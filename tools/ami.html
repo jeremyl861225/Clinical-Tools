@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMI Diagnostic Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-amiscore">
+  <div class="app-header">
+    <div><div class="eyebrow">Mesenteric Ischemia Scoring Tool</div><h1>AMI Diagnostic Score</h1><div class="sub">急診鑑別急性腸繫膜缺血之常規血液檢驗評分（Wang et al. 之新型評分系統）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-amiscore'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="field-row"><label>白血球 WBC</label>
+      <select id="ami_wbc"><option value="0.5">≤19.6 ×10³/µL</option><option value="1">&gt;19.6 ×10³/µL</option></select>
+    </div>
+    <div class="field-row"><label>紅血球分布寬度 RDW</label>
+      <select id="ami_rdw"><option value="1">≤15%</option><option value="2">&gt;15%</option></select>
+    </div>
+    <div class="field-row"><label>平均血小板體積 MPV</label>
+      <select id="ami_mpv"><option value="0.5">≤9.3 fL</option><option value="1">&gt;9.3 fL</option></select>
+    </div>
+    <div class="field-row"><label>血栓分解產物 D-dimer</label>
+      <select id="ami_ddimer"><option value="1">≤0.7 μg/mL FEU</option><option value="2">&gt;0.7 μg/mL FEU</option></select>
+    </div>
+  </div>
+  <div class="result">
+    <div class="metric-label">AMI Diagnostic Score（3–6）</div>
+    <div class="metric-value big" id="ami_total">3</div>
+    <div class="metric-label" style="margin-top:8px;">臨床判讀</div>
+    <div id="ami_interp" style="font-size:15px;">分數 ≤4：AMI可能性較低</div>
+    <div class="risk-note">切點 &gt;4 分：敏感度97.8%、特異度91.8%、PPV 89.8%、NPV 98.2%（AUC分析）。此為小型單中心回顧性研究（n=106），僅供輔助篩檢參考，仍須配合CT血管攝影等影像檢查確診。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Wang+Z%2C+et+al.+World+J+Surg.+2017%3B41%288%29%3A1966-1974" target="_blank" rel="noopener" class="ref-link">Wang Z, et al. World J Surg. 2017;41(8):1966-1974.</a></footer>
+</div>
+</div>
+<script>
+function amiScoreCalc(){
+  const wbc=parseFloat(document.getElementById('ami_wbc').value);
+  const rdw=parseFloat(document.getElementById('ami_rdw').value);
+  const mpv=parseFloat(document.getElementById('ami_mpv').value);
+  const dd=parseFloat(document.getElementById('ami_ddimer').value);
+  const total=wbc+rdw+mpv+dd;
+  document.getElementById('ami_total').textContent=total.toFixed(1);
+  document.getElementById('ami_interp').textContent = total>4 ? '分數 >4：AMI可能性較高，建議進一步影像檢查（如CT血管攝影）' : '分數 ≤4：AMI可能性較低，仍須綜合臨床表現判斷';
+}
+document.querySelectorAll('#view-amiscore select').forEach(el=>el.addEventListener('change',amiScoreCalc));
+amiScoreCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

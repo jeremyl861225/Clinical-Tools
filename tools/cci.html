@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCI 共病指數 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-cci">
+  <div class="app-header">
+    <div><div class="eyebrow">Comorbidity Scoring Tool</div><h1>CCI 共病指數</h1><div class="sub">Charlson Comorbidity Index</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="cci_back_chole" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/cholecystitis.html'">← 返回膽囊炎決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-cci'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field-row">
+      <label>患者年齡 Age</label><input type="number" id="cci_age" min="0" max="120" value="0">
+      <span class="unit" id="cci_ageAddText">年齡加分：+0</span>
+      <label class="toggle-inline" style="margin-left:auto;"><input type="checkbox" id="cci_useAgeAdjust" checked> 計算年齡校正總分</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">心血管系統 <span class="unit" style="text-transform:none;">Cardiovascular</span></div>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="mi"> 心肌梗塞 <span class="unit">(Myocardial infarction)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="chf"> 鬱血性心衰竭 <span class="unit">(Congestive heart failure)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="pvd"> 周邊血管疾病 <span class="unit">(Peripheral vascular disease)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="cvd"> 腦血管疾病 <span class="unit">(Cerebrovascular disease，CVA/TIA)</span><span class="pt-badge">1分</span></label>
+
+    <div class="section-title">肝臟疾病 <span class="unit" style="text-transform:none;">Liver disease</span></div>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb cci-liver" value="liverMild"> 輕度肝病 <span class="unit">(Mild liver disease：慢性肝炎，無門脈高壓)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="3" class="cci-cb cci-liver" value="liverSevere"> 中至重度肝病 <span class="unit">(Moderate–severe liver disease：肝硬化併門脈高壓、腹水或靜脈曲張出血)</span><span class="pt-badge pt-3">3分</span></label>
+    <div class="exclusive-note">＊二選一</div>
+
+    <div class="section-title">腎臟疾病 <span class="unit" style="text-transform:none;">Renal disease</span></div>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb" value="renal"> 中至重度腎病 <span class="unit">(Moderate–severe renal disease：含透析、CKD stage ≥3、腎移植)</span><span class="pt-badge pt-2">2分</span></label>
+
+    <div class="section-title">糖尿病 <span class="unit" style="text-transform:none;">Diabetes mellitus</span></div>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb cci-dm" value="dmNoComp"> 糖尿病，無併發症 <span class="unit">(Diabetes without end-organ damage)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb cci-dm" value="dmComp"> 糖尿病併終端器官損傷 <span class="unit">(Diabetes with end-organ damage：視網膜/腎/神經病變)</span><span class="pt-badge pt-2">2分</span></label>
+    <div class="exclusive-note">＊二選一</div>
+
+    <div class="section-title">呼吸／神經／其他 <span class="unit" style="text-transform:none;">Pulmonary / Neurological / Other</span></div>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="copd"> 慢性肺病 <span class="unit">(Chronic pulmonary disease)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="dementia"> 失智症 <span class="unit">(Dementia)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb" value="hemiplegia"> 偏癱 <span class="unit">(Hemiplegia / paraplegia)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="ctd"> 結締組織疾病 <span class="unit">(Connective tissue disease)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" data-w="1" class="cci-cb" value="ulcer"> 消化性潰瘍 <span class="unit">(Peptic ulcer disease)</span><span class="pt-badge">1分</span></label>
+
+    <div class="section-title">腫瘤與血液惡性腫瘤 <span class="unit" style="text-transform:none;">Neoplasm</span></div>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb cci-tumor" value="tumor"> 實體腫瘤，無轉移 <span class="unit">(Solid tumor, without metastasis)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" data-w="6" class="cci-cb cci-tumor" value="metastatic"> 轉移性實體腫瘤 <span class="unit">(Metastatic solid tumor)</span><span class="pt-badge pt-6">6分</span></label>
+    <div class="exclusive-note">＊二選一</div>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb" value="leukemia"> 白血病 <span class="unit">(Leukemia)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" data-w="2" class="cci-cb" value="lymphoma"> 淋巴瘤 <span class="unit">(Lymphoma)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" data-w="6" class="cci-cb" value="aids"> AIDS <span class="unit">(愛滋病，非僅HIV陽性)</span><span class="pt-badge pt-6">6分</span></label>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">CCI Score</div><div class="metric-value" id="cci_raw">0</div></div>
+      <div><div class="metric-label">Age-adjusted CCI</div><div class="metric-value" id="cci_adj">0</div></div>
+    </div>
+    <div class="metric-label">10 年預估存活率</div>
+    <div class="metric-value" id="cci_survival" style="font-size:26px;">100%</div>
+    <div class="risk-note">公式：10 年存活率 = 0.983^(e^(score×0.9))。僅供臨床參考，非個別病人精確預後估計。</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="cciReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Charlson+ME%2C+et+al.+J+Chronic+Dis.+1987%3B40%285%29%3A373-383" target="_blank" rel="noopener" class="ref-link">Charlson ME, et al. J Chronic Dis. 1987;40(5):373-383.</a></footer>
+</div>
+</div>
+<script>
+function cciAgePts(age){
+  if(isNaN(age)||age<50) return 0;
+  if(age<=59) return 1; if(age<=69) return 2; if(age<=79) return 3; if(age<=89) return 4; return 5;
+}
+function cciExclusive(cls){
+  document.querySelectorAll('.'+cls).forEach(cb=>cb.addEventListener('change',()=>{
+    if(cb.checked) document.querySelectorAll('.'+cls).forEach(o=>{ if(o!==cb) o.checked=false; });
+    cciCalc();
+  }));
+}
+cciExclusive('cci-liver'); cciExclusive('cci-dm'); cciExclusive('cci-tumor');
+function cciCalc(){
+  let raw=0;
+  document.querySelectorAll('.cci-cb').forEach(cb=>{ if(cb.checked) raw+=parseInt(cb.dataset.w); });
+  const age=parseFloat(document.getElementById('cci_age').value);
+  const agePts=cciAgePts(age);
+  document.getElementById('cci_ageAddText').textContent='年齡加分：+'+agePts;
+  const adj=raw+agePts;
+  document.getElementById('cci_raw').textContent=raw;
+  document.getElementById('cci_adj').textContent=adj;
+  const useAdj=document.getElementById('cci_useAgeAdjust').checked;
+  const s=useAdj?adj:raw;
+  const surv=Math.max(0,Math.min(100, Math.pow(0.983,Math.exp(s*0.9))*100));
+  document.getElementById('cci_survival').textContent=surv.toFixed(1)+'%';
+}
+document.querySelectorAll('.cci-cb').forEach(cb=>cb.addEventListener('change',cciCalc));
+document.getElementById('cci_age').addEventListener('input',cciCalc);
+document.getElementById('cci_useAgeAdjust').addEventListener('change',cciCalc);
+function cciReset(){
+  document.querySelectorAll('.cci-cb').forEach(cb=>cb.checked=false);
+  document.getElementById('cci_age').value=0;
+  document.getElementById('cci_useAgeAdjust').checked=true;
+  cciCalc();
+}
+cciCalc();
+
+/* 從膽囊炎決策頁進入時，顯示返回鈕 */
+if(location.search.indexOf('from=chole')>=0){var _b=document.getElementById('cci_back_chole'); if(_b) _b.style.display='';}
+
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

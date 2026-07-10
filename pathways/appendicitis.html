@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性闌尾炎手術決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-appy-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>闌尾炎手術決策</h1><div class="sub">Acute Appendicitis · Operative vs Non-operative（WSES 2025 Jerusalem Guidelines · Podda, JAMA Surg 2026）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-appy-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>診斷、定義、時機與抗生素 Definitions（WSES 2025）</summary>
+    <div class="box-inner">
+      <b>診斷／分流：</b>先以風險分層評分（成人 <b>AIR、AAS</b>；兒童 <b>PAS</b>）分流 — 低分可排除、中分需影像或觀察。不確定時 <b>CT（低劑量 &lt;2–3 mSv）</b>為診斷標準。影像選擇：年輕／兒童首選超音波(US)；成人、肥胖、高齡首選低劑量 CT；孕婦先 US，陰性／不確定時改 MRI。<br><br>
+      <b>未複雜性 Uncomplicated（2025 定義）：</b>闌尾發炎伴充血(hyperemia)和／或蜂窩狀發炎(phlegmon)，無壞疽、穿孔、膿瘍或瀰漫性腹膜炎。<br>
+      <b>複雜性 Complicated：</b>延伸性壞疽／壞死、穿孔、膿瘍、或瀰漫性腹膜炎。<br>
+      <b>糞石 Appendicolith：</b>為穿孔與 NOM 失敗之<b>風險因子</b>，但<b>非</b>複雜性之定義條件。<br><br>
+      <b>發炎指數（輔助）：</b>&lt;60 歲成人若 WBC 與 CRP 皆正常（WBC &lt;12×10³/µL、CRP &lt;6 mg/dL）對排除闌尾炎有高陰性預測值；WBC／CRP 顯著升高與複雜性／壞疽相關。CT 闌尾外徑 &gt;6 mm 支持診斷。<br><br>
+      <b>手術時機（2025，強建議）：</b>選擇手術之未複雜性病人，於<b>入院 24 小時內</b>施行腹腔鏡闌尾切除即可，延遲 ≤24h 不增併發症 — 不需連夜緊急手術（穿孔者除外）。<br><br>
+      <b>抗生素（2025）：</b><br>
+      ・未複雜性 + 手術：<b>術前單劑預防即可</b>；等待手術期間不需額外抗生素；<b>術後不需抗生素</b>。<br>
+      ・複雜性：術前預防 + 等待手術期間<b>治療性抗生素</b>；術後<b>短療程 2–3 天</b>（優於 5–7 天）。<br>
+      ・未複雜性 NOM：抗生素治療（可門診），須臨床監測與追蹤。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>NOM（抗生素治療）失敗之預測因子 Predictors of NOM failure</summary>
+    <div class="box-inner">
+      <b>◆ 入院時 At presentation：</b><br>
+      ・闌尾直徑 <b>≥15 mm</b>：初期無反應校正 RR 4.00（95% CI 2.00–7.92）。<br>
+      ・闌尾直徑 <b>≥13 mm</b>：治療失敗 OR 17.55（1.30–237.28）。<br>
+      ・體溫 <b>&gt;38°C</b>：校正 RR 2.76（1.27–6.03）。<br>
+      ・<b>糞石 appendicolith／fecalith</b>：失敗率較高（手術率 41% vs 25%）、併發症增加（20.2% vs 3.5%）；<b>多顆或 &gt;5 mm</b> 尤具預測性。<br>
+      ・<b>男性</b>：多變項分析之獨立預測因子。<br><br>
+      <b>◆ 早期治療中 Early treatment（入院後 6–30 小時）：</b><br>
+      ・24 小時 <b>CRP ≥10 mg/dL</b>：初期無反應校正 RR 8.29（3.69–18.63）；<b>CRP &lt;10 mg/dL 對失敗有 99% 陰性預測值</b>。<br>
+      ・白血球 <b>≥9×10⁹/L</b>：校正 RR 4.44（1.79–11.05）。<br>
+      ・<b>24 小時無臨床改善</b>：壓痛未減、發燒曲線未改善、症狀未緩解。<br>
+      ・<b>臨床惡化</b>：疼痛加劇、心搏過速加重、低血壓、持續發燒或意識改變。<br><br>
+      <b>◆ 預測模型 Prediction model：</b>三變項（男性、闌尾直徑 ≥15 mm、糞石）AUC 0.778；<b>≥2 分</b>：敏感度 71.4%、特異度 90.8%。<br><br>
+      <b>◆ 失敗與復發率：</b>早期治療失敗（24–72 小時內）約 <b>8–12%</b>；<b>1 年復發 15–41%</b>（多數 25–30%）；<b>5 年復發 39.1%</b>（95% CI 33.1–45.3%，APPAC）。<br><br>
+      <span class="note">＊臨床應用：入院時具高失敗風險因子者（尤其闌尾直徑 ≥15 mm、糞石、男性）較傾向手術；選擇 NOM 者於 <b>24 小時</b>以 CRP／白血球與臨床反應再評估，惡化或無改善即轉手術。</span>
+    </div>
+  </details>
+
+  <div class="flow-step" id="appy_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">闌尾炎複雜度分型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('type','uncomp',this)">未複雜性 Uncomplicated<span class="fo-sub">充血和／或蜂窩狀發炎，無壞疽／穿孔／膿瘍／瀰漫性腹膜炎</span></button>
+      <button class="flow-opt" onclick="appyPick('type','comp',this)">複雜性 Complicated<span class="fo-sub">壞疽／壞死、穿孔、膿瘍、或瀰漫性腹膜炎</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector" id="appy_c2">↓</div>
+
+  <!-- 未複雜性分支 -->
+  <div class="flow-step hidden" id="appy_s2u">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">族群？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('pop','gen',this)">一般成人或兒童<span class="fo-sub">進入手術 vs 非手術之共享決策</span></button>
+      <button class="flow-opt" onclick="appyPick('pop','preg',this)">懷孕<span class="fo-sub">首選腹腔鏡闌尾切除</span></button>
+      <button class="flow-opt" onclick="appyPick('pop','older',this)">高齡或高手術風險／免疫低下<span class="fo-sub">一般首選手術，視共病個別化</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="appy_c3u">↓</div>
+  <div class="flow-step hidden" id="appy_s3u">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">治療選擇（共享決策）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('uChoice','surg',this)">手術：腹腔鏡闌尾切除<span class="fo-sub">標準治療；糞石／發炎指數顯著升高者 NOM 失敗風險較高，傾向手術</span></button>
+      <button class="flow-opt" onclick="appyPick('uChoice','nom',this)">非手術：抗生素治療（NOM）<span class="fo-sub">經選擇病人之安全替代方案，需監測與追蹤</span></button>
+    </div>
+  </div>
+
+  <!-- 複雜性分支 -->
+  <div class="flow-step hidden" id="appy_s2c">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">複雜性型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('cType','free',this)">壞疽／穿孔／瀰漫性腹膜炎<span class="fo-sub">游離穿孔或全腹腹膜炎</span></button>
+      <button class="flow-opt" onclick="appyPick('cType','abscess',this)">闌尾周圍膿瘍／發炎性腫塊（局部包覆）<span class="fo-sub">walled-off，病情相對穩定</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="appy_c3">↓</div>
+  <div class="flow-step hidden" id="appy_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">年齡？（膿瘍處置依年齡分流）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('age','lt35',this)">&lt; 35 歲（含兒童）<span class="fo-sub">腫瘤風險低</span></button>
+      <button class="flow-opt" onclick="appyPick('age','ge35',this)">≥ 35 歲<span class="fo-sub">潛在闌尾腫瘤風險升高（達 14.3%）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="appy_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="appyReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Podda+M+Diagnosis+and+Treatment+of+Acute+Appendicitis+2025+Edition+WSES+Jerusalem+Guidelines+JAMA+Surg+2026" target="_blank" rel="noopener" class="ref-link">Podda M, et al. Diagnosis and Treatment of Acute Appendicitis: 2025 Edition of the WSES Jerusalem Guidelines. JAMA Surg. 2026;161(3):283-295.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Salminen+P%2C+et+al.+%28APPAC%29+JAMA.+2015%3B313%2823%29%3A2340-2348" target="_blank" rel="noopener" class="ref-link">Salminen P, et al. (APPAC) JAMA. 2015;313(23):2340-2348.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const appySt={type:null,pop:null,uChoice:null,cType:null,age:null};
+function appyPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='type'){ appySt.type=val; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null; }
+  else if(key==='pop'){ appySt.pop=val; if(val!=='gen') appySt.uChoice=null; }
+  else if(key==='uChoice'){ appySt.uChoice=val; }
+  else if(key==='cType'){ appySt.cType=val; appySt.age=null; }
+  else if(key==='age'){ appySt.age=val; }
+  appyRender();
+}
+function appyRender(){
+  const t=appySt.type;
+  // 未複雜性分支顯示
+  flowShow('appy_s2u', t==='uncomp');
+  const showS3u = (t==='uncomp' && appySt.pop==='gen');
+  flowShow('appy_c3u', showS3u);
+  flowShow('appy_s3u', showS3u);
+  if(t!=='uncomp'){ flowClearSel('appy_s2u'); flowClearSel('appy_s3u'); }
+  if(!showS3u) flowClearSel('appy_s3u');
+  // 複雜性分支顯示
+  flowShow('appy_s2c', t==='comp');
+  const showS3 = (t==='comp' && appySt.cType==='abscess');
+  flowShow('appy_c3', showS3);
+  flowShow('appy_s3', showS3);
+  if(t!=='comp') flowClearSel('appy_s2c');
+  if(!showS3) flowClearSel('appy_s3');
+
+  const ABX_UNCOMP_SURG='抗生素：術前單劑預防即可，等待手術期間不需額外抗生素，術後不需抗生素。';
+  const ABX_NOM='抗生素：靜脈廣效（ertapenem，或 ceftriaxone + metronidazole；青黴素過敏用 ciprofloxacin + metronidazole）→ 臨床改善後轉口服，療程視臨床反應（可門診）。';
+  const ABX_COMP='抗生素：術前預防 + 等待手術期間治療性抗生素；術後短療程 2–3 天（優於 5–7 天）。';
+
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+  if(t==='uncomp'){
+    if(appySt.pop==='preg'){
+      cls='rec-elective'; title='懷孕：腹腔鏡闌尾切除術（首選）';
+      detail='<li>首選腹腔鏡闌尾切除（由有經驗團隊施行）。</li><li>NOM 僅在手術風險高或無法立即手術時作為替代（證據極不確定）。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+      note='WSES 2025 建議 5.3：懷孕之未複雜性闌尾炎以腹腔鏡闌尾切除為首選。';
+    } else if(appySt.pop==='older'){
+      cls='rec-elective'; title='高齡／高手術風險：以手術為首選（個別化）';
+      detail='<li>高齡病人一般首選闌尾切除。</li><li>共病重、手術風險高（含免疫低下）者，可將 NOM 抗生素作為替代方案，需共享決策。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+      note='WSES 2025 建議 5.4：高齡者以手術為首選，高風險者可考慮 NOM。';
+    } else if(appySt.pop==='gen'){
+      if(appySt.uChoice==='surg'){
+        cls='rec-elective'; title='腹腔鏡闌尾切除術（入院 24 小時內施行即可）';
+        detail='<li>腹腔鏡為標準術式；可於入院 <b>24 小時內</b>施行，延遲 ≤24h 不增風險 — 不需連夜緊急手術（強建議）。</li><li>闌尾直徑 ≥15 mm、糞石、男性、24h CRP ≥10 mg/dL 者，NOM 失敗／穿孔風險較高，傾向手術。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+        note='WSES 2025 建議 9.1、15.1、17.1。';
+      } else if(appySt.uChoice==='nom'){
+        cls='rec-nonop'; title='非手術抗生素治療（NOM，共享決策）';
+        detail='<li>經選擇之未複雜性病人（成人與兒童）可用抗生素治療，需臨床監測與共享決策；適合者可<b>門診</b>治療並確保追蹤。</li><li>'+ABX_NOM+'</li><li>於 <b>24 小時</b>再評估，CRP ≥10 mg/dL、惡化或無改善即轉手術。</li><li>復發率：1 年 15–41%（多數 25–30%）、5 年約 39%（APPAC）。<b>不建議</b>常規 30 天後追蹤或常規 interval appendectomy（除非症狀持續／復發）。</li>';
+        note='WSES 2025 建議 5.1／5.2、6、7、8：NOM 為安全替代，且不需常規追蹤或 interval appendectomy。';
+      } else { cls='rec-idle'; title='請完成步驟 3'; }
+    } else { cls='rec-idle'; title='請完成步驟 2'; }
+  } else if(t==='comp'){
+    if(appySt.cType==='free'){
+      cls='rec-urgent'; title='腹腔鏡闌尾切除（穿孔者立即）+ 源頭控制';
+      detail='<li>壞疽／穿孔／瀰漫性腹膜炎：行腹腔鏡闌尾切除，<b>穿孔者立即手術</b>。</li><li>術中<b>僅抽吸</b>污染液體、不常規灌洗；<b>不常規放置腹腔引流</b>。</li><li>'+ABX_COMP+'</li>';
+      note='WSES 2025 建議 10.1（抽吸不灌洗）、11.1（不放引流）、16.1／18.1／19.1（抗生素）。';
+    } else if(appySt.cType==='abscess'){
+      if(appySt.age==='lt35'){
+        cls='rec-elective'; title='＜35 歲膿瘍：早期腹腔鏡闌尾切除（首選）';
+        detail='<li>&lt;35 歲（含兒童）之闌尾周圍膿瘍：<b>首選早期腹腔鏡闌尾切除</b>。</li><li>若缺乏足夠腹腔鏡技術／資源，則以 NOM（抗生素 ± 經皮引流）後 <b>6–12 週 interval appendectomy</b> 為替代。</li><li>兒童不建議常規 interval appendectomy。'+ABX_COMP+'</li>';
+        note='WSES 2025 建議 13.1／13.2。';
+      } else if(appySt.age==='ge35'){
+        cls='rec-nonop'; title='≥35 歲膿瘍：先 NOM，之後 interval appendectomy（6–12 週）';
+        detail='<li><b>不建議早期手術</b>（潛在闌尾腫瘤風險達 14.3%）。</li><li>先 NOM：抗生素 ± 經皮膿瘍引流；'+ABX_NOM+'</li><li>之後 <b>6–12 週施行 interval appendectomy</b> 以偵測腫瘤（<b>強建議</b>），並安排大腸鏡／影像追蹤。</li>';
+        note='WSES 2025 建議 13.1（≥35 歲不早期手術）、14.1（interval appendectomy 為強建議）。';
+      } else { cls='rec-idle'; title='請完成步驟 3'; }
+    } else { cls='rec-idle'; title='請完成步驟 2'; }
+  }
+  flowRec('appy_rec',cls,title,detail,note);
+}
+function appyReset(){
+  appySt.type=null; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null;
+  document.querySelectorAll('#view-appy-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  appyRender();
+}
+appyReset();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

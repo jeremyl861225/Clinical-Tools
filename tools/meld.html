@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELD 3.0 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-meld">
+  <div class="app-header">
+    <div><div class="eyebrow">Hepatology Scoring Tool</div><h1>MELD 3.0</h1><div class="sub">Model for End-Stage Liver Disease 3.0（Kim et al. 2021）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-meld'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="meld-field">
+      <label class="mf-label">性別 Sex</label>
+      <div class="mf-inputwrap"><select id="meld_sex"><option value="M">男 Male</option><option value="F">女 Female</option></select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">總膽紅素 Bilirubin</label>
+      <div class="mf-inputwrap"><input type="number" id="meld_bili" step="0.1"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">下限 1.0，無上限</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">肌酸酐 Creatinine</label>
+      <div class="mf-inputwrap"><input type="number" id="meld_cr" step="0.1"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">範圍限制 1.0–3.0</span>
+      <label class="toggle-inline" style="margin-top:6px;"><input type="checkbox" id="meld_dialysis"> 過去一週內透析≥2次或24小時內CVVHD（肌酸酐強制設為3.0）</label>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">INR</label>
+      <div class="mf-inputwrap"><input type="number" id="meld_inr" step="0.01"></div>
+      <span class="mf-note">下限 1.0</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血清鈉 Sodium</label>
+      <div class="mf-inputwrap"><input type="number" id="meld_na" step="1"><span class="unit">mEq/L</span></div>
+      <span class="mf-note">範圍限制 125–137</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">白蛋白 Albumin</label>
+      <div class="mf-inputwrap"><input type="number" id="meld_alb" step="0.1"><span class="unit">g/dL</span></div>
+      <span class="mf-note">範圍限制 1.5–3.5</span>
+    </div>
+  </div>
+  <div class="result">
+    <div class="metric-label">MELD 3.0 Score</div>
+    <div class="metric-value big" id="meld_total">6</div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">1.33</span><span class="fvar">× Female</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">4.56</span><span class="fvar">× ln(Bilirubin)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.82</span><span class="fvar">× (137 − Na)</span></div>
+        <div class="formula-term"><span class="fop">−</span><span class="fcoef">0.24</span><span class="fvar">× (137 − Na) × ln(Bilirubin)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">9.09</span><span class="fvar">× ln(INR)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">11.14</span><span class="fvar">× ln(Creatinine)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.85</span><span class="fvar">× (3.5 − Albumin)</span></div>
+        <div class="formula-term"><span class="fop">−</span><span class="fcoef">1.83</span><span class="fvar">× (3.5 − Albumin) × ln(Creatinine)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">6</span><span class="fvar"></span></div>
+      </div>
+      <div class="formula-result">= MELD 3.0（四捨五入取整，範圍限制 6–40）</div>
+    </div>
+
+    <div class="risk-note">分數越高代表90天內肝病相關死亡風險越高，常用於肝移植等候名單優先順序排序。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Kim+WR%2C+et+al.+Gastroenterology.+2021%3B161%286%29%3A1887-1895" target="_blank" rel="noopener" class="ref-link">Kim WR, et al. Gastroenterology. 2021;161(6):1887-1895.</a></footer>
+</div>
+</div>
+<script>
+function meldCalc(){
+  const female=document.getElementById('meld_sex').value==='F'?1:0;
+  let bili=parseFloat(document.getElementById('meld_bili').value); if(isNaN(bili))bili=1.0; bili=Math.max(bili,1.0);
+  let cr=parseFloat(document.getElementById('meld_cr').value); if(isNaN(cr))cr=1.0;
+  if(document.getElementById('meld_dialysis').checked) cr=3.0; else cr=Math.min(Math.max(cr,1.0),3.0);
+  let inr=parseFloat(document.getElementById('meld_inr').value); if(isNaN(inr))inr=1.0; inr=Math.max(inr,1.0);
+  let na=parseFloat(document.getElementById('meld_na').value); if(isNaN(na))na=137; na=Math.min(Math.max(na,125),137);
+  let alb=parseFloat(document.getElementById('meld_alb').value); if(isNaN(alb))alb=3.5; alb=Math.min(Math.max(alb,1.5),3.5);
+
+  let score = 1.33*female
+    + 4.56*Math.log(bili)
+    + 0.82*(137-na)
+    - 0.24*(137-na)*Math.log(bili)
+    + 9.09*Math.log(inr)
+    + 11.14*Math.log(cr)
+    + 1.85*(3.5-alb)
+    - 1.83*(3.5-alb)*Math.log(cr)
+    + 6;
+  score = Math.round(score);
+  score = Math.min(Math.max(score,6),40);
+  document.getElementById('meld_total').textContent=score;
+}
+document.querySelectorAll('#view-meld input, #view-meld select').forEach(el=>{el.addEventListener('input',meldCalc); el.addEventListener('change',meldCalc);});
+meldCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

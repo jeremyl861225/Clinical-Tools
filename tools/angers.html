@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angers CT Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-angers">
+  <div class="app-header">
+    <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Angers CT Score</h1><div class="sub">預測黏連性小腸阻塞保守治療失敗風險</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-angers'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_beak"> Beak sign（鳥嘴徵） <span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_closed"> Closed loop（閉環徵象） <span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_ip_fluid"> 腹腔內游離液體（局部或瀰漫性） <span class="unit">(Intraperitoneal liquid)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_haziness"> 腸繫膜混濁（局部或瀰漫性） <span class="unit">(Mesenteric haziness)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_mes_fluid"> 腸繫膜內游離液體 <span class="unit">(Mesenteric liquid)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="angers-cb" id="ag_diameter"> 最擴張腸段直徑 &gt;40mm <span class="pt-badge">1分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">Angers CT Score（0–6）</div>
+    <div class="metric-value big" id="angers_total">0</div>
+    <div class="metric-label" style="margin-top:8px;">風險分層</div>
+    <div id="angers_interp" style="font-size:15px;">低風險</div>
+    <div class="risk-note">Angers CT score ≥5 為保守治療失敗之獨立風險因子（多中心前瞻研究OR 2.39，95%CI 1.01–5.69）；首次發作病人為保守治療成功之保護因子。此分數依6項CT徵象計算，各1分。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Paisant+A%2C+et+al.+World+J+Surg.+2023%3B47%284%29%3A975-984" target="_blank" rel="noopener" class="ref-link">Paisant A, et al. World J Surg. 2023;47(4):975-984.</a></footer>
+</div>
+</div>
+<script>
+function angersCalc(){
+  let total=0;
+  document.querySelectorAll('.angers-cb').forEach(cb=>{ if(cb.checked) total+=1; });
+  document.getElementById('angers_total').textContent=total;
+  document.getElementById('angers_interp').textContent = total>=5 ? '高風險（≥5分，保守治療失敗風險升高，建議考慮早期手術）' : '低風險（<5分，保守治療成功機會較高）';
+}
+document.querySelectorAll('.angers-cb').forEach(cb=>cb.addEventListener('change',angersCalc));
+angersCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

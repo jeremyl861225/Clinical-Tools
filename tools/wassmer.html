@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wassmer Clinical Severity Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-wassmer">
+  <div class="app-header">
+    <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Wassmer Clinical Severity Score</h1><div class="sub">預測黏連性小腸阻塞（aSBO）是否需手術切除腸段</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-wassmer'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">臨床評估 Clinical Assessment</div>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_age"> 年齡 ≥70歲 <span class="unit">(Age ≥70 years)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_first"> 首次發作（非復發） <span class="unit">(First episode of SBO)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_nobm"> 排便停止 ≥3天 <span class="unit">(No bowel movement ≥3 days)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_guard"> 腹部壓痛／防禦 <span class="unit">(Abdominal guarding)</span><span class="pt-badge">1分</span></label>
+    <div class="field-row"><label>CRP</label><input type="number" id="wm_crp" step="0.1" placeholder="例如 6.0"><span class="unit">mg/dL</span></div>
+    <div class="note">CRP ≥5.0 mg/dL（原文獻切點50 mg/L）計1分</div>
+  </div>
+
+  <div class="card" style="border-color:var(--accent); background:var(--soft-bg);">
+    <div class="section-title" style="margin-top:0;">影像學表現 CT Findings</div>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_transition"> 小腸transition point <span class="unit">(CT transition point)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_noenhance"> 小腸壁無顯影增強 <span class="unit">(Lack of small bowel contrast enhancement)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_fluid"> 腹內游離液體 ≥500 mL <span class="unit">(Intra-abdominal fluid ≥500mL)</span><span class="pt-badge">1分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">Wassmer Score（0–8）</div>
+    <div class="metric-value big" id="wm_total">0</div>
+    <div class="metric-label" style="margin-top:8px;">預估需腸切除機率</div>
+    <div class="metric-value" id="wm_prob" style="font-size:26px; color:#f0a875;">0%</div>
+    <div class="metric-label" style="margin-top:6px;">風險分層</div>
+    <div id="wm_interp" style="font-size:15px;">低風險</div>
+    <table class="ref">
+      <tr><th>分數</th><th>需腸切除比例</th></tr>
+      <tr><td>0</td><td>0%</td></tr><tr><td>1</td><td>約6.1%</td></tr><tr><td>2</td><td>約16.1%</td></tr>
+      <tr><td>3</td><td>約36.4%</td></tr><tr><td>4</td><td>約70.7%</td></tr><tr><td>≥5</td><td>約100%</td></tr>
+    </table>
+    <div class="risk-note">≥4分建議列為高風險（likely需手術切除腸段），AUC 0.84（外部驗證0.82）。若無法施打顯影劑或CRP檢驗，可省略對應項目仍具參考價值（原文獻提供7項與4項簡化版本）。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Wassmer+CH%2C+et+al.+Int+J+Surg.+2023%3B109%286%29%3A1620-1628" target="_blank" rel="noopener" class="ref-link">Wassmer CH, et al. Int J Surg. 2023;109(6):1620-1628.</a></footer>
+</div>
+</div>
+<script>
+function wassmerCalc(){
+  let total=0;
+  document.querySelectorAll('.wassmer-cb').forEach(cb=>{ if(cb.checked) total+=1; });
+  const crp=parseFloat(document.getElementById('wm_crp').value);
+  if(!isNaN(crp) && crp>=5.0) total+=1;
+  document.getElementById('wm_total').textContent=total;
+  const probMap=[0,6.1,16.1,36.4,70.7,100,100,100,100];
+  document.getElementById('wm_prob').textContent = probMap[Math.min(total,8)].toFixed(1)+'%';
+  document.getElementById('wm_interp').textContent = total>=4 ? '高風險（≥4分，建議考慮手術切除腸段）' : '低至中風險（<4分，可考慮持續保守治療並密切觀察）';
+}
+document.querySelectorAll('.wassmer-cb').forEach(cb=>cb.addEventListener('change',wassmerCalc));
+document.getElementById('wm_crp').addEventListener('input',wassmerCalc);
+wassmerCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

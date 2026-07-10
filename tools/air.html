@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIR Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-air">
+  <div class="app-header">
+    <div><div class="eyebrow">Acute Abdomen Scoring Tool</div><h1>AIR Score</h1><div class="sub">Appendicitis Inflammatory Response Score</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-air'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="field-row"><label>嘔吐</label><select id="air_vomit"><option value="0">無</option><option value="1">有</option></select></div>
+    <div class="field-row"><label>右下腹疼痛</label><select id="air_pain"><option value="0">無</option><option value="1">有</option></select></div>
+    <div class="field-row"><label>反彈痛／肌肉防禦</label><select id="air_rebound">
+      <option value="0">無</option><option value="1">輕度</option><option value="2">中度</option><option value="3">強烈</option>
+    </select></div>
+    <div class="field-row"><label>體溫 ≥38.5°C</label><select id="air_temp"><option value="0">無</option><option value="1">有</option></select></div>
+    <div class="field-row"><label>PMN 比例</label><select id="air_pmn">
+      <option value="0">&lt;70%</option><option value="1">70–84%</option><option value="2">≥85%</option>
+    </select></div>
+    <div class="field-row"><label>白血球 WBC</label><select id="air_wbc">
+      <option value="0">&lt;10.0 k/uL</option><option value="1">10.0–14.9 k/uL</option><option value="2">≥15.0 k/uL</option>
+    </select></div>
+    <div class="field-row"><label>CRP</label><select id="air_crp">
+      <option value="0">&lt;1.0 mg/dL</option><option value="1">1.0–4.9 mg/dL</option><option value="2">≥5.0 mg/dL</option>
+    </select></div>
+  </div>
+  <div class="result">
+    <div class="metric-label">AIR Score</div>
+    <div class="metric-value big" id="air_total">0</div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div id="air_interp" style="font-size:15px; margin-top:2px;">低度懷疑</div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th></tr>
+      <tr><td>0–4</td><td>低度懷疑</td></tr>
+      <tr><td>5–8</td><td>不確定，建議影像/觀察</td></tr>
+      <tr><td>9–12</td><td>高度懷疑</td></tr>
+    </table>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Andersson+M%2C+Andersson+RE.+World+J+Surg.+2008%3B32%288%29%3A1843-1849" target="_blank" rel="noopener" class="ref-link">Andersson M, Andersson RE. World J Surg. 2008;32(8):1843-1849.</a></footer>
+</div>
+</div>
+<script>
+function airCalc(){
+  const ids=['air_vomit','air_pain','air_rebound','air_temp','air_pmn','air_wbc','air_crp'];
+  const total=ids.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  document.getElementById('air_total').textContent=total;
+  let interp='低度懷疑';
+  if(total>=9) interp='高度懷疑';
+  else if(total>=5) interp='不確定，建議影像/觀察';
+  document.getElementById('air_interp').textContent=interp;
+}
+document.querySelectorAll('#view-air select').forEach(el=>el.addEventListener('change',airCalc));
+airCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

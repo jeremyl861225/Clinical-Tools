@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOFA Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-sofa">
+  <div class="app-header">
+    <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>SOFA Score</h1><div class="sub">Sequential Organ Failure Assessment</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-sofa'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">呼吸系統</span><span class="organ-en">Respiration</span></div><div class="organ-score" id="sofa_s_resp">0</div></div>
+    <div class="field-row"><label>PaO₂/FiO₂</label><input type="number" id="sofa_pf" step="1"><span class="unit">mmHg</span></div>
+    <div class="field-row"><label class="toggle-inline"><input type="checkbox" id="sofa_support"> 呼吸器/NIV 支持中</label></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥400</td><td>0分</td></tr><tr><td>300–399</td><td>1分</td></tr><tr><td>200–299</td><td>2分</td></tr>
+      <tr><td>100–199（需呼吸支持）</td><td>3分</td></tr><tr><td>&lt;100（需呼吸支持）</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">凝血功能</span><span class="organ-en">Coagulation</span></div><div class="organ-score" id="sofa_s_coag">0</div></div>
+    <div class="field-row"><label>血小板</label><input type="number" id="sofa_plt" step="1"><span class="unit">×10³/µL</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥150</td><td>0分</td></tr><tr><td>100–149</td><td>1分</td></tr><tr><td>50–99</td><td>2分</td></tr>
+      <tr><td>20–49</td><td>3分</td></tr><tr><td>&lt;20</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">肝臟功能</span><span class="organ-en">Liver</span></div><div class="organ-score" id="sofa_s_liver">0</div></div>
+    <div class="field-row"><label>總膽紅素</label><input type="number" id="sofa_bili" step="0.1"><span class="unit">mg/dL</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;1.2</td><td>0分</td></tr><tr><td>1.2–1.9</td><td>1分</td></tr><tr><td>2.0–5.9</td><td>2分</td></tr>
+      <tr><td>6.0–11.9</td><td>3分</td></tr><tr><td>≥12.0</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">心血管系統</span><span class="organ-en">Cardiovascular</span></div><div class="organ-score" id="sofa_s_cardio">0</div></div>
+    <select id="sofa_cardio" style="width:100%;">
+      <option value="0">MAP ≥ 70 mmHg，未使用升壓劑</option>
+      <option value="1">MAP &lt; 70 mmHg，未使用升壓劑</option>
+      <option value="2">Dopamine ≤5，或任何劑量 Dobutamine</option>
+      <option value="3">Dopamine &gt;5，或 Epi/Norepi ≤0.1 mcg/kg/min</option>
+      <option value="4">Dopamine &gt;15，或 Epi/Norepi &gt;0.1 mcg/kg/min</option>
+    </select>
+
+    <details class="drug-calc-details">
+      <summary style="cursor:pointer; font-family:var(--mono); font-size:12.5px; color:var(--accent); font-weight:700; margin-top:10px; list-style:none;">💉 藥物流速換算器 Drug Rate Calculator（點擊展開）</summary>
+      <div class="drug-calc">
+        <div class="drug-calc-title">選擇藥物種類、輸入濃度與體重/速率，將自動換算並判斷SOFA心血管分數</div>
+        <div class="field-row" style="margin:4px 0;"><label style="min-width:90px;">藥物種類</label>
+          <select id="sofa_drug_type">
+            <option value="dopamine">Dopamine</option>
+            <option value="dobutamine">Dobutamine</option>
+            <option value="epinephrine">Epinephrine</option>
+            <option value="norepinephrine">Norepinephrine</option>
+          </select>
+        </div>
+        <div class="drug-row-grid">
+          <div class="field-row" style="margin:4px 0;"><label style="min-width:90px;">藥物劑量</label><input type="number" id="sofa_drug_mg" step="0.1" placeholder="例如 8"><span class="unit">mg</span></div>
+          <div class="field-row" style="margin:4px 0;"><label style="min-width:90px;">溶液體積</label><input type="number" id="sofa_drug_vol" step="1" placeholder="例如 250"><span class="unit">mL</span></div>
+          <div class="field-row" style="margin:4px 0;"><label style="min-width:90px;">病人體重</label><input type="number" id="sofa_drug_wt" step="0.1" placeholder="例如 70"><span class="unit">kg</span></div>
+          <div class="field-row" style="margin:4px 0;"><label style="min-width:90px;">輸液速率</label><input type="number" id="sofa_drug_rate" step="0.1" placeholder="例如 5"><span class="unit">mL/hr</span></div>
+        </div>
+        <div class="drug-out">= <span id="sofa_drug_result">0.000</span> mcg/kg/min</div>
+        <div class="note" id="sofa_drug_note">請完整輸入藥物劑量、溶液體積、體重與速率，將自動對照上方選單判斷SOFA心血管分數</div>
+      </div>
+    </details>
+  </div>
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">中樞神經</span><span class="organ-en">CNS</span></div><div class="organ-score" id="sofa_s_cns">0</div></div>
+    <div class="field-row"><label>GCS</label><input type="number" id="sofa_gcs" min="3" max="15" step="1"></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>15</td><td>0分</td></tr><tr><td>13–14</td><td>1分</td></tr><tr><td>10–12</td><td>2分</td></tr>
+      <tr><td>6–9</td><td>3分</td></tr><tr><td>&lt;6</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">腎臟功能</span><span class="organ-en">Renal</span></div><div class="organ-score" id="sofa_s_renal">0</div></div>
+    <div class="field-row"><label>Creatinine</label><input type="number" id="sofa_cr" step="0.1"><span class="unit">mg/dL</span></div>
+    <div class="field-row"><label>尿量（選填）</label><input type="number" id="sofa_urine" step="1"><span class="unit">mL/day</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;1.2</td><td>0分</td></tr><tr><td>1.2–1.9</td><td>1分</td></tr><tr><td>2.0–3.4</td><td>2分</td></tr>
+      <tr><td>3.5–4.9 或尿量&lt;500mL/day</td><td>3分</td></tr><tr><td>≥5.0 或尿量&lt;200mL/day</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">SOFA Total Score</div>
+    <div class="metric-value big" id="sofa_total">0</div>
+    <div class="breakdown">
+      <div>呼吸 <b id="sofa_b_resp">0</b></div><div>凝血 <b id="sofa_b_coag">0</b></div><div>肝臟 <b id="sofa_b_liver">0</b></div>
+      <div>心血管 <b id="sofa_b_cardio">0</b></div><div>中樞神經 <b id="sofa_b_cns">0</b></div><div>腎臟 <b id="sofa_b_renal">0</b></div>
+    </div>
+    <table class="ref">
+      <tr><th>分數</th><th>參考死亡率趨勢</th></tr>
+      <tr><td>0–1</td><td>&lt;10%</td></tr><tr><td>2–3</td><td>約10–20%</td></tr><tr><td>4–5</td><td>約20–35%</td></tr>
+      <tr><td>6–7</td><td>約35–50%</td></tr><tr><td>8–9</td><td>約50–65%</td></tr><tr><td>≥10</td><td>&gt;65%</td></tr>
+    </table>
+    <div class="risk-note">死亡率為文獻族群統計趨勢，非個別病人精確預測值。疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義。</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="sofaReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Vincent+JL%2C+et+al.+Intensive+Care+Med.+1996%3B22%287%29%3A707-710" target="_blank" rel="noopener" class="ref-link">Vincent JL, et al. Intensive Care Med. 1996;22(7):707-710.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Singer+M%2C+et+al.+JAMA.+2016%3B315%288%29%3A801-810" target="_blank" rel="noopener" class="ref-link">Singer M, et al. JAMA. 2016;315(8):801-810.</a></footer>
+</div>
+</div>
+<script>
+function sofaCalc(){
+  const pf=parseFloat(document.getElementById('sofa_pf').value);
+  const support=document.getElementById('sofa_support').checked;
+  let resp=0;
+  if(!isNaN(pf)){
+    if(pf<100&&support) resp=4; else if(pf<200&&support) resp=3; else if(pf<300) resp=2; else if(pf<400) resp=1;
+  }
+  const plt=parseFloat(document.getElementById('sofa_plt').value);
+  let coag=0;
+  if(!isNaN(plt)){ if(plt<20)coag=4; else if(plt<50)coag=3; else if(plt<100)coag=2; else if(plt<150)coag=1; }
+  const bili=parseFloat(document.getElementById('sofa_bili').value);
+  let liver=0;
+  if(!isNaN(bili)){ if(bili>=12)liver=4; else if(bili>=6)liver=3; else if(bili>=2)liver=2; else if(bili>=1.2)liver=1; }
+  const cardio=parseInt(document.getElementById('sofa_cardio').value);
+  const gcs=parseFloat(document.getElementById('sofa_gcs').value);
+  let cns=0;
+  if(!isNaN(gcs)){ if(gcs<6)cns=4; else if(gcs<=9)cns=3; else if(gcs<=12)cns=2; else if(gcs<=14)cns=1; }
+  const cr=parseFloat(document.getElementById('sofa_cr').value);
+  const urine=parseFloat(document.getElementById('sofa_urine').value);
+  let crScore=0;
+  if(!isNaN(cr)){ if(cr>=5)crScore=4; else if(cr>=3.5)crScore=3; else if(cr>=2)crScore=2; else if(cr>=1.2)crScore=1; }
+  let urineScore=0;
+  if(!isNaN(urine)){ if(urine<200)urineScore=4; else if(urine<500)urineScore=3; }
+  const renal=Math.max(crScore,urineScore);
+
+  document.getElementById('sofa_s_resp').textContent=resp;
+  document.getElementById('sofa_s_coag').textContent=coag;
+  document.getElementById('sofa_s_liver').textContent=liver;
+  document.getElementById('sofa_s_cardio').textContent=cardio;
+  document.getElementById('sofa_s_cns').textContent=cns;
+  document.getElementById('sofa_s_renal').textContent=renal;
+  document.getElementById('sofa_b_resp').textContent=resp;
+  document.getElementById('sofa_b_coag').textContent=coag;
+  document.getElementById('sofa_b_liver').textContent=liver;
+  document.getElementById('sofa_b_cardio').textContent=cardio;
+  document.getElementById('sofa_b_cns').textContent=cns;
+  document.getElementById('sofa_b_renal').textContent=renal;
+  document.getElementById('sofa_total').textContent=resp+coag+liver+cardio+cns+renal;
+}
+document.querySelectorAll('#view-sofa input, #view-sofa select').forEach(el=>{el.addEventListener('input',sofaCalc); el.addEventListener('change',sofaCalc);});
+function sofaReset(){
+  ['sofa_pf','sofa_plt','sofa_bili','sofa_gcs','sofa_cr','sofa_urine'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sofa_support').checked=false;
+  document.getElementById('sofa_cardio').value='0';
+  sofaCalc();
+}
+sofaCalc();
+
+/* SOFA inline drug calc */
+function sofaDrugCalc(){
+  const drugType=document.getElementById('sofa_drug_type').value;
+  const mg=parseFloat(document.getElementById('sofa_drug_mg').value);
+  const vol=parseFloat(document.getElementById('sofa_drug_vol').value);
+  const wt=parseFloat(document.getElementById('sofa_drug_wt').value);
+  const rate=parseFloat(document.getElementById('sofa_drug_rate').value);
+  let result=0;
+  let valid=false;
+  if(!isNaN(mg)&&!isNaN(vol)&&vol>0&&!isNaN(wt)&&wt>0&&!isNaN(rate)){
+    const concUgPerML=(mg*1000)/vol;
+    result=(concUgPerML*rate)/(60*wt);
+    valid=true;
+  }
+  document.getElementById('sofa_drug_result').textContent=result.toFixed(3);
+  const noteEl=document.getElementById('sofa_drug_note');
+  if(valid){
+    let matchedScore=null;
+    if(drugType==='dopamine'){
+      if(result<=5) matchedScore=2; else if(result<=15) matchedScore=3; else matchedScore=4;
+    } else if(drugType==='dobutamine'){
+      matchedScore=2;
+    } else if(drugType==='epinephrine' || drugType==='norepinephrine'){
+      if(result<=0.1) matchedScore=3; else matchedScore=4;
+    }
+    if(matchedScore!==null){
+      document.getElementById('sofa_cardio').value=String(matchedScore);
+      noteEl.textContent='已自動選擇SOFA心血管分數：'+matchedScore+'分（'+drugType+' '+result.toFixed(3)+' mcg/kg/min）';
+      sofaCalc();
+    }
+  } else {
+    noteEl.textContent='請完整輸入藥物劑量、溶液體積、體重與速率，將自動對照上方選單判斷SOFA心血管分數';
+  }
+}
+document.getElementById('sofa_drug_type').addEventListener('change',sofaDrugCalc);
+['sofa_drug_mg','sofa_drug_vol','sofa_drug_wt','sofa_drug_rate'].forEach(id=>document.getElementById(id).addEventListener('input',sofaDrugCalc));
+sofaDrugCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

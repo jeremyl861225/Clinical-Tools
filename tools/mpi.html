@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mannheim Peritonitis Index · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-mpi">
+  <div class="app-header">
+    <div><div class="eyebrow">Peritonitis Scoring Tool</div><h1>Mannheim Peritonitis Index</h1><div class="sub">腹膜炎嚴重度評分（MPI）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-mpi'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="5" id="mpi_age"> 年齡 &gt;50歲 <span class="unit">(Age &gt;50 years)</span><span class="pt-badge pt-2">5分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="5" id="mpi_female"> 女性 <span class="unit">(Female sex)</span><span class="pt-badge pt-2">5分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="7" id="mpi_organ"> 合併器官衰竭 <span class="unit">(Organ failure)</span><span class="pt-badge pt-2">7分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="4" id="mpi_malig"> 惡性腫瘤 <span class="unit">(Malignancy)</span><span class="pt-badge pt-2">4分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="4" id="mpi_duration"> 腹膜炎病程 &gt;24小時 <span class="unit">(Preoperative duration &gt;24h)</span><span class="pt-badge pt-2">4分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="4" id="mpi_origin"> 非大腸來源 <span class="unit">(Not colonic origin)</span><span class="pt-badge pt-2">4分</span></label>
+    <label class="item"><input type="checkbox" class="mpi-cb" data-w="6" id="mpi_diffuse"> 瀰漫性腹膜炎 <span class="unit">(Diffuse generalized peritonitis)</span><span class="pt-badge pt-2">6分</span></label>
+    <div class="field-row" style="margin-top:10px;"><label>腹腔滲液性質</label>
+      <select id="mpi_exudate">
+        <option value="0">清澈 Clear</option><option value="6">混濁／化膿 Cloudy/purulent</option><option value="12">糞便性 Fecal/feculent</option>
+      </select>
+    </div>
+    <details class="def-box">
+      <summary>器官衰竭定義 Definition of organ failure</summary>
+      <div class="box-inner">
+        <b>腎臟：</b>Creatinine &gt;2.0 mg/dL（&gt;177 μmol/L）、Urea &gt;60 mg/dL（≈10 mmol/L，相當於 BUN &gt;28 mg/dL）、或尿量 &lt;20 mL/hr<br>
+        <b>肺臟：</b>PaO₂ &lt;50 mmHg、PaCO₂ &gt;50 mmHg<br>
+        <b>休克：</b>Hypodynamic or hyperdynamic shock<br>
+        <b>腸道：</b>腸阻塞 &gt;24小時或完全機械性腸阻塞
+        <div class="note" style="margin-top:8px;">＊<b>Urea 60 mg/dL = BUN 28 mg/dL = 10 mmol/L</b>（BUN = Urea × 28/60）。部分文獻誤植為「Urea &gt;167 mmol/L」，換算後 BUN 高達數百 mg/dL 並不合理。</div>
+      </div>
+    </details>
+  </div>
+  <div class="result">
+    <div class="metric-label">MPI Score（0–47）</div>
+    <div class="metric-value big" id="mpi_total">0</div>
+    <table class="ref">
+      <tr><th>分數區間</th><th>參考死亡率趨勢</th></tr>
+      <tr><td>&lt;21</td><td>低（多數文獻報告&lt;10%）</td></tr>
+      <tr><td>21–29</td><td>中等（文獻報告差異較大，約20–30%）</td></tr>
+      <tr><td>&gt;29</td><td>高（部分文獻報告可達60–100%）</td></tr>
+    </table>
+    <div class="risk-note">死亡率區間為文獻概略趨勢，不同研究族群報告數值差異頗大，僅供參考；MPI≥26分常被視為高死亡風險之分界點。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Wacha+H%2C+Linder+MM%2C+et+al.+Theor+Surg.+1987%3B1%3A169-177" target="_blank" rel="noopener" class="ref-link">Wacha H, Linder MM, et al. Theor Surg. 1987;1:169-177.</a></footer>
+</div>
+</div>
+<script>
+function mpiCalc(){
+  let total=0;
+  document.querySelectorAll('.mpi-cb').forEach(cb=>{ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  total += parseInt(document.getElementById('mpi_exudate').value);
+  document.getElementById('mpi_total').textContent=total;
+}
+document.querySelectorAll('.mpi-cb').forEach(cb=>cb.addEventListener('change',mpiCalc));
+document.getElementById('mpi_exudate').addEventListener('change',mpiCalc);
+mpiCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

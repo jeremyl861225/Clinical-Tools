@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULP Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-pulp">
+  <div class="app-header">
+    <div><div class="eyebrow">Peptic Ulcer Perforation Scoring Tool</div><h1>PULP Score</h1><div class="sub">Peptic Ulcer Perforation Score（預測穿孔性消化性潰瘍30天死亡率）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-pulp'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="field-row" style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--line);"><label>ASA 分級</label>
+      <select id="pulp_asa">
+        <option value="0">ASA 1</option><option value="1">ASA 2</option><option value="3">ASA 3</option><option value="5">ASA 4</option><option value="7">ASA 5</option>
+      </select>
+      <span class="pt-badge pt-2" id="pulp_asa_badge">0分</span>
+    </div>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="3" id="pulp_age"> 年齡 &gt;65歲 <span class="unit">(Age &gt;65 years)</span><span class="pt-badge pt-3">3分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="1" id="pulp_malig"> 惡性腫瘤或AIDS <span class="unit">(Active malignancy or AIDS)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="2" id="pulp_cirrhosis"> 肝硬化 <span class="unit">(Liver cirrhosis)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="1" id="pulp_steroid"> 使用類固醇 <span class="unit">(Concomitant steroid use)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="1" id="pulp_shock"> 術前休克 <span class="unit">(Shock：SBP&lt;100mmHg 且 HR&gt;100/min)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="1" id="pulp_delay"> 穿孔至就診&gt;24小時 <span class="unit">(Time to admission &gt;24h)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="pulp-cb" data-w="2" id="pulp_cr"> 肌酸酐&gt;1.5 mg/dL <span class="unit">(Creatinine &gt;130 μmol/L)</span><span class="pt-badge pt-2">2分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">PULP Score（0–18）</div>
+    <div class="metric-value big" id="pulp_total">0</div>
+    <div class="metric-label" style="margin-top:8px;">風險分層</div>
+    <div id="pulp_interp" style="font-size:15px;">低風險（≤7分）</div>
+    <table class="ref">
+      <tr><th>分數</th><th>風險分層</th><th>30天死亡風險</th></tr>
+      <tr><td>0–7</td><td>低風險 Low risk</td><td>&lt;25%</td></tr>
+      <tr><td>8–18</td><td>高風險 High risk</td><td>&gt;25%</td></tr>
+    </table>
+    <div class="risk-note">此分數以Møller等2012年丹麥全國性研究（n=2668）為基礎，AUC 0.83，表現優於Boey score（AUC 0.70）與單獨ASA分級（AUC 0.78）。<b>原始研究僅驗證「≤7分」與「&gt;7分」兩組風險分層，並未提供逐分數對應之精確死亡率曲線</b>；若需更細緻的分數-死亡率對應關係，建議參考個別驗證研究（如印度單中心研究：平均PULP分數9分之族群死亡率8.5%），但跨研究間死亡率差異頗大，不宜直接套用。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=M%C3%B8ller+MH%2C+et+al.+Acta+Anaesthesiol+Scand.+2012%3B56%286%29%3A655-662" target="_blank" rel="noopener" class="ref-link">Møller MH, et al. Acta Anaesthesiol Scand. 2012;56(6):655-662.</a></footer>
+</div>
+</div>
+<script>
+function pulpCalc(){
+  let total=0;
+  document.querySelectorAll('.pulp-cb').forEach(cb=>{ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  const asaPts=parseInt(document.getElementById('pulp_asa').value);
+  document.getElementById('pulp_asa_badge').textContent=asaPts+'分';
+  total += asaPts;
+  document.getElementById('pulp_total').textContent=total;
+  document.getElementById('pulp_interp').textContent = total>7 ? '高風險（>7分，>25%死亡風險）' : '低風險（≤7分，<25%死亡風險）';
+}
+document.querySelectorAll('.pulp-cb').forEach(cb=>cb.addEventListener('change',pulpCalc));
+document.getElementById('pulp_asa').addEventListener('change',pulpCalc);
+pulpCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

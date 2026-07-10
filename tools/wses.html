@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSES Sepsis Severity Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-wses">
+  <div class="app-header">
+    <div><div class="eyebrow">Peritonitis / Sepsis Scoring Tool</div><h1>WSES Sepsis Severity Score</h1><div class="sub">複雜性腹內感染之敗血症嚴重度評分</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-wses'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">入院時臨床狀況 Clinical condition at admission</div>
+    <div class="field-row">
+      <select id="wses_sepsis" style="flex:1;">
+        <option value="0">無 / 單純感染</option>
+        <option value="3">嚴重敗血症 Severe sepsis（急性器官功能障礙）</option>
+        <option value="5">敗血性休克 Septic shock（需升壓劑之持續性低血壓）</option>
+      </select>
+      <span class="pt-badge pt-2" id="wses_sepsis_badge">0分</span>
+    </div>
+    <div class="section-title">感染來源 Setting of acquisition</div>
+    <label class="item"><input type="checkbox" id="wses_hcai" data-w="2"> 醫療照護相關感染 <span class="unit">(Healthcare-associated infection)</span><span class="pt-badge pt-2">2分</span></label>
+    <div class="section-title">腹內感染來源 Origin of the IAIs</div>
+    <div class="field-row">
+      <select id="wses_origin" style="flex:1;">
+        <option value="0">其他來源（如闌尾炎）／非以下選項</option>
+        <option value="2">大腸非憩室性穿孔腹膜炎 Colonic non-diverticular perforation</option>
+        <option value="3">小腸穿孔腹膜炎 Small bowel perforation</option>
+        <option value="2">憩室瀰漫性腹膜炎 Diverticular diffuse peritonitis</option>
+        <option value="2">術後瀰漫性腹膜炎 Post-operative diffuse peritonitis</option>
+      </select>
+      <span class="pt-badge pt-2" id="wses_origin_badge">0分</span>
+    </div>
+    <div class="section-title">來源控制延遲 Delay in source control</div>
+    <label class="item"><input type="checkbox" id="wses_delay" data-w="3"> 初次介入延遲&gt;24小時 <span class="unit">(Delayed initial intervention &gt;24h)</span><span class="pt-badge pt-2">3分</span></label>
+    <div class="section-title">危險因子 Risk factors</div>
+    <label class="item"><input type="checkbox" id="wses_age" data-w="2"> 年齡&gt;70歲 <span class="unit">(Age &gt;70)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" id="wses_immuno" data-w="3"> 免疫抑制 <span class="unit">(慢性類固醇、免疫抑制劑、化學治療、淋巴系統疾病、病毒感染)</span><span class="pt-badge pt-2">3分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">WSES Sepsis Severity Score（0–18）</div>
+    <div class="metric-value big" id="wses_total">0</div>
+    <table class="ref">
+      <tr><th>分數區間</th><th>參考死亡率</th></tr>
+      <tr><td>0–3</td><td>約0.6%</td></tr>
+      <tr><td>4–6</td><td>約6.3%</td></tr>
+      <tr><td>≥7</td><td>約41.7%</td></tr>
+      <tr><td>≥9</td><td>約55.5%</td></tr>
+      <tr><td>≥11</td><td>約68.2%</td></tr>
+      <tr><td>≥13</td><td>約80.9%</td></tr>
+    </table>
+    <div class="risk-note">死亡率數據來自WISS全球多中心驗證研究（n=4553，Sartelli et al. 2015），觀察期間為住院期間；分數&gt;5.5為死亡最佳預測切點（敏感度89.2%、特異度83.5%）。此分數為統計預測工具，仍須綜合臨床判斷。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Sartelli+M%2C+et+al.+World+J+Emerg+Surg.+2015%3B10%3A61" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. World J Emerg Surg. 2015;10:61.</a></footer>
+</div>
+</div>
+<script>
+function wsesCalc(){
+  const sepsisVal=parseInt(document.getElementById('wses_sepsis').value);
+  const originVal=parseInt(document.getElementById('wses_origin').value);
+  document.getElementById('wses_sepsis_badge').textContent=sepsisVal+'分';
+  document.getElementById('wses_origin_badge').textContent=originVal+'分';
+  let total=sepsisVal+originVal;
+  if(document.getElementById('wses_hcai').checked) total+=2;
+  if(document.getElementById('wses_delay').checked) total+=3;
+  if(document.getElementById('wses_age').checked) total+=2;
+  if(document.getElementById('wses_immuno').checked) total+=3;
+  document.getElementById('wses_total').textContent=total;
+}
+document.querySelectorAll('#view-wses select, #view-wses input[type=checkbox]').forEach(el=>{el.addEventListener('change',wsesCalc);});
+wsesCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

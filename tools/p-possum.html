@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P-POSSUM · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-possum">
+  <div class="app-header">
+    <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>P-POSSUM</h1><div class="sub">Portsmouth Physiological and Operative Severity Score</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-possum'">← 返回主選單</button>
+  </div>
+
+  <div class="section-title" style="margin-top:0;">生理評分 Physiological Score</div>
+  <div class="card">
+    <div class="field-row"><label>年齡 Age</label><select id="ps_age"><option value="1">≤60 yrs</option><option value="2">61–70 yrs</option><option value="4">&gt;70 yrs</option></select></div>
+    <div class="field-row"><label>心臟徵象 Cardiac signs</label><select id="ps_cardiac">
+      <option value="1">No failure（無心衰竭徵象）</option><option value="2">Diuretic/digoxin/anti-HTN therapy；邊緣性心臟肥大</option>
+      <option value="4">Peripheral edema, warfarin；心臟肥大</option><option value="8">Raised JVP；心臟肥大合併周邊水腫</option>
+    </select></div>
+    <div class="field-row"><label>呼吸徵象 Respiratory signs</label><select id="ps_resp">
+      <option value="1">No dyspnea（無呼吸困難）</option><option value="2">活動後呼吸困難；輕度COPD</option>
+      <option value="4">受限性呼吸困難（爬1層樓）；中度COPD</option><option value="8">休息時呼吸困難(RR&gt;30)；肺纖維化</option>
+    </select></div>
+    <div class="field-row"><label>收縮壓 Systolic BP</label><select id="ps_sbp">
+      <option value="8">&lt;90 mmHg</option><option value="4">90–99 mmHg</option><option value="2">100–109 mmHg</option>
+      <option value="1" selected>110–130 mmHg</option><option value="2">131–170 mmHg</option><option value="4">&gt;170 mmHg</option>
+    </select></div>
+    <div class="field-row"><label>脈搏 Pulse rate</label><select id="ps_pulse">
+      <option value="8">&lt;40 bpm</option><option value="2">40–49 bpm</option><option value="1" selected>50–80 bpm</option>
+      <option value="2">81–100 bpm</option><option value="4">101–120 bpm</option><option value="8">&gt;120 bpm</option>
+    </select></div>
+    <div class="field-row"><label>意識 GCS</label><select id="ps_gcs">
+      <option value="8">&lt;9</option><option value="4">9–11</option><option value="2">12–14</option><option value="1" selected>15</option>
+    </select></div>
+    <div class="field-row"><label>血紅素 Hemoglobin</label><select id="ps_hb">
+      <option value="8">&lt;10 g/dL</option><option value="4">10–11.4 g/dL</option><option value="2">11.5–12.9 g/dL</option>
+      <option value="1" selected>13–16 g/dL</option><option value="2">16.1–17 g/dL</option><option value="4">17.1–18 g/dL</option><option value="8">&gt;18 g/dL</option>
+    </select></div>
+    <div class="field-row"><label>白血球 WBC</label><select id="ps_wbc">
+      <option value="4">&lt;3 k/uL</option><option value="2">3.1–3.9 k/uL</option><option value="1" selected>4–10 k/uL</option>
+      <option value="2">10.1–20 k/uL</option><option value="4">&gt;20 k/uL</option>
+    </select></div>
+    <div class="field-row"><label>尿素氮 BUN</label><select id="ps_bun">
+      <option value="1" selected>&lt;21 mg/dL</option><option value="2">21–28 mg/dL</option><option value="4">29–42 mg/dL</option><option value="8">&gt;42 mg/dL</option>
+    </select></div>
+    <div class="note">原始 POSSUM 以血中尿素 Urea (mmol/L) 計分，此處已換算為 BUN (mg/dL)：&lt;21 / 21–28 / 29–42 / &gt;42 對應 urea &lt;7.5 / 7.5–10 / 10–15 / &gt;15 mmol/L（BUN = urea × 2.8）。</div>
+    <div class="field-row"><label>血鈉 Sodium</label><select id="ps_na">
+      <option value="8">≤125 mmol/L</option><option value="4">126–130 mmol/L</option><option value="2">131–135 mmol/L</option><option value="1" selected>≥136 mmol/L</option>
+    </select></div>
+    <div class="field-row"><label>血鉀 Potassium</label><select id="ps_k">
+      <option value="8">≤2.8 mmol/L</option><option value="4">2.9–3.1 mmol/L</option><option value="2">3.2–3.4 mmol/L</option>
+      <option value="1" selected>3.5–5.0 mmol/L</option><option value="2">5.1–5.3 mmol/L</option><option value="4">5.4–5.9 mmol/L</option><option value="8">≥6.0 mmol/L</option>
+    </select></div>
+    <div class="field-row"><label>心電圖 ECG</label><select id="ps_ecg">
+      <option value="1" selected>Normal（正常）</option>
+      <option value="4">AF 心房顫動 (rate 60–90)</option>
+      <option value="8">其他異常節律、&gt;5 ectopics/min、Q波或 ST/T 缺血性變化</option>
+    </select></div>
+  </div>
+
+  <div class="section-title">手術嚴重度評分 Operative Severity Score</div>
+  <div class="card">
+    <div class="field-row"><label>手術嚴重度 Operative severity</label><select id="os_severity">
+      <option value="1">Minor（輕度）</option><option value="2">Moderate（中度）</option><option value="4">Major（重大）</option><option value="8">Major+（重大＋）</option>
+    </select></div>
+    <details class="def-box">
+      <summary>分級參考範例 Grading guide / examples</summary>
+      <div class="box-inner">
+        <b>Minor:</b> hernia repair, appendectomy, minor skin/soft tissue procedures, minor limb amputation<br>
+        <b>Moderate:</b> cholecystectomy, hysterectomy, segmental colectomy, hemorrhoidectomy<br>
+        <b>Major:</b> total gastrectomy, hepatic resection, elective aortic aneurysm repair, major joint replacement<br>
+        <b>Major+:</b> pancreaticoduodenectomy (Whipple), esophagectomy, ruptured aortic aneurysm repair, cardiac surgery
+      </div>
+    </details>
+    <div class="field-row"><label>手術數量 No. of procedures</label><select id="os_multi">
+      <option value="1">1 次</option><option value="4">2 次</option><option value="8">&gt;2 次</option>
+    </select></div>
+    <div class="field-row"><label>總出血量 Blood loss</label><select id="os_blood">
+      <option value="1">&lt;100 mL</option><option value="2">101–500 mL</option><option value="4">501–999 mL</option><option value="8">≥1000 mL</option>
+    </select></div>
+    <div class="field-row"><label>腹腔污染 Peritoneal soiling</label><select id="os_soil">
+      <option value="1">None（無）</option><option value="2">Minor serous fluid（少量漿液）</option><option value="4">Local pus（局部膿液）</option><option value="8">Free bowel content, pus, or blood（腸內容物／膿／血液瀰漫）</option>
+    </select></div>
+    <div class="field-row"><label>惡性腫瘤狀態 Malignancy</label><select id="os_malig">
+      <option value="1">None（無）</option><option value="2">Primary cancer only（僅原發癌）</option><option value="4">Nodal metastases（淋巴結轉移）</option><option value="8">Distant metastases（遠端轉移）</option>
+    </select></div>
+    <div class="field-row"><label>手術模式 Mode of surgery</label><select id="os_mode">
+      <option value="1">Elective（選擇性）</option><option value="4">Urgent（急迫性）</option><option value="8">Emergency（緊急）</option>
+    </select></div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">生理分數 Ps</div><div class="metric-value" id="poss_ps">12</div></div>
+      <div><div class="metric-label">手術分數 Os</div><div class="metric-value" id="poss_os">6</div></div>
+      <div><div class="metric-label">預測死亡率</div><div class="metric-value big" id="poss_mortality">—</div></div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fvar">Ps = 生理評分總和（12項相加）</span></div>
+        <div class="formula-term"><span class="fvar">Os = 手術嚴重度總和（6項相加）</span></div>
+      </div>
+      <div class="formula-list" style="margin-top:12px;">
+        <div class="formula-term"><span class="fvar">ln(R ÷ (1 − R))</span></div>
+        <div class="formula-term"><span class="fop">=</span><span class="fcoef">−9.065</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.1692</span><span class="fvar">× Ps</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.1550</span><span class="fvar">× Os</span></div>
+      </div>
+      <div class="formula-result">R = 預測死亡率 Predicted mortality</div>
+    </div>
+
+    <div class="risk-note">此為統計預測工具，用於術前風險評估與族群比較（如手術品質稽核），並非個別病人絕對死亡機率。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Whiteley+MS%2C+et+al.+Br+J+Surg.+1998%3B85%289%29%3A1217-1220" target="_blank" rel="noopener" class="ref-link">Whiteley MS, et al. Br J Surg. 1998;85(9):1217-1220.</a></footer>
+</div>
+</div>
+<script>
+function possBadge(id){
+  const sel=document.getElementById(id);
+  let b=sel.parentNode.querySelector('.poss-badge');
+  if(!b){ b=document.createElement('span'); b.className='pt-badge poss-badge'; sel.parentNode.appendChild(b); }
+  b.textContent=sel.value+'分';
+}
+function possCalc(){
+  const psIds=['ps_age','ps_cardiac','ps_resp','ps_sbp','ps_pulse','ps_gcs','ps_hb','ps_wbc','ps_bun','ps_na','ps_k','ps_ecg'];
+  const osIds=['os_severity','os_multi','os_blood','os_soil','os_malig','os_mode'];
+  psIds.concat(osIds).forEach(possBadge);
+  let ps=psIds.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  const os=osIds.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  document.getElementById('poss_ps').textContent=ps;
+  document.getElementById('poss_os').textContent=os;
+  // P-POSSUM（Portsmouth）死亡率預測式：ln[R/(1−R)] = −9.065 + 0.1692×Ps + 0.1550×Os
+  const L=-9.065+0.1692*ps+0.1550*os;
+  const R=Math.exp(L)/(1+Math.exp(L));
+  document.getElementById('poss_mortality').textContent=(R*100).toFixed(1)+'%';
+}
+document.querySelectorAll('#view-possum select').forEach(el=>el.addEventListener('change',possCalc));
+possCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

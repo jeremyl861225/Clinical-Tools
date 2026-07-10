@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alvarado Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-alvarado">
+  <div class="app-header">
+    <div><div class="eyebrow">Acute Abdomen Scoring Tool</div><h1>Alvarado Score</h1><div class="sub">急性闌尾炎臨床評分</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-alvarado'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 疼痛轉移至右下腹 <span class="unit">(Migration)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 食慾不振 <span class="unit">(Anorexia)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 噁心／嘔吐 <span class="unit">(Nausea/Vomiting)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="2"> 右下腹壓痛 <span class="unit">(RLQ tenderness)</span><span class="pt-badge">2分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 反彈痛 <span class="unit">(Rebound tenderness)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 體溫 ≥37.3°C <span class="unit">(Fever)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="2"> 白血球增多 <span class="unit">(Leukocytosis, &gt;10k/mm³)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" class="alv-cb" data-w="1"> 嗜中性球左移 &gt;75% <span class="unit">(Left shift)</span><span class="pt-badge">1分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">Alvarado Score</div>
+    <div class="metric-value big" id="alv_total">0</div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div id="alv_interp" style="font-size:15px; margin-top:2px;">不太可能為闌尾炎</div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th></tr>
+      <tr><td>1–4</td><td>不太可能，考慮其他診斷</td></tr>
+      <tr><td>5–6</td><td>可能，建議觀察或影像檢查</td></tr>
+      <tr><td>7–8</td><td>極有可能，建議外科會診</td></tr>
+      <tr><td>9–10</td><td>高度懷疑，考慮手術</td></tr>
+    </table>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Alvarado+A.+Ann+Emerg+Med.+1986%3B15%285%29%3A557-564" target="_blank" rel="noopener" class="ref-link">Alvarado A. Ann Emerg Med. 1986;15(5):557-564.</a></footer>
+</div>
+</div>
+<script>
+function alvCalc(){
+  let total=0;
+  document.querySelectorAll('.alv-cb').forEach(cb=>{ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  document.getElementById('alv_total').textContent=total;
+  let interp='不太可能為闌尾炎';
+  if(total>=9) interp='高度懷疑，考慮手術';
+  else if(total>=7) interp='極有可能，建議外科會診';
+  else if(total>=5) interp='可能，建議觀察或影像檢查';
+  document.getElementById('alv_interp').textContent=interp;
+}
+document.querySelectorAll('.alv-cb').forEach(cb=>cb.addEventListener('change',alvCalc));
+alvCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

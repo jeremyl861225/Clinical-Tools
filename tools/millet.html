@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Millet Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-millet">
+  <div class="app-header">
+    <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Millet Score</h1><div class="sub">結合CT徵象評估黏連性小腸阻塞絞窄（strangulation）風險</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-millet'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <label class="item"><input type="checkbox" class="millet-cb" data-w="2" id="ml_enhance"> 腸壁顯影降低／缺損 <span class="unit">(Reduced bowel wall enhancement)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" class="millet-cb" data-w="2" id="ml_haziness"> 瀰漫性腸繫膜混濁 <span class="unit">(Diffuse mesenteric haziness)</span><span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" class="millet-cb" data-w="2" id="ml_closed"> 閉環機轉 <span class="unit">(Closed-loop mechanism)</span><span class="pt-badge pt-2">2分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">Millet Score（0–6）</div>
+    <div class="metric-value big" id="millet_total">0</div>
+    <div class="metric-label" style="margin-top:8px;">臨床判讀</div>
+    <div id="millet_interp" style="font-size:15px;">三項皆無：低機率絞窄</div>
+    <table class="ref">
+      <tr><th>分數</th><th>臨床意義</th></tr>
+      <tr><td>0</td><td>三項CT徵象皆無，NPV 97%，可高信心排除絞窄</td></tr>
+      <tr><td>2（1項）</td><td>單一徵象，仍需綜合判斷</td></tr>
+      <tr><td>4（2項）</td><td>LR+ 14.7，大幅提高絞窄機率</td></tr>
+      <tr><td>6（3項）</td><td>LR+ 43.8，高度懷疑絞窄</td></tr>
+    </table>
+    <div class="risk-note">AUC 0.91（95%CI 0.86–0.96）。絞窄病人中，腸壁顯影降低與腸繫膜液體為預測需腸切除之獨立因子。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Millet+I%2C+et+al.+Radiology.+2017%3B285%283%29%3A798-808" target="_blank" rel="noopener" class="ref-link">Millet I, et al. Radiology. 2017;285(3):798-808.</a></footer>
+</div>
+</div>
+<script>
+function milletCalc(){
+  let total=0;
+  document.querySelectorAll('.millet-cb').forEach(cb=>{ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  document.getElementById('millet_total').textContent=total;
+  let interp='三項CT徵象皆無：低機率絞窄（NPV 97%）';
+  if(total===6) interp='三項徵象皆有：高度懷疑絞窄（LR+ 43.8）';
+  else if(total===4) interp='兩項徵象：大幅提高絞窄機率（LR+ 14.7）';
+  else if(total===2) interp='單一徵象：仍需綜合臨床判斷';
+  document.getElementById('millet_interp').textContent=interp;
+}
+document.querySelectorAll('.millet-cb').forEach(cb=>cb.addEventListener('change',milletCalc));
+milletCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

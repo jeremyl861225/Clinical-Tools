@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APACHE II · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-apache">
+  <div class="app-header">
+    <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>APACHE II</h1><div class="sub">Acute Physiology and Chronic Health Evaluation II</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-apache'">← 返回主選單</button>
+  </div>
+
+  <div class="section-title" style="margin-top:0;">A｜急性生理評分（每項 0–4 分）</div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">體溫 Temperature</div><div class="organ-score" id="ap_pt_temp">0</div></div>
+    <div class="field-row"><input type="number" id="ap_temp" step="0.1"><span class="unit">°C</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤29.9</td><td>4分</td></tr><tr><td>30–31.9</td><td>3分</td></tr><tr><td>32–33.9</td><td>2分</td></tr><tr><td>34–35.9</td><td>1分</td></tr>
+      <tr><td>36–38.4</td><td>0分</td></tr><tr><td>38.5–38.9</td><td>1分</td></tr><tr><td>39–40.9</td><td>3分</td></tr><tr><td>≥41</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">平均動脈壓 MAP</div><div class="organ-score" id="ap_pt_map">0</div></div>
+    <div class="field-row"><input type="number" id="ap_map" step="1"><span class="unit">mmHg</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤49</td><td>4分</td></tr><tr><td>50–69</td><td>2分</td></tr><tr><td>70–109</td><td>0分</td></tr><tr><td>110–129</td><td>2分</td></tr><tr><td>130–159</td><td>3分</td></tr><tr><td>≥160</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">心率 Heart Rate</div><div class="organ-score" id="ap_pt_hr">0</div></div>
+    <div class="field-row"><input type="number" id="ap_hr" step="1"><span class="unit">bpm</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤39</td><td>4分</td></tr><tr><td>40–54</td><td>3分</td></tr><tr><td>55–69</td><td>2分</td></tr><tr><td>70–109</td><td>0分</td></tr><tr><td>110–139</td><td>2分</td></tr><tr><td>140–179</td><td>3分</td></tr><tr><td>≥180</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">呼吸速率 Respiratory Rate</div><div class="organ-score" id="ap_pt_rr">0</div></div>
+    <div class="field-row"><input type="number" id="ap_rr" step="1"><span class="unit">breaths/min</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤5</td><td>4分</td></tr><tr><td>6–9</td><td>2分</td></tr><tr><td>10–11</td><td>1分</td></tr><tr><td>12–24</td><td>0分</td></tr>
+      <tr><td>25–34</td><td>1分</td></tr><tr><td>35–49</td><td>3分</td></tr><tr><td>≥50</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">氧合狀態 Oxygenation</div><div class="organ-score" id="ap_pt_ox">0</div></div>
+    <div class="field-row"><label>FiO₂</label><input type="number" id="ap_fio2" step="1" placeholder="例如 40"><span class="unit">%</span></div>
+    <div class="field-row" id="ap_row_pao2"><label>PaO₂</label><input type="number" id="ap_pao2" step="1"><span class="unit">FiO₂&lt;50%</span></div>
+    <div class="field-row" id="ap_row_aado2"><label>A-aDO₂</label><input type="number" id="ap_aado2" step="1"><span class="unit">FiO₂≥50%</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>A-aDO₂&lt;200（FiO₂≥50%）</td><td>0分</td></tr><tr><td>A-aDO₂200–349</td><td>2分</td></tr><tr><td>A-aDO₂350–499</td><td>3分</td></tr><tr><td>A-aDO₂≥500</td><td>4分</td></tr>
+      <tr><td>PaO₂&lt;55（FiO₂&lt;50%）</td><td>4分</td></tr><tr><td>PaO₂55–60</td><td>3分</td></tr><tr><td>PaO₂61–70</td><td>1分</td></tr><tr><td>PaO₂&gt;70</td><td>0分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">動脈血 Arterial pH</div><div class="organ-score" id="ap_pt_ph">0</div></div>
+    <div class="field-row"><input type="number" id="ap_ph" step="0.01"></div>
+    <div class="note">無ABG可填 HCO₃⁻：<input type="number" id="ap_hco3" step="0.1" style="width:80px;"></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;7.15</td><td>4分</td></tr><tr><td>7.15–7.24</td><td>3分</td></tr><tr><td>7.25–7.32</td><td>2分</td></tr><tr><td>7.33–7.49</td><td>0分</td></tr>
+      <tr><td>7.5–7.59</td><td>1分</td></tr><tr><td>7.6–7.69</td><td>3分</td></tr><tr><td>≥7.7</td><td>4分</td></tr>
+      <tr><td colspan="2" style="color:var(--accent); font-family:var(--sans); font-weight:600; padding-top:8px;">無ABG時，改用 HCO₃⁻ (mEq/L)</td></tr>
+      <tr><td>&lt;15</td><td>4分</td></tr><tr><td>15–17.9</td><td>3分</td></tr><tr><td>18–21.9</td><td>2分</td></tr><tr><td>22–31.9</td><td>0分</td></tr>
+      <tr><td>32–40.9</td><td>1分</td></tr><tr><td>41–51.9</td><td>3分</td></tr><tr><td>≥52</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血清鈉 Sodium</div><div class="organ-score" id="ap_pt_na">0</div></div>
+    <div class="field-row"><input type="number" id="ap_na" step="1"><span class="unit">mEq/L</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤110</td><td>4分</td></tr><tr><td>111–119</td><td>3分</td></tr><tr><td>120–129</td><td>2分</td></tr><tr><td>130–149</td><td>0分</td></tr>
+      <tr><td>150–154</td><td>1分</td></tr><tr><td>155–159</td><td>2分</td></tr><tr><td>160–179</td><td>3分</td></tr><tr><td>≥180</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血清鉀 Potassium</div><div class="organ-score" id="ap_pt_k">0</div></div>
+    <div class="field-row"><input type="number" id="ap_k" step="0.1"><span class="unit">mEq/L</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;2.5</td><td>4分</td></tr><tr><td>2.5–2.9</td><td>2分</td></tr><tr><td>3–3.4</td><td>1分</td></tr><tr><td>3.5–5.4</td><td>0分</td></tr>
+      <tr><td>5.5–5.9</td><td>1分</td></tr><tr><td>6–6.9</td><td>3分</td></tr><tr><td>≥7</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">肌酸酐 Creatinine</div><div class="organ-score" id="ap_pt_cr">0</div></div>
+    <div class="field-row"><input type="number" id="ap_cr" step="0.1"><span class="unit">mg/dL</span></div>
+    <label class="toggle-inline"><input type="checkbox" id="ap_arf"> 急性腎損傷 ×2</label>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;0.6</td><td>2分</td></tr><tr><td>0.6–1.4</td><td>0分</td></tr><tr><td>1.5–1.9</td><td>2分</td></tr><tr><td>2.0–3.4</td><td>3分</td></tr><tr><td>≥3.5</td><td>4分</td></tr>
+      <tr><td>急性腎損傷（ARF）</td><td>分數×2</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血球容積比 Hematocrit</div><div class="organ-score" id="ap_pt_hct">0</div></div>
+    <div class="field-row"><input type="number" id="ap_hct" step="0.1"><span class="unit">%</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;20</td><td>4分</td></tr><tr><td>20–29.9</td><td>2分</td></tr><tr><td>30–45.9</td><td>0分</td></tr><tr><td>46–49.9</td><td>1分</td></tr><tr><td>50–59.9</td><td>2分</td></tr><tr><td>≥60</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">白血球 WBC</div><div class="organ-score" id="ap_pt_wbc">0</div></div>
+    <div class="field-row"><input type="number" id="ap_wbc" step="0.1"><span class="unit">×10³/mm³</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;1</td><td>4分</td></tr><tr><td>1–2.9</td><td>2分</td></tr><tr><td>3–14.9</td><td>0分</td></tr><tr><td>15–19.9</td><td>1分</td></tr><tr><td>20–39.9</td><td>2分</td></tr><tr><td>≥40</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">意識 GCS</div><div class="organ-score" id="ap_pt_gcs">0</div></div>
+    <div class="field-row"><input type="number" id="ap_gcs" min="3" max="15" step="1"></div>
+    <div class="note">分數 = 15 − GCS</div>
+  </div>
+
+  <div class="section-title">B｜年齡分數</div>
+  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">年齡 Age</div><div class="organ-score" id="ap_pt_age">0</div></div>
+    <div class="field-row"><input type="number" id="ap_age" step="1"><span class="unit">歲</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤44</td><td>0分</td></tr><tr><td>45–54</td><td>2分</td></tr><tr><td>55–64</td><td>3分</td></tr>
+      <tr><td>65–74</td><td>5分</td></tr><tr><td>≥75</td><td>6分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="section-title">C｜慢性健康分數</div>
+  <div class="card">
+    <div class="organ-head"><div class="organ-name" style="font-size:14.5px;">嚴重器官不全／免疫抑制</div><div class="organ-score" id="ap_pt_chronic">0</div></div>
+    <label class="toggle-inline"><input type="checkbox" id="ap_chronic"> 具相關病史</label>
+    <div class="field-row" style="margin-top:8px;">
+      <label><input type="radio" name="ap_surg" value="5" checked> 非手術/緊急術後(+5)</label>
+      <label><input type="radio" name="ap_surg" value="2"> 選擇性術後(+2)</label>
+    </div>
+    <details class="def-box">
+      <summary>符合條件之定義 Definition of organ insufficiency / immunocompromised state</summary>
+      <div class="box-inner">
+        <b>Liver（肝）：</b>經切片證實肝硬化併門脈高壓；曾有因肝硬化導致的上消化道出血；或曾發生肝衰竭／肝性腦病／肝昏迷。<br><br>
+        <b>Cardiovascular（心血管）：</b>NYHA 心衰竭分級 IV 級。<br><br>
+        <b>Respiratory（呼吸）：</b>慢性限制性、阻塞性或血管性肺病導致嚴重運動限制（如無法爬樓梯或執行家務）；或有文獻紀錄之慢性缺氧、高碳酸血症、續發性紅血球增多症、嚴重肺動脈高壓(&gt;40mmHg)；或呼吸器依賴。<br><br>
+        <b>Renal（腎）：</b>長期透析病人。<br><br>
+        <b>Immunocompromised（免疫抑制）：</b>接受可抑制感染抵抗力之治療（如免疫抑制劑、化學治療、放射治療、長期或近期高劑量類固醇），或疾病本身已嚴重抑制免疫抵抗力（如白血病、淋巴瘤、AIDS）。
+      </div>
+    </details>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">APS</div><div class="metric-value" id="ap_apsTotal">0</div></div>
+      <div><div class="metric-label">年齡+慢性</div><div class="metric-value" id="ap_extraTotal">0</div></div>
+      <div><div class="metric-label">總分</div><div class="metric-value big" id="ap_total">0</div></div>
+      <div><div class="metric-label">預估死亡率</div><div class="metric-value big" id="ap_mortality" style="color:#f0a875;">4%</div></div>
+    </div>
+    <div class="note" style="color:#c9c4b4; margin-top:-8px; margin-bottom:10px;" id="ap_mortality_note">依右方「手術類別」欄位選擇（非手術/緊急術後 或 選擇性術後）自動對照下表估算</div>
+    <table class="ref">
+      <tr><th>分數</th><th>非手術／緊急術後<br>參考死亡率</th><th>選擇性術後<br>參考死亡率</th></tr>
+      <tr><td>0–4</td><td>約4%</td><td>約1%</td></tr>
+      <tr><td>5–9</td><td>約8%</td><td>約3%</td></tr>
+      <tr><td>10–14</td><td>約15%</td><td>約7%</td></tr>
+      <tr><td>15–19</td><td>約25%</td><td>約12%</td></tr>
+      <tr><td>20–24</td><td>約40%</td><td>約20%</td></tr>
+      <tr><td>25–29</td><td>約55%</td><td>約35%</td></tr>
+      <tr><td>30–34</td><td>約75%</td><td>約55%</td></tr>
+      <tr><td>≥35</td><td>約85%</td><td>約75%</td></tr>
+    </table>
+    <div class="risk-note">此表為示意性概略趨勢，反映「選擇性手術後病人在相同分數下死亡率通常低於非手術／緊急術後病人」之文獻一致方向，惟並非逐項驗證之精確原始數據，亦未納入疾病診斷類別係數。精確個別病人死亡率預測仍建議參考原始 Knaus 1985 文獻或所屬機構之完整計算模組。</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="apReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Knaus+WA%2C+et+al.+Crit+Care+Med.+1985%3B13%2810%29%3A818-829" target="_blank" rel="noopener" class="ref-link">Knaus WA, et al. Crit Care Med. 1985;13(10):818-829.</a></footer>
+</div>
+</div>
+<script>
+function apVal(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function apCalc(){
+  const t=apVal('ap_temp'); let s_temp=0;
+  if(t!==null){ if(t>=41)s_temp=4; else if(t>=39)s_temp=3; else if(t>=38.5)s_temp=1; else if(t>=36)s_temp=0; else if(t>=34)s_temp=1; else if(t>=32)s_temp=2; else if(t>=30)s_temp=3; else s_temp=4; }
+  const m=apVal('ap_map'); let s_map=0;
+  if(m!==null){ if(m>=160)s_map=4; else if(m>=130)s_map=3; else if(m>=110)s_map=2; else if(m>=70)s_map=0; else if(m>=50)s_map=2; else s_map=4; }
+  const h=apVal('ap_hr'); let s_hr=0;
+  if(h!==null){ if(h>=180)s_hr=4; else if(h>=140)s_hr=3; else if(h>=110)s_hr=2; else if(h>=70)s_hr=0; else if(h>=55)s_hr=2; else if(h>=40)s_hr=3; else s_hr=4; }
+  const r=apVal('ap_rr'); let s_rr=0;
+  if(r!==null){ if(r>=50)s_rr=4; else if(r>=35)s_rr=3; else if(r>=25)s_rr=1; else if(r>=12)s_rr=0; else if(r>=10)s_rr=1; else if(r>=6)s_rr=2; else s_rr=4; }
+
+  const fio2pct=apVal('ap_fio2'); const fio2 = fio2pct===null?null:fio2pct/100; const pao2=apVal('ap_pao2'); const aado2=apVal('ap_aado2');
+  const pao2Row=document.getElementById('ap_row_pao2'), aado2Row=document.getElementById('ap_row_aado2');
+  if(fio2===null){ pao2Row.style.display='flex'; aado2Row.style.display='flex'; }
+  else if(fio2>=0.5){ pao2Row.style.display='none'; aado2Row.style.display='flex'; }
+  else { pao2Row.style.display='flex'; aado2Row.style.display='none'; }
+  let s_ox=0;
+  if(fio2!==null&&fio2>=0.5){ if(aado2!==null){ if(aado2>=500)s_ox=4; else if(aado2>=350)s_ox=3; else if(aado2>=200)s_ox=2; else s_ox=0; } }
+  else { if(pao2!==null){ if(pao2>70)s_ox=0; else if(pao2>=61)s_ox=1; else if(pao2>=55)s_ox=3; else s_ox=4; } }
+
+  const ph=apVal('ap_ph'); const hco3=apVal('ap_hco3'); let s_ph=0;
+  if(ph!==null){ if(ph>=7.7)s_ph=4; else if(ph>=7.6)s_ph=3; else if(ph>=7.5)s_ph=1; else if(ph>=7.33)s_ph=0; else if(ph>=7.25)s_ph=2; else if(ph>=7.15)s_ph=3; else s_ph=4; }
+  else if(hco3!==null){ if(hco3>=52)s_ph=4; else if(hco3>=41)s_ph=3; else if(hco3>=32)s_ph=1; else if(hco3>=22)s_ph=0; else if(hco3>=18)s_ph=2; else if(hco3>=15)s_ph=3; else s_ph=4; }
+
+  const na=apVal('ap_na'); let s_na=0;
+  if(na!==null){ if(na>=180)s_na=4; else if(na>=160)s_na=3; else if(na>=155)s_na=2; else if(na>=150)s_na=1; else if(na>=130)s_na=0; else if(na>=120)s_na=2; else if(na>=111)s_na=3; else s_na=4; }
+  const k=apVal('ap_k'); let s_k=0;
+  if(k!==null){ if(k>=7)s_k=4; else if(k>=6)s_k=3; else if(k>=5.5)s_k=1; else if(k>=3.5)s_k=0; else if(k>=3)s_k=1; else if(k>=2.5)s_k=2; else s_k=4; }
+
+  const cr=apVal('ap_cr'); let s_cr=0;
+  if(cr!==null){ if(cr>=3.5)s_cr=4; else if(cr>=2.0)s_cr=3; else if(cr>=1.5)s_cr=2; else if(cr>=0.6)s_cr=0; else s_cr=2; if(document.getElementById('ap_arf').checked)s_cr*=2; }
+
+  const hct=apVal('ap_hct'); let s_hct=0;
+  if(hct!==null){ if(hct>=60)s_hct=4; else if(hct>=50)s_hct=2; else if(hct>=46)s_hct=1; else if(hct>=30)s_hct=0; else if(hct>=20)s_hct=2; else s_hct=4; }
+  const wbc=apVal('ap_wbc'); let s_wbc=0;
+  if(wbc!==null){ if(wbc>=40)s_wbc=4; else if(wbc>=20)s_wbc=2; else if(wbc>=15)s_wbc=1; else if(wbc>=3)s_wbc=0; else if(wbc>=1)s_wbc=2; else s_wbc=4; }
+  const gcs=apVal('ap_gcs'); const s_gcs=gcs===null?0:Math.max(0,15-gcs);
+  const age=apVal('ap_age'); let s_age=0;
+  if(age!==null){ if(age>=75)s_age=6; else if(age>=65)s_age=5; else if(age>=55)s_age=3; else if(age>=45)s_age=2; }
+  let s_chronic=0;
+  if(document.getElementById('ap_chronic').checked) s_chronic=parseInt(document.querySelector('input[name=ap_surg]:checked').value);
+
+  const ids={ap_pt_temp:s_temp,ap_pt_map:s_map,ap_pt_hr:s_hr,ap_pt_rr:s_rr,ap_pt_ox:s_ox,ap_pt_ph:s_ph,ap_pt_na:s_na,ap_pt_k:s_k,ap_pt_cr:s_cr,ap_pt_hct:s_hct,ap_pt_wbc:s_wbc,ap_pt_gcs:s_gcs,ap_pt_age:s_age,ap_pt_chronic:s_chronic};
+  for(const k2 in ids) document.getElementById(k2).textContent=ids[k2];
+
+  const aps=s_temp+s_map+s_hr+s_rr+s_ox+s_ph+s_na+s_k+s_cr+s_hct+s_wbc+s_gcs;
+  const extra=s_age+s_chronic;
+  document.getElementById('ap_apsTotal').textContent=aps;
+  document.getElementById('ap_extraTotal').textContent=extra;
+  const totalScore=aps+extra;
+  document.getElementById('ap_total').textContent=totalScore;
+
+  const surgType=document.querySelector('input[name=ap_surg]:checked').value;
+  const nonopRates=[4,8,15,25,40,55,75,85];
+  const electiveRates=[1,3,7,12,20,35,55,75];
+  let idx;
+  if(totalScore<5) idx=0; else if(totalScore<10) idx=1; else if(totalScore<15) idx=2; else if(totalScore<20) idx=3;
+  else if(totalScore<25) idx=4; else if(totalScore<30) idx=5; else if(totalScore<35) idx=6; else idx=7;
+  const mortality = surgType==='5' ? nonopRates[idx] : electiveRates[idx];
+  document.getElementById('ap_mortality').textContent=mortality+'%';
+  document.getElementById('ap_mortality_note').textContent = '依右方「手術類別」欄位選擇（目前：'+(surgType==='5'?'非手術/緊急術後':'選擇性術後')+'）自動對照下表估算，僅為概略趨勢參考';
+}
+document.querySelectorAll('#view-apache input, #view-apache select').forEach(el=>{el.addEventListener('input',apCalc); el.addEventListener('change',apCalc);});
+function apReset(){
+  document.querySelectorAll('#view-apache input[type=number]').forEach(el=>el.value='');
+  document.getElementById('ap_arf').checked=false;
+  document.getElementById('ap_chronic').checked=false;
+  document.querySelector('input[name=ap_surg][value="5"]').checked=true;
+  apCalc();
+}
+apCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RADIAL Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-radial">
+  <div class="app-header">
+    <div><div class="eyebrow">Mesenteric Ischemia Scoring Tool</div><h1>RADIAL Score</h1><div class="sub">預測急性腸繫膜缺血（AMI）住院死亡率</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-radial'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <label class="item"><input type="checkbox" class="radial-cb" data-w="3" id="rd_norectal"> 無直腸出血 <span class="unit">(No rectal bleeding)</span><span class="pt-badge pt-3">3分</span></label>
+    <label class="item"><input type="checkbox" class="radial-cb" data-w="3" id="rd_hypotension"> 低血壓 <span class="unit">(Hypotension)</span><span class="pt-badge pt-3">3分</span></label>
+    <label class="item"><input type="checkbox" class="radial-cb" data-w="3" id="rd_age"> 年齡 &gt;65歲 <span class="pt-badge pt-3">3分</span></label>
+    <label class="item"><input type="checkbox" class="radial-cb" data-w="2" id="rd_ph"> 動脈血 pH &lt;7.3 <span class="pt-badge pt-2">2分</span></label>
+    <label class="item"><input type="checkbox" class="radial-cb" data-w="2" id="rd_cr"> Creatinine &gt;1.7 mg/dL <span class="pt-badge pt-2">2分</span></label>
+  </div>
+  <div class="result">
+    <div class="metric-label">RADIAL Score（0–13）</div>
+    <div class="metric-value big" id="radial_total">0</div>
+    <div class="metric-label" style="margin-top:8px;">預估住院死亡率</div>
+    <div class="metric-value" id="radial_mortality" style="font-size:26px; color:#f0a875;">約30–40%</div>
+    <table class="ref">
+      <tr><th>分數</th><th>參考死亡率</th></tr>
+      <tr><td>0–4</td><td>約30–40%（低風險組）</td></tr>
+      <tr><td>5–9</td><td>約50–60%（中風險組）</td></tr>
+      <tr><td>10–13</td><td>約80%（高風險組，建議考慮限縮積極治療）</td></tr>
+    </table>
+    <div class="risk-note">AUC 0.78。原始研究建議高分組（尤其≥10分）病人若考慮侵入性治療，應審慎評估其存活可能性，優先考慮保守治療。此分數為輔助工具，仍須綜合臨床判斷（如失能狀態、共病負荷）。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Castilla-Guerra+L%2C+et+al.+J+Clin+Med.+2026%3B15%283%29%3A1106" target="_blank" rel="noopener" class="ref-link">Castilla-Guerra L, et al. J Clin Med. 2026;15(3):1106.</a></footer>
+</div>
+</div>
+<script>
+function radialCalc(){
+  let total=0;
+  document.querySelectorAll('.radial-cb').forEach(cb=>{ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  document.getElementById('radial_total').textContent=total;
+  let mortality;
+  if(total<=4) mortality='約30–40%（低風險組）';
+  else if(total<=9) mortality='約50–60%（中風險組）';
+  else mortality='約80%（高風險組）';
+  document.getElementById('radial_mortality').textContent=mortality;
+}
+document.querySelectorAll('.radial-cb').forEach(cb=>cb.addEventListener('change',radialCalc));
+radialCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

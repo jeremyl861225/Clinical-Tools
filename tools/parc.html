@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pARC · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-parc">
+  <div class="app-header">
+    <div><div class="eyebrow">Pediatric Appendicitis Scoring Tool</div><h1>pARC</h1><div class="sub">Pediatric Appendicitis Risk Calculator（連續機率量表，適用5–18歲）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-parc'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">症狀與理學檢查 <span class="unit" style="text-transform:none;">History &amp; Physical</span></div>
+    <div class="field-row"><label>性別</label><select id="parc_sex"><option value="F">女 Female</option><option value="M">男 Male</option></select></div>
+    <div class="field-row"><label>年齡</label><input type="number" id="parc_age" step="0.5" placeholder="例如 10"><span class="unit">歲（5–18歲適用）</span></div>
+    <div class="field-row"><label>疼痛持續時間</label>
+      <select id="parc_duration"><option value="0">&lt;24小時</option><option value="1">24–&lt;48小時</option><option value="2">48–96小時</option></select>
+    </div>
+    <label class="item"><input type="checkbox" id="parc_walking"> 走路／跳躍／咳嗽會加劇疼痛 <span class="unit">(Pain with walking)</span></label>
+    <label class="item"><input type="checkbox" id="parc_migration"> 疼痛轉移至右下腹 <span class="unit">(Migration of pain to RLQ)</span></label>
+    <label class="item"><input type="checkbox" id="parc_tenderness"> 右下腹最大壓痛點 <span class="unit">(Maximal tenderness in RLQ)</span></label>
+    <label class="item"><input type="checkbox" id="parc_guarding"> 腹部防禦 <span class="unit">(Abdominal guarding)</span></label>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">抽血檢驗 <span class="unit" style="text-transform:none;">Laboratory</span></div>
+    <div class="field-row"><label>白血球 WBC</label><input type="number" id="parc_wbc" step="0.1" placeholder="例如 12.0"><span class="unit">×10³/µL</span></div>
+    <div class="field-row"><label>Segment (%)</label><input type="number" id="parc_seg" step="0.1" placeholder="例如 75"><span class="unit">%</span></div>
+    <div class="field-row"><label>Band (%)</label><input type="number" id="parc_band" step="0.1" placeholder="例如 5（無則留空）"><span class="unit">%</span></div>
+    <div class="note">ANC = WBC × (Segment% + Band%) ÷ 100。若僅填WBC、未填Seg/Band，系統將以公式估算：ANC ≈ (−0.8783 + 1.1008×√WBC)²</div>
+    <div class="field-row"><label style="color:var(--accent); font-weight:600;">估算之ANC</label><span class="pt-badge pt-2" id="parc_anc_display" style="margin-left:0;">—</span></div>
+  </div>
+  <div class="result">
+    <div class="metric-label">預測闌尾炎機率 Predicted risk of appendicitis</div>
+    <div class="metric-value big" id="parc_prob">—</div>
+    <div class="metric-label" style="margin-top:8px;">風險分層</div>
+    <div id="parc_interp" style="font-size:15px;">—</div>
+    <table class="ref">
+      <tr><th>風險機率</th><th>分層</th><th>建議</th></tr>
+      <tr><td>&lt;5%</td><td>極低風險</td><td>可考慮安全出院或觀察</td></tr>
+      <tr><td>5–14%</td><td>低風險</td><td>可考慮觀察，減少影像需求</td></tr>
+      <tr><td>15–84%</td><td>中等風險</td><td>建議影像檢查（首選超音波）</td></tr>
+      <tr><td>≥85%</td><td>高風險</td><td>建議外科會診，可考慮減少影像依賴</td></tr>
+    </table>
+
+    <div class="formula-box">
+      <div class="formula-title">Logistic Regression Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fvar">Logit(p)</span></div>
+        <div class="formula-term"><span class="fop">=</span><span class="fcoef">−8.7</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.28</span><span class="fvar">× Male</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.38</span><span class="fvar">× Age 5–7.9y</span></div>
+        <div class="formula-term"><span class="fop">−</span><span class="fcoef">1.05</span><span class="fvar">× Male &amp; Age 5–7.9y</span></div>
+        <div class="formula-term"><span class="fop">−</span><span class="fcoef">0.72</span><span class="fvar">× Age 8–13.9y (F 8–11.9y)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.47</span><span class="fvar">× Pain 24–&lt;48h</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.10</span><span class="fvar">× Pain 48–96h</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.05</span><span class="fvar">× Pain with walking</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.46</span><span class="fvar">× Migration to RLQ</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.14</span><span class="fvar">× Max tenderness RLQ</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.67</span><span class="fvar">× Guarding</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.77</span><span class="fvar">× √ANC (if ANC&lt;14), or <b style="color:#f0a875;">6.62</b> (if ANC≥14)</span></div>
+      </div>
+      <div class="formula-result">p = 1 ÷ (1 + e<sup>−Logit(p)</sup>)　　（Kharbanda et al. 2018）</div>
+    </div>
+
+    <div class="risk-note">此模型為羅吉斯迴歸連續機率計算（非簡單加總計分），社區急診驗證研究AUC 0.89，優於Pediatric Appendicitis Score（PAS，AUC 0.80）。適用5–18歲、疼痛≤5天之疑似闌尾炎兒童，不適用於已切除闌尾、發炎性腸道疾病等病人。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Kharbanda+AB%2C+et+al.+Pediatrics.+2018%3B141%284%29%3Ae20172699" target="_blank" rel="noopener" class="ref-link">Kharbanda AB, et al. Pediatrics. 2018;141(4):e20172699.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Cotton+DM%2C+et+al.+Ann+Emerg+Med.+2019%3B74%284%29%3A471-480" target="_blank" rel="noopener" class="ref-link">Cotton DM, et al. Ann Emerg Med. 2019;74(4):471-480.</a></footer>
+</div>
+</div>
+<script>
+function parcCalc(){
+  const sex=document.getElementById('parc_sex').value;
+  const age=parseFloat(document.getElementById('parc_age').value);
+  const duration=parseInt(document.getElementById('parc_duration').value);
+  const walking=document.getElementById('parc_walking').checked;
+  const migration=document.getElementById('parc_migration').checked;
+  const tenderness=document.getElementById('parc_tenderness').checked;
+  const guarding=document.getElementById('parc_guarding').checked;
+  const wbc=parseFloat(document.getElementById('parc_wbc').value);
+  const seg=parseFloat(document.getElementById('parc_seg').value);
+  const band=parseFloat(document.getElementById('parc_band').value);
+
+  let anc;
+  if(!isNaN(wbc) && !isNaN(seg)){
+    const bandVal = isNaN(band) ? 0 : band;
+    anc = wbc * (seg + bandVal) / 100;
+  } else if(!isNaN(wbc)){
+    const v=(-0.8783+1.1008*Math.sqrt(wbc));
+    anc=v*v;
+  } else {
+    anc=7.0;
+  }
+  document.getElementById('parc_anc_display').textContent = anc.toFixed(2) + ' ×10³/µL';
+
+  if(isNaN(age)){
+    document.getElementById('parc_prob').textContent='—';
+    document.getElementById('parc_interp').textContent='請輸入年齡';
+    return;
+  }
+
+  let ageTerm=0;
+  const isMale = sex==='M';
+  const youngCut = 8;
+  const midCut = isMale ? 13.9 : 11.9;
+  if(age < youngCut){
+    ageTerm = 0.38;
+    if(isMale) ageTerm += -1.05;
+  } else if(age < midCut){
+    ageTerm = -0.72;
+  } else {
+    ageTerm = 0;
+  }
+
+  let durationTerm=0;
+  if(duration===1) durationTerm=0.47;
+  else if(duration===2) durationTerm=0.10;
+
+  let ancTerm;
+  if(anc < 14){
+    ancTerm = 1.77*Math.sqrt(anc);
+  } else {
+    ancTerm = 6.62;
+  }
+
+  const score = -8.7
+    + (isMale ? 1.28 : 0)
+    + ageTerm
+    + durationTerm
+    + (walking ? 1.05 : 0)
+    + (migration ? 0.46 : 0)
+    + (tenderness ? 1.14 : 0)
+    + (guarding ? 0.67 : 0)
+    + ancTerm;
+
+  const prob = 1/(1+Math.exp(-score));
+  const pct = prob*100;
+  document.getElementById('parc_prob').textContent = pct.toFixed(1)+'%';
+  let interp='中等風險';
+  if(pct<5) interp='極低風險 (<5%)';
+  else if(pct<15) interp='低風險 (5–14%)';
+  else if(pct<85) interp='中等風險 (15–84%)';
+  else interp='高風險 (≥85%)';
+  document.getElementById('parc_interp').textContent=interp;
+}
+document.querySelectorAll('#view-parc input, #view-parc select').forEach(el=>{el.addEventListener('input',parcCalc); el.addEventListener('change',parcCalc);});
+parcCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

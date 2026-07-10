@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性膽囊炎手術決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-chole-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性膽囊炎手術決策</h1><div class="sub">Acute Cholecystitis · TG18 severity + surgical risk（Tokyo Guidelines / WSES / AAST）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-chole-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>膽道／胰臟、TG18 分級與負向預測因子 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：</b>先評估／排除合併之膽道—胰臟問題（急性膽管炎、膽石性胰臟炎、疑似總膽管結石），再進行膽囊炎本身之 TG18 分級與手術時機判定。<br><br>
+      <b>CBD 擴張（操作型定義）：</b>膽囊在位者，總膽管（CBD）內徑 <b>&gt;6 mm</b>（US／CT／MRCP 測量）為擴張；可年齡校正（&gt;60 歲約每增 10 歲 +1 mm）；膽囊切除後之基準可放寬至約 10 mm。<br><br>
+      <b>ASGE 2019 總膽管結石風險：</b><br>
+      ・高風險（任一）：影像見 CBD 結石、或 <b>T-Bil &gt;4 mg/dL 且 CBD 擴張</b>、或臨床急性膽管炎 → 直接 ERCP。<br>
+      ・中風險（任一）：肝功能異常（非膽紅素項）、年齡 &gt;55、或 CBD 擴張（&gt;6 mm）而未達高風險 → 先 EUS/MRCP 或術中膽道攝影(IOC)確認。<br>
+      ・低風險：皆無 → 直接膽囊切除（± IOC）。<br><br>
+      <b>膽石性胰臟炎：</b>輕度 → 同次住院早期膽囊切除（PONCHO）；重度／壞死性 → 延後手術（常約 6 週）。ERCP 僅在合併膽管炎或持續膽道阻塞時才需要。<br><br>
+      <b>TG18 嚴重度分級：</b><br>
+      ・<b>Grade I 輕度：</b>無器官功能障礙、僅膽囊輕度發炎。<br>
+      ・<b>Grade II 中度（任一）：</b>WBC &gt;18,000/mm³、右上腹可觸及壓痛腫塊、症狀 &gt;72 小時、或明顯局部發炎（壞疽性、膽囊周圍／肝膿瘍、膽汁性腹膜炎、氣腫性膽囊炎）。<br>
+      ・<b>Grade III 重度（合併器官／系統功能障礙，任一）：</b>心血管（需 dopamine ≥5 mcg/kg/min 或任何劑量 norepinephrine）、神經（意識障礙）、呼吸（PaO₂/FiO₂ &lt;300）、腎（Oliguria 或 Cr &gt;2.0 mg/dL）、肝（PT-INR &gt;1.5）、血液（PLT &lt;100 k/mm³）。<br><br>
+      <b>Grade III：負向預測因子（NPF） vs. 可逆性器官障礙（FOSF）：</b><br>
+      ・<b>負向預測因子 NPF（negative predictive factor）：</b>① 黃疸 (T-Bil ≥2 mg/dL) ② 神經功能障礙 ③ 呼吸功能障礙（PaO₂/FiO₂ &lt;300），屬 unfavorable，存在任一則不建議早期手術。<br>
+      ・<b>可逆性器官障礙 FOSF（favorable organ system failure）：</b>心血管（升壓）或腎功能障礙若對初始治療（輸液、抗生素、器官支持）<b>快速反應而恢復</b>，屬 favorable，仍可能適合早期手術。<br><br>
+      <b>手術風險與 CCI 切點：</b>Grade I／II 低風險 ≈ CCI ≤5、ASA ≤2；Grade III 可早期手術之嚴格條件為 CCI ≤3、ASA ≤2、無 NPF、器官障礙屬 FOSF，且於醫學中心（具進階腹腔鏡經驗）。<br>
+      <b>AAST 解剖分級：</b>另可用 AAST EGS 解剖嚴重度（I–V）輔助描述局部病灶嚴重程度。
+    </div>
+  </details>
+
+  <div class="flow-step" id="chole_bs1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">先評估：是否合併膽道／胰臟問題？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('bil','none',this)">單純急性膽囊炎<span class="fo-sub">直接進入下方 TG18 分級</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','cholangitis',this)">急性膽管炎<span class="fo-sub">發燒／寒顫 + 黃疸 + 右上腹痛（Charcot）或 TG18 膽管炎 — 最優先處理</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','pancreatitis',this)">膽石性胰臟炎<span class="fo-sub">lipase／amylase 升高，符合胰臟炎診斷</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','cbd',this)">疑似總膽管結石（無膽管炎／胰臟炎）<span class="fo-sub">膽紅素／肝功能升高、CBD 擴張（&gt;6 mm）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">若同時存在，依優先順序選擇：急性膽管炎 &gt; 膽石性胰臟炎 &gt; 疑似總膽管結石。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="chole_bc_sub">↓</div>
+  <div class="flow-step hidden" id="chole_bs_psev">
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">膽石性胰臟炎嚴重度？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('pSev','mild',this)">輕度<span class="fo-sub">無持續器官衰竭、無局部或全身併發症</span></button>
+      <button class="flow-opt" onclick="cholePick('pSev','severe',this)">中／重度、壞死性<span class="fo-sub">持續器官衰竭或胰周壞死／積液</span></button>
+    </div>
+  </div>
+  <div class="flow-step hidden" id="chole_bs_asge">
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">總膽管結石 ASGE 風險分層？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('asge','high',this)">高風險<span class="fo-sub">影像見 CBD 結石／T-Bil &gt;4 mg/dL 且 CBD 擴張（&gt;6 mm）</span></button>
+      <button class="flow-opt" onclick="cholePick('asge','int',this)">中風險<span class="fo-sub">肝功能異常（非膽紅素）、年齡 &gt;55、或 CBD 擴張（&gt;6 mm）未達高風險</span></button>
+      <button class="flow-opt" onclick="cholePick('asge','low',this)">低風險<span class="fo-sub">上述皆無</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="chole_bil_rec">
+    <div class="rec-label">膽道／胰臟處置 Biliary / pancreatic</div>
+    <div class="rec-title">請先於步驟 1 選擇</div>
+  </div>
+
+  <div id="chole_gb_section" class="hidden">
+  <div class="home-divider" style="margin:26px 0 18px;">膽囊本身處置 Gallbladder · TG18</div>
+
+  <div class="flow-step" id="chole_s1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">TG18 嚴重度分級？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('grade','1',this)">Grade I 輕度<span class="fo-sub">無器官功能障礙，僅輕度膽囊發炎</span></button>
+      <button class="flow-opt" onclick="cholePick('grade','2',this)">Grade II 中度<span class="fo-sub">WBC&gt;18k／可觸及腫塊／症狀&gt;72h／明顯局部發炎（壞疽、膿瘍等）</span></button>
+      <button class="flow-opt" onclick="cholePick('grade','3',this)">Grade III 重度<span class="fo-sub">合併器官／系統功能障礙</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="chole_c2">↓</div>
+  <div class="flow-step hidden" id="chole_s2">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">手術風險評估？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('risk','low',this)">低風險<span class="fo-sub" id="chole_low_sub"></span></button>
+      <button class="flow-opt" onclick="cholePick('risk','high',this)">高風險<span class="fo-sub" id="chole_high_sub"></span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/cci.html?from=chole'">🧮 開啟 CCI 計算機（可從該頁返回本決策）</button>
+  </div>
+
+  <div class="flow-rec rec-idle" id="chole_rec">
+    <div class="rec-label">膽囊處置 Gallbladder recommendation</div>
+    <div class="rec-title">請完成上方步驟</div>
+  </div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="choleReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. Tokyo Guidelines 2018 (TG18). J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2020+WSES+guidelines+for+acute+calculous+cholecystitis.+World+J+Emerg+Surg.+2020%3B15%3A61" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2020 WSES guidelines for acute calculous cholecystitis. World J Emerg Surg. 2020;15:61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=da+Costa+DW%2C+et+al.+%28PONCHO%29+Lancet.+2015%3B386%2810000%29%3A1261-1268" target="_blank" rel="noopener" class="ref-link">da Costa DW, et al. (PONCHO) Lancet. 2015;386(10000):1261-1268.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Crockett+SD%2C+et+al.+AGA.+Gastroenterology.+2018%3B154%284%29%3A1096-1101" target="_blank" rel="noopener" class="ref-link">Crockett SD, et al. AGA. Gastroenterology. 2018;154(4):1096-1101.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const choleSt={bil:null,pSev:null,asge:null,grade:null,risk:null};
+function cholePick(key,val,btn){
+  flowSelect(btn);
+  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.asge=null; }
+  else if(key==='pSev'){ choleSt.pSev=val; }
+  else if(key==='asge'){ choleSt.asge=val; }
+  else if(key==='grade'){ choleSt.grade=val; choleSt.risk=null; flowClearSel('chole_s2'); }
+  else if(key==='risk'){ choleSt.risk=val; }
+  choleRender();
+}
+function choleRender(){
+  const b=choleSt.bil;
+  // 膽道／胰臟子步驟顯示
+  const showSub = (b==='pancreatitis'||b==='cbd');
+  flowShow('chole_bc_sub', showSub);
+  flowShow('chole_bs_psev', b==='pancreatitis');
+  flowShow('chole_bs_asge', b==='cbd');
+  if(b!=='pancreatitis') flowClearSel('chole_bs_psev');
+  if(b!=='cbd') flowClearSel('chole_bs_asge');
+  choleBilRender();
+
+  // 膽囊本身處置：僅在單純急性膽囊炎（無合併膽道／胰臟情況）時顯示
+  flowShow('chole_gb_section', b==='none');
+
+  // 膽囊 TG18 分級 / 手術風險
+  const g=choleSt.grade;
+  flowShow('chole_c2', !!g);
+  flowShow('chole_s2', !!g);
+  const lowSub=document.getElementById('chole_low_sub'), highSub=document.getElementById('chole_high_sub');
+  if(g==='3'){
+    lowSub.innerHTML='<strong>需全部符合</strong>：<br>・CCI ≤3、ASA ≤2<br>・無 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）<br>・有 FOSF（心血管／腎對初始治療有反應）<br>・於醫學中心';
+    highSub.innerHTML='不符低風險條件，或存在 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）';
+  } else {
+    lowSub.innerHTML='・CCI ≤5<br>・ASA ≤2';
+    highSub.innerHTML='CCI &gt;5 或 ASA ≥3，或存在負向預測因子';
+  }
+
+  // 依合併膽道／胰臟情況整合膽囊切除時機
+  let bilNote='';
+  if(b==='cholangitis') bilNote='※ 整合：先以 ERCP 引流控制膽管炎，再依上述時機行膽囊切除（同次住院為佳）。';
+  else if(b==='pancreatitis'&&choleSt.pSev==='severe') bilNote='※ 整合：合併重度膽石性胰臟炎時，膽囊切除延後至胰臟炎恢復（約 6 週），時機以胰臟炎為主。';
+  else if(b==='pancreatitis'&&choleSt.pSev==='mild') bilNote='※ 整合：輕度膽石性胰臟炎建議同次住院行膽囊切除（PONCHO）。';
+  else if(b==='cbd') bilNote='※ 整合：先完成總膽管清除（依 ASGE 風險），再行膽囊切除。';
+
+  let cls='rec-idle', title='請完成上方步驟', detail='', note='';
+  const r=choleSt.risk;
+  if(g==='1'){
+    if(r==='low'){ cls='rec-elective'; title='早期腹腔鏡膽囊切除術';
+      detail='<li>Grade I 首選：發病後盡早行腹腔鏡膽囊切除（理想 &lt;72 小時，≤7–10 天內）。</li><li>健康、低手術風險病人可安全施行。</li>';
+      note='TG18 / WSES 2020：Grade I 低風險者建議早期腹腔鏡膽囊切除。'; }
+    else if(r==='high'){ cls='rec-nonop'; title='先保守治療，改善後再行膽囊切除';
+      detail='<li>抗生素 + 支持治療；待手術風險改善後行延遲（interval）膽囊切除。</li><li>若治療無反應或惡化，考慮膽囊引流（PTGBD）。</li>';
+      note='TG18：高手術風險者可先保守治療，再評估手術時機。'; }
+    else { cls='rec-idle'; title='請完成步驟 3'; }
+  } else if(g==='2'){
+    if(r==='low'){ cls='rec-elective'; title='早期腹腔鏡膽囊切除術（建議於醫學中心）';
+      detail='<li>Grade II 中度：若外科團隊具進階腹腔鏡經驗且病人手術風險低，建議早期腹腔鏡膽囊切除。</li><li>局部發炎嚴重、解剖困難時，適時改開腹或次全膽囊切除。</li>';
+      note='TG18 / WSES 2020：Grade II 於醫學中心可行早期手術。'; }
+    else if(r==='high'){ cls='rec-nonop'; title='抗生素 + 早期膽囊引流(PTGBD)，延遲膽囊切除';
+      detail='<li>抗生素治療；若無法立即安全手術或反應不佳，行經皮膽囊造口引流（PTGBD）。</li><li>病情穩定後再行延遲膽囊切除。</li>';
+      note='TG18：Grade II 高風險或治療反應不佳者，早期膽囊引流。'; }
+    else { cls='rec-idle'; title='請完成步驟 3'; }
+  } else if(g==='3'){
+    if(r==='low'){ cls='rec-elective'; title='可考慮早期膽囊切除術（器官支持下）';
+      detail='<li>僅在全部符合時考慮：CCI ≤3、ASA ≤2、無負向預測因子，且器官障礙屬可逆 FOSF（心血管／腎對初始治療快速反應），於醫學中心。</li><li>同時進行器官功能支持與抗生素治療。</li>';
+      note='TG18 / WSES 2020：Grade III 僅具良好條件（FOSF、無負向因子）者於醫學中心可行早期手術。'; }
+    else if(r==='high'){ cls='rec-urgent'; title='緊急膽囊引流(PTGBD) + 器官支持 + 抗生素';
+      detail='<li>優先穩定器官功能（ICU 支持）、廣效抗生素，並行緊急／早期經皮膽囊造口引流（PTGBD）。</li><li>存在負向預測因子（黃疸／神經／呼吸障礙）者尤不宜早期手術。</li><li>病情改善後再評估延遲膽囊切除。</li>';
+      note='TG18 / WSES 2020：Grade III 不適合立即手術者，膽囊引流為首選。'; }
+    else { cls='rec-idle'; title='請完成步驟 3'; }
+  }
+  if(bilNote) note = (note?note+'<br>':'') + bilNote;
+  flowRec('chole_rec',cls,title,detail,note);
+}
+function choleBilRender(){
+  const b=choleSt.bil;
+  let cls='rec-idle', title='請先於步驟 1 選擇', detail='', note='';
+  if(b==='none'){
+    cls='rec-idle'; title='無合併膽道／胰臟情況 — 直接進行下方 TG18 流程';
+  } else if(b==='cholangitis'){
+    cls='rec-urgent'; title='急性膽管炎：抗生素 + 儘早膽道引流（ERCP），再擇期膽囊切除';
+    detail='<li>立即廣效抗生素 + 液體復甦；儘早經內視鏡膽道引流／取石（ERCP，理想 24–48 小時內，重度者更需緊急）。</li><li>無法 ERCP 時考慮 PTBD 或手術膽道引流。</li><li>膽管炎控制後再行膽囊切除（同次住院為佳，高手術風險者可延遲）。</li>';
+    note='TG18（急性膽管炎）：依嚴重度儘早膽道引流為治療核心。';
+  } else if(b==='pancreatitis'){
+    if(choleSt.pSev==='mild'){ cls='rec-elective'; title='輕度膽石性胰臟炎：同次住院早期膽囊切除';
+      detail='<li><b>同次住院（出院前）行腹腔鏡膽囊切除</b>，可顯著降低再發膽石相關併發症（PONCHO）。</li><li>不需常規 ERCP；僅在合併膽管炎或持續膽道阻塞時才行 ERCP。</li>';
+      note='PONCHO 2015 / AGA 2018：輕度膽石性胰臟炎建議同次住院膽囊切除。'; }
+    else if(choleSt.pSev==='severe'){ cls='rec-nonop'; title='重度／壞死性膽石性胰臟炎：延後膽囊切除';
+      detail='<li>延後膽囊切除至全身發炎消退、積液穩定（常約 6 週後），以降低手術併發症。</li><li>合併膽管炎或持續膽道阻塞 → 早期 ERCP；否則不常規 ERCP。</li><li>期間依需要處理胰周積液／壞死。</li>';
+      note='IAP/APA 與 AGA：重度膽石性胰臟炎延後膽囊切除，ERCP 僅用於膽管炎／阻塞。'; }
+    else { cls='rec-idle'; title='請於步驟 1b 選擇胰臟炎嚴重度'; }
+  } else if(b==='cbd'){
+    if(choleSt.asge==='high'){ cls='rec-elective'; title='高風險總膽管結石：直接 ERCP 取石，再行膽囊切除';
+      detail='<li>直接 ERCP 取石（不需先做確認性影像）。</li><li>膽管清除後建議<b>同次住院</b>行膽囊切除。</li>';
+      note='ASGE 2019：高風險者直接 ERCP。'; }
+    else if(choleSt.asge==='int'){ cls='rec-elective'; title='中風險總膽管結石：先確認影像，再視情況 ERCP';
+      detail='<li>先 EUS／MRCP 或術中膽道攝影(IOC)確認；證實結石則 ERCP（或術中處理），之後膽囊切除。</li><li>避免不必要之診斷性 ERCP。</li>';
+      note='ASGE 2019：中風險者先行確認性檢查。'; }
+    else if(choleSt.asge==='low'){ cls='rec-elective'; title='低風險：直接膽囊切除（± 術中膽道攝影）';
+      detail='<li>不需 ERCP，直接行腹腔鏡膽囊切除（可 ± IOC）。</li>';
+      note='ASGE 2019：低風險者直接手術。'; }
+    else { cls='rec-idle'; title='請於步驟 1b 選擇 ASGE 風險分層'; }
+  }
+  flowRec('chole_bil_rec',cls,title,detail,note);
+}
+function choleReset(){
+  choleSt.bil=null; choleSt.pSev=null; choleSt.asge=null; choleSt.grade=null; choleSt.risk=null;
+  document.querySelectorAll('#view-chole-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  choleRender();
+}
+choleReset();
+
+/* 跨頁保存/還原選項（供 CCI 計算機往返使用） */
+function choleSave(){try{sessionStorage.setItem('choleSt',JSON.stringify(choleSt));}catch(e){}}
+function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);[['bil',choleSt.bil],['pSev',choleSt.pSev],['asge',choleSt.asge],['grade',choleSt.grade],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
+var _cholePickBase=cholePick;cholePick=function(k,v,btn){_cholePickBase(k,v,btn);choleSave();};
+var _choleResetBase=choleReset;choleReset=function(){try{sessionStorage.removeItem('choleSt');}catch(e){}_choleResetBase();};
+choleRestore();
+
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

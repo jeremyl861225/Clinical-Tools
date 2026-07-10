@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>升壓/強心藥物流速換算 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-vasopressor">
+  <div class="app-header">
+    <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>升壓/強心藥物流速換算</h1><div class="sub">Vasopressor &amp; Inotrope Rate Calculator + Vasoactive-Inotropic Score (VIS)</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-vasopressor'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="field-row"><label>病人體重 Weight</label><input type="number" id="vaso_weight" step="0.1" placeholder="例如 70"><span class="unit">kg</span></div>
+  </div>
+
+  <div id="vaso_rows_container"></div>
+
+  <div style="display:flex; justify-content:center; margin:14px 0;"><button class="btn-add" onclick="vasoAddRow()">＋ 新增藥物 Add Drug</button></div>
+
+  <div class="result">
+    <div class="metric-label">Vasoactive-Inotropic Score (VIS)</div>
+    <div class="metric-value big" id="vaso_vis_total">0.0</div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fvar">VIS</span></div>
+        <div class="formula-term"><span class="fop">=</span><span class="fcoef">1</span><span class="fvar">× Dopamine</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1</span><span class="fvar">× Dobutamine</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">100</span><span class="fvar">× Epinephrine</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">100</span><span class="fvar">× Norepinephrine</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">10</span><span class="fvar">× Milrinone</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">10,000</span><span class="fvar">× Vasopressin</span></div>
+      </div>
+      <div class="formula-result">劑量單位皆為 mcg/kg/min（Vasopressin 為 units/kg/min）</div>
+    </div>
+
+    <div class="risk-note">
+      VIS 分數越高代表循環支持強度越大，常用於評估重症病人（尤其是心臟術後）血管活性藥物負荷與預後相關性。此分數為輔助評估工具，仍須綜合臨床判斷。
+    </div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Gaies+MG%2C+et+al.+Pediatr+Crit+Care+Med.+2010%3B11%282%29%3A234-238" target="_blank" rel="noopener" class="ref-link">Gaies MG, et al. Pediatr Crit Care Med. 2010;11(2):234-238.</a></footer>
+</div>
+</div>
+<script>
+let vasoRowCount=0;
+const VASO_DRUGS={
+  norepinephrine:{label:'Norepinephrine', unit:'mg', weight:100},
+  epinephrine:{label:'Epinephrine', unit:'mg', weight:100},
+  dopamine:{label:'Dopamine', unit:'mg', weight:1},
+  dobutamine:{label:'Dobutamine', unit:'mg', weight:1},
+  milrinone:{label:'Milrinone', unit:'mg', weight:10},
+  vasopressin:{label:'Vasopressin', unit:'units', weight:10000}
+};
+function vasoAddRow(){
+  vasoRowCount++;
+  const id='vaso_row_'+vasoRowCount;
+  const div=document.createElement('div');
+  div.className='vaso-row';
+  div.id=id;
+  let optionsHtml='';
+  for(const key in VASO_DRUGS){ optionsHtml+='<option value="'+key+'">'+VASO_DRUGS[key].label+'</option>'; }
+  div.innerHTML=
+    '<button class="vaso-remove" onclick="vasoRemoveRow(\''+id+'\')">×</button>'+
+    '<div class="field-row"><label style="min-width:70px;">藥物</label><select class="vaso-drug" onchange="vasoUpdateUnit(\''+id+'\')">'+optionsHtml+'</select></div>'+
+    '<div class="drug-row-grid">'+
+      '<div class="field-row" style="margin:4px 0;"><label style="min-width:70px;">劑量</label><input type="number" class="vaso-amount" step="0.1" placeholder="例如 8"><span class="unit vaso-unit-label">mg</span></div>'+
+      '<div class="field-row" style="margin:4px 0;"><label style="min-width:70px;">溶液體積</label><input type="number" class="vaso-vol" step="1" placeholder="例如 250"><span class="unit">mL</span></div>'+
+      '<div class="field-row" style="margin:4px 0; grid-column:1/-1;"><label style="min-width:70px;">輸液速率</label><input type="number" class="vaso-rate" step="0.1" placeholder="例如 5"><span class="unit">mL/hr</span></div>'+
+    '</div>'+
+    '<div class="vaso-dose-out">= <span class="vaso-dose-val">0.000</span> <span class="vaso-dose-unit">mcg/kg/min</span></div>';
+  document.getElementById('vaso_rows_container').appendChild(div);
+  div.querySelectorAll('input').forEach(el=>el.addEventListener('input',vasoCalcAll));
+  div.querySelector('select').addEventListener('change',vasoCalcAll);
+  vasoCalcAll();
+}
+function vasoRemoveRow(id){
+  const el=document.getElementById(id);
+  if(el) el.remove();
+  vasoCalcAll();
+}
+function vasoUpdateUnit(id){
+  const row=document.getElementById(id);
+  const drugKey=row.querySelector('.vaso-drug').value;
+  const unit=VASO_DRUGS[drugKey].unit;
+  row.querySelector('.vaso-unit-label').textContent=unit;
+  row.querySelector('.vaso-amount').placeholder = unit==='units' ? '例如 20' : '例如 8';
+  vasoCalcAll();
+}
+function vasoCalcAll(){
+  const weight=parseFloat(document.getElementById('vaso_weight').value);
+  let vis=0;
+  document.querySelectorAll('.vaso-row').forEach(row=>{
+    const drugKey=row.querySelector('.vaso-drug').value;
+    const drug=VASO_DRUGS[drugKey];
+    const amount=parseFloat(row.querySelector('.vaso-amount').value);
+    const vol=parseFloat(row.querySelector('.vaso-vol').value);
+    const rate=parseFloat(row.querySelector('.vaso-rate').value);
+    let dose=0;
+    if(!isNaN(amount)&&!isNaN(vol)&&vol>0&&!isNaN(rate)&&!isNaN(weight)&&weight>0){
+      let concPerML;
+      if(drug.unit==='units'){ concPerML=amount/vol; } else { concPerML=(amount*1000)/vol; }
+      dose=(concPerML*rate)/(60*weight);
+    }
+    const doseUnit = drug.unit==='units' ? 'units/kg/min' : 'mcg/kg/min';
+    row.querySelector('.vaso-dose-val').textContent=dose.toFixed(4);
+    row.querySelector('.vaso-dose-unit').textContent=doseUnit;
+    vis += dose*drug.weight;
+  });
+  document.getElementById('vaso_vis_total').textContent=vis.toFixed(1);
+}
+document.getElementById('vaso_weight').addEventListener('input',vasoCalcAll);
+vasoAddRow();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Child-Pugh Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-childpugh">
+  <div class="app-header">
+    <div><div class="eyebrow">Hepatology Scoring Tool</div><h1>Child-Pugh Score</h1><div class="sub">肝硬化嚴重度分級</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-childpugh'">← 返回主選單</button>
+  </div>
+  <div class="card">
+    <div class="field-row"><label>總膽紅素 Bilirubin</label>
+      <select id="cp_bili">
+        <option value="1">&lt;2 mg/dL</option><option value="2">2–3 mg/dL</option><option value="3">&gt;3 mg/dL</option>
+      </select>
+    </div>
+    <div class="field-row"><label>白蛋白 Albumin</label>
+      <select id="cp_alb">
+        <option value="1">&gt;3.5 g/dL</option><option value="2">2.8–3.5 g/dL</option><option value="3">&lt;2.8 g/dL</option>
+      </select>
+    </div>
+    <div class="field-row"><label>INR</label>
+      <select id="cp_inr">
+        <option value="1">&lt;1.7</option><option value="2">1.7–2.3</option><option value="3">&gt;2.3</option>
+      </select>
+    </div>
+    <div class="field-row"><label>腹水 Ascites</label>
+      <select id="cp_ascites">
+        <option value="1">無</option><option value="2">輕度，藥物可控制</option><option value="3">中重度／難治性</option>
+      </select>
+    </div>
+    <div class="field-row"><label>肝性腦病 Encephalopathy</label>
+      <select id="cp_enceph">
+        <option value="1">無</option><option value="2">Grade 1–2</option><option value="3">Grade 3–4</option>
+      </select>
+    </div>
+  </div>
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">總分</div><div class="metric-value big" id="cp_total">5</div></div>
+      <div><div class="metric-label">分級</div><div class="metric-value big" id="cp_class">A</div></div>
+    </div>
+    <table class="ref">
+      <tr><th>分級</th><th>總分</th><th>1年存活率</th><th>2年存活率</th></tr>
+      <tr><td>A</td><td>5–6</td><td>約100%</td><td>約85%</td></tr>
+      <tr><td>B</td><td>7–9</td><td>約80%</td><td>約60%</td></tr>
+      <tr><td>C</td><td>10–15</td><td>約45%</td><td>約35%</td></tr>
+    </table>
+    <div class="risk-note">存活率為文獻概略趨勢（Pugh 1973 及後續族群統計），非個別病人精確預後。臨床意義：評估肝硬化嚴重度與手術耐受性，C級病人手術風險顯著升高。</div>
+  </div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pugh+RN%2C+et+al.+Br+J+Surg.+1973%3B60%288%29%3A646-649" target="_blank" rel="noopener" class="ref-link">Pugh RN, et al. Br J Surg. 1973;60(8):646-649.</a></footer>
+</div>
+</div>
+<script>
+function cpCalc(){
+  const total=['cp_bili','cp_alb','cp_inr','cp_ascites','cp_enceph'].reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  document.getElementById('cp_total').textContent=total;
+  const cls=total<=6?'A':(total<=9?'B':'C');
+  document.getElementById('cp_class').textContent=cls;
+}
+document.querySelectorAll('#view-childpugh select').forEach(el=>el.addEventListener('change',cpCalc));
+cpCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
