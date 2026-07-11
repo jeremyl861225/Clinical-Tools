@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SORT · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-sort">
+  <div class="app-header">
+    <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>SORT</h1><div class="sub">Surgical Outcome Risk Tool · 預測 30 天全因死亡率（Protopapa 2014）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-sort'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="meld-field">
+      <label class="mf-label">ASA-PS 分級</label>
+      <div class="mf-inputwrap"><select id="sort_asa">
+        <option value="0">I–II 級（正常／輕微系統性疾病）</option>
+        <option value="1.411">III 級（嚴重系統性疾病）</option>
+        <option value="2.388">IV 級（持續威脅生命）</option>
+        <option value="4.081">V 級（瀕死，不手術無法存活）</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">手術緊急度 Urgency</label>
+      <div class="mf-inputwrap"><select id="sort_urg">
+        <option value="0">擇期 Elective（可安排於日常班表）</option>
+        <option value="1.236">加快 Expedited（數日內，非立即威脅生命）</option>
+        <option value="1.657">緊急 Urgent（24 小時內，威脅生命／肢體／器官）</option>
+        <option value="2.452">立即 Immediate（數小時內，復甦同時進行）</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">高風險專科</label>
+      <div class="mf-inputwrap"><select id="sort_spec">
+        <option value="0">否 — 其他專科</option>
+        <option value="0.712">是 — 腸胃道／胸腔／血管手術</option>
+      </select></div>
+      <span class="mf-note">high-risk specialty：GI / thoracic / vascular</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">手術嚴重度 Severity</label>
+      <div class="mf-inputwrap"><select id="sort_sev">
+        <option value="0">次要／中等／主要 Minor–Major</option>
+        <option value="0.381">超大／複雜 Xmajor / complex</option>
+      </select></div>
+      <span class="mf-note">依 AXA／BUPA 手術嚴重度分級（見下方展開）</span>
+      <details class="def-box" style="margin-top:6px;">
+        <summary>Surgical severity grades</summary>
+        <div class="box-inner">
+          <b>Minor</b> (coefficient 0): excision of skin lesion; drainage of breast abscess.<br>
+          <b>Intermediate</b> (coefficient 0): primary repair of inguinal hernia; excision of varicose veins; tonsillectomy; knee arthroscopy.<br>
+          <b>Major</b> (coefficient 0): total abdominal hysterectomy; transurethral resection of prostate (TURP); lumbar discectomy; thyroidectomy.<br>
+          <b>Xmajor / complex</b> (<b>coefficient +0.381</b>): total joint replacement; lung operations; colonic resection; radical neck dissection; and major vascular (e.g. aortic aneurysm), oesophagectomy, or pancreatectomy.<br><br>
+          <span class="note">*Severity is graded by the <b>AXA / BUPA specialist procedure codes</b> (SORT's original definition; the two schedules differ for only ~3.5% of procedures, and never by more than one category). The examples above are representative items from the concordant <b>NICE grades of surgery (NG45)</b>, for quick reference only. In the SORT model only Xmajor/complex carries +0.381; the other three grades are the reference baseline (0).</span>
+        </div>
+      </details>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">惡性腫瘤 Cancer</label>
+      <div class="mf-inputwrap"><select id="sort_ca">
+        <option value="0">無 Absent</option>
+        <option value="0.667">有 Present（手術涉及惡性腫瘤）</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">年齡 Age</label>
+      <div class="mf-inputwrap"><select id="sort_age">
+        <option value="0">&lt; 65 歲</option>
+        <option value="0.777">65–79 歲</option>
+        <option value="1.591">≥ 80 歲</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">預估 30 天死亡率 · Predicted 30-day mortality</div>
+    <div class="metric-value big" id="sort_pct">0.06%</div>
+
+    <div class="formula-box">
+      <div class="formula-title">Model（logistic regression）</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">−7.366</span><span class="fvar">常數 constant</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">ASA</span><span class="fvar">III +1.411 · IV +2.388 · V +4.081</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">緊急</span><span class="fvar">加快 +1.236 · 緊急 +1.657 · 立即 +2.452</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.712</span><span class="fvar">× 高風險專科（GI／胸腔／血管）</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.381</span><span class="fvar">× 超大／複雜手術</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.667</span><span class="fvar">× 惡性腫瘤</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">年齡</span><span class="fvar">65–79 +0.777 · ≥80 +1.591</span></div>
+      </div>
+      <div class="formula-result">= x（線性預測值 <span id="sort_logit">−7.366</span>）　→　風險 = eˣ ÷ (1 + eˣ)</div>
+    </div>
+
+    <div class="risk-note">SORT 由英國 NCEPOD 資料（非心臟、非神經外科住院手術）建立，預測全因 30 天死亡率，用於術前風險溝通與稽核校正。此模型未納入個別共病細節（以 ASA 概括），不取代完整臨床評估。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Protopapa+KL+Development+and+validation+of+the+Surgical+Outcome+Risk+Tool+SORT+Br+J+Surg+2014" target="_blank" rel="noopener" class="ref-link">Protopapa KL, et al. Development and validation of the Surgical Outcome Risk Tool (SORT). Br J Surg. 2014;101(13):1774-1783.</a></footer>
+</div>
+</div>
+<script>
+function sortCalc(){
+  const ids=['sort_asa','sort_urg','sort_spec','sort_sev','sort_ca','sort_age'];
+  let x=-7.366;
+  ids.forEach(id=>{ x+=parseFloat(document.getElementById(id).value)||0; });
+  const p=Math.exp(x)/(1+Math.exp(x));
+  const pct=p*100;
+  document.getElementById('sort_pct').textContent = (pct<10 ? pct.toFixed(2) : pct.toFixed(1)) + '%';
+  document.getElementById('sort_logit').textContent = (x>=0?'+':'') + x.toFixed(3);
+}
+document.querySelectorAll('#view-sort select').forEach(el=>{ el.addEventListener('change',sortCalc); el.addEventListener('input',sortCalc); });
+sortCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
