@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抗生素指引 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  /* ---- 抗生素指引 Empiric antibiotic guide（頁面專用元件） ---- */
+  .abx-disclaimer{background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:2px; padding:10px 13px; font-size:12px; line-height:1.6; color:var(--label-ink); margin-bottom:16px;}
+  .abx-disclaimer b{color:var(--accent2);}
+  .abx-picker{display:flex; flex-direction:column; gap:8px; margin-bottom:6px;}
+  .abx-site-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media(max-width:520px){ .abx-site-grid{grid-template-columns:1fr;} }
+  .abx-modes{display:flex; gap:6px; margin-bottom:18px; border-bottom:2px solid var(--accent-soft); padding-bottom:0;}
+  .abx-mode{font-family:var(--mono); font-size:12.5px; background:none; border:1px solid var(--line); border-bottom:none; padding:9px 14px; border-radius:4px 4px 0 0; cursor:pointer; color:var(--muted); position:relative; top:2px;}
+  .abx-mode:hover{background:var(--hover-bg); color:var(--ink);}
+  .abx-mode.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-soft); font-weight:700;}
+  @media(max-width:520px){ .abx-mode{flex:1; padding:9px 4px; font-size:11.5px; text-align:center;} }
+  .abx-lookup-input{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:10px;}
+  .abx-lookup-input:focus{outline:none; border-color:var(--accent);}
+  .abx-lookup-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
+  .bac-group-head{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:16px 0 7px; border-bottom:1px solid var(--accent-soft); padding-bottom:3px;}
+  .bac-item{display:block; width:100%; text-align:left; background:var(--field-bg); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:10px 12px; cursor:pointer; margin-bottom:7px; color:var(--ink); transition:border-color .15s, background .15s;}
+  .bac-item:hover{border-color:var(--accent); border-left-color:var(--accent); background:var(--hover-bg);}
+  .bac-item .bi-name{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .bac-item .bi-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:6px;}
+  .bac-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
+  .abx-back{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:6px 11px; border-radius:2px; cursor:pointer; color:var(--ink); margin-bottom:12px;}
+  .abx-back:hover{background:var(--accent-soft); border-color:var(--accent);}
+  .abx-crumb{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin:2px 0 12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .abx-crumb b{color:var(--accent);}
+  .abx-crumb .sep{color:var(--muted-soft);}
+  .abx-type-note{font-size:12px; color:var(--muted); margin:0 0 12px; line-height:1.6;}
+
+  .rgm{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:13px 15px; margin-bottom:10px;}
+  .rgm.first{border-left:3px solid var(--accent);}
+  .rgm.alt{border-left:3px solid var(--muted-soft);}
+  .rgm.special{border-left:3px solid var(--accent2);}
+  .rgm.none{border-left:3px solid var(--muted-soft);}
+  .rgm.none .rgm-role{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line);}
+  .rgm-head{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:8px;}
+  .rgm-role{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-radius:9px; padding:2px 9px; white-space:nowrap;}
+  .rgm.first .rgm-role{color:#fff; background:var(--accent);}
+  .rgm.alt .rgm-role{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line);}
+  .rgm.special .rgm-role{color:#fff; background:var(--accent2);}
+  .rgm-label{font-family:var(--serif); font-size:14.5px; font-weight:600; color:var(--ink);}
+  .rgm-drugs{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+  .rgm-plus{font-family:var(--mono); color:var(--muted-soft); font-size:13px;}
+  .drug-chip{font-family:var(--sans); font-size:13px; background:var(--field-bg); border:1px solid var(--line); border-bottom:2px solid var(--accent-soft); border-radius:3px; padding:5px 10px; cursor:pointer; color:var(--ink); transition:border-color .15s, background .15s;}
+  .drug-chip:hover{border-color:var(--accent); background:var(--hover-bg);}
+  .drug-chip .dc-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin-left:5px;}
+  .rgm-dur{font-family:var(--mono); font-size:11px; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:4px 9px; margin-top:9px; display:inline-block; line-height:1.5;}
+  .rgm-note{font-size:11.5px; color:var(--muted); margin-top:8px; padding-top:7px; border-top:1px dashed var(--line); line-height:1.6;}
+  .cov-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
+  .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px;}
+  .cov-tag.yes{color:var(--accent); background:var(--accent-soft);}
+  .cov-tag.no{color:var(--muted-soft); background:var(--soft-bg); text-decoration:line-through; opacity:.75;}
+
+  .drugcard{background:var(--panel); border:1px solid var(--line); border-radius:2px; margin-bottom:8px; scroll-margin-top:14px;}
+  .drugcard summary{cursor:pointer; list-style:none; padding:11px 14px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .drugcard summary::-webkit-details-marker{display:none;}
+  .drugcard summary::marker{content:'';}
+  .drugcard summary:before{content:'▸'; font-family:var(--mono); color:var(--accent); font-size:12px; margin-right:2px;}
+  .drugcard[open] summary:before{content:'▾';}
+  .drugcard[open] summary{border-bottom:1px solid var(--line);}
+  .dc-name{font-family:var(--serif); font-size:15.5px; font-weight:600; color:var(--ink);}
+  .dc-zh{font-family:var(--sans); font-size:12.5px; color:var(--muted); margin-left:1px;}
+  .dc-nameen{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+  table.renal-tbl{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px;}
+  table.renal-tbl td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.renal-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted); width:34%;}
+  table.renal-tbl tr:last-child td{border-bottom:none;}
+  .dc-class{margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; white-space:nowrap;}
+  .dc-body{padding:4px 14px 13px;}
+  .dc-field{margin-top:11px;}
+  .dc-field:first-child{margin-top:6px;}
+  .dc-flabel{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; display:flex; align-items:center; gap:6px;}
+  .dc-flabel .ico{font-size:12px;}
+  .dc-ftext{font-size:13px; line-height:1.65; color:var(--label-ink);}
+  .dc-ftext .sub{display:block; font-size:11.5px; color:var(--muted); font-family:var(--mono); margin-top:2px;}
+  .dc-warn{color:var(--accent2);}
+  .abx-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono); margin:14px 0 6px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-antibiotics">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Antibiotic Guide</div>
+      <h1>抗生素指引</h1>
+      <div class="sub">三種查法：依感染部位（經驗性）· 依細菌 · 藥物查詢</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+  </div>
+
+  <div class="abx-disclaimer">
+    <b>僅供教育／參考</b>，非醫療處方。經驗性建議與療程須依當地抗藥性、培養結果、感染源控制、過敏史、肝腎功能、體重、孕哺與交互作用個別調整。劑量為一般成人、腎功能正常之起始劑量；兒科劑量為概略常用值，須依體重、年齡與最新用藥指引核算。用藥前務必核對最新準則與藥品仿單。本工具整理自公開臨床準則（IDSA、SIS、AHA、藥品仿單等），非任何商業指南之重製。
+  </div>
+
+  <!-- 模式切換 -->
+  <div class="abx-modes">
+    <button class="abx-mode active" data-mode="empiric" onclick="switchMode('empiric')">依部位（經驗性）</button>
+    <button class="abx-mode" data-mode="bacteria" onclick="switchMode('bacteria')">依細菌</button>
+    <button class="abx-mode" data-mode="lookup" onclick="switchMode('lookup')">藥物查詢</button>
+  </div>
+
+  <!-- 模式一：依部位（經驗性） -->
+  <div id="mode-empiric">
+  <!-- 第一步：選感染部位 -->
+  <div id="abx-step-site">
+    <div class="abx-hint">STEP 1 — 選擇感染部位</div>
+    <div class="abx-site-grid" id="abx-sites"></div>
+  </div>
+
+  <!-- 第二步：選感染型態 -->
+  <div id="abx-step-type" class="hidden">
+    <button class="abx-back" onclick="backToSites()">← 上一步：選感染部位</button>
+    <div class="abx-crumb" id="abx-crumb1"></div>
+    <div class="abx-hint">STEP 2 — 選擇感染型態</div>
+    <div class="abx-picker" id="abx-types"></div>
+  </div>
+
+  <!-- 第三步：建議 -->
+  <div id="abx-step-result" class="hidden">
+    <button class="abx-back" onclick="backToTypes()">← 上一步：選感染型態</button>
+    <div class="abx-crumb" id="abx-crumb2"></div>
+    <p class="abx-type-note" id="abx-typenote"></p>
+    <div id="abx-regimens"></div>
+    <div class="abx-hint">相關抗生素資訊（點藥名展開）</div>
+    <div id="abx-drugcards"></div>
+    <button class="btn-reset" style="margin-top:12px" onclick="abxReset()">↺ 重新選擇</button>
+  </div>
+  </div><!-- /mode-empiric -->
+
+  <!-- 模式二：依細菌 -->
+  <div id="mode-bacteria" class="hidden">
+    <div id="bac-step-list">
+      <div class="abx-hint">選擇病原菌 — 顯示建議之經驗／目標治療</div>
+      <input type="text" id="bac-search" class="abx-lookup-input" placeholder="搜尋菌名（中／英，如 MRSA、Pseudomonas、大腸桿菌）…" oninput="renderBacteria(this.value)">
+      <div id="bac-list"></div>
+    </div>
+    <div id="bac-step-result" class="hidden">
+      <button class="abx-back" onclick="backToBacteria()">← 上一步：選病原菌</button>
+      <div class="abx-crumb" id="bac-crumb"></div>
+      <p class="abx-type-note" id="bac-note"></p>
+      <div id="bac-regimens"></div>
+      <div class="abx-hint">相關抗生素資訊（點藥名展開）</div>
+      <div id="bac-drugcards"></div>
+    </div>
+  </div>
+
+  <!-- 模式三：藥物查詢 -->
+  <div id="mode-lookup" class="hidden">
+    <div class="abx-hint">輸入藥名前幾個字母即時篩選（中文名／英文名／台灣商品名／分類皆可）</div>
+    <input type="text" id="lookup-input" class="abx-lookup-input" placeholder="例：vanco、tazocin、萬古黴素、頭孢、flumarin、抗結核…" oninput="renderLookup(this.value)" autocomplete="off">
+    <div id="lookup-count" class="abx-lookup-count"></div>
+    <div id="lookup-results"></div>
+  </div>
+
+  <footer class="tool-footer">
+    參考：
+    <a href="https://www.idsociety.org/practice-guideline/practice-guidelines/" target="_blank" rel="noopener" class="ref-link">IDSA Practice Guidelines</a> ·
+    Solomkin et al. <a href="https://pubmed.ncbi.nlm.nih.gov/20034345/" target="_blank" rel="noopener" class="ref-link">Complicated Intra-abdominal Infection (IDSA/SIS). Clin Infect Dis. 2010.</a> ·
+    Metlay et al. <a href="https://pubmed.ncbi.nlm.nih.gov/31573350/" target="_blank" rel="noopener" class="ref-link">CAP (ATS/IDSA). Am J Respir Crit Care Med. 2019.</a> ·
+    Stevens et al. <a href="https://pubmed.ncbi.nlm.nih.gov/24947530/" target="_blank" rel="noopener" class="ref-link">SSTI (IDSA). Clin Infect Dis. 2014.</a> ·
+    Baddour et al. <a href="https://pubmed.ncbi.nlm.nih.gov/26373316/" target="_blank" rel="noopener" class="ref-link">Infective Endocarditis (AHA). Circulation. 2015.</a> ·
+    Tunkel et al. <a href="https://pubmed.ncbi.nlm.nih.gov/15494903/" target="_blank" rel="noopener" class="ref-link">Bacterial Meningitis (IDSA). Clin Infect Dis. 2004.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Bratzler+antimicrobial+prophylaxis+surgery+2013" target="_blank" rel="noopener" class="ref-link">Surgical Antimicrobial Prophylaxis (ASHP/IDSA/SIS/SHEA). 2013.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Baveno+VII+portal+hypertension+de+Franchis" target="_blank" rel="noopener" class="ref-link">Baveno VII — Portal Hypertension. J Hepatol. 2022.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/?term=ACG+clinical+guideline+ischemic+colitis+Brandt" target="_blank" rel="noopener" class="ref-link">ACG Guideline: Ischemic Colitis. 2015.</a> ·
+    Pappas et al. <a href="https://pubmed.ncbi.nlm.nih.gov/26810419/" target="_blank" rel="noopener" class="ref-link">Candidiasis (IDSA). Clin Infect Dis. 2016.</a> ·
+    Kalil et al. <a href="https://pubmed.ncbi.nlm.nih.gov/27418577/" target="_blank" rel="noopener" class="ref-link">HAP/VAP (IDSA/ATS). Clin Infect Dis. 2016.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Liu+MRSA+IDSA+guideline+2011" target="_blank" rel="noopener" class="ref-link">MRSA (IDSA). Clin Infect Dis. 2011.</a> ·
+    Teicoplanin vs Vancomycin 佐證：<a href="https://pubmed.ncbi.nlm.nih.gov/20556772/" target="_blank" rel="noopener" class="ref-link">Cavalcanti et al. Cochrane. 2010</a>；<a href="https://pubmed.ncbi.nlm.nih.gov/19596875/" target="_blank" rel="noopener" class="ref-link">Svetitsky et al. AAC. 2009</a>（療效相當、腎毒性較低）。 ·
+    劑量／療程／代謝／禁忌整理自各藥品仿單與上述準則（文獻經 PubMed 查證）。
+  </footer>
+</div>
+</div>
+
+<script>
+/* =========================================================================
+   DRUGS — 藥物藥理資訊（定義一次，各感染部位引用）
+   欄位：name 英文學名, zh 中文名, brands[] 台灣商品名, cls 分類,
+         dose 成人劑量, renal 腎調整(字串或 [{k,v}] 表格), peds 兒科劑量,
+         bioav 口服生體可用率, dist 分布/組織穿透, metab 代謝途徑,
+         contra 禁忌與警示, spectrum 抗菌譜, cov 覆蓋標記
+   註：所有藥物均已升級為新 schema（zh/brands/bioav/dist 與腎功能表格）。
+       劑量／商品名為台灣常用值，請對照台大藥劑部藥品查詢做最終核對。
+   ========================================================================= */
+const DRUGS = {
+  piptazo:{name:'Piperacillin-Tazobactam',zh:'匹派拉西林/泰唑巴坦',brands:['Tazocin'],cls:'抗綠膿 β-lactam/BLI',
+    dose:'4.5 g IV q6–8h。重症／Pseudomonas 建議延長輸注（q8h、輸注 4 小時）。',
+    renal:[{k:'>40',v:'4.5 g q6–8h（不需調整）'},{k:'20–40',v:'3.375 g q6h'},{k:'<20',v:'2.25 g q6h'},{k:'血液透析',v:'2.25 g q8h，透析後追加 0.75 g'}],
+    peds:'100 mg/kg（piperacillin）IV q6–8h（≥9 月）；最大同成人。',
+    bioav:'靜脈注射（口服不吸收）。',
+    dist:'良好分布至肺、膽汁、腹腔、軟組織；CSF 穿透差（腦膜發炎時增加）。',
+    metab:'主要經腎排除（piperacillin 約 68% 以原型從尿排出）。需依腎功能調整。',
+    adverse:'腹瀉、C. difficile；與 vancomycin 併用增加 AKI；血小板／白血球低下、癲癇(腎衰高劑量)、假性肌酸酐上升。',
+    contra:'對 penicillin／β-lactam 過敏禁用。警示：腎衰高劑量致癲癇；與 vancomycin 併用增加 AKI 風險；血小板／白血球低下；假性肌酸酐升高。',
+    spectrum:'廣效：Enterobacterales、Pseudomonas、厭氧菌、腸球菌(faecalis)。不涵蓋 MRSA、ESBL(不穩定)、非典型菌。',
+    cov:{pseudo:1,anaerobe:1,enterococcus:1}},
+
+  brosym:{name:'Cefoperazone-Sulbactam',zh:'頭孢哌酮/舒巴坦',brands:['Brosym','Sulperazon'],cls:'第三代 cephalosporin/BLI',
+    dose:'1–2 g（cefoperazone）IV q12h；重症 q6–8h（sulbactam 每日上限 4 g）。',
+    renal:[{k:'>30',v:'不需調整（cefoperazone 主要經膽汁）'},{k:'≤30',v:'限制 sulbactam 劑量（sulbactam 經腎）'}],
+    peds:'40–80 mg/kg/day（cefoperazone）分 q6–12h。',
+    bioav:'靜脈注射。',
+    dist:'膽汁濃度高；組織分布良好；CSF 穿透有限。',
+    metab:'Cefoperazone 主要經膽汁排除；sulbactam 經腎。',
+    adverse:'NMTT 相關凝血異常(PT 延長)、飲酒 disulfiram 反應；腹瀉、肝酵素上升。',
+    contra:'β-lactam 過敏。含 NMTT 側鏈：凝血異常(維生素 K)與飲酒 disulfiram 反應，需監測 PT。',
+    spectrum:'Enterobacterales、Pseudomonas(cefoperazone)、Acinetobacter(sulbactam)、厭氧、部分 ESBL。不涵蓋 MRSA。台灣常用於腹腔／膽道／院內感染。',
+    cov:{pseudo:1,anaerobe:1}},
+
+  cefazolin:{name:'Cefazolin',zh:'頭孢唑林',brands:['Cefazolin','Kefzol'],cls:'第一代 cephalosporin',
+    dose:'1–2 g IV q8h（重症／深部感染 2 g q8h）。',
+    renal:[{k:'≥35',v:'不需調整'},{k:'10–34',v:'常規劑量 q12h'},{k:'<10',v:'常規劑量 q24h'}],
+    peds:'50–100 mg/kg/day 分 q8h（max 6 g/day）。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'良好分布至骨、關節、軟組織；不穿透 CSF（不用於腦膜炎）。',
+    metab:'主要經腎排除。',
+    adverse:'過敏、腹瀉、C. difficile；少見血球低下、肝酵素上升。',
+    contra:'β-lactam 過敏禁用。',
+    spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus。MSSA 菌血症／骨感染首選。不涵蓋 MRSA、腸球菌、多數院內 GNB、厭氧。'},
+
+  cefalexin:{name:'Cephalexin',zh:'頭孢氨苄',brands:['Keflex','Ceporex'],cls:'第一代 cephalosporin(口服)',
+    dose:'250–500 mg PO q6h；SSTI 可 500 mg q12h。',
+    renal:[{k:'>30',v:'不需調整'},{k:'15–29',v:'250–500 mg q8–12h'},{k:'<15',v:'250 mg q12–24h'}],
+    peds:'25–50 mg/kg/day 分 q6–12h（重症至 100 mg/kg/day）。',
+    bioav:'口服吸收約 90%，受食物影響小。',
+    dist:'良好分布至皮膚軟組織、骨；CSF 穿透差。',
+    metab:'主要以原型經腎排除。',
+    adverse:'腸胃不適、腹瀉、皮疹；C. difficile。',
+    contra:'β-lactam 過敏。',
+    spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus。門診 SSTI、鏈球菌感染之口服選擇。不涵蓋 MRSA、腸球菌、厭氧、Pseudomonas。'},
+
+  cefuroxime:{name:'Cefuroxime',zh:'頭孢呋辛',brands:['Zinacef (IV)','Zinnat (PO)'],cls:'第二代 cephalosporin',
+    dose:'IV 750 mg–1.5 g q8h；口服(axetil) 250–500 mg q12h。',
+    renal:[{k:'>20',v:'不需調整'},{k:'10–20',v:'750 mg IV q12h'},{k:'<10',v:'750 mg IV q24h'}],
+    peds:'IV 75–150 mg/kg/day 分 q8h；PO 20–30 mg/kg/day 分 q12h。',
+    bioav:'口服 cefuroxime axetil 約 37–52%，隨食物增加。',
+    dist:'呼吸道、皮膚組織分布佳；CSF 穿透不足（不建議用於腦膜炎）。',
+    metab:'主要經腎排除。',
+    adverse:'腸胃不適、腹瀉、皮疹；少見血球低下。',
+    contra:'β-lactam 過敏。',
+    spectrum:'MSSA、Streptococcus(含肺炎鏈球菌)、H. influenzae、M. catarrhalis、部分 Enterobacterales。呼吸道／SSTI。不涵蓋 Pseudomonas、ESBL、MRSA、腸球菌、多數厭氧。'},
+
+  cefmetazole:{name:'Cefmetazole',zh:'頭孢美唑',brands:['Cefmetazon'],cls:'Cephamycin(第二代)',
+    dose:'手術預防 1–2 g IV 切皮前單劑；治療 1–2 g IV q6–12h。',
+    renal:[{k:'>60',v:'不需調整'},{k:'30–60',v:'延長間隔'},{k:'<30',v:'進一步延長間隔'}],
+    peds:'25–100 mg/kg/day 分 q6–8h。',
+    bioav:'靜脈注射。',
+    dist:'腹腔、膽汁、組織分布佳；CSF 穿透差。',
+    metab:'主要經腎排除。',
+    adverse:'NMTT 相關凝血異常、飲酒 disulfiram 反應；腹瀉。',
+    contra:'β-lactam 過敏。含 NMTT 側鏈：可能凝血異常(維生素 K 依賴因子)與飲酒 disulfiram 樣反應。',
+    spectrum:'Enterobacterales、厭氧(含 B. fragilis)、MSSA；對部分 ESBL 有活性但非首選。不涵蓋 Pseudomonas、腸球菌、MRSA。台灣常用於腸道手術預防與腹腔感染。',
+    cov:{anaerobe:1}},
+
+  flomoxef:{name:'Flomoxef',zh:'氟氧頭孢',brands:['Flumarin'],cls:'Oxacephem(第二代型)',
+    dose:'1–2 g IV q12h（重症 q6–8h）。',
+    renal:[{k:'>40',v:'不需調整'},{k:'≤40',v:'延長間隔（主要經腎排除）'}],
+    peds:'60–80 mg/kg/day 分 q6–8h。',
+    bioav:'靜脈注射。',
+    dist:'膽汁、組織分布佳；CSF 穿透有限。',
+    metab:'主要經腎排除。',
+    adverse:'腹瀉、皮疹、肝酵素上升；凝血異常較其他 cephamycin 少。',
+    contra:'β-lactam 過敏；NMTT 相關凝血／酒精反應風險較其他 cephamycin 低但仍留意。',
+    spectrum:'MSSA、Streptococcus、Enterobacterales、厭氧(含 B. fragilis)；對部分 ESBL 穩定。不涵蓋 Pseudomonas、腸球菌、MRSA。台灣常用於腹腔／婦科／膽道感染。',
+    cov:{anaerobe:1}},
+
+  ceftriaxone:{name:'Ceftriaxone',zh:'頭孢曲松',brands:['Rocephin'],cls:'第三代 cephalosporin',
+    dose:'1–2 g IV q24h；腦膜炎／重症 2 g q12h。',
+    renal:'一般不需調整（肝膽＋腎雙重排除）',
+    hepatic:'肝腎功能同時嚴重受損時考慮減量（上限 2 g/day）。',
+    peds:'50–75 mg/kg/day IV q12–24h；腦膜炎 100 mg/kg/day 分 q12h（max 4 g/day）。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'廣泛分布；CSF 穿透良好（腦膜炎首選之一）；膽汁濃度高。',
+    metab:'肝膽與腎雙重排除（約 40–50% 由膽汁）。腎功能不全通常不需調整。',
+    adverse:'膽汁假性結石(sludge)、腹瀉、C. difficile；少見免疫性溶血、血球低下；新生兒核黃疸／含鈣沉澱。',
+    contra:'β-lactam 過敏禁用。新生兒(<28天)勿與含鈣輸液併用（沉澱）；高膽紅素新生兒禁用。可致膽汁假性結石(sludge)。',
+    spectrum:'多數 Enterobacterales、Streptococcus(含肺炎鏈球菌)、N. gonorrhoeae/meningitidis。不涵蓋 Pseudomonas、腸球菌、ESBL、MRSA、厭氧(腹腔需加 metronidazole)。'},
+
+  cefotaxime:{name:'Cefotaxime',zh:'頭孢噻肟',brands:['Claforan'],cls:'第三代 cephalosporin',
+    dose:'1–2 g IV q8h；腦膜炎／重症 2 g q4–6h。',
+    renal:[{k:'>20',v:'不需調整'},{k:'≤20',v:'劑量減半'}],
+    peds:'150–200 mg/kg/day 分 q6–8h；腦膜炎 200–300 mg/kg/day 分 q6h。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'CSF 穿透良好（新生兒腦膜炎常用，無 ceftriaxone 之膽紅素／含鈣顧慮）；組織分布廣。',
+    metab:'部分經肝代謝為活性 desacetyl 代謝物，其餘經腎。',
+    adverse:'腹瀉、皮疹、血球低下；快速輸注偶致心律不整。',
+    contra:'β-lactam 過敏。',
+    spectrum:'同 ceftriaxone：多數 Enterobacterales、Streptococcus、Neisseria。不涵蓋 Pseudomonas、腸球菌、ESBL、MRSA、厭氧。'},
+
+  ceftazidime:{name:'Ceftazidime',zh:'頭孢他啶',brands:['Fortum'],cls:'第三代(抗綠膿) cephalosporin',
+    dose:'2 g IV q8h。',
+    renal:[{k:'>50',v:'2 g q8h'},{k:'30–50',v:'2 g q12h'},{k:'15–30',v:'2 g q24h'},{k:'<15',v:'進一步減量'}],
+    peds:'50 mg/kg IV q8h（max 2 g/劑）。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'組織分布佳；CSF 穿透良好（腦膜發炎時）。',
+    metab:'幾乎完全經腎排除。',
+    adverse:'腹瀉、皮疹；腎衰未調量致腦病變／肌陣攣；易篩選抗藥菌。',
+    contra:'β-lactam 過敏。腎衰未調量可致腦病變／肌陣攣。',
+    spectrum:'強抗 Pseudomonas 與 Enterobacterales；Gram(+) 活性弱（不宜單獨覆蓋葡萄球菌）。不涵蓋厭氧、MRSA、腸球菌。',
+    cov:{pseudo:1}},
+
+  cefixime:{name:'Cefixime',zh:'頭孢克肟',brands:['Cefspan','Suprax'],cls:'第三代 cephalosporin(口服)',
+    dose:'400 mg PO q24h 或分 q12h。',
+    renal:[{k:'>60',v:'不需調整'},{k:'21–60',v:'減量約 25%'},{k:'≤20',v:'減量約 50%'}],
+    peds:'8 mg/kg/day 分 q12–24h。',
+    bioav:'口服約 40–50%，不受食物顯著影響。',
+    dist:'尿路濃度高、膽汁分布；CSF 穿透差。',
+    metab:'部分經腎、部分經膽汁排除。',
+    adverse:'腹瀉常見、腸胃不適、皮疹。',
+    contra:'β-lactam 過敏。',
+    spectrum:'Enterobacterales、Streptococcus、H. influenzae、N. gonorrhoeae。門診 UTI、淋病、呼吸道。對 S. aureus 弱；不涵蓋 Pseudomonas、腸球菌、厭氧。'},
+
+  cefepime:{name:'Cefepime',zh:'頭孢吡肟',brands:['Maxipime'],cls:'第四代 cephalosporin',
+    dose:'1–2 g IV q8–12h；中性球低下／Pseudomonas 2 g q8h。腦膜炎 2 g q8h。',
+    renal:[{k:'>60',v:'依適應症 1–2 g q8–12h'},{k:'30–60',v:'延長至 q12–24h'},{k:'11–29',v:'進一步減量'},{k:'≤10',v:'大幅減量，注意神經毒性'}],
+    peds:'50 mg/kg IV q8–12h（max 2 g/劑）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布廣；CSF 穿透良好（腦膜發炎時）。',
+    metab:'主要經腎排除（約 85% 原型）。需依腎功能調整。',
+    adverse:'神經毒性(腦病變／非抽搐性癲癇，尤其腎衰未調量)、腹瀉、C. difficile。',
+    contra:'β-lactam 過敏。警示：腎衰未調量致腦病變／非抽搐性癲癇(cefepime neurotoxicity)。',
+    spectrum:'廣效含 Pseudomonas、多數 Enterobacterales(含部分 AmpC)、Streptococcus。不涵蓋 MRSA、腸球菌、厭氧(需加 metronidazole)、ESBL 不建議。',
+    cov:{pseudo:1}},
+
+  ceftaroline:{name:'Ceftaroline',zh:'頭孢洛林',brands:['Zinforo'],cls:'抗 MRSA cephalosporin',
+    dose:'600 mg IV q12h；重症／MRSA 菌血症可 q8h。',
+    renal:[{k:'>50',v:'600 mg q12h'},{k:'30–50',v:'400 mg q12h'},{k:'15–30',v:'300 mg q12h'},{k:'<15／HD',v:'200 mg q12h（透析後給）'}],
+    peds:'≥2 月核准；2月–<2歲 8 mg/kg q8h、≥2歲 12 mg/kg q8h(max 400–600 mg)。',
+    bioav:'靜脈注射（前驅藥 ceftaroline fosamil）。',
+    dist:'組織／皮膚分布佳；CSF 穿透有限。',
+    metab:'主要經腎排除。',
+    adverse:'皮疹、腹瀉、Coombs 陽性；少見嗜中性球低下。',
+    contra:'β-lactam 過敏。',
+    spectrum:'唯一覆蓋 MRSA 的 cephalosporin；MSSA、Streptococcus、部分 Enterobacterales。不涵蓋 Pseudomonas、ESBL、E. faecium、厭氧。',
+    cov:{mrsa:1}},
+
+  ceftobiprole:{name:'Ceftobiprole',zh:'頭孢比普',brands:['Zevtera','Mabelio'],cls:'抗 MRSA 廣效 cephalosporin',
+    dose:'500 mg IV q8h（輸注 2 小時）。',
+    renal:[{k:'>50',v:'500 mg q8h'},{k:'30–50',v:'500 mg q12h'},{k:'<30',v:'250 mg q12h'}],
+    peds:'依年齡體重核准，請參最新仿單。',
+    bioav:'靜脈注射（前驅藥 ceftobiprole medocaril）。',
+    dist:'組織分布佳；肺穿透良好（核准用於肺炎）。',
+    metab:'主要經腎排除。',
+    adverse:'噁心、腹瀉、味覺異常、頭痛、低血鈉。',
+    contra:'β-lactam 過敏。',
+    spectrum:'廣效含 MRSA、MSSA、Streptococcus、腸球菌(faecalis)、多數 Enterobacterales、Pseudomonas。厭氧有限、不涵蓋高產 ESBL/AmpC。用於 CAP／HAP、SSTI、S. aureus 菌血症。',
+    cov:{mrsa:1,pseudo:1,enterococcus:1}},
+
+  cefiderocol:{name:'Cefiderocol',zh:'頭孢地爾',brands:['Fetroja'],cls:'鐵載體 cephalosporin',
+    dose:'2 g IV q8h（輸注 3 小時）。',
+    renal:[{k:'60–119',v:'2 g q8h'},{k:'≥120(高清除)',v:'2 g q6h'},{k:'30–59',v:'1.5 g q8h'},{k:'15–29',v:'1 g q8h'},{k:'<15／HD',v:'0.75 g q12h（透析後給）'}],
+    peds:'兒科資料有限。',
+    bioav:'靜脈注射。',
+    dist:'組織分布；經鐵載體主動運輸進入 Gram 陰性菌。',
+    metab:'主要經腎排除。',
+    adverse:'腹瀉、輸注反應、肝酵素上升；重症 GNB 感染死亡率議題需監測。',
+    contra:'β-lactam 過敏。屬 MDR 保留用藥，需感染科／抗生素管理審核。',
+    spectrum:'廣效抗 MDR/XDR Gram 陰性菌：CRE(含金屬 β-lactamase NDM)、MDR Pseudomonas、Acinetobacter、Stenotrophomonas。不涵蓋 Gram 陽性／厭氧。',
+    cov:{pseudo:1,esbl:1}},
+
+  meropenem:{name:'Meropenem',zh:'美羅培南',brands:['Mepem','Merrem'],cls:'Carbapenem',
+    dose:'1 g IV q8h；腦膜炎／Pseudomonas 2 g q8h（延長輸注 3 小時）。',
+    renal:[{k:'>50',v:'1–2 g q8h'},{k:'26–50',v:'1 g q12h'},{k:'10–25',v:'500 mg q12h'},{k:'<10',v:'500 mg q24h'}],
+    peds:'20 mg/kg IV q8h；腦膜炎 40 mg/kg q8h（max 2 g/劑）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布廣；CSF 穿透良好（腦膜炎用高劑量）。',
+    metab:'主要經腎排除。',
+    adverse:'腹瀉、C. difficile、癲癇(較 imipenem 低)、降低 valproate、血球低下。',
+    contra:'β-lactam 過敏（與 penicillin 交叉反應低但仍避免）。降低 valproate 血中濃度；腎衰致癲癇。',
+    spectrum:'極廣效含 ESBL、Pseudomonas、厭氧、多數 GPC(不含 MRSA／VRE／E. faecium)。屬保留用藥。',
+    cov:{pseudo:1,anaerobe:1,esbl:1,enterococcus:1}},
+
+  imipenem:{name:'Imipenem-Cilastatin',zh:'亞胺培南/西司他丁',brands:['Tienam'],cls:'Carbapenem',
+    dose:'500 mg IV q6h 或 1 g q8h（重症）。',
+    renal:[{k:'>90',v:'500 mg q6h'},{k:'60–90',v:'500 mg q8h'},{k:'30–60',v:'500 mg q8–12h'},{k:'15–30',v:'500 mg q12h'},{k:'<15',v:'避免（除非即將透析）'}],
+    peds:'15–25 mg/kg IV q6h。',
+    bioav:'靜脈注射（與 cilastatin 併用防腎去活化）。',
+    dist:'組織分布廣；癲癇風險較高，腦膜炎首選 meropenem。',
+    metab:'Imipenem 經腎 DHP-I 代謝，cilastatin 抑制之；主要經腎。',
+    adverse:'癲癇(carbapenem 中最高)、噁心嘔吐、C. difficile、降低 valproate。',
+    contra:'β-lactam 過敏。癲癇風險為 carbapenem 中最高（CNS 病灶／腎衰慎用）；降低 valproate。',
+    spectrum:'極廣效含 Pseudomonas、ESBL、厭氧、多數 GPC(含腸球菌 faecalis)。不含 MRSA／VRE／Stenotrophomonas。',
+    cov:{pseudo:1,anaerobe:1,esbl:1,enterococcus:1}},
+
+  ertapenem:{name:'Ertapenem',zh:'厄他培南',brands:['Invanz'],cls:'Carbapenem',
+    dose:'1 g IV q24h。',
+    renal:[{k:'>30',v:'1 g q24h'},{k:'≤30',v:'500 mg q24h'}],
+    peds:'3月–12歲 15 mg/kg IV q12h（max 1 g/day）；≥13歲 1 g q24h。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'蛋白結合高；組織分布佳；CSF 穿透有限（不用於腦膜炎）。',
+    metab:'主要經腎排除。',
+    adverse:'癲癇／精神狀態改變(尤其腎衰未調量)、腹瀉、輸注部位反應。',
+    contra:'β-lactam 過敏。癲癇風險；降低 valproate。',
+    spectrum:'廣效含 ESBL、厭氧；但不涵蓋 Pseudomonas、Acinetobacter、腸球菌。適合社區型 IAI 之經驗治療。',
+    cov:{anaerobe:1,esbl:1}},
+
+  ampsulbactam:{name:'Ampicillin-Sulbactam',zh:'安比西林/舒巴坦',brands:['Unasyn'],cls:'胺基 penicillin/BLI',
+    dose:'3 g IV q6h。',
+    renal:[{k:'≥30',v:'3 g q6h'},{k:'15–29',v:'3 g q12h'},{k:'<15',v:'3 g q24h'}],
+    peds:'100–200 mg/kg/day（ampicillin）分 q6h（max 8 g ampicillin/day）。',
+    bioav:'靜脈注射。',
+    dist:'組織、腹腔分布佳；CSF 穿透差（發炎時略增）。',
+    metab:'主要經腎排除。',
+    adverse:'皮疹、腹瀉、肝酵素上升；C. difficile。',
+    contra:'penicillin 過敏禁用。',
+    spectrum:'MSSA、Streptococcus、腸球菌(faecalis)、厭氧、部分 Enterobacterales、Acinetobacter(sulbactam)。不涵蓋 Pseudomonas、ESBL、MRSA。',
+    cov:{anaerobe:1,enterococcus:1}},
+
+  amoxclav:{name:'Amoxicillin-Clavulanate',zh:'安莫西林/克拉維酸',brands:['Augmentin','Curam'],cls:'胺基 penicillin/BLI(口服)',
+    dose:'875/125 mg PO q12h 或 500/125 mg PO q8h。',
+    renal:[{k:'>30',v:'不需調整'},{k:'10–30',v:'500/125 q12h'},{k:'<10',v:'500/125 q24h（避免 875 mg 劑型）'}],
+    peds:'25–45 mg/kg/day（amoxicillin）分 q12h PO。',
+    bioav:'口服 amoxicillin 約 90%；隨餐服用減少腸胃不適。',
+    dist:'呼吸道、中耳、皮膚分布佳；CSF 穿透差。',
+    metab:'主要經腎排除。',
+    adverse:'腹瀉常見、膽汁鬱積性肝炎(clavulanate 相關)、皮疹。',
+    contra:'penicillin 過敏；曾對本藥膽汁鬱積性肝炎者禁用。',
+    spectrum:'MSSA、Streptococcus、厭氧、H. influenzae、部分 Enterobacterales。適合動物／人咬傷、輕度 SSTI、門診吸入性肺炎。',
+    cov:{anaerobe:1}},
+
+  metronidazole:{name:'Metronidazole',zh:'甲硝唑',brands:['Flagyl'],cls:'Nitroimidazole',
+    dose:'500 mg IV／PO q8h（重症可 q6h）。',
+    renal:'不需依腎功能調整',
+    hepatic:'嚴重肝病(Child C)：劑量減半或延長間隔。',
+    peds:'30 mg/kg/day 分 q6–8h（max 4 g/day）。',
+    bioav:'口服吸收近 100%（可 IV 轉 PO）。',
+    dist:'分布極廣，CSF／腦膿瘍、骨、膿腔穿透佳。',
+    metab:'主要經肝代謝(CYP)。',
+    adverse:'金屬味、噁心、周邊神經病變(長期)、disulfiram 樣反應；少見腦病變／小腦毒性。',
+    contra:'第一孕期慎用；用藥期間及停藥後 3 天內禁酒(disulfiram 樣反應)；長期使用致周邊神經病變。',
+    spectrum:'厭氧菌（含 B. fragilis）、原蟲、C. difficile。無需氧 GNB／GPC 活性。常與 cephalosporin／FQ 併用以補厭氧。',
+    cov:{anaerobe:1}},
+
+  vancomycin:{name:'Vancomycin',zh:'萬古黴素',brands:['Vancocin'],cls:'Glycopeptide',
+    dose:'15–20 mg/kg IV q8–12h；重症 loading dose 25–30 mg/kg。目標 AUC/MIC 400–600（或 trough 15–20）。口服 125 mg q6h 用於 C. difficile。',
+    renal:'完全依血中濃度與腎功能個別調整',
+    peds:'15 mg/kg IV q6h（60–80 mg/kg/day）；需 TDM。',
+    bioav:'口服幾乎不吸收（僅腸道局部作用，用於 C. difficile）；全身感染須 IV。',
+    dist:'組織分布中等；CSF 穿透差（腦膜發炎時增加）；肺穿透有限。',
+    metab:'幾乎完全經腎排除。',
+    adverse:'腎毒性(尤與 pip-tazo)、紅人症候群(輸注過快)、耳毒性、血球低下、DRESS／線狀 IgA 皮膚病。',
+    contra:'警示：腎毒性(尤其與 pip-tazo 併用)、紅人症候群(輸注過快)、耳毒性、DRESS。',
+    spectrum:'MRSA、MSSA、Streptococcus、腸球菌(非 VRE)、C. difficile(口服)。無 GNB 活性。',
+    cov:{mrsa:1,enterococcus:1}},
+
+  teicoplanin:{name:'Teicoplanin',zh:'替考拉寧',brands:['Targocid'],cls:'Glycopeptide',
+    dose:'loading dose 6–12 mg/kg q12h × 3–5 劑，then maintenance 6–12 mg/kg q24h（重症／心內膜炎用高劑量端）。',
+    renal:[{k:'>60',v:'維持劑量 q24h'},{k:'40–60',v:'維持劑量 q48h 或減半'},{k:'<40',v:'維持劑量 q72h'}],
+    peds:'負荷 10 mg/kg q12h ×3，續 6–10 mg/kg q24h。',
+    bioav:'靜脈／肌肉注射（口服不吸收）。',
+    dist:'組織分布佳；CSF 穿透差；蛋白結合高、半衰期長。',
+    metab:'主要經腎排除。',
+    adverse:'腎／耳毒性(較 vancomycin 低)、血小板低下、皮疹、發燒；輸注反應少。',
+    contra:'glycopeptide 過敏。腎／耳毒性較 vancomycin 低；血球低下；需 TDM(trough，心內膜炎目標較高)。',
+    spectrum:'MRSA、MSSA、Streptococcus、腸球菌(非 VRE)。無 GNB。輸注反應較 vancomycin 少、可 IM，台灣常用。',
+    cov:{mrsa:1,enterococcus:1}},
+
+  fidaxomicin:{name:'Fidaxomicin',zh:'非達黴素',brands:['Dificid'],cls:'Macrocyclic(抗 C. difficile)',
+    dose:'200 mg PO q12h × 10 天。',
+    renal:'不需依腎功能調整。',
+    peds:'≥6 月依體重（參仿單）。',
+    bioav:'口服極少吸收（腸道腔內局部作用）。',
+    dist:'幾乎僅作用於腸道腔內；全身濃度極低。',
+    metab:'腸道局部水解；幾乎不吸收。',
+    adverse:'噁心、嘔吐、腹痛；整體耐受性佳。',
+    contra:'對本藥過敏。',
+    spectrum:'C. difficile(窄效殺菌)；復發率較 vancomycin 低。用於 CDI 首選或復發。'},
+
+  linezolid:{name:'Linezolid',zh:'利奈唑胺',brands:['Zyvox'],cls:'Oxazolidinone',
+    dose:'600 mg IV／PO q12h。',
+    renal:'不需調整（代謝物可蓄積）',
+    peds:'<12歲 10 mg/kg IV／PO q8h；≥12歲 600 mg q12h。',
+    bioav:'口服吸收近 100%（IV＝PO，可早期轉口服）。',
+    dist:'組織穿透佳，含肺、CSF、骨。',
+    metab:'非酵素氧化代謝為主，少量經腎。',
+    adverse:'骨髓抑制(血小板低下／貧血，>2 週)、周邊／視神經病變、血清素症候群、乳酸中毒。',
+    contra:'與 MAOI／serotonergic 藥物併用→血清素症候群；>2 週→骨髓抑制、周邊／視神經病變、乳酸中毒。',
+    spectrum:'MRSA、VRE、Streptococcus。肺組織穿透佳。無 GNB 活性。',
+    cov:{mrsa:1,enterococcus:1}},
+
+  daptomycin:{name:'Daptomycin',zh:'達托黴素',brands:['Cubicin'],cls:'Lipopeptide',
+    dose:'菌血症／心內膜炎 8–10 mg/kg IV q24h；SSTI 4–6 mg/kg q24h。',
+    renal:[{k:'≥30',v:'同劑量 q24h'},{k:'<30／HD',v:'同劑量改 q48h'}],
+    peds:'依年齡核准：12–17歲 菌血症 7 mg/kg qd；年幼者劑量較高、間隔較短。',
+    bioav:'靜脈注射。',
+    dist:'組織分布；不可用於肺（被肺 surfactant 去活化）。',
+    metab:'主要經腎排除。',
+    adverse:'橫紋肌溶解／CPK 上升、嗜酸性肺炎、周邊神經病變；需監測 CPK。',
+    contra:'不可用於肺炎（被肺表面活性劑抑制而失效）。監測 CPK／橫紋肌溶解；與 statin 併用宜停 statin；嗜酸性肺炎。',
+    spectrum:'MRSA、VRE、多數 GPC。無 GNB 活性。',
+    cov:{mrsa:1,enterococcus:1}},
+
+  ciprofloxacin:{name:'Ciprofloxacin',zh:'環丙沙星',brands:['Ciproxin','Cipro'],cls:'Fluoroquinolone',
+    dose:'400 mg IV q8–12h／500–750 mg PO q12h。',
+    renal:[{k:'>50',v:'不需調整'},{k:'30–50',v:'PO 250–500 q12h'},{k:'<30',v:'IV 400 q24h／PO 250–500 q18–24h'}],
+    peds:'限特定適應症（軟骨疑慮）；10 mg/kg IV q8–12h（max 400 mg/劑）。',
+    bioav:'口服約 70%；避免與鈣／鐵／鎂／鋅、制酸劑、乳製品同服（螯合降低吸收）。',
+    dist:'組織／前列腺／骨／尿路穿透佳；CSF 中等。',
+    metab:'肝(抑制 CYP1A2)與腎排除。',
+    adverse:'肌腱炎／斷裂、QT 延長、C. difficile、周邊神經病變、血糖異常、主動脈剝離、癲癇。',
+    contra:'黑框：肌腱炎／斷裂、周邊神經病變、中樞影響、重症肌無力惡化。QT 延長、主動脈剝離、C. diff、癲癇；勿與含陽離子制酸劑／鈣鐵同服；孕婦、青少年慎用。',
+    spectrum:'GNB 含 Pseudomonas、Enterobacterales；非典型菌。Gram(+) 弱（不宜單用於肺炎鏈球菌／SSTI）。',
+    cov:{pseudo:1,atypical:1}},
+
+  levofloxacin:{name:'Levofloxacin',zh:'左氧氟沙星',brands:['Cravit'],cls:'呼吸道 Fluoroquinolone',
+    dose:'750 mg IV／PO q24h（呼吸道、Pseudomonas）；UTI 250–500 mg q24h。',
+    renal:[{k:'>50',v:'750 mg q24h'},{k:'20–49',v:'750 mg q48h（或 500 首劑後 250 q24h）'},{k:'<20',v:'進一步減量'}],
+    peds:'限特定適應症；<5歲 10 mg/kg q12h、≥5歲 10 mg/kg q24h（max 500–750 mg）。',
+    bioav:'口服約 99%（IV＝PO）；避免陽離子同服。',
+    dist:'肺／組織／尿路穿透佳。',
+    metab:'主要經腎排除。',
+    adverse:'肌腱炎／斷裂、QT 延長、血糖異常、周邊神經病變、光敏感、C. difficile。',
+    contra:'同 FQ 類黑框警示（肌腱、神經、肌無力）；QT 延長、血糖異常、光敏感。',
+    spectrum:'肺炎鏈球菌、非典型菌、GNB 含 Pseudomonas(750 mg)。可單藥覆蓋 CAP。',
+    cov:{pseudo:1,atypical:1}},
+
+  moxifloxacin:{name:'Moxifloxacin',zh:'莫西沙星',brands:['Avelox'],cls:'呼吸道 Fluoroquinolone',
+    dose:'400 mg IV／PO q24h。',
+    renal:'不需調整；尿中濃度低，不宜用於 UTI',
+    hepatic:'嚴重肝功能不全(Child C)資料有限，慎用。',
+    peds:'兒科資料有限、一般不建議常規使用。',
+    bioav:'口服約 90%（IV＝PO）。',
+    dist:'肺／組織穿透佳；尿中濃度低。',
+    metab:'主要經肝代謝(glucuronide／sulfate)。',
+    adverse:'QT 延長(FQ 中最明顯)、肝毒性、肌腱病變、血糖異常、C. difficile。',
+    contra:'QT 延長為 FQ 類中最明顯；肝毒性；其餘同 FQ 類黑框。',
+    spectrum:'肺炎鏈球菌、非典型菌、厭氧菌。不涵蓋 Pseudomonas。',
+    cov:{atypical:1,anaerobe:1}},
+
+  gentamicin:{name:'Gentamicin',zh:'健大黴素／慶大黴素',brands:['Garamycin'],cls:'Aminoglycoside',
+    dose:'擴展間隔 5–7 mg/kg IV q24h；協同治療(心內膜炎) 1 mg/kg q8h。需監測濃度。',
+    renal:'依血中濃度與腎功能延長間隔',
+    peds:'7.5 mg/kg/day 分 q8h 或擴展間隔給藥；需 TDM。',
+    bioav:'靜脈／肌肉注射（口服不吸收）。',
+    dist:'分布於細胞外液；組織／尿路濃度佳；CSF／肺／前列腺穿透差；肥胖者用校正體重計算。',
+    metab:'幾乎完全經腎排除。',
+    adverse:'腎毒性、耳／前庭毒性(可能不可逆)、神經肌肉阻斷。',
+    contra:'腎毒性、耳／前庭毒性(可能不可逆)、神經肌肉阻斷；孕婦慎用；重症肌無力。需 TDM。',
+    spectrum:'GNB 含 Pseudomonas；與 β-lactam 對 GPC 有協同(心內膜炎)。無厭氧活性；肺／尿滲透需留意。',
+    cov:{pseudo:1}},
+
+  amikacin:{name:'Amikacin',zh:'阿米卡星',brands:['Amikin','Biklin'],cls:'Aminoglycoside',
+    dose:'15 mg/kg IV q24h（擴展間隔）。需監測濃度。',
+    renal:'依血中濃度與腎功能延長間隔',
+    peds:'15–22.5 mg/kg/day；需 TDM。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'分布於細胞外液；CSF／肺穿透差；肥胖者用校正體重。',
+    metab:'幾乎完全經腎排除。',
+    adverse:'腎毒性、耳毒性(聽力為主)、神經肌肉阻斷。',
+    contra:'腎毒性、耳毒性、神經肌肉阻斷；孕婦慎用。需 TDM。',
+    spectrum:'aminoglycoside 中抗菌譜最廣，對多重抗藥 GNB(含部分 Pseudomonas／Acinetobacter)仍有效。無厭氧。',
+    cov:{pseudo:1}},
+
+  aztreonam:{name:'Aztreonam',zh:'氨曲南',brands:['Azactam'],cls:'Monobactam',
+    dose:'1–2 g IV q8h（重症 2 g q6–8h）。',
+    renal:[{k:'>30',v:'不需調整'},{k:'10–30',v:'首劑後減半'},{k:'<10',v:'首劑後給 1/4'}],
+    peds:'30 mg/kg IV q6–8h（max 2 g/劑）。',
+    bioav:'靜脈／肌肉注射。',
+    dist:'組織／尿路分布佳；CSF 穿透(腦膜發炎時)。',
+    metab:'主要經腎排除。',
+    adverse:'皮疹、腹瀉、肝酵素上升、注射部位反應；過敏性低。',
+    contra:'與 ceftazidime 側鏈相同，兩者交叉過敏；其餘 β-lactam 過敏者多可安全使用。',
+    spectrum:'僅需氧 GNB 含 Pseudomonas；β-lactam(penicillin／cephalosporin) 過敏者的替代。無 Gram(+)／厭氧活性。',
+    cov:{pseudo:1}},
+
+  clindamycin:{name:'Clindamycin',zh:'克林達黴素',brands:['Cleocin','Dalacin C'],cls:'Lincosamide',
+    dose:'600–900 mg IV q8h／300–450 mg PO q6–8h。',
+    renal:'不需調整',
+    hepatic:'嚴重肝病代謝物可蓄積，一般不需常規減量但需留意。',
+    peds:'25–40 mg/kg/day 分 q6–8h IV（max 2.7 g/day）。',
+    bioav:'口服約 90%。',
+    dist:'骨／軟組織／膿腔穿透佳；不穿透 CSF（不用於腦膜炎）。',
+    metab:'主要經肝代謝。',
+    adverse:'C. difficile(高風險)、腹瀉、皮疹、肝酵素上升。',
+    contra:'C. difficile 感染高風險(關聯性高)。誘導型 clindamycin 抗性(D-test)注意。',
+    spectrum:'GPC(MSSA／部分 CA-MRSA)、橫膈上厭氧；抑制外毒素合成(壞死性感染／中毒性休克加用)。',
+    cov:{mrsa:1,anaerobe:1}},
+
+  azithromycin:{name:'Azithromycin',zh:'阿奇黴素',brands:['Zithromax'],cls:'Macrolide',
+    dose:'500 mg IV／PO 第 1 天，then 250 mg q24h；或 500 mg q24h。',
+    renal:'不需調整',
+    hepatic:'嚴重肝病／膽汁鬱積者慎用（肝膽排除）。',
+    peds:'10 mg/kg 第 1 天（max 500 mg），續 5 mg/kg（max 250 mg）。',
+    bioav:'口服約 37%；組織半衰期長，可短療程。',
+    dist:'細胞內／組織濃度極高（遠高於血中），肺／巨噬細胞濃度高；CSF 低。',
+    metab:'主要經肝膽排除。',
+    adverse:'QT 延長、腸胃不適、肝毒性、少見聽力障礙。',
+    contra:'QT 延長；肝毒性；重症肌無力惡化。',
+    spectrum:'非典型菌(Legionella／Mycoplasma／Chlamydia)、部分呼吸道菌。CAP 加用以覆蓋非典型。',
+    cov:{atypical:1}},
+
+  doxycycline:{name:'Doxycycline',zh:'去氧羥四環素／多西環素',brands:['Vibramycin','Doxymycin'],cls:'Tetracycline',
+    dose:'100 mg IV／PO q12h。',
+    renal:'不需調整（非腎排除，可用於腎衰）',
+    peds:'2.2 mg/kg q12h（max 100 mg）；≥8歲常規，嚴重感染（如立克次體）不受年齡限。',
+    bioav:'口服約 90–100%；與鈣／鐵／鎂／制酸劑螯合降低吸收。',
+    dist:'組織／肺／前列腺分布佳；CSF 中等。',
+    metab:'經腸道／膽汁排除為主，可用於腎衰。',
+    adverse:'光敏感、食道炎／潰瘍、腸胃不適、兒童牙齒染色。',
+    contra:'孕婦、8 歲以下(牙齒染色，短療程風險低)；光敏感；食道潰瘍(需多水、勿臥)。',
+    spectrum:'非典型菌、CA-MRSA、部分呼吸道菌、tick-borne、立克次體。輕度 MRSA SSTI 之口服選擇。',
+    cov:{mrsa:1,atypical:1}},
+
+  minocycline:{name:'Minocycline',zh:'米諾環素',brands:['Minocin'],cls:'Tetracycline',
+    dose:'loading dose 200 mg，then maintenance 100 mg PO／IV q12h。',
+    renal:'不需調整；嚴重腎衰慎用',
+    peds:'≥8歲 首劑 4 mg/kg，續 2 mg/kg q12h（max 100 mg/劑）。',
+    bioav:'口服約 90–100%；與鈣／鐵／鎂／制酸劑螯合注意。',
+    dist:'脂溶性高，CNS／皮脂／組織穿透佳。',
+    metab:'主要經肝代謝。',
+    adverse:'前庭副作用(眩暈)、色素沉著、藥物性狼瘡／自體免疫肝炎、DRESS。',
+    contra:'孕婦／8 歲以下；前庭副作用(眩暈)、皮膚／黏膜色素沉著、長期用藥物性狼瘡／自體免疫肝炎。',
+    spectrum:'CA-MRSA、Acinetobacter(部分)、Stenotrophomonas、非典型、Nocardia。用於 SSTI、痤瘡。',
+    cov:{mrsa:1,atypical:1}},
+
+  tmpsmx:{name:'TMP-SMX',zh:'磺胺甲噁唑／三甲氧芐啶',brands:['Baktar','Sevatrim','Bactrim'],cls:'Sulfonamide 複方',
+    dose:'一般感染(以 TMP 計)8–10 mg/kg/day 分 2–3 次；PJP 治療 15–20 mg/kg/day 分 3–4 次；PJP 預防 single-DS 每日或每週三次。',
+    renal:[{k:'>30',v:'標準劑量'},{k:'15–30',v:'減半'},{k:'<15',v:'避免'}],
+    peds:'一般 8–12 mg/kg/day（TMP）分 q12h；PJP 治療 15–20 mg/kg/day（TMP）。',
+    bioav:'口服約 90–100%（IV＝PO）。',
+    dist:'組織／前列腺／CSF 穿透佳；肺(PJP)。',
+    metab:'肝代謝＋腎排除。',
+    adverse:'高血鉀、骨髓抑制、SJS／TEN、AKI／假性肌酸酐上升、肝炎、無菌性腦膜炎。',
+    contra:'sulfa 過敏、G6PD 缺乏、孕晚期／新生兒(核黃疸)、嚴重肝腎病。警示：高血鉀、假性肌酸酐上升、骨髓抑制、SJS／TEN。',
+    spectrum:'CA-MRSA、多數 Enterobacterales、Stenotrophomonas、PJP、Nocardia。無 Pseudomonas／厭氧；A 群鏈球菌覆蓋不足。',
+    cov:{mrsa:1}},
+
+  nitrofurantoin:{name:'Nitrofurantoin',zh:'呋喃妥因',brands:['Macrodantin','Macrobid'],cls:'Nitrofuran(口服)',
+    dose:'100 mg PO q12h × 5–7 天。',
+    renal:[{k:'≥30',v:'100 mg q12h'},{k:'<30',v:'禁用（尿中濃度不足且蓄積）'}],
+    peds:'>1月 5–7 mg/kg/day 分 q6h。',
+    bioav:'口服；隨餐服用吸收較佳。',
+    dist:'僅尿中濃度高；組織／血中濃度低（僅用於膀胱炎）。',
+    metab:'約 40% 原型由腎濃縮至尿，僅達膀胱有效濃度。',
+    adverse:'腸胃不適、急／慢性肺毒性(纖維化)、肝毒性、周邊神經病變、溶血(G6PD)。',
+    contra:'CrCl <30、孕 38 週後／分娩期、G6PD 缺乏；長期使用致肺纖維化、肝毒性、周邊神經病變。',
+    spectrum:'E. coli、腸球菌、S. saprophyticus。僅限單純性膀胱炎（組織／血中濃度低，不可用於腎盂腎炎／菌血症）。不涵蓋 Proteus／Pseudomonas。',
+    cov:{enterococcus:1}},
+
+  fosfomycin:{name:'Fosfomycin',zh:'磷黴素',brands:['Monurol'],cls:'Phosphonic acid(口服)',
+    dose:'單純性膀胱炎 3 g PO 單一劑量。',
+    renal:[{k:'≥10',v:'3 g 單劑'},{k:'<10',v:'不建議'}],
+    peds:'≥12歲同成人 3 g 單劑；幼兒資料有限。',
+    bioav:'口服約 37%（空腹吸收較佳）。',
+    dist:'尿中濃度高且維持數日；另有 IV 劑型可全身用(本表以口服膀胱炎為主)。',
+    metab:'原型經腎排除，尿中濃度高。',
+    adverse:'腹瀉、噁心、頭痛；耐受性佳。',
+    contra:'過敏者禁用。',
+    spectrum:'E. coli(含部分 ESBL)、腸球菌(含 VRE)。僅限單純性膀胱炎。',
+    cov:{esbl:1,enterococcus:1}},
+
+  ceftazavi:{name:'Ceftazidime-Avibactam',zh:'頭孢他啶/阿維巴坦',brands:['Zavicefta'],cls:'抗綠膿 cephalosporin/BLI',
+    dose:'2.5 g IV q8h（延長輸注 2–3 小時）。',
+    renal:[{k:'>50',v:'2.5 g q8h'},{k:'31–50',v:'1.25 g q8h'},{k:'16–30',v:'0.94 g q12h'},{k:'≤15／HD',v:'0.94 g q24h（透析後給）'}],
+    peds:'≥3 月核准，依年齡／體重給藥（感染科建議）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布；CSF 穿透有限。',
+    metab:'主要經腎排除。',
+    adverse:'腹瀉、噁心、肝酵素上升、輸注反應。',
+    contra:'β-lactam 過敏。屬保留用藥，須感染科／抗生素管理審核。',
+    spectrum:'CRE(KPC、OXA-48)、MDR Pseudomonas、ESBL、AmpC。不涵蓋金屬 β-lactamase(NDM，除非併 aztreonam)、厭氧、GPC。',
+    cov:{pseudo:1,esbl:1}},
+
+  ceftolotazo:{name:'Ceftolozane-Tazobactam',zh:'頭孢洛扎/他唑巴坦',brands:['Zerbaxa'],cls:'抗綠膿 cephalosporin/BLI',
+    dose:'IAI／cUTI 1.5 g IV q8h；院內肺炎／VAP 3 g q8h。',
+    renal:[{k:'>50',v:'IAI/cUTI 1.5 g q8h；肺炎 3 g q8h'},{k:'30–50',v:'減半'},{k:'15–29',v:'進一步減量'}],
+    peds:'兒科依年齡核准，依體重給藥（感染科建議）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布；肺穿透（HAP/VAP 用高劑量）。',
+    metab:'主要經腎排除。',
+    adverse:'噁心、腹瀉、頭痛、肝酵素上升。',
+    contra:'β-lactam 過敏。屬保留用藥。IAI 需併 metronidazole 補厭氧。',
+    spectrum:'MDR／XDR Pseudomonas 首選之一、ESBL Enterobacterales。不涵蓋 CRE、MRSA、多數厭氧。',
+    cov:{pseudo:1,esbl:1}},
+
+  tigecycline:{name:'Tigecycline',zh:'替加環素',brands:['Tygacil'],cls:'Glycylcycline',
+    dose:'loading dose 100 mg，then maintenance 50 mg IV q12h。',
+    renal:'不需調整（依腎功能）',
+    hepatic:'Child-Pugh C：loading 100 mg 後 maintenance dose 減為 25 mg q12h。',
+    peds:'<8歲不建議（牙齒染色）；限無其他選擇時。',
+    bioav:'靜脈注射。',
+    dist:'組織分布極廣（肺／膽汁／腸），但血中／尿中濃度低（不宜菌血症／UTI）。',
+    metab:'主要經膽汁排除。',
+    adverse:'噁心嘔吐(常見)、胰臟炎、肝酵素上升、凝血影響；菌血症死亡率上升(黑框)。',
+    contra:'黑框：相較對照藥全因死亡率增加，不建議單用於菌血症／院內肺炎／VAP；血中／尿中濃度低。噁心嘔吐、胰臟炎、孕婦。',
+    spectrum:'廣效含 MRSA、VRE、ESBL、Acinetobacter、厭氧；不涵蓋 Pseudomonas、Proteus、Providencia。',
+    cov:{mrsa:1,anaerobe:1,esbl:1,enterococcus:1}},
+
+  colistin:{name:'Colistin (Colistimethate)',zh:'多黏菌素 E／克痢黴素',brands:['Colomycin','Tadim'],cls:'Polymyxin',
+    dose:'依 CMS 換算給 loading dose 後 maintenance，嚴格依腎功能與體重個別計算(需藥師協助)。',
+    renal:'依腎功能與體重個別計算（藥師協助）',
+    peds:'依腎功能與體重個別計算（需藥師／感染科協助）。',
+    bioav:'靜脈注射（CMS 前驅物）。',
+    dist:'組織／CSF 穿透差（腦室內感染需鞘內給藥）；肺穿透差（可考慮吸入劑）。',
+    metab:'CMS 前驅物經腎排除，活性 colistin 非腎排除。',
+    adverse:'劑量依賴性腎毒性、神經毒性(感覺異常、神經肌肉阻斷)。',
+    contra:'劑量依賴性腎毒性、神經毒性(感覺異常、神經肌肉阻斷)。屬 MDR 挽救用藥。',
+    spectrum:'MDR／XDR GNB 挽救治療：Pseudomonas、Acinetobacter、CRE。不涵蓋 Proteus、Serratia、Burkholderia。',
+    cov:{pseudo:1}},
+
+  penG:{name:'Penicillin G',zh:'青黴素 G／盤尼西林',brands:['Penicillin G'],cls:'天然 penicillin',
+    dose:'心內膜炎 18–24 百萬 U/day IV（連續輸注或分 q4h）；一般感染 2–4 百萬 U q4–6h。',
+    renal:[{k:'>10',v:'不需調整'},{k:'≤10',v:'降低劑量或延長間隔'}],
+    peds:'250,000–400,000 U/kg/day IV 分 q4–6h（腦膜炎用高劑量端）。',
+    bioav:'靜脈注射（Pen G 口服不耐胃酸）。',
+    dist:'廣泛分布；CSF 穿透隨腦膜發炎增加。',
+    metab:'主要經腎排除。',
+    adverse:'過敏／過敏性休克、Jarisch-Herxheimer 反應(梅毒)、癲癇(高劑量腎衰)、電解質負荷、間質性腎炎。',
+    contra:'penicillin 過敏禁用。高劑量腎衰致癲癇；大量鈉／鉀負荷。',
+    spectrum:'鏈球菌(viridans、S. bovis、A/B 群)、感受性腸球菌(＋aminoglycoside)、螺旋體、Neisseria meningitidis、多數厭氧(橫膈上)。',
+    cov:{enterococcus:1}},
+
+  ampicillin:{name:'Ampicillin',zh:'安比西林',brands:['Viccillin','Ampicillin'],cls:'胺基 penicillin',
+    dose:'2 g IV q4h（腦膜炎／腸球菌心內膜炎）；一般 1–2 g q6h。',
+    renal:[{k:'>30',v:'不需調整'},{k:'10–30',v:'延長至 q6–8h'},{k:'<10',v:'q12h'}],
+    peds:'200–400 mg/kg/day IV 分 q6h（腦膜炎用高劑量端，max 12 g/day）。',
+    bioav:'靜脈注射（口服吸收不如 amoxicillin）。',
+    dist:'CSF 穿透良好(發炎時)；組織分布廣。',
+    metab:'主要經腎排除。',
+    adverse:'皮疹(EBV／CMV 時高)、腹瀉、過敏、C. difficile。',
+    contra:'penicillin 過敏禁用；EBV／CMV 感染時出疹風險高。',
+    spectrum:'Enterococcus faecalis、Listeria monocytogenes、鏈球菌、感受性 E. coli／Proteus。腦膜炎覆蓋 Listeria、腸球菌感染核心用藥。',
+    cov:{enterococcus:1}},
+
+  nafcillin:{name:'Nafcillin／Oxacillin',zh:'那夫西林／苯唑西林',brands:['Oxacillin (台灣常用)'],cls:'抗葡萄球菌 penicillin',
+    dose:'2 g IV q4h（MSSA 菌血症／心內膜炎／骨感染）。',
+    renal:'不需調整（主要經肝膽排除）',
+    hepatic:'主要經肝膽排除；嚴重肝病合併腎衰時需減量。',
+    peds:'100–150 mg/kg/day 分 q6h（重症 200 mg/kg/day）。',
+    bioav:'靜脈注射。',
+    dist:'骨、關節、軟組織分布佳；CSF 穿透隨發炎增加。',
+    metab:'主要經肝膽排除。',
+    adverse:'藥物性間質性腎炎、靜脈炎、外滲組織壞死、嗜中性球低下(長期)、肝酵素上升。',
+    contra:'penicillin 過敏禁用。靜脈炎、藥物性間質性腎炎、外滲組織壞死。',
+    spectrum:'MSSA 首選（菌血症／心內膜炎／骨關節）。不涵蓋 MRSA、腸球菌、GNB、厭氧。台灣多以 oxacillin 或 cefazolin 替代。'},
+
+  rifampin:{name:'Rifampin',zh:'利福平',brands:['Rifadin','Rifampin'],cls:'Rifamycin(抗結核／加成)',
+    dose:'結核 10 mg/kg（max 600 mg）PO q24h；人工裝置葡萄球菌加成 300–450 mg q12h（不可單用）。',
+    renal:'不需調整',
+    hepatic:'嚴重肝病慎用／避免；治療中肝功能惡化應停藥。',
+    peds:'10–20 mg/kg/day 分 q12–24h（max 600 mg/day）。',
+    bioav:'口服良好（空腹吸收較佳）。',
+    dist:'脂溶性高，穿透廣泛含 CSF、骨、膿腔、生物膜、細胞內。',
+    metab:'主要經肝代謝；強效 CYP 誘導劑（大量藥物交互作用）。體液呈橘紅色。',
+    adverse:'肝毒性、體液橘紅、流感樣症候群、血小板低下；大量藥物交互作用。',
+    contra:'不可單獨使用(快速產生抗藥)；肝毒性；與蛋白酶抑制劑／抗凝劑／免疫抑制劑等大量交互作用。',
+    spectrum:'生物膜／人工瓣膜／人工關節之葡萄球菌感染加成；分枝桿菌；腦膜炎雙球菌暴露後預防。須與其他有效藥併用。'},
+
+  isoniazid:{name:'Isoniazid (INH)',zh:'異菸鹼醯肼',brands:['INH','Rimifon'],cls:'抗結核第一線',
+    dose:'5 mg/kg（max 300 mg）PO q24h；併服 pyridoxine(B6) 防周邊神經病變。',
+    renal:'不需調整',
+    hepatic:'急性肝病禁用；治療中肝酵素明顯上升應停藥。',
+    peds:'10–15 mg/kg/day（max 300 mg）。',
+    bioav:'口服良好（空腹）。',
+    dist:'CSF／組織穿透佳（結核性腦膜炎有效）。',
+    metab:'肝乙醯化（快／慢代謝型）。',
+    adverse:'肝毒性、周邊神經病變(缺 B6)、藥物性狼瘡、過量致癲癇。',
+    contra:'急性肝病。周邊神經病變(缺 B6)、肝毒性、藥物性狼瘡、與多種藥交互(CYP 抑制)。',
+    spectrum:'M. tuberculosis(殺菌)；不用於一般細菌感染。'},
+
+  ethambutol:{name:'Ethambutol (EMB)',zh:'乙胺丁醇',brands:['Myambutol'],cls:'抗結核第一線',
+    dose:'15–20 mg/kg PO q24h。',
+    renal:[{k:'>50',v:'不需調整'},{k:'10–50',v:'q24–36h'},{k:'<10',v:'q48h'}],
+    peds:'15–20 mg/kg/day（限視力可評估者）。',
+    bioav:'口服良好。',
+    dist:'組織穿透佳；CSF 穿透(腦膜發炎時)。',
+    metab:'部分肝代謝、部分經腎。',
+    adverse:'視神經炎(視力／色覺下降)、高尿酸／痛風、周邊神經病變。',
+    contra:'視神經炎(劑量／腎功能相關，須定期查視力／色覺)；痛風(尿酸上升)。',
+    spectrum:'M. tuberculosis(抑菌)；抑制抗藥產生。'},
+
+  pyrazinamide:{name:'Pyrazinamide (PZA)',zh:'吡嗪醯胺',brands:['PZA'],cls:'抗結核第一線',
+    dose:'20–25 mg/kg（max 2 g）PO q24h（前 2 個月強化期）。',
+    renal:[{k:'>30',v:'不需調整'},{k:'<30／HD',v:'25–35 mg/kg 每週三次'}],
+    hepatic:'嚴重肝病禁用。',
+    peds:'30–40 mg/kg/day。',
+    bioav:'口服良好。',
+    dist:'CSF 穿透佳（結核性腦膜炎）。',
+    metab:'肝代謝。',
+    adverse:'肝毒性、高尿酸／痛風、關節痛、光敏感、腸胃不適。',
+    contra:'嚴重肝病、痛風／高尿酸。肝毒性(與 INH／RIF 併用)、關節痛。',
+    spectrum:'M. tuberculosis(酸性環境殺菌，強化期核心)。'},
+
+  acyclovir:{name:'Acyclovir',zh:'阿昔洛韋',brands:['Zovirax'],cls:'抗病毒(HSV/VZV)',
+    dose:'HSV 腦炎 10 mg/kg IV q8h（依實際體重，肥胖用理想體重）。',
+    renal:[{k:'>50',v:'10 mg/kg q8h'},{k:'25–50',v:'10 mg/kg q12h'},{k:'10–25',v:'10 mg/kg q24h'},{k:'<10',v:'5 mg/kg q24h'}],
+    peds:'HSV 腦炎 10–20 mg/kg IV q8h（依年齡）。',
+    bioav:'口服約 10–20%（故重症用 IV；口服前驅藥 valacyclovir 較佳）。',
+    dist:'CSF 穿透約 50%（可治療 HSV 腦炎）；廣泛組織分布。',
+    metab:'主要經腎排除。',
+    adverse:'結晶性腎病(需水化)、神經毒性(意識混亂／震顫，尤其腎衰)、靜脈炎。',
+    contra:'腎毒性(結晶性腎病，需水化與緩慢輸注)、神經毒性(意識混亂、震顫，尤其腎衰)。',
+    spectrum:'HSV-1/2、VZV。用於疑似病毒性(HSV)腦炎之經驗覆蓋；非細菌用藥。'},
+
+  oseltamivir:{name:'Oseltamivir',zh:'奧司他韋',brands:['Tamiflu'],cls:'抗病毒(流感 NA 抑制劑)',
+    dose:'治療 75 mg PO q12h × 5 天；預防 75 mg q24h。',
+    renal:[{k:'>60',v:'75 mg q12h'},{k:'30–60',v:'30 mg q12h'},{k:'10–30',v:'30 mg q24h'},{k:'HD',v:'每次透析後 30 mg'}],
+    peds:'依體重（如 ≤15 kg 30 mg q12h；15–23 kg 45 mg q12h）。',
+    bioav:'口服約 80%（前驅藥經肝活化）。',
+    dist:'呼吸道分布；經活性代謝物作用。',
+    metab:'肝酯酶活化為 oseltamivir carboxylate，經腎排除。',
+    adverse:'噁心嘔吐(常見)、頭痛；少見神經精神事件(尤其兒童／青少年)。',
+    contra:'腎功能不全需減量；噁心嘔吐、少數神經精神事件。',
+    spectrum:'流感 A／B 病毒(神經胺酸酶抑制)。發病 48 小時內給藥效益最大；非細菌用藥。'},
+
+  fluconazole:{name:'Fluconazole',zh:'氟康唑',brands:['Diflucan'],cls:'Azole 抗黴菌',
+    dose:'念珠菌血症 loading dose 800 mg(12 mg/kg)，then maintenance 400 mg(6 mg/kg) q24h。',
+    renal:[{k:'>50',v:'標準劑量'},{k:'≤50',v:'維持劑量減半'},{k:'HD',v:'每次透析後給整日劑量'}],
+    peds:'念珠菌血症 12 mg/kg 負荷，續 6–12 mg/kg/day。',
+    bioav:'口服約 90%（IV＝PO）。',
+    dist:'CSF／眼／尿路穿透極佳（隱球菌腦膜炎、念珠菌尿路）。',
+    metab:'部分肝代謝、主要經腎；強效 CYP2C9／3A4 抑制，藥物交互作用多。',
+    adverse:'QT 延長、肝毒性、腸胃不適、長期脫髮；大量 CYP 交互作用。',
+    contra:'QT 延長、肝毒性、孕婦(高劑量致畸)；與多種藥交互作用。',
+    spectrum:'多數 C. albicans、C. parapsilosis、Cryptococcus。對 C. glabrata(劑量依賴)／C. krusei(抗藥)不可靠。不涵蓋黴菌／Aspergillus。'},
+
+  voriconazole:{name:'Voriconazole',zh:'伏立康唑',brands:['Vfend'],cls:'Azole 抗黴菌(黴菌)',
+    dose:'loading dose 6 mg/kg IV q12h ×2 劑，then maintenance 4 mg/kg q12h；口服 200–300 mg q12h。需 TDM(trough 1–5.5 mg/L)。',
+    renal:[{k:'≥50',v:'標準劑量'},{k:'<50',v:'口服優先（IV 賦形劑 SBECD 蓄積）'}],
+    hepatic:'Child-Pugh A/B：maintenance dose 減半；嚴重肝病(C)僅在效益大於風險時使用。',
+    peds:'依年齡體重（幼兒清除較快、劑量較高）；需 TDM。',
+    bioav:'口服約 96%。',
+    dist:'CSF／眼／組織穿透佳。',
+    metab:'肝 CYP2C19／3A4(基因多型性；藥物交互作用多)。',
+    adverse:'視覺障礙(常見)、肝毒性、QT 延長、幻覺／腦病變、光敏／皮膚癌與骨膜炎(長期)。',
+    contra:'與多種 CYP 藥物禁忌併用；肝毒性、視覺障礙、QT、長期光敏／皮膚癌、幻覺。需 TDM。',
+    spectrum:'Aspergillus 首選；念珠菌(含部分抗 fluconazole)、Scedosporium、Fusarium。不涵蓋 Mucorales(毛黴)。'},
+
+  anidulafungin:{name:'Anidulafungin',zh:'安尼芬淨',brands:['Eraxis'],cls:'Echinocandin 抗黴菌',
+    dose:'loading dose 200 mg IV ×1，then maintenance 100 mg q24h。',
+    renal:'不需調整',
+    peds:'依體重（較少用於幼兒）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布；CSF／眼／尿路穿透差。',
+    metab:'非酵素化學降解（非肝腎）；肝腎不全皆不需調整、交互作用少。',
+    adverse:'輸注相關(組織胺)反應、肝酵素上升；整體耐受性佳。',
+    contra:'輸注反應(組織胺相關)；監測肝功能。',
+    spectrum:'念珠菌(含 glabrata／krusei)——中重症／不穩定首選之一；對 Aspergillus 部分。不涵蓋 Cryptococcus／尿路。'},
+
+  amphoLipo:{name:'Amphotericin B, Liposomal',zh:'微脂體兩性黴素 B',brands:['AmBisome'],cls:'Polyene 抗黴菌',
+    dose:'3–5 mg/kg IV q24h（毛黴／重症可更高）。',
+    renal:'不依 CrCl 減量，但腎毒性時調整；微脂體較傳統劑型腎毒性低',
+    peds:'3–5 mg/kg/day。',
+    bioav:'靜脈注射。',
+    dist:'網狀內皮系統／肝脾／組織；CSF 濃度低但可治療某些真菌性腦膜炎。',
+    metab:'非肝腎代謝為主；半衰期長。',
+    adverse:'腎毒性、低血鉀／低血鎂、輸注反應(發燒寒顫)、貧血。',
+    contra:'腎毒性、低鉀／低鎂、輸注反應(發燒寒顫)；避免與其他腎毒性藥併用。',
+    spectrum:'極廣效：念珠菌、Cryptococcus、Aspergillus、Mucorales(毛黴，首選)、地方性黴菌。廣譜救援用藥。'},
+
+  caspofungin:{name:'Caspofungin',zh:'卡泊芬淨',brands:['Cancidas'],cls:'Echinocandin 抗黴菌',
+    dose:'loading dose 70 mg IV ×1，then maintenance 50 mg q24h（>80 kg 維持 70 mg）。',
+    renal:'不需依腎功能調整。',
+    hepatic:'Child-Pugh B：maintenance dose 減為 35 mg q24h；Child-Pugh C 資料有限。',
+    peds:'70 mg/m² loading，then maintenance 50 mg/m²/day（依體表面積）。',
+    bioav:'靜脈注射。',
+    dist:'組織分布佳；CSF／眼／尿路穿透差。',
+    metab:'肝水解／N-乙醯化為主（非 CYP）。',
+    adverse:'輸注相關(組織胺)反應、肝酵素上升、發燒；與 cyclosporine 交互作用。',
+    contra:'過敏；與 rifampin／某些酵素誘導劑併用需增量。',
+    spectrum:'念珠菌(含 glabrata／krusei)——中重症／不穩定首選之一；Aspergillus 之救援。不涵蓋 Cryptococcus／尿路。'},
+
+  flucytosine:{name:'Flucytosine (5-FC)',zh:'氟胞嘧啶',brands:['Ancotil'],cls:'Pyrimidine 抗黴菌',
+    dose:'25 mg/kg PO q6h（與 amphotericin B 併用，隱球菌腦膜炎誘導）。需 TDM。',
+    renal:[{k:'>40',v:'25 mg/kg q6h'},{k:'20–40',v:'25 mg/kg q12h'},{k:'10–20',v:'25 mg/kg q24h'},{k:'<10／HD',v:'依血中濃度給藥、透析後補'}],
+    peds:'依體重同成人 mg/kg；需 TDM。',
+    bioav:'口服吸收良好（台灣多為口服劑型）。',
+    dist:'CSF 穿透極佳（隱球菌腦膜炎）；廣泛組織分布。',
+    metab:'主要以原型經腎排除。',
+    adverse:'骨髓抑制(血中濃度相關)、肝毒性、腸胃不適；需 TDM（尖峰 <100 µg/mL）。',
+    contra:'單用易快速產生抗藥（須併用）；嚴重腎衰慎用、需減量。',
+    spectrum:'Cryptococcus、念珠菌——與 amphotericin B 協同(隱球菌腦膜炎誘導、嚴重念珠菌)。不可單用。'},
+
+  valganciclovir:{name:'Valganciclovir／Ganciclovir',zh:'纈更昔洛韋／更昔洛韋',brands:['Valcyte','Cymevene'],cls:'抗病毒(CMV)',
+    dose:'Valganciclovir 誘導 900 mg PO q12h、維持／預防 900 mg q24h；Ganciclovir 誘導 5 mg/kg IV q12h。',
+    renal:[{k:'valgan ≥60',v:'900 mg q12h(誘導)'},{k:'40–59',v:'450 mg q12h'},{k:'25–39',v:'450 mg q24h'},{k:'10–24',v:'450 mg q48h'}],
+    peds:'依 BSA×CrCl 公式(Valcyte 兒科劑量公式)個別計算。',
+    bioav:'Valganciclovir 口服約 60%（前驅藥，遠高於口服 ganciclovir）。',
+    dist:'廣泛分布，含眼、CSF。',
+    metab:'主要經腎排除。',
+    adverse:'骨髓抑制(嗜中性球／血小板低下)、腎功能異常、腸胃不適、致畸。',
+    contra:'骨髓抑制(中性球／血小板低下)、致畸／生殖毒性；與 TMP-SMX／mycophenolate 併用加重血液毒性。',
+    spectrum:'CMV(移植後常見)、HSV。用於移植後 CMV 感染／預防；非細菌用藥。'}
+};
+
+/* =========================================================================
+   SITES — 感染部位 → 型態 → 建議 regimen（引用 DRUGS 的 key）
+   regimen: {role:'first'|'alt'|'special', label, drugs:[key...], dur, note}
+   ========================================================================= */
+const SITES = [
+  {id:'bacteremia', name:'菌血症 / 敗血症', en:'Bacteremia / Sepsis', icon:'🩸',
+   types:[
+     {name:'不明來源之敗血症（經驗性）', en:'Sepsis, source unknown',
+      note:'先抽兩套血液培養再給藥；一小時內開始。廣覆蓋 GNB(含 Pseudomonas)，若休克／院內／有 MRSA 風險加抗 MRSA。找到來源後儘速降階。',
+      regimens:[
+        {role:'first', label:'抗綠膿 β-lactam ± 抗 MRSA', drugs:['piptazo'], dur:'找到來源後計算，一般 7–14 天', note:'或 cefepime／meropenem 擇一。有 MRSA 風險(留置導管、近期住院、已知移生)加 vancomycin。'},
+        {role:'first', label:'抗綠膿 + 抗 MRSA（休克／高風險）', drugs:['cefepime','vancomycin'], dur:'依來源，7–14 天', note:'血流動力不穩、免疫低下或 MRSA 高風險時的組合。'},
+        {role:'alt', label:'β-lactam 過敏替代', drugs:['aztreonam','vancomycin'], dur:'依來源，7–14 天', note:'嚴重 β-lactam 過敏；必要時加 aminoglycoside 補 GNB 協同。'}
+      ]},
+     {name:'導管相關血流感染 CRBSI', en:'Catheter-related BSI',
+      note:'考慮移除感染導管。經驗性覆蓋 MRSA(常為葡萄球菌)，重症加 GNB(含 Pseudomonas)。',
+      regimens:[
+        {role:'first', label:'抗 MRSA', drugs:['vancomycin'], dur:'拔管後：S. aureus ≥14 天、CoNS 5–7 天', note:'最常見致病菌為 coagulase-negative staph／S. aureus。'},
+        {role:'first', label:'抗 MRSA + 抗綠膿（重症／免疫低下／股靜脈導管）', drugs:['vancomycin','cefepime'], dur:'GNB 7–14 天；念珠菌 血培養轉陰後 14 天', note:'加 GNB 覆蓋；念珠菌風險(TPN、廣效抗生素、多部位移生)加 micafungin。'},
+        {role:'alt', label:'daptomycin（vancomycin MIC 高或不耐受）', drugs:['daptomycin'], dur:'依病原，S. aureus ≥14 天', note:'菌血症用 8–10 mg/kg。'},
+        {role:'alt', label:'Teicoplanin（台灣常用，可替代 vancomycin）', drugs:['teicoplanin'], dur:'依病原，S. aureus ≥14 天', note:'穩定之導管相關感染合理替代；須給足 loading dose 並監測 trough。已排除／未合併心內膜炎時尤佳。'}
+      ]},
+     {name:'MRSA 菌血症（培養確診）', en:'MRSA bacteremia',
+      note:'需找感染源、移除異物、追蹤血培養轉陰、評估心內膜炎。療程自血培養轉陰起算。',
+      regimens:[
+        {role:'first', label:'Vancomycin（TDM 目標 AUC/MIC 400–600）', drugs:['vancomycin'], dur:'血培養轉陰起 ≥14 天；有併發症 4–6 週'},
+        {role:'first', label:'Daptomycin 8–10 mg/kg', drugs:['daptomycin'], dur:'血培養轉陰起 ≥14 天', note:'vancomycin 失敗、MIC ≥2 或腎毒性時。不可用於肺源。'},
+        {role:'alt', label:'Ceftaroline（頑固性、合併用藥）', drugs:['ceftaroline'], dur:'血培養轉陰起 ≥14 天'},
+        {role:'alt', label:'Teicoplanin（台灣常用替代，需足量）', drugs:['teicoplanin'], dur:'血培養轉陰起 ≥14 天', note:'台灣常用；須給足 loading dose、trough 目標較高。合併心內膜炎／深部感染或療效不佳時仍以 vancomycin／daptomycin 為主，並會診感染科。'}
+      ]},
+     {name:'Gram 陰性菌血症（腸道菌）', en:'Gram-negative bacteremia',
+      note:'依培養與抗藥性降階。ESBL 首選 carbapenem；CRE 用新型 BLI。多數可短療程。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone（感受性 Enterobacterales）', drugs:['ceftriaxone'], dur:'7 天（穩定、感染源已控制）～14 天'},
+        {role:'first', label:'Meropenem（ESBL）', drugs:['meropenem'], dur:'7–14 天'},
+        {role:'special', label:'Ceftazidime-avibactam（CRE）', drugs:['ceftazavi'], dur:'依病原與反應，常 ≥14 天', note:'需感染科／抗生素管理審核。'}
+      ]},
+     {name:'念珠菌血症', en:'Candidemia',
+      note:'移除中心導管；眼底檢查；血培養轉陰後 14 天療程。中重症／不穩定先用 echinocandin。',
+      regimens:[
+        {role:'first', label:'Micafungin（echinocandin，首選）', drugs:['micafungin'], dur:'血培養轉陰後 14 天'},
+        {role:'alt', label:'Fluconazole（穩定、未曾用 azole、感受性）', drugs:['fluconazole'], dur:'血培養轉陰後 14 天'}
+      ]}
+   ]},
+
+  {id:'transplant', name:'移植後 / 免疫低下感染', en:'Post-transplant / Immunocompromised', icon:'🧬',
+   types:[
+     {name:'發熱性中性球低下（經驗性）', en:'Febrile neutropenia',
+      note:'ANC <500。緊急給抗綠膿單藥；有低血壓／黏膜炎／導管感染／已知 MRSA 移生加 vancomycin。持續發燒 4–7 天加抗黴菌。',
+      regimens:[
+        {role:'first', label:'抗綠膿 β-lactam 單藥', drugs:['cefepime'], dur:'至 ANC 恢復且退燒無感染徵象', note:'或 pip-tazo／meropenem。'},
+        {role:'first', label:'加抗 MRSA（不穩定／導管／黏膜炎）', drugs:['cefepime','vancomycin'], dur:'至 ANC 恢復；有病灶依病灶', note:'台灣常以 teicoplanin 替代 vancomycin（once-daily、腎毒性較低）；但確診 MRSA 菌血症／心內膜炎仍以 vancomycin 或 daptomycin 為主。'},
+        {role:'special', label:'持續發燒加經驗性抗黴菌', drugs:['micafungin'], dur:'依黴菌感染評估', note:'高風險黴菌感染另考慮 voriconazole／L-AmB(本表未列)。'}
+      ]},
+     {name:'肺囊蟲肺炎 PJP', en:'Pneumocystis (PJP)',
+      note:'移植／長期類固醇／HIV 之乾咳、低血氧、雙側浸潤。中重症(PaO₂<70)加類固醇。',
+      regimens:[
+        {role:'first', label:'高劑量 TMP-SMX', drugs:['tmpsmx'], dur:'21 天'},
+        {role:'alt', label:'Clindamycin ＋ primaquine（磺胺不耐，primaquine 未列）', drugs:['clindamycin'], dur:'21 天', note:'primaquine 需先驗 G6PD。'}
+      ]},
+     {name:'PJP 預防', en:'PJP prophylaxis',
+      note:'實體器官／幹細胞移植、長期高劑量類固醇之預防。',
+      regimens:[
+        {role:'first', label:'TMP-SMX single-DS（每日或每週三次）', drugs:['tmpsmx'], dur:'免疫抑制期間持續（常 6–12 個月以上）'}
+      ]},
+     {name:'CMV 感染 / 病', en:'CMV infection',
+      note:'移植後常見；依 CMV DNA(PCR)監測，D+/R− 高風險。減免疫抑制。',
+      regimens:[
+        {role:'first', label:'Valganciclovir（口服）／Ganciclovir（靜脈，重症）', drugs:['valganciclovir'], dur:'至症狀緩解且病毒量連續轉陰，常 ≥2–3 週'}
+      ]},
+     {name:'侵襲性念珠菌感染', en:'Invasive candidiasis',
+      note:'移植、腹部手術、TPN、廣效抗生素之高風險族群。',
+      regimens:[
+        {role:'first', label:'Micafungin（echinocandin）', drugs:['micafungin'], dur:'血培養轉陰後 14 天（深部感染更久）'},
+        {role:'alt', label:'Fluconazole（穩定、感受性）', drugs:['fluconazole'], dur:'血培養轉陰後 14 天'}
+      ]}
+   ]},
+
+  {id:'iai', name:'腹腔內感染 IAI', en:'Intra-abdominal Infection', icon:'🫁',
+   types:[
+     {name:'社區型・輕中度', en:'Community-acquired, mild–moderate',
+      note:'如穿孔性闌尾炎、憩室炎。須涵蓋腸道 GNB＋厭氧。搭配感染源控制(引流／手術)。',
+      regimens:[
+        {role:'first', label:'Ertapenem 單藥', drugs:['ertapenem'], dur:'感染源控制後 4–5 天'},
+        {role:'first', label:'Ceftriaxone ＋ Metronidazole', drugs:['ceftriaxone','metronidazole'], dur:'感染源控制後 4–5 天'},
+        {role:'alt', label:'β-lactam 過敏：FQ ＋ Metronidazole', drugs:['ciprofloxacin','metronidazole'], dur:'感染源控制後 4–5 天'}
+      ]},
+     {name:'社區型・高風險 / 重度', en:'Community-acquired, high-risk / severe',
+      note:'APACHE II 高、高齡、免疫低下、感染源控制延遲。擴大覆蓋含 Pseudomonas。',
+      regimens:[
+        {role:'first', label:'Piperacillin-tazobactam', drugs:['piptazo'], dur:'感染源控制後 4–7 天'},
+        {role:'first', label:'Meropenem（重症／曾用抗生素）', drugs:['meropenem'], dur:'感染源控制後 4–7 天'},
+        {role:'alt', label:'Cefepime ＋ Metronidazole', drugs:['cefepime','metronidazole'], dur:'感染源控制後 4–7 天'}
+      ]},
+     {name:'院內型 / 術後', en:'Healthcare-associated / postoperative',
+      note:'依院內抗藥圖譜；覆蓋 Pseudomonas、ESBL，MRSA 風險或已移生者加抗 MRSA，念珠菌風險加抗黴菌。',
+      regimens:[
+        {role:'first', label:'抗綠膿 β-lactam（± MRSA／抗黴菌）', drugs:['meropenem'], dur:'感染源控制後 4–7 天', note:'或 pip-tazo／cefepime+metronidazole。MRSA 風險加 vancomycin；上消化道穿孔／TPN 念珠菌風險加 micafungin。'},
+        {role:'special', label:'加抗 MRSA', drugs:['vancomycin'], dur:'同主方案'},
+        {role:'special', label:'加抗黴菌（念珠菌風險）', drugs:['micafungin'], dur:'依培養與反應'}
+      ]},
+     {name:'急性膽道感染', en:'Acute cholangitis / cholecystitis',
+      note:'膽道感染以腸道 GNB 為主；中重度膽管炎需儘速膽道引流(ERCP)。腸球菌覆蓋依嚴重度。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone ＋ Metronidazole', drugs:['ceftriaxone','metronidazole'], dur:'感染源控制後 4–5 天', note:'膽腸吻合／複雜性以厭氧覆蓋為要。'},
+        {role:'first', label:'Piperacillin-tazobactam（中重度／院內）', drugs:['piptazo'], dur:'感染源控制後 4–7 天', note:'一併覆蓋腸球菌與 Pseudomonas。'}
+      ]},
+     {name:'感染性胰臟壞死', en:'Infected pancreatic necrosis',
+      note:'僅在確診感染性壞死時給抗生素；選擇能穿透胰臟壞死組織者(carbapenem／FQ／metronidazole)。',
+      regimens:[
+        {role:'first', label:'Meropenem', drugs:['meropenem'], dur:'依清創與臨床反應，常 2–4 週'},
+        {role:'alt', label:'Ciprofloxacin ＋ Metronidazole', drugs:['ciprofloxacin','metronidazole'], dur:'依清創與臨床反應，常 2–4 週'}
+      ]},
+     {name:'胃腸穿孔 (Hollow viscus perforation)', en:'GI tract perforation',
+      note:'需涵蓋腸道 GNB＋厭氧，並依上／下消化道來源、社區／院內、嚴重度決定廣度與是否加抗黴菌／抗 MRSA。感染源控制（手術修補／引流）為關鍵。上消化道（胃／十二指腸）穿孔迅速修補且低風險者療程可短。',
+      regimens:[
+        {role:'first', label:'社區型：Ceftriaxone ＋ Metronidazole（或 Ertapenem）', drugs:['ceftriaxone','metronidazole'], dur:'感染源控制後 4–5 天'},
+        {role:'first', label:'院內／重症／曾用抗生素：Piperacillin-tazobactam 或 Meropenem', drugs:['piptazo'], dur:'感染源控制後 4–7 天'},
+        {role:'special', label:'加抗黴菌（見下方適應症）', drugs:['micafungin'], dur:'依培養與反應', note:'Candida 於上消化道穿孔常見。指徵：上消化道（胃／十二指腸）穿孔、術後或院內型、反覆滲漏、重症敗血症、免疫低下、長期 TPN／廣效抗生素、腹腔／引流培養出念珠菌。單純社區型下消化道穿孔且低風險者通常不需。'},
+        {role:'special', label:'加抗 MRSA（院內／已移生）', drugs:['vancomycin'], dur:'同主方案', note:'台灣可用 teicoplanin 替代（once-daily、腎毒性較低）；深部感染需足量。'}
+      ]},
+     {name:'腸阻塞 / 麻痺性腸阻塞', en:'Ileus / bowel obstruction',
+      note:'單純機械性或麻痺性腸阻塞本身不是抗生素適應症。僅在懷疑絞扼(strangulation)、腸壞死、穿孔或腹膜炎時才給藥。',
+      regimens:[
+        {role:'none', label:'單純腸阻塞：不需經驗性抗生素', drugs:[], note:'無腸壞死／穿孔／腹膜炎徵象者以鼻胃管減壓、禁食、輸液處理即可；不建議常規預防性抗生素。手術前預防性給藥另見「術後 / 外科」。'},
+        {role:'special', label:'疑絞扼／腸壞死／穿孔：比照社區型 IAI', drugs:['piptazo'], dur:'感染源控制後 4–7 天', note:'覆蓋腸道 GNB＋厭氧；重症／曾用抗生素改 meropenem。'}
+      ]},
+     {name:'腸缺血 / 腸系膜缺血', en:'Ischemic bowel / mesenteric ischemia',
+      note:'腸黏膜屏障破壞、細菌移位，中重度建議廣效抗生素覆蓋腸道菌叢＋厭氧，並儘速處理血流(手術／血管介入)。',
+      regimens:[
+        {role:'first', label:'Piperacillin-tazobactam', drugs:['piptazo'], dur:'依手術與臨床反應，常 4–7 天', note:'一併覆蓋 GNB(含 Pseudomonas)、厭氧與腸球菌。'},
+        {role:'alt', label:'Ceftriaxone ＋ Metronidazole（輕中度）', drugs:['ceftriaxone','metronidazole'], dur:'依臨床反應'},
+        {role:'special', label:'透壁壞死／需腸切除：比照重度 IAI', drugs:['meropenem'], dur:'術後 4–7 天'}
+      ]},
+     {name:'上消化道出血（肝硬化）', en:'UGI bleeding in cirrhosis',
+      note:'肝硬化併上消化道出血者，預防性抗生素可降低細菌感染與再出血、改善存活（Baveno VII）。非肝硬化之單純上消化道出血不需預防性抗生素。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone（預防性）', drugs:['ceftriaxone'], dur:'最多 7 天（止血穩定可提早停）', note:'首選 1 g/day，尤其進展期肝硬化或當地 quinolone 抗藥率高者。'},
+        {role:'alt', label:'Fluoroquinolone（低風險之替代）', drugs:['ciprofloxacin'], dur:'最多 7 天', note:'傳統為 norfloxacin 口服；本表以 ciprofloxacin 代表此類。'}
+      ]},
+     {name:'痔瘡出血', en:'Hemorrhoid bleeding',
+      note:'單純痔瘡出血沒有感染指徵，不是抗生素適應症。',
+      regimens:[
+        {role:'none', label:'單純痔瘡出血：不需抗生素', drugs:[], note:'僅在合併肛周膿瘍、蜂窩性組織炎、壞死性感染、免疫低下或術後感染時才給藥。'},
+        {role:'special', label:'合併肛周膿瘍／蜂窩性組織炎', drugs:['amoxclav'], dur:'依感染控制', note:'重症／免疫低下比照腹會陰壞死性感染廣效覆蓋(見 SSTI 壞死性感染)。'}
+      ]}
+   ]},
+
+  {id:'uti', name:'泌尿道感染 UTI', en:'Urinary Tract Infection', icon:'🚻',
+   types:[
+     {name:'單純性膀胱炎', en:'Uncomplicated cystitis',
+      note:'非孕、無結構異常之下泌尿道感染。優先窄效、短療程口服。',
+      regimens:[
+        {role:'first', label:'Nitrofurantoin', drugs:['nitrofurantoin'], dur:'5 天'},
+        {role:'first', label:'TMP-SMX（當地抗藥率 <20%）', drugs:['tmpsmx'], dur:'3 天'},
+        {role:'alt', label:'Fosfomycin（含部分 ESBL）', drugs:['fosfomycin'], dur:'單一劑量'}
+      ]},
+     {name:'急性腎盂腎炎', en:'Acute pyelonephritis',
+      note:'上泌尿道感染／發燒。門診可口服 FQ；住院／嘔吐用靜脈。避免 nitrofurantoin／fosfomycin(組織濃度不足)。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone（住院起始）', drugs:['ceftriaxone'], dur:'β-lactam 10–14 天'},
+        {role:'first', label:'Ciprofloxacin／Levofloxacin（門診口服）', drugs:['ciprofloxacin'], dur:'FQ 5–7 天'},
+        {role:'alt', label:'ESBL 風險：Ertapenem／Meropenem', drugs:['ertapenem'], dur:'10–14 天'}
+      ]},
+     {name:'複雜性 / 導管相關 UTI', en:'Complicated / catheter-associated',
+      note:'結構異常、留置導管、男性、免疫低下。依培養與院內抗藥圖譜，覆蓋含 Pseudomonas；儘量移除／更換導管。',
+      regimens:[
+        {role:'first', label:'Piperacillin-tazobactam', drugs:['piptazo'], dur:'7 天（迅速改善）～14 天'},
+        {role:'first', label:'Cefepime', drugs:['cefepime'], dur:'7–14 天'},
+        {role:'special', label:'ESBL：Meropenem／Ertapenem', drugs:['meropenem'], dur:'7–14 天'}
+      ]},
+     {name:'急性細菌性攝護腺炎', en:'Acute bacterial prostatitis',
+      note:'需組織穿透良好者；療程較長。',
+      regimens:[
+        {role:'first', label:'Ciprofloxacin／Levofloxacin', drugs:['ciprofloxacin'], dur:'2–4 週'},
+        {role:'alt', label:'TMP-SMX', drugs:['tmpsmx'], dur:'2–4 週'},
+        {role:'alt', label:'重症住院：Ceftriaxone', drugs:['ceftriaxone'], dur:'2–4 週（可先靜脈後口服接續）'}
+      ]}
+   ]},
+
+  {id:'pneumonia', name:'肺炎 / 呼吸道', en:'Pneumonia / Respiratory', icon:'🫀',
+   types:[
+     {name:'社區型肺炎・門診', en:'CAP, outpatient',
+      note:'無共病之門診 CAP。需覆蓋肺炎鏈球菌與非典型菌。',
+      regimens:[
+        {role:'first', label:'Amoxicillin-clavulanate ＋ Macrolide／Doxycycline', drugs:['amoxclav','azithromycin'], dur:'最少 5 天且退燒穩定 48–72 小時', note:'或以呼吸道 FQ 單藥替代。'},
+        {role:'first', label:'呼吸道 FQ 單藥', drugs:['levofloxacin'], dur:'最少 5 天', note:'或 moxifloxacin。'}
+      ]},
+     {name:'社區型肺炎・住院（非 ICU）', en:'CAP, inpatient non-ICU',
+      note:'β-lactam ＋ macrolide，或呼吸道 FQ 單藥。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone ＋ Azithromycin', drugs:['ceftriaxone','azithromycin'], dur:'5–7 天'},
+        {role:'first', label:'呼吸道 FQ 單藥', drugs:['levofloxacin'], dur:'5–7 天'}
+      ]},
+     {name:'社區型肺炎・重度 / ICU', en:'CAP, severe / ICU',
+      note:'β-lactam ＋（macrolide 或 FQ）。評估 MRSA(壞死／流感後)與 Pseudomonas 風險並加藥。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone ＋ Azithromycin', drugs:['ceftriaxone','azithromycin'], dur:'7 天（依反應）'},
+        {role:'special', label:'MRSA 風險加抗 MRSA', drugs:['vancomycin'], dur:'7 天以上', note:'或 linezolid(肺穿透佳)。'},
+        {role:'special', label:'Pseudomonas 風險改抗綠膿 β-lactam', drugs:['piptazo'], dur:'7 天以上', note:'或 cefepime／meropenem＋FQ。'}
+      ]},
+     {name:'院內 / 呼吸器相關肺炎 HAP/VAP', en:'HAP / VAP',
+      note:'依院內抗藥圖譜。覆蓋 Pseudomonas＋MRSA；多重抗藥風險用雙抗綠膿。',
+      regimens:[
+        {role:'first', label:'抗綠膿 β-lactam ＋ 抗 MRSA', drugs:['cefepime','vancomycin'], dur:'7 天', note:'β-lactam 可用 pip-tazo／meropenem；抗 MRSA 可用 linezolid。'},
+        {role:'special', label:'MDR 風險加第二抗綠膿', drugs:['amikacin'], dur:'7 天', note:'或抗綠膿 FQ；避免同類雙藥。'},
+        {role:'alt', label:'MDR Pseudomonas：Ceftolozane-tazobactam／Ceftazidime-avibactam', drugs:['ceftolotazo'], dur:'7 天（依反應）'}
+      ]},
+     {name:'吸入性肺炎 / 膿胸', en:'Aspiration pneumonia',
+      note:'厭氧覆蓋依情境；社區吸入多可用 amoxclav。膿胸需引流。',
+      regimens:[
+        {role:'first', label:'Ampicillin-sulbactam', drugs:['ampsulbactam'], dur:'5–7 天（膿胸／壞死性較長）'},
+        {role:'alt', label:'Amoxicillin-clavulanate（門診口服）', drugs:['amoxclav'], dur:'5–7 天'},
+        {role:'alt', label:'β-lactam 過敏：Moxifloxacin', drugs:['moxifloxacin'], dur:'5–7 天'}
+      ]}
+   ]},
+
+  {id:'ssti', name:'皮膚軟組織 SSTI', en:'Skin & Soft-Tissue Infection', icon:'🩹',
+   types:[
+     {name:'非化膿性蜂窩性組織炎', en:'Non-purulent cellulitis',
+      note:'多為 β-hemolytic streptococci／MSSA。無膿瘍者初始不需常規覆蓋 MRSA。',
+      regimens:[
+        {role:'first', label:'Cefazolin（靜脈）／Cephalexin（口服）', drugs:['cefazolin'], dur:'5–6 天（可依反應延長）'},
+        {role:'alt', label:'β-lactam 過敏：Clindamycin', drugs:['clindamycin'], dur:'5–6 天'}
+      ]},
+     {name:'化膿性 / 膿瘍（MRSA）', en:'Purulent / abscess (MRSA)',
+      note:'核心處置為切開引流；中重度加覆蓋 CA-MRSA 的抗生素並送膿液培養。',
+      regimens:[
+        {role:'first', label:'Vancomycin（住院／重度）', drugs:['vancomycin'], dur:'引流後 5–7 天'},
+        {role:'first', label:'口服：TMP-SMX 或 Doxycycline', drugs:['tmpsmx'], dur:'引流後 5–7 天', note:'門診輕中度 CA-MRSA。'},
+        {role:'alt', label:'Teicoplanin（台灣常用，可等效替代 vancomycin）', drugs:['teicoplanin'], dur:'引流後 5–7 天', note:'SSTI 此類非 CNS 感染，teicoplanin 與 vancomycin 療效相當，且 once-daily、可 IM、腎毒性較低，適合 OPAT／腎功能不佳者。'},
+        {role:'alt', label:'Linezolid（口服替代／頑固）', drugs:['linezolid'], dur:'引流後 5–7 天'}
+      ]},
+     {name:'壞死性軟組織感染', en:'Necrotizing fasciitis',
+      note:'外科急症——緊急清創為第一要務。廣效經驗性＋抑毒素(clindamycin)；確診 A 群鏈球菌可降階 penicillin＋clindamycin。',
+      regimens:[
+        {role:'first', label:'廣效 β-lactam ＋ 抗 MRSA ＋ Clindamycin', drugs:['piptazo','vancomycin','clindamycin'], dur:'至不需再清創且臨床穩定後', note:'clindamycin 用於抑制外毒素合成。'},
+        {role:'alt', label:'β-lactam 過敏：Meropenem 替代 pip-tazo', drugs:['meropenem','vancomycin','clindamycin'], dur:'至不需再清創且臨床穩定後'}
+      ]},
+     {name:'糖尿病足感染', en:'Diabetic foot infection',
+      note:'依嚴重度與是否慢性／曾用抗生素決定廣度；評估骨髓炎與缺血。輕度可窄效，中重度覆蓋 GNB＋厭氧±MRSA。',
+      regimens:[
+        {role:'first', label:'輕度：Amoxicillin-clavulanate', drugs:['amoxclav'], dur:'1–2 週'},
+        {role:'first', label:'中重度：Piperacillin-tazobactam（± 抗 MRSA）', drugs:['piptazo'], dur:'軟組織 2–3 週；合併骨髓炎更久', note:'MRSA 風險或已移生加 vancomycin 或 teicoplanin（後者 once-daily、適合長療程／OPAT、腎毒性較低）。'},
+        {role:'special', label:'加抗 MRSA：Teicoplanin（台灣常用）或 Vancomycin', drugs:['teicoplanin'], dur:'依感染控制', note:'糖尿病足常需較長療程，teicoplanin once-daily／可 IM／腎毒性低而適合；需足量並監測 trough。'},
+        {role:'alt', label:'β-lactam 過敏：FQ ＋ Metronidazole（± vancomycin）', drugs:['ciprofloxacin','metronidazole'], dur:'2–3 週'}
+      ]},
+     {name:'肛周膿瘍', en:'Perianal / anorectal abscess',
+      note:'核心處置為切開引流。單純肛周膿瘍引流後多數不需抗生素；有蜂窩性組織炎、全身感染徵象、免疫低下／糖尿病／中性球低下、人工瓣膜或深部（坐骨直腸窩／骨盆直腸）膿瘍時才給。覆蓋腸道 GNB＋厭氧。',
+      regimens:[
+        {role:'none', label:'單純膿瘍引流後：多數不需抗生素', drugs:[], note:'免疫正常、無蜂窩性組織炎或全身感染徵象者，充分引流即可。'},
+        {role:'first', label:'門診（有蜂窩性組織炎）：Amoxicillin-clavulanate', drugs:['amoxclav'], dur:'依感染控制，約 5–7 天'},
+        {role:'first', label:'住院／重度：Ceftriaxone ＋ Metronidazole（或 Pip-tazo）', drugs:['ceftriaxone','metronidazole'], dur:'依感染控制'},
+        {role:'special', label:'免疫低下／中性球低下：涵蓋 Pseudomonas', drugs:['piptazo'], dur:'依感染控制', note:'此族群肛周感染可迅速惡化；及早廣效並會診。'}
+      ]}
+   ]},
+
+  {id:'endocarditis', name:'感染性心內膜炎', en:'Infective Endocarditis', icon:'💗',
+   types:[
+     {name:'原生瓣膜・經驗性', en:'Native valve, empiric',
+      note:'血流動力學穩定者先取 ≥3 套血培養等結果；急性／重症才經驗給藥。覆蓋 S. aureus(含 MRSA)＋鏈球菌＋腸球菌。感染科／心臟科會診。',
+      regimens:[
+        {role:'first', label:'Vancomycin ＋ Ceftriaxone', drugs:['vancomycin','ceftriaxone'], dur:'依病原重新計算，通常 4–6 週', note:'涵蓋 MRSA、鏈球菌、HACEK；培養結果出來後降階。'},
+        {role:'alt', label:'Vancomycin ＋ Gentamicin（腸球菌考量）', drugs:['vancomycin','gentamicin'], dur:'4–6 週', note:'gentamicin 用協同劑量；留意腎毒性。'}
+      ]},
+     {name:'Viridans 鏈球菌 / S. bovis（感受性）', en:'Viridans strep / S. bovis',
+      note:'penicillin 感受性原生瓣膜心內膜炎，預後較佳。',
+      regimens:[
+        {role:'first', label:'Penicillin G 或 Ceftriaxone', drugs:['penG'], dur:'4 週（單藥）', note:'加 gentamicin 協同可縮短為 2 週(選擇性病人)。'},
+        {role:'first', label:'Ceftriaxone（方便門診靜脈治療）', drugs:['ceftriaxone'], dur:'4 週'},
+        {role:'alt', label:'Vancomycin（β-lactam 過敏）', drugs:['vancomycin'], dur:'4 週'}
+      ]},
+     {name:'腸球菌 Enterococcus', en:'Enterococcal',
+      note:'需細胞壁藥＋協同(aminoglycoside 或雙 β-lactam)。檢驗高濃度 aminoglycoside 抗性(HLAR)。',
+      regimens:[
+        {role:'first', label:'Ampicillin ＋ Ceftriaxone', drugs:['ampicillin','ceftriaxone'], dur:'6 週', note:'E. faecalis 首選之一，尤其 HLAR 陽性或欲避免腎毒性。'},
+        {role:'alt', label:'Ampicillin ＋ Gentamicin', drugs:['ampicillin','gentamicin'], dur:'4–6 週', note:'需 HLAR 陰性；監測腎功能。'}
+      ]},
+     {name:'葡萄球菌（原生瓣膜）', en:'Staphylococcal, native valve',
+      note:'S. aureus 原生瓣膜心內膜炎，病程猛烈。',
+      regimens:[
+        {role:'first', label:'MSSA：Nafcillin／Oxacillin 或 Cefazolin', drugs:['nafcillin'], dur:'6 週', note:'非嚴重過敏可用 cefazolin。'},
+        {role:'first', label:'MRSA：Vancomycin 或 Daptomycin', drugs:['vancomycin'], dur:'6 週', note:'daptomycin 8–10 mg/kg 為替代。'}
+      ]},
+     {name:'人工瓣膜（葡萄球菌）', en:'Prosthetic valve, staphylococcal',
+      note:'PVE 常需外科；葡萄球菌採三合一含 rifampin。感染科會診必要。',
+      regimens:[
+        {role:'first', label:'MRSA：Vancomycin ＋ Rifampin ＋ Gentamicin', drugs:['vancomycin','rifampin','gentamicin'], dur:'Vanco/Rifampin ≥6 週；Gentamicin 前 2 週', note:'MRSA PVE 標準三合一；rifampin 待菌血症清除後加入。'},
+        {role:'special', label:'MSSA：Nafcillin ＋ Rifampin ＋ Gentamicin', drugs:['nafcillin','rifampin','gentamicin'], dur:'Nafcillin/Rifampin ≥6 週；Gentamicin 前 2 週'}
+      ]}
+   ]},
+
+  {id:'bonejoint', name:'骨與關節感染', en:'Bone & Joint Infection', icon:'🦴',
+   types:[
+     {name:'急性骨髓炎（經驗性）', en:'Acute osteomyelitis, empiric',
+      note:'成人以 S. aureus 為主；儘量取骨培養／血培養再給藥。依 MRSA 風險決定經驗覆蓋。',
+      regimens:[
+        {role:'first', label:'Vancomycin（涵蓋 MRSA 經驗）', drugs:['vancomycin'], dur:'≥4–6 週', note:'確認 MSSA 後降階 cefazolin／nafcillin。'},
+        {role:'alt', label:'Teicoplanin（台灣常用，適合長療程／OPAT）', drugs:['teicoplanin'], dur:'≥4–6 週', note:'骨關節長療程時 once-daily、可 IM、腎毒性較低；需足量並監測 trough（骨感染目標較高）。'},
+        {role:'first', label:'Cefazolin 或 Nafcillin（MSSA 確診）', drugs:['cefazolin'], dur:'4–6 週'},
+        {role:'alt', label:'加 GNB 覆蓋（免疫低下／術後／植入物）', drugs:['cefepime'], dur:'4–6 週'}
+      ]},
+     {name:'化膿性關節炎', en:'Septic arthritis',
+      note:'關節引流／沖洗＋抗生素。經驗覆蓋 MRSA；性活躍年輕者考慮淋病(N. gonorrhoeae)。',
+      regimens:[
+        {role:'first', label:'Vancomycin ＋ Ceftriaxone', drugs:['vancomycin','ceftriaxone'], dur:'3–4 週', note:'ceftriaxone 覆蓋 GNB 與淋球菌。'},
+        {role:'alt', label:'Vancomycin ＋ Cefepime（GNB／Pseudomonas 風險）', drugs:['vancomycin','cefepime'], dur:'3–4 週'}
+      ]},
+     {name:'人工關節感染 PJI', en:'Prosthetic joint infection',
+      note:'常需清創或更換假體；葡萄球菌加 rifampin(生物膜)。感染科會診。',
+      regimens:[
+        {role:'first', label:'Vancomycin ＋ Rifampin', drugs:['vancomycin','rifampin'], dur:'依手術策略，靜脈後常口服接續共 3–6 個月', note:'rifampin 僅在保留假體之清創、傷口乾燥且引流管移除後加入。'},
+        {role:'special', label:'MSSA：Nafcillin／Cefazolin ＋ Rifampin', drugs:['nafcillin','rifampin'], dur:'同上'}
+      ]},
+     {name:'糖尿病足骨髓炎', en:'Diabetic foot osteomyelitis',
+      note:'延續糖尿病足感染；骨髓炎療程較長，依骨培養與是否手術切除決定。',
+      regimens:[
+        {role:'first', label:'Piperacillin-tazobactam（± 抗 MRSA）', drugs:['piptazo'], dur:'未切除 6 週；完全切除感染骨 2–5 天～2 週', note:'MRSA 風險加 vancomycin。'},
+        {role:'alt', label:'FQ ＋ Metronidazole（± Vancomycin）', drugs:['ciprofloxacin','metronidazole'], dur:'同上'}
+      ]}
+   ]},
+
+  {id:'cns', name:'中樞神經系統感染', en:'CNS Infection', icon:'🧠',
+   types:[
+     {name:'社區型細菌性腦膜炎（經驗性）', en:'Community-acquired meningitis',
+      note:'醫療急症——立即經驗治療，勿因等影像／腰椎穿刺而延遲。疑肺炎鏈球菌先／同時給 dexamethasone。>50 歲或免疫低下加 ampicillin 覆蓋 Listeria。',
+      regimens:[
+        {role:'first', label:'Vancomycin ＋ Ceftriaxone（高劑量）', drugs:['vancomycin','ceftriaxone'], dur:'依病原：腦膜炎雙球菌 7 天、肺炎鏈球菌 10–14 天', note:'ceftriaxone 2 g q12h；併用 dexamethasone。CNS 感染請用 vancomycin，勿以 teicoplanin 替代（CSF 穿透差）。'},
+        {role:'special', label:'>50 歲／免疫低下加 Ampicillin（Listeria）', drugs:['ampicillin'], dur:'Listeria ≥21 天'}
+      ]},
+     {name:'院內 / 術後腦膜炎（含分流）', en:'Healthcare-associated meningitis',
+      note:'神經外科術後、腦室外引流／分流。覆蓋 MRSA＋Pseudomonas；常需移除感染裝置。',
+      regimens:[
+        {role:'first', label:'Vancomycin ＋ Cefepime', drugs:['vancomycin','cefepime'], dur:'依病原與裝置處理，常 10–14 天以上', note:'cefepime 2 g q8h。'},
+        {role:'alt', label:'Vancomycin ＋ Meropenem', drugs:['vancomycin','meropenem'], dur:'依病原，常 10–14 天以上', note:'meropenem 2 g q8h。'}
+      ]},
+     {name:'疑似病毒性腦炎（HSV）', en:'Suspected HSV encephalitis',
+      note:'意識改變／發燒／局部神經學徵象／顳葉病灶。不要延遲 acyclovir，常與細菌性腦膜炎經驗治療併行至排除。',
+      regimens:[
+        {role:'first', label:'Acyclovir（經驗，充分水化）', drugs:['acyclovir'], dur:'HSV 確診 14–21 天', note:'PCR 陰性且臨床不符可停藥。'}
+      ]}
+   ]},
+
+  {id:'postop', name:'術後 / 外科（一般外科）', en:'Postoperative / General Surgery', icon:'',
+   types:[
+     {name:'手術預防性抗生素（依手術類別）', en:'Surgical prophylaxis',
+      note:'切皮前 60 分鐘內給單劑靜脈抗生素（vancomycin／FQ 需 120 分鐘）；長手術超過建議間隔或失血 >1500 mL 術中再給；多數乾淨／乾淨-污染手術術後不需續用（≤24 小時）。劑量依體重：cefazolin <120 kg 2 g、≥120 kg 3 g。',
+      regimens:[
+        {role:'first', label:'多數手術（乾淨／乾淨-污染：上消化道、肝膽、疝氣含 mesh、乳房、腹壁）：Cefazolin', drugs:['cefazolin'], dur:'切皮前單劑；一般 ≤24 小時', note:'長手術每 4 小時重給一次。'},
+        {role:'first', label:'大腸直腸 / 闌尾 / 穿透腸道：Cefazolin ＋ Metronidazole', drugs:['cefazolin','metronidazole'], dur:'切皮前單劑', note:'另建議術前機械性腸道準備＋口服抗生素(neomycin＋erythromycin 或 metronidazole)。'},
+        {role:'alt', label:'台灣常用替代：Cefmetazole 單藥（含厭氧覆蓋）', drugs:['cefmetazole'], dur:'切皮前單劑'},
+        {role:'alt', label:'β-lactam 嚴重過敏：Clindamycin（±Gentamicin）／Vancomycin', drugs:['clindamycin'], dur:'切皮前單劑', note:'需覆蓋 GNB 時加 gentamicin／aztreonam；MRSA 移生者加／改 vancomycin。'}
+      ]},
+     {name:'術後腹腔感染 / 吻合口滲漏', en:'Postop peritonitis / anastomotic leak',
+      note:'屬院內型腹腔內感染；覆蓋 Pseudomonas、ESBL、腸球菌，並依風險加抗 MRSA／抗黴菌。感染源控制（引流／再手術）是關鍵。',
+      regimens:[
+        {role:'first', label:'Piperacillin-tazobactam', drugs:['piptazo'], dur:'感染源控制後 4–7 天', note:'重症／曾用抗生素改 meropenem。'},
+        {role:'special', label:'加抗 MRSA（風險／已移生）：Vancomycin 或 Teicoplanin', drugs:['vancomycin'], dur:'同主方案', note:'台灣可用 teicoplanin 替代（once-daily、腎毒性較低）。'},
+        {role:'special', label:'加抗黴菌（見下一型態之適應症）', drugs:['micafungin'], dur:'依培養與反應'}
+      ]},
+     {name:'術後何時加抗黴菌（腹腔念珠菌）', en:'When to add antifungal',
+      note:'術後腹腔感染是否加 Candida 覆蓋的判斷。符合下列指徵者建議經驗性抗黴菌。',
+      regimens:[
+        {role:'special', label:'符合指徵 → Echinocandin（首選，不穩定／曾用 azole／中重症）', drugs:['micafungin'], dur:'依感染源控制與培養，血培養陽性者轉陰後 14 天', note:'指徵：上消化道穿孔／滲漏、反覆手術或吻合口滲漏、院內型 IAI、免疫低下、重症敗血症、長期 TPN、久用廣效抗生素、腹腔／引流培養出念珠菌。'},
+        {role:'alt', label:'穩定、未曾用 azole、感受性 → Fluconazole', drugs:['fluconazole'], dur:'依培養與反應'},
+        {role:'none', label:'不符指徵：不需常規抗黴菌', drugs:[], note:'單純社區型、低風險、下消化道來源且無上述危險因子者，不需常規經驗性抗黴菌。'}
+      ]},
+     {name:'術後傷口感染 SSI', en:'Surgical site infection',
+      note:'淺層 SSI 常只需拆線引流；深部／器官腔隙依部位處理。經驗覆蓋依手術類別與 MRSA 風險。',
+      regimens:[
+        {role:'first', label:'乾淨手術、無 MRSA 風險：Cefazolin', drugs:['cefazolin'], dur:'依清創與反應'},
+        {role:'first', label:'MRSA 風險／已移生：Vancomycin 或 Teicoplanin', drugs:['vancomycin'], dur:'依反應', note:'台灣常用 teicoplanin 替代（once-daily、可 IM、腎毒性較低）。'},
+        {role:'alt', label:'腸道／會陰手術：Cefazolin ＋ Metronidazole', drugs:['cefazolin','metronidazole'], dur:'依反應', note:'或直接用 pip-tazo。'}
+      ]},
+     {name:'術後發燒之感染源評估', en:'Postop fever workup',
+      note:'術後發燒鑑別（Wind 肺、Water 尿路、Wound 傷口、Walking DVT、Wonder-drug 藥物、導管）；先找來源，避免無來源亂投廣效抗生素。',
+      regimens:[
+        {role:'none', label:'無明確感染源：不需經驗性抗生素', drugs:[], note:'術後 48 小時內發燒多為非感染性（如 atelectasis）。系統評估各來源；有腹瀉查 C. difficile。'},
+        {role:'special', label:'導管相關血流感染：見「菌血症 → CRBSI」', drugs:['vancomycin'], dur:'見 CRBSI'},
+        {role:'special', label:'C. difficile 腸炎', drugs:['vancomycin'], dur:'10 天', note:'口服 vancomycin 125 mg q6h（或 fidaxomicin，本表未列）；停用誘發之抗生素。'}
+      ]}
+   ]}
+];
+
+/* =========================================================================
+   BACTERIA — 依病原菌之建議治療（引用 DRUGS）。dur 省略：療程依感染部位而定。
+   ========================================================================= */
+const BACTERIA = [
+  {group:'Gram 陽性球菌', items:[
+    {name:'金黃色葡萄球菌 (MSSA)', en:'S. aureus, methicillin-susceptible', kw:'staph MSSA 葡萄球菌',
+     note:'甲氧西林敏感。首選抗葡萄球菌 penicillin 或第一代 cephalosporin，優於 vancomycin。',
+     regimens:[
+       {role:'first', label:'Nafcillin／Oxacillin 或 Cefazolin', drugs:['nafcillin']},
+       {role:'first', label:'Cefazolin（等效、方便）', drugs:['cefazolin']},
+       {role:'alt', label:'β-lactam 過敏：Vancomycin／Cefazolin(非嚴重過敏)', drugs:['vancomycin']}
+     ]},
+    {name:'抗藥金黃色葡萄球菌 (MRSA)', en:'S. aureus, methicillin-resistant', kw:'MRSA staph 葡萄球菌',
+     note:'甲氧西林抗藥。菌血症首選 vancomycin(TDM)或 daptomycin；肺炎不可用 daptomycin。',
+     regimens:[
+       {role:'first', label:'Vancomycin（TDM AUC/MIC 400–600）', drugs:['vancomycin']},
+       {role:'first', label:'Daptomycin（菌血症；不可用於肺炎）', drugs:['daptomycin']},
+       {role:'alt', label:'Linezolid（肺炎／口服）／Ceftaroline', drugs:['linezolid']}
+     ]},
+    {name:'肺炎鏈球菌', en:'Streptococcus pneumoniae', kw:'strep pneumococcus 肺炎',
+     note:'依 penicillin 感受性。腦膜炎在感受性未知前 vancomycin＋ceftriaxone。',
+     regimens:[
+       {role:'first', label:'Penicillin G／Amoxicillin（penicillin 感受性）', drugs:['penG']},
+       {role:'first', label:'Ceftriaxone（中度抗藥或非腦膜炎）', drugs:['ceftriaxone']},
+       {role:'special', label:'腦膜炎／高抗藥加 Vancomycin', drugs:['vancomycin']}
+     ]},
+    {name:'A 群鏈球菌（化膿鏈球菌）', en:'Streptococcus pyogenes (GAS)', kw:'group A strep 鏈球菌',
+     note:'penicillin 幾乎無抗藥。侵襲性／壞死性感染／中毒性休克加 clindamycin 抑毒素。',
+     regimens:[
+       {role:'first', label:'Penicillin G／Ampicillin', drugs:['penG']},
+       {role:'special', label:'侵襲性／壞死性加 Clindamycin（抑毒素）', drugs:['clindamycin']},
+       {role:'alt', label:'β-lactam 過敏：Vancomycin', drugs:['vancomycin']}
+     ]},
+    {name:'B 群鏈球菌', en:'Streptococcus agalactiae (GBS)', kw:'group B strep 鏈球菌',
+     note:'新生兒與成人侵襲性感染。',
+     regimens:[{role:'first', label:'Penicillin G／Ampicillin', drugs:['penG']}]},
+    {name:'草綠色鏈球菌', en:'Viridans group streptococci', kw:'viridans strep 心內膜炎',
+     note:'常見於心內膜炎；依 penicillin MIC。',
+     regimens:[
+       {role:'first', label:'Penicillin G 或 Ceftriaxone', drugs:['penG']},
+       {role:'alt', label:'β-lactam 過敏：Vancomycin', drugs:['vancomycin']}
+     ]},
+    {name:'腸球菌 (E. faecalis)', en:'Enterococcus faecalis', kw:'enterococcus 腸球菌',
+     note:'多對 ampicillin 感受。心內膜炎需協同(ampicillin＋ceftriaxone 或＋gentamicin)。',
+     regimens:[
+       {role:'first', label:'Ampicillin（±Ceftriaxone／Gentamicin 協同）', drugs:['ampicillin']},
+       {role:'alt', label:'Ampicillin 抗藥／過敏：Vancomycin', drugs:['vancomycin']}
+     ]},
+    {name:'腸球菌 (E. faecium) / VRE', en:'Enterococcus faecium / VRE', kw:'VRE enterococcus 腸球菌 抗萬古',
+     note:'常對 ampicillin／vancomycin 抗藥(VRE)。',
+     regimens:[
+       {role:'first', label:'Linezolid 或 Daptomycin', drugs:['linezolid']},
+       {role:'alt', label:'Daptomycin（高劑量，菌血症）', drugs:['daptomycin']}
+     ]},
+    {name:'表皮／凝固酶陰性葡萄球菌', en:'Coagulase-negative staphylococci', kw:'CoNS staph epidermidis 導管',
+     note:'常見導管／人工裝置感染，多為甲氧西林抗藥。',
+     regimens:[{role:'first', label:'Vancomycin', drugs:['vancomycin']}]},
+    {name:'李斯特菌', en:'Listeria monocytogenes', kw:'listeria 腦膜炎',
+     note:'孕婦、老人、免疫低下之腦膜炎／菌血症；cephalosporin 無效。',
+     regimens:[
+       {role:'first', label:'Ampicillin（±Gentamicin 協同）', drugs:['ampicillin']},
+       {role:'alt', label:'磺胺過敏以外之替代：TMP-SMX', drugs:['tmpsmx']}
+     ]}
+  ]},
+  {group:'Gram 陰性桿菌', items:[
+    {name:'大腸桿菌 / 克雷伯氏菌（非 ESBL）', en:'E. coli / Klebsiella (non-ESBL)', kw:'ecoli klebsiella 大腸桿菌 克雷伯',
+     note:'依感受性；社區型多可用第三代 cephalosporin。',
+     regimens:[
+       {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
+       {role:'alt', label:'Fluoroquinolone', drugs:['ciprofloxacin']}
+     ]},
+    {name:'ESBL 腸道菌', en:'ESBL-producing Enterobacterales', kw:'ESBL 大腸桿菌 克雷伯',
+     note:'產 ESBL；carbapenem 為菌血症首選。cUTI 可考慮新型 BLI。',
+     regimens:[
+       {role:'first', label:'Meropenem（重症／菌血症）', drugs:['meropenem']},
+       {role:'first', label:'Ertapenem（非 Pseudomonas 來源）', drugs:['ertapenem']},
+       {role:'alt', label:'cUTI：Ceftolozane-tazo／Ceftazidime-avi', drugs:['ceftolotazo']}
+     ]},
+    {name:'AmpC 型（Enterobacter/Serratia/Citrobacter）', en:'AmpC producers', kw:'ampc enterobacter serratia citrobacter',
+     note:'避免第三代 cephalosporin(誘導型去抑制致治療失敗)；用 cefepime 或 carbapenem。',
+     regimens:[
+       {role:'first', label:'Cefepime', drugs:['cefepime']},
+       {role:'alt', label:'Meropenem（重症）', drugs:['meropenem']}
+     ]},
+    {name:'綠膿桿菌', en:'Pseudomonas aeruginosa', kw:'pseudomonas 綠膿桿菌',
+     note:'抗綠膿 β-lactam；重症／中性球低下可加 aminoglycoside。MDR 用新型 BLI／colistin。',
+     regimens:[
+       {role:'first', label:'Cefepime／Pip-tazo／Ceftazidime／Meropenem', drugs:['cefepime']},
+       {role:'special', label:'重症加 Aminoglycoside 協同', drugs:['amikacin']},
+       {role:'alt', label:'MDR：Ceftolozane-tazo／Ceftazidime-avi／Colistin', drugs:['ceftolotazo']}
+     ]},
+    {name:'鮑氏不動桿菌', en:'Acinetobacter baumannii', kw:'acinetobacter 不動桿菌',
+     note:'常多重抗藥；sulbactam 成分具活性。',
+     regimens:[
+       {role:'first', label:'Ampicillin-sulbactam（高劑量 sulbactam）', drugs:['ampsulbactam']},
+       {role:'alt', label:'Meropenem（感受性）', drugs:['meropenem']},
+       {role:'special', label:'MDR：Colistin／Tigecycline', drugs:['colistin']}
+     ]},
+    {name:'嗜麥芽窄食單胞菌', en:'Stenotrophomonas maltophilia', kw:'stenotrophomonas 窄食',
+     note:'對 carbapenem 天然抗藥；TMP-SMX 為首選。',
+     regimens:[
+       {role:'first', label:'TMP-SMX', drugs:['tmpsmx']},
+       {role:'alt', label:'Levofloxacin', drugs:['levofloxacin']}
+     ]},
+    {name:'流感嗜血桿菌', en:'Haemophilus influenzae', kw:'haemophilus 嗜血桿菌',
+     regimens:[
+       {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
+       {role:'alt', label:'Amoxicillin-clavulanate（口服）', drugs:['amoxclav']}
+     ]},
+    {name:'腦膜炎雙球菌', en:'Neisseria meningitidis', kw:'meningococcus 腦膜炎雙球菌',
+     regimens:[
+       {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
+       {role:'alt', label:'Penicillin G（感受性）', drugs:['penG']}
+     ]},
+    {name:'淋病雙球菌', en:'Neisseria gonorrhoeae', kw:'gonorrhea 淋病',
+     note:'合併 Chlamydia 覆蓋。',
+     regimens:[{role:'first', label:'Ceftriaxone（＋Azithromycin／Doxycycline）', drugs:['ceftriaxone','azithromycin']}]},
+    {name:'奇異變形桿菌', en:'Proteus mirabilis', kw:'proteus 變形桿菌',
+     note:'對 nitrofurantoin／colistin 天然抗藥。',
+     regimens:[
+       {role:'first', label:'Ampicillin／Ceftriaxone（依感受性）', drugs:['ceftriaxone']}
+     ]},
+    {name:'抗碳青黴烯腸道菌 (CRE)', en:'Carbapenem-resistant Enterobacterales', kw:'CRE KPC NDM 抗碳青黴烯',
+     note:'依碳青黴烯酶型別選藥；屬保留用藥，需感染科／抗生素管理。',
+     regimens:[
+       {role:'special', label:'Ceftazidime-avibactam（KPC／OXA-48）', drugs:['ceftazavi']},
+       {role:'alt', label:'Colistin（±Tigecycline）挽救', drugs:['colistin']}
+     ]},
+    {name:'非傷寒沙門氏菌（侵襲性）', en:'Non-typhoidal Salmonella, invasive', kw:'salmonella 沙門氏',
+     regimens:[
+       {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
+       {role:'alt', label:'Fluoroquinolone', drugs:['ciprofloxacin']}
+     ]},
+    {name:'類鼻疽伯克霍爾德氏菌', en:'Burkholderia pseudomallei', kw:'burkholderia pseudomallei melioidosis 類鼻疽',
+     note:'台灣／東南亞；糖尿病人高風險。急性期靜脈治療 ≥10–14 天，之後口服根除期 3–6 個月以防復發。',
+     regimens:[
+       {role:'first', label:'急性期：Ceftazidime 或 Meropenem', drugs:['ceftazidime']},
+       {role:'first', label:'根除期：TMP-SMX（口服 3–6 個月）', drugs:['tmpsmx']}
+     ]},
+    {name:'洋蔥伯克霍爾德氏菌', en:'Burkholderia cepacia complex', kw:'burkholderia cepacia 洋蔥 囊狀纖維化',
+     note:'囊狀纖維化／院內感染；多重內在抗藥（含 colistin 天然抗藥）。依感受性選藥。',
+     regimens:[
+       {role:'first', label:'TMP-SMX 或 Meropenem 或 Ceftazidime（依感受性）', drugs:['tmpsmx']}
+     ]},
+    {name:'創傷弧菌', en:'Vibrio vulnificus', kw:'vibrio vulnificus 創傷弧菌 海洋 壞死',
+     note:'海水／生食貝類接觸、肝病／免疫低下之壞死性軟組織感染與敗血症；及早清創、預後差。',
+     regimens:[
+       {role:'first', label:'Doxycycline ＋ Ceftriaxone（或 Cefotaxime）', drugs:['doxycycline','ceftriaxone']},
+       {role:'alt', label:'Fluoroquinolone', drugs:['levofloxacin']}
+     ]},
+    {name:'產氣單胞菌', en:'Aeromonas hydrophila', kw:'aeromonas 產氣單胞 淡水 水蛭',
+     note:'淡水／水蛭／外傷相關軟組織感染；常帶誘導型 β-lactamase。',
+     regimens:[
+       {role:'first', label:'第三代 cephalosporin 或 Fluoroquinolone（±Doxycycline）', drugs:['ceftriaxone']}
+     ]},
+    {name:'多殺巴斯德氏菌', en:'Pasteurella multocida', kw:'pasteurella 巴斯德 動物咬傷 貓狗',
+     note:'貓／狗咬傷之常見菌。',
+     regimens:[
+       {role:'first', label:'Amoxicillin-clavulanate（或 Penicillin G）', drugs:['amoxclav']}
+     ]},
+    {name:'卡他莫拉菌', en:'Moraxella catarrhalis', kw:'moraxella catarrhalis 卡他',
+     note:'呼吸道感染；多產 β-lactamase。',
+     regimens:[
+       {role:'first', label:'Amoxicillin-clavulanate 或第二／三代 cephalosporin', drugs:['amoxclav']},
+       {role:'alt', label:'Macrolide／Doxycycline', drugs:['azithromycin']}
+     ]},
+    {name:'曲狀桿菌', en:'Campylobacter jejuni', kw:'campylobacter 曲狀桿菌 腸炎',
+     note:'腸炎；FQ 抗藥率上升，首選 macrolide。',
+     regimens:[
+       {role:'first', label:'Azithromycin', drugs:['azithromycin']}
+     ]}
+  ]},
+  {group:'厭氧 / 其他', items:[
+    {name:'脆弱擬桿菌', en:'Bacteroides fragilis', kw:'bacteroides 厭氧 anaerobe',
+     note:'橫膈下厭氧代表菌。',
+     regimens:[
+       {role:'first', label:'Metronidazole', drugs:['metronidazole']},
+       {role:'alt', label:'Pip-tazo／Carbapenem（合併需氧菌時）', drugs:['piptazo']}
+     ]},
+    {name:'困難梭菌', en:'Clostridioides difficile', kw:'cdiff cdi 困難梭菌 偽膜性',
+     note:'停用誘發抗生素。口服 vancomycin 或 fidaxomicin 為首選（fidaxomicin 復發率較低）。',
+     regimens:[
+       {role:'first', label:'口服 Vancomycin 125 mg q6h', drugs:['vancomycin']},
+       {role:'first', label:'Fidaxomicin（復發率較低）', drugs:['fidaxomicin']},
+       {role:'alt', label:'Metronidazole（僅輕症或無替代時）', drugs:['metronidazole']}
+     ]}
+  ]},
+  {group:'非典型', items:[
+    {name:'黴漿菌 / 披衣菌', en:'Mycoplasma / Chlamydophila', kw:'mycoplasma chlamydia 非典型 atypical',
+     regimens:[
+       {role:'first', label:'Azithromycin', drugs:['azithromycin']},
+       {role:'alt', label:'Doxycycline／呼吸道 FQ', drugs:['doxycycline']}
+     ]},
+    {name:'退伍軍人桿菌', en:'Legionella pneumophila', kw:'legionella 退伍軍人',
+     regimens:[
+       {role:'first', label:'Levofloxacin 或 Azithromycin', drugs:['levofloxacin']}
+     ]}
+  ]},
+  {group:'分枝桿菌 / 放線菌', items:[
+    {name:'結核分枝桿菌', en:'Mycobacterium tuberculosis', kw:'tuberculosis TB 結核 分枝桿菌 RIPE',
+     note:'標準四合一：強化期 2 個月 RIPE，續 INH＋RIF 維持 4 個月（共 6 個月）；依藥敏調整。',
+     regimens:[
+       {role:'first', label:'Isoniazid ＋ Rifampin ＋ Pyrazinamide ＋ Ethambutol（RIPE）', drugs:['isoniazid','rifampin','pyrazinamide','ethambutol']}
+     ]},
+    {name:'諾卡氏菌', en:'Nocardia spp.', kw:'nocardia 諾卡 放線菌 免疫低下',
+     note:'免疫低下之肺／腦膿瘍；療程長（數月）。',
+     regimens:[
+       {role:'first', label:'TMP-SMX（重症加 carbapenem／amikacin）', drugs:['tmpsmx']}
+     ]}
+  ]},
+  {group:'黴菌 / 病毒', items:[
+    {name:'白色念珠菌', en:'Candida albicans', kw:'candida 念珠菌 fungus',
+     regimens:[
+       {role:'first', label:'Fluconazole（穩定）或 Micafungin（中重症）', drugs:['fluconazole']},
+       {role:'alt', label:'Micafungin（不穩定／曾用 azole）', drugs:['micafungin']}
+     ]},
+    {name:'光滑／克魯斯念珠菌', en:'Candida glabrata / krusei', kw:'candida glabrata krusei 念珠菌',
+     note:'常對 fluconazole 抗藥／劑量依賴。',
+     regimens:[{role:'first', label:'Echinocandin（Micafungin／Anidulafungin）', drugs:['micafungin']}]},
+    {name:'麴菌', en:'Aspergillus spp.', kw:'aspergillus 麴菌 侵襲性 黴菌 免疫低下',
+     note:'侵襲性麴菌病（中性球低下／免疫低下／移植）。',
+     regimens:[
+       {role:'first', label:'Voriconazole', drugs:['voriconazole']},
+       {role:'alt', label:'Liposomal amphotericin B（或 Isavuconazole，本表未列）', drugs:['amphoLipo']}
+     ]},
+    {name:'毛黴菌', en:'Mucorales (Mucormycosis)', kw:'mucor mucormycosis 毛黴 糖尿病酮酸',
+     note:'糖尿病酮酸中毒／免疫低下之 rhino-orbital-cerebral 或肺部感染；及早手術清創為關鍵。',
+     regimens:[
+       {role:'first', label:'Liposomal amphotericin B（＋手術清創）', drugs:['amphoLipo']},
+       {role:'alt', label:'Isavuconazole／Posaconazole（本表未列）', drugs:[]}
+     ]},
+    {name:'新型隱球菌', en:'Cryptococcus neoformans', kw:'cryptococcus 隱球菌 腦膜炎 HIV',
+     note:'免疫低下／HIV 之腦膜炎：誘導→鞏固→維持三階段。',
+     regimens:[
+       {role:'first', label:'誘導：Liposomal amphotericin B ＋ Flucytosine', drugs:['amphoLipo','flucytosine']},
+       {role:'first', label:'鞏固／維持：Fluconazole', drugs:['fluconazole']}
+     ]},
+    {name:'巨細胞病毒', en:'Cytomegalovirus (CMV)', kw:'CMV 巨細胞病毒 移植',
+     regimens:[{role:'first', label:'Valganciclovir／Ganciclovir', drugs:['valganciclovir']}]},
+    {name:'單純疱疹病毒', en:'Herpes simplex virus (HSV)', kw:'HSV 疱疹 腦炎',
+     regimens:[{role:'first', label:'Acyclovir', drugs:['acyclovir']}]}
+  ]}
+];
+
+/* ---- 覆蓋標記顯示名 ---- */
+const COV_LABELS={mrsa:'MRSA',pseudo:'Pseudomonas',anaerobe:'厭氧',atypical:'非典型',esbl:'ESBL',enterococcus:'腸球菌'};
+
+/* =========================================================================
+   Rendering
+   ========================================================================= */
+let curSite=null, curType=null;
+
+function el(id){return document.getElementById(id);}
+function show(id,on){el(id).classList.toggle('hidden',!on);}
+
+function renderSites(){
+  el('abx-sites').innerHTML = SITES.map((s,i)=>
+    `<button class="flow-opt" onclick="selectSite(${i})">
+       <span style="font-size:15px">${s.name}</span>
+       <span class="fo-sub">${s.en} · ${s.types.length} 型態</span>
+     </button>`).join('');
+}
+
+function selectSite(i){
+  curSite=SITES[i]; curType=null;
+  el('abx-crumb1').innerHTML=`<b>${curSite.name}</b>`;
+  el('abx-types').innerHTML = curSite.types.map((t,j)=>
+    `<button class="flow-opt" onclick="selectType(${j})">
+       <span>${t.name}</span><span class="fo-sub">${t.en}</span>
+     </button>`).join('');
+  show('abx-step-site',false); show('abx-step-type',true); show('abx-step-result',false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectType(j){
+  curType=curSite.types[j];
+  el('abx-crumb2').innerHTML=`<span>${curSite.name}</span><span class="sep">›</span><b>${curType.name}</b>`;
+  el('abx-typenote').textContent=curType.note||'';
+  el('abx-regimens').innerHTML = curType.regimens.map(renderRegimen).join('');
+  el('abx-drugcards').innerHTML = uniqueDrugs(curType).map(renderDrugCard).join('');
+  show('abx-step-type',false); show('abx-step-result',true);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const ROLE_TXT={first:'首選',alt:'替代',special:'特殊 / 加用',none:'不需 / 不建議'};
+
+function renderRegimen(r){
+  const has = r.drugs.length>0;
+  const chips = r.drugs.map((k,idx)=>{
+    const d=DRUGS[k];
+    return (idx>0?'<span class="rgm-plus">＋</span>':'')+
+      `<button class="drug-chip" onclick="openDrug('${k}')">${d.name}<span class="dc-en">${d.en}</span></button>`;
+  }).join('');
+  // 合併此 regimen 所有藥物的覆蓋標記
+  let tags='';
+  if(has){
+    const cov={}; r.drugs.forEach(k=>Object.assign(cov,DRUGS[k].cov||{}));
+    tags = Object.keys(COV_LABELS).map(key=>
+      `<span class="cov-tag ${cov[key]?'yes':'no'}">${COV_LABELS[key]}</span>`).join('');
+  }
+  return `<div class="rgm ${r.role}">
+    <div class="rgm-head"><span class="rgm-role">${ROLE_TXT[r.role]}</span><span class="rgm-label">${r.label}</span></div>
+    ${has?`<div class="rgm-drugs">${chips}</div>`:''}
+    ${r.dur&&r.dur!=='—'?`<div class="rgm-dur">建議療程：${r.dur}</div>`:''}
+    ${r.note?`<div class="rgm-note">${r.note}</div>`:''}
+    ${has?`<div class="cov-tags">${tags}</div>`:''}
+  </div>`;
+}
+
+function uniqueDrugs(type){
+  const seen=[]; type.regimens.forEach(r=>r.drugs.forEach(k=>{if(!seen.includes(k))seen.push(k);}));
+  return seen;
+}
+
+function renderDrugCard(k){
+  const d=DRUGS[k];
+  const field=(label,text,warn)=> (text&&String(text).trim())?
+    `<div class="dc-field"><div class="dc-flabel">${label}</div>
+     <div class="dc-ftext ${warn?'dc-warn':''}">${text}</div></div>` : '';
+  // 腎功能調整：陣列→表格；字串→純文字（向後相容）
+  let renalField='';
+  if(Array.isArray(d.renal)){
+    const rows=d.renal.map(r=>`<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join('');
+    renalField=`<div class="dc-field"><div class="dc-flabel">腎功能調整（CrCl mL/min）</div><div class="dc-ftext"><table class="renal-tbl"><tbody>${rows}</tbody></table></div></div>`;
+  } else if(d.renal){
+    renalField=field('腎功能調整',d.renal);
+  }
+  const sub = d.brands ? d.brands.join('、') : (d.en||'');
+  const zh = d.zh ? `<span class="dc-zh">${d.zh}</span>` : '';
+  return `<details class="drugcard" id="drug-${k}">
+    <summary><span class="dc-name">${d.name}</span>${zh}<span class="dc-nameen">${sub}</span><span class="dc-class">${d.cls}</span></summary>
+    <div class="dc-body">
+      ${field('台灣商品名',d.brands?d.brands.join('、'):'')}
+      ${field('劑量（成人）',d.dose)}
+      ${renalField}
+      ${field('肝功能調整',d.hepatic)}
+      ${field('兒科劑量',d.peds)}
+      ${field('口服生體可用率 Bioavailability',d.bioav)}
+      ${field('分布 / 組織穿透 Distribution',d.dist)}
+      ${field('代謝途徑',d.metab)}
+      ${field('常見併發症／副作用',d.adverse)}
+      ${field('禁忌與警示',d.contra,true)}
+      ${field('抗菌譜與備註',d.spectrum)}
+    </div>
+  </details>`;
+}
+
+function openDrug(k){
+  // 同一藥卡可能同時存在於多個模式的 DOM；只操作目前可見者
+  let target=null;
+  document.querySelectorAll('.drugcard').forEach(c=>{
+    if(c.id==='drug-'+k && c.offsetParent!==null) target=c;
+  });
+  if(!target) target=el('drug-'+k);
+  if(target){ target.open=true; target.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+
+/* ---- 模式切換與新模組 ---- */
+let curBac=null;
+
+function switchMode(m){
+  ['empiric','bacteria','lookup'].forEach(x=>show('mode-'+x, x===m));
+  document.querySelectorAll('.abx-mode').forEach(b=>b.classList.toggle('active', b.dataset.mode===m));
+  if(m==='bacteria' && !el('bac-list').innerHTML) renderBacteria('');
+  if(m==='lookup' && !el('lookup-results').innerHTML) renderLookup('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderBacteria(q){
+  q=(q||'').trim().toLowerCase();
+  let html='';
+  BACTERIA.forEach((g,gi)=>{
+    const items=g.items.filter(b=> !q || (b.name+' '+b.en+' '+(b.kw||'')).toLowerCase().includes(q));
+    if(!items.length) return;
+    html+=`<div class="bac-group-head">${g.group}</div>`;
+    items.forEach(b=>{
+      const bi=g.items.indexOf(b);
+      html+=`<button class="bac-item" onclick="selectBacteria(${gi},${bi})"><span class="bi-name">${b.name}</span><span class="bi-en">${b.en}</span></button>`;
+    });
+  });
+  el('bac-list').innerHTML = html || '<div class="bac-empty">找不到符合的菌名。</div>';
+}
+
+function selectBacteria(gi,bi){
+  curBac=BACTERIA[gi].items[bi];
+  el('bac-crumb').innerHTML=`<b>${curBac.name}</b> <span class="sep">·</span> ${curBac.en}`;
+  el('bac-note').textContent=curBac.note||'';
+  el('bac-regimens').innerHTML=curBac.regimens.map(renderRegimen).join('');
+  const seen=[]; curBac.regimens.forEach(r=>r.drugs.forEach(k=>{if(!seen.includes(k))seen.push(k);}));
+  el('bac-drugcards').innerHTML=seen.map(renderDrugCard).join('');
+  show('bac-step-list',false); show('bac-step-result',true);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToBacteria(){ show('bac-step-list',true); show('bac-step-result',false); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function renderLookup(q){
+  q=(q||'').trim().toLowerCase();
+  let keys=Object.keys(DRUGS).filter(k=>{const d=DRUGS[k]; const hay=(d.name+' '+(d.zh||'')+' '+(d.brands?d.brands.join(' '):(d.en||''))+' '+d.cls).toLowerCase(); return !q || hay.includes(q);});
+  keys.sort((a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name));
+  el('lookup-count').textContent = q ? `${keys.length} 筆符合` : `共 ${keys.length} 種藥物`;
+  el('lookup-results').innerHTML = keys.length ? keys.map(renderDrugCard).join('') : '<div class="bac-empty">找不到符合的藥物。</div>';
+}
+
+function backToSites(){
+  curType=null;
+  show('abx-step-site',true); show('abx-step-type',false); show('abx-step-result',false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToTypes(){
+  show('abx-step-type',true); show('abx-step-result',false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function abxReset(){
+  curSite=null; curType=null;
+  show('abx-step-site',true); show('abx-step-type',false); show('abx-step-result',false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+renderSites();
+</script>
+
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

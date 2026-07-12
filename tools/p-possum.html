@@ -18,7 +18,7 @@
 <div class="sheet">
 <div class="view active" id="view-possum">
   <div class="app-header">
-    <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>P-POSSUM</h1><div class="sub">Portsmouth Physiological and Operative Severity Score</div></div>
+    <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>P-POSSUM</h1><div class="sub">Portsmouth Physiological and Operative Severity Score for the enumeration of Mortality</div></div>
     <button class="back-btn" onclick="location.href='../index.html#card-view-possum'">← 返回主選單</button>
   </div>
 
@@ -26,12 +26,12 @@
   <div class="card">
     <div class="field-row"><label>年齡 Age</label><select id="ps_age"><option value="1">≤60 yrs</option><option value="2">61–70 yrs</option><option value="4">&gt;70 yrs</option></select></div>
     <div class="field-row"><label>心臟徵象 Cardiac signs</label><select id="ps_cardiac">
-      <option value="1">No failure（無心衰竭徵象）</option><option value="2">Diuretic/digoxin/anti-HTN therapy；邊緣性心臟肥大</option>
-      <option value="4">Peripheral edema, warfarin；心臟肥大</option><option value="8">Raised JVP；心臟肥大合併周邊水腫</option>
+      <option value="1">No failure（Normal cardiovascular status）</option><option value="2">Diuretics/digoxin/HTN medication（Controlled cardiac disease）</option>
+      <option value="4">Peripheral edema, warfarin；Borderline cardiomegaly（Moderate cardiac compromise）</option><option value="8">Raised JVP；Cardiomegaly（Severe cardiac failure）</option>
     </select></div>
     <div class="field-row"><label>呼吸徵象 Respiratory signs</label><select id="ps_resp">
-      <option value="1">No dyspnea（無呼吸困難）</option><option value="2">活動後呼吸困難；輕度COPD</option>
-      <option value="4">受限性呼吸困難（爬1層樓）；中度COPD</option><option value="8">休息時呼吸困難(RR&gt;30)；肺纖維化</option>
+      <option value="1">No dyspnea；Normal CXR</option><option value="2">Exertional dyspnea；mild COPD on CXR</option>
+      <option value="4">Limiting dyspnea；mild COPD on CXR</option><option value="8">Dyspnea at rest（RR ≧30）；fibrosis/consolidation on CXR</option>
     </select></div>
     <div class="field-row"><label>收縮壓 Systolic BP</label><select id="ps_sbp">
       <option value="8">&lt;90 mmHg</option><option value="4">90–99 mmHg</option><option value="2">100–109 mmHg</option>
@@ -64,9 +64,9 @@
       <option value="1" selected>3.5–5.0 mmol/L</option><option value="2">5.1–5.3 mmol/L</option><option value="4">5.4–5.9 mmol/L</option><option value="8">≥6.0 mmol/L</option>
     </select></div>
     <div class="field-row"><label>心電圖 ECG</label><select id="ps_ecg">
-      <option value="1" selected>Normal（正常）</option>
-      <option value="4">AF 心房顫動 (rate 60–90)</option>
-      <option value="8">其他異常節律、&gt;5 ectopics/min、Q波或 ST/T 缺血性變化</option>
+      <option value="1" selected>Normal</option>
+      <option value="2">Atrial fibrillation（HR 60–90)</option>
+      <option value="8">其他異常節律、&gt;5 ectopics/min、Q 波或 ST/T 缺血性變化</option>
     </select></div>
   </div>
 
@@ -97,7 +97,7 @@
       <option value="1">None（無）</option><option value="2">Primary cancer only（僅原發癌）</option><option value="4">Nodal metastases（淋巴結轉移）</option><option value="8">Distant metastases（遠端轉移）</option>
     </select></div>
     <div class="field-row"><label>手術模式 Mode of surgery</label><select id="os_mode">
-      <option value="1">Elective（選擇性）</option><option value="4">Urgent（急迫性）</option><option value="8">Emergency（緊急）</option>
+      <option value="1">Elective（非急刀）</option><option value="4">Urgent（急刀 &lt;24 hours）</option><option value="8">Emergency（急刀 &lt;2 hours）</option>
     </select></div>
   </div>
 
@@ -132,7 +132,7 @@
 function possBadge(id){
   const sel=document.getElementById(id);
   let b=sel.parentNode.querySelector('.poss-badge');
-  if(!b){ b=document.createElement('span'); b.className='pt-badge poss-badge'; sel.parentNode.appendChild(b); }
+  if(!b){ b=document.createElement('span'); b.className='pt-badge poss-badge'; sel.parentNode.classList.add('scored-row'); sel.parentNode.appendChild(b); }
   b.textContent=sel.value+'分';
 }
 function possCalc(){

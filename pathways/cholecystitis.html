@@ -47,10 +47,10 @@
   <div class="flow-step" id="chole_bs1">
     <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">先評估：是否合併膽道／胰臟問題？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="cholePick('bil','none',this)">單純急性膽囊炎<span class="fo-sub">直接進入下方 TG18 分級</span></button>
       <button class="flow-opt" onclick="cholePick('bil','cholangitis',this)">急性膽管炎<span class="fo-sub">發燒／寒顫 + 黃疸 + 右上腹痛（Charcot）或 TG18 膽管炎 — 最優先處理</span></button>
       <button class="flow-opt" onclick="cholePick('bil','pancreatitis',this)">膽石性胰臟炎<span class="fo-sub">lipase／amylase 升高，符合胰臟炎診斷</span></button>
       <button class="flow-opt" onclick="cholePick('bil','cbd',this)">疑似總膽管結石（無膽管炎／胰臟炎）<span class="fo-sub">膽紅素／肝功能升高、CBD 擴張（&gt;6 mm）</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','none',this)">單純急性膽囊炎<span class="fo-sub">直接進入下方 TG18 分級</span></button>
     </div>
     <div class="note" style="margin-top:8px;">若同時存在，依優先順序選擇：急性膽管炎 &gt; 膽石性胰臟炎 &gt; 疑似總膽管結石。</div>
   </div>
@@ -60,14 +60,14 @@
     <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">膽石性胰臟炎嚴重度？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="cholePick('pSev','mild',this)">輕度<span class="fo-sub">無持續器官衰竭、無局部或全身併發症</span></button>
-      <button class="flow-opt" onclick="cholePick('pSev','severe',this)">中／重度、壞死性<span class="fo-sub">持續器官衰竭或胰周壞死／積液</span></button>
+      <button class="flow-opt" onclick="cholePick('pSev','severe',this)">重度／壞死性<span class="fo-sub">持續器官衰竭或胰周壞死／積液</span></button>
     </div>
   </div>
   <div class="flow-step hidden" id="chole_bs_asge">
     <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">總膽管結石 ASGE 風險分層？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="cholePick('asge','high',this)">高風險<span class="fo-sub">影像見 CBD 結石／T-Bil &gt;4 mg/dL 且 CBD 擴張（&gt;6 mm）</span></button>
-      <button class="flow-opt" onclick="cholePick('asge','int',this)">中風險<span class="fo-sub">肝功能異常（非膽紅素）、年齡 &gt;55、或 CBD 擴張（&gt;6 mm）未達高風險</span></button>
+      <button class="flow-opt" onclick="cholePick('asge','high',this)">高風險<span class="fo-sub">影像見 CBD 結石／T-Bil &gt;4 mg/dL + CBD 擴張（&gt;6 mm）</span></button>
+      <button class="flow-opt" onclick="cholePick('asge','int',this)">中風險<span class="fo-sub">肝功能異常（非膽紅素）／年齡 &gt;55／CBD 擴張（&gt;6 mm）未達高風險</span></button>
       <button class="flow-opt" onclick="cholePick('asge','low',this)">低風險<span class="fo-sub">上述皆無</span></button>
     </div>
   </div>
@@ -85,7 +85,7 @@
     <div class="flow-opts">
       <button class="flow-opt" onclick="cholePick('grade','1',this)">Grade I 輕度<span class="fo-sub">無器官功能障礙，僅輕度膽囊發炎</span></button>
       <button class="flow-opt" onclick="cholePick('grade','2',this)">Grade II 中度<span class="fo-sub">WBC&gt;18k／可觸及腫塊／症狀&gt;72h／明顯局部發炎（壞疽、膿瘍等）</span></button>
-      <button class="flow-opt" onclick="cholePick('grade','3',this)">Grade III 重度<span class="fo-sub">合併器官／系統功能障礙</span></button>
+      <button class="flow-opt" onclick="cholePick('grade','3',this)">Grade III 重度<span class="fo-sub">心血管（dopamine ≥5 mcg/kg/min 或任何劑量 norepinephrine）<br>神經（意識障礙）<br>呼吸（PaO₂ / FiO₂ &lt;300）<br>腎（Oliguria 或 Cr &gt;2.0 mg/dL）<br>肝（PT-INR &gt;1.5）<br>血液（PLT &lt;100 k/mm³）。</span></button>
     </div>
   </div>
 
@@ -144,7 +144,7 @@ function choleRender(){
     lowSub.innerHTML='<strong>需全部符合</strong>：<br>・CCI ≤3、ASA ≤2<br>・無 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）<br>・有 FOSF（心血管／腎對初始治療有反應）<br>・於醫學中心';
     highSub.innerHTML='不符低風險條件，或存在 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）';
   } else {
-    lowSub.innerHTML='・CCI ≤5<br>・ASA ≤2';
+    lowSub.innerHTML='CCI ≤5 且 ASA ≤2';
     highSub.innerHTML='CCI &gt;5 或 ASA ≥3，或存在負向預測因子';
   }
 

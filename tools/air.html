@@ -54,8 +54,15 @@
 </div>
 </div>
 <script>
+function airBadge(id){
+  const sel=document.getElementById(id);
+  let b=sel.parentNode.querySelector('.score-badge');
+  if(!b){ b=document.createElement('span'); b.className='pt-badge score-badge'; sel.parentNode.classList.add('scored-row'); sel.parentNode.appendChild(b); }
+  b.textContent=sel.value+'分';
+}
 function airCalc(){
   const ids=['air_vomit','air_pain','air_rebound','air_temp','air_pmn','air_wbc','air_crp'];
+  ids.forEach(airBadge);
   const total=ids.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
   document.getElementById('air_total').textContent=total;
   let interp='低度懷疑';

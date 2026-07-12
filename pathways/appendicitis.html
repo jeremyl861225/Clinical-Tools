@@ -74,7 +74,8 @@
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('pop','gen',this)">一般成人或兒童<span class="fo-sub">進入手術 vs 非手術之共享決策</span></button>
       <button class="flow-opt" onclick="appyPick('pop','preg',this)">懷孕<span class="fo-sub">首選腹腔鏡闌尾切除</span></button>
-      <button class="flow-opt" onclick="appyPick('pop','older',this)">高齡或高手術風險／免疫低下<span class="fo-sub">一般首選手術，視共病個別化</span></button>
+      <button class="flow-opt" onclick="appyPick('pop','older',this)">高齡或高手術風險<span class="fo-sub">一般首選手術，視共病個別化</span></button>
+      <button class="flow-opt" onclick="appyPick('pop','immuno',this)">免疫低下<span class="fo-sub">血液腫瘤／移植／HIV／長期類固醇等；多科整合、低手術門檻</span></button>
     </div>
   </div>
 
@@ -82,7 +83,7 @@
   <div class="flow-step hidden" id="appy_s3u">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">治療選擇（共享決策）？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="appyPick('uChoice','surg',this)">手術：腹腔鏡闌尾切除<span class="fo-sub">標準治療；糞石／發炎指數顯著升高者 NOM 失敗風險較高，傾向手術</span></button>
+      <button class="flow-opt" onclick="appyPick('uChoice','surg',this)">手術：腹腔鏡闌尾切除<span class="fo-sub">標準治療；闌尾直徑 ≥15 mm、糞石、男性、CRP ≥10 mg/dL 者 NOM 失敗風險較高</span></button>
       <button class="flow-opt" onclick="appyPick('uChoice','nom',this)">非手術：抗生素治療（NOM）<span class="fo-sub">經選擇病人之安全替代方案，需監測與追蹤</span></button>
     </div>
   </div>
@@ -98,10 +99,12 @@
 
   <div class="flow-connector hidden" id="appy_c3">↓</div>
   <div class="flow-step hidden" id="appy_s3">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">年齡？（膿瘍處置依年齡分流）</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">族群 / 年齡？（膿瘍處置分流）</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('age','lt35',this)">&lt; 35 歲（含兒童）<span class="fo-sub">腫瘤風險低</span></button>
       <button class="flow-opt" onclick="appyPick('age','ge35',this)">≥ 35 歲<span class="fo-sub">潛在闌尾腫瘤風險升高（達 14.3%）</span></button>
+      <button class="flow-opt" onclick="appyPick('age','preg',this)">懷孕<span class="fo-sub">母胎安全優先；腫瘤監測理由不適用</span></button>
+      <button class="flow-opt" onclick="appyPick('age','immuno',this)">免疫低下<span class="fo-sub">低門檻源頭控制＋廣效抗生素</span></button>
     </div>
   </div>
 
@@ -110,7 +113,7 @@
     <div class="rec-title">請由上方步驟開始選擇</div>
   </div>
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="appyReset()">重置</button></div>
-  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Podda+M+Diagnosis+and+Treatment+of+Acute+Appendicitis+2025+Edition+WSES+Jerusalem+Guidelines+JAMA+Surg+2026" target="_blank" rel="noopener" class="ref-link">Podda M, et al. Diagnosis and Treatment of Acute Appendicitis: 2025 Edition of the WSES Jerusalem Guidelines. JAMA Surg. 2026;161(3):283-295.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Salminen+P%2C+et+al.+%28APPAC%29+JAMA.+2015%3B313%2823%29%3A2340-2348" target="_blank" rel="noopener" class="ref-link">Salminen P, et al. (APPAC) JAMA. 2015;313(23):2340-2348.</a></footer>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Podda+M+Diagnosis+and+Treatment+of+Acute+Appendicitis+2025+Edition+WSES+Jerusalem+Guidelines+JAMA+Surg+2026" target="_blank" rel="noopener" class="ref-link">Podda M, et al. Diagnosis and Treatment of Acute Appendicitis: 2025 Edition of the WSES Jerusalem Guidelines. JAMA Surg. 2026;161(3):283-295.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Salminen+P%2C+et+al.+%28APPAC%29+JAMA.+2015%3B313%2823%29%3A2340-2348" target="_blank" rel="noopener" class="ref-link">Salminen P, et al. (APPAC) JAMA. 2015;313(23):2340-2348.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34372902/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Acute abdomen in the immunocompromised patient: WSES/SIS-E/WSIS/AAST/GAIS guidelines. World J Emerg Surg. 2021;16:40.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33635341/" target="_blank" rel="noopener" class="ref-link">Nakashima M, et al. Acute Appendicitis During Pregnancy: Conservative Management and Appendectomy. World J Surg. 2021;45(6):1717-1724.</a></footer>
 </div>
 </div>
 <script src="../js/common.js"></script>
@@ -143,23 +146,27 @@ function appyRender(){
   if(!showS3) flowClearSel('appy_s3');
 
   const ABX_UNCOMP_SURG='抗生素：術前單劑預防即可，等待手術期間不需額外抗生素，術後不需抗生素。';
-  const ABX_NOM='抗生素：靜脈廣效（ertapenem，或 ceftriaxone + metronidazole；青黴素過敏用 ciprofloxacin + metronidazole）→ 臨床改善後轉口服，療程視臨床反應（可門診）。';
+  const ABX_NOM='抗生素：靜脈廣效（ertapenem，或 ceftriaxone + metronidazole；青黴素過敏用 ciprofloxacin + metronidazole）→ 靜脈給予 48 小時且臨床改善後轉口服，療程視臨床反應（可門診，建議 7-10 天）。';
   const ABX_COMP='抗生素：術前預防 + 等待手術期間治療性抗生素；術後短療程 2–3 天（優於 5–7 天）。';
 
   let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
   if(t==='uncomp'){
     if(appySt.pop==='preg'){
       cls='rec-elective'; title='懷孕：腹腔鏡闌尾切除術（首選）';
-      detail='<li>首選腹腔鏡闌尾切除（由有經驗團隊施行）。</li><li>NOM 僅在手術風險高或無法立即手術時作為替代（證據極不確定）。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+      detail='<li>首選腹腔鏡闌尾切除（由有經驗團隊施行）。</li><li>NOM 僅在手術風險高或無法立即手術時作為替代（證據極不確定），且明確增加流產（OR 3.057）及早產（OR 3.186）風險。</li><li>'+ABX_UNCOMP_SURG+'</li>';
       note='WSES 2025 建議 5.3：懷孕之未複雜性闌尾炎以腹腔鏡闌尾切除為首選。';
     } else if(appySt.pop==='older'){
       cls='rec-elective'; title='高齡／高手術風險：以手術為首選（個別化）';
-      detail='<li>高齡病人一般首選闌尾切除。</li><li>共病重、手術風險高（含免疫低下）者，可將 NOM 抗生素作為替代方案，需共享決策。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+      detail='<li>高齡病人一般首選闌尾切除。</li><li>共病重、手術風險高者，可將 NOM 抗生素作為替代方案，需共享決策。</li><li>'+ABX_UNCOMP_SURG+'</li>';
       note='WSES 2025 建議 5.4：高齡者以手術為首選，高風險者可考慮 NOM。';
+    } else if(appySt.pop==='immuno'){
+      cls='rec-elective'; title='免疫低下：低手術門檻、以手術為首選（多科整合）';
+      detail='<li>免疫低下族群（血液腫瘤／中性球低下、實體器官移植、HIV/AIDS、長期類固醇／生物製劑）臨床表現常不典型、發炎反應鈍化，易延遲診斷，併發症與死亡率較高，須<b>多科整合</b>評估。</li><li>因免疫反應受抑、單靠抗生素 NOM 之可靠度較低，宜<b>降低手術門檻、以闌尾切除為首選</b>做確定性源頭控制；抗生素應廣效並警覺伺機性病原（CMV、黴菌、結核）。</li><li>注意<b>圍手術期類固醇補充</b>與免疫抑制劑調整。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+      note='Coccolini F, et al. Acute abdomen in the immunocompromised patient: WSES/SIS-E/WSIS/AAST/GAIS guidelines. World J Emerg Surg 2021;16:40.';
     } else if(appySt.pop==='gen'){
       if(appySt.uChoice==='surg'){
         cls='rec-elective'; title='腹腔鏡闌尾切除術（入院 24 小時內施行即可）';
-        detail='<li>腹腔鏡為標準術式；可於入院 <b>24 小時內</b>施行，延遲 ≤24h 不增風險 — 不需連夜緊急手術（強建議）。</li><li>闌尾直徑 ≥15 mm、糞石、男性、24h CRP ≥10 mg/dL 者，NOM 失敗／穿孔風險較高，傾向手術。</li><li>'+ABX_UNCOMP_SURG+'</li>';
+        detail='<li>闌尾直徑 ≥15 mm、糞石、男性、24h CRP ≥10 mg/dL 者，NOM 失敗／穿孔風險較高，傾向手術。</li><li>腹腔鏡為標準術式；可於入院 <b>24 小時內</b>施行，延遲 ≤24h 不增風險 — 不需連夜緊急手術（強建議）。</li><li>'+ABX_UNCOMP_SURG+'</li>';
         note='WSES 2025 建議 9.1、15.1、17.1。';
       } else if(appySt.uChoice==='nom'){
         cls='rec-nonop'; title='非手術抗生素治療（NOM，共享決策）';
@@ -181,6 +188,14 @@ function appyRender(){
         cls='rec-nonop'; title='≥35 歲膿瘍：先 NOM，之後 interval appendectomy（6–12 週）';
         detail='<li><b>不建議早期手術</b>（潛在闌尾腫瘤風險達 14.3%）。</li><li>先 NOM：抗生素 ± 經皮膿瘍引流；'+ABX_NOM+'</li><li>之後 <b>6–12 週施行 interval appendectomy</b> 以偵測腫瘤（<b>強建議</b>），並安排大腸鏡／影像追蹤。</li>';
         note='WSES 2025 建議 13.1（≥35 歲不早期手術）、14.1（interval appendectomy 為強建議）。';
+      } else if(appySt.age==='preg'){
+        cls='rec-elective'; title='懷孕合併膿瘍：以確定性源頭控制為主（多科整合）';
+        detail='<li>優先<b>母胎安全</b>，由婦產科與外科<b>多科整合</b>；孕婦多為年輕、闌尾腫瘤風險低，故「以 interval appendectomy 排除腫瘤」的理由<b>不適用</b>，不應僅為腫瘤監測而延遲處置。</li><li>可及之膿瘍先<b>影像導引（超音波）經皮引流</b>＋抗生素穩定；穩定後由有經驗團隊行<b>腹腔鏡闌尾切除</b>（任何孕期皆可）。</li><li>複雜性／穿孔之延遲處置會增加<b>流產與早產</b>風險，避免長時間單靠抗生素觀望。</li><li>'+ABX_COMP+'</li>';
+        note='WSES 2025（Podda, JAMA Surg 2026）孕婦以腹腔鏡闌尾切除為首選；Nakashima M, et al. World J Surg 2021;45:1717（懷孕闌尾炎保守 vs 手術之結局）。';
+      } else if(appySt.age==='immuno'){
+        cls='rec-elective'; title='免疫低下合併膿瘍：低門檻源頭控制（手術或引流）＋廣效抗生素';
+        detail='<li>免疫低下者發炎反應鈍化、可迅速惡化，宜<b>降低門檻</b>及早<b>源頭控制</b>（闌尾切除或影像導引經皮引流），並<b>多科整合</b>。</li><li>抗生素採<b>廣效</b>，於中性球低下／移植等高風險者<b>考慮加抗黴菌</b>，並警覺伺機性病原（CMV、黴菌、結核）。</li><li>注意<b>圍手術期類固醇補充</b>與免疫抑制劑調整；單靠抗生素 NOM 之可靠度較低。</li><li>'+ABX_COMP+'</li>';
+        note='Coccolini F, et al. Acute abdomen in the immunocompromised patient: WSES/SIS-E/WSIS/AAST/GAIS guidelines. World J Emerg Surg 2021;16:40.';
       } else { cls='rec-idle'; title='請完成步驟 3'; }
     } else { cls='rec-idle'; title='請完成步驟 2'; }
   }

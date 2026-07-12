@@ -65,8 +65,16 @@
 </div>
 </div>
 <script>
+function cpBadge(id){
+  const sel=document.getElementById(id);
+  let b=sel.parentNode.querySelector('.score-badge');
+  if(!b){ b=document.createElement('span'); b.className='pt-badge score-badge'; sel.parentNode.classList.add('scored-row'); sel.parentNode.appendChild(b); }
+  b.textContent=sel.value+'分';
+}
 function cpCalc(){
-  const total=['cp_bili','cp_alb','cp_inr','cp_ascites','cp_enceph'].reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  const ids=['cp_bili','cp_alb','cp_inr','cp_ascites','cp_enceph'];
+  ids.forEach(cpBadge);
+  const total=ids.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
   document.getElementById('cp_total').textContent=total;
   const cls=total<=6?'A':(total<=9?'B':'C');
   document.getElementById('cp_class').textContent=cls;
