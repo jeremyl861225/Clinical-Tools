@@ -104,7 +104,7 @@
   </div>
 
   <div class="abx-disclaimer">
-    <b>僅供教育／參考</b>，非醫療處方。經驗性建議與療程須依當地抗藥性、培養結果、感染源控制、過敏史、肝腎功能、體重、孕哺與交互作用個別調整。劑量為一般成人、腎功能正常之起始劑量；兒科劑量為概略常用值，須依體重、年齡與最新用藥指引核算。用藥前務必核對最新準則與藥品仿單。本工具整理自公開臨床準則（IDSA、SIS、AHA、藥品仿單等），非任何商業指南之重製。
+    <b>僅供教育／參考</b>，非醫療處方。經驗性建議與療程須依當地抗藥性、培養結果、感染源控制、過敏史、肝腎功能、體重、孕哺與交互作用個別調整。劑量為一般成人、腎功能正常之起始劑量；兒科劑量為概略常用值，須依體重、年齡與最新用藥指引核算。用藥前務必核對最新準則與藥品仿單。本工具整理自公開臨床準則（IDSA、SIS、AHA、藥品仿單等），非任何商業指南之重製。<br><b>抗 MRSA 醣肽類：</b>本工具預設以 <b>teicoplanin 為首選</b>（台灣常用，once-daily、可 IM、腎毒性較低；與 vancomycin 療效相當——Cochrane 2010、Svetitsky 2009）。僅在文獻／藥理支持 vancomycin 之情境保留 vancomycin 為首選：<b>CNS 感染</b>（CSF 穿透差）、<b>肺炎／VAP</b>（肺穿透，或用 linezolid）、<b>感染性心內膜炎與確診 S. aureus 菌血症</b>（需快速可靠血中濃度、指引指定）、<b>猛爆性壞死性感染</b>、<b>口服治療 C. difficile</b>。teicoplanin 用於深部感染須給足 loading dose 並監測 trough。
   </div>
 
   <!-- 模式切換 -->
@@ -949,7 +949,7 @@ const SITES = [
       note:'ANC <500。緊急給抗綠膿單藥；有低血壓／黏膜炎／導管感染／已知 MRSA 移生加 vancomycin。持續發燒 4–7 天加抗黴菌。',
       regimens:[
         {role:'first', label:'抗綠膿 β-lactam 單藥', drugs:['cefepime'], dur:'至 ANC 恢復且退燒無感染徵象', note:'或 pip-tazo／meropenem。'},
-        {role:'first', label:'加抗 MRSA（不穩定／導管／黏膜炎）', drugs:['cefepime','vancomycin'], dur:'至 ANC 恢復；有病灶依病灶', note:'台灣常以 teicoplanin 替代 vancomycin（once-daily、腎毒性較低）；但確診 MRSA 菌血症／心內膜炎仍以 vancomycin 或 daptomycin 為主。'},
+        {role:'first', label:'加抗 MRSA（不穩定／導管／黏膜炎）', drugs:['cefepime','teicoplanin'], dur:'至 ANC 恢復；有病灶依病灶', note:'台灣以 teicoplanin 為首選（once-daily、腎毒性較低）；vancomycin 為替代。若確診 MRSA 菌血症／心內膜炎或肺源，改以 vancomycin／daptomycin／linezolid。'},
         {role:'special', label:'持續發燒加經驗性抗黴菌', drugs:['micafungin'], dur:'依黴菌感染評估', note:'高風險黴菌感染另考慮 voriconazole／L-AmB(本表未列)。'}
       ]},
      {name:'肺囊蟲肺炎 PJP', en:'Pneumocystis (PJP)',
@@ -996,7 +996,7 @@ const SITES = [
       note:'依院內抗藥圖譜；覆蓋 Pseudomonas、ESBL，MRSA 風險或已移生者加抗 MRSA，念珠菌風險加抗黴菌。',
       regimens:[
         {role:'first', label:'抗綠膿 β-lactam（± MRSA／抗黴菌）', drugs:['meropenem'], dur:'感染源控制後 4–7 天', note:'或 pip-tazo／cefepime+metronidazole。MRSA 風險加 vancomycin；上消化道穿孔／TPN 念珠菌風險加 micafungin。'},
-        {role:'special', label:'加抗 MRSA', drugs:['vancomycin'], dur:'同主方案'},
+        {role:'special', label:'加抗 MRSA', drugs:['teicoplanin'], dur:'同主方案', note:'台灣以 teicoplanin 為首選（once-daily、腎毒性較低）；vancomycin 為替代。'},
         {role:'special', label:'加抗黴菌（念珠菌風險）', drugs:['micafungin'], dur:'依培養與反應'}
       ]},
      {name:'急性膽道感染', en:'Acute cholangitis / cholecystitis',
@@ -1011,13 +1011,13 @@ const SITES = [
         {role:'first', label:'Meropenem', drugs:['meropenem'], dur:'依清創與臨床反應，常 2–4 週'},
         {role:'alt', label:'Ciprofloxacin ＋ Metronidazole', drugs:['ciprofloxacin','metronidazole'], dur:'依清創與臨床反應，常 2–4 週'}
       ]},
-     {name:'胃腸穿孔 (Hollow viscus perforation)', en:'GI tract perforation',
-      note:'需涵蓋腸道 GNB＋厭氧，並依上／下消化道來源、社區／院內、嚴重度決定廣度與是否加抗黴菌／抗 MRSA。感染源控制（手術修補／引流）為關鍵。上消化道（胃／十二指腸）穿孔迅速修補且低風險者療程可短。',
+     {name:'胃腸穿孔', en:'Hollow viscus perforation',
+      note:'胃腸道穿孔導致腹腔內感染／腹膜炎，須涵蓋腸道 GNB＋厭氧，並依上／下消化道來源、社區／院內、嚴重度決定廣度與是否加抗黴菌／抗 MRSA。感染源控制（手術修補／引流）為關鍵：上消化道（胃／十二指腸）穿孔迅速修補且低風險者療程可短；下消化道（結腸）穿孔厭氧與 GNB 菌量高、污染重，療程與廣度依污染程度與感染源控制而定。',
       regimens:[
         {role:'first', label:'社區型：Ceftriaxone ＋ Metronidazole（或 Ertapenem）', drugs:['ceftriaxone','metronidazole'], dur:'感染源控制後 4–5 天'},
         {role:'first', label:'院內／重症／曾用抗生素：Piperacillin-tazobactam 或 Meropenem', drugs:['piptazo'], dur:'感染源控制後 4–7 天'},
         {role:'special', label:'加抗黴菌（見下方適應症）', drugs:['micafungin'], dur:'依培養與反應', note:'Candida 於上消化道穿孔常見。指徵：上消化道（胃／十二指腸）穿孔、術後或院內型、反覆滲漏、重症敗血症、免疫低下、長期 TPN／廣效抗生素、腹腔／引流培養出念珠菌。單純社區型下消化道穿孔且低風險者通常不需。'},
-        {role:'special', label:'加抗 MRSA（院內／已移生）', drugs:['vancomycin'], dur:'同主方案', note:'台灣可用 teicoplanin 替代（once-daily、腎毒性較低）；深部感染需足量。'}
+        {role:'special', label:'加抗 MRSA（院內／已移生）', drugs:['teicoplanin'], dur:'同主方案', note:'台灣以 teicoplanin 為首選（once-daily、腎毒性較低）；vancomycin 為替代；深部感染需足量並監測 trough。'}
       ]},
      {name:'腸阻塞 / 麻痺性腸阻塞', en:'Ileus / bowel obstruction',
       note:'單純機械性或麻痺性腸阻塞本身不是抗生素適應症。僅在懷疑絞扼(strangulation)、腸壞死、穿孔或腹膜炎時才給藥。',
@@ -1032,11 +1032,14 @@ const SITES = [
         {role:'alt', label:'Ceftriaxone ＋ Metronidazole（輕中度）', drugs:['ceftriaxone','metronidazole'], dur:'依臨床反應'},
         {role:'special', label:'透壁壞死／需腸切除：比照重度 IAI', drugs:['meropenem'], dur:'術後 4–7 天'}
       ]},
-     {name:'上消化道出血（肝硬化）', en:'UGI bleeding in cirrhosis',
-      note:'肝硬化併上消化道出血者，預防性抗生素可降低細菌感染與再出血、改善存活（Baveno VII）。非肝硬化之單純上消化道出血不需預防性抗生素。',
+     {name:'消化道出血', en:'GI bleeding',
+      note:'抗生素僅在特定情境有適應症：肝硬化併靜脈曲張／上消化道出血需預防性抗生素（Baveno VII，可降低細菌感染與再出血、改善存活）。非靜脈曲張、非肝硬化之出血（消化性潰瘍、小腸、大腸）本身不是抗生素適應症，除非合併穿孔、缺血、憩室炎或敗血症。',
       regimens:[
-        {role:'first', label:'Ceftriaxone（預防性）', drugs:['ceftriaxone'], dur:'最多 7 天（止血穩定可提早停）', note:'首選 1 g/day，尤其進展期肝硬化或當地 quinolone 抗藥率高者。'},
-        {role:'alt', label:'Fluoroquinolone（低風險之替代）', drugs:['ciprofloxacin'], dur:'最多 7 天', note:'傳統為 norfloxacin 口服；本表以 ciprofloxacin 代表此類。'}
+        {role:'first', label:'食道／胃靜脈曲張出血（肝硬化）：Ceftriaxone 預防', drugs:['ceftriaxone'], dur:'最多 7 天（止血穩定可提早停）', note:'首選 1 g/day，尤其進展期肝硬化或當地 quinolone 抗藥率高者（Baveno VII）。'},
+        {role:'alt', label:'靜脈曲張出血之替代：Fluoroquinolone', drugs:['ciprofloxacin'], dur:'最多 7 天', note:'傳統為 norfloxacin 口服；本表以 ciprofloxacin 代表此類。'},
+        {role:'none', label:'消化性潰瘍出血：不需預防性抗生素', drugs:[], note:'非靜脈曲張性上消化道出血不需常規抗生素。H. pylori 陽性者於病情穩定後給根除療程（屬計畫性治療，非急性經驗用藥）。'},
+        {role:'none', label:'小腸出血：不需抗生素', drugs:[], note:'血管發育不良、腫瘤、Meckel 憩室、小腸潰瘍等本身無感染指徵。'},
+        {role:'none', label:'大腸出血（憩室、血管發育不良、痔瘡等）：不需抗生素', drugs:[], note:'單純下消化道出血不需抗生素；僅合併憩室炎、缺血性腸炎、穿孔或敗血症時，比照對應之腹腔內感染給藥。'}
       ]},
      {name:'痔瘡出血', en:'Hemorrhoid bleeding',
       note:'單純痔瘡出血沒有感染指徵，不是抗生素適應症。',
@@ -1126,9 +1129,9 @@ const SITES = [
      {name:'化膿性 / 膿瘍（MRSA）', en:'Purulent / abscess (MRSA)',
       note:'核心處置為切開引流；中重度加覆蓋 CA-MRSA 的抗生素並送膿液培養。',
       regimens:[
-        {role:'first', label:'Vancomycin（住院／重度）', drugs:['vancomycin'], dur:'引流後 5–7 天'},
+        {role:'first', label:'Teicoplanin（住院／重度，台灣首選）', drugs:['teicoplanin'], dur:'引流後 5–7 天', note:'SSTI 非 CNS 感染，teicoplanin 與 vancomycin 療效相當且 once-daily、可 IM、腎毒性較低，適合 OPAT／腎功能不佳者；深部感染需足量。'},
         {role:'first', label:'口服：TMP-SMX 或 Doxycycline', drugs:['tmpsmx'], dur:'引流後 5–7 天', note:'門診輕中度 CA-MRSA。'},
-        {role:'alt', label:'Teicoplanin（台灣常用，可等效替代 vancomycin）', drugs:['teicoplanin'], dur:'引流後 5–7 天', note:'SSTI 此類非 CNS 感染，teicoplanin 與 vancomycin 療效相當，且 once-daily、可 IM、腎毒性較低，適合 OPAT／腎功能不佳者。'},
+        {role:'alt', label:'Vancomycin（替代）', drugs:['vancomycin'], dur:'引流後 5–7 天'},
         {role:'alt', label:'Linezolid（口服替代／頑固）', drugs:['linezolid'], dur:'引流後 5–7 天'}
       ]},
      {name:'壞死性軟組織感染', en:'Necrotizing fasciitis',
@@ -1195,21 +1198,21 @@ const SITES = [
      {name:'急性骨髓炎（經驗性）', en:'Acute osteomyelitis, empiric',
       note:'成人以 S. aureus 為主；儘量取骨培養／血培養再給藥。依 MRSA 風險決定經驗覆蓋。',
       regimens:[
-        {role:'first', label:'Vancomycin（涵蓋 MRSA 經驗）', drugs:['vancomycin'], dur:'≥4–6 週', note:'確認 MSSA 後降階 cefazolin／nafcillin。'},
-        {role:'alt', label:'Teicoplanin（台灣常用，適合長療程／OPAT）', drugs:['teicoplanin'], dur:'≥4–6 週', note:'骨關節長療程時 once-daily、可 IM、腎毒性較低；需足量並監測 trough（骨感染目標較高）。'},
+        {role:'first', label:'Teicoplanin（涵蓋 MRSA 經驗，台灣首選）', drugs:['teicoplanin'], dur:'≥4–6 週', note:'骨關節長療程 once-daily、可 IM、腎毒性較低；需足量並監測 trough（骨感染目標較高）。確認 MSSA 後降階 cefazolin／nafcillin。'},
+        {role:'alt', label:'Vancomycin（替代）', drugs:['vancomycin'], dur:'≥4–6 週'},
         {role:'first', label:'Cefazolin 或 Nafcillin（MSSA 確診）', drugs:['cefazolin'], dur:'4–6 週'},
         {role:'alt', label:'加 GNB 覆蓋（免疫低下／術後／植入物）', drugs:['cefepime'], dur:'4–6 週'}
       ]},
      {name:'化膿性關節炎', en:'Septic arthritis',
       note:'關節引流／沖洗＋抗生素。經驗覆蓋 MRSA；性活躍年輕者考慮淋病(N. gonorrhoeae)。',
       regimens:[
-        {role:'first', label:'Vancomycin ＋ Ceftriaxone', drugs:['vancomycin','ceftriaxone'], dur:'3–4 週', note:'ceftriaxone 覆蓋 GNB 與淋球菌。'},
-        {role:'alt', label:'Vancomycin ＋ Cefepime（GNB／Pseudomonas 風險）', drugs:['vancomycin','cefepime'], dur:'3–4 週'}
+        {role:'first', label:'Teicoplanin ＋ Ceftriaxone', drugs:['teicoplanin','ceftriaxone'], dur:'3–4 週', note:'ceftriaxone 覆蓋 GNB 與淋球菌；抗 MRSA 台灣以 teicoplanin 為首選，vancomycin 為替代。'},
+        {role:'alt', label:'Teicoplanin ＋ Cefepime（GNB／Pseudomonas 風險）', drugs:['teicoplanin','cefepime'], dur:'3–4 週'}
       ]},
      {name:'人工關節感染 PJI', en:'Prosthetic joint infection',
       note:'常需清創或更換假體；葡萄球菌加 rifampin(生物膜)。感染科會診。',
       regimens:[
-        {role:'first', label:'Vancomycin ＋ Rifampin', drugs:['vancomycin','rifampin'], dur:'依手術策略，靜脈後常口服接續共 3–6 個月', note:'rifampin 僅在保留假體之清創、傷口乾燥且引流管移除後加入。'},
+        {role:'first', label:'Teicoplanin ＋ Rifampin', drugs:['teicoplanin','rifampin'], dur:'依手術策略，靜脈後常口服接續共 3–6 個月', note:'抗 MRSA 台灣以 teicoplanin 為首選（vancomycin 為替代）；rifampin 僅在保留假體之清創、傷口乾燥且引流管移除後加入。'},
         {role:'special', label:'MSSA：Nafcillin／Cefazolin ＋ Rifampin', drugs:['nafcillin','rifampin'], dur:'同上'}
       ]},
      {name:'糖尿病足骨髓炎', en:'Diabetic foot osteomyelitis',
@@ -1255,7 +1258,7 @@ const SITES = [
       note:'屬院內型腹腔內感染；覆蓋 Pseudomonas、ESBL、腸球菌，並依風險加抗 MRSA／抗黴菌。感染源控制（引流／再手術）是關鍵。',
       regimens:[
         {role:'first', label:'Piperacillin-tazobactam', drugs:['piptazo'], dur:'感染源控制後 4–7 天', note:'重症／曾用抗生素改 meropenem。'},
-        {role:'special', label:'加抗 MRSA（風險／已移生）：Vancomycin 或 Teicoplanin', drugs:['vancomycin'], dur:'同主方案', note:'台灣可用 teicoplanin 替代（once-daily、腎毒性較低）。'},
+        {role:'special', label:'加抗 MRSA（風險／已移生）', drugs:['teicoplanin'], dur:'同主方案', note:'台灣以 teicoplanin 為首選（once-daily、腎毒性較低）；vancomycin 為替代。'},
         {role:'special', label:'加抗黴菌（見下一型態之適應症）', drugs:['micafungin'], dur:'依培養與反應'}
       ]},
      {name:'術後何時加抗黴菌（腹腔念珠菌）', en:'When to add antifungal',
@@ -1269,7 +1272,7 @@ const SITES = [
       note:'淺層 SSI 常只需拆線引流；深部／器官腔隙依部位處理。經驗覆蓋依手術類別與 MRSA 風險。',
       regimens:[
         {role:'first', label:'乾淨手術、無 MRSA 風險：Cefazolin', drugs:['cefazolin'], dur:'依清創與反應'},
-        {role:'first', label:'MRSA 風險／已移生：Vancomycin 或 Teicoplanin', drugs:['vancomycin'], dur:'依反應', note:'台灣常用 teicoplanin 替代（once-daily、可 IM、腎毒性較低）。'},
+        {role:'first', label:'MRSA 風險／已移生：Teicoplanin（台灣首選）', drugs:['teicoplanin'], dur:'依反應', note:'台灣以 teicoplanin 為首選（once-daily、可 IM、腎毒性較低）；vancomycin 為替代。'},
         {role:'alt', label:'腸道／會陰手術：Cefazolin ＋ Metronidazole', drugs:['cefazolin','metronidazole'], dur:'依反應', note:'或直接用 pip-tazo。'}
       ]},
      {name:'術後發燒之感染源評估', en:'Postop fever workup',
@@ -1295,10 +1298,11 @@ const BACTERIA = [
        {role:'alt', label:'β-lactam 過敏：Vancomycin／Cefazolin(非嚴重過敏)', drugs:['vancomycin']}
      ]},
     {name:'抗藥金黃色葡萄球菌 (MRSA)', en:'S. aureus, methicillin-resistant', kw:'MRSA staph 葡萄球菌',
-     note:'甲氧西林抗藥。菌血症首選 vancomycin(TDM)或 daptomycin；肺炎不可用 daptomycin。',
+     note:'甲氧西林抗藥。菌血症／心內膜炎首選 vancomycin(TDM)或 daptomycin；肺炎不可用 daptomycin。皮膚軟組織、骨關節等非 CNS／非菌血症之感染，台灣可以 teicoplanin 為首選（腎毒性較低）。',
      regimens:[
-       {role:'first', label:'Vancomycin（TDM AUC/MIC 400–600）', drugs:['vancomycin']},
+       {role:'first', label:'Vancomycin（TDM AUC/MIC 400–600；菌血症／心內膜炎／CNS）', drugs:['vancomycin']},
        {role:'first', label:'Daptomycin（菌血症；不可用於肺炎）', drugs:['daptomycin']},
+       {role:'alt', label:'Teicoplanin（SSTI／骨關節等，台灣常用；需足量並監測 trough）', drugs:['teicoplanin']},
        {role:'alt', label:'Linezolid（肺炎／口服）／Ceftaroline', drugs:['linezolid']}
      ]},
     {name:'肺炎鏈球菌', en:'Streptococcus pneumoniae', kw:'strep pneumococcus 肺炎',
