@@ -1,0 +1,1899 @@
+{
+ "_meta": {
+  "title": "台大醫院藥劑部 抗微生物劑 藥物資料庫 (NTUH Anti-infective Drug Database)",
+  "source": "https://dept.ntuh.gov.tw/phar/WebAp/QueryDrugInfoPhr.aspx?PharmacologyId=18 (XVI. Antiinfective Agents) 及各藥明細/腎/肝/透析/CVVH/注射子頁",
+  "scraped_date": "2026-07-13",
+  "drug_count": 57,
+  "matched_to": "Clinical-Tools/tools/antibiotics.html 的 DRUGS keys (our_key)",
+  "fields": {
+   "generic": "學名",
+   "brand_en": "英文商品名(全名，短名取前字，如 Cefa)",
+   "name_zh": "中文商品名",
+   "dosage_form": "劑型",
+   "usual_dose": "常用劑量",
+   "max_dose": "最大劑量",
+   "indication": "衛福部許可證適應症",
+   "pregnancy": "懷孕藥品分級(A/B/C/D/X)",
+   "price_nhi": "健保價(NT$)",
+   "price_self": "自費售價(NT$)",
+   "company": "藥商",
+   "renal": "腎功能不佳劑量調整(CCr分級)",
+   "hepatic": "肝功能不佳劑量調整",
+   "dialysis": "透析病人劑量(HD/PD)",
+   "cvvh": "CVVH/CVVHD/CVVHDF劑量",
+   "injection": "注射劑給藥指引",
+   "all_products": "台大同學名之所有品項(可能多廠牌/劑型)"
+  },
+  "missing": [
+   "ceftobiprole",
+   "aztreonam",
+   "nitrofurantoin"
+  ],
+  "missing_note": "台大此抗微生物劑分類無此三藥（aztreonam、nitrofurantoin、ceftobiprole）",
+  "WARNING": "資料自動擷取自台大藥劑部網站(2026-07-13)，供整合參考；臨床使用前請對照台大原始頁面與最新仿單。腎/肝/透析為原頁文字節錄(截斷至約900字)。"
+ },
+ "drugs": {
+  "piptazo": {
+   "our_key": "piptazo",
+   "generic": "Piperacillin Sodium and Tazobactam Sodium",
+   "code": "TAO1AA28",
+   "brand_en": "Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency)",
+   "name_zh": "達梭黴素涷晶注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Bases on piperacillin content. Intermittent IF over at least 30 mins. Adults & children ≧ 40 kg, 3 g q6h; severe infection, 4 g q6h; max. 16 g/day. Children > 9 m/o, Children 2-9 m/o, 80 mg/kg q8h; severe infection, 300-400 mg/kg/day in q6h; max. 16 g/day. Infants UTI, adults, complicated: 2-4 g q6-8h; uncomplicated, 2-4 g q6-12h.",
+   "max_dose": "16 g/day",
+   "indication": "對PIPERACILLIN具有感受性以及對PIPERACILLIN具抗藥性但對PIPERACILLIN／TAZOBACTAM有感受性之B－LACTAMASE產生菌株所引起之中至嚴重程度感染",
+   "pregnancy": "B",
+   "price_nhi": "178",
+   "price_self": "223",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Piperacillin Sodium and Tazobactam Sodium",
+     "code": "TAO1AA28",
+     "zh": "達梭黴素涷晶注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency) Piperacillin Sodium and Tazobactam Sodium Y(1,2) for infections other than nosocomial pneumonia 20-40 (mL/min) 2 g Piperacillin q6h (1,2) 2 Y(1,2) For infections other than nosocomial pneumonia 2 g Piperacillin q8h (1,2) 3 Y(1,2) For nosocomial pneumonia 20~40 (mL/min) 3 g Piperacillin q6h (1,2) 4 Y(1,2) For nosocomial pneumonia 2 g Piperacillin q6h (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency) Piperacillin Sodium and Tazobactam Sodium 無資料 No adjustment (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency) Piperacillin Sodium and Tazobactam Sodium 2 g Piperacillin q8h (1) 2 g Piperacillin q8h (1) 2",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency) Piperacillin Sodium and Tazobactam Sodium 3 g Piperacillin q6h 3 g Piperacillin q6h 3 g Piperacillin q6h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Tazocin Lyo-Injection 2000 mg piperacillin & 250 mg tazobactam/vial (Na 2.79 mEq/g potency) Piperacillin Sodium and Tazobactam Sodium IF W, NS, D5W(3) 體積：10 mL (3) NS, D5W 每劑：50-150 mL/dose (1,3) 20-80 mg/mL ≧30 min (1,2) 應與aminoglycosides、血液製劑及蛋白水解物分開給藥。 室溫15-30℃ 室溫：24 hr(2,3) 2-8度：48 hr(2,3) 室溫：24 hr(3) 2-8度：7 D(1,3) PVC：相容(2) PP：NA PE：相容(2) EVA：相容(2) cIF W, NS, D5W 體積：10 mL NS, D5W 每劑：250 mL/dose 20-80 mg/mL ≧30 min (1,2) 應與aminoglycosides、血液製劑及蛋白水解物分開給藥。 室溫15-30℃ 室溫：24 hr(2,3) 2-8度：48 hr(2,3) 室溫：24 hr(3) 2-8度：7 D(1,3) PVC：相容(2) PP：無資料 PE：相容(2) EVA：相容(2) 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs"
+  },
+  "brosym": {
+   "our_key": "brosym",
+   "generic": "Cefoperazone Sodium and Sulbactam Sodium",
+   "code": "BRO1AB44",
+   "brand_en": "Brosym for Injection (cefoperazone sodium 1000 mg & sulbactam sodium 1000 mg)/vial (Na 5.4 mEq/vial)",
+   "name_zh": "博益欣注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV. Bases on cefoperazone content. Adults, 500-1000 mg q12h; severe infection: 2000 mg q12h; MDRAB infection: please consult ID specialist for dosage adjustment. Children: 20-40 mg/kg/day in 2-4 doses; serious infection: 80 mg/kg/day in 2-4 doses.",
+   "max_dose": "",
+   "indication": "適用於治療由感受性細菌所引起的下列感染：上、下呼吸道感染、上、下泌尿道感染、腹膜炎、膽囊炎、膽管炎及其他腹腔內感染、骨盆發炎、子宮內膜炎及其他生殖道感染、以及創傷燙傷、手術後之二次感染。",
+   "pregnancy": "B",
+   "price_nhi": "357",
+   "price_self": "447",
+   "company": "臺灣東洋藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefoperazone Sodium and Sulbactam Sodium",
+     "code": "BRO1AB44",
+     "zh": "博益欣注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Brosym for Injection (cefoperazone sodium 1000 mg & sulbactam sodium 1000 mg)/vial (Na 5.4 mEq/vial) Cefoperazone Sodium and Sulbactam Sodium Y (1,2,仿單) > 30 (mL/min) 2000 mg (cefoperazone) q12h 2 15~30 (mL/min) 1000 mg (cefoperazone) q12h 3 500 mg (cefoperazone) q12h 4 除MDRAB須使用高劑量sulbactam(off label)治療的病人外，使用Brosym於其他適應症應依腎功能調整劑量或考慮其他替代藥品。(cefoperazone由膽排除, 依腎功能調整恐降低療效，sulbactam由腎排除，未調整將導致藥物累積)。",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Brosym for Injection (cefoperazone sodium 1000 mg & sulbactam sodium 1000 mg)/vial (Na 5.4 mEq/vial) Cefoperazone Sodium and Sulbactam Sodium Y",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Brosym for Injection (cefoperazone sodium 1000 mg & sulbactam sodium 1000 mg)/vial (Na 5.4 mEq/vial) Cefoperazone Sodium and Sulbactam Sodium 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Brosym for Injection (cefoperazone sodium 1000 mg & sulbactam sodium 1000 mg)/vial (Na 5.4 mEq/vial) Cefoperazone Sodium and Sulbactam Sodium IV (1) W, NS, D5W (1) 體積：6-10 mL (1) > 3 min (1) ≦25℃以下 室溫：6 hr (1) 2-8度：48 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IF (1) W, NS, D5W (1) 體積：6-10 mL (1) NS, D5W (1) 每瓶：20 mL/vial 10-250 mg/mL 15-60 mins ≦25℃以下 室溫：6 hr (1) 2-8度：48 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/pha"
+  },
+  "cefazolin": {
+   "our_key": "cefazolin",
+   "generic": "Cefazolin Sodium",
+   "code": "CE 1AB22",
+   "brand_en": "Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency)",
+   "name_zh": "信華注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV over 3-5 mins, intermittent or continuous IF or deep IM. Adults: Mild: 250-500 mg q8h. Moderate: 0.5-1 g q6-8h. Severe: 1-2 g q6h, up to 12 g/day. Perioperative prophylaxis: Preoperative: 1 g ( Intraoperative: Repeat dose every 4 hrs if needed. Postoperative: 0.5-1 g q6-8h for 24 hrs. Infants and children: Mild-moderate infections: 25-50 mg/kg/day in q6-8h; max. 1 g/dose. Severe infections: 100-150 mg/kg/day in q6-8h; max. 2 g/dose. Bacterial endocarditis: Prophylaxis: 50 mg/kg 30-60 mins prior to procedures; max. 1 g/dose. Treatment: 100 mg/kg/day in q6-8h; max. 2 g/dose, up to 6 g/day for severe cases. Neonates: ≦ 2 kg: 25 mg/kg q12h. > 2 kg: ≦ 7 d/o: 50 mg/kg q12h. 8-28 d/o: 50 mg/kg q8h.",
+   "max_dose": "Adults: 12 g/dayInfants, Children and Adolescents: 2 g/dose",
+   "indication": "葡萄球菌、鏈球菌、肺炎雙球菌、腦膜炎球菌及其他具有感受性細菌引起之感染症",
+   "pregnancy": "B",
+   "price_nhi": "25",
+   "price_self": "32",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefazolin Sodium",
+     "code": "CE 1AB22",
+     "zh": "信華注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium Y(1,2) ≧55 (mL/min) full dose 2 Y(1,2) 35-54 (mL/min) full dose ≧q8h (1,2) 3 Y(1,2) 11-34 (mL/min) 50% usual dose q12h (1,2) 4 Y(1,2) ≦10 (mL/min) 50% usual dose q18~24h (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium 無資料 2 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium 0.5-1 g qd or 2 g after each HD session Irregular HD: 15-20 mg/kg (max. 2 g) only after each HD. 20~50%(1) 0.5 g q12h or 1 g qd",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium LD: 2 g, then 1 g q8h or 2 g q12h (1) LD: 2 g, then 1 g q8h or 2 g q12h (1) LD: 2 g, then 1 g q8h or 2 g q12h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 4 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cefa for Injection 1000 mg cefazolin/vial (Na 2.1 mEq/g potency) Cefazolin Sodium cIF (2) W, NS, D5W 體積：W 2.5 mL (330 mg/mL)(2, 3, 4); W 7 mL(1); W 10 mL (約100 mg/mL)(7) W, NS, D5W, LR (2) 每劑：50~100 mL/dose (2) 1.溶解前後均避光保存(1,2)。 2. 若使用NS溶解，需立即使用完畢 (1)。 室溫(2)，避光(1)，貯存於緊密容器 室溫：48 hr ( 1) 2-8度：96 hr (1)，冷藏可能結晶(2) PVC：相容(2) PP：無資料 PE：無資料 EVA：相容(2) IF (2) W, NS, D5W 體積：W 2.5 mL (330 mg/mL)(2, 3, 4); W 7 mL(1); W 10 mL (約100 mg/mL)(7) W, NS, D5W, LR (2) 每劑：50~100 mL/dose (2) IM (1,2) W (1,2), NS, D5W 體積：W: 3.5 mL; NS, D5W: 4.5 mL (1) IV (1) W, NS, D5W 體積：W 2.5 mL (330 mg/mL)(2, 3, 4); W 7 mL(1); W 10 mL (約100 mg/mL)(7) 3~5 min (2) 1 第 1 / 1 頁，每頁 10 筆，共 4 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1"
+  },
+  "cefalexin": {
+   "our_key": "cefalexin",
+   "generic": "Cephalexin",
+   "code": "CEP4AB02",
+   "brand_en": "Cephalexin Capsule 250 mg/cap",
+   "name_zh": "信保欣膠囊",
+   "dosage_form": "硬膠囊",
+   "usual_dose": "PO. Adults: 250-1000 mg q6h or 500 mg q12h; max. 4 g/day. Endocarditis prophylaxis: 2 g 30-60 mins prior to procedures. Uncomplicated cystitis (> 15 y/o): 500 mg q12h for 5-7 days (may extend up to 14 days if necessary). Children: Mild to moderate infections: 25-50 mg/kg/day in q6-8h. Severe infections: 75-100 mg/kg/day in q6-8h; max. 4 g/day. Otitis media: 75-100 mg/kg/day in q6h. Pharyngitis/tonsillitis, skin infections: 25-50 mg/kg/day in q12h × at least 10 days. Uncomplicated cystitis: > 15 y/o, 500 mg q12h × 7-14 days. Endocarditis prophylaxis: 50 mg/kg 30-60 mins prior to procedures; max. 2 g/dose.",
+   "max_dose": "Adults: 4 g/day",
+   "indication": "有感受性細菌所引起之泌尿生殖道、呼吸道、柔組織及皮膚等感染症",
+   "pregnancy": "B",
+   "price_nhi": "2",
+   "price_self": "2",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cephalexin",
+     "code": "CEP4AB02",
+     "zh": "信保欣膠囊"
+    },
+    {
+     "generic": "Cephalexin",
+     "code": "ULE5AB05",
+     "zh": "優力黴素口服懸液用顆粒"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cephalexin Capsule 250 mg/cap Cephalexin Y(1,2) 15-30 (mL/min) 250-500 mg q8-12h 2 Y(1,2) 250-500 mg q12-24h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cephalexin Capsule 250 mg/cap Cephalexin 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cephalexin Capsule 250 mg/cap Cephalexin 250-500 mg q12-24h, give dose after dialysis session (1) 20 to 50%(1) 250-500 mg q12-24h (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "cefuroxime": {
+   "our_key": "cefuroxime",
+   "generic": "Cefuroxime Axetil",
+   "code": "CEF4AB28",
+   "brand_en": "Ceflour Film-coated Tablets 250 mg cefuroxime/tab",
+   "name_zh": "喜華膜衣錠",
+   "dosage_form": "膜衣錠",
+   "usual_dose": "PO, take with food. Adults: General infections (skin, respiratory, sinusitis, pharyngitis): 250-500 mg bid. Uncomplicated UTIs: 250 mg bid × 7-10 days. Lyme disease: Erythema migrans or carditis: 500 mg bid × 14-21 days. Lyme arthritis: 500 mg bid × 28 days. Infants, children & adolescents: 20-30 mg/kg/day in q12h; max. 1 g/day.",
+   "max_dose": "",
+   "indication": "對廣範圍的革蘭氏陽性及革蘭氏陰性細菌有效，適用於治療對CEFUROXIME敏感的細菌所引起的上、下呼吸道、生殖泌尿道、皮膚，軟組織及淋病等感染症",
+   "pregnancy": "B",
+   "price_nhi": "5.9",
+   "price_self": "8",
+   "company": "永信藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefuroxime Axetil",
+     "code": "CEF4AB28",
+     "zh": "喜華膜衣錠"
+    },
+    {
+     "generic": "Cefuroxime Sodium",
+     "code": "CEF1AB19",
+     "zh": "賜福樂信注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Ceflour Film-coated Tablets 250 mg cefuroxime/tab Cefuroxime Axetil Y 10-30 (mL/min) 250 mg q12h 2 Y 250 mg qd",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Ceflour Film-coated Tablets 250 mg cefuroxime/tab Cefuroxime Axetil 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Ceflour Film-coated Tablets 250 mg cefuroxime/tab Cefuroxime Axetil 250 mg qd after HD on HD days (1) 無資料 250-500 mg qd (1,8) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "cefmetazole": {
+   "our_key": "cefmetazole",
+   "generic": "Cefmetazole Sodium",
+   "code": "CET1AB14",
+   "brand_en": "Cetazone Injection 500 mg cefmetazole/vial (Na 2.12 mEq/g potency)",
+   "name_zh": "喜達隆注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV over 3-5 mins or intermittent IF over 10-60 mins.Adults, 1-2 g q6-12h, up to 8 g/day. Children, 25-150 mg/kg/day in q6-12h.",
+   "max_dose": "",
+   "indication": "葡萄球菌、鏈球菌、肺炎雙球菌、腦膜炎球菌及其他具有感受性細菌引起之感染。",
+   "pregnancy": "B",
+   "price_nhi": "59",
+   "price_self": "74",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefmetazole Sodium",
+     "code": "CET1AB14",
+     "zh": "喜達隆注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cetazone Injection 500 mg cefmetazole/vial (Na 2.12 mEq/g potency) Cefmetazole Sodium Y 50-90 (mL/min/1.73 m2) 1-2 g q12h 2 Y 30~49 (mL/min/1.73 m2) 0.75-1.5 g q12h 3 Y 10~29 (mL/min/1.73 m2) 1-2 g q24h 4 Y 1-2 g q48h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cetazone Injection 500 mg cefmetazole/vial (Na 2.12 mEq/g potency) Cefmetazole Sodium 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cetazone Injection 500 mg cefmetazole/vial (Na 2.12 mEq/g potency) Cefmetazole Sodium 1-2 g (standard dose) after HD (1-2 g TIW) (2) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cetazone Injection 500 mg cefmetazole/vial (Na 2.12 mEq/g potency) Cefmetazole Sodium IF (1) W, NS, D5W (1) 體積：5 mL (1) NS, D5W (1) The drug may be gradually colored by light. Store it with caution after opening the package (1). 室溫 (1) 室溫：24 hr (1) PVC：NA PP：NA PE：NA EVA：NA IV (1) W, NS, D5W (1) 體積：5 mL (1) 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://d"
+  },
+  "flomoxef": {
+   "our_key": "flomoxef",
+   "generic": "Flomoxef Sodium",
+   "code": "FLU1AB34",
+   "brand_en": "Flumarin for Injection 1.0 g/vial",
+   "name_zh": "氟黴寧靜脈注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV or intermittent IF. Adults, 1-2 g/day in 2 doses; serious infections: 4 g/day in 2-4 doses. Children, 60-80 mg/kg/day in 3-4 doses, up to 150 mg/kg/day. Neonates ≦ 3 d/o, 20 mg/kg q8-12h; > 3 d/o: 20 mg/kg q6-8h.",
+   "max_dose": "Adults, 4 g/dayChildren,150 mg/kg/day",
+   "indication": "對本劑有感受性之下列病原菌引起之嚴重感染：葡萄球菌屬、鏈球菌屬(腸球菌除外)、肺炎球菌、PEPTOSTREPT OCOCCUS屬、BRANHAMELLA CATARRHALIS、淋菌、大腸菌、KLEBSIELLA屬、PROTEUS屬、INFLUENZAE菌、BACTEROIDES屬。",
+   "pregnancy": "",
+   "price_nhi": "235",
+   "price_self": "294",
+   "company": "臺灣鹽野義製藥股份有限公司",
+   "all_products": [
+    {
+     "generic": "Flomoxef Sodium",
+     "code": "FLU1AB34",
+     "zh": "氟黴寧靜脈注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Flumarin for Injection 1.0 g/vial Flomoxef Sodium Y > 80 (mL/min) 1 g q6h 2 Y 50 - 80 (mL/min) 1 g q8h 3 Y 25 - 50 (mL/min) 1 g q12h 4 Y 1 g qd",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Flumarin for Injection 1.0 g/vial Flomoxef Sodium 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Flumarin for Injection 1.0 g/vial Flomoxef Sodium 1 g qd after HD (仿單) 80% (仿單) 1 g q24h (仿單) 24.37% (仿單)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Flumarin for Injection 1.0 g/vial Flomoxef Sodium 無資料 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Flumarin for Injection 1.0 g/vial Flomoxef Sodium IF (1) W, NS, D5W (1) 體積：≧4 mL (1) 室溫：6 hr (1) 2-8度：24 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IV (1) W, NS, D5W (1) 體積：≧4 mL (1) 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "ceftriaxone": {
+   "our_key": "ceftriaxone",
+   "generic": "Ceftriaxone Sodium",
+   "code": "CEI1AB20",
+   "brand_en": "Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency)",
+   "name_zh": "舒復靜脈注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 15-30 mins in adults or 10-30 mins in pediatric patients or deep IM. Adults: 1-2 g/day in 1-2 doses. Meningitis: 2 g q12h; max. 4 g/day. Pelvic inflammatory disease (PID): Mild-Moderate: 500 mg IM once + doxycycline 100 mg PO bid +/- metronidazole 500 mg PO bid × 14 days. Severe PID: 1 g IV qd + doxycycline 100 mg PO bid + metronidazole 500 mg PO/IV bid × ≧ 14 days. Gonococcal infection: uncomplicated: 1 g IM once; disseminated Infection (DGI): 1 g IV qd × ≧ 7-14 days; meningitis, endocarditis : 1-2 g IV qd × 10-14 days or up to ≧ 4 weeks. Bacterial endocarditis prophylaxis in high-risk patients: 1 g IV/IM 30- 60 mins prior to procedures. Infants & children: Mild-moderate infection: 50-75 mg/kg qd; max. 1 g/day. Severe infection: 100 mg/kg/day in 1-2 doses; max. 4 g/day. Neonates: IM/IV 50 mg/kg q24h. Gonococcal infection: 25-50 mg/kg qd; max. 125 mg/dose. Meningitis: ≧ 14 d/o: 80-100 mg/kg qd.",
+   "max_dose": "4 g/day",
+   "indication": "葡萄球菌、鏈球菌、肺炎雙球菌、腦膜炎球菌及其他具有感受性細菌引起之感染症。",
+   "pregnancy": "B",
+   "price_nhi": "39.8",
+   "price_self": "50",
+   "company": "臺灣汎生製藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ceftriaxone Sodium",
+     "code": "CEI1AB20",
+     "zh": "舒復靜脈注射劑"
+    },
+    {
+     "generic": "Ceftriaxone Sodium",
+     "code": "SIN1AB20",
+     "zh": "信得瑞注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency) Ceftriaxone Sodium N(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency) Ceftriaxone Sodium Y Only when concurrent renal and hepatic dysfunction: Maximum dose ≦ 2 g/day (1) Dosing adjustments may be indicated in patients with combined hepatic and renal insufficiency, and monitor serum levels (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency) Ceftriaxone Sodium Usual dose (1), 1-2 g q24h after HD (2)(Drug F&C)(8) 0~5% (1) Usual dose (1), 1 g q24h or 750 mg q12h (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency) Ceftriaxone Sodium Usual dose (1) or 2 g LD, then 1-2 g q12-24h (2) Usual dose (1) or 2 g LD, then 1-2 g q12-24h (2) Usual dose (1) or 2 g LD, then 1-2 g q12-24h (2) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cefin for IV Injection 500 mg ceftriaxone/vial (Na 3.6 mEq/g potency) Ceftriaxone Sodium IF (1,2) W 體積：5 mL (1) NS, D5W, W (1) 每瓶：50~100 mL/vial (1) 10~40 mg/mL (2) ≧30 min (1); 10~30 min (2) 1. 勿和其他含抗生素藥物的溶液混合使用。(1) 2.不可加入含鈣之溶液(如 LR 及 R)中或由Y型管同時給予。 (1,2) ≦ 30℃ (1); ≦ 25℃, 避光(2,3) 室溫：6 hr (1), 2 D (100 mg/mL) (2) 2-8度：24 hr (1), 10 D (100 mg/mL) (2) 室溫：3 D(3) 2-8度：10 D (3) PVC：相容(3) PP：相容(2) PE：無資料 EVA：無資料 IV (1) W (1) 體積：5 mL (1) 100 mg/mL (1) 2~4 min Rapid IV injection of a 2 g dose may resulted in tachycardia, restlessness, diaphoresis, and palpitation. IM (1) W or 1% Lidocaine HCL (1) 體積：2-3.5 mL 建議250-500 mg溶於2 mL，1 g則溶於3.5 mL的1% Lidocaine HCL溶液，注射於身體較大的肌肉，且IM每邊注射劑量不超過1 g。 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh."
+  },
+  "cefotaxime": {
+   "our_key": "cefotaxime",
+   "generic": "Cefotaxime Sodium",
+   "code": "CLA1AB06",
+   "brand_en": "Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency)",
+   "name_zh": "可活能注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV over 3-5 mins, intermittent IF over 20-30 mins or continuous IF or deep IM. IM doses of 2 g should be divided between different injection sites. Adults, children ≧ 50 kg: Uncomplicated infections: 1 g q12h. Moderate-severe infections: 1-2 g q8h, up to 2 g q4-6h; max. 12 g/day. Children 1 m/o-18 y/o & Mild-moderate infection: 100-200 mg/kg/day in q4-8h; max. 6 g/day. Severe infection: 200-225 mg/kg/day in q4-6h; up to 300 mg/kg/day. Meningitis: 225-300 mg/kg/day in q6-8h. Neonates: General infection: IM, IV. ≦ 14 days: 50 mg/kg q12h. > 14 days: 50 mg/kg q8h. 1000-2000 g: ≦ 7 days: 50 mg/kg q12h. > 7 days: 50 mg/kg q8h. > 2000 g: ≦ 7 days: 50 mg/kg q12h. > 7 days: 50 mg/kg q6-8h. Meningitis: IV. ≦ 2000 g: 50 mg/kg q12h. > 2000 g: ≦ 7 days: 50 mg/kg q8h. > 7 days: 50 mg/kg q6-8h.",
+   "max_dose": "Adults & children ≧ 50 kg, 12 g/day.",
+   "indication": "對下列疾病具感受性細菌之感染、下呼吸道感染、泌尿器官感染、生殖器官、敗症、皮膚感染、腹腔感染、骨骼關節炎症、中樞神經系統感染",
+   "pregnancy": "B",
+   "price_nhi": "77",
+   "price_self": "97",
+   "company": "賽諾菲股份有限公司(2014.7.28)臺灣安萬特藥品股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefotaxime Sodium",
+     "code": "CLA1AB06",
+     "zh": "可活能注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency) Cefotaxime Sodium Y (1,2) GFR 10~50 (mL/min/1.73 m2) q6h~12h(1) 2 GFR 50% dose or q24h (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency) Cefotaxime Sodium N (3)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency) Cefotaxime Sodium 1-2 g qd, post HD on HD days (1) 62% (2) 1 g (2) CAPD: 1 g qd (1) not dialyzable (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency) Cefotaxime Sodium 2 g q8h 2 g q8h 2 g q8h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Claforan for Injection 500 mg cefotaxime/vial (Na 2.1 mEq/g potency) Cefotaxime Sodium IF (1) W (1) 體積：2 mL (1), 10 mL (2) W, NS, D5W, LR (1,2) 每劑：40 mL/dose (1) ~1000 mL/dose (2) 20~60 min (1,2) 1.Rapid IV ( 2. IM: doses of 2 g should be divided between different injection sites (2). ≦ 25℃, 避光 (1) 室溫：24 hr (1-3), 12 hr (2,3)(≧180 mg/mL) 2-8度：5℃: 7 D (2-4) 室溫：freshly used (1), 24 hr (2,3) 2-8度：24 hr (1), 5 D (2,3) PVC：相容(2) PP：相容(2) PE：無資料 EVA：相容(2) IM (1,2) W (1) 體積：2 mL (1,2) 230 mg/mL (2) IV (1,2) W (1) 體積：2 mL (1) 3~5 min (2) 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information ("
+  },
+  "ceftazavi": {
+   "our_key": "ceftazavi",
+   "generic": "Ceftazidime Pentahydrate and Avibactam Sodium",
+   "code": "ZAV1AB45",
+   "brand_en": "Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency)",
+   "name_zh": "贊飛得注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF. Bases on ceftazidime content. Pneumonia (HAP/VAP), Complicated urinary tract infection (cUTIs): Adults: 2000 mg q8h. Children: ≧ 6 m/o to ≧ 3 m/o to Complicated intra-abdominal infections (cIAIs)(in combination with IV metronidazole): Adults: 2000 mg q8h (in combination with metronidazole). Children: ≧ 6 m/o to ≧ 3 m/o to < 3 m/o: 30 mg/kg q8h.",
+   "max_dose": "max. 2000 mg/dose.",
+   "indication": "適用於治療自出生起之兒童病人及成人病人對Zavicefta 具感受性的革蘭氏陰性微生物（susceptible Gram-negative microorganisms）所引起的下列感染： ．複雜性腹腔內感染(complicated intra-abdominal infection, cIAI) ．複雜性泌尿道感染(complicated urinary tract infection, cUTI)，包括腎盂腎炎(pyelonephritis) ．院內感染型肺炎(Hospital-acquired pneumonia, HAP)，包括呼吸器相關肺炎(ventilator associated pneumonia, VAP) 治療與上列任何感染相關，或疑似與上列任何感染相關之菌血症成人病人。應考量抗生素的使用準則來合理使用抗生素製劑。",
+   "pregnancy": "B",
+   "price_nhi": "2759",
+   "price_self": "3449",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ceftazidime Pentahydrate and Avibactam Sodium",
+     "code": "ZAV1AB45",
+     "zh": "贊飛得注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency) Ceftazidime Pentahydrate and Avibactam Sodium Y 31-50 (mL/min) 1000 mg (ceftazidime) q8h 2 Y 16-30 (mL/min) 750 mg (ceftazidime) q12h 3 Y 6-15 (mL/min) 750 mg (ceftazidime) qd 4 Y ≦5 (mL/min) 750 mg (ceftazidime) qod",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency) Ceftazidime Pentahydrate and Avibactam Sodium N",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency) Ceftazidime Pentahydrate and Avibactam Sodium 750 mg (ceftazidime) qd or qod (based on estimated renal function, e.g. CrCl 6-15 or ≦5 mL/min) 55% No data (consider using ceftazidime basis for dosing)(3)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency) Ceftazidime Pentahydrate and Avibactam Sodium 1000 mg q8h 1000 mg q8h 1000 mg q8h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Zavicefta Powder for Concentrate for Solution for Infusion (Ceftazidime 2000 mg & Avibactam 500 mg)/vial (Na 3.2 mEq/g potency) Ceftazidime Pentahydrate and Avibactam Sodium IF W 體積：10 mL (溶解後總體積約12 mL，ceftazidime 167.3 mg/mL(1)) NS (1,2), D5W (1,2), GS (1,2), LR (1,2) 每劑：100 mL/dose (50-250 mL/dose) 8-40 mg/mL 120 mins 1. 溶解後藥品應於30分鐘內立即稀釋，剩餘藥品 應稀釋後再保存 。 2. 溶解後總體積為12 mL，如劑量為1000 mg需抽取6 mL，750 mg需抽取4.5 mL 。 30°C以下 室溫：無資料 2-8度：無資料。溶解後藥品應於30分鐘內立即稀釋，剩餘藥品 應稀釋後再保存 。 室溫：12 hrs (1,2) 2-8度：24 hrs (1,2) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micr"
+  },
+  "ceftazidime": {
+   "our_key": "ceftazidime",
+   "generic": "Ceftazidime Pentahydrate",
+   "code": "TAT1AB16",
+   "brand_en": "Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency)",
+   "name_zh": "祐坦賜福乾粉注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV over 3-5 mins, intermittent IF over 15-30 mins, extended infusion over 3-4 hrs, continuous infusion or deep IM. Adults: Meningitis, bloodstream infection, intra-abdominal infection, Neutropenic fever, osteomyelitis, pneumonia, septic arthritis, abscess, skin and soft tissue infection: 2 g q8h; max. 12 g/day. Complicated UTI: 1-2 g q8h; max. 12 g/day. Infants, children & adolescents: Mild-moderate infections, complicated intra-abdominal infections: 30-50 mg/kg q8h; max. 6 g/day. Severe infections, meningitis: 200-300 mg/kg/day in q6-8h; max. 12 g/day.Neonates: ≦ 14 d/o: 50 mg/kg q12h. > 14 d/o: 50 mg/kg q8h. ≧ 1000 g: ≦ 7 d/o: 50 mg/kg q12h. > 7 days: 50 mg/kg q8h. Meningitis: ≦ 7 d/o: 50 mg/kg q8h. > 7 d/o: 50 mg/kg q8h.",
+   "max_dose": "",
+   "indication": "CEFTAZIDIME是殺菌性頭孢子菌抗生素、對多種乙內醯胺&#37238;有抵抗力、並對廣範圍的革蘭氏陽性及陰性的細菌有效",
+   "pregnancy": "B",
+   "price_nhi": "25.7",
+   "price_self": "33",
+   "company": "中國化學製藥股份有限公司新豐工廠",
+   "all_products": [
+    {
+     "generic": "Ceftazidime Pentahydrate",
+     "code": "TAT1AB16",
+     "zh": "祐坦賜福乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency) Ceftazidime Pentahydrate Y (1,2) 31~50 (mL/min) q12h(1) 2 16-30 (mL/min) q24h(1) 3 6-15 (mL/min) 50% dose q24h 4 50% dose q48h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency) Ceftazidime Pentahydrate N (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency) Ceftazidime Pentahydrate 0.5-1 g q24h or 1-2 g q48-72h (1) or 1 g loading then 1 g after HD (2) 50-100% (1) 1/2 dose (2) 1 g q24h (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency) Ceftazidime Pentahydrate LD: 2 g, then 1 g q6h LD: 2 g, then 1 g q6h LD: 2 g, then 1 g q6h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Tatumcef Powder for Injection 500 mg ceftazidime with 59 mg Na2CO3/vial (Na 2.3 mEq/g potency) Ceftazidime Pentahydrate IF (1,2) W (1) 體積：10 mL (分兩次加入) (1,2) D5W, NS, W (1) 每瓶：25~50 mL/vial (1,2) 每劑：100 mL/dose (2) 10~40 mg/mL (1,2) 15~30 min (2) 1.如起泡，靜置1-2分鐘 (2)。 2.不宜使用sodium bicarbonate當作稀釋液。 3.不可與aminoglycosides在同一注射器內混合。 4.加入vancomycin會產生沈澱，因此使用此二種藥品前後的注射器沖洗手續需極謹慎 (1)。 15~30°C，避光 (1,3) 室溫：18 hr (1) 2-8度：7 D (1,3) 室溫：24 hr (2,3) 2-8度：7 D (2,3) PVC：相容(2) PP：無資料 PE：相容(2) EVA：無資料 IM (1,2) W (1) 體積：1.5 mL (1) 260 mg/mL IV (1,2) W (1,2) 體積：5 mL (1), 5.3 mL (2) 90 mg/mL (1) 100 mg/mL (2) 3~5 min (2) 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufact"
+  },
+  "cefixime": {
+   "our_key": "cefixime",
+   "generic": "Cefixime",
+   "code": "CEI4AB24",
+   "brand_en": "Cefixmycin Capsule 100 mg/cap (關機)",
+   "name_zh": "喜復黴素膠囊",
+   "dosage_form": "硬膠囊",
+   "usual_dose": "PO. Adults & children > 45 kg, 400 mg/day in 1-2 doses. Children ≦ 45 kg, 8 mg/kg/day in q12-24h; max. 400 mg/day; or fixed dosing by capsules: 5 to 7.6 to 10.1 to 12.6 to 20.6 to 28.1 to 33.1 to 40.1 to ≦ 45 kg: 350 mg/day.",
+   "max_dose": "",
+   "indication": "STREPTOCOCCUS SPP., S.PENEUMONIAE, N.GONORRHOEAE, BRANHAMELLA CATARRHALIS, E. COLI, KLEBSIELLA SPP., SERRATIA SPP., PROTEUS SPP., H. INFLUENZAE菌當中，由CEFIXIME感受性菌引起之下述感染症: 支氣管炎、支氣管擴張症(感染時)，慢性呼吸系疾病的繼發性感染、肺炎、腎盂腎炎、膀胱炎、細菌性尿道炎、中耳炎、副鼻竇炎。",
+   "pregnancy": "B",
+   "price_nhi": "4.17",
+   "price_self": "6",
+   "company": "永信藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefixime",
+     "code": "CEI4AB24",
+     "zh": "喜復黴素膠囊"
+    },
+    {
+     "generic": "Cefixime",
+     "code": "CEX4AB24",
+     "zh": "賜信膠囊"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cefixmycin Capsule 100 mg/cap (關機) Cefixime Y (1,2) 21-59 (mL/min) 75% dose(1,2); 300mg/day (2) 2 50% dose(1,2); 200mg/day (2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cefixmycin Capsule 100 mg/cap (關機) Cefixime 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cefixmycin Capsule 100 mg/cap (關機) Cefixime 75% dose(1,2); 300mg/day (2) 10% (1); not significantly removed by HD (2) No (2) CAPD: 50% dose(1,2); 200mg/day (2) not significantly removed by PD (2) No (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "cefepime": {
+   "our_key": "cefepime",
+   "generic": "Cefepime HCl",
+   "code": "SUP1AB23",
+   "brand_en": "Supecef Powder for Injection 500 mg cefepime/vial",
+   "name_zh": "斯沛服乾粉注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 30 mins or deep IM (for mild-moderate UTI only). Adults: UTI: mild-moderate, 0.5-1 g q12h; moderate-severe, 2 g q12h. Pneumonia: 1-2 g q12h, up to 2 g q8h for nosocomial infection.Skin/subcutaneous tissue infection or complicated abdominal infection: 2 g q12h. Other serious infections, e.g. meningitis, febrile neutropenia: 2 g q8h. Children 1 m/o-16 y/o: 50 mg/kg q12h; febrile neutropenia: 50 mg/kg q8h; max. 2 g/dose. Neonates: 30 mg/kg q12h, up to 50 mg/kg q12h. Meningitis/Pseudomonal infection: ≦ 14 d/o, 50 mg/kg q12h> 14 d/o, 50 mg/kg q8h1000-2000 g: ≦ 7 d/o, 50 mg/kg q12h> 7 d/o, 50 mg/kg q8h> 2000 g: 50 mg/kg q8h.",
+   "max_dose": "",
+   "indication": "對Cefepime具感受性之細菌性感染症。",
+   "pregnancy": "B",
+   "price_nhi": "84",
+   "price_self": "105",
+   "company": "中國化學製藥股份有限公司台南三廠",
+   "all_products": [
+    {
+     "generic": "Cefepime HCl",
+     "code": "SUP1AB23",
+     "zh": "斯沛服乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Supecef Powder for Injection 500 mg cefepime/vial Cefepime HCl Y (1,2) >60 (mL/min) 500mg/1g/2g/2g q12h/q12h/q12h/q8h(1,2) 2 30~60 (mL/min) 500mg/1g/2g/2g q24h/q24h/q24h/q12h (1,2) 3 11~29 (mL/min) 500mg/500mg/1g/2g q24h (1,2) 4 250mg/250mg/500mg/1g q24h (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Supecef Powder for Injection 500 mg cefepime/vial Cefepime HCl N (3)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Supecef Powder for Injection 500 mg cefepime/vial Cefepime HCl 1 g once on day 1, MD: 500mg -1g qd, give dose after HD on HD days and at the same time each day (1,2) 68% (2) normal dose q48h (2) Less than HD (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Supecef Powder for Injection 500 mg cefepime/vial Cefepime HCl LD: 2 g, then 1 g q6h LD: 2 g, then 1 g q6h LD: 2 g, then 1 g q6h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Supecef Powder for Injection 500 mg cefepime/vial Cefepime HCl IF (1,2) W, D5W, NS (1) 體積：5 mL (1,2) NS, D5W (1) 1~40 mg/mL (1) 30 min (1,2) 1. IM: 劑量1 g以下可在單一位置注射，2 g則要分二個位置注射(for mild to moderate UTI only)。 2. Incompatible with metronidazole, vancomycin, gentamicin, tobramycin or netilmicin1. ≦30℃, 避光 (1,2), 2~25 ℃ (2) 室溫：24 hr (1,2) 2-8度：7 D (1,2) 室溫：24 hr (1,2) 2-8度：7 D (1,2) PVC：相容(2) PP：相容(2) PE：無資料 EVA：無資料 IM (1,2) W, D5W, NS, 0.5% or 1% lidocaine HCl (1, 2) 體積：1.3 mL (1,2) 280 mg/mL (1,2) IV (1,2) W, D5W, NS (1) 體積：5 mL (1,2) 100 mg/mL (1,2) 3~5 min (1) 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable D"
+  },
+  "ceftaroline": {
+   "our_key": "ceftaroline",
+   "generic": "Ceftaroline Fosamil",
+   "code": "ZIN1AB43",
+   "brand_en": "Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial",
+   "name_zh": "捷復寧注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF. Skin & skin structure infection, Community-acquired pneumonia (CAP): Adults: 600 mg q12h; up to 600 mg q8h for MRSA with high MIC. Children > 33 kg: 400 mg q8h or 600 mg q12h (up to 600 mg q8h for MRSA with high MIC). ≧ 2 y/o to ≦ 33 kg: 12 mg/kg q8h (15 mg/kg q8h for MRSA with high MIC).≧ 2 m/o to < 2 m/o: 6 mg/kg q8h; max. 18 mg/kg/day.",
+   "max_dose": "",
+   "indication": "適用於治療新生兒、嬰兒、兒童、青少年及成人對ceftaroline fosamil具感受性菌種的社區性肺炎(CAP)及複雜性皮膚與軟組織感染(cSSTI)。",
+   "pregnancy": "Animal data reveal no teratogenic effects.",
+   "price_nhi": "1379",
+   "price_self": "1724",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ceftaroline Fosamil",
+     "code": "ZIN1AB43",
+     "zh": "捷復寧注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial Ceftaroline Fosamil Y 30-50 (mL/min) 2/3 dose & the same frequency if usual dose 600 mg q12h: 400 mg q12h if usual dose 600 mg q8h: 400 mg q8h 2 Y 15-30 (mL/min) 1/2 dose & the same frequency if usual dose 600 mg q12h: 300 mg q12h if usual dose 600 mg q8h: 300 mg q8h 3 Y 1/3 dose & the same frequency (1) or 2/3 dose q12h in higher dose (4) if usual dose 600 mg q12h: 200 mg q12h if usual dose 600 mg q8h: 200 mg q8h or 300 mg q12h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial Ceftaroline Fosamil 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial Ceftaroline Fosamil If usual dose 600 mg q12h: 200 mg q12h If usual dose 600 mg q8h: 200 mg q8h or 300 mg q12h 21.6% (1) after hemodialysis on hemodialysis days If usual dose 600 mg q12h: 200 mg q12h If usual dose 600 mg q8h: 200 mg q8h or 300 mg q12h",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial Ceftaroline Fosamil If usual dose 600 mg q12h: 400 mg q12h If usual dose 600 mg q8h: 400 mg q8h Based on high-flux dialyzers and effluent flow rates of 20-25 mL/kg/hr (or ~1500-3000 mL/hr) If usual dose 600 mg q12h: 400 mg q12h If usual dose 600 mg q8h: 400 mg q8h Based on high-flux dialyzers and effluent flow rates of 20-25 mL/kg/hr (or ~1500-3000 mL/hr) If usual dose 600 mg q12h: 400 mg q12h If usual dose 600 mg q8h: 400 mg q8h Based on high-flux dialyzers and effluent flow rates of 20-25 mL/kg/hr (or ~1500-3000 mL/hr) 1 第 1 / 1 頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Zinforo Powder for Concentrate for Solution for Infusion 600 mg/vial Ceftaroline Fosamil IF (1,2,4) Water for injection (1), NS, D5W, LR (2,4) 體積：20 mL NS, D5W, GS, LR (1,2,4) 每瓶：50-250 mL/vial (1,2,4) 每劑：50-250 mL/dose (1,2,4) ≦12 mg/mL (1,2,4) 30-120 min (1,2,4) 溶解後藥品應立即稀釋，剩餘藥品 應稀釋後再保存 。 30°C以下，避免光線照射 (1) 室溫：無資料 2-8度：無資料。溶解後藥品應立即稀釋，剩餘藥品 應稀釋後再保存 。 室溫：6 hr (1,2,4) 2-8度：24 hr (4) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepa"
+  },
+  "cefiderocol": {
+   "our_key": "cefiderocol",
+   "generic": "Cefiderocol Sulfate Tosilate",
+   "code": "FET1AB47",
+   "brand_en": "Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency)",
+   "name_zh": "伏驖佳注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF over 3 hrs. Adults, 2000 mg q8h. (2000 mg q6h if CCl ≧ 120 mL/min)",
+   "max_dose": "Adults, 2000 mg q8h. (2000 mg q6h if CCl ≧ 120 mL/min)",
+   "indication": "適用於治療成人病人對Fetroja具有感受性之革蘭氏陰性微生物(susceptible Gram-negative microorganisms)所引起的下列感染：１、複雜性泌尿道感染(Complicated Urinary Tract Infections, cUTI)，包含腎盂腎炎(Pyelonephritis) ２、院內感染型肺炎(Hospital-acquired Bacterial Pneumonia, HABP)和呼吸器相關肺炎(Ventilator-associated Bacterial Pneumonia, VABP)。",
+   "pregnancy": "Fetal risk cannot be ruled out.",
+   "price_nhi": "0",
+   "price_self": "6125",
+   "company": "台灣&#x5869;野義製藥股份有限公司",
+   "all_products": [
+    {
+     "generic": "Cefiderocol Sulfate Tosilate",
+     "code": "FET1AB47",
+     "zh": "伏驖佳注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency) Cefiderocol Sulfate Tosilate Y ≧120 (mL/min) 2000 mg q6h 2 Y ≧60 to 2000 mg q8h 3 Y ≧30 to 1500 mg q8h 4 Y ≧15 to 1000 mg q8h 5 Y 750 mg q12h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency) Cefiderocol Sulfate Tosilate N",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency) Cefiderocol Sulfate Tosilate 750 mg q12h, give after HD on HD days 60%",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency) Cefiderocol Sulfate Tosilate 見備",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Fetroja for Injection 1000 mg/vial (Na 7.7 mEq/g potency) Cefiderocol Sulfate Tosilate IF NS, D5W 體積：10 mL NS, D5W 每劑：100 mL/dose (1) 7.5-62.5 mg/mL (2) 180 mins 1.溶解後藥品應於60分鐘內立即稀釋，剩餘藥品應稀釋後再保存。 2.每瓶溶解後總體積為11.2 mL，如劑量為1000 mg需抽取11.2 mL，750 mg需抽取8.4 mL，500 mg需抽取5.6 mL。 2-8°C冷藏、避光保存。 室溫：立即使用。25°C：1 hr 2-8度：無資料 室溫：25°C：6 hrs 2-8度：&避光：24 hrs。使用前應回溫至室溫，且於25°C下6小時內完成輸注。 PVC：無資料 PP：相容 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/"
+  },
+  "meropenem": {
+   "our_key": "meropenem",
+   "generic": "Meropenem Trihydrate",
+   "code": "MEP1AK17",
+   "brand_en": "Mepem for Injection 250 mg meropenem/vial",
+   "name_zh": "美平乾粉注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 15-30 mins. Adults, children ≧ 50 kg: Skin & skin structure infections: 0.5-1 g q8h. Other infections: 1 g q8h. Bacterial meningitis: 2 g q8h. Children Skin & skin structure infections: 10 mg/kg q8h; max. 500 mg q8h. Other infections: 20 mg/kg q8h; max. 1 g q8h. Bacterial meningitis: 40 mg/kg q8h; max. 2 g q8h. Neonates: ≦ 2 kg: ≦ 14 d/o: 20 mg/kg q12h. > 14 d/o: 20 mg/kg q8h. > 2 kg: ≦ 14 d/o: 20 mg/kg q8h. > 14 d/o: 30 mg/kg q8h. Meningitis: 40 mg/kg q8h.",
+   "max_dose": "Adults, children: 2 g q8h for meningitis. Neonates: 40 mg/kg q8h for meningitis.",
+   "indication": "對MEROPENEM具有感受性之細菌引起之感染症。",
+   "pregnancy": "B",
+   "price_nhi": "226",
+   "price_self": "283",
+   "company": "文德藥業有限公司",
+   "all_products": [
+    {
+     "generic": "Meropenem Trihydrate",
+     "code": "MEP1AK17",
+     "zh": "美平乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Mepem for Injection 250 mg meropenem/vial Meropenem Trihydrate Y (1,2) 26~50 (mL/min) usual dose q12h(1,2) 2 10~25 (mL/min) 50% dose q12h(1,2) 3 50% dose q24h(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Mepem for Injection 250 mg meropenem/vial Meropenem Trihydrate N (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Mepem for Injection 250 mg meropenem/vial Meropenem Trihydrate 500 mg q24h, administer after hemodialysis on dialysis day (1) (consider 1 g qd for CNS infection) dialyzable (1) 500 mg q24h (Ref: ABX GUIDE, 熱病) (consider 1 g qd for CNS infection)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Mepem for Injection 250 mg meropenem/vial Meropenem Trihydrate LD 1 g, then 500 mg q8h LD 1 g, then 500 mg q6-8h or 1 g q8-12h (1) LD 1 g, then 500 mg q6-8h or 1 g q8-12h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Mepem for Injection 250 mg meropenem/vial Meropenem Trihydrate IF W (2), NS (1), D5W (1) 體積：5 mL D5W, NS (1,2) 每瓶：100 mL/vial (1) 2.5~50 mg/mL (2) ≧30 min (1), 15~30 min (2) ≦25℃(1) 室溫： W: 3 hr (50 mg/mL)(2,4); NS: 6 hr (50 mg/mL)(1); D5W: 1 hr (50 mg/mL)(1) 2-8度： W: 13 hr (50 mg/mL)(2) 室溫： NS: 24 hr (5 mg/mL)(1), 8-12 hr (10-20 mg/mL)(2), 6 hr (50 mg/mL)(1); D5W: 3 hr (5 mg/mL)(1), 3 hr (20-50 mg/mL)(2), 1 hr (50 mg/mL)(1) 2-8度： NS: 18 hr (1-20 mg/mL)(2); D5W: 8 hr (2.5-50 mg/mL)(2) PVC：無資料 PP：無資料 PE：無資料 EVA：相容(2) IV (2) W (2), NS (1), D5W (1) 體積：5 mL 3~5 min (2) IP PD液稀釋後，溫度高於25℃超過6小時藥品效價會降低，但依據ISPD建議IP治療仍應是有效，建議使用前再進行調製。 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1)"
+  },
+  "imipenem": {
+   "our_key": "imipenem",
+   "generic": "Imipenem 500 mg and Cilastatin 500 mg",
+   "code": "PRI11791",
+   "brand_en": "Primaxin-MK-7655-004 500 mg/vial",
+   "name_zh": "",
+   "dosage_form": "注射劑",
+   "usual_dose": "1. Experimental: MK-7655 250 mg with imipenem/cilastatin Participants randomized to receive MK-7655 250 mg will be administered 250 mg doses of MK-7655 IV in a blinded fashion once every 6 hours with each dose infused over a 30-minute interval. A 500 mg dose of imipenem/cilastatin will be administered in an open-label fashion once every 6 hours with each dose infused over a 30-minute interval. 2. Experimental: MK-7655 125 mg with imipenem/cilastatin Participants randomized to receive MK-7655 125 mg will be administered 125 mg doses of MK-7655 IV, in a blinded-treatment fashion once every 6 hours with each dose infused over a 30-minute interval. A 500 mg dose of imipenem/cilastatin will be administered IV in an open-label fashion once every 6 hours with each dose infused over a 30-minute interval. 3. Active Comparator: imipenem / cilastatin with placebo A 500 mg dose of imipenem/cilastatin will be administered IV in an open-label fashion once every 6 hours with each dose infused over a 30-minute interval. Participants randomized to receive imipenem/cilastatin alone will receive a placebo-matching infusion of IV normal saline (0.9%) once every 6 hours.",
+   "max_dose": "",
+   "indication": "臨床試驗:一項研究 MK-7655 + Imipenem/ Cilastatin（亞胺培南／西司他丁） 比較單獨使用Imipenem/ Cilastatin（亞胺培南/西司他丁）治療複雜性腹腔內感染[cIAI]病患的安全性、耐受性和療效的第 II 期、隨機、活性藥對照臨床試驗",
+   "pregnancy": "C",
+   "price_nhi": "0",
+   "price_self": "0",
+   "company": "",
+   "all_products": [
+    {
+     "generic": "Imipenem 500 mg and Cilastatin 500 mg",
+     "code": "PRI11791",
+     "zh": ""
+    },
+    {
+     "generic": "Imipenem and Cilastatin Sodium",
+     "code": "IMI1AK42",
+     "zh": "疫必寧靜脈乾粉注射劑"
+    },
+    {
+     "generic": "Imipenem, Cilastatin and Relebactam",
+     "code": "REC1AK61",
+     "zh": "瑞必優 乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "ertapenem": {
+   "our_key": "ertapenem",
+   "generic": "Ertapenem Sodium",
+   "code": "INV1AK39",
+   "brand_en": "Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency)",
+   "name_zh": "益滿治注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 30 mins or IM. Adults & adolescents: 1000 mg qd. Infants & children: 15 mg/kg bid; max. 500 mg/dose. Colorectal surgery prophylaxis (IF 1 hr before procedures): Adults: 1000 mg; Children & adolescents: 15 mg/kg/dose; max. 1000 mg.",
+   "max_dose": "",
+   "indication": "治療成人病患由具感受性之微生物所引起的中度至重度感染，且適用於下列感染在尚未鑑定出病原菌之前按經驗的治療處理：複雜的腹腔內感染、複雜的皮膚和皮膚組織感染、社區感染性肺炎、複雜的尿道感染，包括腎盂腎炎、急性骨盆感染，包括產後子宮內肌炎、敗血性流產和手術後婦科感染",
+   "pregnancy": "B",
+   "price_nhi": "864",
+   "price_self": "1080",
+   "company": "美商默沙東藥廠股份有限公司台灣分公司",
+   "all_products": [
+    {
+     "generic": "Ertapenem Sodium",
+     "code": "INV1AK39",
+     "zh": "益滿治注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency) Ertapenem Sodium Y (1,2) 500 mg/day (50% dose)(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency) Ertapenem Sodium 無資料 (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency) Ertapenem Sodium 500 mg QD (2) 30% (2) 150mg after HD, if daily dose is given within 6 hrs prior to HD. No supplementary dose if given at least 6 hrs before HD (2) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency) Ertapenem Sodium 1 g qd 1 g qd 1 g qd 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Invanz for Injection 1000 mg ertapenem/vial (Na 6.0 mEq/g potency) Ertapenem Sodium IF W, NS (1~3) 體積：10 mL (1~3) NS (1~3) 每劑：50 mL/dose (1~3) ≦ 20 mg/mL (1,2) 30 min (1~3) 1.Do not mix with other drugs. 2.藥品稀釋後安定性：infuse within 4 hr after removal from refrigeration 3.Dextrose containing solutions should NOT be used to dilute ertapenem 25℃ 室溫：use immediately (1,2) 室溫：6 hr (1,2) 2-8度：24 hr (2,3) PVC：NA PP：NA PE：NA EVA：NA IM 1% or 2% lidocaine without epinephrine (1~3) 體積：3.2 mL (1~3) 280 mg/mL (2) 25℃ 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Informa"
+  },
+  "ampsulbactam": {
+   "our_key": "ampsulbactam",
+   "generic": "Ampicillin Sodium and Sulbactam Sodium",
+   "code": "UN 1AA33",
+   "brand_en": "Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial)",
+   "name_zh": "優耐迅肌肉/靜脈注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Based on ampicillin content. IV over at least 10-15 mins, intermittent IF over 15-30 mins or deep IM. Adults & children ≧ 40 kg: 1-2 g q6-8h. Children Neonates: 100-150 mg/kg/day in q8-12h. High Dose for carbapenem resistant Acinetobacter (6-9 g of sulbactam/day) in adults: 2 g ampicillin/1 g sulbactam q4h IF 30 mins or 6 g ampicillin/3 g sulbactam q8h IF 4 hrs or 18 g ampicillin/9 g sulbactam continuous infusion.",
+   "max_dose": "",
+   "indication": "鏈球菌、葡萄球菌、大腸桿菌、克雷氏菌、沙雷氏菌、流行感冒嗜血桿菌、&#x5432;&#x54DA;陰性變形桿菌屬、檸檬酸菌屬、厭氧性細菌（ＢＡＣＴＥＲＯＩＤＥＳ ＦＵＳＯＢＡＣＴＥＲＩＵＭ， ＣＬＯＳＴＲＩＤＩＵＭ ＤＩＦＦＩＣＩＬＥ），ＢＲＡＮＨＡＭＥＬＬＡ ＣＡＴＡＲＲＨＡＬＩＳ 引起之感染症。",
+   "pregnancy": "B",
+   "price_nhi": "50",
+   "price_self": "63",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ampicillin Sodium and Sulbactam Sodium",
+     "code": "UN 1AA33",
+     "zh": "優耐迅肌肉/靜脈注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial) Ampicillin Sodium and Sulbactam Sodium Y(1,2) ≧30 (mL/min/1.73 m2) 1-2 g ampicillin q6-8h (1-3) 2 15-29 (mL/min/1.73 m2) 1-2 g ampicillin q12h (1-3) 3 1-2 g ampicillin q24h (1-3) 4 30-59 (mL/min) If higher dosing 2 g ampicillin q4h: 2 g q6h (1) q6h (1); 2/3 daily dose with reduced frequency 5 15-29 (mL/min) If higher dosing 2 g ampicillin q4h: 2 g q8h (1) q8h (1); 1/2 daily dose with reduced frequency 6 If higher dosing 2 g ampicillin q4h: 2 g q12h (1) q12h (1); 1/3 daily dose with reduced frequency 7 30-89 (mL/min) If 6 g ampicillin q8h IF 4 hrs: 4 g q8h IF 4 hrs or 2 g q6h IF 4 hrs (1) 2/3 dose q8h IF 4 hrs (1) 8 15-29 (mL/min) If 6 g ampicillin q8h IF 4 hrs: 2 g q8h IF 4 hrs (1) 1/3 dose q8h IF 4 hrs (1) 9 If 6 g ampicillin q8h IF 4 hrs: 2 g q12h IF 4 hrs (1) 1/3 do",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial) Ampicillin Sodium and Sulbactam Sodium 無資料 Amp 2-6 g/day in chronic liver disease: safe.(2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial) Ampicillin Sodium and Sulbactam Sodium 1-2 g Amp. Q12-24h. Dose after HD (1) or 1/3 daily dose with q12-24h If higher dosing: 1/3 daily dose with reduced frequency. Dose after HD (1) 2 g Amp. q24h (1) or 1/3 daily dose in q24h If higher dosing: 1/3 daily dose with reduced frequency (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial) Ampicillin Sodium and Sulbactam Sodium LD: Amp 2 g, then 2 g q8h. If higher dosing: 2/3 daily dose with reduced frequency LD: Amp 2 g, then 2 g q8h. If higher dosing: 2/3 daily dose with reduced frequency LD: Amp. 2 g, then 2 g q6-8h or 3/4 daily dose in q8h. If higher dosing: 2/3 daily dose with reduced frequency 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Unasyn IM/IV for Injection ampicillin 1000 mg & sulbactam 500 mg/vial (Na 5.0 mEq/vial) Ampicillin Sodium and Sulbactam Sodium IM (1-3) W (1-3), 0.5% (1-3) or 2% (2,3) lidocaine HCl 體積：3.2 mL (1-3) ampicillin sodium: 250 mg/mL (1-3) ≧3 min 室溫：1 hr (1,3) IV (1-3) W (1-3) 體積：3.2 mL (1-3) ampicillin sodium: 250 mg/mL (1-3) ≧3 min (1) or 10-15 min (2,3) 靜脈輸注過快可能導致癲癇(3) IF (1-3) W (1-3) 體積：3.2 mL (1-3) NS (1-3), W (1-3), LR (1-3), D5W(4) 每劑：50-100 mL/dose (2) 3-45 mg/mL (2,3) 15-30 min (1-3) 1. 若以D5W稀釋,最高濃度30 mg/mL,需在2hr內用完(4) 2.不可與aminoglycosides混合(1-4) 3. 不可和血液製劑或蛋白質水解液混合(1) 室溫：1 hr (1-3) 室溫：(NS)45 mg/mL: 8 hr; (D5W)15-30 mg/mL: 2 hr; (LR)45mg/mL: 8 hr; (W)45mg/mL: 8 hr (1-4) 2-8度：(NS)45 mg/mL: 48 hr; 30mg/mL: 72 hr; (D5W)30 mg/mL: 4 hr; (LR"
+  },
+  "amoxclav": {
+   "our_key": "amoxclav",
+   "generic": "Amoxicillin and Clavulanate Potassium",
+   "code": "AUG5AA34",
+   "brand_en": "Augmentin Powder for Oral Suspension 80 mg amoxicillin/mL, 2800 mg amoxicillin & 400 mg clavulanic acid/35 mL/btl",
+   "name_zh": "安滅菌糖漿用粉劑",
+   "dosage_form": "口服懸液用粉劑",
+   "usual_dose": "PO. Based on amoxicillin content. Community-acquired pneumonia (CAP), acute bacterial rhinosinusitis (ABRS), acute otitis media (AOM): High dose: 80-100 mg/kg/day in 2 doses; max. 4 g amoxicillin/day. Standard dose (only for susceptible S. pneumoniae): 45-60 mg/kg/day in 3 doses. UTI: Adults & children ≧ 40 kg: 875 mg q12h or 500 mg q8h. Children ≧ 2 m/o < 40 kg: 20-50 mg/kg/day in q8-12h.",
+   "max_dose": "",
+   "indication": "葡萄球菌、鏈球菌、肺炎雙球菌、腦膜炎球菌及其他具有感受性細菌引起之感染症。",
+   "pregnancy": "B",
+   "price_nhi": "167",
+   "price_self": "209",
+   "company": "荷商葛蘭素史克藥廠股份有限公司臺灣分公司",
+   "all_products": [
+    {
+     "generic": "Amoxicillin and Clavulanate Potassium",
+     "code": "AUG5AA34",
+     "zh": "安滅菌糖漿用粉劑"
+    },
+    {
+     "generic": "Amoxicillin and Clavulanate Potassium",
+     "code": "CUR4AA35",
+     "zh": "諾快寧膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Augmentin Powder for Oral Suspension 80 mg amoxicillin/mL, 2800 mg amoxicillin & 400 mg clavulanic acid/35 mL/btl Amoxicillin and Clavulanate Potassium Y(1,2) 10~30 (mL/min) 250-500mg Amo/125 Cla q12h (1,2) 2 Y(1,3) 250-500mg Amo/125 Cla q24h (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Augmentin Powder for Oral Suspension 80 mg amoxicillin/mL, 2800 mg amoxicillin & 400 mg clavulanic acid/35 mL/btl Amoxicillin and Clavulanate Potassium 無資料 Use with caution. Prolonged use: monitor liver function (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Augmentin Powder for Oral Suspension 80 mg amoxicillin/mL, 2800 mg amoxicillin & 400 mg clavulanic acid/35 mL/btl Amoxicillin and Clavulanate Potassium 250-500 mg amoxicillin/125 mg clavulanate q24h (1) 20-50%(1,2) A supplement dose both during and after HD (1,2) 250 mg q12h (1,2) 20-50%(1,2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "metronidazole": {
+   "our_key": "metronidazole",
+   "generic": "Metronidazole",
+   "code": "FLA41523",
+   "brand_en": "Flagyl-201110021MD 250 mg/tab",
+   "name_zh": "服立治兒錠",
+   "dosage_form": "錠劑",
+   "usual_dose": "Experimental: levofloxacin-based sequential therapy levofloxacin-based sequential therapy for 10 dayslansoprazole 30 mg and amoxicillin 1 g for the first 5 days, followed by lansoprazole 30 mg, levofloxacin 250 mg, and metronidazole 500 mg for another 5 days (all given twice daily)Active Comparator: levofloxacin-based triple therapylevofloxacin-based triple therapy for 10 dayslansoprazole 30 mg and amoxicillin 1 g, and levofloxacin 250 mg for 10 days (all given twice daily)",
+   "max_dose": "Anaerobic infections: 4 g/day",
+   "indication": "臨床試驗用於比較含levofloxacin的相繼式治療與三合一治療在幽門螺旋桿菌感染第二線的療效",
+   "pregnancy": "B; (FDA建議懷孕全期都是B，但廠商資料：懷孕第一期不建議使用)",
+   "price_nhi": "0",
+   "price_self": "0",
+   "company": "",
+   "all_products": [
+    {
+     "generic": "Metronidazole",
+     "code": "FLA41523",
+     "zh": "服立治兒錠"
+    },
+    {
+     "generic": "Metronidazole",
+     "code": "MET4BA02",
+     "zh": "妳樂淨內服膜衣錠"
+    },
+    {
+     "generic": "Metronidazole",
+     "code": "SAB1AK11",
+     "zh": "沙普注射液"
+    },
+    {
+     "generic": "Metronidazole",
+     "code": "SUT8AK11",
+     "zh": "素女潔陰道用凝膠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "vancomycin": {
+   "our_key": "vancomycin",
+   "generic": "Vancomycin HCl",
+   "code": "UVA1AN01",
+   "brand_en": "U-Vanco Injection 500 mg/vial",
+   "name_zh": "優凡可靜脈注射劑 (汎克黴素)",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF ≧ 1 hr at a rate of ≦ 10 mg/min. Adults, (use actual body weight for obese patient) Loading dose: 20-25 mg/kg once (25 mg/kg in critical ill or ESRD); max. 3000 mg/dose. Empirical maintenance dose: 15-20 mg/kg/dose q8-12h or refer to \"臺大醫院Vancomycin Dosing Protocol\" below; max. 4500 mg/day.",
+   "max_dose": "",
+   "indication": "葡萄球菌感染所致之心內膜炎、骨髓炎、肺炎、敗血病、軟組織感染，腸炎，梭狀桿菌感染所致之假膜性結腸炎",
+   "pregnancy": "C",
+   "price_nhi": "65",
+   "price_self": "82",
+   "company": "優良化學製藥股份有限公司",
+   "all_products": [
+    {
+     "generic": "Vancomycin HCl",
+     "code": "UVA1AN01",
+     "zh": "優凡可靜脈注射劑 (汎克黴素)"
+    },
+    {
+     "generic": "Vancomycin HCl",
+     "code": "VAC4AN01",
+     "zh": "凡可復膠囊"
+    },
+    {
+     "generic": "Vancomycin HCl",
+     "code": "VAO1AN01",
+     "zh": "萬古利凡凍晶靜脈注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 U-Vanco Injection 500 mg/vial Vancomycin HCl Y (1) 請參考常用劑量欄位：AUC based vancomycin dosing nomogram for adult表 或依下方建議調整 2 > 50 (1) (mL/min) 15-20 mg/kg/dose q8-12h (1) 3 20-49 (1) (mL/min) 15-20 mg/kg/dose q24h (1) 4 Will need longer intervals; determine by serum concentration monitoring (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 U-Vanco Injection 500 mg/vial Vancomycin HCl N (Martindale)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 U-Vanco Injection 500 mg/vial Vancomycin HCl LD: 25 mg/kg, then 7.5-10 mg/kg after HD (TIW) Low flux 0-5%. High flux 24-50% (AJHP 2004;61:1812) 無資料 7.5 mg/kg q3d Minimally (3) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 U-Vanco Injection 500 mg/vial Vancomycin HCl LD 20 mg/kg, then 7.5-10 mg/kg Q12H (UFR > 1 L/h) LD 20 mg/kg, then 7.5-10 mg/kg Q12H (UFR > 1 L/h) LD 20 mg/kg, then 7.5-10 mg/kg Q12H (UFR > 1 L/h) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 U-Vanco Injection 500 mg/vial Vancomycin HCl IF (1-4) W (1-4) 體積：10 mL (1-4) D5W, NS (1-4) 每瓶：≧100 mL/vial (1-4) ≦5 mg/mL (1-4) ≧60 min (1-4) ≦10 mg/min (1-4) 1. Avoid extravasation; thrombophlebitis can be minimized by using solutions of 2.5~5 mg/mL.(2) 2. Up to 10 mg/mL for patients requiring fluid restriction.(4) 3. Should not be given by IM.(2) 15~30℃ (1,3) 室溫：14 D (2,3) 2-8度：14 D (1,2) 室溫：24 hr (1) 2-8度：96 hr (1) PVC：相容(2) PP：無資料 PE：無資料 EVA：無資料 IF(CVC) W (1-4) 體積：10 mL (1-4) D5W, NS (1-4) 每瓶：≧100 mL/vial (1-4) 5-10 mg/mL (1-4) ≧60 min (1-4) ≦10 mg/min (1-4) 1. Avoid extravasation; thrombophlebitis can be minimized by using solutions of 2.5~5 mg/mL.(2) 2. Up to 10 mg/mL for patients requiring fluid restriction.(4) 3. Should not be giv"
+  },
+  "teicoplanin": {
+   "our_key": "teicoplanin",
+   "generic": "Teicoplanin",
+   "code": "TAR1AN02",
+   "brand_en": "Targocid for Injection 200 mg/vial",
+   "name_zh": "得時高凍晶注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IV 3-5 mins, intermittent IF over 30 mins or IM. Adults & adolescents: Pneumonia (CAP/ HAP), complicated skin & soft tissue infections, complicated UTI: Initially, 6-12 mg/kg q12h × 3 doses, then 6-12 mg/kg qd since D3. Septic arthritis, osteomyelitis, IE (streptococcal or S. aureus): loading 12 mg/kg q12h × 3-5 doses, then 12 mg/kg qd since D3 or D4. Surgical prophylaxis: 400-800 mg once, 30 mins prior to procedures. Children 2 m/o-12 y/o: loading 10 mg/kg q12h × 3 doses, then 6-10 mg/kg qd. For severe infections: 10-12 mg/kg q12h × 3 doses, then 10-12 mg/kg qd since D3. Infants < 2 m/o: loading 16 mg/kg IF, then 8-10 mg/kg IF qd since D2.",
+   "max_dose": "",
+   "indication": "葡萄球菌感染所致之心內膜炎、骨髓炎、肺炎、敗血病、軟組織感染、腸炎、梭狀桿菌感染所致之假膜性結腸炎。",
+   "pregnancy": "",
+   "price_nhi": "394",
+   "price_self": "493",
+   "company": "賽諾菲安萬特股份有限公司",
+   "all_products": [
+    {
+     "generic": "Teicoplanin",
+     "code": "TAR1AN02",
+     "zh": "得時高凍晶注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Targocid for Injection 200 mg/vial Teicoplanin Y (2,3,Drug F&C) >60 (2,Martindale,仿單) (mL/min) Usual dose q24h Usual dose q24h (2,3) 2 10-59 (mL/min) 1/2 doses q24h Usual dose q48h (2,3,Drug F&C) 3 1/3 doses q24h usual dose q72h (2,Drug F&C)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Targocid for Injection 200 mg/vial Teicoplanin 無資料 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Targocid for Injection 200 mg/vial Teicoplanin Usual dose q3d (2) Not dialyzable (2) N (2) Usual dose q3d (2) Not dialyzable (2) N (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Targocid for Injection 200 mg/vial Teicoplanin consider usual dose qd-qod (Martindale; Basic & Clinical Pharmacology & Toxicology, 2012; (110): 416-420.) 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Targocid for Injection 200 mg/vial Teicoplanin IF solvent 體積：3 mL D5W, NS, LR (1,2,4) 30 min (2) 1.製備時小心避免泡沫產生，若產生泡沫時，可靜置約15分鐘待泡沫消除 (1)； 2.和aminoglycoside不相容，注射前不可相混合 (1,2)； 3. 4. Do not store in syringes. (1,2) 5.製備小劑量時，建議先用W 4 mL溶解為50 mg/mL再調配。 室溫：Use immediately (1,2) 2-8度：24 hr (1,2) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IM solvent 體積：3 mL 200 mg/3 mL (2) 1.製備時小心避免泡沫產生，若產生泡沫時，可靜置約15分鐘待泡沫消除 (1)； 2.和aminoglycoside不相容，注射前不可相混合 (1,2)； 3. 4. Do not store in syringes. (1,2) 5.製備小劑量時，建議先用W 4 mL溶解為50 mg/mL再調配。 室溫：Use immediately (1,2) 2-8度：24 hr (1,2) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IV solvent 體積：3 mL 200 mg/3 mL (2) 3~5 min (2) 1.製備時小心避免泡沫產生，若產生泡沫時，可靜置約15分鐘待泡沫消除 (1)； 2.和aminoglycoside不相容，注射前不可相混合 (1,2)； 3. 4. Do not store in syringes. (1,2) 5.製備小劑量時，建"
+  },
+  "linezolid": {
+   "our_key": "linezolid",
+   "generic": "Linezolid",
+   "code": "ZYV1AK19",
+   "brand_en": "Zyvox Injection 600 mg/300 mL/bag",
+   "name_zh": "采福適注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF over 30-120 mins. Skin & skin structure infections: Adults, children ≧ 12 y/o: 600 mg q12h. Children Neonates (BNF in Children): 7-28 d/o, 10 mg/kg q8h.",
+   "max_dose": "",
+   "indication": "治療由下列感受性菌株感染的患者：vancomycin 抗藥性的Enterococcus faecium感染，包括併發菌血症的病例。醫院感染的肺炎，由Staphylococcus aureus (對methicillin有感受性和對methicillin 有抗藥性的菌株) 或Streptococcus pneumoniae (對penicillin有感受性的菌株)所引起。複雜性皮膚和皮膚構造感染，包括糖尿病足感染，無併發骨髓炎，由Staphylococcus aureus (對methicillin有感受性和對methicillin 有抗藥性的菌株)，Streptococcus pyogenes或Streptococcus agalactiae所引起。非複雜性皮膚和皮膚構造感染，由Staphylococcus aureus (僅限於對methicillin有感受性的菌株)或Streptococcus pyogenes 所引起。社區感染的肺炎，由Streptococcus pneumoniae (僅限於對penicillin有感受性的菌株)，包括併發菌血症的病例，或Staphylococcus aureus (僅限於對methicillin有感受性的菌株) 所引起。(960906)",
+   "pregnancy": "C",
+   "price_nhi": "874",
+   "price_self": "1093",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Linezolid",
+     "code": "ZYV1AK19",
+     "zh": "采福適注射劑"
+    },
+    {
+     "generic": "Linezolid",
+     "code": "ZYV4AK19",
+     "zh": "采福適膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Zyvox Injection 600 mg/300 mL/bag Linezolid N (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Zyvox Injection 600 mg/300 mL/bag Linezolid N (1,2) No dosage adjustment in mild to moderate hepatic insufficiency (Child-Pugh Class A and B); use in severe hepatic insufficiency has not been adequately evaluated (1,2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Zyvox Injection 600 mg/300 mL/bag Linezolid Dose after HD (1,2) 38% (2) N (2) 無資料 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Zyvox Injection 600 mg/300 mL/bag Linezolid Usual dose (1) Usual dose (1) Usual dose (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Zyvox Injection 600 mg/300 mL/bag Linezolid IF undiluted, NS, D5W, LR (1,2) 30~120 min (1,2) The injection may exhibit a yellow color that can intensify over time without adversely affecting potency (1,2). 室溫，應保持於鋁箔袋中避光，請勿冷凍(1,2) PVC：相容(2) PP：無資料 PE：相容(2) EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialys"
+  },
+  "daptomycin": {
+   "our_key": "daptomycin",
+   "generic": "Daptomycin",
+   "code": "CUB1AK48",
+   "brand_en": "Cubicin Injection 500 mg/vial",
+   "name_zh": "救必辛注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF over 30 mins. Adults, Bacteremia: 6 mg/kg qd; higher doses: 8-10 mg/kg qd. Infection of skin and/or subcutaneous tissue (complicated): 4 mg/kg qd x 7-14 days. Children, 12-18 y/o: 5-7 mg/kg qd. 7-11 y/o: 7-9 mg/kg qd. 2 m/o - 6 y/o: 8-12 mg/kg qd. < 2 m/o: 6 mg/kg q12h.",
+   "max_dose": "",
+   "indication": "1. 治療成人及兒童（1至17歲）病人因下列感受性革蘭氏陽性菌引起的複雜性皮膚和皮膚組織感染 (cSSSI)：Staphylococcus aureus（包括methicillin-resistant isolates）、Streptococcus pyogenes、Streptococcus agalactiae、Streptococcus dysgalactiae subsp. equisimilis與Enterococcus faecalis (vancomycin-susceptible isolates only)。 2. 治療成人病人因Staphylococcus aureus引起之血液感染（菌血症），包括由具methicillin感受性及抗藥性菌株造成之右側感染性心內膜炎。 3. 治療兒童（1至17歲）病人因Staphylococcus aureus引起之血液感染（菌血症）。",
+   "pregnancy": "B",
+   "price_nhi": "2973",
+   "price_self": "3717",
+   "company": "臺灣東洋藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Daptomycin",
+     "code": "CUB1AK48",
+     "zh": "救必辛注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cubicin Injection 500 mg/vial Daptomycin Y 4-6 mg/kg (up to 8-10 mg/kg for Staphylococcal bacteremia and IE) q48h (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cubicin Injection 500 mg/vial Daptomycin N (1) No adjustment required for Child-Pugh class A or B; no evaluated in Child-Pugh class C (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cubicin Injection 500 mg/vial Daptomycin Usual dose q48h after HD on dialysis days (1) 15% after 4hr (2); high permeability intermittent hemodialysis removes ~50% during a 4 hr session (1) (dose given after dialysis) (1) Usual dose q48h (1) 11% over 48 hr (2) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cubicin Injection 500 mg/vial Daptomycin 8 mg/kg qd 8 mg/kg qd 8 mg/kg qd 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cubicin Injection 500 mg/vial Daptomycin IF (1,2) NS (1,2) 體積：10 mL (1) NS, LR (1,2) 每瓶：25-50 mL/vial 30 min (1,2); 1-6 y/o: 60 min 1.建議使用21號或更小之針頭注入溶解液以避免產生橡皮塞碎屑。 2. Do not use D5W as its diluent. 2-8°C (1,2) 室溫：12 hr (1,2) 2-8度：48 hr (1,2) 室溫：12 hr (1,2) 2-8度：48 hr (1,2) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IV (1) NS 體積：10 mL (1) 50 mg/mL (1) 2 min (1) 18歲以下不建議IV 2-8°C (1,2) 室溫：12 hr (1,2) 2-8度：48 hr (1,2) 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar"
+  },
+  "ciprofloxacin": {
+   "our_key": "ciprofloxacin",
+   "generic": "Ciprofloxacin HCl Monohydrate",
+   "code": "CIN4AK15",
+   "brand_en": "Cinolone F.C. Tablet 250 mg ciprofloxacin/tab",
+   "name_zh": "信諾隆膜衣錠",
+   "dosage_form": "膜衣錠",
+   "usual_dose": "PO. Adults: Mild/moderate: 500 mg q12h x 7-14 days. Severe/complicated: 750 mg q12h x 7-14 days. Uncomplicated UTI: 250 mg q12h x 3 days. Complicated UTI or pyelonephritis: 500 mg q12h. Children, 20-40 mg/kg/day in q8-12h; max. 1.5 g/day.",
+   "max_dose": "Children: max. 1.5 g/day.",
+   "indication": "對ＣＩＰＲＯＦＬＯＸＡＣＩＮ有感受性之細菌所引起之呼吸道感染、中耳炎、竇炎、眼感染、腎臟及泌尿道感染（包括淋病）、腹部感染（包括腹膜炎）、皮膚及軟組織感染、骨髓炎、關節感染、菌血症。成人和小孩：吸入性炭疽病（接觸後）。小孩：綠膿桿菌有關之囊腫性纖維化產生急性肺部惡化的現象（5-17歲）。",
+   "pregnancy": "C",
+   "price_nhi": "3.81",
+   "price_self": "5",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ciprofloxacin HCl Monohydrate",
+     "code": "CIN4AK15",
+     "zh": "信諾隆膜衣錠"
+    },
+    {
+     "generic": "Ciprofloxacin Lactate",
+     "code": "CIP1AK30",
+     "zh": "速博新靜脈輸液"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cinolone F.C. Tablet 250 mg ciprofloxacin/tab Ciprofloxacin HCl Monohydrate Y (1,2) 30-50 (1,2) (mL/min) 250-500mg (1,2) q12h (1,2) 2 5-29 (1,2) (mL/min) 500 mg (1,2) qd (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cinolone F.C. Tablet 250 mg ciprofloxacin/tab Ciprofloxacin HCl Monohydrate N (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cinolone F.C. Tablet 250 mg ciprofloxacin/tab Ciprofloxacin HCl Monohydrate 250-500mg q24h after HD (1,2) 2-30% (3) (after dialysis on dialysis days) (1) 250-500mg q24h (1,2) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cinolone F.C. Tablet 250 mg ciprofloxacin/tab Ciprofloxacin HCl Monohydrate 無資料 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "levofloxacin": {
+   "our_key": "levofloxacin",
+   "generic": "Levofloxacin",
+   "code": "CR 1AK40",
+   "brand_en": "Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial)",
+   "name_zh": "可樂必妥靜脈輸液",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF (250-500 mg over 60 mins; 750 mg over 90 mins). Adults, Healthcare-associated pneumonia (HAP): 750 mg qd. Acute bacterial sinusitis, community-acquired pneumonia (CAP): 750 mg qd x 5 days or 500 mg qd x 7-14 days. Acute bacterial exacerbation of chronic bronchitis, chronic bacterial prostatitis, Traveler’s diarrhea: 500 mg qd. Skin and skin structure infections (not S. aureus): Uncomplicated: 500 mg qd x 7-10 days. Complicated: 750 mg qd x 7-14 days. Urinary tract infections: Uncomplicated: 250 mg qd x 3 days. Complicated, including pyelonephritis: 250 mg qd x 10 days or 750 mg qd x 5 days. Tuberculosis: 500-1000 mg qd. Children, CAP, otitis media, acute (alternative agent): 5-16 y/o: 8-10 mg/kg qd; max. 750 mg/dose. < 5 y/o: 8-10 mg/kg q12h; max. 500 mg/dose.",
+   "max_dose": "",
+   "indication": "治療成人因對levofloxacin有感受性的致病菌所引起之下列感染：社區性肺炎、複雜性尿道感染(包括:腎盂腎炎)、慢性細菌性前列腺炎、皮膚和軟組織感染。",
+   "pregnancy": "C",
+   "price_nhi": "290",
+   "price_self": "363",
+   "company": "台灣第一三共股份有限公司",
+   "all_products": [
+    {
+     "generic": "Levofloxacin",
+     "code": "CR 1AK40",
+     "zh": "可樂必妥靜脈輸液"
+    },
+    {
+     "generic": "Levofloxacin",
+     "code": "CRA41521",
+     "zh": ""
+    },
+    {
+     "generic": "Levofloxacin",
+     "code": "CRA4AK37",
+     "zh": "可樂必妥膜衣錠"
+    },
+    {
+     "generic": "Levofloxacin",
+     "code": "LEF4AK41",
+     "zh": "(免費) 佐淨菌膜衣錠"
+    },
+    {
+     "generic": "Levofloxacin",
+     "code": "LEO4AK47",
+     "zh": "雷弗欣膜衣錠"
+    },
+    {
+     "generic": "Levofloxacin",
+     "code": "VOR4AK41",
+     "zh": "樂富妥膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial) Levofloxacin Y (1,2) 20-49 (mL/min) if normal dose = 750 mg qd: 750 mg q48h if normal dose = 500 mg qd: LD 500 mg, then 250 mg qd (1) 2 10-19 (mL/min) if normal dose = 750 mg qd: LD 750 mg, then 500 mg q48h if normal dose = 500 mg qd: LD 500 mg, then 250 mg q48h if normal dose = 250 mg qd: 250 mg q48h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial) Levofloxacin N (3)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial) Levofloxacin 750 mg LD, then 500 mg q48h (after dialysis on dialysis days) (1) 無資料 N (3) 750 mg LD, then 500 mg q48h (1) 無資料 N (3) 2 500 mg LD, then 250 mg q48h (after dialysis on dialysis days) (1) 無資料 N (3) 500 mg LD, then 250 mg q48h (1,2) 無資料 N (3)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial) Levofloxacin 750 mg LD, then 250 mg q24h (1) 750 mg LD, then 250-500 mg q24h (1) 750 mg LD, then 250-500 mg q24h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cravit IV Solution for Infusion 250 mg/50 mL/vial (Na 7.8 mEq/vial) Levofloxacin IF undiluted or NS, D5W (1) ≦5mg/ml (2) 250 mg: ≧30 min 500 mg: ≧60 min 750 mg: ≧90 min 1.輸注時不須避光 (1)。 2.Rapid infusion or bolus administration may cause hypotension (2). 1. 室溫，避光於原包裝內。外盒除去,有效期限三天。 2.外盒除去，有效期限3天。 3.橡皮塞穿刺後應於3小時內使用 (1)。 PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar"
+  },
+  "moxifloxacin": {
+   "our_key": "moxifloxacin",
+   "generic": "Moxifloxacin",
+   "code": "AVE1AK33",
+   "brand_en": "Avelox Infusion Solution 400 mg/250 mL/btl",
+   "name_zh": "威洛速靜脈輸注液",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 60 mins. Adults & adolescents ≧ 45 kg: Usual dose (FDA labeled indications): 400 mg qd. Active tuberculosis: 400 mg qd. Children: 6 to 2 to ≧ 3 m/o to < 2 y/o: 6 mg/kg q12h.",
+   "max_dose": "",
+   "indication": "用於治療成人(十八歲以上)感受性細菌引起的感染症，包括:上呼吸道及下呼吸道感染(急性鼻竇炎、慢性支氣管的急性惡化、社區性肺炎)，皮膚和軟組織的感染，複雜腹腔內感染(包括多種細菌感染症)。(100.3.12)",
+   "pregnancy": "C",
+   "price_nhi": "524",
+   "price_self": "655",
+   "company": "臺灣拜耳股份有限公司",
+   "all_products": [
+    {
+     "generic": "Moxifloxacin",
+     "code": "AVE1AK33",
+     "zh": "威洛速靜脈輸注液"
+    },
+    {
+     "generic": "Moxifloxacin HCl",
+     "code": "AVE4AK26",
+     "zh": "威洛速膜衣錠"
+    },
+    {
+     "generic": "Moxifloxacin HCl",
+     "code": "FLO4AK27",
+     "zh": "福樂星膜衣錠"
+    },
+    {
+     "generic": "Moxifloxacin HCl",
+     "code": "MOE4AK27",
+     "zh": "摩克星膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Avelox Infusion Solution 400 mg/250 mL/btl Moxifloxacin N (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Avelox Infusion Solution 400 mg/250 mL/btl Moxifloxacin N (1,2) No dosage adjustment in mild to moderate hepatic insufficiency (Child-Pugh Class A, B or C) (1,2); use with caution in this patient population secondary to the risk of QT prolongation",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Avelox Infusion Solution 400 mg/250 mL/btl Moxifloxacin N (1,2) ~ 9% (2) N (1) N (1,2) ~ 2% (2) N (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Avelox Infusion Solution 400 mg/250 mL/btl Moxifloxacin N (1,2) N (1,2) N (1,2) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Avelox Infusion Solution 400 mg/250 mL/btl Moxifloxacin IF undiluted or NS, D5W , LR (1) 60 min (1) 請勿冷藏或冷凍 (1) 室溫：24 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "gentamicin": {
+   "our_key": "gentamicin",
+   "generic": "Gentamicin Sulfate",
+   "code": "VGE1AC04",
+   "brand_en": "V-Genta inj 80 mg/2 mL/vial",
+   "name_zh": "維健注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Once-daily dosing (extended interval dosing), IV: 5-7 mg/kg once daily. Traditional/conventional dosing, IV or IM: Adults: 3-5 mg/kg/day in q8-12h (a loading dose 2-3 mg/kg IV could be given). Children ≧ 30 d/o: 2-2.5 mg/kg q8h. Synergy dosing (for gram-positive infections), IV or IM: 3 mg/kg/day in 1-3 doses, combined with a gram-positive agent. Neonates: ≦ 2 kg: ≦ 7 d/o: 5 mg/kg q48h; 8-28 d/o: 4 mg/kg q24h. > 2 kg: 4 mg/kg q24h.",
+   "max_dose": "",
+   "indication": "葡萄球菌、肺炎球菌、腦膜炎球菌及其他具有感受性細菌引起之感染症",
+   "pregnancy": "D",
+   "price_nhi": "15",
+   "price_self": "19",
+   "company": "榮民製藥股份有限公司",
+   "all_products": [
+    {
+     "generic": "Gentamicin Sulfate",
+     "code": "VGE1AC04",
+     "zh": "維健注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 V-Genta inj 80 mg/2 mL/vial Gentamicin Sulfate Y (1,2) ≧60 (mL/min) No dosage adjustment necessary. 2 40 to 1 – 1.7 mg/kg q12h. (traditional dosing) 3 20 to 1 – 1.7 mg/kg qd. (traditional dosing) 4 Loading dose, then subsequent doses based on gentamicin concs. (traditional dosing) 5 Extended-interval dosing should be adjusted based on therapeutic drug monitoring",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 V-Genta inj 80 mg/2 mL/vial Gentamicin Sulfate N (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 V-Genta inj 80 mg/2 mL/vial Gentamicin Sulfate Dose after HD (1). 50%, variable (1) 2/3 dose postdialysis (2) or 1-1.7 mg/kg at the end of dialysis (2,3) Dose as Ccr",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 V-Genta inj 80 mg/2 mL/vial Gentamicin Sulfate LD 3 mg/kg, then 2 mg/kg q24h. Do TDM. LD 3 mg/kg, then 2 mg/kg q24h. Do TDM. LD 3 mg/kg, then 2 mg/kg q24h. Do TDM. 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 V-Genta inj 80 mg/2 mL/vial Gentamicin Sulfate IF (2,4) NS, D5W (2,4) 每劑： (adults) 50~200 mL/dose (2,4) 30 min (60 min for high doses)(1-3) 15~30℃, 室溫 (1) 室溫：24 hr (3) PVC：相容(2) PP：相容(2) PE：相容(2) EVA：無資料 IM undiluted 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "amikacin": {
+   "our_key": "amikacin",
+   "generic": "Amikacin sulfate",
+   "code": "ACE1AC01",
+   "brand_en": "Acemycin Injection 500 mg amikacin/2 mL/vial",
+   "name_zh": "時欣黴素注射液",
+   "dosage_form": "注射劑",
+   "usual_dose": "Once-daily dosing (extended interval dosing), IV: 15-20 mg/kg once daily. Mycobacterial Infections: 10-15 mg/kg once daily or 15-25 mg/kg tiw. Traditional/conventional dosing, IV or IM: Adults: 15-20 mg/kg/day in q8-12h. Children ≧ 30 d/o: 5-7.5 mg/kg q8h. Neonates: ≦ 1 kg: ≦ 14 d/o: 15 mg/kg q48h; 15-29 d/o: 15 mg/kg q24h. 1-2 kg: ≦ 7 d/o: 15 mg/kg q48h; 8-29 d/o: 15 mg/kg q24h. > 2 kg: 15 mg/kg q24h.",
+   "max_dose": "",
+   "indication": "對gentamicin具耐藥性之綠膿菌、變形菌、鋸桿菌、大腸菌、克雷白氏桿菌、腸內桿菌、檸檬桿菌屬citrobacter等對於amikacin具敏感性之細菌所引起之下列感染症：敗血症、支氣管擴張症之感染症、肝炎、肺化膿症、腹膜炎、腎盂腎炎、膀胱炎、尿道炎、創傷、熱傷及手術後繼發性感染症",
+   "pregnancy": "D",
+   "price_nhi": "37.4",
+   "price_self": "47",
+   "company": "永信藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Amikacin sulfate",
+     "code": "ACE1AC01",
+     "zh": "時欣黴素注射液"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Acemycin Injection 500 mg amikacin/2 mL/vial Amikacin sulfate Y(1) ≧60 (mL/min) No dosage adjustment necessary. 2 40 to 5 mg/kg q12h. (traditional dosing) 3 20 to 5 mg/kg qd. (traditional dosing) 4 5 - 7.5 mg/kg once; subsequent doses based on amikacin concs. (traditional dosing) 5 Extended-interval dosing should be adjusted based on therapeutic drug monitoring.",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Acemycin Injection 500 mg amikacin/2 mL/vial Amikacin sulfate Y (2) In alcoholic cirrhotic patients with ascites, dose with TBW, not LBW (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Acemycin Injection 500 mg amikacin/2 mL/vial Amikacin sulfate Dose after HD (1). 50-100% (1) 2/3 dose postdialysis and follow levels(1) Dose as Ccr",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Acemycin Injection 500 mg amikacin/2 mL/vial Amikacin sulfate LD 10 mg/kg followed by 7.5 mg/kg q24-48h (1) LD 10 mg/kg followed by 7.5 mg/kg q24-48h (1) LD 10 mg/kg followed by 7.5 mg/kg q24-48h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Acemycin Injection 500 mg amikacin/2 mL/vial Amikacin sulfate IM (1~3) undiluted (3) IF (1~3) D5W, NS (1~3) 每瓶：(adults) 100~200 mL/vial (2,3) 每劑：100~200 mL/dose (1) 30 mins (60 mins for high doses)(1~3) 15~30℃ (1,3) 室溫：24 hr (0.25 and 5 mg/mL) (1~3) 2-8度：60 D (0.25 and 5 mg/mL) (1~3) PVC：相容(2) PP：相容(2) PE：相容(2) EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 2 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal."
+  },
+  "clindamycin": {
+   "our_key": "clindamycin",
+   "generic": "Clindamycin HCl",
+   "code": "LIN4AG01",
+   "brand_en": "Lindacin Capsule 150 mg clindamycin/cap",
+   "name_zh": "利達信黴素膠囊",
+   "dosage_form": "硬膠囊",
+   "usual_dose": "PO, take with a full glass of water. Adults, 150-450 mg q6h. Infants & children, 10-40 mg/kg/day in q6-8h; max. 1.8 g/day. Bacterial endocarditis prophylaxis in penicillin-allergic patients: 20 mg/kg 60 mins prior to procedures; max. 600 mg.",
+   "max_dose": "",
+   "indication": "鏈球菌、葡萄球菌、肺炎雙球菌等所引起之感染症。",
+   "pregnancy": "B",
+   "price_nhi": "2",
+   "price_self": "3",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Clindamycin HCl",
+     "code": "LIN4AG01",
+     "zh": "利達信黴素膠囊"
+    },
+    {
+     "generic": "Clindamycin Phosphate",
+     "code": "CLI1AG01",
+     "zh": "克力欣注射液"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Lindacin Capsule 150 mg clindamycin/cap Clindamycin HCl N (2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Lindacin Capsule 150 mg clindamycin/cap Clindamycin HCl N (1) In severe liver disease, use caution and monitor liver enzymes periodically during therapy (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Lindacin Capsule 150 mg clindamycin/cap Clindamycin HCl N (2) Nondilyzable (2) N (2) N (2) Nondilyzable (2) N (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "azithromycin": {
+   "our_key": "azithromycin",
+   "generic": "Azithromycin Dihydrate",
+   "code": "ZIT4AG08",
+   "brand_en": "Zithromax Tablet 250 mg azithromycin/tab",
+   "name_zh": "日舒錠",
+   "dosage_form": "膜衣錠",
+   "usual_dose": "PO. Community acquired pneumonia (CAP), Streptococcal pharyngitis, Streptococcal tonsillitis: Adults: 500 mg qd on day 1, then 250 mg qd on day 2-5; or 500 mg × 3 days. Children: 10-12 mg/kg qd on day 1 (max. 500 mg), 5-6 mg/kg qd on day 2-5; max. 250 mg/day; or 10-12 mg/kg qd × 3 days. Pertussis: Adults: 500 mg qd on day 1, then 250 mg qd on day 2-5. Children ≧ 6 m/o: 10 mg/kg qd on day 1 (max. 500 mg), 5 mg/kg qd on day 2-5; max. 250 mg/day. Children Mycobacterium avium complex (MAC), disseminated: Treatment & secondary prophylaxis: Adults: 500-600 mg qd + ethambutol 15 mg/kg qd. Children: 10-12 mg/kg (max. 500 mg) qd + ethambutol. Mycobacterium avium complex (MAC), lung disease: Nodular/bronchiectatic (three times weekly regimen): Adults: 500-600 mg TIW + ethambutol 25 mg/kg TIW + rifampin 600 mg TIW. Cavitary (daily regimen): Adults: 250-500 mg qd + ethambutol 15 mg/kg qd + rifampin 450-600 mg qd.",
+   "max_dose": "",
+   "indication": "革蘭氏陽性、陰性及厭氧菌引起之下呼吸道感染(支氣管炎及肺炎)皮膚及軟褚組織感染、中耳炎、上呼吸道感染和性傳染病。",
+   "pregnancy": "B",
+   "price_nhi": "15.2",
+   "price_self": "19",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Azithromycin Dihydrate",
+     "code": "ZIT4AG08",
+     "zh": "日舒錠"
+    },
+    {
+     "generic": "Azithromycin Dihydrate",
+     "code": "ZIT4AG18",
+     "zh": "日舒錠"
+    },
+    {
+     "generic": "Azithromycin Dihydrate",
+     "code": "ZIT5AG08",
+     "zh": "日舒懸液用粉, 47.78毫克/公克"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Zithromax Tablet 250 mg azithromycin/tab Azithromycin Dihydrate Y (1,2) Use with caution (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Zithromax Tablet 250 mg azithromycin/tab Azithromycin Dihydrate 無資料 (1) Use with caution (1), not necessary in patient with class A or B cirrhosis (3)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Zithromax Tablet 250 mg azithromycin/tab Azithromycin Dihydrate not dialyzable (2) No (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "doxycycline": {
+   "our_key": "doxycycline",
+   "generic": "Doxycycline HCl",
+   "code": "DOX4AE01",
+   "brand_en": "Doxymycin Capsules 100 mg doxycycline/cap",
+   "name_zh": "多喜黴素腸溶膠囊",
+   "dosage_form": "腸溶膠囊劑",
+   "usual_dose": "PO, take with adequate amount of fluid. May with food if GI upset. Adults: 100 mg q12h. Children: Community acquired atypical pneumonia: 1-2 mg/kg bid; max. 200 mg/day. Other atypical infection: 2.2 mg/kg bid; max. 200 mg/day. Fixed dosing by capsule (NTUH experience): 7 to 11 to 16 to 22 to 32 to > 45 kg: 100 mg bid.",
+   "max_dose": "",
+   "indication": "革蘭氏陽性菌、陰性菌、立克次氏體及巨型濾過性病毒感染症。",
+   "pregnancy": "D",
+   "price_nhi": "2",
+   "price_self": "3",
+   "company": "永信藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Doxycycline HCl",
+     "code": "DOX4AE01",
+     "zh": "多喜黴素腸溶膠囊"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Doxymycin Capsules 100 mg doxycycline/cap Doxycycline HCl N(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Doxymycin Capsules 100 mg doxycycline/cap Doxycycline HCl 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Doxymycin Capsules 100 mg doxycycline/cap Doxycycline HCl 0~5%(1) N (1,2) 0~5% (1) N (1,2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "minocycline": {
+   "our_key": "minocycline",
+   "generic": "Minocycline HCl",
+   "code": "MEN1AE02",
+   "brand_en": "Menocik Lyophilized Injection 100 mg/vial",
+   "name_zh": "美諾幸凍晶注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF. Adults: 200 mg once, followed by 100 mg q12h. CRAB infection: 200 mg q12h. Children > 8 y/o: 4 mg/kg once (max. 200 mg/dose), then 2 mg/kg q12h (max. 100 mg/dose).",
+   "max_dose": "Max. adults, 400 mg/day (Micromedex)",
+   "indication": "革蘭氏陽性、陰性菌、立克次氏體及巨型濾過性病毒等引起之感染症。",
+   "pregnancy": "D",
+   "price_nhi": "812",
+   "price_self": "1015",
+   "company": "博晟生醫股份有限公司",
+   "all_products": [
+    {
+     "generic": "Minocycline HCl",
+     "code": "MEN1AE02",
+     "zh": "美諾幸凍晶注射劑"
+    },
+    {
+     "generic": "Minocycline HCl",
+     "code": "MI 4AE02",
+     "zh": "美樂寧膠囊"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Menocik Lyophilized Injection 100 mg/vial Minocycline HCl N(1,2) Patients with kidney impairment should be monitored renal function if > 200 mg/day.",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Menocik Lyophilized Injection 100 mg/vial Minocycline HCl N",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Menocik Lyophilized Injection 100 mg/vial Minocycline HCl N N N N",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Menocik Lyophilized Injection 100 mg/vial Minocycline HCl N N N 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Menocik Lyophilized Injection 100 mg/vial Minocycline HCl IF (1,2) W (1,2) 體積：5 mL (1) NS, D5W, LR (avoid other Ca2+ containing solution)(1-3), D5S (2,3) 每劑：100-1000 mL/dose (1)(3) 0.1-2 mg/mL (3) over 60 mins (1,2) 室溫：24 hrs (1) 室溫：24 hrs (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/drugi"
+  },
+  "fosfomycin": {
+   "our_key": "fosfomycin",
+   "generic": "Fosfomycin Sodium",
+   "code": "UFO1AK52",
+   "brand_en": "UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g)",
+   "name_zh": "優福乾粉注射劑 (弗斯黴素)",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF, used as combination therapy. Adults & adolescents ≧ 12 y/o, > 40 kg: 2-4 g/day in 2 doses. Higher dose for severe infections caused by multidrug-resistant organism: 12-24 g/day in 2-3 doses. For bacterial meningitis: 16-24 g/day in 3-4 divided doses; max. 8 g/dose. Infants & children > 40 kg: 16-24 g/day in 3-4 doses; max. 8 g/dose. 10-40 kg: 200-400 mg/kg/day in 3-4 doses. < 10 kg: 200-300 mg/kg/day in 3 doses.",
+   "max_dose": "Adults: 8 g/dose, 24 g/day.",
+   "indication": "綠膿菌、變形菌、沙雷氏菌、葡萄球菌、大腸桿菌等具有感受性細菌所引起下列感染症（敗血症、支氣管炎、細支氣管炎、支氣管擴張症、肺炎、肺化膿症、膿胸、腹膜炎、腎盂炎、膀胱炎）。",
+   "pregnancy": "B",
+   "price_nhi": "187",
+   "price_self": "234",
+   "company": "達富康國際有限公司(2019.4.9)聯邦化學製藥股份有限公司(old)",
+   "all_products": [
+    {
+     "generic": "Fosfomycin Sodium",
+     "code": "UFO1AK52",
+     "zh": "優福乾粉注射劑 (弗斯黴素)"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g) Fosfomycin Sodium Y 30-40 (mL/min) 70% daily dose in 2-3 divided doses; LD should be double and 2 Y 20-30 (mL/min) 60% daily dose in 2-3 divided doses; LD should be double and 3 Y 10-20 (mL/min) 40% daily dose in 2-3 divided doses; LD should be double and 4 Y ≦ 10 (mL/min) 20% daily dose in 1-2 divided doses; LD should be double and",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g) Fosfomycin Sodium Use with caution (liver function may worsen)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g) Fosfomycin Sodium 2 g after HD (Martindale) 10-80% (8) 2-4 g q48h (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g) Fosfomycin Sodium 6-8 g q12h (1) 6-8 g q12h (1) 6-8 g q12h (1) CVVH: 77% removal (3) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 UFO Powder for Injection 2000 mg/vial (Na 14.5 mEq/g) Fosfomycin Sodium IF (1) W, D5W (1) 體積：20 mL W, D5W (1) 每劑：100-500 mL/dose (1) ≦40 mg/mL 1-2 hrs (1) or ≦133.3 mg/min 1.溶解時偶爾會有微溫現象，但不影響藥效。 2.限靜脈內注射，且儘可能使用Intraveous drip infusion。 3.有低血鉀風險的病人可考慮延長輸注時間(≦ 4 hrs)。 室溫 PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.g"
+  },
+  "ceftolotazo": {
+   "our_key": "ceftolotazo",
+   "generic": "Ceftolozane Sulfate and Tazobactam Sodium",
+   "code": "ZER1AB46",
+   "brand_en": "Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial",
+   "name_zh": "諾倍適乾粉注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF infused over 1 hr. Bases on ceftolozane content. Complicated urinary tract infection (cUTIs): Adults: 1000 mg q8h. Children: 20 mg/kg q8h; max. 1000 mg/dose. Complicated intra-abdominal infections (cIAIs)(in combination with IV metronidazole): Adults: 1000 mg q8h. Children: 20 mg/kg q8h; max. 1000 mg/dose. Pneumonia (HAP/VAP): Adults: 2000 mg q8h.",
+   "max_dose": "",
+   "indication": "治療18歲（含）以上成人，患有對ceftolozane 與tazobactam 具感受性的致病菌所引起的以下感染症：(1) 複雜性腹內感染，需與metronidazole併用。 (2) 複雜性泌尿道感染，包括腎盂腎炎。 (3) 院內感染性肺炎，包括呼吸器相關肺炎。",
+   "pregnancy": "B",
+   "price_nhi": "1253",
+   "price_self": "1567",
+   "company": "美商默沙東藥廠股份有限公司台灣分公司",
+   "all_products": [
+    {
+     "generic": "Ceftolozane Sulfate and Tazobactam Sodium",
+     "code": "ZER1AB46",
+     "zh": "諾倍適乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial Ceftolozane Sulfate and Tazobactam Sodium Y 30-50 (mL/min) 1/2 dose q8h; cIAIs, cUTIs: 500 mg ceftolozane q8h; HAP/VAP: 1000 mg ceftolozane q8h 2 Y 15-30 (mL/min) 1/4 dose q8h; cIAIs, cUTIs: 250 mg ceftolozane q8h; HAP/VAP: 500 mg ceftolozane q8h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial Ceftolozane Sulfate and Tazobactam Sodium N",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial Ceftolozane Sulfate and Tazobactam Sodium cIAIs, cUTIs, LD: 500 mg ceftolozane ONCE, then 100 mg ceftolozane q8h (LD: 1/2 dose ONCE, then 1/10 dose q8h) HAP/VAP: LD: 1500 mg ceftolozane ONCE, then 300 mg ceftolozane q8h (LD: 3/4 dose ONCE, then 0.15 dose q8h)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial Ceftolozane Sulfate and Tazobactam Sodium 1000 mg q8h 1000 mg q8h 1000 mg q8h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Zerbaxa for Injection 1000 mg ceftolozane & 500 mg tazobactam/vial Ceftolozane Sulfate and Tazobactam Sodium IF (1,2) W, NS (1,2) 體積：10 mL (最終體積11.4 mL) D5W, NS (1,2) 每劑：100 mL/dose (1) 1-20 mg/mL (based on ceftolozane)(2) over 1 hr (1,2) 2-8℃ 室溫：1 hr (溶解後藥品應於1小時內立即稀釋，剩餘藥品應稀釋後再保存) 室溫：24 hrs (1,2) 2-8度：7 days (1,2) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar"
+  },
+  "tigecycline": {
+   "our_key": "tigecycline",
+   "generic": "Tigecycline",
+   "code": "TYG1AE06",
+   "brand_en": "Tygacil for Injection 50 mg/vial",
+   "name_zh": "老虎黴素凍晶注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF over 30-60 mins. Community-acquired pneumonia (CAP), complicated skin/skin structure infection (cSSTI), complicated intra-abdominal infection (cIAI): Adults: 100 mg once, then 50 mg q12h. Children ≧ 8 y/o: 1.5-2 mg/kg once, then 1-2 mg/kg q12h; max. 50 mg/dose. Multidrug-resistant (MDR) infections: Adults: 200 mg once, then 100 mg q12h as part of combination therapy. Children ≧ 8 y/o: Standard: 1.5-2 mg/kg once, then 1.2-2 mg/kg q12h; max. 50 mg/dose. High-dose (for carbapenem-resistant Enterobacterales): 4 mg/kg once (max. 200 mg), then 2-3.2 mg/kg q12h; max. 100 mg/dose.",
+   "max_dose": "",
+   "indication": "對Tigecycline具有感受性之細菌所引起之複雜性皮膚及皮膚結構感染、複雜性腹腔內感染症及社區感染性肺炎。",
+   "pregnancy": "D",
+   "price_nhi": "1390",
+   "price_self": "1738",
+   "company": "美商惠氏藥廠（亞洲）股份有限公司臺灣分公司",
+   "all_products": [
+    {
+     "generic": "Tigecycline",
+     "code": "TYG1AE06",
+     "zh": "老虎黴素凍晶注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Tygacil for Injection 50 mg/vial Tigecycline N(1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Tygacil for Injection 50 mg/vial Tigecycline Y(1) Severe hepatic impairment (Child-Pugh class C): LD:100 mg then 25 mg q12h (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Tygacil for Injection 50 mg/vial Tigecycline Poorly dialyzed N (1) Poorly dialyzed N (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Tygacil for Injection 50 mg/vial Tigecycline IF NS, D5W, LR (1) 體積：5.3 mL (10 mg/mL) NS, D5W, LR (1) 每劑：100 mL/dose (1) ≦1 mg/mL 30~60 min Take 5 mL of reconstituted solution (= 50 mg) and immediately transfer to be further diluted for I.V. infusion. The reconstituted solution should be yellow to orange in color; if not, the solution should be discarded. 20~25℃ 室溫：6 hr (1) 室溫：24 hr (1) 2-8度：D5W, NS: 48 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 "
+  },
+  "colistin": {
+   "our_key": "colistin",
+   "generic": "Colistin Methanesulfonate",
+   "code": "COL1AH01",
+   "brand_en": "Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial",
+   "name_zh": "克痢黴素注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Dosage expressed in terms of colistin base. Dosage should be based on an estimate of IBW.IV or IM.Adults:Loading dose: 4 mg/kg; max. 300 mg/dose. First maintenance dose should be given 12 hrs later.",
+   "max_dose": "Adults: max of LD: 300 mg/dose. Infants, children and adolescents: max. 160 mg/dose.",
+   "indication": "限用於一般抗生素無效，且具多重抗藥性之革蘭氏陰性菌之嚴重感染。",
+   "pregnancy": "C",
+   "price_nhi": "345",
+   "price_self": "432",
+   "company": "臺灣東洋藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Colistin Methanesulfonate",
+     "code": "COL1AH01",
+     "zh": "克痢黴素注射劑"
+    },
+    {
+     "generic": "Colistin Methanesulfonate",
+     "code": "COL1AH04",
+     "zh": "克痢黴素注射劑(居家吸入型)"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial Colistin Methanesulfonate Y ≧ 90 (mL/min) 183.7 mg q12h (2.75 vial q12h); max. 360 mg/day Reference: CID 2017;64(5):565-571 2 80 to 167 mg q12h (2.5 vial q12h); max. 340 mg/day 3 70 to 150.3 mg q12h (2.25 vial q12h); max. 300 mg/day 4 60 to 133.6 mg q12h (2 vial q12h); max. 275 mg/day 5 40 to 116.9 mg q12h (1.75 vial q12h); max. 245 mg/day 6 30 to 100.2 mg q12h (1.5 vial q12h); max. 195 mg/day 7 10 to 83.5 mg q12h (1.25 vial q12h); max. 175 mg/day 8 66.8 mg q12h (1 vial q12h); max. 145 mg/day",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial Colistin Methanesulfonate 無資料 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial Colistin Methanesulfonate 66.8 mg q12h (CID 2017;64(5):565-571) 無資料 50.1 mg (0.75 vial) TIW after HD (CID 2017;64(5):565-571) 133.6 mg qd (CID 2017;64(5):565-571, AAC 2014;58(1):440-6) 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial Colistin Methanesulfonate 217.1 mg q12h (3.25 vial q12h) 217.1 mg q12h (3.25 vial q12h) 217.1 mg q12h (3.25 vial q12h) CID 2017;64(5):565-571 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 5 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Colimycin Injection 2 MU (= 66.8 mg colistin = 160 mg colistin methanesulfonate(CMS))/vial Colistin Methanesulfonate cIF (1,2,3,4) NS, D5W, LR (1) 1/2 daily dose slow IV bolus first. Infuse the rest at 5~6 mg/hr for 1~2 hr after IV bolus dose (1)；腎功能障礙者應降低速率。(1,3) 室溫 (1,2) 室溫：7 Days (1) 2-8度：14 Days (1) 室溫：24 hr (1,3,4) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IM (1,2,3,4) W, NS (1) 體積：2 mL (1,2,3,4) 33.4 mg colistin base/mL (1) 室溫 (1,2) 室溫：7 Days (1) 2-8度：14 Days (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IV (1,2,3,4) W, NS (1) 體積：2 mL (1,2,3,4) 3~5 min (1,2,3,4) 室溫 (1,2) 室溫：7 Days (1) 2-8度：14 Days (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 IF (1,3) W, NS (1) 體積：2 mL (1,2,3,4) NS, D5W, LR (1) 1.溶解時，輕輕旋轉小瓶，避免產生泡沫 (1,2,3,4)。 2.Concomitant use of nondepolarizing neurom"
+  },
+  "penG": {
+   "our_key": "penG",
+   "generic": "Penicillin G Benzathine",
+   "code": "BIC1AA38",
+   "brand_en": "Bicillin L-A Disposable Syringe 2.4 MU penicillin G/4 mL/syringe (暫時缺貨)",
+   "name_zh": "必希寧注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Deep IM only. Rheumatic fever, recurrent; prophylaxis: Adults: 1.2 MU q3-4wk or 0.6 MU q2wk. Children > 27 kg: 1.2 MU q3-4wk. Children ≦ 27 kg: 0.6 MU q3-4wk. Syphilis: (max. 2.4 MU/dose, total 7.2 MU). Neurosyphilis: Adults: 2.4 MU qw × 3 doses. Late latent: Adults: 2.4 MU qw × 3 doses; children: 0.05 MU/kg qw × 3 doses. Primary, secondary, early latent: Adults: 2.4 MU once; children: 0.05 MU/kg once. Congenital: neonates: 0.05 MU/kg once. Streptococcal pharyngitis, treatment & prevention: Adults: 1.2 MU once. Children > 27 kg: 1.2 MU once. Children ≦ 27 kg: 0.6 MU once.",
+   "max_dose": "",
+   "indication": "對青黴素具有感受性菌所引起之感染症",
+   "pregnancy": "B",
+   "price_nhi": "949",
+   "price_self": "1187",
+   "company": "輝瑞大藥廠股份有限公司 (委託辦理進口事宜)",
+   "all_products": [
+    {
+     "generic": "Penicillin G Benzathine",
+     "code": "BIC1AA38",
+     "zh": "必希寧注射劑"
+    },
+    {
+     "generic": "Penicillin G Benzathine",
+     "code": "EXT1AA38",
+     "zh": "無正式中文名"
+    },
+    {
+     "generic": "Penicillin G Benzathine",
+     "code": "PEN1AA38",
+     "zh": "無正式中文名"
+    },
+    {
+     "generic": "Penicillin G Sodium",
+     "code": "PE 1AA01",
+     "zh": "&#33476;基青黴素鈉注射液用粉"
+    },
+    {
+     "generic": "Penicillin G Sodium",
+     "code": "PEN1AA43",
+     "zh": "無正式中文名"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Bicillin L-A Disposable Syringe 2.4 MU penicillin G/4 mL/syringe (暫時缺貨) Penicillin G Benzathine Y(2) 10~50 (mL/min) 75% dose at usual intervals (2) 2 20~50% dose at usual intervals (2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Bicillin L-A Disposable Syringe 2.4 MU penicillin G/4 mL/syringe (暫時缺貨) Penicillin G Benzathine 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Bicillin L-A Disposable Syringe 2.4 MU penicillin G/4 mL/syringe (暫時缺貨) Penicillin G Benzathine 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Bicillin L-A Disposable Syringe 2.4 MU penicillin G/4 mL/syringe (暫時缺貨) Penicillin G Benzathine IM (1,3,4) undiluted 1.本品不可由皮下、靜脈、腰椎或其他體腔注入(1)。 2. IV administration of Penicillin G Benzathine has been associated with cardiorespiratory arrest and death (3,4). 2-8℃; keep from freezing. PVC：NA PP：NA PE：NA EVA：NA 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http:/"
+  },
+  "ampicillin": {
+   "our_key": "ampicillin",
+   "generic": "Ampicillin Sodium",
+   "code": "AMP1AA08",
+   "brand_en": "Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency)",
+   "name_zh": "安博黴素注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Slow IV over 10-15 mins, intermittent IF or IM. Adults: (max. 12 g/day) Urinary tract infection: IV/IM 500-2000 mg q4-6h. Bacteremia, meningitis, infective endocarditis, osteomyelitis: IV 2000 mg q4-6h. Bacterial endocarditis; Prophylaxis: 2000 mg IV/IM 30-60 mins prior to procedure. Group B streptococcal mother intrapartum prophylaxis: IV. Initially, 2000 mg, then 1000 mg q4h until delivery. Infants, children & adolescents: (max. 12 g/day) Mild-moderate infection: 100-200 mg/kg/day in q6h. Severe infection: 200-400 mg/kg/day in q6h; max. 12 g/day.",
+   "max_dose": "Infants and Children: 12 g/day.",
+   "indication": "葡萄球菌、鏈球菌、肺炎雙球菌、腦膜炎球菌及其他對青黴素具有感受性細菌引起之感染症",
+   "pregnancy": "B",
+   "price_nhi": "25",
+   "price_self": "25",
+   "company": "永豐化學工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ampicillin Sodium",
+     "code": "AMP1AA08",
+     "zh": "安博黴素注射劑"
+    },
+    {
+     "generic": "Ampicillin Sodium",
+     "code": "AMT1AA08",
+     "zh": "無正式中文名"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency) Ampicillin Sodium Y(1,2) >50 (mL/min) q6h (1,2) 2 Y(1,2) 10~50 (mL/min) q6-12h (1,2) 3 Y(1,2) q12-24h (1); q12-16h (2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency) Ampicillin Sodium 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency) Ampicillin Sodium 1-2 g q12-24h. On HD day, give after HD. (1) 20-50%(1) 250-2000 mg q12h",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency) Ampicillin Sodium LD 2 g, 2 g q8h LD 2 g, 2 g q8h LD 2 g, 2 g q6-8h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Ampolin for Injection 500 mg ampicillin/vial (Na 2.9-3.1 mEq/g potency) Ampicillin Sodium IF (1-3) W (1,2) 體積：5 mL (1,2) NS, D5W, LR (4) ≦30 mg/mL (1-3) 1.不可與aminoglycosides混合 (2,3) 2.以D5W稀釋穩定度較低 (1,4) 3.靜脈輸注過快可能引起癲癇 (3) 室溫 室溫：1 hr (1,2,3) 2-8度：4 hr (2) 室溫：NS,LR,W, ≦30 mg/mL: 8 hr (1,2,4); D5W, ≦20 mg/mL: 1 hr (1,2) 2-8度：NS ≦30 mg/mL: 24 hr; LR,W, 30 mg/mL: 24 hr (1); D5W≦20 mg/mL: 1 hr (1,2) PVC：相容(2) PP：相容(2) PE：相容(2) EVA：無資料 IM (1-3) W (1,2) 體積：1.8 mL (1,2) 室溫 室溫：1 hr (1,2,3) IV (1-3) W (1,2) 體積：5 mL(1,2) 10-15 mins (2,3) or 3-5 mins (4) 室溫 室溫：1 hr (1,2,3) 1 第 1 / 1 頁，每頁 10 筆，共 3 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Dru"
+  },
+  "nafcillin": {
+   "our_key": "nafcillin",
+   "generic": "Dicloxacillin Sodium",
+   "code": "DII4AA06",
+   "brand_en": "Dicloxacillin Sodium Capsule 250 mg dicloxacillin/cap (Na 0.6 mEq/cap)",
+   "name_zh": "無正式中文名",
+   "dosage_form": "硬膠囊",
+   "usual_dose": "PO, take on an empty stomach. Adults & children ≧ 40 kg, 125-500 mg q6h. MSSA infection (if no IV access): 500-1000 mg q6-8h. Children < 40 kg, 25-50 mg/kg/day in q6h, 50-100 mg/kg/day in q6h for follow-up therapy of osteomyelitis; max. 500 mg/dose.",
+   "max_dose": "",
+   "indication": "無(葡萄球菌、β－溶血性鏈球菌和肺炎雙球菌等細菌所引起的感染症)",
+   "pregnancy": "B",
+   "price_nhi": "1.5",
+   "price_self": "2",
+   "company": "橫山企業有限公司",
+   "all_products": [
+    {
+     "generic": "Dicloxacillin Sodium",
+     "code": "DII4AA06",
+     "zh": "無正式中文名"
+    },
+    {
+     "generic": "Dicloxacillin Sodium",
+     "code": "ZIE4AA06",
+     "zh": "奇福黴素膠囊"
+    },
+    {
+     "generic": "Oxacillin Sodium",
+     "code": "OCI1AA07",
+     "zh": "歐西林鈉乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Dicloxacillin Sodium Capsule 250 mg dicloxacillin/cap (Na 0.6 mEq/cap) Dicloxacillin Sodium N(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Dicloxacillin Sodium Capsule 250 mg dicloxacillin/cap (Na 0.6 mEq/cap) Dicloxacillin Sodium N(2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Dicloxacillin Sodium Capsule 250 mg dicloxacillin/cap (Na 0.6 mEq/cap) Dicloxacillin Sodium N(2) Nondialyzable (2) 0-5% (1) No(1) N(2) Nondialyzable (2) No(1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "rifampin": {
+   "our_key": "rifampin",
+   "generic": "Dapsone and Rifampin",
+   "code": "MDT4AK44",
+   "brand_en": "MDT-Combi Pack (Dapsone 100 mg/cap and Rifampin 300 mg/cap)/pack (少菌型)",
+   "name_zh": "無正式中文名(漢生計畫)",
+   "dosage_form": "組合藥",
+   "usual_dose": "Multibacillary leprosy: PO, Adults: Rifampicin 600 mg ac and clofazimine 300 mg q4w pc, plus clofazimine 50 mg and dapsone 100 mg qd pc. Treatment should last a year.Paucibacillary leprosy: Rifampicin: 600 mg q4w ac + dapsone 100 mg qd pc. Treatment should last 6 months.",
+   "max_dose": "",
+   "indication": "",
+   "pregnancy": "C",
+   "price_nhi": "0",
+   "price_self": "0",
+   "company": "臺灣諾華股份有限公司",
+   "all_products": [
+    {
+     "generic": "Dapsone and Rifampin",
+     "code": "MDT4AK44",
+     "zh": "無正式中文名(漢生計畫)"
+    },
+    {
+     "generic": "Dapsone, Clofazimine and Rifampin",
+     "code": "MDT4AK43",
+     "zh": "無正式中文名(漢生計畫)"
+    },
+    {
+     "generic": "Rifampin",
+     "code": "RIA4AD22",
+     "zh": "立汎黴素膠囊"
+    },
+    {
+     "generic": "Rifampin",
+     "code": "RIM5AD05",
+     "zh": ""
+    },
+    {
+     "generic": "Rifampin and Isoniazid",
+     "code": "MAC4AD09",
+     "zh": "袪核-二合膜衣錠"
+    },
+    {
+     "generic": "Rifampin and Isoniazid",
+     "code": "RH 4AD21",
+     "zh": "兒立服-2"
+    },
+    {
+     "generic": "Rifampin, Isoniazid and Pyrazinamide",
+     "code": "RHZ4AD20",
+     "zh": "愛兒肺平-3"
+    },
+    {
+     "generic": "Rifampin, Isoniazid, Ethambutol",
+     "code": "AKU4AD14",
+     "zh": "立剋核膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 MDT-Combi Pack (Dapsone 100 mg/cap and Rifampin 300 mg/cap)/pack (少菌型) Dapsone and Rifampin 無資料 無資料 無資料",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 MDT-Combi Pack (Dapsone 100 mg/cap and Rifampin 300 mg/cap)/pack (少菌型) Dapsone and Rifampin 無資料 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 MDT-Combi Pack (Dapsone 100 mg/cap and Rifampin 300 mg/cap)/pack (少菌型) Dapsone and Rifampin 無資料 無資料 無資料 無資料 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 MDT-Combi Pack (Dapsone 100 mg/cap and Rifampin 300 mg/cap)/pack (少菌型) Dapsone and Rifampin 無資料 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "isoniazid": {
+   "our_key": "isoniazid",
+   "generic": "Isoniazid",
+   "code": "ISM4AD15",
+   "brand_en": "新 (Free) Isoniazid-CDC Tablet 300 mg/tab (for 速克伏)",
+   "name_zh": "無正式中文名",
+   "dosage_form": "錠劑",
+   "usual_dose": "PO. Latent tuberculosis infection: 3HP regimen: Combination with rifapentine qw for 12 weeks as directly observed therapy. Adults & children ≧ 12 y/o, 15 mg/kg (max. 900 mg) qw.Children 2-11 y/o, 25 mg/kg (max. 900 mg) qw.1HP regimen (for HIV): Combination with rifapentine qd for 28 days. Adults & children ≧ 13 y/o, 300 mg qd.",
+   "max_dose": "900 mg qw",
+   "indication": "無 (肺結核，喉頭結核，腸結核，膀胱結核，皮膚結核，結核性髓膜炎，結核性膿胸，腎臟結核。)",
+   "pregnancy": "C",
+   "price_nhi": "0",
+   "price_self": "0",
+   "company": "衛福部疾管署/如山藥業有限公司",
+   "all_products": [
+    {
+     "generic": "Isoniazid",
+     "code": "ISM4AD15",
+     "zh": "無正式中文名"
+    },
+    {
+     "generic": "Isoniazid",
+     "code": "ISO4AD07",
+     "zh": "異菸(生僉)&#x91AF;&#x80BC;錠"
+    },
+    {
+     "generic": "Isoniazid and Rifapentine",
+     "code": "ISR4AD23",
+     "zh": "(速克伏)"
+    },
+    {
+     "generic": "Rifampin and Isoniazid",
+     "code": "MAC4AD09",
+     "zh": "袪核-二合膜衣錠"
+    },
+    {
+     "generic": "Rifampin and Isoniazid",
+     "code": "RH 4AD21",
+     "zh": "兒立服-2"
+    },
+    {
+     "generic": "Rifampin, Isoniazid and Pyrazinamide",
+     "code": "RHZ4AD20",
+     "zh": "愛兒肺平-3"
+    },
+    {
+     "generic": "Rifampin, Isoniazid, Ethambutol",
+     "code": "AKU4AD14",
+     "zh": "立剋核膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 新 (Free) Isoniazid-CDC Tablet 300 mg/tab (for 速克伏) Isoniazid N (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 新 (Free) Isoniazid-CDC Tablet 300 mg/tab (for 速克伏) Isoniazid N (1) Use with caution. Discontinue or temporarily withhold treatment if ALT or AST > 3 times the ULN (1) Defer its use in latent TB if acute hepatic diseases occur (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 新 (Free) Isoniazid-CDC Tablet 300 mg/tab (for 速克伏) Isoniazid No dose adjustment needed (give after HD) (1) 50-100% (1) No dose adjustment needed up to 73% (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "ethambutol": {
+   "our_key": "ethambutol",
+   "generic": "Ethambutol HCl",
+   "code": "EB 4AD01",
+   "brand_en": "E-butol F.C. Tablet 400 mg/tab",
+   "name_zh": "醫肺必妥膜衣錠",
+   "dosage_form": "膜衣錠",
+   "usual_dose": "PO. Tuberculosis: Adults, initially, 15 mg/kg qd. For patients with previous treatment, 25 mg/kg qd × 60 days or until bacteriologic smears and cultures become negative; followed by 15 mg/kg qd; max. 1.6 g/day. If used in an intermittent regimen, 2-4 g twice weekly or 1.2-2.4 g tiw. Children, 15-25 mg/kg qd or 50 mg/kg (up to 2.5 g) biw. Nontuberculous mycobacterial infection: Adults, 25 mg/kg TIW × 2 months, followed by 15 mg/kg qd, continued until culture negative for 1 year. Children and adolescents, 15-25 mg/kg qd; max. 2.5 g/day.",
+   "max_dose": "",
+   "indication": "結核病。",
+   "pregnancy": "B",
+   "price_nhi": "3.97",
+   "price_self": "5",
+   "company": "培力國際醫藥股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ethambutol HCl",
+     "code": "EB 4AD01",
+     "zh": "醫肺必妥膜衣錠"
+    },
+    {
+     "generic": "Rifampin, Isoniazid, Ethambutol",
+     "code": "AKU4AD14",
+     "zh": "立剋核膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 E-butol F.C. Tablet 400 mg/tab Ethambutol HCl Y (1,2) TIW",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 E-butol F.C. Tablet 400 mg/tab Ethambutol HCl 無資料 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 E-butol F.C. Tablet 400 mg/tab Ethambutol HCl 15-20 mg/kg TIW after HD 5-20% (1) (dose given after dialysis) (1) 15-20 mg/kg TIW 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 E-butol F.C. Tablet 400 mg/tab Ethambutol HCl q24~36h (1) 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "pyrazinamide": {
+   "our_key": "pyrazinamide",
+   "generic": "Pyrazinamide",
+   "code": "PY 4AD08",
+   "brand_en": "Pyrazinamide Tablet 500 mg/tab",
+   "name_zh": "匹井梭安錠",
+   "dosage_form": "錠劑",
+   "usual_dose": "PO. (based on lean body weight)Tuberculosis: Adults and children ≧ 15 y/o or 40 kg.",
+   "max_dose": "",
+   "indication": "肺結核及其他之結核症",
+   "pregnancy": "C",
+   "price_nhi": "4.68",
+   "price_self": "6",
+   "company": "培力藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Pyrazinamide",
+     "code": "PY 4AD08",
+     "zh": "匹井梭安錠"
+    },
+    {
+     "generic": "Pyrazinamide",
+     "code": "PY 5AD08",
+     "zh": ""
+    },
+    {
+     "generic": "Rifampin, Isoniazid and Pyrazinamide",
+     "code": "RHZ4AD20",
+     "zh": "愛兒肺平-3"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Pyrazinamide Tablet 500 mg/tab Pyrazinamide Y usual dose TIW",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Pyrazinamide Tablet 500 mg/tab Pyrazinamide N (1) Contraindicated in patients with severe hepatic damage, acute gout (1,3)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Pyrazinamide Tablet 500 mg/tab Pyrazinamide Usual dose tiw after HD 45%(2) 無資料 無資料 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Pyrazinamide Tablet 500 mg/tab Pyrazinamide 無資料 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "acyclovir": {
+   "our_key": "acyclovir",
+   "generic": "Acyclovir",
+   "code": "ACY4AMF3",
+   "brand_en": "Acylo Tablet 400 mg/tab",
+   "name_zh": "克&#30129;疹錠",
+   "dosage_form": "錠劑",
+   "usual_dose": "PO. Genital Herpes: Initial episodes: Adults & children ≧ 12 y/o, 200 mg q4h while awake (5 times/day) × 10 days or 400 mg tid × 7-10 days. Children Recurrent episodes: Adults & children ≧ 12 y/o, 200 mg q4h while awake (5 times/day) × 5 days; 400 mg tid × 5 days or 800 mg bid × 5 days or 800 mg tid × 2 days. In HIV patients, 400 mg tid × 5-10 days or 7-14 days. Children Chronic suppression: Adults & children ≧ 12 y/o, immunocompetent, 400 mg bid; HIV infected, 400-800 mg bid or tid.Children Herpes zoster (shingles): Adults & children ≧ 12 y/o, 800 mg q4h (5 times/day) × 7-10 days; max. 4 g/day. Children with HIV & mild zoster, 20 mg/kg (max. 800 mg) qid × 7-10 days. Varicella zoster (chickenpox): Adults & children ≧ 2 y/o, 20 mg/kg (max. 800 mg) qid × 5 days. Initiated within 1st 24 hrs of rash onset. Children with HIV: 20 mg/kg (max. 800 mg) qid × 7 days or until no new lesions appear for 48 hrs. HSV orolabial disease (i.e. gingivostomatitis, herpes labialis): Infants, children & adolescents (non-HIV-infected), 20 mg/kg (max. 800 mg) qid × 5-7 days. Infants & children (HIV-infected), 20 mg/kg (max. 400 mg) qid × 7-10 days. Adolescents (HIV-infected), 400 mg tid × 5-10 days.",
+   "max_dose": "",
+   "indication": "帶狀&#30129;疹病毒引起之感染、單純&#30129;疹病毒引起之皮膚黏膜感染、預防骨髓移植及白血病所引起之免疫不全病人之單純&#30129;疹感染、復發性單純&#30129;疹感染之抑制、水痘之感染。",
+   "pregnancy": "B",
+   "price_nhi": "4.91",
+   "price_self": "7",
+   "company": "信東生技股份有限公司",
+   "all_products": [
+    {
+     "generic": "Acyclovir",
+     "code": "ACY4AMF3",
+     "zh": "克&#30129;疹錠"
+    },
+    {
+     "generic": "Acyclovir",
+     "code": "ZOV5AM01",
+     "zh": "熱威樂素懸液劑"
+    },
+    {
+     "generic": "Acyclovir Sodium",
+     "code": "ZOV1AM01",
+     "zh": "熱威樂素注射劑"
+    },
+    {
+     "generic": "Valacyclovir HCL",
+     "code": "VAL4AM04",
+     "zh": "祛疹易錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Acylo Tablet 400 mg/tab Acyclovir Y 200 mg q12h (when 200 mg q4h, or 200 mg q8h, or 400 mg q12h in normal renal function) q12h 2 Y 10~25 (mL/min/1.73 m2) 800 mg q8h (when 800 mg q4h in normal renal function) q8h 3 Y 200-400 mg q12h (1) (when 800 mg q4h in normal renal function) q12h",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Acylo Tablet 400 mg/tab Acyclovir N",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Acylo Tablet 400 mg/tab Acyclovir Administer after HD on HD days, 200 mg q12h (when 200 mg q4h or 400 mg q12h in normal renal function) 400 mg as loading dose, then 200 mg q12h, give extra 400 mg after each dialysis (when 800 mg q4h in normal renal function) (1) 60%(2) 200 mg q12h (when 200 mg q4h or 400 mg q12h in normal renal function), 600-800 mg qd (when 800 mg q4h in normal renal function) (1) N",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱：",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "oseltamivir": {
+   "our_key": "oseltamivir",
+   "generic": "Oseltamivir Phosphate",
+   "code": "ERA4AM59",
+   "brand_en": "(Free) Eraflu-CDC Capsule 75 mg/cap",
+   "name_zh": "(免費) 易剋冒膠囊",
+   "dosage_form": "硬膠囊",
+   "usual_dose": "PO. Influenza A and B virus infections treatment: (initiated within 2 days of symptom onset) Adults: 75 mg bid × 5 days. Children & adolescents: > 40 kg, 75 mg bid × 5 days. > 23-40 kg, 60 mg bid × 5 days. > 15-23 kg, 45 mg bid × 5 days. ≦ 15 kg, 30 mg bid × 5 days. Infants ≧ 9 m/o: 3.5 mg/kg bid × 5 days. Infants Prevention of seasonal Influenza A and B virus infections: (initiated within 2 days of exposure) Adults: 75 mg qd × 10 days. Children & adolescents: > 40 kg, 75 mg qd × ≧ 7 days. > 23-40 kg, 60 mg qd × ≧ 7 days. > 15-23 kg, 45 mg qd × ≧ 7 days. ≦ 15 kg, 30 mg qd × ≧ 7 days. Infants 3-9 m/o: limited data, 3 mg/kg qd.",
+   "max_dose": "",
+   "indication": "成人和兒童（包含足月新生兒）的流行性感冒之治療。成人和1歲或以上兒童的流行性感冒之預防。",
+   "pregnancy": "C",
+   "price_nhi": "0",
+   "price_self": "0",
+   "company": "永信藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "ERA4AM59",
+     "zh": "(免費) 易剋冒膠囊"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "ERA5AM59",
+     "zh": "(兒免費) 易剋冒口服懸浮液劑 15 毫克/毫升"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "OSE5AMI9",
+     "zh": "(兒免費) 速剋流口服懸液用粉劑"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "TA 4AM35",
+     "zh": "(自費) 克流感膠囊"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "TA 5AM35",
+     "zh": "(兒自費) 克流感口服懸浮液劑 15毫克/毫升"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "TAI4AM35",
+     "zh": "(自費) 克流感膠囊"
+    },
+    {
+     "generic": "Oseltamivir Phosphate",
+     "code": "TAI5AM35",
+     "zh": "(兒自費) 克流感口服懸浮液劑 15毫克/毫升"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 (Free) Eraflu-CDC Capsule 75 mg/cap Oseltamivir Phosphate Y(treatment) 10~30 (mL/min) 75 mg qd × 5 days 2 Y(prophylaxis) 10~30 (mL/min) 75 mg / 30 mg q48h / qd",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 (Free) Eraflu-CDC Capsule 75 mg/cap Oseltamivir Phosphate N mild-to-moderate liver impairment: N; severe impairment: 無資料 (1, 2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 (Free) Eraflu-CDC Capsule 75 mg/cap Oseltamivir Phosphate Treatment: low-flux HD: 30 mg after each dialysis sessions, high-flux HD: 75 mg after each dialysis session. 無資料 無資料 Adults: treatment: 30 mg x 1 dose, prophylaxis: 30 mg immediately and then 30 mg qw 無資料 無資料 Intensive Care Med (2010) 36:1618–1619",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 (Free) Eraflu-CDC Capsule 75 mg/cap Oseltamivir Phosphate 75 mg q12h-qd 75 mg q12h-qd 75 mg q12h-qd 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "fluconazole": {
+   "our_key": "fluconazole",
+   "generic": "Fluconazole",
+   "code": "DIF1AL09",
+   "brand_en": "Diflucan Injection 100 mg/50 mL/vial",
+   "name_zh": "泰復肯靜脈注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF (rate ≦ 200 mg/hr). Urinary tract infection: 200 mg (3 mg/kg) qd, up to 400 mg (6 mg/kg) qd for pyelonephritis. Invasive candidiasis: Adults, 800 mg (12 mg/kg) on D1, then 400 mg (6 mg/kg) qd. Children, 25 mg/kg (max. 800 mg) on D1; then 12 mg/kg qd (max. 800 mg/day).Neonates, 25 mg/kg on D1, then 12 mg/kg qd. Cryptococcal meningitis: Adults: Induction, 400-800 mg qd + amphotericin B/flucytosine (or monotherapy, 800-1200 mg/day); Consolidation: 400-800 mg/day. Children: Induction, 12 mg/kg qd on D1, then 6-12 mg/kg qd; Consolidation, 6-12 mg/kg qd; max. 800 mg/day. Candidiasis of the esophagus: Adults, 200-400 mg (3-6 mg/kg) qd. Children, 6-12 mg/kg qd; max. 600 mg/day. Prophylaxis in high-risk ICU patients, stem cell transplant recipients with neutropenia, chemotherapy-induced neutropenia: Adults, 400 mg (6-12 mg/kg) qd; Children, 6 mg/kg qd; max. 400 mg/day. Prophylaxis in solid-organ transplant recipients: Adults, 200-400 mg (3-6 mg/kg) qd; Children: 3-6 mg/kg qd; max 400 mg/day. Prophylaxis for NICUs: birth weight < 1 kg (initiate within 48-72 hrs of birth): 3-6 mg/kg/dose twice weekly (for up to 6 weeks).",
+   "max_dose": "",
+   "indication": "抗黴菌劑",
+   "pregnancy": "C (single dose for vaginal candidiasis) / D (all other indications)",
+   "price_nhi": "206",
+   "price_self": "258",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Fluconazole",
+     "code": "DIF1AL09",
+     "zh": "泰復肯靜脈注射劑"
+    },
+    {
+     "generic": "Fluconazole",
+     "code": "DIF4AL09",
+     "zh": "泰復肯膠囊"
+    },
+    {
+     "generic": "Fluconazole",
+     "code": "FLU5AL09",
+     "zh": "復抑諾懸液用粉劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Diflucan Injection 100 mg/50 mL/vial Fluconazole Y (1,2) ≦50 (1,2) (mL/min) 降低50% (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Diflucan Injection 100 mg/50 mL/vial Fluconazole N (1) Use with caution (1)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Diflucan Injection 100 mg/50 mL/vial Fluconazole 50% dose qd , give after HD (1) 50% (2) 50% dose qd (Ref: Abx guide) 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Diflucan Injection 100 mg/50 mL/vial Fluconazole LD 800 mg followed by 400-800 mg q24h (1) LD 800 mg followed by 400-800 mg q24h (1) LD 800 mg followed by 400-800 mg q24h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Diflucan Injection 100 mg/50 mL/vial Fluconazole IF NS, LR, D5W (1,2) ≦2 mg/mL Pediatrics > 2 hrs; Adults ≦200 mg/hr ≦30℃，勿冷凍 PVC：相容(2) PP：無資料 PE：無資料 EVA：相容(2) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "voriconazole": {
+   "our_key": "voriconazole",
+   "generic": "Voriconazole",
+   "code": "VFE1AL23",
+   "brand_en": "Vfend for Solution for Infusion 200 mg/vial",
+   "name_zh": "黴飛凍晶注射液",
+   "dosage_form": "注射劑",
+   "usual_dose": "Invasive Aspergillosis, Candidiasis, Mycosis, Febrile neutropenia, Serious Mycosis: Adults & Children ≧ 15 y/o: loading 6 mg/kg IV q12h × 2 doses, then 4 mg/kg IV q12h or 200-300 mg PO bid or 3-4 mg/kg PO bid. Children 1 m/o - 14 y/o, ≧ 50 kg: loading 6 mg/kg IV q12h × 2 doses, then 4 mg/kg IV q12h or 200-300 mg PO bid or 3-4 mg/kg PO bid. Children 1 m/o - 14 y/o, Neonates, PNA ≦ 28 d/o: IV 6 mg/kg q12h. Candidiasis of the esophagus, Oropharyngeal candidiasis: Adults & Children ≧ 12 y/o: ≧ 40 kg, 200 mg bid; < 40 kg, 100 mg bid × 14-21 days.",
+   "max_dose": "Infants & Children < 12 y/o: max. 350 mg q12h",
+   "indication": "1. 治療侵犯性麴菌病(invasive aspergillosis)、2. 治療嚴重之侵犯性念珠菌感染(serious invasive candida infections)、3. 治療足分枝菌(Scedosporium spp.)和鐮刀菌(Fusarium spp.)之嚴重黴菌感染。(2011.4)4. 預防高危險患者發生侵入性黴菌感染，包括接受造血幹細胞移植 (HSCT)的患者。(2014.8)",
+   "pregnancy": "D",
+   "price_nhi": "3806",
+   "price_self": "4758",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Voriconazole",
+     "code": "VFE1AL23",
+     "zh": "黴飛凍晶注射液"
+    },
+    {
+     "generic": "Voriconazole",
+     "code": "VFE4AL23",
+     "zh": "黴飛膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Vfend for Solution for Infusion 200 mg/vial Voriconazole Y (1,2) Closely monitor Scr and change to oral voriconazole when possible. (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Vfend for Solution for Infusion 200 mg/vial Voriconazole Y (1,2) Mild to moderate hepatic dysfunction (Child-Pugh Class A and B): following standard LD, reduce MD by 50%; Severe impairment (Child-Pugh class C): should only be used if benefit outweighs risk, monitor closely for toxicity (1,2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Vfend for Solution for Infusion 200 mg/vial Voriconazole Dialyzable (2) N (2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Vfend for Solution for Infusion 200 mg/vial Voriconazole 6 mg/kg for 2 doses, then 3-4 mg/kg q12h 6 mg/kg for 2 doses, then 3-4 mg/kg q12h 6 mg/kg for 2 doses, then 3-4 mg/kg q12h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Vfend for Solution for Infusion 200 mg/vial Voriconazole IF W 體積：19 mL (10 mg/mL) D5W, NS, H/S (1) 0.5~5 mg/mL (3) 60~120 min (1) 3 mg/kg/hr (1,3) 1. IV maximum infusion rate 3 mg/kg/hr over 1 to 2 hrs; not for IV bolus administration. 2.不可與其他藥物輸注液一同輸注 (1)。 2-8度：24 hr (1) 室溫：25℃ in D5W (2 mg/mL): 4 days; 25℃ in NS (2 mg/mL): 8 days (Am J Health Syst Pharm. 2006 Aug 1;63(15):1423-6) PVC：相容 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.go"
+  },
+  "anidulafungin": {
+   "our_key": "anidulafungin",
+   "generic": "Anidulafungin",
+   "code": "ERA1AL24",
+   "brand_en": "Eraxis for Injection 100 mg/vial",
+   "name_zh": "助黴飛注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Slow IF. Candidemia, Invasive candidiasis: Adults, loading 200 mg qd on D1, then 100 mg qd. Children > 1 m/o, loading 3 mg/kg qd on D1, then 1.5 mg/kg qd.",
+   "max_dose": "",
+   "indication": "治療成人侵襲性念珠菌感染。",
+   "pregnancy": "B",
+   "price_nhi": "1912",
+   "price_self": "2390",
+   "company": "輝瑞大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Anidulafungin",
+     "code": "ERA1AL24",
+     "zh": "助黴飛注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Eraxis for Injection 100 mg/vial Anidulafungin N(1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Eraxis for Injection 100 mg/vial Anidulafungin N(1,2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Eraxis for Injection 100 mg/vial Anidulafungin N(1,2,3) Not dialyzable (1,2,3) N (3) N(1,2,3) Not dialyzable (1,2,3) 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Eraxis for Injection 100 mg/vial Anidulafungin No dosage adjustment necessary (1) No dosage adjustment necessary (1) No dosage adjustment necessary (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Eraxis for Injection 100 mg/vial Anidulafungin IF (1,3) W 體積：30 mL (1) (3.33 mg/mL) D5W, NS (1,3,4) 每瓶：Adults, 100 mL/vial (total 130 mL/vial)(1) 0.77 mg/mL (1,3) 1. More rapid infusion may increase the risk of a histamine-mediated reaction.(1,3) 2. Eraxis 100 mg 必須用 30 mL Water for Injection溶解後，(成人)加入100 mL D5W or NS稀釋至總體積130 mL再輸注。 3. 建議使用21 gauge或更細針頭調配。 2-8℃ (1,3,4) 室溫：24 hr (1) 室溫：48 hr (1) PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http"
+  },
+  "micafungin": {
+   "our_key": "micafungin",
+   "generic": "Micafungin Sodium",
+   "code": "MYC1AL14",
+   "brand_en": "Mycamine for Injection 50 mg/vial",
+   "name_zh": "米開民注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Slow IF over 1 hr. Invasive Aspergillosis, Candidiasis: Adults, 100 mg qd; max. 150 mg qd. Children ≧ 9 y/o, ≦ 40 kg: 2-3 mg/kg qd; > 40 kg: 100 mg qd. Children 2-8 y/o, 15-40 kg: 3-4 mg/kg qd. Infants ≧ 4 m/o, 7-15 kg: 5-7 mg/kg qd. Neonates, Infants Prophylaxis of Candida infection in hematopoietic stem cell transplantation: Adults, 50-100 mg qd. Infants ≧ 4 m/o, children & adolescents: 1 mg/kg qd; max. 50 mg qd. Infants < 4 m/o: 2 mg/kg qd.",
+   "max_dose": "150 mg qd",
+   "indication": "1. 治療4個月以上兒童與成人病人的念珠菌血症、急性播散性念珠菌病、念珠菌腹膜炎及膿瘍。 2. 治療未滿4個月兒童病人的念珠菌血症、急性播散性念珠菌病、未合併腦膜腦炎和/或眼擴散之念珠菌腹膜炎及膿瘍。 3. 治療4個月以上兒童與成人病人的食道念珠菌感染症。 4. 預防接受造血幹細胞移植 (HSCT) 的4個月以上兒童與成人病人的念珠菌感染症。",
+   "pregnancy": "C",
+   "price_nhi": "843",
+   "price_self": "1054",
+   "company": "台灣山德士藥業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Micafungin Sodium",
+     "code": "MYC1AL14",
+     "zh": "米開民注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Mycamine for Injection 50 mg/vial Micafungin Sodium N (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Mycamine for Injection 50 mg/vial Micafungin Sodium N (1,2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Mycamine for Injection 50 mg/vial Micafungin Sodium N (1,2,3) Not dialyzable (2,3) N (3) 無資料 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Mycamine for Injection 50 mg/vial Micafungin Sodium N (2) N (2) N (2) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Mycamine for Injection 50 mg/vial Micafungin Sodium IF NS, D5W 體積：5 mL NS/D5W 每劑：100 mL/dose 0.5-4 mg/mL 60 min 不可與其他藥物混合或同時輸注，會發生沉澱。原有的靜脈輸注管線應先用0.9%氯化鈉注射液沖洗(1)，建議使用單獨的靜脈輸注管線。兒童給藥濃度高於1.5 mg/mL建議由中央靜脈CVC給藥。 25℃ 室溫：24 hr 室溫：24 hr，避光 PVC：無資料 PP：無資料 PE：無資料 EVA：無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis."
+  },
+  "caspofungin": {
+   "our_key": "caspofungin",
+   "generic": "Caspofungin Acetate",
+   "code": "CAN1AL22",
+   "brand_en": "Cancidas for Injection 50 mg/vial",
+   "name_zh": "黴息止注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Slow IF over 1 hr.Adults: loading 70 mg qd × 1 day, then 50 mg qd.Children 3 m/o-17 yrs, loading 70 mg/m2; maintenance 50-70 mg/m2 qd (max. 70 mg).Infants 2 qd.",
+   "max_dose": "",
+   "indication": "適用於其他治療方法無效或不能忍受的侵入性麴菌病(INVASIVE ASPERGILLOSIS)治療之第二線用藥，食道念珠菌感染。併有及未併有嗜中性白血球減少現象之患者得侵入性念珠菌感染症，包括念珠菌血症(INVASIVE CANDIDIASIS)。對發燒的重度嗜中性白血球缺乏症患者可能罹患黴菌感染症之經驗療法。",
+   "pregnancy": "C",
+   "price_nhi": "7053",
+   "price_self": "8817",
+   "company": "美商默沙東藥廠股份有限公司台灣分公司",
+   "all_products": [
+    {
+     "generic": "Caspofungin Acetate",
+     "code": "CAN1AL22",
+     "zh": "黴息止注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cancidas for Injection 50 mg/vial Caspofungin Acetate N (1,2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cancidas for Injection 50 mg/vial Caspofungin Acetate Y (1) Moderate hepatic insufficiency (Child-Pugh score 7-9): LD 70mg, followed by 35 mg/day; no clinical experience in patients with severe hepatic insufficiency (Child-Pugh score > 9), a further dosage reduction may be considered in these patients (1,2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cancidas for Injection 50 mg/vial Caspofungin Acetate N (1,3) Not dialyzable (2) N (1) N (1) Not dialyzable (2) N (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cancidas for Injection 50 mg/vial Caspofungin Acetate N N N 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cancidas for Injection 50 mg/vial Caspofungin Acetate IF (1) W (1) 體積：10.5 mL (溶解後濃度：5.2 mg/mL)(1) NS, LR (1,3) 每劑：250 mL/dose，或限水的病人≦0.5 mg/mL/dose (1,3) ≦0.5 mg/mL (1,3) 60 min (1,3) 1. 不可以使用任何含有葡萄糖的稀釋液 (1,3)。 2. 不可與其他藥品混合或同時輸注 (1,3)。 3. Prior to reconstitution, the vial should be allowed to reach room temperature (1). 2~8 ℃ (1,3) 室溫：24 hr (1) 室溫：24 hr (1,3) 2-8度：48 hr (1,3) PVC：NA PP：NA PE：NA EVA：NA 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/pha"
+  },
+  "amphoLipo": {
+   "our_key": "amphoLipo",
+   "generic": "Amphotericin B Liposomal",
+   "code": "AMB1AL18",
+   "brand_en": "AmBisome for Injection 50 mg/vial",
+   "name_zh": "脂黴素微脂粒凍晶乾粉注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "IF over 2 hrs via controlled infusion device. Adults & children ≧ 1 m/o, Aspergillosis, invasive: 3-5 mg/kg qd. Candidiasis: 3-5 mg/kg qd. Cryptococcal meningitis induction: 3-4 mg/kg qd + flucytosine 25 mg/kg PO qid (preferred) × 2 wks.",
+   "max_dose": "",
+   "indication": "‧ 治療感染囊球菌腦膜炎的HIV患者 ‧ 治療嚴重全身性及/ 或深部黴菌感染 ‧ 治療臟器的利時曼氏病。在免疫不全且患有臟器的利時曼氏病之患者使用AmBisome治療，在初期寄生蟲清除後仍有高復發率。 ‧ 對發燒的重度嗜中性白血球缺乏症患者可能罹患黴菌感染症之經驗療法。",
+   "pregnancy": "B",
+   "price_nhi": "5243",
+   "price_self": "6554",
+   "company": "香港商吉立亞醫藥有限公司台灣分公司",
+   "all_products": [
+    {
+     "generic": "Amphotericin B Liposomal",
+     "code": "AMB1AL18",
+     "zh": "脂黴素微脂粒凍晶乾粉注射劑"
+    },
+    {
+     "generic": "Amphotericin B Liposomal",
+     "code": "LIP1AL18",
+     "zh": "立博黴微脂粒凍晶乾粉注射劑"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 AmBisome for Injection 50 mg/vial Amphotericin B Liposomal N (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 AmBisome for Injection 50 mg/vial Amphotericin B Liposomal 無資料 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 AmBisome for Injection 50 mg/vial Amphotericin B Liposomal N (1) Poorly dialyzed (1) N (1) 無資料 Poorly dialyzed(1) N (1) IHD: no dosage adjustment necessary, administer after hemodialysis on dialysis day (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 AmBisome for Injection 50 mg/vial Amphotericin B Liposomal No dosage adjustment necessary No dosage adjustment necessary No dosage adjustment necessary 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 AmBisome for Injection 50 mg/vial Amphotericin B Liposomal IF (1-3) W (1-3) 體積：12 mL (4 mg/mL) (1-3) D5W (1-3) 1~2 mg/mL (1,2,3) 0.2-0.5 mg/mL may be used in infants and small children to provide enough volume for infusion. 60~120 min (1,2,3) 1. Do not reconstitute with saline or mix with other drugs. 2. An existing intravenous line must be flushed with D5W prior to infusion or through a separate line.(1-3) 3. Reconstituted soln. should be filtered via the 5-μm filter (provided by the manufacturer) into D5W soln. 4. Lower concentrations (0.2~0.5 mg/mL) may be appropriate for infants and small children.(1) ≦25°C (1-3) 2-8度：24 hr (1,2,3) 室溫：6 hr (1); 0.2 and 2 mg/mL: 24 hr (2) 2-8度：2 mg/mL: 14 D (2) & 0.2 mg/ml: 11 D (2) PVC：相容 (2) PP：無資料 P"
+  },
+  "flucytosine": {
+   "our_key": "flucytosine",
+   "generic": "Flucytosine",
+   "code": "FLU4AL03",
+   "brand_en": "Flusine Tablet 500 mg/tab",
+   "name_zh": "弗路欣錠",
+   "dosage_form": "錠劑",
+   "usual_dose": "PO. Adults & children, 25 mg/kg q6h.",
+   "max_dose": "",
+   "indication": "白色黴菌病、黴菌性肺炎及產色黴菌病",
+   "pregnancy": "C",
+   "price_nhi": "83",
+   "price_self": "93",
+   "company": "臺灣東洋藥品工業股份有限公司",
+   "all_products": [
+    {
+     "generic": "Flucytosine",
+     "code": "FLU4AL03",
+     "zh": "弗路欣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Flusine Tablet 500 mg/tab Flucytosine Y (1,2,3) 20-40 (3) (mL/min) q12h (3) 2 10-20 (3) (mL/min) q24h (3) 3 q48h (3)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Flusine Tablet 500 mg/tab Flucytosine N (2)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Flusine Tablet 500 mg/tab Flucytosine Adult: 25-50 mg/kg q48-72 h after dialysis (1,2); Infants, Children, and non-HIV positive Adolescents: 25-37.5 mg/kg q24h (1) 50-100% (1) Adults: 25 mg/kg q24-48h. Infants, Children, and non-HIV positive Adolescents: 25-37.5 mg/kg q24h (1) 無資料 Flucytosine should be avoided in children with severe renal impairment (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Flusine Tablet 500 mg/tab Flucytosine NA, consider adults, 25-37.5 mg/kg q12-24h (3); children, 25-37.5 mg/kg q8h (1) NA, consider adults, 25-37.5 mg/kg q12-24h (3); children, 25-37.5 mg/kg q8h (1) NA, consider adults, 25-37.5 mg/kg q12-24h (3); children, 25-37.5 mg/kg q8h (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "valganciclovir": {
+   "our_key": "valganciclovir",
+   "generic": "Ganciclovir Sodium",
+   "code": "CYM1AM02",
+   "brand_en": "Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency)",
+   "name_zh": "西美芬凍晶靜脈注射劑",
+   "dosage_form": "注射劑",
+   "usual_dose": "Intermittent IF at a constant rate over 1 hr, conc. ≦ 10 mg/mL. CMV retinitis or other CMV diseases: Adults, children & infants > 3 m/o, induction, 5 mg/kg q12h × 14-21 days; maintenance, 5 mg/kg qd or 6 mg/kg qd for 5 days/wk. Prevention of CMV disease in transplant recipients: Induction, 5 mg/kg q12h × 7-14 days. Maintenance, 5 mg/kg qd or 6 mg/kg qd × 5 days/wk. Congenital CMV disease: 6 mg/kg q12h, continued for a total of 6 months.",
+   "max_dose": "",
+   "indication": "用於治療免疫功能缺乏之巨細胞病毒感染症。",
+   "pregnancy": "C",
+   "price_nhi": "1492",
+   "price_self": "1546",
+   "company": "羅氏大藥廠股份有限公司",
+   "all_products": [
+    {
+     "generic": "Ganciclovir Sodium",
+     "code": "CYM1AM02",
+     "zh": "西美芬凍晶靜脈注射劑"
+    },
+    {
+     "generic": "Ganciclovir Sodium",
+     "code": "GAN1AM22",
+     "zh": "甘西韋注射劑"
+    },
+    {
+     "generic": "Valganciclovir HCl",
+     "code": "VAL4AM42",
+     "zh": "克毒癒膜衣錠"
+    },
+    {
+     "generic": "Valganciclovir HCl",
+     "code": "VAL5AM42",
+     "zh": ""
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency) Ganciclovir Sodium Y (1) 50~69 (mL/min) Induction: 2.5 mg/kg q12h; maintenance: 2.5 mg/kg qd (1, 2) 2 Y (1) 25~49 (mL/min) Induction: 2.5 mg/kg qd; maintenance: 1.25 mg/kg qd (1, 2) 3 Y (1) 10-24 (mL/min) Induction: 1.25 mg/kg qd; maintenance: 0.625 mg/kg qd (1, 2) 4 Y (1) Induction: 1.25 mg/kg TIW; MD: 0.625 mg/kg TIW (1, 2)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency) Ganciclovir Sodium 無資料",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency) Ganciclovir Sodium Induction: 1.25 mg/kg TIW following hemodialysis; maintenance: 0.625 mg/kg TIW following hemodialysis (1, 2) 50% Induction: 1.25 mg/kg TIW following hemodialysis; maintenance: 0.625 mg/kg TIW following hemodialysis (1, 2)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency) Ganciclovir Sodium Induction: 2.5 mg/kg q24h, Maintenance: 1.25 mg/kg q24h Induction: 2.5 mg/kg q24h, Maintenance: 1.25 mg/kg q24h Induction: 2.5 mg/kg q24h, Maintenance: 1.25 mg/kg q24h 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 給藥 途徑 溶解液 及體積 稀釋液 及體積 給藥 濃度 輸注時間 或速率 注意 事項 原包裝 儲存條件 溶解後 安定性 稀釋後 安定性 容器 相容性 1 Cymevene Lyophilized IV Injection 500 mg ganciclovir/10 mL/vial (Na 4 mEq/g potency) Ganciclovir Sodium IF W 體積：10 mL (1~3) D5W, NS, LR, Ringer's (2,3) 每劑：50~250 mL/dose (usually 100 mL/dose) (2) ≦10 mg/mL ≧60 min 1. Carcinogenic/teratogenic, wear proper protective equipment. 2. Cymevene solutions are alkaline (pH ~11). If such contact occurs, wash thoroughly with soap and water, rinse eyes thoroughly with plain water. 3. Do not use bacteriostatic water for injection containing parabens (may cause precipitation). 室溫：12 hr (1) 2-8度：Should not be refrigerated (1), since a precipitate may form (2) 室溫：24 hr (1) 2-8度：24 hr (1,3) PVC：相容(2) PP：相容(2) PE：無資料 EVA：相容(2) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/I"
+  },
+  "fidaxomicin": {
+   "our_key": "fidaxomicin",
+   "generic": "Fidaxomicin",
+   "code": "DIF4AK56",
+   "brand_en": "Dificid Film-coated Tablet 200 mg/tab",
+   "name_zh": "鼎腹欣膜衣錠",
+   "dosage_form": "膜衣錠",
+   "usual_dose": "PO. Treatment of C. difficile-associated infection (CDI): Adults: 200 mg bid for 10 days. Children ≧ 6 m/o, fixed dosing by tablet (NTUH experience): ≧ 12.5 kg, 200 mg bid for 10 days. 9-12.4 kg, 150 mg bid for 10 days. 4-9 kg, 100 mg bid for 10 days. < 4 kg, 50 mg bid for 10 days.",
+   "max_dose": "max. 200 mg/dose BID",
+   "indication": "困難梭狀桿菌相關腹瀉(C. difficile-associated diarrhoea, CDAD)",
+   "pregnancy": "B",
+   "price_nhi": "842",
+   "price_self": "1053",
+   "company": "美商默沙東藥廠股份有限公司台灣分公司",
+   "all_products": [
+    {
+     "generic": "Fidaxomicin",
+     "code": "DIF4AK56",
+     "zh": "鼎腹欣膜衣錠"
+    }
+   ],
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Dificid Film-coated Tablet 200 mg/tab Fidaxomicin N (2,3,仿單)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Dificid Film-coated Tablet 200 mg/tab Fidaxomicin N(2,3,仿單)",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Dificid Film-coated Tablet 200 mg/tab Fidaxomicin 無資料 無資料",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Dificid Film-coated Tablet 200 mg/tab Fidaxomicin 無資料 無資料 無資料 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  },
+  "tmpsmx": {
+   "our_key": "tmpsmx",
+   "generic": "Co-trimoxazole",
+   "code": "BAK4AI02",
+   "brand_en": "Baktar Tablet 400 mg sulfamethoxazole & 80 mg trimethoprim/tab",
+   "name_zh": "撲菌特錠",
+   "dosage_form": "錠劑",
+   "usual_dose": "Contraindication: Infants But PJP prophylaxis can begin at 1 m/o. PO. Dosage expressed in terms of the trimethoprim content. Adults: 160 mg q12h. Children ≧ 2 m/o: 6-12 mg/kg/day in 2 doses. Pneumocystis jiroveci (previous Pneumocystis carinii) pneumonia: Adults, children ≧ 2 m/o: 15-20 mg/kg/day in 3-4 doses for 14-21 days. Prevention of P. jiroveci pneumonia or toxoplasmosis in HIV patients: Adults & adolescents: 80-160 mg qd or on 3 consecutive days/wk. Children ≧ 2 m/o, 5-10 mg/kg/day or 150 mg/m2/day for 3-7 days per week; administered as q12h doses for 3 consecutive or alternating days, or as a qd dose for 3 consecutive days; max. 320 mg/day. Acute Otitis Media: Children ≧ 2 m/o: 8 mg/kg/day in q12h. GI Infections, respiratory tract infections, UTI: Adults: 160 mg q12h. Children ≧ 2 m/o: 8-10 mg/kg/day in q12h. UTI prophylaxis: Adults: 40-80 mg qd or 3 times weekly. Children ≧ 2 m/o: 2 mg/kg qd or 5 mg/kg twice weekly.",
+   "max_dose": "trimethoprim 20 mg/kg/day",
+   "indication": "葡萄狀球菌、鏈鎖球菌、肺炎雙球菌、大腸菌、赤痢菌及綠膿菌引起之感染症",
+   "pregnancy": "D",
+   "price_nhi": "2",
+   "price_self": "2",
+   "company": "臺灣鹽野義製藥股份有限公司",
+   "renal": "學名 腎功能不佳 是否須調整劑量 CCr 建議劑量 建議頻次 1 Baktar Tablet 400 mg sulfamethoxazole & 80 mg trimethoprim/tab Co-trimoxazole Y (1,2) 15-30 (1,2) (mL/min) 50% (1) 2 Not recommended (1)",
+   "hepatic": "學名 是否須調整劑量 劑量調整、建議或注意事項 1 Baktar Tablet 400 mg sulfamethoxazole & 80 mg trimethoprim/tab Co-trimoxazole Use with caution. Contraindicated in cases of marked hepatic damage.",
+   "dialysis": "學名 HD PD 備註 劑量調整 透析移除比例 透析後 補充劑量 劑量調整 透析移除比例 透析後 補充劑量 1 Baktar Tablet 400 mg sulfamethoxazole & 80 mg trimethoprim/tab Co-trimoxazole 2.5-10 mg/kg trimethoprim q24h or 5-20 mg/kg trimethoprim tiw after IHD; For PCP prophylaxis: 80 mg trimethoprim after each dialysis session (1) 44%T/57%S (2) 50% (2) 5-10 mg/kg/day (Ref: ABX GUIDE AND 熱病) For PCP prophylaxis: 160 mg qod (Ref: ABX GUIDE AND 熱病) Not dialyzable (1,2) N (1)",
+   "cvvh": "CVVH查詢頁面 // // // // 藥品名稱： 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁 編號 商品名 學名 CVVH CVVHD CVVHDF Remark 1 Baktar Tablet 400 mg sulfamethoxazole & 80 mg trimethoprim/tab Co-trimoxazole 2.5-7.5 mg/kg T q12h (depending on clinical indication) (1) 2.5-7.5 mg/kg T q12h (depending on clinical indication) (1) 2.5-7.5 mg/kg T q12h (depending on clinical indication); up to 10 mg/kg q12h for critically-ill patients with P. jiroveci pneumonia (1) 1 第 1 / 1 頁，每頁 10 筆，共 1 筆，跳頁",
+   "injection": "給藥指引 // // // // 輸入藥名： 查詢中央靜脈輸注給藥指引 縮寫參考表 注射劑給藥指引： http://dept.ntuh.gov.tw/phar/WebAp/InjectionPage.aspx 註： 括號中數字為參考文獻： (1) Circular from the manufacturer(仿單) (2) Handbook on Injectable Drugs (3) AHFS Drug Information (4) Micromedex (5) Drug Information Handbook / UpToDate (6) Pediatric Injectable Drugs (7) 其他 肝、腎、功能調整： http://dept.ntuh.gov.tw/phar/intranet/druginfo/hepatic.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/renal.asp http://dept.ntuh.gov.tw/phar/intranet/druginfo/dialysis.asp //"
+  }
+ }
+}
