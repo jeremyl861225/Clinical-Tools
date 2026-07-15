@@ -223,8 +223,9 @@ OPTIONAL_STRING_FIELDS = [
 ]
 INJECTION_SUBFIELDS = ['route', 'reconstitute', 'diluent', 'volume', 'conc', 'time', 'notes']
 COV_KEYS_BACTERIAL = {'mrsa', 'pseudo', 'anaerobe', 'atypical', 'esbl', 'enterococcus'}
-COV_KEYS_FUNGAL = {'candida', 'glabkrusei', 'aspergillus'}
-COV_VALUES = {1, 'p'}
+COV_KEYS_FUNGAL = {'candida', 'glabkrusei', 'aspergillus', 'mucor', 'fusarium', 'histo', 'blasto', 'cocci'}
+# 四級：2=強效/在地%S≥90、1=涵蓋/80–89、'p'=部分/60–79、0=不涵蓋（通常省略）
+COV_VALUES = {2, 1, 'p', 0}
 
 
 def _is_string(v):
@@ -330,7 +331,7 @@ def validate_drug(key, d, errors, warnings):
                         f'標準鍵集合 {sorted(allowed)} 內'
                     )
                 if v not in COV_VALUES:
-                    errors.append(f'[{key}] `cov.{k}` 值應為 1 或 \'p\'，實際={v!r}')
+                    errors.append(f'[{key}] `cov.{k}` 值應為 2、1、\'p\' 或 0，實際={v!r}')
     if 'covSet' in d and d['covSet'] not in ('fungal',):
         warnings.append(f'[{key}] `covSet` 值非預期（目前只定義 \'fungal\'），實際={d["covSet"]!r}')
 

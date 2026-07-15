@@ -2,20 +2,31 @@
    依賴全域資料（由 data/antibiotics/*.js 掛載於 window）：DRUGS, SITES, BACTERIA,
    COV_LABELS, COV_LABELS_FUNGAL, ROLE_TXT, ABG, ABG_ORG_LABEL, ABG_AB_LABEL, BAC_ABG。 */
 
-/* 藥卡標題徽章列（收合時可判讀）：抗細菌＝六大覆蓋旗標，抗黴菌＝三類。
-   cov[key]: 1=涵蓋(亮燈)、'p'=部分(琥珀)、缺=不涵蓋(暗掉+刪除線)。d.covSet==='fungal' 用抗黴菌標籤。 */
+/* 藥卡標題徽章列（收合時可判讀）：抗細菌＝六大覆蓋旗標，抗黴菌＝八類。
+   四級 cov[key]：2=強效／在地%S≥90(亮粗框)、1=涵蓋／80–89(亮)、'p'=部分／變異／60–79(琥珀)、
+   0 或缺=不涵蓋／<60(暗掉+刪除線)。分級以台大在地 %S 優先，缺在地資料者依文獻 spectrum。
+   d.covSet==='fungal' 用抗黴菌標籤；d.catLabel（如抗結核／抗病毒）則只顯示單一類別標籤。 */
+function covTier(v){ return v===2?'sy-hi':(v===1?'yes':(v==='p'?'partial':'no')); }
 function covStrip(d){
+  if(d.catLabel) return `<div class="dc-cov"><span class="cov-tag cat">${d.catLabel}</span></div>`;
   if(!d.cov) return '';
   const labels = d.covSet==='fungal'?COV_LABELS_FUNGAL:COV_LABELS;
-  return `<div class="dc-cov">`+Object.keys(labels).map(key=>{
-    const v=d.cov[key];
-    const cls=v===1?'yes':(v==='p'?'partial':'no');
-    return `<span class="cov-tag ${cls}">${labels[key]}</span>`;
-  }).join('')+`</div>`;
+  return `<div class="dc-cov">`+Object.keys(labels).map(key=>
+    `<span class="cov-tag ${covTier(d.cov[key])}">${labels[key]}</span>`).join('')+`</div>`;
 }
 
+/* 把 antibiogram 儲存格值轉成 {num, disp}：數字→%；字串如 "75(SDD)"→取前導數字分級、原字串顯示；
+   NA／NI／無前導數字→null（略過）。 */
+function abgCell(raw){
+  if(typeof raw==='number') return {num:raw, disp:raw+'%'};
+  const m=String(raw).match(/^(\d+)/);
+  if(!m) return null;                          // NA / NI / No interpretive criteria
+  return {num:+m[1], disp:String(raw)};        // 保留 (SDD) 等註記
+}
+function abgTier(n){ return n>=90?'sy-hi':(n>=80?'yes':(n>=60?'partial':'no')); }
+
 /* 抗菌譜欄內的台大在地感受性徽章：依 d.abg（[{sec,col}]）列出該藥所在表格中「所有」有數值的菌種 %S。
-   門檻：%S ≥90 亮＋加粗框、80–89 亮燈、60–79 琥珀、<60 暗掉＋刪除線。NA（未列/樣本不足）略過。 */
+   門檻：%S ≥90 亮＋加粗框、80–89 亮燈、60–79 琥珀、<60 暗掉＋刪除線。NA／NI 略過。 */
 function abgSpectrum(d){
   if(!d.abg) return '';
   const cells=[];
@@ -23,10 +34,9 @@ function abgSpectrum(d){
     const sec=ABG[m.sec]; if(!sec) return;
     const ci=sec.ab.indexOf(m.col); if(ci<0) return;
     Object.keys(sec.org).forEach(org=>{
-      const v=sec.org[org].S[ci];
-      if(typeof v!=='number') return;
-      const cls = v>=90?'sy-hi' : (v>=80?'yes' : (v>=60?'partial':'no'));
-      cells.push(`<span class="cov-tag ${cls}">${ABG_ORG_LABEL[org]||org} ${v}%</span>`);
+      const c=abgCell(sec.org[org].S[ci]);
+      if(!c) return;
+      cells.push(`<span class="cov-tag ${abgTier(c.num)}">${ABG_ORG_LABEL[org]||org} ${c.disp}</span>`);
     });
   });
   if(!cells.length) return '';
@@ -46,10 +56,9 @@ function abgForBac(b){
     const rec=sec.org[m.org]; if(!rec) return;
     const cells=[];
     sec.ab.forEach((abk,ci)=>{
-      const v=rec.S[ci];
-      if(typeof v!=='number') return;
-      const cls = v>=90?'sy-hi' : (v>=80?'yes' : (v>=60?'partial':'no'));
-      cells.push(`<span class="cov-tag ${cls}">${ABG_AB_LABEL[abk]||abk} ${v}%</span>`);
+      const c=abgCell(rec.S[ci]);
+      if(!c) return;
+      cells.push(`<span class="cov-tag ${abgTier(c.num)}">${ABG_AB_LABEL[abk]||abk} ${c.disp}</span>`);
     });
     if(!cells.length) return;
     const sub = list.length>1 ? `<div class="dc-susc-cap" style="margin-top:7px">${ABG_ORG_LABEL[m.org]||m.org}（n=${rec.n}）</div>` : '';
@@ -239,12 +248,47 @@ function selectBacteria(gi,bi){
 
 function backToBacteria(){ show('bac-step-list',true); show('bac-step-result',false); window.scrollTo({top:0,behavior:'smooth'}); }
 
+/* 查詢模式的「種類排序」分組：依 cls 歸入粗分類，依此固定順序顯示群組標題。 */
+const DRUG_GROUPS = [
+  ['青黴素類 Penicillins',        c=>/penicillin/i.test(c) && !/cephalosporin/i.test(c)],
+  ['頭孢子菌素類 Cephalosporins', c=>/cephalosporin|cephamycin/i.test(c)],
+  ['碳青黴烯類 Carbapenems',      c=>/carbapenem/i.test(c)],
+  ['單環內醯胺 Monobactam',       c=>/monobactam/i.test(c)],
+  ['抗 Gram(+)／anti-MRSA',       c=>/glycopeptide|lipopeptide|oxazolidinone/i.test(c)],
+  ['胺基醣苷類 Aminoglycosides',  c=>/aminoglycoside/i.test(c)],
+  ['氟喹諾酮類 Fluoroquinolones', c=>/fluoroquinolone/i.test(c)],
+  ['四環素／甘胺醯環素',          c=>/tetracycline|glycylcycline/i.test(c)],
+  ['巨環／林可醯胺類',            c=>/macrolide|lincosamide/i.test(c)],
+  ['多黏菌素 Polymyxin',          c=>/polymyxin/i.test(c)],
+  ['抗結核 Anti-TB',              c=>/anti-tb/i.test(c)],
+  ['抗黴菌 Antifungals',          c=>/azole|echinocandin|polyene|pyrimidine/i.test(c)],
+  ['抗病毒 Antivirals',           c=>/antiviral/i.test(c)],
+  ['其他 Others',                 c=>true],
+];
+function drugGroupIdx(cls){ const c=cls||''; for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](c)) return i; return DRUG_GROUPS.length-1; }
+
+let lookupSort='alpha';
+function setLookupSort(mode){
+  lookupSort=mode;
+  document.querySelectorAll('.lookup-sort .abx-sortbtn').forEach(b=>b.classList.toggle('active', b.dataset.sort===mode));
+  renderLookup(el('lookup-input')?el('lookup-input').value:'');
+}
+
 function renderLookup(q){
   q=(q||'').trim().toLowerCase();
   let keys=Object.keys(DRUGS).filter(k=>{const d=DRUGS[k]; const prod=d.ntuhProducts?d.ntuhProducts.map(p=>(p.en||'')+' '+(p.zh||'')).join(' '):''; const hay=(d.name+' '+(d.zh||'')+' '+(d.brands?d.brands.join(' '):(d.en||''))+' '+prod+' '+d.cls).toLowerCase(); return !q || hay.includes(q);});
-  keys.sort((a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name));
   el('lookup-count').textContent = q ? `${keys.length} 筆符合` : `共 ${keys.length} 種藥物`;
-  el('lookup-results').innerHTML = keys.length ? keys.map(renderDrugCard).join('') : '<div class="bac-empty">找不到符合的藥物。</div>';
+  if(!keys.length){ el('lookup-results').innerHTML='<div class="bac-empty">找不到符合的藥物。</div>'; return; }
+  const byName=(a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name);
+  if(lookupSort==='class'){
+    keys.sort((a,b)=>{const ga=drugGroupIdx(DRUGS[a].cls),gb=drugGroupIdx(DRUGS[b].cls); return ga!==gb?ga-gb:byName(a,b);});
+    let html='',cur=-1;
+    keys.forEach(k=>{const gi=drugGroupIdx(DRUGS[k].cls); if(gi!==cur){cur=gi; html+=`<div class="bac-group-head">${DRUG_GROUPS[gi][0]}</div>`;} html+=renderDrugCard(k);});
+    el('lookup-results').innerHTML=html;
+  } else {
+    keys.sort(byName);
+    el('lookup-results').innerHTML = keys.map(renderDrugCard).join('');
+  }
 }
 
 function backToSites(){

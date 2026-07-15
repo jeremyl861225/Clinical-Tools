@@ -27,7 +27,7 @@ window.DRUGS = {
     adverse:'腹瀉、C. difficile；與 vancomycin 併用增加 AKI；血小板／白血球低下、癲癇(腎衰高劑量)、假性肌酸酐上升。',
     contra:'對 penicillin／β-lactam 過敏禁用。警示：腎衰高劑量致癲癇；與 vancomycin 併用增加 AKI 風險；血小板／白血球低下；假性肌酸酐升高。',
     spectrum:'廣效：Enterobacterales、Pseudomonas、厭氧菌、腸球菌(faecalis)。不涵蓋 MRSA、ESBL(不穩定)、非典型菌。',
-    cov:{pseudo:1,anaerobe:1,enterococcus:1,esbl:'p'}},
+    cov:{pseudo:'p',anaerobe:1,enterococcus:1,esbl:'p'}},
 
   brosym:{name:'Cefoperazone-Sulbactam',zh:'頭孢哌酮/舒巴坦',brands:['Brosym','Sulperazon'],cls:'3rd cephalosporin/BLI',
     ntuhProducts:[{en:'Brosym',zh:'博益欣注射劑'}],
@@ -47,7 +47,7 @@ window.DRUGS = {
     spectrum:'Enterobacterales、Pseudomonas(cefoperazone)、Acinetobacter(sulbactam)、厭氧、部分 ESBL。不涵蓋 MRSA。台灣常用於腹腔／膽道／院內感染。',
     cov:{pseudo:1,anaerobe:1}},
 
-  cefazolin:{name:'Cefazolin',zh:'頭孢唑林',brands:['Cefazolin','Kefzol'],cls:'1st cephalosporin',
+  cefazolin:{cov:{},name:'Cefazolin',zh:'頭孢唑林',brands:['Cefazolin','Kefzol'],cls:'1st cephalosporin',
     ntuhProducts:[{en:'Cefa',zh:'信華注射劑'}],
     vialDose:'1000 mg cefazolin／vial（Na 2.1 mEq/g potency）',
     usualDose:'IV push 3–5 分鐘、間歇或持續 IF、或深部 IM。<br>• 輕度：250–500 mg q8h。<br>• 中度：0.5–1 g q6–8h。<br>• 重度：1–2 g q6h（至 12 g/day）。<br>• 手術預防：術前 1 g；術中每 4 hr 視需重複；術後 0.5–1 g q6–8h × 24 hr。',
@@ -67,7 +67,7 @@ window.DRUGS = {
     contra:'β-lactam 過敏禁用。',
     spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus（下方在地 %S 為尿路 breakpoint）。MSSA 菌血症／骨感染首選。不涵蓋 MRSA、腸球菌、多數院內 GNB、厭氧。'},
 
-  cefalexin:{name:'Cephalexin',zh:'頭孢氨苄',brands:['Keflex','Ceporex'],cls:'1st cephalosporin',
+  cefalexin:{cov:{},name:'Cephalexin',zh:'頭孢氨苄',brands:['Keflex','Ceporex'],cls:'1st cephalosporin',
     ntuhProducts:[{en:'Cephalexin',zh:'信保欣膠囊'},{en:'',zh:'優力黴素口服懸液用顆粒'}],
     vialDose:'膠囊 250 mg／cap；另有口服懸液用顆粒',
     usualDose:'口服。<br>• 成人：250–1000 mg q6h 或 500 mg q12h（max 4 g/day）。<br>• 單純性膀胱炎（>15 歲）：500 mg q12h × 5–7 天（必要時延長至 14 天）。<br>• 心內膜炎預防：術前 30–60 分鐘 2 g。',
@@ -85,7 +85,7 @@ window.DRUGS = {
     contra:'β-lactam 過敏。',
     spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus。門診 SSTI、鏈球菌感染之口服選擇。不涵蓋 MRSA、腸球菌、厭氧、Pseudomonas。'},
 
-  cefuroxime:{name:'Cefuroxime',zh:'頭孢呋辛',brands:['Zinacef (IV)','Zinnat (PO)'],cls:'2nd cephalosporin',
+  cefuroxime:{cov:{},name:'Cefuroxime',zh:'頭孢呋辛',brands:['Zinacef (IV)','Zinnat (PO)'],cls:'2nd cephalosporin',
     ntuhProducts:[{en:'Ceflour',zh:'喜華膜衣錠（口服）'},{en:'',zh:'賜福樂信注射劑'}],
     vialDose:'口服 250 mg／錠（喜華）；注射劑（賜福樂信）',
     usualDose:'口服（axetil）隨餐服用。<br>• 一般感染（皮膚、呼吸道、鼻竇炎、咽炎）：250–500 mg bid。<br>• 單純性 UTI：250 mg bid × 7–10 天。<br>• 萊姆病（遊走性紅斑或心臟炎）：500 mg bid × 14–21 天；萊姆關節炎 500 mg bid × 28 天。<br>• 注射劑（賜福樂信）：750 mg–1.5 g IV q8h（依感受性）。',
@@ -121,7 +121,7 @@ window.DRUGS = {
     adverse:'NMTT 相關凝血異常、飲酒 disulfiram 反應；腹瀉。',
     contra:'β-lactam 過敏。含 NMTT 側鏈：可能凝血異常(維生素 K 依賴因子)與飲酒 disulfiram 樣反應。',
     spectrum:'Enterobacterales、厭氧(含 B. fragilis)、MSSA；對部分 ESBL 有活性但非首選。不涵蓋 Pseudomonas、腸球菌、MRSA。台灣常用於腸道手術預防與腹腔感染。',
-    cov:{anaerobe:1}},
+    cov:{anaerobe:'p'}},
 
   flomoxef:{name:'Flomoxef',zh:'氟氧頭孢',brands:['Flumarin'],cls:'2nd cephamycin',
     ntuhProducts:[{en:'Flumarin',zh:'氟黴寧靜脈注射劑'}],
@@ -140,7 +140,7 @@ window.DRUGS = {
     adverse:'腹瀉、皮疹、肝酵素上升；凝血異常較其他 cephamycin 少。',
     contra:'β-lactam 過敏；NMTT 相關凝血／酒精反應風險較其他 cephamycin 低但仍留意。',
     spectrum:'MSSA、Streptococcus、Enterobacterales、厭氧(含 B. fragilis)；對部分 ESBL 穩定。不涵蓋 Pseudomonas、腸球菌、MRSA。台灣常用於腹腔／婦科／膽道感染。',
-    cov:{anaerobe:1}},
+    cov:{anaerobe:'p'}},
 
   ceftriaxone:{name:'Ceftriaxone',zh:'頭孢曲松',brands:['Rocephin'],cls:'3rd cephalosporin',
     ntuhProducts:[{en:'Cefin',zh:'舒復靜脈注射劑'},{en:'Sintrix',zh:'信得瑞注射劑'}],
@@ -163,7 +163,7 @@ window.DRUGS = {
     spectrum:'多數 Enterobacterales、Streptococcus(含肺炎鏈球菌)、N. gonorrhoeae/meningitidis。不涵蓋 Pseudomonas、腸球菌、ESBL、MRSA、厭氧(腹腔需加 metronidazole)。',
     cov:{}},
 
-  cefotaxime:{name:'Cefotaxime',zh:'頭孢噻肟',brands:['Claforan'],cls:'3rd cephalosporin',
+  cefotaxime:{cov:{},name:'Cefotaxime',zh:'頭孢噻肟',brands:['Claforan'],cls:'3rd cephalosporin',
     ntuhProducts:[{en:'Claforan',zh:'可活能注射劑'}],
     vialDose:'500 mg cefotaxime／vial（Na 2.1 mEq/g potency）',
     usualDose:'IV push 3–5 分鐘、間歇 IF 20–30 分鐘、持續 IF 或深部 IM。<br>• 成人及 ≥50 kg 兒童：單純感染 1 g q12h；中重度 1–2 g q8h（至 2 g q4–6h，max 12 g/day）。',
@@ -204,7 +204,7 @@ window.DRUGS = {
     spectrum:'強抗 Pseudomonas 與 Enterobacterales；Gram(+) 活性弱（不宜單獨覆蓋葡萄球菌）。不涵蓋厭氧、MRSA、腸球菌。',
     cov:{pseudo:1}},
 
-  cefixime:{name:'Cefixime',zh:'頭孢克肟',brands:['Cefspan','Suprax'],cls:'3rd cephalosporin',
+  cefixime:{cov:{},name:'Cefixime',zh:'頭孢克肟',brands:['Cefspan','Suprax'],cls:'3rd cephalosporin',
     ntuhProducts:[{en:'Cefixmycin',zh:'喜復黴素膠囊'},{en:'Cexime',zh:'賜信膠囊'}],
     vialDose:'膠囊 100 mg／cap',
     usualDose:'口服。<br>• 成人及 >45 kg 兒童：400 mg/day 分 1–2 次。',
@@ -259,7 +259,7 @@ window.DRUGS = {
     adverse:'皮疹、腹瀉、Coombs 陽性；少見嗜中性球低下。',
     contra:'β-lactam 過敏。懷孕分級：動物試驗未見致畸胎（台大未列 A–X 分級）。',
     spectrum:'唯一覆蓋 MRSA 的 cephalosporin；MSSA、Streptococcus、部分 Enterobacterales。不涵蓋 Pseudomonas、ESBL、E. faecium、厭氧。',
-    cov:{mrsa:1}},
+    cov:{mrsa:2}},
 
   ceftobiprole:{name:'Ceftobiprole',zh:'頭孢比普',brands:['Zevtera','Mabelio'],cls:'5th cephalosporin',
     dose:'500 mg IV q8h（輸注 2 小時）。',
@@ -271,7 +271,7 @@ window.DRUGS = {
     adverse:'噁心、腹瀉、味覺異常、頭痛、低血鈉。',
     contra:'β-lactam 過敏。',
     spectrum:'廣效含 MRSA、MSSA、Streptococcus、腸球菌(faecalis)、多數 Enterobacterales、Pseudomonas。厭氧有限、不涵蓋高產 ESBL/AmpC。用於 CAP／HAP、SSTI、S. aureus 菌血症。',
-    cov:{mrsa:1,pseudo:1,enterococcus:1}},
+    cov:{mrsa:2,pseudo:1,enterococcus:'p'}},
 
   cefiderocol:{name:'Cefiderocol',zh:'頭孢地爾',brands:['Fetroja'],cls:'Siderophore cephalosporin',
     ntuhProducts:[{en:'Fetroja',zh:'伏驖佳注射劑'}],
@@ -289,7 +289,7 @@ window.DRUGS = {
     adverse:'腹瀉、輸注反應、肝酵素上升；重症 GNB 感染死亡率議題需監測。',
     contra:'β-lactam 過敏。屬 MDR 保留用藥，需感染科／抗生素管理審核。懷孕：胎兒風險無法排除（台大未列 A–X 分級）。',
     spectrum:'廣效抗 MDR/XDR Gram 陰性菌：CRE(含金屬 β-lactamase NDM)、MDR Pseudomonas、Acinetobacter、Stenotrophomonas。不涵蓋 Gram 陽性／厭氧。',
-    cov:{pseudo:1,esbl:1}},
+    cov:{pseudo:2,esbl:2}},
 
   meropenem:{name:'Meropenem',zh:'美羅培南',brands:['Mepem'],cls:'Carbapenem',
     ntuhProducts:[{en:'Mepem',zh:'美平乾粉注射劑'}],
@@ -309,7 +309,7 @@ window.DRUGS = {
     adverse:'腹瀉、C. difficile、癲癇(較 imipenem 低)、降低 valproate、血球低下。',
     contra:'β-lactam 過敏（與 penicillin 交叉反應低但仍避免）。降低 valproate 血中濃度；腎衰致癲癇。',
     spectrum:'極廣效含 ESBL、Pseudomonas、厭氧、多數 GPC(不含 MRSA／VRE／E. faecium)。屬保留用藥。',
-    cov:{pseudo:1,anaerobe:1,esbl:1}},
+    cov:{pseudo:1,anaerobe:2,esbl:2}},
 
   imipenem:{name:'Imipenem/Cilastatin',zh:'亞胺培南/西司他丁',brands:['Tienam'],cls:'Carbapenem',
     ntuhProducts:[{en:'Tienam',zh:'疫必寧靜脈乾粉注射劑'}],
@@ -329,7 +329,7 @@ window.DRUGS = {
     adverse:'癲癇(carbapenem 中最高)、噁心嘔吐、C. difficile、降低 valproate。',
     contra:'β-lactam 過敏。癲癇風險為 carbapenem 中最高（CNS 病灶／腎衰慎用）；降低 valproate。',
     spectrum:'極廣效含 Pseudomonas、ESBL、厭氧、多數 GPC(含腸球菌 faecalis)。不含 MRSA／VRE／Stenotrophomonas。',
-    cov:{pseudo:1,anaerobe:1,esbl:1}},
+    cov:{pseudo:1,anaerobe:2,esbl:2}},
 
   ertapenem:{name:'Ertapenem',zh:'厄他培南',brands:['Invanz'],cls:'Carbapenem',
     ntuhProducts:[{en:'Invanz',zh:'益滿治注射劑'}],
@@ -350,7 +350,7 @@ window.DRUGS = {
     adverse:'癲癇／精神狀態改變(尤其腎衰未調量)、腹瀉、輸注部位反應。',
     contra:'β-lactam 過敏。癲癇風險；降低 valproate。',
     spectrum:'廣效含 ESBL、厭氧；但不涵蓋 Pseudomonas、Acinetobacter、腸球菌。適合社區型 IAI 之經驗治療。',
-    cov:{anaerobe:1,esbl:1}},
+    cov:{anaerobe:2,esbl:2}},
 
   ampsulbactam:{name:'Ampicillin-Sulbactam',zh:'安比西林/舒巴坦',brands:['Unasyn'],cls:'Aminopenicillin/BLI',
     ntuhProducts:[{en:'Unasyn',zh:'優耐迅肌肉/靜脈注射劑'}],
@@ -370,7 +370,7 @@ window.DRUGS = {
     adverse:'皮疹、腹瀉、肝酵素上升；C. difficile。',
     contra:'penicillin 過敏禁用。',
     spectrum:'MSSA、Streptococcus、腸球菌(faecalis)、厭氧、部分 Enterobacterales、Acinetobacter(sulbactam)。不涵蓋 Pseudomonas、ESBL、MRSA。',
-    cov:{anaerobe:1,enterococcus:1}},
+    cov:{anaerobe:'p',enterococcus:2}},
 
   amoxclav:{name:'Amoxicillin-Clavulanate',zh:'安莫西林/克拉維酸',brands:['Augmentin','Curam'],cls:'Aminopenicillin/BLI',
     ntuhProducts:[{en:'Curam',zh:'諾快寧膜衣錠（1000 mg/錠）'},{en:'Augmentin',zh:'安滅菌糖漿用粉劑'}],
@@ -389,7 +389,7 @@ window.DRUGS = {
     adverse:'腹瀉常見、膽汁鬱積性肝炎(clavulanate 相關)、皮疹。',
     contra:'penicillin 過敏；曾對本藥膽汁鬱積性肝炎者禁用。',
     spectrum:'MSSA、Streptococcus、厭氧、H. influenzae、部分 Enterobacterales。適合動物／人咬傷、輕度 SSTI、門診吸入性肺炎。',
-    cov:{anaerobe:1}},
+    cov:{anaerobe:'p',enterococcus:1}},
 
   metronidazole:{name:'Metronidazole',zh:'甲硝唑',brands:['Flagyl'],cls:'Nitroimidazole',
     dose:'500 mg IV／PO q8h（重症可 q6h）。',
@@ -402,7 +402,7 @@ window.DRUGS = {
     adverse:'金屬味、噁心、周邊神經病變(長期)、disulfiram 樣反應；少見腦病變／小腦毒性。',
     contra:'第一孕期慎用；用藥期間及停藥後 3 天內禁酒(disulfiram 樣反應)；長期使用致周邊神經病變。',
     spectrum:'厭氧菌（含 B. fragilis）、原蟲、C. difficile。無需氧 GNB／GPC 活性。常與 cephalosporin／FQ 併用以補厭氧。',
-    cov:{anaerobe:1}},
+    cov:{anaerobe:2}},
 
   vancomycin:{name:'Vancomycin',zh:'萬古黴素',brands:['Vancocin'],cls:'Glycopeptide',
     ntuhProducts:[{en:'U-Vanco',zh:'優凡可靜脈注射劑'},{en:'Vancover',zh:'凡可復膠囊（口服，C. diff）'},{en:'',zh:'萬古利凡凍晶靜脈注射劑'}],
@@ -423,7 +423,7 @@ window.DRUGS = {
     adverse:'腎毒性(尤與 pip-tazo)、紅人症候群(輸注過快)、耳毒性、血球低下、DRESS／線狀 IgA 皮膚病。',
     contra:'警示：腎毒性(尤其與 pip-tazo 併用)、紅人症候群(輸注過快)、耳毒性、DRESS。',
     spectrum:'MRSA、MSSA、Streptococcus、腸球菌(非 VRE)、C. difficile(口服)。無 GNB 活性。',
-    cov:{mrsa:1,enterococcus:1}},
+    cov:{mrsa:2,enterococcus:2}},
 
   teicoplanin:{name:'Teicoplanin',zh:'替考拉寧',brands:['Targocid'],cls:'Glycopeptide',
     ntuhProducts:[{en:'Targocid',zh:'得時高凍晶注射劑'}],
@@ -442,9 +442,9 @@ window.DRUGS = {
     adverse:'腎／耳毒性(較 vancomycin 低)、血小板低下、皮疹、發燒；輸注反應少。',
     contra:'glycopeptide 過敏。腎／耳毒性較 vancomycin 低；血球低下；需 TDM(trough，心內膜炎目標較高)。',
     spectrum:'MRSA、MSSA、Streptococcus、腸球菌(非 VRE)。無 GNB。輸注反應較 vancomycin 少、可 IM，台灣常用。',
-    cov:{mrsa:1,enterococcus:1}},
+    cov:{mrsa:2,enterococcus:2}},
 
-  fidaxomicin:{name:'Fidaxomicin',zh:'非達黴素',brands:['Dificid'],cls:'Macrolide',
+  fidaxomicin:{cov:{},name:'Fidaxomicin',zh:'非達黴素',brands:['Dificid'],cls:'Macrolide',
     dose:'200 mg PO q12h × 10 天。',
     renal:'不需依腎功能調整。',
     peds:'≥6 月依體重（參仿單）。',
@@ -473,7 +473,7 @@ window.DRUGS = {
     adverse:'骨髓抑制(血小板低下／貧血，>2 週)、周邊／視神經病變、血清素症候群、乳酸中毒。',
     contra:'與 MAOI／serotonergic 藥物併用→血清素症候群；>2 週→骨髓抑制、周邊／視神經病變、乳酸中毒。',
     spectrum:'MRSA、VRE、Streptococcus。肺組織穿透佳。無 GNB 活性。',
-    cov:{mrsa:1,enterococcus:1}},
+    cov:{mrsa:2,enterococcus:2}},
 
   daptomycin:{name:'Daptomycin',zh:'達托黴素',brands:['Cubicin'],cls:'Lipopeptide',
     ntuhProducts:[{en:'Cubicin',zh:'救必辛注射劑'}],
@@ -493,7 +493,7 @@ window.DRUGS = {
     adverse:'橫紋肌溶解／CPK 上升、嗜酸性肺炎、周邊神經病變；需監測 CPK。',
     contra:'不可用於肺炎（被肺表面活性劑抑制而失效）。監測 CPK／橫紋肌溶解；與 statin 併用宜停 statin；嗜酸性肺炎。',
     spectrum:'MRSA、VRE、多數 GPC。無 GNB 活性。',
-    cov:{mrsa:1,enterococcus:1}},
+    cov:{mrsa:2,enterococcus:1}},
 
   ciprofloxacin:{name:'Ciprofloxacin',zh:'環丙沙星',brands:['Ciproxin','Cipro'],cls:'Fluoroquinolone',
     ntuhProducts:[{en:'Cinolone',zh:'信諾隆膜衣錠（口服）'},{en:'',zh:'速博新靜脈輸液'}],
@@ -533,7 +533,7 @@ window.DRUGS = {
     adverse:'肌腱炎／斷裂、QT 延長、血糖異常、周邊神經病變、光敏感、C. difficile。',
     contra:'同 FQ 類黑框警示（肌腱、神經、肌無力）；QT 延長、血糖異常、光敏感。',
     spectrum:'肺炎鏈球菌、非典型菌、GNB 含 Pseudomonas(750 mg)。可單藥覆蓋 CAP。',
-    cov:{pseudo:1,atypical:1}},
+    cov:{pseudo:1,atypical:2}},
 
   moxifloxacin:{name:'Moxifloxacin',zh:'莫西沙星',brands:['Avelox'],cls:'Fluoroquinolone',
     ntuhProducts:[{en:'Avelox',zh:'威洛速靜脈輸注液／膜衣錠'},{en:'',zh:'福樂星／摩克星膜衣錠'}],
@@ -553,7 +553,7 @@ window.DRUGS = {
     adverse:'QT 延長(FQ 中最明顯)、肝毒性、肌腱病變、血糖異常、C. difficile。',
     contra:'QT 延長為 FQ 類中最明顯；肝毒性；其餘同 FQ 類黑框。',
     spectrum:'肺炎鏈球菌、非典型菌、厭氧菌。不涵蓋 Pseudomonas。',
-    cov:{atypical:1,anaerobe:1}},
+    cov:{atypical:2,anaerobe:'p'}},
 
   gentamicin:{name:'Gentamicin',zh:'健大黴素／慶大黴素',brands:['Garamycin'],cls:'Aminoglycoside',
     ntuhProducts:[{en:'V-Genta',zh:'維健注射劑'}],
@@ -573,7 +573,7 @@ window.DRUGS = {
     adverse:'腎毒性、耳／前庭毒性(可能不可逆)、神經肌肉阻斷。',
     contra:'腎毒性、耳／前庭毒性(可能不可逆)、神經肌肉阻斷；孕婦慎用；重症肌無力。需 TDM。',
     spectrum:'GNB 含 Pseudomonas；與 β-lactam 對 GPC 有協同(心內膜炎)。無厭氧活性；肺／尿滲透需留意。',
-    cov:{pseudo:1}},
+    cov:{pseudo:'p'}},
 
   amikacin:{name:'Amikacin',zh:'阿米卡星',brands:['Amikin','Biklin'],cls:'Aminoglycoside',
     ntuhProducts:[{en:'Acemycin',zh:'時欣黴素注射液'}],
@@ -618,7 +618,7 @@ window.DRUGS = {
     adverse:'C. difficile(高風險)、腹瀉、皮疹、肝酵素上升。',
     contra:'C. difficile 感染高風險(關聯性高)。誘導型 clindamycin 抗性(D-test)注意。',
     spectrum:'GPC(MSSA／部分 CA-MRSA)、橫膈上厭氧；抑制外毒素合成(壞死性感染／中毒性休克加用)。',
-    cov:{mrsa:1,anaerobe:1}},
+    cov:{mrsa:'p',anaerobe:'p'}},
 
   azithromycin:{name:'Azithromycin',zh:'阿奇黴素',brands:['Zithromax'],cls:'Macrolide',
     dose:'500 mg IV／PO 第 1 天，then 250 mg q24h；或 500 mg q24h。',
@@ -631,7 +631,7 @@ window.DRUGS = {
     adverse:'QT 延長、腸胃不適、肝毒性、少見聽力障礙。',
     contra:'QT 延長；肝毒性；重症肌無力惡化。',
     spectrum:'非典型菌(Legionella／Mycoplasma／Chlamydia)、部分呼吸道菌。CAP 加用以覆蓋非典型。',
-    cov:{atypical:1}},
+    cov:{atypical:2}},
 
   doxycycline:{name:'Doxycycline',zh:'去氧羥四環素／多西環素',brands:['Vibramycin','Doxymycin'],cls:'Tetracycline',
     dose:'100 mg IV／PO q12h。',
@@ -643,7 +643,7 @@ window.DRUGS = {
     adverse:'光敏感、食道炎／潰瘍、腸胃不適、兒童牙齒染色。',
     contra:'孕婦、8 歲以下(牙齒染色，短療程風險低)；光敏感；食道潰瘍(需多水、勿臥)。',
     spectrum:'非典型菌、CA-MRSA、部分呼吸道菌、tick-borne、立克次體。輕度 MRSA SSTI 之口服選擇。',
-    cov:{mrsa:1,atypical:1}},
+    cov:{mrsa:'p',atypical:1}},
 
   minocycline:{name:'Minocycline',zh:'米諾環素',brands:['Minocin'],cls:'Tetracycline',
     dose:'loading dose 200 mg，then maintenance 100 mg PO／IV q12h。',
@@ -655,7 +655,7 @@ window.DRUGS = {
     adverse:'前庭副作用(眩暈)、色素沉著、藥物性狼瘡／自體免疫肝炎、DRESS。',
     contra:'孕婦／8 歲以下；前庭副作用(眩暈)、皮膚／黏膜色素沉著、長期用藥物性狼瘡／自體免疫肝炎。',
     spectrum:'CA-MRSA、Acinetobacter(部分)、Stenotrophomonas、非典型、Nocardia。用於 SSTI、痤瘡。',
-    cov:{mrsa:1,atypical:1}},
+    cov:{mrsa:'p',atypical:1}},
 
   tmpsmx:{name:'TMP-SMX',zh:'磺胺甲噁唑／三甲氧芐啶',brands:['Baktar','Sevatrim','Bactrim'],cls:'Sulfonamide',
     dose:'一般感染(以 TMP 計)8–10 mg/kg/day 分 2–3 次；PJP 治療 15–20 mg/kg/day 分 3–4 次；PJP 預防 single-DS 每日或每週三次。',
@@ -667,7 +667,7 @@ window.DRUGS = {
     adverse:'高血鉀、骨髓抑制、SJS／TEN、AKI／假性肌酸酐上升、肝炎、無菌性腦膜炎。',
     contra:'sulfa 過敏、G6PD 缺乏、孕晚期／新生兒(核黃疸)、嚴重肝腎病。警示：高血鉀、假性肌酸酐上升、骨髓抑制、SJS／TEN。',
     spectrum:'CA-MRSA、多數 Enterobacterales、Stenotrophomonas、PJP、Nocardia。無 Pseudomonas／厭氧；A 群鏈球菌覆蓋不足。',
-    cov:{mrsa:1}},
+    cov:{mrsa:2}},
 
   nitrofurantoin:{name:'Nitrofurantoin',zh:'呋喃妥因',brands:['Macrodantin','Macrobid'],cls:'Nitrofuran',
     dose:'100 mg PO q12h × 5–7 天。',
@@ -703,7 +703,7 @@ window.DRUGS = {
     adverse:'腹瀉、噁心、肝酵素上升、輸注反應。',
     contra:'β-lactam 過敏。屬保留用藥，須感染科／抗生素管理審核。',
     spectrum:'CRE(KPC、OXA-48)、MDR Pseudomonas、ESBL、AmpC。不涵蓋金屬 β-lactamase(NDM，除非併 aztreonam)、厭氧、GPC。',
-    cov:{pseudo:1,esbl:1}},
+    cov:{pseudo:2,esbl:2}},
 
   ceftolotazo:{name:'Ceftolozane-Tazobactam',zh:'頭孢洛扎/他唑巴坦',brands:['Zerbaxa'],cls:'5th cephalosporin/BLI',
     dose:'IAI／cUTI 1.5 g IV q8h；院內肺炎／VAP 3 g q8h。',
@@ -715,7 +715,7 @@ window.DRUGS = {
     adverse:'噁心、腹瀉、頭痛、肝酵素上升。',
     contra:'β-lactam 過敏。屬保留用藥。IAI 需併 metronidazole 補厭氧。',
     spectrum:'MDR／XDR Pseudomonas 首選之一、ESBL Enterobacterales。不涵蓋 CRE、MRSA、多數厭氧。',
-    cov:{pseudo:1,esbl:1}},
+    cov:{pseudo:2,esbl:1}},
 
   tigecycline:{name:'Tigecycline',zh:'替加環素',brands:['Tygacil'],cls:'Glycylcycline',
     ntuhProducts:[{en:'Tygacil',zh:'老虎黴素凍晶注射劑'}],
@@ -755,7 +755,7 @@ window.DRUGS = {
     adverse:'劑量依賴性腎毒性、神經毒性(感覺異常、神經肌肉阻斷)。',
     contra:'劑量依賴性腎毒性、神經毒性(感覺異常、神經肌肉阻斷)。屬 MDR 挽救用藥。',
     spectrum:'MDR／XDR GNB 挽救治療：Pseudomonas、Acinetobacter、CRE。不涵蓋 Proteus、Serratia、Burkholderia。',
-    cov:{pseudo:1}},
+    cov:{pseudo:2}},
 
   penG:{name:'Penicillin G',zh:'青黴素 G／盤尼西林',brands:['Penicillin G'],cls:'Penicillin',
     ntuhProducts:[{en:'',zh:'青黴素鈉注射液用粉（水溶性，靜脈）'},{en:'Bicillin L-A',zh:'必希寧注射劑（Benzathine，肌肉長效）'}],
@@ -774,7 +774,7 @@ window.DRUGS = {
     adverse:'過敏／過敏性休克、Jarisch-Herxheimer 反應(梅毒)、癲癇(高劑量腎衰)、電解質負荷、間質性腎炎。',
     contra:'penicillin 過敏禁用。高劑量腎衰致癲癇；大量鈉／鉀負荷。',
     spectrum:'鏈球菌(viridans、S. bovis、A/B 群)、感受性腸球菌(＋aminoglycoside)、螺旋體、Neisseria meningitidis、多數厭氧(橫膈上)。',
-    cov:{enterococcus:1}},
+    cov:{enterococcus:2}},
 
   ampicillin:{name:'Ampicillin',zh:'安比西林',brands:['Viccillin','Ampicillin'],cls:'Aminopenicillin',
     ntuhProducts:[{en:'Ampolin',zh:'安博黴素注射劑'}],
@@ -795,9 +795,9 @@ window.DRUGS = {
     adverse:'皮疹(EBV／CMV 時高)、腹瀉、過敏、C. difficile。',
     contra:'penicillin 過敏禁用；EBV／CMV 感染時出疹風險高。',
     spectrum:'Enterococcus faecalis、Listeria monocytogenes、鏈球菌、感受性 E. coli／Proteus。腦膜炎覆蓋 Listeria、腸球菌感染核心用藥。',
-    cov:{enterococcus:1}},
+    cov:{enterococcus:2}},
 
-  nafcillin:{name:'Oxacillin',zh:'苯唑西林',brands:['Oxacillin'],cls:'Penicillinase-resistant penicillin',
+  nafcillin:{cov:{},name:'Oxacillin',zh:'苯唑西林',brands:['Oxacillin'],cls:'Penicillinase-resistant penicillin',
     ntuhProducts:[{en:'Ocillina',zh:'歐西林鈉乾粉注射劑'}],
     vialDose:'500 mg oxacillin／vial（Na 2.8 mEq/g potency）',
     usualDose:'IV（100 mg/mL）10 分鐘、間歇或持續 IF、或深部 IM（max 12 g/day）。<br>• 輕中度：250–500 mg q4–6h。<br>• 重度：1 g q4–6h。<br>• 骨髓炎：1.5–2 g q4–6h。<br>• 心內膜炎、腦膜炎或導管相關血流感染：IV 2 g q4h × 4–6 週。',
@@ -816,7 +816,7 @@ window.DRUGS = {
     contra:'penicillin 過敏禁用。靜脈炎、藥物性間質性腎炎、外滲組織壞死。',
     spectrum:'MSSA 首選（菌血症／心內膜炎／骨關節）。不涵蓋 MRSA、腸球菌、GNB、厭氧。台灣無 nafcillin，以 oxacillin 為抗葡萄球菌 penicillin；口服可用 dicloxacillin。'},
 
-  dicloxacillin:{name:'Dicloxacillin',zh:'雙氯西林',brands:['Diclocil'],cls:'Penicillinase-resistant penicillin(口服)',
+  dicloxacillin:{cov:{},name:'Dicloxacillin',zh:'雙氯西林',brands:['Diclocil'],cls:'Penicillinase-resistant penicillin(口服)',
     ntuhProducts:[{en:'Ziefmycin',zh:'奇福黴素膠囊（暫時缺貨）'}],
     vialDose:'250 mg dicloxacillin／cap（Na 0.6 mEq/cap）',
     usualDose:'口服，空腹服用。<br>• 成人及 ≥40 kg 兒童：125–500 mg q6h。<br>• MSSA（無靜脈途徑時）：500–1000 mg q6–8h。',
@@ -834,7 +834,7 @@ window.DRUGS = {
     contra:'penicillin 過敏禁用。',
     spectrum:'MSSA、Streptococcus。口服抗葡萄球菌 penicillin，用於輕度 MSSA 皮膚軟組織感染／靜脈治療後降階口服。不涵蓋 MRSA、腸球菌、GNB、厭氧。'},
 
-  rifampin:{name:'Rifampin',zh:'利福平',brands:['Rifadin','Rifampin'],cls:'Anti-TB',
+  rifampin:{catLabel:'抗結核',name:'Rifampin',zh:'利福平',brands:['Rifadin','Rifampin'],cls:'Anti-TB',
     dose:'結核 10 mg/kg（max 600 mg）PO q24h；人工裝置葡萄球菌加成 300–450 mg q12h（不可單用）。',
     renal:'不需調整',
     hepatic:'嚴重肝病慎用／避免；治療中肝功能惡化應停藥。',
@@ -846,7 +846,7 @@ window.DRUGS = {
     contra:'不可單獨使用(快速產生抗藥)；肝毒性；與蛋白酶抑制劑／抗凝劑／免疫抑制劑等大量交互作用。',
     spectrum:'生物膜／人工瓣膜／人工關節之葡萄球菌感染加成；分枝桿菌；腦膜炎雙球菌暴露後預防。須與其他有效藥併用。'},
 
-  isoniazid:{name:'Isoniazid (INH)',zh:'異菸鹼醯肼',brands:['INH','Rimifon'],cls:'Anti-TB',
+  isoniazid:{catLabel:'抗結核',name:'Isoniazid (INH)',zh:'異菸鹼醯肼',brands:['INH','Rimifon'],cls:'Anti-TB',
     dose:'5 mg/kg（max 300 mg）PO q24h；併服 pyridoxine(B6) 防周邊神經病變。',
     renal:'不需調整',
     hepatic:'急性肝病禁用；治療中肝酵素明顯上升應停藥。',
@@ -858,7 +858,7 @@ window.DRUGS = {
     contra:'急性肝病。周邊神經病變(缺 B6)、肝毒性、藥物性狼瘡、與多種藥交互(CYP 抑制)。',
     spectrum:'M. tuberculosis(殺菌)；不用於一般細菌感染。'},
 
-  ethambutol:{name:'Ethambutol (EMB)',zh:'乙胺丁醇',brands:['Myambutol'],cls:'Anti-TB',
+  ethambutol:{catLabel:'抗結核',name:'Ethambutol (EMB)',zh:'乙胺丁醇',brands:['Myambutol'],cls:'Anti-TB',
     dose:'15–20 mg/kg PO q24h。',
     renal:[{k:'>50',v:'不需調整'},{k:'10–50',v:'q24–36h'},{k:'<10',v:'q48h'}],
     peds:'15–20 mg/kg/day（限視力可評估者）。',
@@ -869,7 +869,7 @@ window.DRUGS = {
     contra:'視神經炎(劑量／腎功能相關，須定期查視力／色覺)；痛風(尿酸上升)。',
     spectrum:'M. tuberculosis(抑菌)；抑制抗藥產生。'},
 
-  pyrazinamide:{name:'Pyrazinamide (PZA)',zh:'吡嗪醯胺',brands:['PZA'],cls:'Anti-TB',
+  pyrazinamide:{catLabel:'抗結核',name:'Pyrazinamide (PZA)',zh:'吡嗪醯胺',brands:['PZA'],cls:'Anti-TB',
     dose:'20–25 mg/kg（max 2 g）PO q24h（前 2 個月強化期）。',
     renal:[{k:'>30',v:'不需調整'},{k:'<30／HD',v:'25–35 mg/kg 每週三次'}],
     hepatic:'嚴重肝病禁用。',
@@ -881,7 +881,7 @@ window.DRUGS = {
     contra:'嚴重肝病、痛風／高尿酸。肝毒性(與 INH／RIF 併用)、關節痛。',
     spectrum:'M. tuberculosis(酸性環境殺菌，強化期核心)。'},
 
-  acyclovir:{name:'Acyclovir',zh:'阿昔洛韋',brands:['Zovirax'],cls:'Antiviral',
+  acyclovir:{catLabel:'抗病毒',name:'Acyclovir',zh:'阿昔洛韋',brands:['Zovirax'],cls:'Antiviral',
     dose:'HSV 腦炎 10 mg/kg IV q8h（依實際體重，肥胖用理想體重）。',
     renal:[{k:'>50',v:'10 mg/kg q8h'},{k:'25–50',v:'10 mg/kg q12h'},{k:'10–25',v:'10 mg/kg q24h'},{k:'<10',v:'5 mg/kg q24h'}],
     peds:'HSV 腦炎 10–20 mg/kg IV q8h（依年齡）。',
@@ -892,7 +892,7 @@ window.DRUGS = {
     contra:'腎毒性(結晶性腎病，需水化與緩慢輸注)、神經毒性(意識混亂、震顫，尤其腎衰)。',
     spectrum:'HSV-1/2、VZV。用於疑似病毒性(HSV)腦炎之經驗覆蓋；非細菌用藥。'},
 
-  oseltamivir:{name:'Oseltamivir',zh:'奧司他韋',brands:['Tamiflu'],cls:'Antiviral',
+  oseltamivir:{catLabel:'抗病毒',name:'Oseltamivir',zh:'奧司他韋',brands:['Tamiflu'],cls:'Antiviral',
     dose:'治療 75 mg PO q12h × 5 天；預防 75 mg q24h。',
     renal:[{k:'>60',v:'75 mg q12h'},{k:'30–60',v:'30 mg q12h'},{k:'10–30',v:'30 mg q24h'},{k:'HD',v:'每次透析後 30 mg'}],
     peds:'依體重（如 ≤15 kg 30 mg q12h；15–23 kg 45 mg q12h）。',
@@ -903,7 +903,7 @@ window.DRUGS = {
     contra:'腎功能不全需減量；噁心嘔吐、少數神經精神事件。',
     spectrum:'流感 A／B 病毒(神經胺酸酶抑制)。發病 48 小時內給藥效益最大；非細菌用藥。'},
 
-  fluconazole:{name:'Fluconazole',zh:'氟康唑',brands:['Diflucan'],cls:'Azole',
+  fluconazole:{covSet:'fungal',cov:{candida:1,glabkrusei:'p',histo:'p',blasto:'p',cocci:1},abg:[{sec:'candida',col:'fluconazole'}],name:'Fluconazole',zh:'氟康唑',brands:['Diflucan'],cls:'Azole',
     dose:'念珠菌血症 loading dose 800 mg(12 mg/kg)，then maintenance 400 mg(6 mg/kg) q24h。',
     renal:[{k:'>50',v:'標準劑量'},{k:'≤50',v:'maintenance dose 減半'},{k:'HD',v:'每次透析後給整日劑量'}],
     peds:'念珠菌血症 12 mg/kg loading，續 6–12 mg/kg/day。',
@@ -914,7 +914,7 @@ window.DRUGS = {
     contra:'QT 延長、肝毒性、孕婦(高劑量致畸)；與多種藥交互作用。',
     spectrum:'多數 C. albicans、C. parapsilosis、Cryptococcus。對 C. glabrata(劑量依賴)／C. krusei(抗藥)不可靠。不涵蓋黴菌／Aspergillus。'},
 
-  voriconazole:{name:'Voriconazole',zh:'伏立康唑',brands:['Vfend'],cls:'Azole',
+  voriconazole:{covSet:'fungal',cov:{candida:1,glabkrusei:1,aspergillus:2,fusarium:1,histo:1,blasto:1,cocci:1},abg:[{sec:'candida',col:'voriconazole'}],name:'Voriconazole',zh:'伏立康唑',brands:['Vfend'],cls:'Azole',
     dose:'loading dose 6 mg/kg IV q12h ×2 劑，then maintenance 4 mg/kg q12h；口服 200–300 mg q12h。需 TDM(trough 1–5.5 mg/L)。',
     renal:[{k:'≥50',v:'標準劑量'},{k:'<50',v:'口服優先（IV 賦形劑 SBECD 蓄積）'}],
     hepatic:'Child-Pugh A/B：maintenance dose 減半；嚴重肝病(C)僅在效益大於風險時使用。',
@@ -926,7 +926,7 @@ window.DRUGS = {
     contra:'與多種 CYP 藥物禁忌併用；肝毒性、視覺障礙、QT、長期光敏／皮膚癌、幻覺。需 TDM。',
     spectrum:'Aspergillus 首選；念珠菌(含部分抗 fluconazole)、Scedosporium、Fusarium。不涵蓋 Mucorales(毛黴)。'},
 
-  anidulafungin:{name:'Anidulafungin',zh:'安尼芬淨',brands:['Eraxis'],cls:'Echinocandin',
+  anidulafungin:{covSet:'fungal',cov:{candida:2,glabkrusei:2,aspergillus:'p'},abg:[{sec:'candida',col:'anidulafungin'}],name:'Anidulafungin',zh:'安尼芬淨',brands:['Eraxis'],cls:'Echinocandin',
     dose:'loading dose 200 mg IV ×1，then maintenance 100 mg q24h。',
     renal:'不需調整',
     peds:'依體重（較少用於幼兒）。',
@@ -937,7 +937,7 @@ window.DRUGS = {
     contra:'輸注反應(組織胺相關)；監測肝功能。',
     spectrum:'念珠菌(含 glabrata／krusei)——中重症／不穩定首選之一；對 Aspergillus 部分。不涵蓋 Cryptococcus／尿路。'},
 
-  amphoLipo:{name:'Amphotericin B, Liposomal',zh:'微脂體兩性黴素 B',brands:['AmBisome'],cls:'Polyene',
+  amphoLipo:{covSet:'fungal',cov:{candida:2,glabkrusei:2,aspergillus:2,mucor:2,fusarium:1,histo:2,blasto:2,cocci:2},abg:[{sec:'candida',col:'amphotericin_B'}],name:'Amphotericin B, Liposomal',zh:'微脂體兩性黴素 B',brands:['AmBisome'],cls:'Polyene',
     dose:'3–5 mg/kg IV q24h（毛黴／重症可更高）。',
     renal:'不依 CrCl 減量，但腎毒性時調整；微脂體較傳統劑型腎毒性低',
     peds:'3–5 mg/kg/day。',
@@ -948,7 +948,7 @@ window.DRUGS = {
     contra:'腎毒性、低鉀／低鎂、輸注反應(發燒寒顫)；避免與其他腎毒性藥併用。',
     spectrum:'極廣效：念珠菌、Cryptococcus、Aspergillus、Mucorales(毛黴，首選)、地方性黴菌。廣譜救援用藥。'},
 
-  caspofungin:{name:'Caspofungin',zh:'卡泊芬淨',brands:['Cancidas'],cls:'Echinocandin',
+  caspofungin:{covSet:'fungal',cov:{candida:2,glabkrusei:2,aspergillus:'p'},abg:[{sec:'candida',col:'caspofungin'}],name:'Caspofungin',zh:'卡泊芬淨',brands:['Cancidas'],cls:'Echinocandin',
     dose:'loading dose 70 mg IV ×1，then maintenance 50 mg q24h（>80 kg maintenance 70 mg）。',
     renal:'不需依腎功能調整。',
     hepatic:'Child-Pugh B：maintenance dose 減為 35 mg q24h；Child-Pugh C 資料有限。',
@@ -960,7 +960,7 @@ window.DRUGS = {
     contra:'過敏；與 rifampin／某些酵素誘導劑併用需增量。',
     spectrum:'念珠菌(含 glabrata／krusei)——中重症／不穩定首選之一；Aspergillus 之救援。不涵蓋 Cryptococcus／尿路。'},
 
-  micafungin:{name:'Micafungin',zh:'米卡芬淨',brands:['Mycamine'],cls:'Echinocandin',
+  micafungin:{covSet:'fungal',cov:{candida:2,glabkrusei:2,aspergillus:'p'},abg:[{sec:'candida',col:'micafungin'}],name:'Micafungin',zh:'米卡芬淨',brands:['Mycamine'],cls:'Echinocandin',
     dose:'念珠菌血症 100 mg IV q24h（食道念珠菌 150 mg q24h）。',
     renal:'不需依腎功能調整。',
     peds:'2–4 mg/kg/day IV（依體重、念珠菌血症）。',
@@ -971,7 +971,7 @@ window.DRUGS = {
     contra:'對 echinocandin 過敏；嚴重肝功能異常留意。',
     spectrum:'念珠菌(含 glabrata／krusei)——血流動力不穩／中重症或曾用 azole 者首選；對 Aspergillus 部分。不涵蓋 Cryptococcus，泌尿道濃度低。'},
 
-  flucytosine:{name:'Flucytosine (5-FC)',zh:'氟胞嘧啶',brands:['Ancotil'],cls:'Pyrimidine',
+  flucytosine:{covSet:'fungal',cov:{candida:'p',glabkrusei:'p'},abg:[{sec:'candida',col:'flucytosine'}],name:'Flucytosine (5-FC)',zh:'氟胞嘧啶',brands:['Ancotil'],cls:'Pyrimidine',
     dose:'25 mg/kg PO q6h（與 amphotericin B 併用，隱球菌腦膜炎誘導）。需 TDM。',
     renal:[{k:'>40',v:'25 mg/kg q6h'},{k:'20–40',v:'25 mg/kg q12h'},{k:'10–20',v:'25 mg/kg q24h'},{k:'<10／HD',v:'依血中濃度給藥、透析後補'}],
     peds:'依體重同成人 mg/kg；需 TDM。',
@@ -982,7 +982,7 @@ window.DRUGS = {
     contra:'單用易快速產生抗藥（須併用）；嚴重腎衰慎用、需減量。',
     spectrum:'Cryptococcus、念珠菌——與 amphotericin B 協同(隱球菌腦膜炎誘導、嚴重念珠菌)。不可單用。'},
 
-  valganciclovir:{name:'Valganciclovir／Ganciclovir',zh:'纈更昔洛韋／更昔洛韋',brands:['Valcyte','Cymevene'],cls:'Antiviral',
+  valganciclovir:{catLabel:'抗病毒',name:'Valganciclovir／Ganciclovir',zh:'纈更昔洛韋／更昔洛韋',brands:['Valcyte','Cymevene'],cls:'Antiviral',
     dose:'Valganciclovir 誘導 900 mg PO q12h、maintenance／預防 900 mg q24h；Ganciclovir 誘導 5 mg/kg IV q12h。',
     renal:[{k:'valgan ≥60',v:'900 mg q12h(誘導)'},{k:'40–59',v:'450 mg q12h'},{k:'25–39',v:'450 mg q24h'},{k:'10–24',v:'450 mg q48h'}],
     peds:'依 BSA×CrCl 公式(Valcyte 兒科劑量公式)個別計算。',

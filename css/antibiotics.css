@@ -53,7 +53,17 @@
   .dc-cov{flex-basis:100%; display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
   .dc-cov .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em; border-radius:8px; padding:2px 8px;}
   .cov-tag.sy-hi{color:var(--accent); background:var(--accent-soft); font-weight:800; border:1.5px solid var(--accent); padding:1px 7px;}
+  /* 抗結核／抗病毒等非抗菌藥的單一類別標籤 */
+  .cov-tag.cat{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line); letter-spacing:.06em;}
   .dc-preg{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); border:1px solid var(--accent2); border-radius:8px; padding:1px 7px;}
+  /* 依病原菌：選菌後放大的菌名 */
+  .bac-crumb-lg b{font-size:20px; font-family:var(--serif); letter-spacing:.01em;}
+  .bac-crumb-lg{font-size:14px;}
+  /* 查詢模式的排序切換 */
+  .lookup-sort{display:flex; align-items:center; gap:6px; margin:2px 0 6px;}
+  .lookup-sort-lbl{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.08em;}
+  .abx-sortbtn{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg); border:1px solid var(--line); border-radius:12px; padding:2px 12px; cursor:pointer;}
+  .abx-sortbtn.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent);}
   /* 抗菌譜欄內：台大在地感受性 %S 徽章區 */
   .dc-susc{margin-top:9px;}
   .dc-susc-cap{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-bottom:5px;}

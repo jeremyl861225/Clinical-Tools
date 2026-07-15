@@ -22,7 +22,7 @@
     <div>
       <div class="eyebrow">Antibiotic Guide</div>
       <h1>抗生素指引</h1>
-      <div class="sub">三種查法：依感染部位（經驗性）· 依細菌 · 藥物查詢</div>
+      <div class="sub">三種查法：依感染部位（經驗性）· 依病原菌 · 藥物查詢</div>
     </div>
     <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
   </div>
@@ -34,7 +34,7 @@
   <!-- 模式切換 -->
   <div class="abx-modes">
     <button class="abx-mode active" data-mode="empiric" onclick="switchMode('empiric')">依部位（經驗性）</button>
-    <button class="abx-mode" data-mode="bacteria" onclick="switchMode('bacteria')">依細菌</button>
+    <button class="abx-mode" data-mode="bacteria" onclick="switchMode('bacteria')">依病原菌</button>
     <button class="abx-mode" data-mode="lookup" onclick="switchMode('lookup')">藥物查詢</button>
   </div>
 
@@ -75,10 +75,11 @@
     </div>
     <div id="bac-step-result" class="hidden">
       <button class="abx-back" onclick="backToBacteria()">← 上一步：選病原菌</button>
-      <div class="abx-crumb" id="bac-crumb"></div>
-      <p class="abx-type-note" id="bac-note"></p>
-      <div id="bac-regimens"></div>
+      <div class="abx-crumb bac-crumb-lg" id="bac-crumb"></div>
       <div id="bac-susc"></div>
+      <p class="abx-type-note" id="bac-note"></p>
+      <div class="abx-hint">建議治療（regimen）</div>
+      <div id="bac-regimens"></div>
       <div class="abx-hint">相關抗生素資訊（點藥名展開）</div>
       <div id="bac-drugcards"></div>
     </div>
@@ -88,6 +89,11 @@
   <div id="mode-lookup" class="hidden">
     <div class="abx-hint">輸入藥名前幾個字母即時篩選（中文名／英文名／台灣商品名／分類皆可）</div>
     <input type="text" id="lookup-input" class="abx-lookup-input" placeholder="例：vanco、tazocin、萬古黴素、頭孢、flumarin、抗結核…" oninput="renderLookup(this.value)" autocomplete="off">
+    <div class="lookup-sort">
+      <span class="lookup-sort-lbl">排序</span>
+      <button class="abx-sortbtn active" data-sort="alpha" onclick="setLookupSort('alpha')">字母</button>
+      <button class="abx-sortbtn" data-sort="class" onclick="setLookupSort('class')">種類</button>
+    </div>
     <div id="lookup-count" class="abx-lookup-count"></div>
     <div id="lookup-results"></div>
   </div>

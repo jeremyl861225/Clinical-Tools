@@ -73,8 +73,9 @@
 
 | 欄位 | 型別 | 說明 |
 |---|---|---|
-| `cov` | object | 選填。鍵為覆蓋類別（抗菌：`mrsa`／`pseudo`／`anaerobe`／`atypical`／`esbl`／`enterococcus`；抗黴：`candida`／`glabkrusei`／`aspergillus`，視 `covSet` 而定），值：`1`=涵蓋（亮燈）、`'p'`=部分（琥珀）、缺該鍵=不涵蓋（暗掉＋刪除線）。用於藥卡標題徽章列（`covStrip`）與 `renderRegimen` 的 regimen 覆蓋列。 |
-| `covSet` | `'fungal'` 或缺省 | 選填。等於 `'fungal'` 時，`covStrip` 改用 `window.COV_LABELS_FUNGAL` 標籤組；否則使用 `window.COV_LABELS`（抗菌）。 |
+| `cov` | object | 選填。鍵為覆蓋類別（抗菌：`mrsa`／`pseudo`／`anaerobe`／`atypical`／`esbl`／`enterococcus`；抗黴：`candida`／`glabkrusei`／`aspergillus`／`mucor`／`fusarium`／`histo`／`blasto`／`cocci`，視 `covSet` 而定）。**四級值**：`2`=強效／台大在地%S≥90（亮＋粗框 sy-hi）、`1`=涵蓋／80–89（亮 yes）、`'p'`=部分／變異／60–79（琥珀 partial）、`0` 或缺該鍵=不涵蓋／<60（暗掉＋刪除線 no）。分級以台大在地 %S 優先，缺在地資料者依文獻 spectrum。用於藥卡標題徽章列（`covStrip`）。空物件 `{}` 會顯示整列暗掉（代表不涵蓋任何紅旗類別，如第一代 cephalosporin）。 |
+| `covSet` | `'fungal'` 或缺省 | 選填。等於 `'fungal'` 時，`covStrip` 改用 `window.COV_LABELS_FUNGAL`（8 類）標籤組；否則使用 `window.COV_LABELS`（抗菌 6 類）。 |
+| `catLabel` | string | 選填。設定後 `covStrip` 只顯示這一個類別標籤（如 `'抗結核'`／`'抗病毒'`），不顯示六／八旗標——用於六旗標無意義的藥（anti-TB／antiviral）。與 `cov` 互斥（`catLabel` 優先）。 |
 
 ## 資料來源與相依全域變數
 
