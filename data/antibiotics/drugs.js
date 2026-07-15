@@ -391,7 +391,7 @@ window.DRUGS = {
     spectrum:'MSSA、Streptococcus、厭氧、H. influenzae、部分 Enterobacterales。適合動物／人咬傷、輕度 SSTI、門診吸入性肺炎。',
     cov:{anaerobe:'p',enterococcus:1}},
 
-  metronidazole:{name:'Metronidazole',zh:'甲硝唑',brands:['Flagyl'],cls:'Nitroimidazole',
+  metronidazole:{name:'Metronidazole',zh:'甲硝唑',brands:['Flagyl'],cls:'Nitroimidazole',abg:[{sec:'anaerobic',col:'metronidazole'}],
     dose:'500 mg IV／PO q8h（重症可 q6h）。',
     renal:'不需依腎功能調整',
     hepatic:'嚴重肝病(Child C)：劑量減半或延長間隔。',
