@@ -31,6 +31,24 @@ window.ABG_AB_LABEL = {
   caspofungin:'Caspofungin', micafungin:'Micafungin', amphotericin_B:'Amphotericin B', flucytosine:'Flucytosine'
 };
 
+/* antibiogram 抗生素欄位鍵 → DRUGS 藥卡 key（供「依病原菌」納入在地高感受性藥物；
+   部分為同類代表：erythromycin→azithromycin、tetracycline→doxycycline、gentamicin_high→gentamicin、
+   cefazolin_urine/other→cefazolin、oxacillin→nafcillin(Oxacillin卡)、amphotericin_B→amphoLipo。
+   無對應藥卡者（fusidic_acid／chloramphenicol／cefpodoxime）省略。 */
+window.ABG_AB_DRUG = {
+  SAM:'ampsulbactam', TZP:'piptazo', cefazolin_urine:'cefazolin', cefazolin_other:'cefazolin',
+  cefmetazole:'cefmetazole', cefotaxime:'cefotaxime', ceftazidime:'ceftazidime', cefepime:'cefepime',
+  ertapenem:'ertapenem', imipenem:'imipenem', meropenem:'meropenem', gentamicin:'gentamicin',
+  gentamicin_high:'gentamicin', amikacin:'amikacin', ciprofloxacin:'ciprofloxacin',
+  levofloxacin:'levofloxacin', moxifloxacin:'moxifloxacin', tigecycline:'tigecycline', colistin:'colistin',
+  SXT:'tmpsmx', penicillin:'penG', ampicillin:'ampicillin', oxacillin:'nafcillin',
+  vancomycin:'vancomycin', daptomycin:'daptomycin', clindamycin:'clindamycin', erythromycin:'azithromycin',
+  tetracycline:'doxycycline', linezolid:'linezolid', flomoxef:'flomoxef', metronidazole:'metronidazole',
+  AMC:'amoxclav', cefuroxime:'cefuroxime', cefixime:'cefixime',
+  fluconazole:'fluconazole', voriconazole:'voriconazole', anidulafungin:'anidulafungin',
+  caspofungin:'caspofungin', micafungin:'micafungin', amphotericin_B:'amphoLipo', flucytosine:'flucytosine'
+};
+
 /* 病原菌 → 台大 antibiogram 菌種對照（以 BACTERIA 的 en 為鍵；一菌可對多列）。
    在抗生素表無資料之菌（Viridans、Listeria、Neisseria、CRE、非典型…）不列，故不顯示徽章。 */
 window.BAC_ABG = {

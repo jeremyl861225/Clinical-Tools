@@ -1,6 +1,6 @@
 /* 抗生素指引 antibiotics.html — render／互動邏輯。
    依賴全域資料（由 data/antibiotics/*.js 掛載於 window）：DRUGS, SITES, BACTERIA,
-   COV_LABELS, COV_LABELS_FUNGAL, ROLE_TXT, ABG, ABG_ORG_LABEL, ABG_AB_LABEL, BAC_ABG。 */
+   COV_LABELS, COV_LABELS_FUNGAL, ROLE_TXT, ABG, ABG_ORG_LABEL, ABG_AB_LABEL, ABG_AB_DRUG, BAC_ABG。 */
 
 /* 藥卡標題徽章列（收合時可判讀）：抗細菌＝六大覆蓋旗標，抗黴菌＝八類。
    四級 cov[key]：2=強效／在地%S≥90(亮粗框)、1=涵蓋／80–89(亮)、'p'=部分／變異／60–79(琥珀)、
@@ -234,6 +234,24 @@ function renderBacteria(q){
   el('bac-list').innerHTML = html || '<div class="bac-empty">找不到符合的菌名。</div>';
 }
 
+/* 依病原菌，回傳台大在地感受性 %S≥80（亮/亮粗框）的藥卡 key（去重、過濾無卡者）。 */
+function suscDrugsFor(b){
+  const map=BAC_ABG[b.en]; if(!map) return [];
+  const list=Array.isArray(map)?map:[map];
+  const out=[];
+  list.forEach(m=>{
+    const sec=ABG[m.sec]; if(!sec) return;
+    const rec=sec.org[m.org]; if(!rec) return;
+    sec.ab.forEach((abk,ci)=>{
+      const c=abgCell(rec.S[ci]);
+      if(!c || c.num<80) return;                 // 只納入亮(80–89)／亮粗框(≥90)
+      const dk=ABG_AB_DRUG[abk];
+      if(dk && DRUGS[dk] && !out.includes(dk)) out.push(dk);
+    });
+  });
+  return out;
+}
+
 function selectBacteria(gi,bi){
   curBac=BACTERIA[gi].items[bi];
   el('bac-crumb').innerHTML=`<b>${curBac.name}</b> <span class="sep">·</span> ${curBac.en}`;
@@ -241,6 +259,8 @@ function selectBacteria(gi,bi){
   el('bac-regimens').innerHTML=curBac.regimens.map(renderRegimen).join('');
   el('bac-susc').innerHTML=abgForBac(curBac);
   const seen=[]; curBac.regimens.forEach(r=>r.drugs.forEach(k=>{if(!seen.includes(k))seen.push(k);}));
+  // 追加台大在地感受性亮/亮粗框（%S≥80）之藥物（regimen 未含者接在後面）
+  suscDrugsFor(curBac).forEach(k=>{ if(!seen.includes(k)) seen.push(k); });
   el('bac-drugcards').innerHTML=seen.map(renderDrugCard).join('');
   show('bac-step-list',false); show('bac-step-result',true);
   window.scrollTo({top:0,behavior:'smooth'});
@@ -259,9 +279,10 @@ const DRUG_GROUPS = [
   ['氟喹諾酮類 Fluoroquinolones', c=>/fluoroquinolone/i.test(c)],
   ['四環素／甘胺醯環素',          c=>/tetracycline|glycylcycline/i.test(c)],
   ['巨環／林可醯胺類',            c=>/macrolide|lincosamide/i.test(c)],
+  ['硝基咪唑類 Nitroimidazole',   c=>/nitroimidazole/i.test(c)],
   ['多黏菌素 Polymyxin',          c=>/polymyxin/i.test(c)],
   ['抗結核 Anti-TB',              c=>/anti-tb/i.test(c)],
-  ['抗黴菌 Antifungals',          c=>/azole|echinocandin|polyene|pyrimidine/i.test(c)],
+  ['抗黴菌 Antifungals',          c=>/\bazole\b|echinocandin|polyene|pyrimidine/i.test(c)],
   ['抗病毒 Antivirals',           c=>/antiviral/i.test(c)],
   ['其他 Others',                 c=>true],
 ];
