@@ -1,0 +1,95 @@
+  /* ---- 癌症分期與治療（頁面專用元件） ---- */
+  .onc-disclaimer{background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:2px; padding:10px 13px; font-size:12px; line-height:1.6; color:var(--label-ink); margin-bottom:16px;}
+  .onc-disclaimer b{color:var(--accent2);}
+  .onc-search{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:14px;}
+  .onc-search:focus{outline:none; border-color:var(--accent);}
+  .onc-group-head{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:18px 0 8px; border-bottom:1px solid var(--accent-soft); padding-bottom:3px;}
+  .onc-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media(max-width:520px){ .onc-grid{grid-template-columns:1fr;} }
+  .onc-card{text-align:left; background:var(--field-bg); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:11px 13px; cursor:pointer; color:var(--ink); transition:border-color .15s, background .15s;}
+  .onc-card:hover{border-color:var(--accent); border-left-color:var(--accent); background:var(--hover-bg);}
+  .onc-card .oc-name{font-family:var(--serif); font-size:15px; font-weight:600; display:block;}
+  .onc-card .oc-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); display:block; margin-top:2px;}
+  .onc-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
+
+  .onc-back{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:6px 11px; border-radius:2px; cursor:pointer; color:var(--ink); margin-bottom:12px;}
+  .onc-back:hover{background:var(--accent-soft); border-color:var(--accent);}
+  .onc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0;}
+  .onc-title .oct-en{font-family:var(--mono); font-size:12px; color:var(--muted-soft); font-weight:400; margin-left:8px;}
+  .onc-edition{font-family:var(--mono); font-size:11px; color:var(--accent); background:var(--accent-soft); border-radius:9px; padding:2px 10px; display:inline-block; margin:8px 0 4px;}
+
+  .onc-tabs{display:flex; gap:6px; margin:14px 0 18px; border-bottom:2px solid var(--accent-soft);}
+  .onc-tab{flex:1; font-family:var(--mono); font-size:12.5px; background:none; border:1px solid var(--line); border-bottom:none; padding:9px 6px; border-radius:4px 4px 0 0; cursor:pointer; color:var(--muted); position:relative; top:2px; text-align:center;}
+  .onc-tab:hover{background:var(--hover-bg); color:var(--ink);}
+  .onc-tab.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-soft); font-weight:700;}
+
+  .onc-sec{margin-bottom:18px;}
+  .onc-sec-h{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); margin:16px 0 7px; border-bottom:1px solid var(--accent2-soft); padding-bottom:3px;}
+  .onc-note{font-size:12px; color:var(--muted); line-height:1.65; margin:6px 0;}
+
+  table.tnm{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
+  table.tnm td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.55;}
+  table.tnm td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent); white-space:nowrap; width:64px;}
+  table.tnm tr:last-child td{border-bottom:none;}
+
+  table.stage{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
+  table.stage th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); text-align:left; padding:4px 7px; border-bottom:2px solid var(--accent-soft);}
+  table.stage td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5;}
+  table.stage td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent2); white-space:nowrap;}
+  table.stage tr:last-child td{border-bottom:none;}
+
+  /* 分期矩陣 T×N（如 AJCC 圖表；依分期深淺著色，深／淺色模式皆可讀） */
+  :root{ --sm-strong-text:#ffffff; }
+  @media (prefers-color-scheme: dark){ :root{ --sm-strong-text:#0e171b; } }
+  .sm-wrap{overflow-x:auto; margin:4px 0 8px;}
+  table.smx{border-collapse:collapse; font-family:var(--mono); font-size:12px; min-width:100%;}
+  table.smx th, table.smx td{border:1px solid var(--line); text-align:center; padding:6px 5px; white-space:nowrap;}
+  .smx .sm-corner{background:var(--soft-bg);}
+  .smx .sm-nh{font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg);}
+  .smx .sm-nh span{display:block; font-size:9px; font-weight:400; color:var(--muted-soft); margin-top:1px;}
+  .smx .sm-th{font-size:11.5px; font-weight:700; color:var(--accent); background:var(--soft-bg); text-align:right; padding-right:8px;}
+  .smx .sm-cell{font-weight:700; color:var(--ink);}
+  .sm-s0{background:transparent;}
+  .sm-s1{background:color-mix(in srgb, var(--accent) 12%, transparent);}
+  .sm-s2{background:color-mix(in srgb, var(--accent) 22%, transparent);}
+  .sm-s3{background:color-mix(in srgb, var(--accent) 34%, transparent);}
+  .sm-s4{background:color-mix(in srgb, var(--accent) 48%, transparent);}
+  .sm-s5{background:color-mix(in srgb, var(--accent) 62%, transparent);}
+  .sm-s6{background:color-mix(in srgb, var(--accent) 78%, transparent);}
+  .sm-s7{background:var(--accent);}
+  .smx .sm-s0{color:var(--muted-soft);}
+  .smx .sm-s4, .smx .sm-s5, .smx .sm-s6, .smx .sm-s7{color:var(--sm-strong-text);}
+  .sm-m1{font-size:12px; color:var(--label-ink); background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:2px; padding:7px 11px; margin-top:4px;}
+  .sm-m1 b{color:var(--accent2); font-family:var(--mono);}
+  .sm-legend{display:flex; flex-wrap:wrap; gap:8px 14px; margin:8px 0 2px; font-family:var(--mono); font-size:10px; color:var(--muted-soft);}
+  .sm-legend span{display:inline-flex; align-items:center; gap:4px;}
+  .sm-legend i{width:12px; height:12px; border:1px solid var(--line); display:inline-block; border-radius:2px;}
+
+  .node-item{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:8px 11px; margin-bottom:6px; font-size:12.5px; line-height:1.55;}
+  .node-item .ni-code{font-family:var(--mono); font-weight:700; color:var(--accent); margin-right:6px;}
+  .node-item .ni-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+  .node-group{font-family:var(--mono); font-size:11px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; margin-left:6px; white-space:nowrap;}
+
+  .tx{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:12px 14px; margin-bottom:9px;}
+  .tx.neo{border-left:3px solid var(--accent2);}
+  .tx.surg{border-left:3px solid var(--accent);}
+  .tx.adj{border-left:3px solid #6b8f8a;}
+  .tx.sys{border-left:3px solid var(--muted-soft);}
+  .tx-head{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:6px;}
+  .tx-role{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; border-radius:9px; padding:2px 9px; white-space:nowrap; color:#fff;}
+  .tx.neo .tx-role{background:var(--accent2);}
+  .tx.surg .tx-role{background:var(--accent);}
+  .tx.adj .tx-role{background:#6b8f8a;}
+  .tx.sys .tx-role{background:var(--muted-soft);}
+  .tx-label{font-family:var(--serif); font-size:14.5px; font-weight:600; color:var(--ink);}
+  .tx-body{font-size:12.5px; line-height:1.7; color:var(--label-ink);}
+  .tx-body .rx{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+  .tx-body .drug{font-family:var(--sans); background:var(--field-bg); border:1px solid var(--line); border-bottom:2px solid var(--accent-soft); border-radius:3px; padding:1px 6px; font-size:12px; white-space:nowrap;}
+  .tx-body ul{margin:5px 0; padding-left:18px;}
+  .tx-body li{margin:3px 0;}
+
+  .onc-reflist{margin-top:16px; border-top:1px solid var(--line); padding-top:10px;}
+  .onc-reflist .rl-h{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted-soft); margin-bottom:6px;}
+  .onc-reflist a{display:block; font-size:11.5px; color:var(--accent); text-decoration:none; margin:3px 0; line-height:1.5; font-family:var(--mono);}
+  .onc-reflist a:hover{color:var(--accent2); text-decoration:underline;}
+  .onc-reflist a:before{content:'▸ '; color:var(--muted-soft);}

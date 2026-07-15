@@ -1,7 +1,7 @@
 /* 臨床計分工具箱 — Service Worker
  * 版本更新時請修改 CACHE_VERSION，使用者下次開啟即自動更新快取。
  */
-const CACHE_VERSION = 'clinical-tools-v43';
+const CACHE_VERSION = 'clinical-tools-v44';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -10,11 +10,14 @@ const PRECACHE_URLS = [
   './manifest.webmanifest',
   './css/styles.css',
   './css/antibiotics.css',
+  './css/cancer-staging.css',
   './js/common.js',
   './js/antibiotics.js',
+  './js/cancer-staging.js',
   './data/antibiotics/antibiogram.js',
   './data/antibiotics/regimens.js',
   './data/antibiotics/drugs.js',
+  './data/cancer/cancers.js',
   './pathways/appendicitis.html',
   './pathways/cholecystitis.html',
   './tools/air.html',
