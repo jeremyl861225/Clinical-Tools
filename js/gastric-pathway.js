@@ -2,7 +2,7 @@
    胃癌治療互動決策流程 Gastric Cancer Treatment Pathway
    資料來源：國立臺灣大學醫學院附設醫院 胃癌診療指引 V.1 2026
    （NTUH Gastric Cancer Guidelines in Oncology, AGC-1 ～ AGC-5）
-   本模組為 cancer-staging.html 治療分頁專用；自足，不依賴 common.js。
+   本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
   'use strict';
