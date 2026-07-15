@@ -61,7 +61,7 @@
     h += '<div id="gc_res" class="hidden">';
     h += conn('gc_c3');
     h += step('gc_s3', '3', '臨床分期 → 治療策略',
-      opt('strat', 'esd', '內視鏡切除候選 ESD', 'cT1a、分化良好、無潰瘍 ≤2cm（或有潰瘍 ≤3cm）；未分化無潰瘍 ≤2cm') +
+      opt('strat', 'esd', '內視鏡切除候選 ESD', 'cT1a，符合任一：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且 ≤3cm；③未分化型、無潰瘍且 ≤2cm') +
       opt('strat', 'upfront', '直接根治性手術', '可切除、非 bulky（cT1b–cT3、N0–N+）') +
       opt('strat', 'periop', '圍手術期化療 → 手術', 'cT4N+ 或 bulky nodes（borderline resectable）'));
 
@@ -214,7 +214,7 @@
     if (s.strat === 'esd') {
       if (!s.esdcur) {
         ulRec(id, 'rec-elective', '內視鏡黏膜下剝離（ESD）', [
-          '適應症：分化型無潰瘍；分化型有潰瘍且 ≤3cm；未分化型無潰瘍且 ≤2cm。',
+          '適應症（Endoscopic resection with curative intent，符合任一）：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且腫瘤 ≤3cm；③未分化型、無潰瘍且腫瘤 ≤2cm。',
           '完成後依病理判定是否為治癒性切除（見步驟 3b）。'
         ], 'AGC-2：cT1 符合條件者可考慮 ESD。');
         return;
