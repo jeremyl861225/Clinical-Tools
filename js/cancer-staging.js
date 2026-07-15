@@ -69,7 +69,10 @@ function switchTab(id, tab){
   var el = document.getElementById('oncTab');
   if(tab === 'stage') el.innerHTML = renderStage(c);
   else if(tab === 'node') el.innerHTML = renderNode(c);
-  else el.innerHTML = renderTx(c);
+  else {
+    el.innerHTML = renderTx(c);
+    if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
+  }
 }
 
 function renderStage(c){
@@ -135,6 +138,10 @@ function renderNode(c){
 
 function renderTx(c){
   var h = '';
+  if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
+    h += gastricPathwayHTML();
+    h += '<div class="onc-sec-h" style="margin-top:22px;">常用療程 Regimen reference（含藥名）</div>';
+  }
   (c.tx||[]).forEach(function(t){
     h += '<div class="tx '+t.cls+'"><div class="tx-head"><span class="tx-role">'+t.role+
          '</span><span class="tx-label">'+t.label+'</span></div>'+
