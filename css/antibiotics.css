@@ -1,0 +1,90 @@
+  /* ---- 抗生素指引 Empiric antibiotic guide（頁面專用元件） ---- */
+  .abx-disclaimer{background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:2px; padding:10px 13px; font-size:12px; line-height:1.6; color:var(--label-ink); margin-bottom:16px;}
+  .abx-disclaimer b{color:var(--accent2);}
+  .abx-picker{display:flex; flex-direction:column; gap:8px; margin-bottom:6px;}
+  .abx-site-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media(max-width:520px){ .abx-site-grid{grid-template-columns:1fr;} }
+  .abx-modes{display:flex; gap:6px; margin-bottom:18px; border-bottom:2px solid var(--accent-soft); padding-bottom:0;}
+  .abx-mode{font-family:var(--mono); font-size:12.5px; background:none; border:1px solid var(--line); border-bottom:none; padding:9px 14px; border-radius:4px 4px 0 0; cursor:pointer; color:var(--muted); position:relative; top:2px;}
+  .abx-mode:hover{background:var(--hover-bg); color:var(--ink);}
+  .abx-mode.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-soft); font-weight:700;}
+  @media(max-width:520px){ .abx-mode{flex:1; padding:9px 4px; font-size:11.5px; text-align:center;} }
+  .abx-lookup-input{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:10px;}
+  .abx-lookup-input:focus{outline:none; border-color:var(--accent);}
+  .abx-lookup-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
+  .bac-group-head{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:16px 0 7px; border-bottom:1px solid var(--accent-soft); padding-bottom:3px;}
+  .bac-item{display:block; width:100%; text-align:left; background:var(--field-bg); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:10px 12px; cursor:pointer; margin-bottom:7px; color:var(--ink); transition:border-color .15s, background .15s;}
+  .bac-item:hover{border-color:var(--accent); border-left-color:var(--accent); background:var(--hover-bg);}
+  .bac-item .bi-name{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .bac-item .bi-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:6px;}
+  .bac-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
+  .abx-back{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:6px 11px; border-radius:2px; cursor:pointer; color:var(--ink); margin-bottom:12px;}
+  .abx-back:hover{background:var(--accent-soft); border-color:var(--accent);}
+  .abx-crumb{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin:2px 0 12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .abx-crumb b{color:var(--accent);}
+  .abx-crumb .sep{color:var(--muted-soft);}
+  .abx-type-note{font-size:12px; color:var(--muted); margin:0 0 12px; line-height:1.6;}
+
+  .rgm{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:13px 15px; margin-bottom:10px;}
+  .rgm.first{border-left:3px solid var(--accent);}
+  .rgm.alt{border-left:3px solid var(--muted-soft);}
+  .rgm.special{border-left:3px solid var(--accent2);}
+  .rgm.none{border-left:3px solid var(--muted-soft);}
+  .rgm.none .rgm-role{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line);}
+  .rgm-head{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:8px;}
+  .rgm-role{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-radius:9px; padding:2px 9px; white-space:nowrap;}
+  .rgm.first .rgm-role{color:#fff; background:var(--accent);}
+  .rgm.alt .rgm-role{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line);}
+  .rgm.special .rgm-role{color:#fff; background:var(--accent2);}
+  .rgm-label{font-family:var(--serif); font-size:14.5px; font-weight:600; color:var(--ink);}
+  .rgm-drugs{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+  .rgm-plus{font-family:var(--mono); color:var(--muted-soft); font-size:13px;}
+  .drug-chip{font-family:var(--sans); font-size:13px; background:var(--field-bg); border:1px solid var(--line); border-bottom:2px solid var(--accent-soft); border-radius:3px; padding:5px 10px; cursor:pointer; color:var(--ink); transition:border-color .15s, background .15s;}
+  .drug-chip:hover{border-color:var(--accent); background:var(--hover-bg);}
+  .drug-chip .dc-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin-left:5px;}
+  .rgm-dur{font-family:var(--mono); font-size:11px; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:4px 9px; margin-top:9px; display:inline-block; line-height:1.5;}
+  .rgm-note{font-size:11.5px; color:var(--muted); margin-top:8px; padding-top:7px; border-top:1px dashed var(--line); line-height:1.6;}
+  .cov-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
+  .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px;}
+  .cov-tag.yes{color:var(--accent); background:var(--accent-soft);}
+  .cov-tag.partial{color:var(--accent2); background:var(--accent2-soft);}
+  .cov-tag.no{color:var(--muted-soft); background:var(--soft-bg); text-decoration:line-through; opacity:.7;}
+  /* 藥卡標題下的抗菌覆蓋徽章列（收合時即可一眼判讀；亮燈=涵蓋、暗掉刪除線=不涵蓋） */
+  .dc-cov{flex-basis:100%; display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
+  .dc-cov .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em; border-radius:8px; padding:2px 8px;}
+  .cov-tag.sy-hi{color:var(--accent); background:var(--accent-soft); font-weight:800; border:1.5px solid var(--accent); padding:1px 7px;}
+  .dc-preg{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); border:1px solid var(--accent2); border-radius:8px; padding:1px 7px;}
+  /* 抗菌譜欄內：台大在地感受性 %S 徽章區 */
+  .dc-susc{margin-top:9px;}
+  .dc-susc-cap{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-bottom:5px;}
+  .dc-susc .dc-cov{margin-top:0;}
+  /* 注射給藥指引小表 */
+  table.inj-tbl{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px;}
+  table.inj-tbl td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.inj-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted); width:30%;}
+  table.inj-tbl tr:last-child td{border-bottom:none;}
+
+  .drugcard{background:var(--panel); border:1px solid var(--line); border-radius:2px; margin-bottom:8px; scroll-margin-top:14px;}
+  .drugcard summary{cursor:pointer; list-style:none; padding:11px 14px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .drugcard summary::-webkit-details-marker{display:none;}
+  .drugcard summary::marker{content:'';}
+  .drugcard summary:before{content:'▸'; font-family:var(--mono); color:var(--accent); font-size:12px; margin-right:2px;}
+  .drugcard[open] summary:before{content:'▾';}
+  .drugcard[open] summary{border-bottom:1px solid var(--line);}
+  .dc-name{font-family:var(--serif); font-size:15.5px; font-weight:600; color:var(--ink);}
+  .dc-zh{font-family:var(--sans); font-size:12.5px; color:var(--muted); margin-left:1px;}
+  .dc-nameen{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+  table.renal-tbl{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px;}
+  table.renal-tbl td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.renal-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted); width:34%;}
+  table.renal-tbl tr:last-child td{border-bottom:none;}
+  .dc-class{margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; white-space:nowrap;}
+  .dc-body{padding:4px 14px 13px;}
+  .dc-field{margin-top:11px;}
+  .dc-field:first-child{margin-top:6px;}
+  .dc-flabel{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; display:flex; align-items:center; gap:6px;}
+  .dc-flabel .ico{font-size:12px;}
+  .dc-ftext{font-size:13px; line-height:1.65; color:var(--label-ink);}
+  .dc-ftext .sub{display:block; font-size:11.5px; color:var(--muted); font-family:var(--mono); margin-top:2px;}
+  .dc-warn{color:var(--accent2);}
+  .abx-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono); margin:14px 0 6px;}
