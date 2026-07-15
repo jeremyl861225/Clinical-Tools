@@ -169,6 +169,7 @@
       <div class="abx-crumb" id="bac-crumb"></div>
       <p class="abx-type-note" id="bac-note"></p>
       <div id="bac-regimens"></div>
+      <div id="bac-susc"></div>
       <div class="abx-hint">相關抗生素資訊（點藥名展開）</div>
       <div id="bac-drugcards"></div>
     </div>
@@ -234,9 +235,15 @@ const DRUGS = {
     cov:{pseudo:1,anaerobe:1,enterococcus:1,esbl:'p'}},
 
   brosym:{name:'Cefoperazone-Sulbactam',zh:'頭孢哌酮/舒巴坦',brands:['Brosym','Sulperazon'],cls:'3rd cephalosporin/BLI',
-    dose:'1–2 g（cefoperazone）IV q12h；重症 q6–8h（sulbactam 每日上限 4 g）。',
-    renal:[{k:'>30',v:'不需調整（cefoperazone 主要經膽汁）'},{k:'≤30',v:'限制 sulbactam 劑量（sulbactam 經腎）'}],
-    peds:'40–80 mg/kg/day（cefoperazone）分 q6–12h。',
+    ntuhProducts:[{en:'Brosym',zh:'博益欣注射劑'}],
+    vialDose:'cefoperazone 1000 mg ＋ sulbactam 1000 mg／vial（Na 5.4 mEq/vial）',
+    usualDose:'IV，以 cefoperazone 含量計。<br>• 成人：500–1000 mg q12h；重症 2000 mg q12h。<br>• MDRAB 感染：需高劑量 sulbactam（off-label），請諮詢感染科調整。',
+    peds:'兒童：20–40 mg/kg/day 分 2–4 次；重症 80 mg/kg/day 分 2–4 次（以 cefoperazone 計）。',
+    renal:[{k:'CCr >30',v:'2000 mg（cefoperazone）q12h'},{k:'CCr 15–30',v:'1000 mg（cefoperazone）q12h'},{k:'CCr <15',v:'500 mg（cefoperazone）q12h'},{k:'備註',v:'MDRAB 用高劑量 sulbactam（off-label）為例外；調整主要因 sulbactam 經腎累積（cefoperazone 經膽排除）。'}],
+    hepatic:'須調整（Y）——cefoperazone 主要經膽汁排除，肝功能不佳時留意。',
+    dialysis:'無資料。',
+    injection:{route:'間歇輸注 IF（或 IV push >3 分鐘）',reconstitute:'注射用水、NS 或 D5W 6–10 mL',diluent:'NS 或 D5W',volume:'每瓶 20 mL',conc:'10–250 mg/mL',time:'15–60 分鐘',notes:'室溫溶解後安定 6 hr、2–8°C 48 hr。'},
+    preg:'B',
     bioav:'靜脈注射。',
     dist:'膽汁濃度高；組織分布良好；CSF 穿透有限。',
     metab:'Cefoperazone 主要經膽汁排除；sulbactam 經腎。',
@@ -246,20 +253,36 @@ const DRUGS = {
     cov:{pseudo:1,anaerobe:1}},
 
   cefazolin:{name:'Cefazolin',zh:'頭孢唑林',brands:['Cefazolin','Kefzol'],cls:'1st cephalosporin',
-    dose:'1–2 g IV q8h（重症／深部感染 2 g q8h）。',
-    renal:[{k:'≥35',v:'不需調整'},{k:'10–34',v:'常規劑量 q12h'},{k:'<10',v:'常規劑量 q24h'}],
-    peds:'50–100 mg/kg/day 分 q8h（max 6 g/day）。',
+    ntuhProducts:[{en:'Cefa',zh:'信華注射劑'}],
+    vialDose:'1000 mg cefazolin／vial（Na 2.1 mEq/g potency）',
+    usualDose:'IV push 3–5 分鐘、間歇或持續 IF、或深部 IM。<br>• 輕度：250–500 mg q8h。<br>• 中度：0.5–1 g q6–8h。<br>• 重度：1–2 g q6h（至 12 g/day）。<br>• 手術預防：術前 1 g；術中每 4 hr 視需重複；術後 0.5–1 g q6–8h × 24 hr。',
+    peds:'• 輕中度：25–50 mg/kg/day 分 q6–8h（max 1 g/劑）。<br>• 重度：100–150 mg/kg/day 分 q6–8h（max 2 g/劑）。<br>• 心內膜炎預防：50 mg/kg 術前 30–60 分鐘（max 1 g/劑）。<br>• 心內膜炎治療：100 mg/kg/day 分 q6–8h（max 2 g/劑，重症至 6 g/day）。<br>• 新生兒：≤2 kg 25 mg/kg q12h；>2 kg 且 ≤7 d 50 mg/kg q12h、8–28 d 50 mg/kg q8h。',
+    maxDose:'成人 12 g/day；嬰兒／兒童 2 g/劑',
+    renal:[{k:'CCr ≥55',v:'常規劑量'},{k:'CCr 35–54',v:'常規劑量，間隔 ≥q8h'},{k:'CCr 11–34',v:'50% 常規劑量 q12h'},{k:'CCr ≤10',v:'50% 常規劑量 q18–24h'}],
+    hepatic:'無資料（一般不需調整）。',
+    dialysis:'HD：0.5–1 g qd 或每次透析後 2 g（不規則 HD：透析後 15–20 mg/kg，max 2 g；移除 20–50%）；PD：0.5 g q12h 或 1 g qd。',
+    cvvh:'LD 2 g，之後 1 g q8h 或 2 g q12h（CVVH／CVVHD／CVVHDF 相同）。',
+    injection:{route:'間歇／持續輸注 IF（或 IV push 3–5 分鐘、深部 IM）',reconstitute:'注射用水（W）：1 g 以 2.5 mL（330 mg/mL）或 10 mL（≈100 mg/mL）',diluent:'NS、D5W 或 LR',volume:'每劑 50–100 mL',time:'IV push 3–5 分鐘',notes:'溶解前後均避光保存；若以 NS 溶解須立即使用完畢。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefazolin_urine'}],
     bioav:'靜脈／肌肉注射。',
     dist:'良好分布至骨、關節、軟組織；不穿透 CSF（不用於腦膜炎）。',
     metab:'主要經腎排除。',
     adverse:'過敏、腹瀉、C. difficile；少見血球低下、肝酵素上升。',
     contra:'β-lactam 過敏禁用。',
-    spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus。MSSA 菌血症／骨感染首選。不涵蓋 MRSA、腸球菌、多數院內 GNB、厭氧。'},
+    spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus（下方在地 %S 為尿路 breakpoint）。MSSA 菌血症／骨感染首選。不涵蓋 MRSA、腸球菌、多數院內 GNB、厭氧。'},
 
   cefalexin:{name:'Cephalexin',zh:'頭孢氨苄',brands:['Keflex','Ceporex'],cls:'1st cephalosporin',
-    dose:'250–500 mg PO q6h；SSTI 可 500 mg q12h。',
-    renal:[{k:'>30',v:'不需調整'},{k:'15–29',v:'250–500 mg q8–12h'},{k:'<15',v:'250 mg q12–24h'}],
-    peds:'25–50 mg/kg/day 分 q6–12h（重症至 100 mg/kg/day）。',
+    ntuhProducts:[{en:'Cephalexin',zh:'信保欣膠囊'},{en:'',zh:'優力黴素口服懸液用顆粒'}],
+    vialDose:'膠囊 250 mg／cap；另有口服懸液用顆粒',
+    usualDose:'口服。<br>• 成人：250–1000 mg q6h 或 500 mg q12h（max 4 g/day）。<br>• 單純性膀胱炎（>15 歲）：500 mg q12h × 5–7 天（必要時延長至 14 天）。<br>• 心內膜炎預防：術前 30–60 分鐘 2 g。',
+    peds:'• 輕中度：25–50 mg/kg/day 分 q6–8h。<br>• 重度：75–100 mg/kg/day 分 q6–8h（max 4 g/day）。<br>• 中耳炎：75–100 mg/kg/day 分 q6h。<br>• 咽炎／扁桃腺炎、皮膚感染：25–50 mg/kg/day 分 q12h × ≥10 天。<br>• 心內膜炎預防：50 mg/kg 術前 30–60 分鐘（max 2 g）。',
+    maxDose:'4 g/day',
+    renal:[{k:'CCr >30',v:'不需調整'},{k:'CCr 15–30',v:'250–500 mg q8–12h'},{k:'CCr <15',v:'250–500 mg q12–24h'}],
+    hepatic:'無資料。',
+    dialysis:'HD：250–500 mg q12–24h，透析後給藥（移除 20–50%）；PD：250–500 mg q12–24h。',
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefazolin_urine'}], abgProxy:'cefazolin（尿路 breakpoint）',
     bioav:'口服吸收約 90%，受食物影響小。',
     dist:'良好分布至皮膚軟組織、骨；CSF 穿透差。',
     metab:'主要以原型經腎排除。',
@@ -268,9 +291,16 @@ const DRUGS = {
     spectrum:'MSSA、Streptococcus、部分 E.coli／Klebsiella／Proteus。門診 SSTI、鏈球菌感染之口服選擇。不涵蓋 MRSA、腸球菌、厭氧、Pseudomonas。'},
 
   cefuroxime:{name:'Cefuroxime',zh:'頭孢呋辛',brands:['Zinacef (IV)','Zinnat (PO)'],cls:'2nd cephalosporin',
-    dose:'IV 750 mg–1.5 g q8h；口服(axetil) 250–500 mg q12h。',
-    renal:[{k:'>20',v:'不需調整'},{k:'10–20',v:'750 mg IV q12h'},{k:'<10',v:'750 mg IV q24h'}],
-    peds:'IV 75–150 mg/kg/day 分 q8h；PO 20–30 mg/kg/day 分 q12h。',
+    ntuhProducts:[{en:'Ceflour',zh:'喜華膜衣錠（口服）'},{en:'',zh:'賜福樂信注射劑'}],
+    vialDose:'口服 250 mg／錠（喜華）；注射劑（賜福樂信）',
+    usualDose:'口服（axetil）隨餐服用。<br>• 一般感染（皮膚、呼吸道、鼻竇炎、咽炎）：250–500 mg bid。<br>• 單純性 UTI：250 mg bid × 7–10 天。<br>• 萊姆病（遊走性紅斑或心臟炎）：500 mg bid × 14–21 天；萊姆關節炎 500 mg bid × 28 天。<br>• 注射劑（賜福樂信）：750 mg–1.5 g IV q8h（依感受性）。',
+    peds:'口服 20–30 mg/kg/day 分 q12h（max 1 g/day）。',
+    maxDose:'口服 1 g/day（兒童）',
+    renal:[{k:'CCr 10–30',v:'250 mg q12h（口服）'},{k:'CCr <10',v:'250 mg qd（口服）'}],
+    hepatic:'無資料。',
+    dialysis:'HD：透析日透析後 250 mg qd（口服），一般 250–500 mg qd；PD：無資料。',
+    preg:'B',
+    abg:[{sec:'haemophilus',col:'cefuroxime'}],
     bioav:'口服 cefuroxime axetil 約 37–52%，隨食物增加。',
     dist:'呼吸道、皮膚組織分布佳；CSF 穿透不足（不建議用於腦膜炎）。',
     metab:'主要經腎排除。',
@@ -279,9 +309,17 @@ const DRUGS = {
     spectrum:'MSSA、Streptococcus(含肺炎鏈球菌)、H. influenzae、M. catarrhalis、部分 Enterobacterales。呼吸道／SSTI。不涵蓋 Pseudomonas、ESBL、MRSA、腸球菌、多數厭氧。'},
 
   cefmetazole:{name:'Cefmetazole',zh:'頭孢美唑',brands:['Cefmetazon'],cls:'2nd cephamycin',
-    dose:'手術預防 1–2 g IV 切皮前單劑；治療 1–2 g IV q6–12h。',
-    renal:[{k:'>60',v:'不需調整'},{k:'30–60',v:'延長間隔'},{k:'<30',v:'進一步延長間隔'}],
-    peds:'25–100 mg/kg/day 分 q6–8h。',
+    ntuhProducts:[{en:'Cetazone',zh:'喜達隆注射劑'}],
+    vialDose:'500 mg cefmetazole／vial（Na 2.12 mEq/g potency）',
+    usualDose:'IV push 3–5 分鐘，或間歇 IF 10–60 分鐘。<br>• 成人：1–2 g q6–12h（至 8 g/day）。',
+    peds:'兒童：25–150 mg/kg/day 分 q6–12h。',
+    maxDose:'8 g/day',
+    renal:[{k:'CCr 50–90',v:'1–2 g q12h'},{k:'CCr 30–49',v:'0.75–1.5 g q12h'},{k:'CCr 10–29',v:'1–2 g q24h'},{k:'CCr <10',v:'1–2 g q48h'}],
+    hepatic:'無資料。',
+    dialysis:'HD：透析後 1–2 g（標準劑量，每週三次 TIW）；PD：無資料。',
+    injection:{route:'間歇輸注 IF（或 IV push）',reconstitute:'注射用水（W）、NS 或 D5W 5 mL',diluent:'NS 或 D5W',time:'10–60 分鐘',notes:'開封後易受光變色，須避光保存；室溫溶解後安定 24 hr。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefmetazole'},{sec:'anaerobic',col:'cefmetazole'}],
     bioav:'靜脈注射。',
     dist:'腹腔、膽汁、組織分布佳；CSF 穿透差。',
     metab:'主要經腎排除。',
@@ -291,9 +329,16 @@ const DRUGS = {
     cov:{anaerobe:1}},
 
   flomoxef:{name:'Flomoxef',zh:'氟氧頭孢',brands:['Flumarin'],cls:'2nd cephamycin',
-    dose:'1–2 g IV q12h（重症 q6–8h）。',
-    renal:[{k:'>40',v:'不需調整'},{k:'≤40',v:'延長間隔（主要經腎排除）'}],
-    peds:'60–80 mg/kg/day 分 q6–8h。',
+    ntuhProducts:[{en:'Flumarin',zh:'氟黴寧靜脈注射劑'}],
+    vialDose:'1.0 g／vial',
+    usualDose:'IV 或間歇 IF。<br>• 成人：1–2 g/day 分 2 次；重症 4 g/day 分 2–4 次。',
+    peds:'• 兒童：60–80 mg/kg/day 分 3–4 次（至 150 mg/kg/day）。<br>• 新生兒：≤3 d 20 mg/kg q8–12h；>3 d 20 mg/kg q6–8h。',
+    maxDose:'成人 4 g/day；兒童 150 mg/kg/day',
+    renal:[{k:'CCr >80',v:'1 g q6h'},{k:'CCr 50–80',v:'1 g q8h'},{k:'CCr 25–50',v:'1 g q12h'},{k:'CCr <25',v:'1 g qd'}],
+    hepatic:'無資料。',
+    dialysis:'HD：透析後 1 g qd（移除 80%）；PD：1 g q24h（移除約 24%）。',
+    injection:{route:'間歇輸注 IF（或 IV）',reconstitute:'注射用水（W）、NS 或 D5W ≥4 mL',diluent:'NS 或 D5W',notes:'室溫溶解後安定 6 hr、2–8°C 24 hr。'},
+    abg:[{sec:'anaerobic',col:'flomoxef'}],
     bioav:'靜脈注射。',
     dist:'膽汁、組織分布佳；CSF 穿透有限。',
     metab:'主要經腎排除。',
@@ -303,29 +348,39 @@ const DRUGS = {
     cov:{anaerobe:1}},
 
   ceftriaxone:{name:'Ceftriaxone',zh:'頭孢曲松',brands:['Rocephin'],cls:'3rd cephalosporin',
-    dose:'1–2 g IV q24h；腦膜炎／重症 2 g q12h。',
-    renal:'一般不需調整（肝膽＋腎雙重排除）',
-    hepatic:'肝腎功能同時嚴重受損時考慮減量（上限 2 g/day）。',
-    peds:'50–75 mg/kg/day IV q12–24h；腦膜炎 100 mg/kg/day 分 q12h（max 4 g/day）。',
+    ntuhProducts:[{en:'Cefin',zh:'舒復靜脈注射劑'},{en:'Sintrix',zh:'信得瑞注射劑'}],
+    vialDose:'500 mg ceftriaxone／vial（Na 3.6 mEq/g potency）',
+    usualDose:'間歇 IF 15–30 分鐘（兒童 10–30 分鐘）或深部 IM。<br>• 成人：1–2 g/day 分 1–2 次。<br>• 腦膜炎：2 g q12h（max 4 g/day）。<br>• 骨盆腔發炎（PID）：輕中度 500 mg IM 單劑＋doxycycline 100 mg PO bid ±metronidazole 500 mg PO bid × 14 天；重度 1 g IV qd＋doxycycline＋metronidazole × ≥14 天。<br>• 淋病：單純性 1 g IM 單劑；瀰漫性（DGI）1 g IV qd × 7–14 天；腦膜炎／心內膜炎 1–2 g IV qd × 10–14 天（可至 ≥4 週）。<br>• 心內膜炎預防（高風險）：術前 30–60 分鐘 1 g IV/IM。',
+    peds:'• 嬰兒及兒童：輕中度 50–75 mg/kg qd（max 1 g/day）；重度 100 mg/kg/day 分 1–2 次（max 4 g/day）。<br>• 新生兒：IM/IV 50 mg/kg q24h；淋病 25–50 mg/kg qd（max 125 mg/劑）；腦膜炎（≥14 d）80–100 mg/kg qd。',
+    maxDose:'4 g/day',
+    renal:'一般不需調整（N；肝膽＋腎雙重排除）。',
+    hepatic:'僅在肝腎功能同時嚴重受損時考慮減量（上限 2 g/day）。',
+    dialysis:'HD：常規劑量，透析後 1–2 g q24h（移除 0–5%）；PD：常規劑量，或 1 g q24h／750 mg q12h。',
+    cvvh:'常規劑量，或 2 g LD 後 1–2 g q12–24h。',
+    injection:{route:'間歇輸注 IF（或深部 IM）',reconstitute:'注射用水（W）5 mL',diluent:'NS、D5W 或 W',volume:'每瓶 50–100 mL',conc:'10–40 mg/mL',time:'≥30 分鐘（10–30 分鐘）',notes:'勿與其他含抗生素之溶液混合；不可加入含鈣溶液（如 LR、R）或由 Y 型管同時給予。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefotaxime'}], abgProxy:'cefotaxime',
     bioav:'靜脈／肌肉注射。',
     dist:'廣泛分布；CSF 穿透良好（腦膜炎首選之一）；膽汁濃度高。',
     metab:'肝膽與腎雙重排除（約 40–50% 由膽汁）。腎功能不全通常不需調整。',
     adverse:'膽汁假性結石(sludge)、腹瀉、C. difficile；少見免疫性溶血、血球低下；新生兒核黃疸／含鈣沉澱。',
     contra:'β-lactam 過敏禁用。新生兒(<28天)勿與含鈣輸液併用（沉澱）；高膽紅素新生兒禁用。可致膽汁假性結石(sludge)。',
     spectrum:'多數 Enterobacterales、Streptococcus(含肺炎鏈球菌)、N. gonorrhoeae/meningitidis。不涵蓋 Pseudomonas、腸球菌、ESBL、MRSA、厭氧(腹腔需加 metronidazole)。',
-    cov:{},
-    ntuhProducts:[{en:'Cefin',zh:'舒復靜脈注射劑'},{en:'Sintrix',zh:'信得瑞注射劑'}],
-    vialDose:'500 mg ceftriaxone／vial（Na 3.6 mEq/g potency）',
-    maxDose:'4 g/day',
-    dialysis:'HD：常規劑量，透析後 1–2 g q24h（移除 0–5%）；PD：常規劑量，或 1 g q24h／750 mg q12h。',
-    cvvh:'常規劑量，或 2 g LD 後 1–2 g q12–24h。',
-    preg:'B',
-    abg:[{sec:'gram_negative',col:'cefotaxime'}], abgProxy:'cefotaxime'},
+    cov:{}},
 
   cefotaxime:{name:'Cefotaxime',zh:'頭孢噻肟',brands:['Claforan'],cls:'3rd cephalosporin',
-    dose:'1–2 g IV q8h；腦膜炎／重症 2 g q4–6h。',
-    renal:[{k:'>20',v:'不需調整'},{k:'≤20',v:'劑量減半'}],
-    peds:'150–200 mg/kg/day 分 q6–8h；腦膜炎 200–300 mg/kg/day 分 q6h。',
+    ntuhProducts:[{en:'Claforan',zh:'可活能注射劑'}],
+    vialDose:'500 mg cefotaxime／vial（Na 2.1 mEq/g potency）',
+    usualDose:'IV push 3–5 分鐘、間歇 IF 20–30 分鐘、持續 IF 或深部 IM。<br>• 成人及 ≥50 kg 兒童：單純感染 1 g q12h；中重度 1–2 g q8h（至 2 g q4–6h，max 12 g/day）。',
+    peds:'• 兒童 1 個月–18 歲：輕中度 100–200 mg/kg/day 分 q4–8h（max 6 g/day）；重度 200–225 mg/kg/day 分 q4–6h（至 300 mg/kg/day）。<br>• 腦膜炎：225–300 mg/kg/day 分 q6–8h。<br>• 新生兒：≤14 d 50 mg/kg q12h；>14 d 50 mg/kg q8h。',
+    maxDose:'成人及 ≥50 kg 兒童 12 g/day；兒童 6 g/day（輕中度）',
+    renal:[{k:'GFR 10–50',v:'q6–12h'},{k:'GFR <10',v:'50% 劑量 或 q24h'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：透析日透析後 1–2 g qd（移除 62%，透析後補 1 g）；PD（CAPD）：1 g qd。',
+    cvvh:'2 g q8h（CVVH／CVVHD／CVVHDF 相同）。',
+    injection:{route:'間歇輸注 IF（或 IV push、深部 IM）',reconstitute:'注射用水（W）2 mL（IV push）或 10 mL',diluent:'W、NS、D5W 或 LR',volume:'每劑 40 mL（持續輸注可至 1000 mL）',time:'20–60 分鐘',notes:'快速 IV 偶致心律不整；2 g IM 須分不同部位注射；避光。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefotaxime'},{sec:'gram_positive',col:'cefotaxime'}],
     bioav:'靜脈／肌肉注射。',
     dist:'CSF 穿透良好（新生兒腦膜炎常用，無 ceftriaxone 之膽紅素／含鈣顧慮）；組織分布廣。',
     metab:'部分經肝代謝為活性 desacetyl 代謝物，其餘經腎。',
@@ -334,9 +389,18 @@ const DRUGS = {
     spectrum:'同 ceftriaxone：多數 Enterobacterales、Streptococcus、Neisseria。不涵蓋 Pseudomonas、腸球菌、ESBL、MRSA、厭氧。'},
 
   ceftazidime:{name:'Ceftazidime',zh:'頭孢他啶',brands:['Fortum'],cls:'3rd cephalosporin',
-    dose:'2 g IV q8h。',
-    renal:[{k:'>50',v:'2 g q8h'},{k:'30–50',v:'2 g q12h'},{k:'15–30',v:'2 g q24h'},{k:'<15',v:'進一步減量'}],
-    peds:'50 mg/kg IV q8h（max 2 g/劑）。',
+    ntuhProducts:[{en:'Tatumcef',zh:'祐坦賜福乾粉注射劑'}],
+    vialDose:'500 mg ceftazidime ＋ 59 mg Na2CO3／vial（Na 2.3 mEq/g potency）',
+    usualDose:'IV push 3–5 分鐘、間歇 IF 15–30 分鐘、延長輸注 3–4 hr、持續輸注或深部 IM。<br>• 成人：腦膜炎、菌血症、腹腔內感染、嗜中性球低下發燒、骨髓炎、肺炎、化膿性關節炎、膿瘍、皮膚軟組織感染：2 g q8h（max 12 g/day）。<br>• 複雜性 UTI：1–2 g q8h（max 12 g/day）。',
+    peds:'• 兒童：輕中度、複雜性腹腔內感染 30–50 mg/kg q8h（max 6 g/day）；重度、腦膜炎 200–300 mg/kg/day 分 q6–8h（max 12 g/day）。<br>• 新生兒：≤14 d 50 mg/kg q12h。',
+    maxDose:'12 g/day',
+    renal:[{k:'CCr 31–50',v:'常規劑量 q12h'},{k:'CCr 16–30',v:'常規劑量 q24h'},{k:'CCr 6–15',v:'50% 劑量 q24h'},{k:'CCr <6',v:'50% 劑量 q48h'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：0.5–1 g q24h 或 1–2 g q48–72h；或 1 g loading 後每次透析後 1 g（移除 50–100%）；PD：1 g q24h。',
+    cvvh:'LD 2 g，之後 1 g q6h（CVVH／CVVHD／CVVHDF 相同）。',
+    injection:{route:'間歇輸注 IF（或深部 IM）',reconstitute:'注射用水（W）10 mL（分兩次加入）',diluent:'D5W、NS 或 W',volume:'每瓶 25–50 mL；每劑 100 mL',conc:'10–40 mg/mL',time:'15–30 分鐘',notes:'如起泡靜置 1–2 分鐘；勿用 sodium bicarbonate 當稀釋液；勿與 aminoglycosides 同針筒混合；與 vancomycin 會沉澱，前後須沖洗針筒。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'ceftazidime'}],
     bioav:'靜脈／肌肉注射。',
     dist:'組織分布佳；CSF 穿透良好（腦膜發炎時）。',
     metab:'幾乎完全經腎排除。',
@@ -346,9 +410,16 @@ const DRUGS = {
     cov:{pseudo:1}},
 
   cefixime:{name:'Cefixime',zh:'頭孢克肟',brands:['Cefspan','Suprax'],cls:'3rd cephalosporin',
-    dose:'400 mg PO q24h 或分 q12h。',
-    renal:[{k:'>60',v:'不需調整'},{k:'21–60',v:'減量約 25%'},{k:'≤20',v:'減量約 50%'}],
-    peds:'8 mg/kg/day 分 q12–24h。',
+    ntuhProducts:[{en:'Cefixmycin',zh:'喜復黴素膠囊'},{en:'Cexime',zh:'賜信膠囊'}],
+    vialDose:'膠囊 100 mg／cap',
+    usualDose:'口服。<br>• 成人及 >45 kg 兒童：400 mg/day 分 1–2 次。',
+    peds:'≤45 kg 兒童：8 mg/kg/day 分 q12–24h（max 400 mg/day）。',
+    maxDose:'400 mg/day',
+    renal:[{k:'CCr 21–59',v:'75% 劑量（300 mg/day）'},{k:'CCr ≤20',v:'50% 劑量（200 mg/day）'}],
+    hepatic:'無資料。',
+    dialysis:'HD：75% 劑量（300 mg/day），HD 不顯著移除（≈10%）；PD（CAPD）：50% 劑量（200 mg/day）。',
+    preg:'B',
+    abg:[{sec:'haemophilus',col:'cefixime'}],
     bioav:'口服約 40–50%，不受食物顯著影響。',
     dist:'尿路濃度高、膽汁分布；CSF 穿透差。',
     metab:'部分經腎、部分經膽汁排除。',
@@ -357,9 +428,18 @@ const DRUGS = {
     spectrum:'Enterobacterales、Streptococcus、H. influenzae、N. gonorrhoeae。門診 UTI、淋病、呼吸道。對 S. aureus 弱；不涵蓋 Pseudomonas、腸球菌、厭氧。'},
 
   cefepime:{name:'Cefepime',zh:'頭孢吡肟',brands:['Maxipime'],cls:'4th cephalosporin',
-    dose:'1–2 g IV q8–12h；中性球低下／Pseudomonas 2 g q8h。腦膜炎 2 g q8h。',
-    renal:[{k:'>60',v:'依適應症 1–2 g q8–12h'},{k:'30–60',v:'延長至 q12–24h'},{k:'11–29',v:'進一步減量'},{k:'≤10',v:'大幅減量，注意神經毒性'}],
-    peds:'50 mg/kg IV q8–12h（max 2 g/劑）。',
+    ntuhProducts:[{en:'Supecef',zh:'斯沛服乾粉注射劑'}],
+    vialDose:'500 mg cefepime／vial',
+    usualDose:'間歇 IF 30 分鐘或深部 IM（僅限輕中度 UTI）。<br>• UTI：輕中度 0.5–1 g q12h；中重度 2 g q12h。<br>• 肺炎：1–2 g q12h，院內感染至 2 g q8h。<br>• 皮膚／皮下組織感染、複雜性腹腔感染：2 g q12h。<br>• 其他重症（腦膜炎、嗜中性球低下發燒）：2 g q8h。',
+    peds:'• 兒童 1 個月–16 歲：50 mg/kg q12h；嗜中性球低下發燒 50 mg/kg q8h（max 2 g/劑）。<br>• 新生兒：30 mg/kg q12h（至 50 mg/kg q12h）；腦膜炎／綠膿感染 50 mg/kg q8h。',
+    maxDose:'2 g/劑',
+    renal:[{k:'CCr >60',v:'常規劑量（依適應症 0.5–2 g q12h、重症 2 g q8h）'},{k:'CCr 30–60',v:'常規劑量 q24h；重症 2 g q12h'},{k:'CCr 11–29',v:'500 mg–1 g q24h；重症 2 g q24h'},{k:'CCr ≤10',v:'250–500 mg q24h；重症 1 g q24h'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：第 1 天 1 g，之後 500 mg–1 g qd，透析日透析後同一時間給藥；PD：常規劑量 q48h。',
+    cvvh:'LD 2 g，之後 1 g q6h（CVVH／CVVHD／CVVHDF 相同）。',
+    injection:{route:'間歇輸注 IF 30 分鐘（或深部 IM，僅限輕中度 UTI）',reconstitute:'注射用水、D5W 或 NS 5 mL',diluent:'NS 或 D5W',conc:'1–40 mg/mL',time:'30 分鐘',notes:'與 metronidazole、vancomycin、gentamicin、tobramycin、netilmicin 不相容；避光。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'cefepime'}],
     bioav:'靜脈注射。',
     dist:'組織分布廣；CSF 穿透良好（腦膜發炎時）。',
     metab:'主要經腎排除（約 85% 原型）。需依腎功能調整。',
@@ -369,14 +449,20 @@ const DRUGS = {
     cov:{pseudo:1}},
 
   ceftaroline:{name:'Ceftaroline',zh:'頭孢洛林',brands:['Zinforo'],cls:'5th cephalosporin',
-    dose:'600 mg IV q12h；重症／MRSA 菌血症可 q8h。',
-    renal:[{k:'>50',v:'600 mg q12h'},{k:'30–50',v:'400 mg q12h'},{k:'15–30',v:'300 mg q12h'},{k:'<15／HD',v:'200 mg q12h（透析後給）'}],
-    peds:'≥2 月核准；2月–<2歲 8 mg/kg q8h、≥2歲 12 mg/kg q8h(max 400–600 mg)。',
+    ntuhProducts:[{en:'Zinforo',zh:'捷復寧注射劑'}],
+    vialDose:'600 mg／vial',
+    usualDose:'間歇 IF。<br>• 皮膚及皮膚結構感染、社區型肺炎（CAP）：600 mg q12h；MRSA 高 MIC 可至 600 mg q8h。',
+    peds:'• >33 kg 兒童：400 mg q8h 或 600 mg q12h（MRSA 高 MIC 至 600 mg q8h）。<br>• ≥2 歲且 ≤33 kg：12 mg/kg q8h（MRSA 高 MIC 15 mg/kg q8h）。<br>• ≥2 個月至 <2 歲：6 mg/kg q8h（max 18 mg/kg/day）。',
+    renal:[{k:'CCr 30–50',v:'600 mg q12h→400 mg q12h；600 mg q8h→400 mg q8h'},{k:'CCr 15–30',v:'→300 mg（同頻次）'},{k:'CCr <15',v:'1/3 劑量（高 MIC 用 2/3 劑量 q12h）'}],
+    hepatic:'無資料。',
+    dialysis:'HD：600 mg q12h→200 mg q12h；600 mg q8h→200 mg q8h 或 300 mg q12h，透析日透析後給藥（移除 21.6%）。',
+    cvvh:'600 mg q12h→400 mg q12h；600 mg q8h→400 mg q8h（高流量透析器、流速 20–25 mL/kg/hr）。',
+    injection:{route:'間歇輸注 IF',reconstitute:'注射用水 20 mL',diluent:'NS、D5W、GS 或 LR',volume:'每瓶／每劑 50–250 mL',conc:'≤ 12 mg/mL',time:'30–120 分鐘',notes:'溶解後應立即稀釋，剩餘藥品應稀釋後再保存；避光；室溫 6 hr、2–8°C 24 hr。'},
     bioav:'靜脈注射（前驅藥 ceftaroline fosamil）。',
     dist:'組織／皮膚分布佳；CSF 穿透有限。',
     metab:'主要經腎排除。',
     adverse:'皮疹、腹瀉、Coombs 陽性；少見嗜中性球低下。',
-    contra:'β-lactam 過敏。',
+    contra:'β-lactam 過敏。懷孕分級：動物試驗未見致畸胎（台大未列 A–X 分級）。',
     spectrum:'唯一覆蓋 MRSA 的 cephalosporin；MSSA、Streptococcus、部分 Enterobacterales。不涵蓋 Pseudomonas、ESBL、E. faecium、厭氧。',
     cov:{mrsa:1}},
 
@@ -393,14 +479,20 @@ const DRUGS = {
     cov:{mrsa:1,pseudo:1,enterococcus:1}},
 
   cefiderocol:{name:'Cefiderocol',zh:'頭孢地爾',brands:['Fetroja'],cls:'Siderophore cephalosporin',
-    dose:'2 g IV q8h（輸注 3 小時）。',
-    renal:[{k:'60–119',v:'2 g q8h'},{k:'≥120(高清除)',v:'2 g q6h'},{k:'30–59',v:'1.5 g q8h'},{k:'15–29',v:'1 g q8h'},{k:'<15／HD',v:'0.75 g q12h（透析後給）'}],
+    ntuhProducts:[{en:'Fetroja',zh:'伏驖佳注射劑'}],
+    vialDose:'1000 mg／vial（Na 7.7 mEq/g potency）',
+    usualDose:'間歇 IF 3 小時。<br>• 成人：2000 mg q8h（CCr ≥120 mL/min 高清除者 2000 mg q6h）。',
     peds:'兒科資料有限。',
+    maxDose:'2000 mg q8h（高清除者 q6h）',
+    renal:[{k:'CCr ≥120',v:'2000 mg q6h'},{k:'CCr 60–119',v:'2000 mg q8h'},{k:'CCr 30–59',v:'1500 mg q8h'},{k:'CCr 15–29',v:'1000 mg q8h'},{k:'CCr <15',v:'750 mg q12h'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：750 mg q12h，透析日透析後給藥（移除 60%）。',
+    injection:{route:'間歇輸注 IF',reconstitute:'NS 或 D5W 10 mL（每瓶溶解後總體積 11.2 mL；1000 mg 抽 11.2 mL、750 mg 抽 8.4 mL、500 mg 抽 5.6 mL）',diluent:'NS 或 D5W',volume:'每劑 100 mL',conc:'7.5–62.5 mg/mL',time:'180 分鐘（3 小時）',notes:'溶解後 60 分鐘內稀釋；冷藏避光，使用前回溫，25°C 下 6 小時內輸畢。'},
     bioav:'靜脈注射。',
     dist:'組織分布；經鐵載體主動運輸進入 Gram 陰性菌。',
     metab:'主要經腎排除。',
     adverse:'腹瀉、輸注反應、肝酵素上升；重症 GNB 感染死亡率議題需監測。',
-    contra:'β-lactam 過敏。屬 MDR 保留用藥，需感染科／抗生素管理審核。',
+    contra:'β-lactam 過敏。屬 MDR 保留用藥，需感染科／抗生素管理審核。懷孕：胎兒風險無法排除（台大未列 A–X 分級）。',
     spectrum:'廣效抗 MDR/XDR Gram 陰性菌：CRE(含金屬 β-lactamase NDM)、MDR Pseudomonas、Acinetobacter、Stenotrophomonas。不涵蓋 Gram 陽性／厭氧。',
     cov:{pseudo:1,esbl:1}},
 
@@ -466,9 +558,17 @@ const DRUGS = {
     cov:{anaerobe:1,esbl:1}},
 
   ampsulbactam:{name:'Ampicillin-Sulbactam',zh:'安比西林/舒巴坦',brands:['Unasyn'],cls:'Aminopenicillin/BLI',
-    dose:'3 g IV q6h。',
-    renal:[{k:'≥30',v:'3 g q6h'},{k:'15–29',v:'3 g q12h'},{k:'<15',v:'3 g q24h'}],
-    peds:'100–200 mg/kg/day（ampicillin）分 q6h（max 8 g ampicillin/day）。',
+    ntuhProducts:[{en:'Unasyn',zh:'優耐迅肌肉/靜脈注射劑'}],
+    vialDose:'ampicillin 1000 mg ＋ sulbactam 500 mg／vial（Na 5.0 mEq/vial）',
+    usualDose:'以 ampicillin 含量計。緩慢 IV ≥10–15 分鐘、間歇 IF 15–30 分鐘或深部 IM。<br>• 成人及 ≥40 kg 兒童：1–2 g（ampicillin）q6–8h。<br>• CRAB 高劑量 sulbactam（6–9 g sulbactam/day，off-label）：2 g ampicillin／1 g sulbactam q4h（IF 30 分鐘）、或 6 g／3 g q8h（IF 4 hr）、或 18 g／9 g 連續輸注。',
+    peds:'新生兒：100–150 mg/kg/day 分 q8–12h（以 ampicillin 計）。',
+    renal:[{k:'CCr ≥30',v:'1–2 g ampicillin q6–8h'},{k:'CCr 15–29',v:'1–2 g ampicillin q12h'},{k:'CCr <15',v:'1–2 g ampicillin q24h'},{k:'備註（高劑量 CRAB）',v:'CCr 30–59：2/3 每日量、減少頻次。'}],
+    hepatic:'無資料（慢性肝病 ampicillin 2–6 g/day 尚安全）。',
+    dialysis:'HD：1–2 g ampicillin q12–24h，透析後給藥（或每日量 1/3 分 q12–24h）；PD：2 g ampicillin q24h。',
+    cvvh:'LD 2 g ampicillin，之後 2 g q8h（高劑量者用 2/3 每日量、減少頻次）。',
+    injection:{route:'間歇輸注 IF（或緩慢 IV、IM）',reconstitute:'注射用水（W）3.2 mL；IM 可用 0.5–2% lidocaine',diluent:'NS',time:'IV ≥3 分鐘或 10–15 分鐘',notes:'靜脈輸注過快可能導致癲癇。'},
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'SAM'},{sec:'anaerobic',col:'SAM'}],
     bioav:'靜脈注射。',
     dist:'組織、腹腔分布佳；CSF 穿透差（發炎時略增）。',
     metab:'主要經腎排除。',
@@ -478,9 +578,16 @@ const DRUGS = {
     cov:{anaerobe:1,enterococcus:1}},
 
   amoxclav:{name:'Amoxicillin-Clavulanate',zh:'安莫西林/克拉維酸',brands:['Augmentin','Curam'],cls:'Aminopenicillin/BLI',
-    dose:'875/125 mg PO q12h 或 500/125 mg PO q8h。',
-    renal:[{k:'>30',v:'不需調整'},{k:'10–30',v:'500/125 q12h'},{k:'<10',v:'500/125 q24h（避免 875 mg 劑型）'}],
-    peds:'25–45 mg/kg/day（amoxicillin）分 q12h PO。',
+    ntuhProducts:[{en:'Curam',zh:'諾快寧膜衣錠（1000 mg/錠）'},{en:'Augmentin',zh:'安滅菌糖漿用粉劑'}],
+    vialDose:'Curam 膜衣錠 1000 mg／錠（amoxicillin 875 mg ＋ clavulanate 125 mg）；Augmentin 糖漿 80 mg amoxicillin/mL',
+    usualDose:'口服，以 amoxicillin 含量計。<br>• 成人及 ≥40 kg 兒童（Curam 膜衣錠）：1 錠 q12h。<br>• UTI：875 mg q12h 或 500 mg q8h。<br>• CAP、急性細菌性鼻竇炎、急性中耳炎（Augmentin 糖漿）：高劑量 80–100 mg/kg/day 分 2 次（max 4 g amoxicillin/day）；標準劑量（僅限感受性肺炎鏈球菌）45–60 mg/kg/day 分 3 次。',
+    peds:'≥2 個月、<40 kg 兒童：20–50 mg/kg/day 分 q8–12h（以 amoxicillin 計）。',
+    maxDose:'4 g amoxicillin/day',
+    renal:[{k:'CCr 10–30',v:'250–500 mg Amo／125 mg Cla q12h'},{k:'CCr <10',v:'250–500 mg Amo／125 mg Cla q24h（避免 875 mg 劑型）'}],
+    hepatic:'謹慎使用；長期使用監測肝功能。',
+    dialysis:'HD：250–500 mg amoxicillin／125 mg clavulanate q24h，透析中與透析後各補一劑（移除 20–50%）；PD：250 mg q12h。',
+    preg:'B',
+    abg:[{sec:'gram_negative',col:'SAM'},{sec:'anaerobic',col:'SAM'}], abgProxy:'ampicillin-sulbactam（同類 BLI）',
     bioav:'口服 amoxicillin 約 90%；隨餐服用減少腸胃不適。',
     dist:'呼吸道、中耳、皮膚分布佳；CSF 穿透差。',
     metab:'主要經腎排除。',
@@ -562,9 +669,17 @@ const DRUGS = {
     cov:{mrsa:1,enterococcus:1}},
 
   ciprofloxacin:{name:'Ciprofloxacin',zh:'環丙沙星',brands:['Ciproxin','Cipro'],cls:'Fluoroquinolone',
-    dose:'400 mg IV q8–12h／500–750 mg PO q12h。',
-    renal:[{k:'>50',v:'不需調整'},{k:'30–50',v:'PO 250–500 q12h'},{k:'<30',v:'IV 400 q24h／PO 250–500 q18–24h'}],
-    peds:'限特定適應症（軟骨疑慮）；10 mg/kg IV q8–12h（max 400 mg/劑）。',
+    ntuhProducts:[{en:'Cinolone',zh:'信諾隆膜衣錠（口服）'},{en:'',zh:'速博新靜脈輸液'}],
+    vialDose:'口服 250 mg／錠（信諾隆）；注射 速博新靜脈輸液',
+    usualDose:'口服（注射 400 mg 約相當於口服 500–750 mg）。<br>• 輕中度：500 mg q12h × 7–14 天。<br>• 重度／複雜性：750 mg q12h × 7–14 天。<br>• 單純性 UTI：250 mg q12h × 3 天。<br>• 複雜性 UTI／腎盂腎炎：500 mg q12h。<br>• 注射：400 mg IV q8–12h。',
+    peds:'兒童：20–40 mg/kg/day 分 q8–12h（max 1.5 g/day）；限特定適應症（軟骨疑慮）。',
+    maxDose:'兒童 1.5 g/day',
+    renal:[{k:'CCr 30–50',v:'250–500 mg q12h'},{k:'CCr 5–29',v:'500 mg qd'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：250–500 mg q24h，透析後給藥（移除 2–30%）；PD：250–500 mg q24h。',
+    injection:{route:'間歇輸注 IF',diluent:'NS 或 D5W（速博新為即用輸液）',time:'60 分鐘',notes:'避免與含陽離子（鈣／鐵／鎂／鋅）制酸劑、乳製品同服（螯合降低口服吸收）；快速輸注可能低血壓。'},
+    preg:'C',
+    abg:[{sec:'gram_negative',col:'ciprofloxacin'},{sec:'gram_positive',col:'ciprofloxacin'}],
     bioav:'口服約 70%；避免與鈣／鐵／鎂／鋅、制酸劑、乳製品同服（螯合降低吸收）。',
     dist:'組織／前列腺／骨／尿路穿透佳；CSF 中等。',
     metab:'肝(抑制 CYP1A2)與腎排除。',
@@ -574,9 +689,17 @@ const DRUGS = {
     cov:{pseudo:1,atypical:1}},
 
   levofloxacin:{name:'Levofloxacin',zh:'左氧氟沙星',brands:['Cravit'],cls:'Fluoroquinolone',
-    dose:'750 mg IV／PO q24h（呼吸道、Pseudomonas）；UTI 250–500 mg q24h。',
-    renal:[{k:'>50',v:'750 mg q24h'},{k:'20–49',v:'750 mg q48h（或 500 首劑後 250 q24h）'},{k:'<20',v:'進一步減量'}],
-    peds:'限特定適應症；<5歲 10 mg/kg q12h、≥5歲 10 mg/kg q24h（max 500–750 mg）。',
+    ntuhProducts:[{en:'Cravit',zh:'可樂必妥靜脈輸液／膜衣錠'},{en:'',zh:'佐淨菌／雷弗欣／樂富妥膜衣錠'}],
+    vialDose:'注射 250 mg/50 mL／vial（Na 7.8 mEq）；口服膜衣錠',
+    usualDose:'間歇 IF（250–500 mg ≥60 分鐘、750 mg ≥90 分鐘）；口服＝靜脈等效。<br>• 院內肺炎（HAP）：750 mg qd。<br>• 急性細菌性鼻竇炎、社區型肺炎（CAP）：750 mg qd × 5 天 或 500 mg qd × 7–14 天。<br>• 慢性支氣管炎急性惡化、慢性細菌性攝護腺炎、旅行者腹瀉：500 mg qd。<br>• 皮膚感染（非 S. aureus）：單純 500 mg qd × 7–10 天；複雜 750 mg qd × 7–14 天。<br>• UTI：單純 250 mg qd × 3 天；複雜／腎盂腎炎 250 mg qd × 10 天 或 750 mg qd × 5 天。<br>• 結核：500–1000 mg qd。',
+    peds:'限特定適應症；依體重年齡個別化。',
+    renal:[{k:'CCr 20–49',v:'750 mg qd→750 mg q48h；500 mg qd→LD 500 mg 後 250 mg qd'},{k:'CCr 10–19',v:'750 mg qd→LD 750 mg 後 500 mg q48h；500 mg qd→LD 500 mg 後 250 mg q48h；250 mg qd→250 mg q48h'}],
+    hepatic:'無須調整（N）。',
+    dialysis:'HD：750 mg LD 後 500 mg q48h，或 500 mg LD 後 250 mg q48h（透析日透析後給藥，不另補充）；PD 同 HD。',
+    cvvh:'750 mg LD，之後 CVVH 250 mg q24h、CVVHD／CVVHDF 250–500 mg q24h。',
+    injection:{route:'間歇輸注 IF',diluent:'即用型，或以 NS、D5W 稀釋 ≤5 mg/mL',time:'250 mg ≥30 分鐘、500 mg ≥60 分鐘、750 mg ≥90 分鐘',notes:'輸注時不須避光；快速輸注／推注可能低血壓；橡皮塞穿刺後 3 小時內使用。'},
+    preg:'C',
+    abg:[{sec:'gram_negative',col:'levofloxacin'},{sec:'gram_positive',col:'levofloxacin'}],
     bioav:'口服約 99%（IV＝PO）；避免陽離子同服。',
     dist:'肺／組織／尿路穿透佳。',
     metab:'主要經腎排除。',
@@ -586,10 +709,17 @@ const DRUGS = {
     cov:{pseudo:1,atypical:1}},
 
   moxifloxacin:{name:'Moxifloxacin',zh:'莫西沙星',brands:['Avelox'],cls:'Fluoroquinolone',
-    dose:'400 mg IV／PO q24h。',
-    renal:'不需調整；尿中濃度低，不宜用於 UTI',
-    hepatic:'嚴重肝功能不全(Child C)資料有限，慎用。',
-    peds:'兒科資料有限、一般不建議常規使用。',
+    ntuhProducts:[{en:'Avelox',zh:'威洛速靜脈輸注液／膜衣錠'},{en:'',zh:'福樂星／摩克星膜衣錠'}],
+    vialDose:'注射 400 mg/250 mL／瓶；口服膜衣錠',
+    usualDose:'間歇 IF 60 分鐘；口服＝靜脈等效。<br>• 成人及 ≥45 kg 青少年：一般（FDA 適應症）400 mg qd。<br>• 活動性結核：400 mg qd。',
+    peds:'兒童 ≥3 個月至 <2 歲：6 mg/kg q12h（兒科資料有限、一般不建議常規使用）。',
+    renal:'無須調整（N）；尿中濃度低，不宜用於 UTI。',
+    hepatic:'輕中度肝功能不全（Child-Pugh A/B/C）無須調整，但因 QT 延長風險須謹慎使用。',
+    dialysis:'HD／PD 皆無須調整（HD 移除 ~9%、PD ~2%）。',
+    cvvh:'無須調整（N）。',
+    injection:{route:'間歇輸注 IF',diluent:'即用型，或以 NS、D5W、LR 稀釋',time:'60 分鐘',notes:'請勿冷藏或冷凍；室溫溶解後安定 24 hr。'},
+    preg:'C',
+    abg:[{sec:'gram_positive',col:'moxifloxacin'}],
     bioav:'口服約 90%（IV＝PO）。',
     dist:'肺／組織穿透佳；尿中濃度低。',
     metab:'主要經肝代謝(glucuronide／sulfate)。',
@@ -770,9 +900,16 @@ const DRUGS = {
     cov:{pseudo:1}},
 
   penG:{name:'Penicillin G',zh:'青黴素 G／盤尼西林',brands:['Penicillin G'],cls:'Penicillin',
-    dose:'心內膜炎 18–24 百萬 U/day IV（連續輸注或分 q4h）；一般感染 2–4 百萬 U q4–6h。',
-    renal:[{k:'>10',v:'不需調整'},{k:'≤10',v:'降低劑量或延長間隔'}],
-    peds:'250,000–400,000 U/kg/day IV 分 q4–6h（腦膜炎用高劑量端）。',
+    ntuhProducts:[{en:'',zh:'青黴素鈉注射液用粉（水溶性，靜脈）'},{en:'Bicillin L-A',zh:'必希寧注射劑（Benzathine，肌肉長效）'}],
+    vialDose:'水溶性 Pen G Sodium 3 MU／vial（Na 2.0 mEq/MU）；Benzathine 2.4 MU／4 mL',
+    usualDose:'【水溶性 Pen G Sodium，靜脈】<br>• 一般感染：0.5–1 MU q4–6h 或 1–2 MU q8–12h。<br>• 重症、神經性梅毒、心內膜炎：2 MU q4–6h（心內膜炎 18–24 MU/day，連續輸注或分 q4h）。<br>【Benzathine，深部肌肉、長效】<br>• 梅毒：早期（初期／二期／早期潛伏）2.4 MU 單劑；晚期潛伏／神經性 2.4 MU 每週 × 3。<br>• 風濕熱復發預防：1.2 MU q3–4 週 或 0.6 MU q2 週。<br>• 鏈球菌咽炎：1.2 MU 單劑（≤27 kg 兒童 0.6 MU）。',
+    peds:'• 水溶性：250,000–400,000 U/kg/day IV 分 q4–6h（腦膜炎用高劑量端）。<br>• Benzathine：0.05 MU/kg（梅毒／鏈球菌，依適應症單劑或每週 × 3）。',
+    renal:[{k:'CCr 10–50',v:'LD 全量，之後 50% 劑量 q4–5h'},{k:'CCr <10',v:'LD 全量，之後 50% 劑量 q8–10h'}],
+    hepatic:'無資料。',
+    dialysis:'HD：透析日透析後給藥，或透析後補 0.5 MU；PD（CAPD）：常規劑量 20–50% q6h。',
+    injection:{route:'水溶性：間歇輸注 IF；Benzathine：僅限深部肌肉（不可靜脈）',reconstitute:'注射用水、D5W 或 NS',diluent:'D5W 或 NS',conc:'成人 0.05–0.145 MU/mL',notes:'Benzathine 為懸浮液，僅可深部 IM、絕不可靜脈注射；高劑量腎衰可致癲癇；梅毒治療可見 Jarisch-Herxheimer 反應。'},
+    preg:'B',
+    abg:[{sec:'gram_positive',col:'penicillin'}],
     bioav:'靜脈注射（Pen G 口服不耐胃酸）。',
     dist:'廣泛分布；CSF 穿透隨腦膜發炎增加。',
     metab:'主要經腎排除。',
@@ -782,9 +919,18 @@ const DRUGS = {
     cov:{enterococcus:1}},
 
   ampicillin:{name:'Ampicillin',zh:'安比西林',brands:['Viccillin','Ampicillin'],cls:'Aminopenicillin',
-    dose:'2 g IV q4h（腦膜炎／腸球菌心內膜炎）；一般 1–2 g q6h。',
-    renal:[{k:'>30',v:'不需調整'},{k:'10–30',v:'延長至 q6–8h'},{k:'<10',v:'q12h'}],
-    peds:'200–400 mg/kg/day IV 分 q6h（腦膜炎用高劑量端，max 12 g/day）。',
+    ntuhProducts:[{en:'Ampolin',zh:'安博黴素注射劑'}],
+    vialDose:'500 mg ampicillin／vial（Na 2.9–3.1 mEq/g potency）',
+    usualDose:'緩慢 IV 10–15 分鐘、間歇 IF 或 IM（max 12 g/day）。<br>• UTI：IV/IM 500–2000 mg q4–6h。<br>• 菌血症、腦膜炎、感染性心內膜炎、骨髓炎：IV 2000 mg q4–6h。<br>• 心內膜炎預防：術前 30–60 分鐘 2000 mg IV/IM。<br>• B 群鏈球菌產婦產程預防：IV 起始 2000 mg，之後 1000 mg q4h 至生產。',
+    peds:'兒童：輕中度 100–200 mg/kg/day 分 q6h；重度 200–400 mg/kg/day 分 q6h（max 12 g/day）。',
+    maxDose:'12 g/day',
+    renal:[{k:'CCr >50',v:'q6h'},{k:'CCr 10–50',v:'q6–12h'},{k:'CCr <10',v:'q12–24h'}],
+    hepatic:'無資料。',
+    dialysis:'HD：1–2 g q12–24h，透析日透析後給藥（移除 20–50%）；PD：250–2000 mg q12h。',
+    cvvh:'LD 2 g，之後 2 g q8h（CVVHDF 可 q6–8h）。',
+    injection:{route:'間歇輸注 IF（或緩慢 IV、IM）',reconstitute:'注射用水（W）5 mL',diluent:'NS、D5W 或 LR',conc:'≤30 mg/mL',notes:'不可與 aminoglycosides 混合；以 D5W 稀釋穩定度較低；靜脈輸注過快可能引起癲癇。'},
+    preg:'B',
+    abg:[{sec:'gram_positive',col:'ampicillin'},{sec:'haemophilus',col:'ampicillin'}],
     bioav:'靜脈注射（口服吸收不如 amoxicillin）。',
     dist:'CSF 穿透良好(發炎時)；組織分布廣。',
     metab:'主要經腎排除。',
@@ -793,17 +939,42 @@ const DRUGS = {
     spectrum:'Enterococcus faecalis、Listeria monocytogenes、鏈球菌、感受性 E. coli／Proteus。腦膜炎覆蓋 Listeria、腸球菌感染核心用藥。',
     cov:{enterococcus:1}},
 
-  nafcillin:{name:'Nafcillin／Oxacillin',zh:'那夫西林／苯唑西林',brands:['Oxacillin (台灣常用)'],cls:'Penicillinase-resistant penicillin',
-    dose:'2 g IV q4h（MSSA 菌血症／心內膜炎／骨感染）。',
-    renal:'不需調整（主要經肝膽排除）',
+  nafcillin:{name:'Oxacillin',zh:'苯唑西林',brands:['Oxacillin'],cls:'Penicillinase-resistant penicillin',
+    ntuhProducts:[{en:'Ocillina',zh:'歐西林鈉乾粉注射劑'}],
+    vialDose:'500 mg oxacillin／vial（Na 2.8 mEq/g potency）',
+    usualDose:'IV（100 mg/mL）10 分鐘、間歇或持續 IF、或深部 IM（max 12 g/day）。<br>• 輕中度：250–500 mg q4–6h。<br>• 重度：1 g q4–6h。<br>• 骨髓炎：1.5–2 g q4–6h。<br>• 心內膜炎、腦膜炎或導管相關血流感染：IV 2 g q4h × 4–6 週。',
+    peds:'• 兒童（max 12 g/day）：輕中度 100–150 mg/kg/day 分 q6h；重度 150–200 mg/kg/day 分 q4–6h；心內膜炎／腦膜炎／壞死性感染 200 mg/kg/day 分 q4–6h。<br>• 新生兒（非腦膜炎）：25 mg/kg 依體重日齡 q6–12h；腦膜炎：50 mg/kg 依體重日齡 q6–12h。',
+    maxDose:'12 g/day',
+    renal:'無須調整（N；主要經肝膽排除）。',
     hepatic:'主要經肝膽排除；嚴重肝病合併腎衰時需減量。',
-    peds:'100–150 mg/kg/day 分 q6h（重症 200 mg/kg/day）。',
+    dialysis:'HD／PD 皆無須調整（不被透析移除，移除 0–5%）。',
+    injection:{route:'持續／間歇輸注 IF（或深部 IM）',reconstitute:'注射用水或 NS 5 mL',diluent:'NS、D5W、LR 或 D5S',conc:'0.5–40 mg/mL',notes:'不可與 aminoglycosides、tetracycline 混合；靜脈注射 >10 分鐘以減少靜脈刺激，老人注意 thrombophlebitis。'},
+    preg:'B',
+    abg:[{sec:'gram_positive',col:'oxacillin'}],
     bioav:'靜脈注射。',
     dist:'骨、關節、軟組織分布佳；CSF 穿透隨發炎增加。',
     metab:'主要經肝膽排除。',
     adverse:'藥物性間質性腎炎、靜脈炎、外滲組織壞死、嗜中性球低下(長期)、肝酵素上升。',
     contra:'penicillin 過敏禁用。靜脈炎、藥物性間質性腎炎、外滲組織壞死。',
-    spectrum:'MSSA 首選（菌血症／心內膜炎／骨關節）。不涵蓋 MRSA、腸球菌、GNB、厭氧。台灣多以 oxacillin 或 cefazolin 替代。'},
+    spectrum:'MSSA 首選（菌血症／心內膜炎／骨關節）。不涵蓋 MRSA、腸球菌、GNB、厭氧。台灣無 nafcillin，以 oxacillin 為抗葡萄球菌 penicillin；口服可用 dicloxacillin。'},
+
+  dicloxacillin:{name:'Dicloxacillin',zh:'雙氯西林',brands:['Diclocil'],cls:'Penicillinase-resistant penicillin(口服)',
+    ntuhProducts:[{en:'Ziefmycin',zh:'奇福黴素膠囊（暫時缺貨）'}],
+    vialDose:'250 mg dicloxacillin／cap（Na 0.6 mEq/cap）',
+    usualDose:'口服，空腹服用。<br>• 成人及 ≥40 kg 兒童：125–500 mg q6h。<br>• MSSA（無靜脈途徑時）：500–1000 mg q6–8h。',
+    peds:'兒童 <40 kg：25–50 mg/kg/day 分 q6h；骨髓炎後續治療 50–100 mg/kg/day 分 q6h（max 500 mg/劑）。',
+    maxDose:'兒童 500 mg/劑',
+    renal:'一般不需調整（主要經肝膽排除）。',
+    hepatic:'主要經肝膽排除。',
+    dialysis:'不被透析顯著移除。',
+    preg:'B',
+    abg:[{sec:'gram_positive',col:'oxacillin'}], abgProxy:'oxacillin（同類抗葡萄球菌 penicillin）',
+    bioav:'口服，空腹吸收較佳。',
+    dist:'皮膚軟組織、骨分布佳；CSF 穿透差。',
+    metab:'主要經肝膽排除。',
+    adverse:'腸胃不適、腹瀉、皮疹；C. difficile。',
+    contra:'penicillin 過敏禁用。',
+    spectrum:'MSSA、Streptococcus。口服抗葡萄球菌 penicillin，用於輕度 MSSA 皮膚軟組織感染／靜脈治療後降階口服。不涵蓋 MRSA、腸球菌、GNB、厭氧。'},
 
   rifampin:{name:'Rifampin',zh:'利福平',brands:['Rifadin','Rifampin'],cls:'Anti-TB',
     dose:'結核 10 mg/kg（max 600 mg）PO q24h；人工裝置葡萄球菌加成 300–450 mg q12h（不可單用）。',
@@ -1457,6 +1628,18 @@ const BACTERIA = [
        {role:'first', label:'TMP-SMX', drugs:['tmpsmx']},
        {role:'alt', label:'Levofloxacin', drugs:['levofloxacin']}
      ]},
+    {name:'產吲哚金黃桿菌', en:'Chryseobacterium indologenes', kw:'chryseobacterium flavobacterium 金黃桿菌 環境菌',
+     note:'環境伺機菌，多重內在抗藥（對多數 β-lactam／carbapenem／aminoglycoside 抗藥）；依感受性選藥，常用 fluoroquinolone 或 TMP-SMX。',
+     regimens:[
+       {role:'first', label:'Levofloxacin（依感受性）', drugs:['levofloxacin']},
+       {role:'alt', label:'TMP-SMX／Minocycline（依感受性）', drugs:['tmpsmx']}
+     ]},
+    {name:'少動鞘胺醇單胞菌', en:'Sphingomonas paucimobilis', kw:'sphingomonas 鞘胺醇單胞菌 環境菌',
+     note:'環境伺機菌，低毒力；對 carbapenem、aminoglycoside、fluoroquinolone 多敏感。',
+     regimens:[
+       {role:'first', label:'Carbapenem 或 Fluoroquinolone（依感受性）', drugs:['meropenem']},
+       {role:'alt', label:'Levofloxacin', drugs:['levofloxacin']}
+     ]},
     {name:'流感嗜血桿菌', en:'Haemophilus influenzae', kw:'haemophilus 嗜血桿菌',
      regimens:[
        {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
@@ -1470,10 +1653,10 @@ const BACTERIA = [
     {name:'淋病雙球菌', en:'Neisseria gonorrhoeae', kw:'gonorrhea 淋病',
      note:'合併 Chlamydia 覆蓋。',
      regimens:[{role:'first', label:'Ceftriaxone（＋Azithromycin／Doxycycline）', drugs:['ceftriaxone','azithromycin']}]},
-    {name:'奇異變形桿菌', en:'Proteus mirabilis', kw:'proteus 變形桿菌',
-     note:'對 nitrofurantoin／colistin 天然抗藥。',
+    {name:'變形桿菌／摩根氏菌／普羅威登斯菌', en:'Proteus / Morganella / Providencia', kw:'proteus morganella providencia 變形桿菌 摩根 普羅威登斯',
+     note:'對 nitrofurantoin／colistin 天然抗藥。Morganella／Providencia 具誘導型 AmpC，避免第三代 cephalosporin 單用。下方在地感受性分「奇異變形桿菌」與「Proteus／Morganella／Providencia 群」兩列。',
      regimens:[
-       {role:'first', label:'Ampicillin／Ceftriaxone（依感受性）', drugs:['ceftriaxone']}
+       {role:'first', label:'Ampicillin／Ceftriaxone（依感受性；AmpC 者用 cefepime／carbapenem）', drugs:['ceftriaxone']}
      ]},
     {name:'抗碳青黴烯腸道菌 (CRE)', en:'Carbapenem-resistant Enterobacterales', kw:'CRE KPC NDM 抗碳青黴烯',
      note:'依碳青黴烯酶型別選藥；屬保留用藥，需感染科／抗生素管理。',
@@ -1646,6 +1829,71 @@ function abgSpectrum(d){
   return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div><div class="dc-cov">${cells.join('')}</div></div>`;
 }
 
+/* 抗生素表欄位（抗生素）縮寫顯示名，用於「依細菌」的感受性徽章。 */
+const ABG_AB_LABEL = {
+  SAM:'Amp-sulbactam', TZP:'Pip-tazo', cefazolin_urine:'Cefazolin(尿)', cefazolin_other:'Cefazolin',
+  cefmetazole:'Cefmetazole', cefotaxime:'Cefotaxime', ceftazidime:'Ceftazidime', cefepime:'Cefepime',
+  ertapenem:'Ertapenem', imipenem:'Imipenem', meropenem:'Meropenem', gentamicin:'Gentamicin',
+  gentamicin_high:'Gentamicin(HL)', amikacin:'Amikacin', ciprofloxacin:'Ciprofloxacin',
+  levofloxacin:'Levofloxacin', moxifloxacin:'Moxifloxacin', tigecycline:'Tigecycline', colistin:'Colistin',
+  SXT:'TMP-SMX', penicillin:'Penicillin', ampicillin:'Ampicillin', oxacillin:'Oxacillin',
+  vancomycin:'Vancomycin', daptomycin:'Daptomycin', clindamycin:'Clindamycin', erythromycin:'Erythromycin',
+  tetracycline:'Tetracycline', fusidic_acid:'Fusidic acid', linezolid:'Linezolid',
+  chloramphenicol:'Chloramphenicol', flomoxef:'Flomoxef', metronidazole:'Metronidazole',
+  AMC:'Amox-clav', cefuroxime:'Cefuroxime', cefpodoxime:'Cefpodoxime', cefixime:'Cefixime'
+};
+
+/* 病原菌 → 台大 antibiogram 菌種對照（以 BACTERIA 的 en 為鍵；一菌可對多列）。
+   在抗生素表無資料之菌（Viridans、Listeria、Neisseria、CRE、非典型…）不列，故不顯示徽章。 */
+const BAC_ABG = {
+  'S. aureus, methicillin-susceptible':{sec:'gram_positive',org:'MSSA'},
+  'S. aureus, methicillin-resistant':{sec:'gram_positive',org:'MRSA'},
+  'Streptococcus pneumoniae':{sec:'gram_positive',org:'Streptococcus pneumoniae'},
+  'Streptococcus pyogenes (GAS)':{sec:'gram_positive',org:'Streptococcus pyogenes (Group A)'},
+  'Streptococcus agalactiae (GBS)':{sec:'gram_positive',org:'Streptococcus agalactiae (Group B)'},
+  'Enterococcus faecalis':[{sec:'gram_positive',org:'Enterococcus faecalis'},{sec:'gram_positive',org:'Enterococcus spp. (other)'}],
+  'Enterococcus faecium / VRE':{sec:'gram_positive',org:'Enterococcus faecium'},
+  'Coagulase-negative staphylococci':{sec:'gram_positive',org:'Coagulase-negative staphylococci'},
+  'E. coli / Klebsiella (non-ESBL)':[{sec:'gram_negative',org:'Escherichia coli'},{sec:'gram_negative',org:'Klebsiella pneumoniae'},{sec:'gram_negative',org:'Klebsiella oxytoca'}],
+  'AmpC producers':[{sec:'gram_negative',org:'Enterobacter cloacae'},{sec:'gram_negative',org:'Serratia marcescens'}],
+  'Pseudomonas aeruginosa':{sec:'gram_negative',org:'Pseudomonas aeruginosa'},
+  'Acinetobacter baumannii':[{sec:'gram_negative',org:'Acinetobacter baumannii complex'},{sec:'gram_negative',org:'Carbapenem-resistant A. baumannii (CRAB)'},{sec:'gram_negative',org:'non-MDRAB complex'}],
+  'Stenotrophomonas maltophilia':{sec:'gram_negative',org:'Stenotrophomonas maltophilia'},
+  'Haemophilus influenzae':{sec:'haemophilus',org:'Haemophilus influenzae'},
+  'Proteus / Morganella / Providencia':[{sec:'gram_negative',org:'Proteus mirabilis'},{sec:'gram_negative',org:'Proteus/Morganella/Providencia'}],
+  'Non-typhoidal Salmonella, invasive':{sec:'gram_negative',org:'Salmonella (non-typhi)'},
+  'Burkholderia cepacia complex':{sec:'gram_negative',org:'Burkholderia cepacia complex'},
+  'Bacteroides fragilis':[{sec:'anaerobic',org:'Bacteroides fragilis'},{sec:'anaerobic',org:'Bacteroides species (other than B. fragilis)'},{sec:'anaerobic',org:'Prevotella species'},{sec:'anaerobic',org:'Fusobacterium species'},{sec:'anaerobic',org:'Peptostreptococcus species (other than P. anaerobius)'}],
+  'Chryseobacterium indologenes':{sec:'gram_negative',org:'Chryseobacterium indologenes'},
+  'Sphingomonas paucimobilis':{sec:'gram_negative',org:'Sphingomonas paucimobilis'}
+};
+
+/* 「依細菌」的在地感受性徽章：對選定菌，列出台大表中所有有數值的抗生素 %S。
+   一菌可對多個 antibiogram 菌列（如 Acinetobacter → complex／CRAB／non-MDRAB），各列分段顯示。
+   門檻同藥卡：%S ≥90 亮+粗框、80–89 亮、60–79 琥珀、<60 暗；NA 略過。 */
+function abgForBac(b){
+  const map = BAC_ABG[b.en]; if(!map) return '';
+  const list = Array.isArray(map)?map:[map];
+  const blocks=[];
+  list.forEach(m=>{
+    const sec=ABG[m.sec]; if(!sec) return;
+    const rec=sec.org[m.org]; if(!rec) return;
+    const cells=[];
+    sec.ab.forEach((abk,ci)=>{
+      const v=rec.S[ci];
+      if(typeof v!=='number') return;
+      const cls = v>=90?'sy-hi' : (v>=80?'yes' : (v>=60?'partial':'no'));
+      cells.push(`<span class="cov-tag ${cls}">${ABG_AB_LABEL[abk]||abk} ${v}%</span>`);
+    });
+    if(!cells.length) return;
+    const sub = list.length>1 ? `<div class="dc-susc-cap" style="margin-top:7px">${ABG_ORG_LABEL[m.org]||m.org}（n=${rec.n}）</div>` : '';
+    blocks.push(sub+`<div class="dc-cov">${cells.join('')}</div>`);
+  });
+  if(!blocks.length) return '';
+  const n = (!Array.isArray(map)) ? `（n=${ABG[map.sec].org[map.org].n}）` : '';
+  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2025 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div>${blocks.join('')}</div>`;
+}
+
 /* =========================================================================
    Rendering
    ========================================================================= */
@@ -1689,8 +1937,11 @@ function renderRegimen(r){
   const has = r.drugs.length>0;
   const chips = r.drugs.map((k,idx)=>{
     const d=DRUGS[k];
+    // 右側小字：優先台大商品名，其次台灣商品名，皆無則略（避免顯示 undefined）
+    const en = d.ntuhProducts ? (d.ntuhProducts[0].en||d.ntuhProducts[0].zh||'')
+             : (d.brands ? d.brands[0] : (d.en||''));
     return (idx>0?'<span class="rgm-plus">＋</span>':'')+
-      `<button class="drug-chip" onclick="openDrug('${k}')">${d.name}<span class="dc-en">${d.en}</span></button>`;
+      `<button class="drug-chip" onclick="openDrug('${k}')">${d.name}${en?`<span class="dc-en">${en}</span>`:''}</button>`;
   }).join('');
   // 合併此 regimen 所有藥物的覆蓋標記
   let tags='';
@@ -1815,6 +2066,7 @@ function selectBacteria(gi,bi){
   el('bac-crumb').innerHTML=`<b>${curBac.name}</b> <span class="sep">·</span> ${curBac.en}`;
   el('bac-note').textContent=curBac.note||'';
   el('bac-regimens').innerHTML=curBac.regimens.map(renderRegimen).join('');
+  el('bac-susc').innerHTML=abgForBac(curBac);
   const seen=[]; curBac.regimens.forEach(r=>r.drugs.forEach(k=>{if(!seen.includes(k))seen.push(k);}));
   el('bac-drugcards').innerHTML=seen.map(renderDrugCard).join('');
   show('bac-step-list',false); show('bac-step-result',true);
