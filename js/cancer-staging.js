@@ -103,7 +103,8 @@ var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,
 function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
 function renderMatrix(mx){
-  var h = '<div class="onc-sec-h">分期組合 Stage Grouping（T×N，皆 M0）</div><div class="sm-wrap"><table class="smx">';
+  var nCols = mx.ncols.length;
+  var h = '<div class="onc-sec-h">分期組合 Stage Grouping（T×N 為 M0；M1 列於下方）</div><div class="sm-wrap"><table class="smx">';
   h += '<tr><td class="sm-corner"></td>';
   mx.ncols.forEach(function(n){
     h += '<th class="sm-nh">'+n[0]+(n[1]?'<span>'+n[1]+'</span>':'')+'</th>';
@@ -115,6 +116,12 @@ function renderMatrix(mx){
       h += '<td class="sm-cell '+shadeClass(s)+'">'+s+'</td>';
     });
     h += '</tr>';
+  });
+  // M 列：接在 T 列之後，橫跨所有 N 欄（M1 分期與 T、N 無關）
+  (mx.mrows||[]).forEach(function(m){
+    h += '<tr class="sm-mrow"><th class="sm-th sm-mth">'+m[0]+'</th>'+
+         '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'" colspan="'+nCols+'">'+
+         '<b>'+m[1]+'</b>'+(m[2]?'<span class="sm-mdesc">'+m[2]+'</span>':'')+'</td></tr>';
   });
   h += '</table></div>';
   h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';

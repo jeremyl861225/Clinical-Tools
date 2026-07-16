@@ -48,7 +48,11 @@ window.CANCERS = [
       ['IIB','IIIA','IIIB','IIIC'],
       ['IIIA','IIIA','IIIB','IIIC'],
     ],
-    m1:'M1a／M1b → <b>IVA</b>　·　M1c → <b>IVB</b>',
+    mrows:[
+      ['M1a','IVA','對側肺葉結節、胸膜／心包結節、惡性胸／心包積液'],
+      ['M1b','IVA','單一遠處器官之單一轉移'],
+      ['M1c','IVB','單一或多器官之多發轉移'],
+    ],
   },
   node_note:'IASLC 淋巴結圖（14 站）。N1 = 站 10–14，N2 = 同側站 2–9，N3 = 站 1 及對側。',
   nodes:[
@@ -150,7 +154,9 @@ window.CANCERS = [
       ['IIB','IIIA','IIIA','IIIB','IIIC'],
       ['IIIA','IIIB','IIIB','IIIC','IIIC'],
     ],
-    m1:'任何 T、任何 N + M1 → <b>IV</b>',
+    mrows:[
+      ['M1','IV','遠處轉移（含腹膜、遠處淋巴結、腹水細胞學陽性）'],
+    ],
   },
   node_note:'依 JGCA《胃癌治療指引》第 6 版（2021）：<b>D 廓清範圍依術式而異</b>，請先選擇術式。<b>區域淋巴結（計入 N 分級）＝ No. 1–12 與 14v</b>；轉移至其餘站別屬 M1（日本胃癌分類第 15 版）。「—」表示該站不在此術式的標準廓清範圍。',
   node_ops:[
@@ -237,7 +243,9 @@ window.CANCERS = [
       ['IIA','IIB','III'],
       ['III','III','III'],
     ],
-    m1:'任何 T、任何 N + M1 → <b>IV</b>',
+    mrows:[
+      ['M1','IV','遠處轉移'],
+    ],
   },
   node_note:'區域淋巴結依顆數分期（N1 1–3、N2 ≥4）；胰頭癌手術（Whipple）廓清範圍含站 5、6、8a、12b、13、14、17（沿肝動脈、SMV/SMA 右側、胰頭前後）。建議至少檢取 ≥12–15 顆。',
   nodes:[
@@ -302,7 +310,10 @@ window.CANCERS = [
       ['IIB','IIIA','IIIA','IIIA','IIIC'],
       ['IIIB','IIIB','IIIB','IIIB','IIIC'],
     ],
-    m1:'任何 T、任何 N + M1 → <b>IV</b>　｜　<b>Tis N0 M0 → 0 期</b>（原位癌，另見治療流程之 DCIS 分支）　｜　T0（無原發腫瘤證據）：N1mi → IB、N1 → IIA、N2 → IIIA、N3 → IIIC。<br>T1 含 T1mi。<b>N1mi 僅於 T0／T1 自成 IB</b>；T2 以上之 N1mi 併入 N1 分組（故 T2N1mi = IIB、T3N1mi = IIIA、T4N1mi = IIIB）。此為 <b>AJCC 8th 解剖分期</b>；預後分期需另計 grade 與 ER/PR/HER2。',
+    mrows:[
+      ['M1','IV','遠處轉移（組織學證實 >0.2mm，或臨床／影像可見）'],
+    ],
+    m1:'<b>Tis N0 M0 → 0 期</b>（原位癌，另見治療流程之 DCIS 分支）　｜　T0（無原發腫瘤證據）：N1mi → IB、N1 → IIA、N2 → IIIA、N3 → IIIC。<br>T1 含 T1mi。<b>N1mi 僅於 T0／T1 自成 IB</b>；T2 以上之 N1mi 併入 N1 分組（故 T2N1mi = IIB、T3N1mi = IIIA、T4N1mi = IIIB）。此為 <b>AJCC 8th 解剖分期</b>；預後分期需另計 grade 與 ER/PR/HER2。',
   },
   node_note:'依 <b>AJCC 第 8 版</b>乳癌區域淋巴結定義：腋下以<b>胸小肌</b>為界分 Level I（外／下）、II（後方）、III（內／鎖骨下 apical），加上 Rotter（胸大小肌間）、內乳（IMN）與鎖骨上（N3c）。<b>乳內淋巴結（intramammary）計入腋下淋巴結</b>。轉移至<b>頸部淋巴結或對側腋下／內乳</b>屬遠處轉移（M1）。<br>台大指引之腋下處置（p8、p13–p15、p48）：<b>cN0 首選 SLNB、cN(+) 行 ALND</b>；符合 <b>ACOSOG Z0011</b> 條件者（cN0、SLN 僅 1–2 顆(+)、T1-2、接受 BCT 且已規劃術後放療、有足量輔助全身治療、尤其 ER(+)）可免除進一步 ALND。',
   nodes:[
@@ -440,7 +451,7 @@ window.CANCERS = [
     ['T1','侵犯黏膜下層（穿透黏膜肌層但未進入固有肌層）Submucosa'],
     ['T2','侵犯固有肌層 Muscularis propria'],
     ['T3','穿透固有肌層至結腸直腸周圍組織 Pericolorectal tissues'],
-    ['T4a','穿透臟層腹膜（含腫瘤致腸穿孔、及經發炎區域連續侵犯至臟層腹膜表面）'],
+    ['T4a','穿透臟層腹膜（含腫瘤致腸穿孔、及經發炎區域連續侵犯至臟層腹膜表面）Visceral peritoneum'],
     ['T4b','直接侵犯或黏連於其他器官或構造 Adjacent organs / structures'],
   ],
   n:[
@@ -467,7 +478,12 @@ window.CANCERS = [
       ['IIB','IIIB','IIIC','IIIC'],
       ['IIC','IIIC','IIIC','IIIC'],
     ],
-    m1:'Tis N0 M0 → <b>0</b>　·　任何 T、任何 N：M1a → <b>IVA</b>　·　M1b → <b>IVB</b>　·　M1c（腹膜）→ <b>IVC</b>（N1 欄含 N1a/N1b/N1c）',
+    mrows:[
+      ['M1a','IVA','轉移至 1 個部位或器官，無腹膜轉移'],
+      ['M1b','IVB','轉移至 ≥2 個部位或器官，無腹膜轉移'],
+      ['M1c','IVC','腹膜表面轉移（單獨或合併其他部位／器官）'],
+    ],
+    m1:'<b>Tis N0 M0 → 0 期</b>（N1 欄含 N1a／N1b／N1c）',
   },
   node_note:'依「陽性淋巴結顆數」分期，非站別命名；手術應行區域淋巴結廓清並<b>至少檢取 ≥12 顆</b>方能可靠分期（<b>取樣 &lt;12 顆</b>本身即為第 II 期之全身性復發高風險特徵，見 COL-3）。完整結腸繫膜切除（CME）+ 中央血管高位結紮為原則。',
   nodes:[
@@ -521,7 +537,12 @@ window.CANCERS = [
       ['IIB','IIIB','IIIC','IIIC'],
       ['IIC','IIIC','IIIC','IIIC'],
     ],
-    m1:'M1a → <b>IVA</b>　·　M1b → <b>IVB</b>　·　M1c（腹膜）→ <b>IVC</b>（N1 含 N1a/b/c）',
+    mrows:[
+      ['M1a','IVA','轉移至 1 個部位或器官，無腹膜轉移'],
+      ['M1b','IVB','轉移至 ≥2 個部位或器官，無腹膜轉移'],
+      ['M1c','IVC','腹膜表面轉移（單獨或合併其他部位／器官）'],
+    ],
+    m1:'N1 欄含 N1a／N1b／N1c',
   },
   node_note:'區域淋巴結含直腸繫膜、直腸上／乙狀結腸／腸繫膜下動脈旁；側方（內髂／閉孔）淋巴結在亞洲低位直腸癌可能加做側方廓清。手術以 <b>TME（全直腸繫膜切除）</b>確保環周切緣（CRM）陰性。',
   nodes:[
