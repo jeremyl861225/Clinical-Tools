@@ -88,8 +88,11 @@
   table.sd-hm thead th{background:var(--accent-soft); color:var(--accent); font-family:var(--mono); font-weight:700; padding:8px 4px; text-align:center; border-bottom:2px solid var(--line); font-size:11px; white-space:nowrap;}
   table.sd-hm tbody th{position:sticky; left:0; z-index:1; background:var(--panel); text-align:left; padding:7px 12px; font-family:var(--serif); font-weight:600; font-size:12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line); white-space:nowrap;}
   td.sd-hc{text-align:center; padding:0; border-bottom:1px solid var(--paper); border-left:1px solid var(--paper);}
-  td.sd-hc .d{display:flex; align-items:center; justify-content:center; height:34px; font-family:var(--mono); font-weight:700; color:#fff; font-size:12px;}
-  td.g .d{background:#2f8f57} td.a .d{background:#c1892f} td.r .d{background:#b25548}
+  td.sd-hc .d{display:flex; align-items:center; justify-content:center; height:34px; font-family:var(--mono); font-weight:700; font-size:12px;}
+  /* 三級 S／±／R 對映表二、三的四級色階（略過 --s1「涵蓋較弱」一級），深淺色模式一併繼承 */
+  td.g .d{background:var(--s2);color:var(--s2t)}
+  td.a .d{background:var(--s0);color:var(--s0t)}
+  td.r .d{background:var(--sn);color:var(--snt)}
   .sd-abbr{font-size:11px; color:var(--muted-soft); margin-top:9px; line-height:1.7;}
 
   /* ---- 抗藥菌卡 ---- */
@@ -191,9 +194,9 @@
   <div class="section-title">4 · 新型抗生素對 CR-GNB 之抗菌譜　Novel Antibiotics vs Carbapenem-Resistant GNBs</div>
   <div class="card">
     <div class="sd-legend" style="margin-bottom:11px;">
-      <span class="lg"><span class="sd-sw" style="background:#2f8f57">S</span>通常有效</span>
-      <span class="lg"><span class="sd-sw" style="background:#c1892f">±</span>變異／需藥敏</span>
-      <span class="lg"><span class="sd-sw" style="background:#b25548">R</span>通常無效</span>
+      <span class="lg"><span class="sd-sw s2">S</span>通常有效</span>
+      <span class="lg"><span class="sd-sw s0">±</span>變異／需藥敏</span>
+      <span class="lg"><span class="sd-sw sn">R</span>通常無效</span>
     </div>
     <div class="sd-hmshell">
       <table class="sd-hm">
