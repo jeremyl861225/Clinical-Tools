@@ -179,6 +179,7 @@
   .flow-rec.rec-elective{background:#123028; color:#eef6f2; border:none;}
   .flow-rec.rec-urgent{background:#3a1712; color:#fdeee9; border:none;}
   .flow-rec.rec-nonop{background:#132126; color:#eef4f2; border:none;}
+  .flow-rec.rec-blue{background:#122a3f; color:#e9f1f8; border:none;}
   .flow-rec .rec-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:5px;}
   .flow-rec .rec-title{font-family:var(--serif); font-size:20px; font-weight:600; margin-bottom:4px; line-height:1.3;}
   .flow-rec .rec-detail{margin:8px 0 0; padding-left:18px; font-size:13px; line-height:1.75;}

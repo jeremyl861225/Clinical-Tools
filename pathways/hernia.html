@@ -34,7 +34,7 @@
   </details>
 
   <details class="def-box" style="margin-bottom:12px;">
-    <summary>★ 絞窄徵象與 TAXIS 禁忌 Strangulation indicators & TAXIS contraindications</summary>
+    <summary>絞窄徵象與 TAXIS 禁忌 Strangulation indicators & TAXIS contraindications</summary>
     <div class="box-inner">
       <b>TAXIS（徒手復位）禁忌 — 記憶法 T A X I S：</b><br>
       ・<b>T</b>ime：症狀發作 <b>&gt; 24 小時</b><br>
@@ -212,14 +212,14 @@ function hernRender(){
   let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
   if(s.taxis==='candidate' && !surg){
     if(s.taxisOut===null){
-      cls='rec-nonop'; title='符合適應症 → 嘗試徒手復位 TAXIS（GPS technique）';
+      cls='rec-blue'; title='符合適應症 → 嘗試徒手復位 TAXIS（GPS technique）';
       detail='<li><b>時機：</b>症狀發作 24 小時內施行。</li>'+
              '<li><b>清醒鎮靜：</b>Fentanyl 25–50 mcg IV（每 4 分可重複，max 50–100 mcg）＋ Midazolam 0.5–1 mg IV（每 2 分可重複，max 2–5 mg）；或 Ketamine 0.5–1 mg/kg IV；或 Propofol 0.5–1 mg/kg IV。</li>'+
              '<li><b>手法：</b>Gentle, Prepared, Safe — 溫和雙手輕柔還納。</li>'+
              '<li>復位後請於下方選擇結果。</li>';
       note='HerniaSurge 2023；Pawlak M, East B, de Beaux AC. Hernia 2021；Lameijer H, et al. Am J Emerg Med 2017。';
     } else if(s.taxisOut==='success'){
-      cls='rec-nonop'; title='復位成功 → 24 小時觀察後擇期修補';
+      cls='rec-blue'; title='復位成功 → 24 小時觀察後擇期修補';
       detail='<li><b>24 小時觀察：</b>警覺 reduction en masse（疝囊連同內容還納、腸道仍受箝）與晚發性併發症（晚發狹窄、小腸穿孔）— 故成功還納後仍須觀察。</li>'+
              '<li>出現腹膜炎／腸阻塞徵象 → 立即轉緊急手術。</li>'+
              '<li><b>擇期修補：</b>數週至數月內安排（elective repair）。</li>';
@@ -227,18 +227,18 @@ function hernRender(){
     }
   } else if(surg){
     if(s.spont===null){
-      cls='rec-urgent';
+      cls='rec-elective';
       title = (s.taxis==='contra') ? '疑絞窄／TAXIS 禁忌 → 緊急手術' : '徒手復位失敗 → 緊急手術';
       detail='<li>絞窄可疑者應<b>立即</b>緊急疝氣修補；strangulation likelihood 每 24 小時倍增，延遲 &gt;8h 增併發症、&gt;24h 增死亡率。</li>'+
              '<li>請於下方完成手術路徑評估（麻醉後是否自發性復位）。</li>';
       note='WSES 2017 / HerniaSurge 2023。';
     } else if(s.spont==='yes'){
-      cls='rec-urgent'; title='自發性復位（麻醉後）→ 診斷性腹腔鏡評估腸道存活';
+      cls='rec-elective'; title='自發性復位（麻醉後）→ 診斷性腹腔鏡評估腸道存活';
       detail='<li>麻醉後自發還納者，行<b>診斷性腹腔鏡 + TAPP</b>，或<b>疝鏡 hernioscopy（腹股溝）</b>（grade 2B）。</li>'+
              '<li>下一步：<b>術中評估已還納腸段之存活</b>（見下方步驟 S3）。</li>';
       note='WSES 2017。';
     } else if(s.spont==='no'){
-      cls='rec-urgent';
+      cls='rec-elective';
       if(s.strang==='unstable'){
         title='疑絞窄 + 不穩／瀰漫性腹膜炎 → 正中剖腹 Midline laparotomy';
         detail='<li>血行動力學不穩或瀰漫性腹膜炎：以<b>正中剖腹</b>探查、源頭控制；此情況腸段多已壞死、屬污染／骯髒場。</li>'+
@@ -252,7 +252,7 @@ function hernRender(){
                '<li>下一步：<b>術中評估腸道存活</b>（見下方步驟 S3）。</li>';
         note='WSES 2017。';
       } else {
-        title='仍嵌頓 → 請完成步驟 S2（絞窄／血行動力學）';
+        cls='rec-idle'; title='仍嵌頓 → 請完成步驟 S2（絞窄／血行動力學）';
         detail='<li>請於上方選擇是否疑絞窄與血行動力學狀態。</li>';
       }
     }
@@ -287,7 +287,7 @@ function hernRender(){
                 '<li>'+ABX_IIIIV+'</li>';
         noteB='WSES 2017。';
       } else if(s.wound==='large'){
-        clsB='rec-nonop'; titleB='CDC III–IV、穩定、缺損 >3 cm → 生物網片／延遲修補';
+        clsB='rec-urgent'; titleB='CDC III–IV、穩定、缺損 >3 cm → 生物網片／延遲修補';
         detailB='<li>缺損 <b>&gt;3 cm</b>、直接縫合不可行：<b>生物網片</b>；若無，則 polyglactin 網片或<b>開放傷口管理 + 延遲修補</b>（grade 2C）。</li>'+
                 '<li>大型中線缺損可考慮<b>組織結構分離術（component separation）</b>（grade 1B）。</li>'+
                 '<li>'+ABX_IIIIV+'</li>';
