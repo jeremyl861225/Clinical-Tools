@@ -38,7 +38,7 @@
     <div class="box-inner">
       <b>TAXIS（徒手復位）禁忌 — 記憶法 T A X I S：</b><br>
       ・<b>T</b>ime：症狀發作 <b>&gt; 24 小時</b><br>
-      ・<b>A</b>：紅斑與嚴重壓痛 erythema and severe tenderness<br>
+      ・<b>A</b>：<b>發紅與嚴重壓痛</b> erythema and severe tenderness<br>
       ・<b>X</b>：腹膜炎／敗血 peritonitis / sepsis（<b>fever &gt; 37℃</b>）<br>
       ・<b>I</b>leus：腸阻塞<br>
       ・<b>S</b>trangulation indicators：<b>ANC &gt; 7 k/µL</b>／<b>NLR &gt; 6.5</b>／<b>PT &gt; 13.5 sec</b><br>
@@ -79,21 +79,12 @@
     </div>
   </details>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>臨床案例 Worked cases（對照使用）</summary>
-    <div class="box-inner">
-      <b>Case 1｜女 91 歲，嘔吐 4 天。</b>TAXIS 指標：女&gt;65(+)、onset&gt;24h(+)、溫 36.6℃(−)、腹膜炎／ileus(+)、ANC 8.3 k/NLR 6.2(+)、PT 11.5(−)、CT closed-loop(+) → <b>禁忌／疑絞窄 → 緊急手術</b>。腹股溝切口（開放腹膜前路），切除 6 cm 小腸吻合，<b>CDC IV（dirty）</b>，<b>McVay</b> 組織修補（無網片）。<br><br>
-      <b>Case 2｜男 67 歲，腹股溝腫塊 4 小時。</b>指標全（−）（onset 4h、溫 36.8℃、無腹膜炎、ANC 5.5/NLR 4.1、PT 10.1）→ 手術。正中剖腹＋腹股溝切口，未切腸但<b>闌尾切除</b>，<b>CDC II</b>，<b>Bassini</b> 組織修補（無網片）。<br><br>
-      <b>Case 3｜男 75 歲，8 小時。</b>指標多為（−），NLR 7.63(+) → 手術。<b>腹腔鏡 TAPP</b>（10-5-5 mm trocar），未切腸，<b>CDC I（clean）</b>，<b>TAPP + 輕量網片</b>可吸收釘固定。
-    </div>
-  </details>
-
   <!-- 步驟 1：TAXIS 適應症 -->
   <div class="flow-step" id="hern_s1">
     <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">TAXIS 適應症評估（是否可徒手復位？）</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="hernPick('taxis','candidate',this)">無任何 TAXIS 禁忌 → 可嘗試徒手復位<span class="fo-sub">症狀 &lt;24h、無紅斑／嚴重壓痛、無腹膜炎／發燒、無 ileus、發炎指數正常（ANC&lt;7、NLR&lt;6.5、PT&lt;13.5）</span></button>
-      <button class="flow-opt" onclick="hernPick('taxis','contra',this)">有 ≥1 項 TAXIS 禁忌／疑絞窄 → 緊急手術<span class="fo-sub">T:&gt;24h · A:紅斑壓痛 · X:腹膜炎/發燒 · I:ileus · S:ANC&gt;7 / NLR&gt;6.5 / PT&gt;13.5</span></button>
+      <button class="flow-opt" onclick="hernPick('taxis','candidate',this)">無任何 TAXIS 禁忌 → 可嘗試徒手復位<span class="fo-sub">症狀 &lt;24h、無發紅／嚴重壓痛、無腹膜炎／發燒、無 ileus、發炎指數正常（ANC&lt;7、NLR&lt;6.5、PT&lt;13.5）</span></button>
+      <button class="flow-opt" onclick="hernPick('taxis','contra',this)">有 ≥1 項 TAXIS 禁忌／疑絞窄 → 緊急手術<span class="fo-sub">T:&gt;24h · A:發紅壓痛 · X:腹膜炎/發燒 · I:ileus · S:ANC&gt;7 / NLR&gt;6.5 / PT&gt;13.5</span></button>
     </div>
   </div>
 
@@ -107,39 +98,44 @@
     </div>
   </div>
 
-  <!-- 手術路徑 步驟 2b：自發性復位 -->
+  <!-- 手術路徑 步驟 S1：麻醉後自發性復位 -->
   <div class="flow-connector hidden" id="hern_c2b">↓</div>
   <div class="flow-step hidden" id="hern_s2b">
     <div class="flow-step-head"><span class="flow-num">S1</span><span class="flow-q">緊急手術：麻醉後是否自發性復位？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="hernPick('spont','yes',this)">是（麻醉後自發還納）<span class="fo-sub">→ 診斷性腹腔鏡 + TAPP，或疝鏡 hernioscopy 評估腸道</span></button>
-      <button class="flow-opt" onclick="hernPick('spont','no',this)">否（仍嵌頓）<span class="fo-sub">→ 依絞窄／血行動力學選擇手術路徑</span></button>
+      <button class="flow-opt" onclick="hernPick('spont','no',this)">否（仍嵌頓，需手術還納）<span class="fo-sub">→ 依絞窄／血行動力學選擇手術路徑</span></button>
     </div>
   </div>
 
-  <!-- 手術路徑 步驟 2c：疑絞窄／血行動力學 -->
+  <!-- 手術路徑 步驟 S2：疑絞窄／血行動力學（僅仍嵌頓時） -->
   <div class="flow-connector hidden" id="hern_c2c">↓</div>
   <div class="flow-step hidden" id="hern_s2c">
-    <div class="flow-step-head"><span class="flow-num">S2</span><span class="flow-q">是否疑絞窄／需腸切除？血行動力學？</span></div>
+    <div class="flow-step-head"><span class="flow-num">S2</span><span class="flow-q">疑絞窄／需腸切除？血行動力學？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="hernPick('strang','unstable',this)">疑絞窄 + 血行動力學不穩／瀰漫性腹膜炎<span class="fo-sub">→ 正中剖腹 Midline laparotomy</span></button>
-      <button class="flow-opt" onclick="hernPick('strang','stable',this)">疑絞窄 + 血行動力學穩定<span class="fo-sub">→ 開放腹膜前路（腹股溝切口）</span></button>
-      <button class="flow-opt" onclick="hernPick('strang','none',this)">不疑絞窄／可還納<span class="fo-sub">→ 腹腔鏡 或 腹股溝路 ± 疝鏡</span></button>
+      <button class="flow-opt" onclick="hernPick('strang','unstable',this)">疑絞窄 + 血行動力學不穩／瀰漫性腹膜炎<span class="fo-sub">→ 正中剖腹 Midline laparotomy（腸段多已壞死污染）</span></button>
+      <button class="flow-opt" onclick="hernPick('strang','stable',this)">疑絞窄 + 血行動力學穩定<span class="fo-sub">→ 傳統疝氣修補（腹股溝切口）</span></button>
     </div>
   </div>
 
-  <!-- 手術路徑 步驟 3：腸道存活 -->
+  <!-- 建議處置 A：術式決策 -->
+  <div class="flow-rec rec-idle" id="hern_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <!-- 手術路徑 步驟 S3：腸道存活（術中，處置後評估） -->
   <div class="flow-connector hidden" id="hern_c3">↓</div>
   <div class="flow-step hidden" id="hern_s3">
-    <div class="flow-step-head"><span class="flow-num">S3</span><span class="flow-q">腸道存活評估（還納後 15–30 分鐘再評估）</span></div>
+    <div class="flow-step-head"><span class="flow-num">S3</span><span class="flow-q">術中腸道存活評估（還納後 15–30 分鐘再評估）</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="hernPick('viab','viable',this)">腸道存活<span class="fo-sub">顏色恢復、有蠕動、繫膜動脈搏動</span></button>
+      <button class="flow-opt" onclick="hernPick('viab','viable',this)">腸道存活<span class="fo-sub">顏色恢復、有蠕動、繫膜動脈搏動（clean）</span></button>
       <button class="flow-opt" onclick="hernPick('viab','resect',this)">需腸切除、無明顯污染<span class="fo-sub">切除吻合、無腸內容外溢（clean-contaminated）</span></button>
       <button class="flow-opt" onclick="hernPick('viab','contam',this)">需腸切除且污染／穿孔／腹膜炎<span class="fo-sub">腸內容外溢或腹膜炎（contaminated–dirty）</span></button>
     </div>
   </div>
 
-  <!-- 手術路徑 步驟 4：CDC 傷口分類（僅污染時） -->
+  <!-- 手術路徑 步驟 S4：CDC 傷口分類（污染／骯髒場） -->
   <div class="flow-connector hidden" id="hern_c4">↓</div>
   <div class="flow-step hidden" id="hern_s4">
     <div class="flow-step-head"><span class="flow-num">S4</span><span class="flow-q">CDC 傷口分類與修補（污染／骯髒場）</span></div>
@@ -150,10 +146,12 @@
     </div>
   </div>
 
-  <div class="flow-rec rec-idle" id="hern_rec">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由上方步驟開始選擇</div>
+  <!-- 建議處置 B：修補決策 -->
+  <div class="flow-rec rec-idle hidden" id="hern_rec2">
+    <div class="rec-label">修補建議 Repair</div>
+    <div class="rec-title">術中評估後顯示</div>
   </div>
+
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="hernReset()">重置</button></div>
   <footer class="tool-footer">REF — <a href="https://doi.org/10.1186/s13017-017-0149-y" target="_blank" rel="noopener" class="ref-link">Birindelli A, et al. 2017 update of the WSES guidelines for emergency repair of complicated abdominal wall hernias. World J Emerg Surg. 2017;12:37.</a> ｜ <a href="https://doi.org/10.1093/bjsopen/zrad080" target="_blank" rel="noopener" class="ref-link">Stabilini C, et al. Update of the international HerniaSurge guidelines for groin hernia management. BJS Open. 2023;7(5):zrad080.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pawlak+East+de+Beaux+taxis+incarcerated+inguinal+hernia+Hernia+2021" target="_blank" rel="noopener" class="ref-link">Pawlak M, East B, de Beaux AC. Hernia. 2021（safe taxis）.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Lameijer+procedural+sedation+hernia+reduction+American+Journal+of+Emergency+Medicine+2017" target="_blank" rel="noopener" class="ref-link">Lameijer H, et al. Am J Emerg Med. 2017（sedation）.</a></footer>
 </div>
@@ -175,6 +173,12 @@ function hernRender(){
   const s=hernSt;
   // 手術路徑是否啟動：TAXIS 禁忌，或 TAXIS 失敗
   const surg = (s.taxis==='contra') || (s.taxis==='candidate' && s.taxisOut==='fail');
+  // 術式（approach）是否已決定
+  const approachSet = surg && (s.spont==='yes' || (s.spont==='no' && s.strang!==null));
+  // 腸道存活評估：僅在「自發復位」或「仍嵌頓＋穩定（傳統修補）」時；不穩／瀰漫性腹膜炎腸段多已壞死污染，直接進傷口分類
+  const showViab = surg && (s.spont==='yes' || (s.spont==='no' && s.strang==='stable'));
+  // CDC 傷口分類：污染時，或不穩／瀰漫性腹膜炎（本即污染骯髒場）
+  const showWound = (showViab && s.viab==='contam') || (surg && s.spont==='no' && s.strang==='unstable');
 
   // 步驟顯示
   flowShow('hern_c2a', s.taxis==='candidate');
@@ -190,28 +194,23 @@ function hernRender(){
   flowShow('hern_s2c', showS2c);
   if(!showS2c) flowClearSel('hern_s2c');
 
-  // 進入腸道存活評估：自發性復位，或已選定手術路徑
-  const approachSet = surg && (s.spont==='yes' || (s.spont==='no' && s.strang!==null));
-  flowShow('hern_c3', approachSet);
-  flowShow('hern_s3', approachSet);
-  if(!approachSet) flowClearSel('hern_s3');
+  flowShow('hern_c3', showViab);
+  flowShow('hern_s3', showViab);
+  if(!showViab) flowClearSel('hern_s3');
 
-  // CDC 傷口分類步驟：僅在污染時
-  const showS4 = approachSet && s.viab==='contam';
-  flowShow('hern_c4', showS4);
-  flowShow('hern_s4', showS4);
-  if(!showS4) flowClearSel('hern_s4');
+  flowShow('hern_c4', showWound);
+  flowShow('hern_s4', showWound);
+  if(!showWound) flowClearSel('hern_s4');
 
-  // 抗生素／麻醉共用字串
+  // 共用字串
   const ABX_I='抗生素：CDC class I 短療程預防（grade 2C）。無腸壞疽者可用局部麻醉（grade 1C）。';
   const ABX_II='抗生素：CDC class II 給予 48 小時預防（grade 2C）。';
   const ABX_IIIIV='抗生素：class III 給 48 小時預防；class IV（腹膜炎）給予治療性抗生素（grade 2C）。';
   const RING='溫和雙手還納（atraumatic grasper + 外部徒手加壓），初期避免切開內環；必要時於 12 點鐘方向（外上）切開，避開內側腹壁下血管與精索。';
 
+  // ===== 建議處置 A：術式決策 =====
   let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
-
   if(s.taxis==='candidate' && !surg){
-    // TAXIS 路徑（尚未失敗）
     if(s.taxisOut===null){
       cls='rec-nonop'; title='符合適應症 → 嘗試徒手復位 TAXIS（GPS technique）';
       detail='<li><b>時機：</b>症狀發作 24 小時內施行。</li>'+
@@ -227,76 +226,86 @@ function hernRender(){
       note='HerniaSurge 2023；Pawlak M, et al. Hernia 2021。';
     }
   } else if(surg){
-    // 緊急手術路徑
     if(s.spont===null){
       cls='rec-urgent';
       title = (s.taxis==='contra') ? '疑絞窄／TAXIS 禁忌 → 緊急手術' : '徒手復位失敗 → 緊急手術';
       detail='<li>絞窄可疑者應<b>立即</b>緊急疝氣修補；strangulation likelihood 每 24 小時倍增，延遲 &gt;8h 增併發症、&gt;24h 增死亡率。</li>'+
              '<li>請於下方完成手術路徑評估（麻醉後是否自發性復位）。</li>';
       note='WSES 2017 / HerniaSurge 2023。';
-    } else if(s.spont==='yes' && s.viab===null){
+    } else if(s.spont==='yes'){
       cls='rec-urgent'; title='自發性復位（麻醉後）→ 診斷性腹腔鏡評估腸道存活';
-      detail='<li>麻醉後自發還納者，行<b>診斷性腹腔鏡 + TAPP</b>，或<b>疝鏡 hernioscopy（腹股溝）</b>，評估已還納腸段存活（grade 2B）。</li>'+
-             '<li>請於下方選擇腸道存活評估結果。</li>';
+      detail='<li>麻醉後自發還納者，行<b>診斷性腹腔鏡 + TAPP</b>，或<b>疝鏡 hernioscopy（腹股溝）</b>（grade 2B）。</li>'+
+             '<li>下一步：<b>術中評估已還納腸段之存活</b>（見下方步驟 S3）。</li>';
       note='WSES 2017。';
-    } else if(s.spont==='no' && s.viab===null){
+    } else if(s.spont==='no'){
       cls='rec-urgent';
       if(s.strang==='unstable'){
         title='疑絞窄 + 不穩／瀰漫性腹膜炎 → 正中剖腹 Midline laparotomy';
-        detail='<li>血行動力學不穩或瀰漫性腹膜炎：以<b>正中剖腹</b>探查、源頭控制。</li><li>'+RING+'</li><li>請於下方選擇腸道存活評估結果。</li>';
+        detail='<li>血行動力學不穩或瀰漫性腹膜炎：以<b>正中剖腹</b>探查、源頭控制；此情況腸段多已壞死、屬污染／骯髒場。</li>'+
+               '<li>'+RING+'</li>'+
+               '<li>下一步：切除壞死腸段後，依<b>CDC 傷口分類</b>選擇修補（見下方步驟 S4）。</li>';
         note='WSES 2017；Ishihara T, et al. Surg Endosc 1996（內環切開技術）。';
       } else if(s.strang==='stable'){
-        title='疑絞窄 + 血行動力學穩定 → 開放腹膜前路（腹股溝切口）';
-        detail='<li><b>Open preperitoneal approach（inguinal incision）</b>；疑需腸切除時開放路較適合。</li><li>'+RING+'</li><li>請於下方選擇腸道存活評估結果。</li>';
-        note='WSES 2017。';
-      } else if(s.strang==='none'){
-        cls='rec-elective'; title='不疑絞窄／可還納 → 腹腔鏡 或 腹股溝路 ± 疝鏡';
-        detail='<li>無絞窄且不需腸切除之嵌頓疝，可用<b>腹腔鏡路（TAPP／TEP）</b>或<b>腹股溝路 ± 疝鏡</b>修補（grade 2C；開放腹膜前路亦佳）。</li><li>'+RING+'</li><li>請於下方選擇腸道存活評估結果。</li>';
+        title='疑絞窄 + 血行動力學穩定 → 傳統疝氣修補（腹股溝切口）';
+        detail='<li><b>傳統疝氣修補（open，腹股溝切口／腹膜前路）</b>；疑需腸切除時開放路較適合。</li>'+
+               '<li>'+RING+'</li>'+
+               '<li>下一步：<b>術中評估腸道存活</b>（見下方步驟 S3）。</li>';
         note='WSES 2017。';
       } else {
-        title='仍嵌頓 → 請完成手術路徑（步驟 S2：絞窄／血行動力學）';
-        detail='<li>請於下方選擇是否疑絞窄與血行動力學狀態。</li>';
-      }
-    } else if(s.viab==='viable'){
-      cls='rec-elective'; title='腸道存活 → 網片修補（TAPP／TEP 或開放）';
-      detail='<li>還納腸段初期常呈充血暗紅，給予 <b>15–30 分鐘</b>再灌流觀察；顏色恢復、有蠕動與繫膜動脈搏動 → 判定存活。</li>'+
-             '<li>腹腔鏡：<b>TAPP，或轉 TEP</b>，合成網片。開放：張力免除合成網片。</li>'+
-             '<li><b>CDC wound class I（clean）</b>：合成網片修補為建議（grade 1A）。</li>'+
-             '<li>'+ABX_I+'</li>';
-      note='WSES 2017。';
-    } else if(s.viab==='resect'){
-      cls='rec-elective'; title='需腸切除、無明顯污染 → 合成網片修補（class II）';
-      detail='<li>持續暗黑、失去蠕動、繫膜動脈無搏動、漿膜撕裂／穿孔 → <b>腸切除吻合</b>。</li>'+
-             '<li>腹腔鏡：<b>Staged TAPP with mesh</b>（分期）或 <b>Immediate TEP with mesh</b>；開放亦可合成網片。</li>'+
-             '<li><b>CDC wound class II</b>（無明顯腸內容外溢）：緊急合成網片修補不增 30 天傷口併發症、顯著降低復發（grade 1A）。</li>'+
-             '<li>'+ABX_II+'</li>';
-      note='WSES 2017；staged TEP：Chihara N, et al. J Laparoendosc Adv Surg Tech A 2019。';
-    } else if(s.viab==='contam'){
-      if(s.wound==='small'){
-        cls='rec-urgent'; title='CDC III–IV、穩定、缺損 <3 cm → 一期組織修補';
-        detail='<li>污染（III：腸切除有外溢）／骯髒（IV：穿孔腹膜炎）之<b>穩定</b>病人，缺損 <b>&lt;3 cm</b>：建議<b>一期組織修補</b>（grade 2C）— 如 Bassini、McVay、Shouldice。</li>'+
-               '<li>直接縫合不可行時 → <b>生物網片</b>；若無，則 polyglactin 網片或開放傷口延遲修補（grade 2C）。</li>'+
-               '<li>'+ABX_IIIIV+'</li>';
-        note='WSES 2017。';
-      } else if(s.wound==='large'){
-        cls='rec-nonop'; title='CDC III–IV、穩定、缺損 >3 cm → 生物網片／延遲修補';
-        detail='<li>缺損 <b>&gt;3 cm</b>、直接縫合不可行：<b>生物網片</b>；若無，則 polyglactin 網片或<b>開放傷口管理 + 延遲修補</b>（grade 2C）。</li>'+
-               '<li>大型中線缺損可考慮<b>組織結構分離術（component separation）</b>（grade 1B）。</li>'+
-               '<li>'+ABX_IIIIV+'</li>';
-        note='WSES 2017。';
-      } else if(s.wound==='unstable'){
-        cls='rec-urgent'; title='不穩定（嚴重敗血／敗血性休克）→ 損傷控制、開放腹部';
-        detail='<li>不穩定病人：<b>開放腹部（open abdomen）</b>管理以預防腹腔室隔症候群；穩定後<b>及早確定性關腹</b>。</li>'+
-               '<li>無法一期筋膜關閉時，<b>僅皮膚關閉</b>為可行選項，日後再以<b>延遲關腹 + 合成網片</b>處理（grade 1C）。</li>'+
-               '<li>抗生素：治療性抗生素（腹膜炎，class IV）。</li>';
-        note='WSES 2017。';
-      } else {
-        cls='rec-urgent'; title='污染／骯髒場 → 請完成 CDC 傷口分類（步驟 S4）';
-        detail='<li>請於下方選擇傷口分類與病人穩定度。</li>';
+        title='仍嵌頓 → 請完成步驟 S2（絞窄／血行動力學）';
+        detail='<li>請於上方選擇是否疑絞窄與血行動力學狀態。</li>';
       }
     }
   }
   flowRec('hern_rec',cls,title,detail,note);
+
+  // ===== 建議處置 B：修補決策（術中） =====
+  let clsB='rec-idle', titleB='術中評估後顯示', detailB='', noteB='';
+  if(approachSet){
+    if(showViab && s.viab===null){
+      clsB='rec-idle'; titleB='待術中腸道存活評估 → 顯示修補建議';
+      detailB='<li>還納後給予 15–30 分鐘再灌流觀察，於上方步驟 S3 選擇腸道存活結果。</li>';
+    } else if(s.viab==='viable'){
+      clsB='rec-elective'; titleB='腸道存活（clean, class I）→ 合成網片修補';
+      detailB='<li>顏色恢復、有蠕動與繫膜動脈搏動 → 判定存活。</li>'+
+              '<li>腹腔鏡：<b>TAPP，或轉 TEP</b>，合成網片；開放：張力免除合成網片。</li>'+
+              '<li><b>CDC class I（clean）</b>：合成網片修補為建議（grade 1A）。</li>'+
+              '<li>'+ABX_I+'</li>';
+      noteB='WSES 2017。';
+    } else if(s.viab==='resect'){
+      clsB='rec-elective'; titleB='需腸切除、無明顯污染（class II）→ 合成網片修補';
+      detailB='<li>持續暗黑、失去蠕動、繫膜動脈無搏動、漿膜撕裂／穿孔 → <b>腸切除吻合</b>。</li>'+
+              '<li>腹腔鏡：<b>Staged TAPP with mesh</b>（分期）或 <b>Immediate TEP with mesh</b>；開放亦可合成網片。</li>'+
+              '<li><b>CDC class II</b>（無明顯腸內容外溢）：緊急合成網片修補不增 30 天傷口併發症、顯著降低復發（grade 1A）。</li>'+
+              '<li>'+ABX_II+'</li>';
+      noteB='WSES 2017；staged TEP：Chihara N, et al. J Laparoendosc Adv Surg Tech A 2019。';
+    } else if(s.viab==='contam' || (s.spont==='no' && s.strang==='unstable')){
+      if(s.wound==='small'){
+        clsB='rec-urgent'; titleB='CDC III–IV、穩定、缺損 <3 cm → 一期組織修補';
+        detailB='<li>污染（III：腸切除有外溢）／骯髒（IV：穿孔腹膜炎）之<b>穩定</b>病人，缺損 <b>&lt;3 cm</b>：建議<b>一期組織修補</b>（grade 2C）— 如 Bassini、McVay、Shouldice。</li>'+
+                '<li>直接縫合不可行時 → <b>生物網片</b>；若無，則 polyglactin 網片或開放傷口延遲修補（grade 2C）。</li>'+
+                '<li>'+ABX_IIIIV+'</li>';
+        noteB='WSES 2017。';
+      } else if(s.wound==='large'){
+        clsB='rec-nonop'; titleB='CDC III–IV、穩定、缺損 >3 cm → 生物網片／延遲修補';
+        detailB='<li>缺損 <b>&gt;3 cm</b>、直接縫合不可行：<b>生物網片</b>；若無，則 polyglactin 網片或<b>開放傷口管理 + 延遲修補</b>（grade 2C）。</li>'+
+                '<li>大型中線缺損可考慮<b>組織結構分離術（component separation）</b>（grade 1B）。</li>'+
+                '<li>'+ABX_IIIIV+'</li>';
+        noteB='WSES 2017。';
+      } else if(s.wound==='unstable'){
+        clsB='rec-urgent'; titleB='不穩定（嚴重敗血／敗血性休克）→ 損傷控制、開放腹部';
+        detailB='<li>不穩定病人：<b>開放腹部（open abdomen）</b>管理以預防腹腔室隔症候群；穩定後<b>及早確定性關腹</b>。</li>'+
+                '<li>無法一期筋膜關閉時，<b>僅皮膚關閉</b>為可行選項，日後再以<b>延遲關腹 + 合成網片</b>處理（grade 1C）。</li>'+
+                '<li>抗生素：治療性抗生素（腹膜炎，class IV）。</li>';
+        noteB='WSES 2017。';
+      } else {
+        clsB='rec-urgent'; titleB='污染／骯髒場 → 請完成 CDC 傷口分類（步驟 S4）';
+        detailB='<li>請於上方選擇傷口分類與病人穩定度。</li>';
+      }
+    }
+  }
+  flowRec('hern_rec2',clsB,titleB,detailB,noteB);
+  flowShow('hern_rec2', approachSet);
 }
 function hernReset(){
   hernSt.taxis=null; hernSt.taxisOut=null; hernSt.spont=null; hernSt.strang=null; hernSt.viab=null; hernSt.wound=null;
