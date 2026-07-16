@@ -2,7 +2,7 @@
  * 策略：network-first（有網路時每次都抓最新版並更新快取；離線或逾時才回退快取）。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v71';
+const CACHE_VERSION = 'clinical-tools-v72';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -91,8 +91,11 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_VERSION);
 
-    // 發出網路請求；成功即更新快取
-    const networkFetch = fetch(req)
+    // 發出網路請求；成功即更新快取。
+    // cache:'no-cache' 強制向伺服器驗證（帶 ETag 的條件式請求，未更動時回 304 幾乎不耗流量）。
+    // 若不指定，SW 的 fetch 會沿用瀏覽器 HTTP 快取，而 GitHub Pages 送 max-age=600，
+    // 將使「開啟即更新」延遲最多 10 分鐘。
+    const networkFetch = fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res && res.status === 200 && res.type === 'basic') {
           cache.put(req, res.clone());

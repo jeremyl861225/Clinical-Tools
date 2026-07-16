@@ -34,6 +34,31 @@
   .back-btn{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:7px 12px; border-radius:2px; cursor:pointer; color:var(--ink); white-space:nowrap;}
   .back-btn:hover{background:var(--accent-soft);}
 
+  /* 全站查詢（首頁） */
+  .gs-box{margin:0 0 18px;}
+  .gs-field{display:flex; align-items:center; gap:8px; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:0 10px; transition:border-color .15s;}
+  .gs-field:focus-within{border-color:var(--accent);}
+  .gs-icon{font-size:16px; color:var(--muted-soft); line-height:1;}
+  .gs-input{flex:1; border:0; outline:0; background:transparent; color:var(--ink); font-family:var(--sans); font-size:14px; padding:11px 0; min-width:0;}
+  .gs-input::placeholder{color:var(--muted-soft); font-size:12.5px;}
+  .gs-input::-webkit-search-cancel-button{display:none;}
+  .gs-clear{border:0; background:transparent; color:var(--muted-soft); font-size:19px; line-height:1; padding:2px 4px; cursor:pointer;}
+  .gs-clear:hover{color:var(--accent2);}
+  .gs-results{margin-bottom:24px;}
+  .gs-count{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin:0 0 10px;}
+  .gs-group-head{display:flex; align-items:baseline; gap:8px; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); border-bottom:1px solid var(--accent-soft); padding-bottom:4px; margin:16px 0 8px;}
+  .gs-group-head:first-of-type{margin-top:0;}
+  .gs-group-n{margin-left:auto; color:var(--muted-soft);}
+  .gs-item{display:block; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:9px 13px; margin-bottom:7px; transition:border-color .15s, background .15s;}
+  .gs-item:hover{border-color:var(--accent); border-left-color:var(--accent); background:var(--hover-bg);}
+  .gs-pathway, .gs-guide{border-left-color:var(--accent2-soft);}
+  .gs-pathway:hover, .gs-guide:hover{border-color:var(--accent2); border-left-color:var(--accent2);}
+  .gs-name{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; font-family:var(--serif); font-size:15px; font-weight:600;}
+  .gs-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); font-weight:400;}
+  .gs-sub{display:block; font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .gs-hl{background:var(--accent-soft); color:inherit; border-radius:2px; padding:0 1px;}
+  .gs-empty{font-size:12.5px; color:var(--muted); background:var(--box-bg); border:1px dashed var(--line); border-radius:2px; padding:14px; text-align:center;}
+
   .tool-group{margin-bottom:24px;}
   .group-head{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; margin:0 0 10px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
   .group-title{font-family:var(--serif); font-size:17px; font-weight:600; color:var(--accent);}

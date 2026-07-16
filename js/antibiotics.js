@@ -393,6 +393,37 @@ function abxReset(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+/* ---- 深層連結：供首頁全站查詢直接跳至指定藥物／病原菌／感染部位 ----
+   #drug=<key>    藥物查詢模式並展開該藥卡
+   #bac=<英文名>  依病原菌模式並選定該菌
+   #site=<index>  依部位模式並選定該部位                                    */
+function applyHash(){
+  const h=decodeURIComponent((location.hash||'').replace(/^#/,''));
+  if(!h) return false;
+  let m;
+  if((m=h.match(/^site=(\d+)$/))){
+    const i=+m[1];
+    if(SITES[i]){ switchMode('empiric'); selectSite(i); return true; }
+  }
+  if((m=h.match(/^bac=(.+)$/))){
+    for(let gi=0; gi<BACTERIA.length; gi++){
+      const bi=BACTERIA[gi].items.findIndex(b=>b.en===m[1]);
+      if(bi>-1){ switchMode('bacteria'); renderBacteria(''); selectBacteria(gi,bi); return true; }
+    }
+  }
+  if((m=h.match(/^drug=(.+)$/))){
+    if(DRUGS[m[1]]){
+      switchMode('lookup'); renderLookup('');
+      // 讓 switchMode 的捲動先完成，openDrug 的 scrollIntoView 才不會被蓋掉
+      setTimeout(()=>openDrug(m[1]), 60);
+      return true;
+    }
+  }
+  return false;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   renderSites();
+  applyHash();
 });
+window.addEventListener('hashchange', applyHash);
