@@ -25,6 +25,16 @@
     </div>
   </div>
 
+  <div class="gs-box">
+    <div class="gs-field">
+      <span class="gs-icon">⌕</span>
+      <input type="search" id="gs-input" class="gs-input" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="查詢工具、藥名、菌名、癌別…（例：Tazocin、MRSA、胃癌、SOFA）">
+      <button type="button" id="gs-clear" class="gs-clear" aria-label="清除查詢">×</button>
+    </div>
+  </div>
+  <div id="gs-results" class="gs-results hidden"></div>
+
   <div class="tool-group deci-group">
     <div class="group-head"><span class="group-title">臨床決策流程</span><span class="group-en">Clinical Decision Pathways</span><span class="group-count">3 項</span></div>
     <div class="home-list">
@@ -202,6 +212,7 @@
   <footer class="tool-footer" style="margin-top:24px; border-top:1px solid var(--line); padding-top:12px;">本工具箱之計分與死亡率／存活率數據皆引自原始文獻之族群統計，僅供臨床輔助參考與教學使用，不能取代個別病人之臨床判斷與完整評估。各分數之出處文獻列於各工具頁下方。<br>© 2026 Lin Shao-Chin. All rights reserved. 未經書面同意，禁止複製、散布或再利用本站內容與程式碼。</footer>
 </div>
 </div>
+<script src="./js/search.js"></script>
 <script src="./js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

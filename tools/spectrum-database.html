@@ -95,6 +95,32 @@
   .sd-colhead .abbr{font-family:var(--mono); font-weight:700; font-size:11.5px; color:var(--accent);}
   .sd-colhead .cn{display:none;}
   th.col-hi .sd-colhead{background:var(--accent);} th.col-hi .sd-colhead .abbr,th.col-hi .sd-colhead .cn{color:#fff;}
+
+  /* ---- 欄位分組色帶 ----
+     色帶只上在表頭（第一列色塊＋第二列縮寫底色），格內維持四級感受性色階，
+     兩套顏色因此不會互相誤讀。四個色系（靛／藍綠／紫／卡其）刻意避開 s2/s0/sn 的
+     teal-ochre-rust，且彩度壓低，不與資料格搶視線。 */
+  :root{ --gA:#e4e9f4; --gAt:#3c4c78; --gB:#dcecef; --gBt:#1f5a6b;
+         --gC:#eae0f1; --gCt:#5b3f70; --gD:#e9e6dd; --gDt:#5b5442; }
+  @media (prefers-color-scheme: dark){
+    :root{ --gA:#2b3450; --gAt:#b9c6e8; --gB:#1f4048; --gBt:#a4d2db;
+           --gC:#382a45; --gCt:#cfb6e4; --gD:#39372e; --gDt:#c9c2ab; }
+  }
+  table.sd-mx thead tr.sd-band th{top:0; z-index:22; height:20px; padding:0 6px; text-align:center;
+    vertical-align:middle; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.05em;
+    border-bottom:1px solid var(--line);}
+  table.sd-mx thead tr.sd-band th.corner{left:0; z-index:32; min-width:172px; padding:0 12px; background:var(--accent-soft);}
+  table.sd-mx thead tr.sd-cols th{top:20px;}          /* 讓縮寫列黏在色帶下方 */
+  table.sd-mx thead tr.sd-cols th.corner{z-index:31;}
+  table.sd-mx thead th.tint-gA{background:var(--gA); color:var(--gAt);}
+  table.sd-mx thead th.tint-gB{background:var(--gB); color:var(--gBt);}
+  table.sd-mx thead th.tint-gC{background:var(--gC); color:var(--gCt);}
+  table.sd-mx thead th.tint-gD{background:var(--gD); color:var(--gDt);}
+  table.sd-mx thead tr.sd-cols th.tint-gA .abbr{color:var(--gAt);}
+  table.sd-mx thead tr.sd-cols th.tint-gB .abbr{color:var(--gBt);}
+  table.sd-mx thead tr.sd-cols th.tint-gC .abbr{color:var(--gCt);}
+  table.sd-mx thead tr.sd-cols th.tint-gD .abbr{color:var(--gDt);}
+  table.sd-mx thead th.gsep, table.sd-mx td.sd-cell.gsep{border-left:2px solid var(--accent);}
   table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
   table.sd-mx tbody th.rowhead .rx{font-family:var(--serif); font-weight:600; font-size:13px; color:var(--ink);}
   table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
@@ -107,6 +133,27 @@
   .dot .sp{font-family:var(--mono); font-size:9px; font-weight:700; line-height:1; background:rgba(255,255,255,.94); border-radius:6px; padding:1px 4px;}
   .dot .sp.px{font-style:italic; opacity:.9;}
   td.sd-cell.col-hi{outline:2px solid var(--accent); outline-offset:-2px;}
+
+  /* ---- 表二／表三 感受性矩陣的手機版（須置於上方基礎規則之後才蓋得掉）----
+     主因：th,td 全域 white-space:nowrap，rowhead 的中文註解（如「新型隱球菌 ·
+     AmB＋5FC 為基石 · echinocandin 無效」）會把整欄撐到約 270px，375px 螢幕只剩
+     一欄半資料看得到。讓 rowhead 換行並鎖寬，字級一併收斂，把寬度讓給資料欄。 */
+  @media(max-width:560px){
+    table.sd-mx thead th.corner{min-width:0; width:116px; padding:4px 8px; font-size:9.5px;}
+    table.sd-mx thead tr.sd-band th.corner{width:116px; min-width:0; padding:0 8px;}
+    table.sd-mx tbody th.rowhead{white-space:normal; width:116px; max-width:116px; padding:5px 8px;}
+    /* 菌名不折行（否則「C. parapsilosis」會被拆成「C.」＋「parapsilosis」），只讓中文註解折 */
+    table.sd-mx tbody th.rowhead .rx{font-size:11px; white-space:nowrap;}
+    table.sd-mx tbody th.rowhead .cn{white-space:normal; font-size:8.5px; line-height:1.3;}
+    /* 註解折行會撐高該列，.dot 若維持固定高度會在色塊上下留出空隙，故改為填滿整列 */
+    td.sd-cell{height:1px;}
+    td.sd-cell .dot{height:100%; min-height:36px; font-size:11px;}
+    tr.sd-grp th{font-size:9px; padding:3px 8px; letter-spacing:.03em;}
+    table.sd-mx thead tr.sd-band th{font-size:8px; letter-spacing:.02em;}
+    .sd-colhead{min-width:44px; padding:6px 3px;}
+    .sd-colhead .abbr{font-size:10px;}
+    .dot .sp{font-size:8px; padding:1px 3px;}
+  }
 
   /* ---- CR-GNB 熱圖（欄寬平均）---- */
   .sd-hmshell{overflow-x:auto; border:1px solid var(--line); border-radius:3px;}
@@ -261,7 +308,20 @@
 /* 台大 2025H1 在地 %S 對照：key = 藥|菌欄；值 [S, n] 或 [S, n, 1(=同類代表)] */
 const NTUH_S={"Penicillin|Strep.":[100,725],"Penicillin|Efc":[98,1483],"Penicillin|Efm":[5,1317],"Penicillin|Anae.":[100,9],"Oxacillin|MSSA":[100,983],"Oxacillin|MRSA":[0,549],"Ampicillin|Efc":[99,1483],"Ampicillin|Efm":[5,1317],"Unasyn|GNB":[56,1969],"Unasyn|En.bac":[1,527],"Unasyn|AB":[82,909],"Unasyn|Anae.":[88,9],"Tazocin|GNB":[79,1969],"Tazocin|En.bac":[59,527],"Tazocin|PsA":[79,1455],"Tazocin|AB":[73,909],"1st|GNB":[61,1969],"Cefmetazole|GNB":[72,1969],"Cefmetazole|Anae.":[89,9],"Ceftriaxone|Strep.":[64,82],"Ceftriaxone|GNB":[69,1969],"Ceftriaxone|En.bac":[44,527],"Ceftazidime|GNB":[71,1969],"Ceftazidime|En.bac":[49,527],"Ceftazidime|PsA":[86,1455],"Ceftazidime|AB":[72,909],"Flomoxef|Anae.":[100,9],"Cefepime|GNB":[90,1969],"Cefepime|En.bac":[80,527],"Cefepime|PsA":[87,1455],"Cefepime|AB":[74,909],"Ertapenem|GNB":[89,1969],"Ertapenem|En.bac":[84,527],"Imipenem|GNB":[93,1969],"Imipenem|En.bac":[89,527],"Imipenem|PsA":[89,1455],"Imipenem|AB":[75,909],"Meropenem|GNB":[95,1969],"Meropenem|En.bac":[93,527],"Meropenem|PsA":[88,1455],"Meropenem|AB":[75,909],"Ciprofloxacin|MSSA":[96,983],"Ciprofloxacin|MRSA":[54,549],"Ciprofloxacin|Efc":[88,1483],"Ciprofloxacin|Efm":[5,1317],"Ciprofloxacin|GNB":[73,1969],"Ciprofloxacin|En.bac":[66,527],"Ciprofloxacin|PsA":[86,1455],"Ciprofloxacin|AB":[74,909],"Levofloxacin|Strep.":[93,725],"Levofloxacin|MSSA":[96,983],"Levofloxacin|MRSA":[54,549],"Levofloxacin|Efc":[89,1483],"Levofloxacin|Efm":[7,1317],"Levofloxacin|GNB":[59,1969],"Levofloxacin|En.bac":[61,527],"Levofloxacin|PsA":[83,1455],"Levofloxacin|AB":[75,909],"Moxifloxacin|Strep.":[98,82],"Vancomycin|Strep.":[100,82],"Vancomycin|MSSA":[100,983],"Vancomycin|MRSA":[100,549],"Vancomycin|Efc":[99,1483],"Vancomycin|Efm":[47,1317],"Daptomycin|MSSA":[100,983],"Daptomycin|MRSA":[100,549],"Daptomycin|Efc":[79,1483],"Linezolid|MSSA":[100,983],"Linezolid|MRSA":[99,549],"Linezolid|Efc":[83,1483],"Linezolid|Efm":[98,1317],"Tigecycline|GNB":[89,1969],"Tigecycline|En.bac":[81,527],"Fusidic acid|MSSA":[85,983],"Fusidic acid|MRSA":[90,549],"Doxycycline|Strep.":[21,725,1],"Doxycycline|MSSA":[55,983,1],"Doxycycline|MRSA":[70,549,1],"Doxycycline|Efc":[10,1483,1],"Doxycycline|Efm":[42,1317,1],"Colistin|GNB":[97,1969],"Colistin|En.bac":[95,527],"Colistin|PsA":[98,1455],"Colistin|AB":[99,909],"TMP-SMX|MSSA":[99,983],"TMP-SMX|MRSA":[92,549],"TMP-SMX|GNB":[63,1969],"TMP-SMX|En.bac":[64,527],"Gentamicin|MSSA":[73,983],"Gentamicin|MRSA":[74,549],"Gentamicin|GNB":[75,1969],"Gentamicin|En.bac":[84,527],"Gentamicin|AB":[77,909],"Amikacin|GNB":[94,1969],"Amikacin|En.bac":[88,527],"Clindamycin|Strep.":[49,725],"Clindamycin|MSSA":[86,983],"Clindamycin|MRSA":[53,549],"Clindamycin|Anae.":[83,9],"Metronidazole|Anae.":[100,9],"Azithromycin|Strep.":[52,725,1],"Azithromycin|MSSA":[62,983,1],"Azithromycin|MRSA":[24,549,1],"Mica|C. albicans":[100,16],"Caspo|C. albicans":[100,16],"Anidula|C. albicans":[100,16],"Vori|C. albicans":[100,16],"Flu|C. albicans":[100,16],"Mica|C. tropicalis":[100,23],"Caspo|C. tropicalis":[96,23],"Anidula|C. tropicalis":[100,23],"Vori|C. tropicalis":[48,23],"Flu|C. tropicalis":[70,23],"Mica|C. parapsilosis":[100,14],"Caspo|C. parapsilosis":[100,14],"Anidula|C. parapsilosis":[100,14],"Vori|C. parapsilosis":[100,14],"Flu|C. parapsilosis":[100,14],"Mica|C. glabrata":[100,16],"Caspo|C. glabrata":[75,16],"Anidula|C. glabrata":[100,16],"Flu|C. glabrata":[75,16]};
 
-const abxCols=[{abbr:"Strep.",cn:"鏈球菌"},{abbr:"MSSA",cn:"甲氧敏感 SA"},{abbr:"MRSA",cn:"抗甲氧 SA"},{abbr:"Efc",cn:"糞腸球菌"},{abbr:"Efm",cn:"屎腸球菌"},{abbr:"GNB",cn:"腸桿菌 E.coli/Kleb"},{abbr:"En.bac",cn:"Enterobacter AmpC"},{abbr:"PsA",cn:"綠膿桿菌"},{abbr:"AB",cn:"鮑氏不動桿菌"},{abbr:"Anae.",cn:"厭氧菌"},{abbr:"Atyp.",cn:"非典型菌"}];
+/* 欄位分組（g）：相似欄以同一色系表頭標示，並在組與組之間加分隔線。
+   表二依菌種分陽性／陰性／厭氧／非典；表三依藥理分 polyene／echinocandin／azole／pyrimidine。
+   色系只上在表頭，格內仍是四級感受性色階，兩者不互相干擾。 */
+const GRP={
+  gp:{label:"革蘭氏陽性 Gram(+)", tint:"gA"},
+  gn:{label:"革蘭氏陰性 Gram(−)", tint:"gB"},
+  an:{label:"厭氧 Anaerobe",       tint:"gC"},
+  at:{label:"非典型 Atypical",     tint:"gD"},
+  po:{label:"Polyene",             tint:"gA"},
+  ec:{label:"Echinocandin",        tint:"gB"},
+  az:{label:"Azole",               tint:"gC"},
+  fc:{label:"Pyrimidine",          tint:"gD"}
+};
+const abxCols=[{abbr:"Strep.",cn:"鏈球菌",g:"gp"},{abbr:"MSSA",cn:"甲氧敏感 SA",g:"gp"},{abbr:"MRSA",cn:"抗甲氧 SA",g:"gp"},{abbr:"Efc",cn:"糞腸球菌",g:"gp"},{abbr:"Efm",cn:"屎腸球菌",g:"gp"},{abbr:"GNB",cn:"腸桿菌 E.coli/Kleb",g:"gn"},{abbr:"En.bac",cn:"Enterobacter AmpC",g:"gn"},{abbr:"PsA",cn:"綠膿桿菌",g:"gn"},{abbr:"AB",cn:"鮑氏不動桿菌",g:"gn"},{abbr:"Anae.",cn:"厭氧菌",g:"an"},{abbr:"Atyp.",cn:"非典型菌",g:"at"}];
 const abxRows=[
  {g:"青黴素類 Penicillins"},
  {rx:"Penicillin",cn:"青黴素 G",v:[2,-1,-1,1,0,-1,-1,-1,-1,0,-1]},
@@ -308,27 +368,34 @@ const abxRows=[
  {rx:"Fosfomycin",cn:"UTI／ESBL",v:[1,1,0,1,0,2,0,0,0,-1,-1]},
  {rx:"Rifampin",cn:"生物膜輔助／勿單用",v:[1,1,1,0,0,0,-1,-1,0,-1,-1]}
 ];
-const afxCols=[{abbr:"AmB",cn:"Amphotericin B"},{abbr:"Mica",cn:"Micafungin"},{abbr:"Caspo",cn:"Caspofungin"},{abbr:"Anidula",cn:"Anidulafungin"},{abbr:"Posa",cn:"Posaconazole"},{abbr:"Vori",cn:"Voriconazole"},{abbr:"Itra",cn:"Itraconazole"},{abbr:"Flu",cn:"Fluconazole"}];
+const afxCols=[{abbr:"AmB",cn:"Amphotericin B",g:"po"},{abbr:"Mica",cn:"Micafungin",g:"ec"},{abbr:"Caspo",cn:"Caspofungin",g:"ec"},{abbr:"Anidula",cn:"Anidulafungin",g:"ec"},{abbr:"Posa",cn:"Posaconazole",g:"az"},{abbr:"Vori",cn:"Voriconazole",g:"az"},{abbr:"Itra",cn:"Itraconazole",g:"az"},{abbr:"Flu",cn:"Fluconazole",g:"az"},{abbr:"5FC",cn:"Flucytosine",g:"fc"}];
+/* 5FC（flucytosine）欄依文獻：菌譜僅限酵母菌（Candida、Cryptococcus）與部分暗色黴菌，
+   對絲狀真菌（Aspergillus、Mucorales、Fusarium）與雙型性地方性黴菌完全無活性。
+   C. albicans／glabrata／parapsilosis 敏感率 95–100%（MIC90 0.12–1）；C. krusei MIC90 32、
+   僅約 5% 敏感故列變異；C. tropicalis 近年出現 FCY2 突變之抗藥株 clonal 擴散（全球非野生型約 10%）故列有效而非強效。
+   C. neoformans 原發抗藥僅 1–2%，為 AmB＋5FC 合併療法之基石。5FC 不單用（易快速產生次發抗藥）。
+   來源：Vermes 2000 / Pfaller 2002 / Bellmann 2023 review (PMC10084540)、
+   Molecular Mechanisms of 5-FC Resistance, J Fungi 2021;7:909、EID 2025;31:5 (C. tropicalis clade)。 */
 const afxRows=[
  {g:"念珠菌 Candida"},
- {rx:"C. albicans",cn:"白色念珠菌",v:[2,2,2,2,2,2,2,2]},
- {rx:"C. tropicalis",cn:"熱帶念珠菌",v:[2,2,2,2,2,2,2,1]},
- {rx:"C. parapsilosis",cn:"近平滑 · echinocandin MIC↑",v:[2,0,0,0,2,2,2,2]},
- {rx:"C. krusei",cn:"克魯斯 · Flu 天然抗藥",v:[1,2,2,2,1,1,1,-1]},
- {rx:"C. glabrata",cn:"光滑 · azole 劑量依賴",v:[1,2,2,2,0,0,0,0]},
+ {rx:"C. albicans",cn:"白色念珠菌",v:[2,2,2,2,2,2,2,2,2]},
+ {rx:"C. tropicalis",cn:"熱帶念珠菌 · 5FC 抗藥株增加",v:[2,2,2,2,2,2,2,1,1]},
+ {rx:"C. parapsilosis",cn:"近平滑 · echinocandin MIC↑",v:[2,0,0,0,2,2,2,2,2]},
+ {rx:"C. krusei",cn:"克魯斯 · Flu 天然抗藥 · 5FC MIC↑",v:[1,2,2,2,1,1,1,-1,0]},
+ {rx:"C. glabrata",cn:"光滑 · azole 劑量依賴",v:[1,2,2,2,0,0,0,0,2]},
  {g:"隱球菌 Cryptococcus"},
- {rx:"C. neoformans",cn:"新型隱球菌 · echinocandin 無效",v:[2,-1,-1,-1,1,1,1,2]},
+ {rx:"C. neoformans",cn:"新型隱球菌 · AmB＋5FC 為基石 · echinocandin 無效",v:[2,-1,-1,-1,1,1,1,2,2]},
  {g:"麴菌 Aspergillus"},
- {rx:"A. fumigatus",cn:"煙麴菌 · Vori 首選",v:[1,1,1,1,2,2,1,-1]},
- {rx:"A. terreus",cn:"土麴菌 · AmB 天然抗藥",v:[-1,1,1,1,2,2,1,-1]},
- {rx:"A. flavus",cn:"黃麴菌",v:[0,1,1,1,2,2,1,-1]},
+ {rx:"A. fumigatus",cn:"煙麴菌 · Vori 首選",v:[1,1,1,1,2,2,1,-1,-1]},
+ {rx:"A. terreus",cn:"土麴菌 · AmB 天然抗藥",v:[-1,1,1,1,2,2,1,-1,-1]},
+ {rx:"A. flavus",cn:"黃麴菌",v:[0,1,1,1,2,2,1,-1,-1]},
  {g:"其他黴菌 Other moulds"},
- {rx:"Mucormycosis",cn:"毛黴菌 · AmB/Posa · Vori 無效",v:[2,-1,-1,-1,1,-1,0,-1]},
- {rx:"Fusarium",cn:"鐮刀菌",v:[1,-1,-1,-1,1,1,-1,-1]},
+ {rx:"Mucormycosis",cn:"毛黴菌 · AmB/Posa · Vori 無效",v:[2,-1,-1,-1,1,-1,0,-1,-1]},
+ {rx:"Fusarium",cn:"鐮刀菌",v:[1,-1,-1,-1,1,1,-1,-1,-1]},
  {g:"雙型性黴菌 Dimorphic"},
- {rx:"Histoplasma",cn:"組織漿菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0]},
- {rx:"Blastomyces",cn:"芽生菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0]},
- {rx:"Coccidioides",cn:"球黴菌 · Flu 可",v:[2,-1,-1,-1,1,1,1,1]}
+ {rx:"Histoplasma",cn:"組織漿菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0,-1]},
+ {rx:"Blastomyces",cn:"芽生菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0,-1]},
+ {rx:"Coccidioides",cn:"球黴菌 · Flu 可",v:[2,-1,-1,-1,1,1,1,1,-1]}
 ];
 const resistant=[
  {ab:"MRSA",cn:"抗甲氧西林金黃色葡萄球菌",d:["Vancomycin","Teicoplanin","Daptomycin","Linezolid","Tigecycline"]},
@@ -346,8 +413,19 @@ const sTier=s=>s>=90?"sHi":s>=80?"sOk":s>=60?"sMid":"sLo";
 
 function buildMatrix(tblId,cols,rows,keyFn){
   const t=document.getElementById(tblId);
-  let thead="<thead><tr><th class='corner'>藥物 ＼ 致病菌</th>";
-  cols.forEach((c,i)=>{ thead+=`<th data-col='${i}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`; });
+  // 第一列：欄位分組色帶（同組連續欄合併為一格）；第二列才是各欄縮寫。
+  let band="<tr class='sd-band'><th class='corner band'></th>";
+  const sep=new Array(cols.length).fill(false);
+  for(let i=0;i<cols.length;){
+    let j=i; while(j<cols.length && cols[j].g===cols[i].g) j++;
+    const G=GRP[cols[i].g];
+    if(i>0) sep[i]=true;                       // 組與組之間畫粗分隔線
+    band+=`<th class='bandcell tint-${G.tint}${i>0?' gsep':''}' colspan='${j-i}'>${G.label}</th>`;
+    i=j;
+  }
+  band+="</tr>";
+  let thead="<thead>"+band+"<tr class='sd-cols'><th class='corner'>藥物 ＼ 致病菌</th>";
+  cols.forEach((c,i)=>{ thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`; });
   thead+="</tr></thead>";
   let tb="<tbody>";
   rows.forEach(r=>{
@@ -357,7 +435,7 @@ function buildMatrix(tblId,cols,rows,keyFn){
     r.v.forEach((v,i)=>{
       const s=NTUH_S[keyFn(r.rx,cols[i].abbr)];
       const sp=s?`<span class='sp ${sTier(s[0])}${s[2]?' px':''}'>${s[2]?'≈':''}${s[0]}%</span>`:"";
-      tb+=`<td class='sd-cell ${cls(v)}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
+      tb+=`<td class='sd-cell ${cls(v)}${sep[i]?' gsep':''}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
     });
     tb+="</tr>";
   });
