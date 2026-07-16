@@ -72,6 +72,8 @@ function switchTab(id, tab){
   else {
     el.innerHTML = renderTx(c);
     if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
+    if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
+    if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
   }
 }
 
@@ -192,9 +194,15 @@ function renderNode(c){
 }
 
 function renderTx(c){
-  // 胃癌治療改為互動決策流程圖（療程資料已整合於各建議處置色塊）
+  // 具互動決策流程圖之癌別：療程資料已整合於各建議處置色塊，tx 僅作為模組未載入時的後備
   if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
     return gastricPathwayHTML();
+  }
+  if(c.pathway === 'breast' && typeof breastPathwayHTML === 'function'){
+    return breastPathwayHTML();
+  }
+  if(c.pathway === 'colon' && typeof colonPathwayHTML === 'function'){
+    return colonPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
