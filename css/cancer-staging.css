@@ -70,6 +70,29 @@
   .node-item .ni-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
   .node-group{font-family:var(--mono); font-size:11px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; margin-left:6px; white-space:nowrap;}
 
+  /* ---- 淋巴結：依術式之 D 級控制列與徽章（胃癌）---- */
+  .nd-ctrl{background:var(--soft-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin:8px 0 10px;}
+  .nd-h{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft); margin:0 0 5px;}
+  .nd-btns{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px;}
+  .nd-btns:last-child{margin-bottom:0;}
+  .nd-btn{font-family:var(--mono); font-size:11.5px; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:5px 10px; cursor:pointer; color:var(--ink);}
+  .nd-btn:hover{border-color:var(--accent); background:var(--hover-bg);}
+  .nd-btn.active{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;}
+  .nd-def{font-size:11.5px; line-height:1.65; color:var(--label-ink); background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:2px; padding:8px 11px; margin-bottom:10px; font-family:var(--mono);}
+  /* D 級著色 */
+  .node-item.dl-1{border-left-color:var(--accent);}
+  .node-item.dl-1p{border-left-color:#6b8f8a;}
+  .node-item.dl-2{border-left-color:var(--accent2);}
+  .node-item.dl-none{border-left-color:var(--line); opacity:.72;}
+  .node-group.dl-1{color:#fff; background:var(--accent);}
+  .node-group.dl-1p{color:#fff; background:#6b8f8a;}
+  .node-group.dl-2{color:#fff; background:var(--accent2);}
+  .node-group.dl-none{color:var(--muted-soft); background:transparent; border:1px solid var(--line);}
+  /* 區域 N / 遠處 M1 標記 */
+  .ni-reg{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px; margin-left:5px; white-space:nowrap; color:var(--accent); border:1px solid var(--accent-soft); background:var(--accent-soft);}
+  .ni-reg.is-m{color:var(--accent2); border-color:var(--accent2); background:var(--accent2-soft);}
+  .ni-note{font-size:11px; line-height:1.6; color:var(--muted); margin-top:5px; padding-top:5px; border-top:1px dashed var(--line);}
+
   .tx{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:12px 14px; margin-bottom:9px;}
   .tx.neo{border-left:3px solid var(--accent2);}
   .tx.surg{border-left:3px solid var(--accent);}
