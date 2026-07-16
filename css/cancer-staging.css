@@ -88,9 +88,20 @@
   .tx-body ul{margin:5px 0; padding-left:18px;}
   .tx-body li{margin:3px 0;}
 
-  /* ---- 胃癌互動流程：追蹤區塊、KPS 分級、巢狀清單 ---- */
+  /* ---- 胃癌互動流程：藥名 badge、線別層次、追蹤區塊、KPS 分級 ---- */
   .rec-detail ul{margin:4px 0 2px; padding-left:16px; list-style:disc;}
   .rec-detail ul li{margin:2px 0;}
+  /* 藥名 badge（深色建議色塊上，半透明淺底可讀） */
+  .rec-detail .drug{display:inline-block; font-family:var(--sans); font-size:11.5px; line-height:1.5; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.30); border-radius:3px; padding:0 6px; margin:1px 1px; white-space:nowrap;}
+  /* 療程名（FLOT、CAPOX…）以 mono 暖色強調 */
+  .rec-detail .rx{font-family:var(--mono); font-weight:700; letter-spacing:.02em; color:#ffd9b0;}
+  /* 線別／階段標題：加大、加底線做出層次 */
+  .rec-detail .rx-h{display:inline-block; font-family:var(--mono); font-size:12.5px; font-weight:700; letter-spacing:.03em; color:#fff; border-bottom:1.5px solid rgba(255,255,255,.4); padding-bottom:1px; margin:2px 0; text-transform:uppercase;}
+  .rec-detail .rx-sub{font-size:11px; opacity:.82;}
+  /* rec-idle（淺底）時的對比修正 */
+  .flow-rec.rec-idle .rec-detail .drug{background:var(--field-bg); border-color:var(--line);}
+  .flow-rec.rec-idle .rec-detail .rx{color:var(--accent2);}
+  .flow-rec.rec-idle .rec-detail .rx-h{color:var(--ink); border-bottom-color:var(--accent-soft);}
   .flow-fu{background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px; padding:13px 16px; margin-top:8px;}
   .flow-fu.hidden{display:none;}
   .flow-fu .fu-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:6px;}

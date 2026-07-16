@@ -27,6 +27,7 @@
       '<div class="flow-opts">' + optsHtml + '</div>' + (extra || '') + '</div>';
   }
   function conn(id) { return '<div class="flow-connector" id="' + id + '">↓</div>'; }
+  function connH(id) { return '<div class="flow-connector hidden" id="' + id + '">↓</div>'; }
   function rec(id, label) {
     return '<div class="flow-rec rec-idle" id="' + id + '"><div class="rec-label">' + label +
       '</div><div class="rec-title">請完成上方步驟</div></div>';
@@ -56,21 +57,24 @@
     h += '<div id="gc_res" class="hidden">';
     h += conn('gc_c3');
     h += step('gc_s3', '3', '臨床分期 → 治療策略',
-      opt('strat', 'esd', '內視鏡切除候選 ESD', 'cT1a，符合任一：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且 ≤3cm；③未分化型、無潰瘍且 ≤2cm') +
+      opt('strat', 'esd', '內視鏡切除 ESD', 'cT1a，符合任一：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且 ≤3cm；③未分化型、無潰瘍且 ≤2cm') +
       opt('strat', 'upfront', '直接根治性手術', '可切除、非 bulky（cT1b–cT3、N0–N+）') +
       opt('strat', 'periop', '圍手術期化療 → 手術', 'cT4N+ 或 bulky nodes（borderline resectable）'));
 
+    h += connH('gc_c3b');
     h += step('gc_s3b', '3b', 'ESD 術後病理是否為治癒性切除？',
       opt('esdcur', 'esd_cur', '治癒性（curative）', '切緣陰性、LVI(−)、submucosal 侵犯 <500µm') +
       opt('esdcur', 'esd_noncur', '非治癒性（non-curative）', '切緣陽性、LVI(+) 或深部侵犯 ≥500µm'));
     h = h.replace('id="gc_s3b"', 'id="gc_s3b" class="hidden"');
 
+    h += connH('gc_c4');
     h += step('gc_s4', '4', '手術切除結果（R status）',
       opt('rstatus', 'R0', 'R0 切除', '無殘存腫瘤') +
       opt('rstatus', 'R1', 'R1 切除', '顯微鏡下殘存（microscopic）') +
       opt('rstatus', 'R2', 'R2 切除', '肉眼可見殘存（gross residual）'));
     h = h.replace('id="gc_s4"', 'id="gc_s4" class="hidden"');
 
+    h += connH('gc_c4b');
     h += step('gc_s4b', '4b', 'R0 病理分期（決定術後輔助化療）',
       opt('pstage', 'p_early', 'pT1N0 或 pT2N0', '早期、淋巴結陰性') +
       opt('pstage', 'p_adj', 'pT3、pT4 或 任何 T、N+', '侵犯較深或淋巴結轉移'));
@@ -79,6 +83,7 @@
     h += '</div>'; // gc_res
 
     // 不可切除（fit）化療後再分期（AGC-3, 2 of 2）
+    h += connH('gc_c_restage');
     h += step('gc_s_restage', '3', '化療後再分期反應（AGC-3, 2 of 2）',
       opt('restage', 'ccr', '臨床完全緩解（cCR）或大幅反應', 'clinical CR / major response') +
       opt('restage', 'residual', '殘存病灶／局部或遠處轉移', 'residual, locoregional and/or distant'));
@@ -188,15 +193,15 @@
 
   function systemicLines() {
     return [
-      '<b>化療骨架 Backbone</b>：體能良好 → 含鉑雙合一 <span class="rx">FOLFOX</span>／<span class="rx">CAPOX</span>／<span class="rx">FP</span>（cisplatin 或 oxaliplatin ＋ <span class="drug">5-FU</span>／<span class="drug">capecitabine</span>／<span class="drug">S-1</span>）；體能不佳（KPS ≤50／ECOG 3）→ <span class="rx">HDFL</span>（週 24hr <span class="drug">5-FU</span> 2,000–2,600 mg/m²＋<span class="drug">leucovorin</span> 300 mg/m²）或 5-FU/LV。' + kpsDetailsHtml(),
-      '<b>一線 1st line</b>（依 HER2／PD-L1／MMR-MSI／CLDN18.2 加成）：<ul>' +
-        '<li>HER2+：＋<span class="drug">trastuzumab</span>（ToGA）；CPS ≥1 再加 <span class="drug">pembrolizumab</span>（KEYNOTE-811）。</li>' +
-        '<li>HER2− · PD-L1 CPS ≥5：＋<span class="drug">nivolumab</span>（CheckMate 649，健保給付）；CPS ≥1：＋<span class="drug">pembrolizumab</span>（KEYNOTE-859）。</li>' +
-        '<li>dMMR／MSI-H：＋<span class="drug">nivolumab</span> 或 <span class="drug">pembrolizumab</span>（不分線別）。</li>' +
-        '<li>CLDN18.2+：＋<span class="drug">zolbetuximab</span>（SPOTLIGHT／GLOW，健保 115/04/01 起給付 HER2−）。</li>' +
+      '<span class="rx-h">化療骨架 Backbone</span><br>體能良好 → 含鉑雙合一 <span class="rx">FOLFOX</span>／<span class="rx">CAPOX</span>／<span class="rx">FP</span>（<span class="drug">cisplatin</span> 或 <span class="drug">oxaliplatin</span> ＋ <span class="drug">5-FU</span>／<span class="drug">capecitabine</span>／<span class="drug">S-1</span>）；體能不佳（KPS ≤50／ECOG 3）→ <span class="rx">HDFL</span>（週 24hr <span class="drug">5-FU</span> 2,000–2,600 mg/m²＋<span class="drug">leucovorin</span> 300 mg/m²）或 5-FU/LV。' + kpsDetailsHtml(),
+      '<span class="rx-h">一線 1st line</span>　<span class="rx-sub">依 HER2／PD-L1／MMR-MSI／CLDN18.2 加成</span><ul>' +
+        '<li><b>HER2+</b>：＋<span class="drug">trastuzumab</span>（ToGA）；CPS ≥1 再加 <span class="drug">pembrolizumab</span>（KEYNOTE-811）。</li>' +
+        '<li><b>HER2− · PD-L1 CPS ≥5</b>：＋<span class="drug">nivolumab</span>（CheckMate 649，健保給付）；CPS ≥1：＋<span class="drug">pembrolizumab</span>（KEYNOTE-859）。</li>' +
+        '<li><b>dMMR／MSI-H</b>：＋<span class="drug">nivolumab</span> 或 <span class="drug">pembrolizumab</span>（不分線別）。</li>' +
+        '<li><b>CLDN18.2+</b>：＋<span class="drug">zolbetuximab</span>（SPOTLIGHT／GLOW，健保 115/04/01 起給付 HER2−）。</li>' +
         '</ul>',
-      '<b>二線 2nd line</b>：<span class="drug">docetaxel</span>（COUGAR-02）；<span class="drug">ramucirumab</span> ± <span class="drug">paclitaxel</span>（RAINBOW）；HER2+ 可用 <span class="drug">trastuzumab deruxtecan</span>（T-DXd）。',
-      '<b>三線後 3rd line+</b>：<span class="drug">trifluridine/tipiracil</span>（TAGS）；<span class="drug">nivolumab</span>（ATTRACTION-2）；<span class="drug">pembrolizumab</span>（CPS ≥1 或 MSI-H／dMMR）；臨床試驗。'
+      '<span class="rx-h">二線 2nd line</span><br><span class="drug">docetaxel</span>（COUGAR-02）；<span class="drug">ramucirumab</span> ± <span class="drug">paclitaxel</span>（RAINBOW）；HER2+ 可用 <span class="drug">trastuzumab deruxtecan</span>（T-DXd）。',
+      '<span class="rx-h">三線後 3rd line+</span><br><span class="drug">trifluridine/tipiracil</span>（TAGS）；<span class="drug">nivolumab</span>（ATTRACTION-2）；<span class="drug">pembrolizumab</span>（CPS ≥1 或 MSI-H／dMMR）；臨床試驗。'
     ];
   }
 
@@ -210,13 +215,23 @@
     gcShow('gc_mc2', s.scope === 'm1');
 
     // M0
-    gcShow('gc_res', s.fit === 'fit_res');
-    gcShow('gc_c3', s.fit === 'fit_res');
-    gcShow('gc_s3b', s.fit === 'fit_res' && s.strat === 'esd');
+    var res = (s.fit === 'fit_res');
+    gcShow('gc_res', res);
+    gcShow('gc_c3', res);
+    var esd = res && s.strat === 'esd';
+    gcShow('gc_c3b', esd);
+    gcShow('gc_s3b', esd);
     var surgical = (s.strat === 'upfront' || s.strat === 'periop');
-    gcShow('gc_s4', s.fit === 'fit_res' && surgical);
-    gcShow('gc_s4b', s.fit === 'fit_res' && surgical && s.rstatus === 'R0');
-    gcShow('gc_s_restage', s.fit === 'fit_unres');
+    var esdNoncur = (s.strat === 'esd' && s.esdcur === 'esd_noncur');
+    var showR = res && (surgical || esdNoncur);
+    gcShow('gc_c4', showR);
+    gcShow('gc_s4', showR);
+    var showPs = showR && s.rstatus === 'R0';
+    gcShow('gc_c4b', showPs);
+    gcShow('gc_s4b', showPs);
+    var unres = (s.fit === 'fit_unres');
+    gcShow('gc_c_restage', unres);
+    gcShow('gc_s_restage', unres);
     renderLocoRec();
 
     // M1
@@ -258,31 +273,34 @@
     // 可耐受手術、可切除
     if (!s.strat) { idleRec(R, F, '請選擇步驟 3（治療策略）'); return; }
 
-    if (s.strat === 'esd') {
-      if (!s.esdcur) {
-        result(R, F, 'rec-elective', '內視鏡黏膜下剝離（ESD）', [
-          '適應症（Endoscopic resection with curative intent，符合任一）：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且腫瘤 ≤3cm；③未分化型、無潰瘍且腫瘤 ≤2cm。',
-          '完成後依病理判定是否為治癒性切除（見步驟 3b）。'
-        ], 'AGC-2：cT1 符合條件者可考慮 ESD。', null);
-        return;
-      }
-      if (s.esdcur === 'esd_cur') {
-        result(R, F, 'rec-elective', 'ESD 治癒性切除 → 觀察追蹤', [
-          '切緣陰性、LVI(−)、submucosal 侵犯 <500µm → 視為治癒。',
-          '定期內視鏡與影像追蹤（見下方追蹤）。'
-        ], '', 'curative');
-      } else {
-        result(R, F, 'rec-nonop', 'ESD 非治癒性 → 追加治療', [
-          '<b>追加胃切除 + 淋巴結廓清</b>（首選）。',
-          '或 repeat ESD；或密切觀察（依風險、共病與病人意願）。'
-        ], 'AGC-2：non-curative ESD → surgical resection／repeat ESD／close observation。', 'curative');
-      }
+    // ESD 分支
+    if (s.strat === 'esd' && !s.esdcur) {
+      result(R, F, 'rec-elective', '內視鏡黏膜下剝離（ESD）', [
+        '適應症（Endoscopic resection with curative intent，符合任一）：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且腫瘤 ≤3cm；③未分化型、無潰瘍且腫瘤 ≤2cm。',
+        '完成後依病理判定是否為治癒性切除（見步驟 3b）。'
+      ], 'AGC-2：cT1 符合條件者可考慮 ESD。', null);
+      return;
+    }
+    if (s.esdcur === 'esd_cur') {
+      result(R, F, 'rec-elective', 'ESD 治癒性切除 → 觀察追蹤', [
+        '切緣陰性、LVI(−)、submucosal 侵犯 <500µm → 視為治癒。',
+        '定期內視鏡與影像追蹤（見下方追蹤）。'
+      ], '', 'curative');
       return;
     }
 
-    // 手術（upfront / periop）
+    // 以下為切除後 R status：手術（upfront／periop）或 ESD 非治癒性追加手術共用
+    var esdNoncur = (s.strat === 'esd' && s.esdcur === 'esd_noncur');
+
     if (!s.rstatus) {
       var lead = [];
+      if (esdNoncur) {
+        lead.push('ESD 非治癒性 → <b>追加胃切除 + 淋巴結廓清（D2）</b>（首選）；或 repeat ESD／密切觀察（依風險、共病與病人意願）。');
+        lead.push('追加手術後依切除結果（R status）決定後續（見下方步驟 4）。');
+        result(R, F, 'rec-nonop', 'ESD 非治癒性 → 追加胃切除 + D2', lead,
+          'AGC-2：non-curative ESD → surgical resection／repeat ESD／close observation。', null);
+        return;
+      }
       if (s.strat === 'periop')
         lead.push('<b>術前</b>：三合一化療 <span class="rx">FLOT</span>（<span class="drug">5-FU</span>＋<span class="drug">leucovorin</span>＋<span class="drug">oxaliplatin</span>＋<span class="drug">docetaxel</span>）或 <span class="rx">DOS</span>（<span class="drug">docetaxel</span>＋<span class="drug">oxaliplatin</span>＋<span class="drug">S-1</span>）；無法耐受三合一 → 鉑+fluoropyrimidine 雙合一。');
       lead.push('遠端癌：<b>次全胃切除</b>（首選）；近端／賁門癌：全胃或近端胃切除。');
