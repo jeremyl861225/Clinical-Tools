@@ -224,6 +224,9 @@ OPTIONAL_STRING_FIELDS = [
 INJECTION_SUBFIELDS = ['route', 'reconstitute', 'diluent', 'volume', 'conc', 'time', 'notes']
 COV_KEYS_BACTERIAL = {'mrsa', 'pseudo', 'anaerobe', 'atypical', 'esbl', 'enterococcus'}
 COV_KEYS_FUNGAL = {'candida', 'glabkrusei', 'aspergillus', 'mucor', 'fusarium', 'histo', 'blasto', 'cocci'}
+COV_KEYS_VIRAL = {'hsv', 'cmv', 'flu', 'cov2', 'hbv', 'hcv', 'hiv', 'rsv'}
+COV_KEYS_PARA = {'malaria', 'ameba', 'nematode', 'cestode', 'trematode', 'ectopara'}
+COV_KEYSETS = {'fungal': COV_KEYS_FUNGAL, 'viral': COV_KEYS_VIRAL, 'para': COV_KEYS_PARA}
 # 四級：2=強效/在地%S≥90、1=涵蓋/80–89、'p'=部分/60–79、0=不涵蓋（通常省略）
 COV_VALUES = {2, 1, 'p', 0}
 
@@ -323,17 +326,19 @@ def validate_drug(key, d, errors, warnings):
         if not isinstance(cov, dict):
             errors.append(f'[{key}] `cov` 應為物件，實際型別={type(cov).__name__}')
         else:
-            allowed = COV_KEYS_FUNGAL if d.get('covSet') == 'fungal' else COV_KEYS_BACTERIAL
+            cset = d.get('covSet')
+            allowed = COV_KEYSETS.get(cset, COV_KEYS_BACTERIAL)
+            setname = {'fungal': '抗黴', 'viral': '抗病毒', 'para': '抗寄生蟲'}.get(cset, '抗菌')
             for k, v in cov.items():
                 if k not in allowed:
                     warnings.append(
-                        f'[{key}] `cov.{k}` 不在 {"抗黴" if d.get("covSet")=="fungal" else "抗菌"} '
-                        f'標準鍵集合 {sorted(allowed)} 內'
+                        f'[{key}] `cov.{k}` 不在 {setname} 標準鍵集合 {sorted(allowed)} 內'
                     )
                 if v not in COV_VALUES:
                     errors.append(f'[{key}] `cov.{k}` 值應為 2、1、\'p\' 或 0，實際={v!r}')
-    if 'covSet' in d and d['covSet'] not in ('fungal',):
-        warnings.append(f'[{key}] `covSet` 值非預期（目前只定義 \'fungal\'），實際={d["covSet"]!r}')
+    if 'covSet' in d and d['covSet'] not in COV_KEYSETS:
+        warnings.append(
+            f'[{key}] `covSet` 值非預期（可用：{sorted(COV_KEYSETS)}），實際={d["covSet"]!r}')
 
     # preg 常見值檢查（非強制，只提示）
     if 'preg' in d and d['preg'] not in ('A', 'B', 'C', 'D', 'X'):

@@ -1,16 +1,19 @@
 /* 抗生素指引 antibiotics.html — render／互動邏輯。
    依賴全域資料（由 data/antibiotics/*.js 掛載於 window）：DRUGS, SITES, BACTERIA,
-   COV_LABELS, COV_LABELS_FUNGAL, ROLE_TXT, ABG, ABG_ORG_LABEL, ABG_AB_LABEL, ABG_AB_DRUG, BAC_ABG。 */
+   COV_LABELS, COV_LABELS_FUNGAL, COV_LABELS_VIRAL, COV_LABELS_PARA, ROLE_TXT, ABG, ABG_ORG_LABEL,
+   ABG_AB_LABEL, ABG_AB_DRUG, BAC_ABG。 */
 
 /* 藥卡標題徽章列（收合時可判讀）：抗細菌＝六大覆蓋旗標，抗黴菌＝八類。
    四級 cov[key]：2=強效／在地%S≥90(亮粗框)、1=涵蓋／80–89(亮)、'p'=部分／變異／60–79(琥珀)、
    0 或缺=不涵蓋／<60(暗掉+刪除線)。分級以台大在地 %S 優先，缺在地資料者依文獻 spectrum。
-   d.covSet==='fungal' 用抗黴菌標籤；d.catLabel（如抗結核／抗病毒）則只顯示單一類別標籤。 */
+   covSet：'fungal'=抗黴菌八旗標、'viral'=病毒別八旗標、'para'=抗寄生蟲旗標、缺省=抗細菌六旗標。
+   d.catLabel（如抗結核）則只顯示單一類別標籤。 */
+const COV_SETS = {fungal:()=>COV_LABELS_FUNGAL, viral:()=>COV_LABELS_VIRAL, para:()=>COV_LABELS_PARA};
 function covTier(v){ return v===2?'sy-hi':(v===1?'yes':(v==='p'?'partial':'no')); }
 function covStrip(d){
   if(d.catLabel) return `<div class="dc-cov"><span class="cov-tag cat">${d.catLabel}</span></div>`;
   if(!d.cov) return '';
-  const labels = d.covSet==='fungal'?COV_LABELS_FUNGAL:COV_LABELS;
+  const labels = COV_SETS[d.covSet] ? COV_SETS[d.covSet]() : COV_LABELS;
   return `<div class="dc-cov">`+Object.keys(labels).map(key=>
     `<span class="cov-tag ${covTier(d.cov[key])}">${labels[key]}</span>`).join('')+`</div>`;
 }

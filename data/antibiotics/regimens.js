@@ -645,6 +645,10 @@ window.BACTERIA = [
 /* ---- 覆蓋標記顯示名 ---- */
 window.COV_LABELS={mrsa:'MRSA',pseudo:'Pseudomonas',anaerobe:'厭氧',atypical:'非典型',esbl:'ESBL',enterococcus:'腸球菌'};
 window.COV_LABELS_FUNGAL={candida:'Candida',glabkrusei:'glabrata/krusei',aspergillus:'Aspergillus',mucor:'Mucorales',fusarium:'Fusarium',histo:'Histoplasma',blasto:'Blastomyces',cocci:'Coccidioides'};
+/* 抗病毒：病毒別八旗標（covSet:'viral'） */
+window.COV_LABELS_VIRAL={hsv:'HSV/VZV',cmv:'CMV',flu:'Influenza',cov2:'SARS-CoV-2',hbv:'HBV',hcv:'HCV',hiv:'HIV',rsv:'RSV'};
+/* 抗寄生蟲／原蟲：旗標（covSet:'para'） */
+window.COV_LABELS_PARA={malaria:'瘧原蟲',ameba:'阿米巴/原蟲',nematode:'線蟲',cestode:'絛蟲',trematode:'吸蟲',ectopara:'外寄生蟲'};
 
 /* ---- regimen role 顯示文字（原內嵌於 render 邏輯旁，屬資料） ---- */
 window.ROLE_TXT={first:'首選',alt:'替代',special:'特殊 / 加用',none:'不需 / 不建議'};
