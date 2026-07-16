@@ -97,31 +97,23 @@
   th.col-hi .sd-colhead{background:var(--accent);} th.col-hi .sd-colhead .abbr,th.col-hi .sd-colhead .cn{color:#fff;}
 
   /* ---- 欄位分組色帶 ----
-     色帶只上在表頭（第一列色塊＋第二列縮寫底色），格內維持四級感受性色階，
-     兩套顏色因此不會互相誤讀。四個色系（靛／藍綠／紫／卡其）刻意避開 s2/s0/sn 的
-     teal-ochre-rust，且彩度壓低，不與資料格搶視線。 */
-  :root{ --gA:#e4e9f4; --gAt:#3c4c78; --gB:#dcecef; --gBt:#1f5a6b;
-         --gC:#eae0f1; --gCt:#5b3f70; --gD:#e9e6dd; --gDt:#5b5442; }
+     不放組名（滑鼠停留才以 title 顯示），只用一條窄色條＋表頭淡底色標示同組欄位，
+     再以組間分隔線輔助。四色刻意取相近的低彩度冷灰調（藍灰／青灰／紫灰／暖灰），
+     僅靠色相微差區分：既不與格內 s2/s0/sn 的 teal-ochre-rust 混淆，也不搶視線。 */
+  :root{ --gA:#dee4ea; --gB:#dde7e4; --gC:#e5e2e8; --gD:#e7e4de; }
   @media (prefers-color-scheme: dark){
-    :root{ --gA:#2b3450; --gAt:#b9c6e8; --gB:#1f4048; --gBt:#a4d2db;
-           --gC:#382a45; --gCt:#cfb6e4; --gD:#39372e; --gDt:#c9c2ab; }
+    :root{ --gA:#28323a; --gB:#27352f; --gC:#322f39; --gD:#363228; }
   }
-  table.sd-mx thead tr.sd-band th{top:0; z-index:22; height:20px; padding:0 6px; text-align:center;
-    vertical-align:middle; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.05em;
-    border-bottom:1px solid var(--line);}
-  table.sd-mx thead tr.sd-band th.corner{left:0; z-index:32; min-width:172px; padding:0 12px; background:var(--accent-soft);}
-  table.sd-mx thead tr.sd-cols th{top:20px;}          /* 讓縮寫列黏在色帶下方 */
-  table.sd-mx thead tr.sd-cols th.corner{z-index:31;}
-  table.sd-mx thead th.tint-gA{background:var(--gA); color:var(--gAt);}
-  table.sd-mx thead th.tint-gB{background:var(--gB); color:var(--gBt);}
-  table.sd-mx thead th.tint-gC{background:var(--gC); color:var(--gCt);}
-  table.sd-mx thead th.tint-gD{background:var(--gD); color:var(--gDt);}
-  table.sd-mx thead tr.sd-cols th.tint-gA .abbr{color:var(--gAt);}
-  table.sd-mx thead tr.sd-cols th.tint-gB .abbr{color:var(--gBt);}
-  table.sd-mx thead tr.sd-cols th.tint-gC .abbr{color:var(--gCt);}
-  table.sd-mx thead tr.sd-cols th.tint-gD .abbr{color:var(--gDt);}
-  table.sd-mx thead th.gsep, table.sd-mx td.sd-cell.gsep{border-left:2px solid var(--accent);}
-  table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
+  table.sd-mx thead th.tint-gA{background:var(--gA);}
+  table.sd-mx thead th.tint-gB{background:var(--gB);}
+  table.sd-mx thead th.tint-gC{background:var(--gC);}
+  table.sd-mx thead th.tint-gD{background:var(--gD);}
+  /* 組間分隔線；最右欄收邊；標題欄（sticky）與資料之間用同粗細的線隔開——
+     標題欄用 box-shadow 而非 border，捲動時線才會跟著黏在左緣。 */
+  table.sd-mx thead th.gsep, table.sd-mx td.sd-cell.gsep{border-left:2px solid var(--line);}
+  table.sd-mx thead th.gend, table.sd-mx td.sd-cell.gend{border-right:2px solid var(--line);}
+  table.sd-mx thead th.corner{box-shadow:2px 0 0 var(--line);}
+  table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:2px 0 0 var(--line);}
   table.sd-mx tbody th.rowhead .rx{font-family:var(--serif); font-weight:600; font-size:13px; color:var(--ink);}
   table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
   tr.sd-grp th{position:sticky; left:0; background:var(--accent); color:#fff; text-align:left; padding:5px 12px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; z-index:11;}
@@ -140,7 +132,6 @@
      一欄半資料看得到。讓 rowhead 換行並鎖寬，字級一併收斂，把寬度讓給資料欄。 */
   @media(max-width:560px){
     table.sd-mx thead th.corner{min-width:0; width:116px; padding:4px 8px; font-size:9.5px;}
-    table.sd-mx thead tr.sd-band th.corner{width:116px; min-width:0; padding:0 8px;}
     table.sd-mx tbody th.rowhead{white-space:normal; width:116px; max-width:116px; padding:5px 8px;}
     /* 菌名不折行（否則「C. parapsilosis」會被拆成「C.」＋「parapsilosis」），只讓中文註解折 */
     table.sd-mx tbody th.rowhead .rx{font-size:11px; white-space:nowrap;}
@@ -149,7 +140,6 @@
     td.sd-cell{height:1px;}
     td.sd-cell .dot{height:100%; min-height:36px; font-size:11px;}
     tr.sd-grp th{font-size:9px; padding:3px 8px; letter-spacing:.03em;}
-    table.sd-mx thead tr.sd-band th{font-size:8px; letter-spacing:.02em;}
     .sd-colhead{min-width:44px; padding:6px 3px;}
     .sd-colhead .abbr{font-size:10px;}
     .dot .sp{font-size:8px; padding:1px 3px;}
@@ -413,19 +403,14 @@ const sTier=s=>s>=90?"sHi":s>=80?"sOk":s>=60?"sMid":"sLo";
 
 function buildMatrix(tblId,cols,rows,keyFn){
   const t=document.getElementById(tblId);
-  // 第一列：欄位分組色帶（同組連續欄合併為一格）；第二列才是各欄縮寫。
-  let band="<tr class='sd-band'><th class='corner band'></th>";
+  // 欄位分組：同組欄位共用表頭淡底色，組間畫分隔線；組名不另闢一列，改掛 title。
   const sep=new Array(cols.length).fill(false);
-  for(let i=0;i<cols.length;){
-    let j=i; while(j<cols.length && cols[j].g===cols[i].g) j++;
-    const G=GRP[cols[i].g];
-    if(i>0) sep[i]=true;                       // 組與組之間畫粗分隔線
-    band+=`<th class='bandcell tint-${G.tint}${i>0?' gsep':''}' colspan='${j-i}'>${G.label}</th>`;
-    i=j;
-  }
-  band+="</tr>";
-  let thead="<thead>"+band+"<tr class='sd-cols'><th class='corner'>藥物 ＼ 致病菌</th>";
-  cols.forEach((c,i)=>{ thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`; });
+  for(let i=1;i<cols.length;i++) if(cols[i].g!==cols[i-1].g) sep[i]=true;
+  let thead="<thead><tr class='sd-cols'><th class='corner'>藥物 ＼ 致病菌</th>";
+  cols.forEach((c,i)=>{
+    const last = (i===cols.length-1) ? ' gend' : '';      // 最右欄補收邊線
+    thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}${last}' title='${GRP[c.g].label}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`;
+  });
   thead+="</tr></thead>";
   let tb="<tbody>";
   rows.forEach(r=>{
@@ -435,7 +420,7 @@ function buildMatrix(tblId,cols,rows,keyFn){
     r.v.forEach((v,i)=>{
       const s=NTUH_S[keyFn(r.rx,cols[i].abbr)];
       const sp=s?`<span class='sp ${sTier(s[0])}${s[2]?' px':''}'>${s[2]?'≈':''}${s[0]}%</span>`:"";
-      tb+=`<td class='sd-cell ${cls(v)}${sep[i]?' gsep':''}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
+      tb+=`<td class='sd-cell ${cls(v)}${sep[i]?' gsep':''}${i===cols.length-1?' gend':''}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
     });
     tb+="</tr>";
   });
