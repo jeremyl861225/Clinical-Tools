@@ -111,10 +111,10 @@
   <!-- 手術路徑 步驟 S2：疑絞窄／血行動力學（僅仍嵌頓時） -->
   <div class="flow-connector hidden" id="hern_c2c">↓</div>
   <div class="flow-step hidden" id="hern_s2c">
-    <div class="flow-step-head"><span class="flow-num">S2</span><span class="flow-q">疑絞窄／需腸切除？血行動力學？</span></div>
+    <div class="flow-step-head"><span class="flow-num">S2</span><span class="flow-q">血行動力學是否穩定？有無瀰漫性腹膜炎？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="hernPick('strang','unstable',this)">疑絞窄 + 血行動力學不穩／瀰漫性腹膜炎<span class="fo-sub">→ 正中剖腹 Midline laparotomy（腸段多已壞死污染）</span></button>
-      <button class="flow-opt" onclick="hernPick('strang','stable',this)">疑絞窄 + 血行動力學穩定<span class="fo-sub">→ 傳統疝氣修補（腹股溝切口）</span></button>
+      <button class="flow-opt" onclick="hernPick('hemo','unstable',this)">血行動力學不穩／瀰漫性腹膜炎<span class="fo-sub">→ 正中剖腹 Midline laparotomy（腸段多已壞死污染）</span></button>
+      <button class="flow-opt" onclick="hernPick('hemo','stable',this)">血行動力學穩定、無瀰漫性腹膜炎<span class="fo-sub">→ 傳統疝氣修補（腹股溝切口）</span></button>
     </div>
   </div>
 
@@ -158,13 +158,13 @@
 </div>
 <script src="../js/common.js"></script>
 <script>
-const hernSt={taxis:null,taxisOut:null,spont:null,strang:null,viab:null,wound:null};
+const hernSt={taxis:null,taxisOut:null,spont:null,hemo:null,viab:null,wound:null};
 function hernPick(key,val,btn){
   flowSelect(btn);
-  if(key==='taxis'){ hernSt.taxis=val; hernSt.taxisOut=null; hernSt.spont=null; hernSt.strang=null; hernSt.viab=null; hernSt.wound=null; }
-  else if(key==='taxisOut'){ hernSt.taxisOut=val; hernSt.spont=null; hernSt.strang=null; hernSt.viab=null; hernSt.wound=null; }
-  else if(key==='spont'){ hernSt.spont=val; hernSt.strang=null; hernSt.viab=null; hernSt.wound=null; }
-  else if(key==='strang'){ hernSt.strang=val; hernSt.viab=null; hernSt.wound=null; }
+  if(key==='taxis'){ hernSt.taxis=val; hernSt.taxisOut=null; hernSt.spont=null; hernSt.hemo=null; hernSt.viab=null; hernSt.wound=null; }
+  else if(key==='taxisOut'){ hernSt.taxisOut=val; hernSt.spont=null; hernSt.hemo=null; hernSt.viab=null; hernSt.wound=null; }
+  else if(key==='spont'){ hernSt.spont=val; hernSt.hemo=null; hernSt.viab=null; hernSt.wound=null; }
+  else if(key==='hemo'){ hernSt.hemo=val; hernSt.viab=null; hernSt.wound=null; }
   else if(key==='viab'){ hernSt.viab=val; hernSt.wound=null; }
   else if(key==='wound'){ hernSt.wound=val; }
   hernRender();
@@ -174,11 +174,11 @@ function hernRender(){
   // 手術路徑是否啟動：TAXIS 禁忌，或 TAXIS 失敗
   const surg = (s.taxis==='contra') || (s.taxis==='candidate' && s.taxisOut==='fail');
   // 術式（approach）是否已決定
-  const approachSet = surg && (s.spont==='yes' || (s.spont==='no' && s.strang!==null));
+  const approachSet = surg && (s.spont==='yes' || (s.spont==='no' && s.hemo!==null));
   // 腸道存活評估：僅在「自發復位」或「仍嵌頓＋穩定（傳統修補）」時；不穩／瀰漫性腹膜炎腸段多已壞死污染，直接進傷口分類
-  const showViab = surg && (s.spont==='yes' || (s.spont==='no' && s.strang==='stable'));
+  const showViab = surg && (s.spont==='yes' || (s.spont==='no' && s.hemo==='stable'));
   // CDC 傷口分類：污染時，或不穩／瀰漫性腹膜炎（本即污染骯髒場）
-  const showWound = (showViab && s.viab==='contam') || (surg && s.spont==='no' && s.strang==='unstable');
+  const showWound = (showViab && s.viab==='contam') || (surg && s.spont==='no' && s.hemo==='unstable');
 
   // 步驟顯示
   flowShow('hern_c2a', s.taxis==='candidate');
@@ -239,21 +239,21 @@ function hernRender(){
       note='WSES 2017。';
     } else if(s.spont==='no'){
       cls='rec-elective';
-      if(s.strang==='unstable'){
-        title='疑絞窄 + 不穩／瀰漫性腹膜炎 → 正中剖腹 Midline laparotomy';
+      if(s.hemo==='unstable'){
+        title='血行動力學不穩／瀰漫性腹膜炎 → 正中剖腹 Midline laparotomy';
         detail='<li>血行動力學不穩或瀰漫性腹膜炎：以<b>正中剖腹</b>探查、源頭控制；此情況腸段多已壞死、屬污染／骯髒場。</li>'+
                '<li>'+RING+'</li>'+
                '<li>下一步：切除壞死腸段後，依<b>CDC 傷口分類</b>選擇修補（見下方步驟 S4）。</li>';
         note='WSES 2017；Ishihara T, et al. Surg Endosc 1996（內環切開技術）。';
-      } else if(s.strang==='stable'){
-        title='疑絞窄 + 血行動力學穩定 → 傳統疝氣修補（腹股溝切口）';
-        detail='<li><b>傳統疝氣修補（open，腹股溝切口／腹膜前路）</b>；疑需腸切除時開放路較適合。</li>'+
+      } else if(s.hemo==='stable'){
+        title='血行動力學穩定、無瀰漫性腹膜炎 → 傳統疝氣修補（腹股溝切口）';
+        detail='<li><b>傳統疝氣修補（open，腹股溝切口／腹膜前路）</b>：可直接顯露疝環與嵌頓腸段，必要時便於腸切除。</li>'+
                '<li>'+RING+'</li>'+
                '<li>下一步：<b>術中評估腸道存活</b>（見下方步驟 S3）。</li>';
         note='WSES 2017。';
       } else {
-        cls='rec-idle'; title='仍嵌頓 → 請完成步驟 S2（絞窄／血行動力學）';
-        detail='<li>請於上方選擇是否疑絞窄與血行動力學狀態。</li>';
+        cls='rec-idle'; title='仍嵌頓 → 請完成步驟 S2（血行動力學／腹膜炎）';
+        detail='<li>請於上方選擇血行動力學是否穩定、有無瀰漫性腹膜炎。</li>';
       }
     }
   }
@@ -279,7 +279,7 @@ function hernRender(){
               '<li><b>CDC class II</b>（無明顯腸內容外溢）：緊急合成網片修補不增 30 天傷口併發症、顯著降低復發（grade 1A）。</li>'+
               '<li>'+ABX_II+'</li>';
       noteB='WSES 2017；staged TEP：Chihara N, et al. J Laparoendosc Adv Surg Tech A 2019。';
-    } else if(s.viab==='contam' || (s.spont==='no' && s.strang==='unstable')){
+    } else if(s.viab==='contam' || (s.spont==='no' && s.hemo==='unstable')){
       if(s.wound==='small'){
         clsB='rec-urgent'; titleB='CDC III–IV、穩定、缺損 <3 cm → 一期組織修補';
         detailB='<li>污染（III：腸切除有外溢）／骯髒（IV：穿孔腹膜炎）之<b>穩定</b>病人，缺損 <b>&lt;3 cm</b>：建議<b>一期組織修補</b>（grade 2C）— 如 Bassini、McVay、Shouldice。</li>'+
@@ -308,7 +308,7 @@ function hernRender(){
   flowShow('hern_rec2', approachSet);
 }
 function hernReset(){
-  hernSt.taxis=null; hernSt.taxisOut=null; hernSt.spont=null; hernSt.strang=null; hernSt.viab=null; hernSt.wound=null;
+  hernSt.taxis=null; hernSt.taxisOut=null; hernSt.spont=null; hernSt.hemo=null; hernSt.viab=null; hernSt.wound=null;
   document.querySelectorAll('#view-hernia-path .flow-opt').forEach(b=>b.classList.remove('selected'));
   hernRender();
 }
