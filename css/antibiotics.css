@@ -44,6 +44,18 @@
   .drug-chip .dc-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin-left:5px;}
   .rgm-dur{font-family:var(--mono); font-size:11px; color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:4px 9px; margin-top:9px; display:inline-block; line-height:1.5;}
   .rgm-note{font-size:11.5px; color:var(--muted); margin-top:8px; padding-top:7px; border-top:1px dashed var(--line); line-height:1.6;}
+  /* 徽章按鈕：外觀沿用 .cov-tag／.dc-class，只解除 button 預設樣式並加上可點提示。
+     .cov-tag.sy-hi／.cat 的 border 具較高 specificity，不會被此處的 border:0 蓋掉。 */
+  button.cov-tag, button.dc-class{border:0; appearance:none; -webkit-appearance:none; cursor:pointer; line-height:1.7;}
+  button.cov-tag:hover, button.dc-class:hover{filter:brightness(1.12); outline:1px solid var(--line);}
+  button.cov-tag.no:hover{opacity:.9;}
+  button.cov-tag:focus-visible, button.dc-class:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .lookup-filter:empty{display:none;}
+  .lookup-filter{display:flex; align-items:center; gap:6px; margin:2px 0 6px;}
+  .lf-lbl{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.08em;}
+  .lf-chip{display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:11px; font-weight:700;
+           color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent); border-radius:12px; padding:2px 4px 2px 12px;}
+  .lf-x{border:0; background:none; color:var(--accent); font-size:14px; line-height:1; cursor:pointer; padding:0 5px;}
   .cov-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
   .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px;}
   .cov-tag.yes{color:var(--accent); background:var(--accent-soft);}

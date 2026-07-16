@@ -10,12 +10,22 @@
    d.catLabel（如抗結核）則只顯示單一類別標籤。 */
 const COV_SETS = {fungal:()=>COV_LABELS_FUNGAL, viral:()=>COV_LABELS_VIRAL, para:()=>COV_LABELS_PARA};
 function covTier(v){ return v===2?'sy-hi':(v===1?'yes':(v==='p'?'partial':'no')); }
+function covLabels(set){ return COV_SETS[set] ? COV_SETS[set]() : COV_LABELS; }
+/* 徽章皆為按鈕：點覆蓋旗標→列出同類別中涵蓋該病原的藥；點類別標籤→列出同類別的藥。
+   徽章位於 <summary> 內，故 drugFilter() 需 preventDefault 以免同時展開／收合藥卡。 */
 function covStrip(d){
-  if(d.catLabel) return `<div class="dc-cov"><span class="cov-tag cat">${d.catLabel}</span></div>`;
+  if(d.catLabel) return `<div class="dc-cov">${catBtn(d)}</div>`;
   if(!d.cov) return '';
-  const labels = COV_SETS[d.covSet] ? COV_SETS[d.covSet]() : COV_LABELS;
+  const set = d.covSet || 'default';
+  const labels = covLabels(d.covSet);
   return `<div class="dc-cov">`+Object.keys(labels).map(key=>
-    `<span class="cov-tag ${covTier(d.cov[key])}">${labels[key]}</span>`).join('')+`</div>`;
+    `<button type="button" class="cov-tag ${covTier(d.cov[key])}" title="列出涵蓋 ${labels[key]} 的藥物"
+      onclick="drugFilter(event,'cov','${set}','${key}')">${labels[key]}</button>`).join('')+`</div>`;
+}
+function catBtn(d){
+  const gi = drugGroupIdx(d);
+  return `<button type="button" class="cov-tag cat" title="列出同類別藥物"
+    onclick="drugFilter(event,'group',${gi})">${d.catLabel}</button>`;
 }
 
 /* 把 antibiogram 儲存格值轉成 {num, disp}：數字→%；字串如 "75(SDD)"→取前導數字分級、原字串顯示；
@@ -188,7 +198,7 @@ function renderDrugCard(k){
       `</tbody></table></div></div>`;
   }
   return `<details class="drugcard" id="drug-${k}">
-    <summary><span class="dc-name">${d.name}</span>${zh}<span class="dc-nameen">${sub}</span><span class="dc-class">${d.cls}</span>${covStrip(d)}</summary>
+    <summary><span class="dc-name">${d.name}</span>${zh}<span class="dc-nameen">${sub}</span><button type="button" class="dc-class" title="列出同類別藥物" onclick="drugFilter(event,'group',${drugGroupIdx(d)})">${d.cls}</button>${covStrip(d)}</summary>
     <div class="dc-body">
       ${brandField}
       ${field(d.usualDose?'常用劑量':'劑量（成人）',d.usualDose||d.dose)}
@@ -307,6 +317,31 @@ const DRUG_GROUPS = [
 ];
 function drugGroupIdx(d){ for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](d||{})) return i; return DRUG_GROUPS.length-1; }
 
+/* 徽章連結：點藥卡上的徽章→切到「藥物查詢」並套用篩選。
+   lookupFilter = {kind:'cov', set, key} | {kind:'group', idx} | null。
+   覆蓋旗標只在同一 covSet 內比較（抗細菌六旗標／黴菌／病毒／寄生蟲各自獨立，語意不通用）。 */
+let lookupFilter=null;
+function drugFilter(ev, kind, a, b){
+  ev.preventDefault(); ev.stopPropagation();          // 別讓 <summary> 跟著展開
+  lookupFilter = (kind==='cov')
+    ? {kind:'cov', set:a, key:b, label:covLabels(a)[b]}
+    : {kind:'group', idx:a, label:DRUG_GROUPS[a][0]};
+  const inp=el('lookup-input'); if(inp) inp.value='';  // 清掉文字查詢，避免兩層條件相互抵銷
+  switchMode('lookup');
+  renderLookup('');
+}
+function clearDrugFilter(){
+  lookupFilter=null;
+  renderLookup(el('lookup-input')?el('lookup-input').value:'');
+}
+function renderFilterChip(){
+  const box=el('lookup-filter'); if(!box) return;
+  if(!lookupFilter){ box.innerHTML=''; return; }
+  const txt = lookupFilter.kind==='cov' ? `涵蓋 ${lookupFilter.label}` : lookupFilter.label;
+  box.innerHTML=`<span class="lf-lbl">篩選</span><span class="lf-chip">${txt}`+
+    `<button type="button" class="lf-x" onclick="clearDrugFilter()" aria-label="清除篩選">×</button></span>`;
+}
+
 let lookupSort='alpha';
 function setLookupSort(mode){
   lookupSort=mode;
@@ -317,7 +352,17 @@ function setLookupSort(mode){
 function renderLookup(q){
   q=(q||'').trim().toLowerCase();
   let keys=Object.keys(DRUGS).filter(k=>{const d=DRUGS[k]; const prod=d.ntuhProducts?d.ntuhProducts.map(p=>(p.en||'')+' '+(p.zh||'')).join(' '):''; const hay=(d.name+' '+(d.zh||'')+' '+(d.brands?d.brands.join(' '):(d.en||''))+' '+prod+' '+d.cls).toLowerCase(); return !q || hay.includes(q);});
-  el('lookup-count').textContent = q ? `${keys.length} 筆符合` : `共 ${keys.length} 種藥物`;
+  if(lookupFilter){
+    keys=keys.filter(k=>{
+      const d=DRUGS[k];
+      if(lookupFilter.kind==='group') return drugGroupIdx(d)===lookupFilter.idx;
+      if((d.covSet||'default')!==lookupFilter.set || !d.cov) return false;
+      const v=d.cov[lookupFilter.key];
+      return v===2||v===1||v==='p';           // 強效／涵蓋／部分皆列入，暗掉（不涵蓋）者排除
+    });
+  }
+  renderFilterChip();
+  el('lookup-count').textContent = (q||lookupFilter) ? `${keys.length} 筆符合` : `共 ${keys.length} 種藥物`;
   if(!keys.length){ el('lookup-results').innerHTML='<div class="bac-empty">找不到符合的藥物。</div>'; return; }
   const byName=(a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name);
   if(lookupSort==='class'){
