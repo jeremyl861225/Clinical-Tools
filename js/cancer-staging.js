@@ -137,11 +137,11 @@ function renderNode(c){
 }
 
 function renderTx(c){
-  var h = '';
+  // 胃癌治療改為互動決策流程圖（療程資料已整合於各建議處置色塊）
   if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
-    h += gastricPathwayHTML();
-    h += '<div class="onc-sec-h" style="margin-top:22px;">常用療程 Regimen reference（含藥名）</div>';
+    return gastricPathwayHTML();
   }
+  var h = '';
   (c.tx||[]).forEach(function(t){
     h += '<div class="tx '+t.cls+'"><div class="tx-head"><span class="tx-role">'+t.role+
          '</span><span class="tx-label">'+t.label+'</span></div>'+
