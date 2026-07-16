@@ -284,6 +284,18 @@ def _validate_matrix(key, mx, errors):
     for f in ('ncols', 'trows', 'cells'):
         if f not in mx:
             errors.append(f'[{key}] `matrix` 缺少必要欄位 `{f}`')
+    # mrows：M 列（接在 T 列之後、橫跨 N 欄），讓 stage IV 出現在表格上。
+    # 非必要欄位（少數部位無 M 分期列），但只要存在就必須結構正確。
+    if 'mrows' in mx:
+        if not isinstance(mx['mrows'], list):
+            errors.append(f'[{key}] `matrix.mrows` 應為陣列')
+        else:
+            for i, m in enumerate(mx['mrows']):
+                if not isinstance(m, list) or len(m) < 2 \
+                        or not _is_string(m[0]) or not _is_string(m[1]):
+                    errors.append(
+                        f'[{key}] `matrix.mrows[{i}]` 應為 [M 代碼, 分期, 說明?] 陣列，實際={m!r}'
+                    )
     if 'ncols' in mx:
         if not isinstance(mx['ncols'], list) or not mx['ncols']:
             errors.append(f'[{key}] `matrix.ncols` 應為非空陣列')

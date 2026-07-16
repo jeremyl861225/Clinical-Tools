@@ -123,10 +123,11 @@ function renderStage(c){
   return h;
 }
 
-var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,
+var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
   'II':2,'IIA':2,'IIB':3,'IIC':3,
   'IIIA':4,'IIIB':5,'IIIC':6,'III':4,
   'IV':7,'IVA':7,'IVB':7,'IVC':7};
+// 'IC'：食道腺癌 pTNM 獨有期別（T1 N0 G3、或 T2 N0 G1–2）；仍屬第一期，故與 IA／IB 同深度。
 function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
 function renderMatrix(mx){

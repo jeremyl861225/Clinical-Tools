@@ -24,21 +24,32 @@
 | `n` | `[code, desc][]` | 必要 | N 分期（區域淋巴結）列表，格式同上。 |
 | `m` | `[code, desc][]` | 必要 | M 分期（遠處轉移）列表，格式同上。 |
 
-分期組合二擇一（`renderStage` 邏輯：有 `matrix` 就用矩陣，否則退回 `stages` 表格）：
+分期組合三選一以上（`renderStage` 邏輯：`matrices` → `matrix` 擇一渲染；**`stages` 為獨立區塊，可與矩陣並存**）：
 
 | 欄位 | 型別 | 必要 | 說明 |
 |---|---|---|---|
-| `matrix` | object | 二擇一 | T×N 分期矩陣（見下）。與 `stages` 擇一，`matrix` 優先。 |
-| `stages` | `[stage, criteria, note?][]` | 二擇一 | 分期組合簡表；`renderStage` 輸出 `<tr><td>stage</td><td>criteria（＋全形空格＋note，若有）</td></tr>`。`note`（陣列第 3 項）選填。 |
+| `matrices` | object[] | 三選一 | **多張** T×N 矩陣變體。用於同一癌別因判別軸（年齡／組織型態／部位／有絲分裂速率）而有數張官方分期表者（甲狀腺、GIST、膽管癌、NET）。渲染為選擇器＋當前變體之矩陣。優先於 `matrix`。 |
+| `matrix_axis` | string | 有 `matrices` 時必要 | 選擇器標題，須指名真正的判別軸（如「解剖部位 Anatomic site」「年齡 Age at diagnosis」）。 |
+| `matrix` | object | 三選一 | 單一 T×N 分期矩陣（見下）。 |
+| `stages` | `[stage, criteria, note?][]` | 三選一 | 分期組合簡表。**不與矩陣互斥**：GIST（AJCC TNM ＋ AFIP 風險分級）、HCC（AJCC ＋ BCLC）兩者並存，各自回答不同問題。分期欄僅在代碼可於 `STAGE_RANK` 解析時著色並附圖例（BCLC／風險分級／WHO grade 不著色）。 |
+| `staging_system` | string | 選填 | 非 TNM 系統之名稱與版本（如「FIGO 2021（子宮頸癌）」「BCLC 2022 update」）。顯示於 `stages` 表上方。 |
+| `stages_title` | string | 選填 | `stages` 區塊之標題，預設「分期組合 Stage Grouping」。與矩陣並存時用來區分（如「風險分級 Risk stratification」）。 |
 
-`matrix` 物件子欄位（`renderMatrix(mx)` 讀取）：
+`matrix` 物件子欄位（`renderMatrix(mx)` 讀取；`matrices[]` 之每個變體同此結構，另加 `key`／`label`／`note`）：
 
 | 子欄位 | 型別 | 必要 | 說明 |
 |---|---|---|---|
+| `key` | string | `matrices` 內必要 | 變體識別碼，同一癌別內不得重複。 |
+| `label` | string | `matrices` 內必要 | 選擇器按鈕文字。**會經 `escapeHtml`**，故 `<55` 請寫原始 `<`，勿寫 `&lt;`（否則雙重轉義）。 |
+| `note` | string | 選填 | 該變體之說明（何以自成一表），顯示於矩陣上方；不經轉義，可含 HTML。 |
 | `ncols` | `[code, sublabel][]` | 必要 | 欄標題（N 分期），`sublabel` 為選填的第二行小字（如淋巴結顆數範圍），空字串則不顯示 `<span>`。 |
 | `trows` | `string[]` | 必要 | 列標題（T 分期代碼），與 `cells` 逐列對應。 |
-| `cells` | `string[][]` | 必要 | 矩陣內容，`cells[i][j]` 對應 `trows[i]` × `ncols[j]` 的分期代碼字串；依 `STAGE_RANK` 對照著色（`shadeClass`）。 |
-| `m1` | string | 選填 | M1（遠處轉移）之附註列，存在時顯示於矩陣下方 `.sm-m1`（可含 HTML，如 `<b>`）。 |
+| `cells` | `string[][]` | 必要 | 矩陣內容，`cells[i][j]` 對應 `trows[i]` × `ncols[j]` 的分期代碼字串；依 `STAGE_RANK` 對照著色（`shadeClass`）。**必須為矩形**：列數 = `trows` 長度、每列欄數 = `ncols` 長度。 |
+| `mrows` | `[Mcode, stage, desc?][]` | 選填 | **M 列**：接在 T 列之後、橫跨所有 N 欄（M1 分期與 T／N 無關），使 stage IV 出現在表格上而非僅存於註腳。依 `STAGE_RANK` 著色。 |
+| `m1` | string | 選填 | M1 附註列，顯示於矩陣下方 `.sm-m1`（可含 HTML）。**僅放 `mrows` 未涵蓋之資訊**（如 Tis N0 M0 → 0 期、N1mi 分組規則）。 |
+
+> 表格選擇與查證規範（含來源歸屬、交叉比對要求）見
+> `.claude/skills/ntuh-cancer-pathway/references/staging-tables.md`。
 
 ## 淋巴結分群（`renderNode`）
 
