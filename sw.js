@@ -1,7 +1,8 @@
 /* 臨床計分工具箱 — Service Worker
- * 版本更新時請修改 CACHE_VERSION，使用者下次開啟即自動更新快取。
+ * 策略：network-first（有網路時每次都抓最新版並更新快取；離線或逾時才回退快取）。
+ * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v64';
+const CACHE_VERSION = 'clinical-tools-v65';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -73,7 +74,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 擷取：cache-first，離線時導航頁回退至首頁
+// 網路逾時（毫秒）：超過即先回退快取，網路請求仍在背景完成並更新快取，下次開啟即為最新版
+const NETWORK_TIMEOUT_MS = 4000;
+
+// 擷取：network-first，有網路時抓最新並更新快取；離線或逾時回退快取
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
@@ -82,26 +86,41 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_VERSION);
 
-      return fetch(req)
-        .then((res) => {
-          // 執行期間動態快取新取得的同源資源
-          if (res && res.status === 200 && res.type === 'basic') {
-            const copy = res.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-        .catch(() => {
-          // 離線且未快取：導航請求回退首頁，其餘失敗
-          if (req.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          return Response.error();
-        });
-    })
-  );
+    // 發出網路請求；成功即更新快取
+    const networkFetch = fetch(req)
+      .then((res) => {
+        if (res && res.status === 200 && res.type === 'basic') {
+          cache.put(req, res.clone());
+        }
+        return res;
+      });
+
+    // 慢網路保護：逾時先用快取，networkFetch 仍在背景更新快取
+    const timeout = new Promise((resolve) => {
+      setTimeout(() => resolve(null), NETWORK_TIMEOUT_MS);
+    });
+
+    const raced = await Promise.race([
+      networkFetch.catch(() => null),
+      timeout
+    ]);
+    if (raced) return raced;
+
+    const cached = await cache.match(req) || await caches.match(req);
+    if (cached) return cached;
+
+    // 無快取：等網路請求完成（可能只是慢）；徹底失敗時導航頁回退首頁
+    try {
+      return await networkFetch;
+    } catch (e) {
+      if (req.mode === 'navigate') {
+        const home = await caches.match('./index.html');
+        if (home) return home;
+      }
+      return Response.error();
+    }
+  })());
 });
