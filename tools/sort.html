@@ -121,6 +121,7 @@ function sortCalc(){
 document.querySelectorAll('#view-sort select').forEach(el=>{ el.addEventListener('change',sortCalc); el.addEventListener('input',sortCalc); });
 sortCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

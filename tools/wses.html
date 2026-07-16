@@ -83,6 +83,7 @@ function wsesCalc(){
 document.querySelectorAll('#view-wses select, #view-wses input[type=checkbox]').forEach(el=>{el.addEventListener('change',wsesCalc);});
 wsesCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

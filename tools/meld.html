@@ -104,6 +104,7 @@ function meldCalc(){
 document.querySelectorAll('#view-meld input, #view-meld select').forEach(el=>{el.addEventListener('input',meldCalc); el.addEventListener('change',meldCalc);});
 meldCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

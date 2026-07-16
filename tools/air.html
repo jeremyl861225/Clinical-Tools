@@ -73,6 +73,7 @@ function airCalc(){
 document.querySelectorAll('#view-air select').forEach(el=>el.addEventListener('change',airCalc));
 airCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

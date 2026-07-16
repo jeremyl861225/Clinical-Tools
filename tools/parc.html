@@ -158,6 +158,7 @@ function parcCalc(){
 document.querySelectorAll('#view-parc input, #view-parc select').forEach(el=>{el.addEventListener('input',parcCalc); el.addEventListener('change',parcCalc);});
 parcCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
