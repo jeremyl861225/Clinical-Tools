@@ -1,7 +1,7 @@
 /* 臨床計分工具箱 — Service Worker
  * 版本更新時請修改 CACHE_VERSION，使用者下次開啟即自動更新快取。
  */
-const CACHE_VERSION = 'clinical-tools-v50';
+const CACHE_VERSION = 'clinical-tools-v51';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -24,7 +24,7 @@ const PRECACHE_URLS = [
   './pathways/hernia.html',
   './tools/air.html',
   './tools/antibiotics.html',
-  './tools/beta-lactamase.html',
+  './tools/spectrum-database.html',
   './tools/alvarado.html',
   './tools/ami.html',
   './tools/angers.html',

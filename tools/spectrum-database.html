@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抗生素菌譜資料庫 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<style>
+  /* 四級感受性色階 */
+  :root{ --s2:#0c8a3e; --s1:#7bbf4a; --s0:#d69a1e; --sn:#c23a6b;
+         --s2t:#fff; --s1t:#12240a; --s0t:#2c2100; --snt:#fff; }
+  /* 台大 %S 分級文字色 */
+  .sHi{color:#0c8a3e} .sOk{color:#2f7a2a} .sMid{color:#b5751a} .sLo{color:#c0392b}
+
+  /* ---- toolbar ---- */
+  .sd-toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-bottom:14px;}
+  .sd-legend{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center;}
+  .sd-legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);}
+  .sd-sw{width:19px; height:19px; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:11px; flex:none;}
+  .sd-sw.s2{background:var(--s2);color:var(--s2t)} .sd-sw.s1{background:var(--s1);color:var(--s1t)}
+  .sd-sw.s0{background:var(--s0);color:var(--s0t)} .sd-sw.sn{background:var(--sn);color:var(--snt)}
+  .sd-ctrl{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-left:auto;}
+  .sd-search{display:flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--panel); border-radius:12px; padding:6px 11px; min-width:180px;}
+  .sd-search input{border:none; outline:none; background:transparent; font-size:13.5px; width:100%; color:var(--ink); font-family:var(--sans);}
+  .sd-btn{border:1px solid var(--line); background:var(--panel); color:var(--muted); font-family:var(--mono); font-size:11.5px; font-weight:700; padding:6px 12px; border-radius:12px; cursor:pointer;}
+  .sd-btn.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent);}
+  .sd-nt{font-size:11px; color:var(--muted-soft); font-family:var(--mono); letter-spacing:.02em;}
+
+  /* ---- Ambler grid（參考照片版結構）---- */
+  .sd-amb{display:grid; grid-template-columns:132px 1fr; border:1px solid var(--line); border-radius:3px; overflow:hidden; margin-bottom:10px;}
+  .sd-amb .cat{display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--mono); font-weight:700; font-size:12px; letter-spacing:.03em; color:#fff; padding:12px 8px; line-height:1.4;}
+  .sd-amb .cat.ser{background:#2f6b7d} .sd-amb .cat.zn{background:#9c5a1e}
+  .sd-amb .rows{display:flex; flex-direction:column;}
+  .sd-clsrow{display:grid; grid-template-columns:104px 1fr; border-bottom:1px solid var(--line);}
+  .sd-clsrow:last-child{border-bottom:none;}
+  .sd-clsname{font-family:var(--serif); font-weight:600; font-size:14px; padding:10px 11px; border-right:1px solid var(--line); background:var(--accent-soft); display:flex; flex-direction:column; gap:2px;}
+  .sd-clsname .zh{font-family:var(--sans); font-size:10px; color:var(--muted); font-weight:400;}
+  .sd-enz{padding:8px 12px; display:flex; flex-direction:column; gap:4px;}
+  .sd-e{font-size:12.5px; line-height:1.5;}
+  .sd-e .ex{font-family:var(--mono); font-size:10.5px; color:var(--muted);}
+  .sd-e.sub{font-size:11.5px; color:var(--muted); padding-left:6px;}
+  .sd-e.sub b{color:var(--ink);}
+  .sd-cbadge{display:inline-block; font-family:var(--mono); font-size:8.5px; font-weight:700; color:var(--accent2); background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:999px; padding:0 5px; margin-left:4px; vertical-align:1px;}
+  table.sd-bjm{border-collapse:collapse; width:100%; font-size:12px; margin-top:8px;}
+  table.sd-bjm th,table.sd-bjm td{border:1px solid var(--line); padding:6px 10px; text-align:left;}
+  table.sd-bjm thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10.5px; color:var(--accent); letter-spacing:.04em;}
+  table.sd-bjm td b{font-family:var(--mono);}
+
+  /* ---- 感受性矩陣 ---- */
+  .sd-mshell{border:1px solid var(--line); border-radius:3px; overflow:auto; max-height:80vh;}
+  table.sd-mx{border-collapse:separate; border-spacing:0; width:100%; font-size:12px;}
+  table.sd-mx th,table.sd-mx td{white-space:nowrap;}
+  table.sd-mx thead th{position:sticky; top:0; z-index:20; background:var(--accent-soft); border-bottom:2px solid var(--line); vertical-align:bottom; padding:0;}
+  table.sd-mx thead th.corner{left:0; z-index:30; text-align:left; padding:9px 12px; min-width:172px; font-family:var(--mono); font-size:11px; color:var(--accent);}
+  .sd-colhead{display:flex; flex-direction:column; align-items:center; gap:1px; padding:8px 5px; cursor:pointer; user-select:none; min-width:52px;}
+  .sd-colhead .abbr{font-family:var(--mono); font-weight:700; font-size:11.5px; color:var(--accent);}
+  .sd-colhead .cn{font-size:9px; color:var(--muted); line-height:1.15; white-space:normal; max-width:62px; text-align:center;}
+  th.col-hi .sd-colhead{background:var(--accent);} th.col-hi .sd-colhead .abbr,th.col-hi .sd-colhead .cn{color:#fff;}
+  table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
+  table.sd-mx tbody th.rowhead .rx{font-family:var(--serif); font-weight:600; font-size:13px; color:var(--ink);}
+  table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
+  tr.sd-grp th{position:sticky; left:0; background:var(--accent); color:#fff; text-align:left; padding:5px 12px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; z-index:11;}
+  tr.sd-grp th .en{opacity:.75; font-weight:400;}
+  td.sd-cell{text-align:center; padding:0; border-bottom:1px solid var(--line); border-left:1px solid var(--line);}
+  td.sd-cell .dot{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; height:40px; font-weight:800; font-size:12px;}
+  td.c2 .dot{background:var(--s2);color:var(--s2t)} td.c1 .dot{background:var(--s1);color:var(--s1t)}
+  td.c0 .dot{background:var(--s0);color:var(--s0t)} td.cn .dot{background:var(--sn);color:var(--snt)}
+  .dot .sp{font-family:var(--mono); font-size:9px; font-weight:700; line-height:1; background:rgba(255,255,255,.94); border-radius:6px; padding:1px 4px;}
+  .dot .sp.px{font-style:italic; opacity:.9;}
+  td.sd-cell.col-hi{outline:2px solid var(--accent); outline-offset:-2px;}
+
+  /* ---- CR-GNB 熱圖（欄寬平均）---- */
+  .sd-hmshell{overflow-x:auto; border:1px solid var(--line); border-radius:3px;}
+  table.sd-hm{border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; font-size:12px; min-width:640px;}
+  table.sd-hm th.corner{position:sticky; left:0; z-index:2; width:184px; background:var(--accent-soft); text-align:left; padding:8px 12px; font-family:var(--mono); font-size:11px; color:var(--accent); border-bottom:2px solid var(--line);}
+  table.sd-hm thead th{background:var(--accent-soft); color:var(--accent); font-family:var(--mono); font-weight:700; padding:8px 4px; text-align:center; border-bottom:2px solid var(--line); font-size:11px; white-space:nowrap;}
+  table.sd-hm tbody th{position:sticky; left:0; z-index:1; background:var(--panel); text-align:left; padding:7px 12px; font-family:var(--serif); font-weight:600; font-size:12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line); white-space:nowrap;}
+  td.sd-hc{text-align:center; padding:0; border-bottom:1px solid var(--paper); border-left:1px solid var(--paper);}
+  td.sd-hc .d{display:flex; align-items:center; justify-content:center; height:34px; font-family:var(--mono); font-weight:700; color:#fff; font-size:12px;}
+  td.g .d{background:#2f8f57} td.a .d{background:#c1892f} td.r .d{background:#b25548}
+  .sd-abbr{font-size:11px; color:var(--muted-soft); margin-top:9px; line-height:1.7;}
+
+  /* ---- 抗藥菌卡 ---- */
+  .sd-rgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px;}
+  .sd-rcard{border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:3px; padding:11px 13px; background:var(--panel);}
+  .sd-rcard .nm{display:flex; align-items:center; gap:7px; margin-bottom:6px;}
+  .sd-rcard .pill{font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 7px; border-radius:999px; background:var(--accent2-soft); color:var(--accent2);}
+  .sd-rcard .nm .cn{font-size:10.5px; color:var(--muted);}
+  .sd-rcard ul{margin:0; padding-left:16px; font-size:11.5px; color:var(--ink); line-height:1.55;}
+
+  ul.sd-notes{margin:8px 0 0; padding-left:18px; font-size:12px; color:var(--muted); line-height:1.65;}
+  ul.sd-notes li{margin:4px 0;} ul.sd-notes b{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-spectrumdb">
+  <div class="app-header">
+    <div><div class="eyebrow">Antimicrobial · Spectrum Database</div><h1>抗生素菌譜資料庫</h1><div class="sub">β-內醯胺酶分類、抗細菌／抗黴菌感受性菌譜、CR-GNB 新藥抗菌譜，整合台大 2025 上半年在地感受性 %S</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-spectrumdb'">← 返回主選單</button>
+  </div>
+
+  <div class="sd-toolbar">
+    <div class="sd-legend">
+      <span class="lg"><span class="sd-sw s2">++</span>強效</span>
+      <span class="lg"><span class="sd-sw s1">+</span>有效</span>
+      <span class="lg"><span class="sd-sw s0">±</span>變異</span>
+      <span class="lg"><span class="sd-sw sn">−</span>無效</span>
+      <span class="sd-nt">· 格內數字＝台大 2025H1 在地 %S（≈ 為同類代表；顏色分級 ≥90/80–89/60–79/&lt;60）</span>
+    </div>
+    <div class="sd-ctrl">
+      <div class="sd-search">🔍<input type="text" id="sd-q" placeholder="搜尋藥名…" autocomplete="off"></div>
+      <button class="sd-btn on" id="sd-cn">中文菌名</button>
+    </div>
+  </div>
+
+  <!-- 1. Ambler -->
+  <div class="section-title">1 · Ambler β-內醯胺酶分類　Classification of β-Lactamases</div>
+  <div class="card">
+    <p style="margin:0 0 12px; font-size:12.5px; color:var(--muted); line-height:1.7;"><b>分子分類 (molecular)</b> 依催化中心：Class A／C／D 為<b>絲胺酸 (Serine)</b> 酵素，Class B 為<b>金屬鋅 (Zinc)</b> 酵素。<span class="sd-cbadge">Carbapenemase</span> 標示者具碳青黴烯水解活性。</p>
+    <div class="sd-amb">
+      <div class="cat ser">Non-metal<br>Serine<br>絲胺酸</div>
+      <div class="rows">
+        <div class="sd-clsrow">
+          <div class="sd-clsname">Class A<span class="zh">絲胺酸</span></div>
+          <div class="sd-enz">
+            <div class="sd-e"><b>Classical narrow-spectrum</b> 傳統窄效　<span class="ex">PSE, CARB</span></div>
+            <div class="sd-e"><b>ESBLs</b> 廣效型　<span class="ex">TEM, SHV, CTX-M</span></div>
+            <div class="sd-e"><b>Class A carbapenemases</b><span class="sd-cbadge">Carbapenemase</span>　<span class="ex">GES, KPC, SME, IMI/NMC-A, SHV-38, SFC-1</span></div>
+          </div>
+        </div>
+        <div class="sd-clsrow">
+          <div class="sd-clsname">Class C<span class="zh">絲胺酸</span></div>
+          <div class="sd-enz">
+            <div class="sd-e"><b>AmpC</b> 頭孢菌素酶</div>
+            <div class="sd-e"><b>ESAC</b> 廣效型 AmpC　<span class="ex">Extended-spectrum AmpC</span></div>
+          </div>
+        </div>
+        <div class="sd-clsrow">
+          <div class="sd-clsname">Class D<span class="zh">絲胺酸</span></div>
+          <div class="sd-enz">
+            <div class="sd-e"><b>ESBLs</b>　<span class="ex">Oxacillinases, OXA</span></div>
+            <div class="sd-e"><b>CHDLs</b><span class="sd-cbadge">Carbapenemase</span>　<span class="ex">carbapenem-hydrolyzing class D β-lactamases</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cat zn">Metal<br>Zinc<br>金屬鋅</div>
+      <div class="rows">
+        <div class="sd-clsrow">
+          <div class="sd-clsname">Class B<span class="zh">金屬鋅</span></div>
+          <div class="sd-enz">
+            <div class="sd-e"><b>MBL</b> Metallo-β-lactamase 金屬酶<span class="sd-cbadge">Carbapenemase</span></div>
+            <div class="sd-e sub"><b>Subclass B1：</b>IMP, VIM, SPM, IND, NDM, DIM, GIM, SIM</div>
+            <div class="sd-e sub"><b>Subclass B2：</b>CphA, Sfh-I, ImiS</div>
+            <div class="sd-e sub"><b>Subclass B3：</b>AIM, CAU-1, GOB-1, FEZ-1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin:14px 0 4px; font-size:12.5px;"><b>Bush-Jacoby-Medeiros 功能分類</b> <span style="color:var(--muted-soft); font-family:var(--mono); font-size:10.5px;">functional</span></p>
+    <table class="sd-bjm">
+      <thead><tr><th style="width:84px">Group</th><th>酵素功能</th><th style="width:140px">對應 Ambler Class</th></tr></thead>
+      <tbody>
+        <tr><td><b>Group 1</b></td><td>Cephalosporinases 頭孢菌素酶</td><td>Class C</td></tr>
+        <tr><td><b>Group 2</b></td><td>Serine-β-lactamase 絲胺酸酶</td><td>Class A 與 D</td></tr>
+        <tr><td><b>Group 3</b></td><td>Metallo-β-lactamase 金屬酶</td><td>Class B</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2. 抗細菌菌譜 -->
+  <div class="section-title">2 · 抗細菌藥物感受性菌譜　Antibacterial Spectrum</div>
+  <div class="sd-mshell"><table class="sd-mx" id="sd-abx"></table></div>
+
+  <!-- 3. 抗黴菌菌譜 -->
+  <div class="section-title">3 · 抗黴菌藥物感受性菌譜　Antifungal Spectrum</div>
+  <div class="sd-mshell"><table class="sd-mx" id="sd-afx"></table></div>
+
+  <!-- 4. CR-GNB 熱圖 -->
+  <div class="section-title">4 · 新型抗生素對 CR-GNB 之抗菌譜　Novel Antibiotics vs Carbapenem-Resistant GNBs</div>
+  <div class="card">
+    <div class="sd-legend" style="margin-bottom:11px;">
+      <span class="lg"><span class="sd-sw" style="background:#2f8f57">S</span>通常有效</span>
+      <span class="lg"><span class="sd-sw" style="background:#c1892f">±</span>變異／需藥敏</span>
+      <span class="lg"><span class="sd-sw" style="background:#b25548">R</span>通常無效</span>
+    </div>
+    <div class="sd-hmshell">
+      <table class="sd-hm">
+        <thead><tr>
+          <th class="corner">抗生素 ＼ 抗藥菌</th>
+          <th>KPC</th><th>NDM</th><th>OXA-48</th><th>DTR-PsA</th><th>CR-AB</th><th>S. malto.</th>
+        </tr></thead>
+        <tbody id="sd-hmbody"></tbody>
+      </table>
+    </div>
+    <p class="sd-abbr"><b>縮寫：</b>KPC＝K. pneumoniae carbapenemase · NDM＝New Delhi metallo-β-lactamase · OXA-48＝OXA-48-like · DTR-PsA＝difficult-to-treat P. aeruginosa · CR-AB＝carbapenem-resistant A. baumannii · S. malto.＝Stenotrophomonas maltophilia</p>
+    <ul class="sd-notes">
+      <li><b>Cefiderocol</b> 全欄有效 → 幾乎涵蓋所有 CR-GNB（siderophore cephalosporin 特性）。</li>
+      <li><b>Aztreonam-avibactam</b>：對含 MBL 的 NDM 仍有效（aztreonam 不被金屬酶水解）、對 S. maltophilia 有效；DTR-PsA 變異、CR-AB 無效。</li>
+      <li><b>Ceftazidime-avibactam</b>：KPC、OXA-48 有效，但 <b>NDM 無效</b>（不涵蓋金屬酶 MBL）。</li>
+      <li><b>Meropenem-vaborbactam</b>：僅 <b>KPC 有效</b>（KPC 專一）。</li>
+      <li><b>Eravacycline／Tigecycline</b>：多數有效，但 <b>DTR-PsA 無效</b>（四環類不涵蓋 Pseudomonas）。</li>
+    </ul>
+  </div>
+
+  <!-- 5. 抗藥菌經驗性用藥 -->
+  <div class="section-title">5 · 抗藥菌經驗性用藥　Empiric Options for Resistant Organisms</div>
+  <div class="card"><div class="sd-rgrid" id="sd-rgrid"></div></div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Sawa+T+beta-lactamase+J+Intensive+Care+2020" target="_blank" rel="noopener" class="ref-link">Sawa T, et al. J Intensive Care. 2020;8:13.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/31054353/" target="_blank" rel="noopener" class="ref-link">Tamma PD, et al. J Pediatric Infect Dis Soc. 2019;8(3):251-260.</a> ·
+    台大醫院 2025 上半年抗生素感受性報表 (antibiogram)
+    <br>菌譜符號為定性抗菌譜；格內 %S 為台大在地實測（susceptible %），臨床仍以最新指引與個別藥敏 (AST) 為準。
+  </footer>
+</div>
+</div>
+<script>
+/* 台大 2025H1 在地 %S 對照：key = 藥|菌欄；值 [S, n] 或 [S, n, 1(=同類代表)] */
+const NTUH_S={"Penicillin|Strep.":[100,725],"Penicillin|Efc":[98,1483],"Penicillin|Efm":[5,1317],"Penicillin|Anae.":[100,9],"Oxacillin|MSSA":[100,983],"Oxacillin|MRSA":[0,549],"Ampicillin|Efc":[99,1483],"Ampicillin|Efm":[5,1317],"Unasyn|GNB":[56,1969],"Unasyn|En.bac":[1,527],"Unasyn|AB":[82,909],"Unasyn|Anae.":[88,9],"Tazocin|GNB":[79,1969],"Tazocin|En.bac":[59,527],"Tazocin|PsA":[79,1455],"Tazocin|AB":[73,909],"1st|GNB":[61,1969],"Cefmetazole|GNB":[72,1969],"Cefmetazole|Anae.":[89,9],"Ceftriaxone|Strep.":[64,82],"Ceftriaxone|GNB":[69,1969],"Ceftriaxone|En.bac":[44,527],"Ceftazidime|GNB":[71,1969],"Ceftazidime|En.bac":[49,527],"Ceftazidime|PsA":[86,1455],"Ceftazidime|AB":[72,909],"Flomoxef|Anae.":[100,9],"Cefepime|GNB":[90,1969],"Cefepime|En.bac":[80,527],"Cefepime|PsA":[87,1455],"Cefepime|AB":[74,909],"Ertapenem|GNB":[89,1969],"Ertapenem|En.bac":[84,527],"Imipenem|GNB":[93,1969],"Imipenem|En.bac":[89,527],"Imipenem|PsA":[89,1455],"Imipenem|AB":[75,909],"Meropenem|GNB":[95,1969],"Meropenem|En.bac":[93,527],"Meropenem|PsA":[88,1455],"Meropenem|AB":[75,909],"Ciprofloxacin|MSSA":[96,983],"Ciprofloxacin|MRSA":[54,549],"Ciprofloxacin|Efc":[88,1483],"Ciprofloxacin|Efm":[5,1317],"Ciprofloxacin|GNB":[73,1969],"Ciprofloxacin|En.bac":[66,527],"Ciprofloxacin|PsA":[86,1455],"Ciprofloxacin|AB":[74,909],"Levofloxacin|Strep.":[93,725],"Levofloxacin|MSSA":[96,983],"Levofloxacin|MRSA":[54,549],"Levofloxacin|Efc":[89,1483],"Levofloxacin|Efm":[7,1317],"Levofloxacin|GNB":[59,1969],"Levofloxacin|En.bac":[61,527],"Levofloxacin|PsA":[83,1455],"Levofloxacin|AB":[75,909],"Moxifloxacin|Strep.":[98,82],"Vancomycin|Strep.":[100,82],"Vancomycin|MSSA":[100,983],"Vancomycin|MRSA":[100,549],"Vancomycin|Efc":[99,1483],"Vancomycin|Efm":[47,1317],"Daptomycin|MSSA":[100,983],"Daptomycin|MRSA":[100,549],"Daptomycin|Efc":[79,1483],"Linezolid|MSSA":[100,983],"Linezolid|MRSA":[99,549],"Linezolid|Efc":[83,1483],"Linezolid|Efm":[98,1317],"Tigecycline|GNB":[89,1969],"Tigecycline|En.bac":[81,527],"Fusidic acid|MSSA":[85,983],"Fusidic acid|MRSA":[90,549],"Doxycycline|Strep.":[21,725,1],"Doxycycline|MSSA":[55,983,1],"Doxycycline|MRSA":[70,549,1],"Doxycycline|Efc":[10,1483,1],"Doxycycline|Efm":[42,1317,1],"Colistin|GNB":[97,1969],"Colistin|En.bac":[95,527],"Colistin|PsA":[98,1455],"Colistin|AB":[99,909],"TMP-SMX|MSSA":[99,983],"TMP-SMX|MRSA":[92,549],"TMP-SMX|GNB":[63,1969],"TMP-SMX|En.bac":[64,527],"Gentamicin|MSSA":[73,983],"Gentamicin|MRSA":[74,549],"Gentamicin|GNB":[75,1969],"Gentamicin|En.bac":[84,527],"Gentamicin|AB":[77,909],"Amikacin|GNB":[94,1969],"Amikacin|En.bac":[88,527],"Clindamycin|Strep.":[49,725],"Clindamycin|MSSA":[86,983],"Clindamycin|MRSA":[53,549],"Clindamycin|Anae.":[83,9],"Metronidazole|Anae.":[100,9],"Azithromycin|Strep.":[52,725,1],"Azithromycin|MSSA":[62,983,1],"Azithromycin|MRSA":[24,549,1],"Mica|C. albicans":[100,16],"Caspo|C. albicans":[100,16],"Anidula|C. albicans":[100,16],"Vori|C. albicans":[100,16],"Flu|C. albicans":[100,16],"Mica|C. tropicalis":[100,23],"Caspo|C. tropicalis":[96,23],"Anidula|C. tropicalis":[100,23],"Vori|C. tropicalis":[48,23],"Flu|C. tropicalis":[70,23],"Mica|C. parapsilosis":[100,14],"Caspo|C. parapsilosis":[100,14],"Anidula|C. parapsilosis":[100,14],"Vori|C. parapsilosis":[100,14],"Flu|C. parapsilosis":[100,14],"Mica|C. glabrata":[100,16],"Caspo|C. glabrata":[75,16],"Anidula|C. glabrata":[100,16],"Flu|C. glabrata":[75,16]};
+
+const abxCols=[{abbr:"Strep.",cn:"鏈球菌"},{abbr:"MSSA",cn:"甲氧敏感 SA"},{abbr:"MRSA",cn:"抗甲氧 SA"},{abbr:"Efc",cn:"糞腸球菌"},{abbr:"Efm",cn:"屎腸球菌"},{abbr:"GNB",cn:"腸桿菌 E.coli/Kleb"},{abbr:"En.bac",cn:"Enterobacter AmpC"},{abbr:"PsA",cn:"綠膿桿菌"},{abbr:"AB",cn:"鮑氏不動桿菌"},{abbr:"Anae.",cn:"厭氧菌"},{abbr:"Atyp.",cn:"非典型菌"}];
+const abxRows=[
+ {g:"青黴素類 Penicillins"},
+ {rx:"Penicillin",cn:"青黴素 G",v:[2,-1,-1,1,0,-1,-1,-1,-1,0,-1]},
+ {rx:"Oxacillin",cn:"抗葡萄球菌青黴素",v:[1,2,-1,-1,-1,-1,-1,-1,-1,-1,-1]},
+ {rx:"Ampicillin",cn:"氨苄青黴素",v:[1,-1,-1,2,0,0,-1,-1,-1,0,-1]},
+ {rx:"Unasyn",cn:"AMP-sulbactam",v:[1,1,-1,1,-1,1,-1,-1,1,1,-1]},
+ {rx:"Tazocin",cn:"PIP-tazobactam",v:[1,1,-1,1,-1,2,1,2,1,2,-1]},
+ {g:"頭孢菌素類 Cephalosporins"},
+ {rx:"1st",cn:"第一代 Cefazolin",v:[1,2,-1,-1,-1,1,-1,-1,-1,-1,-1]},
+ {rx:"2nd",cn:"第二代 Cefuroxime",v:[1,1,-1,-1,-1,1,-1,-1,-1,-1,-1]},
+ {rx:"Cefmetazole",cn:"頭黴素 cephamycin",v:[1,1,-1,-1,-1,1,-1,-1,-1,1,-1]},
+ {rx:"Ceftriaxone",cn:"第三代",v:[2,1,-1,-1,-1,2,0,-1,-1,-1,-1]},
+ {rx:"Ceftazidime",cn:"第三代 抗綠膿",v:[0,-1,-1,-1,-1,2,0,2,0,-1,-1]},
+ {rx:"Flomoxef",cn:"氧頭孢烯 oxacephem",v:[1,1,-1,-1,-1,1,-1,-1,-1,1,-1]},
+ {rx:"Brosym",cn:"CPZ-sulbactam",v:[1,1,-1,0,-1,2,1,1,2,1,-1]},
+ {rx:"Cefepime",cn:"第四代",v:[1,1,-1,-1,-1,2,2,2,1,-1,-1]},
+ {rx:"Cefpirome",cn:"第四代",v:[1,1,-1,-1,-1,2,2,1,0,-1,-1]},
+ {rx:"Ceftobiprole",cn:"第五代 抗 MRSA",v:[2,2,1,1,-1,1,1,1,0,-1,-1]},
+ {g:"碳青黴烯類 Carbapenems"},
+ {rx:"Ertapenem",cn:"無綠膿／腸球菌／AB",v:[1,1,-1,-1,-1,2,2,-1,-1,2,-1]},
+ {rx:"Imipenem",cn:"",v:[1,1,-1,1,-1,2,2,2,2,2,-1]},
+ {rx:"Meropenem",cn:"",v:[1,1,-1,0,-1,2,2,2,2,2,-1]},
+ {rx:"Doripenem",cn:"",v:[1,1,-1,0,-1,2,2,2,2,2,-1]},
+ {g:"氟喹諾酮類 Fluoroquinolones"},
+ {rx:"Ciprofloxacin",cn:"抗綠膿最佳",v:[0,0,-1,-1,-1,2,1,2,1,-1,2]},
+ {rx:"Levofloxacin",cn:"呼吸道",v:[1,1,-1,0,-1,2,1,1,1,0,2]},
+ {rx:"Moxifloxacin",cn:"厭氧佳／無綠膿",v:[2,1,-1,0,-1,1,1,-1,0,1,2]},
+ {g:"抗 Gram(+)／其他 Anti-GP & others"},
+ {rx:"Vancomycin",cn:"萬古黴素",v:[2,2,2,1,0,-1,-1,-1,-1,1,-1]},
+ {rx:"Teicoplanin",cn:"",v:[2,2,2,1,0,-1,-1,-1,-1,1,-1]},
+ {rx:"Daptomycin",cn:"涵蓋 VRE／勿用肺炎",v:[2,2,2,2,2,-1,-1,-1,-1,-1,-1]},
+ {rx:"Linezolid",cn:"涵蓋 VRE",v:[2,2,2,2,2,-1,-1,-1,-1,1,-1]},
+ {rx:"Tigecycline",cn:"廣效／無綠膿",v:[2,2,2,2,2,2,1,-1,2,2,1]},
+ {rx:"Fusidic acid",cn:"抗葡萄球菌",v:[1,2,1,-1,-1,-1,-1,-1,-1,0,-1]},
+ {g:"其他 Others"},
+ {rx:"Doxycycline",cn:"四環黴素",v:[1,1,0,0,0,0,0,-1,0,0,2]},
+ {rx:"Colistin",cn:"多黏菌素 MDR-GNB",v:[-1,-1,-1,-1,-1,2,1,2,2,-1,-1]},
+ {rx:"TMP-SMX",cn:"涵蓋 MRSA／Steno",v:[1,1,1,-1,-1,1,1,-1,1,-1,0]},
+ {rx:"Gentamicin",cn:"",v:[0,1,-1,0,0,2,1,1,1,-1,-1]},
+ {rx:"Amikacin",cn:"",v:[-1,0,-1,-1,-1,2,2,2,1,-1,-1]},
+ {rx:"Clindamycin",cn:"橫膈上厭氧",v:[1,1,1,-1,-1,-1,-1,-1,-1,1,-1]},
+ {rx:"Metronidazole",cn:"純厭氧",v:[-1,-1,-1,-1,-1,-1,-1,-1,-1,2,-1]},
+ {rx:"Azithromycin",cn:"非典型佳",v:[1,0,-1,-1,-1,0,-1,-1,-1,0,2]},
+ {rx:"Fosfomycin",cn:"UTI／ESBL",v:[1,1,0,1,0,2,0,0,0,-1,-1]},
+ {rx:"Rifampin",cn:"生物膜輔助／勿單用",v:[1,1,1,0,0,0,-1,-1,0,-1,-1]}
+];
+const afxCols=[{abbr:"AmB",cn:"Amphotericin B"},{abbr:"Mica",cn:"Micafungin"},{abbr:"Caspo",cn:"Caspofungin"},{abbr:"Anidula",cn:"Anidulafungin"},{abbr:"Posa",cn:"Posaconazole"},{abbr:"Vori",cn:"Voriconazole"},{abbr:"Itra",cn:"Itraconazole"},{abbr:"Flu",cn:"Fluconazole"}];
+const afxRows=[
+ {g:"念珠菌 Candida"},
+ {rx:"C. albicans",cn:"白色念珠菌",v:[2,2,2,2,2,2,2,2]},
+ {rx:"C. tropicalis",cn:"熱帶念珠菌",v:[2,2,2,2,2,2,2,1]},
+ {rx:"C. parapsilosis",cn:"近平滑 · echinocandin MIC↑",v:[2,0,0,0,2,2,2,2]},
+ {rx:"C. krusei",cn:"克魯斯 · Flu 天然抗藥",v:[1,2,2,2,1,1,1,-1]},
+ {rx:"C. glabrata",cn:"光滑 · azole 劑量依賴",v:[1,2,2,2,0,0,0,0]},
+ {g:"隱球菌 Cryptococcus"},
+ {rx:"C. neoformans",cn:"新型隱球菌 · echinocandin 無效",v:[2,-1,-1,-1,1,1,1,2]},
+ {g:"麴菌 Aspergillus"},
+ {rx:"A. fumigatus",cn:"煙麴菌 · Vori 首選",v:[1,1,1,1,2,2,1,-1]},
+ {rx:"A. terreus",cn:"土麴菌 · AmB 天然抗藥",v:[-1,1,1,1,2,2,1,-1]},
+ {rx:"A. flavus",cn:"黃麴菌",v:[0,1,1,1,2,2,1,-1]},
+ {g:"其他黴菌 Other moulds"},
+ {rx:"Mucormycosis",cn:"毛黴菌 · AmB/Posa · Vori 無效",v:[2,-1,-1,-1,1,-1,0,-1]},
+ {rx:"Fusarium",cn:"鐮刀菌",v:[1,-1,-1,-1,1,1,-1,-1]},
+ {g:"雙型性黴菌 Dimorphic"},
+ {rx:"Histoplasma",cn:"組織漿菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0]},
+ {rx:"Blastomyces",cn:"芽生菌 · Itra 佳",v:[2,-1,-1,-1,1,1,2,0]},
+ {rx:"Coccidioides",cn:"球黴菌 · Flu 可",v:[2,-1,-1,-1,1,1,1,1]}
+];
+const resistant=[
+ {ab:"MRSA",cn:"抗甲氧西林金黃色葡萄球菌",d:["Vancomycin","Teicoplanin","Daptomycin","Linezolid","Tigecycline"]},
+ {ab:"PsA",cn:"綠膿桿菌",d:["Ciprofloxacin / Levofloxacin","Aztreonam","Aminoglycoside","Pip-tazo (TZP)","Ceftazidime / Cefepime","Meropenem / Imipenem"]},
+ {ab:"ESBL",cn:"超廣效乙內醯胺酶",d:["Carbapenem (-penem)","Fosfomycin","Tigecycline"]},
+ {ab:"VRE",cn:"抗萬古黴素腸球菌",d:["Daptomycin","Linezolid","Tigecycline"]},
+ {ab:"MDRAB",cn:"多重抗藥鮑氏不動桿菌",d:["Carbapenem (-penem)","Sulbactam (SAM)","Brosym (CPZ-SB)","Colistin"]},
+ {ab:"PRSP",cn:"抗青黴素肺炎鏈球菌",d:["Ceftriaxone","Vancomycin / Teicoplanin","Tigecycline"]},
+ {ab:"Anae.",cn:"厭氧菌",d:["Metronidazole","SAM / TZP","Cephamycin","Clindamycin","Carbapenem","Moxifloxacin / Tigecycline / Dapto"]}
+];
+
+const cls=v=>v===2?"c2":v===1?"c1":v===0?"c0":"cn";
+const sym=v=>v===2?"++":v===1?"+":v===0?"±":"−";
+const sTier=s=>s>=90?"sHi":s>=80?"sOk":s>=60?"sMid":"sLo";
+let showCN=true;
+
+function buildMatrix(tblId,cols,rows,keyFn){
+  const t=document.getElementById(tblId);
+  let thead="<thead><tr><th class='corner'>藥物 ＼ 致病菌</th>";
+  cols.forEach((c,i)=>{ thead+=`<th data-col='${i}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`; });
+  thead+="</tr></thead>";
+  let tb="<tbody>";
+  rows.forEach(r=>{
+    if(r.g){ const p=r.g.split(" "); const en=r.g.replace(p[0],"").trim();
+      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
+    tb+=`<tr><th class='rowhead'><span class='rx'>${r.rx}</span>${r.cn?`<span class='cn'>${r.cn}</span>`:""}</th>`;
+    r.v.forEach((v,i)=>{
+      const s=NTUH_S[keyFn(r.rx,cols[i].abbr)];
+      const sp=s?`<span class='sp ${sTier(s[0])}${s[2]?' px':''}'>${s[2]?'≈':''}${s[0]}%</span>`:"";
+      tb+=`<td class='sd-cell ${cls(v)}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
+    });
+    tb+="</tr>";
+  });
+  tb+="</tbody>";
+  t.innerHTML=thead+tb;
+}
+function toggleCol(tblId,idx){
+  const t=document.getElementById(tblId);
+  const on=t.querySelector(`th[data-col='${idx}']`).classList.toggle("col-hi");
+  t.querySelectorAll(`td[data-col='${idx}']`).forEach(td=>td.classList.toggle("col-hi",on));
+}
+function buildResistant(){
+  document.getElementById("sd-rgrid").innerHTML=resistant.map(r=>
+    `<div class="sd-rcard"><div class="nm"><span class="pill">${r.ab}</span><span class="cn">${r.cn}</span></div><ul>${r.d.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+}
+const BL_ROWS=[
+ {rx:"Aztreonam-avibactam",v:["g","g","g","a","r","g"]},
+ {rx:"Cefiderocol",v:["g","g","g","g","g","g"]},
+ {rx:"Ceftazidime-avibactam",v:["g","r","g","a","r","r"]},
+ {rx:"Ceftolozane-tazobactam",v:["r","r","r","a","r","a"]},
+ {rx:"Eravacycline",v:["g","g","g","r","g","g"]},
+ {rx:"Fosfomycin",v:["a","a","a","a","r","r"]},
+ {rx:"Imipenem-relebactam",v:["g","r","a","g","r","r"]},
+ {rx:"Meropenem-vaborbactam",v:["g","r","r","r","r","r"]},
+ {rx:"Plazomicin",v:["g","a","g","a","r","r"]},
+ {rx:"Polymyxin B／Colistin",v:["a","a","a","a","a","a"]},
+ {rx:"Tigecycline",v:["g","g","g","r","g","g"]}
+];
+const BL_SYM={g:"S",a:"±",r:"R"};
+document.getElementById("sd-hmbody").innerHTML=BL_ROWS.map(r=>
+  `<tr><th>${r.rx}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
+
+buildMatrix("sd-abx",abxCols,abxRows,(rx,ab)=>rx+"|"+ab);
+buildMatrix("sd-afx",afxCols,afxRows,(rx,ab)=>ab+"|"+rx);
+buildResistant();
+
+/* 中文菌名 toggle */
+document.getElementById("sd-cn").onclick=function(){
+  showCN=!showCN; this.classList.toggle("on",showCN);
+  document.querySelectorAll(".sd-colhead .cn").forEach(e=>e.style.display=showCN?"":"none");
+};
+/* 搜尋（過濾兩表 row） */
+document.getElementById("sd-q").addEventListener("input",e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll("table.sd-mx tbody tr").forEach(tr=>{
+    if(tr.classList.contains("sd-grp")){tr.style.display=""; return;}
+    const txt=tr.querySelector(".rowhead")?.textContent.toLowerCase()||"";
+    tr.style.display=(!q||txt.includes(q))?"":"none";
+  });
+});
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
