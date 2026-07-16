@@ -2,7 +2,7 @@
  * 策略：network-first（有網路時每次都抓最新版並更新快取；離線或逾時才回退快取）。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v69';
+const CACHE_VERSION = 'clinical-tools-v71';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -14,6 +14,7 @@ const PRECACHE_URLS = [
   './css/cancer-staging.css',
   './js/common.js',
   './js/pull-to-refresh.js',
+  './js/search.js',
   './js/antibiotics.js',
   './js/cancer-staging.js',
   './js/gastric-pathway.js',

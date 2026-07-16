@@ -101,9 +101,12 @@ function renderStage(c){
     h += renderMatrix(v);
   } else if(c.matrix){
     h += renderMatrix(c.matrix);
-  } else if(c.stages && c.stages.length){
+  }
+  // stages 為獨立區塊，不與 matrix 互斥：GIST（AJCC TNM ＋ AFIP 風險分級）、
+  // HCC（AJCC ＋ BCLC）等癌別兩者並存，且各自回答不同問題。
+  if(c.stages && c.stages.length){
     if(c.staging_system) h += '<div class="nd-def">分期系統：<b>'+escapeHtml(c.staging_system)+'</b></div>';
-    h += '<div class="onc-sec-h">分期組合 Stage Grouping</div>';
+    h += '<div class="onc-sec-h">'+escapeHtml(c.stages_title || '分期組合 Stage Grouping')+'</div>';
     h += '<table class="stage"><tr><th>分期</th><th>條件</th></tr>';
     // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
     // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
@@ -259,6 +262,15 @@ function escapeHtml(s){
   });
 }
 
+/* 深層連結：#cancer=<id>，供首頁全站查詢直接開啟該癌症 */
+function applyHash(){
+  var m = decodeURIComponent((location.hash||'').replace(/^#/,'')).match(/^cancer=(.+)$/);
+  if(m && CANCERS.some(function(c){return c.id===m[1];})){ showDetail(m[1]); return true; }
+  return false;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   renderPicker('');
+  applyHash();
 });
+window.addEventListener('hashchange', applyHash);

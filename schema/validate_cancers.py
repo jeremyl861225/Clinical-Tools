@@ -415,13 +415,34 @@ def validate_cancer(idx, c, errors, warnings):
             _validate_tnm_rows(key, f, c[f], errors)
 
     # 分期組合：matrix 與 stages 二擇一（matrix 優先），至少要有一個
+    has_matrices = 'matrices' in c
     has_matrix = 'matrix' in c
     has_stages = 'stages' in c
-    if not has_matrix and not has_stages:
-        errors.append(f'[{key}] 缺少分期組合資料：`matrix` 與 `stages` 皆不存在')
+    if not has_matrices and not has_matrix and not has_stages:
+        errors.append(f'[{key}] 缺少分期組合資料：`matrices`、`matrix` 與 `stages` 皆不存在')
+    if has_matrices:
+        mats = c['matrices']
+        if not isinstance(mats, list) or not mats:
+            errors.append(f'[{key}] `matrices` 應為非空陣列')
+        else:
+            if 'matrix_axis' not in c:
+                errors.append(f'[{key}] 有 `matrices` 但缺少 `matrix_axis`（選擇器標題）')
+            seen = set()
+            for i, v in enumerate(mats):
+                if not isinstance(v, dict):
+                    errors.append(f'[{key}] `matrices[{i}]` 應為物件')
+                    continue
+                for f in ('key', 'label'):
+                    if not _is_string(v.get(f)) or not v.get(f, '').strip():
+                        errors.append(f'[{key}] `matrices[{i}].{f}` 應為非空字串')
+                k = v.get('key')
+                if k in seen:
+                    errors.append(f'[{key}] `matrices` 的 key 重複：{k!r}')
+                seen.add(k)
+                _validate_matrix(f'{key}/{k}', v, errors)
     if has_matrix:
         _validate_matrix(key, c['matrix'], errors)
-    elif has_stages:
+    if has_stages:
         _validate_stages(key, c['stages'], errors)
 
     # 淋巴結分群（選填，但若存在需符合格式）
