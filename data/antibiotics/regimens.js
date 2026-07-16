@@ -648,7 +648,9 @@ window.COV_LABELS_FUNGAL={candida:'Candida',glabkrusei:'glabrata/krusei',aspergi
 /* 抗病毒：病毒別八旗標（covSet:'viral'） */
 window.COV_LABELS_VIRAL={hsv:'HSV/VZV',cmv:'CMV',flu:'Influenza',cov2:'SARS-CoV-2',hbv:'HBV',hcv:'HCV',hiv:'HIV',rsv:'RSV'};
 /* 抗寄生蟲／原蟲：旗標（covSet:'para'） */
-window.COV_LABELS_PARA={malaria:'瘧原蟲',ameba:'阿米巴/原蟲',nematode:'線蟲',cestode:'絛蟲',trematode:'吸蟲',ectopara:'外寄生蟲'};
+/* ameba 旗標涵蓋阿米巴、梨形鞭毛蟲、弓形蟲等——阿米巴本身即原蟲的一種（非並列關係），
+   且本旗標不只阿米巴，故用上位詞「原蟲」；瘧原蟲另立旗標。 */
+window.COV_LABELS_PARA={malaria:'瘧原蟲',ameba:'原蟲',nematode:'線蟲',cestode:'絛蟲',trematode:'吸蟲',ectopara:'外寄生蟲'};
 
 /* ---- regimen role 顯示文字（原內嵌於 render 邏輯旁，屬資料） ---- */
 window.ROLE_TXT={first:'首選',alt:'替代',special:'特殊 / 加用',none:'不需 / 不建議'};

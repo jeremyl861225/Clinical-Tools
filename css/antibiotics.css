@@ -56,6 +56,8 @@
   /* 抗結核／抗病毒等非抗菌藥的單一類別標籤 */
   .cov-tag.cat{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line); letter-spacing:.06em;}
   .dc-preg{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); border:1px solid var(--accent2); border-radius:8px; padding:1px 7px;}
+  /* 懷孕分級的補充說明（台大未給字母分級、或有適應症別/避孕期限等附註時） */
+  .dc-pregnote{font-size:12px; color:var(--muted); margin-left:7px; line-height:1.6;}
   /* 依病原菌：選菌後放大的菌名 */
   .bac-crumb-lg b{font-size:20px; font-family:var(--serif); letter-spacing:.01em;}
   .bac-crumb-lg{font-size:14px;}

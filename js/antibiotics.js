@@ -165,9 +165,18 @@ function renderDrugCard(k){
   const brandField = (d.vialDose||d.ntuhProducts)
     ? field('商品名／單隻劑量', brandLine)
     : field('台灣商品名', prodStr);
-  // 懷孕藥品分級徽章
-  const pregField = d.preg
-    ? `<div class="dc-field"><div class="dc-flabel">懷孕藥品分級</div><div class="dc-ftext"><span class="dc-preg">Category ${d.preg}</span></div></div>` : '';
+  // 懷孕藥品分級：開頭若是字母分級(A/B/C/D/X，可帶 B1 等)就做成徽章，其餘說明文字接在後面；
+  // 台大未給字母分級者（只有敘述）則純文字呈現，不硬套 "Category"。
+  let pregField='';
+  if(d.preg){
+    const m = String(d.preg).match(/^\s*([ABCDX]\d?)\s*([\s\S]*)$/);
+    const grade = m ? m[1] : '';
+    const note  = m ? m[2].trim() : String(d.preg).trim();
+    pregField = `<div class="dc-field"><div class="dc-flabel">懷孕藥品分級</div><div class="dc-ftext">`+
+      (grade?`<span class="dc-preg">Category ${grade}</span>`:'')+
+      (note?`<span class="dc-pregnote">${note}</span>`:'')+
+      `</div></div>`;
+  }
   // 注射給藥指引（若為注射劑；口服藥不設此欄）
   let injField='';
   if(d.injection){
@@ -271,25 +280,32 @@ function selectBacteria(gi,bi){
 
 function backToBacteria(){ show('bac-step-list',true); show('bac-step-result',false); window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* 查詢模式的「種類排序」分組：依 cls 歸入粗分類，依此固定順序顯示群組標題。 */
+/* 查詢模式的「種類排序」分組。
+   先看 catLabel／covSet（抗結核、抗麻風、抗黴菌、抗寄生蟲、抗病毒各自獨立成群，
+   不會因 cls 含 aminoglycoside 之類字樣而被混進抗菌類——如 streptomycin 屬抗結核），
+   其餘抗細菌藥才依 cls 歸類。判斷式吃整個藥物物件。 */
 const DRUG_GROUPS = [
-  ['青黴素類 Penicillins',        c=>/penicillin/i.test(c) && !/cephalosporin/i.test(c)],
-  ['頭孢子菌素類 Cephalosporins', c=>/cephalosporin|cephamycin/i.test(c)],
-  ['碳青黴烯類 Carbapenems',      c=>/carbapenem/i.test(c)],
-  ['單環內醯胺 Monobactam',       c=>/monobactam/i.test(c)],
-  ['抗 Gram(+)／anti-MRSA',       c=>/glycopeptide|lipopeptide|oxazolidinone/i.test(c)],
-  ['胺基醣苷類 Aminoglycosides',  c=>/aminoglycoside/i.test(c)],
-  ['氟喹諾酮類 Fluoroquinolones', c=>/fluoroquinolone/i.test(c)],
-  ['四環素／甘胺醯環素',          c=>/tetracycline|glycylcycline/i.test(c)],
-  ['巨環／林可醯胺類',            c=>/macrolide|lincosamide/i.test(c)],
-  ['硝基咪唑類 Nitroimidazole',   c=>/nitroimidazole/i.test(c)],
-  ['多黏菌素 Polymyxin',          c=>/polymyxin/i.test(c)],
-  ['抗結核 Anti-TB',              c=>/anti-tb/i.test(c)],
-  ['抗黴菌 Antifungals',          c=>/\bazole\b|echinocandin|polyene|pyrimidine/i.test(c)],
-  ['抗病毒 Antivirals',           c=>/antiviral/i.test(c)],
-  ['其他 Others',                 c=>true],
+  ['抗結核 Anti-TB',              d=>d.catLabel==='抗結核'],
+  ['抗麻風 Anti-leprosy',         d=>d.catLabel==='抗麻風'],
+  ['抗黴菌 Antifungals',          d=>d.covSet==='fungal'],
+  ['抗寄生蟲 Antiparasitics',     d=>d.covSet==='para'],
+  ['HIV 抗反轉錄病毒 HIV ART',    d=>d.covSet==='viral' && /\bHIV\b/i.test(d.cls||'')],
+  ['肝炎抗病毒 Hepatitis B／C',   d=>d.covSet==='viral' && /\bHBV\b|\bHCV\b/i.test(d.cls||'')],
+  ['抗病毒 Antivirals',           d=>d.covSet==='viral'],
+  ['青黴素類 Penicillins',        d=>/penicillin/i.test(d.cls||'') && !/cephalosporin/i.test(d.cls||'')],
+  ['頭孢子菌素類 Cephalosporins', d=>/cephalosporin|cephamycin/i.test(d.cls||'')],
+  ['碳青黴烯類 Carbapenems',      d=>/carbapenem/i.test(d.cls||'')],
+  ['單環內醯胺 Monobactam',       d=>/monobactam/i.test(d.cls||'')],
+  ['抗 Gram(+)／anti-MRSA',       d=>/glycopeptide|lipopeptide|oxazolidinone/i.test(d.cls||'')],
+  ['胺基醣苷類 Aminoglycosides',  d=>/aminoglycoside/i.test(d.cls||'')],
+  ['氟喹諾酮類 Fluoroquinolones', d=>/fluoroquinolone|quinolone/i.test(d.cls||'')],
+  ['四環素／甘胺醯環素',          d=>/tetracycline|glycylcycline/i.test(d.cls||'')],
+  ['巨環／林可醯胺類',            d=>/macrolide|lincosamide/i.test(d.cls||'')],
+  ['硝基咪唑類 Nitroimidazole',   d=>/nitroimidazole/i.test(d.cls||'')],
+  ['多黏菌素 Polymyxin',          d=>/polymyxin/i.test(d.cls||'')],
+  ['其他 Others',                 d=>true],
 ];
-function drugGroupIdx(cls){ const c=cls||''; for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](c)) return i; return DRUG_GROUPS.length-1; }
+function drugGroupIdx(d){ for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](d||{})) return i; return DRUG_GROUPS.length-1; }
 
 let lookupSort='alpha';
 function setLookupSort(mode){
@@ -305,9 +321,9 @@ function renderLookup(q){
   if(!keys.length){ el('lookup-results').innerHTML='<div class="bac-empty">找不到符合的藥物。</div>'; return; }
   const byName=(a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name);
   if(lookupSort==='class'){
-    keys.sort((a,b)=>{const ga=drugGroupIdx(DRUGS[a].cls),gb=drugGroupIdx(DRUGS[b].cls); return ga!==gb?ga-gb:byName(a,b);});
+    keys.sort((a,b)=>{const ga=drugGroupIdx(DRUGS[a]),gb=drugGroupIdx(DRUGS[b]); return ga!==gb?ga-gb:byName(a,b);});
     let html='',cur=-1;
-    keys.forEach(k=>{const gi=drugGroupIdx(DRUGS[k].cls); if(gi!==cur){cur=gi; html+=`<div class="bac-group-head">${DRUG_GROUPS[gi][0]}</div>`;} html+=renderDrugCard(k);});
+    keys.forEach(k=>{const gi=drugGroupIdx(DRUGS[k]); if(gi!==cur){cur=gi; html+=`<div class="bac-group-head">${DRUG_GROUPS[gi][0]}</div>`;} html+=renderDrugCard(k);});
     el('lookup-results').innerHTML=html;
   } else {
     keys.sort(byName);
