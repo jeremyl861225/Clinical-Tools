@@ -82,14 +82,15 @@
 
     h += '</div>'; // gc_res
 
-    // 不可切除（fit）化療後再分期（AGC-3, 2 of 2）
+    h += rec('gc_loco_rec', '建議處置 · 侷限性 Locoregional');
+
+    // 不可切除（fit）化療後再分期（AGC-3, 2 of 2）— 置於建議處置之後
     h += connH('gc_c_restage');
     h += step('gc_s_restage', '3', '化療後再分期反應（AGC-3, 2 of 2）',
       opt('restage', 'ccr', '臨床完全緩解（cCR）或大幅反應', 'clinical CR / major response') +
       opt('restage', 'residual', '殘存病灶／局部或遠處轉移', 'residual, locoregional and/or distant'));
     h = h.replace('id="gc_s_restage"', 'id="gc_s_restage" class="hidden"');
 
-    h += rec('gc_loco_rec', '建議處置 · 侷限性 Locoregional');
     h += '<div class="flow-fu hidden" id="gc_loco_fu"></div>';
     h += '</div>'; // gc_loco
 
@@ -334,11 +335,13 @@
       ], '', 'curative');
     } else {
       result(R, F, 'rec-elective', 'R0 + pT3–4 或 N+ → 術後輔助化療', [
+        '<span class="rx-h">最佳療程尚未確立</span>　<span class="rx-sub">Optimal regimen not established；可依病人狀況與醫病討論選擇</span>',
         '<span class="rx">S-1</span> 單方（ACTS-GC）。',
+        '<span class="rx">HDFL</span>（週 24hr <span class="drug">5-FU</span> 2,000–2,600 mg/m²＋<span class="drug">leucovorin</span> 300 mg/m²）。',
         '<span class="rx">XELOX</span>（<span class="drug">capecitabine</span>＋<span class="drug">oxaliplatin</span>，CLASSIC）。',
-        '<span class="rx">S-1 + docetaxel</span>（JACCRO GC-07）— <b>pStage III 建議</b>。',
+        '<span class="rx">S-1 + docetaxel</span>（<span class="drug">S-1</span>＋<span class="drug">docetaxel</span>，JACCRO GC-07）— <b>pStage III 建議</b>。',
         '<span class="rx">SOX</span>（<span class="drug">S-1</span>＋<span class="drug">oxaliplatin</span>，ARTIST 2）— <b>pStage III 建議</b>。'
-      ], 'AGC-3：D2 R0 後 pT3-4 或 pN+ → adjuvant chemo。S-1+docetaxel 與 SOX 於 pStage III 之 3 年無復發存活優於 S-1 單方；惟 capecitabine／oxaliplatin／docetaxel 於 adjuvant 未納健保。', 'curative');
+      ], 'AGC-5（1 of 3）：D2 切除後 pT3-4 或 pN+ → post-operative chemotherapy，最佳療程尚未確立。S-1+docetaxel 與 SOX 於 pStage III 之 3 年無復發存活優於 S-1 單方；惟 capecitabine／oxaliplatin／docetaxel 於 adjuvant 未納健保。', 'curative');
     }
   }
 
