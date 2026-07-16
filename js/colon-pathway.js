@@ -56,11 +56,31 @@
         'Single specimen, completely removed, favorable histologic features and clear margins') +
       opt('pfind', 'unfav', '標本破碎／切緣無法評估／組織學特徵不良／具高風險特徵',
         'Fragmented · margin cannot be assessed · unfavorable histology · high-risk features'),
-      '<div class="note"><b>Favorable histologic features</b>：grade 1 或 2、無血管淋巴管侵犯、切緣陰性。' +
-      '<b>Unfavorable</b>：grade 3 或 4、血管淋巴管侵犯、或切緣陽性。<br>' +
-      '<b>High Risk Features（COL-1）</b>：① Haggitt level 4；② 切緣陽性或 &lt; 1mm；③ 分塊切除（piecemeal removal）；' +
-      '④ 組織分級為 poorly differentiated 或 undifferentiated；⑤ 黏膜下侵犯 &gt; 1mm；⑥ Tumor budding &gt; G2/G3；' +
-      '⑦ 淋巴血管侵犯陽性；⑧ 神經周圍侵犯。</div>');
+      '<div class="crit-box">' +
+        '<div class="crit-pair">' +
+          '<div class="crit crit-fav">' +
+            '<div class="crit-h">FAVORABLE　<span class="crit-zh">組織學特徵良好</span></div>' +
+            '<ul><li>Grade 1 或 2</li><li>無血管淋巴管侵犯</li><li>切緣陰性</li></ul>' +
+          '</div>' +
+          '<div class="crit crit-unfav">' +
+            '<div class="crit-h">UNFAVORABLE　<span class="crit-zh">組織學特徵不良</span></div>' +
+            '<ul><li>Grade 3 或 4</li><li>血管淋巴管侵犯</li><li>切緣陽性</li></ul>' +
+          '</div>' +
+        '</div>' +
+        '<div class="crit crit-hr">' +
+          '<div class="crit-h">HIGH RISK FEATURES（COL-1）　<span class="crit-zh">任一項即屬高風險</span></div>' +
+          '<ol>' +
+            '<li>Haggitt level 4</li>' +
+            '<li>切緣陽性或 &lt; 1mm</li>' +
+            '<li>分塊切除（piecemeal removal）</li>' +
+            '<li>組織分級為 poorly differentiated 或 undifferentiated</li>' +
+            '<li>黏膜下侵犯 &gt; 1mm</li>' +
+            '<li>Tumor budding &gt; G2/G3</li>' +
+            '<li>淋巴血管侵犯陽性</li>' +
+            '<li>神經周圍侵犯</li>' +
+          '</ol>' +
+        '</div>' +
+      '</div>');
 
     h += connH('cc_c3p');
     h += step('cc_s3p', '3', '息肉形態（COL-1 MANAGEMENT）',

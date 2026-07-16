@@ -70,6 +70,26 @@
   .node-item .ni-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
   .node-group{font-family:var(--mono); font-size:11px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; margin-left:6px; white-space:nowrap;}
 
+  /* ---- 判讀準則區塊（流程步驟內的 Favorable / Unfavorable / High-risk 清單）---- */
+  .crit-box{margin-top:9px; display:flex; flex-direction:column; gap:7px;}
+  .crit-pair{display:grid; grid-template-columns:1fr 1fr; gap:7px;}
+  @media(max-width:560px){ .crit-pair{grid-template-columns:1fr;} }
+  .crit{background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--line); border-radius:2px; padding:8px 11px;}
+  .crit-h{font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.04em; margin-bottom:5px; line-height:1.4;}
+  .crit-h .crit-zh{font-family:var(--sans); font-weight:600; letter-spacing:0;}
+  .crit ul, .crit ol{margin:0; padding-left:16px; font-size:12px; line-height:1.75; color:var(--label-ink);}
+  .crit li{margin:1px 0;}
+  .crit-fav{border-left-color:var(--accent);}
+  .crit-fav .crit-h{color:var(--accent);}
+  .crit-unfav{border-left-color:var(--accent2);}
+  .crit-unfav .crit-h{color:var(--accent2);}
+  .crit-hr{border-left-color:var(--accent2); background:var(--accent2-soft);}
+  .crit-hr .crit-h{color:var(--accent2);}
+  .crit-hr ol{columns:2; column-gap:18px; padding-left:18px;}
+  @media(max-width:560px){ .crit-hr ol{columns:1;} }
+  .crit-hr ol li{break-inside:avoid;}
+  .crit-note{font-size:11px; color:var(--muted-soft); line-height:1.6; margin-top:4px;}
+
   /* ---- 淋巴結：依術式之 D 級控制列與徽章（胃癌）---- */
   .nd-ctrl{background:var(--soft-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin:8px 0 10px;}
   .nd-h{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft); margin:0 0 5px;}
