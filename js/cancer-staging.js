@@ -77,21 +77,45 @@ function switchTab(id, tab){
   }
 }
 
+var MTX_VARIANT = {};   // cancerId -> 目前選取之變體 key
+
+function setMatrixVariant(id, key){ MTX_VARIANT[id] = key; switchTab(id, 'stage'); }
+
 function renderStage(c){
   var h = '';
   if(c.staging_note) h += '<p class="onc-note">'+c.staging_note+'</p>';
   h += tnmTable('T — 原發腫瘤', c.t);
   h += tnmTable('N — 區域淋巴結', c.n);
   h += tnmTable('M — 遠處轉移', c.m);
-  if(c.matrix){
+  if(c.matrices && c.matrices.length){
+    // 分期依判別軸（年齡／組織型態／部位…）分為多張表
+    var key = MTX_VARIANT[c.id] || c.matrices[0].key;
+    var v = c.matrices.filter(function(x){return x.key === key;})[0] || c.matrices[0];
+    h += '<div class="nd-ctrl"><div class="nd-h">'+escapeHtml(c.matrix_axis || '分期依據')+'</div><div class="nd-btns">';
+    c.matrices.forEach(function(x){
+      h += '<button class="nd-btn'+(x.key===v.key?' active':'')+'" onclick="setMatrixVariant(\''+c.id+'\',\''+x.key+'\')">'+
+           escapeHtml(x.label)+'</button>';
+    });
+    h += '</div></div>';
+    if(v.note) h += '<div class="nd-def">'+v.note+'</div>';
+    h += renderMatrix(v);
+  } else if(c.matrix){
     h += renderMatrix(c.matrix);
   } else if(c.stages && c.stages.length){
+    if(c.staging_system) h += '<div class="nd-def">分期系統：<b>'+escapeHtml(c.staging_system)+'</b></div>';
     h += '<div class="onc-sec-h">分期組合 Stage Grouping</div>';
     h += '<table class="stage"><tr><th>分期</th><th>條件</th></tr>';
+    // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
+    // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
+    var shaded = 0;
     c.stages.forEach(function(s){
-      h += '<tr><td>'+s[0]+'</td><td>'+(s[1]||'')+(s[2]?'　'+s[2]:'')+'</td></tr>';
+      var cls = shadeClass(String(s[0]).replace(/\s/g,''));
+      if(cls !== 'sm-s0') shaded++;
+      h += '<tr><td class="st-code '+cls+'">'+s[0]+'</td>'+
+           '<td>'+(s[1]||'')+(s[2]?'　'+s[2]:'')+'</td></tr>';
     });
     h += '</table>';
+    if(shaded) h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';
   }
   return h;
 }

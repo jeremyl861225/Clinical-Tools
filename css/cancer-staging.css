@@ -36,6 +36,10 @@
   table.stage th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); text-align:left; padding:4px 7px; border-bottom:2px solid var(--accent-soft);}
   table.stage td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5;}
   table.stage td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent2); white-space:nowrap;}
+  /* 非 TNM 系統（FIGO／BCLC…）之分期欄：沿用 T×N 表之深淺著色 */
+  table.stage td.st-code{text-align:center; border-radius:2px;}
+  table.stage td.st-code.sm-s4, table.stage td.st-code.sm-s5,
+  table.stage td.st-code.sm-s6, table.stage td.st-code.sm-s7{color:var(--sm-strong-text);}
   table.stage tr:last-child td{border-bottom:none;}
 
   /* 分期矩陣 T×N（如 AJCC 圖表；依分期深淺著色，深／淺色模式皆可讀） */
@@ -162,6 +166,103 @@
   .kps-details table{border-collapse:collapse; margin-top:7px; font-size:11px; line-height:1.4;}
   .kps-details td{border:1px solid rgba(190,190,190,.32); padding:3px 8px; vertical-align:top;}
   .kps-details td:first-child{font-family:var(--mono); font-weight:700; text-align:right; white-space:nowrap;}
+
+     結腸癌流程專用（js/colon-pathway.js）
+     1) pT1 內視鏡切除後迷你流程圖（COL-1-1）
+     2) 術後病理分期 T×N 可點選格（COL-3）
+     3) 系統性治療分層面板（COL-6／COL-7／COL-8）
+     ============================================================ */
+
+  /* ---- 1) pT1 迷你流程圖（置於深色 .flow-rec 內）---- */
+  .pt1-flow{margin-top:9px; font-family:var(--sans); min-width:0;}
+  .pt1-flow .pt1-cols{display:grid; gap:8px; align-items:start; min-width:0;}
+  .pt1-flow .pt1-cols-main{grid-template-columns:1.6fr 1fr;}
+  .pt1-flow .pt1-cols-sub{grid-template-columns:1fr 1fr;}
+  @media(max-width:620px){ .pt1-flow .pt1-cols-main,.pt1-flow .pt1-cols-sub{grid-template-columns:1fr;} }
+  .pt1-flow .pt1-col{min-width:0;}
+  .pt1-flow .pt1-node{min-width:0; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.28);
+    border-radius:3px; padding:7px 9px; font-size:11.5px; line-height:1.6; overflow-wrap:anywhere;}
+  .pt1-flow .pt1-node ul{margin:4px 0 0; padding-left:15px; list-style:disc;}
+  .pt1-flow .pt1-node li{margin:1px 0;}
+  .pt1-flow .pt1-sub{display:block; font-size:10.5px; opacity:.78; font-weight:400; margin-top:2px;}
+  .pt1-flow .pt1-root{text-align:center; font-family:var(--mono); font-weight:700;}
+  .pt1-flow .pt1-head{font-weight:700;}
+  .pt1-flow .pt1-arrow{text-align:center; font-size:13px; line-height:1; margin:5px 0; opacity:.6;}
+  .pt1-flow .pt1-term{font-weight:700; text-align:center;}
+  .pt1-flow .is-go{border-left:3px solid #7fd8a8;}
+  .pt1-flow .is-warn{border-left:3px solid #f0c274;}
+  .pt1-flow .is-stop{border-left:3px solid #f09a89;}
+  .pt1-flow .pt1-term.is-go{background:rgba(127,216,168,.20);}
+  .pt1-flow .pt1-term.is-warn{background:rgba(240,194,116,.20);}
+  .pt1-flow .pt1-term.is-stop{background:rgba(240,154,137,.22);}
+  .pt1-flow .pt1-foot{margin-top:9px; font-size:10.5px; line-height:1.65; opacity:.8; overflow-wrap:anywhere;}
+  .flow-rec.rec-idle .pt1-flow .pt1-node{background:var(--field-bg); border-color:var(--line);}
+
+  /* ---- 2) T×N 病理分期格 ---- */
+  :root{
+    --tn-none-bg:#dbeee1; --tn-none-line:#5f9c78; --tn-none-ink:#1d4230;
+    --tn-ii-bg:#f7e9cd;   --tn-ii-line:#b8913f;   --tn-ii-ink:#4a3612;
+    --tn-low-bg:#d9e6f4;  --tn-low-line:#5c86b5;  --tn-low-ink:#1d3550;
+    --tn-high-bg:#f2dcd6; --tn-high-line:#b8705f; --tn-high-ink:#502a21;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --tn-none-bg:#1b3a2a; --tn-none-line:#4f9070; --tn-none-ink:#cfeadc;
+      --tn-ii-bg:#3d3218;   --tn-ii-line:#9c7f38;   --tn-ii-ink:#f0e0bc;
+      --tn-low-bg:#1c3145;  --tn-low-line:#4f7aa8;  --tn-low-ink:#d5e5f5;
+      --tn-high-bg:#402721; --tn-high-line:#a86452; --tn-high-ink:#f3d9d1;
+    }
+  }
+  .tn-wrap{min-width:0;}
+  .tn-cap{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--muted-soft); margin-bottom:7px;}
+  .tn-grid{display:grid; grid-template-columns:auto repeat(3,1fr); gap:4px; min-width:0;}
+  .tn-grid > *{min-width:0;}
+  .tn-corner,.tn-ch,.tn-rh{font-family:var(--mono); font-size:10.5px; display:flex; align-items:center;
+    justify-content:center; text-align:center; padding:2px 4px; color:var(--muted-soft); overflow-wrap:anywhere;}
+  .tn-ch{font-weight:700; color:var(--muted);}
+  .tn-rh{justify-content:flex-end; padding-right:6px; font-weight:700; color:var(--muted);}
+  .tn-cell{font-family:var(--mono); font-size:11.5px; font-weight:700; line-height:1.3; min-width:0;
+    border:1px solid var(--line); border-radius:2px; padding:10px 2px; text-align:center; cursor:pointer;
+    background:var(--field-bg); color:var(--ink); transition:box-shadow .15s;}
+  .tn-cell:hover{box-shadow:0 0 0 1px var(--ink) inset;}
+  .tn-cell.selected{box-shadow:0 0 0 2px var(--ink) inset;}
+  .tn-cell.g-none{background:var(--tn-none-bg); border-color:var(--tn-none-line); color:var(--tn-none-ink);}
+  .tn-cell.g-ii{background:var(--tn-ii-bg); border-color:var(--tn-ii-line); color:var(--tn-ii-ink);}
+  .tn-cell.g-low{background:var(--tn-low-bg); border-color:var(--tn-low-line); color:var(--tn-low-ink);}
+  .tn-cell.g-high{background:var(--tn-high-bg); border-color:var(--tn-high-line); color:var(--tn-high-ink);}
+  .tn-na{border:1px dashed var(--line); border-radius:2px; padding:10px 2px; text-align:center;
+    font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+  .tn-legend{display:flex; flex-wrap:wrap; gap:5px 14px; margin-top:10px;}
+  .tn-lg{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--label-ink); line-height:1.5;}
+  .tn-sw{flex-shrink:0; width:13px; height:13px; border-radius:2px; border:1px solid var(--line);}
+  .tn-sw.g-none{background:var(--tn-none-bg); border-color:var(--tn-none-line);}
+  .tn-sw.g-ii{background:var(--tn-ii-bg); border-color:var(--tn-ii-line);}
+  .tn-sw.g-low{background:var(--tn-low-bg); border-color:var(--tn-low-line);}
+  .tn-sw.g-high{background:var(--tn-high-bg); border-color:var(--tn-high-line);}
+
+  /* ---- 3) 系統性治療分層面板（.rec-detail 之變體，藥物徽章沿用 .rec-detail 作用域）---- */
+  .flow-rec .rec-detail.rx-panel{padding-left:0; list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .rx-panel .rx-stack{display:flex; flex-direction:column; gap:8px;}
+  .rx-panel-h{font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+    opacity:.85; border-bottom:1px solid rgba(255,255,255,.25); padding-bottom:5px;}
+  .rx-def,.rx-warn{font-size:12px; line-height:1.7; border-radius:3px; padding:7px 10px; overflow-wrap:anywhere;}
+  .rx-def{background:rgba(255,255,255,.06); border:1px dashed rgba(255,255,255,.24);}
+  .rx-warn{background:rgba(240,154,137,.16); border:1px solid rgba(240,154,137,.45);}
+  .rx-line{min-width:0; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18);
+    border-left:3px solid rgba(255,255,255,.45); border-radius:3px; padding:9px 11px;}
+  .rx-line-h{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; margin-bottom:3px;}
+  .rx-items{margin:0; padding-left:16px; font-size:12.5px; line-height:1.75; list-style:disc;}
+  .rx-items li{margin:2px 0; overflow-wrap:anywhere;}
+  .rx-more > summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; opacity:.9;
+    text-decoration:underline; list-style:none;}
+  .rx-more > summary::-webkit-details-marker{display:none;}
+  .rx-more[open] > summary{margin-bottom:8px;}
+  .rx-note{font-size:12.5px; line-height:1.75;}
+  .flow-rec.rec-idle .rx-panel-h{border-bottom-color:var(--line);}
+  .flow-rec.rec-idle .rx-def{background:var(--box-bg); border-color:var(--line);}
+  .flow-rec.rec-idle .rx-warn{background:var(--accent2-soft); border-color:var(--accent2);}
+  .flow-rec.rec-idle .rx-line{background:var(--box-bg); border-color:var(--line); border-left-color:var(--accent);}
 
   .onc-reflist{margin-top:16px; border-top:1px solid var(--line); padding-top:10px;}
   .onc-reflist .rl-h{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted-soft); margin-bottom:6px;}
