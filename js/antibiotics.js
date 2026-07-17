@@ -187,6 +187,22 @@ function renderDrugCard(k){
       (note?`<span class="dc-pregnote">${note}</span>`:'')+
       `</div></div>`;
   }
+  /* 剝半／磨粉／管餵建議（台大藥劑部 crush 建議；口服劑型才有）。
+     h=剝半 c=磨粉 cap=打開膠囊 t=管餵；'Y'／'N'，缺值代表該劑型不適用
+     （膠囊只會有 cap，不會有 h/c），故缺值不顯示，避免無中生有。 */
+  let crushField='';
+  if(d.crush){
+    const cr=d.crush;
+    const tag=(lbl,v)=> v ? `<span class="crush-tag ${v==='Y'?'yes':'no'}">${lbl} ${v==='Y'?'可':'不可'}</span>` : '';
+    const tags=[tag('剝半',cr.h),tag('磨粉',cr.c),tag('打開膠囊',cr.cap),tag('管餵',cr.t)].join('');
+    if(tags||cr.why||cr.note){
+      crushField=`<div class="dc-field"><div class="dc-flabel">剝半／磨粉／管餵</div><div class="dc-ftext">`+
+        (tags?`<div class="crush-tags">${tags}</div>`:'')+
+        (cr.why?`<div class="crush-note"><b>理由：</b>${cr.why}</div>`:'')+
+        (cr.note?`<div class="crush-note"><b>管餵處理：</b>${cr.note}</div>`:'')+
+        `</div></div>`;
+    }
+  }
   // 注射給藥指引（若為注射劑；口服藥不設此欄）
   let injField='';
   if(d.injection){
@@ -209,6 +225,7 @@ function renderDrugCard(k){
       ${field('透析劑量（HD／PD）',d.dialysis)}
       ${field('CVVH／CRRT 劑量',d.cvvh)}
       ${injField}
+      ${crushField}
       ${pregField}
       ${field('口服生體可用率 Bioavailability',d.bioav)}
       ${field('分布 / 組織穿透 Distribution',d.dist)}

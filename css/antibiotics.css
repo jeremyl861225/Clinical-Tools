@@ -68,6 +68,13 @@
   /* 抗結核／抗病毒等非抗菌藥的單一類別標籤 */
   .cov-tag.cat{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line); letter-spacing:.06em;}
   .dc-preg{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); border:1px solid var(--accent2); border-radius:8px; padding:1px 7px;}
+  /* 剝半／磨粉／管餵：可＝accent 綠、不可＝警示色，沿用藥卡既有的 soft 底色語彙 */
+  .crush-tags{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:5px;}
+  .crush-tag{font-family:var(--mono); font-size:10px; font-weight:700; border-radius:8px; padding:2px 8px; letter-spacing:.03em;}
+  .crush-tag.yes{color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent);}
+  .crush-tag.no{color:var(--accent2); background:var(--accent2-soft); border:1px solid var(--accent2);}
+  .crush-note{font-size:12px; line-height:1.6; color:var(--muted); margin-top:2px;}
+  .crush-note b{color:var(--ink); font-weight:600;}
   /* 懷孕分級的補充說明（台大未給字母分級、或有適應症別/避孕期限等附註時） */
   .dc-pregnote{font-size:12px; color:var(--muted); margin-left:7px; line-height:1.6;}
   /* 依病原菌：選菌後放大的菌名 */
