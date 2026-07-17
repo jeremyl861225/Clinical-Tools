@@ -76,6 +76,7 @@ function switchTab(id, tab){
     if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
     if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
     if(c.pathway === 'panc' && typeof initPancPathway === 'function') initPancPathway();
+    if(c.pathway === 'hcc' && typeof initHccPathway === 'function') initHccPathway();
   }
 }
 
@@ -254,6 +255,9 @@ function renderTx(c){
   }
   if(c.pathway === 'panc' && typeof pancPathwayHTML === 'function'){
     return pancPathwayHTML();
+  }
+  if(c.pathway === 'hcc' && typeof hccPathwayHTML === 'function'){
+    return hccPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
