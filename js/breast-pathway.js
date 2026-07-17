@@ -54,7 +54,22 @@
       opt('scope', 'ebc', '侵襲性乳癌 · 無遠處轉移（M0）', 'EBC／局部晚期：管、小葉、混合、化生型（含 micropapillary、medullary）') +
       opt('scope', 'mbc', '晚期／轉移性乳癌（M1）', 'Advanced / Metastatic Breast Cancer') +
       opt('scope', 'recur', '局部／區域復發', 'Local / regional recurrence'),
-      '<div class="note"><b>Work-up（p1、p3）</b>：病史與理學檢查、CBC/DC、肝功能（含 ALP）、腎功能、<b>雙側診斷性乳房攝影為必要（stage 0~III）</b>、必要時超音波、組織診斷（首選 core biopsy）、ER／PR／HER2。<b>全身分期</b>（CT/MRI、PET 或 bone scan）：T1-3 N(−) 不常規做，除非有相關症狀或異常檢驗／理學發現；cN0、pT1-2N1M0 亦不特別考慮（Z0011）；<b>cT3N1、cTanyN2、cTanyN3、cT4Nany、pStage III 強烈考慮</b>；DCIS 完全不考慮。最終仍由主治醫師判斷。<br><b>HER2 判讀（p2）</b>：IHC 0–1+ 陰性（通常不做 FISH）；IHC 2+ 須做 FISH；IHC 3+ 陽性（不需 FISH）。NACT 後手術檢體會重複 ER／PR／HER2 染色。<br><b>gBRCA1/2 檢測（p4、p5）</b>：符合遺傳諮詢條件（家族史、雙側乳癌或 &lt;35 歲發病）者；或可能受益於 PARP 抑制劑者 — EBC：HER2(−) stage II/III 且符合 OlympiA 條件；ABC：HER2(−) 且曾接受化療（術前、術後或轉移期）。</div>');
+      '<div class="cbx"><div class="cbx-h">WORK-UP（p1、p3）</div><div class="cbx-items">' +
+        '<span class="cb">病史與理學檢查</span>' +
+        '<span class="cb">CBC/DC</span>' +
+        '<span class="cb">肝功能（含 ALP）</span>' +
+        '<span class="cb">腎功能</span>' +
+        '<span class="cb"><span class="cb-k">必要</span>雙側診斷性乳房攝影（stage 0~III）</span>' +
+        '<span class="cb">超音波（必要時）</span>' +
+        '<span class="cb">組織診斷（首選 core biopsy）</span>' +
+        '<span class="cb">ER／PR／HER2</span>' +
+      '</div></div>' +
+      '<div class="cbx"><div class="cbx-h">HER2 判讀（p2）</div><div class="cbx-items">' +
+        '<span class="cb"><span class="cb-k">IHC 0–1+</span>陰性（通常不做 FISH）</span>' +
+        '<span class="cb"><span class="cb-k">IHC 2+</span>須做 FISH</span>' +
+        '<span class="cb"><span class="cb-k">IHC 3+</span>陽性（不需 FISH）</span>' +
+      '</div></div>' +
+      '<div class="note"><b>全身分期</b>（CT/MRI、PET 或 bone scan）：T1-3 N(−) 不常規做，除非有相關症狀或異常檢驗／理學發現；cN0、pT1-2N1M0 亦不特別考慮（Z0011）；<b>cT3N1、cTanyN2、cTanyN3、cT4Nany、pStage III 強烈考慮</b>；DCIS 完全不考慮。最終仍由主治醫師判斷。<br>NACT 後手術檢體會重複 ER／PR／HER2 染色。<br><b>gBRCA1/2 檢測（p4、p5）</b>：符合遺傳諮詢條件（家族史、雙側乳癌或 &lt;35 歲發病）者；或可能受益於 PARP 抑制劑者 — EBC：HER2(−) stage II/III 且符合 OlympiA 條件；ABC：HER2(−) 且曾接受化療（術前、術後或轉移期）。</div>');
 
     /* ===================== DCIS ===================== */
     h += '<div id="bc_dcis" class="hidden">';
@@ -503,7 +518,15 @@
       if (s.ax === 'ax_neg') {
         axl.push('<b>pN0(sn) → 不需 ALND</b>（p15）。');
       } else if (s.ax === 'ax_z0011') {
-        axl.push('<b>符合 ACOSOG Z0011 → 可免除進一步 ALND</b>（p8）。條件：(a) cN0 且 SLN 僅 1–2 顆(+)；(b) T1-2；(c) 接受 BCT 且已規劃術後放療；(d) 有足量之輔助全身治療；(e) 尤其 ER(+)。');
+        axl.push('<b>符合 ACOSOG Z0011 → 可免除進一步 ALND</b>（p8）。' +
+          '<div class="cbx"><div class="cbx-h">Z0011 條件　<span class="cbx-sub">須全部符合</span></div>' +
+          '<div class="cbx-items">' +
+            '<span class="cb"><span class="cb-k">a</span>cN0 且 SLN 僅 1–2 顆(+)</span>' +
+            '<span class="cb"><span class="cb-k">b</span>T1-2</span>' +
+            '<span class="cb"><span class="cb-k">c</span>接受 BCT 且已規劃術後放療</span>' +
+            '<span class="cb"><span class="cb-k">d</span>有足量之輔助全身治療</span>' +
+            '<span class="cb"><span class="cb-k">e</span>尤其 ER(+)</span>' +
+          '</div></div>');
       } else if (s.ax === 'ax_noz') {
         axl.push('<b>不符合 Z0011 → ALND</b>（p15）。');
         axl.push('<b>p48 補充</b>：cLN(−)、s/p SM + SLND、pT1-2 且 SLN(+ 1–2 顆) → <b>應完成 ALND</b>。若 ALND 不完整（取出 LN &lt; 10 顆）：TNBC 或 LVI(+) 且總陽性淋巴結仍為 1–2 顆 → 建議完成 ALND；non-TNBC 且 LVI(−)（任何 LN 陽性）→ 建議 ALND，除非外科醫師認為完整 ALND 困難、或病人充分討論後仍拒絕 → 此時<b>依 AMAROS 試驗建議區域放療（腋下 + SCF）± 胸壁放療</b>。');

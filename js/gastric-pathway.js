@@ -277,7 +277,12 @@
     // ESD 分支
     if (s.strat === 'esd' && !s.esdcur) {
       result(R, F, 'rec-elective', '內視鏡黏膜下剝離（ESD）', [
-        '適應症（Endoscopic resection with curative intent，符合任一）：①分化型、無潰瘍（不限大小）；②分化型、有潰瘍且腫瘤 ≤3cm；③未分化型、無潰瘍且腫瘤 ≤2cm。',
+        '<div class="cbx"><div class="cbx-h">適應症 Endoscopic resection with curative intent　' +
+          '<span class="cbx-sub">符合任一即可</span></div><div class="cbx-items">' +
+          '<span class="cb"><span class="cb-k">①</span>分化型、無潰瘍（不限大小）</span>' +
+          '<span class="cb"><span class="cb-k">②</span>分化型、有潰瘍且腫瘤 ≤3cm</span>' +
+          '<span class="cb"><span class="cb-k">③</span>未分化型、無潰瘍且腫瘤 ≤2cm</span>' +
+        '</div></div>',
         '完成後依病理判定是否為治癒性切除（見步驟 3b）。'
       ], 'AGC-2：cT1 符合條件者可考慮 ESD。', null);
       return;

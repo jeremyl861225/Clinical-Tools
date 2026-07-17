@@ -156,9 +156,19 @@
       opt('pres', 'obs', '可切除、有阻塞', 'Resectable, obstructing') +
       opt('pres', 't4b', '臨床 T4b', 'Clinical T4b（侵犯／黏連鄰近器官或構造）') +
       opt('pres', 'unres', '局部無法切除 或 無法耐受手術', 'Locally unresectable or medically inoperable'),
-      '<div class="note"><b>治療前應完成之關鍵檢查（★，COL-2）</b>：★大腸鏡、★胸部／腹部／骨盆 CT（IV 或口服顯影）。' +
-      '其餘：切片、<b>MMR／MSI</b>、病理檢視、CBC／BCS、CEA、視需要腹部／骨盆 MRI、造口治療師術前造口定位與衛教。' +
-      '<b>PET-CT 非例行建議</b>。適當病人考慮生育風險討論。所有結腸癌病人皆應進行家族史諮詢。</div>');
+      '<div class="cbx"><div class="cbx-h">治療前應完成之檢查（COL-2）　<span class="cbx-sub">★ 為關鍵檢查</span></div>' +
+      '<div class="cbx-items">' +
+        '<span class="cb"><span class="cb-k">★</span>大腸鏡</span>' +
+        '<span class="cb"><span class="cb-k">★</span>胸部／腹部／骨盆 CT（IV 或口服顯影）</span>' +
+        '<span class="cb">切片</span>' +
+        '<span class="cb">MMR／MSI</span>' +
+        '<span class="cb">病理檢視</span>' +
+        '<span class="cb">CBC／BCS</span>' +
+        '<span class="cb">CEA</span>' +
+        '<span class="cb">腹部／骨盆 MRI（視需要）</span>' +
+        '<span class="cb">造口定位與衛教</span>' +
+      '</div></div>' +
+      '<div class="note"><b>PET-CT 非例行建議</b>。適當病人考慮生育風險討論。所有結腸癌病人皆應進行家族史諮詢。</div>');
 
     // ── 先給「初步建議處置」（手術），再進入 T×N 分期步驟（COL-3）
     h += rec('cc_resect_rec', '建議處置 · 非轉移性結腸癌（COL-2 PRIMARY TREATMENT）');
@@ -197,10 +207,18 @@
       opt('msite', 'liverlung', '同時性「僅」肝轉移 或「僅」肺轉移', 'Synchronous liver only or lung only metastases') +
       opt('msite', 'periton', '同時性腹腔／腹膜轉移', 'Synchronous abdominal / peritoneal metastases（COL-5）') +
       opt('msite', 'other', '其他部位、同時性不可切除轉移', 'Synchronous unresectable metastases of other sites（COL-8）'),
-      '<div class="note"><b>轉移性檢查（COL-4）</b>：★大腸鏡、★胸部／腹部／骨盆 CT、CBC／BCS、CEA、' +
-      '<b>腫瘤基因 RAS 與 BRAF ± HER-2 amplification</b>（可單獨或併入 NGS，<b>健保未給付</b>）、' +
-      '<b>MMR／MSI</b>（若先前未做）、視需要切片；潛在可手術治癒之 M1 選擇性病人考慮 PET-CT（顱底至大腿中段）；' +
-      '潛在可切除肝轉移考慮肝臟 MRI；<b>多專科團隊評估，須含具肝膽及肺轉移切除經驗之外科醫師</b>。</div>');
+      '<div class="cbx"><div class="cbx-h">轉移性檢查（COL-4）　<span class="cbx-sub">★ 為關鍵檢查</span></div>' +
+      '<div class="cbx-items">' +
+        '<span class="cb"><span class="cb-k">★</span>大腸鏡</span>' +
+        '<span class="cb"><span class="cb-k">★</span>胸部／腹部／骨盆 CT</span>' +
+        '<span class="cb">CBC／BCS</span>' +
+        '<span class="cb">CEA</span>' +
+        '<span class="cb">RAS 與 BRAF ± HER-2 amplification（健保未給付）</span>' +
+        '<span class="cb">MMR／MSI（若先前未做）</span>' +
+        '<span class="cb">切片（視需要）</span>' +
+      '</div></div>' +
+      '<div class="note">腫瘤基因可單獨檢測或併入 NGS。潛在可手術治癒之 M1 選擇性病人考慮 <b>PET-CT</b>（顱底至大腿中段）；' +
+      '潛在可切除肝轉移考慮<b>肝臟 MRI</b>；<b>多專科團隊評估，須含具肝膽及肺轉移切除經驗之外科醫師</b>。</div>');
 
     h += connH('cc_c3m');
     h += step('cc_s3m', '3', '肝／肺轉移之可切除性（COL-4 → COL-6／COL-7）',
