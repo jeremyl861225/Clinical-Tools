@@ -203,6 +203,18 @@ function renderDrugCard(k){
         `</div></div>`;
     }
   }
+  /* 飲食交互作用（台大 food 子頁）：f=食品 s=嚴重度 e=影響 m=處置。
+     嚴重度沿用感受性徽章的語彙：禁忌／重大＝警示色，其餘＝中性。 */
+  let foodField='';
+  if(d.food && d.food.length){
+    const sevCls=(x)=> (x==='禁忌'||x==='重大') ? 'hi' : 'mid';
+    foodField=`<div class="dc-field"><div class="dc-flabel">飲食交互作用</div><div class="dc-ftext">`+
+      d.food.map(x=>`<div class="food-item">
+        <div class="food-head"><span class="food-name">${x.f}</span>${x.s?`<span class="food-sev ${sevCls(x.s)}">${x.s}</span>`:''}</div>
+        ${x.e?`<div class="food-note">${x.e}</div>`:''}
+        ${x.m?`<div class="food-note"><b>處置：</b>${x.m}</div>`:''}
+      </div>`).join('')+`</div></div>`;
+  }
   // 注射給藥指引（若為注射劑；口服藥不設此欄）
   let injField='';
   if(d.injection){
@@ -226,6 +238,7 @@ function renderDrugCard(k){
       ${field('CVVH／CRRT 劑量',d.cvvh)}
       ${injField}
       ${crushField}
+      ${foodField}
       ${pregField}
       ${field('口服生體可用率 Bioavailability',d.bioav)}
       ${field('分布 / 組織穿透 Distribution',d.dist)}
