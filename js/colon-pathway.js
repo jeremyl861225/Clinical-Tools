@@ -76,9 +76,15 @@
       lg('g-low', '低風險第 III 期 Low risk stage III') +
       lg('g-high', '高風險第 III 期 High risk stage III') +
       '</div>';
-    h += '<div class="note"><b>第 II 期高風險特徵（COL-3(1)）</b>：Grade 3–4、淋巴血管侵犯、腸阻塞、' +
-      '<b>取樣淋巴結 &lt; 12 顆</b>、神經周圍侵犯、局部穿孔、切緣接近／無法確定／陽性。<br>' +
-      '<b>無禁忌症者應於術後 6 週內開始輔助化療。</b>Tis 依定義為 N0，故 Tis／N1、Tis／N2 不適用。</div>';
+    h += '<div class="hrf">' +
+      '<div class="hrf-h">第 II 期高風險特徵（COL-3(1)）　<span class="hrf-sub">任一項即屬高風險</span></div>' +
+      '<div class="hrf-items">' +
+        ['Grade 3–4', '淋巴血管侵犯', '腸阻塞', '取樣淋巴結 &lt; 12 顆',
+         '神經周圍侵犯', '局部穿孔', '切緣接近／無法確定／陽性']
+          .map(function (x) { return '<span class="hrf-b">' + x + '</span>'; }).join('') +
+      '</div></div>';
+    h += '<div class="note"><b>無禁忌症者應於術後 6 週內開始輔助化療。</b>' +
+      'Tis 依定義為 N0，故 Tis／N1、Tis／N2 不適用。</div>';
     h += '</div>';
     return h;
   }

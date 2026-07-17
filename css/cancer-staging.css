@@ -241,6 +241,17 @@
   .tn-sw.g-low{background:var(--tn-low-bg); border-color:var(--tn-low-line);}
   .tn-sw.g-high{background:var(--tn-high-bg); border-color:var(--tn-high-line);}
 
+  /* 第 II 期高風險特徵：逐項 badge（沿用 g-ii 琥珀色，與 T3N0/T4N0 格對應） */
+  .hrf{margin-top:10px; background:var(--box-bg); border:1px solid var(--line);
+       border-left:3px solid var(--tn-ii-line); border-radius:2px; padding:9px 11px;}
+  .hrf-h{font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.04em;
+         color:var(--tn-ii-line); margin-bottom:7px; line-height:1.4;}
+  .hrf-h .hrf-sub{font-family:var(--sans); font-weight:600; letter-spacing:0; color:var(--muted);}
+  .hrf-items{display:flex; flex-wrap:wrap; gap:5px;}
+  .hrf-b{display:inline-block; font-size:11.5px; line-height:1.6; white-space:nowrap;
+         background:var(--tn-ii-bg); border:1px solid var(--tn-ii-line); color:var(--tn-ii-ink);
+         border-radius:3px; padding:1px 8px;}
+
   /* ---- 3) 系統性治療分層面板（.rec-detail 之變體，藥物徽章沿用 .rec-detail 作用域）---- */
   .flow-rec .rec-detail.rx-panel{padding-left:0; list-style:none; display:flex; flex-direction:column; gap:8px;}
   .rx-panel .rx-stack{display:flex; flex-direction:column; gap:8px;}
