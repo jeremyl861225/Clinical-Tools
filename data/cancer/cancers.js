@@ -925,7 +925,7 @@ window.CANCERS = [
       ['IIIB','IIIC'],
     ],
     mrows:[['M1','IV','任何 T、任何 N 併遠處轉移（AJCC 8th 肛門癌不細分 IVA／IVB／IVC）']],
-    m1:'<b>Tis N0 M0 → 0 期</b>。N1 欄合併 N1a／N1b／N1c —— AJCC 8th 之分期組合<b>不區分</b>三者，部位細分僅用於描述與放射治療標靶設計。注意 <b>T4 N0 為 IIIB</b>（非 IIIA）、<b>T1–2 N1 為 IIIA</b>。',
+    m1:'<b>Tis N0 M0 → 0 期</b>。N1 欄合併 N1a／N1b／N1c —— AJCC 8th 之分期組合<b>不區分</b>三者，部位細分僅用於描述與放射治療標靶設計。注意 <b>T4 N0 為 IIIB</b>（非 IIIA）、<b>T1–2 N1 為 IIIA</b>。<b>肛門癌之第 IV 期不細分 IVA／IVB／IVC。</b>',
   },
   node_note:'AJCC 8th 將區域淋巴結簡化為 <b>N1</b>，依部位再分 a／b／c，<b>不再區分 N2／N3</b>（7th 版曾依部位與大小分至 N3）。鼠蹊、直腸繫膜、內髂、外髂皆為<b>區域</b>淋巴結；腹主動脈旁與總髂淋巴結為<b>非區域</b>，轉移屬 M1。',
   nodes:[

@@ -155,14 +155,11 @@ function renderMatrix(mx){
     });
     h += '</tr>';
   });
-  // M／N 列：接在 T 列之後。期別置於第一個資料欄（置中，與上方欄位對齊），描述橫跨其餘欄位。
+  // M／N 列：接在 T 列之後，期別<b>橫跨所有資料欄</b>並置中；不於格內附描述文字（m[2] 僅供資料備註）。
   (mx.mrows||[]).forEach(function(m){
-    var descSpan = nCols - 1;
     h += '<tr class="sm-mrow"><th class="sm-th sm-mth">'+m[0]+'</th>';
     if(hasNG) h += '<td class="sm-ng sm-ng-empty"></td>';
-    h += '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'">'+m[1]+'</td>';
-    if(m[2] && descSpan>=1) h += '<td class="sm-mdesc-cell" colspan="'+descSpan+'">'+m[2]+'</td>';
-    h += '</tr>';
+    h += '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'" colspan="'+nCols+'">'+m[1]+'</td></tr>';
   });
   h += '</table></div>';
   h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';
