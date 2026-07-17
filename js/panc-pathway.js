@@ -51,17 +51,17 @@
     return '<div class="crit-box">' +
       cbx('可切除 Resectable', 'PANC-B · M. D. Anderson criteria', [
         cb('SMA', '無侵犯；腫瘤與動脈間脂肪層正常 No extension; normal fat plane'),
-        cb('腹腔動脈幹／肝動脈', '無侵犯 No extension'),
+        cb('Celiac axis/hepatic artery', '無侵犯 No extension'),
         cb('SMV／PV', '通暢 Patent')
       ]) +
       cbx('臨界可切除 Borderline resectable', '任一項即屬之', [
         cb('SMA', '腫瘤貼附 ≦ 180°（含周徑一半以下）；動脈周圍條紋狀變化、腫瘤接觸面呈凸面者切除機會較高'),
-        cb('腹腔動脈幹／肝動脈', '總肝動脈短節段被包覆／貼附（多在胃十二指腸動脈起始處）；外科醫師須準備血管切除與間置移植'),
+        cb('Celiac axis/hepatic artery', '總肝動脈短節段被包覆／貼附（多在胃十二指腸動脈起始處）；外科醫師須準備血管切除與間置移植'),
         cb('SMV／PV', '短節段阻塞，但上下游血管條件適合重建；單獨靜脈阻塞而無 SMA 侵犯者少見，且應可於 CT 顯現')
       ]) +
       cbx('局部晚期 Locally advanced', '', [
         cb('SMA', '被包覆 &gt; 180° Encased'),
-        cb('腹腔動脈幹／肝動脈', '被包覆且因延伸至腹腔動脈幹／脾-左胃動脈交界或腹腔動脈幹起始處，技術上無法重建'),
+        cb('Celiac axis/hepatic artery', '被包覆且因延伸至腹腔動脈幹／脾-左胃動脈交界或腹腔動脈幹起始處，技術上無法重建'),
         cb('SMV／PV', '阻塞且技術上無法重建 Occluded, no technical option for reconstruction')
       ]) +
       cbx('不可切除 Unresectable', 'PANC-B · 依腫瘤部位', [
@@ -257,14 +257,14 @@
       opt('ext', 'la', '局部晚期不可切除 Locally advanced unresectable', '無遠處轉移（PANC-7／PANC-8）') +
       opt('ext', 'meta', '轉移性 Metastatic disease', '影像或理學檢查發現轉移（PANC-1 → PANC-9）') +
       opt('ext', 'rec', '切除後復發 Recurrence after resection', '（PANC-10）'),
-      cbx('初始檢查 WORK UP（PANC-1／PANC-2）', '★ 為關鍵項目', [
-        cb('★', '胰臟 protocol CT 或 MRI（PANC-A）'),
-        cb('★', '多專科團隊會診 Multidisciplinary review'),
-        cb('', '考慮內視鏡超音波 EUS'),
-        cb('', '肝功能檢查 Liver function tests'),
-        cb('', '胸部影像 Chest image'),
-        cb('', '術前 CA 19-9、CEA'),
-        cb('轉移時', '轉移部位＋原發部位之抽吸／切片確認（若無法自轉移部位取得，應自原發部位切片）')
+      rxLine('初始檢查 WORK UP', 'PANC-1／PANC-2 · ★ 為關鍵項目', [
+        '<b>★</b>　胰臟 protocol CT 或 MRI（PANC-A）',
+        '<b>★</b>　多專科團隊會診 Multidisciplinary review',
+        '考慮內視鏡超音波 EUS',
+        '肝功能檢查 Liver function tests',
+        '胸部影像 Chest image',
+        '術前 CA 19-9、CEA',
+        '<b>轉移時</b>：轉移部位＋原發部位之抽吸／切片確認（若無法自轉移部位取得，應自原發部位切片）'
       ]) +
       cbx('黃疸之處置（PANC-2）', '', [
         cb('無黃疸', '直接測 CA 19-9、CEA → 判定可切除性'),
