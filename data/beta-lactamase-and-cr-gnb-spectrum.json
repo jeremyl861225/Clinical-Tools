@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "title": "β-lactamase 分類 與 新型抗生素對 CR-GNB 抗菌譜",
+    "description": "由兩張投影片照片 (IMG_9926 Ambler β-lactamase 分類、IMG_9927 Spectrum of Novel Antibiotics against CR-GNBs) 判讀數位化。第二張熱圖之顏色以程式逐格取樣原始像素、經每欄各自偵測頂/底並均分 11 列之透視校正後判定，並以裁切圖交叉驗證。",
+    "generated_from": ["IMG_9926.HEIC", "IMG_9927.HEIC"],
+    "caveat": "顏色語意為原投影片之定性抗菌譜，非實驗室藥敏數據；臨床仍以最新指引與個別 AST 為準。標示 review_flag 的格建議對照原圖再確認。"
+  },
+
+  "ambler_classification": {
+    "_source": "Sawa T, et al. J Intensive Care 2020;8:13",
+    "molecular_classification": {
+      "basis": "催化中心 (catalytic center)",
+      "classes": [
+        {
+          "class": "A",
+          "catalytic_center": "Non-metal (Serine)",
+          "enzymes": [
+            {"name": "Classical narrow-spectrum", "zh": "傳統窄效", "examples": ["PSE", "CARB"], "carbapenemase": false},
+            {"name": "ESBLs", "zh": "廣效型 β-內醯胺酶", "full": "Extended-spectrum β-lactamase", "examples": ["TEM", "SHV", "CTX-M"], "carbapenemase": false},
+            {"name": "Class A carbapenemases", "examples": ["GES", "KPC", "SME", "IMI/NMC-A", "SHV-38", "SFC-1"], "carbapenemase": true}
+          ]
+        },
+        {
+          "class": "B",
+          "catalytic_center": "Metal (Zinc)",
+          "enzymes": [
+            {"name": "MBL", "full": "Metallo-β-lactamase", "carbapenemase": true, "subclasses": [
+              {"subclass": "B1", "examples": ["IMP", "VIM", "SPM", "IND", "NDM", "DIM", "GIM", "SIM"]},
+              {"subclass": "B2", "examples": ["CphA", "Sfh-I", "ImiS"]},
+              {"subclass": "B3", "examples": ["AIM", "CAU-1", "GOB-1", "FEZ-1"]}
+            ]}
+          ]
+        },
+        {
+          "class": "C",
+          "catalytic_center": "Non-metal (Serine)",
+          "enzymes": [
+            {"name": "AmpC", "zh": "頭孢菌素酶", "carbapenemase": false},
+            {"name": "ESAC", "full": "Extended-spectrum AmpC", "carbapenemase": false}
+          ]
+        },
+        {
+          "class": "D",
+          "catalytic_center": "Non-metal (Serine)",
+          "enzymes": [
+            {"name": "ESBLs", "full": "Extended-spectrum β-lactamase", "examples": ["Oxacillinases", "OXA"], "carbapenemase": false},
+            {"name": "CHDLs", "full": "carbapenem-hydrolyzing class D β-lactamases", "carbapenemase": true}
+          ]
+        }
+      ]
+    },
+    "functional_classification": {
+      "_name": "Bush-Jacoby-Medeiros functional classification",
+      "groups": [
+        {"group": "1", "function": "cephalosporinases", "zh": "頭孢菌素酶", "ambler_class": ["C"]},
+        {"group": "2", "function": "serine-β-lactamase", "zh": "絲胺酸酶", "ambler_class": ["A", "D"]},
+        {"group": "3", "function": "metallo-β-lactamase", "zh": "金屬酶", "ambler_class": ["B"]}
+      ]
+    }
+  },
+
+  "cr_gnb_novel_antibiotic_spectrum": {
+    "_source": "Tamma PD, et al. J Pediatric Infect Dis Soc 2019;8:251-260",
+    "legend": {
+      "S": {"color": "green",  "meaning_zh": "通常有效 / 可能感受", "meaning_en": "active / likely susceptible"},
+      "V": {"color": "orange", "meaning_zh": "變異，需依藥敏",     "meaning_en": "variable, depends on susceptibility testing"},
+      "R": {"color": "red",    "meaning_zh": "通常無效 / 抗藥",     "meaning_en": "inactive / resistant"}
+    },
+    "organisms": [
+      {"key": "KPC",      "zh": "KPC 型碳青黴烯酶腸桿菌"},
+      {"key": "NDM",      "zh": "NDM 型金屬酶 (MBL) 腸桿菌"},
+      {"key": "OXA-48",   "zh": "OXA-48 型腸桿菌"},
+      {"key": "DTR-PsA",  "zh": "難治型綠膿桿菌 (difficult-to-treat P. aeruginosa)"},
+      {"key": "CR-AB",    "zh": "碳青黴烯抗藥鮑氏不動桿菌"},
+      {"key": "S. maltophilia", "zh": "嗜麥芽窄食單胞菌 (Stenotrophomonas)"}
+    ],
+    "matrix": [
+      {"drug": "Aztreonam-avibactam",    "S": {"KPC":"S","NDM":"S","OXA-48":"S","DTR-PsA":"V","CR-AB":"R","S. maltophilia":"S"}},
+      {"drug": "Cefiderocol",            "S": {"KPC":"S","NDM":"S","OXA-48":"S","DTR-PsA":"S","CR-AB":"S","S. maltophilia":"S"}},
+      {"drug": "Ceftazidime-avibactam",  "S": {"KPC":"S","NDM":"R","OXA-48":"S","DTR-PsA":"V","CR-AB":"R","S. maltophilia":"R"}},
+      {"drug": "Ceftolozane-tazobactam", "S": {"KPC":"R","NDM":"R","OXA-48":"R","DTR-PsA":"V","CR-AB":"R","S. maltophilia":"V"}, "review_flag": "DTR-PsA 判為橘；C/T 臨床上常為 DTR-PsA 首選，色階偏保守，請對原圖再確認。"},
+      {"drug": "Eravacycline",           "S": {"KPC":"S","NDM":"S","OXA-48":"S","DTR-PsA":"R","CR-AB":"S","S. maltophilia":"S"}},
+      {"drug": "Fosfomycin",             "S": {"KPC":"V","NDM":"V","OXA-48":"V","DTR-PsA":"V","CR-AB":"R","S. maltophilia":"R"}},
+      {"drug": "Imipenem-relebactam",    "S": {"KPC":"S","NDM":"R","OXA-48":"V","DTR-PsA":"S","CR-AB":"R","S. maltophilia":"R"}, "review_flag": "OXA-48 判為橘，請對原圖再確認。"},
+      {"drug": "Meropenem-vaborbactam",  "S": {"KPC":"S","NDM":"R","OXA-48":"R","DTR-PsA":"R","CR-AB":"R","S. maltophilia":"R"}},
+      {"drug": "Plazomicin",             "S": {"KPC":"S","NDM":"V","OXA-48":"S","DTR-PsA":"V","CR-AB":"R","S. maltophilia":"R"}},
+      {"drug": "Polymyxin B / Colistin", "S": {"KPC":"V","NDM":"V","OXA-48":"V","DTR-PsA":"V","CR-AB":"V","S. maltophilia":"V"}},
+      {"drug": "Tigecycline",            "S": {"KPC":"S","NDM":"S","OXA-48":"S","DTR-PsA":"R","CR-AB":"S","S. maltophilia":"S"}}
+    ]
+  }
+}

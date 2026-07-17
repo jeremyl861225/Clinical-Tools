@@ -139,3 +139,7 @@
   .dc-ftext .sub{display:block; font-size:11.5px; color:var(--muted); font-family:var(--mono); margin-top:2px;}
   .dc-warn{color:var(--accent2);}
   .abx-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono); margin:14px 0 6px;}
+
+/* 頁首返回鍵群組：由菌譜資料庫點藥名進來時會多一顆「返回菌譜資料庫」，
+   窄螢幕允許換行，避免與標題擠在同一列。 */
+.abx-backs{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}

@@ -96,6 +96,17 @@
   .sd-colhead .cn{display:none;}
   th.col-hi .sd-colhead{background:var(--accent);} th.col-hi .sd-colhead .abbr,th.col-hi .sd-colhead .cn{color:#fff;}
 
+  /* ---- 藥名 → 藥卡連結 ----
+     表二藥名在列標題、表三藥名在欄標題；兩者都連到 antibiotics.html#drug=<key>。
+     以虛線底線標示可點，避免與格內色階搶視覺；無藥卡者（Cefpirome／Doripenem）
+     維持純文字不加連結。表三欄標題整格即連結，故該表不再有 toggleCol 反白。 */
+  a.dlink{color:inherit; text-decoration:none;}
+  th.rowhead a.dlink .rx{border-bottom:1px dashed var(--accent); }
+  th.rowhead a.dlink:hover .rx,th.rowhead a.dlink:focus-visible .rx{color:var(--accent); border-bottom-style:solid;}
+  a.sd-colhead .abbr{border-bottom:1px dashed var(--accent);}
+  a.sd-colhead:hover .abbr,a.sd-colhead:focus-visible .abbr{border-bottom-style:solid; filter:brightness(1.25);}
+  a.dlink:focus-visible{outline:2px solid var(--accent); outline-offset:-2px; border-radius:3px;}
+
   /* ---- 欄位分組色帶 ----
      不放組名（滑鼠停留才以 title 顯示），只用一條窄色條＋表頭淡底色標示同組欄位，
      再以組間分隔線輔助。四色刻意取相近的低彩度冷灰調（藍灰／青灰／紫灰／暖灰），
@@ -312,14 +323,26 @@ const GRP={
   fc:{label:"Pyrimidine",          tint:"gD"}
 };
 const abxCols=[{abbr:"Strep.",cn:"鏈球菌",g:"gp"},{abbr:"MSSA",cn:"甲氧敏感 SA",g:"gp"},{abbr:"MRSA",cn:"抗甲氧 SA",g:"gp"},{abbr:"Efc",cn:"糞腸球菌",g:"gp"},{abbr:"Efm",cn:"屎腸球菌",g:"gp"},{abbr:"GNB",cn:"腸桿菌 E.coli/Kleb",g:"gn"},{abbr:"En.bac",cn:"Enterobacter AmpC",g:"gn"},{abbr:"PsA",cn:"綠膿桿菌",g:"gn"},{abbr:"AB",cn:"鮑氏不動桿菌",g:"gn"},{abbr:"Anae.",cn:"厭氧菌",g:"an"},{abbr:"Atyp.",cn:"非典型菌",g:"at"}];
+/* Fosfomycin 欄依文獻校正（2026-07 修訂，原 MRSA 0／AB 0／GNB 2 與文獻不符）：
+   S. aureus（明文含 MRSA）pooled %S 91.7%（95%CI 88.7–94.9）故 MSSA 列強效；MRSA 因 pooled 值未按
+   MRSA 分層、且各研究異質性大（33–100%），保守列有效而非強效。E. faecalis 96.8%、E. faecium 92.6%
+   （95%CI 85.2–100，VRE MIC 較高）故列有效。GNB 欄合併 E.coli／Kleb：E.coli（含 ESBL）95.1% 但
+   Klebsiella 因染色體 fosA 僅 83.8%、CR-Kp 更降至 73.5%，單一值取級距 1 以免高估 Klebsiella。
+   A. baumannii 為內生性抗藥（ATCC 17978 MIC ≥1024 mg/L）故改無效，並與本頁 CR-GNB 表之 CR-AB 一致。
+   P. aeruginosa 僅合併用藥、無可靠 %S，維持變異。Atypical 無細胞壁，機轉上無效。
+   ⚠ CLSI breakpoint 僅涵蓋 E. coli 與 E. faecalis 尿液分離株（agar dilution），全身性用途外推需謹慎；
+   文獻多混合口服 trometamol 與靜脈 disodium，未按劑型分層。
+   來源：Vardakas IJAA 2016;47:269-85 (PMID 27013000)、Falagas Clin Microbiol Rev 2016;29:321-47
+   (PMID 26960938)、Ito mBio 2017;8:e00749-17 (PMID 28851843)、Gil-Marqués JAC 2018;73:2960-8
+   (PMID 30124902)。 */
 const abxRows=[
- {g:"青黴素類 Penicillins"},
+ {g:"Penicillins"},
  {rx:"Penicillin",cn:"青黴素 G",v:[2,-1,-1,1,0,-1,-1,-1,-1,0,-1]},
  {rx:"Oxacillin",cn:"抗葡萄球菌青黴素",v:[1,2,-1,-1,-1,-1,-1,-1,-1,-1,-1]},
  {rx:"Ampicillin",cn:"氨苄青黴素",v:[1,-1,-1,2,0,0,-1,-1,-1,0,-1]},
  {rx:"Unasyn",cn:"AMP-sulbactam",v:[1,1,-1,1,-1,1,-1,-1,1,1,-1]},
  {rx:"Tazocin",cn:"PIP-tazobactam",v:[1,1,-1,1,-1,2,1,2,1,2,-1]},
- {g:"頭孢菌素類 Cephalosporins"},
+ {g:"Cephalosporins"},
  {rx:"1st",cn:"第一代 Cefazolin",v:[1,2,-1,-1,-1,1,-1,-1,-1,-1,-1]},
  {rx:"2nd",cn:"第二代 Cefuroxime",v:[1,1,-1,-1,-1,1,-1,-1,-1,-1,-1]},
  {rx:"Cefmetazole",cn:"頭黴素 cephamycin",v:[1,1,-1,-1,-1,1,-1,-1,-1,1,-1]},
@@ -330,23 +353,23 @@ const abxRows=[
  {rx:"Cefepime",cn:"第四代",v:[1,1,-1,-1,-1,2,2,2,1,-1,-1]},
  {rx:"Cefpirome",cn:"第四代",v:[1,1,-1,-1,-1,2,2,1,0,-1,-1]},
  {rx:"Ceftobiprole",cn:"第五代 抗 MRSA",v:[2,2,1,1,-1,1,1,1,0,-1,-1]},
- {g:"碳青黴烯類 Carbapenems"},
+ {g:"Carbapenems"},
  {rx:"Ertapenem",cn:"無綠膿／腸球菌／AB",v:[1,1,-1,-1,-1,2,2,-1,-1,2,-1]},
  {rx:"Imipenem",cn:"",v:[1,1,-1,1,-1,2,2,2,2,2,-1]},
  {rx:"Meropenem",cn:"",v:[1,1,-1,0,-1,2,2,2,2,2,-1]},
  {rx:"Doripenem",cn:"",v:[1,1,-1,0,-1,2,2,2,2,2,-1]},
- {g:"氟喹諾酮類 Fluoroquinolones"},
+ {g:"Fluoroquinolones"},
  {rx:"Ciprofloxacin",cn:"抗綠膿最佳",v:[0,0,-1,-1,-1,2,1,2,1,-1,2]},
  {rx:"Levofloxacin",cn:"呼吸道",v:[1,1,-1,0,-1,2,1,1,1,0,2]},
  {rx:"Moxifloxacin",cn:"厭氧佳／無綠膿",v:[2,1,-1,0,-1,1,1,-1,0,1,2]},
- {g:"抗 Gram(+)／其他 Anti-GP & others"},
+ {g:"Anti-GP & others"},
  {rx:"Vancomycin",cn:"萬古黴素",v:[2,2,2,1,0,-1,-1,-1,-1,1,-1]},
  {rx:"Teicoplanin",cn:"",v:[2,2,2,1,0,-1,-1,-1,-1,1,-1]},
  {rx:"Daptomycin",cn:"涵蓋 VRE／勿用肺炎",v:[2,2,2,2,2,-1,-1,-1,-1,-1,-1]},
  {rx:"Linezolid",cn:"涵蓋 VRE",v:[2,2,2,2,2,-1,-1,-1,-1,1,-1]},
  {rx:"Tigecycline",cn:"廣效／無綠膿",v:[2,2,2,2,2,2,1,-1,2,2,1]},
  {rx:"Fusidic acid",cn:"抗葡萄球菌",v:[1,2,1,-1,-1,-1,-1,-1,-1,0,-1]},
- {g:"其他 Others"},
+ {g:"Others"},
  {rx:"Doxycycline",cn:"四環黴素",v:[1,1,0,0,0,0,0,-1,0,0,2]},
  {rx:"Colistin",cn:"多黏菌素 MDR-GNB",v:[-1,-1,-1,-1,-1,2,1,2,2,-1,-1]},
  {rx:"TMP-SMX",cn:"涵蓋 MRSA／Steno",v:[1,1,1,-1,-1,1,1,-1,1,-1,0]},
@@ -355,7 +378,7 @@ const abxRows=[
  {rx:"Clindamycin",cn:"橫膈上厭氧",v:[1,1,1,-1,-1,-1,-1,-1,-1,1,-1]},
  {rx:"Metronidazole",cn:"純厭氧",v:[-1,-1,-1,-1,-1,-1,-1,-1,-1,2,-1]},
  {rx:"Azithromycin",cn:"非典型佳",v:[1,0,-1,-1,-1,0,-1,-1,-1,0,2]},
- {rx:"Fosfomycin",cn:"UTI／ESBL",v:[1,1,0,1,0,2,0,0,0,-1,-1]},
+ {rx:"Fosfomycin",cn:"UTI／ESBL",v:[1,2,1,2,1,1,0,0,-1,-1,-1]},
  {rx:"Rifampin",cn:"生物膜輔助／勿單用",v:[1,1,1,0,0,0,-1,-1,0,-1,-1]}
 ];
 const afxCols=[{abbr:"AmB",cn:"Amphotericin B",g:"po"},{abbr:"Mica",cn:"Micafungin",g:"ec"},{abbr:"Caspo",cn:"Caspofungin",g:"ec"},{abbr:"Anidula",cn:"Anidulafungin",g:"ec"},{abbr:"Posa",cn:"Posaconazole",g:"az"},{abbr:"Vori",cn:"Voriconazole",g:"az"},{abbr:"Itra",cn:"Itraconazole",g:"az"},{abbr:"Flu",cn:"Fluconazole",g:"az"},{abbr:"5FC",cn:"Flucytosine",g:"fc"}];
@@ -401,7 +424,78 @@ const cls=v=>v===2?"c2":v===1?"c1":v===0?"c0":"cn";
 const sym=v=>v===2?"++":v===1?"+":v===0?"±":"−";
 const sTier=s=>s>=90?"sHi":s>=80?"sOk":s>=60?"sMid":"sLo";
 
-function buildMatrix(tblId,cols,rows,keyFn){
+/* =====================================================================
+   藥名 → 藥卡連動
+   對照表以 drugs.js 的 name／zh／brands 欄位逐筆人工核對而來（key 名與藥名
+   常不一致，例如 Oxacillin 的 key 是 nafcillin、Penicillin G 是 penG、
+   Imipenem 是 imipenem(name: Imipenem/Cilastatin)），故不做模糊比對。
+   Cefpirome／Doripenem 於 drugs.js 全檔 0 筆，暫無藥卡故不連結。
+   ===================================================================== */
+const SDX_DRUG={
+  // 表二（列＝藥名）
+  "Penicillin":"penG", "Oxacillin":"nafcillin", "Ampicillin":"ampicillin",
+  "Unasyn":"ampsulbactam", "Tazocin":"piptazo",
+  "1st":"cefazolin", "2nd":"cefuroxime", "Cefmetazole":"cefmetazole",
+  "Ceftriaxone":"ceftriaxone", "Ceftazidime":"ceftazidime", "Flomoxef":"flomoxef",
+  "Brosym":"brosym", "Cefepime":"cefepime", "Ceftobiprole":"ceftobiprole",
+  "Ertapenem":"ertapenem", "Imipenem":"imipenem", "Meropenem":"meropenem",
+  "Ciprofloxacin":"ciprofloxacin", "Levofloxacin":"levofloxacin", "Moxifloxacin":"moxifloxacin",
+  "Vancomycin":"vancomycin", "Teicoplanin":"teicoplanin", "Daptomycin":"daptomycin",
+  "Linezolid":"linezolid", "Tigecycline":"tigecycline", "Fusidic acid":"fusidicAcid",
+  "Doxycycline":"doxycycline", "Colistin":"colistin", "TMP-SMX":"tmpsmx",
+  "Gentamicin":"gentamicin", "Amikacin":"amikacin", "Clindamycin":"clindamycin",
+  "Metronidazole":"metronidazole", "Azithromycin":"azithromycin",
+  "Fosfomycin":"fosfomycin", "Rifampin":"rifampin",
+  // 表三（欄＝藥名）
+  "AmB":"amphoB", "Mica":"micafungin", "Caspo":"caspofungin", "Anidula":"anidulafungin",
+  "Posa":"posaconazole", "Vori":"voriconazole", "Itra":"itraconazole",
+  "Flu":"fluconazole", "5FC":"flucytosine"
+};
+const sdHref=k=>`antibiotics.html?from=spectrum#drug=${encodeURIComponent(k)}`;
+
+/* 離開前存捲動位置：window 捲動＋各矩陣自身的 .sd-mshell 內捲動（表格有
+   max-height:80vh，內捲動不存的話返回時只會回到表格頂端而非原本那一列）。 */
+const SD_SCROLL_KEY='sd-scroll-state';
+function sdSaveScroll(){
+  const shells={};
+  document.querySelectorAll('.sd-mshell').forEach(sh=>{
+    const t=sh.querySelector('table[id]');
+    if(t) shells[t.id]=sh.scrollTop;
+  });
+  try{ sessionStorage.setItem(SD_SCROLL_KEY,JSON.stringify({y:window.scrollY,shells})); }catch(e){}
+}
+// 關掉瀏覽器自帶的捲動還原，否則它會在我們還原後再把位置重設掉
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+function sdRestoreScroll(){
+  let st=null;
+  try{ st=JSON.parse(sessionStorage.getItem(SD_SCROLL_KEY)||'null'); }catch(e){}
+  if(!st) return;
+  sessionStorage.removeItem(SD_SCROLL_KEY);   // 只還原一次，避免之後重進又跳位
+  /* 需等版面底定才捲得動：字體載入與表格寬度計算完成前，頁面高度不足，
+     window.scrollTo 會被夾到 0（冷載入時 load 當下就是這種狀態）。故重試到捲到位為止。
+     重試用 setTimeout 而非 requestAnimationFrame：分頁在背景／不繪製時 rAF 不會觸發，
+     那正是最需要重試的時機。使用者一有手動捲動就放棄，避免跟人搶。 */
+  let tries=0, abort=false;
+  const giveUp=()=>{abort=true;};
+  const evs=['wheel','touchstart','keydown'];
+  evs.forEach(ev=>window.addEventListener(ev,giveUp,{passive:true}));
+  (function apply(){
+    if(abort){ evs.forEach(ev=>window.removeEventListener(ev,giveUp)); return; }
+    Object.keys(st.shells||{}).forEach(id=>{
+      const t=document.getElementById(id);
+      const sh=t && t.closest('.sd-mshell');
+      if(sh) sh.scrollTop=st.shells[id];
+    });
+    window.scrollTo(0,st.y||0);
+    if(++tries<15 && Math.abs(window.scrollY-(st.y||0))>2) setTimeout(apply,40);
+    else evs.forEach(ev=>window.removeEventListener(ev,giveUp));
+  })();
+}
+// 以上一頁手勢返回時走 bfcache，DOM 與捲動皆已保留，僅需清掉殘留狀態
+window.addEventListener('pageshow',e=>{ if(e.persisted) try{ sessionStorage.removeItem(SD_SCROLL_KEY); }catch(err){} });
+
+function buildMatrix(tblId,cols,rows,keyFn,opts){
+  opts=opts||{};
   const t=document.getElementById(tblId);
   // 欄位分組：同組欄位共用表頭淡底色，組間畫分隔線；組名不另闢一列，改掛 title。
   const sep=new Array(cols.length).fill(false);
@@ -409,14 +503,24 @@ function buildMatrix(tblId,cols,rows,keyFn){
   let thead="<thead><tr class='sd-cols'><th class='corner'>藥物 ＼ 致病菌</th>";
   cols.forEach((c,i)=>{
     const last = (i===cols.length-1) ? ' gend' : '';      // 最右欄補收邊線
-    thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}${last}' title='${GRP[c.g].label}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div></th>`;
+    // colDrug（表三）：欄＝藥名，整格即藥卡連結，故不掛 toggleCol 反白
+    const dk=opts.colDrug ? SDX_DRUG[c.abbr] : null;
+    const inner=dk
+      ? `<a class='sd-colhead dlink' href='${sdHref(dk)}' onclick='sdSaveScroll()' title='查看 ${c.cn} 藥卡'><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></a>`
+      : `<div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div>`;
+    thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}${last}' title='${GRP[c.g].label}'>${inner}</th>`;
   });
   thead+="</tr></thead>";
   let tb="<tbody>";
   rows.forEach(r=>{
     if(r.g){ const p=r.g.split(" "); const en=r.g.replace(p[0],"").trim();
       tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
-    tb+=`<tr><th class='rowhead'><span class='rx'>${r.rx}</span>${r.cn?`<span class='cn'>${r.cn}</span>`:""}</th>`;
+    // rowDrug（表二）：列＝藥名
+    const rk=opts.rowDrug ? SDX_DRUG[r.rx] : null;
+    const nm=rk
+      ? `<a class='dlink' href='${sdHref(rk)}' onclick='sdSaveScroll()' title='查看 ${r.rx} 藥卡'><span class='rx'>${r.rx}</span></a>`
+      : `<span class='rx'>${r.rx}</span>`;
+    tb+=`<tr><th class='rowhead'>${nm}${r.cn?`<span class='cn'>${r.cn}</span>`:""}</th>`;
     r.v.forEach((v,i)=>{
       const s=NTUH_S[keyFn(r.rx,cols[i].abbr)];
       const sp=s?`<span class='sp ${sTier(s[0])}${s[2]?' px':''}'>${s[2]?'≈':''}${s[0]}%</span>`:"";
@@ -453,9 +557,11 @@ const BL_SYM={g:"S",a:"±",r:"R"};
 document.getElementById("sd-hmbody").innerHTML=BL_ROWS.map(r=>
   `<tr><th>${r.rx}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
 
-buildMatrix("sd-abx",abxCols,abxRows,(rx,ab)=>rx+"|"+ab);
-buildMatrix("sd-afx",afxCols,afxRows,(rx,ab)=>ab+"|"+rx);
+buildMatrix("sd-abx",abxCols,abxRows,(rx,ab)=>rx+"|"+ab,{rowDrug:true});   // 表二：列＝藥名
+buildMatrix("sd-afx",afxCols,afxRows,(rx,ab)=>ab+"|"+rx,{colDrug:true});   // 表三：欄＝藥名
 buildResistant();
+// 還原捲動：須等 load（字體／表格版面底定）才捲得到位，見 sdRestoreScroll 註解
+window.addEventListener('load',sdRestoreScroll);
 
 /* 搜尋（過濾兩表 row） */
 document.getElementById("sd-q").addEventListener("input",e=>{
