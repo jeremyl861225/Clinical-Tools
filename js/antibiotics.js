@@ -222,7 +222,10 @@ function renderDrugCard(k){
     const row=(t,v)=> v?`<tr><td>${t}</td><td>${v}</td></tr>`:'';
     injField=`<div class="dc-field"><div class="dc-flabel">注射給藥指引</div><div class="dc-ftext"><table class="inj-tbl"><tbody>`+
       row('給藥途徑',j.route)+row('溶解液',j.reconstitute)+row('稀釋液',j.diluent)+
-      row('每劑體積',j.volume)+row('給藥濃度',j.conc)+row('輸注時間',j.time)+row('注意事項',j.notes)+
+      row('每劑體積',j.volume)+row('給藥濃度',j.conc)+row('輸注時間',j.time)+
+      row('其他途徑',j.altRoutes)+row('注意事項',j.notes)+
+      row('原包裝儲存',j.storage)+row('溶解後安定性',j.stabRecon)+
+      row('稀釋後安定性',j.stabDilute)+row('容器相容性',j.container)+
       `</tbody></table></div></div>`;
   }
   return `<details class="drugcard" id="drug-${k}">
