@@ -34,6 +34,18 @@
   .back-btn{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:7px 12px; border-radius:2px; cursor:pointer; color:var(--ink); white-space:nowrap;}
   .back-btn:hover{background:var(--accent-soft);}
 
+  /* 返回首頁時，剛才所在的卡片短暫高亮（配合置中捲動） */
+  .tool-card.card-return{animation:cardReturn 1.6s ease-out;}
+  @keyframes cardReturn{
+    0%,55%{border-color:var(--accent); border-left-color:var(--accent); background:var(--accent-soft);}
+    100%{border-color:var(--line); border-left-color:var(--accent-soft); background:var(--panel);}
+  }
+  .tool-card.deci-card.card-return{animation:cardReturnDeci 1.6s ease-out;}
+  @keyframes cardReturnDeci{
+    0%,55%{border-color:var(--accent2); border-left-color:var(--accent2); background:var(--accent2-soft);}
+    100%{border-color:var(--line); border-left-color:var(--accent2-soft); background:var(--panel);}
+  }
+
   /* 全站查詢（首頁） */
   .gs-box{margin:0 0 18px;}
   .gs-field{display:flex; align-items:center; gap:8px; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:0 10px; transition:border-color .15s;}
