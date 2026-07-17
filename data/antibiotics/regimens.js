@@ -66,7 +66,7 @@ window.SITES = [
      {name:'CMV 感染 / 病', en:'CMV infection',
       note:'移植後常見；依 CMV DNA(PCR)監測，D+/R− 高風險。減免疫抑制。',
       regimens:[
-        {role:'first', label:'Valganciclovir（口服）／Ganciclovir（靜脈，重症）', drugs:['valganciclovir'], dur:'至症狀緩解且病毒量連續轉陰，常 ≥2–3 週'}
+        {role:'first', label:'Valganciclovir（口服）／Ganciclovir（靜脈，重症）', drugs:['valganciclovir','ganciclovir'], dur:'至症狀緩解且病毒量連續轉陰，常 ≥2–3 週'}
       ]},
      {name:'侵襲性念珠菌感染', en:'Invasive candidiasis',
       note:'移植、腹部手術、TPN、廣效抗生素之高風險族群。',
@@ -380,7 +380,7 @@ window.SITES = [
       regimens:[
         {role:'none', label:'無明確感染源：不需經驗性抗生素', drugs:[], note:'術後 48 小時內發燒多為非感染性（如 atelectasis）。系統評估各來源；有腹瀉查 C. difficile。'},
         {role:'special', label:'導管相關血流感染：見「菌血症 → CRBSI」', drugs:['vancomycin'], dur:'見 CRBSI'},
-        {role:'special', label:'C. difficile 腸炎', drugs:['vancomycin'], dur:'10 天', note:'口服 vancomycin 125 mg q6h（或 fidaxomicin，本表未列）；停用誘發之抗生素。'}
+        {role:'special', label:'C. difficile 腸炎', drugs:['vancomycinPO'], dur:'10 天', note:'口服 vancomycin 125 mg q6h（或 fidaxomicin，本表未列）；停用誘發之抗生素。'}
       ]}
    ]}
 ];
@@ -580,7 +580,7 @@ window.BACTERIA = [
     {name:'困難梭菌', en:'Clostridioides difficile', kw:'cdiff cdi 困難梭菌 偽膜性',
      note:'停用誘發抗生素。口服 vancomycin 或 fidaxomicin 為首選（fidaxomicin 復發率較低）。',
      regimens:[
-       {role:'first', label:'口服 Vancomycin 125 mg q6h', drugs:['vancomycin']},
+       {role:'first', label:'口服 Vancomycin 125 mg q6h', drugs:['vancomycinPO']},
        {role:'first', label:'Fidaxomicin（復發率較低）', drugs:['fidaxomicin']},
        {role:'alt', label:'Metronidazole（僅輕症或無替代時）', drugs:['metronidazole']}
      ]}
@@ -636,7 +636,7 @@ window.BACTERIA = [
        {role:'first', label:'鞏固／維持：Fluconazole', drugs:['fluconazole']}
      ]},
     {name:'巨細胞病毒', en:'Cytomegalovirus (CMV)', kw:'CMV 巨細胞病毒 移植',
-     regimens:[{role:'first', label:'Valganciclovir／Ganciclovir', drugs:['valganciclovir']}]},
+     regimens:[{role:'first', label:'Valganciclovir／Ganciclovir', drugs:['valganciclovir','ganciclovir']}]},
     {name:'單純疱疹病毒', en:'Herpes simplex virus (HSV)', kw:'HSV 疱疹 腦炎',
      regimens:[{role:'first', label:'Acyclovir', drugs:['acyclovir']}]}
   ]}
