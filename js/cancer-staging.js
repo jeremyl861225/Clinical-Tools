@@ -74,6 +74,8 @@ function switchTab(id, tab){
     if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
     if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
     if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
+    if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
+    if(c.pathway === 'panc' && typeof initPancPathway === 'function') initPancPathway();
   }
 }
 
@@ -238,6 +240,12 @@ function renderTx(c){
   }
   if(c.pathway === 'colon' && typeof colonPathwayHTML === 'function'){
     return colonPathwayHTML();
+  }
+  if(c.pathway === 'rectal' && typeof rectalPathwayHTML === 'function'){
+    return rectalPathwayHTML();
+  }
+  if(c.pathway === 'panc' && typeof pancPathwayHTML === 'function'){
+    return pancPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
