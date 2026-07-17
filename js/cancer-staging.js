@@ -2,7 +2,7 @@
 /* ============================================================
    渲染 Rendering
    ============================================================ */
-var GROUP_ORDER = ['消化系 GI','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic'];
+var GROUP_ORDER = ['消化系 GI','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue'];
 
 function renderPicker(filter){
   filter = (filter||'').trim().toLowerCase();
@@ -77,6 +77,8 @@ function switchTab(id, tab){
     if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
     if(c.pathway === 'panc' && typeof initPancPathway === 'function') initPancPathway();
     if(c.pathway === 'hcc' && typeof initHccPathway === 'function') initHccPathway();
+    if(c.pathway === 'sts' && typeof initStsPathway === 'function') initStsPathway();
+    if(c.pathway === 'pnet' && typeof initPnetPathway === 'function') initPnetPathway();
   }
 }
 
@@ -110,7 +112,10 @@ function renderStage(c){
   if(c.stages && c.stages.length){
     if(c.staging_system) h += '<div class="nd-def">分期系統：<b>'+escapeHtml(c.staging_system)+'</b></div>';
     h += '<div class="onc-sec-h">'+escapeHtml(c.stages_title || '分期組合 Stage Grouping')+'</div>';
-    h += '<table class="stage"><tr><th>分期</th><th>條件</th></tr>';
+    // 首欄標題可覆寫：stages 也用於非期別之系統（GIST 風險分級、HCC BCLC、STS 之 FNCLCC 分級），
+    // 該處硬寫「分期」會與內容矛盾。
+    h += '<table class="stage"><tr><th>'+escapeHtml(c.stages_code_label || '分期')+'</th><th>'+
+         escapeHtml(c.stages_crit_label || '條件')+'</th></tr>';
     // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
     // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
     var shaded = 0;
@@ -176,7 +181,10 @@ function setNodeSort(id, s){ NODE_SORT = s; switchTab(id, 'node'); }
 /* 各癌別之廓清分級，由內而外排序；[分級名稱, CSS class] */
 var NODE_LEVELS = {
   gastric: [['D1','dl-1'], ['D1+','dl-1p'], ['D2','dl-2']],
-  panc:    [['標準','dl-1'], ['擴大','dl-warn']]
+  panc:    [['標準','dl-1'], ['擴大','dl-warn']],
+  // pNET 之選擇軸是「腫瘤位置」而非術式：AJCC 對胰臟 NET 之區域淋巴結定義依胰頭／頸 vs 胰體／尾而異，
+  // 故此處的分級是「該淋巴結群於該部位是否屬區域（N1）」；未列出者即非區域 → 轉移屬 M1b。
+  pnet:    [['區域 N1','dl-1']]
 };
 
 function renderNode(c){
@@ -208,7 +216,9 @@ function renderNode(c){
   });
   h += '</div>';
   h += '<div class="nd-h">排序 Sort</div><div class="nd-btns">';
-  h += '<button class="nd-btn'+(NODE_SORT==='num'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'num\')">站號 No.</button>';
+  // 第一種排序為資料原始順序；多數癌別即站號，但非站別式者（如 pNET 以 AJCC 具名解剖群描述區域淋巴結，
+  // 並無 JPS 站號）須自訂標籤，否則按鈕會與 node_note「本表無站號」自相矛盾。
+  h += '<button class="nd-btn'+(NODE_SORT==='num'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'num\')">'+escapeHtml(c.node_num_label || '站號 No.')+'</button>';
   h += '<button class="nd-btn'+(NODE_SORT==='d'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'d\')">'+escapeHtml(c.node_sort_label || '廓清分級')+'</button>';
   h += '</div></div>';
 
@@ -258,6 +268,12 @@ function renderTx(c){
   }
   if(c.pathway === 'hcc' && typeof hccPathwayHTML === 'function'){
     return hccPathwayHTML();
+  }
+  if(c.pathway === 'sts' && typeof stsPathwayHTML === 'function'){
+    return stsPathwayHTML();
+  }
+  if(c.pathway === 'pnet' && typeof pnetPathwayHTML === 'function'){
+    return pnetPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
