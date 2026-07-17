@@ -165,44 +165,50 @@ function tnmTable(title, rows){
   return h + '</table>';
 }
 
-/* 淋巴結分群：一般癌症為固定標籤；具 node_ops 者（胃癌）依術式動態顯示 D 級 */
-var NODE_OP = 'tg';     // 目前術式
-var NODE_SORT = 'num';  // 'num' 站號 | 'd' D 分級
+/* 淋巴結分群：一般癌症為固定標籤；具 node_ops 者依術式動態顯示廓清分級 */
+var NODE_OP = null;     // 目前術式；切換癌別時於 renderNode 重設
+var NODE_SORT = 'num';  // 'num' 站號 | 'd' 廓清分級
 
 function setNodeOp(id, op){ NODE_OP = op; switchTab(id, 'node'); }
 function setNodeSort(id, s){ NODE_SORT = s; switchTab(id, 'node'); }
 
-var D_RANK = {'D1':1,'D1+':2,'D2':3};
-function dLevelClass(lv){
-  if(lv === 'D1') return 'dl-1';
-  if(lv === 'D1+') return 'dl-1p';
-  if(lv === 'D2') return 'dl-2';
-  return 'dl-none';
-}
+/* 各癌別之廓清分級，由內而外排序；[分級名稱, CSS class] */
+var NODE_LEVELS = {
+  gastric: [['D1','dl-1'], ['D1+','dl-1p'], ['D2','dl-2']],
+  panc:    [['標準','dl-1'], ['擴大','dl-warn']]
+};
 
 function renderNode(c){
   var h = '';
   if(c.node_note) h += '<p class="onc-note">'+c.node_note+'</p>';
 
-  // 一般癌症：固定標籤
+  // 一般癌症：固定標籤；第 4 欄為選填註解
   if(!c.node_ops){
     (c.nodes||[]).forEach(function(n){
       h += '<div class="node-item"><span class="ni-code">'+n[0]+'</span>'+n[1]+
-           (n[2] ? '<span class="node-group">'+n[2]+'</span>' : '')+'</div>';
+           (n[2] ? '<span class="node-group">'+n[2]+'</span>' : '')+
+           (n[3] ? '<div class="ni-note">'+n[3]+'</div>' : '')+'</div>';
     });
     return h;
   }
 
   // 依術式動態顯示
+  var opKeys = c.node_ops.map(function(o){ return o[0]; });
+  if(opKeys.indexOf(NODE_OP) === -1) NODE_OP = opKeys[0];   // 切換癌別時重設為第一種術式
+
+  var levels = NODE_LEVELS[c.id] || [];
+  var lvRank = {}, lvClass = {};
+  levels.forEach(function(l, i){ lvRank[l[0]] = i; lvClass[l[0]] = l[1]; });
+
   h += '<div class="nd-ctrl">';
-  h += '<div class="nd-h">術式 Gastrectomy</div><div class="nd-btns">';
+  h += '<div class="nd-h">'+escapeHtml(c.node_op_label || '術式')+'</div><div class="nd-btns">';
   c.node_ops.forEach(function(o){
     h += '<button class="nd-btn'+(NODE_OP===o[0]?' active':'')+'" onclick="setNodeOp(\''+c.id+'\',\''+o[0]+'\')">'+escapeHtml(o[1])+'</button>';
   });
   h += '</div>';
   h += '<div class="nd-h">排序 Sort</div><div class="nd-btns">';
   h += '<button class="nd-btn'+(NODE_SORT==='num'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'num\')">站號 No.</button>';
-  h += '<button class="nd-btn'+(NODE_SORT==='d'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'d\')">D 分級</button>';
+  h += '<button class="nd-btn'+(NODE_SORT==='d'?' active':'')+'" onclick="setNodeSort(\''+c.id+'\',\'d\')">'+escapeHtml(c.node_sort_label || '廓清分級')+'</button>';
   h += '</div></div>';
 
   if(c.node_defs && c.node_defs[NODE_OP]) h += '<div class="nd-def">'+c.node_defs[NODE_OP]+'</div>';
@@ -210,8 +216,8 @@ function renderNode(c){
   var list = (c.nodes||[]).map(function(n, i){ return {n:n, i:i}; });
   if(NODE_SORT === 'd'){
     list.sort(function(a, b){
-      var ra = D_RANK[(a.n[3]||{})[NODE_OP]] || 9;
-      var rb = D_RANK[(b.n[3]||{})[NODE_OP]] || 9;
+      var ra = lvRank[(a.n[3]||{})[NODE_OP]]; if(ra === undefined) ra = 9;
+      var rb = lvRank[(b.n[3]||{})[NODE_OP]]; if(rb === undefined) rb = 9;
       return ra !== rb ? ra - rb : a.i - b.i;
     });
   }
@@ -219,11 +225,13 @@ function renderNode(c){
   list.forEach(function(x){
     var n = x.n;
     var lv = (n[3]||{})[NODE_OP];
-    var cls = dLevelClass(lv);
+    var cls = lv ? (lvClass[lv] || 'dl-1') : 'dl-none';
+    // 分期軸（N／M1）僅在該癌別確有站別式區域定義時顯示；胰臟依顆數分期，故留空
+    var reg = (n[2] === 'R' || n[2] === 'M')
+      ? '<span class="ni-reg'+(n[2]==='M'?' is-m':'')+'">'+(n[2]==='M'?'M1':'N')+'</span>' : '';
     h += '<div class="node-item '+cls+'">'+
          '<span class="ni-code">'+n[0]+'</span>'+n[1]+
-         '<span class="node-group '+cls+'">'+(lv || '—')+'</span>'+
-         '<span class="ni-reg'+(n[2]==='M'?' is-m':'')+'">'+(n[2]==='M'?'M1':'N')+'</span>'+
+         '<span class="node-group '+cls+'">'+(lv || '—')+'</span>'+ reg +
          (n[4] ? '<div class="ni-note">'+n[4]+'</div>' : '')+
          '</div>';
   });

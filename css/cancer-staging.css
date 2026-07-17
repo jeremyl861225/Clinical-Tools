@@ -113,10 +113,12 @@
   .node-item.dl-1{border-left-color:var(--accent);}
   .node-item.dl-1p{border-left-color:#6b8f8a;}
   .node-item.dl-2{border-left-color:var(--accent2);}
+  .node-item.dl-warn{border-left-color:#a8763f;}
   .node-item.dl-none{border-left-color:var(--line); opacity:.72;}
   .node-group.dl-1{color:#fff; background:var(--accent);}
   .node-group.dl-1p{color:#fff; background:#6b8f8a;}
   .node-group.dl-2{color:#fff; background:var(--accent2);}
+  .node-group.dl-warn{color:#fff; background:#a8763f;}
   .node-group.dl-none{color:var(--muted-soft); background:transparent; border:1px solid var(--line);}
   /* 區域 N / 遠處 M1 標記 */
   .ni-reg{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px; margin-left:5px; white-space:nowrap; color:var(--accent); border:1px solid var(--accent-soft); background:var(--accent-soft);}
