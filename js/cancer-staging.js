@@ -140,24 +140,29 @@ function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
 function renderMatrix(mx){
   var nCols = mx.ncols.length;
-  var h = '<div class="onc-sec-h">分期組合 Stage Grouping（T×N 為 M0；M1 列於下方）</div><div class="sm-wrap"><table class="smx">';
-  h += '<tr><td class="sm-corner"></td>';
+  var hasNG = !!mx.ng_label;               // 選填：T 列右側之合併註記欄（如 STS 之「N0」）
+  var h = '<div class="onc-sec-h">分期組合 Stage Grouping</div><div class="sm-wrap"><table class="smx">';
+  h += '<tr><td class="sm-corner"'+(hasNG?' colspan="2"':'')+'></td>';
   mx.ncols.forEach(function(n){
     h += '<th class="sm-nh">'+n[0]+(n[1]?'<span>'+n[1]+'</span>':'')+'</th>';
   });
   h += '</tr>';
   mx.trows.forEach(function(t, i){
     h += '<tr><th class="sm-th">'+t+'</th>';
+    if(hasNG && i===0) h += '<td class="sm-ng" rowspan="'+mx.trows.length+'">'+mx.ng_label+'</td>';
     (mx.cells[i]||[]).forEach(function(s){
       h += '<td class="sm-cell '+shadeClass(s)+'">'+s+'</td>';
     });
     h += '</tr>';
   });
-  // M 列：接在 T 列之後，橫跨所有 N 欄（M1 分期與 T、N 無關）
+  // M／N 列：接在 T 列之後。期別置於第一個資料欄（置中，與上方欄位對齊），描述橫跨其餘欄位。
   (mx.mrows||[]).forEach(function(m){
-    h += '<tr class="sm-mrow"><th class="sm-th sm-mth">'+m[0]+'</th>'+
-         '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'" colspan="'+nCols+'">'+
-         '<b>'+m[1]+'</b>'+(m[2]?'<span class="sm-mdesc">'+m[2]+'</span>':'')+'</td></tr>';
+    var descSpan = nCols - 1;
+    h += '<tr class="sm-mrow"><th class="sm-th sm-mth">'+m[0]+'</th>';
+    if(hasNG) h += '<td class="sm-ng sm-ng-empty"></td>';
+    h += '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'">'+m[1]+'</td>';
+    if(m[2] && descSpan>=1) h += '<td class="sm-mdesc-cell" colspan="'+descSpan+'">'+m[2]+'</td>';
+    h += '</tr>';
   });
   h += '</table></div>';
   h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';

@@ -21,7 +21,7 @@
     <div>
       <div class="eyebrow">Clinical Toolbox</div>
       <h1>臨床工具箱</h1>
-      <div class="sub">Established by Lin Shao-Chin, latest revision 2026.07.17</div>
+      <div class="sub">Established by Lin Shao-Chin, latest revision 2026.07.18</div>
     </div>
   </div>
 
@@ -212,6 +212,29 @@
   <footer class="tool-footer" style="margin-top:24px; border-top:1px solid var(--line); padding-top:12px;">本工具箱之計分與死亡率／存活率數據皆引自原始文獻之族群統計，僅供臨床輔助參考與教學使用，不能取代個別病人之臨床判斷與完整評估。各分數之出處文獻列於各工具頁下方。<br>© 2026 Lin Shao-Chin. All rights reserved. 未經書面同意，禁止複製、散布或再利用本站內容與程式碼。</footer>
 </div>
 </div>
+<script>
+  /* 由工具頁返回時（#card-view-NAME），將原本的卡片捲到畫面正中並短暫高亮，
+     取代瀏覽器預設「錨點置頂」的行為。
+     關鍵：瀏覽器的錨點捲動排在 rAF 之後、卻在 setTimeout(0) 之前，
+     故用 setTimeout(0) 讓我方置中排在瀏覽器捲動之後（最後生效者為我方）。 */
+  (function () {
+    function centerCard() {
+      var m = (location.hash || '').match(/^#(card-view-[\w-]+)$/);
+      if (!m) return;
+      var card = document.getElementById(m[1]);
+      if (!card) return;
+      setTimeout(function () {
+        card.scrollIntoView({ block: 'center', behavior: 'auto' });
+        card.classList.remove('card-return');
+        void card.offsetWidth;            // 重觸發動畫（連續返回同一卡片時）
+        card.classList.add('card-return');
+      }, 0);
+    }
+    if (document.readyState === 'complete') centerCard();
+    else window.addEventListener('load', centerCard);
+    window.addEventListener('hashchange', centerCard);
+  })();
+</script>
 <script src="./js/search.js"></script>
 <script src="./js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
