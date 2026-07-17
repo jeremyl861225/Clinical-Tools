@@ -814,7 +814,7 @@ window.DRUGS = {
     hepatic:'無資料。',
     dialysis:'HD：66.8 mg q12h，每次透析後補 50.1 mg（0.75 vial，TIW）；PD：133.6 mg qd。',
     cvvh:'217.1 mg q12h（3.25 vial q12h）。',
-    injection:{route:'持續輸注 cIF（可先 1/2 每日量緩速 IV bolus，其餘於 bolus 後 1–2 hr 以 5–6 mg/hr 輸注）',diluent:'NS、D5W 或 LR',notes:'腎功能障礙者降低輸注速率；劑量以 colistin base（非 CMS mg）計。',storage:'室溫',stabRecon:'室溫：立即使用，未用完請丟棄',stabDilute:'室溫：立即使用，未用完請丟棄'},
+    injection:{route:'持續輸注 cIF（可先 1/2 每日量緩速 IV bolus，其餘於 bolus 後 1–2 hr 以 5–6 mg/hr 輸注）',reconstitute:'W 或 NS 2 mL',diluent:'NS、D5W 或 LR',notes:'溶解時輕輕旋轉小瓶，避免產生泡沫；避免與非去極化神經肌肉阻斷劑（如 atracurium）及 aminoglycosides 併用；腎功能障礙者降低輸注速率；劑量以 colistin base（非 CMS mg）計。',altRoutes:'IM：W 或 NS 2 mL，33.4 mg colistin base/mL；IV：W 或 NS 2 mL，3–5 分鐘；IF：W 或 NS 2 mL，稀釋 NS／D5W／LR；IH 吸入：不含防腐劑之 NS、W 或 NS+W 2–4 mL，稀釋液用 W',storage:'室溫',stabRecon:'注射途徑（IV／IM／IF／cIF）：室溫 7 天、2–8°C 14 天。吸入（IH）：立即使用，未用完丟棄。',stabDilute:'注射途徑：室溫 24 hr。吸入（IH）：立即使用，未用完丟棄。',stabNote:'CMS 一旦溶於液體即開始分解為 colistin 等產物，吸入該分解物可傷害肺組織——故吸入途徑務必現配現用，未用完之預混液應丟棄（台大原文）。'},
     preg:'C',
     abg:[{sec:'gram_negative',col:'colistin'}],
     bioav:'靜脈注射（CMS 前驅物）。',

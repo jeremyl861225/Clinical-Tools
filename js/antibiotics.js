@@ -225,7 +225,8 @@ function renderDrugCard(k){
       row('每劑體積',j.volume)+row('給藥濃度',j.conc)+row('輸注時間',j.time)+
       row('其他途徑',j.altRoutes)+row('注意事項',j.notes)+
       row('原包裝儲存',j.storage)+row('溶解後安定性',j.stabRecon)+
-      row('稀釋後安定性',j.stabDilute)+row('容器相容性',j.container)+
+      row('稀釋後安定性',j.stabDilute)+row('安定性備註',j.stabNote)+
+      row('容器相容性',j.container)+
       `</tbody></table></div></div>`;
   }
   return `<details class="drugcard" id="drug-${k}">
@@ -503,8 +504,20 @@ function applyHash(){
   return false;
 }
 
+/* 由菌譜資料庫（spectrum-database.html）點藥名進來時帶 ?from=spectrum，
+   顯示「返回菌譜資料庫」；返回後由該頁自 sessionStorage 還原原本捲動位置。 */
+function applyBackContext(){
+  var from='';
+  try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from==='spectrum'){
+    var b=document.getElementById('back-to-spectrum');
+    if(b) b.classList.remove('hidden');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   renderSites();
+  applyBackContext();
   applyHash();
 });
 window.addEventListener('hashchange', applyHash);
