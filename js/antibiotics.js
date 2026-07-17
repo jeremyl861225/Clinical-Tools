@@ -321,13 +321,19 @@ function selectBacteria(gi,bi){
 function backToBacteria(){ show('bac-step-list',true); show('bac-step-result',false); window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* 查詢模式的「種類排序」分組。
-   先看 catLabel／covSet（抗結核、抗麻風、抗黴菌、抗寄生蟲、抗病毒各自獨立成群，
-   不會因 cls 含 aminoglycoside 之類字樣而被混進抗菌類——如 streptomycin 屬抗結核），
-   其餘抗細菌藥才依 cls 歸類。判斷式吃整個藥物物件。 */
+
+   ⚠ 比對順序與顯示順序是兩回事，不可混用同一份陣列：
+   比對必須先看 catLabel／covSet（streptomycin 的 cls 含 aminoglycoside 但屬抗結核，
+   fenticonazole 的 cls 是 Imidazole 但屬抗黴菌），其餘抗細菌藥才依 cls 歸類；
+   而顯示要依臨床習慣排：抗細菌 → 抗細菌（其他）→ 黴菌 → 黴菌（其他）→ 抗病毒
+   → 抗結核／抗麻風 → 抗寄生蟲。故以 DRUG_GROUPS 定比對優先序，GROUP_ORDER 定顯示序。 */
 const DRUG_GROUPS = [
   ['抗結核 Anti-TB',              d=>d.catLabel==='抗結核'],
   ['抗麻風 Anti-leprosy',         d=>d.catLabel==='抗麻風'],
-  ['抗黴菌 Antifungals',          d=>d.covSet==='fungal'],
+  ['多烯類 Polyenes',             d=>d.covSet==='fungal' && /polyene/i.test(d.cls||'')],
+  ['棘白菌素 Echinocandins',      d=>d.covSet==='fungal' && /echinocandin/i.test(d.cls||'')],
+  ['唑類 Azoles',                 d=>d.covSet==='fungal' && /azole/i.test(d.cls||'')],
+  ['抗黴菌（其他）',              d=>d.covSet==='fungal'],
   ['抗寄生蟲 Antiparasitics',     d=>d.covSet==='para'],
   ['HIV 抗反轉錄病毒 HIV ART',    d=>d.covSet==='viral' && /\bHIV\b/i.test(d.cls||'')],
   ['肝炎抗病毒 Hepatitis B／C',   d=>d.covSet==='viral' && /\bHBV\b|\bHCV\b/i.test(d.cls||'')],
@@ -343,9 +349,35 @@ const DRUG_GROUPS = [
   ['巨環／林可醯胺類',            d=>/macrolide|lincosamide/i.test(d.cls||'')],
   ['硝基咪唑類 Nitroimidazole',   d=>/nitroimidazole/i.test(d.cls||'')],
   ['多黏菌素 Polymyxin',          d=>/polymyxin/i.test(d.cls||'')],
-  ['其他 Others',                 d=>true],
+  ['抗細菌（其他）',              d=>true],   // 走到這裡的必為抗細菌：黴菌／病毒／寄生蟲／抗結核已於上方攔截
+];
+// 顯示順序（未列到的排在最後，不會消失）
+const GROUP_ORDER = [
+  '青黴素類 Penicillins','頭孢子菌素類 Cephalosporins','碳青黴烯類 Carbapenems',
+  '單環內醯胺 Monobactam','抗 Gram(+)／anti-MRSA','胺基醣苷類 Aminoglycosides',
+  '氟喹諾酮類 Fluoroquinolones','四環素／甘胺醯環素','巨環／林可醯胺類',
+  '硝基咪唑類 Nitroimidazole','多黏菌素 Polymyxin','抗細菌（其他）',
+  '多烯類 Polyenes','棘白菌素 Echinocandins','唑類 Azoles','抗黴菌（其他）',
+  'HIV 抗反轉錄病毒 HIV ART','肝炎抗病毒 Hepatitis B／C','抗病毒 Antivirals',
+  '抗結核 Anti-TB','抗麻風 Anti-leprosy','抗寄生蟲 Antiparasitics',
 ];
 function drugGroupIdx(d){ for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](d||{})) return i; return DRUG_GROUPS.length-1; }
+function groupSortIdx(d){
+  const p = GROUP_ORDER.indexOf(DRUG_GROUPS[drugGroupIdx(d)][0]);
+  return p < 0 ? GROUP_ORDER.length : p;      // 未列入 GROUP_ORDER 者殿後，不遺失
+}
+
+/* 類別標題可點擊摺疊。收合狀態存 Set，重繪（搜尋／切換排序）後仍保留。 */
+const collapsedGroups = new Set();
+function toggleGroup(label){
+  if(collapsedGroups.has(label)) collapsedGroups.delete(label); else collapsedGroups.add(label);
+  renderLookup(el('lookup-input') ? el('lookup-input').value : '');
+}
+function setAllGroups(collapse){
+  collapsedGroups.clear();
+  if(collapse) GROUP_ORDER.forEach(g=>collapsedGroups.add(g));
+  renderLookup(el('lookup-input') ? el('lookup-input').value : '');
+}
 
 /* 徽章連結：點藥卡上的徽章→切到「藥物查詢」並套用篩選。
    lookupFilter = {kind:'cov', set, key} | {kind:'group', idx} | null。
@@ -396,9 +428,25 @@ function renderLookup(q){
   if(!keys.length){ el('lookup-results').innerHTML='<div class="bac-empty">找不到符合的藥物。</div>'; return; }
   const byName=(a,b)=>DRUGS[a].name.localeCompare(DRUGS[b].name);
   if(lookupSort==='class'){
-    keys.sort((a,b)=>{const ga=drugGroupIdx(DRUGS[a]),gb=drugGroupIdx(DRUGS[b]); return ga!==gb?ga-gb:byName(a,b);});
-    let html='',cur=-1;
-    keys.forEach(k=>{const gi=drugGroupIdx(DRUGS[k]); if(gi!==cur){cur=gi; html+=`<div class="bac-group-head">${DRUG_GROUPS[gi][0]}</div>`;} html+=renderDrugCard(k);});
+    // 依顯示順序（GROUP_ORDER）排，而非比對優先序
+    keys.sort((a,b)=>{const ga=groupSortIdx(DRUGS[a]),gb=groupSortIdx(DRUGS[b]); return ga!==gb?ga-gb:byName(a,b);});
+    const groups=[];                      // [{label, keys[]}]
+    keys.forEach(k=>{
+      const lbl=DRUG_GROUPS[drugGroupIdx(DRUGS[k])][0];
+      if(!groups.length || groups[groups.length-1].label!==lbl) groups.push({label:lbl, keys:[]});
+      groups[groups.length-1].keys.push(k);
+    });
+    let html=`<div class="grp-allctl">`+
+      `<button type="button" class="abx-sortbtn" onclick="setAllGroups(true)">全部收合</button>`+
+      `<button type="button" class="abx-sortbtn" onclick="setAllGroups(false)">全部展開</button></div>`;
+    groups.forEach(g=>{
+      const off=collapsedGroups.has(g.label);
+      html+=`<button type="button" class="bac-group-head${off?' collapsed':''}"
+        aria-expanded="${!off}" onclick="toggleGroup('${g.label.replace(/'/g,"\\'")}')">`+
+        `<span class="grp-caret">${off?'▸':'▾'}</span><span class="grp-name">${g.label}</span>`+
+        `<span class="grp-count">${g.keys.length}</span></button>`;
+      if(!off) html+=g.keys.map(renderDrugCard).join('');
+    });
     el('lookup-results').innerHTML=html;
   } else {
     keys.sort(byName);
