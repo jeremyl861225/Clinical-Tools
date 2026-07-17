@@ -83,6 +83,23 @@
     setPull(dist + 48);                       // +48 讓指示器從畫面外滑入
   }, { passive: false });
 
+  // SW 為 stale-while-revalidate（一律先回快取），單純 reload 仍會拿到舊版；
+  // 故請 SW 重抓全部檔案，完成後才重新載入，確保下拉即為最新版。
+  function forceRefresh() {
+    var sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+    if (!sw) { location.reload(); return; }
+    var done = false;
+    function finish() { if (!done) { done = true; location.reload(); } }
+    navigator.serviceWorker.addEventListener('message', function onMsg(e) {
+      if (e.data && e.data.type === 'REFRESHED') {
+        navigator.serviceWorker.removeEventListener('message', onMsg);
+        finish();
+      }
+    });
+    sw.postMessage({ type: 'REFRESH' });
+    setTimeout(finish, 6000);   // 逾時（離線／慢網路）仍重新載入，至少沿用既有快取
+  }
+
   document.addEventListener('touchend', function () {
     if (loading || startY === null) return;
     if (dist >= THRESHOLD) {
@@ -91,7 +108,7 @@
       wrap.classList.add('ptr-loading');
       wrap.style.transition = 'transform .2s';
       wrap.style.transform = 'translateY(' + (THRESHOLD + 48) + 'px)';
-      setTimeout(function () { location.reload(); }, 300);
+      setTimeout(forceRefresh, 300);
     } else {
       reset();
     }

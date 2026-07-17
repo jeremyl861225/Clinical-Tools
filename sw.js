@@ -1,8 +1,13 @@
 /* 臨床計分工具箱 — Service Worker
- * 策略：network-first（有網路時每次都抓最新版並更新快取；離線或逾時才回退快取）。
+ * 策略：stale-while-revalidate —— 一律先回快取（開啟即顯示，與離線同速），
+ * 同時在背景抓最新版寫回快取，下次開啟即為新版。
+ * 下拉更新（PTR）會送 REFRESH 訊息，強制重抓全部檔案後重新載入，可立即取得最新版。
+ *
+ * 註：曾採 network-first，但每個資源都要等網路（且以 no-cache 逐一向伺服器驗證），
+ *     手機網路下每頁數十次往返，開啟明顯變慢，故改為本策略。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v74';
+const CACHE_VERSION = 'clinical-tools-v75';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -76,10 +81,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 網路逾時（毫秒）：超過即先回退快取，網路請求仍在背景完成並更新快取，下次開啟即為最新版
-const NETWORK_TIMEOUT_MS = 4000;
-
-// 擷取：network-first，有網路時抓最新並更新快取；離線或逾時回退快取
+// 擷取：stale-while-revalidate —— 有快取就立即回應，背景另抓新版更新快取
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
@@ -90,42 +92,47 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_VERSION);
+    const cached = await cache.match(req);
 
-    // 發出網路請求；成功即更新快取。
-    // cache:'no-cache' 強制向伺服器驗證（帶 ETag 的條件式請求，未更動時回 304 幾乎不耗流量）。
-    // 若不指定，SW 的 fetch 會沿用瀏覽器 HTTP 快取，而 GitHub Pages 送 max-age=600，
-    // 將使「開啟即更新」延遲最多 10 分鐘。
-    const networkFetch = fetch(req, { cache: 'no-cache' })
+    // 背景更新：no-cache 強制向伺服器驗證（帶 ETag，未更動時回 304 幾乎不耗流量），
+    // 否則會沿用瀏覽器 HTTP 快取，而 GitHub Pages 送 max-age=600。
+    // 此請求不阻擋畫面，抓到新版寫回快取，下次開啟即為最新。
+    const update = fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res && res.status === 200 && res.type === 'basic') {
           cache.put(req, res.clone());
         }
         return res;
-      });
+      })
+      .catch(() => null);
 
-    // 慢網路保護：逾時先用快取，networkFetch 仍在背景更新快取
-    const timeout = new Promise((resolve) => {
-      setTimeout(() => resolve(null), NETWORK_TIMEOUT_MS);
-    });
-
-    const raced = await Promise.race([
-      networkFetch.catch(() => null),
-      timeout
-    ]);
-    if (raced) return raced;
-
-    const cached = await cache.match(req) || await caches.match(req);
-    if (cached) return cached;
-
-    // 無快取：等網路請求完成（可能只是慢）；徹底失敗時導航頁回退首頁
-    try {
-      return await networkFetch;
-    } catch (e) {
-      if (req.mode === 'navigate') {
-        const home = await caches.match('./index.html');
-        if (home) return home;
-      }
-      return Response.error();
+    if (cached) {
+      event.waitUntil(update);   // 維持 SW 存活至背景更新完成
+      return cached;
     }
+
+    // 未快取過：只能等網路；失敗時導航請求回退首頁
+    const res = await update;
+    if (res) return res;
+    if (req.mode === 'navigate') {
+      const home = await cache.match('./index.html');
+      if (home) return home;
+    }
+    return Response.error();
+  })());
+});
+
+// 下拉更新：重抓全部檔案（略過所有快取）後通知頁面重新載入，用於立即取得最新版
+self.addEventListener('message', (event) => {
+  if (!event.data || event.data.type !== 'REFRESH') return;
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_VERSION);
+    await Promise.all(PRECACHE_URLS.map((u) =>
+      fetch(u, { cache: 'reload' })
+        .then((res) => (res && res.status === 200) ? cache.put(u, res) : null)
+        .catch(() => null)          // 個別檔案失敗不影響其餘
+    ));
+    const clients = await self.clients.matchAll();
+    clients.forEach((c) => c.postMessage({ type: 'REFRESHED' }));
   })());
 });
