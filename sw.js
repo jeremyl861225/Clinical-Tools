@@ -24,6 +24,7 @@ const PRECACHE_URLS = [
   './js/cancer-staging.js',
   './js/gastric-pathway.js',
   './js/breast-pathway.js',
+  './js/crc-regimens.js',
   './js/colon-pathway.js',
   './js/rectal-pathway.js',
   './js/panc-pathway.js',
