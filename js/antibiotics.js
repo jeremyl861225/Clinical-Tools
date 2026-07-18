@@ -401,7 +401,7 @@ const DRUG_GROUPS = [
   ['多烯類 Polyenes',             d=>d.covSet==='fungal' && /polyene/i.test(d.cls||'')],
   ['棘白菌素 Echinocandins',      d=>d.covSet==='fungal' && /echinocandin/i.test(d.cls||'')],
   ['唑類 Azoles',                 d=>d.covSet==='fungal' && /azole/i.test(d.cls||'')],
-  ['抗黴菌（其他）',              d=>d.covSet==='fungal'],
+  ['抗黴菌（其他） Antifungals (other)',              d=>d.covSet==='fungal'],
   ['抗寄生蟲 Antiparasitics',     d=>d.covSet==='para'],
   ['HIV 抗反轉錄病毒 HIV ART',    d=>d.covSet==='viral' && /\bHIV\b/i.test(d.cls||'')],
   ['肝炎抗病毒 Hepatitis B／C',   d=>d.covSet==='viral' && /\bHBV\b|\bHCV\b/i.test(d.cls||'')],
@@ -413,19 +413,19 @@ const DRUG_GROUPS = [
   ['抗 Gram(+)／anti-MRSA',       d=>/glycopeptide|lipopeptide|oxazolidinone/i.test(d.cls||'')],
   ['胺基醣苷類 Aminoglycosides',  d=>/aminoglycoside/i.test(d.cls||'')],
   ['氟喹諾酮類 Fluoroquinolones', d=>/fluoroquinolone|quinolone/i.test(d.cls||'')],
-  ['四環素／甘胺醯環素',          d=>/tetracycline|glycylcycline/i.test(d.cls||'')],
-  ['巨環／林可醯胺類',            d=>/macrolide|lincosamide/i.test(d.cls||'')],
+  ['四環素／甘胺醯環素 Tetracyclines／Glycylcyclines',          d=>/tetracycline|glycylcycline/i.test(d.cls||'')],
+  ['巨環／林可醯胺類 Macrolides／Lincosamides',            d=>/macrolide|lincosamide/i.test(d.cls||'')],
   ['硝基咪唑類 Nitroimidazole',   d=>/nitroimidazole/i.test(d.cls||'')],
   ['多黏菌素 Polymyxin',          d=>/polymyxin/i.test(d.cls||'')],
-  ['抗細菌（其他）',              d=>true],   // 走到這裡的必為抗細菌：黴菌／病毒／寄生蟲／抗結核已於上方攔截
+  ['抗細菌（其他） Antibacterials (other)',              d=>true],   // 走到這裡的必為抗細菌：黴菌／病毒／寄生蟲／抗結核已於上方攔截
 ];
 // 顯示順序（未列到的排在最後，不會消失）
 const GROUP_ORDER = [
   '青黴素類 Penicillins','頭孢子菌素類 Cephalosporins','碳青黴烯類 Carbapenems',
   '單環內醯胺 Monobactam','抗 Gram(+)／anti-MRSA','胺基醣苷類 Aminoglycosides',
-  '氟喹諾酮類 Fluoroquinolones','四環素／甘胺醯環素','巨環／林可醯胺類',
-  '硝基咪唑類 Nitroimidazole','多黏菌素 Polymyxin','抗細菌（其他）',
-  '多烯類 Polyenes','棘白菌素 Echinocandins','唑類 Azoles','抗黴菌（其他）',
+  '氟喹諾酮類 Fluoroquinolones','四環素／甘胺醯環素 Tetracyclines／Glycylcyclines','巨環／林可醯胺類 Macrolides／Lincosamides',
+  '硝基咪唑類 Nitroimidazole','多黏菌素 Polymyxin','抗細菌（其他） Antibacterials (other)',
+  '多烯類 Polyenes','棘白菌素 Echinocandins','唑類 Azoles','抗黴菌（其他） Antifungals (other)',
   'HIV 抗反轉錄病毒 HIV ART','肝炎抗病毒 Hepatitis B／C','抗病毒 Antivirals',
   '抗結核 Anti-TB','抗麻風 Anti-leprosy','抗寄生蟲 Antiparasitics',
 ];
