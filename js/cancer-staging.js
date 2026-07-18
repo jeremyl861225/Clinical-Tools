@@ -2,17 +2,35 @@
 /* ============================================================
    渲染 Rendering
    ============================================================ */
-var GROUP_ORDER = ['消化系 GI','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue'];
+var GROUP_ORDER = ['消化系 GI','婦科 Gynecologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue'];
+
+/* 家族（兩層選單）：範圍大到一張清單塞不下的癌別群（婦癌）先收成一張卡，
+   點進去再選細分項。成員癌別本身仍是獨立的 CANCERS 條目——搜尋、#cancer= 深層
+   連結、三個分頁的渲染都不受影響；家族只改變「未搜尋時」的第一層長相。 */
+function familyOf(id){
+  var F = window.CANCER_FAMILIES || [];
+  for(var i=0;i<F.length;i++){ if(F[i].members.indexOf(id) !== -1) return F[i]; }
+  return null;
+}
 
 function renderPicker(filter){
   filter = (filter||'').trim().toLowerCase();
   var byGroup = {};
+  var grouped = !filter;   // 搜尋時攤平到癌別本身，不再多一層家族卡
+  var shown = {};
   CANCERS.forEach(function(c){
     if(filter){
       var hay = (c.zh + ' ' + c.en + ' ' + c.id).toLowerCase();
       if(hay.indexOf(filter) === -1) return;
     }
-    (byGroup[c.group] = byGroup[c.group] || []).push(c);
+    var fam = grouped ? familyOf(c.id) : null;
+    if(fam){
+      if(shown[fam.id]) return;          // 同一家族只放一張卡
+      shown[fam.id] = 1;
+      (byGroup[fam.group] = byGroup[fam.group] || []).push({fam:fam});
+    } else {
+      (byGroup[c.group] = byGroup[c.group] || []).push({c:c});
+    }
   });
   var html = '';
   var groups = GROUP_ORDER.filter(function(g){return byGroup[g];});
@@ -22,14 +40,45 @@ function renderPicker(filter){
   }
   groups.forEach(function(g){
     html += '<div class="onc-group-head">'+escapeHtml(g)+'</div><div class="onc-grid">';
-    byGroup[g].forEach(function(c){
-      html += '<button class="onc-card" onclick="showDetail(\''+c.id+'\')">'+
-              '<span class="oc-name">'+escapeHtml(c.zh)+'</span>'+
-              '<span class="oc-en">'+escapeHtml(c.en)+'</span></button>';
+    byGroup[g].forEach(function(x){
+      if(x.fam){
+        html += '<button class="onc-card is-family" onclick="showFamily(\''+x.fam.id+'\')">'+
+                '<span class="oc-name">'+escapeHtml(x.fam.zh)+'<span class="oc-count">'+x.fam.members.length+' 項</span></span>'+
+                '<span class="oc-en">'+escapeHtml(x.fam.en)+'</span>'+
+                '<span class="oc-sub">'+escapeHtml(x.fam.sub||'')+'</span></button>';
+      } else {
+        html += '<button class="onc-card" onclick="showDetail(\''+x.c.id+'\')">'+
+                '<span class="oc-name">'+escapeHtml(x.c.zh)+'</span>'+
+                '<span class="oc-en">'+escapeHtml(x.c.en)+'</span></button>';
+      }
     });
     html += '</div>';
   });
   document.getElementById('oncPicker').innerHTML = html;
+}
+
+/* 第二層：家族內的細分項清單 */
+function showFamily(fid){
+  var F = (window.CANCER_FAMILIES||[]).filter(function(f){return f.id===fid;})[0];
+  if(!F) return;
+  var html = '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>'+
+    '<h2 class="onc-title">'+escapeHtml(F.zh)+'<span class="oct-en">'+escapeHtml(F.en)+'</span></h2>';
+  if(F.note) html += '<p class="onc-note">'+F.note+'</p>';
+  html += '<div class="onc-grid">';
+  F.members.forEach(function(id){
+    var c = CANCERS.filter(function(x){return x.id===id;})[0];
+    if(!c) return;
+    html += '<button class="onc-card" onclick="showDetail(\''+c.id+'\')">'+
+            '<span class="oc-name">'+escapeHtml(c.zh)+'</span>'+
+            '<span class="oc-en">'+escapeHtml(c.en)+'</span></button>';
+  });
+  html += '</div>';
+  document.getElementById('oncPicker').style.display = 'none';
+  document.getElementById('oncSearch').style.display = 'none';
+  var d = document.getElementById('oncDetail');
+  d.style.display = 'block';
+  d.innerHTML = html;
+  window.scrollTo(0,0);
 }
 
 function showDetail(id){
@@ -39,8 +88,12 @@ function showDetail(id){
   document.getElementById('oncSearch').style.display = 'none';
   var d = document.getElementById('oncDetail');
   d.style.display = 'block';
-  d.innerHTML =
-    '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>'+
+  // 家族成員的返回鍵回到該家族的細分項清單，而非跳回最上層——使用者是從那裡進來的。
+  var fam = familyOf(id);
+  var back = fam
+    ? '<button class="onc-back" onclick="showFamily(\''+fam.id+'\')">← 返回'+escapeHtml(fam.zh)+'</button>'
+    : '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>';
+  d.innerHTML = back+
     '<h2 class="onc-title">'+escapeHtml(c.zh)+'<span class="oct-en">'+escapeHtml(c.en)+'</span></h2>'+
     '<div class="onc-edition">'+escapeHtml(c.edition)+'</div>'+
     '<div class="onc-tabs">'+
@@ -80,6 +133,10 @@ function switchTab(id, tab){
     if(c.pathway === 'sts' && typeof initStsPathway === 'function') initStsPathway();
     if(c.pathway === 'pnet' && typeof initPnetPathway === 'function') initPnetPathway();
     if(c.pathway === 'net' && typeof initNetPathway === 'function') initNetPathway();
+    if(c.pathway === 'cervix' && typeof initCervixPathway === 'function') initCervixPathway();
+    if(c.pathway === 'endo' && typeof initEndoPathway === 'function') initEndoPathway();
+    if(c.pathway === 'utsarc' && typeof initUtsarcPathway === 'function') initUtsarcPathway();
+    if(c.pathway === 'ovarian' && typeof initOvarianPathway === 'function') initOvarianPathway();
   }
 }
 
@@ -133,9 +190,12 @@ function renderStage(c){
 }
 
 var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
-  'II':2,'IIA':2,'IIB':3,'IIC':3,
-  'IIIA':4,'IIIB':5,'IIIC':6,'III':4,
+  'IB1':1,'IB2':1,'IB3':1,'IC1':1,'IC2':1,'IC3':1,
+  'II':2,'IIA':2,'IIA1':2,'IIA2':2,'IIB':3,'IIC':3,
+  'IIIA':4,'IIIA1':4,'IIIA2':4,'IIIB':5,'IIIC':6,'IIIC1':6,'IIIC2':6,'III':4,
   'IV':7,'IVA':7,'IVB':7,'IVC':7};
+// 婦癌新增之細分期別：子宮頸 FIGO 2018 之 IB1–IB3／IIA1–IIA2／IIIC1–IIIC2、
+// 卵巢 FIGO 2014 之 IC1–IC3／IIIA1–IIIA2、子宮體 IIIC1／IIIC2。
 // 'IC'：食道腺癌 pTNM 獨有期別（T1 N0 G3、或 T2 N0 G1–2）；仍屬第一期，故與 IA／IB 同深度。
 function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
@@ -303,6 +363,18 @@ function renderTx(c){
   }
   if(c.pathway === 'net' && typeof netPathwayHTML === 'function'){
     return netPathwayHTML();
+  }
+  if(c.pathway === 'cervix' && typeof cervixPathwayHTML === 'function'){
+    return cervixPathwayHTML();
+  }
+  if(c.pathway === 'endo' && typeof endoPathwayHTML === 'function'){
+    return endoPathwayHTML();
+  }
+  if(c.pathway === 'utsarc' && typeof utsarcPathwayHTML === 'function'){
+    return utsarcPathwayHTML();
+  }
+  if(c.pathway === 'ovarian' && typeof ovarianPathwayHTML === 'function'){
+    return ovarianPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
