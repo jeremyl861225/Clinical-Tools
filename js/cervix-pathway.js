@@ -114,7 +114,9 @@
   }
 
   /* ---------- 建議處置 ---------- */
-  function recFor(s) {
+  /* 原發治療建議：只看組織型態／分期／生育意願，<b>不</b>看術後病理——
+     術後病理是手術之後才有的資訊，屬於下一段（recAdjuvant）。 */
+  function recPrimary(s) {
     /* ── 小細胞神經內分泌癌 NECC（CERV-14／CERV-15）── */
     if (s.histo === 'necc') {
       if (s.nstage === 'n_local_small') {
@@ -202,7 +204,7 @@
     }
 
     /* ── IB3／IIA2：兩條路都成立 ── */
-    if (s.stage === 'ib3iia2' && !s.path) {
+    if (s.stage === 'ib3iia2') {
       return { cls: 'rec-elective', title: '第 IB3／IIA2 期 · 兩條原發治療路徑並存', detail:
         rxLine('CERV-4 之三個並列選項', '指引未指定優先者', [
           '<b>骨盆腔 EBRT + 同步含鉑化療 + 近接治療（category 1）</b> → 追蹤。',
@@ -215,7 +217,9 @@
     }
 
     /* ── 早期：先看有無保留生育需求 ── */
-    var early = (s.stage === 'ia1' || s.stage === 'ia2ib1' || s.stage === 'ib2' || s.stage === 'iia1');
+    // CERV-1 只對 IA1／IA2／IB1／IB2 畫出「保留生育」與「不保留生育」兩條平行箭頭；
+    // IIA1 僅有一條箭頭指向 CERV-4，故不納入生育意願軸。
+    var early = (s.stage === 'ia1' || s.stage === 'ia2ib1' || s.stage === 'ib2');
 
     if (early && s.fert === 'fert_yes') {
       if (s.stage === 'ia1') {
@@ -241,16 +245,15 @@
           ]),
           note: 'CERV-2。<b>「錐狀切片＋淋巴結」中的「+」是必要合併，「骨盆腔廓清 or SLN」才是二擇一</b>——這兩層在指引圖上是不同層級，勿混。' };
       }
-      return { cls: 'rec-elective', title: '第 ' + (s.stage === 'ib2' ? 'IB2' : 'IIA1') + ' 期 · 保留生育之適用性有限', detail:
-        rxLine('指引所列', 'CERV-2', [
-          '<b>僅「選擇性 IB2（select IB2）」</b>列入保留生育路徑：<b>根除性子宮頸切除術 + 骨盆腔淋巴結廓清 ± 主動脈旁淋巴結廓清</b>（考慮 SLN 定位）→ 依 CERV-5。',
-          '<b>IIA1 未列入保留生育路徑</b>——CERV-1 對 IIA1 僅畫出一條箭頭指向 CERV-4。'
+      return { cls: 'rec-elective', title: '第 IB2 期 · 保留生育（限選擇性病例）', detail:
+        rxLine('原發治療', 'CERV-2', [
+          '<b>根除性子宮頸切除術（radical trachelectomy）+ 骨盆腔淋巴結廓清 ± 主動脈旁淋巴結廓清</b>（考慮 SLN 定位）'
         ]),
-        note: 'CERV-1／CERV-2。若不保留生育，請於第 3 步改選「不保留生育」以取得 CERV-3／CERV-4 之建議。' };
+        note: 'CERV-2。指引在此標明為<b>「選擇性 IB2（select IB2）」</b>——並非所有 IB2 都適用保留生育，須經審慎篩選。若不保留生育，請於第 3 步改選「不保留生育」。' };
     }
 
     /* ── 早期 · 不保留生育（CERV-3／CERV-4）── */
-    if (early && s.fert === 'fert_no' && !s.path) {
+    if (early && s.fert === 'fert_no') {
       if (s.stage === 'ia1') {
         return { cls: 'rec-elective', title: '第 IA1 期（無 LVSI）· 不保留生育 · 依錐狀切片結果分流', detail:
           rxLine('錐狀切片切緣陰性', 'CERV-3', [
@@ -278,7 +281,7 @@
           ]),
           note: 'CERV-3／CERV-4。' };
       }
-      return { cls: 'rec-elective', title: '第 ' + (s.stage === 'ib2' ? 'IB2' : 'IIA1') + ' 期 · 不保留生育', detail:
+      return { cls: 'rec-elective', title: '第 IB2 期 · 不保留生育', detail:
         rxLine('CERV-4 之兩個並列選項（終點不同）', 'IB1 不符保守條件、IB2、IIA1 三者共用同一方塊', [
           '<b>根除性子宮切除 + 骨盆腔淋巴結廓清（category 1）</b> ± 主動脈旁淋巴結廓清（category 2B）（考慮 SLN 定位）→ <b>依術後病理發現決定輔助治療</b>（CERV-5，請選第 4 步）。',
           '<b>或 骨盆腔 EBRT + 近接治療 ± 同步含鉑化療</b> → <b>直接進入追蹤</b>。'
@@ -286,6 +289,22 @@
         note: 'CERV-4。' };
     }
 
+    // IIA1：CERV-1 單一箭頭指向 CERV-4，與 IB2 不保留生育者共用同一治療方塊
+    if (s.stage === 'iia1') {
+      return { cls: 'rec-elective', title: '第 IIA1 期', detail:
+        rxLine('CERV-4 之兩個並列選項（終點不同）', 'IB1 不符保守條件、IB2、IIA1 三者共用同一方塊', [
+          '<b>根除性子宮切除 + 骨盆腔淋巴結廓清（category 1）</b> ± 主動脈旁淋巴結廓清（category 2B）（考慮 SLN 定位）→ <b>依術後病理發現決定輔助治療</b>（CERV-5，見下方第 4 步）。',
+          '<b>或 骨盆腔 EBRT + 近接治療 ± 同步含鉑化療</b> → <b>直接進入追蹤</b>。'
+        ]),
+        note: 'CERV-4。<b>IIA1 無保留生育之選項</b>——CERV-1 對 IIA1 僅畫出一條箭頭指向 CERV-4。' };
+    }
+
+    return null;
+  }
+
+  /* 輔助治療建議（CERV-5）：僅在使用者於第 4 步輸入術後病理發現後才出現。
+     必須先有手術才會有淋巴結、切緣與子宮旁的病理結果，故本段排在原發治療建議之後。 */
+  function recAdjuvant(s) {
     /* ── CERV-5：術後病理發現 → 輔助治療 ── */
     if (s.path === 'p_neg') {
       return { cls: 'rec-elective', title: '術後病理：淋巴結、切緣、子宮旁皆陰性（中度風險）', detail:
@@ -352,6 +371,11 @@
       opt('fert', 'fert_no', '不保留生育', 'CERV-3／CERV-4'),
       '<div class="note">CERV-1 對 IA1／IA2／IB1／IB2 <b>同時畫出兩條平行箭頭</b>——保留生育與否是<b>並行選項</b>，由病人意願決定，不是先後步驟。</div>');
 
+    // 原發治療建議：接在生育意願之後。術後病理（第 4 步）必須排在它之後——
+    // 要先依這裡的建議動了刀，才會有淋巴結、切緣與子宮旁的病理結果可填。
+    h += '<div class="flow-rec rec-idle" id="cx_rec"><div class="rec-label">建議處置 Recommendation</div>' +
+      '<div class="rec-title">請完成上方步驟</div></div>';
+
     h += connH('cx_c3');
     h += step('cx_s4', '4', '若已接受根除性手術：術後病理發現？',
       opt('path', 'p_neg', '淋巴結、切緣、子宮旁皆陰性', '中度風險 · Sedlis') +
@@ -359,8 +383,8 @@
       opt('path', 'p_para', '手術分期發現主動脈旁淋巴結陽性'),
       '<div class="note">尚未手術、或選擇根治性化放療者<b>可略過本步</b>——上方建議處置已含該路徑之完整內容。</div>');
 
-    h += '<div class="flow-rec rec-idle" id="cx_rec"><div class="rec-label">建議處置 Recommendation</div>' +
-      '<div class="rec-title">請完成上方步驟</div></div>';
+    h += '<div class="flow-rec rec-idle hidden" id="cx_rec2"><div class="rec-label">輔助治療 Adjuvant</div>' +
+      '<div class="rec-title">請選擇術後病理發現</div></div>';
     h += '<div class="flow-fu hidden" id="cx_fu"></div>';
 
     h += '<div class="flow-reset"><button class="btn-reset" onclick="cxReset()">重置</button></div>';
@@ -383,42 +407,28 @@
     show('cx_s2', usual);
     show('cx_s2n', necc);
 
-    // 第 3 步（生育需求）僅掛於早期且可能手術者
-    var early = usual && (s.stage === 'ia1' || s.stage === 'ia2ib1' || s.stage === 'ib2' || s.stage === 'iia1');
+    // 第 3 步（生育需求）僅掛於 CERV-1 畫出兩條平行箭頭的分期；IIA1 不在其中
+    var early = usual && (s.stage === 'ia1' || s.stage === 'ia2ib1' || s.stage === 'ib2');
     show('cx_c2', early);
     show('cx_s3', early);
 
-    // 第 4 步（術後病理）掛於所有有手術選項的分期
-    var surgical = usual && (
-      (early && s.fert === 'fert_no') ||
-      (early && s.fert === 'fert_yes' && s.stage !== 'ia1') ||
-      s.stage === 'ib3iia2'
-    );
-    show('cx_c3', surgical);
-    show('cx_s4', surgical);
-
+    // 原發治療建議：完成生育意願（或不需問生育意願的分期）即可給出
     var done = (necc && !!s.nstage) ||
-      (usual && (s.stage === 'ivb' || s.stage === 'iibiva' || s.stage === 'incidental')) ||
-      (usual && s.stage === 'ib3iia2') ||
+      (usual && (s.stage === 'ivb' || s.stage === 'iibiva' || s.stage === 'incidental' ||
+                 s.stage === 'ib3iia2' || s.stage === 'iia1')) ||
       (early && !!s.fert);
 
     var rec = document.getElementById('cx_rec');
+    var rec2 = document.getElementById('cx_rec2');
     var fu = document.getElementById('cx_fu');
     if (!rec) return;
 
-    if (!done) {
-      rec.className = 'flow-rec rec-idle';
-      rec.innerHTML = '<div class="rec-label">建議處置 Recommendation</div>' +
-        '<div class="rec-title">請完成上方步驟</div>';
-      if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
-      return;
-    }
-
-    var r = recFor(s);
+    var r = done ? recPrimary(s) : null;
     if (!r) {
       rec.className = 'flow-rec rec-idle';
       rec.innerHTML = '<div class="rec-label">建議處置 Recommendation</div>' +
         '<div class="rec-title">請完成上方步驟</div>';
+      show('cx_c3', false); show('cx_s4', false); show('cx_rec2', false);
       if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
       return;
     }
@@ -427,6 +437,33 @@
       '<div class="rec-title">' + r.title + '</div>' +
       '<div class="rec-detail">' + r.detail + '</div>' +
       (r.note ? '<div class="rec-note">' + r.note + '</div>' : '');
+
+    // 第 4 步（術後病理）只掛在原發治療含手術選項的分期，且必須排在上方建議之後——
+    // 要先照建議動了刀，才會有淋巴結／切緣／子宮旁的病理結果。
+    var surgical = usual && (
+      (early && s.fert === 'fert_no') ||
+      (early && s.fert === 'fert_yes' && s.stage !== 'ia1') ||
+      s.stage === 'iia1' ||
+      s.stage === 'ib3iia2'
+    );
+    show('cx_c3', surgical);
+    show('cx_s4', surgical);
+
+    // 輔助治療建議：僅在填入術後病理後出現，且<b>不取代</b>上方的原發治療建議
+    var a = surgical && s.path ? recAdjuvant(s) : null;
+    if (rec2) {
+      if (a) {
+        rec2.className = 'flow-rec ' + a.cls;
+        rec2.innerHTML = '<div class="rec-label">輔助治療 Adjuvant</div>' +
+          '<div class="rec-title">' + a.title + '</div>' +
+          '<div class="rec-detail">' + a.detail + '</div>' +
+          (a.note ? '<div class="rec-note">' + a.note + '</div>' : '');
+      } else {
+        rec2.className = 'flow-rec rec-idle hidden';
+        rec2.innerHTML = '<div class="rec-label">輔助治療 Adjuvant</div>' +
+          '<div class="rec-title">請選擇術後病理發現</div>';
+      }
+    }
 
     if (fu) { fu.innerHTML = fuHtml(); fu.classList.remove('hidden'); }
   }
@@ -467,6 +504,8 @@
     if (root) root.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
     var fu = document.getElementById('cx_fu');
     if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
+    var rec2 = document.getElementById('cx_rec2');
+    if (rec2) { rec2.classList.add('hidden'); }
     cxRender();
   }
 
