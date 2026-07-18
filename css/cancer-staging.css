@@ -46,7 +46,12 @@
   :root{ --sm-strong-text:#ffffff; }
   @media (prefers-color-scheme: dark){ :root{ --sm-strong-text:#0e171b; } }
   .sm-wrap{overflow-x:auto; margin:4px 0 8px;}
-  table.smx{border-collapse:collapse; font-family:var(--mono); font-size:12px; width:100%; table-layout:fixed;}
+  table.smx{border-collapse:collapse; font-family:var(--mono); font-size:12px; width:100%;}
+  /* 左側 TNM 標籤欄與 N0 欄縮到內容自然寬（不被拉寬，避免長列標籤被裁切）；
+     資料欄（N／G 期別）等比例 → 平均分配剩餘寬度 */
+  .smx col.smc-lbl{width:1px;}
+  .smx col.smc-ng{width:1px;}
+  .smx col.smc-data{width:20%;}
   table.smx th, table.smx td{border:1px solid var(--line); text-align:center; padding:6px 5px; white-space:nowrap;}
   .smx .sm-corner{background:var(--soft-bg);}
   .smx .sm-nh{font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg);}
@@ -63,7 +68,8 @@
   .sm-s7{background:var(--accent);}
   .smx .sm-s0{color:var(--muted-soft);}
   .smx .sm-s4, .smx .sm-s5, .smx .sm-s6, .smx .sm-s7{color:var(--sm-strong-text);}
-  /* M 列（接在 T4 之後，橫跨 N 欄；讓 stage IV 也出現在表格上） */
+  /* N／M 列（接在 T4 之後，橫跨資料欄）：N 列（N1…）與 N0 同色，M 列（M1…）用另色，避免兩軸混淆 */
+  .smx tr.sm-mrow th.sm-nth{color:var(--muted);}
   .smx tr.sm-mrow th.sm-mth{color:var(--accent2);}
   .smx td.sm-mcell{font-weight:700;}
   .smx td.sm-mdesc-cell{text-align:left; padding-left:9px; font-family:var(--sans); font-size:10.5px; opacity:.85;}

@@ -142,6 +142,10 @@ function renderMatrix(mx){
   var nCols = mx.ncols.length;
   var hasNG = !!mx.ng_label;               // 選填：T 列右側之合併註記欄（如 STS 之「N0」）
   var h = '<div class="onc-sec-h">分期組合 Stage Grouping</div><div class="sm-wrap"><table class="smx">';
+  // colgroup：左側 TNM 標籤欄（及 N0 欄）固定窄欄寬，僅右側資料欄（N／G 期別）平均分配。
+  h += '<colgroup><col class="smc-lbl">'+(hasNG?'<col class="smc-ng">':'');
+  mx.ncols.forEach(function(){ h += '<col class="smc-data">'; });
+  h += '</colgroup>';
   h += '<tr><td class="sm-corner"'+(hasNG?' colspan="2"':'')+'></td>';
   mx.ncols.forEach(function(n){
     h += '<th class="sm-nh">'+n[0]+(n[1]?'<span>'+n[1]+'</span>':'')+'</th>';
@@ -155,11 +159,14 @@ function renderMatrix(mx){
     });
     h += '</tr>';
   });
-  // M／N 列：接在 T 列之後，期別<b>橫跨所有資料欄</b>並置中；不於格內附描述文字（m[2] 僅供資料備註）。
+  // M／N 列：接在 T 列之後，期別橫跨所有資料欄並置中。
+  // 具 N0 欄時，期別同時併入右側之 N0 空格（colspan = 資料欄 + 1）。
+  // N 列（N1…）之列首與 N0 同色；M 列（M1…）用另色，使 N／M 兩軸不致混淆。
   (mx.mrows||[]).forEach(function(m){
-    h += '<tr class="sm-mrow"><th class="sm-th sm-mth">'+m[0]+'</th>';
-    if(hasNG) h += '<td class="sm-ng sm-ng-empty"></td>';
-    h += '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'" colspan="'+nCols+'">'+m[1]+'</td></tr>';
+    var thCls = /^N/.test(m[0]) ? 'sm-nth' : 'sm-mth';
+    var span = hasNG ? nCols + 1 : nCols;
+    h += '<tr class="sm-mrow"><th class="sm-th '+thCls+'">'+m[0]+'</th>'+
+         '<td class="sm-cell sm-mcell '+shadeClass(m[1])+'" colspan="'+span+'">'+m[1]+'</td></tr>';
   });
   h += '</table></div>';
   h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';
