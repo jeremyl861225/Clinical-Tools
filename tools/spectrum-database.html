@@ -511,9 +511,10 @@ function buildMatrix(tblId,cols,rows,keyFn,opts){
     const last = (i===cols.length-1) ? ' gend' : '';      // 最右欄補收邊線
     // colDrug（表三）：欄＝藥名，整格即藥卡連結，故不掛 toggleCol 反白
     const dk=opts.colDrug ? SDX_DRUG[c.abbr] : null;
+    // 欄位藥名備註（cn）依需求移除；完整名保留在 title 提示中
     const inner=dk
-      ? `<a class='sd-colhead dlink' href='${sdHref(dk)}' onclick='sdSaveScroll()' title='查看 ${c.cn} 藥卡'><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></a>`
-      : `<div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span><span class='cn'>${c.cn}</span></div>`;
+      ? `<a class='sd-colhead dlink' href='${sdHref(dk)}' onclick='sdSaveScroll()' title='查看 ${c.cn} 藥卡'><span class='abbr'>${c.abbr}</span></a>`
+      : `<div class='sd-colhead' onclick="toggleCol('${tblId}',${i})" title='${c.cn}'><span class='abbr'>${c.abbr}</span></div>`;
     thead+=`<th data-col='${i}' class='tint-${GRP[c.g].tint}${sep[i]?' gsep':''}${last}' title='${GRP[c.g].label}'>${inner}</th>`;
   });
   thead+="</tr></thead>";
@@ -647,7 +648,7 @@ function buildAbxSplit(tblId){
       tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
     const rk=SDX_DRUG[r.rx];
     const nm=rk?`<a class='dlink' href='${sdHref(rk)}' onclick='sdSaveScroll()' title='查看 ${r.rx} 藥卡'><span class='rx'>${r.rx}</span></a>`:`<span class='rx'>${r.rx}</span>`;
-    tb+=`<tr><th class='rowhead'>${nm}${r.cn?`<span class='cn'>${r.cn}</span>`:""}</th>`;
+    tb+=`<tr><th class='rowhead'>${nm}</th>`;   // 藥名備註（cn）依需求移除
     cols.forEach((c,i)=>{
       // 台大實測 %（供 %徽章；ci<0 之無母欄菌並用以定質性符號，避免符號與 % 相左）
       let pv=null; const ak=SPLIT_ABGKEY[r.rx];
