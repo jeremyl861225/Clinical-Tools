@@ -150,11 +150,31 @@ function uniqueDrugs(type){
   return seen;
 }
 
+/* 劑量段落排版：把資料裡既有的 <br>／•／【】／子項結構排成有懸掛縮排的條列，
+   純段落（無結構標記）原樣返回，不臆造斷行、不改動任何字元。
+   注意：欄位字串內有大量「字面 <」（如「< 60 kg」「<12 歲」），故只按字面
+   「<br>」切割，其餘（含 <b>、&nbsp; 等）全部原樣保留，切勿用會吃掉 <…> 的 regex。 */
+function fmtDose(text){
+  const t=String(text);
+  if(t.indexOf('<br>')<0 && t.trimStart()[0]!=='•' && t.indexOf('【')<0) return t;
+  let html='';
+  for(let raw of t.split(/<br\s*\/?>/i)){
+    const s=raw.trim();
+    if(!s) continue;
+    const sub=s.replace(/^(?:&nbsp;|&emsp;|\s)+[-–]\s*/,'');       // 子項：縮排後接短橫
+    if(sub!==s){ html+=`<div class="dl-sub">${sub}</div>`; continue; }
+    if(s[0]==='•'){ html+=`<div class="dl-item">${s.slice(1).trim()}</div>`; continue; }
+    if(/^【[^】]*】$/.test(s)){ html+=`<div class="dl-sect">${s}</div>`; continue; } // 整段為【段標】
+    html+=`<div class="dl-line">${s}</div>`;                        // 給藥途徑／說明／續行
+  }
+  return `<div class="dose-fmt">${html}</div>`;
+}
+
 function renderDrugCard(k){
   const d=DRUGS[k];
   const field=(label,text,warn)=> (text&&String(text).trim())?
     `<div class="dc-field"><div class="dc-flabel">${label}</div>
-     <div class="dc-ftext ${warn?'dc-warn':''}">${text}</div></div>` : '';
+     <div class="dc-ftext ${warn?'dc-warn':''}">${fmtDose(text)}</div></div>` : '';
   // 腎功能調整：陣列→表格；字串→純文字（向後相容）
   let renalField='';
   if(Array.isArray(d.renal)){

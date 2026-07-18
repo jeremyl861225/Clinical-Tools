@@ -137,6 +137,16 @@
   .dc-flabel .ico{font-size:12px;}
   .dc-ftext{font-size:13px; line-height:1.65; color:var(--label-ink);}
   .dc-ftext .sub{display:block; font-size:11.5px; color:var(--muted); font-family:var(--mono); margin-top:2px;}
+  /* 劑量條列排版（fmtDose 產生）：懸掛縮排，換行的續行對齊文字而非回到最左 */
+  .dose-fmt{display:flex; flex-direction:column;}
+  .dose-fmt .dl-line{margin:1px 0;}
+  .dose-fmt .dl-line + .dl-item{margin-top:3px;}
+  .dose-fmt .dl-item{padding-left:1.15em; text-indent:-1.15em; margin:2px 0;}
+  .dose-fmt .dl-item::before{content:'•'; color:var(--accent); margin-right:.5em;}
+  .dose-fmt .dl-sub{padding-left:2.35em; text-indent:-1.1em; margin:1px 0; color:var(--muted);}
+  .dose-fmt .dl-sub::before{content:'–'; color:var(--muted); margin-right:.5em;}
+  .dose-fmt .dl-sect{font-weight:600; color:var(--label-ink); margin:6px 0 2px;}
+  .dose-fmt .dl-sect:first-child{margin-top:0;}
   .dc-warn{color:var(--accent2);}
   .abx-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono); margin:14px 0 6px;}
 
