@@ -6,19 +6,21 @@
    ※ NET-1 之流程結構依第 19 頁決策圖判讀（非文字順序）：
      先分「小型偶發完整切除（<1cm）」vs「其他所有直腸腫瘤」；前者依切緣與分級，
      後者依大小（<2cm vs >2cm 或淋巴結陽性）決定切除方式。
-   ※ 進展性／轉移性分支之系統性治療為<b>跨部位 GEP-NET</b>之整理（SSA／PRRT／標靶／化療），
-     非 NET-1 內容；胰臟 NET 之完整流程另見「胰臟神經內分泌腫瘤（pNET）」條目。
-   本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
+   ※ 本模組依「原發部位」分流：胰臟 → 委派 pnet-pathway.js（PanNET-1～13、WDG3、NE-H，
+     嵌入模式）；直腸 → NET-1；其他部位 → 跨部位系統性治療整理（SSA／PRRT／標靶／化療）。
+     pnet-pathway.js 須於本檔之前載入。本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
   'use strict';
 
   var ntSt = {
-    setting: null,  // inc | other | adv   （情境）
-    margin: null,   // neg | indet          （偶發瘤切緣）
-    grade: null,    // g1 | g2              （偶發瘤切緣不確定時之分級）
-    size: null      // lt2 | gt2            （其他直腸腫瘤之大小／淋巴結）
+    site: null,     // panc | rectal | other  （原發部位）
+    rmode: null,    // inc | other            （直腸：小型偶發完整切除 vs 其他所有直腸腫瘤）
+    margin: null,   // neg | indet            （直腸偶發瘤切緣）
+    grade: null,    // g1 | g2                （切緣不確定時之分級）
+    size: null      // lt2 | gt2              （其他直腸腫瘤之大小／淋巴結）
   };
+  var pancInjected = false;   // 胰臟分支之 pnet 流程是否已注入
 
   /* ---------- 版面 helpers ---------- */
   function opt(key, val, title, sub) {
@@ -63,8 +65,8 @@
   function systemicPanel() {
     return '<div class="rec-detail rx-panel">' +
       '<div class="rx-panel-h">進展性／轉移性 GEP-NET · 系統性治療（跨部位整理）</div>' +
-      '<div class="rx-def"><b>此區為跨部位 GEP-NET 之系統性治療整理，非 NET-1 內容。</b>' +
-      '<b>胰臟 NET（PanNET）之完整互動流程請見「胰臟神經內分泌腫瘤（pNET）」條目。</b></div>' +
+      '<div class="rx-def"><b>此區為跨部位 GEP-NET 之系統性治療整理。</b>' +
+      '<b>胰臟 NET（PanNET）之完整互動流程請於<u>步驟 1 選「胰臟」</u>。</b></div>' +
       rxLine('手術 / 減積', '侷限性或原發灶', [
         '<b>手術切除 + 區域淋巴結廓清</b>；小病灶（&lt;2cm、無功能、G1）可考慮觀察或摘除。',
         '<b>原發灶切除即使已有肝轉移仍常建議</b>（減積 cytoreduction）。'
@@ -86,47 +88,75 @@
   /* ---------- 版面 HTML ---------- */
   function netPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）之 NET-1</b>——' +
-      '<b>直腸神經內分泌腫瘤（rectal NET）之局部治療流程</b>。分期採 <b>AJCC v9（2023）直腸／結腸 NET</b>（NET-2，見「分期」分頁）。' +
-      '<b>本流程僅適用於分化良好之直腸 NET</b>；<b>胰臟 NET 之完整流程另見「胰臟神經內分泌腫瘤（pNET）」條目</b>；' +
-      '其他部位（胃／十二指腸／空腸-迴腸／闌尾）與進展性／轉移性疾病之系統性治療見下方「進展性／轉移性」分支。</p>';
+    h += '<p class="onc-note"><b>神經內分泌瘤（GEP-NET）之治療流程，依原發部位分流。</b>' +
+      '<b>胰臟</b> → 完整 <b>PanNET 流程</b>（台大胰臟神經內分泌腫瘤診療指引 版次 02；PanNET-1～13、WDG3、NE-H）；' +
+      '<b>直腸</b> → <b>NET-1</b>（台大大腸直腸癌診療指引 版次 21，直腸 NET 局部治療）；' +
+      '<b>其他部位</b>（胃／十二指腸／空腸-迴腸／闌尾／結腸）與各部位之<b>進展性／轉移性</b>疾病 → 跨部位系統性治療整理。' +
+      '分期見「分期」分頁（依部位選擇）。先選原發部位。</p>';
     h += '<div class="onc-path" id="ntPath">';
 
-    // Step 1 — 情境
-    h += step('nt_s1', '1', '臨床情境 Clinical setting（NET-1）',
-      opt('setting', 'inc', '直腸 NET · <b>小型偶發、已完整切除（&lt;1cm）</b>', 'Small (&lt;1 cm) completely resected incidental tumors') +
-      opt('setting', 'other', '直腸 NET · <b>其他所有直腸腫瘤</b>', 'All other rectal tumors → 依大小決定切除方式') +
-      opt('setting', 'adv', '<b>進展性／轉移性 GEP-NET</b>', '系統性治療（跨部位整理；胰臟 NET 見 pNET 條目）'));
+    // Step 1 — 原發部位
+    h += step('nt_s1', '1', '原發部位 Primary site',
+      opt('site', 'panc', '<b>胰臟 Pancreas</b>', '→ 完整 PanNET 流程（分化良好 G1／G2 與 WD G3）') +
+      opt('site', 'rectal', '<b>直腸 Rectum</b>', '→ NET-1 直腸 NET 局部治療') +
+      opt('site', 'other', '<b>其他部位</b>（胃／十二指腸／空腸-迴腸／闌尾／結腸）', '→ 手術原則 + 跨部位系統性治療'));
 
-    // ── 偶發瘤（<1cm 完整切除）分支
+    // ── 胰臟分支：動態注入 pnet 流程
+    h += connH('nt_cpanc');
+    h += '<div id="nt_panc" class="hidden"></div>';
+
+    // ── 直腸分支（NET-1）
+    h += connH('nt_crectal');
+    h += '<div id="nt_rectal" class="hidden">';
+    h += step('nt_s2r', '2', '直腸 NET 情境 Clinical setting（NET-1）',
+      opt('rmode', 'inc', '<b>小型偶發、已完整切除（&lt;1cm）</b>', 'Small (&lt;1 cm) completely resected incidental tumors') +
+      opt('rmode', 'other', '<b>其他所有直腸腫瘤</b>', 'All other rectal tumors → 依大小決定切除方式'));
+
+    // 偶發瘤（<1cm 完整切除）子分支
     h += connH('nt_c2i');
-    h += step('nt_s2i', '2', '切緣 Margin（小型偶發、已完整切除）',
+    h += step('nt_s2i', '3', '切緣 Margin（小型偶發、已完整切除）',
       opt('margin', 'neg', '<b>切緣陰性</b> Negative margin', '→ 無需額外追蹤') +
       opt('margin', 'indet', '<b>切緣不確定</b> Indeterminate margins', '→ 依分級決定'));
     h = h.replace('id="nt_s2i"', 'id="nt_s2i" class="hidden"');
 
     h += connH('nt_c3i');
-    h += step('nt_s3i', '3', '分級 Grade（切緣不確定時）',
+    h += step('nt_s3i', '4', '分級 Grade（切緣不確定時）',
       opt('grade', 'g1', '<b>低惡性度 Low grade（G1）</b>', '→ 6–12 個月內視鏡評估殘存病灶') +
       opt('grade', 'g2', '<b>不確定分級 Indeterminate grade（G2）</b>', '→ 依「其他所有直腸腫瘤」流程'));
     h = h.replace('id="nt_s3i"', 'id="nt_s3i" class="hidden"');
 
-    // ── 其他所有直腸腫瘤分支
+    // 其他所有直腸腫瘤子分支
     h += connH('nt_c2o');
-    h += step('nt_s2o', '2', '腫瘤大小與淋巴結（其他所有直腸腫瘤，NET-1 FIRST-LINE TREATMENT）',
+    h += step('nt_s2o', '3', '腫瘤大小與淋巴結（其他所有直腸腫瘤，NET-1 FIRST-LINE TREATMENT）',
       opt('size', 'lt2', '<b>&lt;2 cm</b>', '→ 經肛門或內視鏡切除（如可行）') +
       opt('size', 'gt2', '<b>&gt;2 cm 或淋巴結陽性</b> &gt;2 cm or node positive', '→ 低前位切除／腹會陰切除／（選擇性）化放療'),
       evalHtml());
     h = h.replace('id="nt_s2o"', 'id="nt_s2o" class="hidden"');
 
-    // 建議處置 + 追蹤
     h += '<div class="flow-rec rec-idle" id="nt_rec"><div class="rec-label">建議處置 Recommendation</div>' +
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="nt_fu"></div>';
+    h += '</div>'; // nt_rectal
+
+    // ── 其他部位分支（系統性治療整理）
+    h += connH('nt_cother');
+    h += '<div class="flow-rec rec-idle hidden" id="nt_other_rec"><div class="rec-label">建議處置 · 其他部位 GEP-NET</div>' +
+      '<div class="rec-title">請於步驟 1 選擇原發部位</div></div>';
 
     h += '<div class="flow-reset"><button class="btn-reset" onclick="ntReset()">重置</button></div>';
     h += '</div>'; // ntPath
     return h;
+  }
+
+  /* ---------- 胰臟分支：注入並初始化 pnet 流程 ---------- */
+  function ensurePanc() {
+    var host = document.getElementById('nt_panc');
+    if (!host) return;
+    if (!pancInjected && typeof pnetPathwayHTML === 'function') {
+      host.innerHTML = pnetPathwayHTML(true);   // embed 模式：無開場、無自己的重置鍵
+      pancInjected = true;
+      if (typeof initPnetPathway === 'function') initPnetPathway();
+    }
   }
 
   /* ---------- 互動 helpers ---------- */
@@ -174,7 +204,7 @@
     } else { // advanced
       h = '<div class="fu-label">追蹤 Follow-up</div><ul class="fu-list">' +
         '<li>依腫瘤分級、部位與治療方式，以影像（多相位 CT／MRI）與生化標記定期追蹤。</li>' +
-        '<li><b>胰臟 NET</b>之監測建議見「胰臟神經內分泌腫瘤（pNET）」條目（PanNET-11）。</li>' +
+        '<li><b>胰臟 NET</b>之監測建議見<b>步驟 1 選「胰臟」</b>之 PanNET 流程（PanNET-11）。</li>' +
         '</ul>';
     }
     el.innerHTML = h;
@@ -188,36 +218,53 @@
   /* ---------- 主渲染 ---------- */
   function ntRender() {
     var s = ntSt;
-    var inc = s.setting === 'inc', other = s.setting === 'other';
+    var isPanc = s.site === 'panc', isRectal = s.site === 'rectal', isOther = s.site === 'other';
 
+    // 胰臟分支
+    ntShow('nt_cpanc', isPanc); ntShow('nt_panc', isPanc);
+    if (isPanc) ensurePanc();
+
+    // 直腸分支
+    ntShow('nt_crectal', isRectal); ntShow('nt_rectal', isRectal);
+    var inc = isRectal && s.rmode === 'inc', other = isRectal && s.rmode === 'other';
     ntShow('nt_c2i', inc); ntShow('nt_s2i', inc);
     var showGrade = inc && s.margin === 'indet';
     ntShow('nt_c3i', showGrade); ntShow('nt_s3i', showGrade);
-
     ntShow('nt_c2o', other); ntShow('nt_s2o', other);
+    // 直腸之建議處置與追蹤僅於直腸分支顯示
+    ntShow('nt_rec', isRectal);
+    var fu = document.getElementById('nt_fu');
+    if (fu && !isRectal) { fu.classList.add('hidden'); fu.innerHTML = ''; }
+
+    // 其他部位分支
+    ntShow('nt_cother', isOther); ntShow('nt_other_rec', isOther);
 
     renderRec();
   }
 
+  function renderOtherRec() {
+    ulRec('nt_other_rec', 'rec-nonop', '其他部位 GEP-NET（胃／十二指腸／空腸-迴腸／闌尾／結腸）→ 手術原則 ＋ 系統性治療', [
+      '<b>侷限性</b>：<b>手術切除 + 區域淋巴結廓清</b>；小病灶（&lt;2cm、無功能、G1）可考慮觀察或摘除；原發灶切除即使已有肝轉移仍常建議（減積）。',
+      '<b>進展性／轉移性</b>：依分化程度、分級、SSTR 影像與腫瘤負荷選擇——SSA → PRRT → 標靶（everolimus）／化療（CAPTEM）；NEC 採 platinum + etoposide。完整選單見下方。',
+      '<b>分期</b>：各部位之 AJCC v9 分期請見「分期」分頁（依部位選擇）。'
+    ], '跨部位 GEP-NET 系統治療整理（PROMID／CLARINET／NETTER-1／RADIANT-3／Sunitinib／CAPTEM）。胰臟 NET 之完整流程請於步驟 1 選「胰臟」。',
+      systemicPanel());
+  }
+
   function renderRec() {
     var s = ntSt;
-    if (!s.setting) { idleRec('請選擇步驟 1（臨床情境）'); return; }
+    if (!s.site) { idleRec('請選擇步驟 1（原發部位）'); return; }
 
-    /* ===== 進展性／轉移性 GEP-NET ===== */
-    if (s.setting === 'adv') {
-      result('rec-nonop', '進展性／轉移性 GEP-NET → 系統性治療（跨部位整理）', [
-        '<b>此分支非 NET-1 內容</b>，為跨部位 GEP-NET 之系統性治療整理。',
-        '<b>治療依分化程度、分級、SSTR 影像與腫瘤負荷選擇</b>：SSA → PRRT → 標靶（everolimus／sunitinib）／化療（CAPTEM）；' +
-        'NEC 則採 platinum + etoposide。完整選單見下方。',
-        '<b>胰臟 NET（PanNET）之完整互動流程與分期請改用「胰臟神經內分泌腫瘤（pNET）」條目。</b>'
-      ], '本區為跨部位 GEP-NET 系統治療整理（PROMID／CLARINET／NETTER-1／RADIANT-3／Sunitinib／CAPTEM）；胰臟 NET 見 pNET 條目。',
-        'advanced', systemicPanel());
-      return;
-    }
+    // 胰臟分支由 pnet 模組自行渲染（pn_rec）；其他部位分支
+    if (s.site === 'panc') { idleRec('胰臟 PanNET 流程如上'); return; }
+    if (s.site === 'other') { renderOtherRec(); return; }
+
+    // ===== 直腸 NET（NET-1）=====
+    if (!s.rmode) { idleRec('請選擇步驟 2（直腸 NET 情境）'); return; }
 
     /* ===== 小型偶發、已完整切除（<1cm）===== */
-    if (s.setting === 'inc') {
-      if (!s.margin) { idleRec('請選擇步驟 2（切緣）'); return; }
+    if (s.rmode === 'inc') {
+      if (!s.margin) { idleRec('請選擇步驟 3（切緣）'); return; }
       if (s.margin === 'neg') {
         result('rec-elective', '小型偶發、已完整切除 · <b>切緣陰性</b> → 無需額外追蹤', [
           '<b>切緣陰性（Negative margin）</b> → <b>No additional follow-up required</b>（無需額外追蹤）。',
@@ -227,13 +274,13 @@
         return;
       }
       // indeterminate margins → grade
-      if (!s.grade) { idleRec('請選擇步驟 3（分級）'); return; }
+      if (!s.grade) { idleRec('請選擇步驟 4（分級）'); return; }
       if (s.grade === 'g1') {
         result('rec-elective', '切緣不確定 · <b>低惡性度（G1）</b> → 6–12 個月內視鏡評估殘存病灶', [
           '<b>Endoscopy at 6–12 mo to assess for residual disease</b>（6–12 個月內視鏡評估殘存病灶）。',
           '<b>陰性（Negative）</b> → <b>無需額外追蹤</b>。',
           '<b>陽性或中等分級（Positive or intermediate grade）</b> → 依「<b>其他所有直腸腫瘤</b>」流程處置' +
-          '（請於<b>步驟 1</b> 改選「其他所有直腸腫瘤」）。'
+          '（請於<b>步驟 2</b> 改選「其他所有直腸腫瘤」）。'
         ], 'NET-1：Indeterminate margins → Low grade (G1) → Endoscopy at 6–12 mo；Negative → no follow-up；Positive or intermediate grade → follow pathway for all other rectal tumors。' + '｜' + cat2A,
           'none');
         return;
@@ -241,7 +288,7 @@
       // g2 indeterminate grade
       result('rec-elective', '切緣不確定 · <b>不確定分級（G2）</b> → 依「其他所有直腸腫瘤」流程', [
         '<b>Indeterminate grade (G2)</b> → 直接<b>依「其他所有直腸腫瘤」流程處置</b>' +
-        '（請於<b>步驟 1</b> 改選「其他所有直腸腫瘤」以取得依大小之切除建議）。',
+        '（請於<b>步驟 2</b> 改選「其他所有直腸腫瘤」以取得依大小之切除建議）。',
         '相較於 G1（可先內視鏡追蹤），<b>G2 不採觀察路徑</b>，直接進入正式評估與切除決策。'
       ], 'NET-1：Indeterminate margins → Indeterminate grade (G2) → follow pathway below for all other rectal tumors。' + '｜' + cat2A,
         null);
@@ -249,7 +296,7 @@
     }
 
     /* ===== 其他所有直腸腫瘤 ===== */
-    if (!s.size) { idleRec('請選擇步驟 2（腫瘤大小與淋巴結）'); return; }
+    if (!s.size) { idleRec('請選擇步驟 3（腫瘤大小與淋巴結）'); return; }
     if (s.size === 'lt2') {
       result('rec-elective', '其他直腸腫瘤 · <b>&lt;2 cm</b> → 經肛門或內視鏡切除', [
         '<b>Resection（transanal or endoscopic excision, if possible）</b>——經肛門或內視鏡切除（如可行）。',
@@ -273,9 +320,13 @@
   function ntPick(key, val, btn) {
     ntSel(btn);
     var s = ntSt;
-    if (key === 'setting') {
-      s.setting = val;
-      s.margin = s.grade = s.size = null;
+    if (key === 'site') {
+      s.site = val;
+      s.rmode = s.margin = s.grade = s.size = null;
+      ntClearSel(['nt_s2r', 'nt_s2i', 'nt_s3i', 'nt_s2o']);
+      if (val !== 'panc' && typeof pnReset === 'function' && pancInjected) pnReset();  // 離開胰臟時歸零其子流程
+    } else if (key === 'rmode') {
+      s.rmode = val; s.margin = s.grade = s.size = null;
       ntClearSel(['nt_s2i', 'nt_s3i', 'nt_s2o']);
     } else if (key === 'margin') {
       s.margin = val; s.grade = null;
@@ -294,10 +345,14 @@
     if (root) root.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
     var fu = document.getElementById('nt_fu');
     if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
+    if (typeof pnReset === 'function' && pancInjected) pnReset();  // 一併歸零胰臟子流程
     ntRender();
   }
 
-  function initNetPathway() { ntReset(); }
+  function initNetPathway() {
+    pancInjected = false;   // switchTab 每次重建 nt_panc（空），須重設旗標讓 ensurePanc 重新注入
+    ntReset();
+  }
 
   // 匯出
   global.netPathwayHTML = netPathwayHTML;

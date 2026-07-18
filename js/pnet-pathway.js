@@ -252,13 +252,19 @@
   }
 
   /* ---------- 版面 HTML ---------- */
-  function pnetPathwayHTML() {
+  function pnetPathwayHTML(embed) {
     var h = '';
-    h += '<p class="onc-note">依 <b>台大醫院胰臟神經內分泌腫瘤診療指引 版次 02（2026/06/16）</b>' +
-      '（文件編號 50710-2-000048；Source: NCCN Guidelines <b>Version 3.2025</b>；PanNET-1～13、WDG3-1～4、NE-H）之互動決策流程。' +
-      '<b>本流程僅適用於<u>分化良好</u>之胰臟 NET（G1／G2 與 WD G3）</b>——' +
-      '分化差之<b>神經內分泌癌（NEC）</b>與<b>混合型（MiNEN）</b>不適用，須改用該部位癌症之處置。' +
-      '<b>本指引各處方多以 or 並列，且明載「無資料可指引全身性治療之排序」。</b></p>';
+    if (!embed) {
+      h += '<p class="onc-note">依 <b>台大醫院胰臟神經內分泌腫瘤診療指引 版次 02（2026/06/16）</b>' +
+        '（文件編號 50710-2-000048；Source: NCCN Guidelines <b>Version 3.2025</b>；PanNET-1～13、WDG3-1～4、NE-H）之互動決策流程。' +
+        '<b>本流程僅適用於<u>分化良好</u>之胰臟 NET（G1／G2 與 WD G3）</b>——' +
+        '分化差之<b>神經內分泌癌（NEC）</b>與<b>混合型（MiNEN）</b>不適用，須改用該部位癌症之處置。' +
+        '<b>本指引各處方多以 or 並列，且明載「無資料可指引全身性治療之排序」。</b></p>';
+    } else {
+      // 嵌入於「神經內分泌瘤（NET）」條目之胰臟分支時的精簡說明（開場與重置鍵由 NET 統一提供）
+      h += '<div class="note"><b>胰臟 NET（PanNET）之完整流程</b>——依台大胰臟神經內分泌腫瘤診療指引 版次 02（PanNET-1～13、WDG3-1～4、NE-H；Source: NCCN v3.2025）。' +
+        '<b>僅適用於分化良好之胰臟 NET（G1／G2 與 WD G3）</b>；NEC 與 MiNEN 不適用。</div>';
+    }
     h += '<div class="onc-path" id="pnPath">';
 
     // Step 1 — 分化與分級
@@ -353,7 +359,8 @@
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="pn_fu"></div>';
 
-    h += '<div class="flow-reset"><button class="btn-reset" onclick="pnReset()">重置</button></div>';
+    // 嵌入模式下不放自己的重置鍵（由外層 NET 統一提供）
+    if (!embed) h += '<div class="flow-reset"><button class="btn-reset" onclick="pnReset()">重置</button></div>';
     h += '</div>'; // pnPath
     return h;
   }
