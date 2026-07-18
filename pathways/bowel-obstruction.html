@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腸阻塞處置決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-bo-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸阻塞處置決策</h1><div class="sub">Bowel Obstruction · 病因分流 + 立即手術指標（WSES / ASCRS / MASCC）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-bo-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>立即手術指標、NOM 與各病因定義 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：</b>先以影像／病史確定<b>病因</b>（不同病因的術式與非手術選項完全不同），再判斷是否存在<b>立即手術指標</b>；無立即手術指標者才進入該病因專屬的非手術／擇期流程。<br><br>
+      <b>立即手術指標（紅旗，任一即成立）：</b><br>
+      ・臨床：腹膜炎徵象、血行動力學不穩、臨床持續惡化。<br>
+      ・CT：閉環 (closed loop)、腸缺血 (bowel ischemia)、腹內游離液體 (free fluid)。<br>
+      → 此三者同時是 ASBO 非手術治療 (NOM) 的<b>絕對禁忌</b>（腹膜炎／絞窄／腸缺血）。<br><br>
+      <b>影像順序（ASBO／大腸癌阻塞共通）：</b>CT 為首選（診斷有疑慮或懷疑 NOM 禁忌時尤然，並可同時分期）→ 水溶性顯影劑檢查（診斷已確定且無立即手術跡象時足夠）→ US／MRI（孕婦或無 CT 之情境）→ 腹部 X 光（輔助價值有限，敏感度約 70%）。<br>
+      最低實驗室檢查：CBC、lactate、電解質、CRP、BUN/Cr。CRP &gt;75 mg/L、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度／特異度均低。<br><br>
+      <b>ASBO 非手術治療 (NOM) 內容：</b>禁食 (NPO)、鼻胃管或長腸管減壓、靜脈輸液與電解質校正、營養支持、預防吸入。<br>
+      ・<b>水溶性顯影劑 (Gastrografin)</b> 兼具診斷與治療角色：給藥後 <b>24 小時</b>腹部 X 光顯影劑仍未到達大腸 → 高度預示 NOM 失敗，考慮手術。<br>
+      ・<b>NOM 試驗安全上限為 72 小時。</b>沾黏佔小腸阻塞病因約 60%；NOM 成功率 70–90%、手術率 20–30%、每次住院死亡率約 3%。<br>
+      ・復發率：非手術 1 年 12%／5 年 20%；手術 1 年 8%／5 年 16%。<br>
+      ・腹腔鏡有利預測因子：既往剖腹 ≤2 次、既往手術為闌尾切除、無正中線剖腹切口、單一沾黏帶。腸損傷率 6.3–26.9%，腸切除率腹腔鏡 53.5% vs 開腹 43.4%，須慎選並準備轉開腹。<br>
+      ・特殊族群：糖尿病（手術延遲 &gt;24 小時，AKI 7.5%、MI 4.8% 風險上升）；孕婦（NOM 失敗率達 94%、胎兒流失約 17%、母體死亡約 2%）；年輕／兒科（終生沾黏併發症風險最高，最能自沾黏預防獲益）。<br><br>
+      <b>大腸癌阻塞（部位定義）：</b>左側 OLCC＝遠端橫結腸至肛門（75% 位於脾曲遠端，最常見為乙狀結腸）；右側 ORCC＝盲腸至近端橫結腸；腹膜外直腸癌另成一類。<br>
+      ・手術風險分層（ACPGBI 預測因子）：年齡、ASA 分級、手術急迫性、Dukes' 分期。<br>
+      ・<b>Damage control 觸發條件（任一即視為不穩定）：</b>pH &lt;7.2、核心體溫 &lt;35°C、base excess &lt;−8、凝血功能異常、sepsis／septic shock（含需 inotropic support）。<br>
+      ・重要提醒：Hartmann 造口高達 <b>90%</b> 因輔助治療或疾病進展而未能還原；一期吻合由大腸直腸專科／主治醫師執行，滲漏與死亡率較低；SEMS 合併 bevacizumab 穿孔風險上升（12.5% vs 9.0%）。<br><br>
+      <b>嵌頓 vs 絞扼疝氣：</b>嵌頓 (incarcerated)＝疝內容物無法回納，可併發腸阻塞；絞扼 (strangulated)＝血流受阻，需緊急手術。絞扼預測指標：SIRS（尤其合併 guarding）、lactate ≥2.0 mmol/L（預測腸壁不活）、CPK、D-dimer、contrast-enhanced CT 腸壁增強減弱（最顯著獨立預測因子，sensitivity 56%、specificity 94%）。<br><br>
+      <b>ACPO（Ogilvie 症候群）：</b>大腸急性擴張但<b>無機械性阻塞病灶</b>，屬功能性阻塞，須先與扭轉／腫瘤等機械性病因鑑別。<br><br>
+      <b>證據分級系統（各病因使用不同系統，請分別解讀）：</b><br>
+      ・<b>Oxford 2011（LoE 1–5／GoR A–D）</b>：ASBO、OLCC、ORCC、直腸癌阻塞。LoE 1 最高（RCT／統合分析）、2 世代研究、3 病例對照／回溯、4 病例系列／專家、5 機轉推論；GoR A 強、B 中等、C 弱、D 極弱。<br>
+      ・<b>GRADE（1/2 + A/B/C）</b>：大腸扭轉、ACPO、複雜性疝氣。1＝強建議、2＝弱建議；A 高品質、B 中品質、C 低／極低品質證據。<br>
+      ・<b>MASCC（LoE I–V）</b>：惡性腸阻塞 MBO。I 統合分析／多個 RCT、II ≥1 個設計良好之 RCT、III 設計良好之非隨機試驗、IV 設計良好之觀察性／多中心研究、V 病例報告／專家意見。<br><br>
+      <b>※ 資料來源註記：</b>OLCC／ORCC／直腸癌與扭轉／ACPO／疝氣／MBO 之分級為原文所載。<b>ASBO 各項建議係由原文敘述整理，其 Table 5 字母分級未經機器驗證</b>，臨床部署前請對照原始 PDF 確認。另 ESGE 於 2020 年更新大腸支架指引，對 SEMS 作為銜接手術 (BTS) 的立場較 WSES 2017 所引用之 2014 版更為正面；需內視鏡觀點時建議雙來源查證。
+    </div>
+  </details>
+
+  <div class="flow-step" id="bo_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">阻塞病因為何？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('cause','asbo',this)">沾黏性小腸阻塞 ASBO<span class="fo-sub">既往腹部手術史；佔小腸阻塞病因約 60%</span></button>
+      <button class="flow-opt" onclick="boPick('cause','crc',this)">大腸／直腸癌阻塞<span class="fo-sub">CT 或大腸鏡證實之惡性阻塞（下一步選擇部位）</span></button>
+      <button class="flow-opt" onclick="boPick('cause','volv',this)">大腸扭轉 Volvulus<span class="fo-sub">CT（可加 rectal contrast）確診；乙狀結腸或盲腸</span></button>
+      <button class="flow-opt" onclick="boPick('cause','acpo',this)">急性大腸假性阻塞 ACPO<span class="fo-sub">大腸急性擴張但無機械性阻塞病灶（Ogilvie 症候群）</span></button>
+      <button class="flow-opt" onclick="boPick('cause','hernia',this)">嵌頓／絞扼性腹壁疝氣<span class="fo-sub">疝內容物無法回納並造成機械性阻塞</span></button>
+      <button class="flow-opt" onclick="boPick('cause','mbo',this)">惡性腸阻塞 MBO（晚期癌症、緩和）<span class="fo-sub">多屬 inoperable；以症狀控制與生活品質為核心</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">ACPO 為功能性阻塞，選擇前須先以影像排除機械性病灶。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="bo_c1b">↓</div>
+  <div class="flow-step hidden" id="bo_s1b_crc">
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">惡性阻塞部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('site','left',this)">左側 OLCC<span class="fo-sub">遠端橫結腸至肛門；75% 位於脾曲遠端</span></button>
+      <button class="flow-opt" onclick="boPick('site','right',this)">右側 ORCC<span class="fo-sub">盲腸至近端橫結腸</span></button>
+      <button class="flow-opt" onclick="boPick('site','rectal',this)">腹膜外直腸癌<span class="fo-sub">阻塞幾乎必然代表局部晚期疾病</span></button>
+    </div>
+  </div>
+  <div class="flow-step hidden" id="bo_s1b_volv">
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">扭轉部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('site','sigmoid',this)">乙狀結腸扭轉<span class="fo-sub">可先嘗試內視鏡解扭減壓</span></button>
+      <button class="flow-opt" onclick="boPick('site','cecal',this)">盲腸扭轉<span class="fo-sub">不建議內視鏡復位</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="bo_c2">↓</div>
+  <div class="flow-step hidden" id="bo_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">是否存在立即手術指標（紅旗）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('red','yes',this)">有（任一項）<span class="fo-sub">腹膜炎徵象／血行動力學不穩／臨床持續惡化<br>CT：閉環 (closed loop)／腸缺血／腹內游離液體</span></button>
+      <button class="flow-opt" onclick="boPick('red','no',this)">無<span class="fo-sub">生命徵象穩定、無腹膜炎、CT 無缺血或閉環徵象</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="bo_rec1">
+    <div class="rec-label">初步分流 Initial triage</div>
+    <div class="rec-title">請先於步驟 1 選擇病因</div>
+  </div>
+
+  <div id="bo_mgmt_section" class="hidden">
+  <div class="home-divider" style="margin:26px 0 18px;">病因專屬處置 Cause-specific management</div>
+
+  <div class="flow-step hidden" id="bo_s3_asbo">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">NOM 與水溶性顯影劑試驗進展？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('mgmt','nom_start',this)">尚未開始／NOM 進行中<span class="fo-sub">未滿 72 小時，顯影劑結果尚未判讀</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','nom_ok',this)">緩解<span class="fo-sub">24 小時內顯影劑到達大腸，症狀與腸道功能改善</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','nom_fail',this)">失敗<span class="fo-sub">24 小時顯影劑未達大腸／NOM 達 72 小時未緩解／臨床惡化</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="bo_s3_crc">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">治療目標與手術風險？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('mgmt','res_low',this)">可切除・手術風險低<span class="fo-sub">以治癒為目標，無其他危險因子</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','res_high',this)">可切除・手術風險高<span class="fo-sub">ACPGBI：高齡、ASA 分級高、Dukes' 分期晚</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','unres',this)">無法切除／緩和為主<span class="fo-sub">遠端轉移廣泛或局部無法切除</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="bo_s3_volv">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">內視鏡解扭結果？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('mgmt','detors_ok',this)">解扭成功、腸壁具活性<span class="fo-sub">成功減壓，內視鏡下未見壞死</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','detors_fail',this)">解扭失敗或見腸壁壞死<span class="fo-sub">無法復位、腸壁不活或穿孔</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="bo_s3_acpo">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">階梯式處置目前進展？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('mgmt','acpo_init',this)">尚未治療<span class="fo-sub">已完成初步評估並排除機械性阻塞</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','acpo_nores',this)">支持治療無效<span class="fo-sub">誘因已矯正但大腸擴張未緩解</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','acpo_neofail',this)">Neostigmine 禁忌或無效<span class="fo-sub">用藥後未緩解，或存在使用禁忌</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','acpo_refract',this)">藥物與內視鏡皆無效<span class="fo-sub">難治性 ACPO</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="bo_s3_mbo">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">可行的介入層級？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="boPick('mgmt','mbo_sems',this)">可內視鏡減壓<span class="fo-sub">大腸阻塞、無穿孔，且院所具 SEMS 置放能力</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','mbo_surg',this)">適合緩和手術<span class="fo-sub">體能狀態與預後可承受造口或繞道</span></button>
+      <button class="flow-opt" onclick="boPick('mgmt','mbo_med',this)">不適合任何介入<span class="fo-sub">以藥物症狀控制為唯一可行方案</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="bo_rec2">
+    <div class="rec-label">病因專屬處置 Cause-specific</div>
+    <div class="rec-title">請完成上方步驟</div>
+  </div>
+  <button class="flow-link hidden" id="bo_hernia_link" onclick="location.href='../pathways/hernia.html'">🔗 開啟「複雜性腹股溝疝氣手術決策」流程（TAXIS／腸道存活／CDC 傷口分類）</button>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="boReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Ten+Broek+RPG%2C+et+al.+Bologna+guidelines+adhesive+small+bowel+obstruction+2017+update.+World+J+Emerg+Surg.+2018%3B13%3A24" target="_blank" rel="noopener" class="ref-link">Ten Broek RPG, et al. Bologna guidelines for ASBO: 2017 update. World J Emerg Surg. 2018;13:24.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2017+WSES+guidelines+on+colon+and+rectal+cancer+emergencies.+World+J+Emerg+Surg.+2018%3B13%3A36" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2017 WSES guidelines on colon and rectal cancer emergencies. World J Emerg Surg. 2018;13:36.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34016826/" target="_blank" rel="noopener" class="ref-link">Alavi K, et al. ASCRS CPG: colonic volvulus and ACPO. Dis Colon Rectum. 2021;64(9):1046-1057.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Birindelli+A%2C+et+al.+2017+update+WSES+guidelines+emergency+repair+complicated+abdominal+wall+hernias.+World+J+Emerg+Surg.+2017%3B12%3A37" target="_blank" rel="noopener" class="ref-link">Birindelli A, et al. 2017 update of the WSES guidelines for emergency repair of complicated abdominal wall hernias. World J Emerg Surg. 2017;12:37.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Davis+MP%2C+et+al.+MASCC+2021+guideline+update+malignant+bowel+obstruction.+Support+Care+Cancer.+2021%3B29%3A8089" target="_blank" rel="noopener" class="ref-link">MASCC 2021 guideline update: medical management of malignant bowel obstruction. Support Care Cancer. 2021;29:8089-8096.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const boSt={cause:null,site:null,red:null,mgmt:null};
+function boPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='cause'){ boSt.cause=val; boSt.site=null; boSt.red=null; boSt.mgmt=null; }
+  else if(key==='site'){ boSt.site=val; boSt.mgmt=null; }
+  else if(key==='red'){ boSt.red=val; boSt.mgmt=null; }
+  else if(key==='mgmt'){ boSt.mgmt=val; }
+  boRender();
+}
+
+const BO_MGMT_STEPS=['bo_s3_asbo','bo_s3_crc','bo_s3_volv','bo_s3_acpo','bo_s3_mbo'];
+
+function boRender(){
+  const c=boSt.cause, s=boSt.site, r=boSt.red, m=boSt.mgmt;
+
+  /* 步驟 1b：僅大腸癌與扭轉需要選部位 */
+  const needSite=(c==='crc'||c==='volv');
+  flowShow('bo_c1b', needSite);
+  flowShow('bo_s1b_crc', c==='crc');
+  flowShow('bo_s1b_volv', c==='volv');
+  if(c!=='crc') flowClearSel('bo_s1b_crc');
+  if(c!=='volv') flowClearSel('bo_s1b_volv');
+
+  /* 步驟 2：病因（與必要之部位）確定後才問紅旗 */
+  const siteReady=(!needSite||!!s);
+  const showRed=(!!c&&siteReady);
+  flowShow('bo_c2', showRed);
+  flowShow('bo_s2', showRed);
+  if(!showRed) flowClearSel('bo_s2');
+
+  boTriageRender();
+
+  /* 步驟 3：僅在無立即手術指標時進入病因專屬流程 */
+  flowShow('bo_mgmt_section', r==='no');
+  const showAsbo =(r==='no'&&c==='asbo');
+  const showCrc  =(r==='no'&&c==='crc'&&s!=='rectal');
+  const showVolv =(r==='no'&&c==='volv'&&s==='sigmoid');
+  const showAcpo =(r==='no'&&c==='acpo');
+  const showMbo  =(r==='no'&&c==='mbo');
+  flowShow('bo_s3_asbo',showAsbo); flowShow('bo_s3_crc',showCrc);
+  flowShow('bo_s3_volv',showVolv); flowShow('bo_s3_acpo',showAcpo);
+  flowShow('bo_s3_mbo',showMbo);
+  const shown={bo_s3_asbo:showAsbo,bo_s3_crc:showCrc,bo_s3_volv:showVolv,bo_s3_acpo:showAcpo,bo_s3_mbo:showMbo};
+  BO_MGMT_STEPS.forEach(function(id){ if(!shown[id]) flowClearSel(id); });
+
+  boMgmtRender();
+  flowShow('bo_hernia_link', r==='no'&&c==='hernia');
+}
+
+/* ── 初步分流：立即手術指標 ───────────────────────────── */
+function boTriageRender(){
+  const c=boSt.cause, s=boSt.site, r=boSt.red;
+  let cls='rec-idle', title='請先於步驟 1 選擇病因', detail='', note='';
+  if(c&&(c==='crc'||c==='volv')&&!s){ title='請於步驟 1b 選擇部位'; }
+  else if(c&&!r){ title='請於步驟 2 判斷是否存在立即手術指標'; }
+  else if(r==='yes'){
+    cls='rec-urgent'; title='立即手術／緊急介入 — 不可再嘗試非手術治療';
+    let op='';
+    if(c==='asbo') op='<li><b>緊急剖腹：沾黏鬆解 ± 腸切除。</b>腹膜炎、絞窄或腸缺血為 NOM 的絕對禁忌，不再進行顯影劑試驗。</li>';
+    else if(c==='crc'&&s==='left') op='<li><b>Hartmann 手術（HP）為首選</b>；HP 優於單純結腸造口（3.1，LoE 2／GoR B）。</li><li>極度不穩定或符合 damage control 條件（pH &lt;7.2、體溫 &lt;35°C、BE &lt;−8、凝血功能異常、sepsis／septic shock）者，以環狀結腸造口減壓，復甦與分期後再定治療（3.1）。</li><li>合併盲腸撕裂／穿孔、腸缺血或同時性右側大腸癌時才做全／次全大腸切除，否則節段切除即可（3.4，LoE 2／GoR B）。</li>';
+    else if(c==='crc'&&s==='right') op='<li><b>右側大腸切除 + 末端迴腸造口為首選</b>（5.3，LoE 2／GoR C）。</li><li>極度不穩定者以環狀迴腸造口處理；需 open abdomen 時可延後造口、腸道先以 stapler 留置（5.3）。</li>';
+    else if(c==='crc'&&s==='rectal') op='<li><b>避免切除原發腫瘤</b>；以造口解除阻塞（3.10，LoE 1／GoR A）。</li><li>阻塞性直腸癌幾乎必然為局部晚期，需保留完整 neoadjuvant chemoradiotherapy 的機會。</li><li>右側環狀橫結腸造口為最廣泛採用之術式；不建議 SEMS。</li>';
+    else if(c==='volv'&&s==='sigmoid') op='<li><b>緊急乙狀結腸切除</b>（SV-2，GRADE 1C）：腸壁不活或穿孔時不應嘗試內視鏡解扭。</li>';
+    else if(c==='volv'&&s==='cecal') op='<li><b>緊急節段切除</b>（CV-1，GRADE 1C）：盲腸扭轉的首選治療即為切除，且不建議內視鏡復位（CV-2，1C）。</li>';
+    else if(c==='acpo') op='<li><b>手術治療</b>：ACPO 併發大腸缺血或穿孔時建議手術（ACPO-5，GRADE 1C）。</li><li>此時不再進行 neostigmine 或內視鏡減壓。</li>';
+    else if(c==='hernia') op='<li><b>立即緊急疝氣修補</b>（HER-T1，GRADE 1C）：延遲 &gt;24 小時與死亡率上升相關。</li><li>疑似腸絞扼者偏好 open pre-peritoneal 途徑；需腸切除或腹膜炎時應全身麻醉（HER-A1）。</li><li>嚴重 sepsis／septic shock 者建議 open abdomen 以防 abdominal compartment syndrome，並可術中測腹內壓（HER-U1，2C）。</li><li>修補方式依 CDC 傷口分類決定，詳見下方疝氣專屬流程。</li>';
+    else if(c==='mbo') op='<li>穿孔或腹膜炎時<b>不適用任何減壓方式（SEMS／減壓管）</b>（MBO-4）。</li><li>是否手術須依體能狀態、預後與病人意願審慎共同決策：晚期癌症接受 MBO 緩和手術者併發症風險高（MBO-1，LoE IV）。</li>';
+    detail='<li>紅旗成立：腹膜炎徵象／血行動力學不穩／臨床持續惡化，或 CT 見閉環、腸缺血、腹內游離液體。</li>'+op+'<li>同時進行液體復甦、廣效抗生素與器官功能支持。</li>';
+    note='WSES／ASCRS：腹膜炎、絞窄與腸缺血為非手術治療之絕對禁忌。';
+  } else if(r==='no'){
+    cls='rec-blue'; title='無立即手術指標 — 先復甦與評估，進入下方病因專屬流程';
+    detail='<li>禁食 (NPO)、鼻胃管減壓、靜脈輸液與電解質校正。</li><li>最低實驗室檢查：CBC、lactate、電解質、CRP、BUN/Cr。</li><li>影像以 CT 為首選（可同時確認病因、定位並分期）。</li><li>持續重新評估：一旦出現腹膜炎、不穩定或臨床惡化，即回到上方緊急手術路徑。</li>';
+    note='CRP &gt;75 mg/L、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度與特異度均低，不可單獨作為排除依據。';
+  }
+  flowRec('bo_rec1',cls,title,detail,note);
+}
+
+/* ── 病因專屬處置 ────────────────────────────────────── */
+function boMgmtRender(){
+  const c=boSt.cause, s=boSt.site, m=boSt.mgmt;
+  let cls='rec-idle', title='請完成上方步驟', detail='', note='';
+
+  if(boSt.red!=='no'){ flowRec('bo_rec2',cls,title,detail,note); return; }
+
+  if(c==='asbo'){
+    if(m==='nom_start'){ cls='rec-blue'; title='非手術治療 (NOM) 試驗 + 水溶性顯影劑';
+      detail='<li>除腹膜炎、絞窄或腸缺血外，所有 ASBO 病人皆應嘗試 NOM（ASBO-MX-01）。</li><li>NOM 內容：禁食、鼻胃管或長腸管減壓、靜脈輸液與電解質校正、營養支持、預防吸入。</li><li>給予水溶性顯影劑 (Gastrografin)，兼具診斷與治療角色，並於 <b>24 小時</b>拍腹部 X 光判讀是否到達大腸。</li><li>NOM 試驗以 <b>72 小時</b>為安全上限（ASBO-MX-02）。</li>';
+      note='WSES Bologna 2017 update：NOM 成功率 70–90%。糖尿病病人手術延遲 &gt;24 小時 AKI／MI 風險上升；孕婦 NOM 失敗率達 94%，兩者宜更早介入。'; }
+    else if(m==='nom_ok'){ cls='rec-blue'; title='NOM 成功 — 繼續保守治療、恢復進食後出院';
+      detail='<li>顯影劑於 24 小時內到達大腸，預示 NOM 可望成功；逐步恢復飲食並移除鼻胃管。</li><li>告知復發風險：非手術 1 年 12%、5 年 20%。</li><li>日後手術請採微創術式並考慮沾黏屏障（hyaluronate carboxymethylcellulose，如 Seprafilm；大腸直腸手術後因 ASBO 再手術 RR 0.49，95% CI 0.28–0.88），年輕病人終生獲益最大（ASBO-PREV-01）。</li>';
+      note='WSES Bologna 2017 update。'; }
+    else if(m==='nom_fail'){ cls='rec-elective'; title='手術治療：沾黏鬆解 ± 腸切除';
+      detail='<li>給藥後 24 小時顯影劑仍未到達大腸，高度預示 NOM 失敗 → 手術（ASBO-DX-02）。</li><li>NOM 已達 72 小時上限而未緩解、或期間臨床惡化者，不應再延長試驗（ASBO-MX-02）。</li><li>術式：腹腔鏡僅對特選單純病例可能有益（既往剖腹 ≤2 次、既往為闌尾切除、無正中線切口、單一沾黏帶），但腸損傷率 6.3–26.9%，須慎選並準備轉開腹（ASBO-MX-03）。</li>';
+      note='WSES Bologna 2017 update：ASBO 手術率約 20–30%，每次住院死亡率約 3%。'; }
+    else { title='請於步驟 3 選擇 NOM 進展'; }
+  }
+
+  else if(c==='crc'&&s==='left'){
+    if(m==='res_low'){ cls='rec-elective'; title='一期切除吻合 (RPA)';
+      detail='<li>單純惡性左側阻塞且無其他危險因子時，RPA 為首選（3.2，LoE 3／GoR B）；由大腸直腸專科／主治醫師執行者滲漏與死亡率較低。</li><li>無證據顯示保護性造口能降低吻合口滲漏或其嚴重度（3.3，LoE 4／GoR C）。</li><li>節段切除即可；僅在盲腸撕裂／穿孔、腸缺血或同時性右側大腸癌時才行全／次全大腸切除（3.4，LoE 2／GoR B）。</li><li>術中灌洗 (ICI) 與徒手減壓 (MD) 死亡／併發症率相似，MD 較快較簡單，依術者經驗選擇（3.5，LoE 2／GoR B）。</li><li>急診情境不建議常規使用腹腔鏡，僅保留給特選有利病例與專門中心（3.6，LoE 4／GoR C）。</li>';
+      note='WSES 2017 colon & rectal cancer emergencies。'; }
+    else if(m==='res_high'){ cls='rec-elective'; title='Hartmann 手術（HP）— 或以 SEMS／經肛減壓管作為銜接手術';
+      detail='<li>高手術風險病人以 HP 較佳（3.2，LoE 3／GoR B）；HP 優於單純結腸造口（3.1，LoE 2／GoR B）。</li><li>提醒：HP 造口高達 <b>90%</b> 因輔助治療或疾病進展而未能還原，術前應與病人討論。</li><li>SEMS 作為銜接手術 (BTS) 短期結果優於直接急診手術、造口率顯著較低（3.9a，LoE 1／GoR A），但長期結果證據不足，<b>尚非 OLCC 首選</b>，僅為特選病例與三級中心的合理選項（3.9b，LoE 1／GoR B）。</li><li>經肛減壓管可作為高風險 OLCC 的有效替代 BTS（3.7，LoE 4／GoR C）。</li>';
+      note='WSES 2017。ESGE 2020 對 SEMS 作為 BTS 的立場較本指引所引用之 2014 版更為正面，必要時雙來源查證。'; }
+    else if(m==='unres'){ cls='rec-blue'; title='緩和：SEMS 為首選（具置放能力之院所）';
+      detail='<li>具置放能力的院所，緩和性治療應優先 SEMS（死亡／併發症與造口相似但住院較短）（3.8a，LoE 1／GoR A）。</li><li>使用或預計使用 <b>bevacizumab</b> 者應考慮 SEMS 以外方案（穿孔風險 12.5% vs 9.0%），並讓腫瘤科醫師參與決策（3.8b，LoE 3／GoR B）。</li><li>無法切除且 SEMS 不可行，或病人太虛弱不適合大手術／全身麻醉者 → 環狀結腸造口（3.1）。</li>';
+      note='WSES 2017。'; }
+    else { title='請於步驟 3 選擇治療目標與手術風險'; }
+  }
+
+  else if(c==='crc'&&s==='right'){
+    if(m==='res_low'){ cls='rec-elective'; title='右側大腸切除併一期迴腸-結腸吻合';
+      detail='<li>右側大腸癌急性阻塞的首選術式（4.1，LoE 2／GoR B）。</li><li>解剖優勢：肝曲較脾曲易游離、小腸活動度高不需額外游離、迴腸-結腸吻合血流供應佳。急診右側切除吻合口滲漏率 0.5–4.6%（擇期 0.5–1.4%），相對可接受。</li><li>右側節段切除極少採用（右結腸短、盲腸常受累）。</li>';
+      note='WSES 2017 colon & rectal cancer emergencies。'; }
+    else if(m==='res_high'){ cls='rec-elective'; title='切除 + 末端迴腸造口併 colonic fistula';
+      detail='<li>判斷一期吻合不安全時的有效替代（4.1，LoE 2／GoR B）。</li><li><b>不建議</b> SEMS 作為 ORCC 的擇期手術銜接（4.3，LoE 4／GoR B；器械到達右側大腸技術困難度高），僅可能是高風險病人的選項。</li>';
+      note='WSES 2017。ORCC 病人通常較年長、局部區域疾病較 OLCC 進展。'; }
+    else if(m==='unres'){ cls='rec-blue'; title='內部繞道（末端迴腸與橫結腸側對側吻合）';
+      detail='<li>無法切除的右側大腸癌可行內部繞道，優於環狀迴腸造口；亦可選擇環狀迴腸造口（4.2，LoE 2／GoR B）。</li><li><b>減壓性盲腸造口應廢棄</b>（高失效與併發症率）；僅極少數虛弱病人可考慮經皮技術（4.2）。</li><li>緩和情境下，SEMS 可作為急診手術的替代（4.4，LoE 3／GoR B）。</li>';
+      note='WSES 2017。'; }
+    else { title='請於步驟 3 選擇治療目標與手術風險'; }
+  }
+
+  else if(c==='crc'&&s==='rectal'){
+    cls='rec-elective'; title='造口解除阻塞、避免切除原發腫瘤（保留 neoadjuvant CRT 機會）';
+    detail='<li>局部晚期直腸癌宜以含 neoadjuvant chemoradiotherapy 的多模式治療；急性阻塞時應避免切除原發腫瘤並製作造口，以利正確分期與更適當的 oncologic 治療（3.10，LoE 1／GoR A）。</li><li>急診術式須能撐過整個 neoadjuvant 療程直到 definitive surgery，且不干擾治療排程。</li><li><b>右側環狀橫結腸造口</b>為最廣泛採用：可保留以保護日後吻合、橫結腸活動度大易於製作、避免傷及 marginal arcade，且不影響左腹（保留日後永久 end colostomy 的位置）。</li><li>環狀迴腸造口<b>僅在不完全阻塞或 ileocaecal valve 通暢時</b>可行；完全阻塞且 valve 功能完整時，結腸造口為必需。</li><li>可預期需 abdominoperineal resection (APR) 者，乙狀結腸端造口為合理替代；全身麻醉高風險者可於局麻＋靜脈鎮靜下經左側皮膚切口製作 trephine 造口。</li><li><b>不建議 SEMS</b>：與低位直腸癌的慢性疼痛、tenesmus 相關，且放化療致腫瘤壞死縮小可能誘發移位／穿孔，危及最終 oncologic 結果。</li>';
+    note='WSES 2017 statement 3.10。急診造口的型別與位置理想上應對應未來 diverting 或 definitive 造口的型別與位置。';
+  }
+
+  else if(c==='volv'&&s==='sigmoid'){
+    if(m==='detors_ok'){ cls='rec-elective'; title='內視鏡解扭成功 → 同次住院乙狀結腸切除';
+      detail='<li>無血行動力學不穩、腹膜炎或穿孔者，應先以下消化道內視鏡評估乙狀結腸活性、解扭並減壓（SV-1，GRADE 1C）。</li><li>成功解扭後應<b>於同次住院</b>行乙狀結腸切除以預防復發（SV-3，1C）。</li><li>單純解扭、sigmoidopexy、mesosigmoidoplasty 等非切除術式在預防復發上劣於乙狀結腸切除（SV-4，2C）。</li><li>手術風險過高的特選病人可考慮內視鏡固定乙狀結腸（SV-5，2C）。</li>';
+      note='ASCRS 2021 CPG：colonic volvulus & ACPO。'; }
+    else if(m==='detors_fail'){ cls='rec-urgent'; title='緊急乙狀結腸切除';
+      detail='<li>內視鏡解扭失敗、或腸壁不活／穿孔時，建議緊急乙狀結腸切除（SV-2，GRADE 1C）。</li><li>腸壞死或穿孔即代表汙染腹腔，吻合與否依汙染程度、血行動力學狀態與腸壁品質決定。</li>';
+      note='ASCRS 2021 CPG。'; }
+    else { title='請於步驟 3 選擇內視鏡解扭結果'; }
+  }
+
+  else if(c==='volv'&&s==='cecal'){
+    cls='rec-elective'; title='節段切除（盲腸扭轉首選治療）';
+    detail='<li>節段切除為盲腸扭轉的首選治療（CV-1，GRADE 1C）。</li><li><b>一般不建議</b>嘗試以內視鏡復位盲腸扭轉（CV-2，1C）。</li><li>腸壁仍具活性者，非切除術式應僅限於<b>不適合切除</b>的病人（CV-3，2C）。</li>';
+    note='ASCRS 2021 CPG：colonic volvulus & ACPO。';
+  }
+
+  else if(c==='acpo'){
+    if(m==='acpo_init'){ cls='rec-blue'; title='支持性治療（第 1 階）';
+      detail='<li>初步評估應含 focused history 與 physical examination、baseline 實驗室數值與影像，並確認排除機械性阻塞（ACPO-1，GRADE 1C）。</li><li>初始治療為支持性：去除或矯正誘發與延長病程的因素（電解質異常、致病藥物、活動不足、腸道減壓等）（ACPO-2，1C）。</li>';
+      note='ASCRS 2021 CPG。'; }
+    else if(m==='acpo_nores'){ cls='rec-blue'; title='Neostigmine 藥物治療（第 2 階）';
+      detail='<li>支持治療無法緩解時，建議以 neostigmine 藥物治療（ACPO-3，GRADE 1B）。</li><li>給藥期間須持續心電圖監測與備妥 atropine，並確認無使用禁忌。</li>';
+      note='ASCRS 2021 CPG。'; }
+    else if(m==='acpo_neofail'){ cls='rec-blue'; title='內視鏡大腸減壓（第 3 階）';
+      detail='<li>neostigmine 禁忌或無效者，應考慮內視鏡大腸減壓（ACPO-4，GRADE 1B）。</li>';
+      note='ASCRS 2021 CPG。'; }
+    else if(m==='acpo_refract'){ cls='rec-elective'; title='手術治療（第 4 階）';
+      detail='<li>對藥物與內視鏡治療皆無效的難治性 ACPO，建議手術治療（ACPO-5，GRADE 1C）。</li><li>若期間出現大腸缺血或穿孔，即屬立即手術指標，應回到上方緊急路徑。</li>';
+      note='ASCRS 2021 CPG。'; }
+    else { title='請於步驟 3 選擇階梯式處置進展'; }
+  }
+
+  else if(c==='hernia'){
+    cls='rec-elective'; title='嵌頓疝氣修補 — 依 CDC 傷口分類決定修補方式';
+    detail='<li><b>Class I clean</b>（嵌頓、無缺血、無腸切除）：建議合成網片 (synthetic mesh) 修補，較組織修補復發率低且不增加傷口感染（HER-C1，GRADE 1A）。</li><li><b>Class II clean-contaminated</b>（絞扼和／或需腸切除、無明顯腸內容溢出）：可行合成網片修補，不增加 30 天傷口併發症且顯著降低復發率，<b>不論疝缺損大小</b>（HER-C2，1A）。</li><li><b>Class III/IV contaminated–dirty</b>（腸壞死＋腸內容溢出／腹膜炎）：穩定病人缺損小（&lt;3 cm）建議一期縫合；無法直接縫合時可用 biological mesh（交聯與否依缺損大小與汙染程度而定）；若無 biological mesh，可用 polyglactin 網片或 open wound 延遲修補（HER-C3，2C）。</li><li>術式：無絞扼且不預期需腸切除者可用腹腔鏡；有絞扼疑慮則偏好 open pre-peritoneal。自發回納後可用診斷性腹腔鏡評估腸壁活性（HER-L1，2B）。</li><li>麻醉：無腸壞死的緊急腹股溝疝可用局部麻醉（併發症較少，HER-A1，1C）；疑似腸壞死／需腸切除／腹膜炎時應全身麻醉。</li><li>抗生素：class I 短程 prophylaxis；class II–III 48 小時 prophylaxis；class IV 腹膜炎者需抗生素治療 (therapy)（均 2C）。</li>';
+    note='WSES 2017 update：emergency repair of complicated abdominal wall hernias。絞扼預測：SIRS、lactate ≥2.0 mmol/L、CPK、D-dimer、contrast-enhanced CT 腸壁增強減弱（sens 56%／spec 94%）。詳細 TAXIS 與腸道存活分流請見下方連結之疝氣流程。';
+  }
+
+  else if(c==='mbo'){
+    if(m==='mbo_sems'){ cls='rec-blue'; title='SEMS 大腸減壓（偏好之減壓方式）+ 藥物症狀控制';
+      detail='<li>大腸減壓可選 SEMS、減壓管或 ablative 方法；<b>SEMS 成功率高於減壓管</b>而為一般偏好（MBO-4，LoE IV）。</li><li><b>穿孔者不適用任何減壓方式。</b></li><li>併用 octreotide 減少腸胃道分泌與腸絞痛，以改善噁心嘔吐（MBO-2，LoE II）。</li>';
+      note='MASCC 2021 guideline update。診斷 MBO 時即應取得外科意見。'; }
+    else if(m==='mbo_surg'){ cls='rec-elective'; title='緩和手術：造口或繞道（審慎選擇病人）';
+      detail='<li>晚期癌症接受 MBO 緩和手術者<b>併發症風險高</b>，應優先考慮侵襲性較低的介入（MBO-1，LoE IV）。</li><li>近端腸道長度足以維持腸道自主功能（short bowel 風險低），或腹腔內吻合併發症風險過高時，偏好<b>造口</b>；否則可考慮繞道。</li><li>診斷 MBO 時即應取得外科意見，並依預後與病人意願共同決策。</li>';
+      note='MASCC 2021 guideline update。'; }
+    else if(m==='mbo_med'){ cls='rec-blue'; title='藥物症狀控制為主';
+      detail='<li><b>Octreotide</b> 能有效減少腸胃道分泌與腸絞痛，進而減輕噁心與嘔吐（MBO-2，LoE II），為 MASCC／ESMO 首選，可 ± haloperidol 止吐。</li><li><b>Scopolamine (hyoscine) butylbromide</b> 於比較研究所用劑量下效果劣於 octreotide（MBO-3，LoE II）。</li><li>輔助用藥：corticosteroids、haloperidol、olanzapine 依情境選用；<b>完全性阻塞避免使用促動力劑 metoclopramide</b>。</li><li>連續鼻胃管抽吸為不適的介入，僅建議短期使用。</li>';
+      note='MASCC 2021 guideline update；處置以症狀控制與生活品質為核心，而非治癒。'; }
+    else { title='請於步驟 3 選擇可行的介入層級'; }
+  }
+
+  flowRec('bo_rec2',cls,title,detail,note);
+}
+
+function boReset(){
+  boSt.cause=null; boSt.site=null; boSt.red=null; boSt.mgmt=null;
+  document.querySelectorAll('#view-bo-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  boRender();
+}
+boReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
