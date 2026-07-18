@@ -46,6 +46,18 @@
   table.stage td.st-code.sm-s4, table.stage td.st-code.sm-s5,
   table.stage td.st-code.sm-s6, table.stage td.st-code.sm-s7{color:var(--sm-strong-text);}
   table.stage tr:last-child td{border-bottom:none;}
+  /* 多欄分期表（FIGO｜TNM｜定義 對照）：第 2 欄放代碼，以等寬字與定義欄拉開層次，
+     使「分期碼 ↔ TNM 組合」一眼可對，不必在兩張表之間來回找。 */
+  table.stage.stage-map td.st-c1{font-family:var(--mono); font-size:11.5px; color:var(--accent2);
+    white-space:nowrap; width:1%; padding-right:16px; font-weight:600;}
+  table.stage.stage-map th{white-space:nowrap;}
+  /* T／N／M 表之 FIGO 對照欄：沿用分期深淺著色，與矩陣、分期表同一套視覺語言 */
+  table.tnm.tnm-figo td.tf-figo{font-family:var(--mono); font-weight:700; font-size:11.5px;
+    text-align:center; white-space:nowrap; width:1%; padding:5px 9px; border-radius:2px;}
+  table.tnm.tnm-figo td.tf-figo.sm-s4, table.tnm.tnm-figo td.tf-figo.sm-s5,
+  table.tnm.tnm-figo td.tf-figo.sm-s6, table.tnm.tnm-figo td.tf-figo.sm-s7{color:var(--sm-strong-text);}
+  table.tnm.tnm-figo th{font-family:var(--mono); font-size:9.5px; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted-soft); text-align:center; padding:2px 6px; font-weight:400;}
 
   /* 分期矩陣 T×N（如 AJCC 圖表；依分期深淺著色，深／淺色模式皆可讀） */
   :root{ --sm-strong-text:#ffffff; }

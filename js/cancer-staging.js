@@ -147,9 +147,11 @@ function setMatrixVariant(id, key){ MTX_VARIANT[id] = key; switchTab(id, 'stage'
 function renderStage(c){
   var h = '';
   if(c.staging_note) h += '<p class="onc-note">'+c.staging_note+'</p>';
-  h += tnmTable('T — 原發腫瘤', c.t);
-  h += tnmTable('N — 區域淋巴結', c.n);
-  h += tnmTable('M — 遠處轉移', c.m);
+  // tnm_figo_label 存在時，T／N／M 表加一欄對應之 FIGO 期別（列資料第 3 元素）。
+  // 此為 AJCC 手冊本身對婦癌採用的版面（T｜FIGO Stage｜定義），兩套代碼並列才看得出對應。
+  h += tnmTable('T — 原發腫瘤', c.t, c.tnm_figo_label);
+  h += tnmTable('N — 區域淋巴結', c.n, c.tnm_figo_label);
+  h += tnmTable('M — 遠處轉移', c.m, c.tnm_figo_label);
   if(c.matrices && c.matrices.length){
     // 分期依判別軸（年齡／組織型態／部位…）分為多張表
     var key = MTX_VARIANT[c.id] || c.matrices[0].key;
@@ -172,19 +174,40 @@ function renderStage(c){
     h += '<div class="onc-sec-h">'+escapeHtml(c.stages_title || '分期組合 Stage Grouping')+'</div>';
     // 首欄標題可覆寫：stages 也用於非期別之系統（GIST 風險分級、HCC BCLC、STS 之 FNCLCC 分級），
     // 該處硬寫「分期」會與內容矛盾。
-    h += '<table class="stage"><tr><th>'+escapeHtml(c.stages_code_label || '分期')+'</th><th>'+
-         escapeHtml(c.stages_crit_label || '條件')+'</th></tr>';
-    // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
-    // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
+    // stages_cols 存在 → 多欄模式（如 FIGO｜TNM｜定義 對照）；欄數由 stages_cols 決定，
+    // 每列即 [分期碼, 第2欄, 第3欄…]。第 2 欄以等寬字呈現（設計上放 TNM 等代碼）。
+    var cols = c.stages_cols;
     var shaded = 0;
-    c.stages.forEach(function(s){
-      var cls = shadeClass(String(s[0]).replace(/\s/g,''));
-      if(cls !== 'sm-s0') shaded++;
-      h += '<tr><td class="st-code '+cls+'">'+s[0]+'</td>'+
-           '<td>'+(s[1]||'')+(s[2]?'　'+s[2]:'')+'</td></tr>';
-    });
-    h += '</table>';
+    if(cols && cols.length){
+      h += '<table class="stage stage-map"><tr>';
+      cols.forEach(function(t){ h += '<th>'+escapeHtml(t)+'</th>'; });
+      h += '</tr>';
+      c.stages.forEach(function(s){
+        var cls = shadeClass(String(s[0]).replace(/\s/g,''));
+        if(cls !== 'sm-s0') shaded++;
+        h += '<tr><td class="st-code '+cls+'">'+s[0]+'</td>';
+        for(var i = 1; i < cols.length; i++){
+          h += '<td class="st-c'+i+'">'+(s[i] || '')+'</td>';
+        }
+        h += '</tr>';
+      });
+      h += '</table>';
+    } else {
+      h += '<table class="stage"><tr><th>'+escapeHtml(c.stages_code_label || '分期')+'</th><th>'+
+           escapeHtml(c.stages_crit_label || '條件')+'</th></tr>';
+      // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
+      // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
+      c.stages.forEach(function(s){
+        var cls = shadeClass(String(s[0]).replace(/\s/g,''));
+        if(cls !== 'sm-s0') shaded++;
+        h += '<tr><td class="st-code '+cls+'">'+s[0]+'</td>'+
+             '<td>'+(s[1]||'')+(s[2]?'　'+s[2]:'')+'</td></tr>';
+      });
+      h += '</table>';
+    }
     if(shaded) h += '<div class="sm-legend">分期由淺至深：<span><i class="sm-s1"></i>I</span><span><i class="sm-s2"></i>II</span><span><i class="sm-s4"></i>III</span><span><i class="sm-s7"></i>IV</span></div>';
+    // 表下註解：說明這張表該怎麼讀（沿用矩陣的 .sm-m1 樣式，兩者在版面上同一層級）
+    if(c.stages_foot) h += '<div class="sm-m1">'+c.stages_foot+'</div>';
   }
   return h;
 }
@@ -250,10 +273,20 @@ function renderMatrix(mx){
   if(mx.m1) h += '<div class="sm-m1">'+mx.m1+'</div>';
   return h;
 }
-function tnmTable(title, rows){
+/* figoLabel 存在 → 三欄（代碼｜FIGO｜定義），列資料第 3 元素為 FIGO 期別；
+   未提供 figoLabel 或該列無第 3 元素時退回兩欄，故既有癌別不受影響。 */
+function tnmTable(title, rows, figoLabel){
   if(!rows || !rows.length) return '';
-  var h = '<div class="onc-sec-h">'+title+'</div><table class="tnm">';
-  rows.forEach(function(r){ h += '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'; });
+  var withFigo = !!figoLabel && rows.some(function(r){ return r.length > 2; });
+  var h = '<div class="onc-sec-h">'+title+'</div><table class="tnm'+(withFigo?' tnm-figo':'')+'">';
+  if(withFigo){
+    h += '<tr><th></th><th>'+escapeHtml(figoLabel)+'</th><th></th></tr>';
+  }
+  rows.forEach(function(r){
+    h += '<tr><td>'+r[0]+'</td>'+
+         (withFigo ? '<td class="tf-figo '+shadeClass(String(r[2]||'').replace(/\s/g,''))+'">'+(r[2]||'')+'</td>' : '')+
+         '<td>'+r[1]+'</td></tr>';
+  });
   return h + '</table>';
 }
 
