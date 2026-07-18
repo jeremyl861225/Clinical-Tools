@@ -266,7 +266,7 @@
       opt('grade', 'g12', '分化良好 · G1／G2', 'Ki-67 &lt;3%（G1）或 3–20%（G2）→ PanNET-1～13') +
       opt('grade', 'wdg3', '分化良好 · G3（WD G3）', 'Ki-67 &gt;20% <b>但分化良好</b> → WDG3-1～4（<b>≠ NEC</b>）'),
       '<div class="note"><b>AJCC v9（2023）之胰臟 NET 分期表明載適用於「Well-Differentiated Neuroendocrine Tumors of the ' +
-      'Pancreas (<u>NET G1, G2, and G3</u>)」——即 <b>WD G3 與 G1／G2 共用同一張分期表</b>，但<b>治療流程不同</b>' +
+      'Pancreas (<u>NET G1, G2, and G3</u>)」——即 </b><b>WD G3 與 G1／G2 共用同一張分期表</b>，但<b>治療流程不同</b>' +
       '（G1／G2 走 PanNET-1～13；WD G3 走 WDG3-1～4）。<br>' +
       '<b>WDG3-1 之評估（若對分化程度存疑）</b>：<b>考慮以組織病理或分子檢測評估 <u>p53、Rb、p16</u></b>' +
       '——用以區分「分化良好 G3」與「分化差之 NEC」。此外建議 <b>SSTR-PET/CT 或 SSTR-PET/MRI</b>、' +
