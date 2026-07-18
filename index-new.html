@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>臨床工具箱 · 新版首頁（測試）</title>
+<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="./css/index-new.css">
+<meta name="theme-color" content="#234551">
+</head>
+<body>
+<div class="sheet">
+<div class="view active">
+
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Toolbox · New Index (Test)</div>
+      <h1>臨床工具箱</h1>
+      <div class="sub">新版首頁配置測試 — 四大分類方磚，未串接正式站台</div>
+    </div>
+  </div>
+
+  <div class="idx-wrap">
+
+    <!-- 麵包屑 -->
+    <div class="idx-crumb" id="idxCrumb" hidden>
+      <button type="button" onclick="location.hash=''">← 返回首頁</button>
+      <span class="idx-crumb-sep">/</span>
+      <span class="idx-crumb-here" id="idxCrumbHere"></span>
+    </div>
+
+    <!-- ===== 首頁：四大分類 ===== -->
+    <div id="viewHome">
+      <div class="idx-grid">
+
+        <!-- 腹部急診 -->
+        <button class="idx-card" onclick="location.hash='abd'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 13c17 0 24 12 24 28 0 24-9 44-24 48-15-4-24-24-24-48 0-16 7-28 24-28Z"
+                  fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2"/>
+            <path d="M40 42c0-6 5-9 10-9s10 3 10 9c0 5-4 7-9 7s-8 2-8 7 4 8 9 8 10-3 10-9"
+                  fill="none" stroke="var(--art)" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M43 66c3 3 9 3 13 0" fill="none" stroke="var(--art)" stroke-width="2.4" stroke-linecap="round"/>
+            <g transform="translate(70,27)">
+              <circle r="12" fill="var(--art)"/>
+              <path d="M-6 0H6M0 -6V6" stroke="var(--plate)" stroke-width="3.4" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">腹部急診</span>
+            <span class="idx-en">Abdominal Emergency</span>
+            <span class="idx-hint">闌尾炎 · 膽囊炎 · 疝氣</span>
+          </span>
+        </button>
+
+        <!-- 抗生素 -->
+        <button class="idx-card" onclick="location.href='tools/antibiotics.html'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <g transform="rotate(-38 50 50)">
+              <rect x="30" y="40" width="40" height="20" rx="10"
+                    fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2"/>
+              <rect x="50" y="40" width="20" height="20" rx="10"
+                    fill="var(--art-fill)" fill-opacity=".28" stroke="var(--art)" stroke-width="2"/>
+              <line x1="50" y1="40" x2="50" y2="60" stroke="var(--art)" stroke-width="2"/>
+            </g>
+            <g fill="none" stroke="var(--art)" stroke-width="2">
+              <rect x="20" y="66" width="24" height="11" rx="5.5" fill="var(--art-fill)" fill-opacity=".12"/>
+              <circle cx="72" cy="26" r="7" fill="var(--art-fill)" fill-opacity=".12"/>
+              <circle cx="80" cy="40" r="4.5" fill="var(--art-fill)" fill-opacity=".12"/>
+            </g>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">抗生素</span>
+            <span class="idx-en">Antibiotics</span>
+            <span class="idx-hint">指引 · 部位 · 細菌 · 菌譜</span>
+          </span>
+        </button>
+
+        <!-- 癌症 -->
+        <button class="idx-card" onclick="location.href='tools/cancer.html'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <g fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2">
+              <circle cx="36" cy="40" r="13"/>
+              <circle cx="63" cy="36" r="10"/>
+              <circle cx="58" cy="62" r="12"/>
+              <circle cx="34" cy="65" r="8"/>
+            </g>
+            <g fill="var(--art)">
+              <circle cx="36" cy="40" r="4.5"/>
+              <circle cx="63" cy="36" r="3.4"/>
+              <circle cx="34" cy="65" r="2.8"/>
+            </g>
+            <path d="M52 56c0-5 3-9 7-9m-1 18c5 0 9-4 9-9" fill="none" stroke="var(--art)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="58" cy="62" r="4.6" fill="none" stroke="var(--art)" stroke-width="2"/>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">癌症</span>
+            <span class="idx-en">Cancer Staging &amp; Treatment</span>
+            <span class="idx-hint">TNM 分期 · 治療策略</span>
+          </span>
+        </button>
+
+        <!-- 計分工具 -->
+        <button class="idx-card" onclick="location.hash='score'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <rect x="30" y="20" width="40" height="54" rx="4"
+                  fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2"/>
+            <rect x="41" y="15" width="18" height="10" rx="3"
+                  fill="var(--art-fill)" fill-opacity=".3" stroke="var(--art)" stroke-width="2"/>
+            <g stroke="var(--art)" stroke-width="2.2" stroke-linecap="round" fill="none">
+              <path d="M37 35l3 3 5-6"/>
+              <path d="M37 48l3 3 5-6"/>
+              <path d="M37 61l3 3 5-6"/>
+              <line x1="50" y1="35" x2="63" y2="35"/>
+              <line x1="50" y1="48" x2="63" y2="48"/>
+              <line x1="50" y1="61" x2="63" y2="61"/>
+            </g>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">計分工具</span>
+            <span class="idx-en">Scoring Tools</span>
+            <span class="idx-hint">18 項風險評分</span>
+          </span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ===== 腹部急診子頁 ===== -->
+    <div id="viewAbd" hidden>
+      <div class="idx-grid">
+
+        <!-- 闌尾炎 -->
+        <button class="idx-card" onclick="location.href='pathways/appendicitis.html'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M28 34c14-4 30-3 40 4 8 6 8 18 1 24-6 5-16 6-27 4"
+                  fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2"/>
+            <path d="M42 64c-2 8-6 14-11 18-4 3-9 1-9-4 0-4 4-7 8-9 4-2 8-4 10-8"
+                  fill="var(--art-fill)" fill-opacity=".2" stroke="var(--art)" stroke-width="2" stroke-linejoin="round"/>
+            <g stroke="var(--art)" stroke-width="1.8" stroke-linecap="round">
+              <line x1="26" y1="82" x2="22" y2="88"/>
+              <line x1="33" y1="85" x2="31" y2="92"/>
+            </g>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">闌尾炎</span>
+            <span class="idx-en">Appendicitis</span>
+            <span class="idx-hint">手術決策 Pathway</span>
+          </span>
+        </button>
+
+        <!-- 膽囊炎 -->
+        <button class="idx-card" onclick="location.href='pathways/cholecystitis.html'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M46 24c-2 5-1 9 2 12 10 3 18 13 18 26 0 15-10 24-22 24S22 77 22 62c0-12 7-21 16-25 2-4 2-9 0-14 2-1 6-1 8 1Z"
+                  fill="var(--art-fill)" fill-opacity=".12" stroke="var(--art)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M48 22c4-4 12-6 18-3" fill="none" stroke="var(--art)" stroke-width="2" stroke-linecap="round"/>
+            <g fill="var(--art)" fill-opacity=".8">
+              <circle cx="40" cy="62" r="4"/>
+              <circle cx="50" cy="68" r="3"/>
+              <circle cx="45" cy="74" r="2.4"/>
+            </g>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">膽囊炎</span>
+            <span class="idx-en">Acute Cholecystitis</span>
+            <span class="idx-hint">手術決策 Pathway</span>
+          </span>
+        </button>
+
+        <!-- 疝氣 -->
+        <button class="idx-card" onclick="location.href='pathways/hernia.html'">
+          <svg class="idx-art" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M18 44h26c3-9 9-9 12 0h26" fill="none" stroke="var(--art)" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M44 44c-4 0-6 4-6 9 0 8 6 15 12 15s12-7 12-15c0-5-2-9-6-9"
+                  fill="var(--art-fill)" fill-opacity=".18" stroke="var(--art)" stroke-width="2"/>
+            <path d="M18 58h20m24 0h20" fill="none" stroke="var(--art)" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+            <circle cx="50" cy="55" r="3.2" fill="var(--art)"/>
+          </svg>
+          <span class="idx-scrim"></span>
+          <span class="idx-label">
+            <span class="idx-name">疝氣</span>
+            <span class="idx-en">Groin Hernia</span>
+            <span class="idx-hint">手術決策 Pathway</span>
+          </span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ===== 計分工具子頁 ===== -->
+    <div id="viewScore" hidden></div>
+
+  </div>
+
+  <div class="idx-testnote" id="idxNote">
+    ※ 本頁為新版首頁的<b>配置測試</b>：四大分類（腹部急診／抗生素／癌症／計分工具）以正方形圖卡呈現，手機一行一張、頁寬壓縮兩張、桌機四張。
+    「腹部急診」與「計分工具」點入後於同頁切換子選單；「抗生素」「癌症」暫直接連往現有頁面示意。尚未與正式 index.html 整合。
+  </div>
+
+</div>
+</div>
+
+<script>
+/* 計分工具清單（沿用現有工具頁）：以縮寫作圖面的字母磚 */
+var SCORE_GROUPS = [
+  { g:'共病評估 Comorbidity', items:[
+    { m:'CCI', zh:'CCI', en:'Charlson Comorbidity Index', href:'tools/cci.html' } ]},
+  { g:'重症／多器官 Critical Care', items:[
+    { m:'SOFA', zh:'SOFA', en:'Sequential Organ Failure', href:'tools/sofa.html' },
+    { m:'APACHE', zh:'APACHE II', en:'Acute Physiology & Chronic Health', href:'tools/apache.html' },
+    { m:'VIS', zh:'Vasopressor', en:'Vasoactive-Inotropic Score', href:'tools/vasopressor.html' } ]},
+  { g:'肝臟 Hepatology', items:[
+    { m:'CP', zh:'Child-Pugh', en:'Child-Pugh Score', href:'tools/child-pugh.html' },
+    { m:'MELD', zh:'MELD 3.0', en:'Model for End-Stage Liver Disease', href:'tools/meld.html' } ]},
+  { g:'一般手術風險 Surgical Risk', items:[
+    { m:'POSSUM', zh:'P-POSSUM', en:'Portsmouth POSSUM', href:'tools/p-possum.html' },
+    { m:'SORT', zh:'SORT', en:'Surgical Outcome Risk Tool', href:'tools/sort.html' } ]},
+  { g:'闌尾炎 Appendicitis', items:[
+    { m:'ALV', zh:'Alvarado', en:'Alvarado Score', href:'tools/alvarado.html' },
+    { m:'AIR', zh:'AIR', en:'Appendicitis Inflammatory Response', href:'tools/air.html' },
+    { m:'pARC', zh:'pARC', en:'Pediatric Appendicitis Risk Calc.', href:'tools/parc.html' } ]},
+  { g:'消化性潰瘍穿孔 Peptic Ulcer Perforation', items:[
+    { m:'PULP', zh:'PULP', en:'Peptic Ulcer Perforation Score', href:'tools/pulp.html' } ]},
+  { g:'腹膜炎 Peritonitis', items:[
+    { m:'MPI', zh:'MPI', en:'Mannheim Peritonitis Index', href:'tools/mpi.html' },
+    { m:'WSES', zh:'WSES', en:'WSES Sepsis Severity Score', href:'tools/wses.html' } ]},
+  { g:'腸阻塞 Bowel Obstruction', items:[
+    { m:'Wass', zh:'Wassmer', en:'Clinical Severity Score for SBO', href:'tools/wassmer.html' },
+    { m:'Angers', zh:'Angers CT', en:'Angers CT Score', href:'tools/angers.html' },
+    { m:'Millet', zh:'Millet', en:'Combined CT Findings', href:'tools/millet.html' } ]},
+  { g:'腸繫膜缺血 Mesenteric Ischemia', items:[
+    { m:'RADIAL', zh:'RADIAL', en:'RADIAL Score for AMI', href:'tools/radial.html' },
+    { m:'AMI', zh:'AMI', en:'AMI Diagnostic Score', href:'tools/ami.html' } ]}
+];
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function buildScore(){
+  var host = document.getElementById('viewScore');
+  if(host.dataset.built) return;
+  var html = '';
+  SCORE_GROUPS.forEach(function(grp){
+    html += '<div class="idx-section-head">'+esc(grp.g)+'</div><div class="idx-grid idx-mono">';
+    grp.items.forEach(function(it){
+      html += '<button class="idx-card idx-mono" onclick="location.href=\''+it.href+'\'">'+
+                '<span class="idx-scrim"></span>'+
+                '<span class="idx-label">'+
+                  '<span class="idx-name">'+esc(it.zh)+'</span>'+
+                  '<span class="idx-en">'+esc(it.en)+'</span>'+
+                '</span></button>';
+    });
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  host.dataset.built = '1';
+}
+
+var VIEWS = {
+  '':      { home:true, title:'' },
+  'abd':   { el:'viewAbd',   crumb:'腹部急診 Abdominal Emergency' },
+  'score': { el:'viewScore', crumb:'計分工具 Scoring Tools', build:buildScore }
+};
+
+function route(){
+  var key = (location.hash || '').replace(/^#/, '');
+  var v = VIEWS[key] || VIEWS[''];
+  var isHome = !!v.home;
+
+  document.getElementById('viewHome').hidden = !isHome;
+  document.getElementById('viewAbd').hidden  = true;
+  document.getElementById('viewScore').hidden = true;
+  document.getElementById('idxNote').hidden  = !isHome;
+
+  var crumb = document.getElementById('idxCrumb');
+  if(isHome){
+    crumb.hidden = true;
+  } else {
+    if(v.build) v.build();
+    document.getElementById(v.el).hidden = false;
+    document.getElementById('idxCrumbHere').textContent = v.crumb;
+    crumb.hidden = false;
+  }
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
