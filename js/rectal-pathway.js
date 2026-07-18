@@ -204,7 +204,7 @@
   /* ---------- 放射治療原則（COL-13／COL-14／COL-15／COL-16）---------- */
   function rtPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">COL-13～COL-16 · 直腸癌放射治療原則</div>' +
+      '<div class="rx-panel-h">直腸癌放射治療原則<span class="rx-panel-src">COL-13～COL-16</span></div>' +
 
       '<div class="rx-def"><b>長程 vs 短程（COL-12(1) 註 c／COL-15）</b>：' +
       '<b>長程 CCRT</b> 建議以 <span class="drug">5-FU</span> 或 <span class="drug">capecitabine</span> 為同步化療，' +
@@ -263,7 +263,7 @@
 
   function systemicPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">COL-8 · 進展性／轉移性疾病之系統性治療</div>' +
+      '<div class="rx-panel-h">進展性／轉移性疾病之系統性治療<span class="rx-panel-src">COL-8</span></div>' +
 
       '<div class="rx-def"><b>療程定義</b>：<span class="rx">FOLFOX-like</span> 包含 <span class="drug">XELOX</span>、' +
       '<span class="drug">Oxaliplatin-HDFL</span> 或 <span class="drug">CapeOx</span>；' +
@@ -316,32 +316,15 @@
         '<span class="drug">pembrolizumab</span> 雖經 <b>TFDA 核准</b>，惟<b>均須自費</b>。</li>' +
         '</ul></div></details>' +
 
+      /* 上列為 COL-8 之「線別與適應症」；實際劑量與打法見 COL-11(1)(2)（結腸與直腸共用） */
+      ((typeof crcMetastaticRegimens === 'function') ? crcMetastaticRegimens() : '') +
+
       '</div>';
   }
 
-  /* ---------- 輔助化療處方（COL-3 ／ 台大大腸直腸癌治療藥物處方 版次 12）---------- */
+  /* ---------- 輔助化療處方（COL-10；結腸與直腸共用，見 crc-regimens.js）---------- */
   function adjRxPanel() {
-    return '<details class="rx-more kps-details"><summary>輔助化療處方與劑量 Adjuvant regimens（台大大腸直腸癌治療藥物處方，適用於結腸癌及直腸癌）▸</summary>' +
-      '<div class="rx-stack" style="margin-top:8px;">' +
-        rxLine('Oxaliplatin-based', '', [
-          '<span class="rx">FOLFOX4</span>（Q2W × 12 循環）：<span class="drug">oxaliplatin</span> 85 mg/m² + <span class="drug">LV</span> 200 mg/m²／2 小時 D1；<span class="drug">5-FU</span> 400 mg/m² IV bolus D1 續 600 mg/m² 輸注 22 小時 D1；D2 同 LV 200 mg/m²／2 小時 + 5-FU 400 bolus 續 600／22 小時。',
-          '<span class="rx">mFOLFOX6</span>（Q2W × 12 循環）：<span class="drug">oxaliplatin</span> 85 mg/m² IV D1；<span class="drug">LV</span> 400 mg/m²／2 小時 D1；<span class="drug">5-FU</span> 400 mg/m² bolus D1 續 2400 mg/m²／46 小時。',
-          '<span class="rx">XELOX</span>（Q3W × 8 循環）：<span class="drug">oxaliplatin</span> 85 mg/m² IV D1 + <span class="drug">capecitabine</span> 800–1250 mg/m² 每日兩次 D1–14。',
-          '<span class="rx">Oxaliplatin-HDFL</span>（Q3W × 6–8 循環）：<span class="drug">oxaliplatin</span> 60–65 mg/m²／2–4 小時 D1、D8；<span class="drug">5-FU</span> 2000–2600 mg/m² + <span class="drug">LV</span> 300 mg/m²／24 小時 D1、D8。'
-        ]) +
-        rxLine('Fluorouracil-based', '', [
-          '<span class="rx">LV5FU2</span>（Q2W）：<span class="drug">LV</span> 200 mg/m² D1、D2；<span class="drug">5-FU</span> 400 mg/m² bolus 續 600 mg/m²／22 小時 D1、D2。',
-          '<span class="rx">HDFL</span>（每週 × 6 個月）：<span class="drug">5-FU</span> 2600 mg/m² IV + <span class="drug">LV</span> 300 mg/m² IV D1。',
-          '<span class="rx">LDFL</span>（每週 × 6 個月）：<span class="drug">5-FU</span> 450–550 mg/m² IV + <span class="drug">LV</span> 45–55 mg/m² IV D1。'
-        ]) +
-        rxLine('口服 Oral', '', [
-          '<span class="drug">capecitabine</span>（Xeloda）800–1250 mg/m² 每日兩次 D1–14，每 3 週一次 × 24 週。',
-          '<span class="drug">UFUR</span> 300–350 mg/m²/日 × 4 週 ±<span class="drug">leucovorin</span> 30 mg po tid × 4 週，休 1 週，Q5W × 5 循環。'
-        ]) +
-        '<div class="rx-warn"><b>⚠ 除非參與臨床試驗，<span class="drug">bevacizumab</span>／<span class="drug">irinotecan</span>／' +
-        '<span class="drug">panitumumab</span>／<span class="drug">cetuximab</span> 不建議用於輔助化療</b>' +
-        '（處方集註；COL-3 註 c 同旨）。</div>' +
-      '</div></details>';
+    return (typeof crcAdjuvantRegimens === 'function') ? crcAdjuvantRegimens() : '';
   }
 
   /* ---------- 版面 HTML ---------- */
@@ -350,7 +333,7 @@
     h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>之直腸癌章節' +
       '（<b>COL-12(1)～COL-12(3)</b> 決策流程、<b>COL-13</b> CCRT 處方、<b>COL-14～COL-16</b> 放射治療原則；' +
       '輔助化療與追蹤共用 COL-3、轉移性系統性治療共用 COL-8）之互動決策流程。' +
-      '逐步點選以取得對應建議處置、藥物療程與追蹤方式。結腸癌流程請另見「結腸癌」。' +
+      '逐步點選以取得對應建議處置、藥物療程與追蹤方式。結腸癌流程請於上方<b>部位</b>切換為「結腸 Colon」。' +
       '<b>復發之處置（含直腸特有之骨盆局部復發）：本院指引未列直腸復發流程，故參考 NCCN Rectal 2026v1（本院指引所引用之版本）與相關文獻，見下方參考文獻。</b></p>';
     h += '<div class="onc-path" id="rcPath">';
 

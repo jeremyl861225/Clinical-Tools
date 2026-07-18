@@ -98,7 +98,7 @@
   /* ---------- 版面 HTML ---------- */
   function colonPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>（NTUH，COL-1～COL-18）之互動決策流程，<b>僅取結腸（colon）適用者</b>；直腸癌之新輔助放化療與 TME 不在此流程。逐步點選以取得對應建議處置、藥物療程與追蹤方式。<b>含復發之處置（COL-9）。</b></p>';
+    h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>（NTUH，COL-1～COL-18）之互動決策流程，<b>僅取結腸（colon）適用者</b>；直腸癌之新輔助放化療與 TME 不在此流程，請於上方<b>部位</b>切換為「直腸 Rectum」。逐步點選以取得對應建議處置、藥物療程與追蹤方式。<b>含復發之處置（COL-9）。</b></p>';
     h += '<div class="onc-path" id="ccPath">';
 
     // Step 1 — 臨床表現
@@ -410,7 +410,7 @@
 
   function systemicPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">COL-8 · 進展性／轉移性疾病之系統性治療</div>' +
+      '<div class="rx-panel-h">進展性／轉移性疾病之系統性治療<span class="rx-panel-src">COL-8</span></div>' +
 
       '<div class="rx-def"><b>療程定義</b>：<span class="rx">FOLFOX-like</span> 包含 <span class="drug">XELOX</span>、' +
       '<span class="drug">Oxaliplatin-HDFL</span> 或 <span class="drug">CapeOx</span>；' +
@@ -463,7 +463,15 @@
         '<span class="drug">pembrolizumab</span> 雖經 <b>TFDA 核准</b>，惟<b>均須自費</b>。</li>' +
         '</ul></div></details>' +
 
+      /* 上列為 COL-8 之「線別與適應症」；實際劑量與打法見 COL-11(1)(2)（結腸與直腸共用） */
+      ((typeof crcMetastaticRegimens === 'function') ? crcMetastaticRegimens() : '') +
+
       '</div>';
+  }
+
+  /* ---------- 輔助化療處方（COL-10；結腸與直腸共用，見 crc-regimens.js）---------- */
+  function adjRxPanel() {
+    return (typeof crcAdjuvantRegimens === 'function') ? crcAdjuvantRegimens() : '';
   }
 
   /* ---------- 主渲染 ---------- */
@@ -630,7 +638,7 @@
           '<b>Observation</b>（觀察）；',
           '<b>或</b> 考慮 <span class="drug">capecitabine</span> 或 <span class="rx">5-FU/leucovorin</span>。',
           '<b>第 II 期不加 oxaliplatin</b>：於第 II 期結腸癌，5-FU/leucovorin 加上 oxaliplatin <b>尚未顯示存活效益</b>（COL-3 註 d）。'
-        ], 'COL-3(1)：T3, N0, M0（MSS/pMMR and no high risk features）→ Observation or consider capecitabine or 5-FU/leucovorin。', 'curative');
+        ], 'COL-3(1)：T3, N0, M0（MSS/pMMR and no high risk features）→ Observation or consider capecitabine or 5-FU/leucovorin。', 'curative', adjRxPanel());
         return;
       }
       // s2_high
@@ -642,7 +650,7 @@
         '神經周圍侵犯、局部穿孔、切緣接近／無法確定／陽性。',
         '<b>T4 且侵犯至固定構造者，考慮放射治療</b>（COL-3 註 b）。',
         '<b>年齡 ≥ 70 歲者，加用 oxaliplatin 之效益未被證實</b>（COL-3 註 e）。'
-      ], 'COL-3(1)：T3, N0, M0 high risk for systemic recurrence 或 T4, N0, M0（MSS/pMMR）→ FOLFOX／CapeOX／clinical trial／observation。Bevacizumab、cetuximab、panitumumab、irinotecan 不可用於第 II／III 期之輔助治療（臨床試驗除外，COL-3 註 c）。', 'curative');
+      ], 'COL-3(1)：T3, N0, M0 high risk for systemic recurrence 或 T4, N0, M0（MSS/pMMR）→ FOLFOX／CapeOX／clinical trial／observation。Bevacizumab、cetuximab、panitumumab、irinotecan 不可用於第 II／III 期之輔助治療（臨床試驗除外，COL-3 註 c）。', 'curative', adjRxPanel());
       return;
     }
 
@@ -653,7 +661,7 @@
         '<b>IDEA 分析（COL-3 註 h）</b>：T1–3, N1 低風險第 III 期，<b>3 個月 CapeOX 對無病存活不劣於 6 個月</b>；' +
         '惟 <b>3 個月 FOLFOX 之不劣性尚未被證實</b>。',
         '<b>3 個月相較 6 個月療程之 Grade 3+ 神經毒性顯著較低</b>（FOLFOX 3% vs 16%；CapeOX 3% vs 9%）。'
-      ], 'COL-3(2)：T1–3, N1（low risk stage III）→ Preferred CapeOX (3 mo) or FOLFOX (3–6 mo)；Other options: capecitabine (6 mo) or 5-FU (6 mo)。無禁忌症者術後 6 週內開始。', 'curative');
+      ], 'COL-3(2)：T1–3, N1（low risk stage III）→ Preferred CapeOX (3 mo) or FOLFOX (3–6 mo)；Other options: capecitabine (6 mo) or 5-FU (6 mo)。無禁忌症者術後 6 週內開始。', 'curative', adjRxPanel());
       return;
     }
 
@@ -664,7 +672,7 @@
       '<b>IDEA 分析（COL-3 註 h）</b>：T4、N1–2 或任何 T、N2 之高風險第 III 期，<b>3 個月 FOLFOX 之無病存活劣於 6 個月</b>；' +
       '而 <b>3 個月 CapeOX 相較 6 個月之不劣性尚未被證實</b>。',
       '<b>T4 且侵犯至固定構造者，考慮放射治療</b>（COL-3 註 b）。'
-    ], 'COL-3(2)：T4, N1-2, T any, N2（high risk stage III）→ Preferred CapeOX (3–6 mo) or FOLFOX (6 mo)；Other options: capecitabine (6 mo) or 5-FU (6 mo)。', 'curative');
+    ], 'COL-3(2)：T4, N1-2, T any, N2（high risk stage III）→ Preferred CapeOX (3–6 mo) or FOLFOX (6 mo)；Other options: capecitabine (6 mo) or 5-FU (6 mo)。', 'curative', adjRxPanel());
   }
 
   /* ---------- C. 轉移（COL-4 → COL-5／6／7／8）---------- */
@@ -689,7 +697,8 @@
           '依個別病人臨床狀況與外科醫師經驗決定。'
         ],
         systemicNote + '｜COL-5：Synchronous abdominal/peritoneal metastases → 依阻塞與否及有無遠處轉移分流 → COL-8。',
-        'palliative', systemicPanel());
+        'palliative',
+        ((typeof crcHipecRegimens === 'function') ? crcHipecRegimens() : '') + systemicPanel());
       return;
     }
 
@@ -710,7 +719,7 @@
         'COL-6：Resectable synchronous liver and/or lung metastases only → 下列 TREATMENT 四選一 → ADJUVANT THERAPY → SURVEILLANCE；復發 → COL-8。',
         'resected_m1',
         '<div class="rec-detail rx-panel">' +
-          '<div class="rx-panel-h">COL-6 · 可切除之同時性肝／肺轉移</div>' +
+          '<div class="rx-panel-h">可切除之同時性肝／肺轉移<span class="rx-panel-src">COL-6</span></div>' +
           rxLine('治療 Treatment', '以下擇一', [
             '<b>同時性或分期之結腸切除</b> + 肝或肺切除及／或局部治療（Synchronous or staged colectomy with liver or lung resection and/or local treatment）。',
             '<b>新輔助治療 2–3 個月</b>（<span class="rx">FOLFOX</span> 或 <span class="rx">CapeOX</span> ± <span class="drug">bevacizumab</span>；' +
@@ -740,7 +749,7 @@
       systemicNote + '｜COL-7：Unresectable synchronous liver and/or lung metastases only → systemic therapy → re-evaluate q2mo → converted to resectable（→ 手術 + 輔助）或 remain unresectable（→ COL-8）。',
       'palliative',
       '<div class="rec-detail rx-panel">' +
-        '<div class="rx-panel-h">COL-7 · 不可切除之同時性肝／肺轉移</div>' +
+        '<div class="rx-panel-h">不可切除之同時性肝／肺轉移<span class="rx-panel-src">COL-7</span></div>' +
         rxLine('治療 Treatment', '', [
           '<b>系統性治療</b>：<span class="rx">FOLFIRI</span> 或 <span class="rx">FOLFOX</span> 或 <span class="rx">CapeOX</span> 或 <span class="rx">FOLFOXIRI</span> ± <span class="drug">bevacizumab</span>。',
           '<b>或</b> <span class="rx">FOLFIRI</span> 或 <span class="rx">FOLFOX</span> 或 <span class="rx">FOLFOXIRI</span> ± <span class="drug">panitumumab</span> 或 <span class="drug">cetuximab</span>（<b>僅 KRAS/NRAS/BRAF 野生型</b>）。',

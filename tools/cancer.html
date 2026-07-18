@@ -32,6 +32,25 @@
   </div>
 
   <input type="text" class="onc-search" id="oncSearch" placeholder="搜尋癌症（中文／英文，例：胃、gastric、NET）…" oninput="renderPicker(this.value)">
+  <!-- 方磚圖版上色:亮色→淺灰版畫、暗色→深板岩反相。sRGB 不可省,否則中間調會再偏一次 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <filter id="plate-duo" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.100 0.940"/>
+        <feFuncG type="table" tableValues="0.095 0.928"/>
+        <feFuncB type="table" tableValues="0.085 0.906"/>
+      </feComponentTransfer>
+    </filter>
+    <filter id="plate-cyano" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.82 0.169"/>
+        <feFuncG type="table" tableValues="0.87 0.188"/>
+        <feFuncB type="table" tableValues="0.92 0.202"/>
+      </feComponentTransfer>
+    </filter>
+  </defs></svg>
   <div id="oncPicker"></div>
   <div id="oncDetail" style="display:none;"></div>
 
@@ -44,6 +63,7 @@
 <script src="../data/cancer/cancers.js"></script>
 <script src="../js/gastric-pathway.js"></script>
 <script src="../js/breast-pathway.js"></script>
+<script src="../js/crc-regimens.js"></script>
 <script src="../js/colon-pathway.js"></script>
 <script src="../js/rectal-pathway.js"></script>
 <script src="../js/panc-pathway.js"></script>

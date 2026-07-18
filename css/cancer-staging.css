@@ -1,22 +1,105 @@
   /* ---- 癌症分期與治療（頁面專用元件） ---- */
+  /* 本檔僅由 tools/cancer.html 載入,故此處覆寫只影響該頁 */
+  :root{ --paper:#f2f1ec; }
+  @media (prefers-color-scheme:dark){ :root{ --paper:#14181b; } }
   .onc-disclaimer{background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:2px; padding:10px 13px; font-size:12px; line-height:1.6; color:var(--label-ink); margin-bottom:16px;}
   .onc-disclaimer b{color:var(--accent2);}
   .onc-search{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:14px;}
   .onc-search:focus{outline:none; border-color:var(--accent);}
-  .onc-group-head{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:18px 0 8px; border-bottom:1px solid var(--accent-soft); padding-bottom:3px;}
-  .onc-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
-  @media(max-width:520px){ .onc-grid{grid-template-columns:1fr;} }
-  .onc-card{text-align:left; background:var(--field-bg); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:11px 13px; cursor:pointer; color:var(--ink); transition:border-color .15s, background .15s;}
-  .onc-card:hover{border-color:var(--accent); border-left-color:var(--accent); background:var(--hover-bg);}
-  .onc-card .oc-name{font-family:var(--serif); font-size:15px; font-weight:600; display:block;}
-  .onc-card .oc-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); display:block; margin-top:2px;}
+  /* ═══ 癌別選單:標本方磚 ═══
+     圖已離線整理成正方形 PNG(器官約佔 80%、補白邊、灰階 600px),故一律 contain,不在此裁切。
+     亮色=淺灰版畫(#plate-duo),暗色=深板岩反相(#plate-cyano),隨 OS 外觀切換。 */
+  /* 變數放 :root —— showFamily() 的第二層方磚渲染在 #oncDetail(不在 picker 容器內),
+     若把變數綁在容器上,子選單的方磚會拿不到而失去上色。 */
+  :root{
+    --tile-bg:#e9e7e1;
+    --tile-label:#fdf8ee; --tile-label-soft:rgba(253,248,238,.86);
+    --tile-label-shadow:0 0 2px rgba(0,0,0,.95), 0 0 4px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.85), 0 0 9px rgba(0,0,0,.6);
+    --tile-accent:#c9a227;
+    --plate-filter:url(#plate-duo) brightness(1) contrast(1.02);
+    --plate-filter-hover:url(#plate-duo) brightness(1.04) contrast(1.03);
+    --scrim:rgba(18,14,10,.12);
+    --scrim-hover:rgba(18,14,10,.07);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --tile-bg:#262b2f;
+      --tile-label:#eaf4fb; --tile-label-soft:rgba(234,244,251,.82);
+      --tile-label-shadow:0 0 2px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.7), 0 0 10px rgba(0,0,0,.35);
+      --tile-accent:#6fb7d6;
+      --plate-filter:url(#plate-cyano) brightness(1) contrast(1.06);
+      --plate-filter-hover:url(#plate-cyano) brightness(1.08) contrast(1.08);
+      --scrim:radial-gradient(ellipse 58% 30% at 50% 52%, rgba(6,10,14,.45), rgba(6,10,14,.14) 68%, rgba(6,10,14,0) 100%);
+      --scrim-hover:radial-gradient(ellipse 56% 28% at 50% 52%, rgba(6,10,14,.36), rgba(6,10,14,.1) 70%, rgba(6,10,14,0) 100%);
+    }
+  }
+
+  .onc-group-head{
+    font-family:var(--serif); font-size:12.5px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--muted); margin:26px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px; font-weight:400;
+  }
+  /* 電腦一行四張、平板三張、手機兩張 */
+  .onc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media(max-width:860px){ .onc-grid{grid-template-columns:repeat(3,1fr);} }
+  @media(max-width:560px){ .onc-grid{grid-template-columns:repeat(2,1fr); gap:8px;} }
+
+  .onc-card{
+    position:relative; aspect-ratio:1; overflow:hidden;
+    background:var(--tile-bg); border:0; border-radius:2px; padding:0;
+    cursor:pointer; color:var(--tile-label); font-family:inherit; display:block;
+  }
+  .onc-card .oc-img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; filter:var(--plate-filter);
+    transition:transform .6s cubic-bezier(.16,1,.3,1), filter .5s;
+  }
+  .onc-card .oc-scrim{position:absolute; inset:0; pointer-events:none; background:var(--scrim); transition:background .5s;}
+  .onc-card .oc-label{
+    position:absolute; inset:0; z-index:2;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:3px; text-align:center; padding:8px;
+  }
+  .onc-card .oc-name{
+    font-family:var(--serif); font-size:16px; font-weight:500; letter-spacing:.04em; line-height:1.3;
+    color:var(--tile-label); text-shadow:var(--tile-label-shadow); text-wrap:balance; display:block;
+  }
+  /* cancers.js 用的是完整英文病名(如 GASTROINTESTINAL STROMAL TUMOR),
+     比短標長得多 —— 故字距收窄、字級縮小並限寬,讓長名折成整齊的區塊而非撐滿方磚。 */
+  .onc-card .oc-en{
+    font-family:var(--sans); font-size:8.5px; letter-spacing:.1em; line-height:1.5; text-transform:uppercase;
+    color:var(--tile-label-soft); text-shadow:var(--tile-label-shadow);
+    display:block; margin:0; max-width:88%; text-wrap:balance;
+  }
+  /* 懸停:圖微放大提亮、壓暗減弱、浮現細金框 */
+  .onc-card::after{
+    content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
+    border:1px solid transparent; transition:border-color .4s, box-shadow .4s;
+  }
+  .onc-card:hover .oc-img, .onc-card:focus-visible .oc-img{ transform:scale(1.04); filter:var(--plate-filter-hover); }
+  .onc-card:hover .oc-scrim, .onc-card:focus-visible .oc-scrim{ background:var(--scrim-hover); }
+  .onc-card:hover::after{ border-color:var(--tile-accent); box-shadow:inset 0 0 0 1px rgba(201,162,39,.24); }
+  .onc-card:focus-visible{ outline:none; }
+  .onc-card:focus-visible::after{ border-color:var(--tile-accent); box-shadow:0 0 0 2px rgba(201,162,39,.5); }
+  /* 無對應圖版時仍是一塊完整方磚,不破圖 */
+  .onc-card.no-img .oc-scrim{background:none;}
+  @media (prefers-reduced-motion:reduce){
+    .onc-card .oc-img, .onc-card .oc-scrim, .onc-card::after{transition:none;}
+    .onc-card:hover .oc-img, .onc-card:focus-visible .oc-img{transform:none;}
+  }
   .onc-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
   /* 家族卡（婦癌等兩層選單的第一層）：以較實的左邊條與細分項預覽，和單一癌別卡區隔 */
-  .onc-card.is-family{border-left-color:var(--accent);}
-  .onc-card.is-family .oc-name{display:flex; align-items:baseline; justify-content:space-between; gap:8px;}
-  .onc-card .oc-count{font-family:var(--mono); font-size:10px; font-weight:400; color:var(--accent); letter-spacing:.04em; white-space:nowrap;}
-  .onc-card .oc-sub{display:block; margin-top:5px; font-size:11.5px; line-height:1.5; color:var(--label-ink);}
+  /* 家族磚(婦癌等兩層選單):以項數徽章標示可再展開,長描述在方磚放不下,於此視圖隱藏 */
+  .onc-card .oc-count{
+    font-family:var(--mono); font-size:9px; font-weight:400; letter-spacing:.1em; white-space:nowrap;
+    color:var(--tile-label-soft); text-shadow:var(--tile-label-shadow);
+    border:1px solid currentColor; border-radius:9px; padding:1px 7px; margin-top:5px; opacity:.85;
+  }
 
+  /* 尚未整編之癌別的佔位訊息 */
+  .onc-wip{
+    font-family:var(--mono); font-size:13px; letter-spacing:.1em; color:var(--muted);
+    border:1px dashed var(--line); border-radius:2px; padding:40px 16px; text-align:center; margin-top:16px;
+  }
   .onc-back{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:6px 11px; border-radius:2px; cursor:pointer; color:var(--ink); margin-bottom:12px;}
   .onc-back:hover{background:var(--accent-soft); border-color:var(--accent);}
   .onc-title{font-family:var(--serif); font-size:21px; font-weight:600; margin:0;}
@@ -34,7 +117,11 @@
 
   table.tnm{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
   table.tnm td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.55;}
-  table.tnm td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent); white-space:nowrap; width:64px;}
+  /* 代碼欄：width:1% + nowrap = 收縮至內容所需寬度（NET 之「十二指腸／壺腹 T1」等長標籤亦不折行），
+     剩餘寬度全歸定義欄。原本的 width:64px 在 nowrap 下不生效，代碼與定義之間僅剩 7px 而顯得壓迫，
+     故改以 padding-right 拉出固定間距。 */
+  table.tnm td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent);
+    white-space:nowrap; width:1%; padding-right:18px;}
   table.tnm tr:last-child td{border-bottom:none;}
 
   table.stage{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
@@ -73,7 +160,8 @@
   .smx .sm-corner{background:var(--soft-bg);}
   .smx .sm-nh{font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg);}
   .smx .sm-nh span{display:block; font-size:9px; font-weight:400; color:var(--muted-soft); margin-top:1px;}
-  .smx .sm-th{font-size:11.5px; font-weight:700; color:var(--accent); background:var(--soft-bg); text-align:right; padding-right:8px;}
+  /* 靠右對齊時，欄寬增加只會把標籤往右推，故間距須由 padding-right 拉開（原 8px 貼著資料欄） */
+  .smx .sm-th{font-size:11.5px; font-weight:700; color:var(--accent); background:var(--soft-bg); text-align:right; padding-right:12px;}
   .smx .sm-cell{font-weight:700; color:var(--ink);}
   .sm-s0{background:transparent;}
   .sm-s1{background:color-mix(in srgb, var(--accent) 12%, transparent);}
@@ -131,6 +219,14 @@
   .nd-btn{font-family:var(--mono); font-size:11.5px; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:5px 10px; cursor:pointer; color:var(--ink);}
   .nd-btn:hover{border-color:var(--accent); background:var(--hover-bg);}
   .nd-btn.active{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;}
+
+  /* 子分型選擇條（大腸直腸癌之結腸／直腸）：位於標題正下方，是三個分頁的總開關。
+     刻意做得比一般 .nd-ctrl 更醒目——選錯部位會讀到另一個部位的治療與淋巴結，
+     故按鈕加大、選中者以左邊條強調，避免使用者沒注意到自己在看哪一個部位。 */
+  .onc-subtype{border-left:3px solid var(--accent); background:var(--accent-soft); margin:10px 0 6px;}
+  .onc-subtype .nd-h{color:var(--accent);}
+  .onc-subtype .nd-btns{margin-bottom:0;}
+  .onc-subtype .nd-btn{font-size:13px; padding:7px 16px; font-weight:600;}
   .nd-def{font-size:11.5px; line-height:1.65; color:var(--label-ink); background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:2px; padding:8px 11px; margin-bottom:10px; font-family:var(--mono);}
   /* D 級著色 */
   .node-item.dl-1{border-left-color:var(--accent);}
@@ -308,8 +404,13 @@
   /* ---- 3) 系統性治療分層面板（.rec-detail 之變體，藥物徽章沿用 .rec-detail 作用域）---- */
   .flow-rec .rec-detail.rx-panel{padding-left:0; list-style:none; display:flex; flex-direction:column; gap:8px;}
   .rx-panel .rx-stack{display:flex; flex-direction:column; gap:8px;}
-  .rx-panel-h{font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
-    opacity:.85; border-bottom:1px solid rgba(255,255,255,.25); padding-bottom:5px;}
+  /* 標題本身放大以利床邊掃讀；指引頁碼（NE-H 2 of 9、PanNET-13…）改置於標題之後、
+     靠右對齊並降一級字級，使各面板之頁碼在右緣對齊、便於回查原指引而不與標題爭主次。 */
+  .rx-panel-h{font-family:var(--mono); font-size:13px; line-height:1.5; letter-spacing:.04em;
+    text-transform:uppercase; opacity:.9; border-bottom:1px solid rgba(255,255,255,.25);
+    padding-bottom:6px; display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px;}
+  .rx-panel-h .rx-panel-src{margin-left:auto; font-size:11px; letter-spacing:.06em;
+    opacity:.72; white-space:nowrap; font-weight:400;}
   .rx-def,.rx-warn{font-size:12px; line-height:1.7; border-radius:3px; padding:7px 10px; overflow-wrap:anywhere;}
   .rx-def{background:rgba(255,255,255,.06); border:1px dashed rgba(255,255,255,.24);}
   .rx-warn{background:rgba(240,154,137,.16); border:1px solid rgba(240,154,137,.45);}

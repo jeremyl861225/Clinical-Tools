@@ -140,7 +140,7 @@
   /* 轉移性／局部晚期之全身治療選單（PANC-E 1 of 4） */
   function systemicPanel(ps) {
     var h = '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">PANC-E · 全身性治療處方（Metastatic 段落，局部晚期亦援用）</div>' +
+      '<div class="rx-panel-h">全身性治療處方（Metastatic 段落，局部晚期亦援用）<span class="rx-panel-src">PANC-E</span></div>' +
       '<div class="rx-def"><b>本指引之處方一律並列，未指定「首選」單一處方；' +
       '<span class="rx">Clinical trial</span> 於各線別均列為 preferred。</b></div>';
 
@@ -201,7 +201,7 @@
     items.push('<b>體能狀態轉差</b> → <b>最佳支持治療</b>（best supportive care）' +
       (where === 'la' ? '。' : '<b>或臨床試驗</b>。'));
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">' + (where === 'la' ? 'PANC-8' : 'PANC-9') + ' · 救援治療 Salvage therapy</div>' +
+      '<div class="rx-panel-h">救援治療 Salvage therapy<span class="rx-panel-src">' + (where === 'la' ? 'PANC-8' : 'PANC-9') + '</span></div>' +
       '<div class="rx-def"><b>註 r</b>：救援治療<b>最適合保有良好體能狀態者</b>。</div>' +
       rxLine('救援治療 Salvage', '', items) +
       '</div>';
@@ -210,7 +210,7 @@
   /* 輔助治療選單（PANC-6 ＋ PANC-E 2 of 4） */
   function adjuvantPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">PANC-6 ＋ PANC-E · 術後輔助治療 Post-operative adjuvant treatment</div>' +
+      '<div class="rx-panel-h">術後輔助治療 Post-operative adjuvant treatment<span class="rx-panel-src">PANC-6 ＋ PANC-E</span></div>' +
       '<div class="rx-def"><b>本指引<u>未指定首選處方</u></b>：PANC-6 將下列選項以「or」<b>並列</b>，' +
       '且以 <span class="rx">Clinical trial preferred</span> 冠於最前。</div>' +
       rxLine('PANC-6 流程圖所列', '依序以 or 並列', [

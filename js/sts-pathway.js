@@ -120,7 +120,7 @@
   /* ---------- 姑息性全身治療選單（指引第 6 頁）---------- */
   function palliativeSystemicPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">Palliative systemic treatment recommendations（指引第 6 頁）</div>' +
+      '<div class="rx-panel-h">Palliative systemic treatment recommendations<span class="rx-panel-src">指引第 6 頁</span></div>' +
       '<div class="rx-def"><b>本院指引<u>鼓勵局部無法手術或轉移性軟組織肉瘤之病人加入臨床試驗</b></u>' +
       '（Enrollment into clinical trials is encouraged）。</div>' +
       rxLine('一線 First-line', '以 anthracycline 為主', [

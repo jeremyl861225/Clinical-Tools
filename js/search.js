@@ -146,19 +146,33 @@
   function indexCancers() {
     var out = [];
     if (!window.CANCERS) return out;
-    CANCERS.forEach(function (c) {
-      // 治療區塊（含療程與藥名 FOLFOX／FLOT／Avastin…）去標籤後納入關鍵字，
-      // 讓查化療處方或藥名也能找到對應癌別
-      var tx = (c.tx || []).map(function (t) {
+    // 治療區塊（含療程與藥名 FOLFOX／FLOT／Avastin…）去標籤後納入關鍵字，
+    // 讓查化療處方或藥名也能找到對應癌別
+    function txKw(o) {
+      return (o.tx || []).map(function (t) {
         return (t.label || '') + ' ' + String(t.html || '').replace(/<[^>]*>/g, ' ');
       }).join(' ');
+    }
+    CANCERS.forEach(function (c) {
       out.push({
         type: 'cancer',
         label: c.zh,
         en: c.en,
         sub: c.group + ' · ' + (c.edition || ''),
-        kw: c.id + ' ' + tx,
+        kw: c.id + ' ' + txKw(c),
         url: 'tools/cancer.html#cancer=' + encodeURIComponent(c.id)
+      });
+      // 具子分型者（大腸直腸癌之結腸／直腸）：各部位另建一筆，直接深連結到該部位。
+      // 查「直腸癌」須能直接開到直腸，而非只落在合併後的條目名稱上。
+      (c.subtypes || []).forEach(function (s) {
+        out.push({
+          type: 'cancer',
+          label: s.search_label || s.label,
+          en: s.search_en || c.en,
+          sub: c.group + ' · ' + (s.edition || c.edition || ''),
+          kw: c.id + ' ' + s.key + ' ' + txKw(s),
+          url: 'tools/cancer.html#cancer=' + encodeURIComponent(s.key)   // 由 ID_ALIAS 導向
+        });
       });
     });
     return out;

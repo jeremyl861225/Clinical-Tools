@@ -5,16 +5,22 @@
    版次 02（2026/06/16 第 87 次癌症醫療委員會會議通過）
    文件編號 50710-2-000048；NTUH 胰臟癌多專科診療團隊修訂
    Source: NCCN Guidelines Version 3.2025（10/01/2025）
-   涵蓋章節：PanNET-1 ～ PanNET-13、WDG3-1 ～ WDG3-4、NE-H（1–9）
-   ※ 本模組涵蓋「分化良好」之胰臟 NET（G1／G2 與 WD G3）。
-     分化差之神經內分泌癌（NEC，小細胞／大細胞型）與混合型（MiNEN）不適用。
+   涵蓋章節：PanNET-1 ～ PanNET-13、WDG3-1 ～ WDG3-4、PDNEC-1／PDNEC-1A、
+             NE-A（WHO 2019 分類）、NE-H（1–9，含 5 of 9 之 PDNEC 處方）
+   ※ 三條主幹（步驟 1 分流，互不相通）：
+     ① 分化良好 G1／G2 → PanNET-1～13
+     ② 分化良好 G3（WD G3）→ WDG3-1～4
+     ③ 分化差之神經內分泌癌（NEC 小細胞／大細胞型）與混合型（MiNEN）→ PDNEC-1
+     ①② 為 NET（well-differentiated），③ 為 NEC／MiNEN（poorly differentiated），
+     兩者預後與治療完全不同；PDNEC-1A 註 c 明載「並非所有 Ki-67 >20% 者皆為分化差」。
    本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
   'use strict';
 
   var pnSt = {
-    grade: null,   // g12 | wdg3            （分化良好 G1/G2 vs WD G3）
+    grade: null,   // g12 | wdg3 | pdnec    （G1/G2 ／ WD G3 ／ 分化差 NEC・MiNEN）
+    pdscope: null, // res | unres | met     （PDNEC 疾病範圍；PDNEC-1）
     func: null,    // nf | gas | ins | glu | vip   （功能性型態；G1/G2）
     scope: null,   // res | unres | met     （疾病範圍；G1/G2）
     size: null,    // le1 | m1to2 | gt2     （無功能且可切除之腫瘤大小）
@@ -147,7 +153,7 @@
   /* ---------- NE-H（2 of 9）：PanNET G1/G2 之全身性治療 ---------- */
   function systemicPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">NE-H（2 of 9）· 局部晚期及／或遠處轉移之胰臟 NET（分化良好 G1／G2）全身性治療</div>' +
+      '<div class="rx-panel-h">局部晚期及／或遠處轉移之胰臟 NET（分化良好 G1／G2）全身性治療<span class="rx-panel-src">NE-H（2 of 9）</span></div>' +
       '<div class="rx-def"><b>⚠ 本節四項通則（NE-H 2 of 9 開頭）</b>：' +
       '<b>①</b> 全身性治療<b>並非對每位局部晚期／轉移病人皆適當</b>，應經<b>多科討論</b>決定最佳選擇' +
       '（含<b>觀察</b>、局部治療、<b>減積手術</b>或全身性治療）。' +
@@ -193,8 +199,8 @@
   /* ---------- PanNET-13：後續治療 ---------- */
   function subsequentPanel() {
     return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">PanNET-13 · 疾病進展後之後續治療 SUBSEQUENT THERAPY</div>' +
-      rxLine('三條並列出口', 'or', [
+      '<div class="rx-panel-h">疾病進展後之後續治療 SUBSEQUENT THERAPY<span class="rx-panel-src">PanNET-13</span></div>' +
+      rxLine('三選一，無先後順序', '以下三條路徑於指引中以 or 並列，未定義優先次序', [
         '<span class="rx">Clinical trial</span>',
         '<b>全身性治療</b>（NE-H 2 of 9——見上方選單）',
         '<b>局部區域治療選項</b>（Locoregional therapy options——見下列）'
@@ -209,10 +215,96 @@
       '</div>';
   }
 
+  /* ---------- NE-A（4 of 7）：WHO 2019 分類——區分 NET G3 與 NEC 的依據 ---------- */
+  function whoClassPanel() {
+    return '<details class="rx-more kps-details">' +
+      '<summary>WHO 2019 神經內分泌腫瘤分類與分級準則（判別 NET G3 vs NEC vs MiNEN）▸</summary>' +
+      '<div class="rx-stack" style="margin-top:8px;">' +
+        '<div class="rx-panel-h">胃腸道與肝膽胰神經內分泌腫瘤之分類與分級<span class="rx-panel-src">NE-A（4 of 7）</span></div>' +
+        rxLine('分化良好 Well-differentiated（＝ NET）', '走 PanNET-1～13 或 WDG3-1～4', [
+          '<b>NET, G1</b>——低度；有絲分裂 <b>&lt;2</b>/2mm²；Ki-67 <b>&lt;3%</b>',
+          '<b>NET, G2</b>——中度；有絲分裂 <b>2–20</b>/2mm²；Ki-67 <b>3–20%</b>',
+          '<b>NET, G3</b>——高度；有絲分裂 <b>&gt;20</b>/2mm²；Ki-67 <b>&gt;20%</b>' +
+          '（<b>仍為分化良好</b>，走 WDG3-1～4，<b>≠ NEC</b>）'
+        ]) +
+        rxLine('分化差 Poorly differentiated（＝ NEC）', '走 PDNEC-1', [
+          '<b>神經內分泌癌 NEC，小細胞型（SCNEC）</b>——有絲分裂 <b>&gt;20</b>/2mm²；Ki-67 <b>&gt;20%</b>',
+          '<b>NEC，大細胞型（LCNEC）</b>——有絲分裂 <b>&gt;20</b>/2mm²；Ki-67 <b>&gt;20%</b>',
+          '<b>註 c</b>：<b>分化差之 NEC 不另作正式分級，依定義即屬高度（high grade）</b>。'
+        ]) +
+        rxLine('混合型 MiNEN', '分化程度與分級皆為 Variable', [
+          '<b>MiNEN</b>（混合神經內分泌–非神經內分泌腫瘤）——<b>分化：可為分化良好或分化差</b>；' +
+          '分級、有絲分裂與 Ki-67 皆<b>不定</b>。',
+          '<b>註 d</b>：<b>多數 MiNEN 之神經內分泌與非神經內分泌兩種成分皆為分化差</b>，' +
+          '且神經內分泌成分之增生指數與其他 NEC 相當；<b>但此分類容許其中一種或兩種成分為分化良好</b>，' +
+          '<b>故可行時應將兩種成分<u>分別分級</u></b>。'
+        ]) +
+        '<div class="rx-warn"><b>⚠ 判別關鍵（PDNEC-1A 註 c）</b>：' +
+        '<b>並非所有高度（Ki-67 &gt;20%）之神經內分泌腫瘤都是分化差</b>' +
+        '（Not all high-grade [Ki-67 &gt;20%] neuroendocrine neoplasms are poorly differentiated）。' +
+        '<b>Ki-67 &gt;20% 只是必要條件，不是充分條件</b>——真正的分野是<b>形態學上的分化程度</b>：' +
+        '分化良好者為 <b>NET G3</b>（走 WDG3-1～4），分化差者才是 <b>NEC</b>（走 PDNEC-1）。' +
+        '<b>存疑時，WDG3-1 建議以組織病理或分子檢測評估 <u>p53、Rb、p16</u> 協助區分。</b></div>' +
+        '<div class="rx-def"><b>註 b（增生指數之判讀）</b>：有絲分裂數以 <b>/2mm²</b> 表示' +
+        '（＝ 40 倍下 10 個高倍視野、目鏡視野直徑 0.5mm），計數 <b>50 個 0.2mm² 視野（合計 10mm²）</b>；' +
+        'Ki-67 則於<b>標記最密集之熱點（hot spots）</b>計數<b>至少 500 個細胞</b>。' +
+        '<b>最終分級取兩項指數中「落在較高級別」者為準。</b><br>' +
+        '<b>資料來源</b>：Klimstra DS, Klöppel G, La Rosa S, et al. ' +
+        'WHO Classification of Tumours, Digestive System Tumours, 5th ed.（2019）。</div>' +
+      '</div></details>';
+  }
+
+  /* ---------- NE-H（5 of 9）：分化差 NEC／MiNEN 之全身性治療 ---------- */
+  function pdnecSystemicPanel() {
+    return '<div class="rec-detail rx-panel">' +
+      '<div class="rx-panel-h">肺外分化差之神經內分泌癌／大或小細胞癌／MiNEN 之全身性治療' +
+      '<span class="rx-panel-src">NE-H（5 of 9）</span></div>' +
+      rxLine('可切除疾病 Resectable disease', '', [
+        '<span class="rx">Carboplatin + etoposide</span>',
+        '<span class="rx">Cisplatin + etoposide</span>',
+        '<span class="rx">FOLFIRI</span>',
+        '<span class="rx">FOLFOX</span>',
+        '<span class="rx">Temozolomide ± capecitabine</span>'
+      ]) +
+      rxLine('局部區域不可切除：化放療 Chemoradiation', '同步或依序 concurrent／sequential', [
+        '<span class="drug">Capecitabine</span>——<b>當 etoposide + 鉑類不可行時</b>（when etoposide + platinum is not feasible）',
+        '<span class="rx">Carboplatin + etoposide</span>',
+        '<span class="rx">Cisplatin + etoposide</span>'
+      ]) +
+      rxLine('局部區域不可切除／轉移性：全身性治療 · 化學治療', '', [
+        '<span class="rx">Carboplatin + etoposide</span>',
+        '<span class="rx">Cisplatin + etoposide</span>',
+        '<span class="rx">Carboplatin + irinotecan</span>',
+        '<span class="rx">Cisplatin + irinotecan</span>',
+        '<span class="rx">FOLFIRI</span>',
+        '<span class="rx">FOLFIRINOX</span>',
+        '<span class="rx">FOLFOX</span>',
+        '<span class="rx">Temozolomide ± capecitabine</span>'
+      ]) +
+      rxLine('局部區域不可切除／轉移性：免疫治療', '<b>需生物標記</b>', [
+        '<span class="drug">Pembrolizumab</span>——<b>限 MSI-H、dMMR 或 TMB-H（≥10 mut/Mb）</b>' +
+        '（註 o：須經 FDA 核准之檢測判定，且<b>已於先前治療後進展、無其他滿意治療選項</b>者）',
+        '<span class="drug">Nivolumab</span> + <span class="drug">ipilimumab</span>——<b>category 2B</b>，' +
+        '<b>僅用於<u>轉移性且已進展</u>者</b>（only for metastatic disease with progression）'
+      ]) +
+      rxLine('局部區域不可切除／轉移性：標靶治療', '<b>需基因變異</b>', [
+        '<span class="drug">Dabrafenib</span> + <span class="drug">trametinib</span>——<b>限 <u>BRAF V600E</u> 突變陽性</b>',
+        '<span class="drug">Entrectinib</span>——<b>限 <u>NTRK</u> 基因融合陽性</b>',
+        '<span class="drug">Larotrectinib</span>——<b>限 <u>NTRK</u> 基因融合陽性</b>',
+        '<span class="drug">Repotrectinib</span>——<b>限 <u>NTRK</u> 基因融合陽性</b>',
+        '<span class="drug">Selpercatinib</span>——<b>限 <u>RET</u> 基因融合陽性</b>'
+      ]) +
+      '<div class="rx-warn"><b>⚠ 註 h</b>：<b>免疫檢查點抑制劑併用化療，對所有肺外 PDNEC 病人而言仍屬<u>研究性質</u></b>' +
+      '（investigational）。<br><b>⚠ 註 e</b>：<b>SSTR 影像（SSTR-PET/CT 或 SSTR-PET/MRI）<u>不屬於</u> PDNEC 之例行評估項目</b>' +
+      '——此點與分化良好之 NET 相反。</div>' +
+      '<div class="rx-def">' + cat2A + '</div>' +
+      '</div>';
+  }
+
   /* ---------- NE-H（4 of 9）：WD G3 之全身性治療 ---------- */
   function wdg3SystemicPanel(bio) {
     var h = '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">NE-H（4 of 9）· 分化良好 G3 神經內分泌腫瘤之全身性治療</div>' +
+      '<div class="rx-panel-h">分化良好 G3 神經內分泌腫瘤之全身性治療<span class="rx-panel-src">NE-H（4 of 9）</span></div>' +
       '<div class="rx-def"><b>註 h</b>：<b>因缺乏前瞻性臨床試驗資料可指引治療，故<u>臨床試驗為 preferred</u></b>' +
       '（Clinical trials are preferred due to a lack of data from prospective clinical trials to guide therapy）。<br>' +
       '<b>註 m（Ki-67 55% 切點之限制）</b>：<b>適當切點應為何，資料上有其限制</b>；' +
@@ -262,15 +354,19 @@
         '<b>本指引各處方多以 or 並列，且明載「無資料可指引全身性治療之排序」。</b></p>';
     } else {
       // 嵌入於「神經內分泌瘤（NET）」條目之胰臟分支時的精簡說明（開場與重置鍵由 NET 統一提供）
-      h += '<div class="note"><b>胰臟 NET（PanNET）之完整流程</b>——依台大胰臟神經內分泌腫瘤診療指引 版次 02（PanNET-1～13、WDG3-1～4、NE-H；Source: NCCN v3.2025）。' +
-        '<b>僅適用於分化良好之胰臟 NET（G1／G2 與 WD G3）</b>；NEC 與 MiNEN 不適用。</div>';
+      h += '<div class="note"><b>胰臟 NET（PanNET）之完整流程</b>——依台大胰臟神經內分泌腫瘤診療指引 版次 02' +
+        '（PanNET-1～13、WDG3-1～4、PDNEC-1、NE-A、NE-H；Source: NCCN v3.2025）。' +
+        '<b>步驟 1 依「分化程度」分三條主幹</b>：分化良好 G1／G2、分化良好 G3（WD G3），' +
+        '以及<b>分化差之 NEC（小細胞／大細胞型）與 MiNEN</b>（走 PDNEC-1，治療與預後與 NET 完全不同）。</div>';
     }
     h += '<div class="onc-path" id="pnPath">';
 
     // Step 1 — 分化與分級
     h += step('pn_s1', '1', '分化與分級 Differentiation &amp; Grade（WHO 2019／消化系統腫瘤分類第 5 版）',
       opt('grade', 'g12', '分化良好 · G1／G2', 'Ki-67 &lt;3%（G1）或 3–20%（G2）→ PanNET-1～13') +
-      opt('grade', 'wdg3', '分化良好 · G3（WD G3）', 'Ki-67 &gt;20% <b>但分化良好</b> → WDG3-1～4（<b>≠ NEC</b>）'),
+      opt('grade', 'wdg3', '分化良好 · G3（WD G3）', 'Ki-67 &gt;20% <b>但分化良好</b> → WDG3-1～4（<b>≠ NEC</b>）') +
+      opt('grade', 'pdnec', '<b>分化差</b> · NEC（小細胞／大細胞型）或 MiNEN',
+          'Poorly differentiated → <b>PDNEC-1</b>（≠ NET，治療與預後完全不同）'),
       '<div class="note"><b>AJCC v9（2023）之胰臟 NET 分期表明載適用於「Well-Differentiated Neuroendocrine Tumors of the ' +
       'Pancreas (<u>NET G1, G2, and G3</u>)」——即 </b><b>WD G3 與 G1／G2 共用同一張分期表</b>，但<b>治療流程不同</b>' +
       '（G1／G2 走 PanNET-1～13；WD G3 走 WDG3-1～4）。<br>' +
@@ -279,7 +375,10 @@
       '視需要 <b>FDG-PET/CT</b>（<b>註 e：若考慮 PRRT，應同時考慮 FDG-PET 與 DOTATATE-PET</b>）、' +
       '<b>病理 review</b>，並<b>考慮腫瘤組織之分子檢測</b>（註 f：以腫瘤組織檢測為<b>優先</b>；' +
       '若不可行可考慮<b>液態切片</b>）。<b>基因檢測僅適用於十二指腸 NET 或 PanNET</b>。<br>' +
-      cat2A + '</div>');
+      '<b>⚠ 分化良好（NET）與分化差（NEC／MiNEN）是本頁最上游的分岔</b>——' +
+      '<b>Ki-67 &gt;20% 同時見於 NET G3 與 NEC，不能只憑 Ki-67 判斷</b>，須依形態學之分化程度區分' +
+      '（PDNEC-1A 註 c）。分類準則見下方 WHO 2019 對照表。<br>' +
+      cat2A + '</div>' + whoClassPanel());
 
     // ===== G1/G2 分支 =====
     // Step 2 — 功能性型態
@@ -353,6 +452,33 @@
       '（指引原文：treatment considerations need to account for both pathologic and clinical features）。<br>' +
       '<b>指引使用「eg,（例如）」措辭</b>：favorable／unfavorable 之三項描述為<b>例示而非硬性判準</b>。</div>');
     h = h.replace('id="pn_s3w"', 'id="pn_s3w" class="hidden"');
+
+    // ===== 分化差 NEC／MiNEN 分支（PDNEC-1）=====
+    h += connH('pn_c2p');
+    h += step('pn_s2p', '2', '疾病範圍 Disease extent（分化差 NEC／MiNEN；PDNEC-1）',
+      opt('pdscope', 'res', '<b>可切除</b> Resectable', '→ 手術為主軸，處置依疾病部位而定') +
+      opt('pdscope', 'unres', '<b>局部區域不可切除</b> Locoregional, unresectable', '→ 化放療或化療；進展後接續次線') +
+      opt('pdscope', 'met', '<b>轉移性</b> Metastatic', '→ 化學治療；進展後接續次線'),
+      '<div class="cbx"><div class="cbx-h">評估 EVALUATION（PDNEC-1；註 c、e）' +
+      '　<span class="cbx-sub">建議項目與「視情況」項目分列</span></div><div class="cbx-items">' +
+      cb('建議', '<b>多相位胸部／腹部／骨盆 CT</b>（NE-D）') +
+      cb('建議', '<b>或</b> 胸部 CT ＋ 腹部／骨盆 MRI（NE-D）') +
+      cb('視情況', '腦部 MRI 或含顯影劑之 CT') +
+      cb('視情況', '<b>FDG-PET/CT</b>（NE-D）') +
+      cb('視情況', '生化評估（依臨床需要）') +
+      cb('視情況', '<b>考慮腫瘤組織之分子檢測</b>（註 g）') +
+      '</div></div>' +
+      '<div class="note"><b>註 f</b>：多相位影像須於<b>動脈期與門靜脈期</b>施打顯影劑。<br>' +
+      '<b>⚠ 註 e</b>：<b>SSTR 影像（SSTR-PET/CT 或 SSTR-PET/MRI）<u>不屬於</u> PDNEC 之例行評估</b>' +
+      '——與分化良好 NET 相反。<br>' +
+      '<b>註 g（分子檢測）</b>：<b>局部區域不可切除／轉移且為抗癌治療候選者，應考慮腫瘤／體細胞分子檢測</b>以尋找可用藥之變異，' +
+      '包括但不限於 <b>NTRK 融合、RET 融合、BRAF V600E、MSI-H、dMMR、TMB-H</b>；' +
+      '<b>以腫瘤組織檢測為優先，不可行時可考慮液態切片</b>。<br>' +
+      '<b>註 d（MiNEN）</b>：<b>PDNEC 常合併腺癌或鱗狀細胞癌等非神經內分泌成分，此類腫瘤之處置仍有爭議</b>；' +
+      '<b>常可考慮採用針對該非神經內分泌成分之化療處方</b>。<br>' +
+      '<b>文獻</b>：Eads JR et al. Endocr Relat Cancer 2023;30:e220206（註 a）；' +
+      'Sorbye H et al. J Neuroendocrinol 2023;35:e13249（註 b）。</div>');
+    h = h.replace('id="pn_s2p"', 'id="pn_s2p" class="hidden"');
 
     // 建議處置 + 追蹤
     h += '<div class="flow-rec rec-idle" id="pn_rec"><div class="rec-label">建議處置 Recommendation</div>' +
@@ -434,6 +560,25 @@
         '<b>胸部 CT（± 顯影劑）</b>依臨床需要；<b>FDG-PET/CT</b> 依臨床需要；<b>生化標記</b>依臨床需要（NE-E）。</li>' +
         '<li><b>⚠ 注意此分支列 FDG-PET/CT 而非 SSTR-PET</b>——與 favorable biology 之 SSTR-PET 陽性相對應。</li>' +
         '</ul>';
+    } else if (type === 'pdres') {
+      h = '<div class="fu-label">監測 Surveillance（PDNEC-1 · 分化差 · 可切除分支）</div><ul class="fu-list">' +
+        '<li><b>每 12 週一次，共 1 年；之後每 6 個月一次</b>（註 j：<b>若出現症狀應提早</b>）。</li>' +
+        '<li>每次內容：<b>病史與理學檢查（H&amp;P）</b>；<b>適當之影像檢查</b>——' +
+        '<b>胸部 CT（± 顯影劑）＋ 含顯影劑之腹部／骨盆 MRI</b>，' +
+        '<b>或</b> <b>多相位胸部／腹部／骨盆 CT</b>（NE-D）。</li>' +
+        '<li><b>⚠ 與不可切除／轉移分支不同</b>：後者為<b>每 6–16 週</b>之較密集監測。</li>' +
+        '<li><b>註 k</b>：長期存活者之照護另見 NCCN Guidelines for Survivorship。</li>' +
+        '</ul>';
+    } else if (type === 'pdadv') {
+      h = '<div class="fu-label">監測 Surveillance（PDNEC-1 · 分化差 · 局部區域不可切除／轉移分支）</div><ul class="fu-list">' +
+        '<li><b>每 6–16 週一次</b>（註 j：<b>若出現症狀應提早</b>）——' +
+        '<b>本監測涵蓋<u>局部區域不可切除</u>與<u>轉移性</u>兩條分支</b>（原圖之括號同時涵蓋兩列）。</li>' +
+        '<li>每次內容：<b>病史與理學檢查（H&amp;P）</b>；<b>適當之影像檢查</b>——' +
+        '<b>胸部 CT（± 顯影劑）＋ 含顯影劑之腹部／骨盆 MRI</b>，' +
+        '<b>或</b> <b>多相位胸部／腹部／骨盆 CT</b>（NE-D）。</li>' +
+        '<li><b>疾病進展</b> → <b>化學治療／免疫治療／標靶治療</b>（NE-H，三項並列；見建議處置內之處方面板）。</li>' +
+        '<li><b>註 k</b>：長期存活者之照護另見 NCCN Guidelines for Survivorship。</li>' +
+        '</ul>';
     } else { // palliative
       h = '<div class="fu-label">監測與後續 Follow-up（PanNET-12 → PanNET-13）</div><ul class="fu-list">' +
         '<li><b>觀察者</b>：以<b>標記</b>與<b>多相位腹部／骨盆 CT 或 MRI</b>（NE-D）<b>每 12 週–12 個月</b>追蹤；' +
@@ -454,7 +599,7 @@
   /* ---------- 主渲染 ---------- */
   function pnRender() {
     var s = pnSt;
-    var g12 = s.grade === 'g12', wdg3 = s.grade === 'wdg3';
+    var g12 = s.grade === 'g12', wdg3 = s.grade === 'wdg3', pdnec = s.grade === 'pdnec';
 
     pnShow('pn_c2', g12); pnShow('pn_s2', g12);
 
@@ -474,12 +619,65 @@
     var showBio = wdg3 && !!s.w3scope;
     pnShow('pn_c3w', showBio); pnShow('pn_s3w', showBio);
 
+    pnShow('pn_c2p', pdnec); pnShow('pn_s2p', pdnec);
+
     renderRec();
   }
 
   function renderRec() {
     var s = pnSt;
     if (!s.grade) { idleRec('請選擇步驟 1（分化與分級）'); return; }
+
+    /* ===== 分化差 NEC／MiNEN（PDNEC-1）=====
+       ⚠ 流程圖之連線（已對照原圖確認）：「若進展」之次線選項與「每 6–16 週」之監測，
+       其括號同時涵蓋<局部區域不可切除>與<轉移性>兩列；<可切除>則自成一列、
+       採另一套較疏的監測（每 12 週 × 1 年 → 每 6 個月）。 */
+    if (s.grade === 'pdnec') {
+      if (!s.pdscope) { idleRec('請選擇步驟 2（疾病範圍）'); return; }
+
+      if (s.pdscope === 'res') {
+        result('rec-elective', '分化差 NEC／MiNEN · <b>可切除</b> → 依疾病部位選擇，四項並列（PDNEC-1）', [
+          '<b>指引原文</b>：<b>治療選項取決於疾病侵犯之部位</b>（Therapy options depend on sites of disease），' +
+          '以下<b>四項為並列選項，指引未定義優先順序</b>：',
+          '<b>①</b> <b>切除</b>（NE-F）＋ <b>術後輔助化療</b>（NE-H）<b>± 放療</b>',
+          '<b>②</b> <b>術前新輔助化療</b>（NE-H）<b>± 放療</b> ＋ <b>切除</b>（NE-F）',
+          '<b>③</b> <b>單獨化療</b>（Chemotherapy alone，NE-H）',
+          '<b>④</b> <b>根治性化放療</b>：<span class="rx">cisplatin + etoposide</span> 或 ' +
+          '<span class="rx">carboplatin + etoposide</span>',
+          '<b>處方細節見下方 NE-H 5 of 9。</b>'
+        ], 'PDNEC-1：Extrapulmonary poorly differentiated → Resectable → Resection (NE-F) + adjuvant chemotherapy (NE-H) ± RT ／ ' +
+           'Neoadjuvant chemotherapy (NE-H) ± RT + resection (NE-F) ／ Chemotherapy alone (NE-H) ／ ' +
+           'Definitive chemoradiation with cisplatin + etoposide or carboplatin + etoposide。' + '｜' + cat2A,
+        'pdres', pdnecSystemicPanel());
+        return;
+      }
+
+      if (s.pdscope === 'unres') {
+        result('rec-nonop', '分化差 NEC／MiNEN · <b>局部區域不可切除</b> → 化放療 或 化療（PDNEC-1）', [
+          '<b>同步或依序之放療 ＋ 化療</b>（Concurrent or sequential RT + chemotherapy，NE-H），',
+          '<b>或</b> <b>單獨化療</b>（Chemotherapy，NE-H）。',
+          '<b>化放療處方（NE-H 5 of 9）</b>：<span class="drug">capecitabine</span>' +
+          '（<b>當 etoposide + 鉑類不可行時</b>）／<span class="rx">carboplatin + etoposide</span>／' +
+          '<span class="rx">cisplatin + etoposide</span>。',
+          '<b>若進展</b>（NE-H）→ <b>化學治療</b>／<b>免疫治療</b>／<b>標靶治療</b>（三項並列，見下方處方面板）。'
+        ], 'PDNEC-1：Locoregional, unresectable → Concurrent or sequential RT + chemotherapy (NE-H) or Chemotherapy (NE-H) → ' +
+           'If progression (NE-H): Chemotherapy／Immunotherapy／Targeted therapy。' + '｜' + cat2A,
+        'pdadv', pdnecSystemicPanel());
+        return;
+      }
+
+      // met
+      result('rec-nonop', '分化差 NEC／MiNEN · <b>轉移性</b> → 化學治療（PDNEC-1）', [
+        '<b>化學治療</b>（Chemotherapy，NE-H）——<b>轉移性分支於 PDNEC-1 僅列此一項</b>，' +
+        '不含放療（與局部區域不可切除分支之「化放療」不同）。',
+        '<b>若進展</b>（NE-H）→ <b>化學治療</b>／<b>免疫治療</b>／<b>標靶治療</b>（三項並列，見下方處方面板）。',
+        '<b>此分支可用 <span class="drug">nivolumab</span> + <span class="drug">ipilimumab</span></b>' +
+        '（category 2B）——<b>該選項僅限「轉移性且已進展」者</b>，局部區域不可切除者不適用。'
+      ], 'PDNEC-1：Metastatic → Chemotherapy (NE-H) → If progression (NE-H): Chemotherapy／Immunotherapy／Targeted therapy。' +
+         '｜' + cat2A,
+      'pdadv', pdnecSystemicPanel());
+      return;
+    }
 
     /* ===== 分化良好 G3（WDG3-1～4）===== */
     if (s.grade === 'wdg3') {
@@ -785,8 +983,10 @@
     var s = pnSt;
     if (key === 'grade') {
       s.grade = val;
-      s.func = s.scope = s.size = s.loc = s.burden = s.w3scope = s.w3bio = null;
-      pnClearSel(['pn_s2', 'pn_s3', 'pn_s4nf', 'pn_s4loc', 'pn_s4adv', 'pn_s2w', 'pn_s3w']);
+      s.func = s.scope = s.size = s.loc = s.burden = s.w3scope = s.w3bio = s.pdscope = null;
+      pnClearSel(['pn_s2', 'pn_s3', 'pn_s4nf', 'pn_s4loc', 'pn_s4adv', 'pn_s2w', 'pn_s3w', 'pn_s2p']);
+    } else if (key === 'pdscope') {
+      s.pdscope = val;
     } else if (key === 'func') {
       s.func = val;
       s.scope = s.size = s.loc = s.burden = null;

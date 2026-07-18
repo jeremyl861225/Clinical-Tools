@@ -2,7 +2,7 @@
 /* ============================================================
    渲染 Rendering
    ============================================================ */
-var GROUP_ORDER = ['消化系 GI','婦科 Gynecologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue'];
+var GROUP_ORDER = ['消化系 GI','婦科 Gynecologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue','頭頸 Head & Neck','泌尿 Genitourinary','血液淋巴 Hematolymphoid'];
 
 /* 家族（兩層選單）：範圍大到一張清單塞不下的癌別群（婦癌）先收成一張卡，
    點進去再選細分項。成員癌別本身仍是獨立的 CANCERS 條目——搜尋、#cancer= 深層
@@ -13,14 +13,45 @@ function familyOf(id){
   return null;
 }
 
+/* 癌別方磚:圖檔以癌別 id 命名(assets/organs/<id>.png),故不需另維護對照表。
+   婦科細分項共用家族圖版(同為子宮／卵巢構造)。無對應圖版者以 no-img 呈現純色方磚,不破圖。 */
+var ONC_TILE_IMG = {
+  gyn:1, lung:1, esoph:1, gastric:1, panc:1, breast:1, gist:1, thyroid:1,
+  colorectal:1, anal:1, appendix:1, hcc:1, cca:1, net:1, sts:1,
+  npc:1, hnc:1, uro:1, heme:1,
+  cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn'
+};
+function oncTile(id, zh, en, onclick, extraClass, extraHtml){
+  var m = ONC_TILE_IMG[id];
+  var file = m === 1 ? id : m;                        // 1=同名檔;字串=共用他者圖版
+  var img = file
+    ? '<img class="oc-img" src="../assets/organs/'+file+'.png" alt="" loading="lazy" decoding="async">'
+    : '';
+  return '<button class="onc-card'+(extraClass||'')+(file?'':' no-img')+'" onclick="'+onclick+'">'+
+           img+'<span class="oc-scrim"></span>'+
+           '<span class="oc-label">'+
+             '<span class="oc-name">'+escapeHtml(zh)+'</span>'+
+             '<span class="oc-en">'+escapeHtml(en)+'</span>'+
+             (extraHtml||'')+
+           '</span></button>';
+}
+
 function renderPicker(filter){
   filter = (filter||'').trim().toLowerCase();
+  var families = window.CANCER_FAMILIES || [];
   var byGroup = {};
-  var grouped = !filter;   // 搜尋時攤平到癌別本身，不再多一層家族卡
+  // 搜尋時一律攤平到癌別本身：使用者打「卵巢」要直接看到卵巢癌，不該再多點一層家族卡。
+  var grouped = !filter;
   var shown = {};
+
   CANCERS.forEach(function(c){
     if(filter){
-      var hay = (c.zh + ' ' + c.en + ' ' + c.id).toLowerCase();
+      // 子分型名稱一併納入比對：大腸直腸癌之標題不含「結腸／直腸」字樣，
+      // 打「結腸」「直腸」「colon」「rectum」仍須找得到這張卡。
+      var hay = (c.zh + ' ' + c.en + ' ' + c.id + ' ' +
+        (c.subtypes || []).map(function(s){
+          return (s.label || '') + ' ' + (s.search_label || '') + ' ' + (s.search_en || '') + ' ' + (s.key || '');
+        }).join(' ')).toLowerCase();
       if(hay.indexOf(filter) === -1) return;
     }
     var fam = grouped ? familyOf(c.id) : null;
@@ -32,6 +63,7 @@ function renderPicker(filter){
       (byGroup[c.group] = byGroup[c.group] || []).push({c:c});
     }
   });
+
   var html = '';
   var groups = GROUP_ORDER.filter(function(g){return byGroup[g];});
   Object.keys(byGroup).forEach(function(g){ if(groups.indexOf(g)===-1) groups.push(g); });
@@ -42,14 +74,10 @@ function renderPicker(filter){
     html += '<div class="onc-group-head">'+escapeHtml(g)+'</div><div class="onc-grid">';
     byGroup[g].forEach(function(x){
       if(x.fam){
-        html += '<button class="onc-card is-family" onclick="showFamily(\''+x.fam.id+'\')">'+
-                '<span class="oc-name">'+escapeHtml(x.fam.zh)+'<span class="oc-count">'+x.fam.members.length+' 項</span></span>'+
-                '<span class="oc-en">'+escapeHtml(x.fam.en)+'</span>'+
-                '<span class="oc-sub">'+escapeHtml(x.fam.sub||'')+'</span></button>';
+        html += oncTile(x.fam.id, x.fam.zh, x.fam.en, 'showFamily(\''+x.fam.id+'\')',
+                        ' is-family', '<span class="oc-count">'+x.fam.members.length+' 項</span>');
       } else {
-        html += '<button class="onc-card" onclick="showDetail(\''+x.c.id+'\')">'+
-                '<span class="oc-name">'+escapeHtml(x.c.zh)+'</span>'+
-                '<span class="oc-en">'+escapeHtml(x.c.en)+'</span></button>';
+        html += oncTile(x.c.id, x.c.zh, x.c.en, 'showDetail(\''+x.c.id+'\')');
       }
     });
     html += '</div>';
@@ -57,54 +85,121 @@ function renderPicker(filter){
   document.getElementById('oncPicker').innerHTML = html;
 }
 
-/* 第二層：家族內的細分項清單 */
+/* 點家族方磚 → 直接進入第一個成員的癌別頁，癌別切換交給頁內的 familyBar()。
+   與大腸直腸癌的部位切換列同款：不再有一層「選癌別」的中間頁，少一次點擊，
+   且在四個癌別之間比對時不必退回上一層。 */
 function showFamily(fid){
   var F = (window.CANCER_FAMILIES||[]).filter(function(f){return f.id===fid;})[0];
-  if(!F) return;
-  var html = '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>'+
-    '<h2 class="onc-title">'+escapeHtml(F.zh)+'<span class="oct-en">'+escapeHtml(F.en)+'</span></h2>';
-  if(F.note) html += '<p class="onc-note">'+F.note+'</p>';
-  html += '<div class="onc-grid">';
-  F.members.forEach(function(id){
-    var c = CANCERS.filter(function(x){return x.id===id;})[0];
-    if(!c) return;
-    html += '<button class="onc-card" onclick="showDetail(\''+c.id+'\')">'+
-            '<span class="oc-name">'+escapeHtml(c.zh)+'</span>'+
-            '<span class="oc-en">'+escapeHtml(c.en)+'</span></button>';
-  });
-  html += '</div>';
-  document.getElementById('oncPicker').style.display = 'none';
-  document.getElementById('oncSearch').style.display = 'none';
-  var d = document.getElementById('oncDetail');
-  d.style.display = 'block';
-  d.innerHTML = html;
-  window.scrollTo(0,0);
+  if(!F || !F.members.length) return;
+  showDetail(F.members[0]);
 }
 
-function showDetail(id){
-  var c = CANCERS.find(function(x){return x.id === id;});
-  if(!c) return;
+/* 家族切換列：外觀與 subtypeBar 相同（.onc-subtype），差別在成員是各自獨立的
+   CANCERS 條目，故 onclick 走 setFamilyMember() 而非 setSubtype()。 */
+function familyBar(id){
+  var F = familyOf(id);
+  if(!F) return '';
+  var h = '<div class="nd-ctrl onc-subtype"><div class="nd-h">'+
+          escapeHtml(F.bar_label || '癌別 Cancer type')+'</div><div class="nd-btns">';
+  F.members.forEach(function(mid){
+    var c = CANCERS.filter(function(x){return x.id===mid;})[0];
+    if(!c) return;
+    h += '<button class="nd-btn'+(mid===id?' active':'')+
+         '" onclick="setFamilyMember(\''+mid+'\')">'+escapeHtml(c.zh)+'</button>';
+  });
+  return h + '</div></div>';
+}
+
+/* 切換家族成員時沿用目前分頁——使用者在比對「四種婦癌的淋巴結」時，
+   不該每換一個癌別就被丟回分期頁。 */
+function setFamilyMember(id){
+  var cur = document.querySelector('.onc-tab.active');
+  var tab = cur ? cur.getAttribute('data-t') : null;
+  if(tab) ACTIVE_TAB[id] = tab;
+  showDetail(id, true);
+}
+
+/* ---------- 子分型（同一癌別下依部位分流）----------
+   結腸／直腸為同一 AJCC 分期表但治療流程、淋巴結分群與文獻皆不同，
+   故合併為單一癌別條目、進入後先選部位；所選部位之欄位覆寫基礎條目，
+   使三個分頁一律只呈現該部位之內容，不致混用。
+   base 提供兩部位共通者（T／N／M 定義、分期矩陣、共用文獻），
+   subtype 提供部位專屬者（staging_note、nodes、node_note、pathway、tx、專屬文獻）。 */
+var SUBTYPE = {};        // cancerId -> 目前選取之子分型 key
+var ACTIVE_TAB = {};     // cancerId -> 目前分頁，切換子分型時保留
+
+function subtypeOf(c){
+  if(!c || !c.subtypes || !c.subtypes.length) return null;
+  var key = SUBTYPE[c.id] || c.subtypes[0].key;
+  return c.subtypes.filter(function(x){return x.key === key;})[0] || c.subtypes[0];
+}
+
+/* 將選取之子分型覆寫至基礎條目，交給既有的 render* 函式（其不需知道子分型存在） */
+function resolveCancer(c){
+  var st = subtypeOf(c);
+  if(!st) return c;
+  var out = {};
+  Object.keys(c).forEach(function(k){ if(k !== 'subtypes') out[k] = c[k]; });
+  Object.keys(st).forEach(function(k){
+    if(k === 'key' || k === 'label' || k === 'refs') return;
+    out[k] = st[k];
+  });
+  // 文獻：共用（base）＋ 部位專屬（subtype）串接，避免兩處各留一份而分岔
+  if(st.refs) out.refs = (c.refs || []).concat(st.refs);
+  out._sub = st.key;
+  return out;
+}
+
+function setSubtype(id, key){
+  SUBTYPE[id] = key;
+  showDetail(id, true);
+}
+
+function subtypeBar(c){
+  if(!c.subtypes || !c.subtypes.length) return '';
+  var cur = (subtypeOf(c) || {}).key;
+  var h = '<div class="nd-ctrl onc-subtype"><div class="nd-h">'+
+          escapeHtml(c.subtype_label || '部位 Site')+'</div><div class="nd-btns">';
+  c.subtypes.forEach(function(s){
+    h += '<button class="nd-btn'+(s.key===cur?' active':'')+
+         '" onclick="setSubtype(\''+c.id+'\',\''+s.key+'\')">'+escapeHtml(s.label)+'</button>';
+  });
+  return h + '</div></div>';
+}
+
+function showDetail(id, keepScroll){
+  var base = CANCERS.find(function(x){return x.id === id;});
+  if(!base) return;
+  var c = resolveCancer(base);
+  var tab = ACTIVE_TAB[id] || 'stage';
   document.getElementById('oncPicker').style.display = 'none';
   document.getElementById('oncSearch').style.display = 'none';
   var d = document.getElementById('oncDetail');
   d.style.display = 'block';
-  // 家族成員的返回鍵回到該家族的細分項清單，而非跳回最上層——使用者是從那裡進來的。
-  var fam = familyOf(id);
-  var back = fam
-    ? '<button class="onc-back" onclick="showFamily(\''+fam.id+'\')">← 返回'+escapeHtml(fam.zh)+'</button>'
-    : '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>';
+  // 家族（婦癌）已無中間層——癌別改由頁內的 familyBar() 切換，故返回鍵一律回最上層清單。
+  var back = '<button class="onc-back" onclick="backToPicker()">← 返回癌症清單</button>';
+  // 尚未整編的癌別:只給標題與「網站架設中」,不進三分頁——沒有資料的空分頁比明講更難用。
+  if(c.wip){
+    d.innerHTML = back+
+      '<h2 class="onc-title">'+escapeHtml(c.zh)+'<span class="oct-en">'+escapeHtml(c.en)+'</span></h2>'+
+      '<div class="onc-wip">網站架設中</div>';
+    if(!keepScroll) window.scrollTo(0,0);
+    return;
+  }
   d.innerHTML = back+
     '<h2 class="onc-title">'+escapeHtml(c.zh)+'<span class="oct-en">'+escapeHtml(c.en)+'</span></h2>'+
+    familyBar(id)+
+    subtypeBar(base)+
     '<div class="onc-edition">'+escapeHtml(c.edition)+'</div>'+
     '<div class="onc-tabs">'+
-      '<button class="onc-tab active" data-t="stage" onclick="switchTab(\''+id+'\',\'stage\')">分期 TNM</button>'+
-      '<button class="onc-tab" data-t="node" onclick="switchTab(\''+id+'\',\'node\')">淋巴結分群</button>'+
-      '<button class="onc-tab" data-t="tx" onclick="switchTab(\''+id+'\',\'tx\')">治療建議</button>'+
+      '<button class="onc-tab'+(tab==='stage'?' active':'')+'" data-t="stage" onclick="switchTab(\''+id+'\',\'stage\')">分期 TNM</button>'+
+      '<button class="onc-tab'+(tab==='node'?' active':'')+'" data-t="node" onclick="switchTab(\''+id+'\',\'node\')">淋巴結分群</button>'+
+      '<button class="onc-tab'+(tab==='tx'?' active':'')+'" data-t="tx" onclick="switchTab(\''+id+'\',\'tx\')">治療建議</button>'+
     '</div>'+
     '<div id="oncTab"></div>'+
     renderRefs(c);
-  switchTab(id, 'stage');
-  window.scrollTo(0,0);
+  switchTab(id, tab);
+  if(!keepScroll) window.scrollTo(0,0);
 }
 
 function backToPicker(){
@@ -115,7 +210,8 @@ function backToPicker(){
 }
 
 function switchTab(id, tab){
-  var c = CANCERS.find(function(x){return x.id === id;});
+  var c = resolveCancer(CANCERS.find(function(x){return x.id === id;}));
+  ACTIVE_TAB[id] = tab;
   document.querySelectorAll('.onc-tab').forEach(function(b){
     b.classList.toggle('active', b.getAttribute('data-t') === tab);
   });
@@ -215,11 +311,11 @@ function renderStage(c){
 var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
   'IB1':1,'IB2':1,'IB3':1,'IC1':1,'IC2':1,'IC3':1,
   'II':2,'IIA':2,'IIA1':2,'IIA2':2,'IIB':3,'IIC':3,
-  'IIIA':4,'IIIA1':4,'IIIA2':4,'IIIB':5,'IIIC':6,'IIIC1':6,'IIIC2':6,'III':4,
+  'IIIA':4,'IIIA1':4,'IIIA1(i)':4,'IIIA1(ii)':4,'IIIA2':4,'IIIB':5,'IIIC':6,'IIIC1':6,'IIIC2':6,'III':4,
   'IV':7,'IVA':7,'IVB':7,'IVC':7};
-// 婦癌新增之細分期別：子宮頸 FIGO 2018 之 IB1–IB3／IIA1–IIA2／IIIC1–IIIC2、
-// 卵巢 FIGO 2014 之 IC1–IC3／IIIA1–IIIA2、子宮體 IIIC1／IIIC2。
 // 'IC'：食道腺癌 pTNM 獨有期別（T1 N0 G3、或 T2 N0 G1–2）；仍屬第一期，故與 IA／IB 同深度。
+// 婦癌新增之細分期別：子宮頸 FIGO 2018 之 IB1–IB3／IIA1–IIA2／IIIC1–IIIC2、
+// 卵巢 FIGO 2014 之 IC1–IC3／IIIA1–IIIA2、子宮體 IIIC1／IIIC2。未列入者會渲染成無底色。
 function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
 /* 以 canvas 依 sm-th 字體實測列標籤（T／N／M）之最大寬度，決定標籤欄寬。
@@ -234,7 +330,9 @@ function labelColWidth(labels){
   }
   var w = 0;
   labels.forEach(function(t){ w = Math.max(w, _lblCtx.measureText(String(t).replace(/<[^>]+>/g,'')).width); });
-  return Math.min(150, Math.max(40, Math.ceil(w) + 16));   // 上限 150px；超過者由 sm-th 換行
+  // 下限 64px：舊值 40px 是「剛好容納 M1a」的極限，短標籤的表（NET、大腸直腸…）會被壓到下限，
+  // 而資料欄可寬達 390px，比例約 1:10，標籤欄看起來像被擠掉。+22 為左右留白預算。
+  return Math.min(150, Math.max(64, Math.ceil(w) + 22));   // 上限 150px；超過者由 sm-th 換行
 }
 
 function renderMatrix(mx){
@@ -254,8 +352,16 @@ function renderMatrix(mx){
   mx.trows.forEach(function(t, i){
     h += '<tr><th class="sm-th">'+t+'</th>';
     if(hasNG && i===0) h += '<td class="sm-ng" rowspan="'+mx.trows.length+'">'+mx.ng_label+'</td>';
-    (mx.cells[i]||[]).forEach(function(s){
-      h += '<td class="sm-cell '+shadeClass(s)+'">'+s+'</td>';
+    // 合併記號：'^' 併入上方格（rowspan）、'<' 併入左方格（colspan）。
+    // 用於期別不隨該軸改變之區塊——如子宮頸之 N1 欄自 TX 到 T3b 全是 IIIC1，
+    // 併成一格才看得出「N 覆寫 T」；不併則像是每列各自算出同一個答案。
+    (mx.cells[i]||[]).forEach(function(s, j){
+      if(s === '^' || s === '<') return;
+      var rs = 1, cs = 1;
+      while(mx.cells[i+rs] && mx.cells[i+rs][j] === '^') rs++;
+      while((mx.cells[i]||[])[j+cs] === '<') cs++;
+      h += '<td class="sm-cell '+shadeClass(s)+'"'+
+           (rs>1?' rowspan="'+rs+'"':'')+(cs>1?' colspan="'+cs+'"':'')+'>'+s+'</td>';
     });
     h += '</tr>';
   });
@@ -433,10 +539,25 @@ function escapeHtml(s){
   });
 }
 
+/* 舊條目 id → 合併後之條目與子分型。結腸／直腸原為兩個獨立癌別，
+   合併為「大腸直腸癌」後，既有書籤與首頁查詢連結仍須可用。 */
+var ID_ALIAS = {
+  colon:  { id:'colorectal', sub:'colon'  },
+  rectal: { id:'colorectal', sub:'rectal' }
+};
+
 /* 深層連結：#cancer=<id>，供首頁全站查詢直接開啟該癌症 */
 function applyHash(){
   var m = decodeURIComponent((location.hash||'').replace(/^#/,'')).match(/^cancer=(.+)$/);
-  if(m && CANCERS.some(function(c){return c.id===m[1];})){ showDetail(m[1]); return true; }
+  if(!m) return false;
+  var want = m[1];
+  if(CANCERS.some(function(c){return c.id===want;})){ showDetail(want); return true; }
+  var a = ID_ALIAS[want];
+  if(a && CANCERS.some(function(c){return c.id===a.id;})){
+    SUBTYPE[a.id] = a.sub;
+    showDetail(a.id);
+    return true;
+  }
   return false;
 }
 
