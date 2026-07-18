@@ -141,6 +141,9 @@
   .dose-fmt{display:flex; flex-direction:column;}
   .dose-fmt .dl-line{margin:1px 0;}
   .dose-fmt .dl-line + .dl-item{margin-top:3px;}
+  /* 途徑標頭（如「靜脈（IF）：」）：獨立一行、稍加強，其下子句左緣對齊 */
+  .dose-fmt .dl-head{font-weight:600; color:var(--label-ink); margin:4px 0 1px;}
+  .dose-fmt .dl-head:first-child{margin-top:0;}
   .dose-fmt .dl-item{padding-left:1.15em; text-indent:-1.15em; margin:2px 0;}
   .dose-fmt .dl-item::before{content:'•'; color:var(--accent); margin-right:.5em;}
   .dose-fmt .dl-sub{padding-left:2.35em; text-indent:-1.1em; margin:1px 0; color:var(--muted);}

@@ -153,10 +153,48 @@ function uniqueDrugs(type){
 /* 劑量段落排版：把資料裡既有的 <br>／•／【】／子項結構排成有懸掛縮排的條列，
    純段落（無結構標記）原樣返回，不臆造斷行、不改動任何字元。
    注意：欄位字串內有大量「字面 <」（如「< 60 kg」「<12 歲」），故只按字面
-   「<br>」切割，其餘（含 <b>、&nbsp; 等）全部原樣保留，切勿用會吃掉 <…> 的 regex。 */
-function fmtDose(text){
+   「<br>」切割，其餘（含 <b>、&nbsp; 等）全部原樣保留，切勿用會吃掉 <…> 的 regex。
+
+   split=true（僅常用劑量／兒科劑量）時，另把「途徑（…）：適應症1：劑量；適應症2：劑量」
+   這種長句在自然分句處（；／。）斷行，並把開頭的「途徑：」標頭獨立一行，提升可讀性。
+   斷句只在括號外進行（不會切開「（max 8 g/劑）」），逐字不增不減。 */
+const DOSE_ROUTE=/^(?:口服|靜脈注射|靜脈滴注|靜脈|肌肉注射|肌肉|皮下注射|皮下|吸入|鞘內|腦室內|間歇\s*IF|緩慢\s*IF|持續\s*IF|連續\s*IF|IF|IV|PO|IM|SC)/;
+function balancedParen(s){
+  let d=0; for(const c of s){ if(c==='（'||c==='(')d++; else if(c==='）'||c===')'){ if(--d<0)return false; } } return d===0;
+}
+/* 把一個長行切成子句行；回傳 [{text, head?}]。head 為「途徑：」標頭。 */
+function doseLines(seg){
+  const parts=[]; let cur='', depth=0;                    // 只在括號外（depth==0）於 ；／。 斷句
+  for(const c of seg){
+    cur+=c;
+    if(c==='（'||c==='(')depth++;
+    else if(c==='）'||c===')')depth--;
+    else if((c==='；'||c==='。')&&depth===0){ parts.push(cur); cur=''; }
+  }
+  if(cur.trim())parts.push(cur);
+  const lines=parts.filter(p=>p.trim()).map(p=>({text:p.trim()}));
+  if(lines.length){                                       // 首段若為「途徑（…）：…」拆出標頭
+    const first=lines[0].text;
+    if(DOSE_ROUTE.test(first)){
+      const ci=first.indexOf('：');
+      if(ci>0 && ci<first.length-1 && ci<=30 && balancedParen(first.slice(0,ci))){
+        const rest=first.slice(ci+1).trim();
+        lines.splice(0,1,{text:first.slice(0,ci+1),head:true},
+                          ...(rest?[{text:rest}]:[]));
+      }
+    }
+  }
+  return lines;
+}
+function fmtDose(text,split){
   const t=String(text);
-  if(t.indexOf('<br>')<0 && t.trimStart()[0]!=='•' && t.indexOf('【')<0) return t;
+  const struct = t.indexOf('<br>')>=0 || t.trimStart()[0]==='•' || t.indexOf('【')>=0;
+  if(!struct && !split) return t;                         // 一般欄位：無結構即原樣
+  if(!struct && split){                                   // 劑量欄：僅在有可斷結構時才排版，單句原樣返回
+    const trimmed=t.trim();
+    const multi = t.indexOf('；')>=0 || DOSE_ROUTE.test(trimmed) || trimmed.slice(0,-1).indexOf('。')>=0;
+    if(!multi) return t;
+  }
   let html='';
   for(let raw of t.split(/<br\s*\/?>/i)){
     const s=raw.trim();
@@ -165,16 +203,22 @@ function fmtDose(text){
     if(sub!==s){ html+=`<div class="dl-sub">${sub}</div>`; continue; }
     if(s[0]==='•'){ html+=`<div class="dl-item">${s.slice(1).trim()}</div>`; continue; }
     if(/^【[^】]*】$/.test(s)){ html+=`<div class="dl-sect">${s}</div>`; continue; } // 整段為【段標】
-    html+=`<div class="dl-line">${s}</div>`;                        // 給藥途徑／說明／續行
+    if(split){                                                     // 長行：拆途徑標頭＋子句各一行
+      for(const ln of doseLines(s))
+        html += ln.head ? `<div class="dl-head">${ln.text}</div>`
+                        : `<div class="dl-line">${ln.text}</div>`;
+    } else {
+      html+=`<div class="dl-line">${s}</div>`;                     // 給藥途徑／說明／續行
+    }
   }
   return `<div class="dose-fmt">${html}</div>`;
 }
 
 function renderDrugCard(k){
   const d=DRUGS[k];
-  const field=(label,text,warn)=> (text&&String(text).trim())?
+  const field=(label,text,warn,split)=> (text&&String(text).trim())?
     `<div class="dc-field"><div class="dc-flabel">${label}</div>
-     <div class="dc-ftext ${warn?'dc-warn':''}">${fmtDose(text)}</div></div>` : '';
+     <div class="dc-ftext ${warn?'dc-warn':''}">${fmtDose(text,split)}</div></div>` : '';
   // 腎功能調整：陣列→表格；字串→純文字（向後相容）
   let renalField='';
   if(Array.isArray(d.renal)){
@@ -253,8 +297,8 @@ function renderDrugCard(k){
     <summary><span class="dc-name">${d.name}</span>${zh}<span class="dc-nameen">${sub}</span><button type="button" class="dc-class" title="列出同類別藥物" onclick="drugFilter(event,'group',${drugGroupIdx(d)})">${d.cls}</button>${covStrip(d)}</summary>
     <div class="dc-body">
       ${brandField}
-      ${field(d.usualDose?'常用劑量':'劑量（成人）',d.usualDose||d.dose)}
-      ${field('兒科劑量',d.peds)}
+      ${field(d.usualDose?'常用劑量':'劑量（成人）',d.usualDose||d.dose,false,true)}
+      ${field('兒科劑量',d.peds,false,true)}
       ${field('最大劑量',d.maxDose)}
       ${renalField}
       ${field('肝功能調整',d.hepatic)}
