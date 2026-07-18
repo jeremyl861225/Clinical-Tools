@@ -36,16 +36,16 @@
       '<ul class="rx-items"><li>' + items.join('</li><li>') + '</li></ul></div>';
   }
 
-  /* ---------- 縮寫對照（指引第 3 頁）---------- */
+  /* ---------- 縮寫對照 ---------- */
   function abbrHtml() {
-    return '<details class="kps-details"><summary>縮寫名稱對照 Abbreviations ▸</summary>' +
-      '<ul class="rx-items">' +
+    return '<details class="dx-details"><summary>縮寫名稱對照 Abbreviations ▸</summary>' +
+      '<ul class="dx-list">' +
       '<li><b>PVT</b> — portal vein thrombosis 門靜脈栓塞</li>' +
       '<li><b>PTA</b> — percutaneous tumor ablation 經皮腫瘤消融</li>' +
       '<li><b>TACE</b> — trans-catheter arterial chemoembolization 經導管動脈化學栓塞</li>' +
       '<li><b>LT</b> — liver transplantation 肝臟移植</li>' +
       '<li><b>EBRT</b> — external-beam radiotherapy 體外放射治療</li>' +
-      '<li><b>SBRT</b> — stereotactic body radiotherapy 立體定位body放射治療</li>' +
+      '<li><b>SBRT</b> — stereotactic body radiotherapy 立體定位放射治療</li>' +
       '<li><b>HAIC</b> — hepatic arterial infusion chemotherapy 肝動脈灌注化學治療</li>' +
       '<li><b>SIRT</b> — selective internal radiation therapy 選擇性體內放射治療</li>' +
       '</ul></details>';
@@ -55,11 +55,11 @@
   function notesHtml(keys) {
     var N = {
       1: '<b>註 1</b>　依個別病人之<b>腫瘤負荷與功能儲備</b>而定。',
-      2: '<b>註 2</b>　第一線建議：<span class="rec-rx">Atezolizumab/bevacizumab</span>、<span class="rec-rx">Durvalumab/tremelimumab</span>、<span class="rec-rx">Ipilimumab/nivolumab</span>、<span class="rec-drug">Sorafenib</span> 或 <span class="rec-drug">Lenvatinib</span>。第二線建議：<span class="rec-drug">Regorafenib</span>、<span class="rec-drug">Cabozantinib</span>、<span class="rec-drug">Nivolumab</span>、<span class="rec-drug">Pembrolizumab</span>、<span class="rec-rx">Nivolumab + ipilimumab</span>，或 <span class="rec-drug">Ramucirumab</span>（<b>僅限 AFP ≥ 400 ng/mL</b>）。詳見下方 Figure 1。',
+      2: '<b>註 2</b>　第一線建議：<span class="rx">Atezolizumab/bevacizumab</span>、<span class="rx">Durvalumab/tremelimumab</span>、<span class="rx">Ipilimumab/nivolumab</span>、<span class="drug">Sorafenib</span> 或 <span class="drug">Lenvatinib</span>。第二線建議：<span class="drug">Regorafenib</span>、<span class="drug">Cabozantinib</span>、<span class="drug">Nivolumab</span>、<span class="drug">Pembrolizumab</span>、<span class="rx">Nivolumab + ipilimumab</span>，或 <span class="drug">Ramucirumab</span>（<b>僅限 AFP ≥ 400 ng/mL</b>）。詳見下方 Figure 1。',
       3: '<b>註 3</b>　<b>HAIC 應保留給以肝臟為主（liver-predominant）之疾病。</b>',
       4: '<b>註 4</b>　<b>BCLC A／B 期</b>：PTA 無法執行時可考慮 EBRT；SBRT 與 hypofractionated RT 之選擇應依<b>正常組織安全性</b>調整。<b>BCLC C 期</b>：EBRT 可作為<b>合併治療之一環</b>、用於<b>症狀緩解</b>，或用於<b>寡轉移（oligometastasis）</b>。',
       5: '<b>註 5</b>　當局部治療不適合，且呈現<b>瀰漫性、浸潤性或廣泛雙葉肝侵犯</b>時，可考慮系統性治療。',
-      6: '<b>註 6</b>　<b>TACE 合併</b> <span class="rec-rx">durvalumab + bevacizumab</span>、<span class="rec-rx">pembrolizumab + lenvatinib</span> 或 <span class="rec-rx">atezolizumab + bevacizumab</span> 可考慮之，因具潛在<b>無惡化存活（PFS）效益</b>。'
+      6: '<b>註 6</b>　<b>TACE 合併</b> <span class="rx">durvalumab + bevacizumab</span>、<span class="rx">pembrolizumab + lenvatinib</span> 或 <span class="rx">atezolizumab + bevacizumab</span> 可考慮之，因具潛在<b>無惡化存活（PFS）效益</b>。'
     };
     var out = keys.map(function (k) { return '<li>' + N[k] + '</li>'; }).join('');
     return '<div class="rx-line"><div class="rx-line-h"><span class="rx-h">指引註解</span>' +
@@ -70,16 +70,16 @@
   function fig1Html() {
     return '<details class="kps-details"><summary>Figure 1：晚期肝細胞癌之系統性治療（第 4 頁）▸</summary>' +
       rxLine('第一線 1L Therapy', '', [
-        '<span class="rec-rx">Anti-PD1/PD-L1 combinations</span>　<b>註 1</b>：包含但不限於 <span class="rec-rx">atezolizumab + bevacizumab</span>、<span class="rec-rx">durvalumab + tremelimumab</span>、<span class="rec-rx">ipilimumab + nivolumab</span>，或由主治醫師判斷適當之<b>其他多激酶抑制劑 + PD1/PD-L1 合併</b>。',
-        '<span class="rec-drug">Sorafenib</span> 或 <span class="rec-drug">Lenvatinib</span>　<b>註 2</b>：<b>當 anti-PD1/PD-L1 合併治療不可行或不適當（如有禁忌症）時</b>。',
+        '<span class="rx">Anti-PD1/PD-L1 combinations</span>　<b>註 1</b>：包含但不限於 <span class="rx">atezolizumab + bevacizumab</span>、<span class="rx">durvalumab + tremelimumab</span>、<span class="rx">ipilimumab + nivolumab</span>，或由主治醫師判斷適當之<b>其他多激酶抑制劑 + PD1/PD-L1 合併</b>。',
+        '<span class="drug">Sorafenib</span> 或 <span class="drug">Lenvatinib</span>　<b>註 2</b>：<b>當 anti-PD1/PD-L1 合併治療不可行或不適當（如有禁忌症）時</b>。',
         '<b>Clinical Trial</b>（臨床試驗）'
       ]) +
       rxLine('第二線 2L Therapy', '', [
-        '<span class="rec-drug">Regorafenib</span>',
-        '<span class="rec-drug">Ramucirumab</span>　<b>僅限 AFP ≥ 400 ng/mL</b>',
-        '<span class="rec-drug">Cabozantinib</span>',
-        '<span class="rec-drug">Anti-PD1</span> 或 <span class="rec-drug">Anti-PD-L1</span>',
-        '<span class="rec-rx">Nivolumab + Ipilimumab</span>',
+        '<span class="drug">Regorafenib</span>',
+        '<span class="drug">Ramucirumab</span>　<b>僅限 AFP ≥ 400 ng/mL</b>',
+        '<span class="drug">Cabozantinib</span>',
+        '<span class="drug">Anti-PD1</span> 或 <span class="drug">Anti-PD-L1</span>',
+        '<span class="rx">Nivolumab + Ipilimumab</span>',
         '<b>Clinical Trial</b>（臨床試驗）'
       ]) +
       '<div class="note">Figure 1 中<b>實線箭頭</b>代表<b>依臨床試驗數據</b>，<b>灰色虛線箭頭</b>代表<b>依專家意見</b>。' +
@@ -87,40 +87,37 @@
       '</details>';
   }
 
-  /* ---------- 追蹤（指引第 2 頁 四、）---------- */
+  /* ---------- 追蹤（指引第 2 頁 四、）——與胃癌同款 fu-label／fu-list ---------- */
   function fuHtml() {
-    return '<div class="flow-fu"><div class="fu-h">追蹤與監測 Follow-up</div>' +
-      rxLine('治療後追蹤', '第 2 頁 四、（一）', [
-        '<b>完成所有治療後 3 個月內</b>應接受一次 <b>AFP</b> 及影像學檢查（超音波或 CT/MRI）。',
-        '<b>1 年內應接受 ≥3 次</b> AFP 及影像學檢查（超音波或 CT/MRI）。',
-        '<b>PIVKA-II 一年兩次</b>。',
-        '<b>註一：「所有治療」包含</b>手術切除、局部消融治療、肝臟移植、TACE、放射治療和其他治療（如肝動脈化療、化學治療、標靶治療、免疫治療等）。'
-      ]) +
-      rxLine('肝炎治療', '第 2 頁 四、（二）', [
-        '<b>除積極處理肝細胞癌外，仍應治療慢性 B 型或 C 型肝炎。</b>'
-      ]) +
-      '<div class="note">※ 如有其他特殊狀況，須經<b>肝癌多專科團隊討論</b>後取得治療共識。<br>' +
-      '※ 免疫治療副作用及照護原則，請參考台大醫院「癌症免疫治療藥物照護原則」相關文件。<br>' +
-      '※ 主治醫師可與病人討論參與肝臟局部治療或系統性治療之<b>臨床試驗</b>。</div>' +
-      '</div>';
+    return '<div class="fu-label">追蹤與監測 Follow-up（指引第 2 頁）</div>' +
+      '<ul class="fu-list">' +
+      '<li><b>完成所有治療後 3 個月內</b>：一次 AFP 及影像（超音波或 CT/MRI）。</li>' +
+      '<li><b>1 年內 ≥3 次</b> AFP 及影像；<b>PIVKA-II 一年兩次</b>。</li>' +
+      '<li>「所有治療」含手術切除、局部消融、肝臟移植、TACE、放射治療及其他（肝動脈化療、化療、標靶、免疫治療等）。</li>' +
+      '<li><b>肝炎治療</b>：除積極處理肝細胞癌外，仍應治療慢性 B 型或 C 型肝炎。</li>' +
+      '<li>特殊狀況經<b>肝癌多專科團隊討論</b>取得共識；免疫治療副作用照護參院內「癌症免疫治療藥物照護原則」；可與病人討論<b>臨床試驗</b>。</li>' +
+      '</ul>';
   }
 
-  /* ---------- 診斷與分期（指引第 1 頁）---------- */
+  /* ---------- 診斷與分期（指引第 1–2 頁）——安靜的參考區塊 ---------- */
   function dxHtml() {
-    return '<details class="kps-details"><summary>診斷與分期檢查（第 1 頁）▸</summary>' +
-      rxLine('一、肝細胞癌診斷', '符合下列條件任一', [
-        '<b>（一）臨床診斷</b>：有<b>慢性肝炎或肝硬化或先前罹患過肝癌</b>的病人，<b>tumor &gt; 1cm</b>，及<b>一種相符合的影像學檢查</b>（CT／MRI／CEUS）。',
-        '<b>（二）病理診斷</b>：病理學或細胞學證實（手術或切片）。',
-        '<b>※</b> 若腫瘤經開刀切除後，正式病理報告顯示<b>非肝細胞癌，則排除在外</b>。如有特殊情形，可提至肝癌團隊會議討論。'
-      ]) +
-      rxLine('二、肝癌分期檢查', '', [
-        '<b>CT／MRI／CEUS（任一）</b>為主要之影像診斷分期依據。',
-        '同時參考 <b>Child-Pugh Score</b> 及 <b>Performance Status</b> 以確認 <b>BCLC 分期</b>。'
-      ]) +
-      rxLine('三、高危險群追蹤', '第 2 頁 三、', [
-        '<b>B 型肝炎表面抗原或 C 型肝炎抗體陽性者</b>：每 <b>6–12 個月</b>作一次 AFP 和超音波或 CT/MRI。',
-        '<b>已確診肝硬化病人</b>：每 <b>3–6 個月</b>作一次 AFP 和超音波或 CT/MRI；而<b>一年兩次</b>作 PIVKA-II 檢查。'
-      ]) +
+    return '<details class="dx-details"><summary>診斷與分期檢查（指引第 1–2 頁）▸</summary>' +
+      '<div class="dx-h">一、肝細胞癌診斷（符合任一）</div>' +
+      '<ul class="dx-list">' +
+      '<li><b>臨床診斷</b>：慢性肝炎／肝硬化／曾罹肝癌之病人，tumor &gt; 1cm，且一種相符影像（CT／MRI／CEUS）。</li>' +
+      '<li><b>病理診斷</b>：手術或切片之病理／細胞學證實。</li>' +
+      '<li>開刀切除後病理若<b>非</b>肝細胞癌則排除；特殊情形可提肝癌團隊會議。</li>' +
+      '</ul>' +
+      '<div class="dx-h">二、肝癌分期檢查</div>' +
+      '<ul class="dx-list">' +
+      '<li>CT／MRI／CEUS（任一）為主要影像分期依據。</li>' +
+      '<li>參考 Child-Pugh score 與 performance status 以確認 <b>BCLC 分期</b>。</li>' +
+      '</ul>' +
+      '<div class="dx-h">三、高危險群追蹤（第 2 頁）</div>' +
+      '<ul class="dx-list">' +
+      '<li>HBsAg 或 anti-HCV 陽性：每 6–12 個月 AFP ＋ 超音波或 CT/MRI。</li>' +
+      '<li>肝硬化：每 3–6 個月 AFP ＋ 超音波或 CT/MRI；PIVKA-II 一年兩次。</li>' +
+      '</ul>' +
       '</details>';
   }
 
@@ -211,27 +208,22 @@
     };
   }
 
-  /* ---------- 版面 ---------- */
+  /* ---------- 版面（以胃癌流程圖為範本：簡潔開場 → 步驟 → 建議處置在下方）---------- */
   function hccPathwayHTML() {
-    var h = '<div class="flow-wrap" id="hcPath">';
-
-    h += '<div class="flow-src">資料來源：<b>台大醫院 肝細胞癌診療指引 版次 20</b>（2026/06/16 第 87 次癌症醫療委員會修訂通過，文件編號 50710-2-000008）。' +
-      '流程結構依<b>第 3 頁決策圖</b>判讀。<b>治療分派請以 BCLC 為主，AJCC TNM 為解剖分期</b>，兩者不可互換（見分期分頁）。</div>';
+    var h = '';
+    h += '<p class="onc-note">依 <b>台大醫院肝細胞癌診療指引 版次 20（2026/06/16，文件編號 50710-2-000008）</b>之互動決策流程。流程結構依<b>指引第 3 頁決策圖</b>判讀——先分「PVT／肝外轉移」，再分肝功能（Child-Pugh）。<b>治療分派以 BCLC 為主，AJCC TNM 僅為解剖分期</b>，兩者不可互換（見分期分頁）。逐步點選以取得對應建議處置與追蹤。</p>';
+    h += '<div class="onc-path" id="hcPath">';
 
     h += dxHtml() + abbrHtml();
 
-    h += '<div class="flow-rec rec-idle" id="hc_rec"><div class="rec-label">建議處置 Recommendation</div>' +
-      '<div class="rec-title">請依序選擇下列項目</div></div>';
-    h += '<div class="flow-fu hidden" id="hc_fu"></div>';
-
     h += step('hc_s1', '1', '有無門靜脈栓塞（PVT）或肝外轉移？',
-      opt('ext', 'pvtneg', 'PVT (-)', '且無肝外轉移') +
+      opt('ext', 'pvtneg', 'PVT (−)', '且無肝外轉移') +
       opt('ext', 'pvtpos', 'PVT (+) 或肝外轉移', 'Extrahepatic metastasis'),
-      '<div class="note">此為指引圖上的<b>第一個分叉</b>——先分 PVT／肝外轉移，再分肝功能。</div>');
+      '<div class="note">指引圖上的<b>第一個分叉</b>——先分 PVT／肝外轉移，再分肝功能。</div>');
 
     h += connH('hc_c1');
     h += step('hc_s2', '2', 'Child-Pugh 分級？',
-      opt('cp', 'ab', 'Child A, B', '肝功能保留') +
+      opt('cp', 'ab', 'Child A、B', '肝功能保留') +
       opt('cp', 'c', 'Child C', '末期肝功能'));
 
     h += connH('hc_c2');
@@ -244,8 +236,13 @@
       opt('ucsf', 'beyond', 'Beyond UCSF', '超出'),
       '<div class="note"><b>本指引以 UCSF 標準判定移植門檻，非 Milan criteria。</b></div>');
 
-    h += '<div class="flow-actions"><button class="flow-reset" onclick="hcReset()">重設 Reset</button></div>';
-    h += '</div>';
+    // 建議處置與追蹤：置於步驟之後（流程圖下方），與胃癌一致
+    h += '<div class="flow-rec rec-idle" id="hc_rec"><div class="rec-label">建議處置 Recommendation</div>' +
+      '<div class="rec-title">請完成上方步驟</div></div>';
+    h += '<div class="flow-fu hidden" id="hc_fu"></div>';
+
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="hcReset()">重置</button></div>';
+    h += '</div>'; // hcPath
     return h;
   }
 
@@ -281,7 +278,7 @@
     if (!done) {
       rec.className = 'flow-rec rec-idle';
       rec.innerHTML = '<div class="rec-label">建議處置 Recommendation</div>' +
-        '<div class="rec-title">請依序選擇下列項目</div>';
+        '<div class="rec-title">請完成上方步驟</div>';
       if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
       return;
     }

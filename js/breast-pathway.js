@@ -161,8 +161,7 @@
     h += '<div class="flow-fu hidden" id="bc_recur_fu"></div>';
     h += '</div>';
 
-    h += '<div class="flow-reset" style="display:flex; justify-content:flex-end;">' +
-      '<button class="btn-reset" onclick="bcReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="bcReset()">重置</button></div>';
     h += '</div>'; // bcPath
     return h;
   }

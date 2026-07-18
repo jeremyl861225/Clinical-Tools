@@ -353,8 +353,7 @@
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="pn_fu"></div>';
 
-    h += '<div class="flow-reset" style="display:flex; justify-content:flex-end;">' +
-      '<button class="btn-reset" onclick="pnReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="pnReset()">重置</button></div>';
     h += '</div>'; // pnPath
     return h;
   }

@@ -230,8 +230,7 @@
     h += '<div class="flow-fu hidden" id="cc_meta_fu"></div>';
     h += '</div>'; // cc_meta
 
-    h += '<div class="flow-reset" style="display:flex; justify-content:flex-end;">' +
-      '<button class="btn-reset" onclick="ccReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="ccReset()">重置</button></div>';
     h += '</div>'; // ccPath
     return h;
   }

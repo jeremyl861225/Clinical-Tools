@@ -239,8 +239,7 @@
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="st_fu"></div>';
 
-    h += '<div class="flow-reset" style="display:flex; justify-content:flex-end;">' +
-      '<button class="btn-reset" onclick="stReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="stReset()">重置</button></div>';
     h += '</div>'; // stPath
     return h;
   }

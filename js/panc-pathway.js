@@ -365,8 +365,7 @@
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="pc_fu"></div>';
 
-    h += '<div class="flow-reset" style="display:flex; justify-content:flex-end;">' +
-      '<button class="btn-reset" onclick="pcReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="pcReset()">重置</button></div>';
     h += '</div>'; // pcPath
     return h;
   }
