@@ -890,6 +890,11 @@ window.CANCERS = [
     ['FOWARC — Deng Y et al. J Clin Oncol 2016;34:3300-7（mFOLFOX6 ± 放療 vs 5-FU/LV + 放療之新輔助治療；COL-13 引用文獻 30）', PM('27480145')],
     ['Capecitabine 併入直腸癌化放療之整合回顧 — Glynne-Jones R et al. Ann Oncol 2006;17:361-71（COL-13 引用文獻 29／COL-18 引用文獻 13）', PM('16500912')],
     ['KEYNOTE-177 — André T et al. NEJM 2020;383:2207-2218（pembrolizumab 用於 dMMR/MSI-H；COL-12(1) M1 分支之依據，COL-18 引用文獻 33）', PM('33264544')],
+    ['〔復發流程 · 直腸特有〕<b>watch &amp; wait 局部再生長之型態與挽救</b> — 國際 Watch &amp; Wait 資料庫（IWWD）：van der Valk MJM et al. Lancet 2018;391:2537-2545（cCR 後器官保留；再生長集中於前 2 年、腸壁，多可由挽救性 TME 根治）', PM('29976470')],
+    ['〔復發流程〕<b>局部再生長者之遠處轉移風險</b> — Fernandez LM et al. J Clin Oncol 2025（兩國際登錄；再生長者 3 年無遠轉存活 75% vs 再分期即手術 87%，為 watch &amp; wait 諮商之重點）', PM('39467217')],
+    ['〔復發流程 · 直腸特有〕<b>局部復發之再放療（re-irradiation）</b> — Guren MG et al. Radiother Oncol 2014;113:151-157（系統性回顧；證據有限，僅限選擇性病人、限縮體積、超分割化放療、專家中心）', PM('25613395')],
+    ['〔復發流程 · 直腸特有〕<b>骨盆廓清（pelvic exenteration）為孤立性局部復發之 R0 根治選項</b> — PelvEx Collaborative. Cancers (Basel) 2025;17:2764', PM('40940862')],
+    ['〔復發流程〕本院指引<b>未列直腸復發流程</b>；上述復發之處置參考本院指引所引用之 <b>NCCN Clinical Practice Guidelines in Oncology — Rectal Cancer（rectal 2026v1）</b>（NCCN 版權文件，未收錄於 PubMed）', PS('NCCN rectal cancer guidelines recurrence')],
   ],
 },
 /* ============================ 肛門癌 ============================ */
@@ -1195,7 +1200,8 @@ window.CANCERS = [
 /* ============================ 神經內分泌瘤 NET ============================ */
 {
   id:'net', zh:'神經內分泌瘤（NET）', en:'Neuroendocrine Tumor', group:'消化系 GI',
-  edition:'AJCC 8th（2017）依原發部位分期 ＋ WHO 2019/5th 分級 · 治療依臨床試驗證據（未對應特定台大指引版次）',
+  pathway:'net',
+  edition:'AJCC 8th（2017）依原發部位分期 ＋ WHO 2019/5th 分級 · <b>直腸 NET 治療流程依台大大腸直腸癌診療指引 版次 21（NET-1）</b>；其他部位系統治療依臨床試驗證據',
   staging_note:'<b>⚠ 胰臟 NET 請改用「<u>胰臟神經內分泌腫瘤（pNET）</u>」條目</b>——該條目採 <b>AJCC v9（2023）</b>分期，並附<b>依台大胰臟神經內分泌腫瘤診療指引（版次 02，2026/06/16）逐頁建置之互動治療流程</b>，以及 <b>AJCC 之區域淋巴結地圖</b>。本條目之「胰」表僅供與其他五個部位<b>對照</b>之用（v9 未更動 T／N／M，故兩表內容一致）。<br><b>分期與分級是兩條互相獨立的軸，不可合併成一張表。</b><br>① <b>分期（stage）</b>：AJCC 第 8 版<b>依原發部位</b>分為六套獨立系統（胃／十二指腸-壺腹／空腸-迴腸／闌尾／結直腸／胰），T 定義與分期組合<b>各不相同</b>——請先於下方選擇部位。其中<b>僅結直腸有 IIA／IIB／IIIA／IIIB 之細分</b>，其餘部位僅 I／II／III／IV；<b>僅空腸-迴腸有 N2</b>（大型繫膜腫塊 >2cm 或 ≥12 顆），其餘部位 N 僅 N0／N1。<br>② <b>分級（WHO 2019／消化系統腫瘤分類第 5 版）</b>：依 <b>Ki-67</b> 與<b>有絲分裂數</b>分級，<b>與 T、N、M 完全無關</b>，兩者取<b>較高</b>者為準——<b>G1</b>：有絲分裂 &lt;2/2mm² <b>且</b> Ki-67 &lt;3%；<b>G2</b>：有絲分裂 2–20/2mm² <b>或</b> Ki-67 3–20%；<b>G3</b>：有絲分裂 &gt;20/2mm² <b>或</b> Ki-67 &gt;20%（<b>NET G3 仍為分化良好，≠ NEC</b>，預後與治療皆不同）。<br><b>本頁六表僅適用於分化良好之 NET（G1–G3）。</b>分化差的<b>神經內分泌癌（NEC，小細胞／大細胞型）</b>與<b>混合型（MiNEN）</b>不適用，須改用該部位<b>癌症（adenocarcinoma）</b>的分期系統。<br><small>AJCC v9（2024）對 GEP-NET <b>未更動任何 T／N／M 定義或分期組合</b>，僅於 stage I／II 增列 NX 組合（反映內視鏡切除未取淋巴結之情形）並將有絲分裂改以 /2mm² 表述；故下表於 v9 同樣適用。</small>',
   t:[
     ['胃 T1','侵犯黏膜固有層或黏膜下層，且 ≤1cm Lamina propria / submucosa, ≤1cm'],
@@ -1366,6 +1372,7 @@ window.CANCERS = [
     ['RADIANT-3 — Yao JC et al. NEJM 2011 (everolimus PanNET)', PM('21306238')],
     ['Sunitinib PanNET — Raymond E et al. NEJM 2011', PM('21306237')],
     ['E2211 CAPTEM — Kunz PL et al. J Clin Oncol 2023 (temozolomide ± capecitabine, PanNET)', PM('36260828')],
+    ['<b>直腸 NET 治療流程（NET-1）</b>之來源：NTUH 大腸直腸癌診療指引 版次 21（2026/06/16 癌委會修訂通過；NET-1 直腸 NET 局部治療、NET-2 為 AJCC v9 直腸／結腸 NET 分期）', PS('NTUH colorectal guideline rectal neuroendocrine tumor NET-1')],
   ],
 },
 /* ============================ 胰臟神經內分泌腫瘤 ============================ */

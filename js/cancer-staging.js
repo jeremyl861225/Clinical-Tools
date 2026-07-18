@@ -79,6 +79,7 @@ function switchTab(id, tab){
     if(c.pathway === 'hcc' && typeof initHccPathway === 'function') initHccPathway();
     if(c.pathway === 'sts' && typeof initStsPathway === 'function') initStsPathway();
     if(c.pathway === 'pnet' && typeof initPnetPathway === 'function') initPnetPathway();
+    if(c.pathway === 'net' && typeof initNetPathway === 'function') initNetPathway();
   }
 }
 
@@ -283,6 +284,9 @@ function renderTx(c){
   }
   if(c.pathway === 'pnet' && typeof pnetPathwayHTML === 'function'){
     return pnetPathwayHTML();
+  }
+  if(c.pathway === 'net' && typeof netPathwayHTML === 'function'){
+    return netPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){

@@ -17,7 +17,10 @@
     tn: null,       // tis_n0 … t4_n2       （COL-3 術後病理 T×N）
     s2: null,       // s2_msi | s2_low | s2_high （COL-3(1) 第 II 期分層）
     msite: null,    // liverlung | periton | other （COL-4）
-    mres: null      // m_res | m_unres      （COL-4 肝／肺轉移可切除性）
+    mres: null,     // m_res | m_unres      （COL-4 肝／肺轉移可切除性）
+    rentry: null,   // cea | metach         （COL-9 復發之呈現）
+    rres: null,     // r_res | r_unres      （COL-9 異時性轉移之可切除性）
+    rprior: null    // p_yes | p_no         （COL-9 12 個月內曾用 FOLFOX/CAPEOX？）
   };
 
   /* ---------- T×N → 輔助治療分組（COL-3(1)／COL-3(2)）----------
@@ -95,14 +98,15 @@
   /* ---------- 版面 HTML ---------- */
   function colonPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>（NTUH，COL-1～COL-18）之互動決策流程，<b>僅取結腸（colon）適用者</b>；直腸癌之新輔助放化療與 TME 不在此流程。逐步點選以取得對應建議處置、藥物療程與追蹤方式。</p>';
+    h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>（NTUH，COL-1～COL-18）之互動決策流程，<b>僅取結腸（colon）適用者</b>；直腸癌之新輔助放化療與 TME 不在此流程。逐步點選以取得對應建議處置、藥物療程與追蹤方式。<b>含復發之處置（COL-9）。</b></p>';
     h += '<div class="onc-path" id="ccPath">';
 
     // Step 1 — 臨床表現
     h += step('cc_s1', '1', '臨床表現（初始情境）',
       opt('entry', 'polyp', '惡性息肉 Malignant polyp', '有柄或無柄息肉（腺瘤）內含侵襲癌（COL-1）') +
       opt('entry', 'resect', '結腸癌 · 非轉移', 'Colon cancer appropriate for resection（non-metastatic，COL-2）') +
-      opt('entry', 'meta', '疑似或證實遠處轉移', 'Suspected or proven metastatic adenocarcinoma（any T, any N, M1，COL-4）'));
+      opt('entry', 'meta', '疑似或證實遠處轉移', 'Suspected or proven metastatic adenocarcinoma（any T, any N, M1，COL-4）') +
+      opt('entry', 'recur', '復發 Recurrence', '治療後追蹤發現復發（血清 CEA 升高或已證實之異時性轉移，COL-9）'));
 
     /* ===================== A. 惡性息肉（COL-1）===================== */
     h += '<div id="cc_polyp" class="hidden">';
@@ -229,6 +233,38 @@
     h += rec('cc_meta_rec', '建議處置 · 轉移性 Metastatic');
     h += '<div class="flow-fu hidden" id="cc_meta_fu"></div>';
     h += '</div>'; // cc_meta
+
+    /* ===================== D. 復發（COL-9）===================== */
+    h += '<div id="cc_recur" class="hidden">';
+    h += conn('cc_c2rec');
+    h += step('cc_s2rec', '2', '復發之呈現（COL-9 RECURRENCE / WORKUP）',
+      opt('rentry', 'cea', '血清 CEA 連續升高', 'Serial CEA elevation（影像尚未證實病灶）') +
+      opt('rentry', 'metach', '已證實之異時性轉移', 'Documented metachronous metastases by CT, MRI, and/or biopsy'),
+      '<div class="cbx"><div class="cbx-h">復發檢查 Recurrence workup（COL-9）　<span class="cbx-sub">依個別病人臨床狀況</span></div>' +
+      '<div class="cbx-items">' +
+        '<span class="cb">理學檢查</span>' +
+        '<span class="cb">大腸鏡</span>' +
+        '<span class="cb">胸部／腹部／骨盆 CT</span>' +
+        '<span class="cb">考慮 PET-CT</span>' +
+        '<span class="cb">腫瘤 KRAS／NRAS／BRAF 狀態</span>' +
+      '</div></div>' +
+      '<div class="note"><b>潛在可切除者應經多專科團隊評估（含外科會診）</b>（COL-9 註 c）。</div>');
+
+    h += connH('cc_c3rec');
+    h += step('cc_s3rec', '3', '異時性轉移之可切除性（COL-9）',
+      opt('rres', 'r_res', '可切除 Resectable', '轉移病灶可完整切除／局部治療') +
+      opt('rres', 'r_unres', '不可切除 Unresectable', '潛在可轉換（convertible）或不可轉換（unconvertible）'));
+    h = h.replace('id="cc_s3rec"', 'id="cc_s3rec" class="hidden"');
+
+    h += connH('cc_c4rec');
+    h += step('cc_s4rec', '4', '過去 12 個月內是否曾接受輔助 FOLFOX／CAPEOX？（COL-9）',
+      opt('rprior', 'p_no', '否 No', '未於 12 個月內用過 oxaliplatin 為基礎之輔助化療') +
+      opt('rprior', 'p_yes', '是 Yes', '12 個月內曾用 FOLFOX／CAPEOX'));
+    h = h.replace('id="cc_s4rec"', 'id="cc_s4rec" class="hidden"');
+
+    h += rec('cc_recur_rec', '建議處置 · 復發 Recurrence（COL-9）');
+    h += '<div class="flow-fu hidden" id="cc_recur_fu"></div>';
+    h += '</div>'; // cc_recur
 
     h += '<div class="flow-reset"><button class="btn-reset" onclick="ccReset()">重置</button></div>';
     h += '</div>'; // ccPath
@@ -467,6 +503,17 @@
     ccShow('cc_c3m', showMres);
     ccShow('cc_s3m', showMres);
     renderMetaRec();
+
+    // D. 復發（COL-9）
+    ccShow('cc_recur', s.entry === 'recur');
+    ccShow('cc_c2rec', s.entry === 'recur');
+    // 已證實之異時性轉移 → 問可切除性；CEA 升高路徑不需（先做 workup）
+    var showRres = (s.entry === 'recur' && s.rentry === 'metach');
+    ccShow('cc_c3rec', showRres); ccShow('cc_s3rec', showRres);
+    // 不可切除者 → 問是否 12 個月內曾用 FOLFOX/CAPEOX
+    var showRprior = (showRres && s.rres === 'r_unres');
+    ccShow('cc_c4rec', showRprior); ccShow('cc_s4rec', showRprior);
+    renderRecurRec();
   }
 
   /* ---------- A. 惡性息肉（COL-1）---------- */
@@ -713,14 +760,78 @@
       '</div>' + systemicPanel());
   }
 
+  /* ---------- D. 復發（COL-9）---------- */
+  function renderRecurRec() {
+    var s = ccSt;
+    if (s.entry !== 'recur') return;
+    var R = 'cc_recur_rec', F = 'cc_recur_fu';
+
+    if (!s.rentry) { idleRec(R, F, '請選擇步驟 2（復發之呈現）'); return; }
+
+    // 血清 CEA 連續升高 → workup
+    if (s.rentry === 'cea') {
+      result(R, F, 'rec-nonop', '血清 CEA 連續升高 → 復發檢查', [
+        '<b>檢查</b>：理學檢查、<b>大腸鏡</b>、<b>胸部／腹部／骨盆 CT</b>。',
+        '<b>影像陰性（Negative findings）</b> → <b>考慮 PET-CT</b>；並於 <b>3 個月後重新評估</b>胸部／腹部／骨盆 CT。若仍為陰性 → 持續追蹤；轉為陽性 → 依已證實之轉移處置。',
+        '<b>影像陽性（Positive findings）</b> → 依<b>已證實之異時性轉移</b>處置（請於<b>步驟 2</b> 改選「已證實之異時性轉移」以取得治療建議）。'
+      ], 'COL-9：Serial CEA elevation → workup（PE／colonoscopy／chest-abd-pelvic CT）；negative → consider PET-CT 並 3 個月後重新評估影像；positive → 依 documented metastases 處置。', null);
+      return;
+    }
+
+    // 已證實之異時性轉移
+    if (!s.rres) { idleRec(R, F, '請選擇步驟 3（異時性轉移之可切除性）'); return; }
+
+    if (s.rres === 'r_res') {
+      result(R, F, 'rec-elective', '可切除之異時性轉移（COL-9）', [
+        '<b>考慮 PET-CT。</b>',
+        '<b>切除及／或局部消融（Resection and/or local ablation）</b>；<b>或</b> <b>新輔助化療 2–3 個月</b>（COL-6）後再行切除及／或局部消融。',
+        '<b>術後系統性治療</b>：<span class="rx">FOLFOX</span>／<span class="rx">CapeOx</span>（<b>preferred</b>）± 標靶治療；' +
+        '<b>或</b> <span class="drug">capecitabine</span>／<span class="rx">5-FU/leucovorin</span> ± 標靶治療；<b>或</b> 觀察。',
+        '圍手術期治療總時程<b>不應超過 6 個月</b>。'
+      ], 'COL-9：Documented metachronous metastases · Resectable → consider PET-CT → resection and/or local ablation 或 neoadjuvant chemo 2–3 mo（COL-6）then resection/ablation → adjuvant FOLFOX/CapeOx（preferred）± biologic 或 capecitabine/5-FU/LV ± biologic 或 observation。',
+        'resected_m1');
+      return;
+    }
+
+    // 不可切除 → 依 12 個月內是否曾用 FOLFOX/CAPEOX 決定骨架
+    if (!s.rprior) { idleRec(R, F, '請選擇步驟 4（12 個月內是否曾用 FOLFOX／CAPEOX）'); return; }
+
+    if (s.rprior === 'p_yes') {
+      result(R, F, 'rec-nonop', '不可切除之異時性轉移 · 12 個月內曾用 FOLFOX／CAPEOX（COL-9）', [
+        '<b>改採 irinotecan 為基礎之骨架</b>：<span class="rx">FOLFIRI-like</span> ± <span class="drug">bevacizumab</span>；' +
+        '<b>或</b> ± <span class="drug">cetuximab</span>（<b>僅 KRAS／NRAS 野生型</b>）。',
+        '<b>BRAF V600E 突變陽性</b> → <span class="drug">encorafenib</span> + <span class="drug">cetuximab</span>。',
+        '<b>每 2 個月重新評估反應以判定可切除性</b>；轉為可切除 → 切除及／或局部消融（回步驟 3 之可切除路徑）。',
+        '完整系統性治療線別選單見下方（COL-8）。'
+      ], 'COL-9：Documented metachronous metastases · Unresectable · previous adjuvant FOLFOX/CAPEOX within 12 months → FOLFIRI-like ± bevacizumab 或 ± cetuximab［KRAS/NRAS WT］或 Encorafenib+cetuximab［BRAF V600E］→ reassess response q2mo → resectable/unresectable。' + '｜' + systemicNote,
+        'palliative', systemicPanel());
+      return;
+    }
+
+    result(R, F, 'rec-nonop', '不可切除之異時性轉移 · 未於 12 個月內用過 FOLFOX／CAPEOX（COL-9）', [
+      '<b>依進展性／轉移性疾病之系統性治療（COL-8）</b>——完整線別選單見下方。',
+      '<b>每 2 個月重新評估反應以判定可切除性</b>；轉為可切除 → 切除及／或局部消融（回步驟 3 之可切除路徑）。'
+    ], 'COL-9：Documented metachronous metastases · Unresectable · no prior adjuvant FOLFOX/CAPEOX within 12 months → Systemic therapy（COL-8）→ reassess response q2mo。' + '｜' + systemicNote,
+      'palliative', systemicPanel());
+  }
+
   /* ---------- 事件 ---------- */
   function ccPick(key, val, btn) {
     ccSel(btn);
     var s = ccSt;
     if (key === 'entry') {
       s.entry = val;
-      s.pfind = s.pmorph = s.pres = s.tn = s.s2 = s.msite = s.mres = null;
-      ccClearSel(['cc_s2p', 'cc_s3p', 'cc_s2r', 'cc_s3r', 'cc_s4r3', 'cc_s4r4', 'cc_s2m', 'cc_s3m']);
+      s.pfind = s.pmorph = s.pres = s.tn = s.s2 = s.msite = s.mres = s.rentry = s.rres = s.rprior = null;
+      ccClearSel(['cc_s2p', 'cc_s3p', 'cc_s2r', 'cc_s3r', 'cc_s4r3', 'cc_s4r4', 'cc_s2m', 'cc_s3m',
+        'cc_s2rec', 'cc_s3rec', 'cc_s4rec']);
+    } else if (key === 'rentry') {
+      s.rentry = val; s.rres = s.rprior = null;
+      ccClearSel(['cc_s3rec', 'cc_s4rec']);
+    } else if (key === 'rres') {
+      s.rres = val; s.rprior = null;
+      ccClearSel(['cc_s4rec']);
+    } else if (key === 'rprior') {
+      s.rprior = val;
     } else if (key === 'pfind') {
       s.pfind = val; s.pmorph = null;
       ccClearSel(['cc_s3p']);

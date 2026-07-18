@@ -19,7 +19,11 @@
     rst1: null,      // rs_res | rs_no   （COL-12(2) 再分期結果）
     tntord: null,    // t_crt1 | t_chemo1（COL-12(3) TNT 順序）
     rst2: null,      // rs_res | rs_no   （COL-12(3) 再分期結果）
-    sym: null        // symp | asymp     （COL-12(1) M1 不可切除）
+    sym: null,       // symp | asymp     （COL-12(1) M1 不可切除）
+    rpat: null,      // local | distant | cea | regrowth （復發型態；參考 NCCN Rectal）
+    lres: null,      // l_res | l_unres  （骨盆局部復發之可切除性）
+    lrt: null,       // rt_naive | rt_prior （先前骨盆放療狀態）
+    dres: null       // d_res | d_unres  （異時性遠處轉移之可切除性）
   };
 
   /* ---------- 術後病理 T×N → 輔助治療分組 ----------
@@ -346,7 +350,8 @@
     h += '<p class="onc-note">依 <b>台大醫院大腸直腸癌診療指引 版次 21（2026/06/16）</b>之直腸癌章節' +
       '（<b>COL-12(1)～COL-12(3)</b> 決策流程、<b>COL-13</b> CCRT 處方、<b>COL-14～COL-16</b> 放射治療原則；' +
       '輔助化療與追蹤共用 COL-3、轉移性系統性治療共用 COL-8）之互動決策流程。' +
-      '逐步點選以取得對應建議處置、藥物療程與追蹤方式。結腸癌流程請另見「結腸癌」。</p>';
+      '逐步點選以取得對應建議處置、藥物療程與追蹤方式。結腸癌流程請另見「結腸癌」。' +
+      '<b>復發之處置（含直腸特有之骨盆局部復發）：本院指引未列直腸復發流程，故參考 NCCN Rectal 2026v1（本院指引所引用之版本）與相關文獻，見下方參考文獻。</b></p>';
     h += '<div class="onc-path" id="rcPath">';
 
     // Step 1 — 臨床分期（COL-12(1) CLINICAL STAGE）
@@ -357,7 +362,8 @@
       opt('entry', 'crminv', 'cT3, N any 且 <b>CRM 受侵犯</b>（MRI）；cT4, N any；或局部無法切除／無法耐受手術',
         'T3, N any with involved CRM (by MRI); T4, N any or locally unresectable or medically inoperable → COL-12(3)') +
       opt('entry', 'm1res', 'T any, N any, <b>M1 且轉移可切除</b>', 'Resectable metastases（COL-12(1) → COL-3、COL-6）') +
-      opt('entry', 'm1unres', 'T any, N any, <b>M1 且轉移不可切除</b> 或無法耐受手術', 'Unresectable metastases or medically inoperable（COL-12(1) → COL-8）'),
+      opt('entry', 'm1unres', 'T any, N any, <b>M1 且轉移不可切除</b> 或無法耐受手術', 'Unresectable metastases or medically inoperable（COL-12(1) → COL-8）') +
+      opt('entry', 'recur', '復發 Recurrence', '治療後追蹤發現復發（骨盆局部復發／異時性遠處轉移／CEA 升高／watch &amp; wait 後局部再生長）'),
       '<div class="cbx"><div class="cbx-h">治療前工作檢查 WORKUP（COL-12(1)）　<span class="cbx-sub">★ 為可決定臨床分期、應於治療前完成之關鍵檢查</span></div>' +
       '<div class="cbx-items">' +
         '<span class="cb">CBC／BCS／LDH／CEA</span>' +
@@ -460,6 +466,38 @@
     h += '<div class="flow-fu hidden" id="rc_m1unres_fu"></div>';
     h += '</div>';
 
+    /* ===================== F. 復發（參考 NCCN Rectal 2026v1 與文獻）===================== */
+    h += '<div id="rc_recur" class="hidden">';
+    h += conn('rc_c2f');
+    h += step('rc_s2f', '2', '復發型態 Pattern of recurrence',
+      opt('rpat', 'local', '<b>骨盆局部復發</b> Locoregional / pelvic recurrence', '<b>直腸特有</b>——結腸罕見孤立性骨盆復發；處置樞紐為「先前放療狀態」與「可否 R0 挽救切除」') +
+      opt('rpat', 'distant', '異時性遠處轉移 Metachronous distant metastases', '肝／肺等；邏輯同結腸 COL-9') +
+      opt('rpat', 'cea', '血清 CEA 升高、影像陰性', 'Serial CEA elevation with negative imaging') +
+      opt('rpat', 'regrowth', 'watch &amp; wait 後局部再生長', 'Local regrowth after non-operative management（cCR 後）'),
+      '<div class="note"><b>檢查</b>：骨盆 MRI（範圍、繫膜筋膜、鄰近器官／骨盆壁侵犯）、胸部／腹部／骨盆 CT、切片確認、<b>PET-CT</b>（排除隱匿遠處轉移）、大腸鏡；<b>須經多專科團隊評估</b>。</div>');
+
+    h += connH('rc_c3f_l');
+    h += step('rc_s3f_l', '3', '骨盆局部復發之可切除性（可達 R0？）',
+      opt('lres', 'l_res', '<b>可切除</b> Resectable', '影像判定可達 R0（骨盆壁、薦骨 S2–3 以上、鄰近臟器）') +
+      opt('lres', 'l_unres', '<b>不可切除／臨界</b> Unresectable / borderline', ''));
+    h = h.replace('id="rc_s3f_l"', 'id="rc_s3f_l" class="hidden"');
+
+    h += connH('rc_c4f_l');
+    h += step('rc_s4f_l', '4', '先前骨盆放療狀態 Prior pelvic RT',
+      opt('lrt', 'rt_naive', '<b>未曾接受骨盆放療</b> RT-naïve', '→ 可行完整長療程化放療（CRT）') +
+      opt('lrt', 'rt_prior', '<b>曾接受骨盆放療</b> Previously irradiated', '→ 完整劑量 CRT 受限；選擇性病人可再放療（re-irradiation）'));
+    h = h.replace('id="rc_s4f_l"', 'id="rc_s4f_l" class="hidden"');
+
+    h += connH('rc_c3f_d');
+    h += step('rc_s3f_d', '3', '異時性遠處轉移之可切除性',
+      opt('dres', 'd_res', '<b>可切除／潛在可轉換</b> Resectable / convertible', '→ 轉移灶切除 ± 圍手術期化療；或轉換性化療後再評估') +
+      opt('dres', 'd_unres', '<b>不可切除／不可轉換</b> Unresectable', '→ 緩和性系統性治療（COL-8）'));
+    h = h.replace('id="rc_s3f_d"', 'id="rc_s3f_d" class="hidden"');
+
+    h += rec('rc_recur_rec', '建議處置 · 復發 Recurrence（參考 NCCN Rectal）');
+    h += '<div class="flow-fu hidden" id="rc_recur_fu"></div>';
+    h += '</div>'; // rc_recur
+
     h += '<div class="flow-reset"><button class="btn-reset" onclick="rcReset()">重置</button></div>';
     h += '</div>'; // rcPath
     return h;
@@ -497,6 +535,101 @@
 
     renderM1ResRec();
     renderM1UnresRec();
+
+    // F. 復發（參考 NCCN Rectal）
+    rcShow('rc_recur', s.entry === 'recur'); rcShow('rc_c2f', s.entry === 'recur');
+    var showLres = (s.entry === 'recur' && s.rpat === 'local');
+    rcShow('rc_c3f_l', showLres); rcShow('rc_s3f_l', showLres);
+    var showLrt = (showLres && !!s.lres);
+    rcShow('rc_c4f_l', showLrt); rcShow('rc_s4f_l', showLrt);
+    var showDres = (s.entry === 'recur' && s.rpat === 'distant');
+    rcShow('rc_c3f_d', showDres); rcShow('rc_s3f_d', showDres);
+    renderRecurRec();
+  }
+
+  /* ---------- F. 復發（參考 NCCN Rectal 2026v1 與文獻）---------- */
+  function renderRecurRec() {
+    var s = rcSt;
+    if (s.entry !== 'recur') return;
+    var R = 'rc_recur_rec', F = 'rc_recur_fu';
+
+    if (!s.rpat) { idleRec(R, F, '請選擇步驟 2（復發型態）'); return; }
+
+    // 血清 CEA 升高、影像陰性
+    if (s.rpat === 'cea') {
+      result(R, F, 'rec-nonop', '血清 CEA 升高、影像陰性 → 檢查（勿盲目給化療）', [
+        '<b>檢查</b>：大腸鏡、胸部／腹部／骨盆 CT；若皆陰性 → <b>考慮 PET-CT</b>。',
+        '<b>發現病灶</b> → 依「骨盆局部復發」或「異時性遠處轉移」處置（請於<b>步驟 2</b> 改選對應型態）。',
+        '<b>仍全部陰性</b> → <b>不應盲目開始系統性化療</b>；<b>約 3 個月後重新影像</b>並持續追蹤 CEA（NCCN Rectal CEA workup pathway）。'
+      ], 'NCCN Rectal：rising CEA + negative imaging → colonoscopy／CT chest-abd-pelvis → consider PET-CT；若仍陰性 → 勿盲目化療，3 個月後重新影像。', null);
+      return;
+    }
+
+    // watch & wait 後局部再生長
+    if (s.rpat === 'regrowth') {
+      result(R, F, 'rec-elective', 'watch &amp; wait 後局部再生長 → 挽救性 TME（根治性手術）', [
+        '<b>局部再生長（local regrowth）</b> 多發生於<b>前 2 年</b>且位於<b>腸壁</b>——故 watch &amp; wait 須以<b>密集內視鏡 + 骨盆 MRI</b> 監測（IWWD）。',
+        '<b>大多數再生長可由 <u>挽救性全直腸繫膜切除（salvage TME）</u>根治</b>（IWWD，van der Valk 2018）。',
+        '<b>⚠ 諮商重點（非僅止於安撫）</b>：發生局部再生長者，其後<b>遠處轉移風險高於再分期即接受 TME 者</b>（3 年無遠轉存活 75% vs 87%；Fernandez 2025）。'
+      ], 'NCCN Rectal · organ preservation：cCR on watch & wait → local regrowth → salvage TME。IWWD（van der Valk, Lancet 2018）：再生長集中於前 2 年、腸壁，多可挽救；Fernandez（JCO 2025）：再生長者遠轉風險較高。', 'curative');
+      return;
+    }
+
+    // 異時性遠處轉移（同結腸 COL-9 邏輯）
+    if (s.rpat === 'distant') {
+      if (!s.dres) { idleRec(R, F, '請選擇步驟 3（遠處轉移之可切除性）'); return; }
+      if (s.dres === 'd_res') {
+        result(R, F, 'rec-elective', '可切除／潛在可轉換之異時性遠處轉移（邏輯同結腸 COL-9）', [
+          '<b>可切除</b> → 轉移灶切除（metastasectomy）± 圍手術期系統性化療，並與骨盆狀態一併規劃。',
+          '<b>潛在可轉換（borderline）</b> → 生物製劑加強、依生物標記選擇之轉換性化療 → <b>再評估可切除性</b> → 轉換後切除。',
+          '骨盆若同時有局部復發 → 一併於多專科團隊規劃（可能需同時或分期處置）。'
+        ], 'NCCN Rectal：metachronous distant metastases（parallels colon COL-9）· resectable/convertible → metastasectomy ± perioperative chemo；borderline → conversion systemic therapy → reassess。', 'resected_m1');
+        return;
+      }
+      result(R, F, 'rec-nonop', '不可切除／不可轉換之異時性遠處轉移 → 緩和性系統性治療（COL-8）', [
+        '<b>依進展性／轉移性疾病之系統性治療（COL-8）</b>——完整線別選單見下方。',
+        '<b>復發時應重新檢測生物標記</b>：RAS／BRAF、MSI／MMR、HER-2（決定 anti-EGFR、encorafenib+cetuximab、免疫治療等）。',
+        '持續再評估是否轉為可切除。'
+      ], systemicNote + '｜NCCN Rectal：unresectable metachronous metastases → palliative systemic therapy（COL-8），依生物標記選擇。', 'palliative', systemicPanel());
+      return;
+    }
+
+    // 骨盆局部復發（直腸特有）
+    if (!s.lres) { idleRec(R, F, '請選擇步驟 3（骨盆局部復發之可切除性）'); return; }
+    if (!s.lrt) { idleRec(R, F, '請選擇步驟 4（先前骨盆放療狀態）'); return; }
+
+    var reRT = '<b>再放療（re-irradiation）</b>：<b>證據有限</b>（多為回溯性／小型前瞻研究、晚期毒性報告不足；Guren 2014 系統性回顧）——僅限<b>選擇性病人、限縮體積、建議超分割化放療</b>，應於<b>專家中心</b>執行。';
+
+    if (s.lres === 'l_res') {
+      if (s.lrt === 'rt_naive') {
+        result(R, F, 'rec-elective', '可切除之孤立性骨盆局部復發 · 未曾放療 → 術前 CRT → R0 挽救切除', [
+          '<b>術前長療程化放療（CRT）</b> → <b>根治性挽救切除</b>：依侵犯範圍行<b>再次 TME／APR／骨盆廓清（pelvic exenteration）</b>，± 圍手術期系統性化療。',
+          '<b>R0 挽救切除是孤立性局部復發<u>唯一潛在治癒途徑</u></b>；骨盆廓清為達 R0 之根治選項（PelvEx Collaborative 2025）。',
+          '<b>須經多專科團隊評估</b>並於具經驗之骨盆手術中心執行。'
+        ], 'NCCN Rectal：resectable isolated LRRC · RT-naïve → preoperative long-course CRT → radical salvage resection（re-do TME／APR／pelvic exenteration）± perioperative systemic therapy。PelvEx Collaborative（Cancers 2025）。', 'resected_m1');
+        return;
+      }
+      result(R, F, 'rec-elective', '可切除之孤立性骨盆局部復發 · 曾放療 → R0 挽救切除 ± 選擇性再放療', [
+        '<b>根治性挽救切除為骨架</b>：再次 TME／APR／<b>骨盆廓清（pelvic exenteration）</b>，± 圍手術期系統性化療（PelvEx Collaborative 2025）。',
+        reRT + '——用以提高可切除性／R0 率。',
+        '<b>須經多專科團隊評估</b>；R0 挽救切除為唯一潛在治癒途徑。'
+      ], 'NCCN Rectal：resectable isolated LRRC · previously irradiated → radical salvage resection（pelvic exenteration/APR）± highly selective re-irradiation（Guren 2014）± systemic therapy。', 'resected_m1');
+      return;
+    }
+
+    // 不可切除／臨界之骨盆局部復發
+    if (s.lrt === 'rt_naive') {
+      result(R, F, 'rec-nonop', '不可切除／臨界之骨盆局部復發 · 未曾放療 → CRT → 再評估可切除性', [
+        '<b>長療程化放療（CRT）</b> → <b>再評估可切除性</b>；<b>若轉為可切除 → 挽救性手術</b>（回步驟 3 之可切除路徑）。',
+        '無法轉換者 → 緩和性系統性治療（COL-8）± 症狀導向放療。'
+      ], systemicNote + '｜NCCN Rectal：unresectable LRRC · RT-naïve → chemoradiation → reassess resectability → salvage surgery if converted；否則 palliative systemic therapy。', 'palliative', systemicPanel());
+      return;
+    }
+    result(R, F, 'rec-nonop', '不可切除／臨界之骨盆局部復發 · 曾放療 → 系統性治療 ± 選擇性再放療', [
+      '<b>緩和性系統性治療（COL-8）</b>為主；' + reRT,
+      '<b>若降期／轉為可切除 → 重新考慮手術</b>（回步驟 3）；否則<b>最佳支持治療</b>與<b>症狀導向放療</b>。',
+      '<b>復發時重新檢測生物標記</b>（RAS／BRAF、MSI／MMR、HER-2）以指引系統性治療。'
+    ], systemicNote + '｜NCCN Rectal：unresectable LRRC · previously irradiated → systemic therapy ± highly selective re-irradiation（Guren 2014）；若轉為可切除則再考慮手術，否則 BSC／症狀導向 RT。', 'palliative', systemicPanel());
   }
 
   /* ---------- A1. cT1-2, N0 之初始處置（COL-12(1)）---------- */
@@ -776,8 +909,19 @@
     var s = rcSt;
     if (key === 'entry') {
       s.entry = val;
-      s.tn = s.s2 = s.nastrat = s.rst1 = s.tntord = s.rst2 = s.sym = null;
-      rcClearSel(['rc_s3a', 'rc_s4a3', 'rc_s4a4', 'rc_s2b', 'rc_s3b', 'rc_s2c', 'rc_s3c', 'rc_s2e']);
+      s.tn = s.s2 = s.nastrat = s.rst1 = s.tntord = s.rst2 = s.sym = s.rpat = s.lres = s.lrt = s.dres = null;
+      rcClearSel(['rc_s3a', 'rc_s4a3', 'rc_s4a4', 'rc_s2b', 'rc_s3b', 'rc_s2c', 'rc_s3c', 'rc_s2e',
+        'rc_s2f', 'rc_s3f_l', 'rc_s4f_l', 'rc_s3f_d']);
+    } else if (key === 'rpat') {
+      s.rpat = val; s.lres = s.lrt = s.dres = null;
+      rcClearSel(['rc_s3f_l', 'rc_s4f_l', 'rc_s3f_d']);
+    } else if (key === 'lres') {
+      s.lres = val; s.lrt = null;
+      rcClearSel(['rc_s4f_l']);
+    } else if (key === 'lrt') {
+      s.lrt = val;
+    } else if (key === 'dres') {
+      s.dres = val;
     } else if (key === 'tn') {
       s.tn = val; s.s2 = null;
       rcClearSel(['rc_s4a3', 'rc_s4a4']);
@@ -803,7 +947,7 @@
     for (var k in rcSt) { if (rcSt.hasOwnProperty(k)) rcSt[k] = null; }
     var root = document.getElementById('rcPath');
     if (root) root.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
-    ['rc_e12_fu', 'rc_adj_fu', 'rc_crmclear_fu', 'rc_crminv_fu', 'rc_m1res_fu', 'rc_m1unres_fu'].forEach(function (id) {
+    ['rc_e12_fu', 'rc_adj_fu', 'rc_crmclear_fu', 'rc_crminv_fu', 'rc_m1res_fu', 'rc_m1unres_fu', 'rc_recur_fu'].forEach(function (id) {
       var el = document.getElementById(id); if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
     });
     rcRender();
