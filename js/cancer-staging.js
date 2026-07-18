@@ -139,12 +139,28 @@ var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
 // 'IC'：食道腺癌 pTNM 獨有期別（T1 N0 G3、或 T2 N0 G1–2）；仍屬第一期，故與 IA／IB 同深度。
 function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 
+/* 以 canvas 依 sm-th 字體實測列標籤（T／N／M）之最大寬度，決定標籤欄寬。
+   如此 table-layout:fixed 可保證資料欄等寬，標籤欄又剛好容納各表自身之標籤
+   （短如「T1」一律 40px、長如食道之判別式標籤才加寬），避免欄寬忽窄忽寬。 */
+var _lblCtx = null;
+function labelColWidth(labels){
+  if(!_lblCtx){
+    var cv = document.createElement('canvas'); _lblCtx = cv.getContext('2d');
+    var mono = (getComputedStyle(document.body).getPropertyValue('--mono') || 'monospace').trim();
+    _lblCtx.font = '700 11.5px ' + mono;
+  }
+  var w = 0;
+  labels.forEach(function(t){ w = Math.max(w, _lblCtx.measureText(String(t).replace(/<[^>]+>/g,'')).width); });
+  return Math.min(150, Math.max(40, Math.ceil(w) + 16));   // 上限 150px；超過者由 sm-th 換行
+}
+
 function renderMatrix(mx){
   var nCols = mx.ncols.length;
   var hasNG = !!mx.ng_label;               // 選填：T 列右側之合併註記欄（如 STS 之「N0」）
   var h = '<div class="onc-sec-h">分期組合 Stage Grouping</div><div class="sm-wrap"><table class="smx">';
-  // colgroup：左側 TNM 標籤欄（及 N0 欄）固定窄欄寬，僅右側資料欄（N／G 期別）平均分配。
-  h += '<colgroup><col class="smc-lbl">'+(hasNG?'<col class="smc-ng">':'');
+  // colgroup：標籤欄依內容實測寬度、N0 欄固定窄欄；資料欄（N／G 期別）於 fixed 版面平均分配剩餘。
+  var lblW = labelColWidth(mx.trows.concat((mx.mrows||[]).map(function(m){ return m[0]; })));
+  h += '<colgroup><col class="smc-lbl" style="width:'+lblW+'px">'+(hasNG?'<col class="smc-ng">':'');
   mx.ncols.forEach(function(){ h += '<col class="smc-data">'; });
   h += '</colgroup>';
   h += '<tr><td class="sm-corner"'+(hasNG?' colspan="2"':'')+'></td>';

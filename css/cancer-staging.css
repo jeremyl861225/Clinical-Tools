@@ -46,13 +46,13 @@
   :root{ --sm-strong-text:#ffffff; }
   @media (prefers-color-scheme: dark){ :root{ --sm-strong-text:#0e171b; } }
   .sm-wrap{overflow-x:auto; margin:4px 0 8px;}
-  table.smx{border-collapse:collapse; font-family:var(--mono); font-size:12px; width:100%;}
-  /* 左側 TNM 標籤欄與 N0 欄縮到內容自然寬（不被拉寬，避免長列標籤被裁切）；
-     資料欄（N／G 期別）等比例 → 平均分配剩餘寬度 */
-  .smx col.smc-lbl{width:1px;}
-  .smx col.smc-ng{width:1px;}
-  .smx col.smc-data{width:20%;}
+  table.smx{border-collapse:collapse; font-family:var(--mono); font-size:12px; width:100%; table-layout:fixed;}
+  /* 標籤欄寬度由 renderMatrix 以 canvas 實測後 inline 指定（40–150px）；N0 欄固定窄欄；
+     資料欄（N／G 期別）無指定寬度 → fixed 版面自動平均分配剩餘寬度，故各資料欄等寬。 */
+  .smx col.smc-ng{width:32px;}
   table.smx th, table.smx td{border:1px solid var(--line); text-align:center; padding:6px 5px; white-space:nowrap;}
+  /* 列標籤（T／N／M）允許換行——極少數判別式標籤（如食道之 T3 敘述）超過 150px 上限時可折行而不裁切 */
+  .smx .sm-th{white-space:normal; overflow-wrap:anywhere;}
   .smx .sm-corner{background:var(--soft-bg);}
   .smx .sm-nh{font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg);}
   .smx .sm-nh span{display:block; font-size:9px; font-weight:400; color:var(--muted-soft); margin-top:1px;}
