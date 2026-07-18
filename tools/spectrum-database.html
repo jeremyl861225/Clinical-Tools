@@ -124,6 +124,11 @@
   table.sd-mx thead th.gsep, table.sd-mx td.sd-cell.gsep{border-left:2px solid var(--line);}
   table.sd-mx thead th.gend, table.sd-mx td.sd-cell.gend{border-right:2px solid var(--line);}
   table.sd-mx thead th.corner{box-shadow:2px 0 0 var(--line);}
+  /* 表二拆分版：兩列表頭（群組帶 English ＋ 菌種縮寫），群組帶置頂、縮寫列接於其下 */
+  #sd-abx thead tr.grpband th{top:0; height:19px; padding:2px 4px; text-align:center; font-family:var(--mono); font-size:9.5px; letter-spacing:.03em; color:var(--accent); border-bottom:1px solid var(--line);}
+  #sd-abx thead tr.abbrrow th{top:19px;}
+  #sd-abx thead th.corner{top:0;}
+  #sd-abx .sd-colhead .abbr{font-size:10px;}
   table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:2px 0 0 var(--line);}
   table.sd-mx tbody th.rowhead .rx{font-family:var(--serif); font-weight:600; font-size:13px; color:var(--ink);}
   table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
@@ -305,6 +310,7 @@
   </footer>
 </div>
 </div>
+<script src="../data/antibiotics/antibiogram.js"></script>
 <script>
 /* 台大 2025H1 在地 %S 對照：key = 藥|菌欄；值 [S, n] 或 [S, n, 1(=同類代表)] */
 const NTUH_S={"Penicillin|Strep.":[100,725],"Penicillin|Efc":[98,1483],"Penicillin|Efm":[5,1317],"Penicillin|Anae.":[100,9],"Oxacillin|MSSA":[100,983],"Oxacillin|MRSA":[0,549],"Ampicillin|Efc":[99,1483],"Ampicillin|Efm":[5,1317],"Unasyn|GNB":[56,1969],"Unasyn|En.bac":[1,527],"Unasyn|AB":[82,909],"Unasyn|Anae.":[88,9],"Tazocin|GNB":[79,1969],"Tazocin|En.bac":[59,527],"Tazocin|PsA":[79,1455],"Tazocin|AB":[73,909],"1st|GNB":[61,1969],"Cefmetazole|GNB":[72,1969],"Cefmetazole|Anae.":[89,9],"Ceftriaxone|Strep.":[64,82],"Ceftriaxone|GNB":[69,1969],"Ceftriaxone|En.bac":[44,527],"Ceftazidime|GNB":[71,1969],"Ceftazidime|En.bac":[49,527],"Ceftazidime|PsA":[86,1455],"Ceftazidime|AB":[72,909],"Flomoxef|Anae.":[100,9],"Cefepime|GNB":[90,1969],"Cefepime|En.bac":[80,527],"Cefepime|PsA":[87,1455],"Cefepime|AB":[74,909],"Ertapenem|GNB":[89,1969],"Ertapenem|En.bac":[84,527],"Imipenem|GNB":[93,1969],"Imipenem|En.bac":[89,527],"Imipenem|PsA":[89,1455],"Imipenem|AB":[75,909],"Meropenem|GNB":[95,1969],"Meropenem|En.bac":[93,527],"Meropenem|PsA":[88,1455],"Meropenem|AB":[75,909],"Ciprofloxacin|MSSA":[96,983],"Ciprofloxacin|MRSA":[54,549],"Ciprofloxacin|Efc":[88,1483],"Ciprofloxacin|Efm":[5,1317],"Ciprofloxacin|GNB":[73,1969],"Ciprofloxacin|En.bac":[66,527],"Ciprofloxacin|PsA":[86,1455],"Ciprofloxacin|AB":[74,909],"Levofloxacin|Strep.":[93,725],"Levofloxacin|MSSA":[96,983],"Levofloxacin|MRSA":[54,549],"Levofloxacin|Efc":[89,1483],"Levofloxacin|Efm":[7,1317],"Levofloxacin|GNB":[59,1969],"Levofloxacin|En.bac":[61,527],"Levofloxacin|PsA":[83,1455],"Levofloxacin|AB":[75,909],"Moxifloxacin|Strep.":[98,82],"Vancomycin|Strep.":[100,82],"Vancomycin|MSSA":[100,983],"Vancomycin|MRSA":[100,549],"Vancomycin|Efc":[99,1483],"Vancomycin|Efm":[47,1317],"Daptomycin|MSSA":[100,983],"Daptomycin|MRSA":[100,549],"Daptomycin|Efc":[79,1483],"Linezolid|MSSA":[100,983],"Linezolid|MRSA":[99,549],"Linezolid|Efc":[83,1483],"Linezolid|Efm":[98,1317],"Tigecycline|GNB":[89,1969],"Tigecycline|En.bac":[81,527],"Fusidic acid|MSSA":[85,983],"Fusidic acid|MRSA":[90,549],"Doxycycline|Strep.":[21,725,1],"Doxycycline|MSSA":[55,983,1],"Doxycycline|MRSA":[70,549,1],"Doxycycline|Efc":[10,1483,1],"Doxycycline|Efm":[42,1317,1],"Colistin|GNB":[97,1969],"Colistin|En.bac":[95,527],"Colistin|PsA":[98,1455],"Colistin|AB":[99,909],"TMP-SMX|MSSA":[99,983],"TMP-SMX|MRSA":[92,549],"TMP-SMX|GNB":[63,1969],"TMP-SMX|En.bac":[64,527],"Gentamicin|MSSA":[73,983],"Gentamicin|MRSA":[74,549],"Gentamicin|GNB":[75,1969],"Gentamicin|En.bac":[84,527],"Gentamicin|AB":[77,909],"Amikacin|GNB":[94,1969],"Amikacin|En.bac":[88,527],"Clindamycin|Strep.":[49,725],"Clindamycin|MSSA":[86,983],"Clindamycin|MRSA":[53,549],"Clindamycin|Anae.":[83,9],"Metronidazole|Anae.":[100,9],"Azithromycin|Strep.":[52,725,1],"Azithromycin|MSSA":[62,983,1],"Azithromycin|MRSA":[24,549,1],"Mica|C. albicans":[100,16],"Caspo|C. albicans":[100,16],"Anidula|C. albicans":[100,16],"Vori|C. albicans":[100,16],"Flu|C. albicans":[100,16],"Mica|C. tropicalis":[100,23],"Caspo|C. tropicalis":[96,23],"Anidula|C. tropicalis":[100,23],"Vori|C. tropicalis":[48,23],"Flu|C. tropicalis":[70,23],"Mica|C. parapsilosis":[100,14],"Caspo|C. parapsilosis":[100,14],"Anidula|C. parapsilosis":[100,14],"Vori|C. parapsilosis":[100,14],"Flu|C. parapsilosis":[100,14],"Mica|C. glabrata":[100,16],"Caspo|C. glabrata":[75,16],"Anidula|C. glabrata":[100,16],"Flu|C. glabrata":[75,16]};
@@ -557,7 +563,110 @@ const BL_SYM={g:"S",a:"±",r:"R"};
 document.getElementById("sd-hmbody").innerHTML=BL_ROWS.map(r=>
   `<tr><th>${r.rx}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
 
-buildMatrix("sd-abx",abxCols,abxRows,(rx,ab)=>rx+"|"+ab,{rowDrug:true});   // 表二：列＝藥名
+/* ===================================================================
+   表二拆分版：致病菌依台大 2025H1 在地感受性拆細（antibiogram.js/window.ABG）。
+   每格沿用本表框架：底色＝質性等級 cls(v)＋符號 sym(v)；框起之 %S 徽章＝台大實測。
+   質性等級 v 來源：粗欄 abxRows.v[ci] 繼承；Steno／B.cepacia／H.influenzae 台大 panel
+   未涵蓋，改採文獻定性（→等級，不顯示 PMID）：
+   · Stenotrophomonas — Nicodemo 2007 PMID 17334747（TMP-SMX/新型FQ/minocycline/tigecycline 有效，餘內在抗藥）
+   · Burkholderia cepacia — Schaumburg 2022 PMID 35512733（SXT/ceftazidime 佳、aminoglycoside/polymyxin 內在抗藥）
+   · Haemophilus influenzae — SENTRY 2003 PMID 12967753／Wajima 2016 PMID 27530834（FQ、碳青黴烯高度敏感）
+   非典型菌沿用原 Atyp 欄質性（β-lactam 不涵蓋；macrolide/tetracycline/FQ 有效）。 =================================================================== */
+const SPLIT_GRP={
+  strep:{label:'Streptococcus',tint:'gA'}, staph:{label:'Staphylococcus',tint:'gA'},
+  entero:{label:'Enterococcus',tint:'gA'}, ebac:{label:'Enterobacterales',tint:'gB'},
+  nonf:{label:'Non-fermenter',tint:'gB'}, fast:{label:'Fastidious',tint:'gB'},
+  anae:{label:'Anaerobe',tint:'gC'}, atyp:{label:'Atypical',tint:'gD'}
+};
+const SPLIT_COLS=[
+  {abbr:'GAS',g:'strep',sec:'gram_positive',org:'Streptococcus pyogenes (Group A)',ci:0},
+  {abbr:'GBS',g:'strep',sec:'gram_positive',org:'Streptococcus agalactiae (Group B)',ci:0},
+  {abbr:'S.pneu',g:'strep',sec:'gram_positive',org:'Streptococcus pneumoniae',ci:0},
+  {abbr:'MSSA',g:'staph',sec:'gram_positive',org:'MSSA',ci:1},
+  {abbr:'MRSA',g:'staph',sec:'gram_positive',org:'MRSA',ci:2},
+  {abbr:'CoNS',g:'staph',sec:'gram_positive',org:'Coagulase-negative staphylococci',ci:2},
+  {abbr:'E.fcl',g:'entero',sec:'gram_positive',org:'Enterococcus faecalis',ci:3},
+  {abbr:'E.fcm',g:'entero',sec:'gram_positive',org:'Enterococcus faecium',ci:4},
+  {abbr:'E.coli',g:'ebac',sec:'gram_negative',org:'Escherichia coli',ci:5},
+  {abbr:'K.pneu',g:'ebac',sec:'gram_negative',org:'Klebsiella pneumoniae',ci:5},
+  {abbr:'K.oxy',g:'ebac',sec:'gram_negative',org:'Klebsiella oxytoca',ci:5},
+  {abbr:'E.clo',g:'ebac',sec:'gram_negative',org:'Enterobacter cloacae',ci:6},
+  {abbr:'S.mar',g:'ebac',sec:'gram_negative',org:'Serratia marcescens',ci:6},
+  {abbr:'P.mir',g:'ebac',sec:'gram_negative',org:'Proteus mirabilis',ci:5},
+  {abbr:'Salm',g:'ebac',sec:'gram_negative',org:'Salmonella (non-typhi)',ci:5},
+  {abbr:'PsA',g:'nonf',sec:'gram_negative',org:'Pseudomonas aeruginosa',ci:7},
+  {abbr:'AB',g:'nonf',sec:'gram_negative',org:'Acinetobacter baumannii complex',ci:8},
+  {abbr:'CRAB',g:'nonf',sec:'gram_negative',org:'Carbapenem-resistant A. baumannii (CRAB)',ci:8},
+  {abbr:'Steno',g:'nonf',sec:'gram_negative',org:'Stenotrophomonas maltophilia',ci:-1},
+  {abbr:'B.cep',g:'nonf',sec:'gram_negative',org:'Burkholderia cepacia complex',ci:-1},
+  {abbr:'H.inf',g:'fast',sec:'haemophilus',org:'Haemophilus influenzae',ci:-1},
+  {abbr:'B.frag',g:'anae',sec:'anaerobic',org:'Bacteroides fragilis',ci:9},
+  {abbr:'Bact',g:'anae',sec:'anaerobic',org:'Bacteroides species (other than B. fragilis)',ci:9},
+  {abbr:'Prev',g:'anae',sec:'anaerobic',org:'Prevotella species',ci:9},
+  {abbr:'Fuso',g:'anae',sec:'anaerobic',org:'Fusobacterium species',ci:9},
+  {abbr:'Pepto',g:'anae',sec:'anaerobic',org:'Peptostreptococcus species (other than P. anaerobius)',ci:9},
+  {abbr:'M.pneu',g:'atyp',sec:null,org:null,ci:10},
+  {abbr:'C.pneu',g:'atyp',sec:null,org:null,ci:10},
+  {abbr:'Legio',g:'atyp',sec:null,org:null,ci:10},
+];
+const SPLIT_ABGKEY={Penicillin:'penicillin',Oxacillin:'oxacillin',Ampicillin:'ampicillin',
+  Unasyn:'SAM',Tazocin:'TZP','1st':'cefazolin_urine',Cefmetazole:'cefmetazole',
+  Ceftriaxone:'cefotaxime',Ceftazidime:'ceftazidime',Flomoxef:'flomoxef',Cefepime:'cefepime',
+  Ertapenem:'ertapenem',Imipenem:'imipenem',Meropenem:'meropenem',
+  Ciprofloxacin:'ciprofloxacin',Levofloxacin:'levofloxacin',Moxifloxacin:'moxifloxacin',
+  Vancomycin:'vancomycin',Daptomycin:'daptomycin',Linezolid:'linezolid',Tigecycline:'tigecycline',
+  'Fusidic acid':'fusidic_acid',Doxycycline:'tetracycline',Colistin:'colistin','TMP-SMX':'SXT',
+  Gentamicin:'gentamicin',Amikacin:'amikacin',Clindamycin:'clindamycin',Metronidazole:'metronidazole',
+  Azithromycin:'erythromycin'};
+const SPLIT_PROXY={Ceftriaxone:1,Doxycycline:1,Azithromycin:1};   // 同類代表，%徽章加 ≈
+const SPLIT_LIT=(function(){
+  const m={}, put=(d,col,lv)=>d.forEach(x=>{ m[x+'|'+col]=lv; });
+  put(['Penicillin','Oxacillin','Ampicillin','Unasyn','Tazocin','1st','2nd','Cefmetazole','Ceftriaxone','Ceftazidime','Flomoxef','Cefepime','Brosym','Ceftobiprole','Cefpirome','Ertapenem','Imipenem','Meropenem','Doripenem','Gentamicin','Amikacin','Vancomycin','Teicoplanin','Daptomycin','Linezolid','Fusidic acid','Clindamycin','Metronidazole','Azithromycin','Rifampin'],'Steno',-1);
+  put(['Levofloxacin','Moxifloxacin','Doxycycline','Tigecycline'],'Steno',1);
+  put(['Ciprofloxacin','Colistin','Fosfomycin'],'Steno',0);
+  put(['Penicillin','Oxacillin','Ampicillin','Unasyn','1st','2nd','Cefmetazole','Ceftriaxone','Flomoxef','Ertapenem','Cefpirome','Gentamicin','Amikacin','Colistin','Vancomycin','Teicoplanin','Daptomycin','Linezolid','Fusidic acid','Clindamycin','Metronidazole','Azithromycin','Fosfomycin'],'B.cep',-1);
+  put(['Tazocin','Cefepime','Imipenem','Ciprofloxacin','Moxifloxacin','Doxycycline','Tigecycline','Brosym','Ceftobiprole','Doripenem','Rifampin'],'B.cep',0);
+  put(['Unasyn','Tazocin','Ceftazidime','Flomoxef','Brosym'],'H.inf',1);
+  put(['2nd','Cefepime','Ceftobiprole','Cefpirome','Ertapenem','Imipenem','Meropenem','Doripenem','Ciprofloxacin','Levofloxacin','Moxifloxacin'],'H.inf',2);
+  put(['Cefmetazole','Azithromycin','Doxycycline','Tigecycline','Gentamicin','Amikacin','Colistin','Fosfomycin','Rifampin'],'H.inf',0);
+  put(['Penicillin','Oxacillin','1st','Vancomycin','Teicoplanin','Daptomycin','Linezolid','Fusidic acid','Clindamycin','Metronidazole'],'H.inf',-1);
+  return m;
+})();
+function buildAbxSplit(tblId){
+  const cols=SPLIT_COLS, t=document.getElementById(tblId);
+  const sep=cols.map((c,i)=> i>0 && c.g!==cols[i-1].g);
+  let thead="<thead><tr class='sd-cols grpband'><th class='corner' rowspan='2'>藥物 ＼ 致病菌</th>";
+  let g=0; while(g<cols.length){ let j=g; while(j+1<cols.length && cols[j+1].g===cols[g].g) j++;
+    thead+=`<th class='tint-${SPLIT_GRP[cols[g].g].tint}${g>0?' gsep':''}${j===cols.length-1?' gend':''}' colspan='${j-g+1}'>${SPLIT_GRP[cols[g].g].label}</th>`; g=j+1; }
+  thead+="</tr><tr class='sd-cols abbrrow'>";
+  cols.forEach((c,i)=>{ thead+=`<th data-col='${i}' class='tint-${SPLIT_GRP[c.g].tint}${sep[i]?' gsep':''}${i===cols.length-1?' gend':''}'><div class='sd-colhead' onclick="toggleCol('${tblId}',${i})"><span class='abbr'>${c.abbr}</span></div></th>`; });
+  thead+="</tr></thead>";
+  let tb="<tbody>";
+  abxRows.forEach(r=>{
+    if(r.g){ const p=r.g.split(" "); const en=r.g.replace(p[0],"").trim();
+      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
+    const rk=SDX_DRUG[r.rx];
+    const nm=rk?`<a class='dlink' href='${sdHref(rk)}' onclick='sdSaveScroll()' title='查看 ${r.rx} 藥卡'><span class='rx'>${r.rx}</span></a>`:`<span class='rx'>${r.rx}</span>`;
+    tb+=`<tr><th class='rowhead'>${nm}${r.cn?`<span class='cn'>${r.cn}</span>`:""}</th>`;
+    cols.forEach((c,i)=>{
+      // 台大實測 %（供 %徽章；ci<0 之無母欄菌並用以定質性符號，避免符號與 % 相左）
+      let pv=null; const ak=SPLIT_ABGKEY[r.rx];
+      if(ak && c.sec && window.ABG[c.sec]){ const S=window.ABG[c.sec], idx=S.ab.indexOf(ak);
+        if(idx>=0){ const o=S.org[c.org]; if(o){ const x=o.S[idx]; if(x!=='NA'&&x!=null) pv=x; } } }
+      // 質性等級 v：粗欄繼承 ＞ 台大%換算（無母欄時）＞ 文獻定性 ＞ 不涵蓋
+      let v;
+      if(c.ci>=0) v=r.v[c.ci];
+      else if(pv!=null) v = pv>=80?2 : pv>=50?1 : pv>=30?0 : -1;
+      else { const lit=SPLIT_LIT[r.rx+'|'+c.abbr]; v = (lit!==undefined)?lit:-1; }
+      let sp="";
+      if(pv!=null){ const px=SPLIT_PROXY[r.rx]?' px':''; sp=`<span class='sp ${sTier(pv)}${px}'>${px?'≈':''}${pv}%</span>`; }
+      tb+=`<td class='sd-cell ${cls(v)}${sep[i]?' gsep':''}${i===cols.length-1?' gend':''}' data-col='${i}'><div class='dot'>${sym(v)}${sp}</div></td>`;
+    });
+    tb+="</tr>";
+  });
+  t.innerHTML=thead+tb+"</tbody>";
+}
+buildAbxSplit("sd-abx");   // 表二：列＝藥名、欄＝拆細菌種
 buildMatrix("sd-afx",afxCols,afxRows,(rx,ab)=>ab+"|"+rx,{colDrug:true});   // 表三：欄＝藥名
 buildResistant();
 // 還原捲動：須等 load（字體／表格版面底定）才捲得到位，見 sdRestoreScroll 註解
