@@ -87,12 +87,12 @@
 
   <div class="result">
     <div class="result-grid">
-      <div class="metric-cell" id="cd_cell_p">
-        <div class="metric-label">Parkland<span class="metric-tag" id="cd_tag_p" hidden>以此為準</span></div>
+      <div>
+        <div class="metric-label">Parkland — 發炎嚴重度</div>
         <div class="metric-value big" id="cd_pgs_out">Grade 1</div>
       </div>
-      <div class="metric-cell" id="cd_cell_n">
-        <div class="metric-label">Nassar（修訂 I–V）<span class="metric-tag" id="cd_tag_n" hidden>以此為準</span></div>
+      <div>
+        <div class="metric-label">Nassar — 手術困難度</div>
         <div class="metric-value big" id="cd_nas_out">Grade I</div>
       </div>
     </div>
@@ -134,41 +134,36 @@ function cdCalc(){
   const roman=['','I','II','III','IV','V'];
   document.getElementById('cd_nas_out').textContent='Grade '+roman[nas];
 
-  // 兩套分級取較高者為準：分級較低的那一套等於低估了這台刀的風險。
-  const govern = (pgs===nas) ? 'both' : (pgs>nas ? 'p' : 'n');
-  const cellP=document.getElementById('cd_cell_p'), cellN=document.getElementById('cd_cell_n');
-  const tagP=document.getElementById('cd_tag_p'), tagN=document.getElementById('cd_tag_n');
-  cellP.classList.toggle('metric-pick', govern!=='n');
-  cellN.classList.toggle('metric-pick', govern!=='p');
-  cellP.classList.toggle('is-muted', govern==='n');
-  cellN.classList.toggle('is-muted', govern==='p');
-  tagP.hidden = (govern==='n');
-  tagN.hidden = (govern==='p');
-  tagP.textContent = tagN.textContent = (govern==='both') ? '兩者一致' : '以此為準';
+  // 兩套分級並列呈現，不指定何者為準——兩者量的不是同一個維度，
+  // 文獻亦未定義兩者該如何合併。以下的難度描述只說明「哪一套達到該級」。
+  const roman2={1:'I',2:'II',3:'III',4:'IV',5:'V'};
+  const hi=Math.max(pgs,nas);
+  const reached=[];
+  if(pgs===hi) reached.push('Parkland '+pgs);
+  if(nas===hi) reached.push('Nassar '+roman2[nas]);
+  const by='（'+reached.join(' ／ ')+'）';
 
-  const worstGrade=Math.max(pgs,nas);
   let head, body;
-  if(worstGrade>=4){
-    head='高困難度';
-    body='轉開腹與膽道損傷風險顯著上升。應<b>及早</b>考慮 bailout：次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 critical view of safety 才切斷任何管狀構造；必要時術中膽道攝影或請求支援。';
-  } else if(worstGrade===3){
-    head='中等困難度';
+  if(hi>=4){
+    head='已有分級落在高困難度區間'+by;
+    body='該區間的轉開腹與膽道損傷風險顯著上升。應<b>及早</b>考慮 bailout：次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 critical view of safety 才切斷任何管狀構造；必要時術中膽道攝影或請求支援。';
+  } else if(hi===3){
+    head='已有分級落在中等困難度區間'+by;
     body='多可完成腹腔鏡切除，但應預留較長手術時間，並在無法辨明膽囊管蒂時主動改採 bailout 策略。';
   } else {
-    head='低困難度';
+    head='兩套分級皆屬低困難度區間';
     body='預期為單純腹腔鏡膽囊切除。';
   }
-  document.getElementById('cd_head').textContent=head;
+  document.getElementById('cd_head').innerHTML=head;
   document.getElementById('cd_body').innerHTML=body;
 
   const notes=[];
-  if(govern==='both'){
-    notes.push('兩套分級級數相同，判讀一致。');
-  } else {
-    const name = govern==='p' ? 'Parkland' : 'Nassar';
-    const gap=Math.abs(pgs-nas);
-    notes.push('<b>以 '+name+' 為準</b>（兩者相差 '+gap+' 級）：取較高者，因為分級較低的那一套等於低估了這台刀的風險。'
-      + (govern==='n' ? 'Parkland 不評估膽囊管蒂，而膽道損傷風險正在於此。' : 'Nassar 不評估膽囊本身的發炎嚴重度與解剖變異。'));
+  const gap=Math.abs(pgs-nas);
+  if(gap>=2){
+    notes.push('<b>兩套分級落差達 '+gap+' 級</b>，請留意各自量的不是同一件事：Parkland 評<b>膽囊發炎嚴重度與局部解剖</b>、<b>不評估膽囊管蒂</b>；Nassar 評<b>手術技術困難度</b>、<b>不評估膽囊本身的發炎嚴重度</b>。'
+      + (nas>pgs ? '此例 Nassar 較高，落差來自膽囊管蒂或沾黏，而膽道損傷風險正在於此。'
+                 : '此例 Parkland 較高，落差來自膽囊本身的發炎或解剖變異。')
+      + '文獻並未定義兩者該如何合併，本頁不代為裁定。');
   }
   if(g5) notes.push('已勾選 <b>Grade V</b>（Mirizzi type ≥2 或膽囊腸道／皮膚瘻管）：屬瘻管性病灶，需計畫性處理瘻管與膽道重建的可能，<b>不宜視為一般困難膽囊</b>。');
   if(pgs===4) notes.push('<b>Parkland Grade 4</b> 可能來自「解剖因素」而非外觀嚴重度（異常肝解剖、肝內膽囊、嵌頓結石）——外觀溫和不代表安全。');
