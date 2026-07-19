@@ -135,6 +135,9 @@
   table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
   tr.sd-grp th{position:sticky; left:0; background:var(--accent); color:#fff; text-align:left; padding:5px 12px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; z-index:11;}
   tr.sd-grp th .en{opacity:.75; font-weight:400;}
+  /* 表二群組名為純英文（Penicillins…），不像表三有中／英兩段，
+     故整段對齊表三英文段的字重，兩表的藥物類別看起來才一致。 */
+  #sd-abx tr.sd-grp th{font-weight:400;}
   td.sd-cell{text-align:center; padding:0; border-bottom:1px solid var(--line); border-left:1px solid var(--line);}
   td.sd-cell .dot{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; height:40px; font-weight:800; font-size:12px;}
   td.c2 .dot{background:var(--s2);color:var(--s2t)} td.c1 .dot{background:var(--s1);color:var(--s1t)}
