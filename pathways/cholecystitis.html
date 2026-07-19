@@ -44,15 +44,46 @@
     </div>
   </details>
 
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>複雜型併發症：膽囊破裂、膽囊出血、Mirizzi syndrome Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 這三者在本流程的位置：</b>Mirizzi syndrome 以<b>膽道阻塞</b>表現，屬步驟 1（膽道／胰臟）；膽囊破裂與膽囊出血是<b>膽囊本身</b>的併發型態，置於 TG18 分級之後的步驟 2b，並覆寫一般的時機建議。<br><br>
+
+      <b>Niemeier 膽囊破裂分型：</b><br>
+      ・<b>Type I 自由穿孔：</b>破入腹腔，瀰漫性膽汁性腹膜炎。文獻占約 8.6–40%，預後最差（糖尿病病人較多）。<br>
+      ・<b>Type II 局部穿孔：</b>被大網膜／鄰近器官包裹，形成膽囊周圍膿瘍。最常見（約 46–76%）。<br>
+      ・<b>Type III 慢性穿孔：</b>形成膽囊—腸道瘻管（cholecysto-enteric fistula），多於術中才診斷；可併發膽石腸阻塞。<br>
+      ・術前診斷率約 49–60%；整體死亡率中位數約 10.8%，年長／多共病者可超過 20%。<br>
+      ・<b>注意：</b>膽汁性腹膜炎、膽囊周圍膿瘍本身即符合 TG18 <b>Grade II</b> 之「明顯局部發炎」；合併器官障礙才是 Grade III。<br><br>
+
+      <b>膽囊出血（Haemorrhagic cholecystitis／Gallbladder haemorrhage）：</b><br>
+      ・約占急性膽囊炎 0.55%；約 <b>47.7% 使用抗凝血劑</b>，46% 無膽結石；死亡率約 10.8%。<br>
+      ・表現：典型 RUQ 痛／發燒（90.8%），但可見消化道出血（29.2%）、黃疸（15.4%）、出血性休克（16.9%）、Hb 下降（36.9%）。<br>
+      ・<b>嚴重度分層（Cureus 2025 系統性回顧）：</b>血行動力學<b>穩定</b> → haemorrhagic cholecystitis (HC)，可保守／擇期處理；<b>不穩定</b>或需輸血 → haemorrhagic gallbladder (HGB)，需緊急或多模式介入。部分病人住院中才由穩定轉為不穩定，須持續監測。<br><br>
+
+      <b>Mirizzi syndrome — Csendes 分型（1989，2007 增修）：</b><br>
+      ・<b>Type I：</b>Hartmann pouch／膽囊管嵌頓結石造成總肝管<b>外在壓迫</b>，無瘻管。<br>
+      ・<b>Type II：</b>膽囊膽道瘻管，侵蝕 <b>&lt;1/3</b> 總膽管周徑。<br>
+      ・<b>Type III：</b>侵蝕 <b>1/3–2/3</b> 周徑。<br>
+      ・<b>Type IV：</b>侵蝕 <b>&gt;2/3</b>／總膽管壁完全破壞。<br>
+      ・<b>Type V：</b>上述任一型 + 膽囊腸道瘻管；<b>Va</b> 無膽石腸阻塞、<b>Vb</b> 合併膽石腸阻塞（gallstone ileus／Bouveret）。<br>
+      ・<b>術前診斷率僅 18–62%</b>，MRCP + ERCP 併用可達 85.9%；ERCP 兼具診斷、減壓與 bridge-to-surgery。<br>
+      ・腹腔鏡多限於 Type I（含部分 II）；整體轉開腹率約 34%，Csendes 分型是轉開腹的獨立危險因子。<br>
+      ・<b>膽囊癌風險：</b>Mirizzi 合併膽囊癌約 5.3%，高於單純膽石症之 1% — 標本務必送病理。<br>
+      ・<b>次全膽囊切除（Strasberg）：</b>fenestrating 型不封閉膽囊、膽汁瘻較多但無殘餘膽囊結石；reconstituting 型封閉下端、留下殘餘膽囊。困難膽囊以此避免膽道損傷。
+    </div>
+  </details>
+
   <div class="flow-step" id="chole_bs1">
     <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">先評估：是否合併膽道／胰臟問題？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="cholePick('bil','cholangitis',this)">急性膽管炎<span class="fo-sub">發燒／寒顫 + 黃疸 + 右上腹痛（Charcot）或 TG18 膽管炎 — 最優先處理</span></button>
       <button class="flow-opt" onclick="cholePick('bil','pancreatitis',this)">膽石性胰臟炎<span class="fo-sub">lipase／amylase 升高，符合胰臟炎診斷</span></button>
       <button class="flow-opt" onclick="cholePick('bil','cbd',this)">疑似總膽管結石（無膽管炎／胰臟炎）<span class="fo-sub">膽紅素／肝功能升高、CBD 擴張（&gt;6 mm）</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','mirizzi',this)">Mirizzi syndrome<span class="fo-sub">膽囊管／Hartmann pouch 嵌頓結石壓迫總肝管：黃疸 + 總肝管擴張而 CBD 內徑正常</span></button>
       <button class="flow-opt" onclick="cholePick('bil','none',this)">單純急性膽囊炎<span class="fo-sub">直接進入下方 TG18 分級</span></button>
     </div>
-    <div class="note" style="margin-top:8px;">若同時存在，依優先順序選擇：急性膽管炎 &gt; 膽石性胰臟炎 &gt; 疑似總膽管結石。</div>
+    <div class="note" style="margin-top:8px;">若同時存在，依優先順序選擇：急性膽管炎 &gt; 膽石性胰臟炎 &gt; Mirizzi syndrome &gt; 疑似總膽管結石。<br>Mirizzi 與總膽管結石影像相似（皆為阻塞性黃疸），關鍵鑑別在<b>阻塞位置</b>：Mirizzi 為總肝管受壓、其遠端 CBD 內徑正常。</div>
   </div>
 
   <div class="flow-connector hidden" id="chole_bc_sub">↓</div>
@@ -70,6 +101,17 @@
       <button class="flow-opt" onclick="cholePick('asge','int',this)">中風險<span class="fo-sub">肝功能異常（非膽紅素）／年齡 &gt;55／CBD 擴張（&gt;6 mm）未達高風險</span></button>
       <button class="flow-opt" onclick="cholePick('asge','low',this)">低風險<span class="fo-sub">上述皆無</span></button>
     </div>
+  </div>
+  <div class="flow-step hidden" id="chole_bs_mir">
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">Mirizzi syndrome — Csendes 分型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('mir','1',this)">Type I<span class="fo-sub">外在壓迫，無膽囊膽道瘻管</span></button>
+      <button class="flow-opt" onclick="cholePick('mir','23',this)">Type II–III<span class="fo-sub">膽囊膽道瘻管侵蝕總膽管周徑 &lt;1/3（II）或 1/3–2/3（III）</span></button>
+      <button class="flow-opt" onclick="cholePick('mir','4',this)">Type IV<span class="fo-sub">侵蝕 &gt;2/3 周徑／總膽管壁完全破壞</span></button>
+      <button class="flow-opt" onclick="cholePick('mir','5a',this)">Type Va<span class="fo-sub">合併膽囊腸道瘻管，無膽石腸阻塞</span></button>
+      <button class="flow-opt" onclick="cholePick('mir','5b',this)">Type Vb<span class="fo-sub">合併膽囊腸道瘻管 + 膽石腸阻塞（gallstone ileus／Bouveret）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">分型多需 MRCP／ERCP 或術中才確定；不確定時以較高分型準備（轉診 HPB 中心、備開腹）。</div>
   </div>
 
   <div class="flow-rec rec-idle" id="chole_bil_rec">
@@ -89,6 +131,34 @@
     </div>
   </div>
 
+  <div class="flow-connector hidden" id="chole_c2b">↓</div>
+  <div class="flow-step hidden" id="chole_s2b">
+    <div class="flow-step-head"><span class="flow-num">2b</span><span class="flow-q">是否為複雜型（膽囊破裂／膽囊出血）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('sp','none',this)">否 — 一般急性膽囊炎<span class="fo-sub">依 TG18 分級與手術風險決定時機</span></button>
+      <button class="flow-opt" onclick="cholePick('sp','perf',this)">膽囊破裂 Gallbladder perforation<span class="fo-sub">CT 見膽囊壁缺損、膽囊周圍積液／膿瘍、游離膽汁或腹膜炎徵象</span></button>
+      <button class="flow-opt" onclick="cholePick('sp','hemo',this)">膽囊出血 Gallbladder haemorrhage<span class="fo-sub">膽囊內高密度出血、hemobilia、Hb 下降／消化道出血；常見於使用抗凝血劑者</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="chole_s2c_perf">
+    <div class="flow-step-head"><span class="flow-num">2c</span><span class="flow-q">Niemeier 破裂分型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('perf','1',this)">Type I 自由穿孔<span class="fo-sub">破入腹腔，瀰漫性膽汁性腹膜炎</span></button>
+      <button class="flow-opt" onclick="cholePick('perf','2',this)">Type II 局部穿孔<span class="fo-sub">被包裹之膽囊周圍膿瘍／積液，無瀰漫性腹膜炎</span></button>
+      <button class="flow-opt" onclick="cholePick('perf','3',this)">Type III 慢性瘻管<span class="fo-sub">膽囊—腸道瘻管；可合併膽石腸阻塞</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="chole_s2c_hemo">
+    <div class="flow-step-head"><span class="flow-num">2c</span><span class="flow-q">膽囊出血：血行動力學狀態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('hemo','stable',this)">穩定（HC）<span class="fo-sub">無休克、無明顯 Hb 下降或輸血需求</span></button>
+      <button class="flow-opt" onclick="cholePick('hemo','unstable',this)">不穩定（HGB）<span class="fo-sub">出血性休克、持續 Hb 下降或需輸血</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此分層決定介入的<b>急迫性</b>，不改變最終仍需膽囊切除的事實；住院中可能由穩定轉為不穩定，須重新評估。</div>
+  </div>
+
   <div class="flow-connector hidden" id="chole_c2">↓</div>
   <div class="flow-step hidden" id="chole_s2">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">手術風險評估？</span></div>
@@ -106,39 +176,55 @@
   </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="choleReset()">重置</button></div>
-  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. Tokyo Guidelines 2018 (TG18). J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2020+WSES+guidelines+for+acute+calculous+cholecystitis.+World+J+Emerg+Surg.+2020%3B15%3A61" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2020 WSES guidelines for acute calculous cholecystitis. World J Emerg Surg. 2020;15:61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=da+Costa+DW%2C+et+al.+%28PONCHO%29+Lancet.+2015%3B386%2810000%29%3A1261-1268" target="_blank" rel="noopener" class="ref-link">da Costa DW, et al. (PONCHO) Lancet. 2015;386(10000):1261-1268.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Crockett+SD%2C+et+al.+AGA.+Gastroenterology.+2018%3B154%284%29%3A1096-1101" target="_blank" rel="noopener" class="ref-link">Crockett SD, et al. AGA. Gastroenterology. 2018;154(4):1096-1101.</a></footer>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. Tokyo Guidelines 2018 (TG18). J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2020+WSES+guidelines+for+acute+calculous+cholecystitis.+World+J+Emerg+Surg.+2020%3B15%3A61" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2020 WSES guidelines for acute calculous cholecystitis. World J Emerg Surg. 2020;15:61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=da+Costa+DW%2C+et+al.+%28PONCHO%29+Lancet.+2015%3B386%2810000%29%3A1261-1268" target="_blank" rel="noopener" class="ref-link">da Costa DW, et al. (PONCHO) Lancet. 2015;386(10000):1261-1268.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Crockett+SD%2C+et+al.+AGA.+Gastroenterology.+2018%3B154%284%29%3A1096-1101" target="_blank" rel="noopener" class="ref-link">Crockett SD, et al. AGA. Gastroenterology. 2018;154(4):1096-1101.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/41695875/" target="_blank" rel="noopener" class="ref-link">Kolokotronis T, Pantelis D. Interventional management of acute perforated cholecystitis. World J Gastrointest Surg. 2026;18(1):114059.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42255797/" target="_blank" rel="noopener" class="ref-link">Tandon V, et al. Gallbladder perforation: a 23-year study of 100 patients. Cureus. 2026;18(5):e108275.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34548226/" target="_blank" rel="noopener" class="ref-link">Gupta V, et al. Gallbladder perforation: step-up approach. Hepatobiliary Pancreat Dis Int. 2022;21(2):168-174.</a> ｜ <a href="https://doi.org/10.7759/cureus.94342" target="_blank" rel="noopener" class="ref-link">Florou E, et al. Clarifying the spectrum of gallbladder haemorrhage: a systematic review. Cureus. 2025;17(10):e94342.</a> ｜ <a href="https://doi.org/10.1097/MD.0000000000009691" target="_blank" rel="noopener" class="ref-link">Chen H, et al. Current trends in the management of Mirizzi syndrome. Medicine (Baltimore). 2018;97(4):e9691.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32661708/" target="_blank" rel="noopener" class="ref-link">Zhao J, et al. Laparoscopic approaches for Mirizzi syndrome: a systematic review. Surg Endosc. 2020;34(11):4717-4726.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16858544/" target="_blank" rel="noopener" class="ref-link">Prasad TLVD, et al. Mirizzi syndrome and gallbladder cancer. J Hepatobiliary Pancreat Surg. 2006;13(4):323-326.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26521077/" target="_blank" rel="noopener" class="ref-link">Strasberg SM, et al. Subtotal cholecystectomy — fenestrating vs reconstituting. J Am Coll Surg. 2016;222(1):89-96.</a></footer>
 </div>
 </div>
 <script src="../js/common.js"></script>
 <script>
-const choleSt={bil:null,pSev:null,asge:null,grade:null,risk:null};
+const choleSt={bil:null,pSev:null,asge:null,mir:null,grade:null,sp:null,perf:null,hemo:null,risk:null};
 function cholePick(key,val,btn){
   flowSelect(btn);
-  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.asge=null; }
+  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.asge=null; choleSt.mir=null; }
   else if(key==='pSev'){ choleSt.pSev=val; }
   else if(key==='asge'){ choleSt.asge=val; }
-  else if(key==='grade'){ choleSt.grade=val; choleSt.risk=null; flowClearSel('chole_s2'); }
+  else if(key==='mir'){ choleSt.mir=val; }
+  else if(key==='grade'){ choleSt.grade=val; choleSt.sp=null; choleSt.perf=null; choleSt.hemo=null; choleSt.risk=null; flowClearSel('chole_s2b'); flowClearSel('chole_s2'); }
+  else if(key==='sp'){ choleSt.sp=val; choleSt.perf=null; choleSt.hemo=null; choleSt.risk=null; flowClearSel('chole_s2'); }
+  else if(key==='perf'){ choleSt.perf=val; }
+  else if(key==='hemo'){ choleSt.hemo=val; }
   else if(key==='risk'){ choleSt.risk=val; }
   choleRender();
 }
 function choleRender(){
   const b=choleSt.bil;
   // 膽道／胰臟子步驟顯示
-  const showSub = (b==='pancreatitis'||b==='cbd');
+  const showSub = (b==='pancreatitis'||b==='cbd'||b==='mirizzi');
   flowShow('chole_bc_sub', showSub);
   flowShow('chole_bs_psev', b==='pancreatitis');
   flowShow('chole_bs_asge', b==='cbd');
+  flowShow('chole_bs_mir', b==='mirizzi');
   if(b!=='pancreatitis') flowClearSel('chole_bs_psev');
   if(b!=='cbd') flowClearSel('chole_bs_asge');
+  if(b!=='mirizzi') flowClearSel('chole_bs_mir');
   choleBilRender();
 
   // 膽囊本身處置：僅在單純急性膽囊炎（無合併膽道／胰臟情況）時顯示
   flowShow('chole_gb_section', b==='none');
 
-  // 膽囊 TG18 分級 / 手術風險
-  const g=choleSt.grade;
-  flowShow('chole_c2', !!g);
-  flowShow('chole_s2', !!g);
+  // 步驟 2b/2c：複雜型（破裂／出血）
+  const g=choleSt.grade, sp=choleSt.sp;
+  flowShow('chole_c2b', !!g);
+  flowShow('chole_s2b', !!g);
+  flowShow('chole_s2c_perf', sp==='perf');
+  flowShow('chole_s2c_hemo', sp==='hemo');
+  if(sp!=='perf') flowClearSel('chole_s2c_perf');
+  if(sp!=='hemo') flowClearSel('chole_s2c_hemo');
+
+  // 手術風險：待複雜型分支問完才出現
+  const spDone = (sp==='none') || (sp==='perf'&&choleSt.perf) || (sp==='hemo'&&choleSt.hemo);
+  flowShow('chole_c2', !!g && !!spDone);
+  flowShow('chole_s2', !!g && !!spDone);
+  if(!spDone) flowClearSel('chole_s2');
   const lowSub=document.getElementById('chole_low_sub'), highSub=document.getElementById('chole_high_sub');
   if(g==='3'){
     lowSub.innerHTML='<strong>需全部符合</strong>：<br>・CCI ≤3、ASA ≤2<br>・無 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）<br>・有 FOSF（心血管／腎對初始治療有反應）<br>・於醫學中心';
@@ -182,6 +268,47 @@ function choleRender(){
       note='TG18 / WSES 2020：Grade III 不適合立即手術者，膽囊引流為首選。'; }
     else { cls='rec-idle'; title='請完成步驟 3'; }
   }
+  if(g && !spDone){ cls='rec-idle'; title='請完成步驟 2b'; detail=''; note=''; }
+
+  // 複雜型覆寫：破裂／出血的處置由併發型態主導，TG18 分級僅作背景
+  if(spDone && sp!=='none' && r){
+    const gbHigh='（本例手術風險高：CCI &gt;5／ASA ≥3，或年齡 ≥80、Karnofsky &lt;50 等）';
+    if(sp==='perf'&&choleSt.perf==='1'){
+      cls='rec-urgent';
+      if(r==='low'){ title='Niemeier I 自由穿孔：緊急膽囊切除 + 腹腔灌洗引流';
+        detail='<li><b>緊急腹腔鏡（必要時開腹）膽囊切除 + 腹腔灌洗 + 引流</b>為首選 source control。</li><li>廣效抗生素 + 液體復甦同步進行。</li><li>Calot triangle 無法安全辨識時，改行<b>次全膽囊切除（subtotal fenestrating）</b>以避免膽道損傷，勿勉強剝離。</li><li>單靠 PTGBD 無法清除腹腔內膽汁污染，不可作為唯一處置。</li>';
+        note='WJGS 2026：Niemeier I 合併瀰漫性腹膜炎，緊急膽囊切除仍為 gold standard。'; }
+      else { title='Niemeier I + 高手術風險：損害控制，仍須處理腹腔污染';
+        detail='<li>手術風險過高者 '+gbHigh+' 可先行 <b>PTGBD ± 經皮腹腔／積液引流</b> 作為 damage control，併廣效抗生素與器官支持。</li><li><b>但引流不等於已控制腹膜炎</b>：腹膜炎持續或惡化仍須手術。</li><li>穩定後安排 interval cholecystectomy — 避免「tube and forget」。</li>';
+        note='WJGS 2026：敗血性休克、麻醉風險過高者 PTC 為安全選項，但須計畫後續膽囊切除。'; }
+    } else if(sp==='perf'&&choleSt.perf==='2'){
+      if(r==='low'){ cls='rec-elective'; title='Niemeier II 局部穿孔：早期膽囊切除（可能需次全切除）';
+        detail='<li>穩定、低手術風險者可行早期腹腔鏡膽囊切除；局部發炎嚴重時採次全膽囊切除。</li><li>局部膿瘍明顯者，先經皮引流再延遲手術亦為合理選擇（step-up）。</li>';
+        note='TG18 / WSES 2020：僅病人拒絕或不適合麻醉才是緊急膽囊切除的絕對禁忌。'; }
+      else { cls='rec-nonop'; title='Niemeier II + 高手術風險：抗生素 + 引流，延遲膽囊切除';
+        detail='<li><b>PTGBD ± 經皮膿瘍引流</b>（或 EUS 導引膽囊引流 / LAMS）+ 廣效抗生素。</li><li>穩定後於<b>約 5–12 週</b>行 interval cholecystectomy，此時腹腔鏡可行性與安全性最佳。</li>';
+        note='TG18：Grade II 且早期手術風險高之 Niemeier I–II，建議膽囊引流。'; }
+    } else if(sp==='perf'&&choleSt.perf==='3'){
+      if(r==='low'){ cls='rec-elective'; title='Niemeier III 膽囊腸道瘻管：計畫性手術（膽囊切除 + 瘻管處理）';
+        detail='<li>多為慢性病程、常於術中才診斷；穩定者待發炎消退後行<b>計畫性</b>手術，技術複雜、常需開腹或轉為次全切除。</li><li><b>若合併膽石腸阻塞（gallstone ileus／Bouveret）：先解除腸阻塞（enterolithotomy）</b>，膽囊與瘻管處置延後或選擇性施行。</li><li>約 2% 於術後病理發現隱匿性膽囊癌 — 標本務必送病理。</li>';
+        note='Cureus 2026（100 例，23 年）：Type III 於穩定病人多可擇期處理。'; }
+      else { cls='rec-nonop'; title='Niemeier III + 高手術風險：多專科評估，以引流／保守為主';
+        detail='<li>多專科（外科／介入放射／內視鏡）共同決策；引流在慎選病人可作為最終處置。</li><li>合併腸阻塞時仍須解除阻塞（enterolithotomy 為主，避免同期複雜膽道手術）。</li>';
+        note='WJGS 2026：Type III 需 multidisciplinary consent；drainage 偶可作為 definitive therapy。'; }
+    } else if(sp==='hemo'&&choleSt.hemo==='unstable'){
+      cls='rec-urgent'; title='膽囊出血 — 不穩定（HGB）：復甦 + 逆轉抗凝 + 緊急膽囊切除';
+      detail='<li><b>立即復甦與輸血、逆轉抗凝血劑</b>（約半數病例使用抗凝劑）。</li><li><b>緊急膽囊切除</b>為主要止血手段；出血與發炎使解剖困難時，放寬開腹與次全膽囊切除之門檻。</li><li>出血源為<b>膽囊動脈假性動脈瘤</b>，或手術風險過高者 → <b>經導管動脈栓塞（TAE）</b>止血，作為手術前的橋接。</li><li>PTGBD 無止血效果，不可作為主要處置。</li>';
+      note='Cureus 2025 系統性回顧：不穩定者以緊急手術（26.2% 開腹／18.5% 腹腔鏡）或多模式治療（30.8%）為主，整體死亡率 10.8%。';
+    } else if(sp==='hemo'&&choleSt.hemo==='stable'){
+      if(r==='low'){ cls='rec-elective'; title='膽囊出血 — 穩定（HC）：矯正凝血後行膽囊切除';
+        detail='<li>停用／逆轉抗凝血劑，追蹤 Hb 與輸血需求；抗生素 + 支持治療。</li><li><b>CT 血管攝影</b>評估膽囊動脈假性動脈瘤與 hemobilia。</li><li>穩定者依 TG18 時機行早期或 interval 膽囊切除。</li><li>持續監測：部分病人於住院中才轉為血行動力學不穩定。</li>';
+        note='Cureus 2025：穩定者（HC，占 26.2%）可保守或擇期手術處理。'; }
+      else { cls='rec-nonop'; title='膽囊出血 — 穩定 + 高手術風險：保守治療 + 密切監測，延遲手術';
+        detail='<li>矯正凝血功能、抗生素與支持治療，密切監測 Hb、生命徵象與腹部理學。</li><li>CT 血管攝影；若見假性動脈瘤 → 預防性動脈栓塞。</li><li>轉為不穩定時立即改採緊急處置。</li><li>PTGBD 僅處理感染／膽汁鬱積，不具止血作用。</li>';
+        note='Cureus 2025：建議依病人生理狀態分層（HC vs HGB）決定介入急迫性。'; }
+    }
+    if(g==='3') note = (note?note+'<br>':'') + '※ 本例同時為 TG18 Grade III（器官功能障礙）：不論何種併發型態，均須同步 ICU 器官支持與廣效抗生素。';
+  }
   if(bilNote) note = (note?note+'<br>':'') + bilNote;
   flowRec('chole_rec',cls,title,detail,note);
 }
@@ -213,11 +340,30 @@ function choleBilRender(){
       detail='<li>不需 ERCP，直接行腹腔鏡膽囊切除（可 ± IOC）。</li>';
       note='ASGE 2019：低風險者直接手術。'; }
     else { cls='rec-idle'; title='請於步驟 1b 選擇 ASGE 風險分層'; }
+  } else if(b==='mirizzi'){
+    const m=choleSt.mir;
+    const mirCommon='<br>※ Mirizzi 共通原則：術前診斷率僅 18–62%（MRCP + ERCP 併用可達 85.9%）；黃疸／膽管炎或合併總膽管結石時，先以 ERCP 減壓、取石或置放支架作為 bridge-to-surgery。切勿在 Calot triangle 強行剝離 — 膽道損傷風險高，困難時一律改次全膽囊切除。合併膽囊癌約 5.3%（單純膽石症僅 1%），標本務必送病理。建議轉診具肝膽胰經驗之中心。';
+    if(m==='1'){ cls='rec-elective'; title='Csendes I：膽囊切除（可嘗試腹腔鏡）';
+      detail='<li>僅外在壓迫、無瘻管 → 可行腹腔鏡膽囊切除；發炎沾黏嚴重時採<b>fundus-first（順行）或次全膽囊切除</b>。</li><li>腹腔鏡適應症主要限於 Type I；整體轉開腹率約 34%，Csendes 分型為轉開腹之危險因子。</li><li>術中膽道攝影有助確認解剖與排除瘻管。</li>';
+      note='Chen 2018 文獻回顧 / Zhao 2020 系統性回顧：Type I 腹腔鏡安全可行。'+mirCommon; }
+    else if(m==='23'){ cls='rec-elective'; title='Csendes II–III：次全膽囊切除 + 膽道修補（choledochoplasty）';
+      detail='<li>以殘留之<b>膽囊壁瓣（cuff）修補瘻管</b>，並置放 T-tube 引流；或改行膽腸吻合。</li><li><b>多建議開腹</b>；腹腔鏡僅在具豐富經驗之術者且 Type II 時謹慎嘗試。</li><li>術前 ERCP 有助界定瘻管範圍與膽道解剖。</li>';
+      note='Chen 2018：Type II/III 以次全膽囊切除 + choledochoplasty 為主，另一選擇為膽腸吻合。'+mirCommon; }
+    else if(m==='4'){ cls='rec-elective'; title='Csendes IV：膽囊切除 + Roux-en-Y 肝管空腸吻合（RYHJ）';
+      detail='<li>總膽管壁已完全破壞，無法單純修補 → <b>膽腸吻合（RYHJ）為共識處置</b>。</li><li>應由肝膽胰專責團隊執行；需注意術後吻合口狹窄（文獻約 25%）與膽汁瘻。</li><li>幾乎均需開腹。</li>';
+      note='Chen 2018 / Reverdito 2016：進階分型以膽腸吻合為最佳處置，惟仍具相當併發症率。'+mirCommon; }
+    else if(m==='5a'){ cls='rec-elective'; title='Csendes Va：開腹處理膽囊腸道瘻管 + 膽道重建';
+      detail='<li>合併膽囊腸道瘻管 → <b>安全做法為開腹</b>：膽囊切除、瘻管切除修補，膽道依破壞程度行修補或膽腸吻合。</li><li>術中應仔細探查全腸道，確認無其他瘻管或滯留結石。</li>';
+      note='Chen 2018：Type V 最安全的做法一律為 laparotomy。'+mirCommon; }
+    else if(m==='5b'){ cls='rec-urgent'; title='Csendes Vb：先解除膽石腸阻塞（enterolithotomy），膽道處置延後';
+      detail='<li><b>優先處理腸阻塞</b>：enterolithotomy 取出阻塞結石，並探查近端腸道有無其他結石。</li><li>膽囊切除與瘻管修補在急性期風險高，多<b>延後或分期</b>施行；僅在病人狀況良好、局部條件許可時考慮一期處理。</li><li>好發於高齡女性，可無膽道症狀病史。</li>';
+      note='Chen 2018 / Porycka 2021：Vb 以解除腸阻塞為第一優先，膽道手術分期進行。'+mirCommon; }
+    else { cls='rec-idle'; title='請於步驟 1b 選擇 Csendes 分型'; }
   }
   flowRec('chole_bil_rec',cls,title,detail,note);
 }
 function choleReset(){
-  choleSt.bil=null; choleSt.pSev=null; choleSt.asge=null; choleSt.grade=null; choleSt.risk=null;
+  Object.keys(choleSt).forEach(function(k){choleSt[k]=null;});
   document.querySelectorAll('#view-chole-path .flow-opt').forEach(b=>b.classList.remove('selected'));
   choleRender();
 }
@@ -225,7 +371,7 @@ choleReset();
 
 /* 跨頁保存/還原選項（供 CCI 計算機往返使用） */
 function choleSave(){try{sessionStorage.setItem('choleSt',JSON.stringify(choleSt));}catch(e){}}
-function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);[['bil',choleSt.bil],['pSev',choleSt.pSev],['asge',choleSt.asge],['grade',choleSt.grade],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
+function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);[['bil',choleSt.bil],['pSev',choleSt.pSev],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
 var _cholePickBase=cholePick;cholePick=function(k,v,btn){_cholePickBase(k,v,btn);choleSave();};
 var _choleResetBase=choleReset;choleReset=function(){try{sessionStorage.removeItem('choleSt');}catch(e){}_choleResetBase();};
 choleRestore();
