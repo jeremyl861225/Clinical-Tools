@@ -110,7 +110,7 @@
   <div class="flow-step hidden" id="gp_s3alcd">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人生理狀況與共病？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="gpPick('fit','fit',this)">穩定且無重大共病<span class="fo-sub">可承受一次吻合</span></button>
+      <button class="flow-opt" onclick="gpPick('fit','fit',this)">穩定且無重大共病<span class="fo-sub">可承受吻合</span></button>
       <button class="flow-opt" onclick="gpPick('fit','unfit',this)">危重／不穩定／多重共病<span class="fo-sub">敗血性休克、需升壓劑或多重器官障礙</span></button>
     </div>
     <button class="flow-link" onclick="location.href='../tools/mpi.html'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
@@ -263,9 +263,9 @@ function gpRender(){
       const feculent = (s==='4');
       if(!gpSt.fit){ cls='rec-idle'; title='請完成步驟 3'; }
       else if(gpSt.fit==='fit'){
-        cls='rec-urgent'; title='切除 + 一次吻合 ± 保護性造口';
-        detail='<li>瀰漫'+(feculent?'糞性':'化膿性')+'腹膜炎但病人<b>穩定且無重大共病</b>：建議切除 + 一次吻合 ± 分流造口（2B）。</li>'+
-               (feculent?'<li>Stage 4（糞性腹膜炎）僅在<b>選擇性</b>穩定病人才行一次吻合，門檻應更高。</li>':'<li>具設備與技術時可行腹腔鏡乙狀結腸切除。</li>')+
+        cls='rec-urgent'; title='切除 + 吻合 ± 保護性造口';
+        detail='<li>瀰漫'+(feculent?'糞性':'化膿性')+'腹膜炎但病人<b>穩定且無重大共病</b>：建議切除 + 吻合 ± 分流造口（2B）。</li>'+
+               (feculent?'<li>Stage 4（糞性腹膜炎）僅在<b>選擇性</b>穩定病人才行吻合，門檻應更高。</li>':'<li>具設備與技術時可行腹腔鏡乙狀結腸切除。</li>')+
                '<li><b>不建議</b>常規以腹腔鏡沖洗 (laparoscopic lavage) 處理化膿性腹膜炎，僅極選擇性個案。</li>'+resus+abx;
         note='WSES ALCD 2020：Stage '+s+'（2B）。';
       } else {
@@ -292,8 +292,8 @@ function gpRender(){
     } else if(i==='op'){
       cls='rec-urgent'; title='手術治療（具技術時腹腔鏡優先）';
       detail='<li>指徵：腹膜炎徵象、臨床惡化、大穿孔、保守失敗、腸道準備不良，或合併需手術之大腸疾病（如疑癌未切除息肉）。</li>'+
-             '<li>術式依所見選擇：一次縫合修補、楔形切除、穿孔外置造口，或大腸切除 ± 一次吻合／造口。</li>'+
-             '<li>腸道準備不良、污染嚴重或病人不穩定時<b>避免一次吻合</b>，改採造口。</li>'+resus+abx;
+             '<li>術式依所見選擇：一次縫合修補、楔形切除、穿孔外置造口，或大腸切除 ± 吻合／造口。</li>'+
+             '<li>腸道準備不良、污染嚴重或病人不穩定時<b>避免吻合</b>，改採造口。</li>'+resus+abx;
       note='WSES ICP 2017：應盡早處置，腹腔鏡為優先入路。';
     }
   }
@@ -302,14 +302,14 @@ function gpRender(){
     if(!s){ cls='rec-idle'; title='請完成步驟 2'; }
     else if(s==='stable'){
       cls='rec-elective'; title='切除吻合 + source control';
-      detail='<li>穩定且污染有限者可行穿孔腸段切除 + 一次吻合。</li>'+
+      detail='<li>穩定且污染有限者可行穿孔腸段切除 + 吻合。</li>'+
              '<li>核心三原則：source control（清除穿孔源）、早期廣效抗生素、敗血症復甦。</li>'+
              '<li>以 MPI／SOFA／qSOFA 評估嚴重度與死亡風險（MPI &gt;26 為高風險切點）。</li>'+resus+abx;
       note='WSES IAI 2017：續發性腹膜炎與腹腔感染通則。';
     } else {
       cls='rec-urgent'; title='損傷控制手術 (DCS) + 開腹策略 (open abdomen) + 造口';
       detail='<li>血行不穩、瀰漫污染或生理失衡者採 DCS：縮短手術、暫時性關腹，ICU 復甦後計畫性再探查。</li>'+
-             '<li><b>不穩定或高風險吻合處避免一次吻合</b>，考慮造口。</li>'+
+             '<li><b>血行不穩，或吻合處條件不佳（水腫、灌流不良、污染嚴重）時避免吻合</b>，考慮造口。</li>'+
              '<li>以 MPI／SOFA／qSOFA 評估嚴重度（MPI &gt;26 提示高死亡風險與需加護照護）。</li>'+resus+abx;
       note='WSES IAI 2017：不穩定者採損傷控制與開腹策略。';
     }
