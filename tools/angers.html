@@ -21,6 +21,7 @@
 <div class="view active" id="view-angers">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Angers CT Score</h1><div class="sub">預測黏連性小腸阻塞保守治療失敗風險</div></div>
+    <button class="back-btn" id="angers_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/bowel-obstruction.html'">← 返回腸阻塞決策</button>
     <button class="back-btn" onclick="location.href='../index.html#card-view-angers'">← 返回主選單</button>
   </div>
   <div class="card">
@@ -50,6 +51,7 @@ function angersCalc(){
 }
 document.querySelectorAll('.angers-cb').forEach(cb=>cb.addEventListener('change',angersCalc));
 angersCalc();
+if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('angers_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

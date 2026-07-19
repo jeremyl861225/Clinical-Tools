@@ -21,6 +21,7 @@
 <div class="view active" id="view-wassmer">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Wassmer Clinical Severity Score</h1><div class="sub">預測黏連性小腸阻塞（aSBO）是否需手術切除腸段</div></div>
+    <button class="back-btn" id="wassmer_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/bowel-obstruction.html'">← 返回腸阻塞決策</button>
     <button class="back-btn" onclick="location.href='../index.html#card-view-wassmer'">← 返回主選單</button>
   </div>
   <div class="card">
@@ -70,6 +71,7 @@ function wassmerCalc(){
 document.querySelectorAll('.wassmer-cb').forEach(cb=>cb.addEventListener('change',wassmerCalc));
 document.getElementById('wm_crp').addEventListener('input',wassmerCalc);
 wassmerCalc();
+if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('wassmer_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -92,6 +92,7 @@
     </div>
     <div class="note" style="margin-top:8px;">ACPO 為功能性阻塞，選擇前須先以影像排除機械性病灶。</div>
   </div>
+  <button class="flow-link hidden" id="bo_hernia_link" onclick="location.href='../pathways/hernia.html'">🔗 開啟「複雜性腹股溝疝氣手術決策」流程（TAXIS／腸道存活／CDC 傷口分類）</button>
 
   <div class="flow-connector hidden" id="bo_c1b">↓</div>
   <div class="flow-step hidden" id="bo_s1b_crc">
@@ -123,8 +124,7 @@
     <div class="rec-label">初步分流 Initial triage</div>
     <div class="rec-title">請先於步驟 1 選擇病因</div>
   </div>
-  <button class="flow-link hidden" id="bo_hernia_link1" onclick="location.href='../pathways/hernia.html'">🔗 開啟「複雜性腹股溝疝氣手術決策」流程（TAXIS／腸道存活／CDC 傷口分類）</button>
-
+  
   <div id="bo_mgmt_section" class="hidden">
   <div class="home-divider" style="margin:26px 0 18px;">病因專屬處置 Cause-specific management</div>
 
@@ -135,9 +135,9 @@
       <button class="flow-opt" onclick="boPick('risk','high',this)">高風險<span class="fo-sub">Millet ≥2/3（LR+ 14.7～43.8）、Wassmer ≥4（切除機率 ≥70%）或 Angers ≥5</span></button>
       <button class="flow-opt" onclick="boPick('risk','na',this)">未評估／無顯影劑 CT<span class="fo-sub">Millet 與 Wassmer 之 CT 項目需增強 CT；Wassmer 另有免顯影劑 7 項版</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/millet.html'">🧮 Millet Score（絞窄，3 項 CT）</button>
-    <button class="flow-link" onclick="location.href='../tools/wassmer.html'">🧮 Wassmer Score（需腸切除，8 項）</button>
-    <button class="flow-link" onclick="location.href='../tools/angers.html'">🧮 Angers CT Score（保守治療失敗，6 項）</button>
+    <button class="flow-link" onclick="location.href='../tools/millet.html?from=bo'">🧮 Millet Score（絞窄，3 項 CT）</button>
+    <button class="flow-link" onclick="location.href='../tools/wassmer.html?from=bo'">🧮 Wassmer Score（需腸切除，8 項）</button>
+    <button class="flow-link" onclick="location.href='../tools/angers.html?from=bo'">🧮 Angers CT Score（保守治療失敗，6 項）</button>
     <div class="note" style="margin-top:8px;">三個評分<b>皆非指引建議項目</b>（WSES Bologna 2018 全文未提及），且都是<b>入院／初次 CT 的分流工具</b>，不是 NOM 途中的再評估工具。分層結果只調整警覺程度與手術門檻，<b>不改變「先試 NOM」的預設</b>。</div>
   </div>
 
@@ -191,8 +191,7 @@
     <div class="rec-label">病因專屬處置 Cause-specific</div>
     <div class="rec-title">請完成上方步驟</div>
   </div>
-  <button class="flow-link hidden" id="bo_hernia_link2" onclick="location.href='../pathways/hernia.html'">🔗 開啟「複雜性腹股溝疝氣手術決策」流程（TAXIS／腸道存活／CDC 傷口分類）</button>
-  </div>
+    </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="boReset()">重置</button></div>
   <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Ten+Broek+RPG%2C+et+al.+Bologna+guidelines+adhesive+small+bowel+obstruction+2017+update.+World+J+Emerg+Surg.+2018%3B13%3A24" target="_blank" rel="noopener" class="ref-link">Ten Broek RPG, et al. Bologna guidelines for ASBO: 2017 update. World J Emerg Surg. 2018;13:24.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2017+WSES+guidelines+on+colon+and+rectal+cancer+emergencies.+World+J+Emerg+Surg.+2018%3B13%3A36" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2017 WSES guidelines on colon and rectal cancer emergencies. World J Emerg Surg. 2018;13:36.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34016826/" target="_blank" rel="noopener" class="ref-link">Alavi K, et al. ASCRS CPG: colonic volvulus and ACPO. Dis Colon Rectum. 2021;64(9):1046-1057.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Birindelli+A%2C+et+al.+2017+update+WSES+guidelines+emergency+repair+complicated+abdominal+wall+hernias.+World+J+Emerg+Surg.+2017%3B12%3A37" target="_blank" rel="noopener" class="ref-link">Birindelli A, et al. 2017 update of the WSES guidelines for emergency repair of complicated abdominal wall hernias. World J Emerg Surg. 2017;12:37.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Davis+MP%2C+et+al.+MASCC+2021+guideline+update+malignant+bowel+obstruction.+Support+Care+Cancer.+2021%3B29%3A8089" target="_blank" rel="noopener" class="ref-link">MASCC 2021 guideline update: medical management of malignant bowel obstruction. Support Care Cancer. 2021;29:8089-8096.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26329902/" target="_blank" rel="noopener" class="ref-link">Ceresoli M, et al. Water-soluble contrast agent in ASBO: meta-analysis. Am J Surg. 2016;211(6):1114-1125.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/17636770/" target="_blank" rel="noopener" class="ref-link">Abbas S, et al. Oral water soluble contrast for ASBO. Cochrane Database Syst Rev. 2007;(3):CD004651.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/40341790/" target="_blank" rel="noopener" class="ref-link">Gowell G, et al. Therapeutic water-soluble contrast in ASBO: meta-analysis. BJS Open. 2025;9(3):zraf049.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28759326/" target="_blank" rel="noopener" class="ref-link">Millet I, et al. Assessment of strangulation in ASBO on combined CT findings. Radiology. 2017;285(3):798-808.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/39853337/" target="_blank" rel="noopener" class="ref-link">Vadot V, et al. External validation of a CT score for ischaemia in ASBO. Eur Radiol. 2025;35(7):4203-4212.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37026805/" target="_blank" rel="noopener" class="ref-link">Wassmer CH, et al. Int J Surg. 2023;109(6):1620-1628.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36648518/" target="_blank" rel="noopener" class="ref-link">Paisant A, et al. Angers CT score and failure of conservative management. World J Surg. 2023;47(4):975-984.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24022438/" target="_blank" rel="noopener" class="ref-link">Teixeira PG, et al. Early operation in adhesive bowel obstruction. Ann Surg. 2013;258(3):459-465.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/10403850/" target="_blank" rel="noopener" class="ref-link">Ponec RJ, et al. Neostigmine for acute colonic pseudo-obstruction. N Engl J Med. 1999;341(3):137-141.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34036484/" target="_blank" rel="noopener" class="ref-link">Pawlak M, et al. Taxis for incarcerated inguinal hernia: technique and safety. Hernia. 2021;25(5):1253-1258.</a></footer>
@@ -233,7 +232,7 @@ function boRender(){
   if(!showRed||!r) flowClearSel('bo_s2');
 
   boTriageRender();
-  flowShow('bo_hernia_link1', c==='hernia'&&r==='yes');
+  flowShow('bo_hernia_link', c==='hernia');
 
   /* 步驟 3：僅在無立即手術指標時進入病因專屬流程 */
   flowShow('bo_mgmt_section', r==='no');
@@ -254,7 +253,6 @@ function boRender(){
   BO_MGMT_STEPS.forEach(function(id){ if(!shown[id]) flowClearSel(id); });
 
   boMgmtRender();
-  flowShow('bo_hernia_link2', r==='no'&&c==='hernia');
 }
 
 /* ── 初步分流：立即手術指標 ───────────────────────────── */
