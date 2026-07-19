@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LRINEC Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-lrinec">
+  <div class="app-header">
+    <div><div class="eyebrow">Soft Tissue Infection Scoring Tool</div><h1>LRINEC Score</h1><div class="sub">壞死性筋膜炎實驗室風險指標 · Laboratory Risk Indicator for Necrotizing Fasciitis（Wong 2004）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="lr_back_nsti" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/nsti.html'">← 返回壞死性感染決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-lrinec'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">使用前必讀 Before You Use</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      LRINEC <b>不能用來排除</b>壞死性軟組織感染（NSTI）。統合分析（23 篇、5982 人）顯示 <b>≥6 分敏感度僅 68.2%</b>（特異度 84.8%）、<b>≥8 分敏感度僅 40.8%</b>（特異度 94.9%）——約三分之一的 NSTI 分數低於 6。<br>
+      WSES 2018 明訂：<b>影像與評分都不得延誤外科會診與手術</b>（recommendation 1A）；快速進展的軟組織感染，一開始就要當作壞死性感染處理。分數低而臨床高度懷疑時，<b>以外科探查（finger test）為準</b>。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">實驗室數值 Laboratory Values</div>
+
+    <div class="field-row">
+      <label>C-反應蛋白 CRP</label>
+      <input type="number" id="lr_crp" step="0.1" placeholder="—">
+      <select id="lr_crp_u" style="max-width:110px;">
+        <option value="1">mg/L</option>
+        <option value="10">mg/dL</option>
+      </select>
+      <span class="organ-score" id="lr_p_crp">0</span>
+    </div>
+    <div class="exclusive-note">台灣多數院內報告 CRP 以 <b>mg/dL</b> 為單位（切點 150 mg/L = <b>15 mg/dL</b>）；請確認上方單位選擇正確，此處最容易算錯。</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt; 150 mg/L（&lt; 15 mg/dL）</td><td>0分</td></tr>
+      <tr><td>≥ 150 mg/L（≥ 15 mg/dL）</td><td>4分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>白血球 WBC</label>
+      <input type="number" id="lr_wbc" step="0.1" placeholder="—">
+      <span class="unit">×10³/µL（15 = 15,000/µL）</span>
+      <span class="organ-score" id="lr_p_wbc">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt; 15</td><td>0分</td></tr>
+      <tr><td>15–25</td><td>1分</td></tr>
+      <tr><td>&gt; 25</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>血紅素 Hemoglobin</label>
+      <input type="number" id="lr_hb" step="0.1" placeholder="—">
+      <span class="unit">g/dL</span>
+      <span class="organ-score" id="lr_p_hb">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&gt; 13.5</td><td>0分</td></tr>
+      <tr><td>11–13.5</td><td>1分</td></tr>
+      <tr><td>&lt; 11</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>血鈉 Sodium</label>
+      <input type="number" id="lr_na" step="1" placeholder="—">
+      <span class="unit">mmol/L</span>
+      <span class="organ-score" id="lr_p_na">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 135</td><td>0分</td></tr>
+      <tr><td>&lt; 135</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>肌酸酐 Creatinine</label>
+      <input type="number" id="lr_cr" step="0.1" placeholder="—">
+      <span class="unit">mg/dL</span>
+      <span class="organ-score" id="lr_p_cr">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 1.6 mg/dL（≤ 141 µmol/L）</td><td>0分</td></tr>
+      <tr><td>&gt; 1.6 mg/dL（&gt; 141 µmol/L）</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>血糖 Glucose</label>
+      <input type="number" id="lr_glu" step="1" placeholder="—">
+      <span class="unit">mg/dL</span>
+      <span class="organ-score" id="lr_p_glu">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 180 mg/dL（≤ 10 mmol/L）</td><td>0分</td></tr>
+      <tr><td>&gt; 180 mg/dL（&gt; 10 mmol/L）</td><td>1分</td></tr>
+    </table></div></details>
+
+    <div class="note" style="margin-top:10px;">未填入之欄位一律以 <b>0 分</b>（正常）計；請確認六項皆已輸入再判讀總分。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">LRINEC Score</div><div class="metric-value big" id="lr_total">0</div></div>
+      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="lr_band" style="font-size:26px;">低風險</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="lr_interp">壞死性感染風險 &lt; 50%，但<b>不足以排除</b>。</div>
+    <table class="ref">
+      <tr><th>分數</th><th>風險分層</th><th>NSTI 機率</th></tr>
+      <tr><td>≤ 5</td><td>低 Low</td><td>&lt; 50%</td></tr>
+      <tr><td>6–7</td><td>中 Intermediate</td><td>50–75%</td></tr>
+      <tr><td>≥ 8</td><td>高 High</td><td>&gt; 75%</td></tr>
+    </table>
+    <div class="risk-note">總分範圍 0–13。原始研究（Wong 2004，新加坡兩家醫學中心，145 例壞死性筋膜炎 vs 309 例嚴重蜂窩組織炎／膿瘍）以 <b>≥6 分</b>為切點，陽性預測值 92.0%、陰性預測值 96.0%，AUC 0.98。但後續多中心驗證與統合分析（Fernando 2019，Ann Surg）顯示<b>敏感度遠低於原始報告</b>（≥6 分僅 68.2%），故本分數只可用於<b>提高警覺</b>，不可用於排除診斷或延後手術。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/15241098/" target="_blank" rel="noopener" class="ref-link">Wong CH, et al. The LRINEC score: a tool for distinguishing necrotizing fasciitis from other soft tissue infections. Crit Care Med. 2004;32(7):1535-1541.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29672405/" target="_blank" rel="noopener" class="ref-link">Fernando SM, et al. Necrotizing soft tissue infection: diagnostic accuracy of physical examination, imaging, and LRINEC score: a systematic review and meta-analysis. Ann Surg. 2019;269(1):58-65.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30564282/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2018 WSES/SIS-E consensus conference: recommendations for the management of skin and soft-tissue infections. World J Emerg Surg. 2018;13:58.</a></footer>
+</div>
+</div>
+<script>
+function lrNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function lrCalc(){
+  /* CRP —— 一律換算為 mg/L 後判讀 */
+  const crpRaw=lrNum('lr_crp');
+  const crpF=parseFloat(document.getElementById('lr_crp_u').value);
+  const crp = crpRaw===null ? null : crpRaw*crpF;
+  const pCrp = (crp!==null && crp>=150) ? 4 : 0;
+
+  const wbc=lrNum('lr_wbc');
+  let pWbc=0;
+  if(wbc!==null){ if(wbc>25) pWbc=2; else if(wbc>=15) pWbc=1; }
+
+  const hb=lrNum('lr_hb');
+  let pHb=0;
+  if(hb!==null){ if(hb<11) pHb=2; else if(hb<=13.5) pHb=1; }
+
+  const na=lrNum('lr_na');
+  const pNa=(na!==null && na<135)?2:0;
+
+  const cr=lrNum('lr_cr');
+  const pCr=(cr!==null && cr>1.6)?2:0;
+
+  const glu=lrNum('lr_glu');
+  const pGlu=(glu!==null && glu>180)?1:0;
+
+  document.getElementById('lr_p_crp').textContent=pCrp;
+  document.getElementById('lr_p_wbc').textContent=pWbc;
+  document.getElementById('lr_p_hb').textContent=pHb;
+  document.getElementById('lr_p_na').textContent=pNa;
+  document.getElementById('lr_p_cr').textContent=pCr;
+  document.getElementById('lr_p_glu').textContent=pGlu;
+
+  const total=pCrp+pWbc+pHb+pNa+pCr+pGlu;
+  document.getElementById('lr_total').textContent=total;
+
+  let band='低風險', interp='壞死性感染風險 &lt; 50%，但<b>不足以排除</b>。臨床高度懷疑時仍應外科會診並考慮探查。';
+  if(total>=8){
+    band='高風險';
+    interp='壞死性感染風險 &gt; 75%。應<b>立即外科會診</b>，並依 WSES 2018 於<b>入院 12 小時內</b>完成手術 source control。';
+  } else if(total>=6){
+    band='中風險';
+    interp='壞死性感染風險 50–75%。應<b>立即外科會診</b>並密切評估是否需探查；不可僅以影像結果延後手術。';
+  }
+  document.getElementById('lr_band').textContent=band;
+  document.getElementById('lr_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-lrinec input, #view-lrinec select')
+  .forEach(el => { el.addEventListener('input', lrCalc); el.addEventListener('change', lrCalc); });
+lrCalc();
+/* 由壞死性軟組織感染決策流程進入時顯示返回鍵 */
+if(location.search.indexOf('from=nsti')>=0){var _b=document.getElementById('lr_back_nsti'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

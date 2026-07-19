@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FGSI / UFGSI · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-fgsi">
+  <div class="app-header">
+    <div><div class="eyebrow">Fournier's Gangrene Scoring Tool</div><h1>FGSI / UFGSI</h1><div class="sub">富尼氏壞疽嚴重度指數 · Fournier's Gangrene Severity Index（Laor 1995）與 Uludağ 修訂版（Yilmazlar 2010）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="fg_back_nsti" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/nsti.html'">← 返回壞死性感染決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-fgsi'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>兩個分數的關係、用途與限制 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ FGSI（Laor 1995）</b>＝ APACHE II 急性生理分數中<b>九項</b>參數的加總（體溫、心率、呼吸速率、血鉀、血鈉、肌酸酐、血比容、白血球、碳酸氫根），各項 0–4 分，滿分 36 分。原始研究 30 例，切點 <b>&gt;9</b>：死亡機率 75%；<b>≤9</b>：存活機率 78%。<br><br>
+
+      <b>◆ UFGSI（Yilmazlar 2010，Uludağ 大學）</b>＝ FGSI（生理分數 a）＋<b>侵犯範圍分數 b</b>＋<b>年齡分數 c</b>，滿分 43 分。原始研究 80 例（死亡率 21%），切點 <b>&gt;9</b>：死亡機率 94%；<b>≤9</b>：存活機率 81%。ROC 分析顯示 UFGSI 優於 FGSI（p = 0.002）。<br><br>
+
+      <b>◆ 侵犯範圍分數（b）：</b>侷限於泌尿生殖／肛門直腸區 = <b>1</b>；侷限於骨盆區 = <b>2</b>；<b>超出骨盆區</b>（延伸至腹壁、大腿、後腹腔）= <b>6</b>。<br>
+      <b>◆ 年齡分數（c）：</b>≥60 歲 = <b>1</b>；&lt;60 歲 = <b>0</b>。<br><br>
+
+      <b>◆ 外部驗證：</b>Üreyen 2017（土耳其兩中心 29 例）以 ROC 求得最佳切點 <b>FGSI &gt;6</b>（敏感度 100%、特異度 78.3%）與 <b>UFGSI &gt;8</b>（敏感度 100%、特異度 73.9%），並指出<b>侵犯範圍</b>是最重要的預後參數之一。Yilmazlar 亦建議 <b>UFGSI &gt;8 者應入加護病房</b>。<br><br>
+
+      <b>◆ 限制：</b>Roghmann 2012（BJU Int，44 例前瞻＋回溯）比較 FGSI、UFGSI、年齡校正 Charlson 共病指數（ACCI）與 surgical Apgar，四者 AUC 差異均不顯著；作者認為 UFGSI 雖納入較多變項，<b>預測力未優於 FGSI</b>。<br>
+      本分數為<b>預後／分流</b>工具，<b>不是手術與否的判準</b>——富尼氏壞疽一經診斷即需緊急徹底清創，分數低不得作為延後手術的理由。<br><br>
+
+      <b>◆ 資料時點：</b>原始研究以<b>入院當時</b>的生理數值計算。<br>
+      <b>◆ 本工具的邊界處理：</b>原始表格逐格印為「&gt;41 / 39–40.9 / …」，格與格之間存在小數空隙（如 38.4 與 38.5 之間）。本工具依 APACHE II 的連續邊界實作（≥41、≥39、≥38.5…），使任何數值都能落入唯一級距，與原表在整數與一位小數上完全一致。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">體溫</span><span class="organ-en">Temperature</span></div><div class="organ-score" id="fg_s_temp">0</div></div>
+    <div class="field-row"><label>體溫</label><input type="number" id="fg_temp" step="0.1" placeholder="36.8"><span class="unit">°C</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 41</td><td>4分</td></tr><tr><td>39–40.9</td><td>3分</td></tr><tr><td>38.5–38.9</td><td>1分</td></tr>
+      <tr><td>36–38.4</td><td>0分</td></tr><tr><td>34–35.9</td><td>1分</td></tr><tr><td>32–33.9</td><td>2分</td></tr>
+      <tr><td>30–31.9</td><td>3分</td></tr><tr><td>≤ 29.9</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">心率</span><span class="organ-en">Heart Rate</span></div><div class="organ-score" id="fg_s_hr">0</div></div>
+    <div class="field-row"><label>心率</label><input type="number" id="fg_hr" step="1" placeholder="80"><span class="unit">次/分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 180</td><td>4分</td></tr><tr><td>140–179</td><td>3分</td></tr><tr><td>110–139</td><td>2分</td></tr>
+      <tr><td>70–109</td><td>0分</td></tr><tr><td>55–69</td><td>2分</td></tr><tr><td>40–54</td><td>3分</td></tr>
+      <tr><td>&lt; 40</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">呼吸速率</span><span class="organ-en">Respiratory Rate</span></div><div class="organ-score" id="fg_s_rr">0</div></div>
+    <div class="field-row"><label>呼吸速率</label><input type="number" id="fg_rr" step="1" placeholder="16"><span class="unit">次/分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 50</td><td>4分</td></tr><tr><td>35–49</td><td>3分</td></tr><tr><td>25–34</td><td>1分</td></tr>
+      <tr><td>12–24</td><td>0分</td></tr><tr><td>10–11</td><td>1分</td></tr><tr><td>6–9</td><td>2分</td></tr>
+      <tr><td>&lt; 6</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">血鉀</span><span class="organ-en">Serum Potassium</span></div><div class="organ-score" id="fg_s_k">0</div></div>
+    <div class="field-row"><label>血鉀</label><input type="number" id="fg_k" step="0.1" placeholder="4.0"><span class="unit">mmol/L</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 7</td><td>4分</td></tr><tr><td>6–6.9</td><td>3分</td></tr><tr><td>5.5–5.9</td><td>1分</td></tr>
+      <tr><td>3.5–5.4</td><td>0分</td></tr><tr><td>3–3.4</td><td>1分</td></tr><tr><td>2.5–2.9</td><td>2分</td></tr>
+      <tr><td>&lt; 2.5</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">血鈉</span><span class="organ-en">Serum Sodium</span></div><div class="organ-score" id="fg_s_na">0</div></div>
+    <div class="field-row"><label>血鈉</label><input type="number" id="fg_na" step="1" placeholder="140"><span class="unit">mmol/L</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 180</td><td>4分</td></tr><tr><td>160–179</td><td>3分</td></tr><tr><td>155–159</td><td>2分</td></tr>
+      <tr><td>150–154</td><td>1分</td></tr><tr><td>130–149</td><td>0分</td></tr><tr><td>120–129</td><td>2分</td></tr>
+      <tr><td>110–119</td><td>3分</td></tr><tr><td>&lt; 110</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">肌酸酐</span><span class="organ-en">Serum Creatinine</span></div><div class="organ-score" id="fg_s_cr">0</div></div>
+    <div class="field-row"><label>肌酸酐</label><input type="number" id="fg_cr" step="0.1" placeholder="1.0"><span class="unit">mg/dL</span></div>
+    <label class="toggle-inline"><input type="checkbox" id="fg_arf"> 合併急性腎衰竭 <span class="unit">(acute renal failure — 分數 ×2)</span></label>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 3.5</td><td>4分</td></tr><tr><td>2–3.4</td><td>3分</td></tr><tr><td>1.5–1.9</td><td>2分</td></tr>
+      <tr><td>0.6–1.4</td><td>0分</td></tr><tr><td>&lt; 0.6</td><td>2分</td></tr>
+      <tr><td>合併急性腎衰竭</td><td>上列分數 ×2</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">血比容</span><span class="organ-en">Hematocrit</span></div><div class="organ-score" id="fg_s_hct">0</div></div>
+    <div class="field-row"><label>血比容</label><input type="number" id="fg_hct" step="0.1" placeholder="40"><span class="unit">%</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 60</td><td>4分</td></tr><tr><td>50–59.9</td><td>2分</td></tr><tr><td>46–49.9</td><td>1分</td></tr>
+      <tr><td>30–45.9</td><td>0分</td></tr><tr><td>20–29.9</td><td>2分</td></tr><tr><td>&lt; 20</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">白血球</span><span class="organ-en">White Blood Count</span></div><div class="organ-score" id="fg_s_wbc">0</div></div>
+    <div class="field-row"><label>白血球</label><input type="number" id="fg_wbc" step="0.1" placeholder="8"><span class="unit">×10³/mm³（8 = 8,000）</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 40</td><td>4分</td></tr><tr><td>20–39.9</td><td>2分</td></tr><tr><td>15–19.9</td><td>1分</td></tr>
+      <tr><td>3–14.9</td><td>0分</td></tr><tr><td>1–2.9</td><td>2分</td></tr><tr><td>&lt; 1</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">碳酸氫根</span><span class="organ-en">Serum Bicarbonate</span></div><div class="organ-score" id="fg_s_hco3">0</div></div>
+    <div class="field-row"><label>HCO₃⁻（靜脈）</label><input type="number" id="fg_hco3" step="0.1" placeholder="24"><span class="unit">mmol/L</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥ 52</td><td>4分</td></tr><tr><td>41–51.9</td><td>3分</td></tr><tr><td>32–40.9</td><td>1分</td></tr>
+      <tr><td>22–31.9</td><td>0分</td></tr><tr><td>18–21.9</td><td>2分</td></tr><tr><td>15–17.9</td><td>3分</td></tr>
+      <tr><td>&lt; 15</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">UFGSI 加項 Uludağ Additions</div>
+    <div class="field-row"><label>侵犯範圍 Dissemination</label>
+      <select id="fg_diss">
+        <option value="1">侷限於泌尿生殖／肛門直腸區　+1</option>
+        <option value="2">侷限於骨盆區　+2</option>
+        <option value="6">超出骨盆區（腹壁／大腿／後腹腔）　+6</option>
+      </select>
+      <span class="organ-score" id="fg_s_diss">1</span>
+    </div>
+    <div class="field-row"><label>年齡 Age</label><input type="number" id="fg_age" step="1" placeholder="60"><span class="unit">歲（≥60 加 1 分）</span><span class="organ-score" id="fg_s_age">0</span></div>
+    <div class="exclusive-note">此兩項<b>只計入 UFGSI</b>，不影響 FGSI。侵犯範圍最少為 1 分，故 UFGSI 最低分為 1。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">FGSI（生理分數 a）</div><div class="metric-value big" id="fg_total">0</div></div>
+      <div><div class="metric-label">UFGSI（a+b+c）</div><div class="metric-value big" id="fg_utotal">1</div></div>
+    </div>
+    <div class="breakdown">
+      <div><div class="metric-label">生理 a</div><div class="metric-value" id="fg_b_a">0</div></div>
+      <div><div class="metric-label">範圍 b</div><div class="metric-value" id="fg_b_b">1</div></div>
+      <div><div class="metric-label">年齡 c</div><div class="metric-value" id="fg_b_c">0</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="fg_interp">FGSI ≤9 且 UFGSI ≤9：屬相對低風險組。</div>
+    <table class="ref">
+      <tr><th>分數</th><th>切點來源</th><th>判讀</th></tr>
+      <tr><td>FGSI &gt; 9</td><td>Laor 1995（n=30）</td><td>死亡機率 75%；≤9 存活機率 78%</td></tr>
+      <tr><td>UFGSI &gt; 9</td><td>Yilmazlar 2010（n=80）</td><td>死亡機率 94%；≤9 存活機率 81%</td></tr>
+      <tr><td>UFGSI &gt; 8</td><td>Yilmazlar／Üreyen 2017</td><td>死亡風險升高，建議收治加護病房</td></tr>
+      <tr><td>FGSI &gt; 6</td><td>Üreyen 2017（n=29）</td><td>ROC 最佳切點，敏感度 100%／特異度 78.3%</td></tr>
+    </table>
+    <div class="risk-note">FGSI 滿分 36 分，UFGSI 滿分 43 分。上述死亡率來自各原始世代（30–80 例的單中心研究），族群小、年代與治療條件不同，<b>應視為風險分層而非個人化預測</b>。本分數<b>不決定是否手術</b>：富尼氏壞疽一經診斷即需緊急徹底清創（WSES 2018 recommendation 1C），分數低不得作為延後手術或縮小清創範圍的理由。未填入之生理欄位以 0 分（正常）計。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/7776464/" target="_blank" rel="noopener" class="ref-link">Laor E, et al. Outcome prediction in patients with Fournier's gangrene. J Urol. 1995;154(1):89-92.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20559857/" target="_blank" rel="noopener" class="ref-link">Yilmazlar T, et al. Fournier's gangrene: an analysis of 80 patients and a novel scoring system. Tech Coloproctol. 2010;14(3):217-223.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29052824/" target="_blank" rel="noopener" class="ref-link">Üreyen O, et al. Usefulness of FGSI and UFGSI scoring systems for predicting mortality in patients with Fournier's gangrene: a multicenter study. Ulus Travma Acil Cerrahi Derg. 2017;23(5):389-394.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22494217/" target="_blank" rel="noopener" class="ref-link">Roghmann F, et al. Is there a need for the Fournier's gangrene severity index? BJU Int. 2012;110(9):1359-1365.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30564282/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2018 WSES/SIS-E consensus conference: recommendations for the management of skin and soft-tissue infections. World J Emerg Surg. 2018;13:58.</a></footer>
+</div>
+</div>
+<script>
+function fgNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function fgTemp(v){ if(v===null) return 0;
+  if(v>=41) return 4; if(v>=39) return 3; if(v>=38.5) return 1; if(v>=36) return 0;
+  if(v>=34) return 1; if(v>=32) return 2; if(v>=30) return 3; return 4; }
+function fgHr(v){ if(v===null) return 0;
+  if(v>=180) return 4; if(v>=140) return 3; if(v>=110) return 2; if(v>=70) return 0;
+  if(v>=55) return 2; if(v>=40) return 3; return 4; }
+function fgRr(v){ if(v===null) return 0;
+  if(v>=50) return 4; if(v>=35) return 3; if(v>=25) return 1; if(v>=12) return 0;
+  if(v>=10) return 1; if(v>=6) return 2; return 4; }
+function fgK(v){ if(v===null) return 0;
+  if(v>=7) return 4; if(v>=6) return 3; if(v>=5.5) return 1; if(v>=3.5) return 0;
+  if(v>=3) return 1; if(v>=2.5) return 2; return 4; }
+function fgNa(v){ if(v===null) return 0;
+  if(v>=180) return 4; if(v>=160) return 3; if(v>=155) return 2; if(v>=150) return 1;
+  if(v>=130) return 0; if(v>=120) return 2; if(v>=110) return 3; return 4; }
+function fgCr(v,arf){ if(v===null) return 0;
+  let p;
+  if(v>=3.5) p=4; else if(v>=2) p=3; else if(v>=1.5) p=2; else if(v>=0.6) p=0; else p=2;
+  return arf ? p*2 : p; }
+function fgHct(v){ if(v===null) return 0;
+  if(v>=60) return 4; if(v>=50) return 2; if(v>=46) return 1; if(v>=30) return 0;
+  if(v>=20) return 2; return 4; }
+function fgWbc(v){ if(v===null) return 0;
+  if(v>=40) return 4; if(v>=20) return 2; if(v>=15) return 1; if(v>=3) return 0;
+  if(v>=1) return 2; return 4; }
+function fgHco3(v){ if(v===null) return 0;
+  if(v>=52) return 4; if(v>=41) return 3; if(v>=32) return 1; if(v>=22) return 0;
+  if(v>=18) return 2; if(v>=15) return 3; return 4; }
+
+function fgCalc(){
+  const p={
+    temp: fgTemp(fgNum('fg_temp')),
+    hr:   fgHr(fgNum('fg_hr')),
+    rr:   fgRr(fgNum('fg_rr')),
+    k:    fgK(fgNum('fg_k')),
+    na:   fgNa(fgNum('fg_na')),
+    cr:   fgCr(fgNum('fg_cr'), document.getElementById('fg_arf').checked),
+    hct:  fgHct(fgNum('fg_hct')),
+    wbc:  fgWbc(fgNum('fg_wbc')),
+    hco3: fgHco3(fgNum('fg_hco3'))
+  };
+  Object.keys(p).forEach(k=>{ document.getElementById('fg_s_'+k).textContent=p[k]; });
+
+  const a=Object.keys(p).reduce((s,k)=>s+p[k],0);
+  const b=parseInt(document.getElementById('fg_diss').value);
+  const age=fgNum('fg_age');
+  const c=(age!==null && age>=60)?1:0;
+
+  document.getElementById('fg_s_diss').textContent=b;
+  document.getElementById('fg_s_age').textContent=c;
+  document.getElementById('fg_b_a').textContent=a;
+  document.getElementById('fg_b_b').textContent=b;
+  document.getElementById('fg_b_c').textContent=c;
+  document.getElementById('fg_total').textContent=a;
+  document.getElementById('fg_utotal').textContent=a+b+c;
+
+  const u=a+b+c;
+  let msg;
+  if(a>9 && u>9){
+    msg='<b>FGSI &gt;9 且 UFGSI &gt;9</b>：兩項切點皆超過，屬最高風險組（原始世代死亡機率 75%／94%）。應收治加護病房、積極復甦，並儘早重複清創。';
+  } else if(u>9){
+    msg='<b>UFGSI &gt;9</b>（原始世代死亡機率 94%）。生理分數尚未超過 FGSI 切點，風險主要來自<b>侵犯範圍與年齡</b>——範圍廣者即使生理指標尚可，仍屬高危。建議加護病房照護。';
+  } else if(a>9){
+    msg='<b>FGSI &gt;9</b>（原始世代死亡機率 75%）。屬高風險，建議加護病房照護。';
+  } else if(u>8){
+    msg='UFGSI &gt;8：未達 9 分切點，但已超過 Yilmazlar／Üreyen 建議的<b>加護病房收治門檻</b>。';
+  } else if(a>6){
+    msg='FGSI &gt;6：未達 9 分切點，但已超過 Üreyen 2017 的 ROC 最佳切點（該世代敏感度 100%），仍應視為<b>需密切監測</b>。';
+  } else {
+    msg='FGSI ≤6 且 UFGSI ≤8：屬相對低風險組。<b>但這不改變手術指徵</b>——確診富尼氏壞疽仍須緊急徹底清創。';
+  }
+  document.getElementById('fg_interp').innerHTML=msg;
+}
+document.querySelectorAll('#view-fgsi input, #view-fgsi select')
+  .forEach(el => { el.addEventListener('input', fgCalc); el.addEventListener('change', fgCalc); });
+fgCalc();
+/* 由壞死性軟組織感染決策流程進入時顯示返回鍵 */
+if(location.search.indexOf('from=nsti')>=0){var _b=document.getElementById('fg_back_nsti'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
