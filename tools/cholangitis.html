@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG18 急性膽管炎 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-cholangitis">
+  <div class="app-header">
+    <div><div class="eyebrow">Biliary Infection Criteria</div><h1>TG18 急性膽管炎</h1><div class="sub">Tokyo Guidelines 2018 · 診斷準則與嚴重度分級（Grade I–III）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-cholangitis'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box">
+    <summary>使用說明與定義 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 兩段式判讀：</b>先以 A／B／C 三組準則判定「疑似」或「確定」急性膽管炎，再對已診斷者做嚴重度分級。<b>嚴重度分級只在有膽管炎診斷時才有意義</b>，本頁在未達疑似診斷時不輸出分級。<br><br>
+      <b>◆ 診斷準則：</b>疑似診斷 = A 任一項 + （B 或 C 任一項）；確定診斷 = A 任一項 + B 任一項 + C 任一項。須先排除急性肝炎及其他急性腹症。<br><br>
+      <b>◆ 嚴重度：</b>Grade III = 出現任一器官功能障礙；Grade II = 符合 5 項中<b>任兩項</b>；Grade I = 兩者皆不符合。Grade I 為<b>否定式定義</b>，且係「初診當下」的判定 — TG18 並未要求「對初始治療有反應」（那是 TG07 的舊定義）。<br><br>
+      <b>◆ STD 的方向不同：</b>診斷準則 B-2 的 STD 指正常值<b>上限</b>（>1.5×）；Grade II 白蛋白的 STD 指正常值<b>下限</b>（&lt;下限×0.7）。TG18 未給白蛋白的絕對數值，請依貴院實驗室下限換算。<br><br>
+      <b>◆ 原文的模糊處（本頁的處理方式）：</b><br>
+      ・Grade II 白血球，TG18 表格印「&gt;12,000」，同篇內文寫「≥12,000」。本頁採<b>表格值 &gt;12,000</b>，僅在剛好 12,000 時有差異。<br>
+      ・Grade III 腎功能障礙原文為「oliguria, serum creatinine &gt;2.0 mg/dL」，未定義寡尿的數值，也未言明兩者是「或」還是「且」。本頁比照通行做法採<b>任一即符合</b>。<br><br>
+      <b>◆ 與 TOKYO criteria 2024 無關：</b>後者是內視鏡膽道引流<b>療效報告的研究標準</b>（技術／臨床成功定義），不是嚴重度分級，也未取代 TG18。截至目前 TG18 仍為現行版本。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">A. 全身性發炎 Systemic inflammation</div>
+    <label class="item"><input type="checkbox" class="chg-a"> A-1 發燒和／或寒顫 <span class="unit">(BT &gt;38°C)</span></label>
+    <label class="item"><input type="checkbox" class="chg-a"> A-2 發炎反應證據 <span class="unit">(WBC &lt;4,000 或 &gt;10,000/µL，或 CRP ≥1 mg/dL)</span></label>
+
+    <div class="section-title">B. 膽汁鬱積 Cholestasis</div>
+    <label class="item"><input type="checkbox" class="chg-b"> B-1 黃疸 <span class="unit">(T-Bil ≥2 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-b"> B-2 肝功能檢驗異常 <span class="unit">(ALP／γ-GTP／AST／ALT 任一 &gt;1.5× 正常上限)</span></label>
+
+    <div class="section-title">C. 影像 Imaging</div>
+    <label class="item"><input type="checkbox" class="chg-c"> C-1 膽道擴張 <span class="unit">(Biliary dilatation)</span></label>
+    <label class="item"><input type="checkbox" class="chg-c"> C-2 影像可見病因 <span class="unit">(狹窄、結石、支架等)</span></label>
+    <div class="note">須排除急性肝炎與其他急性腹症後方可判定。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">Grade III 器官功能障礙（任一項即為重度）</div>
+    <label class="item"><input type="checkbox" class="chg-g3"> 心血管 <span class="unit">(需 dopamine ≥5 µg/kg/min 或任何劑量 norepinephrine 之低血壓)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 神經 <span class="unit">(意識障礙)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 呼吸 <span class="unit">(PaO₂/FiO₂ &lt;300)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 腎臟 <span class="unit">(寡尿，或 Cr &gt;2.0 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 肝臟 <span class="unit">(PT-INR &gt;1.5)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 血液 <span class="unit">(血小板 &lt;100,000/mm³)</span></label>
+
+    <div class="section-title">Grade II 條件（符合任兩項即為中度）</div>
+    <label class="item"><input type="checkbox" class="chg-g2"> 白血球異常 <span class="unit">(&gt;12,000 或 &lt;4,000/mm³)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 高燒 <span class="unit">(≥39°C)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 年齡 <span class="unit">(≥75 歲)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 高膽紅素血症 <span class="unit">(T-Bil ≥5 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 低白蛋白血症 <span class="unit">(&lt; 正常值下限 × 0.7)</span></label>
+    <div class="note">Grade II 已符合 <span id="chg_g2n">0</span> / 5 項。TG18 未給白蛋白絕對值，請依貴院正常下限換算。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div>
+        <div class="metric-label">診斷 Diagnosis</div>
+        <div class="metric-value" id="chg_dx">不符合</div>
+      </div>
+      <div>
+        <div class="metric-label">嚴重度 Severity</div>
+        <div class="metric-value big" id="chg_grade">—</div>
+      </div>
+    </div>
+    <div class="metric-label" style="margin-top:12px;">處置與引流時機 Management</div>
+    <div id="chg_mgmt" style="font-size:15px; margin-top:2px;">請先勾選上方準則。</div>
+    <table class="ref">
+      <tr><th>嚴重度</th><th>TG18 膽道引流時機</th></tr>
+      <tr><td>Grade I 輕度</td><td>多數僅需抗生素；對初始治療無反應時才引流</td></tr>
+      <tr><td>Grade II 中度</td><td>早期引流（證據基礎為 24 小時內）</td></tr>
+      <tr><td>Grade III 重度</td><td>器官支持穩定後儘速引流</td></tr>
+    </table>
+    <div class="risk-note">引流時機依 <b>TG18</b>。ESGE 2019 的時窗不同（重度合併敗血性休克 12 小時內；中度放寬至 48–72 小時），臨床採用哪一套請明示。引流途徑首選<b>內視鏡經乳突引流（ERCP）</b>，ENBD 與支架效果相當；單純引流不需常規 EST。ERCP 失敗或無法執行時，EUS-BD 與 PTBD 為第二線，手術引流為最後手段。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/29032610/" target="_blank" rel="noopener" class="ref-link">Kiriyama S, et al. TG18: diagnostic criteria and severity grading of acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):17-30.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28941329/" target="_blank" rel="noopener" class="ref-link">Miura F, et al. TG18: initial management and flowchart for acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):31-40.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28834389/" target="_blank" rel="noopener" class="ref-link">Mukai S, et al. Indications and techniques of biliary drainage in TG18. J Hepatobiliary Pancreat Sci. 2017;24(10):537-549.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30943551/" target="_blank" rel="noopener" class="ref-link">Manes G, et al. ESGE guideline: endoscopic management of common bile duct stones. Endoscopy. 2019;51(5):472-491.</a></footer>
+</div>
+</div>
+<script>
+function chgCount(sel){ let n=0; document.querySelectorAll(sel).forEach(cb=>{ if(cb.checked) n++; }); return n; }
+
+function chgCalc(){
+  const a=chgCount('.chg-a'), b=chgCount('.chg-b'), c=chgCount('.chg-c');
+  const g3=chgCount('.chg-g3'), g2=chgCount('.chg-g2');
+  document.getElementById('chg_g2n').textContent=g2;
+
+  // 診斷：確定 = A+B+C；疑似 = A + (B 或 C)
+  let dx='不符合', definite=false, suspected=false;
+  if(a>=1 && b>=1 && c>=1){ dx='確定診斷'; definite=true; }
+  else if(a>=1 && (b>=1 || c>=1)){ dx='疑似診斷'; suspected=true; }
+  document.getElementById('chg_dx').textContent=dx;
+
+  const dxOK = definite || suspected;
+  let grade='—', mgmt='請先勾選上方準則。';
+
+  if(!dxOK){
+    grade='—';
+    mgmt = (a+b+c===0) ? '請先勾選上方診斷準則。'
+      : '尚未達 TG18 疑似診斷（需 A 至少一項，加上 B 或 C 至少一項）。未達診斷者不進行嚴重度分級；請考慮其他急性腹症並排除急性肝炎。';
+  } else if(g3>=1){
+    grade='Grade III 重度';
+    mgmt='<b>合併器官功能障礙。</b>立即器官支持（必要時插管與升壓劑）＋ 廣效抗生素與液體復甦；於全身狀況經初始治療與呼吸循環支持改善後，<b>儘速</b>行內視鏡或經皮經肝膽道引流。病因（結石取出等）待病情穩定後再處理。應轉送具緊急引流與重症照護能力之院所。';
+  } else if(g2>=2){
+    grade='Grade II 中度';
+    mgmt='<b>需早期膽道引流。</b>抗生素＋支持治療，並行<b>早期</b>內視鏡或經皮經肝膽道引流（TG18 引用之證據為 24 小時內：院內死亡率 1.7% vs 3.4%，P=0.0172）。全身狀況改善後再處理病因；輕、中度者可於引流同次行 EST 加取石，但抗凝血或凝血異常者除外。';
+  } else {
+    grade='Grade I 輕度';
+    mgmt='多數僅以抗生素等初始治療即可，<b>不常規需要膽道引流</b>；<b>對初始治療無反應時應進行引流</b>。若存在總膽管結石，或 24 小時內對初始治療無反應，依中度處理。';
+  }
+  document.getElementById('chg_grade').textContent=grade;
+  document.getElementById('chg_mgmt').innerHTML=mgmt;
+}
+
+document.querySelectorAll('#view-cholangitis input[type=checkbox]').forEach(el=>{el.addEventListener('change',chgCalc);});
+chgCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
