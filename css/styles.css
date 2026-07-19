@@ -211,6 +211,33 @@
   .btn-reset:hover{background:var(--accent-soft);}
   footer.tool-footer{margin-top:16px; font-size:11px; color:var(--muted-soft); font-family:var(--mono); line-height:1.7;}
 
+  /* ---- 分級清單 Graded reference list（緊急手術分級） ---- */
+  /* 級別配色：紅→橙→琥珀→teal→石板，五級皆為實心底＋白字，深淺色模式共用 */
+  .lv1{background:#8f2318;} .lv2{background:#b4551f;} .lv3{background:#8a6b12;}
+  .lv4{background:#1f5a6b;} .lv5{background:#4a5560;}
+
+  .lv-legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:6px;}
+  .lv-chip{display:flex; flex-direction:column; gap:2px; text-align:left; border:1px solid var(--line); background:var(--field-bg); color:var(--ink); border-radius:2px; padding:8px 10px; cursor:pointer; font-family:var(--sans); font-size:12.5px; line-height:1.4;}
+  .lv-chip:hover{background:var(--hover-bg);}
+  .lv-chip.selected{border-color:var(--accent); background:var(--accent-soft);}
+  .lv-chip .lv-name{font-weight:600;}
+  .lv-chip .lv-wait{font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .lv-chip .lv-badge{align-self:flex-start; margin-bottom:2px;}
+
+  .lv-badge{display:inline-block; flex-shrink:0; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; color:#fff; border-radius:2px; padding:2px 6px; white-space:nowrap;}
+
+  .dept-block{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:12px 14px; margin-bottom:8px;}
+  .dept-head{display:flex; align-items:baseline; gap:8px; border-bottom:1px solid var(--line); padding-bottom:6px; margin-bottom:6px;}
+  .dept-name{font-family:var(--serif); font-size:15px; font-weight:600;}
+  .dept-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .dept-n{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .op-item{display:flex; gap:9px; align-items:flex-start; padding:5px 0; border-bottom:1px dotted var(--line); font-size:13px; line-height:1.55;}
+  .op-item:last-child{border-bottom:0;}
+  .op-item .lv-badge{margin-top:2px;}
+  .op-note{display:block; font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .op-hl{background:var(--accent-soft); border-radius:2px;}
+  .list-empty{font-size:12.5px; color:var(--muted-soft); text-align:center; padding:18px 0;}
+
   /* ---- 臨床決策流程 Decision pathways ---- */
   .home-divider{text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--muted-soft); text-transform:uppercase; margin:4px 0 20px; display:flex; align-items:center; gap:12px;}
   .home-divider:before,.home-divider:after{content:""; flex:1; height:1px; background:var(--line);}

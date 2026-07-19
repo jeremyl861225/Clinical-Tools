@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>緊急手術分級 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-emerg-op">
+  <div class="app-header">
+    <div><div class="eyebrow">Emergency Surgery Priority</div><h1>緊急手術分級</h1><div class="sub">台大醫院緊急手術作業規範 · 依術式／病況查詢急刀級數與合理等候時間</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-emerg-op'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">分級與合理等候時間 Priority levels</div>
+    <div class="lv-legend" id="lvLegend"></div>
+    <div class="note">點選級別可只看該級；再點一次取消。合理手術等候時間以<strong>預計開始時間</strong>起算。</div>
+  </div>
+
+  <div class="card">
+    <div class="gs-field">
+      <input class="gs-input" id="opSearch" type="search" placeholder="搜尋病況或術式，例如：闌尾、腸阻塞、腹膜炎、扭轉…" autocomplete="off">
+    </div>
+    <div class="note" id="opCount"></div>
+  </div>
+
+  <div id="opList"></div>
+
+  <details class="def-box">
+    <summary>排程與調度原則 Scheduling</summary>
+    <div class="box-inner">
+      <ul>
+        <li><strong>排程順序：</strong>第一級 &gt; 第二級 &gt; 第三級 &gt; 第四級 &gt; 第五級。</li>
+        <li><strong>等候時間：</strong>以預計開始時間起算，不得超過該級之合理等候時間（例如不可排 6 小時以後才開的三級刀、12 小時以後才開的四級刀）。</li>
+        <li><strong>滿線徵用：</strong>一級刀可徵用<em>任一科部</em>最先結束之手術室；二級刀徵用<em>該科部</em>最先結束之手術室；三級刀由麻醉部值班總醫師徵詢該科部；四級刀等候超過 6 小時後才徵詢該科部。</li>
+        <li><strong>第五級：</strong>僅在無前四級等候（或僅等候一台第四級空腹）時，依預約順序與跨科部協商彈性排程。</li>
+        <li><strong>未列名之術式：</strong>經手術醫師判斷亟需緊急手術者，可先自行選擇適當分級，並於手術當日評估及病程記錄留下病情描述與理由。</li>
+        <li><strong>升降級：</strong>病情有變時，排程醫師可修改預計開始時間或提出升級、降級、取消。</li>
+        <li><strong>人力線數：</strong>08:00–16:00 與 22:00–08:00 維持兩線緊急手術（遇一、二級刀可徵用第三間人力）；16:00–22:00 維持三線。</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer class="tool-footer">REF — 國立臺灣大學醫學院附設醫院《緊急手術作業規範》，文件編號 15900-2-000001，版次 01；113 年 06 月 18 日手術室管理委員會第 3 次會議通過，113 年 08 月 27 日核定，113 年 09 月 23 日公告。本頁為該規範附件一「緊急手術分級」之查詢介面，內容以院內公告之正式文件為準。</footer>
+</div>
+</div>
+<script>
+const LEVELS = [
+  {lv:1, name:'立即手術', en:'Immediate',  wait:'< 30 分鐘',   why:'有立即死亡風險，為立即救命'},
+  {lv:2, name:'危急手術', en:'Critical',   wait:'< 2 小時',    why:'有死亡風險，為緊急救命、拯救四肢或器官'},
+  {lv:3, name:'緊急手術', en:'Emergent',   wait:'< 4–6 小時',  why:'病情或生命徵象不穩定，為穩定病情、器官移植或捐贈'},
+  {lv:4, name:'急迫手術', en:'Urgent',     wait:'< 8–12 小時', why:'病情穩定，為減輕症狀、提早恢復功能或避免惡化'},
+  {lv:5, name:'盡快手術', en:'Expedited',  wait:'< 24–36 小時',why:'病情穩定，為因應其他因素'}
+];
+
+/* 附件一 緊急手術分級：科別順序以一般外科居首 */
+const DEPTS = [
+  {name:'共同項目', en:'All departments', items:[
+    {lv:1, t:'嚴重出血性休克：持續出血且休克'},
+    {lv:1, t:'穿刺性胸腹創傷，須立即進行探查手術'},
+    {lv:2, t:'持續大出血，生命徵象不穩定'},
+    {lv:2, t:'嚴重敗血性休克', n:'因感染併發之敗血性休克，經急救復甦後無法維持穩定血壓，需手術移除感染源'},
+    {lv:3, t:'持續出血，生命徵象穩定'},
+    {lv:3, t:'敗血症或嚴重感染', n:'敗血症預期將導致敗血性休克；嚴重感染預期 6 小時內將導致敗血症或敗血性休克'},
+    {lv:4, t:'嚴重感染，預期 12 小時內將導致敗血症或敗血性休克'},
+    {lv:5, t:'因應其他因素而需盡快進行之手術'}
+  ]},
+  {name:'一般外科', en:'General Surgery', items:[
+    {lv:1, t:'術後傷口破裂導致臟器外露'},
+    {lv:2, t:'急性腹膜炎', n:'中空臟器破裂、膽囊破裂或肝膿瘍破裂'},
+    {lv:2, t:'腹部腔室症候群', n:'腹內壓大於 25 mmHg'},
+    {lv:2, t:'腸道缺血性壞死'},
+    {lv:2, t:'急性消化道阻塞無法以非手術療法打通者'},
+    {lv:2, t:'崁頓性疝氣'},
+    {lv:3, t:'在急診室已等候超過 20 小時之闌尾結石或破裂'},
+    {lv:4, t:'傷口清創手術'},
+    {lv:4, t:'腹內局部膿瘍引流'},
+    {lv:4, t:'腹部腔室症候群之再開腹手術'},
+    {lv:4, t:'急性闌尾炎'},
+    {lv:4, t:'急性膽囊或膽道炎經藥物治療症狀未緩解'},
+    {lv:4, t:'異物取出'}
+  ]},
+  {name:'胸腔外科', en:'Thoracic Surgery', items:[
+    {lv:1, t:'氣管支氣管嚴重損傷或橫斷'},
+    {lv:2, t:'張力性氣胸', n:'經胸管治療後仍未能緩解者'},
+    {lv:2, t:'開放性氣胸'},
+    {lv:2, t:'穿刺性肺部外傷'},
+    {lv:2, t:'食道破裂'},
+    {lv:2, t:'縱膈腔炎'},
+    {lv:3, t:'食道氣管廔管手術'},
+    {lv:3, t:'膿胸手術', n:'敗血症'},
+    {lv:3, t:'血胸手術', n:'穩定'},
+    {lv:3, t:'氣道狹窄手術'},
+    {lv:3, t:'嚴重肋骨骨折固定術'},
+    {lv:4, t:'異物取出'},
+    {lv:4, t:'氣胸手術'},
+    {lv:4, t:'膿胸手術', n:'嚴重感染'},
+    {lv:4, t:'氣切手術'},
+    {lv:4, t:'食道擴張／支架手術'},
+    {lv:4, t:'中度肋骨骨折固定術'}
+  ]},
+  {name:'心血管外科', en:'Cardiovascular Surgery', items:[
+    {lv:1, t:'穿刺性心臟或大血管外傷'},
+    {lv:1, t:'主動脈或心臟破裂'},
+    {lv:1, t:'A 型主動脈剝離或主動脈瘤併休克'},
+    {lv:1, t:'心包膜填塞併休克'},
+    {lv:1, t:'心因性休克'},
+    {lv:1, t:'肺部灌流異常造成之急型低血氧'},
+    {lv:1, t:'心臟或血管內異物併休克'},
+    {lv:2, t:'週邊或臟器血管急性缺血'},
+    {lv:2, t:'血管偽瘤破裂'},
+    {lv:2, t:'B 型主動脈剝離併臟器或四肢灌流不足'},
+    {lv:2, t:'急性心肌梗塞併機械性併發症、休克或持續心絞痛'},
+    {lv:2, t:'急性肺栓塞併休克'},
+    {lv:2, t:'生命徵象穩定之血管或心臟內異物移除'},
+    {lv:3, t:'創傷後假性血管瘤探查手術'},
+    {lv:3, t:'有血栓或出血風險之葉克膜移除'},
+    {lv:3, t:'血行動力穩定之急性肺栓塞'},
+    {lv:3, t:'胸骨未關之止血或關胸手術'},
+    {lv:4, t:'穩定之葉克膜移除'},
+    {lv:4, t:'高風險之急性冠狀動脈症候群'},
+    {lv:4, t:'血行動力學穩定之 B 型主動脈剝離'}
+  ]},
+  {name:'小兒外科', en:'Pediatric Surgery', items:[
+    {lv:1, t:'先天性腹裂或腹部傷口崩裂'},
+    {lv:2, t:'腸套疊無法以灌腸復位者'},
+    {lv:2, t:'腸阻塞疑似腸道缺血性壞死或併有腹膜炎跡象者'},
+    {lv:2, t:'中空臟器破裂'},
+    {lv:2, t:'巨結腸症併毒性休克'},
+    {lv:2, t:'新生兒壞死性腸炎'},
+    {lv:4, t:'疑似植入導管感染，需移除血管導管者'},
+    {lv:4, t:'傷口清創手術'},
+    {lv:4, t:'急性闌尾炎'},
+    {lv:4, t:'出生超過一天之無肛症'},
+    {lv:4, t:'巨結腸症病童之人工造口術'},
+    {lv:4, t:'先天性橫膈膜疝氣'},
+    {lv:4, t:'消化道閉鎖'},
+    {lv:4, t:'異物取出'}
+  ]},
+  {name:'泌尿科', en:'Urology', items:[
+    {lv:1, t:'疑似睪丸扭轉'},
+    {lv:2, t:'大量血尿合併血塊致尿路阻塞，有致膀胱破裂之風險'},
+    {lv:2, t:'佛尼爾氏壞死', n:'Fournier gangrene'},
+    {lv:2, t:'創傷性膀胱輸尿管破裂'},
+    {lv:2, t:'缺血型陰莖異常勃起'},
+    {lv:2, t:'中空臟器破裂併腹膜炎、腹部腔室症候群（腹內壓 &gt; 25 mmHg）、腸道缺血性壞死、急性消化道阻塞', n:'規範註明此四項適應症與一般外科相同'},
+    {lv:3, t:'僅剩下單一腎臟阻塞或雙側腎臟阻塞'},
+    {lv:3, t:'懷孕婦女合併輸尿管結石'},
+    {lv:3, t:'泌尿道損傷'},
+    {lv:3, t:'箝頓性包莖'},
+    {lv:4, t:'傷口清創手術'},
+    {lv:4, t:'局部膿瘍引流'},
+    {lv:4, t:'血循穩定之腹部再開腹探察手術'},
+    {lv:4, t:'陰莖骨折'},
+    {lv:4, t:'腎臟阻塞合併疑似泌尿道感染或腎功能惡化之輸尿管導管引流手術'}
+  ]},
+  {name:'神經外科', en:'Neurosurgery', items:[
+    {lv:1, t:'已造成單側或兩側瞳孔擴張之顱內病變'},
+    {lv:1, t:'後顱窩病變合併急性意識障礙'},
+    {lv:1, t:'顱內病變已造成或將造成疝脫'},
+    {lv:1, t:'硬腦膜上出血'},
+    {lv:2, t:'顱內病變造成急性神經功能缺損', n:'如頭部外傷、顱內出血、腦腫瘤或水腦症等'},
+    {lv:2, t:'顱內壓監測器之置放'},
+    {lv:2, t:'再開顱手術'},
+    {lv:2, t:'脊椎病灶合併急性脊髓病變'},
+    {lv:3, t:'顱內病灶合併高腦壓'},
+    {lv:3, t:'開放性凹陷性顱骨骨折併有位移'},
+    {lv:3, t:'脊椎病變合併急性馬尾症候群或其他進行性運動缺失'},
+    {lv:3, t:'創傷性脊椎減壓手術'},
+    {lv:4, t:'未合併神經功能缺損之清創手術'},
+    {lv:5, t:'顱內或脊椎病灶併腫塊效應，但無急性功能缺損、高腦壓、脊髓病變或馬尾症候群'},
+    {lv:5, t:'須盡快取得檢體之顱內或脊椎病灶'}
+  ]},
+  {name:'婦產部', en:'Obstetrics & Gynecology', items:[
+    {lv:1, t:'懷孕合併胎兒窘迫、臍帶脫垂、產前出血及前置胎盤／植入性胎盤／胎盤早期剝離、重度子癲前症、HELLP 症候群、子癲症或重大醫療併發症'},
+    {lv:2, t:'懷孕合併急產（&lt; 2 小時）徵兆', n:'胎位不正、可治療之胎兒異常、極度早產嬰兒（&lt; 1500 g）、巨大胎兒、胎頭骨盆不對稱、產程遲滯、催生失敗、急性生殖器泡疹、前胎剖腹產、有子宮手術史、陰道陰唇菜花、骨盆腔畸形、難產、人類免疫缺乏病毒'},
+    {lv:3, t:'懷孕合併產兆', n:'項目同第二級之十四項，惟無急產（&lt; 2 小時）徵兆'},
+    {lv:4, t:'卵巢扭轉'},
+    {lv:4, t:'子宮異常出血'}
+  ]},
+  {name:'耳鼻喉部', en:'Otolaryngology', items:[
+    {lv:1, t:'急性上呼吸道阻塞合併困難插管狀況，需緊急進行氣管切開術'},
+    {lv:1, t:'小兒呼吸道異物致有呼吸窘迫情形'},
+    {lv:2, t:'術後傷口出血併有呼吸道阻塞風險'},
+    {lv:2, t:'移行性咽喉食道異物併膿瘍'},
+    {lv:2, t:'鼻竇疾病併發急性視力損失'},
+    {lv:3, t:'咽喉食道異物', n:'本項與下列三項於規範中第三級、第四級並列，實務上依病情擇一分級'},
+    {lv:3, t:'顳骨骨折併顏面神經麻痺'},
+    {lv:3, t:'鼻竇疾病併眼部併發症'},
+    {lv:3, t:'鼻竇疾病併顱內併發症'},
+    {lv:4, t:'咽喉食道異物'},
+    {lv:4, t:'顳骨骨折併顏面神經麻痺'},
+    {lv:4, t:'鼻竇疾病併眼部併發症'},
+    {lv:4, t:'鼻竇疾病併顱內併發症'}
+  ]},
+  {name:'整形外科', en:'Plastic Surgery', items:[
+    {lv:1, t:'斷肢'},
+    {lv:1, t:'自由皮瓣血管重接'},
+    {lv:2, t:'皮瓣血液循環不良之術後探查'},
+    {lv:2, t:'斷肢／斷指重接術'},
+    {lv:2, t:'顏面部骨折併大出血或危害氣道'},
+    {lv:2, t:'壞死性筋膜炎'},
+    {lv:2, t:'腔室症候群筋膜切開術'},
+    {lv:3, t:'大面積創傷傷口處理'},
+    {lv:4, t:'手部骨折手術'},
+    {lv:4, t:'周邊神經、血管和肌腱重接術'},
+    {lv:4, t:'傷口清創手術'}
+  ]},
+  {name:'骨科', en:'Orthopedics', items:[
+    {lv:1, t:'骨折致出血性休克'},
+    {lv:2, t:'第三型開放性骨折或開放性骨折合併嚴重軟組織損傷'},
+    {lv:2, t:'長骨骨折與脫臼合併血管損傷'},
+    {lv:2, t:'腔室症候群'},
+    {lv:2, t:'肢體、手指或血管再接'},
+    {lv:2, t:'截肢手術'},
+    {lv:2, t:'脊椎病灶或創傷合併急性脊髓病變'},
+    {lv:2, t:'脊髓病變合併神經學症狀惡化'},
+    {lv:2, t:'骨盆出血固定手術'},
+    {lv:3, t:'脊髓損傷併馬尾症候群'},
+    {lv:3, t:'脊椎病灶或創傷合併急性脊髓神經根病變'},
+    {lv:3, t:'脊髓神經根病變合併神經學症狀惡化'},
+    {lv:3, t:'脊椎不穩定骨折與脫臼'},
+    {lv:3, t:'兒童骨折（&lt; 13 歲）'},
+    {lv:3, t:'股骨頸骨折需要內固定手術'},
+    {lv:3, t:'多處骨折'},
+    {lv:3, t:'開放性骨折'},
+    {lv:3, t:'關節脫臼'},
+    {lv:3, t:'高齡（&gt; 70 歲）或有嚴重疾病病人的骨折'},
+    {lv:4, t:'骨折病人有手術適應症'}
+  ]},
+  {name:'口腔顎面外科', en:'Oral & Maxillofacial Surgery', items:[
+    {lv:1, t:'緊急氣道阻塞合併困難插管狀況，需緊急進行氣管切開術'},
+    {lv:2, t:'顏面部骨折併大出血或危害氣道'},
+    {lv:2, t:'頭頸部壞死性筋膜炎之筋膜切除'},
+    {lv:4, t:'嚴重頭頸部齒源性感染併呼吸道狹窄'}
+  ]},
+  {name:'眼科部', en:'Ophthalmology', items:[
+    {lv:2, t:'眼窩出血併視神經壓迫'},
+    {lv:3, t:'急性眼內感染'},
+    {lv:4, t:'眼球內異物'},
+    {lv:4, t:'即將侵襲黃斑部的視網膜剝離'},
+    {lv:4, t:'眼球破裂，如角膜或鞏膜破裂'},
+    {lv:4, t:'鼻淚管斷裂'},
+    {lv:4, t:'眼瞼撕裂傷'},
+    {lv:4, t:'眼窩骨折合併視神經壓迫'},
+    {lv:4, t:'角膜移植手術'}
+  ]},
+  {name:'影像醫學部', en:'Radiology', items:[
+    {lv:1, t:'緊急顱內血栓處置'}
+  ]},
+  {name:'創傷', en:'Trauma', items:[
+    {lv:5, t:'創傷性截肢'},
+    {lv:5, t:'創傷性韌帶修補'},
+    {lv:5, t:'顏面骨折'}
+  ]},
+  {name:'器官移植或器官組織捐贈', en:'Transplant & Donation', items:[
+    {lv:2, t:'器官移植或捐贈', n:'遇多個器官同時移植時，由移植團隊醫師協調部分手術改為第三級；可依情況改變或時間推移提升分級'},
+    {lv:3, t:'多個器官同時移植時，經移植團隊醫師協調改列之手術'}
+  ]}
+];
+
+const legend = document.getElementById('lvLegend');
+const list   = document.getElementById('opList');
+const search = document.getElementById('opSearch');
+const count  = document.getElementById('opCount');
+let lvFilter = 0;   // 0 = 全部
+
+LEVELS.forEach(L => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'lv-chip';
+  b.dataset.lv = L.lv;
+  b.innerHTML = '<span class="lv-badge lv' + L.lv + '">第' + L.lv + '級 ' + L.en + '</span>'
+              + '<span class="lv-name">' + L.name + '</span>'
+              + '<span class="lv-wait">合理等候 ' + L.wait + '</span>';
+  b.addEventListener('click', () => { lvFilter = (lvFilter === L.lv) ? 0 : L.lv; render(); });
+  legend.appendChild(b);
+});
+
+// 資料已含 &lt; / &gt; 實體，比對前先還原成純文字
+function plain(s){ return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&'); }
+
+function mark(html, q){
+  if (!q) return html;
+  // 跳過 HTML 實體，避免把 &lt; 拆壞
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi');
+  return html.split(/(&[a-z]+;)/gi)
+             .map(p => /^&[a-z]+;$/i.test(p) ? p : p.replace(re,'<span class="op-hl">$1</span>'))
+             .join('');
+}
+
+function render(){
+  const q = search.value.trim();
+  let shown = 0;
+  list.innerHTML = '';
+
+  DEPTS.forEach(d => {
+    const items = d.items.filter(it => {
+      if (lvFilter && it.lv !== lvFilter) return false;
+      if (!q) return true;
+      const hay = plain(it.t + ' ' + (it.n || '') + ' ' + d.name + ' ' + d.en);
+      return hay.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+    });
+    if (!items.length) return;
+    shown += items.length;
+
+    const block = document.createElement('div');
+    block.className = 'dept-block';
+    let html = '<div class="dept-head"><span class="dept-name">' + d.name + '</span>'
+             + '<span class="dept-en">' + d.en + '</span>'
+             + '<span class="dept-n">' + items.length + ' 項</span></div>';
+    items.forEach(it => {
+      const L = LEVELS[it.lv - 1];
+      html += '<div class="op-item"><span class="lv-badge lv' + it.lv + '">' + it.lv + '級 ' + L.wait + '</span>'
+            + '<span>' + mark(it.t, q)
+            + (it.n ? '<span class="op-note">' + mark(it.n, q) + '</span>' : '')
+            + '</span></div>';
+    });
+    block.innerHTML = html;
+    list.appendChild(block);
+  });
+
+  if (!shown) list.innerHTML = '<div class="card list-empty">查無符合條件之項目。未列於規範清單之術式，可由手術醫師依病情選擇適當分級並於病程記錄敘明理由。</div>';
+
+  legend.querySelectorAll('.lv-chip').forEach(c =>
+    c.classList.toggle('selected', Number(c.dataset.lv) === lvFilter));
+  count.textContent = shown + ' 項'
+    + (lvFilter ? '｜第' + lvFilter + '級' : '')
+    + (q ? '｜關鍵字「' + q + '」' : '');
+}
+
+search.addEventListener('input', render);
+render();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
