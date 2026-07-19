@@ -34,7 +34,7 @@
         ['pathways/gi-ischemia.html',       '腸胃道缺血處置決策',       'GI Ischemia'],
         ['pathways/gi-perforation.html',    '腸胃道穿孔處置決策',       'GI Perforation'],
         ['pathways/abdominal-trauma.html',  '腹部創傷處置決策',         'Abdominal Trauma'],
-        ['tools/emergency-surgery.html',    '緊急手術分級',             'Emergency Surgery Priority']
+        ['tools/emergency-surgery.html',    '緊急手術分級',             'Emergency Surgery Priority Levels']
       ]
     },
     {
@@ -53,27 +53,27 @@
     {
       title: '計分工具', en: 'Scoring Tools',
       items: [
-        ['tools/cci.html',         'CCI 共病指數',           'Charlson Comorbidity Index'],
-        ['tools/sofa.html',        'SOFA',                   'Sequential Organ Failure'],
-        ['tools/apache.html',      'APACHE II',              'Acute Physiology & Chronic Health'],
-        ['tools/vasopressor.html', '升壓／強心藥物換算',     'Vasoactive-Inotropic Score'],
+        ['tools/cci.html',         'CCI',                    'Charlson Comorbidity Index'],
+        ['tools/sofa.html',        'SOFA',                   'Sequential Organ Failure Assessment'],
+        ['tools/apache.html',      'APACHE II',              'Acute Physiology & Chronic Health Eval.'],
+        ['tools/vasopressor.html', 'Vasopressor Calc',       'Vasoactive-Inotropic Score'],
         ['tools/child-pugh.html',  'Child-Pugh',             'Child-Pugh Score'],
-        ['tools/meld.html',        'MELD 3.0',               'Model for End-Stage Liver Disease'],
+        ['tools/meld.html',        'MELD 3.0',               'Model for End-Stage Liver Disease 3.0'],
         ['tools/p-possum.html',    'P-POSSUM',               'Portsmouth POSSUM'],
         ['tools/sort.html',        'SORT',                   'Surgical Outcome Risk Tool'],
         ['tools/alvarado.html',    'Alvarado',               'Alvarado Score'],
         ['tools/air.html',         'AIR Score',              'Appendicitis Inflammatory Response'],
-        ['tools/parc.html',        'pARC（兒童）',           'Pediatric Appendicitis Risk Calculator'],
-        ['tools/pulp.html',        'PULP Score',             'Peptic Ulcer Perforation'],
-        ['tools/marshall.html',    'Modified Marshall',      'Organ Failure in Pancreatitis'],
+        ['tools/parc.html',        'pARC',                   'Pediatric Appendicitis Risk Calculator（兒童）'],
+        ['tools/pulp.html',        'PULP Score',             'Peptic Ulcer Perforation Score'],
+        ['tools/marshall.html',    'Modified Marshall Score','Organ Failure in Acute Pancreatitis'],
         ['tools/ctsi.html',        'CT Severity Index',      'Balthazar CTSI'],
         ['tools/mpi.html',         'MPI',                    'Mannheim Peritonitis Index'],
-        ['tools/wses.html',        'WSES Sepsis Score',      'WSES Sepsis Severity'],
+        ['tools/wses.html',        'WSES Sepsis Score',      'WSES Sepsis Severity Score'],
         ['tools/wassmer.html',     'Wassmer Score',          'Clinical Severity Score for SBO'],
         ['tools/angers.html',      'Angers CT Score',        'Angers CT Score'],
-        ['tools/millet.html',      'Millet Score',           'CT Findings for Strangulation'],
-        ['tools/radial.html',      'RADIAL Score',           'RADIAL Score for AMI'],
-        ['tools/ami.html',         'AMI Diagnostic Score',   'Scoring System for AMI Diagnosis']
+        ['tools/millet.html',      'Millet Score',           'Combined CT Findings for Strangulation'],
+        ['tools/radial.html',      'RADIAL Score',           'RADIAL Score for AMI Mortality'],
+        ['tools/ami.html',         'AMI Diagnostic Score',   'Novel Scoring System for AMI Diagnosis']
       ]
     }
   ];
