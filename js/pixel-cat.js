@@ -46,7 +46,8 @@
     food:  '#b8894a',
     foodHi:'#d9ae6e',
     heart: '#d9556b',
-    tear:  '#6fa8c9',
+    tear:  '#5b9fd6',
+    tearHi:'#cfe8fa',
     pee:   '#e8cf6a',
     dust:  '#c2ad8e'
   };
@@ -362,7 +363,8 @@
     for (i = 0; i < cat.tears.length; i++) {
       var d = cat.tears[i];
       ctx.globalAlpha = Math.max(0, 1 - d.t / d.life);
-      px(d.x, d.y, 1.5, 2, C.tear);
+      px(d.x, d.y, 2, 3, C.tear);              // 淚滴本體
+      px(d.x, d.y, 1, 1, C.tearHi);            // 高光，小圖上才看得出是水珠
       ctx.globalAlpha = 1;
     }
     for (i = 0; i < cat.hearts.length; i++) {
@@ -446,8 +448,10 @@
       var h = cat.hearts[i]; h.t += dt; h.y -= dt * 9;
       if (h.t > h.life) cat.hearts.splice(i, 1);
     }
+    // 眼淚走拋物線：先往外噴再被重力拉下來，只往下掉看不出是「噴」出來的
     for (i = cat.tears.length - 1; i >= 0; i--) {
-      var d = cat.tears[i]; d.t += dt; d.y += dt * 21;
+      var d = cat.tears[i];
+      d.t += dt; d.x += d.vx * dt; d.y += d.vy * dt; d.vy += dt * 55;
       if (d.t > d.life || d.y > floorV) cat.tears.splice(i, 1);
     }
     for (i = puddles.length - 1; i >= 0; i--) {
@@ -516,8 +520,17 @@
       if (Math.abs(cd) < 1.2) {
         cat.x = cat.cryTarget;
         setState('cry');
-        if (Math.random() < dt * 6) {                 // 眼淚自眼睛滴落
-          cat.tears.push({ x: cat.x + 5 * cat.dir, y: floorV - CAT_H + 9, t: 0, life: 1.2 });
+        // 兩眼各噴一道：眼睛在貓身中心前方 5 與 9.4 格、離地 11.5 格（見 drawCat 的頭部座標）
+        if (Math.random() < dt * 11) {
+          for (var e = 0; e < 2; e++) {
+            var ex = cat.x + (e ? 9.4 : 5) * cat.dir;
+            cat.tears.push({
+              x: ex, y: floorV - CAT_H + 10.5,
+              vx: cat.dir * (9 + Math.random() * 9) * (e ? 1 : 0.55),
+              vy: -(9 + Math.random() * 7),
+              t: 0, life: 1.4
+            });
+          }
         }
         if (cat.t > 5.5) { cat.cryTarget = null; setState('sit'); }
       } else {

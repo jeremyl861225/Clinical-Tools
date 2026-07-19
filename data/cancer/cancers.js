@@ -16,7 +16,7 @@ window.CANCER_FAMILIES = [
   // bar_label 為頁內切換列之標題（與大腸直腸癌之 subtype_label 同款）。四者雖同出一份
   // 台大婦癌診療指引，分期系統與治療流程互不相通（子宮頸 FIGO 2018／子宮體與子宮肉瘤
   // AJCC 8th／卵巢 FIGO 2014），故為各自獨立之 CANCERS 條目，僅以切換列相連。
-  { id:'gyn', zh:'婦癌', en:'Gynecologic Cancers', group:'婦科 Gynecologic',
+  { id:'gyn', zh:'婦癌', en:'Gynecologic Cancers', group:'婦科／泌尿 Gynecologic & Urologic',
     sub:'子宮頸癌 · 子宮內膜癌 · 子宮肉瘤 · 卵巢癌',
     bar_label:'癌別 Cancer type（先選癌別；分期／淋巴結／治療三個分頁會一併切換）',
     members:['cervix','endometrial','utsarc','ovarian'] },
@@ -24,7 +24,7 @@ window.CANCER_FAMILIES = [
   // （膀胱有 M1a／M1b、髂總為 N3；上泌尿道兩者皆無），腎細胞癌與攝護腺癌則
   // 連組織來源都不同（攝護腺更是唯一用預後分期群組者）。四者出自四份各自獨立
   // 的台大診療指引，故為四個獨立條目，僅以切換列相連。
-  { id:'uro', zh:'泌尿癌', en:'Urologic Cancers', group:'泌尿 Genitourinary',
+  { id:'uro', zh:'泌尿癌', en:'Urologic Cancers', group:'婦科／泌尿 Gynecologic & Urologic',
     sub:'上泌尿道腫瘤 · 腎細胞癌 · 膀胱癌 · 攝護腺癌',
     bar_label:'癌別 Cancer type（先選癌別；分期／淋巴結／治療三個分頁會一併切換）',
     members:['utuc','rcc','bladder','prostate'] },
@@ -33,7 +33,7 @@ window.CANCER_FAMILIES = [
 window.CANCERS = [
 /* ============================ 肺癌 ============================ */
 {
-  id:'lung', zh:'肺癌（NSCLC）', en:'Lung Cancer', group:'胸腔 Thoracic',
+  id:'lung', zh:'肺癌', abbr:'NSCLC', en:'Lung Cancer', group:'胸腔 Thoracic',
   edition:'AJCC 8th / IASLC 8th（2017）',
   staging_note:'非小細胞肺癌（NSCLC）分期；小細胞肺癌（SCLC）臨床仍常用 limited / extensive stage 二分法，但亦可套用 TNM。',
   t:[
@@ -546,7 +546,7 @@ window.CANCERS = [
 },
 /* ============================ GIST ============================ */
 {
-  id:'gist', zh:'胃腸道基質瘤（GIST）', en:'Gastrointestinal Stromal Tumor', group:'消化系 GI',
+  id:'gist', zh:'胃腸道基質瘤', abbr:'GIST', en:'Gastrointestinal Stromal Tumor', group:'消化系 GI',
   edition:'AJCC 8th（2017，依部位×有絲分裂速率分四套 TNM）／復發風險採 AFIP（Miettinen）分級 · 治療依 ESMO／NTUH 指引',
   staging_note:'GIST 有<b>兩套並存、回答不同問題</b>的系統，兩者都要看：<br>①<b>AJCC 8th TNM 分期</b>（下方矩陣）——解剖範圍與預後分期。同一個 T／N 在<b>不同部位、不同有絲分裂速率</b>下是不同期別，故分成四張表：胃／網膜與小腸等部位各有低／高分裂速率兩套。<br>②<b>AFIP／Miettinen 復發風險分級</b>（再下方）——決定<b>是否需要輔助 imatinib</b>，AJCC 8th 亦收錄此表。<br>要點：有絲分裂數以<b>每 5 mm²</b> 計（舊式顯微鏡約 50 HPF，新式廣角物鏡約 20–25 HPF），低 ≤5／5mm²、高 >5／5mm²。GIST 淋巴結轉移罕見，但<b>一旦 N1 即為第 IV 期</b>。此外「腫瘤破裂」不在 AFIP 表內，但在 modified-NIH 分級中<b>單獨即列為高風險</b>。',
   t:[
@@ -1013,7 +1013,7 @@ window.CANCERS = [
 },
 /* ============================ 肝癌（HCC） ============================ */
 {
-  id:'hcc', zh:'肝細胞癌（HCC）', en:'Hepatocellular Carcinoma', group:'消化系 GI',
+  id:'hcc', zh:'肝細胞癌', abbr:'HCC', en:'Hepatocellular Carcinoma', group:'消化系 GI',
   pathway:'hcc',
   edition:'AJCC 8th（2017，解剖分期）＋ BCLC 2022 update（治療分派） · 治療依台大肝細胞癌診療指引 版次 20（2026/06/16）',
   staging_note:'HCC 有<b>兩套並存、回答不同問題</b>的系統：<br>①<b>AJCC 8th TNM</b>（下方矩陣）——純<b>解剖範圍</b>分期，只看腫瘤數目／大小／血管侵犯／淋巴結／遠處轉移，<b>完全不看肝功能與體能狀態</b>，主要用於病理報告、癌症登記與預後比較。<br>②<b>BCLC（2022 update）</b>（再下方）——<b>治療分派演算法</b>，結合腫瘤負荷 ＋ 肝功能 ＋ ECOG PS，直接對應第一線治療；<b>它不是解剖期別</b>，不可與 AJCC 期別互相換算。臨床決策以 BCLC 為主。<br>AJCC 8th 要點：T1 依 2cm 切分 T1a／T1b；T4（主幹分支血管侵犯或侵犯鄰近器官）+N0 為 IIIB，<b>N1 才進入第 IV 期（IVA）</b>，M1 為 IVB。',
@@ -1188,7 +1188,7 @@ window.CANCERS = [
 },
 /* ============================ 神經內分泌瘤 NET ============================ */
 {
-  id:'net', zh:'神經內分泌瘤（NET）', en:'Neuroendocrine Tumor', group:'消化系 GI',
+  id:'net', zh:'神經內分泌瘤', abbr:'NET', en:'Neuroendocrine Tumor', group:'消化系 GI',
   pathway:'net',
   edition:'AJCC 8th（2017）依原發部位分期 ＋ WHO 2019/5th 分級 · 直腸 NET 治療流程依台大大腸直腸癌診療指引 版次 21（NET-1）；其他部位系統治療依臨床試驗證據',
   staging_note:'<b>本條目涵蓋所有 GEP-NET，含<u>胰臟 NET（PanNET）</u></b>——<b>治療</b>分頁請<b>先於步驟 1 選原發部位</b>（胰臟 → 完整 PanNET 流程；直腸 → NET-1；其他 → 系統治療）；<b>淋巴結</b>分頁含<b>胰臟之 AJCC 區域淋巴結地圖</b>。<b>分期</b>請於下方選擇部位——<b>胰</b>表即 AJCC v9（2023）之胰臟 NET 分期（v9 未更動 T／N／M，與 8th 一致）。<br><b>分期與分級是兩條互相獨立的軸，不可合併成一張表。</b><br>① <b>分期（stage）</b>：AJCC 第 8 版<b>依原發部位</b>分為六套獨立系統（胃／十二指腸-壺腹／空腸-迴腸／闌尾／結直腸／胰），T 定義與分期組合<b>各不相同</b>——請先於下方選擇部位。其中<b>僅結直腸有 IIA／IIB／IIIA／IIIB 之細分</b>，其餘部位僅 I／II／III／IV；<b>僅空腸-迴腸有 N2</b>（大型繫膜腫塊 >2cm 或 ≥12 顆），其餘部位 N 僅 N0／N1。<br>② <b>分級（WHO 2019／消化系統腫瘤分類第 5 版）</b>：依 <b>Ki-67</b> 與<b>有絲分裂數</b>分級，<b>與 T、N、M 完全無關</b>，兩者取<b>較高</b>者為準——<b>G1</b>：有絲分裂 &lt;2/2mm² <b>且</b> Ki-67 &lt;3%；<b>G2</b>：有絲分裂 2–20/2mm² <b>或</b> Ki-67 3–20%；<b>G3</b>：有絲分裂 &gt;20/2mm² <b>或</b> Ki-67 &gt;20%（<b>NET G3 仍為分化良好，≠ NEC</b>，預後與治療皆不同）。<br><b>本頁六表僅適用於分化良好之 NET（G1–G3）。</b>分化差的<b>神經內分泌癌（NEC，小細胞／大細胞型）</b>與<b>混合型（MiNEN）</b><b>於分期</b>不適用，須改用該部位<b>癌症（adenocarcinoma）</b>的分期系統；<b>但兩者於<u>治療</u>有專屬流程</b>——見<b>治療</b>分頁步驟 1 選「<b>分化差 · NEC／MiNEN</b>」（PDNEC-1、NE-H 5 of 9）。<b>⚠ Ki-67 &gt;20% 同時見於 NET G3 與 NEC，不能只憑 Ki-67 判斷</b>，須依形態學之分化程度區分（PDNEC-1A 註 c）。<br><small>AJCC v9（2024）對 GEP-NET <b>未更動任何 T／N／M 定義或分期組合</b>，僅於 stage I／II 增列 NX 組合（反映內視鏡切除未取淋巴結之情形）並將有絲分裂改以 /2mm² 表述；故下表於 v9 同樣適用。</small>',
@@ -1380,7 +1380,7 @@ window.CANCERS = [
 },
 /* ============================ 軟組織肉瘤 ============================ */
 {
-  id:'sts', zh:'軟組織肉瘤（STS）', en:'Soft Tissue Sarcoma', group:'骨與軟組織 Bone & Soft Tissue',
+  id:'sts', zh:'軟組織肉瘤', abbr:'STS', en:'Soft Tissue Sarcoma', group:'軟組織／血液淋巴 Soft Tissue & Heme',
   pathway:'sts',
   edition:'AJCC 8th（2017）／治療依台大肉瘤診療指引 版次 08（NTUH Sarcoma v.1 2026，2026/06/16）',
   staging_note:'AJCC 8th 依原發部位分四章，<b>僅<u>軀幹／四肢（Ch.41）</u>與<u>腹膜後（Ch.44）</u>有分期組合表</b>；<b>頭頸（Ch.40，T 以 2／4cm 分）與腹腔／胸腔內臟（Ch.42，依器官侵犯／多發性）AJCC 未公布分期組合</b>，不適用下表。下表以<b>原發部位</b>切換，<b>組織學分級（FNCLCC）為欄</b>（分期時 <b>GX 與 G1 同組、G2 與 G3 同組</b>），T／N／M 為列。<b>N1 M0 之期別依部位而異：軀幹／四肢＝IV、腹膜後＝IIIB</b>（此格 AJCC 與 UICC 分歧，CAP protocol 採 UICC；本頁標示 AJCC）。<b>GIST 不適用本頁</b>（另見「胃腸道基質瘤（GIST）」條目）。',
@@ -1494,7 +1494,7 @@ window.CANCERS = [
 },
 /* ============================ 子宮頸癌 ============================ */
 {
-  id:'cervix', zh:'子宮頸癌', en:'Cervical Cancer', group:'婦科 Gynecologic',
+  id:'cervix', zh:'子宮頸癌', en:'Cervical Cancer', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'cervix',
   edition:'FIGO 2018（含 2019 corrigendum）／AJCC 第 9 版（v9，2021/01/01 生效）／治療依台大婦癌診療指引 版次 10（2026/06/16，CERV-1～CERV-15）',
   staging_note:'本院指引明載「<b>All staging in guidelines is based on updated 2018 FIGO staging</b>」（CERV-1）。<b>FIGO 2018 與舊版最大的差別有三</b>：①<b>影像與病理所見可用於分期</b>（不再限於臨床檢查）；②<b>IA 期取消水平擴散寬度之限制</b>，僅以侵犯深度界定；③<b>新增 IIIC 期</b>——只要淋巴結轉移（含微轉移）即為 IIIC，<b>與腫瘤大小及局部侵犯範圍無關</b>。分期碼後之 <b>r</b>（影像判定）與 <b>p</b>（病理判定）標註依據，例如 <b>IIIC1r／IIIC1p</b>；<b>孤立腫瘤細胞不改變分期</b>，但應記錄。<br><b>務必用對 AJCC 版本——這是本頁最容易出錯的一點。</b>與 FIGO 2018 對應的是 <b>AJCC 第 9 版</b>（僅電子發行，2021/01/01 生效，取代第 8 版之子宮頸內容），<b>不是第 8 版</b>。<b>AJCC 第 8 版的子宮頸只有 NX／N0／N0(i+)／N1 四級，沒有 N2，也沒有 IIIC 期別</b>——第 8 版中淋巴結完全不影響期別分組（每一期別皆含 Any N）。因此<b>拿 FIGO 2018 的 IIIC 去配 AJCC 第 8 版的 N 是無法成立的組合</b>：第 8 版根本無法表達 IIIC。本頁之 T／N 定義與下方 <b>T×N 方格</b>均依 <b>AJCC v9</b>。<br><b>另一個版本陷阱</b>：第 8 版中 <b>AJCC 認定主動脈旁淋巴結為區域淋巴結，UICC 則認定為非區域</b>，兩者在同一版本互相矛盾；且第 8 版之 N1 指「任一區域淋巴結轉移」，與 v9 之 N1（<b>僅骨盆腔</b>）意義不同，舊病歷的 N1 不可直接等同新制。<br><b>本院指引未複製 FIGO 分期表本身</b>，分期內容之來源為 FIGO 與 AJCC，非本院指引。',
@@ -1587,7 +1587,7 @@ window.CANCERS = [
 },
 /* ============================ 子宮內膜癌 ============================ */
 {
-  id:'endometrial', zh:'子宮內膜癌', en:'Endometrial Carcinoma', group:'婦科 Gynecologic',
+  id:'endometrial', zh:'子宮內膜癌', en:'Endometrial Carcinoma', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'endo',
   edition:'AJCC 8th／FIGO 2009（依本院指引 ST-1、ST-2 所載）／治療依台大婦癌診療指引 版次 10（2026/06/16，UN-1、ENDO-1～ENDO-14）',
   staging_note:'<b>本頁分期直接取自本院指引 ST-1／ST-2 兩頁所複製之表格</b>，其出處標明為 <b>AJCC Cancer Staging Manual, 8th ed.（2017）</b>，對應 <b>FIGO 2009</b> 手術分期。<br><b>務必注意版本落差</b>：指引各流程頁標示「based on updated FIGO staging」，但 ST-1／ST-2 印出的仍是 <b>FIGO 2009</b> 的定義（IA ＝ 侵犯 &lt;1/2 肌層、IIIA ＝ 漿膜或附屬器），且 <b>ENDO-7 頁自己明載「based on 2009 FIGO staging」</b>。<b>FIGO 於 2023 年發布了大幅改版的子宮內膜癌分期</b>（納入組織型態與分子分型、重新定義 I／II 期），<b>本院版次 10 指引尚未採用</b>，本頁因此依指引所載之 AJCC 8th／FIGO 2009 呈現，以與院內病歷一致。分子分型之角色見治療分頁之 ENDO-A。',
@@ -1662,7 +1662,7 @@ window.CANCERS = [
 },
 /* ============================ 子宮肉瘤 ============================ */
 {
-  id:'utsarc', zh:'子宮肉瘤', en:'Uterine Sarcoma', group:'婦科 Gynecologic',
+  id:'utsarc', zh:'子宮肉瘤', en:'Uterine Sarcoma', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'utsarc',
   edition:'AJCC 8th／FIGO（依本院指引 ST-3、ST-4）／治療依台大婦癌診療指引 版次 10（2026/06/16，UTSARC-1～UTSARC-5）',
   staging_note:'<b>子宮肉瘤有兩張互不相同的分期表，用錯一張整個 T 分類就錯。</b>本院指引 <b>ST-3</b> 適用<b>平滑肌肉瘤（LMS）與子宮內膜間質肉瘤（ESS）</b>，其 T1 依<b>腫瘤大小</b>（≤5cm／&gt;5cm）分；<b>ST-4</b> 適用<b>苗勒氏腺肉瘤（Müllerian adenosarcoma）</b>，其 T1 依<b>肌層侵犯深度</b>分，且多一個 IC 期。請以下方「組織型態」切換。<br><b>癌肉瘤（carcinosarcoma）不使用本頁分期</b>——依 ST-1／ST-2 以<b>子宮內膜癌</b>之 TNM 分期，治療亦走 ENDO-14（見子宮內膜癌頁）。<br>ST-4 之原註：<b>2009 FIGO 與 2017 AJCC 對腺肉瘤 IB／IC 之腫瘤定義存在歧異，NCCN 專家小組選用 2009 FIGO 之文字</b>（Corrigendum to “FIGO staging for uterine sarcomas”, Int J Gynaecol Obstet 2009;104:179），本頁從之。',
@@ -1730,7 +1730,7 @@ window.CANCERS = [
 },
 /* ============================ 卵巢癌 ============================ */
 {
-  id:'ovarian', zh:'卵巢癌', en:'Ovarian / Fallopian Tube / Primary Peritoneal Cancer', group:'婦科 Gynecologic',
+  id:'ovarian', zh:'卵巢癌', en:'Ovarian / Fallopian Tube / Primary Peritoneal Cancer', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'ovarian',
   edition:'FIGO 2014／AJCC 8th／治療依台大婦癌診療指引 版次 10（2026/06/16，OV-1～OV-8、LCOC-1～LCOC-14）',
   staging_note:'<b>卵巢癌、輸卵管癌與原發性腹膜癌採同一套分期與同一套治療流程</b>（FIGO 2014 起合併），本院指引各頁標題亦一律三者並列。<br><b>本院指引未複製 FIGO 分期表</b>，分期內容之來源為 <b>FIGO 2014 與 AJCC 8th</b>，非本院指引。分期為<b>手術分期</b>——須完整探查、腹水或沖洗液細胞學、大網膜切除與腹膜多處切片，分期不足會系統性低估期別。<br><b>本頁 T×N 方格與條件表並列</b>：方格用<b>合併儲存格</b>呈現「僅淋巴結陽性 → IIIA1」與「一旦有腹膜病灶 → 改由病灶大小定期別」兩條規則；條件表則保留方格表達不了的細節——<b>IC 依「如何破裂」再分三級</b>（手術中破裂／術前破裂或表面腫瘤／腹水或沖洗液陽性），此三者的 T 分類相同、期別不同，只能以條件列出。',
@@ -1830,7 +1830,7 @@ window.CANCERS = [
 
 /* ============================ 上泌尿道尿路上皮癌 ============================ */
 {
-  id:'utuc', zh:'上泌尿道腫瘤', en:'Upper Tract Urothelial Carcinoma', group:'泌尿 Genitourinary',
+  id:'utuc', zh:'上泌尿道腫瘤', en:'Upper Tract Urothelial Carcinoma', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'utuc',
   edition:'AJCC 8th（2017）腎盂與輸尿管 · 治療依台大上泌尿道腫瘤診療指引 版次 15（2026/06/16，文件編號 50710-2-000018）',
   staging_note:'<b>腎盂與輸尿管共用同一套 TNM，但有兩處必須分開讀</b>：<br>①<b>T3 的定義兩者不同</b>——<b>腎盂 T3</b> ＝ 穿出肌層進入<b>腎盂周圍脂肪<u>或腎實質</u></b>；<b>輸尿管 T3</b> ＝ 穿出肌層進入<b>輸尿管周圍脂肪</b>（無「腎實質」一項，因輸尿管本無腎實質可侵）。下方 T 表以兩列分別列出。<br>②<b>區域淋巴結的清單兩者不同</b>——輸尿管納入<b>髂總、髂內、髂外與輸尿管旁</b>淋巴結，腎盂則<b>不含髂群</b>。詳見「淋巴結分群」分頁。<br><b>第 8 版之變更</b>：舊版之 <b>N3（>5cm）已刪除並併入 N2</b>；本部位<b>沒有 M1a／M1b 之細分</b>（那是膀胱獨有），只有 M0／M1。<br><b>分期非本院指引之範圍</b>：台大上泌尿道腫瘤診療指引僅載治療流程，未複製 TNM 表；本頁 T／N／M 與分期組合取自 <b>AJCC 第 8 版</b>（CAP Cancer Protocol 轉載）。<b>本部位截至 2026 年 7 月尚無 AJCC 第 9 版</b>。',
@@ -1897,7 +1897,7 @@ window.CANCERS = [
 },
 /* ============================ 腎細胞癌 ============================ */
 {
-  id:'rcc', zh:'腎細胞癌', en:'Renal Cell Carcinoma', group:'泌尿 Genitourinary',
+  id:'rcc', zh:'腎細胞癌', en:'Renal Cell Carcinoma', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'rcc',
   edition:'AJCC 8th（2017）腎臟 · 治療依台大腎臟癌診療指引 版次 15（2026/06/16，文件編號 50710-2-000020）',
   staging_note:'<b>第 8 版腎臟最需要注意的兩點</b>：<br>①<b>腎盂腎盞侵犯（pelvicalyceal system invasion）自第 8 版起明列於 T3a</b>——第 7 版無此文字。因此<b>腫瘤長入集尿系統而未穿出 Gerota 筋膜者為 T3a，不是 T2</b>。<br>②<b>同側腎上腺受侵犯有兩種完全不同的歸類</b>：<b>直接連續性侵犯（contiguous extension）＝ T4</b>；<b>分離的非連續性結節（separate, noncontiguous nodule）＝ M1</b>。病理報告必須交代是哪一種——CAP 協定特別要求記載此點。<br>另：<b>腎靜脈侵犯之 pT3a 判定以顯微鏡下所見為準</b>，非肉眼判讀。<br><b>腎臟無 N2／N3，亦無 M1a／M1b 之細分</b>：N 只有 N0／N1，M 只有 M0／M1。<br><b>分期非本院指引之範圍</b>：台大腎臟癌診療指引僅以 Stage I, II, III／Stage IV 分流，未複製 TNM 表；本頁 T／N／M 與分期組合取自 <b>AJCC 第 8 版</b>。<b>本部位截至 2026 年 7 月尚無 AJCC 第 9 版</b>。',
@@ -1972,7 +1972,7 @@ window.CANCERS = [
 },
 /* ============================ 膀胱癌 ============================ */
 {
-  id:'bladder', zh:'膀胱癌', en:'Urinary Bladder Cancer', group:'泌尿 Genitourinary',
+  id:'bladder', zh:'膀胱癌', en:'Urinary Bladder Cancer', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'bladder',
   edition:'AJCC 8th（2017）膀胱 · 治療依台大膀胱癌診療指引 版次 16（2026/06/16，文件編號 50710-2-000019）',
   staging_note:'<b>膀胱是本組四個部位中唯一有 M1a／M1b 細分的</b>，也是唯一把<b>髂總淋巴結獨立成 N3</b> 的。這兩件事合起來構成第 IV 期的分界，讀分期表時務必先看清楚。<br><b>三個容易錯的地方</b>：<br>①<b>T2 的 a／b 是肌層的內半與外半</b>（superficial vs deep muscularis propria），不是有無穿出肌層。<b>T3 的 a／b 才是顯微 vs 肉眼</b>（microscopically vs macroscopically）。<br>②<b>經尿道路徑侵犯攝護腺基質不算 T4a</b>——第 8 版明確澄清此情形應依<b>尿道</b>分期歸為 T2；<b>T4a 專指自膀胱壁直接外侵</b>至攝護腺基質、子宮或陰道。<br>③<b>AJCC 條文之 T4a 逐字只列「攝護腺基質、子宮、陰道」</b>，未列儲精囊（儲精囊出現在 T4 之主類別文字中）。本頁照 AJCC 字面呈現。<br><b>分期非本院指引之範圍</b>：台大膀胱癌診療指引之流程圖以 cTa／cT1／cTis／cT2-4a／cT4b 分流，未複製 TNM 表；本頁 T／N／M 與分期組合取自 <b>AJCC 第 8 版</b>（CAP Cancer Protocol, Urinary Bladder 轉載）。<b>本部位截至 2026 年 7 月尚無 AJCC 第 9 版</b>。',
@@ -2054,7 +2054,7 @@ window.CANCERS = [
 },
 /* ============================ 攝護腺癌 ============================ */
 {
-  id:'prostate', zh:'攝護腺癌', en:'Prostate Cancer', group:'泌尿 Genitourinary',
+  id:'prostate', zh:'攝護腺癌', en:'Prostate Cancer', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'prostate',
   edition:'AJCC 8th（2017）攝護腺預後分期 · 治療依台大攝護腺癌診療指引 版次 15（2026/06/16，文件編號 50710-2-000021）',
   staging_note:'<b>攝護腺癌是本頁唯一無法以 T×N 方格呈現分期的癌別。</b>AJCC 第 8 版之攝護腺採<b>預後分期群組（Prognostic Stage Group）</b>，需<b>同時</b>納入 <b>T、N、M、PSA 與 Grade Group</b> 五項；缺 PSA 或 Grade Group 者<b>無法指派預後分期</b>，此時只能以解剖 TNM 表示。故下方以完整條件表呈現，不做方格。<br><b>第 8 版之三項重大變更</b>：<br>①<b>病理分期沒有 pT1</b>——pT 起自 <b>pT2（器官侷限）</b>，因病理分期需完整腺體標本，不存在「臨床不可觸及」之概念。<br>②<b>pT2 不再細分 a／b／c</b>（第 7 版有，因無預後價值而刪除）；但<b>臨床 cT2 仍保留 a／b／c</b>。<b>cT 與 pT 的這個不對稱是最常寫錯的地方</b>。<br>③<b>導入 Grade Group（1–5）取代單獨使用 Gleason 分數</b>，且 Grade Group 直接參與分期分組。<br><b>Grade Group 對照</b>：<table class="tnm"><tr><td>Grade Group 1</td><td>Gleason ≤6（≤3+3）</td></tr><tr><td>Grade Group 2</td><td>Gleason 7（<b>3+4</b>）</td></tr><tr><td>Grade Group 3</td><td>Gleason 7（<b>4+3</b>）</td></tr><tr><td>Grade Group 4</td><td>Gleason 8（4+4、3+5、5+3）</td></tr><tr><td>Grade Group 5</td><td>Gleason 9–10（4+5、5+4、5+5）</td></tr></table><b>Gleason 3+4 與 4+3 同為總分 7，但分屬 Grade Group 2 與 3</b>——本院指引之 UIR 定義正是以此區分（見治療分頁）。<br><b>分期非本院指引之範圍</b>：台大攝護腺癌診療指引以<b>本院自訂之風險分層（Low／FIR／UIR／High-very high／N1／M1）</b>決定治療，未複製 AJCC 分期表；兩套系統不可互相代換。本頁分期取自 <b>AJCC 第 8 版</b>。<b>本部位截至 2026 年 7 月尚無 AJCC 第 9 版</b>。',
@@ -2231,5 +2231,5 @@ window.CANCERS = [
    移除該條目的 wip 旗標即可自動改走正常的三分頁流程。
    ============================================================ */
 { id:'hnc',  zh:'頭頸癌',   en:'Head & Neck Cancer',       group:'頭頸 Head & Neck',            wip:true },
-{ id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'血液淋巴 Hematolymphoid',     wip:true },
+{ id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'軟組織／血液淋巴 Soft Tissue & Heme',     wip:true },
 ];

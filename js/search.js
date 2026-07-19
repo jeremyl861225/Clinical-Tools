@@ -179,7 +179,7 @@
         label: c.zh,
         en: c.en,
         sub: c.group + ' · ' + (c.edition || ''),
-        kw: c.id + ' ' + txKw(c),
+        kw: c.id + ' ' + (c.abbr || '') + ' ' + txKw(c),
         url: 'tools/cancer.html#cancer=' + encodeURIComponent(c.id)
       });
       // 具子分型者（大腸直腸癌之結腸／直腸）：各部位另建一筆，直接深連結到該部位。

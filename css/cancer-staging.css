@@ -57,9 +57,17 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:3px; text-align:center; padding:8px;
   }
+  /* 癌別名最長六字（胃腸道基質瘤、神經內分泌瘤、上泌尿道腫瘤），一律不換行：
+     折成兩行時方磚上的名稱會被英文病名擠在一起，手機上尤其難讀。
+     字級跟著方磚寬度走，窄螢幕自動縮小而不是換行。 */
   .onc-card .oc-name{
     font-family:var(--serif); font-size:16px; font-weight:500; letter-spacing:.04em; line-height:1.3;
-    color:var(--tile-label); text-shadow:var(--tile-label-shadow); text-wrap:balance; display:block;
+    color:var(--tile-label); text-shadow:var(--tile-label-shadow); display:block;
+    white-space:nowrap; max-width:100%;
+  }
+  @supports (font-size:1cqw){
+    .onc-card{container-type:inline-size;}
+    .onc-card .oc-name{font-size:clamp(12.5px, 11cqw, 17px);}
   }
   /* cancers.js 用的是完整英文病名(如 GASTROINTESTINAL STROMAL TUMOR),
      比短標長得多 —— 故字距收窄、字級縮小並限寬,讓長名折成整齊的區塊而非撐滿方磚。 */

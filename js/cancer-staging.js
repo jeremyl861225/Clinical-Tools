@@ -2,7 +2,7 @@
 /* ============================================================
    渲染 Rendering
    ============================================================ */
-var GROUP_ORDER = ['消化系 GI','婦科 Gynecologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','骨與軟組織 Bone & Soft Tissue','頭頸 Head & Neck','泌尿 Genitourinary','血液淋巴 Hematolymphoid'];
+var GROUP_ORDER = ['消化系 GI','婦科／泌尿 Gynecologic & Urologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','軟組織／血液淋巴 Soft Tissue & Heme','頭頸 Head & Neck'];
 
 /* 家族（兩層選單）：範圍大到一張清單塞不下的癌別群（婦癌）先收成一張卡，
    點進去再選細分項。成員癌別本身仍是獨立的 CANCERS 條目——搜尋、#cancer= 深層
@@ -49,7 +49,8 @@ function renderPicker(filter){
     if(filter){
       // 子分型名稱一併納入比對：大腸直腸癌之標題不含「結腸／直腸」字樣，
       // 打「結腸」「直腸」「colon」「rectum」仍須找得到這張卡。
-      var hay = (c.zh + ' ' + c.en + ' ' + c.id + ' ' +
+      // abbr 一併納入：方磚上不再顯示 NSCLC／GIST 等縮寫，但打縮寫仍要找得到
+      var hay = (c.zh + ' ' + c.en + ' ' + c.id + ' ' + (c.abbr || '') + ' ' +
         (c.subtypes || []).map(function(s){
           return (s.label || '') + ' ' + (s.search_label || '') + ' ' + (s.search_en || '') + ' ' + (s.key || '');
         }).join(' ')).toLowerCase();
