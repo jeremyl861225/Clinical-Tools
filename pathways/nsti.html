@@ -251,6 +251,15 @@ function nsReset(){
   render();
 }
 nsReset();
+
+/* 由 LRINEC／FGSI 返回時保留已選項目（見 js/common.js 的 flowPersist）。
+   typeof 保護：舊版快取的 common.js 沒有此函式，屆時僅少了保留功能，不影響流程。 */
+if (typeof flowPersist === 'function') {
+  var nsPersist = flowPersist('nsSt', st, 'view-nsti-path', 'nsPick', nsPick, nsReset, render);
+  nsPick = nsPersist.pick;
+  nsReset = nsPersist.reset;
+  nsPersist.restore();
+}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
