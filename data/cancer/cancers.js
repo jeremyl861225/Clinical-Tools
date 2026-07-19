@@ -106,7 +106,7 @@ window.CANCERS = [
 },
 /* ============================ 食道癌 ============================ */
 {
-  id:'esoph', zh:'食道癌', en:'Esophageal Cancer', group:'消化系 GI',
+  id:'esoph', zh:'食道癌', en:'Esophageal Cancer', group:'胸腔 Thoracic',
   edition:'AJCC 8th（2017）食道／食道胃接合部 EGJ',
   staging_note:'AJCC 8th 食道／EGJ <b>不是單一張分期表</b>：分期組合同時取決於<b>組織型態</b>（鱗癌 vs 腺癌）與<b>分期時機</b>（臨床 cTNM／病理 pTNM／新輔助後 ypTNM）；鱗癌之<b>病理</b>分期另納入<b>分化度 G</b> 與<b>腫瘤位置</b>。上方選擇器提供全部 5 張表，未省略任何一張。<br>· <b>分化度 G</b>：G1 分化良好、G2 中度、G3 分化差、GX 無法評估。<br>· <b>鱗癌位置 L</b>（以腫瘤中心計）：上段＝頸段食道至奇靜脈下緣；中段＝奇靜脈下緣至下肺靜脈下緣；下段＝下肺靜脈下緣至胃（含 EGJ）。<br>· <b>cTNM 與 ypTNM 皆不納入 G 與位置</b>；ypTNM 鱗癌與腺癌<b>共用同一張表</b>。<br>· EGJ 腫瘤中心位於賁門下 ≤2cm 且侵犯 EGJ 者依食道分期；>2cm 者依胃癌分期。',
   t:[
@@ -1380,7 +1380,7 @@ window.CANCERS = [
 },
 /* ============================ 軟組織肉瘤 ============================ */
 {
-  id:'sts', zh:'軟組織肉瘤', abbr:'STS', en:'Soft Tissue Sarcoma', group:'軟組織／血液淋巴 Soft Tissue & Heme',
+  id:'sts', zh:'軟組織肉瘤', abbr:'STS', en:'Soft Tissue Sarcoma', group:'軟組織／血液淋巴 Soft Tissue & Hema',
   pathway:'sts',
   edition:'AJCC 8th（2017）／治療依台大肉瘤診療指引 版次 08（NTUH Sarcoma v.1 2026，2026/06/16）',
   staging_note:'AJCC 8th 依原發部位分四章，<b>僅<u>軀幹／四肢（Ch.41）</u>與<u>腹膜後（Ch.44）</u>有分期組合表</b>；<b>頭頸（Ch.40，T 以 2／4cm 分）與腹腔／胸腔內臟（Ch.42，依器官侵犯／多發性）AJCC 未公布分期組合</b>，不適用下表。下表以<b>原發部位</b>切換，<b>組織學分級（FNCLCC）為欄</b>（分期時 <b>GX 與 G1 同組、G2 與 G3 同組</b>），T／N／M 為列。<b>N1 M0 之期別依部位而異：軀幹／四肢＝IV、腹膜後＝IIIB</b>（此格 AJCC 與 UICC 分歧，CAP protocol 採 UICC；本頁標示 AJCC）。<b>GIST 不適用本頁</b>（另見「胃腸道基質瘤（GIST）」條目）。',
@@ -2231,5 +2231,5 @@ window.CANCERS = [
    移除該條目的 wip 旗標即可自動改走正常的三分頁流程。
    ============================================================ */
 { id:'hnc',  zh:'頭頸癌',   en:'Head & Neck Cancer',       group:'頭頸 Head & Neck',            wip:true },
-{ id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'軟組織／血液淋巴 Soft Tissue & Heme',     wip:true },
+{ id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'軟組織／血液淋巴 Soft Tissue & Hema',     wip:true },
 ];

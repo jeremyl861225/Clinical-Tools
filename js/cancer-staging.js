@@ -2,7 +2,7 @@
 /* ============================================================
    渲染 Rendering
    ============================================================ */
-var GROUP_ORDER = ['消化系 GI','婦科／泌尿 Gynecologic & Urologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','軟組織／血液淋巴 Soft Tissue & Heme','頭頸 Head & Neck'];
+var GROUP_ORDER = ['消化系 GI','婦科／泌尿 Gynecologic & Urologic','內分泌／乳房 Endocrine/Breast','胸腔 Thoracic','軟組織／血液淋巴 Soft Tissue & Hema','頭頸 Head & Neck'];
 
 /* 家族（兩層選單）：範圍大到一張清單塞不下的癌別群（婦癌）先收成一張卡，
    點進去再選細分項。成員癌別本身仍是獨立的 CANCERS 條目——搜尋、#cancer= 深層
