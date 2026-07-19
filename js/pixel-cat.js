@@ -102,11 +102,25 @@
     cat.x = Math.max(ruleL + EDGE, Math.min(ruleR - EDGE, cat.x || ruleR - EDGE - 4));
   }
 
-  function resize() {
+  /* 畫布尺寸一律以「畫布自己量到的 CSS box」為準，不可用 innerWidth/innerHeight。
+     手機（尤其 iOS）上兩者經常對不起來：
+       · 網址列收合／展開時，fixed 元素的 100% 高度跟著版面視窗，innerHeight 卻是視覺視窗
+       · 雙指縮放時 innerWidth/Height 變成放大後的可視範圍，fixed 畫布仍是整個版面視窗
+     一旦 bitmap 尺寸與 CSS box 不一致，瀏覽器就會把 bitmap 拉伸填滿（實測 1.27 倍），
+     貓與飼料會整個偏離橫桿 —— 這正是手機上「貓跑版」的成因。 */
+  function syncCanvasSize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = Math.round(window.innerWidth * dpr);
-    canvas.height = Math.round(window.innerHeight * dpr);
+    var r = canvas.getBoundingClientRect();
+    var w = Math.round((r.width || window.innerWidth) * dpr);
+    var h = Math.round((r.height || window.innerHeight) * dpr);
+    if (canvas.width === w && canvas.height === h) return false;
+    canvas.width = w; canvas.height = h;        // 指定尺寸會清空畫布，故僅在真的改變時才做
     ctx.imageSmoothingEnabled = false;
+    return true;
+  }
+
+  function resize() {
+    syncCanvasSize();
     refreshPlatforms();
     draw();
   }
@@ -318,10 +332,12 @@
 
   function draw() {
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    // 清「整張 bitmap」而不是推算出來的視窗範圍：雙指縮放時 innerWidth/Height 只剩
+    // 放大後的可視區，用它清畫面會清不乾淨，上一幀的貓留在原地（螢幕上會出現兩隻貓）
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     // 文件座標 → 裝置像素：捲動位移交給 transform，飼料才會黏在它停靠的平台上
     ctx.setTransform(U * dpr, 0, 0, U * dpr, -window.scrollX * dpr, -window.scrollY * dpr);
-    ctx.clearRect(window.scrollX / U, window.scrollY / U,
-                  window.innerWidth / U + 2, window.innerHeight / U + 2);
 
     var i;
     for (i = 0; i < puddles.length; i++) {
@@ -575,6 +591,13 @@
     if (document.hidden) stop(); else start();
   });
   window.addEventListener('resize', resize);
+  // 手機網址列收合／雙指縮放時不一定會派 resize，但畫布的 CSS box 會變 —— 直接盯著它，
+  // bitmap 才不會與 CSS box 脫鉤（脫鉤就會被拉伸，貓整個偏離橫桿）
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resize);
+    window.visualViewport.addEventListener('scroll', refreshPlatforms);
+  }
   // 版面會變（展開分類、查詢、捲動），平台位置得跟著更新
   window.addEventListener('scroll', refreshPlatforms, { passive: true });
   window.addEventListener('hashchange', function () { setTimeout(refreshPlatforms, 60); });
@@ -582,6 +605,11 @@
   window.addEventListener('cat:relayout', function () { setTimeout(resize, 0); });
 
   resize();
-  setInterval(refreshPlatforms, 500);
+  // ResizeObserver 只在「元素的框」變動時才觸發，若 bitmap 因其他原因與 CSS box 脫鉤
+  // 就永遠不會自我修正，故這裡定期比對一次（順便更新平台位置）
+  setInterval(function () {
+    if (syncCanvasSize()) draw();
+    refreshPlatforms();
+  }, 500);
   if (reduced) draw(); else start();
 })();
