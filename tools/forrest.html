@@ -55,20 +55,25 @@
     <div class="metric-label" style="margin-top:10px;">建議處置（ESGE 2026）</div>
     <div id="fr_rx" style="font-size:14px; margin-top:4px; line-height:1.65;"></div>
     <div class="risk-note" id="fr_note"></div>
+    <div class="risk-note">
+      <b>Rockall SRH 是什麼</b>：SRH＝<span class="mono">stigmata of recent haemorrhage</span>（近期出血痕跡），是 Rockall score 五個項目中的最後一項，<b>必須做過內視鏡才填得出來</b>。原始論文（Gut 1996 Table III）只分兩級：<b>上消化道內有血、黏附血塊、可見血管或噴血 → 2 分</b>；<b>無痕跡或僅暗色斑點 → 0 分</b>。<br>
+      對照過來就是：Forrest <b>Ia／Ib／IIa／IIb 一律 2 分</b>，<b>IIc／III 為 0 分</b>——Rockall 不再細分高風險組內部的差別，因此本頁上方的 22–55% 再出血率落差，在 Rockall 裡是同一格。此欄與「內視鏡診斷」欄合計最多 4 分，正是內視鏡前 Rockall（0–7）與完整 Rockall（0–11）的差額。
+      <a class="tool-link" href="rockall.html">開啟 Rockall Score →</a>
+    </div>
   </div>
 
   <div class="card">
     <div class="section-title">全表對照 Full Classification</div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><th>分類</th><th>內視鏡所見</th><th>風險</th><th>盛行率</th><th>未治療再出血率</th></tr>
-      <tr><td>Ia</td><td>噴射性出血 Spurting</td><td>高</td><td>7%</td><td rowspan="2">55%（Ia 與 Ib 合計）</td></tr>
-      <tr><td>Ib</td><td>滲出性出血 Oozing</td><td>高</td><td>27%</td></tr>
+      <tr><td>Ia</td><td>噴射性出血 Spurting</td><td>高</td><td>7%</td><td>55%※</td></tr>
+      <tr><td>Ib</td><td>滲出性出血 Oozing</td><td>高</td><td>27%</td><td>55%※</td></tr>
       <tr><td>IIa</td><td>不出血之可見血管 NBVV</td><td>高</td><td>26%</td><td>43%</td></tr>
       <tr><td>IIb</td><td>黏附血塊 Adherent clot</td><td>高</td><td>11%</td><td>22%</td></tr>
       <tr><td>IIc</td><td>扁平色素斑 Flat pigmented spot</td><td>低</td><td>4%</td><td>10%</td></tr>
       <tr><td>III</td><td>乾淨潰瘍底 Clean base</td><td>低</td><td>25%</td><td>5%</td></tr>
     </table>
-    <div class="note"><b>Ia 與 Ib 的再出血率無法分開</b>：此組數據源頭（Laine &amp; Peterson, NEJM 1994）把噴血與滲血合併為「active bleeding」一類統計，55% 是兩者合計值。任何把 Ia、Ib 標成兩個不同百分比的表格，那個拆分是編造的。另有研究（Jensen 2017, Am J Gastroenterol）指出 Ib 的實際再出血風險低於 Ia／IIa／IIb，55% 對 Ib 而言可能高估；但現行指引仍將 Ib 依高風險處理。</div>
+    <div class="note">※ <b>Ia 與 Ib 的再出血率無法分開</b>：此組數據源頭（Laine &amp; Peterson, NEJM 1994）把噴血與滲血合併為「active bleeding」一類統計，55% 是兩者<b>合計</b>值，兩列填同一個數字即為此故。任何把 Ia、Ib 標成兩個不同百分比的表格，那個拆分是編造的。另有研究（Jensen 2017, Am J Gastroenterol）指出 Ib 的實際再出血風險低於 Ia／IIa／IIb，55% 對 Ib 而言可能高估；但現行指引仍將 Ib 依高風險處理。</div>
     </div></details>
   </div>
 
@@ -84,12 +89,12 @@
 </div>
 <script>
 var FR={
-  Ia:{name:'噴射性出血 Spurting',risk:'高風險',rb:'55%*',prev:'7%',rock:'2分',
+  Ia:{name:'噴射性出血 Spurting',risk:'高風險',rb:'55%※',prev:'7%',rock:'2分',
       rx:'內視鏡止血：<b>腎上腺素注射＋第二種止血方式</b>（接觸式熱凝、機械式夾閉）之合併治療；或<b>OTS clip 單一治療</b>作為第一線替代（再出血率較低）。亦可用止血鉗軟凝固單一治療。<br>術後高劑量 PPI（IV bolus 80mg 後 8mg/hr 連續輸注 72 小時，或高劑量 bolus／口服每日兩次），住院監測。',
-      note:'*55% 為 Ia 與 Ib 合計之數值，原始文獻未分開統計。止血粉／噴劑不可作為第一線單一治療。持續出血且各種內視鏡方式皆失敗者，考慮經導管血管栓塞（TAE）；TAE 不可行或失敗才手術。高風險個案（到院即血行動力學不穩、十二指腸後壁潰瘍、潰瘍 >2 cm、或止血持久度存疑）可考慮預防性 TAE。'},
-  Ib:{name:'滲出性出血 Oozing',risk:'高風險',rb:'55%*',prev:'27%',rock:'2分',
+      note:'※ 55% 為 Ia 與 Ib 合計之數值，原始文獻未分開統計。止血粉／噴劑不可作為第一線單一治療。持續出血且各種內視鏡方式皆失敗者，考慮經導管血管栓塞（TAE）；TAE 不可行或失敗才手術。高風險個案（到院即血行動力學不穩、十二指腸後壁潰瘍、潰瘍 >2 cm、或止血持久度存疑）可考慮預防性 TAE。'},
+  Ib:{name:'滲出性出血 Oozing',risk:'高風險',rb:'55%※',prev:'27%',rock:'2分',
       rx:'處置同 Forrest Ia：合併止血治療，或 OTS clip 單一治療；術後高劑量 PPI 72 小時，住院監測。',
-      note:'*55% 為 Ia 與 Ib 合計之數值。Jensen 2017 年大型國際隨機試驗指出 Ib 實際再出血風險低於 Ia／IIa／IIb，故 55% 對 Ib 可能高估；惟現行指引仍依高風險處理。'},
+      note:'※ 55% 為 Ia 與 Ib 合計之數值。Jensen 2017 年大型國際隨機試驗指出 Ib 實際再出血風險低於 Ia／IIa／IIb，故 55% 對 Ib 可能高估；惟現行指引仍依高風險處理。'},
   IIa:{name:'不出血之可見血管 NBVV',risk:'高風險',rb:'43%',prev:'26%',rock:'2分',
       rx:'內視鏡止血：接觸式或非接觸式熱凝、機械式治療（TTS clip 或 OTS clip）、或硬化劑注射，<b>各自單獨使用或搭配腎上腺素注射皆可</b>。OTS clip 亦可作為替代之單一治療；止血鉗軟凝固單一治療亦可。<br>術後高劑量 PPI 72 小時，住院監測。',
       note:'腎上腺素注射<b>不可單獨</b>作為最終止血方式，必須搭配第二種方式或改用其他單一治療。'},
