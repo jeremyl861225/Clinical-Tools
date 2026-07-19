@@ -224,6 +224,7 @@ function switchTab(id, tab){
   else if(tab === 'node') el.innerHTML = renderNode(c);
   else {
     el.innerHTML = renderTx(c);
+    if(c.pathway === 'lung' && typeof initLungPathway === 'function') initLungPathway();
     if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
     if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
     if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
@@ -485,6 +486,9 @@ function renderNode(c){
 
 function renderTx(c){
   // 具互動決策流程圖之癌別：療程資料已整合於各建議處置色塊，tx 僅作為模組未載入時的後備
+  if(c.pathway === 'lung' && typeof lungPathwayHTML === 'function'){
+    return lungPathwayHTML();
+  }
   if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
     return gastricPathwayHTML();
   }
