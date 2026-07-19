@@ -43,9 +43,10 @@
       <h1>臨床工具箱</h1>
       <div class="sub">Established by Lin Shao-Chin · latest revision 2026.07.19</div>
     </div>
-    <!-- 像素貓的活動範圍：貓腳底＝本區塊底緣＝標題橫桿（見 js/pixel-cat.js）。
-         這條空白帶同時把橫桿與上方文字拉開，貓不會壓到 .sub。 -->
-    <div class="cat-strip" id="cat-strip"><canvas id="cat-canvas"></canvas></div>
+    <!-- 為像素貓保留的空白帶：貓腳底＝本區塊底緣＝標題橫桿（見 js/pixel-cat.js）。
+         這條空白同時把橫桿與上方文字拉開，貓不會壓到 .sub。
+         貓與飼料畫在整頁的 #cat-canvas 疊層上（飼料會掉到圖卡、查詢欄上），不畫在這裡。 -->
+    <div class="cat-strip" id="cat-strip"></div>
   </div>
 
   <div class="gs-box">
@@ -403,6 +404,8 @@
     window.addEventListener('popstate', route);
   })();
 </script>
+<!-- 像素貓與飼料的整頁疊層：飼料自點擊處落下，停在下方最近的平台（橫桿／圖卡／查詢欄） -->
+<canvas id="cat-canvas" aria-hidden="true"></canvas>
 <script src="./js/pixel-cat.js" defer></script>
 <script src="./js/search.js"></script>
 <script src="./js/pull-to-refresh.js" defer></script>
