@@ -240,6 +240,7 @@ function switchTab(id, tab){
     if(c.pathway === 'rcc' && typeof initRccPathway === 'function') initRccPathway();
     if(c.pathway === 'bladder' && typeof initBladderPathway === 'function') initBladderPathway();
     if(c.pathway === 'prostate' && typeof initProstatePathway === 'function') initProstatePathway();
+    if(c.pathway === 'npc' && typeof initNpcPathway === 'function') initNpcPathway();
   }
 }
 
@@ -530,6 +531,9 @@ function renderTx(c){
   }
   if(c.pathway === 'bladder' && typeof bladderPathwayHTML === 'function'){
     return bladderPathwayHTML();
+  }
+  if(c.pathway === 'npc' && typeof npcPathwayHTML === 'function'){
+    return npcPathwayHTML();
   }
   if(c.pathway === 'prostate' && typeof prostatePathwayHTML === 'function'){
     return prostatePathwayHTML();

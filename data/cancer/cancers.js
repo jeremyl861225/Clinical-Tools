@@ -2142,6 +2142,86 @@ window.CANCERS = [
   ],
 },
 
+/* ============================ 鼻咽癌 ============================ */
+{
+  id:'npc', zh:'鼻咽癌', en:'Nasopharyngeal Carcinoma', group:'頭頸 Head & Neck',
+  pathway:'npc',
+  edition:'AJCC／UICC 第 9 版（TNM-9，2025 年 1 月起適用）／淋巴結分區依 Grégoire 2013 國際共識 · 治療依台大鼻咽癌診療指引 版次 17（2026/06/16）',
+  staging_note:'鼻咽癌自 <b>2025 年 1 月</b>起改用 <b>AJCC／UICC 第 9 版（TNM-9）</b>；台大指引附件「鼻咽癌放射治療指引」之適應症亦明文以 AJCC 9th 期別書寫。與第 8 版之三項差異：<b>①</b> N3 新增「影像上進階囊外侵犯（advanced radiologic ENE，侵犯鄰近肌肉、皮膚及／或神經血管束）」為判準；<b>②</b> 無遠端轉移者一律歸為 I–III 期（第 8 版之 III、IVA 分別下降為第 9 版之 II、III），第 I 期並細分 IA（T1–2 N0）與 IB（T1–2 N1）；<b>③</b> 第 IV 期<b>專用於 M1</b>，並依轉移病灶數細分 M1a（≤3 個）→ IVA、M1b（&gt;3 個）→ IVB。<b>T 分類與第 8 版相同，未變更。</b>',
+  t:[
+    ['Tis','原位癌 Carcinoma in situ'],
+    ['T1','侷限於鼻咽，或延伸至口咽及／或鼻腔（含鼻中隔），未侵犯咽旁間隙　Confined to nasopharynx, or extension to oropharynx and/or nasal cavity (incl. nasal septum), without parapharyngeal involvement'],
+    ['T2','侵犯咽旁間隙，及／或鄰近軟組織（內翼肌、外翼肌、椎前肌）　Parapharyngeal space, and/or adjacent soft tissue (medial pterygoid, lateral pterygoid, prevertebral muscles)'],
+    ['T3','明確侵犯骨組織：顱底（含翼突構造）、鼻竇、頸椎　Unequivocal infiltration of bony structures: skull base (incl. pterygoid structures), paranasal sinuses, cervical vertebrae'],
+    ['T4','顱內侵犯；顱神經侵犯（影像及／或臨床明確）；下咽；眼眶（含眶下裂）；腮腺；或廣泛軟組織侵犯超出外翼肌之前外側面　Intracranial extension; cranial nerve involvement; hypopharynx; orbit (incl. inferior orbital fissure); parotid gland; or extensive soft tissue infiltration beyond the anterolateral surface of the lateral pterygoid muscle'],
+  ],
+  n:[
+    ['N0','無區域淋巴結侵犯　No tumor involvement of regional lymph node(s)'],
+    ['N1','單側頸部淋巴結，及／或單側或雙側咽後淋巴結；並須<b>全部</b>符合：≤6cm、位於環狀軟骨下緣以上、無進階囊外侵犯'],
+    ['N2','<b>雙側</b>頸部淋巴結；並須<b>全部</b>符合：≤6cm、位於環狀軟骨下緣以上、無進階囊外侵犯'],
+    ['N3','單側或雙側頸部淋巴結，符合<b>任一</b>：&gt;6cm；延伸至環狀軟骨下緣<b>以下</b>；影像上進階囊外侵犯（侵犯鄰近肌肉、皮膚及／或神經血管束）'],
+  ],
+  m:[
+    ['M0','無遠端轉移　No distant metastasis'],
+    ['M1a','遠端轉移病灶 <b>≤3 個</b>（可分布於一個以上器官／部位）'],
+    ['M1b','遠端轉移病灶 <b>&gt;3 個</b>（可分布於一個以上器官／部位）'],
+  ],
+  matrix:{
+    ncols:[['N0',''],['N1','單側頸／咽後'],['N2','雙側頸'],['N3','&gt;6cm／環狀軟骨下／rENE']],
+    trows:['T1','T2','T3','T4'],
+    cells:[
+      ['IA','IB','II','III'],
+      ['IA','IB','II','III'],
+      ['II','II','II','III'],
+      ['III','III','III','III'],
+    ],
+    mrows:[
+      ['M1a','IVA','遠端轉移病灶 ≤3 個'],
+      ['M1b','IVB','遠端轉移病灶 >3 個'],
+    ],
+    m1:'<b>Tis N0 M0 → 0 期</b>。第 9 版之無遠端轉移病例僅有 I–III 期；<b>第 IV 期專用於 M1</b>。',
+  },
+  node_note:'<b>分區解剖界線</b>依 Grégoire 等 2013 國際共識（DAHANCA／EORTC／HKNPCSG／NCIC CTG／NCRI／RTOG／TROG）；<b>N 分級</b>依 AJCC／UICC 第 9 版。右欄為「該分區之淋巴結所對應之 N 分級」，係<b>兩份來源之對照</b>，非任一來源之原文——實際判定仍以<b>該顆淋巴結</b>相對「環狀軟骨下緣」之影像位置、側性與最大徑為準。鼻咽癌無標準頸部廓清術式（頸部廓清僅用於化放療後殘存或復發之頸部病灶），故本表不列廓清範圍；僅列鼻咽癌常見之引流分區。台大指引之放射治療標靶體積另依 CSTRO／CACA／CSCO／HNCIG／ESTRO／ASTRO 2025 鼻咽癌描繪指引與圖譜，本表不重製該圖譜。',
+  nodes:[
+    ['VIIa','咽後 Retropharyngeal','N1','鼻咽癌之第一站。頭側界＝C1 椎體上緣／硬顎，尾側界＝舌骨體上緣。<b>不論單側或雙側皆計為 N1</b>（AJCC 第 9 版明文）。'],
+    ['VIIb','莖突後 Retro-styloid','N1／N2','頭側界＝顱底（頸靜脈孔），尾側界＝C1 側突下緣（即 Level II 上界）。整區位於環狀軟骨下緣以上 → 單側 N1、雙側 N2。'],
+    ['Ib','頷下 Submandibular','N1／N2','鼻咽癌少見。位於環狀軟骨下緣以上 → 單側 N1、雙側 N2。'],
+    ['II','上頸靜脈 Upper jugular','N1／N2','頭側界＝C1 側突下緣，尾側界＝舌骨體下緣。<b>鼻咽癌最常見之頸部轉移區</b>。位於環狀軟骨下緣以上 → 單側 N1、雙側 N2。'],
+    ['III','中頸靜脈 Middle jugular','N1／N2','頭側界＝舌骨體下緣，<b>尾側界＝環狀軟骨下緣</b>。仍屬環狀軟骨下緣以上 → 單側 N1、雙側 N2。'],
+    ['IVa','下頸靜脈 Lower jugular','N3','頭側界＝<b>環狀軟骨下緣</b>，尾側界＝胸骨柄上方 2cm。<b>整區位於環狀軟骨下緣以下 → N3</b>。'],
+    ['IVb','鎖骨上內側 Medial supraclavicular','N3','頭側界＝Level IVa 之尾側界（胸骨柄上方 2cm），尾側界＝胸骨柄上緣。<b>整區位於環狀軟骨下緣以下 → N3</b>。'],
+    ['V','後頸三角 Posterior triangle（Va／Vb）','依實際位置','2013 共識之<b>影像描繪單位為整個 Level V</b>（頭側界＝舌骨體上緣，尾側界＝頸橫血管下方之平面）；Va／Vb 以環狀軟骨下緣區分係<b>外科</b>分法，共識原文並未給 Va、Vb 各自之描繪界線。故 N 分級須依該顆淋巴結相對環狀軟骨下緣之實際位置判定：<b>以上</b> → 單側 N1／雙側 N2；<b>以下</b> → N3。'],
+    ['Vc','鎖骨上外側 Lateral supraclavicular','N3','頭側界＝頸橫血管下方之平面（Level V 之尾側界），尾側界＝胸骨柄上方 2cm。共識未以環狀軟骨界定本區；惟頸橫血管遠低於環狀軟骨下緣，故本區淋巴結實務上落入 N3——<b>此為解剖推論，非指引明文</b>。'],
+    ['VIII','腮腺 Parotid','未歸類','鼻咽癌少見。AJCC 第 9 版之分析顯示腮腺淋巴結<b>非顯著預後因子</b>，且其 N 定義僅涵蓋「頸部」與「咽後」淋巴結，未明文歸類本區，故此處不逕行標註 N 分級。'],
+  ],
+  tx:[
+    {role:'放射治療',cls:'surg',label:'根治性放射治療（Definitive RT）',html:'適應症：<b>AJCC 9th Stage IA</b>；同步化學治療為選項。<b>IMRT／VMAT</b>，CTV_H ≥66 Gy（≥2.0 Gy/fx）、CTV_Int ≥50 Gy、CTV_L ≥50 Gy，PTV margin 0.2–0.5cm。'},
+    {role:'同步化放療',cls:'neo',label:'Definitive CCRT',html:'適應症：<b>Stage IB–III</b>；Stage IV 合併寡轉移者為選項。以 <span class="drug">cisplatin</span> 為基礎（INT-0099）。<b>引導化療</b>於 T3 N1–3、T4 任何 N、或任何 T N2–3 時 preferred（<span class="rx">TPF</span> 或 <span class="rx">GP</span>）。'},
+    {role:'輔助',cls:'adj',label:'Adjuvant systemic therapy（optional）',html:'較高復發風險者可考慮口服低劑量（節拍式）化療：<span class="drug">capecitabine</span> 1 年，或口服 <span class="drug">tegafur-uracil（UFUR）</span>。'},
+    {role:'轉移／復發',cls:'sys',label:'Systemic therapy',html:'化療藥物：<span class="drug">5-FU</span>、<span class="drug">UFUR</span>、<span class="drug">Xeloda</span>、<span class="drug">cisplatin</span>、<span class="drug">methotrexate</span>、<span class="drug">anthracyclines</span>、<span class="drug">mitomycin C</span>、<span class="drug">vinorelbine</span>、<span class="drug">gemcitabine</span>、<span class="drug">paclitaxel</span>；複方緩解率約 30–50%。免疫檢查點抑制劑於部分患者有效；<span class="drug">bevacizumab</span> 可併化療但<b>需注意出血風險</b>。'},
+  ],
+  refs:[
+    ['NTUH 鼻咽癌診療指引 版次 17（2026/06/16，文件編號 50710-3-000012；含附件鼻咽癌放射治療指引）', PS('NTUH nasopharyngeal carcinoma guidelines')],
+    ['AJCC／UICC 鼻咽癌 TNM 第 9 版（本頁分期表之依據）— Pan JJ et al. JAMA Oncol 2024', PM('39388190')],
+    ['頸部淋巴結分區描繪國際共識 2013 更新（本頁分區界線之依據）— Grégoire V et al. Radiother Oncol 2014', PM('24183870')],
+    ['鼻咽癌頸部標靶體積描繪指引與圖譜 — Tang LL et al. Lancet Oncol 2025', PM('40907527')],
+    ['鼻咽癌原發部位標靶體積描繪指引與圖譜 — Tang LL et al. Lancet Oncol 2025', PM('40907526')],
+    ['INT-0099（同步化放療優於單獨放射治療）— Al-Sarraf M et al. J Clin Oncol 1998', PM('9552031')],
+    ['早期鼻咽癌之同步化放療 — Cheng SH et al. J Clin Oncol 2000', PM('10811668')],
+    ['TPF 引導化療加上同步化放療（第三期試驗）— Sun Y et al. Lancet Oncol 2016', PM('27686945')],
+    ['Gemcitabine 加 cisplatin 引導化療（第三期試驗）— Zhang Y et al. NEJM 2019', PM('31150573')],
+    ['節拍式 capecitabine 輔助治療（第三期試驗）— Chen YP et al. Lancet 2021', PM('34111416')],
+    ['同步化放療後口服 tegafur-uracil 節拍式治療（國內研究）— Chen JH et al. Head Neck 2019', PM('31435974')],
+    ['Bevacizumab 加入標準化放療（RTOG 0615）— Lee NY et al. Lancet Oncol 2012', PM('22178121')],
+    ['E1395（cisplatin+5-FU 對比 cisplatin+paclitaxel）— Gibson MK et al. J Clin Oncol 2005', PM('15908667')],
+    ['Cetuximab 併 carboplatin 用於復發或轉移性鼻咽癌 — Chan AT et al. J Clin Oncol 2005', PM('15809453')],
+    ['Nivolumab 用於復發或轉移性鼻咽癌（NCI-9742）— Ma BBY et al. J Clin Oncol 2018', PM('29584545')],
+    ['Pembrolizumab 用於 PD-L1 陽性鼻咽癌（KEYNOTE-028）— Hsu C et al. J Clin Oncol 2017', PM('28837405')],
+    ['Toripalimab 併化學治療用於第一線復發或轉移性鼻咽癌（JUPITER-02）— Mai HQ et al. JAMA 2023', PM('38015220')],
+    ['內視鏡鼻咽切除術合併 KTP 雷射用於早期局部復發（本院經驗）— Ko JY et al. Head Neck 2009', PM('19360738')],
+  ],
+},
+
 /* ============================================================
    尚未整合內容的癌別（wip:true）
    ------------------------------------------------------------
@@ -2150,7 +2230,6 @@ window.CANCERS = [
    整編某一癌別時：補齊 edition／t／n／m／stage／node／tx／refs 後，
    移除該條目的 wip 旗標即可自動改走正常的三分頁流程。
    ============================================================ */
-{ id:'npc',  zh:'鼻咽癌',   en:'Nasopharyngeal Carcinoma', group:'頭頸 Head & Neck',            wip:true },
 { id:'hnc',  zh:'頭頸癌',   en:'Head & Neck Cancer',       group:'頭頸 Head & Neck',            wip:true },
 { id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'血液淋巴 Hematolymphoid',     wip:true },
 ];
