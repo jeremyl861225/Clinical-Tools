@@ -33,7 +33,12 @@
       ・高風險（任一）：影像見 CBD 結石、或 <b>T-Bil &gt;4 mg/dL 且 CBD 擴張</b>、或臨床急性膽管炎 → 直接 ERCP。<br>
       ・中風險（任一）：肝功能異常（非膽紅素項）、年齡 &gt;55、或 CBD 擴張（&gt;6 mm）而未達高風險 → 先 EUS/MRCP 或術中膽道攝影(IOC)確認。<br>
       ・低風險：皆無 → 直接膽囊切除（± IOC）。<br><br>
-      <b>膽石性胰臟炎：</b>輕度 → 同次住院早期膽囊切除（PONCHO）；重度／壞死性 → 延後手術（常約 6 週）。ERCP 僅在合併膽管炎或持續膽道阻塞時才需要。<br><br>
+      <b>膽石性胰臟炎（嚴重度依 Revised Atlanta 2012）：</b><br>
+      ・<b>輕度 Mild</b>：無器官衰竭、無局部／全身併發症。<br>
+      ・<b>中重度 Moderately severe</b>：<b>暫時性</b>器官衰竭（&lt;48 小時）和／或局部／全身併發症、共病惡化。<br>
+      ・<b>重度 Severe</b>：<b>持續性</b>器官衰竭（&gt;48 小時）。器官衰竭之操作型定義為 <b>modified Marshall score ≥2</b>（呼吸／腎臟／心血管其一）。DBC 另增列 <b>Critical</b>（持續性器官衰竭 ＋ 感染性壞死）。<br>
+      ・<b>膽囊切除時機的關鍵不只是分級，而是「有無胰周積液／壞死聚積」：</b>IAP/APA 2013 對輕度建議<b>同次住院</b>切除（GRADE 1C）；對<b>有胰周積液者</b>建議延後至積液<b>消退</b>、或持續 &gt;6 週後再與引流合併施行（GRADE 2C，證據為 Nealon 2004）。AGA 2018 則對膽源性胰臟炎整體建議同次住院切除（強建議、中等品質），其證據基礎 PONCHO 僅納入<b>輕度</b>。<br>
+      ・ERCP 僅在合併膽管炎或持續膽道阻塞時才需要。<br><br>
       <b>TG18 嚴重度分級：</b><br>
       ・<b>Grade I 輕度：</b>無器官功能障礙、僅膽囊輕度發炎。<br>
       ・<b>Grade II 中度（任一）：</b>WBC &gt;18,000/mm³、右上腹可觸及壓痛腫塊、症狀 &gt;72 小時、或明顯局部發炎（壞疽性、膽囊周圍／肝膿瘍、膽汁性腹膜炎、氣腫性膽囊炎）。<br>
@@ -141,11 +146,24 @@
   </div>
 
   <div class="flow-step hidden" id="chole_bs_psev">
-    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">膽石性胰臟炎嚴重度？</span></div>
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">膽石性胰臟炎嚴重度（Revised Atlanta 2012）？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="cholePick('pSev','mild',this)">輕度<span class="fo-sub">無持續器官衰竭、無局部或全身併發症</span></button>
-      <button class="flow-opt" onclick="cholePick('pSev','severe',this)">重度／壞死性<span class="fo-sub">持續器官衰竭或胰周壞死／積液</span></button>
+      <button class="flow-opt" onclick="cholePick('pSev','mild',this)">輕度 Mild<span class="fo-sub">無器官衰竭、無局部或全身併發症</span></button>
+      <button class="flow-opt" onclick="cholePick('pSev','mod',this)">中重度 Moderately severe<span class="fo-sub">暫時性器官衰竭（&lt;48h）和／或局部／全身併發症、共病惡化</span></button>
+      <button class="flow-opt" onclick="cholePick('pSev','severe',this)">重度 Severe<span class="fo-sub">持續性器官衰竭 &gt;48h（modified Marshall ≥2）；DBC 之 Critical（＋感染性壞死）併入本項</span></button>
     </div>
+    <button class="flow-link" onclick="location.href='../tools/marshall.html?from=chole'">🧮 開啟 Modified Marshall Score 計算機（判定有無器官衰竭，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/ctsi.html?from=chole'">🧮 開啟 CT Severity Index 計算機（影像壞死範圍，可從該頁返回本決策）</button>
+    <div class="note" style="margin-top:8px;">完整的胰臟炎處置（病因、監測層級、step-up 介入時機）見<a class="tool-link" href="pancreatitis.html">急性胰臟炎處置決策</a>；本步驟只決定<b>膽囊切除時機</b>。</div>
+  </div>
+
+  <div class="flow-step hidden" id="chole_bs_pcol">
+    <div class="flow-step-head"><span class="flow-num">1c</span><span class="flow-q">有無胰周積液／壞死聚積？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="cholePick('pCol','yes',this)">有<span class="fo-sub">CT 見 APFC／ANC／假性囊腫／WON</span></button>
+      <button class="flow-opt" onclick="cholePick('pCol','no',this)">無<span class="fo-sub">影像上無胰周積液或壞死聚積</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">IAP/APA 2013 的延後條件是<b>有無積液</b>，而非分級本身；中重度而無積液者不必然需要延後手術。</div>
   </div>
   <div class="flow-step hidden" id="chole_bs_asge">
     <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">總膽管結石 ASGE 風險分層？</span></div>
@@ -230,12 +248,12 @@
   </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="choleReset()">重置</button></div>
-  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. Tokyo Guidelines 2018 (TG18). J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2020+WSES+guidelines+for+acute+calculous+cholecystitis.+World+J+Emerg+Surg.+2020%3B15%3A61" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2020 WSES guidelines for acute calculous cholecystitis. World J Emerg Surg. 2020;15:61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29032610/" target="_blank" rel="noopener" class="ref-link">Kiriyama S, et al. TG18: diagnostic criteria and severity grading of acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):17-30.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28941329/" target="_blank" rel="noopener" class="ref-link">Miura F, et al. TG18: initial management and flowchart for acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):31-40.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28834389/" target="_blank" rel="noopener" class="ref-link">Mukai S, et al. Indications and techniques of biliary drainage in TG18. J Hepatobiliary Pancreat Sci. 2017;24(10):537-549.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30943551/" target="_blank" rel="noopener" class="ref-link">Manes G, et al. ESGE guideline: endoscopic management of common bile duct stones. Endoscopy. 2019;51(5):472-491.</a> ｜<a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=da+Costa+DW%2C+et+al.+%28PONCHO%29+Lancet.+2015%3B386%2810000%29%3A1261-1268" target="_blank" rel="noopener" class="ref-link">da Costa DW, et al. (PONCHO) Lancet. 2015;386(10000):1261-1268.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Crockett+SD%2C+et+al.+AGA.+Gastroenterology.+2018%3B154%284%29%3A1096-1101" target="_blank" rel="noopener" class="ref-link">Crockett SD, et al. AGA. Gastroenterology. 2018;154(4):1096-1101.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/41695875/" target="_blank" rel="noopener" class="ref-link">Kolokotronis T, Pantelis D. Interventional management of acute perforated cholecystitis. World J Gastrointest Surg. 2026;18(1):114059.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42255797/" target="_blank" rel="noopener" class="ref-link">Tandon V, et al. Gallbladder perforation: a 23-year study of 100 patients. Cureus. 2026;18(5):e108275.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34548226/" target="_blank" rel="noopener" class="ref-link">Gupta V, et al. Gallbladder perforation: step-up approach. Hepatobiliary Pancreat Dis Int. 2022;21(2):168-174.</a> ｜ <a href="https://doi.org/10.7759/cureus.94342" target="_blank" rel="noopener" class="ref-link">Florou E, et al. Clarifying the spectrum of gallbladder haemorrhage: a systematic review. Cureus. 2025;17(10):e94342.</a> ｜ <a href="https://doi.org/10.1097/MD.0000000000009691" target="_blank" rel="noopener" class="ref-link">Chen H, et al. Current trends in the management of Mirizzi syndrome. Medicine (Baltimore). 2018;97(4):e9691.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32661708/" target="_blank" rel="noopener" class="ref-link">Zhao J, et al. Laparoscopic approaches for Mirizzi syndrome: a systematic review. Surg Endosc. 2020;34(11):4717-4726.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16858544/" target="_blank" rel="noopener" class="ref-link">Prasad TLVD, et al. Mirizzi syndrome and gallbladder cancer. J Hepatobiliary Pancreat Surg. 2006;13(4):323-326.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26521077/" target="_blank" rel="noopener" class="ref-link">Strasberg SM, et al. Subtotal cholecystectomy — fenestrating vs reconstituting. J Am Coll Surg. 2016;222(1):89-96.</a></footer>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. Tokyo Guidelines 2018 (TG18). J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Pisano+M%2C+et+al.+2020+WSES+guidelines+for+acute+calculous+cholecystitis.+World+J+Emerg+Surg.+2020%3B15%3A61" target="_blank" rel="noopener" class="ref-link">Pisano M, et al. 2020 WSES guidelines for acute calculous cholecystitis. World J Emerg Surg. 2020;15:61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29032610/" target="_blank" rel="noopener" class="ref-link">Kiriyama S, et al. TG18: diagnostic criteria and severity grading of acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):17-30.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28941329/" target="_blank" rel="noopener" class="ref-link">Miura F, et al. TG18: initial management and flowchart for acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):31-40.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28834389/" target="_blank" rel="noopener" class="ref-link">Mukai S, et al. Indications and techniques of biliary drainage in TG18. J Hepatobiliary Pancreat Sci. 2017;24(10):537-549.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30943551/" target="_blank" rel="noopener" class="ref-link">Manes G, et al. ESGE guideline: endoscopic management of common bile duct stones. Endoscopy. 2019;51(5):472-491.</a> ｜<a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=da+Costa+DW%2C+et+al.+%28PONCHO%29+Lancet.+2015%3B386%2810000%29%3A1261-1268" target="_blank" rel="noopener" class="ref-link">da Costa DW, et al. (PONCHO) Lancet. 2015;386(10000):1261-1268.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Crockett+SD%2C+et+al.+AGA.+Gastroenterology.+2018%3B154%284%29%3A1096-1101" target="_blank" rel="noopener" class="ref-link">Crockett SD, et al. AGA. Gastroenterology. 2018;154(4):1096-1101.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24054878/" target="_blank" rel="noopener" class="ref-link">IAP/APA evidence-based guidelines for the management of acute pancreatitis. Pancreatology. 2013;13(4 Suppl 2):e1-15.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15166953/" target="_blank" rel="noopener" class="ref-link">Nealon WH, et al. Appropriate timing of cholecystectomy in moderate to severe gallstone pancreatitis with peripancreatic fluid collections. Ann Surg. 2004;239(6):741-749.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23100216/" target="_blank" rel="noopener" class="ref-link">Banks PA, et al. Revised Atlanta classification of acute pancreatitis. Gut. 2013;62(1):102-111.</a> ｜<a href="https://pubmed.ncbi.nlm.nih.gov/41695875/" target="_blank" rel="noopener" class="ref-link">Kolokotronis T, Pantelis D. Interventional management of acute perforated cholecystitis. World J Gastrointest Surg. 2026;18(1):114059.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42255797/" target="_blank" rel="noopener" class="ref-link">Tandon V, et al. Gallbladder perforation: a 23-year study of 100 patients. Cureus. 2026;18(5):e108275.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34548226/" target="_blank" rel="noopener" class="ref-link">Gupta V, et al. Gallbladder perforation: step-up approach. Hepatobiliary Pancreat Dis Int. 2022;21(2):168-174.</a> ｜ <a href="https://doi.org/10.7759/cureus.94342" target="_blank" rel="noopener" class="ref-link">Florou E, et al. Clarifying the spectrum of gallbladder haemorrhage: a systematic review. Cureus. 2025;17(10):e94342.</a> ｜ <a href="https://doi.org/10.1097/MD.0000000000009691" target="_blank" rel="noopener" class="ref-link">Chen H, et al. Current trends in the management of Mirizzi syndrome. Medicine (Baltimore). 2018;97(4):e9691.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32661708/" target="_blank" rel="noopener" class="ref-link">Zhao J, et al. Laparoscopic approaches for Mirizzi syndrome: a systematic review. Surg Endosc. 2020;34(11):4717-4726.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16858544/" target="_blank" rel="noopener" class="ref-link">Prasad TLVD, et al. Mirizzi syndrome and gallbladder cancer. J Hepatobiliary Pancreat Surg. 2006;13(4):323-326.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26521077/" target="_blank" rel="noopener" class="ref-link">Strasberg SM, et al. Subtotal cholecystectomy — fenestrating vs reconstituting. J Am Coll Surg. 2016;222(1):89-96.</a></footer>
 </div>
 </div>
 <script src="../js/common.js"></script>
 <script>
-const choleSt={bil:null,chg:null,chgDx:'none',chgBox:null,pSev:null,asge:null,mir:null,grade:null,sp:null,perf:null,hemo:null,risk:null};
+const choleSt={bil:null,chg:null,chgDx:'none',chgBox:null,pSev:null,pCol:null,asge:null,mir:null,grade:null,sp:null,perf:null,hemo:null,risk:null};
 
 /* 步驟 1b：TG18 急性膽管炎 — 診斷準則（A/B/C）與嚴重度，由勾選項目自動判定 */
 function chgBoxes(){ return document.querySelectorAll('#chole_bs_chg input[type=checkbox]'); }
@@ -266,8 +284,9 @@ function chgClear(){ chgBoxes().forEach(cb=>{cb.checked=false;}); chgCalc(); }
 
 function cholePick(key,val,btn){
   flowSelect(btn);
-  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.asge=null; choleSt.mir=null; if(val!=='cholangitis') chgClear(); }
-  else if(key==='pSev'){ choleSt.pSev=val; }
+  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.pCol=null; choleSt.asge=null; choleSt.mir=null; if(val!=='cholangitis') chgClear(); }
+  else if(key==='pSev'){ choleSt.pSev=val; choleSt.pCol=null; flowClearSel('chole_bs_pcol'); }
+  else if(key==='pCol'){ choleSt.pCol=val; }
   else if(key==='asge'){ choleSt.asge=val; }
   else if(key==='mir'){ choleSt.mir=val; }
   else if(key==='grade'){ choleSt.grade=val; choleSt.sp=null; choleSt.perf=null; choleSt.hemo=null; choleSt.risk=null; flowClearSel('chole_s2b'); flowClearSel('chole_s2'); }
@@ -284,6 +303,8 @@ function choleRender(){
   flowShow('chole_bc_sub', showSub);
   flowShow('chole_bs_chg', b==='cholangitis');
   flowShow('chole_bs_psev', b==='pancreatitis');
+  flowShow('chole_bs_pcol', b==='pancreatitis' && choleSt.pSev==='mod');
+  if(!(b==='pancreatitis'&&choleSt.pSev==='mod')) flowClearSel('chole_bs_pcol');
   flowShow('chole_bs_asge', b==='cbd');
   flowShow('chole_bs_mir', b==='mirizzi');
   if(b!=='pancreatitis') flowClearSel('chole_bs_psev');
@@ -325,6 +346,7 @@ function choleRender(){
   let bilNote='';
   if(b==='cholangitis') bilNote='※ 整合：先以 ERCP 引流控制膽管炎，再依上述時機行膽囊切除（同次住院為佳）。';
   else if(b==='pancreatitis'&&choleSt.pSev==='severe') bilNote='※ 整合：合併重度膽石性胰臟炎時，膽囊切除延後至胰臟炎恢復（約 6 週），時機以胰臟炎為主。';
+  else if(b==='pancreatitis'&&choleSt.pSev==='mod') bilNote='※ 整合：中重度膽石性胰臟炎，有胰周積液者延後至消退或 >6 週；無積液者可於同次住院切除。';
   else if(b==='pancreatitis'&&choleSt.pSev==='mild') bilNote='※ 整合：輕度膽石性胰臟炎建議同次住院行膽囊切除（PONCHO）。';
   else if(b==='cbd') bilNote='※ 整合：先完成總膽管清除（依 ASGE 風險），再行膽囊切除。';
 
@@ -421,12 +443,22 @@ function choleBilRender(){
       detail='<li>疑似診斷需 <b>A 至少一項</b>，加上 <b>B 或 C 至少一項</b>；確定診斷需 A + B + C 各至少一項。</li><li>請先排除急性肝炎與其他急性腹症；若不成立膽管炎，回步驟 1 改選其他分支。</li>'; }
     else { cls='rec-idle'; title='請於步驟 1b 勾選 TG18 診斷準則'; }
   } else if(b==='pancreatitis'){
+    const ercpNote='<li>不需常規 ERCP；僅在合併膽管炎或持續膽道阻塞時才行 ERCP。</li>';
     if(choleSt.pSev==='mild'){ cls='rec-elective'; title='輕度膽石性胰臟炎：同次住院早期膽囊切除';
-      detail='<li><b>同次住院（出院前）行腹腔鏡膽囊切除</b>，可顯著降低再發膽石相關併發症（PONCHO）。</li><li>不需常規 ERCP；僅在合併膽管炎或持續膽道阻塞時才行 ERCP。</li>';
-      note='PONCHO 2015 / AGA 2018：輕度膽石性胰臟炎建議同次住院膽囊切除。'; }
-    else if(choleSt.pSev==='severe'){ cls='rec-nonop'; title='重度／壞死性膽石性胰臟炎：延後膽囊切除';
-      detail='<li>延後膽囊切除至全身發炎消退、積液穩定（常約 6 週後），以降低手術併發症。</li><li>合併膽管炎或持續膽道阻塞 → 早期 ERCP；否則不常規 ERCP。</li><li>期間依需要處理胰周積液／壞死。</li>';
-      note='IAP/APA 與 AGA：重度膽石性胰臟炎延後膽囊切除，ERCP 僅用於膽管炎／阻塞。'; }
+      detail='<li><b>同次住院（出院前）行腹腔鏡膽囊切除</b>，可顯著降低再發膽石相關併發症（PONCHO）。</li>'+ercpNote;
+      note='IAP/APA 2013 Q36（GRADE 1C）：輕度膽源性胰臟炎於 index admission 切除；延後切除者約 18% 因再發膽道事件再入院。AGA 2018 亦為強建議（中等品質證據）。'; }
+    else if(choleSt.pSev==='mod'){
+      if(choleSt.pCol==='no'){ cls='rec-elective'; title='中重度、無胰周積液：可同次住院膽囊切除（待急性期穩定）';
+        detail='<li>IAP/APA 的延後條件是<b>有胰周積液</b>；無積液者待器官功能恢復、可耐受麻醉後，<b>同次住院</b>行腹腔鏡膽囊切除為合理選擇。</li><li>AGA 2018 對膽源性胰臟炎整體建議同次住院切除，惟其證據基礎（PONCHO）僅納入輕度 — 中重度屬<b>證據外推</b>，須個案評估。</li>'+ercpNote;
+        note='※ 中重度且無積液者缺乏直接 RCT 證據，本建議由 IAP/APA Q37 之反面（無積液即無延後理由）與 AGA 2018 推得，決策請併同病人生理狀態。'; }
+      else if(choleSt.pCol==='yes'){ cls='rec-nonop'; title='中重度、有胰周積液：延後至積液消退或 &gt;6 週';
+        detail='<li>延後膽囊切除至積液<b>自行消退</b>；若持續 &gt;6 週，此時可安全施行，並可與假性囊腫引流<b>合併</b>執行。</li><li>早期手術的代價（Nealon 2004，moderate–severe 合併積液）：敗血症 47% vs 7%、膽囊切除併發症 44% vs 5.5%、住院天數更長。</li>'+ercpNote;
+        note='IAP/APA 2013 Q37（GRADE 2C）：有胰周積液者延後至消退或持續 &gt;6 週再行膽囊切除。'; }
+      else { cls='rec-idle'; title='請於步驟 1c 選擇有無胰周積液'; }
+    }
+    else if(choleSt.pSev==='severe'){ cls='rec-nonop'; title='重度膽石性胰臟炎：延後膽囊切除（約 6 週）';
+      detail='<li>延後膽囊切除至全身發炎消退、積液消退或穩定（<b>約 6 週</b>），以降低手術併發症與感染風險。</li><li>合併膽管炎或持續膽道阻塞 → 早期 ERCP；否則不常規 ERCP。已行 sphincterotomy 且可耐受手術者，仍應完成膽囊切除（ERCP 可防再發胰臟炎，但不防膽絞痛／膽囊炎）。</li><li>期間依需要處理胰周積液／壞死（step-up）。</li>';
+      note='IAP/APA 2013 Q37（GRADE 2C）／Q38 註記：重度膽源性胰臟炎之膽囊切除應延後 6 週。'; }
     else { cls='rec-idle'; title='請於步驟 1b 選擇胰臟炎嚴重度'; }
   } else if(b==='cbd'){
     if(choleSt.asge==='high'){ cls='rec-elective'; title='高風險總膽管結石：直接 ERCP 取石，再行膽囊切除';
@@ -472,7 +504,7 @@ choleReset();
 
 /* 跨頁保存/還原選項（供 CCI 計算機往返使用） */
 function choleSave(){try{sessionStorage.setItem('choleSt',JSON.stringify(choleSt));}catch(e){}}
-function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);if(Array.isArray(choleSt.chgBox)){var _cb=chgBoxes();choleSt.chgBox.forEach(function(v,i){if(_cb[i])_cb[i].checked=!!v;});chgCalc();}[['bil',choleSt.bil],['pSev',choleSt.pSev],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
+function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);if(Array.isArray(choleSt.chgBox)){var _cb=chgBoxes();choleSt.chgBox.forEach(function(v,i){if(_cb[i])_cb[i].checked=!!v;});chgCalc();}[['bil',choleSt.bil],['pSev',choleSt.pSev],['pCol',choleSt.pCol],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
 var _cholePickBase=cholePick;cholePick=function(k,v,btn){_cholePickBase(k,v,btn);choleSave();};
 var _choleResetBase=choleReset;choleReset=function(){try{sessionStorage.removeItem('choleSt');}catch(e){}_choleResetBase();};
 choleRestore();

@@ -23,6 +23,7 @@
     <div><div class="eyebrow">Pancreatitis Scoring Tool</div><h1>Modified Marshall Score</h1><div class="sub">急性胰臟炎器官衰竭評分（Revised Atlanta 2012）</div></div>
     <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
       <button class="back-btn" id="ms_back_panc" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/pancreatitis.html'">← 返回胰臟炎決策</button>
+      <button class="back-btn" id="ms_back_chole" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/cholecystitis.html'">← 返回膽囊炎決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-marshall'">← 返回主選單</button>
     </div>
   </div>
@@ -143,6 +144,7 @@ document.querySelectorAll('#view-marshall input, #view-marshall select')
 msCalc();
 /* 由胰臟炎決策流程進入時顯示返回鍵 */
 if(location.search.indexOf('from=panc')>=0){var _b=document.getElementById('ms_back_panc'); if(_b) _b.style.display='';}
+if(location.search.indexOf('from=chole')>=0){var _bc=document.getElementById('ms_back_chole'); if(_bc) _bc.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
