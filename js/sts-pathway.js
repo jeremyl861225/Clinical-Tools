@@ -41,6 +41,13 @@
       (sub ? '　<span class="cbx-sub">' + sub + '</span>' : '') + '</div>' +
       '<div class="cbx-items">' + items.join('') + '</div></div>';
   }
+  /* 長句／散文式的準則項目改用條列（badge 僅留給短而可列舉者，見 cancer-staging.css 之註記） */
+  function critList(head, sub, items) {
+    return '<div class="crit"><div class="crit-h">' + head +
+      (sub ? '　<span class="crit-zh">' + sub + '</span>' : '') + '</div>' +
+      '<ul><li>' + items.join('</li><li>') + '</li></ul></div>';
+  }
+  function kv(k, txt) { return (k ? '<b>' + k + '</b>：' : '') + txt; }
   function rxLine(head, sub, items) {
     return '<div class="rx-line"><div class="rx-line-h"><span class="rx-h">' + head + '</span>' +
       (sub ? '<span class="rx-sub">' + sub + '</span>' : '') + '</div>' +
@@ -83,14 +90,14 @@
   function rpsDefHtml() {
     return '<div class="crit-box">' +
       '<div class="note"><b>原發性腹膜後肉瘤（RPS）之定義：<u>非內臟來源</u>（non-visceral origin）。</b></div>' +
-      cbx('納入 Inclusion', '', [
-        cb('最常見型態', '<b>分化良好脂肪肉瘤（WD LPS）、去分化脂肪肉瘤（DD LPS）、平滑肌肉瘤（LMS）、' +
+      critList('INCLUSION', '納入 RPS 分類', [
+        kv('最常見型態', '分化良好脂肪肉瘤（WD LPS）、去分化脂肪肉瘤（DD LPS）、平滑肌肉瘤（LMS）、' +
           '孤立性纖維瘤（solitary fibrous tumor）、惡性周邊神經鞘瘤（MPNST）、' +
-          '未分類／未分化多形性肉瘤（undifferentiated pleomorphic sarcoma）</b>'),
-        cb('較少見型態', '滑膜肉瘤（synovial sarcoma）、黏液纖維肉瘤（myxofibrosarcoma）'),
-        cb('其他', '大靜脈與腰大肌之肉瘤（sarcoma of major veins and psoas muscle）；輸尿管平滑肌肉瘤（ureteric LMS）')
+          '未分類／未分化多形性肉瘤（undifferentiated pleomorphic sarcoma）'),
+        kv('較少見型態', '滑膜肉瘤（synovial sarcoma）、黏液纖維肉瘤（myxofibrosarcoma）'),
+        kv('其他', '大靜脈與腰大肌之肉瘤（sarcoma of major veins and psoas muscle）；輸尿管平滑肌肉瘤（ureteric LMS）')
       ]) +
-      cbx('排除 Exclusion', '不屬 RPS 分類', [
+      cbx('EXCLUSION', '排除　不屬 RPS 分類', [
         cb('', '良性腫瘤 Benign tumors'),
         cb('', '<b>GIST</b>（另見「胃腸道基質瘤」條目）'),
         cb('', '硬纖維瘤 Desmoid tumor'),
@@ -102,11 +109,11 @@
       '<div class="note"><b>⚠ 被排除於 RPS 分類之肉瘤型態，仍應於 MDT 討論</b>' +
       '（指引原文：Sarcoma subtypes that are excluded from RPS classification should still be discussed in a ' +
       'multidisciplinary team setting to ensure the best possible outcomes for these patients）。</div>' +
-      cbx('診斷與影像 Diagnosis &amp; Image', '', [
-        cb('切片', '<b>CNB（core needle biopsy）</b>'),
-        cb('CT', '<b>含顯影劑之 CT，範圍自胸部至骨盆</b>（chest to pelvic）'),
-        cb('腦部影像', '<b>Optimal</b>——於<b>平滑肌肉瘤（LMS）</b>或<b>其他有大血管侵犯之肉瘤型態</b>時<b>強烈建議</b>'),
-        cb('分期補充', '<b>FDG PET 或 bone scan</b> 可考慮用以完成分期')
+      critList('DIAGNOSIS &amp; IMAGE', '診斷與影像', [
+        kv('切片', 'CNB（core needle biopsy）'),
+        kv('CT', '含顯影劑之 CT，範圍自胸部至骨盆（chest to pelvic）'),
+        kv('腦部影像', 'Optimal——於平滑肌肉瘤（LMS）或其他有大血管侵犯之肉瘤型態時<b>強烈建議</b>'),
+        kv('分期補充', 'FDG PET 或 bone scan 可考慮用以完成分期')
       ]) +
       '</div>';
   }
@@ -362,7 +369,7 @@
         ], '指引第 10–11 頁：Resectable RPS → MDT discussion for surgical planning<sup>1,2</sup> → Surgery → ' +
           'MDT discussion<sup>1</sup> for post-operative management → Adjuvant Tx<sup>2</sup> → Follow-up<sup>3</sup>。' +
           '｜STRASS 主要試驗結果為陰性（Bonvalot, Lancet Oncol 2020），本院之「可考慮」係依其亞組分析與 STREXIT（Callegaro, Ann Surg 2023）。',
-          'rps_curative', rpsDefHtml());
+          'rps_curative');
         return;
       }
       if (s.rpsres === 'border') {
@@ -376,7 +383,7 @@
           '<b>未載明降階（downstaging）之術前治療處方</b>。'
         ], '指引第 11 頁：Borderline Resectable RPS → MDT discussion<sup>1</sup> for Resectability → ' +
           'Resectable（Refer to resectable tx）／Unresectable（Refer to unresectable tx）。',
-          null, rpsDefHtml());
+          null);
         return;
       }
       // unres
