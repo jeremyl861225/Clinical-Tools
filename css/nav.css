@@ -14,9 +14,10 @@
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --nv-bg:#e3e0d8; --nv-ink:#132126; --nv-line:#c9c4b5;
-    --nv-muted:#5b5b52; --nv-accent:#1f5a6b; --nv-accent-soft:#dbe8ea;
-    --nv-accent2-soft:#e7dccb; --nv-hover:#eeebe4; --nv-current:#d5dedf;
+    /* 中性灰，不帶內容區那層暖米色：深色主題下大片暖白會過亮、也容易被當成內容 */
+    --nv-bg:#cbcfd1; --nv-ink:#14181b; --nv-line:#aeb4b7;
+    --nv-muted:#4e565a; --nv-accent:#1a4e5e; --nv-accent-soft:#b3c4c8;
+    --nv-accent2-soft:#cbb9ad; --nv-hover:#d8dbdd; --nv-current:#b6c3c7;
   }
 }
 
@@ -82,12 +83,16 @@ html.nav-open .side-nav{ transform:none; visibility:visible; transition:transfor
 .nav-head.is-current{ background:var(--nv-current); }
 
 .nav-group{ margin:14px 0 0; }
+/* 大類標題本身也是連結：點了到該分類（首頁的分類區塊，或該類自己的頁面） */
 .nav-group-head{
   display:flex; align-items:baseline; gap:7px;
   font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--nv-accent); border-bottom:1px solid var(--nv-line);
-  padding:0 14px 4px; margin:0 0 5px;
+  padding:5px 14px 4px; margin:0 0 5px;
+  text-decoration:none; cursor:pointer; transition:background .13s, border-color .13s;
 }
+.nav-group-head:hover{ background:var(--nv-hover); border-bottom-color:var(--nv-accent); }
+.nav-group-head:hover .nav-group-zh{ text-decoration:underline; }
 .nav-group-en{ color:var(--nv-muted); }
 .nav-group-n{ margin-left:auto; color:var(--nv-muted); }
 

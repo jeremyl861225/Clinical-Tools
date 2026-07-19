@@ -46,7 +46,7 @@
   var CANCER_PAGE = 'tools/cancer.html';
 
   var KEY = 'ct-nav-open';
-  var SNAP = 'ct-nav-snapshot-v1';    // 清單快照；格式變更時改版號即可作廢舊檔
+  var SNAP = 'ct-nav-snapshot-v2';    // 清單快照；格式變更時改版號即可作廢舊檔
   var DESKTOP = '(min-width:1024px)';
   var root = document.documentElement;
 
@@ -122,7 +122,9 @@
         if (href === CANCER_PAGE) items = items.concat(cancerItems());
       }
 
-      if (items.length) groups.push({ title: title, en: en, items: items });
+      // 方磚連 #abdomen 這種站內錨點時，補上首頁路徑，子頁點了才回得去
+      var dest = href.charAt(0) === '#' ? 'index.html' + href : href;
+      if (items.length) groups.push({ title: title, en: en, href: dest, items: items });
     });
     return groups;
   }
@@ -191,9 +193,10 @@
     groups.forEach(function (g) {
       var box = el('div', 'nav-group');
       var n = g.items.filter(function (it) { return !it.head; }).length;
-      box.appendChild(el('div', 'nav-group-head',
-        '<span></span><span class="nav-group-en"></span><span class="nav-group-n"></span>'));
-      var h = box.firstChild;
+      var h = el(g.href ? 'a' : 'div', 'nav-group-head',
+        '<span class="nav-group-zh"></span><span class="nav-group-en"></span><span class="nav-group-n"></span>');
+      if (g.href) h.href = ROOT + g.href;
+      box.appendChild(h);
       h.children[0].textContent = g.title;
       h.children[1].textContent = g.en;
       h.children[2].textContent = n;
