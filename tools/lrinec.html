@@ -42,15 +42,15 @@
       <label>C-反應蛋白 CRP</label>
       <input type="number" id="lr_crp" step="0.1" placeholder="—">
       <select id="lr_crp_u" style="max-width:110px;">
-        <option value="1">mg/L</option>
         <option value="10">mg/dL</option>
+        <option value="1">mg/L</option>
       </select>
       <span class="organ-score" id="lr_p_crp">0</span>
     </div>
-    <div class="exclusive-note">台灣多數院內報告 CRP 以 <b>mg/dL</b> 為單位（切點 150 mg/L = <b>15 mg/dL</b>）；請確認上方單位選擇正確，此處最容易算錯。</div>
+    <div class="exclusive-note">預設 <b>mg/dL</b>（台灣多數院內報告之單位），切點為 <b>15 mg/dL</b>。原始論文以 mg/L 表示（150 mg/L）；若你的報告是 mg/L，請切換上方單位——此處最容易算錯。</div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
-      <tr><td>&lt; 150 mg/L（&lt; 15 mg/dL）</td><td>0分</td></tr>
-      <tr><td>≥ 150 mg/L（≥ 15 mg/dL）</td><td>4分</td></tr>
+      <tr><td>&lt; 15 mg/dL（&lt; 150 mg/L）</td><td>0分</td></tr>
+      <tr><td>≥ 15 mg/dL（≥ 150 mg/L）</td><td>4分</td></tr>
     </table></div></details>
 
     <div class="field-row">
