@@ -10,6 +10,16 @@
 const PM = id => 'https://pubmed.ncbi.nlm.nih.gov/' + id + '/';
 const PS = q  => 'https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(q);
 
+/* 非台大來源之提醒。
+   台大血癌診療指引版次 15 之化療章節「只涵蓋 AML」——ALL、CML、MDS、MPN 在該指引中
+   僅出現於 AML-1 的分流出口與放射治療章節的照射適應症，並無治療流程；台大亦無這四者
+   的獨立診療指引。故這四個條目改以「公開且可於 PubMed 查證」的國際分層標準與關鍵試驗
+   為據（刻意不寫「依 NCCN」——NCCN 全文需登入，無法讓讀者點進去核對）。
+   此徽章必須出現在該四個條目「每一個分頁」的最上方：只標在分期頁的話，使用者從治療頁
+   進來就看不到，那正是最需要看到的地方。
+   注意 staging_note／node_note 會被塞進 <p class="onc-note">，只能放行內元素。 */
+const NTUH_NO = '<span class="tx-role" style="background:#a33a2f;">來源提醒</span> <b>本條目不是台大診療指引。</b>台大血癌診療指引版次 15 之化療章節僅涵蓋 AML，本病種在該指引中只有 AML-1 的分流出口與放射治療章節的照射適應症；院內另有規定時，一律以院內規定為準。';
+
 /* 兩層選單：婦癌範圍大，picker 第一層只放一張家族卡，點進去再選細分項。
    成員仍是獨立 CANCERS 條目——搜尋與 #cancer= 深層連結不受影響。 */
 window.CANCER_FAMILIES = [
@@ -2521,6 +2531,51 @@ window.CANCERS = [
     ['ILROG 何杰金氏淋巴瘤放射治療照野與劑量指引 — Specht L et al. Int J Radiat Oncol Biol Phys 2014;89:854-862', PM('23790512')],
     ['ILROG 成人淋巴瘤 involved-site 放射治療指引綜述 — Wirth A et al. Int J Radiat Oncol Biol Phys 2020;107:909-933', PM('32272184')],
     ['FORT（和緩型淋巴瘤 4 Gy 對照 24 Gy 放射治療）— Hoskin PJ et al. Lancet Oncol 2014;15:457-463', PM('24572077')],
+  ],
+},
+
+/* ==================== 急性淋巴性白血病（ALL）==================== */
+{
+  id:'all', zh:'急性淋巴性白血病', abbr:'ALL', en:'Acute Lymphoblastic Leukemia', group:'軟組織／血液淋巴 Soft Tissue & Hema',
+  pathway:'all',
+  stage_tab_label:'風險分層 Risk',
+  node_tab_label:'中樞神經與髓外',
+  edition:'※ 非台大診療指引 ｜ 分型依 WHO 2022／ICC 2022，風險以遺傳學＋MRD 判定 ｜ 治療依公開關鍵臨床試驗（顱部照射劑量引自台大放射治療指引 v1.0）',
+  staging_note: NTUH_NO + '<br><b>ALL 沒有 AJCC／UICC 的 TNM 分期</b>，也沒有像 AML 之 ELN 那樣單一、全球一致採用的分層表。成人 ALL 的治療分層由三件事共同決定，本頁即以此取代分期表：<b>①BCR::ABL1 是否陽性</b>（決定要不要加 TKI，是分流的第一軸）、<b>②其他遺傳學風險因子</b>、<b>③誘導後的 MRD</b>。<br><b>其中 MRD 的權重高於初診時的臨床風險分組</b>——初診看起來標準風險但 MRD 持續陽性者，預後比初診高風險卻早期清除 MRD 者更差。因此下表列的是「風險因子」而非互斥的期別，實際處置請以流程圖逐步判定。<br>分型依 <b>WHO 第 5 版（2022）</b>與 <b>ICC（2022）</b>；兩者對 B-ALL 的遺傳學亞型定義大致一致，惟命名與少數亞型的門檻略有出入，引用時請註明所依版本。',
+  t:[], n:[], m:[],
+  staging_system:'WHO 第 5 版（2022）／ICC（2022）分型 ＋ 遺傳學風險因子 ＋ MRD',
+  stages_title:'風險因子 Risk factors（成人 ALL）',
+  stages_code_label:'類別',
+  stages_crit_label:'內容與臨床意義',
+  stages:[
+    ['BCR::ABL1(+)','<b>費城染色體陽性 B-ALL</b>——約占成人 B-ALL 四分之一，且比例隨年齡上升。<b>這是治療分流的第一軸，不只是預後因子</b>：陽性者治療骨架一律加入 TKI，加了 TKI 之後預後已大幅改善，不再等同於過去的「極高風險」。反應不佳或復發時應檢測 <i>ABL1</i> 激酶區突變；<b>T315I</b> 者僅 ponatinib 有效。'],
+    ['Ph-like（BCR::ABL1-like）','<b>無 BCR::ABL1，但基因表現譜近似 Ph 陽性</b>。MRD 清除較慢、預後較差。帶 <i>ABL</i> 類融合基因（<i>ABL1</i>／<i>ABL2</i>／<i>CSF1R</i>／<i>PDGFRB</i>）者可考慮加用 TKI；帶 <i>CRLF2</i> 或 JAK-STAT 路徑異常者以臨床試驗為優先。'],
+    ['其他不良遺傳學','<i>KMT2A</i> 重組（尤其 t(4;11)／<i>KMT2A::AFF1</i>）；<b>低二倍體 hypodiploid</b>（染色體數 &lt;44）；<b>iAMP21</b>；<i>TP53</i> 異常；複雜核型。此類多屬異體移植之適應症。'],
+    ['良好遺傳學','高二倍體 hyperdiploid；<i>ETV6::RUNX1</i>。<b>兩者在兒童常見、在成人罕見</b>——不要把兒童 ALL 的良好預後直接套用到成人身上。'],
+    ['臨床因子','初診<b>白血球數</b>（B-ALL ≥30,000/µL、T-ALL ≥100,000/µL 者較差）；<b>年齡</b>（隨年齡上升而惡化，且與可耐受之治療強度直接相關）；<b>CNS3</b>（腦脊髓液中有芽細胞且細胞數升高）；<b>誘導後未達型態緩解</b>。'],
+    ['MRD（權重最高）','<b>微量殘存病灶是成人 ALL 最強的預後因子，凌駕上述所有初診因子。</b>以流式細胞術（靈敏度 10<sup>-4</sup>）、<i>IG/TR</i> 重排定量或次世代定序測定；Ph 陽性者另以 <b>BCR::ABL1 定量</b>追蹤。<b>MRD 持續陽性是異體移植最明確的適應症之一</b>；已達緩解後由陰轉陽即視為分子復發，應提前處置而非等待型態上復發。判讀時點與閾值請依所在實驗室之標準作業。'],
+  ],
+  stages_foot:'<b>本表為風險因子清單，不是互斥的期別</b>，故不著色也無深淺圖例。實際處置請走「治療建議」分頁的流程圖：先判系列（B／T）、再判 BCR::ABL1、再依年齡與體能選擇治療強度，最後以誘導後 MRD 決定鞏固策略與是否移植。<br><b>T-ALL 的分層邏輯與 B-ALL 不同</b>：無 BCR::ABL1 之分流，亦無 CD19／CD22 免疫治療可用；<b>ETP-ALL（早期 T 前驅細胞型）</b>對化療反應較差、MRD 清除較慢，應視為高風險並及早評估移植。',
+  node_note: NTUH_NO + '<br><b>ALL 沒有淋巴結分群，本頁不列站別。</b>白血病自診斷起即為全身性疾病，無「原發部位 → 區域淋巴結 → 遠處轉移」的擴散路徑，因此不存在區域淋巴結（N）與廓清範圍（D 分級）的概念。<br>與其他癌別「淋巴結分群」臨床位置最接近的，是<b>中樞神經與髓外侵犯</b>——而這在 ALL 遠比在 AML 重要：<b>所有 ALL 病人都需要中樞神經預防</b>，未經預防時中樞神經復發率高，且一旦復發極難挽救。<br><b>一、中樞神經侵犯之分級（腰椎穿刺＋腦脊髓液細胞學，初診必做）</b><br>· <b>CNS1</b>：腦脊髓液中<b>無</b>芽細胞。<br>· <b>CNS2</b>：腦脊髓液白血球數 &lt;5/µL，但<b>有</b>芽細胞。<br>· <b>CNS3</b>：腦脊髓液白血球數 ≥5/µL 且有芽細胞，或有<b>顱神經麻痺</b>等臨床中樞侵犯表現。<b>CNS3 屬臨床高風險因子</b>。<br><b>二、中樞神經預防（全體病人）</b><br>· <b>鞘內化療</b>（methotrexate、cytarabine，或加類固醇之三合一）貫穿誘導、鞏固與維持。<br>· <b>全身性高劑量 methotrexate</b>（T-ALL 另加高劑量 cytarabine）以加強中樞穿透。<br><b>三、顱部放射治療</b>　<span class="tx-role" style="background:var(--accent);">此段引自台大</span> 台大 Leukemia Radiation Therapy Guidelines v1.0（2025/09）——<b>這是台大指引中唯一實際涵蓋 ALL 的部分</b>。<br>· <b>適應症</b>：高風險急性淋巴性白血病之 CNS 預防；復發／難治之 CNS 白血病；其他個別情況。<b>兒童 ALL 之預防性顱部照射可省略。</b><br>· <b>劑量</b>：總劑量 12–24 Gy／每分次 1.5–2 Gy；與最後一劑 methotrexate 或 cytarabine <b>至少間隔 48–72 小時</b>。靶區（CTV）＝顱內容物，含篩板、中顱窩、眼球後三分之二，加 C1～C2 脊髓。<br>· <b>明顯 CNS 白血病</b>之顱部總劑量為 <b>18–30 Gy</b>，每分次 1.5–2 Gy。<br>· <b>CNS 復發之治療選項</b>：①單獨化療；②TBI ± CSI（常用 12 Gy 全身 + 12 Gy 顱內／6–12 Gy 脊髓）；③CSI（常用 24 Gy 顱內／18–24 Gy 脊髓）；④TBI + 顱部加強。<br>· <b>全身照射（TBI）之 ALL 適應症</b>：費城染色體陽性之第一次緩解；費城染色體陰性但具高風險特徵之第一次緩解；初始誘導難治；復發治療後再緩解；任何治療後難治。<br><b>四、其他髓外部位</b><br>· <b>縱膈腫塊</b>：T-ALL 常見，注意上腔靜脈症候群與氣道壓迫。<br>· <b>睪丸</b>：男性復發之特殊部位，理學檢查不可略過。<br>· <b>肝脾腫大與淋巴結腫大</b>：屬疾病本身之表現，<b>不用於分期</b>。',
+  refs:[
+    ['〔本頁唯一之台大來源〕台大醫院血癌診療指引 版次 15（2026/06/16）之 Leukemia Radiation Therapy Guidelines v1.0（2025/09）：ALL 之顱部照射與全身照射適應症與劑量', PS('NTUH leukemia radiation therapy guidelines')],
+    ['WHO 第 5 版血液淋巴腫瘤分類：骨髓與組織球／樹突細胞腫瘤 — Khoury JD et al. Leukemia 2022', PM('35732831')],
+    ['ICC 骨髓腫瘤與急性白血病國際共識分類 — Arber DA et al. Blood 2022', PM('35767897')],
+    ['成人 ALL 之 MRD 評估與處置北美專家共識 — Short NJ et al. Am J Hematol 2019', PM('30394566')],
+    ['UKALLXII/ECOG2993（標準處方加入 imatinib 改善 Ph 陽性 ALL 之長期結果）— Fielding AK et al. Blood 2014', PM('24277073')],
+    ['GIMEMA LAL1205（dasatinib 用於 Ph 陽性 ALL 之第一線）— Foà R et al. Blood 2011', PM('21931113')],
+    ['PhALLCON（ponatinib 對比 imatinib 用於初診 Ph 陽性 ALL，MRD 陰性率顯著較高）— Jabbour E et al. JAMA 2024', PM('38722621')],
+    ['D-ALBA（dasatinib + blinatumomab 之無化療誘導鞏固）— Foà R et al. NEJM 2020', PM('33085860')],
+    ['CALGB 10403（青少年與年輕成人採用兒童型強化處方）— Stock W et al. Blood 2019', PM('30658992')],
+    ['Hyper-CVAD 用於成人 ALL（原始報告）— Kantarjian HM et al. JCO 2000', PM('10653870')],
+    ['GRAALL-2005/R（CD20 陽性 B 系列成人 ALL 加入 rituximab）— Maury S et al. NEJM 2016', PM('27626518')],
+    ['ECOG-ACRIN E1910（MRD 陰性 B-ALL 於鞏固階段加入 blinatumomab 延長整體存活）— Litzow MR et al. NEJM 2024', PM('39047240')],
+    ['BLAST（blinatumomab 用於 MRD 陽性之 B 前驅細胞 ALL）— Gökbuget N et al. Blood 2018', PM('29358182')],
+    ['TOWER（blinatumomab 對比標準化療用於復發／難治 B-ALL）— Kantarjian H et al. NEJM 2017', PM('28249141')],
+    ['INO-VATE（inotuzumab ozogamicin 對比標準治療用於復發／難治 ALL）— Kantarjian HM et al. NEJM 2016', PM('27292104')],
+    ['ZUMA-3（brexucabtagene autoleucel 用於成人復發／難治 B-ALL）— Shah BD et al. Lancet 2021', PM('34097852')],
+    ['ELIANA（tisagenlecleucel 用於兒童與年輕成人復發／難治 B-ALL）— Maude SL et al. NEJM 2018', PM('29385370')],
+    ['CALGB 19801（nelarabine 用於復發／難治 T 系列 ALL）— DeAngelo DJ et al. Blood 2007', PM('17344466')],
   ],
 },
 

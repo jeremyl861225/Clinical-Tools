@@ -36,7 +36,7 @@ class JSSyntaxError(Exception):
     pass
 
 
-_PUNCT = set('{}[]:,()')
+_PUNCT = set('{}[]:,()+')
 
 _IDENT_RE = re.compile(r'[A-Za-z_$][A-Za-z0-9_$]*')
 _NUMBER_RE = re.compile(r'-?\d+(\.\d+)?([eE][+-]?\d+)?')
@@ -131,9 +131,10 @@ def _tokenize(src):
 
 
 class _Parser:
-    def __init__(self, tokens):
+    def __init__(self, tokens, consts=None):
         self.tokens = tokens
         self.pos = 0
+        self.consts = consts or {}
 
     def peek(self):
         return self.tokens[self.pos]
@@ -150,6 +151,22 @@ class _Parser:
         return tok
 
     def parse_value(self):
+        """解析一個值；若其後接 `+`，視為字串串接並持續併入。
+
+        cancers.js 以具名常數（如 NTUH_NO）存放多個條目共用的長字串，再以
+        `NTUH_NO + '…'` 組成該條目的 staging_note／node_note。不支援 `+` 的話，
+        單一來源的共用字串就得在每個條目裡複製一份，日後改一處會漏改其餘。
+        """
+        value = self.parse_primary()
+        while self.peek()[0] == '+':
+            self.next()
+            rhs = self.parse_primary()
+            if not isinstance(value, str) or not isinstance(rhs, str):
+                raise JSSyntaxError(f'`+` 僅支援字串串接，實際={value!r} + {rhs!r}')
+            value = value + rhs
+        return value
+
+    def parse_primary(self):
         ttype, val, pos = self.peek()
         if ttype == '{':
             return self.parse_object()
@@ -165,6 +182,9 @@ class _Parser:
             # 函式呼叫：PM('...') / PS('...')
             if self.peek()[0] == '(':
                 return self._parse_call(val, pos)
+            # 檔頭以 `const NAME = '…'` 宣告之字串常數（如 NTUH_NO）
+            if val in self.consts:
+                return self.consts[val]
             # 極少數情況資料中可能出現裸字 identifier，當成字串處理以求穩健。
             return val
         raise JSSyntaxError(f'無法解析的值，token={self.peek()!r}')
@@ -230,9 +250,50 @@ class _Parser:
         return arr
 
 
-def parse_js_value(src):
+_CONST_DECL_RE = re.compile(r"^const\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*(?=['\"])", re.M)
+
+
+def collect_string_consts(js_source):
+    """取出檔頭以 `const NAME = '…';` 宣告之字串常數（值本身可為串接式）。
+
+    只收字串字面值開頭者——箭頭函式（PM／PS）由 _KNOWN_CALLS 另行處理。
+    """
+    consts = {}
+    for m in _CONST_DECL_RE.finditer(js_source):
+        name = m.group(1)
+        try:
+            # 只取這一句宣告——_tokenize 是一次吃完整段字串的，若把 m.end() 之後
+            # 的整份檔案都丟進去，必定會撞到後面某個本解析器不認得的語法而拋錯，
+            # 於是每個常數都被 except 吞掉、collect 回傳空 dict（此處踩過一次）。
+            consts[name] = _Parser(_tokenize(_slice_statement(js_source, m.end())), consts).parse_value()
+        except JSSyntaxError:
+            continue          # 解析不了的宣告直接略過，不讓它擋住整份驗證
+    return consts
+
+
+def _slice_statement(src, start):
+    """自 start 起取到「字串外的第一個 `;`」為止，回傳該段原始碼。"""
+    i, n = start, len(src)
+    quote = None
+    while i < n:
+        ch = src[i]
+        if quote:
+            if ch == '\\':
+                i += 2
+                continue
+            if ch == quote:
+                quote = None
+        elif ch in ('"', "'"):
+            quote = ch
+        elif ch == ';':
+            return src[start:i]
+        i += 1
+    return src[start:]
+
+
+def parse_js_value(src, consts=None):
     tokens = _tokenize(src)
-    parser = _Parser(tokens)
+    parser = _Parser(tokens, consts)
     return parser.parse_value()
 
 
@@ -246,7 +307,7 @@ def load_window_assignment(js_source, var_name):
     if eq_idx == -1:
         raise JSSyntaxError(f'window.{var_name} 後找不到 =')
     rest = js_source[eq_idx + 1:]
-    return parse_js_value(rest)
+    return parse_js_value(rest, collect_string_consts(js_source[:idx]))
 
 
 # ---------------------------------------------------------------------------

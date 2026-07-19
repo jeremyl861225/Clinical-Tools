@@ -20,7 +20,7 @@ var ONC_TILE_IMG = {
   colorectal:1, anal:1, appendix:1, hcc:1, cca:1, net:1, sts:1,
   npc:1, hnc:1, uro:1, heme:1,
   // 原 heme（淋巴血癌）已拆成血癌與淋巴癌兩張卡，兩者暫時共用原本那張圖版
-  aml:'heme', lymphoma:'heme',
+  aml:'heme', lymphoma:'heme', all:'heme',
   cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn',
   utuc:'uro', rcc:'uro', bladder:'uro', prostate:'uro'
 };
@@ -249,6 +249,7 @@ function switchTab(id, tab){
     if(c.pathway === 'npc' && typeof initNpcPathway === 'function') initNpcPathway();
     if(c.pathway === 'hnc' && typeof initHncPathway === 'function') initHncPathway();
     if(c.pathway === 'aml' && typeof initAmlPathway === 'function') initAmlPathway();
+    if(c.pathway === 'all' && typeof initAllPathway === 'function') initAllPathway();
     if(c.pathway === 'lym' && typeof initLymPathway === 'function') initLymPathway();
   }
 }
@@ -558,6 +559,9 @@ function renderTx(c){
   }
   if(c.pathway === 'aml' && typeof amlPathwayHTML === 'function'){
     return amlPathwayHTML();
+  }
+  if(c.pathway === 'all' && typeof allPathwayHTML === 'function'){
+    return allPathwayHTML();
   }
   if(c.pathway === 'lym' && typeof lymPathwayHTML === 'function'){
     return lymPathwayHTML();
