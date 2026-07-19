@@ -20,43 +20,63 @@
 <div class="sheet">
 <div class="view active" id="view-gi-bleed-path">
   <div class="app-header">
-    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>消化道出血處置決策</h1><div class="sub">GI Bleeding · 上消化道（非靜脈曲張）與下消化道（ESGE 2026 · ACG 2021 · ACG 2023）</div></div>
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>消化道出血處置決策</h1><div class="sub">GI Bleeding · 上消化道（靜脈曲張與非靜脈曲張）與下消化道（ESGE 2026 · Baveno VII · ACG 2021／2023）</div></div>
     <button class="back-btn" onclick="location.href='../index.html#card-view-gi-bleed-path'">← 返回主選單</button>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
-    <summary>適用範圍、風險分數的分工、復甦與輸血、抗血栓藥處理 Definitions</summary>
+    <summary>風險分數的分工、復甦與輸血、內視鏡前用藥 Definitions</summary>
     <div class="box-inner">
-      <b>◆ 適用範圍：</b>本流程涵蓋<b>非靜脈曲張性上消化道出血（以消化性潰瘍為主）</b>與<b>急性下消化道出血</b>。<b>不涵蓋食道／胃靜脈曲張出血</b>——該情境依 Baveno VII 走完全不同的路徑（血管活性藥物、預防性抗生素、12 小時內結紮），若懷疑肝硬化門脈高壓出血請勿套用本流程。<br><br>
+      <b>◆ 流程順序：</b>先分辨出血來源（上／下消化道），上消化道再先問<b>有無肝硬化門脈高壓</b>——靜脈曲張與非靜脈曲張從第一支針就分道揚鑣（不同的輸血目標、必用的預防性抗生素、不同的內視鏡時限），不能等內視鏡才分流。<b>Forrest 分類、內視鏡所見與再出血</b>屬內視鏡當下與之後才知道的資訊，故列於第一段建議之後、由第二張建議卡承接。<br><br>
 
-      <b>◆ 流程順序：</b>先分辨出血來源（上／下消化道），再依「復甦後是否穩定」決定內視鏡時機，最後才進到內視鏡所見與止血方式。<b>Forrest 分類與再出血屬內視鏡當下與之後才知道的資訊</b>，故列於第一段建議之後、由第二張建議卡承接。<br><br>
-
-      <b>◆ 三個分數的分工（別互相取代）：</b><br>
+      <b>◆ 四個分數的分工（別互相取代）：</b><br>
       ・<b>GBS（Glasgow-Blatchford，0–23）</b>：上消化道，內視鏡前。回答「能不能回家」。預測需介入或死亡 AUROC 0.86，為各分數最佳。<br>
       ・<b>AIMS65（0–5）</b>：上消化道。回答「會不會死」。預測死亡 AUROC 0.77，優於 GBS 的 0.64；但預測需不需要介入僅 0.68，不可拿來決定出院。<br>
       ・<b>Rockall（內視鏡前 0–7／完整 0–11）</b>：上消化道。死亡與再出血風險分層，完整版需內視鏡結果。<br>
       ・<b>Oakland（0–35）</b>：下消化道。回答「能不能回家」，分數越低越安全。預測安全出院 AUROC 0.86–0.87。<br>
-      <span class="note">Oakland 預測「需不需要止血處置」很差（AUROC 0.36），該項應改用 Strate score。</span><br><br>
+      <span class="note">Oakland 預測「需不需要止血處置」很差（AUROC 0.36），該項應改用 Strate score。靜脈曲張出血則<b>不適用</b>上述任何一個分數，改以 Child-Pugh 與 MELD 分層（Baveno VII 6.16）。</span><br><br>
 
-      <b>◆ 復甦與輸血：</b>ACG 2021 建議住院之上消化道出血病人採<b>限制型輸血策略，血紅素門檻 7 g/dL</b>。持續大量出血、合併心血管疾病或血行動力學不穩者，門檻與時機須個別判斷。<br><br>
+      <b>◆ 輸血目標，兩條路徑並不相同：</b><br>
+      ・非靜脈曲張：ACG 2021 建議限制型策略，<b>血紅素門檻 7 g/dL</b>。<br>
+      ・靜脈曲張：Baveno VII 6.2 目標 <b>7–8 g/dL</b>，並強調須併同考量心血管疾病、年齡、血行動力學與持續出血。<br>
+      <span class="note">門檻數字其實相近，真正的差別在<b>過度輸血的害處</b>：靜脈曲張病人輸過頭會使門脈壓回升而加重出血，不只是輸血本身的風險。別把它記成「靜脈曲張門檻比較低」。</span><br><br>
 
-      <b>◆ 內視鏡前用藥（ESGE 2026）：</b><br>
-      ・<b>高劑量靜脈 PPI</b>：建議於急性上消化道出血病人於內視鏡前投予，<b>但不得因此延遲內視鏡</b>。<br>
-      ・<b>Erythromycin</b>：內視鏡前靜脈投予以促進胃排空、改善視野（ACG 2021 建議）。若無 erythromycin，臨床上出血嚴重或持續活動性出血者，可考慮改用<b>靜脈 metoclopramide</b>（ESGE 2026 新增）。<br>
+      <b>◆ 內視鏡前用藥（非靜脈曲張，ESGE 2026）：</b><br>
+      ・<b>高劑量靜脈 PPI</b>：建議於內視鏡前投予，<b>但不得因此延遲內視鏡</b>。<br>
+      ・<b>Erythromycin</b>：內視鏡前靜脈投予以促進胃排空、改善視野（ACG 2021）。若無 erythromycin，出血嚴重或持續活動性出血者可考慮<b>靜脈 metoclopramide</b>（ESGE 2026 新增）。<br>
       ・<b>不建議</b>常規使用膠囊內視鏡或遙測式血液感測膠囊（ESGE 2026 新增之否定建議）。<br><br>
 
-      <b>◆ 內視鏡後用藥與照護（ESGE 2026）：</b><br>
+      <b>◆ 內視鏡後用藥與照護（非靜脈曲張，ESGE 2026）：</b><br>
       ・接受內視鏡止血者給<b>高劑量 PPI</b>：靜脈 bolus 80 mg 後 8 mg/hr 連續輸注 72 小時；或高劑量 bolus 每日兩次、或口服每日兩次之替代療程。<br>
       ・<b>P-CAB（鉀離子競爭型胃酸阻斷劑）</b>是否可取代 PPI，ESGE 2026 <b>未能達成共識</b>，未給建議。<br>
-      ・止血穩固者<b>24 小時內開始經口進食</b>。<br>
-      ・合併缺鐵或貧血者<b>出院前開始鐵劑治療</b>。<br><br>
+      ・止血穩固者<b>24 小時內開始經口進食</b>；合併缺鐵或貧血者<b>出院前開始鐵劑治療</b>。<br>
+      <span class="note">反過來，<b>靜脈曲張出血不需要 PPI</b>：Baveno VII 6.12 明確要求「內視鏡前若已開始 PPI，術後應立即停用」，除非另有明確適應症。這是臨床上最常見的過度用藥之一。</span>
+    </div>
+  </details>
 
-      <b>◆ 抗血栓藥物：</b><br>
-      ・<b>低劑量 aspirin 作次級心血管預防者不可中斷</b>（ESGE，強建議）；若因故中斷，應盡快、最好 3–5 天內恢復。<br>
-      ・<b>抗凝血劑</b>：ESGE 2026 建議<b>依血栓栓塞風險，臨床上一可行即恢復</b>（2021 版原表述為「出血控制後、最好 7 天內或稍後」，2026 版改為以血栓風險為準）。DOAC 起效快於 VKA，恢復時機須將此納入考量。<br>
-      ・下消化道出血之抗凝逆轉劑使用、以及出院後抗血小板／抗凝藥恢復，見 ACG 2023 指引。<br><br>
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>抗血栓藥物：何時停、何時恢復 Antithrombotics</summary>
+    <div class="box-inner">
+      <table class="score-ref">
+        <tr><th>情境</th><th>處理</th><th>出處與強度</th></tr>
+        <tr><td>Aspirin<br>次級預防</td><td><b>不中斷</b>。若已中斷，於<b>確認內視鏡止血當日（24 小時內）恢復</b></td><td>ACG-CAG 2022 建議 9、10（條件式，極低確定性）；BSG-ESGE 2021（強建議，中等證據）；ESGE 2021 若中斷則 3–5 天內恢復</td></tr>
+        <tr><td>Aspirin<br>初級預防</td><td><b>暫停</b>，並重新評估是否仍有適應症——多數可永久停用</td><td>ESGE 2021（強建議，低證據）；BSG-ESGE 2021（弱建議，低證據）；ACG 2023 建議 11b（限憩室出血後）</td></tr>
+        <tr><td>DAPT<br>（冠狀動脈支架）</td><td><b>絕不可兩者同時停用</b>。保留 aspirin，會診心臟科；P2Y12 抑制劑最遲 <b>5 天內</b>恢復</td><td>BSG-ESGE 2021（三項皆為強建議、中等證據）</td></tr>
+        <tr><td>P2Y12 單獨使用</td><td><b>指引無建議</b>，須與心臟科個別決定</td><td>ACG-CAG 2022 明言無法作出建議；且警告不可由 aspirin 外推</td></tr>
+        <tr><td>血小板輸注<br>（因抗血小板藥）</td><td>無血小板低下者<b>不建議</b>常規輸注</td><td>ACG-CAG 2022 建議 8（條件式，極低確定性）</td></tr>
+        <tr><td>抗凝血劑</td><td>暫停至出血控制；依<b>血栓栓塞風險</b>盡快恢復</td><td>ESGE 2026 建議 17（強建議，低證據；2026 新增，取代 2021 的「7 天內」）；ACG 2023 建議 12（強建議，中等證據）</td></tr>
+        <tr><td>急性<b>靜脈曲張</b>出血<br>之 aspirin</td><td><b>指引未涵蓋</b>，勿由非靜脈曲張外推</td><td>Baveno VII 僅有 4.3（慢性期不應勸阻使用），第 6 節急性出血未提 aspirin</td></tr>
+      </table>
+      <br>
+      <b>◆ 為什麼「入院就先停 aspirin」幾乎沒有幫助：</b>aspirin 不可逆抑制 COX-1，血栓素合成需 <b>7–10 天</b>才恢復（約第 3 天回復 70% 血小板功能）。停藥當下對這次出血幾乎沒有影響，卻立刻開始累積血栓風險。次級預防病人中斷 aspirin，心血管事件風險約增為 <b>3 倍</b>，其中約 <b>70% 發生在中斷後 7–10 天內</b>；冠狀動脈支架者的勝算比更高達 89。<br><br>
 
-      <b>◆ 本流程與 ACG 的差異標註：</b>凡 ESGE 2026 與 ACG 2021／2023 建議不同之處，皆於該步驟的建議卡下方以「ACG 差異」標明。
+      <b>◆ 主要證據（Sung 2010 RCT，n=156）：</b>低劑量 aspirin 使用者、消化性潰瘍出血合併高風險痕跡、<b>已成功內視鏡止血</b>後，隨機續用 aspirin 80 mg 或安慰劑：30 天再出血 <b>10.3% vs 5.4%</b>（差 4.9%，95% CI −3.6 至 13.4，<b>未能證實非劣性</b>）；但 8 週全因死亡 <b>1.3% vs 12.9%</b>（差 11.6%，95% CI 3.7 至 19.5）。作者結論為續用「可能增加再出血、但可能降低死亡率」。這是「保留 aspirin」的主要依據，也是為何 ACG-CAG 給的是<b>條件式、極低確定性</b>建議——安慰劑組停藥長達 2 個月，與現代做法差距太大。<br><br>
+
+      <b>◆ 兩個容易被寫錯的地方：</b><br>
+      ・<b>ESGE 2026 並未重新評估抗血栓那一節</b>：其 Table 1 在「Antithrombotic medications」整塊標為「未重新評估」，2026 內文亦無任何提及 aspirin 的建議框。上述 aspirin 建議應引 <b>ESGE 2021 或 ACG-CAG 2022</b>，標成「ESGE 2026 建議」是誇大了該次更新的範圍。<br>
+      ・<b>沒有任何指引以 Forrest 分類決定 aspirin 的去留</b>。決策點是<b>是否已達成止血</b>，不是病灶長什麼樣。網路上流傳「ESGE 2026 說低風險病灶（FIIc、FIII）可立即恢復 aspirin」——查核原文<b>不存在此段文字</b>，係兩項無關建議被混為一談，勿採用。<br><br>
+
+      <b>◆ 下消化道的差別：</b>ACG 2023 對<b>急性期</b>的抗血小板處理只給未分級的 Key Concept（嚴重血便可先停非 aspirin 抗血小板；一年內置放支架者需多科決定），其分級建議 11a–11d 全部是<b>出院後</b>且<b>僅限憩室出血</b>——引用時別把這個限定拿掉。
     </div>
   </details>
 
@@ -70,10 +90,21 @@
     <div class="note" style="margin-top:8px;">血便合併血行動力學不穩者，有相當比例其實是上消化道大量出血；ACG 2023 建議此族群<b>先做上消化道內視鏡</b>，不要直接排大腸鏡。</div>
   </div>
 
-  <!-- ===== 上消化道路徑 ===== -->
+  <!-- ===== 上消化道：先分靜脈曲張與否 ===== -->
+  <div class="flow-connector hidden" id="gb_c2v">↓</div>
+  <div class="flow-step hidden" id="gb_s2v">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">已知或高度懷疑肝硬化／門脈高壓？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gbPick('varix','yes',this)">是——疑似靜脈曲張出血<span class="fo-sub">已知肝硬化、門脈高壓徵象、或影像／檢驗高度支持</span></button>
+      <button class="flow-opt" onclick="gbPick('varix','no',this)">否——非靜脈曲張出血<span class="fo-sub">以消化性潰瘍為主</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">這一題必須在內視鏡<b>之前</b>回答。疑似靜脈曲張者，血管活性藥物與預防性抗生素都應在確認來源前就開始（Baveno VII 6.5、6.7），內視鏡時限也從 24 小時縮為 12 小時。</div>
+  </div>
+
+  <!-- ===== 非靜脈曲張路徑 ===== -->
   <div class="flow-connector hidden" id="gb_c2u">↓</div>
   <div class="flow-step hidden" id="gb_s2u">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">充分復甦後，血行動力學是否穩定？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">充分復甦後，血行動力學是否穩定？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="gbPick('hemo','stable',this)">穩定<span class="fo-sub">復甦後生命徵象回穩</span></button>
       <button class="flow-opt" onclick="gbPick('hemo','unstable',this)">仍不穩定<span class="fo-sub">已適當復甦仍持續休克</span></button>
@@ -83,7 +114,7 @@
 
   <div class="flow-connector hidden" id="gb_c3u">↓</div>
   <div class="flow-step hidden" id="gb_s3u">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">內視鏡前風險分層：Glasgow-Blatchford Score？</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">內視鏡前風險分層：Glasgow-Blatchford Score？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="gbPick('gbs','low',this)">GBS ≤1<span class="fo-sub">極低風險：30 天再出血、死亡與需院內介入之風險 &lt;1%</span></button>
       <button class="flow-opt" onclick="gbPick('gbs','high',this)">GBS ≥2<span class="fo-sub">非低風險：須住院並安排內視鏡</span></button>
@@ -95,7 +126,7 @@
 
   <div class="flow-connector hidden" id="gb_c4u">↓</div>
   <div class="flow-step hidden" id="gb_s4u">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">內視鏡所見：Forrest 分類？</span></div>
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">內視鏡所見：Forrest 分類？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="gbPick('forrest','I',this)">Forrest Ia／Ib<span class="fo-sub">噴射性／滲出性活動出血 — 高風險</span></button>
       <button class="flow-opt" onclick="gbPick('forrest','IIa',this)">Forrest IIa<span class="fo-sub">不出血之可見血管 — 高風險</span></button>
@@ -103,6 +134,39 @@
       <button class="flow-opt" onclick="gbPick('forrest','low',this)">Forrest IIc／III<span class="fo-sub">扁平色素斑／乾淨潰瘍底 — 低風險</span></button>
     </div>
     <button class="flow-link" onclick="location.href='../tools/forrest.html?from=gi-bleed'">🧮 開啟 Forrest 分類對照</button>
+  </div>
+
+  <!-- ===== 靜脈曲張路徑 ===== -->
+  <div class="flow-connector hidden" id="gb_cv1">↓</div>
+  <div class="flow-step hidden" id="gb_sv1">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">內視鏡所見：出血來源為何？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gbPick('vlesion','eso',this)">食道靜脈曲張<span class="fo-sub">Oesophageal varices</span></button>
+      <button class="flow-opt" onclick="gbPick('vlesion','gov1',this)">GOV1<span class="fo-sub">胃食道靜脈曲張第 1 型，沿小彎延伸</span></button>
+      <button class="flow-opt" onclick="gbPick('vlesion','gastric',this)">GOV2 或 IGV1<span class="fo-sub">GOV2 延伸超過賁門／孤立胃靜脈曲張（胃底）</span></button>
+      <button class="flow-opt" onclick="gbPick('vlesion','phg',this)">門脈高壓性胃病 PHG<span class="fo-sub">Portal hypertensive gastropathy</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">若內視鏡確認出血來源其實是潰瘍等<b>非靜脈曲張</b>病灶，請回到步驟 2 改選「否」，改走非靜脈曲張路徑，並依 Baveno VII 6.12 停用術前開始的 PPI 之外的處置調整。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gb_cv2">↓</div>
+  <div class="flow-step hidden" id="gb_sv2">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">藥物加內視鏡治療後，出血是否控制？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gbPick('vctrl','yes',this)">已控制<span class="fo-sub">出血停止且血行動力學穩定</span></button>
+      <button class="flow-opt" onclick="gbPick('vctrl','no',this)">未控制或 5 天內再出血<span class="fo-sub">Baveno VII 6.14：五日治療失敗</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">Baveno VII 6.14 將<b>五日治療失敗</b>定義為「未能控制出血，或首 5 天內再出血」。註：APASL 2025 改用 <b>48 小時</b>作為出血事件與再出血的分界，同一位病人在兩套定義下可能分類不同——本流程採 Baveno VII。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gb_cv3">↓</div>
+  <div class="flow-step hidden" id="gb_sv3">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">是否符合 pre-emptive TIPS 條件？（任一即符合）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gbPick('vtips','yes',this)">符合<span class="fo-sub">Child-Pugh C &lt;14 分／Child-Pugh B &gt;7 分且初次內視鏡時有活動性出血／出血當時 HVPG &gt;20 mmHg</span></button>
+      <button class="flow-opt" onclick="gbPick('vtips','no',this)">不符合<span class="fo-sub">走標準次級預防</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">僅適用於<b>食道靜脈曲張與 GOV1／GOV2</b> 出血者（Baveno VII 6.27）。<b>ACLF、入院時肝性腦病、入院時高膽紅素血症皆不是禁忌</b>（6.28）——這點常被誤當成排除條件。</div>
   </div>
 
   <!-- ===== 下消化道路徑 ===== -->
@@ -135,7 +199,7 @@
   <!-- ===== 第二張卡：內視鏡止血之後 ===== -->
   <div class="flow-connector hidden" id="gb_c5u">↓</div>
   <div class="flow-step hidden" id="gb_s5u">
-    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">內視鏡止血後續：是否臨床上再出血？</span></div>
+    <div class="flow-step-head"><span class="flow-num">6</span><span class="flow-q">內視鏡止血後續：是否臨床上再出血？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="gbPick('rebleed','no',this)">無再出血<span class="fo-sub">止血穩固</span></button>
       <button class="flow-opt" onclick="gbPick('rebleed','yes',this)">再出血<span class="fo-sub">臨床證據顯示潰瘍再出血</span></button>
@@ -152,20 +216,45 @@
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="gbReset()">重置</button></div>
 
-  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/42127996/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2026. Endoscopy. 2026.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33567467/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2021. Endoscopy. 2021;53(3):300-332.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33929377/" target="_blank" rel="noopener" class="ref-link">Laine L, et al. ACG Clinical Guideline: Upper GI and Ulcer Bleeding. Am J Gastroenterol. 2021;116(5):899-917.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36735555/" target="_blank" rel="noopener" class="ref-link">Sengupta N, et al. Acute Lower GI Bleeding: An Updated ACG Guideline. Am J Gastroenterol. 2023;118(2):208-231.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30792244/" target="_blank" rel="noopener" class="ref-link">Oakland K, et al. BSG Guidelines. Gut. 2019;68(5):776-789.</a></footer>
+  <footer class="tool-footer">REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/42127996/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2026. Endoscopy. 2026;58(9):899-924.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33567467/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2021. Endoscopy. 2021;53(3):300-332.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/35120736/" target="_blank" rel="noopener" class="ref-link">de Franchis R, et al. Baveno VII. J Hepatol. 2022;76(4):959-974.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37870298/" target="_blank" rel="noopener" class="ref-link">Kaplan DE, et al. AASLD Practice Guidance. Hepatology. 2024;79(5):1180-1211.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40886248/" target="_blank" rel="noopener" class="ref-link">Lesmana CRA, et al. Updated APASL Guidelines. Hepatol Int. 2025;19(5):1003-1031.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33929377/" target="_blank" rel="noopener" class="ref-link">Laine L, et al. ACG Clinical Guideline: Upper GI and Ulcer Bleeding. Am J Gastroenterol. 2021;116(5):899-917.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36735555/" target="_blank" rel="noopener" class="ref-link">Sengupta N, et al. Acute Lower GI Bleeding: An Updated ACG Guideline. Am J Gastroenterol. 2023;118(2):208-231.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/35297395/" target="_blank" rel="noopener" class="ref-link">Abraham NS, et al. ACG-CAG Clinical Practice Guideline: Antithrombotics in Acute GI Bleeding. Am J Gastroenterol. 2022;117(4):542-558.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34362780/" target="_blank" rel="noopener" class="ref-link">Veitch AM, et al. BSG-ESGE Guideline Update. Gut. 2021;70(9):1611-1628.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/19949136/" target="_blank" rel="noopener" class="ref-link">Sung JJY, et al. Ann Intern Med. 2010;152(1):1-9.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/30792244/" target="_blank" rel="noopener" class="ref-link">Oakland K, et al. BSG Guidelines. Gut. 2019;68(5):776-789.</a>
+  </footer>
 </div>
 </div>
 <script src="../js/common.js"></script>
 <script>
-var gbSt={src:null,hemo:null,gbs:null,forrest:null,rebleed:null,oak:null,sev:null};
+var gbSt={src:null,varix:null,hemo:null,gbs:null,forrest:null,rebleed:null,oak:null,sev:null,
+          vlesion:null,vctrl:null,vtips:null};
+
+/* 抗血栓藥物的處理與病灶型態無關，只與「是否已止血」有關，故抽成共用字串重複使用。
+   刻意不依 Forrest 分類給不同建議——查核結果是沒有任何指引這樣分（見說明區）。 */
+var ASA_HOLD  = '<li><b>Aspirin</b>：次級預防<b>不中斷</b>；初級預防則暫停並重新評估適應症。停藥對當下出血幾乎無幫助（血栓素需 7–10 天才恢復），卻立即開始累積血栓風險。</li>';
+var ASA_RESUME= '<li><b>Aspirin</b>：次級預防不中斷；若已中斷，於<b>確認止血當日（24 小時內）恢復</b>。初級預防者重新評估適應症，多數可永久停用。</li>';
+var ASA_DAPT  = '<li><b>雙抗（DAPT）</b>：<b>絕不可兩者同時停用</b>——保留 aspirin，會診心臟科；P2Y12 抑制劑最遲 <b>5 天內</b>恢復。P2Y12 單獨使用者指引無建議，須個別決定。</li>';
+var ANTICOAG  = '<li><b>抗凝血劑</b>：暫停至出血控制，再依<b>血栓栓塞風險</b>盡快恢復（ESGE 2026 建議 17 已取代 2021 的「7 天內」說法）。</li>';
+var VAR_ANTI  = '<li><b>抗血栓藥</b>：抗凝血劑暫停至出血控制，停用長度依適應症強度個別決定（Baveno VII 6.39）。<b>急性靜脈曲張出血的 aspirin 處理指引未涵蓋</b>——Baveno VII 僅於慢性期表示不應勸阻使用（4.3），勿由非靜脈曲張路徑外推。</li>';
 
 function gbPick(key,val,btn){
   flowSelect(btn);
-  if(key==='src'){ gbSt.src=val; gbSt.hemo=null; gbSt.gbs=null; gbSt.forrest=null; gbSt.rebleed=null; gbSt.oak=null; gbSt.sev=null; }
+  if(key==='src'){ gbSt.src=val; gbSt.varix=null; gbSt.hemo=null; gbSt.gbs=null; gbSt.forrest=null; gbSt.rebleed=null; gbSt.oak=null; gbSt.sev=null; gbSt.vlesion=null; gbSt.vctrl=null; gbSt.vtips=null; }
+  else if(key==='varix'){ gbSt.varix=val; gbSt.hemo=null; gbSt.gbs=null; gbSt.forrest=null; gbSt.rebleed=null; gbSt.vlesion=null; gbSt.vctrl=null; gbSt.vtips=null; }
   else if(key==='hemo'){ gbSt.hemo=val; gbSt.gbs=null; gbSt.forrest=null; gbSt.rebleed=null; }
   else if(key==='gbs'){ gbSt.gbs=val; gbSt.forrest=null; gbSt.rebleed=null; }
   else if(key==='forrest'){ gbSt.forrest=val; gbSt.rebleed=null; }
   else if(key==='rebleed'){ gbSt.rebleed=val; }
+  else if(key==='vlesion'){ gbSt.vlesion=val; gbSt.vctrl=null; gbSt.vtips=null; }
+  else if(key==='vctrl'){ gbSt.vctrl=val; gbSt.vtips=null; }
+  else if(key==='vtips'){ gbSt.vtips=val; }
   else if(key==='oak'){ gbSt.oak=val; gbSt.sev=null; }
   else if(key==='sev'){ gbSt.sev=val; }
   gbRender();
@@ -175,10 +264,14 @@ function gbRender(){
   /* 「血便＋不穩」併入上消化道路徑處理 */
   var isUGI = gbSt.src==='ugi' || gbSt.src==='brisk';
   var isLGI = gbSt.src==='lgi';
+  var isVar = isUGI && gbSt.varix==='yes';
+  var isNonVar = isUGI && gbSt.varix==='no';
 
   /* --- 步驟顯示 --- */
-  flowShow('gb_c2u',isUGI); flowShow('gb_s2u',isUGI);
-  var showGbs = isUGI && gbSt.hemo==='stable';
+  flowShow('gb_c2v',isUGI); flowShow('gb_s2v',isUGI);
+
+  flowShow('gb_c2u',isNonVar); flowShow('gb_s2u',isNonVar);
+  var showGbs = isNonVar && gbSt.hemo==='stable';
   flowShow('gb_c3u',showGbs); flowShow('gb_s3u',showGbs);
   var showForrest = showGbs && gbSt.gbs==='high';
   flowShow('gb_c4u',showForrest); flowShow('gb_s4u',showForrest);
@@ -186,35 +279,96 @@ function gbRender(){
   var didHemostasis = showForrest && (gbSt.forrest==='I'||gbSt.forrest==='IIa'||gbSt.forrest==='IIb');
   flowShow('gb_c5u',didHemostasis); flowShow('gb_s5u',didHemostasis);
 
+  flowShow('gb_cv1',isVar); flowShow('gb_sv1',isVar);
+  /* PHG 不是靜脈曲張出血，不走「控制與否→TIPS」那條 */
+  var showVctrl = isVar && gbSt.vlesion && gbSt.vlesion!=='phg';
+  flowShow('gb_cv2',showVctrl); flowShow('gb_sv2',showVctrl);
+  /* pre-emptive TIPS 只問止血成功者；且僅限食道靜脈曲張與 GOV1／GOV2（Baveno VII 6.27） */
+  var tipsEligibleLesion = gbSt.vlesion==='eso'||gbSt.vlesion==='gov1'||gbSt.vlesion==='gastric';
+  var showVtips = showVctrl && gbSt.vctrl==='yes' && tipsEligibleLesion;
+  flowShow('gb_cv3',showVtips); flowShow('gb_sv3',showVtips);
+
   flowShow('gb_c2l',isLGI); flowShow('gb_s2l',isLGI);
   var showSev = isLGI && gbSt.oak==='high';
   flowShow('gb_c3l',showSev); flowShow('gb_s3l',showSev);
 
   /* --- 清掉被隱藏步驟的殘留選取 --- */
-  if(!isUGI){ ['gb_s2u','gb_s3u','gb_s4u','gb_s5u'].forEach(flowClearSel); }
+  if(!isUGI){ ['gb_s2v','gb_s2u','gb_s3u','gb_s4u','gb_s5u','gb_sv1','gb_sv2','gb_sv3'].forEach(flowClearSel); }
+  if(!isNonVar){ ['gb_s2u','gb_s3u','gb_s4u','gb_s5u'].forEach(flowClearSel); }
   if(!showGbs) flowClearSel('gb_s3u');
   if(!showForrest) flowClearSel('gb_s4u');
   if(!didHemostasis) flowClearSel('gb_s5u');
+  if(!isVar){ ['gb_sv1','gb_sv2','gb_sv3'].forEach(flowClearSel); }
+  if(!showVctrl) flowClearSel('gb_sv2');
+  if(!showVtips) flowClearSel('gb_sv3');
   if(!isLGI){ ['gb_s2l','gb_s3l'].forEach(flowClearSel); }
   if(!showSev) flowClearSel('gb_s3l');
 
   /* --- 第一張建議卡 --- */
   var cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
 
-  if(isUGI && gbSt.hemo==='unstable'){
+  /* ---------- 靜脈曲張 ---------- */
+  if(isVar && !gbSt.vlesion){
+    cls='rec-urgent'; title='疑似靜脈曲張出血：立即啟動 bundle，12 小時內內視鏡';
+    detail='<li><b>血管活性藥物盡快開始</b>，不必等內視鏡確認來源，持續 <b>2–5 天</b>（Baveno VII 6.5）。劑量（AASLD 2024）：terlipressin 2 mg IV q4–6h，24–48 小時後降為 1 mg q4–6h；somatostatin 250 mcg bolus 後 250–500 mcg/hr；octreotide 50 mcg bolus 後 25–50 mcg/hr。</li>'+
+           '<li><b>預防性抗生素是治療的一部分，自入院即開始</b>（6.7）：ceftriaxone 1 g IV q24h（6.9），並依院內抗藥性與抗生素政策調整。</li>'+
+           '<li>輸血採限制型策略，<b>目標 Hb 7–8 g/dL</b>（6.2）；輸過頭會使門脈壓回升而加重出血。</li>'+
+           '<li>復甦後<b>12 小時內</b>做上消化道內視鏡（6.17）——比非靜脈曲張的 24 小時更緊；不穩定者盡快安全施行。</li>'+
+           '<li>意識改變或大量吐血者，內視鏡前先<b>插管</b>（6.3），術後儘早拔管（6.4）。放置鼻胃管等氣道操作須謹慎，有肺部感染風險（6.11）。</li>'+
+           '<li>監測<b>血鈉</b>：terlipressin 可致低血鈉，肝功能保留者尤甚（6.6）。</li>'+
+           '<li><b>不以 FFP 矯正凝血</b>（6.36，且會加重容積負荷與門脈高壓）；PT/INR 與 aPTT 無法反映肝病的凝血狀態（6.35）。<b>不用 rFVIIa 與 tranexamic acid</b>（6.38）。</li>'+
+           ANTICOAG+
+           '<li><b>PPI 若術前已開始，內視鏡後立即停用</b>（6.12），除非另有明確適應症。</li>'+
+           '<li>盡早開始經口營養（6.10）。所有 AVB 病人應做含對比劑 CT／MRI，排除脾門靜脈血栓與 HCC 並描繪側支（6.26）。</li>';
+    note='Baveno VII（2022）為現行共識。<b>Baveno VIII 工作坊已於 2026 年 3 月 27–28 日舉行，但共識文尚未發表</b>，本流程仍依 VII。急性靜脈曲張出血的 aspirin 處理<b>指引未涵蓋</b>，勿由非靜脈曲張路徑外推。';
+  }
+  else if(gbSt.vlesion==='eso'){
+    cls='rec-elective'; title='食道靜脈曲張：內視鏡靜脈曲張結紮（EVL）';
+    detail='<li><b>結紮（EVL）為建議之內視鏡治療方式</b>（Baveno VII 6.21）。</li>'+
+           '<li><b>止血粉不可作為第一線</b>內視鏡治療（6.24）。</li>'+
+           '<li>血管活性藥物續用至滿 2–5 天；預防性抗生素續用。</li>'+
+           '<li>術前已開始的 PPI 於術後立即停用（6.12）。</li>'+
+           '<li>尚未做者補做含對比劑 CT／MRI（6.26）。</li>'+VAR_ANTI;
+    note='硬化治療（sclerotherapy）之劣勢僅 APASL 2025 以未分級敘述提及（再出血與併發症較多，死亡率無差異），Baveno VII 與 AASLD 2024 均未做此比較——歸屬要標清楚。';
+  }
+  else if(gbSt.vlesion==='gov1'){
+    cls='rec-elective'; title='GOV1：EVL 或組織膠皆可';
+    detail='<li><b>EVL 或組織膠（tissue adhesive）皆可</b>用於 GOV1 出血（Baveno VII 6.23）。</li>'+
+           '<li>AASLD 2024 認為 GOV1 的自然病程與食道靜脈曲張相近，可比照處理。</li>'+
+           '<li>血管活性藥物續用至滿 2–5 天；預防性抗生素續用；術前 PPI 術後停用。</li>'+VAR_ANTI;
+    note='GOV1 是三種胃靜脈曲張中唯一被明確允許用 EVL 的；GOV2 與 IGV1 則建議組織膠。';
+  }
+  else if(gbSt.vlesion==='gastric'){
+    cls='rec-elective'; title='GOV2／IGV1：組織膠注射（N-butyl-cyanoacrylate／thrombin）';
+    detail='<li><b>組織膠</b>（N-butyl-cyanoacrylate／thrombin）為建議治療（Baveno VII 6.22，涵蓋孤立胃靜脈曲張與延伸超過賁門的 GOV2）。</li>'+
+           '<li><b>BRTO 可作為替代</b>方案（取代內視鏡治療或 TIPS），前提是分流型態與管徑適合、且有在地技術能力（6.40）。</li>'+
+           '<li>AASLD 2024 將 GOV2／IGV1 的第一線並列為：組織膠、TIPS、或逆行性經靜脈阻塞術；TIPS 禁忌時偏好逆行性阻塞。</li>'+
+           '<li>血管活性藥物續用至滿 2–5 天；預防性抗生素續用；術前 PPI 術後停用。</li>'+VAR_ANTI;
+    note='<b>EVL 不適合胃底靜脈曲張</b>：AASLD 內文指出對 cardiofundal varices 控制率僅 45–93%、再出血率高於組織膠，僅在別無選擇時使用。<b>EUS 導引線圈／組織膠在任何指引中都沒有分級建議</b>——Baveno VII 僅將其列入研究議題，勿當成標準做法。';
+  }
+  else if(gbSt.vlesion==='phg'){
+    cls='rec-blue'; title='門脈高壓性胃病（PHG）：局部內視鏡治療';
+    detail='<li>可用 <b>argon plasma coagulation、射頻燒灼或結紮</b>作局部治療（Baveno VII 6.25，同條涵蓋胃竇血管擴張 GAVE）。</li>'+
+           '<li>PHG 出血多為慢性滲血，與急性靜脈曲張破裂的處置路徑不同，故本流程不再往 TIPS 分支。</li>'+
+           '<li>預防性抗生素仍適用於所有肝硬化合併上消化道出血者（6.7）。</li>'+VAR_ANTI;
+    note='PHG 與 GAVE 在 Baveno VII 屬同一條建議；兩者病灶分布與治療反應不同，實務上仍須區分。';
+  }
+  /* ---------- 非靜脈曲張 ---------- */
+  else if(isNonVar && gbSt.hemo==='unstable'){
     cls='rec-urgent'; title='持續復甦，並施行緊急上消化道內視鏡';
     detail='<li>持續大量輸液與輸血復甦，同時緊急會診內視鏡團隊。</li>'+
            '<li>內視鏡前給高劑量靜脈 PPI，但<b>不得因此延遲內視鏡</b>。</li>'+
            '<li>內視鏡前靜脈 erythromycin 以清空胃部、改善視野；若無 erythromycin，可考慮靜脈 metoclopramide。</li>'+
            '<li>輸血採限制型策略（血紅素門檻 7 g/dL）；持續大量出血或合併心血管疾病者須個別判斷。</li>'+
-           '<li>低劑量 aspirin 若為次級心血管預防，<b>不中斷</b>。</li>';
+           ASA_HOLD+ASA_DAPT+ANTICOAG;
     note='ESGE 2026：不建議常規 ≤6 小時或 ≤12 小時內視鏡，<b>唯獨復甦後仍血行動力學不穩者例外</b>，即本情境。ACG 2021 亦建議 24 小時內完成內視鏡。';
   }
-  else if(isUGI && gbSt.gbs==='low'){
+  else if(isNonVar && gbSt.gbs==='low'){
     cls='rec-blue'; title='極低風險：可門診處理，安排門診內視鏡';
     detail='<li>GBS ≤1 者 30 天再出血、死亡與需院內介入之風險 &lt;1%，可不住院。</li>'+
            '<li>安排門診上消化道內視鏡，並給予口服 PPI。</li>'+
-           '<li>檢討 NSAID／抗血栓用藥，安排 H. pylori 檢測與根除。</li>'+
+           '<li>檢討 NSAID 用藥，安排 H. pylori 檢測與根除。</li>'+
+           ASA_HOLD+
            '<li>明確交代回診條件：再吐血、黑便、頭暈或暈厥即刻返診。</li>';
     note='ESGE 2021 強建議（中等品質證據）：GBS ≤1 可安全以門診方式處理。<b>ACG 差異</b>：ACG 2021 同樣採 GBS 0–1；但英國 NICE CG141 較嚴格，僅 GBS <b>= 0</b> 才建議早期出院。採用前請確認貴院依循哪一版。';
   }
@@ -224,94 +378,133 @@ function gbRender(){
            '<li><b>或 OTS clip 單一治療</b>作為第一線替代方案——ESGE 2026 新增，因其再出血率低於標準止血法。</li>'+
            '<li>止血鉗軟凝固亦可作為單一治療。</li>'+
            '<li><b>腎上腺素不可單獨</b>作為最終止血方式。<b>止血粉／噴劑不可作為第一線單一治療</b>。</li>'+
-           '<li>術後高劑量 PPI：靜脈 bolus 80 mg 後 8 mg/hr 連續輸注 72 小時（或高劑量 bolus／口服每日兩次）。</li>';
-    note='ESGE 2026 建議 7、10、11。Ia 與 Ib 未治療再出血率合計 55%（原始文獻未分開統計）。<b>ACG 差異</b>：ACG 2021 對活動性出血潰瘍另建議可用止血粉 TC-325，ESGE 2026 則明確反對其作為第一線單一治療。';
+           '<li>術後高劑量 PPI：靜脈 bolus 80 mg 後 8 mg/hr 連續輸注 72 小時（或高劑量 bolus／口服每日兩次）。</li>'+
+           ASA_RESUME+ASA_DAPT;
+    note='ESGE 2026 建議 7、10、11。未治療再出血率 Ia＋Ib 合計 55%（原文未分開）；<b>但成功止血後分得開：Ia 22.5%、Ib 僅 4.9%</b>（Jensen 2017）。ESGE 2026 仍將兩者並列為高風險，故處置不變。<b>ACG 差異</b>：ACG 2021 對活動性出血潰瘍另建議可用止血粉 TC-325，ESGE 2026 則明確反對其作為第一線單一治療。';
   }
   else if(gbSt.forrest==='IIa'){
     cls='rec-elective'; title='Forrest IIa：內視鏡止血（多種方式皆可）';
     detail='<li>接觸式或非接觸式熱凝、機械式治療（TTS clip 或 OTS clip）、或硬化劑注射，<b>各自單獨使用或搭配腎上腺素注射皆可</b>。</li>'+
            '<li>OTS clip 亦可作為替代之單一治療；止血鉗軟凝固亦可單一使用。</li>'+
-           '<li>術後高劑量 PPI 72 小時，住院監測。</li>';
-    note='ESGE 2026 建議 8、9、10。未治療再出血率 43%。';
+           '<li>術後高劑量 PPI 72 小時，住院監測。</li>'+
+           ASA_RESUME+ASA_DAPT;
+    note='ESGE 2026 建議 8、9、10。未治療再出血率 43%，成功止血後 72 小時為 11.3%（Jensen 2017）。';
   }
   else if(gbSt.forrest==='IIb'){
     cls='rec-elective'; title='Forrest IIb（黏附血塊）：移除血塊並視所見止血';
     detail='<li>ESGE 2026 建議<b>移除血塊</b>，再依底下顯露的病灶（可能為 Ia／Ib／IIa）施行內視鏡止血。</li>'+
            '<li><b>但書</b>：術者須具備安全移除血塊、且能處理「轉為更高風險病灶」的技術能力；不具備時維持高劑量 PPI 治療。</li>'+
-           '<li>術後高劑量 PPI 72 小時，住院監測。</li>';
-    note='<b>ESGE 2026 相對 2021 的實質改動</b>：2021 版對未接受內視鏡治療的 IIb 僅給高劑量 PPI，2026 版轉為建議積極移除血塊。未治療再出血率 22%。';
+           '<li>術後高劑量 PPI 72 小時，住院監測。</li>'+
+           ASA_RESUME+ASA_DAPT;
+    note='<b>ESGE 2026 相對 2021 的實質改動</b>：2021 版對未接受內視鏡治療的 IIb 僅給高劑量 PPI，2026 版轉為建議積極移除血塊。未治療再出血率 22%，成功止血後 72 小時為 17.6%——<b>止血後反而高於 IIa 的 11.3%</b>，與未治療欄的排序相反。';
   }
   else if(gbSt.forrest==='low'){
     cls='rec-blue'; title='Forrest IIc／III：不需內視鏡止血，可考慮早期出院';
     detail='<li>不施行內視鏡止血；給予口服 PPI。</li>'+
            '<li>止血穩固後<b>24 小時內開始經口進食</b>。</li>'+
            '<li>合併缺鐵或貧血者，<b>出院前開始鐵劑治療</b>。</li>'+
-           '<li>H. pylori 檢測與根除；檢討 NSAID／抗血栓用藥。</li>'+
-           '<li>低劑量 aspirin 若為次級心血管預防不中斷；抗凝血劑依血栓栓塞風險盡快恢復。</li>';
-    note='ESGE 2026 建議 18、19。IIc 與 III 未治療再出血率分別約 10% 與 5%。';
+           '<li>H. pylori 檢測與根除；檢討 NSAID 用藥。</li>'+
+           ASA_RESUME+ANTICOAG;
+    note='ESGE 2026 建議 18、19。IIc 與 III 未治療再出血率分別約 10% 與 5%（此兩級未接受內視鏡止血，故無「止血後」數字）。<b>注意</b>：低風險病灶不代表可以更早恢復 aspirin——沒有任何指引以 Forrest 分類決定抗血栓藥的去留，決策點是是否已達成止血。';
   }
-  else if(isUGI && gbSt.gbs==='high'){
+  else if(isNonVar && gbSt.gbs==='high'){
     cls='rec-blue'; title='住院，24 小時內安排上消化道內視鏡';
     detail='<li>復甦後穩定者<b>不需</b>緊急（≤6h）或急迫（≤12h）內視鏡；24 小時內完成即可。</li>'+
            '<li>內視鏡前給高劑量靜脈 PPI，但不得因此延遲內視鏡。</li>'+
            '<li>輸血採限制型策略（血紅素門檻 7 g/dL）。</li>'+
            '<li>可併用 AIMS65 判斷是否需加護照護（AIMS65 ≥2 為死亡風險上升之閾值）。</li>'+
-           '<li>完成內視鏡後回到步驟 4 選擇 Forrest 分類。</li>';
+           ASA_HOLD+ASA_DAPT+
+           '<li>完成內視鏡後回到步驟 5 選擇 Forrest 分類。</li>';
     note='ESGE 2026 建議 4；ESGE 2021 建議 3（復甦後 ≤24 小時早期內視鏡，強建議、高品質證據）。';
   }
+  /* ---------- 下消化道 ---------- */
   else if(isLGI && (gbSt.oak==='low'||gbSt.oak==='mid')){
     cls='rec-blue'; title='下消化道出血低風險：可門診處理';
     detail='<li>Oakland ≤8 約 95% 機率可安全出院（不需輸血、止血處置，無再出血、死亡或 28 天內再入院）。</li>'+
            (gbSt.oak==='mid' ? '<li>放寬至 ≤10 分仍維持 96% 敏感度，但不良事件由 5.5% 升至 7.5%、住院死亡由 1.1% 升至 1.4%——此取捨宜由各院共識決定。</li>' : '')+
            '<li>安排門診大腸鏡評估出血來源。</li>'+
+           '<li><b>Aspirin</b>：確診憩室出血且有心血管疾病者<b>續用</b>（ACG 2023 建議 11c）；<b>初級預防者停用</b>（11b）。非 aspirin 抗血小板藥之去留，於多科討論後重新評估（11d）。非 aspirin 之 NSAID 應停用（11a）。</li>'+
            '<li>明確交代回診條件：再次大量血便、頭暈或暈厥即刻返診。</li>';
-    note='ACG 2023 建議使用風險分層工具辨識低風險病人。Oakland score 在 LGIB 各分數比較中對安全出院鑑別力最佳（AUROC 0.86）。';
+    note='ACG 2023 建議使用風險分層工具辨識低風險病人。Oakland score 在 LGIB 各分數比較中對安全出院鑑別力最佳（AUROC 0.86）。<b>建議 11a–11d 均限於憩室出血且屬出院後處置</b>，引用時勿去掉此限定。';
   }
   else if(isLGI && gbSt.sev==='severe'){
     cls='rec-urgent'; title='嚴重下消化道出血：優先 CT 血管攝影（CTA）';
     detail='<li>持續復甦與輸血，同時安排 <b>CTA</b> 定位出血點——ACG 2023 明確擴大 CTA 在嚴重下消化道出血的角色。</li>'+
            '<li>CTA 陽性者接續<b>經導管血管栓塞</b>止血。</li>'+
            '<li>使用 vitamin K 拮抗劑或 DOAC 且危及生命之出血，依 ACG 2023 使用相應逆轉劑。</li>'+
+           '<li><b>抗血小板藥</b>：嚴重血便者可先停用<b>非 aspirin</b> 抗血小板藥；但<b>一年內置放冠狀動脈支架</b>者須經多科共同決定，且 P2Y12 最遲 5 天內恢復。</li>'+
+           '<li>無血小板低下者，不因使用抗血小板藥而常規輸血小板。</li>'+
            '<li>栓塞失敗或不可行者，會診外科。</li>';
-    note='ACG 2023：CTA 在嚴重下消化道出血之角色提升，並就 CTA 陽性後之處置給出建議。';
+    note='ACG 2023：CTA 在嚴重下消化道出血之角色提升，並就 CTA 陽性後之處置給出建議。急性期的抗血小板處理在 ACG 2023 屬<b>未分級的 Key Concept</b>（非分級建議）。';
   }
   else if(isLGI && gbSt.sev==='mild'){
     cls='rec-blue'; title='住院評估，安排非緊急大腸鏡';
     detail='<li><b>不需</b> 24 小時內的緊急大腸鏡——ACG 2023 指出緊急大腸鏡並未改善再出血等重要臨床結果。</li>'+
            '<li>多數需住院之病人採<b>非緊急大腸鏡</b>，於充分腸道準備後施行。</li>'+
            '<li>持續監測生命徵象與血紅素；出血復發時重新評估是否需 CTA。</li>'+
-           '<li>依 ACG 2023 處理出院後抗血小板與抗凝藥物之恢復。</li>';
-    note='ACG 2023：建議大多數需住院大腸鏡之病人接受非緊急大腸鏡。';
+           ASA_HOLD+ANTICOAG;
+    note='ACG 2023：建議大多數需住院大腸鏡之病人接受非緊急大腸鏡；抗凝血劑於出血停止後恢復（建議 12，強建議、中等品質證據）。';
   }
   flowRec('gb_rec',cls,title,detail,note);
 
-  /* --- 第二張建議卡：內視鏡止血之後 --- */
-  var c2='rec-idle', t2='—', d2='', n2='';
-  if(gbSt.rebleed==='no'){
-    c2='rec-blue'; t2='止血穩固：完成療程並準備出院';
+  /* --- 第二張建議卡 --- */
+  var c2='rec-idle', t2='—', d2='', n2='', show2=false;
+
+  /* 靜脈曲張：控制與否 → TIPS 或救援 */
+  if(gbSt.vctrl==='no'){
+    show2=true; c2='rec-urgent'; t2='靜脈曲張出血未能控制：救援 PTFE-covered TIPS';
+    d2='<li>藥物加內視鏡治療仍失敗者，<b>以救援 PTFE-covered TIPS 處理</b>（Baveno VII 6.30）。</li>'+
+       '<li><b>橋接手段</b>：氣球填塞或自膨式金屬支架（SEMS）作為過渡（6.29）；<b>SEMS 效力與氣球填塞相當且更安全</b>。</li>'+
+       '<li>時間上限：<b>氣球填塞最多 24 小時</b>（APASL 2025／AASLD 2024，防食道破裂）；<b>食道支架可留置 5–7 天</b>（APASL）／最長一週（AASLD）。</li>'+
+       '<li>胃靜脈曲張填塞須用 <b>Linton-Nachlas 管或 Minnesota 管的胃氣球</b>，不是一般食道氣球（AASLD）。</li>'+
+       '<li>徒勞界線：Child-Pugh ≥14 分，或 MELD &gt;30 且乳酸 &gt;12 mmol/L，TIPS 可能無效（6.31），除非短期內可望移植；仍須個案判斷。</li>';
+    n2='Baveno VII 6.29、6.30、6.31。橋接手段是過渡而非終點——決定性治療是 TIPS。';
+  } else if(gbSt.vtips==='yes'){
+    show2=true; c2='rec-elective'; t2='符合 pre-emptive TIPS：72 小時內（理想 &lt;24 小時）施行';
+    d2='<li><b>PTFE-covered stent 之 pre-emptive TIPS，於 72 小時內、理想在 24 小時內</b>施行（Baveno VII 6.27）。</li>'+
+       '<li>適應症（任一即可）：<b>Child-Pugh C &lt;14 分</b>；<b>Child-Pugh B &gt;7 分且初次內視鏡時有活動性出血</b>；<b>出血當時 HVPG &gt;20 mmHg</b>。</li>'+
+       '<li><b>ACLF、入院時肝性腦病、入院時高膽紅素血症都不是禁忌</b>（6.28）。</li>'+
+       '<li>AASLD 2024 認為急性期量 HVPG 不可行，實務上<b>略去 HVPG 這一條</b>，改用 CTP B&gt;7 有活動性出血、或 CTP C 10–13。APASL 2025 敘述中用的是 HVPG &gt;16 mmHg。</li>'+
+       '<li>已行 pre-emptive TIPS 者，AASLD 指出<b>不需再加做其他次級預防</b>；若門體壓力梯度 &lt;12 mmHg 亦不需 NSBB。</li>';
+    n2='Baveno VII 6.27（本流程採其條件，因為這是唯一有分級的版本）、6.28。三家指引的門檻並不完全一致，已於上方列出差異。';
+  } else if(gbSt.vtips==='no'){
+    show2=true; c2='rec-blue'; t2='不符合 pre-emptive TIPS：進入次級預防';
+    d2='<li><b>第一線為傳統 NSBB 或 carvedilol ＋ EVL 併用</b>（Baveno VII 7.8）。</li>'+
+       '<li>AASLD 2024：<b>NSBB 於停用血管活性藥時開始</b>；血管活性藥不晚於第 5 天停用。次級預防應在指標出血控制後立即展開，<b>入院 7 天內</b>——再出血風險以最初 6 週最高。</li>'+
+       '<li><b>EVL 每 2–4 週重複一次直到靜脈曲張消失</b>（AASLD）。</li>'+
+       '<li>若已用 NSBB 作初級預防仍出血，仍採 NSBB ＋ EVL；合併頑固性腹水者考慮 TIPS（7.11）。</li>'+
+       '<li>無法耐受 EVL 或 NSBB 者，兩者擇一單獨維持；合併頑固性腹水者考慮 TIPS（7.10）。</li>'+
+       '<li>在 NSBB ＋ EVL 之下仍再出血者，<b>TIPS 為首選</b>（7.9）。</li>';
+    n2='Baveno VII 7.8–7.11；起始時機取自 AASLD 2024（Baveno VII 未給時間點）。';
+  }
+  /* 非靜脈曲張：止血後再出血 */
+  else if(gbSt.rebleed==='no'){
+    show2=true; c2='rec-blue'; t2='止血穩固：完成療程並準備出院';
     d2='<li>高劑量 PPI 靜脈輸注滿 72 小時後，改口服 PPI 每日兩次，續用至內視鏡後兩週。</li>'+
        '<li><b>24 小時內開始經口進食</b>（ESGE 2026 新增建議）。</li>'+
        '<li>合併缺鐵或貧血者，<b>出院前開始鐵劑治療</b>（ESGE 2026 新增建議）。</li>'+
        '<li>H. pylori 檢測與根除；檢討並停用非必要之 NSAID。</li>'+
-       '<li>低劑量 aspirin（次級預防）不中斷；抗凝血劑依血栓栓塞風險，臨床上一可行即恢復。</li>';
+       ASA_RESUME+ASA_DAPT+ANTICOAG;
     n2='ESGE 2026 建議 17、18、19；ACG 2021 建議內視鏡止血後高劑量 PPI 持續或間歇給予 3 天，之後口服每日兩次共兩週。';
   } else if(gbSt.rebleed==='yes'){
-    c2='rec-elective'; t2='再出血：再次內視鏡止血，優先考慮 OTS clip';
+    show2=true; c2='rec-elective'; t2='再出血：再次內視鏡止血，優先考慮 OTS clip';
     d2='<li>ESGE 2026 建議再出血時<b>使用 OTS clip</b> 進行第二次內視鏡止血。</li>'+
        '<li>持續高劑量 PPI，重新評估凝血功能與抗血栓用藥。</li>'+
+       '<li>抗血栓藥：<b>仍不建議把 aspirin（次級預防）與 P2Y12 同時停掉</b>；若因大出血必須調整，保留 aspirin 並即刻會診心臟科。</li>'+
        '<li>第二次止血若仍失敗，進入下一階段（TAE／手術）。</li>';
     n2='ESGE 2026 建議 16。ACG 2021 亦建議再出血時使用 over-the-scope clip。';
   } else if(gbSt.rebleed==='refractory'){
-    c2='rec-urgent'; t2='內視鏡止血失敗：經導管血管栓塞（TAE），必要時手術';
+    show2=true; c2='rec-urgent'; t2='內視鏡止血失敗：經導管血管栓塞（TAE），必要時手術';
     d2='<li>持續出血且已用盡內視鏡方式（含局部止血劑與 OTS clip）者，<b>考慮 TAE</b>。</li>'+
        '<li><b>TAE 無法在院內施行、或 TAE 失敗時，才是手術的適應症</b>。</li>'+
        '<li>高風險個案（到院即血行動力學不穩、十二指腸後壁潰瘍、潰瘍 &gt;2 cm、或止血持久度存疑）可考慮<b>預防性 TAE</b>。</li>'+
-       '<li>持續大量輸血復甦，同步啟動大量輸血流程與外科待命。</li>';
+       '<li>持續大量輸血復甦，同步啟動大量輸血流程與外科待命。</li>'+
+       '<li>抗血栓藥之取捨由出血嚴重度主導，但仍應與心臟科共同決定，並在止血後盡快恢復。</li>';
     n2='ESGE 2026 建議 13、14、16。<b>ACG 差異</b>：ACG 2021 建議內視鏡治療失敗時採經導管栓塞，未就預防性 TAE 給建議——預防性 TAE 為 ESGE 2026 新增。';
   }
   flowRec('gb_rec2',c2,t2,d2,n2);
-  flowShow('gb_rec2',!!gbSt.rebleed);          /* flowRec 會重寫 className，須排在其後 */
-  flowShow('gb_crec2',!!gbSt.rebleed);
+  flowShow('gb_rec2',show2);          /* flowRec 會重寫 className，須排在其後 */
+  flowShow('gb_crec2',show2);
 }
 
 function gbReset(){
