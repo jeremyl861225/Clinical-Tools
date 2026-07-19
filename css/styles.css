@@ -214,7 +214,7 @@
   /* ---- 分級清單 Graded reference list（緊急手術分級） ---- */
   /* 級別配色：紅→橙→琥珀→teal→石板，五級皆為實心底＋白字，深淺色模式共用 */
   .lv1{background:#8f2318;} .lv2{background:#b4551f;} .lv3{background:#8a6b12;}
-  .lv4{background:#1f5a6b;} .lv5{background:#4a5560;}
+  .lv4{background:#1f5a6b;} .lv5{background:#6a6a66;}
 
   .lv-legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:6px;}
   .lv-chip{display:flex; flex-direction:column; gap:2px; text-align:left; border:1px solid var(--line); background:var(--field-bg); color:var(--ink); border-radius:2px; padding:8px 10px; cursor:pointer; font-family:var(--sans); font-size:12.5px; line-height:1.4;}
