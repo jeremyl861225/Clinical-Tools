@@ -19,7 +19,7 @@ var ONC_TILE_IMG = {
   gyn:1, lung:1, esoph:1, gastric:1, panc:1, breast:1, gist:1, thyroid:1,
   colorectal:1, anal:1, appendix:1, hcc:1, cca:1, net:1, sts:1,
   npc:1, hnc:1, uro:1, heme:1,
-  // 原 heme（淋巴血癌）已拆成血癌與淋巴癌兩張卡，兩者暫時共用原本那張圖版
+  // 血液腫瘤細分項共用家族圖版（搜尋時攤平成六張卡，仍須有圖不破圖）
   aml:'heme', lymphoma:'heme', all:'heme', cml:'heme', mds:'heme', mpn:'heme',
   cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn',
   utuc:'uro', rcc:'uro', bladder:'uro', prostate:'uro'

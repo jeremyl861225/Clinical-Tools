@@ -38,6 +38,15 @@ window.CANCER_FAMILIES = [
     sub:'上泌尿道腫瘤 · 腎細胞癌 · 膀胱癌 · 攝護腺癌',
     bar_label:'癌別 Cancer type（先選癌別；分期／淋巴結／治療三個分頁會一併切換）',
     members:['utuc','rcc','bladder','prostate'] },
+  // 血液腫瘤六者皆無 TNM，取而代之的分層系統彼此毫不相通（AML 用 ELN 2022、ALL 用
+  // 遺傳學＋MRD、CML 用病期與 ELN 2020 反應里程碑、MDS 用 IPSS-R／M、MPN 依 PV/ET 血栓
+  // 風險與 MF 存活預後、淋巴癌用 Modified Ann Arbor），且僅 AML 與淋巴癌出自台大診療
+  // 指引，其餘四者掛 NTUH_NO 徽章。故維持六個獨立條目，僅以切換列相連。
+  // 排序依系列：急性（AML→ALL）→慢性骨髓（CML）→骨髓衰竭／增生（MDS→MPN）→淋巴癌。
+  { id:'heme', zh:'淋巴血癌', en:'Leukemia & Lymphoma', group:'軟組織／血液淋巴 Soft Tissue & Hema',
+    sub:'急性骨髓性白血病 · 急性淋巴性白血病 · 慢性骨髓性白血病 · 骨髓分化不良症候群 · 骨髓增生性腫瘤 · 淋巴癌',
+    bar_label:'癌別 Cancer type（先選癌別；分期／淋巴結／治療三個分頁會一併切換）',
+    members:['aml','all','cml','mds','mpn','lymphoma'] },
 ];
 
 window.CANCERS = [
@@ -2436,7 +2445,9 @@ window.CANCERS = [
 
 /* ============================ 血癌（AML）============================ */
 {
-  id:'aml', zh:'血癌', abbr:'AML', en:'Leukemia (Acute Myeloid Leukemia)', group:'軟組織／血液淋巴 Soft Tissue & Hema',
+  // zh 由「血癌」改為全名：切換列裡與「急性淋巴性白血病」並排時，「血癌」指涉不明
+  // （ALL 也是血癌）。「血癌」二字移入 abbr 以維持搜尋命中（hay 含 abbr）。
+  id:'aml', zh:'急性骨髓性白血病', abbr:'AML 血癌', en:'Leukemia (Acute Myeloid Leukemia)', group:'軟組織／血液淋巴 Soft Tissue & Hema',
   pathway:'aml',
   stage_tab_label:'風險分層 Risk',
   node_tab_label:'髓外／中樞侵犯',
@@ -2716,7 +2727,8 @@ window.CANCERS = [
    整編某一癌別時：補齊 edition／t／n／m／stage／node／tx／refs 後，
    移除該條目的 wip 旗標即可自動改走正常的三分頁流程。
    ============================================================ */
-// 原 heme（淋巴血癌）已拆分：血癌（AML）依台大血癌診療指引整編完成，見上方 id:'aml'；
-// 淋巴癌依台大淋巴癌診療指引版次 17 整編完成，見上方 id:'lymphoma'。
+// 淋巴血癌（heme）已由六個各自整編完成的獨立條目組成，以 CANCER_FAMILIES 的家族卡相連：
+// aml／lymphoma 依台大血癌（版次 15）與淋巴癌（版次 17）診療指引，all／cml／mds／mpn 為
+// 非台大來源（掛 NTUH_NO 徽章）。picker 第一層只呈現一張「淋巴血癌」卡。
 // 目前無 wip 癌別；新增未整編之癌別時直接於此處補列。
 ];
