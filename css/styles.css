@@ -261,6 +261,13 @@
   details.def-box[open] summary:before{content:'▾ ';}
   details.def-box .box-inner{background:var(--box-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin-top:6px; font-size:12.5px; line-height:1.7;}
   details.def-box .box-inner ul{margin:4px 0; padding-left:18px;}
+  /* def-box 內的多欄對照表（分級／分類）。score-ref 是「數值→分數」兩欄專用，
+     這裡需要具表頭、可換行的一般表格。 */
+  table.def-table{width:100%; border-collapse:collapse; font-size:12px; margin:6px 0 8px;}
+  table.def-table th,table.def-table td{border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; vertical-align:top;}
+  table.def-table th{font-family:var(--mono); font-size:11px; color:var(--accent); white-space:nowrap;}
+  table.def-table td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--accent2); font-weight:700;}
+  table.def-table tr.dt-warn td{color:var(--accent2);}
 
   /* Drug calculator */
   .drug-calc{background:var(--soft-bg); border:1px solid var(--accent-soft); border-radius:2px; padding:12px 14px; margin-top:10px;}
