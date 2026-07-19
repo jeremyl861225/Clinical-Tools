@@ -33,13 +33,13 @@
       ・<b>中重度 Moderately severe</b>：<b>暫時性</b>器官衰竭（&lt;48 小時）和／或局部／全身併發症或共病惡化。<br>
       ・<b>重度 Severe</b>：<b>持續性</b>器官衰竭（&gt;48 小時）。<br>
       ・<b>Critical（DBC 增列）</b>：持續性器官衰竭 ＋ <b>感染性壞死</b>，死亡率最高。<br>
-      ・器官衰竭定義：<b>modified Marshall score ≥2</b>（呼吸／腎臟／心血管其一）；持續 &gt;48 小時為 persistent。<br><br>
+      ・器官衰竭定義：<b>modified Marshall score ≥2</b>（呼吸／腎臟／心血管其一）；持續 &gt;48 小時為 persistent。　<a class="tool-link" href="../tools/marshall.html?from=panc">🧮 開啟計算機</a><br><br>
       <b>局部聚積之命名：</b><b>APFC</b> 急性胰周液體聚積（&lt;4 週，間質水腫型）／<b>Pseudocyst</b> 假性囊腫（&gt;4 週，有壁包覆之液體）／<b>ANC</b> 急性壞死聚積（&lt;4 週，含壞死組織）／<b>WON</b> 包覆性壞死（≥4 週，成熟有壁包覆之壞死）。<br><br>
       <b>實驗室指標：</b>CRP <b>≥150 mg/L（15 mg/dL）於第 3 天</b> 為 SAP 預後因子（2A）／Hct <b>&gt;44%</b> 為胰臟壞死之獨立危險因子（1B）／BUN <b>&gt;20 mg/dL</b> 為死亡率之獨立預測因子（2B）／PCT <b>≥3.8 ng/mL（96 小時內）</b>提示壞死、低值為感染性壞死之強陰性預測（2A）／TG <b>&gt;1000 mg/dL（11.3 mmol/L）</b>指向高三酸甘油酯病因（2C）。<br><br>
-      <b>影像時機：</b>入院時 US 判定膽源性病因（1C）；所有 SAP 應以 CE-CT 或 MRI 評估，<b>首次 CE-CT 最佳時機為症狀發作後 72–96 小時</b>（1C）；CTSI ≥3 者於首次 CT 後 <b>7–10 天</b>追蹤（1C）；其餘僅在臨床惡化／未持續改善或考慮介入時追加（1C）。病因不明時以 <b>MRCP 或 EUS</b> 篩檢隱性總膽管結石（1C）。<br><br>
+      <b>影像時機：</b>入院時 US 判定膽源性病因（1C）；所有 SAP 應以 CE-CT 或 MRI 評估，<b>首次 CE-CT 最佳時機為症狀發作後 72–96 小時</b>（1C）；CTSI ≥3 者於首次 CT 後 <b>7–10 天</b>追蹤（1C，<a class="tool-link" href="../tools/ctsi.html?from=panc">🧮 開啟計算機</a>）；其餘僅在臨床惡化／未持續改善或考慮介入時追加（1C）。病因不明時以 <b>MRCP 或 EUS</b> 篩檢隱性總膽管結石（1C）。<br><br>
       <b>BISAP（0–5 分，每項 1 分）：</b>BUN &gt;25 mg/dL／意識狀態改變（GCS &lt;15）／SIRS ≥2 項／年齡 &gt;60 歲／肋膜積液。<b>≥2 分</b>為 SAP、器官衰竭與死亡之顯著切點。<br>
       <span class="mono" style="font-size:11.5px;">※ BISAP 原始定義為 BUN &gt;25 mg/dL；WSES 文中預後段落另引用 urea／BUN &gt;20 mg/dL，兩者不可混用。WSES 認為無 gold-standard 預後評分，BISAP 因簡單早期可用而實用，準確度近似 APACHE-II（1B）。</span><br><br>
-      <b>CTSI（Balthazar，0–10 分）＝ 分級分數 ＋ 壞死分數：</b><br>
+      <b>CTSI（Balthazar，0–10 分）＝ 分級分數 ＋ 壞死分數：</b>　<a class="tool-link" href="../tools/ctsi.html?from=panc">🧮 開啟計算機</a><br>
       ・分級：A 正常 0／B 局部或瀰漫腫大 1／C 合併周邊脂肪發炎 2／D 單一胰周液體聚積 3／E ≥2 處聚積或胰周氣體 4。<br>
       ・壞死：無 0／&lt;30% 2／30–50% 4／&gt;50% 6。<br>
       ・判讀：0–3 輕度／4–6 中度／7–10 重度。<br><br>
@@ -75,6 +75,8 @@
       <button class="flow-opt" onclick="apPick('sev','severe',this)">重度 Severe<span class="fo-sub">持續性器官衰竭 &gt;48h（modified Marshall ≥2）</span></button>
       <button class="flow-opt" onclick="apPick('sev','critical',this)">危急 Critical（DBC）<span class="fo-sub">持續性器官衰竭 ＋ 感染性壞死</span></button>
     </div>
+    <button class="flow-link" onclick="location.href='../tools/marshall.html?from=panc'">🧮 開啟 Modified Marshall Score 計算機（判定有無器官衰竭，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/ctsi.html?from=panc'">🧮 開啟 CT Severity Index 計算機（影像嚴重度，可從該頁返回本決策）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="ap_sev_rec">
@@ -91,7 +93,7 @@
       <button class="flow-opt" onclick="apPick('necro','none',this)">無壞死，或無菌性壞死且臨床穩定<span class="fo-sub">無感染跡象、器官功能持續改善</span></button>
       <button class="flow-opt" onclick="apPick('necro','infected',this)">疑似／證實感染性壞死<span class="fo-sub">臨床惡化、PCT ≥3.8 ng/mL、CT 見聚積內氣泡，或 FNA 培養陽性</span></button>
       <button class="flow-opt" onclick="apPick('necro','sterile',this)">無感染，但持續器官衰竭或聚積造成症狀<span class="fo-sub">WON 造成胃出口／膽道／腸道阻塞、胰管離斷症候群、症狀性或持續增大之假性囊腫</span></button>
-      <button class="flow-opt" onclick="apPick('necro','emergent',this)">出現緊急手術指徵<span class="fo-sub">腹腔室隔症候群（ACS）／血管內止血失敗之持續出血／腸缺血或壞死性膽囊炎／腸廔管延伸進入胰周聚積</span></button>
+      <button class="flow-opt" onclick="apPick('necro','emergent',this)">出現緊急手術指徵<span class="fo-sub"><span class="ind-badge">腹腔室隔症候群 ACS</span><span class="ind-badge">血管內止血失敗之持續出血</span><span class="ind-badge">腸缺血或壞死性膽囊炎</span><span class="ind-badge">腸廔管延伸進入胰周聚積</span></span></button>
     </div>
   </div>
 
@@ -168,7 +170,7 @@ function apRender(){
     d2='<li><b>輸液</b>：早期以組織灌流為目標，勿等血流動力學惡化才給；避免輸液過量；首選<b>等張晶體液</b>（1B）。</li><li><b>營養</b>：早期經口／腸道營養，避免 TPN（1A）。</li><li><b>止痛</b>：多模式止痛；AKI 者避免 NSAID（1C）。</li><li><b>抗生素</b>：<b>不常規</b>給予預防性抗生素（1A）。</li><li><b>影像</b>：診斷已確立且臨床改善者不需常規 CT。</li>';
     n2='WSES 2019：輕度胰臟炎以輸液、營養與止痛為主，不需預防性抗生素（1A）。'; }
   else if(s==='mod'){ c2='rec-blue'; t2='高依賴單位監測 ＋ 積極支持治療';
-    d2='<li>器官功能異常時需<b>高依賴單位連續生命徵象監測</b>（1C）。</li><li><b>影像</b>：以 CE-CT 或 MRI 評估，首次最佳時機為發作後 <b>72–96 小時</b>（1C）；CTSI ≥3 者於首次 CT 後 <b>7–10 天</b>追蹤（1C）。</li><li><b>營養</b>：腸道營養預防腸衰竭與感染併發症；<b>胃或空腸餵食皆安全</b>，必要時 partial PN 補足，避免 TPN（1A）。</li><li><b>抗生素</b>：仍<b>不</b>常規預防性給予（1A）；以 PCT 追蹤感染性壞死風險（1B）。</li>';
+    d2='<li>器官功能異常時需<b>高依賴單位連續生命徵象監測</b>（1C）。</li><li><b>影像</b>：以 CE-CT 或 MRI 評估，首次最佳時機為發作後 <b>72–96 小時</b>（1C）；CTSI ≥3 者於首次 CT 後 <b>7–10 天</b>追蹤（1C）。<a class="tool-link" href="../tools/ctsi.html?from=panc">🧮 開啟計算機</a></li><li><b>營養</b>：腸道營養預防腸衰竭與感染併發症；<b>胃或空腸餵食皆安全</b>，必要時 partial PN 補足，避免 TPN（1A）。</li><li><b>抗生素</b>：仍<b>不</b>常規預防性給予（1A）；以 PCT 追蹤感染性壞死風險（1B）。</li>';
     n2='WSES 2019：中重度病人重點在監測、腸道營養與適時影像追蹤。'; }
   else if(s==='severe'){ c2='rec-urgent'; t2='收 ICU ＋ 器官支持（無特定藥物治療）';
     d2='<li>充分輸液後仍持續器官功能不良／衰竭者<b>收 ICU</b>（1C）。</li><li><b>呼吸</b>：高流量鼻導管／CPAP 仍無法矯正呼吸窘迫時需機械通氣，採 <b>lung-protective</b> 策略（1C）。</li><li><b>腹內壓</b>：限制鎮靜／輸液／血管活性藥以達<b>較低正常灌流目標</b>，控制腹內高壓；保守無效再手術減壓（1B）。</li><li><b>止痛</b>：非插管病人偏好 <b>hydromorphone</b> 優於 morphine／fentanyl；可用硬脊膜外或 PCA（1C）。</li><li><b>營養</b>：腸道營養（1A）。<b>藥物</b>：除器官支持與營養外<b>無特定藥物治療</b>（1B）。</li><li><b>抗生素</b>：不常規預防性給予（1A）；以 PCT 監測感染性壞死（1B）。</li>';
@@ -193,7 +195,13 @@ function apRender(){
     d3='<li>無菌性壞死且臨床穩定者<b>多可完全非手術處理</b>，不需引流或清創。</li><li>持續腸道營養與器官支持；不常規給預防性抗生素（1A）。</li><li>僅在<b>臨床惡化／未持續改善</b>或考慮介入時才追加 CE-CT（1C）。</li><li>低 PCT 為感染性壞死之強陰性預測指標（2A）。</li>';
     n3='WSES 2019：無菌性壞死原則上非手術處理，避免不必要之介入與影像。'; }
   else if(nec==='emergent'){ c3='rec-urgent'; t3='立即手術（不受 4 週原則限制）';
-    d3='<li>下列情況為手術適應症（1C）：<b>腹腔室隔症候群（ACS）</b>、血管內止血失敗之持續出血、急性胰臟炎期間之<b>腸缺血或壞死性膽囊炎</b>、<b>腸廔管</b>延伸進入胰周聚積。</li><li>ACS 先採保守減壓（限制輸液、鎮靜、排空腸胃道）；<b>保守無效再手術減壓</b>（1B）。</li><li>此類指徵優先於「延後至壞死包覆化」之一般原則。</li>';
+    d3='<li>下列情況為手術適應症（1C）：<br>'+
+         '<span class="ind-badge">腹腔室隔症候群 ACS</span>'+
+         '<span class="ind-badge">血管內止血失敗之持續出血</span>'+
+         '<span class="ind-badge">急性胰臟炎期間之腸缺血或壞死性膽囊炎</span>'+
+         '<span class="ind-badge">腸廔管延伸進入胰周聚積</span></li>'+
+       '<li>ACS 先採保守減壓（限制輸液、鎮靜、排空腸胃道）；<b>保守無效再手術減壓</b>（1B）。</li>'+
+       '<li>此類指徵優先於「延後至壞死包覆化」之一般原則。</li>';
     n3='WSES 2019：上述急症為明確手術適應症（1C），不適用延後策略。'; }
   else if(nec==='infected'){
     if(w==='lt4'){ c3='rec-urgent'; t3='抗生素 ＋ 立即經皮／內視鏡引流（step-up 第一線）';

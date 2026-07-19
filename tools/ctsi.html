@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT Severity Index (Balthazar) · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-ctsi">
+  <div class="app-header">
+    <div><div class="eyebrow">Pancreatitis Scoring Tool</div><h1>CT Severity Index</h1><div class="sub">急性胰臟炎 CT 嚴重度指數（Balthazar CTSI）</div></div>
+    <button class="back-btn" id="ctsi_back_panc" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/pancreatitis.html'">← 返回胰臟炎決策</button>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-ctsi'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="field-row"><label>Balthazar 分級</label>
+      <select id="ctsi_grade">
+        <option value="0">A — 正常胰臟</option>
+        <option value="1">B — 胰臟局部或瀰漫腫大</option>
+        <option value="2">C — 胰臟異常合併周邊脂肪發炎</option>
+        <option value="3">D — 單一胰周液體聚積</option>
+        <option value="4">E — ≥2 處液體聚積或胰周氣體</option>
+      </select>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>A 正常胰臟</td><td>0分</td></tr>
+      <tr><td>B 局部或瀰漫腫大</td><td>1分</td></tr>
+      <tr><td>C 合併周邊脂肪發炎</td><td>2分</td></tr>
+      <tr><td>D 單一胰周液體聚積</td><td>3分</td></tr>
+      <tr><td>E ≥2 處聚積或胰周氣體</td><td>4分</td></tr>
+    </table></div></details>
+    <div class="field-row"><label>胰臟壞死範圍</label>
+      <select id="ctsi_necrosis">
+        <option value="0">無壞死</option>
+        <option value="2">壞死 &lt; 30%</option>
+        <option value="4">壞死 30–50%</option>
+        <option value="6">壞死 &gt; 50%</option>
+      </select>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>無壞死</td><td>0分</td></tr>
+      <tr><td>&lt; 30%</td><td>2分</td></tr>
+      <tr><td>30–50%</td><td>4分</td></tr>
+      <tr><td>&gt; 50%</td><td>6分</td></tr>
+    </table></div></details>
+    <div class="exclusive-note">壞死範圍須以含對比劑電腦斷層（CE-CT）判定；非顯影劑增強之 CT 無法評估壞死。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">CTSI 總分</div><div class="metric-value big" id="ctsi_total">0</div></div>
+      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="ctsi_class">輕度</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">公式</div>
+    <div style="font-size:14px; margin-top:2px;">CTSI ＝ Balthazar 分級分數（0–4） ＋ 壞死分數（0–6），範圍 0–10</div>
+    <table class="ref">
+      <tr><th>總分</th><th>嚴重度</th></tr>
+      <tr><td>0–3</td><td>輕度 Mild</td></tr>
+      <tr><td>4–6</td><td>中度 Moderate</td></tr>
+      <tr><td>7–10</td><td>重度 Severe</td></tr>
+    </table>
+    <div class="risk-note">WSES 2019：所有重症急性胰臟炎應以 CE-CT 或 MRI 評估，<b>首次 CE-CT 最佳時機為症狀發作後 72–96 小時</b>（1C）——過早掃描會低估壞死範圍。<b>CTSI ≥3 者建議於首次 CT 後 7–10 天追蹤 CE-CT</b>（1C）；其餘僅在臨床惡化、未持續改善或考慮介入時才追加（1C）。CTSI 為影像嚴重度指標，不取代 Revised Atlanta 之臨床嚴重度分級。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/2296641/" target="_blank" rel="noopener" class="ref-link">Balthazar EJ, Robinson DL, Megibow AJ, Ranson JH. Acute pancreatitis: value of CT in establishing prognosis. Radiology. 1990;174(2):331-336.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31210778/" target="_blank" rel="noopener" class="ref-link">Leppäniemi A, et al. 2019 WSES guidelines for the management of severe acute pancreatitis. World J Emerg Surg. 2019;14:27.</a></footer>
+</div>
+</div>
+<script>
+function ctsiBadge(id){
+  const sel=document.getElementById(id);
+  let b=sel.parentNode.querySelector('.score-badge');
+  if(!b){ b=document.createElement('span'); b.className='pt-badge score-badge'; sel.parentNode.classList.add('scored-row'); sel.parentNode.appendChild(b); }
+  b.textContent=sel.value+'分';
+}
+function ctsiCalc(){
+  const ids=['ctsi_grade','ctsi_necrosis'];
+  ids.forEach(ctsiBadge);
+  const total=ids.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  document.getElementById('ctsi_total').textContent=total;
+  const cls = total<=3 ? '輕度' : (total<=6 ? '中度' : '重度');
+  document.getElementById('ctsi_class').textContent=cls;
+}
+document.querySelectorAll('#view-ctsi select').forEach(el=>el.addEventListener('change',ctsiCalc));
+ctsiCalc();
+/* 由胰臟炎決策流程進入時顯示返回鍵 */
+if(location.search.indexOf('from=panc')>=0){var _b=document.getElementById('ctsi_back_panc'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

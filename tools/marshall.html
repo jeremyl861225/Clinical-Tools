@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modified Marshall Score · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-marshall">
+  <div class="app-header">
+    <div><div class="eyebrow">Pancreatitis Scoring Tool</div><h1>Modified Marshall Score</h1><div class="sub">急性胰臟炎器官衰竭評分（Revised Atlanta 2012）</div></div>
+    <button class="back-btn" id="ms_back_panc" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/pancreatitis.html'">← 返回胰臟炎決策</button>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-marshall'">← 返回主選單</button>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">呼吸系統</span><span class="organ-en">Respiratory</span></div><div class="organ-score" id="ms_s_resp">0</div></div>
+    <div class="field-row"><label>PaO₂</label><input type="number" id="ms_pao2" step="1" placeholder="95"><span class="unit">mmHg</span></div>
+    <div class="field-row"><label>FiO₂</label>
+      <select id="ms_fio2">
+        <option value="21">21%　室內空氣 Room air</option>
+        <option value="25">25%　鼻導管 2 L/min</option>
+        <option value="30">30%　鼻導管 4 L/min</option>
+        <option value="40">40%　6–8 L/min</option>
+        <option value="50">50%　9–10 L/min</option>
+        <option value="60">60%</option>
+        <option value="70">70%</option>
+        <option value="80">80%</option>
+        <option value="90">90%</option>
+        <option value="100">100%</option>
+      </select>
+    </div>
+    <div class="field-row"><label>PaO₂/FiO₂</label><span class="organ-score" id="ms_pf">—</span><span class="unit">mmHg（自動計算）</span></div>
+    <div class="exclusive-note">非插管病人請依上表由氧氣流量推估 FiO₂。</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&gt; 400</td><td>0分</td></tr>
+      <tr><td>301–400</td><td>1分</td></tr>
+      <tr><td>201–300</td><td>2分</td></tr>
+      <tr><td>101–200</td><td>3分</td></tr>
+      <tr><td>≤ 101</td><td>4分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">腎臟</span><span class="organ-en">Renal</span></div><div class="organ-score" id="ms_s_renal">0</div></div>
+    <div class="field-row"><label>血清肌酸酐 Creatinine</label><input type="number" id="ms_cr" step="0.1" placeholder="1.0"><span class="unit">mg/dL</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt; 1.4（&lt; 134 µmol/L）</td><td>0分</td></tr>
+      <tr><td>1.4–1.8（134–169）</td><td>1分</td></tr>
+      <tr><td>1.9–3.6（170–310）</td><td>2分</td></tr>
+      <tr><td>3.6–4.9（311–439）</td><td>3分</td></tr>
+      <tr><td>&gt; 4.9（&gt; 439）</td><td>4分</td></tr>
+    </table></div></details>
+    <div class="exclusive-note">原始表格於 3.6 mg/dL 處兩個級距重疊；本工具將 3.6 歸為 3 分（取較高者）。</div>
+  </div>
+
+  <div class="card">
+    <div class="organ-head"><div><span class="organ-name">心血管</span><span class="organ-en">Cardiovascular</span></div><div class="organ-score" id="ms_s_cv">0</div></div>
+    <div class="field-row"><label>收縮壓 Systolic BP</label>
+      <select id="ms_cv">
+        <option value="0">&gt; 90 mmHg</option>
+        <option value="1">&lt; 90 mmHg，輸液有反應 fluid responsive</option>
+        <option value="2">&lt; 90 mmHg，輸液無反應 not fluid responsive</option>
+        <option value="3">&lt; 90 mmHg，且 pH &lt; 7.3</option>
+        <option value="4">&lt; 90 mmHg，且 pH &lt; 7.2</option>
+      </select>
+    </div>
+    <div class="exclusive-note">血壓須於<b>未使用強心／升壓藥物（off inotropic support）</b>之情況下判讀。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">最高單一器官分數</div><div class="metric-value big" id="ms_max">0</div></div>
+      <div><div class="metric-label">器官衰竭</div><div class="metric-value big" id="ms_of">無</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判定規則</div>
+    <div style="font-size:14px; margin-top:2px;" id="ms_rule">三個器官系統中<b>任一項 ≥ 2 分</b>即定義為器官衰竭；<b>不是</b>加總三項分數。</div>
+    <table class="ref">
+      <tr><th>持續時間</th><th>分類</th><th>Revised Atlanta 嚴重度</th></tr>
+      <tr><td>無器官衰竭</td><td>—</td><td>輕度 Mild（且無局部／全身併發症）</td></tr>
+      <tr><td>&lt; 48 小時</td><td>暫時性 Transient</td><td>中重度 Moderately severe</td></tr>
+      <tr><td>&gt; 48 小時</td><td>持續性 Persistent</td><td>重度 Severe</td></tr>
+    </table>
+    <div class="risk-note">持續性器官衰竭合併<b>感染性壞死</b>者，於 Determinant-Based Classification 另歸為 <b>Critical（危急）</b>級，死亡率最高。本評分為<b>單一時點</b>之器官功能評估，須連續追蹤才能區分暫時性與持續性；請勿以單次計算判定 Revised Atlanta 嚴重度。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/23100216/" target="_blank" rel="noopener" class="ref-link">Banks PA, et al. Classification of acute pancreatitis—2012: revision of the Atlanta classification and definitions by international consensus. Gut. 2013;62(1):102-111.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/7587228/" target="_blank" rel="noopener" class="ref-link">Marshall JC, et al. Multiple organ dysfunction score: a reliable descriptor of a complex clinical outcome. Crit Care Med. 1995;23(10):1638-1652.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31210778/" target="_blank" rel="noopener" class="ref-link">Leppäniemi A, et al. 2019 WSES guidelines for the management of severe acute pancreatitis. World J Emerg Surg. 2019;14:27.</a></footer>
+</div>
+</div>
+<script>
+function msResp(){
+  const pao2=parseFloat(document.getElementById('ms_pao2').value);
+  const fio2=parseFloat(document.getElementById('ms_fio2').value);
+  const pfEl=document.getElementById('ms_pf');
+  if(isNaN(pao2)||pao2<=0){ pfEl.textContent='—'; return 0; }
+  const pf=pao2/(fio2/100);
+  pfEl.textContent=Math.round(pf);
+  if(pf<=101) return 4;
+  if(pf<=200) return 3;
+  if(pf<=300) return 2;
+  if(pf<=400) return 1;
+  return 0;
+}
+function msRenal(){
+  const cr=parseFloat(document.getElementById('ms_cr').value);
+  if(isNaN(cr)) return 0;
+  if(cr>4.9) return 4;
+  if(cr>=3.6) return 3;   /* 原表 3.6 於兩級距重疊，取較高者 */
+  if(cr>=1.9) return 2;
+  if(cr>=1.4) return 1;
+  return 0;
+}
+function msCalc(){
+  const r=msResp(), k=msRenal(), c=parseInt(document.getElementById('ms_cv').value);
+  document.getElementById('ms_s_resp').textContent=r;
+  document.getElementById('ms_s_renal').textContent=k;
+  document.getElementById('ms_s_cv').textContent=c;
+  const max=Math.max(r,k,c);
+  document.getElementById('ms_max').textContent=max;
+  const of=max>=2;
+  document.getElementById('ms_of').textContent=of?'有':'無';
+  const names=[]; if(r>=2)names.push('呼吸'); if(k>=2)names.push('腎臟'); if(c>=2)names.push('心血管');
+  document.getElementById('ms_rule').innerHTML = of
+    ? '符合器官衰竭（<b>'+names.join('、')+'</b> ≥ 2 分）。持續 &gt;48 小時為<b>持續性器官衰竭</b> → Revised Atlanta <b>重度</b>；&lt;48 小時為暫時性 → <b>中重度</b>。'
+    : '三個器官系統中<b>任一項 ≥ 2 分</b>即定義為器官衰竭；<b>不是</b>加總三項分數。';
+}
+document.querySelectorAll('#view-marshall input, #view-marshall select')
+  .forEach(el => { el.addEventListener('input', msCalc); el.addEventListener('change', msCalc); });
+msCalc();
+/* 由胰臟炎決策流程進入時顯示返回鍵 */
+if(location.search.indexOf('from=panc')>=0){var _b=document.getElementById('ms_back_panc'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
