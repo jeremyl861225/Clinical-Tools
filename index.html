@@ -67,7 +67,7 @@
        中文拆成上下兩半、英文夾在中間。data-* 供 js/search.js 建索引用。
        濾鏡 defs 置於 <body> 最前（見上），晚於引用者定義會導致首次繪製時整張圖不顯示。 -->
   <div class="hub-grid" id="hub">
-    <a class="hub-card" href="#abdomen" aria-label="腹部急症"
+    <a class="hub-card" id="card-view-abdomen" href="#abdomen" aria-label="腹部急症"
        data-label="腹部急症" data-en="Abdominal Emergencies" data-sub="決策流程與緊急手術分級">
       <img class="hub-img" src="assets/hub/emergency.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
@@ -87,7 +87,7 @@
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">癌症</span><span class="hub-en">Cancer</span><span class="hub-zh">治療</span></span>
     </a>
-    <a class="hub-card" href="#scores" aria-label="計分工具"
+    <a class="hub-card" id="card-view-scores" href="#scores" aria-label="計分工具"
        data-label="計分工具" data-en="Scoring Tools" data-sub="共病、重症、肝臟、手術風險與腹部急症計分">
       <img class="hub-img" src="assets/hub/sofa.png" alt="" decoding="async">
       <span class="hub-scrim"></span>
@@ -101,7 +101,6 @@
       <div>
         <div class="eyebrow">Abdominal Emergencies</div>
         <h1>腹部急症</h1>
-        <div class="sub">互動式決策流程 · 緊急手術分級</div>
       </div>
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
@@ -192,7 +191,6 @@
       <div>
         <div class="eyebrow">Scoring Tools</div>
         <h1>計分工具</h1>
-        <div class="sub">共病 · 重症 · 肝臟 · 手術風險 · 腹部急症</div>
       </div>
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
@@ -354,8 +352,15 @@
      故用 setTimeout(0) 讓我方置中排在瀏覽器捲動之後（最後生效者為我方）。 */
   (function () {
     var SECTIONS = { abdomen: 'sec-abdomen', scores: 'sec-scores' };
+    var current = '';        // 目前展開的分類，返回主選單時據此標註對應的方磚
 
     function showSection(key) {
+      // 先清掉舊的標記：class 若留在上一張卡上，方磚每次重新顯示都會再播一次動畫，
+      // 於是不論從哪一類返回，亮起來的永遠是最後標註過的那張
+      var marked = document.querySelectorAll('.card-return');
+      for (var i = 0; i < marked.length; i++) marked[i].classList.remove('card-return');
+      current = key || '';
+
       var hub = document.getElementById('hub');
       if (hub) hub.classList.toggle('hidden', !!key);
       Object.keys(SECTIONS).forEach(function (k) {
@@ -369,12 +374,16 @@
       window.dispatchEvent(new Event('cat:relayout'));
     }
 
+    function markCard(card) {
+      card.classList.remove('card-return');
+      void card.offsetWidth;              // 重觸發動畫（連續返回同一張時）
+      card.classList.add('card-return');
+    }
+
     function centerCard(card) {
       setTimeout(function () {
         card.scrollIntoView({ block: 'center', behavior: 'auto' });
-        card.classList.remove('card-return');
-        void card.offsetWidth;            // 重觸發動畫（連續返回同一卡片時）
-        card.classList.add('card-return');
+        markCard(card);
       }, 0);
     }
 
@@ -401,9 +410,13 @@
 
     // 分類頁的「返回主選單」：清掉 hash 但保留上一頁可回溯
     window.goHome = function () {
+      var from = current;                 // showSection('') 會清掉，先記下來
       history.pushState(null, '', location.pathname + location.search);
       showSection('');
       window.scrollTo(0, 0);
+      // 標註剛才瀏覽的那一類；方磚就在第一屏，只閃框不捲動，否則會把標題捲出畫面
+      var tile = from && document.getElementById('card-view-' + from);
+      if (tile) markCard(tile);
     };
 
     if (document.readyState === 'complete') route();
