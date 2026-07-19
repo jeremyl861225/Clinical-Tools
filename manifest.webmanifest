@@ -1,7 +1,7 @@
 {
-  "name": "臨床計分工具箱",
+  "name": "臨床工具箱",
   "short_name": "Clinical Tools",
-  "description": "急重症與外科臨床評分工具箱：SOFA、APACHE II、Child-Pugh、MELD、Alvarado、AIR 等，及闌尾炎／膽囊炎手術決策流程。可離線使用。",
+  "description": "外科與急重症臨床工具箱，分四類：腹部急症決策流程與緊急手術分級、抗微生物（經驗性用藥／病原菌／藥物查詢／菌譜資料庫）、癌症分期與治療、臨床計分工具（SOFA、APACHE II、Child-Pugh、MELD、Alvarado、AIR 等）。可離線使用。",
   "lang": "zh-Hant",
   "start_url": "./index.html",
   "scope": "./",

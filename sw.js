@@ -1,4 +1,4 @@
-/* 臨床計分工具箱 — Service Worker
+/* 臨床工具箱 — Service Worker
  * 策略：stale-while-revalidate —— 一律先回快取（開啟即顯示，與離線同速），
  * 同時在背景抓最新版寫回快取，下次開啟即為新版。
  * 下拉更新（PTR）會送 REFRESH 訊息，強制重抓全部檔案後重新載入，可立即取得最新版。
@@ -7,7 +7,7 @@
  *     手機網路下每頁數十次往返，開啟明顯變慢，故改為本策略。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v131';
+const CACHE_VERSION = 'clinical-tools-v133';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [

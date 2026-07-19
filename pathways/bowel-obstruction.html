@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>腸阻塞處置決策 · 臨床計分工具箱</title>
+<title>腸阻塞處置決策 · 臨床工具箱</title>
 <link rel="stylesheet" href="../css/styles.css">
 <!-- pwa-head-tags -->
 <meta name="theme-color" content="#1f5a6b">
@@ -31,7 +31,7 @@
       ・CT：閉環 (closed loop)、腸缺血 (bowel ischemia)、腹內游離液體 (free fluid)。<br>
       → 此三者同時是 ASBO 非手術治療 (NOM) 的<b>絕對禁忌</b>（腹膜炎／絞窄／腸缺血）。<br><br>
       <b>影像順序（ASBO／大腸癌阻塞共通）：</b>CT 為首選（診斷有疑慮或懷疑 NOM 禁忌時尤然，並可同時分期）→ 水溶性顯影劑檢查（診斷已確定且無立即手術跡象時足夠）→ US／MRI（孕婦或無 CT 之情境）→ 腹部 X 光（輔助價值有限，敏感度約 70%）。<br>
-      最低實驗室檢查：CBC、lactate、電解質、CRP、BUN/Cr。CRP &gt;75 mg/L、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度／特異度均低。<br><br>
+      最低實驗室檢查：CBC、lactate、電解質、CRP、BUN/Cr。CRP <b>&gt;7.5 mg/dL</b>（原文 75 mg/L）、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度／特異度均低。<br><br>
       <b>ASBO 非手術治療 (NOM) 內容：</b>禁食 (NPO)、鼻胃管或長腸管減壓、靜脈輸液與電解質校正、營養支持、預防吸入。<br>
       ・<b>水溶性顯影劑</b>兼具診斷與治療角色：給藥後 <b>24 小時</b>腹部 X 光顯影劑仍未到達大腸 → 預示 NOM 失敗，考慮手術。<br>
       ・<b>NOM 試驗安全上限為 72 小時。</b>沾黏佔小腸阻塞病因約 60%；NOM 成功率 70–90%、手術率 20–30%、每次住院死亡率約 3%。<br><br>
@@ -278,7 +278,7 @@ function boTriageRender(){
   } else if(r==='no'){
     cls='rec-blue'; title='無立即手術指標 — 先復甦與評估，進入下方病因專屬流程';
     detail='<li>禁食 (NPO)、鼻胃管減壓、靜脈輸液與電解質校正。</li><li>最低實驗室檢查：CBC、lactate、電解質、CRP、BUN/Cr。</li><li>影像以 CT 為首選（可同時確認病因、定位並分期）。</li><li>持續重新評估：一旦出現腹膜炎、不穩定或臨床惡化，即回到上方緊急手術路徑。</li>';
-    note='CRP &gt;75 mg/L、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度與特異度均低，不可單獨作為排除依據。';
+    note='CRP <b>&gt;7.5 mg/dL</b>（原文 75 mg/L）、WBC &gt;10,000/mm³ 提示腹膜炎，但敏感度與特異度均低，不可單獨作為排除依據。';
   }
   flowRec('bo_rec1',cls,title,detail,note);
 }
