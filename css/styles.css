@@ -184,11 +184,12 @@
     .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:none;}
   }
 
-  /* ---- 首頁分類頁（腹部急症／計分工具）---- */
-  .sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
-    border-bottom:2px solid var(--accent-soft); padding-bottom:9px; margin-bottom:18px;}
-  .sec-eyebrow{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-soft);}
-  .sec-title{font-family:var(--serif); font-size:20px; font-weight:600; color:var(--accent);}
+  /* ---- 首頁分類頁（腹部急症／計分工具）----
+     這兩類沒有各自的 .html，是首頁裡的區塊；展開時把主頁的標題、查詢欄與像素貓
+     收起來，只留分類自己的 .app-header，看起來就與癌症／抗生素等獨立頁一致。 */
+  body.sec-open .home-header,
+  body.sec-open .gs-box,
+  body.sec-open #cat-canvas{display:none;}
 
   .tool-group{margin-bottom:24px;}
   .group-head{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; margin:0 0 10px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}

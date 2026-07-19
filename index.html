@@ -97,10 +97,11 @@
 
   <!-- ============ 腹部急症 ============ -->
   <section class="home-sec hidden" id="sec-abdomen">
-    <div class="sec-head">
+    <div class="app-header">
       <div>
-        <div class="sec-eyebrow">Abdominal Emergencies</div>
-        <div class="sec-title">腹部急症</div>
+        <div class="eyebrow">Abdominal Emergencies</div>
+        <h1>腹部急症</h1>
+        <div class="sub">互動式決策流程 · 緊急手術分級</div>
       </div>
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
@@ -187,10 +188,11 @@
 
   <!-- ============ 計分工具 ============ -->
   <section class="home-sec hidden" id="sec-scores">
-    <div class="sec-head">
+    <div class="app-header">
       <div>
-        <div class="sec-eyebrow">Scoring Tools</div>
-        <div class="sec-title">計分工具</div>
+        <div class="eyebrow">Scoring Tools</div>
+        <h1>計分工具</h1>
+        <div class="sub">共病 · 重症 · 肝臟 · 手術風險 · 腹部急症</div>
       </div>
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
@@ -360,6 +362,11 @@
         var el = document.getElementById(SECTIONS[k]);
         if (el) el.classList.toggle('hidden', k !== key);
       });
+      // 進入分類時整頁改成「獨立頁面」的樣子：收掉主頁標題、查詢欄與像素貓，
+      // 由分類自己的 .app-header 當頁首（見 css 的 body.sec-open）
+      document.body.classList.toggle('sec-open', !!key);
+      // 貓的地板是主頁首的橫桿，收合／展開後位置全變了，通知牠重新量一次
+      window.dispatchEvent(new Event('cat:relayout'));
     }
 
     function centerCard(card) {

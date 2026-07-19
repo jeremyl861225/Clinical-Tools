@@ -62,13 +62,18 @@
   var litter = [];    // 落在別處、貓構不到的（不會消失，重新整理才清空）
   var puddles = [];   // 尿漬
   var dust = [];      // 蓋貓砂踢起的塵土
-  var floorV = 0, ruleL = 0, ruleR = 0;
+  var floorV = 0, ruleL = 0, ruleR = 0, groundY = 0;
   var platforms = [];
-  var raf = null, last = 0, running = false;
+  var raf = null, last = 0, running = false, visible = true;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
   /* ---- 平台：飼料可以停住的水平面（皆為文件座標的虛擬像素） ---- */
   function refreshPlatforms() {
+    // 展開分類時主頁首被收起（body.sec-open），此時沒有橫桿也就沒有地板。
+    // 必須直接跳出：否則 rect 全為 0，floorV 歸零、cat.x 被夾成 0，返回主選單時貓會卡在最左邊。
+    if (!header.offsetParent) { visible = false; return; }
+    visible = true;
+
     var sx = window.scrollX, sy = window.scrollY;
     var hr = header.getBoundingClientRect();
     // 取橫桿「上緣」而非 rect.bottom：bottom 含 2px 邊框，貓會站進線裡。取整數見檔頭說明。
@@ -85,6 +90,14 @@
       if (!el.offsetParent) continue;              // 隱藏中（收合的分類、查詢時的首頁本體）
       var r = el.getBoundingClientRect();
       platforms.push({ x0: (r.left + sx) / U, x1: (r.right + sx) / U, y: (r.top + sy) / U });
+    }
+    // 內容底緣當作地面：點在頁尾以下的空白處時，飼料才有東西可以停，
+    // 否則它會一路掉出頁面外被回收，看起來像沒反應
+    var sheet = document.querySelector('.sheet');
+    if (sheet) {
+      var sr = sheet.getBoundingClientRect();
+      groundY = (sr.bottom + sy) / U;
+      platforms.push({ x0: (sr.left + sx) / U, x1: (sr.right + sx) / U, y: groundY });
     }
     cat.x = Math.max(ruleL + EDGE, Math.min(ruleR - EDGE, cat.x || ruleR - EDGE - 4));
   }
@@ -524,8 +537,7 @@
     if (!running) return;
     var dt = Math.min((ts - last) / 1000 || 0, 0.05);
     last = ts;
-    update(dt);
-    draw();
+    if (visible) { update(dt); draw(); }   // 分類展開時整隻收起來，不必空轉
     raf = requestAnimationFrame(loop);
   }
   function start() {
@@ -552,7 +564,10 @@
       return;
     }
     refreshPlatforms();
+    // 點在頁尾以下的空白處時，把起點提到地面之上：否則它下方沒有任何平台，
+    // 會一路掉出頁面被回收，看起來像沒反應
     var fy = (e.clientY + window.scrollY) / U;
+    if (groundY && fy > groundY - 1) fy = groundY - 1;
     falling.push({ x: (e.clientX + window.scrollX) / U, y: fy, prev: fy, vy: 0, base: 0 });
   });
 
@@ -563,6 +578,8 @@
   // 版面會變（展開分類、查詢、捲動），平台位置得跟著更新
   window.addEventListener('scroll', refreshPlatforms, { passive: true });
   window.addEventListener('hashchange', function () { setTimeout(refreshPlatforms, 60); });
+  // 首頁路由展開／收合分類後會派這個事件：版面整個換掉，地板要重新量
+  window.addEventListener('cat:relayout', function () { setTimeout(resize, 0); });
 
   resize();
   setInterval(refreshPlatforms, 500);
