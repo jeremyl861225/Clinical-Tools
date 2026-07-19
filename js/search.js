@@ -35,6 +35,7 @@
   var loading = null;     // 載入中的 Promise，避免重複載入
   var ftPages = null;     // 內文索引；null = 尚未建立
   var ftLoading = null;
+  var ftFailed = false;   // 各頁均抓不到（file:// 開啟等），內文查詢無法運作
   var input, results, groupsWrap;
 
   /* ---- 資料載入 ---- */
@@ -292,6 +293,9 @@
       }).catch(function () { return null; });   // 單頁抓不到不影響其餘結果
     })).then(function (pages) {
       ftPages = pages.filter(Boolean);
+      // 全數失敗＝根本抓不到頁面（如以 file:// 直接開啟，fetch 受 CORS 阻擋）。
+      // 此時內文查詢一律無結果，須明說，否則與「查無此詞」無法分辨。
+      ftFailed = pages.length > 0 && ftPages.length === 0;
     });
     return ftLoading;
   }
@@ -349,7 +353,9 @@
     var pending = (textHits === null && q.length >= MIN_TEXT_Q);
     if (!hits.length && !(textHits && textHits.length)) {
       results.innerHTML = '<div class="gs-empty">找不到符合「' + esc(q) + '」的工具、藥物、菌名或癌症。' +
-        (pending ? '<br><span class="gs-pending">正在搜尋各頁內文…</span>' : '') + '</div>';
+        (pending ? '<br><span class="gs-pending">正在搜尋各頁內文…</span>' : '') +
+        (ftFailed ? '<br><span class="gs-pending">頁面內文無法讀取（請由網址或主畫面 App 開啟，勿直接開啟本機檔案）</span>' : '') +
+        '</div>';
       return;
     }
     var byType = {};
