@@ -168,6 +168,17 @@
     </div>
 
     <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">出血</span><span class="group-en">Hemorrhage</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-gi-bleed-path" onclick="location.href='pathways/gi-bleeding.html'"
+             data-search-kw="消化道出血 上消化道出血 下消化道出血 UGIB LGIB 吐血 黑便 血便 hematemesis melena hematochezia Forrest 消化性潰瘍 內視鏡止血 OTS clip 栓塞 TAE PPI 大腸鏡 CTA 輸血">
+          <div class="tool-name">消化道出血處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">GI Bleeding · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：先分上下消化道，上消化道依復甦後穩定度決定內視鏡時機、以 GBS 分流門診或住院，再依 Forrest 分類給止血方式，止血後另段判定再出血之 OTS clip／TAE／手術階梯；下消化道以 Oakland score 判定可否出院，嚴重出血走 CTA 與栓塞（ESGE 2026 · ACG 2021 · ACG 2023）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group deci-group">
       <div class="group-head"><span class="group-title">創傷</span><span class="group-en">Trauma</span><span class="group-count">1 項</span></div>
       <div class="home-list">
         <div class="tool-card deci-card" id="card-view-trauma-path" onclick="location.href='pathways/abdominal-trauma.html'"
@@ -269,7 +280,7 @@
           <div class="tool-desc">發炎反應導向之闌尾炎評分，特異度優於Alvarado，9–12分高度懷疑闌尾炎</div>
         </div>
         <div class="tool-card" id="card-view-parc" onclick="location.href='tools/parc.html'">
-          <div class="tool-name">pARC <span class="tool-en">Pediatric Appendicitis Risk Calculator（兒童）</span></div>
+          <div class="tool-name">pARC <span class="tool-en">Pediatric Appendicitis Risk Calculator</span></div>
           <div class="tool-desc">以連續機率量表評估5–18歲兒童闌尾炎風險，較PAS更能區分高低風險族群</div>
         </div>
       </div>
@@ -281,6 +292,37 @@
         <div class="tool-card" id="card-view-pulp" onclick="location.href='tools/pulp.html'">
           <div class="tool-name">PULP Score <span class="tool-en">Peptic Ulcer Perforation Score</span></div>
           <div class="tool-desc">預測消化性潰瘍穿孔30天死亡率，表現優於傳統Boey score與ASA分級</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">消化道出血</span><span class="group-en">GI Bleeding</span><span class="group-count">5 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-gbs" onclick="location.href='tools/gbs.html'"
+             data-search-kw="上消化道出血 UGIB 吐血 黑便 內視鏡前 風險分層 出院 門診 Blatchford GBS BUN 尿素氮">
+          <div class="tool-name">Glasgow-Blatchford <span class="tool-en">Glasgow-Blatchford Score</span></div>
+          <div class="tool-desc">上消化道出血內視鏡前風險分層，預測是否需住院介入或死亡；≤1 分可考慮門診處理，各分數中鑑別力最佳（AUROC 0.86）</div>
+        </div>
+        <div class="tool-card" id="card-view-rockall" onclick="location.href='tools/rockall.html'"
+             data-search-kw="上消化道出血 UGIB 死亡率 再出血 內視鏡前 完整 admission full SRH 出血痕跡">
+          <div class="tool-name">Rockall Score <span class="tool-en">Rockall Score</span></div>
+          <div class="tool-desc">上消化道出血死亡與再出血風險分層，分內視鏡前（0–7）與完整（0–11）兩段；休克分級由血壓心跳自動判定，避免常見的抄錯</div>
+        </div>
+        <div class="tool-card" id="card-view-aims65" onclick="location.href='tools/aims65.html'"
+             data-search-kw="上消化道出血 UGIB 死亡率 albumin INR 意識 收縮壓 年齡 加護病房 ICU">
+          <div class="tool-name">AIMS65 <span class="tool-en">AIMS65 Score</span></div>
+          <div class="tool-desc">上消化道出血住院死亡率預測（白蛋白、INR、意識、收縮壓、年齡各 1 分）；預測死亡優於 GBS，≥2 分為高風險</div>
+        </div>
+        <div class="tool-card" id="card-view-oakland" onclick="location.href='tools/oakland.html'"
+             data-search-kw="下消化道出血 LGIB 血便 hematochezia 安全出院 門診 憩室出血 痔瘡">
+          <div class="tool-name">Oakland Score <span class="tool-en">Oakland Score</span></div>
+          <div class="tool-desc">下消化道出血安全出院評估（0–35 分，越低越安全）；≤8 分約 95% 機率可安全出院，血紅素權重最重</div>
+        </div>
+        <div class="tool-card" id="card-view-forrest" onclick="location.href='tools/forrest.html'"
+             data-search-kw="消化性潰瘍出血 內視鏡 分類 再出血 噴血 滲血 可見血管 血塊 色素斑 乾淨潰瘍底 止血 OTS clip">
+          <div class="tool-name">Forrest 分類 <span class="tool-en">Forrest Classification</span></div>
+          <div class="tool-desc">消化性潰瘍出血內視鏡分級（Ia–III）：查各級未治療再出血率、對應 Rockall SRH 分數與 ESGE 2026 建議之止血方式</div>
         </div>
       </div>
     </div>
