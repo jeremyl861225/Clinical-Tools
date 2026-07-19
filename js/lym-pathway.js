@@ -301,7 +301,8 @@
           ] }
       ],
       // 步驟 3 依步驟 2 而異
-      dynStep: function (s) {
+      dynStep: function (s, idx) {
+        if (idx !== 1) return null;
         if (s.a === 'nonbulky2') {
           return { q: '有無症狀？', opts: [
             ['nosx', '無症狀 No symptoms', '→ 觀察'],
@@ -601,7 +602,8 @@
           ] },
         { q: '', key: 'c', dyn: true }
       ],
-      dynStep: function (s) {
+      dynStep: function (s, idx) {
+        if (idx !== 2) return null;
         if (s.b === 'hn_lp') {
           return { q: '有無症狀？', opts: [
             ['asx', '無症狀 Asymptomatic', '→ 觀察'],
@@ -807,33 +809,32 @@
         { q: '', key: 'b', dyn: true },
         { q: '', key: 'c', dyn: true }
       ],
-      dynStep: function (s) {
-        if (!s.b) {
+      /* 依<b>步驟索引</b>回傳該格的題目，而不是「下一題」——渲染時每個版位各呼叫一次，
+         若照狀態回傳「下一題」，同一份規格會被兩個版位取用，答完後兩格又同時落空。 */
+      dynStep: function (s, idx) {
+        var restage = [
+          ['cr', '完全緩解 CR', ''],
+          ['pr', '部分緩解 PR', ''],
+          ['sdpd', '疾病穩定或進展 SD／PD', '→ 見復發／難治疾病']
+        ];
+        if (idx === 1) {
           if (s.a === 'adv') {
             return { q: '一線方案選擇（第 36 頁之兩條主線）', opts: [
               ['abvd', 'ABVD／A+AVD（第四期）× 2–4 療程 → 再分期', '第 36 頁上半'],
               ['beacopd', '考慮 escalated BEACOPD × 4 療程 → 再分期', '第 36 頁下半']
             ] };
           }
-          return { q: '誘導化療後之再分期（Restaging）', opts: [
-            ['cr', '完全緩解 CR', ''],
-            ['pr', '部分緩解 PR', ''],
-            ['sdpd', '疾病穩定或進展 SD／PD', '→ 見復發／難治疾病']
-          ] };
+          return { q: '誘導化療後之再分期（Restaging）', opts: restage };
         }
-        // 第三步
-        if (s.a === 'adv' && !s.c) {
-          return { q: '再分期結果', opts: [
-            ['cr', '完全緩解 CR', ''],
-            ['pr', '部分緩解 PR', ''],
-            ['sdpd', '疾病穩定或進展 SD／PD', '→ 見復發／難治疾病']
-          ] };
-        }
-        if ((s.a === 'fav' || s.a === 'unfav') && s.b === 'pr') {
-          return { q: '追加治療後之再評估', opts: [
-            ['cr', '完全緩解 CR', '→ 追蹤'],
-            ['noncr', '未達完全緩解 Non-CR', '→ 見復發／難治疾病']
-          ] };
+        if (idx === 2) {
+          if (s.a === 'adv') return { q: '再分期結果', opts: restage };
+          // 侷限期只有 PR 需要追加治療，故僅此分支再問一次
+          if ((s.a === 'fav' || s.a === 'unfav') && s.b === 'pr') {
+            return { q: '追加治療後之再評估', opts: [
+              ['cr', '完全緩解 CR', '→ 追蹤'],
+              ['noncr', '未達完全緩解 Non-CR', '→ 見復發／難治疾病']
+            ] };
+          }
         }
         return null;
       },
@@ -1196,7 +1197,7 @@
     if (!st) return null;
     if (st.when && !st.when(s)) return null;
     if (st.dyn) {
-      var dyn = def.dynStep ? def.dynStep(s) : null;
+      var dyn = def.dynStep ? def.dynStep(s, idx) : null;
       if (!dyn) return null;
       return { q: dyn.q, opts: dyn.opts, key: st.key };
     }
