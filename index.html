@@ -35,228 +35,284 @@
   </div>
   <div id="gs-results" class="gs-results hidden"></div>
 
-  <div class="tool-group deci-group">
-    <div class="group-head"><span class="group-title">臨床決策流程</span><span class="group-en">Clinical Decision Pathways</span><span class="group-count">8 項</span></div>
-    <div class="home-list">
-      <div class="tool-card deci-card" id="card-view-appy-path" onclick="location.href='pathways/appendicitis.html'">
-        <div class="tool-name">急性闌尾炎手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Appendicitis · Operative Decision</span></div>
-        <div class="tool-desc">互動式流程圖：依複雜度、族群與膿瘍年齡分流，決定手術或非手術治療（WSES 2025 Jerusalem Guidelines · JAMA Surg 2026）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-chole-path" onclick="location.href='pathways/cholecystitis.html'">
-        <div class="tool-name">急性膽囊炎手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Cholecystitis · Operative Decision</span></div>
-        <div class="tool-desc">互動式流程圖：依 Tokyo Guidelines TG18 嚴重度分級與手術風險，決定早期腹腔鏡手術、膽囊引流或保守治療（TG18 / WSES / AAST）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-hernia-path" onclick="location.href='pathways/hernia.html'">
-        <div class="tool-name">複雜性腹股溝疝氣手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Complicated Groin Hernia · Operative Decision</span></div>
-        <div class="tool-desc">互動式流程圖：嵌頓／絞窄疝氣依 TAXIS 禁忌決定徒手復位或緊急手術，再依自發性復位、腸道存活與 CDC 傷口分類選擇術式與修補（WSES 2017 · HerniaSurge 2023）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-bo-path" onclick="location.href='pathways/bowel-obstruction.html'">
-        <div class="tool-name">腸阻塞處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Bowel Obstruction · Management Decision</span></div>
-        <div class="tool-desc">互動式流程圖：先分流病因（沾黏、大腸／直腸癌、扭轉、ACPO、嵌頓疝氣、惡性腸阻塞）並判斷立即手術指標，再依各病因決定 NOM、內視鏡減壓、支架或術式（WSES 2017–2018 · ASCRS 2021 · MASCC 2021）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-gi-isch-path" onclick="location.href='pathways/gi-ischemia.html'">
-        <div class="tool-name">腸胃道缺血處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">GI Ischemia · Management Decision</span></div>
-        <div class="tool-desc">互動式流程圖：分辨急性腸繫膜缺血 (AMI)、大腸缺血 (CI) 與慢性腸繫膜缺血 (CMI)。AMI 依 CTA 四型（AMAE／AMAT／NOMI／MVT）與腹膜炎／血行動力學決定血管內重建、抗凝或損害控制手術；CI 先依分布（IRCI／全結腸／節段性）再依 ACG 嚴重度；CMI 依血管侵犯型態決定支架或開放式重建；術中腸段活性另段判定切除範圍（ESVS 2025 · WSES 2022 · ACG 2015）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-gi-perf-path" onclick="location.href='pathways/gi-perforation.html'">
-        <div class="tool-name">腸胃道穿孔處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">GI Perforation · Management Decision</span></div>
-        <div class="tool-desc">互動式流程圖：依病因分流消化性潰瘍穿孔、憩室穿孔（WSES CT 分級）、醫源性大腸鏡穿孔與小腸穿孔，決定 NOM、引流或手術入路；PPU 再依術中穿孔大小與部位選擇修補術式（WSES 2017–2020）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-divert-path" onclick="location.href='pathways/diverticulitis.html'">
-        <div class="tool-name">急性大腸憩室炎處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Colonic Diverticulitis · Management Decision</span></div>
-        <div class="tool-desc">互動式流程圖：依 WSES CT 分期（0／1A／1B／2A／2B／3／4）與病人條件、可否經皮引流、生理狀態，決定門診治療、抗生素、經皮引流或術式（一期吻合／Hartmann's／損害控制），並判定非手術治療後之大腸評估（WSES 2020）</div>
-      </div>
-      <div class="tool-card deci-card" id="card-view-panc-path" onclick="location.href='pathways/pancreatitis.html'">
-        <div class="tool-name">急性胰臟炎處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Pancreatitis · Management Decision</span></div>
-        <div class="tool-desc">互動式流程圖：先依病因決定 ERCP 適應症與膽囊切除時機，再依 Revised Atlanta 嚴重度給監測、輸液、營養與抗生素策略，最後依壞死感染狀態與病程週數決定 step-up 引流／清創時機（WSES 2019 · Atlanta 2012）</div>
-      </div>
-    </div>
+  <!-- 首頁本體：四大類入口＋各類內容；查詢時整塊隱藏（見 js/search.js） -->
+  <div id="home-body">
+
+  <!-- 四大類入口 -->
+  <div class="hub-grid" id="hub">
+    <a class="hub-card" href="#abdomen">
+      <span class="hub-title">腹部急症</span>
+      <span class="hub-en">Abdominal Emergencies</span>
+      <span class="hub-desc">八項互動式決策流程，依感染／阻塞／缺血／穿孔分類</span>
+      <span class="hub-count">8 項流程</span>
+    </a>
+    <a class="hub-card" id="card-view-antibiotics" href="tools/antibiotics.html"
+       data-search-kw="抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌">
+      <span class="hub-title">抗微生物</span>
+      <span class="hub-en">Antimicrobials</span>
+      <span class="hub-desc">抗生素指引：依感染部位（經驗性）、依病原菌、藥物查詢，及抗生素菌譜資料庫</span>
+      <span class="hub-count">4 個分頁</span>
+    </a>
+    <a class="hub-card" id="card-view-cancer" href="tools/cancer.html"
+       data-search-kw="癌症 分期 TNM AJCC 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫 FLOT FOLFOX Avastin">
+      <span class="hub-title">癌症治療</span>
+      <span class="hub-en">Cancer Treatment</span>
+      <span class="hub-desc">14 種常見癌症之 AJCC TNM 分期、淋巴結分群與治療決策流程</span>
+      <span class="hub-count">14 癌別</span>
+    </a>
+    <a class="hub-card" href="#scores">
+      <span class="hub-title">計分工具</span>
+      <span class="hub-en">Scoring Tools</span>
+      <span class="hub-desc">共病、重症、肝臟、手術風險及各腹部急症之臨床計分</span>
+      <span class="hub-count">21 項工具</span>
+    </a>
   </div>
 
-  <div class="tool-group deci-group">
-    <div class="group-head"><span class="group-title">抗生素指引</span><span class="group-en">Empiric Antibiotic Guide</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card deci-card" id="card-view-antibiotics" onclick="location.href='tools/antibiotics.html'">
-        <div class="tool-name">抗生素指引 <span class="deci-tag">Guide</span> <span class="tool-en">Antibiotic Guide</span></div>
-        <div class="tool-desc">三種查法：依感染部位（經驗性）、依細菌、藥物查詢。每藥附成人／兒科劑量、腎功能調整、療程、代謝、禁忌與抗菌譜（涵蓋菌血症、移植後、IAI、UTI、肺炎、SSTI、心內膜炎、骨關節、CNS、術後外科；IDSA / SIS / AHA 準則整理）</div>
+  <!-- ============ 腹部急症 ============ -->
+  <section class="home-sec hidden" id="sec-abdomen">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow">Abdominal Emergencies</div>
+        <div class="sec-title">腹部急症</div>
       </div>
-      <div class="tool-card deci-card" id="card-view-spectrumdb" onclick="location.href='tools/spectrum-database.html'">
-        <div class="tool-name">抗生素菌譜資料庫 <span class="deci-tag">Database</span> <span class="tool-en">Antibiotic Spectrum Database</span></div>
-        <div class="tool-desc">β-內醯胺酶 Ambler 分類、抗細菌／抗黴菌感受性菌譜（整合台大 2025H1 在地 %S）、新型抗生素對 CR-GNB 抗菌譜、抗藥菌經驗性用藥對照</div>
+      <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
+    </div>
+
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">感染</span><span class="group-en">Infection</span><span class="group-count">4 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-appy-path" onclick="location.href='pathways/appendicitis.html'">
+          <div class="tool-name">急性闌尾炎手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Appendicitis · Operative Decision</span></div>
+          <div class="tool-desc">互動式流程圖：依複雜度、族群與膿瘍年齡分流，決定手術或非手術治療（WSES 2025 Jerusalem Guidelines · JAMA Surg 2026）</div>
+        </div>
+        <div class="tool-card deci-card" id="card-view-chole-path" onclick="location.href='pathways/cholecystitis.html'">
+          <div class="tool-name">急性膽囊炎手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Cholecystitis · Operative Decision</span></div>
+          <div class="tool-desc">互動式流程圖：依 Tokyo Guidelines TG18 嚴重度分級與手術風險，決定早期腹腔鏡手術、膽囊引流或保守治療（TG18 / WSES / AAST）</div>
+        </div>
+        <div class="tool-card deci-card" id="card-view-divert-path" onclick="location.href='pathways/diverticulitis.html'">
+          <div class="tool-name">急性大腸憩室炎處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Colonic Diverticulitis · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：依 WSES CT 分期（0／1A／1B／2A／2B／3／4）與病人條件、可否經皮引流、生理狀態，決定門診治療、抗生素、經皮引流或術式（吻合／Hartmann's／損害控制），並判定非手術治療後之大腸評估（WSES 2020）</div>
+        </div>
+        <div class="tool-card deci-card" id="card-view-panc-path" onclick="location.href='pathways/pancreatitis.html'">
+          <div class="tool-name">急性胰臟炎處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Pancreatitis · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：先依病因決定 ERCP 適應症與膽囊切除時機，再依 Revised Atlanta 嚴重度給監測、輸液、營養與抗生素策略，最後依壞死感染狀態與病程週數決定 step-up 引流／清創時機（WSES 2019 · Atlanta 2012）</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group deci-group">
-    <div class="group-head"><span class="group-title">癌症分期與治療</span><span class="group-en">Cancer Staging &amp; Treatment</span><span class="group-count">1 項</span></div>
-    <div class="home-list">
-      <div class="tool-card deci-card" id="card-view-cancer" onclick="location.href='tools/cancer.html'">
-        <div class="tool-name">癌症分期與治療 <span class="deci-tag">Guide</span> <span class="tool-en">Cancer Staging &amp; Treatment</span></div>
-        <div class="tool-desc">14 種消化系外科、內分泌外科及胸腔常見癌症：AJCC 8/9 TNM 分期表、淋巴結分群命名（胃癌 JGCA 站別、肺癌 IASLC map、乳癌腋下分級等），及治療策略（upfront surgery / neoadjuvant / adjuvant / 免疫 / 標靶，含療程與藥名如 FLOT、FOLFOX、Avastin）。附各癌症 PubMed 里程碑文獻連結</div>
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">阻塞</span><span class="group-en">Obstruction</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-hernia-path" onclick="location.href='pathways/hernia.html'">
+          <div class="tool-name">複雜性腹股溝疝氣手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Complicated Groin Hernia · Operative Decision</span></div>
+          <div class="tool-desc">互動式流程圖：嵌頓／絞窄疝氣依 TAXIS 禁忌決定徒手復位或緊急手術，再依自發性復位、腸道存活與 CDC 傷口分類選擇術式與修補（WSES 2017 · HerniaSurge 2023）</div>
+        </div>
+        <div class="tool-card deci-card" id="card-view-bo-path" onclick="location.href='pathways/bowel-obstruction.html'">
+          <div class="tool-name">腸阻塞處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Bowel Obstruction · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：先分流病因（沾黏、大腸／直腸癌、扭轉、ACPO、嵌頓疝氣、惡性腸阻塞）並判斷立即手術指標，再依各病因決定 NOM、內視鏡減壓、支架或術式（WSES 2017–2018 · ASCRS 2021 · MASCC 2021）</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="home-divider">評分工具 Scoring Tools</div>
-
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">共病評估</span><span class="group-en">Comorbidity</span><span class="group-count">1 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-cci" onclick="location.href='tools/cci.html'">
-        <div class="tool-name">CCI <span class="tool-en">Charlson Comorbidity Index</span></div>
-        <div class="tool-desc">勾選共病項目計算指數，評估共病負荷與10年預估存活率，常用於研究校正與術前風險溝通</div>
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">缺血</span><span class="group-en">Ischemia</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-gi-isch-path" onclick="location.href='pathways/gi-ischemia.html'">
+          <div class="tool-name">腸胃道缺血處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">GI Ischemia · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：分辨急性腸繫膜缺血 (AMI)、大腸缺血 (CI) 與慢性腸繫膜缺血 (CMI)。AMI 依 CTA 四型（AMAE／AMAT／NOMI／MVT）與腹膜炎／血行動力學決定血管內重建、抗凝或損害控制手術；CI 先依分布（IRCI／全結腸／節段性）再依 ACG 嚴重度；CMI 依血管侵犯型態決定支架或開放式重建；術中腸段活性另段判定切除範圍（ESVS 2025 · WSES 2022 · ACG 2015）</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">3 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-sofa" onclick="location.href='tools/sofa.html'">
-        <div class="tool-name">SOFA <span class="tool-en">Sequential Organ Failure Assessment</span></div>
-        <div class="tool-desc">六大器官系統評分；疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義</div>
-      </div>
-      <div class="tool-card" id="card-view-apache" onclick="location.href='tools/apache.html'">
-        <div class="tool-name">APACHE II <span class="tool-en">Acute Physiology &amp; Chronic Health Eval.</span></div>
-        <div class="tool-desc">評估ICU入住24小時內疾病嚴重度，分數越高住院死亡風險越高</div>
-      </div>
-      <div class="tool-card" id="card-view-vasopressor" onclick="location.href='tools/vasopressor.html'">
-        <div class="tool-name">Vasopressor Calc <span class="tool-en">Vasoactive-Inotropic Score</span></div>
-        <div class="tool-desc">計算多重升壓/強心藥物流速並加總VIS，數值越高代表循環支持需求越大</div>
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">穿孔</span><span class="group-en">Perforation</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-gi-perf-path" onclick="location.href='pathways/gi-perforation.html'">
+          <div class="tool-name">腸胃道穿孔處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">GI Perforation · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：依病因分流消化性潰瘍穿孔、憩室穿孔（WSES CT 分級）、醫源性大腸鏡穿孔與小腸穿孔，決定 NOM、引流或手術入路；PPU 再依術中穿孔大小與部位選擇修補術式（WSES 2017–2020）</div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">肝臟</span><span class="group-en">Hepatology</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-childpugh" onclick="location.href='tools/child-pugh.html'">
-        <div class="tool-name">Child-Pugh <span class="tool-en">Child-Pugh Score</span></div>
-        <div class="tool-desc">評估肝硬化嚴重度分級A/B/C，C級病人手術風險顯著升高</div>
+  <!-- ============ 計分工具 ============ -->
+  <section class="home-sec hidden" id="sec-scores">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow">Scoring Tools</div>
+        <div class="sec-title">計分工具</div>
       </div>
-      <div class="tool-card" id="card-view-meld" onclick="location.href='tools/meld.html'">
-        <div class="tool-name">MELD 3.0 <span class="tool-en">Model for End-Stage Liver Disease 3.0</span></div>
-        <div class="tool-desc">計算終末期肝病死亡風險，用於肝移植等候名單優先順序排序</div>
+      <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">共病評估</span><span class="group-en">Comorbidity</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-cci" onclick="location.href='tools/cci.html'">
+          <div class="tool-name">CCI <span class="tool-en">Charlson Comorbidity Index</span></div>
+          <div class="tool-desc">勾選共病項目計算指數，評估共病負荷與10年預估存活率，常用於研究校正與術前風險溝通</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">一般手術風險</span><span class="group-en">Surgical Risk</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-possum" onclick="location.href='tools/p-possum.html'">
-        <div class="tool-name">P-POSSUM <span class="tool-en">Portsmouth POSSUM</span></div>
-        <div class="tool-desc">預測手術術後 30 天死亡率，常用於手術品質稽核與族群風險校正</div>
-      </div>
-      <div class="tool-card" id="card-view-sort" onclick="location.href='tools/sort.html'">
-        <div class="tool-name">SORT <span class="tool-en">Surgical Outcome Risk Tool</span></div>
-        <div class="tool-desc">以 ASA、緊急度、手術別與嚴重度、癌症、年齡預估 30 天全因死亡率，用於術前風險溝通與稽核校正</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">3 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-sofa" onclick="location.href='tools/sofa.html'">
+          <div class="tool-name">SOFA <span class="tool-en">Sequential Organ Failure Assessment</span></div>
+          <div class="tool-desc">六大器官系統評分；疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義</div>
+        </div>
+        <div class="tool-card" id="card-view-apache" onclick="location.href='tools/apache.html'">
+          <div class="tool-name">APACHE II <span class="tool-en">Acute Physiology &amp; Chronic Health Eval.</span></div>
+          <div class="tool-desc">評估ICU入住24小時內疾病嚴重度，分數越高住院死亡風險越高</div>
+        </div>
+        <div class="tool-card" id="card-view-vasopressor" onclick="location.href='tools/vasopressor.html'">
+          <div class="tool-name">Vasopressor Calc <span class="tool-en">Vasoactive-Inotropic Score</span></div>
+          <div class="tool-desc">計算多重升壓/強心藥物流速並加總VIS，數值越高代表循環支持需求越大</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">闌尾炎</span><span class="group-en">Appendicitis</span><span class="group-count">3 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-alvarado" onclick="location.href='tools/alvarado.html'">
-        <div class="tool-name">Alvarado <span class="tool-en">Alvarado Score</span></div>
-        <div class="tool-desc">評估急性闌尾炎機率，≥7分建議外科會診，敏感度高但特異度較AIR score低</div>
-      </div>
-      <div class="tool-card" id="card-view-air" onclick="location.href='tools/air.html'">
-        <div class="tool-name">AIR Score <span class="tool-en">Appendicitis Inflammatory Response</span></div>
-        <div class="tool-desc">發炎反應導向之闌尾炎評分，特異度優於Alvarado，9–12分高度懷疑闌尾炎</div>
-      </div>
-      <div class="tool-card" id="card-view-parc" onclick="location.href='tools/parc.html'">
-        <div class="tool-name">pARC <span class="tool-en">Pediatric Appendicitis Risk Calculator（兒童）</span></div>
-        <div class="tool-desc">以連續機率量表評估5–18歲兒童闌尾炎風險，較PAS更能區分高低風險族群</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">肝臟</span><span class="group-en">Hepatology</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-childpugh" onclick="location.href='tools/child-pugh.html'">
+          <div class="tool-name">Child-Pugh <span class="tool-en">Child-Pugh Score</span></div>
+          <div class="tool-desc">評估肝硬化嚴重度分級A/B/C，C級病人手術風險顯著升高</div>
+        </div>
+        <div class="tool-card" id="card-view-meld" onclick="location.href='tools/meld.html'">
+          <div class="tool-name">MELD 3.0 <span class="tool-en">Model for End-Stage Liver Disease 3.0</span></div>
+          <div class="tool-desc">計算終末期肝病死亡風險，用於肝移植等候名單優先順序排序</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">消化性潰瘍穿孔</span><span class="group-en">Peptic Ulcer Perforation</span><span class="group-count">1 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-pulp" onclick="location.href='tools/pulp.html'">
-        <div class="tool-name">PULP Score <span class="tool-en">Peptic Ulcer Perforation Score</span></div>
-        <div class="tool-desc">預測消化性潰瘍穿孔30天死亡率，表現優於傳統Boey score與ASA分級</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">一般手術風險</span><span class="group-en">Surgical Risk</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-possum" onclick="location.href='tools/p-possum.html'">
+          <div class="tool-name">P-POSSUM <span class="tool-en">Portsmouth POSSUM</span></div>
+          <div class="tool-desc">預測手術術後 30 天死亡率，常用於手術品質稽核與族群風險校正</div>
+        </div>
+        <div class="tool-card" id="card-view-sort" onclick="location.href='tools/sort.html'">
+          <div class="tool-name">SORT <span class="tool-en">Surgical Outcome Risk Tool</span></div>
+          <div class="tool-desc">以 ASA、緊急度、手術別與嚴重度、癌症、年齡預估 30 天全因死亡率，用於術前風險溝通與稽核校正</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">胰臟炎</span><span class="group-en">Pancreatitis</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-marshall" onclick="location.href='tools/marshall.html'">
-        <div class="tool-name">Modified Marshall Score <span class="tool-en">Organ Failure in Acute Pancreatitis</span></div>
-        <div class="tool-desc">Revised Atlanta 2012 定義器官衰竭之評分：呼吸（PaO₂/FiO₂）、腎臟（Cr）、心血管（收縮壓）任一項 ≥2 分即為器官衰竭；持續 &gt;48 小時為重度</div>
-      </div>
-      <div class="tool-card" id="card-view-ctsi" onclick="location.href='tools/ctsi.html'">
-        <div class="tool-name">CT Severity Index <span class="tool-en">Balthazar CTSI</span></div>
-        <div class="tool-desc">急性胰臟炎影像嚴重度：Balthazar 分級（0–4）＋ 壞死範圍（0–6），總分 0–10 分為輕／中／重度；須以含對比劑 CT 判定壞死</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">闌尾炎</span><span class="group-en">Appendicitis</span><span class="group-count">3 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-alvarado" onclick="location.href='tools/alvarado.html'">
+          <div class="tool-name">Alvarado <span class="tool-en">Alvarado Score</span></div>
+          <div class="tool-desc">評估急性闌尾炎機率，≥7分建議外科會診，敏感度高但特異度較AIR score低</div>
+        </div>
+        <div class="tool-card" id="card-view-air" onclick="location.href='tools/air.html'">
+          <div class="tool-name">AIR Score <span class="tool-en">Appendicitis Inflammatory Response</span></div>
+          <div class="tool-desc">發炎反應導向之闌尾炎評分，特異度優於Alvarado，9–12分高度懷疑闌尾炎</div>
+        </div>
+        <div class="tool-card" id="card-view-parc" onclick="location.href='tools/parc.html'">
+          <div class="tool-name">pARC <span class="tool-en">Pediatric Appendicitis Risk Calculator（兒童）</span></div>
+          <div class="tool-desc">以連續機率量表評估5–18歲兒童闌尾炎風險，較PAS更能區分高低風險族群</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">腹膜炎</span><span class="group-en">Peritonitis</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-mpi" onclick="location.href='tools/mpi.html'">
-        <div class="tool-name">MPI <span class="tool-en">Mannheim Peritonitis Index</span></div>
-        <div class="tool-desc">評估腹膜炎嚴重度並預測死亡率，分數越高（0–47分）預後越差</div>
-      </div>
-      <div class="tool-card" id="card-view-wses" onclick="location.href='tools/wses.html'">
-        <div class="tool-name">WSES Sepsis Score <span class="tool-en">WSES Sepsis Severity Score</span></div>
-        <div class="tool-desc">評估複雜性腹內感染之敗血症嚴重度，用於預測死亡率與器官衰竭風險</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">消化性潰瘍穿孔</span><span class="group-en">Peptic Ulcer Perforation</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-pulp" onclick="location.href='tools/pulp.html'">
+          <div class="tool-name">PULP Score <span class="tool-en">Peptic Ulcer Perforation Score</span></div>
+          <div class="tool-desc">預測消化性潰瘍穿孔30天死亡率，表現優於傳統Boey score與ASA分級</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">腸阻塞</span><span class="group-en">Bowel Obstruction</span><span class="group-count">3 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-wassmer" onclick="location.href='tools/wassmer.html'">
-        <div class="tool-name">Wassmer Score <span class="tool-en">Clinical Severity Score for SBO</span></div>
-        <div class="tool-desc">預測黏連性小腸阻塞是否需手術切除腸段，≥4分列為高風險</div>
-      </div>
-      <div class="tool-card" id="card-view-angers" onclick="location.href='tools/angers.html'">
-        <div class="tool-name">Angers CT Score <span class="tool-en">Angers CT Score</span></div>
-        <div class="tool-desc">依CT影像特徵預測黏連性小腸阻塞保守治療失敗風險，≥5分為高風險</div>
-      </div>
-      <div class="tool-card" id="card-view-millet" onclick="location.href='tools/millet.html'">
-        <div class="tool-name">Millet Score <span class="tool-en">Combined CT Findings for Strangulation</span></div>
-        <div class="tool-desc">結合3項CT徵象評估小腸阻塞絞窄風險，三項皆無時可高信心排除絞窄</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">胰臟炎</span><span class="group-en">Pancreatitis</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-marshall" onclick="location.href='tools/marshall.html'">
+          <div class="tool-name">Modified Marshall Score <span class="tool-en">Organ Failure in Acute Pancreatitis</span></div>
+          <div class="tool-desc">Revised Atlanta 2012 定義器官衰竭之評分：呼吸（PaO₂/FiO₂）、腎臟（Cr）、心血管（收縮壓）任一項 ≥2 分即為器官衰竭；持續 &gt;48 小時為重度</div>
+        </div>
+        <div class="tool-card" id="card-view-ctsi" onclick="location.href='tools/ctsi.html'">
+          <div class="tool-name">CT Severity Index <span class="tool-en">Balthazar CTSI</span></div>
+          <div class="tool-desc">急性胰臟炎影像嚴重度：Balthazar 分級（0–4）＋ 壞死範圍（0–6），總分 0–10 分為輕／中／重度；須以含對比劑 CT 判定壞死</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tool-group">
-    <div class="group-head"><span class="group-title">腸繫膜缺血</span><span class="group-en">Mesenteric Ischemia</span><span class="group-count">2 項</span></div>
-    <div class="home-list">
-      <div class="tool-card" id="card-view-radial" onclick="location.href='tools/radial.html'">
-        <div class="tool-name">RADIAL Score <span class="tool-en">RADIAL Score for AMI Mortality</span></div>
-        <div class="tool-desc">預測急性腸繫膜缺血住院死亡率，分數越高（0–13分）死亡率越高</div>
-      </div>
-      <div class="tool-card" id="card-view-amiscore" onclick="location.href='tools/ami.html'">
-        <div class="tool-name">AMI Diagnostic Score <span class="tool-en">Novel Scoring System for AMI Diagnosis</span></div>
-        <div class="tool-desc">以常規血液檢驗（WBC、RDW、MPV、D-dimer）輔助急診鑑別急性腸繫膜缺血</div>
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">腹膜炎</span><span class="group-en">Peritonitis</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-mpi" onclick="location.href='tools/mpi.html'">
+          <div class="tool-name">MPI <span class="tool-en">Mannheim Peritonitis Index</span></div>
+          <div class="tool-desc">評估腹膜炎嚴重度並預測死亡率，分數越高（0–47分）預後越差</div>
+        </div>
+        <div class="tool-card" id="card-view-wses" onclick="location.href='tools/wses.html'">
+          <div class="tool-name">WSES Sepsis Score <span class="tool-en">WSES Sepsis Severity Score</span></div>
+          <div class="tool-desc">評估複雜性腹內感染之敗血症嚴重度，用於預測死亡率與器官衰竭風險</div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">腸阻塞</span><span class="group-en">Bowel Obstruction</span><span class="group-count">3 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-wassmer" onclick="location.href='tools/wassmer.html'">
+          <div class="tool-name">Wassmer Score <span class="tool-en">Clinical Severity Score for SBO</span></div>
+          <div class="tool-desc">預測黏連性小腸阻塞是否需手術切除腸段，≥4分列為高風險</div>
+        </div>
+        <div class="tool-card" id="card-view-angers" onclick="location.href='tools/angers.html'">
+          <div class="tool-name">Angers CT Score <span class="tool-en">Angers CT Score</span></div>
+          <div class="tool-desc">依CT影像特徵預測黏連性小腸阻塞保守治療失敗風險，≥5分為高風險</div>
+        </div>
+        <div class="tool-card" id="card-view-millet" onclick="location.href='tools/millet.html'">
+          <div class="tool-name">Millet Score <span class="tool-en">Combined CT Findings for Strangulation</span></div>
+          <div class="tool-desc">結合3項CT徵象評估小腸阻塞絞窄風險，三項皆無時可高信心排除絞窄</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">腸繫膜缺血</span><span class="group-en">Mesenteric Ischemia</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-radial" onclick="location.href='tools/radial.html'">
+          <div class="tool-name">RADIAL Score <span class="tool-en">RADIAL Score for AMI Mortality</span></div>
+          <div class="tool-desc">預測急性腸繫膜缺血住院死亡率，分數越高（0–13分）死亡率越高</div>
+        </div>
+        <div class="tool-card" id="card-view-amiscore" onclick="location.href='tools/ami.html'">
+          <div class="tool-name">AMI Diagnostic Score <span class="tool-en">Novel Scoring System for AMI Diagnosis</span></div>
+          <div class="tool-desc">以常規血液檢驗（WBC、RDW、MPV、D-dimer）輔助急診鑑別急性腸繫膜缺血</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /home-body -->
 
   <footer class="tool-footer" style="margin-top:24px; border-top:1px solid var(--line); padding-top:12px;">本工具箱之計分與死亡率／存活率數據皆引自原始文獻之族群統計，僅供臨床輔助參考與教學使用，不能取代個別病人之臨床判斷與完整評估。各分數之出處文獻列於各工具頁下方。<br>© 2026 Lin Shao-Chin. All rights reserved. 未經書面同意，禁止複製、散布或再利用本站內容與程式碼。</footer>
 </div>
 </div>
 <script>
-  /* 由工具頁返回時（#card-view-NAME），將原本的卡片捲到畫面正中並短暫高亮，
-     取代瀏覽器預設「錨點置頂」的行為。
+  /* 首頁路由：#abdomen／#scores 開啟對應分類；#card-view-NAME 由工具頁返回時，
+     自動開啟該卡片所屬分類、捲到畫面正中並短暫高亮（取代瀏覽器預設錨點置頂）。
      關鍵：瀏覽器的錨點捲動排在 rAF 之後、卻在 setTimeout(0) 之前，
      故用 setTimeout(0) 讓我方置中排在瀏覽器捲動之後（最後生效者為我方）。 */
   (function () {
-    function centerCard() {
-      var m = (location.hash || '').match(/^#(card-view-[\w-]+)$/);
-      if (!m) return;
-      var card = document.getElementById(m[1]);
-      if (!card) return;
+    var SECTIONS = { abdomen: 'sec-abdomen', scores: 'sec-scores' };
+
+    function showSection(key) {
+      var hub = document.getElementById('hub');
+      if (hub) hub.classList.toggle('hidden', !!key);
+      Object.keys(SECTIONS).forEach(function (k) {
+        var el = document.getElementById(SECTIONS[k]);
+        if (el) el.classList.toggle('hidden', k !== key);
+      });
+    }
+
+    function centerCard(card) {
       setTimeout(function () {
         card.scrollIntoView({ block: 'center', behavior: 'auto' });
         card.classList.remove('card-return');
@@ -264,9 +320,39 @@
         card.classList.add('card-return');
       }, 0);
     }
-    if (document.readyState === 'complete') centerCard();
-    else window.addEventListener('load', centerCard);
-    window.addEventListener('hashchange', centerCard);
+
+    function route() {
+      var h = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+
+      if (SECTIONS[h]) { showSection(h); window.scrollTo(0, 0); return; }
+
+      var m = h.match(/^card-view-[\w-]+$/);
+      var card = m ? document.getElementById(h) : null;
+      if (card) {
+        // 找出卡片所屬分類（首頁入口方磚不在任何分類內，維持顯示 hub）
+        var sec = card.closest('.home-sec');
+        var key = '';
+        if (sec) Object.keys(SECTIONS).forEach(function (k) {
+          if (SECTIONS[k] === sec.id) key = k;
+        });
+        showSection(key);
+        centerCard(card);
+        return;
+      }
+      showSection('');
+    }
+
+    // 分類頁的「返回主選單」：清掉 hash 但保留上一頁可回溯
+    window.goHome = function () {
+      history.pushState(null, '', location.pathname + location.search);
+      showSection('');
+      window.scrollTo(0, 0);
+    };
+
+    if (document.readyState === 'complete') route();
+    else window.addEventListener('load', route);
+    window.addEventListener('hashchange', route);
+    window.addEventListener('popstate', route);
   })();
 </script>
 <script src="./js/search.js"></script>

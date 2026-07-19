@@ -547,6 +547,8 @@ function applyHash(){
   const h=decodeURIComponent((location.hash||'').replace(/^#/,''));
   if(!h) return false;
   let m;
+  // 由菌譜資料庫（第四分頁）點回前三分頁時使用
+  if((m=h.match(/^mode=(empiric|bacteria|lookup)$/))){ switchMode(m[1]); return true; }
   if((m=h.match(/^site=(\d+)$/))){
     const i=+m[1];
     if(SITES[i]){ switchMode('empiric'); selectSite(i); return true; }

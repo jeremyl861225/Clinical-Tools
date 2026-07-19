@@ -87,6 +87,25 @@
     return out;
   }
 
+  // 首頁四大類入口方磚：僅收有實際頁面者（腹部急症／計分工具為站內分類，不另建索引）
+  function indexHubs() {
+    var out = [];
+    document.querySelectorAll('.hub-card[href]').forEach(function (card) {
+      var url = card.getAttribute('href') || '';
+      if (url.indexOf('.html') === -1) return;
+      var desc = txt(card.querySelector('.hub-desc'));
+      out.push({
+        type: 'guide',
+        label: txt(card.querySelector('.hub-title')),
+        en: txt(card.querySelector('.hub-en')),
+        sub: desc.length > 90 ? desc.slice(0, 90) + '…' : desc,
+        kw: desc + ' ' + (card.getAttribute('data-search-kw') || ''),
+        url: url
+      });
+    });
+    return out;
+  }
+
   function indexDrugs() {
     var out = [];
     if (!window.DRUGS) return out;
@@ -179,7 +198,8 @@
   }
 
   function buildIndex() {
-    idx = [].concat(indexCards(), indexSites(), indexBacteria(), indexDrugs(), indexCancers());
+    idx = [].concat(indexHubs(), indexCards(), indexSites(), indexBacteria(),
+                    indexDrugs(), indexCancers());
   }
 
   /* ---- 比對與排序 ---- */
@@ -281,7 +301,9 @@
     input = document.getElementById('gs-input');
     results = document.getElementById('gs-results');
     if (!input || !results) return;
-    groupsWrap = Array.prototype.slice.call(
+    // 查詢時整塊隱藏首頁本體（入口方磚＋各分類），清空查詢後由路由還原原本的分類顯示狀態
+    var body = document.getElementById('home-body');
+    groupsWrap = body ? [body] : Array.prototype.slice.call(
       document.querySelectorAll('.tool-group, .home-divider'));
 
     // 聚焦即開始載入資料，使用者打完字時通常已就緒

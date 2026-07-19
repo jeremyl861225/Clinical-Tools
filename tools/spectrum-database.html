@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>抗生素菌譜資料庫 · 臨床計分工具箱</title>
 <link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/antibiotics.css">
 <!-- pwa-head-tags -->
 <meta name="theme-color" content="#1f5a6b">
 <link rel="manifest" href="../manifest.webmanifest">
@@ -192,7 +193,15 @@
 <div class="view active" id="view-spectrumdb">
   <div class="app-header">
     <div><div class="eyebrow">Antimicrobial · Spectrum Database</div><h1>抗生素菌譜資料庫</h1><div class="sub">β-內醯胺酶分類、抗細菌／抗黴菌感受性菌譜、CR-GNB 新藥抗菌譜，整合台大 2025 上半年在地感受性 %S</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-spectrumdb'">← 返回主選單</button>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+  </div>
+
+  <!-- 抗生素指引的第四分頁：前三分頁在 antibiotics.html，以 #mode= 指定開啟的分頁 -->
+  <div class="abx-modes">
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=empiric'">依部位（經驗性）</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=bacteria'">依病原菌</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=lookup'">藥物查詢</button>
+    <button class="abx-mode active">菌譜資料庫</button>
   </div>
 
   <div class="sd-toolbar">
