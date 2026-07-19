@@ -116,7 +116,7 @@
         </div>
         <div class="tool-card deci-card" id="card-view-chole-path" onclick="location.href='pathways/cholecystitis.html'">
           <div class="tool-name">急性膽囊炎手術決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Cholecystitis · Operative Decision</span></div>
-          <div class="tool-desc">互動式流程圖：依 Tokyo Guidelines TG18 嚴重度分級與手術風險，決定早期腹腔鏡手術、膽囊引流或保守治療（TG18 / WSES / AAST）</div>
+          <div class="tool-desc">互動式流程圖：先分流合併之膽道／胰臟問題（含 TG18 急性膽管炎分級與引流時機），再依 TG18 膽囊炎嚴重度與手術風險，決定早期腹腔鏡手術、膽囊引流或保守治療（TG18 / WSES / AAST）</div>
         </div>
         <div class="tool-card deci-card" id="card-view-divert-path" onclick="location.href='pathways/diverticulitis.html'">
           <div class="tool-name">急性大腸憩室炎處置決策 <span class="deci-tag">Pathway</span> <span class="tool-en">Acute Colonic Diverticulitis · Management Decision</span></div>
@@ -189,6 +189,17 @@
       </div>
     </div>
 
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">腹腔高壓 / 開腹</span><span class="group-en">Intra-abdominal Hypertension</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-iah-path" onclick="location.href='pathways/iah-acs.html'"
+             data-search-kw="腹腔內高壓 腹內壓 腹腔室症候群 腔室症候群 腹腔腔室症候群 IAH ACS IAP APP WSACS 減壓性剖腹 decompressive laparotomy 開腹 開放性腹部 open abdomen laparostomy 暫時性關腹 TAC 負壓傷口治療 NPWT 筋膜牽引 關筋膜 fascial closure Björck Bjorck 分類 frozen abdomen 腸道大氣瘻管 EAF enteroatmospheric fistula 腸皮瘻管 planned ventral hernia component separation 生物網片 WSES">
+          <div class="tool-name">腹腔內高壓／腔室症候群與開腹腹腔 <span class="deci-tag">Pathway</span> <span class="tool-en">IAH / ACS &amp; Open Abdomen · Management Decision</span></div>
+          <div class="tool-desc">互動式流程圖：先以 IAP 分級與有無新發生器官功能障礙區分 IAH 與 ACS，再依 primary／secondary／recurrent 決定直接減壓或續行階梯式內科治療；腹部打開後另段以 Björck 修訂版分類（腹壁固定程度 × 污染狀態）分級，給暫時性關腹、再探查時機、營養與確定性關腹策略（WSACS 2013 · Björck 2016 · WSES 2018）</div>
+        </div>
+      </div>
+    </div>
+
     <div class="tool-group">
       <div class="group-head"><span class="group-title">排程</span><span class="group-en">Scheduling</span><span class="group-count">1 項</span></div>
       <div class="home-list">
@@ -223,8 +234,13 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">3 項</span></div>
+      <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">4 項</span></div>
       <div class="home-list">
+        <div class="tool-card" id="card-view-iah" onclick="location.href='tools/iah.html'"
+             data-search-kw="腹腔內高壓 腹內壓 腹腔室症候群 腔室症候群 腹腔腔室症候群 IAH ACS IAP APP 膀胱壓 bladder pressure WSACS 分級 Grade 減壓 器官功能障礙 風險因子 兒童 小兒 polycompartment abdominal compliance lateralization">
+          <div class="tool-name">WSACS 腹腔內高壓 <span class="tool-en">IAH / ACS Grading</span></div>
+          <div class="tool-desc">輸入 IAP 與 MAP 判定 IAH 分級（Grade I–IV）、是否成立 ACS 與 APP；含 primary／secondary／recurrent 分類對減壓時機的影響、WSACS 完整風險因子清單，以及兒童專屬閾值（兒科小組未採納成人分級，故兒童模式不輸出 Grade）</div>
+        </div>
         <div class="tool-card" id="card-view-sofa" onclick="location.href='tools/sofa.html'">
           <div class="tool-name">SOFA <span class="tool-en">Sequential Organ Failure Assessment</span></div>
           <div class="tool-desc">六大器官系統評分；疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義</div>
@@ -342,12 +358,8 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">膽道</span><span class="group-en">Biliary</span><span class="group-count">2 項</span></div>
+      <div class="group-head"><span class="group-title">膽道</span><span class="group-en">Biliary</span><span class="group-count">1 項</span></div>
       <div class="home-list">
-        <div class="tool-card" id="card-view-cholangitis" onclick="location.href='tools/cholangitis.html'">
-          <div class="tool-name">TG18 急性膽管炎 <span class="tool-en">Tokyo Guidelines 2018 · Acute Cholangitis</span></div>
-          <div class="tool-desc">以 A 全身性發炎／B 膽汁鬱積／C 影像三組準則判定疑似或確定診斷，再分級 Grade I–III 並對應膽道引流時機</div>
-        </div>
         <div class="tool-card" id="card-view-choledx" onclick="location.href='tools/chole-difficulty.html'">
           <div class="tool-name">膽囊切除困難度 <span class="tool-en">Parkland + Nassar Grading</span></div>
           <div class="tool-desc">術中評估：Parkland 評膽囊發炎嚴重度、Nassar 由膽囊／膽囊管蒂／沾黏三面向取最差者評手術困難度，對應轉開腹與膽道損傷風險</div>
