@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSACS 腹腔內高壓分級 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-iah">
+  <div class="app-header">
+    <div><div class="eyebrow">Critical Care Grading</div><h1>腹腔內高壓與腹腔腔室症候群</h1><div class="sub">WSACS 2013 · IAH Grade I–IV／ACS 判定／APP／風險因子</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-iah'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box">
+    <summary>定義、測量標準與使用說明 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 分級與判定是兩件事：</b>Grade I–IV 只描述<b>壓力高度</b>；ACS 則額外要求<b>新發生的器官功能障礙</b>。IAP 25 mmHg 而無器官障礙是 Grade IV IAH，<b>不是</b> ACS。本頁把兩者分開輸出。<br><br>
+
+      <b>◆ 測量標準（WSACS 定義 2、3）：</b>間歇測量之參考標準為<b>經膀胱</b>測壓，最大灌注量 <b>25 mL</b> 無菌生理食鹽水；以 mmHg 表示，於<b>吐氣末、平躺</b>、確認腹壁肌肉無收縮下測量，感測器歸零於<b>腋中線</b>。數值取決於測量姿勢 —— 抬高床頭會使 IAP 上升（本身即為列表中的風險因子）。<br><br>
+
+      <b>◆ 核心定義：</b><br>
+      ・IAP 為腹腔內的穩態壓力；重症成人約 <b>5–7 mmHg</b>。<br>
+      ・<b>IAH</b> = 持續或反覆之病理性 IAP <b>≥ 12 mmHg</b>。<br>
+      ・<b>ACS</b> = 持續 IAP <b>&gt; 20 mmHg</b>（不論 APP 是否 &lt; 60 mmHg），且<b>合併新發生之器官功能障礙／衰竭</b>。<br>
+      ・<b>APP = MAP − IAP</b>。<br>
+      ・分級：Grade I <b>12–15</b>／II <b>16–20</b>／III <b>21–25</b>／IV <b>&gt; 25</b> mmHg。<br><br>
+
+      <b>◆ 原發／續發／復發：</b><br>
+      ・<b>Primary</b>：源自腹骨盆腔的損傷或疾病，通常需早期手術或介入性放射處置。<br>
+      ・<b>Secondary</b>：病因<b>不</b>源自腹骨盆腔（如大量輸液復甦、燒傷、敗血症）。<br>
+      ・<b>Recurrent</b>：在已針對原發或續發 IAH／ACS 做過手術或內科治療後<b>再度發生</b>。<br>
+      此分類直接改變處置：Fig 1 對 primary ACS 直接走減壓；secondary／recurrent 則先續行內科治療，待 IAP &gt; 20 併<b>進行性</b>器官衰竭才減壓。<br><br>
+
+      <b>◆ 2013 年新增之四項定義：</b><br>
+      ・<b>Open abdomen</b>：剖腹後皮膚與筋膜未關閉、需要暫時性關腹者。<br>
+      ・<b>Lateralization</b>：腹壁肌肉與筋膜（最典型為腹直肌及其筋膜鞘）隨時間向外側偏離中線的現象。<br>
+      ・<b>Polycompartment syndrome</b>：兩個或以上的解剖腔室同時出現壓力升高。<br>
+      ・<b>Abdominal compliance</b>：腹腔擴張的難易度，由腹壁與橫膈的彈性決定，以<b>每單位 IAP 變化所對應的腹腔容積變化</b>表示。<br><br>
+
+      <b>◆ 兒童（WSACS 兒科小組）：</b>重症兒童 IAP 約 <b>4–10 mmHg</b>；<b>IAH 定義為持續 IAP &gt; 10 mmHg</b>；<b>ACS 為持續 IAP &gt; 10 mmHg 併新發生／惡化之器官功能障礙</b>。經膀胱灌注量為 <b>1 mL/kg</b>，最少 3 mL、最多 25 mL。<br>
+      <b>注意：</b>兒科小組明列為「維持不變」的定義中<b>並不包含成人的 Grade I–IV 分級</b>。因此本頁在兒童模式下<b>不輸出 Grade 分級</b>，只輸出 IAH／ACS 判定 —— 把成人的壓力區間套用在兒童身上並無共識背書。<br><br>
+
+      <b>◆ APP 的地位：</b>WSACS 對「是否以 APP 作為復甦／處置目標」<b>未能做出建議（NO RECOMMENDATION）</b>。本頁計算 APP 僅供參考，不應作為單一治療目標。同樣未能做出建議的還有：利尿劑、腎臟替代療法、白蛋白用於已復甦完成之血流動力學穩定 IAH 病人，以及 component separation。<br><br>
+
+      <b>◆ 風險因子的用途：</b>WSACS <b>建議（1C）</b>只要重症或受傷病人存在<b>任一</b>已知風險因子即應測量 IAP。因此下方清單是「該不該測」的觸發器，<b>不是</b>加總計分 —— 勾選數目多寡並無驗證過的分數意義。<br><br>
+
+      <b>◆ 版本註記：</b>2013 年版<b>仍為現行版本</b>（wsacs.org 明載）。一項由 Malbrain 主持的新版共識（PROSPERO CRD420251167137、ClinicalTrials.gov NCT07563842）預計 2026 年完成，屆時本頁需重新核對。<br><br>
+
+      <b>◆ 開腹腹腔（open abdomen）的 Björck 分級與後續管理</b>不在本頁，請見「腹腔內高壓／腔室症候群與開腹腹腔」決策流程。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">測量值 Measurements</div>
+    <div class="field-row">
+      <label>病人族群</label>
+      <select id="iah_pop">
+        <option value="adult">成人 Adult</option>
+        <option value="child">兒童 Child</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label>腹內壓 IAP</label>
+      <input type="number" id="iah_iap" step="1" min="0" placeholder="—">
+      <span class="unit">mmHg</span>
+    </div>
+    <div class="field-row">
+      <label>平均動脈壓 MAP</label>
+      <input type="number" id="iah_map" step="1" min="0" placeholder="—">
+      <span class="unit">mmHg（用於計算 APP）</span>
+    </div>
+    <div class="field-row" id="iah_wtrow" style="display:none;">
+      <label>體重 Weight</label>
+      <input type="number" id="iah_wt" step="0.1" min="0" placeholder="—">
+      <span class="unit">kg（計算膀胱灌注量）</span>
+    </div>
+    <div class="note" id="iah_instil">經膀胱測壓灌注量：成人最大 <b>25 mL</b> 無菌生理食鹽水；吐氣末、平躺、腹肌無收縮，感測器歸零於腋中線。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">器官功能障礙與分類 Organ dysfunction &amp; category</div>
+    <label class="item"><input type="checkbox" id="iah_od"> 出現<b>新發生或惡化</b>之器官功能障礙／衰竭，且可歸因於升高之 IAP <span class="unit">(new organ dysfunction/failure)</span></label>
+    <div class="field-row" style="margin-top:8px;">
+      <label>IAH／ACS 分類</label>
+      <select id="iah_cat">
+        <option value="">未指定</option>
+        <option value="primary">Primary（源自腹骨盆腔）</option>
+        <option value="secondary">Secondary（非源自腹骨盆腔）</option>
+        <option value="recurrent">Recurrent（治療後復發）</option>
+      </select>
+    </div>
+    <div class="note">ACS 的成立<b>必須</b>同時滿足壓力閾值與此項器官功能障礙；分類則決定減壓時機（見結果欄）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">風險因子 Risk factors（WSACS Table 2）</div>
+    <div class="note" style="margin-top:0;">存在<b>任一</b>項即建議測量 IAP（<b>RECOMMEND, GRADE 1C</b>）。此為觸發清單，非加總計分。</div>
+
+    <div class="section-title">腹壁順應性下降 Diminished abdominal wall compliance</div>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹部手術 <span class="unit">(Abdominal surgery)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 重大創傷 <span class="unit">(Major trauma)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 大面積燒傷 <span class="unit">(Major burns)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 俯臥姿勢 <span class="unit">(Prone positioning)</span></label>
+
+    <div class="section-title">腸腔內容物增加 Increased intra-luminal contents</div>
+    <label class="item"><input type="checkbox" class="iah-rf"> 胃輕癱／胃脹／腸麻痺 <span class="unit">(Gastroparesis / gastric distention / ileus)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腸麻痺 <span class="unit">(Ileus)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 大腸假性阻塞 <span class="unit">(Colonic pseudo-obstruction)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腸扭轉 <span class="unit">(Volvulus)</span></label>
+
+    <div class="section-title">腹腔內容物增加 Increased intra-abdominal contents</div>
+    <label class="item"><input type="checkbox" class="iah-rf"> 急性胰臟炎 <span class="unit">(Acute pancreatitis)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹脹 <span class="unit">(Distended abdomen)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹腔積血／積氣或腹腔內積液 <span class="unit">(Hemoperitoneum / pneumoperitoneum / fluid collections)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹腔內感染／膿瘍 <span class="unit">(Intra-abdominal infection / abscess)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹腔內或後腹腔腫瘤 <span class="unit">(Intra-abdominal or retroperitoneal tumors)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹腔鏡充氣壓力過高 <span class="unit">(Laparoscopy with excessive insufflation pressures)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 肝功能異常／肝硬化併腹水 <span class="unit">(Liver dysfunction / cirrhosis with ascites)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹膜透析 <span class="unit">(Peritoneal dialysis)</span></label>
+
+    <div class="section-title">微血管滲漏／液體復甦 Capillary leak / fluid resuscitation</div>
+    <label class="item"><input type="checkbox" class="iah-rf"> 酸中毒 <span class="unit">(Acidosis)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 損傷控制剖腹 <span class="unit">(Damage control laparotomy)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 低體溫 <span class="unit">(Hypothermia)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> APACHE-II 或 SOFA 分數升高 <span class="unit">(Increased APACHE-II or SOFA score)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 大量液體復甦或正液體平衡 <span class="unit">(Massive fluid resuscitation / positive fluid balance)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 大量輸血 <span class="unit">(Polytransfusion)</span></label>
+
+    <div class="section-title">其他 Others</div>
+    <label class="item"><input type="checkbox" class="iah-rf"> 年齡 <span class="unit">(Age)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 菌血症 <span class="unit">(Bacteremia)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 凝血病變 <span class="unit">(Coagulopathy)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 床頭抬高角度增加 <span class="unit">(Increased head of bed angle)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 巨大切口疝修補 <span class="unit">(Massive incisional hernia repair)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 機械通氣 <span class="unit">(Mechanical ventilation)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 肥胖或 BMI 升高 <span class="unit">(Obesity or increased BMI)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> PEEP &gt; 10 <span class="unit">(PEEP &gt; 10)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 腹膜炎 <span class="unit">(Peritonitis)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 肺炎 <span class="unit">(Pneumonia)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 敗血症 <span class="unit">(Sepsis)</span></label>
+    <label class="item"><input type="checkbox" class="iah-rf"> 休克或低血壓 <span class="unit">(Shock or hypotension)</span></label>
+    <div class="note" id="iah_rfout" style="font-weight:600;">尚未勾選風險因子。</div>
+    <div class="note">WSACS Table 2 原表同時列有「Gastroparesis／gastric distention／ileus」與「Ileus」兩列，本頁照錄未合併。原表亦<b>未</b>對酸中毒、低體溫、大量輸血等給出數值閾值（2006 年版曾有，2013 年表格已移除）。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div>
+        <div class="metric-label">IAH 分級 Grade</div>
+        <div class="metric-value big" id="iah_grade">—</div>
+      </div>
+      <div>
+        <div class="metric-label">ACS 判定</div>
+        <div class="metric-value" id="iah_acs">—</div>
+      </div>
+      <div>
+        <div class="metric-label">APP = MAP − IAP</div>
+        <div class="metric-value" id="iah_app">—</div>
+      </div>
+    </div>
+    <div class="metric-label" style="margin-top:12px;">判讀與處置 Interpretation</div>
+    <div id="iah_interp" style="font-size:15px; margin-top:2px;">請輸入 IAP。</div>
+    <table class="ref">
+      <tr><th>IAP（成人）</th><th>分級與意義</th></tr>
+      <tr><td>5–7 mmHg</td><td>重症成人之正常值</td></tr>
+      <tr><td>12–15 mmHg</td><td>Grade I IAH</td></tr>
+      <tr><td>16–20 mmHg</td><td>Grade II IAH</td></tr>
+      <tr><td>21–25 mmHg</td><td>Grade III IAH</td></tr>
+      <tr><td>&gt; 25 mmHg</td><td>Grade IV IAH</td></tr>
+      <tr><td>&gt; 20 mmHg ＋ 新器官功能障礙</td><td><b>ACS</b>（成人）</td></tr>
+      <tr><td>&gt; 10 mmHg（兒童）</td><td>IAH；併新器官功能障礙即為兒童 ACS</td></tr>
+    </table>
+    <div class="risk-note">分級與定義依 <b>WSACS 2013</b>。IAH 之定義要求「<b>持續或反覆</b>」升高，單次測值不足以定義 IAH —— 請以序列測量佐證。WSACS <b>建議（1C）</b>重症病人一旦存在任一風險因子即測 IAP，並在 IAH 期間<b>至少每 4 小時</b>序列監測；內科治療應以 <b>IAP ≤ 15 mmHg</b> 為滴定目標（1C）。APP <b>未</b>被建議作為復甦目標（NO RECOMMENDATION）。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/23673399/" target="_blank" rel="noopener" class="ref-link">Kirkpatrick AW, et al. Intra-abdominal hypertension and the abdominal compartment syndrome: updated consensus definitions and clinical practice guidelines from the World Society of the Abdominal Compartment Syndrome. Intensive Care Med. 2013;39(7):1190-1206.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26588481/" target="_blank" rel="noopener" class="ref-link">Kirkpatrick AW, et al. Methodological background and strategy for the 2012-2013 updated consensus definitions and clinical practice guidelines from the abdominal compartment society. Anaesthesiol Intensive Ther. 2015;47 Spec No:s63-77.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29434652/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. The open abdomen in trauma and non-trauma patients: WSES guidelines. World J Emerg Surg. 2018;13:7.</a></footer>
+</div>
+</div>
+<script>
+function iahCalc(){
+  const pop=document.getElementById('iah_pop').value;
+  const child = pop==='child';
+  const iapRaw=parseFloat(document.getElementById('iah_iap').value);
+  const mapRaw=parseFloat(document.getElementById('iah_map').value);
+  const od=document.getElementById('iah_od').checked;
+  const cat=document.getElementById('iah_cat').value;
+
+  // 兒童模式才需要體重（換算膀胱灌注量）
+  document.getElementById('iah_wtrow').style.display = child ? '' : 'none';
+  let instil='經膀胱測壓灌注量：成人最大 <b>25 mL</b> 無菌生理食鹽水；吐氣末、平躺、腹肌無收縮，感測器歸零於腋中線。';
+  if(child){
+    const wt=parseFloat(document.getElementById('iah_wt').value);
+    let v='—';
+    if(!isNaN(wt) && wt>0) v='<b>'+Math.min(Math.max(wt*1, 3), 25).toFixed(1)+' mL</b>';
+    instil='兒童經膀胱灌注量 = <b>1 mL/kg</b>，最少 3 mL、最多 25 mL → 本例 '+v+'。測量條件同成人。';
+  }
+  document.getElementById('iah_instil').innerHTML=instil;
+
+  // 風險因子：任一項成立即觸發「應測 IAP」（Rec 1, 1C）；不加總計分
+  let rf=0; document.querySelectorAll('.iah-rf').forEach(cb=>{ if(cb.checked) rf++; });
+  document.getElementById('iah_rfout').innerHTML = rf===0
+    ? '尚未勾選風險因子。'
+    : '已勾選 <b>'+rf+'</b> 項風險因子 → <b>建議測量 IAP</b>（RECOMMEND, GRADE 1C）。項數本身無分數意義。';
+
+  // APP = MAP − IAP
+  const app=(!isNaN(iapRaw)&&!isNaN(mapRaw)) ? (mapRaw-iapRaw) : null;
+  document.getElementById('iah_app').textContent = (app===null)?'—':(app+' mmHg');
+
+  const gradeEl=document.getElementById('iah_grade');
+  const acsEl=document.getElementById('iah_acs');
+  const interpEl=document.getElementById('iah_interp');
+
+  if(isNaN(iapRaw)){
+    gradeEl.textContent='—'; acsEl.textContent='—';
+    interpEl.innerHTML='請輸入 IAP。';
+    return;
+  }
+
+  // IAH 閾值：成人 ≥12、兒童 >10
+  const iah = child ? (iapRaw>10) : (iapRaw>=12);
+  // ACS 閾值：成人 >20、兒童 >10；兩者均須合併新器官功能障礙
+  const acsThreshold = child ? (iapRaw>10) : (iapRaw>20);
+  const acs = acsThreshold && od;
+
+  // 分級：WSACS 兒科小組未採納成人 Grade I–IV，兒童模式不輸出分級
+  let grade='—';
+  if(child){
+    grade = iah ? 'IAH' : '正常';
+  } else if(iapRaw>25) grade='IV';
+  else if(iapRaw>=21) grade='III';
+  else if(iapRaw>=16) grade='II';
+  else if(iapRaw>=12) grade='I';
+  else grade='無 IAH';
+  gradeEl.textContent=grade;
+  acsEl.textContent = acs ? 'ACS 成立' : (iah ? '非 ACS' : '—');
+
+  let txt='';
+  if(!iah){
+    txt='IAP 未達'+(child?'兒童 IAH 閾值（&gt; 10 mmHg）':'IAH 閾值（≥ 12 mmHg）')+'。若存在風險因子仍應<b>持續序列監測</b>；IAP 持續 &lt; 12 mmHg 方可視為 IAH 已解除並停止測量。';
+  } else if(acs){
+    txt='<b>符合'+(child?'兒童 ':'')+'ACS</b>（IAP '+(child?'&gt; 10':'&gt; 20')+' mmHg 併新發生器官功能障礙）。先<b>辨識並治療 ACS 的病因</b>。';
+    if(cat==='primary'){
+      txt+='<br>屬 <b>Primary ACS</b> → 依 Fig 1 直接<b>執行或修正腹部減壓並施行暫時性關腹</b>（GRADE 2D）；WSACS 對明確 ACS 之減壓性剖腹為<b>建議（RECOMMEND, 1D）</b>。';
+    } else if(cat==='secondary'||cat==='recurrent'){
+      txt+='<br>屬 <b>'+(cat==='secondary'?'Secondary':'Recurrent')+' ACS</b> → 續行內科治療並每 4 小時測 IAP；<b>一旦 IAP &gt; 20 mmHg 併「進行性」器官衰竭即應減壓</b>（GRADE 2D）。此處的「進行性」是 Fig 1 的用字，臨床上請與整體惡化速度合併判斷，勿以此延誤明確 ACS 的減壓。';
+    } else {
+      txt+='<br>請於上方選擇 <b>Primary／Secondary／Recurrent</b> —— 此分類決定是直接減壓（primary）或先續行內科治療（secondary／recurrent）。';
+    }
+    txt+='<br>合併<b>平衡式復甦</b>（前負荷、收縮力、後負荷），並<b>避免過度液體復甦</b>（GRADE 2D）。';
+  } else {
+    txt='<b>符合 IAH，尚未達 ACS</b>（無可歸因於 IAP 的新器官功能障礙）。應立即<b>啟動階梯式內科治療降低 IAP</b>（GRADE 1C），並<b>至少每 4 小時</b>序列監測（1C），滴定至 <b>IAP ≤ 15 mmHg</b>。避免過度液體復甦、維持器官灌流。';
+    if(!child && iapRaw>20){
+      txt+='<br><b>注意：IAP 已 &gt; 20 mmHg。</b>目前僅因無器官功能障礙而不成立 ACS —— 此為<b>高危狀態</b>，請縮短監測間隔並準備減壓；一旦出現新器官功能障礙即為 ACS。';
+    }
+    txt+='<br>內科治療五大方向：排空腸腔內容物、排除腹腔占位性病灶、改善腹壁順應性、優化輸液、優化全身／區域灌流 —— 逐階升階，若某一階無反應即進入下一階。';
+  }
+
+  if(app!==null && app<60){
+    txt+='<br><span style="opacity:.85;">APP '+app+' mmHg（&lt; 60）。ACS 定義為「不論 APP 是否 &lt; 60」，且 WSACS 對以 APP 作為復甦目標<b>未做建議</b>，故此值僅供參考。</span>';
+  }
+  interpEl.innerHTML=txt;
+}
+
+document.querySelectorAll('#view-iah input, #view-iah select')
+  .forEach(el=>{ el.addEventListener('input',iahCalc); el.addEventListener('change',iahCalc); });
+iahCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
