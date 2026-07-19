@@ -87,11 +87,19 @@
 
   <div class="result">
     <div class="result-grid">
-      <div><div class="metric-label">Parkland</div><div class="metric-value big" id="cd_pgs_out">Grade 1</div></div>
-      <div><div class="metric-label">Nassar（修訂 I–V）</div><div class="metric-value big" id="cd_nas_out">Grade I</div></div>
+      <div class="metric-cell" id="cd_cell_p">
+        <div class="metric-label">Parkland<span class="metric-tag" id="cd_tag_p" hidden>以此為準</span></div>
+        <div class="metric-value big" id="cd_pgs_out">Grade 1</div>
+      </div>
+      <div class="metric-cell" id="cd_cell_n">
+        <div class="metric-label">Nassar（修訂 I–V）<span class="metric-tag" id="cd_tag_n" hidden>以此為準</span></div>
+        <div class="metric-value big" id="cd_nas_out">Grade I</div>
+      </div>
     </div>
-    <div class="metric-label" style="margin-top:12px;">判讀</div>
-    <div id="cd_interp" style="font-size:15px; margin-top:2px;"></div>
+    <div class="metric-label" style="margin-top:14px;">判讀</div>
+    <div class="result-headline" id="cd_head"></div>
+    <div class="result-body" id="cd_body"></div>
+    <ul class="result-notes" id="cd_notes"></ul>
     <table class="ref">
       <tr><th>Nassar</th><th>轉開腹</th><th>30 天併發症</th><th>總膽管損傷</th><th>手術時間中位數</th></tr>
       <tr><td>I</td><td>0.2%</td><td>7.6%</td><td>0.0%</td><td>55 分</td></tr>
@@ -126,19 +134,45 @@ function cdCalc(){
   const roman=['','I','II','III','IV','V'];
   document.getElementById('cd_nas_out').textContent='Grade '+roman[nas];
 
-  let msg='';
-  if(nas>=4 || pgs>=4){
-    msg='<b>高困難度。</b>轉開腹與膽道損傷風險顯著上升。應及早考慮 bailout：次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 critical view of safety 才切斷任何管狀構造；必要時術中膽道攝影或請求支援。';
-  } else if(nas===3 || pgs===3){
-    msg='<b>中等困難度。</b>多可完成腹腔鏡切除，但應預留較長手術時間，並在無法辨明膽囊管蒂時主動改採 bailout 策略。';
+  // 兩套分級取較高者為準：分級較低的那一套等於低估了這台刀的風險。
+  const govern = (pgs===nas) ? 'both' : (pgs>nas ? 'p' : 'n');
+  const cellP=document.getElementById('cd_cell_p'), cellN=document.getElementById('cd_cell_n');
+  const tagP=document.getElementById('cd_tag_p'), tagN=document.getElementById('cd_tag_n');
+  cellP.classList.toggle('metric-pick', govern!=='n');
+  cellN.classList.toggle('metric-pick', govern!=='p');
+  cellP.classList.toggle('is-muted', govern==='n');
+  cellN.classList.toggle('is-muted', govern==='p');
+  tagP.hidden = (govern==='n');
+  tagN.hidden = (govern==='p');
+  tagP.textContent = tagN.textContent = (govern==='both') ? '兩者一致' : '以此為準';
+
+  const worstGrade=Math.max(pgs,nas);
+  let head, body;
+  if(worstGrade>=4){
+    head='高困難度';
+    body='轉開腹與膽道損傷風險顯著上升。應<b>及早</b>考慮 bailout：次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 critical view of safety 才切斷任何管狀構造；必要時術中膽道攝影或請求支援。';
+  } else if(worstGrade===3){
+    head='中等困難度';
+    body='多可完成腹腔鏡切除，但應預留較長手術時間，並在無法辨明膽囊管蒂時主動改採 bailout 策略。';
   } else {
-    msg='<b>低困難度。</b>預期為單純腹腔鏡膽囊切除。';
+    head='低困難度';
+    body='預期為單純腹腔鏡膽囊切除。';
   }
-  if(g5) msg+='<br>※ 已勾選 Grade V（Mirizzi type ≥2 或膽囊腸道／皮膚瘻管）：屬瘻管性病灶，需計畫性處理瘻管與膽道重建的可能，不宜視為一般困難膽囊。';
-  if(pgs===4) msg+='<br>※ Parkland Grade 4 可能來自「解剖因素」而非外觀嚴重度（異常肝解剖、肝內膽囊、嵌頓結石）——外觀溫和不代表安全。';
-  const gap=Math.abs(pgs-nas);
-  if(gap>=2) msg+='<br>※ 兩套分級落差達 '+gap+' 級：Parkland 不評估膽囊管蒂，而膽道損傷風險正在於此。若 Nassar 較高，以 Nassar 為準。';
-  document.getElementById('cd_interp').innerHTML=msg;
+  document.getElementById('cd_head').textContent=head;
+  document.getElementById('cd_body').innerHTML=body;
+
+  const notes=[];
+  if(govern==='both'){
+    notes.push('兩套分級級數相同，判讀一致。');
+  } else {
+    const name = govern==='p' ? 'Parkland' : 'Nassar';
+    const gap=Math.abs(pgs-nas);
+    notes.push('<b>以 '+name+' 為準</b>（兩者相差 '+gap+' 級）：取較高者，因為分級較低的那一套等於低估了這台刀的風險。'
+      + (govern==='n' ? 'Parkland 不評估膽囊管蒂，而膽道損傷風險正在於此。' : 'Nassar 不評估膽囊本身的發炎嚴重度與解剖變異。'));
+  }
+  if(g5) notes.push('已勾選 <b>Grade V</b>（Mirizzi type ≥2 或膽囊腸道／皮膚瘻管）：屬瘻管性病灶，需計畫性處理瘻管與膽道重建的可能，<b>不宜視為一般困難膽囊</b>。');
+  if(pgs===4) notes.push('<b>Parkland Grade 4</b> 可能來自「解剖因素」而非外觀嚴重度（異常肝解剖、肝內膽囊、嵌頓結石）——外觀溫和不代表安全。');
+  document.getElementById('cd_notes').innerHTML = notes.map(function(n){return '<li>'+n+'</li>';}).join('');
 }
 document.querySelectorAll('#view-choledx select, #view-choledx input[type=checkbox]').forEach(el=>el.addEventListener('change',cdCalc));
 cdCalc();

@@ -271,6 +271,19 @@
   .metric-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:#9fb3ae; margin-bottom:3px;}
   .metric-value{font-family:var(--serif); font-size:32px; color:#fff; font-weight:600;}
   .metric-value.big{font-size:44px;}
+  /* 並列指標中標出「應以何者為準」（如 Parkland vs Nassar 取較高者）。
+     .result 面板恆為深色，故此處色值與該面板同組，不走亮/暗色 token。 */
+  .metric-cell{border:1px solid transparent; border-left:3px solid transparent; border-radius:2px; padding:7px 10px; margin:-7px -10px;}
+  .metric-cell.metric-pick{border-color:#3f6b78; border-left-color:#7cbccc; background:#1a2c33;}
+  .metric-cell.metric-pick .metric-value{color:#bfe3ec;}
+  .metric-cell.is-muted .metric-value{color:#8fa2a8;}
+  .metric-tag{display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:.06em; text-transform:uppercase; color:#132126; background:#7cbccc; border-radius:8px; padding:1px 7px; margin-left:6px; vertical-align:middle;}
+  /* display 會蓋掉 hidden 屬性（UA 的 display:none 優先度較低），故明寫 */
+  .metric-tag[hidden]{display:none;}
+  .result-headline{font-family:var(--serif); font-size:18px; color:#fff; font-weight:600; margin-top:2px;}
+  .result-body{font-size:13.5px; line-height:1.75; color:#e4e0d4; margin-top:5px;}
+  .result-notes{margin:9px 0 0; padding-left:16px; font-size:12.5px; line-height:1.7; color:#c9c4b4;}
+  .result-notes li{margin:5px 0;}
   table.ref{width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;}
   table.ref th,table.ref td{border-bottom:1px solid #2a3a3a; padding:5px 6px; text-align:left; color:#c9c4b4;}
   table.ref th{color:#fff; font-family:var(--mono); font-size:11px;}
