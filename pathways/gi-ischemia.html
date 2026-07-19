@@ -93,7 +93,7 @@
       ・<b>Rec 38（IIb/C）</b>：經皮支架不可行時可考慮<b>逆行開放式腸繫膜支架 (ROMS)</b>。<br>
       ・<b>Rec 36（IIa/C）</b>：開放式重建後應以術中血管攝影、duplex 或 Doppler 做完成度確認。<br>
       ・<b>Rec 39（IIb/C）</b>：可考慮以<b>定量 ICG 螢光影像</b>輔助判斷腸段活性。<br>
-      ・<b>Rec 40（IIa/C）</b>：需切除腸段者，應考慮<b>切除但不做一期重建 + 計畫性 second-look 剖腹</b>；暫時性關腹可用負壓傷口治療裝置。<br>
+      ・<b>Rec 40（IIa/C）</b>：需切除腸段者，應考慮<b>切除但不做重建 + 計畫性 second-look 剖腹</b>；暫時性關腹可用負壓傷口治療裝置。<br>
       ・<b>Rec 44（I/C）</b>：懷疑 NOMI 且合併腹腔室症候群者，<b>緊急減壓剖腹</b>。<br>
       ・<b>Rec 45（IIb/C）</b>：NOMI 可考慮於<b>保護性肝素化下</b>經 SMA 導管內給予血管擴張劑。<br><br>
 
@@ -343,7 +343,7 @@ function giRender(){
     else if(a==='perit'){
       cls='rec-urgent'; title='立即剖腹／腹腔鏡探查 + 損害控制手術 (DCS)';
       detail='<li>明顯腹膜炎者<b>立即</b>探查（WSES 1C）；ESVS Rec 35（IIa/C）建議<b>先血流重建再切除腸段</b>，灌流恢復後界線才判得準。</li>'+
-             '<li>需切除者採 <b>ESVS Rec 40（IIa/C）</b>：切除但<b>不做一期重建</b>，暫時性關腹（可用負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再做確定性處置。</li>'+
+             '<li>需切除者採 <b>ESVS Rec 40（IIa/C）</b>：切除但<b>不做重建</b>，暫時性關腹（可用負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再做確定性處置。</li>'+
              (s==='emb'?'<li><b>AMAE：</b>同次手術行 SMA 栓子切除術 (embolectomy) ± 血管成形術；已有腹膜炎者不適合單純血管內抽吸取栓。開放式重建後應以術中血管攝影／duplex／Doppler 確認完成度（ESVS Rec 36）。</li>':'')+
              (s==='thr'?'<li><b>AMAT：</b>經皮支架不可行時行<b>逆行開放式腸繫膜支架 ROMS</b>（ESVS Rec 38, IIb/C），可在壞死腸段存在時避免繞道（技術成功率約 94%）；或自 supraceliac aorta 順行／infrarenal aorta・髂動脈逆行繞道、血栓內膜切除 + 補片。</li>':'')+
              (s==='nomi'?'<li><b>NOMI：通常不需血管修補</b>；手術目的為切除壞死腸段，同時全力矯正誘因（優化心輸出、移除升壓劑、處理低血流狀態）。合併<b>腹腔室症候群者緊急減壓剖腹</b>（ESVS Rec 44, I/C）。</li>':'')+
@@ -479,14 +479,14 @@ function giRender(){
   if(toOR && giSt.op){
     const isCI = (t==='ci');
     if(giSt.op==='seg'){
-      c2='rec-elective'; t2 = isCI ? '節段性大腸切除 + 末端造口（預設不做吻合）' : '切除壞死腸段，不做一期重建 + 計畫性 second-look';
+      c2='rec-elective'; t2 = isCI ? '節段性大腸切除 + 末端造口（預設不做吻合）' : '切除壞死腸段，不做重建 + 計畫性 second-look';
       d2 = isCI
         ? '<li><b>預設 Hartmann／末端造口。</b>三個手術世代中造口率 61–87%；NSQIP 中做吻合的（已是最穩定的一群）<b>滲漏率仍達 32.3%</b>。吻合僅限血行動力學穩定、切緣確定有活性、無腹膜炎者，並考慮保護性造口。</li>'+
           '<li><b>切除範圍要夠寬：</b>黏膜傷害可超出漿膜外觀，單靠肉眼視診結腸不足 — 建議<b>當場剖開切除標本檢視黏膜</b>確認切緣健康。切緣有缺血變化者主要外科併發症 <b>OR 3.7</b>。</li>'+
           '<li>若病因為<b>阻塞性大腸癌</b>：缺血段在腫瘤近端且術中可外觀正常，<b>納入吻合會導致崩解</b>；近端結腸缺血是 (次)全結腸切除的適應症，colon-sparing（迴盲部切除 + 迴結腸吻合）為結果相當的替代。</li>'+
           '<li>若病因為<b>糞石 (stercoral)</b>：本病侵犯的是一整段結腸而非單一穿孔點；切除病變段 + 外置之死亡率 32%，優於縫合加近端造口 57%。</li>'+
           '<li>術後加護照護，持續廣效抗生素並矯正心血管異常。</li>'
-        : '<li><b>ESVS Rec 40（IIa/C）：切除但不做一期重建</b>，暫時性關腹（負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再決定吻合或造口（WSES 1B）。血行不穩或需升壓劑時<b>不做吻合</b>。</li>'+
+        : '<li><b>ESVS Rec 40（IIa/C）：切除但不做重建</b>，暫時性關腹（負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再決定吻合或造口（WSES 1B）。血行不穩或需升壓劑時<b>不做吻合</b>。</li>'+
           '<li>ESVS Rec 35：先完成血流重建再判定切除範圍，確保切緣灌流；開放式重建後以術中血管攝影／duplex／Doppler 確認（Rec 36）。</li>'+
           '<li>可用<b>定量 ICG 螢光影像</b>輔助判斷腸段活性（ESVS Rec 39, IIb/C）。</li>'+
           '<li>術後加護目標為改善腸道灌流、預防多器官衰竭（WSES 1C），並維持抗凝（aPTT 40–60 秒）。</li>';
@@ -516,6 +516,22 @@ function giReset(){
   giRender();
 }
 giReset();
+
+/* 跨頁保存／還原選項（供 RADIAL Score 往返使用） */
+function giSave(){try{sessionStorage.setItem('giSt',JSON.stringify(giSt));}catch(e){}}
+function giRestore(){try{
+  var s=JSON.parse(sessionStorage.getItem('giSt')||'null'); if(!s) return;
+  Object.assign(giSt,s);
+  Object.keys(giSt).forEach(function(k){
+    var v=giSt[k]; if(v==null) return;
+    var b=document.querySelector('#view-gi-isch-path .flow-opt[onclick*="giPick(\''+k+'\',\''+v+'\'"]');
+    if(b) b.classList.add('selected');
+  });
+  giRender();
+}catch(e){}}
+var _giPickBase=giPick; giPick=function(k,v,btn){ _giPickBase(k,v,btn); giSave(); };
+var _giResetBase=giReset; giReset=function(){ try{sessionStorage.removeItem('giSt');}catch(e){} _giResetBase(); };
+giRestore();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

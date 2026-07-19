@@ -19,7 +19,10 @@
 <div class="view active" id="view-pulp">
   <div class="app-header">
     <div><div class="eyebrow">Peptic Ulcer Perforation Scoring Tool</div><h1>PULP Score</h1><div class="sub">Peptic Ulcer Perforation Score（預測穿孔性消化性潰瘍30天死亡率）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-pulp'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="pulp_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-perforation.html'">← 返回腸胃道穿孔決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-pulp'">← 返回主選單</button>
+    </div>
   </div>
   <div class="card">
     <div class="field-row" style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--line);"><label>ASA 分級</label>
@@ -64,6 +67,10 @@ function pulpCalc(){
 document.querySelectorAll('.pulp-cb').forEach(cb=>cb.addEventListener('change',pulpCalc));
 document.getElementById('pulp_asa').addEventListener('change',pulpCalc);
 pulpCalc();
+</script>
+<script>
+/* 由腸胃道穿孔決策流程開啟時，顯示暫時性返回鍵 */
+if(location.search.indexOf('from=gi-perf')>=0){var _b=document.getElementById('pulp_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

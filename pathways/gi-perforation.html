@@ -79,7 +79,7 @@
       <button class="flow-opt" onclick="gpPick('ppu','op',this)">有手術指徵<span class="fo-sub">顯著氣腹、顯影劑外滲，或腹膜炎徵象（1C）</span></button>
       <button class="flow-opt" onclick="gpPick('ppu','nom',this)">極選擇性非手術 (NOM) 條件<span class="fo-sub">水溶性顯影劑證實穿孔<b>已封閉</b>、生命徵象正常、無腹膜炎／敗血症（2C）</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/pulp.html'">🧮 開啟 PULP Score（PPU 30 天死亡率）</button>
+    <button class="flow-link" onclick="location.href='../tools/pulp.html?from=gi-perf'">🧮 開啟 PULP Score（PPU 30 天死亡率）</button>
   </div>
 
   <div class="flow-connector hidden" id="gp_c3">↓</div>
@@ -113,7 +113,7 @@
       <button class="flow-opt" onclick="gpPick('fit','fit',this)">穩定且無重大共病<span class="fo-sub">可承受吻合</span></button>
       <button class="flow-opt" onclick="gpPick('fit','unfit',this)">危重／不穩定／多重共病<span class="fo-sub">敗血性休克、需升壓劑或多重器官障礙</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/mpi.html'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
+    <button class="flow-link" onclick="location.href='../tools/mpi.html?from=gi-perf'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
   </div>
 
   <!-- ICP -->
@@ -134,7 +134,7 @@
       <button class="flow-opt" onclick="gpPick('sb','stable',this)">穩定、污染有限<span class="fo-sub">無需升壓劑，污染侷限</span></button>
       <button class="flow-opt" onclick="gpPick('sb','unstable',this)">血行不穩／瀰漫污染／生理失衡<span class="fo-sub">敗血性休克、糞性腹膜炎、酸中毒・低體溫・凝血異常</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/mpi.html'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
+    <button class="flow-link" onclick="location.href='../tools/mpi.html?from=gi-perf'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="gp_rec">
@@ -292,7 +292,7 @@ function gpRender(){
     } else if(i==='op'){
       cls='rec-urgent'; title='手術治療（具技術時腹腔鏡優先）';
       detail='<li>指徵：腹膜炎徵象、臨床惡化、大穿孔、保守失敗、腸道準備不良，或合併需手術之大腸疾病（如疑癌未切除息肉）。</li>'+
-             '<li>術式依所見選擇：一次縫合修補、楔形切除、穿孔外置造口，或大腸切除 ± 吻合／造口。</li>'+
+             '<li>術式依所見選擇：縫合修補、楔形切除、穿孔外置造口，或大腸切除 ± 吻合／造口。</li>'+
              '<li>腸道準備不良、污染嚴重或病人不穩定時<b>避免吻合</b>，改採造口。</li>'+resus+abx;
       note='WSES ICP 2017：應盡早處置，腹腔鏡為優先入路。';
     }
@@ -326,11 +326,11 @@ function gpRender(){
   if(toOR && gpSt.size){
     const dcs = (gpSt.hemo==='unstable');
     if(gpSt.size==='small'){
-      c2='rec-elective'; t2='一次縫合修補 (primary repair)';
-      d2='<li>穿孔 &lt;2 cm 行一次縫合修補；是否加<b>網膜貼補 (omental patch)</b> 無定論，可選擇性用於邊緣脆弱之潰瘍（2C）。</li>'+
+      c2='rec-elective'; t2='縫合修補 (primary repair)';
+      d2='<li>穿孔 &lt;2 cm 行縫合修補；是否加<b>網膜貼補 (omental patch)</b> 無定論，可選擇性用於邊緣脆弱之潰瘍（2C）。</li>'+
          '<li>取潰瘍邊緣切片（尤其胃潰瘍）以排除惡性。</li>'+
          '<li>術後 PPI、H. pylori 檢測與根除、停用 NSAID。</li>';
-      n2='WSES 2020（PPU）：&lt;2 cm 一次修補（2C）。';
+      n2='WSES 2020（PPU）：&lt;2 cm 縫合修補（2C）。';
     } else if(gpSt.size==='gastric'){
       c2='rec-urgent'; t2='胃穿孔 ≥2 cm：疑惡性者切除 + 術中冰凍病理';
       d2='<li>疑惡性者<b>切除 + 術中冰凍病理</b>；必要時行胃切除並重建（2D）。</li>'+
@@ -354,6 +354,22 @@ function gpReset(){
   gpRender();
 }
 gpReset();
+
+/* 跨頁保存／還原選項（供 PULP／MPI 往返使用） */
+function gpSave(){try{sessionStorage.setItem('gpSt',JSON.stringify(gpSt));}catch(e){}}
+function gpRestore(){try{
+  var s=JSON.parse(sessionStorage.getItem('gpSt')||'null'); if(!s) return;
+  Object.assign(gpSt,s);
+  Object.keys(gpSt).forEach(function(k){
+    var v=gpSt[k]; if(v==null) return;
+    var b=document.querySelector('#view-gi-perf-path .flow-opt[onclick*="gpPick(\''+k+'\',\''+v+'\'"]');
+    if(b) b.classList.add('selected');
+  });
+  gpRender();
+}catch(e){}}
+var _gpPickBase=gpPick; gpPick=function(k,v,btn){ _gpPickBase(k,v,btn); gpSave(); };
+var _gpResetBase=gpReset; gpReset=function(){ try{sessionStorage.removeItem('gpSt');}catch(e){} _gpResetBase(); };
+gpRestore();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
