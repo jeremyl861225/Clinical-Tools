@@ -20,6 +20,7 @@ const PRECACHE_URLS = [
   './js/common.js',
   './js/pull-to-refresh.js',
   './js/search.js',
+  './js/pixel-cat.js',
   './js/antibiotics.js',
   './js/cancer-staging.js',
   './js/gastric-pathway.js',

@@ -37,12 +37,15 @@
 </defs></svg>
 <div class="sheet">
 <div class="view active" id="view-home">
-  <div class="app-header">
-    <div>
+  <div class="app-header home-header">
+    <div class="home-title">
       <div class="eyebrow">Clinical Toolbox</div>
       <h1>臨床工具箱</h1>
-      <div class="sub">Established by Lin Shao-Chin, latest revision 2026.07.19</div>
+      <div class="sub">Established by Lin Shao-Chin · latest revision 2026.07.19</div>
     </div>
+    <!-- 像素貓的活動範圍：貓腳底＝本區塊底緣＝標題橫桿（見 js/pixel-cat.js）。
+         這條空白帶同時把橫桿與上方文字拉開，貓不會壓到 .sub。 -->
+    <div class="cat-strip" id="cat-strip"><canvas id="cat-canvas"></canvas></div>
   </div>
 
   <div class="gs-box">
@@ -400,6 +403,7 @@
     window.addEventListener('popstate', route);
   })();
 </script>
+<script src="./js/pixel-cat.js" defer></script>
 <script src="./js/search.js"></script>
 <script src="./js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
