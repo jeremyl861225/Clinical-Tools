@@ -111,12 +111,14 @@ function familyBar(id){
 }
 
 /* 切換家族成員時沿用目前分頁——使用者在比對「四種婦癌的淋巴結」時，
-   不該每換一個癌別就被丟回分期頁。 */
+   不該每換一個癌別就被丟回分期頁。
+   刻意不依賴任何跨癌別的分頁狀態變數：先從 DOM 讀目前分頁，重繪後再切回去，
+   如此本函式自足，不與其他機制耦合。 */
 function setFamilyMember(id){
   var cur = document.querySelector('.onc-tab.active');
-  var tab = cur ? cur.getAttribute('data-t') : null;
-  if(tab) ACTIVE_TAB[id] = tab;
+  var tab = cur ? cur.getAttribute('data-t') : 'stage';
   showDetail(id, true);
+  switchTab(id, tab);
 }
 
 /* ---------- 子分型（同一癌別下依部位分流）----------
