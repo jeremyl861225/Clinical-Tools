@@ -3,6 +3,10 @@
  * ＋ 感染部位 SITES ＋ 癌症 CANCERS。
  * 資料檔（drugs.js 約 316K）於首次聚焦搜尋欄時才載入，首頁初始載入維持輕量；
  * 這些檔案皆已列入 SW 預快取，離線時亦可即時取得。
+ *
+ * 另建「頁面內文」索引：許多分型／評分（Niemeier、Csendes、Björck…）只出現在工具或
+ * 流程頁的內文，卡片名稱與說明查不到。故於背景抓取各頁 HTML 取出純文字（含流程頁
+ * <script> 內的建議字串），比對後以命中片段呈現。頁面皆在 SW 預快取內，離線同樣可查。
  */
 (function () {
   'use strict';
@@ -14,7 +18,8 @@
     site:     { label: '感染部位', order: 3 },
     bacteria: { label: '病原菌',   order: 4 },
     drug:     { label: '藥物',     order: 5 },
-    cancer:   { label: '癌症',     order: 6 }
+    cancer:   { label: '癌症',     order: 6 },
+    text:     { label: '頁面內文', order: 9 }
   };
 
   var DATA_FILES = [
@@ -24,8 +29,12 @@
   ];
 
   var MAX_HITS = 50;      // 單次最多顯示筆數（超過時提示縮小範圍）
+  var MAX_TEXT_HITS = 12; // 內文命中最多列出的頁數
+  var MIN_TEXT_Q = 2;     // 單一字元不做內文搜尋（雜訊過多）
   var idx = null;         // 索引；null = 尚未建立
   var loading = null;     // 載入中的 Promise，避免重複載入
+  var ftPages = null;     // 內文索引；null = 尚未建立
+  var ftLoading = null;
   var input, results, groupsWrap;
 
   /* ---- 資料載入 ---- */
@@ -220,10 +229,10 @@
   }
 
   function search(q) {
-    var hits = [];
+    var hits = [], urls = {};
     idx.forEach(function (item) {
       var s = scoreOf(item, q);
-      if (s > 0) hits.push({ item: item, score: s });
+      if (s > 0) { hits.push({ item: item, score: s }); urls[item.url.split('#')[0]] = 1; }
     });
     hits.sort(function (a, b) {
       if (b.score !== a.score) return b.score - a.score;
@@ -231,7 +240,92 @@
       if (ta !== tb) return ta - tb;
       return a.item.label.localeCompare(b.item.label);
     });
-    return { total: hits.length, items: hits.slice(0, MAX_HITS).map(function (h) { return h.item; }) };
+    return {
+      total: hits.length,
+      urls: urls,                     // 供內文搜尋排除已命中的頁面，避免同一頁重複列出
+      items: hits.slice(0, MAX_HITS).map(function (h) { return h.item; })
+    };
+  }
+
+  /* ---- 頁面內文（全文）索引 ---- */
+  // 索引對象＝首頁卡片與入口方磚指向的實際頁面；新增頁面自動納入，無須維護清單
+  function pageList() {
+    var seen = {}, out = [];
+    idx.forEach(function (it) {
+      if (it.type !== 'tool' && it.type !== 'pathway' && it.type !== 'guide') return;
+      var u = it.url.split('#')[0];
+      if (u.indexOf('.html') === -1 || seen[u]) return;
+      seen[u] = 1;
+      out.push({ url: u, label: it.label, en: it.en, type: it.type });
+    });
+    return out;
+  }
+
+  // 流程頁的建議文字寫在 <script> 的字串常值裡（title/detail/note），一併取出；
+  // 去掉標籤與 class 名稱，避免以原始碼比對造成的雜訊命中
+  function parsePage(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var lit = [];
+    doc.querySelectorAll('script').forEach(function (s) {
+      var m = s.textContent.match(/'[^'\n]{2,}'|"[^"\n]{2,}"|`[^`]{2,}`/g);
+      if (m) lit.push(m.join(' '));
+    });
+    doc.querySelectorAll('script, style, svg, noscript').forEach(function (n) { n.remove(); });
+    return {
+      text: (doc.body ? doc.body.textContent : '').replace(/\s+/g, ' ').trim(),
+      code: lit.join(' ').replace(/<[^>]*>/g, ' ').replace(/[`'"]/g, ' ')
+              .replace(/\s+/g, ' ').trim()
+    };
+  }
+
+  function loadFullText() {
+    if (ftLoading) return ftLoading;
+    ftLoading = Promise.all(pageList().map(function (p) {
+      return fetch(p.url).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      }).then(function (html) {
+        var parsed = parsePage(html);
+        p.text = parsed.text;
+        p.code = parsed.code;
+        return p;
+      }).catch(function () { return null; });   // 單頁抓不到不影響其餘結果
+    })).then(function (pages) {
+      ftPages = pages.filter(Boolean);
+    });
+    return ftLoading;
+  }
+
+  // 命中處前後各留一小段作為片段；回傳已跳脫並標示 <mark> 的 HTML
+  function snippet(text, q) {
+    var i = text.toLowerCase().indexOf(q);
+    if (i === -1) return null;
+    var start = Math.max(0, i - 34), end = Math.min(text.length, i + q.length + 60);
+    return (start > 0 ? '…' : '') + esc(text.slice(start, i)) +
+           '<mark class="gs-hl">' + esc(text.slice(i, i + q.length)) + '</mark>' +
+           esc(text.slice(i + q.length, end)) + (end < text.length ? '…' : '');
+  }
+
+  function searchFullText(q, skipUrls) {
+    var out = [];
+    (ftPages || []).forEach(function (p) {
+      if (skipUrls[p.url]) return;
+      var body = p.text || '', code = p.code || '';
+      var src = body, sn = snippet(body, q);
+      if (!sn) { src = code; sn = snippet(code, q); }
+      if (!sn) return;
+      out.push({
+        type: 'text', label: p.label, en: p.en, url: p.url, snippet: sn,
+        // 內文命中可用 Scroll-to-Text 直接捲到該處；瀏覽器不支援時僅開啟頁面
+        hash: '#:~:text=' + encodeURIComponent(src.substr(src.toLowerCase().indexOf(q), q.length)),
+        hits: src.toLowerCase().split(q).length - 1
+      });
+    });
+    out.sort(function (a, b) {
+      if (b.hits !== a.hits) return b.hits - a.hits;
+      return a.label.localeCompare(b.label);
+    });
+    return out.slice(0, MAX_TEXT_HITS);
   }
 
   /* ---- 畫面 ---- */
@@ -249,17 +343,22 @@
            '</mark>' + esc(s.slice(i + q.length));
   }
 
-  function render(q, res) {
+  // textHits：內文命中陣列；null = 內文索引仍在背景建立中
+  function render(q, res, textHits) {
     var hits = res.items;
-    if (!hits.length) {
-      results.innerHTML = '<div class="gs-empty">找不到符合「' + esc(q) + '」的工具、藥物、菌名或癌症。</div>';
+    var pending = (textHits === null && q.length >= MIN_TEXT_Q);
+    if (!hits.length && !(textHits && textHits.length)) {
+      results.innerHTML = '<div class="gs-empty">找不到符合「' + esc(q) + '」的工具、藥物、菌名或癌症。' +
+        (pending ? '<br><span class="gs-pending">正在搜尋各頁內文…</span>' : '') + '</div>';
       return;
     }
     var byType = {};
     hits.forEach(function (h) { (byType[h.type] = byType[h.type] || []).push(h); });
     var order = Object.keys(byType).sort(function (a, b) { return TYPES[a].order - TYPES[b].order; });
     var html = '<div class="gs-count">' + res.total + ' 筆結果' +
-      (res.total > hits.length ? '（顯示前 ' + hits.length + ' 筆，請輸入更完整的關鍵字）' : '') + '</div>';
+      (res.total > hits.length ? '（顯示前 ' + hits.length + ' 筆，請輸入更完整的關鍵字）' : '') +
+      (textHits && textHits.length ? ' · 另有 ' + textHits.length + ' 頁內文提及' : '') +
+      (pending ? ' · 內文搜尋中…' : '') + '</div>';
     order.forEach(function (t) {
       html += '<div class="gs-group-head">' + TYPES[t].label + '<span class="gs-group-n">' +
               byType[t].length + '</span></div>';
@@ -270,12 +369,35 @@
                 (h.sub ? '<span class="gs-sub">' + esc(h.sub) + '</span>' : '') + '</a>';
       });
     });
+    if (textHits && textHits.length) {
+      html += '<div class="gs-group-head">' + TYPES.text.label +
+              '<span class="gs-group-n">' + textHits.length + '</span></div>';
+      textHits.forEach(function (h) {
+        html += '<a class="gs-item gs-text" href="' + esc(h.url + h.hash) + '">' +
+                '<span class="gs-name">' + esc(h.label) +
+                (h.en ? '<span class="gs-en">' + esc(h.en) + '</span>' : '') +
+                (h.hits > 1 ? '<span class="gs-nhit">' + h.hits + ' 處</span>' : '') + '</span>' +
+                '<span class="gs-snip">' + h.snippet + '</span></a>';
+      });
+    }
     results.innerHTML = html;
   }
 
   function setActive(on) {
     results.classList.toggle('hidden', !on);
     groupsWrap.forEach(function (n) { n.classList.toggle('hidden', on); });
+  }
+
+  // 一般索引先出結果，內文索引（需抓取各頁）就緒後再補上該分組
+  function show(q) {
+    var res = search(q);
+    var ready = !!ftPages && q.length >= MIN_TEXT_Q;
+    render(q, res, ready ? searchFullText(q, res.urls) : null);
+    if (ftPages || q.length < MIN_TEXT_Q) return;
+    loadFullText().then(function () {
+      var cur = input.value.trim().toLowerCase();   // 抓取期間使用者可能已改字或清空
+      if (cur === q) show(q);
+    });
   }
 
   function onInput() {
@@ -286,16 +408,15 @@
       results.innerHTML = '<div class="gs-empty">載入資料中…</div>';
       loadData().then(function () {
         buildIndex();
-        // 載入期間使用者可能已改字或清空
         var cur = input.value.trim().toLowerCase();
-        if (cur) render(cur, search(cur)); else setActive(false);
+        if (cur) show(cur); else setActive(false);
       }).catch(function (e) {
         results.innerHTML = '<div class="gs-empty">資料載入失敗，請確認網路或重新整理。</div>';
         console.warn(e);
       });
       return;
     }
-    render(q, search(q));
+    show(q);
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -307,8 +428,13 @@
     groupsWrap = body ? [body] : Array.prototype.slice.call(
       document.querySelectorAll('.tool-group, .home-divider'));
 
-    // 聚焦即開始載入資料，使用者打完字時通常已就緒
-    input.addEventListener('focus', function () { loadData(); }, { once: true });
+    // 聚焦即開始載入資料並抓取各頁內文，使用者打完字時通常已就緒
+    input.addEventListener('focus', function () {
+      loadData().then(function () {
+        if (!idx) buildIndex();
+        loadFullText();
+      }).catch(function () {});
+    }, { once: true });
     input.addEventListener('input', onInput);
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') { input.value = ''; onInput(); input.blur(); }
