@@ -133,6 +133,14 @@
     </div>
   </div>
 
+  <div class="flow-step hidden" id="dv_s3b">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">宿主風險？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="dvPick('host','competent',this)">免疫健全<span class="fo-sub">無論有無全身性發炎徵象，處置相同——本分期一律給抗生素。<br>全身性發炎徵象係指：SIRS／頑固症狀或嘔吐／CRP &gt;14 mg/dL／WBC &gt;15 ×10⁹/L／ASA III–IV／症狀 &gt;5 天／frail／無法口服／無可靠追蹤（AGA BPA 7），此類病人給藥途徑與住院與否見建議卡。</span></button>
+      <button class="flow-opt" onclick="dvPick('host','immuno',this)">免疫低下<span class="fo-sub">長期類固醇、器官移植、惡性腫瘤治療中、慢性腎衰竭、其他免疫抑制劑（WSES 2D：非手術治療失敗之高風險）</span></button>
+    </div>
+  </div>
+
   <div class="flow-connector hidden" id="dv_c4">↓</div>
   <div class="flow-step hidden" id="dv_s4a">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">此膿瘍是否可行經皮引流（PCD）？</span></div>
@@ -146,8 +154,8 @@
   <div class="flow-step hidden" id="dv_s4b">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">免疫狀態與是否適合密切追蹤？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="dvPick('sel','nom',this)">免疫健全，且為可密切追蹤之選擇性病人<span class="fo-sub">血行動力學穩定、無瀰漫性腹膜炎、Douglas 窩無液體、遠端氣體量少，且可住院連續評估</span></button>
-      <button class="flow-opt" onclick="dvPick('sel','surg',this)">免疫健全，但不符選擇性條件<span class="fo-sub">不穩定、瀰漫性腹膜炎、大量遠端腹腔內或後腹膜氣體，或無法密切追蹤</span></button>
+      <button class="flow-opt" onclick="dvPick('sel','nom',this)">免疫健全、穩定<span class="fo-sub">血行動力學穩定、無瀰漫性腹膜炎、Douglas 窩無液體、遠端氣體量少，且可住院連續評估</span></button>
+      <button class="flow-opt" onclick="dvPick('sel','surg',this)">免疫健全、不穩定<span class="fo-sub">不穩定、瀰漫性腹膜炎、大量遠端腹腔內或後腹膜氣體，或無法密切追蹤</span></button>
       <button class="flow-opt" onclick="dvPick('sel','immuno',this)">免疫低下<span class="fo-sub">長期類固醇、器官移植、惡性腫瘤治療中、慢性腎衰竭、其他免疫抑制劑</span></button>
     </div>
   </div>
@@ -188,7 +196,7 @@ function dvPick(key,val,btn){
   if(key==='side'){ dvSt.side=val; dvSt.arcdDx=null; dvClearStage(); flowClearSel('dv_s1b'); }
   else if(key==='arcdDx'){ dvSt.arcdDx=val; dvClearStage(); }
   else if(key==='stage'){ dvSt.stage=val; dvSt.host=null; dvSt.drain=null; dvSt.sel=null; dvSt.phys=null;
-    ['dv_s3','dv_s4a','dv_s4b','dv_s4c'].forEach(flowClearSel); }
+    ['dv_s3','dv_s3b','dv_s4a','dv_s4b','dv_s4c'].forEach(flowClearSel); }
   else if(key==='host'){ dvSt.host=val; }
   else if(key==='drain'){ dvSt.drain=val; }
   else if(key==='sel'){ dvSt.sel=val; }
@@ -197,7 +205,7 @@ function dvPick(key,val,btn){
 }
 function dvClearStage(){
   dvSt.stage=null; dvSt.host=null; dvSt.drain=null; dvSt.sel=null; dvSt.phys=null;
-  ['dv_s2','dv_s3','dv_s4a','dv_s4b','dv_s4c'].forEach(flowClearSel);
+  ['dv_s2','dv_s3','dv_s3b','dv_s4a','dv_s4b','dv_s4c'].forEach(flowClearSel);
 }
 
 /* 右側憩室炎：附加於各建議卡的共同註記 */
@@ -240,22 +248,26 @@ function dvRender(){
   flowShow('dv_stage_section', showStage);
   if(!showStage){
     if(!showIntraop) flowRec('dv_rec','rec-idle','請由步驟 1 開始選擇','','');
-    ['dv_s3','dv_s4a','dv_s4b','dv_s4c','dv_c3','dv_c4'].forEach(function(id){ flowShow(id,false); });
+    ['dv_s3','dv_s3b','dv_s4a','dv_s4b','dv_s4c','dv_c3','dv_c4'].forEach(function(id){ flowShow(id,false); });
     flowShow('dv_fu_section', false);
     return;
   }
 
   const s=dvSt.stage;
   /* 宿主風險僅在 stage 0/1A/1B 會改變建議；2A 由可否引流決定、2B 由免疫狀態＋選擇性合併決定 */
-  const showHost = ['0','1a','1b'].indexOf(s)>=0;
+  /* stage 0 需區分有無全身性發炎徵象（決定給不給抗生素）；1A/1B 一律給抗生素，
+     故免疫健全的兩種情況合併為單一選項，僅與免疫低下區分 */
+  const showHost = (s==='0'), showHostB = (s==='1a'||s==='1b');
   const show4a = (s==='2a'), show4b = (s==='2b'), show4c = (s==='34');
   flowShow('dv_s3', showHost);
-  flowShow('dv_c3', showHost || show4a || show4b || show4c);
+  flowShow('dv_s3b', showHostB);
+  flowShow('dv_c3', showHost || showHostB || show4a || show4b || show4c);
   flowShow('dv_s4a', show4a);
   flowShow('dv_s4b', show4b);
   flowShow('dv_s4c', show4c);
   flowShow('dv_c4', false);
   if(!showHost) flowClearSel('dv_s3');
+  if(!showHostB) flowClearSel('dv_s3b');
   if(!show4a) flowClearSel('dv_s4a');
   if(!show4b) flowClearSel('dv_s4b');
   if(!show4c) flowClearSel('dv_s4c');
@@ -291,12 +303,12 @@ function dvRender(){
     else { title='請完成步驟 3'; }
   }
   else if(s==='1a'){
-    if(h==='well'||h==='sick'){ cls='rec-blue'; title='抗生素之非手術治療'; nom='uncomp';
+    if(h==='competent'){ cls='rec-blue'; title='抗生素之非手術治療'; nom='uncomp';
       detail='<li>CT 見<b>周邊（pericolic）腸外氣體</b>者，建議嘗試以抗生素進行非手術治療（WSES 2C）。</li>'+
              '<li>住院密切觀察臨床與發炎指標；惡化即重新影像評估並考慮引流／手術。</li>'+
              dvAbx('iv')+dvAbx('po')+
-             '<li class="ev">證據：DIABOLO 次分析（n=109，單純周邊氣體）非手術治療失敗率 8%；給抗生素組 13% vs 未給組 4%（p=0.083）；僅就診時 CRP 上升為失敗之獨立預測因子。事件數少，周邊氣體者是否真的需要抗生素仍不確定；WSES 基於敗血症風險採較保守立場。</li>'+
-             (h==='sick'?'<li>合併全身性發炎徵象者先住院靜脈給藥，再依反應轉口服。</li>':'');
+             '<li><b>合併全身性發炎徵象者先住院靜脈給藥，再依反應轉口服。</b></li>'+
+             '<li class="ev">證據：DIABOLO 次分析（n=109，單純周邊氣體）非手術治療失敗率 8%；給抗生素組 13% vs 未給組 4%（p=0.083）；僅就診時 CRP 上升為失敗之獨立預測因子。事件數少，周邊氣體者是否真的需要抗生素仍不確定；WSES 基於敗血症風險採較保守立場。</li>';
       note='WSES 2020：Stage 1A 之腸外周邊氣體不等同須手術（2C）。'; }
     else if(h==='immuno'){ cls='rec-blue'; title='住院 ＋ 抗生素，密切監測（失敗高風險）'; nom='uncomp';
       detail='<li>抗生素之非手術治療仍為起始策略（2C），但免疫低下為失敗高風險（2D）。</li>'+
@@ -306,10 +318,11 @@ function dvRender(){
     else { title='請完成步驟 3'; }
   }
   else if(s==='1b'){
-    if(h==='well'||h==='sick'){ cls='rec-blue'; title='單用抗生素之非手術治療（膿瘍 ≤4 cm）'; nom='abscess';
+    if(h==='competent'){ cls='rec-blue'; title='單用抗生素之非手術治療（膿瘍 ≤4 cm）'; nom='abscess';
       detail='<li>小膿瘍初期可<b>單用抗生素</b>之非手術治療，不需常規引流（WSES 2C）。</li>'+
              '<li>住院觀察；未改善或膿瘍擴大 → 改行經皮引流。</li>'+
              dvAbx('iv')+
+             '<li><b>合併全身性發炎徵象者先住院靜脈給藥，再依反應轉口服。</b></li>'+
              '<li class="ev">證據：Siewert 2006 中 &lt;3 cm 之 23 個膿瘍全數以抗生素緩解；Mali 2019 中 &lt;40 mm 者失敗率 13%（成功率 87%）。</li>';
       note='⚠️ <b>切點有學會間歧異：</b>ASCRS 2020 主張 <b>&gt;3 cm 即引流（1B，強建議）</b>；WSES 2020 主張 <b>&lt;4–5 cm 單用抗生素（2C，弱建議）</b>。此議題<b>從未有隨機試驗</b>——同一份零 RCT 的證據被給予 1B 與 2C 兩種強度，本身即說明它是共識而非實證。'; }
     else if(h==='immuno'){ cls='rec-blue'; title='單用抗生素起始，但降低引流／手術閾值'; nom='abscess';
