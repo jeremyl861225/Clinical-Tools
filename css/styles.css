@@ -288,6 +288,8 @@
   table.ref{width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;}
   table.ref th,table.ref td{border-bottom:1px solid #2a3a3a; padding:5px 6px; text-align:left; color:#c9c4b4;}
   table.ref th{color:#fff; font-family:var(--mono); font-size:11px;}
+  /* 標出病人目前落點的那一列（底色沿用 .breakdown 的深色格） */
+  table.ref tr.ref-current td{color:#fff; font-weight:700; background:#1f2e2e;}
   .risk-note{font-size:12px; color:#c9c4b4; margin-top:12px; border-top:1px solid #2a3a3a; padding-top:10px;}
   .breakdown{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; font-family:var(--mono); font-size:12px; color:#c9c4b4; margin-bottom:14px;}
   .breakdown div{background:#1f2e2e; padding:6px 8px; border-radius:2px;}

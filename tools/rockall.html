@@ -84,32 +84,20 @@
 
   <div class="result">
     <div class="result-grid">
-      <div><div class="metric-label">內視鏡前 (0–7)</div><div class="metric-value" id="rk_pre">0</div></div>
-      <div><div class="metric-label">完整 (0–11)</div><div class="metric-value" id="rk_full">0</div></div>
+      <div><div class="metric-label" id="rk_score_label">內視鏡前 Rockall (0–7)</div><div class="metric-value big" id="rk_score">0</div></div>
+      <div><div class="metric-label">對應死亡率</div><div class="metric-value big" id="rk_mort">0.2%</div></div>
     </div>
+    <div id="rk_rebleed_wrap"><div class="metric-label">對應再出血率</div>
+      <div class="metric-value" id="rk_rebleed" style="margin-bottom:10px;">—</div></div>
     <div class="metric-label">臨床判讀</div>
     <div id="rk_interp" style="font-size:15px; margin-top:2px;">請輸入年齡與生命徵象</div>
-    <table class="ref">
-      <tr><th>內視鏡前分數</th><th>死亡率</th><th>完整分數</th><th>死亡率</th></tr>
-      <tr><td>0</td><td>0.2%</td><td>0</td><td>0%</td></tr>
-      <tr><td>1</td><td>2.4%</td><td>1</td><td>0%</td></tr>
-      <tr><td>2</td><td>5.6%</td><td>2</td><td>0.2%</td></tr>
-      <tr><td>3</td><td>11.0%</td><td>3</td><td>2.9%</td></tr>
-      <tr><td>4</td><td>24.6%</td><td>4</td><td>5.3%</td></tr>
-      <tr><td>5</td><td>39.6%</td><td>5</td><td>10.8%</td></tr>
-      <tr><td>6</td><td>48.9%</td><td>6</td><td>17.3%</td></tr>
-      <tr><td>7</td><td>50.0%</td><td>7</td><td>27.0%</td></tr>
-      <tr><td>—</td><td>—</td><td>8+</td><td>41.1%</td></tr>
-    </table>
-    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
-      <tr><th>完整分數</th><th>再出血率</th></tr>
-      <tr><td>0</td><td>4.9%</td></tr><tr><td>1</td><td>3.2%</td></tr><tr><td>2</td><td>5.3%</td></tr>
-      <tr><td>3</td><td>11.3%</td></tr><tr><td>4</td><td>14.4%</td></tr><tr><td>5</td><td>18.3%</td></tr>
-      <tr><td>6</td><td>32.7%</td></tr><tr><td>7</td><td>42.3%</td></tr><tr><td>8+</td><td>53.2%</td></tr>
-    </table>
-    <div class="note">上列再出血率係<b>由原始論文 Table IV 的病人數與再出血人數重新計算</b>而得。原文印出的百分比在兩格與其分子分母不符（分數 5 印 24.1% 但 83/453＝18.3%；分數 8+ 印 41.8% 但 101/190＝53.2%），研判為 1996 年排版誤植，故此處採可對帳的計算值。死亡率各格則與原文完全吻合，直接引用。</div>
-    </div></details>
-    <div class="risk-note">死亡率與再出血率取自 Rockall 1996 年英國全國性前瞻研究（n=4185 推導、1625 驗證）之族群統計，為 1990 年代初期的照護水準；現代 PPI 與內視鏡止血普及後實際死亡率較低，宜視為相對風險分層而非絕對預測值。內視鏡前分數 0 分或完整分數 ≤2 分者再出血與死亡風險極低，原文即建議可考慮早期出院或門診治療。</div>
+    <table class="ref" id="rk_table"></table>
+    <div class="risk-note">
+      <b>死亡率與再出血率取自 Rockall 1996 年英國全國性前瞻研究（n=4185 推導、1625 驗證）之族群統計，僅供參考。</b>
+      該研究反映 1990 年代初期的照護水準；現代高劑量 PPI 與內視鏡止血普及後，實際死亡率明顯低於表列數字。請視為<b>相對風險分層</b>，不要當成個別病人的絕對機率預測。<br><br>
+      <b>再出血率為重新計算值</b>：係由原始論文 Table IV 的病人數與再出血人數回推而得。原文印出的百分比有兩格與其分子分母不符（分數 5 印 24.1%，但 83/453＝18.3%；分數 8+ 印 41.8%，但 101/190＝53.2%），研判為 1996 年排版誤植，故此處採可對帳的計算值。死亡率各格則與原文完全吻合，直接引用。<br><br>
+      內視鏡前 0 分、或完整分數 ≤2 分者，再出血與死亡風險極低，原文即建議可考慮早期出院或門診治療。
+    </div>
   </div>
   <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="rkReset()">重置</button></div>
   <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/8675081/" target="_blank" rel="noopener" class="ref-link">Rockall TA, Logan RF, Devlin HB, Northfield TC. Gut. 1996;38(3):316-21.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28053181/" target="_blank" rel="noopener" class="ref-link">Stanley AJ, et al. BMJ. 2017;356:i6432.</a></footer>
@@ -148,8 +136,20 @@ function rkCalc(){
 
   const pre=pAge+pShock+pCom;
   const full=pre+pDx+pSrh;
-  document.getElementById('rk_pre').textContent=pre;
-  document.getElementById('rk_full').textContent=noScope?'—':full;
+
+  /* 兩段分數擇一顯示：尚未內視鏡時只有內視鏡前分數有意義，
+     做過內視鏡後完整分數才是該用的那一個（Rockall 1996 Table IV 亦分開列表） */
+  const score = noScope ? pre : full;
+  document.getElementById('rk_score_label').textContent = noScope ? '內視鏡前 Rockall (0–7)' : '完整 Rockall (0–11)';
+  document.getElementById('rk_score').textContent = score;
+
+  const row = noScope ? RK_PRE[pre] : RK_FULL[Math.min(full,8)];   /* 完整分數 8 以上併為 8+ */
+  document.getElementById('rk_mort').textContent = row.mort;
+  document.getElementById('rk_rebleed').textContent = row.rb || '—';
+  /* 再出血率只有完整分數版本有（原文僅就完整分數列出） */
+  document.getElementById('rk_rebleed_wrap').classList.toggle('hidden',noScope);
+
+  rkTable(noScope,score);
 
   let interp;
   if(noScope){
@@ -160,6 +160,32 @@ function rkCalc(){
            : full<=4 ? '完整 '+full+' 分：中風險' : '完整 '+full+' 分：高風險，需密切監測再出血';
   }
   document.getElementById('rk_interp').textContent=interp;
+}
+
+/* Rockall 1996 Table IV。死亡率直接引用原文；再出血率為由原文人數回推之計算值
+   （原文分數 5 與 8+ 兩格印出的百分比與其分子分母不符，研判排版誤植，見下方說明）。 */
+var RK_PRE=[{mort:'0.2%'},{mort:'2.4%'},{mort:'5.6%'},{mort:'11.0%'},
+            {mort:'24.6%'},{mort:'39.6%'},{mort:'48.9%'},{mort:'50.0%'}];
+var RK_FULL=[{mort:'0%',rb:'4.9%'},{mort:'0%',rb:'3.2%'},{mort:'0.2%',rb:'5.3%'},
+             {mort:'2.9%',rb:'11.3%'},{mort:'5.3%',rb:'14.4%'},{mort:'10.8%',rb:'18.3%'},
+             {mort:'17.3%',rb:'32.7%'},{mort:'27.0%',rb:'42.3%'},{mort:'41.1%',rb:'53.2%'}];
+
+function rkTable(noScope,score){
+  var t=document.getElementById('rk_table'), h='';
+  if(noScope){
+    h='<tr><th>內視鏡前分數</th><th>死亡率</th></tr>';
+    RK_PRE.forEach(function(r,i){
+      h+='<tr'+(i===score?' class="ref-current"':'')+'><td>'+i+'</td><td>'+r.mort+'</td></tr>';
+    });
+  } else {
+    h='<tr><th>完整分數</th><th>死亡率</th><th>再出血率</th></tr>';
+    RK_FULL.forEach(function(r,i){
+      var label = i===8 ? '8+' : String(i);
+      var cur = (i===Math.min(score,8));
+      h+='<tr'+(cur?' class="ref-current"':'')+'><td>'+label+'</td><td>'+r.mort+'</td><td>'+r.rb+'</td></tr>';
+    });
+  }
+  t.innerHTML=h;
 }
 function rkReset(){
   ['rk_age','rk_sbp','rk_hr'].forEach(id=>document.getElementById(id).value='');
