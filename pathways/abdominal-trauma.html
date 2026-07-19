@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腹部創傷處置決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-trauma-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腹部創傷處置決策</h1><div class="sub">Abdominal Trauma · hemodynamics-first triage → organ-specific management（WSES / EAST / WTA / AAST-OIS 2018）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-trauma-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>血行動力學狀態、ATLS 出血分級、損害控制與復甦 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：</b>腹部創傷的第一個分岔<b>永遠是血行動力學，不是器官</b>。器官分級來自 CT，而不穩定病人根本到不了 CT，因此本流程先做「初評分流」（是否立刻剖腹），確定可安全影像檢查後，才展開器官別分級與處置。<br><br>
+
+      <b>WSES 血行動力學定義（成人）：</b><br>
+      ・<b>不穩定 unstable：</b>到院 SBP &lt;90 mmHg 且有出血性休克表徵（皮膚血管收縮：冰冷、濕黏、微血管回填變慢；意識改變；呼吸急促）；<b>或</b> SBP &gt;90 mmHg 但需反覆輸液／輸血、需升壓劑、base deficit &gt;5 mmol/L，或前 8 小時輸血 &gt;4 單位紅血球。<br>
+      ・<b>短暫反應 transient responder：</b>初始輸液復甦後有反應，隨後再度出現持續失血與灌流不足徵象；未達可安全接受 NOM 或血管內處置之穩定度。<br>
+      ・<b>穩定 stable：</b>輸液後血壓維持或改善，SBP &gt;90 mmHg 且 HR &lt;100 bpm。<br>
+      <span class="note">※ 指引原文誤寫為「BE &gt;−5 mmol/L」，依算術應為 base excess &lt;−5，即 <b>base deficit &gt;5 mmol/L</b>；WSES 骨盆創傷指引則寫 base deficit &gt;6。本流程採 base deficit ≥5 並標示此歧異。輸血門檻在脾／腎／十二指腸-胰臟／骨盆指引為 4–6 U／24 h，肝臟指引為 &gt;4 U／8 h。<b>各指引未給乳酸的數值切點</b>，勿自行設定。</span><br><br>
+
+      <b>兒童：</b>正常 SBP = 90 + (2 × 年齡)，可接受下限 = 70 + (2 × 年齡)；輸血前先給 3 次 20 mL/kg 晶體液（肝臟指引採 2 次，屬指引間歧異）。嚴重失血 = 循環血量 &gt;45%。<br><br>
+
+      <b>ATLS 第 10 版出血性休克分級（70 kg 成人）：</b><br>
+      ・<b>Class I：</b>失血 &lt;15%（≤750 mL），base deficit 0 至 −2 mEq/L — 監測即可。<br>
+      ・<b>Class II 輕度：</b>15–30%（750–1500 mL），BD −2 至 −6 — 脈壓下降，可能需血品。<br>
+      ・<b>Class III 中度：</b>31–40%（1500–2000 mL），BD −6 至 −10 — 血壓開始下降、尿量減少、意識改變，需要血品。<br>
+      ・<b>Class IV 重度：</b>&gt;40%（&gt;2000 mL），BD ≤−10 — 啟動大量輸血protocol。<br>
+      <span class="note">※ ATLS 10 原表中 HR／BP／RR／尿量／GCS 僅以箭頭表示方向，<b>並無數字切點</b>；坊間流傳的 HR &gt;140、SBP &lt;90 等數字出自 Mutschler 修訂版，非 ATLS 原文。base deficit 才是 ATLS 10 正式納入的數值。ATLS 第 11 版（2025）已將流程改為 <b>xABCDE</b>（致命性外出血優先於呼吸道），其休克分級表是否維持四級未能自公開來源確認。</span><br><br>
+
+      <b>大量輸血預測 — ABC score（各 1 分，≥2 分預測需大量輸血：敏感度 75%、特異度 86%）：</b>穿刺傷機轉／FAST 陽性／到院 SBP ≤90 mmHg／到院 HR ≥120 bpm。<b>Shock index</b>（HR÷SBP）&gt;0.9 起風險顯著上升（&gt;1.1–1.3 為 RR 5.57、&gt;1.3 為 RR 8.13），但該研究僅含鈍傷且到院前 SBP &gt;90，外推至穿刺傷未經驗證。<br><br>
+
+      <b>損害控制手術 (DCS) 適應症（歐洲創傷大出血指引第 6 版，Grade 1B）：</b>嚴重創傷合併出血性休克、持續出血、凝血病變，和／或腹腔血管合併胰臟損傷。其他觸發因素（1C）：低體溫、酸中毒、無法到達的主要解剖損傷、需耗時之手術。無上述因素則建議一期確定性手術（1C）。<br>
+      <span class="note">※ 歐洲指引<b>未給數值門檻</b>。唯一有指引評級的數字來自 WSES 開放性腹部指引（Grade 2A）：<b>持續低血壓、pH &lt;7.2、體溫 &lt;34°C、凝血病變</b>是需縮短手術與開放性腹部的強力預測因子。常被引用的「體溫 &lt;35°C」「輸血 &gt;10 單位」<b>並非指引評級之切點</b>，屬慣例。</span><br><br>
+
+      <b>復甦要點：</b><br>
+      ・<b>TXA：</b>1 g 靜脈輸注 10 分鐘，續 1 g 輸注 8 小時，<b>受傷後 3 小時內</b>給（Grade 1A）。CRASH-2 全因死亡 14.5% vs 16.0%（RR 0.91，p=0.0035）；≤1 小時給藥 RR 0.68、1–3 小時 RR 0.79，但<b>&gt;3 小時給藥反而增加出血死亡（RR 1.44，p=0.004）</b>—— 這是硬性上限，不是偏好。<br>
+      ・<b>允許性低血壓（Grade 1B）：</b>止血前目標 SBP 80–90 mmHg（MAP 50–60）；合併嚴重腦損傷（GCS ≤8）者維持 MAP ≥80 mmHg（1C）。目標 Hb 70–90 g/L（1C）。<br>
+      ・<b>輸血比例：</b>PROPPR（n=680）1:1:1 vs 1:1:2 之 24 小時（12.7% vs 17.0%，p=.12）與 30 天死亡（22.4% vs 26.1%，p=.26）<b>兩個主要終點皆為陰性</b>；僅 24 小時失血致死（9.2% vs 14.6%，p=.03）與達成止血（86% vs 78%，p=.006）有利於 1:1:1。歐洲指引有評級的立場是 <b>FFP:pRBC ≥1:2（1C）</b>＋高血小板比例（2B），與 1:1:1 並不相同。<br>
+      ・纖維蛋白原 ≤1.5 g/L 補充 3–4 g（1C/2C）；血小板維持 &gt;50×10⁹/L（腦損傷 &gt;100×10⁹/L，2C）；監測並維持游離鈣（1C）。PT ratio &gt;1.2 為創傷凝血病變門檻、&gt;1.5 為嚴重（歐洲指引第 11 項）。<br><br>
+
+      <b>腹腔內高壓與腹腔腔室症候群（WSACS 2013）：</b>正常腹內壓 5–7 mmHg；<b>IAH = 持續 IAP ≥12 mmHg</b>（Grade I 12–15／II 16–20／III 21–25／IV &gt;25）；<b>ACS = 持續 IAP &gt;20 mmHg 併新發生之器官功能障礙</b>（APP = MAP − IAP）。WSACS 對明確 ACS <b>建議</b>減壓性剖腹（1D，強建議但證據等級極低）；WSES 則要求<b>內科治療失敗後</b>才減壓（2B）。安全編碼方式：明確 ACS 併器官衰竭 → 減壓；IAH 無器官衰竭 → 先內科治療並依流程監測 IAP。開放性腹部再探查應於<b>24–48 小時內</b>（1C），以負壓治療合併筋膜牽引為首選暫時性關腹（2B）。<br><br>
+
+      <b>REBOA：</b>ACS COT／ACEP 2018 聯合聲明明言「目前無高等級證據顯示 REBOA 改善預後或存活」。適應症為橫膈以下、對復甦無反應之致命性出血，或推測為橫膈下出血之到院心跳停止。<b>Zone 1</b>（遠端胸主動脈）用於腹腔／後腹腔出血，主張<b>阻斷 &lt;15 分鐘</b>後即手術；<b>Zone 3</b>（腎動脈以下）用於骨盆／交界處出血，可耐受較長時間（4–6 小時）；Zone 2 非阻斷目標。<b>UK-REBOA 隨機試驗（n=90，2023）90 天死亡 54% vs 42%，OR 1.58（95% CrI 0.72–3.52），OR &gt;1 之後驗機率 86.9%，結論為「並未降低、且可能增加死亡率」。</b>本流程僅將 REBOA 列為過渡性橋接，且要求確定性止血須即刻可行。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>診斷工具：E-FAST、CT、DPL、局部傷口探查與連續理學檢查 Diagnostics</summary>
+    <div class="box-inner">
+      <b>E-FAST：</b>Cochrane 統合分析（34 篇、8,635 人，鈍性胸腹創傷）整體<b>敏感度 0.74（0.65–0.81）、特異度 0.96（0.94–0.98）</b>；分部位：<b>腹部敏感度僅 0.68（0.59–0.75）</b>、特異度 0.95；胸部敏感度 0.96；<b>兒童敏感度 0.63（0.46–0.77）</b>。LR+ 18.5、LR− 0.27。結論：<b>陽性有助於決策，但陰性無法排除腹內損傷，須以 CT 等參考檢查確認，兒童尤然。</b><br>
+      <span class="note">※ WSES 指引引用之數字較樂觀（敏感度可達 91%），但同段亦載偽陰性達 42%；腎臟指引則直言「E-FAST 對腎損傷敏感度與特異度皆低（GoR 1B）」。本流程採 Cochrane 統合值。</span><br><br>
+
+      <b>E-FAST 的判讀隨血行動力學而異：</b><br>
+      ・<b>不穩定 + 陽性 → 剖腹。</b>（WSES 十二指腸-胰臟指引 GoR 1A：不穩定（WSES class IV）且 E-FAST 陽性者，適應剖腹探查。）<br>
+      ・<b>不穩定 + 陰性 →</b> E-FAST 不足以排除骨盆出血，但<b>足以排除「需要剖腹」</b>；出血源改往骨盆、胸腔、長骨、後腹腔尋找。<br>
+      ・<b>穩定 + 陽性 → 做 CT，不是剖腹。</b>特異度雖高但陽性本身不構成手術適應症。<br>
+      ・<b>穿刺傷合併低血壓與可疑腹部理學檢查 → 不論 FAST 結果如何，直接手術探查</b>（WTA：穿刺傷 FAST 偽陰性率高）。<br><br>
+
+      <b>CT（靜脈顯影）：</b>穩定或已穩定病人的黃金標準（GoR 1A），敏感度／特異度接近 96–100%。須在創傷團隊監督下、且 CT 即刻可用時才執行；僅穩定、已穩定，或特殊情況下短暫反應者可進行。實質器官血管損傷須用<b>雙時相（動脈期＋門脈期）</b>；腎臟須加<b>延遲排泄期（5 分鐘）</b>。<b>只有 47% 的 CT 發現能在血管攝影得到證實。</b>口服顯影劑並不提升 CT 對十二指腸-胰臟損傷的敏感度（GoR 2A）。<br><br>
+
+      <b>DPL：</b>已被 E-FAST 與超音波取代；僅保留於<b>資源受限、無 CT 或超音波之場域</b>，或休克病人有大量皮下氣腫無法做超音波、或穩定病人有腹腔游離液體而無實質器官損傷時考慮（併發症率至多 2%）。對後腹腔損傷不可靠，腸穿孔漏診率達 10%。<b>DPA（診斷性腹腔抽吸）未見於上述任何 WSES 指引</b>，屬專家經驗而非指引依據。<br><br>
+
+      <b>穿刺傷（EAST 2010 選擇性非手術處置指引，PMID 20220426）：</b><br>
+      ・<b>Level 1(a)：</b>血行動力學不穩定或瀰漫性腹部壓痛者，應緊急剖腹。<br>
+      ・<b>Level 1(b)：</b>穩定但理學檢查不可靠者（腦損傷、脊髓損傷、中毒、需鎮靜或麻醉），應進一步影像檢查或剖腹探查。<br>
+      ・<b>Level 2(c)：</b>穩定、無腹膜炎徵象或（遠離傷口之）瀰漫性壓痛之腹部刺傷，在具外科專業之中心<b>不需常規剖腹</b>。<br>
+      ・<b>Level 2(d)：</b>穩定之腹部槍傷，若為切線性且無腹膜徵象，不需常規剖腹。<br>
+      ・<b>Level 2(e)：</b>由有經驗（且盡量為同一團隊）之臨床醫師執行之連續理學檢查，足以偵測穿刺傷後之顯著損傷。<br>
+      ・<b>Level 2(f)：</b>選擇初始 NOM 者，應積極考慮腹骨盆 CT 以協助初期處置決策。<br>
+      ・<b>Level 2(i)：</b>診斷性腹腔鏡可作為評估橫膈裂傷與腹膜穿透之工具。<br>
+      ・<b>Level 3(h)：</b>多數以非手術處置之腹部穿刺傷，若腹部理學檢查可靠且壓痛極輕微，觀察 24 小時後可出院。<br>
+      <span class="note">※ 網路上流傳的分級多有錯置（常把 CT 誤標為 Level 3）；上列依原文 a–i 清單。</span><br><br>
+
+      <b>局部傷口探查 (LWE) 的兩條規則（WTA 刺傷流程）：</b>① 明確陰性的 LWE 可排除腹內損傷，病人可安全出院；② <b>陽性的 LWE 在可評估的病人身上「不」構成剖腹適應症</b>——即使 LWE 陽性，非治療性剖腹率仍達 30–50%；應改以影像或連續理學檢查。LWE 在冰錐狀小傷口、長切線傷道、顯著肥胖、多處刺傷、無法配合／躁動病人身上不可靠。<br><br>
+
+      <b>連續理學檢查 (SCE)：</b>可評估 = GCS 13–15。WTA 建議<b>至少觀察 24 小時</b>；失敗率 2–10%。文獻對時間長度不一（一系列 650 人所有剖腹皆在 12 小時內，亦有報告延至 40 小時），發表之 protocol 多用 24–48 小時。<br><br>
+
+      <b>穿刺傷之 CT 侷限：</b>前腹壁刺傷 CT <b>偽陰性率 8.7%</b>（統合 7 篇、575 人）——「陰性 CT 不可作為腹部刺傷病人出院的唯一依據」。CT 傷道重建 (tractography) 對刺傷陰性預測值可達 100%，但 WTA 警告其在某些傷型可靠度有限，<b>不可作為排除腹膜穿透的單一依據</b>。<br><br>
+
+      <b>槍傷：</b>硬性指標（不穩定、腹膜炎、腸道外露、嘔血、直腸出血）者手術性損傷發生率 <b>≥80%</b>；另外 X 光游離氣體、FAST 大量或多象限游離液體、<b>多發腹部槍傷</b>亦應直接探查。清醒、警覺、腹部理學檢查良性者約 <b>90%</b> 不需手術；一律剖腹則約 <b>25%</b> 為陰性或非治療性。SNOM 統合失敗率 7%、該族群死亡率 0.4%；依部位：背部 3.1%、右胸腹 3.4%、側腹 7%、<b>前腹 13.2%</b>。所有失敗皆發生於 24 小時內，故觀察至少 24 小時。<b>資源受限場域是明確例外</b>，應一律剖腹或立即後送。<br><br>
+
+      <b>背側／側腹穿刺傷：</b>後腹腔結構（大血管、實質器官、大腸、十二指腸）症狀可極不明顯且進展緩慢，應<b>直接走影像路徑</b>，CT 特別注意入口傷附近。三重顯影（直腸＋口服＋靜脈）CT 報告敏感度 100%、特異度 96–100%，但<b>兩份 WTA 流程皆明確不將其列為強制</b>，顯影方式由外科與放射科主治醫師決定；初次 CT 不明確時，加做腸道顯影劑重複 CT 為有價值之輔助。骨盆貫穿槍傷須注意膀胱（CT 膀胱攝影）、直腸（硬式直腸鏡）、髂血管。<br><br>
+
+      <b>橫膈損傷：</b>左側胸腹穿刺傷之隱匿性橫膈損傷可達 <b>40%</b>；Murray 1997 系列中 42% 有橫膈損傷，其中 <b>26% 於腹腔鏡才發現、術前完全無症狀或徵象</b>。刺傷之橫膈損傷 75% 在左側；<b>&gt;80% 的破口小於 2 cm</b>，故 X 光與常規 CT 易漏診（CT 對<b>穿刺性</b>橫膈損傷敏感度僅 8–60%）。任何上腹刺傷合併氣胸或血胸，應視同橫膈損傷。<b>WTA 刺傷流程建議診斷性腹腔鏡為標準檢查</b>；WTA 槍傷流程與 EAST 橫膈指引則僅要求<b>左側</b>常規手術評估（右側有肝臟保護）——此左右不對稱為指引間真實差異。EAST 橫膈指引全部 PICO 之證據品質皆為極低，僅能給條件式建議：診斷上腹腔鏡優於 CT；右側穿刺性損傷非手術優於手術；急性期經腹優於經胸；單純橫膈損傷腹腔鏡優於開放。若以 CT 作為排除依據，須於 6–12 個月重複影像並追蹤至少一年。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>AAST-OIS 2018 分級、WSES 分類與鈍性腸道／腸繫膜損傷 Grading</summary>
+    <div class="box-inner">
+      <b>◆ 重要版本問題：</b>WSES 的脾／肝／腎分類是建立在 <b>1994 年版 AAST-OIS</b> 上，而 <b>2018 年修訂版（PMID 30462622）</b>將「任何合併血管損傷」納入分級。以脾臟為例，<b>單純一個被膜內假性動脈瘤在 2018 版即為 grade IV</b>（1994 版可能僅 grade II），連帶使該病人由 WSES class I 跳為 class III，而 WSES 對 class III 有「不論有無 blush 皆應血管栓塞」的 <b>GoR 1B</b> 建議。WSES 迄今未發表調和此差異的更新。<b>本流程採 2018 版影像分級，使用時務必確認貴院放射報告所依版本。</b><br><br>
+
+      <b>2018 AAST-OIS 通則：</b>影像、手術、病理三者取<b>最高</b>級；同一器官多處 I 或 II 級損傷<b>升一級，最高至 III 級</b>（腎臟則為「雙側損傷升一級至 III」）。<b>血管損傷</b>定義為假性動脈瘤或動靜脈廔管，表現為局部顯影劑聚積且<b>於延遲期衰減下降</b>；<b>活動性出血</b>則為顯影劑於<b>延遲期增大或增強</b>。<br><br>
+
+      <b>脾臟 AAST-OIS 2018（影像）：</b>I 被膜下血腫 &lt;10% 表面積／裂傷 &lt;1 cm 深／被膜撕裂；II 被膜下血腫 10–50%／實質內血腫 &lt;5 cm／裂傷 1–3 cm；III 被膜下血腫 &gt;50%／破裂之被膜下或實質內血腫 ≥5 cm／裂傷 &gt;3 cm 深；<b>IV 任何合併脾血管損傷或活動性出血侷限於脾被膜內者</b>／裂傷侵犯節段或脾門血管致 &gt;25% 去血管化；<b>V 任何合併脾血管損傷且活動性出血溢出脾臟進入腹腔者</b>／脾臟碎裂。<br>
+      <b>WSES 脾臟分類：</b>class I = 穩定 + AAST I–II；class II = 穩定 + AAST III；class III = 穩定 + AAST IV–V；<b>class IV = 不穩定（任何級數）→ 手術</b>。<br><br>
+
+      <b>肝臟 AAST-OIS 2018（影像）：</b>I 被膜下血腫 &lt;10%／裂傷 &lt;1 cm 深；II 被膜下血腫 10–50%／實質內血腫 &lt;10 cm／裂傷 1–3 cm 深且 ≤10 cm 長；<b>III</b> 被膜下血腫 &gt;50%／實質內血腫 &gt;10 cm／裂傷 &gt;3 cm 深／<b>任何合併肝血管損傷或活動性出血侷限於肝實質內者</b>；<b>IV</b> 實質破壞佔肝葉 25–75%／<b>活動性出血溢出肝實質進入腹腔</b>；V 實質破壞 &gt;75%／肝旁靜脈損傷（肝後腔靜脈、中央主肝靜脈）。<span class="note">※ 2018 版肝臟最高只到 V；WSES 2020 肝臟指引表格仍寫「AAST I–VI」，屬未更新之殘留。</span><br>
+      <b>WSES 肝臟分類：</b>class I = 穩定 + AAST I–II；class II = 穩定 + AAST III；class III = 穩定 + AAST IV–V；class IV = 不穩定 → 手術。<br><br>
+
+      <b>腎臟 AAST-OIS 2018 重點變動：</b>III 級納入「任何合併腎血管損傷或出血侷限於 Gerota 筋膜內」；<b>IV 級</b>新增節段腎靜脈或動脈損傷、<b>所有集尿系統損傷</b>、出血溢出 Gerota 筋膜、血管栓塞造成之節段或全腎梗塞；V 級納入去血管化腎臟合併活動性出血。<br>
+      <b>WSES 腎臟分類：</b>class I = 穩定 + AAST I–II；class II = 穩定 + AAST III 或節段血管損傷；class III = 穩定 + AAST IV–V 或任何級數合併主血管剝離／阻塞；class IV = 不穩定 → 手術。<br>
+      <b>NOM 失敗高風險 CT 徵象：</b>顯影劑外漏、<b>腎周血腫 &gt;3.5 cm</b>、內側裂傷合併顯著內側尿外滲、輸尿管無顯影（提示 UPJ 完全斷裂）。中重度損傷合併<b>其中 ≥2 項</b>者 NOM 失敗率高。<br><br>
+
+      <b>骨盆 WSES 分類：</b>class I = APC I／LC I，血行與力學皆穩定；class II = APC II–III／LC II–III，血行穩定但力學不穩；class III = VS／CM，血行穩定但力學不穩；<b>class IV = 血行不穩定（任何型態）</b>。<br>
+      <b>出血來源這件事決定了整個骨盆流程：</b>血行不穩定之骨盆環破壞，<b>80–90% 為靜脈出血</b>，僅 10–20% 為動脈出血（但有動脈出血時幾乎 100% 併有靜脈出血）；<b>85% 之骨盆出血來自骨面、軟組織或主要靜脈</b>。由於<b>血管栓塞無法處理靜脈出血</b>，傳統以血管栓塞為主的處置在此族群死亡率 &gt;40%。骨盆 X 光敏感度僅 50–68%（偽陰性 32%），CT 對骨折敏感度與特異度均 100%；<b>骨盆血腫 ≥500 cm³ 即使無 blush 亦應強烈懷疑動脈損傷</b>。骨折型態本身無法預測誰需要血管攝影——血行動力學必須主導。<br><br>
+
+      <b>鈍性腸道／腸繫膜損傷 (BBMI)：</b><b>目前無任何 WSES 或 EAST 專屬指引</b>，以下為指引片段加原始文獻，證據等級低於其他節點。<br>
+      ・<b>WSES 肝臟指引所列之 NOM 禁忌 CT 徵象：</b>腹腔內或後腹腔游離氣體、<b>無實質器官損傷之腹腔游離液體</b>、局部腸壁增厚、彈道貼近空腔臟器且周圍有血腫、高能量穿刺傷。<br>
+      ・<b>需立即手術者：</b>明確全層破裂證據（腸道顯影劑外漏、游離氣體）——但這類發現<b>罕見</b>，絕大多數病人只有非特異徵象（腸壁增厚、周圍水腫、脂肪紋理增加、游離液體），或完全沒有發現。<br>
+      ・<b>手術證實之鈍性腸損傷的 CT 徵象出現率：</b>腹腔積液 93.9%、腸繫膜血腫或脂肪紋理 84.8%、腸壁增厚或血腫 42.4%、活動性顯影劑外漏 36.3%、腹腔游離氣體 21.2%、<b>腸壁不連續僅 6.1%</b>、<b>完全無異常者 9.1%</b>。換言之特異徵象少見，而陰性 CT 無法收尾。<br>
+      ・<b>BIPS（Bowel Injury Prediction Score，各 1 分）：</b>① WBC ≥17,000/µL ② 腹部壓痛 ③ CT 腸繫膜損傷分級 ≥4（腸繫膜挫傷或血腫合併腸壁增厚或腸間積液）。<b>切點 ≥2 分。</b>多中心前瞻驗證（n=313）敏感度 72%、特異度 78%、PPV 67%、NPV 82%、AUROC 0.75；GCS 3–8 之次族群敏感度 70%、特異度 92%。單中心外部驗證（n=766，盛行率 3.1%）敏感度 89%、特異度 89%、<b>PPV 僅 19%</b>、NPV 99.7%，且<b>「WBC ≥17」與「單獨 CT 分級 4」在該族群皆未達統計顯著</b>，結論為套用 BIPS 會造成大量非治療性剖腹而未能比 CT 單獨更早找出更多損傷。<br>
+      <span class="note">※ BIPS <b>未獲任何學會指引背書</b>。其較可信的價值是高陰性預測值（排除用），而非陽性時的手術依據；最穩定的單一鑑別因子是 <b>CT 腸繫膜分級 ≥4</b>。GCS 3–8 無法連續理學檢查時最有參考價值。兒童 BBMI 完全無指引，外科醫師實際作法差異達兩倍。</span><br>
+      ・<b>觀察窗有上限：</b>WSES 十二指腸-胰臟指引指出，<b>延遲手術超過 24 小時者併發症率才顯著上升</b>；且 12–24 小時重複 CT 可使腸穿孔敏感度由 30% 升至 82%、非手術之陰性預測值由 94% 升至 100%。一系列穩定病人中仍有 <b>24% 的顯著 BBMI 延遲診斷 &gt;24 小時</b>。
+    </div>
+  </details>
+
+  <div class="home-divider" style="margin:6px 0 18px;">第一段 · 初評分流 Primary triage</div>
+
+  <div class="flow-step" id="tr_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">受傷機轉？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('mech','blunt',this)">鈍性腹部創傷<span class="fo-sub">車禍、墜落、擠壓 — 依 WSES 各器官指引</span></button>
+      <button class="flow-opt" onclick="trPick('mech','stab',this)">腹部刺傷<span class="fo-sub">EAST 2010 選擇性非手術處置／WTA 2018 刺傷流程</span></button>
+      <button class="flow-opt" onclick="trPick('mech','gsw',this)">腹部槍傷<span class="fo-sub">WTA 2019 槍傷流程 — 多發槍傷通常應直接探查</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">無論機轉，第一優先為 xABCDE 與止血復甦；本流程處理的是「開不開刀、什麼時候開」。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c2">↓</div>
+  <div class="flow-step hidden" id="tr_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">初始復甦後之血行動力學反應？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('hemo','non',this)">無反應（不穩定）<span class="fo-sub">SBP &lt;90 mmHg 併休克表徵；或需持續輸血／升壓劑、base deficit &gt;5 mmol/L、8 小時內輸血 &gt;4 U — WSES class IV</span></button>
+      <button class="flow-opt" onclick="trPick('hemo','trans',this)">短暫反應<span class="fo-sub">初始復甦有反應，隨後再度出現持續失血與灌流不足徵象</span></button>
+      <button class="flow-opt" onclick="trPick('hemo','stable',this)">穩定或已穩定<span class="fo-sub">SBP &gt;90 mmHg 且 HR &lt;100 bpm，不需持續輸液／血品維持</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c3">↓</div>
+  <div class="flow-step hidden" id="tr_s3fast">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">E-FAST 結果與骨盆 X 光？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('fast','pos',this)">E-FAST 陽性（腹腔游離液體）<span class="fo-sub">不穩定 + 陽性 = 剖腹適應症（GoR 1A）</span></button>
+      <button class="flow-opt" onclick="trPick('fast','neg_pelv',this)">E-FAST 陰性，但骨盆環破壞<span class="fo-sub">陰性 FAST 足以排除「需剖腹」，出血源指向骨盆</span></button>
+      <button class="flow-opt" onclick="trPick('fast','neg',this)">E-FAST 陰性，骨盆完整<span class="fo-sub">出血源應往胸腔、長骨、後腹腔、外出血尋找</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">腹部 E-FAST 敏感度僅 0.68（兒童 0.63）；陰性不代表沒有腹內損傷，只代表此刻不需要因腹腔而剖腹。</div>
+  </div>
+
+  <div class="flow-step hidden" id="tr_s3hard">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">是否有立即剖腹之硬性指標？腹部理學檢查是否可靠？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('hard','op',this)">有硬性指標<span class="fo-sub">瀰漫性腹膜炎／腸道外露／鼻胃管或直腸鮮血／橫膈下游離氣體／插入物尚未移除；槍傷另加：多發彈道、FAST 大量或多象限游離液體</span></button>
+      <button class="flow-opt" onclick="trPick('hard','ct',this)">無硬性指標，理學檢查可靠<span class="fo-sub">GCS 13–15、可配合連續理學檢查</span></button>
+      <button class="flow-opt" onclick="trPick('hard','unexam',this)">無硬性指標，但理學檢查不可靠<span class="fo-sub">GCS &lt;13、脊髓損傷、中毒或需鎮靜／麻醉 — EAST Level 1(b)</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="tr_rec">
+    <div class="rec-label">初評處置 Primary triage</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div id="tr_ct_section" class="hidden">
+  <div class="home-divider" style="margin:26px 0 18px;">第二段 · 依 CT 之器官別處置 Organ-specific management</div>
+
+  <div class="flow-step" id="tr_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">CT 顯示之主要損傷器官？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('organ','spleen',this)">脾臟<span class="fo-sub">WSES 2017 脾臟創傷分類與指引</span></button>
+      <button class="flow-opt" onclick="trPick('organ','liver',this)">肝臟<span class="fo-sub">WSES 2020 肝臟創傷指引</span></button>
+      <button class="flow-opt" onclick="trPick('organ','kidney',this)">腎臟／泌尿道<span class="fo-sub">WSES-AAST 2019 腎臟與泌尿道創傷指引</span></button>
+      <button class="flow-opt" onclick="trPick('organ','dp',this)">十二指腸／胰臟<span class="fo-sub">WSES-AAST 2019 十二指腸-胰臟與肝外膽道創傷指引</span></button>
+      <button class="flow-opt" onclick="trPick('organ','bowel',this)">腸道／腸繫膜<span class="fo-sub">無專屬指引；依指引片段與 BIPS，證據等級較低</span></button>
+      <button class="flow-opt" onclick="trPick('organ','pelvis',this)">骨盆<span class="fo-sub">WSES 2017 骨盆創傷分類與指引</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">多器官損傷時以「最高級數、最需介入者」為主；十二指腸-胰臟複合傷之 WSES 級數取十二指腸、胰臟、膽道三者中最高者。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c5">↓</div>
+  <div class="flow-step hidden" id="tr_s5grade">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">AAST-OIS 分級（2018 版影像判讀）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('grade','g12',this)">AAST I–II<span class="fo-sub" id="tr_g12_sub"></span></button>
+      <button class="flow-opt" onclick="trPick('grade','g3',this)">AAST III<span class="fo-sub" id="tr_g3_sub"></span></button>
+      <button class="flow-opt" onclick="trPick('grade','g45',this)">AAST IV–V<span class="fo-sub" id="tr_g45_sub"></span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c6">↓</div>
+  <div class="flow-step hidden" id="tr_s6blush">
+    <div class="flow-step-head"><span class="flow-num">6</span><span class="flow-q">CT 是否有血管損傷徵象？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('blush','yes',this)">有<span class="fo-sub">顯影劑外漏 (blush)、假性動脈瘤或動靜脈廔管；活動性出血於延遲期<b>增大</b>，血管損傷於延遲期<b>衰減下降</b></span></button>
+      <button class="flow-opt" onclick="trPick('blush','no',this)">無<span class="fo-sub">雙時相 CT 未見血管異常</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;" id="tr_blush_note"></div>
+  </div>
+
+  <div class="flow-step hidden" id="tr_s5dp">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">十二指腸／胰臟損傷型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('dp','dhem',this)">十二指腸壁內血腫（AAST I–II，無全層破裂）<span class="fo-sub">無顯影劑外漏、無游離氣體</span></button>
+      <button class="flow-opt" onclick="trPick('dp','dperf',this)">十二指腸全層破裂<span class="fo-sub">腸道顯影劑外漏或後腹腔游離氣體</span></button>
+      <button class="flow-opt" onclick="trPick('dp','pdist',this)">胰臟 AAST III（主胰管斷裂），位於腸繫膜上靜脈<b>遠端</b><span class="fo-sub">體尾部；位置是此級數的主要決定因素</span></button>
+      <button class="flow-opt" onclick="trPick('dp','pprox',this)">胰臟 AAST III（主胰管斷裂），位於腸繫膜上靜脈<b>近端</b><span class="fo-sub">極近端體部／頸部</span></button>
+      <button class="flow-opt" onclick="trPick('dp','p45',this)">胰臟 AAST IV–V<span class="fo-sub">壺腹部／十二指腸-胰臟複合損傷、胰頭嚴重破壞</span></button>
+      <button class="flow-opt" onclick="trPick('dp','gb',this)">膽囊／肝外膽道損傷<span class="fo-sub">依 WSES 膽道分級處理</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">受傷後 3–6 小時起，每 6 小時<b>合併</b>測 amylase 與 lipase（GoR 1B）：到院時 amylase 正常者達 40%；兩者合併於 6 小時後敏感度 85%、特異度 100%。高度懷疑但初次 CT 陰性或非特異者，<b>12–24 小時內重複 CT（GoR 2A）</b>。</div>
+  </div>
+
+  <div class="flow-step hidden" id="tr_s5bowel">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">CT 腸道／腸繫膜徵象？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('bowel','definite',this)">明確全層破裂<span class="fo-sub">腸道顯影劑外漏、腹腔或後腹腔游離氣體、腸壁不連續（僅佔手術證實病例之 6–21%）</span></button>
+      <button class="flow-opt" onclick="trPick('bowel','suspect',this)">高度可疑<span class="fo-sub">腸繫膜血腫合併腸壁增厚或腸間積液（CT 腸繫膜分級 ≥4）、腹部壓痛、WBC ≥17,000/µL — 即 BIPS ≥2</span></button>
+      <button class="flow-opt" onclick="trPick('bowel','fluid',this)">無實質器官損傷之腹腔游離液體<span class="fo-sub">WSES 明列為 NOM 禁忌徵象之一</span></button>
+      <button class="flow-opt" onclick="trPick('bowel','nonspec',this)">僅非特異發現或 CT 陰性<span class="fo-sub">手術證實之腸損傷中有 9.1% CT 完全正常</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="tr_s5pelv">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">骨盆 CT 與力學穩定度？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('pelv','blush',this)">CT 見動脈顯影劑外漏<span class="fo-sub">或骨盆血腫 ≥500 cm³ 而無明顯 blush</span></button>
+      <button class="flow-opt" onclick="trPick('pelv','unstable_mech',this)">無 blush，但力學不穩定<span class="fo-sub">APC II–III／LC II–III（WSES class II）或 VS／CM（WSES class III）</span></button>
+      <button class="flow-opt" onclick="trPick('pelv','stable_mech',this)">無 blush，力學穩定<span class="fo-sub">APC I／LC I — WSES class I</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="tr_rec2">
+    <div class="rec-label">器官別處置 Organ-specific recommendation</div>
+    <div class="rec-title">請完成上方步驟</div>
+  </div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="trReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/28828034/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Splenic trauma: WSES classification and guidelines. World J Emerg Surg. 2017;12:40.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32228707/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Liver trauma: WSES 2020 guidelines. World J Emerg Surg. 2020;15(1):24.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31827593/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Kidney and uro-trauma: WSES-AAST guidelines. World J Emerg Surg. 2019;14:54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31867050/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Duodeno-pancreatic and extrahepatic biliary tree trauma: WSES-AAST guidelines. World J Emerg Surg. 2019;14:56.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28115984/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. Pelvic trauma: WSES classification and guidelines. World J Emerg Surg. 2017;12:5.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30462622/" target="_blank" rel="noopener" class="ref-link">Kozar RA, et al. Organ injury scaling 2018 update: spleen, liver, and kidney. J Trauma Acute Care Surg. 2018;85(6):1119-1122.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20220426/" target="_blank" rel="noopener" class="ref-link">Como JJ, et al. EAST practice management guidelines for selective nonoperative management of penetrating abdominal trauma. J Trauma. 2010;68(3):721-733.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29659472/" target="_blank" rel="noopener" class="ref-link">Martin MJ, et al. Abdominal stab wounds: a WTA critical decisions algorithm. J Trauma Acute Care Surg. 2018;85(5):1007-1015.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31233440/" target="_blank" rel="noopener" class="ref-link">Martin MJ, et al. Abdominal gunshot wounds: a WTA critical decisions algorithm. J Trauma Acute Care Surg. 2019;87(5):1220-1227.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29613959/" target="_blank" rel="noopener" class="ref-link">McDonald AA, et al. Traumatic diaphragmatic injuries: EAST practice management guideline. J Trauma Acute Care Surg. 2018;85(1):198-207.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36859355/" target="_blank" rel="noopener" class="ref-link">Rossaint R, et al. European guideline on management of major bleeding and coagulopathy following trauma: sixth edition. Crit Care. 2023;27(1):80.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20554319/" target="_blank" rel="noopener" class="ref-link">CRASH-2 trial collaborators. Lancet. 2010;376(9734):23-32.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/21439633/" target="_blank" rel="noopener" class="ref-link">Roberts I, et al. CRASH-2 timing analysis. Lancet. 2011;377(9771):1096-1101.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25647203/" target="_blank" rel="noopener" class="ref-link">Holcomb JB, et al. PROPPR randomized clinical trial. JAMA. 2015;313(5):471-482.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23673399/" target="_blank" rel="noopener" class="ref-link">Kirkpatrick AW, et al. WSACS consensus definitions and clinical practice guidelines. Intensive Care Med. 2013;39(7):1190-1206.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29434652/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. The open abdomen in trauma and non-trauma patients: WSES guidelines. World J Emerg Surg. 2018;13:7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37824132/" target="_blank" rel="noopener" class="ref-link">Jansen JO, et al. UK-REBOA randomized clinical trial. JAMA. 2023;330(19):1862-1871.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30548249/" target="_blank" rel="noopener" class="ref-link">Stengel D, et al. Point-of-care ultrasonography for diagnosing thoracoabdominal injuries in blunt trauma. Cochrane Database Syst Rev. 2018;12:CD012669.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34380598/" target="_blank" rel="noopener" class="ref-link">Wandling M, et al. Multi-center validation of the Bowel Injury Predictive Score. Injury. 2022;53(1):122-128.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const trSt={mech:null,hemo:null,fast:null,hard:null,organ:null,grade:null,blush:null,dp:null,bowel:null,pelv:null};
+
+function trPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='mech'){ trSt.mech=val; trSt.hemo=null; trResetDownstream(); }
+  else if(key==='hemo'){ trSt.hemo=val; trResetDownstream(); }
+  else if(key==='fast'){ trSt.fast=val; }
+  else if(key==='hard'){ trSt.hard=val; if(val==='op'){ trResetOrgan(); } }
+  else if(key==='organ'){ trResetOrgan(); trSt.organ=val; }
+  else if(key==='grade'){ trSt.grade=val; }
+  else if(key==='blush'){ trSt.blush=val; }
+  else if(key==='dp'){ trSt.dp=val; }
+  else if(key==='bowel'){ trSt.bowel=val; }
+  else if(key==='pelv'){ trSt.pelv=val; }
+  trRender();
+}
+function trResetDownstream(){ trSt.fast=null; trSt.hard=null; trResetOrgan(); }
+function trResetOrgan(){ trSt.organ=null; trSt.grade=null; trSt.blush=null; trSt.dp=null; trSt.bowel=null; trSt.pelv=null; }
+
+/* 各器官之 AAST 分級說明：同一步驟依器官換文字，避免三套幾乎相同的步驟 */
+const TR_GRADE_SUB={
+  spleen:{
+    g12:'被膜下血腫 &lt;10–50% 表面積、實質內血腫 &lt;5 cm、裂傷 &lt;1–3 cm — WSES class I',
+    g3 :'被膜下血腫 &gt;50%、破裂之血腫 ≥5 cm、裂傷 &gt;3 cm 深 — WSES class II',
+    g45:'IV：任何脾血管損傷或活動性出血侷限被膜內、&gt;25% 去血管化；V：出血溢出至腹腔、脾臟碎裂 — WSES class III'
+  },
+  liver:{
+    g12:'被膜下血腫 &lt;50%、實質內血腫 &lt;10 cm、裂傷 ≤3 cm 深且 ≤10 cm 長 — WSES class I',
+    g3 :'裂傷 &gt;3 cm 深、實質內血腫 &gt;10 cm，或任何肝血管損傷／活動性出血<b>侷限於肝實質內</b> — WSES class II',
+    g45:'IV：肝葉破壞 25–75%，或活動性出血<b>溢出肝實質進入腹腔</b>；V：破壞 &gt;75%、肝後腔靜脈或主肝靜脈損傷 — WSES class III'
+  },
+  kidney:{
+    g12:'被膜下血腫、實質裂傷 &lt;1 cm 且無尿外滲 — WSES class I',
+    g3 :'裂傷 &gt;1 cm 無集尿系統破裂，或任何腎血管損傷／出血<b>侷限於 Gerota 筋膜內</b>；含節段血管損傷 — WSES class II',
+    g45:'IV：集尿系統損傷、節段腎動靜脈損傷、出血溢出 Gerota、血管栓塞致梗塞；V：腎門撕脫、去血管化腎臟合併活動性出血 — WSES class III'
+  }
+};
+
+function trRender(){
+  const m=trSt.mech, h=trSt.hemo, pen=(m==='stab'||m==='gsw');
+
+  flowShow('tr_c2', !!m);
+  flowShow('tr_s2', !!m);
+
+  /* 步驟 3 的兩種形態：不穩定走 E-FAST，穩定走硬性指標。
+     穿刺傷不穩定不問 FAST —— 不論 FAST 結果都要開，這一問不改變輸出。 */
+  const showFast   = (m==='blunt' && (h==='non'||h==='trans'));
+  const showHard   = (!!m && h==='stable');
+  flowShow('tr_c3', showFast||showHard);
+  flowShow('tr_s3fast', showFast);
+  flowShow('tr_s3hard', showHard);
+  if(!showFast) flowClearSel('tr_s3fast');
+  if(!showHard) flowClearSel('tr_s3hard');
+
+  /* 第二段只在「病人真的能去做 CT」時展開 */
+  const ctTrack = (h==='stable' && (trSt.hard==='ct'||trSt.hard==='unexam'));
+  flowShow('tr_ct_section', ctTrack);
+  if(!ctTrack){ ['tr_s4','tr_s5grade','tr_s6blush','tr_s5dp','tr_s5bowel','tr_s5pelv'].forEach(flowClearSel); }
+
+  const o=trSt.organ, solid=(o==='spleen'||o==='liver'||o==='kidney');
+  flowShow('tr_c5', !!o);
+  flowShow('tr_s5grade', solid);
+  flowShow('tr_s5dp', o==='dp');
+  flowShow('tr_s5bowel', o==='bowel');
+  flowShow('tr_s5pelv', o==='pelvis');
+  if(!solid){ flowClearSel('tr_s5grade'); flowClearSel('tr_s6blush'); }
+  if(o!=='dp') flowClearSel('tr_s5dp');
+  if(o!=='bowel') flowClearSel('tr_s5bowel');
+  if(o!=='pelvis') flowClearSel('tr_s5pelv');
+
+  if(solid){
+    const s=TR_GRADE_SUB[o];
+    document.getElementById('tr_g12_sub').innerHTML=s.g12;
+    document.getElementById('tr_g3_sub').innerHTML=s.g3;
+    document.getElementById('tr_g45_sub').innerHTML=s.g45;
+  }
+  const showBlush = (solid && !!trSt.grade);
+  flowShow('tr_c6', showBlush);
+  flowShow('tr_s6blush', showBlush);
+  if(!showBlush) flowClearSel('tr_s6blush');
+  if(showBlush){
+    const bn=document.getElementById('tr_blush_note');
+    if(o==='spleen') bn.innerHTML='顯影劑外漏發生率約 17%，其中 &gt;60% NOM 失敗；若見 blush 卻未栓塞，NOM 失敗率 67–82%。但 CT 之 blush 有 2.3–47% 在血管攝影未獲證實。';
+    else if(o==='liver') bn.innerHTML='兒童即使 CT 有 blush，亦<b>非</b>血管栓塞之絕對適應症（GoR 2B）。';
+    else bn.innerHTML='腎臟：血管攝影陰性時<b>不做盲目栓塞</b>（GoR 1C），即使 CT 曾見顯影劑外漏。';
+  }
+
+  trRenderPrimary(pen);
+  trRenderOrgan();
+}
+
+function trRenderPrimary(pen){
+  const m=trSt.mech, h=trSt.hemo;
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  if(m && h){
+    if(pen && (h==='non'||h==='trans')){
+      cls='rec-urgent'; title='立即剖腹止血 + 損害控制';
+      detail='<li>不穩定或短暫反應之穿刺傷<b>直接進手術室</b>；<b>不論 E-FAST 結果如何</b>都要探查（穿刺傷 FAST 偽陰性率高）。</li>'+
+        '<li>低血壓穿刺傷病人「即使短暫的延誤也與死亡率上升相關」；此族群需緊急剖腹者死亡率約 46%，過去二十年未明顯改善。</li>'+
+        '<li>復甦：TXA 1 g/10 分鐘後 1 g/8 小時（受傷 3 小時內，1A）；止血前允許性低血壓 SBP 80–90 mmHg（1B，合併 GCS ≤8 之腦損傷則 MAP ≥80）；維持正常體溫（體溫每降 1°C，凝血因子功能下降約 10%）。</li>'+
+        '<li>符合損害控制條件者（出血性休克 + 持續出血 + 凝血病變，或腹腔血管合併胰臟損傷，1B；或 pH &lt;7.2、體溫 &lt;34°C，2A）行縮短手術與開放性腹部，24–48 小時內再探查（1C）。</li>'+
+        '<li>左側胸腹或上腹刺傷合併氣胸／血胸者，應視同橫膈損傷，以診斷性腹腔鏡評估（破口 &gt;80% 小於 2 cm，CT 對穿刺性橫膈損傷敏感度僅 8–60%）。</li>';
+      note='EAST 2010 Level 1(a)；WTA 刺傷 2018／槍傷 2019：不穩定、腹膜炎、腸道外露、嘔血或直腸出血者手術性損傷發生率 ≥80%。';
+    }
+    else if(m==='blunt' && (h==='non'||h==='trans')){
+      const f=trSt.fast;
+      if(f==='pos'){
+        cls='rec-urgent'; title='立即剖腹止血 + 損害控制';
+        detail='<li>血行動力學不穩定（WSES class IV）合併 E-FAST 陽性者，<b>適應剖腹探查（GoR 1A）</b>—— 不做 CT。</li>'+
+          '<li>手術首要目標為止血與控制膽汁／腸內容物外漏，並儘早啟動損害控制復甦（肝臟 GoR 2A）。</li>'+
+          '<li>肝臟：先填塞 (packing)，<b>初次手術避免大範圍肝切除</b>（2B）；右肝或總肝動脈結紮須同時做膽囊切除；<b>門靜脈主幹不應結紮</b>。術後對疑似持續動脈出血者行血管栓塞（2A）。</li>'+
+          '<li>脾臟：不穩定者行脾切除；成人不建議部分保脾（2B），<b>兒童則應儘可能保脾</b>（2B）。急性出血期不建議腹腔鏡脾切除（2A）。</li>'+
+          '<li>剖腹探查時<b>必須顯露並探查十二指腸-胰臟複合體</b>（GoR 1A）—— 這是最常被漏掉的一步。</li>'+
+          '<li>需要橋接時 REBOA 置於 <b>zone 1</b>（腹腔出血），阻斷 &lt;15 分鐘內即應止血；充氣前須先建立橫膈上中心靜脈導管。</li>';
+        note='WSES 十二指腸-胰臟指引 GoR 1A；肝臟指引 GoR 2A。※ REBOA：ACS COT/ACEP 2018 明言無高等級證據支持，UK-REBOA（2023）90 天死亡 54% vs 42%（OR 1.58，OR&gt;1 之後驗機率 86.9%）—— 僅作為過渡性橋接，且確定性止血須即刻可行。';
+      } else if(f==='neg_pelv'){
+        cls='rec-urgent'; title='骨盆出血：骨盆帶 + 腹膜前填塞 + 外固定（不是先做血管栓塞）';
+        detail='<li>陰性 E-FAST 足以<b>排除「需要剖腹」</b>，出血源指向骨盆。</li>'+
+          '<li><b>骨盆帶</b>置於大轉子與恥骨聯合高度（優於床單包紮，1C）；生理狀況允許時儘早移除並改為外固定，<b>不應超過 24–48 小時</b>（1B）。</li>'+
+          '<li><b>腹膜前骨盆填塞 (PPP) 是低血壓骨盆環出血之有效早期止血手段（Grade 1B）</b>，須與骨盆固定併行以形成有效對抗壓力（2A）。有經驗者可於 20 分鐘內完成，膀胱兩側各三塊紗墊，48–72 小時內回頭整理。</li>'+
+          '<li>採<b>恥骨上獨立切口</b>，如需處理腹內損傷可另從其上方做正中剖腹，已證實不會造成腹腔污染擴散至後腹腔。</li>'+
+          '<li>外固定（1A）：APC-II/III、LC-II/III 用髂嵴或髖臼上方之前方復甦架；<b>垂直剪力合併薦髂關節分離用後方 C-clamp</b>（2A）—— C-clamp 禁用於粉碎性與經薦孔薦骨骨折、髂骨翼骨折、LC 型。</li>'+
+          '<li>血管栓塞於此時<b>只嘉惠少數病人</b>，應在骨盆外與非動脈性出血控制後才進行；填塞後仍持續出血者再考慮（2A），PPP 後需栓塞者約 13–20%。</li>'+
+          '<li>需要橋接時 REBOA 置於 <b>zone 3</b>（SBP &lt;90 或對血品無反應者，2B），可考慮部分或間歇性阻斷以減少缺血（2C）。</li>';
+        note='WSES 骨盆創傷 2017：不穩定骨盆環破壞之出血 80–90% 為靜脈性，僅 10–20% 為動脈性；<b>血管栓塞無法處理靜脈出血</b>，以栓塞為主的傳統處置在此族群死亡率 &gt;40%。若骨盆將做血管攝影，膀胱攝影應延後至攝影完成後再做（腎臟指引 GoR 2A）。';
+      } else if(f==='neg'){
+        cls='rec-urgent'; title='腹腔非出血源 — 依 xABCDE 重新搜尋出血部位';
+        detail='<li>依序排查：外出血與交界處出血、胸腔（胸管引流量）、骨盆、長骨、後腹腔。</li>'+
+          '<li>E-FAST 對腹部之敏感度僅 0.68（兒童 0.63），<b>陰性不排除腹內損傷</b>；若病人始終無法穩定而其他部位皆已排除，仍應考慮剖腹探查。</li>'+
+          '<li>持續復甦：TXA（3 小時內，1A）、大量輸血protocol（ABC score ≥2 分預測敏感度 75%／特異度 86%）、維持正常體溫與游離鈣（1C）。</li>'+
+          '<li>一旦短暫穩定，CT 才有意義；<b>短暫反應者僅在創傷團隊全程監視、手術室與血品即刻可用之中心才可做 CT</b>。</li>';
+        note='WSES 骨盆創傷 2017（引 EAST）：E-FAST 敏感度不足以排除骨盆出血，但足以排除不穩定病人是否需要剖腹。';
+      } else {
+        cls='rec-idle'; title='請完成步驟 3';
+      }
+    }
+    else if(h==='stable'){
+      const hd=trSt.hard;
+      if(hd==='op'){
+        cls='rec-urgent'; title='剖腹探查（硬性指標）';
+        detail='<li>瀰漫性腹膜炎、腸道外露、鼻胃管或直腸鮮血、橫膈下游離氣體，任一即為手術適應症；插入物應於手術室內控制下移除。</li>'+
+          '<li>槍傷另加：多發彈道、FAST 大量或多象限游離液體——「多發腹部槍傷手術性損傷發生率極高，通常應直接探查」。</li>'+
+          '<li>穩定病人有腹膜炎徵象仍屬剖腹適應症，但可依生理狀況採一期確定性手術而非損害控制（歐洲指引 1C）。</li>'+
+          '<li>橫膈下游離氣體之例外：穩定、腹部理學檢查良性、氣體量少或判讀存疑者，WTA 共識允許先影像或觀察。</li>';
+        note='EAST 2010 Level 1(a)；WTA 2018/2019。※ 陽性的局部傷口探查<b>不是</b>剖腹適應症——即使 LWE 陽性，非治療性剖腹率仍達 30–50%。';
+      } else if(hd==='ct'||hd==='unexam'){
+        cls='rec-blue'; title='靜脈顯影 CT（雙時相），再依器官分級決定處置';
+        detail='<li><b>CT（靜脈顯影）為穩定或已穩定病人的黃金標準（GoR 1A）</b>，敏感度／特異度接近 96–100%；實質器官血管損傷須用動脈期＋門脈期雙時相，腎臟加 5 分鐘延遲排泄期。</li>'+
+          '<li>CT 須即刻可用且在創傷團隊監督下執行；口服顯影劑不提升對十二指腸-胰臟損傷的敏感度（GoR 2A）。</li>'+
+          '<li>背側／側腹穿刺傷應直接走影像路徑（後腹腔之大腸與十二指腸損傷症狀可極不明顯）；初次 CT 不明確時，加做腸道顯影劑重複 CT。三重顯影 CT <b>非強制</b>，由外科與放射科決定。</li>'+
+          (hd==='unexam'
+            ? '<li><b>理學檢查不可靠者（EAST Level 1(b)）：應進一步影像檢查<u>或</u>直接剖腹探查。</b>此族群無法以連續理學檢查收尾，門檻應放低——BIPS 在 GCS 3–8 者特異度 92%、PPV 82%，是少數仍具參考價值的情境。</li>'
+            : '<li>可靠之連續理學檢查（同一團隊執行）足以偵測穿刺傷後之顯著損傷（EAST Level 2(e)），觀察<b>至少 24 小時</b>；腹部刺傷 CT 偽陰性率 8.7%，<b>陰性 CT 不可作為出院之唯一依據</b>。</li>')+
+          '<li>穩定 + FAST 陽性者<b>做 CT，不是剖腹</b>；穿刺傷之 NOM 須在具外科專業之中心進行，資源受限場域應一律剖腹或立即後送。</li>';
+        note='WSES 各器官指引 GoR 1A；EAST 2010 Level 1(b)、2(e)、2(f)。';
+      } else {
+        cls='rec-idle'; title='請完成步驟 3';
+      }
+    }
+  } else if(m){
+    cls='rec-idle'; title='請完成步驟 2';
+  }
+  flowRec('tr_rec',cls,title,detail,note);
+}
+
+function trRenderOrgan(){
+  const o=trSt.organ, g=trSt.grade, b=trSt.blush;
+  let cls='rec-idle', title='請完成上方步驟', detail='', note='';
+
+  if(o==='spleen'){
+    if(!g) { title='請於步驟 5 選擇 AAST 分級'; }
+    else if(!b){ title='請於步驟 6 選擇有無血管損傷徵象'; }
+    else if(g==='g45'){
+      cls='rec-blue'; title='非手術處置 + 血管栓塞（不論有無 blush）';
+      detail='<li><b>穩定之 WSES class III（AAST IV–V）應全部考慮血管栓塞，不論 CT 有無 blush（GoR 1B）。</b></li>'+
+        '<li>單一血管異常之輕中度損傷，近端或遠端栓塞孰優文獻尚無定論；<b>多處血管異常或嚴重損傷應採近端或合併栓塞</b>（1C），並先確認胰臟血管解剖可容許。栓塞材料以<b>線圈優於暫時性物質</b>（1C）。</li>'+
+        '<li>支持數據：AAST IV 未栓塞 vs 栓塞之 NOM 失敗率 43.7% vs 17.3%（p=0.035）；AAST V 為 83.1% vs 25.0%（p=0.016）。栓塞成功率 73–100%。</li>'+
+        '<li class="ev">代價：栓塞主要併發症 3.7–28.5%、次要併發症 23–61%（遠端 15.9–25.2% vs 近端 2.8–11.6%）。感染性併發症：觀察 4.8%、栓塞 4.2%、脾修補 10.5%、<b>脾切除 32.0%</b>（p=0.001）。</li>'+
+        '<li>NOM 僅可在具備重症監測、隨時可用之血管攝影室與手術室、血品即時供應之環境進行（2A）。</li>'+
+        '<li><b>合併嚴重腦損傷之 WSES class II–III，若無法即刻取得手術或栓塞之救援治療，應直接脾切除（GoR 1C）。</b></li>';
+      note='WSES 脾臟 2017 GoR 1B。※ 2018 版 AAST：單一被膜內假性動脈瘤即為 grade IV，會使原本 1994 版的 grade II 病人跳到此處置——請確認放射報告所依版本。';
+    }
+    else if(b==='yes'){
+      cls='rec-blue'; title='非手術處置 + 血管栓塞（CT 見血管損傷）';
+      detail='<li><b>穩定且 CT 見動脈 blush 者，血管栓塞可為第一線處置，不論損傷級數（GoR 2B）。</b>假性動脈瘤與動靜脈廔管同樣適用（2A）。</li>'+
+        '<li>僅在栓塞可即刻執行之中心進行；否則或血行迅速惡化時，應改為手術（2B）。</li>'+
+        '<li>若血管攝影當下未見 blush 但 CT 曾見，可考慮近端栓塞（2C）。</li>'+
+        '<li class="ev">CT blush 有 2.3–47% 在血管攝影未獲證實；但見到 blush 卻只做攝影不栓塞，會使再出血與 NOM 失敗風險加倍。blush 者未栓塞之 NOM 失敗率 67–82%。</li>'+
+        '<li>監測：連續腹部理學檢查與 Hct 每 6 小時；NOM 失敗之危險因子為年齡 &gt;55 歲、高 ISS、中重度脾損傷（2B）。</li>';
+      note='WSES 脾臟 2017 GoR 2B。';
+    }
+    else if(g==='g3'){
+      cls='rec-blue'; title='非手術處置（AAST III 無 blush：不做常規栓塞）';
+      detail='<li><b>穩定之 WSES class II（AAST III）且無 blush 者，不應常規血管栓塞（GoR 2B）</b>；僅在具 NOM 失敗危險因子時，可考慮預防性近端栓塞。</li>'+
+        '<li>穩定且無其他需手術之腹內損傷者，<b>不論級數皆應先嘗試 NOM（GoR 2A）</b>。</li>'+
+        '<li>NOM 危險因子（非絕對禁忌，2B）：年齡 &gt;55 歲、大量腹腔積血、復甦前低血壓、<b>GCS &lt;12</b>、到院 Hct 偏低、合併其他腹內損傷、CT blush、抗凝藥物、HIV、藥癮、肝硬化、需輸血。<b>腹腔積血量本身與 NOM 失敗無關，不可作為禁忌</b>。</li>'+
+        '<li>監測：Hct 與腹部理學檢查每 6 小時；AAST III 以上或 Hct 下降者可考慮 36–72 小時重複 CT（此點文獻尚無共識）。</li>'+
+        '<li>血栓預防：機械式預防（2A）＋ 儘早開始 LMWH（2B）—— LMWH 延後 &gt;72 小時者靜脈栓塞率高 4 倍以上，而 &lt;48 h／48–72 h／&gt;72 h 開始對 NOM 失敗率無差異。</li>';
+      note='WSES 脾臟 2017 GoR 2A／2B。整體鈍性脾損傷 NOM 失敗率 4–15%，高量中心嘗試 NOM 之成功率約 90%。';
+    }
+    else {
+      cls='rec-blue'; title='非手術處置 + 連續評估（AAST I–II 無 blush）';
+      detail='<li>穩定且無其他需手術之腹內損傷者應先嘗試 NOM（GoR 2A）；WSES class I 以觀察與連續評估為主，不需常規栓塞。</li>'+
+        '<li>低級數損傷之觀察是治療的一部分：入院 CT 後<b>每 6 小時</b>連續腹部理學檢查與 Hct 追蹤。</li>'+
+        '<li class="ev">即使 AAST I–II，仍有 4% 存在活動性出血之血管損傷；因此「級數低」不等於「不需監測」。</li>'+
+        '<li>出院後追蹤：AAST I–II <b>不需常規追蹤 CT</b>。癒合：AAST I–II 平均 12.5 天、約 50 天完全癒合。</li>'+
+        '<li>延遲破裂：19% 發生於 48 小時內，最常見於第 4–10 天；出院後因脾切除再入院率 1.4%。恢復活動時間各家不一（2 週至 6 個月），指引未做裁決；<b>兒童中重度損傷 NOM 後至少 6 週才恢復正常活動（GoR 2B）</b>。</li>';
+      note='WSES 脾臟 2017 GoR 2A。NOM 禁忌（GoR 1A）：無法矯正之血行不穩定，或其他剖腹適應症（腹膜炎、空腔臟器損傷、腸道外露、插入物）。';
+    }
+    if(g&&b) detail+='<li><b>脾切除後：</b>肺炎鏈球菌、b 型嗜血桿菌、腦膜炎雙球菌疫苗於<b>脾切除後不少於 14 天</b>接種（14 天前抗體反應不佳；過此期限則愈早愈好）；預計 15 天內出院且有漏打風險者，出院前先打第一劑。&gt;6 個月者每年流感疫苗。栓塞後之功能性脾機能低下者亦應視同接種。OPSI 發生率 0.5–2%、死亡率 30–70%，風險終生存在。緊急備用抗生素：成人 Amoxicillin 3 g 起始後 1 g q8h（β-lactam 過敏用 Levofloxacin 500 mg q24h 或 Moxifloxacin 400 mg q24h）；兒童 Amoxicillin 50 mg/kg/day 分 3 次。<span class="mono">※ 疫苗品項請依現行 CDC/ACIP 時程，WSES 2017 所列版本已過時。</span></li>';
+  }
+  else if(o==='liver'){
+    if(!g){ title='請於步驟 5 選擇 AAST 分級'; }
+    else if(!b){ title='請於步驟 6 選擇有無血管損傷徵象'; }
+    else if(b==='yes'){
+      cls='rec-blue'; title='非手術處置 + 血管栓塞（CT 見動脈 blush）';
+      detail='<li><b>穩定且 CT 見動脈 blush 者，血管栓塞可為第一線處置（GoR 2B）。</b></li>'+
+        '<li><b>兒童即使有 blush，亦非血管栓塞之絕對適應症（GoR 2B）。</b></li>'+
+        '<li>肝動脈假性動脈瘤（發生率約 1%）<b>應以血管栓塞處理以防破裂（GoR 2A）</b>。</li>'+
+        '<li>監測：臨床與血色素每 6 小時、至少 24 小時（2A）；'+(g==='g12'?'AAST I–II 之單純肝損傷通常不需入 ICU。':'<b>AAST III 以上建議入 ICU（GoR 2B）</b>。')+'</li>'+
+        '<li>合併中重度腦損傷者，NOM 之前提是能達成 <b>SBP &gt;110 mmHg 且／或 CPP 60–70 mmHg</b>；脊髓損傷者 MBP &gt;80 mmHg（2B）。</li>';
+      note='WSES 肝臟 2020 GoR 2B。';
+    }
+    else {
+      cls='rec-blue'; title='非手術處置（NOM 為首選，不論級數）';
+      detail='<li><b>所有穩定之輕度（WSES I／AAST I–II）、中度（WSES II／AAST III）與重度（WSES III／AAST IV–V）肝損傷，在無其他需手術之腹內損傷時，NOM 應為首選治療（GoR 2A）。</b>肝臟與脾臟不同——高級數本身不構成栓塞適應症。</li>'+
+        '<li>考慮 NOM 者<b>必須</b>先做靜脈顯影 CT（2A）；治療期間必須連續臨床評估與抽血以偵測變化（2A），血色素每 6 小時、至少 24 小時。</li>'+
+        '<li>'+(g==='g12'?'AAST I–II 之單純肝損傷通常不需入 ICU。':'<b>AAST III 以上建議入 ICU（GoR 2B）</b>。')+'</li>'+
+        '<li><b>短暫反應者之 AAST III 以上損傷，只有在受過訓練之外科醫師、手術室、ICU 級連續監測、血管攝影與栓塞、血品皆即刻可得，且具備快速後送機制之中心，才可考慮 NOM（GoR 2B）。</b></li>'+
+        '<li>NOM 禁忌（CT 徵象）：腹腔或後腹腔游離氣體、<b>無實質器官損傷之腹腔游離液體</b>、局部腸壁增厚、彈道貼近空腔臟器且周圍有血腫、高能量穿刺傷。</li>'+
+        '<li>追蹤：<b>不需常規安排後期追蹤影像</b>；多數肝損傷約 4 個月癒合，中重度損傷通常 3–4 個月後可恢復正常體能活動。有症狀或感染之 biloma 與肝內膿瘍以經皮引流處理（2A）。</li>';
+      note='WSES 肝臟 2020 GoR 2A。整體高級數鈍性肝損傷併發症率 12–14%，再出血 1.7–5.9%（其中 69% 之「晚期」出血仍可非手術處理），膽道併發症 2.8–30%。';
+    }
+  }
+  else if(o==='kidney'){
+    if(!g){ title='請於步驟 5 選擇 AAST 分級'; }
+    else if(!b){ title='請於步驟 6 選擇有無血管損傷徵象'; }
+    else if(b==='yes'){
+      cls='rec-blue'; title='非手術處置 + 超選擇性血管栓塞';
+      detail='<li><b>穩定或已穩定病人若有動脈顯影劑外漏、假性動脈瘤、動靜脈廔管，或非自限性肉眼血尿，適應血管攝影併超選擇性栓塞（GoR 1C）。</b></li>'+
+        '<li><b>血管攝影陰性時不做盲目栓塞（GoR 1C）</b>，即使 CT 曾見顯影劑外漏（雙腎健全者）。</li>'+
+        (g==='g45'?'<li><b>嚴重腎血管損傷而出血非自限性者適應手術（1C）；主腎靜脈損傷且出血非自限性者不適合栓塞，應手術處理（1C）。</b></li><li>主腎動脈損傷／剝離／阻塞可在專門中心以支架或覆膜支架經皮血管重建，前提是<b>溫缺血時間 &lt;240 分鐘</b>（2C）。</li>':'')+
+        '<li>NOM 失敗高風險：顯影劑外漏、<b>腎周血腫 &gt;3.5 cm</b>、內側裂傷合併顯著內側尿外滲、輸尿管無顯影；中重度損傷合併<b>≥2 項</b>者失敗率高。</li>'+
+        '<li>中重度損傷有高達 25% 於<b>兩週內</b>發生假性動脈瘤或動靜脈廔管導致之續發出血。</li>';
+      note='WSES-AAST 腎臟 2019 GoR 1C。';
+    }
+    else {
+      cls='rec-blue'; title='非手術處置（腎臟 NOM 適用於所有穩定病人）';
+      detail='<li><b>所有穩定或已穩定之輕度（AAST I–II）、中度（AAST III）與重度（AAST IV–V）腎損傷，NOM 應為首選（GoR 1B）。</b></li>'+
+        '<li><b>單純尿外滲本身不是 NOM 的絕對禁忌（GoR 1B）</b>；<b>無活力組織（去血管化腎臟）在急性期也不是手術適應症（GoR 2A）</b>，前提是沒有其他剖腹適應症。</li>'+
+        (g==='g45'?'<li>集尿系統損傷（2018 版全數列為 AAST IV）以引流為主；持續尿外滲可置輸尿管支架或腎造瘻。</li>':'')+
+        '<li>影像：靜脈顯影 CT <b>合併延遲排泄期（5 分鐘）</b>為黃金標準（1A）。鈍傷若有肉眼或顯微血尿併低血壓，<b>或高能量減速傷不論有無血尿</b>，皆須做（2B）。</li>'+
+        '<li>膀胱：<b>腹腔內膀胱破裂應手術探查並一期修補（1B）</b>；單純腹腔外膀胱損傷可以導尿引流非手術處理（1C）。逆行性膀胱攝影為首選診斷（1C），優於 CT 延遲期（1B）。若骨盆將做血管栓塞，<b>膀胱攝影應延後至血管攝影完成後</b>（2A）。</li>'+
+        '<li>尿道：血行不穩定合併後尿道損傷者<b>先做尿液引流、延後處理</b>（1C）；鈍性部分後尿道損傷以保守與內視鏡對位為主，確定性手術延後 14 天（1C）。</li>'+
+        '<li>追蹤：AAST I–II 不需追蹤影像（2B）。恢復運動：輕中度 2–6 週，重度 6–12 個月。</li>';
+      note='WSES-AAST 腎臟 2019 GoR 1B。※ E-FAST 對腎損傷之敏感度與特異度皆低（GoR 1B），不可用於排除。';
+    }
+  }
+  else if(o==='dp'){
+    const d=trSt.dp;
+    if(!d){ title='請於步驟 5 選擇損傷型態'; }
+    else if(d==='dhem'){
+      cls='rec-blue'; title='十二指腸壁內血腫：非手術處置';
+      detail='<li>WSES class I–II（AAST I–II）之十二指腸血腫以 NOM 為主（GoR 2B）：鼻胃管減壓、禁食、必要時全靜脈營養（阻塞超過 7 天時）。</li>'+
+        '<li><b>初始以 NOM 處理之血腫，若十二指腸阻塞於 14 天內未緩解，應考慮手術（GoR 2C）。</b>NOM 失敗率 5–10.3%。</li>'+
+        '<li>受傷後 3–6 小時起每 6 小時合併測 amylase 與 lipase（1B）；數值升高或持續上升即為進一步檢查之指標。</li>'+
+        '<li>初次 CT 陰性或非特異、或腹痛持續者，<b>12–24 小時內重複 CT（2A）</b>—— 可使腸穿孔敏感度由 30% 升至 82%、非手術之陰性預測值由 94% 升至 100%。</li>'+
+        '<li>單純十二指腸周圍積液或血腫<b>不需要立即探查</b>。臨床惡化而影像不明確者，應行診斷性剖腹（2A）。</li>';
+      note='WSES-AAST 十二指腸-胰臟 2019 GoR 2B／2C。鈍性十二指腸損傷漏診率達 27%（其中 83% 回頭看 CT 有細微徵象）；腔外氣體僅出現於 20–55%。';
+    }
+    else if(d==='dperf'){
+      cls='rec-elective'; title='十二指腸全層破裂：手術，儘可能一期修補';
+      detail='<li><b>只要技術上可行，不論級數皆應考慮一期修補（GoR 2B）。</b></li>'+
+        '<li>WSES class III 以上（AAST III–V）可考慮輔助術式如<b>幽門排除</b>（含或不含胃空腸吻合）與膽道分流（GoR 2C）。</li>'+
+        '<li class="ev">但同一份指引的內文對此並不熱衷：十二指腸憩室化與三管減壓<b>已不再被提倡</b>，且多篇研究顯示幽門排除相較「一期修補＋鼻胃管」<b>並未改善併發症或死亡率，反而延長住院天數</b>。此點請視為有爭議。</li>'+
+        '<li>剖腹時<b>必須完整顯露並探查十二指腸-胰臟複合體（GoR 1A）</b>；懷疑膽道損傷但未能確認時，<b>強烈建議術中膽道攝影（GoR 2A）</b>。</li>'+
+        '<li>延遲手術<b>超過 24 小時</b>者併發症率才顯著上升——這是觀察窗的實際上限。</li>';
+      note='WSES-AAST 十二指腸-胰臟 2019 GoR 2B。※ 懷疑十二指腸穿孔時不建議做 ERCP。';
+    }
+    else if(d==='pdist'){
+      cls='rec-elective'; title='胰臟 AAST III（SMV 遠端）：遠端胰臟切除';
+      detail='<li><b>WSES class II（AAST III）胰臟損傷的處置由「位置」決定（GoR 2C）：位於腸繫膜上靜脈遠端者應接受手術處置（2C）。</b></li>'+
+        '<li><b>遠端胰臟切除（含或不含脾切除）為首選術式（GoR 2C）。</b></li>'+
+        '<li>影像侷限：CT 對主胰管損傷之特異度 90–95%，但<b>敏感度僅 52–54%</b>；受傷 12 小時內可漏診達 40%，損傷常於 12–24 小時後才顯現。胰臟期取像時間為顯影劑注射後 35–40 秒。</li>'+
+        '<li>ERCP 即使在早期亦兼具診斷與治療價值（1B），但有 3–14% 術後胰臟炎與 0.2–1% 死亡率、9–14% 插管失敗。</li>'+
+        '<li>創傷性遠端胰臟切除後新發生內分泌功能障礙 &lt;4%。</li>';
+      note='WSES-AAST 十二指腸-胰臟 2019 GoR 2C。';
+    }
+    else if(d==='pprox'){
+      cls='rec-blue'; title='胰臟 AAST III（SMV 近端）：選擇性非手術處置';
+      detail='<li><b>位於腸繫膜上靜脈近端（極近端體部）者，僅在經篩選之穩定或已穩定病人考慮 NOM，且僅限高階創傷中心（GoR 2C）。</b></li>'+
+        '<li>此處切除意謂近全胰切除，代價遠高於遠端損傷——這是位置決定術式的原因。</li>'+
+        '<li>每 6 小時合併追蹤 amylase 與 lipase（1B）；12–24 小時重複 CT（2A）；ERCP 可用於評估與處理主胰管（1B）。</li>'+
+        '<li>高級數胰臟損傷之 NOM <b>需至少追蹤 6 個月</b>；假性囊腫是最常見之 NOM 併發症。</li>';
+      note='WSES-AAST 十二指腸-胰臟 2019 GoR 2C。';
+    }
+    else if(d==='p45'){
+      cls='rec-elective'; title='胰臟 AAST IV–V：處置有爭議，現行以清創與廣泛引流為主';
+      detail='<li><b>WSES 明言：穩定或已穩定病人之 WSES class III（AAST IV）胰臟損傷，其最佳處置仍有爭議（GoR 2C）。</b></li>'+
+        '<li>現行主流為<b>清創與廣泛局部引流</b>（胰廔管率 12–13.8%），相較胰腸吻合重建（11–20%）並不遜色。</li>'+
+        '<li>創傷性 Whipple 手術死亡率 12–33%，26–80% 需損害控制策略；<b>採分期方式施行結果較佳（GoR 2C）</b>——即先止血與控制污染，重建留待二次手術。</li>'+
+        '<li>十二指腸-胰臟損傷之損害控制使用率 20–63%，到院時已不穩定者 10–44%，合併其他損傷 55–100%。</li>'+
+        '<li>術後胰廔管 10–35%、胰臟炎 17%。</li>';
+      note='WSES-AAST 十二指腸-胰臟 2019 GoR 2C。';
+    }
+    else if(d==='gb'){
+      cls='rec-elective'; title='膽囊／肝外膽道損傷：依級數選擇切除或重建';
+      detail='<li><b>膽囊損傷（WSES class I／AAST I–III）：膽囊切除為首選（GoR 1C）。</b></li>'+
+        '<li><b>WSES class II–III（AAST IV–V）之肝外膽道損傷：若無合併血管損傷，以肝管空腸吻合或總膽管空腸吻合重建（GoR 2C）。</b></li>'+
+        '<li><b>剖腹探查時若懷疑膽道損傷卻未能確認，強烈建議術中膽道攝影（GoR 2A）。</b></li>'+
+        '<li>DPL 對膽道損傷雖敏感但不具特異性（GoR 2B）。</li>';
+      note='WSES-AAST 十二指腸-胰臟與肝外膽道 2019 GoR 1C／2C。';
+    }
+  }
+  else if(o==='bowel'){
+    const bw=trSt.bowel;
+    if(!bw){ title='請於步驟 5 選擇 CT 徵象'; }
+    else if(bw==='definite'){
+      cls='rec-elective'; title='剖腹探查（明確全層破裂）';
+      detail='<li>腸道顯影劑外漏或游離氣體屬「明確全層破裂證據」，應立即手術——但<b>這類發現罕見</b>：手術證實之鈍性腸損傷中，游離氣體僅 21.2%、腸壁不連續僅 6.1%。</li>'+
+        '<li>腹腔或後腹腔游離氣體同時是 WSES 明列之 NOM 禁忌徵象。</li>'+
+        '<li>合併實質器官損傷時，空腔臟器損傷之發生率隨脾損傷嚴重度上升：輕度 1.9%、中度 2.4%、重度 4.9%、極重度 11.6%。</li>';
+      note='WSES 肝臟 2020 之 NOM 禁忌；WSES-AAST 十二指腸-胰臟 2019。※ BBMI 無專屬學會指引，本節證據等級低於其他器官。';
+    }
+    else if(bw==='suspect'){
+      cls='rec-elective'; title='手術探查，或密切連續評估 + 12–24 小時重複 CT';
+      detail='<li>BIPS ≥2（WBC ≥17,000/µL、腹部壓痛、CT 腸繫膜分級 ≥4 各 1 分）之多中心前瞻驗證：敏感度 72%、特異度 78%、PPV 67%、NPV 82%、AUROC 0.75。</li>'+
+        '<li class="ev">但 BIPS <b>未獲任何學會指引背書</b>：單中心外部驗證（盛行率 3.1%）PPV 僅 19%，且<b>「WBC ≥17」與「單獨 CT 分級 4」皆未達統計顯著</b>，結論為套用 BIPS 會造成大量非治療性剖腹，而未能比 CT 單獨更早找出更多損傷。最穩定的單一鑑別因子是 <b>CT 腸繫膜分級 ≥4</b>（OR 11.7）。</li>'+
+        '<li><b>理學檢查不可靠（GCS 3–8）者是 BIPS 最有價值的情境</b>：該族群特異度 92%、PPV 82%，此時應降低手術門檻。</li>'+
+        '<li>選擇觀察者：連續理學檢查由同一團隊執行，並於 <b>12–24 小時重複 CT</b>（腸穿孔敏感度由 30% 升至 82%）。<b>延遲手術超過 24 小時者併發症率顯著上升</b>——這是觀察窗的上限，不是可無限延長的選項。</li>'+
+        '<li>延遲情境下診斷性腹腔鏡兼具診斷與治療價值，陰性時可減少不必要之剖腹（2C）。</li>';
+      note='BIPS：McNutt 2015 衍生、Wandling 2022 多中心驗證、Zingg 2018 外部驗證（結論相反）。※ 兒童 BBMI <b>完全無指引</b>，外科醫師實際作法差異達兩倍。';
+    }
+    else if(bw==='fluid'){
+      cls='rec-elective'; title='無實質器官損傷之腹腔游離液體：視為腸道／腸繫膜損傷';
+      detail='<li><b>WSES 明列「無實質器官損傷之腹腔游離液體」為 NOM 之禁忌徵象</b>，其意義是空腔臟器或腸繫膜損傷，直到被排除為止。</li>'+
+        '<li>腹腔積液出現於 93.9% 之手術證實鈍性腸損傷，是最敏感（但最不特異）的單一徵象。</li>'+
+        '<li>處置：具腹膜炎徵象或理學檢查不可靠者 → 剖腹探查；理學檢查可靠且完全良性者 → 連續評估 + 12–24 小時重複 CT，並在惡化時立即手術（2A）。</li>'+
+        '<li>資源允許時，診斷性腹腔鏡可作為橋接策略以避免非治療性剖腹（2C）。</li>';
+      note='WSES 肝臟 2020 NOM 禁忌清單。';
+    }
+    else if(bw==='nonspec'){
+      cls='rec-blue'; title='連續理學檢查 + 12–24 小時重複 CT（陰性 CT 不能收尾）';
+      detail='<li><b>手術證實之鈍性腸損傷中有 9.1% 的 CT 完全正常</b>；腸壁增厚或血腫僅出現於 42.4%。陰性 CT 無法排除腸道損傷。</li>'+
+        '<li>一系列穩定病人中，仍有 <b>24% 的顯著 BBMI 延遲診斷超過 24 小時</b>，儘管都做了常規 CT。</li>'+
+        '<li>由同一團隊執行連續理學檢查（EAST Level 2(e)），觀察至少 24 小時；<b>12–24 小時重複 CT</b> 可使腸穿孔敏感度由 30% 升至 82%、非手術之陰性預測值由 94% 升至 100%。</li>'+
+        '<li>臨床惡化而影像仍不明確者 → <b>診斷性剖腹（GoR 2A）</b>；延遲手術超過 24 小時者併發症率顯著上升。</li>'+
+        '<li>理學檢查不可靠者不適用本路徑——該族群無法以連續評估收尾，應提早以影像或探查處理。</li>';
+      note='LeBedis 2016 之 CT 徵象出現率；WSES-AAST 十二指腸-胰臟 2019 GoR 2A。';
+    }
+  }
+  else if(o==='pelvis'){
+    const p=trSt.pelv;
+    if(!p){ title='請於步驟 5 選擇骨盆 CT 與力學穩定度'; }
+    else if(p==='blush'){
+      cls='rec-blue'; title='骨盆血管栓塞（CT 見動脈外漏）';
+      detail='<li><b>CT 見骨盆動脈顯影劑外漏者，不論血行動力學狀態皆可能受益於血管栓塞（Grade 2A）。</b>CT 之動脈外漏與骨盆血腫是預測需要栓塞的最重要徵象（1C）。</li>'+
+        '<li><b>骨盆血腫 ≥500 cm³ 時，即使未見 blush 亦應強烈懷疑動脈損傷。</b>CT 判讀 blush 之準確度 98%，但無 blush 不代表沒有活動性出血。</li>'+
+        '<li><b>老年病人不論血行動力學狀態皆應考慮骨盆血管栓塞（Grade 2C）。</b></li>'+
+        '<li>栓塞須在骨盆外與非動脈性出血來源已控制後才進行——胸腔、腹腔、四肢之出血可能比骨盆更緊急。持續出血徵象者可考慮<b>重複</b>栓塞（2B）。</li>'+
+        '<li>若同時懷疑膀胱損傷，<b>膀胱攝影應延後至血管攝影完成之後</b>，以免影響攝影判讀（腎臟指引 GoR 2A）。</li>';
+      note='WSES 骨盆創傷 2017 Grade 2A／1C。';
+    }
+    else if(p==='unstable_mech'){
+      cls='rec-blue'; title='骨盆固定（力學不穩定，血行動力學穩定）';
+      detail='<li>骨盆帶優於床單包紮（1C），置於<b>大轉子與恥骨聯合高度</b>；生理狀況允許時應儘早移除並改為外固定或確定性固定（1B）——<b>不應超過 24–48 小時</b>（壓力 &gt;9.3 kPa 超過 2–3 小時即有皮膚壞死風險）。</li>'+
+        '<li><b>外固定提供暫時性骨盆環穩定，是早期止血之輔助（Grade 1A）。</b>APC-II/III 與 LC-II/III 用髂嵴或髖臼上方之前方復甦架；<b>垂直剪力合併薦髂關節分離用後方 C-clamp</b>（2A）。</li>'+
+        '<li><b>C-clamp 禁用於</b>粉碎性與經薦孔薦骨骨折、髂骨翼骨折、LC 型骨盆環破壞（2B）。</li>'+
+        '<li>確定性固定：恥骨聯合分離 &gt;2.5 cm（APC-II/III）以鋼板固定（1A）；血行穩定或「borderline」者可於 <b>24 小時內</b>安全接受早期確定性固定（2A）；生理狀況惡劣之多重創傷者應<b>延後至第 4 天之後</b>（2A）。</li>'+
+        '<li>合併損傷：骨盆環骨折病人 7–25% 有下泌尿道／尿道損傷（<b>約 23% 初評時被漏診</b>；恥骨聯合分離每增加 1 mm，風險上升 10%）；高級數損傷之肛門直腸損傷達 18–64%。</li>';
+      note='WSES 骨盆創傷 2017 Grade 1A／1B／2A。※ 骨折型態本身無法預測誰需要血管攝影——血行動力學必須主導。';
+    }
+    else if(p==='stable_mech'){
+      cls='rec-blue'; title='非手術處置（WSES class I）';
+      detail='<li>血行動力學與力學皆穩定之 APC I／LC I 為 WSES class I，以非手術處置為主。</li>'+
+        '<li>仍須連續評估：CT 對骨盆骨折之敏感度與特異度均 100%，但骨盆 X 光敏感度僅 50–68%（偽陰性 32%）——若僅有 X 光而臨床可疑，應做 CT。</li>'+
+        '<li>注意合併之泌尿道損傷（約 23% 之尿道損傷於初評被漏診）與肛門直腸損傷。</li>'+
+        '<li>血栓預防：機械式預防加儘早開始 LMWH。</li>';
+      note='WSES 骨盆創傷 2017。';
+    }
+  }
+  flowRec('tr_rec2',cls,title,detail,note);
+}
+
+function trReset(){
+  Object.keys(trSt).forEach(k=>trSt[k]=null);
+  document.querySelectorAll('#view-trauma-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  trRender();
+}
+trReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
