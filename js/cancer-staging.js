@@ -19,7 +19,8 @@ var ONC_TILE_IMG = {
   gyn:1, lung:1, esoph:1, gastric:1, panc:1, breast:1, gist:1, thyroid:1,
   colorectal:1, anal:1, appendix:1, hcc:1, cca:1, net:1, sts:1,
   npc:1, hnc:1, uro:1, heme:1,
-  cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn'
+  cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn',
+  utuc:'uro', rcc:'uro', bladder:'uro', prostate:'uro'
 };
 function oncTile(id, zh, en, onclick, extraClass, extraHtml){
   var m = ONC_TILE_IMG[id];
@@ -235,6 +236,10 @@ function switchTab(id, tab){
     if(c.pathway === 'endo' && typeof initEndoPathway === 'function') initEndoPathway();
     if(c.pathway === 'utsarc' && typeof initUtsarcPathway === 'function') initUtsarcPathway();
     if(c.pathway === 'ovarian' && typeof initOvarianPathway === 'function') initOvarianPathway();
+    if(c.pathway === 'utuc' && typeof initUtucPathway === 'function') initUtucPathway();
+    if(c.pathway === 'rcc' && typeof initRccPathway === 'function') initRccPathway();
+    if(c.pathway === 'bladder' && typeof initBladderPathway === 'function') initBladderPathway();
+    if(c.pathway === 'prostate' && typeof initProstatePathway === 'function') initProstatePathway();
   }
 }
 
@@ -310,7 +315,7 @@ function renderStage(c){
   return h;
 }
 
-var STAGE_RANK = {'0':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
+var STAGE_RANK = {'0':0,'0a':0,'0is':0,'I':1,'IA':1,'IA1':1,'IA2':1,'IA3':1,'IB':1,'IC':1,
   'IB1':1,'IB2':1,'IB3':1,'IC1':1,'IC2':1,'IC3':1,
   'II':2,'IIA':2,'IIA1':2,'IIA2':2,'IIB':3,'IIC':3,
   'IIIA':4,'IIIA1':4,'IIIA1(i)':4,'IIIA1(ii)':4,'IIIA2':4,'IIIB':5,'IIIC':6,'IIIC1':6,'IIIC2':6,'III':4,
@@ -516,6 +521,18 @@ function renderTx(c){
   }
   if(c.pathway === 'ovarian' && typeof ovarianPathwayHTML === 'function'){
     return ovarianPathwayHTML();
+  }
+  if(c.pathway === 'utuc' && typeof utucPathwayHTML === 'function'){
+    return utucPathwayHTML();
+  }
+  if(c.pathway === 'rcc' && typeof rccPathwayHTML === 'function'){
+    return rccPathwayHTML();
+  }
+  if(c.pathway === 'bladder' && typeof bladderPathwayHTML === 'function'){
+    return bladderPathwayHTML();
+  }
+  if(c.pathway === 'prostate' && typeof prostatePathwayHTML === 'function'){
+    return prostatePathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){
