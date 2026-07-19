@@ -1,0 +1,114 @@
+/* 全站側邊導覽列 —— 三橫槓開合，電腦預設展開、手機預設收合（見 js/nav.js）。
+   結構由 js/nav.js 於載入時注入，故本檔只描述外觀與開合狀態。
+   狀態掛在 <html>（.has-nav / .nav-open），才能在 body 尚未有內容前就決定版面，
+   避免展開狀態下先畫出未推開的內容再跳一次。 */
+
+:root{ --nav-w:250px; }
+
+/* 有導覽列的頁面：頂端留一條給三橫槓，避免蓋住頁首的 eyebrow 文字 */
+html.has-nav body{ padding-top:56px; transition:padding-left .22s ease; }
+
+/* 開合動畫等第一次繪製後才啟用（.nav-ready 由 js/nav.js 加上）：
+   否則預設展開的頁面每次開啟都會先看到導覽列滑進來、內容再被推開一次 */
+html.has-nav:not(.nav-ready) body,
+html.has-nav:not(.nav-ready) .side-nav,
+html.has-nav:not(.nav-ready) .nav-scrim,
+html.has-nav:not(.nav-ready) .nav-toggle span{ transition:none !important; }
+
+/* ---- 三橫槓按鈕：永遠固定在左上角；展開時正好落在導覽列的標題列上 ---- */
+.nav-toggle{
+  position:fixed; top:9px; left:10px; z-index:70;
+  width:38px; height:38px; padding:0;
+  display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px;
+  background:var(--panel); border:1px solid var(--line); border-radius:2px;
+  cursor:pointer; transition:border-color .15s, background .15s;
+}
+.nav-toggle:hover{ border-color:var(--accent); background:var(--hover-bg); }
+.nav-toggle span{
+  display:block; width:17px; height:1.5px; background:var(--ink); border-radius:1px;
+  transition:transform .2s ease, opacity .15s ease;
+}
+/* 展開時三橫槓收成叉，位置不動（回按同一顆即收合） */
+html.nav-open .nav-toggle span:nth-child(1){ transform:translateY(5.5px) rotate(45deg); }
+html.nav-open .nav-toggle span:nth-child(2){ opacity:0; }
+html.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-5.5px) rotate(-45deg); }
+
+/* ---- 導覽列本體 ---- */
+.side-nav{
+  position:fixed; top:0; left:0; bottom:0; width:var(--nav-w); z-index:60;
+  background:var(--panel); border-right:1px solid var(--line);
+  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  padding:0 0 40px; overscroll-behavior:contain;
+  transform:translateX(-100%);
+  /* 收合時 visibility 延到動畫結束才切掉，否則會瞬間消失而非滑出；
+     收起後設為 hidden，內容才不會被鍵盤 Tab 逐項走到 */
+  visibility:hidden; transition:transform .22s ease, visibility 0s linear .22s;
+}
+html.nav-open .side-nav{ transform:none; visibility:visible; transition:transform .22s ease, visibility 0s; }
+
+/* 標題列：左側空出 48px 給三橫槓 */
+.nav-head{
+  display:block; padding:14px 14px 12px 58px; margin-bottom:6px;
+  border-bottom:1px solid var(--line); text-decoration:none; color:inherit;
+}
+.nav-head .nav-head-en{
+  display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent);
+}
+.nav-head .nav-head-zh{
+  display:block; font-family:var(--serif); font-size:17px; font-weight:600; margin-top:2px;
+}
+.nav-head:hover .nav-head-zh{ color:var(--accent); }
+.nav-head.is-current{ background:var(--soft-bg); }
+
+.nav-group{ margin:14px 0 0; }
+.nav-group-head{
+  display:flex; align-items:baseline; gap:7px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent); border-bottom:1px solid var(--accent-soft);
+  padding:0 14px 4px; margin:0 0 5px;
+}
+.nav-group-en{ color:var(--muted-soft); }
+.nav-group-n{ margin-left:auto; color:var(--muted-soft); }
+
+.nav-item{
+  display:block; text-decoration:none; color:inherit;
+  padding:6px 14px 6px 13px; border-left:3px solid transparent;
+  transition:background .13s, border-color .13s;
+}
+.nav-item:hover{ background:var(--hover-bg); border-left-color:var(--accent-soft); }
+.nav-zh{ display:block; font-size:13px; line-height:1.35; }
+.nav-en{
+  display:block; font-family:var(--mono); font-size:9.5px; color:var(--muted-soft);
+  line-height:1.3; margin-top:1px;
+}
+/* 決策流程與計分工具同列，沿用首頁的第二色標示流程圖 */
+.nav-item.is-pathway:hover{ border-left-color:var(--accent2-soft); }
+/* 目前所在頁面 */
+.nav-item.is-current{
+  background:var(--soft-bg); border-left-color:var(--accent); font-weight:600;
+}
+.nav-item.is-current .nav-en{ font-weight:400; }
+
+/* ---- 手機：抽屜式，蓋在內容上並附遮罩 ---- */
+.nav-scrim{
+  position:fixed; inset:0; z-index:55; background:rgba(10,14,16,.42);
+  opacity:0; pointer-events:none; transition:opacity .2s ease;
+}
+html.nav-open .nav-scrim{ opacity:1; pointer-events:auto; }
+
+/* ---- 電腦：推開內容，不用遮罩（.sheet 仍在剩餘寬度內置中）---- */
+@media (min-width:1024px){
+  html.nav-open body{ padding-left:calc(var(--nav-w) + 14px); }
+  html.nav-open .nav-scrim{ opacity:0; pointer-events:none; }
+}
+
+/* 動畫敏感者：直接切換，不滑動 */
+@media (prefers-reduced-motion:reduce){
+  .side-nav, .nav-scrim, .nav-toggle span, html.has-nav body{ transition:none; }
+}
+
+@media print{
+  .side-nav, .nav-scrim, .nav-toggle{ display:none; }
+  html.has-nav body{ padding-top:20px; padding-left:14px; }
+}
