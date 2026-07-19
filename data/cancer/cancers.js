@@ -1389,7 +1389,7 @@ window.CANCERS = [
     ['Sunitinib PanNET — Raymond E et al. NEJM 2011', PM('21306237')],
     ['E2211 CAPTEM — Kunz PL et al. J Clin Oncol 2023 (temozolomide ± capecitabine, PanNET)', PM('36260828')],
     ['直腸 NET 治療流程（NET-1）之來源：NTUH 大腸直腸癌診療指引 版次 21（2026/06/16 癌委會修訂通過；NET-1 直腸 NET 局部治療、NET-2 為 AJCC v9 直腸／結腸 NET 分期）', PS('NTUH colorectal guideline rectal neuroendocrine tumor NET-1')],
-    ['胰臟 NET（PanNET）治療流程之來源：NTUH 胰臟神經內分泌腫瘤診療指引 版次 02（文件編號 50710-2-000048；2026/06/16；PanNET-1～13、WDG3-1～4、<b>PDNEC-1／PDNEC-1A</b>、NE-A、NE-H 1～9；Source: NCCN v3.2025）', PS('NTUH pancreatic neuroendocrine tumor guidelines')],
+    ['胰臟 NET（PanNET）治療流程之來源：NTUH 胰臟神經內分泌腫瘤診療指引 版次 02（文件編號 50710-2-000048；2026/06/16；PanNET-1～13、WDG3-1～4、PDNEC-1／PDNEC-1A、NE-A、NE-H 1～9；Source: NCCN v3.2025）', PS('NTUH pancreatic neuroendocrine tumor guidelines')],
     ['WHO 2019／消化系統腫瘤分類第 5 版之分類與分級準則（NE-A 4 of 7 之來源；NET G1–G3 vs NEC vs MiNEN）— Klimstra DS, Klöppel G, La Rosa S, et al. WHO Classification of Tumours, Digestive System Tumours, 5th ed. IARC 2019', PS('WHO classification digestive system tumours 5th edition neuroendocrine')],
     ['PDNEC-1 註 a · 高惡性度 GEP／婦科神經內分泌腫瘤之處置共識（NANETS；明確區分分化良好 G3 NET 與分化差 NEC 之處置）— Eads JR et al. Endocr Relat Cancer 2023;30:e220206', PM('37184955')],
     ['PDNEC-1 註 b · ENETS 2023 消化道神經內分泌癌（NEC）指引（carboplatin + etoposide 為轉移性一線；irinotecan + fluoropyrimidine 為二線證據最佳）— Sorbye H et al. J Neuroendocrinol 2023;35:e13249', PM('36924180')],
