@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIMS65 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-aims65">
+  <div class="app-header">
+    <div><div class="eyebrow">Upper GI Bleeding Scoring Tool</div><h1>AIMS65</h1><div class="sub">上消化道出血住院死亡率預測（5 項床邊參數，各 1 分）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="a65_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html'">← 返回消化道出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-aims65'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box"><summary>AIMS65 記憶法與定位</summary><div class="box-inner">
+    <b>A</b>lbumin &lt;3.0 g/dL ｜ <b>I</b>NR &gt;1.5 ｜ <b>M</b>ental status altered ｜ <b>S</b>BP ≤90 mmHg ｜ 年齡 &gt;<b>65</b> 歲。<br><br>
+    AIMS65 的長處是<b>預測死亡</b>，短處是預測「需不需要介入」。在國際多中心前瞻研究中，預測死亡 AUROC 0.77（與 PNED 並列最佳，優於 admission Rockall 0.72 與 GBS 0.64）；但預測「需介入或死亡」僅 0.68，明顯不如 GBS 的 0.86。<br><br>
+    因此臨床上常見的分工是：<b>用 GBS 決定能不能回家，用 AIMS65 決定要不要進加護病房</b>。
+  </div></details>
+
+  <div class="card">
+    <label class="item"><input type="checkbox" class="a65-cb" id="a65_alb"> 白蛋白 &lt;3.0 g/dL <span class="unit">(Albumin &lt;3.0 g/dL)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="a65-cb" id="a65_inr"> INR &gt;1.5 <span class="unit">(INR &gt;1.5)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="a65-cb" id="a65_ms"> 意識狀態改變 <span class="unit">(Altered mental status)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="a65-cb" id="a65_sbp"> 收縮壓 ≤90 mmHg <span class="unit">(SBP ≤90 mmHg)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="a65-cb" id="a65_age"> 年齡 &gt;65 歲 <span class="unit">(Age &gt;65 years)</span><span class="pt-badge">1分</span></label>
+    <div class="note">五項皆為<b>到院初評即可取得</b>的資料，不需內視鏡結果。原始研究之意識狀態改變係以 GCS &lt;14、或病歷記載 disorientation／lethargy／stupor／coma 認定。</div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">AIMS65 Score（0–5）</div>
+    <div class="metric-value big" id="a65_total">0</div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div id="a65_interp" style="font-size:15px; margin-top:2px;">低風險（0分）</div>
+    <table class="ref">
+      <tr><th>分數</th><th>住院死亡率</th></tr>
+      <tr><td>0（無任何危險因子）</td><td>0.3%</td></tr>
+      <tr><td>1–4</td><td>介於兩端之間，逐級上升（原始論文未逐分公布）</td></tr>
+      <tr><td>5（五項全有）</td><td>31.8%</td></tr>
+    </table>
+    <div class="risk-note">
+      死亡率取自 Saltzman 2011 年美國 187 家醫院資料庫研究（推導 n=29,222／驗證 n=32,504），預測住院死亡 AUROC 0.80（驗證 0.77）。<b>該研究僅公布 0 分與 5 分兩端的死亡率，中間各分數之精確值未於原文列出，本頁因此不填數字，以免給出看似精確的杜撰值。</b><br><br>
+      實務上常用的分界是 <b>≥2 分</b>：Stanley 2017 年國際多中心前瞻研究（n=3012）算出 AIMS65 ≥2 為預測死亡的最佳閾值。AIMS65 分數越高，住院天數與住院費用亦顯著增加。原始研究以資料庫回溯建立，未納入再出血等結果。
+    </div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="a65Reset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/21907980/" target="_blank" rel="noopener" class="ref-link">Saltzman JR, et al. Gastrointest Endosc. 2011;74(6):1215-24.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28053181/" target="_blank" rel="noopener" class="ref-link">Stanley AJ, et al. BMJ. 2017;356:i6432.</a></footer>
+</div>
+</div>
+<script>
+function a65Calc(){
+  let total=0;
+  document.querySelectorAll('.a65-cb').forEach(cb=>{ if(cb.checked) total++; });
+  document.getElementById('a65_total').textContent=total;
+  let interp;
+  if(total===0) interp='低風險（0分）：住院死亡率約 0.3%';
+  else if(total===1) interp='低至中風險（1分）：未達 ≥2 分之死亡預測閾值';
+  else if(total<5) interp='高風險（'+total+'分）：已達 ≥2 分閾值，死亡風險隨分數上升';
+  else interp='極高風險（5分）：住院死亡率約 31.8%';
+  document.getElementById('a65_interp').textContent=interp;
+}
+function a65Reset(){
+  document.querySelectorAll('.a65-cb').forEach(cb=>cb.checked=false);
+  a65Calc();
+}
+document.querySelectorAll('.a65-cb').forEach(cb=>cb.addEventListener('change',a65Calc));
+a65Calc();
+</script>
+<script>
+if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('a65_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forrest 分類 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-forrest">
+  <div class="app-header">
+    <div><div class="eyebrow">Upper GI Bleeding Classification</div><h1>Forrest 分類</h1><div class="sub">消化性潰瘍出血之內視鏡分級：再出血風險與對應止血處置（ESGE 2026）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="fr_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html'">← 返回消化道出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-forrest'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box"><summary>Forrest 分類是分數還是分類？</summary><div class="box-inner">
+    Forrest 分類<b>不是計分工具</b>，是 1974 年提出的內視鏡外觀分級，用來把「這個潰瘍看起來會不會再出血」翻譯成可操作的處置決策。它同時是 Rockall score 中「出血痕跡（SRH）」那一列的判定依據：<b>Ia／Ib／IIa／IIb 在 Rockall 皆計 2 分，IIc 與 III 計 0 分</b>。<br><br>
+    高風險（Ia、Ib、IIa、IIb）需內視鏡止血並住院；低風險（IIc、III）不需內視鏡止血，可口服 PPI、早期進食並考慮早期出院。
+  </div></details>
+
+  <div class="card">
+    <div class="section-title">選擇內視鏡所見 Endoscopic Finding</div>
+    <div class="field-row"><label>Forrest 分類</label>
+      <select id="fr_sel">
+        <option value="Ia">Ia — 噴射性出血 Spurting</option>
+        <option value="Ib">Ib — 滲出性出血 Oozing</option>
+        <option value="IIa">IIa — 不出血之可見血管 Non-bleeding visible vessel</option>
+        <option value="IIb">IIb — 黏附血塊 Adherent clot</option>
+        <option value="IIc">IIc — 扁平色素斑 Flat pigmented spot</option>
+        <option value="III">III — 乾淨潰瘍底 Clean base</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Forrest <span id="fr_cls">Ia</span> · <span id="fr_risk">高風險</span></div>
+    <div class="metric-value" id="fr_name" style="margin-bottom:6px;">噴射性出血</div>
+    <div class="breakdown">
+      <div>未治療再出血率 <b id="fr_rb">55%</b></div><div>盛行率 <b id="fr_prev">7%</b></div><div>Rockall SRH <b id="fr_rock">2分</b></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">建議處置（ESGE 2026）</div>
+    <div id="fr_rx" style="font-size:14px; margin-top:4px; line-height:1.65;"></div>
+    <div class="risk-note" id="fr_note"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">全表對照 Full Classification</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th>分類</th><th>內視鏡所見</th><th>風險</th><th>盛行率</th><th>未治療再出血率</th></tr>
+      <tr><td>Ia</td><td>噴射性出血 Spurting</td><td>高</td><td>7%</td><td rowspan="2">55%（Ia 與 Ib 合計）</td></tr>
+      <tr><td>Ib</td><td>滲出性出血 Oozing</td><td>高</td><td>27%</td></tr>
+      <tr><td>IIa</td><td>不出血之可見血管 NBVV</td><td>高</td><td>26%</td><td>43%</td></tr>
+      <tr><td>IIb</td><td>黏附血塊 Adherent clot</td><td>高</td><td>11%</td><td>22%</td></tr>
+      <tr><td>IIc</td><td>扁平色素斑 Flat pigmented spot</td><td>低</td><td>4%</td><td>10%</td></tr>
+      <tr><td>III</td><td>乾淨潰瘍底 Clean base</td><td>低</td><td>25%</td><td>5%</td></tr>
+    </table>
+    <div class="note"><b>Ia 與 Ib 的再出血率無法分開</b>：此組數據源頭（Laine &amp; Peterson, NEJM 1994）把噴血與滲血合併為「active bleeding」一類統計，55% 是兩者合計值。任何把 Ia、Ib 標成兩個不同百分比的表格，那個拆分是編造的。另有研究（Jensen 2017, Am J Gastroenterol）指出 Ib 的實際再出血風險低於 Ia／IIa／IIb，55% 對 Ib 而言可能高估；但現行指引仍將 Ib 依高風險處理。</div>
+    </div></details>
+  </div>
+
+  <details class="def-box"><summary>ESGE 2026 相對 2021 版的三項改動</summary><div class="box-inner">
+    <b>1. Forrest IIb（黏附血塊）改為建議積極處理。</b>2021 版對未做內視鏡治療的 IIb 給高劑量 PPI；2026 版改為<b>建議移除血塊、視底下所見再行止血</b>，但附但書——須內視鏡醫師具備安全移除血塊、並能處理「移除後變成更高風險病灶」的技術能力。<br><br>
+    <b>2. Ia／Ib 可用 OTS clip 單一治療。</b>2021 版要求 Ia／Ib 一律用腎上腺素注射<b>加</b>第二種方式（合併治療）；2026 版建議 <b>over-the-scope clip 單獨使用</b>可作為第一線的替代方案，因其再出血率低於標準止血法。<br><br>
+    <b>3. 止血粉／噴劑不可作為第一線單一治療。</b>僅在標準方式無效、持續出血時，才考慮局部止血劑或 OTS clip。<br><br>
+    另：Doppler 探頭是否常規使用、以及術後是否改用 P-CAB（鉀離子競爭型胃酸阻斷劑），2026 版<b>未能達成共識</b>，兩者皆未給建議。
+  </div></details>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/4136718/" target="_blank" rel="noopener" class="ref-link">Forrest JA, Finlayson ND, Shearman DJ. Lancet. 1974;2(7877):394-7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42127996/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2026. Endoscopy. 2026.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36949934/" target="_blank" rel="noopener" class="ref-link">Alali AA, Barkun AN. Gastroenterol Rep (Oxf). 2023;11:goad011.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/8058080/" target="_blank" rel="noopener" class="ref-link">Laine L, Peterson WL. N Engl J Med. 1994;331(11):717-27.</a></footer>
+</div>
+</div>
+<script>
+var FR={
+  Ia:{name:'噴射性出血 Spurting',risk:'高風險',rb:'55%*',prev:'7%',rock:'2分',
+      rx:'內視鏡止血：<b>腎上腺素注射＋第二種止血方式</b>（接觸式熱凝、機械式夾閉）之合併治療；或<b>OTS clip 單一治療</b>作為第一線替代（再出血率較低）。亦可用止血鉗軟凝固單一治療。<br>術後高劑量 PPI（IV bolus 80mg 後 8mg/hr 連續輸注 72 小時，或高劑量 bolus／口服每日兩次），住院監測。',
+      note:'*55% 為 Ia 與 Ib 合計之數值，原始文獻未分開統計。止血粉／噴劑不可作為第一線單一治療。持續出血且各種內視鏡方式皆失敗者，考慮經導管血管栓塞（TAE）；TAE 不可行或失敗才手術。高風險個案（到院即血行動力學不穩、十二指腸後壁潰瘍、潰瘍 >2 cm、或止血持久度存疑）可考慮預防性 TAE。'},
+  Ib:{name:'滲出性出血 Oozing',risk:'高風險',rb:'55%*',prev:'27%',rock:'2分',
+      rx:'處置同 Forrest Ia：合併止血治療，或 OTS clip 單一治療；術後高劑量 PPI 72 小時，住院監測。',
+      note:'*55% 為 Ia 與 Ib 合計之數值。Jensen 2017 年大型國際隨機試驗指出 Ib 實際再出血風險低於 Ia／IIa／IIb，故 55% 對 Ib 可能高估；惟現行指引仍依高風險處理。'},
+  IIa:{name:'不出血之可見血管 NBVV',risk:'高風險',rb:'43%',prev:'26%',rock:'2分',
+      rx:'內視鏡止血：接觸式或非接觸式熱凝、機械式治療（TTS clip 或 OTS clip）、或硬化劑注射，<b>各自單獨使用或搭配腎上腺素注射皆可</b>。OTS clip 亦可作為替代之單一治療；止血鉗軟凝固單一治療亦可。<br>術後高劑量 PPI 72 小時，住院監測。',
+      note:'腎上腺素注射<b>不可單獨</b>作為最終止血方式，必須搭配第二種方式或改用其他單一治療。'},
+  IIb:{name:'黏附血塊 Adherent clot',risk:'高風險',rb:'22%',prev:'11%',rock:'2分',
+      rx:'<b>ESGE 2026 建議移除血塊</b>，視移除後底下所見（可能轉為 Ia／Ib／IIa）再行內視鏡止血。<br>但術者須具備安全移除血塊、並能處理轉為更高風險病灶之技術能力；若不具備，維持高劑量 PPI 治療。',
+      note:'此為 2026 版相對 2021 版的實質改動：2021 版對未做內視鏡治療之 IIb 僅給高劑量 PPI，2026 版轉為積極處理。'},
+  IIc:{name:'扁平色素斑 Flat pigmented spot',risk:'低風險',rb:'10%',prev:'4%',rock:'0分',
+      rx:'<b>不需內視鏡止血</b>。口服 PPI 即可。<br>止血穩固後 24 小時內開始經口進食；合併缺鐵或貧血者出院前開始鐵劑治療。可考慮早期出院。',
+      note:'低風險病灶之處置重點在確認出血來源、根除 H. pylori 與檢討 NSAID／抗血栓用藥，而非內視鏡治療。'},
+  III:{name:'乾淨潰瘍底 Clean base',risk:'低風險',rb:'5%',prev:'25%',rock:'0分',
+      rx:'<b>不需內視鏡止血</b>。口服 PPI 即可。<br>止血穩固後 24 小時內開始經口進食；合併缺鐵或貧血者出院前開始鐵劑治療。可考慮早期出院。',
+      note:'低風險病灶之處置重點在確認出血來源、根除 H. pylori 與檢討 NSAID／抗血栓用藥，而非內視鏡治療。'}
+};
+function frCalc(){
+  var k=document.getElementById('fr_sel').value, d=FR[k];
+  document.getElementById('fr_cls').textContent=k;
+  document.getElementById('fr_risk').textContent=d.risk;
+  document.getElementById('fr_name').textContent=d.name;
+  document.getElementById('fr_rb').textContent=d.rb;
+  document.getElementById('fr_prev').textContent=d.prev;
+  document.getElementById('fr_rock').textContent=d.rock;
+  document.getElementById('fr_rx').innerHTML=d.rx;
+  document.getElementById('fr_note').innerHTML=d.note;
+}
+document.getElementById('fr_sel').addEventListener('change',frCalc);
+frCalc();
+</script>
+<script>
+if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('fr_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

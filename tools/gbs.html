@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glasgow-Blatchford Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-gbs">
+  <div class="app-header">
+    <div><div class="eyebrow">Upper GI Bleeding Scoring Tool</div><h1>Glasgow-Blatchford Score</h1><div class="sub">GBS · 上消化道出血內視鏡前風險分層（預測是否需住院介入或死亡）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="gbs_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html'">← 返回消化道出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-gbs'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box"><summary>這個分數在回答什麼問題？</summary><div class="box-inner">
+    GBS 預測的是「<b>需要住院介入（輸血、內視鏡或外科／放射線止血）或 30 天內死亡</b>」，<b>不是</b>預測死亡率本身。它完全由到院時的病史、生命徵象與抽血算出，<b>不需要內視鏡結果</b>，因此用途是決定「這位病人能不能安全地當門診處理」。<br><br>
+    若要預測死亡率，AIMS65 與 Rockall 表現較佳（Stanley 2017 BMJ：預測死亡 AUROC AIMS65 0.77 vs GBS 0.64）。
+  </div></details>
+
+  <div class="card">
+    <div class="section-title">生命徵象與抽血 Vitals &amp; Labs</div>
+    <div class="field-row"><label>性別</label>
+      <select id="gbs_sex"><option value="M">男 Male</option><option value="F">女 Female</option></select>
+      <span class="unit">（血紅素分數依性別不同）</span>
+    </div>
+    <div class="field-row"><label>血紅素 Hb</label><input type="number" id="gbs_hb" step="0.1"><span class="unit">g/dL</span><span class="pt-badge" id="gbs_b_hb">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>男 ≥13.0／女 ≥12.0</td><td>0分</td></tr>
+      <tr><td>男 12.0–12.9</td><td>1分</td></tr>
+      <tr><td>女 10.0–11.9</td><td>1分</td></tr>
+      <tr><td>男 10.0–11.9</td><td>3分</td></tr>
+      <tr><td>&lt;10.0（男女相同）</td><td>6分</td></tr>
+    </table></div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>尿素氮</label><input type="number" id="gbs_urea" step="0.1">
+      <select id="gbs_urea_unit"><option value="bun">BUN mg/dL</option><option value="mmol">Urea mmol/L</option></select>
+      <span class="pt-badge" id="gbs_b_urea">0分</span></div>
+    <div class="exclusive-note">單位務必確認：原始論文用的是 <b>urea mmol/L</b>。台灣檢驗報告多為 <b>BUN mg/dL</b>（換算 ÷2.8）。若您的報告是「urea mg/dL」而非 BUN，換算係數為 ÷6.0，直接當成 BUN 會嚴重低估分數。</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th>Urea mmol/L</th><th>BUN mg/dL</th><th>分數</th></tr>
+      <tr><td>&lt;6.5</td><td>&lt;18.2</td><td>0分</td></tr>
+      <tr><td>6.5–7.9</td><td>18.2–22.3</td><td>2分</td></tr>
+      <tr><td>8.0–9.9</td><td>22.4–27.9</td><td>3分</td></tr>
+      <tr><td>10.0–24.9</td><td>28.0–69.9</td><td>4分</td></tr>
+      <tr><td>≥25.0</td><td>≥70.0</td><td>6分</td></tr>
+    </table></div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>收縮壓 SBP</label><input type="number" id="gbs_sbp" step="1"><span class="unit">mmHg</span><span class="pt-badge" id="gbs_b_sbp">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≥110</td><td>0分</td></tr><tr><td>100–109</td><td>1分</td></tr><tr><td>90–99</td><td>2分</td></tr><tr><td>&lt;90</td><td>3分</td></tr>
+    </table></div></details>
+  </div>
+
+  <div class="card">
+    <div class="section-title">其他指標 Other Markers</div>
+    <label class="item"><input type="checkbox" class="gbs-cb" data-w="1" id="gbs_pulse"> 心跳 ≥100 次/分 <span class="unit">(Pulse ≥100/min)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="gbs-cb" data-w="1" id="gbs_melena"> 到院時有黑便 <span class="unit">(Melaena at presentation)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="gbs-cb" data-w="2" id="gbs_syncope"> 到院時有暈厥 <span class="unit">(Syncope at presentation)</span><span class="pt-badge">2分</span></label>
+    <label class="item"><input type="checkbox" class="gbs-cb" data-w="2" id="gbs_liver"> 肝病病史 <span class="unit">(Hepatic disease)</span><span class="pt-badge">2分</span></label>
+    <label class="item"><input type="checkbox" class="gbs-cb" data-w="2" id="gbs_cardiac"> 心臟衰竭 <span class="unit">(Cardiac failure)</span><span class="pt-badge">2分</span></label>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Glasgow-Blatchford Score（0–23）</div>
+    <div class="metric-value big" id="gbs_total">0</div>
+    <div class="breakdown">
+      <div>血紅素 <b id="gbs_k_hb">0</b></div><div>尿素氮 <b id="gbs_k_urea">0</b></div><div>收縮壓 <b id="gbs_k_sbp">0</b></div>
+      <div>心跳 <b id="gbs_k_pulse">0</b></div><div>黑便／暈厥 <b id="gbs_k_pres">0</b></div><div>共病 <b id="gbs_k_com">0</b></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div id="gbs_interp" style="font-size:15px; margin-top:2px;">極低風險</div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th></tr>
+      <tr><td>0</td><td>極低風險。NICE CG141 建議可考慮直接出院、門診安排內視鏡</td></tr>
+      <tr><td>0–1</td><td>極低風險。ACG 2021 與 ESGE 建議可門診處理並安排門診內視鏡</td></tr>
+      <tr><td>2–6</td><td>中間風險，需住院評估；無單一建議閾值</td></tr>
+      <tr><td>≥7</td><td>預測「需要內視鏡止血治療」的最佳閾值（敏感度 80%、特異度 57%）</td></tr>
+    </table>
+    <div class="risk-note">
+      GBS ≤1 為低風險閾值：國際多中心前瞻研究（Stanley 2017 BMJ，n=3012）中，GBS ≤1 預測「不需介入且存活」的敏感度 98.6%、特異度 34.6%；GBS 預測「需介入或死亡」AUROC 0.86，優於 full Rockall（0.70）、admission Rockall（0.66）與 AIMS65（0.68）。<b>NICE 與 ACG／ESGE 的低風險閾值不同（0 vs ≤1），這是真實的指引分歧，非筆誤</b>；採用前請確認貴院依循哪一版。GBS 對再出血與住院天數無預測價值。
+    </div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="gbsReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/11073021/" target="_blank" rel="noopener" class="ref-link">Blatchford O, Murray WR, Blatchford M. Lancet. 2000;356(9238):1318-21.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28053181/" target="_blank" rel="noopener" class="ref-link">Stanley AJ, et al. BMJ. 2017;356:i6432.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33929377/" target="_blank" rel="noopener" class="ref-link">Laine L, et al. ACG Clinical Guideline. Am J Gastroenterol. 2021;116(5):899-917.</a></footer>
+</div>
+</div>
+<script>
+function gbsCalc(){
+  const sex=document.getElementById('gbs_sex').value;
+  const hb=parseFloat(document.getElementById('gbs_hb').value);
+  let pHb=0;
+  if(!isNaN(hb)){
+    if(hb<10) pHb=6;
+    else if(sex==='M'){ if(hb<12) pHb=3; else if(hb<13) pHb=1; }
+    else { if(hb<12) pHb=1; }
+  }
+  /* 一律換算成原始論文的 urea mmol/L 再分級，避免兩套門檻各自維護而漂移 */
+  let ureaIn=parseFloat(document.getElementById('gbs_urea').value);
+  const unit=document.getElementById('gbs_urea_unit').value;
+  let pUrea=0;
+  if(!isNaN(ureaIn)){
+    const mmol = unit==='bun' ? ureaIn/2.8 : ureaIn;
+    if(mmol>=25) pUrea=6; else if(mmol>=10) pUrea=4; else if(mmol>=8) pUrea=3; else if(mmol>=6.5) pUrea=2;
+  }
+  const sbp=parseFloat(document.getElementById('gbs_sbp').value);
+  let pSbp=0;
+  if(!isNaN(sbp)){ if(sbp<90) pSbp=3; else if(sbp<100) pSbp=2; else if(sbp<110) pSbp=1; }
+
+  const pPulse=document.getElementById('gbs_pulse').checked?1:0;
+  const pPres=(document.getElementById('gbs_melena').checked?1:0)+(document.getElementById('gbs_syncope').checked?2:0);
+  const pCom=(document.getElementById('gbs_liver').checked?2:0)+(document.getElementById('gbs_cardiac').checked?2:0);
+
+  document.getElementById('gbs_b_hb').textContent=pHb+'分';
+  document.getElementById('gbs_b_urea').textContent=pUrea+'分';
+  document.getElementById('gbs_b_sbp').textContent=pSbp+'分';
+  document.getElementById('gbs_k_hb').textContent=pHb;
+  document.getElementById('gbs_k_urea').textContent=pUrea;
+  document.getElementById('gbs_k_sbp').textContent=pSbp;
+  document.getElementById('gbs_k_pulse').textContent=pPulse;
+  document.getElementById('gbs_k_pres').textContent=pPres;
+  document.getElementById('gbs_k_com').textContent=pCom;
+
+  const total=pHb+pUrea+pSbp+pPulse+pPres+pCom;
+  document.getElementById('gbs_total').textContent=total;
+  let interp;
+  if(total===0) interp='極低風險（0分）：NICE 與 ACG／ESGE 皆支持門診處理';
+  else if(total===1) interp='極低風險（1分）：ACG／ESGE 支持門診處理；NICE 標準則需住院';
+  else if(total<7) interp='中間風險（2–6分）：建議住院評估';
+  else interp='高風險（≥7分）：達預測需內視鏡止血治療之閾值';
+  document.getElementById('gbs_interp').textContent=interp;
+}
+function gbsReset(){
+  ['gbs_hb','gbs_urea','gbs_sbp'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('gbs_sex').value='M';
+  document.getElementById('gbs_urea_unit').value='bun';
+  document.querySelectorAll('.gbs-cb').forEach(cb=>cb.checked=false);
+  gbsCalc();
+}
+document.querySelectorAll('#view-gbs input, #view-gbs select')
+  .forEach(el=>{ el.addEventListener('input',gbsCalc); el.addEventListener('change',gbsCalc); });
+gbsCalc();
+</script>
+<script>
+/* 由消化道出血決策流程開啟時，顯示暫時性返回鍵 */
+if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('gbs_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

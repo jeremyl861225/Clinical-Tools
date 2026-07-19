@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oakland Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-oakland">
+  <div class="app-header">
+    <div><div class="eyebrow">Lower GI Bleeding Scoring Tool</div><h1>Oakland Score</h1><div class="sub">下消化道出血安全出院評估（0–35 分，分數越低越安全）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="oak_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html'">← 返回消化道出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-oakland'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box"><summary>「安全出院」在這個分數裡是什麼意思？</summary><div class="box-inner">
+    Oakland score 的設計方向與多數風險分數相反：它預測的是<b>安全出院（safe discharge）</b>這個複合結果，定義為<b>完全沒有發生</b>以下任何一項——住院中再出血、輸血、治療性介入（內視鏡止血、腸繫膜栓塞、剖腹）、住院死亡、28 天內因下消化道出血再入院。<br><br>
+    因此<b>分數越低＝越安全</b>，與 GBS／Rockall 的方向一致但語意不同：Oakland 是拿來「放人回家」的工具，不是拿來預測死亡的（其預測住院死亡的 AUROC 僅 0.63、預測再出血 0.46，均不堪用）。<br><br>
+    在 LGIB 的各家分數比較統合分析中，Oakland 對安全出院（AUROC 0.86）、大量出血（0.93）與輸血需求（0.99）皆為最佳；但預測是否需止血處置很差（0.36），該項應改用 Strate score（0.82）。
+  </div></details>
+
+  <div class="card">
+    <div class="section-title">病人基本資料 Demographics</div>
+    <div class="field-row"><label>年齡</label><input type="number" id="oak_age" step="1"><span class="unit">歲</span><span class="pt-badge" id="oak_b_age">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤39 歲</td><td>0分</td></tr><tr><td>40–69 歲</td><td>1分</td></tr><tr><td>≥70 歲</td><td>2分</td></tr>
+    </table></div></details>
+    <div class="field-row" style="margin-top:10px;"><label>性別</label>
+      <select id="oak_sex"><option value="0">女 Female</option><option value="1">男 Male</option></select>
+      <span class="pt-badge" id="oak_b_sex">0分</span>
+    </div>
+    <label class="item"><input type="checkbox" id="oak_prev"> 曾因下消化道出血住院 <span class="unit">(Previous LGIB admission)</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" id="oak_dre"> 肛門指診有血 <span class="unit">(Blood on digital rectal examination)</span><span class="pt-badge">1分</span></label>
+    <div class="note">美國 38,067 人外部驗證中，肛診欄位全部缺漏、僅用其餘 6 項計算，分數仍維持良好鑑別力（AUROC 0.87）。因此病人無法接受肛診時（例如肛裂出血），略過此項仍可使用本分數。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">生命徵象與抽血 Vitals &amp; Labs</div>
+    <div class="field-row"><label>心跳 HR</label><input type="number" id="oak_hr" step="1"><span class="unit">次/分</span><span class="pt-badge" id="oak_b_hr">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤69</td><td>0分</td></tr><tr><td>70–89</td><td>1分</td></tr><tr><td>90–109</td><td>2分</td></tr><tr><td>≥110</td><td>3分</td></tr>
+    </table></div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>收縮壓 SBP</label><input type="number" id="oak_sbp" step="1"><span class="unit">mmHg</span><span class="pt-badge" id="oak_b_sbp">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>50–89</td><td>5分</td></tr><tr><td>90–119</td><td>4分</td></tr><tr><td>120–129</td><td>3分</td></tr><tr><td>130–159</td><td>2分</td></tr><tr><td>≥160</td><td>0分</td></tr>
+    </table>
+    <div class="note">原始表格未列 SBP &lt;50 的分數（該區間無病人）；本頁比照最重一級給 5 分。注意此列<b>沒有 1 分</b>的區間，且 130–159 仍計 2 分——血壓正常不代表 0 分。</div>
+    </div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>血紅素 Hb</label><input type="number" id="oak_hb" step="0.1"><span class="unit">g/dL</span><span class="pt-badge" id="oak_b_hb">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>3.6–6.9</td><td>22分</td></tr><tr><td>7.0–8.9</td><td>17分</td></tr><tr><td>9.0–10.9</td><td>13分</td></tr>
+      <tr><td>11.0–12.9</td><td>8分</td></tr><tr><td>13.0–15.9</td><td>4分</td></tr><tr><td>≥16.0</td><td>0分</td></tr>
+    </table>
+    <div class="note">血紅素權重最重（0–22 分），單獨一項就能決定結果：<b>Hb &lt;11.0 g/dL 至少 13 分，已不可能低於任何低風險閾值</b>。原始表格未列 Hb &lt;3.6 的分數；本頁比照最重一級給 22 分。</div>
+    </div></details>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Oakland Score（0–35）</div>
+    <div class="metric-value big" id="oak_total">0</div>
+    <div class="breakdown">
+      <div>年齡 <b id="oak_k_age">0</b></div><div>性別 <b id="oak_k_sex">0</b></div><div>病史／肛診 <b id="oak_k_hist">0</b></div>
+      <div>心跳 <b id="oak_k_hr">0</b></div><div>收縮壓 <b id="oak_k_sbp">0</b></div><div>血紅素 <b id="oak_k_hb">0</b></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
+    <div id="oak_interp" style="font-size:15px; margin-top:2px;">請輸入資料</div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th><th>安全出院敏感度</th></tr>
+      <tr><td>≤8</td><td>低風險，原始論文之安全出院閾值（95% 機率安全出院）</td><td>98.4%</td></tr>
+      <tr><td>≤10</td><td>低風險（放寬閾值，可涵蓋更多病人）</td><td>96.0%</td></tr>
+      <tr><td>&gt;10</td><td>未達低風險閾值，建議住院評估</td><td>—</td></tr>
+    </table>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th>低風險組不良事件</th><th>≤8分</th><th>≤10分</th></tr>
+      <tr><td>輸血</td><td>4.0%</td><td>5.7%</td></tr>
+      <tr><td>內視鏡止血</td><td>0.3%</td><td>0.3%</td></tr>
+      <tr><td>腸繫膜栓塞／手術</td><td>0%</td><td>0%</td></tr>
+      <tr><td>住院中再出血</td><td>4.6%</td><td>5.1%</td></tr>
+      <tr><td>住院死亡</td><td>1.1%</td><td>1.4%</td></tr>
+      <tr><td>28 天內再出血入院</td><td>0.2%</td><td>0.6%</td></tr>
+      <tr><td>任一不良事件</td><td>5.5%</td><td>7.5%</td></tr>
+    </table>
+    <div class="note">取自美國 140 家醫院 38,067 人之外部驗證。放寬到 ≤10 分可把低風險族群從 8.7% 擴大到 17.8%，代價是不良事件由 5.5% 升到 7.5%、死亡由 1.1% 升到 1.4%。這個取捨應由各院自行決定，原作者亦提醒<b>需與臨床判斷併用</b>。</div>
+    </div></details>
+    <div class="risk-note">Oakland score 推導自英國 143 家醫院 2,336 人前瞻資料（AUROC 0.84，外部驗證 0.79），後於美國 38,067 人再驗證（AUROC 0.87）。特異度偏低（≤8 分時僅 16.0%），意即<b>會把許多其實可以回家的病人留下來</b>——這是刻意的設計取捨，寧可多留人也不要漏掉高風險者。驗證族群皆為「已住院」的下消化道出血病人，若用於急診未收治族群，低風險比例應更高。</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="oakReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/28651935/" target="_blank" rel="noopener" class="ref-link">Oakland K, et al. Lancet Gastroenterol Hepatol. 2017;2(9):635-643.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32633766/" target="_blank" rel="noopener" class="ref-link">Oakland K, et al. JAMA Netw Open. 2020;3(7):e209630.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35622365/" target="_blank" rel="noopener" class="ref-link">Almaghrabi M, et al. JAMA Netw Open. 2022;5(5):e2214253.</a></footer>
+</div>
+</div>
+<script>
+function oakCalc(){
+  const age=parseFloat(document.getElementById('oak_age').value);
+  let pAge=0;
+  if(!isNaN(age)){ if(age>=70) pAge=2; else if(age>=40) pAge=1; }
+
+  const pSex=parseInt(document.getElementById('oak_sex').value);
+  const pPrev=document.getElementById('oak_prev').checked?1:0;
+  const pDre=document.getElementById('oak_dre').checked?1:0;
+
+  const hr=parseFloat(document.getElementById('oak_hr').value);
+  let pHr=0;
+  if(!isNaN(hr)){ if(hr>=110) pHr=3; else if(hr>=90) pHr=2; else if(hr>=70) pHr=1; }
+
+  /* 原表最低一級為 50–89；<50 無對應區間，比照最重一級 */
+  const sbp=parseFloat(document.getElementById('oak_sbp').value);
+  let pSbp=0;
+  if(!isNaN(sbp)){
+    if(sbp<90) pSbp=5; else if(sbp<120) pSbp=4; else if(sbp<130) pSbp=3; else if(sbp<160) pSbp=2;
+  }
+
+  /* 原表最低一級為 3.6–6.9；<3.6 無對應區間，比照最重一級 */
+  const hb=parseFloat(document.getElementById('oak_hb').value);
+  let pHb=0;
+  if(!isNaN(hb)){
+    if(hb<7) pHb=22; else if(hb<9) pHb=17; else if(hb<11) pHb=13; else if(hb<13) pHb=8; else if(hb<16) pHb=4;
+  }
+
+  document.getElementById('oak_b_age').textContent=pAge+'分';
+  document.getElementById('oak_b_sex').textContent=pSex+'分';
+  document.getElementById('oak_b_hr').textContent=pHr+'分';
+  document.getElementById('oak_b_sbp').textContent=pSbp+'分';
+  document.getElementById('oak_b_hb').textContent=pHb+'分';
+  document.getElementById('oak_k_age').textContent=pAge;
+  document.getElementById('oak_k_sex').textContent=pSex;
+  document.getElementById('oak_k_hist').textContent=pPrev+pDre;
+  document.getElementById('oak_k_hr').textContent=pHr;
+  document.getElementById('oak_k_sbp').textContent=pSbp;
+  document.getElementById('oak_k_hb').textContent=pHb;
+
+  const total=pAge+pSex+pPrev+pDre+pHr+pSbp+pHb;
+  document.getElementById('oak_total').textContent=total;
+  const ready = !isNaN(age) && !isNaN(hr) && !isNaN(sbp) && !isNaN(hb);
+  let interp;
+  if(!ready) interp='請輸入年齡、心跳、收縮壓與血紅素（未填欄位以 0 分計，會低估分數）';
+  else if(total<=8) interp='低風險（≤8分）：約 95% 機率可安全出院，符合原始論文閾值';
+  else if(total<=10) interp='低風險（9–10分）：放寬閾值下仍屬低風險（敏感度 96%）';
+  else interp='未達低風險閾值（>10分）：建議住院評估';
+  document.getElementById('oak_interp').textContent=interp;
+}
+function oakReset(){
+  ['oak_age','oak_hr','oak_sbp','oak_hb'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('oak_sex').value='0';
+  document.getElementById('oak_prev').checked=false;
+  document.getElementById('oak_dre').checked=false;
+  oakCalc();
+}
+document.querySelectorAll('#view-oakland input, #view-oakland select')
+  .forEach(el=>{ el.addEventListener('input',oakCalc); el.addEventListener('change',oakCalc); });
+oakCalc();
+</script>
+<script>
+if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('oak_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

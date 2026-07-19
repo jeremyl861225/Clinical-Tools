@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rockall Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-rockall">
+  <div class="app-header">
+    <div><div class="eyebrow">Upper GI Bleeding Scoring Tool</div><h1>Rockall Score</h1><div class="sub">上消化道出血死亡風險分層：內視鏡前（0–7）與完整（0–11）兩段</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="rk_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html'">← 返回消化道出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-rockall'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box"><summary>兩段分數的差別，以及一個常見的抄錯</summary><div class="box-inner">
+    <b>內視鏡前 Rockall（admission／clinical Rockall，0–7）</b>：只用年齡、休克、共病三項，到院即可算。<br>
+    <b>完整 Rockall（full Rockall，0–11）</b>：再加上內視鏡診斷與出血痕跡（SRH）兩項。<br><br>
+    <b>⚠ 休克那一列的常見錯誤</b>：原始論文（Gut 1996 Table III）中，2 分的「hypotension」定義是<b>收縮壓 &lt;100 mmHg，與心跳無關</b>；心跳只用來區分 0 分與 1 分。網路與部分綜述把 2 分寫成「HR &gt;100 <b>且</b> SBP &lt;100」，那是錯的，會讓心跳正常的低血壓病人少算 2 分。本頁直接由您輸入的血壓／心跳自動判定，以避免此誤。
+  </div></details>
+
+  <div class="card">
+    <div class="section-title">內視鏡前項目 Pre-endoscopy（0–7）</div>
+    <div class="field-row"><label>年齡</label><input type="number" id="rk_age" step="1"><span class="unit">歲</span><span class="pt-badge" id="rk_b_age">0分</span></div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>&lt;60 歲</td><td>0分</td></tr><tr><td>60–79 歲</td><td>1分</td></tr><tr><td>≥80 歲</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>收縮壓 SBP</label><input type="number" id="rk_sbp" step="1"><span class="unit">mmHg</span></div>
+    <div class="field-row"><label>心跳 HR</label><input type="number" id="rk_hr" step="1"><span class="unit">次/分</span><span class="pt-badge" id="rk_b_shock">0分</span></div>
+    <div class="note" id="rk_shock_txt">休克分級：尚未輸入</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>No shock：SBP ≥100 且 pulse &lt;100</td><td>0分</td></tr>
+      <tr><td>Tachycardia：SBP ≥100 且 pulse ≥100</td><td>1分</td></tr>
+      <tr><td>Hypotension：SBP &lt;100（不論心跳）</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row" style="margin-top:10px;"><label>共病</label>
+      <select id="rk_com">
+        <option value="0">無重大共病 No major comorbidity</option>
+        <option value="2">心衰竭／缺血性心臟病／其他重大共病</option>
+        <option value="3">腎衰竭／肝衰竭／轉移性惡性腫瘤</option>
+      </select>
+      <span class="pt-badge" id="rk_b_com">0分</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">內視鏡後項目 Post-endoscopy（＋0–4）</div>
+    <label class="toggle-inline"><input type="checkbox" id="rk_noscope"> 尚未接受內視鏡（只計算內視鏡前分數）</label>
+    <div id="rk_scope_fields">
+      <div class="field-row" style="margin-top:10px;"><label>內視鏡診斷</label>
+        <select id="rk_dx">
+          <option value="0">Mallory-Weiss 撕裂傷，或未找到病灶且無 SRH</option>
+          <option value="1">其他所有診斷 All other diagnoses</option>
+          <option value="2">上消化道惡性腫瘤 Malignancy of upper GI tract</option>
+        </select>
+        <span class="pt-badge" id="rk_b_dx">0分</span>
+      </div>
+      <div class="field-row"><label>出血痕跡 SRH</label>
+        <select id="rk_srh">
+          <option value="0">無，或僅暗色斑點 None or dark spot only</option>
+          <option value="2">上消化道內有血、黏附血塊、可見血管或噴血</option>
+        </select>
+        <span class="pt-badge" id="rk_b_srh">0分</span>
+      </div>
+      <div class="note">SRH = stigmata of recent haemorrhage。對照 Forrest 分類：Forrest Ia／Ib／IIa／IIb 皆屬本列 2 分；Forrest IIc（扁平色素斑）與 III（乾淨潰瘍底）為 0 分。</div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">內視鏡前 (0–7)</div><div class="metric-value" id="rk_pre">0</div></div>
+      <div><div class="metric-label">完整 (0–11)</div><div class="metric-value" id="rk_full">0</div></div>
+    </div>
+    <div class="metric-label">臨床判讀</div>
+    <div id="rk_interp" style="font-size:15px; margin-top:2px;">請輸入年齡與生命徵象</div>
+    <table class="ref">
+      <tr><th>內視鏡前分數</th><th>死亡率</th><th>完整分數</th><th>死亡率</th></tr>
+      <tr><td>0</td><td>0.2%</td><td>0</td><td>0%</td></tr>
+      <tr><td>1</td><td>2.4%</td><td>1</td><td>0%</td></tr>
+      <tr><td>2</td><td>5.6%</td><td>2</td><td>0.2%</td></tr>
+      <tr><td>3</td><td>11.0%</td><td>3</td><td>2.9%</td></tr>
+      <tr><td>4</td><td>24.6%</td><td>4</td><td>5.3%</td></tr>
+      <tr><td>5</td><td>39.6%</td><td>5</td><td>10.8%</td></tr>
+      <tr><td>6</td><td>48.9%</td><td>6</td><td>17.3%</td></tr>
+      <tr><td>7</td><td>50.0%</td><td>7</td><td>27.0%</td></tr>
+      <tr><td>—</td><td>—</td><td>8+</td><td>41.1%</td></tr>
+    </table>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th>完整分數</th><th>再出血率</th></tr>
+      <tr><td>0</td><td>4.9%</td></tr><tr><td>1</td><td>3.2%</td></tr><tr><td>2</td><td>5.3%</td></tr>
+      <tr><td>3</td><td>11.3%</td></tr><tr><td>4</td><td>14.4%</td></tr><tr><td>5</td><td>18.3%</td></tr>
+      <tr><td>6</td><td>32.7%</td></tr><tr><td>7</td><td>42.3%</td></tr><tr><td>8+</td><td>53.2%</td></tr>
+    </table>
+    <div class="note">上列再出血率係<b>由原始論文 Table IV 的病人數與再出血人數重新計算</b>而得。原文印出的百分比在兩格與其分子分母不符（分數 5 印 24.1% 但 83/453＝18.3%；分數 8+ 印 41.8% 但 101/190＝53.2%），研判為 1996 年排版誤植，故此處採可對帳的計算值。死亡率各格則與原文完全吻合，直接引用。</div>
+    </div></details>
+    <div class="risk-note">死亡率與再出血率取自 Rockall 1996 年英國全國性前瞻研究（n=4185 推導、1625 驗證）之族群統計，為 1990 年代初期的照護水準；現代 PPI 與內視鏡止血普及後實際死亡率較低，宜視為相對風險分層而非絕對預測值。內視鏡前分數 0 分或完整分數 ≤2 分者再出血與死亡風險極低，原文即建議可考慮早期出院或門診治療。</div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="rkReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/8675081/" target="_blank" rel="noopener" class="ref-link">Rockall TA, Logan RF, Devlin HB, Northfield TC. Gut. 1996;38(3):316-21.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28053181/" target="_blank" rel="noopener" class="ref-link">Stanley AJ, et al. BMJ. 2017;356:i6432.</a></footer>
+</div>
+</div>
+<script>
+function rkCalc(){
+  const age=parseFloat(document.getElementById('rk_age').value);
+  let pAge=0;
+  if(!isNaN(age)){ if(age>=80) pAge=2; else if(age>=60) pAge=1; }
+
+  /* 休克：2 分只看 SBP<100（原論文 Table III），心跳僅區分 0 與 1 分 */
+  const sbp=parseFloat(document.getElementById('rk_sbp').value);
+  const hr=parseFloat(document.getElementById('rk_hr').value);
+  let pShock=0, shockTxt='休克分級：尚未輸入';
+  if(!isNaN(sbp)){
+    if(sbp<100){ pShock=2; shockTxt='休克分級：Hypotension（SBP <100）'; }
+    else if(!isNaN(hr)){
+      if(hr>=100){ pShock=1; shockTxt='休克分級：Tachycardia（SBP ≥100 且 HR ≥100）'; }
+      else { pShock=0; shockTxt='休克分級：No shock'; }
+    } else shockTxt='休克分級：SBP ≥100，尚需心跳才能區分 0 分或 1 分';
+  }
+
+  const pCom=parseInt(document.getElementById('rk_com').value);
+  const noScope=document.getElementById('rk_noscope').checked;
+  document.getElementById('rk_scope_fields').classList.toggle('hidden',noScope);
+  const pDx=noScope?0:parseInt(document.getElementById('rk_dx').value);
+  const pSrh=noScope?0:parseInt(document.getElementById('rk_srh').value);
+
+  document.getElementById('rk_b_age').textContent=pAge+'分';
+  document.getElementById('rk_b_shock').textContent=pShock+'分';
+  document.getElementById('rk_shock_txt').textContent=shockTxt;
+  document.getElementById('rk_b_com').textContent=pCom+'分';
+  document.getElementById('rk_b_dx').textContent=pDx+'分';
+  document.getElementById('rk_b_srh').textContent=pSrh+'分';
+
+  const pre=pAge+pShock+pCom;
+  const full=pre+pDx+pSrh;
+  document.getElementById('rk_pre').textContent=pre;
+  document.getElementById('rk_full').textContent=noScope?'—':full;
+
+  let interp;
+  if(noScope){
+    interp = pre===0 ? '內視鏡前 0 分：死亡風險極低（0.2%），可考慮早期出院或門診處理'
+           : pre<=2 ? '內視鏡前 '+pre+' 分：低風險' : '內視鏡前 '+pre+' 分：中高風險，建議住院並安排內視鏡';
+  } else {
+    interp = full<=2 ? '完整 '+full+' 分：低風險（死亡率 ≤0.2%），可考慮早期出院'
+           : full<=4 ? '完整 '+full+' 分：中風險' : '完整 '+full+' 分：高風險，需密切監測再出血';
+  }
+  document.getElementById('rk_interp').textContent=interp;
+}
+function rkReset(){
+  ['rk_age','rk_sbp','rk_hr'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rk_com').value='0';
+  document.getElementById('rk_dx').value='0';
+  document.getElementById('rk_srh').value='0';
+  document.getElementById('rk_noscope').checked=false;
+  rkCalc();
+}
+document.querySelectorAll('#view-rockall input, #view-rockall select')
+  .forEach(el=>{ el.addEventListener('input',rkCalc); el.addEventListener('change',rkCalc); });
+rkCalc();
+</script>
+<script>
+if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('rk_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
