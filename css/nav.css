@@ -91,6 +91,12 @@ html.nav-open .side-nav{ transform:none; visibility:visible; transition:transfor
 .nav-group-en{ color:var(--nv-muted); }
 .nav-group-n{ margin-left:auto; color:var(--nv-muted); }
 
+/* 癌別的分群小標（消化系 GI、胸腔 Thoracic…）：比分類標題輕，只用來斷開 30 個癌別 */
+.nav-subhead{
+  font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  color:var(--nv-muted); padding:9px 14px 2px 16px;
+}
+
 .nav-item{
   display:block; text-decoration:none; color:inherit;
   padding:6px 14px 6px 13px; border-left:3px solid transparent;

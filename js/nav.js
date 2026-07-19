@@ -5,10 +5,13 @@
  *   <script src="<相對路徑>/js/nav.js" defer></script>
  * 其餘全由本檔注入，頁面本身不需要任何標記。
  *
- * 清單來源＝首頁（index.html）的方磚與工具卡，本檔不另存一份名單：
- * 日後新增工具或流程圖，只要照舊在 index.html 加一張卡片，側欄就會跟著出現，
- * 分類與排序也一律以首頁為準（與 js/search.js 讀首頁 DOM 建索引的作法一致）。
- * 首頁本身直接讀自己的 DOM；其他頁面抓 index.html 來解析（已列入 SW 預快取，離線可用）。
+ * 清單來源＝首頁（index.html）的方磚與工具卡＋癌症資料庫的癌別，本檔不另存一份名單：
+ * 日後新增工具、流程圖或癌別，清單自動跟著長出來（與 js/search.js 讀首頁 DOM 建索引一致）。
+ *   · 首頁：直接讀自己的 DOM。
+ *   · 其他頁：先用上次存在 localStorage 的清單「立刻」畫出來（否則要等 index.html
+ *     抓回來才有東西，慢一點的裝置會看到一片空白的側欄），再於背景重抓、有變動才重畫。
+ *   · 癌別：cancers.js 有 320KB，不為了導覽列在每頁載入；已載入該檔的頁面（癌症頁、
+ *     用過搜尋的頁）順手把癌別清單存起來，其餘頁面即由該份存檔渲染。
  *
  * 相對路徑由自己的 script src 反推（tools/ 與 pathways/ 深一層，首頁不是），
  * 故各頁只要引用正確的 nav.js，連結一律正確。
@@ -26,31 +29,35 @@
   })();
   var ROOT = self.src.replace(/js\/nav\.js.*$/, '');
 
-  /* 首頁方磚直接連向單一頁面者（抗微生物、癌症治療），其底下的頁面在首頁沒有卡片，
-     故於此列出。方磚若不在表內，就以方磚本身當成該類唯一的項目，
-     因此日後新增一類方磚仍會自動出現，只有「該類要再細分成多頁」時才需回來加一筆。 */
+  /* 首頁方磚直接連向單一頁面者（抗微生物、癌症治療），其底下的分頁在首頁沒有卡片，
+     故於此列出；#mode= 與 #cancer= 深層連結由該頁自己的 applyHash 處理。
+     方磚若不在表內，就以方磚本身當成該類唯一的項目，因此日後新增一類方磚仍會自動出現。 */
   var HUB_PAGES = {
     'tools/antibiotics.html': [
-      ['tools/antibiotics.html', '抗生素指引', 'Antibiotic Guide'],
-      ['tools/spectrum-database.html', '菌譜資料庫', 'Spectrum Database']
+      { href: 'tools/antibiotics.html#mode=empiric',  zh: '依部位（經驗性）', en: 'Empiric by Site' },
+      { href: 'tools/antibiotics.html#mode=bacteria', zh: '依病原菌',         en: 'By Pathogen' },
+      { href: 'tools/antibiotics.html#mode=lookup',   zh: '藥物查詢',         en: 'Drug Lookup' },
+      { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' }
+    ],
+    'tools/cancer.html': [
+      { href: 'tools/cancer.html', zh: '癌別總覽', en: 'All Cancers' }
     ]
   };
+  var CANCER_PAGE = 'tools/cancer.html';
 
   var KEY = 'ct-nav-open';
+  var SNAP = 'ct-nav-snapshot-v1';    // 清單快照；格式變更時改版號即可作廢舊檔
   var DESKTOP = '(min-width:1024px)';
   var root = document.documentElement;
 
   function desktop() { return window.matchMedia(DESKTOP).matches; }
 
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 無痕模式等寫不進去 */ } }
+
   // 記住的是「使用者在這種寬度下的選擇」；沒選過就用預設（電腦展開、手機收合）
-  function stored() {
-    try { return localStorage.getItem(KEY + (desktop() ? '-d' : '-m')); }
-    catch (e) { return null; }
-  }
-  function remember(open) {
-    try { localStorage.setItem(KEY + (desktop() ? '-d' : '-m'), open ? '1' : '0'); }
-    catch (e) { /* 無痕模式等寫不進去，忽略即可 */ }
-  }
+  function stored() { return lsGet(KEY + (desktop() ? '-d' : '-m')); }
+  function remember(open) { lsSet(KEY + (desktop() ? '-d' : '-m'), open ? '1' : '0'); }
 
   function setOpen(open, persist) {
     root.classList.toggle('nav-open', open);
@@ -62,20 +69,12 @@
     if (persist) remember(open);
   }
 
-  // 目前頁面：以「目錄/檔名」比對（首頁可能是 / 或 /index.html）
-  var here = location.pathname.replace(/\/$/, '/index.html');
-  function isCurrent(href) {
-    var tail = href.replace(/^.*?([^/]+\/)?([^/]+\.html)$/, '$1$2');
-    return here.slice(-tail.length) === tail;
-  }
-
   function el(tag, cls, html) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
     if (html != null) e.innerHTML = html;
     return e;
   }
-
   function txt(node) { return node ? node.textContent.trim() : ''; }
 
   /* ---- 由首頁 DOM 推導清單 ---- */
@@ -95,9 +94,7 @@
     // 後半在導覽列裡是贅詞，整句照抄會折成兩三行，一屏放不了幾項。
     var en = txt(card.querySelector('.tool-en')).split(/\s[·・]\s/)[0];
     return {
-      href: m[1],
-      zh: zh.trim() || txt(nameEl),
-      en: en,
+      href: m[1], zh: zh.trim() || txt(nameEl), en: en,
       pathway: card.classList.contains('deci-card')
     };
   }
@@ -106,8 +103,7 @@
   // 連 .html 者取 HUB_PAGES 的細目（無細目就是方磚本身那一頁）。
   function readGroups(doc) {
     var groups = [];
-    var hub = doc.querySelectorAll('#hub .hub-card');
-    Array.prototype.forEach.call(hub, function (tile) {
+    Array.prototype.forEach.call(doc.querySelectorAll('#hub .hub-card'), function (tile) {
       var href = tile.getAttribute('href') || '';
       var title = tile.getAttribute('data-label') || txt(tile);
       var en = tile.getAttribute('data-en') || '';
@@ -121,10 +117,9 @@
         });
       } else if (/\.html$/.test(href)) {
         var listed = HUB_PAGES[href];
-        if (listed) listed.forEach(function (r) {
-          items.push({ href: r[0], zh: r[1], en: r[2], pathway: false });
-        });
-        else items.push({ href: href, zh: title, en: en, pathway: false });
+        if (listed) listed.forEach(function (r) { items.push({ href: r.href, zh: r.zh, en: r.en }); });
+        else items.push({ href: href, zh: title, en: en });
+        if (href === CANCER_PAGE) items = items.concat(cancerItems());
       }
 
       if (items.length) groups.push({ title: title, en: en, items: items });
@@ -132,31 +127,102 @@
     return groups;
   }
 
+  /* ---- 癌別：cancers.js 太大不為導覽列而載，改用「載過的頁面順手存檔」 ---- */
+
+  // window.CANCERS 於癌症頁與用過搜尋的頁面已存在；有就更新存檔，沒有就沿用存檔。
+  function cancerItems() {
+    var list = null;
+    if (window.CANCERS && window.CANCERS.length) {
+      list = window.CANCERS.map(function (c) { return { id: c.id, zh: c.zh, en: c.en, g: c.group || '' }; });
+      lsSet(SNAP + '-cancers', JSON.stringify(list));
+    } else {
+      try { list = JSON.parse(lsGet(SNAP + '-cancers') || 'null'); } catch (e) { list = null; }
+    }
+    if (!list) return [];
+
+    // 依癌症頁的分群集中並插入小標，30 個癌別才掃得動。
+    // 資料檔內同一群的癌別未必相鄰（依撰寫順序排列），故先歸位再輸出。
+    var order = [], bucket = {};
+    list.forEach(function (c) {
+      var g = c.g || '其他 Other';
+      if (!bucket[g]) { bucket[g] = []; order.push(g); }
+      bucket[g].push({ href: CANCER_PAGE + '#cancer=' + c.id, zh: c.zh, en: c.en });
+    });
+    var out = [];
+    order.forEach(function (g) {
+      out.push({ head: g });
+      out = out.concat(bucket[g]);
+    });
+    return out;
+  }
+
+  /* ---- 目前頁面 ---- */
+
+  // 以「目錄/檔名」比對（首頁可能是 / 或 /index.html）；同一頁有多個項目時再比 hash
+  var here = location.pathname.replace(/\/$/, '/index.html');
+  function samePage(href) {
+    var path = href.split('#')[0];
+    var tail = path.replace(/^.*?([^/]+\/)?([^/]+\.html)$/, '$1$2');
+    return here.slice(-tail.length) === tail;
+  }
+  // 本頁對應的項目：hash 相符者優先；本頁無 hash 時取該頁第一個項目
+  function markCurrent(nav) {
+    var hash = location.hash;
+    var mine = Array.prototype.filter.call(nav.querySelectorAll('.nav-item'), function (a) {
+      return samePage(a.getAttribute('data-href'));
+    });
+    if (!mine.length) return null;
+    var hit = null;
+    if (hash) hit = mine.filter(function (a) {
+      return a.getAttribute('data-href').indexOf('#') > -1 &&
+             '#' + a.getAttribute('data-href').split('#')[1] === hash;
+    })[0];
+    var cur = hit || mine[0];
+    cur.classList.add('is-current');
+    return cur;
+  }
+
   /* ---- 注入 ---- */
 
   function fill(nav, groups) {
+    // 重畫：標題列留著，只換清單
+    Array.prototype.forEach.call(nav.querySelectorAll('.nav-group'), function (g) { g.remove(); });
+
     groups.forEach(function (g) {
       var box = el('div', 'nav-group');
+      var n = g.items.filter(function (it) { return !it.head; }).length;
       box.appendChild(el('div', 'nav-group-head',
-        '<span>' + g.title + '</span>' +
-        '<span class="nav-group-en">' + g.en + '</span>' +
-        '<span class="nav-group-n">' + g.items.length + '</span>'));
+        '<span></span><span class="nav-group-en"></span><span class="nav-group-n"></span>'));
+      var h = box.firstChild;
+      h.children[0].textContent = g.title;
+      h.children[1].textContent = g.en;
+      h.children[2].textContent = n;
+
       g.items.forEach(function (it) {
+        if (it.head) {                       // 癌別分群小標
+          var sh = el('div', 'nav-subhead');
+          sh.textContent = it.head;
+          box.appendChild(sh);
+          return;
+        }
         var a = el('a', 'nav-item' + (it.pathway ? ' is-pathway' : ''),
           '<span class="nav-zh"></span><span class="nav-en"></span>');
-        // 名稱來自首頁 DOM，一律以 textContent 寫入，不走 innerHTML
+        // 名稱來自首頁 DOM／資料檔，一律以 textContent 寫入，不走 innerHTML
         a.querySelector('.nav-zh').textContent = it.zh;
-        a.querySelector('.nav-en').textContent = it.en;
+        a.querySelector('.nav-en').textContent = it.en || '';
         a.href = ROOT + it.href;
-        if (isCurrent(it.href)) a.classList.add('is-current');
+        a.setAttribute('data-href', it.href);
         box.appendChild(a);
       });
       nav.appendChild(box);
     });
 
-    // 捲到目前頁面那一項（工具多、計分工具在最下面），置於導覽列正中。
-    // 自行算 scrollTop 而非 scrollIntoView：後者會連整頁一起捲。
-    var cur = nav.querySelector('.nav-item.is-current');
+    center(nav, markCurrent(nav));
+  }
+
+  // 捲到目前頁面那一項（項目多，計分工具與癌別都在下面），置於導覽列正中。
+  // 自行算 scrollTop 而非 scrollIntoView：後者會連整頁一起捲。
+  function center(nav, cur) {
     function centerCurrent() {
       if (!cur || !nav.clientHeight) return;
       nav.scrollTop = cur.offsetTop + cur.offsetHeight / 2 - nav.clientHeight / 2;
@@ -169,9 +235,7 @@
       ro.observe(nav);
       var stop = function () {
         ro.disconnect();
-        ['pointerdown', 'wheel', 'touchstart'].forEach(function (t) {
-          nav.removeEventListener(t, stop);
-        });
+        ['pointerdown', 'wheel', 'touchstart'].forEach(function (t) { nav.removeEventListener(t, stop); });
       };
       ['pointerdown', 'wheel', 'touchstart'].forEach(function (t) {
         nav.addEventListener(t, stop, { passive: true });
@@ -189,7 +253,7 @@
       '<span class="nav-head-en">Clinical Toolbox</span>' +
       '<span class="nav-head-zh">臨床工具箱</span>');
     head.href = ROOT + 'index.html';
-    if (isCurrent('index.html')) head.classList.add('is-current');
+    if (samePage('index.html')) head.classList.add('is-current');
     nav.appendChild(head);
 
     var scrim = el('div', 'nav-scrim');
@@ -216,6 +280,13 @@
       if (e.target.closest('a') && !desktop()) setOpen(false, false);
     });
 
+    // 同頁的 #mode=／#cancer= 連結不會重新載入，換頁內分頁後自行更新標示
+    window.addEventListener('hashchange', function () {
+      var old = nav.querySelector('.nav-item.is-current');
+      if (old) old.classList.remove('is-current');
+      markCurrent(nav);
+    });
+
     // 轉向／改變視窗寬度時，若使用者未在該寬度下手動選過，回到該寬度的預設
     window.matchMedia(DESKTOP).addEventListener('change', function () {
       var s = stored();
@@ -227,19 +298,61 @@
       requestAnimationFrame(function () { root.classList.add('nav-ready'); });
     });
 
-    // 首頁：自己的 DOM 就是清單來源，同步填入。
-    // 其他頁：抓首頁來解析；SW 有預快取，離線亦可取得。抓不到就只留標題連回首頁。
+    load(nav);
+  }
+
+  var srcDoc = null;              // 清單所依據的首頁文件，癌別補上來時據此重算
+
+  function derive(doc) {
+    srcDoc = doc;
+    var groups = readGroups(doc);
+    if (!groups.length) return null;
+    lsSet(SNAP, JSON.stringify(groups));
+    return groups;
+  }
+
+  // 從沒載過 cancers.js 的瀏覽器，側欄會缺癌別；等頁面閒下來再補抓一次，
+  // 抓完存檔，之後每頁都直接由存檔渲染，不再動這個 320KB 的檔。
+  function ensureCancers(nav) {
+    if (window.CANCERS || lsGet(SNAP + '-cancers')) return;
+    var kick = function () {
+      var s = document.createElement('script');
+      s.src = ROOT + 'data/cancer/cancers.js';
+      s.onload = function () {
+        var g = srcDoc ? derive(srcDoc) : null;
+        if (g) fill(nav, g);
+      };
+      document.head.appendChild(s);
+    };
+    if (window.requestIdleCallback) window.requestIdleCallback(kick, { timeout: 4000 });
+    else setTimeout(kick, 1500);
+  }
+
+  function load(nav) {
+    // 首頁：自己的 DOM 就是清單來源
     if (document.getElementById('hub')) {
-      fill(nav, readGroups(document));
-    } else {
-      fetch(ROOT + 'index.html', { credentials: 'same-origin' })
-        .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
-        .then(function (html) {
-          var doc = new DOMParser().parseFromString(html, 'text/html');
-          fill(nav, readGroups(doc));
-        })
-        .catch(function (e) { console.warn('導覽列清單載入失敗:', e); });
+      var groups = derive(document);
+      if (groups) fill(nav, groups);
+      ensureCancers(nav);
+      return;
     }
+
+    // 其他頁：先用上次的快照立刻畫出來，避免等待期間側欄一片空白
+    var cached = null;
+    try { cached = JSON.parse(lsGet(SNAP) || 'null'); } catch (e) { cached = null; }
+    if (cached && cached.length) fill(nav, cached);
+
+    // 再抓首頁核對；有變動（新增工具、新癌別）才重畫，抓不到就維持快照
+    fetch(ROOT + 'index.html', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+      .then(function (html) {
+        var fresh = derive(new DOMParser().parseFromString(html, 'text/html'));
+        if (fresh && JSON.stringify(fresh) !== JSON.stringify(cached)) fill(nav, fresh);
+      })
+      .catch(function (e) {
+        if (!cached) console.warn('導覽列清單載入失敗:', e);
+      })
+      .then(function () { ensureCancers(nav); });
   }
 
   root.classList.add('has-nav');

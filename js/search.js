@@ -22,10 +22,12 @@
     text:     { label: '頁面內文', order: 9 }
   };
 
+  // [檔案, 該檔宣告的全域]：這些檔於頂層用 const 宣告，重複載入會整支報錯，
+  // 故已由別處載入者（如 js/nav.js 為了癌別清單載過 cancers.js）一律跳過。
   var DATA_FILES = [
-    './data/antibiotics/regimens.js',   // SITES, BACTERIA
-    './data/antibiotics/drugs.js',      // DRUGS
-    './data/cancer/cancers.js'          // CANCERS
+    ['./data/antibiotics/regimens.js', 'SITES'],
+    ['./data/antibiotics/drugs.js',    'DRUGS'],
+    ['./data/cancer/cancers.js',       'CANCERS']
   ];
 
   var MAX_HITS = 50;      // 單次最多顯示筆數（超過時提示縮小範圍）
@@ -52,8 +54,10 @@
   function loadData() {
     if (loading) return loading;
     // 依序載入：cancers.js 於頂層宣告 const，重複載入會出錯，故各檔僅載一次
-    loading = DATA_FILES.reduce(function (p, src) {
-      return p.then(function () { return loadScript(src); });
+    loading = DATA_FILES.reduce(function (p, f) {
+      return p.then(function () {
+        return window[f[1]] ? null : loadScript(f[0]);
+      });
     }, Promise.resolve());
     return loading;
   }
