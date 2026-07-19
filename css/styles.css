@@ -46,7 +46,12 @@
     0%,55%{border-color:var(--accent); border-left-color:var(--accent); background:var(--accent-soft);}
     100%{border-color:var(--line); border-left-color:var(--accent-soft); background:var(--panel);}
   }
-  .hub-card.card-return{animation:cardReturn 1.6s ease-out;}
+  /* 圖磚沒有底色可漸變，改以金框脈動標示「剛才所在的入口」 */
+  .hub-card.card-return::after{animation:tileReturn 1.6s ease-out;}
+  @keyframes tileReturn{
+    0%,55%{border-color:var(--tile-accent); box-shadow:inset 0 0 0 2px rgba(201,162,39,.5);}
+    100%{border-color:transparent; box-shadow:none;}
+  }
   .tool-card.deci-card.card-return{animation:cardReturnDeci 1.6s ease-out;}
   @keyframes cardReturnDeci{
     0%,55%{border-color:var(--accent2); border-left-color:var(--accent2); background:var(--accent2-soft);}
@@ -78,17 +83,77 @@
   .gs-hl{background:var(--accent-soft); color:inherit; border-radius:2px; padding:0 1px;}
   .gs-empty{font-size:12.5px; color:var(--muted); background:var(--box-bg); border:1px dashed var(--line); border-radius:2px; padding:14px; text-align:center;}
 
-  /* ---- 首頁四大類入口 ---- */
-  .hub-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px;}
-  @media(max-width:560px){ .hub-grid{grid-template-columns:1fr;} }
-  .hub-card{display:flex; flex-direction:column; gap:2px; text-decoration:none; color:inherit;
-    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent);
-    border-radius:2px; padding:16px 18px 14px; transition:border-color .15s, background .15s;}
-  .hub-card:hover{border-color:var(--accent); background:var(--hover-bg);}
-  .hub-title{font-family:var(--serif); font-size:21px; font-weight:600; line-height:1.25;}
-  .hub-en{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft);}
-  .hub-desc{font-size:12px; color:var(--muted); margin-top:6px;}
-  .hub-count{font-family:var(--mono); font-size:10.5px; color:var(--accent); margin-top:8px;}
+  /* ---- 首頁四大類入口：標本方磚（與 tools/cancer.html 的癌別方磚同款）----
+     圖已離線處理成 640px 正方灰階（照片置中裁切、SOFA 表格補白邊全幅保留），
+     故一律 cover 不再裁切；亮色→淺灰版畫、暗色→深板岩反相，隨 OS 外觀切換。
+     變數scoped 在 .hub-grid：cancer-staging.css 有同名的 :root 變數，兩者互不載入同一頁，
+     但仍避免日後同頁載入時互相覆寫。 */
+  .hub-grid{
+    /* 限寬置中：滿版 820px 的 2×2 正方形會高達 1600px，首頁一屏塞不下 */
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    max-width:600px; margin:0 auto 8px;
+    --tile-bg:#e9e7e1;
+    --tile-label:#fdf8ee; --tile-label-soft:rgba(253,248,238,.86);
+    --tile-label-shadow:0 0 2px rgba(0,0,0,.95), 0 0 4px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.85), 0 0 9px rgba(0,0,0,.6);
+    --tile-accent:#c9a227;
+    --plate-filter:url(#plate-duo) brightness(1) contrast(1.02);
+    --plate-filter-hover:url(#plate-duo) brightness(1.04) contrast(1.03);
+    /* 比癌別方磚(.12)壓得深：那些是白底版畫，這裡是照片，且有藥錠、表格等亮底 */
+    --scrim:rgba(18,14,10,.3);
+    --scrim-hover:rgba(18,14,10,.2);
+  }
+  @media (prefers-color-scheme:dark){
+    .hub-grid{
+      --tile-bg:#262b2f;
+      --tile-label:#eaf4fb; --tile-label-soft:rgba(234,244,251,.82);
+      --tile-label-shadow:0 0 2px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.7), 0 0 10px rgba(0,0,0,.35);
+      --tile-accent:#6fb7d6;
+      --plate-filter:url(#plate-cyano) brightness(1) contrast(1.06);
+      --plate-filter-hover:url(#plate-cyano) brightness(1.08) contrast(1.08);
+      --scrim:radial-gradient(ellipse 68% 42% at 50% 50%, rgba(6,10,14,.5), rgba(6,10,14,.2) 70%, rgba(6,10,14,.06) 100%);
+      --scrim-hover:radial-gradient(ellipse 66% 40% at 50% 50%, rgba(6,10,14,.42), rgba(6,10,14,.15) 72%, rgba(6,10,14,.04) 100%);
+    }
+  }
+  .hub-card{
+    position:relative; aspect-ratio:1; overflow:hidden; display:block;
+    background:var(--tile-bg); border:0; border-radius:2px; padding:0;
+    text-decoration:none; color:var(--tile-label); cursor:pointer;
+  }
+  .hub-card .hub-img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; filter:var(--plate-filter);
+    transition:transform .6s cubic-bezier(.16,1,.3,1), filter .5s;
+  }
+  .hub-card .hub-scrim{position:absolute; inset:0; pointer-events:none; background:var(--scrim); transition:background .5s;}
+  .hub-card .hub-label{
+    position:absolute; inset:0; z-index:2;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px; text-align:center; padding:10px;
+  }
+  .hub-card .hub-zh{
+    font-family:var(--serif); font-size:clamp(26px,6.4vw,44px); font-weight:500;
+    letter-spacing:.22em; text-indent:.22em; line-height:1.15;
+    color:var(--tile-label); text-shadow:var(--tile-label-shadow);
+  }
+  .hub-card .hub-en{
+    font-family:var(--sans); font-size:clamp(11px,2.1vw,15px); font-weight:400;
+    letter-spacing:.1em; line-height:1.4; max-width:92%;
+    color:var(--tile-label-soft); text-shadow:var(--tile-label-shadow);
+  }
+  /* 懸停：圖微放大提亮、壓暗減弱、浮現細金框 */
+  .hub-card::after{
+    content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
+    border:1px solid transparent; transition:border-color .4s, box-shadow .4s;
+  }
+  .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{ transform:scale(1.04); filter:var(--plate-filter-hover); }
+  .hub-card:hover .hub-scrim, .hub-card:focus-visible .hub-scrim{ background:var(--scrim-hover); }
+  .hub-card:hover::after{ border-color:var(--tile-accent); box-shadow:inset 0 0 0 1px rgba(201,162,39,.24); }
+  .hub-card:focus-visible{ outline:none; }
+  .hub-card:focus-visible::after{ border-color:var(--tile-accent); box-shadow:0 0 0 2px rgba(201,162,39,.5); }
+  @media (prefers-reduced-motion:reduce){
+    .hub-card .hub-img, .hub-card .hub-scrim, .hub-card::after{transition:none;}
+    .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:none;}
+  }
 
   /* ---- 首頁分類頁（腹部急症／計分工具）---- */
   .sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px;

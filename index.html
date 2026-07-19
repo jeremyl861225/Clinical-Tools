@@ -15,6 +15,26 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 </head>
 <body>
+<!-- 方磚圖版上色：亮色→淺灰版畫、暗色→深板岩反相。sRGB 不可省，否則中間調會再偏一次。
+     必須定義在引用它的 <img> 之前，否則首次繪製時 filter 尚未存在，整張圖不會顯示。 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="plate-duo" color-interpolation-filters="sRGB">
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.100 0.940"/>
+      <feFuncG type="table" tableValues="0.095 0.928"/>
+      <feFuncB type="table" tableValues="0.085 0.906"/>
+    </feComponentTransfer>
+  </filter>
+  <filter id="plate-cyano" color-interpolation-filters="sRGB">
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.82 0.169"/>
+      <feFuncG type="table" tableValues="0.87 0.188"/>
+      <feFuncB type="table" tableValues="0.92 0.202"/>
+    </feComponentTransfer>
+  </filter>
+</defs></svg>
 <div class="sheet">
 <div class="view active" id="view-home">
   <div class="app-header">
@@ -38,33 +58,35 @@
   <!-- 首頁本體：四大類入口＋各類內容；查詢時整塊隱藏（見 js/search.js） -->
   <div id="home-body">
 
-  <!-- 四大類入口 -->
+  <!-- 四大類入口：與癌別方磚同款（灰階圖版＋雙色調濾鏡＋壓暗層＋疊字），
+       中文拆成上下兩半、英文夾在中間。data-* 供 js/search.js 建索引用。
+       濾鏡 defs 置於 <body> 最前（見上），晚於引用者定義會導致首次繪製時整張圖不顯示。 -->
   <div class="hub-grid" id="hub">
-    <a class="hub-card" href="#abdomen">
-      <span class="hub-title">腹部急症</span>
-      <span class="hub-en">Abdominal Emergencies</span>
-      <span class="hub-desc">九項互動式決策流程，依感染／阻塞／缺血／穿孔／創傷分類，另附緊急手術分級查詢</span>
-      <span class="hub-count">9 項流程 · 1 查詢</span>
+    <a class="hub-card" href="#abdomen" aria-label="腹部急症"
+       data-label="腹部急症" data-en="Abdominal Emergencies" data-sub="決策流程與緊急手術分級">
+      <img class="hub-img" src="assets/hub/emergency.jpg" alt="" decoding="async">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">腹部</span><span class="hub-en">Emergency</span><span class="hub-zh">急症</span></span>
     </a>
-    <a class="hub-card" id="card-view-antibiotics" href="tools/antibiotics.html"
+    <a class="hub-card" id="card-view-antibiotics" href="tools/antibiotics.html" aria-label="抗微生物"
+       data-label="抗微生物" data-en="Antimicrobials" data-sub="抗生素指引與菌譜資料庫"
        data-search-kw="抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌">
-      <span class="hub-title">抗微生物</span>
-      <span class="hub-en">Antimicrobials</span>
-      <span class="hub-desc">抗生素指引：依感染部位（經驗性）、依病原菌、藥物查詢，及抗生素菌譜資料庫</span>
-      <span class="hub-count">4 個分頁</span>
+      <img class="hub-img" src="assets/hub/antibiotics.jpg" alt="" decoding="async">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">抗微</span><span class="hub-en">Antimicrobials</span><span class="hub-zh">生物</span></span>
     </a>
-    <a class="hub-card" id="card-view-cancer" href="tools/cancer.html"
-       data-search-kw="癌症 分期 TNM AJCC 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫 FLOT FOLFOX Avastin">
-      <span class="hub-title">癌症治療</span>
-      <span class="hub-en">Cancer Treatment</span>
-      <span class="hub-desc">18 種癌症之 AJCC／FIGO 分期、淋巴結分群與治療決策流程（另 4 種建置中）</span>
-      <span class="hub-count">18 癌別</span>
+    <a class="hub-card" id="card-view-cancer" href="tools/cancer.html" aria-label="癌症治療"
+       data-label="癌症治療" data-en="Cancer Treatment" data-sub="分期、淋巴結分群與治療決策"
+       data-search-kw="癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫 FLOT FOLFOX Avastin">
+      <img class="hub-img" src="assets/hub/cancer.jpg" alt="" decoding="async">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">癌症</span><span class="hub-en">Cancer</span><span class="hub-zh">治療</span></span>
     </a>
-    <a class="hub-card" href="#scores">
-      <span class="hub-title">計分工具</span>
-      <span class="hub-en">Scoring Tools</span>
-      <span class="hub-desc">共病、重症、肝臟、手術風險及各腹部急症之臨床計分</span>
-      <span class="hub-count">21 項工具</span>
+    <a class="hub-card" href="#scores" aria-label="計分工具"
+       data-label="計分工具" data-en="Scoring Tools" data-sub="共病、重症、肝臟、手術風險與腹部急症計分">
+      <img class="hub-img" src="assets/hub/sofa.png" alt="" decoding="async">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">計分</span><span class="hub-en">Scoring</span><span class="hub-zh">工具</span></span>
     </a>
   </div>
 

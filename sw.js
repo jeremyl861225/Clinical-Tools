@@ -74,6 +74,12 @@ const PRECACHE_URLS = [
   './tools/vasopressor.html',
   './tools/wassmer.html',
   './tools/wses.html',
+  // 首頁四大類方磚圖：第一屏內容，離線時不能缺（癌別方磚在點進去之後才需要，
+  // 由 fetch 的 stale-while-revalidate 於實際瀏覽時逐張快取，故不列於此）
+  './assets/hub/emergency.jpg',
+  './assets/hub/antibiotics.jpg',
+  './assets/hub/cancer.jpg',
+  './assets/hub/sofa.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-192.png',

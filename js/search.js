@@ -93,13 +93,14 @@
     document.querySelectorAll('.hub-card[href]').forEach(function (card) {
       var url = card.getAttribute('href') || '';
       if (url.indexOf('.html') === -1) return;
-      var desc = txt(card.querySelector('.hub-desc'));
+      // 方磚上的中文被拆成上下兩半（腹部／急症），故完整名稱與英文取自 data-*
+      var sub = card.getAttribute('data-sub') || '';
       out.push({
         type: 'guide',
-        label: txt(card.querySelector('.hub-title')),
-        en: txt(card.querySelector('.hub-en')),
-        sub: desc.length > 90 ? desc.slice(0, 90) + '…' : desc,
-        kw: desc + ' ' + (card.getAttribute('data-search-kw') || ''),
+        label: card.getAttribute('data-label') || '',
+        en: card.getAttribute('data-en') || '',
+        sub: sub,
+        kw: sub + ' ' + (card.getAttribute('data-search-kw') || ''),
         url: url
       });
     });
