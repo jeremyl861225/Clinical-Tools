@@ -34,7 +34,11 @@
       ・<b>重度 Severe</b>：<b>持續性</b>器官衰竭（&gt;48 小時）。<br>
       ・<b>Critical（DBC 增列）</b>：持續性器官衰竭 ＋ <b>感染性壞死</b>，死亡率最高。<br>
       ・器官衰竭定義：<b>modified Marshall score ≥2</b>（呼吸／腎臟／心血管其一）；持續 &gt;48 小時為 persistent。　<a class="tool-link" href="../tools/marshall.html?from=panc">🧮 開啟計算機</a><br><br>
-      <b>局部聚積之命名：</b><b>APFC</b> 急性胰周液體聚積（&lt;4 週，間質水腫型）／<b>Pseudocyst</b> 假性囊腫（&gt;4 週，有壁包覆之液體）／<b>ANC</b> 急性壞死聚積（&lt;4 週，含壞死組織）／<b>WON</b> 包覆性壞死（≥4 週，成熟有壁包覆之壞死）。<br><br>
+      <b>局部聚積之命名：</b><br>
+      ・<b>APFC</b>（acute peripancreatic fluid collection）急性胰周液體聚積 — &lt;4 週，間質水腫型<br>
+      ・<b>Pseudocyst</b> 假性囊腫 — &gt;4 週，有壁包覆之液體<br>
+      ・<b>ANC</b>（acute necrotic collection）急性壞死聚積 — &lt;4 週，含壞死組織<br>
+      ・<b>WON</b>（walled-off necrosis）包覆性壞死 — ≥4 週，成熟有壁包覆之壞死<br><br>
       <b>實驗室指標：</b>CRP <b>≥150 mg/L（15 mg/dL）於第 3 天</b> 為 SAP 預後因子（2A）／Hct <b>&gt;44%</b> 為胰臟壞死之獨立危險因子（1B）／BUN <b>&gt;20 mg/dL</b> 為死亡率之獨立預測因子（2B）／PCT <b>≥3.8 ng/mL（96 小時內）</b>提示壞死、低值為感染性壞死之強陰性預測（2A）／TG <b>&gt;1000 mg/dL（11.3 mmol/L）</b>指向高三酸甘油酯病因（2C）。<br><br>
       <b>影像時機：</b>入院時 US 判定膽源性病因（1C）；所有 SAP 應以 CE-CT 或 MRI 評估，<b>首次 CE-CT 最佳時機為症狀發作後 72–96 小時</b>（1C）；CTSI ≥3 者於首次 CT 後 <b>7–10 天</b>追蹤（1C，<a class="tool-link" href="../tools/ctsi.html?from=panc">🧮 開啟計算機</a>）；其餘僅在臨床惡化／未持續改善或考慮介入時追加（1C）。病因不明時以 <b>MRCP 或 EUS</b> 篩檢隱性總膽管結石（1C）。<br><br>
       <b>BISAP（0–5 分，每項 1 分）：</b>BUN &gt;25 mg/dL／意識狀態改變（GCS &lt;15）／SIRS ≥2 項／年齡 &gt;60 歲／肋膜積液。<b>≥2 分</b>為 SAP、器官衰竭與死亡之顯著切點。<br>
@@ -101,8 +105,8 @@
   <div class="flow-step hidden" id="ap_s4">
     <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">自症狀發作起算之病程時間？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="apPick('week','lt4',this)">&lt;4 週<span class="fo-sub">壞死尚未包覆化（ANC 階段）</span></button>
-      <button class="flow-opt" onclick="apPick('week','4to8',this)">4–8 週<span class="fo-sub">壞死已包覆化（WON）</span></button>
+      <button class="flow-opt" onclick="apPick('week','lt4',this)">&lt;4 週<span class="fo-sub">壞死尚未包覆化，屬 <b>ANC</b>（acute necrotic collection，急性壞死聚積）階段</span></button>
+      <button class="flow-opt" onclick="apPick('week','4to8',this)">4–8 週<span class="fo-sub">壞死已包覆化，成為 <b>WON</b>（walled-off necrosis，包覆性壞死）</span></button>
       <button class="flow-opt" onclick="apPick('week','gt8',this)">&gt;8 週<span class="fo-sub">慢性期，聚積壁成熟</span></button>
     </div>
   </div>
