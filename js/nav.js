@@ -67,6 +67,7 @@
         ['tools/pulp.html',        'PULP Score',             'Peptic Ulcer Perforation Score'],
         ['tools/marshall.html',    'Modified Marshall Score','Organ Failure in Acute Pancreatitis'],
         ['tools/ctsi.html',        'CT Severity Index',      'Balthazar CTSI'],
+        ['tools/cholangitis.html', 'TG18 急性膽管炎',        'Tokyo Guidelines 2018 · Acute Cholangitis'],
         ['tools/mpi.html',         'MPI',                    'Mannheim Peritonitis Index'],
         ['tools/wses.html',        'WSES Sepsis Score',      'WSES Sepsis Severity Score'],
         ['tools/wassmer.html',     'Wassmer Score',          'Clinical Severity Score for SBO'],
