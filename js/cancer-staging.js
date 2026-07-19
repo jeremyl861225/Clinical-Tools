@@ -19,6 +19,8 @@ var ONC_TILE_IMG = {
   gyn:1, lung:1, esoph:1, gastric:1, panc:1, breast:1, gist:1, thyroid:1,
   colorectal:1, anal:1, appendix:1, hcc:1, cca:1, net:1, sts:1,
   npc:1, hnc:1, uro:1, heme:1,
+  // 原 heme（淋巴血癌）已拆成血癌與淋巴癌兩張卡，兩者暫時共用原本那張圖版
+  aml:'heme', lymphoma:'heme',
   cervix:'gyn', endometrial:'gyn', utsarc:'gyn', ovarian:'gyn',
   utuc:'uro', rcc:'uro', bladder:'uro', prostate:'uro'
 };
@@ -196,8 +198,10 @@ function showDetail(id, keepScroll){
     subtypeBar(base)+
     '<div class="onc-edition">'+escapeHtml(c.edition)+'</div>'+
     '<div class="onc-tabs">'+
-      '<button class="onc-tab'+(tab==='stage'?' active':'')+'" data-t="stage" onclick="switchTab(\''+id+'\',\'stage\')">分期 TNM</button>'+
-      '<button class="onc-tab'+(tab==='node'?' active':'')+'" data-t="node" onclick="switchTab(\''+id+'\',\'node\')">淋巴結分群</button>'+
+      // 前兩個分頁的標題可覆寫：血液腫瘤無 TNM、亦無淋巴結分群，硬寫「分期 TNM」「淋巴結分群」
+      // 會與該癌別自己的 staging_note／node_note 互相矛盾（分頁名說有、內文說沒有）。
+      '<button class="onc-tab'+(tab==='stage'?' active':'')+'" data-t="stage" onclick="switchTab(\''+id+'\',\'stage\')">'+escapeHtml(c.stage_tab_label || '分期 TNM')+'</button>'+
+      '<button class="onc-tab'+(tab==='node'?' active':'')+'" data-t="node" onclick="switchTab(\''+id+'\',\'node\')">'+escapeHtml(c.node_tab_label || '淋巴結分群')+'</button>'+
       '<button class="onc-tab'+(tab==='tx'?' active':'')+'" data-t="tx" onclick="switchTab(\''+id+'\',\'tx\')">治療建議</button>'+
     '</div>'+
     '<div id="oncTab"></div>'+
@@ -244,6 +248,8 @@ function switchTab(id, tab){
     if(c.pathway === 'prostate' && typeof initProstatePathway === 'function') initProstatePathway();
     if(c.pathway === 'npc' && typeof initNpcPathway === 'function') initNpcPathway();
     if(c.pathway === 'hnc' && typeof initHncPathway === 'function') initHncPathway();
+    if(c.pathway === 'aml' && typeof initAmlPathway === 'function') initAmlPathway();
+    if(c.pathway === 'lym' && typeof initLymPathway === 'function') initLymPathway();
   }
 }
 
@@ -549,6 +555,12 @@ function renderTx(c){
   }
   if(c.pathway === 'prostate' && typeof prostatePathwayHTML === 'function'){
     return prostatePathwayHTML();
+  }
+  if(c.pathway === 'aml' && typeof amlPathwayHTML === 'function'){
+    return amlPathwayHTML();
+  }
+  if(c.pathway === 'lym' && typeof lymPathwayHTML === 'function'){
+    return lymPathwayHTML();
   }
   var h = '';
   (c.tx||[]).forEach(function(t){

@@ -2424,6 +2424,103 @@ window.CANCERS = [
   ],
 },
 
+/* ============================ 血癌（AML）============================ */
+{
+  id:'aml', zh:'血癌', abbr:'AML', en:'Leukemia (Acute Myeloid Leukemia)', group:'軟組織／血液淋巴 Soft Tissue & Hema',
+  pathway:'aml',
+  stage_tab_label:'風險分層 Risk',
+  node_tab_label:'髓外／中樞侵犯',
+  edition:'ELN 2022 遺傳學風險分層（血癌無 AJCC TNM 分期）／治療依台大血癌診療指引 版次 15（2026/06/16，AML-1～AML-16 ＋ 放射治療指引 v1.0）',
+  staging_note:'<b>本頁涵蓋範圍即為指引本身的範圍：急性骨髓性白血病（AML，含 M3／APL）。</b>台大血癌診療指引版次 15 之化療章節僅收錄 AML；<b>ALL、混合表型急性白血病（MPAL）、混合／未定型系列急性白血病與骨髓分化不良症候群（MDS）在 AML-1 分流後即離開本指引</b>，指引未載其治療流程（僅放射治療章節提及 ALL 與 CML 之全身照射適應症）。淋巴癌另有台大淋巴癌診療指引，不在本頁。<br><b>血癌沒有 AJCC／UICC 的 TNM 分期</b>——白血病自診斷起即為全身性疾病，無原發腫瘤大小（T）、無區域淋巴結顆數（N）、無遠處轉移（M）之概念。決定治療強度與是否移植的，是<b>細胞遺傳學／分子遺傳學風險分層</b>，本頁即以其取代分期表。<br>本指引同時收錄 <b>ELN 2017（AML-15）</b>與 <b>ELN 2022（AML-16）</b>兩套分層；<b>ELN 2022 為現行版本</b>，主要變動為：取消 FLT3-ITD 的 allelic ratio（高／低比值）之區分、以 <b>bZIP in-frame CEBPA 突變</b>取代 biallelic CEBPA、並將 <b>BCOR／EZH2／SF3B1／SRSF2／STAG2／U2AF1／ZRSR2</b> 等骨髓分化不良相關突變納入 adverse。<br><span class="tx-role" style="background:var(--muted-soft);">註</span> <b>指引內部有兩處交叉引用不一致，引用時請留意</b>：① AML-7 之註 7 寫「風險定義如 <b>AML-13</b>」，惟 AML-13 實為 APL 之鞏固後監測，風險分層表實際位於 <b>AML-15／AML-16</b>；② AML-1 將 M3（APL）指向「See <b>AML-7</b>」，惟 AML-7 實為 non-M3 之緩解後鞏固，APL 內容實際位於 <b>AML-10～AML-14</b>。',
+  t:[], n:[], m:[],
+  staging_system:'ELN 2022（European LeukemiaNet；本指引 AML-16）／並列 ELN 2017（AML-15）',
+  stages_title:'遺傳學風險分層 Risk stratification（non-M3 AML）',
+  stages_code_label:'風險分組',
+  stages_crit_label:'遺傳學異常（上：ELN 2022 現行／下：ELN 2017）',
+  stages:[
+    ['Favorable','<b>ELN 2022（AML-16）</b><ul><li>t(8;21)(q22;q22.1)／<i>RUNX1::RUNX1T1</i></li><li>inv(16)(p13.1q22) 或 t(16;16)(p13.1;q22)／<i>CBFB::MYH11</i></li><li><i>NPM1</i> 突變且<b>無</b> FLT3-ITD</li><li><i>CEBPA</i> bZIP in-frame 突變</li></ul><div class="ni-note"><b>ELN 2017（AML-15）</b>　細胞遺傳學：inv(16)(p13.1q22)、t(16;16)(p13.1;q22)、t(8;21)(q22;q22.1)（附加之細胞遺傳學變化不額外增加風險）。分子：<i>CBFB-MYH11</i>、<i>RUNX1-RUNX1T1</i>、<i>NPM1</i> 突變且無 FLT3-ITD 或併 FLT3-ITD<sup>low</sup>、<i>CEBPA</i> 雙對偶基因突變。</div>'],
+    ['Intermediate','<b>ELN 2022（AML-16）</b><ul><li><i>NPM1</i> 突變<b>併</b> FLT3-ITD</li><li><i>NPM1</i> 野生型<b>併</b> FLT3-ITD</li><li>t(9;11)(p21.3;q23.3)／<i>MLLT3::KMT2A</i></li><li>未歸類為 favorable 或 adverse 之細胞遺傳學及／或分子異常</li></ul><div class="ni-note"><b>ELN 2017（AML-15）</b>　細胞遺傳學：正常核型、t(9;11)(p21.3;q23.3)、其他未定義之細胞遺傳學異常。分子：<i>MLLT3-KMT2A</i>、<i>NPM1</i> 突變併 FLT3-ITD<sup>high</sup>、<i>NPM1</i> 野生型且無 FLT3-ITD 或併 FLT3-ITD<sup>low</sup>。（allelic ratio：low <0.5、high ≥0.5）</div>'],
+    ['Adverse','<b>ELN 2022（AML-16）</b><ul><li>t(6;9)(p23;q34.1)／<i>DEK::NUP214</i>；t(v;11q23.3)／<i>KMT2A</i> 重組；t(9;22)(q34.1;q11.2)／<i>BCR::ABL1</i>；t(8;16)(p11;p13)／<i>KAT6A::CREBBP</i></li><li>inv(3)(q21.3q26.2) 或 t(3;3)(q21.3;q26.2)／<i>GATA2, MECOM(EVI1)</i>；t(3q26.2;v)／<i>MECOM(EVI1)</i> 重組</li><li>−5 或 del(5q)；−7；−17／abn(17p)</li><li>複雜核型（complex karyotype）、單體核型（monosomal karyotype）</li><li><i>ASXL1</i>、<i>BCOR</i>、<i>EZH2</i>、<i>RUNX1</i>、<i>SF3B1</i>、<i>SRSF2</i>、<i>STAG2</i>、<i>U2AF1</i> 或 <i>ZRSR2</i> 突變</li><li><i>TP53</i> 突變</li></ul><div class="ni-note"><b>ELN 2017（AML-15）</b>　細胞遺傳學：複雜核型（≥3 個 clonal abnormalities）、單體核型、−5、5q−、−7、−17／abn(17p)、t(v;11q23.3)（非 t(9;11)）、inv(3)(q21.3q26.2) 或 t(3;3)(q21.3;q26.2)、t(6;9)(p23;q34.1)、t(9;22)(q34.1;q11.2)。分子：<i>NPM1</i> 野生型併 FLT3-ITD<sup>high</sup>、<i>KMT2A</i> 重組（非併 <i>MLLT3</i>）、<i>GATA2</i>／<i>EVI1(MECOM)</i> 重組、<i>DEK-NUP214</i>、<i>BCR-ABL1</i>、<i>TP53</i> 突變、<i>RUNX1</i> 突變、<i>ASXL1</i> 突變。</div>'],
+  ],
+  stages_foot:'<b>此表僅適用於 non-M3 AML。</b>急性前骨髓性白血病（APL，M3）另有一套風險分層，且直接決定誘導處方（AML-10～AML-12）：<b>低風險＝初診 WBC ≤10,000/µL</b>；<b>高風險＝WBC >10,000/µL</b>，高風險再依<b>有無心臟問題</b>（低左心室射出分率／QTc 延長）分流。<br>另注意：<b>AML-2 的「治療強度分層」與本表是不同的軸</b>——是否有前驅血液疾病、治療相關 AML、具 MDS 相關基因或細胞遺傳學、或 poor-risk（<i>TP53</i>、17p−），在<b>誘導階段</b>即改走另一組處方，不必等風險分層結果；本表之 favorable／intermediate／adverse 用於<b>緩解後鞏固</b>（AML-7）。<br>風險分組代碼非 AJCC 期別，故不著色。',
+  node_note:'<b>血癌沒有淋巴結分群，本頁不列站別。</b>白血病起源於骨髓造血細胞、經血流全身散布，並無「原發部位 → 區域淋巴結 → 遠處轉移」的解剖擴散路徑，因此<b>不存在區域淋巴結（N）與廓清範圍（D 分級）的概念</b>；<b>台大血癌診療指引亦未定義任何淋巴結站別</b>。此處若列出任何站別表，都會是憑空捏造。<br>與其他癌別「淋巴結分群」在臨床上位置最接近的，是<b>髓外與中樞神經侵犯的評估</b>——以下內容全部取自本指引：<br><b>一、初診評估（AML-1）</b><ul><li><b>PET/CT</b>：臨床懷疑<b>髓外病灶（extramedullary disease）</b>時執行。</li><li><b>腰椎穿刺（LP）</b>：<b>有症狀者</b>執行；<b>無症狀者為 category 2B</b>。</li><li><b>腦部 CT（不打顯影劑）</b>：懷疑<b>中樞神經出血</b>時。</li><li><b>腦部 MRI（打顯影劑）</b>：懷疑<b>白血病腦膜炎（leukemic meningitis）</b>時。</li></ul><b>二、中樞神經之放射治療（放射治療指引 v1.0，2025/09）</b><ul><li><b>顱部照射（cranial irradiation）適應症</b>：高風險急性淋巴性白血病之 CNS 預防；復發／難治之 CNS 白血病；其他個別情況。<b>兒童 ALL 之預防性顱部照射可省略。</b></li><li><b>顱部照射劑量</b>：總劑量 12–24 Gy／每分次 1.5–2 Gy；與最後一劑 methotrexate 或 cytarabine 至少間隔 48–72 小時。靶區（CTV）＝顱內容物，含篩板、中顱窩、眼球後三分之二，加 C1～C2 脊髓。</li><li><b>CNS 復發之治療選項</b>：①單獨化療；②TBI ± CSI（常用 12 Gy 全身 + 12 Gy 顱內／6–12 Gy 脊髓，每分次 1.5–2 Gy）；③CSI（常用 24 Gy 顱內／18–24 Gy 脊髓）；④TBI + 顱部加強（12 Gy 全身 + 12 Gy 顱內）。<b>明顯 CNS 白血病之顱部總劑量為 18–30 Gy</b>，每分次 1.5–2 Gy。</li></ul><b>三、APL 之 CNS 預防</b>：復發治療達第二次形態緩解後，<b>考慮以鞘內化療（methotrexate 或 cytarabine）做 CNS 預防</b>（AML-14）。',
+  refs:[
+    ['台大醫院血癌診療指引 版次 15（2026/06/16，文件編號 50710-2-000023；AML-1～AML-16 ＋ Leukemia Radiation Therapy Guidelines v1.0, Sep 2025）', PS('NTUH leukemia treatment guidelines')],
+    ['本指引所依據之外部來源（見指引參考文獻頁）：NCCN AML Guidelines V.3 2026；ELN 2017 與 ELN 2022；2025 Update on MRD in AML — ELN-DAVID MRD Working Party 共識文件', PS('NCCN acute myeloid leukemia guidelines')],
+    ['ELN 2022 風險分層（AML-16 之出處）— Döhner H et al. Blood 2022;140:1345-1377', PM('35797463')],
+    ['ELN 2017 風險分層（AML-15 之出處）— Döhner H et al. Blood 2017;129:424-447', PM('27895058')],
+    ['RATIFY（3+7 加 midostaurin 用於 FLT3 突變 AML）— Stone RM et al. NEJM 2017', PM('28644114')],
+    ['QuANTUM-First（3+7 加 quizartinib 用於 FLT3-ITD AML）— Erba HP et al. Lancet 2023', PM('37116523')],
+    ['VIALE-A（venetoclax + azacitidine 用於不適合積極化療者）— DiNardo CD et al. NEJM 2020', PM('32786187')],
+    ['VIALE-C（venetoclax + 低劑量 cytarabine 用於不適合積極化療者）— Wei AH et al. Blood 2020', PM('32219442')],
+    ['CLIA + venetoclax（cladribine + idarubicin + cytarabine 併 venetoclax；本次改版新增之選項）— Kadia TM et al. Lancet Haematol 2021', PM('34329576')],
+    ['CPX-351（用於續發性／治療相關 AML）— Lancet JE et al. JCO 2018', PM('30024784')],
+    ['QUAZAR AML-001（口服 azacitidine／Onureg 於第一次緩解之維持治療）— Wei AH et al. NEJM 2020', PM('33369355')],
+    ['ADMIRAL（gilteritinib 用於復發／難治之 FLT3 突變 AML）— Perl AE et al. NEJM 2019', PM('31665578')],
+    ['APL0406（ATRA + arsenic trioxide 用於低／中風險 APL，優於 ATRA + 化療）— Lo-Coco F et al. NEJM 2013', PM('23841729')],
+    ['ILROG 全身照射（TBI）指引（本院放療章節之外部依據）— Wong JYC et al. Int J Radiat Oncol Biol Phys 2018;101:521-529', PM('29893272')],
+    ['ILROG 中樞神經白血病放射治療指引（本院放療章節之外部依據）— Pinnix CC et al. Int J Radiat Oncol Biol Phys 2018;102:53-58', PM('30102203')],
+  ],
+},
+
+/* ============================ 淋巴癌 ============================ */
+{
+  id:'lymphoma', zh:'淋巴癌', abbr:'Lymphoma', en:'Lymphoma (Hodgkin & Non-Hodgkin)', group:'軟組織／血液淋巴 Soft Tissue & Hema',
+  pathway:'lym',
+  edition:'Modified Ann Arbor（Lugano 2014）／治療依台大淋巴癌診療指引 版次 17（NTULYM-G6-2026，2026/06/16）',
+  staging_note:'<b>淋巴癌不使用 TNM 分期</b>——AJCC 對淋巴瘤採用的是 <b>Modified Ann Arbor（Lugano）</b>系統，以<b>受侵犯之淋巴區域數目</b>與<b>是否跨越橫膈膜</b>決定期別，故本頁無 T／N／M 表。<br>台大指引第 49 頁明載其依據為 <b>AJCC Cancer Staging 2018 版與 Cheson et al. JCO 2014;32:3059</b>，並將第一、二期歸為<b>侷限期</b>、第三、四期歸為<b>蔓延期</b>——此二分法才是治療流程真正的分叉點（見治療分頁）。<br><span class="tx-role" style="background:var(--muted-soft);">註</span> Lugano 明確指出 <b>A／B 症狀標記僅在會影響治療決策時才需標註</b>（例如第二期何杰金氏淋巴瘤），因其在多數預後指標中並非獨立因子。<b>分期不等於治療分組</b>：濾泡型、被套細胞、CLL/SLL、MALToma 等和緩型淋巴瘤的治療是由<b>治療適應症（GELF、症狀、器官功能）</b>而非期別驅動，第三、四期並不自動代表需要立即治療。',
+  // 淋巴癌不使用 TNM：空陣列使 tnmTable() 回傳空字串，分期分頁直接呈現 Ann Arbor 期別表（同 aml 之作法）
+  t:[], n:[], m:[],
+  staging_system:'Modified Ann Arbor（Lugano classification, Cheson 2014）',
+  stages_title:'分期 Modified Ann Arbor（Lugano）',
+  stages_code_label:'期別',
+  stages_crit_label:'定義（譯自台大淋巴癌診療指引第 49 頁）',
+  stages:[
+    ['I','僅侷限在<b>單一淋巴結（群）</b>，或單一淋巴組織外器官（<b>第 I<sub>E</sub> 期</b>）。','<span class="tx-role" style="background:var(--muted-soft);">侷限期</span>'],
+    ['II','<b>兩處或多處淋巴結</b>受到侵犯，但都在<b>橫膈膜同一側</b>；有時會長出到「直接相連的」淋巴組織外器官（<b>第 II<sub>E</sub> 期</b>）。','<span class="tx-role" style="background:var(--muted-soft);">侷限期</span>'],
+    ['III','<b>橫膈膜上下都有</b>淋巴結侵犯，或是橫膈膜上淋巴結<b>合併脾臟</b>的侵犯。','<span class="tx-role" style="background:var(--muted-soft);">蔓延期</span>'],
+    ['IV','以下狀況皆屬第四期：<ul><li>第二期狀況再加上鄰近「<b>未</b>直接相連的」淋巴組織外器官侵犯。</li><li>第三期狀況再加上淋巴組織外器官侵犯。</li><li>單一或多個淋巴組織外器官的「<b>瀰散式</b>」侵犯。</li><li>任何侵犯到<b>腦、腦脊髓液、骨髓、肝臟</b>或<b>多處肺臟</b>。</li></ul>','<span class="tx-role" style="background:var(--muted-soft);">蔓延期</span>'],
+  ],
+  stages_foot:'<b>後綴</b>　<b>A／B</b>＝有無 B 症狀（發燒 >38°C、盜汗、6 個月內體重減輕 >10%）；<b>E</b>＝侷限之淋巴組織外侵犯（更廣泛者直接歸第四期）。<br><b>Bulky 的定義（台大指引第 39 頁，何杰金氏淋巴瘤）</b>：胸部 X 光上<b>縱膈腫塊 > 胸廓內徑之 1／3</b>，或 CT 上<b>任一腫塊 >10cm</b>。Bulky 與否是第一、二期治療的分叉條件，務必於報告中明列。<br><hr><b>預後指標（供風險溝通用；台大指引之治療流程本身並不依 IPI 分叉）</b><br><b>IPI（DLBCL，第 8、62 頁）</b>——每項 1 分：年齡 >60 歲｜血清 LDH > 正常上限｜體能狀態 2–4｜第三或第四期｜淋巴組織外侵犯 >1 處。<b>Low 0–1｜Low-intermediate 2｜High-intermediate 3｜High 4–5</b>。<br><b>aaIPI（≤60 歲）</b>——每項 1 分：第三或第四期｜LDH > 正常｜體能狀態 2–4。<b>Low 0｜Low/int 1｜High/int 2｜High 3</b>。<br><b>NCCN-IPI</b>——年齡 >40–60 歲 1 分、>60–<75 歲 2 分、≥75 歲 3 分；LDH 正規化值 >1–3 倍 1 分、>3 倍 2 分；Ann Arbor 第三、四期 1 分；淋巴組織外侵犯（<b>骨髓、中樞神經、肝／腸胃道或肺</b>）1 分；體能狀態 ≥2 得 1 分。<b>Low 0–1｜Low-int 2–3｜High-int 4–5｜High ≥6</b>。<br><span class="tx-role" style="background:var(--muted-soft);">註</span> IPI 與 R-IPI 的<b>計分因子完全相同</b>，差別僅在風險分組的切點（台大指引第 8 頁）。<br><b>IPS（何杰金氏淋巴瘤第三、四期，第 39 頁）</b>——白蛋白 <4 g/dL｜血色素 <10.5 g/dL｜男性｜年齡 ≥45 歲｜第四期｜白血球 >15,000/mm³｜淋巴球 <8% 或 <600/mm³。<br><b>第一、二期何杰金氏淋巴瘤之不良因子（第 39 頁）</b>——Bulky（如上定義）｜無症狀者 ESR ≥50｜>3 個淋巴區域｜B 症狀｜>1 處淋巴組織外侵犯。<br>其餘：<b>FLIPI</b> 用於濾泡型、<b>MIPI</b> 用於被套細胞淋巴瘤（台大指引第 3 頁列為常規檢查項目，未於指引內附計分表）。',
+  node_note:'<b>淋巴癌沒有「淋巴結站別圖」，也不存在區域／遠處（N／M1）之分</b>——在其他癌別，淋巴結是<u>轉移的去處</u>；在淋巴癌，淋巴結是<u>原發器官</u>。Lugano 分期問的是<b>受侵犯的淋巴區域有幾個、在橫膈膜的哪一側</b>，而不是哪一站陽性，因此本表<b>不是站別表</b>，也不標示 N／M1 徽章。<br><b>來源與缺口</b>：<b>台大淋巴癌診療指引本身未收錄 Ann Arbor 淋巴區域劃分圖</b>——第 52 頁為一般性淋巴系統解剖圖，第 61 頁為 B／T 細胞惡性度分類表（Hiddemann W et al. Blood 1996;88:4085），皆非區域圖。<b>故下表僅列出指引正文本身點名的淋巴／淋巴組織部位</b>（第 3 頁理學檢查與檢查項目、第 39 頁不良因子、第 49 頁分期定義、第 52 頁解剖圖），並標註各部位相對於橫膈膜的位置。<b>完整且正式的 Ann Arbor 區域劃分請參 Ann Arbor 原始共識（Carbone 1971）與 ILROG 之照野定義（Specht 2014、Wirth 2020）</b>，本頁未予轉載。<br><b>為何區域數目要數清楚</b>：<b>1 個區域＝第一期、同側 ≥2 個＝第二期、跨橫膈膜＝第三期</b>；此外<b>「>3 個淋巴區域」是第一、二期何杰金氏淋巴瘤的不良因子</b>（第 39 頁），而<b>「≥3 個淋巴結部位、各 ≥3cm」是濾泡型淋巴瘤 GELF 治療適應症的第一條</b>（第 19 頁）——同一個「數區域」的動作，在兩個病別各自改變治療決策。',
+  node_num_label:'部位 Site',
+  // [部位, 名稱（中文＋英文）, 橫膈位置, 備註]
+  nodes:[
+    ['Waldeyer','華氏環 Waldeyer ring（扁桃腺、舌根、鼻咽）','橫膈上','<b>指引第 3 頁明列</b>為理學檢查必須注意之 node-bearing region。屬<b>淋巴組織</b>而非淋巴組織外器官，受侵犯時不加 E 後綴。'],
+    ['頸／鎖骨上','頸部、鎖骨上 Cervical, supraclavicular','橫膈上','指引第 52 頁解剖圖之 cervical lymph nodes；左右各自為獨立區域。'],
+    ['腋下','腋下 Axillary','橫膈上','指引第 52 頁解剖圖之 axillary lymph nodes。<b>接受胸部或腋下放射治療者，療程結束 8–10 年後或年滿 40 歲起需每年乳房篩檢</b>（第 38 頁）。'],
+    ['滑車上','滑車上 Epitrochlear','橫膈上','<b>指引第 3 頁與華氏環並列點名</b>——這兩處是理學檢查最常被漏掉、卻會改變期別的部位。'],
+    ['縱膈','縱膈 Mediastinal','橫膈上','指引第 52 頁之 thoracic lymph nodes。<b>縱膈腫塊 > 胸廓內徑 1／3（CXR）即屬 bulky</b>（第 39 頁），直接改變第一、二期的治療強度。'],
+    ['肺門','肺門 Hilar','橫膈上',''],
+    ['脾臟','脾臟 Spleen','橫膈下','<b>屬淋巴組織，不是淋巴組織外器官</b>：指引第 49 頁定義「橫膈膜上淋巴結<b>合併脾臟</b>侵犯」即為<b>第三期</b>。脾腫大另為濾泡型 GELF 適應症之一（第 19 頁）與脾邊緣區淋巴瘤之治療指徵（第 28 頁）。'],
+    ['主動脈旁','主動脈旁／腹膜後 Para-aortic, retroperitoneal','橫膈下','指引第 52 頁之 lumbar lymph nodes。'],
+    ['腸繫膜','腸繫膜 Mesenteric','橫膈下','指引第 52 頁之 mesenteric lymph nodes。'],
+    ['髂','髂 Iliac','橫膈下','指引第 52 頁之 iliac lymph nodes。'],
+    ['腹股溝／股','腹股溝、股 Inguinal, femoral','橫膈下','指引第 52 頁之 inguinal lymph nodes。'],
+    ['膕','膕 Popliteal','橫膈下','指引第 52 頁之 popliteal lymph nodes。'],
+    ['〔骨髓〕','骨髓 Bone marrow','—','<b>不是淋巴區域</b>：受侵犯即為<b>第四期</b>（第 49 頁）。指引第 3 頁列 bone marrow biopsy + aspirate + flow cytometry 為常規（<b>侷限期 DLBCL 可省略</b>）；何杰金氏淋巴瘤依 Lugano 可由 PET-CT 取代骨髓切片。'],
+    ['〔中樞神經〕','腦、腦脊髓液 Brain, CSF','—','<b>不是淋巴區域</b>：受侵犯即為<b>第四期</b>（第 49 頁）。亦為 NCCN-IPI 之淋巴組織外部位之一。'],
+    ['〔肝〕','肝臟 Liver','—','<b>不是淋巴區域</b>：受侵犯即為<b>第四期</b>（第 49 頁）。'],
+    ['〔肺〕','肺臟 Lung','—','<b>不是淋巴區域</b>：<b>多處</b>肺臟侵犯為<b>第四期</b>（第 49 頁）；單一且與淋巴結直接相連者可為 E 病灶。'],
+  ],
+  refs:[
+    ['台大醫院淋巴癌診療指引 版次 17（NTULYM-G6-2026，2026/06/16 第 87 次癌症醫療品質委員會修訂通過）', PS('NTUH lymphoma clinical guideline')],
+    ['Lugano 分期與療效評估共識（本頁分期依據）— Cheson BD et al. J Clin Oncol 2014;32:3059-68', PM('25113753')],
+    ['Ann Arbor 分期原始共識 — Carbone PP et al. Cancer Res 1971;31:1860-1', PM('5121694')],
+    ['瀰漫性大 B 細胞淋巴瘤綜述 — Sehn LH, Salles G. N Engl J Med 2021;384:842-858', PM('33657296')],
+    ['POLARIX（polatuzumab vedotin 併 R-CHP 用於未治療之 DLBCL）— Tilly H et al. N Engl J Med 2022;386:351-363', PM('34904799')],
+    ['Tucidinostat 併 R-CHOP 用於 MYC／BCL2 雙表現 DLBCL — Xu PP et al. JAMA 2026', PM('42018318')],
+    ['STARGLO（glofitamab 併 GemOx 用於復發或難治 DLBCL）— Abramson JS et al. Lancet 2024;404:1940-1954', PM('39550172')],
+    ['ROSEWOOD（zanubrutinib 併 obinutuzumab 用於復發或難治濾泡型淋巴瘤）— Zinzani PL et al. J Clin Oncol 2023;41:5107-5117', PM('37506346')],
+    ['HD21（PET 導引之 BrECADD 對照 eBEACOPP 用於晚期典型何杰金氏淋巴瘤）— Borchmann P et al. Lancet 2024;404:341-352', PM('38971175')],
+    ['EORTC／LYSA／FIL H10 試驗長期追蹤（侷限期何杰金氏淋巴瘤之反應導引治療）— Federico M et al. J Clin Oncol 2024;42:19-25', PM('37967311')],
+    ['原發中樞神經淋巴瘤診療指引（EANO）— Hoang-Xuan K et al. Lancet Oncol 2015;16:322-332', PM('26149884')],
+    ['ILROG 何杰金氏淋巴瘤放射治療照野與劑量指引 — Specht L et al. Int J Radiat Oncol Biol Phys 2014;89:854-862', PM('23790512')],
+    ['ILROG 成人淋巴瘤 involved-site 放射治療指引綜述 — Wirth A et al. Int J Radiat Oncol Biol Phys 2020;107:909-933', PM('32272184')],
+    ['FORT（和緩型淋巴瘤 4 Gy 對照 24 Gy 放射治療）— Hoskin PJ et al. Lancet Oncol 2014;15:457-463', PM('24572077')],
+  ],
+},
+
 /* ============================================================
    尚未整合內容的癌別（wip:true）
    ------------------------------------------------------------
@@ -2432,5 +2529,7 @@ window.CANCERS = [
    整編某一癌別時：補齊 edition／t／n／m／stage／node／tx／refs 後，
    移除該條目的 wip 旗標即可自動改走正常的三分頁流程。
    ============================================================ */
-{ id:'heme', zh:'淋巴血癌', en:'Lymphoma / Leukemia',      group:'軟組織／血液淋巴 Soft Tissue & Hema',     wip:true },
+// 原 heme（淋巴血癌）已拆分：血癌（AML）依台大血癌診療指引整編完成，見上方 id:'aml'；
+// 淋巴癌依台大淋巴癌診療指引版次 17 整編完成，見上方 id:'lymphoma'。
+// 目前無 wip 癌別；新增未整編之癌別時直接於此處補列。
 ];
