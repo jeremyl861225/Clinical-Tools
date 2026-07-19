@@ -99,6 +99,17 @@
     };
   }
 
+  /* 計分工具一律以英文名呈現：分數名本來就是英文，首頁卡片上少數帶中文說明的
+     （AAS 成人闌尾炎分數、Forrest 分類…）在導覽列裡只會讓一整欄看起來忽中忽英。
+     作法是去掉中日文字與括號註記，剩下的縮寫即為顯示名；整個名稱都是中文時退回英文全名。 */
+  function asciiName(zh, en) {
+    var s = zh.replace(/[（(][^）)]*[）)]/g, ' ')                       // 括號註記
+      .replace(/[\u2E80-\u9FFF\uF900-\uFAFF\uFF01-\uFF60]/g, ' ')   // 中日文字與全形標點
+      .replace(/\s+/g, ' ').trim()
+      .replace(/[·・、,]+$/, '').trim();
+    return s || en;
+  }
+
   // 分類與排序一律照首頁的四張方磚：連 #sec-xxx 者取該區塊內所有工具卡，
   // 連 .html 者取 HUB_PAGES 的細目（無細目就是方磚本身那一頁）。
   function readGroups(doc) {
@@ -111,9 +122,12 @@
 
       if (href.charAt(0) === '#') {
         var sec = doc.getElementById('sec-' + href.slice(1));
+        var english = href === '#scores';        // 計分工具：見 asciiName
         if (sec) Array.prototype.forEach.call(sec.querySelectorAll('.tool-card'), function (c) {
           var it = cardItem(c);
-          if (it) items.push(it);
+          if (!it) return;
+          if (english) it.zh = asciiName(it.zh, it.en);
+          items.push(it);
         });
       } else if (/\.html$/.test(href)) {
         var listed = HUB_PAGES[href];
