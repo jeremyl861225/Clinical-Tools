@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>憩室炎分期對照 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-divstage">
+  <div class="app-header">
+    <div><div class="eyebrow">Diverticulitis Staging</div><h1>憩室炎分期對照</h1><div class="sub">Modified Hinchey（Wasvary／Kaiser CT）與 WSES 2020 CT 分類</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="ds_back_div" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/diverticulitis.html'">← 返回憩室炎決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-divstage'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box">
+    <summary>三個世代的分期沿革與互不等價之處 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 沿革（常被張冠李戴）：</b><br>
+      ・<b>Hinchey 1978</b>：依<b>術中所見</b>分四期（I 結腸旁膿瘍／蜂窩組織炎、II 骨盆或腹腔內或後腹腔膿瘍、III 瀰漫化膿性腹膜炎、IV 瀰漫糞性腹膜炎）。<b>沒有 0 期，也沒有 Ia/Ib</b>。<br>
+      ・<b>Wasvary 1999</b>：加入 <b>0、Ia、Ib</b> 的細分。<br>
+      ・<b>Kaiser 2005</b>：為上述各期<b>掛上 CT 判讀準則</b>。<br>
+      正確的說法是「Wasvary 加分期、Kaiser 加 CT 準則」，兩者常被混稱為 modified Hinchey。<br><br>
+      <b>⚠ Wasvary 1999 的摘要裡沒有這套分期</b>——該文摘要是 42 人的同次住院切除 vs 擇期切除比較，分期只出現在內文。若你依摘要查核會誤判此引用有誤，實際上沒有。<br><br>
+      <b>⚠ 「4 公分」不是 modified Hinchey 的內容。</b>部分放射科來源在 Ib 與 II 之間加上「膿瘍 &lt;4 cm vs &gt;4 cm」，但 modified Hinchey 的 Ib 與 II 是<b>依位置</b>（結腸旁／腸繫膜 vs 骨盆／遠處／後腹腔）而非依大小區分。4 公分來自 WSES 分類與膿瘍引流文獻。本頁不在 modified Hinchey 內實作大小規則。<br><br>
+      <b>◆ 兩套不可一對一換算，主要有兩處：</b><br>
+      ・<b>WSES 1A ≠ Hinchey Ia</b>：WSES 1A <b>要求有腸外氣泡或少量液體</b>（即已穿孔但被侷限），Hinchey Ia 並不要求有氣體。<br>
+      ・<b>WSES 2A 橫跨 Hinchey Ib 與 II</b>：WSES 依<b>大小</b>（&gt;4 cm）分，Hinchey 依<b>位置</b>分——一個 &gt;4 cm 的結腸旁膿瘍是 WSES 2A，但仍是 Hinchey <b>Ib</b>。<br>
+      故本頁兩套<b>各自獨立輸入</b>，不自動換算。<br><br>
+      <b>◆ WSES 2020 並未宣稱取代 Hinchey：</b>原文明言「現有多種分類系統，<b>沒有任何一種被確證在預測病人預後上更優越，因此無法給出特定建議</b>」。WSES 只是以自己的系統組織其處置建議。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">Modified Hinchey（Wasvary 分期 ＋ Kaiser CT 準則）</div>
+    <div class="field-row"><label>分期</label>
+      <select id="ds_hin" style="flex:1;">
+        <option value="0">0 — 輕度臨床憩室炎</option>
+        <option value="Ia">Ia — 侷限之結腸旁發炎／蜂窩組織炎</option>
+        <option value="Ib">Ib — 結腸旁或腸繫膜膿瘍</option>
+        <option value="II">II — 骨盆、遠處腹腔內或後腹腔膿瘍</option>
+        <option value="III">III — 瀰漫化膿性腹膜炎</option>
+        <option value="IV">IV — 瀰漫糞性腹膜炎</option>
+      </select>
+    </div>
+    <div class="metric-label" style="color:var(--accent); margin-top:10px;">對應 CT 所見</div>
+    <div id="ds_hin_ct" class="note" style="margin-top:2px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">WSES 2020 CT 分類</div>
+    <div class="field-row"><label>分期</label>
+      <select id="ds_wses" style="flex:1;">
+        <option value="0">0 — 憩室、腸壁增厚、結腸旁脂肪密度增加（單純型）</option>
+        <option value="1A">1A — 結腸旁氣泡或少量結腸旁液體，無膿瘍（距發炎腸段 5 cm 內）</option>
+        <option value="1B">1B — 膿瘍 ≤4 cm</option>
+        <option value="2A">2A — 膿瘍 &gt;4 cm</option>
+        <option value="2B">2B — 遠處游離氣體（距發炎腸段 &gt;5 cm）</option>
+        <option value="3">3 — 瀰漫液體，無遠處游離氣體</option>
+        <option value="4">4 — 瀰漫液體，合併遠處游離氣體</option>
+      </select>
+    </div>
+    <div class="metric-label" style="color:var(--accent); margin-top:10px;">分類位置</div>
+    <div id="ds_wses_note" class="note" style="margin-top:2px;"></div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">Modified Hinchey</div><div class="metric-value big" id="ds_hin_out">0</div></div>
+      <div><div class="metric-label">WSES 2020</div><div class="metric-value big" id="ds_wses_out">0</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:12px;">兩套對照</div>
+    <div id="ds_cmp" style="font-size:15px; margin-top:2px;"></div>
+    <table class="ref">
+      <tr><th>WSES</th><th>約略對應 Modified Hinchey</th></tr>
+      <tr><td>0</td><td>0 / Ia（WSES 0 已含脂肪條紋，橫跨兩期）</td></tr>
+      <tr><td>1A</td><td>Ia ※ 不等價：WSES 1A 需有腸外氣體或液體</td></tr>
+      <tr><td>1B</td><td>Ib</td></tr>
+      <tr><td>2A</td><td>Ib 或 II ※ 不等價：WSES 依大小、Hinchey 依位置</td></tr>
+      <tr><td>2B</td><td>II–III（遠處氣體無乾淨對應）</td></tr>
+      <tr><td>3</td><td>III</td></tr>
+      <tr><td>4</td><td>IV</td></tr>
+    </table>
+    <div class="risk-note">此對照表僅供閱讀他院報告時參考，<b>不可用於自動換算</b>。標示 ※ 的兩列是實質不等價之處：以此換算會給出錯誤分期。WSES 2020 本身亦聲明無任何分類系統經證實預後預測較優。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/735943/" target="_blank" rel="noopener" class="ref-link">Hinchey EJ, Schaal PG, Richards GK. Treatment of perforated diverticular disease of the colon. Adv Surg. 1978;12:85-109.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/10399971/" target="_blank" rel="noopener" class="ref-link">Wasvary H, et al. Same hospitalization resection for acute diverticulitis. Am Surg. 1999;65(7):632-635.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15784040/" target="_blank" rel="noopener" class="ref-link">Kaiser AM, et al. The management of complicated diverticulitis and the role of computed tomography. Am J Gastroenterol. 2005;100(4):910-917.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32381121/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2020 update of the WSES guidelines for the management of acute colonic diverticulitis in the emergency setting. World J Emerg Surg. 2020;15(1):32.</a></footer>
+</div>
+</div>
+<script>
+var DS_HIN_CT={
+  '0'  :'憩室存在，腸壁可增厚或不增厚；<b>無</b>結腸旁脂肪條紋。',
+  'Ia' :'腸壁增厚<b>合併</b>結腸旁軟組織變化／脂肪條紋；無成形之液體聚積。',
+  'Ib' :'腸壁增厚＋結腸旁脂肪條紋，<b>另有</b>結腸旁或腸繫膜膿瘍。',
+  'II' :'遠處膿瘍（骨盆或腸間）。',
+  'III':'游離液體／游離氣體，<b>無</b>可辨識之交通處。',
+  'IV' :'游離液體／游離氣體，<b>合併對比劑外溢</b>。'
+};
+var DS_WSES_NOTE={
+  '0' :'單純型 Uncomplicated。',
+  '1A':'複雜型 Complicated —— 已穿孔但被侷限。',
+  '1B':'複雜型 Complicated。',
+  '2A':'複雜型 Complicated。',
+  '2B':'複雜型 Complicated。',
+  '3' :'複雜型 Complicated。',
+  '4' :'複雜型 Complicated。'
+};
+var DS_MAP={'0':'0 / Ia','1A':'Ia','1B':'Ib','2A':'Ib 或 II','2B':'II–III','3':'III','4':'IV'};
+
+function dsCalc(){
+  const h=document.getElementById('ds_hin').value;
+  const w=document.getElementById('ds_wses').value;
+  document.getElementById('ds_hin_out').textContent=h;
+  document.getElementById('ds_wses_out').textContent=w;
+  document.getElementById('ds_hin_ct').innerHTML=DS_HIN_CT[h];
+  document.getElementById('ds_wses_note').innerHTML=DS_WSES_NOTE[w];
+
+  let msg='WSES '+w+' 約略對應 modified Hinchey <b>'+DS_MAP[w]+'</b>。';
+  if(w==='1A') msg+='<br>※ <b>此列不等價</b>：WSES 1A 要求有結腸旁氣泡或液體（已穿孔但侷限），而 Hinchey Ia 不要求有氣體。單純的蜂窩組織炎是 Hinchey Ia，但<b>不</b>符合 WSES 1A，應歸 WSES 0。';
+  if(w==='2A') msg+='<br>※ <b>此列不等價</b>：WSES 2A 只看膿瘍 &gt;4 cm，Hinchey 則看位置。一個 &gt;4 cm 的<b>結腸旁</b>膿瘍是 WSES 2A，但仍是 Hinchey <b>Ib</b>（不是 II）。';
+  if(w==='2B') msg+='<br>※ 遠處游離氣體在 Hinchey 中沒有乾淨的對應階，通常被視為介於膿瘍與瀰漫腹膜炎之間。';
+  const declared=DS_MAP[w];
+  if(declared.indexOf(h)<0) msg+='<br><b>目前兩邊的選擇彼此不相容</b>（你選的 Hinchey '+h+' 不在 WSES '+w+' 的對應範圍內）。若兩者皆為實際判讀所得，請以影像原始所見為準，並注意這正是兩套系統不等價的表現。';
+  document.getElementById('ds_cmp').innerHTML=msg;
+}
+document.querySelectorAll('#view-divstage select').forEach(el=>el.addEventListener('change',dsCalc));
+dsCalc();
+if(location.search.indexOf('from=div')>=0){var _b=document.getElementById('ds_back_div'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

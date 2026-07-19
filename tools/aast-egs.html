@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAST EGS 統一分級 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-aastegs">
+  <div class="app-header">
+    <div><div class="eyebrow">Uniform Anatomic Severity Grading</div><h1>AAST EGS 統一分級</h1><div class="sub">16 個緊急一般外科疾病之解剖嚴重度 Grade I–V（Tominaga 2016）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-aastegs'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box">
+    <summary>分級哲學、驗證狀態與使用限制 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 分級哲學（原文）：</b>「These grades range from Grade I through Grade V, reflecting an escalating clinical progression from mild disease limited within the organ itself to severe disease that is widespread.」——即由<b>侷限於器官本身的輕症</b>遞進到<b>廣泛播散的重症</b>。<br><br>
+      <b>◆ 四個判定欄位：</b>臨床（Clinical）、影像（Imaging）、術中（Operative）、病理（Pathologic）。<b>部分疾病的部分欄位原表即為 N/A</b>，本頁照實顯示 N/A，不自行填補。<br><br>
+      <b>◆ 判定準則保留原文英文</b>：這四欄是診斷用的原始措辭，翻譯過程容易產生語意漂移，故僅將各級的「描述」譯為中文，準則欄位維持 AAST 原文。<br><br>
+      <b>⚠ 使用限制一：實際族群嚴重偏向 I–II 級。</b>多個驗證研究中 58–94% 落在 Grade I–II。此量表的實際行為<b>比較接近二分（單純 vs 複雜）而非真正的五級序位</b>。Scott 2021 的建議是：即使只二分為「較單純／較複雜」，仍具價值。<br><br>
+      <b>⚠ 使用限制二：16 個疾病中有 7 個從未經過驗證</b>——食道穿孔、骨盆腔發炎、肛周膿瘍、肋膜腔感染、手術部位感染、疝氣、腸道動脈缺血（僅間接出現於混合世代）。這些條目請視為<b>描述性共同語言</b>，不可作為預後推論。<br><br>
+      <b>⚠ 使用限制三：已知表現不佳者。</b><br>
+      ・<b>急性膽囊炎</b>：Schuster 2021（前瞻多中心 n=861）結論為「鑑別力中等，與 TG18 相近，但<b>普遍低於 Parkland 分級</b>，應先修訂再廣泛使用」。<br>
+      ・<b>腸阻塞</b>：McFadden 2022 發現<b>非單調</b>——Grade II 與 30 天死亡相關（OR 7.92），Grade III–V 反而較低（OR 3.56）；與 30 天再入院無關。<br>
+      ・<b>消化性潰瘍穿孔</b>：在美國族群有效，<b>在南非族群無效</b>。<br>
+      ・<b>乳房感染</b>：Mayo κ=1.0，南非 κ=0.34。<br>
+      ・<b>腸道吻合（RESHAPES）</b>：吻合併發症與死亡率<b>與分級無關</b>。<br>
+      ・<b>行政／申報資料</b>：Scott 2021（NIS，n=1,090 萬）——「沒有任何一個疾病能對應到五個不同的嚴重度等級，且分級上升與預後之關聯在各疾病間並不一致。」<br><br>
+      <b>◆ 版本說明：</b>16 個疾病由 Shafi 2014（8 個消化道疾病）與 Crandall 2014（另 8 個）合併，Tominaga 2016 整併為四欄準則。<b>此後未再有增修</b>。近年 AAST 對胰臟（2024）、腎臟（2025）、大腸（2020）的修訂屬<b>創傷 Organ Injury Scale，是另一套系統</b>，切勿混用。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="field-row"><label>疾病</label>
+      <select id="ae_dz" style="flex:1;"></select>
+    </div>
+    <div class="field-row"><label>分級</label>
+      <select id="ae_gr" style="flex:1;">
+        <option value="0">Grade I</option>
+        <option value="1">Grade II</option>
+        <option value="2">Grade III</option>
+        <option value="3">Grade IV</option>
+        <option value="4">Grade V</option>
+      </select>
+    </div>
+    <div class="note" id="ae_val"></div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">描述 Description</div>
+    <div class="metric-value" id="ae_desc" style="font-size:19px;"></div>
+    <div class="metric-label" style="margin-top:12px;">判定準則（AAST 原文）</div>
+    <table class="ref">
+      <tr><th style="width:22%;">Clinical</th><td id="ae_c"></td></tr>
+      <tr><th>Imaging</th><td id="ae_i"></td></tr>
+      <tr><th>Operative</th><td id="ae_o"></td></tr>
+      <tr><th>Pathologic</th><td id="ae_p"></td></tr>
+    </table>
+    <div class="risk-note" id="ae_note"></div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/27257696/" target="_blank" rel="noopener" class="ref-link">Tominaga GT, et al. The AAST grading scale for 16 emergency general surgery conditions. J Trauma Acute Care Surg. 2016;81(3):593-602.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24553565/" target="_blank" rel="noopener" class="ref-link">Shafi S, et al. Measuring anatomic severity of disease in emergency general surgery. J Trauma Acute Care Surg. 2014;76(3):884-887.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25494421/" target="_blank" rel="noopener" class="ref-link">Crandall ML, et al. Application of a uniform anatomic grading system to measure disease severity in eight emergency general surgical illnesses. J Trauma Acute Care Surg. 2014;77(5):705-708.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32371835/" target="_blank" rel="noopener" class="ref-link">Schuster KM, et al. Multicenter validation of the AAST grading scale for acute cholecystitis. J Trauma Acute Care Surg. 2021;90(1):87-96.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33093292/" target="_blank" rel="noopener" class="ref-link">Scott JW, et al. Evaluating the AAST EGS grading system using administrative data. J Trauma Acute Care Surg. 2021;90(3):500-507.</a></footer>
+</div>
+</div>
+<script>
+/* 資料為 AAST「Data Dictionaries for AAST Grading System for EGS Conditions」全 16 條目，
+   四欄準則保留原文；N/A 者為原表即無該欄，非本頁遺漏。
+   val：驗證狀態，用於提醒使用者哪些條目不可作預後推論。 */
+var AAST=[
+{k:'A',zh:'急性闌尾炎',en:'Acute Appendicitis',img:'CT',val:'ok',
+ g:[['完整但急性發炎之闌尾','Pain, leukocytosis and right lower quadrant (RLQ) tenderness','Inflammatory changes localized to appendix +/- appendiceal dilation +/- contrast non-filling','Acutely inflamed appendix, intact','Presence of neutrophils at the base of crypts, submucosa +/- in muscular wall'],
+    ['完整但壞疽之闌尾','Pain, leukocytosis and RLQ tenderness','Appendiceal wall necrosis with contrast non-enhancement +/- air in appendiceal wall','Gangrenous appendix, intact','Mucosa and muscular wall digestion; not identifiable on H&E stain'],
+    ['闌尾穿孔合併局部污染','Pain, leukocytosis and RLQ tenderness','Above with local periappendiceal fluid +/- contrast extravasation','Above, with evidence of local contamination','Gross perforation or focal dissolution of muscular wall'],
+    ['闌尾穿孔合併闌尾周圍蜂窩組織炎或膿瘍','Pain, leukocytosis and RLQ tenderness; may have palpable mass','Regional soft tissue inflammatory changes, phlegmon or abscess','Above, with abscess or phlegmon in region of appendix','Gross perforation'],
+    ['闌尾穿孔合併瀰漫性腹膜炎','Generalized peritonitis','Diffuse abdominal or pelvic inflammatory changes +/- free intra-peritoneal fluid or air','Above, with addition of generalized purulent contamination away from appendix','Gross perforation']]},
+{k:'B',zh:'乳房感染',en:'Breast Infections',img:'US／CT',val:'poor:Mayo κ=1.0，但南非族群 κ=0.34。原作者群結論：於中低收入國家之較重症病人「需進一步修訂才適用」。',
+ g:[['乳房蜂窩組織炎','Erythema, induration, edema, pain, tenderness','Inflammation without fluid collection','N/A','N/A'],
+    ['單純膿瘍','Single, small abscess without loculations; not involving the nipple/areolar complex','Single well circumscribed fluid collection within breast tissue, not involving nipple/areolar complex','Single, well circumscribed fluid collection within breast tissue, not involving nipple/areola complex','Acute inflammation limited to breast tissue'],
+    ['複雜膿瘍','Large abscess with multiple loculations, multiple abscesses, or abscess involving nipple/areola complex; lymphadenopathy','Multiple separate fluid collections or single large collection with multiple loculations within breast tissue or involvement of nipple/areola complex','Multiple separate fluid collections or single large collection with multiple loculations within breast tissue, or involvement of nipple/areola complex; enlarged lymph nodes','Acute inflammation limited to breast tissue with cultures positive for organism if available'],
+    ['乳房膿瘍延伸至腋下','Breast abscess with ipsilateral lymphadenopathy, thrombophlebitis, lymphangitis','Fascial plane thickening with enhancement; evidence of lymphadenopathy on US or CT','Above, plus axillary fluid collections, extension of inflammatory changes well beyond the abscesses','Acute inflammation of breast tissue and axillary lymph nodes with cultures positive for organisms'],
+    ['乳房膿瘍侵及胸壁','Above, plus erosion into chest wall muscles or ribs or pleural space, or necrotizing fasciitis','Above, plus inflammatory changes in the chest wall muscles, ribs or pleural space','Above, with erosion into chest wall muscles or ribs or pleural space, or necrotizing fasciitis','Acute inflammation involving chest wall, fascia, muscles or ribs with or without necrosis and cultures positive for organisms']]},
+{k:'C',zh:'急性膽囊炎',en:'Acute Cholecystitis',img:'CT／US／HIDA',val:'poor:Schuster 2021（前瞻多中心 n=861）：鑑別力中等，與 TG18 相近但<b>低於 Parkland 分級</b>，「應先修訂再廣泛使用」。本工具箱另有 Parkland／Nassar 頁。',
+ g:[['急性膽囊炎',"RUQ or epigastric pain; Murphy's Sign; leukocytosis",'Wall thickening; distention; gallstones or sludge; pericholecystic fluid; non-visualization of gallbladder (GB) on HIDA scan','Inflammatory changes localized to GB; wall thickening; distention; gallstones','Acute inflammatory changes in the GB wall without necrosis or pus'],
+    ['膽囊積膿、壞疽性或氣腫性膽囊炎',"RUQ or epigastric pain; Murphy's Sign; leukocytosis",'Above, plus air in GB lumen, wall or in the biliary tree; focal mucosal defects without frank perforation','Distended GB with pus or hydrops; necrosis or gangrene of wall; not perforated','Above, plus pus in the GB lumen; necrosis of GB wall; intramural abscess; epithelial sloughing; no perforation'],
+    ['膽囊穿孔合併局部污染','Localized peritonitis in RUQ','HIDA with focal transmural defect, extraluminal fluid collection or radiotracer but limited to RUQ','Perforated GB wall (non-iatrogenic) with bile outside the GB but limited to RUQ','Necrosis with perforation of the GB wall (non-iatrogenic)'],
+    ['膽囊穿孔合併膽囊周圍膿瘍或腸道瘻管','Localized peritonitis at multiple locations; abdominal distention with symptoms of bowel obstruction','Abscess in RUQ outside GB; bilio-enteric fistula; gallstone ileus','Pericholecystic abscess; bilio-enteric fistula; gallstone ileus','Necrosis with perforation of the GB wall (non-iatrogenic)'],
+    ['膽囊穿孔合併瀰漫性腹膜炎','Above, with generalized peritonitis','Free intra-peritoneal bile','Above, plus generalized peritonitis','Necrosis with perforation of the GB wall (non-iatrogenic)']]},
+{k:'D',zh:'急性大腸憩室炎',en:'Acute Diverticulitis of the Colon',img:'CT',val:'ok:Shafi 2016 多中心 n=1,105，κ=0.81，不良事件由 13%（I）升至 50%（V）；Choi 2020 顯示優於 modified Hinchey。',
+ g:[['大腸發炎','Pain; leukocytosis; minimal or no tenderness','Mesenteric stranding; colon wall thickening','N/A','N/A'],
+    ['大腸微穿孔或結腸旁蜂窩組織炎、無膿瘍','Local tenderness (single or multiple areas) without peritonitis','Pericolic phlegmon; foci of air (single or multiple); no abscess','Pericolic phlegmon with no abscess','Inflamed colon with microscopic perforation'],
+    ['侷限之結腸旁膿瘍','Localized peritonitis','Pericolic abscess','Pericolic abscess','Inflamed colon with perforation'],
+    ['遠處和／或多發膿瘍','Localized peritonitis at multiple locations','Abscess or phlegmon away from the colon','Abscess or phlegmon away from the colon','Inflamed colon with perforation'],
+    ['大腸自由穿孔合併瀰漫性腹膜炎','Generalized peritonitis','Free air and free fluid','Perforation with generalized fecal and purulent contamination','Inflamed colon with perforation']]},
+{k:'E',zh:'食道穿孔',en:'Esophageal Perforation',img:'影像和／或內視鏡',val:'none',
+ g:[['黏膜撕裂','Dysphagia; chest pain, upper abdominal pain or back pain; breathing problems','No abnormality or possible intramural air','Preservation of normal anatomy with dissection required to identify inflammation','Partial thickness or mucosal tear'],
+    ['全層撕裂、發炎輕微','Above, with subcutaneous emphysema','Esophageal thickening','Obvious inflammation','Full thickness perforation with minimal inflammation without mediastinitis or peritonitis'],
+    ['全層撕裂合併侷限膿瘍','Above, with vomiting and ill-appearing','Air in prevertebral planes','Presence of inflammation and stigmata of perforation with contained collection','Mediastinal inflammation or emphysema'],
+    ['食道壁壞死','As above','Mediastinal widening','Inflammation; necrosis of the esophageal wall with localized contamination','Severe mediastinal necrosis'],
+    ['膿胸、腹膜炎、縱膈腔炎','As above','Pleural effusion','Perforation with disseminated contamination; erosion into adjacent structures (chest, mediastinum, or abdomen)','Pleural invasion or empyema']]},
+{k:'F',zh:'疝氣（內疝或腹壁疝）',en:'Hernias (Internal or Abdominal wall)',img:'CT',val:'none',
+ g:[['可回納之疝氣','Palpable, reducible hernia without fever or leukocytosis','Hernia visible on CT','Abdominal wall defect present','N/A'],
+    ['嵌頓性疝氣、無腸道缺血','Local tenderness with non-reducible palpable hernia. No fever of leukocytosis.','Hernia visible on CT','Abdominal wall defect present with abdominal contents lodged in defect; healthy appearing viscera','N/A'],
+    ['嵌頓合併腸道缺血但仍存活','Local tenderness with non-reducible palpable hernia; may be associated with fever, tachycardia, or leukocytosis','Hernia visible on CT with local stranding or inflammatory changes','Abdominal wall defect present with abdominal contents lodged in defect; visibly inflamed but viable appearing viscera','N/A'],
+    ['嵌頓合併腸道壞疽或穿孔、局部外漏','Local tenderness with guarding, non-reducible palpable hernia with associated skin changes such as erythema','Hernia visible on CT with local stranding or inflammatory changes as well as contained fluid collection','Abdominal wall defect present with abdominal contents lodged in defect; gangrenous or perforated abdominal contents','Local necrosis or perforation'],
+    ['嵌頓合併穿孔與瀰漫腹腔污染','Diffuse abdominal tenderness with guarding or rebound; non-reducible palpable hernia with associated skin changes such as erythema','Hernia visible on CT with local stranding or inflammatory changes as well as diffuse fluid collections and inflammation','Abdominal wall defect present with abdominal contents lodged in defect; gangrenous or perforated abdominal contents with diffuse contamination','Local necrosis or perforation']]},
+{k:'G',zh:'感染性大腸炎',en:'Infectious Colitis',img:'CT',val:'unknown',
+ g:[['黏膜病變合併培養或實驗室確認陽性','Diarrhea and/or abdominal pain with positive stool cultures or toxin assays; inflamed mucosa on endoscopy','Normal CT','Normal colon','Mucosal inflammatory changes on biopsy, positive stool cultures or toxin assays'],
+    ['影像見腸壁增厚或內視鏡見偽膜','Diarrhea and/or abdominal pain, and/or abdominal tenderness with pseudomembranes on endoscopy','Localized colonic wall thickening','Localized thickened but otherwise normal colon','Transmural colonic inflammation'],
+    ['腸壁增厚合併腹水、瀰漫大腸擴張或融合性偽膜','Abdominal pain and tenderness and/or distension; coalescing pseudomembranes by endoscopy','Diffuse colonic thickening or localized thickening and free intra-abdominal fluid','Diffusely thickened colon or localized thickening with free intra-abdominal fluid','Transmural colonic inflammation'],
+    ['侷限之大腸壞死，合併或不合併穿孔','Abdominal pain with peritonitis and mucosal necrosis by endoscopy','Colonic thickening with free fluid +/- evidence of perforation or abscess','Colonic thickening with localized or discontinuous transmural necrosis or ischemia with or without perforation or abscess','Transmural colonic inflammation with areas of necrosis'],
+    ['瀰漫全層大腸壞死，合併或不合併穿孔','Abdominal pain with peritonitis mucosal necrosis by endoscopy','Colonic thickening with free fluid +/- evidence of perforation or abscess','Diffuse colonic necrosis with or without perforation or abscess','Transmural colonic inflammation with areas of full thickness necrosis']]},
+{k:'H',zh:'黏連性腸阻塞',en:'Intestinal Obstruction Due to Adhesions',img:'CT',val:'poor:McFadden 2022（n=287）發現<b>非單調</b>——Grade II 與 30 天死亡相關（OR 7.92），Grade III–V 反較低（OR 3.56）；且與 30 天再入院無關。',
+ g:[['部分小腸阻塞','Some flatus; normal or hypoactive bowel sounds; minor abdominal distention','Normal imaging or minimal intestinal distension','Minimal intestinal distension with no evidence of bowel obstruction','N/A'],
+    ['完全小腸阻塞、腸道存活未受損','Minimal to no flatus; hypoactive bowel sounds; distension without generalized tenderness','Intestinal distension with transition point; delayed contrast flow with some distal contrast; no evidence of bowel compromise','Intestinal distention with transition point; no evidence of bowel compromise','N/A'],
+    ['完全阻塞、腸道受損但仍存活','No flatus; absent bowel sounds; abdominal distension with localized tenderness','Intestinal distension with transition point and no distal contrast flow; evidence of complete obstruction or impending bowel compromise','Intestinal distention with impending bowel compromise','N/A'],
+    ['完全阻塞合併腸道壞死或穿孔、局部外漏','Obstipation; abdominal distension with diffuse tenderness, rebound, guarding','Evidence of localized perforation or free air; bowel distension with free air or free fluid','Intestinal distension with localized perforation or free fluid','Bowel gangrene or perforation'],
+    ['小腸穿孔合併瀰漫腹腔污染','Abdominal distension with evidence of peritonitis','Bowel perforation with free air and free fluid','Intestinal distension with perforation, free fluid and evidence of diffuse peritonitis','Bowel gangrene or perforation']]},
+{k:'I',zh:'腸道動脈缺血',en:'Intestinal Arterial Ischemia of the Bowel',img:'CT',val:'none',
+ g:[['腸道缺血但無組織喪失','Anorexia with abdominal pain','Wall thickening and mucosal edema with enhancement','Normal appearing bowel','Ischemia without ulceration'],
+    ['腸道缺血僅見黏膜潰瘍、無全層梗塞','Abdominal pain out of proportion to exam; no peritonitis','Wall thickening and edema without enhancement; mesenteric vessel occlusion','Normal serosa, mucosal ischemia and ulceration','Mucosal ulceration'],
+    ['節段性全層腸梗塞、無穿孔','Abdominal pain and tenderness without peritonitis','Wall thickening without mucosal or intestinal wall enhancement; intramural, portal, or mesenteric pneumatosis','Transmural necrosis without perforation','Transmural necrosis without perforation'],
+    ['節段性全層腸梗塞合併穿孔','Abdominal pain and tenderness with peritonitis','Pneumoperitoneum, contrast extravasation, abscess','Transmural necrosis with perforation and peritonitis','Transmural necrosis with perforation'],
+    ['全腸道梗塞','Abdominal pain and tenderness with peritonitis','Grade III or IV above with involvement of both Superior Mesenteric Artery and Inferior Mesenteric Artery distributions','Pan-intestinal infarction and necrosis with or without perforation','Transmural infarction with perforation']]},
+{k:'J',zh:'急性胰臟炎',en:'Acute Pancreatitis',img:'CT',val:'partial:Younis 2018 僅有「初步效度」；該世代死亡率 1.3%，無法檢驗死亡率鑑別力。',
+ g:[['急性水腫性胰臟炎','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatitis without phlegmon, necrosis, peripancreatic fluid collection or abscess','Edematous pancreas','N/A'],
+    ['胰臟蜂窩組織炎、胰周液體聚積或出血','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Phlegmon or peripancreatic fluid collection or hemorrhage','Pancreatic phlegmon or peripancreatic fluid collection','N/A'],
+    ['無菌性胰臟壞死','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatic necrosis without extraluminal air or abscess','Pancreatic necrosis without purulence or abscess','Gram stain and culture of necrosis negative for organisms'],
+    ['感染性胰臟壞死或膿瘍','Severe midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatic necrosis with extraluminal air or abscess','Pancreatic necrosis with purulence or abscess','Gram stain and culture of necrosis or abscess positive for organisms'],
+    ['胰外延伸之壞死侵及鄰近器官（如大腸壞死）','Severe diffuse midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Extra-pancreatic extension of necrosis involving adjacent organs, such as colonic necrosis','Involvement or necrosis of adjacent organs','Involvement or necrosis of resected adjacent organs']]},
+{k:'K',zh:'骨盆腔發炎疾病',en:'Pelvic Inflammatory Disease',img:'CT／US',val:'none',
+ g:[['子宮頸發炎','None','N/A','N/A','N/A'],
+    ['子宮頸化膿性分泌物','None OR vaginal discharge, vaginal irritation, pelvic discomfort','N/A','N/A','None or positive cervical cultures for organisms'],
+    ['輸卵管、卵巢和／或整個子宮發炎','Above, plus pelvic pain or discomfort; fever','Inflammation of pelvic organ or organs','None, or purulent pelvic fluid on laparoscopy','None or positive cervical cultures for organisms'],
+    ['輸卵管卵巢膿瘍、子宮蓄膿','Severe pelvic pain; fever','Inflammation and abscess of pelvic organ or organs','Drainage of tubo-ovarian abscess or pyometra','None, or positive cervical or pelvic cultures for organisms'],
+    ['瀰漫性骨盆腔敗血症','Generalized peritonitis','Single or multiple abscesses, widespread inflammation','Drainage of fluid collections, complications related to abscesses, such as interloop abscesses causing bowel obstruction; hysterectomy','None, or positive cervical or pelvic cultures for organisms']]},
+{k:'L',zh:'消化性潰瘍穿孔（胃或十二指腸）',en:'Perforated Peptic Ulcer Disease',img:'CT',val:'poor:Hernandez 2018——於美國族群有效，<b>於南非族群無效</b>。',
+ g:[['微穿孔、無腹膜炎','Discomfort in the epigastric region','Extraluminal gas with no associated inflammatory changes','Preservation of normal anatomy with dissection required to identify the perforation','Perforation with minimal bowel wall inflammation'],
+    ['被侷限之穿孔合併局部腹膜炎','Tenderness confined to the right upper quadrant (RUQ)','Extraluminal gas contained in a walled off collection or the retroperitoneum','Presence of inflammation and stigmata of perforation with contained collection','Perforation with bowel wall inflammation'],
+    ['穿孔合併局部腹膜炎與小網膜囊或右上腹液體聚積','Tenderness confined to the RUQ','Perforation with associated collection that is not contained in a anatomic space or abscess but not disseminated','Inflammation and contamination of peritoneal cavity confined to the RUQ','Perforation with bowel wall inflammation'],
+    ['自由穿孔合併腹膜炎','Diffuse peritonitis','Perforation with disseminated air and fluid','Perforation with disseminated succus or purulent peritonitis','Perforation with bowel wall inflammation'],
+    ['穿孔合併十二指腸破壞、可能侵及鄰近器官與瀰漫腹膜炎','Diffuse peritonitis','Perforation with disseminated air and fluid with loss of local anatomic planes at the site of perforation','Perforation with disseminated succus or purulent peritonitis and erosion into adjacent structures','Destructive erosion of involved structures']]},
+{k:'M',zh:'肛周膿瘍',en:'Perirectal Abscess',img:'影像',val:'none',
+ g:[['肛周膿瘍','Anal pain and swelling, erythema, tenderness','N/A','Drainage of localized pus','N/A'],
+    ['括約肌間膿瘍或坐骨直腸窩膿瘍','Fever; perineal pain; diffuse swelling; pain with defecation; palpable fluctuant area on digital examination','Endorectal ultrasound localization; CT may localize collection but MRI preferable','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['馬蹄形膿瘍','Pain with defecation; palpable fluctuant area on digital examination','Endorectal ultrasound localization; CT may localize collection but MRI preferable','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['提肛肌上膿瘍','Fever; may present with sepsis or perineal discomfort; may have no localized clinical signs','Endorectal ultrasound not useful; CT demonstrating collection','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['會陰、臀部等處之壞死性軟組織感染（Fournier 壞疽）','Systemic signs of sepsis, perineal pain and swelling, cellulitis, crepitus, necrotic skin changes','X-ray or CT may demonstrate air in soft tissues. CT or MRI may demonstrate intra-abdominal or retroperitoneal source of infection.','Necrotic skin and soft tissue of perianal, perineal, and genitalia','Above, plus necrotic skin and soft tissue of perianal, perineal, and genitalia']]},
+{k:'N',zh:'肋膜腔感染',en:'Pleural Space Infection',img:'影像',val:'none',
+ g:[['殘留血胸或肋膜積液合併肋膜液培養陽性','Leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid no evidence of loculations','Retained blood, blood clot, or other non-purulent fluid without lung trapping.','Culture of fluid positive for organisms'],
+    ['影像見化膿性、可自由流動之肋膜積液或血胸','Respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid; no evidence of loculation','Retained blood, blood clot, with purulent areas OR completely purulent fluid.','Culture of fluid positive for organisms'],
+    ['纖維化膿期，積液或血胸出現分隔','Respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid, with evidence of loculation','Retained blood, blood clot or other purulent fluid with limited lung trapping','Culture of fluid positive for organisms with areas of fibrous peel'],
+    ['機化期，肺擴張與呼吸力學受限','Severe respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid with evidence of loculation; significantly decreased lung volumes','Retained blood, blood clot or other purulent fluid with diffuse pleural inflammation and lung trapping','Culture of fluid positive for organisms with areas of fibrous peel'],
+    ['自發性向外引流或擴散之胸腔外壞死性軟組織感染','Severe respiratory failure, leukocytosis, fever, chest pain','Above, plus severe inflammatory changes of adjacent abdominal, mediastinal or subcutaneous tissue','Above, with external drainage or necrotizing soft tissue infection of mediastinum, diaphragm or subcutaneous tissues','Above, with necrotic soft tissue from mediastinum, or subcutaneous space']]},
+{k:'O',zh:'軟組織感染',en:'Soft Tissue Infections',img:'CT',val:'ok:Ray-Zack 2018 與 Louis 2019（多中心 n=622，死亡 OR 2.3）均支持。',
+ g:[['蜂窩組織炎','Folliculitis, erysipelas, impetigo, simple cellulitis','Superficial inflammation with no subcutaneous stranding','N/A','Acute inflammation involving epidermis only'],
+    ['表淺壞死或液化','Necrotizing, blistering or bullous cellulitis or skin necrosis','Subcutaneous stranding, but no abscess','N/A','Acute inflammation involving epidermis and dermis'],
+    ['皮下膿瘍','Subcutaneous abscess','Well defined (walled off) subcutaneous fluid collection with surrounding inflammation','Well defined subcutaneous fluid collection','Acute inflammation involving epidermis, dermis, and subcutaneous fat with cultures positive for organisms if available'],
+    ['筋膜炎','Fasciitis','Inflammation extending to fascia; likely air along fascia margins','Clear involvement of fascia with healthy, viable muscle underneath.','Acute inflammation involving epidermis, dermis, subcutaneous fat, and muscular fascia with cultures positive for organisms if available'],
+    ['肌肉壞死','Myonecrosis','Air deep to fascia; likely poor perfusion of muscle','Extension of necrosis into muscle and deeper tissue','Acute inflammation involving epidermis, dermis, subcutaneous fat, muscular fascia, adjacent tissue (muscle, etc.) with cultures positive for organisms if available']]},
+{k:'P',zh:'手術部位感染',en:'Surgical Site Infections',img:'CT',val:'none',
+ g:[['僅侵犯皮膚','One or more of the following: peri-incisional erythema, warmth, pain, swelling without induration, exudate, or wound separation','N/A','N/A','N/A'],
+    ['侵犯皮下組織','One or more of the following: peri-incisional erythema warmth, pain, swelling plus induration or exudate confined to subcutaneous tissues','Soft tissue inflammatory changes, phlegmon or abscess in subcutaneous tissues','Phlegmon or abscess in subcutaneous tissues','Acute inflammation limited to subcutaneous tissues'],
+    ['侵犯筋膜或肌肉層','Subcutaneous abscess or phlegmon extending to muscle or fascia','Regional soft tissue inflammatory changes, phlegmon or abscess involving muscle or fascia','Phlegmon or abscess involving muscle or fascia','Acute inflammation involving muscle or fascia with cultures positive for organism if available'],
+    ['侵犯手術中開啟或操作過之體腔或深部空間','Above, plus separation of fascia or subfascial abscess','Phlegmon or abscess extending deep to muscle or fascia OR fascial dehiscence at surgical site','Phlegmon or abscess extending deep to muscle or fascia OR facial wound dehiscence','Acute inflammation involving fascia and underlying tissues with cultures positive for organism if available'],
+    ['侵犯遠離手術部位之體腔或深部空間','Purulent drainage in a body cavity away from the operative site','Phlegmon or abscess in body cavity or deep space extending deeper than the fascia/deep muscle incision','Phlegmon or abscess in body cavity or deep space extending deeper than the fascial/deep muscle incision','Acute inflammation in body cavity or deep space away extending deeper than the fascial/deep muscle incision with cultures positive for organisms if available']]}
+];
+
+var VAL_TEXT={
+  none:'⚠ <b>此條目從未經過驗證</b>——16 個疾病中有 7 個未有預後驗證研究，本條為其一。可作為描述用的共同語言，<b>不可據以推論預後</b>。',
+  ok:'此條目已有預後驗證支持。',
+  partial:'此條目僅有初步效度。',
+  unknown:'⚠ <b>本頁未能確認此條目的驗證狀態</b>——建立本頁時的文獻查核既未找到支持性驗證，也未將其列入「從未驗證」名單。請勿據以推論預後。'
+};
+
+function aeFill(){
+  const sel=document.getElementById('ae_dz');
+  AAST.forEach(function(d,i){
+    const o=document.createElement('option');
+    o.value=i; o.textContent=d.k+'. '+d.zh+'（'+d.en+'）';
+    sel.appendChild(o);
+  });
+}
+function aeRender(){
+  const d=AAST[parseInt(document.getElementById('ae_dz').value)];
+  const gi=parseInt(document.getElementById('ae_gr').value);
+  const g=d.g[gi];
+  const roman=['I','II','III','IV','V'];
+  document.getElementById('ae_desc').textContent='Grade '+roman[gi]+' — '+g[0];
+  ['ae_c','ae_i','ae_o','ae_p'].forEach(function(id,n){
+    const cell=document.getElementById(id);
+    const v=g[n+1];
+    cell.innerHTML = (v==='N/A') ? '<span style="opacity:.55;">N/A — 原表無此欄</span>' : v;
+  });
+  document.getElementById('ae_val').innerHTML='影像欄位之檢查別：'+d.img+'。';
+  let note = d.val.indexOf(':')>0
+    ? '⚠ <b>此條目已知表現不佳：</b>'+d.val.split(':').slice(1).join(':')
+    : VAL_TEXT[d.val];
+  note += '<br>本量表實際族群嚴重偏向 Grade I–II，行為接近「單純 vs 複雜」的二分，而非真正的五級序位。';
+  document.getElementById('ae_note').innerHTML=note;
+}
+document.querySelectorAll('#view-aastegs select').forEach(function(el){el.addEventListener('change',aeRender);});
+aeFill();
+aeRender();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

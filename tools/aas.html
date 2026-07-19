@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAS 成人闌尾炎分數 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-aas">
+  <div class="app-header">
+    <div><div class="eyebrow">Appendicitis Scoring Tool</div><h1>AAS 成人闌尾炎分數</h1><div class="sub">Adult Appendicitis Score（Sammalkorpi 2014）· 0–24 分</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="aas_back_appy" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/appendicitis.html'">← 返回闌尾炎決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-aas'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box">
+    <summary>使用說明與兩個易踩的陷阱 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 為何用 AAS：</b>AAS 是少數以<b>前瞻性全體就診者</b>（而非僅手術病人）建立的分數，且<b>依性別與年齡調整</b>右下腹壓痛的權重。原始世代中 AUC 0.882，優於 Alvarado 0.790 與 AIR 0.810（差異具統計顯著性）。<br><br>
+      <b>⚠ 陷阱一：CRP 的配分是「非單調」的。</b>症狀 &lt;24 小時者 CRP ≥83 mg/L 只給 <b>1 分</b>（低於 25–83 的 5 分）；症狀 &gt;24 小時者 CRP ≥152 亦只給 <b>1 分</b>。這<b>不是抄錄錯誤</b>，而是原表的設計——極高 CRP 反映的是另一種／更晚期的病態（如穿孔、膿瘍或其他診斷），不再支持「單純急性闌尾炎」的診斷。請勿「修正」成遞增。<br><br>
+      <b>⚠ 陷阱二：AAS 沒有嘔吐項，也沒有食慾不振項。</b>多份二手整理誤植了這兩項。原表 Table 2 確認並無此二者。<br><br>
+      <b>◆ 右下腹壓痛依族群給分不同：</b>男性與 50 歲以上女性給 3 分；16–49 歲女性只給 1 分（該族群婦科疾病的鑑別診斷多，壓痛特異度低）。<br><br>
+      <b>◆ 判讀分段（原文）：</b>0–10 低度可能；11–15 中度；≥16 高度可能。另指出 <b>≥18</b> 為「極高可能」子群（特異度 97.6%、LR+ 11.5），原文認為此群「可直接安排手術，不需進一步影像或追蹤觀察」。≥16 時敏感度 58.0%、特異度 92.7%。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">症狀與病史 Symptoms</div>
+    <label class="item"><input type="checkbox" class="aas-cb" data-w="2"> 右下腹疼痛 <span class="unit">(Pain in RLQ)</span><span class="pt-badge">2分</span></label>
+    <label class="item"><input type="checkbox" class="aas-cb" data-w="2"> 疼痛轉移 <span class="unit">(Pain relocation)</span><span class="pt-badge">2分</span></label>
+
+    <div class="section-title">理學檢查 Signs</div>
+    <div class="field-row"><label>右下腹壓痛</label>
+      <select id="aas_tend" style="flex:1;">
+        <option value="0">無</option>
+        <option value="3">男性，或 50 歲以上女性</option>
+        <option value="1">16–49 歲女性</option>
+      </select>
+      <span class="pt-badge" id="aas_tend_b">0分</span>
+    </div>
+    <div class="field-row"><label>肌衛 Guarding</label>
+      <select id="aas_guard" style="flex:1;">
+        <option value="0">無</option>
+        <option value="2">輕度 Mild</option>
+        <option value="4">中度或重度 Moderate / severe</option>
+      </select>
+      <span class="pt-badge" id="aas_guard_b">0分</span>
+    </div>
+
+    <div class="section-title">實驗室 Laboratory</div>
+    <div class="field-row"><label>白血球 ×10⁹/L</label>
+      <select id="aas_wbc" style="flex:1;">
+        <option value="0">&lt;7.2</option>
+        <option value="1">≥7.2 且 &lt;10.9</option>
+        <option value="2">≥10.9 且 &lt;14.0</option>
+        <option value="3">≥14.0</option>
+      </select>
+      <span class="pt-badge" id="aas_wbc_b">0分</span>
+    </div>
+    <div class="field-row"><label>嗜中性球 %</label>
+      <select id="aas_neut" style="flex:1;">
+        <option value="0">&lt;62</option>
+        <option value="2">≥62 且 &lt;75</option>
+        <option value="3">≥75 且 &lt;83</option>
+        <option value="4">≥83</option>
+      </select>
+      <span class="pt-badge" id="aas_neut_b">0分</span>
+    </div>
+    <div class="field-row"><label>症狀持續時間</label>
+      <select id="aas_dur" style="flex:1;">
+        <option value="lt">&lt; 24 小時</option>
+        <option value="gt">&gt; 24 小時</option>
+      </select>
+    </div>
+    <div class="field-row"><label>CRP mg/L</label>
+      <select id="aas_crp" style="flex:1;"></select>
+      <span class="pt-badge" id="aas_crp_b">0分</span>
+    </div>
+    <div class="exclusive-note">CRP 級距隨症狀時間切換，且<b>最高級距的配分反而較低（1 分）</b>——此為原表設計，非錯誤。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">AAS 總分（0–24）</div><div class="metric-value big" id="aas_total">0</div></div>
+      <div><div class="metric-label">判讀</div><div class="metric-value big" id="aas_band">低度可能</div></div>
+    </div>
+    <div id="aas_note" style="font-size:15px; margin-top:10px;"></div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th></tr>
+      <tr><td>0–10</td><td>低度可能 Low probability</td></tr>
+      <tr><td>11–15</td><td>中度 Intermediate</td></tr>
+      <tr><td>≥16</td><td>高度可能 High probability</td></tr>
+      <tr><td>≥18</td><td>極高可能（原文：可直接安排手術）</td></tr>
+    </table>
+    <div class="risk-note">數據來自 Sammalkorpi 之前瞻性推導與驗證世代（急診腹痛全體就診者，非僅手術病人）。≥16：敏感度 58.0%、特異度 92.7%；≥18：特異度 97.6%、LR+ 11.5。AUC 0.882（Alvarado 0.790、AIR 0.810）。分數為輔助工具，不取代臨床判斷與必要之影像檢查。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/24970111/" target="_blank" rel="noopener" class="ref-link">Sammalkorpi HE, Mentula P, Leppäniemi A. A new adult appendicitis score improves diagnostic accuracy of acute appendicitis. BMC Gastroenterol. 2014;14:114.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28163774/" target="_blank" rel="noopener" class="ref-link">Sammalkorpi HE, et al. The introduction of Adult Appendicitis Score reduced negative appendectomy rate. Scand J Surg. 2017;106(3):196-201.</a></footer>
+</div>
+</div>
+<script>
+var AAS_CRP={
+  lt:[['0','&lt;4',0],['2','≥4 且 &lt;11',2],['3','≥11 且 &lt;25',3],['5','≥25 且 &lt;83',5],['1','≥83（配分較低）',1]],
+  gt:[['0','&lt;12',0],['2a','≥12 且 &lt;53',2],['2b','≥53 且 &lt;152',2],['1','≥152（配分較低）',1]]
+};
+function aasFillCrp(){
+  const dur=document.getElementById('aas_dur').value;
+  const sel=document.getElementById('aas_crp');
+  const prev=sel.value;
+  sel.innerHTML='';
+  AAS_CRP[dur].forEach(function(r){
+    const o=document.createElement('option');
+    o.value=r[2]; o.dataset.key=r[0]; o.innerHTML=r[1];
+    sel.appendChild(o);
+  });
+  // 切換時間級距後，盡量保留原本的分數選擇；找不到就回到 0 分
+  const match=Array.prototype.find.call(sel.options,function(o){return o.value===prev;});
+  sel.value = match ? prev : '0';
+}
+function aasCalc(){
+  let total=0;
+  document.querySelectorAll('.aas-cb').forEach(function(cb){ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  ['aas_tend','aas_guard','aas_wbc','aas_neut','aas_crp'].forEach(function(id){
+    const v=parseInt(document.getElementById(id).value)||0;
+    total+=v;
+    const b=document.getElementById(id+'_b');
+    if(b) b.textContent=v+'分';
+  });
+  document.getElementById('aas_total').textContent=total;
+
+  let band='低度可能', note='';
+  if(total>=18){ band='極高可能';
+    note='原文指此族群（≥18）特異度 97.6%、LR+ 11.5，<b>可直接安排手術，不需進一步影像或追蹤觀察</b>。'; }
+  else if(total>=16){ band='高度可能';
+    note='高度可能為急性闌尾炎（≥16：特異度 92.7%）。建議外科處置；是否加做影像依臨床情境與院內流程決定。'; }
+  else if(total>=11){ band='中度';
+    note='中度可能。<b>此區間最需要影像檢查</b>（CT／超音波）或短時間再評估，單靠分數無法決定去留。'; }
+  else { band='低度可能';
+    note='低度可能。可考慮觀察與再評估，並積極尋找其他診斷；但分數低不等於排除，臨床高度懷疑時仍應影像檢查。'; }
+  document.getElementById('aas_band').textContent=band;
+  document.getElementById('aas_note').innerHTML=note;
+}
+document.getElementById('aas_dur').addEventListener('change',function(){ aasFillCrp(); aasCalc(); });
+document.querySelectorAll('#view-aas input, #view-aas select').forEach(function(el){
+  el.addEventListener('change',aasCalc);
+});
+aasFillCrp();
+aasCalc();
+if(location.search.indexOf('from=appy')>=0){var _b=document.getElementById('aas_back_appy'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

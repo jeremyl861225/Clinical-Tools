@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腹股溝疝氣分類 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-herniacls">
+  <div class="app-header">
+    <div><div class="eyebrow">Groin Hernia Classification</div><h1>腹股溝疝氣分類</h1><div class="sub">EHS（Miserez 2007）為主，對照 Nyhus 與 Gilbert／Rutkow-Robbins</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="hc_back_hernia" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/hernia.html'">← 返回疝氣決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-herniacls'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <details class="def-box">
+    <summary>為何以 EHS 為主、以及三個使用限制 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 為何 EHS 為主：</b>HerniaSurge 2018 國際指引建議使用 EHS 分類（證據等級低、弱建議），德國 Herniamed、瑞典與丹麥的疝氣登錄系統亦採用之，當代文獻幾乎一律以 M1–M3／L1–L3／F1–F3 表述。Nyhus 與 Gilbert 仍在教學與舊文獻中使用，本頁作為對照保留。<br><br>
+      <b>◆ EHS 分類至今未改版：</b>2007 年發表後，2009 年 EHS 指引原樣沿用；HerniaSurge 2018 明言「2015 年的文獻回顧未發現新的分類系統或新證據」；2023 年 HerniaSurge 更新了 10 個章節，<b>第 4 章「分類」不在其中</b>。故 Miserez 2007 仍為現行標準。<br><br>
+      <b>⚠ 限制一：EHS 是術中分類，不是術前分類。</b>HerniaSurge 原文明列此為缺點：「EHS 系統並非為術前分類疝氣型態而設計」。大小級數的原始定義是<b>術中以食指指尖（開刀）或腹腔鏡抓鉗鉗口（內視鏡）</b>比對，兩者均約 1.5–2 cm；公分數值（&lt;1.5／1.5–3／&gt;3）是由此換算而來，而非反過來。床邊術前使用時請自行保留誤差。<br><br>
+      <b>⚠ 限制二：EHS 另有腹壁疝與造口旁疝的分類，格式相同但意義完全不同。</b>切口疝用 W1/W2/W3 寬度（&lt;4／≥4–10／≥10 cm）與 M1–M5、L1–L4 位置——那裡的 M 與 L 與腹股溝的 M（內側／直接）、L（外側／間接）<b>不是同一回事</b>，勿混用。<br><br>
+      <b>⚠ 限制三：M3 會改變處置。</b>HerniaSurge 強建議：「TAPP 或 TEP 之大型直接疝（M3）建議固定網膜以降低復發風險」；而 Lichtenstein 使用膠固定「僅限於 MII 或 LII 型」。這是實作 EHS 最實際的理由。<br><br>
+      <b>◆ 急診疝氣沒有公認的嚴重度分類：</b>WSES 2017 複雜腹壁疝指引的分層軸是 <b>CDC 手術傷口分類</b>（Clean／Clean-Contaminated／Contaminated／Dirty-Infected），用以決定網膜選擇——那是傷口污染分類，不是疝氣嚴重度或腸道存活分級。HerniaSurge 第 21 章只給定義（嵌頓 = 無法回納；絞窄 = 血流受損），並明言「無證據支持最佳手術術式，建議個別化處理」。文獻中唯一的腸道形態分級（Duan 2014）為單中心、未經外部驗證、無學會採認，本頁不予實作。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">EHS 分類（Miserez 2007）</div>
+    <div class="field-row"><label>位置</label>
+      <select id="hc_loc" style="flex:1;">
+        <option value="L">L — 外側／間接 Lateral（深環外側，位於腹壁下動脈外側）</option>
+        <option value="M">M — 內側／直接 Medial（Hesselbach 三角內）</option>
+        <option value="F">F — 股疝 Femoral</option>
+      </select>
+    </div>
+    <div class="field-row"><label>缺損大小</label>
+      <select id="hc_size" style="flex:1;">
+        <option value="1">1 — 小於一指幅／一鉗口（&lt; 1.5 cm）</option>
+        <option value="2">2 — 一至兩指幅（1.5–3 cm）</option>
+        <option value="3">3 — 超過兩指幅（&gt; 3 cm）</option>
+        <option value="x">x — 情況不明或未探查</option>
+        <option value="0">0 — 該處無疝氣（已探查確認）</option>
+      </select>
+    </div>
+    <div class="field-row"><label>原發／復發</label>
+      <select id="hc_pr" style="flex:1;">
+        <option value="P">P — 原發 Primary</option>
+        <option value="R">R — 復發 Recurrent</option>
+      </select>
+    </div>
+    <div class="note">同時存在多處疝氣時分別記錄（例：右側 M3 + L1 + F2）。<b>陰囊型疝氣不另立一類，多數對應 L3</b>；<b>腹膜前或精索脂肪瘤記為 L1</b>；未見缺損但後壁薄弱者視為內側疝，記為 <b>Mx</b>。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">對照：Nyhus 分類</div>
+    <div class="field-row"><label>Type</label>
+      <select id="hc_nyhus" style="flex:1;">
+        <option value="I">I — 間接疝，深環大小與結構正常</option>
+        <option value="II">II — 間接疝，深環擴大，但後壁完整、腹壁下動脈未移位；未進入陰囊</option>
+        <option value="IIIA">IIIA — 直接疝（後壁缺損，不分大小）</option>
+        <option value="IIIB">IIIB — 間接疝，深環擴大並侵及／破壞橫筋膜（含巨大陰囊疝、滑動疝、褲型疝）</option>
+        <option value="IIIC">IIIC — 股疝</option>
+        <option value="IVA">IVA — 復發之直接疝</option>
+        <option value="IVB">IVB — 復發之間接疝</option>
+        <option value="IVC">IVC — 復發之股疝</option>
+        <option value="IVD">IVD — 復發之混合型</option>
+      </select>
+    </div>
+    <div class="note">Nyhus 為<b>後方（腹膜前）路徑</b>的分類，以深環與後壁完整性為軸。文獻顯示<b>術前以理學檢查判定 Nyhus 型別並不可靠</b>，與 EHS 同樣受限於術中判讀。</div>
+
+    <div class="section-title">對照：Gilbert（1–5）／Rutkow-Robbins（6–7）</div>
+    <div class="field-row"><label>Type</label>
+      <select id="hc_gilbert" style="flex:1;">
+        <option value="1">1 — 間接，深環完整且 &lt; 一指幅（約 &lt;1.5 cm），後壁完整</option>
+        <option value="2">2 — 間接，深環中度擴大約一指幅（約 1.5–4 cm），後壁完整</option>
+        <option value="3">3 — 間接，深環擴大變形達兩指幅以上（約 &gt;4 cm），後壁受侵（含滑動疝、陰囊疝）</option>
+        <option value="4">4 — 直接，後壁全面塌陷，深環完整</option>
+        <option value="5">5 — 直接，憩室型缺損，不超過一指（約 ≤1–2 cm），多位於恥骨上</option>
+        <option value="6">6 — 混合型／褲型疝（直接＋間接並存）</option>
+        <option value="7">7 — 股疝</option>
+      </select>
+    </div>
+    <div class="note">Type 1–3 為間接、4–5 為直接（Gilbert 1989）；Type 6–7 為 Rutkow-Robbins 1993 增補。此系統於 plug 修補文獻與北美舊文獻常見。</div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">EHS 編碼</div>
+    <div class="metric-value big" id="hc_code">L1P</div>
+    <div class="metric-label" style="margin-top:10px;">處置意涵</div>
+    <div id="hc_note" style="font-size:15px; margin-top:2px;"></div>
+    <table class="ref">
+      <tr><th>大小</th><th>術中對照</th><th>約略公分</th></tr>
+      <tr><td>1</td><td>小於一指幅／一鉗口</td><td>&lt; 1.5 cm</td></tr>
+      <tr><td>2</td><td>一至兩指幅／鉗口</td><td>1.5–3 cm</td></tr>
+      <tr><td>3</td><td>超過兩指幅／鉗口</td><td>&gt; 3 cm</td></tr>
+    </table>
+    <div class="risk-note">食指指尖與腹腔鏡抓鉗鉗口均約 1.5–2 cm，此為 EHS 大小級數的原始參照物；公分值為換算而得。<b>本分類為術中判定</b>，HerniaSurge 明列「未為術前分類而設計」為其缺點。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/17353992/" target="_blank" rel="noopener" class="ref-link">Miserez M, et al. The European hernia society groin hernia classification: simple and easy to remember. Hernia. 2007;11(2):113-116.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29330835/" target="_blank" rel="noopener" class="ref-link">HerniaSurge Group. International guidelines for groin hernia management. Hernia. 2018;22(1):1-165.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/14586776/" target="_blank" rel="noopener" class="ref-link">Nyhus LM. Classification of groin hernia: milestones. Hernia. 2004;8(2):87-88.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/2919740/" target="_blank" rel="noopener" class="ref-link">Gilbert AI. An anatomic and functional classification for the diagnosis and treatment of inguinal hernia. Am J Surg. 1989;157(3):331-333.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28804507/" target="_blank" rel="noopener" class="ref-link">Birindelli A, et al. 2017 update of the WSES guidelines for emergency repair of complicated abdominal wall hernias. World J Emerg Surg. 2017;12:37.</a></footer>
+</div>
+</div>
+<script>
+function hcCalc(){
+  const loc=document.getElementById('hc_loc').value;
+  const size=document.getElementById('hc_size').value;
+  const pr=document.getElementById('hc_pr').value;
+  document.getElementById('hc_code').textContent=loc+size+pr;
+
+  let note='';
+  if(size==='x'){
+    note='<b>x = 該處未探查或情況不明。</b>例：開刀修補外側疝時未檢視股環，記為 L2 Fx；若已檢視且無股疝，才記為 F0。此區分在復發與漏診的稽核上有意義。';
+  } else if(size==='0'){
+    note='<b>0 = 已探查確認該處無疝氣</b>，與「未探查（x）」意義不同。';
+  } else if(loc==='M' && size==='3'){
+    note='<b>M3（大型直接疝）：HerniaSurge 強建議——以 TAPP 或 TEP 修補時應固定網膜</b>，以降低復發風險。此為 EHS 分類直接改變處置的主要情境。';
+  } else if(size==='2'){
+    note='HerniaSurge：Lichtenstein 修補使用<b>膠固定</b>僅限於 M2 或 L2 型。';
+  } else {
+    note='一般型態。網膜固定方式依術式與缺損大小決定；M3 需固定、M2/L2 可用膠固定。';
+  }
+  if(pr==='R'){
+    note+='<br>※ 復發疝：EHS 的 P/R 僅為二分，<b>不帶復發之嚴重度資訊</b>。若需依復發型態決定路徑，文獻另有 Campanelli R1/R2/R3 分類（R1 前方 plug、R2 腹膜前 Wantz、R3 Stoppa／腹腔鏡），惟非 EHS 正式內容。';
+  }
+  if(loc==='F'){
+    note+='<br>※ 股疝為嵌頓／絞窄的強危險因子（HerniaSurge 強建議所列之危險因子：前一年因疝氣住院、女性、股疝且以右側為著）。';
+  }
+  document.getElementById('hc_note').innerHTML=note;
+}
+document.querySelectorAll('#view-herniacls select').forEach(function(el){el.addEventListener('change',hcCalc);});
+hcCalc();
+if(location.search.indexOf('from=hernia')>=0){var _b=document.getElementById('hc_back_hernia'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
