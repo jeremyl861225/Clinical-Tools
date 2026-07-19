@@ -79,8 +79,8 @@
     <div class="flow-opts">
       <button class="flow-opt" onclick="cholePick('bil','cholangitis',this)">急性膽管炎<span class="fo-sub">發燒／寒顫 + 黃疸 + 右上腹痛（Charcot）或 TG18 膽管炎 — 最優先處理</span></button>
       <button class="flow-opt" onclick="cholePick('bil','pancreatitis',this)">膽石性胰臟炎<span class="fo-sub">lipase／amylase 升高，符合胰臟炎診斷</span></button>
-      <button class="flow-opt" onclick="cholePick('bil','cbd',this)">疑似總膽管結石（無膽管炎／胰臟炎）<span class="fo-sub">膽紅素／肝功能升高、CBD 擴張（&gt;6 mm）</span></button>
       <button class="flow-opt" onclick="cholePick('bil','mirizzi',this)">Mirizzi syndrome<span class="fo-sub">膽囊管／Hartmann pouch 嵌頓結石壓迫總肝管：黃疸 + 總肝管擴張而 CBD 內徑正常</span></button>
+      <button class="flow-opt" onclick="cholePick('bil','cbd',this)">疑似總膽管結石（無膽管炎／胰臟炎）<span class="fo-sub">膽紅素／肝功能升高、CBD 擴張（&gt;6 mm）</span></button>
       <button class="flow-opt" onclick="cholePick('bil','none',this)">單純急性膽囊炎<span class="fo-sub">直接進入下方 TG18 分級</span></button>
     </div>
     <div class="note" style="margin-top:8px;">若同時存在，依優先順序選擇：急性膽管炎 &gt; 膽石性胰臟炎 &gt; Mirizzi syndrome &gt; 疑似總膽管結石。<br>Mirizzi 與總膽管結石影像相似（皆為阻塞性黃疸），關鍵鑑別在<b>阻塞位置</b>：Mirizzi 為總肝管受壓、其遠端 CBD 內徑正常。</div>
@@ -141,6 +141,7 @@
     </div>
   </div>
 
+  <div class="flow-connector hidden" id="chole_c2c">↓</div>
   <div class="flow-step hidden" id="chole_s2c_perf">
     <div class="flow-step-head"><span class="flow-num">2c</span><span class="flow-q">Niemeier 破裂分型？</span></div>
     <div class="flow-opts">
@@ -215,16 +216,20 @@ function choleRender(){
   const g=choleSt.grade, sp=choleSt.sp;
   flowShow('chole_c2b', !!g);
   flowShow('chole_s2b', !!g);
+  flowShow('chole_c2c', sp==='perf'||sp==='hemo');
   flowShow('chole_s2c_perf', sp==='perf');
   flowShow('chole_s2c_hemo', sp==='hemo');
   if(sp!=='perf') flowClearSel('chole_s2c_perf');
   if(sp!=='hemo') flowClearSel('chole_s2c_hemo');
 
-  // 手術風險：待複雜型分支問完才出現
+  // 手術風險：待複雜型分支問完才出現。
+  // 出血且血行動力學不穩定時，高／低風險處置相同（皆為緊急止血），此步驟不再影響結果 → 略過。
   const spDone = (sp==='none') || (sp==='perf'&&choleSt.perf) || (sp==='hemo'&&choleSt.hemo);
-  flowShow('chole_c2', !!g && !!spDone);
-  flowShow('chole_s2', !!g && !!spDone);
-  if(!spDone) flowClearSel('chole_s2');
+  const riskNeeded = !(sp==='hemo' && choleSt.hemo==='unstable');
+  const showRisk = !!g && !!spDone && riskNeeded;
+  flowShow('chole_c2', showRisk);
+  flowShow('chole_s2', showRisk);
+  if(!showRisk){ flowClearSel('chole_s2'); if(!riskNeeded) choleSt.risk=null; }
   const lowSub=document.getElementById('chole_low_sub'), highSub=document.getElementById('chole_high_sub');
   if(g==='3'){
     lowSub.innerHTML='<strong>需全部符合</strong>：<br>・CCI ≤3、ASA ≤2<br>・無 NPF（T-bil ≥2／GCS↓／PF ratio &lt;300）<br>・有 FOSF（心血管／腎對初始治療有反應）<br>・於醫學中心';
@@ -271,7 +276,7 @@ function choleRender(){
   if(g && !spDone){ cls='rec-idle'; title='請完成步驟 2b'; detail=''; note=''; }
 
   // 複雜型覆寫：破裂／出血的處置由併發型態主導，TG18 分級僅作背景
-  if(spDone && sp!=='none' && r){
+  if(spDone && sp!=='none' && (r || !riskNeeded)){
     const gbHigh='（本例手術風險高：CCI &gt;5／ASA ≥3，或年齡 ≥80、Karnofsky &lt;50 等）';
     if(sp==='perf'&&choleSt.perf==='1'){
       cls='rec-urgent';
@@ -298,7 +303,7 @@ function choleRender(){
     } else if(sp==='hemo'&&choleSt.hemo==='unstable'){
       cls='rec-urgent'; title='膽囊出血 — 不穩定（HGB）：復甦 + 逆轉抗凝 + 緊急膽囊切除';
       detail='<li><b>立即復甦與輸血、逆轉抗凝血劑</b>（約半數病例使用抗凝劑）。</li><li><b>緊急膽囊切除</b>為主要止血手段；出血與發炎使解剖困難時，放寬開腹與次全膽囊切除之門檻。</li><li>出血源為<b>膽囊動脈假性動脈瘤</b>，或手術風險過高者 → <b>經導管動脈栓塞（TAE）</b>止血，作為手術前的橋接。</li><li>PTGBD 無止血效果，不可作為主要處置。</li>';
-      note='Cureus 2025 系統性回顧：不穩定者以緊急手術（26.2% 開腹／18.5% 腹腔鏡）或多模式治療（30.8%）為主，整體死亡率 10.8%。';
+      note='Cureus 2025 系統性回顧：不穩定者以緊急手術（26.2% 開腹／18.5% 腹腔鏡）或多模式治療（30.8%）為主，整體死亡率 10.8%。<br>※ 血行動力學不穩定時，高／低手術風險的處置一致（皆須緊急止血），故本分支略過步驟 3；風險過高者以 TAE 取代或橋接手術。';
     } else if(sp==='hemo'&&choleSt.hemo==='stable'){
       if(r==='low'){ cls='rec-elective'; title='膽囊出血 — 穩定（HC）：矯正凝血後行膽囊切除';
         detail='<li>停用／逆轉抗凝血劑，追蹤 Hb 與輸血需求；抗生素 + 支持治療。</li><li><b>CT 血管攝影</b>評估膽囊動脈假性動脈瘤與 hemobilia。</li><li>穩定者依 TG18 時機行早期或 interval 膽囊切除。</li><li>持續監測：部分病人於住院中才轉為血行動力學不穩定。</li>';
