@@ -138,20 +138,6 @@
     <label class="item"><input type="checkbox" class="chg-g2"> 高膽紅素血症 <span class="unit">(T-Bil ≥5 mg/dL)</span></label>
     <label class="item"><input type="checkbox" class="chg-g2"> 低白蛋白血症 <span class="unit">(&lt; 正常值下限 × 0.7)</span></label>
     <div class="note">Grade II 已符合 <span id="chg_g2n">0</span> / 5 項。TG18 未給白蛋白絕對值，請依貴院正常下限換算。<br>Grade I 為<b>否定式定義</b>（Grade II／III 皆不符合），且係「初診當下」的判定。</div>
-
-    <div class="result" style="margin-top:14px;">
-      <div class="result-grid">
-        <div>
-          <div class="metric-label">診斷 Diagnosis</div>
-          <div class="metric-value" id="chg_dx">不符合</div>
-        </div>
-        <div>
-          <div class="metric-label">嚴重度 Severity</div>
-          <div class="metric-value big" id="chg_grade">—</div>
-        </div>
-      </div>
-      <div class="risk-note" id="chg_hint">請勾選上方診斷準則。</div>
-    </div>
   </div>
 
   <div class="flow-step hidden" id="chole_bs_psev">
@@ -260,27 +246,20 @@ function chgCalc(){
   document.getElementById('chg_g2n').textContent=g2;
 
   // 診斷：確定 = A+B+C；疑似 = A + (B 或 C)
-  let dx='none', dxText='不符合';
-  if(a>=1 && b>=1 && c>=1){ dx='definite'; dxText='確定診斷'; }
-  else if(a>=1 && (b>=1 || c>=1)){ dx='suspected'; dxText='疑似診斷'; }
+  let dx='none';
+  if(a>=1 && b>=1 && c>=1){ dx='definite'; }
+  else if(a>=1 && (b>=1 || c>=1)){ dx='suspected'; }
   else if(a+b+c>0){ dx='partial'; }
   choleSt.chgDx=dx;
 
   // 嚴重度分級只在有膽管炎診斷時才有意義
-  let grade=null, gradeText='—', hint='';
+  let grade=null;
   if(dx==='definite'||dx==='suspected'){
-    if(g3>=1){ grade='3'; gradeText='Grade III 重度'; }
-    else if(g2>=2){ grade='2'; gradeText='Grade II 中度'; }
-    else { grade='1'; gradeText='Grade I 輕度'; }
-    hint='處置與引流時機見下方建議。';
-  } else {
-    hint = (dx==='none') ? '請勾選上方診斷準則。'
-      : '尚未達 TG18 疑似診斷（需 A 至少一項，加上 B 或 C 至少一項）。未達診斷者不進行嚴重度分級；請考慮其他急性腹症並排除急性肝炎，必要時回步驟 1 改選其他分支。';
+    if(g3>=1) grade='3';
+    else if(g2>=2) grade='2';
+    else grade='1';
   }
   choleSt.chg=grade;
-  document.getElementById('chg_dx').textContent=dxText;
-  document.getElementById('chg_grade').textContent=gradeText;
-  document.getElementById('chg_hint').innerHTML=hint;
   choleSt.chgBox=Array.prototype.map.call(chgBoxes(),cb=>cb.checked?1:0);
 }
 function chgClear(){ chgBoxes().forEach(cb=>{cb.checked=false;}); chgCalc(); }
@@ -427,12 +406,12 @@ function choleBilRender(){
     cls='rec-idle'; title='無合併膽道／胰臟情況 — 直接進行下方 TG18 流程';
   } else if(b==='cholangitis'){
     const chgCommon='<li>共通：立即廣效抗生素 + 液體復甦，並處理病因（總膽管結石取石等）；血液與膽汁培養。</li><li>引流途徑首選<b>內視鏡經乳突引流（ERCP）</b>，ENBD 與支架效果相當、單純引流不需常規 EST；ERCP 失敗或無法執行時以 EUS-BD／PTBD 為第二線，手術引流為最後手段。</li><li>膽管炎控制後再行膽囊切除（<b>同次住院為佳</b>，高手術風險者可延遲）。</li>';
-    const chgCommonNote='<br>※ 引流時機依 <b>TG18</b>。ESGE 2019 的時窗不同（重度合併敗血性休克 12 小時內；中度放寬至 48–72 小時），臨床採用哪一套請明示。';
+    const chgCommonNote='<br>※ TG18 診斷：<b>'+(choleSt.chgDx==='definite'?'確定診斷':'疑似診斷')+'</b>（依步驟 1b 勾選判定）。引流時機依 <b>TG18</b>。ESGE 2019 的時窗不同（重度合併敗血性休克 12 小時內；中度放寬至 48–72 小時），臨床採用哪一套請明示。';
     const c=choleSt.chg;
     if(c==='1'){ cls='rec-nonop'; title='Grade I 輕度：抗生素等初始治療，不常規引流';
       detail='<li>多數僅以抗生素等初始治療即可，<b>不常規需要膽道引流</b>。</li><li><b>對初始治療無反應時應進行引流</b>；若存在總膽管結石，或 24 小時內對初始治療無反應，依中度處理。</li>'+chgCommon;
       note='TG18：Grade I 以初始治療為主，引流保留給無反應者。'+chgCommonNote; }
-    else if(c==='2'){ cls='rec-urgent'; title='Grade II 中度：抗生素 + 早期膽道引流';
+    else if(c==='2'){ cls='rec-elective'; title='Grade II 中度：抗生素 + 早期膽道引流';
       detail='<li>抗生素＋支持治療，並行<b>早期</b>內視鏡或經皮經肝膽道引流（TG18 引用之證據為 24 小時內：院內死亡率 1.7% vs 3.4%，P=0.0172）。</li><li>全身狀況改善後再處理病因；輕、中度者可於引流同次行 EST 加取石，但抗凝血或凝血異常者除外。</li>'+chgCommon;
       note='TG18：Grade II 需早期膽道引流。'+chgCommonNote; }
     else if(c==='3'){ cls='rec-urgent'; title='Grade III 重度：器官支持 + 儘速膽道引流';
