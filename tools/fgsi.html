@@ -20,7 +20,7 @@
 <div class="sheet">
 <div class="view active" id="view-fgsi">
   <div class="app-header">
-    <div><div class="eyebrow">Fournier's Gangrene Scoring Tool</div><h1>FGSI / UFGSI</h1><div class="sub">富尼氏壞疽嚴重度指數 · Fournier's Gangrene Severity Index（Laor 1995）與 Uludağ 修訂版（Yilmazlar 2010）</div></div>
+    <div><div class="eyebrow">Fournier's Gangrene Scoring Tool</div><h1>FGSI / UFGSI</h1><div class="sub">Fournier's gangrene 嚴重度指數 · Fournier's Gangrene Severity Index（Laor 1995）與 Uludağ 修訂版（Yilmazlar 2010）</div></div>
     <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
       <button class="back-btn" id="fg_back_nsti" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/nsti.html'">← 返回壞死性感染決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-fgsi'">← 返回主選單</button>
@@ -40,7 +40,7 @@
       <b>◆ 外部驗證：</b>Üreyen 2017（土耳其兩中心 29 例）以 ROC 求得最佳切點 <b>FGSI &gt;6</b>（敏感度 100%、特異度 78.3%）與 <b>UFGSI &gt;8</b>（敏感度 100%、特異度 73.9%），並指出<b>侵犯範圍</b>是最重要的預後參數之一。Yilmazlar 亦建議 <b>UFGSI &gt;8 者應入加護病房</b>。<br><br>
 
       <b>◆ 限制：</b>Roghmann 2012（BJU Int，44 例前瞻＋回溯）比較 FGSI、UFGSI、年齡校正 Charlson 共病指數（ACCI）與 surgical Apgar，四者 AUC 差異均不顯著；作者認為 UFGSI 雖納入較多變項，<b>預測力未優於 FGSI</b>。<br>
-      本分數為<b>預後／分流</b>工具，<b>不是手術與否的判準</b>——富尼氏壞疽一經診斷即需緊急徹底清創，分數低不得作為延後手術的理由。<br><br>
+      本分數為<b>預後／分流</b>工具，<b>不是手術與否的判準</b>——Fournier's gangrene 一經診斷即需緊急徹底清創，分數低不得作為延後手術的理由。<br><br>
 
       <b>◆ 資料時點：</b>原始研究以<b>入院當時</b>的生理數值計算。<br>
       <b>◆ 本工具的邊界處理：</b>原始表格逐格印為「&gt;41 / 39–40.9 / …」，格與格之間存在小數空隙（如 38.4 與 38.5 之間）。本工具依 APACHE II 的連續邊界實作（≥41、≥39、≥38.5…），使任何數值都能落入唯一級距，與原表在整數與一位小數上完全一致。
@@ -169,7 +169,7 @@
       <tr><td>UFGSI &gt; 8</td><td>Yilmazlar／Üreyen 2017</td><td>死亡風險升高，建議收治加護病房</td></tr>
       <tr><td>FGSI &gt; 6</td><td>Üreyen 2017（n=29）</td><td>ROC 最佳切點，敏感度 100%／特異度 78.3%</td></tr>
     </table>
-    <div class="risk-note">FGSI 滿分 36 分，UFGSI 滿分 43 分。上述死亡率來自各原始世代（30–80 例的單中心研究），族群小、年代與治療條件不同，<b>應視為風險分層而非個人化預測</b>。本分數<b>不決定是否手術</b>：富尼氏壞疽一經診斷即需緊急徹底清創（WSES 2018 recommendation 1C），分數低不得作為延後手術或縮小清創範圍的理由。未填入之生理欄位以 0 分（正常）計。</div>
+    <div class="risk-note">FGSI 滿分 36 分，UFGSI 滿分 43 分。上述死亡率來自各原始世代（30–80 例的單中心研究），族群小、年代與治療條件不同，<b>應視為風險分層而非個人化預測</b>。本分數<b>不決定是否手術</b>：Fournier's gangrene 一經診斷即需緊急徹底清創（WSES 2018 recommendation 1C），分數低不得作為延後手術或縮小清創範圍的理由。未填入之生理欄位以 0 分（正常）計。</div>
   </div>
 
   <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/7776464/" target="_blank" rel="noopener" class="ref-link">Laor E, et al. Outcome prediction in patients with Fournier's gangrene. J Urol. 1995;154(1):89-92.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20559857/" target="_blank" rel="noopener" class="ref-link">Yilmazlar T, et al. Fournier's gangrene: an analysis of 80 patients and a novel scoring system. Tech Coloproctol. 2010;14(3):217-223.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29052824/" target="_blank" rel="noopener" class="ref-link">Üreyen O, et al. Usefulness of FGSI and UFGSI scoring systems for predicting mortality in patients with Fournier's gangrene: a multicenter study. Ulus Travma Acil Cerrahi Derg. 2017;23(5):389-394.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22494217/" target="_blank" rel="noopener" class="ref-link">Roghmann F, et al. Is there a need for the Fournier's gangrene severity index? BJU Int. 2012;110(9):1359-1365.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30564282/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2018 WSES/SIS-E consensus conference: recommendations for the management of skin and soft-tissue infections. World J Emerg Surg. 2018;13:58.</a></footer>
@@ -247,7 +247,7 @@ function fgCalc(){
   } else if(a>6){
     msg='FGSI &gt;6：未達 9 分切點，但已超過 Üreyen 2017 的 ROC 最佳切點（該世代敏感度 100%），仍應視為<b>需密切監測</b>。';
   } else {
-    msg='FGSI ≤6 且 UFGSI ≤8：屬相對低風險組。<b>但這不改變手術指徵</b>——確診富尼氏壞疽仍須緊急徹底清創。';
+    msg='FGSI ≤6 且 UFGSI ≤8：屬相對低風險組。<b>但這不改變手術指徵</b>——確診 Fournier\'s gangrene 仍須緊急徹底清創。';
   }
   document.getElementById('fg_interp').innerHTML=msg;
 }

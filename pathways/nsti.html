@@ -20,7 +20,7 @@
 <div class="sheet">
 <div class="view active" id="view-nsti-path">
   <div class="app-header">
-    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>壞死性軟組織感染處置決策</h1><div class="sub">Necrotizing Soft Tissue Infection · 腹壁／會陰（富尼氏壞疽）／四肢（WSES／SIS-E 2018）</div></div>
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>壞死性軟組織感染處置決策</h1><div class="sub">Necrotizing Soft Tissue Infection · 腹壁／會陰（Fournier's gangrene）／四肢（WSES／SIS-E 2018）</div></div>
     <button class="back-btn" onclick="location.href='../index.html#card-view-nsti-path'">← 返回主選單</button>
   </div>
 
@@ -33,7 +33,7 @@
       依深度分為 necrotizing cellulitis（真皮／皮下）、necrotizing fasciitis（筋膜）、necrotizing myositis（肌肉）。依菌相分 <b>Type 1</b>（多菌，需氧＋厭氧，常見於年長或有共病者，常有組織內氣體）、<b>Type 2</b>（單菌，以 A 群鏈球菌最多，其次 MRSA，可發生於任何年齡且無共病者）、<b>Type 3</b>（氣性壞疽，clostridial myonecrosis）。<br>
       <span class="note">WSES 特別指出：這些命名分類「可能沒有臨床用途」，辨識出<b>需要立即積極處置</b>的感染比判定亞型更重要；不同名稱反而可能延誤診斷與清創。</span><br><br>
 
-      <b>◆ 富尼氏壞疽（Fournier's gangrene）：</b>侵犯會陰／生殖器區的 NSTI。因筋膜層連續（會陰的 Colles 筋膜 ↔ 腹壁的 Scarpa 筋膜 ↔ 陰莖／陰囊的 Buck 與 Dartos 筋膜），感染可向上延伸至<b>腹壁</b>、向下至<b>大腿</b>、進入肛周與臀部間隙、偶爾進入<b>後腹腔</b>。睪丸受累少見（血流來源非會陰）。當代系列<b>死亡率 20–50%</b>。感染源多可辨識，以肛門直腸、泌尿生殖或局部皮膚來源為主。<br><br>
+      <b>◆ Fournier's gangrene：</b>侵犯會陰／生殖器區的 NSTI。因筋膜層連續（會陰的 Colles 筋膜 ↔ 腹壁的 Scarpa 筋膜 ↔ 陰莖／陰囊的 Buck 與 Dartos 筋膜），感染可向上延伸至<b>腹壁</b>、向下至<b>大腿</b>、進入肛周與臀部間隙、偶爾進入<b>後腹腔</b>。睪丸受累少見（血流來源非會陰）。當代系列<b>死亡率 20–50%</b>。感染源多可辨識，以肛門直腸、泌尿生殖或局部皮膚來源為主。<br><br>
 
       <b>◆ 臨床徵象：</b>多數 NSTI 一開始就<b>被診斷為蜂窩組織炎</b>。最具提示性的是<b>疼痛程度與理學所見不成比例</b>。實驗室檢查對 NSTI <b>敏感度與特異度都不高</b>；「快速進展的軟組織感染，從一開始就要當作壞死性感染治療」，臨床可在數小時內急遽惡化。<br>
       理學徵象的統合分析數據（Fernando 2019）：發燒 敏感度 46.0%／特異度 77.0%；出血性水泡 25.2%／95.8%；低血壓 21.0%／97.7%——<b>單一徵象缺席都不足以排除</b> NSTI。<br><br>
@@ -48,7 +48,7 @@
 
       <b>◆ 評分工具：</b><br>
       ・<b>LRINEC</b>（CRP／WBC／Hb／Na／Cr／Glucose）：≥6 分敏感度僅 68.2%、特異度 84.8%；≥8 分敏感度 40.8%、特異度 94.9%。<b>因敏感度差，不得用於排除 NSTI</b>。<br>
-      ・<b>FGSI／UFGSI</b>：富尼氏壞疽的<b>預後</b>分層，不是手術判準。<br>
+      ・<b>FGSI／UFGSI</b>：Fournier's gangrene 的<b>預後</b>分層，不是手術判準。<br>
       ・<b>qSOFA</b>（收縮壓 ≤100 mmHg、呼吸 ≥22 次/分、GCS &lt;15，符合 ≥2 項）：WSES 強調它<b>不是敗血症的診斷準則</b>，而是預後不良的警訊。<br>
       ・WSES 認為嚴重度評分的價值在於<b>在急診或加護病房外</b>及早辨識出需要手術與圍手術期重症照護的病人（1C）。<br><br>
 
@@ -99,7 +99,7 @@
   <div class="flow-step hidden" id="ns_s3">
     <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">感染部位？</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="nsPick('site','perineal',this)">會陰／生殖器／肛周<span class="fo-sub">富尼氏壞疽 Fournier's gangrene</span></button>
+      <button class="flow-opt" onclick="nsPick('site','perineal',this)">會陰／生殖器／肛周<span class="fo-sub">Fournier's gangrene</span></button>
       <button class="flow-opt" onclick="nsPick('site','abdwall',this)">腹壁／軀幹<span class="fo-sub">須留意經 Scarpa／Colles 筋膜與會陰、大腿、後腹腔相通</span></button>
       <button class="flow-opt" onclick="nsPick('site','limb',this)">四肢<span class="fo-sub">保留皮膚穿通枝，多切口清創</span></button>
     </div>
@@ -112,7 +112,7 @@
       <button class="flow-opt" onclick="nsPick('fecal','yes',this)">有糞便污染<span class="fo-sub">肛門直腸來源、括約肌受累或持續糞便污染創面</span></button>
       <button class="flow-opt" onclick="nsPick('fecal','no',this)">無糞便污染<span class="fo-sub">泌尿生殖或局部皮膚來源，創面未受糞便污染</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/fgsi.html?from=nsti'">🧮 開啟 FGSI / UFGSI（富尼氏壞疽預後分層）</button>
+    <button class="flow-link" onclick="location.href='../tools/fgsi.html?from=nsti'">🧮 開啟 FGSI / UFGSI（Fournier's gangrene 預後分層）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="ns_rec">
@@ -192,7 +192,7 @@ function render(){
       '<li>單一理學徵象缺席不足以排除 NSTI（發燒敏感度 46%、出血性水泡 25%、低血壓 21%）。</li>';
     note='WSES 2018：快速進展的軟組織感染，從一開始就應當作壞死性感染治療。';
   } else if(confirmed && st.site==='perineal' && st.fecal){
-    cls='rec-urgent'; title='富尼氏壞疽 — 緊急徹底清創' + (st.fecal==='yes' ? '＋考慮糞便改道' : '');
+    cls='rec-urgent'; title="Fournier's gangrene — 緊急徹底清創" + (st.fecal==='yes' ? '＋考慮糞便改道' : '');
     detail = NS_CORE +
       '<li><b>會陰部位特有</b>：radical debridement 須<b>延伸進入外觀健康的組織</b>。因 Colles 筋膜與腹壁 Scarpa 筋膜、陰莖 Buck／Dartos 筋膜相連，感染可延伸至腹壁、大腿、肛周與臀部間隙、偶及後腹腔，探查<b>必須跨越這些解剖界線</b>。睪丸受累少見（血流來源非會陰），通常可保留。</li>' +
       (st.fecal==='yes'
@@ -205,7 +205,7 @@ function render(){
     cls='rec-urgent'; title='腹壁／軀幹壞死性感染 — 緊急徹底清創';
     detail = NS_CORE +
       '<li><b>腹壁部位特有</b>：Scarpa 筋膜與會陰 Colles 筋膜相連，感染可沿筋膜面向下延伸至<b>會陰與大腿</b>、或進入<b>後腹腔</b>；探查與影像判讀都不可停在腹壁範圍內。</li>' +
-      '<li>若已延伸至會陰且創面受糞便污染，依富尼氏壞疽處理，考慮糞便改道（2C）。</li>' +
+      '<li>若已延伸至會陰且創面受糞便污染，依 Fournier\'s gangrene 處理，考慮糞便改道（2C）。</li>' +
       '<li>腹壁大範圍缺損的重建、功能保留與傷口照護是後期主要挑戰；復健為復原不可或缺的一環。</li>';
     note='WSES 2018：清創的早晚與完整度是決定預後最重要的因素（早期完整清創死亡率 4.2% vs 延遲／不完整 38%）。';
   } else if(confirmed && st.site==='limb'){
