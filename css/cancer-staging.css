@@ -2,8 +2,6 @@
   /* 本檔僅由 tools/cancer.html 載入,故此處覆寫只影響該頁 */
   :root{ --paper:#f2f1ec; }
   @media (prefers-color-scheme:dark){ :root{ --paper:#14181b; } }
-  .onc-disclaimer{background:var(--accent2-soft); border:1px solid var(--accent2); border-radius:2px; padding:10px 13px; font-size:12px; line-height:1.6; color:var(--label-ink); margin-bottom:16px;}
-  .onc-disclaimer b{color:var(--accent2);}
   .onc-search{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:14px;}
   .onc-search:focus{outline:none; border-color:var(--accent);}
   /* ═══ 癌別選單:標本方磚 ═══
