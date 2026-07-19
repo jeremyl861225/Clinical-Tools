@@ -243,6 +243,7 @@ function switchTab(id, tab){
     if(c.pathway === 'bladder' && typeof initBladderPathway === 'function') initBladderPathway();
     if(c.pathway === 'prostate' && typeof initProstatePathway === 'function') initProstatePathway();
     if(c.pathway === 'npc' && typeof initNpcPathway === 'function') initNpcPathway();
+    if(c.pathway === 'hnc' && typeof initHncPathway === 'function') initHncPathway();
   }
 }
 
@@ -419,7 +420,10 @@ var NODE_LEVELS = {
   panc:    [['標準','dl-1'], ['擴大','dl-warn']],
   // pNET 之選擇軸是「腫瘤位置」而非術式：AJCC 對胰臟 NET 之區域淋巴結定義依胰頭／頸 vs 胰體／尾而異，
   // 故此處的分級是「該淋巴結群於該部位是否屬區域（N1）」；未列出者即非區域 → 轉移屬 M1b。
-  pnet:    [['區域 N1','dl-1']]
+  pnet:    [['區域 N1','dl-1']],
+  // 頭頸癌之選擇軸是「原發部位」；分級為該分區於該部位之選擇性廓清／預防照射範圍，
+  // 非區域／M1（AJCC 頭頸癌依淋巴結大小、顆數、側性與 ENE 分期，無分區式區域地圖）。
+  hnc:     [['常規','dl-1'], ['條件','dl-1p'], ['N+ 加做','dl-2']]
 };
 
 function renderNode(c){
@@ -539,6 +543,9 @@ function renderTx(c){
   }
   if(c.pathway === 'npc' && typeof npcPathwayHTML === 'function'){
     return npcPathwayHTML();
+  }
+  if(c.pathway === 'hnc' && typeof hncPathwayHTML === 'function'){
+    return hncPathwayHTML();
   }
   if(c.pathway === 'prostate' && typeof prostatePathwayHTML === 'function'){
     return prostatePathwayHTML();
