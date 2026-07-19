@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腸胃道穿孔處置決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-gi-perf-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸胃道穿孔處置決策</h1><div class="sub">GI Perforation · PPU / diverticular / iatrogenic colonoscopy / small bowel（WSES 2017–2020）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-gi-perf-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>診斷與復甦、風險評分、WSES CT 分級與 Hinchey、經驗性抗生素 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：</b>先分辨穿孔病因／部位（各有專屬 WSES 指引），再決定保守 (NOM) 或手術與手術入路；<b>穿孔大小與部位</b>屬開腹後所見，其修補術式列於手術建議之後。<br><br>
+
+      <b>診斷（PPU，WSES 2020）：</b>常規血液檢查 + 動脈血氣（1D）；<b>首選腹部 CT</b>（敏感度高、可定位穿孔部位與大小，1C）；無法及時 CT 時以立位或左側臥位胸腹部 X 光偵測游離氣體（1C）；影像未見游離氣體但仍高度懷疑時，經口／鼻胃管給<b>水溶性顯影劑</b>再評估（2D）。<br><br>
+
+      <b>復甦目標：</b>早期辨識敗血症以預防器官衰竭，以 SOFA／qSOFA 評估嚴重度（1B／2C）。目標 <b>MAP ≥ 65 mmHg</b>、<b>尿量 ≥ 0.5 mL/kg/h</b>、<b>乳酸正常化</b>。不穩定病人於 <b>1 小時內</b>快速復甦，並同步外科會診、血／體液培養、給抗生素（1C）。<br><br>
+
+      <b>風險分層（PPU）：</b><br>
+      ・<b>Boey 評分（0–3）：</b>術前休克 (SBP&lt;100)、穿孔至手術 &gt;24 小時、合併重大內科疾病，各 1 分。死亡率約 0 分 0–1.5%／1 分 8–15%／2 分 15–33%／3 分 38–100%。Boey ≥3、年齡 &gt;70 歲、症狀 &gt;24 小時傳統上視為腹腔鏡修補的<b>相對禁忌</b>。<br>
+      ・<b>PULP 評分（0–18）：</b>年齡&gt;65 (3)、現行惡性腫瘤或 AIDS (1)、肝硬化 (2)、類固醇 (1)、入院休克 (1)、&gt;24 小時 (1)、Cr&gt;130 µmol/L≈1.47 mg/dL (2)、ASA I–V (0/1/3/5/7)。<b>&gt;7 為高風險</b>（30 天死亡率 &gt;25%），建議加護照護。<br>
+      ・<b>POMPP（輔助，0–3）：</b>年齡&gt;65、Albumin&lt;3.5 g/dL、BUN&gt;45 mg/dL 各 1 分；&gt;1 分與顯著較高死亡率相關（AUC ~0.93）。非 WSES 正式評分。<br>
+      ・WSES 2020 建議採用 Boey／PULP／ASA 分層（2C）。<br><br>
+
+      <b>Mannheim 腹膜炎指數 (MPI，0–47)：</b>適用所有續發性腹膜炎（含小腸／大腸穿孔）。年齡&gt;50 (5)、女性 (5)、器官衰竭* (7)、惡性腫瘤 (4)、術前病程&gt;24 小時 (4)、敗血來源非大腸 (4)、瀰漫性腹膜炎 (6)、腹腔滲出液（清澈 0／膿性 6／糞性 12）。<b>&lt;21 低（0–2.3%）／21–29 中／&gt;29 高</b>；常用單一切點 <b>&gt;26</b>（敏感度 84–95%、特異度 78–80%）。<br>
+      *器官衰竭定義：腎（Cr&gt;177 µmol/L 或 urea&gt;167 mmol/L 或 oliguria&lt;20 mL/h）、肺（PO₂&lt;50 或 PCO₂&gt;50 mmHg）、休克（SBP&lt;90 或 MAP&lt;60 mmHg）、腸阻塞（麻痺&gt;24 h 或完全性機械性阻塞）。<br><br>
+
+      <b>WSES 大腸憩室炎 CT 分級（Sartelli 2015）：</b><br>
+      ・<b>0（無併發症）：</b>憩室、腸壁增厚、周圍脂肪密度增加。<br>
+      ・<b>1A：</b>周圍小氣泡或少量周圍積液，無膿瘍（距發炎腸段 &lt;5 cm）。<br>
+      ・<b>1B：</b>膿瘍 ≤4 cm。　・<b>2A：</b>膿瘍 &gt;4 cm。<br>
+      ・<b>2B：</b>遠端（腹腔內或後腹腔）游離氣體。<br>
+      ・<b>3：</b>瀰漫性積液，無遠端游離氣體。　・<b>4：</b>瀰漫性積液合併遠端游離氣體。<br><br>
+
+      <b>Hinchey 分級（外科所見）：</b>Ia 蜂窩組織炎／局限發炎；Ib 周圍 (mesenteric) 膿瘍；II 骨盆腔或遠端腹腔膿瘍；III 廣泛化膿性腹膜炎；IV 廣泛糞性腹膜炎。<br><br>
+
+      <b>經驗性抗生素（WSES IAI 2017／PPU 2020，正常腎功能）：</b><br>
+      ・社區型・非危重：Amoxicillin/clavulanate 1.2–2.2 g q6h；或 Ceftriaxone 2 g q24h + Metronidazole 500 mg q6h；或 Cefotaxime 2 g q8h + Metronidazole 500 mg q6h。β-lactam 過敏：Ciprofloxacin 400 mg q8h + Metronidazole 500 mg q6h。疑社區型 ESBL：Ertapenem 1 g q24h，或 Tigecycline 100 mg 起始後 50 mg q12h。<br>
+      ・社區型・危重：Piperacillin/tazobactam 4.5 g q6h；或 Cefepime 2 g q8h + Metronidazole 500 mg q6h。疑 ESBL：Meropenem 1 g q8h／Doripenem 500 mg q8h／Imipenem-cilastatin 1 g q8h。<br>
+      ・醫療照護相關・非危重：Piperacillin/tazobactam 4.5 g q6h；高 MDRO 風險：Meropenem 1 g q8h（±Ampicillin 2 g q6h）等；carbapenem-sparing：Piperacillin/tazobactam + Tigecycline。<br>
+      ・醫療照護相關・危重：Meropenem／Doripenem／Imipenem-cilastatin ＋ Vancomycin（25–30 mg/kg 起始後 15–20 mg/kg q8h）或 Teicoplanin（12 mg/kg q12h×3 劑後 q24h）；VRE 風險：Linezolid 600 mg q12h 或 Daptomycin 6 mg/kg q24h。<br>
+      ・抗黴菌：<b>不建議常規經驗性使用</b>；僅高風險者（免疫低下、高齡、多重共病、ICU 久住、腹腔感染未解）。Fluconazole（起始 12 mg/kg≈800 mg，之後 6 mg/kg/day）用於社區型 Candida 腹膜炎、無 azole 暴露者；非嗜中性球低下之危重病人首選 echinocandin（caspofungin／micafungin／anidulafungin）；Amphotericin B 3–5 mg/kg/day 用於無替代或不耐受者。<br>
+      ・療程：source control 完成後<b>短療程 3–5 天</b>（或至發炎指標正常），依培養降階 (de-escalation)（1C）。<br>
+      <span class="note">劑量與經驗性選擇務必依 NTUH 抗生素管理計畫 (ASP) 與院內 antibiogram、腎功能與過敏史調整。</span>
+    </div>
+  </details>
+
+  <div class="flow-step" id="gp_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">穿孔病因／部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('type','ppu',this)">消化性潰瘍穿孔 PPU<span class="fo-sub">胃／十二指腸潰瘍穿孔 — WSES 2020</span></button>
+      <button class="flow-opt" onclick="gpPick('type','alcd',this)">左側大腸憩室炎／憩室穿孔 ALCD<span class="fo-sub">依 WSES CT 分級處置 — WSES 2020</span></button>
+      <button class="flow-opt" onclick="gpPick('type','icp',this)">醫源性大腸鏡穿孔 ICP<span class="fo-sub">依診斷時機與穿孔特徵處置 — WSES 2017</span></button>
+      <button class="flow-opt" onclick="gpPick('type','sb',this)">小腸及其他腸胃道穿孔<span class="fo-sub">無專屬指引，依續發性腹膜炎／腹腔感染通則 — WSES IAI 2017</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">不論何種病因，三大核心不變：source control、早期廣效抗生素、敗血症復甦。</div>
+  </div>
+
+  <!-- PPU -->
+  <div class="flow-connector hidden" id="gp_c2">↓</div>
+  <div class="flow-step hidden" id="gp_s2ppu">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">是否符合手術指徵？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('ppu','op',this)">有手術指徵<span class="fo-sub">顯著氣腹、顯影劑外滲，或腹膜炎徵象（1C）</span></button>
+      <button class="flow-opt" onclick="gpPick('ppu','nom',this)">極選擇性非手術 (NOM) 條件<span class="fo-sub">水溶性顯影劑證實穿孔<b>已封閉</b>、生命徵象正常、無腹膜炎／敗血症（2C）</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/pulp.html'">🧮 開啟 PULP Score（PPU 30 天死亡率）</button>
+  </div>
+
+  <div class="flow-connector hidden" id="gp_c3">↓</div>
+  <div class="flow-step hidden" id="gp_s3ppu">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">手術入路：病人血行動力學狀態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('hemo','stable',this)">穩定<span class="fo-sub">具技術與設備時採腹腔鏡（2B）</span></button>
+      <button class="flow-opt" onclick="gpPick('hemo','unstable',this)">不穩定／敗血性休克<span class="fo-sub">開腹手術（1D）；生理嚴重失衡者採損傷控制策略（2D）</span></button>
+    </div>
+  </div>
+
+  <!-- ALCD -->
+  <div class="flow-step hidden" id="gp_s2alcd">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">WSES 大腸憩室炎 CT 分級？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('alcd','0',this)">0 無併發症<span class="fo-sub">憩室、腸壁增厚、周圍脂肪密度增加</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','1A',this)">1A 周圍小氣泡／少量積液<span class="fo-sub">無膿瘍，距發炎腸段 &lt;5 cm</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','1B',this)">1B 膿瘍 ≤4 cm<span class="fo-sub">局限性膿瘍</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','2A',this)">2A 膿瘍 &gt;4 cm<span class="fo-sub">較大之局限性膿瘍</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','2B',this)">2B 遠端游離氣體<span class="fo-sub">腹腔內或後腹腔遠端游離氣體</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','3',this)">3 瀰漫性積液（化膿性腹膜炎）<span class="fo-sub">無遠端游離氣體</span></button>
+      <button class="flow-opt" onclick="gpPick('alcd','4',this)">4 瀰漫性積液 + 遠端游離氣體（糞性腹膜炎）<span class="fo-sub">Hinchey IV 對應</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='diverticulitis.html'">→ 完整版：急性大腸憩室炎處置決策（含非手術後大腸評估）</button>
+  </div>
+
+  <div class="flow-connector hidden" id="gp_c3b">↓</div>
+  <div class="flow-step hidden" id="gp_s3alcd">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人生理狀況與共病？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('fit','fit',this)">穩定且無重大共病<span class="fo-sub">可承受一次吻合</span></button>
+      <button class="flow-opt" onclick="gpPick('fit','unfit',this)">危重／不穩定／多重共病<span class="fo-sub">敗血性休克、需升壓劑或多重器官障礙</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/mpi.html'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
+  </div>
+
+  <!-- ICP -->
+  <div class="flow-step hidden" id="gp_s2icp">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">診斷時機與穿孔特徵？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('icp','endo',this)">術中即時發現之小穿孔<span class="fo-sub">腸道準備良好、病人穩定，具內視鏡夾閉技術與設備</span></button>
+      <button class="flow-opt" onclick="gpPick('icp','nom',this)">術後發現之小穿孔，臨床穩定<span class="fo-sub">無瀰漫腹膜炎、無敗血，且無須手術之潛在腸道疾病</span></button>
+      <button class="flow-opt" onclick="gpPick('icp','op',this)">須手術之情形<span class="fo-sub">腹膜炎徵象／臨床惡化／大穿孔／保守失敗／腸道準備不良／合併需手術之大腸疾病（如疑癌未切除息肉）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">診斷到治療的時間差是關鍵預後因子，應盡早處置。</div>
+  </div>
+
+  <!-- 小腸／其他 -->
+  <div class="flow-step hidden" id="gp_s2sb">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">生理狀態與腹腔污染程度？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('sb','stable',this)">穩定、污染有限<span class="fo-sub">無需升壓劑，污染侷限</span></button>
+      <button class="flow-opt" onclick="gpPick('sb','unstable',this)">血行不穩／瀰漫污染／生理失衡<span class="fo-sub">敗血性休克、糞性腹膜炎、酸中毒・低體溫・凝血異常</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/mpi.html'">🧮 開啟 MPI（Mannheim 腹膜炎指數）</button>
+  </div>
+
+  <div class="flow-rec rec-idle" id="gp_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gp_c4">↓</div>
+  <div class="flow-step hidden" id="gp_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">術中所見：穿孔大小與部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="gpPick('size','small',this)">穿孔 &lt;2 cm<span class="fo-sub">胃或十二指腸</span></button>
+      <button class="flow-opt" onclick="gpPick('size','gastric',this)">穿孔 ≥2 cm — 胃<span class="fo-sub">須考量惡性可能</span></button>
+      <button class="flow-opt" onclick="gpPick('size','duodenal',this)">穿孔 ≥2 cm — 十二指腸<span class="fo-sub">修補困難、滲漏風險高</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此步驟為<b>開腹／腹腔鏡探查後</b>之所見，僅在上方建議手術後才需回答。</div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="gp_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 4</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="gpReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/31921329/" target="_blank" rel="noopener" class="ref-link">Tarasconi A, et al. Perforated and bleeding peptic ulcer: WSES guidelines. World J Emerg Surg. 2020;15:3.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32423408/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2020 update of the WSES guidelines for acute colonic diverticulitis. World J Emerg Surg. 2020;15:32.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29416554/" target="_blank" rel="noopener" class="ref-link">de'Angelis N, et al. 2017 WSES guidelines for iatrogenic colonoscopy perforation. World J Emerg Surg. 2018;13:5.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28702076/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. Management of intra-abdominal infections: 2017 WSES guidelines. World J Emerg Surg. 2017;12:29.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const gpSt={type:null,ppu:null,hemo:null,alcd:null,fit:null,icp:null,sb:null,size:null};
+function gpPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='type'){ gpSt.type=val; gpSt.ppu=null; gpSt.hemo=null; gpSt.alcd=null; gpSt.fit=null; gpSt.icp=null; gpSt.sb=null; gpSt.size=null; }
+  else if(key==='ppu'){ gpSt.ppu=val; gpSt.hemo=null; gpSt.size=null; }
+  else if(key==='hemo'){ gpSt.hemo=val; gpSt.size=null; }
+  else if(key==='alcd'){ gpSt.alcd=val; gpSt.fit=null; }
+  else if(key==='fit'){ gpSt.fit=val; }
+  else if(key==='icp'){ gpSt.icp=val; }
+  else if(key==='sb'){ gpSt.sb=val; }
+  else if(key==='size'){ gpSt.size=val; }
+  gpRender();
+}
+function gpRender(){
+  const t=gpSt.type;
+  flowShow('gp_c2', !!t);
+  flowShow('gp_s2ppu',  t==='ppu');
+  flowShow('gp_s2alcd', t==='alcd');
+  flowShow('gp_s2icp',  t==='icp');
+  flowShow('gp_s2sb',   t==='sb');
+  if(t!=='ppu')  flowClearSel('gp_s2ppu');
+  if(t!=='alcd') flowClearSel('gp_s2alcd');
+  if(t!=='icp')  flowClearSel('gp_s2icp');
+  if(t!=='sb')   flowClearSel('gp_s2sb');
+
+  // 步驟 3：PPU 手術入路 / ALCD 瀰漫腹膜炎之生理狀況
+  const showPpu3 = (t==='ppu' && gpSt.ppu==='op');
+  const showAlcd3 = (t==='alcd' && (gpSt.alcd==='3' || gpSt.alcd==='4'));
+  flowShow('gp_c3', showPpu3);
+  flowShow('gp_s3ppu', showPpu3);
+  flowShow('gp_c3b', showAlcd3);
+  flowShow('gp_s3alcd', showAlcd3);
+  if(!showPpu3) flowClearSel('gp_s3ppu');
+  if(!showAlcd3) flowClearSel('gp_s3alcd');
+
+  const abx='<li>採檢（腹水細菌與黴菌培養）後盡早給廣效抗生素涵蓋 G(−)／G(+)／厭氧菌，之後依培養降階；source control 完成後短療程 3–5 天（1C）。</li>';
+  const resus='<li>復甦目標：MAP ≥65 mmHg、尿量 ≥0.5 mL/kg/h、乳酸正常化；不穩定者於 1 小時內快速復甦並同步外科會診（1C）。</li>';
+
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  if(t==='ppu'){
+    if(!gpSt.ppu){ cls='rec-idle'; title='請完成步驟 2'; }
+    else if(gpSt.ppu==='nom'){
+      cls='rec-blue'; title='極選擇性非手術治療 (NOM) — 隨時可轉手術';
+      detail='<li><b>不建議常規採用 NOM</b>；僅用於水溶性顯影劑證實穿孔已封閉、生命徵象正常且無腹膜炎／敗血症者（2C）。</li>'+
+             '<li>必要條件（R 原則）：影像無滲漏、反覆理學檢查、反覆抽血追蹤、呼吸與腎臟支持、監測資源、<b>隨時可轉手術</b>。</li>'+
+             '<li>&gt;70 歲對 NOM 反應差；NOM 失敗會增加死亡率，需審慎選擇。</li>'+
+             '<li>不建議以內視鏡治療（clip／膠／支架）作為標準處置（2C）。</li>'+abx;
+      note='WSES 2020（PPU）：NOM 僅限極選擇性個案（2C）。';
+    }
+    else if(gpSt.ppu==='op'){
+      if(!gpSt.hemo){ cls='rec-idle'; title='請完成步驟 3'; }
+      else if(gpSt.hemo==='stable'){
+        cls='rec-elective'; title='盡早手術：腹腔鏡修補（具技術與設備時）';
+        detail='<li>顯著氣腹、顯影劑外滲或腹膜炎徵象即建議手術（1C）；<b>盡早</b>手術，尤其延遲就醫與 &gt;70 歲者（1B）— 每延遲 1 小時死亡率上升約 2.4%。</li>'+
+               '<li>穩定病人在具備技術與設備時採腹腔鏡（2B）；否則開腹。</li>'+
+               '<li>Boey ≥3、年齡 &gt;70 歲、症狀 &gt;24 小時為腹腔鏡修補之相對禁忌；PULP &gt;7 建議加護照護。</li>'+resus+abx;
+        note='WSES 2020（PPU）：手術指徵 1C、盡早手術 1B、腹腔鏡 2B。';
+      } else {
+        cls='rec-urgent'; title='開腹手術 + 損傷控制策略 (DCS)';
+        detail='<li>不穩定病人採<b>開腹</b>手術（1D）。</li>'+
+               '<li>敗血性休克且生理嚴重失衡者採損傷控制：縮短手術、暫時性關腹、ICU 復甦後再探查（2D）。</li>'+
+               '<li>血行不穩／需升壓劑時<b>避免吻合</b>。</li>'+resus+abx;
+        note='WSES 2020（PPU）：不穩定者開腹 1D、DCS 2D。';
+      }
+    }
+  }
+  else if(t==='alcd'){
+    const s=gpSt.alcd;
+    if(!s){ cls='rec-idle'; title='請完成步驟 2'; }
+    else if(s==='0'){
+      cls='rec-blue'; title='保守治療；免疫正常且無全身發炎徵象者<b>不需抗生素</b>';
+      detail='<li>免疫正常、無全身發炎徵象之無併發症憩室炎<b>不給抗生素</b>（1A）。</li>'+
+             '<li>可門診或住院支持治療；診斷需綜合病史、理學、發炎指標與影像，不可僅憑理學檢查。</li>';
+      note='WSES ALCD 2020：Stage 0 不給抗生素（1A）。';
+    } else if(s==='1A'){
+      cls='rec-blue'; title='保守治療 (NOM)；有周圍游離氣體者給抗生素';
+      detail='<li>周圍游離氣體 (pericolic extraluminal gas) 者<b>建議給抗生素</b>。</li>'+
+             '<li>穩定且社會支持足夠者可考慮門診管理，密切追蹤。</li>';
+      note='WSES ALCD 2020：Stage 1A 以 NOM 為主。';
+    } else if(s==='1B'){
+      cls='rec-blue'; title='膿瘍 ≤4 cm：單用抗生素之非手術治療';
+      detail='<li>膿瘍 ≤4 cm 建議<b>單以抗生素</b>治療（2B），不需常規引流。</li>'+
+             '<li>臨床無改善時重新影像評估，考慮引流或手術。</li>'+abx;
+      note='WSES ALCD 2020：Stage 1B（2B）。';
+    } else if(s==='2A'){
+      cls='rec-blue'; title='膿瘍 &gt;4 cm：經皮引流 + 抗生素';
+      detail='<li>膿瘍 &gt;4 cm 建議<b>經皮引流 (percutaneous drainage) + 抗生素</b>（2B）。</li>'+
+             '<li>引流失敗或臨床惡化 → 手術切除。</li>'+abx;
+      note='WSES ALCD 2020：Stage 2A（2B）。';
+    } else if(s==='2B'){
+      cls='rec-blue'; title='遠端游離氣體：穩定者可試 NOM，失敗或不穩定則手術切除';
+      detail='<li>血行動力學穩定且無瀰漫腹膜炎者可嘗試 NOM（抗生素 + 密切追蹤）。</li>'+
+             '<li>NOM 失敗或病人不穩定 → <b>手術切除</b>。</li>'+abx;
+      note='WSES ALCD 2020：Stage 2B。';
+    } else if(s==='3'||s==='4'){
+      const feculent = (s==='4');
+      if(!gpSt.fit){ cls='rec-idle'; title='請完成步驟 3'; }
+      else if(gpSt.fit==='fit'){
+        cls='rec-urgent'; title='切除 + 一次吻合 ± 保護性造口';
+        detail='<li>瀰漫'+(feculent?'糞性':'化膿性')+'腹膜炎但病人<b>穩定且無重大共病</b>：建議切除 + 一次吻合 ± 分流造口（2B）。</li>'+
+               (feculent?'<li>Stage 4（糞性腹膜炎）僅在<b>選擇性</b>穩定病人才行一次吻合，門檻應更高。</li>':'<li>具設備與技術時可行腹腔鏡乙狀結腸切除。</li>')+
+               '<li><b>不建議</b>常規以腹腔鏡沖洗 (laparoscopic lavage) 處理化膿性腹膜炎，僅極選擇性個案。</li>'+resus+abx;
+        note='WSES ALCD 2020：Stage '+s+'（2B）。';
+      } else {
+        cls='rec-urgent'; title='Hartmann 手術（切除 + 末端造口）';
+        detail='<li>廣泛腹膜炎且<b>危重或多重共病</b>者建議 Hartmann 手術（1B）。</li>'+
+               '<li>生理嚴重失衡者採損傷控制策略，暫時性關腹後 ICU 復甦再重建。</li>'+resus+abx;
+        note='WSES ALCD 2020：危重／多共病之廣泛腹膜炎行 Hartmann（1B）。';
+      }
+    }
+  }
+  else if(t==='icp'){
+    const i=gpSt.icp;
+    if(!i){ cls='rec-idle'; title='請完成步驟 2'; }
+    else if(i==='endo'){
+      cls='rec-blue'; title='內視鏡夾閉 (endoscopic closure)';
+      detail='<li>術中即時發現之小穿孔、腸道準備良好、病人穩定者，以 through-the-scope 或 over-the-scope clip 夾閉。</li>'+
+             '<li>夾閉後禁食、靜脈輸液、廣效抗生素並密切追蹤；出現腹膜炎或惡化即轉手術。</li>';
+      note='WSES ICP 2017：處置取決於診斷時機、穿孔特徵、病人狀況與術者經驗設備。';
+    } else if(i==='nom'){
+      cls='rec-blue'; title='保守治療 (NOM)：禁食 + 靜脈輸液 + 廣效抗生素 + 密切追蹤';
+      detail='<li>適用小穿孔、無瀰漫腹膜炎、無敗血、臨床穩定，且無需手術之潛在腸道疾病者。</li>'+
+             '<li>密切追蹤理學檢查與發炎指標；<b>惡化即轉手術</b>。</li>'+abx;
+      note='WSES ICP 2017：診斷到治療的時間差是關鍵預後因子。';
+    } else if(i==='op'){
+      cls='rec-urgent'; title='手術治療（具技術時腹腔鏡優先）';
+      detail='<li>指徵：腹膜炎徵象、臨床惡化、大穿孔、保守失敗、腸道準備不良，或合併需手術之大腸疾病（如疑癌未切除息肉）。</li>'+
+             '<li>術式依所見選擇：一次縫合修補、楔形切除、穿孔外置造口，或大腸切除 ± 一次吻合／造口。</li>'+
+             '<li>腸道準備不良、污染嚴重或病人不穩定時<b>避免一次吻合</b>，改採造口。</li>'+resus+abx;
+      note='WSES ICP 2017：應盡早處置，腹腔鏡為優先入路。';
+    }
+  }
+  else if(t==='sb'){
+    const s=gpSt.sb;
+    if(!s){ cls='rec-idle'; title='請完成步驟 2'; }
+    else if(s==='stable'){
+      cls='rec-elective'; title='切除吻合 + source control';
+      detail='<li>穩定且污染有限者可行穿孔腸段切除 + 一次吻合。</li>'+
+             '<li>核心三原則：source control（清除穿孔源）、早期廣效抗生素、敗血症復甦。</li>'+
+             '<li>以 MPI／SOFA／qSOFA 評估嚴重度與死亡風險（MPI &gt;26 為高風險切點）。</li>'+resus+abx;
+      note='WSES IAI 2017：續發性腹膜炎與腹腔感染通則。';
+    } else {
+      cls='rec-urgent'; title='損傷控制手術 (DCS) + 開腹策略 (open abdomen) + 造口';
+      detail='<li>血行不穩、瀰漫污染或生理失衡者採 DCS：縮短手術、暫時性關腹，ICU 復甦後計畫性再探查。</li>'+
+             '<li><b>不穩定或高風險吻合處避免一次吻合</b>，考慮造口。</li>'+
+             '<li>以 MPI／SOFA／qSOFA 評估嚴重度（MPI &gt;26 提示高死亡風險與需加護照護）。</li>'+resus+abx;
+      note='WSES IAI 2017：不穩定者採損傷控制與開腹策略。';
+    }
+  }
+  flowRec('gp_rec',cls,title,detail,note);
+
+  // 第二段：PPU 開腹後所見決定修補術式
+  const toOR = (t==='ppu' && gpSt.ppu==='op' && !!gpSt.hemo);
+  flowShow('gp_c4', toOR);
+  flowShow('gp_s4', toOR);
+  if(!toOR) flowClearSel('gp_s4');
+
+  let c2='rec-idle', t2='請完成步驟 4', d2='', n2='';
+  if(toOR && gpSt.size){
+    const dcs = (gpSt.hemo==='unstable');
+    if(gpSt.size==='small'){
+      c2='rec-elective'; t2='一次縫合修補 (primary repair)';
+      d2='<li>穿孔 &lt;2 cm 行一次縫合修補；是否加<b>網膜貼補 (omental patch)</b> 無定論，可選擇性用於邊緣脆弱之潰瘍（2C）。</li>'+
+         '<li>取潰瘍邊緣切片（尤其胃潰瘍）以排除惡性。</li>'+
+         '<li>術後 PPI、H. pylori 檢測與根除、停用 NSAID。</li>';
+      n2='WSES 2020（PPU）：&lt;2 cm 一次修補（2C）。';
+    } else if(gpSt.size==='gastric'){
+      c2='rec-urgent'; t2='胃穿孔 ≥2 cm：疑惡性者切除 + 術中冰凍病理';
+      d2='<li>疑惡性者<b>切除 + 術中冰凍病理</b>；必要時行胃切除並重建（2D）。</li>'+
+         '<li>單純修補常無法安全封閉大穿孔，且會遺漏惡性病灶。</li>';
+      n2='WSES 2020（PPU）：胃穿孔 ≥2 cm（2D）。';
+    } else if(gpSt.size==='duodenal'){
+      c2='rec-urgent'; t2='十二指腸穿孔 ≥2 cm：切除或修補 ± 幽門排除／外部膽汁引流';
+      d2='<li>依情況考慮切除或修補 ± <b>幽門排除 (pyloric exclusion)</b>／外部膽汁引流（2D）。</li>'+
+         '<li>十二指腸造口僅限極端情況。</li>'+
+         '<li>滲漏風險高，應放置足夠引流並規劃術後營養途徑。</li>';
+      n2='WSES 2020（PPU）：十二指腸穿孔 ≥2 cm（2D）。';
+    }
+    if(dcs){ d2 += '<li>此病人血行不穩：先以損傷控制方式完成暫時性 source control 與關腹，待 ICU 復甦後再探查完成確定性重建；<b>避免於不穩定狀態下吻合</b>。</li>'; c2='rec-urgent'; }
+  }
+  flowRec('gp_rec2',c2,t2,d2,n2);
+  flowShow('gp_rec2', toOR);
+}
+function gpReset(){
+  Object.keys(gpSt).forEach(k=>gpSt[k]=null);
+  document.querySelectorAll('#view-gi-perf-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  gpRender();
+}
+gpReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

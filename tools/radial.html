@@ -19,6 +19,7 @@
 <div class="view active" id="view-radial">
   <div class="app-header">
     <div><div class="eyebrow">Mesenteric Ischemia Scoring Tool</div><h1>RADIAL Score</h1><div class="sub">預測急性腸繫膜缺血（AMI）住院死亡率</div></div>
+    <button class="back-btn" id="rd_back_giisch" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-ischemia.html'">← 返回腸胃道缺血決策</button>
     <button class="back-btn" onclick="location.href='../index.html#card-view-radial'">← 返回主選單</button>
   </div>
   <div class="card">
@@ -57,6 +58,8 @@ function radialCalc(){
 }
 document.querySelectorAll('.radial-cb').forEach(cb=>cb.addEventListener('change',radialCalc));
 radialCalc();
+/* 由腸胃道缺血決策流程開啟時，顯示暫時性返回鍵 */
+if(location.search.indexOf('from=gi-isch')>=0){var _b=document.getElementById('rd_back_giisch'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

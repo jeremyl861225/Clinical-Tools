@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腸胃道缺血處置決策 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-gi-isch-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸胃道缺血處置決策</h1><div class="sub">GI Ischemia · AMI subtype + revascularisation / Colon ischemia distribution + severity（ESVS 2025 · WSES 2022 · ACG 2015）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-gi-isch-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>① 診斷：影像、生物標記與 AMI 分型 Diagnosis</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：</b>先分辨缺血部位／型態（小腸為主之急性腸繫膜缺血 AMI vs. 大腸缺血 CI）；AMI 依 CTA 分型與臨床狀態決定血流重建方式，CI 先依<b>分布</b>再依嚴重度。<b>術中所見（腸段活性）</b>屬手術中的第二段決策，列於建議之後。<br><br>
+
+      <b>臨床警訊（WSES 2022）：</b>與理學檢查<b>不成比例</b>的劇烈腹痛，在排除前應假設為 AMI（1C）。栓塞型典型三徵（ESVS 2025）：① 劇烈腹痛但理學所見輕微（disproportionate pain）② 排空腸道（嘔吐、腹瀉）③ 有栓子來源（最常為 AF）。病程三期：初期劇痛（可逆）→ 疼痛減輕（潛伏期，最易誤判）→ 疼痛再起並惡化為瀰漫性腹膜炎（不可逆）。<br><br>
+
+      <b>影像（ESVS 2025）：</b><br>
+      ・<b>Rec 33（I/B）</b>：懷疑 AMI 者<b>不論腎功能</b>，立即行 CTA，<b>動脈相 + 靜脈相、切片 ≤1 mm</b>（非顯影相為選配）。2017 年版建議的三相已改為雙相／split-bolus 即可。<br>
+      ・<b>Rec 32（I/C）</b>：轉檢單上<b>必須寫明「懷疑 AMI」</b> — 診斷率高度取決於報告者是否被提示。<br>
+      ・不建議腹部平片（WSES 1B）；口服對比劑<b>不需要且可能有害</b>（WSES 2022）。<br>
+      ・診斷每延遲 6 小時死亡率加倍（WSES 2022）；未治療死亡率 &gt;50%。<br><br>
+
+      <b>生物標記 — 兩大指引都轉為否定：</b><br>
+      ・<b>ESVS 2025 Rec 31（IIIb/C）</b>：<b>不建議</b>以單次 lactate 或 D-dimer 確認或排除 AMI。（2017 年版曾建議 D-dimer 用於排除，2025 年<b>推翻</b>：其他研究之 NPV 僅 87–96%，且幾乎所有急腹症都會升高。）<br>
+      ・ESVS：「把 lactate 當成腸道缺血指標是一種<b>誤解</b>」— 高 lactate 與代謝性酸中毒代表全身低灌流與高死亡風險，與病因無關。缺血由黏膜向漿膜進展，故全身 lactate 上升時多已透壁。<br>
+      ・WSES 2022（2B）：無單一數據可確診；&gt;90% 有白血球增多、88% 有代謝性酸中毒；D-dimer &gt;0.9 mg/L 特異度 82%、敏感度 60%。<b>約半數 AMI 有 amylase 上升</b>，易誤判為胰臟炎。<br>
+      ・I-FABP、citrulline、D-lactate 目前皆缺乏可信之臨床驗證。<br><br>
+
+      <b>AMI 四種亞型（英文縮寫依 ESVS／WSES 慣用）：</b><br>
+      ・<b>AMAE — acute mesenteric arterial embolism（動脈栓塞，25–50%）：</b>心房顫動、近期 MI、心內血栓、二尖瓣疾病、心內膜炎、栓塞病史；突發劇痛嘔吐；栓子多卡於 SMA 起源遠端 3–10 cm（常保留近端空腸與大腸）。<br>
+      ・<b>AMAT — acute mesenteric arterial thrombosis（動脈血栓，20–40%）：</b>瀰漫性動脈粥狀硬化、餐後腹痛、體重減輕、慢性腸繫膜缺血病史；阻塞多在內臟動脈<b>起源處</b>（celiac／SMA／IMA）。<br>
+      ・<b>NOMI — non-occlusive mesenteric ischaemia（20–25%）：</b>心衰竭、低血流狀態、多器官功能障礙、升壓劑、腹腔室症候群、血液透析、心臟手術後；血管本身通暢而痙攣；危重病人常無明顯腹部徵象（WSES 2C）。<br>
+      ・<b>MVT／AMVT — (acute) mesenteric venous thrombosis（&lt;10%）：</b>門脈高壓、VTE 病史、口服避孕藥／雌激素、血栓體質、胰臟炎、惡性腫瘤、脾切除／減重手術；CTA 靜脈相 target sign。<br><br>
+
+      <b>NOMI 的診斷陷阱（ESVS 2025）：</b><br>
+      ・<b>Rec 43（IIa/C）</b>：休克病人若 CTA 顯示腸壁不顯影、小腸壁增厚、腸壁積氣或門靜脈氣，<b>而 SMA 無顯著狹窄</b>，應懷疑 NOMI。<br>
+      ・SMA 口徑縮小是真的（NOMI 平均 7.32 → 5.39 mm），但<b>沒有先前的 CT 可比對時難以判讀</b>；且升壓劑本身就會使 SMA 變細 — 這個徵象部分測到的是藥物而非疾病。<br>
+      ・<b>CT 陰性不能排除 NOMI：</b>確診病例中 25–30% CT 完全無缺血徵象（含已有透壁壞死者）。高度懷疑時應直接探查；ICU／心臟術後病人可考慮<b>床邊診斷性腹腔鏡</b>（WSES 2022）。<br>
+      ・血管攝影（Siegelman 準則）為歷史上的參考標準，<b>從未經前瞻驗證</b>，且低血容與升壓劑本身即可造成相同影像；今日主要作為<b>治療途徑</b>而非診斷工具。<br>
+      ・「非阻塞性」不等於血管正常：解剖研究中約 <b>40%</b> 的致死性 NOMI 仍有 &gt;25% 的 SMA 狹窄。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>② 復甦、抗生素與抗凝劑量 Resuscitation · Antibiotics · Anticoagulation</summary>
+    <div class="box-inner">
+      <b>復甦目標（WSES 2022, 1B）：</b>確診後立即補液改善內臟灌流、矯正電解質、放置鼻胃管減壓。晶體液 ± 血品；避免超生理性氧輸送；以 <b>lactate clearance</b> 監測灌流。<br><br>
+
+      <b>升壓劑選擇 — 請理解其證據強度：</b>WSES 2022 建議審慎使用升壓劑，並謂 <b>dobutamine、低劑量 dopamine、milrinone</b> 對腸繫膜血流影響較小、宜以 <b>noradrenaline + dobutamine 而非 vasopressin</b>。<br>
+      <span class="note">⚠ 誠實揭露：這兩句在 WSES 原文所引的是一篇 UpToDate 章節與兩篇敘述性回顧，<b>無原始生理學研究支撐</b>；ESVS 2025 對 NOMI 的升壓劑選擇<b>未做任何建議</b>。動物實驗中 vasopressin 使 SMA 血流下降約 51%（豬，敗血性休克），是「NOMI 避免 vasopressin」最實在的機轉依據；但 VASST 試驗（n=778）顯示低劑量 vasopressin 的嚴重不良事件率與 norepinephrine 相同（10.3% vs 10.5%）。實務上請視為<b>生理學推論而非結果實證</b>。</span><br><br>
+
+      <b>抗生素：</b><br>
+      ・<b>ESVS 2025 Rec 41（I/C）</b>：AMI 病人<b>建議給予抗生素</b>。但指引同時明言「<b>抗生素應依院內規範給予；由於不同抗生素臨床結果相近，無法對藥物種類做出specific建議</b>」— 亦即<b>指引本身不指定藥物</b>。<br>
+      ・WSES 2022（1C）：立即給予廣效抗生素；免疫正常且穩定者<b>至少 4 天</b>，依培養調整。<br>
+      ・實務選藥依續發性腹膜炎／腹腔感染通則（WSES IAI 2017，正常腎功能）：<br>
+      　－ 社區型・非危重：Amoxicillin/clavulanate 1.2–2.2 g q6h；或 Ceftriaxone 2 g q24h + Metronidazole 500 mg q6h；或 Cefotaxime 2 g q8h + Metronidazole 500 mg q6h。β-lactam 過敏：Ciprofloxacin 400 mg q8h + Metronidazole 500 mg q6h。<br>
+      　－ 社區型・危重：Piperacillin/tazobactam 4.5 g q6h；或 Cefepime 2 g q8h + Metronidazole 500 mg q6h。疑 ESBL：Meropenem 1 g q8h／Imipenem-cilastatin 1 g q8h。<br>
+      　－ 醫療照護相關・危重：Meropenem 1 g q8h ＋ Vancomycin（起始 25–30 mg/kg，之後 15–20 mg/kg q8h）或 Teicoplanin（12 mg/kg q12h×3 劑後 q24h）；VRE 風險：Linezolid 600 mg q12h 或 Daptomycin 6 mg/kg q24h。<br>
+      ・<b>研究中：</b>口服 gentamicin + metronidazole（腸道去汙）在一項 67 人前瞻世代中與<b>降低不可逆腸壞死風險</b>獨立相關（Nuzzo 2019）；ESVS 據此指出 <b>ORIAMI 隨機試驗（NCT06387147）</b>正在進行。<b>目前尚不足以常規採用。</b><br>
+      <span class="note">劑量與選藥務必依 NTUH 抗生素管理計畫 (ASP)、院內 antibiogram、腎功能與過敏史調整。</span><br><br>
+
+      <b>抗凝 — 「全劑量抗凝」指的是什麼：</b>指引所稱之 full-dose / therapeutic anticoagulation，實務上即<b>治療劑量的 unfractionated heparin (UFH) 靜脈持續灌注</b>（急性期、腎功能不佳或隨時可能手術者優先選 UFH，因半衰期短、可用 protamine 反轉；無手術計畫者可改治療劑量 LMWH）。<br>
+      ・<b>ESVS 2025 與 WSES 2022 均未載明數字劑量。</b>臨床常用之體重換算 UFH 方案為：<b>loading 80 U/kg IV bolus（常見上限 5,000 U）→ maintenance 18 U/kg/h IV 持續灌注</b>，之後依院內 nomogram 以 aPTT（或 anti-Xa）滴定。<span class="note">此為一般臨床做法，<b>非上述指引明訂</b>，請依院內抗凝方案執行。</span><br>
+      ・<b>WSES 2022 有明訂的目標</b>：術後 aPTT 維持 <b>40–60 秒</b>。<br>
+      ・<b>MVT 的抗凝（ESVS 2025）</b>：Rec 50（I/C）第一線為 UFH 或 LMWH；Rec 52（I/B）續以 VKA 或 LMWH <b>抗凝 3–6 個月</b>；Rec 53（IIb/C）DOAC 可作為替代；Rec 54/55 有暫時性危險因子者延長至 6 個月以上；<b>Rec 56（I/C）原發性 MVT 或有永久性危險因子者終身抗凝</b>。Rec 48：預計 3–6 個月後停藥之選擇性病人可做血栓體質檢查。<br>
+      ・<b>支架術後抗血小板 — 兩指引不一致，請留意</b>：ESVS 2025 <b>Rec 18（IIb/C）</b>：動脈硬化性腸繫膜動脈疾病行血管內重建後，可考慮<b>短期（至少 1 個月）</b>雙抗（aspirin + clopidogrel）以降低支架栓塞。WSES 2022 則寫 clopidogrel 6 個月 + aspirin 終身。<br>
+      ・追蹤：接受血流重建者應影像監測（CTA／duplex）（WSES 1B）。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>③ 血管內處置與手術 Endovascular · Surgery</summary>
+    <div class="box-inner">
+      <b>ESVS 2025 手術與重建建議：</b><br>
+      ・<b>Rec 34（I/C）</b>：應於具 <b>24/7 多專科團隊</b>、且同時具備開放與血管內腸繫膜重建能力的中心治療。<br>
+      ・<b>Rec 35（IIa/C）</b>：應考慮<b>先血流重建再切除腸段</b>（revascularisation first）— 灌流恢復後界線才判得準。<br>
+      ・<b>Rec 37（IIa/B）</b>：SMA 栓塞或血栓所致之 AMI，<b>血管內重建為第一線</b>。<br>
+      ・<b>Rec 38（IIb/C）</b>：經皮支架不可行時可考慮<b>逆行開放式腸繫膜支架 (ROMS)</b>。<br>
+      ・<b>Rec 36（IIa/C）</b>：開放式重建後應以術中血管攝影、duplex 或 Doppler 做完成度確認。<br>
+      ・<b>Rec 39（IIb/C）</b>：可考慮以<b>定量 ICG 螢光影像</b>輔助判斷腸段活性。<br>
+      ・<b>Rec 40（IIa/C）</b>：需切除腸段者，應考慮<b>切除但不做一期重建 + 計畫性 second-look 剖腹</b>；暫時性關腹可用負壓傷口治療裝置。<br>
+      ・<b>Rec 44（I/C）</b>：懷疑 NOMI 且合併腹腔室症候群者，<b>緊急減壓剖腹</b>。<br>
+      ・<b>Rec 45（IIb/C）</b>：NOMI 可考慮於<b>保護性肝素化下</b>經 SMA 導管內給予血管擴張劑。<br><br>
+
+      <b>血管內處置選項（技術與數據）：</b><br>
+      ・<b>抽吸取栓 (aspiration embolectomy)</b>：適用<b>無腹膜炎</b>者；經導線進入 SMA 迴結腸分支，換硬導線建立支撐後置入可拆式 hub 之 introducer，內置導引／專用抽吸導管抽栓，反覆造影抽吸。死亡率較低、可重複施行。<br>
+      ・<b>SMA 溶栓</b>：出血風險；約 38% 仍需剖腹；禁忌為近期手術／外傷、腦或腸胃道出血、未控制高血壓。<br>
+      ・<b>順行支架 (antegrade stenting)</b>：有剝離風險，動脈角度不利時困難。<br>
+      ・<b>ROMS（逆行開放式支架）</b>：需剖腹；存在壞死腸段時可避免繞道；技術成功率約 94%、通暢率 76–88%。<br>
+      ・開放式選項：栓子切除術 ± 血管成形術（栓塞型）；繞道（自 supraceliac aorta 順行或自 infrarenal aorta／髂動脈逆行）、血栓內膜切除 + 補片（血栓型）。<br><br>
+
+      <b>NOMI 導管內血管擴張劑劑量（ESVS 2025 原文）：</b><br>
+      ・<b>Papaverine：SMA 內 bolus 80 mg，續以 30–60 mg/h 持續灌注 24–72 小時。</b><br>
+      ・<b>PGE1（alprostadil）動脈內</b>：SMA 內 20 µg 於 10 分鐘給予，續以 60–80 µg/24 h（Rittgerodt 2022，n=42 前瞻觀察；24 小時 lactate 下降 &gt;2 mmol/L 者 28 天死亡率 59%，未達者 85%）。<br>
+      <span class="note">⚠ ESVS 明言「<b>無任何比較不同血管擴張劑、劑量或方案的研究，因此無法給出精確建議</b>」，且警告經腸繫膜循環給予血管擴張劑<b>有因全身性低血壓致猝死之風險</b>，屬最後手段。此領域<b>從未有隨機試驗</b>；papaverine 與 heparin 不相容（會沉澱），需分開管路。</span><br><br>
+
+      <b>短腸症與緩和照護（WSES 2022）：</b>大範圍切除後之短腸症應恢復消化道連續性，並輔以荷爾蒙治療（GLP-2 類似物 teduglutide）以達營養自主（2C）；大範圍腸壞死時應審慎評估共病與預立醫療意願，<b>緩和照護可能是最佳策略</b>（2C）。<br><br>
+
+      <b>流行病學（ESVS 2025 / AMESI）：</b>AMI 發生率 0.9–2.0/10 萬人年；NOMI 約占 AMI 的 13–15%，是預後最差的亞型 — AMESI 前瞻研究中 NOMI 55/418（13.2%），<b>住院死亡率 72.7%、90 天 74.5%</b>。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>④ 大腸缺血 (CI)：分布、嚴重度、誘因與手術 Colon Ischemia</summary>
+    <div class="box-inner">
+      <b>概觀（ACG 2015）：</b>最常見的腸道缺血型態，多數為非壞疽、可自癒。典型序列為突發輕度腹絞痛 → 急欲排便 → 24 小時內鮮紅／暗紅血便。<b>整體死亡率約 7.7%</b>（西班牙 CIE 前瞻研究 n=364）；不良結局（死亡和／或手術）12.9%；但臨床上<b>僅 24.2% 在術前被正確懷疑為 CI</b>。<br><br>
+
+      <b>分布與預後 — 這是最重要的分流依據：</b><br>
+      ・<b>孤立性右結腸缺血 IRCI</b>（屬 <b>SMA</b> 領域，與小腸同源）：占 CI 約 <b>9–26%</b>（社區世代 9%、三級中心 25%）。死亡率 20.3–22.5%（其他部位 9–11.9%）、手術率 44.3–54.9%（其他部位 11%）、住院天數中位數 10 vs 6 天。<br>
+      　－ <b>表現不同</b>：IRCI 以<b>腹痛而非血便</b>為主；<b>59% 只有急性腹痛而無直腸出血</b>，僅 25–46% 有血便。ACG 建議 2 反向表述：「<b>有血便者應考慮為非 IRCI</b>」。→ 右側缺血 + 劇痛 + <b>沒有血便</b>是最危險的組合，不是最良性的。<br>
+      　－ <b>與 AMI 連續</b>：IRCI 中 <b>15.4% 合併或隨即發生 AMI</b>；此群<b>手術率 100%、30 天死亡率 70%</b>（IRCI 單獨者 43.1%／14.5%）。BUN 與 WBC 明顯較高是床邊線索（非切點）。<br>
+      　－ <b>共病</b>：冠心病 39.2%（其他型 21.4%）、末期腎病透析 20.3%（7.7%）。透析病人的 CI 有 <b>82%</b> 侵犯右側（非透析者 26%）。<br>
+      ・<b>全結腸型 pancolonic</b>：約 7.3%，<b>死亡率 21.7%</b>，與 IRCI 相當。代表 SMA 與 IMA 兩套循環同時低灌流；最常見誘因為敗血症（70%），共病以第五期 CKD（30.4%）與周邊血管疾病（21.7%）為主。<br>
+      ・<b>左側／遠端／橫結腸</b>：最常見（左側約 32.6%），<b>預後最佳</b> — 手術率最低、住院最短。<br>
+      ・<b>分水嶺解剖</b>：脾曲 <b>Griffiths point</b>（SMA 中結腸動脈左支 ↔ IMA 左結腸動脈升支，經 marginal artery／arc of Riolan 連接）與乙狀結腸 <b>Sudeck point</b>（IMA 最末乙狀結腸分支）。系統性回顧（n=2,864）顯示 marginal artery 在脾曲與直腸乙狀結腸交界的<b>存在率各僅 82%</b>，即約 18% 的人天生缺如。<br>
+      ・<b>直腸受侵犯要分辨兩種情況</b>：<b>孤立性</b>直腸缺血 &lt;1%（直腸有 splanchnic + systemic 雙重血供），一旦出現代表兩套都失效 — 近半數為<b>主動脈髂動脈阻塞性疾病</b>、40% 為全身低流量狀態，且需先排除 IBD、感染性與放射性直腸炎；<b>作為廣泛分布之一部分</b>被波及則約 15%，依全結腸型處理。<br><br>
+
+      <b>ACG 2015 嚴重度分級（適用於非 IRCI／非全結腸型）：</b><br>
+      ・<b>輕度：</b>典型症狀、節段性結腸炎，且無下列中度危險因子。<br>
+      ・<b>中度：</b>具下列 <b>≤3 項</b>：男性、SBP&lt;90、HR&gt;100、腹痛但無直腸出血、BUN&gt;20 mg/dL、Hgb&lt;12 g/dL、LDH&gt;350 U/L、Na&lt;136 mEq/L、WBC&gt;15×10⁹/L、大腸鏡見黏膜潰瘍。<br>
+      ・<b>重度：</b>符合中度標準 <b>&gt;3 項</b>，或任一：腹膜炎徵象、影像見腸壁積氣／門靜脈氣、大腸鏡見壞疽、<b>全結腸分布或 IRCI</b>（故本流程將分布獨立為前一步）。<br>
+      <span class="note">⚠ 指引內部不一致：Table 6 之 LDH 切點為 &gt;350 U/L，Table 7 所引原始研究用 &gt;450 U/L。此外所有實驗室數值均為<b>組間關聯</b>而非驗證過的決策切點（LDH 的 OR 信賴區間寬達 1.5–138.2）。</span><br><br>
+
+      <b>影像與內視鏡（ACG 2015）：</b><br>
+      ・Rec 1（強／中）：CT（靜脈 + 口服對比）為首選，評估分布與分期。<br>
+      ・<b>Rec 3（強／中）：疑似 IRCI 或無法排除 AMI 者，施行多相 CTA</b>（不含口服對比、含動脈相與門靜脈相），時機為<b>入院時或出院前</b>。<br>
+      ・Rec 4（強／中）：CT／MRI 見腸壁積氣與門靜脈氣可預測透壁梗塞。<br>
+      ・<b>Rec 5（條件式）：若情境符合 AMI 前哨（IRCI、劇痛無出血、心房顫動）而多相 CT 未見血管阻塞，應考慮傳統內臟動脈攝影</b> — 因單次 triple-phase CT 偵測 SMA 血栓的<b>敏感度僅 26%</b>（特異度近 100%），<b>陰性不能排除</b>。<br>
+      ・大腸鏡：48 小時內早期施行、充氣量最小化、到病灶最遠端即停、除壞疽外應切片；<b>有腹膜炎、壞疽或腸壁積氣者禁行</b>。<br>
+      ・建議檢驗：Albumin、Amylase、CBC、電解質全套、CK、Lactate、LDH、糞便 C. difficile toxin／培養／寄生蟲卵。<br><br>
+
+      <b>特定誘因與亞型（影響處置者）：</b><br>
+      ・<b>便秘／糞石 (stercoral)</b>：便秘 OR 1.62、IBS OR 2.01、瀉劑 OR 4.73；前瞻研究中 <b>25%</b> 病人發病前 30 天內有便秘（回溯病歷僅記錄到 7%）。糞石造成壓力性壞死；穿孔好發<b>乙狀結腸</b>（穿孔病例 95% 侵犯乙狀結腸，其中 13/20 完全無直腸受累）。CT 三徵：糞便嵌塞 + 局部腸壁增厚 + 周圍脂肪浸潤。<b>62% 病歷記載「無腹痛」— 無腹痛不能排除。</b>手術要點：本病侵犯的是<b>一整段結腸而非單一穿孔點</b>，術後死亡率依術式為 縫合+近端造口 57%、單純外置 43%、<b>切除病變段+外置 32%</b>。<br>
+      ・<b>阻塞性大腸癌近端之缺血</b>：缺血段<b>位於腫瘤近端</b>（90% 為緊鄰連續分布，10% 有跳躍區；病理系列中平均距阻塞點 14.6 cm）。<b>阻塞性左側結腸癌手術中 16% 術中發現盲腸缺血或撐脹性穿孔</b>（法國全國研究 n=1,220）。<b>關鍵手術教訓（1982、1990、1993 三篇獨立來源一致）：缺血腸段在術中可外觀正常，把它納入吻合會導致吻合口崩解／滲漏／狹窄</b>。近端結腸缺血是 (次)全結腸切除的適應症；colon-sparing（迴盲部切除 + 迴結腸吻合）在全國性資料中結果相當（死亡率 7% vs 12%，NS）。CT 可在 75% 病例區分缺血段與腫瘤段（缺血段較薄 1.0 vs 2.0 cm、較長 10.1 vs 5.9 cm、均質增強）。<b>盲腸腸壁積氣不等於透壁壞死</b> — 手術證實透壁壞死者僅 26%。<br>
+      ・<b>運動誘發（runner's colitis）</b>：次極量運動使 <b>SMA 血流下降 32%、總 splanchnic 下降 43%</b>（低強度運動則不下降）。馬拉松後糞便潛血轉陽 23%、超馬 85%，多在 48 小時內自限。ACG 彙整之 12 例多為 26–42 歲女性，<b>10 例侵犯右結腸</b>，2 例接受切除，<b>無死亡</b>。<span class="note">復發率與重返運動建議<b>文獻無資料</b>；NSAID 亦未被證實為共因。</span><br><br>
+
+      <b>手術（ACG 2015 Table 9 + 外科文獻）：</b><br>
+      ・急性適應症：腹膜炎徵象、大量出血、全結腸猛暴性結腸炎 ± 毒性巨結腸、門靜脈氣／腸壁積氣、臨床惡化。<br>
+      ・亞急性：節段性缺血 2–3 週內未改善、症狀持續或蛋白流失性結腸病；<b>看似癒合卻反覆敗血</b>（通常有一小段未癒合腸段作為細菌移位入口，切除可根治）。<br>
+      ・慢性：有症狀之結腸狹窄、有症狀之節段性缺血性結腸炎。<br>
+      ・<b>切除範圍</b>：黏膜傷害可超出漿膜外觀，單靠肉眼視診結腸不足；建議<b>當場剖開切除標本檢視黏膜</b>確認切緣健康。切緣有缺血變化者主要外科併發症 <b>OR 3.7</b>；術前酸中毒（pH 每降 0.1，死亡 OR 2.5）者宜早期剖腹。<span class="note">「黏膜超出漿膜幾公分」無任何原始數據，故本頁不列數字。</span><br>
+      ・<b>吻合 vs 造口</b>：三個手術世代中造口率 <b>61–87%</b>，即不吻合為主流。NSQIP toxic colitis 世代中做一期吻合的 28 例（已是最穩定的一群）<b>滲漏率仍達 32.3%</b>。<b>預設 Hartmann／末端造口</b>；一期吻合僅限血行動力學穩定、切緣確定有活性、無腹膜炎者，並考慮保護性造口。<br>
+      ・<b>手術死亡率</b>：系統性回顧中需手術者死亡 39.3%；三個世代 37–47%；ACS-NSQIP 4,548 例 30 天死亡 <b>25.3%</b>。獨立危險因子含高齡、功能狀態差、敗血性休克、輸血、急性腎衰竭、<b>入院到手術的延遲</b>。<br>
+      ・<b>腹腔鏡</b>：NSQIP 顯示死亡率 6.4% vs 26%，但台灣單中心 propensity-matched 研究中<b>配對後死亡率差異消失</b> — 這是選病人的結果，<b>不可宣稱腹腔鏡降低死亡率</b>。<br>
+      ・<b>唯一經獨立外部驗證的評分是 ICMR</b>（Ischemic Colitis Mortality Risk，外部 AUC 0.75），且僅適用於<b>已決定開刀</b>者預測圍術期死亡，<b>不能用來決定要不要開刀</b>。ACG 的 mild/moderate/severe 分層是專家共識，<b>從未經驗證研究測試</b>。<br><br>
+
+      <b>恢復後追蹤：</b>近期未篩檢者應於缺血事件恢復<b>數週後</b>安排大腸鏡（CI 與遠端惡性腫瘤、狹窄、糞石等阻塞性病灶有關聯），急性期<b>不做</b>篩檢性大腸鏡。狹窄發生率 3.3–9.4%，<b>多數無症狀且可能於數月至數年間自行緩解</b>；僅有症狀時才需節段切除（ACG 標示內視鏡擴張為「未經證實 unproven」）。復發率 5 年約 10%（1／2／3／5 年 2.9%／5.1%／8.1%／9.7%）。年輕病人與<b>所有復發性 CI</b> 應考慮血栓體質檢查。
+    </div>
+  </details>
+
+  <div class="flow-step" id="gi_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">缺血部位／型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('type','ami',this)">急性腸繫膜缺血 AMI<span class="fo-sub">Acute mesenteric ischaemia — 小腸為主；與理學檢查不成比例之劇烈腹痛、酸中毒、器官衰竭</span></button>
+      <button class="flow-opt" onclick="giPick('type','ci',this)">缺血性結腸炎／大腸缺血 CI<span class="fo-sub">Colon ischemia — 輕度腹絞痛、急欲排便，24 小時內血便／血性腹瀉</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">兩者可連續發生：孤立性右結腸缺血 (IRCI) 中 15.4% 合併或隨即發生 AMI，故 IRCI 一律須以多相 CTA 排除 SMA 阻塞。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gi_c2">↓</div>
+  <div class="flow-step hidden" id="gi_s2a">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">CTA 分型（AMI 亞型）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('sub','emb',this)"><b>AMAE</b> — Acute Mesenteric Arterial Embolism<span class="fo-sub">腸繫膜動脈栓塞｜心房顫動／近期 MI／心內血栓；栓子卡於 SMA 起源遠端 3–10 cm，常保留近端空腸與大腸</span></button>
+      <button class="flow-opt" onclick="giPick('sub','thr',this)"><b>AMAT</b> — Acute Mesenteric Arterial Thrombosis<span class="fo-sub">腸繫膜動脈血栓｜瀰漫動脈硬化、餐後腹痛、體重減輕；阻塞位於內臟動脈起源處</span></button>
+      <button class="flow-opt" onclick="giPick('sub','nomi',this)"><b>NOMI</b> — Non-Occlusive Mesenteric Ischaemia<span class="fo-sub">非阻塞性腸繫膜缺血｜危重、需升壓劑、多器官功能障礙、透析、心臟術後；血管通暢而痙攣</span></button>
+      <button class="flow-opt" onclick="giPick('sub','mvt',this)"><b>MVT</b> — (Acute) Mesenteric Venous Thrombosis<span class="fo-sub">腸繫膜靜脈血栓｜門脈高壓／血栓體質／胰臟炎／惡性腫瘤；CTA 靜脈相 target sign</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">同步復甦：補液、廣效抗生素（ESVS Rec 41, I/C）、鼻胃管減壓、矯正電解質，並開始治療劑量 UFH 抗凝。</div>
+  </div>
+
+  <div class="flow-step hidden" id="gi_s2b">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">大腸缺血的分布型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('dist','irci',this)">孤立性右結腸缺血 IRCI<span class="fo-sub">SMA 領域；常為腹痛而無血便（59%）；死亡率 20–22%、手術率 44–55%</span></button>
+      <button class="flow-opt" onclick="giPick('dist','pan',this)">全結腸型 pancolonic<span class="fo-sub">SMA 與 IMA 同時低灌流；死亡率 21.7%；多因敗血症</span></button>
+      <button class="flow-opt" onclick="giPick('dist','left',this)">左側／遠端／橫結腸（節段性）<span class="fo-sub">最常見且預後最佳；分水嶺為脾曲 Griffiths point 與乙狀結腸 Sudeck point</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">IRCI 與全結腸型依 ACG 標準本身即屬「重度」，故不再重複詢問嚴重度。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gi_c3">↓</div>
+  <div class="flow-step hidden" id="gi_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">臨床狀態：有無腹膜炎或血行動力學不穩？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('acute','perit',this)">有腹膜炎徵象／血行動力學不穩<span class="fo-sub">腸段已可能壞死 — 立即探查，不因等待血管處置而延遲</span></button>
+      <button class="flow-opt" onclick="giPick('acute','stable',this)">無腹膜炎且血行動力學穩定<span class="fo-sub">可先行血流重建（ESVS Rec 37：血管內為第一線）或藥物治療</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/radial.html?from=gi-isch'">🧮 開啟 RADIAL Score（AMI 住院死亡率，可從該頁返回本決策）</button>
+  </div>
+
+  <div class="flow-step hidden" id="gi_s3b">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">ACG 2015 嚴重度分級？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('ci','mild',this)">輕度<span class="fo-sub">典型症狀、節段性，無下列中度危險因子</span></button>
+      <button class="flow-opt" onclick="giPick('ci','mod',this)">中度<span class="fo-sub">具中度危險因子 ≤3 項（男性／SBP&lt;90／HR&gt;100／腹痛無出血／BUN&gt;20／Hgb&lt;12／LDH&gt;350／Na&lt;136／WBC&gt;15／黏膜潰瘍）</span></button>
+      <button class="flow-opt" onclick="giPick('ci','sev',this)">重度<span class="fo-sub">中度危險因子 &gt;3 項，或腹膜炎徵象／腸壁積氣・門靜脈氣／大腸鏡見壞疽</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="gi_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="gi_c4">↓</div>
+  <div class="flow-step hidden" id="gi_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">術中所見：腸段壞死範圍？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('op','seg',this)">節段性壞死，可切除<span class="fo-sub">壞死侷限於單一或少數腸段，切除後仍保留足夠腸長</span></button>
+      <button class="flow-opt" onclick="giPick('op','massive',this)">大範圍壞死<span class="fo-sub">近全小腸／全大腸壞死，切除後將導致短腸症</span></button>
+      <button class="flow-opt" onclick="giPick('op','undet',this)">缺血但活性未定<span class="fo-sub">腸段顏色／蠕動／脈動未定，尚無明確壞死界線；可用定量 ICG 螢光輔助（ESVS Rec 39, IIb/C）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此步驟為<b>開腹後</b>之所見，僅在上方建議送入手術室後才需回答。ESVS Rec 35：先血流重建再判定切除範圍。</div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="gi_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 4</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="giReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/40513642/" target="_blank" rel="noopener" class="ref-link">Koelemay MJ, et al. ESVS 2025 Clinical Practice Guidelines on the Management of Diseases of the Mesenteric and Renal Arteries and Veins. Eur J Vasc Endovasc Surg. 2025;70(2):153-218.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36261857/" target="_blank" rel="noopener" class="ref-link">Bala M, et al. Acute mesenteric ischemia: updated guidelines of the WSES. World J Emerg Surg. 2022;17(1):54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25559486/" target="_blank" rel="noopener" class="ref-link">Brandt LJ, et al. ACG Clinical Guideline: Colon Ischemia. Am J Gastroenterol. 2015;110(1):18-44.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38263058/" target="_blank" rel="noopener" class="ref-link">Reintam Blaser A, et al. AMESI study. Crit Care. 2024;28(1):32.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25911119/" target="_blank" rel="noopener" class="ref-link">Feuerstadt P, et al. Right-sided colon ischemia with acute mesenteric ischemia. Clin Gastroenterol Hepatol. 2015;13(11):1962-8.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30576324/" target="_blank" rel="noopener" class="ref-link">Nuzzo A, et al. Oral antibiotics reduce intestinal necrosis in AMI. Am J Gastroenterol. 2019;114(2):348-51.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35379286/" target="_blank" rel="noopener" class="ref-link">Rittgerodt N, et al. Intra-arterial PGE1 in NOMI. Crit Care. 2022;26(1):92.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24425619/" target="_blank" rel="noopener" class="ref-link">Genstorfer J, et al. Surgery for ischemic colitis. Int J Colorectal Dis. 2014;29(4):493-503.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28702076/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. Management of intra-abdominal infections: 2017 WSES guidelines. World J Emerg Surg. 2017;12:29.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const giSt={type:null,sub:null,dist:null,ci:null,acute:null,op:null};
+function giPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='type'){ giSt.type=val; giSt.sub=null; giSt.dist=null; giSt.ci=null; giSt.acute=null; giSt.op=null; }
+  else if(key==='sub'){ giSt.sub=val; giSt.acute=null; giSt.op=null; }
+  else if(key==='dist'){ giSt.dist=val; giSt.ci=null; giSt.op=null; }
+  else if(key==='ci'){ giSt.ci=val; giSt.op=null; }
+  else if(key==='acute'){ giSt.acute=val; giSt.op=null; }
+  else if(key==='op'){ giSt.op=val; }
+  giRender();
+}
+function giRender(){
+  const t=giSt.type;
+  // 步驟 2：依型態分流
+  flowShow('gi_c2', !!t);
+  flowShow('gi_s2a', t==='ami');
+  flowShow('gi_s2b', t==='ci');
+  if(t!=='ami') flowClearSel('gi_s2a');
+  if(t!=='ci') flowClearSel('gi_s2b');
+  // 步驟 3：AMI → 腹膜炎／血行動力學；CI → 僅節段性（左側／遠端／橫結腸）才需分級
+  const showS3a = (t==='ami' && !!giSt.sub);
+  const showS3b = (t==='ci' && giSt.dist==='left');
+  flowShow('gi_c3', showS3a || showS3b);
+  flowShow('gi_s3', showS3a);
+  flowShow('gi_s3b', showS3b);
+  if(!showS3a) flowClearSel('gi_s3');
+  if(!showS3b) flowClearSel('gi_s3b');
+
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+  const toOR = (t==='ami' && giSt.acute==='perit') ||
+               (t==='ci' && (giSt.dist==='irci' || giSt.dist==='pan' || giSt.ci==='sev'));
+
+  if(t==='ami'){
+    const s=giSt.sub, a=giSt.acute;
+    const common='<li><b>復甦（WSES 1B）：</b>晶體液 ± 血品、鼻胃管減壓、矯正電解質；升壓劑審慎使用，以 <b>lactate clearance</b> 監測灌流。</li>'+
+                 '<li><b>抗生素（ESVS Rec 41, I/C）：</b>立即給予；指引不指定藥物，依院內規範 — 社區型危重可用 Piperacillin/tazobactam 4.5 g q6h，或 Cefepime 2 g q8h + Metronidazole 500 mg q6h；疑 ESBL 用 Meropenem 1 g q8h。免疫正常且穩定者至少 4 天（WSES 1C）。</li>'+
+                 '<li><b>抗凝：</b>治療劑量 UFH 靜脈灌注（常用 loading 80 U/kg IV bolus → maintenance 18 U/kg/h，依院內 nomogram 以 aPTT／anti-Xa 滴定；<b>指引未載明數字劑量</b>）；WSES 明訂術後 aPTT 維持 <b>40–60 秒</b>。</li>';
+    if(!s){ cls='rec-idle'; title='請於步驟 2 選擇 AMI 亞型'; }
+    else if(!a){ cls='rec-idle'; title='請完成步驟 3'; }
+    else if(a==='perit'){
+      cls='rec-urgent'; title='立即剖腹／腹腔鏡探查 + 損害控制手術 (DCS)';
+      detail='<li>明顯腹膜炎者<b>立即</b>探查（WSES 1C）；ESVS Rec 35（IIa/C）建議<b>先血流重建再切除腸段</b>，灌流恢復後界線才判得準。</li>'+
+             '<li>需切除者採 <b>ESVS Rec 40（IIa/C）</b>：切除但<b>不做一期重建</b>，暫時性關腹（可用負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再做確定性處置。</li>'+
+             (s==='emb'?'<li><b>AMAE：</b>同次手術行 SMA 栓子切除術 (embolectomy) ± 血管成形術；已有腹膜炎者不適合單純血管內抽吸取栓。開放式重建後應以術中血管攝影／duplex／Doppler 確認完成度（ESVS Rec 36）。</li>':'')+
+             (s==='thr'?'<li><b>AMAT：</b>經皮支架不可行時行<b>逆行開放式腸繫膜支架 ROMS</b>（ESVS Rec 38, IIb/C），可在壞死腸段存在時避免繞道（技術成功率約 94%）；或自 supraceliac aorta 順行／infrarenal aorta・髂動脈逆行繞道、血栓內膜切除 + 補片。</li>':'')+
+             (s==='nomi'?'<li><b>NOMI：通常不需血管修補</b>；手術目的為切除壞死腸段，同時全力矯正誘因（優化心輸出、移除升壓劑、處理低血流狀態）。合併<b>腹腔室症候群者緊急減壓剖腹</b>（ESVS Rec 44, I/C）。</li>':'')+
+             (s==='mvt'?'<li><b>MVT：</b>手術僅在腹膜炎時進行，<b>盡量保留腸段</b>並採 damage control，避免過度切除（系統性回顧中腸切除率 43.9%）。術後仍以抗凝為主軸。</li>':'')+
+             common;
+      note='ESVS 2025 Rec 35、40、44；WSES 2022 建議 9（1C）、11（1B）。';
+    } else { // stable
+      if(s==='emb'){
+        cls='rec-elective'; title='AMAE：血管內血流重建為第一線（抽吸取栓）';
+        detail='<li><b>ESVS Rec 37（IIa/B）：SMA 栓塞或血栓所致之 AMI，血管內重建為第一線。</b>無腹膜炎者行<b>抽吸取栓</b>：導線進入 SMA 迴結腸分支、換硬導線建立支撐，置入可拆式 hub 之 introducer，內置抽吸導管邊退邊抽，反覆造影抽吸。</li>'+
+               '<li>溶栓為替代（約 38% 仍需剖腹）；禁忌：近期手術／外傷、腦或腸胃道出血、未控制高血壓。</li>'+
+               '<li>無法血管內處置時行開放式栓子切除術 + 血管成形術。</li>'+
+               '<li>應於具 <b>24/7 多專科團隊</b>、同時具開放與血管內能力的中心治療（ESVS Rec 34, I/C）；否則儘早轉送。</li>'+common+
+               '<li>臨床惡化即轉為探查 — CT 陰性或影像改善都不能取代反覆理學檢查。</li>';
+        note='ESVS 2025 Rec 34、37；WSES 2022 建議 10（1C）。';
+      } else if(s==='thr'){
+        cls='rec-elective'; title='AMAT：內臟動脈支架置放；不可行時繞道或 ROMS';
+        detail='<li>血管內優先（ESVS Rec 37, IIa/B）：順行支架 (antegrade stenting)，注意剝離風險與動脈角度。</li>'+
+               '<li>經皮不可行時考慮 <b>ROMS</b>（ESVS Rec 38, IIb/C）；或繞道 — 自 supraceliac aorta 順行、自 infrarenal aorta／髂動脈逆行。</li>'+
+               '<li><b>支架後抗血小板（兩指引不一致）：</b>ESVS Rec 18（IIb/C）建議<b>至少 1 個月</b>雙抗（aspirin + clopidogrel）；WSES 2022 則寫 clopidogrel 6 個月 + aspirin 終身。請依院內慣例並記錄理由。</li>'+common+
+               '<li>接受血流重建者應接受影像監測（CTA／duplex）（WSES 1B）。</li>';
+        note='ESVS 2025 Rec 18、37、38；WSES 2022 建議 10、18。';
+      } else if(s==='nomi'){
+        cls='rec-blue'; title='NOMI：矯正潛在病因 + 改善腸繫膜灌流（多為非手術）';
+        detail='<li><b>核心是治療誘因</b>：補液、優化心輸出量、盡量移除升壓劑、處理腹腔室症候群／透析相關低血流。合併腹腔室症候群者<b>緊急減壓剖腹</b>（ESVS Rec 44, I/C）。</li>'+
+               '<li>Systemic heparin；可考慮經 SMA 導管內血管擴張劑（ESVS Rec 45, IIb/C，須<b>在保護性肝素化下</b>）：<b>papaverine SMA 內 bolus 80 mg → 30–60 mg/h 持續 24–72 小時</b>，或 <b>PGE1 20 µg／10 分鐘 → 60–80 µg/24 h</b>。</li>'+
+               '<li><b>但請認清證據等級：</b>ESVS 明言無任何比較不同藥物或劑量的研究，此領域<b>從未有隨機試驗</b>；經腸繫膜循環給血管擴張劑<b>有全身性低血壓致猝死之風險</b>，屬最後手段。papaverine 與 heparin 不相容，須分開管路。</li>'+
+               '<li><b>通常不需血管修補</b>；一旦出現腹膜炎、穿孔或臨床惡化，立即手術切除壞死腸段。CT 陰性不能排除 NOMI（確診者 25–30% 無 CT 徵象），高度懷疑時可床邊診斷性腹腔鏡。</li>'+common;
+        note='ESVS 2025 Rec 43、44、45；WSES 2022 建議 6（2C）、13（1C）。NOMI 死亡率 58–73%。';
+      } else if(s==='mvt'){
+        cls='rec-blue'; title='MVT：抗凝為主之非手術治療';
+        detail='<li><b>ESVS Rec 50（I/C）：第一線為 UFH 或 LMWH 抗凝</b>，所有急性腸繫膜靜脈血栓病人皆適用。WSES 建議連續 unfractionated heparin 灌注（1B）。</li>'+
+               '<li>支持治療：鼻胃管抽吸、補液、腸道休息、止痛；出血者輸血、必要時全靜脈營養。</li>'+
+               '<li><b>療程（ESVS）：</b>Rec 52（I/B）續以 VKA 或 LMWH <b>抗凝 3–6 個月</b>；Rec 53（IIb/C）DOAC 為替代；Rec 54/55 有暫時性危險因子者可延長至 6 個月以上；<b>Rec 56（I/C）原發性 MVT 或有永久性危險因子者終身抗凝</b>。VKA 通常於 2–3 週後接手。</li>'+
+               '<li><b>病因檢查（ESVS Rec 46, I/B）：</b>應調查腹內惡性腫瘤、發炎性疾病、骨髓增生性腫瘤、CMV 與 SARS-CoV-2 感染、慢性肝病。反覆 MVT 併反覆流產者查抗磷脂症候群（Rec 47）；預計 3–6 個月停藥者可查血栓體質（Rec 48）。</li>'+
+               '<li>抗凝中仍惡化者可考慮<b>血管內靜脈溶栓或機械取栓</b>（ESVS Rec 51, IIb/C）。抗生素未被證實降低死亡率，僅用於穿孔、細菌移位敗血、pylephlebitis 或化膿性血栓性靜脈炎。</li>'+
+               '<li>僅在出現腹膜炎時手術。一年復發率約 2.7%。</li>'+common;
+        note='ESVS 2025 Rec 46–56；WSES 2022 建議 12（1B）。';
+      }
+    }
+  } else if(t==='ci'){
+    const d=giSt.dist, c=giSt.ci;
+    const ciAbx='<li>中度與重度病人應考慮<b>廣效抗生素</b>（ACG，Strong／Very low）— 此建議的人體證據薄弱，主要來自動物實驗。</li>';
+    if(!d){ cls='rec-idle'; title='請於步驟 2 選擇分布型態'; }
+    else if(d==='irci'){
+      cls='rec-urgent'; title='IRCI：立即多相 CTA 排除 AMI + 緊急外科會診';
+      detail='<li><b>ACG Rec 3（強／中）：疑似 IRCI 者施行多相 CTA</b>（動脈相 + 門靜脈相），時機為<b>入院時或出院前</b> — IRCI 中 15.4% 合併或隨即發生 AMI，該群<b>手術率 100%、30 天死亡率 70%</b>。</li>'+
+             '<li><b>ACG Rec 5（條件式）：多相 CT 未見血管阻塞但情境符合 AMI 前哨（劇痛無出血、心房顫動）者，考慮傳統內臟動脈攝影</b> — 單次 triple-phase CT 偵測 SMA 血栓敏感度僅 26%，<b>陰性不能排除</b>。</li>'+
+             '<li><b>IRCI 本身即為外科會診適應症，不需等到腹膜炎</b>（ACG 治療建議 2，強／中）。BUN 與 WBC 明顯升高是合併 AMI 的床邊警訊。</li>'+
+             '<li>矯正心血管異常、轉入加護監測。</li>'+ciAbx+
+             '<li>有腹膜炎、壞疽或腸壁積氣者<b>禁行大腸鏡</b>；否則 48 小時內早期大腸鏡確診（充氣量最小化、切片）。</li>'+
+             '<li>透析病人的 CI 有 82% 侵犯右側，屬特別高風險族群。</li>';
+      note='ACG 2015 Rec 3、5 與治療建議 2；Feuerstadt 2015（IRCI + AMI 之手術率與死亡率）。';
+    } else if(d==='pan'){
+      cls='rec-urgent'; title='全結腸型：緊急外科會診 + 加護照護（多數需手術）';
+      detail='<li>全結腸分布代表 <b>SMA 與 IMA 兩套循環同時低灌流</b>，依 ACG 標準即屬重度；<b>死亡率 21.7%</b>，與 IRCI 相當。</li>'+
+             '<li>緊急外科會診並轉入加護；最常見誘因為<b>敗血症（70%）</b>，應同步追查並處理敗血來源。</li>'+
+             '<li>手術指徵：腹膜炎徵象、大量出血、猛暴性全結腸炎 ± 毒性巨結腸、門靜脈氣／腸壁積氣、臨床惡化。</li>'+ciAbx+
+             '<li><b>禁行大腸鏡</b>（腹膜炎、壞疽或腸壁積氣者）。</li>'+
+             '<li>共病以第五期 CKD（30.4%）與周邊血管疾病（21.7%）為主，術前風險溝通應據實說明。</li>';
+      note='ACG 2015 治療建議 2（Strong／Moderate）；Brandt 2010（n=313 分布與預後）。';
+    } else if(d==='left'){
+      if(!c){ cls='rec-idle'; title='請於步驟 3 選擇 ACG 嚴重度'; }
+      else if(c==='mild'){
+        cls='rec-blue'; title='輕度：觀察 + 支持治療';
+        detail='<li>多數大腸缺血會自行緩解，<b>不需特殊治療</b>（ACG，Strong／Low）。</li>'+
+               '<li>補液、腸道休息、停用可能誘發之藥物（鴉片類與其他易致便秘藥物 AOR 1.75–1.96）。</li>'+
+               '<li>48 小時內早期大腸鏡確診：充氣量最小化、到病灶最遠端即停、除壞疽外應切片。</li>'+
+               '<li><b>追查誘因</b>：便秘／糞石、近期主動脈手術、低血流狀態、血管收縮藥物、長跑；以及<b>遠端阻塞性大腸癌</b>（缺血段位於腫瘤近端）。</li>'+
+               '<li>恢復數週後若近期未篩檢，安排大腸鏡（急性期不做篩檢性大腸鏡）。</li>';
+        note='ACG 2015 治療建議 1。5 年復發率約 10%。';
+      } else if(c==='mod'){
+        cls='rec-blue'; title='中度：矯正心血管異常 + 廣效抗生素 + 外科會診';
+        detail='<li>積極補液矯正低血壓／心搏過速等心血管異常。</li>'+ciAbx+
+               '<li><b>安排外科會診並密切追蹤</b>；治療無反應、惡化或出現腹膜炎即轉為手術。</li>'+
+               '<li>合併低血壓、心搏過速、<b>腹痛但無直腸出血</b>者屬手術警訊（腹痛無出血 OR 3.9；非血性腹瀉 OR 10.0 — 後者最易被誤當腸胃炎）。</li>'+
+               '<li>狹窄發生率 3.3–9.4%，多數無症狀且可能自行緩解；僅有症狀時才處理。</li>';
+        note='ACG 2015 治療建議 2、3；Montoro CIE 2011（獨立危險因子）。';
+      } else if(c==='sev'){
+        cls='rec-urgent'; title='重度：緊急外科會診（常需手術）+ 加護照護 + 廣效抗生素';
+        detail='<li>緊急外科會診並多數需手術：腹膜炎徵象、大量出血、猛暴性結腸炎 ± 毒性巨結腸、門靜脈氣／腸壁積氣、臨床惡化。</li>'+
+               '<li>轉入加護病房，矯正心血管異常。<b>術前酸中毒者宜早期剖腹</b>（pH 每下降 0.1，死亡 OR 2.5）。</li>'+ciAbx+
+               '<li><b>禁行大腸鏡。</b></li>'+
+               '<li>手術死亡率 25–47%；入院到手術的延遲本身即為獨立死亡危險因子。</li>'+
+               '<li>亞急性適應症別漏掉：<b>看似癒合卻反覆敗血</b>者通常有一小段未癒合腸段作為細菌移位入口，切除可根治。</li>';
+        note='ACG 2015 治療建議 2（Strong／Moderate）；Genstorfer 2014、ACS-NSQIP。';
+      }
+    }
+  }
+  flowRec('gi_rec',cls,title,detail,note);
+
+  // 第二段：術中所見（僅在建議送入手術室後）
+  flowShow('gi_c4', toOR);
+  flowShow('gi_s4', toOR);
+  if(!toOR) flowClearSel('gi_s4');
+
+  let c2='rec-idle', t2='請完成步驟 4', d2='', n2='';
+  if(toOR && giSt.op){
+    const isCI = (t==='ci');
+    if(giSt.op==='seg'){
+      c2='rec-elective'; t2 = isCI ? '節段性大腸切除 + 末端造口（預設不做一期吻合）' : '切除壞死腸段，不做一期重建 + 計畫性 second-look';
+      d2 = isCI
+        ? '<li><b>預設 Hartmann／末端造口。</b>三個手術世代中造口率 61–87%；NSQIP 中做一期吻合的（已是最穩定的一群）<b>滲漏率仍達 32.3%</b>。一期吻合僅限血行動力學穩定、切緣確定有活性、無腹膜炎者，並考慮保護性造口。</li>'+
+          '<li><b>切除範圍要夠寬：</b>黏膜傷害可超出漿膜外觀，單靠肉眼視診結腸不足 — 建議<b>當場剖開切除標本檢視黏膜</b>確認切緣健康。切緣有缺血變化者主要外科併發症 <b>OR 3.7</b>。</li>'+
+          '<li>若病因為<b>阻塞性大腸癌</b>：缺血段在腫瘤近端且術中可外觀正常，<b>納入吻合會導致崩解</b>；近端結腸缺血是 (次)全結腸切除的適應症，colon-sparing（迴盲部切除 + 迴結腸吻合）為結果相當的替代。</li>'+
+          '<li>若病因為<b>糞石 (stercoral)</b>：本病侵犯的是一整段結腸而非單一穿孔點；切除病變段 + 外置之死亡率 32%，優於縫合加近端造口 57%。</li>'+
+          '<li>術後加護照護，持續廣效抗生素並矯正心血管異常。</li>'
+        : '<li><b>ESVS Rec 40（IIa/C）：切除但不做一期重建</b>，暫時性關腹（負壓傷口治療裝置），24–48 小時計畫性 second-look 剖腹再決定吻合或造口（WSES 1B）。血行不穩或需升壓劑時<b>不做吻合</b>。</li>'+
+          '<li>ESVS Rec 35：先完成血流重建再判定切除範圍，確保切緣灌流；開放式重建後以術中血管攝影／duplex／Doppler 確認（Rec 36）。</li>'+
+          '<li>可用<b>定量 ICG 螢光影像</b>輔助判斷腸段活性（ESVS Rec 39, IIb/C）。</li>'+
+          '<li>術後加護目標為改善腸道灌流、預防多器官衰竭（WSES 1C），並維持抗凝（aPTT 40–60 秒）。</li>';
+      n2 = isCI ? 'ACG 2015；Genstorfer 2014（切緣缺血 OR 3.7）；NSQIP toxic colitis 世代。' : 'ESVS 2025 Rec 35、36、39、40；WSES 2022 建議 11（1B）、14（1C）。';
+    } else if(giSt.op==='massive'){
+      c2='rec-urgent'; t2='大範圍腸壞死：審慎評估共病與預立醫療意願，含緩和照護之選項';
+      d2='<li>大範圍腸壞死時應<b>審慎評估共病與預立醫療意願</b>，尋找最佳策略（<b>可能包含緩和照護</b>）（WSES 2C）。此決策應由多專科團隊 (MDT) 於專責中心做成（WSES 1C；ESVS Rec 34, I/C）。</li>'+
+         '<li>決定積極治療者：切除 + 暫時性關腹，24–48 小時計畫性 second-look，<b>盡可能保留有活性腸段</b>，避免一次切到底。</li>'+
+         '<li>大範圍切除後之短腸症應恢復消化道連續性，並輔以荷爾蒙治療（GLP-2 類似物 <b>teduglutide</b>）以達營養自主（WSES 2C）；同步安排腸道復健與居家全靜脈營養評估。</li>'+
+         '<li>術後持續抗凝與加護支持；預後溝通應據實 — NOMI 型 90 天死亡率可達 74.5%。</li>';
+      n2='WSES 2022 建議 15（1C）、16、17（2C）；ESVS 2025 Rec 34。';
+    } else if(giSt.op==='undet'){
+      c2='rec-blue'; t2='活性未定：暫不切除，暫時性關腹 + 24–48 小時計畫性 second-look';
+      d2='<li>活性未定之腸段<b>先不切除</b>，以損害控制策略暫時性關腹，24–48 小時再探查時重新判定界線（ESVS Rec 40；WSES 1B）。</li>'+
+         '<li>可用<b>定量 ICG 螢光影像</b>輔助判斷（ESVS Rec 39, IIb/C）；另有術中 Doppler、fluorescein 等輔助，但均無前瞻驗證。</li>'+
+         '<li>期間持續血流重建後之抗凝（aPTT 40–60 秒）、灌流優化與廣效抗生素。</li>'+
+         '<li>再探查仍無法判定時可重複 second-look，<b>避免過度切除造成短腸症</b>。</li>';
+      n2='ESVS 2025 Rec 39、40；WSES 2022 建議 11（1B）。';
+    }
+  }
+  flowRec('gi_rec2',c2,t2,d2,n2);
+  flowShow('gi_rec2', toOR);
+}
+function giReset(){
+  Object.keys(giSt).forEach(k=>giSt[k]=null);
+  document.querySelectorAll('#view-gi-isch-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  giRender();
+}
+giReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
