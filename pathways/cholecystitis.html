@@ -108,13 +108,50 @@
 
   <div class="flow-connector hidden" id="chole_bc_sub">↓</div>
   <div class="flow-step hidden" id="chole_bs_chg">
-    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">急性膽管炎 TG18 嚴重度？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="cholePick('chg','1',this)">Grade I 輕度<span class="fo-sub">不符合 Grade II／III 之任何條件（初診當下判定，不以「對初始治療有反應」為要件）</span></button>
-      <button class="flow-opt" onclick="cholePick('chg','2',this)">Grade II 中度<span class="fo-sub">下列<b>任兩項</b>：WBC &gt;12,000 或 &lt;4,000/mm³；高燒 ≥39°C；年齡 ≥75 歲；T-Bil ≥5 mg/dL；低白蛋白血症（&lt; 正常下限 × 0.7）</span></button>
-      <button class="flow-opt" onclick="cholePick('chg','3',this)">Grade III 重度<span class="fo-sub">器官功能障礙<b>任一</b>：心血管（dopamine ≥5 µg/kg/min 或任何劑量 norepinephrine）<br>神經（意識障礙）<br>呼吸（PaO₂/FiO₂ &lt;300）<br>腎（寡尿或 Cr &gt;2.0 mg/dL）<br>肝（PT-INR &gt;1.5）<br>血液（PLT &lt;100,000/mm³）</span></button>
+    <div class="flow-step-head"><span class="flow-num">1b</span><span class="flow-q">急性膽管炎：TG18 診斷準則與嚴重度？</span></div>
+
+    <div class="section-title" style="margin-top:4px;">A. 全身性發炎 Systemic inflammation</div>
+    <label class="item"><input type="checkbox" class="chg-a"> A-1 發燒和／或寒顫 <span class="unit">(BT &gt;38°C)</span></label>
+    <label class="item"><input type="checkbox" class="chg-a"> A-2 發炎反應證據 <span class="unit">(WBC &lt;4,000 或 &gt;10,000/µL，或 CRP ≥1 mg/dL)</span></label>
+
+    <div class="section-title">B. 膽汁鬱積 Cholestasis</div>
+    <label class="item"><input type="checkbox" class="chg-b"> B-1 黃疸 <span class="unit">(T-Bil ≥2 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-b"> B-2 肝功能檢驗異常 <span class="unit">(ALP／γ-GTP／AST／ALT 任一 &gt;1.5× 正常上限)</span></label>
+
+    <div class="section-title">C. 影像 Imaging</div>
+    <label class="item"><input type="checkbox" class="chg-c"> C-1 膽道擴張 <span class="unit">(Biliary dilatation)</span></label>
+    <label class="item"><input type="checkbox" class="chg-c"> C-2 影像可見病因 <span class="unit">(狹窄、結石、支架等)</span></label>
+    <div class="note">疑似診斷 = A 任一項 + （B 或 C 任一項）；確定診斷 = A + B + C 各任一項。須排除急性肝炎與其他急性腹症後方可判定。</div>
+
+    <div class="section-title">Grade III 器官功能障礙（任一項即為重度）</div>
+    <label class="item"><input type="checkbox" class="chg-g3"> 心血管 <span class="unit">(需 dopamine ≥5 µg/kg/min 或任何劑量 norepinephrine 之低血壓)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 神經 <span class="unit">(意識障礙)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 呼吸 <span class="unit">(PaO₂/FiO₂ &lt;300)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 腎臟 <span class="unit">(寡尿，或 Cr &gt;2.0 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 肝臟 <span class="unit">(PT-INR &gt;1.5)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g3"> 血液 <span class="unit">(血小板 &lt;100,000/mm³)</span></label>
+
+    <div class="section-title">Grade II 條件（符合任兩項即為中度）</div>
+    <label class="item"><input type="checkbox" class="chg-g2"> 白血球異常 <span class="unit">(&gt;12,000 或 &lt;4,000/mm³)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 高燒 <span class="unit">(≥39°C)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 年齡 <span class="unit">(≥75 歲)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 高膽紅素血症 <span class="unit">(T-Bil ≥5 mg/dL)</span></label>
+    <label class="item"><input type="checkbox" class="chg-g2"> 低白蛋白血症 <span class="unit">(&lt; 正常值下限 × 0.7)</span></label>
+    <div class="note">Grade II 已符合 <span id="chg_g2n">0</span> / 5 項。TG18 未給白蛋白絕對值，請依貴院正常下限換算。<br>Grade I 為<b>否定式定義</b>（Grade II／III 皆不符合），且係「初診當下」的判定。</div>
+
+    <div class="result" style="margin-top:14px;">
+      <div class="result-grid">
+        <div>
+          <div class="metric-label">診斷 Diagnosis</div>
+          <div class="metric-value" id="chg_dx">不符合</div>
+        </div>
+        <div>
+          <div class="metric-label">嚴重度 Severity</div>
+          <div class="metric-value big" id="chg_grade">—</div>
+        </div>
+      </div>
+      <div class="risk-note" id="chg_hint">請勾選上方診斷準則。</div>
     </div>
-    <div class="note" style="margin-top:8px;">分級前請先確認診斷：<b>疑似</b> = A 任一項 + （B 或 C 任一項）；<b>確定</b> = A + B + C 各任一項（詳見上方定義區）。須先排除急性肝炎與其他急性腹症；未達疑似診斷者不進行嚴重度分級。</div>
   </div>
 
   <div class="flow-step hidden" id="chole_bs_psev">
@@ -212,11 +249,45 @@
 </div>
 <script src="../js/common.js"></script>
 <script>
-const choleSt={bil:null,chg:null,pSev:null,asge:null,mir:null,grade:null,sp:null,perf:null,hemo:null,risk:null};
+const choleSt={bil:null,chg:null,chgDx:'none',chgBox:null,pSev:null,asge:null,mir:null,grade:null,sp:null,perf:null,hemo:null,risk:null};
+
+/* 步驟 1b：TG18 急性膽管炎 — 診斷準則（A/B/C）與嚴重度，由勾選項目自動判定 */
+function chgBoxes(){ return document.querySelectorAll('#chole_bs_chg input[type=checkbox]'); }
+function chgCount(sel){ let n=0; document.querySelectorAll('#chole_bs_chg '+sel).forEach(cb=>{ if(cb.checked) n++; }); return n; }
+function chgCalc(){
+  const a=chgCount('.chg-a'), b=chgCount('.chg-b'), c=chgCount('.chg-c');
+  const g3=chgCount('.chg-g3'), g2=chgCount('.chg-g2');
+  document.getElementById('chg_g2n').textContent=g2;
+
+  // 診斷：確定 = A+B+C；疑似 = A + (B 或 C)
+  let dx='none', dxText='不符合';
+  if(a>=1 && b>=1 && c>=1){ dx='definite'; dxText='確定診斷'; }
+  else if(a>=1 && (b>=1 || c>=1)){ dx='suspected'; dxText='疑似診斷'; }
+  else if(a+b+c>0){ dx='partial'; }
+  choleSt.chgDx=dx;
+
+  // 嚴重度分級只在有膽管炎診斷時才有意義
+  let grade=null, gradeText='—', hint='';
+  if(dx==='definite'||dx==='suspected'){
+    if(g3>=1){ grade='3'; gradeText='Grade III 重度'; }
+    else if(g2>=2){ grade='2'; gradeText='Grade II 中度'; }
+    else { grade='1'; gradeText='Grade I 輕度'; }
+    hint='處置與引流時機見下方建議。';
+  } else {
+    hint = (dx==='none') ? '請勾選上方診斷準則。'
+      : '尚未達 TG18 疑似診斷（需 A 至少一項，加上 B 或 C 至少一項）。未達診斷者不進行嚴重度分級；請考慮其他急性腹症並排除急性肝炎，必要時回步驟 1 改選其他分支。';
+  }
+  choleSt.chg=grade;
+  document.getElementById('chg_dx').textContent=dxText;
+  document.getElementById('chg_grade').textContent=gradeText;
+  document.getElementById('chg_hint').innerHTML=hint;
+  choleSt.chgBox=Array.prototype.map.call(chgBoxes(),cb=>cb.checked?1:0);
+}
+function chgClear(){ chgBoxes().forEach(cb=>{cb.checked=false;}); chgCalc(); }
+
 function cholePick(key,val,btn){
   flowSelect(btn);
-  if(key==='bil'){ choleSt.bil=val; choleSt.chg=null; choleSt.pSev=null; choleSt.asge=null; choleSt.mir=null; }
-  else if(key==='chg'){ choleSt.chg=val; }
+  if(key==='bil'){ choleSt.bil=val; choleSt.pSev=null; choleSt.asge=null; choleSt.mir=null; if(val!=='cholangitis') chgClear(); }
   else if(key==='pSev'){ choleSt.pSev=val; }
   else if(key==='asge'){ choleSt.asge=val; }
   else if(key==='mir'){ choleSt.mir=val; }
@@ -236,7 +307,6 @@ function choleRender(){
   flowShow('chole_bs_psev', b==='pancreatitis');
   flowShow('chole_bs_asge', b==='cbd');
   flowShow('chole_bs_mir', b==='mirizzi');
-  if(b!=='cholangitis') flowClearSel('chole_bs_chg');
   if(b!=='pancreatitis') flowClearSel('chole_bs_psev');
   if(b!=='cbd') flowClearSel('chole_bs_asge');
   if(b!=='mirizzi') flowClearSel('chole_bs_mir');
@@ -368,7 +438,9 @@ function choleBilRender(){
     else if(c==='3'){ cls='rec-urgent'; title='Grade III 重度：器官支持 + 儘速膽道引流';
       detail='<li><b>合併器官功能障礙。</b>立即器官支持（必要時插管與升壓劑）＋ 廣效抗生素與液體復甦。</li><li>於全身狀況經初始治療與呼吸循環支持改善後，<b>儘速</b>行內視鏡或經皮經肝膽道引流；病因（結石取出等）待病情穩定後再處理。</li><li>應轉送具緊急引流與重症照護能力之院所。</li>'+chgCommon;
       note='TG18：Grade III 於器官支持穩定後儘速引流。'+chgCommonNote; }
-    else { cls='rec-idle'; title='請於步驟 1b 選擇膽管炎 TG18 嚴重度'; }
+    else if(choleSt.chgDx==='partial'){ cls='rec-idle'; title='尚未達 TG18 疑似診斷 — 不進行嚴重度分級';
+      detail='<li>疑似診斷需 <b>A 至少一項</b>，加上 <b>B 或 C 至少一項</b>；確定診斷需 A + B + C 各至少一項。</li><li>請先排除急性肝炎與其他急性腹症；若不成立膽管炎，回步驟 1 改選其他分支。</li>'; }
+    else { cls='rec-idle'; title='請於步驟 1b 勾選 TG18 診斷準則'; }
   } else if(b==='pancreatitis'){
     if(choleSt.pSev==='mild'){ cls='rec-elective'; title='輕度膽石性胰臟炎：同次住院早期膽囊切除';
       detail='<li><b>同次住院（出院前）行腹腔鏡膽囊切除</b>，可顯著降低再發膽石相關併發症（PONCHO）。</li><li>不需常規 ERCP；僅在合併膽管炎或持續膽道阻塞時才行 ERCP。</li>';
@@ -413,13 +485,15 @@ function choleBilRender(){
 function choleReset(){
   Object.keys(choleSt).forEach(function(k){choleSt[k]=null;});
   document.querySelectorAll('#view-chole-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  chgClear();
   choleRender();
 }
+chgBoxes().forEach(function(cb){ cb.addEventListener('change',function(){ chgCalc(); choleRender(); choleSave(); }); });
 choleReset();
 
 /* 跨頁保存/還原選項（供 CCI 計算機往返使用） */
 function choleSave(){try{sessionStorage.setItem('choleSt',JSON.stringify(choleSt));}catch(e){}}
-function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);[['bil',choleSt.bil],['chg',choleSt.chg],['pSev',choleSt.pSev],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
+function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);if(Array.isArray(choleSt.chgBox)){var _cb=chgBoxes();choleSt.chgBox.forEach(function(v,i){if(_cb[i])_cb[i].checked=!!v;});chgCalc();}[['bil',choleSt.bil],['pSev',choleSt.pSev],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
 var _cholePickBase=cholePick;cholePick=function(k,v,btn){_cholePickBase(k,v,btn);choleSave();};
 var _choleResetBase=choleReset;choleReset=function(){try{sessionStorage.removeItem('choleSt');}catch(e){}_choleResetBase();};
 choleRestore();
