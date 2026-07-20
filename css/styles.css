@@ -433,8 +433,10 @@
      整段變成一大片同樣大小的字、看不出層次。 */
   .sys-body{font-size:12.5px; line-height:1.7;}
   .sys-body table.def-table{margin:8px 0 10px;}
-  /* 級別／型別字樣用與 def-table 第一欄同一個色，散文與表格才是同一套視覺語彙 */
-  .sys-body b.g{color:var(--accent2);}
+  /* 一套分級底下的小節（診斷準則／嚴重度／引流時機…）：比 .sys-head 低一階，
+     讓一張卡片裡的數張表格分得出各自在講什麼 */
+  .sys-sub{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--accent);
+           margin:14px 0 4px; padding-bottom:3px; border-bottom:1px solid var(--accent-soft);}
   /* 段落之間的呼吸：各級／各型之間本來只靠 <br><br>，字級縮小後會擠在一起 */
   .sys-body .lv{display:block; margin-top:10px;}
   .sys-body .lv:first-child{margin-top:0;}
