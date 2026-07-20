@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NELA PRS · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-nela">
+  <div class="app-header">
+    <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>NELA PRS</h1><div class="sub">National Emergency Laparotomy Audit · 簡約風險分數 — 急診剖腹術後 30 天死亡率（2023 年版）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-nela'">← 返回主選單</button>
+  </div>
+
+  <div class="exclusive-note" style="margin-bottom:14px;">
+    <b>⚠ 本頁實作的是 2023 年 4 月起的 Parsimonious Risk Score（PRS），不是 2018 年 Eugene 版。</b>
+    NELA 技術文件明文寫道「The previous NELA risk model should not be used after 1st April 2023」——舊版（BJA 2018;121:739-48）已停用。
+    若您在別處看到 22 變項、含 creatinine／sodium／potassium／失血量／手術次數的 NELA 模型，那是<b>已停用的舊版</b>，兩者結果不同。
+  </div>
+
+  <div class="card">
+    <div class="section-title">病人與生理 Patient &amp; physiology</div>
+
+    <div class="meld-field">
+      <label class="mf-label">年齡 Age</label>
+      <div class="mf-inputwrap"><input type="number" id="nl_age" min="18" max="110" step="1" placeholder="歲"></div>
+      <span class="mf-note">以 64 歲為中心（Age_cent = Age − 64），並與 ASA 有交互作用項</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">ASA 分級</label>
+      <div class="mf-inputwrap"><select id="nl_asa">
+        <option value="0">1 或 2 級（參照組）</option>
+        <option value="3">3 級</option>
+        <option value="4">4 級</option>
+        <option value="5">5 級</option>
+      </select></div>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">白蛋白 Albumin</label>
+      <div class="mf-inputwrap"><input type="number" id="nl_alb" min="5" max="70" step="0.1" placeholder="g/L"></div>
+      <span class="mf-note">單位為 <b>g/L</b>（台灣報告多為 g/dL，需 ×10）。Winsorise 10–55；<b>不置中</b>，直接以原始值進入模型</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">白血球 WBC</label>
+      <div class="mf-inputwrap"><input type="number" id="nl_wbc" min="0.1" max="100" step="0.1" placeholder="×10⁹/L"></div>
+      <span class="mf-note">×10⁹/L 即 K/µL。取自然對數後 Winsorise 0.8–3.6（約 2.2–36.6 ×10⁹/L），再減 2.4</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">尿素氮 Urea</label>
+      <div class="mf-inputwrap">
+        <input type="number" id="nl_urea" min="0.1" step="0.1" placeholder="數值">
+        <select id="nl_urea_unit" style="margin-left:6px;">
+          <option value="bun">BUN mg/dL</option>
+          <option value="mmol">Urea mmol/L</option>
+        </select>
+      </div>
+      <span class="mf-note">模型用的是 <b>urea mmol/L</b>。台灣檢驗報告多為 <b>BUN mg/dL</b>（換算 ÷2.8）。取自然對數後 Winsorise 0.5–3.7，再減 1.9</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">心跳 Pulse</label>
+      <div class="mf-inputwrap"><input type="number" id="nl_pulse" min="20" max="220" step="1" placeholder="bpm"></div>
+      <span class="mf-note">Winsorise 55–145，再減 91。含平方項</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">收縮壓 Systolic BP</label>
+      <div class="mf-inputwrap"><input type="number" id="nl_sbp" min="40" max="260" step="1" placeholder="mmHg"></div>
+      <span class="mf-note">Winsorise 70–190，再減 127。含平方項</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">昏迷指數 GCS</label>
+      <div class="mf-inputwrap"><select id="nl_gcs">
+        <option value="15">15（參照組）</option>
+        <option value="14">14</option>
+        <option value="13">3–13</option>
+      </select></div>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">呼吸病史 Dyspnoea</label>
+      <div class="mf-inputwrap"><select id="nl_resp">
+        <option value="1">無（參照組）</option>
+        <option value="2">活動時喘，或 CXR 輕度 COAD</option>
+        <option value="3">活動受限或休息時即喘，或 CXR 中度 COAD／纖維化／實質化</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">手術相關 Operative</div>
+
+    <div class="meld-field">
+      <label class="mf-label">緊急度 Urgency</label>
+      <div class="mf-inputwrap"><select id="nl_urg">
+        <option value="18">&gt; 18 小時（參照組）</option>
+        <option value="6">6–18 小時</option>
+        <option value="2">2–6 小時</option>
+        <option value="0">&lt; 2 小時</option>
+      </select></div>
+      <span class="mf-note">自決定手術到進入手術室的時間</span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">手術適應症 Indication</label>
+      <div class="mf-inputwrap"><select id="nl_ind">
+        <option value="obs">阻塞 Obstruction（參照組）</option>
+        <option value="sep">敗血 Sepsis</option>
+        <option value="isc">缺血 Ischaemia</option>
+        <option value="hae">出血 Haemorrhage</option>
+      </select></div>
+      <span class="mf-note">「其他 Other」組（傷口裂開、腹腔腔室症候群、計畫性再探查等）依原文<b>視同阻塞組</b>處理</span>
+      <details class="def-box" style="margin-top:6px;">
+        <summary>四組的完整對應與多重適應症規則（Table 2）</summary>
+        <div class="box-inner">
+          <b>1. 出血 Haemorrhage：</b>Haemorrhage<br>
+          <b>2. 阻塞 Obstruction：</b>小腸阻塞、大腸阻塞、腸阻塞、腸扭轉、嵌頓疝氣、內疝、阻塞性切口疝、腸套疊、假性阻塞、異物<br>
+          <b>3. 敗血 Sepsis：</b>蜂窩組織、氣腹、醫源性損傷、吻合口漏、穿孔、腹膜炎、腹腔膿瘍、腸瘻管、其他敗血<br>
+          <b>4. 缺血 Ischaemia：</b>壞死、缺血、酸中毒、大腸炎<br>
+          <b>其他 Other：</b>傷口裂開、腹腔腔室症候群、計畫性再探查、其他 —— <b>視同「2. 阻塞」組</b><br><br>
+          <b>⚠ 多重適應症的規則：</b>若病人同時落入多組，一律歸到<b>編號最大的那一組</b>。原文舉例——同時屬「2. 阻塞」與「3. 敗血」者歸「3. 敗血」；同時屬「4. 缺血」與「1. 出血」者歸「4. 缺血」。<br><br>
+          注意此規則會讓「出血」在合併其他適應症時幾乎不會被選到，而出血組的係數是<b>唯一為負</b>的（−0.40615，相對於阻塞組風險較低）。
+        </div>
+      </details>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">預期惡性程度 Malignancy</label>
+      <div class="mf-inputwrap"><select id="nl_mal">
+        <option value="none">無（參照組）</option>
+        <option value="prim">僅原發病灶 Primary only</option>
+        <option value="nodal">淋巴結轉移 Nodal metastases</option>
+        <option value="dist">遠端轉移 Distant metastases</option>
+      </select></div>
+      <span class="mf-note">術中變項，術前<b>填入預期值</b></span>
+    </div>
+
+    <div class="meld-field">
+      <label class="mf-label">預期腹腔污染 Soiling</label>
+      <div class="mf-inputwrap"><select id="nl_soil">
+        <option value="0">無上述情形（參照組）</option>
+        <option value="1">游離腸內容物、膿或血 Free bowel content, pus or blood</option>
+      </select></div>
+      <span class="mf-note">術中變項，術前填入預期值。PRS 已將原本的四級<b>重新歸併為二元</b>——這樣做提高了術前預期值與術中實際值的一致性</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">預估 30 天死亡率 · Predicted 30-day mortality</div>
+    <div class="metric-value big" id="nl_pct">—</div>
+    <div class="metric-label" id="nl_band" style="margin-top:6px;"></div>
+
+    <div class="formula-box">
+      <div class="formula-title">Logit（線性預測值）</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">−3.04678</span><span class="fvar">常數 intercept</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_age">0</span><span class="fvar">年齡（含 ASA×年齡交互作用）</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_asa">0</span><span class="fvar">ASA 主效應</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_alb">0</span><span class="fvar">白蛋白 × −0.04323</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_pulse">0</span><span class="fvar">心跳（線性＋平方）</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_sbp">0</span><span class="fvar">收縮壓（線性＋平方）</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_urea">0</span><span class="fvar">ln(urea)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_wbc">0</span><span class="fvar">ln(WBC)（線性＋平方）</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_gcs">0</span><span class="fvar">GCS</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_mal">0</span><span class="fvar">惡性程度</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_resp">0</span><span class="fvar">呼吸病史</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_urg">0</span><span class="fvar">緊急度</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_ind">0</span><span class="fvar">適應症</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef" id="nl_t_soil">0</span><span class="fvar">腹腔污染</span></div>
+      </div>
+      <div class="formula-result">= <span id="nl_logit">—</span>　→　風險 = eˣ ÷ (1 + eˣ)</div>
+    </div>
+
+    <div class="metric-label" style="margin-top:14px;">Winsorise 後實際帶入的數值</div>
+    <div class="breakdown">
+      <div>Albumin <b id="nl_w_alb">—</b></div>
+      <div>ln(Urea) <b id="nl_w_urea">—</b></div>
+      <div>ln(WBC) <b id="nl_w_wbc">—</b></div>
+      <div>Pulse <b id="nl_w_pulse">—</b></div>
+      <div>SBP <b id="nl_w_sbp">—</b></div>
+      <div>Urea mmol/L <b id="nl_w_ureaRaw">—</b></div>
+    </div>
+
+    <div class="risk-note" id="nl_note"></div>
+  </div>
+
+  <details class="def-box" style="margin-top:14px;">
+    <summary>解讀門檻、模型限制，以及為什麼台灣使用要特別小心</summary>
+    <div class="box-inner">
+      <b>◆ 5% 這條線是「組織標準」，不是模型輸出。</b>NELA 體系把預估 30 天死亡率 <b>≥5%</b> 定義為高風險，據此要求主治醫師到場；<b>≥10%</b> 者要求 4 小時內主治醫師評估並於術後給予 Level 3（加護）照護。不同 NELA／RCS 標準文件對這兩條線的措辭略有出入（有的版本寫「術終評估 ≥5% 即應直接入加護」），引用時請明示採哪一份。這些是<b>照護流程標準</b>，不是本模型算出來的東西。<br><br>
+
+      <b>⚠ 最重要的限制——未經台灣族群校準。</b>PRS 技術文件自己寫得很清楚：「Although the cohort of UK patients is likely to be similar to emergency laparotomy patients in other countries, we recommend an assessment of the model's calibration in other population-based cohorts before being used in other health care systems.」模型的截距內建了<b>英國 9.7% 的基礎死亡率</b>。台灣族群的實際基礎風險若不同，絕對數值會系統性偏移；<b>用於區分高低風險的排序仍可能有效，但絕對百分比不可直接拿來跟病人與家屬溝通「你有 X% 會死」</b>。<br><br>
+
+      <b>◆ 模型定位在 2023 年改變了。</b>2020 年的技術文件說模型是為了「casemix-adjusted comparison of mortality rates between hospitals」——院際稽核校正用。PRS 文件則改口說它「was designed to support decision making prior to surgery」，這也是為什麼腹腔污染與惡性程度這兩個術中變項改成填「預期值」。兩種定位對誤差的容忍度不同，用途請自己拿捏。<br><br>
+
+      <b>◆ 與 P-POSSUM、SORT 的比較。</b>Darbyshire 2022（World J Surg 46:552-560，n=116,396 P-POSSUM／46,935 NELA）：c-statistic P-POSSUM 0.801–0.836、NELA 0.811–0.862；<b>NELA 在各風險十分位皆校準良好，P-POSSUM 在死亡率 &gt;20% 區段則高估</b>。兩者對腹腔鏡個案均高估。NELA 原始開發資料中 P-POSSUM 與 SORT 的 c-statistic 皆約 0.81。Hansted 2023（Acta Anaesthesiol Scand）AUC：更新版 NELA 0.85、原版 0.84、P-POSSUM 0.81，但作者主張此模型應用於<b>區分高低風險族群，而非個別病人的風險預測</b>，並指出其低估死亡率。<br><br>
+
+      <b>◆ 尚未通過同儕審查。</b>PRS 的完整開發過程在技術文件撰寫時「is currently under peer review prior to journal publication」，目前查無已發表的 PubMed 論文。可引用的只有技術文件本身與已停用舊版的 BJA 2018 論文。<br><br>
+
+      <b>◆ 第三方實作有已知的落差問題。</b>Johnstone 2023（Anaesthesia 78:1414-1415）記錄了不同 NELA 計算機實作之間的實際差異。本頁係數取自 NELA 官方技術文件（2023 年 4 月版），保留原文的<b>小數點後 5 位</b>——技術文件明文警告位數取少會產生不同的預測值。若結果攸關臨床決策，請與 NELA 官方計算機交叉核對。<br><br>
+
+      <b>◆ 本頁刻意不做的事：</b>不提供舊版（2018／2020）模型的計算。兩版變項集不同、係數不同、結果不同，並列只會製造混淆。
+    </div>
+  </details>
+
+  <footer class="tool-footer">REF — <a href="https://www.nela.org.uk/s/Technical-Document-NELA_PRS_Overview_Coefficients-April-2023-1.pdf" target="_blank" rel="noopener" class="ref-link">NELA. Technical Document — NELA_PRS Overview &amp; Coefficients. April 2023.（係數來源）</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30236236/" target="_blank" rel="noopener" class="ref-link">Eugene N, et al. Development and internal validation of a novel risk adjustment model for adult patients undergoing emergency laparotomy surgery: the NELA risk model. Br J Anaesth. 2018;121(4):739-748.（已停用之舊版）</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35001139/" target="_blank" rel="noopener" class="ref-link">Darbyshire AR, et al. NELA vs P-POSSUM. World J Surg. 2022;46(3):552-560.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37551435/" target="_blank" rel="noopener" class="ref-link">Johnstone J, et al. Reassessing the numbers: discrepancies, implications and potential solutions for the NELA Risk Calculator. Anaesthesia. 2023;78(11):1414-1415.</a></footer>
+</div>
+</div>
+<script>
+/* NELA Parsimonious Risk Score (PRS)，2023-04 官方技術文件。
+   係數保留原文 5 位小數——技術文件明言位數取少會產生不同預測值，勿自行縮位。
+   Winsorise 的順序很重要：urea 與 WBC 是「先取 ln、再 Winsorise、最後置中」，
+   不是先 Winsorise 原始值。albumin 唯一不置中。 */
+var NL_C = {
+  intercept: -3.04678,
+  age:        0.06660,
+  asa:  {3: 1.13007, 4: 1.76293, 5: 2.55345},
+  asaAge:{3:-0.03021, 4:-0.03356, 5:-0.04676},
+  alb:       -0.04323,
+  pulse:      0.01265, pulse2: -0.00012,
+  sbp:       -0.00683, sbp2:    0.00011,
+  lnUrea:     0.38002,
+  lnWbc:      0.02041, lnWbc2:  0.24153,
+  gcs:  {14: 0.41557, 13: 0.64480},
+  mal:  {prim: 0.19201, nodal: 0.50610, dist: 0.94309},
+  resp: {2: 0.35378, 3: 0.60700},
+  urg:  {6: 0.03782, 2: 0.14779, 0: 0.57310},
+  ind:  {sep: 0.02812, isc: 0.56948, hae: -0.40615},
+  soil:       0.29453
+};
+
+function nlClamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+function nlNum(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+function nlFmt(x){ return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(4); }
+
+function nlCalc(){
+  var age = nlNum('nl_age'), alb = nlNum('nl_alb'), wbc = nlNum('nl_wbc');
+  var ureaIn = nlNum('nl_urea'), pulse = nlNum('nl_pulse'), sbp = nlNum('nl_sbp');
+
+  /* 一律先換算成模型用的 urea mmol/L，避免兩套單位各自維護而漂移 */
+  var ureaMmol = null;
+  if (ureaIn !== null && ureaIn > 0) {
+    ureaMmol = document.getElementById('nl_urea_unit').value === 'bun' ? ureaIn / 2.8 : ureaIn;
+  }
+
+  var ready = age !== null && alb !== null && wbc !== null && wbc > 0
+              && ureaMmol !== null && pulse !== null && sbp !== null;
+
+  var asa  = document.getElementById('nl_asa').value;
+  var gcs  = document.getElementById('nl_gcs').value;
+  var resp = document.getElementById('nl_resp').value;
+  var urg  = document.getElementById('nl_urg').value;
+  var ind  = document.getElementById('nl_ind').value;
+  var mal  = document.getElementById('nl_mal').value;
+  var soil = document.getElementById('nl_soil').value === '1';
+
+  var t = {age:0, asa:0, alb:0, pulse:0, sbp:0, urea:0, wbc:0, gcs:0, mal:0, resp:0, urg:0, ind:0, soil:0};
+  var w = {alb:'—', urea:'—', wbc:'—', pulse:'—', sbp:'—', ureaRaw:'—'};
+
+  if (ready) {
+    var ageC   = age - 64;
+    var albW   = nlClamp(alb, 10, 55);                    /* 原始值 Winsorise，不置中 */
+    var lnUrea = nlClamp(Math.log(ureaMmol), 0.5, 3.7);   /* 先 ln 再 Winsorise */
+    var lnWbc  = nlClamp(Math.log(wbc), 0.8, 3.6);
+    var pulseC = nlClamp(pulse, 55, 145) - 91;
+    var sbpC   = nlClamp(sbp, 70, 190) - 127;
+    var lnUreaC = lnUrea - 1.9;
+    var lnWbcC  = lnWbc - 2.4;
+
+    t.age   = NL_C.age * ageC + (NL_C.asaAge[asa] ? NL_C.asaAge[asa] * ageC : 0);
+    t.asa   = NL_C.asa[asa] || 0;
+    t.alb   = NL_C.alb * albW;
+    t.pulse = NL_C.pulse * pulseC + NL_C.pulse2 * pulseC * pulseC;
+    t.sbp   = NL_C.sbp * sbpC + NL_C.sbp2 * sbpC * sbpC;
+    t.urea  = NL_C.lnUrea * lnUreaC;
+    t.wbc   = NL_C.lnWbc * lnWbcC + NL_C.lnWbc2 * lnWbcC * lnWbcC;
+    t.gcs   = NL_C.gcs[gcs] || 0;
+    t.mal   = NL_C.mal[mal] || 0;
+    t.resp  = NL_C.resp[resp] || 0;
+    t.urg   = NL_C.urg[urg] || 0;
+    t.ind   = NL_C.ind[ind] || 0;
+    t.soil  = soil ? NL_C.soil : 0;
+
+    w.alb = albW.toFixed(1) + (albW !== alb ? ' ⚠' : '');
+    w.urea = lnUrea.toFixed(3) + (Math.abs(lnUrea - Math.log(ureaMmol)) > 1e-9 ? ' ⚠' : '');
+    w.wbc = lnWbc.toFixed(3) + (Math.abs(lnWbc - Math.log(wbc)) > 1e-9 ? ' ⚠' : '');
+    w.pulse = nlClamp(pulse, 55, 145) + (nlClamp(pulse, 55, 145) !== pulse ? ' ⚠' : '');
+    w.sbp = nlClamp(sbp, 70, 190) + (nlClamp(sbp, 70, 190) !== sbp ? ' ⚠' : '');
+    w.ureaRaw = ureaMmol.toFixed(2);
+  }
+
+  ['age','asa','alb','pulse','sbp','urea','wbc','gcs','mal','resp','urg','ind','soil'].forEach(function(k){
+    document.getElementById('nl_t_' + k).textContent = ready ? nlFmt(t[k]) : '—';
+  });
+  ['alb','urea','wbc','pulse','sbp','ureaRaw'].forEach(function(k){
+    document.getElementById('nl_w_' + k).textContent = w[k];
+  });
+
+  if (!ready) {
+    document.getElementById('nl_pct').textContent = '—';
+    document.getElementById('nl_logit').textContent = '—';
+    document.getElementById('nl_band').textContent = '';
+    document.getElementById('nl_note').innerHTML = '請填入全部六項數值（年齡、白蛋白、白血球、尿素氮、心跳、收縮壓）。<b>白蛋白單位為 g/L</b>——台灣報告若是 g/dL 請 ×10，填錯會嚴重低估風險。';
+    return;
+  }
+
+  var x = NL_C.intercept;
+  Object.keys(t).forEach(function(k){ x += t[k]; });
+  var p = Math.exp(x) / (1 + Math.exp(x));
+  var pct = p * 100;
+
+  document.getElementById('nl_logit').textContent = (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(4);
+  document.getElementById('nl_pct').textContent = (pct < 10 ? pct.toFixed(2) : pct.toFixed(1)) + '%';
+
+  var band, note;
+  if (pct >= 10) {
+    band = '≥ 10% — NELA 標準之最高風險層';
+    note = 'NELA 組織標準：此層要求<b>入院後 4 小時內主治醫師評估</b>，且術後給予 <b>Level 3（加護）照護</b>；手術應有主治外科醫師與主治麻醉醫師到場。';
+  } else if (pct >= 5) {
+    band = '≥ 5% — NELA 定義之高風險';
+    note = 'NELA 將預估 30 天死亡率 <b>≥5%</b> 定義為高風險，要求<b>主治醫師到場執刀</b>。部分 NELA／RCS 標準文件進一步要求術終評估 ≥5% 者直接入加護病房——引用時請明示採用哪一份。';
+  } else {
+    band = '&lt; 5% — 未達 NELA 高風險定義';
+    note = '未達 NELA 高風險門檻。但<b>此模型在低風險端仍可能低估</b>（Hansted 2023），且低風險不等於低共病——高齡與衰弱另需獨立評估，見 Clinical Frailty Scale。';
+  }
+  document.getElementById('nl_band').innerHTML = band;
+  document.getElementById('nl_note').innerHTML = note +
+    '<br><br><b>⚠ 此百分比未經台灣族群校準。</b>模型截距內建英國約 9.7% 的基礎死亡率，官方文件建議在其他醫療體系使用前先做校準評估。用於<b>風險排序</b>較為可靠，<b>絕對數值不宜直接用於醫病溝通</b>。';
+}
+
+document.querySelectorAll('#view-nela input, #view-nela select').forEach(function(el){
+  el.addEventListener('input', nlCalc);
+  el.addEventListener('change', nlCalc);
+});
+nlCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

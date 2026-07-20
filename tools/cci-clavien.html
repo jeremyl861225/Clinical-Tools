@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCI 綜合併發症指數 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-cci-clavien">
+  <div class="app-header">
+    <div><div class="eyebrow">Perioperative Scoring Tool</div><h1>CCI 綜合併發症指數</h1><div class="sub">Comprehensive Complication Index · 把一次住院期間<b>所有</b>併發症合併為 0–100 的連續量尺（Slankamenac 2013）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-cci-clavien'">← 返回主選單</button>
+  </div>
+
+  <div class="exclusive-note" style="margin-bottom:14px;">
+    <b>⚠ 命名歧義：本頁不是 Charlson。</b>文獻裡 CCI 兩個意思都有人用。本頁是 <b>Comprehensive Complication Index</b>（Clavien 團隊，術後併發症負荷）。
+    共病指數請走 <a class="tool-link" href="cci.html">→ Charlson 共病指數</a>。
+  </div>
+
+  <div class="note" style="margin-bottom:14px;">
+    先把住院期間<b>每一項</b>併發症各自依 Clavien-Dindo 分級，再在下方填入各級的<b>件數</b>。
+    分級定義見 <a class="tool-link" href="classifications.html#sys-clavien">→ Clavien-Dindo 分級</a>。
+  </div>
+
+  <div class="card">
+    <div class="section-title">各級併發症件數 Number of complications by grade</div>
+
+    <div class="meld-field">
+      <label class="mf-label">Grade I</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_1" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 300　·　單獨一件 = CCI 8.7</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Grade II</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_2" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 1750　·　單獨一件 = CCI 20.9</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Grade IIIa</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_3a" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 2750　·　單獨一件 = CCI 26.2</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Grade IIIb</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_3b" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 4550　·　單獨一件 = CCI 33.7</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Grade IVa</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_4a" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 7200　·　單獨一件 = CCI 42.4</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Grade IVb</label>
+      <div class="mf-inputwrap"><input type="number" id="cc_4b" min="0" max="99" step="1" value="0"></div>
+      <span class="mf-note">權重 8550　·　單獨一件 = CCI 46.2</span>
+    </div>
+
+    <label class="toggle-inline" style="margin-top:12px;"><input type="checkbox" id="cc_5"> <b>Grade V — 死亡</b></label>
+    <div class="exclusive-note">死亡直接定義為 <b>CCI = 100</b>，不經公式計算（若照公式回推需權重 40,000，原始權重表並無此值）。勾選後其餘欄位不影響結果。</div>
+
+    <div style="margin-top:12px;"><button class="btn-reset" onclick="ccReset()">清除重填</button></div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Comprehensive Complication Index</div>
+    <div class="metric-value big" id="cc_val">0.0</div>
+    <div class="metric-label" id="cc_band" style="margin-top:6px;"></div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">CCI</span><span class="fvar">= √(wC₁ + wC₂ + … + wCₓ) ÷ 2</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">wC</span><span class="fvar">= 各併發症之權重（依 Clavien-Dindo 級別）</span></div>
+      </div>
+      <div class="formula-result">權重總和 Σw = <span id="cc_sum">0</span>　→　√Σw ÷ 2 = <span id="cc_raw">0.0</span></div>
+    </div>
+
+    <div class="metric-label" style="margin-top:14px;">明細</div>
+    <div class="breakdown">
+      <div>件數合計 <b id="cc_n">0</b></div>
+      <div>最高級別 <b id="cc_max">—</b></div>
+      <div>僅取最高級 <b id="cc_cdonly">—</b></div>
+    </div>
+
+    <div class="risk-note" id="cc_note"></div>
+  </div>
+
+  <details class="def-box" style="margin-top:14px;">
+    <summary>權重從哪裡來、門檻怎麼讀，以及三個容易算錯的地方</summary>
+    <div class="box-inner">
+      <b>◆ 權重的來源：</b>取自 operation risk index（ORI）方法學（源自行銷研究），由 <b>472 位病人與醫師</b>對 30 種不同併發症評分，權重 = 病人端中位參考值 × 醫師端中位參考值。<br><br>
+
+      <b>◆ 為什麼要開根號再除以 2：</b>這使量尺<b>非線性且會飽和</b>——併發症累積越多，每多一件所增加的分數越少。直覺上很容易算錯：<b>兩件 Grade II（√3500÷2 = 29.6）遠小於一件 Grade II 的兩倍（41.8）</b>。所以請務必由權重計算，不要心算或硬記組合。<br><br>
+
+      <b>◆ 三個容易算錯的地方：</b><br>
+      ① <b>每一件併發症都要獨立計入，即使彼此有因果關係。</b>Clavien 2017 明確指示 —— 併發症與其後遺症<b>不可合併為一件</b>。例如吻合口漏（IIIb）後續導致的腎衰竭需透析（IVa）應計為兩件。<br>
+      ② <b>不是把最高級別填進去就好。</b>CCI 存在的理由正是 Clavien-Dindo 只取最高級會遺失累積負荷 —— Clavien 2017 實測 290 位有併發症的病人中，<b>44%（127/290）出院前發生一件以上</b>。上方「僅取最高級」欄位就是給你對照這個落差用的。<br>
+      ③ <b>觀察窗要講清楚。</b>資訊增益隨手術複雜度與觀察時間拉長而增加，最長到<b>術後 3 個月</b>。比較兩組 CCI 時，觀察窗必須一致。<br><br>
+
+      <b>◆ 門檻——哪些是真的：</b><br>
+      ・<b>MID（最小重要差異）= 12 分</b>。Abbassi 2025（Ann Surg 282:670-677，1583 人、3 個 RCT ＋ 1 個前瞻世代），錨定法，各錨定值介於 6.1–22.2（大腸直腸）與 6.2–13.8（HPB），三角驗證後提出<b>組間平均差 12 分</b>為腹部大手術之臨床相關差異。此為目前最佳答案，且相當新——多數既有 CCI 文獻都早於它。<br>
+      ・<b>CCI ≥ 26.2</b>：等同至少一件 Grade IIIa。<br>
+      ・<b>CCI ≥ 33.7</b>：等同至少一件 Grade IIIb <b>或</b> 多件 I–IIIa 累加達此值 —— 後半句才是用 CCI 取代 CD 的重點。此為較常用的「重大併發症」研究終點。<br>
+      ・<b>「CCI &gt; 20」查無出處</b>。它接近單一 Grade II 的 20.9，但本頁查核未能找到確立此門檻的來源，故<b>不予採用</b>。若您在文獻中看到，請回頭確認該文自己的定義。<br><br>
+
+      <b>◆ 為什麼值得用：</b>Slankamenac 2014（Ann Surg 260:757-62）在 3 個已發表 RCT 中重跑 —— CCI 在胰臟（P=0.009）與食道（P=0.014）手術偵測到傳統終點測不到的組間差異，同時在大腸試驗正確地維持「無差異」（P=0.39）。所需樣本數最多可降至傳統併發症終點的<b>九分之一</b>。<br><br>
+
+      <b>◆ 權重數值的查核等級：</b>Slankamenac 2013 原文為付費牆內容，本頁權重取自兩份獨立的同儕審查再現（含 Mari 2020, World J Urol, PMC8166677），並經算術自洽驗證——六個權重代入 √w÷2 後<b>全部</b>還原為公認的單一併發症 CCI 值（8.7／20.9／26.2／33.7／42.4／46.2）。可信度高，但仍屬<b>間接來源</b>，非直接讀取原始表格。<br><br>
+
+      <b>◆ 官方計算機：</b>CCI® 為註冊商標，官方線上計算機由 Clavien 團隊之 AssesSurgery GmbH 營運（cci-calculator.com）。本頁為離線實作，公式為閉合式、除六個權重外無需查表。若用於發表，建議與官方計算機交叉核對。
+    </div>
+  </details>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/23728278/" target="_blank" rel="noopener" class="ref-link">Slankamenac K, Graf R, Barkun J, Puhan MA, Clavien PA. The comprehensive complication index: a novel continuous scale to measure surgical morbidity. Ann Surg. 2013;258(1):1-7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25379846/" target="_blank" rel="noopener" class="ref-link">Slankamenac K, et al. The comprehensive complication index: a novel and more sensitive endpoint for assessing outcome and reducing sample size in RCTs. Ann Surg. 2014;260(5):757-762.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28486288/" target="_blank" rel="noopener" class="ref-link">Clavien PA, et al. The Comprehensive Complication Index (CCI®): added value and clinical perspectives 3 years "down the line". Ann Surg. 2017;265(6):1045-1050.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/40793921/" target="_blank" rel="noopener" class="ref-link">Abbassi F, et al. Beyond P values: novel minimal important difference of the Comprehensive Complication Index. Ann Surg. 2025;282(5):670-677.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15273542/" target="_blank" rel="noopener" class="ref-link">Dindo D, Demartines N, Clavien PA. Classification of surgical complications. Ann Surg. 2004;240(2):205-213.</a></footer>
+</div>
+</div>
+<script>
+/* CCI = √(Σ 權重) ÷ 2。權重為 472 位病人與醫師調查之中位參考值乘積。
+   Grade V 不走公式（回推需權重 40,000，原始權重表無此值），直接定義為 100。 */
+var CC_W = {'1':300, '2':1750, '3a':2750, '3b':4550, '4a':7200, '4b':8550};
+var CC_LABEL = {'1':'I', '2':'II', '3a':'IIIa', '3b':'IIIb', '4a':'IVa', '4b':'IVb'};
+
+function ccCalc(){
+  var dead = document.getElementById('cc_5').checked;
+  var sum = 0, n = 0, maxKey = null;
+
+  Object.keys(CC_W).forEach(function(k){
+    var c = parseInt(document.getElementById('cc_' + k).value, 10);
+    if (isNaN(c) || c < 0) c = 0;
+    sum += CC_W[k] * c;
+    n += c;
+    if (c > 0) maxKey = k;   /* CC_W 的鍵已由輕到重排列，最後一個非零者即最高級 */
+  });
+
+  var raw = Math.sqrt(sum) / 2;
+  var cci = dead ? 100 : Math.min(100, raw);
+
+  document.getElementById('cc_sum').textContent = dead ? '—（死亡不經公式）' : sum;
+  document.getElementById('cc_raw').textContent = dead ? '—' : raw.toFixed(1);
+  document.getElementById('cc_val').textContent = cci.toFixed(1);
+  document.getElementById('cc_n').textContent = dead ? n + ' ＋死亡' : n;
+  document.getElementById('cc_max').textContent = dead ? 'V' : (maxKey ? CC_LABEL[maxKey] : '—');
+  document.getElementById('cc_cdonly').textContent =
+    dead ? '100' : (maxKey ? (Math.sqrt(CC_W[maxKey]) / 2).toFixed(1) : '0.0');
+
+  var band, note;
+  if (dead) {
+    band = 'Grade V — 死亡';
+    note = '死亡依定義為 CCI 100，為量尺上限。';
+  } else if (cci === 0) {
+    band = '無併發症';
+    note = '住院期間未發生任何併發症，CCI = 0。';
+  } else if (cci >= 33.7) {
+    band = '≥ 33.7 — 常用之「重大併發症」研究終點';
+    note = '等同至少一件 Grade IIIb，<b>或</b>多件較輕併發症累加達此值。後者正是 CCI 相對於 Clavien-Dindo 的價值所在。';
+  } else if (cci >= 26.2) {
+    band = '≥ 26.2 — 等同至少一件 Grade IIIa';
+    note = '達到需要介入處置（非全身麻醉下）之等級。';
+  } else {
+    band = '&lt; 26.2';
+    note = '未達「需介入處置」等級之併發症負荷。';
+  }
+  document.getElementById('cc_band').innerHTML = band;
+
+  var extra = '';
+  if (!dead && maxKey && n > 1) {
+    var cdOnly = Math.sqrt(CC_W[maxKey]) / 2;
+    var gap = cci - cdOnly;
+    if (gap > 0.05) {
+      extra = '<br><br><b>累積負荷的落差：</b>本例共 ' + n + ' 件併發症，CCI 為 <b>' + cci.toFixed(1) +
+              '</b>；若比照 Clavien-Dindo 只取最高級（' + CC_LABEL[maxKey] + '）則僅為 ' + cdOnly.toFixed(1) +
+              '，相差 <b>' + gap.toFixed(1) + ' 分</b>。' +
+              (gap >= 12 ? '此差距已達 Abbassi 2025 提出的最小重要差異（12 分）。' : '');
+    }
+  }
+  document.getElementById('cc_note').innerHTML = note + extra +
+    '<br><br>※ 併發症與其後遺症須<b>分別計為兩件</b>，不可合併（Clavien 2017）。比較兩組 CCI 時觀察窗必須一致（資訊增益最長可延伸至術後 3 個月）。';
+}
+
+function ccReset(){
+  Object.keys(CC_W).forEach(function(k){ document.getElementById('cc_' + k).value = 0; });
+  document.getElementById('cc_5').checked = false;
+  ccCalc();
+}
+
+document.querySelectorAll('#view-cci-clavien input').forEach(function(el){
+  el.addEventListener('input', ccCalc);
+  el.addEventListener('change', ccCalc);
+});
+ccCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

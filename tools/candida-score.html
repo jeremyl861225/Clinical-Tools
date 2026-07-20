@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candida Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-candida-score">
+  <div class="app-header">
+    <div><div class="eyebrow">Infection Scoring Tool</div><h1>Candida Score</h1><div class="sub">非嗜中性球低下之危重病人侵襲性念珠菌感染風險 — <b>用途是排除，不是啟動治療</b></div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-candida-score'">← 返回主選單</button>
+  </div>
+
+  <div class="exclusive-note" style="margin-bottom:14px;">
+    <b>⚠ 有兩個版本，數字不一樣，別混用。</b>
+    <b>León 2006</b>（衍生）用的是<b>迴歸係數</b>、切點 <b>&gt;2.5</b>；<b>León 2009</b>（驗證）才是大家熟知的<b>整數版 2/1/1/1</b>、切點 <b>≥3</b>。
+    兩者都「正確」，因為它們是<b>兩套不同的工具</b>。請於下方選擇版本，並在病歷或論文中明示採用哪一版。
+  </div>
+
+  <div class="card">
+    <div class="meld-field">
+      <label class="mf-label">採用版本</label>
+      <div class="mf-inputwrap"><select id="cs_ver">
+        <option value="2009">León 2009 — 整數版（切點 ≥3）</option>
+        <option value="2006">León 2006 — 迴歸係數版（切點 &gt;2.5）</option>
+      </select></div>
+    </div>
+
+    <div class="section-title" style="margin-top:14px;">四個項目</div>
+    <label class="item"><input type="checkbox" class="cs-cb" value="sepsis"> 嚴重敗血症 <span class="unit">(Severe sepsis)</span><span class="pt-badge" id="cs_p_sepsis"></span></label>
+    <label class="item"><input type="checkbox" class="cs-cb" value="tpn"> 全靜脈營養 <span class="unit">(Total parenteral nutrition)</span><span class="pt-badge" id="cs_p_tpn"></span></label>
+    <label class="item"><input type="checkbox" class="cs-cb" value="surg"> 手術 <span class="unit">(Surgery，入住加護病房時)</span><span class="pt-badge" id="cs_p_surg"></span></label>
+    <label class="item"><input type="checkbox" class="cs-cb" value="colon"> 多部位念珠菌移生 <span class="unit">(Multifocal Candida colonization)</span><span class="pt-badge" id="cs_p_colon"></span></label>
+
+    <div class="note" style="margin-top:10px;">
+      本分數的適用族群為<b>已有念珠菌移生、非嗜中性球低下的危重病人</b>。多部位移生之判定見下方「移生指數」。
+    </div>
+    <div style="margin-top:12px;"><button class="btn-reset" onclick="csReset()">清除重填</button></div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Candida Score</div>
+    <div class="metric-value big" id="cs_val">0</div>
+    <div class="metric-label" id="cs_band" style="margin-top:6px;"></div>
+    <div class="risk-note" id="cs_note"></div>
+  </div>
+
+  <details class="def-box" style="margin-top:14px;">
+    <summary>兩版的配分對照、以及為什麼它是「排除工具」</summary>
+    <div class="box-inner">
+      <b>◆ León 2006（Crit Care Med 34:730-7）— 迴歸係數版，切點 &gt;2.5：</b>
+      <table class="score-ref">
+        <tr><th>項目</th><th>配分</th></tr>
+        <tr><td>嚴重敗血症 Severe sepsis</td><td>+2.038</td></tr>
+        <tr><td>多部位移生 Multifocal colonization</td><td>+1.112</td></tr>
+        <tr><td>手術 Surgery</td><td>+0.997</td></tr>
+        <tr><td>全靜脈營養 Parenteral nutrition</td><td>+0.908</td></tr>
+      </table>
+      切點 2.5 時敏感度 <b>81%</b>、特異度 <b>74%</b>。
+      <span class="note">⚠ <b>本頁不列出 2006 版的 AUC</b>——原始文獻取不到此數值，網路流傳的「0.847」查無出處。PPV／NPV 同樣未能查證。</span><br><br>
+
+      <b>◆ León 2009（Crit Care Med 37:1624-33）— 整數版，切點 ≥3：</b>原文計分方式為「variables coded as absent = 0, present = 1」，然後<b>嚴重敗血症 ×2、手術 ×1、多部位移生 ×1、全靜脈營養 ×1</b>。<br>
+      表現：AUC <b>0.774</b>（0.715–0.832），優於單用移生指數的 0.633。<br><br>
+
+      <b>◆ 為什麼它是排除工具而不是啟動治療的依據。</b>León 2009 的結論原文是：「<b>IC is highly improbable if a Candida-colonized non-neutropenic critically ill patient has a CS &lt;3</b>」——講的是「幾乎可以排除」。對應的數據是 <b>CS &lt;3 者侵襲性念珠菌感染率僅 2.3%</b>（95% CI 1.06–3.54）。<br>
+      反過來說，<b>CS ≥3 並不等於「應開始抗黴菌治療」</b>。這是實務上最常見的誤用。<br><br>
+
+      <b>⚠ IDSA 2016 念珠菌症指引<u>未針對任何 Candida score 門檻給出建議</u>。</b>這點值得特別留意，因為坊間常把此分數呈現得像有指引背書。IDSA 給的是<b>臨床情境</b>的建議（近期腹部手術、吻合口漏、壞死性胰臟炎等風險因子＋腹腔感染的臨床證據），不是分數門檻。WSES 現行的腹腔感染文件（World J Emerg Surg 2021;16:49）<b>全文未提及 Candida score</b>。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-top:10px;">
+    <summary>念珠菌移生指數 Candida Colonization Index（Pittet 1994）</summary>
+    <div class="box-inner">
+      <b>定義（原文）：</b>「A Candida colonization index was determined daily as the ratio of the number of distinct body sites (dbs) colonized with <b>identical strains</b> over the total number of dbs tested; a mean of 5.3 dbs per patient was obtained.」<br>
+      <b>注意「identical strains」</b>——是<b>經菌株鑑別為同一株</b>，不只是「有長念珠菌」。這個細節常在轉述中被省略。<br><br>
+      <b>門檻 ≥0.5：</b>敏感度 100%、特異度 69%、PPV 66%、NPV 100%；指數達標的時間平均比感染發生<b>早 6 天</b>。
+      <span class="note">⚠ <b>n 只有 29 人。</b>那些 100% 不具外推性——León 2009 實測此指數的 AUC 僅 <b>0.633</b>，明顯低於 Candida score 的 0.774。</span><br><br>
+      <b>◆ 修正移生指數（corrected colonization index, CCI）門檻 0.4</b>：同篇論文所述「CCIs were less than 0.35 in all colonized patients and at least 0.4 in all infected patients」。
+      <span class="note">⚠ <b>本頁刻意不列出 CCI 的計算公式。</b>二手來源對其分母的描述自相矛盾（照所引措辭計算，比值會恆等於 1），而 1994 年原文 PDF 無法機讀。要使用 CCI 請先取得紙本原文確認公式，勿依網路轉述實作。</span>
+    </div>
+  </details>
+
+  <div class="note" style="margin-top:14px;">
+    <a class="tool-link" href="classifications.html#sys-iac">→ 腹腔內念珠菌感染：為什麼沒有公認的分類系統</a>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/16505659/" target="_blank" rel="noopener" class="ref-link">León C, et al. A bedside scoring system ("Candida score") for early antifungal treatment in nonneutropenic critically ill patients with Candida colonization. Crit Care Med. 2006;34(3):730-737.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19325481/" target="_blank" rel="noopener" class="ref-link">León C, et al. Usefulness of the "Candida score" for discriminating between Candida colonization and invasive candidiasis in non-neutropenic critically ill patients. Crit Care Med. 2009;37(5):1624-1633.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/7986142/" target="_blank" rel="noopener" class="ref-link">Pittet D, et al. Candida colonization and subsequent infections in critically ill surgical patients. Ann Surg. 1994;220(6):751-758.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26679628/" target="_blank" rel="noopener" class="ref-link">Pappas PG, et al. IDSA Clinical Practice Guideline for the Management of Candidiasis: 2016 Update. Clin Infect Dis. 2016;62(4):e1-e50.</a></footer>
+</div>
+</div>
+<script>
+/* 兩版是不同的工具，不是同一套的近似——2006 為迴歸係數（切點 >2.5），
+   2009 為整數版（切點 ≥3）。版本切換時連配分徽章一起換，避免看著整數配分
+   卻套用 2.5 這條線。 */
+var CS_W = {
+  '2006': {sepsis:2.038, colon:1.112, surg:0.997, tpn:0.908},
+  '2009': {sepsis:2,     colon:1,     surg:1,     tpn:1}
+};
+
+function csCalc(){
+  var ver = document.getElementById('cs_ver').value;
+  var w = CS_W[ver];
+  var total = 0;
+
+  ['sepsis','tpn','surg','colon'].forEach(function(k){
+    var cb = document.querySelector('.cs-cb[value="' + k + '"]');
+    document.getElementById('cs_p_' + k).textContent = '+' + w[k];
+    if (cb.checked) total += w[k];
+  });
+
+  var cut = ver === '2006' ? 2.5 : 3;
+  var over = ver === '2006' ? total > cut : total >= cut;
+
+  document.getElementById('cs_val').textContent = ver === '2006' ? total.toFixed(3) : total;
+
+  var band, note;
+  if (over) {
+    band = ver === '2006' ? '&gt; 2.5 — 達 2006 版切點' : '≥ 3 — 達 2009 版切點';
+    note = '<b>但這不等於「應開始抗黴菌治療」。</b>本分數經驗證的用途是<b>排除</b>——León 2009 的結論是「若 CS &lt;3 則侵襲性念珠菌感染極不可能」，並未確立 CS 達標即為治療啟動門檻。' +
+           '<b>IDSA 2016 未針對任何 Candida score 門檻給出建議</b>，其建議係基於臨床情境（近期腹部手術、吻合口漏、壞死性胰臟炎等）。是否經驗性投藥請依整體臨床判斷。';
+  } else {
+    band = ver === '2006' ? '≤ 2.5 — 未達切點' : '&lt; 3 — 未達切點';
+    note = '<b>這是本分數最有價值的用途。</b>León 2009：CS &lt;3 之已移生、非嗜中性球低下危重病人，侵襲性念珠菌感染率僅 <b>2.3%</b>（95% CI 1.06–3.54）——「IC is highly improbable」。可據此<b>避免不必要的經驗性抗黴菌治療</b>。';
+  }
+  document.getElementById('cs_band').innerHTML = band;
+  document.getElementById('cs_note').innerHTML = note +
+    '<br><br>※ 適用族群為<b>已有念珠菌移生、非嗜中性球低下</b>的危重病人；' +
+    (ver === '2006'
+      ? '2006 版切點 2.5 之敏感度 81%、特異度 74%（<b>原始文獻取不到 AUC</b>，網路流傳之 0.847 查無出處）。'
+      : '2009 版 AUC 0.774（0.715–0.832），優於單用移生指數之 0.633。');
+}
+
+function csReset(){
+  document.querySelectorAll('.cs-cb').forEach(function(cb){ cb.checked = false; });
+  csCalc();
+}
+
+document.querySelectorAll('#view-candida-score input, #view-candida-score select').forEach(function(el){
+  el.addEventListener('change', csCalc);
+});
+csCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

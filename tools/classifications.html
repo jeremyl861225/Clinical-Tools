@@ -39,6 +39,8 @@
     <button class="tab-btn"        data-tab="panc"    onclick="clTab('panc')">胰臟</button>
     <button class="tab-btn"        data-tab="hernia"  onclick="clTab('hernia')">疝氣</button>
     <button class="tab-btn"        data-tab="gib"     onclick="clTab('gib')">消化道出血</button>
+    <button class="tab-btn"        data-tab="periop"  onclick="clTab('periop')">圍手術期</button>
+    <button class="tab-btn"        data-tab="misc"    onclick="clTab('misc')">其他</button>
   </div>
 
   <div class="note" style="margin:-8px 0 16px;">
@@ -671,6 +673,398 @@
   <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/4136718/" target="_blank" rel="noopener" class="ref-link">Forrest JA, Finlayson ND, Shearman DJ. Lancet. 1974;2(7877):394-7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42127996/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2026. Endoscopy. 2026.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36949934/" target="_blank" rel="noopener" class="ref-link">Alali AA, Barkun AN. Gastroenterol Rep (Oxf). 2023;11:goad011.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/8058080/" target="_blank" rel="noopener" class="ref-link">Laine L, Peterson WL. N Engl J Med. 1994;331(11):717-27.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28094314/" target="_blank" rel="noopener" class="ref-link">Jensen DM, et al. Reassessment of Rebleeding Risk of Forrest IB. Am J Gastroenterol. 2017;112(3):441-446.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22310222/" target="_blank" rel="noopener" class="ref-link">Laine L, Jensen DM. ACG Guideline: Management of Patients with Ulcer Bleeding. Am J Gastroenterol. 2012;107(3):345-60.</a></footer>
 </div>
 
+<!-- ==================== 圍手術期 ==================== -->
+<div id="tab-periop" class="hidden">
+
+  <div class="sys-head" id="sys-clavien">
+    <span class="sys-name">Clavien-Dindo 手術併發症分級</span>
+    <span class="sys-en">Clavien-Dindo Classification of Surgical Complications</span>
+    <span class="sys-src">Dindo 2004</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>核心原則：依「實際採取了什麼治療」分級，不依「病人看起來多嚴重」。</b>原文自述此系統「still mostly relies on the therapy used to treat the complication」。用病情嚴重度的主觀印象來給級數，是最常見的誤用。
+      <table class="def-table">
+        <tr><th style="width:12%;">級</th><th>定義（Dindo 2004 原文）</th></tr>
+        <tr><td>I</td><td>Any deviation from the normal postoperative course without the need for pharmacological treatment or surgical, endoscopic, and radiological interventions.<br><span class="unit">Allowed therapeutic regimens are: drugs as antiemetics, antipyretics, analgetics, diuretics, electrolytes, and physiotherapy. This grade also includes wound infections opened at the bedside.</span></td></tr>
+        <tr><td>II</td><td>Requiring pharmacological treatment with drugs other than such allowed for grade I complications.<br><span class="unit">Blood transfusions and total parenteral nutrition are also included.</span></td></tr>
+        <tr><td>III</td><td>Requiring surgical, endoscopic or radiological intervention.</td></tr>
+        <tr><td>IIIa</td><td>Intervention <b>not</b> under general anesthesia.</td></tr>
+        <tr><td>IIIb</td><td>Intervention under general anesthesia.</td></tr>
+        <tr><td>IV</td><td>Life-threatening complication (including CNS complications)* requiring IC/ICU management.</td></tr>
+        <tr><td>IVa</td><td>Single organ dysfunction (including dialysis).</td></tr>
+        <tr><td>IVb</td><td>Multiorgan dysfunction.</td></tr>
+        <tr class="dt-warn"><td>V</td><td>Death of a patient.</td></tr>
+        <tr><td>後綴 d</td><td>出院時併發症仍存在者，於級數後加註 <b>d</b>（disability），表示需追蹤以完整評估該併發症。</td></tr>
+      </table>
+      <span class="unit">* 原表註腳：Brain hemorrhage, ischemic stroke, subarrachnoidal bleeding, but excluding transient ischemic attacks.　（"analgetics" 與 "subarrachnoidal" 均為原文印刷用字，本頁照錄未更正。）</span>
+
+      <div class="sys-sub">四個常見誤用</div>
+      <table class="def-table">
+        <tr><td>依嚴重度給級</td><td>應依<b>實際治療</b>給級。這是最常見的誤用。</td></tr>
+        <tr><td>Grade II 的判準</td><td>由<b>藥物類別</b>決定，不是由嚴重程度決定——凡超出 Grade I 允許清單者即為 II，<b>輸血與全靜脈營養明文包含在內</b>。</td></tr>
+        <tr><td>Grade IV 的判準</td><td>須是<b>危及生命</b>的併發症且需 IC／ICU 處置。常規或制度性的 ICU 入住本身<b>不構成</b> Grade IV。</td></tr>
+        <tr><td>只取最高級</td><td>會遺失累積負荷——Clavien 2017 實測有併發症的 290 人中 <b>44%（127/290）</b>出院前不只一件。此即 CCI 存在的理由。</td></tr>
+      </table>
+
+      <div class="sys-sub">版本與信度</div>
+      <b>2009 年五年期評估後未再修訂。</b>該文結論明言「No modification in the general principle of classification is warranted」。此後出現的 Clavien-Dindo-Sink（脊椎／骨科）、頭頸部游離皮瓣的「IIIc」、小兒外科的 Clavien-Madadi 等，均為<b>他人提出的次專科改編，不是母分類的更新版</b>，勿當成新版引用。<br><br>
+      信度：2004 年 10 個中心 144 位外科醫師，<b>90% 的案例情境給級正確</b>；2009 年跨洲 7 個中心 11 個困難情境，<b>89% 一致</b>。兩篇原始論文<b>只報告百分比一致度，未報告 kappa</b>——若需 kappa 須引用獨立驗證研究，勿宣稱出自 Dindo／Clavien。<br><br>
+      2009 年另建議：<b>「minor／major complication」這類措辭應自外科文獻中移除</b>。並發現約半數研究只用了壓縮過的級距而非完整級別，跨研究比較時須留意。
+      <span class="sys-caveat">※ 分級只是第一步。要表達一次住院<b>全部</b>併發症的累積負荷，須進一步計算 CCI。</span>
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="cci-clavien.html">→ 依此分級計算累積負荷：CCI 綜合併發症指數計算機</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-isrec">
+    <span class="sys-name">吻合口漏 ISREC 嚴重度分級</span>
+    <span class="sys-en">ISREC / Rahbari Grading of Anastomotic Leakage</span>
+    <span class="sys-src">Rahbari 2010</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>定義（原文）：</b>「Anastomotic leakage should be defined as a defect of the intestinal wall at the anastomotic site (including suture and staple lines of neorectal reservoirs) leading to a communication between the intra- and extraluminal compartments.」<br>
+      吻合口<b>鄰近之骨盆腔膿瘍</b>亦視為吻合口漏；「鄰近」定義為<b>吻合口周圍、但無明顯糞瘻</b>之骨盆腔膿瘍。
+      <table class="def-table">
+        <tr><th style="width:12%;">級</th><th>定義（原文）</th><th style="width:30%;">實務意涵</th></tr>
+        <tr><td>A</td><td>results in <b>no change</b> in patients' management</td><td>不改變處置，多為影像上偶然發現</td></tr>
+        <tr><td>B</td><td>requires <b>active therapeutic intervention</b> but is manageable <b>without re-laparotomy</b></td><td>抗生素、介入性引流、經肛引流等</td></tr>
+        <tr class="dt-warn"><td>C</td><td>requires <b>re-laparotomy</b></td><td>再剖腹（如 Hartmann、造口轉流）</td></tr>
+      </table>
+      <span class="unit">※ 各級的處置舉例（抗生素／介入引流／Hartmann 等）出自二手綜述引用之 Rahbari 表 2，非原文摘要用字；上表「定義」欄才是可逐字引用的原文。</span>
+
+      <div class="sys-sub">⚠ 適用範圍：只限直腸前位切除</div>
+      ISREC 是為<b>直腸前位切除（anterior resection of the rectum）</b>而提出，定義本身即限定於「結腸—直腸或結腸—肛門」之吻合。<b>唯一的正式驗證</b>為 Kulu 2013（Surgery 153:753-61），世代為 746 例保留括約肌之直腸前位切除、全部為組織學證實之直腸腺癌，<b>不含結腸、食道或胃之吻合</b>。<br><br>
+      <b>用於結腸、食道、胃吻合屬適應症外，且無驗證支持</b>——本頁查核未找到任何將 ISREC 外推至上述部位的驗證研究；2021 年一篇食道吻合口漏定義的綜述列出 Bruce、Lerut、Price、Low 與 ECCG 五套，<b>完全未提及 ISREC</b>，反向支持此結論。<br><br>
+      2020 年一項改良式 Delphi 共識（World J Gastroenterol 26:3293-3303）發現 ISREC 是專家小組最常建議的通用定義——但該小組討論的正是<b>大腸直腸</b>吻合口漏。
+
+      <div class="sys-sub">Kulu 2013 驗證世代之預後（n=746，漏發生率 7.5%）</div>
+      <table class="def-table">
+        <tr><th>級</th><th>佔漏之比例</th><th>死亡</th><th>住院天數中位數</th><th>轉入 ICU</th><th>再剖腹</th></tr>
+        <tr><td>A</td><td>16%（n=9）</td><td>0</td><td>13</td><td>0</td><td>0</td></tr>
+        <tr><td>B</td><td>23%（n=13）</td><td>0</td><td>16</td><td>8%</td><td>0</td></tr>
+        <tr><td>C</td><td>61%（n=34）</td><td>2（6%）</td><td>33.5</td><td>53%</td><td>100%</td></tr>
+      </table>
+      再剖腹率 0／0／100% 恰好還原分級定義本身，這正是該驗證的核心論點。<b>死亡率的組間差異未達統計顯著（P=.51）</b>，研究對死亡此一終點檢定力不足，6% 這個數字請保守解讀。有轉流性迴腸造口之次群漏發生率 6.7%，分佈為 A 20%／B 30%／C 50%。
+
+      <span class="sys-caveat">⚠ <b>本頁不引用「WSES 2022 吻合口漏指引」——經查核，該指引不存在。</b>以四種方式檢索 PubMed 均為 0 筆：精確片語檢索、World J Emerg Surg 期刊內 anastomotic leak 標題檢索（史上僅 2 篇，皆非指引）、WJES 2022 年所有 guidelines 標題清單（6 篇，無一關於吻合口漏）、全 PubMed anastomotic leak + guideline 標題檢索。若您手上的資料引用了這份指引，請回頭確認出處。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-leak-family">
+    <span class="sys-name">四套「漏」的分級，別搞混</span>
+    <span class="sys-en">Leak Grading Systems by Organ — Disambiguation</span>
+    <span class="sys-src">跨指引對照</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>ISREC 與 ISGLS 的 A／B／C 措辭幾乎一模一樣</b>（兩者共同作者含 Rahbari、Büchler、Weitz），是實務上最容易張冠李戴的一組。查任何一套之前，<b>先確定講的是哪個器官</b>。
+      <table class="def-table">
+        <tr><th style="width:20%;">系統</th><th style="width:16%;">器官／術式</th><th style="width:16%;">級別</th><th>要點</th></tr>
+        <tr><td><b>ISREC</b><br><span class="unit">Rahbari 2010</span></td><td>直腸前位切除</td><td>A / B / C</td><td>見上。A 不改變處置、B 需介入但免再剖腹、C 需再剖腹</td></tr>
+        <tr><td><b>ISGLS</b><br><span class="unit">Koch 2011</span></td><td>肝膽胰手術<br>之膽汁漏</td><td>A / B / C</td><td>定義：術後第 3 天（含）以後引流液膽紅素 <b>≥ 血中膽紅素 3 倍</b>，或因膽汁積聚／膽汁性腹膜炎而需放射線或手術介入。分級措辭與 ISREC 近乎相同</td></tr>
+        <tr class="dt-warn"><td><b>ISGPS</b><br><span class="unit">Bassi 2017</span></td><td>胰臟手術之<br>術後胰瘻</td><td><b>biochemical leak</b><br>/ B / C</td><td><b>⚠ 2016 更新已廢除「Grade A」一詞</b>，改稱 biochemical leak——「it has no clinical importance and is no longer referred to a true pancreatic fistula」。定義：引流液澱粉酶 &gt;3 倍院內血清正常上限，且伴隨臨床相關狀況。<b>切勿再寫「POPF grade A」</b></td></tr>
+        <tr><td><b>ECCG</b><br><span class="unit">Low 2015</span></td><td>食道切除術</td><td>Type I / II / III</td><td>用 <b>Type</b> 不用 Grade。I＝局部缺損，僅需藥物或飲食調整；II＝需介入性放射線引流、支架、床邊撐開或填塞；III＝需手術處理</td></tr>
+      </table>
+      <span class="sys-caveat">※ ISGPS B 級定義為「需改變術後處置；引流留置 &gt;3 週或經內視鏡／經皮重新置放」；C 級為「需再手術，或導致單一／多重器官衰竭及／或因胰瘻而死亡」。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-cfs">
+    <span class="sys-name">臨床衰弱量表 CFS</span>
+    <span class="sys-en">Clinical Frailty Scale（Rockwood）· version 2.0</span>
+    <span class="sys-src">Rockwood 2005／v2.0 2020</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ 本量表有版權，本頁未逐字轉載。</b>CFS© 為 <b>Dalhousie University</b> 所有。非商業之臨床、教育與研究用途通常<b>免授權費、也不需簽授權合約，但仍須向該校 Permission Request Portal 提出使用申請</b>；商業用途才需正式授權。使用者並須同意不修改、不商業化本量表。<br>
+        因此下表僅列<b>各級名稱</b>（此為事實性資訊）與<b>本頁自行撰寫的中文功能性摘要</b>，<b>未轉載原始英文描述文字</b>。臨床實際評估請使用向 Dalhousie 取得之官方版本。該校<b>未公布指定的標註格式</b>，正式引用格式請於申請時一併確認。
+      </div>
+      <table class="def-table">
+        <tr><th style="width:8%;">級</th><th style="width:34%;">v2.0 名稱</th><th>功能狀態摘要（本頁撰寫）</th></tr>
+        <tr><td>1</td><td>Very Fit<br><span class="unit">非常健壯</span></td><td>健壯、有活力，規律從事較強度的運動，體能屬同齡中最佳</td></tr>
+        <tr><td>2</td><td>Fit<br><span class="unit">健壯</span></td><td>無活動性疾病症狀，但運動強度或頻率低於第 1 級，例如僅於季節性期間活動</td></tr>
+        <tr><td>3</td><td>Managing Well<br><span class="unit">管理良好</span></td><td>有慢性病但控制良好，未因此限制日常活動；規律走動以外少有運動習慣</td></tr>
+        <tr><td>4</td><td>Living with Very Mild Frailty<br><span class="unit">極輕度衰弱</span></td><td>尚未依賴他人，但症狀已開始限制活動——常自述「變慢了」、容易疲倦，較重的家事已感吃力</td></tr>
+        <tr><td>5</td><td>Living with Mild Frailty<br><span class="unit">輕度衰弱</span></td><td>工具性日常活動（IADL）出現不等程度依賴：交通、金錢管理、家務、備餐、服藥；已無法做粗重家事</td></tr>
+        <tr><td>6</td><td>Living with Moderate Frailty<br><span class="unit">中度衰弱</span></td><td>依賴延伸至居家所有戶外活動與家務；<b>沐浴</b>開始需要協助，穿衣可能需少量提示或協助</td></tr>
+        <tr><td>7</td><td>Living with Severe Frailty<br><span class="unit">重度衰弱</span></td><td>個人日常活動（ADL）全面依賴，但狀態穩定、短期內無高度死亡風險；<b>特徵是逐步臥床化，但尚未完全臥床</b></td></tr>
+        <tr><td>8</td><td>Living with Very Severe Frailty<br><span class="unit">極重度衰弱</span></td><td>完全依賴且接近生命終點；典型為大致臥床，連輕微疾病都難以恢復</td></tr>
+        <tr class="dt-warn"><td>9</td><td>Terminally Ill<br><span class="unit">末期</span></td><td>預期壽命約數週至數月之末期疾病，且其他方面未必衰弱。<b>唯一以「當前狀態」而非「病前基準」判定的一級</b></td></tr>
+      </table>
+
+      <div class="sys-sub">三個判定原則（最常出錯的地方）</div>
+      <table class="def-table">
+        <tr><td>評的是<b>病前兩週</b></td><td>問病人或家屬／照服員／救護人員「<u>兩週前</u>的能力如何」，<b>不可依眼前的急性樣貌評分</b>。（第 9 級除外）</td></tr>
+        <tr><td>年齡限制</td><td>為 <b>65 歲以上</b>族群發展。Rockwood &amp; Theou 2020 明言「has largely not been validated in younger people」</td></tr>
+        <tr><td>穩定型單系統障礙<b>不適用</b></td><td>腦性麻痺、長期脊髓損傷、智能障礙等穩定型長期失能者，其預後意義與年齡相關的漸進性失能不同。SCFN／NICE 的建議是<b>此類族群不要使用 CFS</b></td></tr>
+      </table>
+
+      <div class="sys-sub">版本沿革（容易引錯）</div>
+      <table class="def-table">
+        <tr><td>2005 原始版</td><td><b>7 級</b>（CMAJ 173:489-95）</td></tr>
+        <tr><td>2007</td><td>擴充為 <b>9 級</b>（原第 7 級拆出 8「Very Severely Frail」與 9「Terminally Ill」）。<b>此次改版查無正式版本號</b>，勿自行標註為 v1.1／v1.2</td></tr>
+        <tr><td>v2.0（2020）</td><td>更改各級名稱並微調描述。<b>Well→Fit、Vulnerable→Living with Very Mild Frailty、Mildly／Moderately／Severely／Very Severely Frail→Living with … Frailty</b>；第 1、3、9 級名稱未變</td></tr>
+      </table>
+      <b>⚠ 常見的張冠李戴：</b>「Well with treated comorbid disease→Managing Well」「Apparently Vulnerable→Vulnerable」這兩項是 <b>2005→2007</b> 的改動，<b>不是 v2.0 的改動</b>。截至目前 v2.0 仍為現行版，無更新版本。
+
+      <div class="sys-sub">在急診剖腹的地位與預後</div>
+      <b>WSES 2023 立場文件</b>（Tian BWCA, et al. World J Emerg Surg 18:38）Statement 1a 為 <b>Grade 1A（強建議、高品質證據）</b>：「All patients being considered for, or undergoing emergency laparotomy aged 65 years or more, should undergo a routine frailty screening, e.g., Clinical Frailty Scale.」<br>
+      <b>切點 CFS ≥5</b> 觸發完整老年綜合評估（CGA）；NELA 另規定 ≥80 歲者不論 CFS 一律納入。CGA 理想上於入院時、或病房收治／降階後 72 小時內完成。<br><br>
+      <b>統合分析</b>（Park B, et al. BJS Open 2024;8(4):zrae078，12 篇研究 n=5704）：衰弱者對非衰弱者之死亡勝算比——30 天 <b>3.84</b>（2.90–5.09）、90 天 2.71、6 個月 5.90、1 年 3.03；重大併發症 1.93。<b>單一研究之校正後 30 天死亡 OR 依級別遞增：CFS 5 → 5.0（2.2–11.7）、CFS 6 → 13.5（6.1–30.1）、CFS 7 → 34.5（12.3–96.6）</b>。<br>
+      各研究採用的切點不一致（≥4 三篇、≥5 五篇、≥6 一篇），但統合迴歸顯示<b>切點差異未顯著影響衰弱與 30 天死亡的關聯</b>。
+      <span class="sys-caveat">※ 以上皆為<b>勝算比，不是絕對死亡率</b>——本頁查核未取得依 CFS 級別分層的絕對死亡百分比，請勿把 OR 當成死亡率向病人說明。另：本頁查核未找到 CFS 與 mFI-5 在急診一般外科的直接對決研究，勿宣稱何者較優；WSES 選用 CFS 是基於<b>快速可行、且 NELA 已採用</b>的務實理由，不是因為已證實優於其他工具。</span>
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="https://www.dal.ca/sites/gmr/our-tools/clinical-frailty-scale.html" target="_blank" rel="noopener">→ Dalhousie 官方 CFS 頁面與使用申請</a>
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/15273542/" target="_blank" rel="noopener" class="ref-link">Dindo D, Demartines N, Clavien PA. Classification of surgical complications. Ann Surg. 2004;240(2):205-213.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19638912/" target="_blank" rel="noopener" class="ref-link">Clavien PA, et al. The Clavien-Dindo classification of surgical complications: five-year experience. Ann Surg. 2009;250(2):187-196.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20004450/" target="_blank" rel="noopener" class="ref-link">Rahbari NN, et al. Definition and grading of anastomotic leakage following anterior resection of the rectum (ISREC). Surgery. 2010;147(3):339-351.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23623276/" target="_blank" rel="noopener" class="ref-link">Kulu Y, et al. Validation of the ISREC definition and severity grading of anastomotic leakage. Surgery. 2013;153(6):753-761.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/21316725/" target="_blank" rel="noopener" class="ref-link">Koch M, et al. Bile leakage after hepatobiliary and pancreatic surgery (ISGLS). Surgery. 2011;149(5):680-688.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28040257/" target="_blank" rel="noopener" class="ref-link">Bassi C, et al. The 2016 update of the ISGPS definition and grading of postoperative pancreatic fistula. Surgery. 2017;161(3):584-591.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25607756/" target="_blank" rel="noopener" class="ref-link">Low DE, et al. International consensus on standardization of data collection for complications associated with esophagectomy (ECCG). Ann Surg. 2015;262(2):286-294.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16129869/" target="_blank" rel="noopener" class="ref-link">Rockwood K, et al. A global clinical measure of fitness and frailty in elderly people. CMAJ. 2005;173(5):489-495.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32904824/" target="_blank" rel="noopener" class="ref-link">Rockwood K, Theou O. Using the Clinical Frailty Scale in allocating scarce health care resources. Can Geriatr J. 2020;23(3):210-215.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37355698/" target="_blank" rel="noopener" class="ref-link">Tian BWCA, et al. Assessing and managing frailty in emergency laparotomy: a WSES position paper. World J Emerg Surg. 2023;18(1):38.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/39166472/" target="_blank" rel="noopener" class="ref-link">Park B, et al. Frailty using the Clinical Frailty Scale to predict outcomes following emergency laparotomy: meta-analysis. BJS Open. 2024;8(4):zrae078.</a></footer>
+</div>
+
+<!-- ==================== 其他 ==================== -->
+<div id="tab-misc" class="hidden">
+
+  <div class="note" style="margin-bottom:14px;">
+    本分頁收錄較少見、或<b>經查核後發現「並不存在公認分類」</b>的主題。後者刻意保留，因為「查不到」本身就是臨床上需要知道的結論——比被二手來源餵一套沒人採認的分級要安全。
+  </div>
+
+  <div class="sys-head" id="sys-cdiff">
+    <span class="sys-name">困難梭狀桿菌大腸炎 嚴重度</span>
+    <span class="sys-en">C. difficile Infection — Severity</span>
+    <span class="sys-src">IDSA/SHEA 2017／WSES 2019</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ WSES 2019 並沒有自己的嚴重度分類。</b>原文明言「<b>international consensus for the definition of severe CDI is lacking</b>」，它給的是一份<b>預測因子清單</b>，不是分級；fulminant 的定義則是直接沿用 IDSA。所以下表<b>以 IDSA/SHEA 2017 為分級主體</b>，WSES 的預測因子另列。
+      </div>
+
+      <div class="sys-sub">IDSA/SHEA 2017 嚴重度定義（原文）</div>
+      <table class="def-table">
+        <tr><th style="width:18%;">分類</th><th>判定</th></tr>
+        <tr><td>非重度<br>Non-severe</td><td>WBC <b>≤15,000</b> <b>且</b> Cr <b>&lt;1.5 mg/dL</b></td></tr>
+        <tr><td>重度<br>Severe</td><td>WBC <b>≥15,000</b> <b>或</b> Cr <b>&gt;1.5 mg/dL</b></td></tr>
+        <tr class="dt-warn"><td>猛爆<br>Fulminant</td><td><b>低血壓或休克、腸阻塞（ileus）、巨結腸（megacolon）</b></td></tr>
+      </table>
+      <b>注意 AND／OR 的方向：</b>非重度是「兩者皆須符合」，重度是「任一符合」。<br>
+      <span class="sys-caveat">※ IDSA 原文表格印的單位是「cells/mL」，這是原文的單位筆誤（應為 /µL 或 /mm³）。本頁照錄<b>數值</b>但不沿用該錯誤單位。</span>
+
+      <div class="sys-sub">WSES 2019 的「重度 CDI 預測因子」（原文清單，非分級）</div>
+      <table class="def-table">
+        <tr><td>任一項</td><td>WBC &gt;15 ×10⁹/L　·　血清肌酸酐上升（≥133 μmol/L 或 ≥病前 1.5 倍）　·　體溫 &gt;38.5°C　·　白蛋白 &lt;2.5 g/dL</td></tr>
+      </table>
+      此清單<b>不含</b>乳酸、低血壓、腸阻塞或巨結腸的門檻——那些屬於 IDSA 的 fulminant 定義。猛爆型佔所有 CDI 的 1–3%。
+
+      <div class="sys-sub">⚠ 治療建議：WSES 2019 已與現行指引脫節</div>
+      <table class="def-table">
+        <tr><td>WSES 2019</td><td>輕—中度仍建議 <b>metronidazole</b>（Rec 17, 2A）</td></tr>
+        <tr><td>IDSA/SHEA 2021<br>focused update</td><td><b>初次發作建議 fidaxomicin 優於標準療程 vancomycin</b>（conditional, moderate）。復發亦以 fidaxomicin（標準或延長脈衝式）優於 vancomycin。6 個月內復發者建議<b>加上 bezlotoxumab</b>（conditional, very low）。<b>本次更新未修改嚴重度定義</b></td></tr>
+        <tr><td>ESCMID 2021</td><td>在有 fidaxomicin／vancomycin 可用之處<b>不再建議 metronidazole</b>；初次與第一次復發首選 fidaxomicin；第二次以上復發首選 <b>FMT 或 bezlotoxumab</b>。並明白轉向——「emphasis is placed on <b>risk for recurrence</b> […] <b>rather than the disease severity</b>」</td></tr>
+      </table>
+      <span class="sys-caveat">⚠ <b>Bezlotoxumab（ZINPLAVA）已由 Merck 於 2025 年 1 月 31 日停產</b>，為唯一供應商且無生物相似藥。任何以它為基礎的建議目前多屬紙上談兵。FMT 端則已進展至 FDA 核准產品（REBYOTA、VOWST），見 AGA 2024 指引（PMID 38395525）。</span>
+
+      <div class="sys-sub">手術（WSES 2019 原文建議）</div>
+      <table class="def-table">
+        <tr><td>Rec 21（1C）</td><td>重度 CDI 進展至全身性毒性者，應<b>早期照會外科</b>並評估手術可能</td></tr>
+        <tr><td>Rec 23（1B）</td><td>猛爆型大腸炎應考慮<b>全大腸切除</b>；但<b>轉流性迴腸造口併大腸灌洗是有用的替代方案</b>（兩者同為 1B）</td></tr>
+        <tr><td>Rec 24（1C）</td><td>猛爆型併用高劑量 vancomycin（500 mg q6h，口服及／或灌腸）＋ 靜脈 metronidazole（500 mg q8h）</td></tr>
+      </table>
+      實證：Bhangu 統合分析中全大腸切除併末端迴腸造口佔手術之 <b>89%（1247/1401）</b>。Neal 2011 系列（n=42，腹腔鏡 35 例／83%）以轉流性迴腸造口併順行性 vancomycin 灌腸 q6h ×10 天，<b>39/42（93%）保住大腸</b>。EAST 2017 多中心校正後死亡率 <b>轉流造口 17.2% vs 全大腸切除 39.7%（p=0.002）</b>。
+      <span class="sys-caveat">※ 版本：WSES 2019（World J Emerg Surg 14:8）仍為實質指引本體。另有 WSES-AAST 2021 執行摘要（J Trauma Acute Care Surg 91:422-426），係<b>濃縮重述而非重新評級的更新版</b>。查無 2024／2025 年之 WSES 改版。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-ecf">
+    <span class="sys-name">腸皮／腸道－大氣瘻管</span>
+    <span class="sys-en">Enterocutaneous &amp; Enteroatmospheric Fistula</span>
+    <span class="sys-src">Björck 2016／WSES 2018</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>先分清楚兩者：</b>腸皮瘻管（ECF）通往<b>皮膚</b>、可被引流受控；腸道－大氣瘻管（EAF）通往<b>開放腹腔的大氣</b>，源頭控制困難，是致命的那一種。Björck 修訂分類明訂：腸滲漏若<b>已縫合關閉、外置為造口，或已成為可受控的永久性腸皮瘻管，即視為 clean</b>。<br><br>
+      <b>EAF 為什麼幾乎不可能自發閉合</b>（Marinis 2013 原文）：「It is in fact <b>not a true fistula</b> because it <b>neither has a fistula tract nor is covered by a well-vascularized tissue</b>（Levy 等人因此稱之為 <i>exposed fistula</i>）… For these reasons, <b>spontaneous closure or sealing of EAFs is almost impossible</b>.」——沒有管道可供肉芽長合、也沒有血流良好的組織覆蓋，這是它與 ECF 的根本差異，不只是位置不同。Pepe 2024 的說法一致：EAF 因<b>缺乏筋膜、軟組織及／或皮膚包覆</b>，腸壁上的破孔<b>直接與大氣接觸</b>。
+
+      <div class="sys-sub">依來源器官的 type I–IV 分類</div>
+      <table class="def-table">
+        <tr><td>Type I</td><td>腹部（食道、胃十二指腸）</td></tr>
+        <tr><td>Type II</td><td>小腸　—　<b>最常見，佔 60–70%</b></td></tr>
+        <tr><td>Type III</td><td>大腸</td></tr>
+        <tr><td>Type IV</td><td><b>EAF，不論來源器官</b></td></tr>
+      </table>
+      另可分<b>內在性</b>（兩個中空臟器之間，gut-to-gut）與<b>外在性</b>（中空臟器通往皮膚表面）。
+      <span class="sys-caveat">※ 此 type I–IV 方案在各綜述中反覆出現，但<b>查無原始提出者</b>，本頁查核未能追出可歸屬的來源。請當成綜述間的共用慣例，不要當成有出處的分類引用。</span>
+      <div class="note" style="margin:10px 0;">
+        <a class="tool-link" href="../pathways/iah-acs.html">→ Björck 開腹腹腔修訂分類（1A–4）完整內容與處置，見腹腔高壓／開腹腹腔決策流程</a>
+      </div>
+      <span class="sys-caveat">⚠ <b>常見誤記：Grade 3 是 frozen abdomen，Grade 4 才是已形成之 EAF——兩者是分開的兩級，不是「frozen abdomen 併瘻管」。</b>2016 年修訂的動機之一，正是 2009 年舊版把 EAF 排在 frozen abdomen <u>之下</u>。</span>
+
+      <div class="sys-sub">⚠ 查無 WSES 的 ECF／EAF 專門指引</div>
+      本頁查核未能找到任何 WSES 或 WSES-AAST 之腸皮／腸道瘻管指引。相關的 WSES 文件是<b>開腹腹腔指引</b>（Coccolini F, et al. World J Emerg Surg 2018;13:7）。若您手上的資料引用了「WSES 2018 腸皮瘻管分類」，請回頭確認出處。
+
+      <div class="sys-sub">WSES 2018 開腹腹腔指引對 EAF 的建議（原文分級）</div>
+      <table class="def-table">
+        <tr><td>1C</td><td><b>預防措施至關重要</b>：早期關腹、以塑膠膜／大網膜／皮膚覆蓋腸道、不將合成人工網膜直接置於腸圈上、不將負壓治療直接施於內臟、腸吻合深埋於腸圈下方</td></tr>
+        <tr><td>1C</td><td>EAF 之處置應依病人狀況、瘻管流量、位置與解剖特徵<b>個別化</b></td></tr>
+        <tr><td>2A</td><td><b>瘻管排出液的隔離是傷口癒合的關鍵</b>；把傷口分隔成不同區室以便收集瘻管排出液極為重要</td></tr>
+        <tr><td>2A</td><td>開腹腹腔合併 EAF 時，負壓傷口治療可使排出液隔離變得可行、傷口得以癒合</td></tr>
+        <tr><td>1C</td><td>EAF 的<b>根治性處理應延後</b>至病人恢復、傷口完全癒合之後</td></tr>
+      </table>
+      風險因子（原文）：延遲關腹、開腹期間未保護腸圈、有腸道損傷或修補／吻合、損傷控制手術中做了大腸切除、大量輸液復甦（<b>&gt;5 L</b>）。
+
+      <div class="sys-sub">依流量分級</div>
+      <table class="def-table">
+        <tr><th style="width:20%;">流量</th><th>定義</th></tr>
+        <tr><td>低 Low</td><td>&lt; 200 mL/日</td></tr>
+        <tr><td>中 Moderate</td><td>200–500 mL/日</td></tr>
+        <tr><td>高 High</td><td>&gt; 500 mL/日</td></tr>
+      </table>
+      WSES 2018 開腹腹腔指引<b>本身即載有這組切點</b>並引用 <b>Schecter WP, et al. J Am Coll Surg. 2009;209(4):484-91</b> 為出處。
+      <span class="sys-caveat">※ 兩點提醒：<br>
+      ① Schecter 原文為付費牆內容，本頁查核<b>未能直接讀取其原始措辭</b>——「Schecter 為原始出處」係由四篇獨立綜述的引用鏈強力支持，而非直接確認。<br>
+      ② <b>&gt;500 mL 這條線很穩固，200 mL 這條則否。</b>部分預後研究只用<b>二分</b>（&lt;500 vs ≥500）而完全不提 200——包括 SOWATS 的 Visschers 2008 本身。</span>
+
+      <div class="sys-sub">自發閉合：機率、時窗與死亡率</div>
+      <table class="def-table">
+        <tr><td>自發閉合率</td><td>報告區間<b>極寬（15.6%–60%）</b>，主因是<b>個案組成</b>：轉診中心收到的多是他院保守治療已失敗者。Visschers 2008（n=135）僅 <b>21 例（15.6%）</b>自發閉合，但總閉合率（含手術）達 87.4%；Kaushal &amp; Carlson 2004 則稱「up to 60%」</td></tr>
+        <tr><td>時窗</td><td>「保守治療 <b>4–6 週</b>內」為公認說法。更精確的版本錨定在<b>敗血症解除之後</b>——Alvarez 2000：90% 的自發閉合發生於<b>敗血症解除後第一個月內</b>，第二個月再 10%，<b>兩個月後不再有自發閉合</b>。惟負壓治療時代有第 2–3 個月才閉合的個案報告。實測時間：Visschers 中位 <b>18 天</b>（7–49）</td></tr>
+        <tr class="dt-warn"><td>死亡率</td><td><b>ECF</b> 現代約 <b>15–30%</b>（Visschers 單一世代 9.6%）。<b>EAF 遠差</b>——Marinis 2013：「as high as <b>70% in past decades but is currently approximately 40%</b>」。死因：Kaushal &amp; Carlson——<b>至少 80% 的死亡源於腹腔敗血症未能控制</b></td></tr>
+      </table>
+      <b>EAF 發生率</b>（依原發病理而異）：創傷 2–25%、腹腔敗血症 20–25%、<b>感染性胰臟壞死可達 50%</b>（Marinis 2013 引 Becker 2007）。負壓傷口治療本身被報告涉及約 5% 的新發 EAF。
+      <span class="sys-caveat">※ <b>WSES 2018 指引本身未給任何 EAF 發生率數字</b>，上列數字請勿掛在 WSES 名下。<br>
+      ※ 術後性 vs 自發性的比例：綜述常引 75–85%／15–25%，但<b>追不到原始研究</b>。若需有病人資料撐腰的數字，請用 Visschers 2008 的 <b>88.1%／11.9%</b>（n=135，惟屬轉診中心世代，偏向術後性）。術後性之中約各半來自<b>非吻合處的醫源性穿孔</b>與<b>吻合口裂開</b>。</span>
+
+      <div class="sys-sub">兩套處置助憶法（都有原始出處）</div>
+      <b>SOWATS</b>——Visschers RGJ, et al. World J Surg. 2008;32(3):445-53，135 例連續病人：<b>S</b>epsis 控制敗血、<b>O</b>ptimization 營養狀態最佳化、<b>W</b>ound care 傷口照護、<b>A</b>natomy 瘻管解剖、<b>T</b>iming 手術時機、<b>S</b>urgical strategy 手術策略。結果：總閉合 <b>118/135（87.4%）</b>；重建手術於中位 <b>53 天</b>（4–270）執行，成功 97/107（90.7%）；死亡 13（9.6%）。<b>自發閉合最強的負向預測因子為腹壁缺損</b>（OR 0.195，CI 0.052–0.726，p=0.015）。原作者自陳此為既有做法的系統化，非全新概念。<br><br>
+      <b>SNAP</b>——Kaushal M, Carlson GL. Clin Colon Rectal Surg. 2004;17(2):79-88 原文：<b>S</b>epsis <b>and skin care</b>（敗血<u>與皮膚照護</u>）、<b>N</b>utritional support、intestinal <b>A</b>natomy、surgical <b>P</b>rocedure。
+      <span class="sys-caveat">※ 兩個常見的記錯：<b>S 不只是 sepsis，原文含 skin care</b>；<b>P 是 Procedure，不是 Plan</b>。<br>
+      ※ 兩者內容其實高度重疊——SOWATS 只是把 SNAP 的 Procedure 拆成 Timing ＋ Surgical strategy，並把 Wound care 獨立出來。<b>SOWATS 有同篇的預後資料支撐，SNAP 出自敘述性綜述、無附帶結果數據</b>；但 SNAP 在英國腸道衰竭實務中使用更普遍。</span>
+
+      <div class="sys-sub">FRIENDS：教學助憶，不是實證分類</div>
+      阻礙自發閉合的因素——<b>F</b>oreign body 異物、<b>R</b>adiation 放射線、<b>I</b>nfection／Inflammation／IBD、<b>E</b>pithelialisation 瘻管上皮化、<b>N</b>eoplasm 腫瘤、<b>D</b>istal obstruction 遠端阻塞、<b>S</b>hort tract 瘻管過短（&lt;2 cm）。
+      <span class="sys-caveat">※ <b>查無任何原始論文定義 FRIENDS</b>，只見於綜述與教科書衍生資料，連引用它的作者都寫「conventionally」。請當<b>記憶輔助</b>用，別當實證分類引用。<br>
+      ※ 最後的 <b>S 確實有分歧</b>：「short tract」是綜述文獻主流讀法；<b>StatPearls 乾脆只列六個字母、完全省略 S</b>；而流傳甚廣的「S = Sepsis」版本，本頁查核<b>找不到任何同儕審查來源</b>。<br>
+      ※ 這些<b>因素本身</b>是有實證的，只是不必經由這個助憶法來引用——可直接引 Pepe 2024 的預後表與 Kaushal &amp; Carlson 2004。惟注意 Pepe 2024 <b>自相矛盾</b>：管道長度門檻在內文寫 &gt;2 cm、在同篇表格寫 &gt;3 cm。</span>
+
+      <div class="sys-sub">WSES 2018 對根治時機的規定</div>
+      「EAF definitive treatment (i.e., fistula closure and abdominal wall reconstruction) should be postponed <b>at least of 6 months</b> and only after the patient and the wound healed completely.」——<b>至少 6 個月</b>，且須待病人與傷口皆完全復原。<br>
+      營養的兩難（原文）：早期腸道營養改善預後，但<b>可能增加 EAF 流量</b>，惟看來並未損及最終結果。負壓治療的終點是把 EAF <b>轉化為近似腸造口的狀態</b>，再行植皮。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-iac">
+    <span class="sys-name">腹腔內念珠菌感染</span>
+    <span class="sys-en">Intra-abdominal Candidiasis</span>
+    <span class="sys-src">查核結論：無公認分類</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ 查核結論：沒有任何學會文件公布過腹腔內念珠菌感染的分類。</b>IDSA 2016、ESCMID 2012、ECMM 2025 與 WSES 2021 一律把 IAC 當成<b>單一未再細分的疾病實體</b>處理。存在的是<b>風險分數</b>，不是分類。
+      </div>
+      廣為非正式沿用的那套解剖分類，其實出自<b>單一研究者自創的方案</b>——Vergidis P, et al. PLoS One 2016;11(4):e0153247, Table 1。作者自述「We developed a classification scheme based on the types and anatomic sources of infection」，<b>未引用任何前人來源</b>。分類為：原發性腹膜炎、續發性腹膜炎（消化道來源）、腹腔膿瘍（消化道來源）、感染性胰臟壞死、膽囊炎／膽管炎。
+      <span class="sys-caveat">※ 該表「感染性胰臟壞死」條目寫的是「<b>chronic</b> pancreatitis」，臨床上頗為突兀。本頁如實指出，不擅自代為更正。<br>
+      ※ 最接近共識文件者為 Bassetti M, et al. Intensive Care Med 2013;39:2092-106，但該文開宗明義承認指引未處理此情境「due to heterogeneity of definitions and scant direct evidence」——它提供的是<b>診斷準則，不是分類架構</b>。</span>
+
+      <div class="sys-sub">IDSA 2016 對腹腔內念珠菌感染的建議（原文）</div>
+      <table class="def-table">
+        <tr><td>Rec 54<br><span class="unit">strong; moderate</span></td><td>「Empiric antifungal therapy should be considered for patients with clinical evidence of intra-abdominal infection and significant risk factors for candidiasis, including <b>recent abdominal surgery, anastomotic leaks, or necrotizing pancreatitis</b>」</td></tr>
+        <tr><td>Rec 55<br><span class="unit">strong; moderate</span></td><td>「Treatment of intra-abdominal candidiasis should include <b>source control</b>, with appropriate drainage and/or debridement」</td></tr>
+      </table>
+      <span class="sys-caveat">⚠ <b>IDSA 未針對任何 Candida score 門檻給出建議</b>——這點值得特別說明，因為坊間常把該分數呈現得像有指引背書。IDSA 2016 目前狀態仍列為 CURRENT、未更新，但最新的權威文件已是 ECMM/ISHAM/ASM 2025（Lancet Infect Dis 25:e280-e293），該文並直接批評既有指引範圍受限。WSES 端現行的腹腔感染文件為 World J Emerg Surg 2021;16(1):49，<b>其中未提及任何 Candida score</b>。</span>
+
+      <div class="note" style="margin-top:10px;">
+        <a class="tool-link" href="candida-score.html">→ Candida score 與念珠菌移生指數計算機（含 2006／2009 兩版的差異）</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-bariatric">
+    <span class="sys-name">減重手術後急症</span>
+    <span class="sys-en">Acute Abdomen after Bariatric Surgery（OBA）</span>
+    <span class="sys-src">WSES/IFSO 2022</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ 是 2022 年，不是 2020 年。</b>正確文件為 De Simone B, et al.「Operative management of acute abdomen after bariatric surgery in the emergency setting: the <b>OBA guidelines</b>」World J Emerg Surg. 2022;17(1):51（PMID 36167572），WSES 與 IFSO 共同發布。<br>
+        坊間所稱的「WSES 2020 減重指引」實為 <b>OBA Survey</b>（World J Emerg Surg 2020;15:2，117 位受訪者），它產生的是 2022 指引所回答的 PICO 問題。<b>從來沒有存在過 2020 年版的 WSES 減重指引。</b>2022 年後亦無更新版。
+      </div>
+      <b>⚠ 適用範圍限制：</b>OBA 只涵蓋 <b>LSG 與 LRYGB</b> 術後之<b>晚期／長期併發症（&gt;4 週）</b>。<b>早期併發症、胃束帶、OAGB、BPD 均不在範圍內。</b>
+
+      <div class="sys-sub">內疝：三個部位的描述性清單，不是具名分類</div>
+      Statement 7.13 原文指示 LRYGB 術後探查應<b>自迴盲部開始（阻塞遠端）</b>往近端檢視空腸—空腸吻合，並檢查三個可能的內疝部位：
+      <table class="def-table">
+        <tr><td>①</td><td>橫結腸繫膜缺損（僅見於 retrocolic bypass）</td></tr>
+        <tr><td>②</td><td><b>Petersen's space（Petersen's hernia）</b></td></tr>
+        <tr><td>③</td><td>空腸—空腸吻合處之腸繫膜缺損（<b>mesojejunal hernia</b>）</td></tr>
+      </table>
+      最後再檢視殘胃。<b>這是一份部位清單，不是一套具名分類系統。</b>
+      <span class="sys-caveat">※ OBA <b>從未在文中定義 Petersen's space 的解剖範圍</b>——「between the Roux limb mesentery and the transverse mesocolon」這句話不存在於該文。要引用該解剖定義請另尋出處。</span>
+
+      <div class="sys-sub">⚠ 漏的時間分期：不是 WSES 的東西</div>
+      「急性 &lt;7 天／早期 1–6 週／晚期／慢性 &gt;12 週」這套四段分期<b>完全沒有出現在 OBA 指引中</b>。OBA 用的是不相容的兩段式，原文：「Early leaks, occurring in the <b>first 14 days</b> after bariatric procedure, have a higher rate of longstanding healing compared to late leaks, that occur <b>over 4–6 weeks</b> after surgery, and fistulae.」<br><br>
+      四段分期屬於 <b>Rosenthal RJ; International Sleeve Gastrectomy Expert Panel. Surg Obes Relat Dis. 2012;8(1):8-19</b>。
+      <span class="sys-caveat">⚠ 兩點必須說明：<br>
+      ① <b>第四段的界線本頁未能查證</b>。二手來源引為「late（6 週以後）、chronic（12 週以後）」，而非常見轉述的「late 6–12 週」；原文為付費牆內容，本頁<b>不採用任一版本的確切界線</b>，需引用請自行取得 SOARD 原文。<br>
+      ② <b>「ICSSG」這個團體不存在</b>，查無任何出處。正確名稱是 <b>International Sleeve Gastrectomy Expert Panel</b>（Rosenthal 2012）。另，Type I／II 是 <b>Csendes</b> 分類而非 Rosenthal，本頁亦未能查證，故不列出。</span>
+
+      <div class="sys-sub">OBA 確實含有的分類</div>
+      <table class="def-table">
+        <tr><td>邊緣性潰瘍<br>Marginal ulcer</td><td>早期 vs 晚期</td></tr>
+        <tr><td>胃—空腸狹窄</td><td>膜狀 membranous／瘢痕性 cicatricial／顆粒性 granular</td></tr>
+        <tr><td>腸套疊</td><td>順行性 antegrade vs 逆行性 retrograde（另引 Schackman 之三型，惟該三型本頁未能取得原文，故不列出）</td></tr>
+      </table>
+      OBA <b>不含</b>袖狀胃術後 GERD 之分類，亦不含胃束帶之分類。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-volvulus">
+    <span class="sys-name">乙狀結腸扭轉</span>
+    <span class="sys-en">Sigmoid Volvulus</span>
+    <span class="sys-src">查核結論：無公認分類</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ 查核結論：乙狀結腸扭轉沒有被廣泛接受的分類系統。</b>現行 WSES 指引<b>全文十條建議中不含任何分類</b>，處置一律以二元描述推進——<b>腸道存活 vs 壞疽</b>、<b>內視鏡復位成功 vs 失敗</b>。這是本項最重要的結論。
+      </div>
+      <b>存在但未被指引採納的兩套：</b>
+      <table class="def-table">
+        <tr><th style="width:22%;">系統</th><th>內容</th><th style="width:30%;">為什麼不採用</th></tr>
+        <tr><td><b>Atamanalp</b><br><span class="unit">2017／2020</span></td><td>IA–IIIB 分群，依腸道存活性、年齡與預期壽命、ASA、腸道狀況、內視鏡是否成功</td><td>單一作者、單一中心；PubMed 文獻類型標為 <b>Letter</b></td></tr>
+        <tr><td><b>AXIS</b><br><span class="unit">2018</span></td><td>影像學分類，依咖啡豆徵象長軸與脊柱夾角：<b>A 組 0–90°、B 組 90–135°、C 組 &gt;135°</b></td><td>n=66 回溯性，<b>從未經外部驗證</b>；C 組只有 3 人，其「100% 重症」之說法無意義</td></tr>
+      </table>
+      Atamanalp 自己 2020 年的文章列出各種描述性方案（臨床病程、嚴重度、盛行率、扭轉方向、扭轉度數）後，結論是：<b>「none of these classifications provides practical information about the treatment or prognosis of SV.」</b><br><br>
+      <b>內視鏡缺血分級亦無已驗證的具名系統。</b>咖啡豆徵象、彎曲內胎徵象、漩渦徵象、northern exposure 徵象都是<b>診斷徵象，不是分類</b>。
+
+      <div class="sys-sub">WSES 2023 共識指引（原文建議）</div>
+      正確引用為 <b>Tian BWCA, et al.「WSES consensus guidelines on sigmoid volvulus management」World J Emerg Surg. 2023;18(1):34</b>（PMID 37189134）。
+      <span class="sys-caveat">⚠ 三處常見引用錯誤：第一作者是 <b>Tian</b>；名稱是 <b>WSES consensus guidelines，不是 WSES-AAST</b>；範圍<b>只涵蓋乙狀結腸扭轉，不含假性阻塞、不含盲腸扭轉</b>。「扭轉＋假性阻塞」那份是 <b>ASCRS</b> 2021（Dis Colon Rectum 64:1046-1057），屬於<b>另一個學會</b>——查無 WSES 之假性阻塞指引。</span>
+      <table class="def-table">
+        <tr><td>Rec 4（1C）</td><td>臨床及／或影像上<b>不懷疑缺血或穿孔</b>者，應<b>先以軟式內視鏡</b>減壓</td></tr>
+        <tr><td>Rec 5（1C）</td><td>內視鏡復位<b>失敗</b>、或腸道<b>無存活性／已穿孔</b>者，須<b>緊急乙狀結腸切除</b></td></tr>
+        <tr><td>Rec 6（1C）</td><td>內視鏡減壓成功者，仍應施行乙狀結腸切除以預防復發，且應<b>儘早、甚至於同次住院期間</b>執行</td></tr>
+      </table>
+      <b>指引未給任何「半擇期手術」的天數。</b>只寫「index admission」——請勿自行填入「6 週」之類的數字。<br><br>
+      數據：內視鏡復位成功率 <b>60–95%</b>；未切除者復發率 <b>45–71%</b>。
+      <span class="sys-caveat">※ 該指引<b>內部數字自相矛盾</b>（他處另寫 70–91% 與 43–75%），本頁以區間呈現並提醒此事。<br>
+      ※ 硬式乙狀結腸鏡<b>最多可漏掉 24%</b> 的缺血。見「advanced mucosal ischemia, perforation or impending perforation」應中止內視鏡，改行緊急切除。壞疽者佔 <b>5–25%</b>，需一開始就切除；技術要點為<b>不復位、以最少的操作</b>切除梗塞腸段。<br>
+      ※ <b>Hartmann vs 一期吻合：指引刻意不做選擇</b>——「there are insufficient data to support one technique over another in emergent cases」。請勿呈現任何偏好。嚴重度分級：<b>該指引未使用任何一種</b>，只以 ASA 與 APACHE II 作為一般性風險描述。</span>
+
+      <div class="note" style="margin-top:10px;">
+        <a class="tool-link" href="../pathways/bowel-obstruction.html">→ 大腸扭轉的完整處置分支，見腸阻塞決策流程</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/30858872/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2019 update of the WSES guidelines for management of Clostridioides difficile infection in surgical patients. World J Emerg Surg. 2019;14:8.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29462280/" target="_blank" rel="noopener" class="ref-link">McDonald LC, et al. IDSA/SHEA Clinical Practice Guidelines for C. difficile Infection. Clin Infect Dis. 2018;66(7):e1-e48.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34164674/" target="_blank" rel="noopener" class="ref-link">Johnson S, et al. IDSA/SHEA 2021 focused update guidelines on management of C. difficile infection in adults. Clin Infect Dis. 2021;73(5):e1029-e1044.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34678515/" target="_blank" rel="noopener" class="ref-link">van Prehn J, et al. ESCMID: treatment guidance document for C. difficile infection. Clin Microbiol Infect. 2021;27 Suppl 2:S1-S21.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29434652/" target="_blank" rel="noopener" class="ref-link">Coccolini F, et al. The open abdomen in trauma and non-trauma patients: WSES guidelines. World J Emerg Surg. 2018;13:7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26929286/" target="_blank" rel="noopener" class="ref-link">Björck M, et al. Amended classification of the open abdomen. Scand J Surg. 2016;105(1):5-10.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/18175171/" target="_blank" rel="noopener" class="ref-link">Visschers RGJ, et al. Treatment strategies in 135 consecutive patients with enterocutaneous fistulas (SOWATS). World J Surg. 2008;32(3):445-453.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19801322/" target="_blank" rel="noopener" class="ref-link">Schecter WP, et al. Enteric fistulas: principles of management. J Am Coll Surg. 2009;209(4):484-491.（流量分級出處）</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20011252/" target="_blank" rel="noopener" class="ref-link">Kaushal M, Carlson GL. Management of enterocutaneous fistulas (SNAP). Clin Colon Rectal Surg. 2004;17(2):79-88.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23820678/" target="_blank" rel="noopener" class="ref-link">Marinis A, et al. Enteroatmospheric fistulae — gastrointestinal openings in the open abdomen. Scand J Surg. 2013;102(2):61-68.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38592102/" target="_blank" rel="noopener" class="ref-link">Pepe G, et al. Entero-cutaneous and entero-atmospheric fistulas: insights into management. J Clin Med. 2024;13(5):1279.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26679628/" target="_blank" rel="noopener" class="ref-link">Pappas PG, et al. IDSA Clinical Practice Guideline for the Management of Candidiasis: 2016 Update. Clin Infect Dis. 2016;62(4):e1-e50.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27123857/" target="_blank" rel="noopener" class="ref-link">Vergidis P, et al. Intra-abdominal candidiasis: the importance of early source control and antifungal treatment. PLoS One. 2016;11(4):e0153247.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36167572/" target="_blank" rel="noopener" class="ref-link">De Simone B, et al. Operative management of acute abdomen after bariatric surgery: the OBA guidelines. World J Emerg Surg. 2022;17(1):51.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37189134/" target="_blank" rel="noopener" class="ref-link">Tian BWCA, et al. WSES consensus guidelines on sigmoid volvulus management. World J Emerg Surg. 2023;18(1):34.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34016826/" target="_blank" rel="noopener" class="ref-link">Alavi K, et al. ASCRS Clinical Practice Guidelines for Colonic Volvulus and Acute Colonic Pseudo-Obstruction. Dis Colon Rectum. 2021;64(9):1046-1057.</a></footer>
+</div>
+
 </div>
 </div>
 
@@ -679,9 +1073,11 @@
    每一套分級都有自己的 id（sys-xxx）與所屬分頁；外部（流程圖、書籤、側邊導覽）
    以 #sys=xxx 連進來時，先切到該分頁再捲到該區塊——只捲不切分頁的話，
    目標永遠在 display:none 的分頁裡，看起來像連結壞掉。 */
-var TABS=['cross','biliary','colon','panc','hernia','gib'];
+var TABS=['cross','biliary','colon','panc','hernia','gib','periop','misc'];
 var SYS_TAB={
   aast:'cross',
+  clavien:'periop','isrec':'periop','leak-family':'periop',cfs:'periop',
+  cdiff:'misc',ecf:'misc',iac:'misc',bariatric:'misc',volvulus:'misc',
   'tg18-gb':'biliary','tg18-cholangitis':'biliary',asge:'biliary',
   parkland:'biliary',nassar:'biliary',niemeier:'biliary',mirizzi:'biliary',
   'wses-ct':'colon',hinchey:'colon',
