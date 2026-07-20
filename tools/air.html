@@ -21,7 +21,10 @@
 <div class="view active" id="view-air">
   <div class="app-header">
     <div><div class="eyebrow">Acute Abdomen Scoring Tool</div><h1>AIR Score</h1><div class="sub">Appendicitis Inflammatory Response Score</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-air'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="air_back_appy" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/appendicitis.html'">← 返回闌尾炎決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-air'">← 返回主選單</button>
+    </div>
   </div>
   <div class="card">
     <div class="field-row"><label>嘔吐</label><select id="air_vomit"><option value="0">無</option><option value="1">有</option></select></div>
@@ -76,6 +79,9 @@ document.querySelectorAll('#view-air select').forEach(el=>el.addEventListener('c
 airCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
+<script>
+if(location.search.indexOf('from=appy')>=0){var _ba=document.getElementById('air_back_appy'); if(_ba) _ba.style.display='';}
+</script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
