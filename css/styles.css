@@ -38,6 +38,8 @@
   h1{font-family:var(--serif); font-size:25px; margin:4px 0 4px; font-weight:600;}
   .sub{font-size:12.5px; color:var(--muted);}
   .back-btn{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:7px 12px; border-radius:2px; cursor:pointer; color:var(--ink); white-space:nowrap;}
+  /* 兩顆返回鍵直向堆疊（來源流程圖在上、主選單在下）；靠右對齊以貼齊 app-header 右緣 */
+  .back-stack{display:flex; flex-direction:column; gap:6px; align-items:flex-end;}
   .back-btn:hover{background:var(--accent-soft);}
 
   /* 返回首頁時，剛才所在的卡片短暫高亮（配合置中捲動） */

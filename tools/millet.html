@@ -21,8 +21,10 @@
 <div class="view active" id="view-millet">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Millet Score</h1><div class="sub">結合CT徵象評估黏連性小腸阻塞絞窄（strangulation）風險</div></div>
-    <button class="back-btn" id="millet_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/bowel-obstruction.html'">← 返回腸阻塞決策</button>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-millet'">← 返回主選單</button>
+    <div class="back-stack">
+      <button class="back-btn" id="millet_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="boReturn()">← 返回腸阻塞決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-millet'">← 返回主選單</button>
+    </div>
   </div>
   <div class="card">
     <label class="item"><input type="checkbox" class="millet-cb" data-w="2" id="ml_enhance"> 腸壁顯影降低／缺損 <span class="unit">(Reduced bowel wall enhancement)</span><span class="pt-badge pt-2">2分</span></label>
@@ -59,6 +61,7 @@ function milletCalc(){
 }
 document.querySelectorAll('.millet-cb').forEach(cb=>cb.addEventListener('change',milletCalc));
 milletCalc();
+function boReturn(){location.href='../pathways/bowel-obstruction.html?restore=1';}
 if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('millet_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
