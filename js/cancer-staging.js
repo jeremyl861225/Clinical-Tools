@@ -230,6 +230,7 @@ function switchTab(id, tab){
     el.innerHTML = renderTx(c);
     if(c.pathway === 'lung' && typeof initLungPathway === 'function') initLungPathway();
     if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
+    if(c.pathway === 'esoph' && typeof initEsophPathway === 'function') initEsophPathway();
     if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
     if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
     if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
@@ -428,6 +429,9 @@ function setNodeSort(id, s){ NODE_SORT = s; switchTab(id, 'node'); }
 var NODE_LEVELS = {
   gastric: [['D1','dl-1'], ['D1+','dl-1p'], ['D2','dl-2']],
   panc:    [['標準','dl-1'], ['擴大','dl-warn']],
+  // 食道之選擇軸是「廓清野」（兩野 2-field＝D2／三野 3-field＝D3，JES 第 12 版定義），
+  // 非術式；分級為該站於該廓清野是否為必須摘除者。AJCC 依顆數分 N，故區域／M1 另以徽章表示。
+  esoph:   [['必要','dl-1'], ['可省略','dl-1p']],
   // pNET 之選擇軸是「腫瘤位置」而非術式：AJCC 對胰臟 NET 之區域淋巴結定義依胰頭／頸 vs 胰體／尾而異，
   // 故此處的分級是「該淋巴結群於該部位是否屬區域（N1）」；未列出者即非區域 → 轉移屬 M1b。
   pnet:    [['區域 N1','dl-1']],
@@ -505,6 +509,9 @@ function renderTx(c){
   }
   if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
     return gastricPathwayHTML();
+  }
+  if(c.pathway === 'esoph' && typeof esophPathwayHTML === 'function'){
+    return esophPathwayHTML();
   }
   if(c.pathway === 'breast' && typeof breastPathwayHTML === 'function'){
     return breastPathwayHTML();
