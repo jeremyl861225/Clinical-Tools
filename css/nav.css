@@ -5,19 +5,19 @@
 
 :root{
   --nav-w:250px;
-  /* 導覽列刻意與內容區反色（亮色系統配深灰欄、暗色系統配淺灰欄），
-     一眼分得出「這是導覽、右邊才是內容」。色值取自 styles.css 另一個外觀的同義變數，
-     故兩種外觀下的對比與全站一致。 */
+  /* 導覽列一律用深灰欄，與內容區分開，一眼看得出「這是導覽、右邊才是內容」：
+     亮色系統下是深灰對淺底（反色），暗色系統下則是比頁面略亮一階的灰（見下）。 */
   --nv-bg:#262b2f; --nv-ink:#e7e4db; --nv-line:#39424a;
   --nv-muted:#a8a39a; --nv-accent:#7cbccc; --nv-accent-soft:#233a42;
   --nv-accent2-soft:#3d2d27; --nv-hover:#2e3439; --nv-current:#1b3037;
 }
 @media (prefers-color-scheme:dark){
   :root{
-    /* 中性灰，不帶內容區那層暖米色：深色主題下大片暖白會過亮、也容易被當成內容 */
-    --nv-bg:#cbcfd1; --nv-ink:#14181b; --nv-line:#aeb4b7;
-    --nv-muted:#4e565a; --nv-accent:#1a4e5e; --nv-accent-soft:#b3c4c8;
-    --nv-accent2-soft:#cbb9ad; --nv-hover:#d8dbdd; --nv-current:#b6c3c7;
+    /* 暗色系統：改用指定的暖調深灰，比頁面底色（#14181b）亮一階，
+       導覽列像一塊墊高的面板；淺灰欄在深色主題下太亮，已不採用 */
+    --nv-bg:#343330; --nv-ink:#e7e4db; --nv-line:#4b4a45;
+    --nv-muted:#a29e95; --nv-accent:#7cbccc; --nv-accent-soft:#2b3f45;
+    --nv-accent2-soft:#463830; --nv-hover:#3e3d39; --nv-current:#2c3e43;
   }
 }
 
