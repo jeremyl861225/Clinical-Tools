@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腸套疊處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-iss-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸套疊處置決策</h1><div class="sub">Intussusception · 兒童與成人 · 依套疊部位分流（APSA 2021 · 日本小兒急診 2012 · 成人系列文獻）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-iss-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>診斷閾值、灌腸參數、證據強度與常被誤引的數字 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 本頁最重要的前提：這個題目沒有指引。</b><br>
+      腸套疊<b>沒有任何國際共識或 Delphi 指引</b>，WSES 與 EAST 皆未涵蓋。現存最強的文件是 <b>APSA Outcomes &amp; EBP Committee 系統性回顧（2021）</b>——該文自承「<i>there is a lack of Level 1 and Level 2 evidence for any of the questions addressed</i>」，<b>全部建議僅 Grade C 或 D</b>。其次為<b>日本小兒急診醫學會指引（2012）</b>（50 個臨床問題、Oxford CEBM 分級）與 <b>ESPR 腹部工作小組 2025 意見書</b>（自述為 opinion，非分級指引）。Cochrane 2017 收錄 6 篇 RCT（n=822），<b>全部 GRADE 低品質</b>，且「未找到任何單獨評估手術介入的研究」。<b>成人部分的證據更弱</b>：整個處置原則建立在 1997 年一篇外科系列、2006 年一篇 n=60 多變項分析、與 2024 年一篇異質性回溯統合之上。本頁凡屬慣例而非證據者均已標明。<br><br>
+
+      <b>◆ 流行病學與年齡——不要照抄西方數字</b><br>
+      ・全球系統性回顧（128 篇、227 個國家資料集）：&lt;1 歲住院發生率中位數<b>非洲 34</b>、<b>西太平洋 90</b>／100,000；但<b>年齡中位數非洲 29 週（83% 在一歲內）vs 西太平洋 70 週（僅 35% 在一歲內）</b>。<br>
+      ・新加坡 391 例（Brighton 標準）：<b>平均 2.59 歲，3.33% ≥10 歲</b>。<b>因此在東亞族群不可把「90% 在兩歲以下」寫死成年齡上限。</b><br>
+      ・致死率：非洲住院者約 <b>1/10</b>，其他地區 &lt;1/100–2000。撒哈拉以南非洲統合（24 篇 n=2078）：平均症狀時間 <b>3.45 天</b>、術後併發症 24.5%、<b>死亡率 12.4%</b>——這是延遲就醫的自然病程。<br><br>
+
+      <b>◆ 三聯徵：不可作為排除依據</b><br>
+      腹絞痛＋嘔吐＋血便三者俱全者，新加坡 391 例僅 <b>3.58%</b>。文獻中的「約 50%」有兩個來源：一是未附原始引用的敘述性回顧，二是平均延遲 3.45 天才就醫的非洲統合（50.4%）——<b>晚到才湊齊三項</b>。現代早期就醫、以超音波篩檢的族群應以 <b>3.6%～15%</b> 為準。亞洲另一組合（腹痛＋屈膝＋嘔吐）為 22.51%。單一症狀頻率：嘔吐 81%、血便 61%、腹痛 59%。<br>
+      <b>腹部 X 光不能排除</b>：敏感度 <b>48%</b>、特異度 21%。<br><br>
+
+      <b>◆ 超音波：診斷效能極高，四篇統合高度一致</b><br>
+      ・Tsou 2019（30 篇 n=5249）：<b>sens 0.98／spec 0.98</b>，LR+ 43.8、LR− 0.03，AUROC 0.99。Rahmani 2023（37 篇）：sens 0.96／spec 0.97。<br>
+      ・<b>POCUS</b>（11 篇 n=2400）：sens 95.1%／spec 98.1%。與放射科超音波<b>未達顯著差異</b>（Tsou p=0.128；Rahmani rDOR 4.38, p=0.06）——但這兩個比較<b>是檢定力不足，不等於已證明對等</b>，且 Rahmani 的點估計反而偏向放射科。安全說法：<b>POCUS 陽性可直接啟動復位流程；POCUS 陰性但臨床仍高度懷疑者須做正式超音波。</b><br><br>
+
+      <b>◆ 迴結腸型 vs 單純小腸型：不要用直徑分</b><br>
+      Lioubashevsky 2013（Radiology，n=200；小腸型 28.5%、迴結腸型 71.5%）：<br>
+      ・平均病灶直徑 迴結腸 <b>2.63 cm（1.3–4.0）</b> vs 小腸 <b>1.42 cm（0.8–3.0）</b>——<b>範圍大幅重疊，「&gt;3 cm＝迴結腸」必然誤判</b>。<br>
+      ・<b>脂肪核心／外側腸壁厚度比值：迴結腸型全部 &gt;1.0，小腸型全部 &lt;1.0</b>（p&lt;0.0001）。<br>
+      ・<b>病灶內淋巴結</b>：迴結腸 128/143（89.5%）vs 小腸 8/57（14.0%）。<br>
+      → <b>以「脂肪核心：腸壁比值」與「病灶內淋巴結」分流，不以直徑分流。</b>惟該研究為單中心且呈現完全分離（perfect separation），n=200 出現完全分離本身是統計警訊，且<b>查無外部驗證</b>。<br>
+      ※ 教科書常見的「外徑 &gt;3 cm、腸壁 &gt;8 mm」<b>查無任何原始驗證來源</b>，屬慣例。<br><br>
+
+      <b>◆ 單純小腸型的「良性五項」（Mateen 準則）——本頁的核心判準</b><br>
+      Mateen 2006（Abdom Imaging，n=108 連續病例，含成人與兒童，41 例為一過性）：一過性、無臨床意義者須<b>五項全部成立</b>——<br>
+      <b>①無可辨識之 lead point ②腸壁厚度正常 ③長度 &lt;3.5 cm ④近端腸道不擴張 ⑤彩色都卜勒血流正常</b>。<br>
+      ・其中 36/41 為<b>因其他原因影像檢查時意外發現</b>；追蹤 30 分鐘／3 天／2 週影像＋6 個月臨床，均無不良結果。<br>
+      ・長度門檻的獨立佐證：Munden 2007（AJR，n=35 兒童單純小腸型，37% 需手術）——平均長度 <b>手術組 7.3 cm vs 自限組 1.9 cm</b>（p&lt;0.0001）；<b>長度 &gt;3.5 cm 預測需手術 sens 93%／spec 100%</b>。另腹水 54% vs 9%（p=0.006）、小腸阻塞 <b>54% vs 0%</b>（p=0.0003）。<br>
+      ・<b>「直徑 &lt;2 cm」不是推導出來的門檻</b>，而是 Kim 2004（n=34 描述性系列，平均直徑 1.5±0.3 cm、腸壁 3.5±1 mm、長度 1.8±0.5 cm）的平均值加約 1.7 個標準差。<b>可決策的是長度，不是直徑。</b><br>
+      ・注意 Mateen 有 5 例<b>帶阻塞徵象仍自行緩解</b>；但 Munden 在兒童發現阻塞對需手術的特異度 100%。<b>阻塞徵象應觸發短間隔重掃與升級警覺，而非自動剖腹。</b><br>
+      ・實作：不確定時<b>間隔 20–30 分鐘重做超音波</b>，多數一過性者已自行復位。<br><br>
+
+      <b>◆ 空氣 vs 液體灌腸：統合與 RCT 結論相反</b><br>
+      ・Sadigh 2015 統合（102 篇、<b>32,451 名兒童</b>）：成功率<b>空氣 82.7% vs 液體 69.6%</b>；穿孔 0.39% vs 0.43%（無差異）；首次復發 6.0% vs 7.3%。Cochrane 同向但評為低品質：RR 1.28（1.10–1.49），<b>NNT 6</b>，僅 2 篇 RCT n=199。<br>
+      ・<b>但最大的 RCT 結論相反</b>：Xie 2017（n=124 隨機）<b>超音波導引生理食鹽水 96.77% vs X 光導引空氣 83.87%（p=0.015）</b>，唯一穿孔發生在空氣組。另一 RCT（n=80）：食鹽水 87.5% vs 空氣 85.0%（p=0.745），成本較低且無輻射。<br>
+      ・<b>矛盾的解釋</b>：Sadigh 的液體組以<b>透視導引（含鋇劑）</b>為主；APSA 明文<b>排除</b>以超音波導引水壓復位為主要方法的研究（因多來自資源有限地區）——這是選擇偏差。<b>正確說法：兩種皆可，依院內熟練度選擇；鋇劑應淘汰。</b><br>
+      ・<b>鋇劑列為 Grade D 不建議</b>（日本 2012）：穿孔時造成嚴重化學性腹膜炎。<br><br>
+
+      <b>◆ 壓力與「三個 3」——這是慣例，不是實證</b><br>
+      ・常規：起始 60–80 mmHg、<b>上限 120 mmHg、最多 3 次、每次 3 分鐘</b>（歸於 ACR Appropriateness Criteria 2021 與日本 2012）。<br>
+      ・原始壓力資料（Shiels 1991，n=186）只證明：<b>套疊頭開始移動的平均壓力 56.5 mmHg、完成復位所需最大壓力平均 97.8 mmHg</b>。<b>該研究並無破裂壓力實驗。120 mmHg 是安全裕度的共識數字，不是量測到的穿孔門檻</b>——此點已於 2025 年在 Pediatr Radiol 被正式為文質疑。歐洲調查中 82.4% 的小兒放射科醫師使用 100–120 mmHg 之間。<br>
+      ・<b>水壓灌腸的「離床 3 呎／100 cm」查無任何原始文獻</b>，純屬慣例。唯一實測壓力的 RCT 為食鹽水 9.6±1.26 kPa（≈72 mmHg）vs 空氣 10.95±1.54 kPa（≈82 mmHg）——與 100 cm 水柱吻合，但那是巧合而非驗證。<br>
+      ・<b>鎮靜／麻醉可提高成功率</b>：統合 17 篇 n=2094，成功率 87%（純空氣次群 94%）；比較性研究 <b>OR 2.41（1.27–4.57），p=0.010</b>；<b>穿孔未增加</b>（OR 1.52, 0.09–23.34）。<b>但延遲重複灌腸時全身麻醉無益</b>：清醒 45.2% vs 全麻 34.6%，無差異。<br>
+      ・<b>灌腸前不需預防性抗生素</b>（APSA Grade C）：三篇研究在發燒、住院天數、進食時間、感染均無差異；27 名嬰兒灌腸前後血液培養<b>無任何腸道菌血症</b>。<br>
+      ・<b>現場人員</b>：APSA 要求「具備腹腔減壓與心肺復甦能力的醫師在場」，體系內須有小兒外科可即時支援；<b>外科醫師不必親自在場</b>（433 次灌腸中 1.4% 出現血行動力學不穩需針刺減壓與 CPR，全部以此穩定；無研究比較外科在場與否；歐洲調查 46% 有外科在場）。<br><br>
+
+      <b>◆ 延遲重複灌腸 (DRE)：本頁證據最強、最能避免開刀的一步</b><br>
+      ・APSA 彙整：<b>整體成功率 57.2%（624/1091）</b>；使用標準化條件者 54.3%。DRE 讓非手術總成功率<b>再拉高約 10 個百分點</b>。<br>
+      ・<b>穿孔率 DRE 1.1%（4/373）</b>；用標準化條件者 0.8%；所有灌腸整體 0.5%（37/7542）。<br>
+      ・<b>DRE 不會讓後續手術變糟</b>：DRE 失敗後腸切除率 29.2%（91/311），與任何復位失敗後的 29.0%（664/2291）幾乎相同。<br>
+      ・<b>三個資格條件</b>：①內科狀況穩定 ②無腹膜炎 ③<b>前次灌腸已達部分復位／套疊頭有進行性移動</b>。<br>
+      ・<b>次數的遞減效益</b>：1 次 53.2%、2 次 62.5%、3 次 50.9%、<b>4 次 35.4%</b>。APSA：超過 3 次可能已無益處。<br>
+      ・<b>間隔</b>：文獻自 10 分鐘至 24 小時；最高報告成功率 <b>82.3%（19/23）出現在 45–60 分鐘</b>。APSA 建議 <b>30 分鐘至 4 小時</b>（Grade D／Level 5，即專家意見）。安全訊號：Sandler 在 6 與 10 小時間隔的 8 名病人中<b>發生 2 例穿孔</b>，改為 2–4 小時後未再發生。<br>
+      ・<b>實質效益（PHIS 資料庫 6889 名兒童）</b>：首次灌腸失敗後直接手術 vs DRE——<b>腸切除率 26.4% vs 11.8%</b>（p&lt;0.001，adj OR 2.50）、<b>NNT 7 即可避免一次腸切除</b>；住院 4.4 vs 3.2 天；成本 $14,422 vs $9,205。<br>
+      ・<b>選擇病人的關鍵（Sandler 1999）</b>：10 例成功者<b>每次嘗試都看得到套疊頭進行性移動</b>；<b>2 例穿孔者第二次嘗試皆無移動</b>。失敗組體溫較高（38.1 vs 37.4°C, p=0.07）、心跳較快（153.7 vs 136.9, p=0.03）、症狀較久（36.8 vs 21.3 小時, p=0.01）。<b>發燒、心搏過速、症狀 &gt;36 小時為 DRE 的相對禁忌。</b><br>
+      ・<b>外院灌腸失敗不是直接開刀的理由</b>：Kaiser 2007 有 <b>48% 在重新嘗試灌腸時成功</b>（含外院已失敗者）。<br><br>
+
+      <b>◆ 穿孔：機轉與立即處置</b><br>
+      ・空氣 0.39%、液體 0.43%（無差異）；單中心氣體灌腸系列 7/650（1.1%）。<br>
+      ・<b>氣體灌腸穿孔會造成張力性氣腹</b>——腹部急速膨脹、橫膈受限、急性呼吸窘迫，須<b>立即以 14 號針穿刺減壓</b>。<br>
+      ・該系列 7 例穿孔<b>全部在灌腸前 X 光即有腸阻塞（液平面）</b>且症狀史較長；<b>無一例在延遲重複灌腸時發生</b>；<b>無一例找到 lead point</b>——<b>穿孔是缺血與時間的函數，不是潛在病灶的函數。</b>氣體穿孔的腹腔汙染極輕微。<br><br>
+
+      <b>◆ 復發：反直覺的年齡效應，以及「再灌腸就好」</b><br>
+      ・復發率：空氣 6.0%、液體 7.3%；17 年 763 名兒童系列整體 9%（鋇劑 11%、空氣 8%）；APSA 彙整 7.5–15%。術後復發 0–14%，腹腔鏡與開腹無差異。<br>
+      ・<b>時間</b>：早期復發 <b>92.1% 發生在 48 小時內</b>（117/127，n=2295）；中位數約 25 小時。但也可長尾至 8 年，以孤立事件或叢集形式出現。<br>
+      ・<b>年齡</b>：&lt;1 歲早期復發 2.1% vs &gt;1 歲 <b>11.9%</b>（p=0.0001）；APSA 的多變項分析則指向 <b>&gt;2 歲</b>為唯一預測因子。<b>兩者方向一致（年紀大者復發多，與直覺相反），但門檻不一致</b>——衛教時說「1–2 歲以上復發風險較高」，不要宣稱精確門檻。<br>
+      ・<b>腺病毒</b>：復發 48.1% vs 13.8%，<b>OR 5.804（1.585–21.245），p=0.008</b>，發燒較久；85.2% 為非腸道型腺病毒。懷疑腺病毒者延長觀察。<br>
+      ・<b>復發的處置就是再灌腸</b>：Daneman 報告初發可復位率 100%、<b>復發 95%，且無任何穿孔</b>，結論明言「<b>多次復發不是禁忌</b>；必須認真尋找 lead point；手術僅保留給無法復位者或已證實的 lead point」。另有 93.7% 復發可再次氣體復位。<br>
+      ・<b>唯一的反對意見</b>：Hsu 2012（n=686）第 1／2／3／4 次復位後的復發率 15.7%／37.7%／68.4%／100%，最終需手術機率 21.8%／35.7%／70.0%，主張<b>第三次發作即手術</b>。但該系列使用<b>已淘汰的鋇劑</b>，且<b>全部 15 個 lead point 都是在第一次發作的手術中找到的</b>，反而不支持「反覆復發代表隱藏病灶」。<b>本頁採 Daneman 立場；Hsu 僅作為第 3–4 次發作時「可考慮手術」的軟性節點。</b><br><br>
+
+      <b>◆ 復位成功後的去向</b><br>
+      ・<b>可自急診出院</b>（APSA Grade C）。最大系列 547 例成功復位中 53% 於中位 <b>7.2 小時</b>觀察後出院；出院後復發 8% vs 住院 2%（p=0.004），但<b>整體復發 8.8% vs 8.5%、手術復位 1% vs 0.6%，實質相同</b>。<br>
+      ・<b>建議觀察 4 小時</b>（Grade C）。已驗證的作法：觀察 3–4 小時；或禁食 2 小時後進食再觀察 2 小時；或 2–4 小時開始進食、5–8 小時出院。<br>
+      ・但 19% 在 24 小時內需要<b>某種</b>處置，<b>6% 需重大處置</b>（再灌腸或手術）；<b>位於肝曲近端者</b>與需重大處置相關。<br>
+      ・一項技術：超音波導引食鹽水復位成功後<b>維持壓力 15 分鐘再排空</b>，早期復發自 19% 降至 10%——<b>但這是跨越 COVID-19 的前後世代比較，作者自承兩組「很可能不可比」，僅屬假說。</b><br><br>
+
+      <b>◆ 病理性 lead point (PLP)：年齡是主軸，但別過度宣稱</b><br>
+      ・整體：所有來院者約 <b>10–15%</b>（Kaiser n=244 為 14%）；<b>進到手術者 21–22%</b>；復發者 8%（單次復發 4%、多次復發 14%）。系統性回顧給的範圍是 <b>0.3–20%</b>（31 篇），<b>跨度 66 倍，不可取中位數當點估計</b>。<br>
+      ・<b>年齡分層（Banapour 2015，多中心 153 例迴結腸型，&lt;12 歲）</b>：<b>0–2 歲 3.7%（4/109）、3–5 歲 14.7%（5/34）、6–12 歲 50.0%（5/10）</b>。同研究另兩個對流程有用的觀察：<b>5 歲以上只有 1 名病人被灌腸復位成功</b>；<b>6–12 歲組血便 0/10</b>（0–5 歲組 42/143）。<br>
+      ・<b>反面意見</b>：另一組獨立查證認為「PLP 隨年齡陡升」雖被普遍複述，但缺乏乾淨的年齡分母研究；Daneman 也發現<b>復發型態無法預測 PLP</b>。<b>穩妥作法：把「每一例手術與多次復發者都主動尋找 PLP」寫進流程，而不是設一條年齡門檻自動送開刀。</b><br>
+      ・兒童 PLP 組成以<b>良性為主</b>——淋巴增生／Peyer's patch、Meckel 憩室、息肉。Meckel 約佔 PLP 的 <b>5–25%</b>（灌腸失敗後手術次群最高：5/20；204 件手術檢體中 14 件＝6.9%）。<br>
+      ・<b>淋巴瘤佔兒童 PLP 的比例衝突極大</b>：突尼西亞 n=27 為 30%、中國 n=65 為 6.2%，無從調和；佔<b>全部</b>兒童腸套疊則遠低於 1%。<b>不可暗示兒童的 lead point 多半是惡性——事實相反。</b><br>
+      ・<b>懷疑淋巴瘤時仍應先灌腸</b>：Bussell 2019（5 例，平均 6.4 歲，皆為侵襲性成熟 B 細胞 NHL）——超音波在復位前即提示 PLP 者 4/5；<b>全部嘗試氣體／水壓復位皆無併發症</b>；3 例以<b>經皮超音波導引切片</b>確診而免於切除。因化療已可治癒，<b>影像導引切片優於手術切除</b>。典型病史是「數週腹痛後急性惡化」。<br><br>
+
+      <b>◆ 手術：術式與兩個不該做的附加動作</b><br>
+      ・<b>腹腔鏡優先</b>（APSA Grade C），但同一份文件明言「<b>目前沒有證據顯示腹腔鏡在復發率或併發症上較優</b>」。8 篇比較性研究中 7 篇住院較短，12 篇比較復發<b>全部無顯著差異</b>。<b>轉開腹率 0–79%，整體 17%</b>（近年下降），轉開腹者腸切除率較高。<br>
+      ・<b>住院天數的優勢部分是選擇偏差</b>——APSA 直言開腹組本來就有較多 lead point、腸水腫、缺血、切除與腹膜炎。<b>不可當成技術本身的因果效益。</b><br>
+      ・<b>腹腔鏡＋術中同步灌腸</b>：6 篇 62 名灌腸失敗者，<b>10/62（16%）在腹腔鏡下已自行復位完成</b>（皆在允許 DRE 的中心）；其餘 52 例合併術中空氣／食鹽水灌腸<b>成功率 87%</b>。可減少腸道抓持並直視確認完全復位。<br>
+      ・<b>腸切除率</b>：復位失敗後手術者 <b>29.0%</b>；Kaiser 系列 140 名手術者中 50% 需切除。切除適應症：無法復位、腸缺血壞死、穿孔、已確認之 lead point。住院天數 手術復位 3.9 天 vs 需切除 6.1 天。<br>
+      ・<b>迴腸固定術 (ileopexy) 無效</b>：186 例開腹復位＋ileopexy vs 67 例單純復位，復發 4.9% vs 4.3%。僅可考慮於高度選擇之多次復發且無 PLP 者。<br>
+      ・<b>不建議常規闌尾切除</b>（Grade D）：PHIS 2008–2015，加做闌尾切除（n=748）vs 單純手術復位（n=564）——1 年因復發再住院 5.5% vs 6.7%（p=0.34），但<b>住院 3.0 vs 2.5 天、成本 $10,594 vs $8,938 皆顯著較高</b>。闌尾發炎或缺血才切。<br><br>
+
+      <b>◆ 藥物</b><br>
+      ・<b>Dexamethasone 可降低復發</b>：RR 0.14（0.03–0.60），<b>NNT 13</b>（2 篇 RCT n=299，低品質）；<b>但不提高復位成功率</b>（RR 1.01）。<br>
+      ・<b>Glucagon 無效</b>：RR 1.09（0.94–1.26）。<br>
+      ・2025 年單劑 methylprednisolone 免灌腸自行緩解 81.7% vs 56.3% 的研究，<b>兩組分配不均（60 vs 32）且基線型態顯著不平衡（p=0.023），兩臂不可比，尚不可入流程。</b><br><br>
+
+      <b>◆ 成人：核心概念與最大的一個誤引</b><br>
+      ・成人佔全部腸套疊約 <b>5%</b>、佔腸阻塞 <b>1–5%</b>。<br>
+      ・<b>「成人 90% 有 lead point」只適用於「被開刀的病人」。</b>該數字出自 Azar &amp; Berger 1997（MGH，n=58，<b>分母是術後診斷者</b>）的 93%，以及 Goh 2006 的 90%。<b>在電腦斷層時代，1902 名病人的系統性回顧顯示 PLP 僅 44.84%</b>（98.3% 術前即確診、88.5% 以 CT 診斷）。<b>這個分母差異就是「可以觀察部分無症狀成人小腸套疊」的全部理由。</b>另有敘述性回顧給 8–20% 為特發性。<br>
+      ・<b>部位與惡性率</b>：Goh 2006（n=60，兩家醫院，多變項）——<b>小腸型 26% 惡性 vs 大腸型 69% 惡性</b>；多變項獨立預測惡性者只有<b>大腸部位（p=0.004）與貧血（p=0.001）</b>；年齡在單變項顯著、多變項不顯著。<b>貧血是被低估的臨床鑑別點，應寫進流程。</b><br>
+      ・統合分析（Hong 2019，40 篇 n=1229）給出梯度：<b>惡性率 小腸 22.5%／迴結腸 36.9%／大腸 46.5%</b>；部位分布 小腸 49.5%／迴結腸 29.1%／大腸 19.9%；病因 惡性腫瘤 32.9%、良性腫瘤 37.4%、特發 15.1%；術後併發症 22.1%、<b>死亡率 5.2%</b>。<br>
+      ・<b>組織型態的不對稱（驅動手術決策）</b>：<b>小腸的惡性 lead point 多為轉移性疾病（黑色素瘤為經典）</b>；<b>迴結腸與大腸的惡性 lead point 多為原發腺癌</b>。臨床意義：小腸惡性常代表<b>已擴散</b>，大腸惡性常代表<b>可切除的原發灶</b>。<br>
+      ・<b>「大腸幾乎都惡性、小腸幾乎都良性」這句話出自 n=7 的系列</b>，且<b>與被引用最多的 Azar 直接矛盾</b>（Azar 的大腸 43% 反而低於小腸 48%）。請用 Hong 的梯度，<b>連大腸都不到 50%</b>。<br>
+      ・<b>成人 CT</b>：無任何統合分析；單中心準確度 <b>75–90.5%</b> 且有驗證偏差（僅開刀者被證實）。應說「報告準確度」，不可說「已驗證之敏感度」。<br><br>
+
+      <b>◆ 成人：不復位 (en-bloc) 的真正理由</b><br>
+      ・傳統理由是「操作會造成腫瘤種植或靜脈栓塞」。<b>此機轉查無任何世代、系列或實驗研究支持</b>，各回顧一律複述而不附原始引用；甚至有系列明確報告兩組皆<b>未發生穿孔或內容物外漏</b>。<br>
+      ・<b>因此本頁的立場：大腸型不復位、直接 en-bloc 切除，理由是約 69%（統合 46.5%）的惡性基礎率，而非已證實的種植風險。</b>如實陳述，才不算曲解文獻。<br>
+      ・<b>小腸型的復位則有正當性</b>：良性病灶、腸段存活、無絞窄時<b>先復位再切除可縮短切除長度、避免短腸症</b>——在 Peutz-Jeghers 與克隆氏症尤其重要。多個系列報告小腸復位無穿孔、無吻合口滲漏。<br><br>
+
+      <b>◆ 成人特殊族群</b><br>
+      ・<b>乳糜瀉 (celiac)</b>：880 名乳糜瀉病人中 14 例（1.6%）發生腸套疊；<b>57%（8/14）以腸套疊為乳糜瀉的初次表現</b>；<b>2 例有 lead point，兩例都是小腸腺癌</b>；10/14 有嚴重絨毛萎縮。最關鍵的一句：<b>該院 45 名被標為「特發性腸套疊」者，只有 2 名曾被檢驗乳糜瀉。</b>→ <b>成人特發性小腸套疊應常規驗乳糜瀉血清學。</b>※ 1.6% 是「乳糜瀉族群中腸套疊的盛行率」，<b>不可反向解讀</b>為「腸套疊中乳糜瀉的比例」（後者未知）。兒童亦有關聯：254 名乳糜瀉兒童中 1.2% 於確診前 9 個月內發生腸套疊（一般小兒族群 0.07%，約 17 倍），且<b>已開始無麩質飲食者無一發生</b>。<br>
+      ・<b>Peutz-Jeghers (PJS)</b>：110 名病人中 <b>69% 至少發生一次腸套疊</b>（1–6 次）；<b>首次發作中位年齡 16 歲（3–50）</b>；<b>20 歲前累積風險 50%</b>；<b>95% 位於小腸</b>；<b>80% 以急腹症表現</b>；<b>92.5% 需手術</b>。致病息肉中位大小 <b>35 mm（15–60）</b>——<b>系列中沒有任何一顆致病息肉小於 15 mm</b>，這正是「內視鏡監測並切除 &gt;10–15 mm 小腸息肉」建議的證據錨點。PJS 也正是最該「先復位以保留腸長度」的族群。<br>
+      ・<b>Roux-en-Y 胃繞道術後</b>：特徵是<b>空腸-空腸吻合口的逆行性套疊</b>，可在術後<b>多年</b>發生（有術後 7 年案例），以<b>閉環性阻塞</b>表現。<b>最高價值的一句：曾有懷孕 25 週、RYGB 術後 2 年之病人因胰臟酵素升高被誤診為急性胰臟炎，實為閉環阻塞。→ RYGB 術後腹痛者，lipase／amylase 升高不能排除、甚至會遮蔽閉環性阻塞，CT 為必須。</b>※ 常見的發生率「0.1–0.6%」、「節律點理論」與各術式復發率比較<b>查無原始文獻</b>，本頁不列數字。<br>
+      ・<b>術後／管路相關</b>：腸內管、空腸造口餵食管、胃部手術後皆為公認醫源性原因（一系列中 44 例有 4 例發生於胃空腸吻合處合併腸內插管，作者結論「應避免腸道插管」）。<b>多為小腸-小腸型，灌腸在解剖上根本搆不到</b>，基本上須手術或內視鏡處理。※ 常引用的「發生率 0.01–0.25%、術後 1–2 週」<b>查無原始出處，本頁不列</b>。<br>
+      ・<b>胃空腸 (GJ) 餵食管相關（小兒）</b>：56 名病人 92 次事件，中位 23 個月大；<b>暫時移除管路「讓腸道休息」與立即換管，復發率（p=1.000）與復發時間（p=0.364）皆無差異</b>——臨床穩定者<b>可立即換管</b>。<br>
+      ・<b>囊狀纖維化 (CF)</b>：約 <b>1%</b> 的 CF 病人（此數字完全來自 1971 年單篇論文，55 年來未曾獨立重新推導，屬歷史數據；另一系列 3/189＝1.6% 佐證同一數量級）。<b>發病年齡中位約 9–13 歲（範圍 4–18，並延伸至成人）</b>，<b>全部為迴結腸／迴盲型</b>，機轉為<b>黏稠糞便嵌塞（DIOS 光譜）</b>或<b>充滿黏液而擴張的闌尾</b>。<b>與舊有外科教條相反：空氣／顯影劑灌腸安全有效，應列為第一線</b>（4 名兒童 6 次成功復位、部分需多次嘗試、無併發症）。<b>4 歲以上、迴結腸型、找不到其他 lead point 者，請問 CF。</b>復位後症狀持續者要想到黏液擴張的闌尾。<br>
+      ・<b>HSP／IgA 血管炎</b>：<b>套疊以小腸（迴腸-迴腸）為主</b>，lead point 是血管炎造成的黏膜下出血與水腫（超音波可見腸壁增厚 3–11 mm），<b>因此位於迴盲瓣近端、灌腸搆不到</b>。<b>最該引用的一篇</b>：曾有兩名兒童在水壓復位時<b>因見到迴腸逆流而誤判復位成功</b>，兩例皆復發，剖腹時迴腸-迴腸套疊仍在——<b>灌腸只復位了迴結腸的那一段。→ HSP 病人不可以「迴腸逆流」作為完全復位的證據。</b>發生率：所有 HSP 約 0.4–5.5%（多篇未經篩選世代），<b>有 GI 侵犯者 8.9%</b>；常被引用的「1.3–13.6%」<b>查無分母與原始系列，不應使用</b>；「4.6%」則是<b>腹部重大併發症率</b>被誤引為套疊率。部位比例「58.4% 侷限於小腸／51.4% 迴腸-迴腸」出自 1998 年<b>未載分母的匯總回顧</b>，僅由三個極小系列（80–100% 迴腸-迴腸）同向支持——<b>方向可信，小數點不可信</b>。多數以內科治療緩解（14 例中 12 例＝85.7%）；類固醇可加速腹痛緩解，但<b>「預防套疊或手術」在統合分析中未達顯著</b>，僅有回溯資料支持。<b>「HSP 灌腸穿孔風險較高」查無任何量化證據</b>，屬機轉推論，不應給數字。<br>
+      ・<b>輪狀病毒疫苗</b>：<b>RotaShield</b>（1999 撤回）第一劑後 3–14 天 <b>adjusted OR 21.7（9.6–48.9）</b>，可歸因風險 <b>1/4,670–9,474</b>。<b>現行疫苗風險小一個數量級</b>：英國 RV1 第一劑後 1–21 天 RI 4.53（2.34–8.58）、<b>1–7 天高峰 13.81（6.44–28.32）</b>，可歸因 <b>1.91／100,000 劑</b>；芬蘭 RV5 未達顯著，約 1/96,000 首劑。整體約 <b>每 100,000 名接種者 1–6 例超額</b>。<b>效益比壓倒性有利</b>：英國每年約 21 例超額入院 vs 預防約 25,000 例腸胃炎入院；印度本土疫苗與非洲監測甚至<b>未偵測到風險上升</b>。臨床上<b>無法分辨哪一例與疫苗有關</b>（症狀與到院時間分布相同）。※ 「1 萬分之 1」是 2001 年工作坊共識，不是研究結果。※ <b>野生型輪狀病毒與腸套疊的因果關聯未成立</b>（紐西蘭研究顯示兩者年齡峰值與季節性不吻合）；<b>證據較好的感染原是腺病毒（尤其 C 型）</b>。<br>
+      ・<b>已描述但僅止於個案報告等級</b>（不給數字）：克隆氏症、化療／嗜中性球低下腸炎、血友病或抗凝之壁內血腫、留置腸道餵食管、HIV 相關淋巴瘤、大麻使用。<br><br>
+
+      <b>◆ 一個對「觀察策略」的重要制衡</b><br>
+      35 年 4,384 例解剖中僅 2 例死於腸套疊（0.05%），<b>但兩例（5 與 6 個月大）在急遽惡化前「只有非特異且看似輕微的表現」，且套疊型態為迴腸-迴腸與迴盲型</b>。作者指出<b>非預期死亡最常見於單純小腸型</b>。<b>因此觀察只適用於「五項全符合且臨床安好」者，且必須明訂重新影像與回診警示。</b><br><br>
+
+      <b>※ 本頁所有「常被引用但查無原始出處」之項目均已於上文逐條標明</b>（120 mmHg、3 呎水柱、外徑 &gt;3 cm／腸壁 &gt;8 mm、成人 90% lead point、腫瘤種植機轉、HSP 1.3–13.6%、RYGB 發生率、術後套疊發生率、CF 1% 的單一來源）。<b>凡屬專家共識者亦已標為共識而非門檻。</b>
+    </div>
+  </details>
+
+  <div class="flow-step" id="iss_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">年齡族群？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('age','ped',this)">兒童<span class="fo-sub">預設路徑為<b>灌腸復位</b>；lead point 比例低（0–2 歲 3.7%）且多為良性</span></button>
+      <button class="flow-opt" onclick="issPick('age','adult',this)">成人<span class="fo-sub">預設路徑為<b>手術</b>；電腦斷層時代 lead point 約 44.8%，惡性依部位 22.5–46.5%</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">東亞族群年齡中位數約 70 週、僅約三分之一在一歲內，且 3.3% ≥10 歲；<b>請勿把「兩歲以下」當成年齡上限</b>。三聯徵（腹絞痛＋嘔吐＋血便）在現代早期就醫族群僅約 3.6%，<b>不可用於排除</b>；腹部 X 光敏感度僅 48%，同樣不可用於排除。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="iss_c2">↓</div>
+  <div class="flow-step hidden" id="iss_s2_ped">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">超音波所見之套疊型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('type','pic',this)">迴結腸型 Ileocolic<span class="fo-sub"><b>脂肪核心／腸壁厚度比值 &gt;1.0</b>、<b>病灶內可見淋巴結</b>（89.5% vs 小腸型 14.0%）</span></button>
+      <button class="flow-opt" onclick="issPick('type','psbi',this)">單純小腸型 Small-bowel<span class="fo-sub"><b>比值 &lt;1.0</b>、病灶內無淋巴結、病灶較小</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>不要以直徑分流</b>：迴結腸型 1.3–4.0 cm 與小腸型 0.8–3.0 cm 大幅重疊。教科書的「外徑 &gt;3 cm、腸壁 &gt;8 mm」查無原始驗證來源。</div>
+  </div>
+  <div class="flow-step hidden" id="iss_s2_adult">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">電腦斷層所見之套疊部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('type','ent',this)">小腸-小腸型 Enteric<span class="fo-sub">佔 49.5%；惡性率 <b>22.5%</b>，且惡性者多為<b>轉移性疾病</b>（經典為黑色素瘤）</span></button>
+      <button class="flow-opt" onclick="issPick('type','aic',this)">迴結腸／迴盲型 Ileocolic<span class="fo-sub">佔 29.1%；惡性率 <b>36.9%</b>，惡性者多為<b>原發腺癌</b></span></button>
+      <button class="flow-opt" onclick="issPick('type','col',this)">大腸-大腸型 Colonic<span class="fo-sub">佔 19.9%；惡性率 <b>46.5%</b>（單中心多變項系列達 69%），多為<b>可切除之原發腺癌</b></span></button>
+      <button class="flow-opt" onclick="issPick('type','post',this)">術後／管路相關／RYGB 逆行性<span class="fo-sub">空腸-空腸吻合口逆行性套疊、腸內管或空腸造口管相關；<b>灌腸在解剖上搆不到</b></span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">成人 CT <b>報告準確度 75–90.5%</b>（無統合分析，且僅開刀者被證實，存在驗證偏差）。<b>貧血是惡性的獨立預測因子</b>（p=0.001），與部位並列為多變項中僅有的兩項。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="iss_c3">↓</div>
+  <div class="flow-step hidden" id="iss_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">是否存在立即手術指標（紅旗）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('red','yes',this)">有（任一項）<span class="fo-sub">氣腹／影像證實穿孔　·　腹膜炎徵象　·　復甦無效之休克</span></button>
+      <button class="flow-opt" onclick="issPick('red','no',this)">無<span class="fo-sub">無腹膜炎、無氣腹；脫水或心搏過速但對輸液有反應者屬此類</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此三項為灌腸復位的<b>絕對禁忌</b>，屬<b>全體專家共識而無任何比較性證據</b>（無人會把休克的孩子隨機分派去灌腸）——仍視為絕對。「休克」應讀作<b>對復甦無反應之休克</b>；補液後穩定者完成復甦即可進行灌腸。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="iss_c4">↓</div>
+  <div class="flow-step hidden" id="iss_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">是否符合「良性一過性」五項判準（Mateen）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('sbi','yes',this)">五項<b>全部</b>成立<span class="fo-sub">①無 lead point ②腸壁厚度正常 ③<b>長度 &lt;3.5 cm</b> ④近端腸道不擴張 ⑤都卜勒血流正常</span></button>
+      <button class="flow-opt" onclick="issPick('sbi','no',this)">任一項<b>不</b>成立<span class="fo-sub">長度 ≥3.5 cm、腸壁增厚、可見 lead point、近端擴張／阻塞、血流減少或腹水</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>五項是一個整體，比長度數字本身重要得多。</b>長度 &gt;3.5 cm 預測需手術 sens 93%／spec 100%（兒童 n=35）；成人的門檻僅由 Mateen 單中心（n=108，41 例一過性）支持，<b>信心等級中等</b>。「直徑 &lt;2 cm」是描述性數據、非驗證門檻。不確定時<b>間隔 20–30 分鐘重做超音波</b>。</div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="iss_rec1">
+    <div class="rec-label">初步處置 Initial management</div>
+    <div class="rec-title">請先於步驟 1 選擇年齡族群</div>
+  </div>
+
+  <div id="iss_stage2" class="hidden">
+  <div class="home-divider" style="margin:26px 0 18px;">介入後所見 Post-intervention findings</div>
+
+  <div class="flow-step hidden" id="iss_s5_enema">
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">灌腸復位結果？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('enema','ok',this)">完全復位<span class="fo-sub">顯影劑／空氣通過迴盲瓣進入末端迴腸，套疊塊消失</span></button>
+      <button class="flow-opt" onclick="issPick('enema','partial',this)">未完全復位，但<b>套疊頭有進行性移動</b><span class="fo-sub">病人穩定、無腹膜炎——<b>延遲重複灌腸的資格條件</b></span></button>
+      <button class="flow-opt" onclick="issPick('enema','fail',this)">失敗且<b>無進行性移動</b>，或已達 3 次<span class="fo-sub">或發燒／心搏過速／症狀 &gt;36 小時等 DRE 相對禁忌</span></button>
+      <button class="flow-opt" onclick="issPick('enema','perf',this)">灌腸中穿孔<span class="fo-sub">腹部急速膨脹、橫膈受限、急性呼吸窘迫＝張力性氣腹</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">HSP 病人請特別注意：<b>看見迴腸逆流不等於完全復位</b>——曾有兩例因此誤判，剖腹時迴腸-迴腸套疊仍在。</div>
+  </div>
+
+  <div class="flow-step hidden" id="iss_s6_op">
+    <div class="flow-step-head"><span class="flow-num">6</span><span class="flow-q">術中所見？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="issPick('op','viable',this)">可復位、腸段存活、未見 lead point<span class="fo-sub">含腹腔鏡下發現已自行復位者（灌腸失敗者中佔 16%）</span></button>
+      <button class="flow-opt" onclick="issPick('op','plp',this)">發現 lead point，腸段存活<span class="fo-sub">兒童多為 Meckel、息肉、淋巴增生；成人依部位判斷良惡性</span></button>
+      <button class="flow-opt" onclick="issPick('op','dead',this)">腸段缺血／壞死／穿孔，或無法復位<span class="fo-sub">術野已汙染</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="iss_rec2">
+    <div class="rec-label">後續處置 Subsequent management</div>
+    <div class="rec-title">請完成上方步驟</div>
+  </div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="issReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/33158508/" target="_blank" rel="noopener" class="ref-link">Kelley-Quon LI, et al. Management of intussusception in children: A systematic review (APSA). J Pediatr Surg. 2021;56(3):587-596.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22748165/" target="_blank" rel="noopener" class="ref-link">Ito Y, et al. Japanese guidelines for the management of intussusception in children, 2011. Pediatr Int. 2012;54(6):948-958.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28567798/" target="_blank" rel="noopener" class="ref-link">Gluckman S, et al. Management for intussusception in children. Cochrane Database Syst Rev. 2017;6:CD006476.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26496576/" target="_blank" rel="noopener" class="ref-link">Sadigh G, et al. Meta-analysis of air versus liquid enema for intussusception reduction in children. AJR. 2015;205(5):W542-W549.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28827051/" target="_blank" rel="noopener" class="ref-link">Xie X, et al. RCT of pneumatic versus hydrostatic reduction for intussusception. J Pediatr Surg. 2017;53(8):1464-1468.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/1887028/" target="_blank" rel="noopener" class="ref-link">Shiels WE, et al. Air enema: clinical experience and pressure correlates. Radiology. 1991;181(1):169-172.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25746701/" target="_blank" rel="noopener" class="ref-link">Lautz TB, et al. Delayed repeat enema in intussusception (PHIS, n=6889). J Pediatr Surg. 2015;50(3):423-427.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/10370026/" target="_blank" rel="noopener" class="ref-link">Sandler AD, et al. Unsuccessful air enema: is delayed repeat safe? Pediatr Surg Int. 1999;15(3-4):214-216.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/9880629/" target="_blank" rel="noopener" class="ref-link">Daneman A, et al. Patterns of recurrent intussusception (n=763). Pediatr Radiol. 1998;28(12):913-919.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26169529/" target="_blank" rel="noopener" class="ref-link">Wang Z, et al. Risk factors for early recurrence (n=2295). Pediatr Surg Int. 2015;31(9):855-858.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23801771/" target="_blank" rel="noopener" class="ref-link">Lioubashevsky N, et al. Ileocolic versus small-bowel intussusception: can US differentiate? Radiology. 2013;269(1):266-271.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/17179377/" target="_blank" rel="noopener" class="ref-link">Munden MM, et al. Sonography of pediatric small-bowel intussusception. AJR. 2007;188(1):275-279.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16944032/" target="_blank" rel="noopener" class="ref-link">Mateen MA, et al. Transient small bowel intussusceptions: US findings and clinical significance. Abdom Imaging. 2006;31(4):410-416.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31182360/" target="_blank" rel="noopener" class="ref-link">Tsou PY, et al. Accuracy of point-of-care ultrasound for intussusception: meta-analysis. Am J Emerg Med. 2019;37(9):1760-1769.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25840080/" target="_blank" rel="noopener" class="ref-link">Banapour P, et al. Surgical approach to intussusception in older children: lead points. J Pediatr Surg. 2015;50(4):647-650.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31139892/" target="_blank" rel="noopener" class="ref-link">Bussell HR, et al. Intussusception in children: lessons from intestinal lymphoma as a rare lead-point. Pediatr Surg Int. 2019;35(8):879-885.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16773257/" target="_blank" rel="noopener" class="ref-link">Goh BKP, et al. Predictive factors of malignancy in adults with intussusception. World J Surg. 2006;30(7):1300-1304.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31011846/" target="_blank" rel="noopener" class="ref-link">Hong KD, et al. Adult intussusception: a systematic review and meta-analysis (n=1229). Tech Coloproctol. 2019;23(4):315-324.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/39085533/" target="_blank" rel="noopener" class="ref-link">T Chand J, et al. Adult intussusception: a systematic review (n=1902). Langenbecks Arch Surg. 2024;409(1):235.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/9296505/" target="_blank" rel="noopener" class="ref-link">Azar T, Berger DL. Adult intussusception. Ann Surg. 1997;226(2):134-138.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28144210/" target="_blank" rel="noopener" class="ref-link">Marsicovetere P, et al. Intestinal intussusception: etiology, diagnosis, and treatment. Clin Colon Rectal Surg. 2017;30(1):30-39.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20033844/" target="_blank" rel="noopener" class="ref-link">Gonda TA, et al. Association of intussusception and celiac disease in adults. Dig Dis Sci. 2010;55(10):2899-2903.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/21157440/" target="_blank" rel="noopener" class="ref-link">van Lier MGF, et al. High cumulative risk of intussusception in Peutz-Jeghers syndrome. Am J Gastroenterol. 2011;106(5):940-945.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/17725252/" target="_blank" rel="noopener" class="ref-link">Oros-Horjus I, et al. False impression of successful hydrostatic reduction with ileal reflux. Ned Tijdschr Geneeskd. 2007;151(30):1661-1664.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/17594107/" target="_blank" rel="noopener" class="ref-link">Pomerantz B, et al. Radiographic reduction of intussusception in cystic fibrosis. Pediatr Surg Int. 2007;23(8):763-765.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/11207352/" target="_blank" rel="noopener" class="ref-link">Murphy TV, et al. Intussusception among infants given an oral rotavirus vaccine. N Engl J Med. 2001;344(8):564-572.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27286641/" target="_blank" rel="noopener" class="ref-link">Stowe J, et al. Intussusception risk following monovalent rotavirus vaccination in England: SCCS. Vaccine. 2016;34(32):3684-3689.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const issSt={age:null,type:null,red:null,sbi:null,enema:null,op:null};
+
+function issPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='age'){ issSt.age=val; issSt.type=null; issSt.red=null; issSt.sbi=null; issSt.enema=null; issSt.op=null; }
+  else if(key==='type'){ issSt.type=val; issSt.red=null; issSt.sbi=null; issSt.enema=null; issSt.op=null; }
+  else if(key==='red'){ issSt.red=val; issSt.sbi=null; issSt.enema=null; issSt.op=null; }
+  else if(key==='sbi'){ issSt.sbi=val; issSt.enema=null; issSt.op=null; }
+  else if(key==='enema'){ issSt.enema=val; issSt.op=null; }
+  else if(key==='op'){ issSt.op=val; }
+  issRender();
+}
+
+/* 小腸型（兒童單純小腸型、成人小腸-小腸型）才需要 Mateen 五項判準 */
+function issNeedsMateen(){ return issSt.type==='psbi'||issSt.type==='ent'; }
+/* 走手術路徑者才問術中所見 */
+function issGoesToOR(){
+  if(issSt.red==='yes') return true;
+  if(issSt.red!=='no') return false;
+  if(issNeedsMateen()) return issSt.sbi==='no';
+  if(issSt.age==='ped') return issSt.enema==='fail'||issSt.enema==='perf';
+  return true;   /* 成人 aic／col／post 一律手術 */
+}
+
+function issRender(){
+  const a=issSt.age, t=issSt.type, r=issSt.red;
+
+  flowShow('iss_c2', !!a);
+  flowShow('iss_s2_ped', a==='ped');
+  flowShow('iss_s2_adult', a==='adult');
+  if(a!=='ped') flowClearSel('iss_s2_ped');
+  if(a!=='adult') flowClearSel('iss_s2_adult');
+
+  const showRed=(!!a&&!!t);
+  flowShow('iss_c3', showRed); flowShow('iss_s3', showRed);
+  if(!showRed) flowClearSel('iss_s3');
+
+  const showMateen=(r==='no'&&issNeedsMateen());
+  flowShow('iss_c4', showMateen); flowShow('iss_s4', showMateen);
+  if(!showMateen) flowClearSel('iss_s4');
+
+  issRec1();
+
+  /* 第二段：兒童迴結腸型走灌腸；其餘走手術 */
+  const showEnema=(r==='no'&&t==='pic');
+  const showOp=issGoesToOR();
+  flowShow('iss_stage2', showEnema||showOp);
+  flowShow('iss_s5_enema', showEnema);
+  flowShow('iss_s6_op', showOp);
+  if(!showEnema) flowClearSel('iss_s5_enema');
+  if(!showOp) flowClearSel('iss_s6_op');
+
+  issRec2();
+}
+
+/* ── 第一張卡：現在該做什麼 ──────────────────────────── */
+function issRec1(){
+  const a=issSt.age, t=issSt.type, r=issSt.red, s=issSt.sbi;
+  let cls='rec-idle', title='請先於步驟 1 選擇年齡族群', detail='', note='';
+
+  if(a&&!t){ title='請於步驟 2 選擇套疊型態／部位'; }
+  else if(a&&t&&!r){ title='請於步驟 3 判斷是否存在立即手術指標'; }
+  else if(r==='yes'){
+    cls='rec-urgent'; title='立即手術 — 不可嘗試灌腸復位';
+    let op='';
+    if(a==='ped') op='<li><b>剖腹或腹腔鏡探查</b>：穿孔、腹膜炎與復甦無效之休克為灌腸的<b>絕對禁忌</b>。</li><li>腸壞死或穿孔者行腸切除；復位失敗後手術的整體腸切除率為 <b>29.0%</b>。</li>';
+    else if(t==='col'||t==='aic') op='<li><b>en-bloc 腫瘤學切除，不做復位</b>：大腸型惡性率 46.5%（單中心多變項系列達 69%）、迴結腸型 36.9%，且惡性者多為<b>原發腺癌</b>。</li><li>汙染術野或不穩定者採 Hartmann／造口，勿勉強一期吻合。</li>';
+    else if(t==='ent') op='<li><b>切除不活腸段</b>；已穿孔或絞窄者<b>不做復位</b>。</li><li>小腸型惡性率 22.5%，且惡性者多為<b>轉移性疾病</b>——術中應同時探查腹腔評估疾病範圍。</li>';
+    else op='<li><b>手術處置</b>：術後／管路相關與 RYGB 逆行性套疊多為小腸-小腸型，<b>灌腸在解剖上搆不到</b>。</li><li>RYGB 者檢查空腸-空腸吻合口，並解除閉環。</li>';
+    detail='<li>紅旗成立：氣腹／影像證實穿孔、腹膜炎徵象，或<b>對復甦無反應之休克</b>。</li>'+op+'<li>同時進行液體復甦、廣效抗生素與電解質校正。</li>';
+    note='此三項禁忌為全體專家共識，<b>無任何比較性證據</b>（無人會把休克病人隨機分派去灌腸）——仍視為絕對禁忌。';
+  }
+  else if(r==='no'){
+    if(t==='pic'){
+      cls='rec-blue'; title='灌腸復位（空氣或超音波導引水壓）— 第一線';
+      detail='<li><b>方式二選一，依院內熟練度決定。</b>統合分析（32,451 名兒童）空氣 82.7% vs 液體 69.6%，但液體組以<b>透視／鋇劑</b>為主；最大的 RCT（n=124）顯示<b>超音波導引食鹽水 96.77% vs 空氣 83.87%（p=0.015）</b>。穿孔率兩者相同（0.39% vs 0.43%）。<b>鋇劑應淘汰</b>（Grade D，穿孔會造成化學性腹膜炎）。</li>'
+        +'<li><b>參數：</b>起始 60–80 mmHg、上限 120 mmHg、最多 3 次、每次 3 分鐘。<b>請理解 120 mmHg 是共識裕度而非量測到的穿孔門檻</b>——原始資料只證明開始移動需平均 56.5 mmHg、完成復位需平均 97.8 mmHg。水壓「離床 3 呎」同樣查無原始文獻。</li>'
+        +'<li><b>鎮靜可提高成功率</b>（OR 2.41, 1.27–4.57）<b>且不增加穿孔</b>（OR 1.52, 0.09–23.34）。</li>'
+        +'<li><b>不需預防性抗生素</b>（APSA Grade C）：發燒、住院、進食時間、感染皆無差異。</li>'
+        +'<li><b>現場需有能執行腹腔針刺減壓與 CPR 的醫師</b>，體系內小兒外科可即時支援；<b>外科醫師不必親自在場</b>（433 次灌腸中 1.4% 需針刺減壓與 CPR，全部以此穩定）。</li>'
+        +'<li><b>外院灌腸失敗不是直接開刀的理由</b>：重新嘗試的成功率為 48%。</li>'
+        +'<li>復發者<b>照樣灌腸</b>：復發的可復位率 95% 且無穿孔，<b>多次復發不是禁忌</b>——但必須認真尋找 lead point。</li>';
+      note='APSA 2021（全部建議 Grade C–D）；日本小兒急診 2012。<b>4 歲以上、迴結腸型、找不到其他 lead point 者請想到囊狀纖維化</b>——CF 的套疊全為迴結腸型、機轉為糞便嵌塞或黏液擴張的闌尾，<b>灌腸安全有效，應列第一線</b>。';
+    }
+    else if(t==='psbi'||t==='ent'){
+      if(!s){ title='請於步驟 4 判定是否符合「良性一過性」五項判準'; }
+      else if(s==='yes'){
+        cls='rec-blue'; title='觀察與短間隔重掃 — 不手術、不灌腸';
+        detail='<li><b>五項全部成立</b>（無 lead point／腸壁正常／長度 &lt;3.5 cm／近端不擴張／都卜勒血流正常）且臨床安好者，屬<b>一過性、無臨床意義</b>的套疊。</li>'
+          +'<li><b>重新影像是強制的，不是選配</b>：若病人仍在院內，<b>20–30 分鐘後重做超音波</b>；否則 24–72 小時內追蹤。原始研究的追蹤為 30 分鐘／3 天／2 週影像＋6 個月臨床，全部無不良結果。</li>'
+          +'<li><b>升級條件：</b>持續存在、長度增加、出現阻塞、出現 lead point、血流減少，或臨床惡化 → 轉為手術路徑。</li>'
+          +(issSt.age==='adult'
+            ? '<li><b>成人請驗乳糜瀉血清學。</b>880 名乳糜瀉病人中 1.6% 發生腸套疊，其中 <b>57% 是以腸套疊作為乳糜瀉的初次表現</b>；而該院 45 名被標為「特發性」者<b>只有 2 名曾被檢驗</b>。</li><li><b>惡性警訊：</b>體重減輕、癌症病史、缺鐵性貧血——貧血是惡性的獨立預測因子（p=0.001）。任一存在則不適用觀察。</li>'
+            : '<li>兒童亦有乳糜瀉關聯（確診前 9 個月內 1.2% vs 一般族群 0.07%，約 17 倍；已開始無麩質飲食者無一發生），可考慮血清學。</li>')
+          +'<li><b>制衡：</b>解剖系列中因腸套疊非預期死亡者「發病前只有非特異且看似輕微的表現」，且<b>最常見於單純小腸型</b>。觀察必須配合明確的回診警示。</li>';
+        note='證據信心<b>中等</b>：從未有前瞻試驗把觀察與手術隨機分派；成人的 3.5 cm 門檻僅由單中心 n=108（41 例一過性）支持，長度門檻的獨立佐證來自兒童 n=35。<b>五項作為整體遠比長度數字重要。</b>';
+      }
+      else {
+        cls='rec-elective'; title='手術 — 腹腔鏡優先';
+        detail='<li>任一項判準不成立（長度 ≥3.5 cm、腸壁增厚、可見 lead point、近端擴張／阻塞、血流減少或腹水）即應手術。長度 &gt;3.5 cm 預測需手術 <b>sens 93%／spec 100%</b>；小腸阻塞在兒童為 <b>54% vs 0%</b>。</li>'
+          +(issSt.age==='ped'
+            ? '<li><b>腹腔鏡優先</b>（APSA Grade C），但同一份文件明言<b>沒有證據顯示腹腔鏡在復發或併發症上較優</b>；住院較短的部分原因是選擇偏差（開腹組本來就有較多 lead point、缺血與腹膜炎）。轉開腹率整體 17%。</li><li><b>懷疑淋巴瘤仍可先嘗試灌腸／腹腔鏡復位</b>——5 例侵襲性 B 細胞 NHL 全部復位無併發症，3 例以<b>影像導引經皮切片</b>確診而免於切除。因化療已可治癒，能不切就不切。</li>'
+            : '<li><b>小腸型：良性病灶、腸段存活、無絞窄時可先復位再切除</b>，以縮短切除長度、避免短腸症——在 Peutz-Jeghers 與克隆氏症尤其重要。</li><li><b>但懷疑惡性時不復位</b>（已知原發癌、體重減輕、缺鐵性貧血、CT 見腫塊或近端擴張）→ 腫瘤學切除。</li><li><b>Peutz-Jeghers：</b>69% 至少發生一次、20 歲前累積風險 50%、95% 位於小腸、92.5% 需手術；致病息肉中位 35 mm 且<b>無一小於 15 mm</b>——術後應安排小腸內視鏡監測並切除 &gt;10–15 mm 息肉。</li>')
+          +'<li>術中請<b>主動尋找 lead point</b>：兒童以 Meckel（佔 PLP 5–25%）、息肉、淋巴增生為主，<b>絕大多數為良性</b>。</li>';
+        note=(issSt.age==='ped'
+          ? '兒童 lead point 隨年齡上升：0–2 歲 3.7%、3–5 歲 14.7%、6–12 歲 50.0%（n=153）。惟另有證據認為此梯度缺乏乾淨的分母研究，<b>故本流程以「每一例手術都主動找 PLP」取代年齡門檻</b>。'
+          : '成人「90% 有 lead point」是<b>手術系列</b>的數字；電腦斷層時代 1902 名病人的系統性回顧為 <b>44.8%</b>——這個分母差異正是可以觀察部分成人小腸套疊的全部理由。');
+      }
+    }
+    else if(t==='aic'||t==='col'){
+      cls='rec-elective'; title='en-bloc 腫瘤學切除 — 不做復位';
+      detail='<li><b>不復位的理由是惡性基礎率，不是已證實的腫瘤種植。</b>大腸型惡性率 <b>46.5%</b>（統合 n=1229）至 <b>69%</b>（單中心多變項 n=60）；迴結腸型 <b>36.9%</b>；且惡性者多為<b>原發腺癌</b>——代表這是一個<b>可切除的原發灶</b>，值得完整的腫瘤學切除。</li>'
+        +'<li><b>誠實揭露：</b>「操作導致腫瘤種植或靜脈栓塞」此一機轉<b>查無任何世代、系列或實驗研究支持</b>，各回顧一律複述而不附原始引用；甚至有系列明確報告兩組皆未見穿孔或內容物外漏。<b>本建議建立在基礎率上。</b></li>'
+        +'<li><b>貧血</b>是惡性的獨立預測因子（p=0.001），與部位並列為多變項中僅有的兩項——有貧血者更應以惡性處理。</li>'
+        +'<li>依部位行右側大腸切除、節段切除或前位切除，並依標準取淋巴結；術前應完成分期影像。</li>'
+        +'<li>常被引用的「大腸幾乎都惡性、小腸幾乎都良性」出自 <b>n=7</b> 的系列，且與被引用最多的 MGH 系列<b>直接矛盾</b>（其大腸 43% 反低於小腸 48%）。請用梯度而非二分法，<b>連大腸型都不到 50%</b>。</li>';
+      note='成人腸套疊<b>沒有任何 WSES／EAST 或其他學會指引</b>；處置建立在 1997 年 n=58 外科系列、2006 年 n=60 多變項分析、2019 年 n=1229 統合與 2024 年 n=1902 系統性回顧之上。整體術後併發症 22.1%、<b>死亡率 5.2%</b>。';
+    }
+    else if(t==='post'){
+      cls='rec-elective'; title='手術／內視鏡處置 — 灌腸不適用';
+      detail='<li><b>術後、管路相關與 RYGB 逆行性套疊幾乎都是小腸-小腸型，位於迴盲瓣近端，逆行性灌腸在解剖上搆不到。</b></li>'
+        +'<li><b>RYGB：</b>典型為<b>空腸-空腸吻合口的逆行性套疊</b>，可於術後<b>多年</b>發生（有術後 7 年案例），以<b>閉環性阻塞</b>表現。</li>'
+        +'<li><b>最重要的陷阱：</b>曾有懷孕 25 週、RYGB 術後 2 年之病人因胰臟酵素升高被誤診為急性胰臟炎，實為閉環阻塞。<b>RYGB 術後腹痛者，lipase／amylase 升高不能排除、甚至會遮蔽閉環性阻塞——CT 為必須。</b></li>'
+        +'<li><b>管路相關：</b>腸內管與空腸造口管為公認醫源性原因（一系列 44 例中 4 例發生於胃空腸吻合處合併腸內插管，作者結論「應避免腸道插管」）。</li>'
+        +'<li><b>小兒 GJ 餵食管相關：</b>56 名病人 92 次事件——<b>暫時移除管路「讓腸道休息」與立即換管，復發率（p=1.000）與復發時間（p=0.364）皆無差異</b>；臨床穩定者<b>可立即換管</b>。</li>';
+      note='<b>本頁刻意不列此族群的發生率數字</b>：RYGB 的「0.1–0.6%」、「節律點理論」與各術式復發率比較，以及術後腸套疊的「0.01–0.25%／術後 1–2 週」，<b>均查無原始文獻</b>，僅有個案報告等級的文獻支持其存在。';
+    }
+  }
+  flowRec('iss_rec1',cls,title,detail,note);
+}
+
+/* ── 第二張卡：介入後所見 ────────────────────────────── */
+function issRec2(){
+  const a=issSt.age, t=issSt.type, e=issSt.enema, o=issSt.op;
+  let cls='rec-idle', title='請完成上方步驟', detail='', note='';
+
+  /* 兒童迴結腸型：先看灌腸結果；灌腸失敗／穿孔而已進手術室者，改由術中所見接手 */
+  if(issSt.red==='no'&&t==='pic'&&!((e==='fail'||e==='perf')&&o)){
+    if(e==='ok'){
+      cls='rec-blue'; title='復位成功 — 觀察 4 小時後可自急診出院';
+      detail='<li><b>建議觀察 4 小時</b>（APSA Grade C）。已驗證作法：觀察 3–4 小時；或禁食 2 小時後進食再觀察 2 小時；或 2–4 小時開始進食、5–8 小時出院。</li>'
+        +'<li><b>可自急診出院。</b>最大系列 547 例中 53% 於中位 7.2 小時後出院；出院後復發 8% vs 住院 2%（p=0.004），但<b>整體復發 8.8% vs 8.5%、手術復位 1% vs 0.6%，實質相同</b>。</li>'
+        +'<li><b>但 19% 於 24 小時內需某種處置、6% 需重大處置</b>（再灌腸或手術）；<b>位於肝曲近端者</b>與需重大處置相關，宜延長觀察。</li>'
+        +'<li><b>復發衛教：</b>整體 7.5–15%；<b>92.1% 的早期復發發生在 48 小時內</b>（中位約 25 小時），但也可長尾至數年。<b>年齡愈大復發愈多</b>（&lt;1 歲 2.1% vs &gt;1 歲 11.9%；另一分析指向 &gt;2 歲）——與直覺相反，門檻不一致，衛教時說「1–2 歲以上風險較高」即可。</li>'
+        +'<li><b>懷疑腺病毒者延長觀察</b>：復發 48.1% vs 13.8%，OR 5.804（1.585–21.245）。</li>'
+        +'<li><b>Dexamethasone 可降低復發</b>（RR 0.14, 0.03–0.60；<b>NNT 13</b>；2 篇 RCT n=299，低品質），但<b>不提高復位成功率</b>。Glucagon 無效。</li>'
+        +'<li>復發時<b>再灌腸即可</b>——可復位率 95% 且無穿孔，<b>多次復發不是禁忌</b>。反對意見（第 3 次發作即手術）出自使用<b>鋇劑</b>的系列，且其全部 15 個 lead point 都在第一次發作的手術中找到，反而不支持「反覆復發＝隱藏病灶」；可作為第 3–4 次發作時「考慮手術」的軟性節點。</li>';
+      note='復位後仍有症狀者請想到<b>囊狀纖維化的黏液擴張闌尾</b>（4 例反覆迴結腸套疊，闌尾切除後症狀解除）。維持壓力 15 分鐘再排空可降低早期復發（19%→10%）的研究<b>橫跨 COVID-19、作者自承兩組不可比，僅屬假說</b>。';
+    }
+    else if(e==='partial'){
+      cls='rec-blue'; title='延遲重複灌腸 (DRE) — 本流程證據最強的一步';
+      detail='<li><b>三個資格條件已成立：</b>①內科狀況穩定 ②無腹膜炎 ③<b>套疊頭有進行性移動</b>。</li>'
+        +'<li><b>間隔 30 分鐘至 4 小時</b>（APSA Grade D／Level 5，專家意見）。最高報告成功率 <b>82.3%（19/23）出現在 45–60 分鐘</b>。<b>安全訊號：</b>採 6 與 10 小時間隔的 8 名病人中發生 <b>2 例穿孔</b>，改為 2–4 小時後未再發生。</li>'
+        +'<li><b>成功率 57.2%</b>（624/1091），使非手術總成功率再提高約 10 個百分點。</li>'
+        +'<li><b>實質效益：</b>灌腸失敗後直接手術 vs DRE——腸切除率 <b>26.4% vs 11.8%</b>（adj OR 2.50），<b>NNT 7 即可避免一次腸切除</b>；住院 4.4 vs 3.2 天。</li>'
+        +'<li><b>次數上限：</b>1 次 53.2%、2 次 62.5%、3 次 50.9%、4 次 35.4% → <b>超過 3 次已無益處</b>。</li>'
+        +'<li><b>DRE 不會讓後續手術變糟</b>：DRE 失敗後腸切除率 29.2%，與任何復位失敗後的 29.0% 相同。穿孔率 DRE 1.1%（標準化條件下 0.8%）。</li>'
+        +'<li><b>延遲重複灌腸時不需全身麻醉</b>：清醒 45.2% vs 全麻 34.6%，無差異。</li>';
+      note='選擇病人的關鍵在「<b>每次嘗試都看得到進行性移動</b>」——原始系列中 10 例成功者皆有移動，<b>2 例穿孔者第二次嘗試皆無移動</b>。發燒、心搏過速、症狀 &gt;36 小時為相對禁忌。';
+    }
+    else if(e==='fail'){
+      cls='rec-elective'; title='手術 — 腹腔鏡優先，並考慮術中同步灌腸';
+      detail='<li><b>腹腔鏡＋術中同步空氣／食鹽水灌腸：</b>6 篇 62 名灌腸失敗者中，<b>10/62（16%）在腹腔鏡下已自行復位完成</b>；其餘 52 例合併術中灌腸<b>成功率 87%</b>。可減少腸道抓持並直視確認完全復位。</li>'
+        +'<li><b>腹腔鏡優先</b>（APSA Grade C），但同一份文件明言<b>無證據顯示其在復發或併發症上較優</b>，住院較短部分來自選擇偏差。轉開腹率整體 17%，轉開腹者腸切除率較高，應低門檻轉開腹。</li>'
+        +'<li><b>腸切除率 29.0%</b>；住院 手術復位 3.9 天 vs 需切除 6.1 天。</li>'
+        +'<li><b>不做迴腸固定術</b>（復發 4.9% vs 4.3%，無效）；<b>不做常規闌尾切除</b>（Grade D：1 年再住院 5.5% vs 6.7%, p=0.34，但住院與成本皆顯著較高）。闌尾發炎或缺血才切。</li>'
+        +'<li>術中<b>主動尋找 lead point</b>：手術族群 PLP 21–22%，以 Meckel、息肉、淋巴增生為主。</li>';
+      note='<b>灌腸「失敗」的定義應包含「無進行性移動」</b>——有移動而僅部分復位者應回到 DRE，而非直接進手術室。';
+    }
+    else if(e==='perf'){
+      cls='rec-urgent'; title='灌腸穿孔 — 立即針刺減壓，再行緊急手術';
+      detail='<li><b>立即以 14 號針行腹腔穿刺減壓。</b>氣體灌腸穿孔造成<b>張力性氣腹</b>：腹部急速膨脹、橫膈受限、急性呼吸窘迫。</li>'
+        +'<li>緊急手術：修補或切除穿孔腸段。<b>氣體穿孔的腹腔汙染極輕微</b>（與鋇劑穿孔的嚴重化學性腹膜炎形成對比——這正是鋇劑列為 Grade D 的理由）。</li>'
+        +'<li><b>穿孔的機轉是缺血與時間，不是潛在病灶：</b>單中心 650 次灌腸的 7 例穿孔<b>全部在灌腸前 X 光即有腸阻塞（液平面）</b>且症狀史較長，<b>無一例找到 lead point</b>，且<b>無一例發生在延遲重複灌腸時</b>。</li>'
+        +'<li>整體穿孔率：空氣 0.39%、液體 0.43%（無差異）；所有灌腸 0.5%（37/7542）。</li>';
+      note='灌腸現場必須有能執行腹腔針刺減壓與 CPR 的醫師——433 次灌腸中 1.4% 出現血行動力學不穩需此處置，<b>全部以此穩定</b>。';
+    }
+    else { title='請於步驟 5 選擇灌腸復位結果'; }
+    flowRec('iss_rec2',cls,title,detail,note);
+    flowShow('iss_rec2', true);
+    return;
+  }
+
+  /* 其餘：手術路徑的術中所見 */
+  if(issGoesToOR()){
+    if(o==='viable'){
+      cls='rec-elective'; title='徒手復位、保留腸段 — 不做附加預防性術式';
+      detail='<li>腸段存活且未見 lead point：完成復位、確認漿膜面完整與蠕動恢復即可。</li>'
+        +(a==='ped'
+          ? '<li>灌腸失敗者中有 <b>16%</b> 在腹腔鏡下已自行復位；仍未復位者合併術中灌腸成功率 <b>87%</b>。</li><li><b>不做迴腸固定術</b>（4.9% vs 4.3%，無效）、<b>不做常規闌尾切除</b>（Grade D，住院與成本顯著較高而復發未減）。</li>'
+          : '<li>成人特發性（無 lead point）者佔 8–20%；電腦斷層時代整體 PLP 僅 44.8%——<b>單純復位是合理終點</b>，不必為了「以防萬一」而切除。</li><li><b>術後請驗乳糜瀉血清學</b>：45 名被標為特發性者中只有 2 名曾被檢驗；乳糜瀉族群中 57% 的腸套疊是該病的<b>初次表現</b>。</li>')
+        +'<li>術後仍應依年齡衛教復發風險（整體 7.5–15%，92.1% 的早期復發在 48 小時內）。</li>';
+      note=(a==='ped'?'術後復發 0–14%，腹腔鏡與開腹無差異（12 篇比較性研究全部無顯著差異）。':'成人整體術後併發症 22.1%、死亡率 5.2%。');
+    }
+    else if(o==='plp'){
+      cls='rec-elective'; title='切除 lead point — 範圍依良惡性與部位決定';
+      detail=(a==='ped'
+        ? '<li>兒童 lead point <b>絕大多數為良性</b>：Meckel 憩室（佔 PLP 5–25%）、息肉、腸重複、淋巴增生。行節段切除或憩室切除即可。</li><li><b>懷疑淋巴瘤時優先考慮影像導引經皮切片而非切除</b>：5 例侵襲性成熟 B 細胞 NHL 中 3 例以此確診，<b>化療已可治癒，能不切就不切</b>。典型病史為「數週腹痛後急性惡化」。</li><li>兒童 lead point 為惡性的比例極低（淋巴瘤佔全部兒童腸套疊遠低於 1%）——<b>不要因為找到 lead point 就假設是惡性</b>。</li>'
+        : (t==='col'||t==='aic')
+          ? '<li><b>en-bloc 腫瘤學切除，全程不復位</b>：大腸型惡性 46.5–69%、迴結腸型 36.9%，且多為<b>原發腺癌</b>。依部位取足夠淋巴結。</li><li>常見良性大腸 lead point 為脂肪瘤（某系列佔良性者 80%）——<b>但術中無法可靠區辨，故仍依惡性原則處理</b>。</li>'
+          : '<li><b>良性、腸段存活、無絞窄：可先復位再切除</b>，以縮短切除長度、避免短腸症。</li><li><b>懷疑惡性則不復位</b>（已知原發癌、體重減輕、缺鐵性貧血、CT 見腫塊）→ 腫瘤學切除。小腸惡性 lead point 多為<b>轉移性疾病</b>（經典為黑色素瘤），代表疾病<b>已擴散</b>，術中應完整探查。</li><li><b>Peutz-Jeghers</b>：69% 至少發生一次、20 歲前累積 50%、95% 在小腸、92.5% 需手術——<b>此族群面臨終生反覆剖腹，保留腸長度是首要考量</b>。致病息肉中位 35 mm 且無一小於 15 mm，術後應安排小腸內視鏡監測並切除 &gt;10–15 mm 息肉。</li>')
+        +'<li>所有切除檢體送病理；成人並依結果安排分期與腫瘤科轉介。</li>';
+      note=(a==='ped'
+        ? 'lead point 隨年齡上升（0–2 歲 3.7%、3–5 歲 14.7%、6–12 歲 50.0%），但整體範圍在文獻中跨度達 66 倍（0.3–20%），<b>不可取中位數當點估計</b>。'
+        : '「操作導致腫瘤種植」的機轉<b>查無原始研究支持</b>；大腸不復位的正當理由是<b>惡性基礎率</b>。');
+    }
+    else if(o==='dead'){
+      cls='rec-urgent'; title='腸切除 — 汙染術野，依情況決定一期吻合或造口';
+      detail='<li>缺血、壞死、穿孔或無法復位者<b>一律切除，且不論部位皆不復位</b>。</li>'
+        +'<li><b>汙染／髒汙術野</b>：依血行動力學、腹膜炎嚴重度與腸壁水腫決定一期吻合、造口或損害控制後二次探查。</li>'
+        +(a==='ped'
+          ? '<li>兒童復位失敗後手術的整體腸切除率 <b>29.0%</b>；需切除者住院 6.1 天（單純手術復位 3.9 天）。</li>'
+          : '<li>成人整體術後併發症 22.1%、<b>死亡率 5.2%</b>；大腸型汙染術野勿勉強一期吻合。</li>')
+        +'<li>檢體務必送病理——<b>穿孔本身不代表沒有 lead point，也不代表有</b>（灌腸穿孔的系列中無一例找到 lead point）。</li>';
+      note='廣效抗生素、液體復甦與器官支持同步進行。';
+    }
+    else { title='請於步驟 6 選擇術中所見'; }
+    flowRec('iss_rec2',cls,title,detail,note);
+    flowShow('iss_rec2', true);
+    return;
+  }
+
+  flowRec('iss_rec2',cls,title,detail,note);
+}
+
+function issReset(){
+  Object.keys(issSt).forEach(function(k){ issSt[k]=null; });
+  document.querySelectorAll('#view-iss-path .flow-opt').forEach(function(b){ b.classList.remove('selected'); });
+  issRender();
+}
+issReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
