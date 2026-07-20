@@ -2,11 +2,12 @@
   .abx-picker{display:flex; flex-direction:column; gap:8px; margin-bottom:6px;}
   .abx-site-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   @media(max-width:520px){ .abx-site-grid{grid-template-columns:1fr;} }
-  .abx-modes{display:flex; gap:6px; margin-bottom:18px; border-bottom:2px solid var(--accent-soft); padding-bottom:0;}
+  /* 六個分頁（三個模式＋菌譜資料庫／手術預防／創傷用藥三頁）：窄螢幕自動換行成多列 */
+  .abx-modes{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; border-bottom:2px solid var(--accent-soft); padding-bottom:0;}
   .abx-mode{font-family:var(--mono); font-size:12.5px; background:none; border:1px solid var(--line); border-bottom:none; padding:9px 14px; border-radius:4px 4px 0 0; cursor:pointer; color:var(--muted); position:relative; top:2px;}
   .abx-mode:hover{background:var(--hover-bg); color:var(--ink);}
   .abx-mode.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-soft); font-weight:700;}
-  @media(max-width:520px){ .abx-mode{flex:1; padding:9px 4px; font-size:11.5px; text-align:center;} }
+  @media(max-width:520px){ .abx-mode{flex:1 1 30%; padding:9px 4px; font-size:11.5px; text-align:center;} }
   .abx-lookup-input{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:10px;}
   .abx-lookup-input:focus{outline:none; border-color:var(--accent);}
   .abx-lookup-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}

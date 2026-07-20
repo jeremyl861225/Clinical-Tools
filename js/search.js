@@ -212,9 +212,28 @@
     return out;
   }
 
+  // 抗生素指引的獨立分頁：不是首頁卡片，故無法由 DOM 取得，於此明列。
+  // 列為 guide 型別後亦會被 pageList() 納入頁面內文索引。
+  var SUB_PAGES = [
+    { label: '抗生素菌譜資料庫', en: 'Spectrum Database', url: 'tools/spectrum-database.html',
+      sub: 'β-內醯胺酶分類、抗細菌／抗黴菌菌譜、CR-GNB 新藥抗菌譜',
+      kw: '菌譜 感受性 antibiogram Ambler β-lactamase ESBL AmpC KPC NDM OXA MBL 碳青黴烯 CR-GNB cefiderocol' },
+    { label: '手術預防性抗微生物', en: 'Surgical Prophylaxis', url: 'tools/surgical-prophylaxis.html',
+      sub: '台大手術預防性抗微生物製劑使用規範表一：依術式的建議處方、時機與期限',
+      kw: '手術預防 預防性抗生素 術前給藥 SSI 傷口感染 cefazolin cefuroxime 追加給藥 redosing 劃刀前 關節置換 開顱 剖腹產 CABG 體外循環 CPB 移植' },
+    { label: '創傷後抗生素', en: 'Trauma Antibiotics', url: 'tools/trauma-abx.html',
+      sub: '穿刺性腹部創傷、開放性骨折、胸管、腦傷、咬傷、燒燙傷與破傷風預防',
+      kw: '創傷 外傷 開放性骨折 Gustilo 胸管 tube thoracostomy 穿刺傷 咬傷 燒燙傷 顏面骨折 顱底骨折 破傷風 tetanus TIG EAST 預防性抗生素' }
+  ];
+  function indexSubPages() {
+    return SUB_PAGES.map(function (p) {
+      return { type: 'guide', label: p.label, en: p.en, sub: p.sub, kw: p.kw, url: p.url };
+    });
+  }
+
   function buildIndex() {
-    idx = [].concat(indexHubs(), indexCards(), indexSites(), indexBacteria(),
-                    indexDrugs(), indexCancers());
+    idx = [].concat(indexHubs(), indexCards(), indexSubPages(), indexSites(),
+                    indexBacteria(), indexDrugs(), indexCancers());
   }
 
   /* ---- 比對與排序 ---- */

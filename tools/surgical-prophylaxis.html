@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手術預防性抗微生物 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<style>
+  /* ── 體重給藥計算 ───────────────────────────────────────────── */
+  .sp-calc{background:var(--soft-bg); border:1px solid var(--accent-soft); border-radius:2px; padding:14px 16px; margin-bottom:16px;}
+  .sp-calc-top{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .sp-calc-lbl{font-family:var(--mono); font-size:12px; color:var(--accent); font-weight:700;}
+  .sp-wt{width:96px; padding:8px 10px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg);
+         color:var(--ink); font-family:var(--mono); font-size:15px; text-align:right;}
+  .sp-calc-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono);}
+  .sp-doses{display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:8px;}
+  .sp-dose{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:9px 11px;}
+  .sp-dose.hi{border-left-color:var(--accent); background:var(--accent-soft);}
+  .sp-dose .dn{font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.03em;}
+  .sp-dose .dv{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink); margin-top:1px;}
+  .sp-dose .dr{font-size:11px; color:var(--muted-soft); margin-top:2px;}
+
+  /* ── 原則清單 ───────────────────────────────────────────────── */
+  .sp-rules{margin:0; padding:0; list-style:none; counter-reset:r;}
+  .sp-rules li{position:relative; padding:7px 0 7px 30px; font-size:13px; line-height:1.7; border-bottom:1px dotted var(--line);}
+  .sp-rules li:last-child{border-bottom:none;}
+  .sp-rules li::before{counter-increment:r; content:"(" counter(r) ")"; position:absolute; left:0; top:7px;
+                       font-family:var(--mono); font-size:11px; color:var(--accent);}
+  .sp-rules b{color:var(--accent2);}
+
+  /* ── 工具列 ─────────────────────────────────────────────────── */
+  .sp-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;}
+  .sp-search{flex:1; min-width:190px; padding:10px 12px; border:1px solid var(--line); border-radius:2px;
+             background:var(--field-bg); color:var(--ink); font-size:14px; font-family:var(--sans);}
+  .sp-search:focus{outline:none; border-color:var(--accent);}
+  .sp-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .sp-chip{font-family:var(--mono); font-size:11.5px; border:1px solid var(--line); background:var(--panel);
+           color:var(--muted); border-radius:12px; padding:5px 11px; cursor:pointer;}
+  .sp-chip:hover{background:var(--hover-bg); color:var(--ink);}
+  .sp-chip.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent); font-weight:700;}
+  .sp-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
+
+  /* ── 術式列 ─────────────────────────────────────────────────── */
+  .sp-dept{margin-bottom:16px;}
+  .sp-dept-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 8px;
+                padding-bottom:4px; border-bottom:2px solid var(--accent-soft);}
+  .sp-dept-zh{font-family:var(--serif); font-size:16px; font-weight:600; color:var(--accent);}
+  .sp-dept-en{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft);}
+  .sp-dept-n{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+
+  .sp-op{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft);
+         border-radius:2px; margin-bottom:7px; overflow:hidden;}
+  .sp-op.open{border-left-color:var(--accent);}
+  .sp-op-head{display:block; width:100%; text-align:left; background:none; border:none; cursor:pointer;
+              padding:11px 13px; font-family:var(--sans); color:var(--ink);}
+  .sp-op-head:hover{background:var(--hover-bg);}
+  .sp-op-t{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap;}
+  .sp-op-zh{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .sp-op-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .sp-op-rec{display:block; font-size:12.5px; color:var(--accent); font-family:var(--mono); margin-top:4px; line-height:1.6;}
+  .sp-caret{float:right; font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:8px;}
+
+  /* 分類徽章 */
+  .sp-cls{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em;
+          border-radius:9px; padding:1px 7px; white-space:nowrap; vertical-align:1px;}
+  .sp-cls.c1{color:#1f6b4f; background:#dcece3; border:1px solid #9dc3b0;}   /* clean */
+  .sp-cls.c2{color:#8a6510; background:#f0e6cc; border:1px solid #cdb277;}   /* clean-contaminated */
+  @media (prefers-color-scheme: dark){
+    .sp-cls.c1{color:#8fd3b4; background:#1c3a2e; border-color:#37624e;}
+    .sp-cls.c2{color:#e0c07c; background:#3a3120; border-color:#645433;}
+  }
+  /* 來源徽章：台大規範 vs 補充文獻 */
+  .sp-src{display:inline-block; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.04em;
+          border-radius:2px; padding:1px 6px; white-space:nowrap; vertical-align:1px;}
+  .sp-src.ntuh{color:#fff; background:var(--accent);}
+  .sp-src.supp{color:var(--accent2); background:var(--accent2-soft); border:1px solid var(--accent2);}
+
+  /* 展開內容 */
+  .sp-op-body{display:none; padding:0 13px 13px; border-top:1px dashed var(--line); margin-top:2px;}
+  .sp-op.open .sp-op-body{display:block;}
+  .sp-fld{display:grid; grid-template-columns:82px 1fr; gap:4px 10px; padding:8px 0; border-bottom:1px dotted var(--line);
+          font-size:12.5px; line-height:1.65;}
+  .sp-fld:last-child{border-bottom:none;}
+  .sp-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft); text-transform:uppercase; padding-top:2px;}
+  .sp-fld .v b{font-family:var(--mono); font-weight:700;}
+  .sp-alt{color:var(--accent2);}
+  .sp-refs{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .sp-fnref{font-family:var(--mono); font-size:10px; color:var(--accent2); cursor:help; vertical-align:super;}
+  @media(max-width:480px){ .sp-fld{grid-template-columns:1fr; gap:1px;} }
+
+  /* ── 風險因子三欄 ───────────────────────────────────────────── */
+  .sp-rf{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px;}
+  .sp-rf-col{background:var(--box-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px;}
+  .sp-rf-h{font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--accent); margin-bottom:6px;
+           border-bottom:1px solid var(--accent-soft); padding-bottom:4px;}
+  .sp-rf-col ol{margin:0; padding-left:17px; font-size:12px; line-height:1.75;}
+
+  /* ── 附註 ───────────────────────────────────────────────────── */
+  .sp-notes{margin:0; padding:0; list-style:none;}
+  .sp-notes li{display:grid; grid-template-columns:22px 1fr; gap:9px; padding:8px 0;
+               border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}
+  .sp-notes li:last-child{border-bottom:none;}
+  .sp-notes .lt{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+
+  /* ── 追加給藥間隔表 ─────────────────────────────────────────── */
+  table.sp-rd{border-collapse:collapse; width:100%; font-size:12.5px;}
+  table.sp-rd th,table.sp-rd td{border:1px solid var(--line); padding:6px 10px; text-align:left;}
+  table.sp-rd thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10.5px;
+                       color:var(--accent); letter-spacing:.04em; text-transform:uppercase;}
+  table.sp-rd td:first-child{font-family:var(--mono); font-weight:700;}
+  table.sp-rd td.na{color:var(--muted-soft);}
+
+  .sp-empty{font-size:12.5px; color:var(--muted-soft); text-align:center; padding:22px 0;
+            background:var(--box-bg); border:1px dashed var(--line); border-radius:2px;}
+  .sp-hl{background:var(--accent-soft); border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-surgprophylaxis">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Antimicrobial · Surgical Prophylaxis</div>
+      <h1>手術預防性抗微生物</h1>
+      <div class="sub">依台大醫院《手術預防性抗微生物製劑使用規範》（文件 15650-2-000016，版次 8）表一，並以 ASHP／IDSA／SIS／SHEA 2013 指引補充台大表一未列之術式</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+  </div>
+
+  <!-- 抗生素指引的第五分頁 -->
+  <div class="abx-modes">
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=empiric'">依部位（經驗性）</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=bacteria'">依病原菌</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=lookup'">藥物查詢</button>
+    <button class="abx-mode" onclick="location.href='spectrum-database.html'">菌譜資料庫</button>
+    <button class="abx-mode active">手術預防</button>
+    <button class="abx-mode" onclick="location.href='trauma-abx.html'">創傷用藥</button>
+  </div>
+
+  <!-- ══ 體重給藥 ══ -->
+  <div class="sp-calc">
+    <div class="sp-calc-top">
+      <span class="sp-calc-lbl">依體重給藥</span>
+      <input type="number" class="sp-wt" id="sp-wt" value="70" min="1" max="250" step="1" oninput="calcDose()">
+      <span class="unit">kg</span>
+      <span class="sp-calc-hint">規範第(二)條：劑量應依據體重調整</span>
+    </div>
+    <div class="sp-doses" id="sp-doses"></div>
+    <p class="note" style="margin-top:9px;">Cefazolin 依台大附註 c：&gt; 80 kg 給 2 g、&gt; 120 kg 給 3 g（ASHP 2013 之成人標準劑量本即為 2 g，&gt; 120 kg 才給 3 g）。Gentamicin 台大表一為 <b>2 mg/kg</b>；ASHP 2013 外科預防則為<b>單次 5 mg/kg</b>，且以<b>實際體重</b>計算——若實際體重超過理想體重 20% 以上，才改用 dosing weight ＝ IBW ＋ 0.4 ×（實際體重 − IBW）。實務上仍應依腎功能與院內規範調整。</p>
+  </div>
+
+  <!-- ══ 1 使用原則 ══ -->
+  <div class="section-title">1 · 使用原則　General Principles</div>
+  <div class="card">
+    <ol class="sp-rules">
+      <li>手術預防性抗微生物製劑之使用，包括適用術式、藥物選擇及使用期限，應依循國內外專業指引、健保署規定或院內相關規定。</li>
+      <li>劑量應依據<b>體重</b>調整。</li>
+      <li>注射劑投藥時間原則上應在<b>手術劃刀前 1 小時內</b>給予。</li>
+      <li>手術時間若距上一劑預防性抗微生物製劑<b>超過 3 小時</b>，且該手術持續進行，應依據術式及藥物動力學性質<b>追加給藥</b>。</li>
+      <li>原則上一般清淨手術術後不使用抗微生物製劑；重大手術使用期限原則上<b>不超過 24 小時</b>；若超過使用期限，應於病歷上詳述理由。</li>
+      <li>手術後若發生感染即應改為<b>治療性</b>使用，並依據本院抗微生物製劑使用管理規定開立處方。</li>
+      <li>手術預防性抗微生物製劑使用準則依術式別列於下方表一。</li>
+    </ol>
+    <p class="note" style="margin-top:10px;">Vancomycin 因需長時間輸注，應於<b>劃刀前 2 小時內</b>開始給予（見各術式「給藥時機」欄）。</p>
+  </div>
+
+  <!-- ══ 2 術式別建議 ══ -->
+  <div class="section-title">2 · 術式別建議　Regimen by Procedure</div>
+  <div class="sp-bar">
+    <input type="text" class="sp-search" id="sp-q" placeholder="搜尋術式或藥名（如：膽囊、craniotomy、cefazolin、剖腹產）…" autocomplete="off" oninput="renderOps()">
+  </div>
+  <div class="sp-chips" id="sp-chips"></div>
+  <div class="sp-count" id="sp-count"></div>
+  <div id="sp-list"></div>
+
+  <!-- ══ 3 追加給藥間隔 ══ -->
+  <div class="section-title">3 · 術中追加給藥間隔　Intraoperative Redosing</div>
+  <div class="card">
+    <p style="margin:0 0 10px; font-size:12.5px; line-height:1.75;">台大規範以「距上一劑<b>超過 3 小時</b>且手術持續進行」為追加時機（附註 a 另舉例：手術超過 <b>4 小時</b>追加 cefazolin 1 g）。ASHP 2013 指引則以「<b>約 2 個藥物半衰期</b>」訂定各藥固定間隔，兩者可互相參照；<b>大量失血</b>時亦應追加。</p>
+    <table class="sp-rd">
+      <thead><tr><th style="width:34%">藥物</th><th style="width:33%">自術前給藥起追加間隔</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr><td>Cefazolin</td><td>每 4 小時</td><td>台大表一標示 q2–5h（骨科關節置換 q4h）</td></tr>
+        <tr><td>Cefuroxime</td><td>每 4 小時</td><td>台大表一標示 q3–4h</td></tr>
+        <tr><td>Cefoxitin</td><td>每 2 小時</td><td>半衰期短，需頻繁追加</td></tr>
+        <tr><td>Ampicillin-sulbactam</td><td>每 2 小時</td><td>—</td></tr>
+        <tr><td>Clindamycin</td><td>每 6 小時</td><td>台大表一標示 q3–6h</td></tr>
+        <tr><td>Metronidazole</td><td class="na">不需追加</td><td>半衰期長；台大表一標示 q6–8h</td></tr>
+        <tr><td>Vancomycin</td><td class="na">不需追加</td><td>台大表一標示 q6–12h；須術前 2 小時內開始輸注</td></tr>
+        <tr><td>Gentamicin</td><td class="na">不需追加</td><td>單次給藥即可涵蓋多數術程</td></tr>
+        <tr><td>Ertapenem</td><td class="na">不需追加</td><td>—</td></tr>
+        <tr><td>Ciprofloxacin</td><td class="na">不需追加</td><td>—</td></tr>
+        <tr><td>Ampicillin</td><td>每 2 小時</td><td>—</td></tr>
+        <tr><td>Piperacillin-tazobactam</td><td>每 2 小時</td><td>—</td></tr>
+        <tr><td>Cefotaxime</td><td>每 3 小時</td><td>—</td></tr>
+        <tr><td>Cefotetan</td><td>每 6 小時</td><td>—</td></tr>
+        <tr><td>Aztreonam</td><td>每 4 小時</td><td>—</td></tr>
+        <tr><td>Ceftriaxone</td><td class="na">不需追加</td><td>—</td></tr>
+        <tr><td>Levofloxacin／Moxifloxacin</td><td class="na">不需追加</td><td>—</td></tr>
+        <tr><td>Fluconazole</td><td class="na">不需追加</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:8px;">ASHP 2013 附註提醒：<b>大量出血或大面積燒傷</b>可能需提早追加；<b>腎功能不全</b>者則可不追加。</p>
+    <p class="note" style="margin-top:10px;">體外循環（CPB）另有加藥規則：心臟手術於上機時追加 cefazolin 1 g（clindamycin 600 mg／vancomycin 500 mg）一次，見心血管外科各術式（附註 h、j）。</p>
+  </div>
+
+  <!-- ══ 4 高風險族群 ══ -->
+  <div class="section-title">4 · 高風險族群定義　High-Risk Definitions</div>
+  <div class="card">
+    <p style="margin:0 0 10px; font-size:12.5px; line-height:1.7;"><b>髖／膝關節置換（附註 f）</b>——符合下列任一者為高風險，預防用藥可延長至 ≤ 3 天：既往關節感染、類固醇注射病史、發炎性關節炎、糖尿病、腎衰竭、HIV 感染、吸菸（戒菸未滿 30 天者）、肥胖（BMI &gt; 30 kg/m²）。</p>
+    <p style="margin:0 0 12px; font-size:12.5px; line-height:1.7;"><b>CABG／心臟手術（附註 i）</b>——具下列風險因子者為高風險，預防用藥可延長至 ≤ 3 天：</p>
+    <div class="sp-rf">
+      <div class="sp-rf-col">
+        <div class="sp-rf-h">Host factors 病人因素</div>
+        <ol>
+          <li>年齡 &gt; 65 歲</li><li>肥胖（BMI &gt; 30 kg/m²）</li><li>糖尿病（HbA1c ≥ 8）</li>
+          <li>慢性阻塞性肺病</li><li>急性腎衰竭／透析</li><li>LVEF &lt; 40%</li>
+          <li>鬱血性心衰竭（NYHA Fc ≥ 3）</li><li>周邊血管疾病</li><li>肺高壓</li><li>免疫抑制</li>
+        </ol>
+      </div>
+      <div class="sp-rf-col">
+        <div class="sp-rf-h">Pre-operation 術前因素</div>
+        <ol>
+          <li>曾接受心臟手術（再次手術）</li><li>圍手術期心肌梗塞</li>
+          <li>加護病房停留時間延長</li><li>呼吸器使用時間延長</li><li>重新插管</li>
+        </ol>
+      </div>
+      <div class="sp-rf-col">
+        <div class="sp-rf-h">Surgical factors 手術因素</div>
+        <ol>
+          <li>緊急／急診手術</li><li>使用內乳動脈（單側或雙側）</li>
+          <li>手術時間延長</li><li>體外循環時間延長</li><li>大量輸血（輸 3000 cc 以上）</li>
+          <li>低心輸出量症候群</li><li>術後需強心劑支持</li><li>機械循環輔助裝置</li><li>因出血再次探查</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 5 附註 ══ -->
+  <div class="section-title">5 · 表一附註　Footnotes</div>
+  <div class="card">
+    <ul class="sp-notes">
+      <li><span class="lt">a</span><span>手術時間超過抗生素半衰期之 1～2 倍，或術中有明顯失血時，應追加術中劑量（例如手術超過 4 小時追加 cefazolin 1 g）。</span></li>
+      <li><span class="lt">b</span><span>術後若仍需使用抗微生物製劑，建議改採一般<b>治療性</b>給藥間隔（如 cefazolin 1 g q8h），並依腎功能調整劑量。</span></li>
+      <li><span class="lt">c</span><span>體重 &gt; 80 kg 者 cefazolin 給 2 g；體重 &gt; 120 kg 者給 3 g。</span></li>
+      <li><span class="lt">d</span><span>經確認有 β-lactam 過敏紀錄者，應改用替代處方。</span></li>
+      <li><span class="lt">e</span><span>已知帶有 MRSA 移生（colonization）之病人，或近期院內有 MRSA 流行時，vancomycin 可作為第一線選擇。術前可考慮做鼻腔 MRSA 篩檢。</span></li>
+      <li><span class="lt">f</span><span>關節置換高風險族群定義見上方第 4 節。</span></li>
+      <li><span class="lt">g</span><span>肺臟移植：1. 若病患移植前已有感染，則不在此限。2. 手術前依病人先前的 sputum culture 結果調整抗生素。3. 手術後依 donor 的 culture 結果調整。4. 手術後依 recipient 取下之肺組織培養結果調整。</span></li>
+      <li><span class="lt">h</span><span>心臟手術若手術傷口在開刀房內仍保持開放，對腎功能正常之病人應每 3～4 小時追加一劑 cefazolin。若可預期體外循環將在 4 小時內結束，則適合延後至灌流完成後再給藥，以達最佳血中濃度。</span></li>
+      <li><span class="lt">i</span><span>CABG／心臟手術術後感染之風險因子，見上方第 4 節三欄表。</span></li>
+      <li><span class="lt">j</span><span>體外循環（CPB）期間可考慮追加一劑預防性抗生素。</span></li>
+    </ul>
+  </div>
+
+  <!-- ══ 6 近年國際立場 ══ -->
+  <div class="section-title">6 · 近年國際立場　Recent International Positions</div>
+  <div class="card">
+    <div class="sp-fld"><span class="k">CDC 2017</span><span class="v">清淨與清淨-污染手術，<b>傷口於手術室關閉後不應再追加預防性抗生素，即使有引流管留置</b>。此立場較台大表一部分術式所列之「≤ 1～3 天」更為嚴格；台大規範第(五)條亦已要求重大手術原則上不超過 24 小時，超過期限須於病歷詳述理由。</span></div>
+    <div class="sp-fld"><span class="k">WHO</span><span class="v">預防性抗生素<b>不應於手術結束後延長使用</b>（strong recommendation, moderate quality evidence）。</span></div>
+    <div class="sp-fld"><span class="k">大腸直腸</span><span class="v">擇期大腸直腸手術，「<b>機械性腸道準備 ＋ 口服抗生素</b>」相較於單用機械性準備可降低手術部位感染（統合分析 OR 0.71／RR 0.51）與吻合口漏，且未增加 <i>C. difficile</i> 感染。ASCRS 2019 腸道準備指引亦採此立場。</span></div>
+    <p class="note" style="margin-top:10px;">本節為國際指引立場，與台大院內規範併陳供參考；實務上仍以院內規範與健保署規定為準。</p>
+  </div>
+
+  <footer class="tool-footer" id="sp-footer">
+    REF — 主要資料來源：國立臺灣大學醫學院附設醫院《手術預防性抗微生物製劑使用規範》，文件編號 15650-2-000016，版次 8（修訂 2019/04/25，檢視 2026/03/11），感染管制中心暨藥劑部。
+    表一參考文獻（編號同表一）：
+    ① Meehan J, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/19797586/" target="_blank" rel="noopener" class="ref-link">Prophylactic Antibiotics in Hip and Knee Arthroplasty. J Bone Joint Surg Am. 2009;91(10):2480-90.</a> ·
+    ② Bosco JA, Slover JD, Haas JP. <a href="https://pubmed.ncbi.nlm.nih.gov/20048118/" target="_blank" rel="noopener" class="ref-link">Perioperative strategies for decreasing infection. J Bone Joint Surg Am. 2010;92(1):232-9.</a> ·
+    ③ Bratzler DW, Houck PM. <a href="https://pubmed.ncbi.nlm.nih.gov/15227616/" target="_blank" rel="noopener" class="ref-link">Antimicrobial Prophylaxis for Surgery: National Surgical Infection Prevention Project. Clin Infect Dis. 2004;38(12):1706-15.</a> ·
+    ④ <a href="https://pubmed.ncbi.nlm.nih.gov/15060692/" target="_blank" rel="noopener" class="ref-link">Guidelines for the use of prophylactic antibiotics in surgery in Taiwan. J Microbiol Immunol Infect. 2004;37(1):71-4.</a>（PubMed 該筆未列作者欄） ·
+    ⑤ Mount Sinai 2008 SCIP antibiotic prophylaxis protocol（原文所附連結已失效） ·
+    ⑥ <a href="https://pubmed.ncbi.nlm.nih.gov/7983958/" target="_blank" rel="noopener" class="ref-link">Antimicrobial prophylaxis in neurosurgery and after head injury (BSAC Working Party). Lancet. 1994;344(8936):1547-51.</a> ·
+    ⑦ The Society of Thoracic Surgeons — Antibiotic Prophylaxis in Cardiac Surgery（原文所附連結已失效） ·
+    ⑧ Källman J, Friberg O. <a href="https://pubmed.ncbi.nlm.nih.gov/17931239/" target="_blank" rel="noopener" class="ref-link">Antibiotic prophylaxis in cardiac surgery — general principles. APMIS. 2007;115(9):1012-5.</a> ·
+    ⑨ Sun HY, Cacciarelli TV, Singh N. <a href="https://pubmed.ncbi.nlm.nih.gov/20104499/" target="_blank" rel="noopener" class="ref-link">Impact of pretransplant infections on outcomes of liver transplant recipients. Liver Transpl. 2010;16(2):222-8.</a> ·
+    ⑩ Antimicrobial Prophylaxis for Surgery. Med Lett Drugs Ther. 2009;7:47-52. ·
+    ⑪ Hsu HH, Chen JS, Ko WJ, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/19660110/" target="_blank" rel="noopener" class="ref-link">Short-term outcomes of cadaveric lung transplantation in ventilator-dependent patients. Crit Care. 2009;13(4):R129.</a> ·
+    ⑫ Kwarteng F, Ahluwalia B, Osborne NG. Antibiotic Prophylaxis in Gynecology. J Gynecol Surg. 2008;24(4):175-9.（該期刊未為 PubMed 收錄） ·
+    ⑬ Bratzler DW, Dellinger EP, Olsen KM, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/23327981/" target="_blank" rel="noopener" class="ref-link">Clinical Practice Guidelines for Antimicrobial Prophylaxis in Surgery (ASHP/IDSA/SIS/SHEA). Am J Health Syst Pharm. 2013;70(3):195-283.</a> ·
+    ⑭ <a href="https://pubmed.ncbi.nlm.nih.gov/21606770/" target="_blank" rel="noopener" class="ref-link">ACOG Practice Bulletin No. 120: Use of prophylactic antibiotics in labor and delivery. Obstet Gynecol. 2011;117(6):1472-83.</a> ·
+    ⑮ Paruk F, Sime FB, Lipman J, Roberts JA. <a href="https://pubmed.ncbi.nlm.nih.gov/28254373/" target="_blank" rel="noopener" class="ref-link">Dosing antibiotic prophylaxis during cardiopulmonary bypass. Int J Antimicrob Agents. 2017;49(4):395-402.</a>
+    　｜近年立場：
+    Berríos-Torres SI, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/28467526/" target="_blank" rel="noopener" class="ref-link">CDC Guideline for the Prevention of Surgical Site Infection, 2017. JAMA Surg. 2017;152(8):784-91.</a> ·
+    Allegranzi B, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/27816414/" target="_blank" rel="noopener" class="ref-link">New WHO recommendations on intraoperative and postoperative measures for SSI prevention. Lancet Infect Dis. 2016;16(12):e288-e303.</a> ·
+    Toh JWT, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/30646234/" target="_blank" rel="noopener" class="ref-link">MBP and Oral Antibiotics Before Elective Colorectal Surgery: Network Meta-analysis. JAMA Netw Open. 2018;1(6):e183226.</a> ·
+    Rollins KE, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/30570543/" target="_blank" rel="noopener" class="ref-link">Oral Antibiotic Preparation in Elective Colorectal Surgery: Meta-analysis. Ann Surg. 2019;270(1):43-58.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/30531263/" target="_blank" rel="noopener" class="ref-link">ASCRS Clinical Practice Guidelines for the Use of Bowel Preparation in Elective Colon and Rectal Surgery. Dis Colon Rectum. 2019;62(1):3-8.</a>
+  </footer>
+</div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   資料：台大表一逐列轉錄（src:'ntuh'），另以 ASHP 2013 補充台大未列術式（src:'supp'）。
+   cls: 1=clean 清淨、2=clean-contaminated 清淨-污染、0=不標示
+   fn:  對應表一附註字母，顯示為上標
+   ───────────────────────────────────────────────────────────────── */
+var DEPTS = [
+  {k:'ortho',  zh:'骨科',        en:'Orthopedics'},
+  {k:'ent',    zh:'耳鼻喉科',    en:'ENT'},
+  {k:'gs',     zh:'一般外科',    en:'General Surgery'},
+  {k:'tx',     zh:'器官移植',    en:'Transplantation'},
+  {k:'ns',     zh:'神經外科',    en:'Neurosurgery'},
+  {k:'obgyn',  zh:'婦產科',      en:'Gynecology & Obstetrics'},
+  {k:'cv',     zh:'心血管外科',  en:'Cardiovascular'},
+  {k:'cts',    zh:'胸腔外科',    en:'Thoracic (non-cardiac)'},
+  {k:'uro',    zh:'泌尿科',      en:'Urology'},
+  {k:'ps',     zh:'整形外科',    en:'Plastic Surgery'},
+  {k:'eye',    zh:'眼科',        en:'Ophthalmic'}
+];
+
+var OPS = [
+  /* ── 骨科 ── */
+  {d:'ortho', src:'ntuh', cls:0,
+   zh:'髖／膝關節置換', en:'Hip and knee arthroplasty',
+   rec:['Cefazolin 1–2 g q4h','<i>或</i> Cefuroxime 1.5 g q3–4h'],
+   alt:['Clindamycin 600 mg q3–6h','Vancomycin 1 g q6–12h'],
+   timing:'劃刀前 1 小時內；vancomycin 應於劃刀前 2 小時內開始',
+   dur:'低風險 ≤ 1 天；高風險 ≤ 3 天', fn:['f'], refs:'1, 2, 3'},
+
+  /* ── 耳鼻喉科 ── */
+  {d:'ent', src:'ntuh', cls:1,
+   zh:'頭頸部手術（清淨）', en:'Head and neck (clean)',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'ent', src:'ntuh', cls:2,
+   zh:'頭頸部手術（清淨-污染）', en:'Head and neck (clean-contaminated)',
+   rec:['Cefazolin 1–2 g q2–5h','<i>或</i> Cefazolin 1 g q2–5h ＋ Metronidazole 500 mg q6–8h'],
+   alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4, 5'},
+  {d:'ent', src:'ntuh', cls:2,
+   zh:'耳部手術（清淨-污染）', en:'Ear (clean-contaminated)',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'ent', src:'ntuh', cls:2,
+   zh:'鼻及鼻竇手術（清淨-污染）', en:'Nose and sinus (clean-contaminated)',
+   rec:['Cefazolin 1 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'ent', src:'ntuh', cls:2,
+   zh:'扁桃腺手術（清淨-污染）', en:'Tonsil (clean-contaminated)',
+   rec:['Cefazolin 1 g q2–5h','<i>或</i> Cefazolin 1 g q4h ＋ Metronidazole 500 mg q6h'],
+   alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4, 5'},
+
+  /* ── 一般外科 ── */
+  {d:'gs', src:'ntuh', cls:2,
+   zh:'單純性闌尾切除術', en:'Non-complicated appendectomy',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4',
+   grp:'台大表一將闌尾切除、開放膽道、膽囊切除、胃十二指腸、腸道手術列為同一列建議'},
+  {d:'gs', src:'ntuh', cls:2,
+   zh:'開放性膽道手術', en:'Open biliary (clean-contaminated)',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:2,
+   zh:'膽囊切除術（開放／腹腔鏡）', en:'Open / laparoscopic cholecystectomy',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:2,
+   zh:'胃十二指腸手術', en:'Gastroduodenal (clean-contaminated)',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:2,
+   zh:'腸道手術', en:'Intestinal (clean-contaminated)',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:1,
+   zh:'疝氣修補術（腹腔鏡／開放，含或不含人工網膜）', en:'Herniorrhaphy ± mesh',
+   rec:['<b>不給藥</b>，或 Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:1,
+   zh:'乳房手術', en:'Breast (clean)',
+   rec:['<b>不給藥</b>，或 Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'gs', src:'ntuh', cls:1,
+   zh:'甲狀腺手術', en:'Thyroid (clean)',
+   rec:['<b>不給藥</b>，或 Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+
+  /* ── 移植 ── */
+  {d:'tx', src:'ntuh', cls:0,
+   zh:'肝臟移植', en:'Liver transplantation',
+   rec:['Cefotaxime 1000 mg q6h（兒童 25 mg/kg）','＋ Ampicillin 1000 mg q6h（兒童 25 mg/kg）'],
+   alt:['① Ceftriaxone　② Flomoxef　③ Ertapenem'],
+   timing:'劃刀前 1 小時內', dur:'1 週', refs:'9',
+   extra:'<b>另自移植當日起：</b>Cotrimoxazole（Baktar）1 tab qd ＋ Nystatin oral suspension 5 mL qid，持續 <b>6 個月～1 年</b>（PJP 與念珠菌預防）。'},
+  {d:'tx', src:'ntuh', cls:0,
+   zh:'肺臟移植', en:'Lung transplantation',
+   rec:['Cefazolin 1–2 g'], alt:['Vancomycin 1 g，on call to OR'],
+   timing:'劃刀前 1 小時內', dur:'移植後 2–4 週，或至症狀緩解', fn:['g'], refs:'11'},
+
+  /* ── 神經外科 ── */
+  {d:'ns', src:'ntuh', cls:0,
+   zh:'開顱手術', en:'Craniotomy',
+   rec:['Cefazolin 1 g q2–5h'],
+   alt:['Oxacillin 2 g q3–6h','<i>或</i> Vancomycin 1 g q12h','<i>或</i> Cefuroxime 1.5 g q3–6h'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 1 天', refs:'3, 4, 6'},
+  {d:'ns', src:'ntuh', cls:0,
+   zh:'脊椎手術', en:'Spine',
+   rec:['Cefazolin 1 g q2–5h','<i>或</i> Cefuroxime 1.5 g q3–4h'],
+   alt:['Vancomycin 1 g q6–12h ＋ Gentamicin 1.5 mg/kg q3–6h'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'ns', src:'ntuh', cls:0,
+   zh:'腦室腹腔分流術', en:'VP shunt',
+   rec:['Cefazolin 1 g q2–5h'],
+   alt:['Oxacillin 2 g q3–6h','<i>或</i> Vancomycin 1 g q12h'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 1～2 天', refs:'3, 4'},
+
+  /* ── 婦產科 ── */
+  {d:'obgyn', src:'ntuh', cls:1,
+   zh:'附屬器手術（腹腔鏡或剖腹）', en:'Adnexal surgery, laparoscopic or laparotomy',
+   rec:['Cefazolin 1 g'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'12'},
+  {d:'obgyn', src:'ntuh', cls:2,
+   zh:'子宮切除術（經腹或經陰道）', en:'Hysterectomy, abdominal or vaginal',
+   rec:['Cefazolin 1–2 g q2–5h'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg q3–6h'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'3, 4'},
+  {d:'obgyn', src:'ntuh', cls:2,
+   zh:'剖腹產', en:'Cesarean section',
+   rec:['Cefazolin 1–2 g'], alt:['Clindamycin 600 mg ＋ Gentamicin 2 mg/kg'],
+   timing:'劃刀前 1 小時內', dur:'≤ 1 天', refs:'4, 13, 14'},
+
+  /* ── 心血管外科 ── */
+  {d:'cv', src:'ntuh', cls:1,
+   zh:'冠狀動脈繞道手術', en:'Coronary artery bypass graft (CABG)',
+   rec:['Cefazolin 1–2 g q2–5h','<span class="sp-alt">CPB：上機時追加 1 g 一次</span>'],
+   alt:['Clindamycin 600 mg q3–6h（CPB：追加 600 mg 一次）','<i>或</i> Vancomycin 1 g q6–12h（CPB：追加 500 mg 一次）'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）',
+   dur:'低風險 ≤ 1 天；高風險 ≤ 3 天', fn:['h','i','j'], refs:'3, 4, 7, 8, 13, 15'},
+  {d:'cv', src:'ntuh', cls:1,
+   zh:'人工瓣膜置換', en:'Prosthetic valve',
+   rec:['Cefazolin 1–2 g q2–5h','<span class="sp-alt">CPB：上機時追加 1 g 一次</span>'],
+   alt:['Clindamycin 600 mg q3–6h（CPB：追加 600 mg 一次）','<i>或</i> Vancomycin 1 g q6–12h（CPB：追加 500 mg 一次）'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）',
+   dur:'低風險 ≤ 1 天；高風險 ≤ 3 天', fn:['h','i','j'], refs:'3, 4, 7, 8, 13, 15'},
+  {d:'cv', src:'ntuh', cls:1,
+   zh:'腹部或下肢大血管手術', en:'Large vessel in abdomen or lower limb',
+   rec:['Cefazolin 1–2 g q2–5h'],
+   alt:['Clindamycin 600 mg q3–6h','<i>或</i> Vancomycin 1 g q6–12h'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'1–2 天', refs:'3, 4, 7, 8, 13, 15'},
+
+  /* ══ 以下為台大表一未列之術式，補充自 ASHP／IDSA／SIS／SHEA 2013 指引 Table 2 ══ */
+  {d:'gs', src:'supp', cls:2,
+   zh:'大腸直腸手術', en:'Colorectal',
+   rec:['Cefazolin ＋ Metronidazole','<i>或</i> Cefoxitin','<i>或</i> Cefotetan','<i>或</i> Ampicillin-sulbactam',
+        '<i>或</i> Ceftriaxone ＋ Metronidazole','<i>或</i> Ertapenem'],
+   alt:['Clindamycin ＋（Aminoglycoside <i>或</i> Aztreonam <i>或</i> Fluoroquinolone）',
+        '<i>或</i> Metronidazole ＋（Aminoglycoside <i>或</i> Fluoroquinolone）'],
+   timing:'劃刀前 1 小時內（fluoroquinolone、vancomycin 為前 2 小時）', dur:'≤ 24 小時',
+   extra:'<b>指引同時要求口服腸道準備：</b>多數病人應於靜脈給藥之外，併用<b>機械性腸道準備 ＋ 口服 neomycin ＋ erythromycin base</b>（或 <b>neomycin ＋ metronidazole</b>）。統合分析顯示「機械性腸道準備 ＋ 口服抗生素」相對於單用機械性準備，可降低手術部位感染（RR 0.51）與吻合口漏，且未增加 <i>C. difficile</i> 感染。'},
+  {d:'gs', src:'supp', cls:2,
+   zh:'小腸手術', en:'Small intestine',
+   rec:['<b>未阻塞：</b>Cefazolin','<b>阻塞：</b>Cefazolin ＋ Metronidazole <i>或</i> Cefoxitin <i>或</i> Cefotetan'],
+   alt:['Clindamycin ＋（Aminoglycoside <i>或</i> Aztreonam <i>或</i> Fluoroquinolone）',
+        '<i>或</i> Metronidazole ＋（Aminoglycoside <i>或</i> Fluoroquinolone）'],
+   timing:'劃刀前 1 小時內', dur:'≤ 24 小時'},
+
+  {d:'cts', src:'supp', cls:0,
+   zh:'胸腔手術（肺葉／全肺切除、開胸、胸腔鏡）', en:'Thoracic: lobectomy, pneumonectomy, thoracotomy, VATS',
+   rec:['Cefazolin','<i>或</i> Ampicillin-sulbactam'],
+   alt:['Clindamycin','<i>或</i> Vancomycin'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 24 小時'},
+
+  {d:'uro', src:'supp', cls:0,
+   zh:'下泌尿道器械操作合併感染風險因子（含經直腸攝護腺切片）', en:'Lower tract instrumentation with risk factors',
+   rec:['Fluoroquinolone','<i>或</i> Trimethoprim-sulfamethoxazole','<i>或</i> Cefazolin'],
+   alt:['Aminoglycoside ± Clindamycin'],
+   timing:'劃刀前 1 小時內（fluoroquinolone：前 2 小時）', dur:'≤ 24 小時',
+   grp:'2013 指引將經直腸攝護腺切片歸入本列，故 cefazolin 亦為選項之一'},
+  {d:'uro', src:'supp', cls:1,
+   zh:'清淨手術、未進入泌尿道', en:'Clean without entry into urinary tract',
+   rec:['Cefazolin'], alt:['Clindamycin','<i>或</i> Vancomycin'],
+   timing:'劃刀前 1 小時內', dur:'≤ 24 小時',
+   grp:'置放人工物（如陰莖假體）時可加單劑 aminoglycoside'},
+  {d:'uro', src:'supp', cls:0,
+   zh:'含植入人工物之手術', en:'Involving implanted prosthesis',
+   rec:['Cefazolin ± Aminoglycoside','<i>或</i> Cefazolin ± Aztreonam','<i>或</i> Ampicillin-sulbactam'],
+   alt:['Clindamycin ± Aminoglycoside <i>或</i> Aztreonam','<i>或</i> Vancomycin ± Aminoglycoside <i>或</i> Aztreonam'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 24 小時'},
+  {d:'uro', src:'supp', cls:1,
+   zh:'清淨手術、有進入泌尿道', en:'Clean with entry into urinary tract',
+   rec:['Cefazolin'], alt:['Fluoroquinolone','<i>或</i> Aminoglycoside ± Clindamycin'],
+   timing:'劃刀前 1 小時內', dur:'≤ 24 小時'},
+  {d:'uro', src:'supp', cls:2,
+   zh:'清淨-污染手術', en:'Clean-contaminated',
+   rec:['Cefazolin ＋ Metronidazole','<i>或</i> Cefoxitin'],
+   alt:['Fluoroquinolone','<i>或</i> Aminoglycoside ＋ Metronidazole <i>或</i> Clindamycin'],
+   timing:'劃刀前 1 小時內', dur:'≤ 24 小時'},
+
+  {d:'ps', src:'supp', cls:0,
+   zh:'清淨合併風險因子，或清淨-污染手術', en:'Clean with risk factors, or clean-contaminated',
+   rec:['Cefazolin','<i>或</i> Ampicillin-sulbactam'],
+   alt:['Clindamycin','<i>或</i> Vancomycin'],
+   timing:'劃刀前 1 小時內（vancomycin：前 2 小時）', dur:'≤ 24 小時'},
+
+  {d:'eye', src:'supp', cls:0,
+   zh:'眼科手術', en:'Ophthalmic',
+   rec:['<b>局部點眼：</b>Neomycin-polymyxin B-gramicidin，<i>或</i>第四代局部 fluoroquinolone（gatifloxacin 或 moxifloxacin）',
+        '術前每 5–15 分鐘 1 滴、共 5 劑'],
+   alt:['<b>可另選擇性於術終加用：</b>結膜下注射 cefazolin 100 mg，<i>或</i>前房內（intracameral）cefazolin 1–2.5 mg 或 cefuroxime 1 mg'],
+   timing:'術前依上述點眼時程；結膜下／前房內給藥於手術結束時',
+   dur:'單次療程',
+   grp:'注意兩種 cefazolin 給法劑量差異極大（結膜下 100 mg vs 前房內 1–2.5 mg）。2013 指引未將 moxifloxacin 列為前房內注射選項'}
+];
+
+/* ── 體重給藥 ── */
+function calcDose(){
+  var w = parseFloat(document.getElementById('sp-wt').value) || 0;
+  var cfz = w > 120 ? '3 g' : (w > 80 ? '2 g' : '1–2 g');
+  var cfzR = w > 120 ? '&gt; 120 kg（附註 c）' : (w > 80 ? '&gt; 80 kg（附註 c）' : '≤ 80 kg');
+  var rows = [
+    {n:'Cefazolin',   v:cfz,                          r:cfzR, hi:true},
+    {n:'Cefuroxime',  v:'1.5 g',                      r:'不依體重調整'},
+    {n:'Vancomycin',  v:fmt(w*15,0)+' mg',            r:'15 mg/kg（台大表一列 1 g）'},
+    {n:'Gentamicin',  v:fmt(w*2,0)+' mg',             r:'2 mg/kg（台大表一用量）'},
+    {n:'Clindamycin', v:'600 mg',                     r:'不依體重調整'},
+    {n:'Metronidazole', v:'500 mg',                   r:'不依體重調整'}
+  ];
+  document.getElementById('sp-doses').innerHTML = rows.map(function(d){
+    return '<div class="sp-dose'+(d.hi?' hi':'')+'"><div class="dn">'+d.n+'</div>'+
+           '<div class="dv">'+d.v+'</div><div class="dr">'+d.r+'</div></div>';
+  }).join('');
+}
+function fmt(n,dp){ return n>0 ? n.toFixed(dp) : '—'; }
+
+/* ── 篩選與渲染 ── */
+var curDept = 'all';
+function setDept(k){
+  curDept = k;
+  [].forEach.call(document.querySelectorAll('#sp-chips .sp-chip'), function(b){
+    b.classList.toggle('on', b.dataset.k === k);
+  });
+  renderOps();
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderChips(){
+  var html = '<button class="sp-chip on" data-k="all" onclick="setDept(\'all\')">全部</button>';
+  DEPTS.forEach(function(d){
+    var n = OPS.filter(function(o){ return o.d === d.k; }).length;
+    html += '<button class="sp-chip" data-k="'+d.k+'" onclick="setDept(\''+d.k+'\')">'+d.zh+' <span style="opacity:.6">'+n+'</span></button>';
+  });
+  document.getElementById('sp-chips').innerHTML = html;
+}
+
+function matches(o, q){
+  if(!q) return true;
+  var hay = [o.zh, o.en, o.rec.join(' '), o.alt.join(' '), o.dur, o.timing, o.extra||''].join(' ').toLowerCase();
+  return hay.indexOf(q) >= 0;
+}
+
+function renderOps(){
+  var q = (document.getElementById('sp-q').value || '').trim().toLowerCase();
+  var hit = OPS.filter(function(o){
+    return (curDept === 'all' || o.d === curDept) && matches(o, q);
+  });
+  document.getElementById('sp-count').textContent = hit.length + ' 項術式' + (q ? '（符合「'+q+'」）' : '');
+
+  if(!hit.length){
+    document.getElementById('sp-list').innerHTML = '<div class="sp-empty">查無符合的術式。</div>';
+    return;
+  }
+  var html = '';
+  DEPTS.forEach(function(dp){
+    var list = hit.filter(function(o){ return o.d === dp.k; });
+    if(!list.length) return;
+    html += '<div class="sp-dept"><div class="sp-dept-head">'+
+            '<span class="sp-dept-zh">'+dp.zh+'</span>'+
+            '<span class="sp-dept-en">'+dp.en+'</span>'+
+            '<span class="sp-dept-n">'+list.length+' 項</span></div>';
+    list.forEach(function(o){ html += opCard(o); });
+    html += '</div>';
+  });
+  document.getElementById('sp-list').innerHTML = html;
+}
+
+function opCard(o){
+  var i = OPS.indexOf(o);
+  var cls = o.cls === 1 ? '<span class="sp-cls c1">清淨 clean</span>'
+          : o.cls === 2 ? '<span class="sp-cls c2">清淨-污染 clean-contam.</span>' : '';
+  var src = o.src === 'ntuh' ? '<span class="sp-src ntuh">台大表一</span>'
+                             : '<span class="sp-src supp">補充 ASHP 2013</span>';
+  var fn = (o.fn || []).map(function(l){ return '<span class="sp-fnref" title="見第 5 節附註 '+l+'">'+l+'</span>'; }).join('');
+
+  var body =
+    '<div class="sp-fld"><span class="k">建議處方</span><span class="v">'+o.rec.join('<br>')+'</span></div>'+
+    '<div class="sp-fld"><span class="k">替代處方</span><span class="v sp-alt">'+o.alt.join('<br>')+
+      '<br><span style="color:var(--muted-soft); font-size:11px;">（用於確認之 β-lactam 過敏'+
+      (o.src === 'ntuh' ? '；已知 MRSA 移生或院內近期 MRSA 流行時，vancomycin 可為第一線 — 附註 d、e' : '')+
+      '）</span></span></div>'+
+    '<div class="sp-fld"><span class="k">給藥時機</span><span class="v">'+o.timing+'</span></div>'+
+    '<div class="sp-fld"><span class="k">使用期限</span><span class="v"><b>'+o.dur+'</b>'+fn+'</span></div>'+
+    (o.extra ? '<div class="sp-fld"><span class="k">併用</span><span class="v">'+o.extra+'</span></div>' : '')+
+    (o.grp ? '<div class="sp-fld"><span class="k">說明</span><span class="v" style="color:var(--muted)">'+o.grp+'</span></div>' : '')+
+    '<div class="sp-fld"><span class="k">出處</span><span class="v sp-refs">'+
+      (o.src === 'ntuh' ? '台大規範表一' + (o.refs ? '，參考文獻 '+o.refs+'（見頁尾）' : '')
+                        : 'ASHP／IDSA／SIS／SHEA 2013 指引 Table 2（台大表一未列此術式）')+
+    '</span></div>';
+
+  return '<div class="sp-op" id="op'+i+'">'+
+    '<button class="sp-op-head" onclick="toggleOp('+i+')">'+
+      '<span class="sp-caret" id="cr'+i+'">＋</span>'+
+      '<span class="sp-op-t"><span class="sp-op-zh">'+o.zh+'</span>'+
+        '<span class="sp-op-en">'+o.en+'</span>'+cls+src+'</span>'+
+      '<span class="sp-op-rec">'+o.rec[0].replace(/<[^>]+>/g,'')+'</span>'+
+    '</button>'+
+    '<div class="sp-op-body">'+body+'</div></div>';
+}
+
+function toggleOp(i){
+  var el = document.getElementById('op'+i);
+  el.classList.toggle('open');
+  document.getElementById('cr'+i).textContent = el.classList.contains('open') ? '−' : '＋';
+}
+
+calcDose();
+renderChips();
+renderOps();
+</script>
+
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

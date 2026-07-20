@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>創傷後抗生素 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<style>
+  /* ── 建議強度徽章 ────────────────────────────────────────────
+     四級：建議給／有條件建議／證據不足／不建議。色系沿用全站 teal-ochre-rust。 */
+  .tr-rec{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em;
+          border-radius:9px; padding:1px 8px; white-space:nowrap; vertical-align:1px;}
+  .tr-rec.r3{color:#fff; background:#2f6b5c;}                              /* 建議給 */
+  .tr-rec.r2{color:#1b2b1f; background:#a9c7ae; border:1px solid #7fa085;} /* 有條件建議 */
+  .tr-rec.r1{color:#2b2110; background:#e6d3a8; border:1px solid #c2a468;} /* 證據不足 */
+  .tr-rec.r0{color:#fff; background:#a8756d;}                              /* 不建議 */
+  @media (prefers-color-scheme: dark){
+    .tr-rec.r3{background:#3d8272;}
+    .tr-rec.r2{color:#0f1a12; background:#7d9c81; border-color:#5c7a61;}
+    .tr-rec.r1{color:#221a0c; background:#b8945a; border-color:#8d7040;}
+    .tr-rec.r0{background:#9c6d66;}
+  }
+  .tr-legend{display:flex; flex-wrap:wrap; gap:7px 14px; align-items:center; margin-bottom:12px;}
+  .tr-legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);}
+
+  /* ── 損傷卡 ─────────────────────────────────────────────────── */
+  .tr-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:11px;}
+  .tr-search{flex:1; min-width:190px; padding:10px 12px; border:1px solid var(--line); border-radius:2px;
+             background:var(--field-bg); color:var(--ink); font-size:14px; font-family:var(--sans);}
+  .tr-search:focus{outline:none; border-color:var(--accent);}
+  .tr-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:9px;}
+
+  .tr-grp{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent);
+          margin:18px 0 8px; border-bottom:2px solid var(--accent-soft); padding-bottom:4px;}
+  .tr-inj{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft);
+          border-radius:2px; margin-bottom:7px; overflow:hidden;}
+  .tr-inj.open{border-left-color:var(--accent);}
+  .tr-inj-head{display:block; width:100%; text-align:left; background:none; border:none; cursor:pointer;
+               padding:11px 13px; font-family:var(--sans); color:var(--ink);}
+  .tr-inj-head:hover{background:var(--hover-bg);}
+  .tr-caret{float:right; font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:8px;}
+  .tr-t{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap;}
+  .tr-zh{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .tr-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .tr-one{display:block; font-size:12.5px; color:var(--muted); margin-top:4px; line-height:1.6;}
+
+  .tr-body{display:none; padding:0 13px 13px; border-top:1px dashed var(--line); margin-top:2px;}
+  .tr-inj.open .tr-body{display:block;}
+  .tr-fld{display:grid; grid-template-columns:80px 1fr; gap:4px 10px; padding:8px 0;
+          border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}
+  .tr-fld:last-child{border-bottom:none;}
+  .tr-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft);
+             text-transform:uppercase; padding-top:2px;}
+  .tr-fld .v b{font-weight:700;}
+  .tr-fld .v em{font-style:normal; color:var(--accent2); font-weight:600;}
+  .tr-src{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); line-height:1.75;}
+  .tr-src a{color:var(--accent);}
+  .tr-cav{background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
+          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin-top:4px;}
+  @media(max-width:480px){ .tr-fld{grid-template-columns:1fr; gap:1px;} }
+
+  /* ── 破傷風決策 ─────────────────────────────────────────────── */
+  .tt-q{margin-bottom:12px;}
+  .tt-lbl{font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+          color:var(--accent); margin-bottom:6px;}
+  .tt-opts{display:flex; flex-wrap:wrap; gap:7px;}
+  .tt-opt{flex:1 1 190px; text-align:left; background:var(--field-bg); border:1px solid var(--line); border-radius:2px;
+          padding:9px 12px; cursor:pointer; font-family:var(--sans); font-size:13px; color:var(--ink); line-height:1.5;}
+  .tt-opt:hover{background:var(--hover-bg); border-color:var(--accent);}
+  .tt-opt.on{border-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .tt-opt small{display:block; font-size:11px; color:var(--muted); font-weight:400; margin-top:2px;}
+  .tt-out{background:#132126; color:#f4f2ec; border-radius:2px; padding:16px 18px; margin-top:14px;}
+  .tt-out .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+             color:#9fb3ae; margin-bottom:8px;}
+  .tt-line{display:flex; align-items:baseline; gap:10px; padding:7px 0; border-bottom:1px solid #2a3a3a;}
+  .tt-line:last-of-type{border-bottom:none;}
+  .tt-line .n{font-family:var(--mono); font-size:11px; color:#9fb3ae; width:52px; flex:none;}
+  .tt-yes{font-family:var(--serif); font-size:18px; font-weight:600; color:#8fd3b4;}
+  .tt-no{font-family:var(--serif); font-size:18px; font-weight:600; color:#c9a89f;}
+  .tt-det{font-size:12.5px; color:#c9c4b4; line-height:1.7;}
+  .tt-note{font-size:12px; color:#c9c4b4; margin-top:11px; border-top:1px solid #2a3a3a; padding-top:9px; line-height:1.75;}
+  table.tt-tbl{border-collapse:collapse; width:100%; font-size:12.5px; margin-top:12px;}
+  table.tt-tbl th,table.tt-tbl td{border:1px solid var(--line); padding:6px 9px; text-align:center;}
+  table.tt-tbl thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px;
+                        color:var(--accent); letter-spacing:.03em;}
+  table.tt-tbl td:first-child{text-align:left; font-weight:600;}
+  table.tt-tbl td.y{color:#1f6b4f; font-weight:700;}
+  table.tt-tbl td.n{color:var(--muted-soft);}
+  @media (prefers-color-scheme: dark){ table.tt-tbl td.y{color:#8fd3b4;} }
+
+  .tr-empty{font-size:12.5px; color:var(--muted-soft); text-align:center; padding:22px 0;
+            background:var(--box-bg); border:1px dashed var(--line); border-radius:2px;}
+  .tr-myth{margin:0; padding:0; list-style:none;}
+  .tr-myth li{display:grid; grid-template-columns:auto 1fr; gap:10px; padding:9px 0;
+              border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.75;}
+  .tr-myth li:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-traumaabx">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Antimicrobial · Trauma</div>
+      <h1>創傷後抗生素</h1>
+      <div class="sub">依損傷部位整理創傷後預防性抗生素的建議、療程與證據強度，並含破傷風預防決策</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+  </div>
+
+  <!-- 抗生素指引的第六分頁 -->
+  <div class="abx-modes">
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=empiric'">依部位（經驗性）</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=bacteria'">依病原菌</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=lookup'">藥物查詢</button>
+    <button class="abx-mode" onclick="location.href='spectrum-database.html'">菌譜資料庫</button>
+    <button class="abx-mode" onclick="location.href='surgical-prophylaxis.html'">手術預防</button>
+    <button class="abx-mode active">創傷用藥</button>
+  </div>
+
+  <!-- ══ 0 核心原則 ══ -->
+  <div class="section-title">1 · 核心原則　Core Principles</div>
+  <div class="card">
+    <div class="tr-fld"><span class="k">預防 ≠ 治療</span><span class="v">創傷後抗生素的目的是<b>預防</b>污染演變成感染。一旦已有感染（腹膜炎、膿胸、骨髓炎、壞死性軟組織感染）即改為<b>治療性</b>使用，療程另依感染部位決定，不適用本頁的預防療程。</span></div>
+    <div class="tr-fld"><span class="k">24 小時</span><span class="v">多數創傷情境的預防療程<b>不超過 24 小時</b>。「傷口還開著」「還有引流管」「還有殘留血胸」<em>都不是</em>延長給藥的理由——現有證據顯示延長給藥並不降低感染，反而與更高感染率及抗藥性相關。</span></div>
+    <div class="tr-fld"><span class="k">給藥時機</span><span class="v">愈早愈好。開放性骨折與穿刺性腹部創傷的關鍵在於<b>到院後儘早給第一劑</b>，其效益遠大於療程長短的爭論。</span></div>
+    <div class="tr-fld"><span class="k">劑量</span><span class="v">應<b>依體重給足劑量</b>並適時追加，詳見第 5 節。注意：常見說法「大量輸血使分布體積增加所以要加量」<em>並未被直接研究支持</em>——真正較確立的驅動因素是創傷後常見的<b>腎清除率增加（augmented renal clearance）</b>。</span></div>
+    <div class="tr-fld"><span class="k">破傷風</span><span class="v">任何創傷都應同時評估破傷風預防（見第 3 節）；這一步最常被遺漏。</span></div>
+  </div>
+
+  <!-- ══ 2 依損傷部位 ══ -->
+  <div class="section-title">2 · 依損傷部位　By Injury Type</div>
+  <div class="tr-legend">
+    <span class="lg"><span class="tr-rec r3">建議給</span>指引明確建議</span>
+    <span class="lg"><span class="tr-rec r2">有條件建議</span>特定族群受益</span>
+    <span class="lg"><span class="tr-rec r1">證據不足</span>無法支持或反對</span>
+    <span class="lg"><span class="tr-rec r0">不建議</span>證據顯示無效益</span>
+  </div>
+  <div class="tr-bar">
+    <input type="text" class="tr-search" id="tr-q" placeholder="搜尋損傷或藥名（如：開放性骨折、胸管、cefazolin、咬傷）…" autocomplete="off" oninput="renderInj()">
+  </div>
+  <div class="tr-count" id="tr-count"></div>
+  <div id="tr-list"></div>
+
+  <!-- ══ 3 破傷風 ══ -->
+  <div class="section-title">3 · 破傷風預防　Tetanus Prophylaxis</div>
+  <div class="card">
+    <div class="tt-q">
+      <div class="tt-lbl">傷口類型</div>
+      <div class="tt-opts" id="tt-wound"></div>
+    </div>
+    <div class="tt-q">
+      <div class="tt-lbl">破傷風類毒素接種史</div>
+      <div class="tt-opts" id="tt-hist"></div>
+    </div>
+    <div class="tt-q">
+      <div class="tt-lbl">特殊情況</div>
+      <div class="tt-opts" id="tt-imm"></div>
+    </div>
+    <div class="tt-out" id="tt-out"></div>
+
+    <p style="margin:16px 0 0; font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--accent);">完整對照表</p>
+    <table class="tt-tbl">
+      <thead><tr>
+        <th rowspan="2" style="width:34%">破傷風類毒素接種史</th>
+        <th colspan="2">乾淨小傷口</th><th colspan="2">其他所有傷口</th>
+      </tr><tr>
+        <th>疫苗</th><th>TIG</th><th>疫苗</th><th>TIG</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>接種史不明，或 &lt; 3 劑</td>
+            <td class="y">給</td><td class="n">不給</td><td class="y">給</td><td class="y">給</td></tr>
+        <tr><td>≥ 3 劑</td>
+            <td class="y">距末劑 ≥ 10 年才給</td><td class="n">不給</td>
+            <td class="y">距末劑 ≥ 5 年才給</td><td class="n">不給</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:9px; line-height:1.8;">
+      「其他所有傷口」＝除乾淨小傷口以外者，包含但不限於：受泥土／糞便／唾液污染、穿刺傷、撕脫傷、槍傷、擠壓傷、燒燙傷、凍傷。<br>
+      <b>TIG 250 IU 肌肉注射</b>（各年齡層相同），愈早給愈好；與疫苗同時給時須<b>分別使用不同針筒、不同部位</b>。<br>
+      疫苗選擇：&lt; 7 歲用 DTaP；≥ 7 歲用 Td 可，但 <b>≥ 11 歲且從未接種過 Tdap 者優先給 Tdap</b>。2020 年 ACIP 更新後，傷口處置情境下 <b>Td 與 Tdap 可互換</b>。<br>
+      <b>HIV 感染或嚴重免疫缺陷</b>者若為污染傷口（<b>含小傷口</b>），不論接種史一律加給 TIG。<br>
+      曾對含破傷風類毒素疫苗發生 Arthus 反應者，距前次劑量未滿 10 年應延後接種類毒素。<br>
+      註：上述 TIG 劑量為<b>預防</b>劑量，與治療已發病破傷風的劑量不同，勿混用。
+    </p>
+  </div>
+
+  <!-- ══ 4 常見誤解 ══ -->
+  <div class="section-title">4 · 常見誤解　Common Pitfalls</div>
+  <div class="card">
+    <ul class="tr-myth" id="tr-myths"></ul>
+  </div>
+
+  <!-- ══ 5 創傷病人的劑量考量 ══ -->
+  <div class="section-title">5 · 創傷病人的劑量考量　Dosing in Trauma</div>
+  <div class="card">
+    <div class="tr-fld"><span class="k">依體重</span><span class="v">
+      <b>一般外科預防指引（ASHP／IDSA／SIS／SHEA 2013）：</b>cefazolin 成人 2 g；<b>&gt; 80 kg 提高至 2 g、≥ 120 kg 給 3 g</b>。<br>
+      <b>Joint Trauma System CPG ID24：</b>&lt; 80 kg 給 1 g、<b>81–160 kg 給 2 g、&gt; 160 kg 給 3 g</b>。
+      <span class="tr-cav"><b>兩者的 3 g 門檻不同（120 kg vs 160 kg）</b>，同時引用時必須分開標示來源，勿混用。</span></span></div>
+    <div class="tr-fld"><span class="k">追加時機</span><span class="v">
+      <b>Bratzler 2013：</b>手術時間超過兩個藥物半衰期（cefazolin 自術前劑量起算 <b>4 小時</b>），或<b>失血 &gt; 1500 mL</b> 時追加；大面積燒傷會縮短半衰期，亦可能需重給。<br>
+      <b>JTS CPG ID24：</b>「<b>若有大量血品復甦則重新給藥</b>」（定性敘述，<b>無定量門檻</b>）；開放性骨折另規定每次清創時重新給藥，直到骨頭獲得軟組織覆蓋。
+      <span class="tr-cav"><b>沒有任何指引</b>以「啟動大量輸血流程」或「≥ 10 units pRBC」作為抗生素追加的門檻。「24 小時內 ≥ 10 units pRBC」這個數字出自 JTS 的<b>侵襲性黴菌感染</b> CPG，是黴菌感染的危險因子，<b>不是</b>抗生素追加條件——極易張冠李戴。</span></span></div>
+    <div class="tr-fld"><span class="k">機轉</span><span class="v">
+      直接檢驗「輸血 → 分布體積增加」假說的研究（15 位接受輸血的創傷病人）發現：<b>血品種類、輸注量與 cefazolin 清除率或分布體積之間並無統計關聯</b>。<br>
+      較確立的驅動因素是<b>腎清除率增加（ARC）</b>：30 位創傷後重症病人的組織間液藥動學研究，平均肌酸酐清除率高達 163 mL/min；模擬顯示 <b>CLcr 50 時 1 g q8h 達標率 88%，但 CLcr 215 時需 2 g q6h 才達 84%</b>。</span></div>
+    <div class="tr-fld"><span class="k">現況</span><span class="v">
+      體重分層給藥的臨床結果證據正在鬆動：肥胖病人 2 g vs 3 g 的感染率 7.2% vs 7.4%（OR 0.98, p=0.95）；2025 年針對 ≥ 120 kg 門檻的研究（n=581）亦顯示 6.3% vs 7.5%（p=0.574）。
+      <b>指引尚未修改，但證據天平已明顯移動</b>——此處仍照現行指引呈現。</span></div>
+    <p class="note" style="margin-top:10px;">手術預防的完整依體重給藥換算，見 <a href="surgical-prophylaxis.html" class="ref-link">手術預防性抗微生物</a> 一頁的計算器。</p>
+  </div>
+
+  <footer class="tool-footer" id="tr-footer">
+    REF — 各項建議之出處已逐則列於上方損傷卡的「來源」欄（含經 PubMed 查證之 PMID）。主要指引：
+    <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener" class="ref-link">AAST Critical Care Committee. Antibiotic prophylaxis in injury: clinical consensus document. Trauma Surg Acute Care Open. 2024;9(1):e001304.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36350736/" target="_blank" rel="noopener" class="ref-link">Buckman SA, et al. SIS Guidelines: 2022 Updated Guidelines for Antibiotic Use in Open Extremity Fractures. Surg Infect. 2022;23(9):817-28.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/23114488/" target="_blank" rel="noopener" class="ref-link">Goldberg SR, et al. Prophylactic antibiotic use in penetrating abdominal trauma: EAST practice management guideline. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S321-5.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36312819/" target="_blank" rel="noopener" class="ref-link">Freeman JJ, et al. Antibiotic prophylaxis for tube thoracostomy placement in trauma: EAST practice management guideline. Trauma Surg Acute Care Open. 2022;7(1):e000886.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/25918919/" target="_blank" rel="noopener" class="ref-link">Ratilal BO, et al. Antibiotic prophylaxis for preventing meningitis in patients with basilar skull fractures. Cochrane Database Syst Rev. 2015;(4):CD004884.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/24973422/" target="_blank" rel="noopener" class="ref-link">Stevens DL, et al. IDSA Practice Guidelines for Skin and Soft Tissue Infections: 2014 update. Clin Infect Dis. 2014;59(2):e10-52.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/23740764/" target="_blank" rel="noopener" class="ref-link">Barajas-Nava LA, et al. Antibiotic prophylaxis for preventing burn wound infection. Cochrane Database Syst Rev. 2013;(6):CD008738.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/21814089/" target="_blank" rel="noopener" class="ref-link">Hospenthal DR, et al. Prevention of infections associated with combat-related injuries: 2011 update (IDSA/SIS). J Trauma. 2011;71(2 Suppl 2):S210-34.</a> ·
+    Joint Trauma System. Infection Prevention in Combat-related Injuries, CPG ID: 24（2021）。 ·
+    破傷風：<a href="https://pubmed.ncbi.nlm.nih.gov/31971933/" target="_blank" rel="noopener" class="ref-link">Havers FP, et al. Use of Td and Tdap Vaccines: Updated ACIP Recommendations. MMWR. 2020;69(3):77-83.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29702631/" target="_blank" rel="noopener" class="ref-link">Liang JL, et al. Prevention of Pertussis, Tetanus, and Diphtheria with Vaccines (ACIP). MMWR Recomm Rep. 2018;67(2):1-44.</a>
+    　｜破傷風傷口處置對照表之結構與內容係比對 CDC 傷口處置臨床指引之次級來源後採用（CDC 網站直接擷取受阻），非 CDC 原文逐字。
+  </footer>
+</div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   資料：每則損傷一筆。
+   rec: 3=建議給／2=有條件建議／1=證據不足／0=不建議
+   src: 來源條列（含已驗證 PMID）
+   ───────────────────────────────────────────────────────────────── */
+var REC_LABEL = {3:'建議給', 2:'有條件建議', 1:'證據不足', 0:'不建議'};
+
+var GROUPS = [
+  {k:'trunk', zh:'軀幹與體腔　Trunk & Body Cavities'},
+  {k:'cns',   zh:'頭部與中樞神經　Head & CNS'},
+  {k:'limb',  zh:'四肢與骨骼　Extremity & Bone'},
+  {k:'soft',  zh:'軟組織、咬傷與燒燙傷　Soft Tissue, Bites & Burns'}
+];
+
+var INJ = [
+  /* ══ 軀幹與體腔 ══ */
+  {g:'trunk', rec:3,
+   zh:'穿刺性腹部創傷', en:'Penetrating abdominal trauma',
+   one:'單劑術前給藥；有空腔臟器損傷者共給 24 小時即停',
+   drug:'涵蓋<b>需氧＋厭氧</b>的廣效性抗生素，於剖腹探查前給予。<span class="tr-cav">EAST 指引<b>未指定具體藥名</b>；cefoxitin、或 cefazolin ＋ metronidazole 等組合屬各院在地作法，非指引明訂。</span>',
+   dur:'無空腔臟器損傷 → <b>單劑即可</b>，不需延長。<br>有空腔臟器損傷 → <b>24 小時</b>（Level I）。',
+   evid:'EAST 2012 實務處置指引，納入 44 篇文獻。指引明列：損傷控制剖腹術情境下<b>沒有資料支持超過 24 小時</b>。',
+   cav:'出血性休克病人因分布體積改變，指引有討論調整劑量的必要，但確切建議劑量文字未能自原文核實。',
+   src:['Goldberg SR, et al. Prophylactic antibiotic use in penetrating abdominal trauma: an EAST practice management guideline. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S321-5. <a href="https://pubmed.ncbi.nlm.nih.gov/23114488/" target="_blank" rel="noopener">PMID 23114488</a>']},
+
+  {g:'trunk', rec:0,
+   zh:'損傷控制剖腹術／開放性腹部', en:'Damage control laparotomy / open abdomen',
+   one:'肚子開著<b>不是</b>延長給藥的理由；仍依 24 小時原則',
+   drug:'同穿刺性腹部創傷之術前單劑；<b>不因未關腹而續用</b>。',
+   dur:'依「有無空腔臟器損傷」的 24 小時原則，<b>與關腹與否無關</b>。',
+   evid:'目前<b>沒有任何指引</b>建議因腹部開放而延長預防性抗生素。單中心回溯研究（n=121）顯示：<b>術前</b>給藥是感染的保護因子（OR 0.20, 95% CI 0.05–0.91），而<b>術後續用</b>反而是感染的危險因子（OR 6.7, 95% CI 1.33–33.8），即使有大小腸損傷亦然。',
+   cav:'該研究為單中心回溯，存在適應症偏差（病況愈重者愈可能被續用抗生素），不能直接推論因果；但至少沒有任何證據支持延長。',
+   src:['Goldberg SR, et al. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S321-5. <a href="https://pubmed.ncbi.nlm.nih.gov/23114488/" target="_blank" rel="noopener">PMID 23114488</a>',
+        'Goldberg SR, Henning J, Wolfe LG, Duane TM. Practice Patterns for the Use of Antibiotic Agents in Damage Control Laparotomy and Its Impact on Outcomes. Surg Infect. 2017;18(3):282-6. <a href="https://pubmed.ncbi.nlm.nih.gov/28394751/" target="_blank" rel="noopener">PMID 28394751</a>']},
+
+  {g:'trunk', rec:2,
+   zh:'創傷性胸管置放', en:'Tube thoracostomy for traumatic hemo/pneumothorax',
+   one:'置管當下給予以降低膿胸；穿刺傷受益明確、鈍傷未證實',
+   drug:'各研究<b>最常用 cefazolin</b>（針對皮膚菌叢，使用率 84.1%）。<span class="tr-cav">2022 指引僅建議「<b>置放當下給予</b>」，<b>未指定藥名，也未指定療程長度</b>。</span>',
+   dur:'指引未訂。各研究從「置管前單劑」到「拔管後 48 小時」皆有；依 24 小時原則，實務上以單劑至 24 小時為合理。',
+   evid:'EAST 2022（GRADE，14 篇含 8 篇 RCT）：<b>有條件建議</b>於置放當下給藥以降低膿胸——膿胸 OR 0.47（95% CI 0.25–0.86）。<b>穿刺傷</b> OR 0.25（0.10–0.59）顯著；<b>鈍傷</b> OR 0.25（0.06–1.12）未達顯著。<b>肺炎與死亡率皆無差異。</b>',
+   cav:'工作小組<b>未達共識</b>（16 人中 13 贊成、3 反對）。反對理由是效益隨年代遞減：AAST 前瞻多中心研究（n=1887，23 中心）顯示肺炎／膿胸皆無差異（2.2% vs 1.5%, p=0.75）。此指引<b>取代</b> 2012 年版「證據不足，無法支持或反對」之結論。',
+   src:['Freeman JJ, et al. Antibiotic prophylaxis for tube thoracostomy placement in trauma: an EAST practice management guideline. Trauma Surg Acute Care Open. 2022;7(1):e000886. <a href="https://pubmed.ncbi.nlm.nih.gov/36312819/" target="_blank" rel="noopener">PMID 36312819</a>',
+        '（前版）Moore FO, et al. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S341-4. <a href="https://pubmed.ncbi.nlm.nih.gov/23114491/" target="_blank" rel="noopener">PMID 23114491</a>',
+        'Bosman A, et al. Br J Surg. 2012;99(4):506-13. <a href="https://pubmed.ncbi.nlm.nih.gov/22139619/" target="_blank" rel="noopener">PMID 22139619</a>',
+        'Elnahla A, et al. Am J Surg. 2021;222(5):1017-22. <a href="https://pubmed.ncbi.nlm.nih.gov/34272063/" target="_blank" rel="noopener">PMID 34272063</a>',
+        'Cook A, et al. Presumptive antibiotics in tube thoracostomy for traumatic hemopneumothorax: a prospective, multicenter AAST study. Trauma Surg Acute Care Open. 2019;4(1):e000356. <a href="https://pubmed.ncbi.nlm.nih.gov/31799417/" target="_blank" rel="noopener">PMID 31799417</a>']},
+
+  {g:'trunk', rec:0,
+   zh:'殘留血胸', en:'Retained hemothorax',
+   one:'核心處置是<b>及早清除積血</b>，不是持續給抗生素',
+   drug:'除胸管置放當下的單次預防外，<b>不建議因殘留血胸而持續給藥</b>。',
+   dur:'不適用。',
+   evid:'AAST 前瞻多中心世代（n=328，20 中心）：膿胸的獨立預測因子為<b>肋骨骨折</b>（OR 2.3）、<b>ISS ≥ 25</b>（OR 2.4）與<b>需額外處置</b>（OR 28.8）——<b>抗生素並未進入獨立預測因子</b>。EAST 2022 指引引用該組資料時亦明確指出，未發現周術期抗生素之使用或藥物選擇與後續膿胸有關聯。',
+   cav:'同一世代另一篇分析顯示「使用周術期抗生素」是 VATS 成功清除的獨立預測因子（OR 3.3, 1.2–9.0），兩篇結論方向不一致，宜視為觀察性資料的殘餘干擾，不足以支持常規延長給藥。整體膿胸率 26.8%、最終 20.4% 需開胸，說明重點在<b>及早以 VATS 清除</b>。',
+   src:['DuBose J, et al. Management of post-traumatic retained hemothorax: a prospective, observational, multicenter AAST study. J Trauma Acute Care Surg. 2012;72(1):11-22. <a href="https://pubmed.ncbi.nlm.nih.gov/22310111/" target="_blank" rel="noopener">PMID 22310111</a>',
+        'DuBose J, et al. Development of posttraumatic empyema in patients with retained hemothorax: AAST study. J Trauma Acute Care Surg. 2012;73(3):752-7. <a href="https://pubmed.ncbi.nlm.nih.gov/22929504/" target="_blank" rel="noopener">PMID 22929504</a>']},
+
+  /* ══ 頭部與中樞神經 ══ */
+  {g:'cns', rec:0,
+   zh:'顱底骨折（含腦脊髓液漏）', en:'Basilar skull fracture ± CSF leak',
+   one:'<b>不建議</b>預防性抗生素，有無腦脊髓液漏皆然',
+   drug:'不給。',
+   dur:'不適用。',
+   evid:'Cochrane 系統性回顧（5 篇 RCT、208 人）：腦膜炎發生率、全因死亡、腦膜炎相關死亡、腦脊髓液漏需手術修補比例<b>四項皆無顯著差異</b>。另納入 17 篇非隨機試驗（2168 人）分開統合，結果一致。GRADE 品質 moderate。',
+   cav:'其中 1 篇 RCT 觀察到鼻咽菌叢被誘導成對所用抗生素具<b>抗藥性</b>的潛在致病菌——這是「給了沒好處還有壞處」的具體證據。2015 年更新版未找到任何新試驗，2020 年後亦無新版。',
+   src:['Ratilal BO, Costa J, Pappamikail L, Sampaio C. Antibiotic prophylaxis for preventing meningitis in patients with basilar skull fractures. Cochrane Database Syst Rev. 2015;(4):CD004884. <a href="https://pubmed.ncbi.nlm.nih.gov/25918919/" target="_blank" rel="noopener">PMID 25918919</a>']},
+
+  {g:'cns', rec:1,
+   zh:'穿刺性腦傷', en:'Penetrating brain injury',
+   one:'傳統上給廣效抗生素，但新近統合分析未顯示效益；若給則短療程、單一藥物',
+   drug:'傳統立場（2000 年 BSAC 工作小組）建議<b>廣效抗生素預防</b>，軍事與民間損傷皆然。<span class="tr-cav">2001 年指引與 2000 年 BSAC 聲明<b>均未指定具體藥名與療程</b>；BSAC 原文自陳無任何對照試驗，建議係基於專家經驗。</span>',
+   dur:'若決定給予，建議<b>短療程、單一藥物</b>（monotherapy）。',
+   evid:'2026 年系統性回顧與統合分析（8 篇、1372 人）：預防性抗生素<b>未顯著降低顱內感染</b>——OR 1.10（95% CI 0.29–4.22, I² 48.8%）。單一 vs 多重抗生素、短療程 vs 長療程皆無差異。2020 年系統性回顧亦結論「無可靠資料」。',
+   cav:'8 篇研究中<b>僅 1 篇使用標準化抗生素方案</b>，異質性高、信賴區間極寬，屬「未證實有效」而非「證實無效」。此結果實質削弱了 2000 年 BSAC 的廣效預防立場。',
+   src:['Frusteri M, et al. Effectiveness of prophylactic antibiotics for the prevention of intracranial infections following penetrating traumatic brain injury: a systematic review and meta-analysis. Neurosurg Rev. 2026;49(1):232. <a href="https://pubmed.ncbi.nlm.nih.gov/41706320/" target="_blank" rel="noopener">PMID 41706320</a>',
+        'Bayston R, et al. Use of antibiotics in penetrating craniocerebral injuries (BSAC Working Party). Lancet. 2000;355(9217):1813-7. <a href="https://pubmed.ncbi.nlm.nih.gov/10832851/" target="_blank" rel="noopener">PMID 10832851</a>',
+        'Loggini A, et al. Management of civilians with penetrating brain injury: a systematic review. J Crit Care. 2020;56:159-66. <a href="https://pubmed.ncbi.nlm.nih.gov/31923862/" target="_blank" rel="noopener">PMID 31923862</a>',
+        'Antibiotic prophylaxis for penetrating brain injury. J Trauma. 2001;51(2 Suppl):S34-40. <a href="https://pubmed.ncbi.nlm.nih.gov/11505198/" target="_blank" rel="noopener">PMID 11505198</a>']},
+
+  {g:'cns', rec:3,
+   zh:'開放性（複合性）顱骨凹陷骨折', en:'Compound depressed skull fracture',
+   one:'處置策略<b>應包含抗生素</b>；凹陷深度超過顱骨厚度者應手術',
+   drug:'指引原文：「所有開放性（複合性）凹陷骨折的處置策略都應包含抗生素」。<span class="tr-cav">該指引<b>未指定藥名、劑量或療程</b>；常見作法（如 cefazolin ± metronidazole、5–7 天）屬在地實務，不應歸給此指引。</span>',
+   dur:'指引未訂。',
+   evid:'Brain Trauma Foundation／AANS-CNS《Guidelines for the Surgical Management of TBI》：開放性凹陷骨折<b>凹陷深度超過顱骨厚度者應手術</b>（抬升＋清創）以預防感染；<b>早期手術可降低感染率</b>。',
+   cav:'若無硬腦膜穿透、無明顯顱內血腫、凹陷 &lt; 1 cm、未侵犯額竇、無明顯外觀變形、無傷口感染、無氣顱、無嚴重污染，則可考慮非手術治療。2020 年後無經查證之更新版指引。',
+   src:['Bullock MR, et al. Surgical management of depressed cranial fractures. Neurosurgery. 2006;58(3 Suppl):S56-60. <a href="https://pubmed.ncbi.nlm.nih.gov/16540744/" target="_blank" rel="noopener">PMID 16540744</a>']},
+
+  /* ══ 四肢與骨骼 ══ */
+  {g:'limb', rec:3,
+   zh:'開放性骨折', en:'Open fracture',
+   one:'愈早給第一劑愈重要；現行主流為<b>只涵蓋 gram-positive、共 24 小時</b>',
+   drug:'<b>第一代 cephalosporin（cefazolin）</b>為骨幹；cephalosporin 過敏改用 <b>clindamycin</b>。'+
+        '<span class="tr-cav"><b>Gustilo type III 要不要加 gram-negative 覆蓋，三份 2021–2024 年文件彼此不一致，必須分開看：</b><br>'+
+        '· <b>SIS 2022</b>：type III <b>不建議</b>擴大到 gram-positive 以外的覆蓋（GRADE 2C）。<br>'+
+        '· <b>JTS CPG ID24（2021）</b>：明文「即使 type III 骨折，<b>不建議</b>加 fluoroquinolone 或 aminoglycoside」。<br>'+
+        '· <b>AAST 2024 共識</b>：仍保留傳統寫法「type I／II 用 gram-positive；<b>type III 加 gram-negative</b>」，列名 first-generation cephalosporin、aminoglycoside、piperacillin/tazobactam、ceftriaxone、clindamycin。<br>'+
+        '傳統 EAST 2011 方案（type III 加 aminoglycoside、48–72 小時）已被 SIS 2022 與 JTS 2021 取代。</span>',
+   dur:'<b>SIS 2022（GRADE 1C）：type III 在無活動性感染徵象下，抗生素不超過受傷後 24 小時。</b><br>'+
+       'JTS 2021：初始 24 小時，之後<b>每次清創（I&amp;D）時重複給藥</b>，直到軟組織覆蓋完成。<br>'+
+       'AAST 2024：受傷後 1 小時內開始、持續 24 小時。',
+   evid:'<b>給藥時機是最關鍵的可改變因素。</b>Type III 脛骨開放性骨折研究（n=137）：抗生素延遲 &gt; 66 分鐘（OR 3.78, 95% CI 1.16–12.31）與軟組織覆蓋 &gt; 5 天（OR 7.39, 2.33–23.45）各自獨立預測深部感染；兩者皆未延遲者感染率 <b>2.8%</b>，兩者皆延遲者 <b>40.5%</b>。<br>'+
+        '支持「不加 gram-negative」的證據：戰傷開放性骨折 n=1044，擴大 GN 覆蓋組軟組織感染略低（22% vs 28%, p=0.029）但<b>骨髓炎率完全相同（皆 8%）</b>，且對 fluoroquinolone／aminoglycoside 不感受的 GN 菌顯著增加（49% vs 40%, p&lt;0.001）。',
+   cav:'SIS 2022 <b>未給出具體 mg 劑量表</b>——所回顧研究使用 cefazolin，具體劑量非該指引內容。'+
+       '院前給藥：2024 年 COT／OTA／ACEP／NAEMSP／NAEMT 五學會共識支持 <b>EMS 於處理致命傷後即給第一代 cephalosporin</b>，不得延誤後送，且適用於有 penicillin 過敏史者（密切監測下仍給）。<br>'+
+       '<b>農場／土壤污染加 penicillin 防梭狀桿菌</b>：源自 EAST 2011 傳統，<b>JTS 2021 明文反對</b>，SIS 2022 亦未作正式建議——新指引傾向不加。<br>'+
+       '海水污染：單中心回溯（n=1337，其中 107 例海水污染）顯示 type II／III 感染率較高，&gt; 90% 病原對 levofloxacin／ciprofloxacin 感受，作者建議早期用 cephalosporin ＋ quinolone（SIS 2022 評為 2C）。淡水／海水暴露的「預防性」用藥屬證據空白。',
+   src:['Buckman SA, et al. Surgical Infection Society Guidelines: 2022 Updated Guidelines for Antibiotic Use in Open Extremity Fractures. Surg Infect. 2022;23(9):817-28. <a href="https://pubmed.ncbi.nlm.nih.gov/36350736/" target="_blank" rel="noopener">PMID 36350736</a>',
+        'Appelbaum RD, et al. Antibiotic prophylaxis in injury: an AAST Critical Care Committee clinical consensus document. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
+        '（前版）Hoff WS, et al. EAST update to practice management guidelines for prophylactic antibiotic use in open fractures. J Trauma. 2011;70(3):751-4. <a href="https://pubmed.ncbi.nlm.nih.gov/21610369/" target="_blank" rel="noopener">PMID 21610369</a>',
+        'Lack WD, et al. Type III open tibia fractures: immediate antibiotic prophylaxis minimizes infection. J Orthop Trauma. 2015;29(1):1-6. <a href="https://pubmed.ncbi.nlm.nih.gov/25526095/" target="_blank" rel="noopener">PMID 25526095</a>',
+        'Lloyd BA, et al. J Trauma Acute Care Surg. 2017;83(5):854-61. <a href="https://pubmed.ncbi.nlm.nih.gov/28570348/" target="_blank" rel="noopener">PMID 28570348</a>',
+        'Johnson JP, et al. Prehospital Antibiotic Administration for Suspected Open Fractures: Joint COT/OTA/ACEP/NAEMSP/NAEMT Position Statement. Prehosp Emerg Care. 2024;28(8):1063-7. <a href="https://pubmed.ncbi.nlm.nih.gov/39356234/" target="_blank" rel="noopener">PMID 39356234</a>']},
+
+  {g:'limb', rec:1,
+   zh:'開放性骨折的局部（傷口內）抗生素', en:'Local / intrawound antibiotics',
+   one:'VANCO 試驗主要終點<b>未達顯著</b>；僅 gram-positive 次族群有效',
+   drug:'傷口內 <b>vancomycin powder 1000 mg</b> 於確定性固定時給予（VANCO 試驗方案）。SIS 2022 所回顧者另含 antibiotic beads／spacer、gentamicin-collagen sponge、gentamicin 塗層髓內釘。',
+   dur:'單次（隨手術給予）。',
+   evid:'<b>VANCO 試驗</b>（開放標籤 RCT，36 個美國創傷中心，n=980，高感染風險脛骨平台或 pilon 骨折）：182 天深部手術部位感染 6.4% vs 9.8%，風險差 <b>−3.4%（95% CI −6.9 至 0.1），P = .06 — 未達顯著</b>。<br>'+
+        '事後分析顯示效益全來自 gram-positive 感染（風險差 −3.7%, 95% CI −6.7 至 −0.8, P = .02）；gram-negative 無效（P = .78），與 vancomycin 抗菌譜一致。<br>'+
+        'SIS 2022（GRADE 2C）：type III 開放性骨折<b>合併骨缺損</b>時，建議在全身性治療之外加上局部抗生素。',
+   cav:'「局部 vancomycin 有效」的說法只能限定在<b>事後分析的 gram-positive 次族群</b>，主要終點是陰性的。後續研究方向不一：低風險脛骨平台骨折的回溯研究（n=459）顯示 gram-positive 感染由 4% 降至 0%（Level III）；但踝關節骨折的<b>雙盲 RCT</b>（n=132）顯示感染率 3.3% vs 3.5%（p=0.945）<b>無差異</b>；急診即刻塗抹 vancomycin ＋ tobramycin 的研究亦未達顯著（P=0.133，作者自承 power 不足）。',
+   src:['O\'Toole RV, et al. (METRC) Effect of Intrawound Vancomycin Powder in Operatively Treated High-risk Tibia Fractures: A Randomized Clinical Trial. JAMA Surg. 2021;156(5):e207259. <a href="https://pubmed.ncbi.nlm.nih.gov/33760010/" target="_blank" rel="noopener">PMID 33760010</a>',
+        'Buckman SA, et al. Surg Infect. 2022;23(9):817-28. <a href="https://pubmed.ncbi.nlm.nih.gov/36350736/" target="_blank" rel="noopener">PMID 36350736</a>',
+        'Acosta-Olivo CA, et al. Cureus. 2024;16(7):e63694. <a href="https://pubmed.ncbi.nlm.nih.gov/39092328/" target="_blank" rel="noopener">PMID 39092328</a>',
+        'Zingas N, et al. J Orthop Trauma. 2023;37(6):282-6. <a href="https://pubmed.ncbi.nlm.nih.gov/36729009/" target="_blank" rel="noopener">PMID 36729009</a>']},
+
+  {g:'limb', rec:2,
+   zh:'顏面骨折', en:'Facial fractures',
+   one:'術前單劑 ± ≤ 24 小時；<b>術後延長無益，&gt; 72 小時可能有害</b>',
+   drug:'<b>AAST 2024：</b>開放或污染性顏面骨折（含開放性下顎骨折、額竇後壁骨折）用 <b>cefazolin／ceftriaxone／ampicillin-sulbactam</b>，penicillin 過敏用 <b>clindamycin</b>。<br>'+
+        'Bern 系列 RCT 使用 amoxicillin/clavulanic acid 1.2 g IV q8h。',
+   dur:'<b>開放或污染性顏面骨折：≤ 24 小時。</b><br><b>閉鎖、非污染、需手術者：術前給藥即可，術後不再給。</b><br><b>非手術（保守）處理的顏面骨折：不給。</b>',
+   evid:'系統性回顧與統合分析（27 篇）：下顎骨折 24–72h vs &lt; 24h <b>OR 0.85（95% CI 0.62–1.17）</b>；<b>&gt; 72h vs &lt; 24h OR 1.42（0.96–2.11）</b>——延長不但無益，作者指出 &gt; 72 小時反而可能矛盾地<b>增加</b>下顎骨折修補後的感染風險。中臉 OR 1.05（0.20–5.63）。<br>'+
+        'Amoxicillin/clavulanate ≤24h vs &gt;24h 統合分析（12 篇、3115 人）：OR 0.86（95% CI 0.40–1.84, P=.783），長療程 GI 症狀與 <i>C. difficile</i> 較多。<br>'+
+        'Bern 三部曲雙盲 RCT（1 天 vs 5 天，同一團隊）：眼眶 6.8% vs 3.2%、下顎 20% vs 21%、Le Fort／顴骨 4% vs 4%，<b>三個部位皆無顯著差異</b>。',
+   cav:'<b>部位差異很大：</b>統合 72 篇資料顯示骨折相關感染率下顎 <b>8.9%</b>（最高）vs 中臉 <b>0.9%</b>（最低）；危險因子為吸菸、藥物濫用、糖尿病、手術延遲、牙周狀況差。<br>'+
+       '<b>單純眼眶底骨折</b>不需術後預防性抗生素，即使與上頜竇相通亦然（153 例修補後完全不給、平均追蹤 165 天、零感染）。<br>'+
+       '<b>額竇骨折</b>：回溯 201 例，給藥組 3.1% vs 未給組 2.6%（P=1.0）；其中 26 例（12.9%）有硬腦膜撕裂／腦脊髓液漏，該次族群<b>全數無感染</b>。<br>'+
+       '<b>鼻骨骨折</b>：未找到專門的 RCT 或系統性回顧，屬證據空白（非「已證明無效」）。',
+   src:['Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
+        'Delaplain PT, et al. No Reduction in Surgical Site Infection Obtained with Post-Operative Antibiotics in Facial Fractures: A Systematic Review and Meta-Analysis. Surg Infect. 2020;21(2):112-21. <a href="https://pubmed.ncbi.nlm.nih.gov/31526317/" target="_blank" rel="noopener">PMID 31526317</a>',
+        'Reinert JP, et al. J Oral Maxillofac Surg. 2025;83:1393-402. <a href="https://pubmed.ncbi.nlm.nih.gov/40818488/" target="_blank" rel="noopener">PMID 40818488</a>',
+        'Goormans F, et al. Antibiotics (Basel). 2022;11(4):483. <a href="https://pubmed.ncbi.nlm.nih.gov/35453234/" target="_blank" rel="noopener">PMID 35453234</a>',
+        'Van der Cruyssen F, et al. J Clin Med. 2025;14:1332. <a href="https://pubmed.ncbi.nlm.nih.gov/40004862/" target="_blank" rel="noopener">PMID 40004862</a>',
+        'Zix J, et al. Br J Oral Maxillofac Surg. 2013;51(4):332-6. <a href="https://pubmed.ncbi.nlm.nih.gov/22981342/" target="_blank" rel="noopener">PMID 22981342</a>｜Schaller B, et al. 2013;51(8):803-7. <a href="https://pubmed.ncbi.nlm.nih.gov/24012053/" target="_blank" rel="noopener">PMID 24012053</a>｜Soong PL, et al. 2014;52(4):329-33. <a href="https://pubmed.ncbi.nlm.nih.gov/24602602/" target="_blank" rel="noopener">PMID 24602602</a>',
+        'Sahi A, et al. J Craniofac Surg. 2026;37:1005-8. <a href="https://pubmed.ncbi.nlm.nih.gov/41562467/" target="_blank" rel="noopener">PMID 41562467</a>']},
+
+  /* ══ 軟組織、咬傷與燒燙傷 ══ */
+  {g:'soft', rec:2,
+   zh:'咬傷（人咬／狗咬／貓咬）', en:'Mammalian bites',
+   one:'不是每個咬傷都要給；<b>手部咬傷與人咬傷</b>效益最明確',
+   drug:'<b>首選 amoxicillin-clavulanate 875/125 mg PO bid</b>（同時涵蓋需氧與厭氧菌）。靜脈用 ampicillin-sulbactam 1.5–3.0 g q6–8h（人咬傷 q6h）或 piperacillin-tazobactam 3.375 g q6–8h。<br>'+
+        '<b>β-lactam 過敏：</b>ciprofloxacin 或 levofloxacin ＋ metronidazole，或 <b>moxifloxacin 400 mg qd 單一藥物</b>（本身含厭氧菌覆蓋）。<br>'+
+        '其他選項：doxycycline 100 mg bid（對 <i>P. multocida</i> 極佳）、cefuroxime 500 mg bid（<b>不涵蓋厭氧菌</b>）、SMX-TMP（厭氧覆蓋差，<b>須加</b> clindamycin 或 metronidazole）。'+
+        '<span class="tr-cav"><b>兩個必記的抗藥性陷阱：</b><br>'+
+        '· 人咬傷的 <i>Eikenella corrodens</i> 對<b>第一代 cephalosporin、macrolide、clindamycin、aminoglycoside 均具抗藥性</b> → 人咬傷不可單用 clindamycin。<br>'+
+        '· <i>P. multocida</i>（貓／狗咬）不被 clindamycin 涵蓋；macrolide 對其活性不穩定，應避免。<br>'+
+        'AAST 2024 以 clindamycin ＋ SMX-TMP 作為 penicillin 過敏替代，<b>與上述 <i>Eikenella</i> 警語有張力</b>——用於人咬傷時應優先採 IDSA 的 fluoroquinolone ＋ metronidazole 或 moxifloxacin。</span>',
+   dur:'預防性（preemptive）給藥 <b>3–5 天</b>。',
+   evid:'<b>IDSA 2014 建議 40（strong, low）——符合下列任一者才給預防性抗生素：</b>(a) 免疫功能低下、(b) 無脾、(c) 進展期肝病、(d) 患處已有或將出現水腫、(e) <b>中至重度傷口，尤其手部或顏面</b>、(f) 可能穿透骨膜或關節囊者。<br>'+
+        'Cochrane 回顧（8 篇 RCT）：<b>人咬傷</b>顯著降低感染；<b>貓／狗咬傷無證據支持常規預防</b>；<b>手部咬傷 OR 0.10（95% CI 0.01–0.86），NNT = 4</b>。傷口型態（撕裂 vs 穿刺）不影響效果。',
+   cav:'<b>傷口關閉（IDSA 建議 44）：</b>一般咬傷<b>不建議一期縫合</b>；<b>顏面例外</b>——大量沖洗、審慎清創、加上預防性抗生素後可關閉，其他部位可對合。<br>'+
+       '<b>破傷風（IDSA 建議 43）：</b>髒污傷口距上次接種 &gt; 5 年、乾淨傷口 &gt; 10 年應追加；未曾接種過 Tdap 者 <b>Tdap 優於 Td</b>（見第 3 節）。<br>'+
+       '<b>狂犬病（IDSA 建議 41）：</b>可能需要暴露後預防，應諮詢當地衛生主管機關。美國 ACIP 暴露後預防為未曾接種者疫苗 4 劑（第 0、3、7、14 天）併用 RIG；曾完整接種者 2 劑、不需 RIG；免疫功能異常者 5 劑 ＋ RIG。（2022 年更新的是<b>暴露前</b>預防，不是暴露後。）<br>'+
+       '孕婦：tetracycline 與 fluoroquinolone 為相對禁忌；SMX-TMP 除第三孕期外可用。<br>'+
+       'Cochrane 該篇為 2001 年版、至今無更新；IDSA 正文亦批評其納入研究樣本小（12–190 人）。',
+   src:['Stevens DL, et al. Practice guidelines for the diagnosis and management of skin and soft tissue infections: 2014 update by the IDSA. Clin Infect Dis. 2014;59(2):e10-52. <a href="https://pubmed.ncbi.nlm.nih.gov/24973422/" target="_blank" rel="noopener">PMID 24973422</a>',
+        'Medeiros I, Saconato H. Antibiotic prophylaxis for mammalian bites. Cochrane Database Syst Rev. 2001;(2):CD001738. <a href="https://pubmed.ncbi.nlm.nih.gov/11406003/" target="_blank" rel="noopener">PMID 11406003</a>',
+        'Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
+        'Rupprecht CE, et al. Use of a reduced (4-dose) vaccine schedule for postexposure prophylaxis to prevent human rabies: ACIP recommendations. MMWR Recomm Rep. 2010;59(RR-2):1-9. <a href="https://pubmed.ncbi.nlm.nih.gov/20300058/" target="_blank" rel="noopener">PMID 20300058</a>']},
+
+  {g:'soft', rec:0,
+   zh:'燒燙傷', en:'Burn injury',
+   one:'<b>不建議</b>常規全身性預防；以局部抗菌劑為主',
+   drug:'<b>不給全身性預防抗生素。</b>局部處置為含銀敷料、mafenide acetate 或 silver sulfadiazine，深部分層／全層另加切除與植皮。',
+   dur:'不適用。',
+   evid:'<b>AAST 2024：</b>「燒傷病人不建議常規使用預防性抗生素」——多篇統合分析顯示無死亡率效益且增加抗藥性。<br>'+
+        'Cochrane 回顧（36 篇 RCT／2117 人）：非手術病人的全身性預防對燒傷傷口感染<b>無效</b>；<b>圍手術期全身性預防對本回顧所有結果均無影響</b>。<br>'+
+        '兒科統合分析（6 篇）：整體感染 OR 1.35（95% CI 0.44–4.18）、全身性感染 OR 0.74（0.38–1.45）；依年齡、體表面積、國家所得分層<b>皆無任何次族群獲益</b>。',
+   cav:'<b>反而有害的證據：</b>Cochrane 顯示局部 silver sulfadiazine 使用<b>顯著增加</b>傷口感染（OR 1.87, 95% CI 1.09–3.19）並延長住院 2.11 天；以非吸收性抗生素 ＋ cefotaxime 行選擇性腸道去汙<b>顯著增加 MRSA</b>（RR 2.22, 1.21–4.07）。<br>'+
+       '<b>尚未定案者：</b>大面積燒傷病人證據不足；燒傷切除植皮手術的圍手術期預防仍屬未解問題——多中心雙盲安慰劑對照試驗（計畫收 506 人）<b>結果尚未發表</b>。<br>'+
+       '燒傷會縮短 cefazolin 半衰期，若因其他適應症給藥時須留意追加。',
+   src:['Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
+        'Barajas-Nava LA, et al. Antibiotic prophylaxis for preventing burn wound infection. Cochrane Database Syst Rev. 2013;(6):CD008738. <a href="https://pubmed.ncbi.nlm.nih.gov/23740764/" target="_blank" rel="noopener">PMID 23740764</a>',
+        'Csenkey A, et al. Systemic antibiotic prophylaxis does not affect infectious complications in pediatric burn injury: a meta-analysis. PLoS One. 2019;14(9):e0223063. <a href="https://pubmed.ncbi.nlm.nih.gov/31553768/" target="_blank" rel="noopener">PMID 31553768</a>',
+        'ISBI Practice Guidelines for Burn Care. Burns. 2016;42(5):953-1021. <a href="https://pubmed.ncbi.nlm.nih.gov/27542292/" target="_blank" rel="noopener">PMID 27542292</a>｜Part 2. Burns. 2018;44(7):1617-706. <a href="https://pubmed.ncbi.nlm.nih.gov/30343831/" target="_blank" rel="noopener">PMID 30343831</a>']},
+
+  {g:'soft', rec:0,
+   zh:'單純撕裂傷縫合', en:'Simple laceration repair',
+   one:'<b>不需要</b>預防性抗生素；統合分析顯示給了感染率反而略高',
+   drug:'不給。<b>例外</b>（AAST 2024）：具顯著組織破壞、大量無效腔、廣泛污染，或高風險病人者，<b>≤ 24 小時</b>的 first-generation cephalosporin 或 clindamycin 為適當。',
+   dur:'例外情境 ≤ 24 小時；一般不給。',
+   evid:'統合分析（7 篇 RCT／1734 人，急診非咬傷性傷口）：抗生素組感染率<b>反而略高</b>——OR 1.16（95% CI 0.77–1.78）；限定 penicillinase-resistant 抗生素者 OR 1.00（0.59–1.71）。<br>'+
+        '<b>AAST 2024：</b>「單純軟組織撕裂傷不建議給預防性抗生素」；單純軟組織的刺傷（stab wound）比照辦理。<br>'+
+        '2025 年美國保險資料庫分析（2010–2020 急診縫合之單純上肢撕裂傷）指出「儘管效益證據有限，抗生素仍被頻繁開立」，支持去實施（de-implementation）。',
+   cav:'<b>常見誤引：</b>本題<b>沒有</b>專門的 Cochrane 回顧；常被當成 Cochrane 引用者其實是上述 1995 年統合分析，或咬傷的 CD001738。<br>'+
+       '<b>證據空白（非「已證明無效」）：</b>撕脫傷／脫套傷（degloving）、耳鼻軟骨受累傷口皆未找到專門的 RCT 或系統性回顧。「軟骨受累需給抗生素以防軟骨炎」在教科書普遍，但無高階實證支持；實務上只能沿用「高風險傷口 ≤ 24 小時」原則外推。<br>'+
+       '口內撕裂傷：小兒研究（n=100）預防組 4% vs 對照 8%（P=0.41），教科書傳統對 &gt; 1–2 cm 黏膜傷口與貫穿傷建議給藥，但實證基礎薄弱。',
+   src:['Cummings P, Del Beccaro MA. Antibiotics to prevent infection of simple wounds: a meta-analysis of randomized studies. Am J Emerg Med. 1995;13(4):396-400. <a href="https://pubmed.ncbi.nlm.nih.gov/7605521/" target="_blank" rel="noopener">PMID 7605521</a>',
+        'Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
+        'Qiu CS, et al. J Hand Surg Am. 2025. <a href="https://pubmed.ncbi.nlm.nih.gov/40057875/" target="_blank" rel="noopener">PMID 40057875</a>',
+        'Cicuttin E, Sartelli M, et al. Antibiotics (Basel). 2022;11(2):139. <a href="https://pubmed.ncbi.nlm.nih.gov/35203743/" target="_blank" rel="noopener">PMID 35203743</a>']},
+
+  {g:'soft', rec:3,
+   zh:'戰傷與高污染傷口', en:'Combat-related & heavily contaminated wounds',
+   one:'以 <b>cefazolin ± metronidazole</b> 為骨幹；<b>不加</b>廣效 gram-negative 覆蓋',
+   drug:'<b>Joint Trauma System CPG ID24（2021）依受傷型態：</b><br>'+
+        '· 四肢軟組織（無開放性骨折）：<b>Cefazolin 2 g IV q6–8h</b>；替代 clindamycin 900 mg IV q8h — <b>24 小時</b><br>'+
+        '· 四肢合併開放性骨折／骨外露／開放關節：同上 — <b>初始 24 小時</b>，之後每次清創重複給藥至軟組織覆蓋完成<br>'+
+        '· 穿刺性胸傷（無食道破損）：Cefazolin 2 g IV q6–8h — <b>1 天</b><br>'+
+        '· 穿刺性胸傷合併食道破損、或穿刺性腹傷疑似／確定中空臟器破損（含直腸／會陰傷）：<b>Cefazolin 2 g IV q6–8h ＋ metronidazole 500 mg IV q8–12h</b>；替代 ertapenem 1 g IV ×1 或 moxifloxacin 400 mg IV ×1 — <b>控制污染／確定性關閉後再 24 小時</b><br>'+
+        '· 開放性上顎顏面骨折：Cefazolin 2 g IV q6–8h — <b>24 小時</b><br>'+
+        '· 穿刺性腦傷：Cefazolin 2 g IV q6–8h（有機物質嚴重污染則考慮加 metronidazole）；替代 ceftriaxone 2 g q24h，對 cephalosporin 過敏性休克者用 vancomycin 15–20 mg/kg q8–12h ＋ ciprofloxacin 400 mg q8–12h — <b>5 天，或直到腦脊髓液漏關閉（取較長者）</b><br>'+
+        '· 眼穿刺傷：<b>Levofloxacin 750 mg IV/PO qd ＋ vancomycin 15–20 mg/kg IV q8–12h</b> — <b>7 天或直到眼科評估</b><br>'+
+        '· 燒傷：<b>僅局部抗菌劑</b>，不給全身性預防<br>'+
+        '<b>受傷點（預期延遲後送）：</b>moxifloxacin 400 mg PO 單劑；若穿刺性腹傷、休克或無法口服 → <b>ertapenem 1 g IV/IM 單劑</b>。',
+   dur:'見上各型態；靜脈抗生素應於<b>受傷後 3 小時內</b>給予。',
+   evid:'JTS CPG 反覆重申三點：<b>①</b>「不建議以 aminoglycoside 或 fluoroquinolone 作 gram-negative 覆蓋」；<b>②</b>「不建議加 penicillin 以預防梭狀桿菌壞疽或鏈球菌感染」；<b>③</b>「即使 Gustilo type III 骨折亦不加強 gram-negative 覆蓋」。'+
+        '理由是過度廣效的戰傷預防抗生素<b>增加多重抗藥菌感染風險，卻未改善手術次數、住院天數或骨髓炎等長期結果</b>。<br>'+
+        '期刊版學術指引（IDSA／SIS 背書）核心即為「以高劑量 cefazolin ± metronidazole 為骨幹」。',
+   cav:'<b>此 CPG 未使用任何正式證據分級系統</b>（無 GRADE、無 IDSA A-I/B-II），全文為敘述式共識——引用時不可自行代入證據等級。<br>'+
+       '2021 版相對 2016 版的主要變更：開放性骨折抗生素<b>縮短為僅前 24 小時</b>（之後僅於每次清創時重新給藥）、納入資料支持肢體傷口勿加 gram-negative 覆蓋、vancomycin 改為依體重給藥、新增破傷風預防附錄。<br>'+
+       '所選藥物<b>不適用於已成立的感染</b>。另注意 JTS 的 cefazolin 體重門檻與一般外科預防指引不同（見第 5 節）。',
+   src:['Joint Trauma System. Infection Prevention in Combat-related Injuries. CPG ID: 24（2021-01-27 版，取代 2016-08-08 版）。',
+        'Hospenthal DR, et al. Guidelines for the prevention of infections associated with combat-related injuries: 2011 update — endorsed by IDSA and SIS. J Trauma. 2011;71(2 Suppl 2):S210-34. <a href="https://pubmed.ncbi.nlm.nih.gov/21814089/" target="_blank" rel="noopener">PMID 21814089</a>',
+        'Tribble DR, et al. Mil Med. 2022;187(Suppl 2):7-16. <a href="https://pubmed.ncbi.nlm.nih.gov/35512379/" target="_blank" rel="noopener">PMID 35512379</a>']}
+];
+
+var MYTHS = [
+  ['傷口還開著／還有引流管，所以要繼續給',
+   '無論是開放性腹部、留置胸管或殘留血胸，都沒有指引支持因此延長預防性抗生素。CDC 2017 對手術傷口的立場同樣是「關閉後即停，即使有引流管」。'],
+  ['顱底骨折有腦脊髓液漏，要預防腦膜炎',
+   'Cochrane 統合 5 篇 RCT 顯示腦膜炎率、死亡率皆無差異，且會誘導鼻咽菌叢產生抗藥性。'],
+  ['鈍傷放胸管也要給抗生素',
+   'EAST 2022 的效益幾乎全來自穿刺傷次族群；鈍傷 OR 0.25 但未達統計顯著（p=0.07），大型前瞻研究亦為陰性。'],
+  ['給了抗生素就不用急著清創／清除積血',
+   '殘留血胸的核心處置是及早 VATS 清除；開放性骨折的關鍵是及早給第一劑<b>並</b>及時清創。抗生素不能替代外科處置。'],
+  ['破傷風打了疫苗就好，不用管 TIG',
+   '接種史不明或未滿 3 劑者，遇「乾淨小傷口以外」的傷口一律要加 TIG 250 IU；免疫功能低下者連小的污染傷口也要給。'],
+  ['Gustilo type III 開放性骨折一定要加 gentamicin',
+   'SIS 2022（2C）與 JTS 2021 均<b>不建議</b>在 type III 加 aminoglycoside 或 fluoroquinolone；戰傷資料顯示擴大 gram-negative 覆蓋後骨髓炎率完全相同（皆 8%），抗藥性 GN 菌卻顯著增加。惟 AAST 2024 共識仍保留傳統寫法，三份文件並不一致。'],
+  ['農場／土壤污染傷口要加 penicillin 防梭狀桿菌',
+   '此為 EAST 2011 的傳統做法；JTS 2021 已<b>明文反對</b>，SIS 2022 亦未作正式建議。'],
+  ['下顎骨折術後要給 5–7 天抗生素',
+   '統合分析顯示 24–72h 與 &lt; 24h 無差異（OR 0.85），而 &gt; 72h 反而可能增加感染（OR 1.42）；三個部位的雙盲 RCT（1 天 vs 5 天）亦全無差異。AAST 2024 立場為術前單劑 ± ≤ 24 小時。'],
+  ['傷口內灑 vancomycin powder 已證實有效',
+   'VANCO 試驗（n=980）<b>主要終點未達顯著</b>（P=.06）；「有效」僅限於事後分析的 gram-positive 次族群。後續踝關節骨折的雙盲 RCT 亦為陰性。'],
+  ['大量輸血後抗生素分布體積變大，所以要加量',
+   '直接檢驗此假說的藥動學研究發現血品輸注量與 cefazolin 清除率、分布體積<b>皆無統計關聯</b>。較確立的機轉是腎清除率增加（ARC）。JTS 確實建議「大量血品復甦後重新給藥」，但那是定性建議，且沒有任何指引以 ≥ 10 units pRBC 為門檻。']
+];
+
+/* ── 渲染 ── */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderInj(){
+  var q = (document.getElementById('tr-q').value || '').trim().toLowerCase();
+  var hit = INJ.filter(function(x){
+    if(!q) return true;
+    return [x.zh, x.en, x.one, x.drug, x.dur, x.evid, x.cav||''].join(' ').toLowerCase().indexOf(q) >= 0;
+  });
+  document.getElementById('tr-count').textContent = hit.length + ' 則損傷' + (q ? '（符合「'+q+'」）' : '');
+  if(!hit.length){
+    document.getElementById('tr-list').innerHTML = '<div class="tr-empty">查無符合的損傷類型。</div>';
+    return;
+  }
+  var html = '';
+  GROUPS.forEach(function(g){
+    var list = hit.filter(function(x){ return x.g === g.k; });
+    if(!list.length) return;
+    html += '<div class="tr-grp">'+g.zh+'</div>';
+    list.forEach(function(x){ html += injCard(x); });
+  });
+  document.getElementById('tr-list').innerHTML = html;
+}
+
+function injCard(x){
+  var i = INJ.indexOf(x);
+  var body =
+    '<div class="tr-fld"><span class="k">建議用藥</span><span class="v">'+x.drug+'</span></div>'+
+    '<div class="tr-fld"><span class="k">療程</span><span class="v">'+x.dur+'</span></div>'+
+    '<div class="tr-fld"><span class="k">證據</span><span class="v">'+x.evid+'</span></div>'+
+    (x.cav ? '<div class="tr-fld"><span class="k">注意</span><span class="v"><span class="tr-cav">'+x.cav+'</span></span></div>' : '')+
+    '<div class="tr-fld"><span class="k">來源</span><span class="v tr-src">'+x.src.join('<br>')+'</span></div>';
+
+  return '<div class="tr-inj" id="inj'+i+'">'+
+    '<button class="tr-inj-head" onclick="toggleInj('+i+')">'+
+      '<span class="tr-caret" id="tc'+i+'">＋</span>'+
+      '<span class="tr-t"><span class="tr-zh">'+x.zh+'</span>'+
+        '<span class="tr-en">'+x.en+'</span>'+
+        '<span class="tr-rec r'+x.rec+'">'+REC_LABEL[x.rec]+'</span></span>'+
+      '<span class="tr-one">'+x.one+'</span>'+
+    '</button>'+
+    '<div class="tr-body">'+body+'</div></div>';
+}
+
+function toggleInj(i){
+  var el = document.getElementById('inj'+i);
+  el.classList.toggle('open');
+  document.getElementById('tc'+i).textContent = el.classList.contains('open') ? '−' : '＋';
+}
+
+/* ── 破傷風決策 ── */
+var tt = {wound:'clean', hist:'unk', imm:'no'};
+var TT_OPTS = {
+  wound: [
+    {v:'clean', t:'乾淨小傷口', s:'非穿刺、無污染'},
+    {v:'dirty', t:'其他所有傷口', s:'污染、穿刺、撕脫、槍傷、擠壓、燒燙傷、凍傷'}
+  ],
+  hist: [
+    {v:'unk',  t:'不明，或 &lt; 3 劑', s:'含接種史不全者'},
+    {v:'ge3',  t:'≥ 3 劑，距末劑 &lt; 5 年', s:''},
+    {v:'ge5',  t:'≥ 3 劑，距末劑 5–10 年', s:''},
+    {v:'ge10', t:'≥ 3 劑，距末劑 ≥ 10 年', s:''}
+  ],
+  imm: [
+    {v:'no',  t:'無', s:''},
+    {v:'yes', t:'HIV 感染或嚴重免疫缺陷', s:'污染傷口一律加 TIG'}
+  ]
+};
+
+function ttRender(){
+  ['wound','hist','imm'].forEach(function(k){
+    document.getElementById('tt-'+k).innerHTML = TT_OPTS[k].map(function(o){
+      return '<button class="tt-opt'+(tt[k]===o.v?' on':'')+'" onclick="ttSet(\''+k+'\',\''+o.v+'\')">'+
+             o.t + (o.s ? '<small>'+o.s+'</small>' : '') + '</button>';
+    }).join('');
+  });
+  ttOut();
+}
+function ttSet(k,v){ tt[k]=v; ttRender(); }
+
+function ttOut(){
+  var dirty = tt.wound === 'dirty';
+  var vac, vacWhy;
+  if(tt.hist === 'unk'){ vac = true; vacWhy = '接種史不明或未滿 3 劑，無論傷口類型皆須接種。'; }
+  else if(dirty){
+    vac = (tt.hist === 'ge5' || tt.hist === 'ge10');
+    vacWhy = vac ? '「其他所有傷口」且距末劑已 ≥ 5 年。' : '「其他所有傷口」但距末劑未滿 5 年，不需追加。';
+  } else {
+    vac = (tt.hist === 'ge10');
+    vacWhy = vac ? '乾淨小傷口且距末劑已 ≥ 10 年。' : '乾淨小傷口且距末劑未滿 10 年，不需追加。';
+  }
+
+  var tig = (tt.hist === 'unk' && dirty);
+  var tigWhy = tig ? '接種史不明或未滿 3 劑，且非乾淨小傷口。' : '不符合施打 TIG 的條件。';
+  if(tt.imm === 'yes' && dirty){
+    tig = true;
+    tigWhy = '<em>HIV 感染或嚴重免疫缺陷</em>者遇污染傷口（含小傷口），<b>不論接種史一律給 TIG</b>。';
+  }
+
+  document.getElementById('tt-out').innerHTML =
+    '<div class="h">建議</div>'+
+    '<div class="tt-line"><span class="n">疫苗</span><span>'+
+      (vac ? '<span class="tt-yes">接種</span>' : '<span class="tt-no">不需接種</span>')+
+      '<div class="tt-det">'+vacWhy+(vac ? ' &lt; 7 歲用 DTaP；≥ 7 歲用 Td 或 Tdap 皆可，<b>≥ 11 歲且從未接種過 Tdap 者優先給 Tdap</b>。' : '')+'</div></span></div>'+
+    '<div class="tt-line"><span class="n">TIG</span><span>'+
+      (tig ? '<span class="tt-yes">給 250 IU IM</span>' : '<span class="tt-no">不需給</span>')+
+      '<div class="tt-det">'+tigWhy+(tig ? ' 各年齡層同劑量，愈早給愈好；與疫苗<b>分不同針筒、不同部位</b>注射。' : '')+'</div></span></div>'+
+    '<div class="tt-note">傷口本身仍需徹底清創與沖洗——破傷風預防不能取代傷口處置。曾發生 Arthus 反應者，距前次劑量未滿 10 年應延後接種類毒素。</div>';
+}
+
+function renderMyths(){
+  document.getElementById('tr-myths').innerHTML = MYTHS.map(function(m){
+    return '<li><span class="tr-rec r0">迷思</span><span><b>「'+m[0]+'」</b><br>'+m[1]+'</span></li>';
+  }).join('');
+}
+
+renderInj();
+ttRender();
+renderMyths();
+</script>
+
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
