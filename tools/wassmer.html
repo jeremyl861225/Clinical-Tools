@@ -32,8 +32,8 @@
     <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_first"> 首次發作（非復發） <span class="unit">(First episode of SBO)</span><span class="pt-badge">1分</span></label>
     <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_nobm"> 排便停止 ≥3天 <span class="unit">(No bowel movement ≥3 days)</span><span class="pt-badge">1分</span></label>
     <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_guard"> 腹部壓痛／防禦 <span class="unit">(Abdominal guarding)</span><span class="pt-badge">1分</span></label>
-    <div class="field-row"><label>CRP</label><input type="number" id="wm_crp" step="0.1" placeholder="例如 6.0"><span class="unit">mg/dL</span></div>
-    <div class="note">CRP ≥5.0 mg/dL（原文獻切點50 mg/L）計1分</div>
+    <label class="item"><input type="checkbox" class="wassmer-cb" id="wm_crp"> CRP ≥5.0 mg/dL <span class="unit">(CRP ≥50 mg/L)</span><span class="pt-badge">1分</span></label>
+    <div class="note">原文獻切點為 50 mg/L，即 5.0 mg/dL</div>
   </div>
 
   <div class="card" style="border-color:var(--accent); background:var(--soft-bg);">
@@ -63,15 +63,12 @@
 function wassmerCalc(){
   let total=0;
   document.querySelectorAll('.wassmer-cb').forEach(cb=>{ if(cb.checked) total+=1; });
-  const crp=parseFloat(document.getElementById('wm_crp').value);
-  if(!isNaN(crp) && crp>=5.0) total+=1;
   document.getElementById('wm_total').textContent=total;
   const probMap=[0,6.1,16.1,36.4,70.7,100,100,100,100];
   document.getElementById('wm_prob').textContent = probMap[Math.min(total,8)].toFixed(1)+'%';
   document.getElementById('wm_interp').textContent = total>=4 ? '高風險（≥4分，建議考慮手術切除腸段）' : '低至中風險（<4分，可考慮持續保守治療並密切觀察）';
 }
 document.querySelectorAll('.wassmer-cb').forEach(cb=>cb.addEventListener('change',wassmerCalc));
-document.getElementById('wm_crp').addEventListener('input',wassmerCalc);
 wassmerCalc();
 function boReturn(){location.href='../pathways/bowel-obstruction.html?restore=1';}
 if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('wassmer_back_bo'); if(_b) _b.style.display='';}
