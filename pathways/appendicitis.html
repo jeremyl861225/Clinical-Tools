@@ -24,13 +24,6 @@
     <button class="back-btn" onclick="location.href='../index.html#card-view-appy-path'">← 返回主選單</button>
   </div>
 
-  <div class="flow-step" style="margin-bottom:12px;">
-    <div class="flow-step-head"><span class="flow-q">診斷風險分層計分工具 Diagnostic scores</span></div>
-    <button class="flow-link" onclick="location.href='../tools/aas.html?from=appy'">🧮 開啟 AAS 成人闌尾炎分數（Adult Appendicitis Score，可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/alvarado.html?from=appy'">🧮 開啟 Alvarado Score（可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/air.html?from=appy'">🧮 開啟 AIR Score（Appendicitis Inflammatory Response，可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/parc.html?from=appy'">🧮 開啟 pARC（兒童 5–18 歲連續機率量表，可從該頁返回本決策）</button>
-  </div>
 
   <details class="def-box" style="margin-bottom:12px;">
     <summary>診斷、定義、時機與抗生素 Definitions（WSES 2025）</summary>
@@ -68,19 +61,35 @@
     </div>
   </details>
 
-  <div class="flow-step" id="appy_s1">
-    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">闌尾炎複雜度分型？</span></div>
+  <div class="flow-step" id="appy_s0">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">診斷是否成立？（風險分層 → 影像）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="appyPick('dx','low',this)">低風險 — 可排除<span class="fo-sub">AIR 0–4／AAS &lt;11／Alvarado ≤4／pARC 低機率；&lt;60 歲且 WBC &lt;12×10³/µL 與 CRP &lt;6 mg/dL；無腹膜炎徵象</span></button>
+      <button class="flow-opt" onclick="appyPick('dx','mid',this)">中度風險 — 診斷未定，需影像或觀察<span class="fo-sub">AIR 5–8／AAS 11–15／Alvarado 5–6；症狀不典型或病程過短</span></button>
+      <button class="flow-opt" onclick="appyPick('dx','conf',this)">診斷成立 — 進入處置決策<span class="fo-sub">高風險分數（AIR 9–12／AAS ≥16／Alvarado ≥7）＋影像陽性（闌尾外徑 &gt;6 mm、壁增厚、周圍脂肪浸潤），或已有明確腹膜炎徵象</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/aas.html?from=appy'">🧮 開啟 AAS 成人闌尾炎分數（Adult Appendicitis Score，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/alvarado.html?from=appy'">🧮 開啟 Alvarado Score（可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/air.html?from=appy'">🧮 開啟 AIR Score（Appendicitis Inflammatory Response，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/parc.html?from=appy'">🧮 開啟 pARC（兒童 5–18 歲連續機率量表，可從該頁返回本決策）</button>
+    <div class="note" style="margin-top:8px;">影像選擇：年輕／兒童首選超音波；成人、肥胖、高齡首選<b>低劑量 CT（&lt;2–3 mSv）</b>；孕婦先 US，陰性／不確定時改 <b>MRI</b>。診斷不確定時 CT 為診斷標準；影像同時決定下一步的<b>複雜度分型</b>。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="appy_c1">↓</div>
+
+  <div class="flow-step hidden" id="appy_s1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">闌尾炎複雜度分型？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('type','uncomp',this)">未複雜性 Uncomplicated<span class="fo-sub">充血和／或蜂窩狀發炎，無壞疽／穿孔／膿瘍／瀰漫性腹膜炎</span></button>
       <button class="flow-opt" onclick="appyPick('type','comp',this)">複雜性 Complicated<span class="fo-sub">壞疽／壞死、穿孔、膿瘍、或瀰漫性腹膜炎</span></button>
     </div>
   </div>
 
-  <div class="flow-connector" id="appy_c2">↓</div>
+  <div class="flow-connector hidden" id="appy_c2">↓</div>
 
   <!-- 未複雜性分支 -->
   <div class="flow-step hidden" id="appy_s2u">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">族群？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">族群？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('pop','gen',this)">一般成人或兒童<span class="fo-sub">進入手術 vs 非手術之共享決策</span></button>
       <button class="flow-opt" onclick="appyPick('pop','preg',this)">懷孕<span class="fo-sub">首選腹腔鏡闌尾切除</span></button>
@@ -91,7 +100,7 @@
 
   <div class="flow-connector hidden" id="appy_c3u">↓</div>
   <div class="flow-step hidden" id="appy_s3u">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">治療選擇（共享決策）？</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">治療選擇（共享決策）？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('uChoice','surg',this)">手術：腹腔鏡闌尾切除<span class="fo-sub">標準治療；闌尾直徑 ≥15 mm、糞石、男性、CRP ≥10 mg/dL 者 NOM 失敗風險較高</span></button>
       <button class="flow-opt" onclick="appyPick('uChoice','nom',this)">非手術：抗生素治療（NOM）<span class="fo-sub">經選擇病人之安全替代方案，需監測與追蹤</span></button>
@@ -100,7 +109,7 @@
 
   <!-- 複雜性分支 -->
   <div class="flow-step hidden" id="appy_s2c">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">複雜性型態？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">複雜性型態？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('cType','free',this)">壞疽／穿孔／瀰漫性腹膜炎<span class="fo-sub">游離穿孔或全腹腹膜炎</span></button>
       <button class="flow-opt" onclick="appyPick('cType','abscess',this)">闌尾周圍膿瘍／發炎性腫塊（局部包覆）<span class="fo-sub">walled-off，病情相對穩定</span></button>
@@ -109,7 +118,7 @@
 
   <div class="flow-connector hidden" id="appy_c3">↓</div>
   <div class="flow-step hidden" id="appy_s3">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">族群 / 年齡？（膿瘍處置分流）</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">族群 / 年齡？（膿瘍處置分流）</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="appyPick('age','lt35',this)">&lt; 35 歲（含兒童）<span class="fo-sub">腫瘤風險低</span></button>
       <button class="flow-opt" onclick="appyPick('age','ge35',this)">≥ 35 歲<span class="fo-sub">潛在闌尾腫瘤風險升高（達 14.3%）</span></button>
@@ -128,10 +137,11 @@
 </div>
 <script src="../js/common.js"></script>
 <script>
-const appySt={type:null,pop:null,uChoice:null,cType:null,age:null};
+const appySt={dx:null,type:null,pop:null,uChoice:null,cType:null,age:null};
 function appyPick(key,val,btn){
   flowSelect(btn);
-  if(key==='type'){ appySt.type=val; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null; }
+  if(key==='dx'){ appySt.dx=val; if(val!=='conf'){ appySt.type=null; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null; } }
+  else if(key==='type'){ appySt.type=val; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null; }
   else if(key==='pop'){ appySt.pop=val; if(val!=='gen') appySt.uChoice=null; }
   else if(key==='uChoice'){ appySt.uChoice=val; }
   else if(key==='cType'){ appySt.cType=val; appySt.age=null; }
@@ -139,7 +149,13 @@ function appyPick(key,val,btn){
   appyRender();
 }
 function appyRender(){
-  const t=appySt.type;
+  const dx=appySt.dx;
+  const t=(dx==='conf')?appySt.type:null;
+  // 診斷步驟 → 複雜度分型
+  flowShow('appy_c1', dx==='conf');
+  flowShow('appy_s1', dx==='conf');
+  flowShow('appy_c2', dx==='conf' && !!t);
+  if(dx!=='conf') flowClearSel('appy_s1');
   // 未複雜性分支顯示
   flowShow('appy_s2u', t==='uncomp');
   const showS3u = (t==='uncomp' && appySt.pop==='gen');
@@ -159,8 +175,18 @@ function appyRender(){
   const ABX_NOM='抗生素：靜脈廣效（ertapenem，或 ceftriaxone + metronidazole；青黴素過敏用 ciprofloxacin + metronidazole）→ 靜脈給予 48 小時且臨床改善後轉口服，療程視臨床反應（可門診，建議 7-10 天）。';
   const ABX_COMP='抗生素：術前預防 + 等待手術期間治療性抗生素；術後短療程 2–3 天（優於 5–7 天）。';
 
-  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
-  if(t==='uncomp'){
+  let cls='rec-idle', title='請由步驟 1（診斷）開始選擇', detail='', note='';
+  if(dx==='low'){
+    cls='rec-blue'; title='低風險：不需常規影像，觀察並尋找其他病因';
+    detail='<li>風險分層低分（AIR 0–4／AAS &lt;11／Alvarado ≤4；兒童 pARC 低機率）者<b>可安全排除</b>闌尾炎，不需常規 CT。</li><li>&lt;60 歲成人若 <b>WBC &lt;12×10³/µL 且 CRP &lt;6 mg/dL</b>，對排除闌尾炎有高陰性預測值。</li><li>鑑別診斷：腸胃炎、腸繫膜淋巴腺炎、泌尿道感染／輸尿管結石、婦科病因（卵巢扭轉、異位妊娠、PID）、憩室炎。</li><li>可門診觀察並<b>衛教回診條件</b>（疼痛移至右下腹、持續惡化、發燒、嘔吐）；症狀持續者於 12–24 小時<b>重新評分</b>並回到步驟 1。</li>';
+    note='WSES 2025：先以風險分層評分分流 — 低分可排除、中分需影像或觀察。';
+  } else if(dx==='mid'){
+    cls='rec-blue'; title='中度風險：影像檢查或主動觀察後再評估';
+    detail='<li><b>影像選擇：</b>年輕／兒童首選<b>超音波</b>；成人、肥胖、高齡首選<b>低劑量 CT（&lt;2–3 mSv）</b>；孕婦先 US，陰性或不確定時改 <b>MRI</b>。US 陰性但臨床仍疑者需進一步影像。</li><li>影像支持診斷之表現：闌尾外徑 <b>&gt;6 mm</b>、壁增厚與強化、周圍脂肪浸潤、糞石；並同時判定有無壞疽、穿孔、膿瘍以完成<b>複雜度分型</b>。</li><li>替代作法為<b>主動觀察</b>：住院連續評估並於 12–24 小時重測 WBC／CRP 與評分；此期間<b>不需給予抗生素</b>以免掩蓋病情。</li><li>診斷確立後回到步驟 1 選「診斷成立」續行處置決策；影像陰性且症狀緩解者可出院並安排追蹤。</li>';
+    note='WSES 2025：不確定時 CT（低劑量）為診斷標準；影像選擇依年齡、體型與懷孕狀態。';
+  } else if(dx==='conf' && !t){
+    cls='rec-idle'; title='請完成步驟 2（複雜度分型）';
+  } else if(t==='uncomp'){
     if(appySt.pop==='preg'){
       cls='rec-elective'; title='懷孕：腹腔鏡闌尾切除術（首選）';
       detail='<li>首選腹腔鏡闌尾切除（由有經驗團隊施行）。</li><li>NOM 僅在手術風險高或無法立即手術時作為替代（證據極不確定），且明確增加流產（OR 3.057）及早產（OR 3.186）風險。</li><li>'+ABX_UNCOMP_SURG+'</li>';
@@ -182,8 +208,8 @@ function appyRender(){
         cls='rec-nonop'; title='非手術抗生素治療（NOM，共享決策）';
         detail='<li>經選擇之未複雜性病人（成人與兒童）可用抗生素治療，需臨床監測與共享決策；適合者可<b>門診</b>治療並確保追蹤。</li><li>'+ABX_NOM+'</li><li>於 <b>24 小時</b>再評估，CRP ≥10 mg/dL、惡化或無改善即轉手術。</li><li>復發率：1 年 15–41%（多數 25–30%）、5 年約 39%（APPAC）。<b>不建議</b>常規 30 天後追蹤或常規 interval appendectomy（除非症狀持續／復發）。</li>';
         note='WSES 2025 建議 5.1／5.2、6、7、8：NOM 為安全替代，且不需常規追蹤或 interval appendectomy。';
-      } else { cls='rec-idle'; title='請完成步驟 3'; }
-    } else { cls='rec-idle'; title='請完成步驟 2'; }
+      } else { cls='rec-idle'; title='請完成步驟 4'; }
+    } else { cls='rec-idle'; title='請完成步驟 3'; }
   } else if(t==='comp'){
     if(appySt.cType==='free'){
       cls='rec-urgent'; title='腹腔鏡闌尾切除（穿孔者立即）+ 源頭控制';
@@ -206,13 +232,13 @@ function appyRender(){
         cls='rec-elective'; title='免疫低下合併膿瘍：低門檻源頭控制（手術或引流）＋廣效抗生素';
         detail='<li>免疫低下者發炎反應鈍化、可迅速惡化，宜<b>降低門檻</b>及早<b>源頭控制</b>（闌尾切除或影像導引經皮引流），並<b>多科整合</b>。</li><li>抗生素採<b>廣效</b>，於中性球低下／移植等高風險者<b>考慮加抗黴菌</b>，並警覺伺機性病原（CMV、黴菌、結核）。</li><li>注意<b>圍手術期類固醇補充</b>與免疫抑制劑調整；單靠抗生素 NOM 之可靠度較低。</li><li>'+ABX_COMP+'</li>';
         note='Coccolini F, et al. Acute abdomen in the immunocompromised patient: WSES/SIS-E/WSIS/AAST/GAIS guidelines. World J Emerg Surg 2021;16:40.';
-      } else { cls='rec-idle'; title='請完成步驟 3'; }
-    } else { cls='rec-idle'; title='請完成步驟 2'; }
+      } else { cls='rec-idle'; title='請完成步驟 4'; }
+    } else { cls='rec-idle'; title='請完成步驟 3'; }
   }
   flowRec('appy_rec',cls,title,detail,note);
 }
 function appyReset(){
-  appySt.type=null; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null;
+  appySt.dx=null; appySt.type=null; appySt.pop=null; appySt.uChoice=null; appySt.cType=null; appySt.age=null;
   document.querySelectorAll('#view-appy-path .flow-opt').forEach(b=>b.classList.remove('selected'));
   appyRender();
 }

@@ -197,8 +197,22 @@
     </div>
   </details>
 
-  <div class="flow-step" id="gi_s1">
-    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">缺血部位／型態？</span></div>
+  <div class="flow-step" id="gi_s0">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">臨床情境與診斷檢查？（決定啟動哪一項影像）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="giPick('dx','acute',this)">急性劇痛<b>與理學檢查不成比例</b>／有栓子來源／酸中毒<span class="fo-sub">→ 立即 <b>CTA：動脈相 + 靜脈相、切片 ≤1 mm</b>，<b>不論腎功能</b>（ESVS Rec 33, I/B）；轉檢單須寫明「懷疑 AMI」（Rec 32, I/C）</span></button>
+      <button class="flow-opt" onclick="giPick('dx','bleed',this)">急性腹絞痛 + 急欲排便，<b>24 小時內血便／血性腹瀉</b><span class="fo-sub">→ <b>CT（靜脈 + 口服對比）</b>評估分布與分期（ACG Rec 1）；無腹膜炎／壞疽／腸壁積氣者 <b>48 小時內大腸鏡</b></span></button>
+      <button class="flow-opt" onclick="giPick('dx','rlq',this)">右側腹劇痛<b>而無血便</b>（疑 IRCI）<span class="fo-sub">→ <b>多相 CTA</b>（動脈相 + 門靜脈相，不含口服對比）排除 AMI（ACG Rec 3）；CT 未見阻塞但情境符合 AMI 前哨者，考慮傳統內臟動脈攝影（Rec 5）</span></button>
+      <button class="flow-opt" onclick="giPick('dx','critical',this)">危重／休克、需升壓劑，<b>無明顯腹部徵象</b>但疑腸缺血<span class="fo-sub">→ CTA 見腸壁不顯影／壁增厚／腸壁積氣・門靜脈氣而 <b>SMA 無顯著狹窄</b>時懷疑 NOMI（Rec 43）；<b>CT 陰性不能排除</b>（25–30% 無徵象），高度懷疑即探查或床邊診斷性腹腔鏡</span></button>
+      <button class="flow-opt" onclick="giPick('dx','chronic',this)">慢性<b>餐後 20–30 分鐘</b>腹痛、食物恐懼、體重減輕<span class="fo-sub">→ <b>空腹至少 4 小時之腸繫膜動脈 duplex</b> 為第一線（ESVS Rec 4, I/B）→ <b>CTA</b> 確診、規劃並排除其他腹內病灶（Rec 5, I/C）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>不可用來排除的檢查：</b>ESVS Rec 31（IIIb/C）<b>不建議</b>以單次 lactate 或 D-dimer 確認或排除 AMI — lactate 上升反映全身低灌流，缺血由黏膜向漿膜進展，故其上升時多已透壁。約<b>半數 AMI 有 amylase 上升</b>，易誤判為胰臟炎。不建議腹部平片；懷疑 AMI 時口服對比劑<b>不需要且可能有害</b>。<b>診斷每延遲 6 小時死亡率加倍。</b></div>
+  </div>
+
+  <div class="flow-connector hidden" id="gi_c1">↓</div>
+
+  <div class="flow-step hidden" id="gi_s1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">影像確認之缺血部位／型態？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('type','ami',this)">急性腸繫膜缺血 AMI<span class="fo-sub">Acute mesenteric ischaemia — 小腸為主；與理學檢查不成比例之劇烈腹痛、酸中毒、器官衰竭</span></button>
       <button class="flow-opt" onclick="giPick('type','ci',this)">缺血性結腸炎／大腸缺血 CI<span class="fo-sub">Colon ischemia — 輕度腹絞痛、急欲排便，24 小時內血便／血性腹瀉</span></button>
@@ -209,7 +223,7 @@
 
   <div class="flow-connector hidden" id="gi_c2">↓</div>
   <div class="flow-step hidden" id="gi_s2a">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">CTA 分型（AMI 亞型）？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">CTA 分型（AMI 亞型）？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('sub','emb',this)"><b>AMAE</b> — Acute Mesenteric Arterial Embolism<span class="fo-sub">腸繫膜動脈栓塞｜心房顫動／近期 MI／心內血栓；栓子卡於 SMA 起源遠端 3–10 cm，常保留近端空腸與大腸</span></button>
       <button class="flow-opt" onclick="giPick('sub','thr',this)"><b>AMAT</b> — Acute Mesenteric Arterial Thrombosis<span class="fo-sub">腸繫膜動脈血栓｜瀰漫動脈硬化、餐後腹痛、體重減輕；阻塞位於內臟動脈起源處</span></button>
@@ -220,7 +234,7 @@
   </div>
 
   <div class="flow-step hidden" id="gi_s2b">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">大腸缺血的分布型態？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">大腸缺血的分布型態？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('dist','irci',this)">孤立性右結腸缺血 IRCI<span class="fo-sub">SMA 領域；常為腹痛而無血便（59%）；死亡率 20–22%、手術率 44–55%</span></button>
       <button class="flow-opt" onclick="giPick('dist','pan',this)">全結腸型 pancolonic<span class="fo-sub">SMA 與 IMA 同時低灌流；死亡率 21.7%；多因敗血症</span></button>
@@ -230,7 +244,7 @@
   </div>
 
   <div class="flow-step hidden" id="gi_s2c">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">血管侵犯型態（duplex／CTA）？</span></div>
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">血管侵犯型態（duplex／CTA）？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('cmi','multi',this)">多條血管阻塞 + 慢性症狀<span class="fo-sub">SMA &gt;50% 且另一條腸繫膜動脈亦 &gt;50%（ESVS Rec 1, I/C）</span></button>
       <button class="flow-opt" onclick="giPick('cmi','sma',this)">孤立性 SMA &gt;70% 狹窄 + 慢性症狀<span class="fo-sub">ESVS Rec 2（IIb/C）：可考慮為 CMI</span></button>
@@ -242,7 +256,7 @@
 
   <div class="flow-connector hidden" id="gi_c3c">↓</div>
   <div class="flow-step hidden" id="gi_s3c">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">重建途徑：解剖是否適合血管內處置？</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">重建途徑：解剖是否適合血管內處置？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('rev','endo',this)">解剖合適，可行血管內重建<span class="fo-sub">ESVS Rec 14（I/B）：血管內為優先策略</span></button>
       <button class="flow-opt" onclick="giPick('rev','open',this)">血管內不可行／失敗／有禁忌，且病人可承受手術<span class="fo-sub">ESVS Rec 19（IIa/C）：開放式重建</span></button>
@@ -251,7 +265,7 @@
 
   <div class="flow-connector hidden" id="gi_c3">↓</div>
   <div class="flow-step hidden" id="gi_s3">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">臨床狀態：有無腹膜炎或血行動力學不穩？</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">臨床狀態：有無腹膜炎或血行動力學不穩？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('acute','perit',this)">有腹膜炎徵象／血行動力學不穩<span class="fo-sub">腸段已可能壞死 — 立即探查，不因等待血管處置而延遲</span></button>
       <button class="flow-opt" onclick="giPick('acute','stable',this)">無腹膜炎且血行動力學穩定<span class="fo-sub">可先行血流重建（ESVS Rec 37：血管內為第一線）或藥物治療</span></button>
@@ -260,7 +274,7 @@
   </div>
 
   <div class="flow-step hidden" id="gi_s3b">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">ACG 2015 嚴重度分級？</span></div>
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">ACG 2015 嚴重度分級？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('ci','mild',this)">輕度<span class="fo-sub">典型症狀、節段性，無下列中度危險因子</span></button>
       <button class="flow-opt" onclick="giPick('ci','mod',this)">中度<span class="fo-sub">具中度危險因子 ≤3 項（男性／SBP&lt;90／HR&gt;100／腹痛無出血／BUN&gt;20／Hgb&lt;12／LDH&gt;350／Na&lt;136／WBC&gt;15／黏膜潰瘍）</span></button>
@@ -270,12 +284,12 @@
 
   <div class="flow-rec rec-idle" id="gi_rec">
     <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由上方步驟開始選擇</div>
+    <div class="rec-title">請由步驟 1（診斷）開始選擇</div>
   </div>
 
   <div class="flow-connector hidden" id="gi_c4">↓</div>
   <div class="flow-step hidden" id="gi_s4">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">術中所見：腸段壞死範圍？</span></div>
+    <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">術中所見：腸段壞死範圍？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="giPick('op','seg',this)">節段性壞死，可切除<span class="fo-sub">壞死侷限於單一或少數腸段，切除後仍保留足夠腸長</span></button>
       <button class="flow-opt" onclick="giPick('op','massive',this)">大範圍壞死<span class="fo-sub">近全小腸／全大腸壞死，切除後將導致短腸症</span></button>
@@ -286,7 +300,7 @@
 
   <div class="flow-rec rec-idle hidden" id="gi_rec2">
     <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請完成步驟 4</div>
+    <div class="rec-title">請完成步驟 5</div>
   </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="giReset()">重置</button></div>
@@ -295,10 +309,11 @@
 </div>
 <script src="../js/common.js"></script>
 <script>
-const giSt={type:null,sub:null,dist:null,ci:null,cmi:null,rev:null,acute:null,op:null};
+const giSt={dx:null,type:null,sub:null,dist:null,ci:null,cmi:null,rev:null,acute:null,op:null};
 function giPick(key,val,btn){
   flowSelect(btn);
-  if(key==='type'){ Object.keys(giSt).forEach(k=>{ if(k!=='type') giSt[k]=null; }); giSt.type=val; }
+  if(key==='dx'){ giSt.dx=val; }
+  else if(key==='type'){ Object.keys(giSt).forEach(k=>{ if(k!=='type'&&k!=='dx') giSt[k]=null; }); giSt.type=val; }
   else if(key==='sub'){ giSt.sub=val; giSt.acute=null; giSt.op=null; }
   else if(key==='dist'){ giSt.dist=val; giSt.ci=null; giSt.op=null; }
   else if(key==='ci'){ giSt.ci=val; giSt.op=null; }
@@ -309,8 +324,13 @@ function giPick(key,val,btn){
   giRender();
 }
 function giRender(){
-  const t=giSt.type;
-  // 步驟 2：依型態分流
+  const dx=giSt.dx;
+  const t=dx?giSt.type:null;
+  // 步驟 1（診斷）→ 步驟 2（型態）
+  flowShow('gi_c1', !!dx);
+  flowShow('gi_s1', !!dx);
+  if(!dx) flowClearSel('gi_s1');
+  // 步驟 3：依型態分流
   flowShow('gi_c2', !!t);
   flowShow('gi_s2a', t==='ami');
   flowShow('gi_s2b', t==='ci');
@@ -331,17 +351,58 @@ function giRender(){
   if(!showS3b) flowClearSel('gi_s3b');
   if(!showS3c) flowClearSel('gi_s3c');
 
-  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+  let cls='rec-idle', title='請由步驟 1（診斷）開始選擇', detail='', note='';
   const toOR = (t==='ami' && giSt.acute==='perit') ||
                (t==='ci' && (giSt.dist==='irci' || giSt.dist==='pan' || giSt.ci==='sev'));
 
-  if(t==='ami'){
+  if(dx && !t){
+    cls='rec-blue';
+    if(dx==='acute'){
+      title='診斷：立即雙相 CTA（不論腎功能），同步復甦';
+      detail='<li><b>ESVS Rec 33（I/B）：立即 CTA — 動脈相 + 靜脈相、切片 ≤1 mm</b>，<b>不因腎功能而延遲或改做其他檢查</b>（非顯影相為選配；2017 年版之三相已改為雙相／split-bolus）。</li>'+
+             '<li><b>Rec 32（I/C）：轉檢單必須寫明「懷疑 AMI」</b> — 診斷率高度取決於報告者是否被提示。</li>'+
+             '<li><b>不可用來排除</b>：Rec 31（IIIb/C）不建議以單次 lactate 或 D-dimer 確認或排除 AMI；約半數 AMI 有 amylase 上升，易誤判為胰臟炎；不建議腹部平片，口服對比劑不需要且可能有害。</li>'+
+             '<li>同步復甦：補液、鼻胃管減壓、矯正電解質、廣效抗生素（ESVS Rec 41, I/C），並開始治療劑量 UFH 抗凝。</li>'+
+             '<li>病程三期：初期劇痛（可逆）→ 疼痛減輕（潛伏期，最易誤判）→ 疼痛再起並惡化為瀰漫性腹膜炎（不可逆）。<b>診斷每延遲 6 小時死亡率加倍。</b></li>';
+      note='ESVS 2025 Rec 31–33、41；WSES 2022（1C：不成比例腹痛在排除前應假設為 AMI）。';
+    } else if(dx==='bleed'){
+      title='診斷：CT（靜脈 + 口服對比）評估分布，48 小時內大腸鏡';
+      detail='<li><b>ACG Rec 1（強／中）：CT（靜脈 + 口服對比）為首選</b>，用以評估<b>分布</b>與分期 — 分布是本流程最重要的分流依據。</li>'+
+             '<li>Rec 4（強／中）：CT／MRI 見<b>腸壁積氣與門靜脈氣</b>可預測透壁梗塞。</li>'+
+             '<li><b>大腸鏡：</b>48 小時內早期施行、充氣量最小化、到病灶最遠端即停、除壞疽外應切片；<b>有腹膜炎、壞疽或腸壁積氣者禁行</b>。</li>'+
+             '<li>建議檢驗：Albumin、Amylase、CBC、電解質全套、CK、Lactate、LDH、糞便 C. difficile toxin／培養／寄生蟲卵。</li>'+
+             '<li>臨床上<b>僅 24.2% 的 CI 在術前被正確懷疑</b>；非血性腹瀉最易被誤當腸胃炎（手術 OR 10.0）。</li>';
+      note='ACG 2015 Rec 1、4 與內視鏡建議；Montoro CIE 2011。';
+    } else if(dx==='rlq'){
+      title='診斷：多相 CTA 排除 AMI（右側劇痛無血便＝最危險組合）';
+      detail='<li><b>ACG Rec 3（強／中）：疑似 IRCI 或無法排除 AMI 者施行多相 CTA</b>（動脈相 + 門靜脈相，<b>不含口服對比</b>），時機為<b>入院時或出院前</b>。</li>'+
+             '<li><b>Rec 5（條件式）：多相 CT 未見血管阻塞但情境符合 AMI 前哨（劇痛無出血、心房顫動）者，應考慮傳統內臟動脈攝影</b> — 單次 triple-phase CT 偵測 SMA 血栓<b>敏感度僅 26%</b>（特異度近 100%），<b>陰性不能排除</b>。</li>'+
+             '<li><b>IRCI 以腹痛而非血便為主：59% 只有急性腹痛而無直腸出血</b>，僅 25–46% 有血便；ACG 反向表述「有血便者應考慮為非 IRCI」。→ 右側缺血 + 劇痛 + 沒有血便是<b>最危險</b>的組合。</li>'+
+             '<li>IRCI 中 <b>15.4% 合併或隨即發生 AMI</b>（該群手術率 100%、30 天死亡率 70%）；BUN 與 WBC 明顯較高是床邊線索。透析病人的 CI 有 82% 侵犯右側。</li>';
+      note='ACG 2015 Rec 3、5；Feuerstadt 2015。';
+    } else if(dx==='critical'){
+      title='診斷：CTA 找 NOMI 徵象，但陰性不能排除 — 高度懷疑即探查';
+      detail='<li><b>ESVS Rec 43（IIa/C）</b>：休克病人若 CTA 顯示腸壁不顯影、小腸壁增厚、腸壁積氣或門靜脈氣，<b>而 SMA 無顯著狹窄</b>，應懷疑 NOMI。</li>'+
+             '<li><b>CT 陰性不能排除 NOMI</b>：確診病例中 <b>25–30% CT 完全無缺血徵象</b>（含已有透壁壞死者）。高度懷疑時應直接探查；ICU／心臟術後病人可考慮<b>床邊診斷性腹腔鏡</b>（WSES 2022）。</li>'+
+             '<li>危重病人常<b>無明顯腹部徵象</b>（WSES 2C）；SMA 口徑縮小的徵象在無舊 CT 比對時難以判讀，且升壓劑本身即會使 SMA 變細。</li>'+
+             '<li>血管攝影（Siegelman 準則）從未經前瞻驗證，今日主要作為<b>治療途徑</b>而非診斷工具。「非阻塞性」不等於血管正常：約 40% 致死性 NOMI 仍有 &gt;25% SMA 狹窄。</li>'+
+             '<li>同步矯正誘因：優化心輸出量、盡量移除升壓劑、處理腹腔室症候群與透析相關低血流。</li>';
+      note='ESVS 2025 Rec 43；WSES 2022 建議 6（2C）。NOMI 住院死亡率 72.7%、90 天 74.5%（AMESI）。';
+    } else if(dx==='chronic'){
+      title='診斷：空腹 duplex 為第一線 → CTA 確認並排除其他病因';
+      detail='<li><b>ESVS Rec 4（I/B）：空腹至少 4 小時後之腸繫膜動脈 duplex 為第一線檢查</b>；Rec 5（I/C）CTA 為診斷、治療規劃與<b>排除其他腹內病灶</b>之首選；Rec 6（IIb/C）顯影 MRA 為替代。</li>'+
+             '<li><b>診斷定義：</b>Rec 1（I/C）慢性腹部症狀 + <b>SMA &gt;50% 且另一條腸繫膜動脈亦 &gt;50%</b>；Rec 2（IIb/C）慢性症狀 + <b>孤立性 SMA &gt;70%</b> 可考慮為 CMI。</li>'+
+             '<li>Duplex 判讀須同時考量其餘血管狹窄與<b>呼吸週期</b>；ESVS 明言各中心<b>應自行以 CTA／DSA 建立自己的切點</b>。常用 SMA PSV：≥50% 約 275–300 cm/s、≥70% 約 400 cm/s。疑 MALS 者 <b>duplex 須於吸氣與呼氣分別施行</b>（Rec 27, I/C）。</li>'+
+             '<li><b>ESVS 提醒：體重正常、僅模糊腹部不適而影像有多條血管硬化者，應優先尋找其他診斷</b>；CMI 的確定診斷只能在<b>重建後回溯</b>確立。</li>';
+      note='ESVS 2025 Rec 1、2、4–6、27。';
+    }
+  } else if(t==='ami'){
     const s=giSt.sub, a=giSt.acute;
     const common='<li><b>復甦（WSES 1B）：</b>晶體液 ± 血品、鼻胃管減壓、矯正電解質；升壓劑審慎使用，以 <b>lactate clearance</b> 監測灌流。</li>'+
                  '<li><b>抗生素（ESVS Rec 41, I/C）：</b>立即給予；指引不指定藥物，依院內規範 — 社區型危重可用 Piperacillin/tazobactam 4.5 g q6h，或 Cefepime 2 g q8h + Metronidazole 500 mg q6h；疑 ESBL 用 Meropenem 1 g q8h。免疫正常且穩定者至少 4 天（WSES 1C）。</li>'+
                  '<li><b>抗凝：</b>治療劑量 UFH 靜脈灌注（常用 loading 80 U/kg IV bolus → maintenance 18 U/kg/h，依院內 nomogram 以 aPTT／anti-Xa 滴定；<b>指引未載明數字劑量</b>）；WSES 明訂術後 aPTT 維持 <b>40–60 秒</b>。</li>';
-    if(!s){ cls='rec-idle'; title='請於步驟 2 選擇 AMI 亞型'; }
-    else if(!a){ cls='rec-idle'; title='請完成步驟 3'; }
+    if(!s){ cls='rec-idle'; title='請於步驟 3 選擇 AMI 亞型'; }
+    else if(!a){ cls='rec-idle'; title='請完成步驟 4'; }
     else if(a==='perit'){
       cls='rec-urgent'; title='立即剖腹／腹腔鏡探查 + 損害控制手術 (DCS)';
       detail='<li>明顯腹膜炎者<b>立即</b>探查（WSES 1C）；ESVS Rec 35（IIa/C）建議<b>先血流重建再切除腸段</b>，灌流恢復後界線才判得準。</li>'+
@@ -389,7 +450,7 @@ function giRender(){
   } else if(t==='ci'){
     const d=giSt.dist, c=giSt.ci;
     const ciAbx='<li>中度與重度病人應考慮<b>廣效抗生素</b>（ACG，Strong／Very low）— 此建議的人體證據薄弱，主要來自動物實驗。</li>';
-    if(!d){ cls='rec-idle'; title='請於步驟 2 選擇分布型態'; }
+    if(!d){ cls='rec-idle'; title='請於步驟 3 選擇分布型態'; }
     else if(d==='irci'){
       cls='rec-urgent'; title='IRCI：立即多相 CTA 排除 AMI + 緊急外科會診';
       detail='<li><b>ACG Rec 3（強／中）：疑似 IRCI 者施行多相 CTA</b>（動脈相 + 門靜脈相），時機為<b>入院時或出院前</b> — IRCI 中 15.4% 合併或隨即發生 AMI，該群<b>手術率 100%、30 天死亡率 70%</b>。</li>'+
@@ -408,7 +469,7 @@ function giRender(){
              '<li>共病以第五期 CKD（30.4%）與周邊血管疾病（21.7%）為主，術前風險溝通應據實說明。</li>';
       note='ACG 2015 治療建議 2（Strong／Moderate）；Brandt 2010（n=313 分布與預後）。';
     } else if(d==='left'){
-      if(!c){ cls='rec-idle'; title='請於步驟 3 選擇 ACG 嚴重度'; }
+      if(!c){ cls='rec-idle'; title='請於步驟 4 選擇 ACG 嚴重度'; }
       else if(c==='mild'){
         cls='rec-blue'; title='輕度：觀察 + 支持治療';
         detail='<li>多數大腸缺血會自行緩解，<b>不需特殊治療</b>（ACG，Strong／Low）。</li>'+
@@ -439,7 +500,7 @@ function giRender(){
     const cmiCommon='<li><b>次級預防</b>：戒菸、statin、抗血小板、控制血壓與糖尿病 — CMI 病人幾乎都是全身性動脈硬化（ESVS Rec 7, I/C）。</li>'+
                     '<li>影像順序：<b>空腹至少 4 小時之 duplex 為第一線</b>（Rec 4, I/B）→ CTA 為診斷、規劃與排除其他腹內病灶之首選（Rec 5, I/C）。Duplex 須考量呼吸週期與其餘血管狹窄；各中心應自行建立切點。</li>'+
                     '<li>應於<b>可同時提供開放與血管內重建</b>之專責中心評估與治療（Rec 3, I/C）。</li>';
-    if(!v){ cls='rec-idle'; title='請於步驟 2 選擇血管侵犯型態'; }
+    if(!v){ cls='rec-idle'; title='請於步驟 3 選擇血管侵犯型態'; }
     else if(v==='asym'){
       cls='rec-blue'; title='無症狀：不重建，給予次級預防與症狀衛教';
       detail='<li><b>不做預防性重建</b> — ESVS 明言對無症狀者施行預防性介入的效益「非常不確定」。</li>'+
@@ -448,7 +509,7 @@ function giRender(){
              '<li>若日後轉為持續劇痛且與理學檢查不成比例，應視為<b>動脈血栓型 AMI (AMAT)</b> 處理 — 請改走本流程的 AMI 分支。</li>';
       note='ESVS 2025 Rec 7、8。';
     }
-    else if(!r){ cls='rec-idle'; title='請完成步驟 3'; }
+    else if(!r){ cls='rec-idle'; title='請完成步驟 4'; }
     else if(r==='endo'){
       cls='rec-elective'; title='血管內重建：常規置放支架（第一線）';
       detail='<li><b>Rec 14（I/B）：解剖合適者以血管內為優先策略。</b>Rec 15（I/C）：應<b>常規置放支架而非單純球囊擴張</b>。</li>'+
@@ -477,7 +538,7 @@ function giRender(){
   flowShow('gi_s4', toOR);
   if(!toOR) flowClearSel('gi_s4');
 
-  let c2='rec-idle', t2='請完成步驟 4', d2='', n2='';
+  let c2='rec-idle', t2='請完成步驟 5', d2='', n2='';
   if(toOR && giSt.op){
     const isCI = (t==='ci');
     if(giSt.op==='seg'){
