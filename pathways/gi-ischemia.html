@@ -209,6 +209,11 @@
     <div class="note" style="margin-top:8px;"><b>不可用來排除的檢查：</b>ESVS Rec 31（IIIb/C）<b>不建議</b>以單次 lactate 或 D-dimer 確認或排除 AMI — lactate 上升反映全身低灌流，缺血由黏膜向漿膜進展，故其上升時多已透壁。約<b>半數 AMI 有 amylase 上升</b>，易誤判為胰臟炎。不建議腹部平片；懷疑 AMI 時口服對比劑<b>不需要且可能有害</b>。<b>診斷每延遲 6 小時死亡率加倍。</b></div>
   </div>
 
+  <div class="flow-rec rec-idle hidden" id="gi_rec0">
+    <div class="rec-label">診斷檢查 Diagnostic work-up</div>
+    <div class="rec-title">請由步驟 1（診斷）開始選擇</div>
+  </div>
+
   <div class="flow-connector hidden" id="gi_c1">↓</div>
 
   <div class="flow-step hidden" id="gi_s1">
@@ -284,7 +289,7 @@
 
   <div class="flow-rec rec-idle" id="gi_rec">
     <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由步驟 1（診斷）開始選擇</div>
+    <div class="rec-title">請由步驟 2（缺血部位／型態）開始選擇</div>
   </div>
 
   <div class="flow-connector hidden" id="gi_c4">↓</div>
@@ -351,11 +356,10 @@ function giRender(){
   if(!showS3b) flowClearSel('gi_s3b');
   if(!showS3c) flowClearSel('gi_s3c');
 
-  let cls='rec-idle', title='請由步驟 1（診斷）開始選擇', detail='', note='';
-  const toOR = (t==='ami' && giSt.acute==='perit') ||
-               (t==='ci' && (giSt.dist==='irci' || giSt.dist==='pan' || giSt.ci==='sev'));
-
-  if(dx && !t){
+  // 第一段建議：診斷檢查（緊接步驟 1，選定型態後仍持續顯示）
+  {
+    let cls='rec-idle', title='請由步驟 1（診斷）開始選擇', detail='', note='';
+    if(dx){
     cls='rec-blue';
     if(dx==='acute'){
       title='診斷：立即雙相 CTA（不論腎功能），同步復甦';
@@ -396,7 +400,16 @@ function giRender(){
              '<li><b>ESVS 提醒：體重正常、僅模糊腹部不適而影像有多條血管硬化者，應優先尋找其他診斷</b>；CMI 的確定診斷只能在<b>重建後回溯</b>確立。</li>';
       note='ESVS 2025 Rec 1、2、4–6、27。';
     }
-  } else if(t==='ami'){
+    }
+    flowRec('gi_rec0',cls,title,detail,note);
+    flowShow('gi_rec0', !!dx);
+  }
+
+  let cls='rec-idle', title='請由步驟 2（缺血部位／型態）開始選擇', detail='', note='';
+  const toOR = (t==='ami' && giSt.acute==='perit') ||
+               (t==='ci' && (giSt.dist==='irci' || giSt.dist==='pan' || giSt.ci==='sev'));
+
+  if(t==='ami'){
     const s=giSt.sub, a=giSt.acute;
     const common='<li><b>復甦（WSES 1B）：</b>晶體液 ± 血品、鼻胃管減壓、矯正電解質；升壓劑審慎使用，以 <b>lactate clearance</b> 監測灌流。</li>'+
                  '<li><b>抗生素（ESVS Rec 41, I/C）：</b>立即給予；指引不指定藥物，依院內規範 — 社區型危重可用 Piperacillin/tazobactam 4.5 g q6h，或 Cefepime 2 g q8h + Metronidazole 500 mg q6h；疑 ESBL 用 Meropenem 1 g q8h。免疫正常且穩定者至少 4 天（WSES 1C）。</li>'+
