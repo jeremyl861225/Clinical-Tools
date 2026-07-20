@@ -514,15 +514,7 @@ function gbReset(){
 }
 gbReset();
 
-/* 由計分工具返回時保留已選項目（見 js/common.js 的 flowPersist）。
-   加 typeof 保護：使用者若還握著舊版快取的 common.js，此處會是 undefined，
-   不擋掉流程本身（gbReset 已在上方跑過），只是暫時沒有保留功能。 */
-if (typeof flowPersist === 'function') {
-  var gbPersist = flowPersist('gbSt', gbSt, 'view-gi-bleed-path', 'gbPick', gbPick, gbReset, gbRender);
-  gbPick = gbPersist.pick;
-  gbReset = gbPersist.reset;
-  gbPersist.restore();
-}
+/* 往返計分工具時保留選項與捲動位置，見 js/common.js 的流程往返還原 */
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -357,21 +357,7 @@ function gpReset(){
 }
 gpReset();
 
-/* 跨頁保存／還原選項（供 PULP／MPI 往返使用） */
-function gpSave(){try{sessionStorage.setItem('gpSt',JSON.stringify(gpSt));}catch(e){}}
-function gpRestore(){try{
-  var s=JSON.parse(sessionStorage.getItem('gpSt')||'null'); if(!s) return;
-  Object.assign(gpSt,s);
-  Object.keys(gpSt).forEach(function(k){
-    var v=gpSt[k]; if(v==null) return;
-    var b=document.querySelector('#view-gi-perf-path .flow-opt[onclick*="gpPick(\''+k+'\',\''+v+'\'"]');
-    if(b) b.classList.add('selected');
-  });
-  gpRender();
-}catch(e){}}
-var _gpPickBase=gpPick; gpPick=function(k,v,btn){ _gpPickBase(k,v,btn); gpSave(); };
-var _gpResetBase=gpReset; gpReset=function(){ try{sessionStorage.removeItem('gpSt');}catch(e){} _gpResetBase(); };
-gpRestore();
+/* 往返計分工具時保留選項與捲動位置，見 js/common.js 的流程往返還原 */
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

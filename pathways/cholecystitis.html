@@ -516,15 +516,10 @@ function choleReset(){
   chgClear();
   choleRender();
 }
-chgBoxes().forEach(function(cb){ cb.addEventListener('change',function(){ chgCalc(); choleRender(); choleSave(); }); });
+chgBoxes().forEach(function(cb){ cb.addEventListener('change',function(){ chgCalc(); choleRender(); }); });
 choleReset();
 
-/* 跨頁保存/還原選項（供 CCI 計算機往返使用） */
-function choleSave(){try{sessionStorage.setItem('choleSt',JSON.stringify(choleSt));}catch(e){}}
-function choleRestore(){try{var s=JSON.parse(sessionStorage.getItem('choleSt')||'null');if(!s)return;Object.assign(choleSt,s);if(Array.isArray(choleSt.chgBox)){var _cb=chgBoxes();choleSt.chgBox.forEach(function(v,i){if(_cb[i])_cb[i].checked=!!v;});chgCalc();}[['bil',choleSt.bil],['pSev',choleSt.pSev],['pCol',choleSt.pCol],['asge',choleSt.asge],['mir',choleSt.mir],['grade',choleSt.grade],['sp',choleSt.sp],['perf',choleSt.perf],['hemo',choleSt.hemo],['risk',choleSt.risk]].forEach(function(kv){if(kv[1]==null)return;var b=document.querySelector('#view-chole-path .flow-opt[onclick*="cholePick(\''+kv[0]+'\',\''+kv[1]+'\'"]');if(b)b.classList.add('selected');});choleRender();}catch(e){}}
-var _cholePickBase=cholePick;cholePick=function(k,v,btn){_cholePickBase(k,v,btn);choleSave();};
-var _choleResetBase=choleReset;choleReset=function(){try{sessionStorage.removeItem('choleSt');}catch(e){}_choleResetBase();};
-choleRestore();
+/* 往返計分工具時保留選項與捲動位置，見 js/common.js 的流程往返還原 */
 
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

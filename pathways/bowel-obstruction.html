@@ -426,24 +426,7 @@ function boReset(){
 }
 boReset();
 
-/* 跨頁保存／還原選項：供 Millet／Wassmer／Angers 計算器往返使用。
-   計算器的返回鍵會帶 ?restore=1，只有那時才還原，從主選單重新進入仍是空白流程。 */
-function boSave(){ try{ sessionStorage.setItem('boSt', JSON.stringify(boSt)); }catch(e){} }
-function boRestore(){
-  try{
-    var s=JSON.parse(sessionStorage.getItem('boSt')||'null'); if(!s) return;
-    Object.assign(boSt,s);
-    ['cause','site','red','risk','mgmt'].forEach(function(k){
-      if(boSt[k]==null) return;
-      var b=document.querySelector('#view-bo-path .flow-opt[onclick*="boPick(\''+k+'\',\''+boSt[k]+'\'"]');
-      if(b) b.classList.add('selected');
-    });
-    boRender();
-  }catch(e){}
-}
-var _boPickBase=boPick; boPick=function(k,v,btn){ _boPickBase(k,v,btn); boSave(); };
-var _boResetBase=boReset; boReset=function(){ try{ sessionStorage.removeItem('boSt'); }catch(e){} _boResetBase(); };
-if(location.search.indexOf('restore=1')>=0) boRestore();
+/* 往返計分工具時保留選項與捲動位置，見 js/common.js 的流程往返還原 */
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

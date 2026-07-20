@@ -593,21 +593,7 @@ function giReset(){
 }
 giReset();
 
-/* 跨頁保存／還原選項（供 RADIAL Score 往返使用） */
-function giSave(){try{sessionStorage.setItem('giSt',JSON.stringify(giSt));}catch(e){}}
-function giRestore(){try{
-  var s=JSON.parse(sessionStorage.getItem('giSt')||'null'); if(!s) return;
-  Object.assign(giSt,s);
-  Object.keys(giSt).forEach(function(k){
-    var v=giSt[k]; if(v==null) return;
-    var b=document.querySelector('#view-gi-isch-path .flow-opt[onclick*="giPick(\''+k+'\',\''+v+'\'"]');
-    if(b) b.classList.add('selected');
-  });
-  giRender();
-}catch(e){}}
-var _giPickBase=giPick; giPick=function(k,v,btn){ _giPickBase(k,v,btn); giSave(); };
-var _giResetBase=giReset; giReset=function(){ try{sessionStorage.removeItem('giSt');}catch(e){} _giResetBase(); };
-giRestore();
+/* 往返計分工具時保留選項與捲動位置，見 js/common.js 的流程往返還原 */
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

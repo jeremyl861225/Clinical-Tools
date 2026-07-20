@@ -10,28 +10,106 @@ function flowRec(id,cls,title,detail,note){
     (note?'<div class="rec-note">'+note+'</div>':'');
 }
 
-/* 跨頁保存／還原流程選項：使用者點開計分工具再按返回時，不該從頭重選。
-   狀態存在 sessionStorage（關閉分頁即失效），按「重置」則主動清除。
-   還原時靠 onclick 內的 pick 呼叫字串反查按鈕，重新標上 .selected。
+/* 流程圖 ⇄ 計分工具往返：點開計分工具再按返回時，不該從頭重選、也不該回到頁首。
 
-   用法（置於 pathway 自己的 render/reset 定義之後）：
-     var p = flowPersist('gbSt', gbSt, 'view-gi-bleed-path', 'gbPick', gbPick, gbReset, gbRender);
-     gbPick = p.pick; gbReset = p.reset; p.restore();
-   呼叫端須覆寫原本的 pick／reset，因 inline onclick 於點擊當下才解析全域名稱。 */
-function flowPersist(key, st, viewId, pickName, pick, reset, render){
-  function save(){ try{ sessionStorage.setItem(key, JSON.stringify(st)); }catch(e){} }
-  return {
-    pick: function(k,v,btn){ pick(k,v,btn); save(); },
-    reset: function(){ try{ sessionStorage.removeItem(key); }catch(e){} reset(); },
-    restore: function(){ try{
-      var s=JSON.parse(sessionStorage.getItem(key)||'null'); if(!s) return;
-      Object.assign(st,s);
-      Object.keys(st).forEach(function(k){
-        var v=st[k]; if(v==null) return;
-        var b=document.querySelector('#'+viewId+' .flow-opt[onclick*="'+pickName+'(\''+k+'\',\''+v+'\'"]');
-        if(b) b.classList.add('selected');
+   作法：離開前記下「已點過的 .flow-opt（依點擊順序）＋勾選框狀態＋捲動位置」，
+   計分工具的返回鍵帶 ?restore=1 回來時原樣重播，畫面停在原本點開超連結的地方。
+   以索引記錄，各流程頁不必自行接線；按「重置」即清空。
+   狀態放 sessionStorage（關掉分頁即失效），且只在 ?restore=1 時還原 —
+   從主選單重新進入仍是空白流程。 */
+(function(){
+  if (!/\/pathways\//.test(location.pathname)) return;
+  var KEY = 'flowNav:' + location.pathname.split('/').pop();
+  var MAX_PICKS = 300;          // 反覆改選也不至於無限累積
+  var picks = [];
+  var replaying = false;
+
+  function opts(){ return document.querySelectorAll('.flow-opt'); }
+  function boxes(){ return document.querySelectorAll('.sheet input[type=checkbox]'); }
+  function toolLinks(){ return document.querySelectorAll('a[href*="tools/"], [onclick*="tools/"]'); }
+  function indexOf(list, el){ return Array.prototype.indexOf.call(list, el); }
+
+  function save(linkIdx){
+    try{
+      sessionStorage.setItem(KEY, JSON.stringify({
+        picks: picks,
+        boxes: Array.prototype.map.call(boxes(), function(cb){ return cb.checked?1:0; }),
+        y: window.scrollY,
+        link: (typeof linkIdx==='number') ? linkIdx : -1
+      }));
+    }catch(e){}
+  }
+  function clear(){ picks=[]; try{ sessionStorage.removeItem(KEY); }catch(e){} }
+
+  /* 找出這次點擊是否要離開本頁去計分工具（含 <a href> 與 onclick 內的 location.href） */
+  function toolLinkFrom(el){
+    for (var n=el; n && n.nodeType===1; n=n.parentNode){
+      var href = n.getAttribute && n.getAttribute('href');
+      if (href && href.indexOf('tools/')>=0) return n;
+      var oc = n.getAttribute && n.getAttribute('onclick');
+      if (oc && oc.indexOf('tools/')>=0) return n;
+    }
+    return null;
+  }
+
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if (!t || t.nodeType!==1) return;
+    if (t.closest('.btn-reset')) { clear(); return; }
+
+    var opt = t.closest('.flow-opt');
+    if (opt){
+      if (!replaying){
+        var i = indexOf(opts(), opt);
+        if (i>=0){ picks.push(i); if (picks.length>MAX_PICKS) picks.shift(); save(); }
+      }
+      return;
+    }
+    var link = toolLinkFrom(t);
+    if (link) save(indexOf(toolLinks(), link));
+  }, true);
+
+  function restore(){
+    var d;
+    try{ d = JSON.parse(sessionStorage.getItem(KEY)||'null'); }catch(e){ return; }
+    if (!d) return;
+
+    if (Array.isArray(d.boxes)){
+      var cbs = boxes();
+      d.boxes.forEach(function(v,i){
+        if (!cbs[i] || cbs[i].checked===!!v) return;
+        cbs[i].checked = !!v;
+        cbs[i].dispatchEvent(new Event('change',{bubbles:true}));
       });
-      render();
-    }catch(e){} }
-  };
-}
+    }
+    if (Array.isArray(d.picks)){
+      replaying = true;
+      var list = opts();
+      d.picks.forEach(function(i){ if (list[i]) list[i].click(); });
+      replaying = false;
+      picks = d.picks.slice();
+    }
+
+    /* 版面已與離開時相同，直接回到原捲動位置；若那顆超連結仍不在視窗內才再校正一次。
+       圖片等資源載入完成前高度還不夠，瀏覽器自己也會把捲軸拉回頂端，
+       因此 DOM 就緒與 load 之後各補一次。 */
+    function place(){
+      window.scrollTo(0, d.y||0);
+      var link = toolLinks()[d.link];
+      if (!link || !window.innerHeight) return;
+      var r = link.getBoundingClientRect();
+      if (r.bottom<0 || r.top>window.innerHeight) link.scrollIntoView({block:'center'});
+    }
+    try{ if ('scrollRestoration' in history) history.scrollRestoration='manual'; }catch(e){}
+    requestAnimationFrame(place);
+    if (document.readyState==='complete') setTimeout(place,0);
+    else window.addEventListener('load', function(){ setTimeout(place,0); });
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    if (location.search.indexOf('restore=1')<0) return;
+    restore();
+    /* 網址留著 ?restore=1 會讓重新整理又跳一次，還原完就抹掉 */
+    try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+  });
+})();

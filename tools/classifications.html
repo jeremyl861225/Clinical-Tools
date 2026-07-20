@@ -724,11 +724,11 @@ function clApplyHash(){
 
 /* 由流程圖進來時（?from=）給一個原路返回鍵 */
 var FROM={
-  chole:['../pathways/cholecystitis.html','← 返回膽囊炎決策'],
-  panc:['../pathways/pancreatitis.html','← 返回胰臟炎決策'],
-  'gi-bleed':['../pathways/gi-bleeding.html','← 返回消化道出血決策'],
-  divert:['../pathways/diverticulitis.html','← 返回憩室炎決策'],
-  hernia:['../pathways/hernia.html','← 返回疝氣決策']
+  chole:['../pathways/cholecystitis.html?restore=1','← 返回膽囊炎決策'],
+  panc:['../pathways/pancreatitis.html?restore=1','← 返回胰臟炎決策'],
+  'gi-bleed':['../pathways/gi-bleeding.html?restore=1','← 返回消化道出血決策'],
+  divert:['../pathways/diverticulitis.html?restore=1','← 返回憩室炎決策'],
+  hernia:['../pathways/hernia.html?restore=1','← 返回疝氣決策']
 };
 (function(){
   var m=(location.search||'').match(/[?&]from=([\w-]+)/);
