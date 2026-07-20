@@ -232,6 +232,7 @@ function switchTab(id, tab){
     if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
     if(c.pathway === 'esoph' && typeof initEsophPathway === 'function') initEsophPathway();
     if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
+    if(c.pathway === 'thyroid' && typeof initThyroidPathway === 'function') initThyroidPathway();
     if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
     if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
     if(c.pathway === 'panc' && typeof initPancPathway === 'function') initPancPathway();
@@ -515,6 +516,9 @@ function renderTx(c){
   }
   if(c.pathway === 'breast' && typeof breastPathwayHTML === 'function'){
     return breastPathwayHTML();
+  }
+  if(c.pathway === 'thyroid' && typeof thyroidPathwayHTML === 'function'){
+    return thyroidPathwayHTML();
   }
   if(c.pathway === 'colon' && typeof colonPathwayHTML === 'function'){
     return colonPathwayHTML();

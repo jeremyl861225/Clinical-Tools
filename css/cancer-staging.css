@@ -291,6 +291,11 @@
   .flow-fu .fu-list li{margin:3px 0;}
   /* 指引本身沒有寫的部分（如食道癌無術後追蹤時程章節）：標為留白而非當成建議。 */
   .flow-fu .fu-gap{color:var(--muted); font-style:italic;}
+  /* 同一個「來源缺口」標記也會出現在建議區塊的內文與註腳中（深色底），
+     需自己的配色，否則會靜默地渲染成一般內文。 */
+  .rec-detail .fu-gap, .rec-note .fu-gap{font-style:italic; opacity:.85;}
+  .flow-step .note .fu-gap{color:var(--muted); font-style:italic;}
+  .flow-rec.rec-idle .rec-detail .fu-gap, .flow-rec.rec-idle .rec-note .fu-gap{color:var(--muted); opacity:1;}
   .kps-details{margin:6px 0 2px;}
   .kps-details summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; color:inherit; text-decoration:underline; opacity:.92;}
   .kps-details summary::-webkit-details-marker{display:none;}
