@@ -51,14 +51,26 @@
 
     <div class="meld-field">
       <label class="mf-label">白蛋白 Albumin</label>
-      <div class="mf-inputwrap"><input type="number" id="nl_alb" min="5" max="70" step="0.1" placeholder="g/L"></div>
-      <span class="mf-note">單位為 <b>g/L</b>（台灣報告多為 g/dL，需 ×10）。Winsorise 10–55；<b>不置中</b>，直接以原始值進入模型</span>
+      <div class="mf-inputwrap">
+        <input type="number" id="nl_alb" min="0.5" step="0.1" placeholder="數值">
+        <select id="nl_alb_unit" style="margin-left:6px;">
+          <option value="gdl">g/dL</option>
+          <option value="gl">g/L</option>
+        </select>
+      </div>
+      <span class="mf-note">台灣報告為 <b>g/dL</b>（如 3.5）；模型用 g/L，換算 ×10。Winsorise 10–55 g/L（＝<b>1.0–5.5 g/dL</b>）；<b>不置中</b>，直接以原始值進入模型</span>
     </div>
 
     <div class="meld-field">
       <label class="mf-label">白血球 WBC</label>
-      <div class="mf-inputwrap"><input type="number" id="nl_wbc" min="0.1" max="100" step="0.1" placeholder="×10⁹/L"></div>
-      <span class="mf-note">×10⁹/L 即 K/µL。取自然對數後 Winsorise 0.8–3.6（約 2.2–36.6 ×10⁹/L），再減 2.4</span>
+      <div class="mf-inputwrap">
+        <input type="number" id="nl_wbc" min="1" step="1" placeholder="數值">
+        <select id="nl_wbc_unit" style="margin-left:6px;">
+          <option value="ul">/µL</option>
+          <option value="k">K/µL（×10⁹/L）</option>
+        </select>
+      </div>
+      <span class="mf-note">台灣報告多為 <b>/µL</b>（如 11000）；模型用 ×10⁹/L，換算 ÷1000。取自然對數後 Winsorise 0.8–3.6（約 <b>2,200–36,600 /µL</b>），再減 2.4</span>
     </div>
 
     <div class="meld-field">
@@ -70,7 +82,7 @@
           <option value="mmol">Urea mmol/L</option>
         </select>
       </div>
-      <span class="mf-note">模型用的是 <b>urea mmol/L</b>。台灣檢驗報告多為 <b>BUN mg/dL</b>（換算 ÷2.8）。取自然對數後 Winsorise 0.5–3.7，再減 1.9</span>
+      <span class="mf-note">台灣報告為 <b>BUN mg/dL</b>；模型用 urea mmol/L，換算 ÷2.8。取自然對數後 Winsorise 0.5–3.7（約 <b>4.6–110 mg/dL BUN</b>），再減 1.9</span>
     </div>
 
     <div class="meld-field">
@@ -188,14 +200,15 @@
       <div class="formula-result">= <span id="nl_logit">—</span>　→　風險 = eˣ ÷ (1 + eˣ)</div>
     </div>
 
-    <div class="metric-label" style="margin-top:14px;">Winsorise 後實際帶入的數值</div>
+    <div class="metric-label" style="margin-top:14px;">換算為模型單位後、Winsorise 後實際帶入的數值</div>
     <div class="breakdown">
-      <div>Albumin <b id="nl_w_alb">—</b></div>
+      <div>Albumin g/L <b id="nl_w_alb">—</b></div>
+      <div>WBC ×10⁹/L <b id="nl_w_wbcRaw">—</b></div>
+      <div>Urea mmol/L <b id="nl_w_ureaRaw">—</b></div>
       <div>ln(Urea) <b id="nl_w_urea">—</b></div>
       <div>ln(WBC) <b id="nl_w_wbc">—</b></div>
       <div>Pulse <b id="nl_w_pulse">—</b></div>
       <div>SBP <b id="nl_w_sbp">—</b></div>
-      <div>Urea mmol/L <b id="nl_w_ureaRaw">—</b></div>
     </div>
 
     <div class="risk-note" id="nl_note"></div>
@@ -251,16 +264,20 @@ function nlNum(id){ var v = parseFloat(document.getElementById(id).value); retur
 function nlFmt(x){ return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(4); }
 
 function nlCalc(){
-  var age = nlNum('nl_age'), alb = nlNum('nl_alb'), wbc = nlNum('nl_wbc');
+  var age = nlNum('nl_age'), albIn = nlNum('nl_alb'), wbcIn = nlNum('nl_wbc');
   var ureaIn = nlNum('nl_urea'), pulse = nlNum('nl_pulse'), sbp = nlNum('nl_sbp');
 
-  /* 一律先換算成模型用的 urea mmol/L，避免兩套單位各自維護而漂移 */
-  var ureaMmol = null;
-  if (ureaIn !== null && ureaIn > 0) {
-    ureaMmol = document.getElementById('nl_urea_unit').value === 'bun' ? ureaIn / 2.8 : ureaIn;
-  }
+  /* 輸入一律以台灣慣用單位為主，先換算成模型單位再計算——
+     只在這一處換算，避免兩套單位各自維護而漂移。
+     模型單位：albumin g/L、WBC ×10⁹/L、urea mmol/L。 */
+  var alb = albIn === null ? null
+          : (document.getElementById('nl_alb_unit').value === 'gdl' ? albIn * 10 : albIn);
+  var wbc = (wbcIn === null || wbcIn <= 0) ? null
+          : (document.getElementById('nl_wbc_unit').value === 'ul' ? wbcIn / 1000 : wbcIn);
+  var ureaMmol = (ureaIn === null || ureaIn <= 0) ? null
+          : (document.getElementById('nl_urea_unit').value === 'bun' ? ureaIn / 2.8 : ureaIn);
 
-  var ready = age !== null && alb !== null && wbc !== null && wbc > 0
+  var ready = age !== null && alb !== null && wbc !== null
               && ureaMmol !== null && pulse !== null && sbp !== null;
 
   var asa  = document.getElementById('nl_asa').value;
@@ -272,7 +289,7 @@ function nlCalc(){
   var soil = document.getElementById('nl_soil').value === '1';
 
   var t = {age:0, asa:0, alb:0, pulse:0, sbp:0, urea:0, wbc:0, gcs:0, mal:0, resp:0, urg:0, ind:0, soil:0};
-  var w = {alb:'—', urea:'—', wbc:'—', pulse:'—', sbp:'—', ureaRaw:'—'};
+  var w = {alb:'—', urea:'—', wbc:'—', pulse:'—', sbp:'—', ureaRaw:'—', wbcRaw:'—'};
 
   if (ready) {
     var ageC   = age - 64;
@@ -304,12 +321,13 @@ function nlCalc(){
     w.pulse = nlClamp(pulse, 55, 145) + (nlClamp(pulse, 55, 145) !== pulse ? ' ⚠' : '');
     w.sbp = nlClamp(sbp, 70, 190) + (nlClamp(sbp, 70, 190) !== sbp ? ' ⚠' : '');
     w.ureaRaw = ureaMmol.toFixed(2);
+    w.wbcRaw = wbc.toFixed(2);
   }
 
   ['age','asa','alb','pulse','sbp','urea','wbc','gcs','mal','resp','urg','ind','soil'].forEach(function(k){
     document.getElementById('nl_t_' + k).textContent = ready ? nlFmt(t[k]) : '—';
   });
-  ['alb','urea','wbc','pulse','sbp','ureaRaw'].forEach(function(k){
+  ['alb','urea','wbc','pulse','sbp','ureaRaw','wbcRaw'].forEach(function(k){
     document.getElementById('nl_w_' + k).textContent = w[k];
   });
 
@@ -317,7 +335,7 @@ function nlCalc(){
     document.getElementById('nl_pct').textContent = '—';
     document.getElementById('nl_logit').textContent = '—';
     document.getElementById('nl_band').textContent = '';
-    document.getElementById('nl_note').innerHTML = '請填入全部六項數值（年齡、白蛋白、白血球、尿素氮、心跳、收縮壓）。<b>白蛋白單位為 g/L</b>——台灣報告若是 g/dL 請 ×10，填錯會嚴重低估風險。';
+    document.getElementById('nl_note').innerHTML = '請填入全部六項數值（年齡、白蛋白、白血球、尿素氮、心跳、收縮壓）。三個檢驗值<b>預設為台灣慣用單位</b>（Albumin g/dL、WBC /µL、BUN mg/dL），本頁自動換算為模型單位；若您的報告是別的單位，請用旁邊的下拉選單切換。';
     return;
   }
 
