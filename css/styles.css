@@ -388,6 +388,9 @@
   .flow-step.hidden,.flow-connector.hidden,.hidden{display:none;}
   .flow-link{display:inline-block; margin-top:9px; font-family:var(--mono); font-size:12px; color:var(--accent); background:none; border:1px dashed var(--accent-soft); border-radius:2px; padding:5px 10px; cursor:pointer;}
   .flow-link:hover{border-color:var(--accent); background:var(--accent-soft);}
+  /* .flow-link 的 display 與上方 .hidden 同特異度且排在後面，會蓋掉 .hidden；
+     可切換顯示的 flow-link 必須靠這條才藏得住（僅加 class 不會生效）。 */
+  .flow-link.hidden{display:none;}
   /* 等寬工具類：供說明區之 ※ 註腳與行內代碼使用（顏色沿用所在容器） */
   .mono{font-family:var(--mono);}
   /* 行內計算機連結：以 currentColor 上色，故淺色說明區與深色建議卡皆可用 */
