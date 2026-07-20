@@ -39,9 +39,8 @@
       { href: 'tools/antibiotics.html#mode=lookup',   zh: '藥物查詢',         en: 'Drug Lookup' },
       { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' }
     ],
-    'tools/cancer.html': [
-      { href: 'tools/cancer.html', zh: '癌別總覽', en: 'All Cancers' }
-    ]
+    // 空陣列＝這一類只列底下的癌別；該頁本身由大類標題連過去，不再重複一項
+    'tools/cancer.html': []
   };
   var CANCER_PAGE = 'tools/cancer.html';
 
@@ -138,7 +137,11 @@
 
       // 方磚連 #abdomen 這種站內錨點時，補上首頁路徑，子頁點了才回得去
       var dest = href.charAt(0) === '#' ? 'index.html' + href : href;
-      if (items.length) groups.push({ title: title, en: en, href: dest, items: items });
+      // 直接連向頁面的方磚即使暫時沒有細目（癌別還沒載到）也要保留，
+      // 否則整類會從導覽列消失；標題本身就是通往該頁的連結
+      if (items.length || /\.html$/.test(href)) {
+        groups.push({ title: title, en: en, href: dest, items: items });
+      }
     });
     return groups;
   }
@@ -181,21 +184,30 @@
     var tail = path.replace(/^.*?([^/]+\/)?([^/]+\.html)$/, '$1$2');
     return here.slice(-tail.length) === tail;
   }
-  // 本頁對應的項目：hash 相符者優先；本頁無 hash 時取該頁第一個項目
+  // 一頁對到多個項目時（分頁、癌別），網址列的 hash 決定是哪一個。
+  // 沒有 hash 時：先找不帶 hash 的那一項，再看該頁有沒有預設分頁；
+  // 都沒有就不標（例如癌症頁停在癌別清單，標任何一個癌別都是錯的）。
+  var DEFAULT_HASH = { 'tools/antibiotics.html': '#mode=empiric' };
+  function itemHash(a) {
+    var h = a.getAttribute('data-href').split('#')[1];
+    return h ? '#' + h : '';
+  }
   function markCurrent(nav) {
     var hash = location.hash;
     var mine = Array.prototype.filter.call(nav.querySelectorAll('.nav-item'), function (a) {
       return samePage(a.getAttribute('data-href'));
     });
     if (!mine.length) return null;
-    var hit = null;
-    if (hash) hit = mine.filter(function (a) {
-      return a.getAttribute('data-href').indexOf('#') > -1 &&
-             '#' + a.getAttribute('data-href').split('#')[1] === hash;
-    })[0];
-    var cur = hit || mine[0];
-    cur.classList.add('is-current');
-    return cur;
+
+    var want = hash || null;
+    if (!want) {
+      var plain = mine.filter(function (a) { return !itemHash(a); })[0];
+      if (plain) { plain.classList.add('is-current'); return plain; }
+      want = DEFAULT_HASH[mine[0].getAttribute('data-href').split('#')[0]] || null;
+    }
+    var cur = want && mine.filter(function (a) { return itemHash(a) === want; })[0];
+    if (cur) cur.classList.add('is-current');
+    return cur || null;
   }
 
   /* ---- 注入 ---- */
@@ -213,7 +225,7 @@
       box.appendChild(h);
       h.children[0].textContent = g.title;
       h.children[1].textContent = g.en;
-      h.children[2].textContent = n;
+      h.children[2].textContent = n || '';
 
       g.items.forEach(function (it) {
         if (it.head) {                       // 癌別分群小標
@@ -295,8 +307,10 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && root.classList.contains('nav-open') && !desktop()) setOpen(false, false);
     });
+    // 手機（抽屜蓋在內容上）點任一連結即收合，並記下收合狀態：
+    // 只在畫面上收起而不記住的話，下一頁又會照著「使用者開過」重新展開。
     nav.addEventListener('click', function (e) {
-      if (e.target.closest('a') && !desktop()) setOpen(false, false);
+      if (e.target.closest('a') && !desktop()) setOpen(false, true);
     });
 
     // 同頁的 #mode=／#cancer= 連結不會重新載入，換頁內分頁後自行更新標示
