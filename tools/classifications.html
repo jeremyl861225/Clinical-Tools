@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分類與分級系統 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-classifications">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Grading &amp; Classification Systems</div>
+      <h1>分類與分級系統</h1>
+      <div class="sub">腹部急症各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <!-- 由流程圖以 ?from= 進來時才顯示，讓使用者查完分級能原路返回 -->
+      <button class="back-btn hidden" id="cl_back" style="border-color:var(--accent2); color:var(--accent2);"></button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-classifications'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="cl_tabs">
+    <button class="tab-btn active" data-tab="cross"   onclick="clTab('cross')">跨疾病</button>
+    <button class="tab-btn"        data-tab="biliary" onclick="clTab('biliary')">膽道</button>
+    <button class="tab-btn"        data-tab="colon"   onclick="clTab('colon')">大腸憩室</button>
+    <button class="tab-btn"        data-tab="panc"    onclick="clTab('panc')">胰臟</button>
+    <button class="tab-btn"        data-tab="hernia"  onclick="clTab('hernia')">疝氣</button>
+    <button class="tab-btn"        data-tab="gib"     onclick="clTab('gib')">消化道出血</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 16px;">
+    本頁只收<b>分類與分級系統</b>（把病人歸到某一級／某一型），不收預測分數（把病人算出一個數值）。
+    後者請見計分工具各頁；分級之後的<b>處置決策</b>請走對應的臨床決策流程圖。
+  </div>
+
+<!-- ==================== 跨疾病 ==================== -->
+<div id="tab-cross">
+
+  <div class="sys-head" id="sys-aast">
+    <span class="sys-name">AAST EGS 統一分級</span>
+    <span class="sys-en">AAST Grading Scale for 16 EGS Conditions</span>
+    <span class="sys-src">Tominaga 2016</span>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>分級哲學、驗證狀態與使用限制 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 分級哲學（原文）：</b>「These grades range from Grade I through Grade V, reflecting an escalating clinical progression from mild disease limited within the organ itself to severe disease that is widespread.」——即由<b>侷限於器官本身的輕症</b>遞進到<b>廣泛播散的重症</b>。<br><br>
+      <b>◆ 四個判定欄位：</b>臨床（Clinical）、影像（Imaging）、術中（Operative）、病理（Pathologic）。<b>部分疾病的部分欄位原表即為 N/A</b>，本頁照實顯示 N/A，不自行填補。<br><br>
+      <b>◆ 判定準則保留原文英文</b>：這四欄是診斷用的原始措辭，翻譯過程容易產生語意漂移，故僅將各級的「描述」譯為中文，準則欄位維持 AAST 原文。<br><br>
+      <b>⚠ 使用限制一：實際族群嚴重偏向 I–II 級。</b>多個驗證研究中 58–94% 落在 Grade I–II。此量表的實際行為<b>比較接近二分（單純 vs 複雜）而非真正的五級序位</b>。Scott 2021 的建議是：即使只二分為「較單純／較複雜」，仍具價值。<br><br>
+      <b>⚠ 使用限制二：16 個疾病中有 7 個從未經過驗證</b>——食道穿孔、骨盆腔發炎、肛周膿瘍、肋膜腔感染、手術部位感染、疝氣、腸道動脈缺血（僅間接出現於混合世代）。這些條目請視為<b>描述性共同語言</b>，不可作為預後推論。<br><br>
+      <b>⚠ 使用限制三：已知表現不佳者。</b><br>
+      ・<b>急性膽囊炎</b>：Schuster 2021（前瞻多中心 n=861）結論為「鑑別力中等，與 TG18 相近，但<b>普遍低於 Parkland 分級</b>，應先修訂再廣泛使用」。<br>
+      ・<b>腸阻塞</b>：McFadden 2022 發現<b>非單調</b>——Grade II 與 30 天死亡相關（OR 7.92），Grade III–V 反而較低（OR 3.56）；與 30 天再入院無關。<br>
+      ・<b>消化性潰瘍穿孔</b>：在美國族群有效，<b>在南非族群無效</b>。<br>
+      ・<b>乳房感染</b>：Mayo κ=1.0，南非 κ=0.34。<br>
+      ・<b>腸道吻合（RESHAPES）</b>：吻合併發症與死亡率<b>與分級無關</b>。<br>
+      ・<b>行政／申報資料</b>：Scott 2021（NIS，n=1,090 萬）——「沒有任何一個疾病能對應到五個不同的嚴重度等級，且分級上升與預後之關聯在各疾病間並不一致。」<br><br>
+      <b>◆ 版本說明：</b>16 個疾病由 Shafi 2014（8 個消化道疾病）與 Crandall 2014（另 8 個）合併，Tominaga 2016 整併為四欄準則。<b>此後未再有增修</b>。近年 AAST 對胰臟（2024）、腎臟（2025）、大腸（2020）的修訂屬<b>創傷 Organ Injury Scale，是另一套系統</b>，切勿混用。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="field-row"><label>疾病</label>
+      <select id="ae_dz" style="flex:1;"></select>
+    </div>
+    <div class="field-row"><label>分級</label>
+      <select id="ae_gr" style="flex:1;">
+        <option value="0">Grade I</option>
+        <option value="1">Grade II</option>
+        <option value="2">Grade III</option>
+        <option value="3">Grade IV</option>
+        <option value="4">Grade V</option>
+      </select>
+    </div>
+    <div class="note" id="ae_val"></div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">描述 Description</div>
+    <div class="metric-value" id="ae_desc" style="font-size:19px;"></div>
+    <div class="metric-label" style="margin-top:12px;">判定準則（AAST 原文）</div>
+    <table class="ref">
+      <tr><th style="width:22%;">Clinical</th><td id="ae_c"></td></tr>
+      <tr><th>Imaging</th><td id="ae_i"></td></tr>
+      <tr><th>Operative</th><td id="ae_o"></td></tr>
+      <tr><th>Pathologic</th><td id="ae_p"></td></tr>
+    </table>
+    <div class="risk-note" id="ae_note"></div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/27257696/" target="_blank" rel="noopener" class="ref-link">Tominaga GT, et al. The AAST grading scale for 16 emergency general surgery conditions. J Trauma Acute Care Surg. 2016;81(3):593-602.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24553565/" target="_blank" rel="noopener" class="ref-link">Shafi S, et al. Measuring anatomic severity of disease in emergency general surgery. J Trauma Acute Care Surg. 2014;76(3):884-887.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25494421/" target="_blank" rel="noopener" class="ref-link">Crandall ML, et al. Application of a uniform anatomic grading system to measure disease severity in eight emergency general surgical illnesses. J Trauma Acute Care Surg. 2014;77(5):705-708.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32371835/" target="_blank" rel="noopener" class="ref-link">Schuster KM, et al. Multicenter validation of the AAST grading scale for acute cholecystitis. J Trauma Acute Care Surg. 2021;90(1):87-96.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33093292/" target="_blank" rel="noopener" class="ref-link">Scott JW, et al. Evaluating the AAST EGS grading system using administrative data. J Trauma Acute Care Surg. 2021;90(3):500-507.</a></footer>
+</div>
+
+<!-- ==================== 膽道 ==================== -->
+<div id="tab-biliary" class="hidden">
+
+  <div class="sys-head" id="sys-tg18-gb">
+    <span class="sys-name">TG18 急性膽囊炎嚴重度分級</span>
+    <span class="sys-en">Tokyo Guidelines 2018 · Acute Cholecystitis</span>
+    <span class="sys-src">Yokoe 2018</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>Grade I 輕度：</b>無器官功能障礙、僅膽囊輕度發炎。<br><br>
+      <b>Grade II 中度（任一）：</b>WBC &gt;18,000/mm³、右上腹可觸及壓痛腫塊、症狀 &gt;72 小時、或明顯局部發炎（壞疽性、膽囊周圍／肝膿瘍、膽汁性腹膜炎、氣腫性膽囊炎）。<br><br>
+      <b>Grade III 重度（合併器官／系統功能障礙，任一）：</b>心血管（需 dopamine ≥5 mcg/kg/min 或任何劑量 norepinephrine）、神經（意識障礙）、呼吸（PaO₂/FiO₂ &lt;300）、腎（Oliguria 或 Cr &gt;2.0 mg/dL）、肝（PT-INR &gt;1.5）、血液（PLT &lt;100 k/mm³）。<br><br>
+      <b>◆ Grade III 之內部再分層：負向預測因子（NPF） vs 可逆性器官障礙（FOSF）</b><br>
+      ・<b>負向預測因子 NPF：</b>① 黃疸（T-Bil ≥2 mg/dL）② 神經功能障礙 ③ 呼吸功能障礙（PaO₂/FiO₂ &lt;300）。屬 unfavorable，存在任一則不建議早期手術。<br>
+      ・<b>可逆性器官障礙 FOSF：</b>心血管（升壓）或腎功能障礙若對初始治療（輸液、抗生素、器官支持）<b>快速反應而恢復</b>，屬 favorable，仍可能適合早期手術。<br>
+      ・可早期手術之嚴格條件：CCI ≤3、ASA ≤2、無 NPF、器官障礙屬 FOSF，且於具進階腹腔鏡經驗之醫學中心。Grade I／II 之低風險切點則為 CCI ≤5、ASA ≤2。<br><br>
+      <span class="mono" style="font-size:11.5px;">※ AAST EGS 之膽囊炎條目在 Schuster 2021 中鑑別力與 TG18 相近，但低於 Parkland；三者評的面向不同（TG18＝臨床嚴重度、AAST＝解剖範圍、Parkland＝術中所見），不可互換。</span>
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="../pathways/cholecystitis.html">→ 依此分級決定手術時機：急性膽囊炎手術決策流程</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-tg18-cholangitis">
+    <span class="sys-name">TG18 急性膽管炎</span>
+    <span class="sys-en">Diagnostic Criteria &amp; Severity Grading</span>
+    <span class="sys-src">Kiriyama 2018</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>◆ 兩段式判讀：</b>先以 A／B／C 三組準則判定「疑似」或「確定」急性膽管炎，再對已診斷者做嚴重度分級。<b>嚴重度分級只在有膽管炎診斷時才有意義</b>；未達疑似診斷者不分級，請考慮其他急性腹症並排除急性肝炎。<br><br>
+      <b>◆ 診斷準則：</b>疑似診斷 = A 任一項 ＋（B 或 C 任一項）；確定診斷 = A 任一項 ＋ B 任一項 ＋ C 任一項。<br>
+      ・<b>A 全身性發炎：</b>A-1 發燒和／或寒顫（BT &gt;38°C）；A-2 發炎反應證據（WBC &lt;4,000 或 &gt;10,000/µL，或 CRP ≥1 mg/dL）。<br>
+      ・<b>B 膽汁鬱積：</b>B-1 黃疸（T-Bil ≥2 mg/dL）；B-2 肝功能檢驗異常（ALP／γ-GTP／AST／ALT 任一 &gt;1.5× 正常上限）。<br>
+      ・<b>C 影像：</b>C-1 膽道擴張；C-2 影像可見病因（狹窄、結石、支架等）。<br><br>
+      <b>◆ 嚴重度：</b>Grade III = 出現任一器官功能障礙；Grade II = 符合 5 項中<b>任兩項</b>（WBC &gt;12,000 或 &lt;4,000／BT ≥39°C／年齡 ≥75／T-Bil ≥5 mg/dL／低白蛋白）；Grade I = 兩者皆不符合。Grade I 為<b>否定式定義</b>，且係「初診當下」的判定 — TG18 並未要求「對初始治療有反應」（那是 TG07 的舊定義）。<br><br>
+      <b>◆ STD 的方向不同：</b>診斷準則 B-2 的 STD 指正常值<b>上限</b>（&gt;1.5×）；Grade II 白蛋白的 STD 指正常值<b>下限</b>（&lt;下限×0.7）。TG18 未給白蛋白的絕對數值，請依貴院實驗室下限換算。<br><br>
+      <b>◆ 原文的模糊處（本頁的處理方式）：</b><br>
+      ・Grade II 白血球，TG18 表格印「&gt;12,000」，同篇內文寫「≥12,000」。本頁採<b>表格值 &gt;12,000</b>，僅在剛好 12,000 時有差異。<br>
+      ・Grade III 腎功能障礙原文為「oliguria, serum creatinine &gt;2.0 mg/dL」，未定義寡尿的數值，也未言明兩者是「或」還是「且」。本頁比照通行做法採<b>任一即符合</b>。<br><br>
+      <b>◆ 引流時機（TG18）：</b>Grade I 多數僅需抗生素、對初始治療無反應時才引流；Grade II 早期引流（證據基礎為 24 小時內）；Grade III 器官支持穩定後儘速引流。<b>ESGE 2019 的時窗不同</b>（重度合併敗血性休克 12 小時內；中度放寬至 48–72 小時），臨床採用哪一套請明示。引流途徑首選<b>內視鏡經乳突引流（ERCP）</b>，ENBD 與支架效果相當；單純引流不需常規 EST。ERCP 失敗或無法執行時，EUS-BD 與 PTBD 為第二線，手術引流為最後手段。<br><br>
+      <b>◆ 與 TOKYO criteria 2024 無關：</b>後者是內視鏡膽道引流<b>療效報告的研究標準</b>（技術／臨床成功定義），不是嚴重度分級，也未取代 TG18。截至目前 TG18 仍為現行版本。
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="../pathways/cholecystitis.html">→ 本流程圖有可勾選的 TG18 膽管炎診斷／分級判定器</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-asge">
+    <span class="sys-name">總膽管結石風險分層</span>
+    <span class="sys-en">ASGE Risk Stratification for Choledocholithiasis</span>
+    <span class="sys-src">ASGE 2019</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>高風險（任一）：</b>影像見 CBD 結石、或 <b>T-Bil &gt;4 mg/dL 且 CBD 擴張</b>、或臨床急性膽管炎 → <b>直接 ERCP</b>。<br>
+      <b>中風險（任一）：</b>肝功能異常（非膽紅素項）、年齡 &gt;55、或 CBD 擴張（&gt;6 mm）而未達高風險 → 先 <b>EUS／MRCP 或術中膽道攝影（IOC）</b>確認。<br>
+      <b>低風險：</b>皆無 → <b>直接膽囊切除</b>（± IOC）。<br><br>
+      <b>CBD 擴張（操作型定義）：</b>膽囊在位者，總膽管內徑 <b>&gt;6 mm</b>（US／CT／MRCP 測量）為擴張；可年齡校正（&gt;60 歲約每增 10 歲 +1 mm）；膽囊切除後之基準可放寬至約 10 mm。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-parkland">
+    <span class="sys-name">Parkland 膽囊發炎分級</span>
+    <span class="sys-en">Parkland Grading Scale（術中第一眼）</span>
+    <span class="sys-src">Madni 2018</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      評<b>膽囊發炎嚴重度與局部解剖</b>——「這顆膽囊看起來多糟」。於<b>暴露膽囊後、開始分離前</b>的第一眼給分，單一整體印象，<b>不評估 Calot 三角</b>。評分者間信度 ICC 0.804。
+      <table class="def-table">
+        <tr><td>1</td><td>外觀正常膽囊（「知更鳥蛋藍」），無沾黏</td></tr>
+        <tr><td>2</td><td>僅頸部或下段有輕微沾黏，其餘正常</td></tr>
+        <tr><td>3</td><td>充血／膽囊周圍積液／體部沾黏／膽囊脹大（<b>任一</b>）</td></tr>
+        <tr><td>4</td><td>沾黏遮蔽大部分膽囊，<b>或</b> I–III 合併異常肝解剖、肝內膽囊、嵌頓結石（Mirizzi）</td></tr>
+        <tr><td>5</td><td>穿孔／壞死／因沾黏完全無法辨識膽囊（<b>任一</b>）</td></tr>
+      </table>
+      <b>Grade 4 是「或」的邏輯</b>——外觀溫和的膽囊也可能<b>純因解剖因素</b>被判為 4 級。部分二手來源漏掉這個「或」。<br><br>
+      ※ Parkland 各級的轉開腹率（1: 1.5%、2: 1.3%、3: 7.1%、4: 26.7%、5: 42.9%）<b>並非取自原始驗證世代</b>（Madni 2018，n=317，該表為付費牆內容），而是引自一個 206 人的獨立開放取用世代，僅供量級參考。原始驗證僅確認「隨級數上升，次全膽囊切除率、轉開腹率、膽汁滲漏率、手術時間均顯著增加」之方向與顯著性。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-nassar">
+    <span class="sys-name">Nassar 手術困難度分級</span>
+    <span class="sys-en">Nassar Operative Difficulty Scale</span>
+    <span class="sys-src">Nassar 1995／1996</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      評<b>手術技術困難度</b>——「這台刀多難開」。由三個面向各自判定、<b>取最差者</b>為總級數；其中「膽囊管蒂能否辨明」要等實際分離後才知道。
+      <table class="def-table">
+        <tr><th>級</th><th>膽囊</th><th>膽囊管蒂</th><th>沾黏</th></tr>
+        <tr><td>I</td><td>鬆軟、不沾黏</td><td>細而清楚</td><td>單純沾黏，至頸部／Hartmann 囊</td></tr>
+        <tr><td>II</td><td>黏液囊腫、充滿結石</td><td>富含脂肪</td><td>單純沾黏，至體部</td></tr>
+        <tr><td>III</td><td>深窩、急性膽囊炎、萎縮、纖維化、Hartmann 囊黏連總膽管、結石嵌頓</td><td>解剖異常，或膽囊管過短、擴張、被遮蔽</td><td>緻密沾黏至底部；侵及肝曲或十二指腸</td></tr>
+        <tr><td>IV</td><td>完全被遮蔽、積膿、壞疽、腫塊</td><td>完全無法辨明</td><td>緻密纖維化包覆膽囊；十二指腸或肝曲難以分離</td></tr>
+        <tr class="dt-warn"><td>V</td><td colspan="3">Mirizzi type 2 以上，或膽囊皮膚／十二指腸／結腸瘻管（<b>1996 修訂版新增</b>）</td></tr>
+      </table>
+      <b>Nassar 有 4 級與 5 級兩版</b>：1995 原始版為 I–IV，1996 於原作者群的參考世代加入 Grade V。<b>本頁採修訂版 I–V</b>；須注意 CholeS 大型驗證是把 <b>IV 與 V 合併分析</b>的（Grade V 佔參考世代 &lt;1%）。<br><br>
+
+      <b>◆ 預後（CholeS 多中心世代 n=8,755）</b>
+      <table class="def-table">
+        <tr><th>級</th><th>轉開腹</th><th>30 天併發症</th><th>總膽管損傷</th><th>手術時間中位數</th></tr>
+        <tr><td>I</td><td>0.2%</td><td>7.6%</td><td>0.0%</td><td>55 分</td></tr>
+        <tr><td>II</td><td>0.5%</td><td>—</td><td>0.2%</td><td>—</td></tr>
+        <tr><td>III</td><td>3.7%</td><td>—</td><td>0.2%</td><td>—</td></tr>
+        <tr><td>IV–V</td><td>27.2%</td><td>24.4%</td><td>1.7%</td><td>110 分</td></tr>
+      </table>
+      轉開腹 AUROC 0.903、30 天死亡率 AUROC 0.822；IV–V 對 I 之校正勝算比——轉開腹 OR 115.6（95% CI 52.9–252.9）、手術 &gt;90 分 OR 14.24、30 天併發症 OR 3.18。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>Parkland 與 Nassar 的關係、處置意涵與限制</summary>
+    <div class="box-inner">
+      <b>◆ 兩者評的不是同一件事，且不可互換。</b>兩套<b>並列使用、不指定何者為準</b>：文獻並未定義兩者該如何合併。落差大時請留意各自沒有評估到什麼。<br><br>
+      <b>◆ 高分級的處置意涵：</b>任一套達 <b>4 級以上</b>時轉開腹與膽道損傷風險顯著上升，應<b>及早</b>考慮 bailout——次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 <b>critical view of safety</b> 才切斷任何管狀構造；必要時術中膽道攝影或請求支援。<b>Nassar Grade V</b> 屬瘻管性病灶，需計畫性處理瘻管與膽道重建的可能，不宜視為一般困難膽囊。<br><br>
+      <b>◆ 兩點必須知道的限制：</b><br>
+      ・<b>WSES 2020、TG18、SAGES 均未正式採認 Parkland 或 Nassar。</b>WSES 2020 全文未提及此二者，其處理困難膽囊的方式是建議 bailout 技術而非困難度評分；SAGES 安全膽囊切除指引點名 TG18 與 AAST，並允許「其他有效的風險分層模式」。兩者應視為<b>已驗證的研究／稽核工具，但無學會背書</b>。<br>
+      ・<b>兩者皆為術中評分，無術前輸入。</b>若需術前預測，另有 Vohra／Griffiths 的術前風險分數；CholeS 亦指出 <b>CRP ≥90 mg/L 預測 Nassar IV–V</b>（敏感度 71.5%、特異度 70.5%，AUC 0.78）。<br><br>
+      REF — Madni TD, et al. Am J Surg. 2018;215(4):625-630.（PMID 28619262）｜ Madni TD, et al. Am J Surg. 2019;217(1):90-97.（PMID 30190078）｜ Griffiths EA, et al.（CholeS）Surg Endosc. 2019;33(1):110-121.（PMID 29956029）
+    </div>
+  </details>
+
+  <div class="sys-head" id="sys-niemeier">
+    <span class="sys-name">Niemeier 膽囊破裂分型</span>
+    <span class="sys-en">Niemeier Classification of Gallbladder Perforation</span>
+    <span class="sys-src">Niemeier 1934</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>Type I 自由穿孔：</b>破入腹腔，瀰漫性膽汁性腹膜炎。文獻占約 8.6–40%，預後最差（糖尿病病人較多）。<br>
+      <b>Type II 局部穿孔：</b>被大網膜／鄰近器官包裹，形成膽囊周圍膿瘍。最常見（約 46–76%）。<br>
+      <b>Type III 慢性穿孔：</b>形成膽囊—腸道瘻管（cholecysto-enteric fistula），多於術中才診斷；可併發膽石腸阻塞。<br><br>
+      ・術前診斷率約 49–60%；整體死亡率中位數約 10.8%，年長／多共病者可超過 20%。<br>
+      ・<b>注意：</b>膽汁性腹膜炎、膽囊周圍膿瘍本身即符合 TG18 <b>Grade II</b> 之「明顯局部發炎」；合併器官障礙才是 Grade III。<br><br>
+      <b>◆ 附：膽囊出血之嚴重度分層</b>（Cureus 2025 系統性回顧）——非 Niemeier 分型，但同屬膽囊本身的併發型態：血行動力學<b>穩定</b> → haemorrhagic cholecystitis (HC)，可保守／擇期處理；<b>不穩定</b>或需輸血 → haemorrhagic gallbladder (HGB)，需緊急或多模式介入。部分病人住院中才由穩定轉為不穩定，須持續監測。約占急性膽囊炎 0.55%；約 47.7% 使用抗凝血劑，46% 無膽結石；死亡率約 10.8%。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-mirizzi">
+    <span class="sys-name">Mirizzi syndrome — Csendes 分型</span>
+    <span class="sys-en">Csendes Classification</span>
+    <span class="sys-src">Csendes 1989／2007</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>Type I：</b>Hartmann pouch／膽囊管嵌頓結石造成總肝管<b>外在壓迫</b>，無瘻管。<br>
+      <b>Type II：</b>膽囊膽道瘻管，侵蝕 <b>&lt;1/3</b> 總膽管周徑。<br>
+      <b>Type III：</b>侵蝕 <b>1/3–2/3</b> 周徑。<br>
+      <b>Type IV：</b>侵蝕 <b>&gt;2/3</b>／總膽管壁完全破壞。<br>
+      <b>Type V：</b>上述任一型 ＋ 膽囊腸道瘻管；<b>Va</b> 無膽石腸阻塞、<b>Vb</b> 合併膽石腸阻塞（gallstone ileus／Bouveret）。<br><br>
+      ・<b>術前診斷率僅 18–62%</b>，MRCP + ERCP 併用可達 85.9%；ERCP 兼具診斷、減壓與 bridge-to-surgery。<br>
+      ・腹腔鏡多限於 Type I（含部分 II）；整體轉開腹率約 34%，Csendes 分型是轉開腹的獨立危險因子。<br>
+      ・<b>膽囊癌風險：</b>Mirizzi 合併膽囊癌約 5.3%，高於單純膽石症之 1% — 標本務必送病理。<br>
+      ・<b>次全膽囊切除（Strasberg）：</b>fenestrating 型不封閉膽囊、膽汁瘻較多但無殘餘膽囊結石；reconstituting 型封閉下端、留下殘餘膽囊。困難膽囊以此避免膽道損傷。
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Yokoe+M%2C+et+al.+Tokyo+Guidelines+2018+%28TG18%29.+J+Hepatobiliary+Pancreat+Sci.+2018%3B25%281%29%3A41-54" target="_blank" rel="noopener" class="ref-link">Yokoe M, et al. TG18: diagnostic criteria and severity grading of acute cholecystitis. J Hepatobiliary Pancreat Sci. 2018;25(1):41-54.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29032610/" target="_blank" rel="noopener" class="ref-link">Kiriyama S, et al. TG18: diagnostic criteria and severity grading of acute cholangitis. J Hepatobiliary Pancreat Sci. 2018;25(1):17-30.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Buxbaum+JL%2C+et+al.+ASGE+guideline%3A+choledocholithiasis.+Gastrointest+Endosc.+2019%3B89%286%29%3A1075-1105" target="_blank" rel="noopener" class="ref-link">Buxbaum JL, et al. ASGE guideline: choledocholithiasis. Gastrointest Endosc. 2019;89(6):1075-1105.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28619262/" target="_blank" rel="noopener" class="ref-link">Madni TD, et al. The Parkland grading scale for cholecystitis. Am J Surg. 2018;215(4):625-630.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29956029/" target="_blank" rel="noopener" class="ref-link">Griffiths EA, et al. (CholeS) Utilisation of an operative difficulty grading scale. Surg Endosc. 2019;33(1):110-121.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/41695875/" target="_blank" rel="noopener" class="ref-link">Kolokotronis T, Pantelis D. Interventional management of acute perforated cholecystitis. World J Gastrointest Surg. 2026;18(1):114059.</a> ｜ <a href="https://doi.org/10.7759/cureus.94342" target="_blank" rel="noopener" class="ref-link">Florou E, et al. Clarifying the spectrum of gallbladder haemorrhage: a systematic review. Cureus. 2025;17(10):e94342.</a> ｜ <a href="https://doi.org/10.1097/MD.0000000000009691" target="_blank" rel="noopener" class="ref-link">Chen H, et al. Current trends in the management of Mirizzi syndrome. Medicine (Baltimore). 2018;97(4):e9691.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26521077/" target="_blank" rel="noopener" class="ref-link">Strasberg SM, et al. Subtotal cholecystectomy — fenestrating vs reconstituting. J Am Coll Surg. 2016;222(1):89-96.</a></footer>
+</div>
+
+<!-- ==================== 大腸憩室 ==================== -->
+<div id="tab-colon" class="hidden">
+
+  <div class="sys-head" id="sys-wses-ct">
+    <span class="sys-name">WSES CT 分期</span>
+    <span class="sys-en">WSES CT-driven Classification for Acute Left Colonic Diverticulitis</span>
+    <span class="sys-src">Sartelli 2015／2020</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <table class="def-table">
+        <tr><th>期</th><th>CT 所見</th></tr>
+        <tr><td>0</td><td>Diverticula, thickening of the wall, increased density of the pericolic fat（<b>Uncomplicated</b>）</td></tr>
+        <tr><td>1A</td><td>Pericolic air bubbles or small amount of pericolic fluid without abscess（within 5 cm from inflamed bowel segment）</td></tr>
+        <tr><td>1B</td><td>Abscess ≤ 4 cm</td></tr>
+        <tr><td>2A</td><td>Abscess &gt; 4 cm</td></tr>
+        <tr><td>2B</td><td>Distant gas（&gt; 5 cm from inflamed bowel segment）</td></tr>
+        <tr><td>3</td><td>Diffuse fluid without distant free gas</td></tr>
+        <tr><td>4</td><td>Diffuse fluid with distant free gas</td></tr>
+      </table>
+      <span class="mono" style="font-size:11.5px;">※ 1A 與 2B 的 5 cm 指的是<b>氣體距發炎腸段</b>的距離，不是病灶本身的大小。</span><br>
+      <span class="mono" style="font-size:11.5px;">※ 此分類為專家共識，無衍生或驗證世代。WSES 2020 自陳：多種 ALCD 分類「<i>None has been conclusively proven to be superior in predicting patient outcomes</i>」，故未建議特定分類。</span><br><br>
+      <b>◆ 右側憩室炎沒有經驗證之分期系統。</b>modified Hinchey、Ambrosetti、WSES CT 分類原始論文皆明訂為左側；在最大的右側世代（Park 2021, n=540）modified Hinchey <b>無法</b>預測保守治療成敗。WSES 2020 對右側之立場為「所有 ALCD 的 statement 亦適用於 ARCD」，<b>該句是全篇唯一未標註 GRADE 強度與證據等級者</b>，屬專家共識外推。
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="../pathways/diverticulitis.html">→ 依此分期決定處置：急性大腸憩室炎處置決策流程</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-hinchey">
+    <span class="sys-name">Hinchey／Modified Hinchey 分類</span>
+    <span class="sys-en">Hinchey 1978 · Wasvary 1999 · Kaiser 2005</span>
+    <span class="sys-src">術中所見＋CT</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>◆ 沿革（常被張冠李戴）：</b><b>Hinchey 1978</b> 依<b>術中所見</b>分四期（I 周邊膿瘍／II 骨盆腔、腹腔內或後腹膜膿瘍／III 全腹化膿性腹膜炎／IV 全腹糞性腹膜炎），沒有 0 期也沒有 Ia/Ib；<b>Wasvary 1999</b> 加入 <b>0、Ia、Ib</b> 的細分；<b>Kaiser 2005</b> 為各期<b>掛上 CT 判讀準則</b>。正確說法是「Wasvary 加分期、Kaiser 加 CT 準則」，兩者常被合稱 modified Hinchey。<br><br>
+
+      <b>◆ Modified Hinchey ＋ CT 準則</b>
+      <table class="def-table">
+        <tr><th>期</th><th>臨床／手術定義</th><th>CT 所見</th></tr>
+        <tr><td>0</td><td>輕度臨床憩室炎</td><td>憩室存在，腸壁可增厚或不增厚；<b>無</b>結腸旁脂肪條紋</td></tr>
+        <tr><td>Ia</td><td>侷限之結腸旁發炎／蜂窩組織炎</td><td>腸壁增厚<b>合併</b>結腸旁軟組織變化／脂肪條紋；無成形之液體聚積</td></tr>
+        <tr><td>Ib</td><td>結腸旁或腸繫膜膿瘍</td><td>腸壁增厚＋脂肪條紋，<b>另有</b>結腸旁或腸繫膜膿瘍</td></tr>
+        <tr><td>II</td><td>骨盆、遠處腹腔內或後腹腔膿瘍</td><td>遠處膿瘍（骨盆或腸間）</td></tr>
+        <tr><td>III</td><td>瀰漫化膿性腹膜炎</td><td>游離液體／游離氣體，<b>無</b>可辨識之交通處</td></tr>
+        <tr><td>IV</td><td>瀰漫糞性腹膜炎</td><td>游離液體／游離氣體，<b>合併對比劑外溢</b></td></tr>
+      </table>
+      <b>⚠ 「4 公分」不屬於 modified Hinchey。</b>部分放射科來源在 Ib 與 II 之間加上「膿瘍 &lt;4 cm vs &gt;4 cm」，但 modified Hinchey 的 Ib 與 II 是<b>依位置</b>（結腸旁／腸繫膜 vs 骨盆／遠處／後腹腔）而非依大小區分。4 公分來自 WSES 分類與膿瘍引流文獻。<br><br>
+
+      <b>◆ 與 WSES CT 分期的對照</b>
+      <table class="def-table">
+        <tr><th>WSES</th><th>約略對應 Modified Hinchey</th></tr>
+        <tr><td>0</td><td>0 / Ia（WSES 0 已含脂肪條紋，橫跨兩期）</td></tr>
+        <tr class="dt-warn"><td>1A</td><td>Ia ※ <b>不等價</b>：WSES 1A 要求有腸外氣泡或液體（已穿孔但侷限），Hinchey Ia 不要求有氣體。單純蜂窩組織炎是 Hinchey Ia，但應歸 WSES 0</td></tr>
+        <tr><td>1B</td><td>Ib</td></tr>
+        <tr class="dt-warn"><td>2A</td><td>Ib <b>或</b> II ※ <b>不等價</b>：WSES 依大小、Hinchey 依位置——一個 &gt;4 cm 的<b>結腸旁</b>膿瘍是 WSES 2A，但仍是 Hinchey <b>Ib</b></td></tr>
+        <tr><td>2B</td><td>II–III（遠處游離氣體無乾淨對應階）</td></tr>
+        <tr><td>3</td><td>III</td></tr>
+        <tr><td>4</td><td>IV</td></tr>
+      </table>
+      此表僅供閱讀他院報告時參考，<b>不可用於自動換算</b>；標示 ※ 的兩列是實質不等價之處。<br><br>
+
+      <b>◆ WSES 2020 並未宣稱取代 Hinchey：</b>原文明言「現有多種分類系統，<b>沒有任何一種被確證在預測病人預後上更優越，因此無法給出特定建議</b>」。WSES 只是以自己的系統組織其處置建議。<br>
+      <b>◆ Wasvary 1999 的摘要裡沒有這套分期</b>——該文摘要是 42 人的同次住院切除 vs 擇期切除比較，分期只出現在內文。依摘要查核會誤判此引用有誤，實際上沒有。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>膿瘍引流切點的爭議（3 cm vs 4 cm，各學會不一致）</summary>
+    <div class="box-inner">
+      此議題<b>從未有任何隨機試驗</b>。各學會對同一份證據給出不同切點與強度：<br>
+      ・<b>WSES 2020</b>：&lt;4–5 cm 單用抗生素（<b>2C，弱建議</b>）<br>
+      ・<b>ASCRS 2020</b>：&gt;3 cm 即建議影像導引引流（<b>1B，強建議</b>）<br>
+      ・EAES/SAGES 2018 &gt;4 cm、ESCP 2020 &gt;3 cm、NICE 2019 &gt;3 cm、ACP 2022 &gt;4 cm<br><br>
+      3 cm 一說源自 Siewert 2006（單中心回顧，僅 31 個膿瘍，其中 23 個 &lt;3 cm 全數以抗生素緩解，無對照組）；4 cm 並無原始結果研究，是<b>分類系統的分界被當成治療規則</b>。Lambrichts 2019（n=447）是唯一實際檢定切點者：3 cm 最能預測短期失敗（OR 2.05, 1.09–3.86），5 cm 最能預測急診手術（OR 2.96, 1.08–8.13），但<b>約 31.5% 的膿瘍大小資料是多重插補補上的</b>。同研究 ≥5 cm 次組中，單用抗生素失敗 28% vs 引流 35%（p=0.409）——<b>引流在數字上並未較好</b>。切點只能辨識「預後較差」的族群，尚未證明能辨識「引流可獲益」的族群。
+    </div>
+  </details>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/32381121/" target="_blank" rel="noopener" class="ref-link">Sartelli M, et al. 2020 update of the WSES guidelines for the management of acute colonic diverticulitis. World J Emerg Surg. 2020;15(1):32.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/10399971/" target="_blank" rel="noopener" class="ref-link">Wasvary H, et al. Same hospitalization resection for acute diverticulitis. Am Surg. 1999;65(7):632-635.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15784040/" target="_blank" rel="noopener" class="ref-link">Kaiser AM, et al. The management of complicated diverticulitis and the role of computed tomography. Am J Gastroenterol. 2005;100(4):910-917.</a></footer>
+</div>
+
+<!-- ==================== 胰臟 ==================== -->
+<div id="tab-panc" class="hidden">
+
+  <div class="sys-head" id="sys-atlanta">
+    <span class="sys-name">Revised Atlanta 嚴重度分級</span>
+    <span class="sys-en">Revised Atlanta Classification (RAC)</span>
+    <span class="sys-src">Banks 2013</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>診斷（3 項符合 ≥2 項）：</b>① 與胰臟炎相符之腹痛　② 血清 amylase 和／或 lipase <b>&gt;3× ULN</b>　③ 影像上典型胰臟炎特徵（CT／MRI／US）。<br><br>
+      <b>嚴重度：</b><br>
+      ・<b>輕度 Mild</b>：無器官衰竭、無局部／全身併發症（間質水腫型），多於第一週緩解。<br>
+      ・<b>中重度 Moderately severe</b>：<b>暫時性</b>器官衰竭（&lt;48 小時）和／或局部／全身併發症或共病惡化。<br>
+      ・<b>重度 Severe</b>：<b>持續性</b>器官衰竭（&gt;48 小時）。<br>
+      ・器官衰竭定義：<b>modified Marshall score ≥2</b>（呼吸／腎臟／心血管其一）；持續 &gt;48 小時為 persistent。　<a class="tool-link" href="marshall.html">🧮 開啟 Modified Marshall 計算機</a><br><br>
+      <b>局部聚積之命名：</b><br>
+      ・<b>APFC</b>（acute peripancreatic fluid collection）急性胰周液體聚積 — &lt;4 週，間質水腫型<br>
+      ・<b>Pseudocyst</b> 假性囊腫 — &gt;4 週，有壁包覆之液體<br>
+      ・<b>ANC</b>（acute necrotic collection）急性壞死聚積 — &lt;4 週，含壞死組織<br>
+      ・<b>WON</b>（walled-off necrosis）包覆性壞死 — ≥4 週，成熟有壁包覆之壞死
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="../pathways/pancreatitis.html">→ 依此分級決定監測與介入時機：急性胰臟炎處置決策流程</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-dbc">
+    <span class="sys-name">DBC 決定因子分類</span>
+    <span class="sys-en">Determinant-Based Classification</span>
+    <span class="sys-src">Dellinger 2012</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <b>◆ 兩個決定因子交叉出四級：</b>DBC 只用<b>局部因子</b>（有無（胰周）壞死；若有，無菌或感染）與<b>全身因子</b>（有無器官衰竭；若有，暫時或持續）。原文並指出「兩者同時存在時的效應大於任一單獨存在」，故另立 <b>Critical</b>。
+      <table class="def-table">
+        <tr><th>DBC</th><th>局部因子</th><th>全身因子</th></tr>
+        <tr><td>Mild</td><td>無壞死</td><td><b>且</b> 無器官衰竭</td></tr>
+        <tr><td>Moderate</td><td>無菌性壞死</td><td><b>及／或</b> 暫時性器官衰竭</td></tr>
+        <tr><td>Severe</td><td>感染性壞死</td><td><b>或</b> 持續性器官衰竭</td></tr>
+        <tr><td>Critical</td><td>感染性壞死</td><td><b>且</b> 持續性器官衰竭</td></tr>
+      </table>
+
+      <b>⚠ 器官衰竭的計分方式與 Revised Atlanta 不同，兩者結果不可互相沿用。</b>DBC 用 <b>SOFA ≥2</b>（心血管／呼吸／腎臟；或需強心升壓支持、Cr &gt;2 mg/dL、PaO₂/FiO₂ &lt;300），Revised Atlanta 用 <b>Modified Marshall ≥2</b>。Marshall 的心血管項只看血壓與輸液反應、<b>沒有升壓劑項目</b>，而 SOFA 只要用到 dopamine ≤5 或任何 dobutamine 就給 2 分——<b>同一位病人可能一套判定有器官衰竭、另一套沒有</b>。暫時 = &lt;48 小時、持續 = ≥48 小時，此點兩套一致。<br><br>
+
+      <b>◆ 兩套分類會給出不同答案的病人（重點）</b>
+      <table class="def-table">
+        <tr><th>情境</th><th>DBC</th><th>Revised Atlanta</th></tr>
+        <tr><td>感染性壞死，無／僅暫時器官衰竭</td><td><b>Severe</b></td><td>Moderately severe</td></tr>
+        <tr><td>感染性壞死 ＋ 持續器官衰竭</td><td><b>Critical</b></td><td>Severe（無第四級）</td></tr>
+        <tr><td>非壞死性局部併發症（APFC、假性囊腫），無器官衰竭</td><td><b>Mild</b></td><td>Moderately severe</td></tr>
+        <tr><td>既有共病惡化，無壞死無器官衰竭</td><td><b>Mild</b></td><td>Moderately severe</td></tr>
+        <tr><td>持續器官衰竭、無壞死</td><td>Severe</td><td>Severe（一致）</td></tr>
+      </table>
+      前兩列是 DBC 設立的動機——Revised Atlanta 的 severe <b>僅由持續性器官衰竭定義，與感染性壞死之有無無關</b>。後兩列則因 DBC 的局部因子<b>只認壞死</b>、且<b>無共病項</b>。淨效果是 <b>DBC 判為 mild 的病人明顯較多</b>（一項比較研究：RAC 49% vs DBC 67%），同時把感染性壞死者往上拉到 severe／critical。<br><br>
+
+      <b>◆ 兩套並存、無取代關係：</b>本工具箱之流程圖與 CTSI／Modified Marshall 走 Revised Atlanta 路線，DBC 為並列的第二套分類。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-ctsi">
+    <span class="sys-name">CT Severity Index</span>
+    <span class="sys-en">Balthazar CTSI</span>
+    <span class="sys-src">Balthazar 1990</span>
+  </div>
+  <div class="card">
+    <div class="field-row"><label>Balthazar 分級</label>
+      <select id="ctsi_grade">
+        <option value="0">A — 正常胰臟</option>
+        <option value="1">B — 胰臟局部或瀰漫腫大</option>
+        <option value="2">C — 胰臟異常合併周邊脂肪發炎</option>
+        <option value="3">D — 單一胰周液體聚積</option>
+        <option value="4">E — ≥2 處液體聚積或胰周氣體</option>
+      </select>
+    </div>
+    <div class="field-row"><label>胰臟壞死範圍</label>
+      <select id="ctsi_necrosis">
+        <option value="0">無壞死</option>
+        <option value="2">壞死 &lt; 30%</option>
+        <option value="4">壞死 30–50%</option>
+        <option value="6">壞死 &gt; 50%</option>
+      </select>
+    </div>
+    <div class="exclusive-note">壞死範圍須以含對比劑電腦斷層（CE-CT）判定；非顯影劑增強之 CT 無法評估壞死。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">CTSI 總分</div><div class="metric-value big" id="ctsi_total">0</div></div>
+      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="ctsi_class">輕度</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">公式</div>
+    <div style="font-size:14px; margin-top:2px;">CTSI ＝ Balthazar 分級分數（0–4） ＋ 壞死分數（0–6），範圍 0–10</div>
+    <table class="ref">
+      <tr><th>總分</th><th>嚴重度</th></tr>
+      <tr><td>0–3</td><td>輕度 Mild</td></tr>
+      <tr><td>4–6</td><td>中度 Moderate</td></tr>
+      <tr><td>7–10</td><td>重度 Severe</td></tr>
+    </table>
+    <div class="risk-note">WSES 2019：所有重症急性胰臟炎應以 CE-CT 或 MRI 評估，<b>首次 CE-CT 最佳時機為症狀發作後 72–96 小時</b>（1C）——過早掃描會低估壞死範圍。<b>CTSI ≥3 者建議於首次 CT 後 7–10 天追蹤 CE-CT</b>（1C）；其餘僅在臨床惡化、未持續改善或考慮介入時才追加（1C）。CTSI 為影像嚴重度指標，不取代 Revised Atlanta 之臨床嚴重度分級。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/23100216/" target="_blank" rel="noopener" class="ref-link">Banks PA, et al. Classification of acute pancreatitis 2012 — revision of the Atlanta classification. Gut. 2013;62(1):102-111.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22735715/" target="_blank" rel="noopener" class="ref-link">Dellinger EP, et al. Determinant-based classification of acute pancreatitis severity. Ann Surg. 2012;256(6):875-880.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/2296641/" target="_blank" rel="noopener" class="ref-link">Balthazar EJ, et al. Acute pancreatitis: value of CT in establishing prognosis. Radiology. 1990;174(2):331-336.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31210778/" target="_blank" rel="noopener" class="ref-link">Leppäniemi A, et al. 2019 WSES guidelines for the management of severe acute pancreatitis. World J Emerg Surg. 2019;14:27.</a></footer>
+</div>
+
+<!-- ==================== 疝氣 ==================== -->
+<div id="tab-hernia" class="hidden">
+
+  <div class="sys-head" id="sys-ehs">
+    <span class="sys-name">EHS 腹股溝疝氣分類</span>
+    <span class="sys-en">European Hernia Society Classification</span>
+    <span class="sys-src">Miserez 2007</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      編碼為<b>位置＋大小＋原發/復發</b>三段，例：<b>L2P</b>、<b>M3R</b>。同時存在多處疝氣分別記錄（例：右側 M3 + L1 + F2）。
+      <table class="def-table">
+        <tr><th>軸</th><th>選項</th><th>定義</th></tr>
+        <tr><td>位置</td><td>L</td><td>外側／間接（深環，位於腹壁下動脈外側）</td></tr>
+        <tr><td></td><td>M</td><td>內側／直接（Hesselbach 三角內）</td></tr>
+        <tr><td></td><td>F</td><td>股疝</td></tr>
+        <tr><td>大小</td><td>1</td><td>小於一指幅／一鉗口（&lt; 1.5 cm）</td></tr>
+        <tr><td></td><td>2</td><td>一至兩指幅（1.5–3 cm）</td></tr>
+        <tr><td></td><td>3</td><td>超過兩指幅（&gt; 3 cm）</td></tr>
+        <tr><td></td><td>x</td><td>情況不明<b>或未探查</b>（例：未檢視股環 → Fx）</td></tr>
+        <tr><td></td><td>0</td><td><b>已探查</b>確認該處無疝氣（例：F0）</td></tr>
+        <tr><td>原發/復發</td><td>P / R</td><td>Primary／Recurrent</td></tr>
+      </table>
+      慣例：陰囊型疝氣不另立一類，<b>多數對應 L3</b>；腹膜前或精索脂肪瘤記為 <b>L1</b>；未見缺損但後壁薄弱視為內側疝，記為 <b>Mx</b>。<br>
+      指尖與腹腔鏡抓鉗鉗口皆約 1.5–2 cm，是大小級數的原始參照物；公分值由此換算而得，非反之。<br><br>
+      <b>◆ 為何值得記 EHS：M3 會改變處置。</b>HerniaSurge 強建議「TAPP／TEP 修補之大型直接疝（M3）應固定網片以降低復發」；Lichtenstein 使用<b>膠固定僅限於 M2 或 L2</b>。
+    </div>
+    <div class="note" style="margin-top:10px;">
+      <a class="tool-link" href="../pathways/hernia.html">→ 嵌頓／絞窄疝氣之處置：複雜性腹股溝疝氣手術決策流程</a>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-nyhus">
+    <span class="sys-name">Nyhus 分類</span>
+    <span class="sys-en">Nyhus Classification</span>
+    <span class="sys-src">Nyhus 1993</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      後方／腹膜前路徑，以深環與後壁完整性為軸。
+      <table class="def-table">
+        <tr><td>I</td><td>間接疝，深環大小與結構正常</td></tr>
+        <tr><td>II</td><td>間接疝，深環擴大，但後壁完整、腹壁下動脈未移位；未進入陰囊</td></tr>
+        <tr><td>IIIA</td><td>直接疝（後壁缺損，<b>不分大小</b>）</td></tr>
+        <tr><td>IIIB</td><td>間接疝，深環擴大並侵及／破壞橫筋膜（含巨大陰囊疝、滑動疝、褲型疝）</td></tr>
+        <tr><td>IIIC</td><td>股疝</td></tr>
+        <tr><td>IVA–D</td><td>復發疝：A 直接、B 間接、C 股疝、D 混合型</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-gilbert">
+    <span class="sys-name">Gilbert（1–5）／Rutkow-Robbins（6–7）</span>
+    <span class="sys-en">Gilbert · Rutkow-Robbins Classification</span>
+    <span class="sys-src">Gilbert 1989 · Rutkow 1993</span>
+  </div>
+  <div class="card">
+    <div class="box-inner" style="padding:0;">
+      <table class="def-table">
+        <tr><td>1</td><td>間接，深環完整且 &lt; 一指幅（約 &lt;1.5 cm），後壁完整</td></tr>
+        <tr><td>2</td><td>間接，深環中度擴大約一指幅（約 1.5–4 cm），後壁完整</td></tr>
+        <tr><td>3</td><td>間接，深環擴大變形達兩指幅以上（約 &gt;4 cm），後壁受侵（含滑動疝、陰囊疝）</td></tr>
+        <tr><td>4</td><td>直接，後壁全面塌陷，深環完整</td></tr>
+        <tr><td>5</td><td>直接，憩室型缺損，不超過一指（約 ≤1–2 cm），多位於恥骨上</td></tr>
+        <tr class="dt-warn"><td>6</td><td>混合型／褲型疝（直接＋間接並存）　<span class="mono" style="font-size:11px;">Rutkow-Robbins 增列</span></td></tr>
+        <tr class="dt-warn"><td>7</td><td>股疝　<span class="mono" style="font-size:11px;">Rutkow-Robbins 增列</span></td></tr>
+      </table>
+      Gilbert 1989 原始版僅 1–5 型（1–3 間接、4–5 直接）；Rutkow 與 Robbins 1993 補上第 6（混合）與第 7（股疝）型，故常合稱 Gilbert-Rutkow-Robbins。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>三套腹股溝分類的共同限制</summary>
+    <div class="box-inner">
+      ・<b>EHS 與 Nyhus 皆為術中分類</b>。HerniaSurge 明列此為 EHS 的缺點：「並非為術前分類疝氣型態而設計」；Nyhus 亦有文獻顯示術前以理學檢查判型並不可靠。<br>
+      ・<b>EHS 另有腹壁疝／造口旁疝的分類，格式相同但意義不同</b>：切口疝用 W1–W3 寬度（&lt;4／≥4–10／≥10 cm）與 M1–M5、L1–L4 位置——<b>該處的 M、L 與腹股溝的內側／外側不是同一回事</b>，勿混用。<br>
+      ・<b>EHS 自 2007 年起未改版</b>：2009 EHS 指引原樣沿用；HerniaSurge 2018 稱 2015 年文獻回顧未發現新系統；2023 年更新的 10 個章節不含「分類」章。<br>
+      ・<b>急診疝氣沒有公認的嚴重度分類</b>。WSES 2017 的分層軸是 <b>CDC 傷口分類</b>（用以決定網片選擇），那是傷口污染分類、不是疝氣嚴重度或腸道存活分級；HerniaSurge 第 21 章僅給定義（嵌頓＝無法回納；絞窄＝血流受損）並建議個別化處理。文獻中唯一的腸道形態分級（Duan 2014）為單中心、未經外部驗證、無學會採認，故不列入。<br>
+      ・復發疝方面 EHS 的 P/R 僅為二分、<b>不帶嚴重度資訊</b>；若需依復發型態決定路徑，另有 Campanelli R1/R2/R3（R1 前方 plug、R2 腹膜前 Wantz、R3 Stoppa／腹腔鏡），惟非 EHS 正式內容。
+    </div>
+  </details>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/17353992/" target="_blank" rel="noopener" class="ref-link">Miserez M, et al. The European hernia society groin hernia classification. Hernia. 2007;11(2):113-116.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29330835/" target="_blank" rel="noopener" class="ref-link">HerniaSurge Group. International guidelines for groin hernia management. Hernia. 2018;22(1):1-165.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/14586776/" target="_blank" rel="noopener" class="ref-link">Nyhus LM. Classification of groin hernia: milestones. Hernia. 2004;8(2):87-88.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/2919740/" target="_blank" rel="noopener" class="ref-link">Gilbert AI. An anatomic and functional classification for the diagnosis and treatment of inguinal hernia. Am J Surg. 1989;157(3):331-333.</a></footer>
+</div>
+
+<!-- ==================== 消化道出血 ==================== -->
+<div id="tab-gib" class="hidden">
+
+  <div class="sys-head" id="sys-forrest">
+    <span class="sys-name">Forrest 分類</span>
+    <span class="sys-en">Forrest Classification of Peptic Ulcer Bleeding</span>
+    <span class="sys-src">Forrest 1974</span>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;"><summary>Forrest 分類是分數還是分類？</summary><div class="box-inner">
+    Forrest 分類<b>不是計分工具</b>，是 1974 年提出的內視鏡外觀分級，用來把「這個潰瘍看起來會不會再出血」翻譯成可操作的處置決策。它同時是 Rockall score 中「出血痕跡（SRH）」那一列的判定依據：<b>Ia／Ib／IIa／IIb 在 Rockall 皆計 2 分，IIc 與 III 計 0 分</b>。<br><br>
+    高風險（Ia、Ib、IIa、IIb）需內視鏡止血並住院；低風險（IIc、III）不需內視鏡止血，可口服 PPI、早期進食並考慮早期出院。
+  </div></details>
+
+  <div class="card">
+    <div class="section-title">選擇內視鏡所見 Endoscopic Finding</div>
+    <div class="field-row"><label>Forrest 分類</label>
+      <select id="fr_sel">
+        <option value="Ia">Ia — 噴射性出血 Spurting</option>
+        <option value="Ib">Ib — 滲出性出血 Oozing</option>
+        <option value="IIa">IIa — 不出血之可見血管 Non-bleeding visible vessel</option>
+        <option value="IIb">IIb — 黏附血塊 Adherent clot</option>
+        <option value="IIc">IIc — 扁平色素斑 Flat pigmented spot</option>
+        <option value="III">III — 乾淨潰瘍底 Clean base</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Forrest <span id="fr_cls">Ia</span> · <span id="fr_risk">高風險</span></div>
+    <div class="metric-value" id="fr_name" style="margin-bottom:6px;">噴射性出血</div>
+    <div class="breakdown">
+      <div>未治療再出血率 <b id="fr_rb">55%</b></div><div>止血後再出血率 <b id="fr_rbtx">22.5%</b></div><div>Rockall SRH <b id="fr_rock">2分</b></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">建議處置（ESGE 2026）</div>
+    <div id="fr_rx" style="font-size:14px; margin-top:4px; line-height:1.65;"></div>
+    <div class="risk-note" id="fr_note"></div>
+    <div class="risk-note">
+      <b>Rockall SRH 是什麼</b>：SRH＝<span class="mono">stigmata of recent haemorrhage</span>（近期出血痕跡），是 Rockall score 五個項目中的最後一項，<b>必須做過內視鏡才填得出來</b>。原始論文（Gut 1996 Table III）只分兩級：<b>上消化道內有血、黏附血塊、可見血管或噴血 → 2 分</b>；<b>無痕跡或僅暗色斑點 → 0 分</b>。<br>
+      對照過來就是：Forrest <b>Ia／Ib／IIa／IIb 一律 2 分</b>，<b>IIc／III 為 0 分</b>——Rockall 不再細分高風險組內部的差別，因此本頁上方的 22–55% 再出血率落差，在 Rockall 裡是同一格。此欄與「內視鏡診斷」欄合計最多 4 分，正是內視鏡前 Rockall（0–7）與完整 Rockall（0–11）的差額。
+      <a class="tool-link" href="rockall.html">開啟 Rockall Score →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">全表對照 Full Classification</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th>分類</th><th>內視鏡所見</th><th>風險</th><th>未治療<br>再出血率</th><th>止血後 72h<br>再出血率</th></tr>
+      <tr><td>Ia</td><td>噴射性出血 Spurting</td><td>高</td><td>55%※</td><td>22.5%</td></tr>
+      <tr><td>Ib</td><td>滲出性出血 Oozing</td><td>高</td><td>55%※</td><td>4.9%</td></tr>
+      <tr><td>IIa</td><td>不出血之可見血管 NBVV</td><td>高</td><td>43%</td><td>11.3%</td></tr>
+      <tr><td>IIb</td><td>黏附血塊 Adherent clot</td><td>高</td><td>22%</td><td>17.6%</td></tr>
+      <tr><td>IIc</td><td>扁平色素斑 Flat pigmented spot</td><td>低</td><td>10%</td><td>未納入</td></tr>
+      <tr><td>III</td><td>乾淨潰瘍底 Clean base</td><td>低</td><td>5%</td><td>未納入</td></tr>
+    </table>
+    <div class="note"><b>兩欄量的不是同一件事，別混用。</b><br>
+    ・<b>未治療欄</b>＝自然病程，源頭為 Laine &amp; Peterson（NEJM 1994）彙整約 37 個前瞻試驗（n≈2,994）之未接受內視鏡治療者。這是「不處理會怎樣」，用來解釋<b>為什麼要治療</b>。<br>
+    ・<b>止血後欄</b>＝Jensen 2017（Am J Gastroenterol）大型國際隨機試驗中，<b>已成功內視鏡止血</b>之安慰劑組 72 小時再出血率（n=388）。這是「治療後還剩多少風險」，才是現代病人的實際處境。<br>
+    ・盛行率（Ia 7%、Ib 27%、IIa 26%、IIb 11%、IIc 4%、III 25%）取自未治療欄同一來源。<br><br>
+    ※ <b>未治療欄的 55% 是 Ia 與 Ib 的合計值</b>，原始文獻把噴血與滲血合併為「active bleeding」一類統計，故兩列填同一數字。（ACG 2012 指引另列未治療滲血為 39%，係該指引表格之restatement，非 1994 原文拆分。）<br><br>
+    <b>止血後欄則清楚分得開，而且落差很大：Ib 只有 4.9%，遠低於 Ia 的 22.5%。</b>Jensen 2017 並發現 Ib 給高劑量靜脈 PPI（5.4%）與安慰劑（4.9%）結果相當，作者因此主張應重新檢討「Ib 屬高風險、需高劑量 IV PPI」的定位。<br>
+    <b>但這尚未成為指引：ESGE 2026 反而刪去了 2021 版關於 Ib 定位有爭議的段落，全文一致以「高風險痕跡（FIa、FIb）」並列。</b>故臨床上仍應依高風險處理 Ib；上表的 4.9% 是用來校正對風險量級的直覺，不是降階處置的依據。</div>
+    </div></details>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;"><summary>ESGE 2026 相對 2021 版的三項改動</summary><div class="box-inner">
+    <b>1. Forrest IIb（黏附血塊）改為建議積極處理。</b>2021 版對未做內視鏡治療的 IIb 給高劑量 PPI；2026 版改為<b>建議移除血塊、視底下所見再行止血</b>，但附但書——須內視鏡醫師具備安全移除血塊、並能處理「移除後變成更高風險病灶」的技術能力。<br><br>
+    <b>2. Ia／Ib 可用 OTS clip 單一治療。</b>2021 版要求 Ia／Ib 一律用腎上腺素注射<b>加</b>第二種方式（合併治療）；2026 版建議 <b>over-the-scope clip 單獨使用</b>可作為第一線的替代方案，因其再出血率低於標準止血法。<br><br>
+    <b>3. 止血粉／噴劑不可作為第一線單一治療。</b>僅在標準方式無效、持續出血時，才考慮局部止血劑或 OTS clip。<br><br>
+    另：Doppler 探頭是否常規使用、以及術後是否改用 P-CAB（鉀離子競爭型胃酸阻斷劑），2026 版<b>未能達成共識</b>，兩者皆未給建議。
+  </div></details>
+
+  <div class="note">
+    <a class="tool-link" href="../pathways/gi-bleeding.html">→ 依此分類決定止血方式與再出血階梯：消化道出血處置決策流程</a>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/4136718/" target="_blank" rel="noopener" class="ref-link">Forrest JA, Finlayson ND, Shearman DJ. Lancet. 1974;2(7877):394-7.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42127996/" target="_blank" rel="noopener" class="ref-link">Gralnek IM, et al. ESGE Guideline – Update 2026. Endoscopy. 2026.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/36949934/" target="_blank" rel="noopener" class="ref-link">Alali AA, Barkun AN. Gastroenterol Rep (Oxf). 2023;11:goad011.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/8058080/" target="_blank" rel="noopener" class="ref-link">Laine L, Peterson WL. N Engl J Med. 1994;331(11):717-27.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28094314/" target="_blank" rel="noopener" class="ref-link">Jensen DM, et al. Reassessment of Rebleeding Risk of Forrest IB. Am J Gastroenterol. 2017;112(3):441-446.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22310222/" target="_blank" rel="noopener" class="ref-link">Laine L, Jensen DM. ACG Guideline: Management of Patients with Ulcer Bleeding. Am J Gastroenterol. 2012;107(3):345-60.</a></footer>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ---------------- 分頁切換與深層連結 ----------------
+   每一套分級都有自己的 id（sys-xxx）與所屬分頁；外部（流程圖、書籤、側邊導覽）
+   以 #sys=xxx 連進來時，先切到該分頁再捲到該區塊——只捲不切分頁的話，
+   目標永遠在 display:none 的分頁裡，看起來像連結壞掉。 */
+var TABS=['cross','biliary','colon','panc','hernia','gib'];
+var SYS_TAB={
+  aast:'cross',
+  'tg18-gb':'biliary','tg18-cholangitis':'biliary',asge:'biliary',
+  parkland:'biliary',nassar:'biliary',niemeier:'biliary',mirizzi:'biliary',
+  'wses-ct':'colon',hinchey:'colon',
+  atlanta:'panc',dbc:'panc',ctsi:'panc',
+  ehs:'hernia',nyhus:'hernia',gilbert:'hernia',
+  forrest:'gib'
+};
+
+function clTab(key,skipHash){
+  TABS.forEach(function(t){
+    var pane=document.getElementById('tab-'+t);
+    if(pane) pane.classList.toggle('hidden',t!==key);
+  });
+  document.querySelectorAll('#cl_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('data-tab')===key);
+  });
+  if(!skipHash) history.replaceState(null,'','#tab='+key);
+}
+
+function clGoto(sys){
+  var tab=SYS_TAB[sys];
+  if(!tab) return false;
+  clTab(tab,true);
+  var el=document.getElementById('sys-'+sys);
+  if(el){
+    el.scrollIntoView({block:'start',behavior:'auto'});
+    el.classList.remove('sys-hit'); void el.offsetWidth; el.classList.add('sys-hit');
+  }
+  return true;
+}
+
+function clApplyHash(){
+  var h=(location.hash||'').replace(/^#/,'');
+  var m=h.match(/^sys=([\w-]+)$/);
+  if(m && clGoto(m[1])) return;
+  m=h.match(/^tab=(\w+)$/);
+  if(m && TABS.indexOf(m[1])>=0){ clTab(m[1],true); return; }
+  clTab('cross',true);
+}
+
+/* 由流程圖進來時（?from=）給一個原路返回鍵 */
+var FROM={
+  chole:['../pathways/cholecystitis.html','← 返回膽囊炎決策'],
+  panc:['../pathways/pancreatitis.html','← 返回胰臟炎決策'],
+  'gi-bleed':['../pathways/gi-bleeding.html','← 返回消化道出血決策'],
+  divert:['../pathways/diverticulitis.html','← 返回憩室炎決策'],
+  hernia:['../pathways/hernia.html','← 返回疝氣決策']
+};
+(function(){
+  var m=(location.search||'').match(/[?&]from=([\w-]+)/);
+  if(!m) return;
+  var f=FROM[m[1]]; if(!f) return;
+  var b=document.getElementById('cl_back');
+  b.textContent=f[1];
+  b.onclick=function(){ location.href=f[0]; };
+  b.classList.remove('hidden');
+})();
+
+/* ---------------- AAST EGS ---------------- */
+var AAST=[
+{k:'A',zh:'急性闌尾炎',en:'Acute Appendicitis',img:'CT',val:'ok',
+ g:[['完整但急性發炎之闌尾','Pain, leukocytosis and right lower quadrant (RLQ) tenderness','Inflammatory changes localized to appendix +/- appendiceal dilation +/- contrast non-filling','Acutely inflamed appendix, intact','Presence of neutrophils at the base of crypts, submucosa +/- in muscular wall'],
+    ['完整但壞疽之闌尾','Pain, leukocytosis and RLQ tenderness','Appendiceal wall necrosis with contrast non-enhancement +/- air in appendiceal wall','Gangrenous appendix, intact','Mucosa and muscular wall digestion; not identifiable on H&E stain'],
+    ['闌尾穿孔合併局部污染','Pain, leukocytosis and RLQ tenderness','Above with local periappendiceal fluid +/- contrast extravasation','Above, with evidence of local contamination','Gross perforation or focal dissolution of muscular wall'],
+    ['闌尾穿孔合併闌尾周圍蜂窩組織炎或膿瘍','Pain, leukocytosis and RLQ tenderness; may have palpable mass','Regional soft tissue inflammatory changes, phlegmon or abscess','Above, with abscess or phlegmon in region of appendix','Gross perforation'],
+    ['闌尾穿孔合併瀰漫性腹膜炎','Generalized peritonitis','Diffuse abdominal or pelvic inflammatory changes +/- free intra-peritoneal fluid or air','Above, with addition of generalized purulent contamination away from appendix','Gross perforation']]},
+{k:'B',zh:'乳房感染',en:'Breast Infections',img:'US／CT',val:'poor:Mayo κ=1.0，但南非族群 κ=0.34。原作者群結論：於中低收入國家之較重症病人「需進一步修訂才適用」。',
+ g:[['乳房蜂窩組織炎','Erythema, induration, edema, pain, tenderness','Inflammation without fluid collection','N/A','N/A'],
+    ['單純膿瘍','Single, small abscess without loculations; not involving the nipple/areolar complex','Single well circumscribed fluid collection within breast tissue, not involving nipple/areolar complex','Single, well circumscribed fluid collection within breast tissue, not involving nipple/areola complex','Acute inflammation limited to breast tissue'],
+    ['複雜膿瘍','Large abscess with multiple loculations, multiple abscesses, or abscess involving nipple/areola complex; lymphadenopathy','Multiple separate fluid collections or single large collection with multiple loculations within breast tissue or involvement of nipple/areola complex','Multiple separate fluid collections or single large collection with multiple loculations within breast tissue, or involvement of nipple/areola complex; enlarged lymph nodes','Acute inflammation limited to breast tissue with cultures positive for organism if available'],
+    ['乳房膿瘍延伸至腋下','Breast abscess with ipsilateral lymphadenopathy, thrombophlebitis, lymphangitis','Fascial plane thickening with enhancement; evidence of lymphadenopathy on US or CT','Above, plus axillary fluid collections, extension of inflammatory changes well beyond the abscesses','Acute inflammation of breast tissue and axillary lymph nodes with cultures positive for organisms'],
+    ['乳房膿瘍侵及胸壁','Above, plus erosion into chest wall muscles or ribs or pleural space, or necrotizing fasciitis','Above, plus inflammatory changes in the chest wall muscles, ribs or pleural space','Above, with erosion into chest wall muscles or ribs or pleural space, or necrotizing fasciitis','Acute inflammation involving chest wall, fascia, muscles or ribs with or without necrosis and cultures positive for organisms']]},
+{k:'C',zh:'急性膽囊炎',en:'Acute Cholecystitis',img:'CT／US／HIDA',val:'poor:Schuster 2021（前瞻多中心 n=861）：鑑別力中等，與 TG18 相近但<b>低於 Parkland 分級</b>，「應先修訂再廣泛使用」。本工具箱另有 Parkland／Nassar 頁。',
+ g:[['急性膽囊炎',"RUQ or epigastric pain; Murphy's Sign; leukocytosis",'Wall thickening; distention; gallstones or sludge; pericholecystic fluid; non-visualization of gallbladder (GB) on HIDA scan','Inflammatory changes localized to GB; wall thickening; distention; gallstones','Acute inflammatory changes in the GB wall without necrosis or pus'],
+    ['膽囊積膿、壞疽性或氣腫性膽囊炎',"RUQ or epigastric pain; Murphy's Sign; leukocytosis",'Above, plus air in GB lumen, wall or in the biliary tree; focal mucosal defects without frank perforation','Distended GB with pus or hydrops; necrosis or gangrene of wall; not perforated','Above, plus pus in the GB lumen; necrosis of GB wall; intramural abscess; epithelial sloughing; no perforation'],
+    ['膽囊穿孔合併局部污染','Localized peritonitis in RUQ','HIDA with focal transmural defect, extraluminal fluid collection or radiotracer but limited to RUQ','Perforated GB wall (non-iatrogenic) with bile outside the GB but limited to RUQ','Necrosis with perforation of the GB wall (non-iatrogenic)'],
+    ['膽囊穿孔合併膽囊周圍膿瘍或腸道瘻管','Localized peritonitis at multiple locations; abdominal distention with symptoms of bowel obstruction','Abscess in RUQ outside GB; bilio-enteric fistula; gallstone ileus','Pericholecystic abscess; bilio-enteric fistula; gallstone ileus','Necrosis with perforation of the GB wall (non-iatrogenic)'],
+    ['膽囊穿孔合併瀰漫性腹膜炎','Above, with generalized peritonitis','Free intra-peritoneal bile','Above, plus generalized peritonitis','Necrosis with perforation of the GB wall (non-iatrogenic)']]},
+{k:'D',zh:'急性大腸憩室炎',en:'Acute Diverticulitis of the Colon',img:'CT',val:'ok:Shafi 2016 多中心 n=1,105，κ=0.81，不良事件由 13%（I）升至 50%（V）；Choi 2020 顯示優於 modified Hinchey。',
+ g:[['大腸發炎','Pain; leukocytosis; minimal or no tenderness','Mesenteric stranding; colon wall thickening','N/A','N/A'],
+    ['大腸微穿孔或結腸旁蜂窩組織炎、無膿瘍','Local tenderness (single or multiple areas) without peritonitis','Pericolic phlegmon; foci of air (single or multiple); no abscess','Pericolic phlegmon with no abscess','Inflamed colon with microscopic perforation'],
+    ['侷限之結腸旁膿瘍','Localized peritonitis','Pericolic abscess','Pericolic abscess','Inflamed colon with perforation'],
+    ['遠處和／或多發膿瘍','Localized peritonitis at multiple locations','Abscess or phlegmon away from the colon','Abscess or phlegmon away from the colon','Inflamed colon with perforation'],
+    ['大腸自由穿孔合併瀰漫性腹膜炎','Generalized peritonitis','Free air and free fluid','Perforation with generalized fecal and purulent contamination','Inflamed colon with perforation']]},
+{k:'E',zh:'食道穿孔',en:'Esophageal Perforation',img:'影像和／或內視鏡',val:'none',
+ g:[['黏膜撕裂','Dysphagia; chest pain, upper abdominal pain or back pain; breathing problems','No abnormality or possible intramural air','Preservation of normal anatomy with dissection required to identify inflammation','Partial thickness or mucosal tear'],
+    ['全層撕裂、發炎輕微','Above, with subcutaneous emphysema','Esophageal thickening','Obvious inflammation','Full thickness perforation with minimal inflammation without mediastinitis or peritonitis'],
+    ['全層撕裂合併侷限膿瘍','Above, with vomiting and ill-appearing','Air in prevertebral planes','Presence of inflammation and stigmata of perforation with contained collection','Mediastinal inflammation or emphysema'],
+    ['食道壁壞死','As above','Mediastinal widening','Inflammation; necrosis of the esophageal wall with localized contamination','Severe mediastinal necrosis'],
+    ['膿胸、腹膜炎、縱膈腔炎','As above','Pleural effusion','Perforation with disseminated contamination; erosion into adjacent structures (chest, mediastinum, or abdomen)','Pleural invasion or empyema']]},
+{k:'F',zh:'疝氣（內疝或腹壁疝）',en:'Hernias (Internal or Abdominal wall)',img:'CT',val:'none',
+ g:[['可回納之疝氣','Palpable, reducible hernia without fever or leukocytosis','Hernia visible on CT','Abdominal wall defect present','N/A'],
+    ['嵌頓性疝氣、無腸道缺血','Local tenderness with non-reducible palpable hernia. No fever of leukocytosis.','Hernia visible on CT','Abdominal wall defect present with abdominal contents lodged in defect; healthy appearing viscera','N/A'],
+    ['嵌頓合併腸道缺血但仍存活','Local tenderness with non-reducible palpable hernia; may be associated with fever, tachycardia, or leukocytosis','Hernia visible on CT with local stranding or inflammatory changes','Abdominal wall defect present with abdominal contents lodged in defect; visibly inflamed but viable appearing viscera','N/A'],
+    ['嵌頓合併腸道壞疽或穿孔、局部外漏','Local tenderness with guarding, non-reducible palpable hernia with associated skin changes such as erythema','Hernia visible on CT with local stranding or inflammatory changes as well as contained fluid collection','Abdominal wall defect present with abdominal contents lodged in defect; gangrenous or perforated abdominal contents','Local necrosis or perforation'],
+    ['嵌頓合併穿孔與瀰漫腹腔污染','Diffuse abdominal tenderness with guarding or rebound; non-reducible palpable hernia with associated skin changes such as erythema','Hernia visible on CT with local stranding or inflammatory changes as well as diffuse fluid collections and inflammation','Abdominal wall defect present with abdominal contents lodged in defect; gangrenous or perforated abdominal contents with diffuse contamination','Local necrosis or perforation']]},
+{k:'G',zh:'感染性大腸炎',en:'Infectious Colitis',img:'CT',val:'unknown',
+ g:[['黏膜病變合併培養或實驗室確認陽性','Diarrhea and/or abdominal pain with positive stool cultures or toxin assays; inflamed mucosa on endoscopy','Normal CT','Normal colon','Mucosal inflammatory changes on biopsy, positive stool cultures or toxin assays'],
+    ['影像見腸壁增厚或內視鏡見偽膜','Diarrhea and/or abdominal pain, and/or abdominal tenderness with pseudomembranes on endoscopy','Localized colonic wall thickening','Localized thickened but otherwise normal colon','Transmural colonic inflammation'],
+    ['腸壁增厚合併腹水、瀰漫大腸擴張或融合性偽膜','Abdominal pain and tenderness and/or distension; coalescing pseudomembranes by endoscopy','Diffuse colonic thickening or localized thickening and free intra-abdominal fluid','Diffusely thickened colon or localized thickening with free intra-abdominal fluid','Transmural colonic inflammation'],
+    ['侷限之大腸壞死，合併或不合併穿孔','Abdominal pain with peritonitis and mucosal necrosis by endoscopy','Colonic thickening with free fluid +/- evidence of perforation or abscess','Colonic thickening with localized or discontinuous transmural necrosis or ischemia with or without perforation or abscess','Transmural colonic inflammation with areas of necrosis'],
+    ['瀰漫全層大腸壞死，合併或不合併穿孔','Abdominal pain with peritonitis mucosal necrosis by endoscopy','Colonic thickening with free fluid +/- evidence of perforation or abscess','Diffuse colonic necrosis with or without perforation or abscess','Transmural colonic inflammation with areas of full thickness necrosis']]},
+{k:'H',zh:'黏連性腸阻塞',en:'Intestinal Obstruction Due to Adhesions',img:'CT',val:'poor:McFadden 2022（n=287）發現<b>非單調</b>——Grade II 與 30 天死亡相關（OR 7.92），Grade III–V 反較低（OR 3.56）；且與 30 天再入院無關。',
+ g:[['部分小腸阻塞','Some flatus; normal or hypoactive bowel sounds; minor abdominal distention','Normal imaging or minimal intestinal distension','Minimal intestinal distension with no evidence of bowel obstruction','N/A'],
+    ['完全小腸阻塞、腸道存活未受損','Minimal to no flatus; hypoactive bowel sounds; distension without generalized tenderness','Intestinal distension with transition point; delayed contrast flow with some distal contrast; no evidence of bowel compromise','Intestinal distention with transition point; no evidence of bowel compromise','N/A'],
+    ['完全阻塞、腸道受損但仍存活','No flatus; absent bowel sounds; abdominal distension with localized tenderness','Intestinal distension with transition point and no distal contrast flow; evidence of complete obstruction or impending bowel compromise','Intestinal distention with impending bowel compromise','N/A'],
+    ['完全阻塞合併腸道壞死或穿孔、局部外漏','Obstipation; abdominal distension with diffuse tenderness, rebound, guarding','Evidence of localized perforation or free air; bowel distension with free air or free fluid','Intestinal distension with localized perforation or free fluid','Bowel gangrene or perforation'],
+    ['小腸穿孔合併瀰漫腹腔污染','Abdominal distension with evidence of peritonitis','Bowel perforation with free air and free fluid','Intestinal distension with perforation, free fluid and evidence of diffuse peritonitis','Bowel gangrene or perforation']]},
+{k:'I',zh:'腸道動脈缺血',en:'Intestinal Arterial Ischemia of the Bowel',img:'CT',val:'none',
+ g:[['腸道缺血但無組織喪失','Anorexia with abdominal pain','Wall thickening and mucosal edema with enhancement','Normal appearing bowel','Ischemia without ulceration'],
+    ['腸道缺血僅見黏膜潰瘍、無全層梗塞','Abdominal pain out of proportion to exam; no peritonitis','Wall thickening and edema without enhancement; mesenteric vessel occlusion','Normal serosa, mucosal ischemia and ulceration','Mucosal ulceration'],
+    ['節段性全層腸梗塞、無穿孔','Abdominal pain and tenderness without peritonitis','Wall thickening without mucosal or intestinal wall enhancement; intramural, portal, or mesenteric pneumatosis','Transmural necrosis without perforation','Transmural necrosis without perforation'],
+    ['節段性全層腸梗塞合併穿孔','Abdominal pain and tenderness with peritonitis','Pneumoperitoneum, contrast extravasation, abscess','Transmural necrosis with perforation and peritonitis','Transmural necrosis with perforation'],
+    ['全腸道梗塞','Abdominal pain and tenderness with peritonitis','Grade III or IV above with involvement of both Superior Mesenteric Artery and Inferior Mesenteric Artery distributions','Pan-intestinal infarction and necrosis with or without perforation','Transmural infarction with perforation']]},
+{k:'J',zh:'急性胰臟炎',en:'Acute Pancreatitis',img:'CT',val:'partial:Younis 2018 僅有「初步效度」；該世代死亡率 1.3%，無法檢驗死亡率鑑別力。',
+ g:[['急性水腫性胰臟炎','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatitis without phlegmon, necrosis, peripancreatic fluid collection or abscess','Edematous pancreas','N/A'],
+    ['胰臟蜂窩組織炎、胰周液體聚積或出血','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Phlegmon or peripancreatic fluid collection or hemorrhage','Pancreatic phlegmon or peripancreatic fluid collection','N/A'],
+    ['無菌性胰臟壞死','Midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatic necrosis without extraluminal air or abscess','Pancreatic necrosis without purulence or abscess','Gram stain and culture of necrosis negative for organisms'],
+    ['感染性胰臟壞死或膿瘍','Severe midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Pancreatic necrosis with extraluminal air or abscess','Pancreatic necrosis with purulence or abscess','Gram stain and culture of necrosis or abscess positive for organisms'],
+    ['胰外延伸之壞死侵及鄰近器官（如大腸壞死）','Severe diffuse midepigastric abdominal pain and tenderness; elevated amylase and/or lipase','Extra-pancreatic extension of necrosis involving adjacent organs, such as colonic necrosis','Involvement or necrosis of adjacent organs','Involvement or necrosis of resected adjacent organs']]},
+{k:'K',zh:'骨盆腔發炎疾病',en:'Pelvic Inflammatory Disease',img:'CT／US',val:'none',
+ g:[['子宮頸發炎','None','N/A','N/A','N/A'],
+    ['子宮頸化膿性分泌物','None OR vaginal discharge, vaginal irritation, pelvic discomfort','N/A','N/A','None or positive cervical cultures for organisms'],
+    ['輸卵管、卵巢和／或整個子宮發炎','Above, plus pelvic pain or discomfort; fever','Inflammation of pelvic organ or organs','None, or purulent pelvic fluid on laparoscopy','None or positive cervical cultures for organisms'],
+    ['輸卵管卵巢膿瘍、子宮蓄膿','Severe pelvic pain; fever','Inflammation and abscess of pelvic organ or organs','Drainage of tubo-ovarian abscess or pyometra','None, or positive cervical or pelvic cultures for organisms'],
+    ['瀰漫性骨盆腔敗血症','Generalized peritonitis','Single or multiple abscesses, widespread inflammation','Drainage of fluid collections, complications related to abscesses, such as interloop abscesses causing bowel obstruction; hysterectomy','None, or positive cervical or pelvic cultures for organisms']]},
+{k:'L',zh:'消化性潰瘍穿孔（胃或十二指腸）',en:'Perforated Peptic Ulcer Disease',img:'CT',val:'poor:Hernandez 2018——於美國族群有效，<b>於南非族群無效</b>。',
+ g:[['微穿孔、無腹膜炎','Discomfort in the epigastric region','Extraluminal gas with no associated inflammatory changes','Preservation of normal anatomy with dissection required to identify the perforation','Perforation with minimal bowel wall inflammation'],
+    ['被侷限之穿孔合併局部腹膜炎','Tenderness confined to the right upper quadrant (RUQ)','Extraluminal gas contained in a walled off collection or the retroperitoneum','Presence of inflammation and stigmata of perforation with contained collection','Perforation with bowel wall inflammation'],
+    ['穿孔合併局部腹膜炎與小網膜囊或右上腹液體聚積','Tenderness confined to the RUQ','Perforation with associated collection that is not contained in a anatomic space or abscess but not disseminated','Inflammation and contamination of peritoneal cavity confined to the RUQ','Perforation with bowel wall inflammation'],
+    ['自由穿孔合併腹膜炎','Diffuse peritonitis','Perforation with disseminated air and fluid','Perforation with disseminated succus or purulent peritonitis','Perforation with bowel wall inflammation'],
+    ['穿孔合併十二指腸破壞、可能侵及鄰近器官與瀰漫腹膜炎','Diffuse peritonitis','Perforation with disseminated air and fluid with loss of local anatomic planes at the site of perforation','Perforation with disseminated succus or purulent peritonitis and erosion into adjacent structures','Destructive erosion of involved structures']]},
+{k:'M',zh:'肛周膿瘍',en:'Perirectal Abscess',img:'影像',val:'none',
+ g:[['肛周膿瘍','Anal pain and swelling, erythema, tenderness','N/A','Drainage of localized pus','N/A'],
+    ['括約肌間膿瘍或坐骨直腸窩膿瘍','Fever; perineal pain; diffuse swelling; pain with defecation; palpable fluctuant area on digital examination','Endorectal ultrasound localization; CT may localize collection but MRI preferable','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['馬蹄形膿瘍','Pain with defecation; palpable fluctuant area on digital examination','Endorectal ultrasound localization; CT may localize collection but MRI preferable','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['提肛肌上膿瘍','Fever; may present with sepsis or perineal discomfort; may have no localized clinical signs','Endorectal ultrasound not useful; CT demonstrating collection','Drainage of localized pus','Culture of abscess positive for organisms'],
+    ['會陰、臀部等處之壞死性軟組織感染（Fournier 壞疽）','Systemic signs of sepsis, perineal pain and swelling, cellulitis, crepitus, necrotic skin changes','X-ray or CT may demonstrate air in soft tissues. CT or MRI may demonstrate intra-abdominal or retroperitoneal source of infection.','Necrotic skin and soft tissue of perianal, perineal, and genitalia','Above, plus necrotic skin and soft tissue of perianal, perineal, and genitalia']]},
+{k:'N',zh:'肋膜腔感染',en:'Pleural Space Infection',img:'影像',val:'none',
+ g:[['殘留血胸或肋膜積液合併肋膜液培養陽性','Leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid no evidence of loculations','Retained blood, blood clot, or other non-purulent fluid without lung trapping.','Culture of fluid positive for organisms'],
+    ['影像見化膿性、可自由流動之肋膜積液或血胸','Respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid; no evidence of loculation','Retained blood, blood clot, with purulent areas OR completely purulent fluid.','Culture of fluid positive for organisms'],
+    ['纖維化膿期，積液或血胸出現分隔','Respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid, with evidence of loculation','Retained blood, blood clot or other purulent fluid with limited lung trapping','Culture of fluid positive for organisms with areas of fibrous peel'],
+    ['機化期，肺擴張與呼吸力學受限','Severe respiratory failure, leukocytosis, fever, chest pain','Pleural fluid consistent with blood or infected fluid with evidence of loculation; significantly decreased lung volumes','Retained blood, blood clot or other purulent fluid with diffuse pleural inflammation and lung trapping','Culture of fluid positive for organisms with areas of fibrous peel'],
+    ['自發性向外引流或擴散之胸腔外壞死性軟組織感染','Severe respiratory failure, leukocytosis, fever, chest pain','Above, plus severe inflammatory changes of adjacent abdominal, mediastinal or subcutaneous tissue','Above, with external drainage or necrotizing soft tissue infection of mediastinum, diaphragm or subcutaneous tissues','Above, with necrotic soft tissue from mediastinum, or subcutaneous space']]},
+{k:'O',zh:'軟組織感染',en:'Soft Tissue Infections',img:'CT',val:'ok:Ray-Zack 2018 與 Louis 2019（多中心 n=622，死亡 OR 2.3）均支持。',
+ g:[['蜂窩組織炎','Folliculitis, erysipelas, impetigo, simple cellulitis','Superficial inflammation with no subcutaneous stranding','N/A','Acute inflammation involving epidermis only'],
+    ['表淺壞死或液化','Necrotizing, blistering or bullous cellulitis or skin necrosis','Subcutaneous stranding, but no abscess','N/A','Acute inflammation involving epidermis and dermis'],
+    ['皮下膿瘍','Subcutaneous abscess','Well defined (walled off) subcutaneous fluid collection with surrounding inflammation','Well defined subcutaneous fluid collection','Acute inflammation involving epidermis, dermis, and subcutaneous fat with cultures positive for organisms if available'],
+    ['筋膜炎','Fasciitis','Inflammation extending to fascia; likely air along fascia margins','Clear involvement of fascia with healthy, viable muscle underneath.','Acute inflammation involving epidermis, dermis, subcutaneous fat, and muscular fascia with cultures positive for organisms if available'],
+    ['肌肉壞死','Myonecrosis','Air deep to fascia; likely poor perfusion of muscle','Extension of necrosis into muscle and deeper tissue','Acute inflammation involving epidermis, dermis, subcutaneous fat, muscular fascia, adjacent tissue (muscle, etc.) with cultures positive for organisms if available']]},
+{k:'P',zh:'手術部位感染',en:'Surgical Site Infections',img:'CT',val:'none',
+ g:[['僅侵犯皮膚','One or more of the following: peri-incisional erythema, warmth, pain, swelling without induration, exudate, or wound separation','N/A','N/A','N/A'],
+    ['侵犯皮下組織','One or more of the following: peri-incisional erythema warmth, pain, swelling plus induration or exudate confined to subcutaneous tissues','Soft tissue inflammatory changes, phlegmon or abscess in subcutaneous tissues','Phlegmon or abscess in subcutaneous tissues','Acute inflammation limited to subcutaneous tissues'],
+    ['侵犯筋膜或肌肉層','Subcutaneous abscess or phlegmon extending to muscle or fascia','Regional soft tissue inflammatory changes, phlegmon or abscess involving muscle or fascia','Phlegmon or abscess involving muscle or fascia','Acute inflammation involving muscle or fascia with cultures positive for organism if available'],
+    ['侵犯手術中開啟或操作過之體腔或深部空間','Above, plus separation of fascia or subfascial abscess','Phlegmon or abscess extending deep to muscle or fascia OR fascial dehiscence at surgical site','Phlegmon or abscess extending deep to muscle or fascia OR facial wound dehiscence','Acute inflammation involving fascia and underlying tissues with cultures positive for organism if available'],
+    ['侵犯遠離手術部位之體腔或深部空間','Purulent drainage in a body cavity away from the operative site','Phlegmon or abscess in body cavity or deep space extending deeper than the fascia/deep muscle incision','Phlegmon or abscess in body cavity or deep space extending deeper than the fascial/deep muscle incision','Acute inflammation in body cavity or deep space away extending deeper than the fascial/deep muscle incision with cultures positive for organisms if available']]}
+];
+
+var VAL_TEXT={
+  none:'⚠ <b>此條目從未經過驗證</b>——16 個疾病中有 7 個未有預後驗證研究，本條為其一。可作為描述用的共同語言，<b>不可據以推論預後</b>。',
+  ok:'此條目已有預後驗證支持。',
+  partial:'此條目僅有初步效度。',
+  unknown:'⚠ <b>本頁未能確認此條目的驗證狀態</b>——建立本頁時的文獻查核既未找到支持性驗證，也未將其列入「從未驗證」名單。請勿據以推論預後。'
+};
+
+function aeFill(){
+  const sel=document.getElementById('ae_dz');
+  AAST.forEach(function(d,i){
+    const o=document.createElement('option');
+    o.value=i; o.textContent=d.k+'. '+d.zh+'（'+d.en+'）';
+    sel.appendChild(o);
+  });
+}
+function aeRender(){
+  const d=AAST[parseInt(document.getElementById('ae_dz').value)];
+  const gi=parseInt(document.getElementById('ae_gr').value);
+  const g=d.g[gi];
+  const roman=['I','II','III','IV','V'];
+  document.getElementById('ae_desc').textContent='Grade '+roman[gi]+' — '+g[0];
+  ['ae_c','ae_i','ae_o','ae_p'].forEach(function(id,n){
+    const cell=document.getElementById(id);
+    const v=g[n+1];
+    cell.innerHTML = (v==='N/A') ? '<span style="opacity:.55;">N/A — 原表無此欄</span>' : v;
+  });
+  document.getElementById('ae_val').innerHTML='影像欄位之檢查別：'+d.img+'。';
+  let note = d.val.indexOf(':')>0
+    ? '⚠ <b>此條目已知表現不佳：</b>'+d.val.split(':').slice(1).join(':')
+    : VAL_TEXT[d.val];
+  note += '<br>本量表實際族群嚴重偏向 Grade I–II，行為接近「單純 vs 複雜」的二分，而非真正的五級序位。';
+  document.getElementById('ae_note').innerHTML=note;
+}
+document.querySelectorAll('#tab-cross select').forEach(function(el){el.addEventListener('change',aeRender);});
+aeFill();
+aeRender();
+
+/* ---------------- Balthazar CTSI ---------------- */
+function ctsiBadge(id){
+  const sel=document.getElementById(id);
+  let b=sel.parentNode.querySelector('.score-badge');
+  if(!b){ b=document.createElement('span'); b.className='pt-badge score-badge'; sel.parentNode.classList.add('scored-row'); sel.parentNode.appendChild(b); }
+  b.textContent=sel.value+'分';
+}
+function ctsiCalc(){
+  const ids=['ctsi_grade','ctsi_necrosis'];
+  ids.forEach(ctsiBadge);
+  const total=ids.reduce((s,id)=>s+parseInt(document.getElementById(id).value),0);
+  document.getElementById('ctsi_total').textContent=total;
+  const cls = total<=3 ? '輕度' : (total<=6 ? '中度' : '重度');
+  document.getElementById('ctsi_class').textContent=cls;
+}
+document.querySelectorAll('#tab-panc select').forEach(el=>el.addEventListener('change',ctsiCalc));
+ctsiCalc();
+
+/* ---------------- Forrest ---------------- */
+/* rb  ＝未治療自然病程（Laine & Peterson 1994）
+   rbtx＝成功內視鏡止血後、安慰劑組 72 小時再出血率（Jensen 2017）
+   兩者量的不是同一件事，故並列而非取代，見全表對照下方說明。 */
+var FR={
+  Ia:{name:'噴射性出血 Spurting',risk:'高風險',rb:'55%※',rbtx:'22.5%',rock:'2分',
+      rx:'內視鏡止血：<b>腎上腺素注射＋第二種止血方式</b>（接觸式熱凝、機械式夾閉）之合併治療；或<b>OTS clip 單一治療</b>作為第一線替代（再出血率較低）。亦可用止血鉗軟凝固單一治療。<br>術後高劑量 PPI（IV bolus 80mg 後 8mg/hr 連續輸注 72 小時，或高劑量 bolus／口服每日兩次），住院監測。',
+      note:'※ 未治療的 55% 為 Ia 與 Ib <b>合計</b>值，原始文獻未分開統計；止血後則分得開，Ia 為 22.5%，是四種主要痕跡中最高的。止血粉／噴劑不可作為第一線單一治療。持續出血且各種內視鏡方式皆失敗者，考慮經導管血管栓塞（TAE）；TAE 不可行或失敗才手術。高風險個案（到院即血行動力學不穩、十二指腸後壁潰瘍、潰瘍 >2 cm、或止血持久度存疑）可考慮預防性 TAE。'},
+  Ib:{name:'滲出性出血 Oozing',risk:'高風險',rb:'55%※',rbtx:'4.9%',rock:'2分',
+      rx:'處置同 Forrest Ia：合併止血治療，或 OTS clip 單一治療；術後高劑量 PPI 72 小時，住院監測。',
+      note:'※ 未治療的 55% 為 Ia 與 Ib 合計值。<b>但成功止血後，Ib 的 72 小時再出血率僅 4.9%，遠低於 Ia 的 22.5%</b>（Jensen 2017，n=388 安慰劑組）；且 Ib 給高劑量 IV PPI（5.4%）與安慰劑（4.9%）結果相當，作者主張應重新檢討 Ib 的高風險定位。<b>惟 ESGE 2026 反而刪去 2021 版關於此爭議的段落，全文一致以「高風險痕跡（FIa、FIb）」並列</b>——故臨床仍依高風險處理，上述數字用於校正風險量級的直覺，不作為降階依據。'},
+  IIa:{name:'不出血之可見血管 NBVV',risk:'高風險',rb:'43%',rbtx:'11.3%',rock:'2分',
+      rx:'內視鏡止血：接觸式或非接觸式熱凝、機械式治療（TTS clip 或 OTS clip）、或硬化劑注射，<b>各自單獨使用或搭配腎上腺素注射皆可</b>。OTS clip 亦可作為替代之單一治療；止血鉗軟凝固單一治療亦可。<br>術後高劑量 PPI 72 小時，住院監測。',
+      note:'腎上腺素注射<b>不可單獨</b>作為最終止血方式，必須搭配第二種方式或改用其他單一治療。止血後再出血風險（11.3%）仍顯著高於 Ib（勝算比 2.61，95% CI 1.05–6.52）。'},
+  IIb:{name:'黏附血塊 Adherent clot',risk:'高風險',rb:'22%',rbtx:'17.6%',rock:'2分',
+      rx:'<b>ESGE 2026 建議移除血塊</b>，視移除後底下所見（可能轉為 Ia／Ib／IIa）再行內視鏡止血。<br>但術者須具備安全移除血塊、並能處理轉為更高風險病灶之技術能力；若不具備，維持高劑量 PPI 治療。',
+      note:'此為 2026 版相對 2021 版的實質改動：2021 版對未做內視鏡治療之 IIb 僅給高劑量 PPI，2026 版轉為積極處理。<b>值得注意</b>：未治療時 IIb（22%）看似低於 IIa（43%），但成功止血後反而是 IIb（17.6%）高於 IIa（11.3%）——兩欄的排序並不一致，別只看其中一欄形成印象。'},
+  IIc:{name:'扁平色素斑 Flat pigmented spot',risk:'低風險',rb:'10%',rbtx:'未納入',rock:'0分',
+      rx:'<b>不需內視鏡止血</b>。口服 PPI 即可。<br>止血穩固後 24 小時內開始經口進食；合併缺鐵或貧血者出院前開始鐵劑治療。可考慮早期出院。',
+      note:'低風險病灶之處置重點在確認出血來源、根除 H. pylori 與檢討 NSAID／抗血栓用藥，而非內視鏡治療。Jensen 2017 之族群限於接受內視鏡止血者，IIc 與 III 不在其中，故無「止血後」數字。'},
+  III:{name:'乾淨潰瘍底 Clean base',risk:'低風險',rb:'5%',rbtx:'未納入',rock:'0分',
+      rx:'<b>不需內視鏡止血</b>。口服 PPI 即可。<br>止血穩固後 24 小時內開始經口進食；合併缺鐵或貧血者出院前開始鐵劑治療。可考慮早期出院。',
+      note:'低風險病灶之處置重點在確認出血來源、根除 H. pylori 與檢討 NSAID／抗血栓用藥，而非內視鏡治療。Jensen 2017 之族群限於接受內視鏡止血者，IIc 與 III 不在其中，故無「止血後」數字。'}
+};
+function frCalc(){
+  var k=document.getElementById('fr_sel').value, d=FR[k];
+  document.getElementById('fr_cls').textContent=k;
+  document.getElementById('fr_risk').textContent=d.risk;
+  document.getElementById('fr_name').textContent=d.name;
+  document.getElementById('fr_rb').textContent=d.rb;
+  document.getElementById('fr_rbtx').textContent=d.rbtx;
+  document.getElementById('fr_rock').textContent=d.rock;
+  document.getElementById('fr_rx').innerHTML=d.rx;
+  document.getElementById('fr_note').innerHTML=d.note;
+}
+document.getElementById('fr_sel').addEventListener('change',frCalc);
+frCalc();
+
+/* 分頁與捲動位置最後才決定：上面各區塊都渲染完，捲動目標的高度才是對的 */
+clApplyHash();
+window.addEventListener('hashchange',clApplyHash);
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

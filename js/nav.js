@@ -226,7 +226,9 @@
           '<span class="nav-zh"></span><span class="nav-en"></span>');
         // 名稱來自首頁 DOM／資料檔，一律以 textContent 寫入，不走 innerHTML
         a.querySelector('.nav-zh').textContent = it.zh;
-        a.querySelector('.nav-en').textContent = it.en || '';
+        // 計分工具的名稱整個是中文時，asciiName 會退回英文全名（見上），此時 zh 與 en
+        // 相同，照填就會同一行印兩次；相同即只留主名。
+        a.querySelector('.nav-en').textContent = (it.en && it.en !== it.zh) ? it.en : '';
         a.href = ROOT + it.href;
         a.setAttribute('data-href', it.href);
         box.appendChild(a);
