@@ -70,7 +70,7 @@
        濾鏡 defs 置於 <body> 最前（見上），晚於引用者定義會導致首次繪製時整張圖不顯示。 -->
   <div class="hub-grid" id="hub">
     <a class="hub-card" id="card-view-abdomen" href="#abdomen" aria-label="腹部急症"
-       data-label="腹部急症" data-en="Abdominal Emergencies" data-sub="決策流程、分類分級與緊急手術分級">
+       data-label="腹部急症" data-en="Abdominal Emergencies" data-sub="決策流程、分類分級、緊急手術分級與圍手術期抗栓">
       <img class="hub-img" src="assets/hub/emergency.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">腹部</span><span class="hub-en">Emergency</span><span class="hub-zh">急症</span></span>
@@ -190,24 +190,22 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">排程</span><span class="group-en">Scheduling</span><span class="group-count">1 項</span></div>
+      <div class="group-head"><span class="group-title">排程 / 分級 / 圍手術期</span><span class="group-en">Scheduling · Classification · Perioperative</span><span class="group-count">3 項</span></div>
       <div class="home-list">
         <div class="tool-card" id="card-view-emerg-op" onclick="location.href='tools/emergency-surgery.html'"
              data-search-kw="急刀 級數 分級 一級刀 二級刀 三級刀 四級刀 五級刀 等候時間 immediate critical emergent urgent expedited 排程 手術室 台大 緊急手術作業規範">
           <div class="tool-name">緊急手術分級 <span class="tool-en">Emergency Surgery Priority Levels</span></div>
           <div class="tool-desc">依台大醫院緊急手術作業規範查詢急刀級數（第一～五級）與合理等候時間；可用病況或術式關鍵字搜尋，一般外科列於首位，另附排程與滿線徵用原則</div>
         </div>
-      </div>
-    </div>
-
-
-    <div class="tool-group">
-      <div class="group-head"><span class="group-title">分類與分級</span><span class="group-en">Grading &amp; Classification</span><span class="group-count">1 項</span></div>
-      <div class="home-list">
         <div class="tool-card" id="card-view-classifications" onclick="location.href='tools/classifications.html'"
              data-search-kw="分類 分級 分期 分型 grading classification staging AAST EGS TG18 東京指引 膽囊炎 膽管炎 Parkland Nassar 困難膽囊 ASGE 總膽管結石 choledocholithiasis Niemeier 膽囊破裂 穿孔 Mirizzi Csendes WSES CT 憩室炎 Hinchey Wasvary Kaiser Revised Atlanta DBC 決定因子 Balthazar CTSI 胰臟炎 EHS Nyhus Gilbert Rutkow Robbins 疝氣 Forrest 消化性潰瘍出血 Clavien Dindo 併發症 complication ISREC Rahbari 吻合口漏 anastomotic leak ISGLS 膽汁漏 ISGPS 胰瘻 ECCG 食道 CFS Clinical Frailty Scale 衰弱 frailty Rockwood 老年 C. difficile 困難梭狀桿菌 CDI 腸皮瘻管 enterocutaneous fistula EAF SOWATS SNAP FRIENDS Björck 開腹 念珠菌 candidiasis 減重手術 bariatric OBA 內疝 Petersen 乙狀結腸扭轉 sigmoid volvulus Atamanalp AXIS">
           <div class="tool-name">分類與分級系統 <span class="tool-en">Grading &amp; Classification Systems</span></div>
           <div class="tool-desc">腹部急症各疾病的嚴重度分級、解剖分型與影像分期集中於一頁：AAST EGS（16 疾病）、TG18 膽囊炎／膽管炎、ASGE 總膽管結石、Parkland／Nassar、Niemeier、Mirizzi Csendes、WSES CT／Hinchey、Revised Atlanta／DBC／Balthazar CTSI、EHS／Nyhus／Gilbert-Rutkow-Robbins、Forrest；<b>圍手術期</b>之 Clavien-Dindo、ISREC 吻合口漏（併 ISGLS／ISGPS／ECCG 對照）、Clinical Frailty Scale；以及 C. difficile、腸皮／腸道－大氣瘻管、腹腔念珠菌、減重術後急症、乙狀結腸扭轉</div>
+        </div>
+        <div class="tool-card" id="card-view-periop-anticoag" onclick="location.href='tools/periop-anticoag.html'"
+             data-search-kw="抗凝 抗凝血劑 抗血小板 抗栓 停藥 橋接 bridging 重啟 恢復 圍手術期 急刀 緊急手術 反轉 逆轉 reversal 解毒劑 antidote idarucizumab Praxbind 依達賽珠 andexanet Andexxa Ondexxya 4F-PCC PCC Kcentra 凝血酶原複合物 維生素K vitamin K FFP 血漿 血小板輸注 platelet transfusion DDAVP desmopressin 去氨加壓素 PATCH 藥物濃度 anti-Xa 稀釋凝血酶時間 dTT ecarin 透析 活性碳 ISTH periop perioperative DOAC NOAC apixaban 艾必克凝 Eliquis rivaroxaban 拜瑞妥 Xarelto edoxaban Lixiana 里先安 dabigatran 普栓達 Pradaxa warfarin 可邁丁 VKA 香豆素 aspirin 阿斯匹靈 clopidogrel 保栓通 Plavix ticagrelor 百無凝 Brilinta prasugrel cangrelor CrCl 肌酸酐廓清率 Cockcroft-Gault 腎功能 CHA2DS2-VASc CHADS2 機械瓣 mechanical valve 二尖瓣 主動脈瓣 心房顫動 AF VTE 靜脈血栓 LMWH enoxaparin 伊諾肝素 dalteparin 肝素 heparin 神經軸 脊椎麻醉 硬脊膜外 neuraxial epidural spinal 支架 stent DES BMS PCI DAPT CHEST 2022 Douketis PAUSE BRIDGE EHRA ASRA POISE-2 出血風險 bleeding risk">
+          <div class="tool-name">圍手術期抗栓藥物管理 <span class="tool-en">Perioperative Antithrombotic Management</span></div>
+          <div class="tool-desc">依藥物、CrCl 與處置出血風險輸出 DOAC／warfarin 的<b>術前停藥天數、是否橋接、術後重啟時機</b>，附術前用藥日曆；另含抗血小板與支架後手術延遲。<b>刻意並列 CHEST 2022／EHRA 2021／ASRA 第 5 版三套方案而不合併</b>——同一病人三者可差一至兩天，神經軸麻醉與機械瓣橋接的分歧另有標示。<b>另設「急刀／反轉」分頁</b>：以台大急刀五級對應反轉決策與劑量（idarucizumab、4F-PCC、維生素 K），標明 andexanet 已於 2025-12 退出美國市場且 ISTH 列急刀為不應使用</div>
         </div>
       </div>
     </div>
@@ -277,7 +275,7 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">圍手術期 / 併發症</span><span class="group-en">Perioperative &amp; Complications</span><span class="group-count">5 項</span></div>
+      <div class="group-head"><span class="group-title">圍手術期 / 併發症</span><span class="group-en">Perioperative &amp; Complications</span><span class="group-count">4 項</span></div>
       <div class="home-list">
         <div class="tool-card" id="card-view-nutrition-risk" onclick="location.href='tools/nutrition-risk.html'"
              data-search-kw="營養 營養風險 營養不良 malnutrition NRS-2002 NRS 2002 Kondrup 篩檢 screening GLIM 診斷 表現型 phenotypic 病因型 etiologic 肌肉量 muscle mass 肌少症 sarcopenia BMI 體重下降 weight loss 再餵食 再餵食症候群 refeeding syndrome NICE CG32 ASPEN thiamine 硫胺 維生素B1 電解質 磷 低血磷 phosphate 鉀 鎂 ESPEN 外科 surgery Weimann 術前營養 preoperative nutrition 高代謝風險 白蛋白 albumin SGA 腸道營養 靜脈營養 TPN 空腸造口">
@@ -293,11 +291,6 @@
              data-search-kw="CHA2DS2-VASc CHADS2 CHA2DS2-VA 心房顫動 AF atrial fibrillation 中風風險 stroke risk 抗凝 anticoagulation 口服抗凝 OAC 充血性心衰竭 高血壓 糖尿病 中風 TIA 血管疾病 性別 女性 ESC 2024 ACC AHA 2023 APHRS 亞太 台灣 趙子凡 Lip 丹麥世代 Olesen 瑞典世代 Friberg 肥厚性心肌病變 心臟類澱粉">
           <div class="tool-name">CHA₂DS₂-VASc <span class="tool-en">Stroke Risk in Atrial Fibrillation</span></div>
           <div class="tool-desc"><b>同時算出 CHA₂DS₂-VASc（滿分 9，含性別）與 ESC 2024 改用的 CHA₂DS₂-VA（滿分 8）</b>，並分列 ESC 2024／ACC AHA 2023／APHRS 2021 三套門檻——同一位女病人兩套差一分，且 APHRS（台灣主導）在低分時比歐美更早介入。<b>刻意不印每分年中風率表</b>（兩份現行指引皆已不印，跨世代差距達 60 倍）</div>
-        </div>
-        <div class="tool-card" id="card-view-periop-anticoag" onclick="location.href='tools/periop-anticoag.html'"
-             data-search-kw="抗凝 抗凝血劑 抗血小板 抗栓 停藥 橋接 bridging 重啟 恢復 圍手術期 急刀 緊急手術 反轉 逆轉 reversal 解毒劑 antidote idarucizumab Praxbind 依達賽珠 andexanet Andexxa Ondexxya 4F-PCC PCC Kcentra 凝血酶原複合物 維生素K vitamin K FFP 血漿 血小板輸注 platelet transfusion DDAVP desmopressin 去氨加壓素 PATCH 藥物濃度 anti-Xa 稀釋凝血酶時間 dTT ecarin 透析 活性碳 ISTH periop perioperative DOAC NOAC apixaban 艾必克凝 Eliquis rivaroxaban 拜瑞妥 Xarelto edoxaban Lixiana 里先安 dabigatran 普栓達 Pradaxa warfarin 可邁丁 VKA 香豆素 aspirin 阿斯匹靈 clopidogrel 保栓通 Plavix ticagrelor 百無凝 Brilinta prasugrel cangrelor CrCl 肌酸酐廓清率 Cockcroft-Gault 腎功能 CHA2DS2-VASc CHADS2 機械瓣 mechanical valve 二尖瓣 主動脈瓣 心房顫動 AF VTE 靜脈血栓 LMWH enoxaparin 伊諾肝素 dalteparin 肝素 heparin 神經軸 脊椎麻醉 硬脊膜外 neuraxial epidural spinal 支架 stent DES BMS PCI DAPT CHEST 2022 Douketis PAUSE BRIDGE EHRA ASRA POISE-2 出血風險 bleeding risk">
-          <div class="tool-name">圍手術期抗栓藥物管理 <span class="tool-en">Perioperative Antithrombotic Management</span></div>
-          <div class="tool-desc">依藥物、CrCl 與處置出血風險輸出 DOAC／warfarin 的<b>術前停藥天數、是否橋接、術後重啟時機</b>，附術前用藥日曆；另含抗血小板與支架後手術延遲。<b>刻意並列 CHEST 2022／EHRA 2021／ASRA 第 5 版三套方案而不合併</b>——同一病人三者可差一至兩天，神經軸麻醉與機械瓣橋接的分歧另有標示。<b>另設「急刀／反轉」分頁</b>：以台大急刀五級對應反轉決策與劑量（idarucizumab、4F-PCC、維生素 K），標明 andexanet 已於 2025-12 退出美國市場且 ISTH 列急刀為不應使用</div>
         </div>
         <div class="tool-card" id="card-view-cci-clavien" onclick="location.href='tools/cci-clavien.html'"
              data-search-kw="CCI 綜合併發症指數 Comprehensive Complication Index Clavien Dindo 併發症 complication 術後 累積負荷 morbidity MID 最小重要差異 26.2 33.7">
