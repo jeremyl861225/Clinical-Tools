@@ -74,8 +74,7 @@
       if (!m) return;
       var nameEl = card.querySelector('.tool-name');
       var enEl = card.querySelector('.tool-en');
-      var tagEl = card.querySelector('.deci-tag');
-      // .tool-name 內含 .tool-en 與 .deci-tag，取出純中文名
+      // .tool-name 內含 .tool-en，取出純中文名
       var name = '';
       if (nameEl) {
         nameEl.childNodes.forEach(function (n) {
@@ -83,11 +82,8 @@
         });
       }
       name = name.trim();
-      var tag = txt(tagEl);
-      var type = 'tool';
-      if (card.classList.contains('deci-card')) {
-        type = (tag === 'Pathway') ? 'pathway' : 'guide';
-      }
+      // 決策流程以 .deci-card 判定；卡片上的「Pathway」標籤已移除，不可再靠標籤文字
+      var type = card.classList.contains('deci-card') ? 'pathway' : 'tool';
       var desc = txt(card.querySelector('.tool-desc'));
       out.push({
         type: type,

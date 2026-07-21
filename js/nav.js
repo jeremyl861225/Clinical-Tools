@@ -79,8 +79,8 @@
   /* ---- 由首頁 DOM 推導清單 ---- */
 
   // 工具卡：<div class="tool-card" onclick="location.href='tools/xxx.html'">
-  //         <div class="tool-name">中文名 <span class="deci-tag">…</span><span class="tool-en">…</span></div>
-  // 中文名取 .tool-name 的純文字節點（略過內含的 .tool-en 與 .deci-tag）。
+  //         <div class="tool-name">中文名 <span class="tool-en">…</span></div>
+  // 中文名取 .tool-name 的純文字節點（略過內含的 .tool-en）。
   function cardItem(card) {
     var m = (card.getAttribute('onclick') || '').match(/'([^']+\.html)'/);
     if (!m) return null;
