@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pittsburgh 食道穿孔嚴重度 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  .ps-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .ps-warn b{color:var(--accent2);}
+  .ps-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+  .ps-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
+  .ps-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .ps-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .ps-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+  .ps-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
+  .ps-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:6px;}
+  .ps-out-d{font-size:12.5px; line-height:1.75; opacity:.9;}
+  .ps-out-d ul{margin:4px 0 0; padding-left:17px;}
+  table.ps-t{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 4px;}
+  table.ps-t th,table.ps-t td{border:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top;}
+  table.ps-t thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.ps-t td.num{font-family:var(--mono);}
+  table.ps-t td:first-child{font-family:var(--mono); font-weight:700; white-space:nowrap;}
+  .ps-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  .ps-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
+  .ps-list li{margin-bottom:3px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-pss">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Esophageal Scoring Tool</div>
+      <h1>Pittsburgh 食道穿孔嚴重度</h1>
+      <div class="sub">Pittsburgh Esophageal Perforation Severity Score（PSS）· Abbas 2009 · 多國驗證 Schweigert 2016</div>
+    </div>
+    <div class="back-stack">
+      <button class="back-btn hidden" id="ps-back-flow">← 返回食道急症流程</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-pss'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="ps-warn">
+    <span class="h">兩件常被搞錯的事</span>
+    ① <b>原始文獻是 Abbas 2009 發表於《Surgery》</b>（PMID 19789035），不是常被誤引的《Ann Thorac Surg》。<br>
+    ② <b>切點有三套在流通</b>：≤2／3–5／&gt;5（Schweigert 多國驗證所用，本頁採此）、&lt;9 對 ≥9（取分數範圍中點的二分法）、
+    以及 ≤2／3–5／<b>≥6</b>（Int J Surg 2025）。第三套與本頁功能相同、只是寫法不同；第二套則是完全不同的切法。
+  </div>
+
+  <div class="card">
+    <div class="section-title">計分項目（10 項，總分 0–18）</div>
+    <div class="pa-checks" id="ps_g">
+      <label><input type="checkbox" class="ps-cb" data-w="1"> 年齡 &gt;75 歲 <span class="unit">(Age &gt;75)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="1"> 心搏過速 &gt;100 次/分 <span class="unit">(Tachycardia)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="1"> 白血球增多 &gt;10 × 10⁹/L <span class="unit">(Leukocytosis)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="1"> 肋膜積液 <span class="unit">(Pleural effusion — CXR、CT 或食道攝影)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="2"> 發燒 &gt;38.5 °C <span class="unit">(Fever)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="2"> <b>非侷限性滲漏</b> <span class="unit">(Non-contained leak — 食道攝影或 CT)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="2"> 呼吸功能受損 <span class="unit">(RR &gt;30／氧氣需求上升／需機械通氣)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="2"> <b>診斷延遲 &gt;24 小時</b> <span class="unit">(Time to diagnosis &gt;24 h)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="3"> 食道癌 <span class="unit">(Esophageal cancer)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="ps-cb" data-w="3"> 低血壓 <span class="unit">(Hypotension)</span><span class="pt-badge">3分</span></label>
+    </div>
+    <div class="note" style="margin-top:8px;">
+      配分結構：4 項 1 分＋4 項 2 分＋2 項 3 分 ＝ 最高 18 分。
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="ps-out">
+      <div class="ps-out-h">Pittsburgh Severity Score</div>
+      <div class="metric-value big" id="ps_total">0</div>
+      <div class="vt-out-v" id="ps_band" style="font-family:var(--serif); font-size:19px; font-weight:600;">—</div>
+    </div>
+
+    <div class="ps-out">
+      <div class="ps-out-h">多國驗證世代之結果（Schweigert 2016，n=288）</div>
+      <div class="ps-out-d" id="ps_d"></div>
+    </div>
+
+    <div class="ps-out">
+      <div class="ps-out-h">與治療決策的關係</div>
+      <div class="ps-out-d" id="ps_mgmt"></div>
+    </div>
+
+    <div class="risk-note">
+      本分數<b>預測的是預後與治療強度，不是直接的手術指示</b>。Schweigert 2016 觀察到「隨分數上升，併發症、住院天數、
+      接受手術的比例與死亡率都上升」，高分者接受手術的機會為低分者的 <b>3.37 倍</b>——這是<u>描述既有作法</u>，
+      不等於分數本身指示該開刀。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">風險分層與各世代結果</div>
+    <table class="ps-t">
+      <thead><tr><th>分層</th><th>分數</th><th>來源與結果</th></tr></thead>
+      <tbody>
+        <tr><td>低</td><td class="num">≤2</td><td>Schweigert 2016：n=63。Int J Surg 2025（僅收自發性破裂，n=101）：90 天死亡率 <b>14.8%</b></td></tr>
+        <tr><td>中</td><td class="num">3–5</td><td>Schweigert 2016：n=86。Int J Surg 2025：90 天死亡率 <b>21.2%</b></td></tr>
+        <tr><td>高</td><td class="num">&gt;5</td><td>Schweigert 2016：n=120。Int J Surg 2025（其寫法為 ≥6）：90 天死亡率 <b>36.4%</b></td></tr>
+      </tbody>
+    </table>
+    <ul class="ps-list">
+      <li><b>Schweigert 2016</b>（多國，德、葡、匈、保、西、英、奧、香港，1990–2014，n=288）：整體死亡率 <b>19.8%</b>；
+        平均 PSS <b>5.82</b>；死亡者平均 <b>9.79</b> vs 存活者 <b>4.84</b>（p&lt;0.001）；
+        接受手術者平均 <b>6.44</b> vs 未手術 <b>4.40</b>（p&lt;0.001）。病因：Boerhaave 119、醫源性 85、外傷 84，43 例併存食道癌。</li>
+      <li><b>Abbas 2009</b>（UPMC，1998–2008，n=119）：整體死亡率 <b>14%</b>；依位置——胸內 18%、頸部 8%、胃食道交界 3%。
+        非手術 vs 手術：住院天數 <b>13 vs 24 天</b>、併發症 <b>36% vs 62%</b>、死亡率 <b>4% vs 15%</b>。
+        診斷中位時間 12 小時（範圍 1–120），Boerhaave 佔 37%。</li>
+      <li><b>Moletta 2022</b>（單一轉診中心，2005–2020，n=73）：中位 PSS 4；60.3% 需手術。
+        PSS 顯著預測併發症（p&lt;0.01）、院內死亡（p=0.01）、入 ICU（p&lt;0.01）、需手術（p&lt;0.01）與需再介入（p=0.02）。</li>
+    </ul>
+    <div class="note" style="margin-top:8px;">
+      <b>注意各世代不可直接互比</b>：Schweigert 收所有病因，Int J Surg 2025 只收自發性破裂，Abbas 為單一中心。
+      分層的百分比請連同其世代一起讀。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">⚠ 指引建議與最新比較性資料相衝突</div>
+    <div class="ps-warn" style="margin-bottom:8px;">
+      <b>WSES 2019 指引</b>引用本分數時表示「<b>低分（≤2）者可能適合非手術治療</b>」。
+      但 <b>Int J Surg 2025</b>（多中心、僅自發性破裂、n=101）發現：手術治療組 90 天死亡率 <b>15.0%（9/60）</b>
+      vs 非手術組 <b>34.1%（14/41）</b>（p=0.031），且手術的好處<b>正是出現在低＋中風險合併分析</b>
+      （OR 0.211, 95% CI 0.064–0.701, p=0.011），<b>高風險組反而看不到好處</b>。
+      <br><b>這個衝突剛好落在你會拿來當非手術門檻的那一段分數上</b>，不要當作已定案。
+    </div>
+    <div class="ps-src">Int J Surg 2025（PMID 38959104）；WSES 2019（PMID 31164915）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">來源可信度說明</div>
+    <ul class="ps-list">
+      <li><b>本頁項目表為第二手。</b>Abbas 2009 與 Schweigert 2016 全文皆付費牆（jtcvs.org 回 HTTP 403），
+        項目與配分取自<b>兩篇獨立的開放取用文獻</b>，兩者逐項一致，且與 Schweigert 摘要中自行列舉的十個項目
+        （年齡、心搏過速、白血球增多、肋膜積液、發燒、非侷限性滲漏、呼吸受損、診斷時間、癌症、低血壓）
+        順序相同，總分亦與所述之 18 分相符。可信度高，但<u>未親見原始表格</u>。</li>
+      <li><b>≤2／3–5／&gt;5 這組切點是否出自 Abbas 2009 本身，無法確認。</b>Schweigert 稱之為
+        「Pittsburgh strata」，暗示出自原作者群，但未經證實。引用時宜寫成「Schweigert 2016 所採用、被稱為 Pittsburgh 分層」。</li>
+      <li>坊間流傳的「Pittsburgh 世代中 PSS ≥9 者無人存活」僅見於第二手敘述，未經任一原始文獻證實，
+        <b>本頁不予採用</b>。</li>
+      <li>Schweigert 2016 的摘要與會議摘要<b>均未公布各分層的併發症率與住院天數的實際數字</b>（僅稱「顯著相關」），
+        故本頁不列。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    原始文獻 — <a href="https://pubmed.ncbi.nlm.nih.gov/19789035/" target="_blank" rel="noopener" class="ref-link">Abbas G, et al. Surgery. 2009;146(4):749-755.</a><br>
+    多國驗證 — <a href="https://pubmed.ncbi.nlm.nih.gov/26897241/" target="_blank" rel="noopener" class="ref-link">Schweigert M, et al. J Thorac Cardiovasc Surg. 2016;151(4):1002-1009.</a><br>
+    單中心驗證 — <a href="https://pubmed.ncbi.nlm.nih.gov/34561399/" target="_blank" rel="noopener" class="ref-link">Moletta L, et al. J Trauma Acute Care Surg. 2022;92(1).</a><br>
+    自發性破裂多中心 — <a href="https://pubmed.ncbi.nlm.nih.gov/38959104/" target="_blank" rel="noopener" class="ref-link">Int J Surg. 2025.</a><br>
+    WSES 指引 — <a href="https://pubmed.ncbi.nlm.nih.gov/31164915/" target="_blank" rel="noopener" class="ref-link">Chirica M, et al. World J Emerg Surg. 2019;14:26.</a>
+  </footer>
+</div>
+</div>
+<script>
+function psCalc(){
+  var total=0;
+  document.querySelectorAll('.ps-cb').forEach(function(cb){ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  document.getElementById('ps_total').textContent=total;
+
+  var band,cls,d,m;
+  if(total>5){
+    band='高風險 High'; cls='b3';
+    d='此層在 Schweigert 世代為 n=120（該世代整體死亡率 19.8%，死亡者平均 PSS 9.79）。'
+     +'Int J Surg 2025 自發性破裂世代之 90 天死亡率為 <b>36.4%</b>。';
+    m='高分者接受手術之機會為低分者的 <b>3.37 倍</b>（Schweigert 2016）。'
+     +'<br><b>但請注意</b>：Int J Surg 2025 發現手術的存活優勢<u>只出現在低＋中風險</u>，'
+     +'<b>高風險組並未觀察到好處</b>（該世代僅收自發性破裂）。此層的治療決策不應單靠分數。';
+  }else if(total>=3){
+    band='中風險 Intermediate'; cls='b2';
+    d='此層在 Schweigert 世代為 n=86。Int J Surg 2025 自發性破裂世代之 90 天死亡率為 <b>21.2%</b>。';
+    m='<b>此層存在指引與資料的衝突</b>：Int J Surg 2025 顯示低＋中風險合併時，手術治療的 90 天死亡率顯著較低'
+     +'（OR 0.211, 95% CI 0.064–0.701, p=0.011）。WSES 2019 則僅就 ≤2 分提及非手術之可能。';
+  }else{
+    band='低風險 Low'; cls='b1';
+    d='此層在 Schweigert 世代為 n=63。Int J Surg 2025 自發性破裂世代之 90 天死亡率為 <b>14.8%</b>。';
+    m='<b>WSES 2019</b>：「低分（≤2）者<u>可能</u>適合非手術治療」——原文用的是 suggested，非強建議。'
+     +'<br><b>但 Int J Surg 2025 的結果相反</b>：於低＋中風險族群，手術組 90 天死亡率 15.0% vs 非手術組 34.1%'
+     +'（p=0.031）。<b>此處請勿把分數當作非手術的許可證</b>，仍須符合 Altorjay 的非手術條件'
+     +'（早期、侷限性穿孔、無敗血症、無既存食道疾病、且具備全天候監測能力）。';
+  }
+  document.getElementById('ps_band').innerHTML=band+'<span class="ps-band '+cls+'">'
+    +(total>5?'&gt;5':(total>=3?'3–5':'≤2'))+'</span>';
+  document.getElementById('ps_d').innerHTML=d;
+  document.getElementById('ps_mgmt').innerHTML=m;
+}
+
+(function(){
+  var from='';
+  try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from==='esoph'){
+    var b=document.getElementById('ps-back-flow');
+    if(b){ b.classList.remove('hidden');
+      b.addEventListener('click',function(){ location.href='../pathways/esophageal-emergency.html?restore=1'; }); }
+  }
+})();
+
+document.querySelectorAll('.ps-cb').forEach(function(cb){ cb.addEventListener('change',psCalc); });
+psCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

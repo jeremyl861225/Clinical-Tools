@@ -163,7 +163,7 @@
   <div class="flow-step hidden" id="gb_sv3">
     <div class="flow-step-head"><span class="flow-num">5</span><span class="flow-q">是否符合 pre-emptive TIPS 條件？（任一即符合）</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="gbPick('vtips','yes',this)">符合<span class="fo-sub">Child-Pugh C &lt;14 分／Child-Pugh B &gt;7 分且初次內視鏡時有活動性出血／出血當時 HVPG &gt;20 mmHg</span></button>
+      <button class="flow-opt" onclick="gbPick('vtips','yes',this)">符合<span class="fo-sub">Child-Pugh C &lt;14 分／Child-Pugh B &gt;7 分且<b>已用血管活性藥物仍</b>於初次內視鏡時有活動性出血／出血當時 HVPG &gt;20 mmHg</span></button>
       <button class="flow-opt" onclick="gbPick('vtips','no',this)">不符合<span class="fo-sub">走標準次級預防</span></button>
     </div>
     <div class="note" style="margin-top:8px;">僅適用於<b>食道靜脈曲張與 GOV1／GOV2</b> 出血者（Baveno VII 6.27）。<b>ACLF、入院時肝性腦病、入院時高膽紅素血症皆不是禁忌</b>（6.28）——這點常被誤當成排除條件。</div>
@@ -462,7 +462,9 @@ function gbRender(){
   } else if(gbSt.vtips==='yes'){
     show2=true; c2='rec-elective'; t2='符合 pre-emptive TIPS：72 小時內（理想 &lt;24 小時）施行';
     d2='<li><b>PTFE-covered stent 之 pre-emptive TIPS，於 72 小時內、理想在 24 小時內</b>施行（Baveno VII 6.27）。</li>'+
-       '<li>適應症（任一即可）：<b>Child-Pugh C &lt;14 分</b>；<b>Child-Pugh B &gt;7 分且初次內視鏡時有活動性出血</b>；<b>出血當時 HVPG &gt;20 mmHg</b>。</li>'+
+       '<li>適應症（任一即可）：<b>Child-Pugh C &lt;14 分</b>（即 C 級 10–13 分，Baveno「&lt;14」、ESGE「≤13」、AASLD「10–13」三種寫法指同一群人）；'+
+       '<b>Child-Pugh B &gt;7 分且已在使用血管活性藥物的情況下，初次內視鏡仍見活動性出血</b>'+
+       '（ESGE 將活動性出血定義為<b>噴射狀或滲血</b>；未用藥即出血者不算，別漏掉這個但書）；<b>出血當時 HVPG &gt;20 mmHg</b>。</li>'+
        '<li><b>ACLF、入院時肝性腦病、入院時高膽紅素血症都不是禁忌</b>（6.28）。</li>'+
        '<li>AASLD 2024 認為急性期量 HVPG 不可行，實務上<b>略去 HVPG 這一條</b>，改用 CTP B&gt;7 有活動性出血、或 CTP C 10–13。APASL 2025 敘述中用的是 HVPG &gt;16 mmHg。</li>'+
        '<li>已行 pre-emptive TIPS 者，AASLD 指出<b>不需再加做其他次級預防</b>；若門體壓力梯度 &lt;12 mmHg 亦不需 NSBB。</li>';

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食道急症處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床工具">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-esoph">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>食道急症處置決策</h1>
+      <div class="sub">Esophageal Emergencies · 穿孔／Boerhaave · 腐蝕性吞入 · 異物（WSES 2019）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-esoph'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box">
+    <summary>使用前必讀：這份指引的性質與三個常見誤引</summary>
+    <div class="box-inner">
+      <b>◆ 文件名稱：</b>「Esophageal emergencies: <b>WSES</b> guidelines」（Chirica 2019，WJES 14:26）。
+      <b>沒有 AAST 共同掛名</b>——AAST 的人（Moore、Biffl、Kluger）在作者群中，但這不是 WSES-AAST 聯合文件，
+      與例如「Anorectal emergencies: WSES-AAST guidelines」不同。<br><br>
+
+      <b>◆ 分級系統是 Oxford CEBM，不是 GRADE。</b>本頁所有「Grade 1C／2A／2C」都是 Oxford 分級，
+      <b>不可當成 GRADE 的強／弱建議讀</b>。<br><br>
+
+      <b>◆ 文件年份：</b>2019 年發表，文獻檢索截止於 2018 年 6 月，<b>至今已 7 年且無更新版</b>。
+      指引自己也坦承：「由於食道損傷發生率低，缺乏高品質證據，文獻多為病例報告、病例系列或綜述。」<br><br>
+
+      <b>◆ 涵蓋四類：</b>(1) 異物吞入、(2) 腐蝕性吞入、(3) 食道穿孔（醫源性與自發性）、(4) 食道外傷。
+      本流程做前三類；外傷另見下方定義區。<br><br>
+
+      <b>◆ Boerhaave 的名稱：</b>指引認為「它並非自發，用<b>壓力性破裂（barogenic rupture）</b>或
+      Boerhaave 症候群較恰當」。佔食道穿孔的 15%，裂孔通常位於<b>胸段食道下三分之一的左側緣</b>，
+      缺損大（<b>3–8 cm</b>）。醫源性佔全部食道穿孔的 60%。
+    </div>
+  </details>
+
+  <details class="def-box">
+    <summary>非手術治療的 Altorjay 條件（指引 Table 1）</summary>
+    <div class="box-inner">
+      指引原文：「Altorjay 等人二十多年前提出的條件，至今仍是非手術治療的主軸。」<b>全部符合才考慮非手術：</b>
+      <ul style="margin:6px 0 0; padding-left:18px; font-size:12.5px; line-height:1.8;">
+        <li><b>延遲時間：早期，小於 24 小時</b></li>
+        <li><b>無敗血症的症狀與徵象</b></li>
+        <li>影像上位於<b>頸部或胸部</b>且為<b>侷限性穿孔</b>（壁內、外滲極少且有引流、無大量肋膜污染）</li>
+        <li><b>無既存食道疾病</b></li>
+        <li>具備專家團隊監測，且外科與放射科<b>全天候</b>可支援</li>
+      </ul>
+      <div class="note" style="margin-top:8px;">注意「頸部<b>或胸部</b>」——非手術並非只限頸部穿孔。真正的門檻是<b>侷限性</b>與<b>早期</b>。</div>
+    </div>
+  </details>
+
+  <details class="def-box">
+    <summary>腐蝕性吞入：CT 四級分類與狹窄風險</summary>
+    <div class="box-inner">
+      <b>◆ CT 造影條件（指引原文）：</b>吞入後 <b>3–6 小時</b>執行頸、胸、腹部 CT，注射非離子性顯影劑前後各掃描
+      （2–3 mL/s，Iomeron 350，2 mL/kg），取像時間 18–25 秒，<b>延遲 90 秒</b>掃描。<br><br>
+      <b>◆ 判讀主軸：</b>透壁壞死的主要徵象是<b>注射顯影劑後管壁不強化</b>；
+      <b>在任何一段（食道、胃、十二指腸、小腸、大腸）出現，即為緊急手術的適應症</b>。
+      <table class="def-table" style="margin-top:8px;">
+        <tr><th>CT 級</th><th>影像所見</th><th>狹窄風險</th></tr>
+        <tr><td>I</td><td>食道壁均勻強化；無管壁水腫、無縱膈脂肪條紋</td><td>幾乎為零</td></tr>
+        <tr><td>IIa</td><td>黏膜內層強化；管壁增厚且低密度；外層亦強化時呈「靶狀」</td><td>低（&lt;20%）</td></tr>
+        <tr><td>IIb</td><td>外壁僅見細環狀強化；壞死黏膜不強化並填塞管腔，管腔呈液體密度</td><td>高（&gt;80%）</td></tr>
+        <tr class="dt-warn"><td>III</td><td><b>注射後管壁完全不強化</b></td><td>—（屬緊急手術適應症）</td></tr>
+      </table>
+      <div class="note" style="margin-top:6px;">第 II 級食道損傷<b>一律可見縱膈脂肪條紋</b>。
+        <b>狹窄風險與級別的對應（零／&lt;20%／&gt;80%）為推定</b>——原文該三句在取用時遺失了級別標籤，
+        依序列與圖說推斷極可能正確，但未逐字確認，請以原文覆核後再據以衛教。</div>
+      <div class="note" style="margin-top:6px;"><b>勿與另一套「Chirica 三級分類」混用</b>：放射科文獻中另有一套三級版本
+        （I 正常／II 管壁水腫加軟組織發炎且有強化／III 無強化），與本表的四級版本granularity 不同，標籤不可互換。</div>
+    </div>
+  </details>
+
+  <details class="def-box">
+    <summary>Zargar 內視鏡分級（指引提及但未收錄，且評價保留）</summary>
+    <div class="box-inner">
+      指引原文：「<b>Zargar 內視鏡分類</b>最常被使用；<b>其預測狹窄形成的能力仍有爭議，且不如 CT</b>。」
+      指引本身<u>沒有</u>重製這張表。以下取自 Zargar 1991 原始文獻之轉述：
+      <table class="def-table" style="margin-top:6px;">
+        <tr><th>級</th><th>內視鏡所見</th></tr>
+        <tr><td>0</td><td>黏膜正常</td></tr>
+        <tr><td>I</td><td>黏膜水腫與充血</td></tr>
+        <tr><td>IIa</td><td>脆弱、出血、糜爛、水泡、白膜、滲出物、表淺潰瘍</td></tr>
+        <tr><td>IIb</td><td>IIa <b>加上</b>深層或環周性潰瘍</td></tr>
+        <tr><td>IIIa</td><td>散在小範圍壞死（局部深灰或褐黑色潰瘍）</td></tr>
+        <tr><td>IIIb</td><td>廣泛壞死（廣泛深灰或褐黑色潰瘍）</td></tr>
+        <tr><td>IV</td><td>穿孔</td></tr>
+      </table>
+      <div class="note" style="margin-top:6px;">IIIa／IIIb 的措辭在不同二手來源之間有出入，原始文獻未能取得。
+        若需逐字引用請覆核 Zargar 1991（Gastrointest Endosc 1991;37(2):165-169）。</div>
+    </div>
+  </details>
+
+  <details class="def-box">
+    <summary>食道外傷（本流程未涵蓋，重點摘要）</summary>
+    <div class="box-inner">
+      佔全部食道損傷不到 15%。指引明確指出<b>理學檢查與抽血都不可靠</b>（兩者皆為負面陳述）。
+      <ul style="margin:6px 0 0; padding-left:18px; font-size:12.5px; line-height:1.8;">
+        <li>血行動力學穩定且懷疑者，應做<b>顯影劑 CT 與 CT 食道攝影</b>（Grade 1C）——CT 食道攝影敏感度 95%、特異度 91%。</li>
+        <li>內視鏡作為 CT 的<b>輔助</b>（Grade 2A）；建議<b>三重內視鏡</b>（食道鏡、喉鏡、支氣管鏡）；
+          使用<b>低流量充氣並以 CO₂ 取代空氣</b>。</li>
+        <li>血行動力學不穩、明顯非侷限性顯影劑外滲、或有嚴重敗血症全身徵象者，<b>立即手術</b>（Grade 1C）；
+          適用損害控制原則（Grade 1C）。</li>
+        <li>某研究之死亡率 44%，其中 <b>92% 的死亡發生在 24 小時內</b>，且死亡與 <b>ISS</b> 相關而非與食道損傷本身相關。</li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- ===== 步驟 1 ===== -->
+  <div class="flow-step" id="es_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">屬於哪一類食道急症？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('type','perf',this)">食道穿孔／Boerhaave<span class="fo-sub">醫源性、壓力性破裂（自發性）</span></button>
+      <button class="flow-opt" onclick="esPick('type','caustic',this)">腐蝕性吞入<span class="fo-sub">Corrosive / caustic ingestion</span></button>
+      <button class="flow-opt" onclick="esPick('type','fb',this)">食道異物／食團阻塞<span class="fo-sub">Foreign body / food bolus</span></button>
+    </div>
+  </div>
+
+  <!-- ===== 穿孔路徑 ===== -->
+  <div class="flow-connector hidden" id="es_cp1">↓</div>
+  <div class="flow-step hidden" id="es_sp1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">穿孔是在內視鏡處置當下發生並當場發現的嗎？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('when','intra',this)">是——處置中發生且當場辨識<span class="fo-sub">Occurred and recognized during endoscopy</span></button>
+      <button class="flow-opt" onclick="esPick('when','other',this)">否——延遲發現，或非內視鏡造成<span class="fo-sub">含 Boerhaave、外傷性、術後</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">這一題先問，因為指引對這兩種情境的<b>第一線治療不同</b>：
+      當場發現的內視鏡穿孔，內視鏡處理是「gold standard」；其餘情境則內視鏡只是「may be considered」。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="es_cp2">↓</div>
+  <div class="flow-step hidden" id="es_sp2">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">是否<b>完全符合</b> Altorjay 非手術條件？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('nom','yes',this)">全部符合<span class="fo-sub">&lt;24 小時、無敗血症、侷限性、無既存食道疾病、具全天候監測</span></button>
+      <button class="flow-opt" onclick="esPick('nom','no',this)">任一項不符<span class="fo-sub">延遲、敗血症、非侷限性滲漏、既存食道疾病或無監測能力</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/pss.html?from=esoph'">🧮 開啟 Pittsburgh 嚴重度分數</button>
+    <div class="note" style="margin-top:8px;">指引亦引用 Pittsburgh 分數：「<b>低分（≤2）者可能適合非手術治療</b>」。
+      但這點與 2025 年多中心資料相衝突（見計分工具頁），<b>Altorjay 條件仍是主要門檻</b>，分數只作輔助。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="es_cp3">↓</div>
+  <div class="flow-step hidden" id="es_sp3">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">穿孔位置？（決定術式，不決定要不要開刀）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('loc','cerv',this)">頸段<span class="fo-sub">Cervical</span></button>
+      <button class="flow-opt" onclick="esPick('loc','thor',this)">胸段<span class="fo-sub">Thoracic</span></button>
+      <button class="flow-opt" onclick="esPick('loc','abd',this)">腹段<span class="fo-sub">Abdominal</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">指引的手術五大原則：<b>(1) 良好暴露、(2) 清除失活組織、(3) 關閉缺損、
+      (4) 以組織襯墊加強食道縫線、(5) 適當的引流管</b>。手術入路依位置調整。</div>
+  </div>
+
+  <!-- ===== 腐蝕性路徑 ===== -->
+  <div class="flow-connector hidden" id="es_cc1">↓</div>
+  <div class="flow-step hidden" id="es_sc1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">能否執行顯影劑 CT？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('ctok','yes',this)">可以——以 CT 為主要評估<span class="fo-sub">吞入後 3–6 小時，延遲 90 秒掃描</span></button>
+      <button class="flow-opt" onclick="esPick('ctok','no',this)">不可以或判讀困難<span class="fo-sub">無 CT／腎衰竭或碘過敏／CT 疑似透壁壞死但判讀不確定／兒童</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>這份指引是 CT 優先，不是內視鏡優先</b>——這與舊教科書相反。
+      原文：緊急 CT「在偵測透壁損傷與預測狹窄形成上<b>優於內視鏡</b>」，且以 CT 為基礎的演算法
+      「相較以內視鏡為基礎的處置，<b>顯著改善了病人的結果</b>」。內視鏡的最大缺點是<b>無法準確預測透壁壞死</b>，
+      可能導致無謂手術或不當的觀察等待而死亡。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="es_cc2">↓</div>
+  <div class="flow-step hidden" id="es_sc2">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">有無透壁壞死？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('necr','yes',this)">有——任一段管壁注射後不強化<span class="fo-sub">CT 第 III 級；食道、胃、十二指腸、小腸或大腸任一處</span></button>
+      <button class="flow-opt" onclick="esPick('necr','no',this)">無透壁壞死<span class="fo-sub">CT 第 I／IIa／IIb 級</span></button>
+    </div>
+  </div>
+
+  <!-- ===== 異物路徑 ===== -->
+  <div class="flow-connector hidden" id="es_cf1">↓</div>
+  <div class="flow-step hidden" id="es_sf1">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">異物性質與阻塞程度？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="esPick('fb','emerg',this)">尖銳物、電池、磁鐵，或<b>完全阻塞</b>之食團<span class="fo-sub">需緊急內視鏡</span></button>
+      <button class="flow-opt" onclick="esPick('fb','urgent',this)">其他食道異物，未完全阻塞<span class="fo-sub">需緊急但非立即之內視鏡</span></button>
+      <button class="flow-opt" onclick="esPick('fb','perf',this)">已出現穿孔徵象<span class="fo-sub">疑似或確認穿孔／併發症</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>80–90% 的吞入異物會自行通過</b>，僅 <b>1–3%</b> 需要手術。
+      緊急處理的四個理由：尖銳物<b>全層穿孔風險可達 35%</b>；鈕扣電池有壓迫壞死、電燒傷與化學灼傷風險；
+      磁鐵造成壓迫壞死；完全阻塞的食團有吸入與穿孔風險。</div>
+  </div>
+
+  <!-- ===== 建議 ===== -->
+  <div class="flow-connector" id="es_crec">↓</div>
+  <div class="flow-rec rec-idle" id="es_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-reset"><button class="btn-reset" onclick="esReset()">重置</button></div>
+
+  <details class="def-box">
+    <summary>相關工具與分級</summary>
+    <div class="box-inner">
+      <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.9;">
+        <li><a href="../tools/pss.html" class="ref-link">Pittsburgh 食道穿孔嚴重度分數</a>——預後分層與治療強度。</li>
+        <li><a href="../tools/classifications.html#sys-aast" class="ref-link">AAST EGS 食道穿孔分級（I–V）</a>——
+          解剖嚴重度的共同語言。<b>注意：食道穿孔是 AAST EGS 全部 16 個疾病中，7 個從未經過驗證者之一</b>，
+          僅可作描述用，不可作預後推論。</li>
+        <li><b>勿與 AAST 的「食道器官損傷分級（OIS）」混淆</b>——同樣是 I–V，但那是<b>外傷</b>用的
+          （挫傷／部分厚度撕裂＝I、撕裂 &lt;50% 環周＝II、&gt;50%＝III、節段缺損或缺血 &lt;2 cm＝IV、&gt;2 cm＝V；
+          多處病灶可升一級至 III 為止），與上面那套 EGS 分級內容完全不同。</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    WSES 2019 — <a href="https://pubmed.ncbi.nlm.nih.gov/31164915/" target="_blank" rel="noopener" class="ref-link">Chirica M, et al. Esophageal emergencies: WSES guidelines. World J Emerg Surg. 2019;14:26.</a><br>
+    Pittsburgh 分數 — <a href="https://pubmed.ncbi.nlm.nih.gov/19789035/" target="_blank" rel="noopener" class="ref-link">Abbas G, et al. Surgery. 2009;146(4):749-755.</a><br>
+    Zargar 分級 — <a href="https://pubmed.ncbi.nlm.nih.gov/1866717/" target="_blank" rel="noopener" class="ref-link">Zargar SA, et al. Gastrointest Endosc. 1991;37(2):165-169.</a>
+  </footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+var esSt={type:null,when:null,nom:null,loc:null,ctok:null,necr:null,fb:null};
+
+function esPick(k,v,btn){
+  flowSelect(btn);
+  if(k==='type'){ esSt.type=v; esSt.when=null; esSt.nom=null; esSt.loc=null; esSt.ctok=null; esSt.necr=null; esSt.fb=null; }
+  else if(k==='when'){ esSt.when=v; esSt.nom=null; esSt.loc=null; }
+  else if(k==='nom'){ esSt.nom=v; esSt.loc=null; }
+  else if(k==='loc'){ esSt.loc=v; }
+  else if(k==='ctok'){ esSt.ctok=v; esSt.necr=null; }
+  else if(k==='necr'){ esSt.necr=v; }
+  else if(k==='fb'){ esSt.fb=v; }
+  esRender();
+}
+
+function esRender(){
+  var isPerf=esSt.type==='perf', isCau=esSt.type==='caustic', isFb=esSt.type==='fb';
+
+  /* 穿孔：當場發現的內視鏡穿孔直接走內視鏡治療，不再問 NOM 條件 */
+  var showP1=isPerf;
+  var showP2=isPerf && esSt.when==='other';
+  var showP3=isPerf && esSt.when==='other' && esSt.nom==='no';
+  flowShow('es_cp1',showP1); flowShow('es_sp1',showP1);
+  flowShow('es_cp2',showP2); flowShow('es_sp2',showP2);
+  flowShow('es_cp3',showP3); flowShow('es_sp3',showP3);
+  if(!showP1) flowClearSel('es_sp1');
+  if(!showP2) flowClearSel('es_sp2');
+  if(!showP3) flowClearSel('es_sp3');
+
+  var showC1=isCau, showC2=isCau && esSt.ctok!==null;
+  flowShow('es_cc1',showC1); flowShow('es_sc1',showC1);
+  flowShow('es_cc2',showC2); flowShow('es_sc2',showC2);
+  if(!showC1) flowClearSel('es_sc1');
+  if(!showC2) flowClearSel('es_sc2');
+
+  flowShow('es_cf1',isFb); flowShow('es_sf1',isFb);
+  if(!isFb) flowClearSel('es_sf1');
+
+  var cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  /* ---------- 穿孔 ---------- */
+  if(isPerf && esSt.when==='intra'){
+    cls='rec-blue'; title='內視鏡閉合（第一線）';
+    detail='<li><b>內視鏡治療是處置中發生並當場辨識之穿孔的 gold standard</b>（Grade 2A）。</li>'
+      +'<li><b>小於 2 cm</b> 的管腔缺損：以<b>內視鏡夾</b>（through-the-scope 或 over-the-scope clip）閉合，此為標準作法。</li>'
+      +'<li>較大缺損或夾閉不理想者：以<b>覆膜自膨脹金屬支架或塑膠支架</b>覆蓋，'
+      +'建議<b>置放 2–4 週</b>以利癒合。</li>'
+      +'<li>支持治療：<b>禁食、廣效抗生素（涵蓋需氧與厭氧菌）、氫離子幫浦抑制劑</b>（Grade 1C）；'
+      +'<b>及早以腸道營養或全靜脈營養提供營養支持</b>（Grade 1C）；建議<b>內視鏡置放鼻胃管</b>（Grade 2A）。</li>'
+      +'<li><b>內視鏡下真空治療（EVT）</b>近年有成功案例報告，可能是有前景的替代方案——'
+      +'但指引僅作<u>描述</u>，<b>未給任何建議等級</b>。</li>';
+    note='WSES 2019（Oxford CEBM 分級）。內視鏡支架另可作為手術後持續滲漏的輔助處理工具。';
+  }
+  else if(isPerf && esSt.nom==='yes'){
+    cls='rec-blue'; title='非手術治療（需全天候監測）';
+    detail='<li><b>穩定、早期表現、侷限性食道破裂、周邊腔室污染極少，且具備高度專門的監測能力</b>時，'
+      +'可考慮非手術治療（Grade 1C）。</li>'
+      +'<li><b>禁食＋廣效抗生素（需氧與厭氧）＋氫離子幫浦抑制劑</b>（Grade 1C）。</li>'
+      +'<li><b>及早給予營養支持</b>（腸道營養或全靜脈營養），這是食道癒合的關鍵（Grade 1C）。</li>'
+      +'<li><b>內視鏡置放鼻胃管</b>（Grade 2A）。</li>'
+      +'<li>指引亦提及 Pittsburgh 分數<b>≤2 分者可能適合非手術</b>——但此點與 2025 年多中心資料衝突，'
+      +'見計分工具頁，勿單以分數決定。</li>';
+    note='WSES 2019。Altorjay 條件必須<b>全部</b>符合；任一項不符即應手術。'
+      +'指引警語：非手術下病情惡化應立即重新評估並考慮手術。';
+  }
+  else if(isPerf && esSt.nom==='no' && esSt.loc){
+    var t,d;
+    if(esSt.loc==='cerv'){
+      cls='rec-elective'; t='頸段穿孔：優先直接修補';
+      d='<li><b>頸部穿孔應盡可能嘗試直接修補</b>食道缺損（Grade 1C）。</li>'
+        +'<li>以<b>胸鎖乳突肌或二腹肌</b>作為襯墊加強縫線。</li>'
+        +'<li><b>若無法直接修補</b>（<b>缺損超過食道環周 50%</b>、或<b>延遲探查</b>）：'
+        +'建議<b>外引流</b>（Grade 2A），並考慮做側式或末端食道造口。</li>';
+    }else if(esSt.loc==='thor'){
+      cls='rec-elective'; t='胸段穿孔：一期修補為首選';
+      d='<li><b>胸段食道自由穿孔的首選治療是一期修補</b>（Grade 1C）。</li>'
+        +'<li>技術要點：<b>黏膜缺損常比肌肉層裂孔更長</b>，於穿孔<b>兩端做縱向肌肉切開</b>以暴露黏膜邊緣。</li>'
+        +'<li><b>縫線裂開率一般引述為 25–50%</b>，故務必以組織襯墊加強。'
+        +'體型合適者可經中線剖腹以經裂孔方式修補，<b>Nissen 胃底摺疊可作為有效的襯墊</b>。</li>'
+        +'<li><b>若無法直接修補</b>（<b>血行動力學不穩、延遲探查、食道破壞範圍大</b>）：'
+        +'應施行<b>食道曠置、轉流或切除</b>（Grade 1C）。可用<b>大口徑 T 型管</b>修補以製造可控的食道皮膚廔管。</li>'
+        +'<li><b>既存食道病變者，切除是最佳選擇。</b></li>'
+        +'<li>一般<b>不建議</b>常規做轉流性頸部食道造口（引流唾液用）。</li>';
+    }else{
+      cls='rec-elective'; t='腹段穿孔：手術修補為首選';
+      d='<li><b>腹段食道自由穿孔的首選治療是手術修補</b>（Grade 1C）。</li>'
+        +'<li>中線剖腹；<b>單層或雙層無張力縫合</b>。</li>'
+        +'<li>以<b>胃底</b>作襯墊（完全或部分胃底摺疊）。</li>'
+        +'<li>置放鼻胃管；做<b>餵食空腸造口</b>；引流<b>橫膈下</b>腔室。</li>';
+    }
+    title=t;
+    detail=d+'<li><b>手術時機：一經決定手術應盡快送手術室</b>（Grade 1C）——'
+      +'即使是輕微的延遲也可能增加併發症與死亡率。</li>'
+      +'<li>微創手術（腹腔鏡、胸腔鏡）修補<b>可以考慮</b>（Grade 1C），'
+      +'但「應僅限於具備高度專門技術的中心」。</li>'
+      +'<li>重建（大腸間置或胃上提）於完全轉流或胸段食道切除後 <b>6–12 個月</b>施行。</li>';
+    note='WSES 2019。手術五原則：良好暴露、清創、關閉缺損、襯墊加強、適當引流。'
+      +'<b>時間就是預後</b>：24 小時內處置者死亡率低於 10%，超過則約 30%；'
+      +'整體食道穿孔死亡率 10–20%，而<b>超過半數的病例存在診斷延遲</b>。';
+  }
+
+  /* ---------- 腐蝕性 ---------- */
+  else if(isCau && esSt.necr==='yes'){
+    cls='rec-urgent'; title='緊急手術：切除所有透壁壞死組織';
+    detail='<li><b>腐蝕性壞死應盡快手術以避免死亡</b>（Grade 1C）。</li>'
+      +'<li><b>初次手術即應切除所有明顯的透壁壞死組織</b>（Grade 2A）。</li>'
+      +'<li>食道與胃皆透壁壞死者：經<b>腹部合併頸部入路</b>行<b>剝除式食道切除加全胃切除</b>。</li>'
+      +'<li>壞死僅侷限於胃者：考慮<b>全胃切除</b>並保留原生食道，或做食道轉流。'
+      +'<b>不建議部分胃切除</b>——持續進行的壞死可能危及存活。</li>'
+      +'<li><b>手術前必須做氣管支氣管內視鏡</b>以偵測氣管支氣管壞死；'
+      +'經右側開胸做肺片修補可能可以救命。</li>'
+      +'<li><b>手術結束時應做餵食空腸造口</b>（Grade 2A）。</li>'
+      +'<li><b>緊急手術當下禁止做食道重建</b>——後續狹窄形成會損害功能結果。</li>'
+      +'<li><b>若剖腹發現廣泛腸道壞死，應放棄切除</b>——存活率差且營養問題無解。</li>';
+    note='WSES 2019。透壁壞死的判準是<b>注射顯影劑後管壁不強化</b>（CT 第 III 級），'
+      +'出現在任一段消化道即為手術適應症。'
+      +'因腐蝕性壞死接受手術者，相對於一般族群之標準化死亡比為 <b>21.5</b>。';
+  }
+  else if(isCau && esSt.necr==='no'){
+    cls='rec-blue'; title='非手術治療＋依 CT 級別分層追蹤';
+    detail='<li><b>未達消化道全層壞死者應接受非手術治療</b>（Grade 1C）。</li>'
+      +'<li><b>任何惡化都應重做 CT 並考慮手術</b>（Grade 2A）——非手術期間約 <b>5%</b> 會出現持續進行的壞死。</li>'
+      +'<li>依 CT 級別分層：<b>第 I 級</b>可立即進食、24–48 小時出院，狹窄風險幾近於零，不需長期追蹤；'
+      +'<b>IIa 級</b>狹窄風險低（&lt;20%）；<b>IIb 級</b>狹窄風險高（&gt;80%）。'
+      +'IIa／IIb 應安排<b>吞入後 4–6 個月</b>回診，因多數狹窄在此期間形成。</li>'
+      +'<li>狹窄處理：<b>少於 3 處、長度小於 5 cm</b> 者，於<b>吞入後 3–6 週</b>開始嘗試內視鏡擴張（Grade 2A）。'
+      +'反覆擴張失敗後應考慮重建手術（Grade 2A），一般在 <b>5–7 次</b>失敗之後。'
+      +'支架的部分「仍缺乏可靠資料支持」。</li>'
+      +'<li><b>所有病人出院前都必須接受精神科評估</b>（Grade 2C）。</li>';
+    note='WSES 2019。CT 級別與狹窄風險的對應為<b>推定</b>（原文該處級別標籤在取用時遺失），請覆核原文後再據以衛教。';
+  }
+  else if(isCau && esSt.ctok==='no' && esSt.necr===null){
+    cls='rec-blue'; title='改以內視鏡評估（CT 不可行時的替代路徑）';
+    detail='<li><b>下列情況應執行緊急內視鏡</b>（Grade 2A）：(1) 無法做 CT；(2) 有顯影劑禁忌（腎衰竭、碘過敏等）；'
+      +'(3) CT 疑似透壁食道壞死但判讀困難或不確定；(4) <b>兒童</b>。</li>'
+      +'<li><b>兒童以內視鏡為第一線</b>：嚴重損傷罕見，且輻射暴露的長期影響是重要考量。</li>'
+      +'<li>內視鏡的最大缺點是<b>無法準確預測透壁壞死</b>，可能導致無謂的手術，'
+      +'或不當的「觀察等待」而致死。判讀時務必意識到這個限制。</li>'
+      +'<li>Zargar 分級可用於描述，但指引評價保留：<b>其預測狹窄形成的能力仍有爭議，且不如 CT</b>。</li>';
+    note='WSES 2019。請於內視鏡評估後回到步驟 3 選擇是否有透壁壞死。';
+  }
+
+  /* ---------- 異物 ---------- */
+  else if(isFb && esSt.fb==='emerg'){
+    cls='rec-urgent'; title='緊急內視鏡：最好 2 小時內，最遲 6 小時內';
+    detail='<li><b>尖銳物、電池、磁鐵，以及造成完全食道阻塞的異物，建議緊急軟式內視鏡處理'
+      +'（最好 2 小時內，最遲 6 小時內）</b>（Grade 1B）。</li>'
+      +'<li>各自的理由：<b>尖銳物</b>全層穿孔風險<b>可達 35%</b>；<b>鈕扣／鈕釦電池</b>有壓迫壞死、'
+      +'電燒傷與化學灼傷風險；<b>磁鐵</b>造成壓迫壞死；<b>食團完全阻塞</b>有吸入與穿孔風險。</li>'
+      +'<li>多數需麻醉科介入，常需<b>全身麻醉並氣管內插管以保護呼吸道</b>。</li>'
+      +'<li>影像：頸、胸、腹部 X 光可評估位置、形狀與大小（Grade 1C），'
+      +'但<b>假陰性率可達 47%</b>；食團、薄金屬、木頭、塑膠、玻璃、魚骨或雞骨的假陰性率<b>可達 85%</b>。'
+      +'<b>雙平面攝影可降低假陰性。</b></li>'
+      +'<li><b>不建議做顯影劑吞嚥檢查，且不應因此延誤其他檢查或處置</b>（Grade 1B）——'
+      +'完全阻塞時有吸入風險，且鋇劑會包覆異物與黏膜而妨礙內視鏡視野。</li>';
+    note='WSES 2019。抽血建議：CBC、CRP、血氧分析之鹼基過剩、乳酸（Grade 2C）。';
+  }
+  else if(isFb && esSt.fb==='urgent'){
+    cls='rec-blue'; title='緊急內視鏡：24 小時內';
+    detail='<li><b>其他未造成完全阻塞的食道異物，建議 24 小時內以軟式內視鏡處理</b>（Grade 1B）。</li>'
+      +'<li>軟式內視鏡是持續存在之食道異物的<b>第一線治療</b>（Grade 1B）——'
+      +'但須知<b>80–90% 的吞入異物會自行通過</b>。</li>'
+      +'<li>懷疑穿孔或其他可能需要介入性內視鏡或手術的併發症時，應做 <b>CT</b>（Grade 1B）。'
+      +'以魚骨嵌頓為例，<b>X 光敏感度僅 32%，CT 為 90–100%、特異度 93.7–100%</b>。</li>';
+    note='WSES 2019。';
+  }
+  else if(isFb && esSt.fb==='perf'){
+    cls='rec-urgent'; title='手術：依污染範圍決定術式';
+    detail='<li><b>食道穿孔併廣泛肋膜／縱膈污染者，應立即採取手術</b>（Grade 1B）。</li>'
+      +'<li>手術的其他適應症：<b>異物無法取出、穿孔、異物緊鄰重要構造（主動脈弓）</b>，'
+      +'以及其他併發症（Grade 1B）。<b>僅 1–3% 的病人需要手術。</b></li>'
+      +'<li>轉診中心應以<b>微創技術為第一線</b>（Grade 1C）。</li>'
+      +'<li><b>肋膜／縱膈污染有限且邊緣組織存活</b>者：可考慮<b>食道切開取出異物並一期閉合</b>（Grade 1C）。</li>'
+      +'<li><b>污染廣泛</b>者：應考慮<b>搶救性食道切除</b>，並做一期或延遲重建。</li>';
+    note='WSES 2019。';
+  }
+
+  flowRec('es_rec', cls, title, detail, note);
+}
+
+/* 往返 Pittsburgh 計分工具的狀態保存與還原，由 js/common.js 的 flowNav 統一處理
+   （記錄已點選項、勾選框、捲動位置與所點連結，並於 ?restore=1 時重播）。
+   本頁不自行實作，以免與其重複執行而互相覆蓋。 */
+function esReset(){
+  Object.keys(esSt).forEach(function(k){ esSt[k]=null; });
+  document.querySelectorAll('#view-esoph .flow-opt').forEach(function(b){ b.classList.remove('selected'); });
+  esRender();
+}
+
+esReset();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
