@@ -82,6 +82,9 @@
         color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
 
   .pa-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  /* 由 CHA₂DS₂-VASc 計算機返回時，把帶回來的分數顯示在該勾選項旁 */
+  .pa-vasc-res{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent);
+        background:var(--accent-soft); border-radius:10px; padding:2px 8px; margin-left:6px; white-space:nowrap;}
   .pa-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
   .pa-list li{margin-bottom:2px;}
 </style>
@@ -194,8 +197,10 @@
     <div id="pa_rf_af" class="pa-checks">
       <label><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"> 近 3 個月內中風或 TIA
         <span class="en">recent (&lt;3 m) stroke / TIA</span></label>
-      <label><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"> CHA₂DS₂-VASc ≥7（或 CHADS₂ 5–6）
-        <span class="en">CHA₂DS₂-VASc ≥7</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1" id="pa_rf_vasc"> CHA₂DS₂-VASc ≥7（或 CHADS₂ 5–6）
+        <span class="en">CHA₂DS₂-VASc ≥7</span>
+        <span id="pa_vasc_res" class="pa-vasc-res hidden"></span></label>
+      <button type="button" class="flow-link" id="pa_vasc_link">開啟 CHA₂DS₂-VASc 計算機 →</button>
       <label><input type="checkbox" class="pa-rf" data-ind="af"> 過去圍手術期曾發生血栓栓塞
         <span class="en">prior perioperative thromboembolism</span></label>
     </div>
@@ -851,11 +856,63 @@ function paCalc(){
 document.querySelectorAll('#view-periop-anticoag input, #view-periop-anticoag select')
   .forEach(function(el){ el.addEventListener('input',paCalc); el.addEventListener('change',paCalc); });
 
+/* ─────────── 與 CHA₂DS₂-VASc 計算機往返 ───────────
+   離開前把整份表單與捲動位置存起來，計算機按返回鍵帶 ?restore=1 回來時原樣還原，
+   畫面停在原本點開連結的地方，並把帶回的分數顯示於該勾選項旁（≥7 自動勾選）。
+   狀態放 sessionStorage（關掉分頁即失效），只還原一次。 */
+var PA_KEY='periopAnticoagSt', PA_RES='cha2ds2Result';
+
+function paSave(){
+  try{
+    var f={};
+    document.querySelectorAll('#view-periop-anticoag input, #view-periop-anticoag select')
+      .forEach(function(el,i){ f[i]=(el.type==='checkbox')?(el.checked?1:0):el.value; });
+    sessionStorage.setItem(PA_KEY,JSON.stringify({f:f,y:window.scrollY,tab:currentTab()}));
+  }catch(e){}
+}
+function currentTab(){
+  var b=document.querySelector('#pa_tabs .tab-btn.active');
+  return b?b.getAttribute('data-tab'):'oac';
+}
+function paRestore(){
+  var d=null;
+  try{ d=JSON.parse(sessionStorage.getItem(PA_KEY)||'null'); }catch(e){}
+  if(!d) return;
+  sessionStorage.removeItem(PA_KEY);           // 只還原一次，之後重進為空白表單
+  var els=document.querySelectorAll('#view-periop-anticoag input, #view-periop-anticoag select');
+  els.forEach(function(el,i){
+    if(!(i in d.f)) return;
+    if(el.type==='checkbox') el.checked=!!d.f[i]; else el.value=d.f[i];
+  });
+  if(d.tab) paTab(d.tab,true);
+
+  /* 帶回的分數 */
+  var r=null;
+  try{ r=JSON.parse(sessionStorage.getItem(PA_RES)||'null'); }catch(e){}
+  if(r && typeof r.score==='number'){
+    sessionStorage.removeItem(PA_RES);
+    var box=document.getElementById('pa_rf_vasc'), tag=document.getElementById('pa_vasc_res');
+    if(tag){
+      tag.textContent=(r.label||'CHA₂DS₂-VASc')+' '+r.score+' 分';
+      tag.classList.remove('hidden');
+    }
+    if(box && r.score>=7 && !box.checked) box.checked=true;
+  }
+  paCalc();
+  requestAnimationFrame(function(){ window.scrollTo(0,d.y||0); });
+}
+
+document.getElementById('pa_vasc_link').addEventListener('click',function(){
+  paSave();
+  location.href='cha2ds2-vasc.html?from=periop-anticoag';
+});
+
 (function(){
   var m=location.hash.match(/#tab=(\w+)/);
   if(m && PA_TABS.indexOf(m[1])>=0) paTab(m[1],true);
 })();
 paCalc();
+if(/[?&]restore=1/.test(location.search)) paRestore();
 </script>
 <!-- pwa-sw-register -->
 <script>

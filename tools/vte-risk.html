@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VTE 風險評估 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  .vt-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .vt-warn b{color:var(--accent2);}
+  .vt-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+
+  .vt-grp{margin-bottom:4px;}
+  .vt-grp-h{display:flex; align-items:baseline; gap:8px; margin:14px 0 2px; padding-bottom:4px;
+        border-bottom:2px solid var(--accent-soft);}
+  .vt-grp-h:first-child{margin-top:0;}
+  .vt-grp-n{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--accent);
+        text-transform:uppercase;}
+  .vt-grp-c{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+
+  .vt-sel{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
+  .vt-sel label{font-size:13px;}
+  .vt-sel select{flex:1; min-width:180px; padding:8px 10px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13.5px;}
+
+  .vt-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  .vt-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
+  .vt-list li{margin-bottom:2px;}
+
+  table.vt-t{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 4px;}
+  table.vt-t th,table.vt-t td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  table.vt-t thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.vt-t td.num{font-family:var(--mono);}
+  table.vt-t td:first-child{font-family:var(--mono); font-weight:700; white-space:nowrap;}
+  table.vt-t tr.hi td{background:var(--accent-soft);}
+
+  /* 結果面板 */
+  .vt-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
+  .vt-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .vt-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:5px;}
+  .vt-out-v{font-family:var(--serif); font-size:19px; font-weight:600; line-height:1.4;}
+  .vt-out-d{font-size:12.5px; line-height:1.75; margin-top:6px; opacity:.9;}
+  .vt-out-d ul{margin:4px 0 0; padding-left:17px;}
+  .vt-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
+  .vt-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .vt-band.b1{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
+  .vt-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .vt-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-vte-risk">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Perioperative Scoring Tool</div>
+      <h1>VTE 風險評估</h1>
+      <div class="sub">Caprini · Padua · IMPROVE 出血風險 — 靜脈血栓栓塞風險與預防</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-vte-risk'">← 返回主選單</button>
+  </div>
+
+  <div class="tab-row" id="vt_tabs">
+    <button class="tab-btn active" data-tab="cap" onclick="vtTab('cap')">Caprini（外科）</button>
+    <button class="tab-btn"        data-tab="pad" onclick="vtTab('pad')">Padua（內科）</button>
+    <button class="tab-btn"        data-tab="imp" onclick="vtTab('imp')">IMPROVE 出血</button>
+    <button class="tab-btn"        data-tab="gl"  onclick="vtTab('gl')">指引與預防</button>
+  </div>
+
+<!-- ══════════════════ Caprini ══════════════════ -->
+<div id="tab-cap">
+  <div class="vt-warn">
+    <span class="h">本頁採 2005 年版</span>
+    Caprini 有 <b>2005／2010 修訂／2013</b> 多個版本在流通，項目與配分並不相同，二手表格常混著抄。
+    本頁實作 <b>2005 年版</b>——這是 ACCP/CHEST AT9 指引收錄、也是一般外科實證最完整的版本。
+    2013 版作者自己註明新增項目「未經驗證研究檢驗」。版本差異見「指引與預防」分頁。
+  </div>
+
+  <div class="card">
+    <div class="vt-grp-h"><span class="vt-grp-n">年齡</span><span class="vt-grp-c" id="cap_c_age">0 分</span></div>
+    <div class="vt-sel">
+      <label>年齡區間</label>
+      <select id="cap_age">
+        <option value="0">≤40 歲（0 分）</option>
+        <option value="1">41–60 歲（1 分）</option>
+        <option value="2">61–74 歲（2 分）</option>
+        <option value="3">≥75 歲（3 分）</option>
+      </select>
+    </div>
+    <div class="note">年齡為互斥區間，故以下拉選單呈現，不重複計分。</div>
+
+    <div class="vt-grp-h"><span class="vt-grp-n">1 分項目</span><span class="vt-grp-c" id="cap_c_1">0 分</span></div>
+    <div class="pa-checks" id="cap_g1">
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 小手術 <span class="unit">(Minor surgery)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> BMI &gt;25 kg/m² <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 下肢腫脹 <span class="unit">(Swollen legs)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 靜脈曲張 <span class="unit">(Varicose veins)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 懷孕或產後 <span class="unit">(Pregnancy or postpartum)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 不明原因或反覆流產（&gt;3 次） <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 口服避孕藥或荷爾蒙替代療法 <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 敗血症（&lt;1 個月） <span class="unit">(Sepsis)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 嚴重肺部疾病，含肺炎（&lt;1 個月） <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 肺功能異常 <span class="unit">(Abnormal pulmonary function)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 急性心肌梗塞 <span class="unit">(Acute MI)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 充血性心衰竭 <span class="unit">(CHF)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 發炎性腸道疾病病史 <span class="unit">(IBD)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="1"> 內科臥床病人 <span class="unit">(Medical patient at bed rest)</span><span class="pt-badge">1分</span></label>
+    </div>
+
+    <div class="vt-grp-h"><span class="vt-grp-n">2 分項目</span><span class="vt-grp-c" id="cap_c_2">0 分</span></div>
+    <div class="pa-checks" id="cap_g2">
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 大型開放手術（&gt;45 分鐘） <span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 腹腔鏡手術（&gt;45 分鐘） <span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 惡性腫瘤 <span class="unit">(Malignancy)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 臥床 &gt;72 小時 <span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 石膏固定 <span class="unit">(Immobilizing cast)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="2"> 中心靜脈導管 <span class="unit">(Central venous access)</span><span class="pt-badge">2分</span></label>
+    </div>
+
+    <div class="vt-grp-h"><span class="vt-grp-n">3 分項目</span><span class="vt-grp-c" id="cap_c_3">0 分</span></div>
+    <div class="pa-checks" id="cap_g3">
+      <label><input type="checkbox" class="cap-cb" data-w="3"> VTE 病史 <span class="unit">(History of VTE)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="3"> VTE 家族史 <span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="3"> 先天或後天血栓體質（Factor V Leiden、抗心磷脂抗體、高同半胱胺酸血症、Prothrombin 20210A） <span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="3"> 肝素引起之血小板低下 <span class="unit">(HIT)</span><span class="pt-badge">3分</span></label>
+    </div>
+
+    <div class="vt-grp-h"><span class="vt-grp-n">5 分項目</span><span class="vt-grp-c" id="cap_c_5">0 分</span></div>
+    <div class="pa-checks" id="cap_g5">
+      <label><input type="checkbox" class="cap-cb" data-w="5"> 中風（&lt;1 個月） <span class="pt-badge">5分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="5"> 擇期人工關節置換 <span class="unit">(Elective arthroplasty)</span><span class="pt-badge">5分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="5"> 髖、骨盆或下肢骨折 <span class="pt-badge">5分</span></label>
+      <label><input type="checkbox" class="cap-cb" data-w="5"> 急性脊髓損傷（&lt;1 個月） <span class="pt-badge">5分</span></label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="vt-out">
+      <div class="vt-out-h">Caprini 2005 分數</div>
+      <div class="metric-value big" id="cap_total">0</div>
+      <div class="vt-out-v" id="cap_band">—</div>
+    </div>
+
+    <div class="vt-out">
+      <div class="vt-out-h">ACCP/CHEST AT9 之建議（本頁主軸）</div>
+      <div class="vt-out-d" id="cap_rec"></div>
+    </div>
+
+    <div class="vt-out">
+      <div class="vt-out-h">另一套分級：Bahl 觀察值（不可與上表並列比較）</div>
+      <div class="vt-out-d" id="cap_bahl"></div>
+    </div>
+
+    <div class="risk-note">
+      <b>指引門檻與實證門檻不一致。</b>AT9 於 Caprini <b>≥5</b> 分建議化學預防；但 Pannucci 統合分析
+      （13 篇研究，VTE 分析 n=14,776）顯示化學預防僅在 <b>7–8 分</b>（OR 0.60, 95% CI 0.37–0.97）與
+      <b>&gt;8 分</b>（OR 0.41, 0.26–0.65）有顯著效益，<b>≤6 分者（佔全體 75%）無顯著獲益</b>，且出血風險與
+      Caprini 分數無關。輸出「5 分 → 給 LMWH」符合指引，但未必符合證據。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    Caprini 2005 — <a href="https://pubmed.ncbi.nlm.nih.gov/15900257/" target="_blank" rel="noopener" class="ref-link">Caprini JA. Dis Mon. 2005;51(2-3):70-78.</a><br>
+    AT9 分級與建議 — <a href="https://pubmed.ncbi.nlm.nih.gov/22315263/" target="_blank" rel="noopener" class="ref-link">Gould MK, et al. Chest. 2012;141(2 Suppl):e227S-e277S.</a><br>
+    一般外科驗證 — <a href="https://pubmed.ncbi.nlm.nih.gov/19779324/" target="_blank" rel="noopener" class="ref-link">Bahl V, et al. Ann Surg. 2010;251(2):344-350.</a><br>
+    化學預防獲益門檻 — <a href="https://pubmed.ncbi.nlm.nih.gov/28106607/" target="_blank" rel="noopener" class="ref-link">Pannucci CJ, et al. Ann Surg. 2017;265(6):1094-1103.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ Padua ══════════════════ -->
+<div id="tab-pad" class="hidden">
+  <div class="vt-warn">
+    <span class="h">適用對象：內科住院病人，不是外科</span>
+    Padua 分數的推導族群是<b>內科住院病人</b>（1,180 位連續住院者）。
+    「近一個月內創傷或手術」是它的<b>其中一個輸入項目</b>，不代表可以拿來評估術後病人。
+    外科病人請用 Caprini 分頁。
+  </div>
+
+  <div class="card">
+    <div class="section-title">Padua Prediction Score</div>
+    <div class="pa-checks" id="pad_g">
+      <label><input type="checkbox" class="pad-cb" data-w="3"> 活動性癌症（局部或遠端轉移；6 個月內曾化療或放療）
+        <span class="unit">(Active cancer)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="3"> 先前 VTE（不含表淺靜脈血栓）
+        <span class="unit">(Previous VTE)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="3"> 活動力下降（臥床、僅能如廁 ≥3 天）
+        <span class="unit">(Reduced mobility)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="3"> 已知血栓體質 <span class="unit">(Known thrombophilia)</span><span class="pt-badge">3分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="2"> 近一個月內創傷或手術 <span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 年齡 ≥70 歲 <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 心臟和／或呼吸衰竭 <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 急性心肌梗塞或缺血性腦中風 <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 急性感染和／或風濕性疾病 <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 肥胖（BMI ≥30） <span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="pad-cb" data-w="1"> 使用中的荷爾蒙治療 <span class="pt-badge">1分</span></label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="vt-out">
+      <div class="vt-out-h">Padua Prediction Score</div>
+      <div class="metric-value big" id="pad_total">0</div>
+      <div class="vt-out-v" id="pad_band">—</div>
+    </div>
+    <div class="vt-out">
+      <div class="vt-out-h">推導世代之結果（90 天追蹤）</div>
+      <div class="vt-out-d" id="pad_d"></div>
+    </div>
+    <div class="risk-note">
+      ASH 2018 內科病人指引將 Padua 與 IMPROVE 並稱為「研究最完整的兩個風險評估模型」，兩者
+      「均經外部驗證、鑑別度尚可」，但同時指出：<b>目前臨床上使用的量化風險評估模型，沒有任何一個做過
+      能證明其使用可改善臨床結果的完整影響性分析</b>。ASH 並未正式背書任一模型。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    Padua — <a href="https://pubmed.ncbi.nlm.nih.gov/20738765/" target="_blank" rel="noopener" class="ref-link">Barbar S, et al. J Thromb Haemost. 2010;8(11):2450-2457.</a><br>
+    ASH 2018（內科） — <a href="https://pubmed.ncbi.nlm.nih.gov/30482763/" target="_blank" rel="noopener" class="ref-link">Schünemann HJ, et al. Blood Adv. 2018;2(22):3198-3225.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ IMPROVE 出血 ══════════════════ -->
+<div id="tab-imp" class="hidden">
+  <div class="vt-warn">
+    <span class="h">三個同名分數，別搞混</span>
+    IMPROVE 登錄研究衍生出三個工具：<b>IMPROVE 出血風險</b>分數（本頁）、<b>IMPROVE VTE 風險</b>分數，
+    以及加入 D-dimer 的 <b>IMPROVEDD</b>。本頁算的是<u>出血</u>，用來判斷該不該給化學預防、或該先用機械預防。
+    另兩個的項目見下方對照。
+  </div>
+
+  <div class="card">
+    <div class="section-title">IMPROVE 出血風險分數</div>
+
+    <div class="vt-sel">
+      <label>年齡</label>
+      <select id="imp_age">
+        <option value="0">&lt;40 歲（0 分）</option>
+        <option value="1.5">40–84 歲（1.5 分）</option>
+        <option value="3.5">≥85 歲（3.5 分）</option>
+      </select>
+    </div>
+    <div class="vt-sel">
+      <label>腎功能</label>
+      <select id="imp_gfr">
+        <option value="0">GFR ≥60（0 分）</option>
+        <option value="1">中度腎衰竭 GFR 30–59（1 分）</option>
+        <option value="2.5">重度腎衰竭 GFR &lt;30（2.5 分）</option>
+      </select>
+    </div>
+    <div class="note">年齡與腎功能皆為<b>互斥區間</b>，不可重複計分——許多二手表格誤植為可累加。</div>
+
+    <div class="pa-checks" id="imp_g" style="margin-top:8px;">
+      <label><input type="checkbox" class="imp-cb" data-w="1"> 男性 <span class="unit">(Male vs female)</span><span class="pt-badge">1分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="2"> 目前有癌症 <span class="unit">(Current cancer)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="2"> 風濕性疾病 <span class="unit">(Rheumatic disease)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="2"> 中心靜脈導管 <span class="unit">(Central venous catheter)</span><span class="pt-badge">2分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="2.5"> 加護病房／冠心病房 <span class="unit">(ICU/CCU)</span><span class="pt-badge">2.5分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="2.5"> 肝衰竭（INR &gt;1.5） <span class="unit">(Hepatic failure)</span><span class="pt-badge">2.5分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="4"> 血小板 &lt;50 × 10⁹/L <span class="pt-badge">4分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="4"> 前 3 個月內曾出血 <span class="unit">(Bleeding in prior 3 months)</span><span class="pt-badge">4分</span></label>
+      <label><input type="checkbox" class="imp-cb" data-w="4.5"> 活動性胃十二指腸潰瘍 <span class="unit">(Active gastroduodenal ulcer)</span><span class="pt-badge">4.5分</span></label>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="vt-out">
+      <div class="vt-out-h">IMPROVE 出血風險分數</div>
+      <div class="metric-value big" id="imp_total">0</div>
+      <div class="vt-out-v" id="imp_band">—</div>
+    </div>
+    <div class="vt-out">
+      <div class="vt-out-h">14 天出血率（推導世代）</div>
+      <div class="vt-out-d" id="imp_d"></div>
+    </div>
+    <div class="risk-note">
+      入院時最強的三個獨立預測因子：活動性胃十二指腸潰瘍（OR 4.15, 95% CI 2.21–7.77）、
+      先前出血（OR 3.64, 2.21–5.99）、血小板低下（OR 3.37, 1.84–6.18）。
+      IMPROVE 世代 14 天內院內大出血加非大出血之累積發生率為 3.2%。
+      推導族群為<b>內科</b>住院病人。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">對照：IMPROVE VTE 風險分數（不是本頁計算的那個）</div>
+    <table class="vt-t">
+      <thead><tr><th>項目</th><th>分數</th></tr></thead>
+      <tbody>
+        <tr><td>先前 VTE</td><td class="num">3</td></tr>
+        <tr><td>已知血栓體質</td><td class="num">2</td></tr>
+        <tr><td>下肢麻痺或無力</td><td class="num">2</td></tr>
+        <tr><td>癌症病史</td><td class="num">2</td></tr>
+        <tr><td>入住 ICU／CCU</td><td class="num">1</td></tr>
+        <tr><td>完全臥床 ≥1 天</td><td class="num">1</td></tr>
+        <tr><td>年齡 ≥60 歲</td><td class="num">1</td></tr>
+      </tbody>
+    </table>
+    <ul class="vt-list">
+      <li>分數範圍 0–10。觀察值：2–3 分 → VTE 1.5%；<b>≥4 分 → 5.7%</b>。</li>
+      <li>累積 VTE 發生率 1.0%；<b>45% 的事件發生在出院之後</b>；C-statistic 0.65（入院模型）／0.69（住院模型）。</li>
+      <li><b>IMPROVEDD</b>：於 IMPROVE VTE 分數上，若 D-dimer ≥2 倍正常上限則<b>加 2 分</b>。
+        ≥2 分 vs 0–1 分之 HR 2.73（95% CI 1.52–4.90, p=0.0007）。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    IMPROVE 出血 — <a href="https://pubmed.ncbi.nlm.nih.gov/20453069/" target="_blank" rel="noopener" class="ref-link">Decousus H, et al. Chest. 2011;139(1):69-79.</a><br>
+    IMPROVE VTE — <a href="https://pubmed.ncbi.nlm.nih.gov/21436241/" target="_blank" rel="noopener" class="ref-link">Spyropoulos AC, et al. Chest. 2011;140(3):706-714.</a><br>
+    IMPROVEDD — <a href="https://pubmed.ncbi.nlm.nih.gov/31249911/" target="_blank" rel="noopener" class="ref-link">Gibson CM, et al. TH Open. 2017;1(1):e56-e65.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ 指引與預防 ══════════════════ -->
+<div id="tab-gl" class="hidden">
+
+  <div class="vt-warn">
+    <span class="h">各指引的哲學不一致，這點比分數本身重要</span>
+    <b>AT9（CHEST 2012）</b>以 Caprini 分數決定預防強度，是唯一真正收錄並背書 Caprini 的指引。
+    <b>ASH 2019</b> 走的是<b>依術式</b>而非依分數的路線——全文只提到 Caprini 一次，且未給任何建議條文。
+    <b>NICE NG89</b> 要求使用「英國國家機構、專業網絡或同儕審查期刊發表的工具」，<u>並未指名 Caprini</u>。
+    <b>換言之，「用 Caprini 分數決定要不要給預防」並非各家共識。</b>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ACCP/CHEST AT9：依 Caprini 分級之預防建議</div>
+    <table class="vt-t">
+      <thead><tr><th>風險層</th><th>Caprini</th><th>基礎 VTE 風險</th><th>建議</th></tr></thead>
+      <tbody>
+        <tr><td>極低</td><td class="num">0</td><td class="num">&lt;0.5%</td><td>除早期下床活動外，不需藥物（<b>1B</b>）或機械（<b>2C</b>）預防</td></tr>
+        <tr><td>低</td><td class="num">1–2</td><td class="num">~1.5%</td><td>機械預防，以 IPC 為佳（<b>2C</b>）</td></tr>
+        <tr><td>中</td><td class="num">3–4</td><td class="num">~3.0%</td><td>LMWH（<b>2B</b>）、LDUH（<b>2B</b>）或 IPC（<b>2C</b>）——若非高出血風險</td></tr>
+        <tr class="hi"><td>高</td><td class="num">≥5</td><td class="num">~6.0%</td><td>LMWH（<b>1B</b>）或 LDUH（<b>1B</b>）；建議<b>加上</b>彈性襪或 IPC（<b>2C</b>）</td></tr>
+      </tbody>
+    </table>
+    <ul class="vt-list">
+      <li><b>高 VTE 風險合併高出血風險</b>（任何層）：先用機械預防（以 IPC 為佳），待出血風險下降後改用藥物預防（<b>2C</b>）。</li>
+      <li>所有層級：<b>不建議</b>以下腔靜脈濾網作初級預防（<b>2C</b>）；<b>不建議</b>常規壓迫超音波監測（<b>2C</b>）。</li>
+      <li>上表百分比是 AT9 針對<b>未接受預防者</b>推估的基礎風險，非直接觀察值。</li>
+      <li><b>AT9 發表於 2012 年，至今已 14 年，CHEST 未再更新外科 VTE 預防章節。</b>（VTE 之<u>治療</u>另有 2016、2021 更新，但不涵蓋本主題。）</li>
+    </ul>
+    <div class="vt-src">Gould MK, et al. Chest 2012;141(2 Suppl):e227S-e277S（PMID 22315263），Table 5。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">另一套 Caprini 分級：Bahl 觀察值</div>
+    <table class="vt-t">
+      <thead><tr><th>分層</th><th>Caprini</th><th>30 天觀察 VTE 率</th></tr></thead>
+      <tbody>
+        <tr><td>低</td><td class="num">0–1</td><td class="num">0%</td></tr>
+        <tr><td>中</td><td class="num">2</td><td class="num">0.70%</td></tr>
+        <tr><td>高</td><td class="num">3–4</td><td class="num">0.97%</td></tr>
+        <tr><td>最高</td><td class="num">≥5</td><td class="num">1.94%</td></tr>
+      </tbody>
+    </table>
+    <div class="vt-warn" style="margin-top:8px; margin-bottom:0;">
+      <b>切勿把這張表與 AT9 那張並排比較。</b>同樣是 3–4 分，AT9 稱「中度、約 3.0%」，Bahl 稱「高度、0.97%」——
+      標籤相反、數字差三倍。原因是兩者本質不同：AT9 是<b>未預防者的推估基礎風險</b>，
+      Bahl 是密西根大學 NSQIP 世代（n=8,216，部分已接受預防）的<b>實際觀察值</b>，整體 VTE 率 1.4%。
+      兩者不可互換，也不可放在同一欄。
+    </div>
+    <div class="vt-src">Bahl V, et al. Ann Surg 2010;251(2):344-350（PMID 19779324）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">延長預防：腹腔／骨盆腔癌症手術</div>
+    <table class="vt-t">
+      <thead><tr><th>來源</th><th>建議</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td>AT9<br>3.6.6</td><td>高 VTE 風險、接受<b>腹腔或骨盆腔癌症手術</b>且非高出血風險者，建議以 LMWH
+          <b>延長預防至 4 週</b>，優於短期預防</td><td><b>Grade 1B</b></td></tr>
+        <tr><td>NICE<br>NG89</td><td>腹部手術且 VTE 風險大於出血風險者，藥物預防<b>至少 7 天</b>（LMWH 或 fondaparinux）；
+          接受<b>腹部大型癌症手術</b>者「可考慮」延長至術後 <b>28 天</b></td><td>—</td></tr>
+        <tr><td>ASCO<br>2023</td><td>癌症大手術後藥物預防<b>至少 7–10 天</b>；接受<b>腹腔或骨盆腔開放或腹腔鏡癌症手術</b>
+          且具高風險特徵（活動受限、肥胖、VTE 病史）者，建議以 LMWH <b>延長至術後 4 週</b></td>
+          <td><b>強建議</b>，高證據品質</td></tr>
+        <tr><td>ASH<br>2019</td><td>接受<b>大手術</b>者，建議延長預防優於短期預防（未針對腹腔／骨盆腔癌症手術另設條文）</td>
+          <td>Conditional，very low ⊕◯◯◯</td></tr>
+      </tbody>
+    </table>
+    <ul class="vt-list">
+      <li>ASH 對「延長」的界定：一般指<b>超過 3 週</b>（範圍 19–42 天）；「短期」指最多 2 週（範圍 4–14 天）。
+        ASH 並註明相關試驗<b>幾乎侷限於兩種高風險情境</b>：全髖／全膝關節置換，與癌症大型一般外科手術。</li>
+      <li><b>本頁不列出具體毫克劑量。</b>AT9、NICE 與 ASCO 在檢索到的建議條文中<u>均未指定劑量</u>
+        （NICE 明言依藥品仿單），故不代為填入。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ASH 2019（外科）之立場</div>
+    <ul class="vt-list">
+      <li><b>Rec 16</b>（conditional，low ⊕⊕◯◯）：接受<b>一般外科大手術</b>者，建議給予藥物預防優於不給。</li>
+      <li><b>Rec 17</b>（conditional，very low ⊕◯◯◯）：建議使用 LMWH 或 UFH。</li>
+      <li>接受<b>神經外科大手術、TURP 或根除性前列腺切除</b>者：<b>建議不給</b>藥物預防。</li>
+      <li>全份指引 30 條建議中，<b>沒有任何一條以 Caprini 或 Rogers 分數為條件</b>；提及 Caprini 僅一次，
+        且僅止於陳述「此類評分系統已於部分術式發展並驗證」。</li>
+    </ul>
+    <div class="vt-src">Anderson DR, et al. Blood Adv 2019;3(23):3898-3944（PMID 31794602）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Caprini 版本差異（2005 vs 2010 修訂）</div>
+    <table class="vt-t">
+      <thead><tr><th>項目</th><th>2005 年版（本頁採用）</th><th>2010 修訂版</th></tr></thead>
+      <tbody>
+        <tr><td>手術時間</td><td>0–44 分＝1 分；≥45 分＝2 分</td><td>0–59 分＝1 分；60–119＝2 分；120–179＝3 分；≥180＝5 分</td></tr>
+        <tr><td>BMI</td><td>≥25＝1 分</td><td>≥30 且 &lt;40＝1 分；≥40 且 &lt;50＝2 分；≥50＝3 分</td></tr>
+        <tr><td>表淺靜脈栓塞性靜脈炎</td><td>非風險因子</td><td>病史＝3 分</td></tr>
+        <tr><td>癌症</td><td>病史＝2 分；現有＝2 分</td><td>病史＝2 分；<b>現有＝3 分</b></td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      其餘項目兩版相同，風險分層切點亦相同（0–1／2／3–4／≥5）。
+      <b>2010 修訂版查無獨立的原始文獻</b>，只能從後續驗證研究中以「與 2005 版的差異」定義；
+      部分文獻稱之為 2009 版，是否為同一工具無法確認。
+      2013 版另有一套結構（以「現在或過去一個月內」組織），其新增項目經作者註明<b>未經驗證研究檢驗</b>，故本頁不實作。
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+<script>
+/* ─────────── 分頁 ─────────── */
+var VT_TABS=['cap','pad','imp','gl'];
+function vtTab(key,skipHash){
+  VT_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);
+    if(p) p.classList.toggle('hidden',t!==key);
+  });
+  document.querySelectorAll('#vt_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('data-tab')===key);
+  });
+  if(!skipHash) history.replaceState(null,'','#tab='+key);
+}
+
+/* ─────────── Caprini ─────────── */
+function capCalc(){
+  var age=parseInt(document.getElementById('cap_age').value)||0;
+  var sub={1:0,2:0,3:0,5:0};
+  document.querySelectorAll('.cap-cb').forEach(function(cb){
+    if(cb.checked) sub[parseInt(cb.dataset.w)]+=parseInt(cb.dataset.w);
+  });
+  var total=age+sub[1]+sub[2]+sub[3]+sub[5];
+  document.getElementById('cap_c_age').textContent=age+' 分';
+  document.getElementById('cap_c_1').textContent=sub[1]+' 分';
+  document.getElementById('cap_c_2').textContent=sub[2]+' 分';
+  document.getElementById('cap_c_3').textContent=sub[3]+' 分';
+  document.getElementById('cap_c_5').textContent=sub[5]+' 分';
+  document.getElementById('cap_total').textContent=total;
+
+  var band,cls,rec;
+  if(total>=5){
+    band='高風險 High'; cls='b3';
+    rec='<b>藥物預防</b>：LMWH（<b>Grade 1B</b>）或低劑量未分餾肝素（<b>1B</b>）；'
+       +'並建議<b>加上</b>機械預防（彈性襪或 IPC，<b>2C</b>）。'
+       +'<br>AT9 推估此層未預防者之基礎 VTE 風險約 <b>6.0%</b>。'
+       +'<br><br><b>若同時為高出血風險</b>：先用機械預防（以 IPC 為佳），待出血風險下降後再改藥物預防（<b>2C</b>）。'
+       +'出血風險可用本頁「IMPROVE 出血」分頁評估（惟其推導族群為內科病人）。';
+  }else if(total>=3){
+    band='中風險 Moderate'; cls='b2';
+    rec='LMWH（<b>2B</b>）、低劑量未分餾肝素（<b>2B</b>）或 IPC（<b>2C</b>），優於不預防——前提是<b>非高出血風險</b>。'
+       +'<br>AT9 推估此層未預防者之基礎 VTE 風險約 <b>3.0%</b>。'
+       +'<br><br><b>若同時為高出血風險</b>：改用機械預防，以 IPC 為佳（<b>2C</b>）。';
+  }else if(total>=1){
+    band='低風險 Low'; cls='b1';
+    rec='<b>機械預防</b>，以 IPC 為佳，優於不預防（<b>2C</b>）。'
+       +'<br>AT9 推估此層未預防者之基礎 VTE 風險約 <b>1.5%</b>。';
+  }else{
+    band='極低風險 Very low'; cls='b0';
+    rec='除<b>早期下床活動</b>外，不需特別的藥物預防（<b>Grade 1B</b>）或機械預防（<b>2C</b>）。'
+       +'<br>AT9 推估此層未預防者之基礎 VTE 風險 <b>&lt;0.5%</b>。';
+  }
+  document.getElementById('cap_band').innerHTML=band+'<span class="vt-band '+cls+'">AT9</span>';
+  document.getElementById('cap_rec').innerHTML=rec
+    +'<br><br><span class="vt-src">所有層級：不建議以下腔靜脈濾網作初級預防（2C）；不建議常規壓迫超音波監測（2C）。</span>';
+
+  var b;
+  if(total>=5)      b='最高 Highest（≥5 分）：30 天觀察 VTE 率 <b>1.94%</b>';
+  else if(total>=3) b='高 High（3–4 分）：30 天觀察 VTE 率 <b>0.97%</b>';
+  else if(total>=2) b='中 Moderate（2 分）：30 天觀察 VTE 率 <b>0.70%</b>';
+  else              b='低 Low（0–1 分）：30 天觀察 VTE 率 <b>0%</b>';
+  document.getElementById('cap_bahl').innerHTML=b
+    +'<br><span class="vt-src">Bahl 2010，密西根大學 NSQIP 世代 n=8,216，整體 VTE 率 1.4%，部分病人已接受預防。'
+    +'此為<b>實際觀察值</b>，與上方 AT9 的<b>未預防者推估值</b>本質不同——同一分數在兩套系統中的分層標籤甚至相反，'
+    +'請勿並排比較或互換使用。</span>';
+}
+
+/* ─────────── Padua ─────────── */
+function padCalc(){
+  var total=0;
+  document.querySelectorAll('.pad-cb').forEach(function(cb){ if(cb.checked) total+=parseInt(cb.dataset.w); });
+  document.getElementById('pad_total').textContent=total;
+  var hi=total>=4;
+  document.getElementById('pad_band').innerHTML=(hi?'高風險 High':'低風險 Low')
+    +'<span class="vt-band '+(hi?'b3':'b0')+'">切點 ≥4</span>';
+  document.getElementById('pad_d').innerHTML= hi
+    ? '推導世代中 469/1,180（39.7%）落在高風險。'
+      +'<br>高風險<b>未</b>接受預防者：VTE 31/283 = <b>11.0%</b>；'
+      +'高風險<b>已</b>接受預防者：VTE 4/186 = <b>2.2%</b>（預防之 HR 0.13, 95% CI 0.04–0.40）。'
+      +'<br>高風險接受預防者之出血：3/186 = 1.6%。'
+    : '低風險者 VTE 2/711 = <b>0.3%</b>。'
+      +'<br>相較之下，未接受預防的高風險者其 VTE 風險為低風險者的 <b>32 倍</b>（HR 32.0, 95% CI 4.1–251.0）。';
+}
+
+/* ─────────── IMPROVE 出血 ─────────── */
+function impCalc(){
+  var total=parseFloat(document.getElementById('imp_age').value)+parseFloat(document.getElementById('imp_gfr').value);
+  document.querySelectorAll('.imp-cb').forEach(function(cb){ if(cb.checked) total+=parseFloat(cb.dataset.w); });
+  total=Math.round(total*10)/10;
+  document.getElementById('imp_total').textContent=total;
+  var hi=total>=7;
+  document.getElementById('imp_band').innerHTML=(hi?'高出血風險 High':'非高出血風險')
+    +'<span class="vt-band '+(hi?'b3':'b0')+'">切點 ≥7</span>';
+  document.getElementById('imp_d').innerHTML= hi
+    ? '≥7 分者：任何出血 <b>7.9%</b>、大出血 <b>4.1%</b>。'
+      +'<br>此族群若同時具高 VTE 風險，AT9 建議<b>先用機械預防（以 IPC 為佳）</b>，待出血風險下降後再改藥物預防（2C）。'
+    : '&lt;7 分者：任何出血 <b>1.5%</b>、大出血 <b>0.4%</b>。';
+}
+
+/* ─────────── 事件 ─────────── */
+document.querySelectorAll('#tab-cap input, #tab-cap select').forEach(function(el){
+  el.addEventListener('input',capCalc); el.addEventListener('change',capCalc); });
+document.querySelectorAll('#tab-pad input').forEach(function(el){
+  el.addEventListener('change',padCalc); });
+document.querySelectorAll('#tab-imp input, #tab-imp select').forEach(function(el){
+  el.addEventListener('input',impCalc); el.addEventListener('change',impCalc); });
+
+(function(){
+  var m=location.hash.match(/#tab=(\w+)/);
+  if(m && VT_TABS.indexOf(m[1])>=0) vtTab(m[1],true);
+})();
+capCalc(); padCalc(); impCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

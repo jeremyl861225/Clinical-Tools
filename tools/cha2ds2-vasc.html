@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHA₂DS₂-VASc · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  .cv-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .cv-warn b{color:var(--accent2);}
+  .cv-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+
+  .cv-item{display:flex; align-items:flex-start; gap:9px; padding:9px 0; border-bottom:1px dotted var(--line); cursor:pointer;}
+  .cv-item:last-child{border-bottom:none;}
+  .cv-item input{margin-top:4px; flex-shrink:0;}
+  .cv-k{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent); min-width:22px; flex-shrink:0; padding-top:1px;}
+  .cv-body{flex:1;}
+  .cv-t{font-size:13.5px; line-height:1.5;}
+  .cv-t .en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+  .cv-def{font-size:11.5px; color:var(--muted); line-height:1.65; margin-top:3px;}
+
+  .cv-sel{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
+  .cv-sel .cv-k{padding-top:0;}
+  .cv-sel select{flex:1; min-width:170px; padding:8px 10px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13.5px;}
+
+  /* 雙分數並列 */
+  .cv-two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:520px){ .cv-two{grid-template-columns:1fr;} }
+  .cv-sc{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:2px; padding:11px 13px;}
+  .cv-sc-n{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; opacity:.66;}
+  .cv-sc-v{font-family:var(--serif); font-size:38px; font-weight:600; line-height:1.1; margin-top:2px;}
+  .cv-sc-m{font-family:var(--mono); font-size:10.5px; opacity:.55;}
+
+  .cv-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
+  .cv-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:6px;}
+  .cv-out-d{font-size:12.5px; line-height:1.75; opacity:.9;}
+  .cv-gl{display:grid; grid-template-columns:96px 1fr; gap:6px 11px; font-size:12.5px; line-height:1.7;}
+  .cv-gl .g{font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; opacity:.6; padding-top:3px;}
+  @media(max-width:480px){ .cv-gl{grid-template-columns:1fr; gap:2px 0;} .cv-gl .g{padding-top:8px;} }
+  .cv-tag{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 7px; vertical-align:1px; margin-left:6px;}
+  .cv-tag.yes{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .cv-tag.mid{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .cv-tag.no{color:#c9d2d6; background:#22323a; border:1px solid #3d525c;}
+
+  table.cv-t2{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 4px;}
+  table.cv-t2 th,table.cv-t2 td{border:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top;}
+  table.cv-t2 thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.cv-t2 td{font-family:var(--mono);}
+  table.cv-t2 td:first-child{font-weight:700;}
+  .cv-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  .cv-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
+  .cv-list li{margin-bottom:3px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-cha2ds2-vasc">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Cardiology Scoring Tool</div>
+      <h1>CHA₂DS₂-VASc</h1>
+      <div class="sub">心房顫動之中風風險評估 · 併同顯示 ESC 2024 改用的 CHA₂DS₂-VA</div>
+    </div>
+    <div class="back-stack">
+      <!-- 由圍手術期抗栓工具點進來時（?from=periop-anticoag）才顯示；返回後該頁自 sessionStorage 還原表單與捲動位置 -->
+      <button class="back-btn hidden" id="cv-back-periop">← 返回圍手術期抗栓</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-cha2ds2-vasc'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="cv-warn">
+    <span class="h">兩個分數，差在性別</span>
+    <b>ESC 2024 已改用 CHA₂DS₂-VA</b>，把性別那一分拿掉（滿分由 9 降為 8）；
+    <b>ACC/AHA 2023 與 APHRS 仍使用含性別的 CHA₂DS₂-VASc</b>。同一位女性病人，兩套算出來會差一分。
+    本頁<b>兩個都算給你看</b>，並將各指引的門檻分開列示，不予合併。
+  </div>
+
+  <div class="card">
+    <div class="section-title">風險因子</div>
+
+    <label class="cv-item">
+      <input type="checkbox" class="cv-cb" data-w="1" id="cv_c">
+      <span class="cv-k">C</span>
+      <span class="cv-body">
+        <span class="cv-t">慢性心衰竭 <span class="en">Chronic heart failure</span><span class="pt-badge">1分</span></span>
+        <span class="cv-def">心衰竭之症狀與徵象，<b>不論左心室射出分率</b>（含 HFpEF、HFmrEF、HFrEF）；
+          或無症狀但 LVEF ≤40%。<b>不需要收縮功能下降才算</b>。</span>
+      </span>
+    </label>
+
+    <label class="cv-item">
+      <input type="checkbox" class="cv-cb" data-w="1" id="cv_h">
+      <span class="cv-k">H</span>
+      <span class="cv-body">
+        <span class="cv-t">高血壓 <span class="en">Hypertension</span><span class="pt-badge">1分</span></span>
+        <span class="cv-def">至少兩次測得休息血壓 &gt;140/90 mmHg，或目前正在服用降血壓藥。</span>
+      </span>
+    </label>
+
+    <div class="cv-sel">
+      <span class="cv-k">A₂/A</span>
+      <select id="cv_age">
+        <option value="0">年齡 &lt;65 歲（0 分）</option>
+        <option value="1">年齡 65–74 歲（1 分）</option>
+        <option value="2">年齡 ≥75 歲（2 分）</option>
+      </select>
+      <span class="pt-badge">0–2分</span>
+    </div>
+    <div class="note" style="margin-bottom:4px;">兩個年齡區間互斥，不重複計分。</div>
+
+    <label class="cv-item">
+      <input type="checkbox" class="cv-cb" data-w="1" id="cv_d">
+      <span class="cv-k">D</span>
+      <span class="cv-body">
+        <span class="cv-t">糖尿病 <span class="en">Diabetes mellitus</span><span class="pt-badge">1分</span></span>
+        <span class="cv-def">第 1 型或第 2 型糖尿病（依現行診斷標準），或正在使用降血糖治療。</span>
+      </span>
+    </label>
+
+    <label class="cv-item">
+      <input type="checkbox" class="cv-cb" data-w="2" id="cv_s">
+      <span class="cv-k">S₂</span>
+      <span class="cv-body">
+        <span class="cv-t">中風、TIA 或動脈血栓栓塞病史 <span class="en">Prior stroke / TIA / thromboembolism</span><span class="pt-badge">2分</span></span>
+        <span class="cv-def">曾發生血栓栓塞者復發風險顯著升高，故給 2 分。</span>
+      </span>
+    </label>
+
+    <label class="cv-item">
+      <input type="checkbox" class="cv-cb" data-w="1" id="cv_v">
+      <span class="cv-k">V</span>
+      <span class="cv-body">
+        <span class="cv-t">血管疾病 <span class="en">Vascular disease</span><span class="pt-badge">1分</span></span>
+        <span class="cv-def"><b>冠狀動脈疾病</b>：曾發生心肌梗塞、<b>心絞痛</b>、<b>曾接受冠脈血管重建</b>（外科或經皮），
+          或影像顯示顯著冠狀動脈疾病。<br>
+          <b>或週邊血管疾病</b>：間歇性跛行、曾因 PVD 接受血管重建、腹主動脈之經皮或外科介入，
+          或影像上之複雜主動脈斑塊（具移動性、潰瘍、帶蒂，或厚度 ≥4 mm）。
+          <br><span style="color:var(--accent2);">注意：此為 ESC 2024 的定義，比原始 2010 年版（心肌梗塞／PAD／主動脈斑塊）<b>寬得多</b>——
+          心絞痛與曾做過 PCI 的病人在舊定義下會被少算一分。</span></span>
+      </span>
+    </label>
+
+    <div class="cv-sel">
+      <span class="cv-k">Sc</span>
+      <select id="cv_sex">
+        <option value="M">男性 Male（0 分）</option>
+        <option value="F">女性 Female（VASc 計 1 分；VA 不計）</option>
+      </select>
+      <span class="pt-badge">0–1分</span>
+    </div>
+    <div class="note">性別僅計入 CHA₂DS₂-<b>VASc</b>。ESC 2024 之 CHA₂DS₂-<b>VA</b> 已將其移除，
+      理由是「女性是<b>與年齡相關的中風風險修飾因子，而非獨立危險因子</b>」，且納入性別會使臨床操作複雜化，
+      亦忽略非二元性別、跨性別或正在接受性荷爾蒙治療者。</div>
+  </div>
+
+  <!-- ============ 結果 ============ -->
+  <div class="result">
+    <div class="cv-two">
+      <div class="cv-sc">
+        <div class="cv-sc-n">CHA₂DS₂-VASc</div>
+        <div class="cv-sc-v" id="cv_vasc">0</div>
+        <div class="cv-sc-m">滿分 9 · 含性別 · ACC/AHA、APHRS</div>
+      </div>
+      <div class="cv-sc">
+        <div class="cv-sc-n">CHA₂DS₂-VA</div>
+        <div class="cv-sc-v" id="cv_va">0</div>
+        <div class="cv-sc-m">滿分 8 · 不含性別 · ESC 2024</div>
+      </div>
+    </div>
+
+    <div class="cv-out">
+      <div class="cv-out-h">各指引之抗凝建議（分開列示，勿合併）</div>
+      <div class="cv-gl">
+        <div class="g">ESC 2024</div>          <div id="cv_esc">—</div>
+        <div class="g">ACC/AHA 2023</div>      <div id="cv_aha">—</div>
+        <div class="g">APHRS 2021</div>        <div id="cv_aphrs">—</div>
+      </div>
+    </div>
+
+    <div class="cv-out">
+      <div class="cv-out-h">這個分數看不出來的事</div>
+      <div class="cv-out-d" id="cv_caveat"></div>
+    </div>
+
+    <div class="risk-note">
+      <b>本頁不輸出每分對應的年中風率。</b>ESC 2024 與 ACC/AHA 2023 都<u>刻意不再印那張表</u>——
+      同一個分數在不同世代之間差距極大（0 分者的年發生率從 0.04 到 2.4 per 100 人年都有，相差約 60 倍）。
+      ACC/AHA 原文：現行風險分數「能中等程度區分高低風險，但在不同族群中可能大幅高估或低估絕對風險」。
+      實際數字見下方丹麥世代表，並請留意該表的族群與終點定義。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">用於決定圍手術期是否橋接？請看這裡</div>
+    <div class="cv-warn" style="margin-bottom:10px;">
+      <span class="h">這個分數的用途是慢性中風預防，不是橋接決策</span>
+      <b>CHEST 2022</b> 確實把「CHA₂DS₂-VASc ≥7 或 CHADS₂ 5–6」列為心房顫動病人可考慮橋接的條件，
+      但那是<b>「強烈建議不橋接」底下的一個窄例外</b>，不是對此分數作為圍手術期工具的背書。
+      <br><b>ACC/AHA 2023 與 ESC 2024 在談圍手術期時根本不用分數切點</b>——ACC/AHA 用的是
+      <b>絕對年血栓栓塞風險 ≥5%</b>（Class 1），ESC 2024 全文只在一張圖裡提到肝素橋接，未給任何分數門檻。
+    </div>
+    <ul class="cv-list">
+      <li>ACC/AHA 2023：接受侵入性處置或手術之抗凝病人，建議<b>暫停抗凝而不橋接</b>（Class 1）。</li>
+      <li>例外是節律器／去顫器植入或更換且<b>預估年血栓栓塞風險 ≥5%</b> 者，建議<b>持續抗凝</b>而非中斷加橋接，
+        以降低囊袋血腫風險（Class 1；依據 BRUISE-CONTROL 試驗，其收案條件亦為「預估年中風風險 ≥5%」）。</li>
+      <li>停藥天數、橋接與術後重啟請用
+        <a href="periop-anticoag.html" class="ref-link">圍手術期抗栓藥物管理</a>。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-title">丹麥全國世代之血栓栓塞率（未抗凝者）</div>
+    <details class="info-box"><summary></summary><div class="box-inner">
+      <table class="cv-t2">
+        <thead><tr><th>VASc</th><th>1 年</th><th>5 年</th><th>10 年</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0.78</td><td>0.69</td><td>0.66</td></tr>
+          <tr><td>1</td><td>2.01</td><td>1.51</td><td>1.45</td></tr>
+          <tr><td>2</td><td>3.71</td><td>3.01</td><td>2.92</td></tr>
+          <tr><td>3</td><td>5.92</td><td>4.41</td><td>4.28</td></tr>
+          <tr><td>4</td><td>9.27</td><td>6.69</td><td>6.46</td></tr>
+          <tr><td>5</td><td>15.26</td><td>10.42</td><td>9.97</td></tr>
+          <tr><td>6</td><td>19.74</td><td>12.85</td><td>12.52</td></tr>
+          <tr><td>7</td><td>21.50</td><td>13.92</td><td>13.96</td></tr>
+          <tr><td>8</td><td>22.38</td><td>14.07</td><td>14.10</td></tr>
+          <tr><td>9</td><td>23.64</td><td>16.08</td><td>15.89</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        單位為每 100 人年。族群：丹麥 1997–2006 年非瓣膜性心房顫動 121,280 人中，
+        <b>未使用維生素 K 拮抗劑或肝素的 73,538 人（60.6%）</b>。
+        <br><b>兩個必須知道的限制：</b>
+        <br>① <b>終點包含肺栓塞</b>（週邊動脈栓塞、缺血性腦中風<u>或肺栓塞</u>），肺栓塞佔全部事件的 7.7%——
+        這與多數計算機暗示的「缺血性中風」並不相同。
+        <br>② <b>8 分與 9 分的信賴區間極寬</b>（分別僅 285 與 46 人），例如 9 分之 1 年估計值 95% CI 為
+        10.62–52.61，實質上不具參考價值。
+      </div>
+      <div class="cv-src">Olesen JB, et al. BMJ 2011;342:d124（PMID 21282258），Table 2。</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="section-title">同樣是 1 分，風險差很多</div>
+    <p style="font-size:12.5px; line-height:1.8; margin:0 0 6px;">
+      丹麥世代的核心發現：<b>相同分數的風險取決於它是由哪些因子組成的</b>。在 CHA₂DS₂-VASc = 1 分、
+      追蹤 1 年的族群中（每 100 人年）：
+    </p>
+    <table class="cv-t2">
+      <thead><tr><th>唯一的那 1 分來自</th><th>血栓栓塞率</th></tr></thead>
+      <tbody>
+        <tr><td>糖尿病</td><td>3.47</td></tr>
+        <tr><td>年齡 65–74 歲</td><td>2.88</td></tr>
+        <tr><td>女性</td><td>1.24</td></tr>
+        <tr><td>血管疾病</td><td>0.75</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      最高與最低相差約 <b>4.6 倍</b>，卻是同一個數字。ACC/AHA 2023 亦指出，
+      把 CHA₂DS₂-VASc 1 分視為單一概念「過於簡化，因為各因子的風險量值並不一致」。
+      <b>看分數之外，也要看分數是怎麼來的。</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">不受分數限制、一律抗凝的情況</div>
+    <ul class="cv-list">
+      <li><b>肥厚性心肌病變</b>或<b>心臟類澱粉沉積症</b>合併心房顫動者，ESC 2024 建議
+        <b>不論 CHA₂DS₂-VA 分數為何，一律抗凝</b>（Class I，LOE B）。單看分數會給出錯誤答案。</li>
+      <li>ESC 2024 Table 10 註記：除表列因子外，尚應考量<b>癌症、慢性腎病、族裔（黑人、西班牙裔、亞洲人）、
+        生物標記（troponin、BNP）</b>，以及特定族群之心房擴大、高血脂、抽菸、肥胖。</li>
+      <li>ESC 2024 明言：<b>個別病人開始抗凝的絕對風險門檻，無法由族群層級的研究推得</b>。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    原始文獻 — <a href="https://pubmed.ncbi.nlm.nih.gov/19762550/" target="_blank" rel="noopener" class="ref-link">Lip GYH, et al. Chest. 2010;137(2):263-272.</a><br>
+    ESC 2024（CHA₂DS₂-VA） — <a href="https://pubmed.ncbi.nlm.nih.gov/39210723/" target="_blank" rel="noopener" class="ref-link">Van Gelder IC, et al. Eur Heart J. 2024;45(36):3314-3414.</a><br>
+    ACC/AHA 2023 — <a href="https://pubmed.ncbi.nlm.nih.gov/38043043/" target="_blank" rel="noopener" class="ref-link">Joglar JA, et al. J Am Coll Cardiol. 2023;83(1):109-279.</a><br>
+    APHRS 2021 — <a href="https://pubmed.ncbi.nlm.nih.gov/34887945/" target="_blank" rel="noopener" class="ref-link">Chao TF, et al. J Arrhythm. 2021;37(6):1389-1426.</a><br>
+    丹麥世代 — <a href="https://pubmed.ncbi.nlm.nih.gov/21282258/" target="_blank" rel="noopener" class="ref-link">Olesen JB, et al. BMJ. 2011;342:d124.</a><br>
+    瑞典世代 — <a href="https://pubmed.ncbi.nlm.nih.gov/22246443/" target="_blank" rel="noopener" class="ref-link">Friberg L, et al. Eur Heart J. 2012;33(12):1500-1510.</a>
+  </footer>
+</div>
+</div>
+<script>
+function cvCalc(){
+  var base=parseInt(document.getElementById('cv_age').value)||0;
+  document.querySelectorAll('.cv-cb').forEach(function(cb){
+    if(cb.checked) base+=parseInt(cb.dataset.w);
+  });
+  var female=document.getElementById('cv_sex').value==='F';
+  var va=base, vasc=base+(female?1:0);
+  document.getElementById('cv_vasc').textContent=vasc;
+  document.getElementById('cv_va').textContent=va;
+
+  /* ── ESC 2024：以 CHA₂DS₂-VA 判定 ── */
+  var esc;
+  if(va>=2)      esc='<b>建議抗凝</b><span class="cv-tag yes">Class I，LOE C</span>'
+                    +'<br><span class="cv-src">「CHA₂DS₂-VA 分數 ≥2 建議作為血栓栓塞風險升高之指標，用於決定是否開始口服抗凝。」</span>';
+  else if(va===1)esc='<b>應考慮抗凝</b><span class="cv-tag mid">Class IIa，LOE C</span>'
+                    +'<br><span class="cv-src">「CHA₂DS₂-VA 分數 1 應視為血栓栓塞風險升高之指標。」</span>';
+  else           esc='未達建議抗凝之門檻<span class="cv-tag no">VA = 0</span>'
+                    +'<br><span class="cv-src">仍應評估表列以外之風險修飾因子（癌症、慢性腎病、族裔、生物標記等）。</span>';
+  document.getElementById('cv_esc').innerHTML=esc
+    +'<br><span class="cv-src">注意兩條門檻的證據等級皆為 <b>LOE C</b>（專家共識，非試驗證據）。</span>';
+
+  /* ── ACC/AHA 2023：以 VASc 且男女不同門檻；框架為絕對年風險 ── */
+  var hi = female ? (vasc>=3) : (vasc>=2);
+  var mid= female ? (vasc===2): (vasc===1);
+  var aha;
+  if(hi)       aha='<b>建議抗凝</b><span class="cv-tag yes">Class 1，LOE A</span>'
+                  +'<br><span class="cv-src">對應「預估年血栓栓塞風險 ≥2%」（男性 VASc ≥2、女性 ≥3）。</span>';
+  else if(mid) aha='<b>抗凝為合理</b><span class="cv-tag mid">Class 2a，LOE A</span>'
+                  +'<br><span class="cv-src">對應「預估年風險 ≥1% 但 &lt;2%」（男性 VASc 1、女性 2）。'
+                  +'此層不確定者，可再考量風險修飾因子輔助決策（Class 2a，LOE C-LD）。</span>';
+  else         aha='未達建議抗凝之門檻<span class="cv-tag no">低風險</span>'
+                  +'<br><span class="cv-src">無中風危險因子者，單用 aspirin 預防血栓栓塞<b>無益處</b>（Class 3: No Benefit）。</span>';
+  document.getElementById('cv_aha').innerHTML=aha
+    +'<br><span class="cv-src">ACC/AHA 的門檻是<b>絕對年風險</b>，CHA₂DS₂-VASc 只是舉例的估算工具之一'
+    +'（ATRIA、GARFIELD-AF 亦明文允許）。</span>';
+
+  /* ── APHRS 2021（台灣主導；亞洲族群低分時風險較高） ── */
+  var aLow = female ? (vasc<=1) : (vasc===0);
+  var aphrs;
+  if(aLow) aphrs='<b>低風險，不建議抗栓治療</b><span class="cv-tag no">男 0 分／女 1 分</span>';
+  else     aphrs='<b>建議提供口服抗凝</b><span class="cv-tag yes">男 ≥1 分／女 ≥2 分</span>'
+                +'<br><span class="cv-src">APHRS 的第二步是「對具 ≥1 個非性別中風危險因子者提供抗凝」，'
+                +'<b>比 ESC 與 ACC/AHA 更早介入</b>。</span>';
+  document.getElementById('cv_aphrs').innerHTML=aphrs
+    +'<br><span class="cv-src">台灣<b>沒有</b>自己的心房顫動指引；APHRS 為台灣主導之亞太共識'
+    +'（第一作者為台北榮總趙子凡），對亞洲族群較具參考性。'
+    +'其另建議依共病採不同年齡門檻：心衰竭 35 歲、高血壓或糖尿病 50 歲、血管疾病 55 歲。</span>';
+
+  /* ── 共通警語 ── */
+  var parts=[];
+  if(document.getElementById('cv_d').checked) parts.push('糖尿病');
+  if(base>=1 && document.getElementById('cv_age').value==='1') parts.push('年齡 65–74');
+  var cav='<b>鑑別度有限</b>：原始推導研究自報之 c-statistic 僅 <b>0.606</b>；'
+    +'瑞典世代 0.67；丹麥世代按 0–9 分計為 0.661（1 年）至 0.777（10 年）。'
+    +'（常被引用的 0.888 是丹麥世代<b>併為三個風險組</b>後的數值，不是逐分數的。）'
+    +'<br><b>這個分數估的是「未抗凝者」的風險</b>——推導與驗證族群皆為未接受抗凝治療者'
+    +'（丹麥 73,538 人、瑞典 90,490 人從未使用抗凝劑），<u>並未針對已在服藥的病人校準</u>。'
+    +'<br><b>未在台灣族群校準</b>：ACC/AHA 提醒風險分數「應對照目標族群的實際年中風率加以校準」。';
+  if(vasc===1 && !female){
+    cav+='<br><br><span class="cv-src">此例為 1 分：請留意這 1 分是由哪個因子構成的——'
+       +'在丹麥世代中，單由糖尿病構成的 1 分其血栓栓塞率為 3.47/100 人年，'
+       +'單由血管疾病構成者僅 0.75，相差約 4.6 倍。詳見下方表格。</span>';
+  }
+  document.getElementById('cv_caveat').innerHTML=cav;
+}
+
+/* ── 由圍手術期抗栓工具進來時，顯示返回鍵並回傳分數 ── */
+(function(){
+  var from='';
+  try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from!=='periop-anticoag') return;
+  var b=document.getElementById('cv-back-periop');
+  if(!b) return;
+  b.classList.remove('hidden');
+  b.addEventListener('click',function(){
+    /* 帶回 CHA₂DS₂-VASc（CHEST 2022 的 ≥7 例外用的是含性別的版本） */
+    try{
+      sessionStorage.setItem('cha2ds2Result',JSON.stringify({
+        score:parseInt(document.getElementById('cv_vasc').textContent)||0,
+        label:'CHA₂DS₂-VASc'
+      }));
+    }catch(e){}
+    location.href='periop-anticoag.html?restore=1';
+  });
+})();
+
+document.querySelectorAll('#view-cha2ds2-vasc input, #view-cha2ds2-vasc select')
+  .forEach(function(el){ el.addEventListener('input',cvCalc); el.addEventListener('change',cvCalc); });
+cvCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
