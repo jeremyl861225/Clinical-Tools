@@ -98,6 +98,7 @@
   <div class="tab-row" id="pa_tabs">
     <button class="tab-btn active" data-tab="oac" onclick="paTab('oac')">抗凝血劑</button>
     <button class="tab-btn"        data-tab="ap"  onclick="paTab('ap')">抗血小板</button>
+    <button class="tab-btn"        data-tab="urg" onclick="paTab('urg')">急刀／反轉</button>
     <button class="tab-btn"        data-tab="ref" onclick="paTab('ref')">風險分層與指引對照</button>
   </div>
 
@@ -256,8 +257,9 @@
       <div class="pa-out-d" id="pa_alt"></div>
     </div>
 
-    <div class="risk-note">本頁僅涵蓋<b>擇期</b>手術／處置。緊急或亟需手術之停藥時間不足、以及是否使用反轉劑
-      （idarucizumab、andexanet alfa、PCC）不在本工具範圍內。</div>
+    <div class="risk-note">本分頁僅涵蓋<b>擇期</b>手術／處置。停藥時間不足的急刀，以及反轉劑的使用，
+      請改看 <b><a href="#" onclick="paTab('urg');window.scrollTo(0,0);return false;" class="ref-link">「急刀／反轉」分頁</a></b>。
+      </div>
   </div>
 </div>
 
@@ -364,6 +366,245 @@
       <li>2025 ACC/AHA ACS 指引<b>對非心臟手術時機無任何建議條文</b>，其 Table 8 僅適用 CABG，勿引用於此。</li>
     </ul>
   </div>
+</div>
+
+<!-- ══════════════════ 急刀／反轉 ══════════════════ -->
+<div id="tab-urg" class="hidden">
+
+  <div class="pa-warn">
+    <span class="h">2025 年 12 月的重大變動</span>
+    <b>Andexanet alfa（Xa 抑制劑專一反轉劑）已退出美國市場</b>：FDA 於 2025-12-18 發布安全通訊，
+    藥廠於 12-22 停止美國銷售並申請主動撤銷藥證，理由為 ANNEXA-I 中血栓事件
+    <b>14.6% vs 6.9%</b>、血栓相關 30 天死亡 <b>2.5% vs 0.9%</b>。歐盟（有條件核准）、英國、日本仍持有（商品名 Ondexxya）。
+    <br>更早之前，<b>ISTH 2024 已把「急刀」列在 andexanet 的「不應使用」欄位</b>——理由是<u>未取得該適應症，且會干擾術中肝素</u>；
+    其唯一手術相關適應症為「顱內出血的緊急減壓手術」。
+    <br><b>本頁因此不將 andexanet 列為急刀的處置選項。</b>
+  </div>
+
+  <div class="pa-warn">
+    <span class="h">台灣可及性未經查證</span>
+    本頁<b>不宣稱</b>任何反轉劑在台灣是否領有藥證、是否有貨、健保是否給付——查證時 TFDA 資料庫無法存取，
+    找到的中文來源內容過期且有明顯錯誤，故不予採用。<b>用藥前請自行向藥劑部與健保給付規定確認。</b>
+  </div>
+
+  <div class="card">
+    <div class="section-title">緊急度：以台大急刀級數對應</div>
+    <div class="note" style="margin-bottom:8px;">
+      國際文獻的緊急度分類<b>彼此衝突</b>：ISTH 2024 為 emergency &lt;6 小時／urgent 6–24 小時／semiurgent 24–48 小時；
+      2024 ACC/AHA 則為 &lt;2 小時／2–24 小時／時效性可達 3 個月。本頁改以<b>台大急刀級數</b>為主軸
+      （你排刀時想的是幾級刀），並標出各級與 ISTH 分類的對應。
+    </div>
+    <table class="pa-cmp">
+      <thead><tr><th>級數</th><th>時限</th><th>ISTH 2024 對應</th><th>抗凝處置的意涵</th></tr></thead>
+      <tbody>
+        <tr><td>第 1 級<br>立即</td><td class="num">&lt; 30 分</td><td>Emergency</td>
+          <td>來不及驗藥物濃度。<b>依最後一劑時間與藥物直接決策</b></td></tr>
+        <tr><td>第 2 級<br>危急</td><td class="num">&lt; 2 小時</td><td>Emergency</td>
+          <td>若院內可即時回報濃度則驗，否則同上</td></tr>
+        <tr><td>第 3 級<br>緊急</td><td class="num">&lt; 4–6 小時</td><td>Emergency</td>
+          <td>通常來得及驗濃度並據以決定是否反轉</td></tr>
+        <tr><td>第 4 級<br>急迫</td><td class="num">&lt; 8–12 小時</td><td>Urgent</td>
+          <td>多數情況<b>等待清除即可</b>，反轉劑非必要</td></tr>
+        <tr class="dt-warn"><td>第 5 級<br>盡快</td><td class="num">&lt; 24–36 小時</td><td>Semiurgent</td>
+          <td><b>已接近擇期的停藥區間</b>——低／中出血風險 DOAC 的標準作法本來就只省略 1 天。
+            此級通常<u>不需要反轉劑</u>，請先看「抗凝血劑」分頁</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      <b>ISTH 明文的原則</b>：當手術可以延到藥物自行清除時，<b>不應使用專一反轉劑</b>。
+      這條在第 4、5 級最常被忽略——不是「急刀就要反轉」。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">情境輸入</div>
+    <div class="pa-row">
+      <label class="pa-k" for="ug_drug">藥物</label>
+      <select id="ug_drug">
+        <option value="dabi">Dabigatran（Pradaxa）</option>
+        <option value="xa">Xa 抑制劑：apixaban／rivaroxaban／edoxaban</option>
+        <option value="warf">Warfarin（VKA）</option>
+        <option value="apt">抗血小板藥（aspirin／P2Y12）</option>
+      </select>
+    </div>
+    <div class="pa-row">
+      <label class="pa-k" for="ug_lv">急刀級數</label>
+      <select id="ug_lv">
+        <option value="1">第 1 級 立即（&lt; 30 分）</option>
+        <option value="2">第 2 級 危急（&lt; 2 小時）</option>
+        <option value="3" selected>第 3 級 緊急（&lt; 4–6 小時）</option>
+        <option value="4">第 4 級 急迫（&lt; 8–12 小時）</option>
+        <option value="5">第 5 級 盡快（&lt; 24–36 小時）</option>
+      </select>
+    </div>
+    <div class="pa-row" id="ug_lvl_row">
+      <label class="pa-k" for="ug_level">藥物濃度</label>
+      <select id="ug_level">
+        <option value="na">無法取得／來不及</option>
+        <option value="lt50">&lt; 50 ng/mL</option>
+        <option value="50100">50–100 ng/mL</option>
+        <option value="gt100">&gt; 100 ng/mL</option>
+      </select>
+      <div class="pa-sub">須為<b>藥物專一校正</b>的檢驗：dabigatran 用稀釋凝血酶時間／ecarin；
+        Xa 抑制劑用<b>以該藥校正</b>的顯色法 anti-Xa。
+        <b>以肝素校正的 anti-Xa 不可用來排除 30–50 ng/mL</b>（除非實驗室另做嚴謹驗證）。</div>
+    </div>
+    <div class="pa-row" id="ug_inr_row">
+      <label class="pa-k" for="ug_inr">INR</label>
+      <select id="ug_inr">
+        <option value="lt2">&lt; 2</option>
+        <option value="24" selected>2 – &lt;4</option>
+        <option value="46">4 – 6</option>
+        <option value="gt6">&gt; 6</option>
+      </select>
+      <div class="pa-sub">4F-PCC 依<b>治療前 INR</b> 分段給量，非依目標 INR 回推。</div>
+    </div>
+    <div class="pa-row" id="ug_wt_row">
+      <label class="pa-k" for="ug_wt">體重</label>
+      <input type="number" id="ug_wt" step="1" min="0" placeholder="kg"
+             style="flex:1; min-width:120px; padding:8px 10px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-family:var(--mono); font-size:14px;">
+      <div class="pa-sub">4F-PCC 依實際體重計算，但<b>上限以 100 kg 計</b>。</div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="pa-out">
+      <div class="pa-out-h">是否需要反轉 · Reversal needed?</div>
+      <div class="pa-out-v" id="ug_need">—</div>
+      <div class="pa-out-d" id="ug_need_d"></div>
+    </div>
+    <div class="pa-out">
+      <div class="pa-out-h">處置 · What to give</div>
+      <div class="pa-out-d" id="ug_give"></div>
+    </div>
+    <div class="pa-out">
+      <div class="pa-out-h">注意 · Cautions</div>
+      <div class="pa-out-d" id="ug_caut"></div>
+    </div>
+    <div class="risk-note">
+      <b>先確認病人是不是真的還有藥效。</b>ANZ 2025 實務指引指出：因出血或需急刀而就診的 DOAC 病人中，
+      <b>約每五人就有一人測不到藥物</b>。在給任何反轉劑之前，先問清楚最後一劑的時間與劑量。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">反轉劑劑量對照</div>
+    <table class="pa-cmp">
+      <thead><tr><th>藥物</th><th>劑量</th><th>要點</th></tr></thead>
+      <tbody>
+        <tr><td>Idarucizumab<br><span class="pa-src">dabigatran</span></td>
+          <td class="num"><b>5 g</b><br>（2.5 g/50 mL × 2 瓶）</td>
+          <td><b>唯一取得「非出血病人術前反轉」適應症者</b>。RE-VERSE AD（n=503，其中 <b>202 例為即將接受急刀</b>）：
+            以稀釋凝血酶時間或 ECT 測得中位最大反轉率 <b>100%</b>；手術組自給藥至手術中位 <b>1.6 小時</b>，
+            術中止血<b>正常者 93.4%</b>。<br>
+            <b>再給藥</b>：仿單載明若凝血參數升高並再度出血、或需第二次緊急手術，可考慮再給 5 g；
+            曾觀察到給藥後 <b>12–24 小時</b>凝血參數回升。重複給藥之安全性與效果<b>未經確立</b>。</td></tr>
+        <tr class="dt-warn"><td>Andexanet alfa<br><span class="pa-src">Xa 抑制劑</span></td>
+          <td class="num">—</td>
+          <td><b>本頁不列為急刀選項</b>：ISTH 2024 明列「急刀／緊急介入」為<u>不應使用</u>之情境
+            （未取得適應症、且會干擾術中肝素）；仿單適應症限於<b>危及生命或無法control 的出血</b>。
+            另已於 2025-12 退出美國市場。</td></tr>
+        <tr><td>4F-PCC<br><span class="pa-src">Xa 抑制劑<br>（適應症外）</span></td>
+          <td class="num">固定 <b>2000 IU</b><br>或 25–50 IU/kg</td>
+          <td>ACC 2020：口服 Xa 抑制劑相關之嚴重或危及生命出血，以<b>固定劑量 2000 單位</b>給予為合理。
+            ISTH：25 篇研究／1760 人之統合分析顯示固定與體重劑量在止血成效、血栓事件與死亡上<b>無顯著差異</b>，
+            但固定 2000 IU 之平均總劑量較低。<br>
+            ISTH 立場：PCC「僅應在無專一解毒劑時、或大量失血之稀釋性凝血病時使用」。</td></tr>
+        <tr><td>4F-PCC<br><span class="pa-src">warfarin</span></td>
+          <td class="num">依治療前 INR：<br>2–&lt;4 → <b>25 IU/kg</b>（上限 2500）<br>4–6 → <b>35</b>（上限 3500）<br>&gt;6 → <b>50</b>（上限 5000）</td>
+          <td>仿單適應症明列「<b>急性大出血<u>或需緊急手術／侵入性處置</u></b>」——這是<b>唯一</b>把「急刀」寫進適應症的反轉劑。
+            依實際體重計算但<b>最高以 100 kg 計</b>。須<b>同時</b>給維生素 K 以維持藥效消退後的因子濃度。
+            <b>重複給藥之安全性與效果未經確立，不建議</b>。</td></tr>
+        <tr><td>維生素 K<br><span class="pa-src">warfarin</span></td>
+          <td class="num">靜脈 <b>5–10 mg</b><br>（大出血／關鍵部位）<br>口服或靜脈 2–5 mg（非大出血）</td>
+          <td>以 25–50 mL 生理食鹽水稀釋、<b>15–30 分鐘緩慢靜脈輸注</b>，INR 於 <b>4–6 小時</b>下降；
+            口服為 <b>18–24 小時</b>；<b>皮下給藥不可預測、不建議</b>。
+            單給維生素 K <b>無法立即矯正</b>，大出血時必須併用補充策略。</td></tr>
+        <tr><td>Dabigatran 且<br>無 idarucizumab</td>
+          <td class="num">PCC 或 aPCC<br><b>50 U/kg</b>（上限 4000）</td>
+          <td>ACC 2020，依據為有限的動物、體外與人體資料。另可考慮<b>血液透析</b>（dabigatran &gt;85% 不與蛋白結合），
+            腎功能不全者尤其適用；攝入 <b>2–4 小時</b>內可考慮活性碳 50 g。</td></tr>
+        <tr><td>血漿 FFP</td><td class="num">10–15 mL/kg</td>
+          <td><b>僅在無 4F-PCC 時的替補</b>。ISTH：FFP <b>不具反轉劑角色</b>，只用於大量輸血下的稀釋性凝血病。
+            實務障礙：完整置換量需 15–30 mL/kg（70 kg 約 2100 mL、約 8 袋），
+            自開單到第一袋可達 <b>90 分鐘</b>，且有 TACO、過敏與 TRALI 風險。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-title">抗血小板藥的急刀：這裡有一個真實的證據空白</div>
+    <div class="pa-warn" style="margin-bottom:10px;">
+      <span class="h">非神經外科的急刀，沒有任何指引給出分級建議</span>
+      <b>PATCH 試驗</b>（Lancet 2016，n=190）顯示血小板輸注<b>有害</b>：3 個月死亡或依賴的勝算比
+      <b>2.05（95% CI 1.18–3.56, p=0.011）</b>，住院期間嚴重不良事件 42% vs 29%。
+      作者結論為「血小板輸注似劣於標準照護，<b>不建議用於此適應症</b>」。
+      <br><b>但 PATCH 明確排除了預定接受手術的病人</b>，其族群是<u>非手術</u>的顱內出血——
+      因此該傷害訊號<b>不可直接外推到手術出血</b>。
+      <br>NCS/SCCM 2016 反而<b>建議</b>神經外科手術前輸血小板；AABB 2025 則把「不建議」明確限定在
+      <b>非手術</b>顱內出血，對手術只給了「血小板 &lt; 50 × 10³/μL」這個<u>數量</u>門檻。
+      <br><b>結果是：抗血小板治療中的病人要接受非神經外科急刀時，該不該輸血小板，查無任何附強度的指引建議。
+      本頁照實呈現為空白，不代為推定。</b>
+    </div>
+    <table class="pa-cmp">
+      <thead><tr><th>情境</th><th>建議</th><th>來源與強度</th></tr></thead>
+      <tbody>
+        <tr><td>非手術之<br>顱內出血</td><td><b>不建議</b>輸血小板（不論何種抗血小板藥、血小板功能檢測結果、出血量或神經學檢查）</td>
+          <td>NCS/SCCM 2016（conditional, low）；AABB 2025（conditional）；PATCH 顯示有害</td></tr>
+        <tr><td>將接受<b>神經外科</b>手術之<br>aspirin／ADP 抑制劑相關顱內出血</td>
+          <td><b>建議</b>輸血小板；<b>可行時應先做血小板功能檢測</b>（strong, moderate）；
+            無法檢測時經驗性輸注可能合理</td>
+          <td>NCS/SCCM 2016（conditional, moderate）。<b>此建議早於 PATCH 發表，未依 PATCH 更新</b></td></tr>
+        <tr class="dt-warn"><td>血小板功能檢測<b>正常</b>或顯示抗血小板<b>抗性</b></td>
+          <td><b>不應</b>輸血小板</td><td>NCS/SCCM 2016，<b>strong</b>, moderate</td></tr>
+        <tr class="dt-warn"><td>NSAID 或 GP IIb/IIIa 抑制劑相關顱內出血</td>
+          <td><b>不建議</b>輸血小板，<u>即使要接受神經外科手術</u></td><td>NCS/SCCM 2016</td></tr>
+        <tr><td>大型非神經軸手術<br>（一般外科）</td><td>血小板 <b>&lt; 50 × 10³/μL</b> 時建議輸注——這是<b>數量</b>門檻，
+          <u>不是</u>「有服用抗血小板藥」的門檻</td><td>AABB 2025（conditional, low/very low）</td></tr>
+      </tbody>
+    </table>
+    <ul class="pa-list" style="margin-top:10px;">
+      <li><b>Desmopressin（DDAVP）</b>：NCS/SCCM 2016 建議可考慮<b>單次 0.4 mcg/kg 靜脈注射</b>，
+        用於 aspirin／COX-1 或 ADP 受體抑制劑相關之顱內出血；適當者（如將接受神經外科手術）可<b>與血小板輸注併用</b>
+        （conditional, low）。注意顏面潮紅與低血鈉；腦血管或心臟血栓之報告 &lt;1%，近期缺血性中風或急性心肌梗塞者宜謹慎。
+        <span class="pa-src">坊間另見 0.2–0.3 µg/kg 之劑量，僅出自心臟外科文獻、未經指引錨定；本頁採 0.4 mcg/kg。</span></li>
+      <li><b>輸注時機</b>：若決定輸血小板，理想上應在抗血小板藥經過 <b>3–5 個終末半衰期</b>後給予，
+        以免輸入的血小板同樣被藥物抑制。劑量為<b>單採血小板 1 單位</b>（相當於 6 袋混合，或每 10 kg 給 1 袋隨機捐贈者）。</li>
+      <li><b>Tranexamic acid</b>：查無任何指引背書其用於抗血小板相關的手術出血。
+        ISTH 稱 TXA「在 DOAC 反轉中<b>無正式角色</b>」，僅可能作為輔助；且應限於懷疑纖溶亢進、其他止血手段無效時。</li>
+      <li><b>Cangrelor 橋接不適用於急刀</b>：BRIDGE 試驗是<b>計畫性</b>的術前橋接，需 ≥48 小時前置時間，
+        依其設計就不可能用在「來不及停藥」的情境。它屬於擇期／時效性手術的範疇。</li>
+      <li><b>Aspirin 本身通常不需處理</b>：2024 ACC/AHA 對曾接受 PCI 者本來就建議<b>續用</b> aspirin 75–100 mg（Class 1）。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-title">明確不要做的事</div>
+    <ul class="pa-list">
+      <li><b>不要用 FFP 當反轉劑</b>——ISTH：FFP 無反轉劑角色，僅用於大量輸血下的稀釋性凝血病。</li>
+      <li><b>不要為了做神經軸麻醉而給反轉劑</b>——ASRA 第 5 版明確建議<u>不要</u>以 idarucizumab、andexanet、PCC 或 aPCC
+        反轉 DOAC 來讓神經軸介入得以安全執行（grade IIC）。</li>
+      <li><b>手術可以延到藥物自行清除時，不要用專一反轉劑</b>——ISTH 對四種製劑一致；同樣不適用於「藥物濃度高但<u>沒有出血</u>」者。</li>
+      <li><b>不要用正常的 aPTT 排除 dabigatran</b>；反過來，<b>正常的凝血酶時間（TT）可以排除</b>臨床上有意義的 dabigatran 濃度。</li>
+      <li><b>不要用以肝素校正的 anti-Xa</b> 來排除 30–50 ng/mL 的門檻（除非實驗室另做嚴謹的院內驗證）。</li>
+      <li><b>給過 andexanet 後，不要用一般顯色法 anti-Xa 判讀殘餘濃度</b>——體外解離會高估。</li>
+      <li><b>維生素 K 不要皮下給</b>——吸收不可預測，明文不建議。</li>
+      <li><b>4F-PCC（Kcentra）不要重複給藥</b>——安全性與效果未經確立，仿單不建議。</li>
+      <li><b>不要用 PCC 或 FFP 反轉口服 FXIa 抑制劑</b>（asundexian、milvexian）——ISTH：查無證據支持。</li>
+      <li><b>DOAC 不需要以肝素橋接</b>——半衰期短、起效與消退皆快。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    ISTH 2024（反轉與急刀） — <a href="https://pubmed.ncbi.nlm.nih.gov/39029742/" target="_blank" rel="noopener" class="ref-link">Levy JH, et al. J Thromb Haemost. 2024;22(10):2889-2899.</a><br>
+    ACC 2020 出血處置 — <a href="https://pubmed.ncbi.nlm.nih.gov/32680646/" target="_blank" rel="noopener" class="ref-link">Tomaselli GF, et al. J Am Coll Cardiol. 2020;76(5):594-622.</a><br>
+    RE-VERSE AD — <a href="https://pubmed.ncbi.nlm.nih.gov/28693366/" target="_blank" rel="noopener" class="ref-link">Pollack CV, et al. N Engl J Med. 2017;377(5):431-441.</a><br>
+    ANNEXA-I — <a href="https://pubmed.ncbi.nlm.nih.gov/38749032/" target="_blank" rel="noopener" class="ref-link">Connolly SJ, et al. N Engl J Med. 2024;390(19):1745-1755.</a><br>
+    PATCH — <a href="https://pubmed.ncbi.nlm.nih.gov/27178479/" target="_blank" rel="noopener" class="ref-link">Baharoglu MI, et al. Lancet. 2016;387(10038):2605-2613.</a><br>
+    NCS/SCCM 顱內出血反轉 — <a href="https://pubmed.ncbi.nlm.nih.gov/27858808/" target="_blank" rel="noopener" class="ref-link">Frontera JA, et al. Neurocrit Care. 2016;24(1):6-46.</a><br>
+    AABB 2025 血小板輸注 — <a href="https://pubmed.ncbi.nlm.nih.gov/40440268/" target="_blank" rel="noopener" class="ref-link">JAMA. 2025;334(7):606-617.</a><br>
+    FDA — <a href="https://www.fda.gov/safety/medical-product-safety-information/update-safety-andexxa-astrazeneca-fda-safety-communication" target="_blank" rel="noopener" class="ref-link">Update on the Safety of Andexxa（2025-12-18）</a>
+  </footer>
 </div>
 
 <!-- ══════════════════ 風險分層與指引對照 ══════════════════ -->
@@ -557,7 +798,7 @@
 
 <script>
 /* ─────────── 分頁 ─────────── */
-var PA_TABS=['oac','ap','ref'];
+var PA_TABS=['oac','ap','urg','ref'];
 function paTab(key,skipHash){
   PA_TABS.forEach(function(t){
     var pane=document.getElementById('tab-'+t);
@@ -846,9 +1087,167 @@ function paCalc(){
   elAlt.innerHTML=alt;
 }
 
+/* ─────────── 急刀／反轉 ─────────── */
+function ugCalc(){
+  var drug=document.getElementById('ug_drug').value,
+      lv=parseInt(document.getElementById('ug_lv').value),
+      lvl=document.getElementById('ug_level').value,
+      inr=document.getElementById('ug_inr').value,
+      wt=parseFloat(document.getElementById('ug_wt').value);
+  var isDoac=(drug==='dabi'||drug==='xa');
+
+  /* 只顯示與該藥物相關的輸入列 */
+  document.getElementById('ug_lvl_row').classList.toggle('hidden',!isDoac);
+  document.getElementById('ug_inr_row').classList.toggle('hidden',drug!=='warf');
+  /* 體重只用於 warfarin 的 4F-PCC 換算，其餘情境不顯示以免暗示有計算 */
+  document.getElementById('ug_wt_row').classList.toggle('hidden',drug!=='warf');
+
+  var need='—', needD='', give='', caut='';
+
+  /* ── 抗血小板 ── */
+  if(drug==='apt'){
+    need='沒有反轉劑<span class="pa-flag no">NO ANTIDOTE</span>';
+    needD='抗血小板藥沒有專一反轉劑。可考慮的是<b>血小板輸注</b>與 <b>DDAVP</b>，'
+      +'但兩者在「非神經外科急刀」這個情境下<b>都沒有附強度的指引建議</b>——這是真實的證據空白，見下方表格。';
+    give='<ul>'
+      +'<li><b>DDAVP</b>：單次 <b>0.4 mcg/kg 靜脈注射</b>（NCS/SCCM 2016，conditional／low）。'
+      +'適當者可與血小板輸注併用。</li>'
+      +'<li><b>血小板輸注</b>：僅在<u>神經外科手術</u>前有指引建議（NCS/SCCM，conditional／moderate），'
+      +'且<b>可行時應先做血小板功能檢測</b>（strong／moderate）；檢測正常或顯示抗性者<b>不應輸注</b>（strong）。'
+      +'一般外科的門檻是<b>血小板數 &lt; 50 × 10³/μL</b>（AABB 2025），<u>不是</u>「有服藥」就輸。</li>'
+      +'<li><b>Aspirin 通常續用</b>：曾接受 PCI 者，2024 ACC/AHA 本來就建議續用 75–100 mg（Class 1）。</li>'
+      +'</ul>';
+    caut='<b>PATCH 試驗顯示血小板輸注有害</b>（3 個月死亡或依賴 OR 2.05, 95% CI 1.18–3.56），'
+      +'<u>但它排除了要開刀的病人</u>，族群為非手術之顱內出血，不可直接外推到手術出血。'
+      +'<br><b>NSAID 或 GP IIb/IIIa 相關出血不建議輸血小板，即使要開神經外科</b>。'
+      +'<br>若決定輸注，理想上應在藥物經過 <b>3–5 個終末半衰期</b>後給，否則輸進去的血小板一樣被抑制。'
+      +'<br>TXA 查無指引背書用於此情境；cangrelor 橋接需 ≥48 小時前置時間，依設計不適用於急刀。';
+  }
+
+  /* ── Warfarin ── */
+  else if(drug==='warf'){
+    var band = (inr==='24')?{d:25,max:2500,t:'2 – &lt;4'} : (inr==='46')?{d:35,max:3500,t:'4 – 6'}
+             : (inr==='gt6')?{d:50,max:5000,t:'&gt; 6'} : null;
+    if(lv>=5){
+      need='多數可先靠維生素 K<span class="pa-flag no">通常免 PCC</span>';
+      needD='第 5 級（24–36 小時）通常來得及讓靜脈維生素 K 發揮作用（<b>4–6 小時</b>起 INR 下降）。'
+        +'若屆時 INR 仍不理想再加 4F-PCC。';
+    }else if(inr==='lt2'){
+      need='INR &lt; 2，多數情況不需反轉<span class="pa-flag no">NO REVERSAL</span>';
+      needD='仿單之 4F-PCC 劑量分段自 INR 2 起。INR &lt; 2 時是否仍需處置，應依手術出血風險個別判斷。'
+        +'<span class="pa-src">註：查無任何文件載明「急刀的目標 INR」——Kcentra 是依<b>治療前</b> INR 分段給量，'
+        +'不是回推目標值。本頁不代為訂定目標 INR。</span>';
+    }else{
+      need='需要反轉<span class="pa-flag yes">4F-PCC ＋ 維生素 K</span>';
+      needD='<b>4F-PCC 是唯一把「需緊急手術／侵入性處置」寫進仿單適應症的反轉劑</b>，'
+        +'不像其他製劑只涵蓋出血。';
+    }
+    give='<ul>';
+    if(band && lv<5){
+      var dose = wt>0 ? Math.min(Math.round(Math.min(wt,100)*band.d), band.max) : null;
+      give+='<li><b>4F-PCC</b>：治療前 INR '+band.t+' → <b>'+band.d+' IU/kg</b>（上限 '+band.max+' IU）'
+         +(dose?('。以體重 '+(wt>100?'100（上限）':wt)+' kg 計為 <b>'+dose+' IU</b>'
+                +(Math.min(wt,100)*band.d>band.max?'（已達上限）':'')):'。輸入體重可自動換算')
+         +'。依實際體重但<b>最高以 100 kg 計</b>。</li>';
+    }
+    give+='<li><b>維生素 K</b>：'+((lv>=5||inr==='lt2')?'':'<b>使用 PCC 時必須併用</b>，以維持 PCC 藥效消退後的因子濃度。')
+       +'大出血或關鍵部位出血 <b>5–10 mg 靜脈</b>；非大出血 2–5 mg 口服或靜脈。'
+       +'以 25–50 mL 生理食鹽水稀釋、<b>15–30 分鐘緩慢輸注</b>；INR 於 <b>4–6 小時</b>下降'
+       +'（口服 18–24 小時，<b>皮下不可預測、不建議</b>）。</li>';
+    give+='<li><b>僅在無 4F-PCC 時</b>才用血漿：10–15 mL/kg。ISTH 明言 FFP 不具反轉劑角色；'
+       +'且自開單至第一袋可達 90 分鐘，並有 TACO／過敏／TRALI 風險。</li></ul>';
+    caut='<b>4F-PCC 不可重複給藥</b>——安全性與效果未經確立，仿單不建議。'
+      +'<br>仿單載有黑框警語：動脈與靜脈血栓栓塞併發症，可致命。'
+      +'<br>單給維生素 K <b>無法立即矯正</b>凝血功能，大出血時必須併用補充策略。';
+  }
+
+  /* ── DOAC ── */
+  else{
+    var isDabi=(drug==='dabi');
+    if(lv>=5){
+      need='通常不需反轉<span class="pa-flag no">等待清除</span>';
+      needD='第 5 級（24–36 小時）<b>已接近擇期的停藥區間</b>——低／中出血風險的標準作法本來就只省略 1 天劑量。'
+        +'<b>ISTH 明文：手術可延到藥物自行清除時，不應使用專一反轉劑。</b>'
+        +'請先回「抗凝血劑」分頁依標準流程處理。';
+      give='<ul><li>確認最後一劑時間與劑量，依標準停藥表推估清除時間。</li>'
+        +'<li>若院內可驗濃度，可用以確認而非用以決定反轉。</li></ul>';
+      caut='別把「急刀」自動等同於「要反轉」。這一級最常見的錯誤是給了不必要的反轉劑。';
+    }else if(lv===4){
+      need='多數可等待清除<span class="pa-flag no">優先驗濃度</span>';
+      needD='第 4 級（8–12 小時）多數情況可等待清除。ISTH 的髖部骨折示例即為此情境：'
+        +'<b>濃度 &lt;50 ng/mL 可於 6–8 小時內開刀</b>；<b>50–100 ng/mL 則延後 20–24 小時</b>'
+        +'（預期屆時可降至 50 ng/mL 以下）。';
+      give='<ul><li>優先<b>驗藥物專一濃度</b>並據以決定，而非逕行反轉。</li>'
+        +'<li>濃度不可得且最後一劑時間不明時，ISTH 提出兩個選項：'
+        +'為使手術能在 24 小時內進行而<b>給予反轉</b>，或<b>不反轉而等待至少 48 小時</b>讓藥物清除。</li></ul>';
+      caut='<b>高齡病人的 DOAC 半衰期會延長</b>（ISTH 特別針對需急刀的長者提醒）。';
+    }else{
+      /* 第 1–3 級 */
+      var byLevel = (lvl==='lt50') ? 'no' : (lvl==='50100' ? 'defer' : (lvl==='gt100' ? 'yes' : 'unknown'));
+      if(byLevel==='no'){
+        need='不需反轉<span class="pa-flag no">&lt; 50 ng/mL</span>';
+        needD='ISTH：<b>濃度 &lt; 50 ng/mL 時可不反轉逕行手術</b>。'
+          +'（若為神經軸麻醉，ASRA 的門檻更嚴：需 &lt; 30 ng/mL 或 anti-Xa ≤ 0.1 IU/mL。）';
+        give='<ul><li>直接進行手術，不需專一反轉劑。</li></ul>';
+        caut='ASRA 明確建議<b>不要</b>為了讓神經軸介入可行而給反轉劑（grade IIC）。';
+      }else if(byLevel==='defer'){
+        need='可延則延，不可延則反轉<span class="pa-flag yes">50–100 ng/mL</span>';
+        needD='ISTH 髖部骨折示例：<b>50–100 ng/mL 時延後 20–24 小時</b>，預期屆時降至 50 ng/mL 以下。'
+          +'第 '+lv+' 級若無法等待，則依下方給予反轉。';
+        give=ugAgent(isDabi);
+        caut='ISTH 表格註記：專一解毒劑<b>僅在殘餘濃度 &gt; 50–75 ng/mL（依術式而定）</b>時才應考慮。';
+      }else if(byLevel==='yes'){
+        need='建議反轉<span class="pa-flag yes">&gt; 100 ng/mL</span>';
+        needD='濃度明顯高於 50 ng/mL 的門檻，且第 '+lv+' 級無法等待清除。';
+        give=ugAgent(isDabi);
+        caut='';
+      }else{
+        need='依最後一劑時間決策<span class="pa-flag yes">濃度不可得</span>';
+        needD='第 '+lv+' 級'+(lv<=2?'（來不及驗濃度）':'')+'且濃度不可得時，'
+          +'ISTH 的兩個選項為：<b>給予反轉</b>以使手術能在 24 小時內進行，'
+          +'或<b>不反轉而等待至少 48 小時</b>——後者在此級數顯然不可行。'
+          +'<br><b>務必先確認最後一劑的時間與劑量</b>：DOAC 病人因出血或急刀就診者，約每五人有一人測不到藥物。';
+        give=ugAgent(isDabi);
+        caut='';
+      }
+    }
+    if(isDabi){
+      caut+=(caut?'<br>':'')+'<b>正常的凝血酶時間（TT）可排除</b>臨床上有意義的 dabigatran 濃度；'
+        +'但<b>正常的 aPTT 不能</b>。';
+    }else{
+      caut+=(caut?'<br>':'')+'檢驗須用<b>以該藥校正</b>的顯色法 anti-Xa；'
+        +'<b>肝素校正的 anti-Xa 不可用來排除 30–50 ng/mL 門檻</b>。';
+    }
+  }
+
+  document.getElementById('ug_need').innerHTML=need;
+  document.getElementById('ug_need_d').innerHTML=needD;
+  document.getElementById('ug_give').innerHTML=give;
+  document.getElementById('ug_caut').innerHTML=caut||'—';
+}
+
+function ugAgent(isDabi){
+  if(isDabi){
+    return '<ul><li><b>Idarucizumab 5 g</b>（2.5 g/50 mL 兩瓶）。'
+      +'<b>這是唯一取得「非出血病人術前反轉」適應症的藥。</b>'
+      +'RE-VERSE AD 的急刀組（n=202）自給藥至手術中位 <b>1.6 小時</b>，術中止血正常者 <b>93.4%</b>。</li>'
+      +'<li>給藥後 <b>12–24 小時</b>可能出現凝血參數回升；若再度出血或需第二次緊急手術，'
+      +'仿單載明可考慮<b>再給 5 g</b>（惟重複給藥之安全性與效果未經確立）。</li>'
+      +'<li><b>若無 idarucizumab</b>：PCC 或 aPCC <b>50 U/kg（上限 4000 U）</b>（ACC 2020，證據有限）；'
+      +'另可考慮<b>血液透析</b>（dabigatran &gt;85% 不與蛋白結合），腎功能不全者尤其適用。</li></ul>';
+  }
+  return '<ul><li><b>4F-PCC 固定劑量 2000 IU</b>（ACC 2020 認為對口服 Xa 抑制劑相關之嚴重或危及生命出血為合理）；'
+    +'或 25–50 IU/kg。統合分析顯示兩種給法在止血成效、血栓與死亡上<b>無顯著差異</b>。</li>'
+    +'<li class="dt-warn"><b>不使用 andexanet alfa</b>：ISTH 2024 明列「急刀／緊急介入」為不應使用之情境'
+    +'（未取得適應症、會干擾術中肝素）；且該藥已於 2025-12 退出美國市場。</li>'
+    +'<li>ISTH 立場：PCC 應僅在<b>無專一解毒劑</b>時、或大量失血之稀釋性凝血病時使用。</li></ul>';
+}
+
 /* ─────────── 事件 ─────────── */
 document.querySelectorAll('#view-periop-anticoag input, #view-periop-anticoag select')
   .forEach(function(el){ el.addEventListener('input',paCalc); el.addEventListener('change',paCalc); });
+document.querySelectorAll('#tab-urg input, #tab-urg select')
+  .forEach(function(el){ el.addEventListener('input',ugCalc); el.addEventListener('change',ugCalc); });
 
 /* ─────────── 與 CHA₂DS₂-VASc 計算機往返 ───────────
    離開前把整份表單與捲動位置存起來，計算機按返回鍵帶 ?restore=1 回來時原樣還原，
@@ -906,6 +1305,7 @@ document.getElementById('pa_vasc_link').addEventListener('click',function(){
   if(m && PA_TABS.indexOf(m[1])>=0) paTab(m[1],true);
 })();
 paCalc();
+ugCalc();
 if(/[?&]restore=1/.test(location.search)) paRestore();
 </script>
 <!-- pwa-sw-register -->
