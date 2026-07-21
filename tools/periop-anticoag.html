@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圍手術期抗栓藥物 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  /* ── CrCl 小計算機 ─────────────────────────────────────────── */
+  .pa-crcl{background:var(--soft-bg); border:1px solid var(--accent-soft); border-radius:2px; padding:12px 14px; margin-bottom:14px;}
+  .pa-crcl-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:9px;}
+  .pa-crcl-f{display:flex; flex-direction:column; gap:3px;}
+  .pa-crcl-f label{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase;}
+  .pa-crcl-f input,.pa-crcl-f select{padding:7px 9px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg);
+        color:var(--ink); font-family:var(--mono); font-size:14px;}
+  .pa-crcl-out{margin-top:10px; padding-top:9px; border-top:1px dashed var(--line); display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;}
+  .pa-crcl-out .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase;}
+  .pa-crcl-out .v{font-family:var(--serif); font-size:22px; font-weight:600; color:var(--accent);}
+  .pa-crcl-out .n{font-size:11.5px; color:var(--muted-soft);}
+
+  /* ── 選項列 ────────────────────────────────────────────────── */
+  .pa-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
+  .pa-row:last-child{border-bottom:none;}
+  .pa-row>label.pa-k{font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--muted);
+        text-transform:uppercase; min-width:104px;}
+  .pa-row select{flex:1; min-width:190px; padding:8px 10px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13.5px;}
+  .pa-sub{width:100%; font-size:11.5px; color:var(--muted-soft); padding-left:104px; line-height:1.6;}
+  @media(max-width:520px){ .pa-row>label.pa-k{min-width:100%;} .pa-sub{padding-left:0;} }
+
+  .pa-checks{display:flex; flex-direction:column; gap:2px; margin-top:4px;}
+  .pa-checks label{display:flex; align-items:flex-start; gap:8px; font-size:13px; line-height:1.65; padding:6px 0;
+        border-bottom:1px dotted var(--line); cursor:pointer;}
+  .pa-checks label:last-child{border-bottom:none;}
+  .pa-checks input{margin-top:3px; flex-shrink:0;}
+  .pa-checks .en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
+
+  /* ── 結果面板內的分段 ──────────────────────────────────────── */
+  .pa-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
+  .pa-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .pa-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:5px;}
+  .pa-out-v{font-family:var(--serif); font-size:20px; font-weight:600; line-height:1.4;}
+  .pa-out-v.sm{font-size:16px;}
+  .pa-out-d{font-size:12.5px; line-height:1.75; margin-top:6px; opacity:.9;}
+  .pa-out-d ul{margin:4px 0 0; padding-left:17px;}
+  .pa-out-d li{margin-bottom:3px;}
+  .pa-flag{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 7px; vertical-align:2px; margin-left:7px;}
+  .pa-flag.no{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+  .pa-flag.yes{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+
+  /* 日曆條 */
+  .pa-cal{margin-top:9px; display:grid; gap:2px; font-family:var(--mono); font-size:10px;}
+  .pa-cal-r{display:grid; grid-template-columns:repeat(11,1fr); gap:2px;}
+  .pa-cal-c{text-align:center; padding:5px 1px; border-radius:2px; background:rgba(255,255,255,.07); opacity:.55;}
+  .pa-cal-c.off{background:#5a3a12; color:#f4d9a8; opacity:1; font-weight:700;}
+  .pa-cal-c.op{background:#f4f2ec; color:#132126; opacity:1; font-weight:700;}
+  .pa-cal-c.on{background:rgba(255,255,255,.2); opacity:1;}
+  .pa-cal-lbl{font-size:9.5px; opacity:.55; letter-spacing:.04em;}
+
+  /* ── 指引對照小表 ─────────────────────────────────────────── */
+  table.pa-cmp{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 4px;}
+  table.pa-cmp th,table.pa-cmp td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  table.pa-cmp thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.pa-cmp td:first-child{font-family:var(--mono); font-weight:700; white-space:nowrap;}
+  table.pa-cmp td.num{font-family:var(--mono);}
+
+  /* ── 警示框 ───────────────────────────────────────────────── */
+  .pa-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .pa-warn b{color:var(--accent2);}
+  .pa-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+
+  .pa-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  .pa-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
+  .pa-list li{margin-bottom:2px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-periop-anticoag">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Perioperative Scoring Tool</div>
+      <h1>圍手術期抗栓藥物管理</h1>
+      <div class="sub">停藥、橋接與重啟 · Perioperative Antithrombotic Management（CHEST 2022 · EHRA 2021 · ASRA 5th 2025）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-periop-anticoag'">← 返回主選單</button>
+  </div>
+
+  <div class="tab-row" id="pa_tabs">
+    <button class="tab-btn active" data-tab="oac" onclick="paTab('oac')">抗凝血劑</button>
+    <button class="tab-btn"        data-tab="ap"  onclick="paTab('ap')">抗血小板</button>
+    <button class="tab-btn"        data-tab="ref" onclick="paTab('ref')">風險分層與指引對照</button>
+  </div>
+
+<!-- ══════════════════ 抗凝血劑 ══════════════════ -->
+<div id="tab-oac">
+
+  <div class="pa-warn">
+    <span class="h">先看這裡 · 三份指引的算法不同</span>
+    CHEST 2022 以<b>「省略幾天劑量」</b>計；EHRA 2021 以<b>「距最後一劑幾小時」</b>計，且四種 DOAC 全部依 CrCl 分段；
+    ASRA 第 5 版針對<b>神經軸麻醉</b>另訂更長的間隔。三者對同一病人可能給出差一至兩天的答案。
+    本頁<b>以 CHEST 2022 為主軸</b>，另將 EHRA 與 ASRA 並列供對照，<u>不予合併</u>。
+  </div>
+
+  <div class="card">
+    <div class="section-title">病人與處置</div>
+
+    <div class="pa-crcl">
+      <div class="pa-crcl-grid">
+        <div class="pa-crcl-f"><label>年齡 Age</label><input type="number" id="pa_age" step="1" min="0" placeholder="歲"></div>
+        <div class="pa-crcl-f"><label>體重 Weight</label><input type="number" id="pa_wt" step="0.5" min="0" placeholder="kg"></div>
+        <div class="pa-crcl-f"><label>Creatinine</label><input type="number" id="pa_cr" step="0.1" min="0" placeholder="mg/dL"></div>
+        <div class="pa-crcl-f"><label>性別 Sex</label>
+          <select id="pa_sex"><option value="M">男 Male</option><option value="F">女 Female</option></select></div>
+        <div class="pa-crcl-f"><label>或直接輸入 CrCl</label><input type="number" id="pa_crcl_manual" step="1" min="0" placeholder="mL/min"></div>
+      </div>
+      <div class="pa-crcl-out">
+        <span class="k">Cockcroft-Gault CrCl</span>
+        <span class="v" id="pa_crcl_v">—</span>
+        <span class="n" id="pa_crcl_n">輸入年齡、體重、Cr 後自動計算；亦可直接填入右欄覆寫</span>
+      </div>
+    </div>
+
+    <div class="pa-row">
+      <label class="pa-k" for="pa_drug">抗凝血劑</label>
+      <select id="pa_drug">
+        <option value="apixaban">Apixaban（Eliquis）</option>
+        <option value="rivaroxaban">Rivaroxaban（Xarelto）</option>
+        <option value="edoxaban">Edoxaban（Lixiana）</option>
+        <option value="dabigatran">Dabigatran（Pradaxa）</option>
+        <option value="warfarin">Warfarin（VKA）</option>
+      </select>
+    </div>
+
+    <div class="pa-row">
+      <label class="pa-k" for="pa_bleed">處置出血風險</label>
+      <select id="pa_bleed">
+        <option value="high">高 High（30 天大出血風險 ≥2%）</option>
+        <option value="low">低／中 Low-Moderate（0–2%）</option>
+        <option value="min">極低 Minimal（約 0%）</option>
+      </select>
+      <div class="pa-sub">分類依 CHEST 2022 之經驗性分級。<b>一般外科多數落在「高」</b>——癌症手術、有吻合口的腸胃道或泌尿道手術、
+        實質器官（肝脾腎）手術、任何時間 &gt;45 分鐘的大手術皆屬之；腹腔鏡膽囊切除、疝氣修補、大腸鏡切片則為低／中。
+        完整清單見「風險分層與指引對照」分頁。</div>
+    </div>
+
+    <div class="pa-row">
+      <label class="pa-k">神經軸麻醉</label>
+      <div class="pa-checks" style="flex:1;">
+        <label><input type="checkbox" id="pa_neuraxial"> 預計採用脊椎／硬脊膜外麻醉或置放硬脊膜外導管
+          <span class="en">neuraxial / epidural catheter</span></label>
+      </div>
+      <div class="pa-sub">CHEST 將神經軸麻醉歸入高出血風險（停 2 天）；<b>ASRA 第 5 版要求更長</b>，勾選後一併顯示。</div>
+    </div>
+
+    <div class="pa-row">
+      <label class="pa-k" for="pa_ind">抗凝適應症</label>
+      <select id="pa_ind">
+        <option value="af">心房顫動 Atrial fibrillation</option>
+        <option value="mhv">機械瓣膜 Mechanical heart valve</option>
+        <option value="vte">靜脈血栓栓塞 VTE</option>
+      </select>
+      <div class="pa-sub" id="pa_ind_sub">決定是否需要橋接；DOAC 一律不橋接，此欄主要影響 warfarin。</div>
+    </div>
+  </div>
+
+  <!-- 血栓風險因子（依適應症切換） -->
+  <div class="card" id="pa_rf_card">
+    <div class="section-title">血栓栓塞風險因子</div>
+
+    <div id="pa_rf_af" class="pa-checks">
+      <label><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"> 近 3 個月內中風或 TIA
+        <span class="en">recent (&lt;3 m) stroke / TIA</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"> CHA₂DS₂-VASc ≥7（或 CHADS₂ 5–6）
+        <span class="en">CHA₂DS₂-VASc ≥7</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="af"> 過去圍手術期曾發生血栓栓塞
+        <span class="en">prior perioperative thromboembolism</span></label>
+    </div>
+
+    <div id="pa_rf_mhv" class="pa-checks hidden">
+      <label><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 二尖瓣位機械瓣，且合併 ≥1 項中風危險因子
+        <span class="en">mechanical mitral valve with ≥1 risk factor</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 舊世代人工瓣（籠球型 caged-ball／傾斜盤型 tilting-disc）
+        <span class="en">older-generation valve</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 近 3 個月內血栓栓塞事件
+        <span class="en">recent (&lt;3 m) thromboembolic event</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 過去圍手術期曾發生血栓栓塞
+        <span class="en">prior perioperative thromboembolism</span></label>
+    </div>
+
+    <div id="pa_rf_vte" class="pa-checks hidden">
+      <label><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 近 3 個月內 VTE（尤其 1 個月內）
+        <span class="en">recent (&lt;3 m) VTE</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 重度血栓體質：protein C／S／antithrombin 缺乏、
+        homozygous factor V Leiden 或 prothrombin 基因突變、雙重異型合子、多重血栓體質
+        <span class="en">severe thrombophilia</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 抗磷脂質抗體
+        <span class="en">antiphospholipid antibodies</span></label>
+      <label><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 高 VTE 風險之活動性癌症
+        <span class="en">active cancer with high VTE risk</span></label>
+    </div>
+    <div class="note" style="margin-top:8px;">勾選項目取自 CHEST 2022 對「高血栓栓塞風險」之界定與其橋接實作註記；未勾選任何項目時視為低至中度風險。</div>
+  </div>
+
+  <!-- ============ 結果 ============ -->
+  <div class="result">
+    <div class="pa-out">
+      <div class="pa-out-h">術前停藥 · Pre-procedure interruption</div>
+      <div class="pa-out-v" id="pa_stop">—</div>
+      <div class="pa-out-d" id="pa_stop_d"></div>
+      <div class="pa-cal" id="pa_cal"></div>
+    </div>
+
+    <div class="pa-out">
+      <div class="pa-out-h">橋接 · Heparin bridging</div>
+      <div class="pa-out-v sm" id="pa_bridge">—</div>
+      <div class="pa-out-d" id="pa_bridge_d"></div>
+    </div>
+
+    <div class="pa-out">
+      <div class="pa-out-h">術後重啟 · Post-procedure resumption</div>
+      <div class="pa-out-v sm" id="pa_resume">—</div>
+      <div class="pa-out-d" id="pa_resume_d"></div>
+    </div>
+
+    <div class="pa-out" id="pa_alt_box">
+      <div class="pa-out-h">其他指引之對照 · Alternative schemes</div>
+      <div class="pa-out-d" id="pa_alt"></div>
+    </div>
+
+    <div class="risk-note">本頁僅涵蓋<b>擇期</b>手術／處置。緊急或亟需手術之停藥時間不足、以及是否使用反轉劑
+      （idarucizumab、andexanet alfa、PCC）不在本工具範圍內。</div>
+  </div>
+</div>
+
+<!-- ══════════════════ 抗血小板 ══════════════════ -->
+<div id="tab-ap" class="hidden">
+
+  <div class="pa-warn">
+    <span class="h">兩個常見誤引</span>
+    ① 廣為流傳的「clopidogrel 5 天／prasugrel 7 天／ticagrelor 3 天」<b>並非 2024 ACC/AHA Table 12 原文</b>（原文為 5–7／7–10／3–5）。
+    ② 該表標題是「<b>血小板功能恢復所需時間</b>」，並不是具 COR/LOE 的停藥建議條文——ACC/AHA 嚴格說來未就術前停藥天數發布建議。
+  </div>
+
+  <div class="card">
+    <div class="section-title">Aspirin</div>
+    <table class="pa-cmp">
+      <thead><tr><th>來源</th><th>建議</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td>CHEST 2022<br>G29a</td><td>擇期非心臟手術正在服用 ASA 者，<b>建議續用而非中斷</b>。實作註記：高出血風險手術可個案改為中斷</td><td>Conditional，moderate certainty</td></tr>
+        <tr><td>CHEST 2022<br>G29b</td><td>若必須中斷，<b>停 ≤7 天</b>而非 7–10 天</td><td>Conditional，very low</td></tr>
+        <tr><td>2024 ACC/AHA<br>Rec 7</td><td>曾接受 PCI 者行非心臟手術，<b>建議續用 aspirin 75–100 mg</b>（if possible）</td><td><b>Class 1</b>，LOE B-R</td></tr>
+        <tr><td>2024 ACC/AHA<br>Rec 11</td><td><b>無</b> PCI 病史之慢性冠心病，若心臟事件風險大於出血風險，續用 aspirin 可能合理</td><td>Class 2b，LOE B-R</td></tr>
+        <tr><td>2024 ACC/AHA<br>Rec 12</td><td>有 CAD 但<b>無</b> PCI 病史行擇期非頸動脈手術，<b>常規「起始」aspirin 無益處</b></td><td><b>Class 3: No Benefit</b>，LOE B-R</td></tr>
+      </tbody>
+    </table>
+    <details class="def-box"><summary>POISE-2 的關鍵細節：為什麼結論是「續用」而不是「停用」</summary>
+      <div class="box-inner">
+        <p style="font-size:12.5px; line-height:1.8; margin:0 0 6px;">
+          POISE-2（n=10,010）整體結果：30 天死亡或非致命性 MI <b>7.0% vs 7.1%</b>（HR 0.99, 95% CI 0.86–1.15, P=0.92）；
+          大出血 <b>4.6% vs 3.8%</b>（HR 1.23, 95% CI 1.01–1.49, P=0.04）。
+        </p>
+        <p style="font-size:12.5px; line-height:1.8; margin:0 0 6px;">
+          但出血的增加<b>主要來自「術前新起始」族群</b>。在原本就規律服用 ASA 的 continuation stratum，出血為
+          <b>4.6% vs 4.1%</b>，並無差異——CHEST 指引第一作者 Douketis 明言這正是 G29a 建議續用的理由之一。
+          ACC/AHA Rec 12 的措辭也只反對「常規<u>起始</u>」，<b>並無「已在服用者應停藥」之條文</b>；坊間「一級預防應停、二級預防可續」
+          的二分法不是原文措辭。
+        </p>
+        <p style="font-size:12.5px; line-height:1.8; margin:0;">
+          <b>已置放支架者</b>另有 POISE-2 事後次族群分析（n=470）：主要終點 ARR 5.5%（95% CI 0.4–10.5），
+          HR 0.50（0.26–0.95），P for interaction 0.036。惟該試驗<b>排除 BMS &lt;6 週、DES &lt;1 年</b>者，不可外推至新近置放支架的病人。
+        </p>
+        <div class="pa-src" style="margin-top:8px;">Devereaux 2014 NEJM（PMID 24679062）；Graham 2017 Ann Intern Med（PMID 29132159）。
+          分層數值未能取得 NEJM 原文核對，continuation stratum 之 4.6% vs 4.1% 另有指引作者簡報佐證。</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <div class="section-title">P2Y12 抑制劑：術前停藥天數</div>
+    <table class="pa-cmp">
+      <thead><tr><th>藥物</th><th>CHEST 2022（Fig. 3）</th><th>2024 ACC/AHA（Table 12）</th><th>ASRA 5th（神經軸）</th></tr></thead>
+      <tbody>
+        <tr><td>Clopidogrel</td><td class="num"><b>5 天</b><br><span class="pa-src">Statement 30</span></td><td class="num"><b>5–7 天</b></td><td class="num">5–7 天</td></tr>
+        <tr><td>Prasugrel</td><td class="num"><b>7 天</b><br><span class="pa-src">Statement 32</span></td><td class="num">7–10 天</td><td class="num">7–10 天</td></tr>
+        <tr><td>Ticagrelor</td><td class="num">3–5 天<br><span class="pa-src">Statement 31</span></td><td class="num">3–5 天</td><td class="num">5 天</td></tr>
+        <tr><td>Aspirin</td><td class="num">續用；需停則 ≤7 天<br><span class="pa-src">Statement 29a/29b</span></td><td class="num">4 天</td><td class="num">無需間隔</td></tr>
+      </tbody>
+    </table>
+    <div class="pa-warn" style="margin-top:10px; margin-bottom:0;">
+      <span class="h">兩處不一致</span>
+      <b>① CHEST 文件內部：</b>Statement 32 的 prasugrel 是<b>停 7 天</b>，但同一份指引的 Figure 3 註腳寫「7–10 天」。
+      本表採建議條文（7 天）。<br>
+      <b>② CHEST vs ACC/AHA：</b>clopidogrel — CHEST 給單一值 5 天，ACC/AHA Table 12 給區間 5–7 天。
+      兩表定義本就不同（前者為停藥建議，後者為血小板功能恢復時間），不宜合併成一組數字。<br>
+      ASRA 的 ticagrelor 由第 4 版的 5–7 天<b>改為 5 天</b>。
+    </div>
+    <ul class="pa-list" style="margin-top:10px;">
+      <li><b>術後重啟</b>：CHEST Statement 33（conditional，very low）建議於術後 <b>≤24 小時</b>恢復抗血小板藥；
+        Fig. 3 註明 P2Y12 以<b>維持劑量</b>恢復（非 loading dose）。
+        2024 ACC/AHA 建議條文中<u>無</u>抗血小板重啟時機之條目，勿標為該指引建議。
+        <span class="pa-src">恢復後達最大效果所需時間：ASA 數分鐘、ticagrelor 2 小時、prasugrel 3 天；
+        clopidogrel 僅給 75 mg 維持劑量需 4–5 天，給 loading dose 則 2–6 小時。</span></li>
+      <li><b>ASRA 導管</b>：clopidogrel 於未給 loading dose 時導管可留置 1–2 天；prasugrel 與 ticagrelor 因起效快
+        <b>不應留置導管</b>。給過 loading dose 者，導管移除與首劑間隔 6 小時。</li>
+      <li><b>靜脈抗血小板橋接：兩份指引方向相左。</b>
+        CHEST Statement 39（conditional，low）<b>不建議常規</b>以 GP IIb/IIIa 抑制劑、cangrelor 或 LMWH 橋接；
+        若仍使用 cangrelor，於 P2Y12 停藥 72 小時內以 0.75 mcg/kg/min 起始，術後 &lt;6 小時恢復，最少 48 小時、最多 7 天。
+        2024 ACC/AHA Rec 10（<b>Class 2b</b>，B-NR）則稱高血栓風險者於 DES &lt;6 個月或 BMS &lt;30 天、手術無法延後時
+        「<b>可考慮</b>」靜脈抗血小板橋接——條文未指名 cangrelor，內文並自承此法「研究不足」，
+        MONET BRIDGE 試驗仍在進行中，GP IIb/IIIa 作為橋接則無實證。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-title">支架置放後，擇期非心臟手術該延多久</div>
+    <table class="pa-cmp">
+      <thead><tr><th>情境</th><th>建議延遲</th><th>COR / LOE</th></tr></thead>
+      <tbody>
+        <tr><td>氣球擴張<br>（未置支架）</td><td>至少 <b>14 天</b></td><td>Class 1，C-LD</td></tr>
+        <tr><td>DES ─ 因 <b>ACS</b> 置放</td><td>理想上 <b>≥12 個月</b></td><td>Class 1，B-NR</td></tr>
+        <tr><td>DES ─ 因 <b>慢性冠心病</b> 置放</td><td><b>≥6 個月</b>為合理</td><td>Class 2a，B-NR</td></tr>
+        <tr><td>DES ─ 時效性手術</td><td>若延遲手術之風險大於 MACE 風險，<b>≥3 個月</b>後可考慮</td><td>Class 2b，B-NR</td></tr>
+        <tr class="dt-warn"><td>BMS 或 DES <b>≤30 天</b></td><td>需中斷 ≥1 種抗血小板藥之擇期手術屬<b>潛在有害</b></td><td><b>Class 3: Harm</b>，B-NR</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      2024 版最重要的改變：<b>門檻不再只看支架種類，而是看置放的臨床適應症</b>（ACS 12 個月 vs 慢性冠心病 6 個月），
+      取代舊有的單一 12 個月規則。另注意指引<u>沒有</u>「BMS 延遲 30 天（Class 1）」這樣一條正面條文——30 天這個數字是由
+      Class 3: Harm 與「BMS &lt;30 天須續用 DAPT」兩條反推而來，二手來源常寫錯。
+    </div>
+    <ul class="pa-list" style="margin-top:8px;">
+      <li>BMS &lt;30 天或 DES &lt;3 個月需時效性手術者，<b>DAPT 應續用</b>，除非出血風險超過預防支架栓塞之效益（Class 1，B-NR）。</li>
+      <li>CHEST G38：支架置放於 3–12 個月內、行擇期手術者，建議<b>停 P2Y12 而續用 ASA</b>（conditional，very low）。</li>
+      <li>CHEST G40：仍需持續 DAPT 者，建議<b>延後擇期手術</b>（conditional，very low）。</li>
+      <li>2025 ACC/AHA ACS 指引<b>對非心臟手術時機無任何建議條文</b>，其 Table 8 僅適用 CABG，勿引用於此。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════ 風險分層與指引對照 ══════════════════ -->
+<div id="tab-ref" class="hidden">
+
+  <div class="card">
+    <div class="section-title">處置出血風險分級（CHEST 2022 經驗性分類）</div>
+    <table class="pa-cmp">
+      <thead><tr><th>等級</th><th>術式／處置</th></tr></thead>
+      <tbody>
+        <tr><td>高<br>≥2%</td><td><b>組織破壞範圍大的大手術</b>；癌症手術，尤其實質腫瘤切除（肺、食道、胃、大腸、肝膽、胰）；
+          大型骨科手術（含肩關節置換）；重建整形手術；大型胸腔手術；
+          <b>泌尿道或腸胃道手術，尤其有吻合口者</b>；經尿道前列腺切除、膀胱切除或腫瘤消融；腎切除、腎切片；
+          <b>大腸息肉切除</b>；<b>腸切除</b>；PEG 置放、ERCP；<b>血管豐富器官（腎、肝、脾）手術</b>；心臟、顱內或脊椎手術；
+          <b>任何時間 &gt;45 分鐘的大手術</b>；神經軸麻醉、硬脊膜外注射</td></tr>
+        <tr><td>低／中<br>0–2%</td><td>關節鏡；皮膚／淋巴結切片；手足部手術；冠狀動脈攝影；腸胃道內視鏡 ±切片；大腸鏡 ±切片；
+          腹式子宮切除；<b>腹腔鏡膽囊切除</b>；<b>腹壁疝氣修補</b>；痔瘡手術；支氣管鏡 ±切片</td></tr>
+        <tr><td>極低<br>約 0%</td><td>小型皮膚科處置；眼科（白內障）處置；小型牙科處置、洗牙、補牙；節律器或去顫器植入</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      <b>腹部手術橫跨兩層</b>：疝氣修補、腹腔鏡膽囊切除、腹式子宮切除、痔瘡手術屬低／中，
+      但<b>腸切除、任何腸胃道吻合、以及任何超過 45 分鐘的手術屬高</b>。
+      指引自己也點明這個模糊地帶：「同一術式（例如腹股溝疝氣修補）複雜度差異可能很大，
+      歸為低／中或高出血風險都有其道理。」——分層時請以實際的手術範圍與預期時間判斷，不要只看術式名稱。
+      <br>各層的藥動學意義：高＝中斷 4–5 個半衰期；低／中＝中斷 2–3 個半衰期；
+      極低＝<b>可在全劑量抗凝下執行</b>（可考慮停手術當天那一劑以避開尖峰）。
+    </div>
+    <div class="pa-src">CHEST 2022 Table 2（Suggested Risk Stratification for Procedural Bleed Risk, Based on ISTH Guidance Statements），30 天大出血風險。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">床邊處置：CHEST 沒收錄的部分（ISTH SSC）</div>
+    <div class="note" style="margin-bottom:8px;">
+      放腹水、放胸水、腰椎穿刺、中心靜脈導管、骨髓切片、攝護腺切片等常見床邊處置，
+      <b>CHEST 2022 的分級表完全沒有列入</b>。下表改用 ISTH SSC 的處置出血風險分級（Douketis 與 Spyropoulos 為共同作者）。
+      <b>這是另一套分類，不是 CHEST 的內容</b>，兩者不可混用。
+    </div>
+    <table class="pa-cmp">
+      <thead><tr><th>等級</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td>極低</td><td>放胸水、放腹水；骨髓抽吸 ±切片；關節抽吸／注射；甲狀腺細針抽吸；
+          非隧道式靜脈導管（含 PICC）；隧道式導管置放／移除；非隧道式腹腔或胸腔引流管；
+          胃鏡／大腸鏡 ±黏膜切片；無介入之 EUS</td></tr>
+        <tr><td>低／中</td><td>膽囊切除；疝氣修補（臍疝、腹股溝疝）；闌尾切除；&lt;1 cm 息肉內視鏡切除；
+          <b>未</b>做括約肌切開之 ERCP；經頸靜脈肝切片；隧道式腹腔或胸腔引流管；甲狀腺粗針切片</td></tr>
+        <tr><td>高</td><td>腰椎穿刺；硬脊膜外注射；實質器官切片（肝、肺、腎、腎上腺）；攝護腺切片；腎切片；
+          ≥1 cm 息肉內視鏡切除；<b>合併</b>括約肌切開之 ERCP；PEG／PEJ；EUS 併細針抽吸；EMR／ESD</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      <b>與 CHEST 的差異</b>：ISTH 會依大小或術式再細分，CHEST 則一律歸高——例如息肉切除與 ERCP，
+      ISTH 以「息肉 ≥1 cm」「有無括約肌切開」分層，CHEST 兩者皆逕列為高出血風險。
+      Thrombosis Canada 另有第三套分類（放胸水／腹水為極低、骨髓切片為低／中、攝護腺切片為高），亦不可標為 CHEST。
+    </div>
+    <div class="pa-src">ISTH SSC Guidance on Procedural Bleed Risk Stratification（Shaw、Abdulrehman 等）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">血栓栓塞風險分級（CHEST 2022 經驗性分類）</div>
+    <table class="pa-cmp">
+      <thead><tr><th>風險</th><th>機械瓣膜</th><th>心房顫動</th><th>靜脈血栓栓塞</th></tr></thead>
+      <tbody>
+        <tr><td>高<br>ATE &gt;10%/年<br>VTE &gt;10%/月</td>
+          <td>二尖瓣機械瓣<b>合併</b>重大中風危險因子；二尖瓣或主動脈瓣位之籠球型或傾斜盤型瓣；近 3 個月內中風或 TIA</td>
+          <td>CHA₂DS₂-VASc ≥7 或 CHADS₂ 5–6；近 3 個月內中風或 TIA；風濕性瓣膜性心臟病</td>
+          <td>近 3 個月（尤其 1 個月）內 VTE；重度血栓體質；抗磷脂質抗體；高 VTE 風險之活動性癌症</td></tr>
+        <tr><td>中<br>4–10%/年<br>4–10%/月</td>
+          <td><b>二尖瓣機械瓣，<u>無</u>重大中風危險因子</b>；雙葉式主動脈瓣置換<b>合併</b>重大中風危險因子</td>
+          <td>CHA₂DS₂-VASc 5–6 或 CHADS₂ 3–4</td>
+          <td>過去 3–12 個月內 VTE；復發性 VTE；非重度血栓體質；活動性或近期癌症病史</td></tr>
+        <tr><td>低<br>&lt;4%/年<br>&lt;2%/月</td>
+          <td>雙葉式主動脈瓣置換，<u>無</u>重大中風危險因子</td>
+          <td>CHA₂DS₂-VASc 1–4 或 CHADS₂ 0–2（且無中風或 TIA 病史）</td>
+          <td>12 個月以前之 VTE</td></tr>
+      </tbody>
+    </table>
+    <div class="pa-warn" style="margin-top:8px;">
+      <span class="h">此表已套用 2023 年 7 月勘誤</span>
+      原始印刷版<b>沒有</b>「二尖瓣機械瓣，無重大中風危險因子」這一列；缺了它，所有機械二尖瓣都會被讀成高風險。
+      指引作者 2023 年的演講投影片仍是勘誤前的版本，坊間許多轉載也是。<b>本表為勘誤後版本。</b>
+    </div>
+    <details class="def-box"><summary>何謂「重大中風危險因子」（Table 1 註 b 之定義）</summary>
+      <div class="box-inner">
+        <p style="font-size:12.5px; line-height:1.8; margin:0;">
+          心房顫動；<b>抗凝中斷期間曾發生中風／TIA</b>，或其他中風／TIA 病史；曾發生人工瓣血栓；風濕性心臟病；
+          高血壓；糖尿病；充血性心衰竭；<b>年齡 ≥75 歲</b>。
+        </p>
+        <p style="font-size:12.5px; line-height:1.8; margin:6px 0 0;">
+          「高 VTE 風險之活動性癌症」（註 c）指：胰臟癌、骨髓增生性疾病、原發性腦瘤、胃癌、食道癌。
+        </p>
+      </div>
+    </details>
+    <div class="pa-src">CHEST 2022 Table 1（Suggested Risk Stratification for Patient-specific Periprocedural Thromboembolism），含 2023 勘誤。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">DOAC 停藥：三份指引對照</div>
+    <table class="pa-cmp">
+      <thead><tr><th></th><th>CHEST 2022 / PAUSE</th><th>EHRA 2021</th><th>ASRA 5th 2025</th></tr></thead>
+      <tbody>
+        <tr><td>計量單位</td><td>省略的<b>天數</b></td><td>距最後一劑的<b>小時數</b></td><td>距最後一劑的<b>小時數</b></td></tr>
+        <tr><td>適用情境</td><td>一般擇期手術／處置</td><td>一般擇期手術／處置</td><td><b>僅限</b>神經軸／深部叢或周邊神經阻斷</td></tr>
+        <tr><td>腎功能分層</td><td><b>僅</b> dabigatran</td><td><b>四種 DOAC 全部</b></td><td>dabigatran；rivaroxaban 低劑量</td></tr>
+        <tr><td>Xa 抑制劑<br>高出血風險</td><td class="num">省略 2 天（約 60–68 小時）</td><td class="num"><b>≥48 小時</b></td><td class="num"><b>≥72 小時</b>（高劑量）</td></tr>
+        <tr><td>Dabigatran<br>高風險 CrCl 30–49</td><td class="num">省略 4 天（約 110 小時）</td><td class="num">≥96 小時</td><td class="num">120 小時</td></tr>
+        <tr><td>極低風險處置</td><td>Fig. 2 未設此列</td><td>於<b>谷值</b>執行，不中斷</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      整體而言 <b>EHRA 對 Xa 抑制劑較寬鬆</b>（高風險 ≥48 小時 vs CHEST 約 72 小時），而 <b>ASRA 對神經軸最嚴格</b>。
+      EHRA 原文亦明言各學會方案不同，建議使用者對照自身醫療體系採用之版本。
+      PAUSE-2 先導隨機試驗即是直接比較 ASRA 的 3 天與 PAUSE 的 2 天方案，兩組術前殘餘藥物濃度並無顯著差異
+      （平均 22.8 vs 23.5 ng/mL）。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">EHRA 2021：距最後一劑之最短間隔（小時）</div>
+    <table class="pa-cmp">
+      <thead><tr><th>CrCl</th><th>Dabigatran 低風險</th><th>Dabigatran 高風險</th><th>Xa 抑制劑 低風險</th><th>Xa 抑制劑 高風險</th></tr></thead>
+      <tbody>
+        <tr><td>≥80</td><td class="num">≥24</td><td class="num">≥48</td><td class="num">≥24</td><td class="num">≥48</td></tr>
+        <tr><td>50–79</td><td class="num">≥36</td><td class="num">≥72</td><td class="num">≥24</td><td class="num">≥48</td></tr>
+        <tr><td>30–49</td><td class="num">≥48</td><td class="num">≥96</td><td class="num">≥24</td><td class="num">≥48</td></tr>
+        <tr><td>15–29</td><td class="num">不建議使用</td><td class="num">不建議使用</td><td class="num">≥36</td><td class="num">≥48</td></tr>
+        <tr class="dt-warn"><td>&lt;15</td><td colspan="4">無正式使用適應症</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:6px;">
+      Xa 抑制劑 = apixaban／edoxaban／rivaroxaban。EHRA 註記：有藥物蓄積風險者（腎功能不全、高齡、併用藥物）
+      可考慮提早 12–24 小時停藥；<b>術後低風險 24 小時、高風險 48（–72）小時恢復全劑量</b>；不建議圍手術期以 LMWH／UFH 橋接。
+    </div>
+    <div class="pa-src">Steffel 2021 Europace, Figure 14（PMID 33895845）。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ASRA 第 5 版（2025）：神經軸麻醉</div>
+    <table class="pa-cmp">
+      <thead><tr><th>藥物</th><th>穿刺前停藥</th><th>導管移除與術後首劑之間隔</th></tr></thead>
+      <tbody>
+        <tr><td>Apixaban 高劑量</td><td class="num">≥72 小時</td><td class="num">≥24 小時</td></tr>
+        <tr><td>Apixaban 低劑量</td><td class="num">≥36 小時</td><td class="num">≥6 小時</td></tr>
+        <tr><td>Rivaroxaban 高劑量</td><td class="num">≥72 小時</td><td class="num">≥24 小時</td></tr>
+        <tr><td>Rivaroxaban 低劑量</td><td class="num">≥24 小時（CrCl &lt;30 為 30 小時）</td><td class="num">≥6 小時</td></tr>
+        <tr><td>Edoxaban 高劑量</td><td class="num">≥72 小時</td><td class="num">≥24 小時</td></tr>
+        <tr><td>Dabigatran 高劑量</td><td class="num">CrCl ≥50：≥72 小時<br>CrCl 30–49：120 小時</td><td class="num">≥24 小時</td></tr>
+        <tr><td>Dabigatran 低劑量</td><td class="num">≥48 小時</td><td class="num">≥6 小時</td></tr>
+        <tr><td>Warfarin</td><td class="num">停 5 天，INR 需正常化</td><td class="num">導管於 INR &lt;1.5 時移除</td></tr>
+      </tbody>
+    </table>
+    <ul class="pa-list" style="margin-top:8px;">
+      <li>DOAC 各項建議皆為 <b>grade IIC</b>；warfarin 停 5 天為 grade IB。</li>
+      <li>Dabigatran <b>CrCl &lt;30 不建議施行阻斷</b>，除非取得藥物濃度且 &lt;30 ng/mL。</li>
+      <li>第 5 版新增：血中濃度 <b>&lt;30 ng/mL</b> 或 anti-Xa <b>≤0.1 IU/mL</b> 可作為替代判準。
+        <b>PT／aPTT 不可</b>用於評估 DOAC 效果。</li>
+      <li>第 5 版將「prophylactic／therapeutic」用語改為<b>「低劑量／高劑量」</b>，因同一絕對劑量在不同病人可能意義不同。</li>
+      <li>導管移除後神經學評估應持續<b>至少 48 小時</b>。</li>
+    </ul>
+    <div class="pa-src">Kopp 2025 Reg Anesth Pain Med（PMID 39880411）。該文尚未指定卷期頁碼，請以 DOI／PMID 引用。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">本頁未涵蓋 · 使用前請知悉</div>
+    <ul class="pa-list">
+      <li><b>緊急／亟需手術</b>：停藥時間不足時之處置與反轉劑使用（idarucizumab、andexanet alfa、PCC）不在範圍內。</li>
+      <li><b>ESC 2024 心房顫動指引</b>對擇期非心臟手術<u>無</u>停藥時距條文，其圍手術期內容僅涉及導管電燒（建議不中斷抗凝）；
+        該指引在此議題上轉引 EHRA 2021。</li>
+      <li><b>2017 年 ACC Expert Consensus Decision Pathway</b>（PMID 28081965）為「<b>非瓣膜性</b>心房顫動」專用文件，
+        其定義即排除機械瓣、生物瓣、風濕性二尖瓣狹窄與二尖瓣修補，<b>不可作為機械瓣膜的依據</b>；
+        且早於 PAUSE 與 CHEST 2022，內容已落後，本頁未採用。查無所謂「ACC 2024 圍手術期抗凝簡明臨床指引」此一文件。</li>
+      <li><b>機械瓣膜的橋接，CHEST 與 ACC/AHA 瓣膜性心臟病指引立場相左</b>（詳見抗凝血劑分頁之輸出）；
+        本頁以 CHEST 為主軸並標示分歧，實際執行請與心臟科共同決策。</li>
+      <li>EHRA 現行版仍為 <b>2021 年第 4 版</b>，2022 年後未見新版。</li>
+      <li>本頁未納入抗凝血劑與神經軸以外之區域麻醉、UFH／LMWH 之完整 ASRA 時距、fondaparinux，以及兒科族群。</li>
+    </ul>
+  </div>
+</div>
+
+  <footer class="tool-footer">
+    CHEST 2022 — <a href="https://pubmed.ncbi.nlm.nih.gov/35964704/" target="_blank" rel="noopener" class="ref-link">Douketis JD, et al. Chest. 2022;162(5):e207-e243.</a><br>
+    PAUSE — <a href="https://pubmed.ncbi.nlm.nih.gov/31380891/" target="_blank" rel="noopener" class="ref-link">Douketis JD, et al. JAMA Intern Med. 2019;179(11):1469-1478.</a><br>
+    BRIDGE — <a href="https://pubmed.ncbi.nlm.nih.gov/26095867/" target="_blank" rel="noopener" class="ref-link">Douketis JD, et al. N Engl J Med. 2015;373(9):823-833.</a><br>
+    EHRA 2021 — <a href="https://pubmed.ncbi.nlm.nih.gov/33895845/" target="_blank" rel="noopener" class="ref-link">Steffel J, et al. Europace. 2021;23(10):1612-1676.</a><br>
+    ASRA 5th — <a href="https://pubmed.ncbi.nlm.nih.gov/39880411/" target="_blank" rel="noopener" class="ref-link">Kopp SL, et al. Reg Anesth Pain Med. 2025. doi:10.1136/rapm-2024-105766.</a><br>
+    2024 ACC/AHA 圍手術期 — <a href="https://pubmed.ncbi.nlm.nih.gov/39316661/" target="_blank" rel="noopener" class="ref-link">Thompson A, et al. Circulation. 2024;150(19):e351-e442.</a><br>
+    POISE-2 — <a href="https://pubmed.ncbi.nlm.nih.gov/24679062/" target="_blank" rel="noopener" class="ref-link">Devereaux PJ, et al. N Engl J Med. 2014;370(16):1494-1503.</a>
+  </footer>
+</div>
+</div>
+
+<script>
+/* ─────────── 分頁 ─────────── */
+var PA_TABS=['oac','ap','ref'];
+function paTab(key,skipHash){
+  PA_TABS.forEach(function(t){
+    var pane=document.getElementById('tab-'+t);
+    if(pane) pane.classList.toggle('hidden',t!==key);
+  });
+  document.querySelectorAll('#pa_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('data-tab')===key);
+  });
+  if(!skipHash) history.replaceState(null,'','#tab='+key);
+}
+
+/* ─────────── CrCl ─────────── */
+function paCrCl(){
+  var man=parseFloat(document.getElementById('pa_crcl_manual').value);
+  if(!isNaN(man)&&man>0){
+    document.getElementById('pa_crcl_v').textContent=Math.round(man);
+    document.getElementById('pa_crcl_n').textContent='使用手動輸入值';
+    return man;
+  }
+  var age=parseFloat(document.getElementById('pa_age').value),
+      wt =parseFloat(document.getElementById('pa_wt').value),
+      cr =parseFloat(document.getElementById('pa_cr').value),
+      f  =document.getElementById('pa_sex').value==='F'?0.85:1;
+  if(isNaN(age)||isNaN(wt)||isNaN(cr)||cr<=0||age<=0||wt<=0){
+    document.getElementById('pa_crcl_v').textContent='—';
+    document.getElementById('pa_crcl_n').textContent='輸入年齡、體重、Cr 後自動計算；亦可直接填入右欄覆寫';
+    return NaN;
+  }
+  var v=((140-age)*wt*f)/(72*cr);
+  document.getElementById('pa_crcl_v').textContent=v.toFixed(0);
+  document.getElementById('pa_crcl_n').textContent='Cockcroft-Gault；體重採實際體重，肥胖或水腫者宜另行判斷';
+  return v;
+}
+
+/* ─────────── DOAC 停藥表（CHEST 2022 Figure 2 / PAUSE） ─────────── */
+/* 值＝術前省略劑量的天數；最後一劑日 = -(omit+1) */
+function paOmitDays(drug,bleed,crcl){
+  if(bleed==='min') return null;                       // Fig.2 未設極低風險列
+  var high = (bleed==='high');
+  if(drug==='dabigatran'){
+    if(isNaN(crcl)) return null;                       // 需先知道腎功能
+    if(crcl<50) return high?4:2;
+    return high?2:1;
+  }
+  return high?2:1;                                      // apixaban / rivaroxaban / edoxaban
+}
+
+/* ─────────── EHRA 2021 Figure 14 ─────────── */
+function paEhraHours(drug,bleed,crcl){
+  if(isNaN(crcl)) return null;
+  var high=(bleed==='high');
+  if(crcl<15) return '無正式使用適應症';
+  if(drug==='dabigatran'){
+    if(crcl<30) return '此腎功能不建議使用 dabigatran';
+    if(crcl<50) return high?'≥96 小時':'≥48 小時';
+    if(crcl<80) return high?'≥72 小時':'≥36 小時';
+    return high?'≥48 小時':'≥24 小時';
+  }
+  if(crcl<30) return high?'≥48 小時':'≥36 小時';
+  return high?'≥48 小時':'≥24 小時';
+}
+
+/* ─────────── ASRA 5th（神經軸，高劑量＝治療劑量） ─────────── */
+function paAsra(drug,crcl){
+  if(drug==='warfarin') return '停 5 天且 INR 正常化後方可穿刺（grade IB）；導管於 INR &lt;1.5 時移除。';
+  if(drug==='dabigatran'){
+    if(!isNaN(crcl)&&crcl<30) return '<b>CrCl &lt;30 不建議施行神經軸阻斷</b>，除非取得血中濃度且 &lt;30 ng/mL。';
+    if(!isNaN(crcl)&&crcl<50) return '穿刺前需停 <b>120 小時</b>（CrCl 30–49，高劑量）；導管移除與術後首劑間隔 ≥24 小時。';
+    return '穿刺前需停 <b>≥72 小時</b>（CrCl ≥50，高劑量）；導管移除與術後首劑間隔 ≥24 小時。';
+  }
+  return '穿刺前需停 <b>≥72 小時</b>（高劑量）；導管移除與術後首劑間隔 ≥24 小時。'
+       + (drug==='rivaroxaban'?'（低劑量為 ≥24 小時，CrCl &lt;30 時 30 小時）':'');
+}
+
+/* ─────────── 日曆條 ─────────── */
+function paCalendar(omit){
+  if(omit===null) return '';
+  var days=[-6,-5,-4,-3,-2,-1,0,1,2,3,4], cells='', lbls='';
+  days.forEach(function(d){
+    var cls='pa-cal-c', txt=(d===0?'手術':(d>0?'+'+d:d));
+    if(d===0) cls+=' op';
+    else if(d<0 && d>=-omit) cls+=' off';
+    else if(d<0) cls+=' on';
+    cells+='<div class="'+cls+'">'+txt+'</div>';
+  });
+  return '<div class="pa-cal-lbl">術前用藥日曆（橙色＝當日不給藥）</div><div class="pa-cal-r">'+cells+'</div>';
+}
+
+/* ─────────── 主計算 ─────────── */
+function paCalc(){
+  var crcl  = paCrCl(),
+      drug  = document.getElementById('pa_drug').value,
+      bleed = document.getElementById('pa_bleed').value,
+      ind   = document.getElementById('pa_ind').value,
+      neur  = document.getElementById('pa_neuraxial').checked;
+
+  /* 風險因子區塊切換 */
+  ['af','mhv','vte'].forEach(function(k){
+    document.getElementById('pa_rf_'+k).classList.toggle('hidden',k!==ind);
+  });
+
+  var hiRisk=false;
+  document.querySelectorAll('.pa-rf').forEach(function(cb){
+    if(cb.dataset.ind===ind && cb.checked && cb.dataset.hi==='1') hiRisk=true;
+  });
+  var anyRf=false;
+  document.querySelectorAll('.pa-rf').forEach(function(cb){
+    if(cb.dataset.ind===ind && cb.checked) anyRf=true;
+  });
+
+  var elStop=document.getElementById('pa_stop'), elStopD=document.getElementById('pa_stop_d'),
+      elBr  =document.getElementById('pa_bridge'), elBrD=document.getElementById('pa_bridge_d'),
+      elRes =document.getElementById('pa_resume'), elResD=document.getElementById('pa_resume_d'),
+      elAlt =document.getElementById('pa_alt');
+
+  /* ── Warfarin ── */
+  if(drug==='warfarin'){
+    if(bleed==='min'){
+      elStop.innerHTML='多數情況不需中斷';
+      elStopD.innerHTML='CHEST G10：牙科處置<b>建議續用 warfarin</b>（conditional，low）——但多顆拔牙或牙齦狀況不佳、'
+        +'預期出血較多者，仍可能以中斷為宜。<br>CHEST G14：節律器或 ICD 植入<b>建議續用 warfarin，且不橋接</b>'
+        +'（<b>strong</b>，moderate）——前提為手術當下 INR &lt;3.0。此為全份指引僅有的兩條 strong 建議之一。';
+      document.getElementById('pa_cal').innerHTML='';
+    }else{
+      elStop.innerHTML='術前 <b>≥5 天</b>停用';
+      elStopD.innerHTML='CHEST G1（conditional，證據來自 BRIDGE 與 PERIOP-2）。高齡合併多重共病、'
+        +'極低劑量 warfarin 或目標 INR 較高者可能需要更久。<br>手術當日應確認 INR；'
+        +'非 warfarin 之其他 VKA 半衰期不同，停藥時距需另計。';
+      document.getElementById('pa_cal').innerHTML=paCalendar(5);
+    }
+
+    if(bleed==='min'){
+      elBr.innerHTML='不需要 <span class="pa-flag no">NO BRIDGING</span>';
+      elBrD.innerHTML='未中斷抗凝，自然不需橋接。';
+    }else if(hiRisk){
+      elBr.innerHTML='可考慮橋接 <span class="pa-flag yes">SELECTED</span>';
+      elBrD.innerHTML='<b>注意：這是例外，不是通則。</b>CHEST 對三種適應症的主建議<u>全部是不橋接</u>'
+        +'（機械瓣 G5 conditional、心房顫動 G6 <b>strong</b>、單純 VTE G7 conditional）。'
+        +'但其實作註記指出，符合下列高血栓風險特徵的<b>選擇性病人</b>建議橋接——您勾選的項目正落在其中。'
+        +'<br><br><b>LMWH 全劑量方案</b>：enoxaparin 1 mg/kg bid 或 1.5 mg/kg qd；dalteparin 100 IU/kg bid 或 200 IU/kg qd。'
+        +'<b>最後一劑於術前一日（D-1）上午給，且僅給每日總量的一半。</b>'
+        +'<br>術後：先以低劑量 LMWH（enoxaparin 40 mg qd 或 dalteparin 5000 IU qd）作 VTE 預防 24–72 小時，'
+        +'全劑量 LMWH 於術後 2–3 天恢復。';
+    }else{
+      elBr.innerHTML='不建議橋接 <span class="pa-flag no">NO BRIDGING</span>';
+      var strength = (ind==='af')
+        ? 'CHEST G6：心房顫動病人<b>建議不橋接（strong recommendation）</b>——這是全份指引 44 條建議中僅有的兩條 strong 之一。'
+        : (ind==='mhv'
+          ? 'CHEST G5：機械瓣膜病人<b>建議不橋接</b>（conditional，very low certainty）。'
+          : 'CHEST G7：以 VTE 為單一適應症者<b>建議不橋接</b>（conditional，very low certainty）。');
+      elBrD.innerHTML=strength
+        +'<br><br>依據 BRIDGE 隨機試驗（n=1884）：不橋接組動脈血栓栓塞 0.4% vs 橋接組 0.3%'
+        +'（不劣性 P=0.01），而大出血 <b>1.3% vs 3.2%</b>（RR 0.41, 95% CI 0.20–0.78, P=0.005）——'
+        +'<b>橋接並未減少血栓，卻使大出血增為兩倍以上。</b>'
+        +(ind!=='af'?'<br><span class="pa-src">但請注意：BRIDGE 只收心房顫動，<b>排除機械瓣膜與近期中風／TIA 者</b>，'
+          +'此結果不可直接外推至機械瓣。機械瓣的「不橋接」建議證據等級低得多。</span>':'')
+        +(ind==='mhv'?'<br><br>指引作者對機械瓣仍傾向不橋接的理由：整體證據顯示橋接不減少血栓卻增加出血；'
+          +'且若採「二尖瓣＋危險因子就橋接」，實務上幾乎所有二尖瓣病人都會被橋接。'
+          +'<br><br><b>⚠ 心臟科可能不同意。</b>ACC/AHA <b>瓣膜性心臟病指引</b>（2020，承襲 2017 focused update）'
+          +'認為下列情況<b>橋接是合理的（Class 2a，LOE C）</b>：機械二尖瓣置換（不論有無其他危險因子）、'
+          +'機械主動脈瓣<u>合併</u>血栓危險因子、或舊世代機械瓣。'
+          +'<br>與 CHEST 的兩處硬碰硬：<b>(1)</b> 機械主動脈瓣＋血栓危險因子——ACC/AHA 橋接，'
+          +'而 CHEST 的例外清單只涵蓋二尖瓣、舊世代瓣、近 3 個月內事件、過去圍手術期事件，'
+          +'因此一位「雙葉式主動脈瓣＋3 個月以上的舊中風」病人落在 CHEST 例外之外；'
+          +'<b>(2)</b> 機械二尖瓣置換而無其他危險因子——ACC/AHA 橋接，CHEST 不橋接。'
+          +'<br><span class="pa-src">雙方證據都很弱：CHEST 此條是全份指引最低等級（conditional／very low），'
+          +'ACC/AHA 該條亦僅 Grade 2C。此處請與心臟科共同決策，不要單方面依本頁執行。'
+          +'另注意 2017 ACC Expert Consensus Decision Pathway 是「<b>非瓣膜性</b>心房顫動」文件，'
+          +'定義上排除機械瓣，不能拿來當機械瓣的依據。</span>':'');
+    }
+
+    if(bleed==='min'){
+      elRes.innerHTML='不適用（未中斷）';
+      elResD.innerHTML='本情境未停用 warfarin，故無重啟問題；僅需確認手術當下 INR 在可接受範圍'
+        +'（節律器／ICD 為 INR &lt;3.0）。';
+    }else{
+      elRes.innerHTML='術後 <b>24 小時內</b>恢復';
+      elResD.innerHTML='CHEST Recommendation 2（conditional，low）：建議於術後 24 小時內恢復 warfarin，'
+        +'而非延後至超過 24 小時。實作上「24 小時內」對多數病人即代表<b>手術當晚</b>恢復，'
+        +'以原本的維持劑量給予（<b>不需 loading，指引明確否定加倍劑量的做法</b>）。'
+        +'<br>warfarin 需 2–3 天才有部分抗凝效果、4–8 天達完全效果，故早期恢復不會立即增加出血。'
+        +'止血不確實、預期還要再次介入、或無法口服者則應延後。';
+    }
+
+    elAlt.innerHTML= neur
+      ? '<b>ASRA 第 5 版（神經軸）</b>：'+paAsra('warfarin',crcl)
+      : '<span class="pa-src">EHRA 與 ASRA 之對照表僅適用於 DOAC 與神經軸情境。</span>';
+    return;
+  }
+
+  /* ── DOAC ── */
+  var omit=paOmitDays(drug,bleed,crcl);
+
+  if(bleed==='min'){
+    elStop.innerHTML='不需中斷';
+    elStopD.innerHTML='CHEST Table 2 對極低出血風險層的註腳：<b>此類處置可在全劑量抗凝下安全執行</b>，'
+      +'惟「可考慮停掉手術當天那一劑 DOAC，以避開藥物尖峰效應」。'
+      +'<br><span class="pa-src">注意 Figure 2 的日曆圖只有高與低／中兩列，沒有極低風險列——方案來自 Table 2 註腳，不是 Figure 2。</span>'
+      +'<br><br><b>EHRA 2021</b> 的做法一致但更明確：<b>不中斷，於藥物谷值執行</b>'
+      +'（dabigatran 距最後一劑 12 小時、Xa 抑制劑 24 小時），當日或最遲隔日恢復。';
+    document.getElementById('pa_cal').innerHTML='';
+  }else if(omit===null){
+    elStop.innerHTML='請先輸入 CrCl';
+    elStopD.innerHTML='Dabigatran 的停藥天數依 CrCl 是否 ≥50 mL/min 而不同，需先取得腎功能。';
+    document.getElementById('pa_cal').innerHTML='';
+  }else{
+    var lastDose=omit+1;
+    elStop.innerHTML='術前省略 <b>'+omit+'</b> 天劑量';
+    elStopD.innerHTML='亦即<b>最後一劑落在術前第 '+lastDose+' 天（D-'+lastDose+'）</b>，'
+      +'手術當日（D-0）不給藥。'
+      +'<br><span class="pa-src">兩種寫法指的是同一件事：CHEST／PAUSE 說「省略 N 天」，'
+      +'BSG/ESGE 等文件說「最後一劑在術前第 N+1 天」。務必確認對方用的是哪一種，否則會差整整一天。</span>'
+      +(drug==='edoxaban'?'<br><br><b>Edoxaban 注意</b>：PAUSE 試驗<u>未納入</u> edoxaban（僅 apixaban、dabigatran、rivaroxaban）。'
+        +'CHEST 2022 Figure 2 有列入 edoxaban，採與其他 Xa 抑制劑相同的型式，'
+        +'但其建議屬<b>外推</b>而非試驗實證，證據等級雖與其他藥同列 conditional／very low，實則更薄。':'')
+      +((drug==='dabigatran'&&!isNaN(crcl)&&crcl<50)?'<br><br><span class="pa-src"><b>CHEST 文件內部不一致</b>：'
+        +'Recommendation 23 與 Figure 2 對 CrCl &lt;50 者為低／中風險停 2 天、高風險停 4 天（本頁採用，'
+        +'與 PAUSE 原始試驗方案一致）；但同份指引的敘述段落寫「需中斷 3 至 4 整天」，與 2 天那一格無法調和，'
+        +'2023 年勘誤亦未處理。另有二手摘要（AFP 2023）寫低／中風險 3 天，與原文牴觸，勿採用。</span>':'')
+      +(bleed==='high'?'<br><br>為何不是 3 天？指引作者的說明：3 天中斷無臨床資料（純屬專家意見）；'
+        +'2 天中斷後 98.8% 的人殘餘藥物濃度 &lt;50 ng/mL；2 天中斷相當於 60–68 小時，約 5 個半衰期。':'');
+    document.getElementById('pa_cal').innerHTML=paCalendar(omit);
+  }
+
+  elBr.innerHTML='不需要 <span class="pa-flag no">NO BRIDGING</span>';
+  elBrD.innerHTML='CHEST G26：需中斷 DOAC 者<b>建議不做圍手術期肝素橋接</b>（conditional，very low certainty）。'
+    +'DOAC 起效與消退都快，本身即具備橋接的藥動特性。EHRA 2021 亦持相同立場。'
+    +'<br><br>CHEST G28：<b>不建議常規檢測術前 DOAC 濃度</b>來指引處置（conditional，very low）；'
+    +'僅在非擇期情境（如急需手術、須評估是否反轉）才考慮。';
+
+  if(bleed==='min'){
+    elRes.innerHTML='當日或隔日恢復（EHRA）';
+    elResD.innerHTML='EHRA：極低風險處置於谷值執行者，當日或最遲隔日恢復。';
+  }else if(bleed==='high'){
+    elRes.innerHTML='術後 <b>48–72 小時</b>';
+    elResD.innerHTML='CHEST Figure 2 註腳。高 VTE 風險之選擇性病人，可於術後前 48–72 小時先給'
+      +'低劑量抗凝（enoxaparin 40 mg qd 或 dalteparin 5000 IU qd）作預防，再轉回全劑量 DOAC。'
+      +'<br>恢復的前提是<b>外科止血確實</b>；此處寧可再等，不要照表操課。';
+  }else{
+    elRes.innerHTML='術後 <b>約 24 小時</b>';
+    elResD.innerHTML='CHEST Figure 2 註腳。恢復的前提是外科止血確實。';
+  }
+
+  var alt='<b>EHRA 2021</b>（以小時計，全 DOAC 依 CrCl 分段）：';
+  var eh=paEhraHours(drug,bleed,crcl);
+  alt += eh ? '<b>'+eh+'</b>' : '<span class="pa-src">需先輸入 CrCl</span>';
+  if(bleed==='high' && drug!=='dabigatran'){
+    alt += '　<span class="pa-src">此格 EHRA 僅要求 ≥48 小時，較 CHEST 的省略 2 天（約 60–72 小時）寬鬆約一天。</span>';
+  }else if(bleed==='high' && drug==='dabigatran' && !isNaN(crcl) && crcl<50){
+    alt += '　<span class="pa-src">此格 EHRA（≥96 小時）較 CHEST 的省略 4 天（約 110 小時）略寬鬆。</span>';
+  }
+  if(!isNaN(crcl) && crcl<30){
+    alt += '<br><span class="pa-src"><b>CrCl &lt;30 警語</b>：CHEST 未對 Xa 抑制劑訂定腎功能分段，'
+        +  '但指引正文載明「部分病人可能需要更長的中斷時間，不論使用何種 DOAC」，並明確點名'
+        +  '<b>嚴重腎功能不全（CrCl &lt;30）</b>、肝功能不全，以及併用 CYP3A4 或 P-glycoprotein 抑制劑者。'
+        +  '此族群請個別判斷，勿逕照上方天數執行。</span>';
+  }
+  if(neur){
+    alt += '<br><br><b>ASRA 第 5 版（神經軸，grade IIC）</b>：'+paAsra(drug,crcl)
+        +  '<br><span class="pa-src">CHEST 把神經軸麻醉歸為高出血風險（停 2 天），ASRA 要求 ≥72 小時——'
+        +  '本例兩者不一致，麻醉科的判準通常是 ASRA。PAUSE-2 先導試驗直接比較兩方案，'
+        +  '術前殘餘濃度平均 22.8（ASRA 3 天）vs 23.5 ng/mL（PAUSE 2 天），無顯著差異。</span>';
+  }
+  elAlt.innerHTML=alt;
+}
+
+/* ─────────── 事件 ─────────── */
+document.querySelectorAll('#view-periop-anticoag input, #view-periop-anticoag select')
+  .forEach(function(el){ el.addEventListener('input',paCalc); el.addEventListener('change',paCalc); });
+
+(function(){
+  var m=location.hash.match(/#tab=(\w+)/);
+  if(m && PA_TABS.indexOf(m[1])>=0) paTab(m[1],true);
+})();
+paCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
