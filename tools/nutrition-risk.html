@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>營養風險評估 · 臨床計分工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<style>
+  .nu-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .nu-warn b{color:var(--accent2);}
+  .nu-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+
+  .nu-grp-h{display:flex; align-items:baseline; gap:8px; margin:14px 0 2px; padding-bottom:4px;
+        border-bottom:2px solid var(--accent-soft);}
+  .nu-grp-h:first-child{margin-top:0;}
+  .nu-grp-n{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--accent);
+        text-transform:uppercase;}
+  .nu-grp-c{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+
+  .nu-sel{display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap; padding:10px 0; border-bottom:1px dotted var(--line);}
+  .nu-sel:last-child{border-bottom:none;}
+  .nu-sel>.k{font-size:13.5px; min-width:132px; padding-top:7px;}
+  .nu-sel select{flex:1; min-width:210px; padding:8px 10px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13.5px;}
+  .nu-sel .d{width:100%; font-size:11.5px; color:var(--muted); line-height:1.65;}
+  @media(max-width:520px){ .nu-sel>.k{min-width:100%; padding-top:0;} }
+
+  .nu-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
+  .nu-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .nu-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:5px;}
+  .nu-out-v{font-family:var(--serif); font-size:19px; font-weight:600; line-height:1.4;}
+  .nu-out-d{font-size:12.5px; line-height:1.75; margin-top:6px; opacity:.9;}
+  .nu-out-d ul{margin:4px 0 0; padding-left:17px;}
+  .nu-out-d li{margin-bottom:3px;}
+  .nu-tag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
+  .nu-tag.ok{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .nu-tag.mid{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .nu-tag.hi{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+
+  .nu-two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:620px){ .nu-two{grid-template-columns:1fr;} }
+  .nu-box{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:2px; padding:11px 13px;}
+  .nu-box-n{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; opacity:.66; margin-bottom:4px;}
+
+  table.nu-t{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 4px;}
+  table.nu-t th,table.nu-t td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  table.nu-t thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.nu-t td.num{font-family:var(--mono);}
+  table.nu-t td:first-child{font-family:var(--mono); font-weight:700; white-space:nowrap;}
+  table.nu-t tr.warn td{color:var(--accent2);}
+  .nu-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); letter-spacing:.02em;}
+  .nu-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
+  .nu-list li{margin-bottom:3px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-nutrition-risk">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Perioperative Scoring Tool</div>
+      <h1>營養風險評估</h1>
+      <div class="sub">NRS-2002 篩檢 · GLIM 診斷 · 再餵食症候群風險（ESPEN 外科指引 2025）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-nutrition-risk'">← 返回主選單</button>
+  </div>
+
+  <div class="tab-row" id="nu_tabs">
+    <button class="tab-btn active" data-tab="nrs"  onclick="nuTab('nrs')">NRS-2002 篩檢</button>
+    <button class="tab-btn"        data-tab="glim" onclick="nuTab('glim')">GLIM 診斷</button>
+    <button class="tab-btn"        data-tab="rf"   onclick="nuTab('rf')">再餵食風險</button>
+    <button class="tab-btn"        data-tab="surg" onclick="nuTab('surg')">外科指引</button>
+  </div>
+
+<!-- ══════════════════ NRS-2002 ══════════════════ -->
+<div id="tab-nrs">
+  <div class="nu-warn">
+    <span class="h">篩檢，不是診斷</span>
+    NRS-2002 是 ESPEN 指定的<b>院內篩檢</b>工具（社區用 MUST、老年用 MNA），回答的是「這個人有沒有營養風險、要不要啟動照護計畫」。
+    要下「營養不良」這個<b>診斷</b>請用 GLIM 分頁。
+  </div>
+
+  <div class="card">
+    <div class="section-title">初步篩檢 Initial screening</div>
+    <div id="nrs_init">
+      <label class="item"><input type="checkbox" class="nrs-i"> BMI &lt;20.5？ <span class="unit">(Is BMI &lt;20.5?)</span></label>
+      <label class="item"><input type="checkbox" class="nrs-i"> 最近 3 個月內體重下降？ <span class="unit">(Weight loss within the last 3 months?)</span></label>
+      <label class="item"><input type="checkbox" class="nrs-i"> 最近 1 週飲食攝取減少？ <span class="unit">(Reduced dietary intake in the last week?)</span></label>
+      <label class="item"><input type="checkbox" class="nrs-i"> 病情嚴重？ <span class="unit">(Severely ill, e.g. in intensive therapy?)</span></label>
+    </div>
+    <div class="note" style="margin-top:8px;">
+      <b>任一項為「是」</b>即進行下方最終篩檢。<b>全部為「否」</b>則每週重新篩檢一次；
+      若病人<b>已排定接受大手術</b>，仍應考慮預防性的營養照護計畫以避免進入風險狀態。
+    </div>
+  </div>
+
+  <div class="card" id="nrs_final_card">
+    <div class="section-title">最終篩檢 Final screening</div>
+
+    <div class="nu-sel">
+      <span class="k">營養狀態受損</span>
+      <select id="nrs_nut">
+        <option value="0">無 Absent（0 分）— 正常營養狀態</option>
+        <option value="1">輕度 Mild（1 分）</option>
+        <option value="2">中度 Moderate（2 分）</option>
+        <option value="3">重度 Severe（3 分）</option>
+      </select>
+      <span class="d" id="nrs_nut_d"></span>
+    </div>
+
+    <div class="nu-sel">
+      <span class="k">疾病嚴重度<br><span class="nu-src">≈ 需求增加程度</span></span>
+      <select id="nrs_dis">
+        <option value="0">無 Absent（0 分）— 正常營養需求</option>
+        <option value="1">輕度 Mild（1 分）</option>
+        <option value="2">中度 Moderate（2 分）</option>
+        <option value="3">重度 Severe（3 分）</option>
+      </select>
+      <span class="d" id="nrs_dis_d"></span>
+    </div>
+
+    <div class="nu-sel">
+      <span class="k">年齡</span>
+      <select id="nrs_age">
+        <option value="0">&lt;70 歲（不加分）</option>
+        <option value="1">≥70 歲（加 1 分）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="nu-out">
+      <div class="nu-out-h">NRS-2002 總分（年齡校正後）</div>
+      <div class="metric-value big" id="nrs_total">0</div>
+      <div class="nu-out-v" id="nrs_band">—</div>
+    </div>
+    <div class="nu-out">
+      <div class="nu-out-h">判讀</div>
+      <div class="nu-out-d" id="nrs_d"></div>
+    </div>
+    <div class="risk-note">
+      分數 ≥3 即為<b>有營養風險</b>，應啟動營養照護計畫。原文列出的四種達標組合：
+      重度營養不良（3+0）、重度疾病（0+3）、中度營養不良＋輕度疾病（2+1）、輕度營養不良＋中度疾病（1+2）。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">疾病嚴重度的判準原型（原文 prototypes）</div>
+    <div class="note" style="margin-bottom:8px;">這段是實際判斷的依據，卻最常被二手表格刪掉——診斷清單只是例示，真正的標準是下面三段描述。</div>
+    <table class="nu-t">
+      <thead><tr><th>分數</th><th>原型描述</th><th>例示診斷</th></tr></thead>
+      <tbody>
+        <tr><td>1 分</td>
+          <td>慢性病病人因併發症入院。病人虛弱但仍可規律下床。<b>蛋白質需求增加，但多數情況下可由口服飲食或營養補充品滿足。</b></td>
+          <td>髖部骨折*；慢性病併急性併發症：肝硬化*、慢性阻塞性肺病*；<i>慢性血液透析、糖尿病、腫瘤</i></td></tr>
+        <tr><td>2 分</td>
+          <td>因病臥床，例如<b>大型腹部手術後</b>。<b>蛋白質需求大幅增加，但仍可滿足，惟許多情況需要人工營養。</b></td>
+          <td><b>大型腹部手術*</b>；中風*；<i>嚴重肺炎、血液惡性腫瘤</i></td></tr>
+        <tr><td>3 分</td>
+          <td>加護病房使用呼吸器等。<b>蛋白質需求增加且即使以人工營養亦無法滿足</b>，但蛋白質分解與氮流失可顯著減緩。</td>
+          <td>頭部外傷*；骨髓移植*；<i>加護病房病人（APACHE &gt;10）</i></td></tr>
+      </tbody>
+    </table>
+    <div class="nu-src">* ＝ 有試驗直接支持該診斷的分級；<i>斜體</i>診斷 ＝ 依上述原型推定。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">營養狀態受損的定義</div>
+    <table class="nu-t">
+      <thead><tr><th>分數</th><th>定義（符合任一）</th></tr></thead>
+      <tbody>
+        <tr><td>1 分<br>輕度</td><td>3 個月內體重下降 &gt;5%　<b>或</b>　前一週攝食量為正常需求的 <b>50–75%</b></td></tr>
+        <tr><td>2 分<br>中度</td><td>2 個月內體重下降 &gt;5%　<b>或</b>　BMI 18.5–20.5 且一般狀況受損　<b>或</b>　前一週攝食量為正常需求的 <b>25–60%</b></td></tr>
+        <tr><td>3 分<br>重度</td><td>1 個月內體重下降 &gt;5%（3 個月內 &gt;15%）　<b>或</b>　BMI &lt;18.5 且一般狀況受損　<b>或</b>　前一週攝食量為正常需求的 <b>0–25%</b></td></tr>
+      </tbody>
+    </table>
+    <div class="nu-warn" style="margin-top:8px; margin-bottom:0;">
+      <b>2 分的攝食量是 25–60%，不是二手表格常見的「25–50%」。</b>此為 ESPEN 官方文件的實際數值。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    NRS-2002 — <a href="https://pubmed.ncbi.nlm.nih.gov/12765673/" target="_blank" rel="noopener" class="ref-link">Kondrup J, et al. Clin Nutr. 2003;22(3):321-336.</a>　｜
+    ESPEN 篩檢指引 — Kondrup J, et al. Clin Nutr. 2003;22(4):415-421.
+  </footer>
+</div>
+
+<!-- ══════════════════ GLIM ══════════════════ -->
+<div id="tab-glim" class="hidden">
+  <div class="nu-warn">
+    <span class="h">診斷需要「表現型 ≥1 項」＋「病因型 ≥1 項」</span>
+    GLIM 是<b>診斷</b>架構，不是篩檢工具——原文設定的流程是先用任一經驗證的篩檢工具（如 NRS-2002）找出風險者，再用 GLIM 下診斷。
+    <b>嚴重度分級只看表現型準則。</b>
+  </div>
+
+  <div class="card">
+    <div class="nu-sel">
+      <span class="k">族群 BMI 標準</span>
+      <select id="glim_pop">
+        <option value="asia">亞洲 Asia（本地預設）</option>
+        <option value="west">非亞洲</option>
+      </select>
+      <span class="d">GLIM 原文對亞洲族群另訂 BMI 切點。<b>但嚴重度分級表（Table 4）沒有亞洲版</b>，原文僅註明「仍需研究以取得亞洲族群的共識參考 BMI 數據」——這是原始文件本身的缺口。</span>
+    </div>
+    <div class="nu-sel">
+      <span class="k">年齡</span>
+      <select id="glim_age">
+        <option value="lt70">&lt;70 歲</option>
+        <option value="ge70">≥70 歲</option>
+      </select>
+      <span class="d">BMI 切點依年齡而不同。</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="nu-grp-h"><span class="nu-grp-n">表現型準則 Phenotypic</span><span class="nu-grp-c" id="glim_c_p">0 / 3</span></div>
+
+    <div class="nu-sel">
+      <span class="k">體重下降</span>
+      <select id="glim_wl">
+        <option value="0">未達標準</option>
+        <option value="1">6 個月內 &gt;5%，或超過 6 個月 &gt;10%（第 1 期）</option>
+        <option value="2">6 個月內 &gt;10%，或超過 6 個月 &gt;20%（第 2 期）</option>
+      </select>
+      <span class="d">嚴重度：第 1 期為 6 個月內 5–10%（或 &gt;6 個月 10–20%）；第 2 期為 6 個月內 &gt;10%（或 &gt;6 個月 &gt;20%）。</span>
+    </div>
+
+    <div class="nu-sel">
+      <span class="k">低 BMI</span>
+      <select id="glim_bmi">
+        <option value="0">未達標準</option>
+        <option value="1">達診斷門檻（第 1 期）</option>
+        <option value="2">達第 2 期門檻</option>
+      </select>
+      <span class="d" id="glim_bmi_d"></span>
+    </div>
+
+    <div class="nu-sel">
+      <span class="k">肌肉量減少</span>
+      <select id="glim_mm">
+        <option value="0">未達標準</option>
+        <option value="1">輕至中度缺損（第 1 期）</option>
+        <option value="2">重度缺損（第 2 期）</option>
+      </select>
+      <span class="d">須以<b>經驗證的身體組成測量方法</b>判定：DXA、BIA、CT、MRI、超音波；資源不足時可用理學檢查或上臂肌肉圍、小腿圍。
+        <b>握力不可取代肌肉量測量</b>，僅作輔助指標。建議使用經驗證的<b>種族與性別特異切點</b>。</span>
+    </div>
+
+    <div class="nu-grp-h"><span class="nu-grp-n">病因型準則 Etiologic</span><span class="nu-grp-c" id="glim_c_e">0 / 2</span></div>
+    <div id="glim_et">
+      <label class="item"><input type="checkbox" class="glim-e"> 攝食或吸收減少
+        <span class="unit">(≤50% 熱量需求持續 &gt;1 週／任何程度的減少持續 &gt;2 週／任何影響食物吸收的慢性腸胃疾病)</span></label>
+      <label class="item"><input type="checkbox" class="glim-e"> 發炎
+        <span class="unit">(急性疾病或創傷／慢性疾病相關)</span></label>
+    </div>
+    <div class="note" style="margin-top:8px;">
+      重度發炎對應重大感染、燒傷、創傷或閉鎖性頭部外傷；慢性疾病（惡性腫瘤、慢性阻塞性肺病、充血性心衰竭、慢性腎病）一般為輕至中度。
+      <b>短暫的輕度發炎不符合門檻。</b>CRP 可作為輔助的實驗室指標。
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="nu-out">
+      <div class="nu-out-h">GLIM 診斷</div>
+      <div class="nu-out-v" id="glim_dx">—</div>
+      <div class="nu-out-d" id="glim_dx_d"></div>
+    </div>
+    <div class="nu-out">
+      <div class="nu-out-h">嚴重度分級（僅依表現型準則）</div>
+      <div class="nu-out-v" id="glim_sev">—</div>
+      <div class="nu-out-d" id="glim_sev_d"></div>
+    </div>
+    <div class="risk-note">
+      2025 年的五年更新結論：<b>體重下降、低 BMI 與攝食／吸收減少三項準則均不作修訂</b>；
+      肌肉量評估「應依經驗與可得的技術資源決定」，發炎與疾病負荷「臨床判斷即可能足夠」。
+      工作小組 100% 同意。<b>亦即 2019 年的數值門檻至 2025 年仍然有效。</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">BMI 切點一覽</div>
+    <table class="nu-t">
+      <thead><tr><th>用途</th><th>&lt;70 歲</th><th>≥70 歲</th></tr></thead>
+      <tbody>
+        <tr><td>診斷<br>非亞洲</td><td class="num">&lt;20</td><td class="num">&lt;22</td></tr>
+        <tr><td>診斷<br><b>亞洲</b></td><td class="num"><b>&lt;18.5</b></td><td class="num"><b>&lt;20</b></td></tr>
+        <tr><td>第 1 期<br>中度</td><td class="num">&lt;20</td><td class="num">&lt;22</td></tr>
+        <tr><td>第 2 期<br>重度</td><td class="num">&lt;18.5</td><td class="num">&lt;20</td></tr>
+      </tbody>
+    </table>
+    <div class="nu-warn" style="margin-top:8px; margin-bottom:0;">
+      <b>注意這張表的一個結構問題：</b>嚴重度分級表（Table 4）<b>沒有亞洲版</b>，其數值恰好與亞洲的<u>診斷</u>門檻相同。
+      因此對亞洲病人而言，「BMI 一達到診斷標準」與「BMI 達到非亞洲標準下的重度」在數字上重疊。
+      GLIM 原文明確表示亞洲族群的嚴重度參考數據<b>仍待研究</b>——本頁在亞洲模式下不以 BMI 單獨推定嚴重度，請併同體重下降與肌肉量判斷。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    GLIM — <a href="https://pubmed.ncbi.nlm.nih.gov/30181091/" target="_blank" rel="noopener" class="ref-link">Cederholm T, et al. Clin Nutr. 2019;38(1):1-9.</a><br>
+    肌肉量指引 — <a href="https://pubmed.ncbi.nlm.nih.gov/35450768/" target="_blank" rel="noopener" class="ref-link">Barazzoni R, et al. Clin Nutr. 2022;41(6):1425-1433.</a><br>
+    五年更新 — <a href="https://pubmed.ncbi.nlm.nih.gov/40222089/" target="_blank" rel="noopener" class="ref-link">Cederholm T, et al. Clin Nutr. 2025;49:11-20.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ 再餵食 ══════════════════ -->
+<div id="tab-rf" class="hidden">
+  <div class="nu-warn">
+    <span class="h">兩套標準有一處是相反的指令，本頁不予合併</span>
+    <b>NICE CG32</b>：「<u>餵食前不需要先矯正</u>血中低電解質」。<br>
+    <b>ASPEN 2020</b>：磷、鉀或鎂嚴重偏低者，「<u>應延後</u>開始或增加熱量，<b>直到矯正為止</b>」。<br>
+    <b>ESPEN 外科指引 2025</b> 站在 ASPEN 這一側（Rec 31：僅在<b>電解質穩定</b>時才小心增加）。
+    本頁兩套分開計算，請自行選定所依循的版本。
+  </div>
+
+  <div class="card">
+    <div class="section-title">NICE CG32 高風險判定</div>
+    <div class="nu-grp-h"><span class="nu-grp-n">符合下列<b>任一項</b></span><span class="nu-grp-c" id="rf_c_a">0</span></div>
+    <div id="rf_a">
+      <label class="item"><input type="checkbox" class="rf-a"> BMI &lt; 16 kg/m²</label>
+      <label class="item"><input type="checkbox" class="rf-a"> 最近 3–6 個月內非刻意體重下降 &gt; 15%</label>
+      <label class="item"><input type="checkbox" class="rf-a"> 幾乎沒有或完全沒有營養攝取 &gt; 10 天</label>
+      <label class="item"><input type="checkbox" class="rf-a"> <b>餵食前</b>鉀、磷或鎂偏低</label>
+    </div>
+
+    <div class="nu-grp-h"><span class="nu-grp-n">或符合下列<b>兩項以上</b></span><span class="nu-grp-c" id="rf_c_b">0</span></div>
+    <div id="rf_b">
+      <label class="item"><input type="checkbox" class="rf-b"> BMI &lt; 18.5 kg/m²</label>
+      <label class="item"><input type="checkbox" class="rf-b"> 最近 3–6 個月內非刻意體重下降 &gt; 10%</label>
+      <label class="item"><input type="checkbox" class="rf-b"> 幾乎沒有或完全沒有營養攝取 &gt; 5 天</label>
+      <label class="item"><input type="checkbox" class="rf-b"> 酒精濫用史，或使用胰島素、化療藥、制酸劑或利尿劑</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ASPEN 2020 風險分層</div>
+    <div class="note" style="margin-bottom:6px;">每一列各自判斷達到哪一級。<b>顯著風險需 1 項、中度風險需 2 項。</b>ASPEN 明言成人<b>不設輕度風險</b>，理由是「那會造成過度敏感的定義」。</div>
+
+    <div class="nu-sel"><span class="k">BMI</span>
+      <select class="asp" id="asp_bmi"><option value="0">未達標準</option>
+        <option value="1">16–18.5 kg/m²（中度）</option><option value="2">&lt;16 kg/m²（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">體重下降</span>
+      <select class="asp" id="asp_wl"><option value="0">未達標準</option>
+        <option value="1">1 個月內 5%（中度）</option><option value="2">3 個月內 7.5%，或 6 個月內 &gt;10%（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">熱量攝取</span>
+      <select class="asp" id="asp_cal"><option value="0">未達標準</option>
+        <option value="1">幾乎無口攝 5–6 天；或急性病中 &lt;75% 需求 &gt;7 天；或 &lt;75% 達 &gt;1 個月（中度）</option>
+        <option value="2">幾乎無口攝 &gt;7 天；或急性病中 &lt;50% 需求 &gt;5 天；或 &lt;50% 達 &gt;1 個月（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">餵食前電解質</span>
+      <select class="asp" id="asp_lyte"><option value="0">正常</option>
+        <option value="1">極輕度偏低；或目前正常但近期偏低而僅需少量或單次補充（中度）</option>
+        <option value="2">中度或顯著偏低；或極輕度偏低／正常但近期偏低而需大量或多次補充（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">皮下脂肪流失</span>
+      <select class="asp" id="asp_fat"><option value="0">無</option>
+        <option value="1">中度流失之證據（中度）</option><option value="2">重度流失之證據（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">肌肉量流失</span>
+      <select class="asp" id="asp_mm"><option value="0">無</option>
+        <option value="1">輕度或中度流失之證據（中度）</option><option value="2">重度流失之證據（顯著）</option></select></div>
+    <div class="nu-sel"><span class="k">高風險共病</span>
+      <select class="asp" id="asp_cm"><option value="0">無</option>
+        <option value="1">中度疾病（中度）</option><option value="2">重度疾病（顯著）</option></select>
+      <span class="d">ASPEN 清單含：愛滋病、慢性酒精或藥物使用疾患、吞嚥困難、飲食疾患、糧食不安全或無家可歸、妊娠劇吐、
+        <b>長期無營養供應的重大壓力或手術</b>、吸收不良狀態、癌症、<b>減重手術後</b>、<b>術後併發症之病人</b>、長期禁食、難民等。</span></div>
+  </div>
+
+  <div class="result">
+    <div class="nu-two">
+      <div class="nu-box">
+        <div class="nu-box-n">NICE CG32</div>
+        <div class="nu-out-v" id="rf_nice">—</div>
+      </div>
+      <div class="nu-box">
+        <div class="nu-box-n">ASPEN 2020</div>
+        <div class="nu-out-v" id="rf_aspen">—</div>
+      </div>
+    </div>
+    <div class="nu-out">
+      <div class="nu-out-h">處置（依所選標準分別列示）</div>
+      <div class="nu-out-d" id="rf_d"></div>
+    </div>
+    <div class="risk-note">
+      <b>ASPEN 的「症候群定義」不建議拿來當警示觸發條件。</b>其定義為磷、鉀、鎂任一項下降
+      10–20%（輕度）／20–30%（中度）／&gt;30%（重度），或因此產生器官功能障礙，且發生於重新給予或大幅增加熱量後 <b>5 天內</b>。
+      驗證研究顯示：套用此定義時，某族群輕度再餵食症候群發生率可達 <b>100%</b>；另一研究中 90% 的住院管灌病人符合輕度標準，
+      且該定義所界定的再餵食症候群<b>與死亡無關</b>。四種工具（SNAQ／GLIM／mNICE／ASPEN）預測再餵食症候群的 AUC 均 &lt;0.6。
+      <b>可用的是它的風險分層表，不是它的症候群定義。</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">兩套標準的處置差異</div>
+    <table class="nu-t">
+      <thead><tr><th>項目</th><th>NICE CG32</th><th>ASPEN 2020</th></tr></thead>
+      <tbody>
+        <tr><td>起始熱量</td><td>最多 <b>10 kcal/kg/日</b>；極端個案（BMI &lt;14 或攝取極少 &gt;15 天）僅 <b>5 kcal/kg/日</b>，並須<b>持續心律監測</b></td>
+          <td>首 24 小時 <b>100–150 g 葡萄糖或 10–20 kcal/kg</b>（含腸道與靜脈葡萄糖）</td></tr>
+        <tr><td>推進速度</td><td>4–7 天內達到或超過完整需求</td><td>每 1–2 天增加目標量的 <b>33%</b></td></tr>
+        <tr><td>Thiamine</td><td><b>口服 200–300 mg/日</b>，併 B 群</td><td><b>100 mg</b> 於餵食前或含葡萄糖點滴前；嚴重饑餓或酒癮者 100 mg/日 × 5–7 天或更久</td></tr>
+        <tr class="warn"><td>餵食前<br>低電解質</td><td><b>「餵食前矯正血中低值並無必要」</b></td>
+          <td><b>「應延後開始或增加熱量，直到矯正為止」</b></td></tr>
+        <tr><td>預防性<br>補充電解質</td><td>給定建議量：鉀 2–4、磷 0.3–0.6、鎂靜脈 0.2／口服 0.4 mmol/kg/日（除非餵食前血中濃度已偏高）</td>
+          <td>對「餵食前正常者是否預防性給予」<b>明確表示無法作出建議</b></td></tr>
+        <tr><td>監測</td><td>—</td><td>高風險者<b>前 3 天每 12 小時</b>驗電解質；起始後 24 小時內每 4 小時測生命徵象</td></tr>
+        <tr><td>風險分層</td><td>1 項清單／2 項清單</td><td>中度（2 項）／顯著（1 項），<b>另納入皮下脂肪與肌肉流失</b>（NICE 無此兩項）</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      ASPEN 自承其準則是在 NICE 基礎上增補，「例如加入皮下脂肪與肌肉量流失等理學檢查發現」。
+      <br><b>NICE CG32 現行狀態</b>：2006 年 2 月發布，2017 年 8 月最後更新，<b>仍為 Active，未被取代或撤回</b>；
+      2017 年的更新僅涉及連結與引用文件，非實質內容變更。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    NICE CG32 — <a href="https://www.nice.org.uk/guidance/cg32" target="_blank" rel="noopener" class="ref-link">Nutrition support for adults. NICE clinical guideline CG32.</a><br>
+    ASPEN 2020 — <a href="https://pubmed.ncbi.nlm.nih.gov/32115791/" target="_blank" rel="noopener" class="ref-link">da Silva JSV, et al. Nutr Clin Pract. 2020;35(2):178-195.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ 外科指引 ══════════════════ -->
+<div id="tab-surg" class="hidden">
+  <div class="nu-warn">
+    <span class="h">版本陷阱</span>
+    ESPEN 外科臨床營養指引現行版本為 <b>2025 年更新版</b>（Clin Nutr 2025;53:222-261），
+    <b>不是常被引用的 2017 原版或 2021 實用版</b>。2025 版共 44 條建議，新增衰弱評估、肌少症診斷與術前預康復。
+    <b>術前靜脈營養的療程在 2025 版由「7–14 天」改為「10–14 天」</b>（保留 7 天為最低值）——引錯版本就會給錯天數。
+  </div>
+
+  <div class="card">
+    <div class="section-title">高代謝風險：可為此延後手術的定義</div>
+    <div class="note" style="margin-bottom:8px;">指引所列<b>符合下列任一項</b>即屬之：</div>
+    <table class="nu-t">
+      <thead><tr><th>準則</th><th>門檻</th></tr></thead>
+      <tbody>
+        <tr><td>體重下降</td><td class="num">6 個月內 &gt; 10–15%</td></tr>
+        <tr><td>BMI</td><td class="num">&lt; 18.5 kg/m²</td></tr>
+        <tr><td>篩檢／評估</td><td class="num">NRS ≥ 5，或 SGA 為 Grade C</td></tr>
+        <tr><td>血清白蛋白</td><td class="num">術前 &lt; 30 g/L（且無肝或腎功能障礙證據）</td></tr>
+      </tbody>
+    </table>
+    <div class="nu-warn" style="margin-top:8px; margin-bottom:0;">
+      <b>白蛋白在這裡是「風險標記」，不是「營養標記」。</b>指引原文：血清白蛋白濃度
+      「<b>無法藉由短期營養治療改變，不應再作為營養指標使用</b>……儘管如此，它仍可用於界定高代謝風險的外科病人」。
+      這個區別很重要——不要把白蛋白低當成「營養不良」的證據，也不要期待補營養就能把它拉上來。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">主要建議條文</div>
+    <table class="nu-t">
+      <thead><tr><th>條文</th><th>內容</th><th>等級／共識</th></tr></thead>
+      <tbody>
+        <tr><td>Rec 6</td><td>計畫接受<b>大手術</b>時，應<b>常規評估營養狀態</b>以指引圍手術期營養治療</td><td>GPP／強共識 100%</td></tr>
+        <tr><td>Rec 7</td><td>癌症外科病人應評估<b>身體組成</b>；有 CT 軟體時應以其為<b>黃金標準</b>（L3 軸切面）</td><td>B／強共識 100%</td></tr>
+        <tr><td>Rec 8</td><td>接受大手術的<b>年長病人</b>應執行<b>衰弱評估</b>，因衰弱與術後不良結果相關</td><td>GPP／強共識 93%</td></tr>
+        <tr><td><b>Rec 20</b></td><td><b>重度營養不良和／或高代謝風險者，術前「應」接受營養治療（A），即使因此延後手術（BM）。療程應考慮 10–14 天（B）</b></td><td>A／B／強共識 93%</td></tr>
+        <tr><td>Rec 27</td><td>僅在無法口服或腸道營養的重度營養不良／高代謝風險者，<b>術前應給予靜脈營養</b>（A）。療程可建議 <b>10–14 天，最少 7 天</b>（GPP）</td><td>A／GPP／強共識 100%</td></tr>
+        <tr><td>Rec 31</td><td>所有圍手術期的營養治療都應特別留意預防再餵食症候群。此類病人標準腸道營養應以<b>低速率 10–30 mL/h 起始</b>，<b>僅在電解質穩定時</b>才小心增加，並監測個別腸道耐受度。達到熱量目標的時間因人而異，<b>可能需要五天</b></td><td>GPP／強共識 95%</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:8px;">
+      Rec 27 的療程在共識會議後由 7–14 天改為 10–14 天以與 Rec 20 對齊，但保留 7 天為最低值——這是 2021→2025 的實質變更。
+      <br>Rec 31 亦於共識會議後特別修訂，加入「<b>電解質穩定</b>」這個前提，立場靠近 ASPEN 而與 NICE 的「餵食前不需矯正」相反。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">篩檢工具：指引其實沒有強制指名</div>
+    <ul class="nu-list">
+      <li>2025 版 Rec 6 只說「應常規評估營養狀態」，<b>未指定必須使用哪一個篩檢工具</b>。</li>
+      <li><b>GLIM</b> 被完整引述為診斷架構（表現型 3 項＋病因型 2 項，各至少 1 項）。</li>
+      <li><b>NRS</b> 僅以「NRS ≥5」出現在高代謝風險的定義中。</li>
+      <li>因此「ESPEN 目前背書 NRS-2002」這句話，其最強的直接證據仍是 2003 年的篩檢指引；
+        2025 外科指引只是<b>沒有推翻它</b>，而不是明文再次背書。本頁不作過度陳述。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    ESPEN 外科指引 2025 — <a href="https://pubmed.ncbi.nlm.nih.gov/40957230/" target="_blank" rel="noopener" class="ref-link">Weimann A, et al. ESPEN guideline on clinical nutrition in surgery – Update 2025. Clin Nutr. 2025;53:222-261.</a><br>
+    前版（實用版） — <a href="https://pubmed.ncbi.nlm.nih.gov/34242915/" target="_blank" rel="noopener" class="ref-link">Weimann A, et al. Clin Nutr. 2021;40(7):4745-4761.</a>
+  </footer>
+</div>
+
+</div>
+</div>
+<script>
+var NU_TABS=['nrs','glim','rf','surg'];
+function nuTab(key,skipHash){
+  NU_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);
+    if(p) p.classList.toggle('hidden',t!==key);
+  });
+  document.querySelectorAll('#nu_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('data-tab')===key);
+  });
+  if(!skipHash) history.replaceState(null,'','#tab='+key);
+}
+
+/* ─────────── NRS-2002 ─────────── */
+var NRS_NUT=['正常營養狀態。',
+  '3 個月內體重下降 &gt;5%，或前一週攝食量為正常需求的 50–75%。',
+  '2 個月內體重下降 &gt;5%，或 BMI 18.5–20.5 且一般狀況受損，或前一週攝食量為正常需求的 <b>25–60%</b>。',
+  '1 個月內體重下降 &gt;5%（3 個月內 &gt;15%），或 BMI &lt;18.5 且一般狀況受損，或前一週攝食量為正常需求的 0–25%。'];
+var NRS_DIS=['正常營養需求。',
+  '慢性病因併發症入院；虛弱但可規律下床。蛋白質需求增加，多數可由口服飲食或補充品滿足。例：髖部骨折、肝硬化、慢性阻塞性肺病。',
+  '因病臥床，例如<b>大型腹部手術後</b>。蛋白質需求大幅增加，仍可滿足但許多情況需人工營養。例：大型腹部手術、中風。',
+  '加護病房使用呼吸器等。蛋白質需求增加且即使人工營養亦無法滿足。例：頭部外傷、骨髓移植、APACHE &gt;10。'];
+
+function nrsCalc(){
+  var anyInit=false;
+  document.querySelectorAll('.nrs-i').forEach(function(cb){ if(cb.checked) anyInit=true; });
+  var n=parseInt(document.getElementById('nrs_nut').value),
+      d=parseInt(document.getElementById('nrs_dis').value),
+      a=parseInt(document.getElementById('nrs_age').value);
+  document.getElementById('nrs_nut_d').innerHTML=NRS_NUT[n];
+  document.getElementById('nrs_dis_d').innerHTML=NRS_DIS[d];
+
+  var total=n+d+a;
+  document.getElementById('nrs_total').textContent=total;
+
+  var band,det;
+  if(total>=3){
+    band='有營養風險 At risk<span class="nu-tag hi">≥3</span>';
+    det='<b>啟動營養照護計畫。</b>'
+      +'<br>若為外科病人，請至「外科指引」分頁確認是否同時符合<b>高代謝風險</b>——'
+      +'ESPEN 2025 的高代謝風險定義之一即為 <b>NRS ≥5</b>，達此程度者術前應接受營養治療，'
+      +'<b>即使因此延後手術</b>（Rec 20，等級 A）。';
+    if(total>=5) det+='<br><b>本例 NRS ≥5，已符合該項高代謝風險準則。</b>';
+  }else{
+    band='未達風險門檻<span class="nu-tag ok">&lt;3</span>';
+    det='<b>每週重新篩檢一次。</b>'
+      +'<br>但原文特別註明：若病人<b>已排定接受大手術</b>，仍應考慮預防性的營養照護計畫，'
+      +'以避免其進入風險狀態——<u>不要因為分數未達 3 就當作不必處理</u>。';
+  }
+  if(!anyInit){
+    det='<b>初步篩檢四題全部為「否」</b>：依原文應每週重新篩檢，不需進行最終篩檢。'
+      +'（下方分數仍會依你的選擇計算，供參考。）<br><br>'+det;
+  }
+  document.getElementById('nrs_band').innerHTML=band;
+  document.getElementById('nrs_d').innerHTML=det;
+}
+
+/* ─────────── GLIM ─────────── */
+function glimCalc(){
+  var pop=document.getElementById('glim_pop').value,
+      age=document.getElementById('glim_age').value;
+  var dxBmi = (pop==='asia') ? (age==='ge70'?'&lt;20':'&lt;18.5') : (age==='ge70'?'&lt;22':'&lt;20');
+  var s2Bmi = (age==='ge70') ? '&lt;20' : '&lt;18.5';
+  document.getElementById('glim_bmi_d').innerHTML=
+    '本例診斷門檻為 <b>BMI '+dxBmi+'</b>（'+(pop==='asia'?'亞洲':'非亞洲')+'，'+(age==='ge70'?'≥70 歲':'&lt;70 歲')+'）。'
+    +'<br>嚴重度：第 1 期為 '+(age==='ge70'?'&lt;22':'&lt;20')+'，第 2 期為 '+s2Bmi+'（<b>此分級表無亞洲版</b>）。';
+
+  var wl=parseInt(document.getElementById('glim_wl').value),
+      bmi=parseInt(document.getElementById('glim_bmi').value),
+      mm=parseInt(document.getElementById('glim_mm').value);
+  var pCount=(wl>0?1:0)+(bmi>0?1:0)+(mm>0?1:0);
+  var eCount=0;
+  document.querySelectorAll('.glim-e').forEach(function(cb){ if(cb.checked) eCount++; });
+  document.getElementById('glim_c_p').textContent=pCount+' / 3';
+  document.getElementById('glim_c_e').textContent=eCount+' / 2';
+
+  var dx = (pCount>=1 && eCount>=1);
+  document.getElementById('glim_dx').innerHTML = dx
+    ? '符合營養不良診斷<span class="nu-tag hi">表現型 '+pCount+'／病因型 '+eCount+'</span>'
+    : '未符合診斷<span class="nu-tag ok">表現型 '+pCount+'／病因型 '+eCount+'</span>';
+  document.getElementById('glim_dx_d').innerHTML = dx
+    ? 'GLIM 要求<b>表現型至少 1 項＋病因型至少 1 項</b>，本例兩者皆具備。'
+    : '尚缺'+(pCount<1?'<b>表現型</b>準則':'')+(pCount<1&&eCount<1?'與':'')+(eCount<1?'<b>病因型</b>準則':'')
+      +'。兩類各需至少 1 項才成立診斷。';
+
+  var maxP=Math.max(wl,bmi,mm);
+  if(!dx){
+    document.getElementById('glim_sev').innerHTML='—';
+    document.getElementById('glim_sev_d').innerHTML='未成立診斷者不進行嚴重度分級。';
+  }else if(maxP>=2){
+    document.getElementById('glim_sev').innerHTML='第 2 期 · 重度<span class="nu-tag hi">Stage 2</span>';
+    document.getElementById('glim_sev_d').innerHTML='符合任一項達第 2 期門檻之表現型準則即為重度。'
+      +(pop==='asia'&&bmi>=2&&wl<2&&mm<2
+        ?'<br><b style="color:#f0c9c0;">注意：本例的第 2 期僅由 BMI 構成，而嚴重度分級表沒有亞洲版</b>——'
+         +'其數值與亞洲的診斷門檻相同，等於「一達到診斷標準就被判為重度」。'
+         +'GLIM 原文明言亞洲族群的嚴重度參考數據仍待研究，<b>請併同體重下降與肌肉量再行判斷</b>。':'');
+  }else{
+    document.getElementById('glim_sev').innerHTML='第 1 期 · 中度<span class="nu-tag mid">Stage 1</span>';
+    document.getElementById('glim_sev_d').innerHTML='表現型準則均未達第 2 期門檻。';
+  }
+}
+
+/* ─────────── 再餵食 ─────────── */
+function rfCalc(){
+  var a=0,b=0;
+  document.querySelectorAll('.rf-a').forEach(function(cb){ if(cb.checked) a++; });
+  document.querySelectorAll('.rf-b').forEach(function(cb){ if(cb.checked) b++; });
+  document.getElementById('rf_c_a').textContent=a;
+  document.getElementById('rf_c_b').textContent=b;
+  var niceHi = (a>=1 || b>=2);
+  document.getElementById('rf_nice').innerHTML = niceHi
+    ? '<span style="color:#f0c9c0;">高風險</span><span class="nu-tag hi">'+(a>=1?'任一項 ✓':'兩項以上 ✓')+'</span>'
+    : '未達高風險<span class="nu-tag ok">—</span>';
+
+  var sig=0, mod=0;
+  document.querySelectorAll('.asp').forEach(function(s){
+    var v=parseInt(s.value);
+    if(v===2) sig++; else if(v===1) mod++;
+  });
+  var aspLevel;
+  if(sig>=1){ aspLevel='significant'; document.getElementById('rf_aspen').innerHTML=
+      '<span style="color:#f0c9c0;">顯著風險</span><span class="nu-tag hi">1 項顯著 ✓</span>'; }
+  else if(mod>=2){ aspLevel='moderate'; document.getElementById('rf_aspen').innerHTML=
+      '<span style="color:#f0dcb4;">中度風險</span><span class="nu-tag mid">2 項中度 ✓</span>'; }
+  else { aspLevel='none'; document.getElementById('rf_aspen').innerHTML='未達風險門檻<span class="nu-tag ok">—</span>'; }
+
+  var d='';
+  if(niceHi){
+    d+='<b>依 NICE CG32（高風險）</b><ul>'
+      +'<li>起始熱量<b>最多 10 kcal/kg/日</b>，於 <b>4–7 天</b>內增至或超過完整需求。</li>'
+      +'<li>極端個案（<b>BMI &lt;14</b> 或攝取極少 <b>&gt;15 天</b>）僅 <b>5 kcal/kg/日</b>，'
+      +'並對這些病人及任何已有或新發生心律不整者<b>持續監測心律</b>。</li>'
+      +'<li><b>口服 thiamine 200–300 mg/日</b>，併維生素 B 群。</li>'
+      +'<li>補充電解質：鉀 <b>2–4</b>、磷 <b>0.3–0.6</b>、鎂靜脈 <b>0.2</b>／口服 <b>0.4</b> mmol/kg/日，'
+      +'<b>除非餵食前血中濃度已偏高；NICE 明言餵食前矯正低值並無必要</b>。</li></ul>';
+  }
+  if(aspLevel!=='none'){
+    d+='<b>依 ASPEN 2020（'+(aspLevel==='significant'?'顯著':'中度')+'風險）</b><ul>'
+      +'<li>首 24 小時 <b>100–150 g 葡萄糖或 10–20 kcal/kg</b>（含腸道與靜脈葡萄糖），'
+      +'其後<b>每 1–2 天增加目標量的 33%</b>。</li>'
+      +'<li><b>磷、鉀或鎂嚴重偏低者，應延後開始或增加熱量，直到矯正為止</b>'
+      +'——<u>此點與上方 NICE 的立場相反</u>。</li>'
+      +'<li>Thiamine <b>100 mg</b> 於餵食前或給予含葡萄糖點滴前；嚴重饑餓或酒癮者 100 mg/日 × 5–7 天或更久。'
+      +'「例行檢驗 thiamine 濃度不太可能有價值。」</li>'
+      +'<li>餵食前驗鉀／鎂／磷；<b>高風險者前 3 天每 12 小時追蹤</b>；起始後 24 小時內每 4 小時測生命徵象。</li>'
+      +'<li>電解質難以矯正或急遽下降時，<b>熱量或葡萄糖減半</b>，再以約 33%／1–2 天的速度推進。</li>'
+      +'<li>對「餵食前濃度正常者是否預防性補充」，ASPEN <b>明確表示無法作出建議</b>。</li></ul>';
+  }
+  if(!niceHi && aspLevel==='none'){
+    d='兩套標準均未達風險門檻。惟外科病人請留意 ESPEN 2025 Rec 31：'
+     +'<b>所有圍手術期的營養治療都應留意預防再餵食症候群</b>，'
+     +'營養不良或高代謝風險者標準腸道營養仍應以 <b>10–30 mL/h</b> 起始，僅在電解質穩定時才增加。';
+  }else{
+    d+='<b>外科情境（ESPEN 2025 Rec 31，GPP／強共識 95%）</b><ul>'
+      +'<li>標準腸道營養以<b>低速率 10–30 mL/h</b> 起始，<b>僅在電解質穩定時</b>才小心增加，'
+      +'並監測個別腸道耐受度。</li>'
+      +'<li>達到熱量目標的時間因人而異，逐日增加，<b>可能需要五天</b>。</li>'
+      +'<li>此條在「電解質是否需先穩定」上<b>與 ASPEN 一致、與 NICE 相反</b>。</li></ul>';
+  }
+  document.getElementById('rf_d').innerHTML=d;
+}
+
+/* ─────────── 事件 ─────────── */
+document.querySelectorAll('#tab-nrs input, #tab-nrs select').forEach(function(el){
+  el.addEventListener('input',nrsCalc); el.addEventListener('change',nrsCalc); });
+document.querySelectorAll('#tab-glim input, #tab-glim select').forEach(function(el){
+  el.addEventListener('input',glimCalc); el.addEventListener('change',glimCalc); });
+document.querySelectorAll('#tab-rf input, #tab-rf select').forEach(function(el){
+  el.addEventListener('input',rfCalc); el.addEventListener('change',rfCalc); });
+
+(function(){
+  var m=location.hash.match(/#tab=(\w+)/);
+  if(m && NU_TABS.indexOf(m[1])>=0) nuTab(m[1],true);
+})();
+nrsCalc(); glimCalc(); rfCalc();
+</script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
