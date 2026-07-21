@@ -7,7 +7,7 @@
  *     手機網路下每頁數十次往返，開啟明顯變慢，故改為本策略。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
-const CACHE_VERSION = 'clinical-tools-v173';
+const CACHE_VERSION = 'clinical-tools-v174';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -61,6 +61,7 @@ const PRECACHE_URLS = [
   './pathways/cholecystitis.html',
   './pathways/hernia.html',
   './pathways/bowel-obstruction.html',
+  './pathways/volvulus.html',
   './pathways/intussusception.html',
   './pathways/gi-ischemia.html',
   './pathways/gi-perforation.html',

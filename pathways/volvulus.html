@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腸扭轉處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-volv-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸扭轉處置決策</h1><div class="sub">Volvulus · 生理狀態優先 ＋ 全部位分流（ASCRS 2021 / WSES 2023 / SAGES 2013）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-volv-path'">← 返回主選單</button>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>分流原則、各部位定義與影像徵象 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 流程順序：先生理，後解剖。</b>所有指引與死亡率模型都指向同一件事——<b>「部位」決定「開什麼刀」，「腹膜炎／缺血／不穩定」決定「現在要不要開」</b>。因此本流程先問紅旗，再問部位。<br><br>
+
+      <b>立即手術指標（不論部位，任一即成立）：</b>腹膜炎、穿孔、游離氣體；血行動力學不穩／休克（休克為獨立死亡預測因子，p&lt;0.001，Chalya 2015, n=146）；腸壁壞死；內視鏡解扭失敗；內視鏡下見缺血黏膜。<br>
+      <b>另兩個易被忽略的分流訊號：</b><br>
+      ・<b>Type 1 嘔吐</b>——嘔吐<b>早於或同時於</b>腹痛（而非之後）：壞疽 64% vs 35%、休克 24% vs 8%、死亡 15% vs 4%（前瞻 n=81, Raveenthiran 2004）。<br>
+      ・<b>ileosigmoid knotting 症狀時間短反而是壞消息</b>：&lt;24 小時就醫者壞疽 90.9%，&gt;24 小時者 57%（p&lt;0.01, n=280）。<br>
+      ・<b>WSES 明言腸缺血可在乳酸正常時發生</b>——不可以乳酸正常來排除手術。<br><br>
+
+      <b>◆ 內視鏡解扭：哪些部位可以、哪些絕對不行</b><br>
+      ・<b>乙狀結腸 Sigmoid：可以，且為首選</b>（無不穩定／腹膜炎／穿孔時）。統合技術成功率 <b>80.0%（95% CI 75–83%）</b>（15 studies, n=1,738）。<br>
+      ・<b>盲腸 Cecum／盲腸翻折 Cecal bascule：不建議</b>（ASCRS 1C）。機轉上迴結腸扭轉無法自下方解開。<b>常見的「內視鏡成功率 10–20%」查無出處</b>——原始文獻只說「rarely achievable」，此建議立基於機轉與臨床慣例，而非實測成功率。<br>
+      ・<b>橫結腸 Transverse／脾曲 Splenic flexure：無證據可循</b>，個案級別，成敗皆有報告。<br>
+      ・<b>迴腸乙狀結腸打結 Ileosigmoid knotting：絕對禁止且危險</b>——迴腸纏繞乙狀結腸<b>根部</b>，內視鏡無法通過；更糟的是「乙狀結腸看似成功減壓」會給予假性安心，而壞疽的迴腸仍留在腹內。<br>
+      ・<b>小腸 Small bowel／中腸 Midgut：無法以內視鏡到達。</b><br>
+      ・<b>胃 Stomach：穩定且無缺血者可選擇性嘗試</b>，但證據僅為 15 例兒科個案的成功報告集，非安全性資料。<br><br>
+
+      <b>◆ 影像徵象（有實測數據者）</b><br>
+      ・<b>Northern exposure sign</b>（乙狀結腸位於橫結腸頭側，仰臥腹部 X 光）：<b>sens 86%／spec 100%</b>——<b>唯一有對照組的大腸扭轉徵象</b>（30 例 vs 28 例擴張對照）。<br>
+      ・<b>Whirl sign 用於小腸扭轉</b>：sens <b>僅 27–64%</b>（兩位判讀者）、spec 98–99%，但 <b>PPV 僅 21–23%</b>（n=1,213 CT）。<b>多數 whirl sign 不是扭轉。</b>常被引用的「73%/100%」出自<b>盲腸扭轉</b>研究（n=11 vs 12），屬跨疾病誤引。<br>
+      ・<b>Whirl sign 的位置</b>可區分盲腸與乙狀結腸扭轉，準確度 96.8%（n=31＋30 對照）。<br>
+      ・<b>X-marks-the-spot</b> sens 43%、<b>split-wall</b> sens 52%、任一出現 86%（n=21，僅病例、無法算 spec）。<br>
+      ・<b>Coffee bean sign</b> sens 76%——<b>特異度從未被測量過</b>。<br>
+      ・<b>Bird's beak</b>：所有來源皆為描述性，<b>無 sens/spec</b>。<br>
+      ・<b>胃扭轉：CT 見幽門處 transition point</b> sens 70–80%／<b>spec 100%</b>（30 例 vs 31 例大型裂孔疝對照）；整體判讀 sens 80%／spec 100%，但<b>亞型判讀一致性僅 κ=0.51</b>。<br>
+      ・<b>CT 的缺血徵象不可靠</b>：一項研究發現影像缺血徵象與臨床缺血「相關性差」，另一項發現與病理無關聯，第三項則發現胃周液體與肋膜積液有意義——<b>三者互相矛盾。不可建立「CT 說沒缺血＝安全」的分支。</b><br><br>
+
+      <b>◆ 各部位重點</b><br>
+      <b>乙狀結腸扭轉 Sigmoid volvulus</b>：解扭後<b>復發率 33.9%（19.5–52.1%）</b>（17 studies, n=3,285），故建議同次住院切除。統合死亡率 22.6%，美國全國資料院內死亡 9.44%。緊急 vs 擇期手術死亡 OR 1.63（1.21–2.22）。CT 擴張 <b>≥9 cm</b> 預測復發 OR 3.23（1.39–7.92）。<b>合併巨結腸者切除範圍要放大</b>：僅限乙狀結腸切除者復發 6%，<b>合併巨結腸則 82%</b>（p=0.005），需次全大腸切除。<br>
+      ・<b>台大本土資料</b>：25 例乙狀結腸扭轉，21 例成功非手術減壓，<b>3 例有壞疽者全數死亡</b>；<b>解扭後間隔 2 天</b>行半擇期手術即足夠，併發症未增加（Tsai 2006）。<br>
+      <b>盲腸扭轉 Cecal volvulus</b>：三亞型——軸向扭轉 40%、loop type 40%、<b>盲腸翻折 cecal bascule 20%</b>（前向摺疊，<b>無軸向扭轉</b>）。<b>切除為首選，即使腸壁存活</b>。腹部平片不足以確診者達 <b>85%</b>（乙狀結腸 49%，p=0.002）。死亡率 6.64%，低於乙狀結腸（病人較年輕、女性居多）。<br>
+      ・<b>教科書的「乙狀 60–75%／盲腸 25–40%」在西方資料不成立</b>：Minnesota 系列 50 vs 53；美國全國再入院資料切除世代為乙狀 39.6% vs 盲腸 60.4%；<b>盲腸扭轉發生率每年上升 5.53%</b>，乙狀結腸持平。<br>
+      <b>橫結腸扭轉 Transverse colon volvulus</b>：<b>僅佔大腸扭轉 0.94%</b>（PRISMA 回顧, 317 例）——常見的「2–4%」查無出處。平均年齡 <b>37.7 歲</b>（遠低於乙狀結腸），<b>死亡率 18–20%，是全國資料中部位別最高者</b>。多在剖腹時才診斷。<br>
+      <b>脾曲扭轉 Splenic flexure volvulus</b>：最罕見。「&lt;1%」溯源至 1981 年 14 例回顧、無分母，且從未更新。唯一有分母的死亡率是 1/14（7%）。<b>whirl 與 bird's beak 徵象可能完全不出現。</b><br>
+      <b>迴腸乙狀結腸打結 Ileosigmoid knotting</b>：平均 43.9 歲、<b>男性 79.9%</b>（n=923）。<b>壞疽率 85.6%、死亡率 22.7%。</b>術前診斷率僅 20.8%。<b>診斷三徵</b>：臨床像小腸阻塞＋影像像大腸阻塞＋<b>乙狀結腸鏡無法減壓</b>。<br>
+      <b>小腸扭轉 Small bowel volvulus</b>：原發（無解剖成因，好發於非洲／中東／亞洲）vs 續發（沾黏、憩室、腫瘤、Meckel、內疝、malrotation）。<b>台灣系列</b>：19 例成人，原發 9／續發 10（6 例空腸憩室、2 例空腸 GIST），<b>死亡率 11%，2 例壞疽者全數死亡、17 例無壞疽者全數存活</b>。<b>無非手術治療的正當角色。</b><br>
+      <b>成人腸旋轉不良 Adult malrotation／中腸扭轉</b>：篩檢 CT 盛行率 <b>0.17%</b>（n=11,176）。<b>兩個推翻標準教學的發現</b>：SMA–SMV 關係<b>正常者達 11%</b>（另一系列 332 例中高達 91.6% 正常）——<b>不可用 SMV/SMA 反轉來排除</b>；迴盲瓣位於右下腹者僅 22%；<b>67% 曾在先前影像被漏掉</b>。<br>
+      <b>胃扭轉 Gastric volvulus</b>：organoaxial 73.9%／mesenteroaxial 26.1%（但亞型僅在 24.7% 的病例被記錄）。<b>Borchardt 三徵</b>＝上腹劇痛與脹、劇烈乾嘔而吐不出、<b>鼻胃管無法通過</b>——<b>統合出現率僅 17.1%（112/654），不是常被引用的 70%</b>；台灣兒科系列 <b>0/15</b>。<b>以三徵為關卡的流程會漏掉大多數病人。</b>診斷應靠 CT（26/26 診斷率 100%；<b>內視鏡僅 45%</b>）。<br><br>
+
+      <b>◆ 台灣與東亞資料</b>：<b>台灣沒有任何部位的腸扭轉發生率統計</b>（已檢索健保資料庫研究，不存在）。可用的本土文獻為台大乙狀結腸扭轉 25 例、成人小腸扭轉 19 例、兒科胃扭轉 15 例、成大橫結腸扭轉個案、中國附醫腹腔鏡乙狀結腸切除 6 例。韓國多中心 n=69：非手術成功 91.4%、復發 25.8%、死亡 1.7%；日本 n=30 次：解扭成功 61.9%、復發 46.2%。<b>乙狀結腸扭轉在日本被明確描述為罕見。</b><br><br>
+
+      <b>◆ 證據分級</b>：ASCRS 2021 與 WSES 2023 的腸扭轉建議<b>幾乎全部是 GRADE 1C</b>（強建議、低品質證據）。1＝強建議、2＝弱建議；A 高品質、B 中品質、C 低／極低品質。<b>本主題沒有任何隨機對照試驗。</b>另注意 ASCRS 2021 原文採<b>連續編號 1–10</b>，並非坊間的 SV-1…／CV-1… 編號（乙狀結腸為第 3–7 條、盲腸為第 8–10 條）。
+    </div>
+  </details>
+
+  <div class="flow-step" id="volv_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">是否存在立即手術指標（紅旗）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="volvPick('red','yes',this)">有（任一項）<span class="fo-sub">腹膜炎／穿孔／游離氣體、血行動力學不穩或休克、腸壁壞死、內視鏡下見缺血黏膜</span></button>
+      <button class="flow-opt" onclick="volvPick('red','no',this)">無<span class="fo-sub">生命徵象穩定、無腹膜炎徵象。注意：乳酸正常不能排除腸缺血</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">先問生理再問解剖：部位決定<b>開什麼刀</b>，腹膜炎／缺血／不穩定決定<b>現在要不要開</b>。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="volv_c2">↓</div>
+  <div class="flow-step hidden" id="volv_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">扭轉部位？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="volvPick('site','sigmoid',this)">乙狀結腸扭轉<span class="fo-sub">Sigmoid volvulus — 最常見；可先內視鏡解扭</span></button>
+      <button class="flow-opt" onclick="volvPick('site','cecal',this)">盲腸扭轉／盲腸翻折<span class="fo-sub">Cecal volvulus / Cecal bascule — 不建議內視鏡復位</span></button>
+      <button class="flow-opt" onclick="volvPick('site','transverse',this)">橫結腸扭轉<span class="fo-sub">Transverse colon volvulus — 佔大腸扭轉 0.94%；病人年輕、死亡率最高</span></button>
+      <button class="flow-opt" onclick="volvPick('site','splenic',this)">脾曲扭轉<span class="fo-sub">Splenic flexure volvulus — 最罕見；影像徵象可能完全不出現</span></button>
+      <button class="flow-opt" onclick="volvPick('site','isk',this)">迴腸乙狀結腸打結<span class="fo-sub">Ileosigmoid knotting — 壞疽率 85.6%；內視鏡絕對禁止</span></button>
+      <button class="flow-opt" onclick="volvPick('site','sbv',this)">小腸扭轉<span class="fo-sub">Small bowel volvulus — 原發或續發；無非手術角色</span></button>
+      <button class="flow-opt" onclick="volvPick('site','midgut',this)">中腸扭轉／成人腸旋轉不良<span class="fo-sub">Midgut volvulus / Adult intestinal malrotation</span></button>
+      <button class="flow-opt" onclick="volvPick('site','gastric',this)">胃扭轉<span class="fo-sub">Gastric volvulus — organoaxial 或 mesenteroaxial</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="volv_rec1">
+    <div class="rec-label">初步分流 Initial triage</div>
+    <div class="rec-title">請先於步驟 1 判斷是否存在立即手術指標</div>
+  </div>
+
+  <div id="volv_mgmt_section" class="hidden">
+  <div class="home-divider" style="margin:26px 0 18px;">部位專屬處置 Site-specific management</div>
+
+  <div class="flow-step hidden" id="volv_s3_sigmoid">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">內視鏡解扭結果？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="volvPick('mgmt','endo_pending',this)">尚未執行<span class="fo-sub">無不穩定／腹膜炎／穿孔者，下消化道內視鏡為首選初步處置</span></button>
+      <button class="flow-opt" onclick="volvPick('mgmt','endo_ok',this)">成功解扭、腸壁具活性<span class="fo-sub">成功減壓，內視鏡下未見缺血黏膜</span></button>
+      <button class="flow-opt" onclick="volvPick('mgmt','endo_fail',this)">失敗或見腸壁壞死<span class="fo-sub">無法復位、腸壁不活或穿孔</span></button>
+      <button class="flow-opt" onclick="volvPick('mgmt','unfit',this)">解扭成功但手術風險過高<span class="fo-sub">無法承受切除手術之衰弱病人</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="volv_s3_gastric">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人狀態與手術耐受度？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="volvPick('mgmt','g_fit',this)">可承受確定性手術<span class="fo-sub">復位＋裂孔疝修補 ± 胃固定術／胃底摺疊術</span></button>
+      <button class="flow-opt" onclick="volvPick('mgmt','g_unfit',this)">高齡衰弱、手術風險高<span class="fo-sub">以最小侵襲方式解除阻塞為目標</span></button>
+    </div>
+  </div>
+
+  <div class="flow-step hidden" id="volv_s3_midgut">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">目前是否有症狀？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="volvPick('mgmt','m_sympt',this)">有症狀<span class="fo-sub">阻塞、反覆腹痛、進食不耐；或已發生中腸扭轉</span></button>
+      <button class="flow-opt" onclick="volvPick('mgmt','m_asympt',this)">無症狀、影像偶然發現<span class="fo-sub">此為真正未解的共同決策點，非既定建議</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="volv_rec2">
+    <div class="rec-label">部位專屬處置 Site-specific</div>
+    <div class="rec-title">請完成上方步驟</div>
+  </div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="volvReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/34016826/" target="_blank" rel="noopener" class="ref-link">Alavi K, et al. ASCRS CPG: colonic volvulus and ACPO. Dis Colon Rectum. 2021;64(9):1046-1057.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Tian+B%2C+et+al.+WSES+consensus+guidelines+sigmoid+volvulus.+World+J+Emerg+Surg.+2023%3B18%3A34" target="_blank" rel="noopener" class="ref-link">Tian B, et al. WSES consensus guidelines on sigmoid volvulus management. World J Emerg Surg. 2023;18:34.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23511842/" target="_blank" rel="noopener" class="ref-link">Halabi WJ, et al. Colonic volvulus in the United States. Ann Surg. 2014;259(2):293-301.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16795971/" target="_blank" rel="noopener" class="ref-link">Tsai MS, et al. (NTUH) Sigmoid volvulus. Hepatogastroenterology. 2006.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16336452/" target="_blank" rel="noopener" class="ref-link">Huang JC, et al. (Taiwan) Small bowel volvulus among adults. J Gastroenterol Hepatol. 2005;20(12):1906-1912.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Atamanalp+SS.+Ileosigmoid+knotting.+Pak+J+Med+Sci.+2022%3B38%283%29" target="_blank" rel="noopener" class="ref-link">Atamanalp SS. Ileosigmoid knotting: pooled review. Pak J Med Sci. 2022;38(3).</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33558953/" target="_blank" rel="noopener" class="ref-link">Perez AA, Pickhardt PJ. Adult malrotation on CT colonography. Abdom Radiol. 2021;46(7):3002-3010.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Mazaheri+P%2C+et+al.+CT+of+gastric+volvulus.+AJR+Am+J+Roentgenol.+2019" target="_blank" rel="noopener" class="ref-link">Mazaheri P, et al. CT of gastric volvulus. AJR Am J Roentgenol. 2019.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Levsky+JM%2C+et+al.+CT+findings+of+sigmoid+volvulus.+AJR+Am+J+Roentgenol.+2010%3B194%281%29%3A136-143" target="_blank" rel="noopener" class="ref-link">Levsky JM, et al. CT findings of sigmoid volvulus. AJR Am J Roentgenol. 2010;194(1):136-143.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const volvSt={red:null,site:null,mgmt:null};
+function volvPick(key,val,btn){
+  flowSelect(btn);
+  if(key==='red'){ volvSt.red=val; volvSt.site=null; volvSt.mgmt=null; }
+  else if(key==='site'){ volvSt.site=val; volvSt.mgmt=null; }
+  else if(key==='mgmt'){ volvSt.mgmt=val; }
+  volvRender();
+}
+
+const VOLV_STEPS=['volv_s3_sigmoid','volv_s3_gastric','volv_s3_midgut'];
+
+function volvRender(){
+  const r=volvSt.red, s=volvSt.site;
+  flowShow('volv_c2', !!r);
+  flowShow('volv_s2', !!r);
+  /* 改選紅旗會把 site 清成 null —— 選取狀態也必須跟著清掉，否則按鈕仍亮著但已不算數 */
+  if(!r||!s) flowClearSel('volv_s2');
+
+  volvTriageRender();
+
+  /* 步驟 3 僅在無紅旗、且該部位確實有可分歧的決策時出現 */
+  flowShow('volv_mgmt_section', r==='no'&&!!s);
+  const showSig =(r==='no'&&s==='sigmoid');
+  const showGas =(r==='no'&&s==='gastric');
+  const showMid =(r==='no'&&s==='midgut');
+  flowShow('volv_s3_sigmoid',showSig);
+  flowShow('volv_s3_gastric',showGas);
+  flowShow('volv_s3_midgut',showMid);
+  const shown={volv_s3_sigmoid:showSig,volv_s3_gastric:showGas,volv_s3_midgut:showMid};
+  VOLV_STEPS.forEach(function(id){ if(!shown[id]) flowClearSel(id); });
+
+  volvMgmtRender();
+}
+
+/* ── 初步分流 ─────────────────────────────────────────── */
+function volvTriageRender(){
+  const r=volvSt.red, s=volvSt.site;
+  let cls='rec-idle', title='請先於步驟 1 判斷是否存在立即手術指標', detail='', note='';
+  if(r&&!s){ title='請於步驟 2 選擇扭轉部位'; }
+  else if(r==='yes'){
+    cls='rec-urgent'; title='立即剖腹探查 — 不再嘗試內視鏡或非手術處置';
+    let op='';
+    if(s==='sigmoid') op='<li><b>緊急乙狀結腸切除</b>（ASCRS 第 4 條，GRADE 1C）：腸壁不活或穿孔時不應嘗試內視鏡解扭。</li><li>吻合與否依汙染程度、血行動力學與腸壁品質決定；不穩定者行 Hartmann 手術。</li>';
+    else if(s==='cecal') op='<li><b>緊急右側大腸切除／節段切除</b>（ASCRS 第 9 條，1C）。</li><li>不穩定者可切除後末端迴腸造口，勿勉強一期吻合。</li>';
+    else if(s==='transverse') op='<li><b>緊急節段切除。</b>橫結腸扭轉在全國資料中<b>死亡率 18%，為部位別最高</b>，且多數在剖腹時才確診——術前診斷不明的大腸扭轉合併腹膜炎，應直接探查。</li>';
+    else if(s==='splenic') op='<li><b>緊急切除。</b>脾曲扭轉的 whirl 與 bird\'s beak 徵象可能完全不出現，影像陰性不能排除；有腹膜炎即探查。</li>';
+    else if(s==='isk') op='<li><b>緊急剖腹。</b>迴腸乙狀結腸打結壞疽率 <b>85.6%</b>、死亡率 22.7%。</li><li><b>關鍵術中原則：若兩段腸管皆壞疽，切勿先解開打結</b>——應先上腸鉗，再<b>整體 (en bloc) 切除</b>，避免壞疽腸段破裂使毒性內容物溢出。</li><li>若末端迴腸壞疽延伸至距迴盲瓣 10 cm 內，關閉遠端殘端並行 end-to-side 迴腸-結腸吻合。</li>';
+    else if(s==='sbv') op='<li><b>緊急剖腹解扭 ± 腸切除。</b>小腸扭轉無非手術治療的正當角色。</li><li>台灣系列（n=19）：<b>2 例壞疽者全數死亡，17 例無壞疽者全數存活</b>——死亡率完全由壞疽驅動，時間就是腸子。</li><li>續發性須同時處理成因（憩室、腫瘤、Meckel、內疝、沾黏帶）。</li>';
+    else if(s==='midgut') op='<li><b>緊急剖腹＋Ladd 手術</b>（鬆解 Ladd bands、拓寬腸繫膜根部、附帶闌尾切除）。</li><li>急診情境預後明顯較差：一系列中<b>急診手術 3/5 需腸切除、1 例發生短腸症；擇期手術 0/6 有併發症</b>。</li>';
+    else if(s==='gastric') op='<li><b>緊急手術復位＋減壓。</b>先嘗試放置鼻胃管減壓（成功可爭取時間），但不可因此延誤手術。</li><li>缺血或穿孔者需切除。英國全國資料（緊急裂孔疝住院 n=12,441）：<b>30 天死亡 7.0%、90 天 11.5%</b>，壞疽 9.2%，且<b>16 年間死亡率未改善</b>。</li><li>注意併發症以<b>心血管與血栓栓塞為主</b>（DVT 24.6%、MI 21.4%、PE 18.8%、stroke 17.4%，佔事件 &gt;80%），敗血症僅 1.0%——術後照護重點在此。</li>';
+    detail='<li>紅旗成立：腹膜炎／穿孔／游離氣體、血行動力學不穩或休克、腸壁壞死、內視鏡下見缺血黏膜、或內視鏡解扭失敗。</li>'+op+'<li>同時進行液體復甦、廣效抗生素與器官功能支持。</li>';
+    note='ASCRS 2021／WSES 2023：休克為獨立死亡預測因子。<b>腸缺血可在乳酸正常時發生，不可以乳酸正常來延後手術。</b>';
+  } else if(r==='no'){
+    cls='rec-blue'; title='無立即手術指標 — 確認部位後進入部位專屬流程';
+    detail='<li>禁食、鼻胃管減壓、靜脈輸液與電解質校正。</li><li>影像：CT（可加 rectal contrast）確診並定位；仰臥腹部 X 光的 <b>northern exposure sign</b> 對乙狀結腸扭轉 sens 86%／spec 100%。</li><li>持續重新評估：一旦出現腹膜炎、不穩定或臨床惡化，即回到上方緊急路徑。</li><li><b>提醒兩個易漏的分流訊號：</b>嘔吐早於腹痛（Type 1 嘔吐，壞疽 64% vs 35%）；迴腸乙狀結腸打結<b>症狀時間短反而預示壞疽</b>。</li>';
+    note='CT 的缺血徵象在本疾病可靠度不佳（三項研究結論互相矛盾），<b>不可用「CT 沒看到缺血」作為安全的依據</b>——臨床惡化即探查。';
+  }
+  flowRec('volv_rec1',cls,title,detail,note);
+}
+
+/* ── 部位專屬處置 ──────────────────────────────────────── */
+function volvMgmtRender(){
+  const s=volvSt.site, m=volvSt.mgmt;
+  let cls='rec-idle', title='請完成上方步驟', detail='', note='';
+  if(volvSt.red!=='no'||!s){ flowRec('volv_rec2',cls,title,detail,note); return; }
+
+  if(s==='sigmoid'){
+    if(m==='endo_pending'){ cls='rec-blue'; title='下消化道內視鏡：評估活性 ＋ 解扭 ＋ 減壓';
+      detail='<li>無血行動力學不穩、腹膜炎或穿孔者，<b>應先行下消化道內視鏡</b>評估乙狀結腸活性、解扭並減壓（ASCRS 第 3 條，GRADE 1C）。</li>'
+        +'<li>統合技術成功率 <b>80.0%（95% CI 75–83%）</b>（15 studies, n=1,738）；台大系列 21/25 成功。</li>'
+        +'<li><b>若內視鏡下見缺血黏膜，立即中止並轉手術</b>（WSES 2023）。</li>'
+        +'<li>解扭後可留置減壓管；但<b>減壓成功不等於治療完成</b>——復發率見下。</li>';
+      note='ASCRS 2021／WSES 2023，皆為 GRADE 1C（強建議、低品質證據）。本主題無任何隨機對照試驗。'; }
+    else if(m==='endo_ok'){ cls='rec-elective'; title='同次住院乙狀結腸切除（勿讓病人帶著扭轉出院）';
+      detail='<li>成功解扭者<b>應於同次住院</b>行乙狀結腸切除以預防復發（ASCRS 第 5 條，1C）。</li>'
+        +'<li><b>不切除的代價是明確的</b>：解扭後統合復發率 <b>33.9%（19.5–52.1%）</b>（17 studies, n=3,285）；丹麥登錄資料 3／6／12／24 個月分別為 63%／47%／41%／24%。</li>'
+        +'<li>單純解扭、sigmoidopexy、mesosigmoidoplasty 等<b>非切除術式在預防復發上劣於切除</b>（ASCRS 第 6 條，2C）。</li>'
+        +'<li><b>時機</b>：無隨機資料。<b>台大經驗顯示間隔 2 天即足以完成準備，併發症未增加</b>；延遲手術與較差結果相關，且約三分之一的病人在該次住院從未接受手術。</li>'
+        +'<li><b>切除範圍</b>：合併巨結腸者僅切乙狀結腸的復發率高達 <b>82%</b>（vs 侷限乙狀結腸者 6%，p=0.005）——此時應行次全大腸切除。</li>'
+        +'<li>擇期手術死亡率明顯較低：緊急 vs 擇期 OR 1.63（1.21–2.22）；一系列中保守 37.2% vs 緊急 22.2% vs 擇期 9.1%（p=0.044）。</li>';
+      note='ASCRS 2021 第 5–6 條。CT 擴張 ≥9 cm 者復發風險更高（OR 3.23, 1.39–7.92），更應把握同次住院手術。'; }
+    else if(m==='endo_fail'){ cls='rec-urgent'; title='緊急乙狀結腸切除';
+      detail='<li>內視鏡解扭失敗、或腸壁不活／穿孔時，建議<b>緊急乙狀結腸切除</b>（ASCRS 第 4 條，1C）。</li>'
+        +'<li>腸壞死或穿孔即代表汙染腹腔；吻合與否依汙染程度、血行動力學狀態與腸壁品質決定。</li>'
+        +'<li><b>失敗的乙狀結腸鏡減壓應觸發剖腹，而非再試一次</b>——這也是迴腸乙狀結腸打結的診斷三徵之一，須一併考慮。</li>';
+      note='ASCRS 2021。'; }
+    else if(m==='unfit'){ cls='rec-blue'; title='內視鏡固定術（僅限手術風險過高的特選病人）';
+      detail='<li>手術風險過高者可考慮<b>內視鏡固定乙狀結腸</b>（ASCRS 第 7 條，2C）。</li>'
+        +'<li>經皮內視鏡結腸造口 (PEC, percutaneous endoscopic colostomy) 系統性回顧：n=81，復發 10/81、死亡 7 例，最常見併發症為傷口感染；另一篇 n=56，併發症 21%、死亡 5%。<b>以留置兩支 PEC 管且不移除者結果最佳。</b></li>'
+        +'<li>此為<b>妥協方案</b>：復發與併發症率均高於切除，僅適用於確實無法承受切除者。</li>';
+      note='ASCRS 2021 第 7 條（2C，弱建議、低品質證據）。'; }
+    else { title='請於步驟 3 選擇內視鏡解扭結果'; }
+  }
+
+  else if(s==='cecal'){
+    cls='rec-elective'; title='節段切除（右側大腸切除）— 即使腸壁存活亦然';
+    detail='<li><b>切除為首選治療</b>（ASCRS 第 9 條，GRADE 1C）；現代實務中大腸扭轉手術有 89% 採切除術式。</li>'
+      +'<li><b>不建議嘗試內視鏡復位</b>（ASCRS 第 8 條，1C）：機轉上迴結腸扭轉無法自下方解開，且進展至壞疽迅速。<b>坊間流傳的「內視鏡成功率 10–20%」查無出處</b>——原始文獻僅稱「rarely achievable」。</li>'
+      +'<li>腸壁仍具活性者，<b>非切除術式（cecopexy、cecostomy）應僅限於不適合切除的病人</b>（ASCRS 第 10 條，2C）。1990 年 561 例資料曾顯示單純解扭與 cecopexy 各約 13% 復發、cecostomy 最差（併發症 52%、死亡 22%），該研究「腸壁存活即可單純解扭」的結論<b>已被現代指引推翻</b>。</li>'
+      +'<li><b>盲腸翻折 (cecal bascule)</b> 佔 5–20%，為前向摺疊<b>無軸向扭轉</b>；CT 可正確區分三亞型，處置同樣為切除（26 例統合：無術後死亡、1 例復發）。</li>'
+      +'<li><b>腹部平片不足以確診者達 85%</b>（乙狀結腸僅 49%，p=0.002）——盲腸扭轉必須靠 CT。</li>';
+    note='ASCRS 2021 第 8–10 條。死亡率 6.64%，低於乙狀結腸（9.44%），因病人較年輕且女性居多。注意<b>盲腸扭轉發生率每年上升 5.53%</b>，而教科書的「乙狀 60–75%／盲腸 25–40%」在西方現代資料並不成立。';
+  }
+
+  else if(s==='transverse'){
+    cls='rec-elective'; title='節段切除（診斷常在剖腹時才確立）';
+    detail='<li>最常採用之術式為<b>節段切除</b>（317 例 PRISMA 回顧中佔 25%）。</li>'
+      +'<li><b>內視鏡減壓在此部位無證據可循</b>——既有失敗報告，亦有成功個案（含成大一例），無成功率可引用。</li>'
+      +'<li><b>病人族群與乙狀結腸完全不同</b>：平均年齡 <b>37.7 ± 23.8 歲</b>、女性 54%。誘因為橫結腸繫膜冗長且懸吊韌帶鬆弛或缺如、Chilaiditi 症候群、懷孕、既往手術形成固定點。</li>'
+      +'<li><b>死亡率 18–20%，是全國資料中部位別最高者</b>——低估此部位的風險是常見錯誤。</li>'
+      +'<li>切除後復發率：<b>無任何附追蹤的系列可引用（NOT VERIFIED）</b>。</li>';
+    note='佔大腸扭轉 <b>0.94%</b>（317 例回顧）——常見的「2–4%」查無原始出處。另「阻塞性左側大腸癌為其成因」屬教科書斷言，未找到個案佐證。';
+  }
+
+  else if(s==='splenic'){
+    cls='rec-elective'; title='切除（證據極稀薄，臨床判斷為主）';
+    detail='<li>最罕見部位。解剖基礎為<b>膈結腸、脾結腸、胃結腸韌帶鬆弛或缺如</b>，常見於既往手術者。</li>'
+      +'<li>平均年齡 53.2 歲，女性略多。唯一有分母的死亡率資料為 <b>1/14（7%）</b>，出自 1981 年回顧，13 例治療者無復發。<b>現代脾曲扭轉專屬死亡率：NOT VERIFIED。</b></li>'
+      +'<li><b>影像陷阱</b>：whirl sign 與 bird\'s beak <b>可能在手術證實的脾曲扭轉中完全不出現</b>——影像陰性不能排除。</li>'
+      +'<li>內視鏡處置僅有個位數個案報告，無成功率可引用。</li>';
+    note='「佔大腸扭轉 &lt;1%」溯源至 1981 年 14 例回顧、<b>無分母且從未更新</b>。本部位的一切建議皆屬低度證據，請以術中所見與臨床判斷為準。';
+  }
+
+  else if(s==='isk'){
+    cls='rec-urgent'; title='立即剖腹 — 內視鏡絕對禁止';
+    detail='<li><b>迴腸乙狀結腸打結是外科急症，沒有非手術選項。</b>迴腸纏繞乙狀結腸<b>根部</b>，內視鏡無法通過。</li>'
+      +'<li><b>最危險的陷阱</b>：若誤判為單純乙狀結腸扭轉而行內視鏡，「乙狀結腸看似成功減壓」會給予假性安心，<b>而壞疽的迴腸仍留在腹內</b>。</li>'
+      +'<li><b>診斷三徵</b>（臨床上極實用）：臨床像<b>小腸</b>阻塞 ＋ 影像像<b>大腸</b>阻塞 ＋ <b>乙狀結腸鏡無法減壓</b>。術前診斷率僅 20.8%。</li>'
+      +'<li><b>術中原則</b>：兩段腸管皆存活時方可解開打結；<b>若已壞疽，切勿解開</b>——先上腸鉗，整體 (en bloc) 切除。</li>'
+      +'<li>壞疽率 <b>85.6%</b>、死亡率 <b>22.7%</b>（n=923）；雙段壞疽者死亡率 28.3%。</li>'
+      +'<li><b>症狀時間短不是好消息</b>：&lt;24 小時就醫者壞疽 90.9%，&gt;24 小時者 57%（p&lt;0.01）——緊的結會快速梗塞，也把病人快速趕進醫院。</li>';
+    note='流行於非洲、中東、印度；土耳其東部發生率 0.3/10 萬/年，馬拉威登錄資料中佔所有腸扭轉 20.8%。<b>坊間「齋戒後飽食＋劇烈活動」的說法僅被檢驗過一次</b>（80 vs 80 病例對照）：飽食僅 10.0%，而<b>居首的誘因是急性腹瀉 21.3%</b>，齋戒本身從未被單獨檢驗。';
+  }
+
+  else if(s==='sbv'){
+    cls='rec-elective'; title='剖腹解扭 ± 腸切除 — 無非手術治療的角色';
+    detail='<li><b>小腸扭轉沒有正當的非手術選項</b>，需早期剖腹以避免梗塞。</li>'
+      +'<li><b>死亡率完全由壞疽驅動</b>：台灣 19 例成人系列中，<b>2 例壞疽者全數死亡、17 例無壞疽者全數存活</b>，整體 11%。</li>'
+      +'<li><b>務必找出續發成因</b>：台灣系列中續發佔 10/19——空腸憩室 6、空腸 GIST 2、懷孕 1、沾黏帶 1。西方系列以沾黏為主，非洲／中東／南亞則以原發為主。</li>'
+      +'<li><b>影像判讀警告</b>：whirl sign 對小腸扭轉 <b>sens 僅 27–64%、PPV 僅 21–23%</b>——多數 whirl sign 不是扭轉，而多數扭轉也沒有 whirl sign。<b>不可用它來排除。</b></li>'
+      +'<li>復發率低（3.2–3.9%），且<b>無任何固定術式被證實可預防復發</b>，各術式間從未有比較性研究。</li>';
+    note='台灣資料：Huang JC, et al. J Gastroenterol Hepatol 2005（成人 19 例，原發 9／續發 10）。<b>「單次大量進食／高纖粗食致病」的說法從未被對照研究檢驗過</b>，屬描述性傳承；齋戒相關的唯一原始資料為 1977 年 n=26 的無對照觀察，近 50 年未被複製。';
+  }
+
+  else if(s==='midgut'){
+    if(m==='m_sympt'){ cls='rec-elective'; title='Ladd 手術（有症狀者建議修補）';
+      detail='<li><b>Ladd 手術</b>：鬆解 Ladd bands、拓寬腸繫膜根部、將小腸置於右側、大腸置於左側，<b>並附帶闌尾切除</b>。</li>'
+        +'<li><b>附帶闌尾切除的理由是解剖性的</b>：術後盲腸位於左上腹，日後闌尾炎將以非典型位置表現。<b>但從未有研究檢驗此舉是否改變結果。</b></li>'
+        +'<li>腹腔鏡可行：一系列 n=44 轉開腹率 13.6%、中位住院 2 天、8 年追蹤復發 2.0%；另一比較研究住院 5.0 vs 11.6 天（p=0.0148），併發症無差異。</li>'
+        +'<li><b>擇期優於急診</b>：一系列中急診手術 3/5 需腸切除、1 例短腸症；<b>擇期手術 0/6 有併發症</b>。</li>'
+        +'<li><b>術前誠實告知</b>：專科追蹤系列稱 &gt;90% 症狀改善，但病人自填登錄資料顯示 <b>78–80% 術後仍有腸胃症狀</b>。徵求同意時應引用較悲觀的數字。</li>';
+      note='<b>成人腸旋轉不良沒有任何學會指引</b>（WSES／ASCRS／SAGES／ACS 均無），所有建議皆來自回溯系列與個案報告。復發率報告落差極大（2% vs 21%），後者出自腸移植轉診族群，可能不具代表性。'; }
+    else if(m==='m_asympt'){ cls='rec-blue'; title='無症狀者：以觀察為主，但這是真正未解的共同決策點';
+      detail='<li><b>此處沒有標準答案，流程圖不應假裝有。</b></li>'
+        +'<li><b>支持觀察</b>：決策分析模型顯示預防性 Ladd 手術的效益在 1 歲最高、至 20 歲後<b>觀察優於手術</b>；194 例統合資料中手術與保守處置的死亡率（p=0.14）與症狀緩解（p=0.44）皆無差異；332 例 CT 診斷之成人中<b>僅 2.1% 發生扭轉、僅 13.2% 接受手術</b>；扭轉風險隨年齡下降（37%→22%→12%）。</li>'
+        +'<li><b>支持手術</b>：無法預測誰會發生災難性中腸扭轉；一個腸移植轉診系列中<b>41% 病人就診時midgut 已喪失</b>；擇期手術死亡率近乎零。</li>'
+        +'<li><b>關鍵的證據空白</b>：<b>從未有研究追蹤已知無症狀成人腸旋轉不良的自然病程</b>，因此<b>任何「每年扭轉風險 X%」的數字都是編造的（NOT VERIFIED）</b>。</li>'
+        +'<li>依年齡、體能、解剖亞型與病人的風險承受度個別化決策。</li>';
+      note='<b>診斷警告</b>：SMA–SMV 反轉不可用來排除——332 例確診成人中 <b>91.6% 的 SMA/SMV 關係正常</b>；篩檢世代中 <b>67% 曾在先前影像被漏診</b>；迴盲瓣位於右下腹者僅 22%。上消化道攝影的「金標準」地位來自傳統而非實測，已發表特異度低至 0.33。'; }
+    else { title='請於步驟 3 選擇是否有症狀'; }
+  }
+
+  else if(s==='gastric'){
+    if(m==='g_fit'){ cls='rec-elective'; title='復位 ＋ 裂孔疝修補 ± 胃固定術';
+      detail='<li>可承受手術者行復位、裂孔缺損修補與固定；腹腔鏡可行。</li>'
+        +'<li><b>SAGES 2013 是唯一涵蓋胃扭轉的指引</b>；<b>SAGES 2024 版完全是擇期取向</b>，未觸及急診表現、扭轉、胃固定術與高風險病人，且對是否加做胃底摺疊術的建議<b>與 2013 版方向相反</b>（2024 為條件性建議、低確定性），並<b>拒絕對網片提出建議</b>。引用時請指明版本。</li>'
+        +'<li><b>診斷靠 CT，不要靠內視鏡</b>：36 例連續急診收治中，CT 診斷 26/26（100%）、<b>內視鏡僅 9/20（45%）</b>。</li>'
+        +'<li>術後照護重點在<b>心血管與血栓栓塞</b>：DVT 24.6%、MI 21.4%、PE 18.8%、stroke 17.4%，佔全部事件 &gt;80%；敗血症僅 1.0%。</li>';
+      note='已手術世代 30 天死亡率統合為 3%（2–5%）。高手術量中心 30 天死亡 5.3% vs 7.8%（p&lt;0.0001）。'; }
+    else if(m==='g_unfit'){ cls='rec-blue'; title='鼻胃管減壓 ± 前方胃固定術（高齡衰弱者）';
+      detail='<li><b>先嘗試鼻胃管減壓</b>：36 例連續急診收治中 <b>8 例（22%）僅以鼻胃管減壓即完全恢復</b>。</li>'
+        +'<li><b>前方胃固定術 (anterior gastropexy)</b> 是衰弱病人證據最佳的選項：11 例高風險病人（中位年齡 83 歲）全數無阻塞與復發；另 13 例緊急修補（中位 84 歲）<b>無死亡</b>。</li>'
+        +'<li><b>但請注意追蹤期極短</b>（中位僅 3 個月），長期復發率不明。</li>'
+        +'<li>減壓失敗或出現缺血徵象即轉為手術——不可讓「不適合手術」變成延誤的理由。</li>';
+      note='英國全國緊急裂孔疝住院資料（n=12,441）：30 天死亡 7.0%、90 天 11.5%，壞疽 9.2%，且 16 年間死亡率未改善——衰弱病人的緊急胃扭轉本身即為高風險事件。'; }
+    else { title='請於步驟 3 選擇病人狀態與手術耐受度'; }
+  }
+
+  flowRec('volv_rec2',cls,title,detail,note);
+}
+
+function volvReset(){
+  volvSt.red=null; volvSt.site=null; volvSt.mgmt=null;
+  document.querySelectorAll('#view-volv-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  volvRender();
+}
+volvReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
