@@ -142,6 +142,7 @@
         <option value="dabigatran">Dabigatran（Pradaxa）</option>
         <option value="warfarin">Warfarin（VKA）</option>
       </select>
+      <div class="pa-sub" id="pa_dose_note"></div>
     </div>
 
     <div class="pa-row">
@@ -172,7 +173,17 @@
         <option value="mhv">機械瓣膜 Mechanical heart valve</option>
         <option value="vte">靜脈血栓栓塞 VTE</option>
       </select>
-      <div class="pa-sub" id="pa_ind_sub">決定是否需要橋接；DOAC 一律不橋接，此欄主要影響 warfarin。</div>
+      <div class="pa-sub" id="pa_ind_sub">決定是否需要橋接；DOAC 一律不橋接，此欄主要影響 warfarin。
+        <b>冠狀動脈疾病本身不是抗凝血劑的適應症</b>，故不列於此——CAD 走抗血小板，請見「抗血小板」分頁；
+        若病人是「因 AF 或 VTE 在吃抗凝血劑，同時又有支架」，請一併勾選下方欄位。</div>
+    </div>
+
+    <div class="pa-row">
+      <label class="pa-k">合併冠心病</label>
+      <div class="pa-checks" style="flex:1;">
+        <label><input type="checkbox" id="pa_pci"> 有冠狀動脈支架／PCI 病史（與上方抗凝適應症併存）
+          <span class="en">prior PCI / coronary stent</span></label>
+      </div>
     </div>
   </div>
 
@@ -233,6 +244,12 @@
       <div class="pa-out-h">術後重啟 · Post-procedure resumption</div>
       <div class="pa-out-v sm" id="pa_resume">—</div>
       <div class="pa-out-d" id="pa_resume_d"></div>
+    </div>
+
+    <div class="pa-out hidden" id="pa_pci_box">
+      <div class="pa-out-h">合併冠狀動脈支架 · Prior PCI</div>
+      <div class="pa-out-v sm">停藥空窗期以 aspirin 頂替</div>
+      <div class="pa-out-d" id="pa_pci_d"></div>
     </div>
 
     <div class="pa-out" id="pa_alt_box">
@@ -636,7 +653,29 @@ function paCalc(){
       drug  = document.getElementById('pa_drug').value,
       bleed = document.getElementById('pa_bleed').value,
       ind   = document.getElementById('pa_ind').value,
-      neur  = document.getElementById('pa_neuraxial').checked;
+      neur  = document.getElementById('pa_neuraxial').checked,
+      pci   = document.getElementById('pa_pci').checked;
+
+  /* 劑量前提說明 */
+  document.getElementById('pa_dose_note').innerHTML = (drug==='warfarin')
+    ? ''
+    : '本表以 <b>AF／VTE 之治療劑量</b>為前提。'
+      +(drug==='rivaroxaban'
+        ? '<b style="color:var(--accent2);">rivaroxaban 2.5 mg BID 之血管劑量</b>（併用 aspirin 治療穩定型冠心病或週邊動脈疾病）'
+          +'<b style="color:var(--accent2);">不在 CHEST／EHRA／ASRA 停藥表的涵蓋範圍</b>，本頁不代為外推。'
+        : '減量或預防劑量之停藥時距，上述文件多未個別規範。');
+
+  /* 合併支架：停用 OAC 期間以 aspirin 頂替 */
+  document.getElementById('pa_pci_box').classList.toggle('hidden',!pci || bleed==='min');
+  if(pci && bleed!=='min'){
+    document.getElementById('pa_pci_d').innerHTML=
+      '<b>2024 ACC/AHA Rec 9（Class 1，LOE B-NR）</b>：曾接受 PCI 者若術前必須停用口服抗凝血劑單方治療，'
+      +'<b>可行時應以 aspirin 頂替</b>，直到抗凝血劑能安全重啟。'
+      +'<br>另 Rec 7（Class 1，B-R）：有 PCI 病史者行非心臟手術，<b>建議續用 aspirin 75–100 mg</b>。'
+      +'<br><span class="pa-src">亦即這類病人在停掉 DOAC／warfarin 的那幾天並非「完全無抗栓保護」，'
+      +'而是靠 aspirin 撐著；術後抗凝血劑重啟後，aspirin 可視情況停用。'
+      +'支架置放時間、是否仍在 DAPT、以及擇期手術該延多久，見「抗血小板」分頁。</span>';
+  }
 
   /* 風險因子區塊切換 */
   ['af','mhv','vte'].forEach(function(k){
