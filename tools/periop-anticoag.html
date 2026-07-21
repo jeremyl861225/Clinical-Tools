@@ -157,8 +157,8 @@
     <div class="pa-row">
       <label class="pa-k">神經軸麻醉</label>
       <div style="flex:1;">
-        <label class="item"><input type="checkbox" id="pa_neuraxial"> 預計採用脊椎／硬脊膜外麻醉或置放硬脊膜外導管
-          <span class="unit">neuraxial / epidural catheter</span></label>
+        <label class="item"><input type="checkbox" id="pa_neuraxial"><span class="it-t">預計採用脊椎／硬脊膜外麻醉或置放硬脊膜外導管
+          <span class="unit">neuraxial / epidural catheter</span></span></label>
       </div>
       <div class="pa-sub">CHEST 將神經軸麻醉歸入高出血風險（停 2 天）；<b>ASRA 第 5 版要求更長</b>，勾選後一併顯示。</div>
     </div>
@@ -178,8 +178,8 @@
     <div class="pa-row">
       <label class="pa-k">合併冠心病</label>
       <div style="flex:1;">
-        <label class="item"><input type="checkbox" id="pa_pci"> 有冠狀動脈支架／PCI 病史（與上方抗凝適應症併存）
-          <span class="unit">prior PCI / coronary stent</span></label>
+        <label class="item"><input type="checkbox" id="pa_pci"><span class="it-t">有冠狀動脈支架／PCI 病史（與上方抗凝適應症併存）
+          <span class="unit">prior PCI / coronary stent</span></span></label>
       </div>
     </div>
   </div>
@@ -189,37 +189,37 @@
     <div class="section-title">血栓栓塞風險因子</div>
 
     <div id="pa_rf_af">
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"> 近 3 個月內中風或 TIA
-        <span class="unit">recent (&lt;3 m) stroke / TIA</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1" id="pa_rf_vasc"> CHA₂DS₂-VASc ≥7（或 CHADS₂ 5–6）
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1"><span class="it-t">近 3 個月內中風或 TIA
+        <span class="unit">recent (&lt;3 m) stroke / TIA</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af" data-hi="1" id="pa_rf_vasc"><span class="it-t">CHA₂DS₂-VASc ≥7（或 CHADS₂ 5–6）
         <span class="unit">CHA₂DS₂-VASc ≥7</span>
-        <span id="pa_vasc_res" class="pa-vasc-res hidden"></span></label>
+        <span id="pa_vasc_res" class="pa-vasc-res hidden"></span></span></label>
       <button type="button" class="flow-link" id="pa_vasc_link">開啟 CHA₂DS₂-VASc 計算機 →</button>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af"> 過去圍手術期曾發生血栓栓塞
-        <span class="unit">prior perioperative thromboembolism</span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="af"><span class="it-t">過去圍手術期曾發生血栓栓塞
+        <span class="unit">prior perioperative thromboembolism</span></span></label>
     </div>
 
     <div id="pa_rf_mhv" class="hidden">
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 二尖瓣位機械瓣，且合併 ≥1 項中風危險因子
-        <span class="unit">mechanical mitral valve with ≥1 risk factor</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 舊世代人工瓣（籠球型 caged-ball／傾斜盤型 tilting-disc）
-        <span class="unit">older-generation valve</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 近 3 個月內血栓栓塞事件
-        <span class="unit">recent (&lt;3 m) thromboembolic event</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"> 過去圍手術期曾發生血栓栓塞
-        <span class="unit">prior perioperative thromboembolism</span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"><span class="it-t">二尖瓣位機械瓣，且合併 ≥1 項中風危險因子
+        <span class="unit">mechanical mitral valve with ≥1 risk factor</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"><span class="it-t">舊世代人工瓣（籠球型 caged-ball／傾斜盤型 tilting-disc）
+        <span class="unit">older-generation valve</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"><span class="it-t">近 3 個月內血栓栓塞事件
+        <span class="unit">recent (&lt;3 m) thromboembolic event</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="mhv" data-hi="1"><span class="it-t">過去圍手術期曾發生血栓栓塞
+        <span class="unit">prior perioperative thromboembolism</span></span></label>
     </div>
 
     <div id="pa_rf_vte" class="hidden">
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 近 3 個月內 VTE（尤其 1 個月內）
-        <span class="unit">recent (&lt;3 m) VTE</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 重度血栓體質：protein C／S／antithrombin 缺乏、
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"><span class="it-t">近 3 個月內 VTE（尤其 1 個月內）
+        <span class="unit">recent (&lt;3 m) VTE</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"><span class="it-t">重度血栓體質：protein C／S／antithrombin 缺乏、
         homozygous factor V Leiden 或 prothrombin 基因突變、雙重異型合子、多重血栓體質
-        <span class="unit">severe thrombophilia</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 抗磷脂質抗體
-        <span class="unit">antiphospholipid antibodies</span></label>
-      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"> 高 VTE 風險之活動性癌症
-        <span class="unit">active cancer with high VTE risk</span></label>
+        <span class="unit">severe thrombophilia</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"><span class="it-t">抗磷脂質抗體
+        <span class="unit">antiphospholipid antibodies</span></span></label>
+      <label class="item"><input type="checkbox" class="pa-rf" data-ind="vte" data-hi="1"><span class="it-t">高 VTE 風險之活動性癌症
+        <span class="unit">active cancer with high VTE risk</span></span></label>
     </div>
     <div class="note" style="margin-top:8px;">勾選項目取自 CHEST 2022 對「高血栓栓塞風險」之界定與其橋接實作註記；未勾選任何項目時視為低至中度風險。</div>
   </div>

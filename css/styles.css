@@ -229,6 +229,13 @@
   label.item{display:flex; align-items:center; flex-wrap:wrap; gap:5px 9px; padding:6px 2px; cursor:pointer; font-size:14px;}
   label.item:hover{background:var(--hover-bg);}
   label.item input{margin-top:2px; accent-color:var(--accent2); width:16px; height:16px; flex-shrink:0;}
+  /* 長條目：label.item 是 flex 容器，直接放在裡面的裸文字會成為一個匿名 flex item，
+     文字一長就整段被擠到勾選框的下一行。把文字（含其後的 .unit）包進 .it-t，
+     使其成為可佔滿剩餘寬度並自行折行的單一 flex item，即可與勾選框對齊。
+     短條目不需要，維持原本寫法即可。 */
+  label.item>.it-t{flex:1 1 0; min-width:0;}
+  label.item:has(>.it-t){align-items:flex-start;}
+  label.item:has(>.it-t)>input{margin-top:4px;}
   .pt-badge{margin-left:auto; flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); background:var(--accent2-soft); border-radius:10px; padding:2px 8px; white-space:nowrap;}
   /* 含分數 badge 之欄位列：label 與 badge（靠最右）固定同一行，select 排至下一行
      （所有寬度一致；避免長選單將 badge 擠到獨立一行） */
