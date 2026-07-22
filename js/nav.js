@@ -44,6 +44,17 @@
   };
   var CANCER_PAGE = 'tools/cancer.html';
 
+  /* 只在導覽列出現、首頁不放方磚的頁面。清單本來全由首頁 DOM 推導，這裡是唯一的例外：
+     藥物資料庫是查詢型工具（一次 500+ 品項），放上首頁會壓過臨床決策那幾類，
+     但仍需要每一頁都能直接跳過去，故於此明列。日後若決定放上首頁，
+     只要在 index.html 加方磚並把這段刪掉即可。 */
+  var NAV_ONLY_GROUPS = [
+    {
+      title: '藥物資料庫', en: 'Drug Database', href: 'tools/drug-database.html',
+      items: [{ href: 'tools/drug-database.html', zh: '藥物資料庫', en: 'NTUH Formulary' }]
+    }
+  ];
+
   var KEY = 'ct-nav-open';
   var SNAP = 'ct-nav-snapshot-v2';    // 清單快照；格式變更時改版號即可作廢舊檔
   var DESKTOP = '(min-width:1024px)';
@@ -143,6 +154,7 @@
         groups.push({ title: title, en: en, href: dest, items: items });
       }
     });
+    NAV_ONLY_GROUPS.forEach(function (g) { groups.push(g); });
     return groups;
   }
 

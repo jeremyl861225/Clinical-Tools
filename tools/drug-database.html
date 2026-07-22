@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>藥物資料庫 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<link rel="stylesheet" href="../css/drug-database.css">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-drugdb">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Drug Database</div>
+      <h1>藥物資料庫</h1>
+      <div class="sub">台大醫院藥劑部處方集 · 一商品名一張藥卡</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+  </div>
+
+  <input type="text" id="db-search" class="db-search" autocomplete="off"
+         placeholder="搜尋學名／商品名／中文品名／機轉（例：sitagliptin、Januvia、佳糖維、DPP-4）…"
+         oninput="onSearch(this.value)">
+
+  <div class="db-cats" id="db-tops"></div>
+  <div class="db-clsrow" id="db-cls"></div>
+  <div class="db-count" id="db-count"></div>
+  <div id="db-list"></div>
+
+  <footer class="tool-footer">
+    資料來源：<a href="https://dept.ntuh.gov.tw/phar/" target="_blank" rel="noopener" class="ref-link">台大醫院藥劑部 藥品查詢系統</a>
+    （藥品明細、腎功能／肝功能／透析／CVVH 劑量調整、注射給藥指引各子頁）。
+    藥理機轉標籤依台大藥品分類之末端節點標註。
+    藥價為擷取當時之健保價／自費價，僅供參考。臨床使用前請對照原始頁面與最新仿單。
+  </footer>
+</div>
+</div>
+
+<script src="../data/drugs/index.js"></script>
+<script src="../js/drug-database.js"></script>
+
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
