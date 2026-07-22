@@ -16,16 +16,22 @@
 const TOP_ZH = {
   'I. Analgesic Drugs': '止痛藥',
   'II. Psychopharmacologic Drugs': '精神科用藥',
-  'III. Anticonvulsants': '抗癲癇藥',
+  'III. Neurologic Drugs': '神經科用藥',
   'IV. Agents Used in Anesthesia': '麻醉用藥',
+  'V. Musculoskeletal And Joint Diseases': '骨骼肌肉與關節用藥',
   'VI. Cardiovascular-renal Drugs': '心血管與腎臟用藥',
   'IX. Hematological Agents': '血液用藥',
   'X. Endocrine and Metabolic Agents': '內分泌與代謝用藥',
   'XI. Antiallergic Agents and Antihistamines': '抗過敏與抗組織胺',
   'XII. Respiratory Tract Drugs': '呼吸道用藥',
   'XIII. Gastrointestinal Agents': '腸胃道用藥',
+  'XIV. Immunologic Agents and Vaccines': '免疫製劑與疫苗',
   'XVI. Antiinfective Agents': '抗微生物劑',
-  'XVIII. Antidotes in Poisoning': '中毒解毒劑'
+  'XVII. Urologic Agents': '泌尿道用藥',
+  'XVIII. Antidotes in Poisoning': '中毒解毒劑',
+  'XX. Dental preparations': '牙科製劑',
+  'XXI. Dermatological Preparations': '皮膚科製劑',
+  'XXIII. Ophthalmic Preparations': '眼科製劑'
 };
 
 const IDX = window.DRUGDB_INDEX || [];
@@ -83,7 +89,11 @@ function renderTops() {
       ${esc(TOP_ZH[t] || t)}<span>${n[t]}</span></button>`).join('');
 }
 
-/* 機轉標籤列：只列出目前大類底下實際有藥的機轉，否則全庫上百個標籤掃不完 */
+/* 機轉標籤列：全庫上百個標籤會把清單擠到看不見，預設只露出最常見的十幾個，
+   其餘收在「更多」後面；正在篩選中的標籤一定會顯示，否則按了自己就消失。 */
+const CLS_SHOWN = 14;
+let clsOpen = false;
+
 function renderCls() {
   const n = {};
   IDX.forEach(d => {
@@ -95,14 +105,22 @@ function renderCls() {
     });
   });
   const keys = Object.keys(n).sort((a, b) => n[b].n - n[a].n || a.localeCompare(b));
-  el('db-cls').innerHTML = keys.length < 2 ? '' :
+  if (keys.length < 2) { el('db-cls').innerHTML = ''; return; }
+  const hidden = clsOpen ? 0 : Math.max(0, keys.length - CLS_SHOWN);
+  const shown = clsOpen ? keys
+    : keys.slice(0, CLS_SHOWN).concat(curCls && keys.indexOf(curCls) >= CLS_SHOWN ? [curCls] : []);
+  el('db-cls').innerHTML =
     `<span class="db-cls-lbl">藥理機轉</span>` +
     `<button class="db-clschip ${curCls ? '' : 'active'}" onclick="pickCls('')">不限</button>` +
-    keys.map(c => `<button class="db-clschip ${curCls === c ? 'active' : ''}" onclick="pickCls('${esc(c)}')"
-      title="${esc(n[c].zh)}">${esc(n[c].zh || c)}<span>${n[c].n}</span></button>`).join('');
+    shown.map(c => `<button class="db-clschip ${curCls === c ? 'active' : ''}" onclick="pickCls('${esc(c)}')"
+      title="${esc(n[c].zh)}">${esc(n[c].zh || c)}<span>${n[c].n}</span></button>`).join('') +
+    (hidden ? `<button class="db-clsmore" onclick="toggleCls()">更多 ${hidden} 種 ▾</button>`
+            : (clsOpen ? `<button class="db-clsmore" onclick="toggleCls()">收合 ▴</button>` : ''));
 }
 
-function pickTop(t) { curTop = t; curCls = ''; renderTops(); renderCls(); renderList(); }
+function toggleCls() { clsOpen = !clsOpen; renderCls(); }
+
+function pickTop(t) { curTop = t; curCls = ''; clsOpen = false; renderTops(); renderCls(); renderList(); }
 function pickCls(c) { curCls = c; renderCls(); renderList(); }
 function onSearch(v) { curQ = (v || '').trim().toLowerCase(); renderList(); }
 

@@ -48,3 +48,8 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
 /* 健保給付規定：原頁就是一長段條列，節錄後仍偏長，收在可捲動的小框裡免得洗掉整張卡 */
 .db-nhi{max-height:190px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);
   border-radius:2px; padding:8px 10px; font-size:12.5px;}
+
+/* 機轉標籤太多時的展開／收合鈕 */
+.db-clsmore{font-family:var(--mono); font-size:10.5px; color:var(--accent); background:none;
+  border:1px dashed var(--line); border-radius:10px; padding:2px 9px; cursor:pointer;}
+.db-clsmore:hover{border-color:var(--accent); background:var(--accent-soft);}
