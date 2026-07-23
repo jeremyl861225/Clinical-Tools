@@ -74,20 +74,30 @@
   var raf = null, last = 0, running = false, visible = true;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
+  /* 文件座標一律走 offsetTop/offsetLeft 鏈（版面真值），不可用
+     getBoundingClientRect()+scrollY：rect 是「視口相對」座標，iOS 鍵盤彈出、
+     visual viewport 平移期間，rect 與 scrollY 彼此對不上（聚焦查詢欄時實測
+     地板整個上飄，貓浮在橫桿上方），而 offset 鏈是純排版數字，與捲動、鍵盤、
+     縮放全然無關。 */
+  function docPos(el) {
+    var x = 0, y = 0;
+    while (el) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
+    return { x: x, y: y };
+  }
+
   /* ---- 平台：飼料可以停住的水平面（皆為文件座標的虛擬像素） ---- */
   function refreshPlatforms() {
     // 展開分類時主頁首被收起（body.sec-open），此時沒有橫桿也就沒有地板。
-    // 必須直接跳出：否則 rect 全為 0，floorV 歸零、cat.x 被夾成 0，返回主選單時貓會卡在最左邊。
+    // 必須直接跳出：否則座標全為 0，floorV 歸零、cat.x 被夾成 0，返回主選單時貓會卡在最左邊。
     if (!header.offsetParent) { visible = false; return; }
     visible = true;
 
-    var sx = window.scrollX, sy = window.scrollY;
-    var hr = header.getBoundingClientRect();
-    // 取橫桿「上緣」而非 rect.bottom：bottom 含 2px 邊框，貓會站進線裡。取整數見檔頭說明。
+    var hp = docPos(header);
+    // 取橫桿「上緣」：offsetHeight 含 2px 邊框，不扣掉的話貓會站進線裡。取整數見檔頭說明。
     var bw = parseFloat(getComputedStyle(header).borderBottomWidth) || 0;
-    floorV = Math.round((hr.bottom - bw + sy) / U);
-    ruleL = (hr.left + sx) / U;
-    ruleR = (hr.right + sx) / U;
+    floorV = Math.round((hp.y + header.offsetHeight - bw) / U);
+    ruleL = hp.x / U;
+    ruleR = (hp.x + header.offsetWidth) / U;
 
     platforms = [{ x0: ruleL, x1: ruleR, y: floorV, rule: true }];
 
@@ -95,16 +105,16 @@
     for (var i = 0; i < sel.length; i++) {
       var el = sel[i];
       if (!el.offsetParent) continue;              // 隱藏中（收合的分類、查詢時的首頁本體）
-      var r = el.getBoundingClientRect();
-      platforms.push({ x0: (r.left + sx) / U, x1: (r.right + sx) / U, y: (r.top + sy) / U });
+      var p = docPos(el);
+      platforms.push({ x0: p.x / U, x1: (p.x + el.offsetWidth) / U, y: p.y / U });
     }
     // 內容底緣當作地面：點在頁尾以下的空白處時，飼料才有東西可以停，
     // 否則它會一路掉出頁面外被回收，看起來像沒反應
     var sheet = document.querySelector('.sheet');
     if (sheet) {
-      var sr = sheet.getBoundingClientRect();
-      groundY = (sr.bottom + sy) / U;
-      platforms.push({ x0: (sr.left + sx) / U, x1: (sr.right + sx) / U, y: groundY });
+      var sp = docPos(sheet);
+      groundY = (sp.y + sheet.offsetHeight) / U;
+      platforms.push({ x0: sp.x / U, x1: (sp.x + sheet.offsetWidth) / U, y: groundY });
     }
     cat.x = Math.max(ruleL + EDGE, Math.min(ruleR - EDGE, cat.x || ruleR - EDGE - 4));
   }
@@ -665,17 +675,19 @@
   }
   function stop() { running = false; if (raf) cancelAnimationFrame(raf); }
 
-  /* ---- 互動 ---- */
+  /* ---- 互動 ----
+     一律用 e.pageX/pageY（引擎直接給的文件座標），不可用 clientX+scrollX 自行換算：
+     iOS 鍵盤開著、visual viewport 平移期間，client 座標與 scrollY 彼此對不上。 */
   function catHit(cx, cy) {
-    var l = (cat.x - CAT_W / 2) * U - window.scrollX, r = (cat.x + CAT_W / 2) * U - window.scrollX;
-    var b = floorV * U - window.scrollY, t = b - CAT_H * U;
+    var l = (cat.x - CAT_W / 2) * U, r = (cat.x + CAT_W / 2) * U;
+    var b = floorV * U, t = b - CAT_H * U;
     return cx >= l && cx <= r && cy >= t - 6 && cy <= b + 6;
   }
 
   document.addEventListener('click', function (e) {
     if (e.target.closest('button, a, input, select, textarea, label, summary, .tool-card, .gs-item')) return;
 
-    if (catHit(e.clientX, e.clientY)) {
+    if (catHit(e.pageX, e.pageY)) {
       cat.hearts.push({ x: cat.x + 3, y: floorV - CAT_H - 3, t: 0, life: 1.2 });
       cat.idle = 0;
       cat.happy = 1.3;                                 // 被摸：瞇眼笑一下
@@ -686,9 +698,9 @@
     refreshPlatforms();
     // 點在頁尾以下的空白處時，把起點提到地面之上：否則它下方沒有任何平台，
     // 會一路掉出頁面被回收，看起來像沒反應
-    var fy = (e.clientY + window.scrollY) / U;
+    var fy = e.pageY / U;
     if (groundY && fy > groundY - 1) fy = groundY - 1;
-    falling.push({ x: (e.clientX + window.scrollX) / U, y: fy, prev: fy, vy: 0, base: 0 });
+    falling.push({ x: e.pageX / U, y: fy, prev: fy, vy: 0, base: 0 });
   });
 
   document.addEventListener('visibilitychange', function () {
