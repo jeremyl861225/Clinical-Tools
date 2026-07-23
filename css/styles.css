@@ -72,8 +72,12 @@
     .home-header .sub .sub-part{display:block;}
   }
   .cat-strip{height:51px; margin-top:6px; pointer-events:none;}
-  /* 整頁疊層：飼料要能落在圖卡與查詢欄上，故不能只蓋住頁首那一條 */
-  #cat-canvas{position:fixed; inset:0; width:100%; height:100%;
+  /* 整頁疊層：飼料要能落在圖卡與查詢欄上，故不能只蓋住頁首那一條。
+     必須是 absolute（隨文件被合成器原生捲動）而非 fixed：fixed 疊層得在 JS 裡
+     用 scrollY 補償捲動，但捲動在合成器執行緒、重繪在主執行緒，快速捲動時
+     重繪永遠慢半拍，貓會整隻「飛離」橫桿（手機動量捲動時最明顯）。
+     高度由 pixel-cat.js 依文件高度設定。 */
+  #cat-canvas{position:absolute; left:0; top:0; width:100%;
               pointer-events:none; z-index:40; image-rendering:pixelated;}
 
   /* 全站查詢（首頁） */

@@ -1,8 +1,9 @@
 /* 像素貓 —— 首頁標題橫桿上的互動小動物
  *
- * 舞台：整頁的 fixed 疊層畫布。飼料要能掉在圖卡與查詢欄上，所以畫布不能只蓋住頁首。
- * 座標一律用「文件座標的虛擬像素」（＝文件 CSS px ÷ U），畫之前把捲動位移交給
- * setTransform 處理，如此捲動時飼料會跟著它停靠的平台一起移動。
+ * 舞台：蓋住整份文件的 absolute 疊層畫布。飼料要能掉在圖卡與查詢欄上，所以畫布
+ * 不能只蓋住頁首。畫布隨頁面被合成器原生捲動，繪製一律用「文件座標的虛擬像素」
+ * （＝文件 CSS px ÷ U），完全不碰 scrollY —— 若改用 fixed＋scrollY 補償，捲動在
+ * 合成器執行緒、重繪在主執行緒，快速捲動時重繪慢半拍，貓會整隻飛離橫桿。
  *
  * 地板：貓只能在 .app-header 的 border-bottom（那條橫桿）上走動。飼料若掉在別的
  * 平台上，貓構不到 —— 牠會走到那份飼料正下方的橫桿處哭，而飼料就一直堆在原處。
@@ -108,17 +109,24 @@
     cat.x = Math.max(ruleL + EDGE, Math.min(ruleR - EDGE, cat.x || ruleR - EDGE - 4));
   }
 
-  /* 畫布尺寸一律以「畫布自己量到的 CSS box」為準，不可用 innerWidth/innerHeight。
-     手機（尤其 iOS）上兩者經常對不起來：
-       · 網址列收合／展開時，fixed 元素的 100% 高度跟著版面視窗，innerHeight 卻是視覺視窗
-       · 雙指縮放時 innerWidth/Height 變成放大後的可視範圍，fixed 畫布仍是整個版面視窗
-     一旦 bitmap 尺寸與 CSS box 不一致，瀏覽器就會把 bitmap 拉伸填滿（實測 1.27 倍），
-     貓與飼料會整個偏離橫桿 —— 這正是手機上「貓跑版」的成因。 */
+  /* 畫布高度＝文件高度（style.height 由此設定），bitmap＝該 CSS box × dpr。
+     畫布是文件的一部分，網址列收合、雙指縮放都由瀏覽器當一般內容處理，
+     不再有 fixed 疊層那套「innerHeight 對不上 CSS box」的走位問題。
+     dpr 依總面積設上限：查詢展開時文件很長，bitmap 太大會撞上行動版 Safari 的
+     canvas 面積限制（整張直接擺爛不顯示），寧可整體略糊。 */
+  var dprEff = 1;
   function syncCanvasSize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
     var r = canvas.getBoundingClientRect();
-    var w = Math.round((r.width || window.innerWidth) * dpr);
-    var h = Math.round((r.height || window.innerHeight) * dpr);
+    var w0 = r.width || document.documentElement.clientWidth;
+    var h0 = Math.max(document.documentElement.scrollHeight, window.innerHeight || 0);
+    var cap = Math.sqrt(16000000 / Math.max(1, w0 * h0));
+    if (dpr > cap) dpr = Math.max(0.5, cap);
+    var hpx = h0 + 'px';
+    if (canvas.style.height !== hpx) canvas.style.height = hpx;
+    dprEff = dpr;
+    var w = Math.round(w0 * dpr);
+    var h = Math.round(h0 * dpr);
     if (canvas.width === w && canvas.height === h) return false;
     canvas.width = w; canvas.height = h;        // 指定尺寸會清空畫布，故僅在真的改變時才做
     ctx.imageSmoothingEnabled = false;
@@ -407,13 +415,11 @@
   }
 
   function draw() {
-    var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    // 清「整張 bitmap」而不是推算出來的視窗範圍：雙指縮放時 innerWidth/Height 只剩
-    // 放大後的可視區，用它清畫面會清不乾淨，上一幀的貓留在原地（螢幕上會出現兩隻貓）
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // 文件座標 → 裝置像素：捲動位移交給 transform，飼料才會黏在它停靠的平台上
-    ctx.setTransform(U * dpr, 0, 0, U * dpr, -window.scrollX * dpr, -window.scrollY * dpr);
+    // 文件座標 → 裝置像素。畫布本身就在文件上隨頁面捲動，這裡不需要也不可以
+    // 補償 scrollY（見檔頭：fixed＋scrollY 補償會讓貓在快速捲動時飛離橫桿）
+    ctx.setTransform(U * dprEff, 0, 0, U * dprEff, 0, 0);
 
     var i;
     for (i = 0; i < puddles.length; i++) {
@@ -689,15 +695,9 @@
     if (document.hidden) stop(); else start();
   });
   window.addEventListener('resize', resize);
-  // 手機網址列收合／雙指縮放時不一定會派 resize，但畫布的 CSS box 會變 —— 直接盯著它，
-  // bitmap 才不會與 CSS box 脫鉤（脫鉤就會被拉伸，貓整個偏離橫桿）
+  // 版面寬度變（旋轉、視窗縮放）時 bitmap 得跟著 CSS box，否則會被拉伸走位。
+  // 捲動不必監聽：畫布隨文件捲動，平台的文件座標不會因捲動而變。
   if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', resize);
-    window.visualViewport.addEventListener('scroll', refreshPlatforms);
-  }
-  // 版面會變（展開分類、查詢、捲動），平台位置得跟著更新
-  window.addEventListener('scroll', refreshPlatforms, { passive: true });
   window.addEventListener('hashchange', function () { setTimeout(refreshPlatforms, 60); });
   // 首頁路由展開／收合分類後會派這個事件：版面整個換掉，地板要重新量
   window.addEventListener('cat:relayout', function () { setTimeout(resize, 0); });
