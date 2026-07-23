@@ -54,6 +54,14 @@
     {
       title: '藥物資料庫', en: 'Drug Database', href: 'tools/drug-database.html',
       items: [{ href: 'tools/drug-database.html', zh: '藥物資料庫', en: 'NTUH Formulary' }]
+    },
+    // 心臟急重症：兩份自含頁面（無首頁方磚），固定列於側邊欄最底。
+    {
+      title: '心臟急重症', en: 'Cardiac & Critical Care', href: '',
+      items: [
+        { href: 'tools/acls.html', zh: 'ACLS 高級心臟救命術', en: 'Resuscitation Algorithms' },
+        { href: 'tools/heart-failure.html', zh: '心臟衰竭治療指引', en: 'NTUH Heart Failure' }
+      ]
     }
   ];
 
@@ -220,6 +228,9 @@
       want = DEFAULT_HASH[mine[0].getAttribute('data-href').split('#')[0]] || null;
     }
     var cur = want && mine.filter(function (a) { return itemHash(a) === want; })[0];
+    // 頁面自身用 hash 做內部分頁（如心衰竭頁的 #overview），該 hash 不對應任何導覽項時，
+    // 退回本頁的無-hash 項，才不會整個側欄都沒有標記當前頁。
+    if (!cur) cur = mine.filter(function (a) { return !itemHash(a); })[0];
     if (cur) cur.classList.add('is-current');
     return cur || null;
   }

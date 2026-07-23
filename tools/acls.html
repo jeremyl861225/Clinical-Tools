@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025 ACLS · Advanced Cardiovascular Life Support</title>
+<meta name="theme-color" content="#1f5a6b">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  :root{
+    color-scheme: light dark;
+    --ink:#132126; --paper:#f4f2ec; --panel:#ffffff; --line:#d8d3c4;
+    --accent:#1f5a6b; --accent-soft:#dbe8ea;
+    --accent2:#a13d2f; --accent2-soft:#e7dccb;
+    --muted:#5b5b52; --muted-soft:#8a8579; --label-ink:#333333;
+    --field-bg:#ffffff; --box-bg:#faf8f2; --hover-bg:#fbfaf6; --soft-bg:#eef4f5;
+    --mono:"IBM Plex Mono","SF Mono",Consolas,monospace;
+    --serif:"Iowan Old Style","Georgia","Noto Serif TC",serif;
+    --sans:"Inter","Noto Sans TC",-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e7e4db; --paper:#14181b; --panel:#1e2429; --line:#39424a;
+      --accent:#7cbccc; --accent-soft:#233a42;
+      --accent2:#e89a8c; --accent2-soft:#3d2d27;
+      --muted:#a8a39a; --muted-soft:#8f897e; --label-ink:#cbc7be;
+      --field-bg:#232b31; --box-bg:#222a2f; --hover-bg:#262e34; --soft-bg:#1b3037;
+    }
+  }
+  ::selection{background:#c9a227; color:#f4f2ec;}
+  @media (prefers-color-scheme: dark){ ::selection{background:#6fb7d6; color:#14181b;} }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.55; padding:20px 14px 60px;}
+  .sheet{max-width:820px; margin:0 auto;}
+  .view{display:none;} .view.active{display:block;}
+  h1{font-family:var(--serif); font-size:25px; margin:4px 0 4px; font-weight:600;}
+
+  .app-header{border-bottom:2px solid var(--ink); padding-bottom:12px; margin-bottom:14px;}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);}
+  .sub{font-size:12.5px; color:var(--muted); margin-top:3px;}
+  .sub .pill{display:inline-block; font-family:var(--mono); font-size:10.5px; padding:1px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); margin-right:4px;}
+
+  /* 分組導覽 */
+  .navwrap{margin-bottom:16px; border-bottom:1px solid var(--line); padding-bottom:12px;}
+  .navgroup{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:7px;}
+  .ng-label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted-soft); min-width:74px; flex-shrink:0;}
+  .navwrap button{font-family:var(--mono); font-size:12px; padding:6px 10px; border:1px solid var(--line); border-radius:2px; background:var(--panel); color:var(--ink); cursor:pointer; transition:border-color .15s,background .15s;}
+  .navwrap button:hover{border-color:var(--accent);}
+  .navwrap button.on{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700;}
+  @media (prefers-color-scheme: dark){ .navwrap button.on{color:#0e1417;} }
+
+  .view-head{margin-bottom:12px;}
+  .view-head .vh-t{font-family:var(--serif); font-size:21px; font-weight:600;}
+  .view-head .vh-s{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft); letter-spacing:.03em;}
+
+  .intro-box{background:var(--soft-bg); border:1px solid var(--line); border-radius:2px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.7;}
+  .intro-box .ib-t{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px;}
+  .intro-box b{font-family:var(--mono); color:var(--ink);}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:14px 16px; margin-bottom:14px;}
+  .section-title{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:20px 0 8px; border-bottom:2px solid var(--accent-soft); padding-bottom:4px;}
+
+  details.def-box{margin:10px 0;}
+  details.def-box summary{cursor:pointer; font-family:var(--mono); font-size:12px; color:var(--accent); list-style:none; font-weight:700;}
+  details.def-box summary::-webkit-details-marker{display:none;}
+  details.def-box summary:before{content:'▸ ';}
+  details.def-box[open] summary:before{content:'▾ ';}
+  details.def-box .box-inner{background:var(--box-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin-top:6px; font-size:12.5px; line-height:1.75;}
+  details.def-box .box-inner ul{margin:4px 0; padding-left:18px;}
+  details.def-box .box-inner b{font-family:var(--mono);}
+
+  /* 互動流程 flow */
+  .flow-step{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:14px 16px;}
+  .flow-step-head{display:flex; align-items:center; gap:9px; margin-bottom:10px;}
+  .flow-num{flex-shrink:0; width:23px; height:23px; border-radius:50%; background:var(--accent); color:#fff; font-family:var(--mono); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  @media (prefers-color-scheme: dark){ .flow-num{color:#0e1417;} }
+  .flow-q{font-family:var(--serif); font-size:15.5px; font-weight:600; color:var(--ink);}
+  .flow-opts{display:flex; flex-direction:column; gap:8px;}
+  .flow-opt{display:block; width:100%; text-align:left; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; cursor:pointer; font-family:var(--sans); font-size:13.5px; line-height:1.5; color:var(--ink); transition:border-color .15s, background .15s;}
+  .flow-opt:hover{border-color:var(--accent);}
+  .flow-opt.selected{border-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .flow-opt .fo-sub{display:block; font-size:11.5px; color:var(--muted-soft); font-weight:400; margin-top:3px;}
+  .flow-opt.selected .fo-sub{color:var(--muted);}
+  .flow-connector{text-align:center; color:var(--accent); font-size:17px; line-height:1; margin:12px 0;}
+  .flow-step.hidden,.flow-connector.hidden,.hidden{display:none;}
+
+  .flow-rec{border-radius:2px; padding:18px 20px; margin-top:14px; border:1px solid var(--line);}
+  .flow-rec.rec-idle{background:var(--box-bg);}
+  .flow-rec.rec-elective{background:#123028; color:#eef6f2; border:none;}
+  .flow-rec.rec-urgent{background:#3a1712; color:#fdeee9; border:none;}
+  .flow-rec.rec-nonop{background:#132126; color:#eef4f2; border:none;}
+  .flow-rec.rec-blue{background:#122a3f; color:#e9f1f8; border:none;}
+  .flow-rec .rec-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:5px;}
+  .flow-rec .rec-title{font-family:var(--serif); font-size:20px; font-weight:600; margin-bottom:4px; line-height:1.3;}
+  .flow-rec .rec-detail{margin:8px 0 0; padding-left:18px; font-size:13px; line-height:1.8;}
+  .flow-rec .rec-detail li{margin:3px 0;}
+  .flow-rec .rec-detail strong{font-family:var(--mono);}
+  .flow-rec .rec-note{margin-top:11px; padding-top:9px; border-top:1px solid rgba(180,180,180,.28); font-size:11.5px; opacity:.92; line-height:1.65;}
+  .flow-rec.rec-idle .rec-title{color:var(--muted); font-size:15px; font-family:var(--sans); font-weight:600;}
+  .flow-rec.rec-idle .rec-label,.flow-rec.rec-idle .rec-note{color:var(--muted-soft);}
+  .flow-reset{margin-top:12px; display:flex; justify-content:flex-end;}
+  .btn-reset{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--line); padding:7px 14px; border-radius:2px; cursor:pointer; color:var(--ink);}
+  .btn-reset:hover{background:var(--accent-soft); border-color:var(--accent);}
+  .flow-link{display:inline-block; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--accent); background:none; border:1px dashed var(--accent-soft); border-radius:2px; padding:6px 11px; cursor:pointer;}
+  .flow-link:hover{border-color:var(--accent); background:var(--accent-soft);}
+
+  /* 靜態流程圖 flow diagram */
+  .fd-box{background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:11px 13px; font-size:12.5px; line-height:1.65;}
+  .fd-box .fd-h{font-family:var(--serif); font-weight:600; font-size:13.5px; margin-bottom:2px;}
+  .fd-box ul{margin:4px 0 0; padding-left:16px;} .fd-box li{margin:2px 0;}
+  .fd-box b{font-family:var(--mono);}
+  .fd-box.start{border-left:3px solid var(--accent);}
+  .fd-box.q{background:var(--accent-soft); border-color:var(--accent);}
+  .fd-box.q .fd-h{color:var(--accent);}
+  .fd-box.warn{border-left:3px solid var(--accent2);}
+  .fd-arrow{text-align:center; color:var(--accent); font-size:15px; line-height:1.1; margin:7px 0;}
+  .fd-arrow .lbl{display:inline-block; font-family:var(--mono); font-size:10px; color:var(--muted); border:1px solid var(--line); border-radius:99px; padding:1px 8px; margin-bottom:2px; background:var(--paper);}
+  .fd-split{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px;}
+  .fd-split.three{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:600px){.fd-split,.fd-split.three{grid-template-columns:1fr;}}
+  .fd-col{border:1px solid var(--line); border-radius:2px; padding:9px 11px; background:var(--box-bg); font-size:12px; line-height:1.6;}
+  .fd-col ul{margin:4px 0 0; padding-left:15px;} .fd-col li{margin:2px 0;}
+  .fd-col b{font-family:var(--mono);}
+  .fd-tag{display:inline-block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.04em; padding:1px 8px; border-radius:99px; margin-bottom:6px; border:1px solid currentColor; background:transparent;}
+  .fd-tag.yes{color:var(--accent);}
+  .fd-tag.no{color:var(--accent2);}
+  .fd-tag.alt{color:var(--muted);}
+  .fd-cap{font-family:var(--serif); font-weight:600; font-size:13px; margin:2px 0 4px;}
+
+  /* tables */
+  table.data{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:8px;}
+  table.data th,table.data td{border:1px solid var(--line); padding:6px 9px; text-align:left; vertical-align:top;}
+  table.data th{background:var(--soft-bg); font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); white-space:nowrap;}
+  table.data td.mono,table.data .mono{font-family:var(--mono);}
+  .tbl-wrap{overflow-x:auto;}
+
+  .ht-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;}
+  @media (max-width:560px){ .ht-grid{grid-template-columns:1fr;} }
+  .ht-col h4{margin:0 0 6px; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent2);}
+  .ht-col ul{margin:0; padding-left:16px; font-size:12.5px; line-height:1.85;}
+  .ht-col li b{font-family:var(--mono); color:var(--ink);}
+
+  .chg{border-left:3px solid var(--accent2-soft); padding:5px 0 5px 12px; margin:9px 0; font-size:12.5px; line-height:1.65;}
+  .chg .chg-t{font-weight:700; color:var(--accent2); font-family:var(--sans);}
+  .chg .chg-tag{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:6px;}
+  ul.tp{font-size:13px; line-height:1.75; margin:0; padding-left:18px;}
+  ul.tp li{margin:6px 0;}
+
+  footer.tool-footer{margin-top:18px; font-size:11px; color:var(--muted-soft); font-family:var(--mono); line-height:1.75; border-top:1px solid var(--line); padding-top:12px;}
+  footer.tool-footer a.ref-link{color:var(--accent); text-decoration:underline; text-underline-offset:2px;}
+  footer.tool-footer a.ref-link:hover{color:var(--accent2);}
+  .disclaimer{margin-top:20px; font-size:11.5px; color:var(--muted-soft); line-height:1.7; border-top:1px solid var(--line); padding-top:12px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="app-header">
+    <div class="eyebrow">2025 AHA Guidelines for CPR &amp; ECC · Resuscitation Algorithms</div>
+    <h1>ACLS 高級心臟救命術</h1>
+    <div class="sub">
+      <span class="pill">2025 AHA CPR &amp; ECC</span>
+      成人 ACLS・兒科 PALS・新生兒復甦　—　依官方 18 張演算法講義整理
+    </div>
+  </div>
+
+  <div class="navwrap" id="navwrap">
+    <div class="navgroup">
+      <span class="ng-label">成人 Adult</span>
+      <button data-v="bls" onclick="showView('bls',this)">BLS</button>
+      <button data-v="arrest" class="on" onclick="showView('arrest',this)">心跳停止</button>
+      <button data-v="tachy" onclick="showView('tachy',this)">心搏過速</button>
+      <button data-v="cardiovert" onclick="showView('cardiovert',this)">電擊整流</button>
+      <button data-v="brady" onclick="showView('brady',this)">心搏過緩</button>
+      <button data-v="post" onclick="showView('post',this)">復甦後照護</button>
+      <button data-v="tor" onclick="showView('tor',this)">終止復甦</button>
+      <button data-v="fbao" onclick="showView('fbao',this)">異物哽塞</button>
+      <button data-v="pregnancy" onclick="showView('pregnancy',this)">孕婦停止</button>
+      <button data-v="lvad" onclick="showView('lvad',this)">LVAD</button>
+    </div>
+    <div class="navgroup">
+      <span class="ng-label">兒科 Peds</span>
+      <button data-v="pbls1" onclick="showView('pbls1',this)">兒 BLS·單人</button>
+      <button data-v="pbls2" onclick="showView('pbls2',this)">兒 BLS·雙人</button>
+      <button data-v="parrest" onclick="showView('parrest',this)">兒心跳停止</button>
+      <button data-v="ptachy" onclick="showView('ptachy',this)">兒心搏過速</button>
+      <button data-v="pbrady" onclick="showView('pbrady',this)">兒心搏過緩</button>
+    </div>
+    <div class="navgroup">
+      <span class="ng-label">新生兒・參考</span>
+      <button data-v="neonatal" onclick="showView('neonatal',this)">新生兒復甦</button>
+      <button data-v="ref" onclick="showView('ref',this)">速查與重點</button>
+    </div>
+  </div>
+
+  <!-- ================= 成人 BLS ================= -->
+  <div class="view" id="view-bls">
+    <div class="view-head"><div class="vh-t">成人基本救命術（醫療人員）</div><div class="vh-s">Adult BLS Algorithm for Health Care Professionals</div></div>
+    <div class="fd-box start"><div class="fd-h">確認現場安全 Verify scene safety</div>
+      <ul><li>檢查反應</li><li>大聲呼救、啟動緊急反應系統</li><li>請人取得 AED／去顫器</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">同時：看呼吸＋觸脈搏（10 秒內）</div>檢查有無「無呼吸或僅喘息」，並確認 10 秒內是否確實摸到脈搏。</div>
+    <div class="fd-split three">
+      <div class="fd-col"><span class="fd-tag yes">呼吸正常・有脈</span><div class="fd-cap">監測</div>持續監測直到高級救護到達。</div>
+      <div class="fd-col"><span class="fd-tag alt">呼吸異常・有脈</span><div class="fd-cap">人工呼吸</div><ul><li>每 <b>6 秒</b> 1 次呼吸（10 次/分）</li><li>每 2 分鐘檢查脈搏；若無脈 → 開始 CPR</li><li>疑鴉片過量 → 給 naloxone</li></ul></div>
+      <div class="fd-col"><span class="fd-tag no">無呼吸/僅喘息・無脈</span><div class="fd-cap">開始 CPR</div><ul><li>30:2 按壓:通氣</li><li>AED 一到即用</li><li>疑鴉片過量 → 考慮 naloxone</li></ul></div>
+    </div>
+    <div class="fd-arrow"><span class="lbl">AED 到達</span><br>↓</div>
+    <div class="fd-box q"><div class="fd-h">檢查心律：可電擊嗎？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">可電擊</span>電擊 1 次 → 立即恢復 CPR 2 分鐘（直到 AED 提示再分析）。</div>
+      <div class="fd-col"><span class="fd-tag no">不可電擊</span>立即恢復 CPR 2 分鐘（直到 AED 提示再分析）。</div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box">持續，直到 ALS 人員接手或病人開始活動。<span style="color:var(--muted-soft)">＊出現青春期徵象者，比照成人處置。</span></div>
+  </div>
+
+  <!-- ================= 成人 心跳停止（互動） ================= -->
+  <div class="view active" id="view-arrest">
+    <div class="view-head"><div class="vh-t">成人心跳停止演算法</div><div class="vh-s">Adult Cardiac Arrest Algorithm (VF/pVT/Asystole/PEA)</div></div>
+
+    <div class="intro-box">
+      <div class="ib-t">進入條件 Entry</div>
+      無反應、無正常呼吸、無脈搏 → <b>開始 CPR</b>、袋瓣罩通氣並給氧、接上監視器／去顫器。<br>
+      高品質 CPR：速率 <b>100–120/min</b>、深度<b>至少 5 cm（2 吋）</b>、每次完全回彈、盡量減少中斷、每 2 分鐘輪替按壓者；無進階呼吸道 <b>30:2</b>，置放後每 <b>6 秒</b> 1 次呼吸（10 次/分）不中斷按壓。
+    </div>
+
+    <div class="flow-step" id="arrest_s1">
+      <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">監視器心律判讀為何？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="aPick('rhythm','shock',this)">可電擊心律 Shockable<span class="fo-sub">心室顫動 VF／無脈搏心室頻脈 pVT</span></button>
+        <button class="flow-opt" onclick="aPick('rhythm','nonshock',this)">不可電擊心律 Non-shockable<span class="fo-sub">無脈搏電氣活動 PEA／心搏停止 Asystole</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle" id="arrest_rec">
+      <div class="rec-label">建議處置 Recommendation</div>
+      <div class="rec-title">請先於步驟 1 判讀心律</div>
+    </div>
+
+    <div class="flow-connector hidden" id="arrest_c2">↓</div>
+    <div class="flow-step hidden" id="arrest_s2">
+      <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">已電擊 ≥ 3 次仍為難治性 VF／pVT？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="aPick('refractory','yes',this)">是，難治性 Refractory<span class="fo-sub">連續電擊＋CPR＋epinephrine 後仍為可電擊心律</span></button>
+        <button class="flow-opt" onclick="aPick('refractory','no',this)">否，尚未達 3 次<span class="fo-sub">持續去顫循環</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle hidden" id="arrest_rec2">
+      <div class="rec-label">建議處置 Recommendation</div><div class="rec-title"></div>
+    </div>
+
+    <div class="flow-reset"><button class="btn-reset" onclick="aReset()">重置</button></div>
+
+    <details class="def-box" open>
+      <summary>每 2 分鐘同步思考可逆原因（H's &amp; T's）</summary>
+      <div class="box-inner">
+        <div class="ht-grid">
+          <div class="ht-col"><h4>H's</h4><ul>
+            <li><b>Hypovolemia</b> 低血容</li><li><b>Hypoxia</b> 缺氧</li><li><b>Hydrogen ion</b> 酸中毒</li>
+            <li><b>Hypo-/Hyperkalemia</b> 低／高血鉀</li><li><b>Hypothermia</b> 低體溫</li></ul></div>
+          <div class="ht-col"><h4>T's</h4><ul>
+            <li><b>Tension pneumothorax</b> 張力性氣胸</li><li><b>Tamponade</b> 心包填塞</li><li><b>Toxins</b> 毒素／中毒</li>
+            <li><b>Thrombosis, pulmonary</b> 肺栓塞</li><li><b>Thrombosis, coronary</b> 冠狀動脈栓塞</li></ul></div>
+        </div>
+        <div style="margin-top:8px; font-size:11.5px; color:var(--muted);">可用床邊超音波（POCUS）輔助鑑別心包填塞、肺栓塞、低血容等。</div>
+      </div>
+    </details>
+
+    <div class="card" style="border-left:3px solid var(--accent);">
+      <div style="font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); margin-bottom:5px;">若出現 ROSC</div>
+      <div style="font-size:13px; line-height:1.7;">恢復自發循環（可觸得脈搏與血壓、ETCO₂ 突升、動脈波形）→ 進入<b>復甦後照護</b>。</div>
+      <button class="flow-link" onclick="showView('post', document.querySelector('#navwrap [data-v=post]'))">前往 復甦後照護 →</button>
+    </div>
+
+    <div class="intro-box" style="margin-top:12px;">
+      <div class="ib-t">貫穿全程 Throughout</div>
+      <b>血管通路：</b>先試 IV，失敗再 IO。　<b>呼吸道：</b>ET 插管或聲門上呼吸道；置放後每 6 秒 1 次呼吸並持續按壓。<br>
+      <b>監測：</b>連續波形二氧化碳圖（capnography）確認插管位置與 CPR 品質；ETCO₂ 低或下降 → 重新評估 CPR 品質；ETCO₂ 突升常示 ROSC。
+    </div>
+  </div>
+
+  <!-- ================= 成人 心搏過速（互動） ================= -->
+  <div class="view" id="view-tachy">
+    <div class="view-head"><div class="vh-t">成人有脈搏心搏過速演算法</div><div class="vh-s">Adult Tachyarrhythmia With a Pulse Algorithm</div></div>
+
+    <div class="intro-box">
+      <div class="ib-t">定義與初始處置 Definition &amp; Initial</div>
+      心搏過速時心跳通常 <b>≥ 150/min</b>。維持呼吸道通暢、必要時輔助呼吸、給氧（若低血氧）、持續心電監測辨識心律、監測血壓與血氧、建立 IV、取得 <b>12 導程心電圖</b>；並評估心跳快是否與臨床狀況相稱。
+    </div>
+
+    <div class="flow-step" id="tachy_s1">
+      <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">持續心搏過速是否造成嚴重症狀？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="tPick('mode','unstable',this)">不穩定 Unstable<span class="fo-sub">低血壓・急性意識改變・休克徵象・缺血性胸部不適・急性心衰竭</span></button>
+        <button class="flow-opt" onclick="tPick('mode','stable',this)">穩定 Stable<span class="fo-sub">無上述嚴重症狀</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle" id="tachy_rec">
+      <div class="rec-label">建議處置 Recommendation</div><div class="rec-title">請先於步驟 1 評估穩定度</div>
+    </div>
+
+    <div class="flow-connector hidden" id="tachy_c2u">↓</div>
+    <div class="flow-step hidden" id="tachy_s2u">
+      <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">心律型態（決定同步電擊整流能量）</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="tPick('urhythm','nr',this)">窄複合波、規則 Narrow &amp; regular<span class="fo-sub">如 SVT／心房撲動</span></button>
+        <button class="flow-opt" onclick="tPick('urhythm','ni',this)">窄複合波、不規則 Narrow &amp; irregular<span class="fo-sub">如心房顫動 AF</span></button>
+        <button class="flow-opt" onclick="tPick('urhythm','wr',this)">寬複合波、規則 Wide &amp; regular<span class="fo-sub">如單型室速 VT</span></button>
+        <button class="flow-opt" onclick="tPick('urhythm','wi',this)">寬複合波、不規則 Wide &amp; irregular<span class="fo-sub">如多型 VT／預激併 AF</span></button>
+      </div>
+    </div>
+
+    <div class="flow-connector hidden" id="tachy_c2s">↓</div>
+    <div class="flow-step hidden" id="tachy_s2s">
+      <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">QRS 寬度？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="tPick('qrs','narrow',this)">窄 QRS &lt; 0.12 秒<span class="fo-sub">室上性心搏過速</span></button>
+        <button class="flow-opt" onclick="tPick('qrs','wide',this)">寬 QRS ≥ 0.12 秒<span class="fo-sub">寬複合波心搏過速</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle hidden" id="tachy_rec2">
+      <div class="rec-label">建議處置 Recommendation</div><div class="rec-title"></div>
+    </div>
+
+    <div class="flow-reset"><button class="btn-reset" onclick="tReset()">重置</button></div>
+
+    <details class="def-box">
+      <summary>藥物劑量 Doses/Details</summary>
+      <div class="box-inner">
+        <ul>
+          <li><b>同步電擊整流</b>：依機型建議能量或 2025 指引以提高首次電擊成功率；未知則用最大能量。詳見「電擊整流」分頁。</li>
+          <li><b>Adenosine</b>：第一劑 6 mg 快速靜脈推注，隨即生理食鹽水沖注；必要時第二劑 12 mg。</li>
+          <li><b>Procainamide</b>（穩定寬 QRS）：20–50 mg/min，直到心律不整被抑制、出現低血壓、QRS 延長 &gt;50%，或達最大 17 mg/kg；維持 1–4 mg/min。<b>QT 延長或 CHF 避免</b>。</li>
+          <li><b>Amiodarone</b>（穩定寬 QRS）：150 mg over 10 min，VT 復發可重複；維持 1 mg/min（前 6 小時）。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ================= 成人 電擊整流 ================= -->
+  <div class="view" id="view-cardiovert">
+    <div class="view-head"><div class="vh-t">電擊整流演算法</div><div class="vh-s">Electrical Cardioversion Algorithm</div></div>
+    <div class="fd-box q"><div class="fd-h">心搏過速合併嚴重症狀（由心搏過速引起）</div>
+      心室率 &gt;150/min → 準備<b>立即整流</b>，可依特定心律先給短暫藥物試驗；心跳 ≤150/min 通常不需立即整流。</div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">床邊備妥・鎮靜</div>
+      <ul><li>血氧監測、抽吸裝置、IV 管路、插管設備</li><li>可行時給予鎮靜（sedation）</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box start"><div class="fd-h">同步電擊整流能量 Synchronized cardioversion</div>
+      <div class="tbl-wrap"><table class="data">
+        <tr><th>心律</th><th>能量</th></tr>
+        <tr><td>心房顫動 Atrial fibrillation</td><td class="mono">200 J</td></tr>
+        <tr><td>心房撲動 Atrial flutter</td><td class="mono">200 J</td></tr>
+        <tr><td>窄複合波心搏過速 Narrow-complex</td><td class="mono">100 J</td></tr>
+        <tr><td>單型室速 Monomorphic VT</td><td class="mono">100 J</td></tr>
+        <tr><td>多型室速 Polymorphic VT</td><td class="mono">非同步、高能量電擊（去顫）</td></tr>
+      </table></div>
+    </div>
+    <details class="def-box" open>
+      <summary>注意事項 Notes</summary>
+      <div class="box-inner"><ul>
+        <li>有效鎮靜方案常含鎮靜劑（如 diazepam）搭配或不搭配止痛劑（如 fentanyl）；若可即時提供麻醉，多數專家建議麻醉。</li>
+        <li>每次整流後可能需<b>重新同步（resynchronize）</b>。</li>
+        <li>若同步發生延遲且臨床危急 → 立即改用<b>非同步電擊</b>。</li>
+      </ul></div>
+    </details>
+  </div>
+
+  <!-- ================= 成人 心搏過緩（互動） ================= -->
+  <div class="view" id="view-brady">
+    <div class="view-head"><div class="vh-t">成人有脈搏心搏過緩演算法</div><div class="vh-s">Adult Bradycardia With a Pulse Algorithm</div></div>
+
+    <div class="intro-box">
+      <div class="ib-t">定義與初始處置 Definition &amp; Initial</div>
+      心搏過緩時心跳通常 <b>&lt; 50/min</b>。維持呼吸道通暢並給氧、必要時正壓通氣輔助、接上心肺監視器、監測脈搏、取得 <b>12 導程心電圖</b>。
+    </div>
+
+    <div class="flow-step" id="brady_s1">
+      <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">是否有心肺功能受損（cardiopulmonary compromise）？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="bPick('sx','no',this)">無 Stable<span class="fo-sub">血壓與意識穩定、無休克徵象</span></button>
+        <button class="flow-opt" onclick="bPick('sx','yes',this)">有 Unstable<span class="fo-sub">低血壓・急性意識改變・休克・缺血性胸部不適・急性心衰竭</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle" id="brady_rec">
+      <div class="rec-label">建議處置 Recommendation</div><div class="rec-title">請先於步驟 1 評估症狀</div>
+    </div>
+
+    <div class="flow-connector hidden" id="brady_c2">↓</div>
+    <div class="flow-step hidden" id="brady_s2">
+      <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">Atropine 1 mg 後反應如何？</span></div>
+      <div class="flow-opts">
+        <button class="flow-opt" onclick="bPick('atr','ok',this)">有反應、灌流改善<span class="fo-sub">可重複至最大 3 mg，並持續找原因</span></button>
+        <button class="flow-opt" onclick="bPick('atr','fail',this)">無效或反覆<span class="fo-sub">達 3 mg 仍無效，或高度房室阻斷、寬 QRS 逸搏</span></button>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle hidden" id="brady_rec2">
+      <div class="rec-label">建議處置 Recommendation</div><div class="rec-title"></div>
+    </div>
+
+    <div class="flow-reset"><button class="btn-reset" onclick="bReset()">重置</button></div>
+
+    <details class="def-box">
+      <summary>可能原因 Possible Causes</summary>
+      <div class="box-inner"><ul>
+        <li>心肌缺血／梗塞（myocardial ischemia/infarction）</li>
+        <li>藥物／毒物：鈣離子通道阻斷劑（CCB）、乙型阻斷劑（β-blocker）、毛地黃（digoxin）</li>
+        <li>缺氧（hypoxia）</li>
+        <li>電解質異常，如高血鉀（hyperkalemia）</li>
+      </ul>
+      <div style="font-size:11.5px; color:var(--muted);">Atropine 對第二度 II 型／第三度房室阻斷或寬 QRS 逸搏常無效 → 應早備 TCP 與升壓輸注。</div></div>
+    </details>
+  </div>
+
+  <!-- ================= 成人 復甦後照護 ================= -->
+  <div class="view" id="view-post">
+    <div class="view-head"><div class="vh-t">復甦後照護演算法</div><div class="vh-s">Adult Post-Cardiac Arrest Care Algorithm</div></div>
+    <div class="intro-box"><div class="ib-t">ROSC 已恢復 · 初始穩定</div>復甦在 ROSC 後仍持續進行，以下多項處置可同時進行。</div>
+
+    <div class="fd-box start"><div class="fd-h">1 · 呼吸道 Manage airway</div>評估呼吸道，必要時置放或更換進階呼吸道並確認位置（通常以波形 capnography／capnometry 確認）。</div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">2 · 氧合與通氣 Oxygenation &amp; ventilation</div>
+      <ul><li>維持 <b>100% FiO₂</b> 直到能可靠測得 SpO₂／PaO₂</li>
+        <li>SpO₂ 目標 <b>90–98%</b>（PaO₂ 60–105 mmHg）</li>
+        <li>PCO₂ 目標 <b>35–45 mmHg</b>（無嚴重酸血症時）；避免過度通氣</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">3 · 血流動力學 Hemodynamics</div>依需要給予或調整升壓劑／輸液，目標 <b>MAP ≥ 65 mmHg</b>。</div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">4 · 早期診斷檢查 Early diagnostics</div>取得 <b>12 導程心電圖</b>；考慮影像檢查（CT 與／或超音波）。</div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box warn"><div class="fd-h">5 · 處理病因與併發症</div>治療心跳停止的病因與併發症；考慮<b>緊急冠狀動脈攝影</b>與／或機械循環支持。</div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">6 · 停鎮靜／肌鬆後可服從指令嗎？</div>在可行時評估病人於停止鎮靜與神經肌肉阻斷後之反應。</div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag no">否／不確定</span><div class="fd-cap">持續重症照護</div><ul>
+        <li>刻意的<b>溫度控制</b>策略</li><li>EEG 監測</li><li>適時<b>冠狀動脈攝影</b></li><li>適當時機的<b>多模式神經預後評估</b></li></ul></div>
+      <div class="fd-col"><span class="fd-tag yes">是</span><div class="fd-cap">持續重症照護</div><ul><li>適時<b>冠狀動脈攝影</b></li></ul></div>
+    </div>
+    <details class="def-box"><summary>要點補充（依台大知識庫）</summary><div class="box-inner"><ul>
+      <li><b>溫度控制（TTM）</b>：對指令無反應者維持至少 36 小時；可採 32–37.5°C 策略，<b>積極預防發燒</b>。</li>
+      <li><b>神經預後</b>：採多模式評估，避免單一指標；不以單一 ETCO₂ 數值決定終止復甦；無 EEG 相關證據者，不建議僅為抑制肌陣攣給藥。</li>
+      <li>偵測並治療癲癇；監測並處理血糖，避免高／低血糖。</li>
+      <li>疑似心因（尤其初始為可電擊心律或有心肌缺血證據）→ 出院前建議冠狀動脈攝影。</li>
+    </ul>
+    <div style="font-size:11px;color:var(--muted-soft)">＊氧合數值採 2025 官方演算法（SpO₂ 90–98%）；台大知識庫另記為 92–98%。</div></div></details>
+  </div>
+
+  <!-- ================= 成人 終止復甦 TOR ================= -->
+  <div class="view" id="view-tor">
+    <div class="view-head"><div class="vh-t">終止復甦規則</div><div class="vh-s">Termination of Resuscitation (TOR) Rules</div></div>
+    <div class="fd-split">
+      <div class="fd-box start"><div class="fd-h">BLS／通用 TOR</div>
+        <div style="font-size:11.5px;color:var(--muted);margin:2px 0 5px">BLS/Universal Termination Rules</div>
+        <ul><li>心跳停止<b>非</b>由 EMS 人員目擊</li><li>轉送前<b>未</b>恢復自發循環（ROSC）</li><li>轉送前<b>未</b>給予 AED 電擊</li></ul></div>
+      <div class="fd-box start"><div class="fd-h">ALS TOR</div>
+        <div style="font-size:11.5px;color:var(--muted);margin:2px 0 5px">ALS Termination Rules</div>
+        <ul><li>心跳停止<b>非</b>被目擊</li><li><b>無</b>旁觀者 CPR</li><li>轉送前<b>未</b>恢復 ROSC</li><li>轉送前<b>未</b>給予電擊</li></ul></div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag no">全部符合</span>考慮<b>終止復甦</b>。</div>
+      <div class="fd-col"><span class="fd-tag yes">任一不符</span>繼續復甦並<b>考慮轉送</b>。</div>
+    </div>
+    <div class="intro-box" style="margin-top:12px;"><div class="ib-t">2025 更新</div>分層 EMS 系統採用<b>通用終止復甦規則</b>（未目擊、未電擊、轉送前未 ROSC）。</div>
+  </div>
+
+  <!-- ================= 成人 異物哽塞 FBAO ================= -->
+  <div class="view" id="view-fbao">
+    <div class="view-head"><div class="vh-t">成人異物哽塞</div><div class="vh-s">Adult Foreign-Body Airway Obstruction (FBAO)</div></div>
+    <div class="fd-box start"><div class="fd-h">確認現場安全</div></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">檢查是否為嚴重哽塞徵象</div>
+      <ul><li>咳嗽微弱或無法咳嗽</li><li>無法說話</li><li>發紺（膚色改變）</li><li>意識改變</li><li>呼吸停止</li></ul></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">徵象不存在（非嚴重）</span>鼓勵咳嗽；持續觀察是否出現嚴重哽塞徵象。</div>
+      <div class="fd-col"><span class="fd-tag no">徵象存在（嚴重）</span>啟動緊急反應系統 → 見下方。</div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">成人是否還有反應？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">有反應</span>開始重複循環：<b>5 次背擊</b>＋<b>5 次腹部推擠</b>＊；重複直到異物排出或病人失去反應。異物排出後持續監測至高級救護到達。</div>
+      <div class="fd-col"><span class="fd-tag no">無反應</span>開始 CPR（依成人 BLS）：先做按壓；給呼吸前先檢查口腔有無可見異物。</div>
+    </div>
+    <div class="intro-box" style="margin-top:12px;"><div class="ib-t">＊註</div>妊娠後期、或施救者無法環抱腹部時，改以<b>5 次胸部推擠</b>取代腹部推擠。</div>
+  </div>
+
+  <!-- ================= 成人 孕婦心跳停止 ================= -->
+  <div class="view" id="view-pregnancy">
+    <div class="view-head"><div class="vh-t">孕婦心跳停止演算法</div><div class="vh-s">Cardiac Arrest in Pregnancy Algorithm</div></div>
+    <div class="fd-box start"><div class="fd-h">開始 BLS／ALS</div>
+      <ul><li>高品質 CPR</li><li>當<b>子宮底 ≥ 肚臍</b>時，持續<b>左側子宮徒手推移</b></li><li>有指徵時使用 AED／去顫器</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">啟動孕婦心跳停止團隊・處理病因</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><div class="fd-cap">最佳化孕期復甦</div><ul>
+        <li>優先早期呼吸道處置</li><li>IV 置於<b>橫膈以上</b></li><li>若正輸注 IV 鎂 → 停鎂並給鈣</li><li>移除胎兒監視器</li><li>疑羊水栓塞 → 啟動大量輸血流程</li></ul></div>
+      <div class="fd-col"><div class="fd-cap">準備救命性分娩</div><ul>
+        <li>當子宮底 ≥ 肚臍</li><li>若無 ROSC，目標於 <b>5 分鐘內分娩</b></li></ul></div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box">持續 ALS。以<b>新生兒復甦演算法</b>救治新生兒。</div>
+    <details class="def-box"><summary>心跳停止病因 A–H（孕婦）</summary><div class="box-inner"><ul>
+      <li><b>A</b> Anesthetic complications 麻醉併發症</li><li><b>B</b> Bleeding 出血</li><li><b>C</b> Cardiovascular 心血管</li>
+      <li><b>D</b> Drugs 藥物</li><li><b>E</b> Embolic 栓塞（羊水或肺栓塞）</li><li><b>F</b> Fever 發燒</li>
+      <li><b>G</b> General 一般原因（H's &amp; T's）</li><li><b>H</b> Hypertension 高血壓</li></ul></div></details>
+  </div>
+
+  <!-- ================= 成人／兒 LVAD ================= -->
+  <div class="view" id="view-lvad">
+    <div class="view-head"><div class="vh-t">耐久型左心室輔助器（LVAD）演算法</div><div class="vh-s">Durable LVAD Algorithm (Adult &amp; Pediatric)</div></div>
+    <div class="fd-box start"><div class="fd-h">裝有耐久型 LVAD 的無反應成人／兒童</div>
+      <ul><li>必要時輔助通氣</li><li>評估灌流</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">灌流足夠嗎？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">足夠</span><ul><li><b>不要</b>做體外胸部按壓</li><li>評估並處理非 LVAD 之無反應原因</li><li>監測灌流</li></ul></div>
+      <div class="fd-col"><span class="fd-tag no">不足</span><ul><li>做體外胸部按壓</li><li>有第二施救者時評估 LVAD 功能</li><li>評估並處理非 LVAD 原因</li><li>持續 BLS/ALS、轉送、聯絡 VAD 中心並持續監測</li></ul></div>
+    </div>
+    <details class="def-box"><summary>評估灌流・非 LVAD 原因・重啟 LVAD</summary><div class="box-inner">
+      <div class="fd-cap">灌流足夠：符合任一即可</div>
+      <ul><li>膚色與體溫正常</li><li>微血管回填正常</li><li><b>MAP &gt;50 mmHg</b>（血壓袖帶失效時用 doppler 或動脈導管）</li><li><b>PETCO₂ &gt;20 mmHg</b></li></ul>
+      <div style="font-size:11.5px;color:var(--muted)">＊病人可能摸不到脈搏。</div>
+      <div class="fd-cap" style="margin-top:8px">非 LVAD 之無反應原因</div>
+      <div>心律不整、出血／低血容、低血糖、缺氧、藥物過量、右心衰竭、敗血症、中風</div>
+      <div class="fd-cap" style="margin-top:8px">評估並嘗試重啟 LVAD</div>
+      <ul><li>看／聽警報</li><li>聽 LVAD 運轉聲（hum）</li><li>傳動線是否連接</li><li>電源是否連接</li><li>是否需更換控制器</li></ul>
+    </div></details>
+  </div>
+
+  <!-- ================= 兒科 BLS 單人 ================= -->
+  <div class="view" id="view-pbls1">
+    <div class="view-head"><div class="vh-t">兒科基本救命術（嬰兒至青春期）· 單人</div><div class="vh-s">Pediatric BLS — Single Rescuer</div></div>
+    <div class="fd-box start"><div class="fd-h">確認現場安全</div><ul><li>檢查反應、大聲呼救、啟動緊急反應系統</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">同時：看呼吸＋觸脈搏（10 秒內）</div></div>
+    <div class="fd-split three">
+      <div class="fd-col"><span class="fd-tag yes">呼吸正常・有脈</span>監測直到高級救護到達。</div>
+      <div class="fd-col"><span class="fd-tag alt">呼吸異常・有脈</span><div class="fd-cap">支持通氣</div><ul><li>打開呼吸道並重新擺位</li><li>每 <b>2–3 秒</b> 1 次呼吸（20–30 次/分）</li><li>2 分鐘後評估脈率；疑鴉片過量給 naloxone</li></ul><div style="margin-top:5px;font-size:11.5px;color:var(--muted)">→ HR&lt;60 且灌流不佳（雖已充分氧合通氣）？ 是 → 開始 CPR；否 → 續給呼吸、每 2 分鐘檢查脈搏。</div></div>
+      <div class="fd-col"><span class="fd-tag no">無呼吸/僅喘息・無脈</span><div class="fd-cap">是否目擊突然倒下？</div>是 → 啟動 ERS、立即取 AED 使用。<br>否 → 開始 CPR，2 分鐘後若仍單人，啟動 ERS 並取 AED。</div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box"><div class="fd-h">開始 CPR</div>單人 <b>30:2</b>；AED 一到即用；疑鴉片過量給 naloxone。</div>
+    <div class="fd-arrow"><span class="lbl">2 分鐘後</span><br>↓</div>
+    <div class="fd-box q"><div class="fd-h">檢查心律：可電擊嗎？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">可電擊</span>電擊 1 次 → 立即恢復 CPR 2 分鐘。</div>
+      <div class="fd-col"><span class="fd-tag no">不可電擊</span>立即恢復 CPR 2 分鐘。</div>
+    </div>
+  </div>
+
+  <!-- ================= 兒科 BLS 雙人 ================= -->
+  <div class="view" id="view-pbls2">
+    <div class="view-head"><div class="vh-t">兒科基本救命術（嬰兒至青春期）· 雙人以上</div><div class="vh-s">Pediatric BLS — 2 or More Rescuers</div></div>
+    <div class="fd-box start"><div class="fd-h">確認現場安全</div><ul><li>檢查反應、呼救、啟動 ERS、請人取得 AED/去顫器</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">同時：看呼吸＋觸脈搏（10 秒內）</div></div>
+    <div class="fd-split three">
+      <div class="fd-col"><span class="fd-tag yes">呼吸正常・有脈</span>監測直到高級救護到達。</div>
+      <div class="fd-col"><span class="fd-tag alt">呼吸異常・有脈</span><div class="fd-cap">支持通氣</div><ul><li>每 <b>2–3 秒</b> 1 次呼吸（20–30 次/分）</li><li>2 分鐘後評估脈率</li></ul><div style="margin-top:5px;font-size:11.5px;color:var(--muted)">→ HR&lt;60 且灌流不佳？ 是 → CPR；否 → 續給呼吸、每 2 分鐘檢查脈搏。</div></div>
+      <div class="fd-col"><span class="fd-tag no">無呼吸/僅喘息・無脈</span><div class="fd-cap">開始 CPR</div>第一人先 30:2；第二人返回後改 <b>15:2</b>；AED 一到即用；疑鴉片過量給 naloxone。</div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">檢查心律：可電擊嗎？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">可電擊</span>電擊 1 次 → 立即恢復 CPR 2 分鐘。</div>
+      <div class="fd-col"><span class="fd-tag no">不可電擊</span>立即恢復 CPR 2 分鐘。</div>
+    </div>
+    <div class="fd-box" style="margin-top:8px">持續直到 PALS 人員接手或嬰幼兒開始活動。</div>
+  </div>
+
+  <!-- ================= 兒科 心跳停止 ================= -->
+  <div class="view" id="view-parrest">
+    <div class="view-head"><div class="vh-t">兒科心跳停止演算法</div><div class="vh-s">Pediatric Cardiac Arrest Algorithm</div></div>
+    <div class="fd-box start"><div class="fd-h">開始 CPR</div><ul><li>袋瓣罩通氣並給氧</li><li>接上監視器／去顫器</li></ul></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">心律可電擊嗎？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">VF/pVT（可電擊）</span><ul>
+        <li>盡快電擊 → CPR 2 分鐘、建立 IV/IO</li>
+        <li>再評估；可電擊 → 電擊 → CPR 2 分鐘、epinephrine 每 3–5 分、考慮進階呼吸道＋capnography</li>
+        <li>再評估；可電擊 → 電擊 → CPR 2 分鐘、<b>Amiodarone 或 Lidocaine</b>、處理可逆原因</li>
+        <li>循環進行</li></ul></div>
+      <div class="fd-col"><span class="fd-tag no">Asystole/PEA（不可電擊）</span><ul>
+        <li>盡快 <b>epinephrine</b></li>
+        <li>CPR 2 分鐘、建立 IV/IO、epinephrine 每 3–5 分、考慮進階呼吸道＋capnography</li>
+        <li>再評估；不可電擊 → CPR 2 分鐘、處理可逆原因</li>
+        <li>若轉為可電擊 → 進入電擊路徑</li></ul></div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box">無 ROSC → 繼續循環；<b>ROSC → 進入復甦後照護</b>。</div>
+    <details class="def-box"><summary>劑量／細節 Doses/Details</summary><div class="box-inner">
+      <div class="fd-cap">高品質 CPR</div>
+      <ul><li>用力壓（胸廓前後徑約 ⅓）、快壓 100–120/min、完全回彈、減少中斷、每 2 分鐘換手</li>
+        <li>無進階呼吸道比例：雙人（青春期前）<b>15:2</b>／雙人（青春期後）<b>30:2</b>／單人（任何年齡）<b>30:2</b></li>
+        <li>有進階呼吸道：持續按壓，每 2–3 秒 1 次呼吸</li>
+        <li>監測 ETCO₂，可用時監測侵入性舒張壓</li></ul>
+      <div class="fd-cap" style="margin-top:8px">去顫能量</div>
+      <ul><li>第一次 <b>2 J/kg</b> → 第二次 <b>4 J/kg</b> → 之後 &gt;4 J/kg，最大 10 J/kg 或成人劑量</li></ul>
+      <div class="fd-cap" style="margin-top:8px">藥物</div>
+      <ul><li><b>Epinephrine</b> IV/IO 0.01 mg/kg（0.1 mg/mL），最大單劑 1 mg，每 3–5 分鐘</li>
+        <li><b>Amiodarone</b> 5 mg/kg IV/IO bolus（可重複，最多 3 劑）<b>或</b> <b>Lidocaine</b> 1 mg/kg（PALS 標準劑量）</li></ul>
+      <div style="font-size:11px;color:var(--muted-soft)">＊講義此欄影像文字截斷，amiodarone/lidocaine 採 PALS 標準劑量，用前請再核對。</div>
+    </div></details>
+  </div>
+
+  <!-- ================= 兒科 心搏過速 ================= -->
+  <div class="view" id="view-ptachy">
+    <div class="view-head"><div class="vh-t">兒科有脈搏心搏過速演算法</div><div class="vh-s">Pediatric Tachyarrhythmia With a Pulse</div></div>
+    <div class="fd-box start"><div class="fd-h">疑似心搏過速的兒童・初始評估與支持</div>
+      <ul><li>維持呼吸道通暢、必要時正壓通氣並給氧</li><li>接上心肺監視器、建立 IV/IO、取得 12 導程心電圖</li></ul></div>
+    <div class="fd-split" style="margin-top:8px">
+      <div class="fd-col"><div class="fd-cap">可能為竇性心搏過速</div><ul><li>有正常 P 波</li><li>RR 間期可變</li><li>嬰兒常 &lt;220/min、兒童常 &lt;180/min</li></ul><div style="margin-top:4px">→ 尋找並治療病因。</div></div>
+      <div class="fd-col"><div class="fd-cap">可能為室上性心搏過速 SVT</div><ul><li>P 波消失／異常</li><li>RR 間期不變</li><li>嬰兒常 ≥220/min、兒童常 ≥180/min</li><li>心率驟變病史</li></ul></div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">是否有心肺功能受損？</div>急性意識改變・休克徵象・低血壓</div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag no">有受損</span><div class="fd-cap">評估 QRS</div>
+        <ul><li><b>窄（≤0.09 秒）</b> 可能 SVT：有 IV/IO → 給 adenosine；或同步電擊整流</li>
+          <li><b>寬（&gt;0.09 秒）</b> 可能 VT：同步電擊整流；追加藥物前先專科會診</li></ul></div>
+      <div class="fd-col"><span class="fd-tag yes">穩定</span><div class="fd-cap">評估 QRS</div>
+        <ul><li><b>窄（≤0.09 秒）</b> 可能 SVT：考慮迷走神經刺激；給 IV/IO adenosine</li>
+          <li><b>寬（&gt;0.09 秒）</b> 可能 VT 或 SVT 併異常傳導：若規則且單型…先專科會診</li></ul></div>
+    </div>
+    <details class="def-box"><summary>劑量／細節 Doses/Details</summary><div class="box-inner"><ul>
+      <li><b>同步電擊整流</b>：0.5–1 J/kg 起始；無效增至 2 J/kg。需要時鎮靜，但勿延誤整流。</li>
+      <li><b>Adenosine</b> IV/IO：0.1 mg/kg（最大 6 mg）快速推注後沖注；必要時 0.2 mg/kg（最大 12 mg）。</li>
+    </ul></div></details>
+  </div>
+
+  <!-- ================= 兒科 心搏過緩 ================= -->
+  <div class="view" id="view-pbrady">
+    <div class="view-head"><div class="vh-t">兒科有脈搏心搏過緩演算法</div><div class="vh-s">Pediatric Bradycardia With a Pulse</div></div>
+    <div class="fd-box start"><div class="fd-h">有脈搏且心搏過緩的兒童</div></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">是否有心肺功能受損？</div>急性意識改變・休克徵象・低血壓</div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">無受損</span>找出並治療病因、支持 ABC、考慮給氧、考慮 12 導程心電圖；<b>觀察</b>。</div>
+      <div class="fd-col"><span class="fd-tag no">有受損</span><div class="fd-cap">評估與支持</div>維持呼吸道並給氧、必要時正壓通氣、接監視器、監測脈搏。</div>
+    </div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">心搏過緩仍持續且合併心肺受損？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">否</span>找出並治療病因；觀察。</div>
+      <div class="fd-col"><span class="fd-tag no">是</span><ul>
+        <li>若 <b>HR &lt;60</b> → 開始 CPR</li><li>建立 IV/IO、給 <b>epinephrine</b></li>
+        <li>因迷走張力增加或原發性房室阻斷 → <b>atropine</b></li>
+        <li>找出並治療病因；考慮經胸／經靜脈節律調節</li></ul>
+        <div style="margin-top:5px;font-size:11.5px;color:var(--muted)">→ 每 2 分鐘檢查脈搏。無脈 → 進入兒科心跳停止演算法。</div></div>
+    </div>
+    <details class="def-box"><summary>劑量與可能原因</summary><div class="box-inner">
+      <ul><li><b>Epinephrine</b> IV/IO 0.01 mg/kg（0.1 mg/mL），最大單劑 1 mg</li>
+        <li><b>Atropine</b> IV/IO 0.02 mg/kg，可重複一次；最小 0.1 mg、最大單劑 0.5 mg</li></ul>
+      <div class="fd-cap" style="margin-top:6px">可能原因</div>
+      <div>低體溫、缺氧、毒物／藥物、顱內壓升高、迷走張力增加、房室阻斷、生理性（適當反應）</div>
+    </div></details>
+  </div>
+
+  <!-- ================= 新生兒復甦 ================= -->
+  <div class="view" id="view-neonatal">
+    <div class="view-head"><div class="vh-t">新生兒復甦演算法</div><div class="vh-s">Neonatal Resuscitation Algorithm</div></div>
+    <div class="fd-box start"><div class="fd-h">產前諮詢・團隊簡報・器材檢查 → 出生・啟動臍帶處理計畫</div></div>
+    <div class="fd-arrow">↓</div>
+    <div class="fd-box q"><div class="fd-h">足月？肌張力佳？有呼吸或哭聲？</div></div>
+    <div class="fd-split">
+      <div class="fd-col"><span class="fd-tag yes">三者皆是</span>與父母肌膚接觸、常規照護、維持正常體溫、持續評估。<div style="margin-top:5px;font-size:11.5px;color:var(--muted)">若費力呼吸或持續發紺 → 血氧計、必要時給氧、考慮 CPAP → 復甦後照護。</div></div>
+      <div class="fd-col"><span class="fd-tag no">否</span>保暖並維持體溫、擦乾、擺位、必要時刺激並清理呼吸道。</div>
+    </div>
+    <div class="fd-arrow"><span class="lbl">若「否」路徑</span><br>↓</div>
+    <div class="fd-box q"><div class="fd-h">呼吸暫停或喘息？HR &lt;100/min？</div></div>
+    <div class="fd-box" style="margin-top:6px"><span class="fd-tag no" style="margin-bottom:0">是</span> → <b>正壓通氣（PPV）</b>、接血氧計、考慮心臟監視器。</div>
+    <div class="fd-arrow">↓ <span style="font-size:11px;color:var(--muted)">HR 仍 &lt;100</span></div>
+    <div class="fd-box">通氣矯正步驟（MR. SOPA）、考慮插管或喉罩、接心臟監視器。</div>
+    <div class="fd-arrow">↓ <span style="font-size:11px;color:var(--muted)">HR &lt;60</span></div>
+    <div class="fd-box warn">插管或喉罩、<b>胸部按壓</b>與通氣 <b>3:1</b> 協調、100% 氧氣、UVC 或 IO。</div>
+    <div class="fd-arrow">↓ <span style="font-size:11px;color:var(--muted)">HR 仍 &lt;60</span></div>
+    <div class="fd-box warn">經 UVC 或 IO 給 <b>epinephrine</b>，每 3–5 分鐘；HR 仍 &lt;60 → 考慮低血容、氣胸。</div>
+    <details class="def-box" open><summary>目標血氧飽和度表（導管前 SpO₂）</summary><div class="box-inner"><div class="tbl-wrap"><table class="data">
+      <tr><th>出生後</th><th>2 min</th><th>3 min</th><th>4 min</th><th>5 min</th><th>10 min</th></tr>
+      <tr><td class="mono">SpO₂</td><td class="mono">65–70%</td><td class="mono">70–75%</td><td class="mono">75–80%</td><td class="mono">80–85%</td><td class="mono">85–95%</td></tr>
+    </table></div></div></details>
+  </div>
+
+  <!-- ================= 速查與重點 ================= -->
+  <div class="view" id="view-ref">
+    <div class="view-head"><div class="vh-t">速查與教學重點</div><div class="vh-s">Quick Reference · Drugs · Changes · Teaching Points</div></div>
+
+    <div class="section-title">速查表 Quick Reference（成人）</div>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>項目</th><th>數值</th></tr>
+      <tr><td>CPR 速率／深度／比例</td><td class="mono">100–120/min · 至少 5 cm · 30:2</td></tr>
+      <tr><td>進階呼吸道後通氣</td><td class="mono">10/min（每 6 秒 1 次）</td></tr>
+      <tr><td>Epinephrine</td><td class="mono">1 mg IV/IO q3–5min</td></tr>
+      <tr><td>Amiodarone（心跳停止）</td><td class="mono">300 mg → 150 mg</td></tr>
+      <tr><td>Lidocaine（心跳停止）</td><td class="mono">1–1.5 mg/kg → 0.5–0.75 mg/kg</td></tr>
+      <tr><td>Atropine</td><td class="mono">1 mg q3–5min，max 3 mg</td></tr>
+      <tr><td>Adenosine</td><td class="mono">6 mg → 12 mg</td></tr>
+      <tr><td>去顫 雙相 / 單相</td><td class="mono">120–200 J（依機型）/ 360 J</td></tr>
+      <tr><td>同步整流（電擊整流演算法）</td><td class="mono">AF/撲動 200 J · 窄複合波 100 J · 單型 VT 100 J · 多型 VT 非同步</td></tr>
+      <tr><td>復甦後 SpO₂ / MAP</td><td class="mono">90–98% / ≥ 65 mmHg</td></tr>
+      <tr><td>溫度控制 TTM</td><td class="mono">≥ 36 小時，32–37.5°C</td></tr>
+    </table></div>
+
+    <div class="section-title">速查表 Quick Reference（兒科／新生兒）</div>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>項目</th><th>數值</th></tr>
+      <tr><td>兒 CPR 比例（無進階呼吸道）</td><td class="mono">單人 30:2／雙人 15:2（青春期後 30:2）</td></tr>
+      <tr><td>兒 進階呼吸道通氣</td><td class="mono">每 2–3 秒 1 次呼吸</td></tr>
+      <tr><td>兒 去顫能量</td><td class="mono">2 → 4 → &gt;4 J/kg（max 10 J/kg 或成人）</td></tr>
+      <tr><td>兒 Epinephrine</td><td class="mono">0.01 mg/kg（max 1 mg）q3–5min</td></tr>
+      <tr><td>兒 同步整流</td><td class="mono">0.5–1 J/kg → 2 J/kg</td></tr>
+      <tr><td>兒 Adenosine</td><td class="mono">0.1 mg/kg（max 6 mg）→ 0.2 mg/kg（max 12 mg）</td></tr>
+      <tr><td>兒 Atropine</td><td class="mono">0.02 mg/kg（min 0.1、max 單劑 0.5 mg）</td></tr>
+      <tr><td>新生兒 按壓:通氣</td><td class="mono">3:1（配 100% O₂）</td></tr>
+      <tr><td>新生兒 Epinephrine</td><td class="mono">UVC/IO，q3–5min</td></tr>
+    </table></div>
+
+    <div class="section-title">藥物 Drugs（成人）</div>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>藥物</th><th>適應症</th><th>劑量</th><th>間隔／備註</th></tr>
+      <tr><td>Epinephrine<br>腎上腺素</td><td>所有心跳停止<br>VF/pVT/PEA/Asystole</td><td class="mono">1 mg IV/IO</td><td>每 3–5 分鐘。不可電擊儘早給；可電擊於初次去顫失敗後給</td></tr>
+      <tr><td>Amiodarone<br>胺碘酮</td><td>難治性 VF/pVT（≥3 次電擊後）</td><td class="mono">300 mg → 150 mg</td><td>心跳停止用；穩定寬複合波為 150 mg over 10 min，勿混用</td></tr>
+      <tr><td>Lidocaine<br>利多卡因</td><td>難治性 VF/pVT（amiodarone 替代）</td><td class="mono">1–1.5 mg/kg → 0.5–0.75 mg/kg</td><td>每 5–10 分鐘，最多 3 劑或 3 mg/kg；與 amiodarone 對等</td></tr>
+      <tr><td>Atropine<br>阿托品</td><td>有症狀心搏過緩</td><td class="mono">1 mg IV bolus</td><td>每 3–5 分鐘，max 3 mg；高度 AVB／寬 QRS 逸搏可能無效</td></tr>
+      <tr><td>Dopamine<br>多巴胺</td><td>心搏過緩對 atropine 無效</td><td class="mono">5–20 mcg/kg/min</td><td>依反應滴定，緩慢減量</td></tr>
+      <tr><td>Epinephrine 輸注</td><td>心搏過緩對 atropine 無效</td><td class="mono">2–10 mcg/min</td><td>依反應滴定</td></tr>
+      <tr><td>Adenosine<br>腺苷</td><td>規則窄複合波（或規則單型寬複合波）心搏過速</td><td class="mono">6 mg → 12 mg</td><td>推注後立即沖注；氣喘、預激併 AF 謹慎</td></tr>
+      <tr><td>Procainamide</td><td>穩定寬複合波心搏過速</td><td class="mono">20–50 mg/min；維持 1–4 mg/min</td><td>至抑制／低血壓／QRS &gt;50%／達 17 mg/kg。QT 延長或 CHF 避免</td></tr>
+      <tr><td>Amiodarone（穩定寬 QRS）</td><td>穩定寬複合波心搏過速</td><td class="mono">150 mg over 10 min</td><td>VT 復發可重複；維持 1 mg/min（前 6 小時）</td></tr>
+      <tr><td>Magnesium sulfate<br>硫酸鎂</td><td>尖端扭轉型室速 / 低血鎂</td><td class="mono">1–2 g IV/IO 稀釋</td><td>不建議常規用於一般心跳停止</td></tr>
+    </table></div>
+
+    <div class="section-title">可逆原因 H's &amp; T's</div>
+    <div class="card"><div class="ht-grid">
+      <div class="ht-col"><h4>H's</h4><ul>
+        <li><b>Hypovolemia</b> 低血容</li><li><b>Hypoxia</b> 缺氧</li><li><b>Hydrogen ion</b> 酸中毒</li>
+        <li><b>Hypo-/Hyperkalemia</b> 低／高血鉀</li><li><b>Hypothermia</b> 低體溫</li></ul></div>
+      <div class="ht-col"><h4>T's</h4><ul>
+        <li><b>Tension pneumothorax</b> 張力性氣胸</li><li><b>Tamponade</b> 心包填塞</li><li><b>Toxins</b> 毒素／中毒</li>
+        <li><b>Thrombosis, pulmonary</b> 肺栓塞</li><li><b>Thrombosis, coronary</b> 冠狀動脈栓塞</li></ul></div>
+    </div></div>
+
+    <div class="section-title">特殊情況 Special Situations</div>
+    <div class="card">
+      <div style="font-weight:700; margin-bottom:4px;">鴉片類相關急症 Opioid-Associated Emergency</div>
+      <ul style="margin:0 0 10px; padding-left:18px; font-size:12.5px; line-height:1.8;">
+        <li>疑似鴉片類過量之<b>心跳停止</b>：可考慮 naloxone，但<b>不得干擾標準復甦</b>。</li>
+        <li>有脈搏但<b>呼吸停止</b>：BVM 通氣並給 naloxone。</li>
+        <li>出院時建議提供 naloxone 並教導使用方式。</li>
+      </ul>
+      <div style="font-weight:700; margin-bottom:4px;">急性冠心症 ACS</div>
+      <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.8;">
+        <li>10 分鐘內取得並判讀 12 導程心電圖；給氧僅在 SpO₂ &lt; 90%。</li>
+        <li>aspirin、nitroglycerin（無禁忌時）、必要時 morphine 止痛。</li>
+        <li>STEMI → 及早再灌流：優先 PCI（符合時間窗）；無法及時 PCI 者考慮溶栓。</li>
+      </ul>
+    </div>
+
+    <div class="section-title">2025 vs 2020 重點更新 Key Changes</div>
+    <div class="card">
+      <div class="chg"><span class="chg-t">血管通路</span>：重申 IV 優先、IO 為次選；2025 統合分析顯示 IO 未較 IV 顯著改善預後。</div>
+      <div class="chg"><span class="chg-t">去顫策略（DSED／改變向量）</span>：≥3 次電擊後難治性 VF 使用雙序列或改變向量電擊，效益仍未確立。</div>
+      <div class="chg"><span class="chg-t">機械式 CPR</span>：不建議常規使用；僅在高品質人工按壓困難之特定情境考慮。<span class="chg-tag">Class 3 / 情境性</span></div>
+      <div class="chg"><span class="chg-t">抬頭 CPR</span>：除臨床試驗外不建議（極低確定性證據）。</div>
+      <div class="chg"><span class="chg-t">抗心律不整替代藥</span>：難治性 VF/pVT 使用 β-blocker、bretylium、procainamide、sotalol 之效益不確定。</div>
+      <div class="chg"><span class="chg-t">Vasopressin</span>：單用或併 epinephrine 相較 epinephrine 單用無優勢。</div>
+      <div class="chg"><span class="chg-t">異物哽塞（FBAO）</span>：嚴重呼吸道異物哽塞改為循環「5 次背擊 + 5 次腹部推擠」。</div>
+      <div class="chg"><span class="chg-t">溫度控制（TTM）</span>：維持至少 36 小時；接受 32–37.5°C 區間策略，積極防發燒。</div>
+      <div class="chg"><span class="chg-t">血壓目標</span>：復甦後維持 MAP ≥ 65 mmHg，避免低血壓；更高目標無額外好處。</div>
+      <div class="chg"><span class="chg-t">診斷影像</span>：新增可考慮頭到骨盆 CT 與 POCUS 找尋病因。</div>
+      <div class="chg"><span class="chg-t">神經預後</span>：強調多模式評估；不以單一 ETCO₂ 值終止復甦；無 EEG 相關者不建議僅為抑制肌陣攣給藥。</div>
+      <div class="chg"><span class="chg-t">鴉片類過量</span>：心跳停止疑似鴉片過量可考慮 naloxone；出院提供 naloxone 與衛教。</div>
+      <div class="chg"><span class="chg-t">終止復甦（TOR）</span>：分層 EMS 系統採用通用終止復甦規則（未目擊、未電擊、未 ROSC）。</div>
+      <div class="chg"><span class="chg-t">去顫性別落差</span>：可調整內衣位置而非移除，以減少女性去顫延遲。</div>
+      <div class="chg"><span class="chg-t">教育訓練</span>：建議使用回饋裝置；VR 用於知識而非技能；建議 &lt;12 歲兒童開始 CPR 訓練。</div>
+    </div>
+
+    <div class="section-title">教學重點 Teaching Points</div>
+    <div class="card"><ul class="tp">
+      <li>最高價值的兩件事是<b>「按壓」與「去顫」</b>；其餘皆圍繞著「減少中斷」來設計。</li>
+      <li>可電擊 vs 不可電擊心律決定 epinephrine 時機：不可電擊<b>儘早給</b>、可電擊於<b>首次去顫失敗後</b>給。</li>
+      <li>難治性 VF/pVT（通常 ≥3 次電擊後）才加抗心律不整藥；amiodarone 與 lidocaine 為對等替代。</li>
+      <li>Atropine 對心搏過緩維持 1 mg／3–5 分鐘／最大 3 mg；對高度房室阻斷常無效，應早備 TCP 與升壓輸注。</li>
+      <li>不穩定心搏過速立即同步電擊；規則窄複合波可先試 adenosine。</li>
+      <li>心跳停止之 amiodarone 300 mg 與穩定寬複合波之 amiodarone 150 mg over 10 min <b>劑量不同，勿混用</b>。</li>
+      <li>每次心律分析都要同步思考 H's &amp; T's，並以 POCUS 輔助（心包填塞、肺栓塞、低血容）。</li>
+      <li>ROSC 後照護：氧合／通氣正常化（SpO₂ 90–98%）、MAP ≥ 65、溫度控制（≥36h）、找病因（含冠脈攝影）。</li>
+      <li>波形 capnography 是 CPR 品質與確認插管位置的關鍵；ETCO₂ 突升常代表 ROSC，但單一數值不可用來決定終止復甦。</li>
+      <li>兒科按壓比例：單人 30:2、雙人（青春期前）15:2；去顫 2→4→&gt;4 J/kg。</li>
+    </ul></div>
+
+    <footer class="tool-footer">
+      資料來源 References — 本頁依「(講義) 2025 ACLS flowcharts」官方 18 張演算法整理，並參照 2025 AHA Guidelines for CPR &amp; ECC。<br>
+      <a class="ref-link" href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001376" target="_blank" rel="noopener">Part 9: Adult Advanced Life Support: 2025 AHA Guidelines (Circulation)</a><br>
+      <a class="ref-link" href="https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/algorithms" target="_blank" rel="noopener">AHA CPR &amp; ECC Guidelines / Algorithms 首頁</a>
+    </footer>
+  </div>
+
+  <div class="disclaimer">
+    本頁為<b>教育與參考用途</b>，非醫療指示。內容依 2025 AHA CPR &amp; ECC 官方演算法講義整理；實際處置應依最新原文指引、當地流程與臨床判斷，<b>劑量請於用藥前再次核對</b>。整體證據等級偏弱（僅約 1.4% 建議為 Level A）。
+  </div>
+</div>
+
+<script>
+/* ---- 決策流程共用 helpers ---- */
+function flowShow(id,on){ const el=document.getElementById(id); if(el) el.classList.toggle('hidden',!on); }
+function flowClearSel(stepId){ const s=document.getElementById(stepId); if(s) s.querySelectorAll('.flow-opt').forEach(b=>b.classList.remove('selected')); }
+function flowSelect(btn){ const g=btn.parentNode; g.querySelectorAll('.flow-opt').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+function flowRec(id,cls,title,detail,note){
+  const rec=document.getElementById(id);
+  rec.className='flow-rec '+cls;
+  rec.innerHTML='<div class="rec-label">建議處置 Recommendation</div><div class="rec-title">'+title+'</div>'+
+    (detail?'<ul class="rec-detail">'+detail+'</ul>':'')+
+    (note?'<div class="rec-note">'+note+'</div>':'');
+}
+
+/* ---- 分頁切換 ---- */
+function showView(name, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('#navwrap button').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+/* ================= 心跳停止 ================= */
+const A={rhythm:null, refractory:null};
+function aPick(k,v,btn){ flowSelect(btn);
+  if(k==='rhythm'){ A.rhythm=v; A.refractory=null; }
+  else if(k==='refractory'){ A.refractory=v; }
+  aRender();
+}
+function aRender(){
+  const shock = A.rhythm==='shock';
+  flowShow('arrest_c2', shock); flowShow('arrest_s2', shock);
+  if(!shock) flowClearSel('arrest_s2');
+
+  let cls='rec-idle', title='請先於步驟 1 判讀心律', detail='', note='';
+  if(A.rhythm==='shock'){
+    cls='rec-urgent'; title='可電擊心律 VF / pVT：立即去顫';
+    detail='<li>電擊 1 次（雙相依機型 120–200 J；單相 360 J），電擊後<strong>立即</strong>恢復 CPR 2 分鐘，勿為分析心律或觸脈而延遲</li>'+
+           '<li>建立 IV／IO 管路（IV 優先）</li>'+
+           '<li>再分析心律；若仍為可電擊 → 再電擊</li>'+
+           '<li><strong>初次去顫失敗後</strong>給 Epinephrine 1 mg IV/IO，之後每 3–5 分鐘一次</li>'+
+           '<li>考慮進階呼吸道 + 波形二氧化碳圖（capnography）</li>';
+    note='可電擊心律的 epinephrine 建議於首次去顫失敗後再給，不必立即給。';
+  } else if(A.rhythm==='nonshock'){
+    cls='rec-urgent'; title='不可電擊心律 PEA / Asystole';
+    detail='<li><strong>儘早</strong>給 Epinephrine 1 mg IV/IO，之後每 3–5 分鐘一次</li>'+
+           '<li>持續高品質 CPR，每 2 分鐘分析心律</li>'+
+           '<li>考慮進階呼吸道 + 波形 capnography</li>'+
+           '<li>積極尋找並矯正可逆原因（H\'s &amp; T\'s）</li>'+
+           '<li>若轉為可電擊心律 → 於步驟 1 改選「可電擊」進入去顫路徑</li>';
+    note='不可電擊心律應儘早（as soon as feasible）給 epinephrine。';
+  }
+  flowRec('arrest_rec', cls, title, detail, note);
+
+  let c2='rec-idle', t2='', d2='', n2='';
+  if(shock && A.refractory==='yes'){
+    c2='rec-urgent'; t2='難治性 VF / pVT：加抗心律不整藥';
+    d2='<li><strong>Amiodarone</strong>：第一劑 300 mg IV/IO，第二劑 150 mg</li>'+
+       '<li>或 <strong>Lidocaine</strong>：第一劑 1–1.5 mg/kg，之後 0.5–0.75 mg/kg（每 5–10 分鐘，最多 3 劑或 3 mg/kg）</li>'+
+       '<li>Torsades／低血鎂 → <strong>Magnesium</strong> 1–2 g IV/IO</li>'+
+       '<li>持續每 2 分鐘輪替按壓者、分析心律，並處理 H\'s &amp; T\'s</li>';
+    n2='Amiodarone 與 Lidocaine 為對等替代；≥3 次電擊後之難治性心律才加藥。';
+  } else if(shock && A.refractory==='no'){
+    c2='rec-blue'; t2='持續去顫循環';
+    d2='<li>維持「電擊 → 2 分鐘 CPR → 分析心律」循環</li>'+
+       '<li>每 3–5 分鐘給 epinephrine；持續尋找並矯正 H\'s &amp; T\'s</li>'+
+       '<li>達第 3 次電擊仍為難治性 → 加抗心律不整藥（見上）</li>';
+  }
+  flowRec('arrest_rec2', c2, t2, d2, n2);
+  flowShow('arrest_rec2', shock && !!A.refractory);
+}
+function aReset(){ A.rhythm=null; A.refractory=null;
+  document.querySelectorAll('#view-arrest .flow-opt').forEach(b=>b.classList.remove('selected'));
+  aRender();
+}
+
+/* ================= 心搏過緩 ================= */
+const B={sx:null, atr:null};
+function bPick(k,v,btn){ flowSelect(btn);
+  if(k==='sx'){ B.sx=v; B.atr=null; }
+  else if(k==='atr'){ B.atr=v; }
+  bRender();
+}
+function bRender(){
+  const unstable = B.sx==='yes';
+  flowShow('brady_c2', unstable); flowShow('brady_s2', unstable);
+  if(!unstable) flowClearSel('brady_s2');
+
+  let cls='rec-idle', title='請先於步驟 1 評估症狀', detail='', note='';
+  if(B.sx==='no'){
+    cls='rec-blue'; title='穩定：找出並治療病因、觀察';
+    detail='<li>心電／血壓／血氧持續監測</li>'+
+           '<li>支持 ABC、考慮給氧、取得 12 導程心電圖</li>'+
+           '<li>準備藥物與經皮節律調節以備惡化</li>';
+    note='無明顯症狀者不需立即用藥。';
+  } else if(B.sx==='yes'){
+    cls='rec-urgent'; title='有症狀：Atropine 第一線';
+    detail='<li><strong>Atropine 1 mg IV bolus</strong>，每 3–5 分鐘重複，最大總量 3 mg</li>'+
+           '<li>同時尋找並處理可逆原因（缺氧、藥物毒性、高血鉀、缺血）</li>';
+    note='心跳通常 <50/min 並造成低血壓／意識改變／休克／胸部不適／急性心衰竭。';
+  }
+  flowRec('brady_rec', cls, title, detail, note);
+
+  let c2='rec-idle', t2='', d2='', n2='';
+  if(unstable && B.atr==='ok'){
+    c2='rec-blue'; t2='Atropine 有效：監測並找原因';
+    d2='<li>可依需要重複 atropine 至最大 3 mg</li><li>持續監測，處理潛在原因</li><li>備妥 TCP 與升壓輸注以防再惡化</li>';
+  } else if(unstable && B.atr==='fail'){
+    c2='rec-urgent'; t2='Atropine 無效：節律調節／升壓輸注';
+    d2='<li><strong>經皮節律調節（TCP）</strong></li>'+
+       '<li>或 <strong>Dopamine</strong> 5–20 mcg/kg/min（依反應調整）</li>'+
+       '<li>或 <strong>Epinephrine</strong> 輸注 2–10 mcg/min（依反應調整）</li>'+
+       '<li>考慮專科會診與<strong>經靜脈節律調節</strong></li>';
+    n2='Atropine 對第二度 II 型／第三度房室阻斷或寬 QRS 逸搏常無效，勿延誤起搏／升壓。';
+  }
+  flowRec('brady_rec2', c2, t2, d2, n2);
+  flowShow('brady_rec2', unstable && !!B.atr);
+}
+function bReset(){ B.sx=null; B.atr=null;
+  document.querySelectorAll('#view-brady .flow-opt').forEach(b=>b.classList.remove('selected'));
+  bRender();
+}
+
+/* ================= 心搏過速 ================= */
+const T={mode:null, urhythm:null, qrs:null};
+function tPick(k,v,btn){ flowSelect(btn);
+  if(k==='mode'){ T.mode=v; T.urhythm=null; T.qrs=null; }
+  else if(k==='urhythm'){ T.urhythm=v; }
+  else if(k==='qrs'){ T.qrs=v; }
+  tRender();
+}
+function tRender(){
+  const unstable = T.mode==='unstable';
+  const stable = T.mode==='stable';
+  flowShow('tachy_c2u', unstable); flowShow('tachy_s2u', unstable);
+  flowShow('tachy_c2s', stable);   flowShow('tachy_s2s', stable);
+  if(!unstable) flowClearSel('tachy_s2u');
+  if(!stable)   flowClearSel('tachy_s2s');
+
+  let cls='rec-idle', title='請先於步驟 1 評估穩定度', detail='', note='';
+  if(unstable){
+    cls='rec-urgent'; title='不穩定：同步電擊整流 Synchronized cardioversion';
+    detail='<li>可行時先給予鎮靜（sedation）</li>'+
+           '<li>依機型建議能量或 2025 指引以提高首次電擊成功率；於步驟 2 依心律型態選能量</li>'+
+           '<li>規則窄複合波可先考慮 adenosine（不延誤電擊）</li>';
+    note='嚴重症狀：低血壓、急性意識改變、休克、缺血性胸部不適、急性心衰竭。';
+  } else if(stable){
+    cls='rec-idle'; title='穩定：請於步驟 2 判別 QRS 寬窄';
+  }
+  flowRec('tachy_rec', cls, title, detail, note);
+
+  let c2='rec-idle', t2='', d2='', n2='', show2=false;
+  if(unstable && T.urhythm){
+    show2=true; c2='rec-urgent';
+    const E={
+      nr:['窄規則：同步整流（SVT 100 J／心房撲動 200 J）','<li><strong>SVT 100 J</strong>；心房撲動 200 J（biphasic）同步整流</li><li>可於準備電擊時先試 adenosine 6 mg → 12 mg</li>'],
+      ni:['窄不規則(AF)：同步整流 200 J','<li><strong>心房顫動 200 J</strong>（biphasic）同步整流</li>'],
+      wr:['寬規則(單型VT)：同步整流 100 J','<li><strong>單型 VT 100 J</strong>（biphasic）同步整流</li><li>若規則且單型，可於準備時考慮 adenosine</li>'],
+      wi:['寬不規則(多型VT)：去顫（非同步）','<li>使用<strong>非同步、高能量電擊（去顫）</strong></li><li>如多型 VT／預激併 AF；勿用房室結阻斷劑</li>']
+    }[T.urhythm];
+    t2=E[0]; d2=E[1]; n2='能量依「電擊整流演算法」；可行時先鎮靜，若同步延遲且危急改非同步電擊。';
+  } else if(stable && T.qrs==='narrow'){
+    show2=true; c2='rec-blue'; t2='穩定窄 QRS（SVT）';
+    d2='<li><strong>迷走神經刺激</strong>（若規則）</li>'+
+       '<li><strong>Adenosine</strong> 6 mg → 12 mg（若規則）</li>'+
+       '<li>考慮乙型阻斷劑或鈣離子通道阻斷劑</li>'+
+       '<li>考慮專科會診</li>';
+  } else if(stable && T.qrs==='wide'){
+    show2=true; c2='rec-blue'; t2='穩定寬 QRS';
+    d2='<li>若<strong>規則且單型</strong> → 可考慮 Adenosine</li>'+
+       '<li>考慮<strong>抗心律不整輸注</strong>：Procainamide、Amiodarone（150 mg over 10 min）或 Sotalol</li>'+
+       '<li>考慮專科會診</li>';
+    n2='Procainamide 於 QT 延長或 CHF 避免；Sotalol 於 QT 延長避免。詳見藥物劑量。';
+  }
+  flowRec('tachy_rec2', c2, t2, d2, n2);
+  flowShow('tachy_rec2', show2);
+}
+function tReset(){ T.mode=null; T.urhythm=null; T.qrs=null;
+  document.querySelectorAll('#view-tachy .flow-opt').forEach(b=>b.classList.remove('selected'));
+  tRender();
+}
+
+aReset(); bReset(); tReset();
+</script>
+</body>
+</html>

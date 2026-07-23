@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>臺大醫院心臟衰竭治療指引（第三版）· 互動版</title>
+<meta name="theme-color" content="#1f5a6b">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+:root{
+  --ink:#132126; --paper:#f4f2ec; --panel:#ffffff; --line:#d8d3c4;
+  --accent:#1f5a6b; --accent-soft:#dbe8ea; --accent2:#a13d2f; --accent2-soft:#e7dccb;
+  --muted:#5d6a6f; --muted-soft:#8b969a; --field-bg:#ffffff; --box-bg:#faf8f3; --soft-bg:#f0ece2;
+  --ok:#1d6b4f; --warn:#8a6d1f; --bad:#8c2f22;
+  --sans:'Inter','Noto Sans TC','PingFang TC','Helvetica Neue',sans-serif;
+  --serif:'Iowan Old Style',Georgia,'Noto Serif TC','Songti TC',serif;
+  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#e8e4da;--paper:#14191b;--panel:#1b2124;--line:#333c40;--accent:#7fb8c4;
+  --accent-soft:#22343a;--accent2:#d98d78;--accent2-soft:#332824;--muted:#9aa5a9;--muted-soft:#6d787c;
+  --field-bg:#222a2d;--box-bg:#1e2528;--soft-bg:#232b2e;--ok:#6fc39d;--warn:#d6b455;--bad:#e08a78;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.7}
+.sheet{max-width:920px;margin:0 auto;padding:0 16px 80px}
+.app-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+  border-bottom:2px solid var(--ink);padding:22px 0 12px;margin-bottom:0}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-size:25px;margin:4px 0 2px;font-weight:600}
+.sub{font-size:12px;color:var(--muted)}
+.ver{font-family:var(--mono);font-size:10px;color:var(--muted-soft);text-align:right;line-height:1.5}
+
+/* tabs */
+.tabbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+  display:flex;gap:0;overflow-x:auto;scrollbar-width:thin;padding-top:2px}
+.tabbar button{flex:0 0 auto;background:none;border:none;border-bottom:2px solid transparent;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;color:var(--muted);
+  padding:10px 12px;cursor:pointer;white-space:nowrap}
+.tabbar button:hover{color:var(--ink)}
+.tabbar button.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab{display:none;padding-top:20px}
+.tab.on{display:block}
+
+/* blocks */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:16px 18px;margin:14px 0}
+.section-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);margin:26px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.section-title .en{color:var(--muted-soft);text-transform:none;letter-spacing:0;margin-left:8px}
+h3{font-family:var(--serif);font-size:16px;margin:18px 0 6px}
+h4{font-size:13px;margin:14px 0 4px;color:var(--accent)}
+p{margin:8px 0}
+ul,ol{margin:8px 0;padding-left:20px}
+li{margin:3px 0}
+.note{font-size:11.5px;color:var(--muted);margin-top:6px}
+.mono{font-family:var(--mono)}
+.en{font-family:var(--mono);font-size:.88em;color:var(--muted)}
+mark{background:var(--accent-soft);color:inherit;padding:0 2px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft-bg);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.03em}
+td.n{font-family:var(--mono);white-space:nowrap}
+.tbl-wrap{overflow-x:auto}
+
+details{border:1px solid var(--line);background:var(--box-bg);border-radius:2px;margin:8px 0;padding:0}
+details>summary{cursor:pointer;padding:9px 12px;font-size:13px;font-weight:600;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▸ ';color:var(--accent)}
+details[open]>summary::before{content:'▾ '}
+details>div{padding:2px 14px 12px}
+
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:2px;
+  border:1px solid var(--line);background:var(--soft-bg);color:var(--muted);white-space:nowrap}
+.badge.c1{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.badge.c2a{background:transparent;color:var(--warn);border-color:var(--warn)}
+.badge.c2b{background:transparent;color:var(--muted);border-style:dashed}
+.badge.c3{background:transparent;color:var(--bad);border-color:var(--bad)}
+.badge.new{background:var(--accent2-soft);color:var(--accent2);border-color:var(--accent2)}
+
+.callout{border-left:3px solid var(--accent);background:var(--box-bg);padding:10px 14px;margin:12px 0;font-size:13px}
+.callout.warn{border-left-color:var(--accent2)}
+.callout .ct{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.callout.warn .ct{color:var(--accent2)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+
+/* flow */
+.flow-step{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px 16px;margin:10px 0}
+.flow-head{display:flex;gap:10px;align-items:baseline}
+.flow-num{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:11px;display:flex;align-items:center;justify-content:center}
+.flow-q{font-family:var(--serif);font-size:15px}
+.flow-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.flow-opt{background:var(--field-bg);border:1px solid var(--line);border-radius:2px;padding:8px 12px;
+  cursor:pointer;font-family:var(--sans);font-size:13px;color:var(--ink);text-align:left}
+.flow-opt:hover{border-color:var(--accent)}
+.flow-opt.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.flow-conn{text-align:center;color:var(--muted-soft);font-size:16px;line-height:1}
+.flow-rec{border-radius:2px;padding:14px 16px;margin:12px 0;color:#e9e6dd;background:var(--ink)}
+.flow-rec .rl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.flow-rec .rt{font-family:var(--serif);font-size:17px;margin:4px 0 8px}
+.flow-rec ul{padding-left:18px;font-size:13px}
+.rec-idle{background:var(--soft-bg);color:var(--muted);border:1px dashed var(--line)}
+.rec-blue{background:#122a3f;color:#dde8f2}
+.rec-green{background:#123028;color:#d9ece3}
+.rec-red{background:#3a1712;color:#f2ded8}
+.rec-amber{background:#3b2f10;color:#f0e6cb}
+.hidden{display:none}
+.btn{font-family:var(--mono);font-size:11px;padding:7px 14px;border:1px solid var(--line);
+  background:var(--field-bg);color:var(--ink);border-radius:2px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* quadrant */
+.quad{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin:14px 0}
+.quad .lbl{font-family:var(--mono);font-size:10.5px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px}
+.qbox{border:1px solid var(--line);background:var(--panel);padding:14px;cursor:pointer;border-radius:2px;min-height:92px}
+.qbox:hover{border-color:var(--accent)}
+.qbox.sel{border-color:var(--accent);background:var(--accent-soft)}
+.qbox .qn{font-family:var(--serif);font-size:17px}
+.qbox .qe{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+
+/* drug table filter */
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+input[type=search],input[type=text]{font-family:var(--sans);font-size:13px;padding:7px 10px;
+  border:1px solid var(--line);background:var(--field-bg);color:var(--ink);border-radius:2px;min-width:180px}
+.chip{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border:1px solid var(--line);
+  background:var(--field-bg);color:var(--muted);border-radius:2px;cursor:pointer}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* pillars */
+.pillar{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:12px}
+.pillar .pn{font-family:var(--serif);font-size:15px;color:var(--accent)}
+.pillar .pd{font-size:12px;color:var(--muted);margin-top:2px}
+
+footer.tool-footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.8}
+.disclaimer{margin-top:10px;font-size:11px;color:var(--muted-soft);font-family:var(--sans)}
+@media print{.tabbar{display:none}.tab{display:block!important}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<div class="app-header">
+  <div>
+    <div class="eyebrow">NTUH Cardiovascular Center · Clinical Guideline</div>
+    <h1>心臟衰竭治療指引</h1>
+    <div class="sub">臺大醫院 第三版 · Heart Failure Guideline, 3rd edition</div>
+  </div>
+  <div class="ver">2022/08/05 制訂<br>2026/06/03 修訂<br>2026/06/15 通過</div>
+</div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+<!-- ============ 1 總覽 ============ -->
+<section class="tab" id="t-overview">
+  <div class="section-title">第三版更新重點 <span class="en">What's new in v3</span></div>
+  <p>本版依 2023 ESC Focus Update、2024 ACC Expert Consensus、JCS/JHFS 2025 指南等新證據更新，重點如下（原文「版本修正說明」）。</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>一、藥物治療標準的更新與強化</h4>
+      <ul>
+        <li><b>SGLT2 抑制劑擴大應用</b>：依 EMPEROR-Preserved 與 DELIVER，<mark>HFmrEF 與 HFpEF 強烈建議使用</mark> dapagliflozin 或 empagliflozin，降低心衰住院或心血管死亡 <span class="badge c1">Class I / Level A</span></li>
+        <li><b>新增 Finerenone</b>：依 2024 FINEARTS-HF 及 2025 日本指南，HFmrEF/HFpEF 可考慮非類固醇型 MRA finerenone；合併 T2DM＋CKD 者強烈建議 <span class="badge c1">I / A</span></li>
+        <li><b>Digoxin 安全性調整</b>：治療濃度由「&lt; 1.2 ng/mL」下修為 <mark>0.5–&lt; 0.9 ng/mL</mark>；須格外小心族群新增「併用 amiodarone」；劑量依 TDM 調整</li>
+        <li><b>Hydralazine + Isosorbide dinitrate</b>：有症狀之非裔美國人（NYHA III–IV）建議等級提升為 <span class="badge c1">Class I / Level A</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>三、缺鐵的明確處置原則</h4>
+      <ul>
+        <li>診斷標準：<mark>TSAT &lt; 20% 或 serum ferritin &lt; 100 μg/L</mark></li>
+        <li>HFrEF / HFmrEF 合併缺鐵 → 靜脈鐵劑（ferric carboxymaltose、ferric derisomaltose），改善症狀、生活品質並降低再住院</li>
+      </ul>
+      <h4>五、瓣膜性心臟病介入治療更新</h4>
+      <ul>
+        <li><b>TEER</b>：高手術風險之 MR（原發＋次發）明確建議評估</li>
+        <li><b>TTVI</b>：不適合手術之嚴重 TR 新增評估建議</li>
+        <li><b>AS</b>：正常收縮分率但 low-flow / low-gradient 之嚴重 AS 亦應換瓣</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>四、急性心臟衰竭與心因性休克的處置優化</h4>
+    <ul>
+      <li>第九章新增<b>心因性休克</b>，納入 <mark>SCAI 分級 A–E</mark> 作為預後評估</li>
+      <li>新增 <b>NTUH 休克團隊啟動流程</b>：血壓異常、組織灌流不足（lactate &gt; 2 mmol/L）、侵入性血流動力學不佳（CI &lt; 2.2 或 CPO &lt; 0.6 W）、ROSC 後特定狀態</li>
+      <li><b>急性期利尿劑</b>：門診已使用者住院改為靜脈 1–2 倍劑量；給藥後追蹤<mark>尿量</mark>與<mark>urinary spot sodium</mark>評估反應；必要時併用 acetazolamide 或 thiazide 以達加乘利尿</li>
+    </ul>
+  </div>
+
+  <div class="section-title">版本沿革 <span class="en">Revision history</span></div>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:52px">版本</th><th style="width:120px">日期</th><th>修改重點</th><th style="width:90px">修改人</th></tr>
+    <tr><td class="n">1</td><td class="n">2019/08/06 制定<br>2020/01/06 通過</td><td>初版（心血管中心第 110 次營運會議暨第 104 次管理會議）</td><td>許如瑩<br>李啟明</td></tr>
+    <tr><td class="n">2</td><td class="n">2022/10 修訂<br>2022/11/21 通過</td><td>新增目錄格式；HFmrEF 由 mid-range 改為 mildly reduced；新增右心室衰竭與心超參數；新增 NP 上升原因表（表 2-2）與診斷流程圖（圖 2-1）；修正 HFrEF 治療流程圖（圖 3-1）、新增 SGLT2i；新增第陸章 HFpEF 治療；新增第柒章心衰竭及懷孕；新增第捌章跨團隊照顧；修訂第拾章心血管共病並增加心房顫動</td><td>盧彥廷</td></tr>
+    <tr><td class="n">3</td><td class="n">2026/06/03 修訂<br>2026/06/15 通過</td><td>如上「第三版更新重點」（心血管營運會議暨核心會議通過）</td><td>江君揚<br>吳宜真</td></tr>
+  </table></div>
+
+  <div class="section-title">章節導覽 <span class="en">Contents</span></div>
+  <div class="grid3" id="tocgrid"></div>
+
+  <div class="callout warn">
+    <div class="ct">使用說明</div>
+    本頁為指引全文之互動化整理，內容依原始 PDF 逐章轉錄。臨床決策仍應回到原始指引與主治醫師判斷；本頁為教育與查閱輔助，不取代臨床判斷。
+  </div>
+</section>
+
+<!-- ============ 2 定義 ============ -->
+<section class="tab" id="t-definition">
+  <div class="section-title">壹、心臟衰竭之定義、病因和預後 <span class="en">Definition, epidemiology and prognosis</span></div>
+  <p>心臟衰竭是一種<b>臨床症候群</b>，其特徵是由於心臟結構和／或功能異常，引起休息或負荷時心輸出量減少和／或心內壓力增高，從而導致典型症狀（呼吸困難、足踝水腫、疲倦感），也可伴有徵象（頸靜脈壓升高、肺部囉音、周邊水腫）。</p>
+  <p>因為心臟衰竭為<b>臨床導向之診斷</b>，在出現明顯臨床症狀之前，患者可表現為無症狀的心臟結構或功能異常（如收縮或舒張左心室功能不全），此為心臟衰竭之前兆。及早發現此類前兆很重要，因為此類病患預後較差須及早介入，進而有效降低死亡率。</p>
+
+  <h3>表 1-1　正常、中等、低收縮分率心臟衰竭的定義</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:64px">分類</th>
+        <th>低收縮分率 <span class="en">HFrEF</span></th>
+        <th>中等收縮分率 <span class="en">HFmrEF</span></th>
+        <th>正常收縮分率 <span class="en">HFpEF</span></th></tr>
+    <tr><td class="n">1</td><td>症狀 ± 徵象 <sup>a</sup></td><td>症狀 ± 徵象</td><td>症狀 ± 徵象</td></tr>
+    <tr><td class="n">2</td><td class="n">LVEF ≦ 40%</td><td class="n">LVEF 41–49% <sup>b</sup></td><td class="n">LVEF ≧ 50%</td></tr>
+    <tr><td class="n">3</td><td>—</td><td>—</td><td>具有心臟結構和／或功能異常之客觀證據，並與左心室舒張異常或左心室填充壓力上升、包括利鈉激素上升 <sup>c</sup> 成一致性</td></tr>
+  </table></div>
+  <div class="note">a：表徵也許不會在心臟衰竭表現（尤其是 HFpEF）或治療良好之患者上表現。<br>
+  b：若有其他結構性心臟病，如左心房擴張、左心室肥厚、左心室填充受損，則更傾向 HFmrEF。<br>
+  c：若有越多異常證據，則越高機率為 HFpEF。</div>
+  <p class="note">LVEF 40–49% 為界定上之「灰色地帶」。歐洲心臟學會已將用詞由「mid-range EF」改為「mildly reduced EF」。許多非心臟疾病（貧血、肺部疾病、腎臟疾病、甲狀腺或肝臟疾病）臨床表現與心臟衰竭相似，但沒有心臟功能異常之證據；不過這些疾病也可能與心臟衰竭同時出現或惡化其症狀。</p>
+
+  <div class="section-title">右心室衰竭 <span class="en">Right ventricular dysfunction</span></div>
+  <p>心臟衰竭也可以是單純右心室功能異常導致，可能致病機轉包括<b>壓力超載</b>（pressure overload）或<b>容積超載</b>（volume overload）。雖然造成慢性右心室衰竭較常見的原因為左心衰竭後的肺高壓（LV dysfunction-induced pulmonary hypertension），但仍有許多原因可造成右心室衰竭，例如心肌梗塞、心律失常性右心室心肌病變（ARVC）或心臟瓣膜疾病。</p>
+  <p>診斷上需要定量性評估整體右心室功能，例如 <span class="mono">fractional area change (FAC)</span>、<span class="mono">TAPSE</span>，或 <span class="mono">Doppler tissue imaging-derived systolic S' velocity of the tricuspid annulus (TA S')</span>。</p>
+
+  <details><summary>圖 1-1　心臟超音波評估右心衰竭之參數（Eur J Heart Fail 2018;20:16-37）</summary><div>
+    <div class="tbl-wrap"><table>
+      <tr><th>參數</th><th>異常閾值</th></tr>
+      <tr><td>A. 心包積液 Pericardial fluid</td><td class="n">舒張期 &gt; 5 mm</td></tr>
+      <tr><td>B. 右心室壁厚 RV wall thickness</td><td class="n">&gt; 5 mm</td></tr>
+      <tr><td>C. 下腔靜脈 IVC 直徑</td><td class="n">&gt; 21 mm，吸氣塌陷 &lt; 50% → 提示高 RA 壓</td></tr>
+      <tr><td>D. 三尖瓣逆流峰值速度 TR peak systolic velocity</td><td class="n">&gt; 2.8 m/s</td></tr>
+      <tr><td>E. TAPSE</td><td class="n">&lt; 17 mm</td></tr>
+      <tr><td>F. 右心室擴大 RV dilation</td><td class="n">RVEDD/LVEDD &gt; 1.0；RV basal diameter &gt; 41 mm</td></tr>
+      <tr><td>G. 右心室面積變化率 FAC</td><td class="n">&lt; 35%</td></tr>
+      <tr><td>H. 心室交互依存 Ventricular interdependence</td><td>中膈偏移、D-shaped LV（壓力超載＝收縮期；容積超載＝舒張期）</td></tr>
+      <tr><td>I. 三尖瓣環收縮期 S' 速度（DTI）</td><td class="n">&lt; 9.5 cm/s</td></tr>
+      <tr><td>J. 右心室自由壁縱向應變 Longitudinal strain</td><td class="n">&lt; 20%（絕對值）</td></tr>
+      <tr><td>K. 右心室心肌功能指數 RIMP（DTI）</td><td class="n">&gt; 0.54</td></tr>
+      <tr><td>L. 3D 右心室射出分率</td><td class="n">&lt; 45%</td></tr>
+    </table></div>
+  </div></details>
+
+  <details><summary>表 1-2　心臟超音波評估右心之測量正常值（J Am Soc Echocardiogr 2010;23:685-713）</summary><div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Variable</th><th style="width:70px">Unit</th><th style="width:110px">Abnormal</th></tr>
+      <tr><th colspan="3">Chamber dimensions</th></tr>
+      <tr><td>RV basal diameter</td><td class="n">cm</td><td class="n">&gt; 4.2</td></tr>
+      <tr><td>RV subcostal wall thickness</td><td class="n">cm</td><td class="n">&gt; 0.5</td></tr>
+      <tr><td>RVOT PSAX distal diameter</td><td class="n">cm</td><td class="n">&gt; 2.7</td></tr>
+      <tr><td>RVOT PLAX proximal diameter</td><td class="n">cm</td><td class="n">&gt; 3.3</td></tr>
+      <tr><td>RA major dimension</td><td class="n">cm</td><td class="n">&gt; 5.3</td></tr>
+      <tr><td>RA minor dimension</td><td class="n">cm</td><td class="n">&gt; 4.4</td></tr>
+      <tr><td>RA end-systolic area</td><td class="n">cm²</td><td class="n">&gt; 18</td></tr>
+      <tr><th colspan="3">Systolic function</th></tr>
+      <tr><td>TAPSE</td><td class="n">cm</td><td class="n">&lt; 1.6</td></tr>
+      <tr><td>Pulsed Doppler peak velocity at the annulus</td><td class="n">cm/s</td><td class="n">&lt; 10</td></tr>
+      <tr><td>Pulsed Doppler MPI</td><td class="n">—</td><td class="n">&gt; 0.40</td></tr>
+      <tr><td>Tissue Doppler MPI</td><td class="n">—</td><td class="n">&gt; 0.55</td></tr>
+      <tr><td>FAC</td><td class="n">%</td><td class="n">&lt; 35</td></tr>
+      <tr><th colspan="3">Diastolic function</th></tr>
+      <tr><td>E/A ratio</td><td class="n">—</td><td class="n">&lt; 0.8 或 &gt; 2.1</td></tr>
+      <tr><td>E/E′ ratio</td><td class="n">—</td><td class="n">&gt; 6</td></tr>
+      <tr><td>Deceleration time</td><td class="n">ms</td><td class="n">&lt; 120</td></tr>
+    </table></div>
+  </div></details>
+
+  <div class="section-title">嚴重程度分級 <span class="en">NYHA &amp; ACC/AHA stage</span></div>
+  <p>NYHA 功能分級已廣為使用於描述症狀嚴重程度與運動耐受度，但單從症狀的嚴重程度與左心室功能的關聯性較差。雖然臨床症狀之嚴重程度與整體存活率有明確關聯，但<b>症狀輕微的患者仍比一般人有較高的住院風險及死亡率</b>。</p>
+
+  <h3>表 1-3　紐約心臟功能分級 NYHA classification</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:110px">分級</th><th>描述</th></tr>
+    <tr><td class="n">第一級 class I</td><td>沒有身體活動上的限制，日常活動不會引起過度疲倦、心悸、呼吸困難或心絞痛的症狀。</td></tr>
+    <tr><td class="n">第二級 class II</td><td>身體活動受到輕度限制，於休息狀態下感到舒適，但從事日常活動（如爬樓梯、掃地）時，就會感覺呼吸困難、疲倦、胸悶、心悸或心絞痛。</td></tr>
+    <tr><td class="n">第三級 class III</td><td>身體活動明顯受到限制，休息時會緩解，但從事輕微活動（如刷牙）時，就會出現疲倦、心悸、呼吸困難、胸悶或心絞痛。</td></tr>
+    <tr><td class="n">第四級 class IV</td><td>無法舒適的執行任何活動，在休息狀態下就會出現呼吸困難、疲倦、胸悶或心絞痛。</td></tr>
+  </table></div>
+
+  <h3>表 1-4　美國心臟學會心臟衰竭分期 ACC/AHA staging</h3>
+  <p class="note">與 NYHA 不同：<b>ACC/AHA 分期不會因為治療後而降期</b>，並且較能評估病患預後。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:90px">分期</th><th>描述</th><th>圖 7-1 之細節</th></tr>
+    <tr><td class="n">Stage A<br><span class="en">At risk</span></td><td>有心臟衰竭之高風險，但無結構性心臟病或心衰竭症狀。</td><td>病患有高血壓、心血管疾病、糖尿病、已知暴露於心毒性物質、有心肌病變之家族史；且缺乏結構生物指標或基因指標。</td></tr>
+    <tr><td class="n">Stage B<br><span class="en">Pre-HF</span></td><td>有結構性心臟病，但無心衰竭之症狀或徵象。</td><td>結構性心臟病：左心室肥厚、腔室擴張、心肌收縮異常、心肌組織異常、瓣膜性心臟病。<br>心臟功能異常：左或右心室收縮功能降低、心臟注入壓力增加或舒張失常之證據。<br>暴露於心毒性物質後 NPs 上升或 Troponin 上升。</td></tr>
+    <tr><td class="n">Stage C<br><span class="en">HF</span></td><td>有結構性心臟病，並且曾有或現有心衰竭之症狀。</td><td>心臟結構或功能性異常 → 可分為「心臟衰竭緩和」與「持續心臟衰竭」。</td></tr>
+    <tr><td class="n">Stage D<br><span class="en">Advanced HF</span></td><td>反覆心衰竭病需要特別治療介入。</td><td>休息時有嚴重症狀 ± 徵象；即使在 GDMT 下仍反覆住院；對 GDMT 無效或無法耐受 → 需進階治療如心臟移植、機械循環支持或安寧治療。</td></tr>
+  </table></div>
+  <div class="callout"><div class="ct">圖 7-1</div>Stage A → B → C → D 為單向進展；但透過 <b>GDMT 與風險因子矯正</b>，Stage C 可維持於「心臟衰竭緩和」狀態。</div>
+
+  <div class="section-title">表 1-5　心臟衰竭病因、表現及特殊檢查 <span class="en">Aetiology</span></div>
+  <p class="note">西方國家及已開發國家中，最主要的主導因素為<b>冠心症及高血壓</b>。受到缺血性病因影響，HFmrEF 與 HFrEF 較相似，兩者都比 HFpEF 有較高的冠心症比例。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:110px">病因</th><th>常見臨床表現</th><th>特殊檢查</th></tr>
+    <tr><td>冠心症</td><td>心肌梗塞、心絞痛或類心絞痛症狀、心律不整</td><td>Invasive coronary angiography；CT coronary angiography；Imaging stress tests（echo, nuclear, CMR）</td></tr>
+    <tr><td>高血壓</td><td>正常收縮分率心衰竭；惡性高血壓／急性肺水腫</td><td>24 小時血壓；plasma metanephrines、腎動脈攝影、renin &amp; aldosterone</td></tr>
+    <tr><td>心臟瓣膜疾病</td><td>原發性／次發性瓣膜疾病、先天性心臟瓣膜病</td><td>心臟超音波 — 經食道超音波或壓力性超音波</td></tr>
+    <tr><td>心律不整</td><td>心房心律不整、心室心律不整</td><td>攜帶性心電圖監測；電生理檢查（若符合適應症）</td></tr>
+    <tr><td>心肌病變</td><td>擴張性、肥厚性、限制性心臟病；ARVC；妊娠性心臟病；章魚壺心肌症；毒物（酒精、古柯鹼、鐵、銅）</td><td>心臟磁振造影；左＋右心導管；冠脈攝影；trace elements、toxicology、LFTs、GGT</td></tr>
+    <tr><td>先天性心臟病</td><td>已修補／校正之大血管轉位、分流病灶、已修補之法洛式四重症、Ebstein 式異常</td><td>心臟磁振造影</td></tr>
+    <tr><td>感染性疾病</td><td>病毒性心肌炎、Chagas 式疾病、HIV、萊姆式疾病</td><td>心臟磁振造影、心肌切片；血清檢測</td></tr>
+    <tr><td>藥物引起</td><td>Anthracycline、trastuzumab、VEGF inhibitor、immune checkpoint inhibitors、proteasome inhibitors、RAF+MEK inhibitors</td><td>—</td></tr>
+    <tr><td>浸潤性疾病</td><td>類澱粉沉積症、類肉瘤病、neoplastic</td><td>血清蛋白電泳、serum free light chains、Bence-Jones protein、bone scintigraphy、CMR、CT-PET、心肌切片；serum ACE、FDG-PET、chest CT、EMB</td></tr>
+    <tr><td>儲積症</td><td>血鐵沉積症、法布瑞氏症、glycogen storage disease</td><td>Iron studies、genetics、CMR（T2 imaging）、EMB；α-galactosidase A、genetics、CMR（T1 mapping）</td></tr>
+    <tr><td>心內膜心肌疾病</td><td>放射治療、endomyocardial fibrosis/eosinophilia、carcinoid</td><td>心臟磁振造影；心肌切片；24 小時尿液 5-HIAA</td></tr>
+    <tr><td>心包膜疾病</td><td>鈣化、浸潤</td><td>胸腔電腦斷層、心臟磁振造影、左右心導管</td></tr>
+    <tr><td>代謝性疾病</td><td>內分泌疾病、營養性疾病、自體免疫疾病</td><td>甲狀腺功能、plasma metanephrines、renin &amp; aldosterone、cortisol；特殊營養因子檢測；ANA、ANCA、rheumatology review</td></tr>
+    <tr><td>神經肌肉疾病</td><td>Friedreich's ataxia、肌肉失養症</td><td>神經傳導檢查、肌電圖、基因檢測；CK、肌電圖、基因檢測</td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 3 診斷 ============ -->
+<section class="tab" id="t-diagnosis">
+  <div class="section-title">貳、心臟衰竭之診斷 <span class="en">Diagnosis of Heart Failure</span></div>
+  <p>心臟衰竭症狀通常是非特異性的，所以無助於區別心臟衰竭及其他問題。由於體液滯留引起的症狀和表徵，用利尿劑治療可以快速緩解。諸如<b>頸靜脈壓升高</b>和<b>心尖搏動移位</b>等表徵比較特異性，但難於檢查出且重複性差。肥胖個體、老年和慢性肺病患者的症狀和表徵可能特別難以鑑別和解釋。</p>
+  <p>應當收集詳細的病史。在沒有相關病史（如心臟損傷的潛在原因）的個體中，心臟衰竭是不常見的。<b>每次訪視時都要評估症狀和表徵，特別是注意鬱血的證據</b>；儘管治療但症狀持續存在，通常表示需要另外的治療，而症狀不斷惡化是一種嚴重的進展（置患者於緊急住院和死亡的風險），需要及時就醫。</p>
+
+  <h3>表 2-1　典型心臟衰竭症狀和表徵</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:50%">症狀 Symptoms</th><th>表徵 Signs</th></tr>
+    <tr><th>典型 Typical</th><th>較為精準 More specific</th></tr>
+    <tr><td>喘不過氣（breathlessness）／端坐呼吸／陣發性夜間喘息／運動耐力下降／疲倦感、運動後需要更多時間恢復／足踝水腫</td>
+        <td>頸靜脈壓力增加／肝頸靜脈逆流／第三心音（奔馬聲）／心尖搏動點外移</td></tr>
+    <tr><th>較不典型 Less typical</th><th>較不精準 Less specific</th></tr>
+    <tr><td>夜咳／喘鳴聲／浮腫感／食慾不振／意識混亂（尤其是老人家）／憂鬱症／心悸感／頭暈／暈厥／向前彎的時候比較喘（bendopnea）</td>
+        <td>體重增加（一週 &gt; 2 公斤）／體重減少（於嚴重心衰竭）／體組織流失（惡體質）／心臟異常心音／周邊水腫（足踝、尾骶、陰囊）／肺部囉音／肺底部進氣減少且扣診沉悶（肋膜積液）／心律過快／不正常心跳過喘／潮式呼吸／肝腫大／腹水／四肢冰冷／寡尿／脈壓減少</td></tr>
+  </table></div>
+
+  <div class="callout">
+    <div class="ct">病史中的八個線索</div>
+    有下列慢性疾病者，較有可能為心臟衰竭：<b>心肌梗塞、高血壓、冠心症、糖尿病、酒精濫用、慢性腎臟病、曾接受具心臟毒性之化學治療、有心肌病變或猝死之家族史</b>。
+  </div>
+
+  <div class="section-title">診斷慢性心臟衰竭之五個步驟 <span class="en">2021 ESC · 5 steps</span></div>
+  <div class="grid2">
+    <div class="card"><h4>一、心電圖</h4><p style="margin:0">若心電圖為正常結果則心臟衰竭較不可能。心房顫動、Q 波、左心室肥大、QRS 較寬會增加心臟衰竭的可能性，也可能指引後續治療方向。</p></div>
+    <div class="card"><h4>二、Natriuretic peptide</h4><p style="margin:0">若 <span class="mono">BNP &lt; 35 pg/mL</span> 或 <span class="mono">NT-proBNP &lt; 125 pg/mL</span> 則較不像是心臟衰竭。</p></div>
+    <div class="card"><h4>三、基本抽血檢測</h4><p style="margin:0">肝腎功能、電解質、全血細胞計數、甲狀腺功能。用於鑑別診斷、提供預後資訊以及指引治療方向。</p></div>
+    <div class="card"><h4>四、心臟超音波</h4><p style="margin:0">評估心臟功能的重要檢查。除 LVEF 外，還能了解心腔大小、左心室肥大程度、局部心肌收縮障礙、右心室衰竭、肺高壓、瓣膜功能以及舒張功能。</p></div>
+    <div class="card"><h4>五、胸部 X 光</h4><p style="margin:0">可鑑別其他造成喘的病因，並提供心衰竭的證據如肺部鬱血或心臟肥大。</p></div>
+  </div>
+
+  <div class="section-title">圖 2-1　心臟衰竭之診斷流程（互動） <span class="en">Interactive diagnostic algorithm</span></div>
+  <p class="note">依序點選各步驟，下方會顯示結論。</p>
+  <div id="dxflow">
+    <div class="flow-step">
+      <div class="flow-head"><div class="flow-num">1</div><div class="flow-q">疑似心臟衰竭：風險因子、臨床症狀及徵象、異常心電圖</div></div>
+      <div class="flow-opts">
+        <button class="flow-opt" data-k="s1" data-v="yes">符合，繼續評估</button>
+      </div>
+    </div>
+    <div class="flow-conn hidden" data-show="s2">↓</div>
+    <div class="flow-step hidden" data-show="s2">
+      <div class="flow-head"><div class="flow-num">2</div><div class="flow-q">NT-proBNP ≥ 125 pg/mL 或 BNP ≥ 35 pg/mL？</div></div>
+      <div class="flow-opts">
+        <button class="flow-opt" data-k="s2" data-v="yes">是</button>
+        <button class="flow-opt" data-k="s2" data-v="high">否，但高度懷疑心衰竭／無法檢測 NP</button>
+        <button class="flow-opt" data-k="s2" data-v="no">否</button>
+      </div>
+    </div>
+    <div class="flow-conn hidden" data-show="s3">↓ 心臟超音波</div>
+    <div class="flow-step hidden" data-show="s3">
+      <div class="flow-head"><div class="flow-num">3</div><div class="flow-q">心臟超音波有異常結果？</div></div>
+      <div class="flow-opts">
+        <button class="flow-opt" data-k="s3" data-v="yes">是</button>
+        <button class="flow-opt" data-k="s3" data-v="no">否</button>
+      </div>
+    </div>
+    <div class="flow-conn hidden" data-show="s4">↓ 確認心臟衰竭・依 LVEF 定義表現型</div>
+    <div class="flow-step hidden" data-show="s4">
+      <div class="flow-head"><div class="flow-num">4</div><div class="flow-q">左心室收縮分率 LVEF</div></div>
+      <div class="flow-opts">
+        <button class="flow-opt" data-k="s4" data-v="r">≦ 40%<span class="en"> HFrEF</span></button>
+        <button class="flow-opt" data-k="s4" data-v="mr">41–49%<span class="en"> HFmrEF</span></button>
+        <button class="flow-opt" data-k="s4" data-v="p">≧ 50%<span class="en"> HFpEF</span></button>
+      </div>
+    </div>
+    <div class="flow-rec rec-idle" id="dxrec">請依序完成上方步驟。</div>
+    <button class="btn" onclick="resetDx()">重設流程</button>
+  </div>
+
+  <div class="section-title">表 2-2　造成 Natriuretic peptides 上升之原因</div>
+  <p class="note">臨床上建議 NPs 用於<b>排除（rule-out）</b>心衰竭的有症狀病人之起始診斷性檢測。由於有許多心因性或非心因性病因可造成 NPs 上升，因此解釋 NPs 上升需要格外小心。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:50%">心因性</th><th>非心因性</th></tr>
+    <tr><td>心臟衰竭／急性冠心症／肺栓塞／心肌炎／左心室肥厚／肥厚性或限制性心肌病變／瓣膜性心臟病／先天性心臟病／心房及心室性心律不整／心臟挫傷／心臟整流／植入性去顫器放電／影響心臟之手術／肺高壓</td>
+        <td>年紀大／缺血性中風／蜘蛛膜下腔出血／腎功能異常／肝功能異常（主要為肝硬化併腹水）／腫瘤伴隨症候群／慢性阻塞性肺病／嚴重感染（包括肺炎及敗血症）／嚴重燒傷／貧血／嚴重代謝性及賀爾蒙異常（如甲狀腺中毒、糖尿病酮酸中毒）</td></tr>
+  </table></div>
+
+  <div class="section-title">鑑別潛在病因之進階檢查 <span class="en">Advanced work-up</span></div>
+  <details><summary>一、經食道心臟超音波 TEE</summary><div>對心臟衰竭的常規診斷評估是<b>不需要</b>的；然而在心臟瓣膜疾病、疑似主動脈異常、疑似心內膜炎或先天性心臟病，以及需要心臟復健的心房顫動患者（為了排除心房內血栓）可能具有價值。當單用 TTE 時二尖瓣或主動脈瓣病變嚴重度與症狀不相符，應當做 TEE。</div></details>
+  <details><summary>二、負荷心臟超音波 Stress echo</summary><div>運動或藥物負荷心臟超音波可用於評估所誘發的心肌缺血和／或心肌存活率，某些情況下可評估瓣膜疾病（動力性二尖瓣逆流、低血流–低壓力梯度主動脈狹窄）。對於活動性呼吸困難、LVEF 保留、休息時舒張功能參數不能做結論的患者，可檢測出與運動相關的舒張功能不全。</div></details>
+  <details><summary>三、心臟核磁共振 CMR</summary><div>公認測量左右心室容量、質量和射血分數的<b>黃金標準</b>。心臟超音波未能診斷（特別是右心成像）時的最佳替代模式，複雜先天性心臟病之首選。LGE 與 T1 mapping 是評估心肌纖維化之首選；可區別缺血性與非缺血性病因，並確認心肌炎、類澱粉沉積症、結構病、查加斯病、法布瑞氏症、緻密化不全心肌病變和血鐵沉積症的組織特徵；亦可評估心肌缺血與心肌活力。</div></details>
+  <details><summary>四、單光子電腦斷層掃描與心室核子攝影</summary><div>可用於評估心肌缺血和心肌活力；門控可提供心室容量與功能資訊，但會使患者暴露於輻射。<b>DPD 或 PYP 閃爍掃描</b>可用於檢出甲狀腺運送蛋白心肌類澱粉沉積症（ATTR）。</div></details>
+  <details><summary>五、正子攝影掃描 PET</summary><div>單用或與 CT 結合，可用於評估心肌缺血和心肌活力。</div></details>
+  <details><summary>六、冠狀動脈血管攝影</summary><div>對藥物難治型心絞痛的心衰患者（其他方面適合血管再灌流）建議做；有症狀的心室心律異常史或複雜心臟停止史者也建議；冠心症前測可能性中到高度、非侵入性負荷檢查存在缺血者，應考慮以明確缺血性病因與嚴重度。</div></details>
+  <details><summary>七、次世代定序 NGS</summary><div>對於符合心肌病變診斷標準的患者建議進行基因檢測，以促進診斷、預後評估和治療分層，同時對親屬進行階層式基因評估。</div></details>
+</section>
+
+<!-- ============ 4 HFrEF ============ -->
+<section class="tab" id="t-hfref">
+  <div class="section-title">參、低收縮分率心臟衰竭 <span class="en">Heart Failure with reduced ejection fraction</span></div>
+  <p>診斷 HFrEF 需要有心臟衰竭的症狀或徵象，以及較低的左心室收縮分率（<span class="mono">LVEF ≤ 40%</span>）。心臟超音波是最常使用的工具；EACVI 建議的測量方式包括線性測量（2D M-mode）、容積測量（apical 4/2 chamber）、超音波顯影劑輔助測量或 global longitudinal strain。若無法使用超音波測量，少數狀況下可運用心臟磁振造影或核子掃描。</p>
+
+  <div class="callout"><div class="ct">治療目標</div>
+    <ol style="margin:6px 0 0">
+      <li>降低死亡率 <span class="en">reduction in mortality</span></li>
+      <li>預防因心衰竭惡化而住院 <span class="en">prevention of recurrent hospitalizations</span></li>
+      <li>改善臨床症狀、功能耐受度及生活品質 <span class="en">clinical status, functional capacity and QOL</span></li>
+    </ol>
+    <div class="note" style="margin-top:8px">藥物治療為 HFrEF 的<b>治療基石</b>，且治療順序上應<b>先藥物治療、後儀器治療</b>（device therapy）。</div>
+  </div>
+
+  <div class="section-title">四大支柱 <span class="en">The four pillars · Class I</span></div>
+  <div class="grid2">
+    <div class="pillar"><div class="pn">ACE-I / ARNI</div><div class="pd">血管張力素轉化酶抑制劑／血管張力素受體–腦啡肽酶抑制劑</div></div>
+    <div class="pillar"><div class="pn">Beta-blocker</div><div class="pd">乙型阻斷劑</div></div>
+    <div class="pillar"><div class="pn">MRA</div><div class="pd">醛固酮受體拮抗劑</div></div>
+    <div class="pillar"><div class="pn">SGLT2i</div><div class="pd">Dapagliflozin / Empagliflozin</div></div>
+  </div>
+  <p class="note">＋ 體液滯留者加上 <b>loop diuretic</b>（圖 3-1，Class I）。</p>
+
+  <div class="section-title">圖 3-1　HFrEF 治療流程（含藥物及心臟輔助裝置）</div>
+  <div class="card">
+    <div style="text-align:center;font-family:var(--serif);font-size:15px">低收縮分率心臟衰竭病患之治療</div>
+    <div class="flow-conn">↓</div>
+    <div class="flow-rec rec-green" style="margin:0">
+      <div class="rl">Class I · 所有病患</div>
+      <ul style="margin:6px 0 0">
+        <li>ACE-I / ARNI <sup>a</sup></li><li>Beta-blocker</li><li>MRA</li>
+        <li>Dapagliflozin / Empagliflozin</li><li>Loop diuretic for fluid retention</li>
+      </ul>
+    </div>
+    <div class="flow-conn">↓ 依 LVEF、QRS、心律分流</div>
+    <div class="grid3">
+      <div class="card" style="margin:0">
+        <div class="mono" style="font-size:12px">LVEF ≤ 35% and QRS &lt; 130 ms and where appropriate</div>
+        <div class="flow-conn">↓</div>
+        <div class="flow-rec rec-amber" style="margin:0"><div class="rt" style="font-size:15px">ICD</div>
+        <div style="font-size:12.5px">缺血性病因 <span class="badge c1">Class I</span><br>非缺血性病因 <span class="badge c2a">Class IIa</span></div></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="mono" style="font-size:12px">LVEF &gt; 35% 或不適合／無適應症之裝置治療</div>
+        <div class="flow-conn">↓</div>
+        <div class="note" style="text-align:center">直接進入下方「症狀仍持續」評估</div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="mono" style="font-size:12px">SR and LVEF ≤ 35% and QRS ≥ 130 ms</div>
+        <div class="flow-conn">↓</div>
+        <div class="flow-rec rec-amber" style="margin:0"><div class="rt" style="font-size:15px">CRT-D <sup>b</sup> / CRT-P</div>
+        <div style="font-size:12.5px">QRS 130–149 ms <span class="badge c2a">Class IIa</span><br>QRS ≥ 150 ms <span class="badge c1">Class I</span></div></div>
+      </div>
+    </div>
+    <div class="flow-conn">↓</div>
+    <div class="flow-rec rec-blue" style="margin:0"><div class="rt" style="font-size:15px">若症狀仍持續 → 可考慮建議等級 Class II 之治療方式</div>
+      <div style="font-size:12.5px">（ARB、ivabradine、hydralazine/ISDN、digoxin、vericiguat、鐵劑、CABG/PCI、瓣膜介入、MCS／移植等，見下方各節）</div></div>
+    <div class="note">a：de novo 未使用過 ACEi 之病患可考慮直接使用 ARNI（Class IIb, Level B）。<br>b：CRT-D 之選擇見「節律治療」分頁。</div>
+  </div>
+
+  <div class="section-title">核心藥物治療建議 <span class="en">Pharmacologic therapy A–E</span></div>
+
+  <details open><summary>A. 血管張力素轉化酶抑制劑 ACEi</summary><div>
+    <p>ACEi 為最早能降低 HFrEF 病患死亡率的藥物，並且也能改善臨床症狀。除非有禁忌症或無法忍受，<b>建議使用於所有病患並調高劑量至最大可忍受之治療劑量</b>。</p>
+    <h4>禁忌症</h4>
+    <ol><li>曾有血管性水腫病史 History of angioedema</li><li>已知雙側腎動脈狹窄</li><li>懷孕或有懷孕風險</li><li>已知有過敏反應或其他不良反應（drug-specific）</li></ol>
+    <h4>應特別留意或應尋求專科協助之族群</h4>
+    <ol>
+      <li>顯著的高血鉀（serum K<sup>+</sup> &gt; 5.0 mmol/L）</li>
+      <li>顯著的腎功能不全（Cr &gt; 2.5 mg/dL 或 eGFR &lt; 30 mL/min/1.73 m²）</li>
+      <li>有症狀低血壓或無症狀嚴重低血壓（SBP &lt; 90 mmHg）</li>
+      <li>潛在藥物交互作用：鉀離子補充劑、保鉀利尿劑、MRA、腎素抑制劑、NSAID、TMP-SMX、標榜低鹽之調和物（含較多鉀離子替代）</li>
+    </ol>
+    <h4>使用方式</h4>
+    <ol><li>給藥前確認腎功能及電解質，用藥後 1–2 週再次追蹤，達最終劑量後 1–2 週再追蹤。</li>
+    <li>低劑量起始；門診病患每兩週以上可雙倍增加劑量，住院或可密切追蹤者可更頻繁加倍。</li></ol>
+  </div></details>
+
+  <details><summary>B. 乙型阻斷劑 β-blockers</summary><div>
+    <p>已證實在使用 ACEi 之下，能減少有症狀 HFrEF 病人住院及死亡之風險，並改善臨床症狀。ACEi 與 β-blocker <b>可以在確診時就一起開立</b>，目前沒有研究證據指出兩者先後選擇有所差別。因急性心臟衰竭住院者，一旦病情穩定，建議低劑量開始並逐步提高至可忍受之最高劑量。</p>
+    <h4>禁忌症</h4>
+    <ol>
+      <li>無心臟節律器之二度或三度房室傳導阻滯</li>
+      <li>危急性肢體缺血</li>
+      <li>氣喘：為<b>相對</b>禁忌症。使用心臟選擇性 β-blocker 時氣喘並非絕對禁忌，但應留意是否需停藥。<b>COPD 不是禁忌症。</b></li>
+      <li>已知有過敏反應或其他不良反應</li>
+    </ol>
+    <h4>應特別留意之族群</h4>
+    <ol>
+      <li>嚴重心臟衰竭（NYHA class IV）</li>
+      <li>現在或近期（四週內）有心衰竭惡化、房室傳導阻滯、或心率 &lt; 50 bpm</li>
+      <li>若持續出現鬱血徵象、低血壓（SBP &lt; 90 mmHg）、頸靜脈壓上升或顯著周邊水腫 → <b>先治療鬱血並達到 euvolemia 再給藥</b></li>
+      <li>潛在藥物交互作用（增加心搏過緩／房室阻滯風險）：verapamil/diltiazem（不建議繼續使用）、毛地黃、amiodarone、ivabradine</li>
+    </ol>
+    <h4>使用方式</h4>
+    <ol><li>低劑量起始；門診病患每兩週以上可雙倍增加，有些病患需要更久間隔。</li>
+    <li>以達最大或最大可接受劑量為主，並注意心律、血壓及臨床徵狀（特別是鬱血徵象與體重）。</li></ol>
+  </div></details>
+
+  <details><summary>C. 醛固酮受體拮抗劑 MRAs</summary><div>
+    <p>對於 <span class="mono">LVEF ≤ 35%</span> 的病人，使用 ACEi 及 β-blocker 仍不能控制症狀時，MRA 能降低住院及死亡風險 <span class="badge c1">Class I / A</span>。<b>Eplerenone 相比 spironolactone 較不會造成男性女乳症</b>。當腎功能異常或血清鉀 &gt; 5 mmol/L 時，需密切追蹤腎功能及鉀離子。</p>
+  </div></details>
+
+  <details><summary>D. 血管張力素受體–腦啡肽酶抑制劑 ARNI</summary><div>
+    <p>2014 年 <b>PARADIGM-HF</b> 後，ARNI 比 enalapril 更能降低心衰惡化住院率、心因性死亡及整體死亡率；此外可改善生活品質、降低糖尿病需要胰島素之比例、降低腎功能惡化及高血鉀風險，並可能降低利尿劑需求。雖較常出現有症狀低血壓，這群病患仍能得到好處。</p>
+    <ul>
+      <li>Ambulatory HFrEF 使用最佳藥物治療後仍有症狀 → 可考慮將 ACEi/ARB <b>更換</b>為 ARNI。</li>
+      <li>2019 <b>PIONEER-HF</b>、<b>TRANSITION</b>：住院中病患（含未用過 ACEi/ARB 的 de novo）起始 ARNI 可降低 42% 後續 CV death 或心衰竭住院 → de novo HFrEF 可考慮使用 ARNI <span class="badge c2b">Class IIb / Level B</span>。</li>
+      <li>若曾使用 ACEi，建議至少 <b>36 小時洗滌期</b>（wash-out）再使用 ARNI，以降低血管性水腫風險。</li>
+    </ul>
+  </div></details>
+
+  <details><summary>E. 第二型鈉–葡萄糖共同轉運蛋白抑制劑 SGLT2i</summary><div>
+    <ul>
+      <li><b>DAPA-HF（2019）</b>：ambulatory HFrEF 於最佳藥物治療外加 dapagliflozin，下降 26% 初級終點（worsening HF 或 CV death）；亦降低 all-cause mortality、緩解症狀、改善活動功能與生活品質。好處在治療初期即可觀察到，且<b>無論有無糖尿病或 HbA1c 高低</b>皆有益。</li>
+      <li><b>EMPEROR-Reduced（2020）</b>：NYHA II–IV 之 HFrEF 加上 empagliflozin，下降 25% 初級終點（CV death 或 HF hospitalization）；納入 eGFR &gt; 20 mL/min/1.73 m² 病患，並觀察到降低腎功能惡化速率。該研究未見 CV mortality 顯著下降，但兩試驗之 meta-analysis 顯示 CV mortality 並無異質性。</li>
+    </ul>
+    <p>因此 HFrEF 病患<b>無論有無糖尿病</b>，已使用最佳藥物治療（ACEi/ARNI、β-blocker、MRA）後，建議加上 dapagliflozin 或 empagliflozin；額外好處是可降低利尿劑劑量。</p>
+    <div class="callout warn"><div class="ct">副作用</div>可能增加反覆性生殖器黴菌感染風險。剛起始時可能輕微降低腎功能，但此降低<b>可預期且可逆</b>，不需因此中止治療。</div>
+  </div></details>
+
+  <div class="section-title">可考慮使用於特定病患之藥物 <span class="en">Selected patients</span></div>
+
+  <details><summary>A. 利尿劑 Diuretics　<span class="badge c1">Class I / Level C</span></summary><div>
+    <p>建議用於改善體液過剩、增進運動耐受性及降低心衰竭住院率。Loop 類相較 Thiazide 類提供<b>較強且短效</b>的利尿效果；合併使用兩者有加乘效果並可改善利尿劑阻抗性（diuretic resistance），但也增加不良作用風險，須小心使用。此外 ARNI、MRA 及 SGLT2i 也有部分利尿效果。<b>目標：以最低劑量維持 euvolemia</b>，可依症狀及體重調整。</p>
+  </div></details>
+
+  <details><summary>B. 血管張力素受體阻斷劑 ARBs　<span class="badge c1">Class I / Level B</span></summary><div>
+    <p>目前建議使用於已接受 β-blocker 及 MRA，但因嚴重副作用而<b>無法忍受 ACEi 或 ARNI</b> 的病人，以降低心衰竭住院率及心因性死亡率。Candesartan 被證實能減少心因性死亡，valsartan 能改善因心衰竭住院的機率。使用時應注意低收縮壓、腎功能不全、或血清鉀 &gt; 5 mmol/L；除非禁忌或無法忍受，應從低劑量逐步調整至最大可忍受劑量。</p>
+  </div></details>
+
+  <details><summary>C. If-channel 抑制劑 Ivabradine</summary><div>
+    <p>藉由抑制竇房結 If-channel 降低心律，<b>只能使用在正常竇性心律的病人</b>。</p>
+    <ul>
+      <li>有症狀 HFrEF（LVEF ≤ 35%）、竇性心律、靜止心率 ≥ 70 bpm，且過去 12 個月曾因心衰竭住院、已接受最佳藥物治療（ACEi/ARB、β-blocker、MRA）→ 可考慮 <span class="badge c2a">Class IIa / Level B</span></li>
+      <li>同上條件但<b>無法忍受或禁忌 β-blocker</b>，已使用 ACEi/ARNI 及 MRA → 可考慮 <span class="badge c2a">Class IIa / Level C</span></li>
+    </ul>
+  </div></details>
+
+  <details><summary>D. Hydralazine + Isosorbide dinitrate</summary><div>
+    <ul>
+      <li>African American 且有症狀（NYHA III–IV），已接受最佳藥物治療後仍有症狀 → 降低住院及死亡率 <span class="badge c1">Class I / Level A</span> <span class="badge new">第三版提升</span></li>
+      <li>有症狀 HFrEF 無法忍受 ACEi / ARB / ARNI → 可考慮以降低死亡風險 <span class="badge c2b">Class IIb / Level C</span></li>
+    </ul>
+  </div></details>
+
+  <details><summary>E. 毛地黃 Digoxin　<span class="badge c2b">Class IIb / Level B</span></summary><div>
+    <p>1997 年 <b>DIG</b> 研究發現毛地黃對死亡率是<b>中性</b>的。治療區間較窄，血清濃度應維持在 <mark class="mono">0.5–&lt; 0.9 ng/mL</mark> <span class="badge new">第三版下修</span>。</p>
+    <p>使用於<b>老人、脆弱病患、低血鉀、腎功能不全、併用 amiodarone <span class="badge new">新增</span>及營養不良</b>病患中應格外小心。</p>
+    <p>有症狀之 HFrEF、竇性心律並已接受最佳藥物治療（ACEi 或 ARNI、β-blocker、MRA）後，可考慮使用以減少整體住院率（包括心因性住院）。</p>
+  </div></details>
+
+  <div class="section-title">近期新發表研究之藥物 <span class="en">Emerging agents</span></div>
+  <div class="grid2">
+    <div class="card"><h4>Vericiguat（soluble guanylate cyclase stimulator）</h4>
+      <p style="margin:0">2020 <b>VICTORIA</b>：用於近期失償之 HFrEF，可降低心因性住院率及心衰竭住院率，但無法降低全體死亡率或心因性死亡率。有症狀之 HFrEF（NYHA II–IV）接受最佳藥物治療後仍持續惡化 → 可考慮使用 <span class="badge c2b">Class IIb / Level B</span></p></div>
+    <div class="card"><h4>Omecamtiv mecarbil（cardiac myosin activator）</h4>
+      <p style="margin:0">2021 <b>GALACTIC-HF</b>：門診及住院 HFrEF 於最佳藥物治療外加上，可降低 8% 初級終點（初次心衰事件或心因性死亡），但整體心因性死亡未顯著降低。<b>目前仍未有正式藥物執照</b>用於心臟衰竭。</p></div>
+  </div>
+
+  <div class="section-title">表 3-1／3-2　劑量表（可搜尋） <span class="en">Dosing</span></div>
+  <div class="filterbar">
+    <input type="search" id="drugq" placeholder="搜尋藥名或類別…" oninput="filterDrugs()">
+    <span class="chip on" data-g="all" onclick="drugChip(this)">全部</span>
+    <span class="chip" data-g="gdmt" onclick="drugChip(this)">疾病修飾藥物</span>
+    <span class="chip" data-g="diu" onclick="drugChip(this)">利尿劑</span>
+  </div>
+  <div class="tbl-wrap"><table id="drugtbl">
+    <thead><tr><th style="width:34%">藥物</th><th>起始劑量</th><th>目標劑量</th></tr></thead>
+    <tbody>
+      <tr data-g="gdmt" class="grp"><th colspan="3">ACE-I</th></tr>
+      <tr data-g="gdmt"><td>Captopril</td><td class="n">6.25 mg TID</td><td class="n">50 mg TID</td></tr>
+      <tr data-g="gdmt"><td>Enalapril</td><td class="n">2.5 mg BID</td><td class="n">10–20 mg BID</td></tr>
+      <tr data-g="gdmt"><td>Lisinopril</td><td class="n">2.5–5.0 mg QD</td><td class="n">20–35 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Ramipril</td><td class="n">2.5 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Trandolapril</td><td class="n">0.5 mg QD</td><td class="n">4 mg QD</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">ARNI</th></tr>
+      <tr data-g="gdmt"><td>Sacubitril / valsartan</td><td class="n">49/51 mg BID</td><td class="n">97/103 mg BID</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">Beta-blockers</th></tr>
+      <tr data-g="gdmt"><td>Bisoprolol</td><td class="n">1.25 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Carvedilol</td><td class="n">3.125 mg BID</td><td class="n">25 mg BID</td></tr>
+      <tr data-g="gdmt"><td>Metoprolol (CR/XL)</td><td class="n">12.5–25 mg QD</td><td class="n">200 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Nebivolol</td><td class="n">1.25 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">ARBs</th></tr>
+      <tr data-g="gdmt"><td>Candesartan</td><td class="n">4 mg QD</td><td class="n">32 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Valsartan</td><td class="n">40 mg BID</td><td class="n">160 mg BID</td></tr>
+      <tr data-g="gdmt"><td>Losartan</td><td class="n">50 mg QD</td><td class="n">150 mg QD</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">MRAs</th></tr>
+      <tr data-g="gdmt"><td>Eplerenone</td><td class="n">25 mg QD</td><td class="n">50 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Spironolactone</td><td class="n">25 mg QD</td><td class="n">50 mg QD</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">SGLT2 inhibitor</th></tr>
+      <tr data-g="gdmt"><td>Dapagliflozin</td><td class="n">10 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Empagliflozin</td><td class="n">10 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt" class="grp"><th colspan="3">Other agents</th></tr>
+      <tr data-g="gdmt"><td>Ivabradine</td><td class="n">5 mg BID</td><td class="n">7.5 mg BID</td></tr>
+      <tr data-g="gdmt"><td>Vericiguat</td><td class="n">2.5 mg QD</td><td class="n">10 mg QD</td></tr>
+      <tr data-g="gdmt"><td>Digoxin</td><td class="n">62.5 μg QD（依照 TDM）</td><td class="n">250 μg QD（依照 TDM）</td></tr>
+      <tr data-g="gdmt"><td>Hydralazine / Isosorbide dinitrate</td><td class="n">37.5 mg TID / 20 mg TID</td><td class="n">75 mg TID / 40 mg TID</td></tr>
+      <tr data-g="diu" class="grp"><th colspan="3">表 3-2　Loop 類利尿劑 <span class="en">起始 / 常用每日劑量 (mg)</span></th></tr>
+      <tr data-g="diu"><td>Furosemide</td><td class="n">20–40</td><td class="n">40–240</td></tr>
+      <tr data-g="diu"><td>Bumetanide</td><td class="n">0.5–1.0</td><td class="n">1–5</td></tr>
+      <tr data-g="diu"><td>Torasemide</td><td class="n">5–10</td><td class="n">10–20</td></tr>
+      <tr data-g="diu" class="grp"><th colspan="3">Thiazides 類利尿劑</th></tr>
+      <tr data-g="diu"><td>Bendroflumethiazide</td><td class="n">2.5</td><td class="n">2.5–10</td></tr>
+      <tr data-g="diu"><td>Hydrochlorothiazide</td><td class="n">25</td><td class="n">12.5–100</td></tr>
+      <tr data-g="diu"><td>Metolazone</td><td class="n">2.5</td><td class="n">2.5–10</td></tr>
+      <tr data-g="diu"><td>Indapamide</td><td class="n">2.5</td><td class="n">2.5–5</td></tr>
+      <tr data-g="diu" class="grp"><th colspan="3">保鉀型利尿劑 <span class="en">起始（+ACEI/ARB / −ACEI/ARB）· 常用（+ / −）</span></th></tr>
+      <tr data-g="diu"><td>Spironolactone / eplerenone</td><td class="n">12.5–25 ／ 50</td><td class="n">50 ／ 100–200</td></tr>
+      <tr data-g="diu"><td>Amiloride</td><td class="n">2.5 ／ 5</td><td class="n">5–10 ／ 10–20</td></tr>
+      <tr data-g="diu"><td>Triamterene</td><td class="n">25 ／ 50</td><td class="n">100 ／ 200</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">TDM: Therapeutic Drug Monitoring。保鉀型利尿劑欄位為「合併 ACEI/ARB ／ 未合併 ACEI/ARB」之劑量。</div>
+
+  <div class="section-title">圖 3-2　依 phenotype 之整體治療策略 <span class="en">2021 ESC treatment strategy</span></div>
+  <div class="card">
+    <h4>降低死亡率 — 針對所有病患</h4>
+    <div class="grid2"><div class="pillar"><div class="pn">ACE-I / ARNI</div></div><div class="pillar"><div class="pn">BB</div></div><div class="pillar"><div class="pn">MRA</div></div><div class="pillar"><div class="pn">SGLT2i</div></div></div>
+    <h4 style="margin-top:16px">降低心衰住院率／死亡率 — 針對特定病患</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th style="width:44%">Phenotype</th><th>治療</th></tr>
+      <tr><td>體液過多</td><td>利尿劑 <span class="badge c1">綠</span></td></tr>
+      <tr><td>SR with LBBB ≥ 150 ms</td><td>CRT-P/D <span class="badge c1">綠</span></td></tr>
+      <tr><td>SR with LBBB 130–149 ms 或 non-LBBB ≥ 150 ms</td><td>CRT-P/D <span class="badge c2a">黃</span></td></tr>
+      <tr><td>缺血性病因</td><td>ICD <span class="badge c1">綠</span></td></tr>
+      <tr><td>非缺血性病因</td><td>ICD <span class="badge c2a">黃</span></td></tr>
+      <tr><td>心房顫動</td><td>抗凝血劑 <span class="badge c1">綠</span>／Digoxin、PVI <span class="badge c2a">黃</span></td></tr>
+      <tr><td>冠心症</td><td>CABG <span class="badge c2a">黃</span></td></tr>
+      <tr><td>鐵質缺乏</td><td>Ferric carboxymaltose <span class="badge c2a">黃</span></td></tr>
+      <tr><td>主動脈瓣膜狹窄</td><td>SAVR / TAVI <span class="badge c1">綠</span></td></tr>
+      <tr><td>二尖瓣閉鎖不全</td><td>TEE MV repair <span class="badge c2a">黃</span></td></tr>
+      <tr><td>竇性心律 &gt; 70 bpm</td><td>Ivabradine <span class="badge c2a">黃</span></td></tr>
+      <tr><td>黑色人種</td><td>Hydralazine / ISDN <span class="badge c2a">黃</span></td></tr>
+      <tr><td>ACEi / ARNI 不耐</td><td>ARB <span class="badge c1">綠</span></td></tr>
+    </table></div>
+    <h4>針對特定嚴重心臟衰竭病患</h4>
+    <p style="margin:4px 0">心臟移植 <span class="badge c1">綠</span>　·　MCS as BTT/BTC <span class="badge c2a">黃</span>　·　Long-term MCS as DT <span class="badge c2a">黃</span></p>
+    <h4>降低心衰住院率及改善生活品質 — 針對所有病患</h4>
+    <p style="margin:4px 0">運動心臟復健　·　多重專業性疾病處置</p>
+    <div class="note">資料來源，翻譯自：2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure. Eur J Heart Fail. 2022;24(1):4-131.</div>
+  </div>
+</section>
+
+<!-- ============ 5 節律治療 ============ -->
+<section class="tab" id="t-rhythm">
+  <div class="section-title">肆、低收縮分率心臟衰竭之節律治療 <span class="en">Cardiac rhythm management</span></div>
+
+  <h3>體內去顫器 Implantable cardioverter-defibrillator, ICD</h3>
+  <p>心臟衰竭的病人有高比例會猝死，原因包含心血管事件、心室心律不整、心搏過緩及心跳停止，其中部分事件和電解質不平衡相關。可改善或延緩心血管疾病進展的治療雖能降低平均每年猝死機率，但對心律不整效果仍有限。<b>ICD 可有效預防心搏過緩以及校正潛在致命之心律不整</b>；相比之下有些抗心律不整藥物雖可能降低心搏過速之心律不整及猝死，但無法降低、甚至可能增加整體死亡率。</p>
+
+  <details open><summary>A. 猝死之次級預防 Secondary prevention</summary><div>
+    <p>與 amiodarone 相比，ICD 可降低「經歷心跳停止的存活者」以及「持續性有症狀之心室心律不整」病人之死亡率。放置需考慮病人意願、生活品質、心室收縮功能（<b>LVEF &gt; 35% 的病人好處仍未知</b>）以及預期壽命大於一年以上。</p>
+    <p>ESC 建議：出現造成血行動力學不穩之心室心律不整，且預期餘命超過一年、功能狀態良好、無可逆病因，或為心肌梗塞後大於 48 小時之病患 → 放置 ICD 可降低猝死風險及整體死亡率 <span class="badge c1">Class I</span>。</p>
+  </div></details>
+
+  <details><summary>B. 猝死之初級預防 Primary prevention</summary><div>
+    <p>心衰竭的猝死比例自 1990 至 2015 年間下降了 <b>44%</b>，主要歸功於治療進步及指引建議治療（β-blocker、MRA、ARNI、CRT-P）。</p>
+    <div class="callout warn"><div class="ct">抗心律不整藥物</div>
+      2005 <b>SCD-HeFT</b>：NYHA II–III 之 HFrEF 使用 amiodarone 無法改善整體死亡率，反而是單導極 ICD 比安慰劑或 amiodarone 更能降低整體死亡率。長期使用 amiodarone 應格外小心。<b>Dronedarone 或第一類抗心律不整藥物（disopyramide、encainide、flecainide）會增加死亡率，不該用於心衰竭病患預防心律不整。</b>
+    </div>
+    <p>缺血性心肌病變比非缺血性有較高猝死機會，ICD 絕對效益也較高（<span class="badge c1">Class I</span> vs <span class="badge c2a">Class IIa</span>）。臨床研究也發現<b>心肌梗塞後 40 天內放置 ICD 並無好處</b>，因此不建議在 40 天內放置作為初級預防。</p>
+    <p>ESC 建議：有症狀之心衰竭（NYHA II–III），先接受至少<b>三個月</b>最佳藥物治療後，LVEF 仍未改善超過 35%，且預期餘命超過一年、功能狀態良好 → 可評估置入 ICD。缺血性 <span class="badge c1">Class I</span>；非缺血性 <span class="badge c2a">Class IIa</span>。</p>
+  </div></details>
+
+  <details><summary>C. 病患選擇 Patient selection</summary><div>
+    <p>低收縮分率心衰竭合併心電圖 <b>QRS &gt; 130 ms 則應放置 CRT-D 而非一般 ICD</b>。</p>
+    <p>ICD 對於嚴重共病多、預期餘命小於一年的病人幫助有限；也不建議使用在過於嚴重的心衰竭病患（NYHA class IV）、對藥物治療無效且不適合 CRT、VAD 或心臟移植的病人 <span class="badge c3">Class III</span>。</p>
+    <p>放置前應與病患討論：放置目的、去顫器運作之相關併發症、關閉機器之時機（因末期疾病）或移除之時機（因感染、左心室功能恢復）。</p>
+  </div></details>
+
+  <details><summary>D. 皮下式去顫器 S-ICD</summary><div>
+    <p>與傳統經靜脈 ICD 治療效率相似，併發症發生率也相似。即使 S-ICD 在放置初始有較高的不當電擊，適當病患選擇後 S-ICD <b>不劣於</b>經靜脈 ICD。<b>在困難靜脈管路或有感染風險的病患是較好的選擇</b>。但 S-ICD 無法治療緩慢性不整脈，也無法提供 anti-tachycardia pacing (ATP) 或 CRT，因此病患選擇上要格外小心。</p>
+  </div></details>
+
+  <h3>表 4-1　植入式去顫器之臨床建議</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:96px">建議／證據等級</th><th style="width:70px">預防策略</th><th>病患條件</th><th>臨床事件</th><th>預後評估</th></tr>
+    <tr><td><span class="badge c1">Class I / A</span></td><td>次級預防</td><td>已發生血液動力學不穩定之心室心律不整</td><td>無可逆之機轉</td><td>預期餘命 &gt; 1 年且良好功能狀態</td></tr>
+    <tr><td><span class="badge c1">Class I / A</span></td><td>次級預防</td><td>已發生血液動力學不穩定之心室心律不整</td><td>心肌梗塞後 48 小時</td><td>預期餘命 &gt; 1 年且良好功能狀態</td></tr>
+    <tr><td><span class="badge c1">Class I / A</span></td><td>初級預防</td><td><b>缺血性</b>病因；有症狀 HFrEF（NYHA II–III，LVEF ≤ 35%）；已最佳藥物治療超過三個月</td><td>心肌梗塞後 40 天</td><td>預期餘命 &gt; 1 年且良好功能狀態</td></tr>
+    <tr><td><span class="badge c2a">Class IIa / A</span></td><td>初級預防</td><td><b>非缺血性</b>病因；有症狀 HFrEF（NYHA II–III，LVEF ≤ 35%）；已最佳藥物治療超過三個月</td><td>—</td><td>預期餘命 &gt; 1 年且良好功能狀態</td></tr>
+    <tr><td><span class="badge c3">Class III / A</span></td><td>初級預防</td><td>發生心肌梗塞後 40 天內</td><td>—</td><td>—</td></tr>
+    <tr><td><span class="badge c3">Class III / C</span></td><td>初級預防</td><td>嚴重心臟衰竭（NYHA IV）併對藥物無效</td><td>無法接受 CRT / VAD 或心臟移植</td><td>—</td></tr>
+  </table></div>
+
+  <h3>心臟再同步化治療 CRT</h3>
+  <p>若適當選擇病人，CRT 可改善心臟功能、心衰症狀、身心健康狀態，並降低重大後遺症跟死亡率。<b>逆向重建（reverse remodeling）</b>是 CRT 的重要機轉：缺血性心臟病病人因心肌瘢痕組織，重建機會不高，心室功能進步有限；<b>女性較男性有比較好的反應</b>（可能因身體與心臟體積較小）。QRS 寬度可預期療效，QRS 型態亦有關 — <b>LBBB 型態病患較能得到好處</b>。</p>
+  <ul>
+    <li>預定接受 ICD 且為竇性心律：QRS 130–149 ms → 可考慮 CRT-D <span class="badge c2a">Class IIa</span>；QRS &gt; 150 ms → 建議 CRT-D <span class="badge c1">Class I</span></li>
+    <li>目的為<b>改善症狀</b>：視需求放置 CRT-P 或 CRT-D</li>
+    <li>目的為<b>改善預後</b>：證據傾向 NYHA II 放 <b>CRT-D</b>；NYHA III–IV 放 <b>CRT-P</b></li>
+    <li>收縮分率下降時，右心室節律（RV pacing）會惡化心臟不同步 → HFrEF 病患無論 NYHA 階段，接受 CRT 而非 RV pacing 可降低死亡率 <span class="badge c1">Class I</span>；已接受節律器／去顫器且高機率 RV pacing 者可考慮升階至 CRT <span class="badge c2a">Class IIa</span></li>
+    <li>心房顫動：有症狀 HFrEF（NYHA III–IV，LVEF ≤ 35%）已最佳藥物治療，若 AF 且 QRS &gt; 150 ms → 可考慮 CRT <span class="badge c2a">Class IIa</span>；若非完全雙心室節律（&lt; 90–95%）→ 可考慮房室節燒灼術 <span class="badge c2a">Class IIa</span></li>
+    <li><b>QRS &lt; 130 ms 時 CRT 可能是有害的</b>（Echo-CRT 及個案資料 meta-analysis）→ 不建議使用 <span class="badge c3">Class III</span></li>
+  </ul>
+
+  <h3>表 4-2　心臟再同步化治療之臨床建議</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:96px">建議／證據等級</th><th>病患條件</th><th style="width:80px">起始心律</th><th>QRS 寬度及型態</th><th>臨床好處</th></tr>
+    <tr><td><span class="badge c1">Class I / A</span></td><td>有症狀 HFrEF（LVEF ≤ 35%）已接受最佳藥物治療</td><td>竇性心律</td><td class="n">≥ 150 ms，LBBB 型態</td><td>改善症狀、降低死亡率</td></tr>
+    <tr><td><span class="badge c2a">Class IIa / B</span></td><td>同上</td><td>竇性心律</td><td class="n">≥ 150 ms，非 LBBB 型態</td><td>改善症狀、降低死亡率</td></tr>
+    <tr><td><span class="badge c2a">Class IIa / B</span></td><td>同上</td><td>竇性心律</td><td class="n">130–149 ms，LBBB 型態</td><td>改善症狀、降低死亡率</td></tr>
+    <tr><td><span class="badge c2b">Class IIb / B</span></td><td>同上</td><td>竇性心律</td><td class="n">130–149 ms，非 LBBB 型態</td><td>改善症狀、降低死亡率</td></tr>
+    <tr><td><span class="badge c1">Class I / A</span></td><td colspan="3">HFrEF（無論 NYHA 或 QRS 寬度，包括心房顫動病患），需要因高度房室阻斷之心室節律（cardiac pacing for AV block）</td><td>改善症狀、降低死亡率</td></tr>
+    <tr><td><span class="badge c3">Class III / A</span></td><td colspan="3">不需因高度房室阻斷之心臟節律，且 QRS &lt; 130 ms</td><td>—</td></tr>
+  </table></div>
+
+  <h3>圖 4-1　CRT-P 或 CRT-D 之臨床考量</h3>
+  <div class="card">
+    <p style="margin-top:0">具 CRT 適應症之病患 → <b>Shared decision making</b></p>
+    <div class="grid2">
+      <div class="pillar"><div class="pn">傾向 CRT-P</div><div class="pd">年齡較大（Age ＋）／心肌纖維化（CMR）較少（−）</div>
+        <ul style="font-size:12.5px;margin:6px 0 0"><li>Non-ischaemic cardiomyopathy</li><li>Short life expectancy</li><li>Major comorbidities</li><li>Poor renal function</li><li>Patient preference</li></ul></div>
+      <div class="pillar"><div class="pn">傾向 CRT-D</div><div class="pd">年齡較輕（Age −）／CMR 上心肌纖維化明顯（＋）</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 HFmrEF ============ -->
+<section class="tab" id="t-hfmref">
+  <div class="section-title">伍、中等收縮分率心臟衰竭 <span class="en">HFmrEF · Diagnosis &amp; treatment</span></div>
+  <p>診斷 HFmrEF 需要有心臟衰竭之症狀或徵象，以及輕微下降的收縮分率（<span class="mono">41–49%</span>）。若有上升之 NPs（BNP ≥ 35 pg/mL 或 NT-proBNP ≥ 125 pg/mL），或其他結構異常之證據（左心房擴大、左心室肥大或超音波測量左心填充）可提高診斷可能性；但<b>如果可以準確測量收縮分率，這些間接證據則非必要</b>。</p>
+
+  <div class="callout"><div class="ct">臨床特徵</div>
+    相比 HFpEF，HFmrEF 的臨床表現與 <b>HFrEF 較為相似</b>：男性較多、年紀較輕、較高機率有冠心症（約 50–60%），且較少有心房顫動及非心臟性共病。但在<b>死亡率上 HFmrEF 與 HFpEF 較為相似</b>，無症狀的 HFmrEF 死亡率低於 HFrEF。HFmrEF 族群包含由 &lt; 40% 進步至此、或由 ≥ 50% 降低至此的病患。
+  </div>
+
+  <div class="section-title">治療 <span class="en">Treatment</span></div>
+  <p>與其他族群相同，利尿劑可用於治療體液過剩之症狀。過去針對 LVEF &gt; 40% 缺乏具強烈實證的改善預後藥物（ACEi/ARB/ARNI/β-blocker/MRA 建議等級僅 Class IIb）；然而隨著 <b>EMPEROR-Preserved</b> 與 <b>DELIVER</b> 發表，證明了 SGLT2 抑制劑在這類族群的效益。</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:150px">藥物</th><th style="width:120px">建議等級</th><th>依據</th></tr>
+    <tr><td><b>SGLT2i</b><br>dapagliflozin / empagliflozin</td>
+        <td><span class="badge c1">ESC I / A</span><br><span class="badge c2a">ACC.AHA IIa / B</span> <span class="badge new">v3</span></td>
+        <td>NEJM 2021 EMPEROR-Preserved、NEJM 2022 DELIVER → 降低心衰竭住院或心血管死亡風險</td></tr>
+    <tr><td>ACEi</td><td><span class="badge c2b">IIb / C</span></td><td>無 HFmrEF 專屬研究；許多病患因冠心症、高血壓或 MI 後左心室收縮失能而使用</td></tr>
+    <tr><td>ARB</td><td><span class="badge c2b">IIb / C</span></td><td>2003 CHARM-Preserved（LVEF &gt; 40%）未達初級終點，但次分析顯示 HFmrEF 使用 candesartan 可降低心衰竭住院率</td></tr>
+    <tr><td>β-blocker</td><td><span class="badge c2b">IIb / C</span></td><td>無專屬研究；綜合分析顯示竇性心律之 HFrEF 與 HFmrEF 中，β-blocker 對心因性與全因死亡下降程度相似</td></tr>
+    <tr><td>MRA</td><td><span class="badge c2b">IIb / C</span></td><td>2014 TOPCAT（LVEF &gt; 45%）：spironolactone 可降低心衰竭住院率，且 LVEF &lt; 55% 者皆有保護力</td></tr>
+    <tr><td><b>Finerenone</b><br>非類固醇型 MRA</td><td><span class="badge c2a">日本 2025：IIa / B</span> <span class="badge new">v3</span></td>
+        <td>2024 NEJM FINEARTS-HF（LVEF &gt; 40%）：顯著降低心衰竭惡化及心血管死亡之複合終點（RR 0.84；95% CI 0.74–0.95；p = 0.007），須留意高血鉀。<b>目前尚未納入歐美相關指引</b></td></tr>
+    <tr><td>ARNI</td><td><span class="badge c2b">IIb / C</span></td><td>2019 PARAGON-HF（LVEF &gt; 45%）未達初級終點，但 LVEF &lt; 57% 者達成初級終點；PARADIGM-HF＋PARAGON-HF 綜合分析顯示 HFmrEF 中 ARNI 可改善心衰竭住院率</td></tr>
+    <tr><td>Digoxin</td><td>不足以支持</td><td>1997 DIG（LVEF &lt; 45%）：竇性心律 HFmrEF 有改善住院率之趨勢，但無法降低死亡率並有增加心因性死亡之趨勢</td></tr>
+    <tr><td>Ivabradine</td><td>無法給予建議</td><td>缺乏大型研究</td></tr>
+  </table></div>
+
+  <div class="section-title">心衰竭合併缺鐵 <span class="en">Iron deficiency</span> <span class="badge new">第三版新增</span></div>
+  <div class="callout">
+    <div class="ct">診斷標準</div>
+    <b>TSAT &lt; 20%</b> 或 <b>serum ferritin &lt; 100 μg/L</b>
+    <ul style="margin:8px 0 0">
+      <li>有症狀的 HFrEF 或 HFmrEF 若存在缺鐵 → 給予<b>靜脈鐵劑</b>補充，緩解症狀並改善生活品質 <span class="badge c1">Class I / Level A</span></li>
+      <li>為降低再次住院風險 → 考慮給予特定靜脈鐵劑（ferric carboxymaltose 或 ferric derisomaltose）<span class="badge c2a">Class IIa / Level A</span></li>
+    </ul>
+  </div>
+
+  <div class="callout warn"><div class="ct">儀器治療</div>
+    針對 CRT 的大型研究中，HFmrEF 因收入病患不足而無法給予足夠建議；ICD 初級預防無臨床研究，次級研究結果亦無臨床好處。<b>因此目前並不建議在 HFmrEF 使用 CRT 或 ICD。</b>
+  </div>
+</section>
+
+<!-- ============ 7 HFpEF ============ -->
+<section class="tab" id="t-hfpef">
+  <div class="section-title">陸、正常收縮分率心臟衰竭 <span class="en">HFpEF · Diagnosis &amp; treatment</span></div>
+  <p>「正常（preserved）」一詞最早主要出現在 2003 年 CHARM 研究中，相對於收縮分率低於 40% 的病患。以收縮分率分類心臟衰竭仍有許多爭議：中等收縮分率是否該用 41–49% 劃分？男女之間是否該用相同標準？目前<b>歐洲心血管影像學會定義收縮失常為男性 LVEF &lt; 52%、女性 &lt; 54%</b>。</p>
+  <p>此外，若定義正常收縮分率是高於 50%，那<b>極高收縮分率（例如 &gt; 65–70%）也應尋求是否有特定病因</b>，例如 cardiac amyloidosis 或肥厚性心肌病變；而「超正常 supra-normal」的收縮分率也可能是因為左心室舒張末容積縮減（公式中的分母減少）導致。</p>
+
+  <div class="callout"><div class="ct">臨床特徵</div>
+    HFpEF 病患<b>年紀較大、較常為女性、較常有心房顫動及慢性腎病，以及其他非心血管性共病</b>。<br><br>
+    <b>應懷疑心臟澱粉沉積症</b>的線索：有高血壓病史卻出現 low normal BP、對 β-blockers 或 ACEi 治療不耐受、雙側腕隧道症候群病史、心電圖低電位（low voltage），以及典型心超特徵（縱隔／後壁／右心室增厚、心房擴大、少量心包膜積液、瓣膜增厚）。<br><br>
+    另有許多疾病表現相似應及早排除：肺部疾病、貧血、肥胖或健康狀況下降（deconditioning）。
+  </div>
+
+  <div class="section-title">診斷標準 <span class="en">Diagnostic criteria</span></div>
+  <p>診斷 HFpEF 較為困難。近期有兩個以分數為主的診斷流程（<b>H₂FPEF</b> 及 <b>HFA-PEFF</b>），但兩者皆為中等似然度（intermediate likelihood），需要額外確認工具強化診斷。</p>
+  <div class="callout">
+    <div class="ct">簡化流程圖之三大要素</div>
+    <ol style="margin:6px 0 0">
+      <li>心臟衰竭之症狀及徵象</li>
+      <li>左心室收縮分率 ≥ 50% <sup>**</sup></li>
+      <li>心臟左心室舒張異常、左心室注入壓上升之結構或功能性異常客觀證據，包括 NPs 上升（BNP or NT-proBNP）</li>
+    </ol>
+    <div class="note" style="margin-top:8px"><sup>**</sup> 若病患收縮分率曾小於 40%、現已恢復大於 50%，應稱呼為 <b>recovered HFrEF</b> 或 <b>HF with improved LVEF</b>，而非直接稱呼 HFpEF。<b>這類病患應繼續接受 HFrEF 的治療。</b>HFpEF 病患的收縮分率長期而言雖較穩定，但長期追蹤後仍發現有<b>三分之一</b>病患的收縮分率下降。</div>
+  </div>
+
+  <h3>圖 6-1　HFA-PEFF 診斷流程（Eur Heart J. 2019;40:3297-3317）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:44px">步驟</th><th style="width:38%">內容</th><th>檢查項目</th></tr>
+    <tr><td class="n"><b>P</b></td><td>起始檢查 Initial Workup<br>第一步：檢查前評估 Pretest Assessment</td>
+        <td>心臟衰竭之症狀及徵象／共病症及風險因子／心電圖／標準心臟超音波（standard）／NPs（BNP or NT-proBNP）／運動測試：六分鐘步行、運動腳踏車、心肺運動檢查</td></tr>
+    <tr><td class="n"><b>E</b></td><td>診斷性檢查 Diagnostic Workup<br>第二步：超音波＆NPs 評分</td>
+        <td>完整心臟超音波（comprehensive）／NPs（若前一步驟未檢測）</td></tr>
+    <tr><td class="n"><b>F1</b></td><td>進階檢查 Advanced Workup<br>第三步：功能性檢查（不確定時）</td>
+        <td>舒張壓力測試：運動心臟超音波／侵入性血液動力學檢測</td></tr>
+    <tr><td class="n"><b>F2</b></td><td>病因檢查 Aetiological Workup<br>第四步：最終病因</td>
+        <td>心臟磁振造影／心臟或非心臟切片／閃爍攝影、電腦斷層、正子斷層掃描／基因檢測／特殊實驗室檢測</td></tr>
+  </table></div>
+
+  <h3>表 6-1　左心室舒張異常或填充壓力上升之客觀證據</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:22%">Parameter</th><th style="width:26%">閾值</th><th>評論</th></tr>
+    <tr><td>LV mass index<br>Relative wall thickness</td>
+        <td class="n">≥ 95 g/m²（女）<br>≥ 115 g/m²（男）<br>&gt; 0.42</td>
+        <td>雖然同心性左心重塑或左心室肥厚可支持 HFpEF，但若沒有也不能排除 HFpEF</td></tr>
+    <tr><td>LA volume index</td><td class="n">&gt; 34 mL/m²（SR）<br>&gt; 40 mL/m²（AF）</td>
+        <td>若沒有心房顫動或瓣膜疾病，左心房擴大代表慢性左心室填充壓力上升</td></tr>
+    <tr><td>E/e′ ratio at rest</td><td class="n">&gt; 9</td>
+        <td>診斷 HFpEF 敏感性 78%、專一性 59%。若閾值提高到 13 則敏感性較低（59%）但專一性較高（86%）</td></tr>
+    <tr><td>NT-proBNP<br>BNP</td>
+        <td class="n">&gt; 125（SR）／&gt; 365（AF）pg/mL<br>&gt; 35（SR）／&gt; 105（AF）pg/mL</td>
+        <td>經侵入性診斷 HFpEF 的病患中，有 <b>20% 的 NPs 低於診斷閾值</b>，特別是肥胖病患</td></tr>
+    <tr><td>PA systolic pressure<br>TR velocity at rest</td><td class="n">&gt; 35 mmHg<br>&gt; 2.8 m/s</td>
+        <td>經侵入性診斷之病患中，此閾值敏感性 54%、專一性 85%</td></tr>
+  </table></div>
+  <div class="note">合併心房顫動時：LA volume index 閾值提高至 &gt; 40 mL/m²；運動壓力測試中 E/e′ 閾值提高至 ≥ 15、TR velocity at peak stress 應 &gt; 3.4 m/s。</div>
+
+  <div class="callout"><div class="ct">舒張期壓力測試</div>
+    若靜止心超及血液檢查無法明確診斷，建議做舒張期壓力測試（侵入性血液動力學運動測試）：<b>PCWP 休息時 ≥ 15 mmHg 或運動時 ≥ 25 mmHg，或休息時左心室舒張末壓力 ≥ 16 mmHg</b> 皆可確診。但並非各地皆可執行，且過程仍有風險，多數為研究用途。目前指引<b>並無要求標準診斷檢測才能診斷 HFpEF</b>，但建議使用心超非侵入性指標以提高可信度。
+  </div>
+
+  <h3>圖 6-2　中華民國心臟學會 HFpEF 診斷流程</h3>
+  <div class="card">
+    <div class="mono" style="font-size:12.5px">病患收縮分率 &gt; 50% 併典型症狀／徵象</div>
+    <div class="flow-conn">↓（無 → 考慮其他診斷）</div>
+    <div class="mono" style="font-size:12.5px">Natriuretic peptides：NT-proBNP &gt; 300 pg/mL 或 BNP &gt; 100 pg/mL</div>
+    <div class="flow-conn">↓（無 → 考慮其他診斷）</div>
+    <div class="card" style="margin:6px 0">
+      <b>1. 重要結構異常</b>
+      <ul style="margin:2px 0"><li>LAVI &gt; 34 mL/m²</li><li>或 LVMI ≥ 115 g/m²（男）／≥ 95 g/m²（女）</li></ul>
+      <b>2. 重要功能異常</b>
+      <ul style="margin:2px 0"><li>Average E/e′ &gt; 14</li><li>Septal e′ velocity &lt; 7 cm/s</li><li>Lateral e′ velocity &lt; 10 cm/s</li></ul>
+      <b>3. 其他（間接）超音波指數</b>
+      <ul style="margin:2px 0"><li>Longitudinal strain 或 tricuspid regurgitation velocity（TRV &gt; 2.8 m/s）</li></ul>
+      <div class="note">三者皆無 → 考慮其他診斷</div>
+    </div>
+    <div class="flow-conn">↓ HFpEF 病患檢查 mitral inflow</div>
+    <div class="grid3">
+      <div class="card" style="margin:0"><div class="mono" style="font-size:12px">E/A ≤ 0.8 and E ≤ 50 cm/s</div>
+        <div class="flow-conn">↓</div><div class="flow-rec rec-blue" style="margin:0"><div class="rt" style="font-size:15px">第一級舒張性異常</div></div></div>
+      <div class="card" style="margin:0"><div class="mono" style="font-size:12px">E/A ≤ 0.8 and E &gt; 50 cm/s，或 0.8 &lt; E/A &lt; 2</div>
+        <div class="flow-conn">↓ Evaluate</div>
+        <ol style="font-size:12px;margin:0 0 6px"><li>Average E/e′ &gt; 14</li><li>TR velocity &gt; 2.8 m/s</li><li>LAVI &gt; 34 mL/m²</li></ol>
+        <div class="note">2–3 項陰性 → 第一級<br>2–3 項陽性 → 第二級</div>
+        <div class="flow-rec rec-blue" style="margin:6px 0 0"><div class="rt" style="font-size:15px">第二級舒張性異常</div></div></div>
+      <div class="card" style="margin:0"><div class="mono" style="font-size:12px">E/A ≥ 2</div>
+        <div class="flow-conn">↓</div><div class="flow-rec rec-blue" style="margin:0"><div class="rt" style="font-size:15px">第三級舒張性異常</div></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">HFpEF 之治療 <span class="en">Treatment</span></div>
+  <p>先前針對 HFpEF 的大型臨床研究包含 <b>PEP-CHF</b>(perindopril)、<b>CHARM-Preserved</b>(candesartan)、<b>I-PRESERVE</b>(irbesartan)、<b>TOPCAT</b>(spironolactone)、<b>DIG-Preserved</b>(digoxin) 及 <b>PARAGON-HF</b>(sacubitril/valsartan)。其中 candesartan 及 spironolactone 可觀察到降低心衰竭住院率之趨勢，但仍未達初級終點。2005 <b>SENIORS</b> 中 nebivolol 雖顯著降低全因死亡及心衰竭住院率，但納入 LVEF &gt; 50% 的病患僅佔全體 15%，轉譯至 HFpEF 仍需謹慎。PARAGON-HF 次分析發現 LVEF &lt; 57% 者使用 ARNI 可降低心因性死亡及心衰竭住院率；TOPCAT 中亦觀察到 LVEF &lt; 55% 者有類似結果。</p>
+
+  <div class="callout"><div class="ct">2023 ESC Focus Update <span class="badge new">v3 重點</span></div>
+    根據 <b>EMPEROR-Preserved</b> 與 <b>DELIVER</b>，SGLT2 抑制劑已晉升為<b>治療核心</b>：HFpEF（LVEF ≥ 50%）建議使用 SGLT2 抑制劑（dapagliflozin 或 empagliflozin），顯著降低心衰竭住院或心血管死亡之風險 <span class="badge c1">Class I / Level A</span>
+  </div>
+  <ul>
+    <li>利尿劑改善體液滯留症狀 <span class="badge c1">Class I / Level C</span></li>
+    <li>積極治療潛在病因與心血管／非心血管共病 <span class="badge c1">Class I</span>：高血壓、冠心症、心臟澱粉沉積症、心房顫動、心臟瓣膜疾病等 — 治療這些潛在疾病也可改善 HFpEF 之臨床症狀</li>
+    <li>Finerenone：2025 日本指南建議有症狀之 HFpEF 可考慮使用 <span class="badge c2a">Class IIa / Level B</span>（尚未納入歐美指引）</li>
+  </ul>
+</section>
+
+<!-- ============ 8 懷孕 ============ -->
+<section class="tab" id="t-pregnancy">
+  <div class="section-title">柒、心衰竭和懷孕 <span class="en">HF and Pregnancy</span></div>
+  <p>孕期的心肌病變可能來自孕前的心肌病變或因懷孕引起的心肌病變。<b>周產期心肌病變</b>定義為懷孕晚期或產後早期的心肌收縮功能障礙，通常 <span class="mono">LVEF &lt; 45%</span>，常伴有左心室擴張。</p>
+
+  <div class="grid2">
+    <div class="card"><h4>危險因子</h4>
+      <p style="margin:0">年紀 &gt; 30 歲、非洲血統、多胎、多產、子癇前症／子癲症、貧血、糖尿病、肥胖、延長孕期。</p></div>
+    <div class="card"><h4>預後相關因子</h4>
+      <p style="margin:0">初診斷時左心室收縮功能、左心室血栓是否形成、整體右心室被影響的程度、子癲前症、地理種族。</p></div>
+  </div>
+
+  <div class="callout"><div class="ct">流行病學與風險</div>
+    <ul style="margin:6px 0 0">
+      <li><b>ROPAC</b>（Registry of Pregnancy and Cardiac disease）分析 1321 位結構性心臟病女性：妊娠前或周產期心肌病之女性<b>死亡率約 2.4%</b>。</li>
+      <li>發生率約<b>千分之一</b>，是懷孕期間死亡的主要原因；推測與自體免疫、擴張性心肌病變病史有關。早期症狀常與正常懷孕生理現象類似而容易被忽視。</li>
+      <li>懷孕是<b>高血液凝固狀態</b>，合併左心室收縮功能下降易併發心臟內血栓，發生率約 <b>16%</b>。抗凝血劑為標準治療；<b>EF &lt; 30% 時考慮在分娩後 6–8 週使用抗凝血劑</b>（此時高凝固狀態最明顯）。若使用 bromocriptine 治療，建議合併抗凝血劑。</li>
+    </ul>
+  </div>
+
+  <p>常見臨床表現包括疲勞、陣發性夜間呼吸困難、水腫、頸靜脈充血，且因孕期凝血因子活化容易形成血栓栓塞。NYHA 分級常以第 <b>III 或 IV 級</b>症狀最常見，有時病程變化快速，會在幾天之內進展到心因性休克、心律不整、多重器官衰竭。</p>
+  <p>處置重點在於<b>確定診斷、改善心衰竭症狀、確保胎兒安全、減少心衰竭惡化</b>，因此孕前諮詢及共同討論與決策相當重要。治療需考量孕期、是否哺乳來調整藥物；若心肺狀態不穩應考慮儘快引產。非藥物措施著重於降低液體和鹽分攝取。</p>
+
+  <div class="section-title">心衰竭懷孕的管理策略 <span class="en">Management across the pregnancy continuum</span></div>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:120px">面向</th><th>懷孕前</th><th>懷孕中</th><th>產後</th></tr>
+    <tr><td><b>非藥物策略</b><br><span class="en">Non-pharmacological</span></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>孕前遺傳諮詢和遺傳性心臟病基因檢測、心臟超音波</li>
+        <li>心肌結構和心臟超音波評估，以提供有利於知情諮詢</li>
+        <li>對於準備計劃懷孕的女性，提供個人化的計畫與目標，確保配偶或伴侶了解風險，提供對決策的社會心理支持</li>
+        <li>討論心衰相關的考量，並轉至婦科進行避孕諮詢</li></ul></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>密切監測孕婦心衰症狀或徵象</li>
+        <li>密切監測胎兒狀況，由產兒科組成醫學團隊</li>
+        <li>第三孕期中常規心臟超音波評估心臟功能</li>
+        <li>孕期中檢視調整心臟衰竭藥物是否減少或停用</li>
+        <li>BNP 或 NT-proBNP 監測來預測心血管事件</li></ul></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>組成由產科、新生兒科和小兒科團隊的多專科團隊，討論母乳餵養和新生兒風險與好處、建議與共同決策</li>
+        <li>對於出現失代償性心臟衰竭或心因性休克的女性，需密切監測血流動力學和適當的機械循環輔助裝置支持</li></ul></td></tr>
+    <tr><td><b>藥物治療策略</b><br><span class="en">Pharmacological</span></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>對於即將懷孕的婦女，必須調整心衰竭藥物治療，<b>停用任何 ACEi、ARB、ARNi、MRA、SGLT2i 或 ivabradine</b></li>
+        <li>在多專科團隊共同決策下，繼續使用 β 受體阻斷劑（最常見為 metoprolol）、hydralazine、nitrates</li>
+        <li>調整利尿劑劑量以盡量減少胎盤灌注不足的風險</li>
+        <li>理想情況下約 3 個月後重複心臟超音波，確保受孕前心肌結構和功能的穩定</li></ul></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>密切監測產婦血壓、心率和容積狀態，並視情況調整處方以避免低血壓（妊娠中期全身血管舒張會達到高峰）和胎盤灌流不足</li>
+        <li>對於未經過孕前諮詢與評估即懷孕者，需<b>緊急停止任何具有胎兒毒性的 GDMT 藥物</b>；在多專科團隊共同決策下，繼續使用 β 受體阻斷劑（最常見 metoprolol）、hydralazine、nitrates</li>
+        <li>調整利尿劑劑量以盡量減少胎盤灌注不足的風險</li></ul></td>
+      <td><ul style="padding-left:16px;margin:0">
+        <li>由周產期心肌病變且 <b>LVEF &lt; 30%</b> 引起的急性心臟衰竭女性，考慮抗凝治療至<b>產後 6–8 週</b></li>
+        <li>周產期心肌病變引起嚴重急性心衰之產後婦女 <b>LVEF &lt; 35%</b>，建議 GDMT 藥物治療和預防性抗凝治療，以改善 LVEF</li>
+        <li>選擇母乳餵養者，與新生兒科和兒科團隊審查哺乳期新生兒安全用藥；可使用者包含 <b>ACEi（enalapril 或 captopril）、beta blockers（metoprolol）</b></li></ul></td></tr>
+    <tr><td><b>多專科團隊</b><br><span class="en">Multidisciplinary care</span></td>
+      <td>諮詢婦科、產科和新生兒科醫學團隊，根據團隊共同討論做決策共享。</td>
+      <td>對於有失代償性心臟衰竭或血流動力學不穩定的女性，產前的分娩計劃需包括產科、麻醉科和新生兒科團隊。</td>
+      <td>關於哺乳的建議由產科、新生兒科和兒科團隊組成多專科團隊。</td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 9 跨團隊照顧 ============ -->
+<section class="tab" id="t-team">
+  <div class="section-title">捌、預防及治療慢性心臟衰竭之跨團隊照顧 <span class="en">Multidisciplinary team management</span></div>
+
+  <h3>A. 預防心臟衰竭 — 表 7-1　風險因子與其潛在可校正方式</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:38%">心臟衰竭之風險因子</th><th>預防策略</th></tr>
+    <tr><td>久坐習慣 Sedentary habit</td><td>規律運動習慣</td></tr>
+    <tr><td>吸菸</td><td>戒菸</td></tr>
+    <tr><td>肥胖</td><td>運動及健康飲食</td></tr>
+    <tr><td>過度飲酒</td><td>一般族群：戒酒或少量飲酒<br>罹患酒精引起之心肌病變：應避免酒精</td></tr>
+    <tr><td>流感 Influenza</td><td>施打流感疫苗</td></tr>
+    <tr><td>微生物如克魯式錐蟲、鏈球菌</td><td>及早診斷、預防性或治療性抗生素治療</td></tr>
+    <tr><td>心毒性藥物如 Anthracyclines 類</td><td>定期追蹤心臟功能及其副作用、藥物劑量調整、更換化療組合</td></tr>
+    <tr><td>胸腔放射線治療</td><td>定期追蹤心臟功能及其副作用、藥物劑量調整</td></tr>
+    <tr><td>高血壓</td><td>改變生活型態、抗高血壓治療</td></tr>
+    <tr><td>血脂異常</td><td>健康飲食、Statin 治療</td></tr>
+    <tr><td>糖尿病</td><td>運動及健康飲食、SGLT2 inhibitor 治療</td></tr>
+    <tr><td>冠狀動脈疾病</td><td>改變生活型態、Statin 治療</td></tr>
+  </table></div>
+
+  <h3>B. 心臟衰竭之跨團隊照護</h3>
+  <p>照護目標是配合社區與醫院提供<b>無縫的照護系統</b>；復健和緩和照護應被加入整體照護系統。多專業團隊模式藉由經規劃的追蹤、衛教病人、最佳化藥物治療、心理支持和增加醫療可近性，來減低心臟衰竭住院率與死亡率。成功的關鍵在於多專業團隊是醫療系統各方面照護的<b>協調者</b>，需要心臟衰竭照護者（心臟科醫師、心臟衰竭照護護理師、基層醫師）和其他專家（藥師、營養師、物理治療師、心理師、社工師、緩和照護）互相配合。照護模式已從診間為主（clinic-based）進展至包括居家照護為主（home-based），強化病患自我調整（self-management）的能力。</p>
+
+  <div class="grid2">
+    <div class="card"><h4>表 7-2　多團隊照護成員</h4>
+      <div class="tbl-wrap"><table style="margin:0">
+        <tr><th style="width:96px">團隊成員</th><th>工作內容</th></tr>
+        <tr><td>個案管理師</td><td>教導自我照護學習，引導決策制定</td></tr>
+        <tr><td>營養師</td><td>營養評估及衛教</td></tr>
+        <tr><td>復健科醫師</td><td>復健計畫制定</td></tr>
+        <tr><td>藥師</td><td>用藥評估及衛教</td></tr>
+        <tr><td>職能治療師</td><td>實地復健教導</td></tr>
+        <tr><td>物理治療師</td><td>實地復健教導</td></tr>
+        <tr><td>照護者</td><td>學習照護知識及技能訓練</td></tr>
+        <tr><td>病患本人</td><td>自我照護學習</td></tr>
+        <tr><td>其他</td><td>根據病患需求而異</td></tr>
+      </table></div></div>
+    <div class="card"><h4>表 7-3　跨團隊照護之目標</h4>
+      <ul style="margin:0">
+        <li>最佳化藥物與裝置治療</li>
+        <li>足夠的衛教，特別著重藥物順從性與自我照護</li>
+        <li>由病人本身做症狀監測與調整利尿劑劑量</li>
+        <li>出院後追蹤（規律回診或到家訪視；可電話訪視或遠距監測）</li>
+        <li>加強醫療可近性（實地追蹤、電話訪查、遠距醫療）</li>
+        <li>當發生失償時協助就醫</li>
+        <li>當發生難以解釋的體重、營養狀態、功能、生活品質和實驗室檢驗變化時，評估並給予適當介入</li>
+        <li>提供進階治療選項</li>
+        <li>給予病人、家屬和照護者心靈與社會支持</li>
+      </ul></div>
+  </div>
+
+  <details><summary>A. 病患衛教</summary><div>
+    良好的心臟衰竭衛教，包括<b>自我評估（self-monitoring）、自我調整（self-management）</b>，可更即時改善生活品質、降低再住院率以及死亡率。內容包括：了解心臟衰竭常見之臨床症狀、目前的治療方式及策略、目前使用藥物之適應症／併發症／副作用、日常活動／睡眠狀況／水份攝取之醫療建議，以及定期接種疫苗、避免酒精或戒菸對於心臟衰竭之好處。
+  </div></details>
+  <details><summary>B. 心肺運動</summary><div>
+    透過運動可改善運動耐受度，進而改善生活品質及降低心臟衰竭住院率。許多研究發現<b>高強度間歇運動</b>可能改善病患之最高氧氣攜帶率（VO₂）。指引建議在合併有較嚴重共病或衰弱症之 HFrEF 病患，可考慮接受<b>有指導下的運動導向心肺訓練</b> <span class="badge c2a">Class IIa</span>。
+  </div></details>
+  <details><summary>C. 病患追蹤</summary><div>
+    <p>應定期評估臨床症狀、治療療效，以及早發現無症狀之心臟衰竭惡化。指引建議<b>追蹤頻率不應超過六個月</b>，且每次追蹤應評估臨床症狀、心跳、血壓、白血球分析、電解質及腎功能。若病患剛出院或正在上調藥物劑量，返診頻率應提高。</p>
+    <p><b>BNP、NT-proBNP</b> 雖然是很好的臨床預後指標，但使用生物指標去指引藥物治療仍有爭議，<b>目前指引並不建議常規使用 BNP 或 NT-proBNP 來指引治療</b>。</p>
+    <p>科技輔助器具（智慧型手機、穿戴式智慧手錶）可提供心跳、心律、血壓等數據。隨著 COVID-19 改變醫療模式，居家醫療評估（home telemonitoring）工具可幫助臨床醫師及早發現病情變化並及早介入。</p>
+  </div></details>
+</section>
+
+<!-- ============ 10 急性心衰竭 ============ -->
+<section class="tab" id="t-acute">
+  <div class="section-title">玖、急性心臟衰竭 <span class="en">Acute heart failure</span></div>
+  <p>急性心臟衰竭為心臟衰竭症狀<b>快速發作或惡化</b>，是危及生命的醫療狀況，需緊急評估與治療，通常需要立即安排住院。可能是第一次表現（de novo），或是慢性心臟衰竭併急性惡化的結果。</p>
+
+  <h3>表 8-1　急性心臟衰竭之可能原因</h3>
+  <div class="tbl-wrap"><table>
+    <tr><td>急性冠心症</td><td>頻脈性心律不整（心房顫動、心室頻脈）</td></tr>
+    <tr><td>血壓極度上升</td><td>感染（肺炎、感染性心內膜炎、敗血症）</td></tr>
+    <tr><td>對藥物、鹽、飲食順從性不佳</td><td>緩脈性心律不整</td></tr>
+    <tr><td>毒性物質（酒精、娛樂性藥物）</td><td>藥物（NSAID、皮質類固醇、心肌抑制藥物、心毒性化療藥物）</td></tr>
+    <tr><td>慢性阻塞性肺病急性惡化</td><td>肺動脈栓塞</td></tr>
+    <tr><td>手術與相關之併發症</td><td>交感神經高度作用、壓力性心肌病變</td></tr>
+    <tr><td>代謝與荷爾蒙因素（甲狀腺功能缺失、糖尿病酮酸、腎上腺失能、懷孕與孕期相關變化）</td><td>腦血管事件</td></tr>
+    <tr><td colspan="2">急性機械性因素：急性冠心症併發心肌破裂、胸部外傷、心臟介入治療、因心內膜炎急性瓣膜失能、主動脈剝離或血栓</td></tr>
+  </table></div>
+
+  <div class="section-title">A. 四象限分類（互動） <span class="en">Warm/Cold · Wet/Dry</span></div>
+  <p class="note">依「是否有鬱血（congestion）」與「是否有灌流不足（hypoperfusion）」畫分。點選任一象限查看該類之臨床特徵與處置原則。<b>「暖＋濕」為臨床上最常見之次族群。</b></p>
+  <div class="quad">
+    <div class="lbl"></div>
+    <div class="lbl">體液鬱積（−）<br><span class="en">Dry</span></div>
+    <div class="lbl">體液鬱積（＋）<br><span class="en">Wet</span></div>
+    <div class="lbl">灌流不足（−）<br><span class="en">Warm</span></div>
+    <div class="qbox" data-q="wd"><div class="qn">暖乾</div><div class="qe">Warm &amp; Dry</div></div>
+    <div class="qbox" data-q="ww"><div class="qn">暖濕</div><div class="qe">Warm &amp; Wet · 最常見</div></div>
+    <div class="lbl">灌流不足（＋）<br><span class="en">Cold</span></div>
+    <div class="qbox" data-q="cd"><div class="qn">冷乾</div><div class="qe">Cold &amp; Dry</div></div>
+    <div class="qbox" data-q="cw"><div class="qn">冷濕</div><div class="qe">Cold &amp; Wet</div></div>
+  </div>
+  <div class="flow-rec rec-idle" id="quadrec">請點選上方任一象限。</div>
+  <div class="grid2">
+    <div class="card"><h4>體液鬱積之表現</h4><p style="margin:0">肺積水／端坐呼吸、夜間呼吸困難／下肢水腫／頸靜脈怒張／腹水／肝腫大</p></div>
+    <div class="card"><h4>灌流不足之表現</h4><p style="margin:0">四肢冰冷／意識改變／尿量減少／頭暈／脈壓窄</p></div>
+  </div>
+
+  <div class="callout"><div class="ct">B. 2021 ESC 分類</div>
+    依心臟衰竭之機轉細分為四類，並各有個別的治療流程圖：<b>急性失償性心臟衰竭</b>（acute decompensated HF）、<b>急性肺水腫</b>（acute pulmonary edema）、<b>獨立性右心室衰竭</b>（isolated RV failure）、<b>心因性休克</b>（cardiogenic shock）。
+  </div>
+
+  <div class="section-title">處理優先順序與病人配置 <span class="en">Triage &amp; disposition</span></div>
+  <p>急性心臟衰竭病況變化大又快，診斷與評估需在<b>第一次接觸病人或其資訊時</b>及早開始。危及生命之臨床狀況或需緊急治療的情況為最優先處理；一開始若具有需要急救、心因性休克或呼吸衰竭的狀況，需要緊急處理及立即安排 <b>CCU</b> 或內科加護病房住院。診斷的第一步通常是<b>排除其他可能造成症狀的原因</b>（肺部感染、嚴重貧血、急性腎衰竭）。</p>
+
+  <h3>A. 住院準則</h3>
+  <ol>
+    <li>持續且嚴重呼吸喘或血行動力不穩病人，應檢傷至可立即提供復甦支持的地點。</li>
+    <li>高風險病人（持續且嚴重呼吸喘或血行動力不穩、反覆心律不整、合併急性冠心症），初始治療應在加護病房。</li>
+    <li><b>入住加護病房準則（以下任一）</b>：
+      <ul>
+        <li>須插管或已插管</li>
+        <li>有灌流不足症狀或徵象</li>
+        <li>給予氧氣下仍血氧濃度不足（SpO₂ &lt; 90%）</li>
+        <li>使用輔助肌呼吸或呼吸速率 &gt; 25/min</li>
+        <li>心跳 &lt; 40 bpm 或 &gt; 130 bpm、收縮壓 &lt; 90 mmHg</li>
+      </ul></li>
+    <li>其他病人通常須入住普通病房；只有少數（通常鬱血症狀輕微）能在給予利尿劑和調整口服藥物後直接從急診出院。臨床狀況穩定後可從加護病房轉入普通病房，後續治療應包括多專業團隊。</li>
+  </ol>
+
+  <h3>B. 辨識須立即處理的加重因子</h3>
+  <details><summary>1. 急性冠心症</summary><div>應依相關治療指引處理。合併急性冠心症與急性心臟衰竭之病人是風險很高的一群，<b>建議盡快進行侵入性治療以達成血管疏通</b>。</div></details>
+  <details><summary>2. 高血壓危症</summary><div>因快速血壓升高而加重心臟衰竭者常以<b>肺水腫</b>表現，首要治療目標為盡快降壓，建議以<b>針劑血管擴張劑加利尿劑</b>積極降壓（在前幾個小時降幅 25%）。</div></details>
+  <details><summary>3. 頻脈、嚴重緩脈或傳導異常</summary><div>合併嚴重心律異常且狀況不穩時，應以藥物、電擊或暫時性心律調節器緊急矯正。若心律不整造成血行動力失償，建議以<b>電擊整流</b>回復竇性心律。處理急性心臟衰竭合併持續心室心律不整非常有挑戰性，因兩者為惡性循環交互作用；某些個案可考慮血管攝影（如需要則血管疏通）或電生理檢查以進行電燒。</div></details>
+  <details><summary>4. 急性機械性因素</summary><div>可能表現為急性冠心症之併發症（游離壁破裂、心室中膈缺損、急性二尖瓣逆流）、胸部外傷、心臟侵入性治療、因心內膜炎造成急性瓣膜缺損、主動脈剝離、血栓或其他罕見阻塞原因（如腫瘤）。<b>診斷需仰賴心超</b>，治療通常要藉助循環支持系統和外科或介入性治療。</div></details>
+  <details><summary>5. 急性肺栓塞</summary><div>應以相關治療指引處理；若確立肺栓塞為休克或低血壓原因，<b>建議立即進行手術或導管溶栓以達成再灌流</b>。</div></details>
+
+  <div class="section-title">C. 心因性休克 <span class="en">Cardiogenic shock</span> <span class="badge new">第三版新增</span></div>
+  <h3>1. SCAI 心源性休克分級</h3>
+  <p class="note">指導治療決策與預後預測。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:120px">級別</th><th>定義</th></tr>
+    <tr><td class="n"><b>A</b> — AT RISK</td><td>血流動力學穩定，且沒有出現心源性休克的症狀或徵象，但<b>具有發展為休克的風險</b>（例如大面積急性心肌梗塞或失代償性心衰竭）。</td></tr>
+    <tr><td class="n"><b>B</b> — BEGINNING</td><td>臨床證據顯示<b>血流動力學不穩定</b>（低血壓、心跳過速或異常的全身血流動力學數據），但<b>尚未出現組織灌流不足</b>。</td></tr>
+    <tr><td class="n"><b>C</b> — CLASSIC</td><td>臨床證據顯示存在<b>組織灌流不足</b>，且初步需要藥物或機械性循環支持。通常會伴隨低血壓症狀。</td></tr>
+    <tr><td class="n"><b>D</b> — DETERIORATING</td><td>臨床證據顯示<b>休克正在惡化</b>，或即便已升級治療方案，病情仍未能改善。</td></tr>
+    <tr><td class="n"><b>E</b> — EXTREMIS</td><td><b>難治性休克狀態</b>，或已發生／即將發生急性循環衰竭。</td></tr>
+  </table></div>
+
+  <h3>2. 掌握休克辨識</h3>
+  <div class="grid2">
+    <div class="card"><h4>臨床症狀</h4><p style="margin:0">意識障礙／意識狀態改變、皮膚蒼白且濕冷、冒冷汗、呼吸急促／呼吸困難、心跳過速。</p></div>
+    <div class="card"><h4>血流動力學徵象</h4>
+      <ul style="margin:0">
+        <li>心臟指數 <b>CI &lt; 2.2 L/min/m²</b> 或心輸出量 <b>CO &lt; 4.0 L/min</b></li>
+        <li>心臟功率輸出 <b>CPO &lt; 1.0</b>（<b>CPO &lt; 0.6</b> 定義為重度心因性休克）</li>
+        <li>終末器官灌流不足之內在證據，例如<b>血乳酸持續升高</b></li>
+      </ul></div>
+  </div>
+
+  <h3>3. NTUH 休克團隊啟動流程</h3>
+  <div class="callout warn">
+    <div class="ct">啟動方式</div>
+    滿足以下兩類條件時，由<b>心臟加護病房專任醫師啟動</b>或<b>經心臟內科會診後啟動</b>。
+    <h4>一、三項中至少符合兩項</h4>
+    <ul>
+      <li><b>血壓異常</b>：SBP &lt; 90 mmHg 或 MAP &lt; 65 mmHg 持續達 30 分鐘</li>
+      <li>需使用<b>血管加壓劑、強心劑或機械性循環支持（MCS）</b>以維持 SBP ≥ 90 mmHg 或 MAP ≥ 65 mmHg</li>
+      <li><b>組織灌流不足</b>：末梢器官受損之臨床證據（少尿／無尿、四肢冰冷、意識狀態變差）；或 2 小時內追蹤之 <b>lactate &gt; 2 mmol/L</b>。侵入性血流動力學數據不佳：<b>CI &lt; 2.2 L/min/m²</b> 或 <b>CPO &lt; 0.6 W</b></li>
+    </ul>
+    <h4>二、心肺功能停止後狀態</h4>
+    <p style="margin:4px 0 0">心肺功能停止患者於 <b>30 分鐘內恢復自主循環（ROSC）</b>，且同時具備：</p>
+    <ul>
+      <li><b>神經功能恢復狀態</b>：GCS ≥ 8 分，或氣切／插管狀態下配合指令者（5T）</li>
+      <li><b>持續性休克</b>：ROSC 後仍處於持續性休克狀態</li>
+    </ul>
+  </div>
+
+  <div class="section-title">初始診斷及評估 <span class="en">Initial work-up</span></div>
+  <p>第一步是完整的病史（症狀、過去心血管疾病史、可能的心因性因素或其他非心因性加重因子）；身體檢查可評估是否有鬱血或灌流不足；所有病人都應接受一系列完整檢查（心電圖、胸部 X 光、實驗室檢查、心臟超音波）來確立診斷。</p>
+  <details><summary>A. 胸部 X 光</summary><div>特異表現包括肺靜脈鬱血、肋膜積水、間質性或肺泡性水腫、心臟肥大。<b>仰躺的 X 光對診斷用處較少</b>。可排除如肺炎等其他非心因性疾病。</div></details>
+  <details><summary>B. 心電圖</summary><div>在急性心臟衰竭鮮少正常，可協助找出潛在心因性因素或其他加重因子（如快速的心房顫動、急性心肌梗塞）。</div></details>
+  <details><summary>C. 心臟超音波</summary><div><b>兩類病人有必要做立即的心超</b>：血行動力不穩（特別是心因性休克）；懷疑有危及生命的急性心臟結構或功能異常（機械性併發症、急性瓣膜逆流、主動脈剝離）。所有初次發生急性心臟衰竭或心臟功能不明的病人都應考慮早期完成心超，<b>目前以住院後 24 小時內完成為目標</b>。易快速惡化之心臟疾病（急性心肌炎、大範圍嚴重心肌梗塞）宜於短時間內重複執行。</div></details>
+  <details><summary>D. 床邊超音波（胸腹部）</summary><div>可評估腹水、肋膜積液、間質性肺水腫、下腔靜脈直徑大小，輔助體液狀態和呼吸之評估；亦為置放管路（如中央靜脈導管）、床邊穿刺引流的指引工具。</div></details>
+  <details open><summary>E. 實驗室檢查</summary><div>
+    <p><b>初始檢查</b>應包含 CBC、血糖、基本電解質（鈉、鉀、鎂）、肝功能、腎功能（BUN、Creatinine）、凝血功能（aPTT、PT）。</p>
+    <ol>
+      <li><b>利鈉尿肽（NPs）</b>：本院檢查項目為 <b>NT-proBNP</b>，具高敏感性，若為正常值則急性心臟衰竭可能性很小（<b>正常值：NT-proBNP &lt; 300 pg/mL</b>）。然而升高並不能確立診斷（見表 8-2）。<b>有些失償末期心臟衰竭、右心衰竭或突發性肺水腫病人可能有預料外的低利鈉尿肽濃度。</b></li>
+      <li><b>心肌旋轉蛋白（troponin）</b>：本院為 troponin-T，所有病人都建議抽取以偵測急性冠心症。若有符合指引的動態變化則需積極排除 ACS；但<b>大多數心衰竭病人即使無 ACS 心臟酵素仍會升高</b>，表示持續性的心肌受損，判讀時需特別小心。</li>
+      <li><b>動脈血氣體分析</b>：不須常規檢測，適用於無法藉由血氧計監測氧合，或需精確量測氧氣與二氧化碳分壓時。靜脈血分析可推測 pH 值和二氧化碳分壓。</li>
+      <li><b>Procalcitonin 或 CRP</b>：用於懷疑合併感染時；procalcitonin 特別適用於鑑別診斷肺炎及導引治療。</li>
+      <li><b>D-dimer</b>：喘的病人用於懷疑肺栓塞。敏感性高但特異性低；數值正常可用來<b>排除</b>肺栓塞，陰性預測率高達 95% 以上。</li>
+    </ol>
+  </div></details>
+
+  <h3>表 8-2　利鈉尿肽濃度升高之可能原因</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:50%">心因性</th><th>非心因性</th></tr>
+    <tr><td>心臟衰竭、急性冠心症、肺栓塞、心肌炎、左心室肥大、肥厚性心肌病變、限制性心肌病變、瓣膜性心臟病、先天性心臟病、心房或心室頻脈性心律不整、心臟挫傷、電擊、影響到心臟之手術、肺動脈高壓</td>
+        <td>高齡、蜘蛛膜下腔出血、腎功能缺損、肝功能缺損（主要是肝硬化併腹水）、腫瘤附屬症候群、慢性阻塞性肺病、嚴重感染（肺炎、敗血症）、嚴重燒傷、貧血、嚴重代謝或荷爾蒙異常（甲狀腺毒症、糖尿酮酸）</td></tr>
+  </table></div>
+
+  <div class="section-title">處置與治療 <span class="en">Management</span></div>
+  <div class="callout"><div class="ct">時效</div>初步評估與診斷完成後，應找出急性惡化原因，並接著<b>於 60–120 分鐘內</b>開始相關治療。</div>
+
+  <details><summary>A. 氧氣治療與呼吸器支持</summary><div>
+    <p><b>不建議在無低血氧病人常規給予氧氣</b>，因為會造成血管收縮而降低心輸出量。在 COPD，高氧合可能加重通氣與灌流差異，進而抑制呼吸造成高碳酸血症。氧氣治療期間須監測酸鹼平衡與血氧。</p>
+    <p>非侵襲性正壓呼吸器包括 <b>CPAP 與 BiPPV</b>；BiPPV 可給予吸氣壓力支持、增加每分通氣量，特別適合高碳酸血症病人（COPD 最為典型）。</p>
+    <p>鬱血會影響肺功能和增加肺內分流造成低血氧。除非有禁忌症，氧分壓依需要（根據 SpO₂）應上調至 100%，但應注意<b>避免高氧症</b>。非侵襲性正壓呼吸器可減少呼吸作功、插管和死亡率；到院後仍有呼吸衰竭徵象病人應繼續使用；若有酸血症或高碳酸血症者以 <b>PS-PEEP</b> 為宜。</p>
+    <div class="callout warn"><div class="ct">鎮靜藥物</div><b>Propofol 具有心臟抑制性可能導致低血壓；midazolam 較少心臟相關副作用。</b>因此急性心臟衰竭與心因性休克者，較適合使用 midazolam。</div>
+  </div></details>
+
+  <details open><summary>B. 藥物治療 — 1. 利尿劑 <span class="badge new">第三版改寫</span></summary><div>
+    <p>利尿劑是急性心臟衰竭合併體液過量與鬱血症狀病人之<b>治療基石</b>，可增加腎臟鹽分與水分排除，並有些微血管擴張效果。</p>
+    <div class="callout warn"><div class="ct">重要順序</div><b>若病人合併灌流不足症狀，應避免在達成足夠灌流前給予利尿劑。</b></div>
+    <p>若血壓許可，處理鬱血的第一步包括<b>針劑利尿劑與血管擴張劑</b>：</p>
+    <ul>
+      <li>如果門診已有使用環利尿劑 → 建議使用<b> 1–2 倍的劑量，靜脈給予</b></li>
+      <li>若為新診斷或過去未使用利尿劑者 → 可從單次注射 <b>furosemide 20–40 mg</b> 開始</li>
+      <li>給予後需追蹤<b>尿量</b>、<b>urinary spot sodium</b> 評估反應，適時調整劑量，並留意腎功能及電解質</li>
+      <li>可併用不同種類利尿劑（<b>acetazolamide</b>、<b>thiazide</b> 類）以達到更佳利尿效果</li>
+    </ul>
+  </div></details>
+
+  <details><summary>B-1b. 血管擴張劑</summary><div>
+    心臟衰竭第二常用之症狀緩解藥物，但無強烈證據證明其好處。可減低靜脈張力（優化前負荷）和動脈張力（減少後負荷），因此可能增加心搏量。<b>對合併高血壓病人尤其有效；若低血壓或有相關症狀者則須避免。</b>須小心控制劑量以避免過度降壓（與預後不佳有關）；若合併主動脈瓣或二尖瓣狹窄者應小心使用。
+  </div></details>
+
+  <details><summary>B-2. 強心劑</summary><div>
+    <p>使用應<b>限於嚴重心輸出降低而導致標的器官灌流不足者</b>，通常見於低血壓性心臟衰竭；但若低血壓之原因為低血溶或其他可矯正之因素，則不建議在矯正這些因素前使用。強心劑（特別是有腎上腺素作用者）會造成心搏過快，也可能造成心肌缺氧與心律不整，<b>需監測心電圖</b>。過去研究顯示強心劑有可能增加死亡率。須小心使用、從低劑量開始，並在密切監測下調整劑量。</p>
+    <h4>表 8-3　強心劑與升壓劑（血管收縮）</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th style="width:130px">藥物</th><th style="width:34%">單次給藥</th><th>滴注速率</th></tr>
+      <tr><td>Dobutamine <sup>a</sup></td><td>不建議</td><td class="n">2–20 μg/kg/min（beta+）</td></tr>
+      <tr><td>Dopamine</td><td>不建議</td><td class="n">3–5 μg/kg/min：強心作用（beta+）<br>&gt; 5 μg/kg/min（beta+）（alpha+）</td></tr>
+      <tr><td>Milrinone <sup>a</sup></td><td class="n">10–20 分鐘內給予 25–75 μg/kg（若血壓過低則不建議）</td><td class="n">0.375–0.75 μg/kg/min</td></tr>
+      <tr><td>Norepinephrine</td><td>不建議</td><td class="n">0.2–1.0 μg/kg/min</td></tr>
+      <tr><td>Epinephrine</td><td class="n">急救時每 3–5 分鐘 1 mg</td><td class="n">0.05–0.5 μg/kg/min</td></tr>
+    </table></div>
+    <div class="note"><sup>a</sup> 同時為血管擴張劑。</div>
+  </div></details>
+
+  <details><summary>B-3～7. 升壓劑、栓塞預防與其他藥物</summary><div>
+    <h4>3. 升壓劑（血管收縮）</h4>
+    <p>給予顯著低血壓之病人具周邊動脈收縮效果藥物（<b>norepinephrine</b> 和高劑量 <b>dopamine</b>），可提高血壓以增進到標的器官之血流，但代價是<b>增加左心室後負荷</b>。有一研究次族群分析顯示 <b>norepinephrine 比 dopamine 的副作用少且死亡率較低</b>。Epinephrine 應用於在藥物使用下仍持續低血壓或急救時。</p>
+    <h4>4. 栓塞預防</h4>
+    <p>若無禁忌症建議以 <b>heparin</b> 或其他抗凝血劑預防栓塞。</p>
+    <h4>5. Vasopressin 受體拮抗劑</h4>
+    <p><b>Tolvaptan</b> 抑制 arginine vasopressin 在腎小管 V2 受體的作用，促進水排出（aquaresis）；<b>可用於體液過多又嚴重低鈉的病人</b>。</p>
+    <h4>6. Opioid 鴉片類</h4>
+    <p>可緩解焦慮與喘，<b>不建議常規使用</b>，只可在嚴重呼吸喘病人審慎考慮。劑量相關副作用包括噁心、低血壓、心搏過緩、呼吸抑制。因其可能有增加死亡率之風險，使用上仍有爭議。</p>
+    <h4>7. 抗焦慮與鎮靜藥物</h4>
+    <p>焦躁或譫妄病人可能需要；<b>小心使用 benzodiazepine（diazepam 或 lorazepam）可能是較安全的做法</b>。</p>
+  </div></details>
+
+  <details><summary>C. 機械輔助裝置</summary><div>
+    <h4>1. 主動脈氣球幫浦 IABP</h4>
+    <p>傳統適應症為急性機械性問題手術前、嚴重心肌炎、心肌梗塞或嚴重心肌缺氧於導管或手術前中後之血循支持。<b>目前指引不建議「常規」使用於急性心衰竭病人</b>，無明確證據顯示 IABP 在其他心因性休克之好處。但在缺血性心臟病需增加冠狀動脈灌流支持、高風險 PCI 病人及心因性休克需增加心臟支持時，仍扮演重要角色。主要併發症：出血、置於肢末端灌流不足、氣球破裂、位置不正確影響主動脈分枝血流、主動脈破裂。</p>
+    <h4>2. 心室輔助器 VAD</h4>
+    <p>心室輔助器或其他機械循環支持可作為特定病人之階段性治療或長期治療。</p>
+  </div></details>
+
+  <details><summary>D. 其他介入治療</summary><div>
+    合併肋膜積水者，可考慮<b>胸腔穿刺並引流</b>以緩解症狀。合併腹水者，可考慮<b>腹腔穿刺並引流</b>；藉由減少腹內壓，同時可能部分正常化經腎臟壓力差，而增加腎臟灌流。
+  </div></details>
+
+  <div class="section-title">住院監測與出院準則 <span class="en">Monitoring &amp; discharge</span></div>
+  <div class="grid2">
+    <div class="card"><h4>住院之監測</h4>
+      <ul style="margin:0">
+        <li>每日量測體重並正確紀錄輸入輸出</li>
+        <li>腎功能監測建議<b>每日追蹤</b>尿素氮、肌酸酐和離子</li>
+        <li><b>不建議常規使用尿管</b></li>
+        <li>入院時腎功能常有缺損，在利尿後可能進步或惡化</li>
+        <li>應持續監測脈搏、呼吸速率和血壓</li>
+        <li>沒有證據顯示，在心因性休克之外的病人，<b>侵入性血行動力監測</b>有好處</li>
+        <li>住院時量測 NP 濃度可能有助於出院計畫；住院中 NP 濃度降低者，六個月內死亡率和再住院率較低</li>
+      </ul></div>
+    <div class="card"><h4>出院準則與高危險期之追蹤</h4>
+      <p style="margin:6px 0 2px"><b>A.</b> 血行動力穩定、血容積正常、已接受口服藥物、出院前 24 小時腎功能正常</p>
+      <p style="margin:2px 0"><b>B.</b> 已接受個人化之衛教</p>
+      <p style="margin:2px 0"><b>C.</b> 病人建議接受：</p>
+      <ol style="margin:0">
+        <li>加入疾病照護計畫；追蹤計畫應於出院前確立，並與主要照護團隊溝通</li>
+        <li><b>兩周內</b>回原醫院心臟照護團隊做評估</li>
+        <li>慢性心臟衰竭病人應在可提供多專業團隊照護醫院追蹤</li>
+      </ol></div>
+  </div>
+</section>
+
+<!-- ============ 11 共病 ============ -->
+<section class="tab" id="t-comorbid">
+  <div class="section-title">拾、心血管性共病 <span class="en">Cardiovascular comorbidities</span></div>
+  <div class="filterbar">
+    <input type="search" id="comoq" placeholder="搜尋共病主題…（例如：貧血、痛風、AF）" oninput="filterComo()">
+    <button class="btn" onclick="toggleComo(true)">全部展開</button>
+    <button class="btn" onclick="toggleComo(false)">全部收合</button>
+  </div>
+  <div id="comolist">
+
+  <details data-k="心房顫動 atrial fibrillation AF 中風 rate control rhythm control"><summary>心房顫動 <span class="en">Atrial fibrillation</span></summary><div>
+    <p>心臟衰竭與心房顫動兩者時常並存，並且心房顫動可透過<b>結構重塑、神經賀爾蒙活化或心率過速</b>等因素惡化心臟衰竭。隨著心臟衰竭病患老化，心房顫動盛行率也隨之提升；慢性心房顫動也可造成特殊的心肌病變（如 tachycardiomyopathy）。慢性心臟衰竭合併心房顫動會有較差的預後，如中風風險及死亡率的增加。</p>
+    <p><b>建議：</b>積極辨認及治療可能引起或誘發心房顫動之病因、預防栓塞風險（embolic events）、速率控制（rate control）、心律控制（rhythm control）。</p>
+  </div></details>
+
+  <details data-k="心絞痛 冠心病 angina CAD revascularization CABG amlodipine nicorandil diltiazem verapamil"><summary>心絞痛跟冠心病 <span class="en">Angina &amp; CAD</span></summary><div>
+    <h4>A. 藥物治療</h4>
+    <p><b>Beta-blocker</b> 跟 <b>ivabradine</b> 是控制心絞痛症狀的有效藥物，也是 HFrEF 心臟衰竭治療的重要藥物。<b>Amlodipine、nicorandil 跟 nitrates</b> 被證明使用在 HFrEF 病人是<b>安全</b>的。<b>Diltiazem 跟 verapamil 則被認為使用在 HFrEF 病人是不安全的。</b></p>
+    <h4>B. 重新建立心肌血流 Revascularization</h4>
+    <p>透過心導管或外科方式重新建立血流可改善缺血性心衰竭患者的預後。根據 ESC 治療指引，<b>當病人有多條血管疾病及可接受的手術風險下，繞道手術為首選</b>。選擇心導管或外科方式應由內外科心臟團隊根據臨床狀況、血管構造、預期重建血流的完整度、是否合併瓣膜疾病及其他共病做整體評估。</p>
+  </div></details>
+
+  <details data-k="惡病質 肌少症 cachexia sarcopenia testosterone 體重"><summary>惡病質與肌少症 <span class="en">Cachexia &amp; sarcopenia</span></summary><div>
+    <p>惡病質是一個影響全身組織的消耗性過程。約 <b>5–15%</b> 心臟衰竭病人會發生，且隨疾病嚴重度惡化，跟症狀嚴重程度、功能下降、住院率增加、存活率降低都有關聯。</p>
+    <p><b>定義：在 6–12 個月內有大於體重 6% 非水腫相關的體重減輕。</b></p>
+    <p>可能機轉包括發炎免疫反應的活化、神經內分泌失調、營養不良吸收不佳、攝取的熱量跟蛋白質失衡、代謝趨力（anabolic drive）降低、長時間無法行動等。約 <b>30–50% 的 HFrEF</b> 病人會出現骨骼肌消耗跟活動能力下降。</p>
+    <p>治療包括促進食慾的藥物、運動復健、加強代謝的藥物（testosterone），再合併營養補充跟抑制分解代謝的治療。<b>不過目前關於好處跟安全度皆尚未有定論。</b></p>
+  </div></details>
+
+  <details data-k="癌症 cancer anthracycline doxorubicin trastuzumab dexrazoxane 電療 心臟毒性"><summary>癌症 <span class="en">Cancer &amp; cardiotoxicity</span></summary><div>
+    <p>許多治療癌症的藥物會導致或惡化左心收縮功能跟心臟衰竭，最常見的是 <b>anthracyclines（doxorubicin）、trastuzumab 跟 tyrosine kinase inhibitors</b>。最近一篇 Cochrane review 發現 <b>dexrazoxane</b> 在有使用 anthracyclines 的病人有心臟保護的效果。</p>
+    <p>若病人接受心臟毒性化療，<b>給藥前後 LVEF 評估、global strain speckling 的評估是被建議的</b>。</p>
+    <p>罹患乳癌的女性接受 trastuzumab 治療，有個根據年齡、化療藥物、基礎心血管狀況跟其他共病的<b>風險指數表</b>可幫助評估後續出現心臟衰竭的風險。當病人出現<b>中重度的心收縮功能異常，應停止化療並接受心臟衰竭藥物治療</b>；若事後心臟功能有恢復，日後化療的好處跟風險應審慎評估。</p>
+    <p>縱膈腔的電療也可能產生長期心臟併發症，心臟酵素（NPs、troponins）的追蹤可用來評估跟監測高心臟毒性風險的病人。</p>
+  </div></details>
+
+  <details data-k="中樞神經 中風 stroke 自律神經 憂鬱 depression SSRI BDI tricyclic"><summary>中樞神經系統共病 <span class="en">CNS comorbidities</span></summary><div>
+    <p><b>中風</b>跟心臟衰竭因有共同的危險因子故常常共存，兩個都有較差的預後，而中風會讓心臟衰竭的病人更難自理。在高中風風險的病人，抗血小板跟抗凝血的藥物使用需取得平衡。</p>
+    <p><b>自律神經失調</b>在嚴重的 HFrEF 病人中尤其常見。再合併低血壓，病人可能會因暈眩而容易受傷，而且許多心臟衰竭的藥物在理想劑量上會有所限制。<b>減低利尿劑可能可以降低姿勢性低血壓的嚴重度。</b></p>
+    <p><b>憂鬱症</b>是常見但常被低估的共病；病患的遵醫囑性較差、社交較為疏離，常有較差的預後。常規使用一些被認可的問卷調查是不錯的方法：<b>The Beck Depression Inventory (BDI)</b> 跟 <b>Cardiac Depression Scale</b> 是目前被認可用來評估心臟衰竭病人憂鬱程度的工具；其他廣泛使用的還有 Geriatric Depression Scale、Hamilton Depression Scale、Hospital Anxiety and Depression Scale。</p>
+    <p>心理治療、藥物治療跟運動復健對有憂鬱症的 HFrEF 病人都是有效的。認知行為治療跟完整的教育規畫可降低憂鬱嚴重程度、焦慮程度跟疲憊症狀，亦可改善社交功能、心智健康狀況以及心臟衰竭相關的生活品質指標。</p>
+    <div class="callout warn"><b>SSRIs 被認為是安全的</b>；相對的，因為會導致低血壓、惡化心臟衰竭跟心律不整，<b>應避免使用 tricyclic antidepressants</b>。</div>
+  </div></details>
+
+  <details data-k="糖尿病 diabetes metformin insulin sulfonylurea thiazolidinedione DPP4 GLP-1 SGLT2"><summary>糖尿病 <span class="en">Diabetes mellitus</span></summary><div>
+    <p>糖尿病是心臟衰竭常見共病，且有較差的預後，但<b>並不影響治療成效</b> — 舉例來說，無論病人有無糖尿病，beta-blockers 都可以改善預後。嚴格的血糖控制是否可以改善存活率仍未定論。</p>
+    <ul>
+      <li><b>Metformin</b>：跟過去的觀念不同，使用在 HFrEF 病人是<b>安全且有效</b>的。因為會造成乳酸中毒，在<b>肝腎功能不全的病人則依舊是禁忌症</b>。</li>
+      <li><b>Insulin</b>：對於治療第一型糖尿病、有症狀的高血糖及 beta 胰島疲乏是必要的。然而 insulin 也是一個強效的<b>鈉滯留荷爾蒙</b>，故可能會加重心臟衰竭惡化。</li>
+      <li><b>Sulfonylurea</b> 衍生物跟心臟衰竭惡化也有關聯，須小心使用。</li>
+      <li><b>Thiazolidinediones</b> 會導致鈉跟水分滯留，進而增加心臟衰竭惡化風險跟住院率，故應謹慎評估。</li>
+      <li><b>DPP4i 與 GLP-1 RA</b>：兩者皆可改善血糖，但針對心血管事件風險不降反升且可能使心臟衰竭惡化。更重要的是<b>目前並沒有關於 DPP4i 跟 GLP-1 使用在心臟衰竭病人身上的安全性數據</b>。</li>
+      <li><b>SGLT2i</b>：一系列臨床試驗顯示可以改善住院率、慢性腎臟病的惡化跟心臟衰竭死亡率，但對心肌梗塞或中風的比率沒有影響。反之，<b>GLP-1 在降低中風的比率較 SGLT2i 明顯</b>。</li>
+    </ul>
+    <p>整體來說，血糖的控制必須依照臨床狀況調整；在增加新的血糖藥後必須密切注意。</p>
+  </div></details>
+
+  <details data-k="勃起障礙 erectile dysfunction PDE5 nitrates"><summary>勃起障礙 <span class="en">Erectile dysfunction</span></summary><div>
+    <p>勃起障礙對心臟衰竭的男性是生活品質重要指標。治療應著重於心血管疾病及重要共病（例如糖尿病）的治療，跟減輕病人焦慮及憂鬱情緒。<b>Thiazide、spironolactone 跟 beta-blockers 可能會加重勃起障礙。</b></p>
+    <p><b>PDE5Is</b> 有正向的血行動力學跟抗心肌重塑的效果，可改善心臟衰竭病人的體適能跟生活品質。<b>然而 PDE5Is 不得跟 nitrates 併用。</b></p>
+  </div></details>
+
+  <details data-k="痛風 關節炎 gout arthritis allopurinol colchicine NSAID EULAR 尿酸"><summary>痛風跟關節炎 <span class="en">Gout &amp; arthritis</span></summary><div>
+    <p>高尿酸血症跟痛風常見於心臟衰竭病人，尤其被<b>利尿劑</b>的使用誘發或加重；高尿酸血症與較差的預後有關。</p>
+    <p>根據 <b>EULAR</b> 治療指引，當有反覆急性發作、關節病變、痛風石或影像上有痛風的變化，則建議使用降尿酸藥物，<b>目標血中尿酸濃度 &lt; 6 mg/dL</b>。</p>
+    <ul>
+      <li><b>Xanthine oxidase inhibitors</b>（allopurinol、oxypurinol）在心臟衰竭病人的安全性尚未明確，但可以作為痛風的預防。</li>
+      <li>相較 NSAIDs，<b>秋水仙素（colchicine）為較適合治療急性發作的藥物</b>。</li>
+      <li>單一關節炎可以使用<b>關節內注射類固醇</b>；全身注射的類固醇則容易造成水分滯留。</li>
+      <li>關節炎常因自行服用止痛藥（尤其 NSAIDs）而惡化腎臟功能。<b>類風濕性關節炎跟 HFpEF 風險增加有關</b>；DMARDs 使用的安全度尚未被建立。</li>
+    </ul>
+  </div></details>
+
+  <details data-k="低血鉀 高血鉀 potassium hypokalemia hyperkalemia amiloride triamterene RAAS"><summary>低血鉀跟高血鉀 <span class="en">Hypo/hyperkalemia</span></summary><div>
+    <p>心臟衰竭許多藥物跟高低血鉀有關，而<b>兩者都可能加重心室心律不整</b>。</p>
+    <ul>
+      <li><b>降血鉀</b>：Loop diuretics 跟 thiazide diuretics</li>
+      <li><b>升血鉀</b>：ACEIs、ARBs、MRAs</li>
+      <li>Amiloride 跟 triamterene 有時會作為利尿劑之外的輔助，用來治療頑固型水腫或避免低血鉀</li>
+      <li>適量食用高鉀食物或服用鉀離子補充劑也可以避免低血鉀</li>
+    </ul>
+    <div class="callout warn">當<b>急性高鉀血症（&gt; 6.0 mmol/L）</b>發生時，保鉀藥物跟 RAAS inhibitors 應暫停；但是後續應盡快小心加回藥物並密切監測血鉀濃度。</div>
+  </div></details>
+
+  <details data-k="高脂血症 statin rosuvastatin LDL"><summary>高脂血症 <span class="en">Dyslipidemia</span></summary><div>
+    <p>LDL 過高在 HFrEF 並不常見，反而在嚴重的病人中 <b>LDL 常常是低的，且有較差的預後</b>。根據兩個大型隨機分派研究，在非缺血性心臟病的心臟衰竭病人使用 <b>rosuvastatin 並不會改善重大後遺症率跟死亡率，但也不會增加風險</b>，且可能可以下降再住院率。</p>
+    <p>故目前<b>沒有證據建議心臟衰竭病人使用 statin</b>；但若病人因冠心病已經有使用則可以考慮繼續服用。</p>
+  </div></details>
+
+  <details data-k="高血壓 hypertension CCB diltiazem verapamil hydralazine amlodipine felodipine nitrates"><summary>高血壓 <span class="en">Hypertension</span></summary><div>
+    <p>高血壓跟心臟衰竭的發生有關。最近的前瞻性世代研究顯示，心臟衰竭病人中<b>較高的基礎收縮壓、舒張壓跟脈搏壓會有較高比例的不良事件</b>，更進一步支持控制血壓的重要性。</p>
+    <ul>
+      <li>會縮減收縮力（negatively inotropic）的 CCBs 包括 <b>diltiazem 跟 verapamil 應避免使用在 HFrEF</b>；使用在 HFpEF 則被認為是安全的。</li>
+      <li>若使用 ACEI/ARB、beta-blocker、MRA 跟利尿劑後血壓仍無法控制，<b>hydralazine、amlodipine、felodipine</b> 被認為使用在 HFrEF 是安全的。</li>
+      <li>高血壓治療指引的目標可以應用在心臟衰竭病人。</li>
+      <li>在急性心臟衰竭的情況下，<b>靜脈滴注的 nitrates</b> 可用來降血壓。</li>
+    </ul>
+  </div></details>
+
+  <details data-k="鐵質缺乏 貧血 iron deficiency anemia TSAT ferritin ESA 紅血球生成刺激劑"><summary>鐵質缺乏與貧血 <span class="en">Iron deficiency &amp; anemia</span></summary><div>
+    <div class="callout"><div class="ct">診斷標準 <span class="badge new">v3</span></div>
+      <b>轉鐵蛋白飽和度 TSAT &lt; 20%</b> 或 <b>血清鐵蛋白 Serum ferritin &lt; 100 μg/L</b>
+    </div>
+    <p>鐵質缺乏在心臟衰竭中是常見的，並會造成貧血以及骨骼肌失能；若病人有鐵質缺乏則預後較差。<b>在 HFrEF 或 HFmrEF 且合併鐵質缺乏的患者中，建議給予靜脈注射鐵劑，以改善臨床症狀與生活品質</b> <span class="badge c1">Class I / Level A</span>；亦應考慮使用靜脈鐵劑以降低因心衰竭住院的風險。</p>
+    <p><b>貧血定義：男性 Hb &lt; 13 g/dL、女性 &lt; 12 g/dL</b>，在心臟衰竭病人很常見，尤其是住院病人。女性、老人跟慢性腎病變的病人盛行率又更高，且跟心肌重塑、發炎反應以及體液過多有相關。</p>
+    <p>貧血的心臟衰竭病人會有較嚴重的症狀、較差的功能狀態、較高的住院率以及存活率下降。仍須檢查找出是否可以解釋貧血的原因，包括出血、鐵質缺乏、B12／葉酸缺乏等。</p>
+    <div class="callout warn"><b>紅血球生成刺激劑</b>並無法改善 HFrEF 病人合併輕度至中度貧血之預後，且會增加栓塞風險，<b>故不建議使用</b>。</div>
+  </div></details>
+
+  <details data-k="腎功能不全 慢性腎病 CKD 心腎症候群 finerenone FIDELIO FIGARO 攝護腺 顯影劑"><summary>腎功能不全（CKD、心腎症候群、攝護腺阻塞） <span class="en">Renal dysfunction</span></summary><div>
+    <p>慢性腎病跟心臟衰竭常共存且有較差預後。<b>CKD 定義：eGFR &lt; 60 mL/min/1.73 m²、有蛋白尿。</b>嚴重的腎功能不全（eGFR &lt; 30）因未被納入隨機分派研究，故許多治療缺乏明確證據。</p>
+    <p><b>腎臟功能惡化</b>通常指肌酸酐上升超過 0.3 mg/dL 或 25% 增加、或 GFR 下降超過 20%。在急性心臟衰竭住院過程中，肌酸酐的上升並不是每次都有意義（尤其伴隨水腫消去、利尿劑使用、血液濃縮時）。大幅度上升為急性腎損傷則相對少見，常是因為利尿劑合併其他腎毒性藥物接觸（抗生素、顯影劑、ACEI/ARB、消炎止痛藥）。</p>
+    <p>心臟衰竭病人中腎功能變化相對常見，尤其在開始跟上調 RAAS inhibitor 時，但大部分幅度不大且<b>不須終止治療除非變化太大</b>。當出現後者情況時，應評估是否有腎動脈狹窄、體液過多或過少、其他共存藥物、或高鉀的情形。</p>
+    <div class="callout"><div class="ct">Finerenone <span class="badge new">v3</span></div>
+      選擇性非類固醇類鹽皮質激素受體拮抗劑。<b>FIDELIO-DKD</b> 與 <b>FIGARO-DKD</b> 顯示，相較安慰劑 finerenone 能有效降低複合性心血管不良事件（心血管死亡、非致命性腦中風、非致命性心肌梗塞及心衰竭住院）的發生率，且單獨分析心衰竭住院風險時亦顯著降低。因此對於<b>合併 T2DM 與 CKD 的患者，推薦使用 finerenone 以降低因心衰竭住院的風險</b> <span class="badge c1">Class I / Level A</span>
+    </div>
+    <ul>
+      <li><b>Diuretics</b> 在 GFR 非常低的病人通常藥效較差，劑量應隨之上調。腎臟代謝排出的藥物在腎功能變差時可能累積，需做劑量下調。</li>
+      <li>有冠狀動脈或周邊血管問題的病人可能因注射顯影劑而有<b>顯影劑引起的急性腎傷害</b>。</li>
+      <li><b>攝護腺阻塞</b>在年老男性常見且可能影響腎臟功能。<b>Alpha-adrenoceptor（阻斷劑）會低血壓且易有鈉離子跟水分滯留，使用在心臟衰竭病人可能不安全；5-α-reductase inhibitors 是比較適合的選擇。</b></li>
+    </ul>
+  </div></details>
+
+  <details data-k="肺部疾病 COPD asthma 氣喘 beta-blocker bisoprolol nebivolol 類固醇 肺高壓 GINA"><summary>肺部疾病 <span class="en">Pulmonary disease</span></summary><div>
+    <p>因為症狀容易重疊且肺功能檢查結果不易判斷，在心臟衰竭病人診斷 COPD 跟氣喘是不容易的，<b>常被過度診斷</b>。<b>肺功能檢查應在病人達到穩定跟適當的體液狀態至少三個月後再安排。</b>無論是真正有 COPD 或被誤判，都跟較差的功能狀態及預後有關。</p>
+    <div class="callout"><b>Beta-blockers 在氣喘只是相對禁忌症，而在 COPD 並不是禁忌症。</b>較專一的 beta-1 adrenoceptor antagonist（<b>bisoprolol、metoprolol succinate、nebivolol</b>）較為適合。</div>
+    <p>Beta-blockers 被認為在氣喘是禁忌症，是根據 1980s–1990s 的研究，當時起始劑量很高且對象為年輕的嚴重氣喘病人。臨床實務上，可考慮以<b>低劑量心臟專一的 beta-blockers 開始並密切注意呼吸道症狀</b>。因此根據 <b>2015 GINA global strategy</b> 並沒有把氣喘列為使用 beta-blockers 的絕對禁忌症；但使用時需非常小心並密切注意病人症狀。</p>
+    <ul>
+      <li>長期使用會刺激心臟的吸入性藥物，其安全性並不確定，在 HFrEF 病人的使用須審慎評估（其在 COPD 跟氣喘的好處主要與症狀緩解有關而非預後）。</li>
+      <li><b>口服類固醇</b>會造成鈉離子跟水分滯留，可能惡化心臟衰竭；<b>吸入性類固醇目前不認為有同樣問題</b>。</li>
+      <li><b>肺高壓</b>是嚴重 COPD 的長期併發症，可能會引發右心臟衰竭。</li>
+      <li>非侵入性正壓呼吸可改善因 COPD 合併心臟衰竭引起的<b>高二氧化碳呼吸衰竭</b>。</li>
+    </ul>
+  </div></details>
+
+  <details data-k="肥胖 obesity BMI 肥胖悖論 減重"><summary>肥胖 <span class="en">Obesity</span></summary><div>
+    <p>肥胖是心臟衰竭的危險因子，且因為一樣會有喘、運動耐受性差、腳腫的情形，還會讓超音波影像品質變差，加上肥胖病人 NP 數值也會上升，故讓診斷變得複雜。相較 HFrEF，<b>肥胖更常見於 HFpEF 病人</b>。</p>
+    <div class="callout"><div class="ct">肥胖悖論 Obesity paradox</div>肥胖雖然是發生心臟衰竭的風險因子，<b>一旦心臟衰竭確診，肥胖卻跟較低的心臟衰竭死亡率有相關</b>。在其他慢性疾病也有類似情形。</div>
+    <p>若目標是<b>預防未來發生</b>心臟衰竭，肥胖病人應依照 ESC 心血管治療指引處置。然而針對體重較重的<b>心臟衰竭病人不建議減重</b> — 過去的前瞻性研究並沒有看出好處且安全性也有疑慮，何況在心臟衰竭病程中體重減輕通常預後較差（高後遺症率、高死亡率、症狀惡化、生活品質變差）。</p>
+    <div class="callout warn">
+      <b>總結：</b>中等程度肥胖的心臟衰竭病人（<b>BMI &lt; 35 kg/m²</b>）<b>不建議減重</b>；重度肥胖的心臟衰竭病人（<b>BMI 35–45 kg/m²</b>）<b>可考慮減重</b>以改善症狀跟體適能。
+    </div>
+  </div></details>
+
+  <details data-k="睡眠 呼吸中止 CSA OSA CPAP BiPAP ASV Cheyne Stokes 膈神經"><summary>睡眠障礙及睡眠呼吸障礙 <span class="en">Sleep-disordered breathing</span></summary><div>
+    <p>有<b>三分之一</b>的心衰竭病人有睡眠呼吸障礙，其盛行率在急性心臟衰竭惡化的病人中更高。最常見的類型：<b>中樞型睡眠呼吸中止（CSA，類似 Cheyne-Stokes respiration）、阻塞型呼吸中止（OSA）</b>跟兩者的混合。其他造成睡眠障礙的原因還有焦慮、憂鬱、端坐呼吸，以及因利尿劑使用而夜尿。</p>
+    <p>有證據顯示心臟衰竭病人有 CSA 跟 OSA 會有較差的預後。<b>CSA 跟 HFrEF 有密切的關聯</b>，相互彼此為重要的成因跟常見共病。</p>
+    <p>睡眠呼吸障礙需做<b>睡眠生理檢查</b>來確診。夜間氧氣支持、CPAP、BiPAP、ASV 在其他治療指引建議可用在治療夜間缺氧（<b>AHI &gt; 30 per hour</b>）的 OSA 病人。<b>然而這些處置對心臟衰竭預後並沒有幫助。</b></p>
+    <p>研究顯示 CPAP 可降低心臟衰竭引起的 CSA 病人呼吸中止或缺氧的頻率、改善 LVEF 跟 6 分鐘走路測試，<b>不過對預後或再住院率並沒有幫助</b>。其他新的治療 CSA 方式（例如植入式膈神經刺激）相關研究仍在進行中。</p>
+  </div></details>
+
+  <details data-k="瓣膜 valvular AS AR MR TR TAVR TEER TTVI dobutamine stress"><summary>瓣膜性心臟疾病 <span class="en">Valvular heart disease</span> <span class="badge new">v3 更新</span></summary><div>
+    <p>瓣膜性心臟疾病會導致或惡化心臟衰竭。合併心臟衰竭及瓣膜疾病的病人為高風險族群，故關於治療的決策都應該由<b>不同次專科醫師組成的心臟團隊</b>作完整評估。</p>
+    <h4>A. 主動脈狹窄 Aortic stenosis</h4>
+    <p>有嚴重 AS 合併 LVEF 下降的病人屬於 <b>low-flow, low-gradient AS</b>（valve area &lt; 1 cm²、LVEF &lt; 40%、mean pressure gradient &lt; 40 mmHg）。<b>低劑量 dobutamine 壓力超音波測試</b>可以分辨病人為中度或重度狹窄，亦可評估收縮能力。</p>
+    <ul>
+      <li>若 mean gradient &gt; 40 mmHg 且病人有症狀，<b>無論 LVEF 都應該接受主動脈瓣膜置換</b></li>
+      <li><b>在正常收縮分率的低血流、低壓力階差嚴重 AS 亦應接受主動脈瓣膜置換</b> <span class="badge new">v3</span></li>
+      <li>若經團隊評估不適合開刀且餘命大於一年 → 應考慮 <b>TAVR</b></li>
+    </ul>
+    <h4>B. 主動脈逆流</h4>
+    <p>嚴重主動脈逆流：<b>有症狀病人建議接受主動脈瓣修補或置換</b>；無症狀病人合併左心室功能不全或進行其他心臟手術時應考慮修補或置換。</p>
+    <h4>C. 二尖瓣逆流</h4>
+    <p><b>Primary（organic）MR</b>：若病人有症狀，或無症狀但有左心室功能不全時，進行 MV 手術。<b>高開刀風險患者應評估進行經導管邊緣對邊修復術（TEER）</b> <span class="badge new">v3</span>。</p>
+    <p><b>Secondary MR</b>：成因為左心室擴大導致二尖瓣關閉不全。<b>有效的指引導向藥物治療可以逆轉心室重塑進而降低功能性二尖瓣逆流</b>；接受 GDMT 後仍有症狀時進行 MV 介入手術，當患者不適合外科手術時應評估進行 <b>TEER</b>。</p>
+    <h4>D. 三尖瓣逆流</h4>
+    <p>次發性／功能性 TR 常見於心臟衰竭的自然病史，主要原因為<b>瓣環擴大</b>。嚴重 TR 會引起跟惡化心臟衰竭症狀；利尿劑可以改善水腫，腹水也常見於這些病人，<b>額外使用 MRA 可能可以改善</b>。</p>
+    <ul>
+      <li>當患者嚴重 TR 需接受左側心瓣膜手術時，<b>建議進行三尖瓣手術</b></li>
+      <li>若為原發性嚴重 TR 且有症狀時亦建議三尖瓣手術；<b>不適合手術時進行經導管三尖瓣介入治療（TTVI）</b> <span class="badge new">v3</span></li>
+    </ul>
+  </div></details>
+
+  </div>
+  <div class="note" id="comoempty" style="display:none">找不到符合的共病主題。</div>
+</section>
+
+<!-- ============ 12 MCS 與移植 ============ -->
+<section class="tab" id="t-mcs">
+  <div class="section-title">壹拾壹、機械式循環輔助與心臟移植 <span class="en">MCS &amp; cardiac transplantation</span></div>
+  <p>對於無法以藥物控制之急性或慢性心臟衰竭病人，機械式循環輔助（MCS）可用於<b>減輕心室負擔與維持標的器官灌流</b>。急性心因性休克病人先以短期置放機械式循環裝置治療，包含 <b>ECMO</b>、<b>IABP</b>，以期爭取時間建立更長期計畫。若是無法以藥物控制之慢性心臟衰竭，可裝置永久性<b>左心室輔助器（LVAD）</b>。</p>
+
+  <h3>表 10-1　機械式循環輔助適應症</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:170px">適應症</th><th>說明</th></tr>
+    <tr><td>過渡至進一步決定、過渡至下一個過渡<br><span class="en">Bridge to decision / bridge to bridge</span></td>
+        <td>以短期 MCS 支持心因性休克病人至血行動力和標的器官灌流穩定；應排除有長期置放 MCS 禁忌症者（如急救後腦傷）；同時評估其他治療選項（長期心室輔助器或心臟移植）。</td></tr>
+    <tr><td>過渡至移植候選<br><span class="en">Bridge to candidacy</span></td>
+        <td>以 MCS（通常是 LVAD）增進標的器官灌流，讓病人可以加入心臟移植候選。</td></tr>
+    <tr><td>過渡至移植<br><span class="en">Bridge to transplantation</span></td>
+        <td>在等候心臟移植的高死亡風險病人，以 MCS 維持病人生命徵象。</td></tr>
+    <tr><td>過渡至回復<br><span class="en">Bridge to recovery</span></td>
+        <td>以 MCS 支持病人至心臟功能恢復。</td></tr>
+    <tr><td>治療目標<br><span class="en">Destination therapy</span></td>
+        <td>以 MCS（LVAD）作為末期心臟衰竭但不符合移植條件病人的另一治療選項；或用於須較長期等待心臟移植者。</td></tr>
+  </table></div>
+
+  <div class="grid2">
+    <div class="card"><h4>A. MCS 於急性心臟衰竭之使用</h4>
+      <p style="margin:0">可支持左心或雙心室衰竭病人至心臟和其他器官功能恢復，通常以<b>幾天至幾周</b>為限。<b>SAVE（Survival After Veno-arterial ECMO）score</b> 可幫助評估病人存活率。MCS（特別是 ECLS 和 ECMO）可用於<b>bridge to decision</b>：先穩定血行動力並回復標的器官功能，再進行完整臨床評估是否心臟移植或轉換至可長期使用之裝置。</p></div>
+    <div class="card"><h4>B. MCS 於末期心臟衰竭之使用</h4>
+      <p style="margin:0">等待移植的病人在 LVAD 支持下有較高的生存率，因此越來越多 MCS（特別是 <b>continuous-flow LVAD</b>）被作為心臟移植之外的替代療法。本來 LVAD 設計為過渡至移植的短期療法，但現在可在需長期等待移植或不符合移植條件病人使用<b>數月至數年</b>；因年紀太大或不符合移植而裝置永久性 LVAD 的病人數持續成長，<b>終生 LVAD 治療已有可能性</b>。</p></div>
+  </div>
+
+  <h3>表 10-2　左心室輔助器裝置條件</h3>
+  <div class="callout">
+    <b>藥物與其他裝置治療下仍有嚴重症狀超過 2 個月</b>，並有超過一項下列狀況：
+    <ul style="margin:6px 0 0">
+      <li>LVEF &lt; 25%，（如有量測）pVO₂ &lt; 12 mL/kg/min</li>
+      <li>過去一年內因心臟衰竭住院至少三次，且無其他明顯加重因子</li>
+      <li>無法脫離強心劑</li>
+      <li>標的器官功能（肝腎功能）因灌流不足持續惡化，並非因心室填充壓力不足（PCWP ≥ 20 mmHg、SBP ≤ 80–90 mmHg、CI ≤ 2 L/min/m²）</li>
+      <li>沒有嚴重右心失能並嚴重三尖瓣脫垂</li>
+    </ul>
+  </div>
+
+  <h3>表 10-3　心臟移植適應症與禁忌症</h3>
+  <div class="grid2">
+    <div class="card"><h4>可考慮心臟移植</h4>
+      <ul style="margin:0">
+        <li>末期心臟衰竭合併嚴重症狀和不良預後，且無其他替代治療選項</li>
+        <li>有動力、情緒穩定、病人應被提供完整資訊能配合術後的特別治療</li>
+      </ul></div>
+    <div class="card"><h4>禁忌症</h4>
+      <ul style="margin:0">
+        <li>進行性感染</li>
+        <li>嚴重周邊血管或腦血管疾病</li>
+        <li>無法以藥物逆轉之肺動脈高壓（需考慮 LVAD，再重新評估是否可作為移植候選）</li>
+        <li>癌症（與腫瘤科專家合作評估病人復發風險）</li>
+        <li>無法回復之腎功能損傷</li>
+        <li>影響多重器官之全身性疾病、其他預後不佳之嚴重共病</li>
+        <li>移植前 BMI &gt; 35 kg/m²（建議減重至 BMI &lt; 35 kg/m²）</li>
+        <li>酒精或藥物濫用</li>
+        <li>社會支持系統不足，無法配合後續門診照護</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- ============ 13 NTUH 流程圖 ============ -->
+<section class="tab" id="t-ntuh">
+  <div class="section-title">臺大醫院臨床心衰竭處置流程圖 <span class="en">NTUH clinical pathway</span></div>
+  <p class="note">依指引末頁「臺大醫院心衰竭照護流程圖及治療指引」重繪。左右兩側為評估項目與判定準則，中間為主流程。</p>
+
+  <div class="grid2">
+    <div class="card"><h4>初步評估</h4>
+      <ol style="margin:0">
+        <li><b>個人病史</b>：高血壓、心血管疾病、使用心毒性藥物、放射線接觸史、端坐呼吸、陣發夜間呼吸困難、旅遊接觸史</li>
+        <li><b>理學檢查</b>：血壓、心跳、心氧、盜汗、意識不清、心雜音、肺囉音、頸靜脈怒張、下肢水腫、心尖搏動位置改變、奇脈、肝腫大</li>
+        <li><b>心電圖檢查異常</b></li>
+      </ol></div>
+    <div class="card"><h4>血液檢驗項目</h4>
+      <ol style="margin:0">
+        <li><b>NT-proBNP &gt; 900 pg/mL</b></li>
+        <li>心肌酵素：CK、CK-MB、Troponin-T</li>
+        <li>血液常規計數檢驗（CBC）</li>
+        <li>生化檢驗：肝功能（AST、ALT、T-Bil）、腎功能（BUN、Cre）、甲狀腺功能（TSH、Free T4）、血脂（lipid profile）、尿酸、血糖（Glucose、HbA1c）等</li>
+      </ol></div>
+  </div>
+
+  <div class="card">
+    <h4>裝置之評估</h4>
+    <ol style="margin:0">
+      <li><b>評估 CRT-P</b>：NYHA Fc &gt; II、左心室射血分率 ≤ 35%、左束支傳導阻滯且 QRSd &gt; 150 毫秒（證據等級 I）</li>
+      <li><b>評估 ICD 或 CRT-D</b>：經心衰竭治療、心肌梗塞治療 40 天後仍左心室射血分率 ≤ 35% 且 VT 或 VF（證據等級 I）</li>
+    </ol>
+  </div>
+
+  <div class="callout warn"><div class="ct">不穩定定義</div>
+    <ol style="margin:6px 0 0;columns:2">
+      <li>血壓 &lt; 90 mmHg</li><li>血氧 &lt; 90%</li>
+      <li>心跳 &lt; 50 或 &gt; 120 次/分</li><li>心室顫動／心室頻脈</li>
+      <li>休克</li><li>意識不清</li><li>呼吸 &gt; 30 次/分</li>
+    </ol>
+  </div>
+
+  <div class="section-title">主流程（互動） <span class="en">Interactive</span></div>
+  <div id="ntuhflow">
+    <div class="flow-step">
+      <div class="flow-head"><div class="flow-num">1</div><div class="flow-q">症狀疑似急性心衰竭 → 血行動力學穩定？</div></div>
+      <div class="flow-opts">
+        <button class="flow-opt" data-k="n1" data-v="stable">穩定</button>
+        <button class="flow-opt" data-k="n1" data-v="unstable">不穩定（見上方定義）</button>
+      </div>
+      <div class="note">病情轉變時應<b>重新評估</b>。</div>
+    </div>
+
+    <div id="n-stable" class="hidden">
+      <div class="flow-conn">↓</div>
+      <div class="flow-step">
+        <div class="flow-head"><div class="flow-num">2</div><div class="flow-q">初步檢驗（胸部 X 光、血液檢驗）疑心衰竭？</div></div>
+        <div class="flow-opts">
+          <button class="flow-opt" data-k="n2" data-v="yes">是</button>
+          <button class="flow-opt" data-k="n2" data-v="no">否</button>
+        </div>
+      </div>
+      <div id="n2-yes" class="hidden">
+        <div class="flow-conn">↓</div>
+        <div class="flow-rec rec-blue">
+          <div class="rl">心臟專科醫師評估</div>
+          <div class="rt">ICU 24 小時／病房 48 小時內心臟超音波</div>
+          <ul>
+            <li>尋找心衰竭成因且進行治療</li>
+            <li>評估心導管術或外科手術</li>
+            <li>評估心臟電生理治療或裝置</li>
+            <li>指引用藥導向治療（GDMT）</li>
+          </ul>
+          <div class="rl" style="margin-top:8px">同時：心衰竭個案管理團隊介入流程</div>
+        </div>
+        <div class="flow-conn">↓</div>
+        <div class="flow-step">
+          <div class="flow-head"><div class="flow-num">3</div><div class="flow-q">HFrEF、ACC stage D 且 NYHA Fc III～IV？</div></div>
+          <div class="flow-opts">
+            <button class="flow-opt" data-k="n3" data-v="yes">是</button>
+            <button class="flow-opt" data-k="n3" data-v="no">否</button>
+          </div>
+        </div>
+        <div id="n3-yes" class="hidden">
+          <div class="flow-conn">↓</div>
+          <div class="flow-step">
+            <div class="flow-head"><div class="flow-num">4</div><div class="flow-q">是否積極治療？</div></div>
+            <div class="flow-opts">
+              <button class="flow-opt" data-k="n4" data-v="yes">是</button>
+              <button class="flow-opt" data-k="n4" data-v="no">否</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="n2-no" class="hidden">
+        <div class="flow-conn">↓</div>
+        <div class="flow-rec rec-amber">
+          <div class="rt">尋找其他原因／照會專家</div>
+          <div>免疫、內分泌疾病、肺部疾病 → 共同照護</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="n-unstable" class="hidden">
+      <div class="flow-conn">↓ 不穩定</div>
+      <div class="flow-step">
+        <div class="flow-head"><div class="flow-num">2</div><div class="flow-q">DNR 且生命末期？</div></div>
+        <div class="flow-opts">
+          <button class="flow-opt" data-k="u2" data-v="yes">是</button>
+          <button class="flow-opt" data-k="u2" data-v="no">否</button>
+        </div>
+      </div>
+      <div id="u2-no" class="hidden">
+        <div class="flow-conn">↓</div>
+        <div class="flow-step">
+          <div class="flow-head"><div class="flow-num">3</div><div class="flow-q">主要問題為何？（可分別評估）</div></div>
+          <div class="flow-opts">
+            <button class="flow-opt" data-k="u3" data-v="shock">心因性休克</button>
+            <button class="flow-opt" data-k="u3" data-v="resp">呼吸衰竭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-rec rec-idle" id="ntuhrec">請依序完成上方步驟。</div>
+    <button class="btn" onclick="resetNtuh()">重設流程</button>
+  </div>
+
+  <div class="section-title">確認急性心衰竭病因（不穩定路徑） <span class="en">6 causes</span></div>
+  <div class="card">
+    <ol style="margin:0;columns:2">
+      <li>急性冠心症</li><li>高血壓危象</li><li>心律不整</li>
+      <li>急性結構問題</li><li>肺栓塞</li><li>心包填塞</li>
+    </ol>
+    <div class="note">→ 立即啟動對應治療（ICU 照護）。</div>
+  </div>
+
+  <div class="section-title">出院後銜接 <span class="en">Post-discharge</span></div>
+  <p>離院後依病患需求銜接：<b>個案管理團隊照護</b>／<b>長照・機構照護</b>／<b>居家自我照護</b>。</p>
+  <div class="note">院內另備有四項 QR code 資源：心衰竭治療指引、心衰竭照護流程、個管師轉介流程（主要對象為心臟超音波 LVEF ≤ 40% 心衰竭惡化住院者，由個管師介入追蹤六個月）、心衰竭衛教包（一系列衛教電子書與影片）。前兩者參照 2016 ESC、2019 TSOC 指引，須以員工信箱帳號密碼登入閱讀。</p>
+</section>
+
+<!-- ============ 14 參考文獻 ============ -->
+<section class="tab" id="t-ref">
+  <div class="section-title">壹拾貳、參考文獻 <span class="en">References</span></div>
+  <ol style="line-height:2">
+    <li>2017 ACC/AHA/HFSA Focused Update of the 2013 ACCF/AHA Guideline for the Management of Heart Failure</li>
+    <li>2019 Focused Update of the Guidelines of the Taiwan Society of Cardiology for the Diagnosis and Treatment of Heart Failure</li>
+    <li>2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure</li>
+    <li>2022 AHA / ACC / HFSA Guideline for the Management of Heart Failure</li>
+    <li>2023 Focus Update of the 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure</li>
+    <li>2024 ACC Expert Consensus Decision Pathway for Treatment of Heart Failure with Reduced Ejection Fraction</li>
+    <li>JCS/JHFS 2025 Guideline on Diagnosis and Treatment of Heart Failure</li>
+    <li>2020 ACC/AHA Guideline for the Management of Patients With Valvular Heart Disease</li>
+    <li>2021 ESC/EACTS guidelines for the management of valvular heart disease</li>
+  </ol>
+
+  <div class="section-title">圖表出處 <span class="en">Figure sources</span></div>
+  <ul>
+    <li>圖 1-1　心臟超音波評估右心衰竭之參數 — <span class="en">Eur J Heart Fail 2018;20:16-37</span></li>
+    <li>表 1-2　心臟超音波評估右心之測量正常值 — <span class="en">J Am Soc Echocardiogr 2010;23:685-713</span></li>
+    <li>圖 3-2　治療低收縮分率心衰竭整體治療策略 — <span class="en">2021 ESC Guidelines. Eur J Heart Fail 2022;24(1):4-131</span></li>
+    <li>圖 6-1　HFA-PEFF 診斷流程 — <span class="en">Eur Heart J 2019;40:3297-3317</span></li>
+    <li>圖 6-2　正常收縮分率心臟衰竭診斷流程 — 中華民國心臟學會</li>
+  </ul>
+
+  <div class="section-title">本頁引用之關鍵臨床試驗 <span class="en">Key trials cited</span></div>
+  <div class="tbl-wrap"><table>
+    <tr><th style="width:170px">試驗</th><th style="width:80px">年份</th><th>重點</th></tr>
+    <tr><td>DIG</td><td class="n">1997</td><td>Digoxin 對死亡率為中性；HFmrEF 有改善住院率趨勢</td></tr>
+    <tr><td>CHARM-Preserved</td><td class="n">2003</td><td>LVEF &gt; 40%；未達初級終點，次分析 HFmrEF 使用 candesartan 降低住院率</td></tr>
+    <tr><td>SCD-HeFT</td><td class="n">2005</td><td>NYHA II–III HFrEF：ICD 優於 amiodarone／安慰劑</td></tr>
+    <tr><td>SENIORS</td><td class="n">2005</td><td>Nebivolol 降低全因死亡及住院率（LVEF &gt; 50% 僅佔 15%）</td></tr>
+    <tr><td>PARADIGM-HF</td><td class="n">2014</td><td>ARNI 優於 enalapril，奠定 ARNI 地位</td></tr>
+    <tr><td>TOPCAT</td><td class="n">2014</td><td>LVEF &gt; 45%；spironolactone 降低心衰竭住院率</td></tr>
+    <tr><td>DAPA-HF</td><td class="n">2019</td><td>Dapagliflozin 下降 26% 初級終點</td></tr>
+    <tr><td>PIONEER-HF / TRANSITION</td><td class="n">2019</td><td>住院中起始 ARNI 降低 42% 後續 CV death 或心衰竭住院</td></tr>
+    <tr><td>PARAGON-HF</td><td class="n">2019</td><td>LVEF &gt; 45%；未達初級終點，LVEF &lt; 57% 有效</td></tr>
+    <tr><td>EMPEROR-Reduced</td><td class="n">2020</td><td>Empagliflozin 下降 25% 初級終點</td></tr>
+    <tr><td>VICTORIA</td><td class="n">2020</td><td>Vericiguat 降低心因性／心衰竭住院率</td></tr>
+    <tr><td>GALACTIC-HF</td><td class="n">2021</td><td>Omecamtiv mecarbil 降低 8% 初級終點</td></tr>
+    <tr><td>EMPEROR-Preserved</td><td class="n">2021</td><td>LVEF &gt; 40% 之 SGLT2i 實證（NEJM）</td></tr>
+    <tr><td>DELIVER</td><td class="n">2022</td><td>LVEF &gt; 40% 之 dapagliflozin 實證（NEJM）</td></tr>
+    <tr><td>FIDELIO-DKD / FIGARO-DKD</td><td class="n">—</td><td>糖尿病腎病變：finerenone 降低複合心血管事件與心衰竭住院</td></tr>
+    <tr><td>FINEARTS-HF</td><td class="n">2024</td><td>LVEF &gt; 40%：finerenone 降低複合終點（RR 0.84；95% CI 0.74–0.95）</td></tr>
+  </table></div>
+</section>
+
+
+<footer class="tool-footer">
+  資料來源 — 臺大醫院心血管中心《心臟衰竭治療指引》第三版（2026/06/03 修訂、2026/06/15 心血管營運會議暨核心會議通過）。審閱：莊志明。
+  <div class="disclaimer">本頁為指引之互動化查閱工具，供教育與臨床參考，不取代臨床判斷或原始指引全文。</div>
+</footer>
+
+</div>
+<script>
+/* ---------- tabs ---------- */
+var TABS = [
+  ['overview','總覽','What’s new'],
+  ['definition','壹 定義・病因','Definition'],
+  ['diagnosis','貳 診斷','Diagnosis'],
+  ['hfref','參 HFrEF','Reduced EF'],
+  ['rhythm','肆 節律治療','Rhythm'],
+  ['hfmref','伍 HFmrEF','Mildly reduced'],
+  ['hfpef','陸 HFpEF','Preserved EF'],
+  ['pregnancy','柒 懷孕','Pregnancy'],
+  ['team','捌 跨團隊照護','Team care'],
+  ['acute','玖 急性心衰竭','Acute HF'],
+  ['comorbid','拾 共病','Comorbidities'],
+  ['mcs','拾壹 MCS・移植','MCS'],
+  ['ntuh','臺大流程圖','NTUH pathway'],
+  ['ref','拾貳 參考文獻','References']
+];
+(function buildTabs(){
+  var bar=document.getElementById('tabbar'), toc=document.getElementById('tocgrid');
+  TABS.forEach(function(t){
+    var b=document.createElement('button');
+    b.textContent=t[1]; b.dataset.t=t[0];
+    b.onclick=function(){ show(t[0]); };
+    bar.appendChild(b);
+    if(t[0]!=='overview'){
+      var c=document.createElement('div');
+      c.className='pillar'; c.style.cursor='pointer';
+      c.innerHTML='<div class="pn">'+t[1]+'</div><div class="pd en">'+t[2]+'</div>';
+      c.onclick=function(){ show(t[0]); };
+      toc.appendChild(c);
+    }
+  });
+})();
+function show(id){
+  TABS.forEach(function(t){
+    var s=document.getElementById('t-'+t[0]);
+    if(s) s.classList.toggle('on', t[0]===id);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#tabbar button'),function(b){
+    b.classList.toggle('on', b.dataset.t===id);
+  });
+  if(location.hash.slice(1)!==id) history.replaceState(null,'','#'+id);
+  window.scrollTo(0,0);
+}
+show(TABS.map(function(t){return t[0];}).indexOf(location.hash.slice(1))>=0 ? location.hash.slice(1) : 'overview');
+
+/* ---------- generic option picker ---------- */
+function pick(root, cb){
+  Array.prototype.forEach.call(root.querySelectorAll('.flow-opt'),function(btn){
+    btn.onclick=function(){
+      Array.prototype.forEach.call(root.querySelectorAll('.flow-opt[data-k="'+btn.dataset.k+'"]'),function(s){
+        s.classList.remove('sel');
+      });
+      btn.classList.add('sel');
+      cb(btn.dataset.k, btn.dataset.v);
+    };
+  });
+}
+function showEl(sel,on){
+  Array.prototype.forEach.call(document.querySelectorAll(sel),function(e){ e.classList.toggle('hidden',!on); });
+}
+
+/* ---------- diagnostic flow (圖 2-1) ---------- */
+var dx={};
+var dxRoot=document.getElementById('dxflow'), dxRec=document.getElementById('dxrec');
+pick(dxRoot,function(k,v){ dx[k]=v; renderDx(); });
+function renderDx(){
+  showEl('#dxflow [data-show="s2"]', !!dx.s1);
+  var goEcho = dx.s2==='yes' || dx.s2==='high';
+  showEl('#dxflow [data-show="s3"]', goEcho);
+  showEl('#dxflow [data-show="s4"]', goEcho && dx.s3==='yes');
+  var cls='rec-idle', html='請依序完成上方步驟。';
+  if(dx.s2==='no'){
+    cls='rec-blue';
+    html='<div class="rl">NT-proBNP &lt; 125 / BNP &lt; 35 pg/mL</div><div class="rt">較不像心臟衰竭</div><ul><li>考慮其他診斷</li><li>若臨床高度懷疑，仍應安排心臟超音波</li></ul>';
+  } else if(dx.s3==='no'){
+    cls='rec-blue';
+    html='<div class="rl">心臟超音波無異常</div><div class="rt">較不像心臟衰竭 → 考慮其他診斷</div>';
+  } else if(dx.s4){
+    var m={
+      r:['HFrEF · 低收縮分率心臟衰竭','LVEF ≦ 40%',
+         ['ACE-I / ARNI、Beta-blocker、MRA、SGLT2i 四大支柱（Class I）','體液滯留者加 loop diuretic','LVEF ≤ 35% 且已最佳藥物治療 &gt; 3 個月 → 評估 ICD / CRT','詳見「參 HFrEF」與「肆 節律治療」分頁'],'hfref'],
+      mr:['HFmrEF · 中等收縮分率心臟衰竭','LVEF 41–49%',
+         ['SGLT2i（dapagliflozin / empagliflozin）Class I / A','利尿劑改善體液過剩','ACEi / ARB / β-blocker / MRA / ARNI 可考慮（Class IIb / C）','合併缺鐵（TSAT &lt; 20% 或 ferritin &lt; 100 μg/L）→ 靜脈鐵劑','詳見「伍 HFmrEF」分頁'],'hfmref'],
+      p:['HFpEF · 正常收縮分率心臟衰竭','LVEF ≧ 50%',
+         ['需有左心室舒張異常／填充壓上升之客觀證據（表 6-1）','SGLT2i Class I / A（2023 ESC Focus Update）','利尿劑改善體液滯留 Class I / C','積極治療潛在病因與共病 Class I','若 LVEF 曾 &lt; 40% 而現恢復 → 稱 recovered HFrEF，續用 HFrEF 治療','詳見「陸 HFpEF」分頁'],'hfpef']
+    }[dx.s4];
+    cls='rec-green';
+    html='<div class="rl">確認心臟衰竭・'+m[1]+'</div><div class="rt">'+m[0]+'</div><ul><li>'+m[2].join('</li><li>')+'</li></ul>'+
+         '<button class="btn" style="margin-top:8px" onclick="show(\''+m[3]+'\')">前往該分頁 →</button>';
+  } else if(dx.s2==='high'){
+    cls='rec-amber';
+    html='<div class="rl">高度懷疑心衰竭／無法檢測 NP</div><div class="rt">仍應直接安排心臟超音波</div>';
+  }
+  dxRec.className='flow-rec '+cls; dxRec.innerHTML=html;
+}
+function resetDx(){
+  dx={};
+  Array.prototype.forEach.call(dxRoot.querySelectorAll('.flow-opt'),function(b){b.classList.remove('sel');});
+  renderDx();
+}
+
+/* ---------- quadrant ---------- */
+var QUAD={
+  wd:['rec-green','暖乾 Warm &amp; Dry','無鬱血、無灌流不足',
+      ['代償狀態；以口服藥物最佳化（GDMT）為主','檢視加重因子與順從性，安排後續追蹤','利尿劑以最低劑量維持 euvolemia']],
+  ww:['rec-blue','暖濕 Warm &amp; Wet','有鬱血、無灌流不足 — 臨床最常見',
+      ['若血壓許可，第一步為<b>針劑利尿劑 ± 血管擴張劑</b>','門診已用 loop diuretic → 靜脈給予原劑量之 1–2 倍；未曾使用 → furosemide 20–40 mg IV','給藥後追蹤<b>尿量</b>與<b>urinary spot sodium</b> 評估反應，並留意腎功能與電解質','效果不足可併用 acetazolamide 或 thiazide 以達加乘利尿','血管擴張劑對合併高血壓者尤其有效']],
+  cd:['rec-amber','冷乾 Cold &amp; Dry','無鬱血、有灌流不足',
+      ['先確認是否為低血容或其他可矯正原因 —<b>矯正前不建議使用強心劑</b>','達成足夠灌流前應避免給予利尿劑','若仍灌流不足，依心因性休克路徑評估']],
+  cw:['rec-red','冷濕 Cold &amp; Wet','有鬱血、且有灌流不足 — 最高風險',
+      ['<b>灌流不足時應先達成足夠灌流，再給利尿劑</b>','嚴重心輸出降低導致標的器官灌流不足 → 考慮強心劑（低劑量起始、密切監測心電圖）','顯著低血壓 → 升壓劑（norepinephrine 副作用少且死亡率較低於 dopamine）','評估是否符合心因性休克／NTUH 休克團隊啟動條件','考慮 IABP、ECMO 等機械循環支持與 CCU 收治']]
+};
+Array.prototype.forEach.call(document.querySelectorAll('.qbox'),function(b){
+  b.onclick=function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.qbox'),function(x){x.classList.remove('sel');});
+    b.classList.add('sel');
+    var q=QUAD[b.dataset.q], el=document.getElementById('quadrec');
+    el.className='flow-rec '+q[0];
+    el.innerHTML='<div class="rl">'+q[2]+'</div><div class="rt">'+q[1]+'</div><ul><li>'+q[3].join('</li><li>')+'</li></ul>';
+  };
+});
+
+/* ---------- NTUH flow ---------- */
+var nt={}, ntRoot=document.getElementById('ntuhflow'), ntRec=document.getElementById('ntuhrec');
+pick(ntRoot,function(k,v){
+  nt[k]=v;
+  if(k==='n1'){ nt.n2=nt.n3=nt.n4=nt.u2=nt.u3=undefined;
+    Array.prototype.forEach.call(ntRoot.querySelectorAll('.flow-opt'),function(b){
+      if(b.dataset.k!=='n1') b.classList.remove('sel'); });
+  }
+  renderNtuh();
+});
+function renderNtuh(){
+  showEl('#n-stable', nt.n1==='stable');
+  showEl('#n-unstable', nt.n1==='unstable');
+  showEl('#n2-yes', nt.n2==='yes');
+  showEl('#n2-no', nt.n2==='no');
+  showEl('#n3-yes', nt.n2==='yes' && nt.n3==='yes');
+  showEl('#u2-no', nt.u2==='no');
+  var cls='rec-idle', html='請依序完成上方步驟。';
+  if(nt.u2==='yes'){
+    cls='rec-blue'; html='<div class="rl">DNR 且生命末期</div><div class="rt">安寧共同照護</div><ul><li>簽署 DNR、安寧共同照護</li><li>離院後銜接個管團隊／長照機構／居家自我照護</li></ul>';
+  } else if(nt.u3==='shock'){
+    cls='rec-red'; html='<div class="rl">心因性休克</div><div class="rt">維持循環灌注 / ACLS</div><ul><li>藥物治療</li><li>機械性循環輔助裝置</li><li>STEMI &lt; 90 分鐘行冠脈血管成形術</li><li>確認急性心衰竭病因（急性冠心症、高血壓危象、心律不整、急性結構問題、肺栓塞、心包填塞）→ 立即啟動對應治療（ICU 照護）</li></ul>';
+  } else if(nt.u3==='resp'){
+    cls='rec-red'; html='<div class="rl">呼吸衰竭</div><div class="rt">維持氧合 / 給氧</div><ul><li>非侵入性呼吸治療</li><li>侵入性呼吸治療</li><li>同時確認急性心衰竭病因並立即啟動對應治療（ICU 照護）</li></ul>';
+  } else if(nt.n4==='yes'){
+    cls='rec-green'; html='<div class="rl">HFrEF・ACC stage D・NYHA III–IV，積極治療</div><div class="rt">機械性循環輔助裝置／心臟移植</div><ul><li>移植團隊照護</li><li>參考「拾壹 MCS・移植」之適應症與禁忌症</li></ul>';
+  } else if(nt.n4==='no'){
+    cls='rec-blue'; html='<div class="rl">HFrEF・ACC stage D，非積極治療</div><div class="rt">簽署 DNR・安寧共同照護</div><ul><li>離院後銜接個管團隊／長照機構／居家自我照護</li></ul>';
+  } else if(nt.n3==='no'){
+    cls='rec-blue'; html='<div class="rl">未達 stage D / NYHA III–IV</div><div class="rt">共同照護，續行 GDMT 與個管追蹤</div><ul><li>持續指引用藥導向治療與裝置評估</li><li>心衰竭個案管理團隊介入追蹤</li></ul>';
+  }
+  ntRec.className='flow-rec '+cls; ntRec.innerHTML=html;
+}
+function resetNtuh(){
+  nt={};
+  Array.prototype.forEach.call(ntRoot.querySelectorAll('.flow-opt'),function(b){b.classList.remove('sel');});
+  renderNtuh();
+}
+
+/* ---------- drug table filter ---------- */
+var drugGroup='all';
+function drugChip(el){
+  Array.prototype.forEach.call(el.parentNode.querySelectorAll('.chip'),function(c){c.classList.remove('on');});
+  el.classList.add('on'); drugGroup=el.dataset.g; filterDrugs();
+}
+function filterDrugs(){
+  var q=(document.getElementById('drugq').value||'').trim().toLowerCase();
+  var rows=document.querySelectorAll('#drugtbl tbody tr');
+  var lastHead=null, headUsed=true;
+  Array.prototype.forEach.call(rows,function(r){
+    var inGroup = drugGroup==='all' || r.dataset.g===drugGroup;
+    if(r.classList.contains('grp')){
+      if(lastHead && !headUsed) lastHead.style.display='none';
+      lastHead=r; headUsed=false;
+      r.style.display = inGroup ? '' : 'none';
+      return;
+    }
+    var hit = inGroup && (!q || r.textContent.toLowerCase().indexOf(q)>=0);
+    r.style.display = hit ? '' : 'none';
+    if(hit) headUsed=true;
+  });
+  if(lastHead && !headUsed) lastHead.style.display='none';
+}
+
+/* ---------- comorbidity filter ---------- */
+function filterComo(){
+  var q=(document.getElementById('comoq').value||'').trim().toLowerCase();
+  var n=0;
+  Array.prototype.forEach.call(document.querySelectorAll('#comolist details'),function(d){
+    var hay=(d.dataset.k||'')+' '+d.textContent;
+    var hit=!q || hay.toLowerCase().indexOf(q)>=0;
+    d.style.display=hit?'':'none';
+    if(hit){ n++; if(q) d.open=true; }
+  });
+  document.getElementById('comoempty').style.display=n?'none':'';
+}
+function toggleComo(open){
+  Array.prototype.forEach.call(document.querySelectorAll('#comolist details'),function(d){ d.open=open; });
+}
+</script>
+</body>
+</html>
