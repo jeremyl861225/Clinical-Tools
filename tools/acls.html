@@ -189,8 +189,11 @@
       <button data-v="pbrady" onclick="showView('pbrady',this)">兒心搏過緩</button>
     </div>
     <div class="navgroup">
-      <span class="ng-label">新生兒・參考</span>
+      <span class="ng-label">新生兒 Neonatal</span>
       <button data-v="neonatal" onclick="showView('neonatal',this)">新生兒復甦</button>
+    </div>
+    <div class="navgroup">
+      <span class="ng-label">參考 Reference</span>
       <button data-v="ref" onclick="showView('ref',this)">速查與重點</button>
     </div>
   </div>
@@ -335,7 +338,7 @@
       <div class="box-inner">
         <ul>
           <li><b>同步電擊整流</b>：依機型建議能量或 2025 指引以提高首次電擊成功率；未知則用最大能量。詳見「電擊整流」分頁。</li>
-          <li><b>Adenosine</b>：第一劑 6 mg 快速靜脈推注，隨即生理食鹽水沖注；必要時第二劑 12 mg。</li>
+          <li><b>Adenosine</b>：第一劑 6 mg 快速靜脈推注，隨即生理食鹽水沖注；必要時第二劑 12 mg。<b>經中央靜脈導管給予時劑量減半（首劑 3 mg）</b>。</li>
           <li><b>Procainamide</b>（穩定寬 QRS）：20–50 mg/min，直到心律不整被抑制、出現低血壓、QRS 延長 &gt;50%，或達最大 17 mg/kg；維持 1–4 mg/min。<b>QT 延長或 CHF 避免</b>。</li>
           <li><b>Amiodarone</b>（穩定寬 QRS）：150 mg over 10 min，VT 復發可重複；維持 1 mg/min（前 6 小時）。</li>
         </ul>
@@ -707,7 +710,7 @@
       <tr><td>Amiodarone（心跳停止）</td><td class="mono">300 mg → 150 mg</td></tr>
       <tr><td>Lidocaine（心跳停止）</td><td class="mono">1–1.5 mg/kg → 0.5–0.75 mg/kg</td></tr>
       <tr><td>Atropine</td><td class="mono">1 mg q3–5min，max 3 mg</td></tr>
-      <tr><td>Adenosine</td><td class="mono">6 mg → 12 mg</td></tr>
+      <tr><td>Adenosine</td><td class="mono">6 mg → 12 mg（中央靜脈導管：首劑 3 mg）</td></tr>
       <tr><td>去顫 雙相 / 單相</td><td class="mono">120–200 J（依機型）/ 360 J</td></tr>
       <tr><td>同步整流（電擊整流演算法）</td><td class="mono">AF/撲動 200 J · 窄複合波 100 J · 單型 VT 100 J · 多型 VT 非同步</td></tr>
       <tr><td>復甦後 SpO₂ / MAP</td><td class="mono">90–98% / ≥ 65 mmHg</td></tr>
@@ -737,7 +740,7 @@
       <tr><td>Atropine<br>阿托品</td><td>有症狀心搏過緩</td><td class="mono">1 mg IV bolus</td><td>每 3–5 分鐘，max 3 mg；高度 AVB／寬 QRS 逸搏可能無效</td></tr>
       <tr><td>Dopamine<br>多巴胺</td><td>心搏過緩對 atropine 無效</td><td class="mono">5–20 mcg/kg/min</td><td>依反應滴定，緩慢減量</td></tr>
       <tr><td>Epinephrine 輸注</td><td>心搏過緩對 atropine 無效</td><td class="mono">2–10 mcg/min</td><td>依反應滴定</td></tr>
-      <tr><td>Adenosine<br>腺苷</td><td>規則窄複合波（或規則單型寬複合波）心搏過速</td><td class="mono">6 mg → 12 mg</td><td>推注後立即沖注；氣喘、預激併 AF 謹慎</td></tr>
+      <tr><td>Adenosine<br>腺苷</td><td>規則窄複合波（或規則單型寬複合波）心搏過速</td><td class="mono">6 mg → 12 mg</td><td>推注後立即沖注；氣喘、預激併 AF 謹慎；<b>經中央靜脈導管劑量減半（首劑 3 mg）</b></td></tr>
       <tr><td>Procainamide</td><td>穩定寬複合波心搏過速</td><td class="mono">20–50 mg/min；維持 1–4 mg/min</td><td>至抑制／低血壓／QRS &gt;50%／達 17 mg/kg。QT 延長或 CHF 避免</td></tr>
       <tr><td>Amiodarone（穩定寬 QRS）</td><td>穩定寬複合波心搏過速</td><td class="mono">150 mg over 10 min</td><td>VT 復發可重複；維持 1 mg/min（前 6 小時）</td></tr>
       <tr><td>Magnesium sulfate<br>硫酸鎂</td><td>尖端扭轉型室速 / 低血鎂</td><td class="mono">1–2 g IV/IO 稀釋</td><td>不建議常規用於一般心跳停止</td></tr>
@@ -763,8 +766,15 @@
       </ul>
       <div style="font-weight:700; margin-bottom:4px;">急性冠心症 ACS</div>
       <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.8;">
-        <li>10 分鐘內取得並判讀 12 導程心電圖；給氧僅在 SpO₂ &lt; 90%。</li>
-        <li>aspirin、nitroglycerin（無禁忌時）、必要時 morphine 止痛。</li>
+        <li>10 分鐘內取得並判讀 12 導程心電圖。</li>
+        <li><b>MONA</b> 初期用藥（實際優先順序為 aspirin 與再灌流，非字面順序）：
+          <ul style="margin:4px 0 0; padding-left:16px;">
+            <li><b>M</b>orphine 嗎啡：2–4 mg IV，必要時每 5–15 分鐘追加 2–8 mg（僅用於硝酸鹽無法緩解之胸痛；NSTEMI 需謹慎）</li>
+            <li><b>O</b>xygen 氧氣：僅在 SpO₂ &lt; 90% 或呼吸窘迫時給予（2–4 L/min）</li>
+            <li><b>N</b>itroglycerin 硝酸甘油：0.4 mg 舌下每 5 分鐘、最多 3 次，或靜脈輸注；低血壓、右心室梗塞、24–48 小時內用過 PDE5 抑制劑者禁用</li>
+            <li><b>A</b>spirin 阿斯匹靈：160–325 mg 嚼服（非腸溶錠）</li>
+          </ul>
+        </li>
         <li>STEMI → 及早再灌流：優先 PCI（符合時間窗）；無法及時 PCI 者考慮溶栓。</li>
       </ul>
     </div>
@@ -978,7 +988,7 @@ function tRender(){
   } else if(stable && T.qrs==='narrow'){
     show2=true; c2='rec-blue'; t2='穩定窄 QRS（SVT）';
     d2='<li><strong>迷走神經刺激</strong>（若規則）</li>'+
-       '<li><strong>Adenosine</strong> 6 mg → 12 mg（若規則）</li>'+
+       '<li><strong>Adenosine</strong> 6 mg → 12 mg（若規則）；經中央靜脈導管劑量減半（首劑 3 mg）</li>'+
        '<li>考慮乙型阻斷劑或鈣離子通道阻斷劑</li>'+
        '<li>考慮專科會診</li>';
   } else if(stable && T.qrs==='wide'){
