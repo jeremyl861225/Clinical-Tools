@@ -259,10 +259,19 @@ function fmtDose(text) {
       chunk.split('‡').forEach(part => {
         part = part.trim().replace(/^[;,]\s*/, '');
         if (!part) return;
-        const bits = part.split(/;\s+/);
+        const bits = [];
+        part.split(/;\s+/).forEach(seg => {
+          seg = seg.trim();
+          if (!seg) return;
+          // 以比較／體重帶或 "or" 開頭的子句，是上一段的同群劑量帶（如
+          // "≦ 60 kg, 50 mg tid; > 60 kg, 100 mg tid"），接回同一行、不另立子項
+          if (bits.length && /^(?:[<>≤≥≦≧]|or\b)/.test(seg))
+            bits[bits.length - 1] += '；' + seg;
+          else bits.push(seg);
+        });
         html += `<div class="dl-line">${esc(bits[0])}</div>`;
         for (let k = 1; k < bits.length; k++)
-          if (bits[k].trim()) html += `<div class="dl-sub">${esc(bits[k].trim())}</div>`;
+          html += `<div class="dl-sub">${esc(bits[k])}</div>`;
       });
     });
   });

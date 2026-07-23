@@ -71,5 +71,7 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
 .dose-fmt .dl-head{font-weight:600; color:var(--label-ink); margin-bottom:2px;}
 .dose-fmt .dl-sect{font-weight:600; color:var(--accent2); margin:6px 0 1px;}
 .dose-fmt .dl-line{margin:1px 0;}
-.dose-fmt .dl-sub{padding-left:14px; position:relative; color:var(--muted); font-size:12.5px;}
-.dose-fmt .dl-sub:before{content:'–'; position:absolute; left:3px; color:var(--muted-soft);}
+/* 子項：整段縮排，破折號在縮排內作為行首（inline，不懸掛出段落前緣）；
+   換行時後續行對齊到破折號後的文字（hanging indent，但不突出段落左緣）。 */
+.dose-fmt .dl-sub{padding-left:1.5em; text-indent:-0.9em; color:var(--muted); font-size:12.5px;}
+.dose-fmt .dl-sub:before{content:'– '; color:var(--muted-soft);}
