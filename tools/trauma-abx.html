@@ -64,8 +64,13 @@
   .tr-fld .v em{font-style:normal; color:var(--accent2); font-weight:600;}
   .tr-src{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); line-height:1.75;}
   .tr-src a{color:var(--accent);}
-  .tr-cav{background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
-          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin-top:4px;}
+  .tr-cav{display:block; background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
+          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
+  /* NM ADSP 機構在地指引框：與 tr-cav 同為框選，但用不同左緣色以資區別 */
+  .tr-nm{display:block; background:var(--box-bg); border-left:2px solid var(--accent); border-radius:2px;
+         padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
+  .tr-nm .lbl{display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; font-weight:700;
+              text-transform:uppercase; color:var(--accent); margin-bottom:3px;}
   @media(max-width:480px){ .tr-fld{grid-template-columns:1fr; gap:1px;} }
 
   /* ── 破傷風決策 ─────────────────────────────────────────────── */
@@ -233,6 +238,7 @@
     <a href="https://pubmed.ncbi.nlm.nih.gov/23740764/" target="_blank" rel="noopener" class="ref-link">Barajas-Nava LA, et al. Antibiotic prophylaxis for preventing burn wound infection. Cochrane Database Syst Rev. 2013;(6):CD008738.</a> ·
     <a href="https://pubmed.ncbi.nlm.nih.gov/21814089/" target="_blank" rel="noopener" class="ref-link">Hospenthal DR, et al. Prevention of infections associated with combat-related injuries: 2011 update (IDSA/SIS). J Trauma. 2011;71(2 Suppl 2):S210-34.</a> ·
     Joint Trauma System. Infection Prevention in Combat-related Injuries, CPG ID: 24（2021）。 ·
+    <span class="ref-link">Northwestern Medicine ADSP. Traumatic Injury Antimicrobial Prophylaxis Guidance（機構在地指引，核准 2022-11-28）——本頁各卡以「機構在地指引」框補入其具體藥名建議；屬單一機構作法，與學會指引不一致處（尤其開放性骨折 Grade III 之 gram-negative 覆蓋）已於卡內標示。</span> ·
     破傷風：<a href="https://pubmed.ncbi.nlm.nih.gov/31971933/" target="_blank" rel="noopener" class="ref-link">Havers FP, et al. Use of Td and Tdap Vaccines: Updated ACIP Recommendations. MMWR. 2020;69(3):77-83.</a> ·
     <a href="https://pubmed.ncbi.nlm.nih.gov/29702631/" target="_blank" rel="noopener" class="ref-link">Liang JL, et al. Prevention of Pertussis, Tetanus, and Diphtheria with Vaccines (ACIP). MMWR Recomm Rep. 2018;67(2):1-44.</a>
     　｜破傷風傷口處置對照表之結構與內容係比對 CDC 傷口處置臨床指引之次級來源後採用（CDC 網站直接擷取受阻），非 CDC 原文逐字。
@@ -248,6 +254,9 @@
    ───────────────────────────────────────────────────────────────── */
 var REC_LABEL = {3:'建議給', 2:'有條件建議', 1:'證據不足', 0:'不建議'};
 
+/* 機構在地指引來源（無 PMID，係使用者提供之 NM ADSP PDF；asp.nm.org 為文件內所列 ADSP 頁面） */
+var NM_SRC = 'Northwestern Medicine Antimicrobial &amp; Diagnostic Stewardship Program (ADSP). Traumatic Injury Antimicrobial Prophylaxis Guidance.（機構在地指引，Antimicrobial Subcommittee 核准 2022-11-28）<a href="https://asp.nm.org/" target="_blank" rel="noopener">asp.nm.org</a>';
+
 var GROUPS = [
   {k:'trunk', zh:'軀幹與體腔　Trunk & Body Cavities'},
   {k:'cns',   zh:'頭部與中樞神經　Head & CNS'},
@@ -260,11 +269,13 @@ var INJ = [
   {g:'trunk', rec:3,
    zh:'穿刺性腹部創傷', en:'Penetrating abdominal trauma',
    one:'單劑術前給藥；有空腔臟器損傷者共給 24 小時即停',
-   drug:'涵蓋<b>需氧＋厭氧</b>的廣效性抗生素，於剖腹探查前給予。<span class="tr-cav">EAST 指引<b>未指定具體藥名</b>；cefoxitin、或 cefazolin ＋ metronidazole 等組合屬各院在地作法，非指引明訂。</span>',
+   drug:'涵蓋<b>需氧＋厭氧</b>的廣效性抗生素，於剖腹探查前給予。<span class="tr-cav">EAST 指引<b>未指定具體藥名</b>；cefoxitin、或 cefazolin ＋ metronidazole 等組合屬各院在地作法，非指引明訂。</span>'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>剖腹探查前<b>單劑 cefazolin ＋ metronidazole</b>（嚴重過敏改 vancomycin ＋ aztreonam ＋ metronidazole）。術後依術中所見：<b>乾淨→術後不再給；有內容物溢出→僅再給 24 小時</b>。<b>延遲就醫或呈敗血性休克者可考慮 piperacillin-tazobactam</b>，並於感染源控制後考慮 4 天療程。鈍傷若無空腔臟器損傷則不需抗生素。此為機構具體化 EAST 原則之在地方案。</span>',
    dur:'無空腔臟器損傷 → <b>單劑即可</b>，不需延長。<br>有空腔臟器損傷 → <b>24 小時</b>（Level I）。',
    evid:'EAST 2012 實務處置指引，納入 44 篇文獻。指引明列：損傷控制剖腹術情境下<b>沒有資料支持超過 24 小時</b>。',
    cav:'出血性休克病人因分布體積改變，指引有討論調整劑量的必要，但確切建議劑量文字未能自原文核實。',
-   src:['Goldberg SR, et al. Prophylactic antibiotic use in penetrating abdominal trauma: an EAST practice management guideline. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S321-5. <a href="https://pubmed.ncbi.nlm.nih.gov/23114488/" target="_blank" rel="noopener">PMID 23114488</a>']},
+   src:['Goldberg SR, et al. Prophylactic antibiotic use in penetrating abdominal trauma: an EAST practice management guideline. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S321-5. <a href="https://pubmed.ncbi.nlm.nih.gov/23114488/" target="_blank" rel="noopener">PMID 23114488</a>',
+        NM_SRC]},
 
   {g:'trunk', rec:0,
    zh:'損傷控制剖腹術／開放性腹部', en:'Damage control laparotomy / open abdomen',
@@ -279,7 +290,8 @@ var INJ = [
   {g:'trunk', rec:2,
    zh:'創傷性胸管置放', en:'Tube thoracostomy for traumatic hemo/pneumothorax',
    one:'置管當下給予以降低膿胸；穿刺傷受益明確、鈍傷未證實',
-   drug:'各研究<b>最常用 cefazolin</b>（針對皮膚菌叢，使用率 84.1%）。<span class="tr-cav">2022 指引僅建議「<b>置放當下給予</b>」，<b>未指定藥名，也未指定療程長度</b>。</span>',
+   drug:'各研究<b>最常用 cefazolin</b>（針對皮膚菌叢，使用率 84.1%）。<span class="tr-cav">2022 指引僅建議「<b>置放當下給予</b>」，<b>未指定藥名，也未指定療程長度</b>。</span>'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>穿刺性胸傷放置胸管：置管前<b>單劑 cefazolin</b>（嚴重過敏改 vancomycin），呼應各研究最常用 cefazolin 之作法。</span>',
    dur:'指引未訂。各研究從「置管前單劑」到「拔管後 48 小時」皆有；依 24 小時原則，實務上以單劑至 24 小時為合理。',
    evid:'EAST 2022（GRADE，14 篇含 8 篇 RCT）：<b>有條件建議</b>於置放當下給藥以降低膿胸——膿胸 OR 0.47（95% CI 0.25–0.86）。<b>穿刺傷</b> OR 0.25（0.10–0.59）顯著；<b>鈍傷</b> OR 0.25（0.06–1.12）未達顯著。<b>肺炎與死亡率皆無差異。</b>',
    cav:'工作小組<b>未達共識</b>（16 人中 13 贊成、3 反對）。反對理由是效益隨年代遞減：AAST 前瞻多中心研究（n=1887，23 中心）顯示肺炎／膿胸皆無差異（2.2% vs 1.5%, p=0.75）。此指引<b>取代</b> 2012 年版「證據不足，無法支持或反對」之結論。',
@@ -287,7 +299,8 @@ var INJ = [
         '（前版）Moore FO, et al. J Trauma Acute Care Surg. 2012;73(5 Suppl 4):S341-4. <a href="https://pubmed.ncbi.nlm.nih.gov/23114491/" target="_blank" rel="noopener">PMID 23114491</a>',
         'Bosman A, et al. Br J Surg. 2012;99(4):506-13. <a href="https://pubmed.ncbi.nlm.nih.gov/22139619/" target="_blank" rel="noopener">PMID 22139619</a>',
         'Elnahla A, et al. Am J Surg. 2021;222(5):1017-22. <a href="https://pubmed.ncbi.nlm.nih.gov/34272063/" target="_blank" rel="noopener">PMID 34272063</a>',
-        'Cook A, et al. Presumptive antibiotics in tube thoracostomy for traumatic hemopneumothorax: a prospective, multicenter AAST study. Trauma Surg Acute Care Open. 2019;4(1):e000356. <a href="https://pubmed.ncbi.nlm.nih.gov/31799417/" target="_blank" rel="noopener">PMID 31799417</a>']},
+        'Cook A, et al. Presumptive antibiotics in tube thoracostomy for traumatic hemopneumothorax: a prospective, multicenter AAST study. Trauma Surg Acute Care Open. 2019;4(1):e000356. <a href="https://pubmed.ncbi.nlm.nih.gov/31799417/" target="_blank" rel="noopener">PMID 31799417</a>',
+        NM_SRC]},
 
   {g:'trunk', rec:0,
    zh:'殘留血胸', en:'Retained hemothorax',
@@ -303,11 +316,12 @@ var INJ = [
   {g:'cns', rec:0,
    zh:'顱底骨折（含腦脊髓液漏）', en:'Basilar skull fracture ± CSF leak',
    one:'<b>不建議</b>預防性抗生素，有無腦脊髓液漏皆然',
-   drug:'不給。',
+   drug:'不給。<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>單純顱底骨折<b>不給</b>；<b>腦脊髓液鼻漏／耳漏亦列為「無需抗生素，但可選擇給單劑」</b>ceftriaxone（與神經外科討論；未曾接種者建議補打 Prevnar 20）——與本卡「不建議常規預防」之大方向一致。</span>',
    dur:'不適用。',
    evid:'Cochrane 系統性回顧（5 篇 RCT、208 人）：腦膜炎發生率、全因死亡、腦膜炎相關死亡、腦脊髓液漏需手術修補比例<b>四項皆無顯著差異</b>。另納入 17 篇非隨機試驗（2168 人）分開統合，結果一致。GRADE 品質 moderate。',
    cav:'其中 1 篇 RCT 觀察到鼻咽菌叢被誘導成對所用抗生素具<b>抗藥性</b>的潛在致病菌——這是「給了沒好處還有壞處」的具體證據。2015 年更新版未找到任何新試驗，2020 年後亦無新版。',
-   src:['Ratilal BO, Costa J, Pappamikail L, Sampaio C. Antibiotic prophylaxis for preventing meningitis in patients with basilar skull fractures. Cochrane Database Syst Rev. 2015;(4):CD004884. <a href="https://pubmed.ncbi.nlm.nih.gov/25918919/" target="_blank" rel="noopener">PMID 25918919</a>']},
+   src:['Ratilal BO, Costa J, Pappamikail L, Sampaio C. Antibiotic prophylaxis for preventing meningitis in patients with basilar skull fractures. Cochrane Database Syst Rev. 2015;(4):CD004884. <a href="https://pubmed.ncbi.nlm.nih.gov/25918919/" target="_blank" rel="noopener">PMID 25918919</a>',
+        NM_SRC]},
 
   {g:'cns', rec:1,
    zh:'穿刺性腦傷', en:'Penetrating brain injury',
@@ -324,11 +338,13 @@ var INJ = [
   {g:'cns', rec:3,
    zh:'開放性（複合性）顱骨凹陷骨折', en:'Compound depressed skull fracture',
    one:'處置策略<b>應包含抗生素</b>；凹陷深度超過顱骨厚度者應手術',
-   drug:'指引原文：「所有開放性（複合性）凹陷骨折的處置策略都應包含抗生素」。<span class="tr-cav">該指引<b>未指定藥名、劑量或療程</b>；常見作法（如 cefazolin ± metronidazole、5–7 天）屬在地實務，不應歸給此指引。</span>',
+   drug:'指引原文：「所有開放性（複合性）凹陷骨折的處置策略都應包含抗生素」。<span class="tr-cav">該指引<b>未指定藥名、劑量或療程</b>；常見作法（如 cefazolin ± metronidazole、5–7 天）屬在地實務，不應歸給此指引。</span>'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>開放性穿刺或凹陷性顱骨骨折：<b>ceftriaxone</b>（嚴重過敏改 vancomycin ＋ aztreonam）<b>共 7 天</b>，並與神經外科討論。此為機構具體化之在地方案，非上述外科指引明訂。</span>',
    dur:'指引未訂。',
    evid:'Brain Trauma Foundation／AANS-CNS《Guidelines for the Surgical Management of TBI》：開放性凹陷骨折<b>凹陷深度超過顱骨厚度者應手術</b>（抬升＋清創）以預防感染；<b>早期手術可降低感染率</b>。',
    cav:'若無硬腦膜穿透、無明顯顱內血腫、凹陷 &lt; 1 cm、未侵犯額竇、無明顯外觀變形、無傷口感染、無氣顱、無嚴重污染，則可考慮非手術治療。2020 年後無經查證之更新版指引。',
-   src:['Bullock MR, et al. Surgical management of depressed cranial fractures. Neurosurgery. 2006;58(3 Suppl):S56-60. <a href="https://pubmed.ncbi.nlm.nih.gov/16540744/" target="_blank" rel="noopener">PMID 16540744</a>']},
+   src:['Bullock MR, et al. Surgical management of depressed cranial fractures. Neurosurgery. 2006;58(3 Suppl):S56-60. <a href="https://pubmed.ncbi.nlm.nih.gov/16540744/" target="_blank" rel="noopener">PMID 16540744</a>',
+        NM_SRC]},
 
   /* ══ 四肢與骨骼 ══ */
   {g:'limb', rec:3,
@@ -339,7 +355,8 @@ var INJ = [
         '· <b>SIS 2022</b>：type III <b>不建議</b>擴大到 gram-positive 以外的覆蓋（GRADE 2C）。<br>'+
         '· <b>JTS CPG ID24（2021）</b>：明文「即使 type III 骨折，<b>不建議</b>加 fluoroquinolone 或 aminoglycoside」。<br>'+
         '· <b>AAST 2024 共識</b>：仍保留傳統寫法「type I／II 用 gram-positive；<b>type III 加 gram-negative</b>」，列名 first-generation cephalosporin、aminoglycoside、piperacillin/tazobactam、ceftriaxone、clindamycin。<br>'+
-        '傳統 EAST 2011 方案（type III 加 aminoglycoside、48–72 小時）已被 SIS 2022 與 JTS 2021 取代。</span>',
+        '傳統 EAST 2011 方案（type III 加 aminoglycoside、48–72 小時）已被 SIS 2022 與 JTS 2021 取代。</span>'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>依 Gustilo 分級：<b>Grade I／II → cefazolin</b>（嚴重過敏改 vancomycin），Grade I 單次、Grade II 清創覆蓋後 24 小時（未覆蓋則 72 小時）。<b>Grade III、或任何大小傷口合併農糞／淡水污染、擠壓傷、腔室症候群或血管損傷 → ceftriaxone 或 piperacillin-tazobactam</b>（嚴重過敏改 vancomycin ＋ aztreonam ± metronidazole），海水污染再加 doxycycline。<b>注意：此機構方案對 Grade III 仍加 gram-negative 覆蓋，與 SIS 2022／JTS 2021「不加 GN」的立場相反</b>——屬機構在地作法，引用時務必辨明與上述學會指引不一致。</span>',
    dur:'<b>SIS 2022（GRADE 1C）：type III 在無活動性感染徵象下，抗生素不超過受傷後 24 小時。</b><br>'+
        'JTS 2021：初始 24 小時，之後<b>每次清創（I&amp;D）時重複給藥</b>，直到軟組織覆蓋完成。<br>'+
        'AAST 2024：受傷後 1 小時內開始、持續 24 小時。',
@@ -354,7 +371,8 @@ var INJ = [
         '（前版）Hoff WS, et al. EAST update to practice management guidelines for prophylactic antibiotic use in open fractures. J Trauma. 2011;70(3):751-4. <a href="https://pubmed.ncbi.nlm.nih.gov/21610369/" target="_blank" rel="noopener">PMID 21610369</a>',
         'Lack WD, et al. Type III open tibia fractures: immediate antibiotic prophylaxis minimizes infection. J Orthop Trauma. 2015;29(1):1-6. <a href="https://pubmed.ncbi.nlm.nih.gov/25526095/" target="_blank" rel="noopener">PMID 25526095</a>',
         'Lloyd BA, et al. J Trauma Acute Care Surg. 2017;83(5):854-61. <a href="https://pubmed.ncbi.nlm.nih.gov/28570348/" target="_blank" rel="noopener">PMID 28570348</a>',
-        'Johnson JP, et al. Prehospital Antibiotic Administration for Suspected Open Fractures: Joint COT/OTA/ACEP/NAEMSP/NAEMT Position Statement. Prehosp Emerg Care. 2024;28(8):1063-7. <a href="https://pubmed.ncbi.nlm.nih.gov/39356234/" target="_blank" rel="noopener">PMID 39356234</a>']},
+        'Johnson JP, et al. Prehospital Antibiotic Administration for Suspected Open Fractures: Joint COT/OTA/ACEP/NAEMSP/NAEMT Position Statement. Prehosp Emerg Care. 2024;28(8):1063-7. <a href="https://pubmed.ncbi.nlm.nih.gov/39356234/" target="_blank" rel="noopener">PMID 39356234</a>',
+        NM_SRC]},
 
   {g:'limb', rec:1,
    zh:'開放性骨折的局部（傷口內）抗生素', en:'Local / intrawound antibiotics',
@@ -374,7 +392,8 @@ var INJ = [
    zh:'顏面骨折', en:'Facial fractures',
    one:'術前單劑 ± ≤ 24 小時；<b>術後延長無益，&gt; 72 小時可能有害</b>',
    drug:'<b>AAST 2024：</b>開放或污染性顏面骨折（含開放性下顎骨折、額竇後壁骨折）用 <b>cefazolin／ceftriaxone／ampicillin-sulbactam</b>，penicillin 過敏用 <b>clindamycin</b>。<br>'+
-        'Bern 系列 RCT 使用 amoxicillin/clavulanic acid 1.2 g IV q8h。',
+        'Bern 系列 RCT 使用 amoxicillin/clavulanic acid 1.2 g IV q8h。'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>開放或污染性下顎／鼻竇／顏面骨折之<b>手術處置 → ampicillin-sulbactam</b>（嚴重過敏改 levofloxacin），<b>術後 24 小時內停</b>；非手術（保守）處理者不給。與 AAST 2024 一致。</span>',
    dur:'<b>開放或污染性顏面骨折：≤ 24 小時。</b><br><b>閉鎖、非污染、需手術者：術前給藥即可，術後不再給。</b><br><b>非手術（保守）處理的顏面骨折：不給。</b>',
    evid:'系統性回顧與統合分析（27 篇）：下顎骨折 24–72h vs &lt; 24h <b>OR 0.85（95% CI 0.62–1.17）</b>；<b>&gt; 72h vs &lt; 24h OR 1.42（0.96–2.11）</b>——延長不但無益，作者指出 &gt; 72 小時反而可能矛盾地<b>增加</b>下顎骨折修補後的感染風險。中臉 OR 1.05（0.20–5.63）。<br>'+
         'Amoxicillin/clavulanate ≤24h vs &gt;24h 統合分析（12 篇、3115 人）：OR 0.86（95% CI 0.40–1.84, P=.783），長療程 GI 症狀與 <i>C. difficile</i> 較多。<br>'+
@@ -389,7 +408,8 @@ var INJ = [
         'Goormans F, et al. Antibiotics (Basel). 2022;11(4):483. <a href="https://pubmed.ncbi.nlm.nih.gov/35453234/" target="_blank" rel="noopener">PMID 35453234</a>',
         'Van der Cruyssen F, et al. J Clin Med. 2025;14:1332. <a href="https://pubmed.ncbi.nlm.nih.gov/40004862/" target="_blank" rel="noopener">PMID 40004862</a>',
         'Zix J, et al. Br J Oral Maxillofac Surg. 2013;51(4):332-6. <a href="https://pubmed.ncbi.nlm.nih.gov/22981342/" target="_blank" rel="noopener">PMID 22981342</a>｜Schaller B, et al. 2013;51(8):803-7. <a href="https://pubmed.ncbi.nlm.nih.gov/24012053/" target="_blank" rel="noopener">PMID 24012053</a>｜Soong PL, et al. 2014;52(4):329-33. <a href="https://pubmed.ncbi.nlm.nih.gov/24602602/" target="_blank" rel="noopener">PMID 24602602</a>',
-        'Sahi A, et al. J Craniofac Surg. 2026;37:1005-8. <a href="https://pubmed.ncbi.nlm.nih.gov/41562467/" target="_blank" rel="noopener">PMID 41562467</a>']},
+        'Sahi A, et al. J Craniofac Surg. 2026;37:1005-8. <a href="https://pubmed.ncbi.nlm.nih.gov/41562467/" target="_blank" rel="noopener">PMID 41562467</a>',
+        NM_SRC]},
 
   /* ══ 軟組織、咬傷與燒燙傷 ══ */
   {g:'soft', rec:2,
@@ -401,7 +421,8 @@ var INJ = [
         '<span class="tr-cav"><b>兩個必記的抗藥性陷阱：</b><br>'+
         '· 人咬傷的 <i>Eikenella corrodens</i> 對<b>第一代 cephalosporin、macrolide、clindamycin、aminoglycoside 均具抗藥性</b> → 人咬傷不可單用 clindamycin。<br>'+
         '· <i>P. multocida</i>（貓／狗咬）不被 clindamycin 涵蓋；macrolide 對其活性不穩定，應避免。<br>'+
-        'AAST 2024 以 clindamycin ＋ SMX-TMP 作為 penicillin 過敏替代，<b>與上述 <i>Eikenella</i> 警語有張力</b>——用於人咬傷時應優先採 IDSA 的 fluoroquinolone ＋ metronidazole 或 moxifloxacin。</span>',
+        'AAST 2024 以 clindamycin ＋ SMX-TMP 作為 penicillin 過敏替代，<b>與上述 <i>Eikenella</i> 警語有張力</b>——用於人咬傷時應優先採 IDSA 的 fluoroquinolone ＋ metronidazole 或 moxifloxacin。</span>'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>依是否手術分流：<b>需手術清創 → ampicillin-sulbactam（IV）</b>；<b>不手術但有危險因子 → amoxicillin-clavulanate（PO）</b>；嚴重過敏用 (doxycycline 或 levofloxacin) ＋ metronidazole。給藥時機為術前單劑，<b>有危險因子者完成 3 天</b>。無手術且無危險因子則不需給。</span>',
    dur:'預防性（preemptive）給藥 <b>3–5 天</b>。',
    evid:'<b>IDSA 2014 建議 40（strong, low）——符合下列任一者才給預防性抗生素：</b>(a) 免疫功能低下、(b) 無脾、(c) 進展期肝病、(d) 患處已有或將出現水腫、(e) <b>中至重度傷口，尤其手部或顏面</b>、(f) 可能穿透骨膜或關節囊者。<br>'+
         'Cochrane 回顧（8 篇 RCT）：<b>人咬傷</b>顯著降低感染；<b>貓／狗咬傷無證據支持常規預防</b>；<b>手部咬傷 OR 0.10（95% CI 0.01–0.86），NNT = 4</b>。傷口型態（撕裂 vs 穿刺）不影響效果。',
@@ -413,12 +434,14 @@ var INJ = [
    src:['Stevens DL, et al. Practice guidelines for the diagnosis and management of skin and soft tissue infections: 2014 update by the IDSA. Clin Infect Dis. 2014;59(2):e10-52. <a href="https://pubmed.ncbi.nlm.nih.gov/24973422/" target="_blank" rel="noopener">PMID 24973422</a>',
         'Medeiros I, Saconato H. Antibiotic prophylaxis for mammalian bites. Cochrane Database Syst Rev. 2001;(2):CD001738. <a href="https://pubmed.ncbi.nlm.nih.gov/11406003/" target="_blank" rel="noopener">PMID 11406003</a>',
         'Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
-        'Rupprecht CE, et al. Use of a reduced (4-dose) vaccine schedule for postexposure prophylaxis to prevent human rabies: ACIP recommendations. MMWR Recomm Rep. 2010;59(RR-2):1-9. <a href="https://pubmed.ncbi.nlm.nih.gov/20300058/" target="_blank" rel="noopener">PMID 20300058</a>']},
+        'Rupprecht CE, et al. Use of a reduced (4-dose) vaccine schedule for postexposure prophylaxis to prevent human rabies: ACIP recommendations. MMWR Recomm Rep. 2010;59(RR-2):1-9. <a href="https://pubmed.ncbi.nlm.nih.gov/20300058/" target="_blank" rel="noopener">PMID 20300058</a>',
+        NM_SRC]},
 
   {g:'soft', rec:0,
    zh:'燒燙傷', en:'Burn injury',
    one:'<b>不建議</b>常規全身性預防；以局部抗菌劑為主',
-   drug:'<b>不給全身性預防抗生素。</b>局部處置為含銀敷料、mafenide acetate 或 silver sulfadiazine，深部分層／全層另加切除與植皮。',
+   drug:'<b>不給全身性預防抗生素。</b>局部處置為含銀敷料、mafenide acetate 或 silver sulfadiazine，深部分層／全層另加切除與植皮。'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>一至三度燒傷及電擊傷<b>均不給全身性預防抗生素</b>，與上述一致；<b>吸入性傷害僅在插管時給單劑 cefazolin</b>（嚴重過敏改 vancomycin），無機械通氣則無證據支持給藥。</span>',
    dur:'不適用。',
    evid:'<b>AAST 2024：</b>「燒傷病人不建議常規使用預防性抗生素」——多篇統合分析顯示無死亡率效益且增加抗藥性。<br>'+
         'Cochrane 回顧（36 篇 RCT／2117 人）：非手術病人的全身性預防對燒傷傷口感染<b>無效</b>；<b>圍手術期全身性預防對本回顧所有結果均無影響</b>。<br>'+
@@ -429,12 +452,14 @@ var INJ = [
    src:['Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
         'Barajas-Nava LA, et al. Antibiotic prophylaxis for preventing burn wound infection. Cochrane Database Syst Rev. 2013;(6):CD008738. <a href="https://pubmed.ncbi.nlm.nih.gov/23740764/" target="_blank" rel="noopener">PMID 23740764</a>',
         'Csenkey A, et al. Systemic antibiotic prophylaxis does not affect infectious complications in pediatric burn injury: a meta-analysis. PLoS One. 2019;14(9):e0223063. <a href="https://pubmed.ncbi.nlm.nih.gov/31553768/" target="_blank" rel="noopener">PMID 31553768</a>',
-        'ISBI Practice Guidelines for Burn Care. Burns. 2016;42(5):953-1021. <a href="https://pubmed.ncbi.nlm.nih.gov/27542292/" target="_blank" rel="noopener">PMID 27542292</a>｜Part 2. Burns. 2018;44(7):1617-706. <a href="https://pubmed.ncbi.nlm.nih.gov/30343831/" target="_blank" rel="noopener">PMID 30343831</a>']},
+        'ISBI Practice Guidelines for Burn Care. Burns. 2016;42(5):953-1021. <a href="https://pubmed.ncbi.nlm.nih.gov/27542292/" target="_blank" rel="noopener">PMID 27542292</a>｜Part 2. Burns. 2018;44(7):1617-706. <a href="https://pubmed.ncbi.nlm.nih.gov/30343831/" target="_blank" rel="noopener">PMID 30343831</a>',
+        NM_SRC]},
 
   {g:'soft', rec:0,
    zh:'單純撕裂傷縫合', en:'Simple laceration repair',
    one:'<b>不需要</b>預防性抗生素；統合分析顯示給了感染率反而略高',
-   drug:'不給。<b>例外</b>（AAST 2024）：具顯著組織破壞、大量無效腔、廣泛污染，或高風險病人者，<b>≤ 24 小時</b>的 first-generation cephalosporin 或 clindamycin 為適當。',
+   drug:'不給。<b>例外</b>（AAST 2024）：具顯著組織破壞、大量無效腔、廣泛污染，或高風險病人者，<b>≤ 24 小時</b>的 first-generation cephalosporin 或 clindamycin 為適當。'+
+        '<span class="tr-nm"><span class="lbl">Northwestern Medicine ADSP · 機構在地指引 2022</span>槍傷、刺傷及單純軟組織撕裂傷<b>除非污染否則不給；污染時給單劑 cefazolin</b>（嚴重過敏改 vancomycin），且傷口不縫合、可鬆填。與本卡一致。</span>',
    dur:'例外情境 ≤ 24 小時；一般不給。',
    evid:'統合分析（7 篇 RCT／1734 人，急診非咬傷性傷口）：抗生素組感染率<b>反而略高</b>——OR 1.16（95% CI 0.77–1.78）；限定 penicillinase-resistant 抗生素者 OR 1.00（0.59–1.71）。<br>'+
         '<b>AAST 2024：</b>「單純軟組織撕裂傷不建議給預防性抗生素」；單純軟組織的刺傷（stab wound）比照辦理。<br>'+
@@ -445,7 +470,8 @@ var INJ = [
    src:['Cummings P, Del Beccaro MA. Antibiotics to prevent infection of simple wounds: a meta-analysis of randomized studies. Am J Emerg Med. 1995;13(4):396-400. <a href="https://pubmed.ncbi.nlm.nih.gov/7605521/" target="_blank" rel="noopener">PMID 7605521</a>',
         'Appelbaum RD, et al. Trauma Surg Acute Care Open. 2024;9(1):e001304. <a href="https://pubmed.ncbi.nlm.nih.gov/38835634/" target="_blank" rel="noopener">PMID 38835634</a>',
         'Qiu CS, et al. J Hand Surg Am. 2025. <a href="https://pubmed.ncbi.nlm.nih.gov/40057875/" target="_blank" rel="noopener">PMID 40057875</a>',
-        'Cicuttin E, Sartelli M, et al. Antibiotics (Basel). 2022;11(2):139. <a href="https://pubmed.ncbi.nlm.nih.gov/35203743/" target="_blank" rel="noopener">PMID 35203743</a>']},
+        'Cicuttin E, Sartelli M, et al. Antibiotics (Basel). 2022;11(2):139. <a href="https://pubmed.ncbi.nlm.nih.gov/35203743/" target="_blank" rel="noopener">PMID 35203743</a>',
+        NM_SRC]},
 
   {g:'soft', rec:3,
    zh:'戰傷與高污染傷口', en:'Combat-related & heavily contaminated wounds',
