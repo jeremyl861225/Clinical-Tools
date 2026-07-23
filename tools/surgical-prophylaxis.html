@@ -24,8 +24,10 @@
   .sp-calc-hint{font-size:11.5px; color:var(--muted-soft); font-family:var(--mono);}
   .sp-doses{display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:8px;}
   .sp-dose{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:9px 11px;}
-  .sp-dose.hi{border-left-color:var(--accent); background:var(--accent-soft);}
   .sp-dose .dn{font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.03em;}
+  .sp-tag{display:inline-block; margin-left:6px; font-family:var(--mono); font-size:9px; font-weight:700;
+          color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:1px 5px;
+          letter-spacing:.04em; vertical-align:middle;}
   .sp-dose .dv{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink); margin-top:1px;}
   .sp-dose .dr{font-size:11px; color:var(--muted-soft); margin-top:2px;}
 
@@ -521,7 +523,7 @@ function calcDose(){
   var cfz = w > 120 ? '3 g' : (w > 80 ? '2 g' : '1–2 g');
   var cfzR = w > 120 ? '&gt; 120 kg（附註 c）' : (w > 80 ? '&gt; 80 kg（附註 c）' : '≤ 80 kg');
   var rows = [
-    {n:'Cefazolin',   v:cfz,                          r:cfzR, hi:true},
+    {n:'Cefazolin',   v:cfz,                          r:cfzR, tag:'首選'},
     {n:'Cefuroxime',  v:'1.5 g',                      r:'不依體重調整'},
     {n:'Vancomycin',  v:fmt(w*15,0)+' mg',            r:'15 mg/kg（台大表一列 1 g）'},
     {n:'Gentamicin',  v:fmt(w*2,0)+' mg',             r:'2 mg/kg（台大表一用量）'},
@@ -529,7 +531,7 @@ function calcDose(){
     {n:'Metronidazole', v:'500 mg',                   r:'不依體重調整'}
   ];
   document.getElementById('sp-doses').innerHTML = rows.map(function(d){
-    return '<div class="sp-dose'+(d.hi?' hi':'')+'"><div class="dn">'+d.n+'</div>'+
+    return '<div class="sp-dose"><div class="dn">'+d.n+(d.tag?'<span class="sp-tag">'+d.tag+'</span>':'')+'</div>'+
            '<div class="dv">'+d.v+'</div><div class="dr">'+d.r+'</div></div>';
   }).join('');
 }
