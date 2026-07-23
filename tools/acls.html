@@ -63,10 +63,10 @@
   .section-title{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:20px 0 8px; border-bottom:2px solid var(--accent-soft); padding-bottom:4px;}
 
   details.def-box{margin:10px 0;}
-  details.def-box summary{cursor:pointer; font-family:var(--mono); font-size:12px; color:var(--accent); list-style:none; font-weight:700;}
+  details.def-box summary{cursor:default; pointer-events:none; font-family:var(--mono); font-size:12px; color:var(--accent); list-style:none; font-weight:700;}
   details.def-box summary::-webkit-details-marker{display:none;}
-  details.def-box summary:before{content:'▸ ';}
-  details.def-box[open] summary:before{content:'▾ ';}
+  details.def-box summary:before{content:'';}
+  details.def-box[open] summary:before{content:'';}
   details.def-box .box-inner{background:var(--box-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin-top:6px; font-size:12.5px; line-height:1.75;}
   details.def-box .box-inner ul{margin:4px 0; padding-left:18px;}
   details.def-box .box-inner b{font-family:var(--mono);}
@@ -333,7 +333,7 @@
 
     <div class="flow-reset"><button class="btn-reset" onclick="tReset()">重置</button></div>
 
-    <details class="def-box">
+    <details class="def-box" open>
       <summary>藥物劑量 Doses/Details</summary>
       <div class="box-inner">
         <ul>
@@ -411,7 +411,7 @@
 
     <div class="flow-reset"><button class="btn-reset" onclick="bReset()">重置</button></div>
 
-    <details class="def-box">
+    <details class="def-box" open>
       <summary>可能原因 Possible Causes</summary>
       <div class="box-inner"><ul>
         <li>心肌缺血／梗塞（myocardial ischemia/infarction）</li>
@@ -452,7 +452,7 @@
       </ul>
       <div style="margin-top:8px; font-size:11.5px; color:var(--muted);">能配合指令者：持續重症照護，適時冠狀動脈攝影即可。</div>
     </div>
-    <details class="def-box"><summary>要點補充（依台大知識庫）</summary><div class="box-inner"><ul>
+    <details class="def-box" open><summary>要點補充（依台大知識庫）</summary><div class="box-inner"><ul>
       <li><b>溫度控制（TTM）</b>：對指令無反應者維持至少 36 小時；可採 32–37.5°C 策略，<b>積極預防發燒</b>。</li>
       <li><b>神經預後</b>：採多模式評估，避免單一指標；不以單一 ETCO₂ 數值決定終止復甦；無 EEG 相關證據者，不建議僅為抑制肌陣攣給藥。</li>
       <li>偵測並治療癲癇；監測並處理血糖，避免高／低血糖。</li>
@@ -515,7 +515,7 @@
     </div>
     <div class="fd-arrow">↓</div>
     <div class="fd-box">持續 ALS。以<b>新生兒復甦演算法</b>救治新生兒。</div>
-    <details class="def-box"><summary>心跳停止病因 A–H（孕婦）</summary><div class="box-inner"><ul>
+    <details class="def-box" open><summary>心跳停止病因 A–H（孕婦）</summary><div class="box-inner"><ul>
       <li><b>A</b> Anesthetic complications 麻醉併發症</li><li><b>B</b> Bleeding 出血</li><li><b>C</b> Cardiovascular 心血管</li>
       <li><b>D</b> Drugs 藥物</li><li><b>E</b> Embolic 栓塞（羊水或肺栓塞）</li><li><b>F</b> Fever 發燒</li>
       <li><b>G</b> General 一般原因（H's &amp; T's）</li><li><b>H</b> Hypertension 高血壓</li></ul></div></details>
@@ -532,7 +532,7 @@
       <div class="fd-col"><span class="fd-tag yes">足夠</span><ul><li><b>不要</b>做體外胸部按壓</li><li>評估並處理非 LVAD 之無反應原因</li><li>監測灌流</li></ul></div>
       <div class="fd-col"><span class="fd-tag no">不足</span><ul><li>做體外胸部按壓</li><li>有第二施救者時評估 LVAD 功能</li><li>評估並處理非 LVAD 原因</li><li>持續 BLS/ALS、轉送、聯絡 VAD 中心並持續監測</li></ul></div>
     </div>
-    <details class="def-box"><summary>評估灌流・非 LVAD 原因・重啟 LVAD</summary><div class="box-inner">
+    <details class="def-box" open><summary>評估灌流・非 LVAD 原因・重啟 LVAD</summary><div class="box-inner">
       <div class="fd-cap">灌流足夠：符合任一即可</div>
       <ul><li>膚色與體溫正常</li><li>微血管回填正常</li><li><b>MAP &gt;50 mmHg</b>（血壓袖帶失效時用 doppler 或動脈導管）</li><li><b>PETCO₂ &gt;20 mmHg</b></li></ul>
       <div style="font-size:11.5px;color:var(--muted)">＊病人可能摸不到脈搏。</div>
@@ -604,7 +604,7 @@
     </div>
     <div class="fd-arrow">↓</div>
     <div class="fd-box">無 ROSC → 繼續循環；<b>ROSC → 進入復甦後照護</b>。</div>
-    <details class="def-box"><summary>劑量／細節 Doses/Details</summary><div class="box-inner">
+    <details class="def-box" open><summary>劑量／細節 Doses/Details</summary><div class="box-inner">
       <div class="fd-cap">高品質 CPR</div>
       <ul><li>用力壓（胸廓前後徑約 ⅓）、快壓 100–120/min、完全回彈、減少中斷、每 2 分鐘換手</li>
         <li>無進階呼吸道比例：雙人（青春期前）<b>15:2</b>／雙人（青春期後）<b>30:2</b>／單人（任何年齡）<b>30:2</b></li>
@@ -638,7 +638,7 @@
         <ul><li><b>窄（≤0.09 秒）</b> 可能 SVT：考慮迷走神經刺激；給 IV/IO adenosine</li>
           <li><b>寬（&gt;0.09 秒）</b> 可能 VT 或 SVT 併異常傳導：若規則且單型…先專科會診</li></ul></div>
     </div>
-    <details class="def-box"><summary>劑量／細節 Doses/Details</summary><div class="box-inner"><ul>
+    <details class="def-box" open><summary>劑量／細節 Doses/Details</summary><div class="box-inner"><ul>
       <li><b>同步電擊整流</b>：0.5–1 J/kg 起始；無效增至 2 J/kg。需要時鎮靜，但勿延誤整流。</li>
       <li><b>Adenosine</b> IV/IO：0.1 mg/kg（最大 6 mg）快速推注後沖注；必要時 0.2 mg/kg（最大 12 mg）。</li>
     </ul></div></details>
@@ -664,7 +664,7 @@
         <li>找出並治療病因；考慮經胸／經靜脈節律調節</li></ul>
         <div style="margin-top:5px;font-size:11.5px;color:var(--muted)">→ 每 2 分鐘檢查脈搏。無脈 → 進入兒科心跳停止演算法。</div></div>
     </div>
-    <details class="def-box"><summary>劑量與可能原因</summary><div class="box-inner">
+    <details class="def-box" open><summary>劑量與可能原因</summary><div class="box-inner">
       <ul><li><b>Epinephrine</b> IV/IO 0.01 mg/kg（0.1 mg/mL），最大單劑 1 mg</li>
         <li><b>Atropine</b> IV/IO 0.02 mg/kg，可重複一次；最小 0.1 mg、最大單劑 0.5 mg</li></ul>
       <div class="fd-cap" style="margin-top:6px">可能原因</div>
