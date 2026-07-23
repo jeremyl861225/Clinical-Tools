@@ -37,7 +37,9 @@
       { href: 'tools/antibiotics.html#mode=empiric',  zh: '依部位（經驗性）', en: 'Empiric by Site' },
       { href: 'tools/antibiotics.html#mode=bacteria', zh: '依病原菌',         en: 'By Pathogen' },
       { href: 'tools/antibiotics.html#mode=lookup',   zh: '藥物查詢',         en: 'Drug Lookup' },
-      { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' }
+      { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' },
+      { href: 'tools/surgical-prophylaxis.html',      zh: '手術預防',         en: 'Surgical Prophylaxis' },
+      { href: 'tools/trauma-abx.html',                zh: '創傷用藥',         en: 'Trauma Antibiotics' }
     ],
     // 空陣列＝這一類只列底下的癌別；該頁本身由大類標題連過去，不再重複一項
     'tools/cancer.html': []

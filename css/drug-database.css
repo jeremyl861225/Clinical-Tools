@@ -29,11 +29,23 @@
 .db-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
 .db-empty, .db-loading{font-size:13px; color:var(--muted); padding:10px 2px;}
 
-/* 卡片內的機轉徽章（可多個：複方藥同時屬兩種機轉） */
+/* 卡片內的機轉徽章（英文，可多個：複方藥同時屬兩種機轉） */
 .db-moas{display:flex; flex-wrap:wrap; gap:6px;}
-.db-moa{font-size:12.5px; color:var(--accent2); background:var(--accent2-soft);
-  border-radius:10px; padding:2px 10px; display:inline-flex; align-items:baseline; gap:6px;}
-.db-moa-en{font-family:var(--mono); font-size:10px; opacity:.8;}
+.db-moa{font-family:var(--mono); font-size:11.5px; color:var(--accent2); background:var(--accent2-soft);
+  border-radius:10px; padding:2px 10px;}
+
+/* 標題列移到名稱後面的前綴小標（兒／管N／專案／《O》） */
+.db-tag{font-family:var(--mono); font-size:10px; color:var(--muted); background:var(--box-bg);
+  border:1px solid var(--line); border-radius:8px; padding:1px 6px; white-space:nowrap;}
+
+/* 含量規格分頁 */
+.db-vtabs{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0 4px;}
+.db-vtabs-lbl{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent); margin-right:2px;}
+.db-vtab{font-family:var(--mono); font-size:11.5px; color:var(--accent); background:var(--accent-soft);
+  border:1px solid transparent; border-radius:8px; padding:3px 10px; cursor:pointer; white-space:nowrap;}
+.db-vtab:hover{filter:brightness(1.06);}
+.db-vtab.active{border-color:var(--accent); background:var(--panel); font-weight:600;}
 
 /* 一支藥在腎／透析表可能有多列（不同適應症或不同廠牌寫法），列間留一條分隔 */
 table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); padding:0; height:6px;}
@@ -53,3 +65,11 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
 .db-clsmore{font-family:var(--mono); font-size:10.5px; color:var(--accent); background:none;
   border:1px dashed var(--line); border-radius:10px; padding:2px 9px; cursor:pointer;}
 .db-clsmore:hover{border-color:var(--accent); background:var(--accent-soft);}
+
+/* 常用劑量分行排版：給藥途徑標頭、適應症段標、族群行與分號子項的縮排 */
+.dose-fmt{display:flex; flex-direction:column; gap:1px;}
+.dose-fmt .dl-head{font-weight:600; color:var(--label-ink); margin-bottom:2px;}
+.dose-fmt .dl-sect{font-weight:600; color:var(--accent2); margin:6px 0 1px;}
+.dose-fmt .dl-line{margin:1px 0;}
+.dose-fmt .dl-sub{padding-left:14px; position:relative; color:var(--muted); font-size:12.5px;}
+.dose-fmt .dl-sub:before{content:'–'; position:absolute; left:3px; color:var(--muted-soft);}

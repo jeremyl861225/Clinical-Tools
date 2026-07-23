@@ -43,11 +43,11 @@ const el = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/* 商品名短名：去掉管制／專案等前綴與劑型含量，只留辨識得出來的那幾個字
+/* 商品名短名：劑型／含量之前的那幾個字即品牌名（前綴已於建置時清掉）
    （'Januvia FC Tablet, equivalent to sitagliptin 100 mg/tab' → 'Januvia'）。 */
 const FORM_WORD = /\b(Tablets?|Capsules?|Injection|Solution|Soln|Syrup|Suspension|Powder|Granules?|Patch|Pen|Inhal\w*|Spray|Cream|Gel|Suppository|Effervescent|Lyo\w*|F\.?C\.?|Film-coated|Oral|SR|CR|MR|XR|ER|Sterile|for)\b/i;
 function shortBrand(b) {
-  let s = String(b || '').replace(/^\s*(?:[（(]管\d[）)]|<專>|＜專＞|兒|＠|@)\s*/g, '').trim();
+  const s = String(b || '').trim();
   const words = s.split(/\s+/);
   const out = [];
   for (const w of words) {
@@ -56,13 +56,6 @@ function shortBrand(b) {
     if (out.length >= 4) break;
   }
   return out.join(' ').replace(/[,，]$/, '') || s;
-}
-
-/* 含量：同一商品名常有多個規格（Jardiance 10 mg／25 mg 各一張卡），
-   標題只寫商品名會分不出來，故把第一段含量抓出來接在後面。 */
-function strengthOf(b) {
-  const m = String(b || '').match(/([\d.,]+\s*(?:mg|mcg|g|mL|U|IU|%)[^,;()]*)/i);
-  return m ? m[1].trim() : '';
 }
 
 /* 台大對沒有中文品名的藥填「無正式中文名」，那是註記不是名字，不要當中文名顯示 */
@@ -74,7 +67,8 @@ function matches(d) {
   if (curTop && (d.tops || []).indexOf(curTop) < 0) return false;
   if (curCls && (d.cls || []).indexOf(curCls) < 0) return false;
   if (!curQ) return true;
-  const hay = [d.name, d.brand, d.zh, (d.cls || []).join(' '), (d.clsZh || []).join(' '), d.code]
+  const hay = [d.name, d.brand, d.zh, (d.cls || []).join(' '),
+    (d.strengths || []).join(' '), (d.codes || [d.code]).join(' ')]
     .join(' ').toLowerCase();
   return curQ.split(/\s+/).every(t => hay.indexOf(t) >= 0);
 }
@@ -98,13 +92,9 @@ function renderCls() {
   const n = {};
   IDX.forEach(d => {
     if (curTop && (d.tops || []).indexOf(curTop) < 0) return;
-    (d.cls || []).forEach((c, i) => {
-      if (!n[c]) n[c] = { n: 0, zh: (d.clsZh || [])[i] || '' };
-      n[c].n++;
-      if (!n[c].zh && (d.clsZh || [])[i]) n[c].zh = (d.clsZh || [])[i];
-    });
+    (d.cls || []).forEach(c => { n[c] = (n[c] || 0) + 1; });
   });
-  const keys = Object.keys(n).sort((a, b) => n[b].n - n[a].n || a.localeCompare(b));
+  const keys = Object.keys(n).sort((a, b) => n[b] - n[a] || a.localeCompare(b));
   if (keys.length < 2) { el('db-cls').innerHTML = ''; return; }
   const hidden = clsOpen ? 0 : Math.max(0, keys.length - CLS_SHOWN);
   const shown = clsOpen ? keys
@@ -113,7 +103,7 @@ function renderCls() {
     `<span class="db-cls-lbl">藥理機轉</span>` +
     `<button class="db-clschip ${curCls ? '' : 'active'}" onclick="pickCls('')">不限</button>` +
     shown.map(c => `<button class="db-clschip ${curCls === c ? 'active' : ''}" onclick="pickCls('${esc(c)}')"
-      title="${esc(n[c].zh)}">${esc(n[c].zh || c)}<span>${n[c].n}</span></button>`).join('') +
+      >${esc(c)}<span>${n[c]}</span></button>`).join('') +
     (hidden ? `<button class="db-clsmore" onclick="toggleCls()">更多 ${hidden} 種 ▾</button>`
             : (clsOpen ? `<button class="db-clsmore" onclick="toggleCls()">收合 ▴</button>` : ''));
 }
@@ -129,21 +119,26 @@ function renderList() {
   el('db-count').textContent = `${hits.length} 個品項` +
     (hits.length > 400 ? '（品項較多，可用上方分類或搜尋縮小範圍）' : '');
   // 同學名的品項排在一起，商品名為次序；未展開的卡片只畫標題列，展開時才載入該分類資料
-  el('db-list').innerHTML = hits.map(d => `
+  el('db-list').innerHTML = hits.map(d => {
+    const badges = (d.strengths || []).map(s => `<span class="db-strength">${esc(s)}</span>`).join('');
+    const tags = (d.tags || []).map(t => `<span class="db-tag">${esc(t)}</span>`).join('');
+    return `
     <details class="drugcard" id="drug-${esc(d.code)}" data-pid="${d.pid}" data-code="${esc(d.code)}"
-             ontoggle="onCardToggle(this)">
+             data-codes="${esc((d.codes || [d.code]).join(' '))}" ontoggle="onCardToggle(this)">
       <summary>
         <span class="dc-name">${esc(shortBrand(d.brand))}</span>
+        ${tags}
         ${zhName(d.zh) ? `<span class="dc-zh">${esc(zhName(d.zh))}</span>` : ''}
-        ${strengthOf(d.brand) ? `<span class="db-strength">${esc(strengthOf(d.brand))}</span>` : ''}
+        ${badges}
         <span class="dc-nameen">${esc(d.name)}</span>
-        ${(d.clsZh && d.clsZh[0]) || (d.cls && d.cls[0])
+        ${(d.cls && d.cls[0])
           ? `<button type="button" class="dc-class" title="列出同機轉藥物"
-               onclick="event.preventDefault();event.stopPropagation();pickCls('${esc((d.cls || [])[0])}')"
-             >${esc((d.clsZh || [])[0] || (d.cls || [])[0])}</button>` : ''}
+               onclick="event.preventDefault();event.stopPropagation();pickCls('${esc(d.cls[0])}')"
+             >${esc(d.cls[0])}</button>` : ''}
       </summary>
       <div class="dc-body"><div class="db-loading">載入中…</div></div>
-    </details>`).join('') ||
+    </details>`;
+  }).join('') ||
     '<div class="db-empty">找不到符合的藥品。可改用學名、商品名或中文品名搜尋。</div>';
 }
 
@@ -207,53 +202,162 @@ function pregField(v) {
     (note ? `<span class="dc-pregnote">${esc(note)}</span>` : '') + `</div></div>`;
 }
 
-function cardBody(d) {
-  const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c.zh || c.en)}` +
-    (c.zh && c.en ? `<span class="db-moa-en">${esc(c.en)}</span>` : '') + `</span>`).join('');
-  const price = [d.nhi ? `健保 NT$ ${esc(d.nhi)}` : '', d.selfpay ? `自費 NT$ ${esc(d.selfpay)}` : '']
+/* 常用劑量排版：台大原文是一整段英文（"PO with meals. Adults, ... ; ... . Children, ..."），
+   一行讀完很吃力。逐字不刪，只在自然邊界插入換行／縮排，提高可讀性：
+   · 給藥途徑（開頭到第一個句點）獨立一行、粗體。
+   · 適應症標頭（"Xxx:"）另起一段、粗體。
+   · 族群（Adults／Children／Neonates…）另起一行。
+   · 句點與分號在括號外時斷句；分號視為同族群下的子項，縮排呈現。 */
+const DOSE_ROUTE = /^(?:PO|IV|IM|SC|SL|PR|IN|IT|IO|ID|Top|Topical|Inhal\w*|Nebuli\w*|Intra\w*|Oral|Rectal|Buccal|Transdermal|Ophthalmic)\b[^.]*\./i;
+const DOSE_POP = /\b(?:Adults?|Children|Child|Neonates?|Infants?(?:\s+and\s+children)?|Adolescents?|Elderly|Geriatric|Pediatric|Paediatric)\b[,:]/g;
+const DOSE_HEADER = /(^|[.;]\s+)([A-Z][A-Za-z][A-Za-z0-9 /()\-,&]{1,60}?):\s+/g;
+// 這些「單字＋句點」是劑量修飾語或縮寫，不視為句尾，不在其後斷行
+const DOSE_ABBR = new Set(['max', 'min', 'approx', 'appro', 'no', 'cf', 'viz', 'etc',
+  'wk', 'wks', 'hr', 'hrs', 'mo', 'mos', 'yr', 'yrs']);
+
+function fmtDose(text) {
+  let t = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!t) return '';
+  let head = '';
+  const rm = t.match(DOSE_ROUTE);
+  if (rm) { head = rm[0].trim(); t = t.slice(rm[0].length).trim(); }
+
+  // 以 †(適應症標頭) 與 ‡(族群) 作為換行標記，稍後轉成 HTML；標記字元本身不出現在資料裡
+  t = t.replace(DOSE_HEADER, (m, pre, h) => `${pre}†${h}: `);
+  t = t.replace(DOSE_POP, m => `‡${m}`);
+
+  // 在括號外的句點後斷段。不切開：小數（後面非空白）、以及縮寫（句點前的字母詞
+  // ≤ 2 字母，如 q.d.／e.g.／vs.／i.e.）。整段句點前是完整單字（day.／wks.）才斷。
+  const segs = [];
+  let cur = '', depth = 0;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (c === '(' || c === '（') depth++;
+    else if (c === ')' || c === '）') depth = Math.max(0, depth - 1);
+    cur += c;
+    if (c === '.' && depth === 0 && /\s/.test(t[i + 1] || ' ')) {
+      const lw = (cur.slice(0, -1).match(/[A-Za-z]+$/) || [''])[0];
+      if ((lw.length === 0 || lw.length > 2) && !DOSE_ABBR.has(lw.toLowerCase())) {
+        segs.push(cur.trim()); cur = '';
+      }
+    }
+  }
+  if (cur.trim()) segs.push(cur.trim());
+
+  let html = head ? `<div class="dl-head">${esc(head)}</div>` : '';
+  segs.forEach(seg => {
+    seg.split('†').forEach((chunk, ci) => {
+      chunk = chunk.trim();
+      if (!chunk) return;
+      if (ci > 0) {                                  // 適應症標頭：Xxx: rest
+        const mi = chunk.indexOf(':');
+        html += `<div class="dl-sect">${esc(chunk.slice(0, mi).replace(/[‡†]/g, '').trim())}</div>`;
+        chunk = chunk.slice(mi + 1).trim();
+        if (!chunk) return;
+      }
+      // 族群拆行；每個族群再依 ; 斷成子項
+      chunk.split('‡').forEach(part => {
+        part = part.trim().replace(/^[;,]\s*/, '');
+        if (!part) return;
+        const bits = part.split(/;\s+/);
+        html += `<div class="dl-line">${esc(bits[0])}</div>`;
+        for (let k = 1; k < bits.length; k++)
+          if (bits[k].trim()) html += `<div class="dl-sub">${esc(bits[k].trim())}</div>`;
+      });
+    });
+  });
+  return `<div class="dose-fmt">${html}</div>`;
+}
+
+function doseField(text) {
+  if (!text || !String(text).trim()) return '';
+  return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
+    <div class="dc-ftext">${fmtDose(text)}</div></div>`;
+}
+
+/* 單一規格（variant）的明細欄位 */
+function variantBody(v) {
+  const price = [v.nhi ? `健保 NT$ ${esc(v.nhi)}` : '', v.selfpay ? `自費 NT$ ${esc(v.selfpay)}` : '']
     .filter(Boolean).join('　·　');
   return `
-    ${field('商品名／含量', d.brand)}
-    ${field('學名', d.name)}
-    ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
-       <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
-    ${field('劑型', d.form)}
-    ${field('常用劑量', d.dose)}
-    ${field('最大劑量', d.maxDose)}
-    ${rowTbl('腎功能調整', d.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
-    ${rowTbl('肝功能調整', d.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
-    ${rowTbl('透析劑量', d.dialysis, [['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
+    ${field('商品名／含量', v.brand)}
+    ${doseField(v.dose)}
+    ${field('最大劑量', v.maxDose)}
+    ${rowTbl('腎功能調整', v.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
+    ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
+    ${rowTbl('透析劑量', v.dialysis, [['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
       ['pd_dose', 'PD 劑量'], ['pd_removal', 'PD 移除比例'], ['pd_supp', 'PD 後補充'], ['remark', '備註']])}
-    ${rowTbl('CVVH／CRRT 劑量', d.cvvh, [['cvvh', 'CVVH'], ['cvvhd', 'CVVHD'], ['cvvhdf', 'CVVHDF'], ['remark', '備註']])}
-    ${rowTbl('注射給藥指引', d.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
+    ${rowTbl('CVVH／CRRT 劑量', v.cvvh, [['cvvh', 'CVVH'], ['cvvhd', 'CVVHD'], ['cvvhdf', 'CVVHDF'], ['remark', '備註']])}
+    ${rowTbl('注射給藥指引', v.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
       ['diluent', '稀釋液及體積'], ['conc', '給藥濃度'], ['time', '輸注時間／速率'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性']])}
-    ${pregField(d.preg)}
-    ${d.ctrl ? field('管制藥品分級', d.ctrl) : ''}
-    ${field('適應症（衛福部許可證）', d.ind)}
-    ${field('藥理作用', d.action)}
-    ${field('副作用', d.adverse)}
-    ${field('禁忌', d.contra, true)}
-    ${field('安全警訊', d.alert, true)}
-    ${field('飲食交互作用', d.food)}
-    ${field('備註', d.note)}
-    ${d.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
-       <div class="dc-ftext db-nhi">${esc(d.nhiRule)}</div></div>` : ''}
-    ${field('藥品外觀', d.look)}
-    ${field('藥商', d.company)}
+    ${pregField(v.preg)}
+    ${v.ctrl ? field('管制藥品分級', v.ctrl) : ''}
+    ${field('適應症（衛福部許可證）', v.ind)}
+    ${field('藥理作用', v.action)}
+    ${field('副作用', v.adverse)}
+    ${field('禁忌', v.contra, true)}
+    ${field('安全警訊', v.alert, true)}
+    ${field('飲食交互作用', v.food)}
+    ${field('備註', v.note)}
+    ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
+       <div class="dc-ftext db-nhi">${esc(v.nhiRule)}</div></div>` : ''}
+    ${field('藥品外觀', v.look)}
+    ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
-    <div class="db-foot">藥品八碼 ${esc(d.code)}　·　台大分類：${esc(d.cat || '')}</div>`;
+    <div class="db-foot">藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}</div>`;
+}
+
+/* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */
+function cardBody(d) {
+  const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
+  const header = `
+    ${field('學名', d.name)}
+    ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
+       <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
+    ${field('劑型', d.form)}`;
+  const vs = (d.variants || []).map(v => ({ cat: d.cat, ...v }));
+  if (vs.length <= 1) return header + (vs[0] ? variantBody(vs[0]) : '');
+
+  // 多規格：以含量分頁，避免不同劑量的劑量／腎肝調整混在一起看不清
+  const labels = uniqueLabels(vs);
+  const tabs = vs.map((v, i) =>
+    `<button type="button" class="db-vtab ${i === 0 ? 'active' : ''}"
+       onclick="switchVariant(this, ${i})">${esc(labels[i])}</button>`).join('');
+  const panes = vs.map((v, i) =>
+    `<div class="db-vpane ${i === 0 ? '' : 'hidden'}">${variantBody(v)}</div>`).join('');
+  return header +
+    `<div class="db-vtabs"><span class="db-vtabs-lbl">含量規格</span>${tabs}</div>
+     <div class="db-vpanes">${panes}</div>`;
+}
+
+// 分頁標籤＝含量；若重複或缺漏，補上序號以維持唯一
+function uniqueLabels(vs) {
+  const seen = {};
+  return vs.map((v, i) => {
+    let s = v.strength || ('規格 ' + (i + 1));
+    if (seen[s]) s += ' ·' + (++seen[s]); else seen[s] = 1;
+    return s;
+  });
+}
+
+function switchVariant(btn, i) {
+  const card = btn.closest('.dc-body');
+  card.querySelectorAll('.db-vtab').forEach((b, k) => b.classList.toggle('active', k === i));
+  card.querySelectorAll('.db-vpane').forEach((p, k) => p.classList.toggle('hidden', k !== i));
 }
 
 /* ---------------- 進場 ---------------- */
 
-// 網址帶 #code=XXXX 時直接展開該藥卡（供其他頁面連過來）
+// 網址帶 #code=XXXX 時直接展開該藥卡（合併後一張卡含多個八碼，任一皆可連進來）
 function applyHash() {
   const m = location.hash.match(/#code=([A-Za-z0-9 %]+)/);
   if (!m) return;
-  const code = decodeURIComponent(m[1]);
-  const card = el('drug-' + code);
+  const code = decodeURIComponent(m[1]).trim();
+  let card = el('drug-' + code);
+  if (!card) card = [...document.querySelectorAll('.drugcard')]
+    .find(c => (c.dataset.codes || '').split(' ').indexOf(code) >= 0);
   if (card) { card.open = true; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 }
 

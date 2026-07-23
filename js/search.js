@@ -27,7 +27,8 @@
   var DATA_FILES = [
     ['./data/antibiotics/regimens.js', 'SITES'],
     ['./data/antibiotics/drugs.js',    'DRUGS'],
-    ['./data/cancer/cancers.js',       'CANCERS']
+    ['./data/cancer/cancers.js',       'CANCERS'],
+    ['./data/drugs/index.js',          'DRUGDB_INDEX']   // 藥物資料庫輕量索引
   ];
 
   var MAX_HITS = 50;      // 單次最多顯示筆數（超過時提示縮小範圍）
@@ -139,6 +140,36 @@
     return out;
   }
 
+  // 藥物資料庫（台大處方集，一商品名一卡）：連向 drug-database.html 並直接展開該卡
+  var DB_FORM = /\b(Tablets?|Capsules?|Injection|Solution|Soln|Syrup|Suspension|Powder|Granules?|Sachet|Patch|Pen|Inhal\w*|Spray|Cream|Gel|Suppository|Effervescent|Lyo\w*|F\.?C\.?|Film-coated|Oral|SR|CR|MR|XR|ER|Sterile|for)\b/i;
+  function dbShortBrand(b) {
+    var out = [];
+    String(b || '').trim().split(/\s+/).some(function (w) {
+      if (out.length && (DB_FORM.test(w) || /[\d,]/.test(w))) return true;
+      out.push(w);
+      return out.length >= 4;
+    });
+    return out.join(' ').replace(/[,，]$/, '');
+  }
+  function indexDrugDb() {
+    var out = [];
+    if (!window.DRUGDB_INDEX) return out;
+    DRUGDB_INDEX.forEach(function (d) {
+      var strengths = (d.strengths || []).join('／');
+      var cls = (d.cls || []).join(' · ');
+      out.push({
+        type: 'drug',
+        label: dbShortBrand(d.brand) || d.name,                    // 商品名（去劑型／含量）
+        en: d.name,                                                // 學名
+        sub: [d.zh, strengths, cls].filter(Boolean).join(' · '),
+        kw: [d.name, d.brand, d.zh, cls, strengths,
+             (d.codes || []).join(' ')].join(' '),
+        url: 'tools/drug-database.html#code=' + encodeURIComponent(d.code)
+      });
+    });
+    return out;
+  }
+
   function indexBacteria() {
     var out = [];
     if (!window.BACTERIA) return out;
@@ -229,7 +260,7 @@
 
   function buildIndex() {
     idx = [].concat(indexHubs(), indexCards(), indexSubPages(), indexSites(),
-                    indexBacteria(), indexDrugs(), indexCancers());
+                    indexBacteria(), indexDrugs(), indexDrugDb(), indexCancers());
   }
 
   /* ---- 比對與排序 ---- */
