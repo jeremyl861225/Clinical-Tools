@@ -55,11 +55,13 @@
       title: '藥物資料庫', en: 'Drug Database', href: 'tools/drug-database.html',
       items: [{ href: 'tools/drug-database.html', zh: '藥物資料庫', en: 'NTUH Formulary' }]
     },
-    // 心臟急重症：兩份自含頁面（無首頁方磚），固定列於側邊欄最底。
+    // 急重症處置：自含頁面（無首頁方磚），固定列於側邊欄最底。
+    // 原名「心臟急重症」，加入呼吸道處置（RSI）後改為涵蓋復甦全域的名稱。
     {
-      title: '心臟急重症', en: 'Cardiac & Critical Care', href: '',
+      title: '急重症處置', en: 'Emergency & Critical Care', href: '',
       items: [
         { href: 'tools/acls.html', zh: 'ACLS 高級心臟救命術', en: 'Resuscitation Algorithms' },
+        { href: 'tools/rsi.html', zh: 'RSI 快速誘導插管', en: 'Rapid Sequence Intubation' },
         { href: 'tools/heart-failure.html', zh: '心臟衰竭治療指引', en: 'NTUH Heart Failure' }
       ]
     }

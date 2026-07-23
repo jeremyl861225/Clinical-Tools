@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快速誘導插管 RSI · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  /* ── 體重列：整頁劑量的唯一輸入，捲動時貼頂 ───────────────────────── */
+  .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
+           border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  .rsi-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  /* 貼頂時才加陰影；窄螢幕另讓開左上角那顆固定的導覽列開關（nav.css 的 .nav-toggle），
+     否則體重欄位會被它蓋住。未貼頂時導覽鈕在標題區上方，不需讓位。 */
+  .rsi-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
+  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }
+  .rsi-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
+                 text-transform:uppercase; letter-spacing:.04em;}
+  .rsi-bar input[type=number]{width:88px; font-family:var(--mono); font-size:15px; font-weight:700;
+      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .rsi-shock{display:inline-flex; align-items:center; gap:5px; font-size:12px; cursor:pointer;
+             padding:4px 8px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg);}
+  .rsi-shock input{accent-color:var(--accent2);}
+  .rsi-shock.on{background:var(--accent2-soft); border-color:var(--accent2);}
+  .rsi-bar .rsi-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
+
+  /* ── 分頁 ─────────────────────────────────────────────────────── */
+  .rsi-tabs{display:flex; gap:0; flex-wrap:wrap; border-bottom:2px solid var(--ink); margin-bottom:14px;}
+  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
+           border:none; background:none; color:var(--muted); border-bottom:2px solid transparent;
+           margin-bottom:-2px;}
+  .rsi-tab:hover{color:var(--ink);}
+  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;}
+  .rsi-panel{display:none;} .rsi-panel.on{display:block;}
+
+  /* ── 時間軸（7 Ps） ──────────────────────────────────────────── */
+  .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
+  .tl-item{position:relative; padding:0 0 14px 18px;}
+  .tl-item:last-child{padding-bottom:2px;}
+  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+                  border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
+  .tl-item.t0:before{background:var(--accent2);}
+  .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
+  .tl-h{font-family:var(--serif); font-size:15px; font-weight:600; margin:1px 0 3px;}
+  .tl-h .en{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400; margin-left:5px;}
+  .tl-b{font-size:12.5px; line-height:1.7;}
+  .tl-b ul{margin:3px 0; padding-left:17px;}
+  .tl-b li{margin:1px 0;}
+
+  /* ── 藥物卡 ─────────────────────────────────────────────────── */
+  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .dg.warn{border-left-color:var(--accent2);}
+  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
+  .dg-zh{font-size:11.5px; color:var(--muted);}
+  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
+  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}
+  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
+  .dg-dose .dd-v.alt{color:var(--accent2);}
+  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
+  .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px;}
+  .dg-kin b{color:var(--ink); font-weight:700;}
+  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
+  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
+  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em;
+             text-transform:uppercase;}
+  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
+  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
+  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
+  .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
+           border-top:1px dashed var(--line); padding-top:6px;}
+  .dg-note b{color:var(--accent2);}
+
+  /* ── 通用小元件 ─────────────────────────────────────────────── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .tw table{min-width:520px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-rsi">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Airway Management · Emergency &amp; Critical Care</div>
+      <h1>快速誘導插管 RSI</h1>
+      <div class="sub">Rapid Sequence Intubation — 流程、藥物劑量、副作用與併發症處置</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+  </div>
+
+  <!-- 體重列：全頁劑量的唯一輸入。前方的哨兵用來判斷它是否已貼頂（見 .rsi-bar.stuck） -->
+  <div id="rsi_sentinel" aria-hidden="true" style="height:1px;"></div>
+  <div class="rsi-bar" id="rsi_bar">
+    <div class="rsi-bar-in">
+      <label for="rsi_wt">體重 Weight</label>
+      <input type="number" id="rsi_wt" min="1" max="250" step="1" value="60">
+      <span class="rsi-hint">kg</span>
+      <label class="rsi-shock" id="rsi_shock_wrap">
+        <input type="checkbox" id="rsi_shock"> 血流動力學不穩／休克（誘導劑減量）
+      </label>
+      <span class="rsi-hint" id="rsi_wt_note">肥胖病人請見「特殊情境」的秤重依據</span>
+    </div>
+  </div>
+
+  <div class="rsi-tabs">
+    <button class="rsi-tab on" data-p="flow">流程 Sequence</button>
+    <button class="rsi-tab" data-p="drug">藥物 Drugs</button>
+    <button class="rsi-tab" data-p="airway">困難氣道 Airway</button>
+    <button class="rsi-tab" data-p="situ">特殊情境 Situations</button>
+    <button class="rsi-tab" data-p="cx">併發症 Complications</button>
+    <button class="rsi-tab" data-p="ev">證據 Evidence</button>
+  </div>
+
+  <!-- ══════════════════ 流程 ══════════════════ -->
+  <div class="rsi-panel on" id="p-flow">
+    <p class="lead">
+      RSI＝在<b>不做正壓通氣</b>（或僅作低壓輔助）的前提下，幾乎同時給予強效鎮靜誘導劑與快速起效的神經肌肉阻斷劑，
+      把「意識喪失」到「氣管內管置入」之間的嘔吐吸入風險壓到最短。以下依經典 <b>7 Ps</b> 排列，
+      時間軸以「給誘導藥的瞬間」為 <span class="mono">T0</span>。
+    </p>
+
+    <div class="card">
+      <div class="section-title">7 Ps 時間軸</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-t">T − 10 min</div>
+          <div class="tl-h">1. 準備<span class="en">Preparation</span></div>
+          <div class="tl-b">
+            口訣 <b>SOAP-ME</b>：Suction 抽吸／Oxygen 氧氣與 BVM／Airway 氣管內管（成人男 7.5–8.0、女 7.0–7.5，含備用小一號）＋喉頭鏡（優先影片喉頭鏡）、bougie、聲門上呼吸道／Positioning 擺位／Monitor 監測（含<b>波形式二氧化碳偵測 waveform capnography</b>）＋Medication 藥物抽好標示。
+            <ul>
+              <li>確認靜脈或骨內通路至少一條可用、通暢。</li>
+              <li>升壓劑（norepinephrine）先接上管路備用；分派人力：操作者、給藥者、監測者、環狀軟骨／外部喉部操作者。</li>
+              <li>先講出「失敗後的下一步」（Plan A/B/C）再開始，不要邊做邊想。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-t">T − 8 ~ 3 min</div>
+          <div class="tl-h">2. 預氧合<span class="en">Preoxygenation</span></div>
+          <div class="tl-b">
+            目標是把功能性殘氣量的氮氣洗掉，換取誘導後的安全無呼吸時間。
+            <ul>
+              <li>床頭抬高 20–30°（或反 Trendelenburg），non-rebreather mask 15 L/min 給 3 分鐘；不合作者可用 8 次最大肺活量呼吸。</li>
+              <li><b>重症或低血氧者優先用非侵襲性正壓通氣（NIV）預氧合</b>：PREOXI 試驗中插管中低血氧（SpO₂&lt;85%）由 18.5% 降至 9.1%，心跳停止 1.1%→0.2%，吸入性肺炎未增加。</li>
+              <li>無呼吸期氧合（apneic oxygenation，鼻導管 15 L/min 全程不拔）在單一 ICU 隨機試驗未見益處，但成本與風險極低，多數流程仍保留。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-t">T − 3 min</div>
+          <div class="tl-h">3. 誘導前優化<span class="en">Pre-induction Optimization / Pretreatment</span></div>
+          <div class="tl-b">
+            重點已從「藥理預處理」轉為「先把循環修好」——插管本身最常殺人的不是缺氧，是低血壓。
+            <ul>
+              <li>先矯正低血壓：升壓劑輸注、必要時 push-dose 升壓劑；<b>常規給 500 mL 輸液並不能降低插管後循環崩潰</b>（PrePARE 與 2022 年 JAMA 千人試驗皆為陰性），有明確低血容者才給。</li>
+              <li>Fentanyl 1–3 mcg/kg（誘導前 3 分鐘）可鈍化交感反應，用於顱內壓／主動脈剝離／缺血性心臟病；低血壓者略過。</li>
+              <li>Lidocaine 1.5 mg/kg、atropine（成人）等舊有預處理<b>證據不足，不建議常規使用</b>。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item t0">
+          <div class="tl-t">T 0</div>
+          <div class="tl-h">4. 麻痺與誘導<span class="en">Paralysis with Induction</span></div>
+          <div class="tl-b">
+            誘導劑快速推注後<b>立刻</b>接著推注神經肌肉阻斷劑（兩者間不等待），沖管。
+            <ul>
+              <li>誘導劑先選 etomidate 或 ketamine（詳見「藥物」分頁）；不穩定者減量。</li>
+              <li>阻斷劑用足量：rocuronium <b>1.2 mg/kg</b>（不是手術室的 0.6）或 succinylcholine 1–1.5 mg/kg。劑量不足＝起效慢、條件差。</li>
+              <li>此時<b>不做常規正壓通氣</b>；但低血氧高風險者，介於誘導與喉頭鏡之間給予低壓 BVM 輔助可降低嚴重低血氧（22.8%→10.9%），吸入未顯著增加。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-t">T 0 ~ +45 s</div>
+          <div class="tl-h">5. 擺位<span class="en">Positioning</span></div>
+          <div class="tl-b">
+            嗅探位（sniffing position）——頸部屈曲、頭部伸展，<b>耳屏與胸骨上切跡等高</b>；肥胖病人用毛毯／楔形墊做成斜坡位（ramped）。
+            <ul>
+              <li>環狀軟骨壓迫（Sellick）<b>不再常規建議</b>：IRIS 試驗未能證明省略它不劣於施行，但施行組 Cormack–Lehane 3–4 級較多（10% vs 5%）、插管時間 &gt;30 秒者較多（47% vs 40%），視野變差是確定的。若使用而視野不佳，立即放手。</li>
+              <li>視野不佳時改做外部喉部操作（BURP／雙手喉部操作）比壓環狀軟骨有用。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-t">T + 45 ~ 60 s</div>
+          <div class="tl-h">6. 置管與確認<span class="en">Placement with Proof</span></div>
+          <div class="tl-b">
+            等到完全鬆弛（succinylcholine 約 45 秒、rocuronium 1.2 mg/kg 約 45–60 秒）再入鏡。
+            <ul>
+              <li><b>影片喉頭鏡為首選</b>：DEVICE 試驗中首次成功率 85.1% vs 直接喉頭鏡 70.8%（絕對差 +14.3%），提前因效益中止。</li>
+              <li>確認：<b>波形式 capnography 為黃金標準</b>（持續 6 個以上波形），輔以雙側呼吸音、胸廓起伏、霧氣、SpO₂；一律留意單側（右主支氣管）插入。</li>
+              <li>單次嘗試 &lt;30 秒；SpO₂ 掉到 90% 就退出、BVM 給氧再試。<b>每多嘗試一次，併發症明顯上升</b>——第 3 次前一定要換人、換器械或換策略。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-t">T + 1 min ~</div>
+          <div class="tl-h">7. 插管後處置<span class="en">Post-intubation Management</span></div>
+          <div class="tl-b">
+            <ul>
+              <li><b>立即</b>給鎮靜與止痛輸注——阻斷劑作用比誘導劑長（rocuronium 45–70 分 vs etomidate 3–12 分），延遲＝清醒下被麻痺。</li>
+              <li>固定管路、記錄深度（成人男 22–24 cm、女 20–22 cm 於門齒）、氣囊壓 20–30 cmH₂O、放置胃管。</li>
+              <li>設定肺保護通氣（潮氣量 6–8 mL/kg 理想體重、平台壓 &lt;30 cmH₂O）、床頭抬高 30°。</li>
+              <li>胸部 X 光確認深度（非確認是否在氣管內）、追蹤血壓與血氣。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kbox alert">
+      <div class="kbox-t">開始前的三個問句</div>
+      <ul>
+        <li><b>會不會插不進去？</b>→ 先算 MACOCHA／LEMON（見「困難氣道」分頁），高風險就備妥影片喉頭鏡、bougie、聲門上呼吸道與外科氣道，並找第二位操作者。</li>
+        <li><b>血壓撐不撐得住？</b>→ Shock index（HR/SBP）&gt;0.8、正在用升壓劑、乳酸高者，先修循環再給藥，誘導劑減量。</li>
+        <li><b>撐得住多久不呼吸？</b>→ 低血氧、肥胖、孕婦、代謝性酸中毒代償過度換氣者，安全無呼吸時間極短，需 NIV 預氧合並準備誘導期輔助通氣。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════ 藥物 ══════════════════ -->
+  <div class="rsi-panel" id="p-drug">
+    <p class="lead">
+      以下每張卡片的劑量方塊會依上方體重即時換算成 <b>mg 與 mL</b>；mL 依<b>台大醫院藥劑部現有品項濃度</b>計算。
+      勾選「血流動力學不穩」後，誘導劑會同時顯示減量後的建議劑量。
+    </p>
+
+    <div class="section-title">誘導鎮靜劑 Induction Agents</div>
+
+    <!-- Etomidate -->
+    <div class="dg" data-drug="etomidate">
+      <div class="dg-head">
+        <span class="dg-name">Etomidate</span>
+        <span class="dg-zh">怡拓眠 Hypnomidate 20 mg/10 mL/amp</span>
+        <span class="dg-tag">2 mg/mL</span><span class="dg-tag ctrl">管4</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">標準劑量 0.3 mg/kg</span><span class="dd-v" data-out="std">—</span></span>
+        <span class="shock-only"><span class="dd-k">不穩定時 0.15–0.2 mg/kg</span><span class="dd-v alt" data-out="low">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>15–45 秒</b> ｜ 作用時間 <b>3–12 分</b> ｜ 原液不需稀釋，推注 ≥30–60 秒</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>血流動力學最平穩的誘導劑，心輸出量與體循環阻力幾乎不變。</li>
+          <li>降低腦代謝率與顱內壓，同時維持腦灌注壓。</li>
+          <li>起效快、清除快，藥效可預期。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li><b>腎上腺皮質抑制</b>（11β-hydroxylase 抑制）：單劑即可造成，最新統合分析中發生率 14.7% vs ketamine 5.3%。</li>
+          <li>肌陣攣（myoclonus）常見，可誤判為抽搐。</li>
+          <li>術後噁心嘔吐、注射部位疼痛。</li>
+          <li>無鎮痛作用，不可單獨用於鎮痛。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note">
+        <b>爭議澄清：</b>六篇隨機試驗、4,108 人的 2026 年統合分析顯示 etomidate 與 ketamine 的<b>28 天死亡率無差異</b>（29.9% vs 28.7%），敗血症次群組亦然；差別在於 etomidate 較多腎上腺抑制、ketamine 較多插管後低血壓。單劑 etomidate 用於敗血症並非禁忌。台大仿單：成人與 ≥10 歲兒童 0.3 mg/kg（0.2–0.6），<b>不建議 &lt;10 歲</b>、不可長時間輸注。
+      </div>
+    </div>
+
+    <!-- Ketamine -->
+    <div class="dg" data-drug="ketamine">
+      <div class="dg-head">
+        <span class="dg-name">Ketamine</span>
+        <span class="dg-zh">克太拉 Ketalar 500 mg/10 mL/vial</span>
+        <span class="dg-tag">50 mg/mL（建議稀釋）</span><span class="dg-tag ctrl">管3</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">標準劑量 1.5 mg/kg（1–2）</span><span class="dd-v" data-out="std">—</span></span>
+        <span class="shock-only"><span class="dd-k">休克時 0.5–1 mg/kg</span><span class="dd-v alt" data-out="low">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>45–60 秒</b> ｜ 作用時間 <b>10–20 分</b> ｜ 推注 ≥60 秒；原液太濃，實務上稀釋至 10 mg/mL 較好給</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>間接擬交感作用，多數病人血壓與心跳維持或上升。</li>
+          <li><b>支氣管擴張</b>——氣喘重積狀態的首選誘導劑。</li>
+          <li>有鎮痛作用，並保留呼吸驅動與氣道反射（適合延遲序列插管 DSI）。</li>
+          <li>不抑制腎上腺功能。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li>兒茶酚胺已耗竭者（久病休克）反而<b>顯露直接心肌抑制而低血壓</b>——統合分析中插管後低血壓 14.2% vs etomidate 11.3%（RR 1.25）。</li>
+          <li>甦醒期反應（幻覺、譫妄）、噩夢。</li>
+          <li>唾液與支氣管分泌增加，喉痙攣風險。</li>
+          <li>心跳與血壓上升，冠心病、主動脈剝離、未控制高血壓者需權衡。</li>
+          <li>管制藥品第三級，台大規定<b>不可氣送</b>。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note">
+        <b>顱內壓迷思已翻案：</b>2026 年含 4 篇隨機試驗的統合分析顯示，創傷性腦損傷病人使用 ketamine 之院內死亡率無差異、基礎 ICP &lt;20 mmHg 者顱內壓升高亦無顯著增加；ketamine 不再視為腦傷禁忌，但該研究中 ketamine 與低血壓事件較多（RR 1.47）。肝功能不良者作用延長，需減量。
+      </div>
+    </div>
+
+    <!-- Propofol -->
+    <div class="dg warn" data-drug="propofol">
+      <div class="dg-head">
+        <span class="dg-name">Propofol</span>
+        <span class="dg-zh">飛可復 Fresofol 2% 1000 mg/50 mL；亦有 1% 200 mg/20 mL</span>
+        <span class="dg-tag">20 mg/mL（2%）</span><span class="dg-tag ctrl">管4</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">標準劑量 1.5 mg/kg（1–2.5）</span><span class="dd-v" data-out="std">—</span></span>
+        <span class="shock-only"><span class="dd-k">不穩定／ASA 3–4：0.5–1.5 mg/kg</span><span class="dd-v alt" data-out="low">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>15–45 秒</b> ｜ 作用時間 <b>5–10 分</b> ｜ 上表為 2% 製劑；用 1% 時 mL 數加倍</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>起效最快、甦醒最乾淨，插管條件佳。</li>
+          <li>抗痙攣，癲癇重積狀態的合理選擇。</li>
+          <li>降低腦代謝率與顱內壓。</li>
+          <li>可無縫銜接插管後鎮靜輸注。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li><b>劑量依賴性低血壓</b>（血管擴張＋心肌抑制）——重症急診插管的<b>相對禁忌</b>。</li>
+          <li>呼吸抑制／無呼吸。</li>
+          <li>注射痛。</li>
+          <li>脂肪乳劑：高三酸甘油酯、熱量負荷；長時間高劑量有 propofol 輸注症候群（&gt;5 mg/kg/hr 且 &gt;48 小時）。</li>
+          <li>無鎮痛作用。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note">
+        <b>使用時機：</b>血壓有餘裕、需要快速可逆的深度鎮靜（癲癇重積、術中氣道）。休克病人若非得使用，務必減至 0.5–1 mg/kg 並先接好升壓劑。開瓶後立即使用，麻醉／處置鎮靜 6 小時內用完、ICU 鎮靜 12 小時內；勿用 &lt;5 微米濾器。
+      </div>
+    </div>
+
+    <!-- Midazolam -->
+    <div class="dg warn" data-drug="midazolam">
+      <div class="dg-head">
+        <span class="dg-name">Midazolam</span>
+        <span class="dg-zh">導眠靜 Dormicum 5 mg/1 mL/amp</span>
+        <span class="dg-tag">5 mg/mL</span><span class="dg-tag ctrl">管4</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">誘導劑量 0.2 mg/kg（0.1–0.3）</span><span class="dd-v" data-out="std">—</span></span>
+        <span class="shock-only"><span class="dd-k">不穩定時 0.05–0.1 mg/kg</span><span class="dd-v alt" data-out="low">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>30–90 秒</b> ｜ 作用時間 <b>15–30 分</b> ｜ 起效最慢、最難抓劑量</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>抗痙攣、有順向失憶效果。</li>
+          <li>取得容易，可與 opioid 併用。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li>誘導劑量常給不足（實務上習慣的 5 mg 遠低於 0.2 mg/kg），導致鎮靜不全。</li>
+          <li>低血壓與呼吸抑制，與 opioid 併用時加成。</li>
+          <li>起效慢、作用時間長，不利快速序列。</li>
+          <li>老年、肝腎功能不良者作用顯著延長，譫妄風險。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note"><b>不建議作為 RSI 的第一線誘導劑</b>；僅在無其他選擇時使用，且必須給到真正的誘導劑量。</div>
+    </div>
+
+    <div class="section-title sect">神經肌肉阻斷劑 Neuromuscular Blocking Agents</div>
+
+    <!-- Succinylcholine -->
+    <div class="dg" data-drug="sux">
+      <div class="dg-head">
+        <span class="dg-name">Succinylcholine</span>
+        <span class="dg-zh">能弛聖 Relaxin 500 mg/vial（粉劑，需復溶）</span>
+        <span class="dg-tag">復溶 10 mL → 50 mg/mL</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">RSI 劑量 1.5 mg/kg（1–1.5）</span><span class="dd-v" data-out="std">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>45 秒</b> ｜ 作用時間 <b>6–10 分</b> ｜ 去極化型；復溶後室溫可放 24 小時</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>起效最快、插管條件最好。</li>
+          <li>作用時間短——理論上「插不到就等它退」（但 6–10 分鐘的缺氧足以致命，不可倚賴）。</li>
+          <li>需快速恢復神經學檢查時較有利。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li><b>高血鉀</b>：正常人升 0.5 mEq/L；去神經化／燒傷／橫紋肌溶解者可急遽上升而心跳停止。</li>
+          <li><b>惡性高熱</b>觸發劑。</li>
+          <li>肌束顫動、術後肌痛、肌球蛋白尿。</li>
+          <li>心搏過緩（尤其兒童與重複給藥）、心律不整。</li>
+          <li>血漿膽鹼酯酶缺乏者作用大幅延長。</li>
+          <li>眼內壓、胃內壓、顱內壓輕微上升。</li>
+          <li>台大規定需對點、<b>不可氣送</b>。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note">
+        <b>絕對／相對禁忌（有其一就改用 rocuronium）：</b>高血鉀或疑似高血鉀、燒傷或擠壓傷＞24–48 小時、去神經化狀態（脊髓損傷、腦中風＞72 小時、長期臥床、嚴重肌肉萎縮）、橫紋肌溶解、惡性高熱病史或家族史、遺傳性肌失養症、重症肌無力（本院註記：兩類阻斷劑皆應避免）、嚴重腎衰竭合併高血鉀。
+      </div>
+    </div>
+
+    <!-- Rocuronium -->
+    <div class="dg" data-drug="rocuronium">
+      <div class="dg-head">
+        <span class="dg-name">Rocuronium</span>
+        <span class="dg-zh">安心麻儂 Esmeron 50 mg/5 mL/vial</span>
+        <span class="dg-tag">10 mg/mL</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">RSI 劑量 1.2 mg/kg（0.6–1.2）</span><span class="dd-v" data-out="std">—</span></span>
+        <span><span class="dd-k">插管後追加 0.15 mg/kg</span><span class="dd-v alt" data-out="maint">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>45–60 秒</b>（1.2 mg/kg）｜ 作用時間 <b>45–70 分</b> ｜ 非去極化型；2–8°C 冷藏保存</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li>沒有 succinylcholine 那些代謝性禁忌，適用族群最廣。</li>
+          <li>高劑量（1.2 mg/kg）起效可與 succinylcholine 相當。</li>
+          <li>可用 sugammadex 立即逆轉。</li>
+          <li>不引起肌束顫動、不觸發惡性高熱。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li><b>作用時間長</b>——插管失敗時無法「等它退」，且鎮靜不足時病人清醒卻全身癱瘓。</li>
+          <li>肝功能不良者需減量、作用延長；腎功能不良者持續時間變異大。</li>
+          <li>過敏／類過敏反應（NMBA 為麻醉中過敏的主要原因）。</li>
+          <li>用 0.6 mg/kg（手術室劑量）做 RSI 會起效太慢，是常見錯誤。</li>
+        </ul></div>
+      </div>
+      <div class="dg-note">
+        <b>該選哪一個？</b>NEAR 註冊研究 4,075 例急診 RSI，首次成功率 87.0%（sux）vs 87.5%（roc）、不良事件 14.7% vs 14.8%，<b>無差異</b>。法國院外 RSI 隨機試驗中 rocuronium 1.2 mg/kg 對 succinylcholine 1 mg/kg <b>未能證明非劣性</b>（74.6% vs 79.4%）。實務結論：兩者皆可，<b>依禁忌與是否需要短效來選</b>；rocuronium 一定要給足 1.2 mg/kg。
+      </div>
+    </div>
+
+    <div class="section-title sect">輔助與救援藥物 Adjuncts &amp; Rescue</div>
+
+    <div class="dg" data-drug="fentanyl">
+      <div class="dg-head">
+        <span class="dg-name">Fentanyl</span>
+        <span class="dg-zh">吩坦尼注射液 0.05 mg/mL, 2 mL/amp</span>
+        <span class="dg-tag">50 mcg/mL</span><span class="dg-tag ctrl">管制</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">誘導前 1–3 mcg/kg（以 2 計）</span><span class="dd-v" data-out="std">—</span></span>
+      </div>
+      <div class="dg-kin">誘導前 <b>3 分鐘</b>緩推 ｜ 鈍化喉鏡刺激的交感反應</div>
+      <div class="dg-note">用於顱內壓升高、主動脈剝離／動脈瘤、缺血性心臟病、嗜鉻細胞瘤。<b>低血壓或倚賴交感張力維持血壓者略過</b>；快速推注可致胸壁僵直。</div>
+    </div>
+
+    <div class="dg" data-drug="sugammadex">
+      <div class="dg-head">
+        <span class="dg-name">Sugammadex</span>
+        <span class="dg-zh">倍帝恩 Bridion 200 mg/2 mL/vial（常備）</span>
+        <span class="dg-tag">100 mg/mL</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">立即逆轉 16 mg/kg</span><span class="dd-v" data-out="std">—</span></span>
+        <span><span class="dd-k">深度阻斷 4 mg/kg</span><span class="dd-v alt" data-out="deep">—</span></span>
+      </div>
+      <div class="dg-kin">僅逆轉 <b>rocuronium／vecuronium</b>，對 succinylcholine 無效 ｜ 起效 2–3 分</div>
+      <div class="dg-note">
+        <b>不要把它當成 CICO（無法插管無法氧合）的救命稻草。</b>即使肌力恢復，病人仍處於誘導劑造成的無意識與呼吸抑制狀態，且原本導致氣道阻塞的病理不會消失；文獻明確稱之為「救援逆轉的迷思」。CICO 的正解是<b>立即外科氣道</b>。
+      </div>
+    </div>
+
+    <div class="dg" data-drug="lidocaine">
+      <div class="dg-head">
+        <span class="dg-name">Lidocaine</span>
+        <span class="dg-zh">靜注用苦息樂卡因 2% 100 mg/5 mL/amp</span>
+        <span class="dg-tag">20 mg/mL</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">1.5 mg/kg（誘導前 3 分鐘）</span><span class="dd-v" data-out="std">—</span></span>
+      </div>
+      <div class="dg-note"><b>不建議常規使用。</b>用於鈍化顱內壓反應與氣道高反應性的證據不足，列此僅供仍沿用舊流程時查劑量。</div>
+    </div>
+
+    <div class="dg" data-drug="atropine">
+      <div class="dg-head">
+        <span class="dg-name">Atropine</span>
+        <span class="dg-zh">硫酸阿托品注射液 1 mg/1 mL/amp</span>
+        <span class="dg-tag">1 mg/mL</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">0.02 mg/kg（最低 0.1 mg）</span><span class="dd-v" data-out="std">—</span></span>
+      </div>
+      <div class="dg-note">僅用於<b>嬰幼兒</b>（&lt;1 歲）或需重複給 succinylcholine 時預防心搏過緩；<b>成人不常規給</b>。</div>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">插管後鎮靜與止痛（阻斷劑退掉前務必開始）</div>
+      <ul>
+        <li><b>Fentanyl</b> 輸注 0.7–10 mcg/kg/hr，或間歇 25–100 mcg IV。</li>
+        <li><b>Propofol</b> 輸注 5–50 mcg/kg/min（血壓可承受時）；<b>Midazolam</b> 輸注 0.02–0.1 mg/kg/hr。</li>
+        <li><b>Dexmedetomidine</b> 0.2–1.4 mcg/kg/hr，適合脫離呼吸器階段，不足以單獨覆蓋剛插管者。</li>
+        <li>若持續需要肌肉鬆弛（如重度 ARDS），<b>必先確保深度鎮靜</b>；rocuronium 追加 0.1–0.2 mg/kg 或 cisatracurium 輸注。</li>
+      </ul>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">Push-dose 升壓劑（過渡用，不能取代連續輸注）</div>
+      <ul>
+        <li><b>Phenylephrine</b> 50–200 mcg IV，每 2–5 分鐘可重複——心跳快、需純血管收縮時。</li>
+        <li><b>Ephedrine</b> 5–10 mg IV（本院 40 mg/mL，須稀釋）——心跳慢合併低血壓。</li>
+        <li><b>Epinephrine</b> 5–20 mcg IV——同時需要強心與升壓時。取 1:10,000 一支 1 mL（100 mcg）加 NS 9 mL＝10 mcg/mL，每次給 0.5–2 mL。</li>
+        <li>配製與標示錯誤是 push-dose 升壓劑最常見的傷害來源；由第二人複誦確認濃度。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════ 困難氣道 ══════════════════ -->
+  <div class="rsi-panel" id="p-airway">
+    <p class="lead">ICU／急診的困難插管發生率約 8–13%，且困難插管者發生嚴重危及生命併發症的比例顯著較高（51% vs 36%）。<b>在給藥之前</b>就要把風險算出來。</p>
+
+    <div class="card">
+      <div class="section-title">MACOCHA Score — 重症困難插管預測</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>項目</th><th>內容</th><th>分數</th></tr>
+          <tr><td>M</td><td>Mallampati III 或 IV</td><td>5</td></tr>
+          <tr><td>A</td><td>阻塞性睡眠呼吸中止症（Apnea syndrome）</td><td>2</td></tr>
+          <tr><td>C</td><td>頸椎活動度下降（Cervical spine mobility ↓）</td><td>1</td></tr>
+          <tr><td>O</td><td>張口 &lt; 3 cm（mouth Opening）</td><td>1</td></tr>
+          <tr><td>C</td><td>昏迷（Coma）</td><td>1</td></tr>
+          <tr><td>H</td><td>嚴重低血氧 SpO₂ &lt; 80%（Hypoxemia）</td><td>1</td></tr>
+          <tr><td>A</td><td>操作者非麻醉科醫師（non-Anesthesiologist）</td><td>1</td></tr>
+          <tr class="dt-warn"><td>總分</td><td>0（最容易）～ 12（最困難）</td><td>12</td></tr>
+        </table>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">判讀</div>
+        <ul>
+          <li>以 <b>≥ 3 分</b>為門檻：驗證世代敏感度 73%、特異度 89%、<b>陰性預測值 98%</b>、陽性預測值 36%，AUC 0.86。</li>
+          <li>臨床用法是<b>「用來安心排除」</b>：0–2 分幾乎不會是困難插管；≥3 分則須升級準備，但不代表一定困難。</li>
+          <li>後續於急診與癌症重症族群的外部驗證表現較差（AUC 0.59–0.66），不可當作唯一依據。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">LEMON — 急診床邊快速評估</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>字母</th><th>評估</th><th>紅旗</th></tr>
+          <tr><td>L</td><td>Look externally 外觀</td><td>臉部外傷、暴牙、鬍鬚、大舌、頸部腫塊、小下顎</td></tr>
+          <tr><td>E</td><td>Evaluate 3-3-2</td><td>張口 &lt;3 指幅、頦－舌骨 &lt;3 指幅、舌骨－甲狀軟骨 &lt;2 指幅</td></tr>
+          <tr><td>M</td><td>Mallampati</td><td>III–IV 級</td></tr>
+          <tr><td>O</td><td>Obstruction / Obesity</td><td>會厭炎、深頸部感染、血腫、異物、腫瘤、BMI 高</td></tr>
+          <tr><td>N</td><td>Neck mobility 頸部活動</td><td>頸圈固定、僵直性脊椎炎、類風濕、術後放射線纖維化</td></tr>
+        </table>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">同時評估「其他三個困難」</div>
+        <ul>
+          <li><b>困難面罩通氣（MOANS）</b>：Mask seal 差（鬍鬚、外傷）、Obese、Aged &gt;55、No teeth、Stiff lung（氣道阻力高）。</li>
+          <li><b>困難聲門上呼吸道（RODS）</b>：Restricted mouth opening、Obstruction、Distorted anatomy、Stiff lung。</li>
+          <li><b>困難外科氣道（SMART）</b>：Surgery/放射線史、Mass、Access（肥胖頸）、Radiation、Tumor。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">插管失敗的處置階梯</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-t">Plan A</div>
+          <div class="tl-h">氣管插管<span class="en">Tracheal intubation</span></div>
+          <div class="tl-b">影片喉頭鏡＋bougie。<b>最多 3 次</b>（含最有經驗者 1 次）；每次之間以 BVM 恢復氧合。第 2 次起就要改變條件：換人、換鏡片、加外部喉部操作、調整擺位、加深鬆弛。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">Plan B</div>
+          <div class="tl-h">聲門上呼吸道<span class="en">Supraglottic airway</span></div>
+          <div class="tl-b">第二代喉罩（可置入胃管者）；最多嘗試 3 次、可換一次尺寸。置入成功即<b>停下來重新評估</b>——維持氧合比拿到氣管內管重要。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">Plan C</div>
+          <div class="tl-h">面罩通氣<span class="en">Face-mask ventilation</span></div>
+          <div class="tl-b">雙人雙手 E-C 手法、口咽／鼻咽氣道、放鬆環狀軟骨壓迫、確保完全肌肉鬆弛（鬆弛不足是通氣失敗的可逆原因）。</div>
+        </div>
+        <div class="tl-item t0">
+          <div class="tl-t">Plan D — CICO</div>
+          <div class="tl-h">緊急前頸部氣道<span class="en">Emergency Front-of-Neck Access</span></div>
+          <div class="tl-b">
+            宣告「<b>無法插管、無法氧合</b>」，立刻執行手術式環甲膜切開（scalpel–bougie–tube，成人用 6.0 內管）。
+            <ul>
+              <li>宣告要說出口，讓全隊切換模式；延遲宣告是最常見的致死因素。</li>
+              <li>不要期待 sugammadex 逆轉來解圍（見「藥物」分頁）。</li>
+              <li>&lt;12 歲以針刺環甲膜穿刺加噴射通氣為主。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">預期困難時，改走別條路</div>
+        <ul>
+          <li><b>清醒氣管插管</b>（局部麻醉＋軟式支氣管鏡／影片喉頭鏡，保留自主呼吸）——已知困難氣道、頸部腫瘤、嚴重臉部外傷者的首選。</li>
+          <li><b>延遲序列插管 DSI</b>：躁動而無法預氧合者，先給 ketamine 1 mg/kg 分離性鎮靜，戴上 NIV 好好預氧合，再給阻斷劑。</li>
+          <li>時間允許就找麻醉科／耳鼻喉科<b>事先</b>到場，而不是失敗後才呼叫。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ 特殊情境 ══════════════════ -->
+  <div class="rsi-panel" id="p-situ">
+    <div class="card">
+      <div class="section-title">依情境調整</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>情境</th><th>誘導劑</th><th>阻斷劑</th><th>關鍵調整</th></tr>
+          <tr><td>休克／敗血症</td><td>Ketamine 0.5–1 或 Etomidate 0.15–0.2 mg/kg</td><td>皆可</td><td>先接升壓劑；不要常規灌 500 mL；避免 propofol</td></tr>
+          <tr><td>重度低血氧／ARDS</td><td>Ketamine 或 Etomidate</td><td>Rocuronium 1.2</td><td>NIV 預氧合、誘導後低壓 BVM 輔助；考慮清醒插管</td></tr>
+          <tr><td>創傷性腦損傷</td><td>Etomidate 或 Ketamine（ICP 非禁忌）</td><td>皆可</td><td>維持 MAP、避免任何一次低血壓與缺氧；可加 fentanyl</td></tr>
+          <tr><td>氣喘重積</td><td><b>Ketamine 1.5–2 mg/kg</b></td><td>Rocuronium 1.2</td><td>低呼吸速率、長吐氣時間；警覺氣胸與自體 PEEP</td></tr>
+          <tr><td>高血鉀／腎衰竭</td><td>依血壓</td><td><b>Rocuronium（禁 sux）</b></td><td>同步降血鉀治療</td></tr>
+          <tr><td>燒傷／擠壓傷 &gt;24–48 h</td><td>Ketamine（有鎮痛）</td><td><b>Rocuronium（禁 sux）</b></td><td>氣道水腫進展快，宜提早插管</td></tr>
+          <tr><td>神經肌肉疾病</td><td>依血壓</td><td>Rocuronium 減量</td><td>重症肌無力對 sux 抗性、對非去極化型極敏感</td></tr>
+          <tr><td>心臟停止</td><td>—</td><td>—</td><td>無意識無反應者<b>不需給藥</b>，直接插管，勿中斷壓胸</td></tr>
+          <tr><td>孕婦（&gt;20 週）</td><td>Ketamine 或 Etomidate</td><td>Sux 1.5 或 Roc 1.2</td><td>左側傾斜 30°、小一號內管、去氧飽和極快、吸入風險高</td></tr>
+          <tr><td>上消化道出血／腸阻塞</td><td>依血壓</td><td>足量、快速起效</td><td>先抽吸胃內容物；備兩台抽吸；考慮頭高位</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">肥胖病人的秤重依據（最容易算錯的地方）</div>
+      <ul>
+        <li><b>Succinylcholine</b>：用<b>實際體重</b>（TBW）——否則鬆弛不足。</li>
+        <li><b>Rocuronium</b>：用<b>理想體重</b>（IBW）——用實際體重會顯著延長作用時間。</li>
+        <li><b>Propofol</b>：誘導用去脂體重／校正體重，維持用校正體重。</li>
+        <li><b>Ketamine、Etomidate</b>：以實際體重計算，但極度肥胖者宜取範圍下限。</li>
+        <li>理想體重（Devine）：男 50 + 2.3 ×（身高吋數 − 60）；女 45.5 + 2.3 ×（身高吋數 − 60）。</li>
+        <li>擺位一律 ramped（耳屏對齊胸骨上切跡），並預期安全無呼吸時間顯著縮短。</li>
+      </ul>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">器官功能不良時的劑量調整（台大藥劑部）</div>
+      <ul>
+        <li><b>Ketamine</b>：腎功能不良免調整；<b>肝功能不良需減量</b>（清除仰賴肝臟，作用延長）。</li>
+        <li><b>Rocuronium</b>：<b>肝病需減量</b>；腎功能不良時阻斷持續時間變異大。</li>
+        <li><b>Succinylcholine</b>：腎功能不良需注意（高血鉀）；血漿膽鹼酯酶活性下降者阻斷延長。</li>
+        <li><b>Propofol</b>：肝腎不良皆不需調整劑量，但低血壓風險不變。</li>
+        <li><b>Etomidate</b>：無腎肝調整資料；不可長時間輸注。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════ 併發症 ══════════════════ -->
+  <div class="rsi-panel" id="p-cx">
+    <p class="lead">
+      INTUBE 研究（29 國、197 家醫院、2,964 名重症病人）顯示：<b>45.2% 的重症插管至少發生一項重大不良事件</b>。
+      這不是罕見併發症的清單，而是常態。
+    </p>
+
+    <div class="card">
+      <div class="section-title">重症插管的不良事件發生率</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>事件</th><th>發生率</th><th>立即處置</th></tr>
+          <tr class="dt-warn"><td>循環不穩定</td><td>42.6%</td><td>升壓劑推注／加速輸注、減少正壓、排除氣胸與自體 PEEP</td></tr>
+          <tr><td>嚴重低血氧 SpO₂&lt;80%</td><td>9.3%</td><td>退出喉頭鏡、雙人 BVM、放聲門上呼吸道</td></tr>
+          <tr class="dt-warn"><td>心跳停止</td><td>3.1%</td><td>立即 CPR；最常見前導是低血壓與低血氧</td></tr>
+          <tr><td>食道插管</td><td>—</td><td>波形式 capnography 無波形即拔除重來（"if in doubt, take it out"）</td></tr>
+          <tr><td>吸入性肺炎</td><td>—</td><td>抽吸、頭高位；不常規預防性抗生素</td></tr>
+          <tr><td>多次嘗試</td><td>—</td><td>嘗試次數增加與併發症明顯相關；第 3 次前務必改變策略</td></tr>
+        </table>
+      </div>
+      <div class="note">整體 ICU 死亡率 32.8%（INTUBE）。首次成功率是最可改變的槓桿，故 2023 年後多數流程把影片喉頭鏡列為預設。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">插管後低血壓：分四步排除</div>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-t">1</div><div class="tl-h">正壓通氣造成的靜脈回流下降</div>
+          <div class="tl-b">最常見。降低潮氣量與呼吸速率、降 PEEP、暫時脫離呼吸器手動輕度通氣。</div></div>
+        <div class="tl-item"><div class="tl-t">2</div><div class="tl-h">誘導劑的血管擴張與心肌抑制</div>
+          <div class="tl-b">給 push-dose 升壓劑爭取時間，並啟動連續輸注。</div></div>
+        <div class="tl-item"><div class="tl-t">3</div><div class="tl-h">自體 PEEP（尤其氣喘／COPD）</div>
+          <div class="tl-b">脫離呼吸器、按壓胸廓讓氣體吐出（apnea test）；血壓回升即證實。</div></div>
+        <div class="tl-item t0"><div class="tl-t">4</div><div class="tl-h">張力性氣胸</div>
+          <div class="tl-b">單側呼吸音消失＋頸靜脈怒張＋氣管偏移 → 立即針刺減壓，不等影像。</div></div>
+      </div>
+    </div>
+
+    <div class="kbox alert">
+      <div class="kbox-t">清醒下被麻痺 Awareness with paralysis</div>
+      <ul>
+        <li>成因：阻斷劑作用時間遠長於誘導劑（rocuronium 45–70 分 vs etomidate 3–12 分／ketamine 10–20 分），插管後鎮靜延遲開始。</li>
+        <li>後果：造成如同創傷後壓力症候群的長期心理傷害，且病人無法表達。</li>
+        <li>預防：<b>把「插管成功後立刻掛上鎮靜與止痛」寫進流程</b>，由給藥者負責提醒；心跳血壓上升、流淚、瞳孔放大要視為鎮靜不足。</li>
+      </ul>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">藥物特異性併發症速查</div>
+      <ul>
+        <li><b>Succinylcholine</b> → 高血鉀性心跳停止（寬 QRS、高尖 T 波）：氯化鈣／葡萄糖酸鈣、胰島素＋葡萄糖、bicarbonate、必要時洗腎；惡性高熱 → dantrolene、停止觸發劑、積極降溫。</li>
+        <li><b>Etomidate</b> → 肌陣攣（自限，勿誤為抽搐）；腎上腺抑制（休克病人若對升壓劑反應差可考慮補充類固醇）。</li>
+        <li><b>Ketamine</b> → 甦醒期反應（benzodiazepine）；分泌物過多（抽吸，必要時 atropine／glycopyrrolate）；喉痙攣。</li>
+        <li><b>Propofol</b> → 深度低血壓（升壓劑）；注射痛（大靜脈、先給 lidocaine）。</li>
+        <li><b>Rocuronium</b> → 逆轉需 sugammadex 16 mg/kg；過敏反應照過敏性休克處理。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════ 證據 ══════════════════ -->
+  <div class="rsi-panel" id="p-ev">
+    <p class="lead">本頁每一項與慣例不同的建議，都對應下列一篇試驗。點擊 PMID 開啟 PubMed。</p>
+
+    <div class="card">
+      <div class="section-title">關鍵隨機試驗與世代研究</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>主題</th><th>研究</th><th>結果</th><th>PMID</th></tr>
+          <tr><td>不良事件基準</td><td>INTUBE, JAMA 2021（n=2,964）</td><td>45.2% 有重大事件；循環不穩 42.6%、嚴重低血氧 9.3%、心跳停止 3.1%</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/33755076/" target="_blank" rel="noopener">33755076</a></td></tr>
+          <tr><td>預氧合</td><td>PREOXI, NEJM 2024（n=1,301）</td><td>NIV vs 氧氣面罩：低血氧 9.1% vs 18.5%；心跳停止 0.2% vs 1.1%</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/38869091/" target="_blank" rel="noopener">38869091</a></td></tr>
+          <tr><td>誘導期通氣</td><td>PreVent, NEJM 2019（n=401）</td><td>BVM 輔助組嚴重低血氧 10.9% vs 22.8%；吸入未顯著增加</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/30779528/" target="_blank" rel="noopener">30779528</a></td></tr>
+          <tr><td>無呼吸期氧合</td><td>FELLOW, AJRCCM 2016（n=150）</td><td>最低 SpO₂ 92% vs 90%，無顯著差異</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26426458/" target="_blank" rel="noopener">26426458</a></td></tr>
+          <tr><td>喉頭鏡</td><td>DEVICE, NEJM 2023（n=1,417）</td><td>影片 vs 直接：首次成功 85.1% vs 70.8%（+14.3%），提前中止</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37326325/" target="_blank" rel="noopener">37326325</a></td></tr>
+          <tr><td>輸液前置</td><td>PrePARE, Lancet Respir Med 2019（n=337）</td><td>500 mL 輸液未降低循環崩潰（20% vs 18%），因無效中止</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/31585796/" target="_blank" rel="noopener">31585796</a></td></tr>
+          <tr><td>輸液前置（確認）</td><td>Russell, JAMA 2022（n=1,067）</td><td>循環崩潰 21.0% vs 18.2%，仍無益處</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/35707974/" target="_blank" rel="noopener">35707974</a></td></tr>
+          <tr><td>環狀軟骨壓迫</td><td>IRIS, JAMA Surg 2019（n=3,472）</td><td>省略未達非劣性；施行組視野較差（CL 3–4 級 10% vs 5%）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/30347104/" target="_blank" rel="noopener">30347104</a></td></tr>
+          <tr><td>誘導劑</td><td>KETASED, Lancet 2009（n=655）</td><td>Etomidate vs ketamine 最大 SOFA 無差異；etomidate 腎上腺抑制 OR 6.7</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/19573904/" target="_blank" rel="noopener">19573904</a></td></tr>
+          <tr><td>誘導劑</td><td>EvK, Intensive Care Med 2022（n=801）</td><td>第 7 天存活 ketamine 85.1% vs etomidate 77.3%；第 28 天無差異</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34904190/" target="_blank" rel="noopener">34904190</a></td></tr>
+          <tr class="dt-warn"><td>誘導劑（最新統合）</td><td>J Intensive Care Med 2026（6 RCT, n=4,108）</td><td>28 天死亡率無差異；ketamine 插管後低血壓較多（RR 1.25）、etomidate 腎上腺抑制較多（14.7% vs 5.3%）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/42299661/" target="_blank" rel="noopener">42299661</a></td></tr>
+          <tr><td>阻斷劑</td><td>NEAR, Ann Emerg Med 2018（n=4,075）</td><td>Sux vs Roc 首次成功 87.0% vs 87.5%、不良事件 14.7% vs 14.8%，無差異</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/29747958/" target="_blank" rel="noopener">29747958</a></td></tr>
+          <tr><td>阻斷劑</td><td>Guihard, JAMA 2019（院外, n=1,248）</td><td>Roc 1.2 對 Sux 1.0 未達非劣性（74.6% vs 79.4%）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/31846014/" target="_blank" rel="noopener">31846014</a></td></tr>
+          <tr><td>困難氣道預測</td><td>MACOCHA, AJRCCM 2013（n=1,000＋400）</td><td>AUC 0.86；≥3 分 Se 73%／Sp 89%／NPV 98%／PPV 36%</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/23348979/" target="_blank" rel="noopener">23348979</a></td></tr>
+          <tr><td>Ketamine 與腦傷</td><td>J Crit Care 2026（15 研究含 4 RCT）</td><td>死亡率無差異；基礎 ICP&lt;20 者顱內壓未顯著升高；低血壓事件較多（RR 1.47）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/41197253/" target="_blank" rel="noopener">41197253</a></td></tr>
+          <tr><td>Sugammadex 救援迷思</td><td>Anesth Analg 2016</td><td>逆轉阻斷不等於恢復通氣；CICO 仍須外科氣道</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/27140684/" target="_blank" rel="noopener">27140684</a></td></tr>
+          <tr><td>困難氣道指引</td><td>ASA 2022, Anesthesiology</td><td>困難氣道處置的實務指引（含 12 個學會共同背書）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34762729/" target="_blank" rel="noopener">34762729</a></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">劑量與品項資料來源</div>
+      藥品濃度、包裝、腎肝調整與給藥注意事項取自<b>台大醫院藥劑部藥品查詢系統</b>（本站「藥物資料庫」同源）。
+      Etomidate、Ketamine、Rocuronium、Succinylcholine 的 RSI 劑量即為該系統所列之
+      <span class="mono">Rapid sequence intubation</span> 適應症劑量。管制藥品分級與「不可氣送」規定亦依本院註記。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33755076/" target="_blank" rel="noopener" class="ref-link">Russotto V, et al. JAMA. 2021;325(12):1164-1172.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/38869091/" target="_blank" rel="noopener" class="ref-link">Gibbs KW, et al. N Engl J Med. 2024;390(23):2165-2177.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37326325/" target="_blank" rel="noopener" class="ref-link">Prekker ME, et al. N Engl J Med. 2023;389(5):418-429.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34762729/" target="_blank" rel="noopener" class="ref-link">Apfelbaum JL, et al. Anesthesiology. 2022;136(1):31-81.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/23348979/" target="_blank" rel="noopener" class="ref-link">De Jong A, et al. Am J Respir Crit Care Med. 2013;187(8):832-839.</a>
+    ｜ 劑量與品項：台大醫院藥劑部藥品查詢系統
+  </footer>
+</div>
+</div>
+
+<script>
+/* 劑量表：每個藥卡以 data-drug 對應一筆。
+   mgkg  = 標準每公斤劑量；low = 血流動力學不穩時的減量劑量（沒有就不顯示）
+   conc  = 台大現有品項的濃度（mg/mL 或 mcg/mL），用來換算 mL
+   extra = 第二個固定輸出（維持劑量、深度阻斷劑量…），key 對應 data-out */
+var RSI_DOSE = {
+  etomidate:   {mgkg:0.3,  low:0.2,   conc:2,   u:'mg'},
+  ketamine:    {mgkg:1.5,  low:1,     conc:50,  u:'mg'},
+  propofol:    {mgkg:1.5,  low:1,     conc:20,  u:'mg'},
+  midazolam:   {mgkg:0.2,  low:0.1,   conc:5,   u:'mg'},
+  sux:         {mgkg:1.5,             conc:50,  u:'mg'},
+  rocuronium:  {mgkg:1.2,             conc:10,  u:'mg', extra:{maint:0.15}},
+  fentanyl:    {mgkg:2,               conc:50,  u:'mcg'},
+  sugammadex:  {mgkg:16,              conc:100, u:'mg', extra:{deep:4}},
+  lidocaine:   {mgkg:1.5,             conc:20,  u:'mg'},
+  atropine:    {mgkg:0.02,            conc:1,   u:'mg', min:0.1}
+};
+
+// 有效位數：劑量給到臨床抽得出來的精度，不是數學精度
+function rsiRound(v){
+  if(!isFinite(v)) return '—';
+  if(v >= 100) return String(Math.round(v));
+  if(v >= 10)  return (Math.round(v*2)/2).toFixed(1).replace(/\.0$/,'');
+  if(v >= 1)   return (Math.round(v*10)/10).toFixed(1);
+  return (Math.round(v*100)/100).toFixed(2);
+}
+function rsiFmt(mg, conc, unit){
+  var mL = mg / conc;
+  return rsiRound(mg) + ' <span class="dd-u">' + unit + ' ／ ' +
+         rsiRound(mL) + ' mL</span>';
+}
+
+function rsiCalc(){
+  var wt = parseFloat(document.getElementById('rsi_wt').value);
+  var shock = document.getElementById('rsi_shock').checked;
+  document.getElementById('rsi_shock_wrap').classList.toggle('on', shock);
+
+  document.querySelectorAll('.dg').forEach(function(card){
+    var d = RSI_DOSE[card.getAttribute('data-drug')];
+    if(!d) return;
+    var ok = !isNaN(wt) && wt > 0;
+
+    function put(key, perKg){
+      var el = card.querySelector('[data-out="' + key + '"]');
+      if(!el) return;
+      if(!ok){ el.textContent = '—'; return; }
+      var mg = perKg * wt;
+      if(d.min && mg < d.min) mg = d.min;      // atropine 有最低劑量
+      el.innerHTML = rsiFmt(mg, d.conc, d.u);
+    }
+    put('std', d.mgkg);
+    if(d.low) put('low', d.low);
+    if(d.extra) for(var k in d.extra) put(k, d.extra[k]);
+
+    // 減量欄位只在勾選「不穩定」時出現，平時不佔版面也不會被誤讀
+    card.querySelectorAll('.shock-only').forEach(function(s){
+      s.style.display = shock ? '' : 'none';
+    });
+  });
+}
+
+/* 分頁 */
+function rsiTab(name){
+  document.querySelectorAll('.rsi-tab').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.rsi-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  // 分頁狀態放進 hash，重新整理與分享連結都停在同一頁
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+document.querySelectorAll('.rsi-tab').forEach(function(b){
+  b.addEventListener('click', function(){ rsiTab(b.getAttribute('data-p')); });
+});
+
+document.getElementById('rsi_wt').addEventListener('input', rsiCalc);
+document.getElementById('rsi_shock').addEventListener('change', rsiCalc);
+
+/* 體重列貼頂偵測：哨兵的上緣捲過畫面頂端，即代表 sticky 已生效 */
+(function(){
+  var bar = document.getElementById('rsi_bar'), sen = document.getElementById('rsi_sentinel');
+  function mark(){ bar.classList.toggle('stuck', sen.getBoundingClientRect().top <= 0); }
+  window.addEventListener('scroll', mark, {passive:true});
+  window.addEventListener('resize', mark);
+  mark();
+})();
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) rsiTab(h);
+  rsiCalc();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
