@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性腎損傷與腎臟替代療法決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-aki-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性腎損傷與腎臟替代療法決策</h1><div class="sub">AKI &amp; RRT Timing · KDIGO 2012 ＋ ELAIN／AKIKI／IDEAL-ICU／STARRT-AKI／AKIKI-2</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-aki-path'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">這條路徑的核心 The Core Question</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      腎臟替代療法（RRT）的啟動決策只有<b>一個真正的分岔</b>：<b>有沒有危及生命的適應症</b>。<br>
+      有——立刻開始，這點從未有爭議。沒有——五個大型隨機試驗一致顯示，<b>提早啟動不改善死亡率</b>，而且 STARRT-AKI 顯示加速啟動者<b>90 天仍依賴透析的比例反而較高</b>（10.4% vs 6.0%）、不良事件較多（23.0% vs 16.5%）。<br>
+      但「等待」也有極限：<b>AKIKI-2</b> 顯示在已寡尿 &gt;72 小時或 BUN &gt;112 mg/dL 之後<b>再延後</b>並無好處，且 60 天死亡的風險比為 <b>1.65</b>（95% CI 1.09–2.50）。<br>
+      因此本頁的三段式結構是：<b>先問緊急適應症 → 再問是否已到「不宜再等」的界線 → 最後才是模式與處方</b>。KDIGO 2012 建議 5.1.2 的原文精神也正是<b>看整體臨床脈絡與趨勢，而非單一的 BUN 或肌酸酐數值</b>。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>KDIGO 2012 的 RRT 建議、五個試驗的證據、模式與處方 Definitions &amp; Evidence</summary>
+    <div class="box-inner">
+      <b>◆ KDIGO 2012 的啟動與停止（皆為 Not Graded）：</b><br>
+      ・<b>5.1.1</b>：出現<b>危及生命</b>的體液、電解質與酸鹼異常時，<b>緊急啟動 RRT</b>。<br>
+      ・<b>5.1.2</b>：決定是否啟動時，應考量<b>整體臨床脈絡、可經 RRT 改善的狀況、以及檢驗值的趨勢</b>，<b>而非只看單一的 BUN 或肌酸酐門檻</b>。<br>
+      ・<b>5.2.1</b>：當腎功能已恢復到足以滿足需求、或 RRT 已不符合照護目標時，<b>停止 RRT</b>。<br>
+      ・<b>5.2.2</b>：<b>不建議</b>用利尿劑促進腎功能恢復，或減少 RRT 的時間與次數（2B）。<br><br>
+
+      <b>◆ 五個隨機試驗（依發表序）：</b><br>
+      ・<b>ELAIN</b>（Zarbock 2016, JAMA 315:2190-2199）：<b>單中心</b>、231 人，早期組 90 天死亡率較低。是唯一顯示早期有益者；兩組實際啟動時間差距<b>不到 24 小時</b>，且為單中心結果。<br>
+      ・<b>AKIKI</b>（Gaudry 2016, N Engl J Med 375:122-133）：620 人，<b>死亡率無差異</b>；延後組<b>約半數最終未接受透析</b>，導管相關感染較少。<br>
+      ・<b>IDEAL-ICU</b>（Barbar 2018, N Engl J Med 379:1431-1442）：早期敗血性休克併 AKI，<b>死亡率無差異</b>；延後組<b>逾三分之一自行恢復腎功能</b>而未接受 RRT。<br>
+      ・<b>STARRT-AKI</b>（N Engl J Med 2020;383:240-251）：<b>3,019 人、多國</b>，加速組（符合條件後 12 小時內啟動）vs 標準組。90 天死亡率 <b>43.9% vs 43.7%</b>（RR 1.00，95% CI 0.93–1.09，p=0.92）；標準組<b>只有 61.8% 最終接受 RRT</b>（加速組 96.8%）；存活者中<b>90 天仍依賴 RRT 者加速組較多</b>（10.4% vs 6.0%，RR 1.74，95% CI 1.24–2.43）；<b>不良事件加速組較多</b>（23.0% vs 16.5%，p&lt;0.001）。<br>
+      ・<b>AKIKI-2</b>（Gaudry 2021, Lancet 397:1293-1300）：278 人，皆已<b>寡尿 &gt;72 小時或 BUN &gt;112 mg/dL</b>。更延後組（等到出現強制適應症或 BUN 達 140 mg/dL）與延後組相比，<b>無 RRT 天數沒有增加</b>（中位 10 vs 12 天，p=0.93），而多變項分析的<b>60 天死亡 HR 1.65</b>（95% CI 1.09–2.50，p=0.018）。<br>
+      ・<b>個別病人資料統合分析</b>（Gaudry 2020, Lancet 395:1506-1515）：延後與早期策略在 28 天死亡率<b>無統計顯著差異</b>，證據品質高。<br>
+      <span class="note">綜合讀法：<b>沒有緊急適應症時不必急著開始</b>（可能有三分之一到一半的人根本用不到），<b>但一旦進入 AKIKI-2 的族群（寡尿 &gt;72 小時或 BUN &gt;112 mg/dL），再拖就開始有害</b>。</span><br><br>
+
+      <b>◆ 緊急（危及生命）適應症：</b>頑固性<b>高鉀血症</b>、對治療無反應的<b>代謝性酸中毒</b>、利尿劑無效的<b>容積過載併肺水腫</b>、<b>尿毒併發症</b>（心包炎、腦病變、出血傾向）、<b>可透析的中毒</b>（如水楊酸、鋰、甲醇、乙二醇、metformin 相關乳酸酸中毒）。<br><br>
+
+      <b>◆ 模式（KDIGO 5.6）：</b><br>
+      ・<b>5.6.1</b>：連續式與間歇式 RRT 應視為<b>互補</b>而非互斥。<br>
+      ・<b>5.6.2</b>：<b>血行動力學不穩者建議 CRRT 優於標準間歇式</b>（2B）。<br>
+      ・<b>5.6.3</b>：<b>急性腦損傷、顱內壓升高或廣泛腦水腫者建議 CRRT</b>（2B）——間歇式的快速溶質移除會加重腦水腫。<br>
+      ・SSC 2026 建議 93、94：<b>無明確適應症時不建議啟動 RRT</b>（條件式，中度確定性）；<b>連續式與間歇式皆可</b>（條件式，低度確定性）。<br><br>
+
+      <b>◆ 抗凝（KDIGO 5.3）：</b><br>
+      ・無出血風險增加、凝血功能正常且未在接受全身抗凝者，<b>建議 RRT 期間使用抗凝</b>（1B）。<br>
+      ・<b>間歇式 RRT</b>：建議用未分餾或低分子量肝素，優於其他抗凝劑（1C）。<br>
+      ・<b>CRRT</b>：<b>無 citrate 禁忌者建議區域性 citrate 抗凝，優於肝素</b>（2B）；有 citrate 禁忌者用肝素（2C）。<br>
+      ・<b>出血風險高</b>且未接受抗凝者：無 citrate 禁忌時<b>仍建議用區域性 citrate</b>（優於完全不抗凝，2C）；<b>應避免區域性肝素化</b>（2C）。<br><br>
+
+      <b>◆ 血管通路（KDIGO 5.4）：</b>用<b>無 cuff、非隧道式</b>透析導管（2D）。靜脈選擇順序：<b>右頸內靜脈 → 股靜脈 → 左頸內靜脈 → 鎖骨下靜脈（最後選擇，且優先選慣用側）</b>。<b>應以超音波導引置入</b>（1A）；頸內或鎖骨下導管置入後、首次使用前<b>應盡快照胸部 X 光</b>（1B）。<b>不建議</b>在置入處使用局部抗生素藥膏（2C）或抗生素封管（2C）。<br><br>
+
+      <b>◆ 處方劑量（KDIGO 5.8）：</b>每次治療前<b>先開立目標劑量</b>，並<b>頻繁評估實際達成劑量</b>以調整處方（1B）。<b>間歇式或延長式：每週 Kt/V 3.9</b>（1A）。<b>CRRT：effluent 流量 20–25 mL/kg/h</b>（1A）——<b>實務上處方需開得更高</b>才能達成（因中斷與濾器效能衰減）。緩衝液應用<b>碳酸氫鹽而非乳酸鹽</b>（休克者為 1B、肝衰竭或乳酸血症者 2B）。<br><br>
+
+      <b>◆ 一般支持（KDIGO 第 3 章重點）：</b>無出血性休克時，<b>用等張晶體液而非膠體液</b>擴充血管內容積（2B）；血管舒張性休克者<b>升壓劑與輸液併用</b>（1C）；重症者胰島素目標<b>血糖 110–149 mg/dL</b>（2C）；<b>不得用利尿劑預防 AKI</b>（1B），治療 AKI 也不建議，<b>除非處理容積過載</b>（2C）；<b>不得用低劑量 dopamine</b>（1A）、fenoldopam（2C）或心房利鈉肽（2C／2B）。<br>
+      <span class="note">KDIGO 2012 的血糖目標（110–149 mg/dL）與 SSC 2026 建議 92（<b>血糖 ≥180 mg/dL 才啟動胰島素</b>）不同——敗血症病人請以 SSC 為準。</span><br><br>
+
+      <b>◆ 版本提醒：</b><b>KDIGO 2026 AKI/AKD 指引草案</b>已於 2026 年 3 月公開徵求意見（延至 5 月 11 日），將把 AKI 與 AKD 整合為同一連續體。<b>最終版尚未發表，本頁不採用草案內容</b>——草案文件本身載明僅供公開審查、不得作其他用途。
+    </div>
+  </details>
+
+  <div class="flow-step" id="ai_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">是否有危及生命、需緊急 RRT 的適應症？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="aiPick('emerg','yes',this)">有<span class="fo-sub">頑固性高鉀、治療無效的代謝性酸中毒、利尿劑無效的容積過載併肺水腫、尿毒併發症（心包炎／腦病變／出血傾向）、可透析的中毒</span></button>
+      <button class="flow-opt" onclick="aiPick('emerg','no',this)">無<span class="fo-sub">腎功能異常但代謝與容積尚可控制</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/kdigo-aki.html?from=aki'">🧮 開啟 KDIGO AKI 分期</button>
+  </div>
+
+  <div class="flow-connector hidden" id="ai_c2">↓</div>
+  <div class="flow-step hidden" id="ai_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">目前的 AKI 嚴重度與病程？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="aiPick('sev','12',this)">第 1–2 期<span class="fo-sub">尚未達第 3 期</span></button>
+      <button class="flow-opt" onclick="aiPick('sev','3early',this)">第 3 期，但尚未到「不宜再等」的界線<span class="fo-sub">寡尿未滿 72 小時且 BUN ≤112 mg/dL</span></button>
+      <button class="flow-opt" onclick="aiPick('sev','3late',this)">第 3 期，且已寡尿 &gt;72 小時或 BUN &gt;112 mg/dL<span class="fo-sub">AKIKI-2 的收案族群</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此處的 72 小時與 BUN 112 mg/dL 是 <b>AKIKI-2 的收案門檻</b>，不是 KDIGO 的建議數值——KDIGO 5.1.2 明訂不要以單一數值決定。放在這裡是因為<b>超過這條線之後再延後已被證實有害</b>。</div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="ai_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="ai_c3">↓</div>
+  <div class="flow-step hidden" id="ai_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人的血行動力學與顱內狀況？（決定模式）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="aiPick('mode','unstable',this)">血行動力學不穩，或有急性腦損傷／顱內壓升高<span class="fo-sub">需升壓劑支持；或腦水腫、顱內壓升高</span></button>
+      <button class="flow-opt" onclick="aiPick('mode','stable',this)">血行動力學穩定，無顱內壓問題<span class="fo-sub">可耐受間歇式治療的體液與溶質移除速率</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="ai_c4">↓</div>
+  <div class="flow-step hidden" id="ai_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">出血風險與 citrate 禁忌？（決定抗凝）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="aiPick('antic','normal',this)">出血風險未增加、凝血正常、未在全身抗凝<span class="fo-sub">且無 citrate 禁忌</span></button>
+      <button class="flow-opt" onclick="aiPick('antic','bleed',this)">出血風險增加或凝血功能受損<span class="fo-sub">近期手術、活動性出血、嚴重血小板低下</span></button>
+      <button class="flow-opt" onclick="aiPick('antic','nocitrate',this)">有 citrate 禁忌<span class="fo-sub">嚴重肝衰竭、citrate 蓄積風險高</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="ai_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 3 與 4</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="aiReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://kdigo.org/guidelines/acute-kidney-injury/" target="_blank" rel="noopener" class="ref-link">KDIGO Clinical Practice Guideline for Acute Kidney Injury. Kidney Int Suppl. 2012;2(1):1-138.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32668114/" target="_blank" rel="noopener" class="ref-link">STARRT-AKI Investigators. Timing of Initiation of Renal-Replacement Therapy in Acute Kidney Injury. N Engl J Med. 2020;383(3):240-251.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33812488/" target="_blank" rel="noopener" class="ref-link">Gaudry S, et al. Comparison of two delayed strategies for renal replacement therapy initiation for severe acute kidney injury (AKIKI 2). Lancet. 2021;397(10281):1293-1300.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27181456/" target="_blank" rel="noopener" class="ref-link">Gaudry S, et al. Initiation Strategies for Renal-Replacement Therapy in the Intensive Care Unit (AKIKI). N Engl J Med. 2016;375(2):122-133.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27209269/" target="_blank" rel="noopener" class="ref-link">Zarbock A, et al. Effect of Early vs Delayed Initiation of Renal Replacement Therapy on Mortality in Critically Ill Patients With Acute Kidney Injury (ELAIN). JAMA. 2016;315(20):2190-2199.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30304656/" target="_blank" rel="noopener" class="ref-link">Barbar SD, et al. Timing of Renal-Replacement Therapy in Patients with Acute Kidney Injury and Sepsis (IDEAL-ICU). N Engl J Med. 2018;379(15):1431-1442.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/32334654/" target="_blank" rel="noopener" class="ref-link">Gaudry S, et al. Delayed versus early initiation of renal replacement therapy for severe acute kidney injury: individual patient data meta-analysis. Lancet. 2020;395(10235):1506-1515.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { emerg:null, sev:null, mode:null, antic:null };
+
+function aiPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='emerg'){ st.emerg=val; st.sev=null; st.mode=null; st.antic=null; }
+  else if(key==='sev'){ st.sev=val; st.mode=null; st.antic=null; }
+  else if(key==='mode'){ st.mode=val; }
+  else if(key==='antic'){ st.antic=val; }
+  render();
+}
+
+/* 決定要開始 RRT 的兩種情形 */
+function aiStartRRT(){ return st.emerg==='yes' || (st.emerg==='no' && st.sev==='3late'); }
+
+const AI_SUPPORT =
+  '<li><b>同時做的事</b>：查明並移除病因（腎毒性藥物、顯影劑、低血容、尿路阻塞、腹腔高壓）；依腎功能重新核對<b>所有藥物劑量</b>；無出血性休克時以<b>等張晶體液而非膠體液</b>擴充容積（KDIGO 3.1.1，2B）；血管舒張性休克者升壓劑與輸液併用（3.1.2，1C）。</li>' +
+  '<li><b>不要做的事</b>：<b>不得用利尿劑預防 AKI</b>（1B）；治療 AKI 也不建議用利尿劑，<b>除非是為了處理容積過載</b>（2C）；<b>不得用低劑量 dopamine</b>（1A）、fenoldopam（2C）或心房利鈉肽（2C／2B）。</li>';
+
+function render(){
+  const showSev = st.emerg==='no';
+  flowShow('ai_c2', showSev);
+  flowShow('ai_s2', showSev);
+  if(!showSev) flowClearSel('ai_s2');
+
+  /* ---- 建議 A：要不要開始 RRT ---- */
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  if(st.emerg==='yes'){
+    cls='rec-urgent'; title='有危及生命的適應症 — 立即啟動 RRT';
+    detail='<li><b>KDIGO 2012 建議 5.1.1</b>：出現危及生命的體液、電解質與酸鹼異常時，<b>緊急啟動 RRT</b>。這一點在所有時機試驗中都不是爭議點——那些試驗的「延後組」也都在出現這些適應症時立即啟動。</li>' +
+      '<li><b>同時處理當下的致命問題</b>，不要等到上機才開始：高鉀依標準流程處理（鈣穩定心肌、促鉀入細胞、促排出）；肺水腫先以非侵襲性支持與硝酸鹽爭取時間；可透析的中毒須確認毒物種類與血中濃度。</li>' +
+      AI_SUPPORT;
+    note='KDIGO 2012 建議 5.1.1（Not Graded）。緊急適應症出現時，「時機爭議」不適用。';
+  } else if(st.sev==='12'){
+    cls='rec-blue'; title='第 1–2 期 — 不啟動 RRT，處理可逆因素與密切追蹤';
+    detail='<li><b>此階段沒有啟動 RRT 的適應症</b>。SSC 2026 建議 93 亦明訂：<b>無明確適應症時不建議啟動</b>腎臟替代療法（條件式，中度確定性）。</li>' +
+      AI_SUPPORT +
+      '<li><b>追蹤什麼</b>：肌酸酐趨勢、尿量、血鉀、酸鹼、容積狀態。KDIGO 5.1.2 明訂看<b>趨勢與整體脈絡</b>，而非單一 BUN 或肌酸酐門檻。</li>' +
+      '<li><b>三個月後重新評估</b>（KDIGO 2.3.4）：AKI 存活者即使腎功能看似恢復，仍屬 CKD 高風險。</li>';
+    note='KDIGO 2012 建議 2.3.4、3.1.1、3.4.1、3.4.2、5.1.2；SSC 2026 建議 93。';
+  } else if(st.sev==='3early'){
+    cls='rec-blue'; title='第 3 期但無緊急適應症 — 可安全等待，設定明確的重新評估節奏';
+    detail='<li><b>提早啟動不改善死亡率</b>：STARRT-AKI（3,019 人）加速組與標準組 90 天死亡率為 <b>43.9% vs 43.7%</b>（RR 1.00）；AKIKI 與 IDEAL-ICU 亦為陰性；個別病人資料統合分析（Lancet 2020）以高品質證據確認 28 天死亡率無差異。</li>' +
+      '<li><b>等待反而可能讓人免於透析</b>：STARRT-AKI 標準組<b>只有 61.8%</b> 最終接受 RRT；AKIKI 延後組<b>約半數</b>未接受透析；IDEAL-ICU 延後組<b>逾三分之一</b>自行恢復腎功能。</li>' +
+      '<li><b>加速啟動有代價</b>：STARRT-AKI 加速組存活者<b>90 天仍依賴 RRT 者較多</b>（10.4% vs 6.0%，RR 1.74），<b>不良事件較多</b>（23.0% vs 16.5%，p&lt;0.001）。</li>' +
+      '<li><b>唯一顯示早期有益的是 ELAIN</b>（單中心、231 人），兩組實際啟動時間相差<b>不到 24 小時</b>；不足以推翻上述多中心結果。</li>' +
+      '<li><b>設定重新評估的節奏</b>：至少每日（惡化時更頻繁）檢視血鉀、酸鹼、容積、尿量與 BUN 趨勢。<b>一旦出現緊急適應症即立刻啟動</b>；接近寡尿 72 小時或 BUN 112 mg/dL 時，改走下一段。</li>' +
+      AI_SUPPORT;
+    note='STARRT-AKI（NEJM 2020）、AKIKI（NEJM 2016）、IDEAL-ICU（NEJM 2018）、IPD 統合分析（Lancet 2020）、ELAIN（JAMA 2016）。';
+  } else if(st.sev==='3late'){
+    cls='rec-elective'; title='已達 AKIKI-2 的界線 — 不宜再延後，啟動 RRT';
+    detail='<li><b>AKIKI-2</b>（Lancet 2021）收的正是這個族群（寡尿 &gt;72 小時或 BUN &gt;112 mg/dL、且無強制適應症）。與「立即啟動」相比，<b>再延後（等到出現強制適應症或 BUN 達 140 mg/dL）並未增加無 RRT 天數</b>（中位 10 vs 12 天，p=0.93），而多變項分析的 <b>60 天死亡 HR 為 1.65</b>（95% CI 1.09–2.50，p=0.018）。</li>' +
+      '<li><b>這是「等待」策略的終點，不是相反的證據</b>：在此之前等待是安全的，在此之後繼續等則與潛在傷害相關。</li>' +
+      '<li>啟動前先確認<b>照護目標</b>——KDIGO 5.2.1 的停止判準同樣適用於是否該開始：RRT 須符合病人的照護目標。</li>' +
+      AI_SUPPORT;
+    note='AKIKI-2（Lancet 2021;397:1293-1300）。此處的 72 小時／112 mg/dL 是該試驗的收案門檻，不是 KDIGO 的建議數值。';
+  }
+  flowRec('ai_rec', cls, title, detail, note);
+
+  /* ---- 建議 B：模式與抗凝（只有決定要洗才需要） ---- */
+  const startRRT = aiStartRRT();
+  flowShow('ai_c3', startRRT);
+  flowShow('ai_s3', startRRT);
+  if(!startRRT) flowClearSel('ai_s3');
+
+  const showAntic = startRRT && !!st.mode;
+  flowShow('ai_c4', showAntic);
+  flowShow('ai_s4', showAntic);
+  if(!showAntic) flowClearSel('ai_s4');
+
+  let cls2='rec-idle', title2='請完成步驟 3 與 4', detail2='', note2='';
+
+  if(startRRT && st.mode && st.antic){
+    const isCRRT = st.mode==='unstable';
+    cls2 = 'rec-elective';
+    title2 = (isCRRT ? '連續式腎臟替代療法（CRRT）' : '間歇式血液透析（IHD）') + ' — 處方與抗凝';
+
+    let modeLi = isCRRT
+      ? '<li><b>模式：CRRT</b>。KDIGO 5.6.2 對<b>血行動力學不穩者</b>建議 CRRT 優於標準間歇式（2B）；5.6.3 對<b>急性腦損傷、顱內壓升高或廣泛腦水腫者</b>建議 CRRT（2B）——間歇式的快速溶質移除會加重腦水腫。</li>' +
+        '<li><b>劑量：effluent 流量 20–25 mL/kg/h</b>（KDIGO 5.8.4，1A）。<b>處方通常要開得比目標更高</b>才能達成實際劑量（治療中斷、濾器效能衰減）；KDIGO 5.8.1 要求<b>頻繁評估實際達成劑量</b>並據以調整（1B）。</li>'
+      : '<li><b>模式：間歇式血液透析</b>。KDIGO 5.6.1 明訂連續式與間歇式是<b>互補</b>而非互斥——病人狀況改變時可以換。</li>' +
+        '<li><b>劑量：每週 Kt/V 3.9</b>（KDIGO 5.8.3，1A，適用於間歇式或延長式）。每次治療前先開立目標劑量，並頻繁評估實際達成量（5.8.1）。</li>';
+
+    let anticLi;
+    if(st.antic==='normal'){
+      anticLi = isCRRT
+        ? '<li><b>抗凝：區域性 citrate 抗凝</b>——KDIGO 5.3.2.2 建議<b>優於肝素</b>（2B），適用於無 citrate 禁忌者。</li>'
+        : '<li><b>抗凝：未分餾或低分子量肝素</b>——KDIGO 5.3.2.1 建議優於其他抗凝劑（1C）。</li>';
+      anticLi += '<li>KDIGO 5.3.1.1：出血風險未增加、凝血功能正常且未在接受有效全身抗凝者，<b>建議 RRT 期間使用抗凝</b>（1B）。</li>';
+    } else if(st.antic==='bleed'){
+      anticLi = '<li><b>抗凝：出血風險增加者仍建議區域性 citrate</b>（KDIGO 5.3.3.1，2C）——優於完全不抗凝，因為 citrate 只作用於體外迴路。</li>' +
+        '<li><b>應避免區域性肝素化</b>（KDIGO 5.3.3.2，2C）。</li>' +
+        (isCRRT ? '' : '<li>間歇式治療若無法抗凝，需縮短療程並提高沖洗頻率以維持迴路通暢。</li>');
+    } else {
+      anticLi = '<li><b>抗凝：有 citrate 禁忌者改用未分餾或低分子量肝素</b>（KDIGO 5.3.2.3，2C）。</li>' +
+        '<li>嚴重肝衰竭、乳酸酸中毒或休克灌流極差者 citrate 代謝受限，須留意<b>citrate 蓄積</b>（總鈣／離子鈣比值上升、代謝性酸中毒惡化）。</li>';
+    }
+
+    detail2 = modeLi + anticLi +
+      '<li><b>血管通路</b>：<b>無 cuff、非隧道式</b>透析導管（5.4.1，2D）；靜脈順序為<b>右頸內 → 股 → 左頸內 → 鎖骨下</b>（5.4.2）；<b>超音波導引置入</b>（5.4.3，1A）；頸內或鎖骨下者<b>首次使用前先照胸部 X 光</b>（5.4.4，1B）。<b>不用</b>局部抗生素藥膏（2C）或抗生素封管（2C）。</li>' +
+      '<li><b>緩衝液用碳酸氫鹽而非乳酸鹽</b>（KDIGO 5.7）——休克者為強建議（1B），肝衰竭或乳酸血症者 2B。</li>' +
+      '<li><b>停止時機</b>：腎功能恢復到足以滿足需求、或 RRT 已不符合照護目標時即停止（5.2.1）。<b>不要用利尿劑</b>來促進恢復或減少 RRT 次數（5.2.2，2B）。</li>';
+    note2 = 'KDIGO 2012 建議 5.2.1、5.2.2、5.3.1.1、5.3.2.1–5.3.3.2、5.4.1–5.4.6、5.6.1–5.6.3、5.7、5.8.1、5.8.3、5.8.4；SSC 2026 建議 94（連續式與間歇式皆可）。';
+  }
+  flowRec('ai_rec2', cls2, title2, detail2, note2);
+  flowShow('ai_rec2', showAntic);
+}
+
+function aiReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-aki-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+aiReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
