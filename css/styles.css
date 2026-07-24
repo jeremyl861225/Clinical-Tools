@@ -225,7 +225,8 @@
   /* ---- 尚未配圖的方磚 ----
      沒有 .hub-img 時只剩底色，原本那層給照片用的壓暗不足以讓白字站得住，
      故底色壓深一階、壓暗層加重（含 hover，否則 hover 反而變得更難讀）。
-     日後補上 <img class="hub-img">，把 .hub-card--nopic 拿掉即可。 */
+     六張方磚目前都已配圖，此組規則留給下一張新磚過渡期用：
+     掛上 .hub-card--nopic 即可，補圖後拿掉。 */
   .hub-card--nopic{--tile-bg:#a8a49b;}
   .hub-card--nopic .hub-scrim{background:rgba(18,14,10,.42);}
   .hub-card--nopic:hover .hub-scrim, .hub-card--nopic:focus-visible .hub-scrim{background:rgba(18,14,10,.32);}

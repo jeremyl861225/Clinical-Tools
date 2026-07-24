@@ -149,11 +149,12 @@ const PRECACHE_URLS = [
   './tools/wassmer.html',
   './tools/wses.html',
   // 首頁方磚圖：第一屏內容，離線時不能缺
-  // （急重症處置與藥物資料庫兩張長方磚尚未配圖，補圖後要在此加行）
   './assets/hub/emergency.jpg',
   './assets/hub/antibiotics.jpg',
   './assets/hub/cancer.jpg',
   './assets/hub/sofa.png',
+  './assets/hub/critical.jpg',
+  './assets/hub/drugdb.jpg',
   // 癌別方磚：原先靠實際瀏覽時逐張快取，沒點過的癌別離線就開天窗，故一併預先快取
   './assets/organs/esoph.png',
   './assets/organs/gastric.png',
