@@ -18,12 +18,14 @@ const PRECACHE_URLS = [
   './css/nav.css',
   './css/antibiotics.css',
   './css/cancer-staging.css',
+  './css/drug-database.css',
   './js/common.js',
   './js/nav.js',
   './js/pull-to-refresh.js',
   './js/search.js',
   './js/pixel-cat.js',
   './js/antibiotics.js',
+  './js/drug-database.js',
   './js/cancer-staging.js',
   './js/gastric-pathway.js',
   './js/esoph-pathway.js',
@@ -53,10 +55,28 @@ const PRECACHE_URLS = [
   './js/mpn-pathway.js',
   './js/lym-pathway.js',
   './js/lung-pathway.js',
+  './js/thyroid-pathway.js',
   './data/antibiotics/antibiogram.js',
   './data/antibiotics/regimens.js',
   './data/antibiotics/drugs.js',
   './data/cancer/cancers.js',
+  /* 藥物資料庫：index.js 是開頁即載的輕量索引，其餘 <pid>.js 是各藥理分類的
+     完整藥卡，原本只在使用者展開某張卡時才注入 <script>。離線時網路取不到，
+     故整批預先快取（合計約 3.4MB，是本清單最大的一塊）。
+     日後新增藥理分類，data/drugs 多一個檔就要在這裡多一行。 */
+  './data/drugs/index.js',
+  './data/drugs/4.js',
+  './data/drugs/6.js',
+  './data/drugs/7.js',
+  './data/drugs/9.js',
+  './data/drugs/11.js',
+  './data/drugs/12.js',
+  './data/drugs/14.js',
+  './data/drugs/15.js',
+  './data/drugs/17.js',
+  './data/drugs/20.js',
+  './data/drugs/166.js',
+  './data/drugs/196.js',
   './pathways/appendicitis.html',
   './pathways/cholecystitis.html',
   './pathways/hernia.html',
@@ -78,6 +98,14 @@ const PRECACHE_URLS = [
   './tools/spectrum-database.html',
   './tools/surgical-prophylaxis.html',
   './tools/trauma-abx.html',
+  './tools/drug-database.html',
+  // 急重症處置
+  './tools/acls.html',
+  './tools/rsi.html',
+  './tools/acs.html',
+  './tools/heart-failure.html',
+  './tools/stroke.html',
+  './tools/pe.html',
   './tools/alvarado.html',
   './tools/ami.html',
   './tools/angers.html',
@@ -104,6 +132,11 @@ const PRECACHE_URLS = [
   './tools/p-possum.html',
   './tools/parc.html',
   './tools/pss.html',
+  './tools/grace.html',
+  './tools/syntax.html',
+  './tools/wells-pe.html',
+  './tools/geneva.html',
+  './tools/perc.html',
   './tools/periop-anticoag.html',
   './tools/vte-risk.html',
   './tools/pulp.html',
@@ -115,12 +148,32 @@ const PRECACHE_URLS = [
   './tools/vasopressor.html',
   './tools/wassmer.html',
   './tools/wses.html',
-  // 首頁四大類方磚圖：第一屏內容，離線時不能缺（癌別方磚在點進去之後才需要，
-  // 由 fetch 的 stale-while-revalidate 於實際瀏覽時逐張快取，故不列於此）
+  // 首頁方磚圖：第一屏內容，離線時不能缺
+  // （急重症處置與藥物資料庫兩張長方磚尚未配圖，補圖後要在此加行）
   './assets/hub/emergency.jpg',
   './assets/hub/antibiotics.jpg',
   './assets/hub/cancer.jpg',
   './assets/hub/sofa.png',
+  // 癌別方磚：原先靠實際瀏覽時逐張快取，沒點過的癌別離線就開天窗，故一併預先快取
+  './assets/organs/esoph.png',
+  './assets/organs/gastric.png',
+  './assets/organs/colorectal.png',
+  './assets/organs/anal.png',
+  './assets/organs/appendix.png',
+  './assets/organs/hcc.png',
+  './assets/organs/cca.png',
+  './assets/organs/panc.png',
+  './assets/organs/gist.png',
+  './assets/organs/net.png',
+  './assets/organs/lung.png',
+  './assets/organs/breast.png',
+  './assets/organs/gyn.png',
+  './assets/organs/uro.png',
+  './assets/organs/thyroid.png',
+  './assets/organs/hnc.png',
+  './assets/organs/npc.png',
+  './assets/organs/sts.png',
+  './assets/organs/heme.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-192.png',
@@ -189,13 +242,16 @@ self.addEventListener('fetch', (event) => {
   })());
 });
 
-// 下拉更新：重抓全部檔案（略過所有快取）後通知頁面重新載入，用於立即取得最新版
+/* 下拉更新：向伺服器逐檔查證後通知頁面重新載入，用於立即取得最新版。
+   用 no-cache 而非 reload：兩者都必定問過伺服器，但 no-cache 帶 ETag，
+   未更動的檔案回 304、幾乎不耗流量；reload 則整包重抓。
+   清單已含藥物資料庫等大檔（合計約 9MB），reload 會讓每次下拉都重載一次全站。 */
 self.addEventListener('message', (event) => {
   if (!event.data || event.data.type !== 'REFRESH') return;
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_VERSION);
     await Promise.all(PRECACHE_URLS.map((u) =>
-      fetch(u, { cache: 'reload' })
+      fetch(u, { cache: 'no-cache' })
         .then((res) => (res && res.status === 200) ? cache.put(u, res) : null)
         .catch(() => null)          // 個別檔案失敗不影響其餘
     ));
