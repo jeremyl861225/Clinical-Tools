@@ -65,35 +65,49 @@
   <!-- 首頁本體：四大類入口＋各類內容；查詢時整塊隱藏（見 js/search.js） -->
   <div id="home-body">
 
-  <!-- 四大類入口：與癌別方磚同款（灰階圖版＋雙色調濾鏡＋壓暗層＋疊字），
+  <!-- 六大類入口：與癌別方磚同款（灰階圖版＋雙色調濾鏡＋壓暗層＋疊字），
        中文拆成上下兩半、英文夾在中間。data-* 供 js/search.js 建索引用。
-       濾鏡 defs 置於 <body> 最前（見上），晚於引用者定義會導致首次繪製時整張圖不顯示。 -->
+       濾鏡 defs 置於 <body> 最前（見上），晚於引用者定義會導致首次繪製時整張圖不顯示。
+       版位（.hub-abd 等）以 grid-template-areas 指定，故 DOM 順序不決定排版：
+       兩張長方磚各自壓在上方兩張方磚之下（電腦與手機皆然，見 css 的 .hub-grid）。
+       尚未配圖者掛 .hub-card--nopic，補上 <img class="hub-img"> 後即可移除。 -->
   <div class="hub-grid" id="hub">
-    <a class="hub-card" id="card-view-abdomen" href="#abdomen" aria-label="腹部急症"
+    <a class="hub-card hub-abd" id="card-view-abdomen" href="#abdomen" aria-label="腹部急症"
        data-label="腹部急症" data-en="Abdominal Emergencies" data-sub="決策流程、分類分級、緊急手術分級與圍手術期抗栓">
       <img class="hub-img" src="assets/hub/emergency.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">腹部</span><span class="hub-en">Emergency</span><span class="hub-zh">急症</span></span>
     </a>
-    <a class="hub-card" id="card-view-antibiotics" href="tools/antibiotics.html" aria-label="抗微生物"
+    <a class="hub-card hub-abx" id="card-view-antibiotics" href="tools/antibiotics.html" aria-label="抗微生物"
        data-label="抗微生物" data-en="Antimicrobials" data-sub="抗生素指引、菌譜資料庫、手術預防與創傷用藥"
        data-search-kw="抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌 手術預防 預防性抗生素 創傷 外傷 開放性骨折 破傷風">
       <img class="hub-img" src="assets/hub/antibiotics.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">抗微</span><span class="hub-en">Antimicrobials</span><span class="hub-zh">生物</span></span>
     </a>
-    <a class="hub-card" id="card-view-cancer" href="tools/cancer.html" aria-label="癌症治療"
+    <a class="hub-card hub-card--wide hub-card--nopic hub-crit" id="card-view-critical" href="#critical" aria-label="急重症處置"
+       data-label="急重症處置" data-en="Emergency &amp; Critical Care" data-sub="心跳停止、氣道、冠心症、中風、肺栓塞與心衰竭">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">急重症處置</span><span class="hub-en">Emergency &amp; Critical Care</span></span>
+    </a>
+    <a class="hub-card hub-canc" id="card-view-cancer" href="tools/cancer.html" aria-label="癌症治療"
        data-label="癌症治療" data-en="Cancer Treatment" data-sub="分期、淋巴結分群與治療決策"
        data-search-kw="癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫 FLOT FOLFOX Avastin">
       <img class="hub-img" src="assets/hub/cancer.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">癌症</span><span class="hub-en">Cancer</span><span class="hub-zh">治療</span></span>
     </a>
-    <a class="hub-card" id="card-view-scores" href="#scores" aria-label="計分工具"
+    <a class="hub-card hub-scor" id="card-view-scores" href="#scores" aria-label="計分工具"
        data-label="計分工具" data-en="Scoring Tools" data-sub="共病、重症、肝臟、手術風險與腹部急症計分">
       <img class="hub-img" src="assets/hub/sofa.png" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">計分</span><span class="hub-en">Scoring</span><span class="hub-zh">工具</span></span>
+    </a>
+    <a class="hub-card hub-card--wide hub-card--nopic hub-drug" id="card-view-drugdb" href="tools/drug-database.html" aria-label="藥物資料庫"
+       data-label="藥物資料庫" data-en="Drug Database" data-sub="台大醫院藥劑部處方集 · 一商品名一張藥卡"
+       data-search-kw="藥物 藥品 藥卡 處方集 formulary 台大藥劑部 學名 商品名 中文品名 機轉 藥理分類 劑量 腎功能 肝功能 透析 CVVH 注射給藥指引 懷孕分級 健保價 自費價 藥價">
+      <span class="hub-scrim"></span>
+      <span class="hub-label"><span class="hub-zh">藥物資料庫</span><span class="hub-en">Drug Database</span></span>
     </a>
   </div>
 
@@ -206,6 +220,65 @@
              data-search-kw="抗凝 抗凝血劑 抗血小板 抗栓 停藥 橋接 bridging 重啟 恢復 圍手術期 急刀 緊急手術 反轉 逆轉 reversal 解毒劑 antidote idarucizumab Praxbind 依達賽珠 andexanet Andexxa Ondexxya 4F-PCC PCC Kcentra 凝血酶原複合物 維生素K vitamin K FFP 血漿 血小板輸注 platelet transfusion DDAVP desmopressin 去氨加壓素 PATCH 藥物濃度 anti-Xa 稀釋凝血酶時間 dTT ecarin 透析 活性碳 ISTH periop perioperative DOAC NOAC apixaban 艾必克凝 Eliquis rivaroxaban 拜瑞妥 Xarelto edoxaban Lixiana 里先安 dabigatran 普栓達 Pradaxa warfarin 可邁丁 VKA 香豆素 aspirin 阿斯匹靈 clopidogrel 保栓通 Plavix ticagrelor 百無凝 Brilinta prasugrel cangrelor CrCl 肌酸酐廓清率 Cockcroft-Gault 腎功能 CHA2DS2-VASc CHADS2 機械瓣 mechanical valve 二尖瓣 主動脈瓣 心房顫動 AF VTE 靜脈血栓 LMWH enoxaparin 伊諾肝素 dalteparin 肝素 heparin 神經軸 脊椎麻醉 硬脊膜外 neuraxial epidural spinal 支架 stent DES BMS PCI DAPT CHEST 2022 Douketis PAUSE BRIDGE EHRA ASRA POISE-2 出血風險 bleeding risk">
           <div class="tool-name">圍手術期抗栓藥物管理 <span class="tool-en">Perioperative Antithrombotic Management</span></div>
           <div class="tool-desc">依藥物、CrCl 與處置出血風險輸出 DOAC／warfarin 的<b>術前停藥天數、是否橋接、術後重啟時機</b>，附術前用藥日曆；另含抗血小板與支架後手術延遲。<b>刻意並列 CHEST 2022／EHRA 2021／ASRA 第 5 版三套方案而不合併</b>——同一病人三者可差一至兩天，神經軸麻醉與機械瓣橋接的分歧另有標示。<b>另設「急刀／反轉」分頁</b>：以台大急刀五級對應反轉決策與劑量（idarucizumab、4F-PCC、維生素 K），標明 andexanet 已於 2025-12 退出美國市場且 ISTH 列急刀為不應使用</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 急重症處置 ============ -->
+  <section class="home-sec hidden" id="sec-critical">
+    <div class="app-header">
+      <div>
+        <div class="eyebrow">Emergency &amp; Critical Care</div>
+        <h1>急重症處置</h1>
+      </div>
+      <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">復甦 / 氣道</span><span class="group-en">Resuscitation &amp; Airway</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-acls" onclick="location.href='tools/acls.html'"
+             data-search-kw="ACLS 高級心臟救命術 CPR 心肺復甦 BLS 基本救命術 PALS 兒科 新生兒復甦 neonatal 心跳停止 cardiac arrest VF pVT 去顫 defibrillation 電擊 心搏過速 tachycardia 心搏過緩 bradycardia 電擊整流 cardioversion adenosine amiodarone lidocaine atropine epinephrine 腎上腺素 naloxone 復甦後照護 post-arrest 低溫治療 TTM 終止復甦 TOR 異物哽塞 FBAO 哈姆立克 孕婦 pregnancy LVAD AHA 2025 ECC">
+          <div class="tool-name">ACLS 高級心臟救命術 <span class="tool-en">Advanced Cardiovascular Life Support</span></div>
+          <div class="tool-desc">依 <b>2025 AHA CPR &amp; ECC 官方 18 張演算法</b>整理：成人之終止復甦、BLS、心跳停止、心搏過速／過緩、電擊整流、復甦後照護、異物哽塞、孕婦停止與 LVAD；另含兒科 PALS 與新生兒復甦，末附速查與重點</div>
+        </div>
+        <div class="tool-card" id="card-view-rsi" onclick="location.href='tools/rsi.html'"
+             data-search-kw="RSI 快速誘導插管 rapid sequence intubation 插管 intubation 氣道 airway 困難氣道 difficult airway 預充氧 preoxygenation 誘導 induction etomidate ketamine propofol midazolam 肌肉鬆弛 神經肌肉阻斷 succinylcholine 舒可利 rocuronium cisatracurium Nimbex sugammadex 環狀軟骨 cricoid 影像喉頭鏡 video laryngoscope bougie 環甲膜切開 cricothyrotomy 插管後低血壓 去飽和 desaturation 惡性高熱">
+          <div class="tool-name">快速誘導插管 RSI <span class="tool-en">Rapid Sequence Intubation</span></div>
+          <div class="tool-desc">分「流程、藥物、困難氣道、特殊情境、併發症、證據」六段：誘導與肌肉鬆弛藥物依體重換算劑量，每張藥卡之禁忌症獨立框出；困難氣道與插管後低血壓、去飽和之處置一併列出</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">心血管</span><span class="group-en">Cardiovascular</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-acs" onclick="location.href='tools/acs.html'"
+             data-search-kw="ACS 急性冠心症 AMI 心肌梗塞 STEMI NSTEMI 不穩定心絞痛 UA 胸痛 chest pain 心電圖 ECG EKG ST 上升 troponin 心肌旋轉蛋白 再灌流 reperfusion PCI 心導管 溶栓 fibrinolysis tenecteplase 抗血小板 aspirin clopidogrel ticagrelor prasugrel heparin enoxaparin DAPT 支架 stent 緊急 CABG 繞道 MONA nitroglycerin morphine Killip">
+          <div class="tool-name">急性冠心症 ACS／AMI <span class="tool-en">Acute Coronary Syndrome</span></div>
+          <div class="tool-desc">分流、心電圖判讀、再灌流時機（直接 PCI 與溶栓）、抗栓藥物與依體重換算之劑量；另含支架置放後之 DAPT 時長與緊急 CABG 的處理</div>
+        </div>
+        <div class="tool-card" id="card-view-hf" onclick="location.href='tools/heart-failure.html'"
+             data-search-kw="心臟衰竭 心衰竭 heart failure HFrEF HFmrEF HFpEF 射出分率 EF LVEF BNP NT-proBNP 四大支柱 ARNI sacubitril valsartan ACEI ARB β-blocker MRA spironolactone SGLT2 dapagliflozin empagliflozin 利尿劑 furosemide 急性心衰竭 ADHF 肺水腫 心因性休克 IABP ECMO MCS LVAD 心臟移植 CRT ICD 心律 心房顫動 周產期心肌病變 台大 NTUH 第三版">
+          <div class="tool-name">心臟衰竭治療指引 <span class="tool-en">NTUH Heart Failure Guideline</span></div>
+          <div class="tool-desc">臺大醫院心血管中心<b>第三版</b>（2026/06 修訂）互動版：定義與診斷、HFrEF／HFmrEF／HFpEF 各自的藥物治療、心律處置、急性心衰竭、共病、機械循環支持與周產期心肌病變，末附台大院內流程與文獻</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">神經 / 肺血管</span><span class="group-en">Neurovascular &amp; Pulmonary Vascular</span><span class="group-count">2 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-stroke" onclick="location.href='tools/stroke.html'"
+             data-search-kw="中風 缺血性中風 腦中風 acute ischemic stroke AIS 大血管阻塞 LVO NIHSS 靜脈溶栓 IVT alteplase tenecteplase rtPA 時間窗 4.5 小時 動脈取栓 EVT 血栓移除 thrombectomy DAWN DEFUSE 灌流影像 CTP ASPECTS 血壓控制 顱內出血 出血轉化 抗血小板 雙抗 CHANCE POINT 醒後中風 wake-up AHA ASA 2026">
+          <div class="tool-name">急性缺血性中風 <span class="tool-en">Acute Ischemic Stroke</span></div>
+          <div class="tool-desc">依 <b>2026 AHA/ASA</b> 分流、靜脈溶栓（alteplase／tenecteplase 各有劑量上限）、動脈取栓適應症與時間窗，以及血壓、抗栓與併發症之早期處置</div>
+        </div>
+        <div class="tool-card" id="card-view-pe" onclick="location.href='tools/pe.html'"
+             data-search-kw="肺栓塞 PE pulmonary embolism 急性肺栓塞 D-dimer CTPA 診斷路徑 Wells Geneva PERC YEARS 危險分層 risk stratification 高風險 中高風險 sPESI PESI 右心室 RV 功能不全 抗凝 anticoagulation heparin enoxaparin DOAC 溶栓 systemic thrombolysis alteplase 導管取栓 catheter-directed 血行動力學不穩 休克 ESC 2019">
+          <div class="tool-name">急性肺栓塞 PE <span class="tool-en">Acute Pulmonary Embolism</span></div>
+          <div class="tool-desc">依 <b>2019 ESC</b> 之診斷路徑（臨床機率、D-dimer、CTPA）、危險分層（休克、sPESI、右心室功能與心肌指標），到抗凝與再灌流治療與各藥物劑量</div>
         </div>
       </div>
     </div>
@@ -492,12 +565,12 @@
 </div>
 </div>
 <script>
-  /* 首頁路由：#abdomen／#scores 開啟對應分類；#card-view-NAME 由工具頁返回時，
+  /* 首頁路由：#abdomen／#critical／#scores 開啟對應分類；#card-view-NAME 由工具頁返回時，
      自動開啟該卡片所屬分類、捲到畫面正中並短暫高亮（取代瀏覽器預設錨點置頂）。
      關鍵：瀏覽器的錨點捲動排在 rAF 之後、卻在 setTimeout(0) 之前，
      故用 setTimeout(0) 讓我方置中排在瀏覽器捲動之後（最後生效者為我方）。 */
   (function () {
-    var SECTIONS = { abdomen: 'sec-abdomen', scores: 'sec-scores' };
+    var SECTIONS = { abdomen: 'sec-abdomen', critical: 'sec-critical', scores: 'sec-scores' };
     var current = '';        // 目前展開的分類，返回主選單時據此標註對應的方磚
 
     function showSection(key) {

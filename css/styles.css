@@ -113,15 +113,20 @@
   .gs-pending{display:inline-block; margin-top:6px; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
   .gs-empty{font-size:12.5px; color:var(--muted); background:var(--box-bg); border:1px dashed var(--line); border-radius:2px; padding:14px; text-align:center;}
 
-  /* ---- 首頁四大類入口：標本方磚（與 tools/cancer.html 的癌別方磚同款）----
+  /* ---- 首頁六大類入口：標本方磚（與 tools/cancer.html 的癌別方磚同款）----
      圖已離線處理成 640px 正方灰階（照片置中裁切、SOFA 表格補白邊全幅保留），
      故一律 cover 不再裁切；亮色→淺灰版畫、暗色→深板岩反相，隨 OS 外觀切換。
      變數scoped 在 .hub-grid：cancer-staging.css 有同名的 :root 變數，兩者互不載入同一頁，
      但仍避免日後同頁載入時互相覆寫。 */
   .hub-grid{
-    /* 電腦一行四張（滿版）；平板以下折成 2×2 並限寬置中，
-       否則 820px 的 2×2 正方形會高達 1600px，一屏塞不下 */
+    /* 電腦：四張方磚一行（滿版），兩張長方磚各壓在其中兩張之下（第二列）；
+       平板以下折成 2 欄，長方磚同樣緊接在自己那兩張方磚下面。
+       版位以 grid-template-areas 明寫，故 HTML 的順序不影響排版。
+       （2×2 若在電腦全寬呈現，820px 的正方形會高達 1600px，一屏塞不下，故仍限寬置中） */
     display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 8px;
+    grid-template-areas:
+      "abd abx canc scor"
+      "crit crit drug drug";
     --tile-bg:#e9e7e1;
     --tile-label:#fdf8ee; --tile-label-soft:rgba(253,248,238,.86);
     --tile-label-shadow:0 0 2px rgba(0,0,0,.95), 0 0 4px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.85), 0 0 9px rgba(0,0,0,.6);
@@ -145,8 +150,17 @@
     }
   }
   @media(max-width:720px){
-    .hub-grid{grid-template-columns:1fr 1fr; gap:10px; max-width:560px; margin-inline:auto;}
+    .hub-grid{
+      grid-template-columns:1fr 1fr; gap:10px; max-width:560px; margin-inline:auto;
+      grid-template-areas:
+        "abd abx"
+        "crit crit"
+        "canc scor"
+        "drug drug";
+    }
   }
+  .hub-abd{grid-area:abd;} .hub-abx{grid-area:abx;} .hub-crit{grid-area:crit;}
+  .hub-canc{grid-area:canc;} .hub-scor{grid-area:scor;} .hub-drug{grid-area:drug;}
   .hub-card{
     /* 字級跟著方磚寬度走：一行四張(≈192px)與 2×2(≈275px)共用一組規則 */
     container-type:inline-size;
@@ -196,8 +210,33 @@
     .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:none;}
   }
 
-  /* ---- 首頁分類頁（腹部急症／計分工具）----
-     這兩類沒有各自的 .html，是首頁裡的區塊；展開時把主頁的標題、查詢欄與像素貓
+  /* ---- 長方磚（急重症處置／藥物資料庫）----
+     橫跨兩欄，故中文不拆上下兩半、改為單行加英文副標；
+     字級一樣跟著自己的寬度走（cqw），才不會在電腦上被撐成標語。 */
+  .hub-card--wide{aspect-ratio:3.4/1;}
+  .hub-card--wide .hub-label{gap:5px;}
+  .hub-card--wide .hub-zh{font-size:clamp(21px,4.6vw,32px);}
+  .hub-card--wide .hub-en{font-size:clamp(9.5px,1.6vw,13px);}
+  @supports (font-size:1cqw){
+    .hub-card--wide .hub-zh{font-size:clamp(20px,5.4cqw,32px);}
+    .hub-card--wide .hub-en{font-size:clamp(9.5px,2cqw,13px);}
+  }
+
+  /* ---- 尚未配圖的方磚 ----
+     沒有 .hub-img 時只剩底色，原本那層給照片用的壓暗不足以讓白字站得住，
+     故底色壓深一階、壓暗層加重（含 hover，否則 hover 反而變得更難讀）。
+     日後補上 <img class="hub-img">，把 .hub-card--nopic 拿掉即可。 */
+  .hub-card--nopic{--tile-bg:#a8a49b;}
+  .hub-card--nopic .hub-scrim{background:rgba(18,14,10,.42);}
+  .hub-card--nopic:hover .hub-scrim, .hub-card--nopic:focus-visible .hub-scrim{background:rgba(18,14,10,.32);}
+  @media (prefers-color-scheme:dark){
+    .hub-card--nopic{--tile-bg:#39424a;}
+    .hub-card--nopic .hub-scrim{background:rgba(6,10,14,.34);}
+    .hub-card--nopic:hover .hub-scrim, .hub-card--nopic:focus-visible .hub-scrim{background:rgba(6,10,14,.24);}
+  }
+
+  /* ---- 首頁分類頁（腹部急症／急重症處置／計分工具）----
+     這幾類沒有各自的 .html，是首頁裡的區塊；展開時把主頁的標題、查詢欄與像素貓
      收起來，只留分類自己的 .app-header，看起來就與癌症／抗生素等獨立頁一致。 */
   body.sec-open .home-header,
   body.sec-open .gs-box,

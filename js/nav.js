@@ -46,29 +46,9 @@
   };
   var CANCER_PAGE = 'tools/cancer.html';
 
-  /* 只在導覽列出現、首頁不放方磚的頁面。清單本來全由首頁 DOM 推導，這裡是唯一的例外：
-     藥物資料庫是查詢型工具（一次 500+ 品項），放上首頁會壓過臨床決策那幾類，
-     但仍需要每一頁都能直接跳過去，故於此明列。日後若決定放上首頁，
-     只要在 index.html 加方磚並把這段刪掉即可。 */
-  var NAV_ONLY_GROUPS = [
-    {
-      title: '藥物資料庫', en: 'Drug Database', href: 'tools/drug-database.html',
-      items: [{ href: 'tools/drug-database.html', zh: '藥物資料庫', en: 'NTUH Formulary' }]
-    },
-    // 急重症處置：自含頁面（無首頁方磚），固定列於側邊欄最底。
-    // 原名「心臟急重症」，加入呼吸道處置（RSI）後改為涵蓋復甦全域的名稱。
-    {
-      title: '急重症處置', en: 'Emergency & Critical Care', href: '',
-      items: [
-        { href: 'tools/acls.html', zh: 'ACLS 高級心臟救命術', en: 'Resuscitation Algorithms' },
-        { href: 'tools/rsi.html', zh: 'RSI 快速誘導插管', en: 'Rapid Sequence Intubation' },
-        { href: 'tools/acs.html', zh: '急性冠心症 ACS／AMI', en: 'Acute Coronary Syndrome' },
-        { href: 'tools/stroke.html', zh: '急性缺血性中風', en: 'Acute Ischemic Stroke' },
-        { href: 'tools/pe.html', zh: '急性肺栓塞 PE', en: 'Pulmonary Embolism' },
-        { href: 'tools/heart-failure.html', zh: '心臟衰竭治療指引', en: 'NTUH Heart Failure' }
-      ]
-    }
-  ];
+  /* 急重症處置與藥物資料庫原先只在導覽列出現（首頁沒有方磚），故曾在此明列一份清單；
+     兩者已各自加上首頁方磚（#critical 分類、tools/drug-database.html），
+     清單回歸由首頁 DOM 推導，此處不再有例外。 */
 
   var KEY = 'ct-nav-open';
   var SNAP = 'ct-nav-snapshot-v2';    // 清單快照；格式變更時改版號即可作廢舊檔
@@ -135,7 +115,7 @@
     return s || en;
   }
 
-  // 分類與排序一律照首頁的四張方磚：連 #sec-xxx 者取該區塊內所有工具卡，
+  // 分類與排序一律照首頁的方磚：連 #sec-xxx 者取該區塊內所有工具卡，
   // 連 .html 者取 HUB_PAGES 的細目（無細目就是方磚本身那一頁）。
   function readGroups(doc) {
     var groups = [];
@@ -169,7 +149,6 @@
         groups.push({ title: title, en: en, href: dest, items: items });
       }
     });
-    NAV_ONLY_GROUPS.forEach(function (g) { groups.push(g); });
     return groups;
   }
 
