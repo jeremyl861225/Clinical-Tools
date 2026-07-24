@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性冠心症 ACS／AMI · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
+           border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  .rsi-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
+  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }
+  .rsi-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .rsi-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
+                 text-transform:uppercase; letter-spacing:.04em;}
+  .rsi-bar input[type=number]{width:88px; font-family:var(--mono); font-size:15px; font-weight:700;
+      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .rsi-bar .rsi-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
+  .rsi-tabs{display:flex; gap:0; flex-wrap:wrap; border-bottom:2px solid var(--ink); margin-bottom:14px;}
+  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
+           border:none; background:none; color:var(--muted); border-bottom:2px solid transparent;
+           margin-bottom:-2px;}
+  .rsi-tab:hover{color:var(--ink);}
+  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;}
+  .rsi-panel{display:none;} .rsi-panel.on{display:block;}
+  .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
+  .tl-item{position:relative; padding:0 0 14px 18px;}
+  .tl-item:last-child{padding-bottom:2px;}
+  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+                  border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
+  .tl-item.t0:before{background:var(--accent2);}
+  .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
+  .tl-h{font-family:var(--serif); font-size:15px; font-weight:600; margin:1px 0 3px;}
+  .tl-h .en{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400; margin-left:5px;}
+  .tl-b{font-size:12.5px; line-height:1.7;}
+  .tl-b ul{margin:3px 0; padding-left:17px;}
+  .tl-b li{margin:1px 0;}
+  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .dg.warn{border-left-color:var(--accent2);}
+  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
+  .dg-zh{font-size:11.5px; color:var(--muted);}
+  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
+  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}
+  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
+  .dg-dose .dd-v.alt{color:var(--accent2);}
+  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
+  .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px;}
+  .dg-kin b{color:var(--ink); font-weight:700;}
+  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
+  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
+  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em;
+             text-transform:uppercase;}
+  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
+  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
+  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
+  .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
+           border-top:1px dashed var(--line); padding-top:6px;}
+  .dg-note b{color:var(--accent2);}
+  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
+         background:var(--accent2-soft); padding:7px 10px;}
+  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
+  .dg-ci li{margin:1px 0;}
+  .dg-ci .abs{font-weight:700;}
+  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .tw table{min-width:520px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .risk-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+  .risk-chip{flex:1 1 130px; border:1px solid var(--line); border-radius:2px; padding:7px 9px; background:var(--panel);}
+  .risk-chip.r-hi{border-left:3px solid var(--accent2);}
+  .risk-chip.r-mid{border-left:3px solid #c9902a;}
+  .risk-chip.r-lo{border-left:3px solid #2e6b53;}
+  .risk-chip .rc-t{font-family:var(--mono); font-size:11px; font-weight:700; margin-bottom:2px;}
+  .risk-chip .rc-b{font-size:11.5px; line-height:1.55; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-acs">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Cardiology · Emergency &amp; Critical Care</div>
+      <h1>急性冠心症 ACS／AMI</h1>
+      <div class="sub">Acute Coronary Syndrome — 分流、判讀、再灌流時機、抗栓藥物與劑量</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+  </div>
+
+  <div class="rsi-bar">
+    <div class="rsi-bar-in">
+      <label for="acs_wt">體重 Weight</label>
+      <input type="number" id="acs_wt" min="1" max="250" step="1" value="60">
+      <span class="rsi-hint">kg</span>
+      <span class="rsi-hint">供 heparin／enoxaparin／tenecteplase 換算</span>
+    </div>
+  </div>
+
+  <div class="rsi-tabs">
+    <button class="rsi-tab on" data-p="triage">分流 Triage</button>
+    <button class="rsi-tab" data-p="dx">判讀 Diagnosis</button>
+    <button class="rsi-tab" data-p="rx">治療 Treatment</button>
+    <button class="rsi-tab" data-p="drug">藥物 Drugs</button>
+    <button class="rsi-tab" data-p="ev">證據 Evidence</button>
+  </div>
+
+  <!-- ═══════════ 分流 ═══════════ -->
+  <div class="rsi-panel on" id="p-triage">
+    <p class="lead">
+      任何疑似缺血性胸痛（或等義症狀：呼吸困難、上腹痛、冷汗、暈厥，尤其女性、糖尿病、老年）到院，
+      <b>10 分鐘內取得並判讀 12 導程心電圖</b>。第一步不是抽血，是心電圖——它決定走哪一條路。
+    </p>
+
+    <div class="card">
+      <div class="section-title">到院黃金 10 分鐘</div>
+      <div class="tl">
+        <div class="tl-item t0">
+          <div class="tl-t">0 min</div>
+          <div class="tl-h">12 導程 ECG<span class="en">＋持續監測、去顫器待命</span></div>
+          <div class="tl-b">下壁梗塞加做右側（V3R–V4R）與後壁（V7–V9）；反覆或變化的胸痛而首張正常，每 15–30 分鐘重照。同步：MONA 已不再照本宣科（見下方警語）、建立雙靜脈通路、抽 hs-troponin、給水溶性 aspirin。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">判讀分岔</div>
+          <div class="tl-h">ST 上升 → STEMI 路線</div>
+          <div class="tl-b">符合 STEMI 心電圖準則（見「判讀」）→ <b>立即啟動再灌流</b>，不必等 troponin。同時通知心導管室／啟動轉院。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">判讀分岔</div>
+          <div class="tl-h">無 ST 上升 → NSTE-ACS 路線</div>
+          <div class="tl-b">走 hs-troponin 0/1h 演算法區分 NSTEMI 與不穩定型心絞痛／非心因性；以 GRACE／風險決定侵入性檢查時機。</div>
+        </div>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">2025 ACC/AHA 打破的舊習慣</div>
+        <ul>
+          <li><b>不再常規給氧</b>：SpO₂ ≥ 90% 者給氧無益甚至有害，僅在 &lt; 90% 或呼吸窘迫時給。</li>
+          <li><b>Morphine 降級</b>：可能延遲並削弱口服 P2Y₁₂ 吸收，僅在硝酸鹽無法緩解的持續疼痛時謹慎使用。</li>
+          <li><b>不常規用硝酸鹽於所有病人</b>：下壁／右心室梗塞、近期使用 PDE5 抑制劑（sildenafil 24h／tadalafil 48h）、收縮壓 &lt; 90 者<b>禁用</b>。</li>
+          <li><b>不常規 P2Y₁₂ 前置</b>於預計行早期侵入性處置的 NSTE-ACS（冠脈解剖未明前）。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 判讀 ═══════════ -->
+  <div class="rsi-panel" id="p-dx">
+    <div class="card">
+      <div class="section-title">STEMI 的心電圖準則（第四版通用定義）</div>
+      <div class="kbox">
+        <div class="kbox-t">新出現的 ST 上升（J 點，連續兩個相鄰導程）</div>
+        <ul>
+          <li>V2–V3：男 ≥ 40 歲 <b>≥ 2 mm</b>、男 &lt; 40 歲 ≥ 2.5 mm、女 <b>≥ 1.5 mm</b>。</li>
+          <li>其他導程：<b>≥ 1 mm</b>。</li>
+          <li>後壁（V7–V9）≥ 0.5 mm；右心室（V3R–V4R）≥ 0.5 mm（男 &lt; 30 歲 ≥ 1 mm）。</li>
+          <li><b>STEMI 等義波形</b>：新發生左束支傳導阻滯（用 Sgarbossa 準則判讀）、de Winter T 波、aVR 上升合併廣泛 ST 下降（左主幹／三血管）、後壁梗塞（V1–V3 ST 下降 + 高 R）。</li>
+        </ul>
+      </div>
+      <div class="note">心肌梗塞的診斷 = troponin 上升／下降且至少一次 &gt; 99 百分位參考上限，加上缺血的臨床證據（症狀、心電圖變化、影像上新的心肌喪失或區域運動異常）。第一型（斑塊破裂血栓）與第二型（供需失衡）須臨床區分——治療完全不同。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">hs-Troponin 0/1h 演算法（ESC，NSTE-ACS）</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>判定</th><th>條件（依各院 assay 的臨界值）</th><th>處置</th></tr>
+          <tr class="dt-warn"><td>Rule-in</td><td>0h 很高，或 0→1h 有明顯上升（Δ 達 assay 臨界）</td><td>視為 NSTEMI，收治、抗栓、安排侵入性處置</td></tr>
+          <tr><td>Observe</td><td>介於中間</td><td>再抽 3h troponin、影像、GRACE 評估</td></tr>
+          <tr class="dt-warn" style="opacity:.85"><td>Rule-out</td><td>0h 極低（且症狀 &gt; 3h），或 0h 低且 0→1h Δ 極小</td><td>PE/主動脈剝離等鑑別後，多可安全離院或門診追蹤</td></tr>
+        </table>
+      </div>
+      <div class="note"><b>臨界值因 assay 而異</b>（hs-cTnT 與各廠 hs-cTnI 數字不同、且分性別），務必用<b>自家檢驗科公布的數值</b>，勿套用他院。單一 troponin 上升不等於第一型 MI——腎衰竭、心衰竭、敗血症、心肌炎、PE 皆可升高。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">風險與鑑別</div>
+      <div class="kbox">
+        <div class="kbox-t">分層工具（本站另有計算器可點）</div>
+        <ul>
+          <li><b>HEART score</b>：急診胸痛 MACE 分層，0–3 分低風險可考慮早期離院。</li>
+          <li><b>GRACE 2.0</b>：NSTE-ACS 住院／6 個月死亡風險，&gt; 140 屬高風險 → 早期侵入性（&lt; 24h）。</li>
+          <li><b>TIMI、Killip 分級</b>：Killip II–IV（肺水腫、休克）預後顯著較差。</li>
+        </ul>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">別漏掉會致命的模仿者</div>
+        主動脈剝離（給抗栓前想一下，尤其胸背撕裂痛、脈搏不對稱、縱膈增寬）、肺栓塞、張力性氣胸、食道破裂、心包填塞。給 aspirin＋抗凝前，這幾個要先過腦。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 治療 ═══════════ -->
+  <div class="rsi-panel" id="p-rx">
+    <div class="card">
+      <div class="section-title">STEMI：再灌流是與時間賽跑</div>
+      <div class="tl">
+        <div class="tl-item t0">
+          <div class="tl-t">首選</div>
+          <div class="tl-h">直接 PCI<span class="en">Primary PCI</span></div>
+          <div class="tl-b">
+            <b>能在 First-Medical-Contact 後 120 分鐘內完成打通</b>就送導管室（PCI 院內目標 door-to-balloon &lt; 90 分；已在 PCI 醫院者 &lt; 60 分）。
+            <ul>
+              <li>優先橈動脈路徑；只處理犯罪血管（心因性休克時可考慮完全血運重建的分期策略）。</li>
+              <li>心因性休克或機械併發症無論發病多久都要緊急血運重建。</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">替代</div>
+          <div class="tl-h">纖溶治療<span class="en">Fibrinolysis</span></div>
+          <div class="tl-b">
+            <b>預期無法在 120 分鐘內 PCI</b>、且發病 &lt; 12 小時、無禁忌 → <b>10 分鐘內</b>給纖溶劑（door-to-needle &lt; 30 分），首選 tenecteplase（見「藥物」的禁忌框）。
+            <ul>
+              <li>給藥後<b>一律轉送可 PCI 醫院</b>：成功者 2–24 小時內做血管攝影；失敗（60–90 分 ST 回落 &lt; 50%、持續痛、血流不穩）→ 立即補救性 PCI。</li>
+              <li>≥ 75 歲 tenecteplase 減半（見藥物）。</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">&gt; 12 h</div>
+          <div class="tl-h">遲到的 STEMI</div>
+          <div class="tl-b">仍有症狀或血流動力學／電氣不穩 → 仍做 PCI。完全無症狀、穩定、發病 &gt; 48 小時的完全阻塞血管，不建議常規 PCI。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">NSTE-ACS：依風險決定侵入時機</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>風險</th><th>條件</th><th>血管攝影時機</th></tr>
+          <tr class="dt-warn"><td>極高危</td><td>血流動力學不穩／心因性休克、反覆或持續缺血痛、致命性心律不整、機械併發症、急性心衰竭</td><td><b>立即（&lt; 2h），比照 STEMI</b></td></tr>
+          <tr><td>高危</td><td>確診 NSTEMI（troponin 上升）、動態 ST-T 變化、GRACE &gt; 140</td><td>早期侵入 <b>&lt; 24h</b></td></tr>
+          <tr><td>中／低危</td><td>無上述，GRACE &lt; 140</td><td>選擇性侵入或先非侵入性缺血檢查</td></tr>
+        </table>
+      </div>
+      <div class="note">2023 ESC 對常規早期侵入的死亡益處態度較保守（時機主要影響缺血事件而非死亡）；但極高危族群的立即處置無爭議。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">抗栓核心（所有 ACS）</div>
+      <div class="kbox">
+        <div class="kbox-t">三根支柱</div>
+        <ul>
+          <li><b>抗血小板一（立即）</b>：Aspirin 負荷後終生維持。</li>
+          <li><b>抗血小板二（P2Y₁₂）</b>：STEMI 直接 PCI 給 ticagrelor 或 prasugrel；NSTE-ACS 若走早期侵入，多在知道解剖後於導管室給。多數維持雙抗（DAPT）12 個月，依出血風險調整。</li>
+          <li><b>抗凝（住院期間）</b>：PCI 術中 UFH（或 bivalirudin）；纖溶／保守則 enoxaparin 或 fondaparinux。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">後續二級預防（出院帶藥）</div>
+        高強度 statin（目標 LDL &lt; 55 mg/dL 且較基礎降 ≥ 50%）、必要時加 ezetimibe／PCSK9i；ACEI/ARB（尤其 LVEF ≤ 40%、高血壓、糖尿病）；β-blocker（LVEF 降低者明確有益）；醛固酮拮抗劑（LVEF ≤ 40% 且心衰竭或糖尿病）；SGLT2i（心衰竭／糖尿病）；戒菸與心臟復健。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 藥物 ═══════════ -->
+  <div class="rsi-panel" id="p-drug">
+    <p class="lead">體重相關者（heparin、enoxaparin、tenecteplase）依上方體重即時換算。抗血小板為固定劑量。</p>
+
+    <div class="section-title">抗血小板 Antiplatelet</div>
+
+    <div class="dg" data-drug="aspirin">
+      <div class="dg-head"><span class="dg-name">Aspirin</span><span class="dg-zh">阿斯匹靈（水溶／嚼服）</span></div>
+      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">162–325 <span class="dd-u">mg 嚼服</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">75–100 <span class="dd-u">mg QD 終生</span></span></span></div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">對 aspirin 或 NSAID 過敏／aspirin 誘發氣喘</span>；<span class="abs">活動性大出血</span>、近期顱內出血。</li>
+        <li><span class="ci-k">相對</span> 活動性消化性潰瘍、嚴重肝病、出血傾向。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="ticagrelor">
+      <div class="dg-head"><span class="dg-name">Ticagrelor</span><span class="dg-zh">Brilinta</span><span class="dg-tag">首選 P2Y₁₂</span></div>
+      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">180 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">90 <span class="dd-u">mg BID</span></span></span></div>
+      <div class="dg-kin">可用於 PCI 與保守治療；停藥 3–5 天再手術</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">活動性病理性出血</span>、<span class="abs">顱內出血病史</span>、中重度肝功能不良。</li>
+        <li><span class="ci-k">交互作用</span> 強效 CYP3A4 抑制劑／誘導劑；aspirin 維持量勿 &gt; 100 mg（會削弱療效）。</li>
+        <li><span class="ci-k">注意</span> 呼吸困難（常見、多良性）、心搏過緩、高尿酸。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="prasugrel">
+      <div class="dg-head"><span class="dg-name">Prasugrel</span><span class="dg-zh">Effient</span><span class="dg-tag">PCI 專用</span></div>
+      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">60 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">10 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">僅用於<b>已知冠脈解剖、將行 PCI</b> 者；≥ 75 歲或 &lt; 60 kg 維持量減至 5 mg</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">中風／TIA 病史</span>（顱內出血風險）；活動性出血；嚴重肝病。</li>
+        <li><span class="ci-k">不建議</span> ≥ 75 歲、體重 &lt; 60 kg（除非減量且效益明確）；未知解剖前的 NSTE-ACS 前置。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="clopidogrel">
+      <div class="dg-head"><span class="dg-name">Clopidogrel</span><span class="dg-zh">Plavix</span><span class="dg-tag">纖溶／不耐前二者時</span></div>
+      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">300–600 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">75 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">纖溶治療者：≤ 75 歲負荷 300 mg，<b>&gt; 75 歲不給負荷</b>、直接 75 mg</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性出血；嚴重肝功能不良。</li>
+        <li><span class="ci-k">注意</span> CYP2C19 弱代謝者療效差；效力弱於 ticagrelor／prasugrel，故僅在後兩者禁忌或纖溶時選用。</li>
+      </ul></div>
+    </div>
+
+    <div class="section-title sect">抗凝 Anticoagulant</div>
+
+    <div class="dg" data-drug="ufh">
+      <div class="dg-head"><span class="dg-name">Unfractionated Heparin</span><span class="dg-zh">UFH，PCI 術中首選</span></div>
+      <div class="dg-dose"><span><span class="dd-k">合併 GPI 或 PCI：bolus 50–70 U/kg</span><span class="dd-v" data-out="ufh_pci">—</span></span><span><span class="dd-k">無 GPI：bolus 70–100 U/kg</span><span class="dd-v alt" data-out="ufh_std">—</span></span></span></div>
+      <div class="dg-kin">依 ACT 調整；保守治療時 60 U/kg（max 4000 U）bolus + 12 U/kg/hr 輸注、追 aPTT</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">活動性大出血</span>、<span class="abs">肝素引起的血小板低下（HIT）病史</span>。</li>
+        <li><span class="ci-k">注意</span> 監測血小板（HIT）；可用 protamine 逆轉。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="enoxaparin">
+      <div class="dg-head"><span class="dg-name">Enoxaparin</span><span class="dg-zh">Clexane，LMWH</span></div>
+      <div class="dg-dose"><span><span class="dd-k">治療 1 mg/kg SC BID</span><span class="dd-v" data-out="enox">—</span></span><span><span class="dd-k">纖溶輔助 IV bolus 30 mg</span><span class="dd-v alt">30 <span class="dd-u">mg</span></span></span></div>
+      <div class="dg-kin">≥ 75 歲：不給 IV bolus、SC 減至 0.75 mg/kg BID；CrCl &lt; 30：1 mg/kg <b>QD</b></div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性大出血、HIT 病史、對 LMWH 或豬源產品過敏。</li>
+        <li><span class="ci-k">減量／避免</span> 嚴重腎功能不良（CrCl &lt; 30 需減量；透析病人優先 UFH）。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="fondaparinux">
+      <div class="dg-head"><span class="dg-name">Fondaparinux</span><span class="dg-zh">Arixtra，Xa 抑制</span><span class="dg-tag">保守治療佳</span></div>
+      <div class="dg-dose"><span><span class="dd-k">2.5 mg SC QD</span><span class="dd-v">2.5 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">出血風險最低；<b>直接 PCI 時不可單用</b>（導管血栓風險）需併 UFH</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">CrCl &lt; 20 mL/min</span>、活動性出血、細菌性心內膜炎。</li>
+        <li><span class="ci-k">注意</span> 單用於 PCI 會增加導管相關血栓，須加 UFH。</li>
+      </ul></div>
+    </div>
+
+    <div class="section-title sect">纖溶劑 Fibrinolytic（僅 STEMI 且無法及時 PCI）</div>
+
+    <div class="dg warn" data-drug="tnk">
+      <div class="dg-head"><span class="dg-name">Tenecteplase</span><span class="dg-zh">TNKase，單次 bolus</span><span class="dg-tag ctrl">依體重分級</span></div>
+      <div class="dg-dose"><span><span class="dd-k">體重分級 bolus（&lt;75 歲）</span><span class="dd-v" data-out="tnk">—</span></span><span><span class="dd-k">≥ 75 歲：<b>減半</b></span><span class="dd-v alt" data-out="tnk_old">—</span></span></div>
+      <div class="dg-kin">分級：&lt;60 kg→30 mg｜60–69→35｜70–79→40｜80–89→45｜≥90 kg→50 mg（單次 5 秒 IV bolus）</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications（STEMI 纖溶）</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">任何顱內出血病史</span>；<span class="abs">已知腦血管結構異常（AVM）或惡性顱內腫瘤</span>；<span class="abs">3 個月內缺血性中風</span>（&lt; 4.5h 除外）；3 個月內嚴重頭部或顏面外傷；活動性出血或出血體質；疑似主動脈剝離；近期顱內／脊椎手術。</li>
+        <li><span class="ci-k">相對</span> 慢性嚴重高血壓或到院 SBP &gt; 180／DBP &gt; 110；缺血性中風 &gt; 3 個月；創傷性或長時間 CPR；近期內出血（2–4 週）；大手術 &lt; 3 週；懷孕；活動性消化性潰瘍；口服抗凝中。</li>
+      </ul></div>
+      <div class="dg-note">纖溶只是「橋接」——給完仍須轉送可 PCI 醫院。&lt;75 歲、發病 &lt;12h、無法 120 分內 PCI 時效益最大。</div>
+    </div>
+
+    <div class="kbox">
+      <div class="kbox-t">緩解與支持</div>
+      <ul>
+        <li><b>Nitroglycerin</b> 舌下 0.4 mg 可重複 ×3（間隔 5 分），或 IV 輸注；<b>禁</b>：SBP &lt; 90、下壁／右室梗塞、24–48h 內用過 PDE5 抑制劑。</li>
+        <li><b>Morphine</b> 2–4 mg IV，僅硝酸鹽無效的持續痛時；會延遲口服 P2Y₁₂ 吸收。</li>
+        <li><b>Oxygen</b> 僅 SpO₂ &lt; 90% 或呼吸窘迫時給。</li>
+        <li><b>β-blocker</b> 24h 內口服（血流動力學穩定、無心衰竭與休克徵象時）；急性期<b>避免 IV</b> β-blocker 於有心因性休克風險者。</li>
+        <li><b>高強度 statin</b> 儘早開始（atorvastatin 80 mg 或 rosuvastatin 20–40 mg）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════ 證據 ═══════════ -->
+  <div class="rsi-panel" id="p-ev">
+    <div class="card">
+      <div class="section-title">指引與關鍵文獻</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>主題</th><th>來源</th><th>PMID</th></tr>
+          <tr><td>ACS 綜合處置指引（美）</td><td>2025 ACC/AHA/ACEP/NAEMSP/SCAI Guideline, Circulation 2025;151:e771</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40014670/" target="_blank" rel="noopener">40014670</a></td></tr>
+          <tr><td>ACS 綜合處置指引（歐）</td><td>2023 ESC Guidelines for ACS, Eur Heart J 2023;44:3720</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37622654/" target="_blank" rel="noopener">37622654</a></td></tr>
+          <tr><td>MI 通用定義</td><td>Fourth Universal Definition of MI（第四版）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/30153967/" target="_blank" rel="noopener">30153967</a></td></tr>
+          <tr><td>hs-troponin 0/1h</td><td>ESC 0/1h 演算法系列驗證（如 Circulation 2021;144:773）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34376064/" target="_blank" rel="noopener">34376064</a></td></tr>
+          <tr><td>door-to-needle 越短越好</td><td>Man S, et al. Circulation 2023;148:20</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37199147/" target="_blank" rel="noopener">37199147</a></td></tr>
+          <tr><td>HEART score 外部驗證</td><td>BMC Emerg Med 2025;25:165（HEART/TIMI/GRACE 比較）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40847270/" target="_blank" rel="noopener">40847270</a></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="kbox">
+      <div class="kbox-t">臨界值與品項注意</div>
+      hs-troponin 的 rule-in／rule-out 臨界值<b>因檢驗 assay 與性別而異</b>，本頁只給演算法骨架，實際數字請用貴院檢驗科公布值。纖溶與抗凝劑量以 2025 ACC/AHA 與 2023 ESC 指引為準，用藥前仍須對照本院藥劑部品項與腎功能調整。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40014670/" target="_blank" rel="noopener" class="ref-link">Rao SV, et al. Circulation. 2025;151:e771-e862.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37622654/" target="_blank" rel="noopener" class="ref-link">Byrne RA, et al. Eur Heart J. 2023;44:3720-3826.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/30153967/" target="_blank" rel="noopener" class="ref-link">Thygesen K, et al. (Fourth Universal Definition of MI). Circulation. 2018;138:e618.</a>
+    ｜ 劑量：2025 ACC/AHA、2023 ESC；品項與腎功能調整請對照台大藥劑部
+  </footer>
+</div>
+</div>
+
+<script>
+var ACS_WT_FIXED = {  // 固定分級藥（tenecteplase）不靠公式，靠體重帶查表
+  tnk: function(w){ return w<60?30 : w<70?35 : w<80?40 : w<90?45 : 50; }
+};
+function acsRound(v){ if(!isFinite(v)) return '—'; if(v>=100) return String(Math.round(v)); if(v>=10) return String(Math.round(v)); return (Math.round(v*10)/10).toFixed(1); }
+function acsCalc(){
+  var w = parseFloat(document.getElementById('acs_wt').value);
+  var ok = !isNaN(w) && w>0;
+  function set(key, html){ var e=document.querySelector('[data-out="'+key+'"]'); if(e) e.innerHTML = ok? html : '—'; }
+  // UFH（PCI）
+  set('ufh_pci', acsRound(50*w)+'–'+acsRound(70*w)+' <span class="dd-u">U</span>');
+  set('ufh_std', acsRound(70*w)+'–'+acsRound(100*w)+' <span class="dd-u">U</span>');
+  // Enoxaparin 治療量
+  set('enox', acsRound(1*w)+' <span class="dd-u">mg SC BID</span>');
+  // Tenecteplase 分級
+  if(ok){ var t=ACS_WT_FIXED.tnk(w); set('tnk', t+' <span class="dd-u">mg bolus</span>'); set('tnk_old', (t/2)+' <span class="dd-u">mg bolus</span>'); }
+  else { set('tnk',''); set('tnk_old',''); }
+}
+function acsTab(name){
+  document.querySelectorAll('.rsi-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-p')===name); });
+  document.querySelectorAll('.rsi-panel').forEach(function(p){ p.classList.toggle('on', p.id==='p-'+name); });
+  if(location.hash!=='#'+name) history.replaceState(null,'','#'+name);
+}
+document.querySelectorAll('.rsi-tab').forEach(function(b){ b.addEventListener('click', function(){ acsTab(b.getAttribute('data-p')); }); });
+document.getElementById('acs_wt').addEventListener('input', acsCalc);
+(function(){ var bar=document.getElementById('acs_wt').closest('.rsi-bar'); if(!bar) return;
+  // 貼頂陰影：以 bar 自身 top 是否為 0 判斷
+  function mark(){ bar.classList.toggle('stuck', bar.getBoundingClientRect().top<=0); }
+  window.addEventListener('scroll', mark, {passive:true}); window.addEventListener('resize', mark); mark();
+})();
+(function init(){ var h=(location.hash||'').replace('#',''); if(document.getElementById('p-'+h)) acsTab(h); acsCalc(); })();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

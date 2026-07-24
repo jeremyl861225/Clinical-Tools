@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性肺栓塞 PE · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
+           border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  .rsi-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
+  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }
+  .rsi-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .rsi-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
+                 text-transform:uppercase; letter-spacing:.04em;}
+  .rsi-bar input[type=number]{width:88px; font-family:var(--mono); font-size:15px; font-weight:700;
+      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .rsi-bar .rsi-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
+  .rsi-tabs{display:flex; gap:0; flex-wrap:wrap; border-bottom:2px solid var(--ink); margin-bottom:14px;}
+  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
+           border:none; background:none; color:var(--muted); border-bottom:2px solid transparent;
+           margin-bottom:-2px;}
+  .rsi-tab:hover{color:var(--ink);}
+  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;}
+  .rsi-panel{display:none;} .rsi-panel.on{display:block;}
+  .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
+  .tl-item{position:relative; padding:0 0 14px 18px;}
+  .tl-item:last-child{padding-bottom:2px;}
+  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+                  border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
+  .tl-item.t0:before{background:var(--accent2);}
+  .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
+  .tl-h{font-family:var(--serif); font-size:15px; font-weight:600; margin:1px 0 3px;}
+  .tl-h .en{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400; margin-left:5px;}
+  .tl-b{font-size:12.5px; line-height:1.7;}
+  .tl-b ul{margin:3px 0; padding-left:17px;}
+  .tl-b li{margin:1px 0;}
+  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .dg.warn{border-left-color:var(--accent2);}
+  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
+  .dg-zh{font-size:11.5px; color:var(--muted);}
+  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
+  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}
+  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
+  .dg-dose .dd-v.alt{color:var(--accent2);}
+  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
+  .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px;}
+  .dg-kin b{color:var(--ink); font-weight:700;}
+  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
+  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
+  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em;
+             text-transform:uppercase;}
+  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
+  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
+  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
+  .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
+           border-top:1px dashed var(--line); padding-top:6px;}
+  .dg-note b{color:var(--accent2);}
+  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
+         background:var(--accent2-soft); padding:7px 10px;}
+  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
+  .dg-ci li{margin:1px 0;}
+  .dg-ci .abs{font-weight:700;}
+  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .tw table{min-width:520px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .risk-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+  .risk-chip{flex:1 1 150px; border:1px solid var(--line); border-radius:2px; padding:8px 10px; background:var(--panel);}
+  .risk-chip.r-hi{border-left:3px solid var(--accent2);}
+  .risk-chip.r-mh{border-left:3px solid #c9902a;}
+  .risk-chip.r-ml{border-left:3px solid #7aa0b4;}
+  .risk-chip.r-lo{border-left:3px solid #2e6b53;}
+  .risk-chip .rc-t{font-family:var(--mono); font-size:11px; font-weight:700; margin-bottom:3px;}
+  .risk-chip .rc-b{font-size:11.5px; line-height:1.55; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-pe">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Pulmonology · Emergency &amp; Critical Care</div>
+      <h1>急性肺栓塞 PE</h1>
+      <div class="sub">Acute Pulmonary Embolism — 診斷路徑、危險分層、抗凝與再灌流（2019 ESC）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+  </div>
+
+  <div class="rsi-bar">
+    <div class="rsi-bar-in">
+      <label for="pe_wt">體重 Weight</label>
+      <input type="number" id="pe_wt" min="1" max="250" step="1" value="60">
+      <span class="rsi-hint">kg</span>
+      <span class="rsi-hint">供 enoxaparin／alteplase 換算</span>
+    </div>
+  </div>
+
+  <div class="rsi-tabs">
+    <button class="rsi-tab on" data-p="dx">診斷 Diagnosis</button>
+    <button class="rsi-tab" data-p="risk">危險分層 Risk</button>
+    <button class="rsi-tab" data-p="rx">治療 Treatment</button>
+    <button class="rsi-tab" data-p="drug">藥物 Drugs</button>
+    <button class="rsi-tab" data-p="ev">證據 Evidence</button>
+  </div>
+
+  <!-- ═══════════ 診斷 ═══════════ -->
+  <div class="rsi-panel on" id="p-dx">
+    <p class="lead">
+      診斷路徑取決於一件事：<b>病人穩不穩</b>。血流動力學不穩者不做機率評分，直接找右心與栓子；
+      穩定者才走「臨床機率 → D-dimer → CTPA」的階梯，避免不必要的顯影劑與輻射。
+    </p>
+
+    <div class="card">
+      <div class="section-title">兩條分流</div>
+      <div class="tl">
+        <div class="tl-item t0">
+          <div class="tl-t">不穩定</div>
+          <div class="tl-h">休克／低血壓<span class="en">SBP &lt; 90 或需升壓</span></div>
+          <div class="tl-b">
+            <b>視為高危 PE</b>。立即床邊心臟超音波找右心室負荷（RV 擴大、D-sign、McConnell）；病人若太不穩無法送 CT，超音波見右心負荷即可<b>經驗性再灌流</b>。能穩住就緊急 CTPA 確診。
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">穩定</div>
+          <div class="tl-h">臨床機率評分<span class="en">Wells / Geneva</span></div>
+          <div class="tl-b">
+            用 Wells 或修訂 Geneva 分「PE 不太可能 vs 可能」。可搭配 <b>PERC</b>（低機率者八項全陰可免驗 D-dimer）。
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">穩定</div>
+          <div class="tl-h">D-dimer（年齡校正）</div>
+          <div class="tl-b">
+            非高機率者驗 D-dimer；<b>&gt; 50 歲用年齡校正臨界值</b>（年齡 ×10 µg/L）提高特異度、減少不必要 CT（ADJUST-PE）。<b>YEARS</b> 演算法可進一步減少造影。陰性即排除、不做 CT。
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">穩定</div>
+          <div class="tl-h">CTPA（或 V/Q）確診</div>
+          <div class="tl-b">
+            高機率、或 D-dimer 陽性 → <b>CT 肺動脈攝影</b>。顯影劑禁忌／腎功能差／孕婦可改 V/Q 掃描。孕婦依 YEARS-pregnancy 調整，必要時先照下肢超音波。
+          </div>
+        </div>
+      </div>
+      <div class="note">Wells／Geneva／PESI 等分數本站另有計算器可用（見「計分工具」）。D-dimer 在住院、癌症、老年、術後偽陽性高，陽性只代表「需要影像」而非確診。</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 危險分層 ═══════════ -->
+  <div class="rsi-panel" id="p-risk">
+    <p class="lead">確診後<b>立即分層</b>——它決定要不要再灌流、在哪裡照護。四個軸：血流動力學、sPESI、右心功能（超音波／CT）、心肌指標（troponin）。</p>
+
+    <div class="card">
+      <div class="section-title">2019 ESC 四級分層</div>
+      <div class="risk-row">
+        <div class="risk-chip r-hi"><div class="rc-t">高危 High</div><div class="rc-b">血流動力學不穩（休克／持續低血壓／需升壓）。無論其他指標 → <b>再灌流</b>。早期死亡最高。</div></div>
+        <div class="risk-chip r-mh"><div class="rc-t">中高危 Interm.-High</div><div class="rc-b">穩定，但 <b>右心功能異常「且」troponin 上升</b>。密切監測，惡化即救援再灌流。</div></div>
+        <div class="risk-chip r-ml"><div class="rc-t">中低危 Interm.-Low</div><div class="rc-b">穩定，右心異常「或」troponin 上升（僅其一，或皆輕微）。住院抗凝。</div></div>
+        <div class="risk-chip r-lo"><div class="rc-t">低危 Low</div><div class="rc-b">穩定、sPESI = 0、無右心負荷、troponin 正常。可考慮早期出院／門診治療。</div></div>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">分層要件</div>
+        <ul>
+          <li><b>sPESI</b>（簡化 PESI）任一項為 1 即 ≥ 1：年齡 &gt; 80、癌症、慢性心肺病、脈搏 ≥ 110、SBP &lt; 100、SpO₂ &lt; 90%。0 分屬低危。</li>
+          <li><b>右心功能</b>：超音波 RV/LV &gt; 1、TAPSE 下降、McConnell 徵象；或 CT 上 RV/LV &gt; 1。</li>
+          <li><b>心肌指標</b>：troponin 上升、BNP/NT-proBNP 升高提示右心受累。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">早期出院／門診治療的條件（低危）</div>
+        Hestia 準則或 sPESI = 0，且無右心負荷、社會支持足、能取得口服抗凝、無其他住院理由。用 DOAC 銜接最方便。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 治療 ═══════════ -->
+  <div class="rsi-panel" id="p-rx">
+    <div class="card">
+      <div class="section-title">依分層決定強度</div>
+      <div class="tl">
+        <div class="tl-item t0">
+          <div class="tl-t">高危</div>
+          <div class="tl-h">全身溶栓（優先）<span class="en">± 導管／外科取栓</span></div>
+          <div class="tl-b">
+            血流動力學不穩 → <b>立即全身纖溶</b>（alteplase），同時 UFH 抗凝、循環支持（謹慎補液、norepinephrine 升壓、必要時 VA-ECMO）。
+            <ul>
+              <li>溶栓禁忌或失敗 → <b>導管取栓／導管定向溶栓，或外科取栓</b>。</li>
+              <li>心臟停止疑似 PE 所致 → 復甦中可考慮溶栓。</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">中高危</div>
+          <div class="tl-h">抗凝 ＋ 密切監測</div>
+          <div class="tl-b">
+            先 <b>抗凝並嚴密監測</b>，<b>不常規全身溶栓</b>（PEITHO：常規溶栓減少血流動力學惡化，但增加大出血與顱內出血）。惡化（休克化）即<b>救援再灌流</b>。導管定向治療（HI-PEITHO／PEERLESS 系列）是新興選項，仍在累積證據。
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">中低／低危</div>
+          <div class="tl-h">抗凝為主</div>
+          <div class="tl-b">直接口服抗凝（DOAC）為多數病人首選；低危可早期出院／門診。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">抗凝的起始與療程</div>
+      <div class="kbox">
+        <div class="kbox-t">起始選擇</div>
+        <ul>
+          <li><b>DOAC 優先</b>（除非禁忌）：apixaban 或 rivaroxaban 可直接口服起始（有前段高劑量期）；dabigatran／edoxaban 需先注射抗凝 5 天再轉換。</li>
+          <li><b>腸外起始</b>：LMWH（enoxaparin）或 fondaparinux；<b>高危、需溶栓、極重腎衰竭、血流不穩</b>用可快速調控的 <b>UFH</b>。</li>
+          <li><b>特殊族群</b>：抗磷脂症候群、機械瓣 → 用 warfarin（DOAC 不適）；癌症相關 → DOAC 或 LMWH（腸胃道／泌尿道腫瘤留意出血）；懷孕 → LMWH（DOAC、warfarin 禁）。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">療程</div>
+        誘發性（可逆因子，如術後）至少 3 個月後停；無誘因或持續危險因子（癌症、復發）考慮延長／終生，並定期評估出血與復發風險。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 藥物 ═══════════ -->
+  <div class="rsi-panel" id="p-drug">
+    <p class="lead">體重相關者（enoxaparin、alteplase）依上方體重換算；DOAC 為固定劑量。</p>
+
+    <div class="section-title">腸外抗凝 Parenteral</div>
+
+    <div class="dg" data-drug="ufh">
+      <div class="dg-head"><span class="dg-name">Unfractionated Heparin</span><span class="dg-zh">UFH，不穩定／需溶栓時首選</span></div>
+      <div class="dg-dose"><span><span class="dd-k">bolus 80 U/kg</span><span class="dd-v" data-out="ufh_bolus">—</span></span><span><span class="dd-k">輸注 18 U/kg/hr 起</span><span class="dd-v alt" data-out="ufh_inf">—</span></span></div>
+      <div class="dg-kin">依 aPTT／anti-Xa 調整；可快速停用與 protamine 逆轉，適合可能溶栓或腎衰竭者</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">活動性大出血</span>、<span class="abs">HIT 病史</span>、近期顱內出血。</li>
+        <li><span class="ci-k">注意</span> 監測血小板（HIT）。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="enoxaparin">
+      <div class="dg-head"><span class="dg-name">Enoxaparin</span><span class="dg-zh">Clexane，LMWH</span><span class="dg-tag">穩定者常用</span></div>
+      <div class="dg-dose"><span><span class="dd-k">1 mg/kg SC BID</span><span class="dd-v" data-out="enox_bid">—</span></span><span><span class="dd-k">或 1.5 mg/kg SC QD</span><span class="dd-v alt" data-out="enox_qd">—</span></span></div>
+      <div class="dg-kin">CrCl &lt; 30：1 mg/kg <b>QD</b>；肥胖、孕婦、極低體重考慮 anti-Xa 監測</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性大出血、HIT 病史、對 LMWH／豬源產品過敏。</li>
+        <li><span class="ci-k">減量／避免</span> 嚴重腎功能不良（減量；透析優先 UFH）。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="fondaparinux">
+      <div class="dg-head"><span class="dg-name">Fondaparinux</span><span class="dg-zh">Arixtra，Xa 抑制</span></div>
+      <div class="dg-dose"><span><span class="dd-k">&lt;50 kg</span><span class="dd-v">5 <span class="dd-u">mg QD</span></span></span><span><span class="dd-k">50–100 kg</span><span class="dd-v">7.5 <span class="dd-u">mg QD</span></span></span><span><span class="dd-k">&gt;100 kg</span><span class="dd-v">10 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">固定分級（非每公斤）；HIT 病人可用</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">CrCl &lt; 30 mL/min</span>、活動性出血、體重 &lt; 50 kg 且用於預防時。</li>
+      </ul></div>
+    </div>
+
+    <div class="section-title sect">口服抗凝 DOAC（固定劑量）</div>
+
+    <div class="dg" data-drug="apixaban">
+      <div class="dg-head"><span class="dg-name">Apixaban</span><span class="dg-zh">Eliquis</span><span class="dg-tag">可直接口服起始</span></div>
+      <div class="dg-dose"><span><span class="dd-k">前 7 天</span><span class="dd-v">10 <span class="dd-u">mg BID</span></span></span><span><span class="dd-k">之後</span><span class="dd-v alt">5 <span class="dd-u">mg BID</span></span></span></div>
+      <div class="dg-kin">無需前段注射抗凝；出血風險相對低</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性大出血；嚴重肝病合併凝血異常；<span class="abs">抗磷脂症候群（三陽性）</span>、<span class="abs">機械瓣</span>、<span class="abs">懷孕／哺乳</span>。</li>
+        <li><span class="ci-k">交互作用</span> 強效 CYP3A4／P-gp 抑制或誘導劑。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="rivaroxaban">
+      <div class="dg-head"><span class="dg-name">Rivaroxaban</span><span class="dg-zh">Xarelto</span><span class="dg-tag">可直接口服起始</span></div>
+      <div class="dg-dose"><span><span class="dd-k">前 21 天</span><span class="dd-v">15 <span class="dd-u">mg BID</span></span></span><span><span class="dd-k">之後</span><span class="dd-v alt">20 <span class="dd-u">mg QD 隨餐</span></span></span></div>
+      <div class="dg-kin">維持量須<b>隨餐</b>服用以確保吸收</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性大出血；嚴重肝病；抗磷脂症候群、機械瓣、懷孕／哺乳。</li>
+        <li><span class="ci-k">避免</span> CrCl &lt; 15；強效 CYP3A4／P-gp 交互作用。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg" data-drug="doac2">
+      <div class="dg-head"><span class="dg-name">Dabigatran / Edoxaban</span><span class="dg-zh">需前段注射</span></div>
+      <div class="dg-dose"><span><span class="dd-k">先 LMWH／UFH ≥ 5 天，再</span><span class="dd-v">Dabigatran 150 mg BID<br>／ Edoxaban 60 mg QD</span></span></div>
+      <div class="dg-kin">Edoxaban 體重 ≤ 60 kg 或 CrCl 30–50 → 30 mg QD</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 活動性出血；機械瓣、抗磷脂症候群、懷孕。</li>
+        <li><span class="ci-k">避免</span> 嚴重腎功能不良（dabigatran 依賴腎排除）。</li>
+      </ul></div>
+    </div>
+
+    <div class="section-title sect">纖溶劑 Fibrinolytic（高危 PE）</div>
+
+    <div class="dg warn" data-drug="alteplase">
+      <div class="dg-head"><span class="dg-name">Alteplase</span><span class="dg-zh">rt-PA，全身溶栓</span><span class="dg-tag ctrl">高危／救援</span></div>
+      <div class="dg-dose"><span><span class="dd-k">標準</span><span class="dd-v">100 <span class="dd-u">mg／2 小時 IV</span></span></span><span><span class="dd-k">心臟停止／瀕死可加速</span><span class="dd-v alt">0.6 mg/kg／15 分（上限 50 mg）</span></span></div>
+      <div class="dg-kin">溶栓期間 UFH 可暫停，之後恢復；<b>與中風的體重換算劑量不同</b></div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications（PE 溶栓）</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">任何顱內出血病史</span>、<span class="abs">已知顱內結構病灶／惡性腫瘤</span>、<span class="abs">6 個月內缺血性中風</span>、近期腦或脊椎手術、近期嚴重頭部外傷、活動性出血、出血體質、疑似主動脈剝離。</li>
+          <li><span class="ci-k">相對</span> 6 個月內 TIA、口服抗凝中、懷孕或產後 1 週、無法壓迫部位穿刺、創傷性 CPR、頑固性高血壓（SBP &gt; 180）、進行性肝病、感染性心內膜炎、活動性消化性潰瘍。</li>
+        <li><span class="ci-k">注意</span> 中高危 PE <b>不常規</b>溶栓——PEITHO 顯示益處被大出血與顱內出血抵銷；僅在惡化時救援使用。</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 證據 ═══════════ -->
+  <div class="rsi-panel" id="p-ev">
+    <div class="card">
+      <div class="section-title">指引與關鍵文獻</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>主題</th><th>來源</th><th>PMID</th></tr>
+          <tr><td>PE 診斷與處置指引</td><td>2019 ESC Guidelines, Eur Heart J 2020;41:543</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/31504429/" target="_blank" rel="noopener">31504429</a></td></tr>
+          <tr><td>中高危常規溶栓（利弊）</td><td>PEITHO, N Engl J Med 2014;370:1402</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24716681/" target="_blank" rel="noopener">24716681</a></td></tr>
+          <tr><td>年齡校正 D-dimer</td><td>ADJUST-PE, JAMA 2014;311:1117</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24643601/" target="_blank" rel="noopener">24643601</a></td></tr>
+          <tr><td>大孔取栓 vs 導管溶栓（中危）</td><td>PEERLESS, Circulation 2025;151:260</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/39470698/" target="_blank" rel="noopener">39470698</a></td></tr>
+          <tr><td>孕婦 PE 診斷策略</td><td>YEARS-pregnancy 個體資料統合, J Thromb Haemost 2023;21:606</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36696189/" target="_blank" rel="noopener">36696189</a></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="kbox">
+      <div class="kbox-t">注意</div>
+      危險分層與再灌流決策以 2019 ESC 為主幹；導管定向治療（HI-PEITHO、PEERLESS）證據仍在累積，屬多專科團隊（PERT）個案決策。抗凝劑量與腎功能調整用藥前請對照本院藥劑部品項。Wells／Geneva／sPESI／PESI 計算器見本站「計分工具」。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/31504429/" target="_blank" rel="noopener" class="ref-link">Konstantinides SV, et al. (2019 ESC PE Guidelines). Eur Heart J. 2020;41:543-603.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/24716681/" target="_blank" rel="noopener" class="ref-link">Meyer G, et al. (PEITHO). N Engl J Med. 2014;370:1402-1411.</a>
+    ｜ 劑量以 2019 ESC 為準；品項與腎功能調整請對照台大藥劑部
+  </footer>
+</div>
+</div>
+
+<script>
+function peRound(v){ if(!isFinite(v)) return '—'; if(v>=100) return String(Math.round(v)); return (Math.round(v*10)/10).toFixed(1).replace(/\.0$/,''); }
+function peCalc(){
+  var w = parseFloat(document.getElementById('pe_wt').value);
+  var ok = !isNaN(w) && w>0;
+  function set(key, html){ var e=document.querySelector('[data-out="'+key+'"]'); if(e) e.innerHTML = ok? html : '—'; }
+  set('ufh_bolus', peRound(80*w)+' <span class="dd-u">U</span>');
+  set('ufh_inf', peRound(18*w)+' <span class="dd-u">U/hr</span>');
+  set('enox_bid', peRound(1*w)+' <span class="dd-u">mg SC BID</span>');
+  set('enox_qd', peRound(1.5*w)+' <span class="dd-u">mg SC QD</span>');
+}
+function peTab(name){
+  document.querySelectorAll('.rsi-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-p')===name); });
+  document.querySelectorAll('.rsi-panel').forEach(function(p){ p.classList.toggle('on', p.id==='p-'+name); });
+  if(location.hash!=='#'+name) history.replaceState(null,'','#'+name);
+}
+document.querySelectorAll('.rsi-tab').forEach(function(b){ b.addEventListener('click', function(){ peTab(b.getAttribute('data-p')); }); });
+document.getElementById('pe_wt').addEventListener('input', peCalc);
+(function(){ var bar=document.getElementById('pe_wt').closest('.rsi-bar'); if(!bar) return;
+  function mark(){ bar.classList.toggle('stuck', bar.getBoundingClientRect().top<=0); }
+  window.addEventListener('scroll', mark, {passive:true}); window.addEventListener('resize', mark); mark();
+})();
+(function init(){ var h=(location.hash||'').replace('#',''); if(document.getElementById('p-'+h)) peTab(h); peCalc(); })();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性缺血性中風 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
+           border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  .rsi-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
+  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }
+  .rsi-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .rsi-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
+                 text-transform:uppercase; letter-spacing:.04em;}
+  .rsi-bar input[type=number]{width:88px; font-family:var(--mono); font-size:15px; font-weight:700;
+      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .rsi-bar .rsi-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
+  .rsi-tabs{display:flex; gap:0; flex-wrap:wrap; border-bottom:2px solid var(--ink); margin-bottom:14px;}
+  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
+           border:none; background:none; color:var(--muted); border-bottom:2px solid transparent;
+           margin-bottom:-2px;}
+  .rsi-tab:hover{color:var(--ink);}
+  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;}
+  .rsi-panel{display:none;} .rsi-panel.on{display:block;}
+  .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
+  .tl-item{position:relative; padding:0 0 14px 18px;}
+  .tl-item:last-child{padding-bottom:2px;}
+  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+                  border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
+  .tl-item.t0:before{background:var(--accent2);}
+  .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
+  .tl-h{font-family:var(--serif); font-size:15px; font-weight:600; margin:1px 0 3px;}
+  .tl-h .en{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400; margin-left:5px;}
+  .tl-b{font-size:12.5px; line-height:1.7;}
+  .tl-b ul{margin:3px 0; padding-left:17px;}
+  .tl-b li{margin:1px 0;}
+  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .dg.warn{border-left-color:var(--accent2);}
+  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
+  .dg-zh{font-size:11.5px; color:var(--muted);}
+  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
+  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}
+  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
+  .dg-dose .dd-v.alt{color:var(--accent2);}
+  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
+  .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px;}
+  .dg-kin b{color:var(--ink); font-weight:700;}
+  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
+  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
+  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em;
+             text-transform:uppercase;}
+  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
+  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
+  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
+  .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
+           border-top:1px dashed var(--line); padding-top:6px;}
+  .dg-note b{color:var(--accent2);}
+  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
+         background:var(--accent2-soft); padding:7px 10px;}
+  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
+  .dg-ci li{margin:1px 0;}
+  .dg-ci .abs{font-weight:700;}
+  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .tw table{min-width:520px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .big-num{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-stroke">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Neurology · Emergency &amp; Critical Care</div>
+      <h1>急性缺血性中風</h1>
+      <div class="sub">Acute Ischemic Stroke — 分流、靜脈溶栓、動脈取栓與早期處置（2026 AHA/ASA）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+  </div>
+
+  <div class="rsi-bar">
+    <div class="rsi-bar-in">
+      <label for="stk_wt">體重 Weight</label>
+      <input type="number" id="stk_wt" min="1" max="250" step="1" value="60">
+      <span class="rsi-hint">kg</span>
+      <span class="rsi-hint">供 alteplase／tenecteplase 換算（各有上限）</span>
+    </div>
+  </div>
+
+  <div class="rsi-tabs">
+    <button class="rsi-tab on" data-p="triage">分流 Triage</button>
+    <button class="rsi-tab" data-p="lyse">靜脈溶栓 IVT</button>
+    <button class="rsi-tab" data-p="evt">動脈取栓 EVT</button>
+    <button class="rsi-tab" data-p="mgmt">處置 Management</button>
+    <button class="rsi-tab" data-p="ev">證據 Evidence</button>
+  </div>
+
+  <!-- ═══════════ 分流 ═══════════ -->
+  <div class="rsi-panel on" id="p-triage">
+    <p class="lead">
+      「Time is brain」——每分鐘約損失 190 萬個神經元。整條路徑的核心是<b>兩個時鐘</b>：
+      <b>最後正常時間（Last Known Well, LKW）</b>與門到治療時間。先確定 LKW，再啟動平行作業。
+    </p>
+
+    <div class="card">
+      <div class="section-title">到院平行作業（不是依序）</div>
+      <div class="tl">
+        <div class="tl-item t0">
+          <div class="tl-t">0 min · 辨識</div>
+          <div class="tl-h">BE-FAST 與 NIHSS<span class="en">院前用 BE-FAST，院內量 NIHSS</span></div>
+          <div class="tl-b">Balance 平衡、Eyes 視野、Face 顏面歪斜、Arm 肢體無力、Speech 言語、Time。問清並記錄<b>確切 LKW</b>（不是被發現的時間）。啟動中風團隊。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">≤ 20 min · 影像</div>
+          <div class="tl-h">立即 NCCT（±CTA/CTP）</div>
+          <div class="tl-b">非顯影電腦斷層<b>先排除出血</b>（出血則走完全不同路線，本頁不含）。懷疑大血管阻塞或進入延展時間窗 → 加做 CTA（找 LVO）與 CTP／MRI 灌流（估核心與可救組織）。目標 door-to-CT &lt; 20 分。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">併行 · 檢驗</div>
+          <div class="tl-h">指尖血糖、必要檢驗</div>
+          <div class="tl-b"><b>血糖必驗</b>（低血糖是常見的中風模仿者）。除非疑似凝血異常或正在服抗凝劑，<b>不必等 INR／血小板結果</b>再溶栓。量血壓兩側。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-t">決策</div>
+          <div class="tl-h">溶栓？取栓？兩者？</div>
+          <div class="tl-b">符合者<b>儘速靜脈溶栓</b>（door-to-needle 目標 &lt; 30–45 分，越短越好），<b>不因等取栓而延遲溶栓</b>；同時評估大血管阻塞是否轉取栓。系統若無快速院際轉送，優先直送可取栓中心。</div>
+        </div>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">中風模仿者（別把非中風當中風溶栓）</div>
+        低血糖、癲癇後麻痺（Todd's）、偏頭痛先兆、周邊性眩暈、貝爾氏面癱、功能性、敗血症誘發舊病灶浮現。但<b>影像陰性不等於不是中風</b>——早期 NCCT 常正常。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 靜脈溶栓 ═══════════ -->
+  <div class="rsi-panel" id="p-lyse">
+    <div class="card">
+      <div class="section-title">時間窗與藥物（2026 AHA/ASA）</div>
+      <div class="kbox">
+        <div class="kbox-t">誰可以溶栓</div>
+        <ul>
+          <li><b>≤ 4.5 小時</b>（自 LKW）：<b>alteplase 或 tenecteplase 皆可</b>——2026 指引正式將 tenecteplase 納入 4.5 小時窗（施打更快、單次 bolus）。</li>
+          <li><b>有失能性缺損就治療，不看 NIHSS 高低</b>——輕但失能者仍應溶栓。</li>
+          <li><b>非失能的輕症</b>（NIHSS 低、不影響功能）：<b>不建議溶栓，改用雙重抗血小板（DAPT）</b>。</li>
+          <li><b>延展窗（4.5–9 小時或醒後中風／發病不明）</b>：以進階影像（CTP／MRI 錯配）篩選出可救組織者，可考慮溶栓。</li>
+        </ul>
+      </div>
+      <div class="note">2026 指引同時<b>放寬了部分溶栓禁忌</b>並修改判定方式；下方禁忌框為實務常用清單，個案仍以最新指引與影像判讀為準。</div>
+    </div>
+
+    <div class="dg warn" data-drug="tnk">
+      <div class="dg-head"><span class="dg-name">Tenecteplase</span><span class="dg-zh">TNK，單次 bolus</span><span class="dg-tag">2026 納入 4.5h 窗</span></div>
+      <div class="dg-dose"><span><span class="dd-k">0.25 mg/kg（上限 25 mg）單次 IV bolus 5 秒</span><span class="dd-v" data-out="tnk">—</span></span></div>
+      <div class="dg-kin">單次 bolus，比 alteplase 更快給完，對大血管阻塞再通率不劣或更佳（ATTEST-2、AcT）</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications（缺血性中風溶栓）</div><ul>
+        <li><span class="ci-k">絕對</span> <span class="abs">影像顯示顱內出血</span>；<span class="abs">3 個月內缺血性中風或嚴重頭部外傷</span>；已知顱內腫瘤（惡性／血管性）、AVM、動脈瘤；近期顱內／脊椎手術；活動性內出血；出血體質。</li>
+        <li><span class="ci-k">絕對</span> <span class="abs">血壓無法降到 &lt; 185／110 mmHg</span>；<span class="abs">血糖 &lt; 50 mg/dL 且矯正後缺損未消</span>；血小板 &lt; 100,000；INR &gt; 1.7 或 48h 內用 DOAC。</li>
+        <li><span class="ci-k">相對</span> 症狀輕微且非失能；懷孕；近期大手術；近期消化道／泌尿道出血；心內膜炎、主動脈剝離。</li>
+      </ul></div>
+    </div>
+
+    <div class="dg warn" data-drug="tpa">
+      <div class="dg-head"><span class="dg-name">Alteplase</span><span class="dg-zh">rt-PA，Actilyse</span></div>
+      <div class="dg-dose"><span><span class="dd-k">0.9 mg/kg（上限 90 mg）</span><span class="dd-v" data-out="tpa_total">—</span></span><span><span class="dd-k">先 10% bolus，其餘 60 分輸注</span><span class="dd-v alt" data-out="tpa_bolus">—</span></span></div>
+      <div class="dg-kin">bolus 1 分鐘內給完，剩餘 90% 於 60 分鐘輸注；施打期間與其後密切監測神經學與血壓</div>
+      <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
+        <li><span class="ci-k">絕對</span> 同 tenecteplase（顱內出血、近期中風／頭部外傷、顱內結構病灶、活動性出血、凝血異常、血壓 &gt; 185/110 無法控制、低血糖未矯正）。</li>
+        <li><span class="ci-k">相對</span> 症狀輕微非失能、懷孕、近期大手術、近期內出血；高齡本身非禁忌。</li>
+      </ul></div>
+      <div class="dg-note">溶栓後 24 小時內<b>不給抗血小板或抗凝劑</b>；24 小時追蹤影像後再評估。任何時候若神經惡化、頭痛、血壓劇升 → 停輸注、急做 NCCT 排除出血。</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 動脈取栓 ═══════════ -->
+  <div class="rsi-panel" id="p-evt">
+    <div class="card">
+      <div class="section-title">機械取栓（EVT）——大血管阻塞的關鍵治療</div>
+      <div class="kbox">
+        <div class="kbox-t">前循環大血管阻塞（ICA、M1／近端 M2）</div>
+        <ul>
+          <li><b>0–6 小時</b>：LVO 且缺損顯著、影像核心不大者，<b>強烈建議 EVT</b>（不論是否已溶栓）。</li>
+          <li><b>6–24 小時</b>：以進階影像（CTP／MRI 錯配，DAWN／DEFUSE-3 型準則）篩選出臨床-核心錯配者仍可 EVT。</li>
+          <li><b>大核心梗塞</b>：2026 指引依近期試驗（如 ANGEL-ASPECT、SELECT2）<b>擴大納入部分大核心（低 ASPECTS）病人</b>，過去被排除者現在部分可受益。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">後循環：基底動脈阻塞</div>
+        NIHSS ≥ 10 的基底動脈阻塞，<b>24 小時內 EVT 為強建議</b>（ATTENTION／BAOCHE）。後循環症狀多樣（意識改變、複視、四肢無力、構音障礙），警覺度要高。
+      </div>
+      <div class="note">溶栓與取栓<b>不互斥</b>：符合溶栓者先溶栓、同時啟動取栓，不要為了等取栓而延後溶栓，也不要因給了溶栓而不轉取栓。ASPECTS（10 分制 CT 早期缺血評分）與核心體積用來估可救組織；門到穿刺與門到再通時間越短越好。</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 處置 ═══════════ -->
+  <div class="rsi-panel" id="p-mgmt">
+    <div class="card">
+      <div class="section-title">血壓——溶栓與否，目標不同</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>情境</th><th>血壓目標</th><th>說明</th></tr>
+          <tr class="dt-warn"><td>將溶栓／取栓</td><td>降到 <b>&lt; 185／110</b> 再給藥</td><td>用 labetalol、nicardipine 輸注平順降壓</td></tr>
+          <tr><td>溶栓後 24 小時</td><td>維持 <b>&lt; 180／105</b></td><td>密集監測，避免波動</td></tr>
+          <tr><td>未溶栓（允許性高血壓）</td><td>除非 &gt; <b>220／120</b> 或另有指徵，<b>不急著降</b></td><td>過度降壓會擴大梗塞；24h 內若降，幅度 ≤ 15%</td></tr>
+        </table>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">2026 明確「不要做」的兩件事</div>
+        <ul>
+          <li><b>不建議常規把收縮壓積極降到 &lt; 140 mmHg</b>——反而可能有害。</li>
+          <li><b>不建議把血糖積極控制到 80–130 mg/dL</b> 的嚴格範圍——低血糖風險大於益處。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">早期支持與二級預防</div>
+      <div class="kbox">
+        <div class="kbox-t">住院前 48 小時</div>
+        <ul>
+          <li><b>血糖</b>：維持 140–180 mg/dL；避免低血糖，也避免 &gt; 180。</li>
+          <li><b>吞嚥篩檢</b>：<b>經口進食／給藥前先做</b>，降低吸入性肺炎。</li>
+          <li><b>體溫</b>：發燒找感染源並退燒。</li>
+          <li><b>抗血小板</b>：未溶栓者 24–48 小時內給 aspirin；<b>溶栓者延到 24 小時後影像確認無出血再給</b>。輕型中風／高危 TIA 可短期 DAPT（aspirin + clopidogrel）21 天。</li>
+          <li><b>不常規預防性抗凝</b>降低早期復發；DVT 預防以間歇加壓為主。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">出院導向</div>
+        病因分類（心因性栓塞→抗凝、大動脈粥狀→抗血小板＋高強度 statin＋危險因子）、頸動脈評估、早期復健、心律監測找陣發性心房顫動。
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 證據 ═══════════ -->
+  <div class="rsi-panel" id="p-ev">
+    <div class="card">
+      <div class="section-title">指引與關鍵文獻</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>主題</th><th>來源</th><th>PMID</th></tr>
+          <tr><td>急性缺血性中風處置指引</td><td>2026 AHA/ASA Guideline, Stroke 2026</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/41582814/" target="_blank" rel="noopener">41582814</a></td></tr>
+          <tr><td>Tenecteplase vs Alteplase</td><td>ATTEST-2, Lancet Neurol 2024;23:1087</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/39424558/" target="_blank" rel="noopener">39424558</a></td></tr>
+          <tr><td>TNK 灌流影像選擇（&lt;4.5h）</td><td>TASTE, Lancet Neurol 2024;23:775</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/38880118/" target="_blank" rel="noopener">38880118</a></td></tr>
+          <tr><td>Door-to-needle 越短越好</td><td>Man S, et al. Circulation 2023;148:20</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37199147/" target="_blank" rel="noopener">37199147</a></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="kbox">
+      <div class="kbox-t">範圍與注意</div>
+      本頁<b>僅涵蓋急性缺血性中風</b>；出血性中風（ICH／SAH）走完全不同的降壓、逆轉抗凝與神經外科路徑，未收於此。溶栓禁忌與時間窗以 2026 AHA/ASA 指引為準；血壓、血糖、DAPT 建議同源。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/41582814/" target="_blank" rel="noopener" class="ref-link">Prabhakaran S, et al. (2026 AHA/ASA AIS Guideline). Stroke. 2026.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/39424558/" target="_blank" rel="noopener" class="ref-link">Muir KW, et al. (ATTEST-2). Lancet Neurol. 2024;23:1087-1096.</a>
+    ｜ 僅限急性缺血性中風；劑量以 2026 AHA/ASA 指引為準
+  </footer>
+</div>
+</div>
+
+<script>
+function stkRound(v){ if(!isFinite(v)) return '—'; return (Math.round(v*10)/10).toFixed(1).replace(/\.0$/,''); }
+function stkCalc(){
+  var w = parseFloat(document.getElementById('stk_wt').value);
+  var ok = !isNaN(w) && w>0;
+  function set(key, html){ var e=document.querySelector('[data-out="'+key+'"]'); if(e) e.innerHTML = ok? html : '—'; }
+  // Tenecteplase 0.25 mg/kg 上限 25
+  var tnk = Math.min(0.25*w, 25);
+  set('tnk', stkRound(tnk)+' <span class="dd-u">mg'+(0.25*w>25?'（達上限 25）':'')+'</span>');
+  // Alteplase 0.9 mg/kg 上限 90，bolus 10%
+  var tot = Math.min(0.9*w, 90);
+  set('tpa_total', stkRound(tot)+' <span class="dd-u">mg'+(0.9*w>90?'（達上限 90）':'')+'</span>');
+  set('tpa_bolus', stkRound(tot*0.1)+' <span class="dd-u">mg bolus ＋ '+stkRound(tot*0.9)+' mg／60 分</span>');
+}
+function stkTab(name){
+  document.querySelectorAll('.rsi-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-p')===name); });
+  document.querySelectorAll('.rsi-panel').forEach(function(p){ p.classList.toggle('on', p.id==='p-'+name); });
+  if(location.hash!=='#'+name) history.replaceState(null,'','#'+name);
+}
+document.querySelectorAll('.rsi-tab').forEach(function(b){ b.addEventListener('click', function(){ stkTab(b.getAttribute('data-p')); }); });
+document.getElementById('stk_wt').addEventListener('input', stkCalc);
+(function(){ var bar=document.getElementById('stk_wt').closest('.rsi-bar'); if(!bar) return;
+  function mark(){ bar.classList.toggle('stuck', bar.getBoundingClientRect().top<=0); }
+  window.addEventListener('scroll', mark, {passive:true}); window.addEventListener('resize', mark); mark();
+})();
+(function init(){ var h=(location.hash||'').replace('#',''); if(document.getElementById('p-'+h)) stkTab(h); stkCalc(); })();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

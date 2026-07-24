@@ -62,6 +62,9 @@
       items: [
         { href: 'tools/acls.html', zh: 'ACLS 高級心臟救命術', en: 'Resuscitation Algorithms' },
         { href: 'tools/rsi.html', zh: 'RSI 快速誘導插管', en: 'Rapid Sequence Intubation' },
+        { href: 'tools/acs.html', zh: '急性冠心症 ACS／AMI', en: 'Acute Coronary Syndrome' },
+        { href: 'tools/stroke.html', zh: '急性缺血性中風', en: 'Acute Ischemic Stroke' },
+        { href: 'tools/pe.html', zh: '急性肺栓塞 PE', en: 'Pulmonary Embolism' },
         { href: 'tools/heart-failure.html', zh: '心臟衰竭治療指引', en: 'NTUH Heart Failure' }
       ]
     }
