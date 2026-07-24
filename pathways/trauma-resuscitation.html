@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重大創傷出血復甦決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-trauma-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>重大創傷出血復甦決策</h1><div class="sub">Damage Control Resuscitation · 歐洲創傷大出血指引第六版（2023）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-trauma-resus'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">TBI 改變一切 The TBI Fork</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      重大創傷復甦的每一個目標，<b>有沒有合併嚴重顱腦損傷（TBI，GCS ≤8）會給出相反的方向</b>：<br>
+      ・<b>血壓</b>：無 TBI 時採 <b>permissive hypotension</b>（SBP 80–90 mmHg）以免衝掉血栓；嚴重 TBI 時<b>反而要維持 MAP ≥80 mmHg</b> 保腦灌流。<br>
+      ・<b>血小板</b>：一般出血維持 &gt;50×10⁹/L；<b>TBI 要 &gt;100×10⁹/L</b>。<br>
+      這是本流程第一個要問的分岔。其餘（TXA、大量輸血比例、fibrinogen、鈣、體溫、損害控制）兩者共通。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>復甦參數全表、觸發判準、致命三角與各建議等級 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ &lt;C&gt;ABCDE：</b>歐洲指引把 ATLS 的 ABCDE 改為 <b>&lt;C&gt;ABCDE</b>——最前面的 <b>&lt;C&gt; = catastrophic／critical haemorrhage</b>，意思是<b>致命性外出血要在 Airway 之前先壓制</b>（直接加壓、止血帶、止血敷料）。<br><br>
+
+      <b>◆ 觸發與評估（Rec 1、2）：</b>依<b>受傷機轉、傷勢型態、生理與對初始復甦的反應</b>綜合判斷（Grade 1C）。<b>Shock index（SI = 心跳 ÷ 收縮壓）≥1</b> 與<b>脈壓變窄</b>（&lt;40／&lt;30 mmHg，ATLS class II 出血訊號）用於評估休克程度與輸血需求（Grade 1C）；SI ≥1 對大量輸血的預測<b>優於 ABC score</b>。<br><br>
+
+      <b>◆ 血壓與輸液（Rec 13，Grade 1B／1C）：</b><br>
+      ・初期採<b>限制性輸液（restricted volume）＋ permissive hypotension</b>：目標 <b>SBP 80–90 mmHg（MAP 50–60）</b>，直到<b>大出血止住</b>、且<b>無腦損傷臨床證據</b>。<br>
+      ・<b>嚴重 TBI（GCS ≤8）：維持 MAP ≥80 mmHg</b>（Grade 1C）。<br><br>
+
+      <b>◆ 抗纖溶——TXA（Rec 23，Grade 1A）：</b>出血或有顯著出血風險者<b>盡早給，能在到院前給更好，並須在受傷 3 小時內</b>：<b>loading 1 g 於 10 分鐘輸注，接著 1 g 於 8 小時輸注</b>。<b>不必等 viscoelastic 結果</b>（Grade 1B）。<br>
+      <span class="note">CRASH-2 顯示 &gt;3 小時後才給 TXA 可能增加出血死亡，故 3 小時是硬門檻。</span><br><br>
+
+      <b>◆ 紅血球（Rec 16，Grade 1C）：</b>需輸血時<b>目標 Hb 70–90 g/L（7–9 g/dL）</b>。<br><br>
+
+      <b>◆ 大量出血的初始比例：</b>擇一——(a) <b>fibrinogen concentrate／cryoprecipitate ＋ pRBC</b>（Grade 1C）；(b) <b>FFP：pRBC 比例至少 1:2</b>（Grade 1C）。並建議<b>高 platelet:pRBC 比例</b>（Grade 2B）。<br><br>
+
+      <b>◆ Fibrinogen（Rec 29，Grade 1C）：</b>大出血合併低纖維蛋白原（viscoelastic 顯示功能性缺乏，或 <b>Clauss fibrinogen ≤1.5 g/L</b>）時給 <b>fibrinogen concentrate 或 cryoprecipitate</b>；<b>初始 3–4 g</b>（≈15–20 單位 cryoprecipitate）。<br><br>
+
+      <b>◆ 血小板：</b>維持<b>出血中 &gt;50×10⁹/L、TBI &gt;100×10⁹/L</b>（Grade 2C）；需要時初始 <b>4–8 單位血小板或 1 個分離術包（aphaeresis pack）</b>（Grade 2B）。<br><br>
+
+      <b>◆ 鈣（Rec 31，Grade 1C）：</b>監測並維持<b>離子鈣正常範圍（1.1–1.3 mmol/L）</b>，大量輸血時尤其重要（枸櫞酸鹽會螯合鈣）；以 <b>calcium chloride</b> 矯正低血鈣。<br><br>
+
+      <b>◆ PCC：</b>fibrinogen 正常前提下，依 viscoelastic 顯示凝血啟動延遲給 <b>prothrombin complex concentrate</b>（Grade 2C）；或用於逆轉維生素 K 拮抗劑相關出血。<br><br>
+
+      <b>◆ 致命三角（lethal triad）：</b><b>低體溫 × 酸中毒 × 凝血功能障礙</b>互相放大。<b>體溫每下降 1°C，凝血因子功能約下降 10%</b>；應積極保溫、用溫熱輸液與血品。<br><br>
+
+      <b>◆ 損害控制（damage control）：</b>血行動力學不穩、酸中毒、低體溫或凝血功能障礙者，採<b>損害控制手術</b>（先止血與污染控制、暫時關腹，復甦穩定後再確定性修復），必要時 <b>REBOA</b>（resuscitative endovascular balloon occlusion of the aorta）暫時控制軀幹出血。<br><br>
+
+      <b>◆ 血栓預防：</b>出血控制、病情穩定後應<b>盡早開始藥物性 VTE 預防</b>（急性期出血風險與後續血栓風險的權衡，依個別狀況與神經外科／骨科意見）。
+    </div>
+  </details>
+
+  <div class="flow-step" id="tr_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">是否為需要大量輸血的重大出血？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('bleed','major',this)">是——重大出血<span class="fo-sub">Shock index ≥1、脈壓變窄、明顯出血源，或對初始輸液反應不佳</span></button>
+      <button class="flow-opt" onclick="trPick('bleed','minor',this)">否——出血可控<span class="fo-sub">生理穩定、無持續大出血徵象</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>&lt;C&gt;ABCDE</b>：致命性外出血先於 Airway 壓制（直接加壓、止血帶、止血敷料）。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c2">↓</div>
+  <div class="flow-step hidden" id="tr_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">是否合併嚴重顱腦損傷（TBI，GCS ≤8）？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('tbi','yes',this)">有嚴重 TBI<span class="fo-sub">目標改為維持腦灌流：MAP ≥80、血小板 &gt;100×10⁹/L</span></button>
+      <button class="flow-opt" onclick="trPick('tbi','no',this)">無 TBI 或輕度<span class="fo-sub">採 permissive hypotension：SBP 80–90</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="tr_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="tr_c3">↓</div>
+  <div class="flow-step hidden" id="tr_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">對復甦的反應與血行動力學？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="trPick('resp','responder',this)">穩定／有反應<span class="fo-sub">血壓回穩、乳酸下降、出血源已控制或可計畫性處理</span></button>
+      <button class="flow-opt" onclick="trPick('resp','transient',this)">短暫反應或持續不穩<span class="fo-sub">需持續輸血、酸中毒／低體溫／凝血障礙</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="tr_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 3</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="trReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/36859355/" target="_blank" rel="noopener" class="ref-link">Rossaint R, Afshari A, Bouillon B, et al. The European guideline on management of major bleeding and coagulopathy following trauma: sixth edition. Crit Care. 2023;27(1):80.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20554319/" target="_blank" rel="noopener" class="ref-link">CRASH-2 trial collaborators. Effects of tranexamic acid on death, vascular occlusive events, and blood transfusion in trauma patients (CRASH-2). Lancet. 2010;376(9734):23-32.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { bleed:null, tbi:null, resp:null };
+
+function trPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='bleed'){ st.bleed=val; st.tbi=null; st.resp=null; }
+  else if(key==='tbi'){ st.tbi=val; st.resp=null; }
+  else if(key==='resp'){ st.resp=val; }
+  render();
+}
+
+/* 共通的凝血與代謝支持 */
+const TR_COAG =
+  '<li><b>TXA</b>：受傷 <b>3 小時內</b>——<b>1 g 於 10 分鐘輸注，接著 1 g 於 8 小時</b>（Grade 1A）。越早越好，不必等 viscoelastic。<b>超過 3 小時不建議開始</b>。</li>' +
+  '<li><b>大量輸血比例</b>：擇一——fibrinogen concentrate／cryoprecipitate ＋ pRBC；或 <b>FFP:pRBC ≥1:2</b>，並採高 platelet:pRBC 比例。得到凝血監測結果後改為<b>目標導向</b>補充。</li>' +
+  '<li><b>Fibrinogen</b>：Clauss ≤1.5 g/L（或 viscoelastic 顯示功能缺乏）時給 fibrinogen concentrate／cryoprecipitate，<b>初始 3–4 g</b>。</li>' +
+  '<li><b>紅血球</b>：目標 <b>Hb 70–90 g/L</b>。</li>' +
+  '<li><b>鈣</b>：維持<b>離子鈣 1.1–1.3 mmol/L</b>，以 calcium chloride 矯正——大量輸血的枸櫞酸鹽會螯合鈣。</li>' +
+  '<li><b>保溫</b>：積極對抗致命三角（低體溫×酸中毒×凝血障礙）——溫熱輸液與血品；體溫每降 1°C 凝血功能約降 10%。</li>';
+
+function render(){
+  const major = st.bleed==='major';
+  flowShow('tr_c2', major); flowShow('tr_s2', major);
+  if(!major) flowClearSel('tr_s2');
+
+  /* ---- 建議 A：復甦目標 ---- */
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  if(st.bleed==='minor'){
+    cls='rec-blue'; title='出血可控 — 標準評估與密切再評估';
+    detail='<li><b>仍以 &lt;C&gt;ABCDE 完成 primary survey</b> 並找出所有出血源（FAST、骨盆、長骨、胸腹、外出血）。</li>' +
+      '<li><b>不需啟動大量輸血</b>，但<b>持續以 shock index 與脈壓再評估</b>——創傷出血可能在數十分鐘內惡化。</li>' +
+      '<li>符合 TXA 適應症（出血或顯著出血風險）者仍應於<b>受傷 3 小時內</b>給予。</li>' +
+      '<li>維持正常體溫、監測乳酸與鹼缺失作為隱性出血的指標。</li>';
+    note='歐洲創傷指引第六版 Rec 1、2、23。';
+  } else if(major && st.tbi){
+    const tbi = st.tbi==='yes';
+    cls = 'rec-urgent';
+    title = tbi ? '重大出血＋嚴重 TBI — 保腦灌流優先' : '重大出血（無 TBI）— permissive hypotension';
+    detail = (tbi
+        ? '<li><b>血壓：維持 MAP ≥80 mmHg</b>（Grade 1C）——嚴重 TBI 時<b>不採 permissive hypotension</b>，低血壓會加重次發性腦損傷。</li>' +
+          '<li><b>血小板目標 &gt;100×10⁹/L</b>（Grade 2C）；需要時初始 4–8 單位或 1 個 aphaeresis pack。</li>'
+        : '<li><b>血壓：permissive hypotension，目標 SBP 80–90 mmHg（MAP 50–60）</b>，直到大出血止住（Grade 1B）——避免過度輸液衝掉已形成的血栓、稀釋凝血因子。</li>' +
+          '<li><b>血小板目標 &gt;50×10⁹/L</b>（Grade 2C）；需要時初始 4–8 單位或 1 個 aphaeresis pack。</li>') +
+      '<li><b>限制性輸液</b>：以血品為主，晶體液僅用於過渡；避免大量晶體液。</li>' +
+      TR_COAG;
+    note = tbi
+      ? '歐洲創傷指引第六版 Rec 13（嚴重 TBI MAP ≥80）、Rec 16、23、29、31。'
+      : '歐洲創傷指引第六版 Rec 13（SBP 80–90）、Rec 16、23、29、31。';
+  }
+  flowRec('tr_rec', cls, title, detail, note);
+
+  /* ---- 建議 B：損害控制 vs 確定性 ---- */
+  const show3 = major && !!st.tbi;
+  flowShow('tr_c3', show3); flowShow('tr_s3', show3);
+  if(!show3) flowClearSel('tr_s3');
+
+  let cls2='rec-idle', title2='請完成步驟 3', detail2='', note2='';
+  if(st.resp==='responder'){
+    cls2='rec-elective'; title2='穩定／有反應 — 目標導向修正並計畫確定性處置';
+    detail2='<li><b>轉為目標導向復甦</b>：依 viscoelastic／傳統凝血檢驗（PT/INR、Clauss fibrinogen、血小板）補足特定成分，而非繼續固定比例。</li>' +
+      '<li><b>確認出血源已控制</b>——影像（CT）與臨床再評估；計畫性手術或介入性栓塞處理剩餘出血源。</li>' +
+      '<li>持續維持 <b>Hb 70–90</b>、<b>離子鈣 1.1–1.3</b>、正常體溫；監測乳酸／鹼缺失確認組織灌流恢復。</li>' +
+      '<li>出血控制、病情穩定後<b>盡早開始藥物性 VTE 預防</b>（與神經外科／骨科權衡時機）。</li>';
+    note2='歐洲創傷指引第六版：目標導向凝血支持與早期血栓預防。';
+  } else if(st.resp==='transient'){
+    cls2='rec-urgent'; title2='短暫反應／持續不穩 — 損害控制手術';
+    detail2='<li><b>啟動損害控制手術（damage control surgery）</b>：優先<b>止血與污染控制、暫時關腹</b>，把確定性修復留到復甦穩定後——持續不穩者的生理儲備不足以承受長時間手術。</li>' +
+      '<li><b>REBOA</b>：軀幹（腹部／骨盆）無法立即壓制的大出血，可用主動脈內球囊暫時阻斷爭取時間。</li>' +
+      '<li><b>持續大量輸血</b>並積極糾正致命三角：溫熱血品、矯正離子鈣與酸中毒；反覆 viscoelastic 導引成分補充。</li>' +
+      '<li><b>骨盆骨折</b>大出血：骨盆綁帶固定 ± 血管栓塞或填塞。</li>' +
+      '<li>反覆評估血壓目標是否仍符合（TBI 者 MAP ≥80；無 TBI 者 SBP 80–90 直到出血控制）。</li>';
+    note2='歐洲創傷指引第六版：損害控制、REBOA、致命三角糾正。';
+  }
+  flowRec('tr_rec2', cls2, title2, detail2, note2);
+  flowShow('tr_rec2', show3);
+}
+
+function trReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-trauma-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+trReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
