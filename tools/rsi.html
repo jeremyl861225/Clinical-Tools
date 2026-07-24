@@ -86,6 +86,16 @@
   .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
            border-top:1px dashed var(--line); padding-top:6px;}
   .dg-note b{color:var(--accent2);}
+  /* 禁忌症：每張藥卡都框起來，讓「不能給誰」在一眼可見的位置，不必讀完整段說明。
+     絕對禁忌以 .abs 加粗，與相對禁忌／配伍禁忌區分。 */
+  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
+         background:var(--accent2-soft); padding:7px 10px;}
+  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
+  .dg-ci li{margin:1px 0;}
+  .dg-ci .abs{font-weight:700;}
+  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
 
   /* ── 通用小元件 ─────────────────────────────────────────────── */
   .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
@@ -286,6 +296,16 @@
           <li>無鎮痛作用，不可單獨用於鎮痛。</li>
         </ul></div>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 etomidate 或其賦形劑過敏</span>。</li>
+          <li><span class="ci-k">禁止</span> <span class="abs">長時間或連續輸注</span>（腎上腺抑制加重；台大仿單明列）。</li>
+          <li><span class="ci-k">不建議</span> &lt; 10 歲兒童（台大仿單）。</li>
+          <li><span class="ci-k">相對</span> 已知腎上腺功能不全、正在使用類固醇替代治療者，宜改用 ketamine。</li>
+          <li><span class="ci-k">注意</span> 無鎮痛作用，不可單獨用於會痛的處置。</li>
+        </ul>
+      </div>
       <div class="dg-note">
         <b>爭議澄清：</b>六篇隨機試驗、4,108 人的 2026 年統合分析顯示 etomidate 與 ketamine 的<b>28 天死亡率無差異</b>（29.9% vs 28.7%），敗血症次群組亦然；差別在於 etomidate 較多腎上腺抑制、ketamine 較多插管後低血壓。單劑 etomidate 用於敗血症並非禁忌。台大仿單：成人與 ≥10 歲兒童 0.3 mg/kg（0.2–0.6），<b>不建議 &lt;10 歲</b>、不可長時間輸注。
       </div>
@@ -317,6 +337,16 @@
           <li>心跳與血壓上升，冠心病、主動脈剝離、未控制高血壓者需權衡。</li>
           <li>管制藥品第三級，台大規定<b>不可氣送</b>。</li>
         </ul></div>
+      </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 ketamine 過敏</span>；<span class="abs">血壓上升會造成立即危險者</span>——主動脈剝離／動脈瘤、近期顱內出血、高血壓急症。</li>
+          <li><span class="ci-k">相對</span> 思覺失調症等精神病（可能誘發惡化）；嚴重冠狀動脈疾病；開放性眼球外傷或青光眼（眼內壓上升）。</li>
+          <li><span class="ci-k">相對</span> 兒茶酚胺已耗竭的久病休克——擬交感作用失效，反而顯露心肌抑制。</li>
+          <li><span class="ci-k">減量</span> 肝硬化或肝功能不良（清除仰賴肝臟，作用延長；台大藥劑部）。</li>
+          <li><span class="ci-k">配伍</span> 與 barbiturate 混合會沉澱；與 diazepam 須分開施打，不可共用針筒或點滴瓶（台大藥劑部）。</li>
+        </ul>
       </div>
       <div class="dg-note">
         <b>顱內壓迷思已翻案：</b>2026 年含 4 篇隨機試驗的統合分析顯示，創傷性腦損傷病人使用 ketamine 之院內死亡率無差異、基礎 ICP &lt;20 mmHg 者顱內壓升高亦無顯著增加；ketamine 不再視為腦傷禁忌，但該研究中 ketamine 與低血壓事件較多（RR 1.47）。肝功能不良者作用延長，需減量。
@@ -350,6 +380,16 @@
           <li>無鎮痛作用。</li>
         </ul></div>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 propofol 或乳劑成分（大豆油、蛋卵磷脂、甘油）過敏</span>。</li>
+          <li><span class="ci-k">相對</span> <span class="abs">休克、低血容、依賴前負荷者</span>——重症急診 RSI 的相對禁忌；嚴重主動脈瓣狹窄、未矯正的低血壓。</li>
+          <li><span class="ci-k">年齡</span> 台大 2% 製劑限 ≥ 3 歲；1% 製劑限 ≥ 1 個月。</li>
+          <li><span class="ci-k">注意</span> 長時間 &gt; 5 mg/kg/hr 且 &gt; 48 小時有 propofol 輸注症候群；高三酸甘油酯血症者避免長期輸注。</li>
+          <li><span class="ci-k">配伍</span> 勿與 cisatracurium 共管路（乳劑不相容）；勿用 &lt; 5 微米濾器。</li>
+        </ul>
+      </div>
       <div class="dg-note">
         <b>使用時機：</b>血壓有餘裕、需要快速可逆的深度鎮靜（癲癇重積、術中氣道）。休克病人若非得使用，務必減至 0.5–1 mg/kg 並先接好升壓劑。開瓶後立即使用，麻醉／處置鎮靜 6 小時內用完、ICU 鎮靜 12 小時內；勿用 &lt;5 微米濾器。
       </div>
@@ -379,10 +419,22 @@
           <li>老年、肝腎功能不良者作用顯著延長，譫妄風險。</li>
         </ul></div>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 benzodiazepine 過敏</span>；<span class="abs">急性窄角性青光眼</span>。</li>
+          <li><span class="ci-k">相對</span> 重症肌無力；休克；嚴重呼吸抑制而氣道尚未準備好。</li>
+          <li><span class="ci-k">交互作用</span> 與強效 CYP3A4 抑制劑（ritonavir、cobicistat、azole 類）併用時作用大幅延長。</li>
+          <li><span class="ci-k">注意</span> 老年、肝腎功能不良者作用顯著延長並增加譫妄。</li>
+        </ul>
+      </div>
       <div class="dg-note"><b>不建議作為 RSI 的第一線誘導劑</b>；僅在無其他選擇時使用，且必須給到真正的誘導劑量。</div>
     </div>
 
     <div class="section-title sect">神經肌肉阻斷劑 Neuromuscular Blocking Agents</div>
+    <p class="lead" style="margin-top:-2px;">
+      RSI 當下只有前兩者可用（起效 &lt; 60 秒）；cisatracurium 列於此供對照，它的位置在<b>插管之後</b>的持續肌肉鬆弛。
+    </p>
 
     <!-- Succinylcholine -->
     <div class="dg" data-drug="sux">
@@ -411,8 +463,16 @@
           <li>台大規定需對點、<b>不可氣送</b>。</li>
         </ul></div>
       </div>
-      <div class="dg-note">
-        <b>絕對／相對禁忌（有其一就改用 rocuronium）：</b>高血鉀或疑似高血鉀、燒傷或擠壓傷＞24–48 小時、去神經化狀態（脊髓損傷、腦中風＞72 小時、長期臥床、嚴重肌肉萎縮）、橫紋肌溶解、惡性高熱病史或家族史、遺傳性肌失養症、重症肌無力（本院註記：兩類阻斷劑皆應避免）、嚴重腎衰竭合併高血鉀。
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications — 有其一就改用 rocuronium</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">高血鉀或疑似高血鉀</span>（腎衰竭、洗腎未透析、擠壓傷）。</li>
+          <li><span class="ci-k">絕對</span> <span class="abs">惡性高熱病史或家族史</span>。</li>
+          <li><span class="ci-k">絕對</span> <span class="abs">骨骼肌病變</span>——遺傳性肌失養症（Duchenne／Becker，尤其兒童男性）、橫紋肌溶解。</li>
+          <li><span class="ci-k">絕對</span> <span class="abs">去神經化狀態發生 &gt; 24–48 小時後</span>：燒傷、擠壓傷、脊髓損傷、腦中風、長期臥床、嚴重肌肉萎縮（接合處外乙醯膽鹼受體增生 → 致命性高血鉀）。<b>注意：受傷 24 小時內仍可使用。</b></li>
+          <li><span class="ci-k">相對</span> 重症肌無力（台大註記：兩類阻斷劑皆應避免）；血漿膽鹼酯酶缺乏或活性下降（阻斷大幅延長）；開放性眼球外傷。</li>
+          <li><span class="ci-k">配伍</span> 不可與鹼性溶液（如 barbiturate）混合，會產生沉澱（台大藥劑部）。</li>
+        </ul>
       </div>
     </div>
 
@@ -442,8 +502,61 @@
           <li>用 0.6 mg/kg（手術室劑量）做 RSI 會起效太慢，是常見錯誤。</li>
         </ul></div>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 rocuronium 或溴離子過敏</span>。</li>
+          <li><span class="ci-k">相對</span> <span class="abs">重症肌無力</span>（台大註記應避免；對非去極化型極為敏感，需大幅減量）。</li>
+          <li><span class="ci-k">相對</span> <span class="abs">預期無法插管又無法通氣、且無外科氣道備援時</span>——作用 45–70 分無法等它退。</li>
+          <li><span class="ci-k">減量</span> 肝病需減量（台大藥劑部）；腎功能不良時阻斷持續時間變異大。</li>
+          <li><span class="ci-k">配伍</span> 不可與鹼性溶液混合。</li>
+        </ul>
+      </div>
       <div class="dg-note">
         <b>該選哪一個？</b>NEAR 註冊研究 4,075 例急診 RSI，首次成功率 87.0%（sux）vs 87.5%（roc）、不良事件 14.7% vs 14.8%，<b>無差異</b>。法國院外 RSI 隨機試驗中 rocuronium 1.2 mg/kg 對 succinylcholine 1 mg/kg <b>未能證明非劣性</b>（74.6% vs 79.4%）。實務結論：兩者皆可，<b>依禁忌與是否需要短效來選</b>；rocuronium 一定要給足 1.2 mg/kg。
+      </div>
+    </div>
+
+    <!-- Cisatracurium -->
+    <div class="dg warn" data-drug="cisatracurium">
+      <div class="dg-head">
+        <span class="dg-name">Cisatracurium</span>
+        <span class="dg-zh">肌弛適 Nimbex 10 mg/5 mL/amp</span>
+        <span class="dg-tag">2 mg/mL</span>
+        <span class="dg-tag ctrl">非 RSI 用</span>
+      </div>
+      <div class="dg-dose">
+        <span><span class="dd-k">插管劑量 0.15–0.2 mg/kg（以 0.2 計）</span><span class="dd-v" data-out="std">—</span></span>
+        <span><span class="dd-k">間歇追加 0.03 mg/kg</span><span class="dd-v alt" data-out="maint">—</span></span>
+      </div>
+      <div class="dg-kin">起效 <b>2–3 分</b>（太慢，不適用 RSI）｜ 作用時間 <b>45–60 分</b> ｜ ICU 輸注 3 mcg/kg/min（範圍 0.5–10.2）｜ 2–8°C 避光，離開冰箱後室溫 21 天</div>
+      <div class="dg-grid">
+        <div class="dg-col dg-pro"><h4>優點</h4><ul>
+          <li><b>Hofmann 消除</b>——非酵素性、不依賴肝腎，<b>肝腎衰竭病人不需調整劑量</b>，是重症持續肌鬆的首選。</li>
+          <li>不釋放組織胺（優於 atracurium），血流動力學影響小。</li>
+          <li>代謝不受透析或 CVVH 影響。</li>
+        </ul></div>
+        <div class="dg-col dg-con"><h4>缺點與副作用</h4><ul>
+          <li><b>起效 2–3 分鐘，不能用於 RSI</b>——RSI 只用 succinylcholine 或 rocuronium。</li>
+          <li>心搏過緩、低血壓（台大藥劑部所列不良反應）。</li>
+          <li>長期使用有加護病房後天無力症（ICU-acquired weakness）風險。</li>
+          <li>代謝產物 laudanosine 在長期高劑量下理論上可致癲癇（臨床罕見）。</li>
+          <li>Sugammadex <b>無法</b>逆轉。</li>
+        </ul></div>
+      </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 cisatracurium、atracurium 或苯磺酸鹽過敏</span>。</li>
+          <li><span class="ci-k">不適用</span> <span class="abs">快速誘導插管</span>——起效 2–3 分鐘，無法達成 RSI 所需的短時間鬆弛。</li>
+          <li><span class="ci-k">相對</span> 重症肌無力（台大註記應避免）。</li>
+          <li><span class="ci-k">絕對</span> <span class="abs">不可肌肉注射</span>（組織刺激性強）。</li>
+          <li><span class="ci-k">配伍</span> 僅在酸性溶液穩定：<b>不可與鹼性溶液（thiopentone）同針筒或同管路</b>；與 propofol 乳劑、ketorolac 不相容；不建議以 Lactated Ringer's 稀釋（台大藥劑部）。</li>
+          <li><span class="ci-k">健保</span> 限使用呼吸器<b>且</b>肝或腎功能衰竭之病人；每次使用以不超過 72 小時為原則；不得作為例行性使用。</li>
+        </ul>
+      </div>
+      <div class="dg-note">
+        <b>它的位置在插管之後，不在插管當下。</b>用於插管後仍需持續肌肉鬆弛的情形（重度 ARDS 早期、呼吸器嚴重不同步、腹腔高壓），尤其是<b>合併肝或腎衰竭</b>而 rocuronium 難以預測時。使用前必須先確保深度鎮靜與止痛。台大註記：需對點、<b>不可氣送</b>；2025 年 2 月起本院有缺藥替代規定，請確認現行品項。
       </div>
     </div>
 
@@ -459,7 +572,16 @@
         <span><span class="dd-k">誘導前 1–3 mcg/kg（以 2 計）</span><span class="dd-v" data-out="std">—</span></span>
       </div>
       <div class="dg-kin">誘導前 <b>3 分鐘</b>緩推 ｜ 鈍化喉鏡刺激的交感反應</div>
-      <div class="dg-note">用於顱內壓升高、主動脈剝離／動脈瘤、缺血性心臟病、嗜鉻細胞瘤。<b>低血壓或倚賴交感張力維持血壓者略過</b>；快速推注可致胸壁僵直。</div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 opioid 過敏</span>。</li>
+          <li><span class="ci-k">相對</span> <span class="abs">低血壓、或倚賴交感張力維持血壓者</span>——直接略過此步驟。</li>
+          <li><span class="ci-k">交互作用</span> 14 天內使用過 MAOI。</li>
+          <li><span class="ci-k">注意</span> 快速大量推注可致<b>胸壁僵直</b>而無法通氣（需阻斷劑或 naloxone 解除）。</li>
+        </ul>
+      </div>
+      <div class="dg-note">用於顱內壓升高、主動脈剝離／動脈瘤、缺血性心臟病、嗜鉻細胞瘤。緩推 30–60 秒。</div>
     </div>
 
     <div class="dg" data-drug="sugammadex">
@@ -473,6 +595,15 @@
         <span><span class="dd-k">深度阻斷 4 mg/kg</span><span class="dd-v alt" data-out="deep">—</span></span>
       </div>
       <div class="dg-kin">僅逆轉 <b>rocuronium／vecuronium</b>，對 succinylcholine 無效 ｜ 起效 2–3 分</div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對 sugammadex 或其賦形劑過敏</span>（台大仿單所列唯一禁忌）。</li>
+          <li><span class="ci-k">不建議</span> <span class="abs">CrCl &lt; 30 mL/min 或透析病人</span>（台大藥劑部）。</li>
+          <li><span class="ci-k">無效</span> <span class="abs">succinylcholine 與 cisatracurium／atracurium</span>——只逆轉 rocuronium 與 vecuronium。</li>
+          <li><span class="ci-k">交互作用</span> 使口服／植入型荷爾蒙避孕失效，等同漏服 7 天，須告知病人；與 toremifene、fusidic acid 有交互作用。</li>
+        </ul>
+      </div>
       <div class="dg-note">
         <b>不要把它當成 CICO（無法插管無法氧合）的救命稻草。</b>即使肌力恢復，病人仍處於誘導劑造成的無意識與呼吸抑制狀態，且原本導致氣道阻塞的病理不會消失；文獻明確稱之為「救援逆轉的迷思」。CICO 的正解是<b>立即外科氣道</b>。
       </div>
@@ -487,6 +618,14 @@
       <div class="dg-dose">
         <span><span class="dd-k">1.5 mg/kg（誘導前 3 分鐘）</span><span class="dd-v" data-out="std">—</span></span>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">絕對</span> <span class="abs">對醯胺類（amide）局部麻醉劑過敏</span>。</li>
+          <li><span class="ci-k">絕對</span> <span class="abs">Adams–Stokes 症候群</span>；<span class="abs">嚴重竇房／房室／心室內傳導阻滯且無節律器</span>；WPW 症候群。</li>
+          <li><span class="ci-k">減量</span> 嚴重肝功能不良、心輸出量低下者（清除下降，易累積至毒性）。</li>
+        </ul>
+      </div>
       <div class="dg-note"><b>不建議常規使用。</b>用於鈍化顱內壓反應與氣道高反應性的證據不足，列此僅供仍沿用舊流程時查劑量。</div>
     </div>
 
@@ -499,6 +638,13 @@
       <div class="dg-dose">
         <span><span class="dd-k">0.02 mg/kg（最低 0.1 mg）</span><span class="dd-v" data-out="std">—</span></span>
       </div>
+      <div class="dg-ci">
+        <div class="dg-ci-t">禁忌症 Contraindications</div>
+        <ul>
+          <li><span class="ci-k">相對</span> <span class="abs">窄角性青光眼</span>；阻塞性尿路病變（前列腺肥大）；麻痺性腸阻塞或幽門阻塞；重症肌無力；心搏過速、甲狀腺毒症。</li>
+          <li><span class="ci-k">注意</span> <span class="abs">單次劑量勿低於 0.1 mg</span>——過低反而引起反常性心搏過緩。</li>
+        </ul>
+      </div>
       <div class="dg-note">僅用於<b>嬰幼兒</b>（&lt;1 歲）或需重複給 succinylcholine 時預防心搏過緩；<b>成人不常規給</b>。</div>
     </div>
 
@@ -508,7 +654,7 @@
         <li><b>Fentanyl</b> 輸注 0.7–10 mcg/kg/hr，或間歇 25–100 mcg IV。</li>
         <li><b>Propofol</b> 輸注 5–50 mcg/kg/min（血壓可承受時）；<b>Midazolam</b> 輸注 0.02–0.1 mg/kg/hr。</li>
         <li><b>Dexmedetomidine</b> 0.2–1.4 mcg/kg/hr，適合脫離呼吸器階段，不足以單獨覆蓋剛插管者。</li>
-        <li>若持續需要肌肉鬆弛（如重度 ARDS），<b>必先確保深度鎮靜</b>；rocuronium 追加 0.1–0.2 mg/kg 或 cisatracurium 輸注。</li>
+        <li>若持續需要肌肉鬆弛（如重度 ARDS），<b>必先確保深度鎮靜</b>；rocuronium 追加 0.1–0.2 mg/kg，或改 cisatracurium 輸注 3 mcg/kg/min（肝腎衰竭者首選，見上方藥卡）。</li>
       </ul>
     </div>
 
@@ -657,6 +803,7 @@
         <li><b>Succinylcholine</b>：腎功能不良需注意（高血鉀）；血漿膽鹼酯酶活性下降者阻斷延長。</li>
         <li><b>Propofol</b>：肝腎不良皆不需調整劑量，但低血壓風險不變。</li>
         <li><b>Etomidate</b>：無腎肝調整資料；不可長時間輸注。</li>
+        <li><b>Cisatracurium</b>：Hofmann 消除，<b>肝腎衰竭與透析／CVVH 皆不需調整</b>——插管後需長時間肌鬆而器官衰竭時的首選（但起效太慢，不能用於插管當下）。</li>
       </ul>
     </div>
   </div>
@@ -781,6 +928,7 @@ var RSI_DOSE = {
   midazolam:   {mgkg:0.2,  low:0.1,   conc:5,   u:'mg'},
   sux:         {mgkg:1.5,             conc:50,  u:'mg'},
   rocuronium:  {mgkg:1.2,             conc:10,  u:'mg', extra:{maint:0.15}},
+  cisatracurium:{mgkg:0.2,            conc:2,   u:'mg', extra:{maint:0.03}},
   fentanyl:    {mgkg:2,               conc:50,  u:'mcg'},
   sugammadex:  {mgkg:16,              conc:100, u:'mg', extra:{deep:4}},
   lidocaine:   {mgkg:1.5,             conc:20,  u:'mg'},
