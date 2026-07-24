@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>低鈉血症矯正速率 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-hyponatremia">
+  <div class="app-header">
+    <div><div class="eyebrow">Electrolyte Emergency Tool</div><h1>低鈉血症矯正速率</h1><div class="sub">Hyponatraemia Correction Limits · 追蹤上限與剩餘額度（SfE 2022／歐洲 2014）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="hn_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/electrolyte-emergency.html?restore=1'">← 返回電解質急症決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-hyponatremia'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">為什麼這裡沒有 Adrogué-Madias 公式</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      這是刻意的。英國內分泌學會 2022 急症指引<b>明確建議不要用 Adrogué-Madias 公式</b>來計算高張鹽水的量與速率（中度確定性證據）——理由是該公式<b>在這種動態情境下缺乏精確度，且與過度矯正的風險增加相關</b>。<br>
+      指引採用的是<b>固定劑量、間歇推注</b>的做法：<b>150 mL 3% 高張鹽水於 20 分鐘內輸注</b>，重複至血鈉上升 5 mmol/L，並以<b>頻繁抽血</b>取代公式預測。因此本頁做的是<b>速率上限與剩餘額度的追蹤</b>，不是預測血鈉會升到多少。<br>
+      <b>間歇推注優於 24 小時持續輸注</b>（中度確定性）：第一小時血鈉改善更快、症狀改善更快，且<b>過度矯正風險更低</b>。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>嚴重度分類、治療流程、過度矯正處置與診斷路徑 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 生化嚴重度（SfE 2022）：</b>輕度 Na⁺ 130–135；中度 125–129；<b>重度（profound）&lt;125 mmol/L</b>。<br><br>
+
+      <b>◆ 症狀嚴重度：</b><br>
+      ・<b>嚴重症狀</b>：持續嘔吐、心肺停止、癲癇發作、意識下降／昏迷（GCS ≤8）。<br>
+      ・<b>中重度症狀</b>：噁心但未嘔吐、意識混亂、頭痛。<br>
+      ・<b>輕微或無症狀</b>。<br>
+      <b>指引明訂：處置決策應依「臨床症狀與徵象」而非生化嚴重度</b>——重度低血鈉可以完全無症狀，中度低血鈉也可能有明顯神經學表現。<b>血鈉 &gt;130 mmol/L 時不太可能出現嚴重症狀</b>，此時應思考其他造成神經功能異常的原因。<br><br>
+
+      <b>◆ 有症狀者的緊急治療（不論病因）：</b><br>
+      ・<b>150 mL 3% 高張鹽水（或等效）於 20 分鐘內</b>靜脈輸注，之後抽血。<br>
+      ・<b>重複最多兩次，或直到血鈉上升 5 mmol/L</b>。<br>
+      ・目標為<b>第一小時內上升 5 mmol/L</b>，以減輕腦水腫的立即危險，同時把過快矯正與滲透壓性脫髓鞘的風險降到最低。<br>
+      ・達到 5 mmol/L 上升後：<b>停止高張鹽水</b>，靜脈管路以最小量 0.9% 生理食鹽水維持通暢，開始針對病因的治療。<br>
+      ・<b>若上升 5 mmol/L 後臨床狀況仍未改善</b>：再給一次 150 mL 3% 高張鹽水（20 分鐘），目標<b>再上升 1 mmol/L</b>，同時<b>積極尋找症狀的其他原因</b>。停止輸注的指徵為：症狀改善、血鈉總共上升 &gt;10 mmol/L、或血鈉達 130 mmol/L（<b>三者以先到者為準</b>）。<br><br>
+
+      <b>◆ 矯正速率上限：</b>第一個 24 小時<b>不超過 10 mmol/L</b>；之後<b>每 24 小時不超過 8 mmol/L</b>，直到血鈉達 130 mmol/L。監測時點：<b>6 小時、12 小時，之後每日</b>直到治療下穩定。<br><br>
+
+      <b>◆ 需要加密監測的情況（過度矯正的預測因子）：</b><br>
+      ・第一或第二次推注後血鈉<b>上升超過 5 mmol/L</b> 者。<br>
+      ・接受<b>三次以上</b>高張鹽水推注者。<br>
+      ・<b>尿量增加</b>是水利尿（aquaresis）的早期指標，也是血鈉即將快速上升的前兆——治療期間必須密切監測尿量。<br><br>
+
+      <b>◆ 過度矯正的處置：</b>過度矯正（第一個 24 小時上升 &gt;10 mmol/L，或之後每 24 小時 &gt;8 mmol/L）有引發滲透壓性脫髓鞘的風險，<b>需要積極處理</b>：<br>
+      ・<b>停止高張鹽水</b>。<br>
+      ・<b>諮詢有處理過度矯正經驗的醫師</b>。可考慮給予低張輸液以限制上升或<b>回降血鈉</b>，並可併用<b>非經腸道 desmopressin（DDAVP）</b>以限制腎臟水分流失、讓血鈉的變化受控。<br>
+      ・<b>過度矯正可以在完全沒有使用高張鹽水的情況下發生</b>——例如攝入或輸注大量低張液體後的自行矯正、腎上腺危象恢復期。不要因為「沒給高張鹽水」就放鬆監測。<br><br>
+
+      <b>◆ 其他重要建議：</b><br>
+      ・<b>不要對有嚴重或中重度症狀者使用 vaptan 類水利尿劑</b>（中度確定性）——既無療效證據，又有增加過度矯正風險的證據。<br>
+      ・<b>治療期間應固定使用同一種血鈉檢測平台</b>（床邊直接電位法 vs 標準稀釋法靜脈血分析），避免不同平台間的差異影響處置決策。<br>
+      ・使用高張鹽水的決定與監督應由<b>受過訓練、有經驗的資深醫師</b>負責，並在能安全給藥、監測與評估療效、且可升階照護的環境進行。<br><br>
+
+      <b>◆ 病因診斷路徑（緊急處置之後才做）：</b>先看<b>尿液滲透壓</b>——&lt;100 mOsm/kg 提示原發性多渴症、不適當的靜脈輸液、低溶質攝取。≥100 mOsm/kg 再看<b>尿鈉</b>：&gt;30 mmol/L 且未使用利尿劑或 ACEI 者，考慮 SIAD、類 AVP 藥物、NSIAD、鹽分流失、嘔吐、腎上腺功能低下、腦性鹽耗；&lt;30 mmol/L 考慮心衰竭、門脈高壓、腎病症候群、低白蛋白血症、第三間隙流失、腸胃道流失、先前使用利尿劑。<b>尿液滲透壓與尿鈉應納入全天候可得的急診檢驗項目</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">追蹤矯正速率 Correction Tracking</div>
+    <div class="field-row">
+      <label>起始血鈉</label>
+      <input type="number" id="hn_start" step="1" placeholder="—">
+      <span class="unit">mmol/L</span>
+    </div>
+    <div class="field-row">
+      <label>目前血鈉</label>
+      <input type="number" id="hn_now" step="1" placeholder="—">
+      <span class="unit">mmol/L</span>
+    </div>
+    <div class="field-row">
+      <label>距起始經過</label>
+      <input type="number" id="hn_hours" step="0.5" placeholder="—">
+      <span class="unit">小時</span>
+    </div>
+    <div class="note">「起始血鈉」指開始治療（或發現低血鈉）當下的數值。超過 24 小時後，本頁以<b>每 24 小時為一個窗口</b>計算：第一個窗口上限 10 mmol/L，之後每個窗口 8 mmol/L。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">高張鹽水推注紀錄 Bolus Log</div>
+    <div class="field-row">
+      <label>已給推注次數</label>
+      <input type="number" id="hn_bolus" step="1" placeholder="0">
+      <span class="unit">次（每次 150 mL 3%／20 分鐘）</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="hn_jump"> 第一或第二次推注後血鈉上升已超過 5 mmol/L</label>
+    <label class="toggle-inline"><input type="checkbox" id="hn_urine"> 尿量明顯增加（水利尿前兆）</label>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">已上升</div><div class="metric-value big" id="hn_rise">—</div></div>
+      <div><div class="metric-label">本窗口上限</div><div class="metric-value big" id="hn_limit">—</div></div>
+      <div><div class="metric-label">剩餘額度</div><div class="metric-value big" id="hn_left">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="hn_interp">請輸入起始與目前血鈉。</div>
+    <table class="ref">
+      <tr><th>時間窗</th><th>上升上限</th><th>備註</th></tr>
+      <tr><td>第一小時（有症狀者）</td><td>目標 +5</td><td>150 mL 3% ×20 分鐘，最多重複兩次</td></tr>
+      <tr><td>第一個 24 小時</td><td>≤ 10 mmol/L</td><td>超過即需積極處理</td></tr>
+      <tr><td>之後每 24 小時</td><td>≤ 8 mmol/L</td><td>直到血鈉達 130 mmol/L</td></tr>
+    </table>
+    <div class="risk-note">停止高張鹽水的指徵：<b>症狀改善、血鈉總共上升 &gt;10 mmol/L、或血鈉達 130 mmol/L，三者以先到者為準</b>。血鈉監測時點為 <b>6 小時、12 小時，之後每日</b>直到穩定；<b>過度矯正可在未使用高張鹽水的情況下發生</b>（大量低張液體後的自行矯正、腎上腺危象恢復期）。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://www.endocrinology.org/media/xhrhxhxm/emergency-management-of-severe-and-moderately-severely-symptomatic-hyponatraemia-in-adult-patients-2022.pdf" target="_blank" rel="noopener" class="ref-link">Ball S, Barth J, Levy M; Society for Endocrinology Clinical Committee. Emergency management of severe and moderately severely symptomatic hyponatraemia in adult patients. Society for Endocrinology Endocrine Emergency Guidance, 2022.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27935814/" target="_blank" rel="noopener" class="ref-link">Ball S, Barth J, Levy M. Emergency management of severe symptomatic hyponatraemia in adult patients. Endocr Connect. 2016;5(5):G4-G6.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24569125/" target="_blank" rel="noopener" class="ref-link">Spasovski G, Vanholder R, Allolio B, et al. Clinical practice guideline on diagnosis and treatment of hyponatraemia. Eur J Endocrinol. 2014;170(3):G1-G47.</a></footer>
+</div>
+</div>
+<script>
+function hnNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function hnCalc(){
+  const start=hnNum('hn_start'), now=hnNum('hn_now'), hrs=hnNum('hn_hours');
+  const bolus=hnNum('hn_bolus'), jump=document.getElementById('hn_jump').checked,
+        urine=document.getElementById('hn_urine').checked;
+
+  const rise = (start!==null && now!==null) ? (now-start) : null;
+  document.getElementById('hn_rise').textContent = rise===null ? '—' : (rise>0?'+':'')+rise.toFixed(0);
+
+  /* 第一個 24 小時窗上限 10，之後每個 24 小時窗 8。
+     累計上限 = 10 + 8×(完整經過的 24 小時窗數) */
+  let limit=null, cumLimit=null, win=1;
+  if(hrs!==null){
+    win = Math.floor(hrs/24) + 1;
+    limit = win===1 ? 10 : 8;
+    cumLimit = 10 + 8*(win-1);
+  }
+  document.getElementById('hn_limit').textContent = limit===null ? '—' : ('+'+limit);
+
+  let left=null;
+  if(rise!==null && cumLimit!==null) left = cumLimit - rise;
+  document.getElementById('hn_left').textContent = left===null ? '—' : (left>0?'+':'')+left.toFixed(0);
+
+  let interp='請輸入起始與目前血鈉。';
+  if(rise!==null && hrs!==null){
+    const over = left!==null && left<0;
+    if(over){
+      interp='<b>已超過累計上限</b>（第 '+win+' 個 24 小時窗，累計上限 +'+cumLimit+' mmol/L，實際 '+(rise>0?'+':'')+rise.toFixed(0)+'）。<b>立即停止高張鹽水</b>，並<b>諮詢有處理過度矯正經驗的醫師</b>：可考慮給低張輸液限制上升或<b>回降血鈉</b>，必要時併用<b>非經腸道 desmopressin（DDAVP）</b>限制腎臟水分流失。過度矯正有引發<b>滲透壓性脫髓鞘</b>的風險。';
+    } else if(left!==null && left<=2){
+      interp='<b>已接近上限</b>（剩餘額度僅 '+left.toFixed(0)+' mmol/L）。應<b>停止高張鹽水</b>並加密監測；此後任何進一步上升都可能越線，尤其在尿量開始增加時。';
+    } else if(hrs<=1 && rise>=5){
+      interp='第一小時內已達 <b>+5 mmol/L 的目標</b>。<b>停止高張鹽水</b>，靜脈管路以最小量 0.9% 生理食鹽水維持，開始針對病因的治療。若症狀仍未改善，可再給一次 150 mL 3%（20 分鐘）以求再上升 1 mmol/L，同時<b>積極尋找症狀的其他原因</b>。';
+    } else if(hrs<=1){
+      interp='第一小時內尚未達 +5 mmol/L。有嚴重或中重度症狀者可<b>重複 150 mL 3% 高張鹽水（20 分鐘）</b>，最多兩次或直到上升 5 mmol/L。';
+    } else {
+      interp='目前在第 '+win+' 個 24 小時窗內，累計上限 <b>+'+cumLimit+' mmol/L</b>，尚有 <b>'+left.toFixed(0)+' mmol/L</b> 的額度。持續監測（6 小時、12 小時，之後每日），並以血鈉達 <b>130 mmol/L</b> 為停止進一步矯正的終點。';
+    }
+
+    let warn=[];
+    if(jump) warn.push('第一或第二次推注後即上升 &gt;5 mmol/L');
+    if(bolus!==null && bolus>=3) warn.push('已給 '+bolus+' 次推注（≥3 次）');
+    if(urine) warn.push('尿量增加，提示水利尿即將使血鈉快速上升');
+    if(warn.length) interp += '<br><b>⚠ 需加密監測</b>：'+warn.join('；')+'。';
+  }
+  document.getElementById('hn_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-hyponatremia input')
+  .forEach(el => { el.addEventListener('input', hnCalc); el.addEventListener('change', hnCalc); });
+hnCalc();
+if(location.search.indexOf('from=lyte')>=0){var _b=document.getElementById('hn_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
