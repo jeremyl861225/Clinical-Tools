@@ -119,15 +119,15 @@
      變數scoped 在 .hub-grid：cancer-staging.css 有同名的 :root 變數，兩者互不載入同一頁，
      但仍避免日後同頁載入時互相覆寫。 */
   .hub-grid{
-    /* 電腦：四張方磚一行（滿版），兩張長方磚各佔滿一整列、急重症處置在上；
-       平板以下折成 2 欄，四張方磚 2×2，兩張長方磚同樣整列疊在下面、順序不變。
-       版位以 grid-template-areas 明寫，故 HTML 的順序不影響排版。
+    /* 電腦：四張方磚一行（滿版），兩張長方磚並排於第二列——急重症處置在左、
+       藥物資料庫在右，各佔兩欄；平板以下折成 2 欄，四張方磚 2×2，兩張長方磚
+       則改為上下各佔滿一整列（急重症處置在上）。版位以 grid-template-areas 明寫，
+       故 HTML 的順序不影響排版。
        （2×2 若在電腦全寬呈現，820px 的正方形會高達 1600px，一屏塞不下，故仍限寬置中） */
     display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 8px;
     grid-template-areas:
       "abd abx canc scor"
-      "crit crit crit crit"
-      "drug drug drug drug";
+      "crit crit drug drug";
     --tile-bg:#e9e7e1;
     --tile-label:#fdf8ee; --tile-label-soft:rgba(253,248,238,.86);
     --tile-label-shadow:0 0 2px rgba(0,0,0,.95), 0 0 4px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.85), 0 0 9px rgba(0,0,0,.6);
@@ -173,6 +173,12 @@
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; filter:var(--plate-filter);
     transition:transform .6s cubic-bezier(.16,1,.3,1), filter .5s;
+    /* 強制每張圖各自成一個合成層（translateZ(0)）。SVG 參考濾鏡（url(#plate-duo)）
+       由多張圖共用時，Chromium 常隨機讓其中幾張整片不上色、只剩底色。
+       will-change 只是提示、仍會漏；實測唯有「真的套上」translateZ(0) 才每張穩定。
+       故 hover 與 reduced-motion 也一律帶著 translateZ(0)，合成層自始至終不掉，
+       否則濾鏡會在 transform 歸零那一刻重新搶畫、灰磚回來。 */
+    transform:translateZ(0);
   }
   .hub-card .hub-scrim{position:absolute; inset:0; pointer-events:none; background:var(--scrim); transition:background .5s;}
   .hub-card .hub-label{
@@ -201,37 +207,26 @@
     content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
     border:1px solid transparent; transition:border-color .4s, box-shadow .4s;
   }
-  .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{ transform:scale(1.04); filter:var(--plate-filter-hover); }
+  .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{ transform:scale(1.04) translateZ(0); filter:var(--plate-filter-hover); }
   .hub-card:hover .hub-scrim, .hub-card:focus-visible .hub-scrim{ background:var(--scrim-hover); }
   .hub-card:hover::after{ border-color:var(--tile-accent); box-shadow:inset 0 0 0 1px rgba(201,162,39,.24); }
   .hub-card:focus-visible{ outline:none; }
   .hub-card:focus-visible::after{ border-color:var(--tile-accent); box-shadow:0 0 0 2px rgba(201,162,39,.5); }
   @media (prefers-reduced-motion:reduce){
     .hub-card .hub-img, .hub-card .hub-scrim, .hub-card::after{transition:none;}
-    .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:none;}
+    .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:translateZ(0);}
   }
 
   /* ---- 長方磚（急重症處置／藥物資料庫）----
-     整列橫跨，故中文不拆上下兩半、改為單行加英文副標。
-     高度：電腦一列 820px 若照手機的 3.4:1 會高達 241px、比方磚還高，兩條疊起來
-     整個首屏都是橫幅，故電腦壓成 5.5:1（≈149px）、手機維持 3.4:1（≈102px）。
-
-     字級要與方磚看起來一樣大：cqw 是「自己寬度」的百分比，而長方磚是
-     電腦 4 張方磚＋3 道 gap（≈4.18 倍寬）、手機 2 張＋1 道（≈2.06 倍寬），
-     故係數各取方磚的 1/4.18 與 1/2.06（17→4.07／8.25，6.2→1.48／3），
-     上下限照抄方磚，兩種版位算出來的字級才會落在同一個尺寸。
+     跨兩欄，故中文不拆上下兩半、改為單行加英文副標。
+     電腦並排、手機上下排，但兩種版位下長方磚都正好是「2 張方磚＋1 道 gap」寬
+     （≈2.06 倍方磚寬），故高度與字級不必分版位：一律 3.4:1、cqw 係數取方磚的
+     一半（17→8.25、6.2→3），上下限照抄方磚，算出來的字級即與方磚同大。
      不支援容器查詢時兩者都吃 vw，本來就同大小，無須另寫。 */
-  .hub-card--wide{aspect-ratio:5.5/1;}
-  @media(max-width:720px){
-    .hub-card--wide{aspect-ratio:3.4/1;}
-  }
+  .hub-card--wide{aspect-ratio:3.4/1;}
   @supports (font-size:1cqw){
-    .hub-card--wide .hub-zh{font-size:clamp(22px,4.07cqw,40px);}
-    .hub-card--wide .hub-en{font-size:clamp(9.5px,1.48cqw,14px);}
-    @media(max-width:720px){
-      .hub-card--wide .hub-zh{font-size:clamp(22px,8.25cqw,40px);}
-      .hub-card--wide .hub-en{font-size:clamp(9.5px,3cqw,14px);}
-    }
+    .hub-card--wide .hub-zh{font-size:clamp(22px,8.25cqw,40px);}
+    .hub-card--wide .hub-en{font-size:clamp(9.5px,3cqw,14px);}
   }
 
   /* ---- 尚未配圖的方磚 ----
