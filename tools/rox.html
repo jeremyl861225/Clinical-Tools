@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROX Index · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-rox">
+  <div class="app-header">
+    <div><div class="eyebrow">High-Flow Nasal Cannula Outcome Index</div><h1>ROX Index</h1><div class="sub">高流量鼻導管失敗預測 · (SpO₂/FiO₂) ÷ 呼吸速率（Roca 2019）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="rx_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html?restore=1'">← 返回呼吸衰竭決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-rox'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">使用前必讀 Before You Use</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      ROX index 的用途是<b>及早辨識高流量鼻導管（HFNC）注定失敗的病人，避免延誤插管</b>；分數高並不代表可以放心，分數低也不是插管的唯一依據。<br>
+      驗證族群是<b>肺炎引起的急性低血氧呼吸衰竭</b>（191 人，35.6% 最終插管），族群外（心因性肺水腫、COPD 惡化、術後、免疫低下）<b>切點未經驗證</b>。<br>
+      預測力隨時間增加而變好（AUC：2 小時 0.679、6 小時 0.703、12 小時 0.759）——<b>單一時點的數值不如趨勢重要</b>：失敗者的 ROX 在 12 小時內上升幅度明顯較小。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、切點來源與指引脈絡 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 公式：</b>ROX = (SpO₂ / FiO₂) ÷ 呼吸速率。FiO₂ 以小數代入（0.6 而非 60）。<br>
+      原文分析指出，三個組成中<b>SpO₂/FiO₂ 的權重大於呼吸速率</b>。<br><br>
+
+      <b>◆ 切點（Roca 2019 驗證世代）：</b><br>
+      ・<b>預測失敗</b>（需插管）：2 小時 &lt;2.85、6 小時 &lt;3.47、12 小時 &lt;3.85。<br>
+      ・<b>預測成功</b>：ROX <b>≥4.88</b> 於 2、6 或 12 小時任一時點測得，皆與較低的插管風險相關（HR 分別 0.434、0.304、0.291）。<br>
+      <span class="note">注意「≥4.88」在三個時點是<b>同一個數值</b>，而失敗切點<b>逐時上升</b>——因為隨時間拉長，還沒改善就代表更不樂觀。介於失敗切點與 4.88 之間屬灰色地帶，原文建議加密評估。</span><br><br>
+
+      <b>◆ 指引脈絡：</b><br>
+      ・<b>ESICM 2023</b>（建議 3.1）：非心因性肺水腫、非 COPD 急性惡化的急性低血氧呼吸衰竭，<b>建議 HFNO 優於一般氧氣治療以降低插管風險</b>（強建議，中度確定性）；但對死亡率<b>無法做出建議</b>（高度確定性的無效果證據）。HFNO 與 CPAP／NIV 相比則<b>無法做出建議</b>（3.2）。<br>
+      ・<b>SSC 2026</b>：PaO₂/FiO₂ &lt;200 者<b>建議 HFNC 優於一般氧氣治療</b>（建議 67，新）、且<b>初始優於非侵襲性正壓通氣</b>（建議 68，新，插管風險 RR 0.88）；<b>不建議 HFNC 與 NIPPV 交替使用</b>（建議 69，新）。<br>
+      ・兩者都沒有把 ROX 寫進建議條文；ROX 是床邊追蹤工具，不是指引判準。<br><br>
+
+      <b>◆ 何時不要再等：</b>ROX 只是輔助。出現<b>血行動力學不穩、意識改變、無法保護呼吸道、呼吸功過大或代謝性酸中毒惡化</b>時，應直接插管而非繼續觀察數值。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">參數 Parameters</div>
+    <div class="field-row">
+      <label>SpO₂</label>
+      <input type="number" id="rx_spo2" step="1" placeholder="—">
+      <span class="unit">%</span>
+    </div>
+    <div class="field-row">
+      <label>FiO₂</label>
+      <input type="number" id="rx_fio2" step="0.01" placeholder="0.21–1.0">
+      <span class="unit">小數（0.6 = 60%）</span>
+    </div>
+    <div class="field-row">
+      <label>呼吸速率</label>
+      <input type="number" id="rx_rr" step="1" placeholder="—">
+      <span class="unit">次/分</span>
+    </div>
+    <div class="field-row">
+      <label>HFNC 開始後</label>
+      <select id="rx_time">
+        <option value="2">2 小時</option>
+        <option value="6">6 小時</option>
+        <option value="12">12 小時</option>
+      </select>
+    </div>
+    <div class="note">FiO₂ 若填 60 會自動視為 0.6。切點依所選時點改變，請選擇實際的測量時間。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">ROX Index</div><div class="metric-value big" id="rx_val">—</div></div>
+      <div><div class="metric-label">判讀</div><div class="metric-value big" id="rx_band" style="font-size:24px;">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床意義</div>
+    <div style="font-size:15px; margin-top:2px;" id="rx_interp">請輸入 SpO₂、FiO₂ 與呼吸速率。</div>
+    <table class="ref">
+      <tr><th>時點</th><th>預測失敗</th><th>預測成功</th></tr>
+      <tr><td>2 小時</td><td>&lt; 2.85</td><td>≥ 4.88</td></tr>
+      <tr><td>6 小時</td><td>&lt; 3.47</td><td>≥ 4.88</td></tr>
+      <tr><td>12 小時</td><td>&lt; 3.85</td><td>≥ 4.88</td></tr>
+    </table>
+    <div class="risk-note">驗證世代為<b>肺炎引起</b>的急性低血氧呼吸衰竭（191 人，35.6% 插管），AUC 隨時間上升（2 小時 0.679、6 小時 0.703、12 小時 0.759）。<b>趨勢比單一數值重要</b>——最終失敗者在 12 小時內的 ROX 上升幅度顯著較小。族群外未經驗證。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/30576221/" target="_blank" rel="noopener" class="ref-link">Roca O, Caralt B, Messika J, et al. An Index Combining Respiratory Rate and Oxygenation to Predict Outcome of Nasal High-Flow Therapy. Am J Respir Crit Care Med. 2019;199(11):1368-1376.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27481760/" target="_blank" rel="noopener" class="ref-link">Roca O, Messika J, Caralt B, et al. Predicting success of high-flow nasal cannula in pneumonia patients with hypoxemic respiratory failure: The utility of the ROX index. J Crit Care. 2016;35:200-205.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37326646/" target="_blank" rel="noopener" class="ref-link">Grasselli G, et al. ESICM guidelines on acute respiratory distress syndrome. Intensive Care Med. 2023;49(7):727-759.</a></footer>
+</div>
+</div>
+<script>
+function rxNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function rxCalc(){
+  const spo2=rxNum('rx_spo2'), rr=rxNum('rx_rr');
+  let fio2=rxNum('rx_fio2');
+  if(fio2!==null && fio2>1) fio2=fio2/100;
+  const t=document.getElementById('rx_time').value;
+  const failThr = t==='2' ? 2.85 : (t==='6' ? 3.47 : 3.85);
+
+  let rox=null;
+  if(spo2!==null && fio2!==null && fio2>0 && rr!==null && rr>0) rox = (spo2/fio2)/rr;
+
+  document.getElementById('rx_val').textContent = rox===null ? '—' : rox.toFixed(2);
+
+  let band='—', interp='請輸入 SpO₂、FiO₂ 與呼吸速率。';
+  if(rox!==null){
+    if(rox<failThr){
+      band='預測失敗';
+      interp='ROX <b>&lt;'+failThr+'</b>（'+t+' 小時切點），<b>預測 HFNC 失敗</b>。應即刻重新評估是否插管，不宜再以「再觀察一下」拖延；同時檢視是否有可逆因素（分泌物、姿勢、鎮靜不足、輸液過多、感染源未控制）。';
+    } else if(rox>=4.88){
+      band='預測成功';
+      interp='ROX <b>≥4.88</b>，與<b>較低的插管風險</b>相關（'+t+' 小時 HR '+(t==='2'?'0.434':(t==='6'?'0.304':'0.291'))+'）。可續用 HFNC，但仍須定期重測並觀察趨勢。';
+    } else {
+      band='灰色地帶';
+      interp='ROX 介於 '+failThr+' 與 4.88 之間，<b>尚無法分類</b>。應<b>加密評估</b>（例如每 1–2 小時重測）並觀察 ROX 是否隨時間上升；上升幅度小者最終多數失敗。';
+    }
+  }
+  document.getElementById('rx_band').textContent=band;
+  document.getElementById('rx_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-rox input, #view-rox select')
+  .forEach(el => { el.addEventListener('input', rxCalc); el.addEventListener('change', rxCalc); });
+rxCalc();
+if(location.search.indexOf('from=ards')>=0){var _b=document.getElementById('rx_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

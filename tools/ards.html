@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARDS 診斷與分級 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-ards">
+  <div class="app-header">
+    <div><div class="eyebrow">Respiratory Failure Diagnostic Tool</div><h1>ARDS 診斷與分級</h1><div class="sub">急性呼吸窘迫症候群 · New Global Definition 2024（含 Berlin 2012 對照）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="ar_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html?restore=1'">← 返回呼吸衰竭決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-ards'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">版本提醒 Version</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      本頁採 <b>2024 新全球定義</b>（Matthay 等，Am J Respir Crit Care Med 2024;209(1):37-47），這是 Berlin 2012 以來最大的一次改版。四項實質變動：<br>
+      ① <b>納入未插管者</b>——高流量鼻導管 <b>≥30 L/min</b>，或 NIV／CPAP 且吐氣末壓 ≥5 cmH₂O；<br>
+      ② <b>可用 SpO₂/FiO₂ 取代 PaO₂/FiO₂</b>（限 SpO₂ ≤97%）；<br>
+      ③ <b>超音波</b>納入影像判準；<br>
+      ④ 另立<b>資源受限地區</b>的簡化判準（不要求 PEEP 與最低氧流速）。<br>
+      <span class="note">新定義自身聲明：其可行性、信度與預後效度<b>仍待前瞻驗證</b>。Berlin 定義並未被撤銷，多數臨床試驗的收案條件仍寫 Berlin，判讀文獻時須留意兩者不等價。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>完整判準、FiO₂ 估算、海拔校正與 Berlin 對照 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 所有類別共通的三項判準（缺一不可）：</b><br>
+      ・<b>危險因子與水腫來源</b>：由急性誘發因子引起（肺炎、非肺部感染、外傷、輸血、燒傷、吸入、休克）。肺水腫<b>不得主要來自心因性肺水腫／體液過多</b>，低血氧也<b>不得主要來自肺塌陷</b>；但若同時存在 ARDS 的誘發因子，仍可在這些情況下診斷 ARDS。<br>
+      ・<b>時間</b>：於誘發因子發生、或呼吸症狀新發／惡化後的<b>一週內</b>急性發生或惡化。<br>
+      ・<b>胸部影像</b>：X 光或電腦斷層的<b>雙側浸潤</b>，或超音波的<b>雙側 B 線與／或實變</b>，且無法完全以肋膜積液、肺塌陷或結節／腫塊解釋。超音波操作者須受過辨識雙側肺通氣喪失的訓練。<br><br>
+
+      <b>◆ 三個類別的氧合判準：</b><br>
+      ・<b>未插管 ARDS</b>：PaO₂/FiO₂ ≤300 mmHg 或 SpO₂/FiO₂ ≤315（限 SpO₂ ≤97%），<b>且</b>在 HFNO 流速 ≥30 L/min 或 NIV／CPAP 吐氣末壓 ≥5 cmH₂O 之下。<b>未插管 ARDS 不再細分嚴重度</b>。<br>
+      ・<b>插管 ARDS</b>：輕度 200&lt;P/F≤300 或 235&lt;S/F≤315；中度 100&lt;P/F≤200 或 148&lt;S/F≤235；重度 P/F≤100 或 S/F≤148。<b>所有嚴重度都要求 PEEP ≥5 cmH₂O</b>。<br>
+      ・<b>資源受限地區</b>：SpO₂/FiO₂ ≤315（限 SpO₂ ≤97%），<b>不要求 PEEP，也不要求最低氧流速或特定呼吸支持裝置</b>。適用於動脈血氣、HFNO、NIV 或呼吸器不易取得之處。<br>
+      <span class="note">病人可在病程中於不同類別間移動。</span><br><br>
+
+      <b>◆ FiO₂ 估算（原文附註）：</b>使用一般氧氣裝置而無法得知確切 FiO₂ 時，<b>估算 FiO₂ = 0.21 + 0.03 × 氧流速（L/min）</b>。本頁「以流速估算」選項即用此式。<br><br>
+
+      <b>◆ 測量條件：</b>血氣與血氧測量應在病人<b>安靜休息</b>時，且距離變換姿勢、調整 FiO₂ 或流速<b>至少 30 分鐘後</b>進行。使用血氧計時須確認波形與探頭位置良好。<b>SpO₂ &gt;97% 時 S/F 比值無效</b>。懷疑血紅素異常（變性血紅素、碳氧血紅素）時<b>不建議</b>用血氧計診斷。<br><br>
+
+      <b>◆ 海拔校正：</b>海拔 &gt;1,000 公尺時，比值須乘上 <b>大氣壓/760</b>。本頁提供海拔輸入，並以標準大氣模型估算大氣壓（原文只給校正式，未指定壓力來源；有實測值時請直接以實測大氣壓判讀）。<br><br>
+
+      <b>◆ 與 Berlin 2012 的差異：</b>Berlin 要求<b>所有</b>病人都在 PEEP ≥5 cmH₂O 之下（形式上，未接受正壓者無法診斷 ARDS）、只認 X 光與電腦斷層、只用 PaO₂/FiO₂、且分輕／中／重三級。新定義保留了「一週內、雙側浸潤、非心因性」的骨幹，擴充的是<b>誰能被診斷</b>與<b>用什麼測量</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">共通判準 Common Criteria</div>
+    <label class="toggle-inline"><input type="checkbox" id="ar_risk"> 有急性誘發危險因子（肺炎、非肺部感染、外傷、輸血、燒傷、吸入、休克）</label>
+    <label class="toggle-inline"><input type="checkbox" id="ar_time"> 一週內急性發生或惡化</label>
+    <label class="toggle-inline"><input type="checkbox" id="ar_img"> 影像雙側浸潤（X 光／CT），或超音波雙側 B 線與／或實變</label>
+    <label class="toggle-inline"><input type="checkbox" id="ar_edema"> 非主要由心因性肺水腫／體液過多或單純肺塌陷所致</label>
+    <div class="note">四項皆須成立才符合 ARDS；氧合達標但共通判準未滿足者，本頁只顯示氧合比值，不下 ARDS 診斷。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">呼吸支持 Respiratory Support</div>
+    <div class="field-row">
+      <label>目前支持方式</label>
+      <select id="ar_mode">
+        <option value="vent">侵襲性機械通氣（插管）</option>
+        <option value="hfno">高流量鼻導管 HFNO</option>
+        <option value="niv">NIV／CPAP</option>
+        <option value="conv">一般氧氣治療／室內空氣</option>
+      </select>
+    </div>
+    <div class="field-row" id="ar_row_peep">
+      <label>PEEP／吐氣末壓</label>
+      <input type="number" id="ar_peep" step="1" placeholder="—">
+      <span class="unit">cmH₂O</span>
+    </div>
+    <div class="field-row" id="ar_row_flow">
+      <label>HFNO 流速</label>
+      <input type="number" id="ar_flow" step="1" placeholder="—">
+      <span class="unit">L/min</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="ar_limited"> 資源受限地區判準（不要求 PEEP 與最低氧流速）</label>
+  </div>
+
+  <div class="card">
+    <div class="section-title">氧合 Oxygenation</div>
+    <div class="field-row">
+      <label>判讀依據</label>
+      <select id="ar_basis">
+        <option value="pf">動脈血氧 PaO₂（PaO₂/FiO₂）</option>
+        <option value="sf">血氧飽和度 SpO₂（SpO₂/FiO₂）</option>
+      </select>
+    </div>
+    <div class="field-row" id="ar_row_pao2">
+      <label>PaO₂</label>
+      <input type="number" id="ar_pao2" step="1" placeholder="—">
+      <span class="unit">mmHg</span>
+    </div>
+    <div class="field-row" id="ar_row_spo2">
+      <label>SpO₂</label>
+      <input type="number" id="ar_spo2" step="1" placeholder="—">
+      <span class="unit">%</span>
+    </div>
+    <div class="field-row">
+      <label>FiO₂ 輸入方式</label>
+      <select id="ar_fio2mode">
+        <option value="direct">直接輸入 FiO₂</option>
+        <option value="flow">以氧流速估算（0.21 + 0.03 × 流速）</option>
+      </select>
+    </div>
+    <div class="field-row" id="ar_row_fio2">
+      <label>FiO₂</label>
+      <input type="number" id="ar_fio2" step="0.01" placeholder="0.21–1.0">
+      <span class="unit">小數（0.4 = 40%）</span>
+    </div>
+    <div class="field-row" id="ar_row_o2flow">
+      <label>氧流速</label>
+      <input type="number" id="ar_o2flow" step="1" placeholder="—">
+      <span class="unit">L/min</span>
+    </div>
+    <div class="field-row">
+      <label>海拔</label>
+      <input type="number" id="ar_alt" step="10" placeholder="0">
+      <span class="unit">公尺（&gt;1000 才校正）</span>
+    </div>
+    <div class="exclusive-note"><b>SpO₂ &gt;97% 時 S/F 無效</b>——此時請改用動脈血氣。懷疑變性血紅素或碳氧血紅素血症時，不可用血氧計診斷。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label" id="ar_ratio_label">PaO₂/FiO₂</div><div class="metric-value big" id="ar_ratio">—</div></div>
+      <div><div class="metric-label">診斷</div><div class="metric-value big" id="ar_dx" style="font-size:24px;">—</div></div>
+      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="ar_sev" style="font-size:24px;">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="ar_interp">請輸入氧合數值與共通判準。</div>
+    <table class="ref">
+      <tr><th>類別</th><th>PaO₂/FiO₂</th><th>SpO₂/FiO₂（SpO₂ ≤97%）</th></tr>
+      <tr><td>插管 · 輕度 Mild</td><td>200–300</td><td>235–315</td></tr>
+      <tr><td>插管 · 中度 Moderate</td><td>100–200</td><td>148–235</td></tr>
+      <tr><td>插管 · 重度 Severe</td><td>≤ 100</td><td>≤ 148</td></tr>
+      <tr><td>未插管 ARDS（不分級）</td><td>≤ 300</td><td>≤ 315</td></tr>
+      <tr><td>資源受限地區（不分級）</td><td>—</td><td>≤ 315</td></tr>
+    </table>
+    <div class="risk-note">插管 ARDS 的所有嚴重度<b>均要求 PEEP ≥5 cmH₂O</b>；未插管 ARDS 要求 <b>HFNO ≥30 L/min</b> 或 <b>NIV／CPAP 吐氣末壓 ≥5 cmH₂O</b>；資源受限判準則兩者皆不要求。病人可在病程中於不同類別間移動。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/37487152/" target="_blank" rel="noopener" class="ref-link">Matthay MA, Arabi Y, Arroliga AC, et al. A New Global Definition of Acute Respiratory Distress Syndrome. Am J Respir Crit Care Med. 2024;209(1):37-47.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22797452/" target="_blank" rel="noopener" class="ref-link">ARDS Definition Task Force. Acute respiratory distress syndrome: the Berlin Definition. JAMA. 2012;307(23):2526-2533.</a></footer>
+</div>
+</div>
+<script>
+function arNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function arShow(id,on){ document.getElementById(id).style.display = on ? '' : 'none'; }
+
+function arCalc(){
+  const mode=document.getElementById('ar_mode').value;
+  const basis=document.getElementById('ar_basis').value;
+  const fmode=document.getElementById('ar_fio2mode').value;
+  const limited=document.getElementById('ar_limited').checked;
+
+  /* 依情境顯示需要的欄位 */
+  arShow('ar_row_peep', !limited && (mode==='vent' || mode==='niv'));
+  arShow('ar_row_flow', !limited && mode==='hfno');
+  arShow('ar_row_pao2', basis==='pf');
+  arShow('ar_row_spo2', basis==='sf');
+  arShow('ar_row_fio2', fmode==='direct');
+  arShow('ar_row_o2flow', fmode==='flow');
+  document.getElementById('ar_ratio_label').textContent = basis==='pf' ? 'PaO₂/FiO₂' : 'SpO₂/FiO₂';
+
+  /* FiO2 */
+  let fio2=null;
+  if(fmode==='direct'){ fio2=arNum('ar_fio2'); }
+  else { const f=arNum('ar_o2flow'); if(f!==null) fio2 = 0.21 + 0.03*f; }
+  if(fio2!==null && fio2>1) fio2 = fio2/100;   /* 有人習慣填 40 而非 0.4 */
+
+  const spo2=arNum('ar_spo2'), pao2=arNum('ar_pao2');
+
+  /* 海拔校正：>1000 m 乘以 大氣壓/760，大氣壓以標準大氣模型估算 */
+  const alt=arNum('ar_alt');
+  let corr=1;
+  if(alt!==null && alt>1000){
+    const p = 760*Math.pow(1 - 2.25577e-5*alt, 5.25588);
+    corr = p/760;
+  }
+
+  let ratio=null, invalid='';
+  if(fio2!==null && fio2>0){
+    if(basis==='pf'){ if(pao2!==null) ratio = pao2/fio2*corr; }
+    else {
+      if(spo2!==null){
+        if(spo2>97){ invalid='SpO₂ &gt;97%，S/F 比值無效'; }
+        else ratio = spo2/fio2*corr;
+      }
+    }
+  }
+
+  document.getElementById('ar_ratio').textContent = ratio===null ? '—' : ratio.toFixed(0);
+
+  /* 共通判準 */
+  const common = ['ar_risk','ar_time','ar_img','ar_edema'].every(i=>document.getElementById(i).checked);
+
+  /* 支持條件 */
+  const peep=arNum('ar_peep'), flow=arNum('ar_flow');
+  let supportOK=false, supportMsg='';
+  if(limited){
+    supportOK = (basis==='sf');
+    if(!supportOK) supportMsg='資源受限判準只以 SpO₂/FiO₂ 判讀，請切換判讀依據。';
+  } else if(mode==='vent'){
+    supportOK = (peep!==null && peep>=5);
+    if(!supportOK) supportMsg='插管 ARDS 要求 PEEP ≥5 cmH₂O。';
+  } else if(mode==='niv'){
+    supportOK = (peep!==null && peep>=5);
+    if(!supportOK) supportMsg='未插管 ARDS 經 NIV／CPAP 者要求吐氣末壓 ≥5 cmH₂O。';
+  } else if(mode==='hfno'){
+    supportOK = (flow!==null && flow>=30);
+    if(!supportOK) supportMsg='未插管 ARDS 經 HFNO 者要求流速 ≥30 L/min。';
+  } else {
+    supportOK = false;
+    supportMsg='一般氧氣治療不符合新全球定義的呼吸支持條件（除非採資源受限判準）。';
+  }
+
+  /* 氧合門檻 */
+  const thr = basis==='pf' ? {mild:300, mod:200, sev:100} : {mild:315, mod:235, sev:148};
+  const hypox = ratio!==null && ratio<=thr.mild;
+
+  let dx='—', sev='—', interp='請輸入氧合數值與共通判準。';
+
+  if(invalid){
+    dx='無法判讀'; sev='—'; interp=invalid+'。請改以動脈血氣的 PaO₂/FiO₂ 判讀。';
+  } else if(ratio===null){
+    interp='請完成氧合欄位（'+(basis==='pf'?'PaO₂':'SpO₂')+' 與 FiO₂）。';
+  } else if(!hypox){
+    dx='不符合'; sev='—';
+    interp='氧合比值未達門檻（'+(basis==='pf'?'P/F ≤300':'S/F ≤315')+'），不符合 ARDS 的氧合判準。';
+  } else if(!common){
+    dx='待確認'; sev='—';
+    interp='氧合已達門檻，但<b>共通判準尚未全部勾選</b>——危險因子、一週內、雙側影像、非心因性四項缺一不可。';
+  } else if(!supportOK){
+    dx='待確認'; sev='—';
+    interp='氧合與共通判準已符合，但呼吸支持條件未達：'+supportMsg;
+  } else if(limited){
+    dx='資源受限判準 ARDS'; sev='不分級';
+    interp='符合<b>資源受限地區的修訂判準</b>（S/F ≤315，不要求 PEEP 與最低氧流速）。此類別<b>不分嚴重度</b>。';
+  } else if(mode==='vent'){
+    dx='插管 ARDS';
+    if(ratio<=thr.sev){ sev='重度 Severe'; interp='<b>重度 ARDS</b>。俯臥（P/F &lt;150 即應開始，每次 ≥16 小時）為強建議；符合 EOLIA 條件者應轉介 ECMO 中心。'; }
+    else if(ratio<=thr.mod){ sev='中度 Moderate'; interp='<b>中度 ARDS</b>。低潮氣容積 4–8 mL/kg 預測體重、plateau pressure &lt;30 cmH₂O；P/F &lt;150 時應俯臥。'; }
+    else { sev='輕度 Mild'; interp='<b>輕度 ARDS</b>。仍應採低潮氣容積與限制 plateau pressure；密切追蹤是否惡化。'; }
+  } else {
+    dx='未插管 ARDS'; sev='不分級';
+    interp='符合<b>未插管 ARDS</b>（'+(mode==='hfno'?'HFNO ≥30 L/min':'NIV／CPAP 吐氣末壓 ≥5 cmH₂O')+'）。新全球定義<b>不對未插管 ARDS 分嚴重度</b>；請密切評估是否需插管，並可用 ROX index 追蹤 HFNO 反應。';
+  }
+
+  document.getElementById('ar_dx').textContent=dx;
+  document.getElementById('ar_sev').textContent=sev;
+  document.getElementById('ar_interp').innerHTML=interp + (corr!==1 ? ' <span class="note">（已依海拔校正，係數 '+corr.toFixed(3)+'）</span>' : '');
+}
+document.querySelectorAll('#view-ards input, #view-ards select')
+  .forEach(el => { el.addEventListener('input', arCalc); el.addEventListener('change', arCalc); });
+arCalc();
+if(location.search.indexOf('from=ards')>=0){var _b=document.getElementById('ar_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
