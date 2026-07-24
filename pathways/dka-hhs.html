@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高血糖危象處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-dka-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>高血糖危象處置決策</h1><div class="sub">DKA &amp; HHS · ADA／EASD／JBDS／AACE／DTS 2024 共識報告</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-dka-path'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">開始之前 Before You Start</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      三件在流程開始前就決定成敗的事：<br>
+      ① <b>先看血鉀再給胰島素</b>——K⁺ &lt;3.5 mmol/L 時<b>必須先補鉀</b>，胰島素會把鉀推進細胞內，先給胰島素可能致命性心律不整。<br>
+      ② <b>診斷判準已於 2024 更新</b>：血糖門檻降為 ≥200 mg/dL 且有糖尿病史者不受此限；酮體改用<b>定量 β-羥丁酸 ≥3.0 mmol/L</b>；<b>陰離子間隙不再是第一線判準</b>。<br>
+      ③ <b>找誘因</b>——感染是全球最常見的 DKA 誘因（14–58%），其次是胰島素中斷。只治高血糖而不找誘因，會再回來一次。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>診斷判準、輸液、胰島素、鉀、緩解與併發症 Definitions &amp; Treatment</summary>
+    <div class="box-inner">
+      <b>◆ 診斷（詳見 DKA／HHS 診斷工具）：</b><br>
+      ・<b>DKA</b>（三項全需）：血糖 ≥200 mg/dL <b>或</b>糖尿病史；β-羥丁酸 ≥3.0 mmol/L <b>或</b>尿酮 2+ 以上；pH &lt;7.3 <b>與／或</b> HCO₃⁻ &lt;18 mmol/L。<br>
+      ・<b>HHS</b>（四項全需）：血糖 ≥600 mg/dL；有效滲透壓 &gt;300 mOsm/kg〔2×Na⁺＋葡萄糖(mmol/L)〕或總滲透壓 &gt;320；β-羥丁酸 &lt;3.0 mmol/L；pH ≥7.3 且 HCO₃⁻ ≥15 mmol/L。<br>
+      ・<b>逾三分之一的高血糖危象同時具備兩者特徵</b>。但<b>兩套判準在字面上互斥</b>（DKA 要 β-羥丁酸 ≥3.0 且有酸中毒，HHS 要 &lt;3.0 且無酸中毒），<b>不會有病人同時滿足兩整套判準</b>——所謂重疊是指<b>符合 DKA 卻同時有顯著高滲透壓</b>。本頁的第三個選項即為此種情形。<br><br>
+
+      <b>◆ 輸液：</b><br>
+      ・以 0.9% NaCl 或其他晶體液，<b>目標是在最初 8–12 小時補足估計缺水量的 50%</b>。中重度 DKA 與 HHS 的起始速率為 <b>1.0 L/h</b>。<br>
+      ・<b>平衡鹽溶液（乳酸林格、Plasmalyte-148）</b>與生理食鹽水相比，可<b>更快緩解 DKA</b>、縮短住院天數、<b>減少高氯性代謝性酸中毒</b>（多篇前瞻與觀察研究及統合分析）。<br>
+      ・血糖降至 <b>&lt;250 mg/dL</b> 時，於輸液中<b>加入 5% 或 10% 葡萄糖</b>。<br>
+      ・<b>血糖正常型 DKA</b>（血糖 &lt;200 且 β-羥丁酸陽性，常見於 SGLT2 抑制劑）：<b>胰島素一開始就要與葡萄糖併用</b>。<br>
+      ・單靠輸液（未給胰島素）血糖即可下降約 <b>50–70 mg/dL/h</b>，HHS 更明顯。<br><br>
+
+      <b>◆ 胰島素：</b><br>
+      ・<b>輕度 DKA</b>：短效胰島素 <b>0.05 units/kg/h</b> 固定速率靜脈輸注；<b>或改用皮下速效類似物</b>——<b>0.1 units/kg 每 1 小時</b>，或 <b>0.2 units/kg 每 2 小時</b>（先給 0.1 units/kg 皮下起始劑量）。共識報告明訂「輕度與無併發症的中度 DKA 可在非重症單位以皮下胰島素處置」。<br>
+      ・<b>中重度 DKA 與 HHS</b>：短效胰島素 <b>0.1 units/kg/h</b> 固定速率靜脈輸注。若建立輸注會延遲，可先給 <b>0.1 units/kg 靜脈或肌肉注射</b>單次劑量。<br>
+      ・血糖 &lt;250 mg/dL 時<b>降為 0.05 units/kg/h</b>（輕度 DKA 皮下者改為 0.05 units/kg/h 或 0.1 units/kg 每 2 小時）。<br>
+      ・<b>目標血糖</b>：DKA <b>150–200 mg/dL</b>；HHS <b>200–250 mg/dL</b>，維持至緩解。<br>
+      ・<b>HHS 有一派主張先只給輸液，等血糖不再因輸液而下降時才開始胰島素</b>（共識報告的圖 4 註腳明列此做法）。<br>
+      ・<b>基礎胰島素併用</b>：靜脈輸注期間併用低劑量（0.15–0.3 units/kg）基礎胰島素可縮短 DKA 緩解時間、縮短輸注時間與住院天數，但<b>部分臨床醫師因低血糖與低血鉀風險而避免</b>——共識報告如實並陳兩種做法。<br><br>
+
+      <b>◆ 鉀（給胰島素前必須先看）：</b><br>
+      ・<b>K⁺ &lt;3.5 mmol/L</b>：<b>先補鉀 10–20 mmol/L/h 直到 K⁺ &gt;3.5</b> 才開始胰島素（更快的補鉀速率需中央靜脈導管）。<br>
+      ・<b>K⁺ 3.5–5.0 mmol/L</b>：開始胰島素，並<b>於每公升輸液加入 10–20 mmol 鉀</b>，維持 K⁺ 在 4–5 mmol/L。<br>
+      ・<b>K⁺ &gt;5.0 mmol/L</b>：<b>開始胰島素但先不補鉀</b>，<b>每 2 小時</b>複查血鉀。<br><br>
+
+      <b>◆ 碳酸氫鹽與磷酸鹽：</b><br>
+      ・<b>碳酸氫鹽只在 pH &lt;7.0 時才考慮</b>。<br>
+      ・<b>磷酸鹽不常規補充</b>——除非出現<b>肌肉無力、呼吸功能受損，且血中磷 &lt;1.0 mmol/L</b>。必要時可於輸液中加入 20–30 mmol 磷酸鉀；<b>過度補充會引起低血鈣</b>。<br><br>
+
+      <b>◆ 監測：</b>每 <b>2–4 小時</b>檢查電解質、腎功能、靜脈 pH、滲透壓與血糖，直到穩定。<br><br>
+
+      <b>◆ 緩解與轉回皮下：</b><br>
+      ・<b>DKA 緩解</b>：血酮 &lt;0.6 mmol/L，且靜脈 pH ≥7.3 或 HCO₃⁻ ≥18 mmol/L（理想上血糖亦 &lt;200 mg/dL）。<br>
+      ・<b>HHS 緩解</b>：計算滲透壓 &lt;300 mOsm/kg、尿量 &gt;0.5 mL/kg/h、認知改善、血糖 &lt;250 mg/dL。<br>
+      ・<b>不可用陰離子間隙判定緩解</b>（大量生理食鹽水造成的高氯性酸中毒會誤導，並延誤轉回皮下）；<b>不可用尿酮判定緩解</b>（β-羥丁酸轉為 acetoacetate，尿酮反而可能變陽性）。<br>
+      ・<b>轉換方式</b>：緩解且能進食後改皮下多次注射；<b>基礎-餐時（basal-bolus）為首選方案，應在停止靜脈胰島素前 1–2 小時先給</b>。劑量可依體重推估，或沿用入院前的胰島素劑量；由每小時靜脈需求量推估總日劑量時<b>要留意糖毒性造成的高估</b>。新診斷者於 DKA 緩解後開始基礎-餐時方案，長效基礎胰島素以 <b>0.15–0.3 units/kg</b> 皮下起始。<br><br>
+
+      <b>◆ 治療中的併發症（共識報告表 3）：</b>低血糖（DKA 治療中發生率 <b>16–28%</b>）、低血鉀、<b>正常陰離子間隙的高氯性代謝性酸中毒</b>、血栓、腦水腫、<b>滲透壓性脫髓鞘症候群</b>、急性腎損傷。<br><br>
+
+      <b>◆ 酮體升高的鑑別：</b>飢餓性酮症（每日 &lt;500 kcal）、酒精性酮酸中毒、懷孕與妊娠劇吐相關酮症——這些不是 DKA。
+    </div>
+  </details>
+
+  <div class="flow-step" id="dp_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">診斷為何？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="dpPick('dx','dka',this)">DKA<span class="fo-sub">血糖 ≥200 或糖尿病史 ＋ BHB ≥3.0 ＋ pH &lt;7.3 或 HCO₃⁻ &lt;18</span></button>
+      <button class="flow-opt" onclick="dpPick('dx','hhs',this)">HHS<span class="fo-sub">血糖 ≥600 ＋ 有效滲透壓 &gt;300 ＋ 無顯著酮血症 ＋ 無酸中毒</span></button>
+      <button class="flow-opt" onclick="dpPick('dx','mixed',this)">DKA 併高滲透壓<span class="fo-sub">符合 DKA，但有效滲透壓 &gt;300 或血糖 ≥600——臨床特徵重疊者佔逾三分之一</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/dka-hhs.html?from=dka'">🧮 開啟 DKA／HHS 診斷與嚴重度</button>
+  </div>
+
+  <div class="flow-connector hidden" id="dp_c2">↓</div>
+  <div class="flow-step hidden" id="dp_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">DKA 的嚴重度？（決定照護層級與胰島素給法）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="dpPick('sev','mild',this)">輕度<span class="fo-sub">BHB 3.0–6.0；pH &gt;7.25–&lt;7.30 或 HCO₃⁻ 15–18；清醒</span></button>
+      <button class="flow-opt" onclick="dpPick('sev','mod',this)">中度<span class="fo-sub">BHB 3.0–6.0；pH 7.0–7.25；HCO₃⁻ 10–&lt;15；清醒或嗜睡</span></button>
+      <button class="flow-opt" onclick="dpPick('sev','severe',this)">重度<span class="fo-sub">BHB &gt;6.0；pH &lt;7.0；HCO₃⁻ &lt;10；木僵或昏迷</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">不需所有欄位都符合，<b>取最嚴重的一項</b>；收治地點最終仍是臨床判斷。以誘發疾病本身為重症者（心肌梗塞、消化道出血、敗血症）不論分級都應收加護病房。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="dp_c3">↓</div>
+  <div class="flow-step hidden" id="dp_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">初始血鉀？（決定能不能開始胰島素）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="dpPick('k','low',this)">K⁺ &lt; 3.5 mmol/L<span class="fo-sub">胰島素會使血鉀進一步下降</span></button>
+      <button class="flow-opt" onclick="dpPick('k','normal',this)">K⁺ 3.5–5.0 mmol/L</button>
+      <button class="flow-opt" onclick="dpPick('k','high',this)">K⁺ &gt; 5.0 mmol/L</button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="dp_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="dp_c4">↓</div>
+  <div class="flow-step hidden" id="dp_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">治療後的狀態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="dpPick('prog','ongoing',this)">仍在治療中，尚未達緩解<span class="fo-sub">血糖已下降但酮體或酸中毒未消除</span></button>
+      <button class="flow-opt" onclick="dpPick('prog','resolved',this)">已達緩解判準<span class="fo-sub">DKA：血酮 &lt;0.6 且 pH ≥7.3 或 HCO₃⁻ ≥18／HHS：滲透壓 &lt;300、尿量 &gt;0.5 mL/kg/h、認知改善、血糖 &lt;250</span></button>
+      <button class="flow-opt" onclick="dpPick('prog','stuck',this)">酸中毒未依預期改善<span class="fo-sub">血糖已控制但 pH 或碳酸氫鹽停滯</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="dp_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 4</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="dpReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/39052901/" target="_blank" rel="noopener" class="ref-link">Umpierrez GE, Davis GM, ElSayed NA, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care. 2024;47(8):1257-1275.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { dx:null, sev:null, k:null, prog:null };
+
+function dpPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='dx'){ st.dx=val; st.sev=null; st.k=null; st.prog=null; }
+  else if(key==='sev'){ st.sev=val; st.k=null; st.prog=null; }
+  else if(key==='k'){ st.k=val; st.prog=null; }
+  else if(key==='prog'){ st.prog=val; }
+  render();
+}
+
+/* HHS 與混合型不走 DKA 的嚴重度分級（HHS 一律照重症處置） */
+function dpNeedSev(){ return st.dx==='dka'; }
+function dpReady(){ return !!st.k && (dpNeedSev() ? !!st.sev : true); }
+
+const DP_FLUID =
+  '<li><b>輸液</b>：0.9% NaCl 或其他晶體液，起始 <b>1.0 L/h</b>，目標是<b>最初 8–12 小時補足估計缺水量的 50%</b>。<b>平衡鹽溶液（乳酸林格、Plasmalyte-148）可更快緩解 DKA、縮短住院、減少高氯性酸中毒</b>。單靠輸液血糖即會下降約 50–70 mg/dL/h。</li>' +
+  '<li><b>血糖降到 &lt;250 mg/dL 時，輸液中加 5% 或 10% 葡萄糖</b>；血糖正常型 DKA（血糖 &lt;200 但酮體陽性，常見於 SGLT2 抑制劑）<b>一開始就要併用葡萄糖</b>。</li>';
+
+const DP_MONITOR =
+  '<li><b>監測</b>：每 <b>2–4 小時</b>檢查電解質、腎功能、靜脈 pH、滲透壓與血糖，直到穩定。</li>' +
+  '<li><b>碳酸氫鹽只在 pH &lt;7.0 才考慮</b>；<b>磷酸鹽不常規補</b>——僅在肌肉無力、呼吸功能受損且磷 &lt;1.0 mmol/L 時給（過度補充會造成低血鈣）。</li>' +
+  '<li><b>找誘因</b>：感染（最常見，14–58%）、胰島素中斷或劑量不足、心肌梗塞、中風、胰臟炎、肺栓塞、酒精與物質使用、創傷。</li>';
+
+function dpKLine(){
+  if(st.k==='low') return '<li><b>血鉀 &lt;3.5 mmol/L — 先補鉀，暫緩胰島素</b>：以 <b>10–20 mmol/L/h</b> 補充直到 K⁺ &gt;3.5 才開始胰島素（更快的速率需中央靜脈導管）。胰島素會把鉀推入細胞內，此時先給胰島素可能引發致命性心律不整。</li>';
+  if(st.k==='high') return '<li><b>血鉀 &gt;5.0 mmol/L — 開始胰島素但先不補鉀</b>，<b>每 2 小時複查血鉀</b>；降至 5.0 以下後再依每公升輸液 10–20 mmol 補充。</li>';
+  return '<li><b>血鉀 3.5–5.0 mmol/L — 可開始胰島素</b>，同時<b>每公升輸液加入 10–20 mmol 鉀</b>，維持血鉀在 <b>4–5 mmol/L</b>。</li>';
+}
+
+function render(){
+  const showSev = dpNeedSev();
+  flowShow('dp_c2', showSev);
+  flowShow('dp_s2', showSev);
+  if(!showSev) flowClearSel('dp_s2');
+
+  const showK = !!st.dx && (showSev ? !!st.sev : true);
+  flowShow('dp_c3', showK);
+  flowShow('dp_s3', showK);
+  if(!showK) flowClearSel('dp_s3');
+
+  /* ---- 建議 A：初始處置 ---- */
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  if(dpReady()){
+    const mild = st.dx==='dka' && st.sev==='mild';
+    const severe = st.dx==='dka' && st.sev==='severe';
+    const hhs = st.dx==='hhs' || st.dx==='mixed';
+
+    cls = (severe || hhs) ? 'rec-urgent' : (mild ? 'rec-blue' : 'rec-elective');
+
+    let care, insulin, target;
+    if(mild){
+      care='<b>一般病房或觀察單位</b>即可——輕度 DKA 收進加護病房並未改善死亡率、住院天數或緩解時間，反而增加檢驗與費用。';
+      insulin='<li><b>胰島素（輕度可用皮下）</b>：短效胰島素 <b>0.05 units/kg/h</b> 固定速率靜脈輸注；<b>或</b>皮下速效類似物 <b>0.1 units/kg 每 1 小時</b>、或 <b>0.2 units/kg 每 2 小時</b>（先給 0.1 units/kg 皮下起始劑量）。血糖 &lt;250 mg/dL 後改為 0.05 units/kg/h 或 0.1 units/kg 每 2 小時。</li>';
+      target='DKA 目標血糖 <b>150–200 mg/dL</b>';
+    } else if(st.dx==='dka'){
+      care = severe ? '<b>加護病房</b>。' : '<b>中重度照護或降階單位</b>；若誘發疾病本身為重症（心肌梗塞、消化道出血、敗血症）或意識改變，則收加護病房。';
+      insulin='<li><b>胰島素</b>：短效胰島素 <b>0.1 units/kg/h</b> 固定速率靜脈輸注。若建立輸注會延遲，可先給 <b>0.1 units/kg 靜脈或肌肉注射</b>單次劑量。血糖 &lt;250 mg/dL 時<b>降為 0.05 units/kg/h</b>。</li>';
+      target='DKA 目標血糖 <b>150–200 mg/dL</b>';
+    } else if(st.dx==='mixed'){
+      care='<b>加護病房</b>。';
+      insulin='<li><b>胰島素</b>：短效胰島素 <b>0.1 units/kg/h</b> 固定速率靜脈輸注（<b>以 DKA 為主軸</b>——必須消除酮酸中毒才算緩解，不可因血糖已降就停）。</li>';
+      target='目標血糖 <b>150–200 mg/dL</b>（依 DKA），但<b>滲透壓與血鈉的矯正速率須比照 HHS 放慢</b>';
+    } else {
+      care='<b>加護病房</b>。';
+      insulin='<li><b>胰島素</b>：短效胰島素 <b>0.1 units/kg/h</b> 固定速率靜脈輸注。<b>HHS 有一派主張先只給輸液，等血糖不再因輸液下降時才開始胰島素</b>——共識報告的治療流程圖明列此做法。</li>';
+      target='HHS 目標血糖 <b>200–250 mg/dL</b>';
+    }
+
+    title = (st.dx==='dka' ? 'DKA（' + ({mild:'輕度',mod:'中度',severe:'重度'}[st.sev]) + '）'
+            : st.dx==='hhs' ? 'HHS' : 'DKA 併高滲透壓') + ' — 初始處置';
+
+    detail = '<li><b>照護層級</b>：' + care + '</li>' +
+      dpKLine() + DP_FLUID + insulin +
+      '<li><b>' + target + '</b>，維持至緩解。</li>' +
+      (hhs ? '<li><b>高滲透壓者特有</b>：滲透壓與血鈉的<b>矯正速率要慢</b>，以免滲透壓性脫髓鞘；同時留意血栓風險（HHS 與靜脈血栓栓塞相關）。</li>' : '') +
+      DP_MONITOR;
+
+    note='ADA／EASD／JBDS／AACE／DTS 2024 共識報告（Diabetes Care 2024;47:1257-1275），治療流程見原文圖 4、嚴重度分級見表 2。';
+  }
+  flowRec('dp_rec', cls, title, detail, note);
+
+  /* ---- 建議 B：治療後 ---- */
+  const showStep4 = dpReady();
+  flowShow('dp_c4', showStep4);
+  flowShow('dp_s4', showStep4);
+  if(!showStep4) flowClearSel('dp_s4');
+
+  let cls2='rec-idle', title2='請完成步驟 4', detail2='', note2='';
+
+  if(st.prog==='ongoing'){
+    cls2='rec-elective'; title2='治療中 — 維持目標區間並持續監測';
+    detail2='<li><b>維持目標血糖</b>：' + (st.dx==='hhs' ? 'HHS 200–250 mg/dL' : 'DKA 150–200 mg/dL') + '；血糖 &lt;250 mg/dL 後輸液加 5–10% 葡萄糖並將胰島素降為 0.05 units/kg/h，<b>不要因血糖下降就停胰島素</b>——酮酸中毒尚未消除。</li>' +
+      '<li><b>每 2–4 小時</b>複查電解質、腎功能、靜脈 pH、滲透壓與血糖。血鉀維持 <b>4–5 mmol/L</b>。</li>' +
+      '<li><b>低血糖是最常見的治療併發症</b>（DKA 治療中發生率 16–28%）；低血鉀次之。兩者都靠葡萄糖與鉀的同步補充來預防。</li>' +
+      '<li><b>可考慮併用低劑量基礎胰島素</b>（0.15–0.3 units/kg）：多項研究顯示可縮短緩解時間、輸注時間與住院天數；但<b>部分臨床醫師因低血糖與低血鉀風險而避免</b>——共識報告並陳兩種做法，未偏袒任一方。</li>';
+    note2='共識報告表 3（治療併發症）。';
+  } else if(st.prog==='resolved'){
+    cls2='rec-blue'; title2='已緩解 — 轉回皮下胰島素並安排出院後支持';
+    detail2='<li><b>確認緩解判準</b>：' + (st.dx==='hhs'
+        ? 'HHS——計算滲透壓 &lt;300 mOsm/kg、尿量 &gt;0.5 mL/kg/h、認知狀態改善、血糖 &lt;250 mg/dL。'
+        : 'DKA——血酮 &lt;0.6 mmol/L，且靜脈 pH ≥7.3 或 HCO₃⁻ ≥18 mmol/L（理想上血糖亦 &lt;200 mg/dL）。') + '</li>' +
+      '<li><b>不可用陰離子間隙或尿酮判定緩解</b>：大量生理食鹽水造成的高氯性酸中毒會讓陰離子間隙誤導；β-羥丁酸轉為 acetoacetate 會讓尿酮反而變陽性。兩者都會不必要地延後轉回皮下。</li>' +
+      '<li><b>轉換方式</b>：緩解且能進食後改皮下多次注射。<b>基礎-餐時為首選，且必須在停止靜脈胰島素前 1–2 小時先給</b>——重疊不足會讓酮酸中毒復發。</li>' +
+      '<li><b>劑量估算</b>：依體重推估，或沿用入院前劑量；由前 6 小時的穩定靜脈需求量加總推估總日劑量時，<b>要留意糖毒性造成的高估</b>。新診斷者以長效基礎胰島素 <b>0.15–0.3 units/kg</b> 皮下起始，再依進食與血糖加上速效。</li>' +
+      '<li><b>出院前</b>：處理誘因（尤其胰島素中斷背後的心理與社經因素）、衛教與注射訓練、安排追蹤。出院時的基礎-餐時劑量應<b>再依低血糖風險重新調整</b>。</li>';
+    note2='共識報告圖 5（轉回維持性胰島素）與緩解判準段落。';
+  } else if(st.prog==='stuck'){
+    cls2='rec-urgent'; title2='酸中毒停滯 — 先分辨是哪一種酸中毒';
+    detail2='<li><b>最常見的原因是「不是酮酸中毒了」</b>：大量 0.9% 生理食鹽水造成的<b>高氯性、正常陰離子間隙代謝性酸中毒</b>，在 DKA 成功治療後很常見，若誤判為持續 DKA 會延後轉回皮下。<b>改看 β-羥丁酸</b>——血酮 &lt;0.6 mmol/L 即為緩解，不必等碳酸氫鹽完全正常。</li>' +
+      '<li><b>若酮體確實仍高</b>：檢查胰島素輸注是否確實給入（管路、幫浦、濃度）、劑量是否足夠、葡萄糖是否已加入以容許足量胰島素、以及<b>誘因是否未解決</b>（未控制的感染最常見）。</li>' +
+      '<li><b>檢視其他酸中毒來源</b>：乳酸酸中毒（灌流不足、敗血症）、急性腎損傷、中毒（水楊酸、甲醇、乙二醇）、酒精性酮酸中毒。</li>' +
+      '<li><b>碳酸氫鹽只在 pH &lt;7.0 時才考慮</b>——單純為了把數字拉高而給，並無實證支持。</li>';
+    note2='共識報告：陰離子間隙不建議作為第一線的診斷或緩解判準，正是因為高氯性酸中毒的干擾。';
+  }
+  flowRec('dp_rec2', cls2, title2, detail2, note2);
+  flowShow('dp_rec2', showStep4);
+}
+
+function dpReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-dka-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+dpReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

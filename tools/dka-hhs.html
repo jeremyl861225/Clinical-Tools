@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DKA／HHS 診斷與嚴重度 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-dka-hhs">
+  <div class="app-header">
+    <div><div class="eyebrow">Hyperglycemic Crisis Diagnostic Tool</div><h1>DKA／HHS 診斷與嚴重度</h1><div class="sub">糖尿病酮酸中毒與高血糖高滲透壓狀態 · ADA／EASD／JBDS／AACE／DTS 2024 共識</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="dk_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/dka-hhs.html?restore=1'">← 返回高血糖危象決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-dka-hhs'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">版本提醒 — 判準已經改了 Version</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      本頁依 <b>2024 共識報告</b>（Umpierrez 等，Diabetes Care 2024;47(8):1257-1275），這是 2009 年以來首次更新，由 <b>ADA、EASD、JBDS、AACE、DTS</b> 五個學會共同制定。與舊教科書相比，四處必須改口：<br>
+      ① <b>血糖門檻降到 ≥200 mg/dL</b>（舊為 250），<b>且有糖尿病史者不受血糖門檻限制</b>——這正是血糖正常型 DKA 得以成立的原因；<br>
+      ② 酮體判準改為<b>定量 β-羥丁酸 ≥3.0 mmol/L</b>（或尿酮試紙 2+ 以上），並用於嚴重度與緩解判定；<br>
+      ③ <b>陰離子間隙不再是第一線的診斷或緩解判準</b>——大量生理食鹽水造成的高氯性正常陰離子間隙酸中毒會誤導判讀；<br>
+      ④ 嚴重度改以<b>代謝性酸中毒的程度</b>（pH、碳酸氫鹽、酮體）與<b>意識狀態</b>分級，並直接對應建議的照護層級。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>完整判準、緩解標準、滲透壓算式與鑑別診斷 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ DKA 診斷（三項<u>全部</u>符合）：</b><br>
+      ・<b>D — 糖尿病／高血糖</b>：血糖 <b>≥200 mg/dL（11.1 mmol/L）</b>，<b>或</b>有糖尿病病史。<br>
+      ・<b>K — 酮血症</b>：<b>β-羥丁酸 ≥3.0 mmol/L</b>，<b>或</b>尿酮試紙 <b>2+ 以上</b>。<br>
+      ・<b>A — 代謝性酸中毒</b>：<b>pH &lt;7.3 與／或碳酸氫鹽 &lt;18 mmol/L</b>。<br><br>
+
+      <b>◆ DKA 嚴重度（共識報告表 2）：</b>不需所有項目都符合；收治地點與照護層級<b>最終仍是臨床判斷</b>。<br>
+      ・<b>輕度</b>：β-羥丁酸 3.0–6.0 mmol/L；pH &gt;7.25 至 &lt;7.30 或碳酸氫鹽 15–18 mmol/L；<b>清醒</b> → 一般病房或觀察單位。<br>
+      ・<b>中度</b>：β-羥丁酸 3.0–6.0 mmol/L；pH 7.0–7.25；碳酸氫鹽 10 至 &lt;15 mmol/L；<b>清醒或嗜睡</b> → 中重度照護／降階單位。<br>
+      ・<b>重度</b>：β-羥丁酸 &gt;6.0 mmol/L；pH &lt;7.0；碳酸氫鹽 &lt;10 mmol/L；<b>木僵或昏迷</b> → 加護病房。<br>
+      <span class="note">共識報告指出：輕度 DKA 收進加護病房並未改善死亡率、住院天數或酮酸中毒緩解時間，反而增加檢驗次數與費用。<b>重度 DKA、HHS、以誘發疾病本身為重症者（心肌梗塞、消化道出血、敗血症）或意識改變者</b>才應進加護病房。</span><br><br>
+
+      <b>◆ HHS 診斷（四項<u>全部</u>符合）：</b><br>
+      ・<b>高血糖</b>：血糖 ≥600 mg/dL（33.3 mmol/L）。<br>
+      ・<b>高滲透壓</b>：<b>計算有效血清滲透壓 &gt;300 mOsm/kg</b>〔2×Na⁺(mmol/L) + 葡萄糖(mmol/L)〕，<b>或</b>總滲透壓 &gt;320 mOsm/kg〔2×Na⁺ + 葡萄糖 + 尿素(mmol/L)〕。<br>
+      ・<b>無顯著酮血症</b>：β-羥丁酸 &lt;3.0 mmol/L，或尿酮試紙未達 2+。<br>
+      ・<b>無酸中毒</b>：pH ≥7.3 <b>且</b>碳酸氫鹽 ≥15 mmol/L。<br>
+      <span class="note">注意 HHS 的碳酸氫鹽門檻是 <b>≥15</b>，與 DKA 的 &lt;18 之間有一段重疊區——這是原文的寫法，不是筆誤。多數 HHS 病人入院 pH ≥7.30、碳酸氫鹽 ≥18，但<b>可能有輕度酮血症</b>。</span><br><br>
+
+      <b>◆ 「DKA ＋ HHS 混合」該怎麼理解：</b>共識報告指出<b>超過三分之一</b>的高血糖危象同時具有兩者特徵。但要注意<b>兩套判準在字面上是互斥的</b>——DKA 要求 β-羥丁酸 ≥3.0 且有酸中毒，HHS 要求 &lt;3.0 且無酸中毒，<b>不可能有病人同時滿足兩整套判準</b>。所謂「混合」指的是<b>臨床特徵</b>的重疊：符合 DKA 卻同時有顯著高滲透壓（有效滲透壓 &gt;300 mOsm/kg 或血糖 ≥600 mg/dL）。本頁即以此判定並標示為「DKA 併高滲透壓」，處置以 DKA 為主軸，但滲透壓與血鈉的矯正速率須比照 HHS 放慢。<br><br>
+
+      <b>◆ 緩解判準：</b><br>
+      ・<b>DKA 緩解</b>：血酮 <b>&lt;0.6 mmol/L</b>，<b>且</b>靜脈 pH ≥7.3 或碳酸氫鹽 ≥18 mmol/L；理想上血糖亦 &lt;200 mg/dL。<br>
+      ・<b>HHS 緩解</b>：計算滲透壓降至 &lt;300 mOsm/kg、高血糖已矯正、<b>尿量 &gt;0.5 mL/kg/h</b>、認知狀態改善、血糖 &lt;250 mg/dL。<br>
+      ・<b>不可用陰離子間隙判定緩解</b>——大量 0.9% 生理食鹽水造成的高氯性代謝性酸中毒會讓陰離子間隙誤導判讀，因而延誤轉回皮下胰島素。<br>
+      ・<b>不可用尿酮判定緩解</b>——酸中毒改善時 β-羥丁酸會轉變為 acetoacetate，尿酮反而可能「變陽性」。<br><br>
+
+      <b>◆ 滲透壓算式與單位換算：</b>有效滲透壓＝2×Na⁺(mmol/L)＋葡萄糖(mmol/L)；總滲透壓再加尿素(mmol/L)。<br>
+      ・血糖 mg/dL ÷ 18 = mmol/L。<br>
+      ・台灣報告多為 <b>BUN</b>：尿素(mmol/L) = BUN(mg/dL) ÷ 2.8。本頁的尿素欄位以 BUN 輸入並自動換算。<br><br>
+
+      <b>◆ 血糖正常型 DKA（euglycemic DKA）：</b>血糖 &lt;200 mg/dL 但 β-羥丁酸陽性者。常見於 <b>SGLT2 抑制劑</b>使用者、懷孕、長期禁食、肝醣儲存不足與酒精使用。因為「有糖尿病史」即滿足 D 判準，這類病人<b>仍可診斷 DKA</b>。治療上<b>一開始就要與生理食鹽水併用 5% 或 10% 葡萄糖</b>，否則無法在不低血糖的前提下給足胰島素。<br><br>
+
+      <b>◆ 酮體升高的鑑別診斷：</b>飢餓性酮症（每日攝取 &lt;500 kcal／2,090 kJ）、酒精性酮酸中毒（長期飲酒者近期大量飲酒後嘔吐）、懷孕與妊娠劇吐相關的酮症。這些不是 DKA，處置不同。<br><br>
+
+      <b>◆ 誘發因素：</b>全球最常見的 DKA 誘因是<b>感染</b>（14–58%）；其次為胰島素中斷或劑量不足（在部分族群佔逾三分之二的 DKA 住院）、中風、酒精與物質使用、胰臟炎、肺栓塞、心肌梗塞與創傷。<b>診斷 DKA 之後一定要找誘因</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">檢驗數值 Laboratory Values</div>
+    <div class="field-row">
+      <label>血糖 Glucose</label>
+      <input type="number" id="dk_glu" step="1" placeholder="—">
+      <span class="unit">mg/dL</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="dk_dm"> 已知糖尿病病史（滿足 D 判準，不受血糖門檻限制）</label>
+
+    <div class="field-row">
+      <label>β-羥丁酸 BHB</label>
+      <input type="number" id="dk_bhb" step="0.1" placeholder="—">
+      <span class="unit">mmol/L</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="dk_uket"> 無法測 BHB，尿酮試紙 2+ 以上</label>
+
+    <div class="field-row">
+      <label>靜脈 pH</label>
+      <input type="number" id="dk_ph" step="0.01" placeholder="—">
+    </div>
+    <div class="field-row">
+      <label>碳酸氫鹽 HCO₃⁻</label>
+      <input type="number" id="dk_hco3" step="0.1" placeholder="—">
+      <span class="unit">mmol/L</span>
+    </div>
+    <div class="field-row">
+      <label>血鈉 Na⁺</label>
+      <input type="number" id="dk_na" step="1" placeholder="—">
+      <span class="unit">mmol/L</span>
+    </div>
+    <div class="field-row">
+      <label>BUN</label>
+      <input type="number" id="dk_bun" step="1" placeholder="—">
+      <span class="unit">mg/dL（選填，供總滲透壓）</span>
+    </div>
+    <div class="field-row">
+      <label>意識狀態</label>
+      <select id="dk_mental">
+        <option value="alert">清醒 Alert</option>
+        <option value="drowsy">嗜睡 Drowsy</option>
+        <option value="stupor">木僵／昏迷 Stupor / Coma</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">診斷</div><div class="metric-value big" id="dk_dx" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="dk_sev" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label">有效滲透壓</div><div class="metric-value big" id="dk_osm" style="font-size:30px;">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀與建議照護層級</div>
+    <div style="font-size:15px; margin-top:2px;" id="dk_interp">請輸入血糖、酮體與血氣數值。</div>
+    <div class="breakdown" style="margin-top:10px;">
+      <div><div class="metric-label">D 判準</div><div id="dk_d">—</div></div>
+      <div><div class="metric-label">K 判準</div><div id="dk_k">—</div></div>
+      <div><div class="metric-label">A 判準</div><div id="dk_a">—</div></div>
+    </div>
+    <table class="ref">
+      <tr><th>嚴重度</th><th>BHB</th><th>pH／HCO₃⁻</th><th>意識</th><th>照護層級</th></tr>
+      <tr><td>輕度</td><td>3.0–6.0</td><td>&gt;7.25–&lt;7.30 或 15–18</td><td>清醒</td><td>一般病房／觀察</td></tr>
+      <tr><td>中度</td><td>3.0–6.0</td><td>7.0–7.25 或 10–&lt;15</td><td>清醒／嗜睡</td><td>中重度照護單位</td></tr>
+      <tr><td>重度</td><td>&gt;6.0</td><td>&lt;7.0 或 &lt;10</td><td>木僵／昏迷</td><td>加護病房</td></tr>
+    </table>
+    <div class="risk-note">DKA 需 D、K、A <b>三項全部符合</b>；HHS 需血糖 ≥600、有效滲透壓 &gt;300（或總滲透壓 &gt;320）、無顯著酮血症、無酸中毒<b>四項全部符合</b>。嚴重度不需所有欄位都符合，取<b>最嚴重的一項</b>；收治地點最終仍是臨床判斷。<b>超過三分之一的高血糖危象同時具備 DKA 與 HHS 特徵。</b></div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/39052901/" target="_blank" rel="noopener" class="ref-link">Umpierrez GE, Davis GM, ElSayed NA, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care. 2024;47(8):1257-1275.</a></footer>
+</div>
+</div>
+<script>
+function dkNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function dkCalc(){
+  const glu=dkNum('dk_glu'), bhb=dkNum('dk_bhb'), ph=dkNum('dk_ph'),
+        hco3=dkNum('dk_hco3'), na=dkNum('dk_na'), bun=dkNum('dk_bun');
+  const dm=document.getElementById('dk_dm').checked;
+  const uket=document.getElementById('dk_uket').checked;
+  const mental=document.getElementById('dk_mental').value;
+
+  /* 滲透壓：有效 = 2×Na + 葡萄糖(mmol/L)；總 = 再加尿素(mmol/L) */
+  let effOsm=null, totOsm=null;
+  if(na!==null && glu!==null){
+    effOsm = 2*na + glu/18;
+    if(bun!==null) totOsm = effOsm + bun/2.8;
+  }
+  document.getElementById('dk_osm').textContent = effOsm===null ? '—' : effOsm.toFixed(0);
+
+  /* ---- DKA 三判準 ---- */
+  const dOK = dm || (glu!==null && glu>=200);
+  const kOK = (bhb!==null && bhb>=3.0) || uket;
+  const aOK = (ph!==null && ph<7.3) || (hco3!==null && hco3<18);
+
+  document.getElementById('dk_d').textContent = dOK ? '✓ 符合' : (dm||glu!==null ? '✗ 未達' : '—');
+  document.getElementById('dk_k').textContent = kOK ? '✓ 符合' : (bhb!==null||uket ? '✗ 未達' : '—');
+  document.getElementById('dk_a').textContent = aOK ? '✓ 符合' : (ph!==null||hco3!==null ? '✗ 未達' : '—');
+
+  const isDKA = dOK && kOK && aOK;
+
+  /* ---- HHS 四判準 ---- */
+  const hGlu = glu!==null && glu>=600;
+  const hOsm = (effOsm!==null && effOsm>300) || (totOsm!==null && totOsm>320);
+  const hNoKet = (bhb!==null && bhb<3.0 && !uket) || (bhb===null && !uket && (ph!==null||hco3!==null));
+  const hNoAcid = (ph!==null && ph>=7.3) && (hco3!==null && hco3>=15);
+  const isHHS = hGlu && hOsm && hNoKet && hNoAcid;
+
+  /* 兩套判準在字面上互斥（K 與 A 的方向相反），所以「混合」不可能是兩者同時成立。
+     臨床上的重疊是「DKA 併帶高滲透壓特徵」——以此判定，而非 isDKA && isHHS。 */
+  const dkaHyperosm = isDKA && ((effOsm!==null && effOsm>300) || (glu!==null && glu>=600));
+
+  /* ---- 嚴重度：取各項中最嚴重者 ---- */
+  let sev=0;   /* 1 輕 2 中 3 重 */
+  if(isDKA){
+    sev=1;
+    if(bhb!==null && bhb>6.0) sev=Math.max(sev,3);
+    if(ph!==null){
+      if(ph<7.0) sev=Math.max(sev,3);
+      else if(ph<=7.25) sev=Math.max(sev,2);
+    }
+    if(hco3!==null){
+      if(hco3<10) sev=Math.max(sev,3);
+      else if(hco3<15) sev=Math.max(sev,2);
+    }
+    if(mental==='stupor') sev=3;
+    else if(mental==='drowsy') sev=Math.max(sev,2);
+  }
+
+  const sevName=['—','輕度','中度','重度'][sev];
+  let dx='—', interp='請輸入血糖、酮體與血氣數值。';
+
+  if(dkaHyperosm){
+    dx='DKA 併高滲透壓';
+    interp='符合 <b>DKA</b>（嚴重度<b>'+sevName+'</b>），<b>並帶有高滲透壓特徵</b>（有效滲透壓 &gt;300 mOsm/kg 或血糖 ≥600 mg/dL）。共識報告指出這種重疊出現在<b>超過三分之一</b>的高血糖危象。<br>' +
+      '注意<b>兩套判準在字面上互斥</b>（DKA 要 β-羥丁酸 ≥3.0 且有酸中毒，HHS 要 &lt;3.0 且無酸中毒），所以不會有「同時成立」的病人——重疊指的是<b>臨床特徵</b>重疊。<br>' +
+      '處置以 <b>DKA 為主軸</b>（必須消除酮酸中毒才算緩解），同時比照 HHS <b>放慢滲透壓與血鈉的矯正速率</b>並密切追蹤神經學變化。<b>建議收治加護病房。</b>';
+  } else if(isDKA){
+    dx='DKA';
+    const glucoseLow = glu!==null && glu<200;
+    interp='符合 <b>DKA</b>（D、K、A 三項齊備），嚴重度<b>'+sevName+'</b>。' +
+      (sev===3 ? '<b>建議收治加護病房</b>；靜脈胰島素 0.1 units/kg/h 固定速率。' :
+       sev===2 ? '<b>建議收治中重度照護或降階單位</b>；靜脈胰島素 0.1 units/kg/h 固定速率。' :
+                 '<b>可於一般病房或觀察單位處置</b>；輕度且無併發症者可用皮下速效胰島素，不必然需要靜脈輸注。') +
+      (glucoseLow ? ' <b>血糖 &lt;200 mg/dL 但酮體陽性——屬血糖正常型 DKA</b>（常見於 SGLT2 抑制劑、懷孕、長期禁食、酒精）；胰島素開始時就必須<b>同步給 5% 或 10% 葡萄糖</b>。' : '') +
+      ' 務必同時尋找誘因（感染最常見，其次為胰島素中斷）。';
+  } else if(isHHS){
+    dx='HHS';
+    interp='符合 <b>HHS</b>（血糖 ≥600、高滲透壓、無顯著酮血症、無酸中毒四項齊備）。<b>建議收治加護病房</b>。目標血糖維持 <b>200–250 mg/dL</b> 直到緩解；緩解判準為滲透壓 &lt;300 mOsm/kg、尿量 &gt;0.5 mL/kg/h、認知改善、血糖 &lt;250 mg/dL。<b>滲透壓與血鈉的矯正速率要慢</b>，以免滲透壓性脫髓鞘。';
+  } else if(dOK||kOK||aOK||hGlu){
+    dx='未符合';
+    let miss=[];
+    if(!dOK) miss.push('D（血糖 ≥200 或糖尿病史）');
+    if(!kOK) miss.push('K（BHB ≥3.0 或尿酮 2+）');
+    if(!aOK) miss.push('A（pH &lt;7.3 或 HCO₃⁻ &lt;18）');
+    interp='尚未同時滿足 DKA 的三項判準，缺：<b>'+miss.join('、')+'</b>。' +
+      (kOK && !aOK ? ' 有酮血症但無酸中毒——考慮<b>飢餓性酮症、酒精性酮酸中毒、懷孕相關酮症</b>，或 DKA 的早期／已部分治療狀態。' : '') +
+      (hGlu && !isHHS ? ' 血糖已達 HHS 門檻，請補齊滲透壓、酮體與血氣數值再判定。' : '');
+  }
+
+  document.getElementById('dk_dx').textContent=dx;
+  document.getElementById('dk_sev').textContent = isDKA ? sevName : (isHHS ? '重症' : '—');
+  document.getElementById('dk_dx').style.fontSize = dx.length>6 ? '20px' : '26px';
+  document.getElementById('dk_interp').innerHTML = interp +
+    (totOsm!==null ? ' <span class="note">（總滲透壓 '+totOsm.toFixed(0)+' mOsm/kg）</span>' : '');
+}
+document.querySelectorAll('#view-dka-hhs input, #view-dka-hhs select')
+  .forEach(el => { el.addEventListener('input', dkCalc); el.addEventListener('change', dkCalc); });
+dkCalc();
+if(location.search.indexOf('from=dka')>=0){var _b=document.getElementById('dk_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
