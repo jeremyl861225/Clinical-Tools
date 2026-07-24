@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>燒燙傷補液 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-burns">
+  <div class="app-header">
+    <div><div class="eyebrow">Burn Resuscitation Tool</div><h1>燒燙傷補液</h1><div class="sub">Burn Shock Resuscitation · ABA 2024 起始 2 mL/kg/%TBSA（並列 Parkland 對照）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-burns'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">公式只是起點 The Formula Is a Starting Rate</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>ABA 2024 臨床實踐指引把起始速率從傳統 Parkland 的 4 mL 降為 2 mL/kg/%TBSA</b>，目的是減少「fluid creep」（過度補液導致腔室症候群、肺水腫）。無論用哪個公式，<b>算出的都只是「起始速率」，必須依尿量與灌流即時滴定</b>——指引原文明訂這不是死板的標準、不取代床邊判斷。<br>
+      適用對象：<b>成人 ≥20% TBSA</b>（ABA CPG 的範圍）；較小面積燒傷多數不需正式復甦，但仍需評估。<br>
+      <span class="note">時間從<b>受傷時刻</b>起算，不是從到院。若已延遲數小時，前 8 小時的目標量要在<b>剩餘時間內</b>補完——本工具已納入此修正。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>Rule of Nines、公式、尿量目標、轉診條件與 ABA 2024 建議 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ TBSA 估算：</b><br>
+      ・<b>Rule of Nines（成人）</b>：頭頸 <b>9%</b>（前後各 4.5%）；軀幹 <b>36%</b>（前 18% = 胸 9 + 腹 9；後 18%）；每上肢 <b>9%</b>（前後各 4.5%）；每下肢 <b>18%</b>（前後各 9%）；會陰 <b>1%</b>。（9＋36＋18＋36＋1 = 100）<br>
+      ・<b>Palmar method</b>：病人<b>整個手掌（含手指）≈1%</b>——適合小面積或分散的燒傷。<br>
+      ・<b>Lund-Browder chart</b>：成人與兒童皆適用，<b>兒童首選</b>（頭部佔比隨年齡變化，rule of nines 會高估兒童頭部）。<br>
+      ・<b>只計部分厚度（partial thickness）與全層（full thickness）</b>；表淺（單純紅斑、無水泡）不列入 TBSA。<br><br>
+
+      <b>◆ 補液公式（皆用 Lactated Ringer，時間自受傷起算，半量前 8 小時、餘量後 16 小時）：</b><br>
+      ・<b>ABA 2024 起始</b>：<b>2 mL/kg/%TBSA</b>（成人；降低液量的現行建議）。<br>
+      ・<b>Parkland（傳統）</b>：<b>4 mL/kg/%TBSA</b>（成人）、<b>3 mL/kg/%TBSA</b>（兒童）——易 fluid creep。<br>
+      ・<b>Modified Brooke</b>：<b>2 mL/kg/%TBSA</b>（成人）。<br>
+      <span class="note">兒童另需<b>加上維持輸液</b>（含葡萄糖），因肝醣儲備少、易低血糖；兒童補液請用 Lund-Browder 並由燒傷/兒科團隊主導。</span><br><br>
+
+      <b>◆ 復甦終點（成人）：</b><b>尿量 0.5–1.0 mL/kg/h（或 30–50 mL/h）</b>、base deficit &lt;2、收縮壓 &gt;90 mmHg、可觸及末梢脈搏、意識正常。<b>兒童尿量目標 1 mL/kg/h</b>。<b>依尿量上下調整速率，而非死守公式</b>。<br><br>
+
+      <b>◆ ABA 2024 臨床實踐指引重點（成人 ≥20% TBSA，前 48 小時）：</b><br>
+      ・<b>起始 2 mL/kg/%TBSA</b> 以降低復甦液量。<br>
+      ・<b>可考慮人血白蛋白（human albumin）</b>，尤其大面積燒傷，以降低總液量、改善尿量。<br>
+      ・<b>選擇性監測腹內壓（IAP）與眼內壓（IOP）</b>——大量補液的腔室症候群風險。<br>
+      ・電腦決策支持軟體導引滴定為<b>弱建議</b>；<b>不建議</b>用經肺熱稀釋（transpulmonary thermodilution）變數導引。<br>
+      ・<b>高劑量維生素 C、FFP、早期 CRRT、升壓劑</b>作為輔助：<b>證據不足，無法做建議</b>。<br><br>
+
+      <b>◆ 吸入性傷害：</b>密閉空間、顏面燒傷、鼻毛燒焦、碳末痰、聲音沙啞、喘鳴者高度懷疑。<b>合併吸入性傷害會顯著增加補液需求</b>，且是早期插管的重要考量（氣道水腫進展快，「早插勝過晚插」）。一氧化碳中毒給 100% 氧氣；懷疑氰化物中毒（工業火災、持續乳酸酸中毒）考慮 hydroxocobalamin。<br><br>
+
+      <b>◆ 轉介燒傷中心的條件（ABA）：</b>符合任一即轉介——<br>
+      ・部分厚度燒傷 <b>&gt;10% TBSA</b>；<b>任何全層燒傷</b>。<br>
+      ・<b>臉、手、腳、生殖器、會陰、大關節</b>燒傷。<br>
+      ・<b>電燒傷（含雷擊）、化學燒傷、吸入性傷害</b>。<br>
+      ・既有共病使處置複雜化；<b>燒傷合併創傷</b>（以創傷為主要死亡風險時，先於創傷中心穩定）。<br>
+      ・<b>兒童</b>在無合格兒童燒傷照護設施的醫院。<br>
+      ・需要特殊社會／情緒／長期復健介入者。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">病人資料 Patient</div>
+    <div class="field-row">
+      <label>體重</label>
+      <input type="number" id="bn_wt" step="1" placeholder="—">
+      <span class="unit">kg</span>
+    </div>
+    <div class="field-row">
+      <label>燒傷面積 %TBSA</label>
+      <input type="number" id="bn_tbsa" step="1" placeholder="—">
+      <span class="unit">%（僅計 partial + full thickness）</span>
+    </div>
+    <div class="field-row">
+      <label>族群</label>
+      <select id="bn_pop">
+        <option value="adult">成人</option>
+        <option value="child">兒童（另需維持輸液，建議專科主導）</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label>受傷後已經過</label>
+      <input type="number" id="bn_elapsed" step="0.5" placeholder="0">
+      <span class="unit">小時</span>
+    </div>
+    <div class="note">「受傷後已經過」用於修正前 8 小時的剩餘速率——延遲抵達時前段量須在剩餘時間內補完。</div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">ABA 2024 起始（2 mL/kg/%TBSA，Lactated Ringer）</div>
+    <div style="font-size:15px; margin-top:4px;" id="bn_aba">請輸入體重與 %TBSA。</div>
+    <div class="metric-label" style="margin-top:14px;">Parkland 對照（成人 4 / 兒童 3 mL/kg/%TBSA）</div>
+    <div style="font-size:15px; margin-top:4px;" id="bn_parkland">請輸入體重與 %TBSA。</div>
+    <div class="metric-label" style="margin-top:14px;">復甦終點 — 依此滴定，非死守公式</div>
+    <div style="font-size:15px; margin-top:4px;" id="bn_goal">—</div>
+    <div class="risk-note">算出的是<b>起始速率</b>，必須依<b>尿量與灌流即時上下調整</b>。ABA 2024 建議起始用 2 mL/kg/%（降 fluid creep），大面積可考慮 albumin 降總量，並監測腹內壓／眼內壓。時間自受傷起算，半量前 8 小時、餘量後 16 小時。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/38051821/" target="_blank" rel="noopener" class="ref-link">Cartotto R, Johnson LS, Savetamal A, et al. American Burn Association Clinical Practice Guidelines on Burn Shock Resuscitation. J Burn Care Res. 2024;45(3):565-589.</a> ｜ <a href="https://www.ncbi.nlm.nih.gov/books/NBK534227/" target="_blank" rel="noopener" class="ref-link">Schaefer TJ, Szymanski KD. Burn Resuscitation and Management. StatPearls. 2023.</a></footer>
+</div>
+</div>
+<script>
+function bnNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function bnRate(total24, elapsed){
+  /* 半量前 8h、餘量後 16h；依已過時間修正剩餘速率 */
+  const first8 = total24/2;
+  const el = (elapsed===null || elapsed<0) ? 0 : elapsed;
+  let firstRateTxt;
+  if(el < 8){
+    const remain = 8 - el;
+    firstRateTxt = '前 8 小時共 '+Math.round(first8)+' mL，' + (el>0 ? '已過 '+el+' 小時，剩 '+remain.toFixed(1)+' 小時內給完 → ' : '→ ') +
+      '<b>'+Math.round(first8/remain)+' mL/h</b>';
+  } else {
+    firstRateTxt = '<b>已超過受傷後 8 小時</b>——前段目標量 '+Math.round(first8)+' mL 應已補完（或依實際落後量與尿量追補）；直接進入後段';
+  }
+  const secondRate = total24/2/16;
+  return firstRateTxt + '；<b>後 16 小時 '+Math.round(total24/2)+' mL → '+Math.round(secondRate)+' mL/h</b>';
+}
+
+function bnCalc(){
+  const wt=bnNum('bn_wt'), tbsa=bnNum('bn_tbsa'), elapsed=bnNum('bn_elapsed');
+  const child=document.getElementById('bn_pop').value==='child';
+
+  if(wt===null || tbsa===null || wt<=0 || tbsa<=0){
+    document.getElementById('bn_aba').innerHTML='請輸入體重與 %TBSA。';
+    document.getElementById('bn_parkland').innerHTML='請輸入體重與 %TBSA。';
+    document.getElementById('bn_goal').innerHTML='—';
+    return;
+  }
+
+  const abaTot = 2*wt*tbsa;
+  const pkCoef = child ? 3 : 4;
+  const pkTot = pkCoef*wt*tbsa;
+
+  document.getElementById('bn_aba').innerHTML =
+    '<b>24 小時估計 '+Math.round(abaTot)+' mL</b>（2 × '+wt+' × '+tbsa+'）。<br>' + bnRate(abaTot, elapsed) +
+    (tbsa>=20 ? '' : '<br><span class="note">此工具與 ABA CPG 的正式復甦範圍為 ≥20% TBSA；目前 '+tbsa+'% 較小，多數不需正式復甦，請個別評估。</span>');
+
+  document.getElementById('bn_parkland').innerHTML =
+    '<b>24 小時估計 '+Math.round(pkTot)+' mL</b>（'+pkCoef+' × '+wt+' × '+tbsa+'，'+(child?'兒童 3 mL':'成人 4 mL')+'）。<br>' + bnRate(pkTot, elapsed) +
+    '<br><span class="note">Parkland 為傳統對照，較高的起始量易造成 fluid creep；ABA 2024 傾向以 2 mL 起始再上調。</span>';
+
+  document.getElementById('bn_goal').innerHTML =
+    '<b>尿量 '+(child ? '1 mL/kg/h（約 '+Math.round(1*wt)+' mL/h）' : '0.5–1.0 mL/kg/h（約 '+Math.round(0.5*wt)+'–'+Math.round(1*wt)+' mL/h）')+'</b>' +
+    (child ? '' : '，或 30–50 mL/h') + '；base deficit &lt;2、SBP &gt;90、末梢脈搏可觸及、意識正常。' +
+    (child ? '<br><span class="note">兒童另需加上含葡萄糖的維持輸液，並以 Lund-Browder 估 TBSA；建議燒傷／兒科團隊主導。</span>' : '') +
+    '<br><b>尿量不足→上調、過多（&gt;1 mL/kg/h 持續）→下調</b>；大面積可考慮 albumin 降總量。';
+}
+document.querySelectorAll('#view-burns input, #view-burns select')
+  .forEach(el => { el.addEventListener('input', bnCalc); el.addEventListener('change', bnCalc); });
+bnCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
