@@ -98,11 +98,15 @@
     return out;
   }
 
-  // 首頁四大類入口方磚：僅收有實際頁面者（腹部急症／計分工具為站內分類，不另建索引）
+  /* 首頁入口方磚：連向頁面者（抗微生物、癌症治療、藥物資料庫）與站內分類
+     （腹部急症、急重症處置、計分工具）都要收——大類名稱本身也要查得到。
+     站內分類的 href 是 #abdomen 這種錨點，改寫成 index.html#abdomen：
+     結果列點下去就回首頁並展開該分類（與導覽列同一套目的地）。 */
   function indexHubs() {
     var out = [];
     document.querySelectorAll('.hub-card[href]').forEach(function (card) {
-      var url = card.getAttribute('href') || '';
+      var href = card.getAttribute('href') || '';
+      var url = href.charAt(0) === '#' ? 'index.html' + href : href;
       if (url.indexOf('.html') === -1) return;
       // 方磚上的中文被拆成上下兩半（腹部／急症），故完整名稱與英文取自 data-*
       var sub = card.getAttribute('data-sub') || '';
@@ -239,7 +243,8 @@
     return out;
   }
 
-  // 抗生素指引的獨立分頁：不是首頁卡片，故無法由 DOM 取得，於此明列。
+  // 只從別頁連出、首頁沒有卡片的頁面（抗生素指引的三個分頁、食道急症流程內的
+  // Pittsburgh 分數）：無法由 DOM 取得，於此明列。
   // 列為 guide 型別後亦會被 pageList() 納入頁面內文索引。
   var SUB_PAGES = [
     { label: '抗生素菌譜資料庫', en: 'Spectrum Database', url: 'tools/spectrum-database.html',
@@ -250,7 +255,10 @@
       kw: '手術預防 預防性抗生素 術前給藥 SSI 傷口感染 cefazolin cefuroxime 追加給藥 redosing 劃刀前 關節置換 開顱 剖腹產 CABG 體外循環 CPB 移植' },
     { label: '創傷後抗生素', en: 'Trauma Antibiotics', url: 'tools/trauma-abx.html',
       sub: '穿刺性腹部創傷、開放性骨折、胸管、腦傷、咬傷、燒燙傷與破傷風預防',
-      kw: '創傷 外傷 開放性骨折 Gustilo 胸管 tube thoracostomy 穿刺傷 咬傷 燒燙傷 顏面骨折 顱底骨折 破傷風 tetanus TIG EAST 預防性抗生素' }
+      kw: '創傷 外傷 開放性骨折 Gustilo 胸管 tube thoracostomy 穿刺傷 咬傷 燒燙傷 顏面骨折 顱底骨折 破傷風 tetanus TIG EAST 預防性抗生素' },
+    { label: 'Pittsburgh 食道穿孔嚴重度', en: 'Pittsburgh Esophageal Perforation Severity Score', url: 'tools/pss.html',
+      sub: '食道穿孔嚴重度分數（PSS）：分數愈高愈不宜單純修補，與食道急症流程往返',
+      kw: 'PSS Pittsburgh 食道 穿孔 esophageal perforation 嚴重度 severity Abbas 2009 Schweigert 2016 Boerhaave 縱膈炎 支架 修補 食道切除' }
   ];
   function indexSubPages() {
     return SUB_PAGES.map(function (p) {
@@ -299,13 +307,15 @@
   }
 
   /* ---- 頁面內文（全文）索引 ---- */
-  // 索引對象＝首頁卡片與入口方磚指向的實際頁面；新增頁面自動納入，無須維護清單
+  // 索引對象＝首頁卡片與入口方磚指向的實際頁面；新增頁面自動納入，無須維護清單。
+  // 首頁自己除外：所有卡片說明都寫在上頭，幾乎每個詞都會命中，而那些卡片本來
+  // 就已由 indexCards() 逐張列出，再多一筆「頁面內文：腹部急症」只是重複。
   function pageList() {
     var seen = {}, out = [];
     idx.forEach(function (it) {
       if (it.type !== 'tool' && it.type !== 'pathway' && it.type !== 'guide') return;
       var u = it.url.split('#')[0];
-      if (u.indexOf('.html') === -1 || seen[u]) return;
+      if (u.indexOf('.html') === -1 || u === 'index.html' || seen[u]) return;
       seen[u] = 1;
       out.push({ url: u, label: it.label, en: it.en, type: it.type });
     });
@@ -475,6 +485,24 @@
     show(q);
   }
 
+  /* 結果列指向首頁自己的分類（index.html#critical…）時，瀏覽器只換 hash、不重新
+     載入；而查詢進行中 #home-body 整塊是隱藏的，路由把分類展開了也看不到。
+     故這類連結先把查詢收乾淨再交給路由；hash 沒變（重複點同一項）時，
+     瀏覽器不發 hashchange，補送一次讓路由重新跑。其餘連結整頁換掉，無須收拾。 */
+  function isHomeAnchor(href) {
+    var parts = href.split('#');
+    return parts.length > 1 && (parts[0] === '' || /(^|\/)index\.html$/.test(parts[0]));
+  }
+  function goResult(href) {
+    if (!isHomeAnchor(href)) { location.href = href; return; }
+    var same = location.hash === '#' + href.split('#')[1];
+    input.value = '';
+    setActive(false);
+    results.innerHTML = '';
+    location.href = href;
+    if (same) window.dispatchEvent(new Event('hashchange'));
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     input = document.getElementById('gs-input');
     results = document.getElementById('gs-results');
@@ -496,8 +524,16 @@
       if (e.key === 'Escape') { input.value = ''; onInput(); input.blur(); }
       if (e.key === 'Enter') {
         var first = results.querySelector('.gs-item');
-        if (first) location.href = first.getAttribute('href');
+        if (first) goResult(first.getAttribute('href'));
       }
+    });
+    results.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a.gs-item') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (!isHomeAnchor(href)) return;
+      e.preventDefault();
+      goResult(href);
     });
     document.getElementById('gs-clear').addEventListener('click', function () {
       input.value = ''; onInput(); input.focus();

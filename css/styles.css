@@ -211,15 +211,15 @@
   }
 
   /* ---- 長方磚（急重症處置／藥物資料庫）----
-     橫跨兩欄，故中文不拆上下兩半、改為單行加英文副標；
-     字級一樣跟著自己的寬度走（cqw），才不會在電腦上被撐成標語。 */
+     橫跨兩欄，故中文不拆上下兩半、改為單行加英文副標。
+     字級要與方磚看起來一樣大：cqw 是「自己寬度」的百分比，而長方磚正好是
+     兩張方磚加一道 gap（約 2.06 倍寬），故係數取方磚的一半（17→8.25、6.2→3）、
+     上下限照抄，兩種版位算出來的字級才會落在同一個尺寸。
+     不支援容器查詢時兩者都吃 vw，本來就同大小，無須另寫。 */
   .hub-card--wide{aspect-ratio:3.4/1;}
-  .hub-card--wide .hub-label{gap:5px;}
-  .hub-card--wide .hub-zh{font-size:clamp(21px,4.6vw,32px);}
-  .hub-card--wide .hub-en{font-size:clamp(9.5px,1.6vw,13px);}
   @supports (font-size:1cqw){
-    .hub-card--wide .hub-zh{font-size:clamp(20px,5.4cqw,32px);}
-    .hub-card--wide .hub-en{font-size:clamp(9.5px,2cqw,13px);}
+    .hub-card--wide .hub-zh{font-size:clamp(22px,8.25cqw,40px);}
+    .hub-card--wide .hub-en{font-size:clamp(9.5px,3cqw,14px);}
   }
 
   /* ---- 尚未配圖的方磚 ----

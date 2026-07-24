@@ -84,8 +84,11 @@ html.nav-open .side-nav{ transform:none; visibility:visible; transition:transfor
 
 .nav-group{ margin:14px 0 0; }
 /* 大類標題本身也是連結：點了到該分類（首頁的分類區塊，或該類自己的頁面） */
+/* 250px 的欄寬放不下「急重症處置 EMERGENCY & CRITICAL CARE」這種長標題。
+   允許整列折行，但中文與英文各自 nowrap：折的是中英之間，中文永遠一整行，
+   英文（連同項目數）整段落到第二行，不會斷在 & 或單字中間。 */
 .nav-group-head{
-  display:flex; align-items:baseline; gap:7px;
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:0 7px;
   font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--nv-accent); border-bottom:1px solid var(--nv-line);
   padding:5px 14px 4px; margin:0 0 5px;
@@ -93,7 +96,8 @@ html.nav-open .side-nav{ transform:none; visibility:visible; transition:transfor
 }
 .nav-group-head:hover{ background:var(--nv-hover); border-bottom-color:var(--nv-accent); }
 .nav-group-head:hover .nav-group-zh{ text-decoration:underline; }
-.nav-group-en{ color:var(--nv-muted); }
+.nav-group-zh{ white-space:nowrap; }
+.nav-group-en{ color:var(--nv-muted); white-space:nowrap; }
 .nav-group-n{ margin-left:auto; color:var(--nv-muted); }
 
 /* 癌別的分群小標（消化系 GI、胸腔 Thoracic…）：比分類標題輕，只用來斷開 30 個癌別 */
