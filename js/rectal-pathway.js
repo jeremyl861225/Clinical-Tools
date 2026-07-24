@@ -47,7 +47,7 @@
 
   /* ---------- 版面 helpers ---------- */
   function opt(key, val, title, sub) {
-    return '<button class="flow-opt" onclick="rcPick(\'' + key + '\',\'' + val + '\',this)">' +
+    return '<button class="flow-opt" onclick="rectPick(\'' + key + '\',\'' + val + '\',this)">' +
       title + (sub ? '<span class="fo-sub">' + sub + '</span>' : '') + '</button>';
   }
   function step(id, num, q, optsHtml, extra) {
@@ -83,7 +83,7 @@
         var g = TN_GROUP[key];
         if (!g) { h += '<div class="tn-na" title="Tis 依定義為 N0">—</div>'; return; }
         h += '<button class="tn-cell ' + g + '" id="rc_tn_' + key + '" ' +
-          'onclick="rcPick(\'tn\',\'' + key + '\',this)">' + t + n + '</button>';
+          'onclick="rectPick(\'tn\',\'' + key + '\',this)">' + t + n + '</button>';
       });
     });
     h += '</div>';
@@ -481,8 +481,11 @@
     h += '<div class="flow-fu hidden" id="rc_recur_fu"></div>';
     h += '</div>'; // rc_recur
 
-    h += '<div class="flow-reset"><button class="btn-reset" onclick="rcReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="rectReset()">重置</button></div>';
     h += '</div>'; // rcPath
+
+    /* 院內流程之外的補充實證（實務手冊 ver.1，依 NCCN）；結腸與直腸共用，見 crc-supplement.js */
+    h += (typeof crcSupplementHTML === 'function') ? crcSupplementHTML() : '';
     return h;
   }
 
@@ -887,7 +890,7 @@
   }
 
   /* ---------- 事件 ---------- */
-  function rcPick(key, val, btn) {
+  function rectPick(key, val, btn) {
     rcSel(btn);
     var s = rcSt;
     if (key === 'entry') {
@@ -926,7 +929,7 @@
     rcRender();
   }
 
-  function rcReset() {
+  function rectReset() {
     for (var k in rcSt) { if (rcSt.hasOwnProperty(k)) rcSt[k] = null; }
     var root = document.getElementById('rcPath');
     if (root) root.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
@@ -936,11 +939,15 @@
     rcRender();
   }
 
-  function initRectalPathway() { rcReset(); }
+  function initRectalPathway() { rectReset(); }
 
   // 匯出
+  /* ⚠ 匯出名稱必須是「全癌別唯一」的：所有 *-pathway.js 都掛在同一個 window 上，
+     後載入者會無聲覆蓋先載入者的同名函式，且不會有任何錯誤訊息——流程圖只是
+     點了沒反應。本檔曾因與 rcc-pathway.js 同樣使用 rcPick／rcReset 而失效，
+     panc 與 prostate 亦曾同用 pcPick／pcReset。新增模組時請用夠長的專屬前綴。 */
   global.rectalPathwayHTML = rectalPathwayHTML;
   global.initRectalPathway = initRectalPathway;
-  global.rcPick = rcPick;
-  global.rcReset = rcReset;
+  global.rectPick = rectPick;
+  global.rectReset = rectReset;
 })(window);

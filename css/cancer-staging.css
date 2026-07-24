@@ -444,6 +444,35 @@
   .flow-rec.rec-idle .rx-warn{background:var(--accent2-soft); border-color:var(--accent2);}
   .flow-rec.rec-idle .rx-line{background:var(--box-bg); border-color:var(--line); border-left-color:var(--accent);}
 
+  /* ---- 4) 大腸直腸癌補充參考面板（實務手冊 ver.1）----
+     rx-panel 系列的底色是為「深色建議色塊」設計的半透明白，
+     .flow-rec.rec-idle 另備一組淺底覆寫。本區塊不在 .flow-rec 內，
+     故需自己複製同一組淺底覆寫，否則會渲染成幾乎看不見的白底白字。 */
+  .crc-supp{margin-top:20px; border-top:1px solid var(--line); padding-top:14px;}
+  .crc-supp-h{font-family:var(--serif); font-size:15.5px; font-weight:600; color:var(--ink); margin-bottom:2px;}
+  .crc-supp > details{margin:7px 0;}
+  .crc-supp > details > summary{cursor:pointer; font-family:var(--sans); font-size:13px; line-height:1.6;
+    color:var(--accent); padding:5px 0; list-style:none;}
+  .crc-supp > details > summary::-webkit-details-marker{display:none;}
+  .crc-supp > details > summary:hover{color:var(--accent2);}
+  .crc-supp > details[open] > summary{font-weight:600; margin-bottom:4px;}
+  .crc-supp .rec-detail.rx-panel{padding-left:0; list-style:none; display:flex; flex-direction:column;
+    gap:8px; color:var(--label-ink);}
+  .crc-supp .rx-panel-h{border-bottom-color:var(--line); color:var(--ink);}
+  .crc-supp .rx-def{background:var(--box-bg); border-color:var(--line);}
+  .crc-supp .rx-warn{background:var(--accent2-soft); border-color:var(--accent2);}
+  .crc-supp .rx-line{background:var(--box-bg); border-color:var(--line); border-left-color:var(--accent);}
+  .crc-supp .rec-detail .drug{background:var(--field-bg); border-color:var(--line);}
+  .crc-supp .rec-detail .rx{color:var(--accent2);}
+  .crc-supp .rec-detail .rx-h{color:var(--ink); border-bottom-color:var(--accent-soft);}
+  .crc-supp .rec-detail .rx-sub{color:var(--muted); opacity:1;}
+  /* 表格一律自帶橫向捲軸，避免補充資料把整頁撐寬 */
+  .crc-supp-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .crc-supp table{border-collapse:collapse; width:100%; min-width:520px; font-size:11.5px; line-height:1.6;}
+  .crc-supp th,.crc-supp td{border:1px solid var(--line); padding:5px 8px; vertical-align:top; text-align:left;}
+  .crc-supp th{background:var(--box-bg); font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.03em; color:var(--ink); white-space:nowrap;}
+
   .onc-reflist{margin-top:16px; border-top:1px solid var(--line); padding-top:10px;}
   .onc-reflist .rl-h{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted-soft); margin-bottom:6px;}
   .onc-reflist a{display:block; font-size:11.5px; color:var(--accent); text-decoration:none; margin:3px 0; line-height:1.5; font-family:var(--mono);}

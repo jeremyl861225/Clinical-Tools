@@ -268,6 +268,9 @@
 
     h += '<div class="flow-reset"><button class="btn-reset" onclick="ccReset()">重置</button></div>';
     h += '</div>'; // ccPath
+
+    /* 院內流程之外的補充實證（實務手冊 ver.1，依 NCCN）；結腸與直腸共用，見 crc-supplement.js */
+    h += (typeof crcSupplementHTML === 'function') ? crcSupplementHTML() : '';
     return h;
   }
 
