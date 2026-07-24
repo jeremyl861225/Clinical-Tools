@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PERC Rule · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .pc-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .pc-warn b{color:var(--accent2);}
+  .pc-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+  /* 閘門：臨床機率未先判定為低，PERC 不成立，故整組準則先鎖住 */
+  .pc-gate{border:1px solid var(--line); border-radius:2px; background:var(--box-bg); padding:10px 12px; margin-bottom:12px;}
+  .pc-gate-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+        text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;}
+  .pc-items.locked{opacity:.45; pointer-events:none;}
+  .pc-lockmsg{font-size:12px; color:var(--accent2); font-family:var(--mono); margin-top:6px;}
+  /* 判定橫幅：PERC 是全有全無，用一條大色帶比數字清楚 */
+  .pc-verdict{border-radius:2px; padding:13px 15px; margin-top:2px;}
+  .pc-verdict.neg{background:#123028; border:1px solid #2e6b53;}
+  .pc-verdict.pos{background:#3a1712; border:1px solid var(--accent2);}
+  .pc-verdict.idle{background:var(--ink); border:1px solid var(--line);}
+  .pc-v-l{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; opacity:.7; color:#fff;}
+  .pc-v-t{font-family:var(--serif); font-size:23px; font-weight:600; margin:3px 0 5px; color:#fff;}
+  .pc-v-b{font-size:12.5px; line-height:1.7; color:#d8d4c9;}
+  .pc-v-b b{color:#fff;}
+  .pc-fail{margin-top:8px; font-size:12px; line-height:1.7; color:#e8bfb6;}
+  .pc-fail b{color:#fff;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-perc">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Pulmonary Embolism Scoring Tool</div>
+      <h1>PERC Rule</h1>
+      <div class="sub">肺栓塞排除準則 · 八項全陰且臨床機率低時，可不驗 D-dimer 直接排除</div>
+    </div>
+    <div class="back-stack">
+      <button class="back-btn hidden" id="pc-back-pe" onclick="location.href='pe.html#dx'">← 返回急性肺栓塞</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-perc'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="pc-warn">
+    <span class="h">PERC 只能用來「排除」，不能用來「診斷」</span>
+    這不是機率評分，而是<b>全有全無的門檻</b>：八項<b>全部為陰性</b>才算通過。
+    只要有<b>任何一項為陽性</b>，PERC 就<b>不成立</b>——但這<b>不代表病人有 PE</b>，只代表不能靠 PERC 省略檢查，
+    應回到常規路徑（D-dimer 或影像）。
+  </div>
+
+  <div class="pc-gate">
+    <div class="pc-gate-t">前提：先判定臨床機率為「低」</div>
+    <label class="toggle-inline">
+      <input type="checkbox" id="pc_gate">
+      臨床機率已判定為<b>低</b>（Wells &lt; 2／Geneva 低機率，或臨床整體判斷 PE 機率 &lt; 15%）
+    </label>
+    <div class="pc-lockmsg" id="pc_lockmsg">尚未確認前提——PERC <b>僅適用於臨床機率已經為低</b>的病人。在中／高機率者使用會漏診。</div>
+    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+      <a class="flow-link" href="wells-pe.html?from=perc">→ 先算 Wells Score</a>
+      <a class="flow-link" href="geneva.html?from=perc">→ 先算 Revised Geneva</a>
+    </div>
+  </div>
+
+  <div class="card pc-items locked" id="pc_items">
+    <div class="section-title" style="margin-top:0;">八項準則 — 全部都要是「否」</div>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_age"> 年齡 ≥ 50 歲 <span class="unit">(Age ≥ 50)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_hr"> 心跳 ≥ 100 次/分 <span class="unit">(HR ≥ 100)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_spo2"> room air SpO₂ &lt; 95% <span class="unit">(未給氧下血氧 &lt; 95%)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_leg"> 單側下肢腫脹 <span class="unit">(Unilateral leg swelling)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_hemo"> 咳血 <span class="unit">(Hemoptysis)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_surg"> 4 週內手術或外傷 <span class="unit">(需全身麻醉或住院者)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_prev"> 曾有 DVT 或 PE 病史 <span class="unit">(Prior DVT/PE)</span></label>
+    <label class="item"><input type="checkbox" class="pc-c" id="pc_horm"> 使用外源性荷爾蒙 <span class="unit">(口服避孕藥、荷爾蒙補充、雌激素)</span></label>
+    <div class="note">勾選＝該項為<b>陽性</b>。全部不勾（八項皆陰）才通過 PERC。</div>
+  </div>
+
+  <div class="result" style="padding-bottom:14px;">
+    <div class="pc-verdict idle" id="pc_verdict">
+      <div class="pc-v-l">判定 Verdict</div>
+      <div class="pc-v-t" id="pc_v_t">請先確認前提</div>
+      <div class="pc-v-b" id="pc_v_b">PERC 僅適用於臨床機率已判定為低的病人。</div>
+      <div class="pc-fail hidden" id="pc_v_f"></div>
+    </div>
+    <div class="risk-note">
+      PERC 通過者 30 天內靜脈血栓栓塞的漏診率<b>低於 2%</b>，落在急診可接受的檢驗後機率之下；
+      其價值在於<b>減少不必要的 D-dimer 與電腦斷層</b>（D-dimer 在低機率族群偽陽性高，一驗下去常被迫做 CT）。
+    </div>
+  </div>
+
+  <details class="def-box">
+    <summary>什麼情況下不要用 PERC</summary>
+    <div class="box-inner">
+      <ul>
+        <li><b>臨床機率不是低</b>（Wells ≥ 2、Geneva 中／高機率，或整體判斷 &gt; 15%）——PERC 無效，直接走 D-dimer 或影像。</li>
+        <li><b>血流動力學不穩</b>——不做機率評估，直接床邊心臟超音波與緊急影像。</li>
+        <li><b>懷孕</b>——PERC 未在孕婦驗證，應改用孕期專用路徑（如 YEARS-pregnancy）。</li>
+        <li><b>PE 盛行率偏高的族群</b>（住院病人、活動性癌症、已知血栓體質）——設計情境是急診低風險門診族群。</li>
+        <li>心跳因發燒、疼痛、焦慮而 ≥ 100 者仍算陽性，PERC 不成立——這是它敏感度換來的代價。</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/18318689/" target="_blank" rel="noopener" class="ref-link">Kline JA, et al. J Thromb Haemost. 2008;6(5):772-780.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29450523/" target="_blank" rel="noopener" class="ref-link">Freund Y, et al. (PROPER RCT). JAMA. 2018;319(6):559-566.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/31504429/" target="_blank" rel="noopener" class="ref-link">2019 ESC PE Guidelines. Eur Heart J. 2020;41:543-603.</a>
+  </footer>
+</div>
+</div>
+<script>
+var PC_LABEL = {
+  pc_age:'年齡 ≥ 50', pc_hr:'心跳 ≥ 100', pc_spo2:'room air SpO₂ < 95%',
+  pc_leg:'單側下肢腫脹', pc_hemo:'咳血', pc_surg:'4 週內手術或外傷',
+  pc_prev:'DVT/PE 病史', pc_horm:'外源性荷爾蒙'
+};
+function pcCalc(){
+  var gate = document.getElementById('pc_gate').checked;
+  document.getElementById('pc_items').classList.toggle('locked', !gate);
+  document.getElementById('pc_lockmsg').classList.toggle('hidden', gate);
+
+  var pos = [];
+  document.querySelectorAll('.pc-c').forEach(function(el){
+    if(el.checked) pos.push(PC_LABEL[el.id]);
+  });
+
+  var v = document.getElementById('pc_verdict');
+  var t = document.getElementById('pc_v_t');
+  var b = document.getElementById('pc_v_b');
+  var f = document.getElementById('pc_v_f');
+  v.classList.remove('idle','neg','pos');
+  f.classList.add('hidden');
+
+  if(!gate){
+    v.classList.add('idle');
+    t.textContent = '請先確認前提';
+    b.innerHTML = 'PERC <b>僅適用於臨床機率已判定為低</b>的病人。中／高機率者請直接走 D-dimer 或影像。';
+    return;
+  }
+  if(pos.length === 0){
+    v.classList.add('neg');
+    t.textContent = 'PERC 陰性 — 可排除 PE';
+    b.innerHTML = '八項全陰且臨床機率低 → <b>不需驗 D-dimer、不需影像</b>，可安全排除肺栓塞（漏診率 &lt; 2%）。請記錄依據並安排適當追蹤。';
+  } else {
+    v.classList.add('pos');
+    t.textContent = 'PERC 不成立 — 需繼續檢查';
+    b.innerHTML = '有 <b>' + pos.length + '</b> 項為陽性，無法用 PERC 排除。<b>這不代表病人有 PE</b>——回到常規路徑：臨床機率低／中者驗 <b>D-dimer</b>（&gt; 50 歲用年齡校正臨界值），陽性再做 CTPA。';
+    f.classList.remove('hidden');
+    f.innerHTML = '<b>陽性項目：</b>' + pos.join('、');
+  }
+}
+document.querySelectorAll('#view-perc input[type=checkbox]')
+  .forEach(function(el){ el.addEventListener('change', pcCalc); });
+(function(){
+  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from==='pe'){ var b=document.getElementById('pc-back-pe'); if(b) b.classList.remove('hidden'); }
+})();
+pcCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

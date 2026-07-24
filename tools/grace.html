@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRACE Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .gr-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .gr-warn b{color:var(--accent2);}
+  .gr-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+  .gr-two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:520px){ .gr-two{grid-template-columns:1fr;} }
+  .gr-sc{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:2px; padding:11px 13px;}
+  .gr-sc-n{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; opacity:.66;}
+  .gr-sc-v{font-family:var(--serif); font-size:34px; font-weight:600; line-height:1.1; margin-top:2px;}
+  .gr-sc-m{font-family:var(--mono); font-size:10.5px; opacity:.55;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-grace">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Acute Coronary Syndrome Scoring Tool</div>
+      <h1>GRACE Score</h1>
+      <div class="sub">急性冠心症死亡風險分層 · 決定 NSTE-ACS 侵入性檢查時機</div>
+    </div>
+    <div class="back-stack">
+      <button class="back-btn hidden" id="gr-back-acs" onclick="location.href='acs.html#dx'">← 返回急性冠心症</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-grace'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="gr-warn">
+    <span class="h">這是 GRACE 1.0（點數表版本）</span>
+    本頁實作的是原始<b>點數加總版</b>，臨床上最常用於床邊分層與指引所引用的
+    <b>&gt; 140 高風險門檻</b>。<b>GRACE 2.0</b> 是另一套非線性連續模型，直接輸出死亡機率而非點數，
+    需由官方網站／院內系統計算，兩者數值不可互換。
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">生理參數 Physiologic variables</div>
+    <div class="field-row"><label>年齡 Age</label><input type="number" id="gr_age" min="0" max="120" step="1" placeholder="例如 68"><span class="unit">歲</span><span class="pt-badge" id="gr_age_b">0</span></div>
+    <div class="field-row"><label>心跳 Heart rate</label><input type="number" id="gr_hr" min="0" max="300" step="1" placeholder="例如 88"><span class="unit">bpm</span><span class="pt-badge" id="gr_hr_b">0</span></div>
+    <div class="field-row"><label>收縮壓 SBP</label><input type="number" id="gr_sbp" min="0" max="300" step="1" placeholder="例如 130"><span class="unit">mmHg</span><span class="pt-badge" id="gr_sbp_b">0</span></div>
+    <div class="field-row"><label>肌酸酐 Creatinine</label><input type="number" id="gr_cr" min="0" max="20" step="0.01" placeholder="例如 1.1"><span class="unit">mg/dL</span><span class="pt-badge" id="gr_cr_b">0</span></div>
+
+    <div class="section-title">Killip 分級 Killip class</div>
+    <div class="field-row">
+      <select id="gr_killip" style="flex:1;">
+        <option value="0">I：無心衰竭徵象</option>
+        <option value="20">II：囉音／頸靜脈怒張／S₃</option>
+        <option value="39">III：肺水腫</option>
+        <option value="59">IV：心因性休克</option>
+      </select>
+      <span class="pt-badge" id="gr_killip_b">0</span>
+    </div>
+
+    <div class="section-title">其他 Other</div>
+    <label class="item"><input type="checkbox" id="gr_arrest"> 到院時曾心跳停止 <span class="unit">(Cardiac arrest at admission)</span><span class="pt-badge">39 分</span></label>
+    <label class="item"><input type="checkbox" id="gr_st"> ST 段偏移 <span class="unit">(ST-segment deviation)</span><span class="pt-badge">28 分</span></label>
+    <label class="item"><input type="checkbox" id="gr_enz"> 心肌酵素／指標上升 <span class="unit">(Elevated cardiac biomarkers)</span><span class="pt-badge">14 分</span></label>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">GRACE Score</div>
+    <div class="metric-value big" id="gr_total">0</div>
+
+    <div class="gr-two" style="margin-top:10px;">
+      <div class="gr-sc">
+        <div class="gr-sc-n">住院死亡風險 IN-HOSPITAL</div>
+        <div class="gr-sc-v" id="gr_ih">低</div>
+        <div class="gr-sc-m" id="gr_ih_m">&lt; 1%</div>
+      </div>
+      <div class="gr-sc">
+        <div class="gr-sc-n">出院後 6 個月 POST-DISCHARGE</div>
+        <div class="gr-sc-v" id="gr_6m">低</div>
+        <div class="gr-sc-m" id="gr_6m_m">&lt; 3%</div>
+      </div>
+    </div>
+
+    <table class="ref">
+      <tr><th>住院死亡</th><th>分數</th><th>死亡率</th></tr>
+      <tr id="gr_r_a"><td>低 Low</td><td>≤ 108</td><td>&lt; 1%</td></tr>
+      <tr id="gr_r_b"><td>中 Intermediate</td><td>109–140</td><td>1–3%</td></tr>
+      <tr id="gr_r_c"><td>高 High</td><td>&gt; 140</td><td>&gt; 3%</td></tr>
+    </table>
+
+    <table class="ref">
+      <tr><th>出院後 6 個月死亡</th><th>分數</th><th>死亡率</th></tr>
+      <tr id="gr_s_a"><td>低 Low</td><td>≤ 88</td><td>&lt; 3%</td></tr>
+      <tr id="gr_s_b"><td>中 Intermediate</td><td>89–118</td><td>3–8%</td></tr>
+      <tr id="gr_s_c"><td>高 High</td><td>&gt; 118</td><td>&gt; 8%</td></tr>
+    </table>
+
+    <div class="risk-note" id="gr_advice">請輸入上方參數。</div>
+  </div>
+
+  <details class="def-box">
+    <summary>GRACE 怎麼影響 NSTE-ACS 的處置</summary>
+    <div class="box-inner">
+      <ul>
+        <li><b>GRACE &gt; 140</b>＝高風險，指引建議<b>早期侵入性策略（&lt; 24 小時內冠狀動脈攝影）</b>。</li>
+        <li><b>GRACE &lt; 140</b> 且無其他高危特徵 → 選擇性侵入，或先做非侵入性缺血檢查。</li>
+        <li><b>極高危特徵</b>（血流動力學不穩、心因性休克、反覆或持續缺血痛、致命性心律不整、機械併發症、急性心衰竭）<b>凌駕分數</b>——立即（&lt; 2 小時）比照 STEMI 處理，不必先算 GRACE。</li>
+        <li>本分數用於<b>風險分層</b>，不用於診斷 ACS；診斷仍依症狀、心電圖與 hs-troponin。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="def-box">
+    <summary>點數分帶（本頁採用之對照表）</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>年齡</th><th>分</th><th>心跳</th><th>分</th><th>收縮壓</th><th>分</th><th>肌酸酐</th><th>分</th></tr>
+        <tr><td>&lt; 30</td><td>0</td><td>&lt; 50</td><td>0</td><td>&lt; 80</td><td>58</td><td>0–0.39</td><td>1</td></tr>
+        <tr><td>30–39</td><td>8</td><td>50–69</td><td>3</td><td>80–99</td><td>53</td><td>0.40–0.79</td><td>4</td></tr>
+        <tr><td>40–49</td><td>25</td><td>70–89</td><td>9</td><td>100–119</td><td>43</td><td>0.80–1.19</td><td>7</td></tr>
+        <tr><td>50–59</td><td>41</td><td>90–109</td><td>15</td><td>120–139</td><td>34</td><td>1.20–1.59</td><td>10</td></tr>
+        <tr><td>60–69</td><td>58</td><td>110–149</td><td>24</td><td>140–159</td><td>24</td><td>1.60–1.99</td><td>13</td></tr>
+        <tr><td>70–79</td><td>75</td><td>150–199</td><td>38</td><td>160–199</td><td>10</td><td>2.00–3.99</td><td>21</td></tr>
+        <tr><td>80–89</td><td>91</td><td>≥ 200</td><td>46</td><td>≥ 200</td><td>0</td><td>≥ 4.00</td><td>28</td></tr>
+        <tr><td>≥ 90</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <div class="note">Killip I/II/III/IV = 0/20/39/59；心跳停止 39；ST 偏移 28；心肌指標上升 14。
+      GRACE 2.0 對年齡等變項採<b>連續函數</b>而非分帶，故同一位病人兩套的數值會有差異，請勿互相換算。</div>
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/14563598/" target="_blank" rel="noopener" class="ref-link">Granger CB, et al. Arch Intern Med. 2003;163(19):2345-2353.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37622654/" target="_blank" rel="noopener" class="ref-link">2023 ESC ACS Guidelines. Eur Heart J. 2023;44:3720-3826.</a>
+  </footer>
+</div>
+</div>
+<script>
+/* 分帶查表：[上限, 分數]，由小到大比對；最後一項為溢出值 */
+var GR_AGE  = [[30,0],[40,8],[50,25],[60,41],[70,58],[80,75],[90,91],[Infinity,100]];
+var GR_HR   = [[50,0],[70,3],[90,9],[110,15],[150,24],[200,38],[Infinity,46]];
+var GR_SBP  = [[80,58],[100,53],[120,43],[140,34],[160,24],[200,10],[Infinity,0]];
+var GR_CR   = [[0.40,1],[0.80,4],[1.20,7],[1.60,10],[2.00,13],[4.00,21],[Infinity,28]];
+function grBand(v, table){
+  for(var i=0;i<table.length;i++){ if(v < table[i][0]) return table[i][1]; }
+  return table[table.length-1][1];
+}
+function grCalc(){
+  function num(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+  var age=num('gr_age'), hr=num('gr_hr'), sbp=num('gr_sbp'), cr=num('gr_cr');
+
+  var pAge = age===null?0:grBand(age,GR_AGE);
+  var pHr  = hr===null?0:grBand(hr,GR_HR);
+  var pSbp = sbp===null?0:grBand(sbp,GR_SBP);
+  var pCr  = cr===null?0:grBand(cr,GR_CR);
+  var pKil = parseInt(document.getElementById('gr_killip').value);
+
+  document.getElementById('gr_age_b').textContent = pAge;
+  document.getElementById('gr_hr_b').textContent  = pHr;
+  document.getElementById('gr_sbp_b').textContent = pSbp;
+  document.getElementById('gr_cr_b').textContent  = pCr;
+  document.getElementById('gr_killip_b').textContent = pKil;
+
+  var total = pAge+pHr+pSbp+pCr+pKil;
+  if(document.getElementById('gr_arrest').checked) total += 39;
+  if(document.getElementById('gr_st').checked)     total += 28;
+  if(document.getElementById('gr_enz').checked)    total += 14;
+  document.getElementById('gr_total').textContent = total;
+
+  // 住院死亡分帶
+  var ih = total<=108?0:(total<=140?1:2);
+  var ihN=['低','中','高'], ihM=['&lt; 1%','1–3%','&gt; 3%'];
+  document.getElementById('gr_ih').textContent = ihN[ih];
+  document.getElementById('gr_ih_m').innerHTML = ihM[ih];
+  ['gr_r_a','gr_r_b','gr_r_c'].forEach(function(id){ document.getElementById(id).classList.remove('ref-current'); });
+  document.getElementById(['gr_r_a','gr_r_b','gr_r_c'][ih]).classList.add('ref-current');
+
+  // 出院後 6 個月分帶（切點與住院不同）
+  var sm = total<=88?0:(total<=118?1:2);
+  var smM=['&lt; 3%','3–8%','&gt; 8%'];
+  document.getElementById('gr_6m').textContent = ihN[sm];
+  document.getElementById('gr_6m_m').innerHTML = smM[sm];
+  ['gr_s_a','gr_s_b','gr_s_c'].forEach(function(id){ document.getElementById(id).classList.remove('ref-current'); });
+  document.getElementById(['gr_s_a','gr_s_b','gr_s_c'][sm]).classList.add('ref-current');
+
+  var missing = [age,hr,sbp,cr].some(function(v){ return v===null; });
+  document.getElementById('gr_advice').innerHTML = missing
+    ? '尚有欄位未填，分數僅計已填入項目——請補齊年齡、心跳、收縮壓與肌酸酐後判讀。'
+    : (total>140
+        ? '<b>GRACE &gt; 140＝高風險</b>：NSTE-ACS 建議<b>早期侵入性策略（&lt; 24 小時冠狀動脈攝影）</b>。若有極高危特徵（休克、持續缺血痛、致命性心律不整、機械併發症）則<b>立即（&lt; 2 小時）</b>處理，不受分數限制。'
+        : 'GRACE ≤ 140：無其他高危特徵時可採選擇性侵入策略或先行非侵入性缺血檢查。<b>極高危臨床特徵凌駕分數</b>，出現即立即處理。');
+}
+document.querySelectorAll('#view-grace input, #view-grace select')
+  .forEach(function(el){ el.addEventListener('input', grCalc); el.addEventListener('change', grCalc); });
+(function(){
+  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from==='acs'){ var b=document.getElementById('gr-back-acs'); if(b) b.classList.remove('hidden'); }
+})();
+grCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

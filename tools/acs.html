@@ -37,7 +37,11 @@
   .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
   .tl-item{position:relative; padding:0 0 14px 18px;}
   .tl-item:last-child{padding-bottom:2px;}
-  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+  /* 圓點要正好騎在 .tl 的 2px 左框上：框佔 x=-2~0，中心 -1。
+     全域的 *{box-sizing:border-box} 不套用到偽元素，故此處必須自己宣告，
+     否則 width:10px 會再加上左右各 2px 邊框（實際 14px）而使圓點右偏 2px。 */
+  .tl-item:before{content:''; position:absolute; box-sizing:border-box; left:-6px; top:5px;
+                  width:10px; height:10px;
                   border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
   .tl-item.t0:before{background:var(--accent2);}
   .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
@@ -206,9 +210,14 @@
         <div class="kbox-t">分層工具（本站另有計算器可點）</div>
         <ul>
           <li><b>HEART score</b>：急診胸痛 MACE 分層，0–3 分低風險可考慮早期離院。</li>
-          <li><b>GRACE 2.0</b>：NSTE-ACS 住院／6 個月死亡風險，&gt; 140 屬高風險 → 早期侵入性（&lt; 24h）。</li>
-          <li><b>TIMI、Killip 分級</b>：Killip II–IV（肺水腫、休克）預後顯著較差。</li>
+          <li><b>GRACE</b>：NSTE-ACS 住院／6 個月死亡風險，<b>&gt; 140 屬高風險 → 早期侵入性（&lt; 24h）</b>。</li>
+          <li><b>TIMI、Killip 分級</b>：Killip II–IV（肺水腫、休克）預後顯著較差；Killip 亦是 GRACE 的組成之一。</li>
+          <li><b>SYNTAX</b>：不是急性期分層工具，而是<b>確定解剖後</b>決定 PCI 或 CABG 的複雜度評分。</li>
         </ul>
+        <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
+          <a class="flow-link" href="grace.html?from=acs">→ GRACE Score 計算器</a>
+          <a class="flow-link" href="syntax.html?from=acs">→ SYNTAX Score 參考</a>
+        </div>
       </div>
       <div class="kbox alert">
         <div class="kbox-t">別漏掉會致命的模仿者</div>
@@ -270,11 +279,74 @@
       <div class="kbox">
         <div class="kbox-t">三根支柱</div>
         <ul>
-          <li><b>抗血小板一（立即）</b>：Aspirin 負荷後終生維持。</li>
-          <li><b>抗血小板二（P2Y₁₂）</b>：STEMI 直接 PCI 給 ticagrelor 或 prasugrel；NSTE-ACS 若走早期侵入，多在知道解剖後於導管室給。多數維持雙抗（DAPT）12 個月，依出血風險調整。</li>
+          <li><b>抗血小板一（立即）</b>：Aspirin loading dose 後終生 maintenance。</li>
+          <li><b>抗血小板二（P2Y₁₂）</b>：STEMI 直接 PCI 給 ticagrelor 或 prasugrel；NSTE-ACS 若走早期侵入，多在知道解剖後於導管室給。雙抗（DAPT）預設 12 個月，依支架與出血風險調整（見下節）。</li>
           <li><b>抗凝（住院期間）</b>：PCI 術中 UFH（或 bivalirudin）；纖溶／保守則 enoxaparin 或 fondaparinux。</li>
         </ul>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">DAPT 時長：依支架與出血風險</div>
+      <div class="kbox alert">
+        <div class="kbox-t">先講結論</div>
+        在 ACS，<b>決定 DAPT 時長的主角是「出血風險」，不是支架種類。</b>
+        現代藥物塗層支架（DES）的內皮化已遠優於第一代，<b>不再因為「放了 DES」而需要更長的 DAPT</b>；
+        裸金屬支架（BMS）在 ACS 也<b>不能因此縮短到 1 個月</b>——那是穩定型冠心症的舊觀念。
+      </div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>情境</th><th>DAPT 時長</th><th>之後</th></tr>
+          <tr><td><b>ACS + 現代 DES</b>（預設）</td><td><b>至少 12 個月</b>（Class 1）</td><td>轉單一抗血小板；缺血風險高且耐受良好者可延長</td></tr>
+          <tr><td><b>ACS + DES，已耐受 ticagrelor</b></td><td>DAPT <b>≥ 1 個月</b>後可轉換</td><td><b>Ticagrelor 單一治療</b>（2025 ACC/AHA 新列 Class 1，降低出血而不增加缺血）</td></tr>
+          <tr class="dt-warn"><td><b>高出血風險（HBR）</b></td><td>縮短至 <b>1–3 個月</b></td><td>轉 P2Y₁₂ 單一治療（MASTER DAPT）</td></tr>
+          <tr><td><b>ACS + BMS</b></td><td><b>仍為 12 個月</b>（同 DES）</td><td>BMS 現已極少使用；縮短至 1 個月僅適用於<b>穩定型冠心症</b>，不適用 ACS</td></tr>
+          <tr><td><b>藥物治療（未放支架）的 ACS</b></td><td>12 個月</td><td>時長由 ACS 本身決定，與有無支架無關</td></tr>
+          <tr><td><b>合併需長期抗凝</b>（如心房顫動）</td><td>三合一儘量縮短（多為 ≤ 1 週～1 個月）</td><td>轉 <b>抗凝＋單一 P2Y₁₂</b>（多選 clopidogrel），1 年後多為單獨抗凝</td></tr>
+        </table>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">高出血風險（HBR）常見條件</div>
+        高齡、貧血或近期輸血、慢性腎病（尤其透析）、需長期口服抗凝、出血病史或顱內出血、
+        肝硬化、活動性惡性腫瘤、血小板低下、近期大手術或預計手術、長期 NSAID／類固醇。
+      </div>
+      <div class="note">支架種類真正影響的是<b>提早停藥的容錯度</b>與<b>非心臟手術的排程</b>：DES 早期停藥仍有支架血栓風險，
+      非急迫手術宜等過 DAPT 期；急迫手術時通常保留 aspirin、停 P2Y₁₂（見下方停藥天數）。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">何時需要緊急／急迫 CABG</div>
+      <div class="kbox alert">
+        <div class="kbox-t">緊急 CABG 的適應症（不必等 SYNTAX 討論）</div>
+        <ul>
+          <li><b>機械併發症</b>：心室中隔破裂、乳頭肌斷裂造成急性二尖瓣逆流、游離壁破裂／心包填塞——修補手術同時做繞道。</li>
+          <li><b>PCI 失敗或無法施行，且仍有大範圍心肌處於缺血</b>：包括 PCI 併發冠脈剝離、無法通過的病灶。</li>
+          <li><b>心因性休克</b>合併左主幹或嚴重多支血管病變、解剖不適合 PCI 者——<b>不論發病多久</b>都應緊急血運重建。</li>
+          <li><b>持續或反覆缺血</b>，藥物治療無法控制，而解剖不適合 PCI。</li>
+          <li><b>致命性心室心律不整</b>合併左主幹或三支血管病變。</li>
+        </ul>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">可以「等一等」的（擇期／次急迫）</div>
+        血流動力學穩定、缺血已控制的多支血管或左主幹病變 → <b>Heart Team 討論</b>，用 SYNTAX 與糖尿病、
+        左心室功能等一併決定 PCI 或 CABG，並讓抗血小板藥有時間退掉。STEMI 應<b>先直接 PCI 打通犯罪血管</b>，
+        再談後續完整血運重建方式——不要為了等 CABG 而延誤急性再灌流。
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">術前 P2Y₁₂ 停藥（非緊急時）</div>
+        <ul>
+          <li><b>Ticagrelor</b> 停 3–5 天　·　<b>Clopidogrel</b> 停 5 天　·　<b>Prasugrel</b> 停 7 天。</li>
+          <li><b>Aspirin 一般不停</b>，持續至手術。</li>
+          <li><b>緊急手術不因停藥期而延後</b>——出血風險由外科與麻醉端處理（血小板輸注等），
+            延誤手術的代價高於出血。</li>
+        </ul>
+      </div>
+      <div style="margin-top:6px;">
+        <a class="flow-link" href="syntax.html?from=acs">→ SYNTAX Score：解剖複雜度與 PCI／CABG 選擇</a>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="kbox">
         <div class="kbox-t">後續二級預防（出院帶藥）</div>
         高強度 statin（目標 LDL &lt; 55 mg/dL 且較基礎降 ≥ 50%）、必要時加 ezetimibe／PCSK9i；ACEI/ARB（尤其 LVEF ≤ 40%、高血壓、糖尿病）；β-blocker（LVEF 降低者明確有益）；醛固酮拮抗劑（LVEF ≤ 40% 且心衰竭或糖尿病）；SGLT2i（心衰竭／糖尿病）；戒菸與心臟復健。
@@ -290,7 +362,7 @@
 
     <div class="dg" data-drug="aspirin">
       <div class="dg-head"><span class="dg-name">Aspirin</span><span class="dg-zh">阿斯匹靈（水溶／嚼服）</span></div>
-      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">162–325 <span class="dd-u">mg 嚼服</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">75–100 <span class="dd-u">mg QD 終生</span></span></span></div>
+      <div class="dg-dose"><span><span class="dd-k">loading dose</span><span class="dd-v">162–325 <span class="dd-u">mg 嚼服</span></span></span><span><span class="dd-k">maintenance</span><span class="dd-v alt">75–100 <span class="dd-u">mg QD 終生</span></span></span></div>
       <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
         <li><span class="ci-k">絕對</span> <span class="abs">對 aspirin 或 NSAID 過敏／aspirin 誘發氣喘</span>；<span class="abs">活動性大出血</span>、近期顱內出血。</li>
         <li><span class="ci-k">相對</span> 活動性消化性潰瘍、嚴重肝病、出血傾向。</li>
@@ -299,7 +371,7 @@
 
     <div class="dg" data-drug="ticagrelor">
       <div class="dg-head"><span class="dg-name">Ticagrelor</span><span class="dg-zh">Brilinta</span><span class="dg-tag">首選 P2Y₁₂</span></div>
-      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">180 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">90 <span class="dd-u">mg BID</span></span></span></div>
+      <div class="dg-dose"><span><span class="dd-k">loading dose</span><span class="dd-v">180 <span class="dd-u">mg</span></span></span><span><span class="dd-k">maintenance</span><span class="dd-v alt">90 <span class="dd-u">mg BID</span></span></span></div>
       <div class="dg-kin">可用於 PCI 與保守治療；停藥 3–5 天再手術</div>
       <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
         <li><span class="ci-k">絕對</span> <span class="abs">活動性病理性出血</span>、<span class="abs">顱內出血病史</span>、中重度肝功能不良。</li>
@@ -310,8 +382,8 @@
 
     <div class="dg" data-drug="prasugrel">
       <div class="dg-head"><span class="dg-name">Prasugrel</span><span class="dg-zh">Effient</span><span class="dg-tag">PCI 專用</span></div>
-      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">60 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">10 <span class="dd-u">mg QD</span></span></span></div>
-      <div class="dg-kin">僅用於<b>已知冠脈解剖、將行 PCI</b> 者；≥ 75 歲或 &lt; 60 kg 維持量減至 5 mg</div>
+      <div class="dg-dose"><span><span class="dd-k">loading dose</span><span class="dd-v">60 <span class="dd-u">mg</span></span></span><span><span class="dd-k">maintenance</span><span class="dd-v alt">10 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">僅用於<b>已知冠脈解剖、將行 PCI</b> 者；≥ 75 歲或 &lt; 60 kg 之 maintenance 減至 5 mg</div>
       <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
         <li><span class="ci-k">絕對</span> <span class="abs">中風／TIA 病史</span>（顱內出血風險）；活動性出血；嚴重肝病。</li>
         <li><span class="ci-k">不建議</span> ≥ 75 歲、體重 &lt; 60 kg（除非減量且效益明確）；未知解剖前的 NSTE-ACS 前置。</li>
@@ -320,8 +392,8 @@
 
     <div class="dg" data-drug="clopidogrel">
       <div class="dg-head"><span class="dg-name">Clopidogrel</span><span class="dg-zh">Plavix</span><span class="dg-tag">纖溶／不耐前二者時</span></div>
-      <div class="dg-dose"><span><span class="dd-k">負荷</span><span class="dd-v">300–600 <span class="dd-u">mg</span></span></span><span><span class="dd-k">維持</span><span class="dd-v alt">75 <span class="dd-u">mg QD</span></span></span></div>
-      <div class="dg-kin">纖溶治療者：≤ 75 歲負荷 300 mg，<b>&gt; 75 歲不給負荷</b>、直接 75 mg</div>
+      <div class="dg-dose"><span><span class="dd-k">loading dose</span><span class="dd-v">300–600 <span class="dd-u">mg</span></span></span><span><span class="dd-k">maintenance</span><span class="dd-v alt">75 <span class="dd-u">mg QD</span></span></span></div>
+      <div class="dg-kin">纖溶治療者：≤ 75 歲 loading 300 mg，<b>&gt; 75 歲不給 loading dose</b>、直接 75 mg</div>
       <div class="dg-ci"><div class="dg-ci-t">禁忌症 Contraindications</div><ul>
         <li><span class="ci-k">絕對</span> 活動性出血；嚴重肝功能不良。</li>
         <li><span class="ci-k">注意</span> CYP2C19 弱代謝者療效差；效力弱於 ticagrelor／prasugrel，故僅在後兩者禁忌或纖溶時選用。</li>
@@ -398,6 +470,11 @@
           <tr><td>hs-troponin 0/1h</td><td>ESC 0/1h 演算法系列驗證（如 Circulation 2021;144:773）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34376064/" target="_blank" rel="noopener">34376064</a></td></tr>
           <tr><td>door-to-needle 越短越好</td><td>Man S, et al. Circulation 2023;148:20</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37199147/" target="_blank" rel="noopener">37199147</a></td></tr>
           <tr><td>HEART score 外部驗證</td><td>BMC Emerg Med 2025;25:165（HEART/TIMI/GRACE 比較）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40847270/" target="_blank" rel="noopener">40847270</a></td></tr>
+          <tr><td>GRACE 分數原始推導</td><td>Granger CB, et al. Arch Intern Med 2003;163:2345</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/14563598/" target="_blank" rel="noopener">14563598</a></td></tr>
+          <tr class="dt-warn"><td>高出血風險縮短 DAPT</td><td>MASTER DAPT, N Engl J Med 2021;385:1643</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34449185/" target="_blank" rel="noopener">34449185</a></td></tr>
+          <tr><td>血管重建指引（PCI vs CABG）</td><td>2021 ACC/AHA/SCAI, Circulation 2022;145:e18</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34882435/" target="_blank" rel="noopener">34882435</a></td></tr>
+          <tr><td>左主幹 PCI vs CABG</td><td>Sabatine MS, et al. Lancet 2021;398:2247（個體資料統合）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34793745/" target="_blank" rel="noopener">34793745</a></td></tr>
+          <tr><td>術前 P2Y₁₂ 停藥與出血</td><td>Voetsch A, et al. Ann Thorac Surg 2021;111:77</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/32565086/" target="_blank" rel="noopener">32565086</a></td></tr>
         </table>
       </div>
     </div>

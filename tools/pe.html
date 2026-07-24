@@ -37,7 +37,11 @@
   .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
   .tl-item{position:relative; padding:0 0 14px 18px;}
   .tl-item:last-child{padding-bottom:2px;}
-  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+  /* 圓點要正好騎在 .tl 的 2px 左框上：框佔 x=-2~0，中心 -1。
+     全域的 *{box-sizing:border-box} 不套用到偽元素，故此處必須自己宣告，
+     否則 width:10px 會再加上左右各 2px 邊框（實際 14px）而使圓點右偏 2px。 */
+  .tl-item:before{content:''; position:absolute; box-sizing:border-box; left:-6px; top:5px;
+                  width:10px; height:10px;
                   border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
   .tl-item.t0:before{background:var(--accent2);}
   .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
@@ -156,6 +160,11 @@
           <div class="tl-h">臨床機率評分<span class="en">Wells / Geneva</span></div>
           <div class="tl-b">
             用 Wells 或修訂 Geneva 分「PE 不太可能 vs 可能」。可搭配 <b>PERC</b>（低機率者八項全陰可免驗 D-dimer）。
+            兩者表現相當，擇一使用即可——Wells 較快，Geneva <b>全為客觀項目</b>、不含「PE 是否為最可能診斷」的主觀判斷。
+            <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="flow-link" href="wells-pe.html?from=pe">→ Wells Score 計算器</a>
+              <a class="flow-link" href="geneva.html?from=pe">→ Revised Geneva 計算器</a>
+            </div>
           </div>
         </div>
         <div class="tl-item">

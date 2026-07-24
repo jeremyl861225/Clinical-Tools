@@ -37,7 +37,11 @@
   .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
   .tl-item{position:relative; padding:0 0 14px 18px;}
   .tl-item:last-child{padding-bottom:2px;}
-  .tl-item:before{content:''; position:absolute; left:-6px; top:5px; width:10px; height:10px;
+  /* 圓點要正好騎在 .tl 的 2px 左框上：框佔 x=-2~0，中心 -1。
+     全域的 *{box-sizing:border-box} 不套用到偽元素，故此處必須自己宣告，
+     否則 width:10px 會再加上左右各 2px 邊框（實際 14px）而使圓點右偏 2px。 */
+  .tl-item:before{content:''; position:absolute; box-sizing:border-box; left:-6px; top:5px;
+                  width:10px; height:10px;
                   border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
   .tl-item.t0:before{background:var(--accent2);}
   .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
