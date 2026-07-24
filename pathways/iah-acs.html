@@ -15,6 +15,40 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<style>
+  /* ── Björck 分類：以「腹壁固定程度 × 污染狀態」矩陣呈現 ──────────
+     原本借用 score-ref（數值→分數兩欄專用，末欄強制靠右）排出來的清單
+     既讀不出兩軸關係，也看不出缺 3C。改為矩陣後兩者一眼可見。 */
+  .bj-matrix{width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; margin:8px 0 0;}
+  .bj-matrix th,.bj-matrix td{padding:7px 5px; border-bottom:1px solid var(--line); text-align:center; vertical-align:middle;}
+  .bj-matrix thead th{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:5px; overflow-wrap:anywhere; vertical-align:bottom;}
+  .bj-ha{display:none;}  /* 窄螢幕才換上的縮寫欄名 */
+  /* table-layout:fixed 只認第一列，欄寬須下在 thead 上 */
+  .bj-matrix thead th:first-child{width:46%; text-align:left; color:var(--muted-soft); letter-spacing:.02em; text-transform:none; font-size:10.5px;}
+  .bj-matrix tbody th{text-align:left; font-weight:400; padding-right:10px;}
+  .bj-matrix tbody tr:last-child th,.bj-matrix tbody tr:last-child td{border-bottom:none;}
+  .bj-g{font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--muted); text-transform:uppercase;}
+  .bj-d{display:block; font-size:12.5px; font-weight:700; color:var(--accent2); margin-top:1px;}
+  .bj-n{display:block; font-size:11px; color:var(--muted-soft); line-height:1.5; margin-top:2px;}
+  .bj-code{display:inline-block; min-width:36px; padding:3px 6px; border:1px solid var(--accent-soft);
+        background:var(--soft-bg); border-radius:2px; font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent);}
+  .bj-na{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  /* Grade 4 不進矩陣：它是獨立的終點狀態，不再有 clean／contaminated 次分 */
+  .bj-g4{display:flex; gap:10px; align-items:flex-start; margin-top:9px; padding:9px 11px;
+        background:var(--accent2-soft); border-left:3px solid var(--accent2); border-radius:2px;}
+  .bj-g4 .bj-code{border-color:var(--accent2); color:var(--accent2); background:transparent; flex:none;}
+  .bj-g4-t{font-size:12.5px; line-height:1.6;}
+  .bj-foot{margin-top:8px; padding-left:9px; border-left:2px solid var(--line); font-size:11.5px; color:var(--muted); line-height:1.6;}
+  @media(max-width:430px){
+    .bj-matrix{font-size:11.5px;}
+    .bj-matrix th,.bj-matrix td{padding:6px 3px;}
+    .bj-matrix thead th:first-child{width:42%;}
+    .bj-matrix tbody th{padding-right:6px;}
+    .bj-hf{display:none;} .bj-ha{display:inline;}
+    .bj-code{min-width:30px; padding:3px 4px;}
+  }
+</style>
 </head>
 <body>
 <div class="sheet">
@@ -35,7 +69,7 @@
       ・<b>Open abdomen</b>：剖腹後皮膚與筋膜未關閉、需暫時性關腹者。<b>Lateralization</b>：腹壁肌肉與筋膜隨時間向外側偏離中線。<br><br>
 
       <b>◆ 階梯式內科治療（Fig 2）：</b>入口為「IAP ≥ 12 mmHg 即開始內科治療（<b>1C</b>）」，<b>至少每 4–6 小時或連續監測，滴定至 IAP ≤ 15 mmHg（1C）</b>。原文明訂：<b>各項介入應逐階施行直到 IAP 下降；若某項無反應，即升階至下一步</b>。<br>
-      <table class="score-ref" style="margin-top:6px;">
+      <table class="def-table" style="margin-top:6px;">
         <tr><th>步驟</th><th>排空腸腔內容物</th><th>排除腹腔占位病灶</th><th>改善腹壁順應性</th><th>優化輸液</th><th>優化灌流</th></tr>
         <tr><td><b>1</b></td><td>置放鼻胃管／肛管；促腸胃蠕動藥（2D）</td><td>腹部超音波找病灶</td><td>確保足夠鎮靜與止痛（1D）；移除束縛性敷料、腹部焦痂</td><td>避免過度液體復甦（2C）；第 3 天前達零至負液體平衡（2C）</td><td>目標導向液體復甦</td></tr>
         <tr><td><b>2</b></td><td>減少腸道營養；灌腸（1D）</td><td>腹部 CT 找病灶；經皮導管引流（2C）</td><td>考慮反 Trendelenburg 姿勢</td><td>以高張液、膠體復甦；穩定後審慎利尿移除液體</td><td>血流動力學監測導引復甦</td></tr>
@@ -57,23 +91,42 @@
   <details class="def-box" style="margin-bottom:12px;">
     <summary>Björck 修訂版開腹分類與 WSES 2018 開腹管理 Open Abdomen</summary>
     <div class="box-inner">
-      <b>◆ Björck 修訂版分類（2016；與 WSACS 2013 Table 3 逐字相同）：</b><br>
-      <table class="score-ref" style="margin-top:6px;">
-        <tr><th>Grade</th><th>定義</th></tr>
-        <tr><td><b>1</b></td><td><b>無固定</b> —— 腸道與腹壁間無沾黏、腹壁亦無固定（未發生 lateralization）</td></tr>
-        <tr><td>1A</td><td>Clean，無固定</td></tr>
-        <tr><td>1B</td><td>Contaminated，無固定</td></tr>
-        <tr><td>1C</td><td>Enteric leak，無固定</td></tr>
-        <tr><td><b>2</b></td><td><b>固定發展中</b> Developing fixation</td></tr>
-        <tr><td>2A</td><td>Clean，固定發展中</td></tr>
-        <tr><td>2B</td><td>Contaminated，固定發展中</td></tr>
-        <tr><td>2C</td><td>Enteric leak，固定發展中</td></tr>
-        <tr><td><b>3</b></td><td><b>Frozen abdomen</b></td></tr>
-        <tr><td>3A</td><td>Clean，frozen abdomen</td></tr>
-        <tr><td>3B</td><td>Contaminated，frozen abdomen</td></tr>
-        <tr><td><b>4</b></td><td><b>已形成之腸道－大氣瘻管</b>（established enteroatmospheric fistula, EAF）—— 定義為<b>永久性腸滲漏進入開腹腹腔，並伴隨肉芽組織</b></td></tr>
+      <b>◆ Björck 修訂版分類（2016；與 WSACS 2013 Table 3 逐字相同）：</b>數字為<b>腹壁固定程度</b>、字母為<b>污染狀態</b>，兩軸交叉即為分級。<br>
+      <table class="bj-matrix">
+        <thead>
+          <tr>
+            <th><span class="bj-hf">固定程度 ↓ ／ 污染狀態 →</span><span class="bj-ha">固定 ↓ ／ 污染 →</span></th>
+            <th>A · Clean</th>
+            <th>B · <span class="bj-hf">Contaminated</span><span class="bj-ha">Contam.</span></th>
+            <th>C · <span class="bj-hf">Enteric leak</span><span class="bj-ha">Leak</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="bj-g">Grade 1</span><span class="bj-d">無固定</span><span class="bj-n">腸道與腹壁間無沾黏、腹壁亦無固定（未發生 lateralization）</span></th>
+            <td><span class="bj-code">1A</span></td>
+            <td><span class="bj-code">1B</span></td>
+            <td><span class="bj-code">1C</span></td>
+          </tr>
+          <tr>
+            <th><span class="bj-g">Grade 2</span><span class="bj-d">固定發展中</span><span class="bj-n">Developing fixation</span></th>
+            <td><span class="bj-code">2A</span></td>
+            <td><span class="bj-code">2B</span></td>
+            <td><span class="bj-code">2C</span></td>
+          </tr>
+          <tr>
+            <th><span class="bj-g">Grade 3</span><span class="bj-d">Frozen abdomen</span><span class="bj-n">原文未給獨立正式定義；僅有 clean／contaminated 兩個次分</span></th>
+            <td><span class="bj-code">3A</span></td>
+            <td><span class="bj-code">3B</span></td>
+            <td><span class="bj-na">分類中無 3C</span></td>
+          </tr>
+        </tbody>
       </table>
-      WSACS 表格註腳：<i>Enteric leak 指腸內容物溢入腹腔、但<b>尚未</b>形成確立之腸瘻管的狀態。</i><br><br>
+      <div class="bj-g4">
+        <span class="bj-code">4</span>
+        <span class="bj-g4-t"><b>已形成之腸道－大氣瘻管</b>（established enteroatmospheric fistula, EAF）—— 定義為<b>永久性腸滲漏進入開腹腹腔，並伴隨肉芽組織</b>。不再分 clean／contaminated。</span>
+      </div>
+      <div class="bj-foot">WSACS 表格註腳：<i>Enteric leak 指腸內容物溢入腹腔、但<b>尚未</b>形成確立之腸瘻管的狀態。</i></div><br>
 
       <b>◆ 「受控的腸滲漏視為 clean」：</b>原文明訂 —— 腸滲漏若<b>已被縫合關閉、外置為造口，或已成為可受控引流的永久性腸皮瘻管（enterocutaneous fistula）</b>，即<b>視為 clean</b>。務必與 EAF 區分：EAF 之所以致命，在於難以達成源頭控制，常導致敗血症與死亡。<br><br>
 
