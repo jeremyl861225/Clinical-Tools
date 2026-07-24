@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抗凝逆轉 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-anticoag-reversal">
+  <div class="app-header">
+    <div><div class="eyebrow">Anticoagulant Reversal Tool</div><h1>抗凝／抗血小板緊急逆轉</h1><div class="sub">Reversal of Antithrombotics · 依 ACC 2020 出血處置決策路徑</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-anticoag-reversal'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">逆轉之前 Before Reversing</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      逆轉劑<b>只用於危及生命的出血，或初步處置無法止住的重大出血</b>（ACC 2020）。逆轉之前與同時都要做的：<b>停藥、局部止血、輸血維持循環、找出血源</b>。<br>
+      問三件事決定方案：<b>① 用的是哪一種抗栓藥；② FXa 抑制劑要問劑量與最後服藥時間（決定 andexanet 高/低劑量）；③ 體重（PCC 依公斤計）</b>。<br>
+      <span class="note">逆轉會帶來血栓風險——止血目的達到後應盡快<b>重新評估恢復抗凝的時機</b>（依原適應症的血栓風險，通常出血控制後數日內）。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>各藥逆轉全表、andexanet 分層、活性碳與抗血小板 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ VKA（warfarin 等 coumarin）：</b><br>
+      ・<b>4F-PCC 依 INR</b>：INR 2–&lt;4 → <b>25 U/kg</b>；INR 4–6 → <b>35 U/kg</b>；INR &gt;6 → <b>50 U/kg</b>。或<b>低固定劑量</b>：非顱內大出血 <b>1000 U</b>、ICH <b>1500 U</b>。<br>
+      ・<b>務必同時給 vitamin K</b>（大出血 <b>10 mg 緩慢靜脈注射</b>）——PCC 效果數小時後消退，vitamin K 維持後續矯正。<br>
+      ・無 4F-PCC 時用<b>血漿 10–15 mL/kg</b>（起效慢、量大、有容積負荷）。<br><br>
+
+      <b>◆ 直接凝血酶抑制劑 DTI（dabigatran）：</b><br>
+      ・<b>idarucizumab 5 g 靜脈注射</b>（specific reversal agent）。<br>
+      ・無 idarucizumab 時用 <b>PCC 或 aPCC</b>。<br>
+      ・<b>出血持續且仍有 dabigatran 效應</b>（或二次侵入性處置前仍有殘餘抗凝疑慮）時，<b>再給一劑 idarucizumab 可能合理</b>。<br>
+      ・<b>dabigatran 可經血液透析清除</b>（腎排除為主）——嚴重出血合併腎功能不良時可考慮。<br><br>
+
+      <b>◆ FXa 抑制劑（apixaban、rivaroxaban、edoxaban、betrixaban）：</b><br>
+      ・<b>andexanet alfa</b>，劑量依<b>藥物、劑量與最後服藥時間</b>分兩級：<br>
+      　－<b>低劑量</b>（apixaban ≤5 mg 或 rivaroxaban ≤10 mg，<b>或最後服藥 &gt;8 小時</b>）：bolus <b>400 mg</b>（30 mg/min）＋ infusion <b>4 mg/min ×120 分鐘</b>。<br>
+      　－<b>高劑量</b>（apixaban &gt;5 mg 或 rivaroxaban &gt;10 mg，<b>且最後服藥 &lt;8 小時或劑量未知</b>）：bolus <b>800 mg</b>（30 mg/min）＋ infusion <b>8 mg/min ×120 分鐘</b>。<br>
+      　－<b>edoxaban／betrixaban：一律用高劑量</b> andexanet。<br>
+      ・<b>無 andexanet 時用 PCC 或 aPCC（50 U/kg）</b>。<br>
+      ・<span class="note">ANNEXA-4 排除 DOAC 濃度 &lt;75 ng/mL 者（視為濃度過低不需逆轉）；若能在不延誤緊急處置下測藥物濃度，應先評估再給 andexanet。andexanet 為 off-label 用於 edoxaban／betrixaban。</span><br><br>
+
+      <b>◆ 活性碳（activated charcoal）：</b>DOAC（dabigatran 與 FXa 抑制劑）<b>最後服藥在 2–4 小時內</b>者可考慮，減少持續吸收。<br><br>
+
+      <b>◆ 肝素類（非 ACC 2020 範圍，依標準與 AHA 2022）：</b><br>
+      ・<b>未分餾肝素（UFH）</b>：<b>protamine 1 mg 中和約 100 U 肝素</b>（以近 2–3 小時內的總量估算），<b>單次上限約 50 mg</b>，緩慢靜脈注射（過快會低血壓）。<br>
+      ・<b>低分子量肝素（LMWH）</b>：protamine <b>部分</b>逆轉——enoxaparin 若在 8 小時內，每 <b>1 mg enoxaparin 給 1 mg protamine</b>；抗 FXa 活性只能部分中和。<br><br>
+
+      <b>◆ 抗血小板藥（aspirin、clopidogrel、ticagrelor 等）：</b><br>
+      ・<b>不常規輸血小板</b>：自發性腦出血服用抗血小板藥者，<b>PATCH 試驗顯示血小板輸注反而有害</b>（AHA 2022 列為 Class 3：Harm，除非需緊急神經外科手術）。<br>
+      ・<b>需要緊急手術</b>者可考慮輸血小板減少術後出血；<b>desmopressin</b>（併或不併血小板輸注）減少血腫擴大的效果<b>不確定</b>（AHA 2022，2b）。<br>
+      ・<b>沒有 specific reversal agent</b>；主要靠停藥與時間（血小板功能隨新生血小板恢復）。<br><br>
+
+      <b>◆ 溶栓劑（fibrinolytic，如 alteplase／tenecteplase）相關出血：</b>停止輸注；補充<b>冷凍沉澱品（cryoprecipitate）</b>補纖維蛋白原，必要時 <b>tranexamic acid</b>、新鮮冷凍血漿與血小板——依出血部位與嚴重度，與神經／血液科共同決定。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">選擇抗栓藥 Select Agent</div>
+    <div class="field-row">
+      <label>使用中的抗栓藥</label>
+      <select id="ar_drug">
+        <option value="">— 選擇 —</option>
+        <option value="vka">VKA（warfarin）</option>
+        <option value="dabi">Dabigatran（DTI）</option>
+        <option value="fxa">FXa 抑制劑（apixaban／rivaroxaban／edoxaban／betrixaban）</option>
+        <option value="ufh">未分餾肝素 UFH</option>
+        <option value="lmwh">低分子量肝素 LMWH</option>
+        <option value="antiplatelet">抗血小板藥</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label>體重</label>
+      <input type="number" id="ar_wt" step="1" placeholder="—">
+      <span class="unit">kg</span>
+    </div>
+
+    <div id="ar_vka_rows" style="display:none;">
+      <div class="field-row">
+        <label>INR</label>
+        <input type="number" id="ar_inr" step="0.1" placeholder="—">
+      </div>
+      <label class="toggle-inline"><input type="checkbox" id="ar_ich"> 顱內出血（ICH）</label>
+    </div>
+
+    <div id="ar_fxa_rows" style="display:none;">
+      <div class="field-row">
+        <label>藥物</label>
+        <select id="ar_fxadrug">
+          <option value="apix">apixaban</option>
+          <option value="riva">rivaroxaban</option>
+          <option value="edox">edoxaban</option>
+          <option value="betr">betrixaban</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>最近劑量</label>
+        <select id="ar_fxadose">
+          <option value="low">apixaban ≤5 mg／rivaroxaban ≤10 mg</option>
+          <option value="high">apixaban &gt;5 mg／rivaroxaban &gt;10 mg</option>
+          <option value="unknown">劑量未知</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>最後服藥距今</label>
+        <select id="ar_fxatime">
+          <option value="lt8">&lt; 8 小時</option>
+          <option value="gt8">&gt; 8 小時</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">逆轉方案 Reversal Strategy</div>
+    <div style="font-size:15px; margin-top:4px;" id="ar_out">請選擇抗栓藥。</div>
+    <div class="risk-note">逆轉劑僅用於<b>危及生命出血或無法止住的重大出血</b>。同時進行停藥、局部止血、輸血與找出血源。ACC 2020 出血決策路徑主要涵蓋口服抗凝劑（VKA 與 DOAC）；肝素、抗血小板與溶栓相關出血的建議依標準與 AHA 2022。止血後應重新評估<b>恢復抗凝的時機</b>。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/32680646/" target="_blank" rel="noopener" class="ref-link">Tomaselli GF, Mahaffey KW, Cuker A, et al. 2020 ACC Expert Consensus Decision Pathway on Management of Bleeding in Patients on Oral Anticoagulants. J Am Coll Cardiol. 2020;76(5):594-622.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35579034/" target="_blank" rel="noopener" class="ref-link">Greenberg SM, et al. 2022 Guideline for the Management of Patients With Spontaneous Intracerebral Hemorrhage. Stroke. 2022;53(7):e282-e361.</a></footer>
+</div>
+</div>
+<script>
+function arNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function arCalc(){
+  const drug=document.getElementById('ar_drug').value;
+  const wt=arNum('ar_wt');
+
+  document.getElementById('ar_vka_rows').style.display = drug==='vka' ? '' : 'none';
+  document.getElementById('ar_fxa_rows').style.display = drug==='fxa' ? '' : 'none';
+
+  let out='請選擇抗栓藥。';
+
+  if(drug==='vka'){
+    const inr=arNum('ar_inr');
+    const ich=document.getElementById('ar_ich').checked;
+    let pcc;
+    if(inr===null) pcc='輸入 INR 後顯示 4F-PCC 劑量';
+    else {
+      let perKg = inr>6 ? 50 : (inr>=4 ? 35 : 25);
+      const dose = wt ? '（'+wt+' kg → '+Math.round(perKg*wt)+' U）' : '';
+      pcc = '<b>4F-PCC '+perKg+' U/kg</b>'+dose+'（INR '+(inr>6?'&gt;6':(inr>=4?'4–6':'2–&lt;4'))+'）；或低固定劑量 <b>'+(ich?'1500 U（ICH）':'1000 U（非顱內大出血）')+'</b>';
+    }
+    out='<li>'+pcc+'。</li>' +
+      '<li><b>務必同時給 vitamin K 10 mg 緩慢靜脈注射</b>——PCC 數小時後消退，需 vitamin K 維持矯正。</li>' +
+      '<li>無 4F-PCC 時用<b>血漿 10–15 mL/kg</b>'+(wt?'（'+Math.round(10*wt)+'–'+Math.round(15*wt)+' mL）':'')+'。</li>';
+  } else if(drug==='dabi'){
+    out='<li><b>idarucizumab 5 g 靜脈注射</b>（specific reversal agent）。</li>' +
+      '<li>無 idarucizumab 時用 <b>PCC 或 aPCC</b>；<b>dabigatran 可經血液透析清除</b>（尤其腎功能不良）。</li>' +
+      '<li><b>最後服藥 2–4 小時內</b>可考慮<b>活性碳</b>。</li>' +
+      '<li>出血持續且仍有 dabigatran 效應時，<b>再給一劑 idarucizumab 可能合理</b>。</li>';
+  } else if(drug==='fxa'){
+    const fd=document.getElementById('ar_fxadrug').value;
+    const dose=document.getElementById('ar_fxadose').value;
+    const time=document.getElementById('ar_fxatime').value;
+    /* edoxaban/betrixaban 一律高劑量；否則依劑量與時間 */
+    let high;
+    if(fd==='edox' || fd==='betr') high=true;
+    else if(time==='gt8') high=false;              /* >8h → 低劑量 */
+    else high = (dose==='high' || dose==='unknown');
+    const regimen = high
+      ? '<b>高劑量 andexanet alfa：bolus 800 mg（30 mg/min）＋ infusion 8 mg/min ×120 分鐘</b>'
+      : '<b>低劑量 andexanet alfa：bolus 400 mg（30 mg/min）＋ infusion 4 mg/min ×120 分鐘</b>';
+    const why = (fd==='edox'||fd==='betr') ? '（edoxaban／betrixaban 一律高劑量，off-label）'
+      : (time==='gt8' ? '（最後服藥 &gt;8 小時 → 低劑量）'
+      : (dose==='low' ? '（apixaban ≤5／rivaroxaban ≤10 mg 且 &lt;8 小時 → 低劑量）' : '（高劑量或劑量未知且 &lt;8 小時 → 高劑量）'));
+    out='<li>'+regimen+' '+why+'。</li>' +
+      '<li>無 andexanet 時用 <b>PCC 或 aPCC 50 U/kg</b>'+(wt?'（'+wt+' kg → '+Math.round(50*wt)+' U）':'')+'。</li>' +
+      '<li><b>最後服藥 2–4 小時內</b>可考慮<b>活性碳</b>。</li>' +
+      '<li><span class="note">若能在不延誤處置下測 DOAC 濃度，&lt;75 ng/mL 者可能不需逆轉（ANNEXA-4 排除標準）。</span></li>';
+  } else if(drug==='ufh'){
+    out='<li><b>protamine 1 mg 中和約 100 U 肝素</b>（以近 2–3 小時內的總量估算），<b>單次上限約 50 mg</b>，緩慢靜脈注射（過快會低血壓與過敏反應）。</li>' +
+      '<li>停止肝素輸注；以 aPTT／anti-Xa 追蹤逆轉程度。</li>';
+  } else if(drug==='lmwh'){
+    out='<li><b>protamine 部分逆轉</b>：enoxaparin 若在 <b>8 小時內</b>，每 <b>1 mg enoxaparin 給 1 mg protamine</b>（超過 8 小時減量）；抗 FXa 活性<b>只能部分中和</b>。</li>' +
+      '<li>停藥；LMWH 半衰期較長，需觀察較久。</li>';
+  } else if(drug==='antiplatelet'){
+    out='<li><b>不常規輸血小板</b>：自發性 ICH 服用抗血小板藥者，<b>PATCH 試驗顯示血小板輸注有害</b>（AHA 2022 Class 3：Harm），<b>除非需緊急神經外科手術</b>。</li>' +
+      '<li><b>需緊急手術</b>者可考慮輸血小板；<b>desmopressin</b> 減少血腫擴大的效果<b>不確定</b>（2b）。</li>' +
+      '<li><b>無 specific reversal agent</b>——主要靠停藥與時間（新生血小板恢復功能）。</li>';
+  }
+
+  document.getElementById('ar_out').innerHTML = out;
+}
+document.querySelectorAll('#view-anticoag-reversal input, #view-anticoag-reversal select')
+  .forEach(el => { el.addEventListener('input', arCalc); el.addEventListener('change', arCalc); });
+arCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
