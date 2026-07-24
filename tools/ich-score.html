@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICH Score · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-ich-score">
+  <div class="app-header">
+    <div><div class="eyebrow">Intracerebral Hemorrhage Scoring Tool</div><h1>ICH Score</h1><div class="sub">自發性腦內出血嚴重度 · 含 ABC/2 血腫體積估算（Hemphill 2001）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="is_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ich.html?restore=1'">← 返回腦出血決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-ich-score'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">使用前必讀 Before You Use</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      ICH Score 是<b>風險分層</b>工具，<b>不可用來決定是否撤除維生治療</b>。這一點在自發性腦內出血特別重要——早期的悲觀預測會導致早期限制治療，而早期限制治療本身又使預後變差，形成<b>自我實現的預言</b>。AHA/ASA 2022 指引因此把「延後對預後的定論、避免過早限制維生治療」列為明確建議。<br>
+      原始世代為 <b>152 人</b>（1997–1998，單一醫學中心），整體 30 天死亡率 45%。<b>0 分者 26 人全部存活、5 分者 6 人全部死亡</b>；30 天死亡率隨分數穩定上升（P&lt;0.005）。<br>
+      <span class="note">本頁<b>刻意不列出各分數對應的死亡率百分比</b>：那些數字廣被轉載，但原文為訂閱制、無開放全文，本次查核<b>未能取得一手數值</b>。與其轉抄無法核對的數字，不如標明出處讓使用者自行查閱原文圖 2。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>計分定義、ABC/2 體積估算與已知限制 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 五個項目（總分 0–6）：</b><br>
+      ・<b>GCS</b>：3–4 分 = <b>2 分</b>；5–12 分 = <b>1 分</b>；13–15 分 = <b>0 分</b>。<br>
+      ・<b>年齡 ≥80 歲</b> = 1 分。<br>
+      ・<b>幕下起源</b>（infratentorial：腦幹或小腦）= 1 分。<br>
+      ・<b>血腫體積 ≥30 cm³</b> = 1 分。<br>
+      ・<b>腦室內出血</b>（IVH）= 1 分。<br><br>
+
+      <b>◆ ABC/2 體積估算：</b>體積(cm³) ≈ <b>(A × B × C) ÷ 2</b>。<br>
+      ・<b>A</b>：血腫最大切面上的<b>最大徑</b>（cm）。<br>
+      ・<b>B</b>：同一切面上<b>與 A 垂直</b>的最大徑（cm）。<br>
+      ・<b>C</b>：<b>血腫的上下高度</b>（cm）＝有血腫的切片數 × 切片厚度。實務上常以「相對於最大切面，血腫面積 ≥75% 的切片計 1、25–75% 計 0.5、&lt;25% 不計」來加總切片數，再乘以切片厚度。<br>
+      <span class="note">ABC/2 是<b>橢球體體積公式的簡化</b>（假設血腫近似橢球）。<b>形狀不規則、分葉狀或已破入腦室的血腫會低估或高估</b>；體積接近 30 cm³ 的門檻時，判讀差異足以改變分數，必要時應以電腦體積測量法確認。</span><br><br>
+
+      <b>◆ 幕下的定義：</b>指出血起源於<b>腦幹或小腦</b>。幕下出血即使體積小，因後顱窩空間有限、鄰近腦幹與第四腦室，死亡率仍高，故獨立計 1 分。<br><br>
+
+      <b>◆ 已知限制：</b><br>
+      ・單一中心、152 人的世代所建立；<b>GCS 應取到院時的數值</b>，插管鎮靜後再評分會失真。<br>
+      ・分數<b>不含</b>抗凝狀態、血腫擴大、發病到就醫時間等已知的重要預後因子。<br>
+      ・後續研究已驗證其可預測 12 個月功能預後，但<b>個別病人的預後不可只憑分數判定</b>。<br><br>
+
+      <b>◆ 與處置的關係：</b>ICH Score 不決定手術。AHA/ASA 2022 的手術判準用的是<b>血腫位置、體積與 GCS</b>（例如幕上血腫 &gt;20–30 mL 且 GCS 5–12 才是微創清除的族群），不是 ICH Score。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">臨床項目 Clinical</div>
+    <div class="field-row">
+      <label>GCS 總分</label>
+      <input type="number" id="is_gcs" step="1" min="3" max="15" placeholder="3–15">
+      <span class="organ-score" id="is_p_gcs">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>13–15</td><td>0分</td></tr>
+      <tr><td>5–12</td><td>1分</td></tr>
+      <tr><td>3–4</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>年齡</label>
+      <input type="number" id="is_age" step="1" placeholder="—">
+      <span class="unit">歲</span>
+      <span class="organ-score" id="is_p_age">0</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="is_infra"> 幕下起源（腦幹或小腦）<span class="pt-badge">1分</span></label>
+    <label class="toggle-inline"><input type="checkbox" id="is_ivh"> 腦室內出血（IVH）<span class="pt-badge">1分</span></label>
+  </div>
+
+  <div class="card">
+    <div class="section-title">血腫體積 Hematoma Volume（ABC/2）</div>
+    <div class="field-row">
+      <label>輸入方式</label>
+      <select id="is_volmode">
+        <option value="abc">以 ABC/2 估算</option>
+        <option value="direct">直接輸入體積</option>
+      </select>
+    </div>
+    <div id="is_abc_rows">
+      <div class="field-row">
+        <label>A 最大徑</label>
+        <input type="number" id="is_a" step="0.1" placeholder="—">
+        <span class="unit">cm</span>
+      </div>
+      <div class="field-row">
+        <label>B 垂直徑</label>
+        <input type="number" id="is_b" step="0.1" placeholder="—">
+        <span class="unit">cm</span>
+      </div>
+      <div class="field-row">
+        <label>C 上下高度</label>
+        <input type="number" id="is_c" step="0.1" placeholder="—">
+        <span class="unit">cm（切片數 × 切片厚度）</span>
+      </div>
+    </div>
+    <div class="field-row" id="is_direct_row">
+      <label>血腫體積</label>
+      <input type="number" id="is_vol" step="1" placeholder="—">
+      <span class="unit">cm³（mL）</span>
+    </div>
+    <div class="field-row">
+      <label>估算結果</label>
+      <span class="metric-value" id="is_volout" style="font-size:20px;">—</span>
+      <span class="unit">cm³</span>
+      <span class="organ-score" id="is_p_vol">0</span>
+    </div>
+    <div class="exclusive-note">體積 <b>≥30 cm³</b> 計 1 分。ABC/2 假設血腫近似橢球，<b>形狀不規則或分葉狀時誤差大</b>；數值接近 30 時建議以電腦體積測量確認。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">ICH Score</div><div class="metric-value big" id="is_total">0</div></div>
+      <div><div class="metric-label">血腫體積</div><div class="metric-value big" id="is_vol2" style="font-size:30px;">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="is_interp">請輸入 GCS、年齡與血腫資訊。</div>
+    <table class="ref">
+      <tr><th>項目</th><th>條件</th><th>分數</th></tr>
+      <tr><td>GCS</td><td>3–4 ／ 5–12 ／ 13–15</td><td>2 ／ 1 ／ 0</td></tr>
+      <tr><td>年齡</td><td>≥ 80 歲</td><td>1</td></tr>
+      <tr><td>起源</td><td>幕下（腦幹或小腦）</td><td>1</td></tr>
+      <tr><td>體積</td><td>≥ 30 cm³</td><td>1</td></tr>
+      <tr><td>腦室內出血</td><td>有</td><td>1</td></tr>
+    </table>
+    <div class="risk-note">原始世代 152 人（Hemphill 2001），整體 30 天死亡率 45%；<b>0 分者 26 人全部存活、5 分者 6 人全部死亡</b>，死亡率隨分數穩定上升（P&lt;0.005）。各分數對應的百分比請查原文圖 2——本頁未取得一手數值，故不轉載。<b>本分數不可用於決定撤除維生治療</b>。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/11283388/" target="_blank" rel="noopener" class="ref-link">Hemphill JC 3rd, Bonovich DC, Besmertis L, Manley GT, Johnston SC. The ICH score: a simple, reliable grading scale for intracerebral hemorrhage. Stroke. 2001;32(4):891-897.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35579034/" target="_blank" rel="noopener" class="ref-link">Greenberg SM, Ziai WC, Cordonnier C, et al. 2022 Guideline for the Management of Patients With Spontaneous Intracerebral Hemorrhage: A Guideline From the American Heart Association/American Stroke Association. Stroke. 2022;53(7):e282-e361.</a></footer>
+</div>
+</div>
+<script>
+function isNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function isCalc(){
+  const mode=document.getElementById('is_volmode').value;
+  document.getElementById('is_abc_rows').style.display = mode==='abc' ? '' : 'none';
+  document.getElementById('is_direct_row').style.display = mode==='direct' ? '' : 'none';
+
+  /* 體積 */
+  let vol=null;
+  if(mode==='abc'){
+    const a=isNum('is_a'), b=isNum('is_b'), c=isNum('is_c');
+    if(a!==null && b!==null && c!==null) vol = a*b*c/2;
+  } else {
+    vol = isNum('is_vol');
+  }
+  const volTxt = vol===null ? '—' : vol.toFixed(1);
+  document.getElementById('is_volout').textContent = volTxt;
+  document.getElementById('is_vol2').textContent = volTxt;
+
+  /* 計分 */
+  const gcs=isNum('is_gcs');
+  let pGcs=0;
+  if(gcs!==null){
+    if(gcs<=4) pGcs=2; else if(gcs<=12) pGcs=1; else pGcs=0;
+  }
+  const age=isNum('is_age');
+  const pAge=(age!==null && age>=80)?1:0;
+  const pInfra=document.getElementById('is_infra').checked?1:0;
+  const pIvh=document.getElementById('is_ivh').checked?1:0;
+  const pVol=(vol!==null && vol>=30)?1:0;
+
+  document.getElementById('is_p_gcs').textContent=pGcs;
+  document.getElementById('is_p_age').textContent=pAge;
+  document.getElementById('is_p_vol').textContent=pVol;
+
+  const total=pGcs+pAge+pInfra+pIvh+pVol;
+  document.getElementById('is_total').textContent=total;
+
+  let interp;
+  if(gcs===null && vol===null){
+    interp='請輸入 GCS、年齡與血腫資訊。';
+  } else {
+    const parts=[];
+    if(pGcs) parts.push('GCS '+pGcs+' 分');
+    if(pAge) parts.push('年齡 ≥80');
+    if(pInfra) parts.push('幕下起源');
+    if(pVol) parts.push('體積 ≥30 cm³');
+    if(pIvh) parts.push('腦室內出血');
+    interp = '總分 <b>'+total+'</b> 分' + (parts.length ? '（'+parts.join('、')+'）' : '（無任何危險因子）') + '。';
+    if(total===0){
+      interp += ' 原始世代中 <b>0 分者 26 人全部存活</b>。';
+    } else if(total>=5){
+      interp += ' 原始世代中 <b>5 分者 6 人全部死亡</b>；6 分在原始世代<b>無病例</b>。';
+    } else {
+      interp += ' 30 天死亡率隨分數穩定上升（原始世代整體 45%）。';
+    }
+    interp += '<br><b>此分數用於風險分層與溝通，不可作為撤除維生治療的依據</b>——早期的悲觀預測會造成自我實現的預言。';
+  }
+  document.getElementById('is_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-ich-score input, #view-ich-score select')
+  .forEach(el => { el.addEventListener('input', isCalc); el.addEventListener('change', isCalc); });
+isCalc();
+if(location.search.indexOf('from=ich')>=0){var _b=document.getElementById('is_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

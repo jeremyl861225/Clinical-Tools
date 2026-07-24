@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ottawa SAH Rule · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-ottawa-sah">
+  <div class="app-header">
+    <div><div class="eyebrow">Headache Decision Rule</div><h1>Ottawa SAH Rule</h1><div class="sub">急性頭痛排除蜘蛛膜下腔出血 · 用來「決定要不要檢查」，不是用來診斷（Perry 2013）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-ottawa-sah'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">先確認適用對象 Applicability First</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      這條規則<b>只適用於一種很窄的病人</b>：<b>成人、非創傷性、急性頭痛且在 1 小時內達到最痛，神經學檢查正常</b>。<br>
+      <b>不符合這些條件就不要用</b>——有神經學缺損、外傷、頭痛超過 1 小時才達峰、或已知動脈瘤／SAH 病史者，本規則<b>沒有被驗證過</b>，應直接依臨床判斷檢查。<br>
+      規則的用途是<b>「這個人需不需要做檢查」</b>：<b>六項全部沒有</b>才可以不查；<b>任一項存在就要查</b>。它<b>不能</b>用來判斷有沒有 SAH。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>原始研究、效能數字與怎麼讀「特異度 15%」 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 原始研究（Perry 2013，JAMA 310(12):1248-1255）：</b>加拿大 <b>10 家三級醫學中心急診</b>、2006 年 4 月至 2010 年 7 月、<b>2,131 名成人</b>的多中心世代研究，其中 <b>132 人（6.2%）</b>確診 SAH。<br><br>
+
+      <b>◆ 效能：</b>最終的 Ottawa SAH Rule <b>敏感度 100%</b>（95% CI 97.2–100.0%）、<b>特異度 15.3%</b>（95% CI 13.8–16.9%）。<br>
+      該研究另評估的一條較簡單的規則（年齡 ≥40、頸部疼痛或僵硬、目擊意識喪失、用力時發作，四項）敏感度為 98.5%（94.6–99.6%）、特異度 27.5%（25.6–29.5%）——<b>Ottawa 規則多加了「霹靂性頭痛」與「頸部屈曲受限」兩項，把敏感度推到 100%，代價是特異度更低</b>。<br><br>
+
+      <b>◆ 「特異度只有 15%」該怎麼讀：</b>這不是缺點，是設計上的取捨。這類規則的目的是<b>安全地排除</b>致命診斷，因此刻意把敏感度推到極限；代價是<b>陽性完全不具鑑別力</b>——符合任一項的病人裡，絕大多數並沒有 SAH。<br>
+      實務含意：<b>規則陽性只代表「需要進一步檢查」</b>，不代表機率高。它能幫你安全地放掉的是那一小群六項全陰的病人。<br><br>
+
+      <b>◆ 檢查怎麼做（原始研究情境）：</b>規則本身只回答「查或不查」，不規定用什麼查。臨床上常見的路徑是頭部電腦斷層（發病後越早做敏感度越高），必要時加上腰椎穿刺或血管影像。<b>各項檢查的時間窗與判讀屬各國指引範圍，本頁不予規定</b>——AHA/ASA 2023 動脈瘤性 SAH 指引全文為訂閱制，本次查核無法取得一手內容。<br><br>
+
+      <b>◆ 六項判準的細節：</b><br>
+      ・<b>年齡 ≥40 歲</b>。<br>
+      ・<b>頸部疼痛或僵硬</b>（症狀，病人主訴）。<br>
+      ・<b>目擊的意識喪失</b>——需有人目擊，不是病人自述「好像昏過去」。<br>
+      ・<b>用力時發作</b>（onset during exertion）。<br>
+      ・<b>霹靂性頭痛</b>——<b>瞬間</b>達到最痛（instantly peaking pain），比「1 小時內達峰」更嚴格。<br>
+      ・<b>頸部屈曲受限</b>（limited neck flexion on examination）——這是<b>理學檢查</b>的發現，與第二項的主訴不同。
+    </div>
+  </details>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">適用條件 Inclusion Criteria（全部符合才可使用）</div>
+    <label class="toggle-inline"><input type="checkbox" id="ot_adult"> 成人（≥15 歲）</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_nontrauma"> 非創傷性頭痛</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_peak"> 頭痛於 <b>1 小時內</b>達到最大強度</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_normal"> 神經學檢查正常（無局部缺損、無意識障礙）</label>
+    <div class="note">任一項不成立即<b>不可使用本規則</b>，應直接依臨床判斷安排檢查。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">六項判準 The Six Criteria</div>
+    <label class="item"><input type="checkbox" id="ot_c1"> 年齡 ≥ 40 歲 <span class="pt-badge">陽性</span></label>
+    <label class="item"><input type="checkbox" id="ot_c2"> 頸部疼痛或僵硬（主訴） <span class="pt-badge">陽性</span></label>
+    <label class="item"><input type="checkbox" id="ot_c3"> 目擊的意識喪失 <span class="pt-badge">陽性</span></label>
+    <label class="item"><input type="checkbox" id="ot_c4"> 用力時發作 <span class="pt-badge">陽性</span></label>
+    <label class="item"><input type="checkbox" id="ot_c5"> 霹靂性頭痛（瞬間達最痛） <span class="pt-badge">陽性</span></label>
+    <label class="item"><input type="checkbox" id="ot_c6"> 頸部屈曲受限（理學檢查） <span class="pt-badge">陽性</span></label>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">結果</div><div class="metric-value big" id="ot_out" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label">陽性項目</div><div class="metric-value big" id="ot_count">0</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀</div>
+    <div style="font-size:15px; margin-top:2px;" id="ot_interp">請先確認四項適用條件。</div>
+    <table class="ref">
+      <tr><th>結果</th><th>意義</th></tr>
+      <tr><td>六項全陰</td><td>可不做 SAH 相關檢查（敏感度 100%，95% CI 97.2–100%）</td></tr>
+      <tr><td>任一項陽性</td><td>需進一步檢查——<b>但不代表 SAH 機率高</b>（特異度僅 15.3%）</td></tr>
+      <tr><td>不符合適用條件</td><td>本規則未經驗證，依臨床判斷處理</td></tr>
+    </table>
+    <div class="risk-note">原始世代 2,131 人、SAH 盛行率 <b>6.2%</b>（加拿大 10 家三級醫學中心急診）。此規則<b>只用於決定要不要檢查</b>，<b>不能用來診斷或排除已在檢查中的病人</b>。神經學檢查異常、外傷、或頭痛超過 1 小時才達峰者<b>不適用</b>。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/24065011/" target="_blank" rel="noopener" class="ref-link">Perry JJ, Stiell IG, Sivilotti MLA, et al. Clinical decision rules to rule out subarachnoid hemorrhage for acute headache. JAMA. 2013;310(12):1248-1255.</a></footer>
+</div>
+</div>
+<script>
+function otCalc(){
+  const incl=['ot_adult','ot_nontrauma','ot_peak','ot_normal'].every(i=>document.getElementById(i).checked);
+  const crits=['ot_c1','ot_c2','ot_c3','ot_c4','ot_c5','ot_c6'];
+  const n=crits.filter(i=>document.getElementById(i).checked).length;
+  document.getElementById('ot_count').textContent=n;
+
+  let out='—', interp='請先確認四項適用條件。';
+  if(!incl){
+    out='不適用';
+    interp='<b>未滿足全部四項適用條件，本規則不適用</b>。Ottawa SAH Rule 只在「成人、非創傷性、1 小時內達最痛、神經學檢查正常」的族群中驗證過；不符者請<b>直接依臨床判斷安排檢查</b>，不要用本規則來免除檢查。';
+  } else if(n===0){
+    out='六項全陰';
+    interp='<b>六項判準全部為陰性</b>——依原始研究，此情形下可<b>不做 SAH 相關檢查</b>（敏感度 100%，95% CI 97.2–100.0%）。<br>仍應記錄六項判準的評估結果，並向病人交代<b>症狀變化時回診</b>的條件。';
+  } else {
+    out='需要檢查';
+    interp='<b>有 '+n+' 項為陽性 → 需要進一步檢查</b>以排除 SAH。<br><b>但陽性幾乎不帶鑑別力</b>：本規則特異度僅 <b>15.3%</b>（95% CI 13.8–16.9%），也就是符合任一項的病人中<b>絕大多數並沒有 SAH</b>。陽性只代表「不能就這樣放掉」，不代表機率高。';
+  }
+  document.getElementById('ot_out').textContent=out;
+  document.getElementById('ot_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-ottawa-sah input')
+  .forEach(el => { el.addEventListener('change', otCalc); });
+otCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
