@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="./css/nav.css">
 <script src="./js/nav.js" defer></script>
 </head>
-<body>
+<body data-backtotop>
 <!-- 方磚圖版上色：亮色→淺灰版畫、暗色→深板岩反相。sRGB 不可省，否則中間調會再偏一次。
      必須定義在引用它的 <img> 之前，否則首次繪製時 filter 尚未存在，整張圖不會顯示。
      尺寸給 1×1 移出畫面外，不用 width="0" height="0"：零尺寸的 SVG 會被繪製階段整個略過，
@@ -55,12 +55,12 @@
     <div class="cat-strip" id="cat-strip"></div>
   </div>
 
-  <div class="gs-box">
+  <div class="gs-box" id="gs-home">
     <div class="gs-field">
       <span class="gs-icon">⌕</span>
       <input type="search" id="gs-input" class="gs-input" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="查詢工具、藥名、菌名、癌別、內文分型…（例：Tazocin、MRSA、胃癌、Csendes）">
-      <button type="button" id="gs-clear" class="gs-clear" aria-label="清除查詢">×</button>
+      <button type="button" id="gs-clear" class="gs-clear" aria-label="清除查詢" hidden>×</button>
     </div>
   </div>
   <div id="gs-results" class="gs-results hidden"></div>
@@ -363,6 +363,19 @@
       </div>
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
+
+    <!-- 分類內查詢：只篩本區塊的計分工具卡（名稱／英文名／說明／關鍵字），
+         與全站查詢欄同一組樣式（見 css 的 .gs-field）；接線在頁尾的分類路由腳本內。 -->
+    <div class="gs-box">
+      <div class="gs-field">
+        <span class="gs-icon">⌕</span>
+        <input type="search" id="sc-q" class="gs-input" autocomplete="off" autocapitalize="off"
+               spellcheck="false" placeholder="查詢計分工具（例：SOFA、出血、Child-Pugh、闌尾）…">
+        <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+      </div>
+      <div class="gs-count hidden" id="sc-count"></div>
+    </div>
+    <div class="gs-empty hidden" id="sc-empty">沒有符合的計分工具，換個關鍵字或用主選單的全站查詢試試。</div>
 
     <div class="tool-group">
       <div class="group-head"><span class="group-title">急性冠心症</span><span class="group-en">Acute Coronary Syndrome</span><span class="group-count">2 項</span></div>
@@ -717,6 +730,8 @@
       document.body.classList.toggle('sec-open', !!key);
       // 貓的地板是主頁首的橫桿，收合／展開後位置全變了，通知牠重新量一次
       window.dispatchEvent(new Event('cat:relayout'));
+      // 分類切換（含「返回主選單」的 pushState，不會觸發 hashchange），供分類內查詢清空
+      window.dispatchEvent(new Event('sec:change'));
     }
 
     function markCard(card) {
@@ -769,11 +784,72 @@
     window.addEventListener('hashchange', route);
     window.addEventListener('popstate', route);
   })();
+
+  /* 計分工具的分類內查詢：純前端篩選本區塊的卡片（不動全站查詢的索引）。
+     比對名稱、英文名、說明與 data-search-kw；整組沒有命中的 .tool-group 一併收起，
+     組標題的「N 項」在篩選時改成「命中／總數」，清空後還原。 */
+  (function () {
+    var sec = document.getElementById('sec-scores');
+    var input = document.getElementById('sc-q');
+    if (!sec || !input) return;
+    var countEl = document.getElementById('sc-count');
+    var emptyEl = document.getElementById('sc-empty');
+    var groups = Array.prototype.slice.call(sec.querySelectorAll('.tool-group'));
+
+    // 各組先記下原本的「N 項」文字，篩選過後才還原得回去
+    groups.forEach(function (g) {
+      var c = g.querySelector('.group-count');
+      if (c && !c.dataset.full) c.dataset.full = c.textContent;
+    });
+
+    function hay(card) {
+      if (!card.dataset.hay) {
+        card.dataset.hay = (card.textContent + ' ' + (card.getAttribute('data-search-kw') || ''))
+          .toLowerCase().replace(/\s+/g, ' ');
+      }
+      return card.dataset.hay;
+    }
+
+    function apply() {
+      // 空白分隔的多個字皆須命中（「出血 內視鏡」＝兩者都要有）
+      var terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      var total = 0;
+      groups.forEach(function (g) {
+        var cards = g.querySelectorAll('.tool-card');
+        var n = 0;
+        cards.forEach(function (card) {
+          var h = hay(card);
+          var ok = terms.every(function (t) { return h.indexOf(t) > -1; });
+          card.classList.toggle('hidden', !ok);
+          if (ok) n++;
+        });
+        g.classList.toggle('hidden', n === 0);
+        var c = g.querySelector('.group-count');
+        if (c) c.textContent = terms.length ? (n + ' / ' + cards.length + ' 項') : c.dataset.full;
+        total += n;
+      });
+      countEl.textContent = total + ' 項符合';
+      countEl.classList.toggle('hidden', !terms.length);
+      emptyEl.classList.toggle('hidden', !terms.length || total > 0);
+    }
+
+    input.addEventListener('input', apply);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { input.value = ''; apply(); input.blur(); }
+    });
+    // 離開計分工具再回來時不該還留著上次的關鍵字
+    window.addEventListener('sec:change', function () {
+      if (!input.value) return;
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));   // 順帶收掉清除鍵
+    });
+  })();
 </script>
 <!-- 像素貓與飼料的整頁疊層：飼料自點擊處落下，停在下方最近的平台（橫桿／圖卡／查詢欄） -->
 <canvas id="cat-canvas" aria-hidden="true"></canvas>
 <script src="./js/pixel-cat.js" defer></script>
 <script src="./js/search.js"></script>
+<script src="./js/searchbar.js" defer></script>
 <script src="./js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
