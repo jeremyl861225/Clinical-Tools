@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burch-Wartofsky · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-thyroid-storm">
+  <div class="app-header">
+    <div><div class="eyebrow">Thyroid Emergency Scoring Tool</div><h1>Burch-Wartofsky Point Scale</h1><div class="sub">甲狀腺風暴 BWPS · 高敏感度、低特異度的篩檢工具（Burch &amp; Wartofsky 1993）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="ts_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/adrenal-crisis.html?restore=1'">← 返回內分泌危象決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-thyroid-storm'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">這是篩檢工具，不是診斷準則</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      在當代世代研究中，<b>BWPS ≥45 對甲狀腺風暴的敏感度達 99%，但特異度只有 12%</b>——它會把很多只是嚴重甲狀腺毒症的病人也標成風暴。用途是<b>不要漏掉</b>，不是<b>確立診斷</b>。<br>
+      分數高必須合併臨床判斷；分數低也不能在臨床強烈懷疑時排除。<br>
+      <b>日本甲狀腺學會（JTA）準則</b>是另一套診斷架構，<b>特異度較高</b>——它要求<b>生化上確有甲狀腺毒症</b>並要求更嚴格的症狀組合。一項 406 人的比較中，JTA 判定 354 例，BWPS 涵蓋其中 352 例並另外多標出 41 例。<br>
+      <span class="note"><b>本頁只做計分，不列治療劑量</b>：甲狀腺風暴的藥物處置應依 ATA 指引，而 ATA 現行版為 <b>2016 年版</b>（Ross &amp; Burch 等，Thyroid 2016;26(10):1343-1421）——本次查核<b>未能取得其全文</b>，因此不轉載具體藥物與劑量。<br>
+      查核附註：檢索過程中有二手來源宣稱「ATA 於 2024 年 5 月更新了甲亢指引」，但 <b>ATA 官方指引頁確認現行仍是 2016 版</b>，該說法有誤。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>計分表的出處、判讀門檻的版本歧異與使用注意 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 出處：</b>Burch HB, Wartofsky L.「Life-threatening thyrotoxicosis. Thyroid storm.」Endocrinol Metab Clin North Am 1993;22(2):263-277。本頁的分數表依該文之診斷準則表。<br><br>
+
+      <b>◆ 判讀門檻（本頁採用，經兩個獨立來源交叉確認）：</b><br>
+      ・<b>&lt;25</b>：不太可能是甲狀腺風暴。<br>
+      ・<b>25–44</b>：<b>即將發生的風暴（impending storm）</b>。<br>
+      ・<b>≥45</b>：<b>高度提示甲狀腺風暴</b>。<br>
+      <b>⚠ 版本歧異（本次查核發現）：</b>流傳的表格重製版中，有一份把門檻寫成「&gt;45 高度提示／<b>35–45 支持診斷</b>／&lt;25 不太可能」——<b>這個版本在 25 到 35 之間留下沒有定義的空缺</b>，與原始三段式判讀不符，應為重製時的錯誤。使用第三方表格前請先確認這三段是否連續。<br><br>
+
+      <b>◆ 計分要點：</b><br>
+      ・<b>體溫用的是實際量到的體溫</b>，不是退燒後的體溫；已給退燒藥者會低估。<br>
+      ・<b>心搏過速</b>與<b>心房顫動</b>是<b>兩個獨立項目</b>，可同時計分（心房顫動另計 10 分）。<br>
+      ・<b>心衰竭</b>與心搏過速也是各自獨立計分。<br>
+      ・<b>誘發事件</b>（感染、手術、創傷、停藥、含碘顯影劑、生產、DKA 等）有無各計 10 分或 0 分——這一項最常被漏掉。<br>
+      ・使用 β 阻斷劑者心跳被壓低，會使分數低估。<br><br>
+
+      <b>◆ 何時該當成風暴處理：</b>BWPS 的設計初衷是<b>提醒臨床醫師別把風暴當成一般甲狀腺毒症</b>。臨床上出現<b>高燒、意識改變、心衰竭或黃疸</b>而背景為甲狀腺毒症時，即使分數未達 45 也應照風暴處置並收治重症單位。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">體溫調節失能 Thermoregulatory</div>
+    <div class="field-row">
+      <label>體溫</label>
+      <select id="ts_temp">
+        <option value="0">&lt; 37.2 °C（&lt; 99 °F）</option>
+        <option value="5">37.2–37.7 °C（99–99.9 °F）</option>
+        <option value="10">37.8–38.2 °C（100–100.9 °F）</option>
+        <option value="15">38.3–38.8 °C（101–101.9 °F）</option>
+        <option value="20">38.9–39.4 °C（102–102.9 °F）</option>
+        <option value="25">39.4–39.9 °C（103–103.9 °F）</option>
+        <option value="30">≥ 40 °C（≥ 104 °F）</option>
+      </select>
+      <span class="organ-score" id="ts_p_temp">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">中樞神經 Central Nervous System</div>
+    <div class="field-row">
+      <label>症狀</label>
+      <select id="ts_cns">
+        <option value="0">無</option>
+        <option value="10">輕度 — 躁動</option>
+        <option value="20">中度 — 譫妄、精神病、極度嗜睡</option>
+        <option value="30">重度 — 癲癇發作、昏迷</option>
+      </select>
+      <span class="organ-score" id="ts_p_cns">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">腸胃／肝臟 Gastrointestinal-Hepatic</div>
+    <div class="field-row">
+      <label>症狀</label>
+      <select id="ts_gi">
+        <option value="0">無</option>
+        <option value="10">中度 — 腹瀉、噁心／嘔吐、腹痛</option>
+        <option value="20">重度 — 不明原因黃疸</option>
+      </select>
+      <span class="organ-score" id="ts_p_gi">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">心血管 Cardiovascular</div>
+    <div class="field-row">
+      <label>心跳速率</label>
+      <select id="ts_hr">
+        <option value="0">&lt; 99 /分</option>
+        <option value="5">99–109 /分</option>
+        <option value="10">110–119 /分</option>
+        <option value="15">120–129 /分</option>
+        <option value="20">130–139 /分</option>
+        <option value="25">≥ 140 /分</option>
+      </select>
+      <span class="organ-score" id="ts_p_hr">0</span>
+    </div>
+    <div class="field-row">
+      <label>心臟衰竭</label>
+      <select id="ts_chf">
+        <option value="0">無</option>
+        <option value="5">輕度 — 足部水腫</option>
+        <option value="10">中度 — 雙側肺底囉音</option>
+        <option value="15">重度 — 肺水腫</option>
+      </select>
+      <span class="organ-score" id="ts_p_chf">0</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="ts_af"> 心房顫動 <span class="pt-badge">10分</span></label>
+    <div class="note">心搏過速、心臟衰竭與心房顫動是<b>三個獨立項目</b>，可同時計分。使用 β 阻斷劑者心跳被壓低會使分數低估。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">誘發事件 Precipitating History</div>
+    <label class="toggle-inline"><input type="checkbox" id="ts_precip"> 有可辨識的誘發事件 <span class="pt-badge">10分</span></label>
+    <div class="note">感染、手術、創傷、抗甲狀腺藥物停用、含碘顯影劑或藥物、生產、糖尿病酮酸中毒等。<b>這一項最常被漏掉。</b></div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">BWPS</div><div class="metric-value big" id="ts_total">0</div></div>
+      <div><div class="metric-label">判讀</div><div class="metric-value big" id="ts_band" style="font-size:24px;">不太可能</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床意義</div>
+    <div style="font-size:15px; margin-top:2px;" id="ts_interp">請輸入各項目。</div>
+    <table class="ref">
+      <tr><th>分數</th><th>判讀</th></tr>
+      <tr><td>&lt; 25</td><td>不太可能是甲狀腺風暴</td></tr>
+      <tr><td>25–44</td><td>即將發生的風暴 Impending storm</td></tr>
+      <tr><td>≥ 45</td><td>高度提示甲狀腺風暴</td></tr>
+    </table>
+    <div class="risk-note">當代世代研究中 <b>≥45 分的敏感度 99%、特異度僅 12%</b>——這是刻意偏向不漏診的設計，<b>陽性不代表確診</b>。JTA 準則要求生化上確有甲狀腺毒症與更嚴格的症狀組合，特異度較高。臨床出現高燒、意識改變、心衰竭或黃疸而背景為甲狀腺毒症時，<b>即使未達 45 分也應照風暴處置</b>。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/8325286/" target="_blank" rel="noopener" class="ref-link">Burch HB, Wartofsky L. Life-threatening thyrotoxicosis. Thyroid storm. Endocrinol Metab Clin North Am. 1993;22(2):263-277.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27521067/" target="_blank" rel="noopener" class="ref-link">Ross DS, Burch HB, Cooper DS, et al. 2016 American Thyroid Association Guidelines for Diagnosis and Management of Hyperthyroidism and Other Causes of Thyrotoxicosis. Thyroid. 2016;26(10):1343-1421.</a></footer>
+</div>
+</div>
+<script>
+function tsVal(id){ return parseInt(document.getElementById(id).value,10)||0; }
+
+function tsCalc(){
+  const temp=tsVal('ts_temp'), cns=tsVal('ts_cns'), gi=tsVal('ts_gi'),
+        hr=tsVal('ts_hr'), chf=tsVal('ts_chf');
+  const af=document.getElementById('ts_af').checked?10:0;
+  const pre=document.getElementById('ts_precip').checked?10:0;
+
+  document.getElementById('ts_p_temp').textContent=temp;
+  document.getElementById('ts_p_cns').textContent=cns;
+  document.getElementById('ts_p_gi').textContent=gi;
+  document.getElementById('ts_p_hr').textContent=hr;
+  document.getElementById('ts_p_chf').textContent=chf;
+
+  const total=temp+cns+gi+hr+chf+af+pre;
+  document.getElementById('ts_total').textContent=total;
+
+  let band, interp;
+  if(total>=45){
+    band='高度提示';
+    interp='<b>≥45 分——高度提示甲狀腺風暴</b>。應<b>收治重症單位</b>並立即開始多重模式治療（抑制荷爾蒙合成、阻斷釋放、阻斷週邊轉換與交感作用、支持治療、處理誘因）。<b>不要等確診檢驗結果才開始治療。</b><br>但請記得<b>特異度只有 12%</b>：同時要積極尋找並排除其他造成高燒、心搏過速與意識改變的原因（敗血症、惡性高熱、抗膽鹼中毒、血清素症候群）。';
+  } else if(total>=25){
+    band='即將發生';
+    interp='<b>25–44 分——即將發生的風暴（impending storm）</b>。應開始抗甲狀腺治療與症狀控制，並<b>考慮重症單位監測</b>。<b>持續重新計分</b>——這個區間的病人可以在數小時內進展。<br><b>務必找出誘發事件</b>並同時處理（感染最常見）。';
+  } else {
+    band='不太可能';
+    interp='<b>&lt;25 分——不太可能是甲狀腺風暴</b>，但<b>不等於排除</b>。若臨床仍高度懷疑（尤其已用 β 阻斷劑而心跳被壓低、或已給退燒藥者），應重新評估並考慮照風暴處置。<br>同時完成甲狀腺功能檢查以確認是否確有甲狀腺毒症。';
+  }
+  document.getElementById('ts_band').textContent=band;
+  document.getElementById('ts_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-thyroid-storm select, #view-thyroid-storm input')
+  .forEach(el => { el.addEventListener('change', tsCalc); el.addEventListener('input', tsCalc); });
+tsCalc();
+if(location.search.indexOf('from=endo')>=0){var _b=document.getElementById('ts_back_path'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
