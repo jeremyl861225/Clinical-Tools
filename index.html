@@ -89,7 +89,7 @@
       <span class="hub-label"><span class="hub-zh">抗微</span><span class="hub-en">Antimicrobials</span><span class="hub-zh">生物</span></span>
     </a>
     <a class="hub-card hub-card--wide hub-crit" id="card-view-critical" href="#critical" aria-label="急重症處置"
-       data-label="急重症處置" data-en="Emergency &amp; Critical Care" data-sub="心跳停止、氣道、冠心症、中風、肺栓塞與心衰竭">
+       data-label="急重症處置" data-en="Emergency &amp; Critical Care" data-sub="敗血症、心跳停止、氣道、冠心症、中風、肺栓塞與心衰竭">
       <img class="hub-img" src="assets/hub/critical.jpg" alt="" decoding="async">
       <span class="hub-scrim"></span>
       <span class="hub-label"><span class="hub-zh">急重症處置</span><span class="hub-en">Emergency &amp; Critical Care</span></span>
@@ -240,6 +240,17 @@
       <button type="button" class="back-btn" onclick="goHome()">← 返回主選單</button>
     </div>
 
+    <div class="tool-group deci-group">
+      <div class="group-head"><span class="group-title">感染 / 敗血症</span><span class="group-en">Infection &amp; Sepsis</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card deci-card" id="card-view-sepsis-path" onclick="location.href='pathways/sepsis.html'"
+             data-search-kw="敗血症 sepsis 敗血性休克 septic shock 感染 infection SSC Surviving Sepsis Campaign 2026 Sepsis-3 篩檢 screening NEWS2 qSOFA SIRS 乳酸 lactate 血液培養 blood culture 抗生素時機 antimicrobial timing 1 小時 3 小時 感染源控制 source control 晶體液 crystalloid 平衡鹽 balanced 白蛋白 albumin 30 mL/kg norepinephrine 正腎上腺素 vasopressin epinephrine 周邊升壓劑 peripheral vasopressor MAP 目標 65 60 dobutamine 強心劑 inotrope 類固醇 hydrocortisone 血糖 輸血 VTE 預防 PPI 腎臟替代 procalcitonin 降階 de-escalation">
+          <div class="tool-name">敗血症與敗血性休克處置 <span class="tool-en">Sepsis &amp; Septic Shock</span> <span class="deci-tag">Pathway</span></div>
+          <div class="tool-desc">依 <b>SSC 2026</b>（2021 版已被取代）：抗生素時機依「可能／很可能／確定」三級分流（3 小時 vs 1 小時）、感染源控制 6 小時、30 mL/kg 平衡鹽液，到 norepinephrine → vasopressin → epinephrine 的升階；<b>≥65 歲 MAP 目標降為 60–65</b>、<b>升壓劑可先走周邊靜脈</b></div>
+        </div>
+      </div>
+    </div>
+
     <div class="tool-group">
       <div class="group-head"><span class="group-title">復甦 / 氣道</span><span class="group-en">Resuscitation &amp; Airway</span><span class="group-count">2 項</span></div>
       <div class="home-list">
@@ -348,8 +359,13 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">3 項</span></div>
+      <div class="group-head"><span class="group-title">重症 / 多器官功能</span><span class="group-en">Critical Care</span><span class="group-count">4 項</span></div>
       <div class="home-list">
+        <div class="tool-card" id="card-view-news2" onclick="location.href='tools/news2.html'"
+             data-search-kw="NEWS2 NEWS National Early Warning Score 早期預警分數 早期預警 惡化偵測 deterioration 敗血症篩檢 sepsis screening 篩檢工具 qSOFA SIRS MEWS 生命徵象 vital signs 呼吸速率 血氧 SpO2 Scale 1 Scale 2 高碳酸血症 COPD 吸氧 收縮壓 脈搏 意識 ACVPU AVPU 新出現混亂 new confusion 體溫 升階 escalation 重症外展 critical care outreach RCP Royal College of Physicians SSC 2026">
+          <div class="tool-name">NEWS2 <span class="tool-en">National Early Warning Score 2</span></div>
+          <div class="tool-desc">七項生理參數的病情惡化預警分數；<b>SSC 2026 指名 NEWS／NEWS2／MEWS／SIRS 作為敗血症篩檢工具優於 qSOFA</b>。含 SpO₂ Scale 2（高碳酸血症呼吸衰竭專用）與各分數對應的監測頻率與升階層級</div>
+        </div>
         <div class="tool-card" id="card-view-sofa" onclick="location.href='tools/sofa.html'">
           <div class="tool-name">SOFA <span class="tool-en">Sequential Organ Failure Assessment</span></div>
           <div class="tool-desc">六大器官系統評分；疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義</div>

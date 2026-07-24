@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>敗血症與敗血性休克處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-sepsis-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>敗血症與敗血性休克處置決策</h1><div class="sub">Sepsis &amp; Septic Shock · 依 Surviving Sepsis Campaign 2026（成人）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-sepsis-path'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">版本提醒 Version</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      本頁依 <b>SSC 2026</b>（Prescott 等，Intensive Care Med 2026;52(5):863-936，同步刊於 Crit Care Med）。<b>2021 年版已被取代</b>，共 129 條建議、其中 <b>46 條為全新</b>。與 2021 相比最需要改口的四點：<br>
+      ① 篩檢<b>指名 NEWS／NEWS2／MEWS／SIRS 優於 qSOFA</b>（2021 只說別單用 qSOFA）；<br>
+      ② 抗生素時機依「<b>可能／很可能／確定</b>」三級分流，不再是一律 1 小時；<br>
+      ③ <b>≥65 歲的初始 MAP 目標降為 60–65 mmHg</b>；<br>
+      ④ <b>升壓劑可先由周邊靜脈開始</b>，不必等中央靜脈導管。<br>
+      <span class="note">原文另有 Publisher Correction（Intensive Care Med 2026;52(6):1411-1413）；該勘誤的具體更動內容本頁未能取得全文查核，引用細節時請以原文為準。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>定義、篩檢、抗生素、感染源控制、血流動力學、輔助與支持治療 Definitions &amp; Recommendations</summary>
+    <div class="box-inner">
+      <b>◆ 診斷定義（Sepsis-3，2016，仍為現行）：</b><br>
+      ・<b>敗血症</b>＝感染引起的宿主反應失調，導致危及生命的器官功能障礙，操作型定義為<b>感染合併 SOFA 分數急性上升 ≥2 分</b>。<br>
+      ・<b>敗血性休克</b>＝敗血症合併循環與細胞代謝異常，死亡風險顯著較高；操作型定義為<b>已充分輸液後仍需升壓劑維持 MAP ≥65 mmHg，且血中乳酸 &gt;2 mmol/L</b>。兩項都要符合。<br>
+      ・SSC 2026 全篇以「<b>possible／probable／definite sepsis</b>」（可能／很可能／確定的敗血症）分流處置，但<b>指引本身並未給這三級的正式操作型定義</b>——四種檢索途徑（SCCM 官方摘要、期刊全文頁、學會導讀、與主筆的訪談）皆查不到定義表，因此這三級<b>由臨床判斷感染可能性高低</b>，不是可計算的準則。此處如實載明，以免下一個人再去找那張不存在的表。<br><br>
+
+      <b>◆ 篩檢（建議 3、4）：</b><br>
+      ・住院中的急性病患：<b>建議用 NEWS、NEWS2、MEWS 或 SIRS 作為單一篩檢工具，優於 qSOFA</b>（強建議，中度確定性）。理由是 qSOFA 敏感度太低；NEWS2 的敏感度與特異度在四者中最佳。<br>
+      ・救護車／空中轉送途中的急性成人：<b>建議使用標準化敗血症篩檢工具優於不篩檢</b>（條件式，極低確定性），但<b>未指名工具</b>。<br>
+      ・醫院應建立含敗血症篩檢的品質改善方案。<br><br>
+
+      <b>◆ 初始檢查（建議 7、8）：</b><br>
+      ・<b>血液培養</b>：可能／很可能／確定的敗血症或敗血性休克，<b>應盡快、並盡可能在給抗生素前</b>採檢（強建議，低度確定性）。自<b>兩個不同部位</b>採檢，每瓶 10 mL。<br>
+      ・<b>乳酸</b>：建議測量（條件式，低度確定性）。≥2 mmol/L 與死亡率獨立相關；<b>2–4 mmol/L 的中度上升</b>者可能受惠於輸液復甦。建議連續追蹤以導引復甦。<br>
+      ・<b>procalcitonin 不用於決定是否開始</b>抗生素（建議 22，改用臨床評估）；<b>可與臨床評估併用於決定停藥</b>（建議 40）。<br><br>
+
+      <b>◆ 抗微生物治療時機（建議 16、17、18、20）：</b><br>
+      ・<b>敗血性休克</b>（可能／很可能／確定）：<b>立即給藥，理想上 1 小時內</b>（強建議，極低確定性）。<br>
+      ・<b>很可能或確定的敗血症、無休克</b>：<b>立即給藥，理想上 1 小時內</b>（強建議，極低確定性）。<br>
+      ・<b>可能的敗血症、無休克</b>：<b>先做限時的快速鑑別（3 小時內）</b>，若疑慮仍在則給藥（條件式，極低確定性）。<br>
+      ・<b>感染可能性低</b>：<b>暫緩抗生素並密切監測</b>（條件式，極低確定性）。<br>
+      <span class="note">須留意：這三條「強建議」的證據等級都只有極低確定性——現有證據其實未能證明 1 小時本身帶來存活效益，這一點在指引發表後受到相當批評。臨床上不應為了趕時鐘而跳過必要的鑑別診斷。</span><br><br>
+
+      <b>◆ 經驗性抗生素選擇（建議 25–29、33、36、37、39）：</b><br>
+      ・<b>多重抗藥性（MDR）高風險</b>者給予涵蓋該病原的經驗性用藥；<b>低風險者不建議</b>常規涵蓋。<br>
+      ・<b>不建議常規經驗性抗黴菌</b>治療。<br>
+      ・厭氧菌覆蓋<b>依風險因子決定</b>：無危險因子者建議選用<b>不含</b>厭氧覆蓋的處方。<br>
+      ・<b>β-lactam 的維持劑量建議採延長／持續輸注，優於快速推注</b>（強建議，中度確定性；<b>自 2021 的條件式升級</b>）——每 1,000 人約可減少 25 例死亡。<br>
+      ・<b>找到病原者建議降階</b>（強建議）；最終培養無病原者亦建議降階（條件式）。<br>
+      ・<b>療程建議短療程優於長療程</b>（條件式）。<br><br>
+
+      <b>◆ 感染源控制（建議 24）：</b>確認有需要介入的解剖學感染源時，<b>建議盡早控制，理想上於敗血症診斷後 6 小時內</b>（條件式，極低確定性）。<br>
+      <span class="note">本工具箱另有專門的腹部急症流程（膽囊炎／膽管炎、憩室炎、胰臟炎、消化道穿孔、壞死性軟組織感染等），感染源在腹部或軟組織時請一併使用。</span><br><br>
+
+      <b>◆ 輸液（建議 43–49）：</b><br>
+      ・<b>晶體液為第一線</b>（強建議，中度確定性）。<br>
+      ・敗血症引起的低灌流或敗血性休克：<b>3 小時內至少 30 mL/kg 晶體液</b>。<br>
+      ・<b>平衡鹽溶液優於 0.9% 生理食鹽水</b>（條件式，中度確定性）；<b>合併外傷性腦損傷時例外，用生理食鹽水</b>。<br>
+      ・<b>不建議常規加白蛋白</b>（條件式）；大量晶體液後或肝硬化併敗血症時可能適合。<br>
+      ・<b>不得使用澱粉類</b>（strong，高度確定性）；<b>不建議明膠</b>（條件式）。<br>
+      ・<b>寬鬆或限制性輸液策略皆可</b>，依病人與體系狀況個別決定（條件式，低度確定性）。<br>
+      ・<b>以動態指標導引</b>輸液，優於單靠理學檢查或靜態指標（條件式）：被動抬腿合併每搏量／心輸出量、輸液挑戰、每搏量變異、脈壓變異、床邊超音波。<br><br>
+
+      <b>◆ 升壓與強心（建議 53、55–58、60、61）：</b><br>
+      ・<b>norepinephrine 為第一線</b>（強建議；相對 dopamine 為高度確定性，相對 epinephrine 與 selepressin 為低度確定性）。相對於 vasopressin 或 angiotensin II 則為<b>條件式</b>建議（自 2021 降級）。<br>
+      ・<b>norepinephrine 劑量持續上升時加上 vasopressin</b>（條件式，中度確定性）。實務上加藥的中位起點約在 norepinephrine <b>0.3 µg/kg/min</b>，vasopressin 採固定劑量 <b>0.03 units/min</b>。<br>
+      ・<b>已用 norepinephrine 與 vasopressin 仍達不到 MAP 目標時加上 epinephrine</b>（條件式，極低確定性）。實務上加藥的中位起點約在 norepinephrine <b>0.8 µg/kg/min</b>。<br>
+      ・<b>合併心功能不全者，第一線可用 norepinephrine 或 epinephrine 皆可</b>（條件式，極低確定性，<b>新</b>）：偏快速心律不整時選 norepinephrine，偏心搏過緩時選 epinephrine。<br>
+      ・<b>可先由周邊靜脈開始升壓劑以回復 MAP，不必等中央靜脈導管</b>（條件式，極低確定性，<b>新</b>）。<br>
+      ・充分輸液與升壓後<b>仍持續低灌流且有心功能不全</b>者，建議加用強心劑（條件式）：加 dobutamine 於 norepinephrine，或單用 epinephrine，兩者<b>死亡率無差異</b>。<br>
+      ・<b>MAP 目標</b>：初始目標 <b>65 mmHg</b>，優於更高的目標；<b>≥65 歲者初始目標 60–65 mmHg</b>（條件式，低度確定性，<b>新</b>）。<br>
+      ・口服 midodrine：<b>證據不足，未做建議</b>（建議 63，新）。<br><br>
+
+      <b>◆ 呼吸支持（建議 66–78，重點）：</b>PaO₂/FiO₂ &lt;200 者<b>建議高流量鼻導管優於一般氧氣治療</b>、且<b>初始優於非侵襲性正壓通氣</b>（皆為新建議）；未插管者<b>可嘗試清醒俯臥</b>（新）；ARDS 採<b>低潮氣容積 6 mL/kg 預測體重</b>（強建議，高度確定性）、<b>plateau pressure 上限 30 cmH₂O</b>（強建議）；<b>非 ARDS 者潮氣容積 6–8 mL/kg</b>（新）；中重度 ARDS 用<b>較高 PEEP</b>（條件式）但<b>不建議遞增式 PEEP titration</b>（強建議反對）；中重度 ARDS <b>俯臥每日 &gt;12 小時</b>；神經肌肉阻斷劑<b>建議間歇推注優於持續輸注</b>；頑固性重度 ARDS 於有經驗中心考慮 <b>VV-ECMO</b>。<br><br>
+
+      <b>◆ 輔助治療（建議 79、81–84）：</b><b>敗血性休克建議靜脈類固醇</b>（條件式，低度確定性）——調查中 90% 使用者採每日相當於 hydrocortisone 200 mg。<b>不建議</b>維生素 C、靜脈免疫球蛋白、血液淨化（血液灌流、血液過濾、血漿置換），亦<b>不建議</b> polymyxin B 血液灌流。<br><br>
+
+      <b>◆ 支持治療（建議 87、90–99）：</b><br>
+      ・<b>血糖 ≥180 mg/dL（10 mmol/L）才啟動胰島素</b>（強建議，中度確定性）。<br>
+      ・輸血採<b>限制性策略</b>（強建議，中度確定性）。<br>
+      ・<b>72 小時內開始腸道營養</b>（條件式，極低確定性）。<br>
+      ・<b>藥物性 VTE 預防</b>（強建議）；<b>低分子量肝素優於未分餾肝素</b>（強建議，中度確定性）；單用藥物性預防即可，不必常規合併機械性（條件式）。<br>
+      ・有消化道出血風險因子者<b>給予 PPI 壓力性潰瘍預防</b>（條件式，中度確定性）。<br>
+      ・<b>無明確適應症時不建議啟動腎臟替代療法</b>（條件式，中度確定性）；連續式與間歇式<b>皆可</b>（條件式）。<br>
+      ・<b>乳酸性酸中毒不建議常規給碳酸氫鈉</b>（條件式）；但<b>pH ≤7.2 併急性腎損傷</b>者建議給予（條件式，極低確定性）。
+    </div>
+  </details>
+
+  <div class="flow-step" id="sp_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">感染的臨床可能性與是否已達休克？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="spPick('cat','shock',this)">敗血性休克<span class="fo-sub">充分輸液後仍需升壓劑維持 MAP ≥65 mmHg，且乳酸 &gt;2 mmol/L；或臨床已明確為感染引起的休克</span></button>
+      <button class="flow-opt" onclick="spPick('cat','definite',this)">很可能／確定的敗血症，無休克<span class="fo-sub">感染合併 SOFA 急性上升 ≥2 分，血壓尚可維持</span></button>
+      <button class="flow-opt" onclick="spPick('cat','possible',this)">可能的敗血症，無休克<span class="fo-sub">有全身惡化表現，但感染是否存在仍不確定</span></button>
+      <button class="flow-opt" onclick="spPick('cat','unlikely',this)">感染可能性低<span class="fo-sub">臨床表現另有更合理的解釋</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">SSC 2026 以「可能／很可能／確定」三級決定抗生素時機，但<b>指引未提供這三級的正式定義</b>，此處依臨床判斷選擇。</div>
+    <button class="flow-link" onclick="location.href='../tools/news2.html?from=sepsis'">🧮 開啟 NEWS2（SSC 2026 指名的篩檢工具，優於 qSOFA）</button>
+    <button class="flow-link" onclick="location.href='../tools/sofa.html?from=sepsis'">🧮 開啟 SOFA（Sepsis-3 的器官功能障礙判準）</button>
+  </div>
+
+  <div class="flow-connector hidden" id="sp_c2">↓</div>
+  <div class="flow-step hidden" id="sp_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">是否找到需要介入的解剖學感染源？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="spPick('src','yes',this)">有，且需引流或手術<span class="fo-sub">腹內膿瘍、消化道穿孔、膽道或泌尿道阻塞、壞死性軟組織感染、感染的植入物或導管</span></button>
+      <button class="flow-opt" onclick="spPick('src','no',this)">無，或尚未找到<span class="fo-sub">肺炎、原發性菌血症等不需介入者，或感染源仍在查</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="sp_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="sp_c3">↓</div>
+  <div class="flow-step hidden" id="sp_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人年齡？（決定初始 MAP 目標）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="spPick('age','young',this)">未滿 65 歲<span class="fo-sub">初始 MAP 目標 65 mmHg</span></button>
+      <button class="flow-opt" onclick="spPick('age','old',this)">65 歲以上<span class="fo-sub">初始 MAP 目標 60–65 mmHg（SSC 2026 新建議）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="sp_c4">↓</div>
+  <div class="flow-step hidden" id="sp_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">初始輸液與 norepinephrine 之後的循環狀態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="spPick('hemo','target',this)">已達 MAP 目標<span class="fo-sub">灌流指標（乳酸、尿量、末梢）同步改善</span></button>
+      <button class="flow-opt" onclick="spPick('hemo','escalate',this)">仍未達標，norepinephrine 需求持續上升<span class="fo-sub">已需中高劑量且仍在加</span></button>
+      <button class="flow-opt" onclick="spPick('hemo','cardiac',this)">血壓可，但持續低灌流併心功能不全<span class="fo-sub">乳酸不降、心輸出量低、超音波顯示收縮功能受損</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/vasopressor.html?from=sepsis'">🧮 開啟升壓／強心藥物流速換算</button>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="sp_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 4</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="spReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/41870560/" target="_blank" rel="noopener" class="ref-link">Prescott HC, Antonelli M, Alhazzani W, et al. Surviving Sepsis Campaign: international guidelines for management of sepsis and septic shock 2026. Intensive Care Med. 2026;52(5):863-936.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/42084789/" target="_blank" rel="noopener" class="ref-link">Publisher Correction. Intensive Care Med. 2026;52(6):1411-1413.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26903338/" target="_blank" rel="noopener" class="ref-link">Singer M, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801-810.</a> ｜ <a href="https://www.rcp.ac.uk/policy-and-campaigns/projects/national-early-warning-score-news-2/" target="_blank" rel="noopener" class="ref-link">Royal College of Physicians. National Early Warning Score (NEWS) 2. London: RCP, 2017.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { cat:null, src:null, age:null, hemo:null };
+
+function spPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='cat'){ st.cat=val; st.src=null; st.age=null; st.hemo=null; }
+  else if(key==='src'){ st.src=val; st.age=null; st.hemo=null; }
+  else if(key==='age'){ st.age=val; st.hemo=null; }
+  else if(key==='hemo'){ st.hemo=val; }
+  render();
+}
+
+/* 需要立刻給抗生素的兩類 */
+function spImmediate(){ return st.cat==='shock' || st.cat==='definite'; }
+
+/* 共通的初始檢查與給藥原則 */
+const SP_CORE =
+  '<li><b>血液培養</b>：盡快採檢，並<b>盡可能在第一劑抗生素之前</b>完成（強建議）。自<b>兩個不同部位</b>各採，每瓶 10 mL。不可為了等培養而延誤重症病人的給藥。</li>' +
+  '<li><b>乳酸</b>：測量並<b>連續追蹤</b>以導引復甦（條件式）。≥2 mmol/L 與死亡率獨立相關；2–4 mmol/L 的中度上升者可能受惠於輸液。</li>' +
+  '<li><b>經驗性選擇</b>：依 MDR 風險決定是否涵蓋抗藥菌（低風險者<b>不需</b>常規涵蓋）；<b>不常規給抗黴菌</b>；厭氧覆蓋依危險因子決定。<b>β-lactam 維持劑量採延長或持續輸注</b>（強建議，中度確定性——自 2021 升級）。</li>' +
+  '<li><b>不以 procalcitonin 決定是否開始</b>抗生素；停藥時才可與臨床評估併用。</li>' +
+  '<li><b>降階與療程</b>：找到病原即降階（強建議）；最終培養無病原者亦建議降階；療程<b>短優於長</b>。</li>';
+
+/* 支持治療（所有敗血症共用） */
+const SP_SUPPORT =
+  '<li><b>支持治療</b>：血糖 <b>≥180 mg/dL</b> 才啟動胰島素（強建議）；輸血採<b>限制性策略</b>（強建議）；<b>72 小時內</b>開始腸道營養；<b>低分子量肝素</b>做 VTE 預防（強建議，優於未分餾肝素）；有消化道出血風險因子者給 PPI。</li>' +
+  '<li><b>不建議</b>維生素 C、靜脈免疫球蛋白、血液淨化（含 polymyxin B 血液灌流）。</li>';
+
+function render(){
+  /* 感染可能性低者不需要問感染源 */
+  const showSrc = !!st.cat && st.cat!=='unlikely';
+  flowShow('sp_c2', showSrc);
+  flowShow('sp_s2', showSrc);
+  if(!showSrc) flowClearSel('sp_s2');
+
+  /* ---- 建議 A：辨識與初始處置 ---- */
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+
+  const srcLine = st.src==='yes'
+    ? '<li><b>感染源控制</b>：確認有需介入的感染源時，<b>盡早控制、理想上於診斷後 6 小時內</b>完成引流或手術（條件式，建議 24）。感染的血管導管或植入物一併移除。腹部或軟組織來源請併用本工具箱的對應決策流程。</li>'
+    : '<li><b>感染源</b>：目前無需介入的解剖學感染源，或尚未找到。<b>持續尋找</b>——影像與臨床再評估；一旦找到需引流／手術者，仍以<b>診斷後 6 小時內</b>控制為目標。</li>';
+
+  if(st.cat==='shock'){
+    cls='rec-urgent'; title='敗血性休克 — 立即抗生素、復甦與升壓';
+    detail='<li><b>抗微生物治療：立即給藥，理想上 1 小時內</b>（強建議，極低確定性，建議 16）。</li>' +
+      SP_CORE + srcLine +
+      '<li><b>輸液</b>：<b>3 小時內至少 30 mL/kg 晶體液</b>；<b>平衡鹽溶液優於生理食鹽水</b>（合併外傷性腦損傷時例外用生理食鹽水）。<b>不用澱粉類</b>，不常規加白蛋白。之後以<b>動態指標</b>（被動抬腿＋每搏量、輸液挑戰、每搏量／脈壓變異、床邊超音波）決定是否續灌。</li>' +
+      '<li><b>升壓劑</b>：<b>norepinephrine 第一線</b>；<b>可先由周邊靜脈開始，不必等中央靜脈導管</b>（新建議）。</li>' +
+      '<li><b>類固醇</b>：敗血性休克建議靜脈類固醇（條件式，低度確定性）——常用每日相當於 <b>hydrocortisone 200 mg</b>。</li>' +
+      SP_SUPPORT;
+    note='SSC 2026 建議 16、24、43–47、49、53、79。休克本身即為 1 小時給藥的適應症，不需先等鑑別診斷。';
+  } else if(st.cat==='definite'){
+    cls='rec-elective'; title='很可能／確定的敗血症（無休克）— 1 小時內給藥';
+    detail='<li><b>抗微生物治療：立即給藥，理想上 1 小時內</b>（強建議，極低確定性，建議 17）。</li>' +
+      SP_CORE + srcLine +
+      '<li><b>輸液</b>：出現敗血症引起的低灌流時，<b>3 小時內至少 30 mL/kg 晶體液</b>，以平衡鹽溶液為主；血壓與灌流穩定者不必為了達到固定容量而過度輸液——<b>寬鬆或限制性策略皆可</b>，依個別狀況決定（條件式）。</li>' +
+      '<li><b>持續評估是否進展為休克</b>：連續乳酸、尿量與血壓；一旦需要升壓劑維持 MAP 且乳酸 &gt;2 mmol/L，即為敗血性休克，處置升級。</li>' +
+      SP_SUPPORT;
+    note='SSC 2026 建議 17、24、43–48。無休克但診斷明確者與休克同樣適用 1 小時目標。';
+  } else if(st.cat==='possible'){
+    cls='rec-blue'; title='可能的敗血症（無休克）— 3 小時限時鑑別';
+    detail='<li><b>先做限時的快速鑑別診斷，於 3 小時內完成</b>；若屆時對感染的疑慮仍在，<b>即給抗微生物治療</b>（條件式，極低確定性，建議 18）。</li>' +
+      '<li>這是 SSC 2026 相對 2021 最實質的改變之一：<b>不再要求所有疑似敗血症都在 1 小時內給藥</b>，以免對非感染性疾病過度用藥。但<b>只要進展為休克或診斷轉為明確，立刻改走 1 小時路徑</b>。</li>' +
+      SP_CORE + srcLine +
+      '<li><b>期間持續復甦與監測</b>：出現低灌流時仍依 30 mL/kg 起始輸液；重複評估生命徵象與乳酸。</li>' +
+      SP_SUPPORT;
+    note='SSC 2026 建議 18。指引未給「可能／很可能」的正式定義，分級屬臨床判斷。';
+  } else if(st.cat==='unlikely'){
+    cls='rec-blue'; title='感染可能性低 — 暫緩抗生素、密切監測';
+    detail='<li><b>暫緩抗微生物治療，並持續密切監測</b>（條件式，極低確定性，建議 20）。</li>' +
+      '<li>繼續追查非感染性的病因（藥物反應、肺栓塞、出血、腎上腺功能不全、內分泌危象、缺血等）。</li>' +
+      '<li><b>設定明確的重新評估時點</b>：一旦臨床惡化、出現器官功能障礙或感染證據浮現，立即重新分級並依對應路徑處置。</li>' +
+      '<li>若病人已在使用抗生素而感染可能性低，應評估停藥；<b>procalcitonin 可與臨床評估併用於停藥決策</b>（建議 40）。</li>';
+    note='SSC 2026 建議 20、40。避免不必要的抗生素本身即是指引的目標之一。';
+  }
+  flowRec('sp_rec', cls, title, detail, note);
+
+  /* ---- 建議 B：血流動力學升階（僅休克需要） ---- */
+  const showHemo = st.cat==='shock' && !!st.src;
+  flowShow('sp_c3', showHemo);
+  flowShow('sp_s3', showHemo);
+  if(!showHemo) flowClearSel('sp_s3');
+
+  const showStep4 = showHemo && !!st.age;
+  flowShow('sp_c4', showStep4);
+  flowShow('sp_s4', showStep4);
+  if(!showStep4) flowClearSel('sp_s4');
+
+  const mapTxt = st.age==='old' ? '60–65 mmHg' : '65 mmHg';
+  let cls2='rec-idle', title2='請完成步驟 4', detail2='', note2='';
+
+  if(st.hemo==='target'){
+    cls2='rec-elective'; title2='已達 MAP 目標 — 維持並開始降階';
+    detail2='<li><b>維持 MAP 目標 ' + mapTxt + '</b>；不追求更高的目標（更高目標未帶來存活效益）。</li>' +
+      '<li><b>停止盲目續灌</b>：改以動態指標判斷是否仍有輸液反應性；灌流已改善者，過多輸液只增加水腫與器官負擔。</li>' +
+      '<li><b>連續追蹤乳酸</b>與尿量、末梢灌流；乳酸下降是復甦有效的指標。</li>' +
+      '<li><b>逐步減量升壓劑</b>；口服 midodrine 於<b>證據不足</b>，指引未做建議（建議 63）。</li>' +
+      '<li>類固醇於休克緩解後依臨床停用；抗生素依培養降階並採<b>短療程</b>。</li>';
+    note2='SSC 2026：初始 MAP 目標 65 mmHg；≥65 歲者 60–65 mmHg（條件式，低度確定性）。';
+  } else if(st.hemo==='escalate'){
+    cls2='rec-urgent'; title2='升壓需求持續上升 — 依序加上 vasopressin、epinephrine';
+    detail2='<li><b>MAP 目標 ' + mapTxt + '</b>。</li>' +
+      '<li><b>第二線：加 vasopressin</b>（條件式，中度確定性）。實務上多在 norepinephrine 約 <b>0.3 µg/kg/min</b> 時加入，採<b>固定劑量 0.03 units/min</b>，不逐步滴定。</li>' +
+      '<li><b>第三線：仍達不到目標時加 epinephrine</b>（條件式，極低確定性）。實務上多在 norepinephrine 約 <b>0.8 µg/kg/min</b> 時加入。</li>' +
+      '<li><b>同時重新檢視三件事</b>：① 感染源是否真的控制了（未引流的膿瘍是最常見的頑固性休克原因）；② 抗生素涵蓋是否足夠；③ 是否有其他休克成因（心因性、出血、腎上腺功能不全、張力性氣胸）。</li>' +
+      '<li><b>pH ≤7.2 併急性腎損傷</b>者可考慮碳酸氫鈉（條件式，極低確定性）；單純乳酸性酸中毒<b>不建議</b>常規給予。</li>' +
+      '<li><b>不建議</b>以血液淨化（血液灌流／血液過濾／血漿置換）處理頑固性休克。</li>';
+    note2='SSC 2026 建議 56、57、63、95、96、83、84。所列 norepinephrine 劑量為指引所述的實務中位起點，不是硬性門檻。';
+  } else if(st.hemo==='cardiac'){
+    cls2='rec-urgent'; title2='持續低灌流併心功能不全 — 加用強心劑';
+    detail2='<li><b>MAP 目標 ' + mapTxt + '</b>，且已完成充分輸液與升壓。</li>' +
+      '<li><b>加用強心劑</b>（條件式，極低確定性）：<b>於 norepinephrine 之上加 dobutamine，或改單用 epinephrine</b>——兩種策略<b>死亡率無差異</b>（建議 60、61）。</li>' +
+      '<li><b>第一線選擇的新指引</b>：合併心功能不全者，第一線用 norepinephrine 或 epinephrine 皆可；偏<b>快速心律不整</b>時選 norepinephrine，偏<b>心搏過緩</b>時選 epinephrine（建議 58，新）。</li>' +
+      '<li><b>以床邊超音波確認</b>是心因性成分（收縮功能受損、心輸出量低）而非仍有輸液反應性或右心後負荷問題。</li>' +
+      '<li>仍須回頭確認感染源控制與抗生素涵蓋是否足夠。</li>';
+    note2='SSC 2026 建議 58、60、61。強心劑的適應症是「充分輸液與升壓後仍持續低灌流且有心功能不全」，不是單看心輸出量數值。';
+  }
+  flowRec('sp_rec2', cls2, title2, detail2, note2);
+  flowShow('sp_rec2', showStep4);
+}
+
+function spReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-sepsis-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+spReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

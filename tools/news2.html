@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEWS2 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-news2">
+  <div class="app-header">
+    <div><div class="eyebrow">Sepsis Screening &amp; Deterioration Score</div><h1>NEWS2</h1><div class="sub">國家早期預警分數第二版 · National Early Warning Score 2（RCP 2017）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="nw_back_sepsis" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sepsis.html?restore=1'">← 返回敗血症決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-news2'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">為什麼是 NEWS2 而不是 qSOFA</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>Surviving Sepsis Campaign 2026</b> 對住院中的急性病患給出<b>強建議（中度確定性，建議 4）</b>：<b>使用 NEWS、NEWS2、MEWS 或 SIRS 作為單一敗血症篩檢工具，優於 qSOFA</b>。理由是 qSOFA 敏感度明顯低於早期預警分數，而其中「NEWS2 的敏感度與特異度均優於 MEWS、SIRS 與 qSOFA」。<br>
+      這與 2021 年版的差別在於：2021 只說「不要單獨用 qSOFA」，2026 進一步指名了替代工具。<b>qSOFA 從未是敗血症的診斷準則</b>，它是預後不良的警訊；本工具箱的 <a href="sofa.html" class="ref-link">SOFA</a> 才是 Sepsis-3 定義中用來判定器官failure的分數。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>適用範圍、SpO₂ Scale 2、ACVPU 與已知限制 Definitions &amp; Caveats</summary>
+    <div class="box-inner">
+      <b>◆ 適用對象：</b>年滿 <b>16 歲</b>的急性病患，用於到院時與住院期間的病情惡化偵測。<b>不適用於孕婦與 16 歲以下兒童</b>（生理參數常態範圍不同）。<br><br>
+
+      <b>◆ SpO₂ Scale 1 vs Scale 2（NEWS2 相對於 NEWS 的核心改動）：</b><br>
+      ・<b>Scale 1 用於絕大多數病人</b>，目標血氧 94–98%。<br>
+      ・<b>Scale 2 只用於「已確診高碳酸血症呼吸衰竭」</b>（多為重度 COPD）且經臨床決定其目標血氧為 <b>88–92%</b> 者。這類病人若被推到高血氧，反而有 CO₂ 蓄積的危險，所以 Scale 2 會把「<b>吸氧狀態下 SpO₂ ≥97%</b>」記為 <b>3 分</b>（危險訊號），而同一數值在 Scale 1 是 0 分。<br>
+      ・使用哪一個 scale 必須由臨床醫師在觀察紀錄上明確指定；不確定時用 Scale 1。<br><br>
+
+      <b>◆ 吸氧加分：</b>凡是<b>需要補充氧氣才能維持其目標血氧</b>者，額外加 <b>2 分</b>。這是 NEWS2 唯一「非生理數值」的項目。<br><br>
+
+      <b>◆ ACVPU（NEWS2 由 AVPU 改成 ACVPU）：</b>新增 <b>C = new Confusion</b>（新出現的意識混亂、定向感喪失或躁動，先前精神狀態正常者）。這種變化可能很細微——病人可能仍能連貫回答問題，但已有混亂或躁動；此時 GCS 語言反應會落在 4 分或 3 分，而非正常的 5 分。<b>C、V、P、U 任一項皆計 3 分</b>；Alert 才是 0 分。<br><br>
+
+      <b>◆ 已知限制：</b><br>
+      ・<b>脊髓損傷</b>（尤其四肢癱瘓或高位截癱）者，自律神經功能受損會使脈搏、體溫與血壓波動，NEWS2 的敏感度與特異度都可能失真。<br>
+      ・NEWS2 是<b>惡化偵測與升階工具</b>，不是診斷工具：分數高不等於敗血症，分數低也不排除。臨床判斷永遠優先。<br>
+      ・<b>單一項目 3 分</b>（表上紅色欄）雖然罕見，但「不可忽視、需緊急臨床評估」；不過以單一極端值當警訊，預測不良結果的特異度<b>遠低於</b>總分 ≥5。<br><br>
+
+      <b>◆ 與 SIRS／qSOFA 的關係：</b>SSC 2026 把 NEWS／NEWS2／MEWS／SIRS 並列為可接受的篩檢工具，而<b>不建議以 qSOFA 作為單一篩檢工具</b>。SIRS（體溫 &gt;38 或 &lt;36°C、心跳 &gt;90、呼吸 &gt;20 或 PaCO₂ &lt;32 mmHg、白血球 &gt;12,000 或 &lt;4,000 或 band &gt;10%，符合 ≥2 項）敏感度高但特異度低；qSOFA（收縮壓 ≤100 mmHg、呼吸 ≥22 次/分、意識改變，符合 ≥2 項）特異度高但敏感度低，作為篩檢會漏掉太多病人。<br><br>
+
+      <b>◆ 版權：</b>NEWS2 由英國 Royal College of Physicians 發展。RCP 明訂「為鼓勵盡可能多人使用，本出版品的內容<b>無版權限制</b>，但重製時應標註 RCP 為版權持有者」。官方觀察紀錄圖表另有「須以彩色重製、不得修改」的規定，故本頁<b>只實作評分邏輯，未重製其圖表</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">生理參數 Physiological Parameters</div>
+
+    <div class="field-row">
+      <label>呼吸速率 Respiration</label>
+      <input type="number" id="nw_rr" step="1" placeholder="—">
+      <span class="unit">次/分</span>
+      <span class="organ-score" id="nw_p_rr">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 8</td><td>3分</td></tr>
+      <tr><td>9–11</td><td>1分</td></tr>
+      <tr><td>12–20</td><td>0分</td></tr>
+      <tr><td>21–24</td><td>2分</td></tr>
+      <tr><td>≥ 25</td><td>3分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>血氧飽和度 SpO₂</label>
+      <input type="number" id="nw_spo2" step="1" placeholder="—">
+      <span class="unit">%</span>
+      <span class="organ-score" id="nw_p_spo2">0</span>
+    </div>
+    <div class="field-row">
+      <label>採用刻度 Scale</label>
+      <select id="nw_scale">
+        <option value="1">Scale 1（目標 94–98%，絕大多數病人）</option>
+        <option value="2">Scale 2（目標 88–92%，已確診高碳酸血症呼吸衰竭）</option>
+      </select>
+    </div>
+    <div class="exclusive-note">Scale 2 <b>僅限已確診高碳酸血症呼吸衰竭</b>（多為重度 COPD）且已由臨床醫師指定目標 88–92% 者。誤用 Scale 2 會把正常血氧算成 3 分。</div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><th colspan="2">Scale 1</th></tr>
+      <tr><td>≤ 91</td><td>3分</td></tr>
+      <tr><td>92–93</td><td>2分</td></tr>
+      <tr><td>94–95</td><td>1分</td></tr>
+      <tr><td>≥ 96</td><td>0分</td></tr>
+      <tr><th colspan="2">Scale 2</th></tr>
+      <tr><td>≤ 83</td><td>3分</td></tr>
+      <tr><td>84–85</td><td>2分</td></tr>
+      <tr><td>86–87</td><td>1分</td></tr>
+      <tr><td>88–92，或未吸氧下 ≥ 93</td><td>0分</td></tr>
+      <tr><td>吸氧下 93–94</td><td>1分</td></tr>
+      <tr><td>吸氧下 95–96</td><td>2分</td></tr>
+      <tr><td>吸氧下 ≥ 97</td><td>3分</td></tr>
+    </table></div></details>
+
+    <label class="toggle-inline"><input type="checkbox" id="nw_o2"> 需補充氧氣才能維持目標血氧 <span class="pt-badge">2分</span></label>
+
+    <div class="field-row">
+      <label>收縮壓 Systolic BP</label>
+      <input type="number" id="nw_sbp" step="1" placeholder="—">
+      <span class="unit">mmHg</span>
+      <span class="organ-score" id="nw_p_sbp">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 90</td><td>3分</td></tr>
+      <tr><td>91–100</td><td>2分</td></tr>
+      <tr><td>101–110</td><td>1分</td></tr>
+      <tr><td>111–219</td><td>0分</td></tr>
+      <tr><td>≥ 220</td><td>3分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>脈搏 Pulse</label>
+      <input type="number" id="nw_hr" step="1" placeholder="—">
+      <span class="unit">次/分</span>
+      <span class="organ-score" id="nw_p_hr">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 40</td><td>3分</td></tr>
+      <tr><td>41–50</td><td>1分</td></tr>
+      <tr><td>51–90</td><td>0分</td></tr>
+      <tr><td>91–110</td><td>1分</td></tr>
+      <tr><td>111–130</td><td>2分</td></tr>
+      <tr><td>≥ 131</td><td>3分</td></tr>
+    </table></div></details>
+
+    <div class="field-row">
+      <label>意識 ACVPU</label>
+      <select id="nw_acvpu">
+        <option value="0">A — Alert 清醒</option>
+        <option value="3">C — new Confusion 新出現的混亂／定向感喪失／躁動</option>
+        <option value="3">V — Voice 呼喚有反應</option>
+        <option value="3">P — Pain 疼痛刺激有反應</option>
+        <option value="3">U — Unresponsive 無反應</option>
+      </select>
+      <span class="organ-score" id="nw_p_ac">0</span>
+    </div>
+    <div class="note">C、V、P、U 皆計 3 分。<b>新出現的意識混亂可能很細微</b>——病人或許仍能連貫回答，但已有混亂、定向感喪失或躁動。</div>
+
+    <div class="field-row">
+      <label>體溫 Temperature</label>
+      <input type="number" id="nw_temp" step="0.1" placeholder="—">
+      <span class="unit">°C</span>
+      <span class="organ-score" id="nw_p_temp">0</span>
+    </div>
+    <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
+      <tr><td>≤ 35.0</td><td>3分</td></tr>
+      <tr><td>35.1–36.0</td><td>1分</td></tr>
+      <tr><td>36.1–38.0</td><td>0分</td></tr>
+      <tr><td>38.1–39.0</td><td>1分</td></tr>
+      <tr><td>≥ 39.1</td><td>2分</td></tr>
+    </table></div></details>
+
+    <div class="note" style="margin-top:10px;">未填入之欄位一律以 <b>0 分</b>計；請確認七項皆已輸入再判讀總分。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">NEWS2 Total</div><div class="metric-value big" id="nw_total">0</div></div>
+      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="nw_band" style="font-size:26px;">低</div></div>
+      <div><div class="metric-label">監測頻率</div><div class="metric-value big" id="nw_freq" style="font-size:22px;">每 12 小時</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">臨床反應 Clinical Response</div>
+    <div style="font-size:15px; margin-top:2px;" id="nw_interp">常規照護。</div>
+    <table class="ref">
+      <tr><th>總分</th><th>風險</th><th>監測頻率</th><th>反應</th></tr>
+      <tr><td>0</td><td>低</td><td>每 12 小時</td><td>常規照護</td></tr>
+      <tr><td>1–4</td><td>低</td><td>每 4–6 小時</td><td>由能勝任的護理人員評估，決定是否加密監測或升階</td></tr>
+      <tr><td>單項 3 分</td><td>低–中</td><td>每 1 小時</td><td>由具急症評估能力的醫師（通常為病房醫師）緊急檢視</td></tr>
+      <tr><td>5–6</td><td>中</td><td>每 1 小時</td><td>緊急檢視，並判斷是否需升階至具重症技能的團隊</td></tr>
+      <tr><td>≥ 7</td><td>高</td><td>連續監測</td><td>由具重症能力的團隊（重症外展團隊）緊急評估，通常轉入更高階照護單位</td></tr>
+    </table>
+    <div class="risk-note">總分範圍 0–20（Scale 1 時 0–19）。<b>≥5 分是關鍵門檻</b>，應觸發緊急臨床評估；<b>≥7 分</b>觸發最高等級警示，即緊急（emergency）臨床評估。單一項目 3 分雖也需緊急評估，但預測不良結果的特異度低於總分 ≥5。本分數為<b>惡化偵測與升階</b>工具，不是敗血症的診斷準則。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://www.rcp.ac.uk/policy-and-campaigns/projects/national-early-warning-score-news-2/" target="_blank" rel="noopener" class="ref-link">Royal College of Physicians. National Early Warning Score (NEWS) 2: Standardising the assessment of acute-illness severity in the NHS. Updated report of a working party. London: RCP, 2017.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/41870560/" target="_blank" rel="noopener" class="ref-link">Prescott HC, Antonelli M, Alhazzani W, et al. Surviving Sepsis Campaign: international guidelines for management of sepsis and septic shock 2026. Intensive Care Med. 2026;52(5):863-936.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26903338/" target="_blank" rel="noopener" class="ref-link">Singer M, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801-810.</a><br><span class="note">評分表引自 RCP NEWS2 官方文件（無版權限制，須標註 RCP 為版權持有者）。</span></footer>
+</div>
+</div>
+<script>
+function nwNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function nwCalc(){
+  const parts = [];
+
+  /* 呼吸速率 */
+  const rr=nwNum('nw_rr');
+  let pRr=0;
+  if(rr!==null){
+    if(rr<=8) pRr=3; else if(rr<=11) pRr=1; else if(rr<=20) pRr=0;
+    else if(rr<=24) pRr=2; else pRr=3;
+  }
+
+  /* 血氧：Scale 2 的 1/2/3 分區間只在「吸氧狀態」成立 */
+  const spo2=nwNum('nw_spo2');
+  const scale=document.getElementById('nw_scale').value;
+  const onO2=document.getElementById('nw_o2').checked;
+  let pSp=0;
+  if(spo2!==null){
+    if(scale==='1'){
+      if(spo2<=91) pSp=3; else if(spo2<=93) pSp=2; else if(spo2<=95) pSp=1; else pSp=0;
+    } else {
+      if(spo2<=83) pSp=3;
+      else if(spo2<=85) pSp=2;
+      else if(spo2<=87) pSp=1;
+      else if(spo2<=92) pSp=0;
+      else if(!onO2) pSp=0;                    /* 未吸氧下 ≥93 為 0 分 */
+      else if(spo2<=94) pSp=1;
+      else if(spo2<=96) pSp=2;
+      else pSp=3;
+    }
+  }
+
+  const pO2 = onO2 ? 2 : 0;
+
+  /* 收縮壓 */
+  const sbp=nwNum('nw_sbp');
+  let pSbp=0;
+  if(sbp!==null){
+    if(sbp<=90) pSbp=3; else if(sbp<=100) pSbp=2; else if(sbp<=110) pSbp=1;
+    else if(sbp<=219) pSbp=0; else pSbp=3;
+  }
+
+  /* 脈搏 */
+  const hr=nwNum('nw_hr');
+  let pHr=0;
+  if(hr!==null){
+    if(hr<=40) pHr=3; else if(hr<=50) pHr=1; else if(hr<=90) pHr=0;
+    else if(hr<=110) pHr=1; else if(hr<=130) pHr=2; else pHr=3;
+  }
+
+  const pAc=parseInt(document.getElementById('nw_acvpu').value,10);
+
+  /* 體溫 */
+  const tp=nwNum('nw_temp');
+  let pTp=0;
+  if(tp!==null){
+    if(tp<=35.0) pTp=3; else if(tp<=36.0) pTp=1; else if(tp<=38.0) pTp=0;
+    else if(tp<=39.0) pTp=1; else pTp=2;
+  }
+
+  document.getElementById('nw_p_rr').textContent=pRr;
+  document.getElementById('nw_p_spo2').textContent=pSp;
+  document.getElementById('nw_p_sbp').textContent=pSbp;
+  document.getElementById('nw_p_hr').textContent=pHr;
+  document.getElementById('nw_p_ac').textContent=pAc;
+  document.getElementById('nw_p_temp').textContent=pTp;
+
+  const total=pRr+pSp+pO2+pSbp+pHr+pAc+pTp;
+  document.getElementById('nw_total').textContent=total;
+
+  /* 單項 3 分：吸氧的 2 分不屬於「單一生理參數極端值」 */
+  const red = [pRr,pSp,pSbp,pHr,pAc,pTp].some(p=>p===3);
+
+  let band='低', freq='每 12 小時',
+      interp='常規照護。';
+  if(total>=7){
+    band='高'; freq='連續監測';
+    interp='<b>緊急（emergency）評估</b>：由具重症照護能力的臨床團隊／重症外展團隊立即評估，通常需轉入更高階照護單位。若懷疑感染，同時啟動敗血症處置。';
+  } else if(total>=5){
+    band='中'; freq='每 1 小時';
+    interp='<b>緊急檢視</b>：由具急症評估能力的臨床醫師（病房醫師或急重症團隊護理師）緊急檢視，並判斷是否需升階至具重症技能的團隊。<b>≥5 分是關鍵門檻。</b>';
+  } else if(red){
+    band='低–中'; freq='每 1 小時';
+    interp='<b>單一項目 3 分</b>：雖罕見但不可忽視，應由具急症評估能力的醫師（通常為病房醫師）緊急檢視，判定原因並決定後續監測頻率與是否升階。';
+  } else if(total>=1){
+    band='低'; freq='每 4–6 小時';
+    interp='由能勝任的註冊護理人員或同等人員評估，決定是否需改變監測頻率或升階照護。';
+  }
+  document.getElementById('nw_band').textContent=band;
+  document.getElementById('nw_freq').textContent=freq;
+  document.getElementById('nw_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-news2 input, #view-news2 select')
+  .forEach(el => { el.addEventListener('input', nwCalc); el.addEventListener('change', nwCalc); });
+nwCalc();
+/* 由敗血症決策流程進入時顯示返回鍵 */
+if(location.search.indexOf('from=sepsis')>=0){var _b=document.getElementById('nw_back_sepsis'); if(_b) _b.style.display='';}
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
