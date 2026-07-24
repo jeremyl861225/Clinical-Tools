@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>癲癇重積計時與劑量 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-status-epilepticus">
+  <div class="app-header">
+    <div><div class="eyebrow">Status Epilepticus Timing &amp; Dosing</div><h1>癲癇重積計時與劑量</h1><div class="sub">Convulsive Status Epilepticus · 依體重即時換算各線劑量（AES 2016 ＋ ESETT）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-status-epilepticus'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">兩個時間門檻與一句話 The Clock</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      ILAE 2015 對抽搐型癲癇重積（convulsive SE）定義兩個操作型時間點：<b>t₁ = 5 分鐘</b>（發作持續超過此即應<b>開始治療</b>，因不太可能自行停止）、<b>t₂ = 30 分鐘</b>（超過此有<b>長期神經後果</b>的風險）。<br>
+      整條治療線都是<b>時間驅動</b>的：<b>benzodiazepine 給到「足量」是最常被做錯的一步</b>——AES 明訂初始治療應<b>一次給足單一完整劑量，不要拆成多次小劑量</b>；劑量不足是癲癇重積演變為難治的最大可修正因素。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>四階段時間分期、各線藥物與難治處置 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 四階段（AES 2016 演算法）：</b><br>
+      ・<b>Stabilization phase（0–5 分）</b>：一般癲癇急救——氣道、呼吸、循環、生命徵象、建立靜脈路徑、<b>驗血糖</b>（低血糖者給葡萄糖，慢性酒精或營養不良者併 thiamine）、抽血（電解質、鈣、鎂、藥物濃度、毒物）。<br>
+      ・<b>Initial therapy phase（5–20 分）</b>：<b>benzodiazepine</b> 為首選（Level A，4 篇 class I RCT）。<br>
+      ・<b>Second therapy phase（20–40 分）</b>：fosphenytoin、valproate、levetiracetam <b>三選一，無實證優劣</b>（ESETT 證實三者等效）。<br>
+      ・<b>Third therapy phase（&gt;40 分）</b>：無明確實證——<b>重複二線</b>或用<b>麻醉劑量</b>的 thiopental／midazolam／pentobarbital／propofol，<b>皆須持續 EEG 監測</b>。<br>
+      <span class="note">重症或 ICU 病人可能<b>更快通過或跳過某階段</b>，直接進入第三階段。</span><br><br>
+
+      <b>◆ 一線 benzodiazepine（AES 2016，成人）：</b><br>
+      ・<b>無靜脈路徑時首選 IM midazolam 10 mg</b>（&gt;40 kg；13–40 kg 為 5 mg）——RAMPART 試驗證實在無 IV access 時<b>優於</b> IV lorazepam（Level A）。<br>
+      ・<b>IV lorazepam 0.1 mg/kg（單次上限 4 mg）</b>，可<b>重複一次</b>。<br>
+      ・<b>IV diazepam 0.15–0.2 mg/kg（單次上限 10 mg）</b>，可<b>重複一次</b>。<br>
+      ・IV lorazepam 與 IV diazepam 效果<b>無顯著差異</b>（Level A）。<br>
+      ・替代：IV phenobarbital 15 mg/kg 單次（起效較慢，列為替代而非首選）；院前或無上述選項時 rectal diazepam、intranasal midazolam、buccal midazolam 合理（Level B）。<br>
+      ・<b>未治療的癲癇重積本身的呼吸抑制風險高於 benzodiazepine</b>——別因怕呼吸抑制而給不足量（Level A）。<br><br>
+
+      <b>◆ 二線（ESETT 2019 一手劑量；三者等效，各約 45–47% 停止發作）：</b><br>
+      ・<b>levetiracetam 60 mg/kg（上限 4500 mg）</b>。<br>
+      ・<b>fosphenytoin 20 mgPE/kg（上限 1500 mgPE）</b>——PE = phenytoin equivalents；有 fosphenytoin 時<b>優於</b> phenytoin（耐受性，Level A）。<br>
+      ・<b>valproate 40 mg/kg（上限 3000 mg）</b>。<br>
+      ・三者無實證優劣，選擇依<b>禁忌與併發症</b>：valproate 避免用於肝病、粒線體疾病與孕婦；fosphenytoin 留意低血壓與心律不整（心臟病者謹慎）；levetiracetam 腎功能不良需調整、副作用最少。<br>
+      ・若三者皆無：IV phenobarbital 15 mg/kg 為合理替代（Level B）。<br><br>
+
+      <b>◆ 第三／難治（AES 2016）：</b>二線失敗即為 refractory SE。選項為<b>重複二線</b>或<b>麻醉劑量</b>（thiopental／midazolam／pentobarbital／propofol），全程<b>持續 EEG</b>。<b>難治與超難治（super-refractory，麻醉 ≥24 小時仍發作或減量時復發）的處置超出 AES 2016 範圍</b>，應由神經重症團隊主導。<br><br>
+
+      <b>◆ 一定要並行的事：</b>整條線上都要<b>找病因</b>——低血糖、電解質（鈉、鈣、鎂）、藥物中毒或戒斷、抗癲癇藥濃度不足、中樞感染、出血或缺血性中風、缺氧、子癲前症／子癲症。<b>找到可逆病因並矯正，往往比再加一線藥更關鍵</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">病人資料 Patient</div>
+    <div class="field-row">
+      <label>體重</label>
+      <input type="number" id="se_wt" step="1" placeholder="—">
+      <span class="unit">kg</span>
+    </div>
+    <div class="field-row">
+      <label>靜脈路徑</label>
+      <select id="se_iv">
+        <option value="yes">已建立 IV</option>
+        <option value="no">尚無 IV（考慮 IM／IN／buccal）</option>
+      </select>
+    </div>
+    <div class="note">輸入體重後，下方各線藥物即依 AES 2016／ESETT 的每公斤劑量與上限自動換算；達上限者以上限值顯示。</div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Initial therapy（5–20 分）— benzodiazepine，一次給足</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_first">請輸入體重。</div>
+    <div class="metric-label" style="margin-top:14px;">Second therapy（20–40 分）— 三選一，無優劣</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_second">請輸入體重。</div>
+    <div class="metric-label" style="margin-top:14px;">Third therapy（&gt;40 分）— 難治</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_third">重複二線，或麻醉劑量 thiopental／midazolam／pentobarbital／propofol，全程持續 EEG。</div>
+    <div class="risk-note">劑量：一線 benzodiazepine 依 AES 2016 演算法（IM midazolam 為 RAMPART 固定劑量）；二線三藥依 ESETT 2019（60 mg/kg / 20 mgPE/kg / 40 mg/kg，上限 4500 / 1500 / 3000）。<b>benzodiazepine 一次給足單一完整劑量</b>，lorazepam 與 diazepam 可各重複一次。二線選擇依禁忌調整（valproate 避開肝病/孕婦、fosphenytoin 留意低血壓/心律不整、levetiracetam 依腎功能調整）。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/26900382/" target="_blank" rel="noopener" class="ref-link">Glauser T, Shinnar S, Gloss D, et al. Evidence-Based Guideline: Treatment of Convulsive Status Epilepticus in Children and Adults: Report of the Guideline Committee of the American Epilepsy Society. Epilepsy Curr. 2016;16(1):48-61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31774955/" target="_blank" rel="noopener" class="ref-link">Kapur J, Elm J, Chamberlain JM, et al. Randomized Trial of Three Anticonvulsant Medications for Status Epilepticus (ESETT). N Engl J Med. 2019;381(22):2103-2113.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22335736/" target="_blank" rel="noopener" class="ref-link">Silbergleit R, Durkalski V, Lowenstein D, et al. Intramuscular versus intravenous therapy for prehospital status epilepticus (RAMPART). N Engl J Med. 2012;366(7):591-600.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26336950/" target="_blank" rel="noopener" class="ref-link">Trinka E, Cock H, Hesdorffer D, et al. A definition and classification of status epilepticus – Report of the ILAE Task Force. Epilepsia. 2015;56(10):1515-1523.</a></footer>
+</div>
+</div>
+<script>
+function seNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function seCap(perKg, wt, max){ const d=perKg*wt; return d>max ? {v:max, capped:true} : {v:Math.round(d), capped:false}; }
+
+function seCalc(){
+  const wt=seNum('se_wt');
+  const iv=document.getElementById('se_iv').value;
+
+  if(wt===null || wt<=0){
+    document.getElementById('se_first').innerHTML='請輸入體重。';
+    document.getElementById('se_second').innerHTML='請輸入體重。';
+    return;
+  }
+
+  /* 一線 */
+  const lz=seCap(0.1, wt, 4);
+  const dz=seCap(0.2, wt, 10);          /* 0.15–0.2；取上界 0.2 計最大單次 */
+  const imMid = wt>40 ? 10 : (wt>=13 ? 5 : Math.round(0.2*wt));
+  let first;
+  if(iv==='no'){
+    first = '<b>首選 IM midazolam '+imMid+' mg</b>'+(wt>40?'（&gt;40 kg 固定 10 mg）':(wt>=13?'（13–40 kg 固定 5 mg）':'（&lt;13 kg 依 0.2 mg/kg）'))+' 肌肉注射，單次——無 IV 時 RAMPART 證實優於 IV lorazepam。<br>' +
+      '替代：intranasal 或 buccal midazolam、rectal diazepam。建立 IV 後若仍發作，改走下方 IV 選項。';
+  } else {
+    first = '擇一，<b>一次給足</b>：<br>' +
+      '・<b>IV lorazepam '+lz.v+' mg</b>（0.1 mg/kg，上限 4 mg'+(lz.capped?'，已達上限':'')+'），可重複一次。<br>' +
+      '・<b>IV diazepam '+dz.v+' mg</b>（0.15–0.2 mg/kg，上限 10 mg'+(dz.capped?'，已達上限':'')+'），可重複一次。<br>' +
+      '・無 IV 時 <b>IM midazolam '+imMid+' mg</b>。<br>' +
+      '<span class="note">替代：IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg，起效較慢）。</span>';
+  }
+  document.getElementById('se_first').innerHTML=first;
+
+  /* 二線 */
+  const lev=seCap(60, wt, 4500);
+  const fos=seCap(20, wt, 1500);
+  const val=seCap(40, wt, 3000);
+  const second = '擇一，<b>三者等效</b>（依禁忌選）：<br>' +
+    '・<b>levetiracetam '+lev.v+' mg</b>（60 mg/kg，上限 4500'+(lev.capped?'，已達上限':'')+'）——副作用最少，腎功能不良需調整。<br>' +
+    '・<b>fosphenytoin '+fos.v+' mgPE</b>（20 mgPE/kg，上限 1500'+(fos.capped?'，已達上限':'')+'）——留意低血壓與心律不整。<br>' +
+    '・<b>valproate '+val.v+' mg</b>（40 mg/kg，上限 3000'+(val.capped?'，已達上限':'')+'）——避開肝病、粒線體疾病、孕婦。<br>' +
+    '<span class="note">三者皆無時 IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg）為替代。</span>';
+  document.getElementById('se_second').innerHTML=second;
+}
+document.querySelectorAll('#view-status-epilepticus input, #view-status-epilepticus select')
+  .forEach(el => { el.addEventListener('input', seCalc); el.addEventListener('change', seCalc); });
+seCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
