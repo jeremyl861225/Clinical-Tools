@@ -97,6 +97,7 @@ const PRECACHE_URLS = [
   './pathways/sepsis.html',
   './pathways/ards.html',
   './pathways/lung-protective-ventilation.html',
+  './pathways/respiratory-failure.html',
   './pathways/aki-crrt.html',
   './pathways/dka-hhs.html',
   './pathways/electrolyte-emergency.html',

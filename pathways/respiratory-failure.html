@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>呼吸衰竭總論與分流 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-resp-failure">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>呼吸衰竭總論與分流</h1><div class="sub">Acute Respiratory Failure · 分型 → 病因 → 支持與藥物 → 難治性升階與 ECMO（GOLD 2026／ESC 2021／ESICM 2023／ELSO 2021）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-resp-failure'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">這一頁怎麼用 How To Use</div>
+    <div class="lede-body">
+      <p><b>分型是選工具的捷徑，病因才決定治療。</b>同樣是低血氧，心因性肺水腫該用 CPAP／NIV 加利尿，非心因性該用 HFNO，COPD 的高碳酸該用 NIV——<b>三者的第一線支持工具剛好不同，選錯會延誤</b>。本頁的流程因此是「先分型 → 再定病因 → 才決定支持與藥物」。</p>
+      <p><b>ECMO 只在最後一段出現。</b>只有「已插管、該做的都做完、仍然難治」才會進入 ECMO 判定；<b>調 PEEP、利尿或 NIV 之後改善的病人，流程不會、也不應該走到 ECMO</b>。這是本頁刻意設計的閘門，不是省略。</p>
+      <p><b>來源等級不同要標明</b>：第一、二型是標準生理分類；<b>第三型（術後）與第四型（休克）是重症教科書的教學分類，沒有寫進任何現行指引</b>，本頁保留是因為床邊好用，但不與指引條文混為一談。</p>
+      <p><b>病因會並存</b>：COPD 病人可以同時心衰、ARDS 病人可以同時容積過載。本頁的分支是「目前主導的問題」，不是互斥的診斷。</p>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>四型呼吸衰竭與 ABG 判讀 Four Types &amp; Blood-Gas Interpretation</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>分型</th><th>血氣特徵</th><th>機轉</th><th>常見病因</th></tr>
+        <tr><td>第一型<br>低血氧型</td><td>PaO₂ &lt;60 mmHg，PaCO₂ 正常或偏低</td><td>肺內分流與通氣／灌流不均</td><td>肺炎、ARDS、心因性肺水腫、肺栓塞、氣胸、肺出血</td></tr>
+        <tr><td>第二型<br>高碳酸（通氣）型</td><td>PaCO₂ &gt;45 mmHg，常併 pH &lt;7.35</td><td>肺泡通氣不足或無效腔增加</td><td>COPD 急性惡化、氣喘重積、神經肌肉疾病、胸壁疾病、肥胖低通氣、鎮靜／鴉片類藥物過量</td></tr>
+        <tr><td>第三型<br>術後型</td><td>多為第一型，也可合併第二型</td><td>麻醉、疼痛、腹脹使功能餘氣量下降 → 肺塌陷</td><td>上腹部與胸腔手術後、臥床、鎮痛不足</td></tr>
+        <tr><td>第四型<br>休克型</td><td>肺可為正常；氧輸送不足</td><td>呼吸肌灌流不足、氧氣需求超過心肺可供應</td><td>各種休克（心因性、敗血性、低血容）</td></tr>
+      </table>
+      <span class="note"><b>第三、四型不是指引分類</b>——它們出自重症教科書的教學傳統，臨床上其實是第一／二型的特殊情境。之所以獨立列出，是因為兩者的處置重點不在肺：第三型是<b>把塌陷的肺打開並止痛</b>，第四型是<b>把呼吸肌的耗氧交給呼吸器、同時修正休克</b>。</span><br><br>
+
+      <b>◆ 急性或慢性？</b>看 pH 與 HCO₃⁻ 的代償程度（<b>教科書經驗法則，非指引</b>）：<br>
+      <div class="dot-line">・<b>急性</b>高碳酸：PaCO₂ 每上升 10 mmHg，pH 約下降 0.08、HCO₃⁻ 約上升 1 mEq/L。</div>
+      <div class="dot-line">・<b>慢性</b>高碳酸：PaCO₂ 每上升 10 mmHg，pH 約下降 0.03、HCO₃⁻ 約上升 3.5–4 mEq/L。</div>
+      <div class="dot-line">・<b>慢性病人急性惡化</b>：HCO₃⁻ 已高（慢性代償）但 pH 掉下來——這正是 NIV 的族群，不要因為「PaCO₂ 本來就高」而輕忽。</div><br>
+
+      <b>◆ A–a 梯度</b>（區分「單純通氣不足」與「合併肺實質病變」）：<br>
+      P<sub>A</sub>O₂ = FiO₂ ×（大氣壓 − 47）− PaCO₂ / 0.8；A–a = P<sub>A</sub>O₂ − PaO₂。海平面呼吸空氣時正常值約 <b>(年齡/4) + 4</b>。<br>
+      <div class="dot-line">・<b>A–a 正常的高碳酸</b>：中樞抑制、神經肌肉、胸壁——肺本身沒問題，處理的是「驅動」與「幫浦」。</div>
+      <div class="dot-line">・<b>A–a 上升</b>：肺本身有病（肺炎、ARDS、肺水腫、肺栓塞），單純增加通氣不會解決氧合。</div><br>
+
+      <b>◆ 一定要先排除的機械性原因：</b>張力性氣胸、大量肋膜積液、上呼吸道阻塞、大量肺栓塞——這些用任何模式的呼吸支持都不會改善，且延誤有致命性。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>三大病因的鑑別與診斷 Differentiating the Three Common Causes</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>病因</th><th>床邊線索</th><th>關鍵檢查</th><th>第一線支持</th></tr>
+        <tr><td>心因性<br>肺水腫</td><td>端坐呼吸、夜間陣發性呼吸困難、頸靜脈怒張、S3、雙側基底濕囉音、粉紅色泡沫痰</td><td><b>NP 排除</b>：BNP &lt;100、NT-proBNP &lt;300、MR-proANP &lt;120 pg/mL 可排除急性心衰（ESC 2021）；肺超音波雙側 B-lines；胸片；心臟超音波；troponin、ECG 找 ACS</td><td><b>CPAP／NIPPV</b>（ESC 2021 IIa B）＋ 靜脈 loop diuretic（I C）</td></tr>
+        <tr><td>COPD<br>急性惡化</td><td>已知 COPD 或吸菸史、喘鳴、呼氣延長、痰量與膿性改變、輔助肌使用</td><td><b>ABG 是關鍵</b>（pH ≤7.35 且 PaCO₂ ≥45 mmHg 即為 NIV 指徵）；胸片排除肺炎與氣胸；Rome 嚴重度分級</td><td><b>NIV</b>（GOLD 2026 明列為住院急性惡化呼吸衰竭的<b>起始通氣模式</b>）</td></tr>
+        <tr><td>非心因性<br>AHRF／ARDS</td><td>一週內急性發生、感染或吸入等誘因、無心衰證據、對高濃度氧反應差</td><td>雙側浸潤（X 光／CT／超音波）；P/F ≤300 或 S/F ≤315（新全球定義 2024）；<b>需先排除主要心因性</b></td><td><b>HFNO</b>（ESICM 2023 建議 3.1 強建議，降低插管風險）</td></tr>
+      </table>
+      <b>◆ 三者混在一起時怎麼辦：</b><br>
+      <div class="dot-line">・<b>先處理可逆且有明確療效的那一項</b>——心因性的利尿與後負荷處理、COPD 的支氣管擴張與類固醇，兩者都能在數小時內改變病程；ARDS 沒有這種快速反轉的藥物。</div>
+      <div class="dot-line">・<b>NP 正常時要停下來想</b>：NP 在低值有很好的排除力，但在肥胖、末期心衰、閃電性肺水腫與右心衰時可能偏低，而心房顫動與腎功能不全會拉高（ESC 2021）。</div>
+      <div class="dot-line">・<b>COPD 惡化的鑑別診斷</b>：GOLD 2026 特別列出肺炎、心衰失代償、心肌梗塞與心律不整、<b>肺栓塞（住院者達 5.9%）</b>——這些可以模仿或加重惡化。</div><br>
+
+      <b>◆ COPD 急性惡化的嚴重度（GOLD 2026，Rome 提案）：</b><br>
+      <div class="dot-line">・<b>輕度</b>：呼吸困難 VAS &lt;5、呼吸速率 &lt;24、心跳 &lt;95、休息時 SaO₂ ≥92%（空氣或原本的氧氣處方）且變化 ≤3%、CRP &lt;10 mg/L。</div>
+      <div class="dot-line">・<b>中度</b>：上列五項中至少三項達閾值（VAS ≥5、RR ≥24、HR ≥95、SaO₂ &lt;92% 或變化 &gt;3%、CRP ≥10）；若有 ABG 可能呈 PaO₂ 70–80 mmHg。</div>
+      <div class="dot-line">・<b>重度</b>：臨床同中度，但 ABG 呈 <b>PaO₂ ≤60 mmHg，且／或 PaCO₂ &gt;45 mmHg 併 pH &lt;7.35</b>。</div>
+      <div class="dot-line">・住院病人另有三級分法：<b>無呼吸衰竭</b>（RR ≤24、HR ≤95、無輔助肌使用、Venturi 24–35% 即可改善、PaCO₂ 未上升）／<b>呼吸衰竭</b>（RR &gt;24、需 Venturi &gt;35%、PaCO₂ 上升或 50–60 mmHg，意識正常）／<b>通氣衰竭</b>（意識急性改變、氧氣無法改善或需 FiO₂ &gt;40%、PaCO₂ &gt;60 mmHg 且 <b>pH ≤7.25</b>）。</div>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>藥物一覽（依病因） Drug Therapy by Cause</summary>
+    <div class="box-inner">
+      <b>◆ 心因性肺水腫（ESC 2021）</b><br>
+      <div class="dot-line">・<b>靜脈 loop diuretic（I C）</b>：起始劑量為病人<b>平常口服日劑量的 1–2 倍</b>；未使用過利尿劑者可用 <b>furosemide 20–40 mg IV</b> 或 <b>torasemide 10–20 mg IV</b>。可分 <b>2–3 次 bolus 或持續輸注</b>；<b>不建議每日只給一次 bolus</b>（給藥後會出現鈉滯留）。</div>
+      <div class="dot-line">・<b>利尿反應怎麼看</b>：給藥後 <b>2 小時 spot urine Na &gt;50–70 mEq/L</b>，或前 6 小時<b>尿量 &gt;100–150 mL/h</b> 即為足夠；不足就<b>把劑量加倍</b>再評估；仍不足（例如加倍後每小時仍 &lt;100 mL）再考慮加上 thiazide 類（<b>IIa B</b>，限利尿劑阻抗性水腫）。</div>
+      <div class="dot-line">・<b>血管擴張劑（IIb B）</b>：僅在 <b>收縮壓 &gt;110 mmHg</b> 時考慮；nitroglycerin 由低劑量起調，嚴重高血壓的急性肺水腫可用 <b>1–2 mg bolus</b>。<b>主動脈瓣狹窄或左心室肥厚者要極度小心</b>（前後負荷驟降）。兩個早期強力血管擴張的隨機試驗相較高劑量利尿<b>未顯示效益</b>，故指引不偏好以血管擴張劑為主的策略。</div>
+      <div class="dot-line">・<b>正性肌力藥（IIb C）</b>：只用於 <b>收縮壓 &lt;90 mmHg 且有低灌流</b>、對輸液等標準治療無反應者。劑量：dobutamine 2–20、dopamine 3–5（正性肌力）／&gt;5 µg/kg/min（升壓）、milrinone 0.375–0.75、enoximone 5–20、levosimendan 0.1（可調 0.05–0.2）µg/kg/min；norepinephrine 0.2–1.0、epinephrine 0.05–0.5 µg/kg/min。<b>正在使用 beta 阻斷劑者，levosimendan 或 PDE3 抑制劑優於 dobutamine</b>。</div>
+      <div class="dot-line">・<b>鴉片類不建議常規使用（III C）</b>——僅限嚴重或難以忍受的疼痛與焦慮。回溯性資料顯示 morphine 與更多機械通氣、更長住院、更多加護病房入住相關。</div>
+      <div class="dot-line">・<b>血栓預防</b>：除非已在抗凝或有禁忌，建議給予 LMWH 等預防性抗凝。</div><br>
+
+      <b>◆ COPD 急性惡化（GOLD 2026）</b><br>
+      <div class="dot-line">・<b>支氣管擴張劑（第一線）</b>：吸入型 SABA ± 短效抗膽鹼；霧化<b>每小時 1 劑共 2–3 劑</b>，之後<b>每 2–4 小時</b>依反應；或 pMDI 每次 1–2 puff 相同頻率。<b>不要用高劑量 SABA</b>。</div>
+      <div class="dot-line">・<b>霧化用空氣驅動優於氧氣驅動</b>——氧氣驅動的霧化有<b>升高 PaCO₂</b> 的風險。長效支氣管擴張劑（含 ICS 複方）應<b>持續使用</b>，或在出院前盡早開始。</div>
+      <div class="dot-line">・<b>全身性類固醇</b>：<b>prednisone 等效 40 mg／天 × 5 天</b>。</div>
+      <div class="dot-line">・<b>抗生素</b>：符合下列任一即給——① 下列四項中<b>至少兩項</b>：呼吸困難增加、發燒、痰量增加、<b>痰變膿</b>，<b>且其中一項必須是痰變膿</b>；② 前次惡化的痰培養陽性；③ 需要機械通氣（侵襲或非侵襲）。療程 <b>5–7 天</b>（門診治療建議 ≤5 天）。<span class="note">注意：<b>GOLD 2026 的這組條件把「發燒」納入四項之中</b>，與傳統只講「呼吸困難／痰量／膿性」的 Anthonisen 三項不同——引用時別照抄舊版。</span></div>
+      <div class="dot-line">・<b>明確不建議</b>：靜脈 methylxanthines（theophylline／aminophylline，副作用大）、呼吸興奮劑（用於急性呼吸衰竭）、<b>procalcitonin 導引抗生素決策</b>（加護病房族群的 procalcitonin 演算法甚至與較高死亡率相關）。</div>
+      <div class="dot-line">・<b>輔助</b>：N-acetylcysteine 可作為排痰困難者的輔助（不改善 FEV₁）；注意液體平衡、血栓預防、共病與營養。</div><br>
+
+      <b>◆ 非心因性 AHRF／ARDS</b><br>
+      <div class="dot-line">・<b>類固醇</b>：ATS 2024 建議使用（條件式，中度確定性，死亡率 RR 0.84），但<b>指引刻意不指定藥物與療程</b>，且<b>發病超過 2 週後才開始可能有害</b>。</div>
+      <div class="dot-line">・<b>神經肌肉阻斷劑</b>：僅限<b>早期重度</b>（發病 &lt;48 小時、P/F ≤100，ATS 2024 條件式）；ESICM 2023 建議 8.1 強烈反對常規持續輸注，SSC 2026 建議 77 偏好間歇推注。</div>
+      <div class="dot-line">・<b>沒有特效藥</b>：ARDS 的處置主力是通氣策略與俯臥，詳見肺保護通氣頁與 ARDS 決策頁。</div><br>
+
+      <b>◆ 第四型（休克相關）</b>：處置的主角是<b>休克本身</b>（感染源控制、輸液、升壓劑、血運重建）。插管與機械通氣在此的目的，是<b>把呼吸肌的高耗氧交給呼吸器</b>，而不是治療肺——插管時的正壓與鎮靜可能讓血壓崩掉，須先備好升壓劑。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>ECMO：什麼時候、哪一種、誰不適合 ECMO Indications, Modes &amp; Contraindications</summary>
+    <div class="box-inner">
+      <b>◆ 先確認「該做的都做完了」</b>：ELSO 2021 明言——延遲的最佳醫療處置與較差預後相關，<b>但有指徵時也不應延後 ECMO</b>。呼吸衰竭端指的是肺保護通氣、PEEP 調整、<b>俯臥每次 ≥16 小時</b>、必要時神經肌肉阻斷；心因性端指的是利尿與後負荷處理、血運重建、必要的機械併發症修補。<br><br>
+
+      <b>◆ VV ECMO 的常見適應症（ELSO 2021，符合下列任一）</b><br>
+      <div class="dot-line">・<b>低血氧型呼吸衰竭：P/F &lt;80 mmHg</b>，於最佳醫療處置之後（無禁忌時應包含一次俯臥試驗）。</div>
+      <div class="dot-line">・<b>高碳酸型呼吸衰竭：pH &lt;7.25</b>，於最佳常規機械通氣之後（<b>呼吸速率 35 次/分、Pplat ≤30 cmH₂O</b>）。</div>
+      <div class="dot-line">・作為<b>肺移植的橋接</b>或移植後原發移植物功能不良的支持。</div>
+      <div class="dot-line">・特定情境：ARDS（病毒／細菌性肺炎、吸入）、急性嗜伊紅性肺炎、瀰漫性肺泡出血、<b>重度氣喘</b>、胸部創傷與嚴重肺挫傷、嚴重吸入性傷害、大支氣管肋膜瘻管、肺移植周邊期。</div>
+      <span class="note">ELSO 註明各試驗使用的切點不同（EOLIA 用 P/F &lt;80、CESAR 用 Murray score &gt;3），<b>沒有強力資料證明哪一個較優</b>。ESICM 2023 建議 9.1（強建議）則是以 <b>EOLIA 收案條件</b>為準：P/F &lt;50 超過 3 小時，或 P/F &lt;80 超過 6 小時，或 pH &lt;7.25 併 PaCO₂ ≥60 超過 6 小時。</span><br><br>
+
+      <b>◆ 相對禁忌（ELSO 2021）</b>：中樞神經出血、嚴重中樞神經損傷、不可逆且失能的中樞神經病變、全身性出血、抗凝禁忌、免疫抑制、高齡（風險隨年齡上升但<b>沒有訂出門檻</b>）、<b>已在 Pplat &gt;30 cmH₂O 且 FiO₂ &gt;90% 下機械通氣超過 7 天</b>。<br>
+      <b>◆ 唯一的絕對禁忌</b>：<b>預期無法恢復且沒有可行的脫機（decannulation）計畫</b>——包括疾病本身或多重器官衰竭且無器官移植選項。若當下無法判定是否為移植候選者，可以「<b>bridge to decision</b>」啟動，但必須有持續的多專科討論與明確的支持期限。<br>
+      <b>◆ 轉院</b>：無 ECMO 能力的院所應<b>及早</b>規劃轉送。ELSO 建議用 <b>RESP score</b> 預測上機後存活、<b>Murray score</b> 估計不上機的死亡率；<b>要轉就早轉</b>。<br><br>
+
+      <b>◆ 模式怎麼選</b><br>
+      <table class="def-table">
+        <tr><th>模式</th><th>適用</th><th>要記得的特性</th></tr>
+        <tr><td>VV</td><td>單純呼吸衰竭、心輸出仍足夠</td><td>串聯式；<b>關掉 sweep gas 不會造成靜脈-動脈分流</b>；<b>提高流量不會升血壓</b>；再循環（recirculation）會讓實際輸送的氧變少</td></tr>
+        <tr><td>VA</td><td>心因性休克／心臟無法維持灌流（併或不併呼吸衰竭）</td><td>並聯式；ESC 2021：短期機械循環支持 <b>IIa C</b>，IABP 於心肌梗塞後休克<b>不常規建議（IIb C）</b>，VA-ECMO <b>缺乏隨機試驗</b>、觀察性統合分析結果有利，猛爆性心肌炎可考慮。心臟恢復時可出現 <b>Harlequin／North-South syndrome</b>（上半身與腦部低血氧）</td></tr>
+        <tr><td>VAV</td><td>呼吸與循環問題並存</td><td>兼顧氧合與循環的混合式，管路與流量分配複雜，需有經驗中心</td></tr>
+        <tr class="dt-warn"><td>ECCO₂R</td><td><b>不是選項</b></td><td>ESICM 2023 建議 9.2 <b>強烈反對</b>用於 ARDS（隨機試驗之外，高度確定性的無效果）；COPD 惡化的 <b>VENT-AVOID</b> 試驗（113 人、提前終止）未改善 5 天無呼吸器天數，<b>且 NIV 分層的院內死亡反而較高（22% vs 0%，P=0.02）</b></td></tr>
+      </table>
+    </div>
+  </details>
+
+  <div class="flow-step" id="rf_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">血氣分析屬於哪一型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('type','t1',this)">第一型 · 低血氧型<span class="fo-sub">PaO₂ &lt;60 mmHg，PaCO₂ 正常或偏低</span></button>
+      <button class="flow-opt" onclick="rfPick('type','t2',this)">第二型 · 高碳酸（通氣）型<span class="fo-sub">PaCO₂ &gt;45 mmHg，常併 pH &lt;7.35</span></button>
+      <button class="flow-opt" onclick="rfPick('type','t3',this)">第三型 · 術後型<span class="fo-sub">手術後的肺塌陷與功能餘氣量下降（教科書分類）</span></button>
+      <button class="flow-opt" onclick="rfPick('type','t4',this)">第四型 · 休克型<span class="fo-sub">肺可為正常，問題是灌流與氧輸送（教科書分類）</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">分型前先排除<b>張力性氣胸、上呼吸道阻塞、大量肋膜積液、大量肺栓塞</b>——這些用任何呼吸支持都不會改善。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c2a">↓</div>
+  <div class="flow-step hidden" id="rf_s2a">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">低血氧的主導病因是什麼？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('cause','cpe',this)">心因性肺水腫<span class="fo-sub">端坐呼吸、頸靜脈怒張、雙側 B-lines；NP 升高</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','ahrf',this)">非心因性急性低血氧呼吸衰竭／ARDS<span class="fo-sub">一週內急性發生、雙側浸潤、非主要心因性</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','vasc',this)">肺血管或機械性原因<span class="fo-sub">肺栓塞、氣胸、大量肋膜積液、肺出血</span></button>
+    </div>
+    <button class="flow-link" onclick="location.href='../tools/ards.html?from=rf'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c2b">↓</div>
+  <div class="flow-step hidden" id="rf_s2b">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">高碳酸的主導病因是什麼？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('cause','copd',this)">COPD 急性惡化<span class="fo-sub">喘鳴、呼氣延長、痰量與膿性改變；pH ≤7.35 且 PaCO₂ ≥45</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','asthma',this)">氣喘重積<span class="fo-sub">PaCO₂ 由低轉為正常或升高＝警訊</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','pump',this)">幫浦或驅動問題<span class="fo-sub">神經肌肉疾病、胸壁、肥胖低通氣、鎮靜或鴉片類藥物過量</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c2c">↓</div>
+  <div class="flow-step hidden" id="rf_s2c">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">術後呼吸衰竭的主要成分？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('cause','postop',this)">肺塌陷與鎮痛不足為主<span class="fo-sub">上腹部或胸腔手術後、淺快呼吸、基底肺塌陷</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','ahrf',this)">已進展為非心因性 AHRF／ARDS<span class="fo-sub">雙側浸潤、需高濃度氧、符合 ARDS 判準</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','cpe',this)">術中／術後容積過載為主<span class="fo-sub">輸液量大、頸靜脈怒張、NP 升高</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c2d">↓</div>
+  <div class="flow-step hidden" id="rf_s2d">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">休克的類型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('cause','cardshock',this)">心因性休克<span class="fo-sub">低心輸出、低灌流徵象、常併肺水腫</span></button>
+      <button class="flow-opt" onclick="rfPick('cause','distshock',this)">分佈性或低血容性休克<span class="fo-sub">敗血症、出血、大量體液流失</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="rf_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c3">↓</div>
+  <div class="flow-step hidden" id="rf_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">依上述處置 1–2 小時後的反應？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('resp','good',this)">改善<span class="fo-sub">氧合與呼吸功改善、pH 回升、意識清楚</span></button>
+      <button class="flow-opt" onclick="rfPick('resp','partial',this)">未明顯改善但仍穩定<span class="fo-sub">尚可維持，但沒有往好的方向走</span></button>
+      <button class="flow-opt" onclick="rfPick('resp','fail',this)">惡化或已達插管指徵<span class="fo-sub">意識改變、無法保護呼吸道、呼吸功過大、血行動力學不穩、pH 持續下降</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>這一步是本頁的分水嶺</b>：選「改善」就往維持與降階走，<b>不會進入難治性與 ECMO 的判定</b>。</div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="rf_rec2">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 3</div>
+  </div>
+
+  <div class="flow-connector hidden" id="rf_c4">↓</div>
+  <div class="flow-step hidden" id="rf_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">插管、且把該做的都做完之後，仍然難治嗎？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="rfPick('ref','no',this)">已改善<span class="fo-sub">氧合／pH 回穩，可維持肺保護設定</span></button>
+      <button class="flow-opt" onclick="rfPick('ref','vv',this)">仍難治，且以呼吸為主<span class="fo-sub">P/F &lt;80 或 pH &lt;7.25（RR 已 35、Pplat ≤30）</span></button>
+      <button class="flow-opt" onclick="rfPick('ref','va',this)">仍難治，且以心臟／循環為主<span class="fo-sub">心因性休克，升壓與正性肌力仍無法維持灌流</span></button>
+      <button class="flow-opt" onclick="rfPick('ref','notyet',this)">仍難治，但未達上述條件<span class="fo-sub">狀況差但尚未落入任一切點</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;">此步驟只在<b>已插管且未改善</b>時出現。ELSO 2021：延遲的最佳醫療處置與較差預後相關，<b>但有指徵時也不該延後 ECMO</b>——兩件事要同時成立。</div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="rf_rec3">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 4</div>
+  </div>
+
+  <button class="flow-link" onclick="location.href='ards.html'">🫁 急性低血氧呼吸衰竭與 ARDS 處置決策（HFNO → 插管 → 俯臥 → NMBA → ECMO）</button>
+  <button class="flow-link" onclick="location.href='lung-protective-ventilation.html'">🧭 肺保護通氣設定與調整（起始設定、PEEP/FiO₂ 表、四路排查）</button>
+  <button class="flow-link" onclick="location.href='../tools/rox.html'">🧮 ROX Index（高流量鼻導管失敗預測）</button>
+  <button class="flow-link" onclick="location.href='../tools/heart-failure.html'">🧮 心臟衰竭治療指引</button>
+  <button class="flow-link" onclick="location.href='../tools/classifications.html'">🧮 分類與分級系統（含 SCAI SHOCK 分級）</button>
+  <button class="flow-link" onclick="location.href='../tools/rsi.html'">🧮 快速誘導插管 RSI</button>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="rfReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://goldcopd.org/2026-gold-report/" target="_blank" rel="noopener" class="ref-link">Global Initiative for Chronic Obstructive Lung Disease. Global Strategy for the Diagnosis, Management, and Prevention of COPD: 2026 Report.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34447992/" target="_blank" rel="noopener" class="ref-link">McDonagh TA, Metra M, Adamo M, et al. 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure. Eur Heart J. 2021;42(36):3599-3726.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33965970/" target="_blank" rel="noopener" class="ref-link">Tonna JE, Abrams D, Brodie D, et al. Management of adult patients supported with venovenous extracorporeal membrane oxygenation (VV ECMO): guideline from the Extracorporeal Life Support Organization. ASAIO J. 2021;67(6):601-610.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37326646/" target="_blank" rel="noopener" class="ref-link">Grasselli G, Calfee CS, Camporota L, et al. ESICM guidelines on acute respiratory distress syndrome. Intensive Care Med. 2023;49(7):727-759.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38032683/" target="_blank" rel="noopener" class="ref-link">Qadir N, Sahetya S, Munshi L, et al. An update on management of adult patients with acute respiratory distress syndrome: an official American Thoracic Society clinical practice guideline. Am J Respir Crit Care Med. 2024;209(1):24-36.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30950507/" target="_blank" rel="noopener" class="ref-link">Berbenetz N, Wang Y, Brown J, et al. Non-invasive positive pressure ventilation (CPAP or bilevel NPPV) for cardiogenic pulmonary oedema. Cochrane Database Syst Rev. 2019;4(4):CD005351.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/18614781/" target="_blank" rel="noopener" class="ref-link">Gray A, Goodacre S, Newby DE, et al. Noninvasive ventilation in acute cardiogenic pulmonary edema. N Engl J Med. 2008;359(2):142-151.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/21366472/" target="_blank" rel="noopener" class="ref-link">Felker GM, Lee KL, Bull DA, et al. Diuretic strategies in patients with acute decompensated heart failure. N Engl J Med. 2011;364(9):797-805.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38261630/" target="_blank" rel="noopener" class="ref-link">Duggal A, Conrad SA, Barrett NA, et al. Extracorporeal carbon dioxide removal to avoid invasive ventilation during exacerbations of COPD: VENT-AVOID trial. Am J Respir Crit Care Med. 2024;209(5):529-542.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29791822/" target="_blank" rel="noopener" class="ref-link">Combes A, Hajage D, Capellier G, et al. Extracorporeal membrane oxygenation for severe acute respiratory distress syndrome. N Engl J Med. 2018;378(21):1965-1975.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/34649974/" target="_blank" rel="noopener" class="ref-link">Oczkowski S, Ergan B, Bos L, et al. ERS clinical practice guidelines: high-flow nasal cannula in acute respiratory failure. Eur Respir J. 2022;59(4):2101574.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { type:null, cause:null, resp:null, ref:null };
+
+function rfPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='type'){ st.type=val; st.cause=null; st.resp=null; st.ref=null; }
+  else if(key==='cause'){ st.cause=val; st.resp=null; st.ref=null; }
+  else if(key==='resp'){ st.resp=val; st.ref=null; }
+  else if(key==='ref'){ st.ref=val; }
+  render();
+}
+
+/* ---------- 卡片 A：病因別的診斷與起始處置 ---------- */
+const CAUSE = {
+  cpe: { cls:'rec-elective', title:'心因性肺水腫 — CPAP／NIPPV ＋ 靜脈 loop diuretic',
+    detail:'<li><b>確認診斷</b>：NP 低值可<b>排除</b>急性心衰（BNP &lt;100、NT-proBNP &lt;300、MR-proANP &lt;120 pg/mL，ESC 2021）；肺超音波雙側 B-lines、胸片、心臟超音波；同時查 troponin 與 ECG 找 ACS。<b>肥胖、末期心衰、閃電性肺水腫與右心衰的 NP 可能偏低</b>。</li>'+
+      '<li><b>氧氣（I C）</b>：SpO₂ &lt;90% 或 PaO₂ &lt;60 mmHg 才給；<b>非低血氧者不常規給氧</b>。</li>'+
+      '<li><b>非侵襲性正壓通氣（IIa B）</b>：呼吸窘迫（<b>呼吸速率 &gt;25、SpO₂ &lt;90%</b>）者應<b>盡早</b>開始，以降低插管率。Cochrane 統合（24 篇、2664 人）顯示 NIV 相較標準處置<b>可能降低院內死亡（RR 0.65，NNT 17）</b>、<b>降低插管（RR 0.49，NNT 13）</b>；3CPO 試驗（1069 人）則顯示<b>7 天死亡無差異</b>（9.5% vs 9.8%），但 1 小時內呼吸困難、心跳、酸中毒與高碳酸改善較快。</li>'+
+      '<li><b>Loop diuretic（I C）</b>：起始劑量＝平常口服日劑量的 <b>1–2 倍</b>；未用過者 furosemide <b>20–40 mg IV</b>。<b>分 2–3 次 bolus 或持續輸注，不要每日只給一次</b>。<b>2 小時 spot urine Na &gt;50–70 mEq/L</b> 或前 6 小時<b>尿量 &gt;100–150 mL/h</b> 即為足夠，不足就<b>劑量加倍</b>。</li>'+
+      '<li><b>血管擴張劑（IIb B）</b>：僅在<b>收縮壓 &gt;110 mmHg</b> 考慮；嚴重高血壓的急性肺水腫可用 nitroglycerin <b>1–2 mg bolus</b>。<b>鴉片類不建議常規使用（III C）</b>。</li>',
+    note:'ESC 2021 急性心衰初始治療建議；Cochrane 2019（CD005351）；3CPO（NEJM 2008）。' },
+
+  ahrf: { cls:'rec-elective', title:'非心因性急性低血氧呼吸衰竭／ARDS — 高流量鼻導管',
+    detail:'<li><b>HFNO 是這個族群的首選</b>：ESICM 2023 建議 3.1（強建議，中度確定性）——非心因性肺水腫、非 COPD 急性惡化者，<b>HFNO 優於一般氧氣治療以降低插管風險</b>；<b>對死亡率無法做出建議</b>。SSC 2026 建議 67、68 亦支持 P/F &lt;200 時 HFNC 優於一般氧氣、且初始優於非侵襲性正壓通氣；<b>不要在 HFNC 與 NIPPV 之間交替</b>（建議 69）。</li>'+
+      '<li><b>同時確認是不是 ARDS</b>：新全球定義 2024——一週內急性發生、雙側浸潤、非主要心因性，P/F ≤300 或 S/F ≤315（限 SpO₂ ≤97%）；未插管者需 HFNO ≥30 L/min 或 CPAP／NIV ≥5 cmH₂O。</li>'+
+      '<li><b>找並處理病因</b>：感染源控制與抗生素、吸入、胰臟炎、輸血相關等；<b>ARDS 本身沒有能在數小時內反轉病程的藥物</b>。</li>'+
+      '<li><b>藥物</b>：類固醇 ATS 2024 建議使用（條件式，RR 0.84），但<b>不指定藥物與療程</b>，<b>發病 &gt;2 週才開始可能有害</b>；神經肌肉阻斷劑只限早期重度（&lt;48 小時、P/F ≤100）。</li>'+
+      '<li><b>用 ROX 追蹤趨勢</b>：2 小時 &lt;2.85、6 小時 &lt;3.47、12 小時 &lt;3.85 預測失敗；≥4.88 與較低插管風險相關。<b>ROX 不是指引判準</b>，惡化就插管，不要等數字。</li>',
+    note:'ESICM 2023 建議 3.1、3.2；SSC 2026 建議 67–69；ATS 2024；新全球定義 2024。' },
+
+  vasc: { cls:'rec-urgent', title:'肺血管或機械性原因 — 先解決結構問題，別急著加壓力',
+    detail:'<li><b>這一類病人加 PEEP、加 FiO₂ 都不會好</b>，而且<b>正壓可能讓情況更糟</b>（張力性氣胸、大量肺栓塞的右心受壓）。</li>'+
+      '<li><b>張力性氣胸</b>：臨床診斷即刻減壓，不要等影像。<b>大量肋膜積液</b>：引流。</li>'+
+      '<li><b>肺栓塞</b>：以危險分層決定治療（大量／次大量／低危險），血行動力學不穩者考慮再灌流治療；插管與正壓通氣會降低前負荷，<b>誘導時可能心跳停止</b>，須先備妥升壓劑。</li>'+
+      '<li><b>瀰漫性肺泡出血</b>：查抗凝與自體免疫病因；此類是 ELSO 列出的 VV ECMO 特定適應症之一。</li>'+
+      '<li>此分支<b>不走一般的低血氧升階流程</b>——先把結構問題解決，再回頭重新分型。</li>',
+    note:'ELSO 2021（VV ECMO 特定適應症清單）；本分支的處置以各病因專屬流程為準。' },
+
+  copd: { cls:'rec-elective', title:'COPD 急性惡化 — NIV 是起始通氣模式，不是最後手段',
+    detail:'<li><b>NIV 指徵（GOLD 2026，符合任一）</b>：① <b>呼吸性酸中毒（PaCO₂ ≥6.0 kPa 或 45 mmHg 且 pH ≤7.35）</b>；② 嚴重呼吸困難併呼吸肌疲勞或呼吸功增加的徵象（輔助肌使用、腹部反常運動、肋間凹陷）；③ 給氧後仍持續低血氧。NIV 的隨機試驗成功率 <b>80–85%</b>，可降低插管率與死亡率。</li>'+
+      '<li><b>支氣管擴張劑</b>：SABA ± 短效抗膽鹼，霧化<b>每小時 1 劑共 2–3 劑</b>後每 2–4 小時；<b>霧化用空氣驅動而非氧氣驅動</b>（氧氣驅動有升高 PaCO₂ 的風險）。</li>'+
+      '<li><b>類固醇</b>：<b>prednisone 等效 40 mg／天 × 5 天</b>。</li>'+
+      '<li><b>抗生素</b>：四項（呼吸困難增加、發燒、痰量增加、痰變膿）中<b>至少兩項且須含痰變膿</b>，或前次惡化痰培養陽性，或<b>需要機械通氣（含 NIV）</b>；療程 5–7 天。<b>不建議 procalcitonin 導引</b>。</li>'+
+      '<li><b>不要做</b>：靜脈 methylxanthines、呼吸興奮劑。<b>HFNT 可作為無法耐受 NIV 或仍低血氧者的替代</b>，但 ERS 指引在<b>高碳酸型呼吸衰竭與高風險拔管後族群建議 NIV 優於 HFNT</b>。</li>',
+    note:'GOLD 2026（Figure 4.8 NIV 指徵、藥物與抗生素條件）；ERS 2022 HFNC 指引。' },
+
+  asthma: { cls:'rec-urgent', title:'氣喘重積 — PaCO₂ 正常就是警訊',
+    detail:'<li><b>解讀 ABG 的陷阱</b>：氣喘發作時本應過度換氣（PaCO₂ 偏低）。<b>PaCO₂ 由低轉為「正常」或升高，代表呼吸肌疲乏</b>，是即將失代償的訊號，不是好轉。</li>'+
+      '<li><b>藥物為主</b>：高劑量吸入型 SABA ± 抗膽鹼、全身性類固醇；依嚴重度考慮硫酸鎂。</li>'+
+      '<li><b>NIV 的證據遠不如 COPD</b>——可在密切監測下試用，但<b>不要用來拖延插管</b>。</li>'+
+      '<li><b>若需插管</b>：預期<b>嚴重 auto-PEEP</b>。用低呼吸速率、長吐氣時間、允許高碳酸；血壓驟降時先<b>脫開呼吸器讓其吐氣</b>並排除氣胸。</li>'+
+      '<li><b>重度氣喘是 ELSO 列出的 VV ECMO 特定適應症之一</b>，難治時應及早聯繫 ECMO 中心。</li>',
+    note:'ELSO 2021（特定適應症）；通氣策略見肺保護通氣頁的 auto-PEEP 分支。' },
+
+  pump: { cls:'rec-elective', title:'幫浦或驅動問題 — 肺是好的，要修的是通氣本身',
+    detail:'<li><b>先看 A–a 梯度</b>：<b>A–a 正常的高碳酸</b>指向中樞抑制、神經肌肉或胸壁問題——單純給氧會<b>掩蓋</b>通氣不足而不解決它。</li>'+
+      '<li><b>可逆原因先處理</b>：鴉片類或鎮靜藥物過量（考慮拮抗劑）、電解質異常、重症肌無力危象或 Guillain-Barré 的免疫治療。</li>'+
+      '<li><b>神經肌肉疾病要追蹤呼吸肌力而非只看血氧</b>：血氧與 PaCO₂ 常在失代償前都還正常；肺活量與吸氣負壓的<b>趨勢</b>比單次血氣更早示警。</li>'+
+      '<li><b>NIV 的角色</b>：可支持通氣並爭取時間，但<b>咳嗽無力、無法保護呼吸道、分泌物清除困難者應直接插管</b>。</li>'+
+      '<li><b>肥胖低通氣</b>：需要較高的吐氣末正壓與足夠的壓力支持，且要處理睡眠呼吸中止。</li>',
+    note:'A–a 梯度與代償法則為生理／教科書經驗法則，非指引條文。' },
+
+  postop: { cls:'rec-elective', title:'術後肺塌陷 — 打開肺、止住痛、動起來',
+    detail:'<li><b>機轉是功能餘氣量下降與基底肺塌陷</b>：麻醉、疼痛、腹脹、臥床與淺快呼吸共同造成。</li>'+
+      '<li><b>鎮痛是治療的一部分</b>：痛到不敢深呼吸就無法擴張肺；優先考慮區域阻斷與多模式鎮痛，減少全身性鴉片類（本身會抑制呼吸驅動）。</li>'+
+      '<li><b>擴張肺</b>：誘發性肺量計、深呼吸與咳嗽訓練、<b>早期下床</b>、必要時 CPAP／NIV。</li>'+
+      '<li><b>不要漏掉其他原因</b>：肺栓塞、吸入性肺炎、腹腔內感染或腹腔高壓、輸液過多——術後低血氧不等於只是肺塌陷。</li>'+
+      '<li><b>若已進展為雙側浸潤與難治性低血氧</b>，回到第一型的 AHRF／ARDS 分支處理。</li>',
+    note:'第三型為教科書分類，無專屬指引；本卡的處置屬周術期照護的一般原則。' },
+
+  cardshock: { cls:'rec-urgent', title:'心因性休克 — 呼吸支持是配角，循環才是主角',
+    detail:'<li><b>插管的目的不是治療肺</b>，而是把呼吸肌的高耗氧交給呼吸器；同時要知道<b>正壓與鎮靜會讓前負荷與血壓進一步下降</b>——誘導前先備妥升壓劑。</li>'+
+      '<li><b>循環處置</b>：正性肌力藥限<b>收縮壓 &lt;90 mmHg 且有低灌流</b>者（ESC 2021 IIb C）；<b>使用中 beta 阻斷劑者，levosimendan 或 PDE3 抑制劑優於 dobutamine</b>；血運重建與機械併發症的處理才是根本。</li>'+
+      '<li><b>機械循環支持（IIa C）</b>：作為恢復、決策或移植的橋接；<b>IABP 於心肌梗塞後休克不常規建議（IIb C）</b>；<b>VA-ECMO 缺乏隨機試驗</b>，觀察性統合分析結果有利，猛爆性心肌炎可考慮。</li>'+
+      '<li><b>合併肺水腫時</b>：CPAP／NIPPV 仍可用於呼吸窘迫（IIa B），但<b>血行動力學不穩、意識改變者不要用 NIV 拖延插管</b>。</li>'+
+      '<li>詳細分期見分類與分級系統頁的 <b>SCAI SHOCK 分級</b>。</li>',
+    note:'ESC 2021 急性心衰與短期機械循環支持建議。' },
+
+  distshock: { cls:'rec-urgent', title:'分佈性／低血容性休克 — 修正休克，通氣只是減少耗氧',
+    detail:'<li><b>第四型的本質是氧輸送不足</b>：肺常是好的，呼吸急促是代謝性酸中毒與呼吸肌灌流不足的結果。</li>'+
+      '<li><b>治療的是休克</b>：感染源控制與抗生素、輸液、升壓劑、止血與輸血——把這些做對，呼吸自然會好轉。</li>'+
+      '<li><b>插管時機與風險</b>：代謝性酸中毒的病人<b>靠很高的分鐘通氣量代償</b>，插管後若呼吸器設定跟不上，pH 會急速惡化；誘導與正壓可能造成血壓崩落，須先擴容與備妥升壓劑。</li>'+
+      '<li><b>不要把它當 ARDS 治療</b>：若確實同時符合 ARDS 判準（雙側浸潤、非主要心因性），才切換到 ARDS 的通氣策略。</li>'+
+      '<li><b>ECMO 在此不是常規選項</b>——VV ECMO 的適應症是呼吸衰竭，不是休克本身。</li>',
+    note:'第四型為教科書分類；敗血症處置見敗血症流程與 SSC 2026。' }
+};
+
+/* ---------- 卡片 B：反應評估 ---------- */
+const RESP_TXT = {
+  good: { cls:'rec-blue', title:'有改善 — 維持現行支持，開始想降階',
+    detail:'<li><b>不要在這裡升階</b>：氧合與 pH 往好的方向走，代表病因治療與支持工具選對了；此時加壓力、換模式或啟動 ECMO 討論都沒有理由。</li>'+
+      '<li><b>降階的順序</b>：先降 FiO₂ 到維持目標的最低值，再降壓力支持；<b>氧合目標達到即可，不追求更漂亮的數字</b>。</li>'+
+      '<li><b>持續追蹤病因治療的終點</b>：心因性看尿量與體重、COPD 看 pH 與呼吸功、AHRF 看 P/F 與影像。</li>'+
+      '<li><b>仍要設定「什麼情況要回頭升階」</b>並讓團隊知道——改善不是保證，反覆評估比單次數字重要。</li>',
+    note:'各病因的支持工具與目標見上一張卡片。' },
+  partial: { cls:'rec-blue', title:'沒有變好也沒有變壞 — 加密評估，先把可逆因素挖乾淨',
+    detail:'<li><b>重新確認診斷</b>：是不是漏了第二個病因（COPD 併心衰、ARDS 併容積過載、肺栓塞）？影像與心超該補就補。</li>'+
+      '<li><b>檢查支持工具用對沒有</b>：介面漏氣、壓力不足、同步性差、分泌物未清除、姿勢不佳——這些常比「換一台機器」更關鍵。</li>'+
+      '<li><b>先處理可逆因素</b>：疼痛與焦慮、發燒、輸液過多、腹脹與腹腔高壓、電解質、感染源控制。</li>'+
+      '<li><b>預先訂好插管的觸發條件</b>並讓團隊知道——<b>延遲插管與較差預後相關</b>；不要在惡化當下才開始討論。</li>'+
+      '<li><b>不要在 HFNC 與 NIPPV 之間反覆切換</b>（SSC 2026 建議 69）。</li>',
+    note:'SSC 2026 建議 69；ESICM 2023（HFNO 失敗的判斷仍未有指引判準，ROX 只是床邊工具）。' },
+  fail: { cls:'rec-urgent', title:'惡化或已達插管指徵 — 插管，並照病因設定呼吸器',
+    detail:'<li><b>不再等待</b>：意識改變、無法保護呼吸道、呼吸功過大、血行動力學不穩、代謝性酸中毒惡化，任一項即應插管（GOLD 2026 的侵襲性通氣指徵亦包含：<b>高流量氧或 NIV 下仍持續致命性低血氧、無法耐受 NIV、心肺停止後、鎮靜無法控制的躁動、大量吸入或持續嘔吐、無法清除分泌物、對輸液與血管活性藥物無反應的嚴重血行動力學不穩、嚴重心律不整</b>）。</li>'+
+      '<li><b>插管本身是高風險時刻</b>：先擴容、備妥升壓劑；心因性休克與代謝性酸中毒者尤其容易在誘導後崩落。</li>'+
+      '<li><b>依病因設定呼吸器</b>：ARDS／AHRF 走肺保護設定（4–8 mL/kg 預測體重、Pplat ≤30）；<b>COPD 與氣喘要留足吐氣時間、預期 auto-PEEP</b>；代謝性酸中毒者要給足分鐘通氣量。</li>'+
+      '<li><b>插管後把該做的做完再談升階</b>：肺保護設定、PEEP 調整、必要時俯臥 ≥16 小時與神經肌肉阻斷；心因性則是利尿、後負荷與血運重建。</li>'+
+      '<li>接著回答下方步驟 4——<b>唯有在這些都做完仍難治時，ECMO 才進入討論</b>。</li>',
+    note:'GOLD 2026 Figure 4.9（侵襲性通氣指徵）；ESICM 2023；ARDSNet 協定。' }
+};
+
+/* 病因專屬的補充句，接在反應卡片後 */
+const RESP_EXTRA = {
+  cpe:  { good:'心因性：確認尿量與負液體平衡確實達成——<b>帶著殘餘鬱血出院是再住院與死亡的重要預測因子</b>。', partial:'心因性：利尿反應不足（2 小時尿鈉 &lt;50–70 mEq/L 或 6 小時尿量 &lt;100–150 mL/h）時<b>把 loop diuretic 劑量加倍</b>，仍不足才加 thiazide（IIa B）。', fail:'心因性：插管後仍要持續利尿與後負荷處理；同時確認有無需要立即處理的 ACS 或瓣膜／機械性併發症。' },
+  ahrf: { good:'AHRF：仍需定期重測 ROX 與 P/F；符合未插管 ARDS 判準者<b>新全球定義不分嚴重度</b>，不代表病情輕。', partial:'AHRF：可考慮清醒俯臥（SSC 2026 建議 70；ESICM 建議 7.3 的證據限於 COVID-19 相關者）。', fail:'AHRF：插管後直接進入肺保護通氣與 ARDS 決策流程（P/F &lt;150 且設定已最佳化即俯臥）。' },
+  vasc: { good:'結構問題解除後<b>重新分型</b>，不要沿用原本的支持計畫。', partial:'再確認一次結構性診斷是否遺漏（重複影像、床邊超音波）——這一類「沒反應」多半是診斷還沒對。', fail:'插管前後都要記得：正壓會讓大量肺栓塞與張力性氣胸的血行動力學更差。' },
+  copd: { good:'COPD：pH 回升、呼吸功下降即可準備停 NIV——<b>能耐受至少 4 小時自主呼吸即可直接停用，不需要「脫離期」</b>（GOLD 2026）。', partial:'COPD：確認面罩貼合與壓力設定、痰液清除與支氣管擴張劑頻次；HFNT 可作為無法耐受 NIV 者的替代。', fail:'COPD：<b>NIV 失敗後才插管者，併發症、住院天數與死亡率都較高</b>（GOLD 2026）——所以觸發條件要事先訂好。' },
+  asthma:{ good:'氣喘：持續高劑量吸入治療與全身類固醇，不要因為一次血氣好轉就放鬆監測。', partial:'氣喘：重新檢視吸入技術與劑量、考慮硫酸鎂；<b>PaCO₂ 由低轉正常即視為惡化</b>。', fail:'氣喘：插管後以低呼吸速率、長吐氣時間為原則，允許高碳酸；血壓驟降先脫開呼吸器並排除氣胸。' },
+  pump: { good:'幫浦問題：追蹤肺活量與吸氣負壓的<b>趨勢</b>，不要只看血氧。', partial:'幫浦問題：重新檢視藥物（鴉片類、鎮靜劑）、電解質與神經肌肉疾病的專屬治療。', fail:'幫浦問題：咳嗽無力與分泌物清除困難者，插管往往比繼續 NIV 安全。' },
+  postop:{ good:'術後：維持鎮痛與早期活動，肺量計訓練要持續而不是只做一次。', partial:'術後：重新找其他原因（肺栓塞、吸入、腹腔內感染或腹腔高壓、輸液過多）。', fail:'術後：若已符合 ARDS 判準，改走 ARDS 的通氣策略。' },
+  cardshock:{ good:'心因性休克：改善代表循環處置有效——繼續處理病因（血運重建、機械併發症），並評估能否降階支持。', partial:'心因性休克：重新評估 SCAI 分期與是否需要機械循環支持，不要只在呼吸器上調參數。', fail:'心因性休克：此時的難治性主要來自循環而非肺——下一步的評估重點是 VA 而非 VV。' },
+  distshock:{ good:'休克：呼吸改善通常是休克好轉的結果，持續追蹤乳酸與灌流指標。', partial:'休克：回頭確認感染源是否真的控制、輸液是否足夠或已過量。', fail:'休克：插管後務必給足分鐘通氣量以維持代償；ECMO 不是休克本身的治療。' }
+};
+
+/* ---------- 卡片 C：難治性與 ECMO ---------- */
+const ECMO_REC = {
+  no: { cls:'rec-blue', title:'插管後已改善 — 維持肺保護設定，每日評估脫離',
+    detail:'<li><b>不進入 ECMO 討論</b>：把該做的做完之後氧合與 pH 回穩，就是流程要的結果。</li>'+
+      '<li>維持 <b>VT 4–8 mL/kg 預測體重、Pplat ≤30 cmH₂O</b>；每次更動 PEEP 或 VT 後、且至少每 4 小時重測 Pplat。</li>'+
+      '<li><b>每日評估自主呼吸試驗條件</b>：FiO₂ ≤0.40 且 PEEP ≤8（或 FiO₂ &lt;0.50 且 PEEP &lt;5）、PEEP/FiO₂ 不高於前一日、有自主呼吸努力、收縮壓 ≥90 且未用升壓劑、未使用神經肌肉阻斷劑。</li>'+
+      '<li><b>持續留意反覆</b>：ARDS 嚴重度會在病程中移動，P/F 掉到 &lt;150 應重新評估俯臥。</li>',
+    note:'ARDSNet 協定；ESICM 2023 建議 7.1。' },
+
+  vv: { cls:'rec-urgent', title:'難治性呼吸衰竭 — VV ECMO 的判定與轉介',
+    detail:'<li><b>ELSO 2021 的常見適應症（符合任一）</b>：<b>P/F &lt;80 mmHg</b>（最佳醫療處置後，無禁忌時應包含一次俯臥試驗）；<b>pH &lt;7.25</b> 的高碳酸型（最佳常規通氣後，呼吸速率 35、Pplat ≤30）；或作為肺移植橋接。</li>'+
+      '<li><b>ESICM 2023 建議 9.1（強建議）</b>以 <b>EOLIA 收案條件</b>為準：P/F &lt;50 超過 3 小時，或 P/F &lt;80 超過 6 小時，或 pH &lt;7.25 併 PaCO₂ ≥60 超過 6 小時（且 RR 已 35、設定調整至 Pplat ≤32）。EOLIA 本身 60 天死亡 <b>35% vs 46%（RR 0.76，P=0.09）未達顯著</b>，對照組 <b>28% 交叉接受 ECMO</b>——選案與時機才是關鍵。</li>'+
+      '<li><b>先確認禁忌</b>：中樞神經出血或嚴重損傷、無法控制的全身性出血、抗凝禁忌、不可逆且失能的神經病變、<b>已在 Pplat &gt;30 且 FiO₂ &gt;90% 通氣超過 7 天</b>。<b>唯一的絕對禁忌是「預期無法恢復且沒有可行的脫機計畫」</b>。</li>'+
+      '<li><b>沒有 ECMO 能力就早轉</b>：ELSO 建議用 <b>RESP score</b> 估上機後存活、<b>Murray score</b> 估不上機的死亡率；轉送要在病人還能安全移動時決定。</li>'+
+      '<li><b>不要用 ECCO₂R 代替</b>：ESICM 2023 建議 9.2 強烈反對；COPD 惡化的 VENT-AVOID 試驗未改善無呼吸器天數，<b>NIV 分層的院內死亡反而較高（22% vs 0%）</b>。</li>',
+    note:'ELSO 2021 Table 1；ESICM 2023 建議 9.1、9.2；EOLIA；VENT-AVOID。' },
+
+  va: { cls:'rec-urgent', title:'難治性循環衰竭 — 走 VA 而非 VV',
+    detail:'<li><b>模式由「哪個器官撐不住」決定</b>：VV 只換氣、<b>不提供循環支持</b>（提高流量不會升血壓）；心臟無法維持灌流時需要 VA。</li>'+
+      '<li><b>ESC 2021</b>：短期機械循環支持作為恢復／決策／移植橋接 <b>IIa C</b>；<b>IABP 於心肌梗塞後休克不常規建議（IIb C）</b>；<b>VA-ECMO 缺乏隨機試驗</b>，觀察性統合分析結果有利，猛爆性心肌炎與非 ACS 造成的難治性休克可考慮。</li>'+
+      '<li><b>VA 的特有問題</b>：左心室後負荷上升（可能需要卸載）、以及心臟恢復時的 <b>Harlequin／North-South syndrome</b>——上半身與腦部由功能不良的肺供血而低血氧，需監測右上肢的血氧。</li>'+
+      '<li><b>呼吸與循環都撐不住時</b>可考慮 <b>VAV</b>，但管路與流量分配複雜，應在有經驗的中心進行。</li>'+
+      '<li>分期見分類與分級系統頁的 <b>SCAI SHOCK 分級</b>；<b>不建議在缺乏多專科團隊的情況下啟動</b>。</li>',
+    note:'ESC 2021 短期機械循環支持建議；ELSO 2021（模式特性與 Harlequin 現象）。' },
+
+  notyet: { cls:'rec-elective', title:'仍難治但未達切點 — 回頭把措施做滿，並提前聯繫',
+    detail:'<li><b>逐項確認是否真的用盡</b>：VT 是否依<b>預測體重</b>計算、Pplat ≤30、PEEP 是否已依表調整、<b>俯臥是否每次滿 16 小時</b>、鎮靜與人機同步是否足夠、無效腔與 auto-PEEP 是否處理。</li>'+
+      '<li><b>找可逆因素</b>：氣胸、肺栓塞、氣管內管阻塞或位置不當、腹腔高壓、體液過多、未控制的感染源。</li>'+
+      '<li><b>提前聯繫 ECMO 中心</b>：切點是收案門檻不是絕對條件，惡化速度快者應在還能安全轉送時就討論。</li>'+
+      '<li><b>不要用沒有證據的救援措施拖時間</b>：吸入性一氧化氮缺乏存活效益；高壓肺復張與遞增式 PEEP 滴定<b>已被指引強烈反對</b>（ART 試驗顯示增加死亡與氣壓傷）。</li>'+
+      '<li>維持每日重新評估——分型、病因與嚴重度都會隨病程移動。</li>',
+    note:'ESICM 2023 建議 6.3、6.4、7.2、9.1；SSC 2026 建議 75；ELSO 2021。' }
+};
+
+function render(){
+  const map = { t1:'a', t2:'b', t3:'c', t4:'d' };
+  ['a','b','c','d'].forEach(k=>{
+    const on = map[st.type]===k;
+    flowShow('rf_c2'+k, on);
+    flowShow('rf_s2'+k, on);
+    if(!on) flowClearSel('rf_s2'+k);
+  });
+
+  /* 卡片 A */
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+  const c = st.cause ? CAUSE[st.cause] : null;
+  if(c){ cls=c.cls; title=c.title; detail=c.detail; note=c.note; }
+  else if(st.type){ title='請完成步驟 2'; }
+  flowRec('rf_rec', cls, title, detail, note);
+
+  /* 步驟 3 只在病因確定後出現 */
+  const showS3 = !!st.cause;
+  flowShow('rf_c3', showS3);
+  flowShow('rf_s3', showS3);
+  if(!showS3) flowClearSel('rf_s3');
+
+  /* 卡片 B */
+  let cls2='rec-idle', title2='請完成步驟 3', detail2='', note2='';
+  if(st.resp){
+    const r = RESP_TXT[st.resp];
+    cls2=r.cls; title2=r.title; note2=r.note;
+    const extra = RESP_EXTRA[st.cause] && RESP_EXTRA[st.cause][st.resp];
+    detail2 = r.detail + (extra ? '<li>'+extra+'</li>' : '');
+  }
+  flowRec('rf_rec2', cls2, title2, detail2, note2);
+  flowShow('rf_rec2', showS3);
+
+  /* 步驟 4：只有「惡化／已插管」才開啟——改善或僅部分改善都不進入 ECMO 判定 */
+  const showS4 = st.resp==='fail';
+  flowShow('rf_c4', showS4);
+  flowShow('rf_s4', showS4);
+  if(!showS4) flowClearSel('rf_s4');
+
+  let cls3='rec-idle', title3='請完成步驟 4', detail3='', note3='';
+  if(showS4 && st.ref){
+    const e = ECMO_REC[st.ref];
+    cls3=e.cls; title3=e.title; detail3=e.detail; note3=e.note;
+  }
+  flowRec('rf_rec3', cls3, title3, detail3, note3);
+  flowShow('rf_rec3', showS4);
+}
+
+function rfReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-resp-failure .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+rfReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
