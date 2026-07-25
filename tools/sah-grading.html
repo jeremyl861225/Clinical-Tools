@@ -21,7 +21,10 @@
 <div class="view active" id="view-sah-grading">
   <div class="app-header">
     <div><div class="eyebrow">Subarachnoid Hemorrhage Grading</div><h1>SAH 分級系統</h1><div class="sub">Hunt-Hess ／ WFNS ／ Fisher ／ modified Fisher 四表對照</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-sah-grading'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="sg_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sah.html?restore=1'">← 返回 SAH 決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-sah-grading'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="card" style="border-left:3px solid var(--accent2);">
@@ -183,6 +186,8 @@ function sgCalc(){
 document.querySelectorAll('#view-sah-grading select, #view-sah-grading input')
   .forEach(el => { el.addEventListener('change', sgCalc); el.addEventListener('input', sgCalc); });
 sgCalc();
+/* 由 SAH 決策流程以 ?from=sah 進來時，顯示原路返回鍵 */
+if(location.search.indexOf('from=sah')>=0){var _sb=document.getElementById('sg_back_path'); if(_sb) _sb.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

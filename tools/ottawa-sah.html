@@ -21,7 +21,10 @@
 <div class="view active" id="view-ottawa-sah">
   <div class="app-header">
     <div><div class="eyebrow">Headache Decision Rule</div><h1>Ottawa SAH Rule</h1><div class="sub">急性頭痛排除蜘蛛膜下腔出血 · 用來「決定要不要檢查」，不是用來診斷（Perry 2013）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-ottawa-sah'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="os_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sah.html?restore=1'">← 返回 SAH 決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-ottawa-sah'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="card" style="border-left:3px solid var(--accent2);">
@@ -118,6 +121,10 @@ function otCalc(){
 document.querySelectorAll('#view-ottawa-sah input')
   .forEach(el => { el.addEventListener('change', otCalc); });
 otCalc();
+</script>
+<script>
+  /* 由 SAH 決策流程以 ?from=sah 進來時，顯示原路返回鍵 */
+  if(location.search.indexOf('from=sah')>=0){var _ob=document.getElementById('os_back_path'); if(_ob) _ob.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

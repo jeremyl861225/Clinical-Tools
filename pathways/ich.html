@@ -263,7 +263,7 @@
         <tr><td>Midline shift</td><td>無或 ≤5 mm 0／&gt;5 mm 1</td></tr>
         <tr><td>Epidural mass lesion</td><td><b>有 0／無 1</b>（EDH 的存在反而是<b>好</b>的預後因子）</td></tr>
         <tr><td>IVH 或 tSAH</td><td>無 0／有 1</td></tr>
-        <tr><td colspan="2">總和後<b>再加 1</b>；原始論文結論是個別影像變數的模型（AUC 至 0.77）優於 Marshall 分類（AUC 0.67）</td></tr>
+        <tr><td style="white-space:normal;" colspan="2">總和後<b>再加 1</b>；原始論文結論是個別影像變數的模型（AUC 至 0.77）優於 Marshall 分類（AUC 0.67）</td></tr>
       </table>
       <span class="sys-caveat">Rotterdam 的逐項配分表取自二手回顧文獻，原始論文全文未取得；分數與死亡率的對應數字因此不轉載。</span>
 
@@ -650,7 +650,8 @@ function render(){
   ['ic_s4a','ic_s4b','ic_s4c','ic_s4d'].forEach(function(id){
     const on = show3 && map[st.loc]===id;
     flowShow(id, on);
-    if(!on) flowClearSel(id);
+    /* st.sub 被上游清空時，選取狀態也要清——否則按鈕還亮著、建議卻回到未完成 */
+    if(!on || !st.sub) flowClearSel(id);
   });
   flowShow('ic_c4', show3 && !!st.loc);
 
@@ -868,7 +869,7 @@ function tbRender(){
   Object.keys(TB_STEP3).forEach(function(k){
     const on = show3 && tb.lesion===k;
     flowShow(TB_STEP3[k], on);
-    if(!on) flowClearSel(TB_STEP3[k]);
+    if(!on || !tb.crit) flowClearSel(TB_STEP3[k]);
   });
 
   /* 建議 A：手術決策 */
