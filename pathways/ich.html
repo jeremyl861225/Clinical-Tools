@@ -381,6 +381,62 @@
     </div>
   </details>
 
+  <!-- Ottawa SAH Rule：進入流程之前的問題——「這個頭痛要不要查」。
+       原為獨立計分工具頁，因只服務本流程的第一步，改為就地嵌入。 -->
+  <div class="card" id="ot_box" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">Ottawa SAH Rule — 這個頭痛要不要查？</div>
+    <div class="note" style="font-size:13px; line-height:1.7; margin-bottom:8px;">
+      這條規則<b>只適用於一種很窄的病人</b>：<b>成人、非創傷性、急性頭痛且在 1 小時內達到最痛、神經學檢查正常</b>。用途是<b>「這個人需不需要做檢查」</b>——<b>六項全部沒有</b>才可以不查；<b>任一項存在就要查</b>。它<b>不能</b>用來判斷有沒有 SAH，也<b>不適用於已確診 SAH 的病人</b>（那請直接由下方步驟 1 開始）。
+    </div>
+
+    <details class="def-box" style="margin-bottom:10px;">
+      <summary>原始研究、效能數字與怎麼讀「特異度 15%」 Definitions</summary>
+      <div class="box-inner">
+        <b>◆ 原始研究（Perry 2013，JAMA 310(12):1248-1255）：</b>加拿大 <b>10 家三級醫學中心急診</b>、2006 年 4 月至 2010 年 7 月、<b>2,131 名成人</b>的多中心世代研究，其中 <b>132 人（6.2%）</b>確診 SAH。<br><br>
+
+        <b>◆ 效能：</b>最終的 Ottawa SAH Rule <b>敏感度 100%</b>（95% CI 97.2–100.0%）、<b>特異度 15.3%</b>（95% CI 13.8–16.9%）。<br>
+        該研究另評估的一條較簡單的規則（年齡 ≥40、頸部疼痛或僵硬、目擊意識喪失、用力時發作，四項）敏感度為 98.5%（94.6–99.6%）、特異度 27.5%（25.6–29.5%）——<b>Ottawa 規則多加了「霹靂性頭痛」與「頸部屈曲受限」兩項，把敏感度推到 100%，代價是特異度更低</b>。<br><br>
+
+        <b>◆ 「特異度只有 15%」該怎麼讀：</b>這不是缺點，是設計上的取捨。這類規則的目的是<b>安全地排除</b>致命診斷，因此刻意把敏感度推到極限；代價是<b>陽性完全不具鑑別力</b>——符合任一項的病人裡，絕大多數並沒有 SAH。<br>
+        實務含意：<b>規則陽性只代表「需要進一步檢查」</b>，不代表機率高。它能幫你安全地放掉的是那一小群六項全陰的病人。<br><br>
+
+        <b>◆ 檢查怎麼做：</b>規則本身只回答「查或不查」，不規定用什麼查——<b>要查的話，接續下方步驟 1 的 CT ± LP 路徑</b>（本頁該段條文取自 AHA/ASA 2023 指引全文）。<br><br>
+
+        <b>◆ 六項判準的細節：</b><br>
+        <div class="dot-line">・<b>年齡 ≥40 歲</b>。</div>
+        <div class="dot-line">・<b>頸部疼痛或僵硬</b>（症狀，病人主訴）。</div>
+        <div class="dot-line">・<b>目擊的意識喪失</b>——需有人目擊，不是病人自述「好像昏過去」。</div>
+        <div class="dot-line">・<b>用力時發作</b>（onset during exertion）。</div>
+        <div class="dot-line">・<b>霹靂性頭痛</b>——<b>瞬間</b>達到最痛（instantly peaking pain），比「1 小時內達峰」更嚴格。</div>
+        <div class="dot-line">・<b>頸部屈曲受限</b>（limited neck flexion on examination）——這是<b>理學檢查</b>的發現，與第二項的主訴不同。</div>
+      </div>
+    </details>
+
+    <div class="section-title" style="font-size:12px;">適用條件 Inclusion（全部符合才可使用）</div>
+    <label class="toggle-inline"><input type="checkbox" id="ot_adult"> 成人（≥15 歲）</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_nontrauma"> 非創傷性頭痛</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_peak"> 頭痛於 <b>1 小時內</b>達到最大強度</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_normal"> 神經學檢查正常（無局部缺損、無意識障礙）</label>
+
+    <div class="section-title" style="font-size:12px; margin-top:10px;">六項判準 The Six Criteria</div>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c1"> 年齡 ≥ 40 歲</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c2"> 頸部疼痛或僵硬（主訴）</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c3"> 目擊的意識喪失</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c4"> 用力時發作</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c5"> 霹靂性頭痛（瞬間達最痛）</label>
+    <label class="toggle-inline"><input type="checkbox" id="ot_c6"> 頸部屈曲受限（理學檢查）</label>
+
+    <div class="result" style="margin-top:12px;">
+      <div class="result-grid">
+        <div><div class="metric-label">結果</div><div class="metric-value big" id="ot_out" style="font-size:26px;">—</div></div>
+        <div><div class="metric-label">陽性項目</div><div class="metric-value big" id="ot_count">0</div></div>
+      </div>
+      <div class="metric-label" style="margin-top:10px;">判讀</div>
+      <div style="font-size:15px; margin-top:2px;" id="ot_interp">請先確認四項適用條件。</div>
+      <div class="risk-note">原始世代 2,131 人、SAH 盛行率 <b>6.2%</b>。此規則<b>只用於決定要不要檢查</b>，<b>不能用來診斷或排除已在檢查中的病人</b>。神經學檢查異常、外傷、或頭痛超過 1 小時才達峰者<b>不適用</b>。</div>
+    </div>
+  </div>
+
   <div class="flow-step" id="sa_s1">
     <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">目前的診斷狀態？</span></div>
     <div class="flow-opts">
@@ -389,7 +445,6 @@
       <button class="flow-opt" onclick="saPick('dx','late',this)">發作 &gt;6 小時或有新的神經學缺損，CT 陰性</button>
       <button class="flow-opt" onclick="saPick('dx','negative',this)">已確診 SAH 但 CTA／DSA 找不到動脈瘤</button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ottawa-sah.html?from=sah'">🧮 開啟 Ottawa SAH Rule</button>
   </div>
 
   <div class="flow-rec rec-idle" id="sa_rec">
@@ -405,7 +460,7 @@
       <button class="flow-opt" onclick="saPick('grade','mid',this)">WFNS 3／Hunt-Hess 3</button>
       <button class="flow-opt" onclick="saPick('grade','poor',this)">Poor grade<span class="fo-sub">WFNS 4–5／Hunt-Hess 4–5</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/sah-grading.html?from=sah'">🧮 開啟 SAH 分級系統（四表對照）</button>
+    <button class="flow-link" onclick="location.href='../tools/classifications.html?from=sah#sys=hunt-hess'">📋 開啟 SAH 分級四表對照（分類與分級系統）</button>
   </div>
 
   <div class="flow-connector hidden" id="sa_c3">↓</div>
@@ -459,7 +514,9 @@
     <br><br>REF ｜ <b>Aneurysmal SAH</b> —
     <b>指引</b> —
     <a href="https://pubmed.ncbi.nlm.nih.gov/37212182/" target="_blank" rel="noopener" class="ref-link">Hoh BL, Ko NU, Amin-Hanjani S, et al. 2023 Guideline for the Management of Patients With Aneurysmal Subarachnoid Hemorrhage. Stroke. 2023;54(7):e314-e370.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/37202712/" target="_blank" rel="noopener" class="ref-link">Treggiari MM, Rabinstein AA, Busl KM, et al. Guidelines for the Neurocritical Care Management of Aneurysmal Subarachnoid Hemorrhage. Neurocrit Care. 2023;39(1):1-28.</a>
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37202712/" target="_blank" rel="noopener" class="ref-link">Treggiari MM, Rabinstein AA, Busl KM, et al. Guidelines for the Neurocritical Care Management of Aneurysmal Subarachnoid Hemorrhage. Neurocrit Care. 2023;39(1):1-28.</a> ｜
+    <b>診斷規則</b> —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/24065011/" target="_blank" rel="noopener" class="ref-link">Perry JJ, Stiell IG, Sivilotti MLA, et al. Clinical decision rules to rule out subarachnoid hemorrhage for acute headache (Ottawa SAH Rule). JAMA. 2013;310(12):1248-1255.</a>
     <br><br>REF ｜ <b>術式與再出血</b> —
     <a href="https://pubmed.ncbi.nlm.nih.gov/12414200/" target="_blank" rel="noopener" class="ref-link">Molyneux A, et al. ISAT of neurosurgical clipping versus endovascular coiling in 2143 patients. Lancet. 2002;360(9342):1267-1274.</a> ｜
     <a href="https://pubmed.ncbi.nlm.nih.gov/25465111/" target="_blank" rel="noopener" class="ref-link">Molyneux AJ, et al. The durability of endovascular coiling versus neurosurgical clipping: 18 year follow-up of the UK cohort of ISAT. Lancet. 2015;385(9969):691-697.</a> ｜
@@ -824,8 +881,34 @@ function saRender(){
 function saReset(){
   Object.keys(sa).forEach(k=>sa[k]=null);
   document.querySelectorAll('#tab-sah .flow-opt').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('#ot_box input[type=checkbox]').forEach(el=>el.checked=false);
   saRender();
+  otCalc();
 }
+
+/* ---------------- Ottawa SAH Rule（原 tools/ottawa-sah.html，2026-07 移入本頁） ----------------
+   只回答「這個頭痛要不要查」；四項適用條件任一不成立即不可使用。 */
+function otCalc(){
+  const incl=['ot_adult','ot_nontrauma','ot_peak','ot_normal'].every(i=>document.getElementById(i).checked);
+  const crits=['ot_c1','ot_c2','ot_c3','ot_c4','ot_c5','ot_c6'];
+  const n=crits.filter(i=>document.getElementById(i).checked).length;
+  document.getElementById('ot_count').textContent=n;
+
+  let out='—', interp='請先確認四項適用條件。';
+  if(!incl){
+    out='不適用';
+    interp='<b>未滿足全部四項適用條件，本規則不適用</b>。Ottawa SAH Rule 只在「成人、非創傷性、1 小時內達最痛、神經學檢查正常」的族群中驗證過；不符者請<b>直接依臨床判斷安排檢查</b>，不要用本規則來免除檢查。';
+  } else if(n===0){
+    out='六項全陰';
+    interp='<b>六項判準全部為陰性</b>——依原始研究，此情形下可<b>不做 SAH 相關檢查</b>（敏感度 100%，95% CI 97.2–100.0%）。<br>仍應記錄六項判準的評估結果，並向病人交代<b>症狀變化時回診</b>的條件。';
+  } else {
+    out='需要檢查';
+    interp='<b>有 '+n+' 項為陽性 → 需要進一步檢查</b>以排除 SAH（接續下方步驟 1）。<br><b>但陽性幾乎不帶鑑別力</b>：本規則特異度僅 <b>15.3%</b>（95% CI 13.8–16.9%），也就是符合任一項的病人中<b>絕大多數並沒有 SAH</b>。陽性只代表「不能就這樣放掉」，不代表機率高。';
+  }
+  document.getElementById('ot_out').textContent=out;
+  document.getElementById('ot_interp').innerHTML=interp;
+}
+document.querySelectorAll('#ot_box input').forEach(el=>el.addEventListener('change',otCalc));
 
 /* ---- 初始化：支援 #tab=sah 直接開啟 ---- */
 icReset();
