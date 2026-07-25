@@ -21,7 +21,11 @@
 <div class="view active" id="view-sofa">
   <div class="app-header">
     <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>SOFA Score</h1><div class="sub">Sequential Organ Failure Assessment</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-sofa'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <!-- 由敗血症決策頁點進來時（?from=sepsis）才顯示，返回後由該頁還原原本捲動位置 -->
+      <button class="back-btn" id="sofa_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sepsis.html?restore=1'">← 返回敗血症決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-sofa'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="card">
@@ -204,6 +208,7 @@ function sofaDrugCalc(){
 document.getElementById('sofa_drug_type').addEventListener('change',sofaDrugCalc);
 ['sofa_drug_mg','sofa_drug_vol','sofa_drug_wt','sofa_drug_rate'].forEach(id=>document.getElementById(id).addEventListener('input',sofaDrugCalc));
 sofaDrugCalc();
+if(location.search.indexOf('from=sepsis')>=0){var _sb=document.getElementById('sofa_back_path'); if(_sb) _sb.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
