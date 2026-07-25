@@ -23,7 +23,7 @@
     <div>
       <div class="eyebrow">Grading &amp; Classification Systems</div>
       <h1>分類與分級系統</h1>
-      <div class="sub">腹部急症與神經外傷各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
+      <div class="sub">腹部急症與神經重症各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
     </div>
     <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
       <!-- 由流程圖以 ?from= 進來時才顯示，讓使用者查完分級能原路返回 -->
@@ -40,7 +40,7 @@
     <button class="tab-btn"        data-tab="hernia"  onclick="clTab('hernia')">疝氣</button>
     <button class="tab-btn"        data-tab="gib"     onclick="clTab('gib')">消化道出血</button>
     <button class="tab-btn"        data-tab="periop"  onclick="clTab('periop')">圍手術期</button>
-    <button class="tab-btn"        data-tab="neuro"   onclick="clTab('neuro')">神經外傷</button>
+    <button class="tab-btn"        data-tab="neuro"   onclick="clTab('neuro')">神經</button>
     <button class="tab-btn"        data-tab="misc"    onclick="clTab('misc')">其他</button>
   </div>
 
@@ -832,7 +832,12 @@
 <div id="tab-neuro" class="hidden">
 
   <div class="note" style="margin-bottom:14px;">
-    本分頁收<b>頭部外傷 CT 的兩套判讀系統</b>。兩者<b>讀的是同一張 CT、用的是同一批影像特徵</b>（basal cisterns、midline shift、mass lesion），但<b>設計目的不同</b>——Marshall 把病人歸類，Rotterdam 算出一個數值。<b>Rotterdam 嚴格說是預測分數而非分類</b>，仍收在此頁，是因為它是 Marshall 的直接後繼者、且兩者必須對照著看才知道差在哪裡。處置決策請走<a class="tool-link" href="../pathways/tbi.html">創傷性腦損傷處置決策</a>。
+    本分頁收<b>兩組互不相干的分級</b>：前半是<b>頭部外傷 CT 的兩套判讀系統</b>（Marshall、Rotterdam），後半是<b>動脈瘤性蜘蛛膜下腔出血的四套分級</b>（Hunt-Hess、WFNS、Fisher、modified Fisher）。<b>分屬不同疾病，只是同置於神經分頁</b>，不可互相換算。
+  </div>
+
+  <div class="sys-sub" style="margin-top:0;">一 · 頭部外傷 CT</div>
+  <div class="note" style="margin-bottom:14px;">
+    Marshall 與 Rotterdam <b>讀的是同一張 CT、用的是同一批影像特徵</b>（basal cisterns、midline shift、mass lesion），但<b>設計目的不同</b>——Marshall 把病人歸類，Rotterdam 算出一個數值。<b>Rotterdam 嚴格說是預測分數而非分類</b>，仍收在此頁，是因為它是 Marshall 的直接後繼者、且兩者必須對照著看才知道差在哪裡。處置決策請走<a class="tool-link" href="../pathways/tbi.html">創傷性腦損傷處置決策</a>。
   </div>
 
   <div class="sys-head" id="sys-marshall-ct">
@@ -892,7 +897,124 @@
     </div>
   </div>
 
-  <footer class="tool-footer">REF — <span class="ref-link" style="text-decoration:none;">Marshall LF, et al. A new classification of head injury based on computerized tomography. J Neurosurg. 1991;75(Suppl):S14-S20.</span> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16331165/" target="_blank" rel="noopener" class="ref-link">Maas AIR, et al. Prediction of outcome in traumatic brain injury with computed tomographic characteristics: a comparison between the computed tomographic classification and combinations of computed tomographic predictors. Neurosurgery. 2005;57(6):1173-1182.</a> ｜ <span class="ref-link" style="text-decoration:none;">Bullock MR, et al. Guidelines for the Surgical Management of Traumatic Brain Injury. Neurosurgery. 2006;58(3 Suppl):S2-1-S2-62.</span></footer>
+  <footer class="tool-footer">REF（頭部外傷 CT）— <span class="ref-link" style="text-decoration:none;">Marshall LF, et al. A new classification of head injury based on computerized tomography. J Neurosurg. 1991;75(Suppl):S14-S20.</span> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16331165/" target="_blank" rel="noopener" class="ref-link">Maas AIR, et al. Prediction of outcome in traumatic brain injury with computed tomographic characteristics: a comparison between the computed tomographic classification and combinations of computed tomographic predictors. Neurosurgery. 2005;57(6):1173-1182.</a> ｜ <span class="ref-link" style="text-decoration:none;">Bullock MR, et al. Guidelines for the Surgical Management of Traumatic Brain Injury. Neurosurgery. 2006;58(3 Suppl):S2-1-S2-62.</span></footer>
+
+  <div class="sys-sub" style="margin-top:34px;">二 · 動脈瘤性蜘蛛膜下腔出血（aneurysmal SAH）</div>
+  <div class="note" style="margin-bottom:14px;">
+    這四個量表分成<b>兩類、量的是不同的東西</b>：
+    <div class="dot-line">・<b>臨床分級</b>（Hunt-Hess、WFNS）：量<b>病人此刻的神經學狀態</b>，與整體預後相關。</div>
+    <div class="dot-line">・<b>影像分級</b>（Fisher、modified Fisher）：量 <b>CT 上的血量分布</b>，預測的是<b>後續的症狀性血管痙攣／延遲性腦缺血</b>，不是當下的嚴重度。</div>
+    <b>混用會出錯</b>：Hunt-Hess II 級的病人若 modified Fisher 4 級，血管痙攣風險仍然很高。四表的逐項填答與交叉判讀見<a class="tool-link" href="sah-grading.html">SAH 分級系統（互動版）</a>。
+  </div>
+
+  <div class="card">
+    <div class="sys-body">
+      <b>◆ 四表對照：</b>
+      <table class="def-table">
+        <tr><th style="width:18%;">量表</th><th style="width:10%;">類別</th><th>依據</th><th>預測</th><th>主要限制</th></tr>
+        <tr><td><b>Hunt &amp; Hess</b></td><td>臨床</td><td>意識與症狀的<b>文字描述</b></td><td>整體預後（原設計為<b>手術風險與時機</b>）</td><td>描述主觀，觀察者間一致性不佳</td></tr>
+        <tr><td><b>WFNS</b></td><td>臨床</td><td><b>GCS ＋ 有無運動缺損</b></td><td>整體預後（客觀性優於 Hunt-Hess）</td><td>II／III 級 GCS 相同，只差運動缺損</td></tr>
+        <tr><td><b>Fisher</b></td><td>影像</td><td>CT 血液<b>厚度與分布</b></td><td>血管痙攣</td><td>風險<b>非單調</b>（3 級高於 4 級）；原始僅 47 例</td></tr>
+        <tr><td><b>modified Fisher</b></td><td>影像</td><td><b>腦池厚血 ＋ 腦室內出血</b></td><td>症狀性血管痙攣（風險單調上升）</td><td>IVH 欄「是否須雙側」有<b>版本歧異</b></td></tr>
+      </table>
+      <b>◆ 共通提醒：</b>四個量表都是<b>族群層次</b>的風險分層工具。個別病人的處置決策（動脈瘤處理時機、是否放腦室外引流、血管痙攣的監測強度）應綜合臨床病程、影像與團隊判斷，不能只看等級。
+      <span class="sys-caveat">⚠ 本節<b>只做分級、不含處置建議</b>——AHA/ASA 2023 動脈瘤性 SAH 指引（Stroke 2023;54:e314-e370）全文為訂閱制，本次查核無法取得一手內容，因此不轉載其處置建議。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-hunt-hess">
+    <span class="sys-name">Hunt &amp; Hess 分級</span>
+    <span class="sys-en">Hunt and Hess Grade</span>
+    <span class="sys-src">Hunt &amp; Hess 1968</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <table class="def-table">
+        <tr><th style="width:14%;">等級</th><th>臨床狀態</th></tr>
+        <tr><td><b>I</b></td><td>無症狀，或<b>輕微頭痛</b>與輕度頸部僵硬</td></tr>
+        <tr><td><b>II</b></td><td><b>中至重度頭痛</b>、頸部僵硬；除<b>顱神經麻痺</b>外無神經學缺損</td></tr>
+        <tr><td><b>III</b></td><td><b>嗜睡、意識混亂</b>，或輕度局部神經學缺損</td></tr>
+        <tr><td><b>IV</b></td><td><b>木僵</b>、中至重度偏癱；可能有早期去大腦僵直與自主神經功能障礙</td></tr>
+        <tr><td><b>V</b></td><td><b>深昏迷</b>、去大腦僵直、瀕死狀態</td></tr>
+        <tr class="dt-warn"><td colspan="2" style="white-space:normal;"><b>加一級規則</b>：合併<b>嚴重全身性疾病</b>（高血壓、糖尿病、嚴重動脈硬化、慢性肺病）或<b>血管攝影見嚴重血管痙攣</b>者，等級<b>加一級</b>。</td></tr>
+      </table>
+
+      <div class="sys-sub">兩個常被忽略的地方</div>
+      <b>① 它原本不是預後量表。</b>Hunt &amp; Hess 1968 的設計目的是<b>評估手術風險與決定手術時機</b>，不是描述自然病程。後來被廣泛當成預後分級，是使用習慣而非原始用途。<br>
+      <b>② 主觀性是它最常被批評的地方。</b>「嗜睡」與「木僵」的界線因人而異，觀察者間一致性不佳——WFNS 就是為了修掉這一點而生。<br>
+      <span class="sys-caveat">※ 上表<b>加一級規則</b>常在二手表格中被整條漏掉；引用等級時應一併註明有無套用此規則，否則同一病人在不同單位會落在不同級。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-wfns">
+    <span class="sys-name">WFNS 分級</span>
+    <span class="sys-en">World Federation of Neurological Surgeons Grade</span>
+    <span class="sys-src">WFNS 1988</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>◆ 分級邏輯：</b>先看 <b>GCS</b>，再看<b>有無運動缺損</b>（失語不算運動缺損）。
+      <table class="def-table">
+        <tr><th style="width:14%;">等級</th><th style="width:24%;">GCS</th><th>運動缺損</th></tr>
+        <tr><td><b>I</b></td><td>15</td><td>無</td></tr>
+        <tr class="dt-warn"><td><b>II</b></td><td><b>13–14</b></td><td><b>無</b></td></tr>
+        <tr class="dt-warn"><td><b>III</b></td><td><b>13–14</b></td><td><b>有</b></td></tr>
+        <tr><td><b>IV</b></td><td>7–12</td><td>有或無</td></tr>
+        <tr><td><b>V</b></td><td>3–6</td><td>有或無</td></tr>
+      </table>
+      <b>◆ 最常填錯的一格：</b><b>II 級與 III 級的 GCS 範圍完全相同（13–14）</b>，差別<b>只在有沒有運動缺損</b>。只抄 GCS 而不看運動欄，這兩級必然混在一起。<br>
+      <b>◆ 與 Hunt-Hess 的關係：</b>WFNS 是<b>為了改掉 Hunt-Hess 的主觀性</b>而設計，改以客觀的 GCS 為主軸。兩者<b>不可互相換算</b>，報告時應載明用的是哪一套。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-fisher">
+    <span class="sys-name">Fisher 分級</span>
+    <span class="sys-en">Fisher Grade</span>
+    <span class="sys-src">Fisher 1980</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>◆ 分級依據：</b>CT 上蜘蛛膜下腔血液的<b>厚度與分布</b>，用來預測血管痙攣。
+      <table class="def-table">
+        <tr><th style="width:14%;">等級</th><th>CT 所見</th></tr>
+        <tr><td><b>1</b></td><td>CT 上<b>未見血</b></td></tr>
+        <tr><td><b>2</b></td><td>瀰漫性、或垂直層<b>厚度 &lt; 1 mm</b></td></tr>
+        <tr class="dt-warn"><td><b>3</b></td><td><b>局部血塊</b>與／或垂直層<b>厚度 ≥ 1 mm</b>——本表血管痙攣風險<b>最高</b>的一級</td></tr>
+        <tr><td><b>4</b></td><td><b>腦內或腦室內血塊</b>，伴或不伴瀰漫性 SAH</td></tr>
+      </table>
+
+      <div class="sys-sub">兩件必須知道的事</div>
+      <b>① 風險不隨等級單調上升。</b>第 <b>3 級（腦池內厚層血塊）的血管痙攣風險反而高於第 4 級</b>——因為第 4 級的血在<b>腦實質或腦室內、不在腦池</b>。把 Fisher 當成「級數愈高愈危險」的序位量表是錯的，這正是 modified Fisher 誕生的理由。<br>
+      <b>② 原始研究只有 47 例。</b>未見血或血液瀰漫分布者<b>幾乎不發生</b>重度血管痙攣（18 例中僅 1 例）；有 <b>&gt;5×3 mm 的血塊</b>、或裂隙與垂直腦池中<b>厚度 ≥1 mm 的血層</b>者，重度痙攣<b>幾乎必然發生</b>（24 例中 23 例）。原文並自承所用分級「<b>部分是主觀的</b>」、結果應視為初步。
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-mfisher">
+    <span class="sys-name">modified Fisher 分級</span>
+    <span class="sys-en">Modified Fisher Scale（Claassen／Columbia scale）</span>
+    <span class="sys-src">Frontera 2006</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>◆ 分級邏輯：</b>把<b>腦池厚血</b>與<b>腦室內出血（IVH）</b>視為<b>兩個各自獨立、可相加</b>的風險，使風險隨等級單調上升。
+      <table class="def-table">
+        <tr><th style="width:14%;">等級</th><th style="width:43%;">蜘蛛膜下腔出血</th><th>腦室內出血</th></tr>
+        <tr><td><b>0</b></td><td>無 SAH</td><td>無</td></tr>
+        <tr><td><b>1</b></td><td>局部或瀰漫性<b>薄層</b></td><td>無</td></tr>
+        <tr><td><b>2</b></td><td>局部或瀰漫性<b>薄層</b></td><td><b>有</b></td></tr>
+        <tr><td><b>3</b></td><td>局部或瀰漫性<b>厚層</b></td><td>無</td></tr>
+        <tr class="dt-warn"><td><b>4</b></td><td>局部或瀰漫性<b>厚層</b></td><td><b>有</b></td></tr>
+      </table>
+      <b>◆ 原始世代：</b>1,355 名 SAH 病人中 <b>451 人（33%）發生症狀性血管痙攣</b>；相對於 0–1 級，第 2 級勝算比 <b>1.6</b>（95% CI 1.0–2.5）、第 3 級 <b>1.6</b>（1.1–2.2）、第 4 級 <b>2.2</b>（1.6–3.1）。
+
+      <div class="sys-sub">兩個容易踩到的坑</div>
+      <b>① 名稱不是原文給的。</b>這個量表<b>在 Frontera 2006 原文中並沒有被命名為「modified Fisher」</b>，部分文獻稱之為 <b>Claassen scale</b> 或 <b>Columbia scale</b>——查文獻時三個名字指的是同一套。<br>
+      <b>② IVH 那一欄有兩種版本。</b>流傳的表格有的寫「<b>IVH</b>」、有的寫「<b>雙側 IVH</b>」，會直接改變 2 級與 4 級的判定。<br>
+      <span class="sys-caveat">⚠ 來源限制：Frontera 2006 摘要只寫「依腦池血與腦室內出血計算」，<b>未指明是否須為雙側</b>，而原文為訂閱制、本次查核無法取得一手全文。上表採用<b>較廣泛引用的「IVH」版本</b>；若貴院判讀慣例為雙側，請以院內慣例為準並在報告中註明所用版本。</span>
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF（SAH 分級）— <a href="https://pubmed.ncbi.nlm.nih.gov/5635959/" target="_blank" rel="noopener" class="ref-link">Hunt WE, Hess RM. Surgical risk as related to time of intervention in the repair of intracranial aneurysms. J Neurosurg. 1968;28(1):14-20.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/3131498/" target="_blank" rel="noopener" class="ref-link">Report of World Federation of Neurological Surgeons Committee on a Universal Subarachnoid Hemorrhage Grading Scale. J Neurosurg. 1988;68(6):985-986.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/7354892/" target="_blank" rel="noopener" class="ref-link">Fisher CM, Kistler JP, Davis JM. Relation of cerebral vasospasm to subarachnoid hemorrhage visualized by computerized tomographic scanning. Neurosurgery. 1980;6(1):1-9.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16823296/" target="_blank" rel="noopener" class="ref-link">Frontera JA, Claassen J, Schmidt JM, et al. Prediction of symptomatic vasospasm after subarachnoid hemorrhage: the modified Fisher scale. Neurosurgery. 2006;59(1):21-27.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37212182/" target="_blank" rel="noopener" class="ref-link">Hoh BL, et al. 2023 Guideline for the Management of Patients With Aneurysmal Subarachnoid Hemorrhage. Stroke. 2023;54(7):e314-e370.</a></footer>
 </div>
 
 <div id="tab-misc" class="hidden">
@@ -1145,6 +1267,7 @@ var TABS=['cross','biliary','colon','panc','hernia','gib','periop','neuro','misc
 var SYS_TAB={
   aast:'cross',
   'marshall-ct':'neuro',rotterdam:'neuro',
+  'hunt-hess':'neuro',wfns:'neuro',fisher:'neuro',mfisher:'neuro',
   clavien:'periop','isrec':'periop','leak-family':'periop',cfs:'periop',
   cdiff:'misc',ecf:'misc',iac:'misc',bariatric:'misc',volvulus:'misc',
   'tg18-gb':'biliary','tg18-cholangitis':'biliary',asge:'biliary',
