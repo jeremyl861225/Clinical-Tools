@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>肺保護通氣設定與調整 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-lpv">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>肺保護通氣設定與調整</h1><div class="sub">Lung-Protective Ventilation · 起始設定 → 四種「調不好」的排查（ARDSNet 協定 ＋ ESICM 2023／ATS 2024／SSC 2026）</div></div>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <button class="back-btn" id="lpv_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html'">← 返回呼吸衰竭決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-lpv'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">使用前必讀 Before You Use</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>指引只訂了兩個數字</b>：潮氣容積 <b>4–8 mL/kg 預測體重</b>（ESICM 2023 建議 5.1、ATS，強建議、高度確定性；SSC 2026 建議 71 寫 6 mL/kg）與 <b>plateau pressure ≤30 cmH₂O</b>（ATS、SSC 2026 建議 73，強建議）。<br>
+      本頁「該怎麼調」的<b>逐步操作數字</b>——起始 8 mL/kg、每 ≤2 小時降 1 mL/kg、Pplat &gt;30 降 VT 至最低 4、呼吸速率上限 35、pH 分段處置——全部出自 <b>ARDSNet 通氣協定卡</b>（ARMA 試驗的操作手冊，<a href="https://pubmed.ncbi.nlm.nih.gov/10793162/" target="_blank" rel="noopener" class="ref-link">NEJM 2000</a>）。<b>那是試驗方案，不是指引條文</b>，本頁一律標明何者來自何處。<br>
+      <b>驅動壓（ΔP）沒有任何指引門檻</b>：ESICM 2023 把「限制驅動壓或 plateau pressure」明列為<b>尚未解決的研究問題</b>。文獻常用的 15 cmH₂O 是警戒線，不是指引目標值。<br>
+      <b>PEEP 的三份指引方向不同</b>——ATS 2024 與 SSC 2026 對中重度建議較高 PEEP（皆條件式），ESICM 2023 建議 6.1「無法做出建議」（高度確定性的無效果）。詳見 ARDS 決策頁的並列說明。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>ARDSNet 通氣協定卡全文 NIH NHLBI ARDS Network Mechanical Ventilation Protocol</summary>
+    <div class="box-inner">
+      <b>◆ 收案條件：</b>急性發生的 PaO₂/FiO₂ ≤300（依海拔校正）；符合肺水腫的雙側浸潤（斑塊狀、瀰漫或均質）；無左心房壓力升高的臨床證據。<br><br>
+
+      <b>◆ PART I：呼吸器設定與調整</b><br>
+      <div class="dot-line">・<b>預測體重（PBW）</b>：男性 = 50 + 2.3 ×〔身高(吋) − 60〕；女性 = 45.5 + 2.3 ×〔身高(吋) − 60〕。</div>
+      <div class="dot-line">・<b>模式不限</b>；設定使<b>起始 VT = 8 mL/kg PBW</b>。</div>
+      <div class="dot-line">・<b>每 ≤2 小時將 VT 降 1 mL/kg，直到 VT = 6 mL/kg PBW。</b></div>
+      <div class="dot-line">・起始呼吸速率設為接近病人原本的分鐘通氣量（<b>不超過 35 次/分</b>）；之後調整 VT 與 RR 以達成下列 pH 與 plateau pressure 目標。</div><br>
+
+      <b>◆ 氧合目標：PaO₂ 55–80 mmHg 或 SpO₂ 88–95%</b><br>
+      <div class="dot-line">・<b>PEEP 最低 5 cmH₂O</b>；可（非強制）使用下方的 FiO₂/PEEP 遞增組合來達標。</div><br>
+
+      <b>◆ Plateau pressure 目標：≤30 cmH₂O</b><br>
+      <div class="dot-line">・以 <b>0.5 秒吸氣暫停</b>測量，<b>至少每 4 小時一次</b>，且<b>每次更動 PEEP 或 VT 之後</b>都要重測。</div>
+      <div class="dot-line">・<b>Pplat &gt;30</b>：VT 每次降 1 mL/kg（<b>最低 4 mL/kg</b>）。</div>
+      <div class="dot-line">・<b>Pplat &lt;25 且 VT &lt;6</b>：VT 每次加 1 mL/kg，直到 Pplat &gt;25 或 VT = 6。</div>
+      <div class="dot-line">・<b>Pplat &lt;30 但出現 breath stacking 或人機不同步</b>：可每次加 1 mL/kg 至 7 或 8 mL/kg，前提是 Pplat 維持 ≤30。</div><br>
+
+      <b>◆ pH 目標：7.30–7.45</b><br>
+      <div class="dot-line">・<b>pH 7.15–7.30</b>：增加 RR 直到 pH &gt;7.30 或 PaCO₂ &lt;25（<b>RR 上限 35</b>）。</div>
+      <div class="dot-line">・<b>pH &lt;7.15</b>：RR 加到 35；若 pH 仍 &lt;7.15，VT 可每次加 1 mL/kg 直到 pH &gt;7.15（<b>此時允許 Pplat 超過 30</b>）。可給 NaHCO₃。</div>
+      <div class="dot-line">・<b>pH &gt;7.45</b>：可行時降低呼吸速率。</div><br>
+
+      <b>◆ I:E 比目標：</b>吸氣時間 ≤ 吐氣時間。<br><br>
+
+      <b>◆ PART II：脫離</b><br>
+      <div class="dot-line">・<b>每日執行自主呼吸試驗（SBT）的條件</b>：① FiO₂ ≤0.40 且 PEEP ≤8，或 FiO₂ &lt;0.50 且 PEEP &lt;5；② PEEP 與 FiO₂ ≤ 前一日的值；③ 有可接受的自主呼吸努力（可將呼吸器速率降 50% 持續 5 分鐘來偵測）；④ 收縮壓 ≥90 mmHg 且未用升壓劑；⑤ 未使用神經肌肉阻斷劑。</div>
+      <div class="dot-line">・<b>SBT 內容</b>：FiO₂ &lt;0.5、PEEP ≤5 下自主呼吸<b>最多 120 分鐘</b>——T-piece、氣切面罩，或 CPAP ≤5 併 PS ≤5。</div>
+      <div class="dot-line">・<b>耐受判準</b>：SpO₂ ≥90% 且／或 PaO₂ ≥60 mmHg；自主 VT ≥4 mL/kg PBW；RR ≤35；pH ≥7.30；無呼吸窘迫（下列 ≥2 項即為窘迫：心跳 &gt;基線 120%、明顯使用輔助肌、腹部反常運動、大汗、明顯呼吸困難）。</div>
+      <div class="dot-line">・<b>耐受 ≥30 分鐘可考慮拔管</b>；不耐受則回到試驗前設定。</div>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>支持證據與判讀陷阱 Evidence &amp; Caveats</summary>
+    <div class="box-inner">
+      <b>◆ 低潮氣容積（ARMA, NEJM 2000）：</b>861 人。6 mL/kg PBW（Pplat ≤30）對比 12 mL/kg（Pplat ≤50），院內死亡 <b>31.0% vs 39.8%</b>（P=0.007），無呼吸器天數 12±11 vs 10±11 天。實際達成的 VT 為 6.2±0.8 vs 11.8±0.8 mL/kg、Pplat 25±6 vs 33±8 cmH₂O。<br><br>
+
+      <b>◆ 較高 PEEP（Briel 2010 個人資料統合，JAMA）：</b>3 個試驗、2299 人。整體院內死亡 32.9% vs 35.2%（adjusted RR 0.94，0.86–1.04，P=0.25），<b>但依有無 ARDS 分層有交互作用（P=0.02）</b>：P/F ≤200 者（n=1892）34.1% vs 39.1%（adjusted RR <b>0.90</b>，0.81–1.00，P=0.049）；<b>非 ARDS 者（n=404）反而 27.2% vs 19.4%（RR 1.37）</b>。這就是「中重度才用較高 PEEP」的來源。<br><br>
+
+      <b>◆ 肺復張與依 compliance 滴定 PEEP 有害（ART, JAMA 2017）：</b>1010 人，中重度 ARDS。復張＋依最佳 compliance 滴定 PEEP 相較低 PEEP 策略，<b>28 天死亡 55.3% vs 49.3%（HR 1.20，1.01–1.42，P=0.041）</b>、6 個月死亡 65.3% vs 59.9%、氣胸需引流 3.2% vs 1.2%、氣壓傷 <b>5.6% vs 1.6%</b>。<br><br>
+
+      <b>◆ 驅動壓（Amato 2015, NEJM）：</b>9 個試驗、3562 人的多層次中介分析。ΔP 每增加 1 個標準差（約 <b>7 cmH₂O</b>）死亡率 <b>RR 1.41</b>（1.31–1.51）；<b>即使 VT 與 Pplat 都已在「保護性」範圍內仍 RR 1.36</b>（1.17–1.58）。單獨更動 VT 或 PEEP 與存活無關，<b>只有在該更動讓 ΔP 下降時才有關聯</b>。<span class="note">這是觀察／中介分析，不是隨機比較；沒有指引因此訂出 ΔP 目標值。ΔP = Pplat − PEEP，<b>只有在病人被動、無自主吸氣努力時才有效</b>。</span><br><br>
+
+      <b>◆ 食道壓導引 PEEP（EPVent-2, JAMA 2019）：</b>200 人，中重度 ARDS。以食道壓（估計胸膜壓）導引 PEEP 相較經驗性高 PEEP-FiO₂ 表，<b>主要複合終點無差異</b>（機率 49.6%，P=0.92）。故食道壓可用於理解胸壁的貢獻，但<b>不建議常規用來設定 PEEP</b>。<br><br>
+
+      <b>◆ 無效腔與呼吸性酸中毒（Hinkson 2006, Respir Care）：</b>7 人，低潮氣容積下比較三種管路配置。<b>移除 HME 使 V_D/V_T 降約 6%、PaCO₂ 降約 5 mmHg</b>；<b>再移除延長管又降 V_D/V_T 約 5%、PaCO₂ 再降約 6 mmHg</b>；兩者都移除後分鐘通氣量由 11.51 降到 10.35 L/min，pH 由 7.30 升到 7.38。<span class="note">樣本極小，但這是處理呼吸性酸中毒時<b>最便宜、最先該做</b>的一步（改用加熱潮濕器）。</span><br><br>
+
+      <b>◆ 俯臥（PROSEVA, NEJM 2013）：</b>466 人，P/F &lt;150 且 FiO₂ ≥0.6、PEEP ≥5、VT 約 6 mL/kg。每次<b>至少 16 小時</b>：28 天死亡 <b>16.0% vs 32.8%</b>（HR 0.39），90 天 23.6% vs 41.0%。<br><br>
+
+      <b>◆ 神經肌肉阻斷（ROSE, NEJM 2019）：</b>1006 人，P/F &lt;150、PEEP ≥8，早期（中位 7.6 小時）給 48 小時 cisatracurium 併深鎮靜。<b>90 天院內死亡 42.5% vs 42.8%（差 −0.3%，P=0.93），因無效而提前停止</b>；介入組活動量較低、心血管不良事件較多。<br><br>
+
+      <b>◆ ECMO（EOLIA, NEJM 2018）：</b>249 人。60 天死亡 <b>35% vs 46%（RR 0.76，0.55–1.04，P=0.09）</b>——未達統計顯著，且<b>對照組 28% 交叉接受 ECMO</b>（平均在隨機分派後 6.5 天，其中 57% 死亡）。ECMO 組輸血相關出血 46% vs 28%、嚴重血小板低下 27% vs 16%，但缺血性中風 0% vs 5%。ESICM 2023 建議 9.1 仍給<b>強建議</b>（符合 EOLIA 收案條件者於 ECMO 中心治療）。<br><br>
+
+      <b>◆ 可復張性（Chen 2020, AJRCCM）：</b>單次呼吸法測 recruitment-to-inflation ratio（PEEP 15→5 的釋放容積），中位 0.5（範圍 0–2.0），可區分高／低可復張者。<b>屬生理評估工具，未被任何指引列為建議</b>，本頁僅作為「升 PEEP 沒效時要想到什麼」的背景。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">① 起始設定：預測體重與潮氣容積 Predicted Body Weight</div>
+    <div class="field-row">
+      <label>身高</label>
+      <input type="number" id="lpv_ht" step="1" placeholder="—">
+      <span class="unit">cm</span>
+    </div>
+    <div class="field-row">
+      <label>性別</label>
+      <select id="lpv_sex">
+        <option value="m">男性 Male</option>
+        <option value="f">女性 Female</option>
+      </select>
+      <span class="unit">PBW 只看身高與性別</span>
+    </div>
+    <div class="note">預測體重<b>與實際體重無關</b>——肥胖病人若用實際體重計算，潮氣容積會嚴重過大。ARDSNet 公式以「吋」定義，本頁由公分換算（1 吋 = 2.54 公分）。</div>
+    <div class="result">
+      <div class="result-grid">
+        <div><div class="metric-label">預測體重 PBW</div><div class="metric-value big" id="lpv_pbw">—</div></div>
+        <div><div class="metric-label">起始 VT（8 mL/kg）</div><div class="metric-value" id="lpv_v8">—</div></div>
+        <div><div class="metric-label">目標 VT（6 mL/kg）</div><div class="metric-value" id="lpv_v6">—</div></div>
+        <div><div class="metric-label">下限 VT（4 mL/kg）</div><div class="metric-value" id="lpv_v4">—</div></div>
+      </div>
+      <div class="metric-label">操作順序</div>
+      <div class="result-body" id="lpv_steps">請輸入身高。</div>
+      <table class="ref">
+        <tr><th>情境</th><th>潮氣容積</th><th>依據</th></tr>
+        <tr><td>起始設定</td><td id="lpv_r8">—</td><td>ARDSNet：起始 8 mL/kg，每 ≤2 小時降 1</td></tr>
+        <tr><td>常規目標</td><td id="lpv_r6">—</td><td>SSC 2026 建議 71；指引容許區間 4–8</td></tr>
+        <tr><td>Pplat &gt;30 時下修至</td><td id="lpv_r4">—</td><td>ARDSNet：每次降 1，最低 4 mL/kg</td></tr>
+        <tr><td>不同步且 Pplat &lt;30 可上修至</td><td id="lpv_r78">—</td><td>ARDSNet：7–8 mL/kg，Pplat 須維持 ≤30</td></tr>
+      </table>
+      <div class="risk-note">指引的容許區間是 <b>4–8 mL/kg PBW</b>（ESICM 2023 建議 5.1、ATS）；<b>4 mL/kg 不是「更保護」的預設值</b>——ARDSNet 協定要求 Pplat &lt;25 且 VT &lt;6 時要把 VT 加回去。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">② PEEP／FiO₂ 對照表 ARDSNet PEEP/FiO₂ Tables</div>
+    <div class="note" style="margin-bottom:8px;">氧合目標 <b>PaO₂ 55–80 mmHg 或 SpO₂ 88–95%</b>，<b>PEEP 最低 5</b>。ARDSNet 協定寫明這兩張表是<b>可用而非強制</b>的達標方式。中重度（P/F ≤200）採較高 PEEP 表有 ATS 2024／SSC 2026 的條件式建議與 Briel 2010 的分層支持；<b>ESICM 2023 建議 6.1 對此無法做出建議</b>。</div>
+    <div class="drug-row-grid">
+      <div>
+        <div class="metric-label" style="color:var(--accent); margin-bottom:4px;">低 PEEP／高 FiO₂ 表</div>
+        <table class="def-table">
+          <tr><th>FiO₂</th><th>PEEP</th><th>FiO₂</th><th>PEEP</th></tr>
+          <tr><td>0.3</td><td>5</td><td>0.7</td><td>14</td></tr>
+          <tr><td>0.4</td><td>5</td><td>0.8</td><td>14</td></tr>
+          <tr><td>0.4</td><td>8</td><td>0.9</td><td>14</td></tr>
+          <tr><td>0.5</td><td>8</td><td>0.9</td><td>16</td></tr>
+          <tr><td>0.5</td><td>10</td><td>0.9</td><td>18</td></tr>
+          <tr><td>0.6</td><td>10</td><td>1.0</td><td>18–24</td></tr>
+          <tr><td>0.7</td><td>10</td><td>—</td><td>—</td></tr>
+          <tr><td>0.7</td><td>12</td><td>—</td><td>—</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="metric-label" style="color:var(--accent); margin-bottom:4px;">高 PEEP／低 FiO₂ 表</div>
+        <table class="def-table">
+          <tr><th>FiO₂</th><th>PEEP</th><th>FiO₂</th><th>PEEP</th></tr>
+          <tr><td>0.3</td><td>5</td><td>0.5</td><td>18</td></tr>
+          <tr><td>0.3</td><td>8</td><td>0.5–0.8</td><td>20</td></tr>
+          <tr><td>0.3</td><td>10</td><td>0.8</td><td>22</td></tr>
+          <tr><td>0.3</td><td>12</td><td>0.9</td><td>22</td></tr>
+          <tr><td>0.3</td><td>14</td><td>1.0</td><td>22</td></tr>
+          <tr><td>0.4</td><td>14</td><td>1.0</td><td>24</td></tr>
+          <tr><td>0.4</td><td>16</td><td>—</td><td>—</td></tr>
+          <tr><td>0.5</td><td>16</td><td>—</td><td>—</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">③ 四件明確不要做的事 What Not To Do</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <div class="dot-line">・<b>長時間高壓肺復張</b>（氣道壓 ≥35 cmH₂O 持續 ≥1 分鐘）：ESICM 2023 建議 6.3 與 ATS 2024 皆<b>強烈反對</b>；短時間高壓復張亦不建議常規使用（建議 6.4）。</div>
+      <div class="dot-line">・<b>以「最佳 compliance」遞增滴定 PEEP</b>：SSC 2026 建議 75 強烈反對；ART 試驗此策略<b>增加 28 天死亡</b>（55.3% vs 49.3%，HR 1.20）與氣壓傷（5.6% vs 1.6%）。</div>
+      <div class="dot-line">・<b>高頻震盪通氣（HFOV）</b>用於中重度 ARDS：ATS（2017 保留至 2024）<b>強烈反對</b>。</div>
+      <div class="dot-line">・<b>ECCO₂R</b> 用於隨機試驗之外：ESICM 2023 建議 9.2 <b>強烈反對</b>（高度確定性的無效果）。</div>
+    </div>
+  </div>
+
+  <div class="flow-step" id="lpv_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">已採肺保護設定，目前最主要的問題是哪一項？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('prob','oxy',this)">氧合不足<span class="fo-sub">SpO₂ &lt;88% 或 PaO₂ &lt;55 mmHg，未達 ARDSNet 氧合目標</span></button>
+      <button class="flow-opt" onclick="lpvPick('prob','press',this)">壓力過高<span class="fo-sub">Pplat &gt;30 cmH₂O，或 Pplat 達標但驅動壓偏高</span></button>
+      <button class="flow-opt" onclick="lpvPick('prob','acid',this)">呼吸性酸中毒<span class="fo-sub">pH &lt;7.30（低潮氣容積下的高碳酸血症）</span></button>
+      <button class="flow-opt" onclick="lpvPick('prob','dys',this)">人機不同步<span class="fo-sub">Breath stacking、雙重觸發、吸氣流速不足、呼吸驅動過強</span></button>
+      <button class="flow-opt" onclick="lpvPick('prob','ok',this)">各項皆達標<span class="fo-sub">Pplat ≤30、pH ≥7.30、SpO₂ 88–95%</span></button>
+    </div>
+    <div class="note" style="margin-top:8px;"><b>突然</b>惡化（血氧驟降或 Pplat 驟升）先排除機械原因再調參數：氣管內管移位／阻塞、氣胸、呼吸器或管路問題、breath stacking。</div>
+  </div>
+
+  <div class="flow-connector hidden" id="lpv_c2a">↓</div>
+  <div class="flow-step hidden" id="lpv_s2a">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">FiO₂／PEEP 已經走到哪一步？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('sub','a1',this)">FiO₂ 已高但 PEEP 仍偏低<span class="fo-sub">尚未依 PEEP/FiO₂ 對照表把 PEEP 補上</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','a2',this)">已依表升到高 PEEP，P/F 仍 ≥150<span class="fo-sub">氧合勉強可維持，但需高 FiO₂</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','a3',this)">P/F &lt;150（PEEP ≥5、設定已最佳化）<span class="fo-sub">已達 ESICM 的俯臥門檻</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','a4',this)">俯臥與各項措施用盡仍難治<span class="fo-sub">P/F &lt;50 超過 3 小時，或 P/F &lt;80 超過 6 小時</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="lpv_c2b">↓</div>
+  <div class="flow-step hidden" id="lpv_s2b">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">潮氣容積與胸壁狀況？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('sub','b1',this)">VT 仍 &gt;4 mL/kg PBW<span class="fo-sub">依協定還有下修空間</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','b2',this)">VT 已降到 4 mL/kg，Pplat 仍 &gt;30<span class="fo-sub">已無協定內的下修空間</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','b3',this)">有胸壁／腹腔因素<span class="fo-sub">肥胖、腹腔高壓、大量腹水、胸壁水腫、大量輸液</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','b4',this)">Pplat ≤30 但驅動壓 &gt;15 cmH₂O<span class="fo-sub">ΔP = Pplat − PEEP（病人被動、無自主吸氣時才有效）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="lpv_c2c">↓</div>
+  <div class="flow-step hidden" id="lpv_s2c">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">呼吸速率與吐氣狀況？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('sub','c1',this)">RR 尚未加到 35（pH 7.15–7.30）<span class="fo-sub">協定內仍有增加分鐘通氣量的空間</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','c2',this)">RR 已加高但 pH 沒改善<span class="fo-sub">流速波形顯示吐氣未完成／測得 auto-PEEP</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','c3',this)">RR 已 35、無 auto-PEEP，pH 仍 &lt;7.15<span class="fo-sub">協定允許例外處置的區段</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','c4',this)">pH &lt;7.25 併 PaCO₂ ≥60 持續 &gt;6 小時<span class="fo-sub">RR 已 35、設定已調至 Pplat ≤32</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="lpv_c2d">↓</div>
+  <div class="flow-step hidden" id="lpv_s2d">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">不同步的型態？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('sub','d1',this)">雙重觸發／breath stacking<span class="fo-sub">吸氣需求大於設定的潮氣容積，Pplat 仍 &lt;30</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','d2',this)">吸氣流速不足／呼吸驅動過強<span class="fo-sub">波形出現吸氣凹陷，病人明顯用力</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','d3',this)">已調設定與鎮靜仍嚴重不同步<span class="fo-sub">且為早期重度 ARDS（發病 &lt;48 小時、P/F ≤100）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="lpv_c2e">↓</div>
+  <div class="flow-step hidden" id="lpv_s2e">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">目前的壓力與氧氣需求？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="lpvPick('sub','e1',this)">Pplat &lt;25 且 VT &lt;6 mL/kg<span class="fo-sub">協定要求把潮氣容積加回去</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','e2',this)">FiO₂ ≤0.40 且 PEEP ≤8<span class="fo-sub">或 FiO₂ &lt;0.50 且 PEEP &lt;5</span></button>
+      <button class="flow-opt" onclick="lpvPick('sub','e3',this)">仍需高 FiO₂ 或高 PEEP<span class="fo-sub">未達每日自主呼吸試驗的條件</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="lpv_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <button class="flow-link" onclick="location.href='../pathways/ards.html'">🧭 回到 ARDS 完整升階流程（HFNO → 插管 → 俯臥 → NMBA → ECMO）</button>
+  <button class="flow-link" onclick="location.href='../tools/ards.html?from=lpv'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
+  <button class="flow-link" onclick="location.href='../tools/iah.html'">🧮 腹內壓與腹腔內腔室症候群（Pplat 高但跨肺壓未必高時）</button>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="lpvReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/10793162/" target="_blank" rel="noopener" class="ref-link">The Acute Respiratory Distress Syndrome Network. Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. N Engl J Med. 2000;342(18):1301-1308.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25693014/" target="_blank" rel="noopener" class="ref-link">Amato MBP, Meade MO, Slutsky AS, et al. Driving pressure and survival in the acute respiratory distress syndrome. N Engl J Med. 2015;372(8):747-755.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20197533/" target="_blank" rel="noopener" class="ref-link">Briel M, Meade M, Mercat A, et al. Higher vs lower positive end-expiratory pressure in patients with acute lung injury and acute respiratory distress syndrome: systematic review and meta-analysis. JAMA. 2010;303(9):865-873.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/28973363/" target="_blank" rel="noopener" class="ref-link">Writing Group for the Alveolar Recruitment for ARDS Trial (ART) Investigators. Effect of lung recruitment and titrated PEEP vs low PEEP on mortality in patients with ARDS: a randomized clinical trial. JAMA. 2017;318(14):1335-1345.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30776290/" target="_blank" rel="noopener" class="ref-link">Beitler JR, Sarge T, Banner-Goodspeed VM, et al. Effect of titrating PEEP with an esophageal pressure-guided strategy vs an empirical high PEEP-FiO2 strategy on death and days free from mechanical ventilation among patients with ARDS: a randomized clinical trial. JAMA. 2019;321(9):846-857.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/17005059/" target="_blank" rel="noopener" class="ref-link">Hinkson CR, Benson MS, Stephens LM, Deem S. The effects of apparatus dead space on PaCO2 in patients receiving lung-protective ventilation. Respir Care. 2006;51(10):1140-1144.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/23688302/" target="_blank" rel="noopener" class="ref-link">Guérin C, Reignier J, Richard JC, et al. Prone positioning in severe acute respiratory distress syndrome. N Engl J Med. 2013;368(23):2159-2168.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31112383/" target="_blank" rel="noopener" class="ref-link">National Heart, Lung, and Blood Institute PETAL Clinical Trials Network. Early neuromuscular blockade in the acute respiratory distress syndrome. N Engl J Med. 2019;380(21):1997-2008.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/29791822/" target="_blank" rel="noopener" class="ref-link">Combes A, Hajage D, Capellier G, et al. Extracorporeal membrane oxygenation for severe acute respiratory distress syndrome. N Engl J Med. 2018;378(21):1965-1975.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener" class="ref-link">Chen L, Del Sorbo L, Grieco DL, et al. Potential for lung recruitment estimated by the recruitment-to-inflation ratio in acute respiratory distress syndrome. Am J Respir Crit Care Med. 2020;201(2):178-187.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37326646/" target="_blank" rel="noopener" class="ref-link">Grasselli G, Calfee CS, Camporota L, et al. ESICM guidelines on acute respiratory distress syndrome. Intensive Care Med. 2023;49(7):727-759.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38032683/" target="_blank" rel="noopener" class="ref-link">Qadir N, Sahetya S, Munshi L, et al. An update on management of adult patients with acute respiratory distress syndrome: an official American Thoracic Society clinical practice guideline. Am J Respir Crit Care Med. 2024;209(1):24-36.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+/* ---------- 預測體重與潮氣容積 ---------- */
+function lpvPBW(){
+  const cm = parseFloat(document.getElementById('lpv_ht').value);
+  if(isNaN(cm) || cm<=0) return null;
+  const inches = cm/2.54;
+  const base = document.getElementById('lpv_sex').value==='m' ? 50 : 45.5;
+  const pbw = base + 2.3*(inches-60);
+  return pbw>0 ? pbw : null;
+}
+
+function lpvCalc(){
+  const pbw = lpvPBW();
+  const fmt = v => v===null ? '—' : Math.round(v)+' mL';
+  document.getElementById('lpv_pbw').textContent = pbw===null ? '—' : pbw.toFixed(1)+' kg';
+  document.getElementById('lpv_v8').textContent = fmt(pbw===null?null:pbw*8);
+  document.getElementById('lpv_v6').textContent = fmt(pbw===null?null:pbw*6);
+  document.getElementById('lpv_v4').textContent = fmt(pbw===null?null:pbw*4);
+  document.getElementById('lpv_r8').textContent = fmt(pbw===null?null:pbw*8);
+  document.getElementById('lpv_r6').textContent = fmt(pbw===null?null:pbw*6);
+  document.getElementById('lpv_r4').textContent = fmt(pbw===null?null:pbw*4);
+  document.getElementById('lpv_r78').textContent = pbw===null ? '—' : Math.round(pbw*7)+'–'+Math.round(pbw*8)+' mL';
+  document.getElementById('lpv_steps').innerHTML = pbw===null
+    ? '請輸入身高。'
+    : '起始 <b>'+Math.round(pbw*8)+' mL</b>（8 mL/kg）→ 每 ≤2 小時降 <b>'+Math.round(pbw)+' mL</b>（1 mL/kg）→ 目標 <b>'+Math.round(pbw*6)+' mL</b>（6 mL/kg）。呼吸速率先設為接近原本的分鐘通氣量（<b>上限 35 次/分</b>），之後依 pH 與 Pplat 調整；每次更動 PEEP 或 VT 後都要重測 Pplat。';
+}
+document.querySelectorAll('#lpv_ht, #lpv_sex').forEach(el=>{
+  el.addEventListener('input', lpvCalc); el.addEventListener('change', lpvCalc);
+});
+
+/* ---------- 排查流程 ---------- */
+const st = { prob:null, sub:null };
+
+function lpvPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='prob'){ st.prob=val; st.sub=null; }
+  else if(key==='sub'){ st.sub=val; }
+  render();
+}
+
+const LPV_REC = {
+  a1: { cls:'rec-elective', title:'依 PEEP／FiO₂ 對照表把 PEEP 補上，不要只加 FiO₂',
+    detail:'<li><b>先對表</b>：氧合目標是 <b>PaO₂ 55–80 mmHg 或 SpO₂ 88–95%</b>（ARDSNet），達標即停，不追求更漂亮的數字。<b>PEEP 最低 5 cmH₂O</b>。</li>'+
+      '<li><b>中重度優先用高 PEEP 表</b>：ATS 2024 與 SSC 2026 建議 74 對中重度建議較高 PEEP（皆<b>條件式</b>）；Briel 2010 的個人資料統合顯示 P/F ≤200 者院內死亡 34.1% vs 39.1%（adjusted RR 0.90，0.81–1.00），<b>但非 ARDS 者反而 RR 1.37</b>。<b>ESICM 2023 建議 6.1 對高／低 PEEP 無法做出建議</b>（高度確定性的無效果）。</li>'+
+      '<li><b>每次調整後重測三件事</b>：SpO₂／PaO₂、<b>Pplat（0.5 秒吸氣暫停）</b>、血壓。協定要求每次更動 PEEP 或 VT 後都重測 Pplat，且至少每 4 小時一次。</li>'+
+      '<li><b>看 ΔP 的走向決定要不要繼續升</b>：升 PEEP 後 ΔP（=Pplat−PEEP）<b>下降</b>代表有復張效果；<b>上升</b>代表這一段 PEEP 造成過度膨脹，應退回。</li>'+
+      '<li><b>不要用高壓復張手法補氧合</b>（ESICM 6.3／ATS 強烈反對；ART 試驗 28 天死亡 55.3% vs 49.3%，氣壓傷 5.6% vs 1.6%）。</li>',
+    note:'ARDSNet 協定（氧合目標與 PEEP/FiO₂ 表）；ATS 2024、SSC 2026 建議 74；ESICM 2023 建議 6.1、6.3。' },
+
+  a2: { cls:'rec-blue', title:'氧合可維持 — 停止往上堆 PEEP，改找肺外可逆因素',
+    detail:'<li><b>不必為了數字再加 PEEP</b>：ESICM 2023 對「更高 PEEP」的證據評為<b>高度確定性的無效果</b>；SSC 2026 建議 75 亦強烈反對遞增式 PEEP 滴定策略。</li>'+
+      '<li><b>試著降 FiO₂</b>：只要維持 SpO₂ 88–95%／PaO₂ 55–80，就依表往回走一格；SSC 2026 建議 66 指出寬鬆與保守的 FiO₂ 滴定目標<b>死亡率無差異</b>。</li>'+
+      '<li><b>找肺外因素</b>：體液過多（考慮限水與利尿）、腹腔高壓、姿勢、分泌物清除、未控制的感染源、氣胸或肋膜積液。</li>'+
+      '<li><b>持續留意惡化</b>：ARDS 嚴重度會在病程中移動，P/F 若掉到 &lt;150 應重新評估俯臥。</li>',
+    note:'ARDSNet 氧合目標；ESICM 2023 建議 6.1；SSC 2026 建議 66、75。' },
+
+  a3: { cls:'rec-elective', title:'P/F &lt;150 — 俯臥，每次滿 16 小時',
+    detail:'<li><b>ESICM 2023 建議 7.1／7.2（強建議、高度確定性）</b>：P/F &lt;150 且 PEEP ≥5、<b>設定已最佳化</b>者建議俯臥；應在插管後早期、經一段低潮氣容積與 PEEP 調整的穩定期後開始，<b>每次持續 16 小時以上</b>。ATS 與 SSC 2026 建議 76 寫每日 &gt;12 小時。</li>'+
+      '<li><b>PROSEVA</b>：28 天死亡 <b>16.0% vs 32.8%</b>（HR 0.39），90 天 23.6% vs 41.0%。試驗族群本身就已用 VT 約 6 mL/kg——<b>俯臥是加在肺保護通氣之上，不是取代它</b>。</li>'+
+      '<li><b>神經肌肉阻斷劑</b>：ATS 2024 的適應症限<b>發病 &lt;48 小時、P/F ≤100</b>（條件式，低度確定性）；ESICM 2023 建議 8.1 <b>強烈反對常規持續輸注</b>；SSC 2026 建議 77 偏好<b>間歇推注</b>。ROSE 試驗（1006 人）的早期持續 cisatracurium <b>90 天死亡 42.5% vs 42.8%，因無效提前中止</b>。</li>'+
+      '<li><b>現在就與 ECMO 中心建立聯繫</b>——不要等到符合 EOLIA 條件才打第一通電話，轉送要在病人還能安全移動時決定。</li>',
+    note:'ESICM 2023 建議 7.1、7.2、8.1；ATS 2024；SSC 2026 建議 76、77；PROSEVA、ROSE。' },
+
+  a4: { cls:'rec-urgent', title:'難治性低血氧 — 對照 EOLIA 條件，轉介 ECMO 中心',
+    detail:'<li><b>EOLIA 收案條件</b>（ESICM 2023 建議 9.1，<b>強建議</b>）：P/F &lt;50 持續 &gt;3 小時，或 P/F &lt;80 持續 &gt;6 小時，或 pH &lt;7.25 併 PaCO₂ ≥60 持續 &gt;6 小時；<b>且呼吸速率已加到 35、設定已調整至 Pplat ≤32 cmH₂O</b>。</li>'+
+      '<li><b>先確認真的用盡了</b>：VT 是否依<b>預測體重</b>計算、Pplat ≤30、PEEP 已依表調整、<b>俯臥每次滿 16 小時</b>、鎮靜與人機同步足夠、可逆因素（氣胸、肺栓塞、管路阻塞、腹腔高壓、體液過多、感染源）已排除。</li>'+
+      '<li><b>試驗本身的限制要知道</b>：EOLIA 60 天死亡 <b>35% vs 46%（RR 0.76，0.55–1.04，P=0.09）未達顯著</b>，且對照組有 <b>28% 交叉接受 ECMO</b>（其中 57% 死亡）。指引仍給強建議，<b>選案與時機</b>才是關鍵。</li>'+
+      '<li><b>ATS 2024 的選案考量</b>：可逆病因、ARDS 病程 &lt;7 天、極重度低血氧（P/F &lt;80）、治療無效的風險因子少；無 ECMO 能力的院所應<b>及早轉院</b>。</li>'+
+      '<li><b>不要用 ECCO₂R</b>（ESICM 2023 建議 9.2，強烈反對於隨機試驗之外使用）。</li>',
+    note:'ESICM 2023 建議 9.1、9.2；ATS 2024；SSC 2026 建議 78；EOLIA。' },
+
+  b1: { cls:'rec-elective', title:'每次降 1 mL/kg，最低到 4 mL/kg PBW',
+    detail:'<li><b>ARDSNet</b>：Pplat &gt;30 時 VT <b>每次降 1 mL/kg</b>，<b>最低 4 mL/kg PBW</b>；每次調整後以 0.5 秒吸氣暫停重測 Pplat。</li>'+
+      '<li><b>先確認 Pplat 量得對</b>：需要吸氣暫停，且<b>病人不能有自主吸氣努力</b>——有吸氣努力時測得的 Pplat 會低估真正的肺泡壓。</li>'+
+      '<li><b>預期 PaCO₂ 會上升</b>：降 VT 後依 pH 分段處置（pH 7.15–7.30 加 RR 至上限 35）。低潮氣容積帶來的高碳酸血症在氧合可接受時通常可耐受。</li>'+
+      '<li><b>不要用復張手法或高頻震盪來「換取」較高的 VT</b>（ESICM 6.3、ATS 強烈反對）。</li>',
+    note:'ARDSNet 協定（Pplat 目標與 VT 調整）；ESICM 2023 建議 5.1、6.3。' },
+
+  b2: { cls:'rec-elective', title:'VT 已到下限 — 改找抬高 Pplat 的其他原因',
+    detail:'<li><b>重新確認測量</b>：0.5 秒吸氣暫停、病人被動、無 breath stacking；不同步時測到的數值不可信。</li>'+
+      '<li><b>測 auto-PEEP</b>（吐氣暫停測 total PEEP）：吐氣不完全會同時抬高 Pplat 與 ΔP。處理方式是降 RR、縮短吸氣時間、處理支氣管痙攣與分泌物（<b>I:E 目標為吸氣時間 ≤ 吐氣時間</b>）。</li>'+
+      '<li><b>試降 PEEP 2 cmH₂O 看 ΔP</b>：ΔP <b>下降</b>＝原設定造成過度膨脹（該降）；ΔP <b>上升</b>＝去復張（該回去）。</li>'+
+      '<li><b>排除機械與腔室問題</b>：氣胸、氣管內管阻塞或位置不當、大量肋膜積液、腹脹與腹腔高壓。</li>'+
+      '<li><b>若 Pplat 仍降不下來且氧合／pH 同時惡化</b>，提早與 ECMO 中心討論；EOLIA 的條件本身就要求設定調整到 Pplat ≤32。</li>',
+    note:'ARDSNet 協定（VT 下限 4 mL/kg、I:E 目標）；ESICM 2023 建議 9.1（EOLIA 條件）。' },
+
+  b3: { cls:'rec-blue', title:'胸壁／腹腔因素 — Pplat 高不等於跨肺壓高',
+    detail:'<li><b>Pplat 反映的是整個呼吸系統（肺＋胸壁）</b>。肥胖、腹腔高壓、大量腹水、胸壁水腫會抬高 Pplat，而真正作用在肺泡上的<b>跨肺壓未必高</b>——此時把 VT 硬壓到 4 mL/kg 以下不會更保護，只會惡化高碳酸血症。</li>'+
+      '<li><b>食道壓可用來理解，但不建議常規導引 PEEP</b>：EPVent-2（200 人）以食道壓導引 PEEP 相較經驗性高 PEEP-FiO₂ 表，<b>主要複合終點無差異</b>（P=0.92）。</li>'+
+      '<li><b>量腹內壓</b>：腹腔高壓可治療（減壓、限制正液體平衡、處理腸脹氣），且會同時解釋氧合與壓力的惡化。</li>'+
+      '<li><b>ΔP 在此情境仍值得追蹤</b>——它扣掉了 PEEP，但同樣包含胸壁的貢獻，故應看<b>趨勢</b>而非單一絕對值。</li>',
+    note:'EPVent-2（JAMA 2019）；ARDSNet 協定；ESICM 2023 未對食道壓導引 PEEP 給出支持建議（建議 6.2 無法做出建議）。' },
+
+  b4: { cls:'rec-elective', title:'驅動壓偏高 — 當作警訊處理，但沒有指引門檻可追',
+    detail:'<li><b>ΔP = Pplat − PEEP</b>，只有在<b>病人被動、無自主吸氣努力</b>時有效。</li>'+
+      '<li><b>Amato 2015</b>（9 個試驗、3562 人的中介分析）：ΔP 每增加 1 個標準差（約 <b>7 cmH₂O</b>）死亡率 <b>RR 1.41</b>（1.31–1.51）；<b>即使 VT 與 Pplat 都在保護範圍內仍 RR 1.36</b>。單獨更動 VT 或 PEEP 與存活無關，<b>只有讓 ΔP 下降的更動才有關聯</b>。</li>'+
+      '<li><b>但沒有任何指引訂 ΔP 目標值</b>——ESICM 2023 明文把「限制驅動壓或 plateau pressure」列為<b>未解決的研究問題</b>。15 cmH₂O 是文獻常用的警戒線，不是指引門檻，<b>不要為了壓低 ΔP 而違反其他已有強建議的設定</b>。</li>'+
+      '<li><b>可做的事</b>：① 在 4–6 mL/kg 區間內先降 VT；② 上下試調 PEEP 2 cmH₂O，選 ΔP 較低的一側；③ ΔP 居高不下代表可通氣的「baby lung」很小，屬高風險族群——提早評估俯臥並與 ECMO 中心討論。</li>',
+    note:'Amato 2015（NEJM）；ESICM 2023（研究缺口，非建議條文）；ARDSNet 協定。' },
+
+  c1: { cls:'rec-elective', title:'先加呼吸速率，上限 35 次/分',
+    detail:'<li><b>ARDSNet</b>：pH 7.15–7.30 時<b>增加 RR 直到 pH &gt;7.30 或 PaCO₂ &lt;25</b>，<b>RR 上限 35</b>。</li>'+
+      '<li><b>加 RR 前先確認吐氣時間夠</b>：I:E 目標是<b>吸氣時間 ≤ 吐氣時間</b>。吐氣時間不足時加 RR 會製造 auto-PEEP，pH 不會改善反而更差。</li>'+
+      '<li><b>順手把無效腔拿掉</b>：移除 HME 與延長管、改用加熱潮濕器（Hinkson 2006：移除 HME 使 PaCO₂ 降約 5 mmHg，再移除延長管又降約 6 mmHg，pH 由 7.30 升到 7.38，分鐘通氣量反而由 11.51 降到 10.35 L/min）。</li>'+
+      '<li><b>同時找 CO₂ 產量增加的原因</b>：發燒、寒顫、疼痛、躁動、餵食過量。</li>',
+    note:'ARDSNet 協定（pH 目標與酸中毒處置、I:E 目標）；Hinkson 2006（Respir Care）。' },
+
+  c2: { cls:'rec-elective', title:'吐氣不完全 — 再加 RR 只會更糟',
+    detail:'<li><b>先確認</b>：吐氣暫停測 total PEEP（與設定 PEEP 的差即 auto-PEEP）；看流速波形的吐氣端在下一次送氣前<b>有沒有回到零</b>。</li>'+
+      '<li><b>處置方向與直覺相反</b>：<b>降低</b> RR、<b>縮短吸氣時間／提高吸氣流速</b>以延長吐氣，處理支氣管痙攣與分泌物，確認氣管內管與呼氣閥沒有阻塞。</li>'+
+      '<li><b>移除所有器械無效腔</b>：拿掉 HME 與延長管改用加熱潮濕器——這是唯一能<b>降低 PaCO₂ 同時降低分鐘通氣量</b>的一步（Hinkson 2006）。</li>'+
+      '<li><b>auto-PEEP 也會抬高 Pplat 與 ΔP</b>：解決後回頭重測，不要在 auto-PEEP 未解決時就依 Pplat 下修 VT。</li>',
+    note:'ARDSNet 協定（I:E 目標）；Hinkson 2006（Respir Care）。' },
+
+  c3: { cls:'rec-urgent', title:'pH &lt;7.15 — 協定允許的例外處置',
+    detail:'<li><b>ARDSNet</b>：RR 先加到 35；若 pH 仍 &lt;7.15，<b>VT 可每次加 1 mL/kg 直到 pH &gt;7.15</b>，<b>此時允許 Pplat 超過 30 cmH₂O</b>。可給 NaHCO₃（協定允許，但無存活效益證據）。</li>'+
+      '<li><b>這是明確的取捨</b>：暫時放棄壓力上限以換取 pH。放寬前先確認<b>無效腔已移除、auto-PEEP 已處理、CO₂ 產量已降低</b>——那些是沒有代價的做法。</li>'+
+      '<li><b>permissive hypercapnia 的例外族群</b>：顱內壓升高、嚴重肺高壓或右心衰竭、嚴重代謝性酸中毒併血行動力學不穩者，耐受度差，應更早升階。</li>'+
+      '<li><b>此時就該與 ECMO 中心討論</b>：若 pH &lt;7.25 併 PaCO₂ ≥60 持續 &gt;6 小時（RR 35、Pplat ≤32），即符合 EOLIA 的第三項條件。</li>',
+    note:'ARDSNet 協定（pH &lt;7.15 的處置）；ESICM 2023 建議 9.1（EOLIA 條件）。' },
+
+  c4: { cls:'rec-urgent', title:'符合 EOLIA 的高碳酸條件 — 轉介 ECMO 中心',
+    detail:'<li><b>EOLIA 第三項收案條件</b>：pH &lt;7.25 併 PaCO₂ ≥60 mmHg 持續 &gt;6 小時，<b>且呼吸速率已加到 35、設定已調整至 Pplat ≤32 cmH₂O</b>——這兩個前提沒有做到就不算符合。</li>'+
+      '<li><b>ESICM 2023 建議 9.1（強建議，中度確定性）</b>：符合 EOLIA 條件者應於符合組織規範的 ECMO 中心接受 ECMO，並採與 EOLIA 相似的管理策略；SSC 2026 建議 78 於有經驗的中心考慮 VV-ECMO（條件式）。</li>'+
+      '<li><b>不要用 ECCO₂R 取代</b>：ESICM 2023 建議 9.2 <b>強烈反對</b>在隨機試驗之外使用（高度確定性的無效果）——即使它在生理上正對應「只需移除 CO₂」的情境。</li>'+
+      '<li><b>無 ECMO 能力的院所應及早轉院</b>，並在轉送前把可逆因素（氣胸、管路、腹腔高壓）再查一次。</li>',
+    note:'ESICM 2023 建議 9.1、9.2；SSC 2026 建議 78；EOLIA。' },
+
+  d1: { cls:'rec-elective', title:'Breath stacking — 協定允許把 VT 加到 7–8 mL/kg',
+    detail:'<li><b>ARDSNet</b>：<b>Pplat &lt;30 且出現 breath stacking 或不同步</b>時，可每次加 1 mL/kg 至 <b>7 或 8 mL/kg</b>，前提是 <b>Pplat 維持 ≤30</b>。這仍落在指引的 4–8 mL/kg 區間內。</li>'+
+      '<li><b>先找可逆的驅動來源</b>：疼痛、焦慮、譫妄、發燒、代謝性酸中毒、分泌物、呼吸器管路積水。</li>'+
+      '<li><b>調設定</b>：提高吸氣流速或改用可變流速的模式、調整觸發靈敏度與吸氣時間，讓送氣更貼近病人的需求。</li>'+
+      '<li><b>Breath stacking 會使實際潮氣容積遠大於設定值</b>，也會讓 Pplat 與 ΔP 的測量失真——先解決不同步，再依數值調參數。</li>',
+    note:'ARDSNet 協定（不同步時的 VT 上修規則）；ESICM 2023 建議 5.1（4–8 mL/kg）。' },
+
+  d2: { cls:'rec-elective', title:'吸氣流速不足／驅動過強 — 先調設定與鎮靜，不要先上肌鬆',
+    detail:'<li><b>調設定</b>：提高吸氣流速、縮短吸氣時間、或改為壓力控制／壓力支持讓流速隨需求變化；波形出現吸氣凹陷（flow starvation）即代表送氣跟不上。</li>'+
+      '<li><b>評估鎮靜與止痛</b>：疼痛與躁動是常見的驅動來源；加深鎮靜的順位<b>在肌肉鬆弛劑之前</b>。</li>'+
+      '<li><b>強烈的自主吸氣努力本身會傷肺</b>（P-SILI），也會讓 Pplat 與 ΔP 低估真實的肺泡壓——此時測得的「達標」數字不可信。</li>'+
+      '<li><b>反覆確認機械原因</b>：管路積水、氣管內管部分阻塞、觸發設定過於靈敏或遲鈍。</li>',
+    note:'ARDSNet 協定；ESICM 2023（對非插管病人特別提到監測吸氣努力以避免 P-SILI）。' },
+
+  d3: { cls:'rec-elective', title:'早期重度且調整無效 — 這才是 NMBA 的位置',
+    detail:'<li><b>ATS 2024</b>：建議用於<b>早期重度</b> ARDS（條件式，低度確定性），原文界定為<b>發病 &lt;48 小時、P/F ≤100</b>；對更晚或較輕者<b>無法做出建議</b>。指引未指定藥物，兩個最大的隨機試驗都用 <b>cisatracurium</b>。</li>'+
+      '<li><b>ESICM 2023 建議 8.1</b>：對中重度（非 COVID-19）ARDS <b>強烈反對常規持續輸注</b>；<b>SSC 2026 建議 77</b>：<b>間歇推注優於持續輸注</b>（條件式）。三者可調和的讀法是——<b>不要常規持續輸注，早期重度可用，優先間歇給予</b>。</li>'+
+      '<li><b>ROSE 試驗</b>（1006 人，中位 7.6 小時內給藥）：早期持續 cisatracurium 併深鎮靜 <b>90 天死亡 42.5% vs 42.8%（P=0.93），因無效提前中止</b>；介入組活動量較低、心血管不良事件較多。</li>'+
+      '<li><b>使用時</b>：必須<b>深鎮靜</b>（肌鬆不等於鎮靜），每日評估停用；使用中無法執行自主呼吸試驗（ARDSNet 的 SBT 條件之一即為未使用神經肌肉阻斷劑）。</li>',
+    note:'ATS 2024；ESICM 2023 建議 8.1；SSC 2026 建議 77；ROSE（NEJM 2019）。' },
+
+  e1: { cls:'rec-blue', title:'把潮氣容積加回去 — 4 mL/kg 不是預設值',
+    detail:'<li><b>ARDSNet</b>：<b>Pplat &lt;25 且 VT &lt;6 mL/kg</b> 時，VT <b>每次加 1 mL/kg</b>，直到 <b>Pplat &gt;25 或 VT = 6 mL/kg</b>。</li>'+
+      '<li>指引的容許區間是 <b>4–8 mL/kg PBW</b>（ESICM 2023 建議 5.1、ATS，強建議）；<b>過低的 VT 需要更深的鎮靜、更容易不同步</b>，且會惡化高碳酸血症。</li>'+
+      '<li>加回去之後<b>重測 Pplat</b>（0.5 秒吸氣暫停），並確認 pH 沒有跑到 &gt;7.45（若是則降 RR）。</li>',
+    note:'ARDSNet 協定（Pplat &lt;25 的 VT 上修規則、pH &gt;7.45 的處置）；ESICM 2023 建議 5.1。' },
+
+  e2: { cls:'rec-blue', title:'已達條件 — 每日執行自主呼吸試驗',
+    detail:'<li><b>SBT 條件（五項全滿足）</b>：① FiO₂ ≤0.40 且 PEEP ≤8，或 FiO₂ &lt;0.50 且 PEEP &lt;5；② PEEP 與 FiO₂ ≤ 前一日；③ 有可接受的自主呼吸努力（可將呼吸器速率降 50% 持續 5 分鐘偵測）；④ 收縮壓 ≥90 mmHg 且未用升壓劑；⑤ <b>未使用神經肌肉阻斷劑</b>。</li>'+
+      '<li><b>SBT 內容</b>：FiO₂ &lt;0.5、PEEP ≤5 下自主呼吸<b>最多 120 分鐘</b>（T-piece、氣切面罩，或 CPAP ≤5 併 PS ≤5）。</li>'+
+      '<li><b>耐受判準</b>：SpO₂ ≥90% 且／或 PaO₂ ≥60；自主 VT ≥4 mL/kg PBW；RR ≤35；pH ≥7.30；無呼吸窘迫（心跳 &gt;基線 120%、明顯使用輔助肌、腹部反常運動、大汗、明顯呼吸困難，<b>≥2 項</b>即為窘迫）。</li>'+
+      '<li><b>耐受 ≥30 分鐘可考慮拔管</b>；不耐受則回到試驗前設定，隔日再試。類固醇若有使用，多數試驗於<b>拔管時停藥</b>（ATS 2024 未指定療程）。</li>',
+    note:'ARDSNet 協定 PART II；ATS 2024（類固醇：指引刻意不指定藥物與療程）。' },
+
+  e3: { cls:'rec-blue', title:'維持現行肺保護設定 — 每日重新評估',
+    detail:'<li>維持 <b>VT 4–8 mL/kg PBW</b>（常規 6）與 <b>Pplat ≤30</b>；每次更動 PEEP 或 VT 後、且至少每 4 小時重測 Pplat。</li>'+
+      '<li><b>每日檢查能否降階</b>：FiO₂ 能否依 PEEP/FiO₂ 表往回走、PEEP 能否下調，目標是走到 SBT 的門檻（FiO₂ ≤0.40 且 PEEP ≤8）。</li>'+
+      '<li><b>嚴重度會移動</b>：P/F 若掉到 &lt;150 應重新評估俯臥（ESICM 2023 建議 7.1）。</li>'+
+      '<li><b>不要為了追求更好的氧合數字而升階</b>：氧合目標是 SpO₂ 88–95%／PaO₂ 55–80，SSC 2026 建議 66 指出寬鬆與保守的 FiO₂ 目標死亡率無差異。</li>',
+    note:'ARDSNet 協定；ESICM 2023 建議 5.1、7.1；ATS 2024；SSC 2026 建議 66、73。' }
+};
+
+function render(){
+  const branches = { oxy:'a', press:'b', acid:'c', dys:'d', ok:'e' };
+  ['a','b','c','d','e'].forEach(k=>{
+    const on = branches[st.prob]===k;
+    flowShow('lpv_c2'+k, on);
+    flowShow('lpv_s2'+k, on);
+    if(!on) flowClearSel('lpv_s2'+k);
+  });
+
+  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+  const r = st.sub ? LPV_REC[st.sub] : null;
+  if(r){ cls=r.cls; title=r.title; detail=r.detail; note=r.note; }
+  else if(st.prob){ title='請完成步驟 2'; }
+  flowRec('lpv_rec', cls, title, detail, note);
+}
+
+function lpvReset(){
+  Object.keys(st).forEach(k=>st[k]=null);
+  document.querySelectorAll('#view-lpv .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+
+lpvCalc();
+lpvReset();
+if(location.search.indexOf('from=ards')>=0){ var _b=document.getElementById('lpv_back_path'); if(_b) _b.style.display=''; }
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
