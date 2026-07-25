@@ -23,7 +23,7 @@
     <div>
       <div class="eyebrow">Grading &amp; Classification Systems</div>
       <h1>分類與分級系統</h1>
-      <div class="sub">腹部急症各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
+      <div class="sub">腹部急症與神經外傷各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
     </div>
     <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
       <!-- 由流程圖以 ?from= 進來時才顯示，讓使用者查完分級能原路返回 -->
@@ -40,6 +40,7 @@
     <button class="tab-btn"        data-tab="hernia"  onclick="clTab('hernia')">疝氣</button>
     <button class="tab-btn"        data-tab="gib"     onclick="clTab('gib')">消化道出血</button>
     <button class="tab-btn"        data-tab="periop"  onclick="clTab('periop')">圍手術期</button>
+    <button class="tab-btn"        data-tab="neuro"   onclick="clTab('neuro')">神經外傷</button>
     <button class="tab-btn"        data-tab="misc"    onclick="clTab('misc')">其他</button>
   </div>
 
@@ -827,6 +828,73 @@
 </div>
 
 <!-- ==================== 其他 ==================== -->
+<!-- ==================== 神經外傷 ==================== -->
+<div id="tab-neuro" class="hidden">
+
+  <div class="note" style="margin-bottom:14px;">
+    本分頁收<b>頭部外傷 CT 的兩套判讀系統</b>。兩者<b>讀的是同一張 CT、用的是同一批影像特徵</b>（basal cisterns、midline shift、mass lesion），但<b>設計目的不同</b>——Marshall 把病人歸類，Rotterdam 算出一個數值。<b>Rotterdam 嚴格說是預測分數而非分類</b>，仍收在此頁，是因為它是 Marshall 的直接後繼者、且兩者必須對照著看才知道差在哪裡。處置決策請走<a class="tool-link" href="../pathways/ich.html#tab=tbi">顱內出血處置決策的創傷性分頁</a>。
+  </div>
+
+  <div class="sys-head" id="sys-marshall-ct">
+    <span class="sys-name">Marshall CT 分類</span>
+    <span class="sys-en">Marshall CT Classification of Traumatic Brain Injury</span>
+    <span class="sys-src">Marshall 1991</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <b>◆ 分類邏輯：</b>先問<b>有沒有需要處理的 mass lesion</b>；沒有的話（Diffuse Injury I–IV），再依 <b>basal cisterns 與 midline shift</b> 遞進分級。<b>25 cm³ 是「算不算 mass lesion」的分界</b>。
+      <table class="def-table">
+        <tr><th style="width:34%;">類別</th><th>判準</th></tr>
+        <tr><td><b>Diffuse Injury I</b></td><td>CT 上<b>無可見病灶</b></td></tr>
+        <tr><td><b>Diffuse Injury II</b></td><td>Basal cisterns <b>存在</b>、midline shift <b>0–5 mm</b>；無 &gt;25 cm³ 的高／混合密度病灶</td></tr>
+        <tr><td><b>Diffuse Injury III</b><br><span class="unit">swelling</span></td><td>Basal cisterns <b>受壓或消失</b>、midline shift 0–5 mm；無 &gt;25 cm³ 病灶</td></tr>
+        <tr><td><b>Diffuse Injury IV</b><br><span class="unit">shift</span></td><td>Midline shift <b>&gt;5 mm</b>；無 &gt;25 cm³ 病灶</td></tr>
+        <tr><td><b>Evacuated mass lesion</b></td><td>任何<b>已手術清除</b>的病灶</td></tr>
+        <tr><td><b>Non-evacuated mass lesion</b></td><td>&gt;25 cm³ 且<b>未清除</b></td></tr>
+      </table>
+
+      <div class="sys-sub">使用時的三個陷阱</div>
+      <b>① 後兩類不是純影像分類、而是「治療後」的狀態。</b>Evacuated 與 non-evacuated 的差別在<b>有沒有開刀</b>——同一張 CT 的病人會因為決定開刀與否落到不同類別。<b>拿它做預後比較時，等於把治療決策混進了分類</b>。<br>
+      <b>② 六類不是單一序位。</b>Diffuse Injury I–IV 是遞進的，但 mass lesion 兩類與前四類<b>不在同一條軸上</b>，不可當成「第五級、第六級」。<br>
+      <b>③ 鑑別力有限。</b>Maas 2005 的驗證中 Marshall 分類的 <b>AUC 為 0.67</b>，而<b>拆開來用個別影像變數</b>（basal cisterns、shift、tSAH／IVH、mass lesion 型態）建立的模型可達 <b>AUC 0.77</b>——這正是 Rotterdam 分數誕生的理由。
+      <span class="sys-caveat">⚠ 來源限制：Marshall 1991 原文（J Neurosurg 1991;75:S14-S20）<b>無 PubMed 編號、本次查核未取得一手全文</b>，上表依神經外科標準教材整理，臨床引用請回查原文。</span>
+    </div>
+  </div>
+
+  <div class="sys-head" id="sys-rotterdam">
+    <span class="sys-name">Rotterdam CT 分數</span>
+    <span class="sys-en">Rotterdam CT Score</span>
+    <span class="sys-src">Maas 2005</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>⚠ 這是分數、不是分類系統。</b>本頁其餘條目都是「把病人歸到某一型」，Rotterdam 則是<b>把四項影像所見加總成 1–6 分</b>。收在此頁只為了與 Marshall 對照；它<b>不會告訴你要不要開刀</b>，手術門檻請看 Bullock 2006（見創傷性分頁）。
+      </div>
+      <table class="def-table">
+        <tr><th style="width:38%;">項目</th><th>計分</th></tr>
+        <tr><td><b>Basal cisterns</b></td><td>正常 <b>0</b>／受壓 <b>1</b>／消失 <b>2</b></td></tr>
+        <tr><td><b>Midline shift</b></td><td>無或 ≤5 mm <b>0</b>／&gt;5 mm <b>1</b></td></tr>
+        <tr class="dt-warn"><td><b>Epidural mass lesion</b></td><td><b>有 0／無 1</b>——<b>EDH 的存在反而是好的預後因子</b></td></tr>
+        <tr><td><b>IVH 或 traumatic SAH</b></td><td>無 <b>0</b>／有 <b>1</b></td></tr>
+        <tr><td colspan="2">四項加總後<b>再加 1</b>，故<b>最低 1 分、最高 6 分</b>（沒有 0 分）</td></tr>
+      </table>
+
+      <div class="sys-sub">兩個最常被弄錯的地方</div>
+      <b>① Epidural mass lesion 的方向是反的。</b>其他所有項目都是「愈嚴重分數愈高」，只有 EDH 是<b>「有反而扣分」</b>——因為 EDH 多為單純的顱外血腫、清除後腦實質常無明顯損傷，預後優於同樣體積的 SDH 或 contusion。抄表時很容易把這一列填反。<br>
+      <b>② 那個「＋1」不是筆誤。</b>設計上是為了讓分數與死亡率的對應<b>不出現 0 分組</b>；漏掉它會讓所有病人少一分。<br><br>
+      <b>◆ 與 Marshall 的關係：</b>Rotterdam 是<b>把 Marshall 拆開重組</b>的產物——同一批影像特徵，改成各自計分再加總，鑑別力優於 Marshall（AUC 0.77 vs 0.67）。實務上兩者常並列報告：<b>Marshall 講「這是哪一種傷」，Rotterdam 講「有多嚴重」</b>。
+      <span class="sys-caveat">⚠ 來源限制：逐項配分表取自二手回顧文獻，<b>原始論文全文未取得</b>；各分數對應的死亡率因此<b>不在本頁轉載</b>，需要時請回查原文。</span>
+
+      <div class="note" style="margin-top:10px;">
+        <a class="tool-link" href="../pathways/ich.html#tab=tbi">→ 逐病灶手術門檻（Bullock 2006）與 severe TBI 的 ICU 處置，見顱內出血處置決策</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF — <span class="ref-link" style="text-decoration:none;">Marshall LF, et al. A new classification of head injury based on computerized tomography. J Neurosurg. 1991;75(Suppl):S14-S20.</span> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16331165/" target="_blank" rel="noopener" class="ref-link">Maas AIR, et al. Prediction of outcome in traumatic brain injury with computed tomographic characteristics: a comparison between the computed tomographic classification and combinations of computed tomographic predictors. Neurosurgery. 2005;57(6):1173-1182.</a> ｜ <span class="ref-link" style="text-decoration:none;">Bullock MR, et al. Guidelines for the Surgical Management of Traumatic Brain Injury. Neurosurgery. 2006;58(3 Suppl):S2-1-S2-62.</span></footer>
+</div>
+
 <div id="tab-misc" class="hidden">
 
   <div class="note" style="margin-bottom:14px;">
@@ -1073,9 +1141,10 @@
    每一套分級都有自己的 id（sys-xxx）與所屬分頁；外部（流程圖、書籤、側邊導覽）
    以 #sys=xxx 連進來時，先切到該分頁再捲到該區塊——只捲不切分頁的話，
    目標永遠在 display:none 的分頁裡，看起來像連結壞掉。 */
-var TABS=['cross','biliary','colon','panc','hernia','gib','periop','misc'];
+var TABS=['cross','biliary','colon','panc','hernia','gib','periop','neuro','misc'];
 var SYS_TAB={
   aast:'cross',
+  'marshall-ct':'neuro',rotterdam:'neuro',
   clavien:'periop','isrec':'periop','leak-family':'periop',cfs:'periop',
   cdiff:'misc',ecf:'misc',iac:'misc',bariatric:'misc',volvulus:'misc',
   'tg18-gb':'biliary','tg18-cholangitis':'biliary',asge:'biliary',
