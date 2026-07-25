@@ -417,6 +417,32 @@
     <div class="gs-empty hidden" id="sc-empty">沒有符合的計分工具，換個關鍵字或用主選單的全站查詢試試。</div>
 
     <div class="tool-group">
+      <div class="group-head"><span class="group-title">一般計算</span><span class="group-en">General Calculations</span><span class="group-count">4 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-body-metrics" onclick="location.href='tools/body-metrics.html'"
+             data-search-kw="BMI 身體質量指數 body mass index 體位 過重 肥胖 國健署 國民健康署 腰圍 BSA 體表面積 body surface area Mosteller Du Bois 化療劑量 IBW 理想體重 ideal body weight Devine PBW predicted body weight 潮氣容積 tidal volume 6 mL/kg ABW 調整體重 adjusted body weight aminoglycoside LBW 去脂體重 lean body weight Janmahasatian propofol 劑量體重 dosing weight">
+          <div class="tool-name">體型與劑量體重 <span class="tool-en">BMI · BSA · IBW · ABW</span></div>
+          <div class="tool-desc">一次算出 BMI（<b>國民健康署體位分類</b>＋WHO 亞洲切點）、BSA（Mosteller 與 Du Bois 並列）、IBW／ABW／LBW，並直接給出 <b>6 mL/kg PBW 的潮氣容積</b>與「實際體重是 IBW 的幾 %、該不該改用 ABW」的判斷</div>
+        </div>
+        <div class="tool-card" id="card-view-dose-conversion" onclick="location.href='tools/dose-conversion.html'"
+             data-search-kw="劑量換算 等效劑量 conversion equivalent dose 類固醇 steroid corticosteroid glucocorticoid hydrocortisone prednisolone prednisone methylprednisolone dexamethasone betamethasone triamcinolone 礦皮質素 fludrocortisone 鴉片 opioid MME morphine milligram equivalent 嗎啡 morphine oxycodone hydromorphone fentanyl 貼片 patch codeine tramadol methadone buprenorphine pethidine meperidine 交叉耐受 cross-tolerance 換藥 opioid rotation CDC 2022 環利尿劑 loop diuretic furosemide lasix bumetanide torsemide ethacrynic acid 生體可用率 bioavailability">
+          <div class="tool-name">藥物劑量換算 <span class="tool-en">Steroid · Opioid · Loop Diuretic</span></div>
+          <div class="tool-desc">三類藥物選「從哪一種換到哪一種」即出等效劑量。類固醇同時顯示<b>礦皮質素活性與作用時間並不等效</b>；鴉片類依 <b>CDC 2022 MME 係數</b>算出每日當量後，<b>把「等效劑量」與「折減 25–50% 後的建議起始劑量」分成兩個數字</b>（methadone／buprenorphine 刻意不提供換入）</div>
+        </div>
+        <div class="tool-card" id="card-view-corrected-labs" onclick="location.href='tools/corrected-labs.html'"
+             data-search-kw="校正鈉 corrected sodium 高血糖 hyperglycemia Katz 1.6 Hillier 2.4 假性低血鈉 pseudohyponatremia 高血脂 高蛋白 校正鈣 corrected calcium 白蛋白 albumin Payne 游離鈣 ionized calcium iCa 檸檬酸鹽 citrate CRRT 鹼中毒 mmol/L mg/dL 換算">
+          <div class="tool-name">校正鈉／校正鈣 <span class="tool-en">Corrected Sodium &amp; Calcium</span></div>
+          <div class="tool-desc">高血糖之校正鈉<b>並列 Katz 1.6 與 Hillier 實測的 2.4</b>（血糖 &gt;400 另有提示）；校正鈣依台大的 <b>mmol/L 報告單位</b>計算並可切換 mg/dL，同時標明<b>危重症與 CRRT 下應直接驗游離鈣</b>的理由</div>
+        </div>
+        <div class="tool-card" id="card-view-osmolality" onclick="location.href='tools/osmolality.html'"
+             data-search-kw="血清滲透壓 serum osmolality osmolarity 計算滲透壓 calculated 有效滲透壓 effective tonicity 滲透壓間隙 osmolal gap osmol gap 毒性酒精 toxic alcohol 甲醇 methanol 乙二醇 ethylene glycol isopropanol acetone propylene glycol 乙醇 ethanol fomepizole 透析 陰離子間隙 anion gap Hoffman Purssell 3.7 4.6">
+          <div class="tool-name">血清滲透壓與滲透壓間隙 <span class="tool-en">Osmolality &amp; Osmolal Gap</span></div>
+          <div class="tool-desc">計算滲透壓、<b>有效滲透壓（tonicity，不含尿素）</b>與滲透壓間隙三者分開呈現；並列兩條常見公式讓你看到<b>間隙隨公式而變</b>，另附由間隙回推毒性酒精濃度。<b>間隙正常不可用來排除毒性酒精中毒</b>（Hoffman 1993 原始結論）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
       <div class="group-head"><span class="group-title">急性冠心症</span><span class="group-en">Acute Coronary Syndrome</span><span class="group-count">1 項</span></div>
       <div class="home-list">
         <div class="tool-card" id="card-view-grace" onclick="location.href='tools/grace.html'"
@@ -476,6 +502,38 @@
              data-search-kw="CCI Charlson 共病 comorbidity 共病指數 存活率 年齡校正">
           <div class="tool-name">Charlson 共病指數 <span class="tool-en">Charlson Comorbidity Index (CCI)</span></div>
           <div class="tool-desc">勾選共病項目計算指數，評估共病負荷與10年預估存活率，常用於研究校正與術前風險溝通。<b>注意：與「綜合併發症指數 CCI」同縮寫但完全不同</b>，後者評的是術後併發症負荷</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">神經</span><span class="group-en">Neurology</span><span class="group-count">1 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-nihss" onclick="location.href='tools/nihss.html'"
+             data-search-kw="NIHSS NIH Stroke Scale 中風量表 缺血性中風 stroke 嚴重度 severity 意識 凝視 視野 顏面 上肢 下肢 協調 感覺 語言 失語 構音 忽略 extinction inattention UN 無法測試 Brott 1989 42 分 溶栓 取栓 LVO 大血管阻塞 後循環 basilar 失能">
+          <div class="tool-name">NIHSS <span class="tool-en">NIH Stroke Scale</span></div>
+          <div class="tool-desc">15 個項目、0–42 分，含 UN（截肢／插管）不計入總分的處理。標明<b>語言項目權重 9 分而忽略與視野僅 4 分</b>——右半球與後循環中風分數系統性偏低；<b>治療決策看的是失能性缺損而非分數高低</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group">
+      <div class="group-head"><span class="group-title">腎臟</span><span class="group-en">Kidney</span><span class="group-count">3 項</span></div>
+      <div class="home-list">
+        <div class="tool-card" id="card-view-egfr" onclick="location.href='tools/egfr.html'"
+             data-search-kw="eGFR 腎絲球過濾率 glomerular filtration rate CKD-EPI 2021 creatinine cystatin C 胱蛋白C 肌酸酐 KDIGO 分期 G1 G2 G3a G3b G4 G5 慢性腎病 CKD 白蛋白尿 albuminuria Cockcroft-Gault 肌酸酐清除率 creatinine clearance 藥物劑量 腎功能調整 Bedside Schwartz 台大 檢驗醫學部">
+          <div class="tool-name">eGFR <span class="tool-en">2021 CKD-EPI cr / cr-cys</span></div>
+          <div class="tool-desc">與台大檢驗報告同一條公式（<b>≥18 歲採 2021 CKD-EPI</b>）；<b>填入 cystatin C 即自動改用雙標記式</b>並顯示兩式差距與該懷疑哪個標記受干擾。另附 Cockcroft-Gault 與「未經體表面積校正的 GFR」供藥物劑量調整</div>
+        </div>
+        <div class="tool-card" id="card-view-fena" onclick="location.href='tools/fena.html'"
+             data-search-kw="FeNa FENa 鈉分泌分率 fractional excretion of sodium FeUN FEUN FEurea 尿素氮分泌分率 腎前性 prerenal 急性腎小管壞死 ATN AKI 急性腎損傷 利尿劑 diuretic 顯影劑 橫紋肌溶解 rhabdomyolysis 肝腎症候群 hepatorenal 心腎 尿液指標 Espinel Carvounis Pépin Pepin 35% 1%">
+          <div class="tool-name">FeNa／FeUN <span class="tool-en">Fractional Excretion of Na / Urea</span></div>
+          <div class="tool-desc">腎前性與 ATN 之鑑別。<b>刻意並列兩篇結論相反的研究</b>——Carvounis 2002 支持「用利尿劑就改看 FeUN」（89% 的腎前性＋利尿劑者 FeUN ≤35%），Pépin 2007 卻顯示其<b>特異度僅 33%</b>、明言不能替代；另列 FeNa 偽低／偽高的完整清單</div>
+        </div>
+        <div class="tool-card" id="card-view-water-deficit" onclick="location.href='tools/water-deficit.html'"
+             data-search-kw="自由水缺乏 free water deficit 高血鈉 hypernatremia hypernatraemia 血鈉 補水 TBW 全身水分 total body water 0.6 0.5 0.45 Adrogué Madias Adrogue 輸液 D5W 0.45% NaCl 矯正速率 correction rate 10 mmol 0.5 mmol/L/hr 腦水腫 cerebral edema 尿尿病 diabetes insipidus desmopressin 滲透性利尿 Chauhan">
+          <div class="tool-name">高血鈉自由水缺乏 <span class="tool-en">Free Water Deficit</span></div>
+          <div class="tool-desc">算出缺水量、<b>Adrogué-Madias 每公升輸液的血鈉變化</b>、本日允許降幅所需的輸液量與速率。並標明證據落差：<b>Chauhan 2019 在重症成人未找到快速矯正造成腦水腫的病例</b>，但兒童仍須嚴格限速；公式不含持續損失，必須量測補回</div>
         </div>
       </div>
     </div>
@@ -553,7 +611,7 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">圍手術期 / 併發症</span><span class="group-en">Perioperative &amp; Complications</span><span class="group-count">4 項</span></div>
+      <div class="group-head"><span class="group-title">圍手術期 / 併發症</span><span class="group-en">Perioperative &amp; Complications</span><span class="group-count">5 項</span></div>
       <div class="home-list">
         <div class="tool-card" id="card-view-nutrition-risk" onclick="location.href='tools/nutrition-risk.html'"
              data-search-kw="營養 營養風險 營養不良 malnutrition NRS-2002 NRS 2002 Kondrup 篩檢 screening GLIM 診斷 表現型 phenotypic 病因型 etiologic 肌肉量 muscle mass 肌少症 sarcopenia BMI 體重下降 weight loss 再餵食 再餵食症候群 refeeding syndrome NICE CG32 ASPEN thiamine 硫胺 維生素B1 電解質 磷 低血磷 phosphate 鉀 鎂 ESPEN 外科 surgery Weimann 術前營養 preoperative nutrition 高代謝風險 白蛋白 albumin SGA 腸道營養 靜脈營養 TPN 空腸造口">
@@ -569,6 +627,11 @@
              data-search-kw="CHA2DS2-VASc CHADS2 CHA2DS2-VA 心房顫動 AF atrial fibrillation 中風風險 stroke risk 抗凝 anticoagulation 口服抗凝 OAC 充血性心衰竭 高血壓 糖尿病 中風 TIA 血管疾病 性別 女性 ESC 2024 ACC AHA 2023 APHRS 亞太 台灣 趙子凡 Lip 丹麥世代 Olesen 瑞典世代 Friberg 肥厚性心肌病變 心臟類澱粉">
           <div class="tool-name">CHA₂DS₂-VASc <span class="tool-en">Stroke Risk in Atrial Fibrillation</span></div>
           <div class="tool-desc"><b>同時算出 CHA₂DS₂-VASc（滿分 9，含性別）與 ESC 2024 改用的 CHA₂DS₂-VA（滿分 8）</b>，並分列 ESC 2024／ACC AHA 2023／APHRS 2021 三套門檻——同一位女病人兩套差一分，且 APHRS（台灣主導）在低分時比歐美更早介入。<b>刻意不印每分年中風率表</b>（兩份現行指引皆已不印，跨世代差距達 60 倍）</div>
+        </div>
+        <div class="tool-card" id="card-view-has-bled" onclick="location.href='tools/has-bled.html'"
+             data-search-kw="HAS-BLED HASBLED 出血風險 bleeding risk 心房顫動 AF atrial fibrillation 抗凝 anticoagulation OAC warfarin DOAC 高血壓 160 腎功能 200 µmol/L 2.26 肝功能 中風 出血病史 貧血 INR TTR 65 歲 抗血小板 NSAID 酒精 8 杯 Pisters 2010 Euro Heart Survey 3 分 可矯正 modifiable ESC 2024 ACC AHA 2023 ORBIT">
+          <div class="tool-name">HAS-BLED <span class="tool-en">Bleeding Risk in Atrial Fibrillation</span></div>
+          <div class="tool-desc">逐項計分並<b>單獨列出可矯正的出血因子與矯正後可降到幾分</b>。標明現行指引立場：<b>ESC 2024 已不再納入任何結構化出血風險分數</b>、不建議僅憑出血因子停用抗凝；<b>≥3 分的意思是「矯正因子＋提早追蹤」，不是停藥</b>。含原文的 SI 單位換算（Cr &gt;200 µmol/L ＝ &gt;2.26 mg/dL）</div>
         </div>
         <div class="tool-card" id="card-view-cci-clavien" onclick="location.href='tools/cci-clavien.html'"
              data-search-kw="CCI 綜合併發症指數 Comprehensive Complication Index Clavien Dindo 併發症 complication 術後 累積負荷 morbidity MID 最小重要差異 26.2 33.7">
@@ -688,8 +751,13 @@
     </div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">肝臟</span><span class="group-en">Hepatology</span><span class="group-count">3 項</span></div>
+      <div class="group-head"><span class="group-title">肝臟</span><span class="group-en">Hepatology</span><span class="group-count">4 項</span></div>
       <div class="home-list">
+        <div class="tool-card" id="card-view-fib4" onclick="location.href='tools/fib4.html'"
+             data-search-kw="FIB-4 FIB4 Fibrosis-4 肝纖維化 fibrosis 非侵入性 noninvasive 脂肪肝 NAFLD MASLD 代謝性 AST ALT 血小板 platelet 年齡 1.30 2.67 1.45 3.25 Sterling Shah AASLD AGA 彈性造影 VCTE FibroScan ELF 進行性纖維化 advanced fibrosis F3 F4 HCV HIV 65 歲 2.0">
+          <div class="tool-name">FIB-4 <span class="tool-en">Fibrosis-4 Index</span></div>
+          <div class="tool-desc">進行性肝纖維化的非侵入性初篩。<b>並列兩套切點</b>——脂肪肝（MASLD）用 1.30／2.67、原始 HIV/HCV 用 1.45／3.25，依病因自動選讀；<b>≥65 歲自動改用 2.0 低風險切點</b>，&lt;35 歲標示敏感度不足。中間帶必須做彈性造影或 ELF，不可停在這一步</div>
+        </div>
         <div class="tool-card" id="card-view-acute-liver-failure" onclick="location.href='tools/acute-liver-failure.html'"
              data-search-kw="急性肝衰竭 acute liver failure ALF fulminant 猛爆性肝衰竭 King's College Criteria KCC 移植 transplant acetaminophen paracetamol 乙醯胺酚 普拿疼 N-acetylcysteine NAC 乙醯半胱胺酸 INR 6.5 pH 7.3 肌酸酐 creatinine bilirubin 膽紅素 肝性腦病 hepatic encephalopathy 顱內壓 腦水腫 cerebral edema CRRT 氨 ammonia O'Grady 1989 AASLD ACG 2023">
           <div class="tool-name">急性肝衰竭 <span class="tool-en">Acute Liver Failure</span></div>

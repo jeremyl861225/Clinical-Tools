@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI／BSA／IBW／ABW · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  /* 一頁多個並列指標：每個指標一行，右側為數值＋單位，下方一行小字說明來源公式 */
+  .bm-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .bm-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .bm-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .bm-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .bm-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .bm-d{font-size:12px; line-height:1.7; margin-top:4px; opacity:.85;}
+  .bm-d b{font-weight:700;}
+  .bm-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .bm-band.b0{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
+  .bm-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .bm-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .bm-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-body-metrics">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">General Calculation Tool</div>
+      <h1>體型與劑量體重</h1>
+      <div class="sub">BMI · BSA · IBW · ABW（adjusted body weight）— 體位分類採國民健康署標準</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-body-metrics'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>四個數字各有各的用途，不能互換。</b>BSA 用於化學治療與心臟指數；<b>IBW（＝ARDSNet 的 PBW）只由身高與性別決定</b>，是潮氣容積的分母；ABW 是為了「親水性藥物在肥胖者的分布體積並未按實際體重等比增加」而設的折衷值，用於 aminoglycoside 一類藥物；LBW 則是麻醉誘導劑量常用的體重。</p>
+      <p><b>IBW 的來源常被誤解。</b>Devine 公式（1974）原本是為了<b>估算 gentamicin 劑量</b>而提出的經驗式，作者本人未發表推導過程，也從未主張它代表「理想」體重；Pai 與 Paloucek 的回顧已把這段歷史講清楚。它之所以仍在使用，是因為後續的藥物動力學與呼吸器研究就是以它為分母做出來的。</p>
+      <div class="lede-foot">本頁不含兒童體位判定（兒童需查年齡別 BMI 百分位），也不處理截肢、大量水腫或懷孕者——這些情況下所有以體重為基礎的公式都會失真。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、體位分類與「哪種體重配哪種藥」 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ BMI</b>＝體重(kg) ÷ 身高(m)²。<br><br>
+
+      <b>◆ BSA 體表面積：</b>本頁以 <b>Mosteller</b> 為主（最常用於化學治療劑量），並列 <b>Du Bois</b> 對照。<br>
+      <div class="dot-line">・<b>Mosteller 1987</b>：BSA(m²) ＝ √[ 身高(cm) × 體重(kg) ÷ 3600 ]。</div>
+      <div class="dot-line">・<b>Du Bois 1916</b>：BSA(m²) ＝ 0.007184 × 身高(cm)<sup>0.725</sup> × 體重(kg)<sup>0.425</sup>。</div>
+      <span class="note">兩式在常見體型下差異多在 ±3% 內，但在極端體型（過瘦、極度肥胖、兒童）可差 5% 以上。<b>同一位病人的療程請固定用同一條公式</b>，換公式會讓劑量出現無臨床意義的變動。多數化療處方上限為 2.0 m²（各院規定不同）。</span><br><br>
+
+      <b>◆ IBW 理想體重（Devine 1974，＝ARDSNet 的 PBW）：</b><br>
+      <div class="dot-line">・男性：50 ＋ 0.91 × [身高(cm) − 152.4]</div>
+      <div class="dot-line">・女性：45.5 ＋ 0.91 × [身高(cm) − 152.4]</div>
+      <span class="note">身高低於 152.4 cm 時公式會外推為較小的值；本頁照算但標示為外推。<b>肺保護通氣的 6 mL/kg 就是乘這個數字</b>，絕不可用實際體重。</span><br><br>
+
+      <b>◆ ABW 調整體重：</b>ABW ＝ IBW ＋ <b>0.4</b> × (實際體重 − IBW)。<br>
+      <span class="note">0.4 為 aminoglycoside 研究得出的校正因子（部分文獻對其他藥物採 0.3 或 0.5）。習慣上<b>實際體重超過 IBW 的 120–130% 才需要改用 ABW</b>；未超過時直接用實際體重。實際體重低於 IBW 時 ABW 會小於 IBW——此時應改用<b>實際體重</b>，不要用 ABW，本頁會標示。</span><br><br>
+
+      <b>◆ LBW 去脂體重（Janmahasatian 2005）：</b><br>
+      <div class="dot-line">・男性：(9270 × 體重) ÷ (6680 ＋ 216 × BMI)</div>
+      <div class="dot-line">・女性：(9270 × 體重) ÷ (8780 ＋ 244 × BMI)</div>
+      <span class="note">此式在肥胖者的表現優於舊的 Hume／James 公式（舊式在極度肥胖時會出現 LBW 隨體重上升而下降的荒謬結果）。</span><br><br>
+
+      <b>◆ 體位分類（國民健康署，18 歲以上）：</b><br>
+      <div class="dot-line">・體重過輕 BMI &lt; 18.5；健康體重 18.5–24；體重過重 24–27。</div>
+      <div class="dot-line">・輕度肥胖 27–30；中度肥胖 30–35；重度肥胖 ≥ 35。</div>
+      <div class="dot-line">・<b>腹部肥胖</b>：男性腰圍 ≥ 90 cm、女性 ≥ 80 cm——<b>BMI 正常但腰圍超標仍屬肥胖</b>。</div>
+      <span class="note">WHO 的國際標準為過重 ≥25、肥胖 ≥30；WHO 亞洲族群建議的補充切點為 23（風險增加）與 27.5（高風險）。台灣標準較國際標準嚴格，是因為同一 BMI 下亞洲人的體脂率與代謝風險較高。本頁同時列出兩套供對照。</span><br><br>
+
+      <b>◆ 哪種體重配哪種用途（常見慣例，非硬性規定）：</b><br>
+      <div class="dot-line">・<b>IBW／PBW</b>：潮氣容積（6 mL/kg PBW）。</div>
+      <div class="dot-line">・<b>ABW</b>：aminoglycoside（gentamicin、amikacin）；肥胖者的部分 β-lactam 亦有採用。</div>
+      <div class="dot-line">・<b>實際體重 TBW</b>：vancomycin（負荷與維持皆然）、治療劑量 LMWH、多數輸液計算。</div>
+      <div class="dot-line">・<b>LBW</b>：propofol 誘導劑量、非去極化肌肉鬆弛劑。</div>
+      <div class="dot-line">・<b>BSA</b>：化學治療、心臟指數（CI）、部分免疫抑制劑。</div>
+      <span class="note">個別藥物請以藥品說明書或藥劑部建議為準；同一藥物在不同適應症可能用不同體重（例如 propofol 誘導用 LBW、維持輸注用實際體重）。</span>
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">基本資料 Inputs</div>
+    <div class="meld-field">
+      <label class="mf-label">性別 Sex</label>
+      <div class="mf-inputwrap"><select id="bm_sex"><option value="M">男 Male</option><option value="F">女 Female</option></select></div>
+      <span class="mf-note">影響 IBW 與 LBW，不影響 BMI／BSA</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">身高 Height</label>
+      <div class="mf-inputwrap"><input type="number" id="bm_ht" step="0.1" placeholder="—"><span class="unit">cm</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">體重 Weight</label>
+      <div class="mf-inputwrap"><input type="number" id="bm_wt" step="0.1" placeholder="—"><span class="unit">kg（實際體重 TBW）</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">腰圍 Waist</label>
+      <div class="mf-inputwrap"><input type="number" id="bm_wc" step="0.1" placeholder="—"><span class="unit">cm（選填）</span></div>
+      <span class="mf-note">男 ≥90／女 ≥80 即為腹部肥胖</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="bm-out">
+      <div class="metric-label">BMI</div>
+      <div class="bm-row"><span class="bm-v" id="bm_bmi">—</span><span class="bm-u">kg/m²</span><span class="bm-band b0" id="bm_bmi_band" style="display:none;"></span></div>
+      <div class="bm-d" id="bm_bmi_d">請輸入身高與體重。</div>
+    </div>
+
+    <div class="bm-out">
+      <div class="metric-label">BSA 體表面積（Mosteller）</div>
+      <div class="bm-row"><span class="bm-v" id="bm_bsa">—</span><span class="bm-u">m²</span></div>
+      <div class="bm-d" id="bm_bsa_d">—</div>
+    </div>
+
+    <div class="bm-out">
+      <div class="metric-label">IBW 理想體重（Devine ／ ARDSNet PBW）</div>
+      <div class="bm-row"><span class="bm-v" id="bm_ibw">—</span><span class="bm-u">kg</span></div>
+      <div class="bm-d" id="bm_ibw_d">—</div>
+    </div>
+
+    <div class="bm-out">
+      <div class="metric-label">ABW 調整體重</div>
+      <div class="bm-row"><span class="bm-v" id="bm_abw">—</span><span class="bm-u">kg</span><span class="bm-band b2" id="bm_abw_band" style="display:none;"></span></div>
+      <div class="bm-d" id="bm_abw_d">—</div>
+    </div>
+
+    <div class="bm-out">
+      <div class="metric-label">LBW 去脂體重（Janmahasatian）</div>
+      <div class="bm-row"><span class="bm-v" id="bm_lbw">—</span><span class="bm-u">kg</span></div>
+      <div class="bm-d">麻醉誘導劑量與部分肌肉鬆弛劑以此為分母。</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">BMI</span><span class="fvar">= 體重 ÷ 身高(m)²</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">BSA</span><span class="fvar">= √(身高cm × 體重kg ÷ 3600)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">IBW</span><span class="fvar">= 50（男）／45.5（女）+ 0.91 × (身高cm − 152.4)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">ABW</span><span class="fvar">= IBW + 0.4 × (實際體重 − IBW)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">LBW</span><span class="fvar">= 9270 × 體重 ÷ (6680 或 8780 + 216 或 244 × BMI)</span></div>
+      </div>
+      <div class="formula-result">＝ 依用途選用對應的體重（見上方定義區）</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>BMI</th><th>國民健康署體位</th><th>WHO 國際標準</th></tr>
+      <tr><td>&lt; 18.5</td><td>體重過輕</td><td>Underweight</td></tr>
+      <tr><td>18.5–24</td><td>健康體重</td><td>Normal（18.5–25）</td></tr>
+      <tr><td>24–27</td><td>體重過重</td><td>Normal／Overweight 交界</td></tr>
+      <tr><td>27–30</td><td>輕度肥胖</td><td>Overweight（25–30）</td></tr>
+      <tr><td>30–35</td><td>中度肥胖</td><td>Obese class I</td></tr>
+      <tr><td>≥ 35</td><td>重度肥胖</td><td>Obese class II／III</td></tr>
+    </table>
+    <div class="risk-note">體位分類依<b>衛生福利部國民健康署</b>成人標準（18 歲以上）。<b>BMI 不分辨肌肉與脂肪</b>，健身者、水腫、腹水、截肢與懷孕者皆會失真；腰圍與 BMI 應一起看。潮氣容積請用 <b>IBW</b>，見<a href="../pathways/lung-protective-ventilation.html" class="ref-link">肺保護通氣</a>。</div>
+  </div>
+
+  <footer class="tool-footer">
+    BSA — <a href="https://pubmed.ncbi.nlm.nih.gov/3657876/" target="_blank" rel="noopener" class="ref-link">Mosteller RD. Simplified calculation of body-surface area. N Engl J Med. 1987;317(17):1098.</a>｜Du Bois D, Du Bois EF. Arch Intern Med. 1916;17:863-871.<br>
+    IBW 來源考證 — <a href="https://pubmed.ncbi.nlm.nih.gov/10981254/" target="_blank" rel="noopener" class="ref-link">Pai MP, Paloucek FP. The origin of the "ideal" body weight equations. Ann Pharmacother. 2000;34(9):1066-1069.</a>（原始出處：Devine BJ. Drug Intell Clin Pharm. 1974;8:650-655）<br>
+    PBW 與潮氣容積 — <a href="https://pubmed.ncbi.nlm.nih.gov/10793162/" target="_blank" rel="noopener" class="ref-link">The Acute Respiratory Distress Syndrome Network. Ventilation with lower tidal volumes… N Engl J Med. 2000;342(18):1301-1308.</a><br>
+    LBW — <a href="https://pubmed.ncbi.nlm.nih.gov/16176118/" target="_blank" rel="noopener" class="ref-link">Janmahasatian S, Duffull SB, Ash S, et al. Quantification of lean bodyweight. Clin Pharmacokinet. 2005;44(10):1051-1065.</a><br>
+    肥胖病人劑量體重之選擇 — <a href="https://pubmed.ncbi.nlm.nih.gov/35777217/" target="_blank" rel="noopener" class="ref-link">Barletta JF, Erstad BL. Pitfalls and pearls with drug dosing in the critically ill obese patient: 10 statements to guide ICU practitioners. J Crit Care. 2022;71:154105.</a><br>
+    亞洲族群 BMI 切點 — <a href="https://pubmed.ncbi.nlm.nih.gov/14726171/" target="_blank" rel="noopener" class="ref-link">WHO Expert Consultation. Appropriate body-mass index for Asian populations… Lancet. 2004;363(9403):157-163.</a>｜體位分類：衛生福利部國民健康署「成人健康體位標準」
+  </footer>
+</div>
+</div>
+<script>
+function bmNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function bmSet(id,txt){ document.getElementById(id).textContent=txt; }
+function bmHtml(id,txt){ document.getElementById(id).innerHTML=txt; }
+
+function bmCalc(){
+  var sex=document.getElementById('bm_sex').value;
+  var ht=bmNum('bm_ht'), wt=bmNum('bm_wt'), wc=bmNum('bm_wc');
+
+  /* ── BMI ── */
+  var bmi=null;
+  var band=document.getElementById('bm_bmi_band');
+  if(ht!==null && wt!==null && ht>0){
+    bmi = wt/Math.pow(ht/100,2);
+    bmSet('bm_bmi', bmi.toFixed(1));
+    var zh,cls,who;
+    if(bmi<18.5){ zh='體重過輕'; cls='b2'; who='WHO underweight'; }
+    else if(bmi<24){ zh='健康體重'; cls='b1'; who='WHO normal'; }
+    else if(bmi<27){ zh='體重過重'; cls='b2'; who='WHO 尚屬 normal 上緣～overweight'; }
+    else if(bmi<30){ zh='輕度肥胖'; cls='b2'; who='WHO overweight'; }
+    else if(bmi<35){ zh='中度肥胖'; cls='b3'; who='WHO obese class I'; }
+    else { zh='重度肥胖'; cls='b3'; who='WHO obese class II 以上'; }
+    band.style.display=''; band.textContent=zh; band.className='bm-band '+cls;
+    var d='國民健康署體位：<b>'+zh+'</b>（'+who+'）。';
+    if(bmi>=23 && bmi<27.5) d+=' WHO 亞洲族群補充切點：≥23 屬<b>風險增加</b>。';
+    else if(bmi>=27.5) d+=' WHO 亞洲族群補充切點：≥27.5 屬<b>高風險</b>。';
+    if(wc!==null){
+      var abdo = (sex==='M' && wc>=90) || (sex==='F' && wc>=80);
+      d += '<br>腰圍 '+wc+' cm：'+(abdo
+        ? '<b>已達腹部肥胖</b>（男 ≥90／女 ≥80）——即使 BMI 正常仍屬肥胖。'
+        : '未達腹部肥胖切點（男 ≥90／女 ≥80）。');
+    }
+    bmHtml('bm_bmi_d', d);
+  } else {
+    bmSet('bm_bmi','—'); band.style.display='none';
+    bmHtml('bm_bmi_d','請輸入身高與體重。');
+  }
+
+  /* ── BSA ── */
+  if(ht!==null && wt!==null && ht>0 && wt>0){
+    var mos=Math.sqrt(ht*wt/3600);
+    var dub=0.007184*Math.pow(ht,0.725)*Math.pow(wt,0.425);
+    bmSet('bm_bsa', mos.toFixed(2));
+    bmHtml('bm_bsa_d','Du Bois 對照：<b>'+dub.toFixed(2)+' m²</b>（差 '+
+      (Math.abs(mos-dub)/dub*100).toFixed(1)+'%）。化療療程請固定用同一條公式。');
+  } else { bmSet('bm_bsa','—'); bmHtml('bm_bsa_d','—'); }
+
+  /* ── IBW（Devine ＝ ARDSNet PBW） ── */
+  var ibw=null;
+  if(ht!==null){
+    ibw = (sex==='M'?50:45.5) + 0.91*(ht-152.4);
+    bmSet('bm_ibw', ibw.toFixed(1));
+    var vt6=(ibw*6).toFixed(0), vt8=(ibw*8).toFixed(0);
+    var id_='潮氣容積 6 mL/kg ＝ <b>'+vt6+' mL</b>；8 mL/kg ＝ '+vt8+' mL。';
+    if(ht<152.4) id_ += ' <b>身高低於 152.4 cm，公式為外推值</b>，矮小病人請與臨床判斷併用。';
+    if(ibw<=0){ bmSet('bm_ibw','—'); id_='身高過低，公式無法給出有意義的值。'; }
+    bmHtml('bm_ibw_d', id_);
+  } else { bmSet('bm_ibw','—'); bmHtml('bm_ibw_d','—'); }
+
+  /* ── ABW ── */
+  var abwBand=document.getElementById('bm_abw_band');
+  if(ibw!==null && ibw>0 && wt!==null){
+    var abw = ibw + 0.4*(wt-ibw);
+    var pct = wt/ibw*100;
+    bmSet('bm_abw', abw.toFixed(1));
+    var ad='實際體重為 IBW 的 <b>'+pct.toFixed(0)+'%</b>。';
+    if(pct>=130){ abwBand.style.display=''; abwBand.className='bm-band b3'; abwBand.textContent='建議改用 ABW';
+      ad+=' 已超過 130%，aminoglycoside 等藥物<b>應以 ABW 計算</b>。'; }
+    else if(pct>=120){ abwBand.style.display=''; abwBand.className='bm-band b2'; abwBand.textContent='可考慮 ABW';
+      ad+=' 落在 120–130% 的灰帶，是否改用 ABW 依藥物與各院慣例。'; }
+    else if(pct>=100){ abwBand.style.display=''; abwBand.className='bm-band b0'; abwBand.textContent='用實際體重';
+      ad+=' 未達 120%，<b>直接用實際體重</b>即可，不需 ABW。'; }
+    else { abwBand.style.display=''; abwBand.className='bm-band b2'; abwBand.textContent='體重低於 IBW';
+      ad+=' <b>實際體重低於 IBW，此時 ABW 會小於實際體重而低估劑量——請改用實際體重。</b>'; }
+    bmHtml('bm_abw_d', ad);
+  } else { bmSet('bm_abw','—'); abwBand.style.display='none'; bmHtml('bm_abw_d','—'); }
+
+  /* ── LBW ── */
+  if(bmi!==null && wt!==null){
+    var lbw = sex==='M' ? (9270*wt)/(6680+216*bmi) : (9270*wt)/(8780+244*bmi);
+    bmSet('bm_lbw', lbw.toFixed(1));
+  } else { bmSet('bm_lbw','—'); }
+}
+document.querySelectorAll('#view-body-metrics input, #view-body-metrics select')
+  .forEach(function(el){ el.addEventListener('input',bmCalc); el.addEventListener('change',bmCalc); });
+bmCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

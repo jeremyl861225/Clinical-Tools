@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAS-BLED · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .hb-grp{display:flex; align-items:baseline; gap:8px; margin:14px 0 2px; padding-bottom:4px;
+        border-bottom:2px solid var(--accent-soft);}
+  .hb-grp:first-child{margin-top:0;}
+  .hb-l{font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--accent);}
+  .hb-n{font-size:12.5px; color:var(--muted);}
+  .hb-c{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .hb-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .hb-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .hb-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.9;}
+  .hb-d ul{margin:4px 0 0; padding-left:17px;}
+  .hb-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .hb-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .hb-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .hb-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+  .hb-mod{font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; color:var(--accent2);
+        border:1px solid var(--accent2); border-radius:2px; padding:1px 5px; margin-left:6px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-has-bled">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Perioperative Scoring Tool</div>
+      <h1>HAS-BLED</h1>
+      <div class="sub">心房顫動抗凝之出血風險（Pisters 2010，總分 0–9）— 用來矯正因子，不是用來停藥</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-has-bled'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>分數高不是不給抗凝的理由。</b>兩份現行指引的立場一致：<b>ESC 2024 已不再納入任何結構化出血風險分數</b>（HAS-BLED 曾列於 2010／2012／2020 版），並明確不建議僅憑出血風險因子就停用口服抗凝；<b>2023 ACC/AHA</b> 則保留它作為追蹤與再評估的工具。<b>HAS-BLED ≥3 的正確用法是：把可改變的因子改掉、並提早且更頻繁地追蹤。</b></p>
+      <p><b>可改變與不可改變要分開看。</b>血壓、抗血小板／NSAID 併用、酒精、INR 不穩定都是<b>可矯正</b>的；年齡與中風史不是。多數病人分數會下降幾分，而下降的那幾分正是真正該做的事——本頁會把可矯正項目單獨列出來。</p>
+      <div class="lede-foot">推導世代為 Euro Heart Survey 3,978 人，1 年內僅 <b>53 件（1.5%）</b>大出血、C statistic 0.72——<b>事件數少、鑑別力中等</b>。本頁<b>刻意不列各分數對應的年出血率</b>：原文為訂閱制，本次查核未取得一手表格數值。中風風險請用<a href="cha2ds2-vasc.html" class="ref-link">CHA₂DS₂-VASc</a>。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>各字母的原始定義、單位換算與「大出血」的定義 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ H — Hypertension（1 分）：</b>指<b>未受控制的高血壓，收縮壓 &gt; 160 mmHg</b>。不是「有高血壓病史」就算——這是最常被算錯的一項。<br><br>
+
+      <b>◆ A — Abnormal renal / liver function（各 1 分，最多 2 分）：</b><br>
+      <div class="dot-line">・<b>腎</b>：長期透析、腎臟移植，或<b>血清肌酸酐 &gt; 200 µmol/L</b>。原文用 SI 單位，換算後為 <b>&gt; 2.26 mg/dL</b>（台大以 mg/dL 報告，參考值 0.6–1.3）。</div>
+      <div class="dot-line">・<b>肝</b>：慢性肝病（如肝硬化），<b>或</b>生化證據——<b>膽紅素 &gt; 2 倍正常上限</b>，<b>並且</b> AST／ALT／ALP <b>&gt; 3 倍正常上限</b>。以台大參考值換算：膽紅素 &gt; 2.0 mg/dL（上限 1.0）、AST &gt; 93 U/L（上限 31）、ALT &gt; 123 U/L（上限 41）。</div><br>
+
+      <b>◆ S — Stroke（1 分）：</b>中風病史。<br><br>
+
+      <b>◆ B — Bleeding（1 分）：</b>先前大出血病史<b>或</b>出血傾向（含<b>貧血</b>）。<br><br>
+
+      <b>◆ L — Labile INR（1 分）：</b>INR 不穩定或偏高、<b>治療區間內時間（TTR）&lt; 60%</b>。<b>僅適用於使用 warfarin 者</b>；使用 DOAC 者此項不成立（本頁提供勾選以維持原始計分，但會標示）。<br><br>
+
+      <b>◆ E — Elderly（1 分）：</b><b>年齡 &gt; 65 歲</b>（原文為 &gt;65，非 ≥75）。<br><br>
+
+      <b>◆ D — Drugs / Alcohol（各 1 分，最多 2 分）：</b><br>
+      <div class="dot-line">・<b>藥物</b>：併用抗血小板藥或 NSAID。</div>
+      <div class="dot-line">・<b>酒精</b>：原文為 <b>≥8 個標準杯／週</b>。</div><br>
+
+      <b>◆ 「大出血」在原文的定義：</b>顱內出血、<b>因出血住院</b>、血色素下降 &gt; 2 g/dL，和／或需要輸血。<br>
+      <span class="note">原文摘要將此處印為「2 g/L」，係排印之誤（2 g/L ＝ 0.2 g/dL，臨床上無意義）；正確為 <b>2 g/dL</b>。</span><br><br>
+
+      <b>◆ 與其他分數的關係：</b>HAS-BLED 與 <b>CHA₂DS₂-VASc</b> 共用多個危險因子（年齡、高血壓、中風），因此高出血風險者通常也是高中風風險者——<b>這正是不能用出血分數決定要不要抗凝的原因</b>：不抗凝的淨傷害通常更大。ORBIT、ATRIA 等替代分數在部分研究校準較佳，但均未改變上述原則。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="hb-grp"><span class="hb-l">H</span><span class="hb-n">高血壓 Hypertension</span><span class="hb-c" id="hb_c_h">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" data-mod="1" id="hb_h"><span class="it-t">未受控制之高血壓，收縮壓 <b>&gt; 160 mmHg</b><span class="hb-mod">可矯正</span></span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">A</span><span class="hb-n">腎／肝功能異常 Abnormal renal / liver</span><span class="hb-c" id="hb_c_a">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" id="hb_renal"><span class="it-t">透析、腎移植，或肌酸酐 <b>&gt; 2.26 mg/dL</b>（原文 &gt;200 µmol/L）</span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" id="hb_liver"><span class="it-t">肝硬化，或膽紅素 &gt;2× 上限<b>且</b> AST／ALT／ALP &gt;3× 上限</span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">S</span><span class="hb-n">中風 Stroke</span><span class="hb-c" id="hb_c_s">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" id="hb_stroke"><span class="it-t">中風病史</span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">B</span><span class="hb-n">出血 Bleeding</span><span class="hb-c" id="hb_c_b">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" data-mod="1" id="hb_bleed"><span class="it-t">大出血病史，或出血傾向（含<b>貧血</b>）<span class="hb-mod">貧血可矯正</span></span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">L</span><span class="hb-n">INR 不穩定 Labile INR</span><span class="hb-c" id="hb_c_l">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" data-mod="1" id="hb_inr"><span class="it-t">INR 不穩定或偏高、TTR &lt; 60%（<b>僅適用 warfarin</b>）<span class="hb-mod">可矯正</span></span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">E</span><span class="hb-n">高齡 Elderly</span><span class="hb-c" id="hb_c_e">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" id="hb_age"><span class="it-t">年齡 <b>&gt; 65 歲</b></span><span class="pt-badge">1分</span></label>
+
+    <div class="hb-grp"><span class="hb-l">D</span><span class="hb-n">藥物／酒精 Drugs / Alcohol</span><span class="hb-c" id="hb_c_d">0 分</span></div>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" data-mod="1" id="hb_drug"><span class="it-t">併用抗血小板藥或 NSAID<span class="hb-mod">可矯正</span></span><span class="pt-badge">1分</span></label>
+    <label class="item"><input type="checkbox" class="hb-cb" data-w="1" data-mod="1" id="hb_alcohol"><span class="it-t">酒精 <b>≥ 8 個標準杯／週</b><span class="hb-mod">可矯正</span></span><span class="pt-badge">1分</span></label>
+  </div>
+
+  <div class="result">
+    <div class="hb-out">
+      <div class="metric-label">HAS-BLED</div>
+      <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <span class="metric-value big" id="hb_total">0</span>
+        <span class="hb-band b0" id="hb_band">低出血風險</span>
+      </div>
+      <div class="hb-d" id="hb_d">未勾選任何項目。</div>
+    </div>
+
+    <div class="hb-out">
+      <div class="metric-label">可矯正的出血因子（本頁的重點）</div>
+      <div class="hb-d" id="hb_mod">目前沒有勾選到可矯正的項目。</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>字母</th><th>項目</th><th>分數</th></tr>
+      <tr><td>H</td><td>未受控高血壓（SBP &gt;160）</td><td>1</td></tr>
+      <tr><td>A</td><td>腎功能異常 ／ 肝功能異常</td><td>1 ／ 1</td></tr>
+      <tr><td>S</td><td>中風病史</td><td>1</td></tr>
+      <tr><td>B</td><td>出血病史或傾向（含貧血）</td><td>1</td></tr>
+      <tr><td>L</td><td>INR 不穩定（TTR &lt;60%，限 warfarin）</td><td>1</td></tr>
+      <tr><td>E</td><td>年齡 &gt;65 歲</td><td>1</td></tr>
+      <tr><td>D</td><td>抗血小板／NSAID ／ 酒精 ≥8 杯/週</td><td>1 ／ 1</td></tr>
+    </table>
+    <div class="risk-note">
+      <b>≥3 分＝高出血風險</b>，代表「<b>矯正可改變因子＋提早且更頻繁追蹤</b>」，<b>不代表停用抗凝</b>。
+      推導世代 3,978 人、1 年 53 件大出血（1.5%）、C statistic 0.72——<b>事件數少、鑑別力中等</b>，個別病人的預測值有限。
+      圍手術期的停藥與橋接請見<a href="periop-anticoag.html" class="ref-link">圍手術期抗栓</a>；已發生出血的逆轉請見<a href="anticoagulant-reversal.html" class="ref-link">抗凝／抗血小板逆轉</a>。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    原始分數 — <a href="https://pubmed.ncbi.nlm.nih.gov/20299623/" target="_blank" rel="noopener" class="ref-link">Pisters R, Lane DA, Nieuwlaat R, de Vos CB, Crijns HJ, Lip GY. A novel user-friendly score (HAS-BLED) to assess 1-year risk of major bleeding in patients with atrial fibrillation: the Euro Heart Survey. Chest. 2010;138(5):1093-1100.</a><br>
+    現行指引立場 — <a href="https://pubmed.ncbi.nlm.nih.gov/39210723/" target="_blank" rel="noopener" class="ref-link">Van Gelder IC, Rienstra M, Bunting KV, et al. 2024 ESC Guidelines for the management of atrial fibrillation. Eur Heart J. 2024;45(36):3314-3414.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/38033089/" target="_blank" rel="noopener" class="ref-link">Joglar JA, Chung MK, Armbruster AL, et al. 2023 ACC/AHA/ACCP/HRS Guideline for the Diagnosis and Management of Atrial Fibrillation. Circulation. 2024;149(1):e1-e156.</a><br>
+    單位換算之參考值：臺大醫院檢驗醫學部臨床檢驗目錄（Creatinine、Bilirubin-T、AST、ALT）
+  </footer>
+</div>
+</div>
+<script>
+var HB_MOD_NAME={hb_h:'血壓（降到 &lt;160 mmHg）', hb_bleed:'貧血（找出原因並矯正）',
+  hb_inr:'INR 控制（改善 TTR，或改用 DOAC）', hb_drug:'停用非必要的抗血小板藥與 NSAID',
+  hb_alcohol:'減少飲酒（&lt;8 杯／週）'};
+
+function hbCalc(){
+  var ids=['hb_h','hb_renal','hb_liver','hb_stroke','hb_bleed','hb_inr','hb_age','hb_drug','hb_alcohol'];
+  var v={}; var total=0;
+  ids.forEach(function(id){ v[id]=document.getElementById(id).checked?1:0; total+=v[id]; });
+
+  document.getElementById('hb_c_h').textContent=v.hb_h+' 分';
+  document.getElementById('hb_c_a').textContent=(v.hb_renal+v.hb_liver)+' 分';
+  document.getElementById('hb_c_s').textContent=v.hb_stroke+' 分';
+  document.getElementById('hb_c_b').textContent=v.hb_bleed+' 分';
+  document.getElementById('hb_c_l').textContent=v.hb_inr+' 分';
+  document.getElementById('hb_c_e').textContent=v.hb_age+' 分';
+  document.getElementById('hb_c_d').textContent=(v.hb_drug+v.hb_alcohol)+' 分';
+  document.getElementById('hb_total').textContent=total;
+
+  var band=document.getElementById('hb_band'), t,cls;
+  if(total>=3){ t='高出血風險（≥3）'; cls='b3'; }
+  else if(total>=1){ t='低至中出血風險'; cls='b2'; }
+  else { t='低出血風險'; cls='b0'; }
+  band.textContent=t; band.className='hb-band '+cls;
+
+  var d;
+  if(total===0){
+    d='未勾選任何項目。<b>0 分不等於零風險</b>——推導世代中 0 分者仍有出血事件。';
+  } else if(total>=3){
+    d='<b>≥3 分＝高出血風險</b>。應做的是：'
+      +'<ul><li><b>矯正可改變因子</b>（見下方清單）</li>'
+      +'<li><b>提早（例如 4 週內）與更頻繁地回診追蹤</b></li>'
+      +'<li>重新確認抗凝適應症與劑量（腎功能、體重、年齡是否需調整 DOAC 劑量）</li></ul>'
+      +'<b>不是停用抗凝。</b>ESC 2024 明確不建議僅憑出血風險因子停藥；不抗凝造成的中風淨傷害通常更大。';
+  } else {
+    d='目前為低至中出血風險。仍應把可矯正因子處理掉，並於常規回診時重新評估——<b>出血風險是會變動的，須定期重算</b>。';
+  }
+  if(v.hb_inr) d+='<br>已勾選 INR 不穩定：此項<b>僅適用於 warfarin</b>；若病人使用 DOAC，此分不應計入（可考慮以「改用 DOAC」作為矯正手段）。';
+  document.getElementById('hb_d').innerHTML=d;
+
+  var mods=[];
+  Object.keys(HB_MOD_NAME).forEach(function(id){ if(v[id]) mods.push(HB_MOD_NAME[id]); });
+  document.getElementById('hb_mod').innerHTML = mods.length
+    ? '共 <b>'+mods.length+'</b> 項可矯正，處理後分數可降至 <b>'+(total-mods.length)+'</b> 分：<ul><li>'+mods.join('</li><li>')+'</li></ul>'
+      +'<span class="note">年齡與中風史不可改變，這也是本分數不該用來決定給不給抗凝的原因。</span>'
+    : '目前沒有勾選到可矯正的項目。';
+}
+document.querySelectorAll('#view-has-bled input').forEach(function(el){ el.addEventListener('change',hbCalc); });
+hbCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

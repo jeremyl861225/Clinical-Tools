@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>藥物劑量換算 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .dc-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
+        padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
+  .dc-warn b{color:var(--accent2);}
+  .dc-warn .h{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
+
+  .dc-sel{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
+  .dc-sel:last-child{border-bottom:none;}
+  .dc-sel label{font-size:13px; min-width:120px;}
+  .dc-sel select{flex:1; min-width:200px; padding:8px 10px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13.5px;}
+  .dc-sel input{width:110px;}
+
+  .dc-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .dc-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .dc-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .dc-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .dc-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .dc-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .dc-d ul{margin:4px 0 0; padding-left:17px;}
+  .dc-flag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px; color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+
+  /* 窄螢幕：表格自己橫向捲動，不讓整頁出現水平捲軸 */
+  .dc-tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:8px 0 4px;}
+  table.dc-t{width:100%; min-width:430px; border-collapse:collapse; font-size:12px;}
+  table.dc-t th,table.dc-t td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  table.dc-t thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10px; color:var(--accent);
+        letter-spacing:.04em; text-transform:uppercase;}
+  table.dc-t td.num{font-family:var(--mono); white-space:nowrap;}
+  table.dc-t td:first-child{font-family:var(--mono); font-weight:700; white-space:nowrap;}
+  table.dc-t tr.hi td{background:var(--accent-soft);}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-dose-conversion">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">General Calculation Tool</div>
+      <h1>藥物劑量換算</h1>
+      <div class="sub">類固醇 · 鴉片類 · 環利尿劑 — 選「從哪一種換到哪一種」，輸入目前劑量</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-dose-conversion'">← 返回主選單</button>
+  </div>
+
+  <div class="tab-row" id="dc_tabs">
+    <button class="tab-btn active" data-tab="ster" onclick="dcTab('ster')">類固醇 Steroid</button>
+    <button class="tab-btn"        data-tab="opi"  onclick="dcTab('opi')">鴉片類 Opioid</button>
+    <button class="tab-btn"        data-tab="diu"  onclick="dcTab('diu')">環利尿劑 Loop</button>
+  </div>
+
+<!-- ══════════════════ 類固醇 ══════════════════ -->
+<div id="tab-ster">
+  <div class="dc-warn">
+    <span class="h">等效劑量只等效在「抗發炎」這一件事上</span>
+    表中的等效劑量比較的是<b>糖皮質素（抗發炎）活性</b>。<b>礦皮質素活性與作用時間並不等效</b>：
+    hydrocortisone 20 mg 換成 dexamethasone 0.75 mg，抗發炎強度相當，但<b>礦皮質素支持幾乎歸零</b>——
+    在<b>腎上腺功能不全</b>的病人身上這樣換算會出事。長效藥（dexamethasone、betamethasone）
+    對 HPA 軸的抑制也明顯較強，不適合長期使用。
+  </div>
+
+  <div class="card">
+    <div class="section-title">換算 Convert</div>
+    <div class="dc-sel">
+      <label>從 Converting from</label>
+      <select id="st_from"></select>
+    </div>
+    <div class="dc-sel">
+      <label>換到 Converting to</label>
+      <select id="st_to"></select>
+    </div>
+    <div class="dc-sel">
+      <label>目前劑量</label>
+      <input type="number" id="st_dose" step="0.1" placeholder="—"><span class="unit">mg</span>
+      <span class="note" style="flex:1; min-width:180px;">輸入單次或每日總量皆可，輸出為<b>同一時距</b>的等效量</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="dc-out">
+      <div class="metric-label">等效劑量</div>
+      <div class="dc-row"><span class="metric-value big" id="st_out" style="font-size:34px;">—</span><span class="dc-u" id="st_out_u">mg</span></div>
+      <div class="dc-d" id="st_d">請選擇兩種藥物並輸入劑量。</div>
+    </div>
+    <div class="dc-out">
+      <div class="metric-label">此劑量在各藥物的等效值</div>
+      <div class="dc-d" id="st_all">—</div>
+    </div>
+    <div class="risk-note">Fludrocortisone <b>不列入換算</b>：其礦皮質素活性為 hydrocortisone 的 125–150 倍，糖皮質素活性只有 10–15 倍，<b>無法以單一比例互換</b>。若需要礦皮質素效果的對照：<b>fludrocortisone 0.1 mg</b> ≈ prednisone／prednisolone 50 mg ≈ hydrocortisone 20 mg 所提供的礦皮質素作用。腎上腺危機的處置見<a href="../pathways/adrenal-crisis.html" class="ref-link">內分泌危象</a>。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">全表 Reference Table</div>
+    <div class="dc-tw"><table class="dc-t" id="st_table">
+      <thead><tr><th>藥物</th><th>等效劑量 (mg)</th><th>糖皮質素活性</th><th>礦皮質素活性</th><th>作用時間 (hr)</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="note">等效劑量為<b>口服或靜脈</b>給藥；關節內或肌肉注射之相對效價差異很大，不可套用。表格出處：Liu 2013（改編自 NICE 2012 與 Furst 2012）。</div>
+  </div>
+
+  <details class="def-box">
+    <summary>換藥時還要考慮什麼 Notes</summary>
+    <div class="box-inner">
+      <div class="dot-line">・<b>Prednisone 是前驅藥</b>，需經肝臟轉為 prednisolone 才有活性；<b>嚴重肝病或肝衰竭時直接用 prednisolone</b>。兩者等效劑量相同（5 mg）。</div>
+      <div class="dot-line">・<b>需要避免水鈉滯留時</b>（心衰竭、嚴重高血壓、腦水腫）選 methylprednisolone、dexamethasone 或 betamethasone。</div>
+      <div class="dot-line">・<b>腎上腺功能不全的替代治療</b>用 hydrocortisone（礦皮質素活性 1，且可分次模擬生理節律）；不可用長效藥取代。</div>
+      <div class="dot-line">・<b>停藥</b>：連續使用超過 2–3 週或累積劑量高者需逐步減量，避免腎上腺抑制引發危機；長效藥的 HPA 抑制更明顯。</div>
+      <div class="dot-line">・本表<b>不適用</b>吸入型、外用、眼用與關節內注射劑型。</div>
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    等效劑量表 — <a href="https://pubmed.ncbi.nlm.nih.gov/23947590/" target="_blank" rel="noopener" class="ref-link">Liu D, Ahmet A, Ward L, et al. A practical guide to the monitoring and management of the complications of systemic corticosteroid therapy. Allergy Asthma Clin Immunol. 2013;9(1):30.</a>（Table 3，改編自 NICE 2012 與 Furst 2012）｜
+    藥動／藥效 — <a href="https://pubmed.ncbi.nlm.nih.gov/15634032/" target="_blank" rel="noopener" class="ref-link">Czock D, Keller F, Rasche FM, Häussler U. Pharmacokinetics and pharmacodynamics of systemically administered glucocorticoids. Clin Pharmacokinet. 2005;44(1):61-98.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ 鴉片類 ══════════════════ -->
+<div id="tab-opi" class="hidden">
+  <div class="dc-warn">
+    <span class="h">CDC 明文：不要用 MME 直接決定換藥後的劑量</span>
+    2022 CDC 指引在 MME 換算表的注意事項中直接寫明——<b>「Do not use the calculated dose in MMEs to determine the doses to use when converting one opioid to another；換藥時新藥通常要用<u>明顯較低</u>的劑量起始」</b>。
+    MME 的設計目的是<b>族群層級的風險評估</b>（例如 ≥50 或 ≥90 MME/day 的過量風險），不是換藥的處方工具。
+    本頁因此把「等效劑量」與「建議起始劑量」<b>分成兩個數字</b>：實際下處方請用後者，並密切追蹤與備妥短效救援劑量。
+  </div>
+
+  <div class="card">
+    <div class="section-title">換算 Convert</div>
+    <div class="dc-sel">
+      <label>從 Converting from</label>
+      <select id="op_from"></select>
+    </div>
+    <div class="dc-sel">
+      <label>目前劑量</label>
+      <input type="number" id="op_dose" step="0.1" placeholder="—"><span class="unit" id="op_dose_u">mg／天</span>
+      <span class="note" style="flex:1; min-width:180px;">請填<b>24 小時總量</b>（fentanyl 貼片填 mcg/hr）</span>
+    </div>
+    <div class="dc-sel">
+      <label>換到 Converting to</label>
+      <select id="op_to"></select>
+    </div>
+    <div class="dc-sel">
+      <label>交叉耐受性折減</label>
+      <select id="op_red">
+        <option value="0.5">減 50%（預設；高齡、腎肝功能差、劑量高、疼痛已控制）</option>
+        <option value="0.75">減 25%（疼痛控制不佳、年輕健康、換同類藥）</option>
+        <option value="1">不折減（僅限同藥不同途徑之換算）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="dc-out">
+      <div class="metric-label">每日口服嗎啡當量 MME／day</div>
+      <div class="dc-row"><span class="metric-value big" id="op_mme" style="font-size:34px;">—</span><span class="dc-u">MME/day</span><span class="dc-flag" id="op_mme_flag" style="display:none;"></span></div>
+      <div class="dc-d" id="op_mme_d">請選擇目前用藥並輸入 24 小時總量。</div>
+    </div>
+    <div class="dc-out">
+      <div class="metric-label">目標藥物之等效劑量（換算值，非處方值）</div>
+      <div class="dc-row"><span class="dc-v" id="op_eq">—</span><span class="dc-u" id="op_eq_u">mg/day</span></div>
+      <div class="dc-d" id="op_eq_d">—</div>
+    </div>
+    <div class="dc-out">
+      <div class="metric-label">建議起始劑量（已折減交叉耐受性）</div>
+      <div class="dc-row"><span class="dc-v" id="op_start" style="font-size:30px;">—</span><span class="dc-u" id="op_start_u">mg/day</span></div>
+      <div class="dc-d" id="op_start_d">—</div>
+    </div>
+    <div class="risk-note">
+      <b>換藥後的必要動作：</b>①（若為緩釋劑型）保留<b>短效救援劑量＝每日總量的 10–15%，可 q1–4h prn</b>；
+      ②前 24–72 小時每天重新評估疼痛與嗜睡；③同時開立<b>便祕預防</b>；
+      ④劑量偏高或合併 benzodiazepine 者評估<b>naloxone</b> 之處方。<b>呼吸抑制的高峰晚於止痛高峰</b>——methadone 與 fentanyl 貼片尤其如此。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">換算係數 Conversion Factors</div>
+    <div class="dc-tw"><table class="dc-t" id="op_table">
+      <thead><tr><th>藥物／途徑</th><th>→ 口服 MME 係數</th><th>出處</th><th>備註</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="note">口服係數採 <b>2022 CDC 指引</b>表格原值；<b>注射與貼片</b>之比值採傳統等效止痛表（口服嗎啡 30 mg ≈ 注射嗎啡 10 mg ≈ fentanyl 貼片 25 mcg/hr ≈ 60 mg/day 之一半），已於表中標明出處以便分辨。</div>
+  </div>
+
+  <details class="def-box">
+    <summary>不可用單一係數換算的藥物、MME 門檻與腎肝功能 Notes</summary>
+    <div class="box-inner">
+      <b>◆ Methadone：</b>換算比例<b>隨劑量變動</b>（嗎啡日劑量越高、比例越大，文獻範圍 4:1 至 20:1 以上），且半衰期長且個體差異大（8–59 小時）、<b>呼吸抑制高峰晚於止痛高峰</b>、有 QT 延長風險。<b>本頁不提供「換到 methadone」</b>，必須由熟悉此藥者以劑量分層比例操作並做心電圖評估。CDC 表中的 4.7 係數僅供<b>族群風險統計</b>使用。<br><br>
+
+      <b>◆ Buprenorphine：</b>部分 µ 受體作用劑，有<b>天花板效應</b>與受體高親和力（可置換全作用劑而誘發戒斷），CDC 表格<b>刻意不收錄</b>。本頁兩個方向都不提供換算。<br><br>
+
+      <b>◆ Pethidine（meperidine）：</b>代謝物 normeperidine 有神經毒性（癲癇），<b>腎功能不全者禁用</b>，不建議用於慢性疼痛或反覆給藥；本頁保留「從 pethidine 換出」以便停藥，但不提供換入。<br><br>
+
+      <b>◆ Fentanyl 貼片：</b>單位是 <b>mcg/hr</b> 不是 mg/day；吸收受<b>發燒、熱敷、電毯</b>影響而增加（可致過量），<b>不可用於未使用過鴉片類者</b>，也不適合疼痛快速變化的情境。貼片起效需 12–24 小時、移除後仍有 16–24 小時的皮下貯庫效應。<br><br>
+
+      <b>◆ MME 的風險門檻（CDC）：</b>≥50 MME/day 過量風險上升，應更謹慎並重新評估；≥90 MME/day 應避免或審慎說明理由。這些門檻是<b>提醒重新評估</b>，不是硬性上限，也<b>不適用於癌症疼痛、安寧療護與鎌狀細胞疾病</b>。<br><br>
+
+      <b>◆ 腎肝功能：</b>morphine 的活性代謝物（M6G）與 hydromorphone 代謝物於腎功能不全時累積 → 選 fentanyl 或減量延長間隔；肝功能不全時多數鴉片類清除率下降，起始劑量與間隔都要調整。<br><br>
+
+      <b>◆ 換算係數本身的不確定性：</b>不同文獻的等效表可差<b>近兩倍</b>（例如 hydromorphone 對嗎啡的比值有 4 也有 5），這正是「換藥要減 25–50%」的由來——把公式的誤差留成安全邊際。
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    MME 係數與警語 — <a href="https://pubmed.ncbi.nlm.nih.gov/36327391/" target="_blank" rel="noopener" class="ref-link">Dowell D, Ragan KR, Jones CM, et al. CDC Clinical Practice Guideline for Prescribing Opioids for Pain — United States, 2022. MMWR Recomm Rep. 2022;71(3):1-95.</a>｜
+    換藥原則與折減 — <a href="https://pubmed.ncbi.nlm.nih.gov/19735902/" target="_blank" rel="noopener" class="ref-link">Fine PG, Portenoy RK; Ad Hoc Expert Panel on Evidence Review and Guidelines for Opioid Rotation. Establishing "best practices" for opioid rotation. J Pain Symptom Manage. 2009;38(3):418-425.</a>
+  </footer>
+</div>
+
+<!-- ══════════════════ 環利尿劑 ══════════════════ -->
+<div id="tab-diu" class="hidden">
+  <div class="dc-warn">
+    <span class="h">等效劑量不等於「換過去就有效」</span>
+    環利尿劑的作用取決於<b>能否把足夠的藥送到腎小管的作用位置</b>。
+    Furosemide 的<b>口服生體可用率個體差異極大（10–100%，平均約 50%）</b>，而 bumetanide 與 torsemide 約 80–100%——
+    這是為什麼 furosemide 靜脈：口服約 <b>1:2</b>，另兩者約 <b>1:1</b>。
+    腎功能不全、腸道水腫（失償心衰竭）與低白蛋白會進一步降低反應，此時<b>提高單次劑量</b>比增加次數有效（環利尿劑有閾值效應）。
+  </div>
+
+  <div class="card">
+    <div class="section-title">換算 Convert</div>
+    <div class="dc-sel">
+      <label>從 Converting from</label>
+      <select id="di_from"></select>
+    </div>
+    <div class="dc-sel">
+      <label>換到 Converting to</label>
+      <select id="di_to"></select>
+    </div>
+    <div class="dc-sel">
+      <label>目前劑量</label>
+      <input type="number" id="di_dose" step="0.5" placeholder="—"><span class="unit">mg</span>
+      <span class="note" style="flex:1; min-width:180px;">單次或每日總量皆可，輸出為<b>同一時距</b>的等效量</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="dc-out">
+      <div class="metric-label">等效劑量</div>
+      <div class="dc-row"><span class="metric-value big" id="di_out" style="font-size:34px;">—</span><span class="dc-u">mg</span></div>
+      <div class="dc-d" id="di_d">請選擇兩種藥物並輸入劑量。</div>
+    </div>
+    <div class="dc-out">
+      <div class="metric-label">此劑量在各藥物／途徑的等效值</div>
+      <div class="dc-d" id="di_all">—</div>
+    </div>
+    <div class="risk-note">換藥後請追蹤<b>尿量、體重、血鉀與腎功能</b>；效果不足時先<b>加大單次劑量</b>（突破閾值），再考慮增加次數或併用 thiazide 類／acetazolamide（序列阻斷）。急性心衰竭的用法見<a href="heart-failure.html" class="ref-link">心臟衰竭</a>。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">全表 Reference Table</div>
+    <div class="dc-tw"><table class="dc-t" id="di_table">
+      <thead><tr><th>藥物／途徑</th><th>等效劑量 (mg)</th><th>口服生體可用率</th><th>備註</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="note">Ethacrynic acid 主要用於<b>對 sulfonamide 類過敏</b>者（其結構不含磺醯基）；台灣供應不穩定，用前請確認藥局是否有藥。</div>
+  </div>
+
+  <footer class="tool-footer">
+    等效劑量與生體可用率 — <a href="https://pubmed.ncbi.nlm.nih.gov/29141174/" target="_blank" rel="noopener" class="ref-link">Ellison DH, Felker GM. Diuretic Treatment in Heart Failure. N Engl J Med. 2017;377(20):1964-1975.</a>｜
+    劑量範圍 — <a href="https://pubmed.ncbi.nlm.nih.gov/35363499/" target="_blank" rel="noopener" class="ref-link">Heidenreich PA, Bozkurt B, Aguilar D, et al. 2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure. Circulation. 2022;145(18):e895-e1032.</a>
+  </footer>
+</div>
+
+</div>
+</div>
+<script>
+/* ───────────── 分頁 ───────────── */
+var DC_TABS=['ster','opi','diu'];
+function dcTab(key,skipHash){
+  DC_TABS.forEach(function(k){
+    document.getElementById('tab-'+k).classList.toggle('hidden', k!==key);
+  });
+  document.querySelectorAll('#dc_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-tab')===key);
+  });
+  if(!skipHash) history.replaceState(null,'','#tab='+key);
+}
+
+/* ───────────── 類固醇 ─────────────
+   等效劑量、糖／礦皮質素相對活性、作用時間：Liu 2013 Table 3（NICE 2012／Furst 2012） */
+var STEROIDS=[
+  {k:'hydrocortisone',  zh:'Hydrocortisone 氫化可體松', eq:20,   gc:'1',     mc:'1',        dur:'8–12',  note:'短效；礦皮質素活性高，適合腎上腺功能不全之替代'},
+  {k:'cortisone',       zh:'Cortisone 可體松',          eq:25,   gc:'0.8',   mc:'0.8',      dur:'8–12',  note:'短效；性質近 hydrocortisone'},
+  {k:'prednisone',      zh:'Prednisone',                eq:5,    gc:'4',     mc:'0.8',      dur:'12–36', note:'中效；<b>前驅藥</b>，需肝臟轉為 prednisolone'},
+  {k:'prednisolone',    zh:'Prednisolone',              eq:5,    gc:'4',     mc:'0.8',      dur:'12–36', note:'中效；肝功能不全時優先選用'},
+  {k:'methylpred',      zh:'Methylprednisolone',        eq:4,    gc:'5',     mc:'極低',      dur:'12–36', note:'中效；水鈉滯留顧慮較小'},
+  {k:'triamcinolone',   zh:'Triamcinolone',             eq:4,    gc:'5',     mc:'0',        dur:'12–36', note:'中效'},
+  {k:'dexamethasone',   zh:'Dexamethasone',             eq:0.75, gc:'30',    mc:'極低',      dur:'36–72', note:'長效；高效價、HPA 抑制強，宜短期使用'},
+  {k:'betamethasone',   zh:'Betamethasone',             eq:0.6,  gc:'30',    mc:'可忽略',    dur:'36–72', note:'長效；性質近 dexamethasone'}
+];
+
+function stFill(){
+  var f=document.getElementById('st_from'), t=document.getElementById('st_to');
+  STEROIDS.forEach(function(s){
+    f.insertAdjacentHTML('beforeend','<option value="'+s.k+'">'+s.zh+'（等效 '+s.eq+' mg）</option>');
+    t.insertAdjacentHTML('beforeend','<option value="'+s.k+'">'+s.zh+'（等效 '+s.eq+' mg）</option>');
+  });
+  f.value='prednisolone'; t.value='methylpred';
+  var tb=document.querySelector('#st_table tbody');
+  STEROIDS.forEach(function(s){
+    tb.insertAdjacentHTML('beforeend','<tr data-k="'+s.k+'"><td>'+s.zh.split(' ')[0]+'</td><td class="num">'+s.eq+
+      '</td><td class="num">'+s.gc+'</td><td class="num">'+s.mc+'</td><td class="num">'+s.dur+'</td></tr>');
+  });
+}
+function stGet(k){ for(var i=0;i<STEROIDS.length;i++) if(STEROIDS[i].k===k) return STEROIDS[i]; return null; }
+
+function stCalc(){
+  var from=stGet(document.getElementById('st_from').value);
+  var to=stGet(document.getElementById('st_to').value);
+  var dose=parseFloat(document.getElementById('st_dose').value);
+  document.querySelectorAll('#st_table tbody tr').forEach(function(tr){
+    tr.classList.toggle('hi', tr.getAttribute('data-k')===from.k || tr.getAttribute('data-k')===to.k);
+  });
+  if(isNaN(dose) || dose<=0){
+    document.getElementById('st_out').textContent='—';
+    document.getElementById('st_d').innerHTML='請選擇兩種藥物並輸入劑量。';
+    document.getElementById('st_all').innerHTML='—';
+    return;
+  }
+  var eq = dose * (to.eq/from.eq);
+  document.getElementById('st_out').textContent = (eq<1 ? eq.toFixed(2) : eq.toFixed(1)).replace(/\.0$/,'');
+  document.getElementById('st_out_u').textContent = 'mg '+to.zh.split(' ')[0];
+
+  var d = '<b>'+from.zh.split(' ')[0]+' '+dose+' mg</b> 的抗發炎效力 ≈ <b>'+to.zh.split(' ')[0]+' '+
+          (eq<1?eq.toFixed(2):eq.toFixed(1)).replace(/\.0$/,'')+' mg</b>。';
+  d += '<ul><li>糖皮質素活性：'+from.gc+' → '+to.gc+'</li>'
+     + '<li>礦皮質素活性：<b>'+from.mc+' → '+to.mc+'</b></li>'
+     + '<li>作用時間：'+from.dur+' → '+to.dur+' 小時</li></ul>';
+  if(from.mc!=='0' && from.mc!=='極低' && from.mc!=='可忽略' && (to.mc==='0'||to.mc==='極低'||to.mc==='可忽略'))
+    d += '<b>換過去會失去礦皮質素支持</b>——若為腎上腺功能不全之替代治療，不可如此換算。';
+  if(to.k==='prednisone') d += ' 目標藥為前驅藥，<b>肝功能不全者請改用 prednisolone</b>。';
+  if(to.dur==='36–72' && from.dur!=='36–72') d += ' 目標藥為<b>長效</b>，HPA 軸抑制較強，不宜長期使用。';
+  document.getElementById('st_d').innerHTML=d;
+
+  var rows = STEROIDS.map(function(s){
+    var v = dose*(s.eq/from.eq);
+    return s.zh.split(' ')[0]+' <b>'+(v<1?v.toFixed(2):v.toFixed(1)).replace(/\.0$/,'')+'</b> mg';
+  }).join('｜');
+  document.getElementById('st_all').innerHTML=rows;
+}
+
+/* ───────────── 鴉片類 ─────────────
+   口服係數＝2022 CDC 指引表格原值；注射／貼片比值＝傳統等效止痛表 */
+var OPIOIDS=[
+  {k:'morphine_po',  zh:'Morphine 口服',            f:1,    u:'mg/天', src:'CDC 2022', to:1, note:'參考藥'},
+  {k:'morphine_iv',  zh:'Morphine 注射 (IV/SC)',    f:3,    u:'mg/天', src:'等效止痛表', to:1, note:'口服 30 mg ≈ 注射 10 mg'},
+  {k:'oxycodone_po', zh:'Oxycodone 口服',           f:1.5,  u:'mg/天', src:'CDC 2022', to:1, note:''},
+  {k:'hydromorph_po',zh:'Hydromorphone 口服',       f:5,    u:'mg/天', src:'CDC 2022', to:1, note:'CDC 2022 已由 4 改為 5'},
+  {k:'hydromorph_iv',zh:'Hydromorphone 注射',       f:20,   u:'mg/天', src:'等效止痛表', to:1, note:'口服:注射 ≈ 5:1'},
+  {k:'codeine_po',   zh:'Codeine 口服',             f:0.15, u:'mg/天', src:'CDC 2022', to:1, note:'CYP2D6 基因型影響大'},
+  {k:'tramadol_po',  zh:'Tramadol 口服',            f:0.2,  u:'mg/天', src:'CDC 2022', to:1, note:'合併血清素藥物須注意血清素症候群'},
+  {k:'fentanyl_td',  zh:'Fentanyl 貼片 (mcg/hr)',   f:2.4,  u:'mcg/hr', src:'CDC 2022', to:1, note:'單位為 mcg/hr；發燒與熱源會增加吸收'},
+  {k:'fentanyl_iv',  zh:'Fentanyl 注射 (mcg)',      f:0.3,  u:'mcg/天', src:'等效止痛表', to:0, note:'注射 100 mcg ≈ 口服嗎啡 30 mg；輸注劑量換算極不可靠'},
+  {k:'hydrocodone',  zh:'Hydrocodone 口服',         f:1,    u:'mg/天', src:'CDC 2022', to:0, note:'台灣未上市'},
+  {k:'oxymorphone',  zh:'Oxymorphone 口服',         f:3,    u:'mg/天', src:'CDC 2022', to:0, note:'台灣未上市'},
+  {k:'tapentadol',   zh:'Tapentadol 口服',          f:0.4,  u:'mg/天', src:'CDC 2022', to:0, note:'台灣未上市'},
+  {k:'pethidine_iv', zh:'Pethidine 注射（不建議續用）', f:0.3, u:'mg/天', src:'等效止痛表', to:0, note:'normeperidine 神經毒性；腎功能不全禁用'},
+  {k:'methadone',    zh:'Methadone 口服（換出僅供參考）', f:4.7, u:'mg/天', src:'CDC 2022（族群統計用）', to:0, note:'換算比例隨劑量變動，不可用單一係數'}
+];
+function opGet(k){ for(var i=0;i<OPIOIDS.length;i++) if(OPIOIDS[i].k===k) return OPIOIDS[i]; return null; }
+
+function opFill(){
+  var f=document.getElementById('op_from'), t=document.getElementById('op_to');
+  OPIOIDS.forEach(function(o){
+    f.insertAdjacentHTML('beforeend','<option value="'+o.k+'">'+o.zh+'</option>');
+    if(o.to) t.insertAdjacentHTML('beforeend','<option value="'+o.k+'">'+o.zh+'</option>');
+  });
+  f.value='morphine_iv'; t.value='morphine_po';
+  var tb=document.querySelector('#op_table tbody');
+  OPIOIDS.forEach(function(o){
+    tb.insertAdjacentHTML('beforeend','<tr data-k="'+o.k+'"><td>'+o.zh+'</td><td class="num">×'+o.f+
+      '</td><td class="num">'+o.src+'</td><td>'+(o.note||'—')+'</td></tr>');
+  });
+}
+
+function opCalc(){
+  var from=opGet(document.getElementById('op_from').value);
+  var to=opGet(document.getElementById('op_to').value);
+  var dose=parseFloat(document.getElementById('op_dose').value);
+  var red=parseFloat(document.getElementById('op_red').value);
+  document.getElementById('op_dose_u').textContent = from.u;
+  document.querySelectorAll('#op_table tbody tr').forEach(function(tr){
+    tr.classList.toggle('hi', tr.getAttribute('data-k')===from.k || tr.getAttribute('data-k')===to.k);
+  });
+
+  var flag=document.getElementById('op_mme_flag');
+  if(isNaN(dose) || dose<=0){
+    document.getElementById('op_mme').textContent='—'; flag.style.display='none';
+    document.getElementById('op_mme_d').innerHTML='請選擇目前用藥並輸入 24 小時總量。';
+    document.getElementById('op_eq').textContent='—';
+    document.getElementById('op_eq_d').innerHTML='—';
+    document.getElementById('op_start').textContent='—';
+    document.getElementById('op_start_d').innerHTML='—';
+    return;
+  }
+
+  var mme = dose*from.f;
+  document.getElementById('op_mme').textContent = mme.toFixed(0);
+  if(mme>=90){ flag.style.display=''; flag.textContent='≥90 MME/day'; }
+  else if(mme>=50){ flag.style.display=''; flag.textContent='≥50 MME/day'; }
+  else flag.style.display='none';
+
+  var md = '目前用藥 '+from.zh+' '+dose+' '+from.u+' × 係數 '+from.f+' ＝ <b>'+mme.toFixed(0)+' MME/day</b>。';
+  if(mme>=90) md += ' <b>≥90 MME/day</b>：CDC 建議避免或審慎說明理由，並重新評估效益與風險。';
+  else if(mme>=50) md += ' <b>≥50 MME/day</b>：過量風險上升，應更謹慎追蹤。';
+  if(mme>=50) md += '（癌症疼痛、安寧療護與鎌狀細胞疾病<b>不適用</b>此門檻。）';
+  if(from.k==='methadone') md += ' <b>methadone 的 4.7 只是族群統計係數</b>，實際換出比例隨劑量而變，請由熟悉此藥者評估。';
+  if(from.k==='fentanyl_iv') md += ' <b>注射 fentanyl（尤其連續輸注）的換算極不可靠</b>，只能當粗略起點。';
+  if(from.k==='pethidine_iv') md += ' pethidine 不建議續用，換出後應停藥。';
+  document.getElementById('op_mme_d').innerHTML=md;
+
+  /* 等效劑量 → 目標藥物 */
+  var eq = mme/to.f;
+  var unit = to.u;
+  document.getElementById('op_eq').textContent = eq<10 ? eq.toFixed(1) : eq.toFixed(0);
+  document.getElementById('op_eq_u').textContent = unit;
+  var ed = '把 '+mme.toFixed(0)+' MME/day 除以 '+to.zh+' 的係數 '+to.f+' ＝ <b>'+
+           (eq<10?eq.toFixed(1):eq.toFixed(0))+' '+unit+'</b>。<b>這是換算值，不是處方值。</b>';
+  if(to.k==='fentanyl_td') ed += ' fentanyl 貼片只有固定規格（12／25／50／75／100 mcg/hr），須<b>就近取可用規格並向下取</b>，不足部分以短效藥補足。';
+  document.getElementById('op_eq_d').innerHTML=ed;
+
+  /* 折減後之起始劑量 */
+  var st = eq*red;
+  document.getElementById('op_start').textContent = st<10 ? st.toFixed(1) : st.toFixed(0);
+  document.getElementById('op_start_u').textContent = unit;
+  var sd;
+  if(red===1){
+    sd = '<b>未折減</b>：僅在同一種藥物更換給藥途徑時可如此處理。跨藥物換算<b>務必折減 25–50%</b>。';
+  } else {
+    sd = '已折減 '+Math.round((1-red)*100)+'%（交叉耐受性不完全）：<b>'+(st<10?st.toFixed(1):st.toFixed(0))+' '+unit+'</b>。';
+    sd += '再依實際情況分配到給藥次數；緩釋劑型另備<b>短效救援劑量＝每日總量的 10–15%</b>。';
+  }
+  if(from.k===to.k) sd = '來源與目標為同一項目，無需換算。';
+  document.getElementById('op_start_d').innerHTML=sd;
+}
+
+/* ───────────── 環利尿劑 ─────────────
+   等效劑量與生體可用率：Ellison & Felker NEJM 2017 */
+var LOOPS=[
+  {k:'furo_po',  zh:'Furosemide 口服',        eq:40, bio:'10–100%（平均約 50%）', note:'吸收變異最大；靜脈：口服 ≈ 1:2'},
+  {k:'furo_iv',  zh:'Furosemide 注射',        eq:20, bio:'注射（不適用）',                    note:''},
+  {k:'bume_po',  zh:'Bumetanide 口服',        eq:1,  bio:'80–100%',              note:'口服與注射劑量相同'},
+  {k:'bume_iv',  zh:'Bumetanide 注射',        eq:1,  bio:'注射（不適用）',                    note:''},
+  {k:'tors_po',  zh:'Torsemide 口服',         eq:20, bio:'80–100%',              note:'半衰期較長、吸收穩定'},
+  {k:'tors_iv',  zh:'Torsemide 注射',         eq:20, bio:'注射（不適用）',                    note:''},
+  {k:'etha_po',  zh:'Ethacrynic acid 口服',   eq:50, bio:'約 100%',              note:'不含磺醯基，可用於 sulfonamide 過敏者'},
+  {k:'etha_iv',  zh:'Ethacrynic acid 注射',   eq:50, bio:'注射（不適用）',                    note:'注射劑型為 ethacrynate sodium'}
+];
+function diGet(k){ for(var i=0;i<LOOPS.length;i++) if(LOOPS[i].k===k) return LOOPS[i]; return null; }
+
+function diFill(){
+  var f=document.getElementById('di_from'), t=document.getElementById('di_to');
+  LOOPS.forEach(function(l){
+    f.insertAdjacentHTML('beforeend','<option value="'+l.k+'">'+l.zh+'（等效 '+l.eq+' mg）</option>');
+    t.insertAdjacentHTML('beforeend','<option value="'+l.k+'">'+l.zh+'（等效 '+l.eq+' mg）</option>');
+  });
+  f.value='furo_po'; t.value='furo_iv';
+  var tb=document.querySelector('#di_table tbody');
+  LOOPS.forEach(function(l){
+    tb.insertAdjacentHTML('beforeend','<tr data-k="'+l.k+'"><td>'+l.zh+'</td><td class="num">'+l.eq+
+      '</td><td class="num">'+l.bio+'</td><td>'+(l.note||'—')+'</td></tr>');
+  });
+}
+
+function diCalc(){
+  var from=diGet(document.getElementById('di_from').value);
+  var to=diGet(document.getElementById('di_to').value);
+  var dose=parseFloat(document.getElementById('di_dose').value);
+  document.querySelectorAll('#di_table tbody tr').forEach(function(tr){
+    tr.classList.toggle('hi', tr.getAttribute('data-k')===from.k || tr.getAttribute('data-k')===to.k);
+  });
+  if(isNaN(dose)||dose<=0){
+    document.getElementById('di_out').textContent='—';
+    document.getElementById('di_d').innerHTML='請選擇兩種藥物並輸入劑量。';
+    document.getElementById('di_all').innerHTML='—';
+    return;
+  }
+  var eq = dose*(to.eq/from.eq);
+  document.getElementById('di_out').textContent = (eq<1?eq.toFixed(2):eq.toFixed(1)).replace(/\.0$/,'');
+  var d = '<b>'+from.zh+' '+dose+' mg</b> ≈ <b>'+to.zh+' '+(eq<1?eq.toFixed(2):eq.toFixed(1)).replace(/\.0$/,'')+' mg</b>。';
+  if(from.k==='furo_po' && to.k==='furo_iv') d += ' 這就是「口服改靜脈時劑量減半」的由來（生體可用率約 50%）。';
+  if(from.k==='furo_iv' && to.k==='furo_po') d += ' 靜脈改口服時劑量<b>加倍</b>；若病人有腸道水腫，加倍後仍可能不足。';
+  if(from.k.indexOf('furo')===0 && to.k.indexOf('furo')!==0) d += ' 換到 '+to.zh.split(' ')[0]+' 的<b>吸收較穩定</b>，同一等效劑量的實際效果可能較強，換後請追蹤尿量與體重。';
+  d += '<br>目前劑量的生體可用率：'+from.bio+'；目標：'+to.bio+'。';
+  document.getElementById('di_d').innerHTML=d;
+
+  document.getElementById('di_all').innerHTML = LOOPS.map(function(l){
+    var v=dose*(l.eq/from.eq);
+    return l.zh+' <b>'+(v<1?v.toFixed(2):v.toFixed(1)).replace(/\.0$/,'')+'</b> mg';
+  }).join('｜');
+}
+
+/* ───────────── 初始化 ───────────── */
+stFill(); opFill(); diFill();
+document.querySelectorAll('#tab-ster input, #tab-ster select').forEach(function(el){
+  el.addEventListener('input',stCalc); el.addEventListener('change',stCalc); });
+document.querySelectorAll('#tab-opi input, #tab-opi select').forEach(function(el){
+  el.addEventListener('input',opCalc); el.addEventListener('change',opCalc); });
+document.querySelectorAll('#tab-diu input, #tab-diu select').forEach(function(el){
+  el.addEventListener('input',diCalc); el.addEventListener('change',diCalc); });
+(function(){
+  var m=location.hash.match(/#tab=(\w+)/);
+  if(m && DC_TABS.indexOf(m[1])>=0) dcTab(m[1],true);
+})();
+stCalc(); opCalc(); diCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>血清滲透壓與滲透壓間隙 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .os-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .os-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .os-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .os-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .os-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .os-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .os-d ul{margin:4px 0 0; padding-left:17px;}
+  .os-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .os-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .os-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .os-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-osmolality">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">General Calculation Tool</div>
+      <h1>血清滲透壓與滲透壓間隙</h1>
+      <div class="sub">計算滲透壓 · 有效滲透壓（tonicity）· osmolal gap 與毒性酒精之估算</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-osmolality'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>間隙正常不能排除毒性酒精中毒。</b>Hoffman 1993（321 位連續病人）測得的滲透壓間隙為 <b>−2 ± 6 mOsm</b>，而<b>不同公式算出的間隙可從 −5 到 +15 mOsm</b>；作者的結論就是一句話——「<b>小的滲透壓間隙不可用來排除毒性酒精攝入</b>」。此外，若病人是<b>晚期就診</b>（母醇已代謝成甲酸／乙醇酸），間隙可能已經回到正常，此時看到的是<b>陰離子間隙升高的代謝性酸中毒</b>。</p>
+      <p><b>三個數字不要混用。</b><b>計算滲透壓</b>用來與實測值相減求間隙；<b>有效滲透壓（tonicity）＝ 2×Na ＋ 葡萄糖/18</b>（不含尿素）才是決定腦細胞脹縮、也是 DKA／HHS 判準與矯正速率所用的那一個；<b>實測滲透壓</b>來自冰點下降法。<b>間隙的絕對值高度依賴你用哪一條公式</b>，換公式就會換答案。</p>
+      <div class="lede-foot">台大檢驗醫學部的項目名稱為 <b>Osmolarity(Blood)</b>，參考值 &lt;60 歲 275–295、≥60 歲 280–301 mOsm/Kg；尿液為 Osmolarity(Urine)（隨機尿 50–1200）。UN 即 BUN（參考值 7–25 mg/dL）。DKA／HHS 的判定請用<a href="dka-hhs.html" class="ref-link">DKA／HHS 診斷與嚴重度</a>。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>各公式、間隙的判讀、毒性酒精之換算與陷阱 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 計算滲透壓（本頁主要公式）：</b>2 × Na ＋ 葡萄糖/18 ＋ UN/2.8（＋ 酒精/3.7）<br>
+      <span class="note">除數＝分子量÷10，用來把 mg/dL 換成 mOsm/L：葡萄糖 180→18、尿素氮 28→2.8。<b>酒精的最佳除數為 3.7</b>（Purssell 2001 於 98 例推導、128 例驗證，r ＝ 0.99；其 95% CI 為 1/3.58–1/3.80），而非嚴格莫耳換算的 4.6——差別在於乙醇的滲透係數與分布。</span><br><br>
+
+      <b>◆ 另一條常見公式：</b>1.86 × Na ＋ 葡萄糖/18 ＋ UN/2.8 ＋ 9<br>
+      <span class="note">係數 1.86 反映鈉鹽的實際解離，＋9 為其他未測溶質。這條公式算出的<b>計算值較高、間隙較小</b>。本頁兩者並列，就是為了讓你看到「間隙」這個數字有多依賴公式選擇。</span><br><br>
+
+      <b>◆ 有效滲透壓（tonicity）：</b>2 × Na ＋ 葡萄糖/18<br>
+      <span class="note"><b>尿素可自由通過細胞膜</b>，不產生有效的滲透梯度，故不計入。尿毒症病人的總滲透壓可以很高但 tonicity 正常——這是為什麼<b>不能用總滲透壓判斷腦水腫風險</b>。</span><br><br>
+
+      <b>◆ 滲透壓間隙 ＝ 實測 − 計算：</b><br>
+      <div class="dot-line">・參考值：Hoffman 1993 為 <b>−2 ± 6 mOsm</b>；慣行以 <b>&gt;10</b> 視為升高。</div>
+      <div class="dot-line">・<b>升高＋高陰離子間隙代謝性酸中毒</b> → 高度懷疑<b>甲醇或乙二醇</b>，應立即處理（fomepizole／透析），不要等確認檢驗。</div>
+      <div class="dot-line">・<b>升高但無酸中毒</b> → 想乙醇、isopropanol（產生酮體但不酸中毒）、mannitol、<b>propylene glycol</b>（大量 lorazepam／diazepam 注射液的溶劑）、大量甘胺酸沖洗液（TURP）、嚴重高血脂或高蛋白（假性低血鈉的同一機制）。</div>
+      <div class="dot-line">・<b>正常間隙</b> → <b>不排除</b>毒性酒精：晚期就診、小量攝入、以及公式本身的變異都可能造成正常值。</div><br>
+
+      <b>◆ 從間隙估算毒性酒精濃度：</b>濃度(mg/dL) ≈ 間隙 × 除數。<br>
+      <span class="note">除數：甲醇 3.2、乙二醇 6.2、isopropanol 6.0、acetone 5.8、propylene glycol 7.6、乙醇 3.7。<b>這只是量級估算</b>——多種物質並存、母醇已部分代謝時都會低估。</span><br><br>
+
+      <b>◆ 採檢陷阱：</b>實測滲透壓必須<b>與電解質同一管血、同一時間</b>；不同時間點的兩個數字相減毫無意義。實測務求<b>冰點下降法</b>（蒸氣壓法測不到揮發性的醇類，會使間隙假性正常）。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">輸入 Inputs　<span class="unit">單位依台大檢驗醫學部</span></div>
+    <div class="meld-field">
+      <label class="mf-label">血鈉 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="os_na" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大參考值 136–145</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血糖 Glucose</label>
+      <div class="mf-inputwrap"><input type="number" id="os_glu" step="1" placeholder="—"><span class="unit">mg/dL</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血尿素氮 UN</label>
+      <div class="mf-inputwrap"><input type="number" id="os_un" step="0.1" placeholder="—"><span class="unit">mg/dL（即 BUN）</span></div>
+      <span class="mf-note">台大參考值 7–25</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血中酒精 Ethanol</label>
+      <div class="mf-inputwrap"><input type="number" id="os_etoh" step="1" placeholder="—"><span class="unit">mg/dL（選填）</span></div>
+      <span class="mf-note">填入即納入計算值（除數 3.7）</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">實測滲透壓</label>
+      <div class="mf-inputwrap"><input type="number" id="os_meas" step="1" placeholder="—"><span class="unit">mOsm/kg（選填，供間隙）</span></div>
+      <span class="mf-note">須與電解質同一管血、冰點下降法</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="os-out">
+      <div class="metric-label">計算滲透壓（2×Na ＋ Glu/18 ＋ UN/2.8 ＋ EtOH/3.7）</div>
+      <div class="os-row"><span class="metric-value big" id="os_calc" style="font-size:34px;">—</span><span class="os-u">mOsm/L</span></div>
+      <div class="os-d" id="os_calc_d">請輸入血鈉、血糖與尿素氮。</div>
+    </div>
+
+    <div class="os-out">
+      <div class="metric-label">有效滲透壓 Tonicity（2×Na ＋ Glu/18）</div>
+      <div class="os-row"><span class="os-v" id="os_eff">—</span><span class="os-u">mOsm/L</span><span class="os-band b0" id="os_eff_band" style="display:none;"></span></div>
+      <div class="os-d" id="os_eff_d">不含尿素；這才是決定腦細胞脹縮的那一個。</div>
+    </div>
+
+    <div class="os-out">
+      <div class="metric-label">滲透壓間隙 Osmolal gap</div>
+      <div class="os-row"><span class="metric-value big" id="os_gap" style="font-size:34px;">—</span><span class="os-u">mOsm</span><span class="os-band b0" id="os_gap_band" style="display:none;"></span></div>
+      <div class="os-d" id="os_gap_d">填入實測滲透壓即可計算。</div>
+    </div>
+
+    <div class="os-out">
+      <div class="metric-label">若間隙由單一物質造成，其約略濃度</div>
+      <div class="os-d" id="os_tox">—</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">2</span><span class="fvar">× Na (mmol/L)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1/18</span><span class="fvar">× 葡萄糖 (mg/dL)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1/2.8</span><span class="fvar">× UN (mg/dL)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1/3.7</span><span class="fvar">× 酒精 (mg/dL)（若有）</span></div>
+        <div class="formula-term"><span class="fop">−</span><span class="fcoef">實測</span><span class="fvar">× (−1)　→ 間隙 ＝ 實測 − 計算</span></div>
+      </div>
+      <div class="formula-result">＝ 間隙參考值 −2 ± 6 mOsm（Hoffman 1993）；&gt;10 視為升高</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>物質</th><th>除數（mg/dL → mOsm）</th><th>備註</th></tr>
+      <tr><td>乙醇 Ethanol</td><td>3.7</td><td>Purssell 2001 驗證值（嚴格莫耳換算為 4.6）</td></tr>
+      <tr><td>甲醇 Methanol</td><td>3.2</td><td>代謝為甲酸 → 視神經毒性、高陰離子間隙酸中毒</td></tr>
+      <tr><td>乙二醇 Ethylene glycol</td><td>6.2</td><td>代謝為乙醇酸／草酸 → 腎衰竭、草酸鈣結晶</td></tr>
+      <tr><td>Isopropanol</td><td>6.0</td><td>產生丙酮 → <b>有酮體但無酸中毒</b></td></tr>
+      <tr><td>Acetone</td><td>5.8</td><td></td></tr>
+      <tr><td>Propylene glycol</td><td>7.6</td><td>大量 lorazepam／diazepam 注射液之溶劑</td></tr>
+    </table>
+    <div class="risk-note"><b>間隙正常不排除毒性酒精中毒</b>（晚期就診、小量攝入、公式變異）。<b>間隙升高＋高陰離子間隙代謝性酸中毒＝先治療再等報告</b>（fomepizole／血液透析、毒物科諮詢）。DKA／HHS 的有效滲透壓判準見<a href="dka-hhs.html" class="ref-link">DKA／HHS</a>；高血鈉補水見<a href="water-deficit.html" class="ref-link">自由水缺乏</a>。</div>
+  </div>
+
+  <footer class="tool-footer">
+    間隙之正常值與限制 — <a href="https://pubmed.ncbi.nlm.nih.gov/8433417/" target="_blank" rel="noopener" class="ref-link">Hoffman RS, Smilkstein MJ, Howland MA, Goldfrank LR. Osmol gaps revisited: normal values and limitations. J Toxicol Clin Toxicol. 1993;31(1):81-93.</a>｜
+    乙醇之除數 — <a href="https://pubmed.ncbi.nlm.nih.gov/11719745/" target="_blank" rel="noopener" class="ref-link">Purssell RA, Pudek M, Brubacher J, Abu-Laban RB. Derivation and validation of a formula to calculate the contribution of ethanol to the osmolal gap. Ann Emerg Med. 2001;38(6):653-659.</a><br>
+    臨床判讀 — <a href="https://pubmed.ncbi.nlm.nih.gov/21794966/" target="_blank" rel="noopener" class="ref-link">Kraut JA, Xing SX. Approach to the evaluation of a patient with an increased serum osmolal gap and high-anion-gap metabolic acidosis. Am J Kidney Dis. 2011;58(3):480-484.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/18045860/" target="_blank" rel="noopener" class="ref-link">Kraut JA, Kurtz I. Toxic alcohol ingestions: clinical features, diagnosis, and management. Clin J Am Soc Nephrol. 2008;3(1):208-225.</a>｜
+    參考值：臺大醫院檢驗醫學部臨床檢驗目錄（Osmolarity(Blood)、UN、Sodium、Glucose）
+  </footer>
+</div>
+</div>
+<script>
+var OS_TOX=[
+  {n:'甲醇 Methanol', d:3.2}, {n:'乙二醇 Ethylene glycol', d:6.2},
+  {n:'Isopropanol', d:6.0}, {n:'Acetone', d:5.8}, {n:'Propylene glycol', d:7.6}
+];
+function osNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function osCalc(){
+  var na=osNum('os_na'), glu=osNum('os_glu'), un=osNum('os_un');
+  var etoh=osNum('os_etoh'), meas=osNum('os_meas');
+  var gb=document.getElementById('os_gap_band'), eb=document.getElementById('os_eff_band');
+
+  if(na===null || glu===null || un===null){
+    document.getElementById('os_calc').textContent='—';
+    document.getElementById('os_calc_d').innerHTML='請輸入血鈉、血糖與尿素氮。';
+    document.getElementById('os_eff').textContent='—'; eb.style.display='none';
+    document.getElementById('os_gap').textContent='—'; gb.style.display='none';
+    document.getElementById('os_gap_d').innerHTML='填入實測滲透壓即可計算。';
+    document.getElementById('os_tox').innerHTML='—';
+    return;
+  }
+
+  var etohTerm = etoh!==null ? etoh/3.7 : 0;
+  var calc = 2*na + glu/18 + un/2.8 + etohTerm;
+  var alt  = 1.86*na + glu/18 + un/2.8 + 9 + etohTerm;
+  var eff  = 2*na + glu/18;
+
+  document.getElementById('os_calc').textContent = calc.toFixed(0);
+  var cd = '組成：2×Na <b>'+(2*na).toFixed(0)+'</b> ＋ 葡萄糖 <b>'+(glu/18).toFixed(1)+
+           '</b> ＋ UN <b>'+(un/2.8).toFixed(1)+'</b>';
+  if(etoh!==null) cd += ' ＋ 酒精 <b>'+etohTerm.toFixed(1)+'</b>（除數 3.7；若用 4.6 則為 '+(etoh/4.6).toFixed(1)+'）';
+  cd += '。<br>另一條公式（1.86×Na ＋ … ＋ 9）＝ <b>'+alt.toFixed(0)+'</b> mOsm/L，'
+      + '差 '+Math.abs(alt-calc).toFixed(0)+' mOsm——<b>間隙會隨公式而變</b>。';
+  document.getElementById('os_calc_d').innerHTML = cd;
+
+  document.getElementById('os_eff').textContent = eff.toFixed(0);
+  var et,ecls;
+  if(eff>320){ et='顯著高滲（&gt;320）'; ecls='b3'; }
+  else if(eff>300){ et='高滲（&gt;300）'; ecls='b2'; }
+  else if(eff<275){ et='低滲（&lt;275）'; ecls='b2'; }
+  else { et='正常範圍'; ecls='b0'; }
+  eb.style.display=''; eb.textContent=et; eb.className='os-band '+ecls;
+  var ed = '不含尿素。<b>有效滲透壓 &gt;300 mOsm/kg 是 HHS 的判準之一</b>（見 DKA／HHS 頁），也是決定血鈉與滲透壓矯正速率的依據。';
+  if(un/2.8 > 15) ed += ' 本例的尿素貢獻達 <b>'+(un/2.8).toFixed(0)+' mOsm</b>——<b>總滲透壓被尿素推高，但這部分不造成有效滲透梯度</b>。';
+  document.getElementById('os_eff_d').innerHTML = ed;
+
+  if(meas===null){
+    document.getElementById('os_gap').textContent='—'; gb.style.display='none';
+    document.getElementById('os_gap_d').innerHTML='填入實測滲透壓即可計算間隙（須與電解質同一管血）。';
+    document.getElementById('os_tox').innerHTML='—';
+    return;
+  }
+
+  var gap = meas - calc;
+  document.getElementById('os_gap').textContent = gap.toFixed(0);
+  var gt,gcls;
+  if(gap>10){ gt='升高（&gt;10）'; gcls='b3'; }
+  else if(gap>=-8 && gap<=10){ gt='在參考範圍內'; gcls='b0'; }
+  else { gt='偏負值'; gcls='b2'; }
+  gb.style.display=''; gb.textContent=gt; gb.className='os-band '+gcls;
+
+  var d = '間隙 ＝ 實測 '+meas.toFixed(0)+' − 計算 '+calc.toFixed(0)+' ＝ <b>'+gap.toFixed(0)+' mOsm</b>。'
+        + '（Hoffman 1993 之參考值 −2 ± 6）';
+  if(gap>10){
+    d += '<br><b>間隙升高。</b>下一步：'
+      + '<ul><li>驗血氣與陰離子間隙——<b>同時有高陰離子間隙代謝性酸中毒者，先當甲醇／乙二醇處理</b>（fomepizole、必要時血液透析），不要等確認報告。</li>'
+      + '<li>無酸中毒者想：乙醇、isopropanol、mannitol、<b>propylene glycol</b>（大量 lorazepam／diazepam 注射）、TURP 甘胺酸沖洗液、嚴重高血脂或高蛋白。</li>'
+      + '<li>諮詢毒物科；同時保留檢體送藥毒物濃度。</li></ul>';
+    if(etoh===null) d += '<b>尚未填入血中酒精</b>——若病人可能飲酒，酒精本身即可造成明顯間隙，應先測酒精濃度再判斷是否仍有「殘餘間隙」。';
+    else d += '已扣除酒精貢獻（'+etohTerm.toFixed(1)+' mOsm），故此為<b>殘餘間隙</b>。';
+  } else if(gap < -10){
+    d += '<br><b>間隙明顯偏負，通常代表資料本身有問題</b>，而不是生理現象：'
+      + '<ul><li>實測滲透壓與電解質<b>不是同一管血／同一時間</b>（最常見）。</li>'
+      + '<li>已填入的酒精濃度<b>並非該次採血的值</b>，導致計算值被高估。</li>'
+      + '<li>實測或計算欄位的單位／數值輸入錯誤，或檢驗誤差。</li></ul>'
+      + '請先核對採檢時間與數值，再解讀間隙。';
+  } else {
+    d += '<br><b>間隙未升高不等於沒有毒性酒精。</b>Hoffman 的原始結論即為「小的間隙不可用來排除毒性酒精攝入」；'
+      + '<b>晚期就診</b>（母醇已代謝，此時表現為高陰離子間隙酸中毒）、小量攝入、以及公式本身的變異都會產生正常間隙。'
+      + '有臨床懷疑就驗血氣、陰離子間隙與藥毒物濃度。';
+  }
+  document.getElementById('os_gap_d').innerHTML = d;
+
+  if(gap>10){
+    var rows = OS_TOX.map(function(x){
+      return x.n+' ≈ <b>'+(gap*x.d).toFixed(0)+'</b> mg/dL';
+    }).join('｜');
+    document.getElementById('os_tox').innerHTML = rows
+      + '<span class="note">量級估算而已：多種物質並存、母醇已部分代謝時皆會低估。乙二醇與甲醇的治療門檻不靠這個數字決定。</span>';
+  } else {
+    document.getElementById('os_tox').innerHTML = '間隙未升高，不做此換算。';
+  }
+}
+document.querySelectorAll('#view-osmolality input')
+  .forEach(function(el){ el.addEventListener('input',osCalc); el.addEventListener('change',osCalc); });
+osCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

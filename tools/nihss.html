@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIHSS · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  /* 15 個項目：每列＝編號＋名稱＋下拉＋該項分數 */
+  .ni-item{display:flex; align-items:center; gap:9px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
+  .ni-item:last-child{border-bottom:none;}
+  .ni-n{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent); min-width:26px;}
+  .ni-name{font-size:13.5px; min-width:132px; flex:0 0 auto;}
+  .ni-name .en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); display:block;}
+  .ni-item select{flex:1; min-width:210px; padding:7px 9px; border:1px solid var(--line); border-radius:2px;
+        background:var(--field-bg); color:var(--ink); font-size:13px;}
+  .ni-p{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent);
+        background:var(--accent-soft); border-radius:2px; padding:2px 7px; min-width:26px; text-align:center;}
+  .ni-p.un{color:var(--accent2); background:var(--accent2-soft);}
+  .ni-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .ni-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .ni-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .ni-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .ni-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .ni-band.b1{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
+  .ni-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .ni-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-nihss">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Neurology Scoring Tool</div>
+      <h1>NIHSS</h1>
+      <div class="sub">NIH Stroke Scale — 15 個項目、0–42 分（Brott 1989）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-nihss'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>治療決策看的是「有沒有失能性缺損」，不是 NIHSS 的高低。</b>NIHSS 的用途是<b>量化嚴重度以便監測變化、交班溝通與試驗分層</b>；輕分數但影響功能者仍應考慮溶栓，非失能的輕症則改用雙重抗血小板。急性缺血性中風的處置請見<a href="stroke.html" class="ref-link">缺血性中風</a>頁。</p>
+      <p><b>NIHSS 對左半球病灶偏重。</b>語言相關項目（1b、1c、9、10）合計 9 分，忽略與視野只有 4 分；<b>右半球與後循環中風的分數會系統性偏低</b>——基底動脈阻塞可能只得 2–3 分卻預後極差。低分數<b>不能</b>當作「病灶不大」或「不必做血管影像」的理由。</p>
+      <div class="lede-foot">評分規則：<b>照題目順序做，不要回頭改</b>；記錄病人「實際做到」的，不是你認為他能做到的；只有 5a／5b／6a／6b（截肢或關節固定）、7（同前）與 10（插管或其他物理障礙）可標 <b>UN</b>，UN <b>不計入總分</b>，本頁會另外標示。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>各項目的操作要點、UN 的用法與分數分層 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 施測要點：</b><br>
+      <div class="dot-line">・<b>1b 意識程度問題</b>：只問<b>月份</b>與<b>年齡</b>。插管、嚴重構音障礙、非語言障礙造成的無法作答＝1 分；失語或無反應＝2 分。</div>
+      <div class="dot-line">・<b>1c 意識程度指令</b>：睜眼／閉眼，以及<b>非麻痺側</b>手的握放。若無法執行可示範，記錄實際表現。</div>
+      <div class="dot-line">・<b>2 凝視</b>：只測<b>水平</b>眼球運動。孤立性周邊眼運動神經麻痺（III／IV／VI）計 1 分。</div>
+      <div class="dot-line">・<b>5 上肢</b>：坐姿 90°、臥姿 45°，維持 <b>10 秒</b>；<b>6 下肢</b>：臥姿 30°，維持 <b>5 秒</b>。左右各自計分。</div>
+      <div class="dot-line">・<b>7 肢體協調</b>：指鼻與腳跟脛骨試驗，兩側都測；<b>只有在明顯不成比例於肌力缺損時才算陽性</b>。無法理解或肢體癱瘓者計 0。</div>
+      <div class="dot-line">・<b>9 語言</b>與 <b>10 構音</b>是<b>兩件事</b>：語言看內容（命名、閱讀、描述），構音只看發音清晰度。</div>
+      <div class="dot-line">・<b>11 忽略</b>：需有足夠資訊才判定；<b>失語但看得出注意兩側者計 0</b>。</div><br>
+
+      <b>◆ UN（無法測試）：</b>僅限 5a／5b／6a／6b／7 的<b>截肢或關節固定</b>，與 10 的<b>插管或其他物理障礙</b>。UN <b>不計入總分</b>，也不可當作 0 分——它代表這一項的資訊缺失，因此<b>兩次評分之間若 UN 項目改變，總分不可直接比較</b>。<br><br>
+
+      <b>◆ 分數分層（常用慣例，非原始論文所定）：</b><br>
+      <div class="dot-line">・0：無中風症狀；1–4：輕度；5–15：中度；16–20：中至重度；21–42：重度。</div>
+      <span class="note">這組分層來自 NIH／臨床試驗的通用習慣，Brott 1989 原文並未定義切點。原文的重點是<b>信度</b>——15 項量表在不同評分者之間有良好一致性（多數項目 kappa 中等以上），因此適合用來追蹤同一病人的變化。</span><br><br>
+
+      <b>◆ 分數會改變什麼（不是門檻，而是提示）：</b><br>
+      <div class="dot-line">・<b>NIHSS 快速上升</b>：優先考慮出血轉化、腦水腫、再阻塞或癲癇——<b>立即重做影像</b>。</div>
+      <div class="dot-line">・<b>分數高</b>與大血管阻塞相關，但<b>低分不排除 LVO</b>；是否做 CTA 依臨床與影像判斷，不以 NIHSS 為關卡。</div>
+      <div class="dot-line">・<b>後循環症狀</b>（意識改變、複視、眩暈、四肢無力、構音障礙）在 NIHSS 上表現不足，警覺度要另外拉高。</div>
+      <span class="note">溶栓與取栓的適應症、時間窗與劑量請見<a href="stroke.html" class="ref-link">缺血性中風</a>頁；本頁不重複列出。</span>
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">意識 Consciousness</div>
+    <div class="ni-item">
+      <span class="ni-n">1a</span><span class="ni-name">意識程度<span class="en">LOC</span></span>
+      <select class="ni-s" id="ni_1a">
+        <option value="0">0　清醒，反應靈敏</option>
+        <option value="1">1　嗜睡，輕微刺激即可喚醒並服從指令</option>
+        <option value="2">2　需重複刺激才注意，或需強烈／疼痛刺激才有非刻板動作</option>
+        <option value="3">3　僅有反射性動作或自主神經反應，或完全無反應、鬆軟、無反射</option>
+      </select>
+      <span class="ni-p" id="ni_p_1a">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">1b</span><span class="ni-name">意識程度問題<span class="en">LOC questions</span></span>
+      <select class="ni-s" id="ni_1b">
+        <option value="0">0　兩題（月份、年齡）皆正確</option>
+        <option value="1">1　一題正確</option>
+        <option value="2">2　兩題皆錯</option>
+      </select>
+      <span class="ni-p" id="ni_p_1b">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">1c</span><span class="ni-name">意識程度指令<span class="en">LOC commands</span></span>
+      <select class="ni-s" id="ni_1c">
+        <option value="0">0　兩項（睜閉眼、握放非麻痺側手）皆完成</option>
+        <option value="1">1　一項完成</option>
+        <option value="2">2　兩項皆未完成</option>
+      </select>
+      <span class="ni-p" id="ni_p_1c">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">眼球與顏面 Gaze · Visual · Face</div>
+    <div class="ni-item">
+      <span class="ni-n">2</span><span class="ni-name">最佳凝視<span class="en">Best gaze</span></span>
+      <select class="ni-s" id="ni_2">
+        <option value="0">0　正常</option>
+        <option value="1">1　部分凝視麻痺（含孤立性周邊眼運動神經麻痺）</option>
+        <option value="2">2　強迫偏移或完全凝視麻痺，頭眼反射無法克服</option>
+      </select>
+      <span class="ni-p" id="ni_p_2">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">3</span><span class="ni-name">視野<span class="en">Visual fields</span></span>
+      <select class="ni-s" id="ni_3">
+        <option value="0">0　無視野缺損</option>
+        <option value="1">1　部分半側視野缺損（含象限缺損）</option>
+        <option value="2">2　完全半側視野缺損</option>
+        <option value="3">3　雙側視野缺損（全盲，含皮質盲）</option>
+      </select>
+      <span class="ni-p" id="ni_p_3">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">4</span><span class="ni-name">顏面麻痺<span class="en">Facial palsy</span></span>
+      <select class="ni-s" id="ni_4">
+        <option value="0">0　正常對稱</option>
+        <option value="1">1　輕微（鼻唇溝變平、微笑不對稱）</option>
+        <option value="2">2　部分（下半臉完全或近乎完全麻痺）</option>
+        <option value="3">3　完全（單側或雙側上下臉皆無動作）</option>
+      </select>
+      <span class="ni-p" id="ni_p_4">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">運動 Motor　<span class="unit">左右各自計分</span></div>
+    <div class="ni-item">
+      <span class="ni-n">5a</span><span class="ni-name">左上肢<span class="en">Left arm · 90°/45° × 10 s</span></span>
+      <select class="ni-s" id="ni_5a">
+        <option value="0">0　無下墜，維持 10 秒</option>
+        <option value="1">1　下墜但未觸床</option>
+        <option value="2">2　有抗重力，但無法達到或維持角度，落至床面</option>
+        <option value="3">3　無法抗重力，肢體落下</option>
+        <option value="4">4　完全無動作</option>
+        <option value="UN">UN　截肢或關節固定（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_5a">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">5b</span><span class="ni-name">右上肢<span class="en">Right arm</span></span>
+      <select class="ni-s" id="ni_5b">
+        <option value="0">0　無下墜，維持 10 秒</option>
+        <option value="1">1　下墜但未觸床</option>
+        <option value="2">2　有抗重力，但無法達到或維持角度，落至床面</option>
+        <option value="3">3　無法抗重力，肢體落下</option>
+        <option value="4">4　完全無動作</option>
+        <option value="UN">UN　截肢或關節固定（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_5b">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">6a</span><span class="ni-name">左下肢<span class="en">Left leg · 30° × 5 s</span></span>
+      <select class="ni-s" id="ni_6a">
+        <option value="0">0　無下墜，維持 5 秒</option>
+        <option value="1">1　下墜但未觸床</option>
+        <option value="2">2　有抗重力，但無法達到或維持角度，落至床面</option>
+        <option value="3">3　無法抗重力，肢體落下</option>
+        <option value="4">4　完全無動作</option>
+        <option value="UN">UN　截肢或關節固定（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_6a">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">6b</span><span class="ni-name">右下肢<span class="en">Right leg</span></span>
+      <select class="ni-s" id="ni_6b">
+        <option value="0">0　無下墜，維持 5 秒</option>
+        <option value="1">1　下墜但未觸床</option>
+        <option value="2">2　有抗重力，但無法達到或維持角度，落至床面</option>
+        <option value="3">3　無法抗重力，肢體落下</option>
+        <option value="4">4　完全無動作</option>
+        <option value="UN">UN　截肢或關節固定（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_6b">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">7</span><span class="ni-name">肢體協調<span class="en">Limb ataxia</span></span>
+      <select class="ni-s" id="ni_7">
+        <option value="0">0　無</option>
+        <option value="1">1　一肢有</option>
+        <option value="2">2　兩肢有</option>
+        <option value="UN">UN　截肢或關節固定（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_7">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">感覺與語言 Sensory · Language · Neglect</div>
+    <div class="ni-item">
+      <span class="ni-n">8</span><span class="ni-name">感覺<span class="en">Sensory</span></span>
+      <select class="ni-s" id="ni_8">
+        <option value="0">0　正常，無感覺喪失</option>
+        <option value="1">1　輕至中度喪失（針刺較不尖或變鈍，但知道被碰觸）</option>
+        <option value="2">2　重度或完全喪失（臉、手臂、腿皆不知被碰觸）</option>
+      </select>
+      <span class="ni-p" id="ni_p_8">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">9</span><span class="ni-name">最佳語言<span class="en">Best language</span></span>
+      <select class="ni-s" id="ni_9">
+        <option value="0">0　無失語</option>
+        <option value="1">1　輕至中度失語（可溝通但流暢度或理解有缺損）</option>
+        <option value="2">2　重度失語（僅片段表達，需大量推測）</option>
+        <option value="3">3　緘默、全失語，無可用言語或聽覺理解</option>
+      </select>
+      <span class="ni-p" id="ni_p_9">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">10</span><span class="ni-name">構音<span class="en">Dysarthria</span></span>
+      <select class="ni-s" id="ni_10">
+        <option value="0">0　正常</option>
+        <option value="1">1　輕至中度（部分字詞不清，但可被理解）</option>
+        <option value="2">2　重度（口齒不清到無法理解），或緘默／無語</option>
+        <option value="UN">UN　插管或其他物理障礙（不計入總分）</option>
+      </select>
+      <span class="ni-p" id="ni_p_10">0</span>
+    </div>
+    <div class="ni-item">
+      <span class="ni-n">11</span><span class="ni-name">忽略<span class="en">Extinction / inattention</span></span>
+      <select class="ni-s" id="ni_11">
+        <option value="0">0　無異常</option>
+        <option value="1">1　一種感覺形式的忽略或消退（視、觸、聽、空間或自身）</option>
+        <option value="2">2　深度半側忽略，或超過一種形式的消退</option>
+      </select>
+      <span class="ni-p" id="ni_p_11">0</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="ni-out">
+      <div class="metric-label">NIHSS 總分</div>
+      <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <span class="metric-value big" id="ni_total">0</span>
+        <span class="ni-band b0" id="ni_band">無中風症狀</span>
+      </div>
+      <div class="ni-d" id="ni_d">全部項目 0 分。0 分不代表沒有中風——後循環與右半球病灶在本量表上可能完全不顯現。</div>
+    </div>
+
+    <div class="ni-out">
+      <div class="metric-label">分項摘要</div>
+      <div class="ni-d" id="ni_break">—</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>總分</th><th>常用分層</th></tr>
+      <tr><td>0</td><td>無中風症狀</td></tr>
+      <tr><td>1–4</td><td>輕度中風</td></tr>
+      <tr><td>5–15</td><td>中度中風</td></tr>
+      <tr><td>16–20</td><td>中至重度中風</td></tr>
+      <tr><td>21–42</td><td>重度中風</td></tr>
+    </table>
+    <div class="risk-note">分層為 NIH／臨床試驗的通用慣例，<b>Brott 1989 原文並未定義切點</b>。本量表<b>語言項目權重高（合計 9 分）、忽略與視野僅 4 分</b>，右半球與後循環中風分數系統性偏低。<b>治療與否看的是失能性缺損，不是分數</b>——見<a href="stroke.html" class="ref-link">缺血性中風</a>。</div>
+  </div>
+
+  <footer class="tool-footer">
+    原始量表 — <a href="https://pubmed.ncbi.nlm.nih.gov/2749846/" target="_blank" rel="noopener" class="ref-link">Brott T, Adams HP Jr, Olinger CP, et al. Measurements of acute cerebral infarction: a clinical examination scale. Stroke. 1989;20(7):864-870.</a>｜
+    處置依據 — <a href="https://pubmed.ncbi.nlm.nih.gov/41582814/" target="_blank" rel="noopener" class="ref-link">Prabhakaran S, et al. 2026 AHA/ASA Guideline for the Early Management of Acute Ischemic Stroke. Stroke. 2026.</a>
+  </footer>
+</div>
+</div>
+<script>
+var NI_IDS=['1a','1b','1c','2','3','4','5a','5b','6a','6b','7','8','9','10','11'];
+var NI_NAME={'1a':'意識','1b':'意識問題','1c':'意識指令','2':'凝視','3':'視野','4':'顏面',
+             '5a':'左上肢','5b':'右上肢','6a':'左下肢','6b':'右下肢','7':'協調',
+             '8':'感覺','9':'語言','10':'構音','11':'忽略'};
+
+function niCalc(){
+  var total=0, un=[], nz=[];
+  NI_IDS.forEach(function(k){
+    var v=document.getElementById('ni_'+k).value;
+    var p=document.getElementById('ni_p_'+k);
+    if(v==='UN'){
+      p.textContent='UN'; p.className='ni-p un';
+      un.push(k);
+    } else {
+      var n=parseInt(v,10);
+      p.textContent=n; p.className='ni-p';
+      total+=n;
+      if(n>0) nz.push(NI_NAME[k]+' '+n);
+    }
+  });
+  document.getElementById('ni_total').textContent=total;
+
+  var band=document.getElementById('ni_band'), t,cls;
+  if(total===0){ t='無中風症狀'; cls='b0'; }
+  else if(total<=4){ t='輕度 Minor'; cls='b1'; }
+  else if(total<=15){ t='中度 Moderate'; cls='b2'; }
+  else if(total<=20){ t='中至重度 Moderate-severe'; cls='b3'; }
+  else { t='重度 Severe'; cls='b3'; }
+  band.textContent=t; band.className='ni-band '+cls;
+
+  var d='總分 <b>'+total+'</b> 分（'+t+'）。';
+  if(total===0) d+=' <b>0 分不代表沒有中風</b>——後循環與右半球病灶在本量表上可能完全不顯現。';
+  else if(total<=5) d+=' 分數低時，關鍵問題是「<b>這個缺損是否造成失能</b>」（例如優勢手無力、失語、無法行走）：失能者仍應考慮溶栓，非失能者改用雙重抗血小板。';
+  if(total>=6) d+=' 分數偏高與<b>大血管阻塞</b>相關，但<b>低分不排除</b>；血管影像依臨床判斷安排。';
+  if(un.length) d+=' <b>有 '+un.length+' 項標為 UN（'+un.join('、')+'），未計入總分</b>——與前次評分比較時，UN 項目若不同則兩次總分不可直接相比。';
+  d+='<br><b>分數快速上升</b>時優先考慮出血轉化、腦水腫、再阻塞或癲癇，應立即重做影像。';
+  document.getElementById('ni_d').innerHTML=d;
+
+  document.getElementById('ni_break').innerHTML = nz.length
+    ? '有分項目：'+nz.join('、')+'。'
+    : '所有可測項目皆為 0 分。';
+}
+document.querySelectorAll('#view-nihss select')
+  .forEach(function(el){ el.addEventListener('change',niCalc); el.addEventListener('input',niCalc); });
+niCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

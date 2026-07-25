@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校正鈉／校正鈣 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .cl-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .cl-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .cl-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .cl-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .cl-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .cl-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .cl-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .cl-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .cl-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .cl-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-corrected-labs">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">General Calculation Tool</div>
+      <h1>校正鈉／校正鈣</h1>
+      <div class="sub">高血糖之校正鈉（Katz 1.6 與 Hillier 2.4 並列）· 低白蛋白之校正鈣（Payne）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-corrected-labs'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>校正鈉的係數有兩個版本，差一倍。</b>教科書沿用的 <b>1.6</b> 來自 Katz 1973 的理論推算；Hillier 1999 以真人輸注葡萄糖實測，得到的係數是 <b>2.4</b>，且在<b>血糖 &gt; 400 mg/dL 時係數更大（非線性）</b>。本頁兩者並列——差異在高血糖時可達數 mmol/L，足以改變「這是真的低血鈉還是稀釋造成的」這個判斷。</p>
+      <p><b>校正鈣是估計值，不是量測值。</b>Payne 公式在門診、白蛋白只是輕度偏低的族群還算堪用；在<b>危重症與慢性腎病</b>族群，多份研究顯示它與實測游離鈣的一致性差，可能同時產生偽低血鈣與偽正常。<b>只要臨床決策會依這個數字改變（補鈣、停鈣、判定副甲狀腺問題），就直接驗游離鈣</b>——台大有 <span class="mono">Plasma free Ca++ (STAT)</span>（iCa，參考值 1.15–1.33 mmol/L，需 4°C 冷藏或冰浴送檢）。</p>
+      <div class="lede-foot">台大檢驗醫學部的<b>血鈣單位是 mmol/L</b>（參考值 2.15–2.58），不是 mg/dL；本頁預設 mmol/L 並可切換。血鈉單位 mmol/L（136–145）、白蛋白 g/dL（3.5–5.7）、血糖 mg/dL。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、係數之爭、假性低血鈉與游離鈣的時機 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 高血糖之校正鈉：</b>校正 Na ＝ 實測 Na ＋ <b>係數</b> × [ 血糖(mg/dL) − 100 ] ÷ 100<br>
+      <div class="dot-line">・<b>Katz 1973（係數 1.6）</b>：以葡萄糖在細胞外液的滲透效應理論推算，是教科書與多數指引沿用的版本。</div>
+      <div class="dot-line">・<b>Hillier 1999（係數 2.4）</b>：以健康受試者輸注葡萄糖至血糖 ~600 mg/dL 實測，整體最適係數為 2.4；<b>血糖 &gt;400 mg/dL 的區段係數更高</b>，故本頁在此區間會額外標示。</div>
+      <span class="note">校正鈉回答的是「<b>把葡萄糖造成的水分轉移扣掉之後，這個病人的鈉是高、正常還是低</b>」。DKA／HHS 常見「實測血鈉正常但校正後偏高」，代表<b>真正的自由水缺乏</b>，補液與矯正速率必須照高血鈉的規則走，見<a href="../pathways/dka-hhs.html" class="ref-link">高血糖危象</a>與<a href="water-deficit.html" class="ref-link">自由水缺乏</a>。</span><br><br>
+
+      <b>◆ 不要把三件事混在一起：</b><br>
+      <div class="dot-line">・<b>校正鈉</b>（本頁）：扣掉高血糖造成的稀釋。</div>
+      <div class="dot-line">・<b>有效滲透壓（tonicity）</b>＝ 2×Na ＋ 葡萄糖÷18：決定腦細胞會不會腫或縮，是 DKA／HHS 判準與矯正速率的依據，見<a href="osmolality.html" class="ref-link">血清滲透壓</a>。</div>
+      <div class="dot-line">・<b>假性低血鈉（pseudohyponatremia）</b>：嚴重高血脂或高蛋白（如多發性骨髓瘤、IVIG）使血漿水分比例下降，<b>間接離子選擇電極法</b>會低估血鈉，但<b>實測血漿滲透壓正常</b>。此時不需校正、也不需治療——線索就是「低血鈉但滲透壓不低」。</div><br>
+
+      <b>◆ 低白蛋白之校正鈣（Payne 1973）：</b><br>
+      <div class="dot-line">・mmol/L 版：校正 Ca ＝ 實測 Ca ＋ <b>0.02</b> × [ 40 − 白蛋白(g/L) ]，等同 ＋ 0.2 × [ 4.0 − 白蛋白(g/dL) ]。</div>
+      <div class="dot-line">・mg/dL 版：校正 Ca ＝ 實測 Ca ＋ <b>0.8</b> × [ 4.0 − 白蛋白(g/dL) ]。</div>
+      <span class="note">兩式是同一條公式的單位換算（1 mmol/L Ca ≈ 4.008 mg/dL）。公式把白蛋白的參考錨點固定在 <b>4.0 g/dL</b>；若某實驗室族群的平均白蛋白並非 4.0，校正就會系統性偏移一個固定量。</span><br><br>
+
+      <b>◆ 什麼時候一定要驗游離鈣，不能用校正值：</b><br>
+      <div class="dot-line">・<b>危重症、敗血症、大量輸液或輸血</b>（檸檬酸鹽螯合鈣）。</div>
+      <div class="dot-line">・<b>以檸檬酸鹽做區域性抗凝的 CRRT</b>：總鈣可能正常或偏高，游離鈣卻低——只看總鈣會漏掉。</div>
+      <div class="dot-line">・<b>酸鹼異常</b>：鹼中毒使鈣與白蛋白結合增加、游離鈣下降（總鈣不變）；酸中毒相反。校正公式完全不含 pH。</div>
+      <div class="dot-line">・<b>慢性腎病</b>、明顯白蛋白異常、副甲狀腺疾病之判定、或準備給鈣的決策。</div>
+      <span class="note">校正鈣的用途已被縮小到「<b>白蛋白輕度偏低、臨床穩定、只想知道總鈣偏低是否只是白蛋白造成</b>」這一種情境。</span><br><br>
+
+      <b>◆ 台大參考值與單位：</b>Ca 2.15–2.58 mmol/L；iCa（Plasma free Ca++）1.15–1.33 mmol/L；Albumin 3.5–5.7 g/dL；Na 136–145 mmol/L；Glucose（AC）70–100 mg/dL。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">高血糖之校正鈉 Corrected Sodium</div>
+    <div class="meld-field">
+      <label class="mf-label">實測血鈉 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="cl_na" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大參考值 136–145</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血糖 Glucose</label>
+      <div class="mf-inputwrap"><input type="number" id="cl_glu" step="1" placeholder="—"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">≤100 時無需校正</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="cl-out">
+      <div class="metric-label">校正鈉（Hillier 係數 2.4）</div>
+      <div class="cl-row"><span class="metric-value big" id="cl_na24" style="font-size:34px;">—</span><span class="cl-u">mmol/L</span><span class="cl-band b0" id="cl_na_band" style="display:none;"></span></div>
+      <div class="cl-d" id="cl_na_d">請輸入血鈉與血糖。</div>
+    </div>
+    <div class="cl-out">
+      <div class="metric-label">校正鈉（Katz 係數 1.6）</div>
+      <div class="cl-row"><span class="cl-v" id="cl_na16">—</span><span class="cl-u">mmol/L</span></div>
+      <div class="cl-d" id="cl_na16_d">教科書與多數指引沿用的版本。</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">Na</span><span class="fvar">實測值 (mmol/L)</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">1.6 或 2.4</span><span class="fvar">× (血糖 mg/dL − 100) ÷ 100</span></div>
+      </div>
+      <div class="formula-result">＝ 校正鈉（扣除高血糖造成的稀釋）</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">低白蛋白之校正鈣 Corrected Calcium</div>
+    <div class="meld-field">
+      <label class="mf-label">血鈣單位</label>
+      <div class="mf-inputwrap"><select id="cl_caunit">
+        <option value="mmol">mmol/L（台大報告單位）</option>
+        <option value="mgdl">mg/dL</option>
+      </select></div>
+      <span class="mf-note">切換後請重新確認輸入值</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">實測總鈣 Ca</label>
+      <div class="mf-inputwrap"><input type="number" id="cl_ca" step="0.01" placeholder="—"><span class="unit" id="cl_ca_u">mmol/L</span></div>
+      <span class="mf-note" id="cl_ca_note">台大參考值 2.15–2.58 mmol/L</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">白蛋白 Albumin</label>
+      <div class="mf-inputwrap"><input type="number" id="cl_alb" step="0.1" placeholder="—"><span class="unit">g/dL</span></div>
+      <span class="mf-note">台大參考值 3.5–5.7 g/dL；公式錨點固定為 4.0</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="cl-out">
+      <div class="metric-label">校正鈣（Payne）</div>
+      <div class="cl-row"><span class="metric-value big" id="cl_ca_out" style="font-size:34px;">—</span><span class="cl-u" id="cl_ca_out_u">mmol/L</span><span class="cl-band b0" id="cl_ca_band" style="display:none;"></span></div>
+      <div class="cl-d" id="cl_ca_d">請輸入總鈣與白蛋白。</div>
+    </div>
+    <div class="cl-out">
+      <div class="metric-label">另一單位對照</div>
+      <div class="cl-row"><span class="cl-v" id="cl_ca_alt">—</span><span class="cl-u" id="cl_ca_alt_u">mg/dL</span></div>
+      <div class="cl-d">換算係數：1 mmol/L ＝ 4.008 mg/dL。</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">Ca</span><span class="fvar">實測總鈣</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.2</span><span class="fvar">× (4.0 − 白蛋白 g/dL)　→ 得 mmol/L</span></div>
+        <div class="formula-term"><span class="fop">+</span><span class="fcoef">0.8</span><span class="fvar">× (4.0 − 白蛋白 g/dL)　→ 得 mg/dL</span></div>
+      </div>
+      <div class="formula-result">＝ 校正鈣（估計值；決策前請驗游離鈣）</div>
+    </div>
+    <table class="ref">
+      <tr><th>項目</th><th>台大參考值</th><th>換算</th></tr>
+      <tr><td>總鈣 Ca</td><td>2.15–2.58 mmol/L</td><td>8.6–10.3 mg/dL</td></tr>
+      <tr><td>游離鈣 iCa</td><td>1.15–1.33 mmol/L</td><td>4.6–5.3 mg/dL</td></tr>
+      <tr><td>白蛋白</td><td>3.5–5.7 g/dL</td><td>35–57 g/L</td></tr>
+    </table>
+    <div class="risk-note">校正鈣在<b>危重症、CKD、檸檬酸鹽抗凝 CRRT、酸鹼異常</b>下不可靠（公式不含 pH）。<b>要據以給鈣或停鈣，請直接驗游離鈣</b>（台大 Plasma free Ca++，4°C 冷藏或冰浴送檢）。</div>
+  </div>
+
+  <footer class="tool-footer">
+    校正鈉 1.6 — <a href="https://pubmed.ncbi.nlm.nih.gov/4763428/" target="_blank" rel="noopener" class="ref-link">Katz MA. Hyperglycemia-induced hyponatremia—calculation of expected serum sodium depression. N Engl J Med. 1973;289(16):843-844.</a>｜
+    校正鈉 2.4 — <a href="https://pubmed.ncbi.nlm.nih.gov/10225241/" target="_blank" rel="noopener" class="ref-link">Hillier TA, Abbott RD, Barrett EJ. Hyponatremia: evaluating the correction factor for hyperglycemia. Am J Med. 1999;106(4):399-403.</a><br>
+    校正鈣 — <a href="https://pubmed.ncbi.nlm.nih.gov/4758544/" target="_blank" rel="noopener" class="ref-link">Payne RB, Little AJ, Williams RB, Milner JR. Interpretation of serum calcium in patients with abnormal serum proteins. Br Med J. 1973;4(5893):643-646.</a>｜
+    校正鈣之限制 — <a href="https://pubmed.ncbi.nlm.nih.gov/28613958/" target="_blank" rel="noopener" class="ref-link">Ridefelt P, Helmersson-Karlqvist J. Albumin adjustment of total calcium does not improve the estimation of calcium status. Scand J Clin Lab Invest. 2017;77(6):442-447.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/31473684/" target="_blank" rel="noopener" class="ref-link">Pekar JD, Grzych G, Durand G, et al. Calcium state estimation by total calcium: the evidence to end the never-ending story. Clin Chem Lab Med. 2020;58(2):222-231.</a><br>
+    單位與參考值：臺大醫院檢驗醫學部臨床檢驗目錄（Calcium、Plasma free Ca++、Albumin、Sodium、Glucose）
+  </footer>
+</div>
+</div>
+<script>
+var CL_F = 4.008;   /* 1 mmol/L Ca = 4.008 mg/dL */
+function clNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function clCalc(){
+  /* ─────── 校正鈉 ─────── */
+  var na=clNum('cl_na'), glu=clNum('cl_glu');
+  var nb=document.getElementById('cl_na_band');
+  if(na!==null && glu!==null){
+    var d24 = 2.4*(glu-100)/100, d16 = 1.6*(glu-100)/100;
+    var c24 = na + d24, c16 = na + d16;
+    document.getElementById('cl_na24').textContent = c24.toFixed(1);
+    document.getElementById('cl_na16').textContent = c16.toFixed(1);
+
+    var t,cls;
+    if(c24<136){ t='校正後仍偏低'; cls='b3'; }
+    else if(c24<=145){ t='校正後正常範圍'; cls='b0'; }
+    else { t='校正後偏高'; cls='b3'; }
+    nb.style.display=''; nb.textContent=t; nb.className='cl-band '+cls;
+
+    var d='血糖每高於 100 mg/dL 的部分，以係數 2.4 回加：＋<b>'+d24.toFixed(1)+'</b> mmol/L。';
+    if(glu<=100) d='血糖未超過 100 mg/dL，<b>不需校正</b>；實測值即為判讀值。';
+    else {
+      if(glu>400) d+=' <b>血糖 &gt;400 mg/dL：Hillier 的資料顯示此區段的係數比 2.4 更大</b>，校正值可能仍低估。';
+      if(na<136 && c24>=136) d+=' <b>實測為低血鈉，但校正後落在正常範圍</b>——這是高血糖造成的稀釋（轉移性低血鈉），不是缺鈉。';
+      if(c24>145) d+=' <b>校正後偏高代表真正的自由水缺乏</b>，補液與矯正速率請照高血鈉處理（見自由水缺乏頁）。';
+      d+='<br>兩式差 <b>'+Math.abs(c24-c16).toFixed(1)+'</b> mmol/L。';
+    }
+    document.getElementById('cl_na_d').innerHTML=d;
+    document.getElementById('cl_na16_d').innerHTML='Katz 1973 的理論推算值，教科書與多數指引沿用；本頁以 Hillier 的實測係數 2.4 為主要輸出。';
+  } else {
+    document.getElementById('cl_na24').textContent='—';
+    document.getElementById('cl_na16').textContent='—';
+    nb.style.display='none';
+    document.getElementById('cl_na_d').innerHTML='請輸入血鈉與血糖。';
+  }
+
+  /* ─────── 校正鈣 ─────── */
+  var unit=document.getElementById('cl_caunit').value;
+  var mmol = unit==='mmol';
+  document.getElementById('cl_ca_u').textContent = mmol?'mmol/L':'mg/dL';
+  document.getElementById('cl_ca_note').textContent = mmol
+    ? '台大參考值 2.15–2.58 mmol/L' : '換算後參考值 8.6–10.3 mg/dL（台大以 mmol/L 報告）';
+  document.getElementById('cl_ca_out_u').textContent = mmol?'mmol/L':'mg/dL';
+  document.getElementById('cl_ca_alt_u').textContent = mmol?'mg/dL':'mmol/L';
+
+  var ca=clNum('cl_ca'), alb=clNum('cl_alb');
+  var cb=document.getElementById('cl_ca_band');
+  if(ca!==null && alb!==null){
+    /* 一律換成 mmol/L 計算，再依所選單位輸出 */
+    var caM = mmol ? ca : ca/CL_F;
+    var corrM = caM + 0.02*(40 - alb*10);
+    var out = mmol ? corrM : corrM*CL_F;
+    var alt = mmol ? corrM*CL_F : corrM;
+    document.getElementById('cl_ca_out').textContent = out.toFixed(2);
+    document.getElementById('cl_ca_alt').textContent = alt.toFixed(2);
+
+    var t2,cls2;
+    if(corrM<2.15){ t2='低血鈣'; cls2='b3'; }
+    else if(corrM<=2.58){ t2='正常範圍'; cls2='b0'; }
+    else { t2='高血鈣'; cls2='b3'; }
+    cb.style.display=''; cb.textContent=t2; cb.className='cl-band '+cls2;
+
+    var delta = corrM - caM;
+    var d2='白蛋白 '+alb.toFixed(1)+' g/dL（低於錨點 4.0 者回加）：校正量 ＋<b>'
+      +delta.toFixed(2)+'</b> mmol/L（＝'+(delta*CL_F).toFixed(2)+' mg/dL）。判讀：<b>'+t2+'</b>。';
+    if(alb>=4.0) d2='白蛋白 ≥4.0 g/dL，<b>校正不會提高數值</b>（甚至下修）；此時直接看實測總鈣即可。判讀：<b>'+t2+'</b>。';
+    if(caM<2.15 && corrM>=2.15) d2+=' <b>實測為低血鈣，校正後落在正常範圍</b>——偏低可能只是白蛋白造成，並非游離鈣不足。';
+    if(alb<2.5) d2+=' <b>白蛋白 &lt;2.5 g/dL 時公式的誤差最大</b>，此範圍請直接驗游離鈣。';
+    d2+='<br><b>本值為估計值。</b>危重症、CKD、檸檬酸鹽抗凝 CRRT 或酸鹼異常時請改驗游離鈣（iCa 1.15–1.33 mmol/L）。';
+    document.getElementById('cl_ca_d').innerHTML=d2;
+  } else {
+    document.getElementById('cl_ca_out').textContent='—';
+    document.getElementById('cl_ca_alt').textContent='—';
+    cb.style.display='none';
+    document.getElementById('cl_ca_d').innerHTML='請輸入總鈣與白蛋白。';
+  }
+}
+document.querySelectorAll('#view-corrected-labs input, #view-corrected-labs select')
+  .forEach(function(el){ el.addEventListener('input',clCalc); el.addEventListener('change',clCalc); });
+clCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

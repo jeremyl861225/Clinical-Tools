@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIB-4 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .fb-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .fb-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .fb-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .fb-v{font-family:var(--serif); font-size:22px; font-weight:600;}
+  .fb-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .fb-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .fb-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .fb-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .fb-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-fib4">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Hepatology Scoring Tool</div>
+      <h1>FIB-4</h1>
+      <div class="sub">Fibrosis-4 Index — 進行性肝纖維化的非侵入性初篩（同時列出 MASLD 與原始 HIV/HCV 兩套切點）</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-fib4'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>流通著兩套不同的切點，抄錯會改變結論。</b>原始論文（Sterling 2006）的族群是 <b>HIV／HCV 共同感染者</b>，切點為 <b>1.45／3.25</b>；而現在最常用的脂肪肝（NAFLD／MASLD）三分流用的是 <b>1.30／2.67</b>（Shah 2009，並被 AASLD 與 AGA 的照護路徑採用）。本頁兩套並列，請依病人的<b>肝病病因</b>選讀。</p>
+      <p><b>FIB-4 是排除工具，不是診斷工具。</b>低值的價值在於陰性預測（可安心排除進行性纖維化），高值只代表「應進一步做彈性造影或轉介肝膽科」，不等於已有 F3–F4。中間帶（indeterminate）約占三成的病人，<b>照路徑必須再做第二階檢查</b>，不可停在這裡。</p>
+      <div class="lede-foot">年齡是分子——<b>≥65 歲會被年齡本身推高</b>（特異度下降，建議把低風險切點改為 2.0），<b>&lt;35 歲則表現不佳</b>，兩者本頁都會標示。急性肝炎、酒精性肝炎急性期、血液疾病造成的血小板異常、抗病毒治療期間，皆不適用。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、兩套切點、年齡校正與後續路徑 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 公式：</b>FIB-4 ＝ [ 年齡(歲) × AST(U/L) ] ÷ [ 血小板(10³/µL) × √ALT(U/L) ]<br>
+      <span class="note">血小板的原始單位是 10⁹/L，與台大報告的 <b>10³/µL 數值完全相同</b>（150 × 10³/µL ＝ 150 × 10⁹/L），不需換算。台大成人參考值：血小板 150–378 × 10³/µL、AST 8–31 U/L、ALT 0–41 U/L。</span><br><br>
+
+      <b>◆ 脂肪肝（NAFLD／MASLD）三分流——AASLD／AGA 路徑：</b><br>
+      <div class="dot-line">・<b>&lt; 1.30 低風險</b>：可排除進行性纖維化。於初級照護持續控制代謝危險因子，1–3 年後再評估。</div>
+      <div class="dot-line">・<b>1.30–2.67 中間帶</b>：做第二階檢查——<b>肝臟彈性造影（VCTE／FibroScan）或 ELF 血液檢查</b>。VCTE &lt;8 kPa 視為低風險、8–12 kPa 不確定、&gt;12 kPa 高風險。</div>
+      <div class="dot-line">・<b>&gt; 2.67 高風險</b>：轉介肝膽科；視為疑似進行性纖維化處理（篩檢肝癌與門脈高壓的準備）。</div><br>
+
+      <b>◆ 原始（HIV／HCV 共同感染）切點：</b><br>
+      <div class="dot-line">・<b>&lt; 1.45</b>：排除進行性纖維化（Ishak 4–6），陰性預測值 90%。</div>
+      <div class="dot-line">・<b>&gt; 3.25</b>：確認進行性纖維化，陽性預測值 65%、特異度 97%。</div>
+      <span class="note">推導世代 n=832（APRICOT 試驗），AUROC 0.765。兩個切點之間有 <b>約 30% 的病人落在無法判定區</b>——這一點在原文即已明言。</span><br><br>
+
+      <b>◆ 年齡的干擾：</b><br>
+      <div class="dot-line">・<b>≥65 歲</b>：以 1.30 為低風險切點會產生大量偽陽性；McPherson 等建議此族群改用 <b>2.0</b>（特異度自 35% 提升至 70%）。</div>
+      <div class="dot-line">・<b>&lt;35 歲</b>：FIB-4 在此族群的敏感度不足，<b>不應單憑低值排除</b>。</div><br>
+
+      <b>◆ 不適用或會失真的情境：</b>急性肝炎與轉胺酶急性大幅上升、酒精性肝炎急性期、血液疾病或脾臟疾病造成的血小板異常、抗凝血或化學治療影響血小板、已知肝硬化（此時不需再篩檢）。<b>肝硬化的嚴重度分級請改用</b><a href="child-pugh.html" class="ref-link">Child-Pugh</a>或<a href="meld.html" class="ref-link">MELD 3.0</a>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">輸入 Inputs　<span class="unit">單位依台大檢驗醫學部</span></div>
+    <div class="meld-field">
+      <label class="mf-label">年齡 Age</label>
+      <div class="mf-inputwrap"><input type="number" id="fb_age" step="1" placeholder="—"><span class="unit">歲</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">AST (GOT)</label>
+      <div class="mf-inputwrap"><input type="number" id="fb_ast" step="1" placeholder="—"><span class="unit">U/L</span></div>
+      <span class="mf-note">台大參考值 8–31 U/L</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">ALT (GPT)</label>
+      <div class="mf-inputwrap"><input type="number" id="fb_alt" step="1" placeholder="—"><span class="unit">U/L</span></div>
+      <span class="mf-note">台大參考值 0–41 U/L</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血小板 Platelet</label>
+      <div class="mf-inputwrap"><input type="number" id="fb_plt" step="1" placeholder="—"><span class="unit">10³/µL（＝10⁹/L）</span></div>
+      <span class="mf-note">台大成人參考值 150–378</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">肝病病因 Aetiology</label>
+      <div class="mf-inputwrap"><select id="fb_ctx">
+        <option value="masld">代謝性脂肪肝 MASLD／NAFLD（用 1.30／2.67）</option>
+        <option value="viral">HIV／HCV 共同感染（用原始 1.45／3.25）</option>
+      </select></div>
+      <span class="mf-note">決定主要判讀採哪一套切點</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="fb-out">
+      <div class="metric-label">FIB-4</div>
+      <div class="fb-row"><span class="metric-value big" id="fb_val">—</span><span class="fb-band b1" id="fb_band" style="display:none;"></span></div>
+      <div class="fb-d" id="fb_d">請輸入年齡、AST、ALT 與血小板。</div>
+    </div>
+
+    <div class="fb-out">
+      <div class="metric-label">建議的下一步</div>
+      <div class="fb-d" id="fb_next" style="opacity:1;">—</div>
+    </div>
+
+    <div class="fb-out">
+      <div class="metric-label">另一套切點對照</div>
+      <div class="fb-d" id="fb_alt2">—</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">分子</span><span class="fvar">= 年齡(歲) × AST(U/L)</span></div>
+        <div class="formula-term"><span class="fop">÷</span><span class="fcoef">分母</span><span class="fvar">= 血小板(10³/µL) × √ALT(U/L)</span></div>
+      </div>
+      <div class="formula-result">＝ FIB-4</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>切點</th><th>MASLD／NAFLD</th><th>原始 HIV/HCV</th></tr>
+      <tr><td>低風險</td><td>&lt; 1.30（≥65 歲用 &lt; 2.0）</td><td>&lt; 1.45</td></tr>
+      <tr><td>中間帶</td><td>1.30–2.67</td><td>1.45–3.25</td></tr>
+      <tr><td>高風險</td><td>&gt; 2.67</td><td>&gt; 3.25</td></tr>
+    </table>
+    <div class="risk-note">FIB-4 的強項是<b>排除</b>：低值可安心觀察，高值只代表需要第二階檢查（彈性造影／ELF）或轉介，<b>不等於已診斷 F3–F4</b>。中間帶不可視為「沒事」。</div>
+  </div>
+
+  <footer class="tool-footer">
+    原始 FIB-4 — <a href="https://pubmed.ncbi.nlm.nih.gov/16729309/" target="_blank" rel="noopener" class="ref-link">Sterling RK, Lissen E, Clumeck N, et al. Development of a simple noninvasive index to predict significant fibrosis in patients with HIV/HCV coinfection. Hepatology. 2006;43(6):1317-1325.</a><br>
+    脂肪肝切點 1.30／2.67 — <a href="https://pubmed.ncbi.nlm.nih.gov/19523535/" target="_blank" rel="noopener" class="ref-link">Shah AG, Lydecker A, Murray K, et al. Comparison of noninvasive markers of fibrosis in patients with nonalcoholic fatty liver disease. Clin Gastroenterol Hepatol. 2009;7(10):1104-1112.</a><br>
+    照護路徑 — <a href="https://pubmed.ncbi.nlm.nih.gov/36727674/" target="_blank" rel="noopener" class="ref-link">Rinella ME, Neuschwander-Tetri BA, Siddiqui MS, et al. AASLD Practice Guidance on the clinical assessment and management of nonalcoholic fatty liver disease. Hepatology. 2023;77(5):1797-1835.</a>｜<a href="https://pubmed.ncbi.nlm.nih.gov/34602251/" target="_blank" rel="noopener" class="ref-link">Kanwal F, Shubrook JH, Adams LA, et al. Clinical Care Pathway for the Risk Stratification and Management of Patients With Nonalcoholic Fatty Liver Disease. Gastroenterology. 2021;161(5):1657-1669.</a><br>
+    年齡校正 — <a href="https://pubmed.ncbi.nlm.nih.gov/27725647/" target="_blank" rel="noopener" class="ref-link">McPherson S, Hardy T, Dufour JF, et al. Age as a Confounding Factor for the Accurate Non-Invasive Diagnosis of Advanced NAFLD Fibrosis. Am J Gastroenterol. 2017;112(5):740-751.</a>
+  </footer>
+</div>
+</div>
+<script>
+function fbNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function fbCalc(){
+  var age=fbNum('fb_age'), ast=fbNum('fb_ast'), alt=fbNum('fb_alt'), plt=fbNum('fb_plt');
+  var ctx=document.getElementById('fb_ctx').value;
+  var bandEl=document.getElementById('fb_band');
+
+  if(age===null||ast===null||alt===null||plt===null||alt<=0||plt<=0||age<=0){
+    document.getElementById('fb_val').textContent='—';
+    bandEl.style.display='none';
+    document.getElementById('fb_d').innerHTML='請輸入年齡、AST、ALT 與血小板。';
+    document.getElementById('fb_next').innerHTML='—';
+    document.getElementById('fb_alt2').innerHTML='—';
+    return;
+  }
+
+  var v = (age*ast)/(plt*Math.sqrt(alt));
+  document.getElementById('fb_val').textContent = v.toFixed(2);
+
+  /* 依病因選主要切點；≥65 歲的 MASLD 低風險切點改用 2.0 */
+  var lo, hi, setName, aged = (ctx==='masld' && age>=65);
+  if(ctx==='masld'){ lo = aged ? 2.0 : 1.30; hi = 2.67; setName = aged ? 'MASLD ≥65 歲（2.0／2.67）' : 'MASLD（1.30／2.67）'; }
+  else { lo = 1.45; hi = 3.25; setName = '原始 HIV/HCV（1.45／3.25）'; }
+
+  var tier, cls, next;
+  if(v < lo){
+    tier='低風險 Low'; cls='b1';
+    next = ctx==='masld'
+      ? '<b>可排除進行性纖維化。</b>不需第二階檢查；持續控制代謝危險因子（體重、血糖、血脂、酒精），<b>1–3 年後再評估</b>一次。'
+      : '<b>可排除進行性纖維化</b>（Ishak 4–6），原文陰性預測值 90%。依病毒治療計畫追蹤即可。';
+  } else if(v <= hi){
+    tier='中間帶 Indeterminate'; cls='b2';
+    next = ctx==='masld'
+      ? '<b>必須做第二階檢查</b>：肝臟彈性造影（VCTE／FibroScan）或 ELF。VCTE &lt;8 kPa → 低風險；8–12 kPa → 仍不確定，轉介肝膽科；&gt;12 kPa → 高風險。<b>不可停在這一步當成「正常」。</b>'
+      : '落在原文的<b>無法判定區</b>（推導世代約 30% 的病人在此）。需影像彈性造影或肝臟切片才能定論。';
+  } else {
+    tier='高風險 High'; cls='b3';
+    next = '<b>轉介肝膽科</b>，視為疑似進行性纖維化（F3–F4）處理：安排彈性造影／影像確認、評估門脈高壓與肝細胞癌篩檢，並檢視所有肝毒性藥物與酒精。<b>高值不等於已確診，仍需第二階檢查。</b>';
+  }
+  bandEl.style.display=''; bandEl.textContent=tier; bandEl.className='fb-band '+cls;
+
+  var d = '採用切點：<b>'+setName+'</b> → '+tier+'。';
+  if(aged) d += ' <b>已自動改用 ≥65 歲的 2.0 低風險切點</b>（1.30 在此族群偽陽性過多）。';
+  if(age<35) d += ' <b>年齡 &lt;35 歲，FIB-4 敏感度不足，低值不足以排除</b>。';
+  if(ast>10*31 || alt>10*41) d += ' <b>轉胺酶大幅升高（疑似急性肝炎）時本分數不適用。</b>';
+  if(plt<50) d += ' 血小板極低時，請先確認是否為肝病以外的原因（血液疾病、藥物、脾臟）。';
+  document.getElementById('fb_d').innerHTML = d;
+  document.getElementById('fb_next').innerHTML = next;
+
+  /* 另一套切點對照 */
+  var o;
+  if(ctx==='masld'){
+    o = '原始 HIV/HCV 切點（1.45／3.25）下為：<b>'+(v<1.45?'低風險':(v<=3.25?'無法判定':'高風險'))+'</b>。';
+    if(aged) o += '｜未做年齡校正的 MASLD 切點（1.30／2.67）下為：<b>'+(v<1.30?'低風險':(v<=2.67?'中間帶':'高風險'))+'</b>。';
+  } else {
+    o = 'MASLD 切點（1.30／2.67）下為：<b>'+(v<1.30?'低風險':(v<=2.67?'中間帶':'高風險'))+'</b>。';
+  }
+  o += '<span class="note">兩套切點來自不同族群，<b>不可混用</b>：同一個數值在兩套下可能落在不同層級。</span>';
+  document.getElementById('fb_alt2').innerHTML = o;
+}
+document.querySelectorAll('#view-fib4 input, #view-fib4 select')
+  .forEach(function(el){ el.addEventListener('input',fbCalc); el.addEventListener('change',fbCalc); });
+fbCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

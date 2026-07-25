@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eGFR（2021 CKD-EPI） · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .eg-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .eg-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .eg-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .eg-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .eg-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .eg-d{font-size:12px; line-height:1.7; margin-top:4px; opacity:.85;}
+  .eg-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .eg-band.g1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .eg-band.g2{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
+  .eg-band.g3{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .eg-band.g4{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+  .eg-used{font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+        color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:2px 7px; margin-left:6px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-egfr">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Kidney Function Tool</div>
+      <h1>eGFR</h1>
+      <div class="sub">2021 CKD-EPI creatinine ／ creatinine-cystatin C — 有填 cystatin C 即自動改用雙標記式</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-egfr'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>本頁與台大檢驗報告同一條公式。</b>台大醫院檢驗醫學部對 <b>18 歲（含）以上</b>者以 <b>2021 CKD-EPI</b> 為 eGFR 的標準公式（未滿 18 歲改用新版 Bedside Schwartz，本頁不適用）。2021 版<b>已移除人種項</b>，故不再需要「是否為黑人」的輸入。</p>
+      <p><b>有 cystatin C 就該用雙標記式。</b>creatinine-cystatin C 式的準確度優於任一單一標記（P<sub>30</sub> &gt; 90% vs 85–90%），KDIGO 2024 也建議在<b>臨床情境與肌酸酐推估值不符</b>時（極端肌肉量、營養不良、截肢、健身者、將決定重大治療如化療或移植評估）以 cystatin C 確認。本頁只要填入 cystatin C 就自動以雙標記式為主要輸出，並保留單標記值對照。</p>
+      <div class="lede-foot">eGFR 的單位是 <b>mL/min/1.73 m²</b>——已依標準體表面積校正。<b>藥物劑量調整用的是未校正的腎絲球過濾率或 Cockcroft-Gault 肌酸酐清除率</b>，體型極端者兩者可差 30% 以上，見下方定義區。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、KDIGO 分期、cystatin C 的干擾因素與藥物劑量換算 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 2021 CKD-EPI creatinine（eGFRcr）：</b><br>
+      eGFR ＝ <b>142</b> × min(Scr/κ, 1)<sup>α</sup> × max(Scr/κ, 1)<sup>−1.200</sup> × <b>0.9938</b><sup>年齡</sup> × <b>1.012</b>〔女性〕<br>
+      <span class="note">κ ＝ 0.7（女）／0.9（男）；α ＝ −0.241（女）／−0.302（男）；Scr 單位 mg/dL。</span><br><br>
+
+      <b>◆ 2021 CKD-EPI creatinine-cystatin C（eGFRcr-cys）：</b><br>
+      eGFR ＝ <b>135</b> × min(Scr/κ, 1)<sup>α</sup> × max(Scr/κ, 1)<sup>−0.544</sup> × min(Scys/0.8, 1)<sup>−0.323</sup> × max(Scys/0.8, 1)<sup>−0.778</sup> × <b>0.9961</b><sup>年齡</sup> × <b>0.963</b>〔女性〕<br>
+      <span class="note">κ ＝ 0.7（女）／0.9（男）；α ＝ −0.219（女）／−0.144（男）；Scys 單位 mg/L。<b>注意女性乘數是 0.963（小於 1），與單標記式的 1.012 方向相反</b>——這不是筆誤，兩式係數是各自獨立配適出來的。</span><br><br>
+
+      <b>◆ KDIGO GFR 分期（G1–G5）：</b><br>
+      <div class="dot-line">・G1 ≥90、G2 60–89、G3a 45–59、G3b 30–44、G4 15–29、G5 &lt;15（或已透析）。</div>
+      <span class="note"><b>單次 eGFR 下降不等於 CKD。</b>CKD 的定義是 eGFR &lt;60 或有腎損傷標記（白蛋白尿、影像、病理、電解質異常）<b>持續 ≥3 個月</b>。G1／G2 若沒有腎損傷標記就<b>不算 CKD</b>。完整分期還要加上白蛋白尿 A1（UACR &lt;30 mg/g）／A2（30–300）／A3（&gt;300）——台大的對應項目為 <b>Microalbumin / Cre(urine)</b>。急性期（AKI）不應用 eGFR 分期，見<a href="kdigo-aki.html" class="ref-link">KDIGO AKI 分期</a>。</span><br><br>
+
+      <b>◆ 兩個標記各自的干擾因素（不一致時的判讀依據）：</b><br>
+      <div class="dot-line">・<b>肌酸酐偏低而高估 GFR</b>：肌肉量少、老年衰弱、截肢、長期臥床、肝硬化、素食或低蛋白飲食。</div>
+      <div class="dot-line">・<b>肌酸酐偏高而低估 GFR</b>：肌肉量大、大量肉類或創傷後、以及<b>抑制腎小管分泌肌酸酐的藥物</b>（trimethoprim、cimetidine、dolutegravir）——這些藥使 Scr 上升但真實 GFR 未變。</div>
+      <div class="dot-line">・<b>cystatin C 偏高而低估 GFR</b>：全身性類固醇、甲狀腺功能過高、明顯發炎或惡性腫瘤、吸菸、肥胖。</div>
+      <div class="dot-line">・<b>cystatin C 偏低</b>：甲狀腺功能低下、cyclosporine 使用者部分研究亦有影響。</div>
+      <span class="note">兩式差距大時，先想「哪一個標記的干擾因素成立」，而不是取平均。</span><br><br>
+
+      <b>◆ 藥物劑量調整不要直接用 eGFR：</b><br>
+      <div class="dot-line">・多數藥品說明書的腎功能分級是以 <b>Cockcroft-Gault 肌酸酐清除率（mL/min，未經體表面積校正）</b>建立的。</div>
+      <div class="dot-line">・CG ＝ [(140 − 年齡) × 體重(kg)] ÷ (72 × Scr) ×0.85〔女性〕。填入體重本頁即一併算出。</div>
+      <div class="dot-line">・若要把 eGFR 轉成個人化的絕對值：<b>未校正 GFR (mL/min) ＝ eGFR × BSA ÷ 1.73</b>。體表面積可用<a href="body-metrics.html" class="ref-link">體型與劑量體重</a>頁計算。</div>
+      <span class="note">CG 用哪一種體重並無共識（實際體重／IBW／ABW 皆有文獻採用），肥胖者差異可觀；本頁照使用者填入的體重計算，不自作調整。<b>不穩定的腎功能（AKI、急速上升的 Scr）下所有穩態公式都不成立。</b></span>
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">輸入 Inputs　<span class="unit">單位依台大檢驗醫學部</span></div>
+    <div class="meld-field">
+      <label class="mf-label">性別 Sex</label>
+      <div class="mf-inputwrap"><select id="eg_sex"><option value="M">男 Male</option><option value="F">女 Female</option></select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">年齡 Age</label>
+      <div class="mf-inputwrap"><input type="number" id="eg_age" step="1" placeholder="—"><span class="unit">歲（≥18）</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血清肌酸酐 Creatinine</label>
+      <div class="mf-inputwrap"><input type="number" id="eg_scr" step="0.01" placeholder="—"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">台大參考值 0.6–1.3 mg/dL</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">Cystatin C</label>
+      <div class="mf-inputwrap"><input type="number" id="eg_cys" step="0.01" placeholder="—"><span class="unit">mg/L（選填）</span></div>
+      <span class="mf-note">台大參考值 0.62–1.11 mg/L；<b>填了就改用雙標記式</b></span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">體重 Weight</label>
+      <div class="mf-inputwrap"><input type="number" id="eg_wt" step="0.1" placeholder="—"><span class="unit">kg（選填，供 Cockcroft-Gault）</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">身高 Height</label>
+      <div class="mf-inputwrap"><input type="number" id="eg_ht" step="0.1" placeholder="—"><span class="unit">cm（選填，供未校正 GFR）</span></div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="eg-out">
+      <div class="metric-label">eGFR<span class="eg-used" id="eg_used">CKD-EPI 2021 cr</span></div>
+      <div class="eg-row"><span class="metric-value big" id="eg_main">—</span><span class="eg-u">mL/min/1.73 m²</span><span class="eg-band g1" id="eg_stage" style="display:none;"></span></div>
+      <div class="eg-d" id="eg_main_d">請輸入年齡與血清肌酸酐。</div>
+    </div>
+
+    <div class="eg-out">
+      <div class="metric-label">另一條公式對照</div>
+      <div class="eg-row"><span class="eg-v" id="eg_alt">—</span><span class="eg-u">mL/min/1.73 m²</span></div>
+      <div class="eg-d" id="eg_alt_d">填入 cystatin C 後，此處顯示只用肌酸酐的值。</div>
+    </div>
+
+    <div class="eg-out">
+      <div class="metric-label">藥物劑量用：Cockcroft-Gault CrCl ／ 未校正 GFR</div>
+      <div class="eg-row"><span class="eg-v" id="eg_cg">—</span><span class="eg-u">mL/min</span></div>
+      <div class="eg-d" id="eg_cg_d">填入體重可算 Cockcroft-Gault；再填身高可算未經體表面積校正的 GFR。</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>分期</th><th>eGFR</th><th>說明</th></tr>
+      <tr><td>G1</td><td>≥ 90</td><td>正常或偏高（需有腎損傷標記才算 CKD）</td></tr>
+      <tr><td>G2</td><td>60–89</td><td>輕度下降（需有腎損傷標記才算 CKD）</td></tr>
+      <tr><td>G3a</td><td>45–59</td><td>輕至中度下降</td></tr>
+      <tr><td>G3b</td><td>30–44</td><td>中至重度下降</td></tr>
+      <tr><td>G4</td><td>15–29</td><td>重度下降；應轉介腎臟科、準備替代療法教育</td></tr>
+      <tr><td>G5</td><td>&lt; 15</td><td>腎衰竭</td></tr>
+    </table>
+    <div class="risk-note">分期須 <b>持續 ≥3 個月</b> 才成立 CKD，並應併同白蛋白尿分級（A1／A2／A3）判讀。<b>急性期不適用</b>。18 歲以下請改用 Bedside Schwartz。</div>
+  </div>
+
+  <footer class="tool-footer">
+    2021 CKD-EPI 兩式 — <a href="https://pubmed.ncbi.nlm.nih.gov/34554658/" target="_blank" rel="noopener" class="ref-link">Inker LA, Eneanya ND, Coresh J, et al. New Creatinine- and Cystatin C-Based Equations to Estimate GFR without Race. N Engl J Med. 2021;385(19):1737-1749.</a><br>
+    分期與 cystatin C 確認 — <a href="https://pubmed.ncbi.nlm.nih.gov/38490803/" target="_blank" rel="noopener" class="ref-link">KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int. 2024;105(4S):S117-S314.</a><br>
+    Cockcroft-Gault — <a href="https://pubmed.ncbi.nlm.nih.gov/1244564/" target="_blank" rel="noopener" class="ref-link">Cockcroft DW, Gault MH. Prediction of creatinine clearance from serum creatinine. Nephron. 1976;16(1):31-41.</a>｜參考值與報告公式：臺大醫院檢驗醫學部臨床檢驗目錄（Creatinine、Cystatin C）
+  </footer>
+</div>
+</div>
+<script>
+function egNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+/* 2021 CKD-EPI creatinine（race-free） */
+function egCr(scr, age, sex){
+  var k = sex==='F' ? 0.7 : 0.9;
+  var a = sex==='F' ? -0.241 : -0.302;
+  var r = scr/k;
+  return 142 * Math.pow(Math.min(r,1), a) * Math.pow(Math.max(r,1), -1.200)
+       * Math.pow(0.9938, age) * (sex==='F' ? 1.012 : 1);
+}
+/* 2021 CKD-EPI creatinine-cystatin C（race-free） */
+function egCrCys(scr, cys, age, sex){
+  var k = sex==='F' ? 0.7 : 0.9;
+  var a = sex==='F' ? -0.219 : -0.144;
+  var r = scr/k, c = cys/0.8;
+  return 135 * Math.pow(Math.min(r,1), a) * Math.pow(Math.max(r,1), -0.544)
+       * Math.pow(Math.min(c,1), -0.323) * Math.pow(Math.max(c,1), -0.778)
+       * Math.pow(0.9961, age) * (sex==='F' ? 0.963 : 1);
+}
+function egStage(v){
+  if(v>=90)  return {t:'G1',  c:'g1'};
+  if(v>=60)  return {t:'G2',  c:'g1'};
+  if(v>=45)  return {t:'G3a', c:'g2'};
+  if(v>=30)  return {t:'G3b', c:'g3'};
+  if(v>=15)  return {t:'G4',  c:'g4'};
+  return {t:'G5', c:'g4'};
+}
+
+function egCalc(){
+  var sex=document.getElementById('eg_sex').value;
+  var age=egNum('eg_age'), scr=egNum('eg_scr'), cys=egNum('eg_cys');
+  var wt=egNum('eg_wt'), ht=egNum('eg_ht');
+  var stageEl=document.getElementById('eg_stage');
+
+  if(age===null || scr===null || scr<=0 || age<=0){
+    document.getElementById('eg_main').textContent='—';
+    document.getElementById('eg_used').textContent='CKD-EPI 2021 cr';
+    stageEl.style.display='none';
+    document.getElementById('eg_main_d').innerHTML='請輸入年齡與血清肌酸酐。';
+    document.getElementById('eg_alt').textContent='—';
+    document.getElementById('eg_alt_d').innerHTML='填入 cystatin C 後，此處顯示只用肌酸酐的值。';
+  } else {
+    var cr = egCr(scr, age, sex);
+    var useCys = (cys!==null && cys>0);
+    var main = useCys ? egCrCys(scr, cys, age, sex) : cr;
+
+    document.getElementById('eg_main').textContent = main.toFixed(0);
+    document.getElementById('eg_used').textContent = useCys ? 'CKD-EPI 2021 cr-cys' : 'CKD-EPI 2021 cr';
+    var st=egStage(main);
+    stageEl.style.display=''; stageEl.textContent=st.t; stageEl.className='eg-band '+st.c;
+
+    var d = useCys
+      ? '已填入 cystatin C，主要輸出採<b>雙標記式</b>（準確度優於單一標記，P<sub>30</sub> &gt; 90%）。'
+      : '未填 cystatin C，採<b>單標記（肌酸酐）式</b>。臨床情境與此值不符時，建議加驗 cystatin C 確認。';
+    if(age<18) d += ' <b>本式僅適用 18 歲以上</b>；未滿 18 歲請改用 Bedside Schwartz。';
+    document.getElementById('eg_main_d').innerHTML = d;
+
+    if(useCys){
+      document.getElementById('eg_alt').textContent = cr.toFixed(0);
+      var diff = main - cr;
+      var pct = Math.abs(diff)/cr*100;
+      var ad = '只用肌酸酐（CKD-EPI 2021 cr）：<b>'+cr.toFixed(0)+'</b>，分期 '+egStage(cr).t+'。';
+      ad += '雙標記式比單標記式'+(diff>=0?'高':'低')+' <b>'+Math.abs(diff).toFixed(0)+'</b>（'+pct.toFixed(0)+'%）。';
+      if(pct>=20) ad += ' <b>差距 ≥20%，請回頭看哪一個標記受到干擾</b>（肌肉量、類固醇、甲狀腺、發炎、抑制肌酸酐分泌的藥物）。';
+      document.getElementById('eg_alt_d').innerHTML = ad;
+    } else {
+      document.getElementById('eg_alt').textContent='—';
+      document.getElementById('eg_alt_d').innerHTML='填入 cystatin C 後，此處顯示只用肌酸酐的值與兩式差距。';
+    }
+
+    /* Cockcroft-Gault ＋ 未校正 GFR */
+    var cgTxt='—', cd='';
+    if(wt!==null && wt>0){
+      var cg = ((140-age)*wt)/(72*scr) * (sex==='F'?0.85:1);
+      cgTxt = cg.toFixed(0);
+      cd = 'Cockcroft-Gault CrCl ＝ <b>'+cg.toFixed(0)+' mL/min</b>（以填入的體重 '+wt+' kg 計算，未經體表面積校正）。<b>藥品說明書的腎功能分級多以此為準。</b>';
+    } else {
+      cd = '填入體重可算 Cockcroft-Gault。';
+    }
+    if(ht!==null && ht>0 && wt!==null && wt>0){
+      var bsa = Math.sqrt(ht*wt/3600);
+      var abs = main*bsa/1.73;
+      cd += '<br>未校正 GFR ＝ eGFR × BSA ÷ 1.73 ＝ <b>'+abs.toFixed(0)+' mL/min</b>（BSA '+bsa.toFixed(2)+' m²，Mosteller）。';
+    }
+    document.getElementById('eg_cg').textContent=cgTxt;
+    document.getElementById('eg_cg_d').innerHTML=cd;
+  }
+}
+document.querySelectorAll('#view-egfr input, #view-egfr select')
+  .forEach(function(el){ el.addEventListener('input',egCalc); el.addEventListener('change',egCalc); });
+egCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

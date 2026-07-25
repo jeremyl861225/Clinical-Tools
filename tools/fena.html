@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeNa／FeUN · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .fe-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .fe-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .fe-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .fe-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .fe-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .fe-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .fe-d ul{margin:4px 0 0; padding-left:17px;}
+  .fe-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .fe-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .fe-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .fe-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-fena">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Kidney Function Tool</div>
+      <h1>FeNa／FeUN</h1>
+      <div class="sub">鈉與尿素氮的分泌分率 — 腎前性 vs 急性腎小管壞死之鑑別</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-fena'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>「有用利尿劑就改看 FeUN」這句話，證據是矛盾的。</b>Carvounis 2002（n=102）支持它：腎前性合併利尿劑者只有 <b>48%</b> 的 FeNa &lt;1%，但 <b>89%</b> 的 FeUN ≤35%。Pépin 2007（n=99）卻得到相反結論：使用利尿劑者 FeUN 的敏感度 79% 但<b>特異度僅 33%</b>，作者明言「<b>FeUN 不能作為替代工具，因為它缺乏特異度</b>」。兩篇本頁都算給你看，但<b>不要把任何一個數字當成診斷</b>。</p>
+      <p><b>這兩個指標只是輔助。</b>KDIGO 對尿液指標的立場保守——它們在混合病因、慢性腎病基礎、敗血症相關 AKI 上都不可靠。真正的判斷依據是<b>臨床病程</b>（容積狀態、對輸液的反應、7 天內肌酸酐是否回到基準）、尿液鏡檢與影像。</p>
+      <div class="lede-foot">單一時點尿液（spot urine）即可計算，血與尿<b>應同時採檢</b>。台大的對應項目為 Sodium, Na(Urine)(STAT)、Creatinine (Urine)(STAT)、UN (Urine)(STAT)；血側為 Sodium／Creatinine／UN (Blood)。<b>UN 就是 BUN</b>（台大命名為「血中尿素氮 UN」，參考值 7–25 mg/dL）。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、切點、會騙人的情況與正確用法 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 公式：</b><br>
+      <div class="dot-line">・FeNa (%) ＝ (尿鈉 × 血肌酸酐) ÷ (血鈉 × 尿肌酸酐) × 100</div>
+      <div class="dot-line">・FeUN (%) ＝ (尿 UN × 血肌酸酐) ÷ (血 UN × 尿肌酸酐) × 100</div>
+      <span class="note">分子分母各自成對，<b>只要同一對用同一單位就會自動抵消</b>：鈉可用 mmol/L、肌酸酐與 UN 可用 mg/dL，不需事先換算。</span><br><br>
+
+      <b>◆ 切點：</b><br>
+      <div class="dot-line">・<b>FeNa</b>：&lt;1% 傾向腎前性；1–2% 無法判定；&gt;2% 傾向 ATN。</div>
+      <div class="dot-line">・<b>FeUN</b>：≤35% 傾向腎前性；35–50% 無法判定；&gt;50% 傾向 ATN。</div>
+      <span class="note">Carvounis 的實測平均值：腎前性 27.9±2.4%、腎前性＋利尿劑 24.5±2.3%、ATN 58.6±3.6%（P&lt;0.0001）。</span><br><br>
+
+      <b>◆ FeNa &lt;1% 但不是腎前性（偽低）：</b><br>
+      <div class="dot-line">・<b>顯影劑腎病變</b>、色素性腎病變（<b>橫紋肌溶解</b>、血紅素尿）。</div>
+      <div class="dot-line">・<b>急性腎小球腎炎</b>、急性間質性腎炎（部分病例）。</div>
+      <div class="dot-line">・<b>早期尿路阻塞</b>（阻塞初期腎小管功能仍完整）。</div>
+      <div class="dot-line">・<b>肝腎症候群、心腎症候群</b>——鈉的極度保留是這兩者的特徵，但病人並非「補水就會好」。</div>
+      <div class="dot-line">・<b>敗血症相關 AKI</b> 早期。</div><br>
+
+      <b>◆ FeNa &gt;1% 但其實是腎前性（偽高）：</b><br>
+      <div class="dot-line">・<b>正在使用利尿劑</b>（最常見）。</div>
+      <div class="dot-line">・<b>慢性腎病基礎</b>（基礎鈉排泄本來就高）。</div>
+      <div class="dot-line">・<b>腎上腺功能不全</b>、鹽分流失性腎病。</div>
+      <div class="dot-line">・<b>碳酸氫鹽尿</b>（代謝性鹼中毒時鈉隨 HCO₃⁻ 排出）、高鹽輸液後。</div><br>
+
+      <b>◆ FeUN 也會被干擾：</b>尿素的再吸收受 <b>ADH／容積狀態</b>與<b>蛋白質負荷</b>影響；<b>類固醇、消化道出血、高蛋白營養</b>會提高血 UN；<b>肝衰竭、營養不良</b>會降低。使用 <b>mannitol、osmotic diuresis、SGLT2 抑制劑</b>時兩個指標都不可靠。<br><br>
+
+      <b>◆ 正確用法：</b>把 FeNa／FeUN 當成<b>一個支持或反對某個臨床假設的線索</b>，與以下併看——容積狀態的理學檢查、對輸液挑戰的反應、<b>尿液鏡檢</b>（顆粒圓柱、腎小管上皮細胞支持 ATN）、腎臟超音波（排除阻塞）、以及 <b>7 天內肌酸酐是否回到基準</b>（回到基準才是真的「暫時性」）。分期與 RRT 時機見<a href="kdigo-aki.html" class="ref-link">KDIGO AKI 分期</a>與<a href="../pathways/aki-crrt.html" class="ref-link">急性腎損傷決策</a>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">血液 Serum　<span class="unit">單位依台大檢驗醫學部</span></div>
+    <div class="meld-field">
+      <label class="mf-label">血鈉 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_pna" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大參考值 136–145</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血肌酸酐 Cr</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_pcr" step="0.01" placeholder="—"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">台大參考值 0.6–1.3</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血尿素氮 UN</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_pun" step="0.1" placeholder="—"><span class="unit">mg/dL（選填，供 FeUN）</span></div>
+      <span class="mf-note">台大參考值 7–25；即一般所稱 BUN</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">尿液 Urine　<span class="unit">單一時點尿，與血液同時採檢</span></div>
+    <div class="meld-field">
+      <label class="mf-label">尿鈉 U-Na</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_una" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿肌酸酐 U-Cr</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_ucr" step="0.1" placeholder="—"><span class="unit">mg/dL</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿尿素氮 U-UN</label>
+      <div class="mf-inputwrap"><input type="number" id="fe_uun" step="1" placeholder="—"><span class="unit">mg/dL（選填，供 FeUN）</span></div>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="fe_diu"> 病人正在使用利尿劑（含 24–48 小時內給過）</label>
+    <div class="note">勾選後，判讀會標示 FeNa 的可信度下降，並同時提示 FeUN 兩篇研究的矛盾結論。</div>
+  </div>
+
+  <div class="result">
+    <div class="fe-out">
+      <div class="metric-label">FeNa</div>
+      <div class="fe-row"><span class="metric-value big" id="fe_fena" style="font-size:34px;">—</span><span class="fe-u">%</span><span class="fe-band b0" id="fe_fena_band" style="display:none;"></span></div>
+      <div class="fe-d" id="fe_fena_d">請輸入血鈉、尿鈉、血肌酸酐與尿肌酸酐。</div>
+    </div>
+    <div class="fe-out">
+      <div class="metric-label">FeUN</div>
+      <div class="fe-row"><span class="fe-v" id="fe_feun">—</span><span class="fe-u">%</span><span class="fe-band b0" id="fe_feun_band" style="display:none;"></span></div>
+      <div class="fe-d" id="fe_feun_d">填入血／尿尿素氮即可計算。</div>
+    </div>
+    <div class="fe-out">
+      <div class="metric-label">綜合判讀</div>
+      <div class="fe-d" id="fe_sum" style="opacity:1;">—</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">FeNa</span><span class="fvar">= (U-Na × P-Cr) ÷ (P-Na × U-Cr) × 100</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">FeUN</span><span class="fvar">= (U-UN × P-Cr) ÷ (P-UN × U-Cr) × 100</span></div>
+      </div>
+      <div class="formula-result">＝ 同一對用同一單位即自動抵消，不需換算</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>指標</th><th>腎前性</th><th>無法判定</th><th>ATN</th></tr>
+      <tr><td>FeNa</td><td>&lt; 1%</td><td>1–2%</td><td>&gt; 2%</td></tr>
+      <tr><td>FeUN</td><td>≤ 35%</td><td>35–50%</td><td>&gt; 50%</td></tr>
+    </table>
+    <div class="risk-note">兩者都只是<b>線索</b>：顯影劑、橫紋肌溶解、早期阻塞、肝腎與心腎症候群都會出現 FeNa &lt;1%；利尿劑與慢性腎病會出現偽高。<b>KDIGO 對尿液指標的評價保守</b>，請與容積狀態、輸液反應、尿液鏡檢、超音波及 7 天內肌酸酐是否回到基準併看。</div>
+  </div>
+
+  <footer class="tool-footer">
+    FeNa 原始 — <a href="https://pubmed.ncbi.nlm.nih.gov/947239/" target="_blank" rel="noopener" class="ref-link">Espinel CH. The FENa test. Use in the differential diagnosis of acute renal failure. JAMA. 1976;236(6):579-581.</a><br>
+    支持 FeUN — <a href="https://pubmed.ncbi.nlm.nih.gov/12427149/" target="_blank" rel="noopener" class="ref-link">Carvounis CP, Nisar S, Guro-Razuman S. Significance of the fractional excretion of urea in the differential diagnosis of acute renal failure. Kidney Int. 2002;62(6):2223-2229.</a>｜
+    反對 FeUN — <a href="https://pubmed.ncbi.nlm.nih.gov/17900456/" target="_blank" rel="noopener" class="ref-link">Pépin MN, Bouchard J, Legault L, Ethier J. Diagnostic performance of fractional excretion of urea and fractional excretion of sodium in the evaluations of patients with acute kidney injury with or without diuretic treatment. Am J Kidney Dis. 2007;50(4):566-573.</a><br>
+    AKI 分期與尿液指標之定位 — <a href="https://kdigo.org/guidelines/acute-kidney-injury/" target="_blank" rel="noopener" class="ref-link">KDIGO Clinical Practice Guideline for Acute Kidney Injury. Kidney Int Suppl. 2012;2(1):1-138.</a>｜單位與參考值：臺大醫院檢驗醫學部臨床檢驗目錄
+  </footer>
+</div>
+</div>
+<script>
+function feNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function feCalc(){
+  var pna=feNum('fe_pna'), pcr=feNum('fe_pcr'), pun=feNum('fe_pun');
+  var una=feNum('fe_una'), ucr=feNum('fe_ucr'), uun=feNum('fe_uun');
+  var diu=document.getElementById('fe_diu').checked;
+  var nb=document.getElementById('fe_fena_band'), ub=document.getElementById('fe_feun_band');
+
+  /* ── FeNa ── */
+  var fena=null;
+  if(pna!==null && pcr!==null && una!==null && ucr!==null && pna>0 && ucr>0){
+    fena = (una*pcr)/(pna*ucr)*100;
+    document.getElementById('fe_fena').textContent = fena<1 ? fena.toFixed(2) : fena.toFixed(1);
+    var t,cls;
+    if(fena<1){ t='傾向腎前性'; cls='b0'; }
+    else if(fena<=2){ t='無法判定'; cls='b2'; }
+    else { t='傾向 ATN'; cls='b3'; }
+    nb.style.display=''; nb.textContent=t; nb.className='fe-band '+cls;
+
+    var d='FeNa <b>'+(fena<1?fena.toFixed(2):fena.toFixed(1))+'%</b> → '+t+'。';
+    if(fena<1){
+      d+='<br><b>但下列情況也會 &lt;1%</b>：顯影劑腎病變、橫紋肌溶解／血紅素尿、急性腎小球腎炎、<b>早期尿路阻塞</b>、肝腎症候群、心腎症候群、早期敗血症相關 AKI。';
+    }
+    if(fena>1 && diu){
+      d+='<br><b>正在使用利尿劑</b>：FeNa 會被推高，此時 &gt;1% <b>不足以排除腎前性</b>——Carvounis 的世代中，腎前性合併利尿劑者只有 48% 的 FeNa &lt;1%。';
+    } else if(fena>1){
+      d+='<br>若病人有<b>慢性腎病基礎、腎上腺功能不全、鹽分流失性腎病或碳酸氫鹽尿</b>，FeNa 也可能偽高。';
+    }
+    document.getElementById('fe_fena_d').innerHTML=d;
+  } else {
+    document.getElementById('fe_fena').textContent='—'; nb.style.display='none';
+    document.getElementById('fe_fena_d').innerHTML='請輸入血鈉、尿鈉、血肌酸酐與尿肌酸酐。';
+  }
+
+  /* ── FeUN ── */
+  var feun=null;
+  if(pun!==null && pcr!==null && uun!==null && ucr!==null && pun>0 && ucr>0){
+    feun = (uun*pcr)/(pun*ucr)*100;
+    document.getElementById('fe_feun').textContent = feun.toFixed(1);
+    var t2,cls2;
+    if(feun<=35){ t2='傾向腎前性'; cls2='b0'; }
+    else if(feun<=50){ t2='無法判定'; cls2='b2'; }
+    else { t2='傾向 ATN'; cls2='b3'; }
+    ub.style.display=''; ub.textContent=t2; ub.className='fe-band '+cls2;
+    var d2='FeUN <b>'+feun.toFixed(1)+'%</b> → '+t2+'。'
+      +'<br>對照 Carvounis 的實測平均：腎前性 27.9%、腎前性＋利尿劑 24.5%、ATN 58.6%。';
+    if(diu) d2+='<br><b>使用利尿劑時 FeUN 的證據是矛盾的</b>：Carvounis 支持它（89% 的腎前性＋利尿劑者 FeUN ≤35%），'
+      +'但 Pépin 2007 顯示其<b>特異度僅 33%</b>，明言不能作為替代工具。低值支持腎前性的力道有限，<b>高值更不足以斷定 ATN</b>。';
+    d2+='<br>會干擾 FeUN 的因素：類固醇、消化道出血、高蛋白營養（推高血 UN）；肝衰竭、營養不良（壓低血 UN）；mannitol 與滲透性利尿（兩者皆不可靠）。';
+    document.getElementById('fe_feun_d').innerHTML=d2;
+  } else {
+    document.getElementById('fe_feun').textContent='—'; ub.style.display='none';
+    document.getElementById('fe_feun_d').innerHTML='填入血／尿尿素氮即可計算。';
+  }
+
+  /* ── 綜合 ── */
+  var s;
+  if(fena===null && feun===null){
+    s='—';
+  } else if(fena!==null && feun!==null){
+    var aPre = fena<1, bPre = feun<=35;
+    if(aPre && bPre) s='<b>兩個指標一致指向腎前性。</b>下一步：確認容積狀態並做<b>輸液挑戰</b>，同時排除阻塞（超音波）與色素性腎病變（CK、尿液潛血對紅血球不成比例）。腎前性的證明是「<b>肌酸酐在 7 天內回到基準</b>」，不是這兩個數字。';
+    else if(!aPre && !bPre) s='<b>兩個指標一致指向 ATN。</b>下一步：找致病原因（低血壓時段、腎毒性藥物、顯影劑、敗血症），<b>停用可停的腎毒性藥物</b>，維持灌流並避免容積過載；尿液鏡檢找顆粒圓柱與腎小管上皮細胞。';
+    else s='<b>兩個指標方向不一致</b>（FeNa '+(aPre?'&lt;1%':'&gt;1%')+'、FeUN '+(bPre?'≤35%':'&gt;35%')+'）。'
+      +'這在<b>混合病因</b>（腎前性演變為 ATN）、<b>使用利尿劑</b>、<b>慢性腎病基礎</b>時很常見。'
+      +'此時<b>不要靠這兩個數字下結論</b>——回到臨床病程與輸液反應。';
+  } else {
+    s='目前只算出其中一個指標。兩個一起看較有價值，尤其在使用利尿劑時。';
+  }
+  if(diu && (fena!==null||feun!==null)) s+='<br><span class="note">已勾選使用利尿劑：兩個指標的解釋力都下降，判讀請以臨床病程為主。</span>';
+  document.getElementById('fe_sum').innerHTML=s;
+}
+document.querySelectorAll('#view-fena input')
+  .forEach(function(el){ el.addEventListener('input',feCalc); el.addEventListener('change',feCalc); });
+feCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

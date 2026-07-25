@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高血鈉自由水缺乏 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<style>
+  .wd-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .wd-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .wd-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .wd-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .wd-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .wd-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .wd-d ul{margin:4px 0 0; padding-left:17px;}
+  .wd-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
+  .wd-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .wd-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .wd-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-water-deficit">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Electrolyte Calculation Tool</div>
+      <h1>高血鈉自由水缺乏</h1>
+      <div class="sub">Free water deficit · Adrogué-Madias 每公升輸液之血鈉變化 · 矯正速率上限</div>
+    </div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-water-deficit'">← 返回主選單</button>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>公式只給起點，不給答案。</b>自由水缺乏與 Adrogué-Madias 都假設「身體是一個沒有進出的水桶」——完全忽略<b>持續的水分損失</b>（尿量、發燒、腹瀉、機械通氣未加濕）與尿液電解質的變化，因此實測血鈉幾乎不會照公式走。英國低血鈉指引（SfE 2022）已<b>明確建議不要用 Adrogué-Madias 決定治療</b>；高血鈉同理——<b>算完之後每 4–6 小時重測血鈉</b>，用實測值調整速率，不要照著公式跑完 24 小時。</p>
+      <p><b>「每小時不可超過 0.5 mmol/L」的證據比想像中薄弱。</b>Chauhan 2019 以 MIMIC-III 分析重症病人（入院時 Na &gt;155 者 122 人、住院中發生者 327 人），快速矯正（&gt;0.5 mmol/L/hr）與慢速矯正的 30 天死亡率無差異（25% vs 28%、44% vs 40%；校正後 aOR 均為 1.3），且<b>逐一病歷回顧未找到任何一例可歸因於快速矯正的腦水腫</b>。本頁的預設仍照 Adrogué-Madias：<b>慢性或不明者 0.5 mmol/L/hr 且每日 ≤10 mmol/L</b>；<b>明確急性（&lt;48 小時）者可以 1 mmol/L/hr 矯正到目標</b>——後者在原文中被認為不增加腦水腫風險，因為細胞內累積的電解質可以迅速排出。</p>
+      <div class="lede-foot">低血鈉的矯正（含速率追蹤與過度矯正的處理）不在本頁，請見<a href="../pathways/electrolyte-emergency.html" class="ref-link">電解質急症</a>。高血糖造成的血鈉失真請先用<a href="corrected-labs.html" class="ref-link">校正鈉</a>。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>公式、體液比例、輸液選擇與監測 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 全身水分 TBW（Adrogué-Madias 所用之比例）：</b><br>
+      <div class="dot-line">・非高齡男性 0.6 × 體重；非高齡女性與高齡男性 0.5；高齡女性 0.45；兒童 0.6。</div>
+      <span class="note">肥胖者的脂肪含水量低，用 0.6 會<b>高估</b> TBW（因而高估缺水量）；消瘦與水腫者也各有偏差。</span><br><br>
+
+      <b>◆ 自由水缺乏：</b>缺水量(L) ＝ TBW × [ (實測 Na ÷ 目標 Na) − 1 ]<br>
+      <span class="note">意義是「要讓血鈉降到目標值，需要補進多少<b>純水</b>」。若用的是含鈉的輸液（0.45% NaCl 等），實際需要的體積會更大——這時請看下面的 Adrogué-Madias 輸出。</span><br><br>
+
+      <b>◆ Adrogué-Madias：</b>每輸注 1 L 該輸液，血鈉變化 ＝ ( 輸液 Na − 血清 Na ) ÷ ( TBW ＋ 1 )<br>
+      <span class="note">輸液鈉濃度：5% 葡萄糖水 0；0.2% NaCl 34；0.45% NaCl 77；0.9% NaCl 154；乳酸林格 130 mmol/L。0.9% 與林格<b>不能用來降血鈉</b>（除非同時嚴重容積不足需要先復甦）。</span><br><br>
+
+      <b>◆ 給水的路徑：</b>只要腸道可用，<b>經口或鼻胃管給白開水是最安全、最便宜的方式</b>（不會造成高血糖，也沒有大量輸注的容積負擔）；靜脈用 5% 葡萄糖水時要注意<b>血糖上升本身會加重高滲透壓與滲透性利尿</b>，需追蹤血糖。<br><br>
+
+      <b>◆ 持續損失必須另外加：</b>公式只算「已經缺的」。實務上還要補上<b>當日的持續損失</b>——尿量（尤其中樞性或腎性尿尿病、滲透性利尿）、發燒（體溫每升高 1°C 增加不感性喪失）、腹瀉、大量出汗、未加濕之機械通氣。<b>正確做法是量測尿量與其他排出量並等量補回</b>，不是套一個固定數字。<br><br>
+
+      <b>◆ 先找病因，否則補不完：</b>中樞性尿尿病（給 desmopressin）、腎性尿尿病（找藥物如 lithium、電解質異常）、滲透性利尿（高血糖、mannitol、高蛋白營養）、水分取得受限（意識不清、失能、無人給水——這是住院高血鈉最常見的原因）、大量不感性喪失。<b>不處理病因只補水，血鈉會一直回彈。</b><br><br>
+
+      <b>◆ 監測：</b>每 <b>4–6 小時</b>測血鈉（急性或速率接近上限時更密），同時追蹤尿量、血糖與意識狀態。<b>血鈉下降太快出現躁動、頭痛、抽搐時，減慢或暫停補水</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">病人資料 Inputs</div>
+    <div class="meld-field">
+      <label class="mf-label">體液比例族群</label>
+      <div class="mf-inputwrap"><select id="wd_grp">
+        <option value="0.6">非高齡男性（TBW ＝ 0.6 × 體重）</option>
+        <option value="0.5">非高齡女性或高齡男性（0.5）</option>
+        <option value="0.45">高齡女性（0.45）</option>
+        <option value="0.6c">兒童（0.6）</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">體重 Weight</label>
+      <div class="mf-inputwrap"><input type="number" id="wd_wt" step="0.1" placeholder="—"><span class="unit">kg</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">實測血鈉 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="wd_na" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大參考值 136–145</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">目標血鈉</label>
+      <div class="mf-inputwrap"><input type="number" id="wd_target" step="1" value="145"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">預設 145（正常上限）</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">病程 Onset</label>
+      <div class="mf-inputwrap"><select id="wd_acute">
+        <option value="chronic">慢性或不明（≥48 小時）— 0.5 mmol/L/hr、≤10 mmol/L／24 hr</option>
+        <option value="acute">急性（明確 &lt;48 小時內發生）— 可以 1 mmol/L/hr 矯正</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">輸液種類</label>
+      <div class="mf-inputwrap"><select id="wd_fluid">
+        <option value="0">白開水（口服／鼻胃管）或 5% 葡萄糖水 — Na 0</option>
+        <option value="34">0.2% NaCl in D5W — Na 34</option>
+        <option value="77">0.45% NaCl — Na 77</option>
+        <option value="154">0.9% NaCl — Na 154（不用於降血鈉）</option>
+        <option value="130">乳酸林格 — Na 130（不用於降血鈉）</option>
+      </select></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">預估持續損失</label>
+      <div class="mf-inputwrap"><input type="number" id="wd_loss" step="100" placeholder="0"><span class="unit">mL／24 hr（選填）</span></div>
+      <span class="mf-note">尿量、發燒、腹瀉等；請以實際量測為準</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="wd-out">
+      <div class="metric-label">自由水缺乏 Free water deficit</div>
+      <div class="wd-row"><span class="metric-value big" id="wd_fwd" style="font-size:34px;">—</span><span class="wd-u">L（純水當量）</span><span class="wd-band b0" id="wd_band" style="display:none;"></span></div>
+      <div class="wd-d" id="wd_d">請輸入體重與血鈉。</div>
+    </div>
+
+    <div class="wd-out">
+      <div class="metric-label">本日允許的血鈉降幅與所需輸液量</div>
+      <div class="wd-row"><span class="wd-v" id="wd_vol">—</span><span class="wd-u">mL／24 hr</span></div>
+      <div class="wd-d" id="wd_vol_d">—</div>
+    </div>
+
+    <div class="wd-out">
+      <div class="metric-label">建議輸注速率</div>
+      <div class="wd-row"><span class="wd-v" id="wd_rate" style="font-size:30px;">—</span><span class="wd-u">mL／hr</span></div>
+      <div class="wd-d" id="wd_rate_d">—</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">TBW</span><span class="fvar">= 比例 × 體重(kg)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">缺水量</span><span class="fvar">= TBW × (實測 Na ÷ 目標 Na − 1)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">ΔNa／L</span><span class="fvar">= (輸液 Na − 血清 Na) ÷ (TBW + 1)</span></div>
+      </div>
+      <div class="formula-result">＝ 起始估算；每 4–6 小時以實測血鈉修正</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>輸液</th><th>Na (mmol/L)</th><th>用途</th></tr>
+      <tr><td>白開水／5% 葡萄糖水</td><td>0</td><td>降血鈉效率最高；腸道可用時優先給白開水</td></tr>
+      <tr><td>0.2% NaCl in D5W</td><td>34</td><td>兼顧少量鈉需求</td></tr>
+      <tr><td>0.45% NaCl</td><td>77</td><td>合併容積不足時常用</td></tr>
+      <tr><td>0.9% NaCl</td><td>154</td><td><b>不降血鈉</b>；僅用於休克復甦階段</td></tr>
+      <tr><td>乳酸林格</td><td>130</td><td><b>不降血鈉</b></td></tr>
+    </table>
+    <div class="risk-note">
+      公式忽略持續損失與尿液電解質變化，<b>只能當起點</b>；<b>每 4–6 小時重測血鈉</b>並依實測調整。
+      <b>不處理病因（尿尿病、滲透性利尿、水分取得受限）就會一直回彈。</b>
+      預設上限 10 mmol/L／24 hr 為慣行做法；Chauhan 2019 未在重症成人找到快速矯正造成腦水腫的證據，但<b>兒童仍應嚴格限速</b>。
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    公式與輸液對照 — <a href="https://pubmed.ncbi.nlm.nih.gov/10816188/" target="_blank" rel="noopener" class="ref-link">Adrogué HJ, Madias NE. Hypernatremia. N Engl J Med. 2000;342(20):1493-1499.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/25551526/" target="_blank" rel="noopener" class="ref-link">Sterns RH. Disorders of plasma sodium—causes, consequences, and correction. N Engl J Med. 2015;372(1):55-65.</a><br>
+    矯正速率之證據 — <a href="https://pubmed.ncbi.nlm.nih.gov/30948456/" target="_blank" rel="noopener" class="ref-link">Chauhan K, Pattharanitima P, Patel N, et al. Rate of Correction of Hypernatremia and Health Outcomes in Critically Ill Patients. Clin J Am Soc Nephrol. 2019;14(5):656-663.</a>
+  </footer>
+</div>
+</div>
+<script>
+function wdNum(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function wdCalc(){
+  var grp=document.getElementById('wd_grp').value;
+  var factor=parseFloat(grp);          /* '0.6c' → parseFloat 得 0.6 */
+  var isChild = grp==='0.6c';
+  var wt=wdNum('wd_wt'), na=wdNum('wd_na'), tgt=wdNum('wd_target');
+  var acute=document.getElementById('wd_acute').value==='acute';
+  var fNa=parseFloat(document.getElementById('wd_fluid').value);
+  var loss=wdNum('wd_loss') || 0;
+  var band=document.getElementById('wd_band');
+
+  if(wt===null || na===null || tgt===null || wt<=0 || tgt<=0){
+    document.getElementById('wd_fwd').textContent='—'; band.style.display='none';
+    document.getElementById('wd_d').innerHTML='請輸入體重與血鈉。';
+    document.getElementById('wd_vol').textContent='—';
+    document.getElementById('wd_vol_d').innerHTML='—';
+    document.getElementById('wd_rate').textContent='—';
+    document.getElementById('wd_rate_d').innerHTML='—';
+    return;
+  }
+
+  var tbw = factor*wt;
+  var fwd = tbw*(na/tgt - 1);
+
+  document.getElementById('wd_fwd').textContent = fwd>0 ? fwd.toFixed(1) : '0.0';
+
+  var t,cls;
+  if(na<146){ t='血鈉未升高'; cls='b0'; }
+  else if(na<150){ t='輕度'; cls='b2'; }
+  else if(na<160){ t='中度'; cls='b3'; }
+  else { t='重度（≥160）'; cls='b3'; }
+  band.style.display=''; band.textContent=t; band.className='wd-band '+cls;
+
+  var d='TBW ＝ '+factor+' × '+wt+' ＝ <b>'+tbw.toFixed(1)+' L</b>。';
+  if(na<=tgt){
+    d += ' 實測血鈉未高於目標值，<b>無自由水缺乏可算</b>。';
+    document.getElementById('wd_vol').textContent='—';
+    document.getElementById('wd_vol_d').innerHTML='血鈉未高於目標值。';
+    document.getElementById('wd_rate').textContent='—';
+    document.getElementById('wd_rate_d').innerHTML='—';
+    document.getElementById('wd_d').innerHTML=d;
+    return;
+  }
+  d += ' 要把血鈉自 '+na+' 降到 '+tgt+' mmol/L，需補約 <b>'+fwd.toFixed(1)+' L 純水</b>（不含持續損失）。';
+  if(factor===0.6 && !isChild) d += ' <span class="note">若病人肥胖，0.6 會高估 TBW 與缺水量；消瘦或水腫者亦有偏差。</span>';
+  document.getElementById('wd_d').innerHTML=d;
+
+  /* 允許降幅與所需輸液量（Adrogué-Madias）
+     速率依據：慢性 0.5 mmol/L/hr 且每日 ≤10 mmol/L；急性（<48 hr）1 mmol/L/hr。 */
+  var totalDrop = na - tgt;
+  var allowed = acute ? totalDrop : Math.min(totalDrop, 10);
+  var hours   = acute ? Math.max(allowed/1.0, 1) : 24;   /* 急性以 1 mmol/L/hr 推算時數 */
+  var dNaPerL = (fNa - na)/(tbw + 1);      /* 負值＝血鈉下降 */
+
+  if(dNaPerL >= 0){
+    document.getElementById('wd_vol').textContent='—';
+    document.getElementById('wd_vol_d').innerHTML =
+      '所選輸液的鈉濃度（'+fNa+' mmol/L）<b>不低於病人血鈉</b>，輸注它<b>不會降低血鈉</b>'
+      + (fNa>na ? '（反而會上升）' : '') + '。要降血鈉請改用白開水／5% 葡萄糖水或 0.45% NaCl。';
+    document.getElementById('wd_rate').textContent='—';
+    document.getElementById('wd_rate_d').innerHTML='—';
+    return;
+  }
+
+  var vol = allowed/Math.abs(dNaPerL)*1000;   /* mL */
+  var totalVol = vol + loss;
+  var vd='';
+
+  /* 等張輸液即使鈉低於病人血鈉，也不是矯正高血鈉的工具 */
+  if(fNa>=130){
+    vd += '<b>0.9% NaCl 與乳酸林格屬等張輸液，不是矯正高血鈉的工具。</b>'
+       + '本例雖然輸液鈉（'+fNa+'）低於病人血鈉（'+na+'），但每公升只能降 '
+       + Math.abs(dNaPerL).toFixed(2)+' mmol/L，達到目標所需的 <b>'+(vol/1000).toFixed(1)
+       + ' L</b> 在臨床上不可行（且會造成嚴重容積過載與鈉負荷）。'
+       + '這兩種輸液只用於<b>合併休克時的復甦階段</b>；降血鈉請改用白開水／5% 葡萄糖水或 0.45% NaCl。<br>';
+  }
+
+  document.getElementById('wd_vol').textContent = Math.round(totalVol/10)*10;
+  vd += '每 1 L 此輸液可使血鈉下降 <b>'+Math.abs(dNaPerL).toFixed(2)+' mmol/L</b>（Adrogué-Madias）。'
+     + '<br>' + (acute
+        ? '急性（&lt;48 小時）可以 <b>1 mmol/L/hr</b> 矯正到目標（Adrogué-Madias）：降幅 <b>'
+          + allowed.toFixed(1)+' mmol/L</b>、預計 <b>'+hours.toFixed(0)+' 小時</b>'
+        : '慢性或不明：速率上限 <b>0.5 mmol/L/hr</b>、每日降幅上限 <b>10 mmol/L</b>（本日允許 '
+          + allowed.toFixed(1)+' mmol/L）')
+     + ' → 需輸液 <b>'+Math.round(vol)+' mL</b>';
+  if(loss>0) vd += '，加上持續損失 '+loss+' mL ＝ <b>'+Math.round(totalVol)+' mL</b>';
+  vd += '。';
+  if(!acute && totalDrop > allowed){
+    var days = Math.ceil(totalDrop/allowed);
+    vd += '<br>總降幅 '+totalDrop.toFixed(0)+' mmol/L 超過單日上限，<b>預計需 '+days+' 天</b>才降到目標值。';
+  }
+  if(loss===0) vd += '<br><span class="note">未填持續損失。<b>公式不含尿量與不感性喪失</b>——實務上必須量測並等量補回，否則血鈉降不下來。</span>';
+  document.getElementById('wd_vol_d').innerHTML=vd;
+
+  var rate = totalVol/hours;
+  document.getElementById('wd_rate').textContent = Math.round(rate);
+  var rd = '＝ '+Math.round(totalVol)+' mL ÷ '+hours.toFixed(0)+' hr ≈ <b>'+Math.round(rate)+' mL/hr</b>'
+         + (acute ? '（急性，以 1 mmol/L/hr 為目標）' : '（分佈於 24 小時）')+'。';
+  if(fNa===0) rd += ' 腸道可用時，<b>以鼻胃管或口服白開水給予同樣的水量更安全</b>（避免葡萄糖負荷與容積負擔）；'
+                 + '用 5% 葡萄糖水者請追蹤血糖——<b>高血糖本身會造成滲透性利尿而加重缺水</b>。';
+  if(isChild) rd += ' <b>兒童請嚴格限速並由小兒科主導</b>：快速矯正造成腦水腫的病例主要見於兒童。';
+  rd += '<br><b>每 4–6 小時重測血鈉</b>，依實測值調整速率；出現躁動、頭痛或抽搐時減慢或暫停。';
+  document.getElementById('wd_rate_d').innerHTML=rd;
+}
+document.querySelectorAll('#view-water-deficit input, #view-water-deficit select')
+  .forEach(function(el){ el.addEventListener('input',wdCalc); el.addEventListener('change',wdCalc); });
+wdCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
