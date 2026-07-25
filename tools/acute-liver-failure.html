@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性肝衰竭 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-acute-liver-failure">
+  <div class="app-header">
+    <div><div class="eyebrow">Acute Liver Failure Tool</div><h1>急性肝衰竭</h1><div class="sub">Acute Liver Failure · King's College Criteria 與移植判準</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-acute-liver-failure'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">兩件不能等的事 Two Things That Can't Wait</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      急性肝衰竭（ALF）的處置有兩條並行的時間線：<br>
+      ① <b>給 NAC（N-acetylcysteine）</b>——acetaminophen（paracetamol）中毒<b>一定要給</b>；<b>非 acetaminophen 的早期腦病（grade I–II）NAC 也有益</b>（改善無移植存活）。<br>
+      ② <b>盡早轉介移植中心</b>——一診斷 ALF 就聯絡，不要等符合 King's College Criteria（KCC）才轉。<b>KCC 陽性代表預後極差、需緊急移植評估，但 KCC 陰性不代表不需要移植</b>。<br>
+      <span class="note">ALF 定義（AASLD／ACG）：<b>無既有肝硬化</b>，凝血障礙（<b>INR ≥1.5</b>）＋<b>任何程度肝性腦病</b>，病程 &lt;26 週。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>KCC 完整判準、NAC、腦病與顱內壓、支持治療 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ King's College Criteria（O'Grady 1989；預測預後極差、需緊急移植評估）：</b><br>
+      <b>Acetaminophen（乙醯胺酚）誘發：</b>符合任一——<br>
+      ・<b>動脈 pH &lt;7.3</b>（充分復甦後）；<b>或</b><br>
+      ・以下<b>三者皆備</b>：<b>INR &gt;6.5</b>（PT &gt;100 秒）＋<b>Cr &gt;3.4 mg/dL</b>（&gt;300 µmol/L）＋<b>grade III/IV 肝性腦病</b>。<br><br>
+      <b>Non-acetaminophen（非乙醯胺酚）誘發：</b>符合任一——<br>
+      ・<b>INR &gt;6.5</b>（PT &gt;100 秒，不論腦病程度）；<b>或</b><br>
+      ・以下<b>五項中三項</b>：① 年齡 &lt;11 或 &gt;40 歲；② 病因為<b>非 A 非 B 型肝炎、halothane 肝炎或藥物特異體質反應</b>（indeterminate／drug）；③ <b>黃疸到腦病 &gt;7 天</b>；④ <b>INR &gt;3.5</b>（PT &gt;50 秒）；⑤ <b>血清 bilirubin &gt;17.5 mg/dL</b>（&gt;300 µmol/L）。<br>
+      <span class="note">單位換算：Cr 300 µmol/L ≈ 3.4 mg/dL（÷88.4）；bilirubin 300 µmol/L ≈ 17.5 mg/dL（÷17.1）。KCC 特異度高、敏感度中等——<b>陰性不能排除移植需求</b>，須合併乳酸、第 V 凝血因子（Clichy 判準）與臨床動態綜合判斷。</span><br><br>
+
+      <b>◆ N-acetylcysteine（NAC）：</b><br>
+      ・<b>Acetaminophen 中毒</b>：依 Rumack-Matthew nomogram 判定並<b>給 NAC</b>；懷疑即給，不必等血中濃度回報（延遲給藥效果差）。<br>
+      ・<b>非 acetaminophen ALF</b>：<b>早期腦病（grade I–II）也建議 NAC</b>——ALFSG 隨機試驗顯示改善<b>無移植存活</b>；grade III–IV 腦病者益處未證實。<br><br>
+
+      <b>◆ 肝性腦病與顱內壓（grade III/IV 的最大死因是腦水腫）：</b><br>
+      ・分級：grade I（輕度混亂）、II（嗜睡、定向障礙）、III（明顯混亂、嗜睡但可喚醒）、IV（昏迷）。<br>
+      ・<b>grade III/IV 收 ICU</b>：<b>床頭抬高 30°、避免刺激與嗆咳、鎮靜下插管保護氣道</b>。<br>
+      ・<b>顱內壓升高</b>：高滲透壓治療（<b>mannitol 或高張鹽水</b>）、維持血鈉正常偏高、避免低血鈉；發燒與癲癇會惡化顱內壓，積極控制。<b>ICP 監測仍有爭議</b>（出血風險 vs 導引治療）。<br>
+      ・<b>氨（ammonia）</b>：動脈氨顯著升高與腦水腫相關；<b>CRRT</b> 可協助清除氨並控制容積與電解質。<br>
+      ・<b>不建議常規預防性抗生素</b>，但感染門檻低時積極培養與治療（ALF 易併發敗血症）。<br><br>
+
+      <b>◆ 支持治療：</b>低血糖常見須密切監測與補糖；凝血障礙<b>不常規矯正</b>（會遮蔽 INR 這個預後指標），僅在出血或侵入性處置前補充；監測並處理電解質、腎功能（常需 CRRT）；循環支持以 norepinephrine 為主。<br><br>
+
+      <b>◆ 特定病因的專屬治療（不可漏）：</b>acetaminophen → NAC；<b>蕈類中毒（Amanita）</b> → penicillin G／silibinin；<b>HBV</b> → 核苷酸類似物；<b>HSV</b> → aciclovir；<b>自體免疫</b> → 類固醇（但不可延誤移植評估）；<b>Wilson 病</b> → 螯合／血漿置換並列為移植適應症；<b>妊娠相關（HELLP／AFLP）</b> → 儘速生產。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">病因 Aetiology</div>
+    <div class="field-row">
+      <label>誘發原因</label>
+      <select id="lf_cause">
+        <option value="apap">Acetaminophen（乙醯胺酚）</option>
+        <option value="non">Non-acetaminophen（非乙醯胺酚）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card" id="lf_apap_card">
+    <div class="section-title">Acetaminophen — King's College Criteria</div>
+    <div class="field-row">
+      <label>動脈 pH</label>
+      <input type="number" id="lf_ph" step="0.01" placeholder="—">
+    </div>
+    <div class="note" style="margin:2px 0 8px;">— 或以下三者皆備 —</div>
+    <div class="field-row">
+      <label>INR</label>
+      <input type="number" id="lf_inr_a" step="0.1" placeholder="—">
+      <span class="unit">&gt;6.5 計入</span>
+    </div>
+    <div class="field-row">
+      <label>肌酸酐 Cr</label>
+      <input type="number" id="lf_cr" step="0.1" placeholder="—">
+      <span class="unit">mg/dL（&gt;3.4 計入）</span>
+    </div>
+    <label class="toggle-inline"><input type="checkbox" id="lf_enc_a"> grade III/IV 肝性腦病</label>
+  </div>
+
+  <div class="card" id="lf_non_card" style="display:none;">
+    <div class="section-title">Non-acetaminophen — King's College Criteria</div>
+    <div class="field-row">
+      <label>INR</label>
+      <input type="number" id="lf_inr_n" step="0.1" placeholder="—">
+      <span class="unit">&gt;6.5 單項即符合</span>
+    </div>
+    <div class="note" style="margin:2px 0 8px;">— 或以下五項符合三項 —</div>
+    <label class="toggle-inline"><input type="checkbox" id="lf_n1"> 年齡 &lt;11 或 &gt;40 歲</label>
+    <label class="toggle-inline"><input type="checkbox" id="lf_n2"> 病因：非 A 非 B 型肝炎、halothane 或藥物特異體質反應</label>
+    <label class="toggle-inline"><input type="checkbox" id="lf_n3"> 黃疸到腦病 &gt;7 天</label>
+    <label class="toggle-inline"><input type="checkbox" id="lf_n4"> INR &gt;3.5（PT &gt;50 秒）</label>
+    <label class="toggle-inline"><input type="checkbox" id="lf_n5"> 血清 bilirubin &gt;17.5 mg/dL（&gt;300 µmol/L）</label>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div><div class="metric-label">King's College Criteria</div><div class="metric-value big" id="lf_kcc" style="font-size:26px;">—</div></div>
+    </div>
+    <div class="metric-label" style="margin-top:10px;">判讀與處置</div>
+    <div style="font-size:15px; margin-top:2px;" id="lf_interp">請輸入數值。</div>
+    <div class="risk-note">KCC 陽性代表<b>預後極差、需緊急移植評估</b>；<b>陰性不能排除移植需求</b>（KCC 特異度高、敏感度中等），須合併乳酸、第 V 因子（Clichy）與臨床動態綜合判斷。無論 KCC 結果，<b>一診斷 ALF 就聯絡移植中心</b>，並依病因給專屬治療（acetaminophen 必給 NAC）。</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/2490426/" target="_blank" rel="noopener" class="ref-link">O'Grady JG, Alexander GJ, Hayllar KM, Williams R. Early indicators of prognosis in fulminant hepatic failure. Gastroenterology. 1989;97(2):439-445.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37377263/" target="_blank" rel="noopener" class="ref-link">Shingina A, Mukhtar N, Wakim-Fleming J, et al. Acute Liver Failure Guidelines. Am J Gastroenterol. 2023;118(7):1128-1153.</a></footer>
+</div>
+</div>
+<script>
+function lfNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function lfCalc(){
+  const cause=document.getElementById('lf_cause').value;
+  document.getElementById('lf_apap_card').style.display = cause==='apap' ? '' : 'none';
+  document.getElementById('lf_non_card').style.display = cause==='non' ? '' : 'none';
+
+  let met=false, detail='';
+
+  if(cause==='apap'){
+    const ph=lfNum('lf_ph'), inr=lfNum('lf_inr_a'), cr=lfNum('lf_cr');
+    const enc=document.getElementById('lf_enc_a').checked;
+    const phMet = ph!==null && ph<7.3;
+    const triad = (inr!==null && inr>6.5) && (cr!==null && cr>3.4) && enc;
+    met = phMet || triad;
+    detail = phMet ? '符合：<b>動脈 pH &lt;7.3</b>。'
+      : (triad ? '符合：<b>INR &gt;6.5 ＋ Cr &gt;3.4 ＋ grade III/IV 腦病（三者皆備）</b>。'
+      : '尚未符合（pH ≥7.3，且 INR/Cr/腦病三者未全備）。');
+  } else {
+    const inr=lfNum('lf_inr_n');
+    const inrMet = inr!==null && inr>6.5;
+    const n = ['lf_n1','lf_n2','lf_n3','lf_n4','lf_n5'].filter(i=>document.getElementById(i).checked).length;
+    met = inrMet || n>=3;
+    detail = inrMet ? '符合：<b>INR &gt;6.5</b>（單項即符合）。'
+      : (n>=3 ? '符合：<b>五項中已符合 '+n+' 項</b>（≥3 項）。'
+      : '尚未符合（INR ≤6.5，五項中僅 '+n+' 項）。');
+  }
+
+  document.getElementById('lf_kcc').textContent = met ? '陽性' : '未達';
+
+  let interp;
+  if(met){
+    interp = '<b>KCC 陽性 — '+detail+'</b><br>' +
+      '<b>立即啟動緊急肝臟移植評估</b>並轉入具移植能力的中心；此為預後極差的族群。<br>' +
+      '同步：' + (cause==='apap' ? '<b>持續 NAC</b>；' : '<b>早期腦病（grade I–II）給 NAC</b>；') +
+      '腦病 grade III/IV 收 ICU、床頭抬高 30°、鎮靜下插管、高滲透壓治療控顱內壓；低血糖與電解質密切監測、循環以 norepinephrine 支持、必要時 CRRT 清氨控容積。';
+  } else {
+    interp = detail + '<br><b>未達 KCC 不代表不需要移植</b>——KCC 敏感度中等。' +
+      '<b>一診斷 ALF 就聯絡移植中心</b>，並合併乳酸、第 V 因子（Clichy）與臨床動態綜合判斷。' +
+      (cause==='apap' ? ' 持續給 <b>NAC</b> 並依 Rumack-Matthew 判定。' : ' 早期腦病者給 <b>NAC</b>；依病因給專屬治療。');
+  }
+  document.getElementById('lf_interp').innerHTML=interp;
+}
+document.querySelectorAll('#view-acute-liver-failure input, #view-acute-liver-failure select')
+  .forEach(el => { el.addEventListener('input', lfCalc); el.addEventListener('change', lfCalc); });
+lfCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
