@@ -119,32 +119,23 @@
     <button class="flow-link" onclick="location.href='../tools/sofa.html?from=sepsis'">🧮 開啟 SOFA（Sepsis-3 的器官功能障礙判準）</button>
   </div>
 
-  <div class="flow-connector hidden" id="sp_c2">↓</div>
-  <div class="flow-step hidden" id="sp_s2">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">是否找到需要介入的解剖學感染源？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="spPick('src','yes',this)">有，且需引流或手術<span class="fo-sub">腹內膿瘍、消化道穿孔、膽道或泌尿道阻塞、壞死性軟組織感染、感染的植入物或導管</span></button>
-      <button class="flow-opt" onclick="spPick('src','no',this)">無，或尚未找到<span class="fo-sub">肺炎、原發性菌血症等不需介入者，或感染源仍在查</span></button>
-    </div>
-  </div>
-
   <div class="flow-rec rec-idle" id="sp_rec">
     <div class="rec-label">建議處置 Recommendation</div>
     <div class="rec-title">請由上方步驟開始選擇</div>
   </div>
 
-  <div class="flow-connector hidden" id="sp_c3">↓</div>
-  <div class="flow-step hidden" id="sp_s3">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">病人年齡？（決定初始 MAP 目標）</span></div>
+  <div class="flow-connector hidden" id="sp_c2">↓</div>
+  <div class="flow-step hidden" id="sp_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">病人年齡？（決定初始 MAP 目標）</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="spPick('age','young',this)">未滿 65 歲<span class="fo-sub">初始 MAP 目標 65 mmHg</span></button>
       <button class="flow-opt" onclick="spPick('age','old',this)">65 歲以上<span class="fo-sub">初始 MAP 目標 60–65 mmHg（SSC 2026 新建議）</span></button>
     </div>
   </div>
 
-  <div class="flow-connector hidden" id="sp_c4">↓</div>
-  <div class="flow-step hidden" id="sp_s4">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">初始輸液與 norepinephrine 之後的循環狀態？</span></div>
+  <div class="flow-connector hidden" id="sp_c3">↓</div>
+  <div class="flow-step hidden" id="sp_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">初始輸液與 norepinephrine 之後的循環狀態？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="spPick('hemo','target',this)">已達 MAP 目標<span class="fo-sub">灌流指標（乳酸、尿量、末梢）同步改善</span></button>
       <button class="flow-opt" onclick="spPick('hemo','escalate',this)">仍未達標，norepinephrine 需求持續上升<span class="fo-sub">已需中高劑量且仍在加</span></button>
@@ -155,7 +146,7 @@
 
   <div class="flow-rec rec-idle hidden" id="sp_rec2">
     <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請完成步驟 4</div>
+    <div class="rec-title">請完成步驟 3</div>
   </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="spReset()">重置</button></div>
@@ -164,12 +155,11 @@
 </div>
 <script src="../js/common.js"></script>
 <script>
-const st = { cat:null, src:null, age:null, hemo:null };
+const st = { cat:null, age:null, hemo:null };
 
 function spPick(key, val, btn){
   flowSelect(btn);
-  if(key==='cat'){ st.cat=val; st.src=null; st.age=null; st.hemo=null; }
-  else if(key==='src'){ st.src=val; st.age=null; st.hemo=null; }
+  if(key==='cat'){ st.cat=val; st.age=null; st.hemo=null; }
   else if(key==='age'){ st.age=val; st.hemo=null; }
   else if(key==='hemo'){ st.hemo=val; }
   render();
@@ -192,18 +182,13 @@ const SP_SUPPORT =
   '<li><b>不建議</b>維生素 C、靜脈免疫球蛋白、血液淨化（含 polymyxin B 血液灌流）。</li>';
 
 function render(){
-  /* 感染可能性低者不需要問感染源 */
-  const showSrc = !!st.cat && st.cat!=='unlikely';
-  flowShow('sp_c2', showSrc);
-  flowShow('sp_s2', showSrc);
-  if(!showSrc) flowClearSel('sp_s2');
-
   /* ---- 建議 A：辨識與初始處置 ---- */
   let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
 
-  const srcLine = st.src==='yes'
-    ? '<li><b>感染源控制</b>：確認有需介入的感染源時，<b>盡早控制、理想上於診斷後 6 小時內</b>完成引流或手術（條件式，建議 24）。感染的血管導管或植入物一併移除。腹部或軟組織來源請併用本工具箱的對應決策流程。</li>'
-    : '<li><b>感染源</b>：目前無需介入的解剖學感染源，或尚未找到。<b>持續尋找</b>——影像與臨床再評估；一旦找到需引流／手術者，仍以<b>診斷後 6 小時內</b>控制為目標。</li>';
+  /* 感染源控制：有沒有找到感染源都指向同一套作為（找到就 6 小時內控制、沒找到就繼續找），
+     故不另設分支，直接寫進建議。 */
+  const srcLine =
+    '<li><b>感染源控制</b>：找到需介入的解剖學感染源（腹內膿瘍、消化道穿孔、膽道或泌尿道阻塞、壞死性軟組織感染、感染的植入物或導管）時，<b>盡早控制、理想上於診斷後 6 小時內</b>完成引流或手術（條件式，建議 24）；感染的血管導管或植入物一併移除，腹部或軟組織來源請併用本工具箱的對應決策流程。<b>尚未找到者（肺炎、原發性菌血症等不需介入者除外）仍須持續尋找</b>——影像與臨床再評估，一旦找到仍以診斷後 6 小時內控制為目標。</li>';
 
   if(st.cat==='shock'){
     cls='rec-urgent'; title='敗血性休克 — 立即抗生素、復甦與升壓';
@@ -241,18 +226,18 @@ function render(){
   flowRec('sp_rec', cls, title, detail, note);
 
   /* ---- 建議 B：血流動力學升階（僅休克需要） ---- */
-  const showHemo = st.cat==='shock' && !!st.src;
-  flowShow('sp_c3', showHemo);
-  flowShow('sp_s3', showHemo);
-  if(!showHemo) flowClearSel('sp_s3');
+  const showHemo = st.cat==='shock';
+  flowShow('sp_c2', showHemo);
+  flowShow('sp_s2', showHemo);
+  if(!showHemo) flowClearSel('sp_s2');
 
-  const showStep4 = showHemo && !!st.age;
-  flowShow('sp_c4', showStep4);
-  flowShow('sp_s4', showStep4);
-  if(!showStep4) flowClearSel('sp_s4');
+  const showStep3 = showHemo && !!st.age;
+  flowShow('sp_c3', showStep3);
+  flowShow('sp_s3', showStep3);
+  if(!showStep3) flowClearSel('sp_s3');
 
   const mapTxt = st.age==='old' ? '60–65 mmHg' : '65 mmHg';
-  let cls2='rec-idle', title2='請完成步驟 4', detail2='', note2='';
+  let cls2='rec-idle', title2='請完成步驟 3', detail2='', note2='';
 
   if(st.hemo==='target'){
     cls2='rec-elective'; title2='已達 MAP 目標 — 維持並開始降階';
@@ -281,7 +266,7 @@ function render(){
     note2='SSC 2026 建議 58、60、61。強心劑的適應症是「充分輸液與升壓後仍持續低灌流且有心功能不全」，不是單看心輸出量數值。';
   }
   flowRec('sp_rec2', cls2, title2, detail2, note2);
-  flowShow('sp_rec2', showStep4);
+  flowShow('sp_rec2', showStep3);
 }
 
 function spReset(){

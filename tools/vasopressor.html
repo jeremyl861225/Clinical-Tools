@@ -21,7 +21,11 @@
 <div class="view active" id="view-vasopressor">
   <div class="app-header">
     <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>升壓/強心藥物流速換算</h1><div class="sub">Vasopressor &amp; Inotrope Rate Calculator + Vasoactive-Inotropic Score (VIS)</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-vasopressor'">← 返回主選單</button>
+    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+      <!-- 由敗血症決策頁點進來時（?from=sepsis）才顯示，返回後由該頁還原原本捲動位置 -->
+      <button class="back-btn" id="vaso_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sepsis.html?restore=1'">← 返回敗血症決策</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-vasopressor'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="card">
@@ -126,6 +130,7 @@ function vasoCalcAll(){
 }
 document.getElementById('vaso_weight').addEventListener('input',vasoCalcAll);
 vasoAddRow();
+if(location.search.indexOf('from=sepsis')>=0){var _vb=document.getElementById('vaso_back_path'); if(_vb) _vb.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
