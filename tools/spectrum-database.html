@@ -33,8 +33,6 @@
   .sd-sw.s2{background:var(--s2);color:var(--s2t)} .sd-sw.s1{background:var(--s1);color:var(--s1t)}
   .sd-sw.s0{background:var(--s0);color:var(--s0t)} .sd-sw.sn{background:var(--sn);color:var(--snt)}
   .sd-ctrl{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-left:auto;}
-  .sd-search{display:flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--panel); border-radius:12px; padding:6px 11px; min-width:180px;}
-  .sd-search input{border:none; outline:none; background:transparent; font-size:13.5px; width:100%; color:var(--ink); font-family:var(--sans);}
   .sd-btn{border:1px solid var(--line); background:var(--panel); color:var(--muted); font-family:var(--mono); font-size:11.5px; font-weight:700; padding:6px 12px; border-radius:12px; cursor:pointer;}
   .sd-btn.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent);}
   .sd-nt{font-size:11px; color:var(--muted-soft); font-family:var(--mono); letter-spacing:.02em;}
@@ -220,7 +218,11 @@
       <span class="sd-nt">· 格內數字＝台大 2025H1 在地 %S（≈ 為同類代表；顏色分級 ≥90/80–89/60–79/&lt;60）</span>
     </div>
     <div class="sd-ctrl">
-      <div class="sd-search"><input type="text" id="sd-q" placeholder="搜尋藥名…" autocomplete="off"></div>
+      <div class="gs-field gs-field--inline">
+        <span class="gs-icon">⌕</span>
+        <input type="search" id="sd-q" class="gs-input" placeholder="搜尋藥名…" autocomplete="off" spellcheck="false">
+        <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+      </div>
     </div>
   </div>
 
@@ -699,6 +701,7 @@ document.getElementById("sd-q").addEventListener("input",e=>{
   });
 });
 </script>
+<script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

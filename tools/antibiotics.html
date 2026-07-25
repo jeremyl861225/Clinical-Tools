@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 </head>
-<body>
+<body data-backtotop>
 <div class="sheet">
 <div class="view active" id="view-antibiotics">
   <div class="app-header">
@@ -76,7 +76,14 @@
   <div id="mode-bacteria" class="hidden">
     <div id="bac-step-list">
       <div class="abx-hint">選擇病原菌 — 顯示建議之經驗／目標治療</div>
-      <input type="text" id="bac-search" class="abx-lookup-input" placeholder="搜尋菌名（中／英，如 MRSA、Pseudomonas、大腸桿菌）…" oninput="renderBacteria(this.value)">
+      <div class="gs-box gs-box--tight">
+        <div class="gs-field">
+          <span class="gs-icon">⌕</span>
+          <input type="search" id="bac-search" class="gs-input" autocomplete="off" spellcheck="false"
+                 placeholder="搜尋菌名（中／英，如 MRSA、Pseudomonas、大腸桿菌）…" oninput="renderBacteria(this.value)">
+          <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+        </div>
+      </div>
       <div id="bac-list"></div>
     </div>
     <div id="bac-step-result" class="hidden">
@@ -94,7 +101,14 @@
   <!-- 模式三：藥物查詢 -->
   <div id="mode-lookup" class="hidden">
     <div class="abx-hint">輸入藥名前幾個字母即時篩選（中文名／英文名／台灣商品名／分類皆可）</div>
-    <input type="text" id="lookup-input" class="abx-lookup-input" placeholder="例：vanco、tazocin、萬古黴素、頭孢、flumarin、抗結核…" oninput="renderLookup(this.value)" autocomplete="off">
+    <div class="gs-box gs-box--tight">
+      <div class="gs-field">
+        <span class="gs-icon">⌕</span>
+        <input type="search" id="lookup-input" class="gs-input" autocomplete="off" spellcheck="false"
+               placeholder="例：vanco、tazocin、萬古黴素、頭孢、flumarin、抗結核…" oninput="renderLookup(this.value)">
+        <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+      </div>
+    </div>
     <div class="lookup-sort">
       <span class="lookup-sort-lbl">排序</span>
       <button class="abx-sortbtn active" data-sort="alpha" onclick="setLookupSort('alpha')">字母</button>
@@ -129,6 +143,7 @@
 <script src="../data/antibiotics/regimens.js"></script>
 <script src="../data/antibiotics/drugs.js"></script>
 <script src="../js/antibiotics.js"></script>
+<script src="../js/searchbar.js" defer></script>
 
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

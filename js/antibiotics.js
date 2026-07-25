@@ -456,7 +456,9 @@ function drugFilter(ev, kind, a, b){
   lookupFilter = (kind==='cov')
     ? {kind:'cov', set:a, key:b, label:covLabels(a)[b]}
     : {kind:'group', idx:a, label:DRUG_GROUPS[a][0]};
-  const inp=el('lookup-input'); if(inp) inp.value='';  // 清掉文字查詢，避免兩層條件相互抵銷
+  // 清掉文字查詢，避免兩層條件相互抵銷；補送 input 事件讓查詢欄的 × 跟著收起（js/searchbar.js）
+  const inp=el('lookup-input');
+  if(inp){ inp.value=''; inp.dispatchEvent(new Event('input',{bubbles:true})); }
   switchMode('lookup');
   renderLookup('');
 }

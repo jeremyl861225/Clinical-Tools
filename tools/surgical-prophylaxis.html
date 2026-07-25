@@ -41,9 +41,6 @@
 
   /* ── 工具列 ─────────────────────────────────────────────────── */
   .sp-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;}
-  .sp-search{flex:1; min-width:190px; padding:10px 12px; border:1px solid var(--line); border-radius:2px;
-             background:var(--field-bg); color:var(--ink); font-size:14px; font-family:var(--sans);}
-  .sp-search:focus{outline:none; border-color:var(--accent);}
   .sp-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
   .sp-chip{font-family:var(--mono); font-size:11.5px; border:1px solid var(--line); background:var(--panel);
            color:var(--muted); border-radius:12px; padding:5px 11px; cursor:pointer;}
@@ -180,7 +177,12 @@
   <!-- ══ 2 術式別建議 ══ -->
   <div class="section-title">2 · 術式別建議　Regimen by Procedure</div>
   <div class="sp-bar">
-    <input type="text" class="sp-search" id="sp-q" placeholder="搜尋術式或藥名（如：膽囊、craniotomy、cefazolin、剖腹產）…" autocomplete="off" oninput="renderOps()">
+    <div class="gs-field gs-field--inline">
+      <span class="gs-icon">⌕</span>
+      <input type="search" class="gs-input" id="sp-q" autocomplete="off" spellcheck="false"
+             placeholder="搜尋術式或藥名（如：膽囊、craniotomy、cefazolin、剖腹產）…" oninput="renderOps()">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+    </div>
   </div>
   <div class="sp-chips" id="sp-chips"></div>
   <div class="sp-count" id="sp-count"></div>
@@ -632,6 +634,7 @@ renderChips();
 renderOps();
 </script>
 
+<script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

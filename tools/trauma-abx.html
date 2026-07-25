@@ -34,9 +34,6 @@
 
   /* ── 損傷卡 ─────────────────────────────────────────────────── */
   .tr-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:11px;}
-  .tr-search{flex:1; min-width:190px; padding:10px 12px; border:1px solid var(--line); border-radius:2px;
-             background:var(--field-bg); color:var(--ink); font-size:14px; font-family:var(--sans);}
-  .tr-search:focus{outline:none; border-color:var(--accent);}
   .tr-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:9px;}
 
   .tr-grp{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent);
@@ -153,7 +150,12 @@
     <span class="lg"><span class="tr-rec r0">不建議</span>證據顯示無效益</span>
   </div>
   <div class="tr-bar">
-    <input type="text" class="tr-search" id="tr-q" placeholder="搜尋損傷或藥名（如：開放性骨折、胸管、cefazolin、咬傷）…" autocomplete="off" oninput="renderInj()">
+    <div class="gs-field gs-field--inline">
+      <span class="gs-icon">⌕</span>
+      <input type="search" class="gs-input" id="tr-q" autocomplete="off" spellcheck="false"
+             placeholder="搜尋損傷或藥名（如：開放性骨折、胸管、cefazolin、咬傷）…" oninput="renderInj()">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+    </div>
   </div>
   <div class="tr-count" id="tr-count"></div>
   <div id="tr-list"></div>
@@ -648,6 +650,7 @@ ttRender();
 renderMyths();
 </script>
 
+<script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

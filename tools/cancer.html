@@ -28,7 +28,14 @@
     <button class="back-btn" onclick="location.href='../index.html#card-view-cancer'">← 返回主選單</button>
   </div>
 
-  <input type="text" class="onc-search" id="oncSearch" placeholder="搜尋癌症（中文／英文，例：胃、gastric、NET）…" oninput="renderPicker(this.value)">
+  <div class="gs-box">
+    <div class="gs-field">
+      <span class="gs-icon">⌕</span>
+      <input type="search" class="gs-input" id="oncSearch" autocomplete="off" spellcheck="false"
+             placeholder="搜尋癌症（中文／英文，例：胃、gastric、NET）…" oninput="renderPicker(this.value)">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+    </div>
+  </div>
   <!-- 方磚圖版上色:亮色→淺灰版畫、暗色→深板岩反相。sRGB 不可省,否則中間調會再偏一次。
        尺寸給 1×1 移出畫面外,不用 width="0" height="0":零尺寸的 SVG 會被繪製階段整個略過,
        手機上第一屏以下的方磚就只剩底色(要捲到才補畫);癌別有 30 張,幾乎整頁都在第一屏以下。 -->
@@ -93,6 +100,7 @@
 <script src="../js/lym-pathway.js"></script>
 <script src="../js/cancer-staging.js"></script>
 
+<script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

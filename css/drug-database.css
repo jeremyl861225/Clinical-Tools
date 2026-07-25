@@ -1,10 +1,6 @@
 /* 藥物資料庫 —— 藥卡本體沿用 antibiotics.css（.drugcard／.dc-*／.renal-tbl），
    本檔只補這一頁特有的：藥理大類方格、機轉標籤列、卡片內的機轉徽章與頁尾註記。 */
 
-.db-search{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px;
-  background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:10px;}
-.db-search:focus{outline:none; border-color:var(--accent);}
-
 /* 藥理大類：一列橫捲的方格，各自帶品項數 */
 .db-cats{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px;}
 .db-cat{font-family:var(--sans); font-size:12.5px; color:var(--ink); background:var(--panel);

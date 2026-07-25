@@ -80,18 +80,25 @@
   #cat-canvas{position:absolute; left:0; top:0; width:100%;
               pointer-events:none; z-index:40; image-rendering:pixelated;}
 
-  /* 全站查詢（首頁） */
+  /* ---- 全站查詢欄（單一樣式，各頁的查詢欄一律用這一組）----
+     結構固定為 .gs-field > .gs-icon + .gs-input + .gs-clear，行為由 js/searchbar.js 接線
+     （× 只在有字時出現）。工具列裡與晶片、按鈕同列者加 .gs-field--inline。
+     .gs-field .gs-input 用兩層選取器，才壓得過個別頁面自帶的 input[type=search] 規則。 */
   .gs-box{margin:0 0 22px;}
+  .gs-box--tight{margin:0 0 11px;}   /* 下方緊接篩選晶片／方格時用 */
   .gs-field{display:flex; align-items:center; gap:10px; background:var(--field-bg); border:1px solid var(--line); border-radius:2px; padding:0 13px;
             transition:border-color .18s, box-shadow .18s;}
   .gs-field:focus-within{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
-  .gs-icon{font-size:17px; color:var(--muted-soft); line-height:1; transition:color .18s;}
+  .gs-field--inline{flex:1; min-width:190px;}
+  .gs-icon{font-size:17px; color:var(--muted-soft); line-height:1; transition:color .18s; user-select:none;}
   .gs-field:focus-within .gs-icon{color:var(--accent);}
-  .gs-input{flex:1; border:0; outline:0; background:transparent; color:var(--ink); font-family:var(--sans); font-size:14px; padding:13px 0; min-width:0;}
+  .gs-field .gs-input{flex:1; border:0; outline:0; background:transparent; color:var(--ink); font-family:var(--sans); font-size:14px; padding:13px 0; min-width:0; border-radius:0;}
+  .gs-field--inline .gs-input{padding:10px 0;}
   .gs-input::placeholder{color:var(--muted-soft); font-size:12.5px;}
   .gs-input::-webkit-search-cancel-button{display:none;}
   .gs-clear{border:0; background:transparent; color:var(--muted-soft); font-size:19px; line-height:1; padding:2px 4px; cursor:pointer;}
   .gs-clear:hover{color:var(--accent2);}
+  .gs-clear[hidden]{display:none;}
   .gs-results{margin-bottom:24px;}
   .gs-count{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin:0 0 10px;}
   .gs-group-head{display:flex; align-items:baseline; gap:8px; font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); border-bottom:1px solid var(--accent-soft); padding-bottom:4px; margin:16px 0 8px;}
@@ -112,6 +119,26 @@
   .gs-snip{display:block; font-size:11.5px; line-height:1.65; color:var(--muted); margin-top:3px;}
   .gs-pending{display:inline-block; margin-top:6px; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
   .gs-empty{font-size:12.5px; color:var(--muted); background:var(--box-bg); border:1px dashed var(--line); border-radius:2px; padding:14px; text-align:center;}
+
+  /* ---- 回到查詢欄（右下角的上箭頭）----
+     由 js/searchbar.js 注入，只在捲過查詢欄之後才出現；框線與尺寸比照側欄的
+     三橫槓開合鍵（38×38、方角、1px 框），箭頭筆畫也用同樣的 1.5px。
+     底部再退 env(safe-area-inset-bottom)，iPhone 上不會被首頁指示條壓住。 */
+  .to-top{
+    position:fixed; right:16px; z-index:50;
+    bottom:calc(18px + env(safe-area-inset-bottom, 0px));
+    width:38px; height:38px; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--panel); border:1px solid var(--line); border-radius:2px;
+    color:var(--ink); cursor:pointer;
+    transition:border-color .15s, background .15s, opacity .18s ease, transform .18s ease;
+  }
+  .to-top:hover{border-color:var(--accent); background:var(--hover-bg); color:var(--accent);}
+  .to-top:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  /* 收起時不用 display:none，否則沒有淡出；用 opacity＋pointer-events 讓它滑掉 */
+  .to-top[aria-hidden="true"]{opacity:0; transform:translateY(6px); pointer-events:none;}
+  @media (prefers-reduced-motion:reduce){ .to-top{transition:border-color .15s, background .15s;} }
+  @media print{ .to-top{display:none;} }
 
   /* ---- 首頁六大類入口：標本方磚（與 tools/cancer.html 的癌別方磚同款）----
      圖已離線處理成 640px 正方灰階（照片置中裁切、SOFA 表格補白邊全幅保留），
@@ -245,9 +272,10 @@
 
   /* ---- 首頁分類頁（腹部急症／急重症處置／計分工具）----
      這幾類沒有各自的 .html，是首頁裡的區塊；展開時把主頁的標題、查詢欄與像素貓
-     收起來，只留分類自己的 .app-header，看起來就與癌症／抗生素等獨立頁一致。 */
+     收起來，只留分類自己的 .app-header，看起來就與癌症／抗生素等獨立頁一致。
+     只收主頁那一顆查詢欄（#gs-home），分類自己的查詢欄（如計分工具）不受影響。 */
   body.sec-open .home-header,
-  body.sec-open .gs-box,
+  body.sec-open #gs-home,
   body.sec-open #cat-canvas{display:none;}
 
   .tool-group{margin-bottom:24px;}
@@ -327,6 +355,9 @@
   details.def-box[open] summary:before{content:'▾ ';}
   details.def-box .box-inner{background:var(--box-bg); border:1px solid var(--line); border-radius:2px; padding:10px 12px; margin-top:6px; font-size:12.5px; line-height:1.7;}
   details.def-box .box-inner ul{margin:4px 0; padding-left:18px;}
+  /* 「・」條列的懸掛縮排：點凸出、續行文字對齊到點之後（提升 def-box／note 內
+     全形點條列的層次清晰度）。用於 <div class="dot-line">・…</div>。 */
+  .dot-line{padding-left:1.3em; text-indent:-1.3em;}
   /* def-box 內的多欄對照表（分級／分類）。score-ref 是「數值→分數」兩欄專用，
      這裡需要具表頭、可換行的一般表格。 */
   table.def-table{width:100%; border-collapse:collapse; font-size:12px; margin:6px 0 8px;}

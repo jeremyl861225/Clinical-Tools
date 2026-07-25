@@ -32,7 +32,9 @@
 
   <div class="card">
     <div class="gs-field">
-      <input class="gs-input" id="opSearch" type="search" placeholder="搜尋病況或術式，例如：闌尾、腸阻塞、腹膜炎、扭轉…" autocomplete="off">
+      <span class="gs-icon">⌕</span>
+      <input class="gs-input" id="opSearch" type="search" placeholder="搜尋病況或術式，例如：闌尾、腸阻塞、腹膜炎、扭轉…" autocomplete="off" spellcheck="false">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
     </div>
     <div class="note" id="opCount"></div>
   </div>
@@ -345,6 +347,7 @@ function render(){
 search.addEventListener('input', render);
 render();
 </script>
+<script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>

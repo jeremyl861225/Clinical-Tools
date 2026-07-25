@@ -8,8 +8,6 @@
   .abx-mode:hover{background:var(--hover-bg); color:var(--ink);}
   .abx-mode.active{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-soft); font-weight:700;}
   @media(max-width:520px){ .abx-mode{flex:1 1 30%; padding:9px 4px; font-size:11.5px; text-align:center;} }
-  .abx-lookup-input{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink); font-size:14.5px; font-family:var(--sans); margin-bottom:10px;}
-  .abx-lookup-input:focus{outline:none; border-color:var(--accent);}
   .abx-lookup-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
   .bac-group-head{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:16px 0 7px; border-bottom:1px solid var(--accent-soft); padding-bottom:3px;}
   /* 可摺疊的類別標題（僅藥物查詢的種類排序用 button；依病原菌的菌種分組仍是 div，不受影響） */

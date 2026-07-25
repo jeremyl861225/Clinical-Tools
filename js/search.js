@@ -535,8 +535,7 @@
       e.preventDefault();
       goResult(href);
     });
-    document.getElementById('gs-clear').addEventListener('click', function () {
-      input.value = ''; onInput(); input.focus();
-    });
+    // 清除鍵（.gs-clear）由 js/searchbar.js 統一處理：清空後會補送 input 事件，
+    // 上面的 input 監聽照樣收得到，本檔不必再自行接線。
   });
 })();
