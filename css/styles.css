@@ -120,8 +120,8 @@
   .gs-pending{display:inline-block; margin-top:6px; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
   .gs-empty{font-size:12.5px; color:var(--muted); background:var(--box-bg); border:1px dashed var(--line); border-radius:2px; padding:14px; text-align:center;}
 
-  /* ---- 回到查詢欄（右下角的上箭頭）----
-     由 js/searchbar.js 注入，只在捲過查詢欄之後才出現；框線與尺寸比照側欄的
+  /* ---- 回到最上面（右下角的上箭頭）----
+     由 js/searchbar.js 注入，只在捲離頁首之後才出現；框線與尺寸比照側欄的
      三橫槓開合鍵（38×38、方角、1px 框），箭頭筆畫也用同樣的 1.5px。
      底部再退 env(safe-area-inset-bottom)，iPhone 上不會被首頁指示條壓住。 */
   .to-top{
