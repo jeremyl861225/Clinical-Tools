@@ -173,13 +173,24 @@ function subtypeBar(c){
   return h + '</div></div>';
 }
 
+/* 查詢欄的外框（.gs-box > .gs-field > input）：收放一定要動最外層那一格，
+   只把 <input> 設成 display:none 會留下一個空的框線＋放大鏡，看起來像壞掉的輸入框。 */
+function oncSearchBox(){
+  var i = document.getElementById('oncSearch');
+  return i ? (i.closest('.gs-box') || i) : null;
+}
+function showOncSearch(on){
+  var box = oncSearchBox();
+  if(box) box.style.display = on ? '' : 'none';
+}
+
 function showDetail(id, keepScroll){
   var base = CANCERS.find(function(x){return x.id === id;});
   if(!base) return;
   var c = resolveCancer(base);
   var tab = ACTIVE_TAB[id] || 'stage';
   document.getElementById('oncPicker').style.display = 'none';
-  document.getElementById('oncSearch').style.display = 'none';
+  showOncSearch(false);
   var d = document.getElementById('oncDetail');
   d.style.display = 'block';
   // 家族（婦癌）已無中間層——癌別改由頁內的 familyBar() 切換，故返回鍵一律回最上層清單。
@@ -213,7 +224,7 @@ function showDetail(id, keepScroll){
 function backToPicker(){
   document.getElementById('oncDetail').style.display = 'none';
   document.getElementById('oncPicker').style.display = 'block';
-  document.getElementById('oncSearch').style.display = 'block';
+  showOncSearch(true);
   window.scrollTo(0,0);
 }
 
