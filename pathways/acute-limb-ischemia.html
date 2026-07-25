@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性肢體缺血決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-ali-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性肢體缺血決策</h1><div class="sub">Acute Limb Ischaemia · Rutherford 分級與再灌流（ESVS 2020）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-ali-path'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">分級決定速度 The Category Sets the Clock</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      急性肢體缺血（ALI）的關鍵是<b>用 Rutherford 分級把「還能等多久」講清楚</b>：<b>IIb（immediately threatened）要立即再灌流，慢的溶栓來不及</b>；IIa（marginally threatened）還有時間走影像與導管溶栓；III（irreversible）勉強再灌流反而害人。<br>
+      <b>所有可挽救的肢體，第一件事都是立即全身 heparin</b>（除非禁忌）——阻止血栓延伸，爭取時間。<br>
+      <span class="note">分級靠三件床邊事：<b>感覺喪失、肌力減弱、都卜勒（動脈與靜脈）訊號</b>。<b>靜脈都卜勒訊號消失＋麻痺＝不可逆</b>。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>Rutherford 分級表、6P、再灌流方式與併發症 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 6P（急性缺血的徵象）：</b>Pain（疼痛）、Pallor（蒼白）、Pulselessness（無脈）、Paresthesia（感覺異常）、Paralysis（麻痺）、Poikilothermia／Perishing cold（冰冷）。<b>Paresthesia 與 Paralysis 是威脅程度升高的關鍵</b>——出現代表神經已受影響。<br><br>
+
+      <b>◆ Rutherford 急性肢體缺血分級（1997，ESVS 2020 採用）：</b><br>
+      <table class="score-ref" style="margin-top:6px;">
+        <tr><th>Category</th><th>感覺喪失</th><th>肌力減弱</th><th>動脈 Doppler</th><th>靜脈 Doppler</th></tr>
+        <tr><td><b>I</b> Viable（不立即威脅）</td><td>無</td><td>無</td><td>可聞</td><td>可聞</td></tr>
+        <tr><td><b>IIa</b> Marginally threatened（及時治療可救）</td><td>最小（限腳趾）或無</td><td>無</td><td>常不可聞</td><td>可聞</td></tr>
+        <tr><td><b>IIb</b> Immediately threatened（立即再灌流可救）</td><td>超過腳趾＋休息痛</td><td>輕至中度</td><td>不可聞</td><td>可聞</td></tr>
+        <tr><td><b>III</b> Irreversible（不可逆）</td><td>深度、麻木</td><td>深度、麻痺（僵直）</td><td>不可聞</td><td>不可聞</td></tr>
+      </table>
+      <span class="note">I 與 IIa 的差別在「動脈 Doppler 是否消失」；IIa 與 IIb 的差別在「感覺喪失是否超過腳趾、有無肌力減弱」；<b>III 的關鍵是靜脈 Doppler 也消失、肌肉僵直</b>。</span><br><br>
+
+      <b>◆ 初始處置（所有可挽救肢體）：</b><br>
+      ・<b>立即全身 heparin</b>（除非禁忌）——阻止血栓向近端與遠端延伸、保護側枝與微循環。<br>
+      ・<b>止痛、保暖患肢（但不主動加熱）、避免患肢受壓</b>；找栓塞來源（心房顫動、動脈瘤、近端粥狀硬化）。<br>
+      ・<b>盡快聯絡血管外科</b>；在能提供<b>開放與腔內全套處置</b>的血管中心治療。<br><br>
+
+      <b>◆ 再灌流方式（ESVS 2020）：</b><br>
+      ・<b>IIa</b>：有時間走<b>影像評估</b>後<b>考慮導管導引溶栓（CDT）</b>（Rec 24）或手術。<br>
+      ・<b>IIb</b>：<b>立即再灌流</b>——手術取栓（thromboembolectomy，最常用）、血管成形或腔內取栓；<b>單純溶栓通常太慢</b>，CDT 只「可考慮」（Rec 25），常需併機械取栓加速。<br>
+      ・<b>溶栓期間不建議連續全身治療性肝素化</b>（Rec 29）——會增加出血。<br>
+      ・<b>III</b>：肢體不可挽救，<b>一次性截肢（primary amputation）</b>；勉強再灌流會引發致命的<b>再灌流症候群</b>（高鉀、肌球蛋白尿、代謝性酸中毒、急性腎損傷）。<br><br>
+
+      <b>◆ 再灌流後併發症：</b><br>
+      ・<b>腔室症候群（compartment syndrome）</b>：長時間缺血後再灌流最常見，<b>IIb 再灌流後尤其要警覺</b>——腫脹、與理學不成比例的疼痛、被動牽張痛；必要時<b>筋膜切開術（fasciotomy）</b>，門檻要低。<br>
+      ・<b>再灌流症候群</b>：大量壞死肌肉再灌流釋出鉀、肌球蛋白、乳酸——監測血鉀與腎功能、積極輸液、鹼化尿液。<br>
+      ・<b>栓塞來源處理</b>：心因性栓塞者後續長期抗凝；動脈粥狀硬化者評估危險因子與抗血小板。<br><br>
+
+      <b>◆ 病因（影響方式選擇）：</b><b>栓塞（embolism）</b>常見於心房顫動、心肌梗塞後附壁血栓、瓣膜性疾病——多為突發、對側脈搏正常、無跛行病史；<b>原位血栓（thrombosis）</b>常見於既有周邊動脈疾病急性惡化——多有慢性跛行病史、側枝較發達、症狀可能較不劇烈。
+    </div>
+  </details>
+
+  <div class="flow-step" id="al_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">Rutherford 分級為何？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="alPick('cat','I',this)">I — Viable<span class="fo-sub">無感覺喪失、無肌力減弱；動脈與靜脈 Doppler 皆可聞</span></button>
+      <button class="flow-opt" onclick="alPick('cat','IIa',this)">IIa — Marginally threatened<span class="fo-sub">感覺喪失最小（限腳趾）或無、無肌力減弱；動脈 Doppler 常不可聞、靜脈可聞</span></button>
+      <button class="flow-opt" onclick="alPick('cat','IIb',this)">IIb — Immediately threatened<span class="fo-sub">感覺喪失超過腳趾＋休息痛、輕中度肌力減弱；動脈 Doppler 不可聞、靜脈可聞</span></button>
+      <button class="flow-opt" onclick="alPick('cat','III',this)">III — Irreversible<span class="fo-sub">深度感覺喪失、麻痺／僵直；動脈與靜脈 Doppler 皆不可聞</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="al_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請選擇 Rutherford 分級</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="alReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/31899099/" target="_blank" rel="noopener" class="ref-link">Björck M, Earnshaw JJ, Acosta S, et al. Editor's Choice – European Society for Vascular Surgery (ESVS) 2020 Clinical Practice Guidelines on the Management of Acute Limb Ischaemia. Eur J Vasc Endovasc Surg. 2020;59(2):173-218.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/9308598/" target="_blank" rel="noopener" class="ref-link">Rutherford RB, Baker JD, Ernst C, et al. Recommended standards for reports dealing with lower extremity ischemia: revised version. J Vasc Surg. 1997;26(3):517-538.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { cat:null };
+function alPick(key, val, btn){ flowSelect(btn); st.cat=val; render(); }
+
+const AL_INIT =
+  '<li><b>立即全身 heparin</b>（除非禁忌）——阻止血栓延伸、保護側枝與微循環，是所有可挽救肢體的第一步。</li>' +
+  '<li><b>止痛、患肢保暖但不主動加熱、避免受壓</b>；<b>盡快聯絡血管外科</b>，在能提供開放與腔內全套處置的血管中心治療。</li>' +
+  '<li><b>找栓塞來源</b>：心房顫動、心肌梗塞後附壁血栓、瓣膜疾病、動脈瘤、近端粥狀硬化。栓塞 vs 原位血栓的判斷影響再灌流方式。</li>';
+
+function render(){
+  let cls='rec-idle', title='請選擇 Rutherford 分級', detail='', note='';
+
+  if(st.cat==='I'){
+    cls='rec-blue'; title='Rutherford I（Viable）— 非緊急，抗凝與影像評估';
+    detail=AL_INIT +
+      '<li><b>肢體暫無立即威脅</b>：可安排<b>影像評估</b>（動脈超音波、CTA）釐清病灶與病因，擇期再血管化。</li>' +
+      '<li><b>密切重新評估</b>：ALI 可在數小時內惡化——感覺喪失或肌力減弱一旦出現即升級為 II，處置隨之改變。</li>';
+    note='ESVS 2020：I 級可影像評估後計畫性處理，但需密切追蹤是否惡化。';
+  } else if(st.cat==='IIa'){
+    cls='rec-elective'; title='Rutherford IIa（Marginally threatened）— 影像後考慮導管溶栓或手術';
+    detail=AL_INIT +
+      '<li><b>及時治療可挽救</b>：仍有時間走<b>影像評估</b>，之後<b>考慮導管導引溶栓（CDT）</b>（ESVS 2020 建議 24）或手術再血管化。</li>' +
+      '<li><b>溶栓期間不建議連續全身治療性肝素化</b>（建議 29）——會增加出血；依方案調整抗凝。</li>' +
+      '<li><b>持續評估是否進展為 IIb</b>：感覺喪失擴大、出現肌力減弱、動脈訊號惡化時，改走緊急再灌流。</li>';
+    note='ESVS 2020 建議 24（IIa 考慮 CDT）、29（溶栓期間不連續全身肝素）。';
+  } else if(st.cat==='IIb'){
+    cls='rec-urgent'; title='Rutherford IIb（Immediately threatened）— 立即再灌流';
+    detail=AL_INIT +
+      '<li><b>立即再灌流，不能等長時間溶栓</b>：以<b>手術取栓（thromboembolectomy）</b>為主，或血管成形／腔內取栓；<b>CDT 只「可考慮」</b>（建議 25），常需併機械取栓加速。</li>' +
+      '<li><b>時間就是肢體</b>——延遲再灌流直接對應截肢率上升；同步準備手術室與血管外科。</li>' +
+      '<li><b>再灌流後警覺腔室症候群</b>：腫脹、與理學不成比例的疼痛、被動牽張痛——<b>fasciotomy 門檻要低</b>。</li>' +
+      '<li><b>監測再灌流症候群</b>：血鉀、肌球蛋白尿、代謝性酸中毒、急性腎損傷——積極輸液、必要時鹼化尿液。</li>';
+    note='ESVS 2020 建議 25（IIb 可考慮 CDT，但常需緊急手術取栓）。';
+  } else if(st.cat==='III'){
+    cls='rec-urgent'; title='Rutherford III（Irreversible）— 一次性截肢';
+    detail='<li><b>肢體不可挽救</b>（深度感覺喪失、肌肉僵直、靜脈 Doppler 消失）：<b>一次性截肢（primary amputation）</b>。</li>' +
+      '<li><b>不要勉強再灌流</b>——大量壞死肌肉再灌流會釋出鉀、肌球蛋白與乳酸，引發<b>致命的再灌流症候群</b>（高鉀心律不整、急性腎損傷、代謝性酸中毒）。</li>' +
+      '<li><b>仍需全身支持</b>：矯正高血鉀與酸中毒、輸液保護腎臟；評估病人整體狀況與截肢層級。</li>' +
+      '<li>與病人及家屬<b>溝通不可挽救的事實</b>與截肢的必要性；處理栓塞來源以保護對側與其他器官。</li>';
+    note='ESVS 2020／Rutherford 1997：III 級為不可逆，勉強再灌流有害。';
+  }
+  flowRec('al_rec', cls, title, detail, note);
+}
+
+function alReset(){
+  st.cat=null;
+  document.querySelectorAll('#view-ali-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  render();
+}
+alReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
