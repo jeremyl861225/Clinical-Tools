@@ -41,6 +41,7 @@
     <button class="tab-btn"        data-tab="gib"     onclick="clTab('gib')">消化道出血</button>
     <button class="tab-btn"        data-tab="periop"  onclick="clTab('periop')">圍手術期</button>
     <button class="tab-btn"        data-tab="neuro"   onclick="clTab('neuro')">神經</button>
+    <button class="tab-btn"        data-tab="circ"    onclick="clTab('circ')">循環</button>
     <button class="tab-btn"        data-tab="misc"    onclick="clTab('misc')">其他</button>
   </div>
 
@@ -1017,6 +1018,45 @@
   <footer class="tool-footer">REF（SAH 分級）— <a href="https://pubmed.ncbi.nlm.nih.gov/5635959/" target="_blank" rel="noopener" class="ref-link">Hunt WE, Hess RM. Surgical risk as related to time of intervention in the repair of intracranial aneurysms. J Neurosurg. 1968;28(1):14-20.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/3131498/" target="_blank" rel="noopener" class="ref-link">Report of World Federation of Neurological Surgeons Committee on a Universal Subarachnoid Hemorrhage Grading Scale. J Neurosurg. 1988;68(6):985-986.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/7354892/" target="_blank" rel="noopener" class="ref-link">Fisher CM, Kistler JP, Davis JM. Relation of cerebral vasospasm to subarachnoid hemorrhage visualized by computerized tomographic scanning. Neurosurgery. 1980;6(1):1-9.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/16823296/" target="_blank" rel="noopener" class="ref-link">Frontera JA, Claassen J, Schmidt JM, et al. Prediction of symptomatic vasospasm after subarachnoid hemorrhage: the modified Fisher scale. Neurosurgery. 2006;59(1):21-27.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37212182/" target="_blank" rel="noopener" class="ref-link">Hoh BL, et al. 2023 Guideline for the Management of Patients With Aneurysmal Subarachnoid Hemorrhage. Stroke. 2023;54(7):e314-e370.</a></footer>
 </div>
 
+<!-- ==================== 循環 ==================== -->
+<div id="tab-circ" class="hidden">
+
+  <div class="sys-head" id="sys-scai">
+    <span class="sys-name">心因性休克 SCAI SHOCK 分級</span>
+    <span class="sys-en">SCAI SHOCK Stage — Cardiogenic Shock</span>
+    <span class="sys-src">Naidu 2022（SCAI 更新版）</span>
+  </div>
+  <div class="card">
+    <div class="sys-body">
+      <div class="exclusive-note" style="margin-bottom:10px;">
+        <b>兩條軸線，不是看血壓高低：</b>① 有沒有<b>低灌流（hypoperfusion）</b>；② 對支持治療<b>有沒有反應</b>。血壓可以正常仍是休克（已低灌流），血壓偏低也可能還不算休克（B 級）。<b>乳酸是貫穿全表的關鍵指標。</b>
+      </div>
+
+      <div class="sys-sub">五級判準（SCAI 2022：臨床／生化／血行動力學）</div>
+      <table class="def-table">
+        <tr><th style="width:15%;">級別</th><th>判準</th></tr>
+        <tr><td><b>A</b><br>At Risk</td><td>有急性心臟診斷、具 CS 風險，但<b>無 preshock 或 shock</b>。血壓與灌流正常、<b>乳酸正常</b>。</td></tr>
+        <tr><td><b>B</b><br>Beginning<br><span style="font-weight:400;">preshock</span></td><td>血行動力學不穩（<b>SBP &lt; 90 或 MAP &lt; 60，或較基準降 &gt; 30 mmHg；或心搏過速</b>）但<b>無低灌流</b>。JVP 上升、<b>溫暖、灌流佳、乳酸正常</b>。</td></tr>
+        <tr class="dt-warn"><td><b>C</b><br>Classic</td><td><b>出現低灌流，且需一項介入</b>（藥物或機械）超出單純容積復甦。冷濕、意識改變、<b>尿量 &lt; 30 mL/h、乳酸 ≥ 2</b>、Cr 升至 1.5× 基準；侵入性血行動力學（強烈建議）：<b>CI &lt; 2.2 L/min/m²、PCWP &gt; 15 mmHg</b>。</td></tr>
+        <tr class="dt-warn"><td><b>D</b><br>Deteriorating</td><td>類似 C 但<b>惡化中</b>——初始支持策略<b>未能恢復灌流</b>，血行動力學惡化或<b>乳酸持續 &gt; 2 且上升</b>，需升級支持。</td></tr>
+        <tr class="dt-warn"><td><b>E</b><br>Extremis</td><td><b>實際或即將循環崩潰</b>。近乎無脈、多次去顫、<b>乳酸 ≥ 8、pH &lt; 7.2、base deficit &gt; 10</b>，最大支持下仍嚴重低血壓、需 bolus 升壓劑。</td></tr>
+      </table>
+      <span class="sys-caveat">※ <b>乳酸切點：C 級 ≥ 2、E 級 ≥ 8 mmol/L。</b><br>
+      ※ <b>A-modifier</b>：任一 stage 若合併<b>心跳停止（CPR）</b>即加此註記，代表預後更差（例如「C 級併 A-modifier」）。</span>
+
+      <div class="sys-sub">用法：這是會移動的動態分級</div>
+      SCAI stage 在病程中<b>可上下移動</b>，須反覆重評（<b>乳酸與灌流是最靈敏的指標</b>），分級越高死亡率越高。它取代舊有的「有／無休克」二分，把 <b>preshock（B）</b>與<b>惡化中（D）</b>獨立出來，好在真正崩潰前就升級照護。
+
+      <div class="note" style="margin:10px 0;">
+        <a class="tool-link" href="cardiogenic-shock.html">→ 互動分級器、逐級處置與機械循環支持（IABP／VA-ECMO／Impella）的試驗證據，見「心因性休克 SCAI 分級」工具</a>
+      </div>
+      <span class="sys-caveat">※ 處置重點（詳見上方工具）：<b>norepinephrine 為第一線升壓劑</b>；AMI-CS 緊急 culprit-only 血運重建；<b>IABP 與 routine VA-ECMO 無存活益處</b>，microaxial flow pump（Impella CP）於 STEMI-CS 降低死亡但併發症增加（DanGer Shock）——裝置決策交由 shock team。</span>
+    </div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/35181179/" target="_blank" rel="noopener" class="ref-link">Naidu SS, Baran DA, Jentzer JC, et al. SCAI SHOCK Stage Classification Expert Consensus Update. J Am Coll Cardiol. 2022;79(9):933-946.</a></footer>
+</div>
+
 <div id="tab-misc" class="hidden">
 
   <div class="note" style="margin-bottom:14px;">
@@ -1263,9 +1303,10 @@
    每一套分級都有自己的 id（sys-xxx）與所屬分頁；外部（流程圖、書籤、側邊導覽）
    以 #sys=xxx 連進來時，先切到該分頁再捲到該區塊——只捲不切分頁的話，
    目標永遠在 display:none 的分頁裡，看起來像連結壞掉。 */
-var TABS=['cross','biliary','colon','panc','hernia','gib','periop','neuro','misc'];
+var TABS=['cross','biliary','colon','panc','hernia','gib','periop','neuro','circ','misc'];
 var SYS_TAB={
   aast:'cross',
+  scai:'circ',
   'marshall-ct':'neuro',rotterdam:'neuro',
   'hunt-hess':'neuro',wfns:'neuro',fisher:'neuro',mfisher:'neuro',
   clavien:'periop','isrec':'periop','leak-family':'periop',cfs:'periop',

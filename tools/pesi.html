@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PESI／sPESI · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="臨床計分">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-pesi">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Pulmonary Embolism Scoring Tool</div>
+      <h1>PESI／sPESI</h1>
+      <div class="sub">Pulmonary Embolism Severity Index · 確診 PE 後的 30 天死亡風險分層</div>
+    </div>
+    <div class="back-stack">
+      <!-- 由肺栓塞頁點進來時（?from=pe）才顯示 -->
+      <button class="back-btn hidden" id="pesi-back-pe" onclick="location.href='pe.html#risk'">← 返回急性肺栓塞</button>
+      <button class="back-btn" onclick="location.href='../index.html#card-view-pesi'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title" style="margin-top:0;">臨床參數 Parameters</div>
+    <div class="field-row"><label>年齡 Age（歲）</label>
+      <input type="number" id="pe_age" inputmode="numeric" min="0" max="120" placeholder="例 72" style="flex:1;">
+    </div>
+    <label class="item"><input type="checkbox" id="pe_male"> 男性 <span class="unit">(Male sex)</span><span class="pt-badge">+10</span></label>
+    <label class="item"><input type="checkbox" id="pe_ca"> 惡性腫瘤病史 <span class="unit">(History of cancer)</span><span class="pt-badge">+30</span></label>
+    <label class="item"><input type="checkbox" id="pe_hf"> 心臟衰竭病史 <span class="unit">(Heart failure)</span><span class="pt-badge">+10</span></label>
+    <label class="item"><input type="checkbox" id="pe_lung"> 慢性肺病病史 <span class="unit">(Chronic lung disease)</span><span class="pt-badge">+10</span></label>
+    <label class="item"><input type="checkbox" id="pe_hr"> 脈搏 ≥ 110 次/分 <span class="unit">(Pulse ≥ 110/min)</span><span class="pt-badge">+20</span></label>
+    <label class="item"><input type="checkbox" id="pe_sbp"> 收縮壓 &lt; 100 mmHg <span class="unit">(SBP &lt; 100)</span><span class="pt-badge">+30</span></label>
+    <label class="item"><input type="checkbox" id="pe_rr"> 呼吸 ≥ 30 次/分 <span class="unit">(RR ≥ 30/min)</span><span class="pt-badge">+20</span></label>
+    <label class="item"><input type="checkbox" id="pe_temp"> 體溫 &lt; 36 °C <span class="unit">(Temp &lt; 36 °C)</span><span class="pt-badge">+20</span></label>
+    <label class="item"><input type="checkbox" id="pe_ams"> 意識改變 <span class="unit">(定向力障礙／嗜睡／木僵／昏迷)</span><span class="pt-badge">+60</span></label>
+    <label class="item"><input type="checkbox" id="pe_spo2"> 動脈血氧飽和 &lt; 90% <span class="unit">(SaO₂ &lt; 90%，不論有無給氧)</span><span class="pt-badge">+20</span></label>
+    <div class="note">原始 PESI：年齡直接加「歲數」，其餘各項加對應點數。<b>sPESI（下方）由同一組欄位自動換算</b>，不必重複輸入。此分數評估<b>死亡風險與能否門診治療</b>，不是用來判斷血流動力學高危——高危看的是休克／低血壓。</div>
+  </div>
+
+  <div class="result">
+    <div class="result-grid">
+      <div>
+        <div class="metric-label">原始 PESI Total</div>
+        <div class="metric-value big" id="pe_total">—</div>
+        <div class="metric-value" id="pe_class" style="font-size:19px; margin-top:2px;">請輸入年齡</div>
+      </div>
+      <div>
+        <div class="metric-label">簡化 sPESI</div>
+        <div class="metric-value big" id="spe_total">—</div>
+        <div class="metric-value" id="spe_risk" style="font-size:19px; margin-top:2px;">—</div>
+      </div>
+    </div>
+    <div class="risk-note" id="pe_advice" style="margin-top:10px;">請輸入年齡並勾選符合的項目。</div>
+
+    <table class="ref" id="pe_ref" style="margin-top:12px;">
+      <tr><th>原始 PESI 分級</th><th>分數</th><th>30 天死亡率（約）</th></tr>
+      <tr id="pe_r1"><td>Class I 極低危</td><td>≤ 65</td><td>0–1.6%</td></tr>
+      <tr id="pe_r2"><td>Class II 低危</td><td>66–85</td><td>1.7–3.5%</td></tr>
+      <tr id="pe_r3"><td>Class III 中危</td><td>86–105</td><td>3.2–7.1%</td></tr>
+      <tr id="pe_r4"><td>Class IV 高危</td><td>106–125</td><td>4.0–11.4%</td></tr>
+      <tr id="pe_r5"><td>Class V 極高危</td><td>&gt; 125</td><td>10.0–24.5%</td></tr>
+    </table>
+  </div>
+
+  <details class="def-box">
+    <summary>PESI 與 sPESI 的差別、以及 2019 ESC 怎麼用</summary>
+    <div class="box-inner">
+      <b>◆ 兩者用途相同、變項不同。</b>都是在<b>血流動力學穩定</b>的確診 PE 病人身上，找出<b>低危、可考慮早期出院／門診治療</b>的一群；不是用來抓「需要立刻再灌流」的高危（那要看休克／持續低血壓）。<br><br>
+
+      <b>◆ 原始 PESI（11 項，Aujesky 2005）→ 五個分級</b><br>
+      <div class="dot-line">・<b>Class I–II（≤ 85 分）＝ 低危</b>：30 天死亡率低，是門診／早期出院的候選（仍須無右心負荷、社會支持足）。</div>
+      <div class="dot-line">・<b>Class III–V（≥ 86 分）＝ 較高危</b>：住院治療，並依右心功能與 troponin 進一步分中低／中高危。</div><br>
+
+      <b>◆ 簡化 sPESI（6 項，Jiménez 2010）→ 二分</b>：年齡 &gt; 80、癌症、慢性心肺病（心衰<b>或</b>慢性肺病，合併只算 1 分）、脈搏 ≥ 110、SBP &lt; 100、SaO₂ &lt; 90%，各 1 分。<br>
+      <div class="dot-line">・<b>0 分 ＝ 低危</b>：30 天死亡率約 <b>1.0%</b>（95% CI 0.0–2.1%）。</div>
+      <div class="dot-line">・<b>≥ 1 分 ＝ 高危</b>：30 天死亡率約 <b>10.9%</b>（95% CI 8.5–13.2%）。</div>
+      <span class="note">sPESI 把年齡改成「&gt; 80」的二分、把心衰與慢性肺病併成「慢性心肺病」，並<b>捨去</b>性別、呼吸速率、體溫、意識——所以本頁勾了這些也不會影響 sPESI。</span><br><br>
+
+      <b>◆ 2019 ESC 的位置：</b>穩定病人中，<b>PESI Class III–V 或 sPESI ≥ 1</b> 即歸為<b>中危</b>，再看右心功能（超音波／CT）與 troponin——兩者皆異常 → 中高危；僅其一 → 中低危。<b>PESI I–II 或 sPESI 0</b> 且無右心負荷、troponin 正常 → <b>低危</b>，可考慮早期出院。血流動力學不穩者一律<b>高危</b>，與 PESI 無關。<br><br>
+
+      <b>⚠ 兩點提醒：</b><br>
+      <div class="dot-line">・低危≠可略過抗凝——低危指的是「死亡風險低、照護地點可下修」，抗凝仍要給。</div>
+      <div class="dot-line">・門診治療除了 sPESI 0，還要滿足<b>無右心負荷、無需氧、疼痛可控、社會支持足、無其他住院理由</b>（可對照 Hestia 準則）。</div>
+    </div>
+  </details>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/16020800/" target="_blank" rel="noopener" class="ref-link">Aujesky D, et al. (原始 PESI). Am J Respir Crit Care Med. 2005;172(8):1041-1046.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/20696966/" target="_blank" rel="noopener" class="ref-link">Jiménez D, et al. (sPESI). Arch Intern Med. 2010;170(15):1383-1389.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/31504429/" target="_blank" rel="noopener" class="ref-link">2019 ESC PE Guidelines. Eur Heart J. 2020;41:543-603.</a>
+  </footer>
+</div>
+</div>
+<script>
+function pesiCalc(){
+  var ageV = document.getElementById('pe_age').value;
+  var age = parseInt(ageV, 10);
+  var hasAge = !isNaN(age) && age >= 0;
+  function ck(id){ return document.getElementById(id).checked; }
+
+  // ── 原始 PESI ──
+  var pesi = 0;
+  if(hasAge) pesi += age;
+  if(ck('pe_male')) pesi += 10;
+  if(ck('pe_ca'))   pesi += 30;
+  if(ck('pe_hf'))   pesi += 10;
+  if(ck('pe_lung')) pesi += 10;
+  if(ck('pe_hr'))   pesi += 20;
+  if(ck('pe_sbp'))  pesi += 30;
+  if(ck('pe_rr'))   pesi += 20;
+  if(ck('pe_temp')) pesi += 20;
+  if(ck('pe_ams'))  pesi += 60;
+  if(ck('pe_spo2')) pesi += 20;
+
+  // ── 簡化 sPESI（由同組欄位推導）──
+  var spesi = 0;
+  if(hasAge && age > 80) spesi += 1;
+  if(ck('pe_ca')) spesi += 1;
+  if(ck('pe_hf') || ck('pe_lung')) spesi += 1;   // 慢性心肺病：合併只算 1
+  if(ck('pe_hr')) spesi += 1;
+  if(ck('pe_sbp')) spesi += 1;
+  if(ck('pe_spo2')) spesi += 1;
+
+  var totalEl = document.getElementById('pe_total');
+  var classEl = document.getElementById('pe_class');
+  var rows = ['pe_r1','pe_r2','pe_r3','pe_r4','pe_r5'];
+  rows.forEach(function(id){ document.getElementById(id).classList.remove('ref-current'); });
+
+  if(!hasAge){
+    totalEl.textContent = '—';
+    classEl.textContent = '請輸入年齡';
+  } else {
+    totalEl.textContent = pesi;
+    var cls, row;
+    if(pesi <= 65){ cls='Class I 極低危'; row='pe_r1'; }
+    else if(pesi <= 85){ cls='Class II 低危'; row='pe_r2'; }
+    else if(pesi <= 105){ cls='Class III 中危'; row='pe_r3'; }
+    else if(pesi <= 125){ cls='Class IV 高危'; row='pe_r4'; }
+    else { cls='Class V 極高危'; row='pe_r5'; }
+    classEl.textContent = cls;
+    document.getElementById(row).classList.add('ref-current');
+  }
+
+  // sPESI 需要年齡才完整（age>80 那項）；未輸入年齡則以已知項為下限
+  document.getElementById('spe_total').textContent = spesi;
+  document.getElementById('spe_risk').textContent = (spesi === 0) ? '低危（0 分）' : '高危（≥ 1）';
+
+  var adv = document.getElementById('pe_advice');
+  if(!hasAge){
+    adv.innerHTML = '請輸入年齡以完成原始 PESI 分級。' + (spesi>0 ? ' 目前已有 sPESI ≥ 1，屬<b>高危</b>。' : '');
+    return;
+  }
+  var pesiLow = pesi <= 85;          // Class I–II
+  var spesiLow = spesi === 0;
+  if(pesiLow && spesiLow){
+    adv.innerHTML = '兩者皆<b>低危</b>（PESI Class I–II、sPESI 0）→ 若<b>無右心負荷、troponin 正常、社會支持足</b>，可考慮早期出院／門診抗凝治療。';
+  } else if(!pesiLow && !spesiLow){
+    adv.innerHTML = '兩者皆屬<b>較高危</b>（PESI Class III–V、sPESI ≥ 1）→ 依 2019 ESC 歸為<b>中危</b>，住院並評估<b>右心功能與 troponin</b>：兩者皆異常＝中高危，僅其一＝中低危。血流動力學不穩則為高危、須再灌流。';
+  } else {
+    adv.innerHTML = '<b>兩分數不一致</b>（PESI ' + (pesiLow?'低危':'較高危') + '、sPESI ' + (spesiLow?'0':'≥1') + '）→ 依 2019 ESC，<b>只要 PESI III–V「或」sPESI ≥ 1 就歸為中危</b>，宜偏保守：住院並評估右心功能與 troponin。';
+  }
+}
+document.querySelectorAll('#view-pesi input').forEach(function(el){
+  el.addEventListener('change', pesiCalc);
+  el.addEventListener('input', pesiCalc);
+});
+(function(){
+  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
+  if(from==='pe'){ var b=document.getElementById('pesi-back-pe'); if(b) b.classList.remove('hidden'); }
+})();
+pesiCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
