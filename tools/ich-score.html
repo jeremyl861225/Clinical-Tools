@@ -22,7 +22,7 @@
   <div class="app-header">
     <div><div class="eyebrow">Intracerebral Hemorrhage Scoring Tool</div><h1>ICH Score</h1><div class="sub">自發性腦內出血嚴重度 · 含 ABC/2 血腫體積估算（Hemphill 2001）</div></div>
     <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="is_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ich.html?restore=1'">← 返回腦出血決策</button>
+      <button class="back-btn" id="is_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ich.html?restore=1'">← 返回自發性腦出血決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-ich-score'">← 返回主選單</button>
     </div>
   </div>
@@ -211,7 +211,11 @@ function isCalc(){
 document.querySelectorAll('#view-ich-score input, #view-ich-score select')
   .forEach(el => { el.addEventListener('input', isCalc); el.addEventListener('change', isCalc); });
 isCalc();
-if(location.search.indexOf('from=ich')>=0){var _b=document.getElementById('is_back_path'); if(_b) _b.style.display='';}
+var _from=(location.search.match(/from=(ich|tbi)/)||[])[1];
+if(_from){var _b=document.getElementById('is_back_path');
+  if(_b){ _b.style.display='';
+    if(_from==='tbi'){ _b.textContent='← 返回創傷性腦損傷決策'; _b.setAttribute('onclick',"location.href='../pathways/tbi.html?restore=1'"); }
+  }}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

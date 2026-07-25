@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>顱內出血處置決策 · 臨床工具箱</title>
+<title>自發性腦出血處置決策 · 臨床工具箱</title>
 <link rel="stylesheet" href="../css/styles.css">
 <!-- pwa-head-tags -->
 <meta name="theme-color" content="#1f5a6b">
@@ -19,896 +19,832 @@
 <body>
 <div class="sheet">
 <div class="view active" id="view-ich-path">
-  <div class="app-header">
-    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>顱內出血處置決策</h1><div class="sub">Spontaneous Intracerebral Hemorrhage · Traumatic Brain Injury</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-ich-path'">← 返回主選單</button>
-  </div>
+ <div class="app-header">
+ <div><div class="eyebrow">Clinical Decision Pathway</div><h1>自發性腦出血處置決策</h1><div class="sub">Spontaneous Intracerebral Hemorrhage · Aneurysmal Subarachnoid Hemorrhage</div></div>
+ <button class="back-btn" onclick="location.href='../index.html#card-view-ich-path'">← 返回主選單</button>
+ </div>
 
-  <div class="tab-row" id="ic_tabs">
-    <button class="tab-btn active" data-tab="spon" onclick="icTab('spon')">自發性 Spontaneous ICH</button>
-    <button class="tab-btn"        data-tab="tbi"  onclick="icTab('tbi')">創傷性 Traumatic Brain Injury</button>
-  </div>
+ <div class="tab-row" id="ic_tabs">
+ <button class="tab-btn active" data-tab="spon" onclick="icTab('spon')">自發性 Spontaneous ICH</button>
+ <button class="tab-btn" data-tab="sah" onclick="icTab('sah')">動脈瘤性 Aneurysmal SAH</button>
+ </div>
 
-  <div class="note" style="margin:-8px 0 16px;">
-    兩個分頁走<b>不同的證據體系</b>：自發性 intracerebral hemorrhage 依 <b>AHA／ASA 2022</b>（有正式 Class／LOE），創傷性依 <b>Brain Trauma Foundation</b> 第 4 版與 <b>2006 年手術處置指引</b>（後者幾乎全為 Class III 證據、無正式分級）。<b>不可把一邊的門檻套到另一邊</b>——例如自發性 ICH 的 blood pressure 目標與 platelet transfusion 禁令，都不是從 traumatic brain injury 的族群導出來的。
-  </div>
+ <div class="note" style="margin:-8px 0 16px;">
+ 兩個分頁<b>走不同的指引</b>：自發性 intracerebral hemorrhage 依 <b>AHA／ASA 2022</b>，aneurysmal subarachnoid hemorrhage 依 <b>AHA／ASA 2023</b>。<b>blood pressure 的處置尤其不可互換</b>——ICH 的主軸是<b>降壓</b>（且 SBP &gt;150 者降到 &lt;130 mmHg 屬 <b>Class 3：Harm</b>）；SAH 在動脈瘤未處理前只要求<b>避免嚴重低血壓、嚴重高血壓與血壓變異</b>，<b>指引刻意不給數字目標</b>。創傷性顱內出血請見<a class="tool-link" href="tbi.html">創傷性腦損傷處置決策</a>。
+ </div>
 
 <!-- ==================== 分頁一：自發性 Spontaneous ICH ==================== -->
 <div id="tab-spon">
 
-  <div class="card" style="border-left:3px solid var(--accent2);">
-    <div class="section-title">三個時間敏感的動作 The First Hours</div>
-    <div class="note" style="font-size:13px; line-height:1.7;">
-      ① <b>Anticoagulation reversal</b>：正在使用 anticoagulant 者<b>立即停藥並盡快逆轉</b>（Class 1）——這是本分頁唯一的強建議等級藥物動作。<br>
-      ② <b>Blood pressure</b>：<b>發病 2 小時內開始、1 小時內達標</b>可降低 hematoma expansion 的風險（2a）；但<b>降得太低有害</b>——SBP &gt;150 mmHg 者急性降到 &lt;130 mmHg 屬 <b>Class 3（Harm）</b>。<br>
-      ③ <b>不要盲目給 platelet transfusion</b>：使用 aspirin 且<b>不需要緊急 neurosurgery</b> 者，platelet transfusion <b>有害、不應給予</b>（Class 3）。只有<b>需要緊急手術</b>時才「可以考慮」（2b）。<br>
-      <span class="note">本分頁涵蓋<b>自發性（非創傷性）intracerebral hemorrhage</b>，含 supratentorial、cerebellar、brainstem 與 intraventricular hemorrhage。<b>Aneurysmal subarachnoid hemorrhage</b> 的處置不在此頁——AHA/ASA 2023 SAH 指引全文為訂閱制、未能取得一手內容，故不轉載其建議；SAH 的分級請用「SAH 分級系統」工具。<b>Traumatic</b> 顱內出血請切換到右邊分頁。</span>
-    </div>
-  </div>
+ <div class="card" style="border-left:3px solid var(--accent2);">
+ <div class="section-title">三個時間敏感的動作 The First Hours</div>
+ <div class="note" style="font-size:13px; line-height:1.7;">
+ ① <b>Anticoagulation reversal</b>：正在使用 anticoagulant 者<b>立即停藥並盡快逆轉</b>（Class 1）——這是本分頁唯一的強建議等級藥物動作。<br>
+ ② <b>Blood pressure</b>：<b>發病 2 小時內開始、1 小時內達標</b>可降低 hematoma expansion 的風險（2a）；但<b>降得太低有害</b>——SBP &gt;150 mmHg 者急性降到 &lt;130 mmHg 屬 <b>Class 3（Harm）</b>。<br>
+ ③ <b>不要盲目給 platelet transfusion</b>：使用 aspirin 且<b>不需要緊急 neurosurgery</b> 者，platelet transfusion <b>有害、不應給予</b>（Class 3）。只有<b>需要緊急手術</b>時才「可以考慮」（2b）。<br>
+ <span class="note">本分頁涵蓋<b>自發性（非創傷性）intracerebral hemorrhage</b>，含 supratentorial、cerebellar、brainstem 與 intraventricular hemorrhage。<b>Aneurysmal subarachnoid hemorrhage</b> 請切換到<b>右邊分頁</b>（依 AHA/ASA 2023）。<b>創傷性</b>顱內出血（EDH／SDH／contusion／traumatic SAH）請見<a class="tool-link" href="tbi.html">創傷性腦損傷處置決策</a>。</span>
+ </div>
+ </div>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>Blood pressure、止血與 coagulopathy、ICP Definitions &amp; Recommendations</summary>
-    <div class="box-inner">
-      <b>◆ Blood pressure（AHA/ASA 2022）：</b><br>
-      ・<b>發病 2 小時內開始治療、1 小時內達到目標</b>，可降低 hematoma expansion 風險（2a）。<br>
-      ・<b>藥物滴定應追求平順而持續的控制，避免高峰與大幅波動</b>（2a）——blood pressure variability 本身就是預後不良因子。<br>
-      ・<b>輕至中度 ICH 且 SBP 150–220 mmHg</b>：急性降至目標 <b>140 mmHg</b>、維持在 <b>130–150 mmHg</b> 是安全的，可能合理（2b）。<br>
-      ・<b>大量或重度 ICH、或需要 surgical decompression 者</b>：積極降壓的安全性與療效<b>尚未確立</b>（2b）。<br>
-      ・<b>SBP &gt;150 mmHg 者急性降至 &lt;130 mmHg 具潛在傷害</b>（<b>Class 3：Harm</b>）。<br><br>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>Blood pressure、止血與 coagulopathy、ICP Definitions &amp; Recommendations</summary>
+ <div class="box-inner">
+ <b>◆ Blood pressure（AHA/ASA 2022）：</b><br>
+ ・<b>發病 2 小時內開始治療、1 小時內達到目標</b>，可降低 hematoma expansion 風險（2a）。<br>
+ ・<b>藥物滴定應追求平順而持續的控制，避免高峰與大幅波動</b>（2a）——blood pressure variability 本身就是預後不良因子。<br>
+ ・<b>輕至中度 ICH 且 SBP 150–220 mmHg</b>：急性降至目標 <b>140 mmHg</b>、維持在 <b>130–150 mmHg</b> 是安全的，可能合理（2b）。<br>
+ ・<b>大量或重度 ICH、或需要 surgical decompression 者</b>：積極降壓的安全性與療效<b>尚未確立</b>（2b）。<br>
+ ・<b>SBP &gt;150 mmHg 者急性降至 &lt;130 mmHg 具潛在傷害</b>（<b>Class 3：Harm</b>）。<br><br>
 
-      <b>◆ Anticoagulant-associated hemorrhage（Class 1：立即停藥並盡快逆轉）：</b><br>
-      ・<b>Vitamin K antagonist</b>：INR <b>1.3–1.9</b> → 4-factor prothrombin complex concentrate（4F-PCC）<b>10–20 IU/kg</b>（2b）；INR <b>&gt;2.0</b> → 4F-PCC <b>25–50 IU/kg</b>（Class 1）＋<b>intravenous vitamin K</b>（Class 1）。<br>
-      ・<b>Dabigatran</b>：優先 <b>idarucizumab</b>（2a）；無法取得時用 PCC 或 activated PCC，和／或 <b>renal replacement therapy</b>（2b，dabigatran 可被 dialysis 清除）。<br>
-      ・<b>Factor Xa inhibitor</b>：優先 <b>andexanet alfa</b>（2a）；無法取得時用 4F-PCC 或 activated PCC（2b）。<br>
-      ・<b>⚠ Andexanet alfa 的可及性已改變：</b><b>ANNEXA-I</b>（NEJM 2024）證實其止血效果優於常規治療（67.0% vs 53.1%，p=0.003），試驗因效益提前中止；但<b>血栓事件較多</b>（10.3% vs 5.6%，p=0.048；ischemic stroke 6.5% vs 1.5%）。<b>2025 年 12 月 AstraZeneca 自美國市場自願撤下 Andexxa</b>（FDA 認定上市後血栓風險大於效益）。<span class="sys-caveat">撤市一事係多家醫藥新聞之二手報導，未取得 FDA 原始公告；<b>各國供應狀況不同，請依院內藥局實際品項決定</b>——若無 andexanet，即依 AHA 2022 用 4F-PCC 或 activated PCC（2b）。</span><br>
-      ・<b>Heparins</b>：unfractionated heparin → <b>protamine</b>（2a）；low-molecular-weight heparin → protamine（2b，逆轉不完全）。<br>
-      ・<b>所有 DOAC</b>：若<b>最後一劑在 2 小時內</b>，可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。務必先問清楚<b>最後一次服藥時間</b>。<br>
-      ・<b>Neurocritical Care Society／SCCM 2016</b> 逆轉指引的劑量與 AHA 2022 一致（vitamin K 10 mg IV＋PCC；idarucizumab 5 g；Xa inhibitor 用 4F-PCC／aPCC 50 U/kg）。該指引<b>定稿於 andexanet alfa 上市前</b>，其中未列 andexanet——以 AHA 2022 的 2a 建議為準。<br><br>
+ <b>◆ Anticoagulant-associated hemorrhage（Class 1：立即停藥並盡快逆轉）：</b><br>
+ ・<b>Vitamin K antagonist</b>：INR <b>1.3–1.9</b> → 4-factor prothrombin complex concentrate（4F-PCC）<b>10–20 IU/kg</b>（2b）；INR <b>&gt;2.0</b> → 4F-PCC <b>25–50 IU/kg</b>（Class 1）＋<b>intravenous vitamin K</b>（Class 1）。<br>
+ ・<b>Dabigatran</b>：優先 <b>idarucizumab</b>（2a）；無法取得時用 PCC 或 activated PCC，和／或 <b>renal replacement therapy</b>（2b，dabigatran 可被 dialysis 清除）。<br>
+ ・<b>Factor Xa inhibitor</b>：優先 <b>andexanet alfa</b>（2a）；無法取得時用 4F-PCC 或 activated PCC（2b）。<br>
+ ・<b>⚠ Andexanet alfa 的可及性已改變：</b><b>ANNEXA-I</b>（NEJM 2024）證實其止血效果優於常規治療（67.0% vs 53.1%，p=0.003），試驗因效益提前中止；但<b>血栓事件較多</b>（10.3% vs 5.6%，p=0.048；ischemic stroke 6.5% vs 1.5%）。<b>2025 年 12 月 AstraZeneca 自美國市場自願撤下 Andexxa</b>（FDA 認定上市後血栓風險大於效益）。<span class="sys-caveat">撤市一事係多家醫藥新聞之二手報導，未取得 FDA 原始公告；<b>各國供應狀況不同，請依院內藥局實際品項決定</b>——若無 andexanet，即依 AHA 2022 用 4F-PCC 或 activated PCC（2b）。</span><br>
+ ・<b>Heparins</b>：unfractionated heparin → <b>protamine</b>（2a）；low-molecular-weight heparin → protamine（2b，逆轉不完全）。<br>
+ ・<b>所有 DOAC</b>：若<b>最後一劑在 2 小時內</b>，可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。務必先問清楚<b>最後一次服藥時間</b>。<br>
+ ・<b>Neurocritical Care Society／SCCM 2016</b> 逆轉指引的劑量與 AHA 2022 一致（vitamin K 10 mg IV＋PCC；idarucizumab 5 g；Xa inhibitor 用 4F-PCC／aPCC 50 U/kg）。該指引<b>定稿於 andexanet alfa 上市前</b>，其中未列 andexanet——以 AHA 2022 的 2a 建議為準。<br><br>
 
-      <b>◆ Antiplatelet-associated hemorrhage：</b><br>
-      ・<b>需要緊急 neurosurgery</b> 者：使用 aspirin 時<b>可考慮 platelet transfusion</b> 以減少術後出血與死亡（2b）。<br>
-      ・<b>不需要緊急手術</b>者：使用 aspirin 時 <b>platelet transfusion 具潛在傷害、不應給予</b>（<b>Class 3：Harm</b>）——來自 <b>PATCH</b>（Lancet 2016）：自發性 supratentorial ICH、發病 6 小時內、<b>已排除手術候選者</b>，輸血小板組 3 個月死亡或依賴的 adjusted common OR <b>2.05（95% CI 1.18–3.56）</b>。族群是<b>自發性</b> ICH、<b>非</b> trauma。<br>
-      ・Desmopressin 併用或不併用 platelet transfusion 以減少 hematoma expansion，<b>效果不確定</b>（2b）。<br><br>
+ <b>◆ Antiplatelet-associated hemorrhage：</b><br>
+ ・<b>需要緊急 neurosurgery</b> 者：使用 aspirin 時<b>可考慮 platelet transfusion</b> 以減少術後出血與死亡（2b）。<br>
+ ・<b>不需要緊急手術</b>者：使用 aspirin 時 <b>platelet transfusion 具潛在傷害、不應給予</b>（<b>Class 3：Harm</b>）——來自 <b>PATCH</b>（Lancet 2016）：自發性 supratentorial ICH、發病 6 小時內、<b>已排除手術候選者</b>，輸血小板組 3 個月死亡或依賴的 adjusted common OR <b>2.05（95% CI 1.18–3.56）</b>。族群是<b>自發性</b> ICH、<b>非</b> trauma。<br>
+ ・Desmopressin 併用或不併用 platelet transfusion 以減少 hematoma expansion，<b>效果不確定</b>（2b）。<br><br>
 
-      <b>◆ ICP 與 cerebral edema：</b><br>
-      ・<b>ICH 或 IVH 合併 hydrocephalus、且造成意識下降者：應行 ventricular drainage 以降低死亡率</b>（<b>Class 1</b>）。<br>
-      ・<b>臨床上有 hydrocephalus 者應轉送至具備 neurosurgery 能力的院所</b>做確定性處置（Class 1）。<br>
-      ・<b>不應使用 corticosteroids</b> 治療 intracranial hypertension（<b>Class 3：No Benefit</b>）。<br>
-      ・ICP monitoring 與治療以降低死亡率、改善預後（2b）。<br>
-      ・<b>早期預防性 hyperosmolar therapy</b> 能否改善預後<b>尚未確立</b>（2b）；<b>bolus hyperosmolar therapy 可考慮用於暫時降低 ICP</b>（2b）。
-    </div>
-  </details>
+ <b>◆ ICP 與 cerebral edema：</b><br>
+ ・<b>ICH 或 IVH 合併 hydrocephalus、且造成意識下降者：應行 ventricular drainage 以降低死亡率</b>（<b>Class 1</b>）。<br>
+ ・<b>臨床上有 hydrocephalus 者應轉送至具備 neurosurgery 能力的院所</b>做確定性處置（Class 1）。<br>
+ ・<b>不應使用 corticosteroids</b> 治療 intracranial hypertension（<b>Class 3：No Benefit</b>）。<br>
+ ・ICP monitoring 與治療以降低死亡率、改善預後（2b）。<br>
+ ・<b>早期預防性 hyperosmolar therapy</b> 能否改善預後<b>尚未確立</b>（2b）；<b>bolus hyperosmolar therapy 可考慮用於暫時降低 ICP</b>（2b）。
+ </div>
+ </details>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>手術：Supratentorial／Cerebellar／Brainstem／IVH Surgical Recommendations</summary>
-    <div class="box-inner">
-      <b>◆ Supratentorial hemorrhage：</b><br>
-      ・<b>Minimally invasive surgery（MIS）</b>——族群為 <b>supratentorial、hematoma &gt;20–30 mL、GCS 5–12</b>：MIS ±thrombolysis 以<b>降低死亡率可能有用</b>（2a）；對<b>功能預後</b>的效果<b>不確定</b>（2b）；<b>選擇 MIS 而非 craniotomy 以改善功能預後可能合理</b>（2b）。<br>
-      ・<b>Craniotomy（supratentorial、中度以上嚴重度，指 &gt;10 mL 併顯著神經學缺損）</b>：對死亡率或功能預後的<b>效益不確定</b>（2b）；<b>可作為惡化中病人的救命措施</b>（2b）。<br>
-      ・<b>指引之後的新證據 — ENRICH（NEJM 2024）</b>：<b>lobar 或 anterior basal ganglia</b>、<b>30–80 mL</b>、發病 <b>24 小時內</b>行 minimally invasive parafascicular surgery，180 天 utility-weighted mRS 優於單純內科治療（0.458 vs 0.374；後驗優越機率 0.981），30 天死亡率 9.3% vs 18.0%。但效益<b>幾乎全由 lobar 亞群貢獻</b>；<b>anterior basal ganglia 亞群因無效而被適應性設計中止</b>。此試驗<b>未納入 cerebellar 或 brainstem hemorrhage</b>，結論不可外推到 infratentorial。<br>
-      ・<b>Decompressive craniectomy（自發性 supratentorial ICH）</b>：對<b>comatose、hematoma 大且 midline shift 顯著、或藥物無法控制之 ICP</b> 者，DC ±hematoma清除<b>可考慮用以降低死亡率</b>（<b>2b，LOE C-LD</b>）；對<b>功能預後</b>的效果<b>不確定</b>（2b，LOE C-LD）。<br>
-      ・<b>SWITCH（Lancet 2024）</b>：deep（basal ganglia／thalamus）supratentorial ICH 行 decompressive craniectomy，主要結果 mRS 5–6 為 44% vs 58%，<b>p=0.057、未達統計顯著</b>；且兩組存活者多為重度失能。<b>不足以作為常規建議</b>；但 <b>ESO／EANS 2025 已據此對 18–75 歲、GCS 8–13、NIHSS 10–30、體積 30–100 mL 且 72 小時內者給予 weak recommendation</b>。<br><br>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>手術：Supratentorial／Cerebellar／Brainstem／IVH Surgical Recommendations</summary>
+ <div class="box-inner">
+ <b>◆ Supratentorial hemorrhage：</b><br>
+ ・<b>Minimally invasive surgery（MIS）</b>——族群為 <b>supratentorial、hematoma &gt;20–30 mL、GCS 5–12</b>：MIS ±thrombolysis 以<b>降低死亡率可能有用</b>（2a）；對<b>功能預後</b>的效果<b>不確定</b>（2b）；<b>選擇 MIS 而非 craniotomy 以改善功能預後可能合理</b>（2b）。<br>
+ ・<b>Craniotomy（supratentorial、中度以上嚴重度，指 &gt;10 mL 併顯著神經學缺損）</b>：對死亡率或功能預後的<b>效益不確定</b>（2b）；<b>可作為惡化中病人的救命措施</b>（2b）。<br>
+ ・<b>指引之後的新證據 — ENRICH（NEJM 2024）</b>：<b>lobar 或 anterior basal ganglia</b>、<b>30–80 mL</b>、發病 <b>24 小時內</b>行 minimally invasive parafascicular surgery，180 天 utility-weighted mRS 優於單純內科治療（0.458 vs 0.374；後驗優越機率 0.981），30 天死亡率 9.3% vs 18.0%。但效益<b>幾乎全由 lobar 亞群貢獻</b>；<b>anterior basal ganglia 亞群因無效而被適應性設計中止</b>。此試驗<b>未納入 cerebellar 或 brainstem hemorrhage</b>，結論不可外推到 infratentorial。<br>
+ ・<b>Decompressive craniectomy（自發性 supratentorial ICH）</b>：對<b>comatose、hematoma 大且 midline shift 顯著、或藥物無法控制之 ICP</b> 者，DC ±hematoma 清除<b>可考慮用以降低死亡率</b>（<b>2b，LOE C-LD</b>）；對<b>功能預後</b>的效果<b>不確定</b>（2b，LOE C-LD）。<br>
+ ・<b>SWITCH（Lancet 2024）</b>：deep（basal ganglia／thalamus）supratentorial ICH 行 decompressive craniectomy，主要結果 mRS 5–6 為 44% vs 58%，<b>p=0.057、未達統計顯著</b>；且兩組存活者多為重度失能。<b>不足以作為常規建議</b>；但 <b>ESO／EANS 2025 已據此對 18–75 歲、GCS 8–13、NIHSS 10–30、體積 30–100 mL 且 72 小時內者給予 weak recommendation</b>。<br><br>
 
-      <b>◆ Cerebellar hemorrhage（本頁少數的 Class 1 手術建議）：</b><br>
-      ・<b>神經學惡化、有 brainstem compression 和／或 ventricular obstruction 造成的 hydrocephalus、或 hematoma volume ≥15 mL 者，應立即手術清除hematoma（±EVD），優於單純內科治療，可降低死亡率</b>（<b>Class 1，LOE B-NR</b>）。<br>
-      ・<b>&ldquo;≥15 mL&rdquo; 是 2022 版新增的門檻</b>，2015 版只有「惡化／brainstem compression／hydrocephalus」三個觸發條件。此數字來自 <b>Kuramatsu JAMA 2019</b> 的個別病人資料統合分析（n=578 cerebellar ICH，配對後各 152 例）：<b>≥15 cm³ 時手術者存活率 74.5% vs 45.1%</b>；反過來 <b>≤12 cm³ 時手術的功能預後更差</b>（favorable outcome 30.6% vs 62.3%）。<br>
-      ・<b>務必理解這是「換命不換功能」的權衡</b>：同一份分析中，手術<b>顯著提高存活</b>（adjusted OR 1.25）但<b>沒有改善</b> 3 個月 mRS 0–3 的比率（30.9% vs 35.5%，p=0.43）。與家屬溝通時不應說成「開刀會恢復比較好」。<br>
-      ・<b>只放 EVD 而不清除hematoma</b>：指引<b>沒有</b>為此另立一條 Class 3 建議，但在該節的 Synopsis 以<b>未分級的敘述</b>寫明——「對 cerebellar ICH 併臨床 hydrocephalus 者，<b>單獨放 EVD 在理論上可能有害，尤其 basal cisterns 已受壓時</b>；當 intracranial hypertension 已妨礙 brainstem 血流時，單靠 EVD 可能不足。」Class 1 建議的措辭本身是「<b>清除hematoma，可併用或不併用 EVD</b>」——即<b>不以 EVD 取代清除</b>。<br>
-      ・<b>&ldquo;&gt;3 cm 就要開&rdquo; 是被簡化錯的口訣</b>：Kirollos（Neurosurgery 2001）的原始結論是——<b>若fourth ventricle未被完全壓扁，即使 hematoma &gt;3 cm 也可能不需要清除</b>。該研究的判準是<b>fourth ventricle受壓分級</b>（I 正常／II 受壓／III 完全消失），III 級一律清除、II 級在 GCS 下降時清除。<b>決策軸是fourth ventricle與 basal cistern 的狀態，不是單看直徑。</b><br><br>
+ <b>◆ Cerebellar hemorrhage（本頁少數的 Class 1 手術建議）：</b><br>
+ ・<b>神經學惡化、有 brainstem compression 和／或 ventricular obstruction 造成的 hydrocephalus、或 hematoma volume ≥15 mL 者，應立即手術清除 hematoma（±EVD），優於單純內科治療，可降低死亡率</b>（<b>Class 1，LOE B-NR</b>）。<br>
+ ・<b>&ldquo;≥15 mL&rdquo; 是 2022 版新增的門檻</b>，2015 版只有「惡化／brainstem compression／hydrocephalus」三個觸發條件。此數字來自 <b>Kuramatsu JAMA 2019</b> 的個別病人資料統合分析（n=578 cerebellar ICH，配對後各 152 例）：<b>≥15 cm³ 時手術者存活率 74.5% vs 45.1%</b>；反過來 <b>≤12 cm³ 時手術的功能預後更差</b>（favorable outcome 30.6% vs 62.3%）。<br>
+ ・<b>務必理解這是「換命不換功能」的權衡</b>：同一份分析中，手術<b>顯著提高存活</b>（adjusted OR 1.25）但<b>沒有改善</b> 3 個月 mRS 0–3 的比率（30.9% vs 35.5%，p=0.43）。與家屬溝通時不應說成「開刀會恢復比較好」。<br>
+ ・<b>只放 EVD 而不清除 hematoma</b>：指引<b>沒有</b>為此另立一條 Class 3 建議，但在該節的 Synopsis 以<b>未分級的敘述</b>寫明——「對 cerebellar ICH 併臨床 hydrocephalus 者，<b>單獨放 EVD 在理論上可能有害，尤其 basal cisterns 已受壓時</b>；當 intracranial hypertension 已妨礙 brainstem 血流時，單靠 EVD 可能不足。」Class 1 建議的措辭本身是「<b>清除 hematoma，可併用或不併用 EVD</b>」——即<b>不以 EVD 取代清除</b>。<br>
+ ・<b>&ldquo;&gt;3 cm 就要開&rdquo; 是被簡化錯的口訣</b>：Kirollos（Neurosurgery 2001）的原始結論是——<b>若 fourth ventricle 未被完全壓扁，即使 hematoma &gt;3 cm 也可能不需要清除</b>。該研究的判準是<b>fourth ventricle 受壓分級</b>（I 正常／II 受壓／III 完全消失），III 級一律清除、II 級在 GCS 下降時清除。<b>決策軸是 fourth ventricle 與 basal cistern 的狀態，不是單看直徑。</b><br><br>
 
-      <b>◆ Brainstem（pontine）hemorrhage：</b><br>
-      ・<b>AHA/ASA 2022 與 ESO／EANS 2025 全文中都沒有任何一條針對原發性 brainstem hemorrhage 的建議</b>——經逐字檢索，兩份指引<b>連 &ldquo;pontine&rdquo; 一詞都未出現</b>；&ldquo;brainstem&rdquo; 只出現在 cerebellar ICH 建議中的 &ldquo;brainstem compression&rdquo;（<b>鄰近 cerebellar hematoma壓迫 brainstem</b>）與病因學段落。<b>不是指引反對開刀，而是指引沒有處理這個族群。</b><br>
-      ・現行標準仍是<b>內科與支持性治療</b>：血壓控制、呼吸道保護、合併 hydrocephalus 時放 EVD。Stereotactic aspiration、endoscopic evacuation 等術式屬<b>研究性質</b>，尚無已發表的陽性隨機試驗（STIPE 試驗招募已結束，<b>截至本次查核未找到已發表結果</b>）。<br>
-      ・預後最一致的兩個因子是<b>初始意識程度</b>與<b>hematoma大小</b>。文獻中的 primary pontine hemorrhage 評分系統<b>未能取得原始論文</b>，故本頁不轉載其分數與切點。<br><br>
+ <b>◆ Brainstem（pontine）hemorrhage：</b><br>
+ ・<b>AHA/ASA 2022 與 ESO／EANS 2025 全文中都沒有任何一條針對原發性 brainstem hemorrhage 的建議</b>——經逐字檢索，兩份指引<b>連 &ldquo;pontine&rdquo; 一詞都未出現</b>；&ldquo;brainstem&rdquo; 只出現在 cerebellar ICH 建議中的 &ldquo;brainstem compression&rdquo;（<b>鄰近 cerebellar hematoma 壓迫 brainstem</b>）與病因學段落。<b>不是指引反對開刀，而是指引沒有處理這個族群。</b><br>
+ ・現行標準仍是<b>內科與支持性治療</b>：血壓控制、呼吸道保護、合併 hydrocephalus 時放 EVD。Stereotactic aspiration、endoscopic evacuation 等術式屬<b>研究性質</b>，尚無已發表的陽性隨機試驗（STIPE 試驗招募已結束，<b>截至本次查核未找到已發表結果</b>）。<br>
+ ・預後最一致的兩個因子是<b>初始意識程度</b>與<b>hematoma 大小</b>。文獻中的 primary pontine hemorrhage 評分系統<b>未能取得原始論文</b>，故本頁不轉載其分數與切點。<br><br>
 
-      <b>◆ Intraventricular hemorrhage（IVH）：</b><br>
-      ・合併 obstructive hydrocephalus 且意識下降者，<b>EVD 可降低死亡率</b>（Class 1）。<br>
-      ・<b>EVD 加 intraventricular thrombolysis</b>：<b>可降低死亡率</b>（2a），對功能預後的效益<b>不確定</b>（2b）。<br>
-      ・<b>Neuroendoscopy 加 EVD</b>（±thrombolysis）：對功能預後與<b>減少永久性 shunt dependence</b> 的效益<b>不確定</b>（2b）。
-    </div>
-  </details>
+ <b>◆ Intraventricular hemorrhage（IVH）：</b><br>
+ ・合併 obstructive hydrocephalus 且意識下降者，<b>EVD 可降低死亡率</b>（Class 1）。<br>
+ ・<b>EVD 加 intraventricular thrombolysis</b>：<b>可降低死亡率</b>（2a），對功能預後的效益<b>不確定</b>（2b）。<br>
+ ・<b>Neuroendoscopy 加 EVD</b>（±thrombolysis）：對功能預後與<b>減少永久性 shunt dependence</b> 的效益<b>不確定</b>（2b）。
+ </div>
+ </details>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>支持照護、二級預防、預後判定與版本備註 Supportive Care &amp; Prognostication</summary>
-    <div class="box-inner">
-      <b>◆ 一般支持照護（AHA/ASA 2022）：</b><br>
-      ・<b>Glucose</b>：應監測 blood glucose以避免 hyperglycemia 與 hypoglycemia（Class 1）；<b>hypoglycemia（&lt;40–60 mg/dL）應治療</b>以降低死亡率（Class 1）；中重度 <b>hyperglycemia（&gt;180–200 mg/dL）治療是合理的</b>（2a）。<br>
-      ・<b>Temperature</b>：以藥物處理發燒<b>可能是合理的</b>（2b）。<br>
-      ・<b>Seizure</b>：<b>沒有 seizure 證據者，預防性 antiseizure medication 無助於功能預後、seizure 控制或死亡率</b>（<b>Class 3：No Benefit</b>）；<b>意識受損且有確認之 electrographic seizure 者，應給 antiseizure medication</b>（Class 1）。<br>
-      ・<b>VTE prophylaxis</b>：不能行走者，<b>發病 24–48 小時起</b>給低劑量 UFH 或 LMWH <b>可能是合理的</b>（2b）；機械性預防以 intermittent pneumatic compression 為主。<br><br>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>支持照護、二級預防、預後判定與版本備註 Supportive Care &amp; Prognostication</summary>
+ <div class="box-inner">
+ <b>◆ 一般支持照護（AHA/ASA 2022）：</b><br>
+ ・<b>Glucose</b>：應監測 blood glucose 以避免 hyperglycemia 與 hypoglycemia（Class 1）；<b>hypoglycemia（&lt;40–60 mg/dL）應治療</b>以降低死亡率（Class 1）；中重度 <b>hyperglycemia（&gt;180–200 mg/dL）治療是合理的</b>（2a）。<br>
+ ・<b>Temperature</b>：以藥物處理發燒<b>可能是合理的</b>（2b）。<br>
+ ・<b>Seizure</b>：<b>沒有 seizure 證據者，預防性 antiseizure medication 無助於功能預後、seizure 控制或死亡率</b>（<b>Class 3：No Benefit</b>）；<b>意識受損且有確認之 electrographic seizure 者，應給 antiseizure medication</b>（Class 1）。<br>
+ ・<b>VTE prophylaxis</b>：不能行走者，<b>發病 24–48 小時起</b>給低劑量 UFH 或 LMWH <b>可能是合理的</b>（2b）；機械性預防以 intermittent pneumatic compression 為主。<br><br>
 
-      <b>◆ 抗凝的重啟：</b>atrial fibrillation 併 ICH 而決定重啟 anticoagulation 者，<b>約在發病後 7–8 週</b>開始<b>可以考慮</b>（2b），須個別權衡再出血與血栓栓塞風險。<br><br>
+ <b>◆ 抗凝的重啟：</b>atrial fibrillation 併 ICH 而決定重啟 anticoagulation 者，<b>約在發病後 7–8 週</b>開始<b>可以考慮</b>（2b），須個別權衡再出血與血栓栓塞風險。<br><br>
 
-      <b>◆ 預後判定與照護目標：</b>應<b>延後對預後的定論</b>，避免在發病早期就限制維生治療——早期的悲觀預測會導致早期限制治療，而早期限制治療本身又使預後變差（<b>self-fulfilling prophecy</b>）。ICH Score 等分數用於<b>風險分層與溝通</b>，<b>不可作為撤除維生治療的依據</b>。<br><br>
+ <b>◆ 預後判定與照護目標：</b>應<b>延後對預後的定論</b>，避免在發病早期就限制維生治療——早期的悲觀預測會導致早期限制治療，而早期限制治療本身又使預後變差（<b>self-fulfilling prophecy</b>）。ICH Score 等分數用於<b>風險分層與溝通</b>，<b>不可作為撤除維生治療的依據</b>。<br><br>
 
-      <b>◆ 版本備註與兩份指引的差異：</b>AHA/ASA <b>2022</b> 版（Greenberg 等，Stroke 2022;53(7):e282-e361）取代 2015 版，<b>截至本次查核仍為現行</b>。歐洲另有 <b>ESO／EANS 2025</b>（Eur Stroke J 2025;10(4):1007-1086），採 GRADE 而非 COR／LOE，<b>四處與 AHA 明顯不同</b>：
-      <table class="def-table">
-        <tr><th>議題</th><th>AHA／ASA 2022</th><th>ESO／EANS 2025（GRADE）</th></tr>
-        <tr><td>Blood pressure</td><td>SBP 150–220 者降至 140、維持 130–150（2b）；<b>&lt;130 為 Class 3 Harm</b></td><td>SBP 150–220 的整體利弊<b>不確定</b>、鼓勵收案入試驗；另對<b>體積 &lt;30 mL 的輕中度 ICH</b> 建議<b>6 小時內降至 SBP &lt;140</b>（weak）</td></tr>
-        <tr><td>Cerebellar ICH</td><td>惡化／brainstem compression／hydrocephalus／<b>≥15 mL</b> → 立即清除（<b>Class 1</b>）</td><td>&gt;15 mL 建議清除以改善存活（<b>weak</b>，證據品質 very low）</td></tr>
-        <tr><td>Minimally invasive surgery</td><td>&gt;20–30 mL＋GCS 5–12 降低死亡率（2a）；功能預後不確定（2b）</td><td>24 小時內行 MIS，<b>lobar</b> 可降死亡率並改善功能預後、<b>deep 者仍不確定</b>（weak）</td></tr>
-        <tr><td>Decompressive craniectomy</td><td>comatose／大 hematoma／難治 ICP 者可考慮降低死亡率（2b）</td><td>18–75 歲、GCS 8–13、NIHSS 10–30、<b>30–100 mL</b>、72 小時內，建議考慮<b>不清hematoma的減壓手術</b>（weak）</td></tr>
-      </table>
-      <b>血壓那一列尤其要注意</b>：AHA 把「降到 &lt;130」列為<b>有害</b>，ESO 則對小hematoma建議「降到 &lt;140」——兩者並不直接衝突（140 不等於 130），但<b>目標值的敘述方式不同，寫醫囑時要指明依據哪一份</b>。ENRICH 與 SWITCH 均<b>發表於 AHA 2022 之後</b>，只反映在 ESO 2025 的條文裡。
-    </div>
-  </details>
+ <b>◆ 版本備註與兩份指引的差異：</b>AHA/ASA <b>2022</b> 版（Greenberg 等，Stroke 2022;53(7):e282-e361）取代 2015 版，<b>截至本次查核仍為現行</b>。歐洲另有 <b>ESO／EANS 2025</b>（Eur Stroke J 2025;10(4):1007-1086），採 GRADE 而非 COR／LOE，<b>四處與 AHA 明顯不同</b>：
+ <table class="def-table">
+ <tr><th>議題</th><th>AHA／ASA 2022</th><th>ESO／EANS 2025（GRADE）</th></tr>
+ <tr><td>Blood pressure</td><td>SBP 150–220 者降至 140、維持 130–150（2b）；<b>&lt;130 為 Class 3 Harm</b></td><td>SBP 150–220 的整體利弊<b>不確定</b>、鼓勵收案入試驗；另對<b>體積 &lt;30 mL 的輕中度 ICH</b> 建議<b>6 小時內降至 SBP &lt;140</b>（weak）</td></tr>
+ <tr><td>Cerebellar ICH</td><td>惡化／brainstem compression／hydrocephalus／<b>≥15 mL</b> → 立即清除（<b>Class 1</b>）</td><td>&gt;15 mL 建議清除以改善存活（<b>weak</b>，證據品質 very low）</td></tr>
+ <tr><td>Minimally invasive surgery</td><td>&gt;20–30 mL＋GCS 5–12 降低死亡率（2a）；功能預後不確定（2b）</td><td>24 小時內行 MIS，<b>lobar</b> 可降死亡率並改善功能預後、<b>deep 者仍不確定</b>（weak）</td></tr>
+ <tr><td>Decompressive craniectomy</td><td>comatose／大 hematoma／難治 ICP 者可考慮降低死亡率（2b）</td><td>18–75 歲、GCS 8–13、NIHSS 10–30、<b>30–100 mL</b>、72 小時內，建議考慮<b>不清 hematoma 的減壓手術</b>（weak）</td></tr>
+ </table>
+ <b>血壓那一列尤其要注意</b>：AHA 把「降到 &lt;130」列為<b>有害</b>，ESO 則對小 hematoma 建議「降到 &lt;140」——兩者並不直接衝突（140 不等於 130），但<b>目標值的敘述方式不同，寫醫囑時要指明依據哪一份</b>。ENRICH 與 SWITCH 均<b>發表於 AHA 2022 之後</b>，只反映在 ESO 2025 的條文裡。
+ </div>
+ </details>
 
-  <div class="flow-step" id="ic_s1">
-    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">發病時使用中的 antithrombotic 藥物？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('drug','none',this)">無 antithrombotic 藥物</button>
-      <button class="flow-opt" onclick="icPick('drug','vka',this)">Vitamin K antagonist<span class="fo-sub">warfarin</span></button>
-      <button class="flow-opt" onclick="icPick('drug','dabi',this)">Direct thrombin inhibitor<span class="fo-sub">dabigatran</span></button>
-      <button class="flow-opt" onclick="icPick('drug','xa',this)">Factor Xa inhibitor<span class="fo-sub">rivaroxaban、apixaban、edoxaban</span></button>
-      <button class="flow-opt" onclick="icPick('drug','hep',this)">Heparins<span class="fo-sub">unfractionated heparin 或 low-molecular-weight heparin</span></button>
-      <button class="flow-opt" onclick="icPick('drug','anti',this)">Antiplatelet<span class="fo-sub">aspirin、clopidogrel 等</span></button>
-    </div>
-  </div>
+ <div class="flow-step" id="ic_s1">
+ <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">發病時使用中的 antithrombotic 藥物？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('drug','none',this)">無 antithrombotic 藥物</button>
+ <button class="flow-opt" onclick="icPick('drug','vka',this)">Vitamin K antagonist<span class="fo-sub">warfarin</span></button>
+ <button class="flow-opt" onclick="icPick('drug','dabi',this)">Direct thrombin inhibitor<span class="fo-sub">dabigatran</span></button>
+ <button class="flow-opt" onclick="icPick('drug','xa',this)">Factor Xa inhibitor<span class="fo-sub">rivaroxaban、apixaban、edoxaban</span></button>
+ <button class="flow-opt" onclick="icPick('drug','hep',this)">Heparins<span class="fo-sub">unfractionated heparin 或 low-molecular-weight heparin</span></button>
+ <button class="flow-opt" onclick="icPick('drug','anti',this)">Antiplatelet<span class="fo-sub">aspirin、clopidogrel 等</span></button>
+ </div>
+ </div>
 
-  <div class="flow-connector hidden" id="ic_c2">↓</div>
-  <div class="flow-step hidden" id="ic_s2">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">到院時的 systolic blood pressure 與出血嚴重度？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('bp','mod150',this)">輕至中度出血，SBP 150–220 mmHg</button>
-      <button class="flow-opt" onclick="icPick('bp','large',this)">大量或重度出血，或需要 surgical decompression</button>
-      <button class="flow-opt" onclick="icPick('bp','high',this)">SBP &gt; 220 mmHg</button>
-      <button class="flow-opt" onclick="icPick('bp','low',this)">SBP &lt; 150 mmHg</button>
-    </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 開啟 ICH Score（含 ABC/2 體積估算）</button>
-  </div>
+ <div class="flow-connector hidden" id="ic_c2">↓</div>
+ <div class="flow-step hidden" id="ic_s2">
+ <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">到院時的 systolic blood pressure 與出血嚴重度？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('bp','mod150',this)">輕至中度出血，SBP 150–220 mmHg</button>
+ <button class="flow-opt" onclick="icPick('bp','large',this)">大量或重度出血，或需要 surgical decompression</button>
+ <button class="flow-opt" onclick="icPick('bp','high',this)">SBP &gt; 220 mmHg</button>
+ <button class="flow-opt" onclick="icPick('bp','low',this)">SBP &lt; 150 mmHg</button>
+ </div>
+ <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 開啟 ICH Score（含 ABC/2 體積估算）</button>
+ </div>
 
-  <div class="flow-rec rec-idle" id="ic_rec">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由上方步驟開始選擇</div>
-  </div>
+ <div class="flow-rec rec-idle" id="ic_rec">
+ <div class="rec-label">建議處置 Recommendation</div>
+ <div class="rec-title">請由上方步驟開始選擇</div>
+ </div>
 
-  <div class="flow-connector hidden" id="ic_c3">↓</div>
-  <div class="flow-step hidden" id="ic_s3">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">出血的解剖位置？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('loc','supra',this)">Supratentorial hemorrhage<span class="fo-sub">lobar、basal ganglia、thalamus</span></button>
-      <button class="flow-opt" onclick="icPick('loc','cbll',this)">Cerebellar hemorrhage<span class="fo-sub">infratentorial，posterior fossa</span></button>
-      <button class="flow-opt" onclick="icPick('loc','stem',this)">Brainstem（pontine）hemorrhage</button>
-      <button class="flow-opt" onclick="icPick('loc','ivh',this)">以 intraventricular hemorrhage 為主<span class="fo-sub">primary IVH 或實質內hematoma甚小</span></button>
-    </div>
-  </div>
+ <div class="flow-connector hidden" id="ic_c3">↓</div>
+ <div class="flow-step hidden" id="ic_s3">
+ <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">出血的解剖位置？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('loc','supra',this)">Supratentorial hemorrhage<span class="fo-sub">lobar、basal ganglia、thalamus</span></button>
+ <button class="flow-opt" onclick="icPick('loc','cbll',this)">Cerebellar hemorrhage<span class="fo-sub">infratentorial，posterior fossa</span></button>
+ <button class="flow-opt" onclick="icPick('loc','stem',this)">Brainstem（pontine）hemorrhage</button>
+ <button class="flow-opt" onclick="icPick('loc','ivh',this)">以 intraventricular hemorrhage 為主<span class="fo-sub">primary IVH 或實質內 hematoma 甚小</span></button>
+ </div>
+ </div>
 
-  <!-- 步驟 4：依位置切換的靜態區塊（保持 .flow-opt 的 DOM 順序穩定，計分工具往返才能原樣還原） -->
-  <div class="flow-connector hidden" id="ic_c4">↓</div>
-  <div class="flow-step hidden" id="ic_s4a">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Supratentorial：影像與神經學狀態？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('sub','deteriorate',this)">神經學持續惡化中<span class="fo-sub">&gt;10 mL 併顯著神經學缺損、意識下降</span></button>
-      <button class="flow-opt" onclick="icPick('sub','enrich',this)">Lobar 或 anterior basal ganglia，30–80 mL，發病 24 小時內<span class="fo-sub">ENRICH 的族群</span></button>
-      <button class="flow-opt" onclick="icPick('sub','mis',this)">Hematoma &gt;20–30 mL 且 GCS 5–12<span class="fo-sub">AHA 2022 minimally invasive surgery 的族群</span></button>
-      <button class="flow-opt" onclick="icPick('sub','med',this)">上述皆非<span class="fo-sub">小量出血、意識清楚、無 midline shift</span></button>
-    </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算hematoma體積</button>
-  </div>
+ <!-- 步驟 4：依位置切換的靜態區塊（保持 .flow-opt 的 DOM 順序穩定，計分工具往返才能原樣還原） -->
+ <div class="flow-connector hidden" id="ic_c4">↓</div>
+ <div class="flow-step hidden" id="ic_s4a">
+ <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Supratentorial：影像與神經學狀態？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('sub','deteriorate',this)">神經學持續惡化中<span class="fo-sub">&gt;10 mL 併顯著神經學缺損、意識下降</span></button>
+ <button class="flow-opt" onclick="icPick('sub','enrich',this)">Lobar 或 anterior basal ganglia，30–80 mL，發病 24 小時內<span class="fo-sub">ENRICH 的族群</span></button>
+ <button class="flow-opt" onclick="icPick('sub','mis',this)">Hematoma &gt;20–30 mL 且 GCS 5–12<span class="fo-sub">AHA 2022 minimally invasive surgery 的族群</span></button>
+ <button class="flow-opt" onclick="icPick('sub','med',this)">上述皆非<span class="fo-sub">小量出血、意識清楚、無 midline shift</span></button>
+ </div>
+ <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算 hematoma 體積</button>
+ </div>
 
-  <div class="flow-step hidden" id="ic_s4b">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Cerebellar：fourth ventricle、brainstem 與體積？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('sub','cevac',this)">神經學惡化／brainstem compression／obstructive hydrocephalus，或 volume ≥15 mL<span class="fo-sub">符合任一項即成立</span></button>
-      <button class="flow-opt" onclick="icPick('sub','cobs',this)">volume &lt;15 mL、意識清楚、fourth ventricle未被壓扁、無 hydrocephalus</button>
-    </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算hematoma體積</button>
-  </div>
+ <div class="flow-step hidden" id="ic_s4b">
+ <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Cerebellar：fourth ventricle、brainstem 與體積？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('sub','cevac',this)">神經學惡化／brainstem compression／obstructive hydrocephalus，或 volume ≥15 mL<span class="fo-sub">符合任一項即成立</span></button>
+ <button class="flow-opt" onclick="icPick('sub','cobs',this)">volume &lt;15 mL、意識清楚、fourth ventricle 未被壓扁、無 hydrocephalus</button>
+ </div>
+ <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算 hematoma 體積</button>
+ </div>
 
-  <div class="flow-step hidden" id="ic_s4c">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Brainstem：是否合併 hydrocephalus？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('sub','shydro',this)">合併 obstructive hydrocephalus 或fourth ventricle出血阻塞</button>
-      <button class="flow-opt" onclick="icPick('sub','snone',this)">無 hydrocephalus</button>
-    </div>
-  </div>
+ <div class="flow-step hidden" id="ic_s4c">
+ <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">Brainstem：是否合併 hydrocephalus？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('sub','shydro',this)">合併 obstructive hydrocephalus 或 fourth ventricle 出血阻塞</button>
+ <button class="flow-opt" onclick="icPick('sub','snone',this)">無 hydrocephalus</button>
+ </div>
+ </div>
 
-  <div class="flow-step hidden" id="ic_s4d">
-    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">IVH：是否造成 hydrocephalus 與意識下降？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="icPick('sub','ihydro',this)">有 hydrocephalus 且意識下降</button>
-      <button class="flow-opt" onclick="icPick('sub','inone',this)">無 hydrocephalus、意識穩定</button>
-    </div>
-  </div>
+ <div class="flow-step hidden" id="ic_s4d">
+ <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">IVH：是否造成 hydrocephalus 與意識下降？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="icPick('sub','ihydro',this)">有 hydrocephalus 且意識下降</button>
+ <button class="flow-opt" onclick="icPick('sub','inone',this)">無 hydrocephalus、意識穩定</button>
+ </div>
+ </div>
 
-  <div class="flow-rec rec-idle hidden" id="ic_rec2">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請完成步驟 4</div>
-  </div>
+ <div class="flow-rec rec-idle hidden" id="ic_rec2">
+ <div class="rec-label">建議處置 Recommendation</div>
+ <div class="rec-title">請完成步驟 4</div>
+ </div>
 
-  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="icReset()">重置</button></div>
+ <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="icReset()">重置</button></div>
 </div>
 
-<!-- ==================== 分頁二：創傷性 Traumatic Brain Injury ==================== -->
-<div id="tab-tbi" class="hidden">
+<!-- ==================== 分頁二：動脈瘤性 Aneurysmal SAH ==================== -->
+<div id="tab-sah" class="hidden">
+ <div class="card" style="border-left:3px solid var(--accent2);">
+ <div class="section-title">四個時間敏感的動作 The First Hours</div>
+ <div class="note" style="font-size:13px; line-height:1.7;">
+ ① <b>確診</b>：發作 <b>&gt;6 小時</b>或<b>有新的神經學缺損</b>者，<b>noncontrast CT 加上（CT 陰性時）lumbar puncture</b>（Class 1）；<b>CTA 陰性或不確定而仍高度懷疑動脈瘤</b>者，<b>做 DSA</b>（Class 1）。<br>
+ ② <b>防再出血</b>：<b>頻繁監測血壓、以短效藥物避免嚴重低血壓、嚴重高血壓與血壓變異</b>（Class 1）；使用 anticoagulant 者<b>立即逆轉</b>（Class 1）。<b>注意指引刻意不給數字目標</b>（見下方說明）。<br>
+ ③ <b>盡早處理動脈瘤</b>：<b>越早越好、最好在發病 24 小時內</b>完成手術或血管內治療（Class 1）。<br>
+ ④ <b>Enteral nimodipine 早期開始</b>（<b>Class 1，LOE A</b>）——這是本頁<b>唯一的 Class 1／LOE A 藥物</b>，也是唯一被證實能預防 DCI 並改善功能預後的藥。<br>
+ <span class="note"><b>兩件不要做的事</b>：<b>routine antifibrinolytic（tranexamic acid）為 Class 3：No Benefit，LOE A</b>——ULTRA 試驗顯示它減少了術前再出血卻沒有改善預後；<b>prophylactic hemodynamic augmentation（舊稱 triple-H）為 Class 3：Harm</b>。本頁只涵蓋<b>動脈瘤性</b> SAH；自發性 intracerebral hemorrhage 與 traumatic SAH 請見<a class="tool-link" href="ich.html">顱內出血處置決策</a>。</span>
+ </div>
+ </div>
 
-  <div class="card" style="border-left:3px solid var(--accent2);">
-    <div class="section-title">頭部外傷最初數小時 The First Hours in TBI</div>
-    <div class="note" style="font-size:13px; line-height:1.7;">
-      ① <b>不要製造 secondary insult</b>：<b>hypotension 與 hypoxia 各自獨立惡化預後</b>。維持 <b>SBP ≥100 mmHg（50–69 歲）或 ≥110 mmHg（15–49 歲與 &gt;70 歲）</b>（Level III）、<b>SpO₂ ≥94%</b>。<b>創傷性腦損傷沒有「積極降壓」這回事</b>——自發性 ICH 的 140 mmHg 目標不可套用。<br>
-      ② <b>Tranexamic acid</b>：受傷 <b>3 小時內</b>給 <b>1 g IV over 10 min，續 1 g over 8 h</b>（CRASH-3）。效益集中在 <b>mild-to-moderate TBI</b>（RR 0.78）；<b>severe TBI 沒有效益</b>（RR 0.99）。<b>各家劑量與族群不一致，見下方 TXA 專節。</b><br>
-      ③ <b>Antithrombotic reversal 與立即 CT</b>：使用 anticoagulant 者比照顱內出血逆轉方案；<b>GCS 下降、anisocoria、開放性或凹陷性骨折即刻聯絡 neurosurgery</b>。<br>
-      <span class="note"><b>絕對不可給 corticosteroids</b>：severe TBI 使用 high-dose methylprednisolone <b>增加死亡率、屬禁忌</b>（<b>Level I</b>，CRASH 試驗 2 週死亡率 21.1% vs 17.9%）。這是本站少數的 Level I 反向建議。</span>
-    </div>
-  </div>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>診斷與影像 Diagnosis &amp; Imaging</summary>
+ <div class="box-inner">
+ <b>◆ 影像與 lumbar puncture（AHA/ASA 2023）：</b><br>
+ ・<b>突發劇烈頭痛者應立即進行診斷評估</b>以確診或排除 aSAH（Class 1）。<br>
+ ・<b>發作 &gt;6 小時，或有新的神經學缺損</b>：<b>做 noncontrast CT；CT 陰性者應做 lumbar puncture</b>（Class 1）。<br>
+ ・<b>發作 &lt;6 小時且無新的神經學缺損</b>：<b>以高品質機器所做、並由 board-certified neuroradiologist 判讀的 noncontrast CT，即可合理地確診或排除</b>（2a）——<b>此時可以不做 lumbar puncture</b>。依據是 2016 年統合分析（n=8907）：6 小時內 CT 的<b>敏感度 98.7%、特異度 99.9%</b>。<br>
+ ・<b>Lumbar puncture 看 xanthochromia</b>：敏感度 100%、特異度 95.2%（合併 n=1235）。<br>
+ ・<b>Ottawa SAH Rule</b> 用於篩出高風險者<b>可能是合理的</b>（2b）。<br>
+ ・<b>CTA 陰性或不確定但高度懷疑</b>：<b>DSA 有指示</b>（Class 1）。已確診動脈瘤者，<b>DSA 有助於決定最佳治療策略</b>（2a）。<br><br>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>病灶定義、CT 分類與影像決策規則 Lesions, CT Scores &amp; Imaging Rules</summary>
-    <div class="box-inner">
-      <b>◆ 病灶：</b><br>
-      ・<b>Epidural hematoma（EDH）</b>：dura 與顱骨之間，典型為 biconvex（lentiform），<b>不跨越 suture line</b>，多來自 middle meningeal artery 撕裂並常伴 temporal bone fracture。經典表現是 <b>lucid interval</b> 後急速惡化（&ldquo;talk and deteriorate&rdquo;）。<br>
-      ・<b>Acute subdural hematoma（SDH）</b>：dura 與 arachnoid 之間，<b>crescentic、可跨 suture line 但不跨 midline</b>，來源多為 bridging vein，常伴下方腦實質損傷，故預後比 EDH 差。<br>
-      ・<b>Chronic subdural hematoma（cSDH）</b>：受傷數週後的 hypodense／mixed-density collection，好發於高齡、酗酒、抗栓治療者。<br>
-      ・<b>Traumatic subarachnoid hemorrhage（tSAH）</b>：血分布於 sulci 與 convexity，與 aneurysmal SAH 的 basal cistern 分布型態不同。<b>tSAH 是 CT 預後分數中的獨立不良因子。</b><br>
-      ・<b>Traumatic intracerebral hemorrhage／contusion</b>：好發於 frontal 與 temporal pole（coup／contrecoup），特徵是<b>會長大</b>——初次 CT 常低估，故需 serial imaging。<br>
-      ・<b>Traumatic intraventricular hemorrhage（IVH）</b>：常與 deep 或 corpus callosum 的剪力損傷並存，本身即為不良預後指標。<br>
-      ・<b>Diffuse axonal injury（DAI）</b>：CT 常僅見 petechial hemorrhage 或完全正常，<b>意識程度與影像不成比例</b>時要想到，MRI（SWI／DWI）才敏感。<br><br>
+ <b>◆ Angiogram-negative SAH：指引沒有給答案。</b>2023 指引把「perimesencephalic 分布的 SAH 該用 CTA 還是 DSA」明確列在 <b>Knowledge Gaps</b>，<b>沒有任何分級建議</b>。可用的最佳證據是單中心回溯資料（n=98 接受 6 週後 repeat DSA）：<b>classic perimesencephalic 型 0/53 找到病灶</b>，<b>non-perimesencephalic 型 2/45（4.4%）找到病灶</b>；預後上 perimesencephalic 全部 mRS 0。實務推論是<b>典型 perimesencephalic 可不必 repeat DSA，non-perimesencephalic 則應 repeat</b>——<b>此為單一回溯研究，不是指引建議</b>。<br><br>
 
-      <b>◆ Marshall CT Classification（Marshall 1991；以「有無 mass lesion」與「cistern／shift」分六類）：</b>
-      <table class="def-table">
-        <tr><th>類別</th><th>判準</th></tr>
-        <tr><td>Diffuse Injury I</td><td>CT 上無可見病灶</td></tr>
-        <tr><td>Diffuse Injury II</td><td>Cisterns 存在、midline shift 0–5 mm；無 &gt;25 cm³ 的高／混合密度病灶</td></tr>
-        <tr><td>Diffuse Injury III</td><td><b>Swelling</b>：cisterns 受壓或消失、shift 0–5 mm；無 &gt;25 cm³ 病灶</td></tr>
-        <tr><td>Diffuse Injury IV</td><td><b>Shift</b>：midline shift &gt;5 mm；無 &gt;25 cm³ 病灶</td></tr>
-        <tr><td>Evacuated mass lesion</td><td>任何已手術清除的病灶</td></tr>
-        <tr><td>Non-evacuated mass lesion</td><td>&gt;25 cm³ 且未清除</td></tr>
-      </table>
-      <span class="sys-caveat">Marshall 1991 原文（J Neurosurg 1991;75:S14-S20）未能取得一手全文，上表依神經外科標準教材整理，請以原文為準。</span>
+ <b>◆ 分級：應使用臨床量表</b>（Hunt and Hess、WFNS）做初始嚴重度與預後評估（<b>Class 1</b>）。<b>臨床分級與影像分級量的是不同的東西</b>，請用「SAH 分級系統」工具四表對照。
+ </div>
+ </details>
 
-      <b>◆ Rotterdam CT Score（Maas 2005；總分＝各項加總＋1，範圍 1–6）：</b>
-      <table class="def-table">
-        <tr><th>項目</th><th>計分</th></tr>
-        <tr><td>Basal cisterns</td><td>正常 0／受壓 1／消失 2</td></tr>
-        <tr><td>Midline shift</td><td>無或 ≤5 mm 0／&gt;5 mm 1</td></tr>
-        <tr><td>Epidural mass lesion</td><td><b>有 0／無 1</b>（EDH 的存在反而是<b>好</b>的預後因子）</td></tr>
-        <tr><td>IVH 或 tSAH</td><td>無 0／有 1</td></tr>
-        <tr><td style="white-space:normal;" colspan="2">總和後<b>再加 1</b>；原始論文結論是個別影像變數的模型（AUC 至 0.77）優於 Marshall 分類（AUC 0.67）</td></tr>
-      </table>
-      <span class="sys-caveat">Rotterdam 的逐項配分表取自二手回顧文獻，原始論文全文未取得；分數與死亡率的對應數字因此不轉載。</span>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>動脈瘤處理：時機與 clipping／coiling Aneurysm Repair</summary>
+ <div class="box-inner">
+ <b>◆ 時機與治療目標：</b><br>
+ ・<b>手術或血管內治療應在就診後越早越好、最好在發病 24 小時內完成</b>（Class 1）。<br>
+ ・<b>只要可行，就應完全阻絕（complete obliteration）破裂的動脈瘤</b>以降低再出血與再治療風險（Class 1）。<br>
+ ・急性期無法完全阻絕者，<b>先部分處理以封住破裂點、待功能恢復後再延遲補做，是合理的</b>（2a）。<br><br>
 
-      <b>◆ 何時要照 CT — Canadian CT Head Rule（Stiell, Lancet 2001；適用於 GCS 13–15 的 minor head injury）：</b><br>
-      ・<b>High-risk（對需要神經外科介入的敏感度 100%）</b>：受傷後 2 小時仍未回到 <b>GCS 15</b>／疑似 <b>open or depressed skull fracture</b>／任何 <b>basal skull fracture</b> 徵象／<b>嘔吐 ≥2 次</b>／<b>年齡 &gt;65 歲</b>。<br>
-      ・<b>Medium-risk（對臨床重要腦損傷敏感度 98.4%）</b>：受傷前 <b>retrograde amnesia &gt;30 分鐘</b>／<b>dangerous mechanism</b>。<br>
-      ・<b>NICE NG232（2023）</b>：符合高風險項目者 <b>1 小時內</b>照 CT；有 loss of consciousness 或 amnesia 併年齡 ≥65、凝血異常、dangerous mechanism、retrograde amnesia &gt;30 分鐘者 <b>8 小時內</b>照 CT。<b>使用 anticoagulant 或 antiplatelet（aspirin 單方除外）而無其他適應症者：受傷後 8 小時內照 CT</b>；若已超過 8 小時才就醫則 1 小時內照。CT 正常但 24 小時後 GCS 仍未回到 15 者，考慮再次影像檢查。<br>
-      <span class="sys-caveat">NICE NG232 條文為二手摘要，未逐字取得原文，臨床適用請回查 NICE 網站。</span>
-    </div>
-  </details>
+ <b>◆ 術式選擇（原文條文）：</b>
+ <table class="def-table">
+ <tr><th>族群</th><th>建議</th><th>等級</th></tr>
+ <tr><td><b>Posterior circulation</b>，可 coiling</td><td><b>Coiling 優於 clipping</b></td><td><b>Class 1</b>，LOE B-R</td></tr>
+ <tr><td><b>Anterior circulation、good grade、兩種術式皆適合</b></td><td><b>Primary coiling 優於 clipping</b>（改善 1 年功能預後）</td><td><b>Class 1，LOE A</b></td></tr>
+ <tr><td>同上族群（長期預後角度）</td><td><b>兩種術式都是合理的</b>（達成良好長期預後）</td><td>2a，LOE B-R</td></tr>
+ <tr><td>大 intraparenchymal hematoma 併意識下降、且評估可救治</td><td><b>應緊急清除血塊</b>以降低死亡率</td><td><b>Class 1</b>，LOE B-R</td></tr>
+ <tr><td><b>年齡 &gt;70 歲</b></td><td>coiling 或 clipping 何者較優<b>尚未確立</b></td><td>2b，LOE B-R</td></tr>
+ <tr><td><b>年齡 &lt;40 歲</b></td><td><b>clipping 可考慮作為優先</b>（治療耐久性）</td><td>2b，LOE C-LD</td></tr>
+ <tr><td>Wide-neck，不適合 clipping 或 primary coiling</td><td>stent-assisted coiling 或 flow diverter <b>是合理的</b></td><td>2a，LOE C-LD</td></tr>
+ <tr><td>Fusiform／blister 動脈瘤</td><td>使用 flow diverter <b>是合理的</b>（降低死亡率）</td><td>2a，LOE C-LD</td></tr>
+ <tr class="dt-warn"><td><b>Saccular 且本來就可 coiling 或 clipping 者</b></td><td><b>不應使用 stent 或 flow diverter</b>（併發症風險較高）</td><td><b>Class 3：Harm</b>，LOE B-NR</td></tr>
+ <tr><td>所有病人</td><td>應由<b>同時具備血管內與手術專業</b>的專科醫師共同評估</td><td>Class 1，LOE C-EO</td></tr>
+ </table>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>手術門檻 Surgical Thresholds（Bullock 2006 逐病灶）</summary>
-    <div class="box-inner">
-      <b>◆ 證據等級的誠實說明：</b>「Guidelines for the Surgical Management of Traumatic Brain Injury」（Neurosurgery 2006;58(3 Suppl)）<b>幾乎全部建立在 Class III 證據上</b>，各章並<b>未</b>對個別門檻標註 Standards／Guidelines／Options 等級。以下數字應視為<b>共識性門檻</b>，不是隨機試驗導出的分界，臨床上仍以<b>神經學狀態的變化</b>為主、影像門檻為輔。此份 2006 年文件<b>至今沒有正式改版</b>（BTF 第 4 版更新的是內科／ICP 處置，不是手術門檻）。
-      <table class="def-table">
-        <tr><th>病灶</th><th>應手術</th><th>可保守（須 serial CT 與密切監測）</th></tr>
-        <tr><td>Epidural hematoma</td><td>體積 <b>&gt;30 cm³</b>（不論 GCS）；<b>GCS &lt;9 併 anisocoria → 盡快手術</b></td><td>同時滿足 <b>&lt;30 cm³ 且厚度 &lt;15 mm 且 midline shift &lt;5 mm 且 GCS &gt;8 且無 focal deficit</b></td></tr>
-        <tr><td>Acute subdural hematoma</td><td>厚度 <b>&gt;10 mm</b> 或 midline shift <b>&gt;5 mm</b>（不論 GCS）；薄 SDH 但 <b>GCS 自受傷至到院下降 ≥2 分</b>、<b>anisocoria 或 fixed dilated pupils</b>、<b>ICP &gt;20 mmHg</b> 任一者</td><td>GCS ≥9、厚度 &lt;10 mm、shift &lt;5 mm 且無上述惡化徵象；<b>所有 GCS &lt;9 者一律放 ICP monitor</b></td></tr>
-        <tr><td>Traumatic parenchymal lesion</td><td>可歸因於病灶的<b>進行性神經學惡化</b>、<b>藥物無法控制的 intracranial hypertension</b>、CT 上的<b>顯著 mass effect</b>；<b>GCS 6–8 併 frontal／temporal contusion &gt;20 cm³ 且 shift ≥5 mm 和／或 cisternal compression</b>；<b>任何病灶 &gt;50 cm³</b></td><td>神經學穩定、ICP 可控、CT 無顯著 mass effect → 密集監測＋serial imaging</td></tr>
-        <tr><td>Posterior fossa mass lesion</td><td>CT 有 mass effect（<b>fourth ventricle變形／移位／消失、basal cisterns 受壓或消失、obstructive hydrocephalus</b>）<b>或</b>可歸因於病灶的神經功能障礙／惡化 → <b>盡快 suboccipital craniectomy</b></td><td>無 mass effect 且無神經功能障礙 → 觀察＋serial imaging</td></tr>
-        <tr><td>Depressed skull fracture</td><td><b>Open（compound）且凹陷深度大於顱骨厚度</b> → 手術以預防感染；早期手術可降低感染率</td><td>Open 但<b>無 dural penetration、無顯著hematoma、凹陷 &lt;1 cm、未涉 frontal sinus、無明顯外觀變形、無感染或污染、無 pneumocephalus</b>；<b>closed</b> 凹陷骨折保守為可接受選項</td></tr>
-      </table>
-      <span class="sys-caveat">Posterior fossa 一章特別註明惡化<b>快速且難以預測</b>——「等等看」在 posterior fossa 的代價遠高於 supratentorial。</span>
+ <b>◆ 支撐證據（讀懂「為什麼 coiling 不是全面勝出」）：</b><br>
+ ・<b>ISAT</b>（Lancet 2002，n=2143）：1 年死亡或失能（mRS 3–6）<b>coiling 23.7% vs clipping 30.6%</b>。<b>UK 世代 18 年追蹤</b>：10 年時「存活且獨立」的 OR <b>1.34</b> 仍偏向 coiling，但<b>晚期再出血與再治療較多</b>。<br>
+ ・<b>BRAT</b>（10 年、saccular）：功能預後<b>兩組無差異</b>，但<b>阻絕率 93%（clip）vs 22%（coil）</b>、<b>再治療 0.8% vs 20%</b>；2 例再出血都在 coil 組。<br>
+ ・臨床解讀：<b>coiling 的優勢在早期預後，clipping 的優勢在耐久性</b>——這正是指引為何對 &lt;40 歲給 clipping 一個 2b、對 &gt;70 歲則說「不確定」。<br><br>
 
-      <b>◆ Acute SDH 要開 craniotomy 還是 decompressive craniectomy？</b><br>
-      ・<b>RESCUE-ASDH（NEJM 2023，n=450）</b>：兩者 12 個月 GOSE <b>沒有差異</b>（common OR 0.85，95% CI 0.60–1.18）；死亡率 30.2% vs 32.2%。差別在併發症型態——<b>craniotomy 組兩週內再手術較多</b>（14.6% vs 6.9%），<b>craniectomy 組傷口併發症較多</b>（12.2% vs 3.9%）。<br>
-      ・臨床解讀：<b>此試驗不支持常規一律做 primary decompressive craniectomy</b>；能安全放回bone flap時就放回，術中腫脹到無法關顱時才留為 craniectomy。<br><br>
+ <b>◆ 麻醉期（Section 7.1）：</b>術中以 mannitol／hypertonic saline 處理 ICP／腦水腫（2a）；<b>麻醉目標應包含減少術後疼痛、噁心與嘔吐</b>（2a）；避免術中高低血糖（2a）；動脈瘤未處理前<b>頻繁監測與控制血壓</b>（2a）；intraoperative neuromonitoring（2b）；術中破裂失控時可用 <b>adenosine</b> 造成短暫心臟停止（2b）。<b>Good-grade 者術中常規 induced mild hypothermia 無效益</b>（<b>Class 3：No Benefit</b>）。<br><br>
 
-      <b>◆ Chronic subdural hematoma：</b><br>
-      ・<b>有症狀者</b>：burr-hole evacuation 為主流；<b>術後放置 subdural drain 可降低復發（9.3% vs 24%）與 6 個月死亡率（8.6% vs 18.1%）</b>（Santarius, Lancet 2009）——這是 cSDH 少數的高品質陽性證據。<br>
-      ・<b>Dexamethasone 不可常規使用</b>：Dex-CSDH（NEJM 2020）顯示 dexamethasone 雖減少再手術（1.7% vs 7.1%），但 <b>6 個月良好預後反而較差（83.9% vs 90.3%）</b>、不良事件較多。<br>
-      ・<b>Middle meningeal artery（MMA）embolization</b>：<b>EMBOLISE</b>（NEJM 2024）作為手術輔助，90 天復發／再手術 <b>4.1% vs 11.3%</b>（RR 0.36）；<b>STEM</b> 180 天複合終點 <b>16% vs 36%</b>（OR 0.36）；<b>MAGIC-MT</b> 主要終點 <b>6.7% vs 9.9%、p=0.10 未達顯著</b>，但嚴重不良事件反而較少。三個試驗中<b>兩個陽性、一個中性</b>，方向一致為<b>減少復發</b>而非改善功能，屬<b>選擇性病人的輔助治療</b>。<br>
-      ・<b>Tranexamic acid 於 cSDH</b>：目前只有小型試驗與統合分析，<b>沒有第三期確認性隨機試驗結果</b>，不列為建議。
-    </div>
-  </details>
+ <b>◆ 轉院：</b>低量院所應<b>及時轉送至具備 neurointensive care、comprehensive stroke center 能力與有經驗術者的高量中心</b>（Class 1）；照護應在<b>專責 neurocritical care unit 由多科團隊</b>提供（Class 1）。<b>2023 版刻意不再訂出案例量的數字門檻</b>（2012 版曾引用 &gt;35／年 vs &lt;10／年，現版僅作參考）。
+ </div>
+ </details>
 
-  <details class="def-box" style="margin-bottom:12px;">
-    <summary>Severe TBI 的 ICU 處置：BTF 第 4 版與 SIBICC 階梯 ICU Management</summary>
-    <div class="box-inner">
-      <b>◆ Brain Trauma Foundation 第 4 版（Carney 2017）＋2020 decompressive craniectomy 更新：</b><br>
-      ・<b>ICP monitoring</b>：以 ICP monitoring 的資訊來管理 severe TBI，可降低院內與傷後兩週死亡率（<b>Level IIB</b>）。<br>
-      ・<b>ICP 治療門檻</b>：<b>ICP &gt;22 mmHg 應治療</b>（Level IIB）；<b>應合併 ICP 數值、臨床變化與 CT 所見一起判讀</b>（Level III）——mass lesion 位置不同時，ICP 未達 20–25 也可能 herniation。<br>
-      ・<b>CPP</b>：目標 <b>60–70 mmHg</b>（Level IIB）；<b>不應以大量輸液與 vasopressor 硬把 CPP 拉到 &gt;70</b>，會增加呼吸衰竭（Level III）。<br>
-      ・<b>Blood pressure</b>：SBP <b>≥100 mmHg（50–69 歲）</b>、<b>≥110 mmHg（15–49 或 &gt;70 歲）</b>（Level III）。<br>
-      ・<b>Hyperosmolar therapy</b>：<b>第 4 版找不到足夠證據給任何一種藥物或劑量正式等級</b>——mannitol 0.25–1 g/kg 與 hypertonic saline 均屬臨床慣例而非分級建議。<br>
-      ・<b>Hyperventilation</b>：<b>不建議長時間預防性hyperventilation至 PaCO₂ ≤25 mmHg</b>（Level IIB）；只作為 herniation 當下的暫時手段。<br>
-      ・<b>Corticosteroids</b>：<b>不建議使用；high-dose methylprednisolone 增加死亡率、屬禁忌</b>（<b>Level I</b>）。<br>
-      ・<b>Seizure prophylaxis</b>：<b>phenytoin 可降低 early post-traumatic seizure（7 天內）</b>（Level IIA，14.2%→3.6%）；<b>不建議用 phenytoin 或 valproate 預防 late seizure</b>（Level IIA）。<b>Levetiracetam 與 phenytoin 孰優，證據不足</b>。<br>
-      ・<b>Nutrition</b>：<b>第 5 天至遲第 7 天達到基礎熱量補充</b>可降低死亡率（Level IIA）；transgastric jejunal feeding 減少 ventilator-associated pneumonia（Level IIB）。<br>
-      ・<b>VTE prophylaxis</b>：LMWH 或低劑量 UFH 可與機械性預防併用，但<b>會增加顱內出血擴大的風險</b>（Level III；藥物、劑量與時機均無足夠證據）。<br>
-      ・<b>Hypothermia</b>：<b>不建議早期（2.5 小時內）、短期（48 小時）預防性hypothermia用於 diffuse injury</b>（Level IIB）。其後的 <b>POLAR</b>（JAMA 2018）與 <b>Eurotherm3235</b>（NEJM 2015）均未顯示效益，後者甚至預後較差。<br>
-      ・<b>CSF drainage</b>：EVD 於 midbrain 歸零並<b>連續引流</b>比間歇引流更能降低 ICP 負荷（Level III）。<br>
-      ・<b>Barbiturates</b>：<b>不建議預防性使用至 burst suppression</b>（Level IIB）；<b>對最大內外科治療仍無效的 ICP 才用高劑量</b>（Level IIB），須先確保血行動力學穩定。Propofol 可用於控制 ICP、但不改善死亡率或 6 個月預後，注意 propofol infusion syndrome。<br>
-      ・<b>Decompressive craniectomy（2020 更新）</b>：<b>晚期難治性 ICP 上升行 secondary DC，建議之，可改善死亡率與良好預後</b>（Level IIA，RESCUEicp）；<b>早期難治性 ICP 上升行 DC，不建議</b>（Level IIA，DECRA）。若要做，<b>大範圍 frontotemporoparietal DC（不小於 12×15 cm 或直徑 15 cm）優於小骨窗</b>（Level IIA）。<br><br>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>DCI 與 vasospasm：定義、監測、預防與救援 Delayed Cerebral Ischemia</summary>
+ <div class="box-inner">
+ <b>◆ 先分清楚三個名詞（2010 多科共識定義）：</b><br>
+ ・<b>Angiographic vasospasm</b>：影像上的血管狹窄。<br>
+ ・<b>Clinical deterioration caused by DCI</b>：<b>新出現的 focal deficit</b>（hemiparesis、aphasia、apraxia、hemianopia 或 neglect）<b>或 GCS 下降 ≥2 分</b>，<b>持續至少 1 小時</b>，<b>非緊接於動脈瘤處理之後</b>，且經臨床、影像與檢驗<b>排除其他原因</b>。<br>
+ ・<b>Cerebral infarction attributable to DCI</b>：6 週內（或最後一次影像、或解剖）出現的新 infarct，<b>排除與 clipping／coiling 手術相關者</b>。<br>
+ ・<b>臨床意義</b>：<b>vasospasm 不等於 DCI</b>。有狹窄但沒缺損不必然要救援；有缺損但影像沒狹窄也可能是 DCI。以「病人變了」為主軸，不是以血流速度為主軸。<br><br>
 
-      <b>◆ 兩個試驗必須分開讀，否則會得出相反結論：</b><br>
-      ・<b>DECRA（NEJM 2011）</b>：<b>早期</b>、<b>diffuse injury 無 mass lesion</b>、ICP &gt;20 mmHg 持續 15 分鐘即開 bifrontotemporoparietal DC。結果 ICP 與 ICU 天數下降，但 <b>6 個月功能預後更差</b>（OR 1.84）。<br>
-      ・<b>RESCUEicp（NEJM 2016）</b>：<b>晚期</b>、ICP &gt;25 mmHg 且已用盡兩階治療。結果<b>死亡率大幅下降（26.9% vs 48.9%）</b>，但<b>vegetative state（8.5% vs 2.1%）與重度失能上升</b>，good recovery 比率兩組相當。<br>
-      ・臨床解讀：DC 在正確的時機（晚期、難治）是<b>換命的手術</b>，而不是換功能的手術；家屬溝通必須把這個交換講清楚。<br><br>
+ <b>◆ 監測（AHA/ASA 2023）：</b>
+ <table class="def-table">
+ <tr><th>工具</th><th>建議等級</th><th>實測表現</th></tr>
+ <tr><td><b>頻繁神經學評估</b>（GCS／NIHSS）</td><td><b>Class 1</b>，LOE B-NR</td><td>DCI 的偵測主力；量表分數的變化才是訊號</td></tr>
+ <tr><td><b>Transcranial Doppler</b></td><td>2a，LOE B-NR</td><td>預測 DCI 敏感度 <b>90%</b>、特異度 71%、<b>NPV 92%</b>——<b>適合用來排除、不適合用來確診</b></td></tr>
+ <tr><td><b>CTA／CT perfusion</b></td><td>2a，LOE B-NR</td><td>可偵測 vasospasm／預測 DCI</td></tr>
+ <tr><td><b>Continuous EEG</b>（high-grade 者）</td><td>2a，LOE B-NR</td><td>特異度高（DCI 82.9%）但<b>敏感度極低（11.1%）</b>——是輔助確認、不是篩檢</td></tr>
+ <tr><td>Brain tissue oxygenation、lactate-pyruvate ratio、glutamate</td><td>2b，LOE B-NR</td><td>侵入性多模監測，可考慮</td></tr>
+ <tr><td style="white-space:normal;" colspan="3"><b>反直覺的一點</b>：以「預測 DCI」而論，<b>catheter angiography 的表現比 TCD 差</b>（敏感度 57%、特異度 68%）——它是 vasospasm 的 gold standard，卻不是 DCI 的好預測工具。</td></tr>
+ </table>
 
-      <b>◆ SIBICC 階梯式處置（Seattle International Severe TBI Consensus Conference）：</b><br>
-      ・<b>Tier 0（所有病人）</b>：ICU 收治、氣管插管與機械通氣、連續神經學與 pupil 評估、床頭抬高 30–45°、非以 ICP 為目的之 analgesia／sedation、temperature 控制（核心 &gt;38°C 即處理）、CPP 初始 ≥60 mmHg、Hb &gt;7 g/dL、避免 hyponatremia、動脈導管、SpO₂ ≥94%、可考慮 antiseizure medication 一週。<br>
-      ・<b>Tier 1</b>：CPP 維持 60–70 mmHg、加深 analgesia／sedation、<b>bolus</b> hyperosmolar therapy（mannitol 0.25–1.0 g/kg 或 hypertonic saline）、PaCO₂ 控制在 low-normal（35–38 mmHg）、有 EVD 時引流 CSF。<br>
-      ・<b>Tier 2</b>：輕度 hypocapnia（PaCO₂ 32–35 mmHg）、neuromuscular blockade（先試單劑）、以 MAP challenge 測試 autoregulation，若 autoregulation 完好則提高 CPP。<br>
-      ・<b>Tier 3</b>：barbiturate coma（滴定至 ICP 控制、<b>非</b>滴定至 burst suppression）、<b>secondary decompressive craniectomy</b>、輕度 hypothermia 35–36°C、hyperventilation 至 PaCO₂ 30–32 mmHg。<br>
-      ・<b>每次升階前必做</b>：重新理學檢查、考慮重照 CT、重新評估有無可手術病灶、排除顱外原因、確認生理參數與監測器正確。<br>
-      ・<b>明列不該做的事</b>：mannitol 連續輸注、定時（q4–6h）給 hyperosmolar、lumbar drain、furosemide、常規 corticosteroids、常規 &lt;35°C hypothermia、以高劑量 propofol 做 burst suppression、PaCO₂ &lt;30 mmHg、常規把 CPP 拉到 &gt;90 mmHg。<br>
-      ・<b>Critical neuroworsening</b> 的定義（觸發緊急處置）：<b>GCS motor 下降 ≥1 分、新發生的anisocoria／bilateral mydriasis 或 pupil 對光反應變差、新的 focal motor deficit、herniation syndrome 或 Cushing's triad</b>。此時可先給 hyperventilation 與 hyperosmolar bolus 並緊急影像——<b>PaCO₂ 30 mmHg 的下限在此刻不適用</b>。<br><br>
+ <b>◆ 預防與治療：</b><br>
+ ・<b>Nimodipine（Class 1，LOE A）</b>：<b>enteral 給藥、早期開始</b>。指引內文所述劑量為 <b>60 mg 每日 6 次（即每 4 小時一次）</b>。<b>投藥的一致性本身就是療效的一部分</b>——中斷與 DCI 增加相關（ρ=0.431，p&lt;0.001）；<b>即使出現 nimodipine 引起的低血壓，也應盡量維持給藥並以標準方式處理低血壓</b>，只有在造成顯著血壓變異時才「可能需要暫停」。<b>IV 與 intra-arterial 途徑的資料不足，指引不給建議</b>；<b>21 天的療程來自原始試驗而非指引條文</b>（BANT：60 mg q4h、96 小時內開始、共 21 天；cerebral infarction <b>22% vs 33%</b>、不良預後 <b>20% vs 33%</b>）。<br>
+ ・<b>維持 euvolemia</b> 有助於預防 DCI 並改善預後（2a）。<br>
+ ・<b>症狀性 vasospasm 時提高 systolic blood pressure「可能合理」</b>（2b）——<b>指引不給數字目標</b>。<b>務必知道唯一的 RCT 是陰性的</b>：HIMALAIA 在收到 41 人時即因無效提早中止，不良預後 RR 1.0（95% CI 0.6–1.8），<b>嚴重不良事件 RR 2.1</b>。<br>
+ ・<b>嚴重 vasospasm 時 intra-arterial vasodilator</b>「可能合理」（2b）、<b>cerebral angioplasty</b>「可能合理」（2b）——<b>兩者都沒有任何隨機試驗</b>。<br><br>
 
-      <b>◆ Antithrombotic reversal（Neurocritical Care Society／SCCM 2016）：</b>原則與自發性 ICH 相同（見左分頁）。<b>差別在 platelet transfusion</b>：不需手術者不建議常規輸血小板（conditional），此建議與 <b>PATCH</b> 試驗一致，但 PATCH 的族群是<b>自發性 ICH，不是 trauma</b>——外傷病人的 platelet transfusion 決策證據更弱，應個別判斷。<br><br>
+ <b>◆ Class 3 —— 這一節是本頁最重要的地方：</b><br>
+ ・<b>Routine statin：Class 3 No Benefit，LOE A</b>（STASH，n=803，6 個月 mRS common OR 0.97）。<br>
+ ・<b>Routine IV magnesium：Class 3 No Benefit，LOE A</b>（MASH-2，n=1204，不良預後 26.2% vs 25.3%）。<br>
+ ・<b>Prophylactic hemodynamic augmentation：Class 3 Harm，LOE B-R</b>——即舊時的 <b>prophylactic hypervolemia／triple-H</b>。既有的小型試驗顯示<b>不改善腦血流、不減少 vasospasm，只增加併發症與費用</b>。<br>
+ ・<b>Induction of hypervolemia：Class 3 Harm</b>（見下一節的水分與鈉）。<br><br>
 
-      <b>◆ Tranexamic acid：三份來源的族群與劑量都不一樣，別混用。</b><br>
-      ・<b>CRASH-3（Lancet 2019，n=12,737）</b>：GCS ≤12 或 CT 有顱內出血、<b>受傷 3 小時內</b>，<b>1 g IV over 10 min 續 1 g over 8 h</b>。主要結果（3 小時內給藥之頭部外傷死亡）<b>18.5% vs 19.8%，未達顯著</b>；排除 GCS 3 或 bilateral unreactive pupils 者後為 12.5% vs 14.0%。<b>mild-to-moderate 有益（RR 0.78），severe 無效益（RR 0.99，交互作用 p=0.030）</b>。無 thrombotic event 或 seizure 增加。<br>
-      ・<b>NICE NG232（2023）</b>：對 <b>moderate-to-severe TBI（GCS ≤12）、無活動性顱外出血</b>者，建議<b>考慮於受傷 2 小時內給 2 g IV bolus</b>（兒童 15–30 mg/kg，上限 2 g），並明載此為 <b>off-label</b>。<b>劑量（2 g 單次 vs 1 g＋1 g）、時窗（2 h vs 3 h）與適用族群（moderate-severe vs mild-moderate）都與 CRASH-3 不同</b>——寫醫囑時要說清楚採用哪一套。<br>
-      ・<b>Brain Trauma Foundation 院前指引（第 3 版）</b>：<b>不建議常規於院前對疑似顱內出血或 ICP 升高者給 TXA</b>；NAEMSP／ACEP／ACS-COT 的聯合聲明亦認為 TXA「可能安全但未見功能或存活效益」。<br>
-      ・結論：<b>沒有任何權威指引把 TXA 列為單純 TBI 的標準治療</b>；NICE 是條件式的「可考慮」，BTF 院前則傾向不常規給。<span class="sys-caveat">NICE NG232 的 TXA 條文與 BTF 院前指引均為二手摘要，未逐字取得原文。</span><br><br>
+ <b>◆ 四個「常被當成有效」的療法，實際狀況：</b>
+ <table class="def-table">
+ <tr><th>療法</th><th>真實證據</th></tr>
+ <tr class="dt-warn"><td><b>Clazosentan</b></td><td><b>要分清楚國家、劑量與終點</b>。日本兩個第三期試驗（10 mg/hr）以「vasospasm 相關morbidity＋死亡」複合終點為陽性（coiling 28.8%→13.6%、clipping 39.6%→16.2%），並據此於<b>日本核准上市</b>；但全球的 <b>REACT 試驗（15 mg/hr，n=409）以「DCI 造成的臨床惡化」為主要終點是陰性</b>（15.8% vs 17.2%，p=0.734），12 週功能預後甚至<b>略偏向較差</b>。<b>AHA 2023 全文未提及 clazosentan。</b></td></tr>
+ <tr><td><b>Milrinone</b>（Montreal protocol）</td><td><b>只有觀察性 case series（n=88，無對照組）</b>；2021 年回顧明確指出<b>至今沒有 RCT</b>。</td></tr>
+ <tr><td><b>Cilostazol</b></td><td>日本單國、開放標籤 RCT（n=109）：症狀性 vasospasm <b>13% vs 40%</b>、新 infarct 11% vs 29% 皆顯著；但<b>mRS 各時間點都未達統計顯著</b>。是「影像／症狀性 vasospasm 有效、功能預後未證實」。</td></tr>
+ <tr><td><b>Intraventricular 緩釋 nimodipine</b>（EG-1962，NEWTON-2）</td><td><b>因無效提早中止</b>：90 天 GOSE 6–8 為 45% vs 口服 nimodipine 42%（RR 1.01）——雖然顯著減少了 angiographic vasospasm（50% vs 63%）。<b>又一個「surrogate 有效、預後無效」的例子。</b></td></tr>
+ </table>
+ <b>◆ 指引未納入的一個陽性試驗：EARLYDRAIN（JAMA Neurol 2023，n=287）</b>——72 小時內加做 <b>lumbar drain</b>，6 個月不良預後（mRS 3–6）<b>32.6% vs 44.8%</b>（RR 0.73，95% CI 0.52–0.98），secondary infarction 亦較少。<b>本頁如實標示：這是開放標籤、樣本中等的陽性試驗，且與 AHA 2023 的條文各自獨立</b>（該指引在 hydrocephalus 一節已允許 EVD 和／或 lumbar drainage 作為急性 CSF diversion）。
+ </div>
+ </details>
 
-      <b>◆ Nimodipine 用於 traumatic SAH：不建議。</b>2003 年 Cochrane 回顧的 tSAH 亞群曾顯示死亡下降（OR 0.59），但 <b>Vergouwen（Lancet Neurol 2006）納入未發表的 HIT-4 資料後，效益消失</b>（poor outcome 39% vs 40%）。<b>nimodipine 的適應症是 aneurysmal SAH，不是 traumatic SAH。</b>
-    </div>
-  </details>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>Hydrocephalus、鈉與水分、seizure 與全身照護 ICU Care</summary>
+ <div class="box-inner">
+ <b>◆ Hydrocephalus：</b><br>
+ ・<b>急性症狀性 hydrocephalus：應緊急做 CSF diversion（EVD 和／或 lumbar drainage）</b>（Class 1）。<br>
+ ・放 EVD 者<b>應執行並遵守 EVD bundle</b>（置放、管理、教育、監測）以降低感染與併發症（Class 1）。<br>
+ ・<b>慢性症狀性 hydrocephalus：應做永久性 CSF diversion</b>（即 VP shunt，Class 1）。<br>
+ ・<b>Routine fenestration of the lamina terminalis 無助於降低 shunt 依賴</b>（<b>Class 3：No Benefit</b>）。<br>
+ ・<b>EVD 的脫離策略（連續 vs 間歇引流、每日引流量）指引明列為 knowledge gap、沒有建議。</b><br><br>
 
-  <div class="flow-step" id="tb_s1">
-    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">初始 GCS（復甦後、給 sedation 前）？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('sev','mild',this)">Mild TBI，GCS 13–15</button>
-      <button class="flow-opt" onclick="tbPick('sev','mod',this)">Moderate TBI，GCS 9–12</button>
-      <button class="flow-opt" onclick="tbPick('sev','sev',this)">Severe TBI，GCS ≤8</button>
-    </div>
-  </div>
+ <b>◆ 水分與鈉：目標是 euvolemia，兩端都錯。</b><br>
+ ・<b>密切監測並以目標導向治療維持 euvolemia</b>是合理的（2a）。<br>
+ ・<b>Mineralocorticoid（fludrocortisone）治療 natriuresis 與 hyponatremia</b> 是合理的（2a）。原始隨機試驗（n=91）顯示前 6 天負鈉平衡由 <b>63% 降至 38%</b>，主要副作用為 hypokalemia；<b>對 DCI 與功能預後則未證實</b>。<br>
+ ・<b>Induction of hypervolemia 具潛在傷害</b>（<b>Class 3：Harm</b>）。<br>
+ ・<b>合起來讀</b>：aSAH 的 hyponatremia <b>不以限水處理</b>（會走向 hypovolemia 與 DCI），也<b>不刻意灌成 hypervolemia</b>。<span class="sys-caveat">SIADH 與 cerebral salt wasting 的鑑別、以及 hypertonic saline 的隨機證據，本次查核<b>未取得一手來源</b>，故本頁不轉載具體方案。</span><br><br>
 
-  <div class="flow-connector hidden" id="tb_c2">↓</div>
-  <div class="flow-step hidden" id="tb_s2">
-    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">CT 上的主要病灶？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('lesion','edh',this)">Epidural hematoma<span class="fo-sub">EDH，biconvex、不跨 suture</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','asdh',this)">Acute subdural hematoma<span class="fo-sub">acute SDH，crescentic</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','csdh',this)">Chronic subdural hematoma<span class="fo-sub">cSDH，數週後之 hypodense／mixed collection</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','contusion',this)">Contusion／traumatic intracerebral hemorrhage</button>
-      <button class="flow-opt" onclick="tbPick('lesion','tsah',this)">Traumatic subarachnoid hemorrhage<span class="fo-sub">tSAH，convexity／sulcal 分布</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','tivh',this)">Traumatic intraventricular hemorrhage<span class="fo-sub">tIVH</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','pf',this)">Posterior fossa mass lesion<span class="fo-sub">cerebellar hematoma、posterior fossa EDH／SDH</span></button>
-      <button class="flow-opt" onclick="tbPick('lesion','depressed',this)">Depressed skull fracture</button>
-      <button class="flow-opt" onclick="tbPick('lesion','none',this)">無 mass lesion<span class="fo-sub">CT 正常、diffuse injury 或 diffuse axonal injury</span></button>
-    </div>
-  </div>
+ <b>◆ Seizure：</b><br>
+ ・<b>沒有高風險特徵者，預防性 antiseizure medication 無效益</b>（<b>Class 3：No Benefit</b>）。<br>
+ ・<b>有高風險特徵者，預防性給藥「可能合理」</b>（2b）。<br>
+ ・<b>Phenytoin 用於 seizure 預防與 antiseizure prophylaxis，與較高的病殘與死亡相關</b>（<b>Class 3：Harm</b>）——<b>要預防就不要選 phenytoin</b>。<br>
+ ・<b>以 seizure 為表現者，給藥 ≤7 天</b>是合理的（2a）；<b>無癲癇病史者給藥超過 7 天無效</b>（<b>Class 3：No Benefit</b>）。<br>
+ ・<b>cEEG 監測</b>適用於病情起伏、意識下降、ruptured MCA aneurysm、high-grade SAH、ICH、hydrocephalus 或 cortical infarction 者（2a）。<br><br>
 
-  <!-- 步驟 3：依病灶切換的靜態區塊 -->
-  <div class="flow-connector hidden" id="tb_c3">↓</div>
+ <b>◆ 全身照護：</b><br>
+ ・<b>VTE 預防</b>：<b>動脈瘤已處理後</b>應給藥物或機械性預防（Class 1）——「已處理」寫在建議本文裡；未處理前的藥物性預防時機<b>沒有分級建議</b>。<br>
+ ・<b>血糖</b>：有效控制、嚴格處理 hyperglycemia、避免 hypoglycemia 是合理的（2a）；<b>沒有給有等級的數字目標</b>。<br>
+ ・<b>發燒</b>：對抗解熱劑無效的發燒，<b>targeted temperature management 的效果不確定</b>（2b）。<br>
+ ・<b>呼吸</b>：機械通氣 &gt;24 小時者應採標準化 ICU care bundle（Class 1）；嚴重 ARDS 可在 ICP 監測下考慮 prone position／recruitment（2b）。<br>
+ ・<b>Nursing（Class 1 群組）</b>：實證化 protocol／order set、<b>頻繁神經學與生命徵象評估</b>、<b>經口進食前先做已驗證的 dysphagia screening</b>；動脈瘤處理後<b>依實證早期活動流程</b>（2a）。<br>
+ ・<b>貧血與輸血：指引明列為 knowledge gap、無建議。</b>其後 <b>SAHaRA</b> 隨機試驗（n=742）比較 liberal（Hb ≤10 g/dL 輸血）與 restrictive（Hb ≤8 g/dL）：12 個月不良預後 <b>33.5% vs 37.7%（RR 0.88，ns）</b>——<b>liberal 沒有更好</b>，restrictive 看來安全。<br>
+ ・<b>心臟併發症（troponin 上升、neurogenic stunned myocardium）：指引無任何建議</b>，明列為 knowledge gap。
+ </div>
+ </details>
 
-  <div class="flow-step hidden" id="tb_s3_edh">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">EDH：體積、厚度、shift 與 pupil？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','coma',this)">GCS &lt;9 且 anisocoria<span class="fo-sub">不論體積</span></button>
-      <button class="flow-opt" onclick="tbPick('crit','big',this)">體積 &gt;30 cm³<span class="fo-sub">不論 GCS</span></button>
-      <button class="flow-opt" onclick="tbPick('crit','small',this)">&lt;30 cm³ 且厚度 &lt;15 mm 且 shift &lt;5 mm 且 GCS &gt;8 且無 focal deficit</button>
-    </div>
-  </div>
+ <details class="def-box" style="margin-bottom:12px;">
+ <summary>預後判定、追蹤與版本備註 Prognostication &amp; Version Notes</summary>
+ <div class="box-inner">
+ <b>◆ 不要提早放棄：</b><br>
+ ・<b>High-grade aSAH 者，在與家屬討論預後後處理動脈瘤是合理的</b>（2a）；<b>高齡者亦同</b>（2a）。<br>
+ ・<b>唯一的「不處理」建議限縮得很窄</b>：只有「因<b>不可逆神經損傷</b>而被判定無法救治、<b>且在矯正可逆因素後仍無改善</b>」者，處理動脈瘤才無效益（<b>Class 3：No Benefit</b>）。指引明列必須先矯正的可逆因素：<b>seizure、hydrocephalus、hyponatremia、status epilepticus、hypothermia</b>。<br>
+ ・原文並強調<b>時間軸的意義</b>：「到院時沒有 brainstem reflex，其意義遠不如 12 或 24 小時後仍然沒有。」早期 DNR 對預後的影響在 aSAH <b>未被研究過</b>，指引把「延後 DNR 至多 72 小時以避免治療虛無主義」列為 knowledge gap 中的討論。<br><br>
 
-  <div class="flow-step hidden" id="tb_s3_asdh">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">Acute SDH：厚度、shift 與惡化徵象？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','thick',this)">厚度 &gt;10 mm 或 midline shift &gt;5 mm<span class="fo-sub">不論 GCS</span></button>
-      <button class="flow-opt" onclick="tbPick('crit','deteriorate',this)">薄 SDH 但 GCS 下降 ≥2 分／anisocoria 或 fixed dilated pupils／ICP &gt;20 mmHg</button>
-      <button class="flow-opt" onclick="tbPick('crit','coma',this)">GCS &lt;9、薄 SDH、無上述惡化徵象</button>
-      <button class="flow-opt" onclick="tbPick('crit','awake',this)">GCS ≥9、厚度 &lt;10 mm、shift &lt;5 mm</button>
-    </div>
-  </div>
+ <b>◆ 追蹤影像：</b>動脈瘤修補後<b>應做周術期影像</b>以找出殘餘或復發（Class 1）；並<b>應做追蹤影像</b>以找出復發、再生長、其他已知動脈瘤的變化或 de novo 動脈瘤（Class 1）。<b>最佳時機與追蹤期長度為 knowledge gap。</b><br><br>
 
-  <div class="flow-step hidden" id="tb_s3_csdh">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">cSDH：是否有症狀？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','sympt',this)">有症狀<span class="fo-sub">focal deficit、意識改變、頭痛合併 mass effect</span></button>
-      <button class="flow-opt" onclick="tbPick('crit','asympt',this)">無症狀或症狀輕微、無顯著 mass effect</button>
-    </div>
-  </div>
+ <b>◆ 指引沒有處理的三件事</b>（本頁如實留白，不以二手來源填補）：<b>親屬篩檢</b>（僅在背景敘述中提到「有 ≥2 位一級親屬罹病者盛行率 12%、每 5–7 年篩檢具成本效益」，<b>不是分級建議</b>）、<b>戒菸與高血壓的二級預防</b>（僅列為可修正風險因子）、<b>perimesencephalic angiogram-negative SAH 的診斷路徑</b>。<br><br>
 
-  <div class="flow-step hidden" id="tb_s3_contusion">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">Contusion／traumatic ICH：體積、shift 與病程？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','deteriorate',this)">可歸因於病灶的進行性神經學惡化，或藥物無法控制的 intracranial hypertension</button>
-      <button class="flow-opt" onclick="tbPick('crit','frontotemporal',this)">GCS 6–8，frontal／temporal contusion &gt;20 cm³，併 shift ≥5 mm 和／或 cisternal compression</button>
-      <button class="flow-opt" onclick="tbPick('crit','huge',this)">任何病灶 &gt;50 cm³</button>
-      <button class="flow-opt" onclick="tbPick('crit','stable',this)">神經學穩定、ICP 可控、無顯著 mass effect</button>
-    </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算hematoma體積</button>
-  </div>
+ <b>◆ 版本備註：</b><br>
+ ・<b>AHA/ASA 2023</b>（Hoh 等，Stroke 2023;54(7):e314-e370）取代 2012 版，<b>截至本次查核為現行</b>；本頁條文均自該指引一手全文抄錄。<br>
+ ・<b>Neurocritical Care Society 2023</b>（Treggiari 等，Neurocrit Care 2023;39(1):1-28）<b>明文取代 NCS 2011 共識</b>，採 GRADE；其結論本身即說明<b>多數重症照護問題證據仍不足</b>（僅 5 個 PICO 有強建議、6 個證據不足）。<br>
+ ・<b>ESO 2013</b> 未見正式改版，且早於 ISAT 18 年追蹤、MASH-2、STASH、ULTRA、HIMALAIA、EARLYDRAIN、clazosentan 各試驗與 SAHaRA，<b>應視為已過時</b>。<br>
+ ・<b>ISAT-II</b> 僅查到 2013 年的試驗計畫書，<b>未找到已發表的主要結果</b>，本頁不引用其結論。
+ </div>
+ </details>
 
-  <div class="flow-step hidden" id="tb_s3_tsah">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">tSAH：是否為單獨病灶？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','isolated',this)">Isolated tSAH，GCS 15，無抗栓藥物、無其他病灶</button>
-      <button class="flow-opt" onclick="tbPick('crit','combined',this)">合併其他顱內病灶、GCS &lt;15，或使用 anticoagulant／antiplatelet</button>
-    </div>
-  </div>
+ <div class="flow-step" id="sa_s1">
+ <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">目前的診斷狀態？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="saPick('dx','ct',this)">CT 已確診 SAH<span class="fo-sub">接下來要找動脈瘤</span></button>
+ <button class="flow-opt" onclick="saPick('dx','early',this)">突發劇烈頭痛，發作 &lt;6 小時、無新的神經學缺損，CT 陰性</button>
+ <button class="flow-opt" onclick="saPick('dx','late',this)">發作 &gt;6 小時或有新的神經學缺損，CT 陰性</button>
+ <button class="flow-opt" onclick="saPick('dx','negative',this)">已確診 SAH 但 CTA／DSA 找不到動脈瘤</button>
+ </div>
+ <button class="flow-link" onclick="location.href='../tools/ottawa-sah.html?from=sah'">🧮 開啟 Ottawa SAH Rule</button>
+ </div>
 
-  <div class="flow-step hidden" id="tb_s3_tivh">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">tIVH：是否造成 hydrocephalus？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','hydro',this)">有 obstructive hydrocephalus 且意識下降</button>
-      <button class="flow-opt" onclick="tbPick('crit','nohydro',this)">無 hydrocephalus</button>
-    </div>
-  </div>
+ <div class="flow-rec rec-idle" id="sa_rec">
+ <div class="rec-label">建議處置 Recommendation</div>
+ <div class="rec-title">請由上方步驟開始選擇</div>
+ </div>
 
-  <div class="flow-step hidden" id="tb_s3_pf">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">Posterior fossa：fourth ventricle與 basal cisterns？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','masseffect',this)">fourth ventricle變形／移位／消失、basal cisterns 受壓或消失、obstructive hydrocephalus，或可歸因之神經功能障礙</button>
-      <button class="flow-opt" onclick="tbPick('crit','nomass',this)">無 mass effect 且無神經功能障礙</button>
-    </div>
-  </div>
+ <div class="flow-connector hidden" id="sa_c2">↓</div>
+ <div class="flow-step hidden" id="sa_s2">
+ <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">臨床分級（WFNS 或 Hunt-Hess）？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="saPick('grade','good',this)">Good grade<span class="fo-sub">WFNS 1–2／Hunt-Hess 1–2</span></button>
+ <button class="flow-opt" onclick="saPick('grade','mid',this)">WFNS 3／Hunt-Hess 3</button>
+ <button class="flow-opt" onclick="saPick('grade','poor',this)">Poor grade<span class="fo-sub">WFNS 4–5／Hunt-Hess 4–5</span></button>
+ </div>
+ <button class="flow-link" onclick="location.href='../tools/sah-grading.html?from=sah'">🧮 開啟 SAH 分級系統（四表對照）</button>
+ </div>
 
-  <div class="flow-step hidden" id="tb_s3_depressed">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">Depressed fracture：開放或閉鎖？凹陷深度？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','open',this)">Open（compound）且凹陷深度大於顱骨厚度</button>
-      <button class="flow-opt" onclick="tbPick('crit','openmild',this)">Open 但無 dural penetration、無顯著hematoma、凹陷 &lt;1 cm、未涉 frontal sinus、無污染</button>
-      <button class="flow-opt" onclick="tbPick('crit','closed',this)">Closed depressed fracture</button>
-    </div>
-  </div>
+ <div class="flow-connector hidden" id="sa_c3">↓</div>
+ <div class="flow-step hidden" id="sa_s3">
+ <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">動脈瘤的位置與型態？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="saPick('aneu','post',this)">Posterior circulation，可 coiling</button>
+ <button class="flow-opt" onclick="saPick('aneu','ant',this)">Anterior circulation，兩種術式皆適合</button>
+ <button class="flow-opt" onclick="saPick('aneu','hematoma',this)">合併大 intraparenchymal hematoma 併意識下降</button>
+ <button class="flow-opt" onclick="saPick('aneu','complex',this)">Wide-neck、fusiform 或 blister，不適合 clipping 或 primary coiling</button>
+ <button class="flow-opt" onclick="saPick('aneu','done',this)">動脈瘤已處理完成<span class="fo-sub">進入 ICU 監測期</span></button>
+ </div>
+ </div>
 
-  <div class="flow-step hidden" id="tb_s3_none">
-    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">無 mass lesion：ICP 與臨床狀態？</span></div>
-    <div class="flow-opts">
-      <button class="flow-opt" onclick="tbPick('crit','refractory',this)">ICP 持續 &gt;22 mmHg，已用盡 Tier 1／Tier 2 治療</button>
-      <button class="flow-opt" onclick="tbPick('crit','monitored',this)">已放 ICP monitor，ICP 可控</button>
-      <button class="flow-opt" onclick="tbPick('crit','ctnormal',this)">CT 正常或僅見 petechial hemorrhage，神經學穩定</button>
-    </div>
-  </div>
+ <div class="flow-rec rec-idle hidden" id="sa_rec2">
+ <div class="rec-label">建議處置 Recommendation</div>
+ <div class="rec-title">請完成步驟 3</div>
+ </div>
 
-  <div class="flow-rec rec-idle" id="tb_rec">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由上方步驟開始選擇</div>
-  </div>
+ <div class="flow-connector hidden" id="sa_c4">↓</div>
+ <div class="flow-step hidden" id="sa_s4">
+ <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">病程與目前的神經學變化？</span></div>
+ <div class="flow-opts">
+ <button class="flow-opt" onclick="saPick('phase','d13',this)">發病 day 1–3，無新的神經學缺損</button>
+ <button class="flow-opt" onclick="saPick('phase','dci',this)">Day 4–14，<b>新的 focal deficit 或 GCS 下降 ≥2 分</b><span class="fo-sub">持續 ≥1 小時、非緊接於動脈瘤處理後 → 疑 DCI</span></button>
+ <button class="flow-opt" onclick="saPick('phase','spasm',this)">Day 4–14，無新缺損但 TCD 或影像顯示 vasospasm</button>
+ <button class="flow-opt" onclick="saPick('phase','hydro',this)">任何時間點：意識下降併急性 hydrocephalus</button>
+ <button class="flow-opt" onclick="saPick('phase','late',this)">發病 &gt;14 天，病情穩定</button>
+ </div>
+ </div>
 
-  <div class="flow-rec rec-idle hidden" id="tb_rec2">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請完成步驟 3</div>
-  </div>
+ <div class="flow-rec rec-idle hidden" id="sa_rec3">
+ <div class="rec-label">建議處置 Recommendation</div>
+ <div class="rec-title">請完成步驟 4</div>
+ </div>
 
-  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="tbReset()">重置</button></div>
+ <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="saReset()">重置</button></div>
 </div>
 
-  <footer class="tool-footer">REF ｜ <b>Spontaneous ICH</b> —
-    <a href="https://pubmed.ncbi.nlm.nih.gov/35579034/" target="_blank" rel="noopener" class="ref-link">Greenberg SM, et al. 2022 Guideline for the Management of Patients With Spontaneous Intracerebral Hemorrhage. Stroke. 2022;53(7):e282-e361.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/40401775/" target="_blank" rel="noopener" class="ref-link">Steiner T, et al. ESO/EANS Guideline on Spontaneous Intracerebral Haemorrhage. Eur Stroke J. 2025;10(4):1007-1086.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/38598795/" target="_blank" rel="noopener" class="ref-link">Pradilla G, et al. Trial of Early Minimally Invasive Removal of Intracerebral Hemorrhage (ENRICH). N Engl J Med. 2024;390(14):1277-1289.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/38761811/" target="_blank" rel="noopener" class="ref-link">Beck J, et al. Decompressive craniectomy for severe deep supratentorial ICH (SWITCH). Lancet. 2024;403(10442):2395-2404.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/31593272/" target="_blank" rel="noopener" class="ref-link">Kuramatsu JB, et al. Surgical Hematoma Evacuation vs Conservative Treatment in Cerebellar ICH. JAMA. 2019;322(14):1392-1403.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/11846937/" target="_blank" rel="noopener" class="ref-link">Kirollos RW, et al. Management of spontaneous cerebellar hematomas: a prospective treatment protocol. Neurosurgery. 2001;49(6):1378-1386.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/34566872/" target="_blank" rel="noopener" class="ref-link">Chen D, et al. Primary Brainstem Hemorrhage: A Review of Prognostic Factors and Surgical Management. Front Neurol. 2021;12:727962.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/27178479/" target="_blank" rel="noopener" class="ref-link">Baharoglu MI, et al. Platelet transfusion versus standard care after ICH associated with antiplatelet therapy (PATCH). Lancet. 2016;387(10038):2605-2613.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/38749032/" target="_blank" rel="noopener" class="ref-link">Connolly SJ, et al. Andexanet for Factor Xa Inhibitor-Associated Acute Intracerebral Hemorrhage (ANNEXA-I). N Engl J Med. 2024;390(19):1745-1755.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/11283388/" target="_blank" rel="noopener" class="ref-link">Hemphill JC 3rd, et al. The ICH score. Stroke. 2001;32(4):891-897.</a>
-    <br><br>REF ｜ <b>Traumatic Brain Injury</b> —
-    <span class="ref-link" style="text-decoration:none;">Bullock MR, et al. Guidelines for the Surgical Management of Traumatic Brain Injury. Neurosurgery. 2006;58(3 Suppl):S2-1-S2-62.</span> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/27654000/" target="_blank" rel="noopener" class="ref-link">Carney N, et al. Guidelines for the Management of Severe Traumatic Brain Injury, 4th Edition. Neurosurgery. 2017;80(1):6-15.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/32761068/" target="_blank" rel="noopener" class="ref-link">Hawryluk GWJ, et al. 2020 Update of the Decompressive Craniectomy Recommendations. Neurosurgery. 2020;87(3):427-434.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/31659383/" target="_blank" rel="noopener" class="ref-link">Hawryluk GWJ, et al. A management algorithm for patients with intracranial pressure monitoring (SIBICC). Intensive Care Med. 2019;45(12):1783-1794.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/21434843/" target="_blank" rel="noopener" class="ref-link">Cooper DJ, et al. Decompressive craniectomy in diffuse traumatic brain injury (DECRA). N Engl J Med. 2011;364(16):1493-1502.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/27602507/" target="_blank" rel="noopener" class="ref-link">Hutchinson PJ, et al. Trial of Decompressive Craniectomy for Traumatic Intracranial Hypertension (RESCUEicp). N Engl J Med. 2016;375(12):1119-1130.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/37092792/" target="_blank" rel="noopener" class="ref-link">Hutchinson PJ, et al. Decompressive Craniectomy versus Craniotomy for Acute Subdural Hematoma (RESCUE-ASDH). N Engl J Med. 2023;388(24):2219-2229.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/31623894/" target="_blank" rel="noopener" class="ref-link">CRASH-3 trial collaborators. Effects of tranexamic acid on death, disability... Lancet. 2019;394(10210):1713-1723.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/15474134/" target="_blank" rel="noopener" class="ref-link">CRASH trial collaborators. Effect of intravenous corticosteroids on death within 14 days. Lancet. 2004;364(9442):1321-1328.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/26714677/" target="_blank" rel="noopener" class="ref-link">Frontera JA, et al. Guideline for Reversal of Antithrombotics in Intracranial Hemorrhage. Neurocrit Care. 2016;24(1):6-46.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/33326713/" target="_blank" rel="noopener" class="ref-link">Hutchinson PJ, et al. Trial of Dexamethasone for Chronic Subdural Hematoma (Dex-CSDH). N Engl J Med. 2020;383(27):2616-2627.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/19782872/" target="_blank" rel="noopener" class="ref-link">Santarius T, et al. Use of drains versus no drains after burr-hole evacuation of chronic subdural haematoma. Lancet. 2009;374(9695):1067-1073.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/39565988/" target="_blank" rel="noopener" class="ref-link">Davies JM, et al. Adjunctive Middle Meningeal Artery Embolization for Subdural Hematoma (EMBOLISE). N Engl J Med. 2024;391(20):1890-1900.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/39565989/" target="_blank" rel="noopener" class="ref-link">Liu J, et al. Middle Meningeal Artery Embolization for Nonacute Subdural Hematoma (MAGIC-MT). N Engl J Med. 2024;391(20):1901-1912.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/39565980/" target="_blank" rel="noopener" class="ref-link">Fiorella D, et al. Embolization of the Middle Meningeal Artery for Chronic Subdural Hematoma (STEM). N Engl J Med. 2025;392(9):855-864.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/11356436/" target="_blank" rel="noopener" class="ref-link">Stiell IG, et al. The Canadian CT Head Rule for patients with minor head injury. Lancet. 2001;357(9266):1391-1396.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/16331165/" target="_blank" rel="noopener" class="ref-link">Maas AIR, et al. Prediction of outcome in TBI with CT characteristics (Rotterdam CT score). Neurosurgery. 2005;57(6):1173-1182.</a> ｜
-    <a href="https://pubmed.ncbi.nlm.nih.gov/17110283/" target="_blank" rel="noopener" class="ref-link">Vergouwen MDI, et al. Effect of nimodipine on outcome in patients with traumatic subarachnoid haemorrhage. Lancet Neurol. 2006;5(12):1029-1032.</a>
-  </footer>
+ <footer class="tool-footer">REF ｜ <b>Spontaneous ICH</b> —
+ <a href="https://pubmed.ncbi.nlm.nih.gov/35579034/" target="_blank" rel="noopener" class="ref-link">Greenberg SM, et al. 2022 Guideline for the Management of Patients With Spontaneous Intracerebral Hemorrhage. Stroke. 2022;53(7):e282-e361.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/40401775/" target="_blank" rel="noopener" class="ref-link">Steiner T, et al. ESO/EANS Guideline on Spontaneous Intracerebral Haemorrhage. Eur Stroke J. 2025;10(4):1007-1086.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/38598795/" target="_blank" rel="noopener" class="ref-link">Pradilla G, et al. Trial of Early Minimally Invasive Removal of Intracerebral Hemorrhage (ENRICH). N Engl J Med. 2024;390(14):1277-1289.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/38761811/" target="_blank" rel="noopener" class="ref-link">Beck J, et al. Decompressive craniectomy for severe deep supratentorial ICH (SWITCH). Lancet. 2024;403(10442):2395-2404.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/31593272/" target="_blank" rel="noopener" class="ref-link">Kuramatsu JB, et al. Surgical Hematoma Evacuation vs Conservative Treatment in Cerebellar ICH. JAMA. 2019;322(14):1392-1403.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/11846937/" target="_blank" rel="noopener" class="ref-link">Kirollos RW, et al. Management of spontaneous cerebellar hematomas: a prospective treatment protocol. Neurosurgery. 2001;49(6):1378-1386.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/34566872/" target="_blank" rel="noopener" class="ref-link">Chen D, et al. Primary Brainstem Hemorrhage: A Review of Prognostic Factors and Surgical Management. Front Neurol. 2021;12:727962.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/27178479/" target="_blank" rel="noopener" class="ref-link">Baharoglu MI, et al. Platelet transfusion versus standard care after ICH associated with antiplatelet therapy (PATCH). Lancet. 2016;387(10038):2605-2613.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/38749032/" target="_blank" rel="noopener" class="ref-link">Connolly SJ, et al. Andexanet for Factor Xa Inhibitor-Associated Acute Intracerebral Hemorrhage (ANNEXA-I). N Engl J Med. 2024;390(19):1745-1755.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/11283388/" target="_blank" rel="noopener" class="ref-link">Hemphill JC 3rd, et al. The ICH score. Stroke. 2001;32(4):891-897.</a>
+ <br><br>REF ｜ <b>Aneurysmal SAH</b> —
+ <b>指引</b> —
+ <a href="https://pubmed.ncbi.nlm.nih.gov/37212182/" target="_blank" rel="noopener" class="ref-link">Hoh BL, Ko NU, Amin-Hanjani S, et al. 2023 Guideline for the Management of Patients With Aneurysmal Subarachnoid Hemorrhage. Stroke. 2023;54(7):e314-e370.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/37202712/" target="_blank" rel="noopener" class="ref-link">Treggiari MM, Rabinstein AA, Busl KM, et al. Guidelines for the Neurocritical Care Management of Aneurysmal Subarachnoid Hemorrhage. Neurocrit Care. 2023;39(1):1-28.</a>
+ <br><br>REF ｜ <b>術式與再出血</b> —
+ <a href="https://pubmed.ncbi.nlm.nih.gov/12414200/" target="_blank" rel="noopener" class="ref-link">Molyneux A, et al. ISAT of neurosurgical clipping versus endovascular coiling in 2143 patients. Lancet. 2002;360(9342):1267-1274.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/25465111/" target="_blank" rel="noopener" class="ref-link">Molyneux AJ, et al. The durability of endovascular coiling versus neurosurgical clipping: 18 year follow-up of the UK cohort of ISAT. Lancet. 2015;385(9969):691-697.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/30849758/" target="_blank" rel="noopener" class="ref-link">Spetzler RF, et al. Ten-year analysis of saccular aneurysms in the Barrow Ruptured Aneurysm Trial. J Neurosurg. 2019;132(3):771-776.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/33357465/" target="_blank" rel="noopener" class="ref-link">Post R, et al. Ultra-early tranexamic acid after subarachnoid haemorrhage (ULTRA). Lancet. 2021;397(10269):112-118.</a>
+ <br><br>REF ｜ <b>DCI</b> —
+ <a href="https://pubmed.ncbi.nlm.nih.gov/2496789/" target="_blank" rel="noopener" class="ref-link">Pickard JD, et al. Effect of oral nimodipine on cerebral infarction and outcome after subarachnoid haemorrhage (British Aneurysm Nimodipine Trial). BMJ. 1989;298(6674):636-642.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/20798370/" target="_blank" rel="noopener" class="ref-link">Vergouwen MDI, et al. Definition of delayed cerebral ischemia after aneurysmal subarachnoid hemorrhage as an outcome event. Stroke. 2010;41(10):2391-2395.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/26495942/" target="_blank" rel="noopener" class="ref-link">Kumar G, et al. Vasospasm on transcranial Doppler is predictive of delayed cerebral ischemia. J Neurosurg. 2016;124(5):1257-1264.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/29998428/" target="_blank" rel="noopener" class="ref-link">Kumar G, et al. Prediction of Delayed Cerebral Ischemia with Cerebral Angiography: A Meta-Analysis. Neurocrit Care. 2019;30(1):62-71.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/29158449/" target="_blank" rel="noopener" class="ref-link">Gathier CS, et al. Induced Hypertension for Delayed Cerebral Ischemia After aSAH (HIMALAIA). Stroke. 2018;49(1):76-83.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/24837690/" target="_blank" rel="noopener" class="ref-link">Kirkpatrick PJ, et al. Simvastatin in aneurysmal subarachnoid haemorrhage (STASH). Lancet Neurol. 2014;13(7):666-675.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/22633825/" target="_blank" rel="noopener" class="ref-link">Dorhout Mees SM, et al. Magnesium for aneurysmal subarachnoid haemorrhage (MASH-2). Lancet. 2012;380(9836):44-49.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/39126720/" target="_blank" rel="noopener" class="ref-link">Mayer SA, et al. Clazosentan for preventing clinical deterioration due to DCI (REACT). J Neurosurg. 2024;142(1):98-109.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/35364589/" target="_blank" rel="noopener" class="ref-link">Endo H, et al. Clazosentan for prevention of vasospasm-related morbidity and all-cause mortality: two phase 3 trials in Japan. J Neurosurg. 2022;137(6):1707-1717.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/32138631/" target="_blank" rel="noopener" class="ref-link">Carlson AP, et al. Single-Dose Intraventricular Nimodipine Microparticles Versus Oral Nimodipine (NEWTON-2). Stroke. 2020;51(4):1142-1149.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/23039152/" target="_blank" rel="noopener" class="ref-link">Senbokuya N, et al. Effects of cilostazol on cerebral vasospasm after aneurysmal subarachnoid hemorrhage. J Neurosurg. 2013;118(1):121-130.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/22528278/" target="_blank" rel="noopener" class="ref-link">Lannes M, et al. Milrinone and homeostasis to treat cerebral vasospasm (Montreal Neurological Hospital protocol). Neurocrit Care. 2012;16(3):354-362.</a>
+ <br><br>REF ｜ <b>其他</b> —
+ <a href="https://pubmed.ncbi.nlm.nih.gov/37330974/" target="_blank" rel="noopener" class="ref-link">Wolf S, et al. Effectiveness of Lumbar Cerebrospinal Fluid Drain Among Patients With aSAH (EARLYDRAIN). JAMA Neurol. 2023;80(8):833-842.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/39655786/" target="_blank" rel="noopener" class="ref-link">English SW, et al. Liberal or Restrictive Transfusion Strategy in Aneurysmal Subarachnoid Hemorrhage (SAHaRA). N Engl J Med. 2025;392(11):1079-1088.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/2672426/" target="_blank" rel="noopener" class="ref-link">Hasan D, et al. Effect of fludrocortisone acetate in patients with subarachnoid hemorrhage. Stroke. 1989;20(9):1156-1161.</a> ｜
+ <a href="https://pubmed.ncbi.nlm.nih.gov/33144792/" target="_blank" rel="noopener" class="ref-link">Yeole U, et al. The Yield of Repeat Angiography in Angiography-Negative Spontaneous Subarachnoid Hemorrhage. J Neurosci Rural Pract. 2020;11(4):565-572.</a>
+ </footer>
 </div>
 </div>
 <script src="../js/common.js"></script>
 <script>
 /* ================= 分頁 ================= */
 function icTab(k){
-  document.getElementById('tab-spon').classList.toggle('hidden', k!=='spon');
-  document.getElementById('tab-tbi').classList.toggle('hidden', k!=='tbi');
-  document.querySelectorAll('#ic_tabs .tab-btn').forEach(function(b){
-    b.classList.toggle('active', b.getAttribute('data-tab')===k);
-  });
-  try{ history.replaceState(null,'','#tab='+k); }catch(e){}
+ document.getElementById('tab-spon').classList.toggle('hidden', k!=='spon');
+ document.getElementById('tab-sah').classList.toggle('hidden', k!=='sah');
+ document.querySelectorAll('#ic_tabs .tab-btn').forEach(function(b){
+ b.classList.toggle('active', b.getAttribute('data-tab')===k);
+ });
+ try{ history.replaceState(null,'','#tab='+k); }catch(e){}
 }
 
+/* ================= 分頁一：自發性 ICH ================= */
 /* ================= 分頁一：自發性 ICH ================= */
 const st = { drug:null, bp:null, loc:null, sub:null };
 
 function icPick(key, val, btn){
-  flowSelect(btn);
-  if(key==='drug'){ st.drug=val; st.bp=null; st.loc=null; st.sub=null; }
-  else if(key==='bp'){ st.bp=val; st.loc=null; st.sub=null; }
-  else if(key==='loc'){ st.loc=val; st.sub=null; }
-  else if(key==='sub'){ st.sub=val; }
-  render();
+ flowSelect(btn);
+ if(key==='drug'){ st.drug=val; st.bp=null; st.loc=null; st.sub=null; }
+ else if(key==='bp'){ st.bp=val; st.loc=null; st.sub=null; }
+ else if(key==='loc'){ st.loc=val; st.sub=null; }
+ else if(key==='sub'){ st.sub=val; }
+ render();
 }
 
 function icReverse(){
-  switch(st.drug){
-    case 'vka': return '<li><b>Vitamin K antagonist — 立即停藥並盡快逆轉</b>（Class 1）：<b>INR 1.3–1.9</b> → 4F-PCC <b>10–20 IU/kg</b>（2b）；<b>INR &gt;2.0</b> → 4F-PCC <b>25–50 IU/kg</b>（Class 1）<b>加上 intravenous vitamin K</b>（Class 1）。Vitamin K 單獨給藥起效太慢，<b>不可取代 PCC</b>。</li>';
-    case 'dabi': return '<li><b>Dabigatran — 立即停藥並盡快逆轉</b>（Class 1）：優先給 <b>idarucizumab</b>（2a）。<b>無法取得時</b>用 PCC 或 activated PCC，和／或 <b>renal replacement therapy</b>（2b，dabigatran 可被 dialysis 清除）。</li>' +
-      '<li><b>先問最後一劑的時間</b>：若在 <b>2 小時內</b>可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。</li>';
-    case 'xa': return '<li><b>Factor Xa inhibitor — 立即停藥並盡快逆轉</b>（Class 1）：優先給 <b>andexanet alfa</b>（2a）。<b>無法取得時</b>用 4F-PCC 或 activated PCC（2b）。</li>' +
-      '<li><b>先確認院內有沒有 andexanet</b>：ANNEXA-I 證實其止血效果較佳（67.0% vs 53.1%）但<b>血栓事件較多</b>（10.3% vs 5.6%），且 <b>2025 年 12 月已自美國市場撤下</b>。<b>取得不到就直接用 4F-PCC／activated PCC</b>，不要為了等藥延誤逆轉。</li>' +
-      '<li><b>先問最後一劑的時間</b>：若在 <b>2 小時內</b>可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。</li>';
-    case 'hep': return '<li><b>Heparins — 立即停藥並盡快逆轉</b>（Class 1）：<b>unfractionated heparin</b> 用 <b>protamine</b>（2a）；<b>low-molecular-weight heparin</b> 亦用 protamine（2b，逆轉效果較不完全）。</li>';
-    case 'anti': return '<li><b>Antiplatelet — platelet transfusion 要看有沒有要開刀</b>：<br>' +
-      '・<b>需要緊急 neurosurgery</b> 且使用 aspirin 者：<b>可考慮</b> platelet transfusion 以減少術後出血與死亡（2b）。<br>' +
-      '・<b>不需要緊急手術</b>且使用 aspirin 者：<b>platelet transfusion 具潛在傷害、不應給予</b>（<b>Class 3：Harm</b>）。</li>' +
-      '<li><b>Desmopressin</b>（併用或不併用 platelet transfusion）以減少 hematoma expansion 的<b>效果不確定</b>（2b）。</li>';
-    default: return '<li><b>無 antithrombotic 藥物</b>：不需逆轉治療。仍應確認<b>liver disease、hematologic disorder 等 anticoagulation 以外的 coagulopathy</b>，並複查凝血功能與 platelet count。</li>';
-  }
+ switch(st.drug){
+ case 'vka': return '<li><b>Vitamin K antagonist — 立即停藥並盡快逆轉</b>（Class 1）：<b>INR 1.3–1.9</b> → 4F-PCC <b>10–20 IU/kg</b>（2b）；<b>INR &gt;2.0</b> → 4F-PCC <b>25–50 IU/kg</b>（Class 1）<b>加上 intravenous vitamin K</b>（Class 1）。Vitamin K 單獨給藥起效太慢，<b>不可取代 PCC</b>。</li>';
+ case 'dabi': return '<li><b>Dabigatran — 立即停藥並盡快逆轉</b>（Class 1）：優先給 <b>idarucizumab</b>（2a）。<b>無法取得時</b>用 PCC 或 activated PCC，和／或 <b>renal replacement therapy</b>（2b，dabigatran 可被 dialysis 清除）。</li>' +
+ '<li><b>先問最後一劑的時間</b>：若在 <b>2 小時內</b>可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。</li>';
+ case 'xa': return '<li><b>Factor Xa inhibitor — 立即停藥並盡快逆轉</b>（Class 1）：優先給 <b>andexanet alfa</b>（2a）。<b>無法取得時</b>用 4F-PCC 或 activated PCC（2b）。</li>' +
+ '<li><b>先確認院內有沒有 andexanet</b>：ANNEXA-I 證實其止血效果較佳（67.0% vs 53.1%）但<b>血栓事件較多</b>（10.3% vs 5.6%），且 <b>2025 年 12 月已自美國市場撤下</b>。<b>取得不到就直接用 4F-PCC／activated PCC</b>，不要為了等藥延誤逆轉。</li>' +
+ '<li><b>先問最後一劑的時間</b>：若在 <b>2 小時內</b>可給 <b>activated charcoal</b>（潛在效益可延伸至 8 小時，2b）。</li>';
+ case 'hep': return '<li><b>Heparins — 立即停藥並盡快逆轉</b>（Class 1）：<b>unfractionated heparin</b> 用 <b>protamine</b>（2a）；<b>low-molecular-weight heparin</b> 亦用 protamine（2b，逆轉效果較不完全）。</li>';
+ case 'anti': return '<li><b>Antiplatelet — platelet transfusion 要看有沒有要開刀</b>：<br>' +
+ '・<b>需要緊急 neurosurgery</b> 且使用 aspirin 者：<b>可考慮</b> platelet transfusion 以減少術後出血與死亡（2b）。<br>' +
+ '・<b>不需要緊急手術</b>且使用 aspirin 者：<b>platelet transfusion 具潛在傷害、不應給予</b>（<b>Class 3：Harm</b>）。</li>' +
+ '<li><b>Desmopressin</b>（併用或不併用 platelet transfusion）以減少 hematoma expansion 的<b>效果不確定</b>（2b）。</li>';
+ default: return '<li><b>無 antithrombotic 藥物</b>：不需逆轉治療。仍應確認<b>liver disease、hematologic disorder 等 anticoagulation 以外的 coagulopathy</b>，並複查凝血功能與 platelet count。</li>';
+ }
 }
 
 function icBP(){
-  switch(st.bp){
-    case 'mod150': return '<li><b>Blood pressure（輕至中度出血、SBP 150–220）</b>：急性降至目標 <b>140 mmHg</b>、維持 <b>130–150 mmHg</b> 是安全的，可能合理（2b）。<b>不要降到 &lt;130 mmHg</b>——SBP &gt;150 者急性降至 &lt;130 屬 <b>Class 3（Harm）</b>。</li>' +
-      '<li><b>時機</b>：<b>發病 2 小時內開始、1 小時內達標</b>可降低 hematoma expansion 風險（2a）。</li>' +
-      '<li><b>方式</b>：滴定用藥追求<b>平順而持續</b>的控制，<b>避免高峰與大幅波動</b>（2a）——blood pressure variability 本身即為預後不良因子。</li>';
-    case 'large': return '<li><b>Blood pressure（大量／重度出血，或需 surgical decompression）</b>：<b>積極降壓的安全性與療效尚未確立</b>（2b）。此族群不套用 140 mmHg 的目標，應個別化並與 neurosurgery 共同決定。</li>' +
-      '<li>仍適用<b>平順控制、避免波動</b>的原則（2a），且<b>避免降至 &lt;130 mmHg</b>（Class 3：Harm）。</li>';
-    case 'high': return '<li><b>Blood pressure（SBP &gt;220）</b>：此區間<b>不在 2022 指引「140 mmHg 目標」的證據範圍內</b>（該建議適用於 SBP 150–220 的輕至中度出血）。實務上以持續靜脈輸注藥物平順降壓、密切監測，<b>避免驟降</b>；仍<b>不可降至 &lt;130 mmHg</b>（Class 3：Harm）。</li>' +
-      '<li><b>平順而持續的控制、避免高峰與大幅波動</b>（2a）；發病 2 小時內開始治療（2a）。</li>';
-    default: return '<li><b>Blood pressure（SBP &lt;150）</b>：<b>不需要降壓</b>。2022 指引的降壓建議針對 SBP 150–220 的族群；此區間<b>降壓沒有證據支持且可能有害</b>。應確認灌流足夠並持續監測血壓變化。</li>';
-  }
+ switch(st.bp){
+ case 'mod150': return '<li><b>Blood pressure（輕至中度出血、SBP 150–220）</b>：急性降至目標 <b>140 mmHg</b>、維持 <b>130–150 mmHg</b> 是安全的，可能合理（2b）。<b>不要降到 &lt;130 mmHg</b>——SBP &gt;150 者急性降至 &lt;130 屬 <b>Class 3（Harm）</b>。</li>' +
+ '<li><b>時機</b>：<b>發病 2 小時內開始、1 小時內達標</b>可降低 hematoma expansion 風險（2a）。</li>' +
+ '<li><b>方式</b>：滴定用藥追求<b>平順而持續</b>的控制，<b>避免高峰與大幅波動</b>（2a）——blood pressure variability 本身即為預後不良因子。</li>';
+ case 'large': return '<li><b>Blood pressure（大量／重度出血，或需 surgical decompression）</b>：<b>積極降壓的安全性與療效尚未確立</b>（2b）。此族群不套用 140 mmHg 的目標，應個別化並與 neurosurgery 共同決定。</li>' +
+ '<li>仍適用<b>平順控制、避免波動</b>的原則（2a），且<b>避免降至 &lt;130 mmHg</b>（Class 3：Harm）。</li>';
+ case 'high': return '<li><b>Blood pressure（SBP &gt;220）</b>：此區間<b>不在 2022 指引「140 mmHg 目標」的證據範圍內</b>（該建議適用於 SBP 150–220 的輕至中度出血）。實務上以持續靜脈輸注藥物平順降壓、密切監測，<b>避免驟降</b>；仍<b>不可降至 &lt;130 mmHg</b>（Class 3：Harm）。</li>' +
+ '<li><b>平順而持續的控制、避免高峰與大幅波動</b>（2a）；發病 2 小時內開始治療（2a）。</li>';
+ default: return '<li><b>Blood pressure（SBP &lt;150）</b>：<b>不需要降壓</b>。2022 指引的降壓建議針對 SBP 150–220 的族群；此區間<b>降壓沒有證據支持且可能有害</b>。應確認灌流足夠並持續監測血壓變化。</li>';
+ }
 }
 
 const IC_SUB = {
-  deteriorate: { cls:'rec-urgent', title:'Supratentorial 且持續惡化 — craniotomy 作為救命措施',
-    detail:'<li><b>Craniotomy 清除hematoma可作為惡化中病人的救命措施</b>（2b）——注意這是<b>救命</b>的定位，不是改善功能預後。</li>' +
-      '<li><b>Supratentorial 中度以上嚴重度</b>（&gt;10 mL 併顯著神經學缺損）者，craniotomy 對<b>死亡率或功能預後的效益不確定</b>（2b）。</li>' +
-      '<li>若同時符合 minimally invasive surgery 的族群（&gt;20–30 mL、GCS 5–12），<b>選擇 MIS 而非 craniotomy 可能合理</b>（2b）。</li>' +
-      '<li><b>Decompressive craniectomy 是另一個選項</b>：對<b>comatose、大 hematoma 併顯著 midline shift、或藥物難治之 ICP</b> 者，DC ±hematoma清除<b>可考慮用以降低死亡率</b>（2b，LOE C-LD），<b>功能預後的效果不確定</b>（2b）。SWITCH 試驗在 deep ICH 未達統計顯著（p=0.057）。</li>' +
-      '<li><b>同時處理 ICP</b>：合併 hydrocephalus 且意識下降者<b>應放 ventricular drain</b>（Class 1）；bolus hyperosmolar therapy 可暫時降壓（2b）；<b>不可用 corticosteroids</b>（Class 3）。</li>',
-    note:'AHA/ASA 2022 手術章節。惡化中病人的 craniotomy 屬救命措施（2b）。' },
-  enrich: { cls:'rec-elective', title:'ENRICH 的族群 — minimally invasive evacuation 可與 neurosurgery 討論',
-    detail:'<li><b>族群定義</b>：<b>lobar 或 anterior basal ganglia</b>、<b>30–80 mL</b>、發病 <b>24 小時內</b>。</li>' +
-      '<li><b>ENRICH（NEJM 2024）</b>：minimally invasive parafascicular surgery 之 180 天 utility-weighted mRS 優於單純內科治療（0.458 vs 0.374），30 天死亡率 9.3% vs 18.0%。</li>' +
-      '<li><b>效益幾乎全來自 lobar 亞群</b>（差值 0.127）；<b>anterior basal ganglia 亞群因無效被中止</b>（差值 −0.013）——deep hemorrhage 不可援用此結果。</li>' +
-      '<li><b>此試驗發表於 AHA/ASA 2022 之後</b>，尚未進入指引條文；屬<b>指引外的新證據</b>，須由具備該術式與器械的團隊執行。</li>' +
-      '<li>術後再出血併神經學惡化的比率為 3.3%。</li>',
-    note:'ENRICH（NEJM 2024;390:1277-1289）。未納入 cerebellar／brainstem hemorrhage。' },
-  mis: { cls:'rec-elective', title:'Minimally invasive surgery 的族群 — 與 neurosurgery 共同決定',
-    detail:'<li><b>族群定義</b>：<b>supratentorial</b>、hematoma <b>&gt;20–30 mL</b>、<b>GCS 5–12</b>。</li>' +
-      '<li><b>MIS ±thrombolysis</b>：<b>降低死亡率可能有用</b>（2a）；對<b>功能預後</b>的效果<b>不確定</b>（2b）。</li>' +
-      '<li><b>選擇 MIS 而非 craniotomy</b> 以改善功能預後<b>可能合理</b>（2b）。</li>' +
-      '<li>手術與否須與 neurosurgery 共同決定；<b>本族群的證據等級最高只到 2a（降低死亡率）</b>，不是必然要開。</li>',
-    note:'AHA/ASA 2022 手術章節。體積估算可用 ABC/2（見 ICH Score 工具）。' },
-  med: { cls:'rec-blue', title:'目前無手術適應症 — 內科治療與密切監測',
-    detail:'<li><b>維持 blood pressure 在目標區間</b>並持續監測神經學狀態；hematoma expansion 多發生在最初數小時，<b>惡化時立即重照影像</b>。</li>' +
-      '<li><b>不可用 corticosteroids</b> 治療 intracranial hypertension（Class 3：No Benefit）。</li>' +
-      '<li><b>持續評估是否轉為需手術</b>：意識下降、出現 hydrocephalus、或 hematoma expansion 時，應重新走一次步驟 3–4。</li>' +
-      '<li><b>不要提早下預後定論</b>；ICH Score 用於溝通與分層，不作為撤除維生治療的依據。</li>',
-    note:'AHA/ASA 2022。手術適應症會隨病程改變，需重複評估。' },
-  cevac: { cls:'rec-urgent', title:'Cerebellar hemorrhage — 立即手術清除（Class 1）',
-    detail:'<li><b>神經學惡化、brainstem compression、ventricular obstruction 造成的 hydrocephalus，或 volume ≥15 mL：應立即清除hematoma（±EVD），優於單純內科治療</b>（<b>Class 1，LOE B-NR</b>）。</li>' +
-      '<li><b>不要只放 EVD</b>：Class 1 建議的措辭是「<b>清除hematoma，可併用或不併用 EVD</b>」。指引另在<b>未分級的敘述</b>中寫明——<b>單獨放 EVD 在理論上可能有害，尤其 basal cisterns 已受壓時</b>；當 intracranial hypertension 已妨礙 brainstem 血流，單靠 EVD 也不夠。（此段<b>不是</b> Class 3 建議，是建議背後的說理。）</li>' +
-      '<li><b>先看fourth ventricle，不要只看直徑</b>：Kirollos 的原始結論是「fourth ventricle未被完全壓扁時，即使 &gt;3 cm 也未必需要清除」——決策軸是<b>fourth ventricle與 basal cisterns 的狀態</b>。</li>' +
-      '<li><b>與家屬溝通的重點</b>：Kuramatsu（JAMA 2019）顯示手術<b>提高存活</b>（≥15 cm³ 時 74.5% vs 45.1%）但<b>未改善 3 個月功能預後</b>（mRS 0–3：30.9% vs 35.5%）。這是<b>換命、不換功能</b>的手術。</li>' +
-      '<li>同一份分析中 <b>≤12 cm³ 者手術的功能預後反而更差</b>——小hematoma不要為了「保險」而開。</li>',
-    note:'AHA/ASA 2022（Class 1，LOE B-NR）；體積門檻源自 Kuramatsu JAMA 2019。' },
-  cobs: { cls:'rec-nonop', title:'Cerebellar hemorrhage 小量且穩定 — 內科治療但需高頻率重評',
-    detail:'<li><b>volume &lt;15 mL、意識清楚、fourth ventricle未被壓扁、無 hydrocephalus</b>：以內科治療與密切監測為主。</li>' +
-      '<li><b>Posterior fossa 的代償空間極小、惡化極快</b>：應收治於可立即開刀的單位，<b>神經學一有變化即刻重照 CT 並聯絡 neurosurgery</b>。惡化的表現常是意識下降、新出現的 cranial nerve 徵象或 ataxia 加重。</li>' +
-      '<li><b>出現 hydrocephalus 或 brainstem compression 時，適應症即翻轉為 Class 1 手術</b>——本步驟的結論隨時可能改變。</li>' +
-      '<li>血壓與 antithrombotic 的處置同步驟 1–2；<b>不可用 corticosteroids</b>（Class 3）。</li>',
-    note:'AHA/ASA 2022；Kirollos 的fourth ventricle分級可作為監測時的判讀依據。' },
-  shydro: { cls:'rec-urgent', title:'Brainstem hemorrhage 併 hydrocephalus — 內科治療＋EVD',
-    detail:'<li><b>合併 hydrocephalus 且意識下降者應行 ventricular drainage</b>（<b>Class 1</b>，此建議適用於所有 ICH／IVH 併 hydrocephalus 者）。</li>' +
-      '<li><b>hematoma本身不開刀</b>：AHA/ASA 2022 的建議表<b>沒有</b>針對原發性 brainstem hemorrhage 的手術建議；stereotactic aspiration 與 endoscopic evacuation 屬<b>研究性質</b>，尚無已發表的陽性隨機試驗。</li>' +
-      '<li><b>其餘處置</b>：氣道保護與呼吸器支援、血壓依步驟 2、glucose 與 temperature 控制、確認之 electrographic seizure 才給 antiseizure medication（Class 1；<b>預防性給藥屬 Class 3：No Benefit</b>）。</li>' +
-      '<li><b>不要提早下預後定論</b>：brainstem hemorrhage 的死亡率高，但早期悲觀預測會造成 self-fulfilling prophecy。</li>',
-    note:'AHA/ASA 2022（hydrocephalus 之 ventricular drainage 為 Class 1）；brainstem 手術無指引建議。' },
-  snone: { cls:'rec-blue', title:'Brainstem hemorrhage — 內科與支持性治療',
-    detail:'<li><b>現行標準是內科治療</b>：血壓控制、氣道保護、避免 hypoxia 與 hypotension、temperature 與 blood glucose 控制。<b>手術不是標準處置。</b></li>' +
-      '<li><b>預後最一致的兩個因子是初始意識程度與hematoma大小</b>；文獻中的 pontine hemorrhage 評分系統未取得原始論文，本頁不轉載分數與切點。</li>' +
-      '<li><b>持續監測 hydrocephalus</b>：fourth ventricle受阻時可能需要 EVD（Class 1）。</li>' +
-      '<li><b>不可用 corticosteroids</b>（Class 3：No Benefit）；預防性 antiseizure medication 亦無效益（Class 3）。</li>',
-    note:'AHA/ASA 2022 無 brainstem 手術建議；STIPE 試驗結果截至本次查核未發表。' },
-  ihydro: { cls:'rec-urgent', title:'IVH 併 hydrocephalus — external ventricular drain（Class 1）',
-    detail:'<li><b>ICH 或 IVH 合併 hydrocephalus、且造成意識下降者：應行 ventricular drainage 以降低死亡率</b>（<b>Class 1</b>）——這是本分頁手術相關建議中<b>唯二的強建議</b>（另一為 cerebellar hemorrhage 的清除）。</li>' +
-      '<li><b>EVD 加 intraventricular thrombolysis</b>：<b>可降低死亡率</b>（2a）；對<b>功能預後</b>的效益<b>不確定</b>（2b）。</li>' +
-      '<li><b>Neuroendoscopy 加 EVD</b>（±thrombolysis）：對功能預後與<b>減少永久性 shunt dependence</b> 的效益<b>不確定</b>（2b）。</li>' +
-      '<li><b>臨床上有 hydrocephalus 者應轉送至具 neurosurgery 能力的院所</b>（Class 1）。ICP monitoring 與治療可考慮（2b）；<b>bolus hyperosmolar therapy 可暫時降 ICP</b>（2b）；<b>不可用 corticosteroids</b>（Class 3）。</li>',
-    note:'AHA/ASA 2022：ventricular drainage 為 Class 1；EVD＋thrombolysis 降低死亡率為 2a。' },
-  inone: { cls:'rec-blue', title:'IVH 無 hydrocephalus — 內科治療與密切監測',
-    detail:'<li><b>目前無引流適應症</b>：持續監測意識程度與ventricular size，<b>一旦出現 hydrocephalus 併意識下降即為 Class 1 引流適應症</b>。</li>' +
-      '<li><b>IVH 本身是預後不良因子</b>（ICH Score 的計分項之一），但<b>不可據此提早限制維生治療</b>。</li>' +
-      '<li><b>找病因</b>：primary IVH 與年輕、無高血壓病史者，應積極檢查 vascular malformation、aneurysm 與 moyamoya——影像上考慮 CT angiography 或 DSA。</li>' +
-      '<li>血壓、antithrombotic 逆轉與支持照護同步驟 1–2；<b>不可用 corticosteroids</b>（Class 3）。</li>',
-    note:'AHA/ASA 2022。適應症會隨病程改變，需重複評估。' }
+ deteriorate: { cls:'rec-urgent', title:'Supratentorial 且持續惡化 — craniotomy 作為救命措施',
+ detail:'<li><b>Craniotomy 清除 hematoma 可作為惡化中病人的救命措施</b>（2b）——注意這是<b>救命</b>的定位，不是改善功能預後。</li>' +
+ '<li><b>Supratentorial 中度以上嚴重度</b>（&gt;10 mL 併顯著神經學缺損）者，craniotomy 對<b>死亡率或功能預後的效益不確定</b>（2b）。</li>' +
+ '<li>若同時符合 minimally invasive surgery 的族群（&gt;20–30 mL、GCS 5–12），<b>選擇 MIS 而非 craniotomy 可能合理</b>（2b）。</li>' +
+ '<li><b>Decompressive craniectomy 是另一個選項</b>：對<b>comatose、大 hematoma 併顯著 midline shift、或藥物難治之 ICP</b> 者，DC ±hematoma 清除<b>可考慮用以降低死亡率</b>（2b，LOE C-LD），<b>功能預後的效果不確定</b>（2b）。SWITCH 試驗在 deep ICH 未達統計顯著（p=0.057）。</li>' +
+ '<li><b>同時處理 ICP</b>：合併 hydrocephalus 且意識下降者<b>應放 ventricular drain</b>（Class 1）；bolus hyperosmolar therapy 可暫時降壓（2b）；<b>不可用 corticosteroids</b>（Class 3）。</li>',
+ note:'AHA/ASA 2022 手術章節。惡化中病人的 craniotomy 屬救命措施（2b）。' },
+ enrich: { cls:'rec-elective', title:'ENRICH 的族群 — minimally invasive evacuation 可與 neurosurgery 討論',
+ detail:'<li><b>族群定義</b>：<b>lobar 或 anterior basal ganglia</b>、<b>30–80 mL</b>、發病 <b>24 小時內</b>。</li>' +
+ '<li><b>ENRICH（NEJM 2024）</b>：minimally invasive parafascicular surgery 之 180 天 utility-weighted mRS 優於單純內科治療（0.458 vs 0.374），30 天死亡率 9.3% vs 18.0%。</li>' +
+ '<li><b>效益幾乎全來自 lobar 亞群</b>（差值 0.127）；<b>anterior basal ganglia 亞群因無效被中止</b>（差值 −0.013）——deep hemorrhage 不可援用此結果。</li>' +
+ '<li><b>此試驗發表於 AHA/ASA 2022 之後</b>，尚未進入指引條文；屬<b>指引外的新證據</b>，須由具備該術式與器械的團隊執行。</li>' +
+ '<li>術後再出血併神經學惡化的比率為 3.3%。</li>',
+ note:'ENRICH（NEJM 2024;390:1277-1289）。未納入 cerebellar／brainstem hemorrhage。' },
+ mis: { cls:'rec-elective', title:'Minimally invasive surgery 的族群 — 與 neurosurgery 共同決定',
+ detail:'<li><b>族群定義</b>：<b>supratentorial</b>、hematoma <b>&gt;20–30 mL</b>、<b>GCS 5–12</b>。</li>' +
+ '<li><b>MIS ±thrombolysis</b>：<b>降低死亡率可能有用</b>（2a）；對<b>功能預後</b>的效果<b>不確定</b>（2b）。</li>' +
+ '<li><b>選擇 MIS 而非 craniotomy</b> 以改善功能預後<b>可能合理</b>（2b）。</li>' +
+ '<li>手術與否須與 neurosurgery 共同決定；<b>本族群的證據等級最高只到 2a（降低死亡率）</b>，不是必然要開。</li>',
+ note:'AHA/ASA 2022 手術章節。體積估算可用 ABC/2（見 ICH Score 工具）。' },
+ med: { cls:'rec-blue', title:'目前無手術適應症 — 內科治療與密切監測',
+ detail:'<li><b>維持 blood pressure 在目標區間</b>並持續監測神經學狀態；hematoma expansion 多發生在最初數小時，<b>惡化時立即重照影像</b>。</li>' +
+ '<li><b>不可用 corticosteroids</b> 治療 intracranial hypertension（Class 3：No Benefit）。</li>' +
+ '<li><b>持續評估是否轉為需手術</b>：意識下降、出現 hydrocephalus、或 hematoma expansion 時，應重新走一次步驟 3–4。</li>' +
+ '<li><b>不要提早下預後定論</b>；ICH Score 用於溝通與分層，不作為撤除維生治療的依據。</li>',
+ note:'AHA/ASA 2022。手術適應症會隨病程改變，需重複評估。' },
+ cevac: { cls:'rec-urgent', title:'Cerebellar hemorrhage — 立即手術清除（Class 1）',
+ detail:'<li><b>神經學惡化、brainstem compression、ventricular obstruction 造成的 hydrocephalus，或 volume ≥15 mL：應立即清除 hematoma（±EVD），優於單純內科治療</b>（<b>Class 1，LOE B-NR</b>）。</li>' +
+ '<li><b>不要只放 EVD</b>：Class 1 建議的措辭是「<b>清除 hematoma，可併用或不併用 EVD</b>」。指引另在<b>未分級的敘述</b>中寫明——<b>單獨放 EVD 在理論上可能有害，尤其 basal cisterns 已受壓時</b>；當 intracranial hypertension 已妨礙 brainstem 血流，單靠 EVD 也不夠。（此段<b>不是</b> Class 3 建議，是建議背後的說理。）</li>' +
+ '<li><b>先看 fourth ventricle，不要只看直徑</b>：Kirollos 的原始結論是「fourth ventricle 未被完全壓扁時，即使 &gt;3 cm 也未必需要清除」——決策軸是<b>fourth ventricle 與 basal cisterns 的狀態</b>。</li>' +
+ '<li><b>與家屬溝通的重點</b>：Kuramatsu（JAMA 2019）顯示手術<b>提高存活</b>（≥15 cm³ 時 74.5% vs 45.1%）但<b>未改善 3 個月功能預後</b>（mRS 0–3：30.9% vs 35.5%）。這是<b>換命、不換功能</b>的手術。</li>' +
+ '<li>同一份分析中 <b>≤12 cm³ 者手術的功能預後反而更差</b>——小 hematoma 不要為了「保險」而開。</li>',
+ note:'AHA/ASA 2022（Class 1，LOE B-NR）；體積門檻源自 Kuramatsu JAMA 2019。' },
+ cobs: { cls:'rec-nonop', title:'Cerebellar hemorrhage 小量且穩定 — 內科治療但需高頻率重評',
+ detail:'<li><b>volume &lt;15 mL、意識清楚、fourth ventricle 未被壓扁、無 hydrocephalus</b>：以內科治療與密切監測為主。</li>' +
+ '<li><b>Posterior fossa 的代償空間極小、惡化極快</b>：應收治於可立即開刀的單位，<b>神經學一有變化即刻重照 CT 並聯絡 neurosurgery</b>。惡化的表現常是意識下降、新出現的 cranial nerve 徵象或 ataxia 加重。</li>' +
+ '<li><b>出現 hydrocephalus 或 brainstem compression 時，適應症即翻轉為 Class 1 手術</b>——本步驟的結論隨時可能改變。</li>' +
+ '<li>血壓與 antithrombotic 的處置同步驟 1–2；<b>不可用 corticosteroids</b>（Class 3）。</li>',
+ note:'AHA/ASA 2022；Kirollos 的 fourth ventricle 分級可作為監測時的判讀依據。' },
+ shydro: { cls:'rec-urgent', title:'Brainstem hemorrhage 併 hydrocephalus — 內科治療＋EVD',
+ detail:'<li><b>合併 hydrocephalus 且意識下降者應行 ventricular drainage</b>（<b>Class 1</b>，此建議適用於所有 ICH／IVH 併 hydrocephalus 者）。</li>' +
+ '<li><b>hematoma 本身不開刀</b>：AHA/ASA 2022 的建議表<b>沒有</b>針對原發性 brainstem hemorrhage 的手術建議；stereotactic aspiration 與 endoscopic evacuation 屬<b>研究性質</b>，尚無已發表的陽性隨機試驗。</li>' +
+ '<li><b>其餘處置</b>：氣道保護與呼吸器支援、血壓依步驟 2、glucose 與 temperature 控制、確認之 electrographic seizure 才給 antiseizure medication（Class 1；<b>預防性給藥屬 Class 3：No Benefit</b>）。</li>' +
+ '<li><b>不要提早下預後定論</b>：brainstem hemorrhage 的死亡率高，但早期悲觀預測會造成 self-fulfilling prophecy。</li>',
+ note:'AHA/ASA 2022（hydrocephalus 之 ventricular drainage 為 Class 1）；brainstem 手術無指引建議。' },
+ snone: { cls:'rec-blue', title:'Brainstem hemorrhage — 內科與支持性治療',
+ detail:'<li><b>現行標準是內科治療</b>：血壓控制、氣道保護、避免 hypoxia 與 hypotension、temperature 與 blood glucose 控制。<b>手術不是標準處置。</b></li>' +
+ '<li><b>預後最一致的兩個因子是初始意識程度與 hematoma 大小</b>；文獻中的 pontine hemorrhage 評分系統未取得原始論文，本頁不轉載分數與切點。</li>' +
+ '<li><b>持續監測 hydrocephalus</b>：fourth ventricle 受阻時可能需要 EVD（Class 1）。</li>' +
+ '<li><b>不可用 corticosteroids</b>（Class 3：No Benefit）；預防性 antiseizure medication 亦無效益（Class 3）。</li>',
+ note:'AHA/ASA 2022 無 brainstem 手術建議；STIPE 試驗結果截至本次查核未發表。' },
+ ihydro: { cls:'rec-urgent', title:'IVH 併 hydrocephalus — external ventricular drain（Class 1）',
+ detail:'<li><b>ICH 或 IVH 合併 hydrocephalus、且造成意識下降者：應行 ventricular drainage 以降低死亡率</b>（<b>Class 1</b>）——這是本分頁手術相關建議中<b>唯二的強建議</b>（另一為 cerebellar hemorrhage 的清除）。</li>' +
+ '<li><b>EVD 加 intraventricular thrombolysis</b>：<b>可降低死亡率</b>（2a）；對<b>功能預後</b>的效益<b>不確定</b>（2b）。</li>' +
+ '<li><b>Neuroendoscopy 加 EVD</b>（±thrombolysis）：對功能預後與<b>減少永久性 shunt dependence</b> 的效益<b>不確定</b>（2b）。</li>' +
+ '<li><b>臨床上有 hydrocephalus 者應轉送至具 neurosurgery 能力的院所</b>（Class 1）。ICP monitoring 與治療可考慮（2b）；<b>bolus hyperosmolar therapy 可暫時降 ICP</b>（2b）；<b>不可用 corticosteroids</b>（Class 3）。</li>',
+ note:'AHA/ASA 2022：ventricular drainage 為 Class 1；EVD＋thrombolysis 降低死亡率為 2a。' },
+ inone: { cls:'rec-blue', title:'IVH 無 hydrocephalus — 內科治療與密切監測',
+ detail:'<li><b>目前無引流適應症</b>：持續監測意識程度與 ventricular size，<b>一旦出現 hydrocephalus 併意識下降即為 Class 1 引流適應症</b>。</li>' +
+ '<li><b>IVH 本身是預後不良因子</b>（ICH Score 的計分項之一），但<b>不可據此提早限制維生治療</b>。</li>' +
+ '<li><b>找病因</b>：primary IVH 與年輕、無高血壓病史者，應積極檢查 vascular malformation、aneurysm 與 moyamoya——影像上考慮 CT angiography 或 DSA。</li>' +
+ '<li>血壓、antithrombotic 逆轉與支持照護同步驟 1–2；<b>不可用 corticosteroids</b>（Class 3）。</li>',
+ note:'AHA/ASA 2022。適應症會隨病程改變，需重複評估。' }
 };
 
 function render(){
-  const showBp = !!st.drug;
-  flowShow('ic_c2', showBp); flowShow('ic_s2', showBp);
-  if(!showBp) flowClearSel('ic_s2');
+ const showBp = !!st.drug;
+ flowShow('ic_c2', showBp); flowShow('ic_s2', showBp);
+ if(!showBp) flowClearSel('ic_s2');
 
-  /* ---- 建議 A：止血與血壓 ---- */
-  let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
-  if(st.drug && st.bp){
-    const urgent = st.drug!=='none' || st.bp==='large' || st.bp==='high';
-    cls = urgent ? 'rec-urgent' : 'rec-elective';
-    title = '急性期處置 — ' + (st.drug==='none' ? '血壓控制與監測' : '逆轉 antithrombotic 作用並控制血壓');
-    detail = icReverse() + icBP() +
-      '<li><b>不可用 corticosteroids</b> 治療 intracranial hypertension（<b>Class 3：No Benefit</b>）。</li>' +
-      '<li><b>複查影像</b>：hematoma expansion 多發生在最初數小時，臨床惡化時應立即重照。</li>' +
-      '<li><b>支持照護</b>：監測 blood glucose 並治療 hypoglycemia（Class 1）、中重度 hyperglycemia 治療為合理（2a）；發燒以藥物處理可能合理（2b）；<b>預防性 antiseizure medication 無效益</b>（Class 3），確認之 electrographic seizure 才治療（Class 1）；不能行走者 <b>24–48 小時起</b>給 UFH／LMWH 預防 VTE 可能合理（2b）。</li>' +
-      '<li><b>不要太早下預後定論</b>：發病早期的悲觀預測會導致早期限制維生治療，而早期限制治療本身又使預後變差。ICH Score 用於<b>風險分層與溝通</b>，<b>不可作為撤除維生治療的依據</b>。</li>';
-    note='AHA/ASA 2022（Stroke 2022;53:e282-e361）。逆轉 anticoagulation 為 Class 1；SBP &gt;150 降至 &lt;130 為 Class 3（Harm）。';
-  }
-  flowRec('ic_rec', cls, title, detail, note);
+ /* ---- 建議 A：止血與血壓 ---- */
+ let cls='rec-idle', title='請由上方步驟開始選擇', detail='', note='';
+ if(st.drug && st.bp){
+ const urgent = st.drug!=='none' || st.bp==='large' || st.bp==='high';
+ cls = urgent ? 'rec-urgent' : 'rec-elective';
+ title = '急性期處置 — ' + (st.drug==='none' ? '血壓控制與監測' : '逆轉 antithrombotic 作用並控制血壓');
+ detail = icReverse() + icBP() +
+ '<li><b>不可用 corticosteroids</b> 治療 intracranial hypertension（<b>Class 3：No Benefit</b>）。</li>' +
+ '<li><b>複查影像</b>：hematoma expansion 多發生在最初數小時，臨床惡化時應立即重照。</li>' +
+ '<li><b>支持照護</b>：監測 blood glucose 並治療 hypoglycemia（Class 1）、中重度 hyperglycemia 治療為合理（2a）；發燒以藥物處理可能合理（2b）；<b>預防性 antiseizure medication 無效益</b>（Class 3），確認之 electrographic seizure 才治療（Class 1）；不能行走者 <b>24–48 小時起</b>給 UFH／LMWH 預防 VTE 可能合理（2b）。</li>' +
+ '<li><b>不要太早下預後定論</b>：發病早期的悲觀預測會導致早期限制維生治療，而早期限制治療本身又使預後變差。ICH Score 用於<b>風險分層與溝通</b>，<b>不可作為撤除維生治療的依據</b>。</li>';
+ note='AHA/ASA 2022（Stroke 2022;53:e282-e361）。逆轉 anticoagulation 為 Class 1；SBP &gt;150 降至 &lt;130 為 Class 3（Harm）。';
+ }
+ flowRec('ic_rec', cls, title, detail, note);
 
-  /* ---- 步驟 3：位置 ---- */
-  const show3 = !!st.drug && !!st.bp;
-  flowShow('ic_c3', show3); flowShow('ic_s3', show3);
-  if(!show3) flowClearSel('ic_s3');
+ /* ---- 步驟 3：位置 ---- */
+ const show3 = !!st.drug && !!st.bp;
+ flowShow('ic_c3', show3); flowShow('ic_s3', show3);
+ if(!show3) flowClearSel('ic_s3');
 
-  /* ---- 步驟 4：依位置切換 ---- */
-  const map = { supra:'ic_s4a', cbll:'ic_s4b', stem:'ic_s4c', ivh:'ic_s4d' };
-  ['ic_s4a','ic_s4b','ic_s4c','ic_s4d'].forEach(function(id){
-    const on = show3 && map[st.loc]===id;
-    flowShow(id, on);
-    /* st.sub 被上游清空時，選取狀態也要清——否則按鈕還亮著、建議卻回到未完成 */
-    if(!on || !st.sub) flowClearSel(id);
-  });
-  flowShow('ic_c4', show3 && !!st.loc);
+ /* ---- 步驟 4：依位置切換 ---- */
+ const map = { supra:'ic_s4a', cbll:'ic_s4b', stem:'ic_s4c', ivh:'ic_s4d' };
+ ['ic_s4a','ic_s4b','ic_s4c','ic_s4d'].forEach(function(id){
+ const on = show3 && map[st.loc]===id;
+ flowShow(id, on);
+ /* st.sub 被上游清空時，選取狀態也要清——否則按鈕還亮著、建議卻回到未完成 */
+ if(!on || !st.sub) flowClearSel(id);
+ });
+ flowShow('ic_c4', show3 && !!st.loc);
 
-  /* ---- 建議 B：手術與引流 ---- */
-  const r = st.sub ? IC_SUB[st.sub] : null;
-  if(r) flowRec('ic_rec2', r.cls, r.title, r.detail, r.note);
-  else flowRec('ic_rec2', 'rec-idle', '請完成步驟 4', '', '');
-  flowShow('ic_rec2', show3 && !!st.loc);
+ /* ---- 建議 B：手術與引流 ---- */
+ const r = st.sub ? IC_SUB[st.sub] : null;
+ if(r) flowRec('ic_rec2', r.cls, r.title, r.detail, r.note);
+ else flowRec('ic_rec2', 'rec-idle', '請完成步驟 4', '', '');
+ flowShow('ic_rec2', show3 && !!st.loc);
 }
 
 function icReset(){
-  Object.keys(st).forEach(k=>st[k]=null);
-  document.querySelectorAll('#tab-spon .flow-opt').forEach(b=>b.classList.remove('selected'));
-  render();
+ Object.keys(st).forEach(k=>st[k]=null);
+ document.querySelectorAll('#tab-spon .flow-opt').forEach(b=>b.classList.remove('selected'));
+ render();
 }
 
-/* ================= 分頁二：Traumatic Brain Injury ================= */
-const tb = { sev:null, lesion:null, crit:null };
 
-function tbPick(key, val, btn){
-  flowSelect(btn);
-  if(key==='sev'){ tb.sev=val; tb.lesion=null; tb.crit=null; }
-  else if(key==='lesion'){ tb.lesion=val; tb.crit=null; }
-  else if(key==='crit'){ tb.crit=val; }
-  tbRender();
+/* ================= 分頁二：Aneurysmal SAH ================= */
+const sa = { dx:null, grade:null, aneu:null, phase:null };
+
+function saPick(key, val, btn){
+ flowSelect(btn);
+ if(key==='dx'){ sa.dx=val; sa.grade=null; sa.aneu=null; sa.phase=null; }
+ else if(key==='grade'){ sa.grade=val; sa.aneu=null; sa.phase=null; }
+ else if(key==='aneu'){ sa.aneu=val; sa.phase=null; }
+ else if(key==='phase'){ sa.phase=val; }
+ saRender();
 }
 
-const TB_STEP3 = { edh:'tb_s3_edh', asdh:'tb_s3_asdh', csdh:'tb_s3_csdh', contusion:'tb_s3_contusion',
-  tsah:'tb_s3_tsah', tivh:'tb_s3_tivh', pf:'tb_s3_pf', depressed:'tb_s3_depressed', none:'tb_s3_none' };
-
-/* 建議 A：以「病灶＋判準」為鍵 */
-const TB_REC = {
-  'edh|coma': { cls:'rec-urgent', title:'EDH 併 anisocoria — 盡快手術清除',
-    detail:'<li><b>GCS &lt;9 併 anisocoria 的 acute EDH，應盡快（as soon as possible）手術清除</b>——這是 2006 年手術指引中語氣最強的一條。</li>' +
-      '<li><b>時間就是結果</b>：EDH 的典型病程是 lucid interval 後急速惡化（&ldquo;talk and deteriorate&rdquo;），<b>及時清除者預後可以很好</b>，延遲則否。</li>' +
-      '<li><b>術式</b>：指引未指定單一術式，但 <b>craniotomy 清除得比 burr hole 完整</b>。</li>' +
-      '<li>轉送與麻醉期間維持 <b>SBP ≥100／110 mmHg、SpO₂ ≥94%</b>，避免 secondary insult；<b>不可用 corticosteroids</b>（Level I）。</li>',
-    note:'Bullock 2006 手術指引（EDH 章）。證據多為 Class III，但此條為一致共識。' },
-  'edh|big': { cls:'rec-urgent', title:'EDH 體積 >30 cm³ — 手術清除（不論 GCS）',
-    detail:'<li><b>體積 &gt;30 cm³ 的 acute EDH 應手術清除，與 GCS 無關</b>——意識清楚不是不開刀的理由。</li>' +
-      '<li>此門檻的臨床意義在於 <b>EDH 會長大</b>：middle meningeal artery 出血可在數小時內迅速擴大。</li>' +
-      '<li><b>術式</b>：craniotomy 清除較完整。術後續依 ICP 與神經學狀態決定監測強度。</li>',
-    note:'Bullock 2006 手術指引（EDH 章）。' },
-  'edh|small': { cls:'rec-nonop', title:'小型 EDH — 可保守，但必須 serial CT',
-    detail:'<li><b>四個條件必須同時成立</b>：&lt;30 cm³、厚度 &lt;15 mm、midline shift &lt;5 mm、GCS &gt;8 且無 focal deficit。<b>缺一即不適用。</b></li>' +
-      '<li><b>保守不等於觀察就好</b>：須在<b>具備 neurosurgery 的院所</b>密切監測並<b>安排 serial CT</b>。</li>' +
-      '<li><b>惡化即翻轉</b>：出現意識下降、pupillary change、新的 focal deficit，或追蹤 CT 顯示hematoma變大，即改為手術適應症。</li>' +
-      '<li>使用 anticoagulant／antiplatelet 者<b>再出血風險高</b>，應先逆轉並縮短追蹤間隔。</li>',
-    note:'Bullock 2006 手術指引（EDH 章）。保守的前提是可隨時開刀。' },
-  'asdh|thick': { cls:'rec-urgent', title:'Acute SDH 厚度 >10 mm 或 shift >5 mm — 手術清除',
-    detail:'<li><b>厚度 &gt;10 mm 或 midline shift &gt;5 mm 者應手術清除，不論 GCS</b>。</li>' +
-      '<li><b>盡快手術</b>：acute SDH 的預後與清除時間高度相關。</li>' +
-      '<li><b>Craniotomy 還是 decompressive craniectomy？</b><b>RESCUE-ASDH（NEJM 2023）顯示兩者 12 個月 GOSE 沒有差異</b>（common OR 0.85）；craniotomy 組再手術較多（14.6% vs 6.9%）、craniectomy 組傷口併發症較多（12.2% vs 3.9%）。<b>不支持常規一律做 craniectomy</b>——能安全放回bone flap就放回。</li>' +
-      '<li><b>comatose 者術後放 ICP monitor</b>；依 SIBICC 階梯處理 ICP，<b>不可用 corticosteroids</b>（Level I）。</li>',
-    note:'Bullock 2006 手術指引（SDH 章）＋RESCUE-ASDH（NEJM 2023）。' },
-  'asdh|deteriorate': { cls:'rec-urgent', title:'薄 SDH 但有惡化徵象 — 仍應手術',
-    detail:'<li><b>GCS &lt;9 且 SDH &lt;10 mm、shift &lt;5 mm 者，只要出現下列任一項即應清除</b>：<b>自受傷至到院 GCS 下降 ≥2 分</b>、<b>anisocoria 或 fixed dilated pupils</b>、<b>ICP &gt;20 mmHg</b>。</li>' +
-      '<li><b>這條門檻的用意是「不要被薄hematoma騙了」</b>：厚度不足但腦已經腫或已在惡化時，決策依據是<b>神經學變化與 ICP</b>，不是毫米數。</li>' +
-      '<li>手術同時處理 ICP：術後保留 ICP monitor，依 SIBICC 階梯升階。</li>',
-    note:'Bullock 2006 手術指引（SDH 章）。' },
-  'asdh|coma': { cls:'rec-blue', title:'Comatose 併薄 SDH — 一律放 ICP monitor',
-    detail:'<li><b>所有 GCS &lt;9 的 acute SDH 病人都應放置 ICP monitor</b>（不論是否手術）。</li>' +
-      '<li><b>ICP &gt;22 mmHg 即治療</b>（Level IIB），並<b>合併 CT 與臨床變化判讀</b>（Level III）；<b>CPP 目標 60–70 mmHg</b>（Level IIB）。</li>' +
-      '<li><b>ICP &gt;20 mmHg 是手術的觸發條件之一</b>——監測到即回頭重新評估是否清除hematoma。</li>' +
-      '<li>依 SIBICC Tier 0→1→2→3 逐階處理；<b>不做預防性hyperventilation至 PaCO₂ ≤25</b>（Level IIB），<b>不用 corticosteroids</b>（Level I）。</li>',
-    note:'Bullock 2006（SDH 章）＋BTF 第 4 版。' },
-  'asdh|awake': { cls:'rec-nonop', title:'清醒且薄 SDH — 保守觀察與 serial CT',
-    detail:'<li>GCS ≥9、厚度 &lt;10 mm、shift &lt;5 mm 且無惡化徵象者，<b>可保守處理</b>。</li>' +
-      '<li><b>安排 serial CT</b>：acute SDH 可能擴大或轉為 chronic；高齡與抗栓治療者風險更高。</li>' +
-      '<li><b>逆轉 anticoagulant</b>（比照顱內出血逆轉方案），並重新評估重啟時機。</li>' +
-      '<li>惡化（GCS 下降 ≥2 分、pupillary change、ICP &gt;20）即改為手術適應症。</li>',
-    note:'Bullock 2006 手術指引（SDH 章）。' },
-  'csdh|sympt': { cls:'rec-elective', title:'有症狀的 cSDH — burr-hole 引流＋放置 subdural drain',
-    detail:'<li><b>術後放置 subdural drain 是少數的高品質陽性證據</b>：復發 <b>9.3% vs 24%</b>、6 個月死亡率 <b>8.6% vs 18.1%</b>（Santarius, Lancet 2009）。</li>' +
-      '<li><b>不要常規給 dexamethasone</b>：Dex-CSDH（NEJM 2020）顯示雖減少再手術（1.7% vs 7.1%），但<b>6 個月良好預後反而較差（83.9% vs 90.3%）</b>、不良事件較多。</li>' +
-      '<li><b>Middle meningeal artery embolization 可作為輔助</b>：EMBOLISE 90 天復發／再手術 4.1% vs 11.3%（RR 0.36）、STEM 180 天複合終點 16% vs 36%（OR 0.36）皆為陽性；<b>MAGIC-MT 主要終點未達顯著</b>（6.7% vs 9.9%，p=0.10）。三試驗方向一致為<b>減少復發</b>，不是改善功能，屬<b>選擇性病人的輔助</b>。</li>' +
-      '<li><b>抗栓藥物</b>：術前逆轉、術後重啟時機須個別權衡；<b>tranexamic acid 於 cSDH 尚無第三期試驗結果</b>，不列建議。</li>',
-    note:'Santarius 2009；Dex-CSDH 2020；EMBOLISE／MAGIC-MT／STEM 2024–2025。' },
-  'csdh|asympt': { cls:'rec-nonop', title:'無症狀的 cSDH — 觀察，不要給 dexamethasone',
-    detail:'<li><b>無症狀或症狀輕微、無顯著 mass effect 者可觀察</b>並安排追蹤影像。</li>' +
-      '<li><b>不要用 dexamethasone 取代手術</b>：Dex-CSDH 顯示 6 個月良好預後較差、不良事件較多。</li>' +
-      '<li><b>檢視抗栓藥物適應症</b>：能停就停、能改就改，是降低復發與惡化最實際的介入。</li>' +
-      '<li>出現 focal deficit、意識改變或影像進展即轉為手術適應症。</li>',
-    note:'Dex-CSDH（NEJM 2020）。' },
-  'contusion|deteriorate': { cls:'rec-urgent', title:'Contusion 併惡化或難治性 ICP — 手術清除',
-    detail:'<li><b>可歸因於病灶的進行性神經學惡化</b>、<b>藥物無法控制的 intracranial hypertension</b>、或 CT 上的<b>顯著 mass effect</b>，任一即為手術適應症。</li>' +
-      '<li><b>Contusion 會長大</b>：初次 CT 常低估最終體積，<b>惡化時先重照 CT 再決定</b>。</li>' +
-      '<li>另可考慮 subtemporal decompression、temporal lobectomy 或 hemispheric decompressive craniectomy 處理難治性 ICP 併 impending herniation（2006 指引列為 option）。</li>' +
-      '<li><b>Bifrontal decompressive craniectomy 於 48 小時內</b>可作為 diffuse、藥物難治性水腫的 option；但 DECRA 顯示<b>早期</b>對 diffuse injury 的 DC <b>功能預後更差</b>，適應症應嚴格。</li>',
-    note:'Bullock 2006（parenchymal lesion 章）＋DECRA。' },
-  'contusion|frontotemporal': { cls:'rec-urgent', title:'GCS 6–8 的 frontal／temporal contusion — 手術清除',
-    detail:'<li><b>GCS 6–8、frontal 或 temporal contusion &gt;20 cm³，併 midline shift ≥5 mm 和／或 cisternal compression</b> → 手術清除。</li>' +
-      '<li><b>Temporal 位置特別危險</b>：靠近 tentorial incisura，<b>ICP 未必上升就可能 uncal herniation</b>——這也是「ICP 正常不代表安全」的典型情境（Level III：ICP 應與 CT、臨床合併判讀）。</li>' +
-      '<li>術後保留 ICP monitor，依 SIBICC 階梯處理。</li>',
-    note:'Bullock 2006（parenchymal lesion 章）。' },
-  'contusion|huge': { cls:'rec-urgent', title:'病灶 >50 cm³ — 手術清除',
-    detail:'<li><b>任何 &gt;50 cm³ 的 traumatic parenchymal lesion 應手術清除</b>，不受 GCS 與其他條件限制。</li>' +
-      '<li>體積估算可用 <b>ABC/2</b>（見 ICH Score 工具的體積計算）。</li>' +
-      '<li>術後保留 ICP monitor；維持 <b>CPP 60–70 mmHg</b>、避免以大量輸液與 vasopressor 硬拉到 &gt;70（Level III）。</li>',
-    note:'Bullock 2006（parenchymal lesion 章）。' },
-  'contusion|stable': { cls:'rec-nonop', title:'Contusion 穩定 — 密集監測＋serial imaging',
-    detail:'<li>神經學穩定、ICP 可控、CT 無顯著 mass effect 者<b>可保守處理</b>，但須<b>密集監測並安排 serial CT</b>。</li>' +
-      '<li><b>Contusion 的特性就是會長大</b>：受傷後 6–24 小時是擴大高峰，<b>影像穩定之前不要降低監測強度</b>。</li>' +
-      '<li>逆轉 anticoagulant／antiplatelet；<b>VTE 預防</b>可用 LMWH／低劑量 UFH 併機械性預防，但須權衡出血擴大（Level III）。</li>' +
-      '<li>惡化、ICP 難控或體積達門檻即轉為手術適應症。</li>',
-    note:'Bullock 2006（parenchymal lesion 章）＋BTF 第 4 版。' },
-  'tsah|isolated': { cls:'rec-nonop', title:'Isolated tSAH — 無手術適應症，也不需 nimodipine',
-    detail:'<li><b>Isolated tSAH 沒有任何手術門檻</b>：2006 手術指引未收錄此病灶，處置以觀察與 serial imaging 為主。</li>' +
-      '<li><b>不要給 nimodipine</b>：其適應症是 aneurysmal SAH。2003 年 Cochrane 的 tSAH 亞群曾顯示效益，但 <b>Vergouwen（Lancet Neurol 2006）納入未發表資料後效益消失</b>（poor outcome 39% vs 40%）。</li>' +
-      '<li><b>但 tSAH 不是「沒事」</b>：它是 <b>Rotterdam CT score 的計分項</b>與獨立不良預後因子；若血分布在 basal cistern 而非 convexity，<b>要考慮是先破裂的 aneurysm 造成跌倒</b>，此時應做 CT angiography。</li>' +
-      '<li>GCS 15、無抗栓、無其他病灶者，多數不需 ICU 與常規重照 CT——此為觀察性文獻的實務共識，非分級建議。</li>',
-    note:'Bullock 2006 未收錄 tSAH；nimodipine 證據見 Vergouwen 2006。' },
-  'tsah|combined': { cls:'rec-blue', title:'tSAH 合併其他病灶或抗栓中 — 依合併病灶處置＋追蹤影像',
-    detail:'<li><b>手術決策由合併的病灶決定</b>（EDH／SDH／contusion／posterior fossa），請回步驟 2 依主要病灶重走一次。</li>' +
-      '<li><b>使用 anticoagulant／antiplatelet 者</b>：逆轉並<b>安排追蹤 CT</b>；NICE 建議此族群即使初次影像正常仍須嚴密觀察。</li>' +
-      '<li><b>GCS &lt;15 者收住院觀察</b>，並在神經學變化時立即重照。</li>' +
-      '<li><b>tSAH 是預後分數的計分項</b>（Rotterdam CT score），合併 IVH 時更差；<b>但不可據此提早限制治療</b>。</li>',
-    note:'Rotterdam CT score（Maas 2005）；NICE NG232（二手摘要）。' },
-  'tivh|hydro': { cls:'rec-urgent', title:'tIVH 併 hydrocephalus — 放置 EVD',
-    detail:'<li><b>Obstructive hydrocephalus 併意識下降者應放 EVD</b>；同時可作為 ICP 監測與 CSF 引流的途徑。</li>' +
-      '<li><b>EVD 引流方式</b>：於 midbrain 歸零並<b>連續引流</b>比間歇引流更能降低 ICP 負荷（BTF Level III）。</li>' +
-      '<li><b>Traumatic IVH 沒有專屬的手術門檻</b>：2006 手術指引未收錄；intraventricular thrombolysis 的證據來自<b>自發性</b> IVH，不可直接外推到 trauma。</li>' +
-      '<li>依 SIBICC 階梯處理 ICP；<b>不可用 corticosteroids</b>（Level I）。</li>',
-    note:'BTF 第 4 版（CSF drainage，Level III）；trauma 無專屬 IVH 手術指引。' },
-  'tivh|nohydro': { cls:'rec-blue', title:'tIVH 無 hydrocephalus — 監測與追蹤影像',
-    detail:'<li><b>目前無引流適應症</b>：持續監測意識與ventricular size，<b>出現 hydrocephalus 併意識下降即放 EVD</b>。</li>' +
-      '<li><b>tIVH 是不良預後指標</b>（Rotterdam CT score 的計分項），常合併 deep 或 corpus callosum 的剪力損傷——<b>意識與影像不成比例時要想到 diffuse axonal injury</b>，MRI 才敏感。</li>' +
-      '<li>GCS ≤8 者依 BTF 建議放置 ICP monitor 並依 SIBICC 階梯處理。</li>',
-    note:'Rotterdam CT score（Maas 2005）＋BTF 第 4 版。' },
-  'pf|masseffect': { cls:'rec-urgent', title:'Posterior fossa 有 mass effect — 盡快 suboccipital craniectomy',
-    detail:'<li><b>fourth ventricle變形／移位／消失、basal cisterns 受壓或消失、obstructive hydrocephalus，或可歸因之神經功能障礙／惡化 → 盡快手術</b>。</li>' +
-      '<li><b>術式為 suboccipital craniectomy</b>。</li>' +
-      '<li><b>Posterior fossa 惡化快且難以預測</b>：2006 指引特別註明「等等看」在此處的代價遠高於 supratentorial——<b>神經學惡化時往往已來不及</b>。</li>' +
-      '<li>若合併 hydrocephalus，<b>清除病灶仍優先於單獨放 EVD</b>（單獨引流 supratentorial ventricle 有 upward herniation 之虞）。</li>',
-    note:'Bullock 2006（posterior fossa 章，Class III 證據）。' },
-  'pf|nomass': { cls:'rec-nonop', title:'Posterior fossa 無 mass effect — 觀察，但門檻要放低',
-    detail:'<li>無 mass effect 且無神經功能障礙者<b>可觀察＋serial imaging</b>。</li>' +
-      '<li><b>收治於可立即開刀的單位</b>：posterior fossa 的代償空間極小，<b>神經學一有變化即刻重照 CT 並聯絡 neurosurgery</b>。</li>' +
-      '<li>惡化的早期表現常是意識下降、新出現的 cranial nerve 徵象、ataxia 或嘔吐加劇。</li>',
-    note:'Bullock 2006（posterior fossa 章）。' },
-  'depressed|open': { cls:'rec-urgent', title:'開放性凹陷骨折且深度大於顱骨厚度 — 手術',
-    detail:'<li><b>Open（compound）depressed fracture 且凹陷深度大於顱骨厚度者應手術</b>，主要目的是<b>預防感染</b>。</li>' +
-      '<li><b>早期手術可降低感染率</b>；術式為<b>抬升復位＋清創</b>，無感染時<b>一期放回bone flap是可接受的選項</b>。</li>' +
-      '<li><b>所有開放性骨折都應給抗生素</b>。</li>' +
-      '<li>合併 dural tear、CSF leak 或顱內hematoma時，一併處理。</li>',
-    note:'Bullock 2006（depressed skull fracture 章）。' },
-  'depressed|openmild': { cls:'rec-nonop', title:'開放但條件齊備 — 可保守處理',
-    detail:'<li><b>下列條件須全部成立</b>：無 dural penetration、無顯著顱內hematoma、凹陷 &lt;1 cm、未涉 frontal sinus、無明顯外觀變形、無傷口感染、無明顯污染、無 pneumocephalus。</li>' +
-      '<li><b>仍應給抗生素並密切追蹤傷口</b>；出現感染徵象即改為手術。</li>',
-    note:'Bullock 2006（depressed skull fracture 章）。' },
-  'depressed|closed': { cls:'rec-nonop', title:'閉鎖性凹陷骨折 — 保守為可接受選項',
-    detail:'<li><b>Closed depressed fracture 的非手術處置是可接受的選項</b>。</li>' +
-      '<li>手術與否取決於<b>是否壓迫功能區、是否有外觀變形、是否合併需處理的顱內病灶</b>。</li>' +
-      '<li>Seizure 風險：depressed fracture 屬 early post-traumatic seizure 的風險因子，可依 BTF 建議給 <b>phenytoin 一週</b>（Level IIA）。</li>',
-    note:'Bullock 2006（depressed skull fracture 章）＋BTF 第 4 版。' },
-  'none|refractory': { cls:'rec-urgent', title:'難治性 ICP — Tier 3，含 secondary decompressive craniectomy',
-    detail:'<li><b>先確認每一階都做到位</b>：升階前重新理學檢查、<b>考慮重照 CT</b>、重新評估有無可手術病灶、排除顱外原因、確認監測器與生理參數。</li>' +
-      '<li><b>Tier 3 的選項</b>：barbiturate coma（<b>滴定至 ICP 控制而非 burst suppression</b>）、<b>secondary decompressive craniectomy</b>、輕度 hypothermia 35–36°C、hyperventilation 至 PaCO₂ 30–32 mmHg。</li>' +
-      '<li><b>DC 的時機決定結論</b>：<b>晚期</b>難治性 ICP 行 secondary DC <b>建議之</b>（Level IIA，RESCUEicp：死亡率 26.9% vs 48.9%，但 vegetative state 8.5% vs 2.1%）；<b>早期</b>對 diffuse injury 行 DC <b>不建議</b>（Level IIA，DECRA：功能預後更差）。</li>' +
-      '<li><b>要做就做大的</b>：frontotemporoparietal DC <b>不小於 12×15 cm 或直徑 15 cm</b>（Level IIA）。</li>' +
-      '<li><b>溝通重點</b>：DC 是<b>換命的手術</b>——死亡率下降的代價是 vegetative state 與重度失能上升，good recovery 比率並未改善。</li>',
-    note:'BTF 2020 DC 更新＋SIBICC Tier 3；DECRA 與 RESCUEicp 必須分開讀。' },
-  'none|monitored': { cls:'rec-blue', title:'ICP 可控 — 依 SIBICC Tier 0–2 維持',
-    detail:'<li><b>Tier 0</b>：床頭 30–45°、非以 ICP 為目的之 analgesia／sedation、核心 temperature &gt;38°C 即處理、CPP ≥60 mmHg、Hb &gt;7 g/dL、避免 hyponatremia、SpO₂ ≥94%。</li>' +
-      '<li><b>Tier 1</b>：CPP 60–70 mmHg、加深 sedation、<b>bolus</b> hyperosmolar therapy、PaCO₂ 35–38 mmHg、有 EVD 時引流 CSF。</li>' +
-      '<li><b>Tier 2</b>：PaCO₂ 32–35 mmHg、neuromuscular blockade（先試單劑）、MAP challenge 測 autoregulation。</li>' +
-      '<li><b>ICP &gt;22 mmHg 才治療</b>（Level IIB），並<b>合併 CT 與臨床判讀</b>（Level III）；<b>不做預防性hyperventilation至 PaCO₂ ≤25</b>（Level IIB）；<b>不用 corticosteroids</b>（Level I）；<b>不做早期預防性hypothermia</b>（Level IIB）。</li>' +
-      '<li><b>Critical neuroworsening</b>（motor 下降 ≥1 分、pupillary change、新 focal deficit、Cushing\'s triad）→ 立即 hyperventilation＋hyperosmolar bolus 並緊急影像，<b>此時 PaCO₂ 30 mmHg 的下限不適用</b>。</li>',
-    note:'SIBICC（Intensive Care Med 2019/2020）＋BTF 第 4 版。' },
-  'none|ctnormal': { cls:'rec-nonop', title:'CT 無 mass lesion — 依嚴重度觀察，注意 diffuse axonal injury',
-    detail:'<li><b>意識程度與 CT 不成比例時要想到 diffuse axonal injury</b>：CT 常僅見 petechial hemorrhage 或完全正常，<b>MRI（SWI／DWI）才敏感</b>。</li>' +
-      '<li><b>CT 正常但 24 小時後 GCS 仍未回到 15 者，考慮再次影像檢查</b>（NICE NG232）。</li>' +
-      '<li><b>使用 anticoagulant／antiplatelet 者風險不同</b>：即使初次 CT 正常仍應延長觀察並考慮追蹤影像。</li>' +
-      '<li>GCS ≤8 者仍應依 BTF 建議<b>放置 ICP monitor</b> 並依 SIBICC 處理——<b>CT 沒有病灶不等於 ICP 不會高</b>。</li>',
-    note:'NICE NG232（二手摘要）＋BTF 第 4 版。' }
+/* ---- 建議 A：診斷路徑與防再出血 ---- */
+const SA_DX = {
+ ct: { cls:'rec-urgent', title:'SAH 已確診 — 找動脈瘤並同時防再出血',
+ detail:'<li><b>找動脈瘤</b>：先做 CTA；<b>CTA 陰性或不確定而仍高度懷疑者，做 DSA</b>（Class 1）。已確診動脈瘤者，<b>DSA 有助於決定治療策略</b>（2a）。</li>' +
+ '<li><b>血壓</b>：<b>頻繁監測、以短效藥物避免嚴重低血壓、嚴重高血壓與血壓變異</b>（Class 1）。<b>指引明文表示證據不足以建議特定血壓目標</b>——內文（未分級）僅提到嚴重高血壓（&gt;180–200 mmHg）時緩降、並嚴格避免 MAP &lt;65 mmHg。<b>看到某個數字被說成「指引目標」時要留意，2023 版並沒有給。</b></li>' +
+ '<li><b>使用 anticoagulant 者立即逆轉</b>（Class 1）。</li>' +
+ '<li><b>不要給 tranexamic acid</b>：routine antifibrinolytic <b>無助於改善功能預後</b>（<b>Class 3：No Benefit，LOE A</b>）。ULTRA：6 個月 mRS 0–3 為 <b>60% vs 64%</b>（aOR 0.86），術前再出血 10% vs 14%——<b>減少了再出血卻換不到預後</b>。</li>' +
+ '<li><b>盡早處理動脈瘤</b>：越早越好、<b>最好 24 小時內</b>（Class 1）。</li>' +
+ '<li><b>Enteral nimodipine 早期開始</b>（<b>Class 1，LOE A</b>），60 mg 每日 6 次。</li>' +
+ '<li><b>轉院</b>：低量院所應及時轉送至具 neurointensive care 與雙專科術者的高量中心（Class 1），並收治於專責 neurocritical care unit（Class 1）。</li>',
+ note:'AHA/ASA 2023（Stroke 2023;54:e314-e370）。血壓沒有分級的數字目標；抗纖維溶解為 Class 3。' },
+ early: { cls:'rec-blue', title:'發作 <6 小時、無缺損、CT 陰性 — 可不做 lumbar puncture',
+ detail:'<li><b>以高品質機器所做、由 board-certified neuroradiologist 判讀的 noncontrast CT，即可合理地排除 aSAH</b>（2a）——<b>此條件下不必常規做 lumbar puncture</b>。</li>' +
+ '<li><b>但三個前提都要成立</b>：<b>&lt;6 小時</b>、<b>無新的神經學缺損</b>、<b>高品質掃描與專科判讀</b>。任一不成立就回到「CT＋LP」的 Class 1 路徑。</li>' +
+ '<li><b>證據</b>：6 小時內 CT 的<b>敏感度 98.7%、特異度 99.9%</b>（統合分析 n=8907）。</li>' +
+ '<li><b>Ottawa SAH Rule</b> 可用於篩出高風險者（2b）——它是<b>用來決定要不要進一步檢查，不是用來確診</b>。</li>' +
+ '<li>若臨床仍高度懷疑（如 sentinel headache、家族史、頸部僵硬），<b>不要因為分數低就停手</b>；必要時仍做 LP 或 CTA。</li>',
+ note:'AHA/ASA 2023 診斷章。此條為 2a，前提缺一不可。' },
+ late: { cls:'rec-urgent', title:'>6 小時或有缺損、CT 陰性 — 應做 lumbar puncture',
+ detail:'<li><b>應做 noncontrast CT，CT 陰性者應接著做 lumbar puncture</b>（<b>Class 1</b>）——這個族群<b>不能只靠 CT 排除</b>。</li>' +
+ '<li><b>LP 看 xanthochromia</b>：敏感度 100%、特異度 95.2%（合併 n=1235）。</li>' +
+ '<li><b>LP 陽性或不確定</b>：接著做 CTA；<b>CTA 陰性但仍高度懷疑 → DSA</b>（Class 1）。</li>' +
+ '<li><b>有新的神經學缺損本身就是把病人推進這條路徑的理由</b>，即使發作在 6 小時內。</li>',
+ note:'AHA/ASA 2023：此為 Class 1，與 <6 小時的 2a 條文互為對照。' },
+ negative: { cls:'rec-blue', title:'Angiogram-negative SAH — 指引沒有給答案，依出血分布決定',
+ detail:'<li><b>先講清楚證據狀態</b>：AHA/ASA 2023 把 <b>perimesencephalic 分布的 SAH 該用 CTA 還是 DSA</b> 明確列在 <b>Knowledge Gaps</b>，<b>沒有任何分級建議</b>。以下是最佳可得證據，不是指引條文。</li>' +
+ '<li><b>典型 perimesencephalic 型</b>（血侷限在 midbrain 周圍、無延伸至 sylvian 或 interhemispheric fissure）：單中心回溯資料中 <b>repeat DSA 的收穫為 0/53</b>，且該組<b>預後全部 mRS 0</b>。實務上<b>可不必 repeat DSA</b>。</li>' +
+ '<li><b>Non-perimesencephalic 型</b>：<b>2/45（4.4%）在 repeat DSA 才找到病灶</b>，預後亦略差。<b>應安排 repeat DSA（該研究於約 6 週後），在此之前不要下「非動脈瘤性」的結論。</b></li>' +
+ '<li><b>在動脈瘤被排除之前，照護方式不變</b>：血壓監測與短效藥物控制、避免血壓變異、nimodipine 與 DCI 監測、有 hydrocephalus 就 CSF diversion。</li>' +
+ '<li><b>不要漏掉其他病因</b>：cervical spine 病灶、cerebral venous thrombosis、vasculitis、RCVS、dural AVF——DSA 陰性時應重新檢視影像範圍。</li>',
+ note:'指引明列為 knowledge gap；repeat DSA 的數字出自單一回溯研究（n=98），非指引建議。' }
 };
 
-/* 建議 B：以嚴重度決定的內科／ICU 與影像決策 */
-const TB_MED = {
-  mild: { cls:'rec-blue', title:'Mild TBI（GCS 13–15）— 影像決策、觀察與衛教',
-    detail:'<li><b>Canadian CT Head Rule — high-risk（對需神經外科介入敏感度 100%）</b>：受傷 2 小時後仍未回到 GCS 15、疑似 open or depressed skull fracture、任何 basal skull fracture 徵象、<b>嘔吐 ≥2 次</b>、<b>年齡 &gt;65 歲</b>。</li>' +
-      '<li><b>Medium-risk（對臨床重要腦損傷敏感度 98.4%）</b>：受傷前 retrograde amnesia &gt;30 分鐘、dangerous mechanism。</li>' +
-      '<li><b>NICE NG232 的時限</b>：高風險項目 <b>1 小時內</b>照 CT；loss of consciousness 或 amnesia 併年齡 ≥65／凝血異常／dangerous mechanism／retrograde amnesia &gt;30 分鐘者 <b>8 小時內</b>照。</li>' +
-      '<li><b>使用 anticoagulant 或 antiplatelet（aspirin 單方除外）而無其他適應症者：受傷後 8 小時內照 CT</b>；若已超過 8 小時才就醫則 1 小時內照。</li>' +
-      '<li><b>Tranexamic acid</b>：CRASH-3 的效益正是集中在 <b>mild-to-moderate TBI</b>（RR 0.78）；<b>CT 有顱內出血者即符合 CRASH-3 的納入條件</b>，<b>受傷 3 小時內</b>給 1 g/10 min＋1 g/8 h。<b>NICE 的「2 小時內 2 g」建議只適用 GCS ≤12</b>，不涵蓋 GCS 13–15。</li>' +
-      '<li><b>&ldquo;Talk and deteriorate&rdquo;</b>：EDH 可在 lucid interval 後急速惡化——<b>離院衛教必須明確交代回診時機</b>（意識改變、反覆嘔吐、劇烈頭痛、抽搐、新的神經學症狀）。</li>',
-    note:'Canadian CT Head Rule（Lancet 2001）＋NICE NG232（二手摘要）＋CRASH-3。' },
-  mod: { cls:'rec-blue', title:'Moderate TBI（GCS 9–12）— 住院、追蹤影像、避免 secondary insult',
-    detail:'<li><b>一律照 CT 並住院觀察</b>；<b>神經學惡化即刻重照</b>——moderate TBI 進展為 severe 的比率不低。</li>' +
-      '<li><b>維持生理目標</b>：SBP <b>≥100 mmHg（50–69 歲）／≥110 mmHg（15–49 或 &gt;70 歲）</b>（Level III）、SpO₂ ≥94%。</li>' +
-      '<li><b>Tranexamic acid</b>：CRASH-3 為<b>受傷 3 小時內</b> 1 g/10 min＋1 g/8 h，效益在 mild-to-moderate 族群（RR 0.78）；<b>NICE NG232 則建議 GCS ≤12 者可考慮受傷 2 小時內 2 g 單次</b>（off-label）。<b>兩套劑量不同，擇一並寫明</b>。</li>' +
-      '<li><b>Seizure</b>：high-risk 者（contusion、depressed fracture、SDH／EDH、穿刺傷）可給 <b>phenytoin 一週</b>降低 early post-traumatic seizure（Level IIA）；<b>不用於預防 late seizure</b>（Level IIA）。</li>' +
-      '<li><b>不可用 corticosteroids</b>（Level I）。</li>',
-    note:'BTF 第 4 版＋CRASH-3。' },
-  sev: { cls:'rec-urgent', title:'Severe TBI（GCS ≤8）— ICP 導向治療的完整套組',
-    detail:'<li><b>ICP monitoring</b>：以 ICP 資訊管理可降低院內與兩週死亡率（Level IIB）；<b>ICP &gt;22 mmHg 即治療</b>（Level IIB），<b>合併 CT 與臨床判讀</b>（Level III）。</li>' +
-      '<li><b>CPP 60–70 mmHg</b>（Level IIB）；<b>不可用大量輸液與 vasopressor 硬拉到 &gt;70</b>（Level III，增加呼吸衰竭）。</li>' +
-      '<li><b>Hyperosmolar therapy</b>：第 4 版<b>找不到足夠證據給任何藥物正式等級</b>；SIBICC 列為 Tier 1 的 <b>bolus</b> 給藥（mannitol 0.25–1.0 g/kg 或 hypertonic saline），<b>不可連續輸注或定時給藥</b>。</li>' +
-      '<li><b>Hyperventilation</b>：<b>不做長時間預防性 PaCO₂ ≤25</b>（Level IIB）；只在 herniation 當下暫時使用。</li>' +
-      '<li><b>Seizure</b>：<b>phenytoin 一週</b>可降低 early post-traumatic seizure（Level IIA，14.2%→3.6%）；<b>不預防 late seizure</b>（Level IIA）。Levetiracetam 與 phenytoin 孰優證據不足。</li>' +
-      '<li><b>Nutrition</b>：<b>第 5 天至遲第 7 天</b>達基礎熱量補充可降低死亡率（Level IIA）。<b>VTE 預防</b>：LMWH／低劑量 UFH 併機械性預防，但有出血擴大風險（Level III）。</li>' +
-      '<li><b>不做的事</b>：corticosteroids（<b>Level I 禁忌</b>）、早期預防性 hypothermia（Level IIB；POLAR 與 Eurotherm3235 亦為陰性）、預防性 barbiturate burst suppression（Level IIB）。</li>' +
-      '<li><b>Barbiturates</b> 保留給最大內外科治療仍難治的 ICP（Level IIB），使用前確保血行動力學穩定。</li>' +
-      '<li><b>Tranexamic acid 在此族群沒有證據支持</b>：CRASH-3 的 severe TBI 亞群 RR 0.99（交互作用 p=0.030）。若要給，須在<b>受傷 3 小時內</b>，且不應排擠逆轉抗栓與清除hematoma等已證實的處置。</li>',
-    note:'BTF 第 4 版（Neurosurgery 2017）＋2020 DC 更新＋SIBICC 階梯。' }
+/* ---- 建議 B：動脈瘤處理 ---- */
+function saGradeLine(){
+ if(sa.grade==='poor') return '<li><b>Poor grade（WFNS 4–5）不等於不處理</b>：<b>在與家屬討論預後後處理動脈瘤是合理的</b>（2a）。<b>唯一的不處理建議極窄</b>——僅限「因不可逆神經損傷而判定無法救治，<b>且矯正可逆因素後仍無改善</b>」者（Class 3：No Benefit）。<b>必須先矯正的可逆因素</b>：seizure、hydrocephalus、hyponatremia、status epilepticus、hypothermia。</li>' +
+ '<li><b>時間軸有意義</b>：到院時沒有 brainstem reflex，意義遠不如 12 或 24 小時後仍然沒有。<b>早期 DNR 對 aSAH 預後的影響從未被研究</b>。</li>';
+ if(sa.grade==='mid') return '<li><b>WFNS 3</b>：處置原則同 good grade，但<b>意識波動者應加強監測</b>——cEEG 適用於病情起伏、意識下降、ruptured MCA aneurysm、high-grade SAH、ICH、hydrocephalus 或 cortical infarction 者（2a）。</li>';
+ return '<li><b>Good grade</b>：此族群正是 anterior circulation「primary coiling 優於 clipping」<b>Class 1／LOE A</b> 建議的適用對象。</li>';
+}
+
+const SA_ANEU = {
+ post: { cls:'rec-urgent', title:'Posterior circulation 且可 coiling — coiling 優於 clipping（Class 1）',
+ detail:'<li><b>後循環動脈瘤若適合 coiling，coiling 優於 clipping</b>（<b>Class 1</b>，LOE B-R）。BRAT 的後循環亞群同樣偏向 coiling。</li>' +
+ '<li><b>時機</b>：越早越好、<b>最好 24 小時內</b>（Class 1）；<b>只要可行就完全阻絕</b>（Class 1）。無法完全阻絕時，<b>先封住破裂點、日後再補</b>是合理的（2a）。</li>' +
+ '<li><b>由雙專科共同評估</b>（Class 1）：具備血管內與手術專業者一起判斷風險效益。</li>' +
+ '<li><b>不要為了「順便」放 stent</b>：saccular 且本來就可 coiling／clipping 者<b>不應使用 stent 或 flow diverter</b>（<b>Class 3：Harm</b>）。</li>',
+ note:'AHA/ASA 2023 手術章。後循環是少數術式有明確優劣的族群。' },
+ ant: { cls:'rec-elective', title:'Anterior circulation、兩者皆適合 — primary coiling 優先（Class 1，LOE A）',
+ detail:'<li><b>Good grade、anterior circulation、兩種術式皆適合者：primary coiling 優於 clipping，以改善 1 年功能預後</b>（<b>Class 1，LOE A</b>）。</li>' +
+ '<li><b>但長期而言兩者都合理</b>（2a）：ISAT 1 年 mRS 3–6 為 <b>23.7%（coil）vs 30.6%（clip）</b>；18 年追蹤中 10 年「存活且獨立」OR <b>1.34</b> 仍偏向 coiling，代價是<b>晚期再出血與再治療較多</b>。BRAT 10 年：<b>阻絕率 93% vs 22%、再治療 0.8% vs 20%</b>——<b>clipping 的耐久性明顯較好</b>。</li>' +
+ '<li><b>年齡會改變答案</b>：<b>&lt;40 歲可考慮以 clipping 為優先</b>（2b，耐久性）；<b>&gt;70 歲則兩者優劣尚未確立</b>（2b）。</li>' +
+ '<li><b>Stent／flow diverter 不可濫用</b>：本來就可 coiling／clipping 的 saccular 動脈瘤<b>不應使用</b>（<b>Class 3：Harm</b>）。</li>',
+ note:'AHA/ASA 2023；ISAT 與 BRAT 的差異在「早期預後」與「耐久性」兩個不同終點。' },
+ hematoma: { cls:'rec-urgent', title:'大 intraparenchymal hematoma 併意識下降 — 緊急清除血塊',
+ detail:'<li><b>評估可救治且因大 intraparenchymal hematoma 而意識下降者，應緊急清除血塊以降低死亡率</b>（<b>Class 1</b>，LOE B-R）。</li>' +
+ '<li><b>此情境常同時決定了術式</b>：需要開顱清除血塊時，<b>同次手術 clipping 是自然選擇</b>；仍應由雙專科共同評估（Class 1）。</li>' +
+ '<li><b>術中</b>：可用 mannitol／hypertonic saline 處理 ICP 與腦水腫（2a）；動脈瘤未處理前<b>頻繁監測與控制血壓</b>（2a）；術中破裂失控時可用 <b>adenosine</b>（2b）。<b>Good grade 者不做常規 induced mild hypothermia</b>（Class 3：No Benefit）。</li>' +
+ '<li><b>同時處理 hydrocephalus</b>：急性症狀性 hydrocephalus 應緊急 CSF diversion（Class 1）。</li>',
+ note:'AHA/ASA 2023 手術與麻醉章。' },
+ complex: { cls:'rec-elective', title:'Wide-neck／fusiform／blister — stent 或 flow diverter 是合理的',
+ detail:'<li><b>Wide-neck 且不適合 clipping 或 primary coiling</b>：<b>stent-assisted coiling 或 flow diverter 是合理的</b>（2a，LOE C-LD）。</li>' +
+ '<li><b>Fusiform／blister 動脈瘤</b>：<b>使用 flow diverter 是合理的</b>（2a，LOE C-LD，降低死亡率）。</li>' +
+ '<li><b>界線要守住</b>：<b>本來就可 primary coiling 或 clipping 的 saccular 動脈瘤，不應使用 stent 或 flow diverter</b>（<b>Class 3：Harm</b>，併發症風險較高）。<b>「複雜型態」是適應症，不是偏好。</b></li>' +
+ '<li><b>抗血小板的兩難</b>：放 stent／flow diverter 需抗血小板，這與未處理的 SAH、可能要放 EVD 或做開顱手術相衝突——<b>指引未提供此情境的分級建議</b>，須由團隊個別權衡。</li>',
+ note:'AHA/ASA 2023 手術章。2a 與 Class 3 的分界就在「本來能不能用常規術式處理」。' },
+ done: { cls:'rec-blue', title:'動脈瘤已處理 — 轉入 DCI 監測與併發症管理',
+ detail:'<li><b>影像確認</b>：修補後<b>應做周術期影像</b>找殘餘或復發（Class 1），並<b>應安排追蹤影像</b>（Class 1）。<b>最佳時機與追蹤長度為 knowledge gap。</b></li>' +
+ '<li><b>Nimodipine 繼續、不要輕易停</b>（Class 1，LOE A）：中斷與 DCI 增加相關；<b>出現低血壓時優先以標準方式處理低血壓，而不是先停藥</b>，僅在造成顯著血壓變異時才可能需要暫停。</li>' +
+ '<li><b>維持 euvolemia</b>（2a）。<b>不要灌成 hypervolemia</b>（<b>Class 3：Harm</b>），<b>也不要做預防性 hemodynamic augmentation</b>（<b>Class 3：Harm</b>）。</li>' +
+ '<li><b>VTE 預防</b>：<b>動脈瘤已處理後</b>應給藥物或機械性預防（Class 1）。</li>' +
+ '<li><b>Nursing 與早期活動</b>：頻繁神經學評估（Class 1）、<b>經口進食前先做 dysphagia screening</b>（Class 1）、動脈瘤處理後依實證早期活動流程（2a）。</li>' +
+ '<li><b>不要用 statin、不要用 IV magnesium</b>（兩者皆 <b>Class 3：No Benefit，LOE A</b>）。</li>',
+ note:'AHA/ASA 2023。此階段的主軸是「維持 nimodipine＋euvolemia＋密集神經學評估」。' }
 };
 
-function tbRender(){
-  const show2 = !!tb.sev;
-  flowShow('tb_c2', show2); flowShow('tb_s2', show2);
-  if(!show2) flowClearSel('tb_s2');
+/* ---- 建議 C：病程與 DCI ---- */
+const SA_PHASE = {
+ d13: { cls:'rec-blue', title:'Day 1–3 — 再出血與 hydrocephalus 的窗口，DCI 還沒開始',
+ detail:'<li><b>這幾天的主要敵人是再出血與 hydrocephalus，不是 vasospasm</b>：DCI 典型出現在 <b>day 4–14</b>。</li>' +
+ '<li><b>動脈瘤若尚未處理</b>：血壓以短效藥物平順控制、避免變異（Class 1），<b>盡快完成處理（最好 24 小時內）</b>（Class 1），<b>不要給 tranexamic acid</b>（Class 3：No Benefit，LOE A）。</li>' +
+ '<li><b>建立 DCI 監測的基線</b>：頻繁神經學評估（Class 1）；TCD（2a）與 CTA／CTP（2a）可用；high-grade 者 cEEG 可用（2a）。</li>' +
+ '<li><b>Seizure</b>：無高風險特徵者<b>不要預防性給藥</b>（Class 3：No Benefit）；要給也<b>不要用 phenytoin</b>（<b>Class 3：Harm</b>）。以 seizure 為表現者給藥 ≤7 天（2a）。</li>' +
+ '<li><b>鈉與水分</b>：維持 euvolemia（2a）；hyponatremia 用 mineralocorticoid（fludrocortisone）是合理的（2a）；<b>不限水、不灌水</b>。</li>',
+ note:'AHA/ASA 2023。DCI 的時間窗是 day 4–14，此階段重點在防再出血與建立基線。' },
+ dci: { cls:'rec-urgent', title:'疑似 DCI — 先排除其他原因，再談升壓與血管內救援',
+ detail:'<li><b>先確認符合定義</b>：新的 focal deficit（hemiparesis、aphasia、apraxia、hemianopia、neglect）<b>或 GCS 下降 ≥2 分</b>，<b>持續 ≥1 小時</b>，<b>非緊接於動脈瘤處理之後</b>，<b>且已排除其他原因</b>。</li>' +
+ '<li><b>必須排除的其他原因</b>：re-bleeding、hydrocephalus、seizure（含 nonconvulsive，可用 cEEG）、hyponatremia、hypoxia、感染／發燒、藥物與代謝因素。<b>「排除其他原因」是定義的一部分，不是可選步驟。</b></li>' +
+ '<li><b>確認 nimodipine 有在給、且沒有漏劑</b>（Class 1，LOE A）；<b>維持 euvolemia</b>（2a）。</li>' +
+ '<li><b>提高 systolic blood pressure「可能合理」</b>（2b）——<b>但要知道唯一的 RCT 是陰性的</b>：HIMALAIA 收到 41 人即因無效中止，不良預後 RR 1.0，<b>嚴重不良事件 RR 2.1</b>。<b>指引不給數字目標</b>，應個別化並密切監測心肺負荷。</li>' +
+ '<li><b>影像確認與血管內救援</b>：CTA／CTP（2a）確認；<b>嚴重 vasospasm 者 intra-arterial vasodilator（2b）或 cerebral angioplasty（2b）可能合理</b>——<b>兩者皆無隨機試驗</b>。</li>' +
+ '<li><b>不要做的事</b>：statin（Class 3，LOE A）、IV magnesium（Class 3，LOE A）、prophylactic hemodynamic augmentation（<b>Class 3：Harm</b>）。<b>Milrinone 只有 n=88 的無對照 case series；clazosentan 的全球 REACT 試驗為陰性、AHA 2023 全文未提及。</b></li>',
+ note:'DCI 定義為 2010 多科共識；升壓與血管內治療皆為 2b，且缺乏隨機證據支持。' },
+ spasm: { cls:'rec-elective', title:'有 vasospasm 但沒有新缺損 — 不等於要救援',
+ detail:'<li><b>Angiographic／TCD 上的 vasospasm 不等於 DCI</b>：DCI 的定義以<b>臨床惡化或新 infarct</b> 為準。<b>沒有臨床變化時，救援治療的適應症並不成立。</b></li>' +
+ '<li><b>TCD 的正確用法是排除而非確診</b>：預測 DCI 敏感度 90%、<b>NPV 92%</b>，但特異度僅 71%。<b>反過來說，catheter angiography 預測 DCI 的表現更差</b>（敏感度 57%、特異度 68%）。</li>' +
+ '<li><b>該做的是提高監測強度</b>：更頻繁的神經學評估（Class 1）、必要時 CTP（2a）、high-grade 者 cEEG（2a，特異度高但敏感度僅 11%，用於確認而非篩檢）。</li>' +
+ '<li><b>維持 nimodipine 與 euvolemia</b>（Class 1／2a）；<b>不要因為「怕痙攣」就預防性升壓或灌水</b>（<b>Class 3：Harm</b>）。</li>' +
+ '<li><b>影像分級重但臨床分級輕的病人要特別盯</b>：神經學狀態良好不代表 vasospasm 風險低。</li>',
+ note:'AHA/ASA 2023＋2010 DCI 共識定義。監測升級，而非治療升級。' },
+ hydro: { cls:'rec-urgent', title:'急性症狀性 hydrocephalus — 緊急 CSF diversion（Class 1）',
+ detail:'<li><b>急性症狀性 hydrocephalus 應緊急做 CSF diversion（EVD 和／或 lumbar drainage）</b>以改善神經學預後（<b>Class 1</b>）。</li>' +
+ '<li><b>放了 EVD 就要照 bundle 走</b>：置放、管理、教育、監測的 <b>EVD bundle</b> 可降低感染與併發症（Class 1）。</li>' +
+ '<li><b>慢性症狀性 hydrocephalus：應做永久性 CSF diversion</b>（VP shunt，Class 1）。<b>Routine fenestration of the lamina terminalis 無助於降低 shunt 依賴</b>（Class 3：No Benefit）。</li>' +
+ '<li><b>EVD 的脫離方式（連續 vs 間歇引流、每日引流量）指引明列為 knowledge gap</b>，沒有建議可循。</li>' +
+ '<li><b>指引外的一個陽性試驗</b>：EARLYDRAIN（n=287）在 72 小時內加做 <b>lumbar drain</b>，6 個月不良預後 <b>32.6% vs 44.8%</b>（RR 0.73），secondary infarction 亦較少——開放標籤、樣本中等，<b>可作為與神經外科討論的材料，不是既定標準</b>。</li>',
+ note:'AHA/ASA 2023 hydrocephalus 章；EARLYDRAIN 為指引外的獨立陽性試驗。' },
+ late: { cls:'rec-nonop', title:'>14 天且穩定 — 收尾與長期追蹤',
+ detail:'<li><b>DCI 的高風險窗口已過</b>（典型 day 4–14）；nimodipine 的原始試驗療程為 <b>21 天</b>（此療程來自試驗，非指引條文）。</li>' +
+ '<li><b>Seizure 用藥要停</b>：無癲癇病史而以 seizure 為表現者，<b>給藥超過 7 天並無效果</b>（<b>Class 3：No Benefit</b>）。</li>' +
+ '<li><b>評估慢性 hydrocephalus</b>：出現步態、認知或尿失禁變化時，<b>慢性症狀性 hydrocephalus 應做永久性 CSF diversion</b>（Class 1）。</li>' +
+ '<li><b>追蹤影像</b>：應安排追蹤以偵測復發、再生長、其他動脈瘤變化或 de novo 動脈瘤（Class 1）；<b>最佳時機與期程為 knowledge gap</b>。</li>' +
+ '<li><b>指引沒有分級建議、但臨床上仍要做的事</b>：戒菸與血壓控制（指引僅列為可修正風險因子）、<b>親屬篩檢</b>（背景敘述提到 ≥2 位一級親屬者盛行率 12%、每 5–7 年篩檢具成本效益，<b>非分級建議</b>）。<b>另外：fluoxetine 用於無憂鬱者以改善功能為 Class 3：No Benefit，LOE A。</b></li>',
+ note:'AHA/ASA 2023 長期照護章。無分級建議之處本頁如實留白。' }
+};
 
-  const show3 = show2 && !!tb.lesion;
-  flowShow('tb_c3', show3);
-  Object.keys(TB_STEP3).forEach(function(k){
-    const on = show3 && tb.lesion===k;
-    flowShow(TB_STEP3[k], on);
-    if(!on || !tb.crit) flowClearSel(TB_STEP3[k]);
-  });
+function saRender(){
+ /* 建議 A */
+ const a = sa.dx ? SA_DX[sa.dx] : null;
+ if(a) flowRec('sa_rec', a.cls, a.title, a.detail, a.note);
+ else flowRec('sa_rec', 'rec-idle', '請由上方步驟開始選擇', '', '');
 
-  /* 建議 A：手術決策 */
-  const key = tb.lesion + '|' + tb.crit;
-  const r = (tb.lesion && tb.crit && TB_REC[key]) ? TB_REC[key] : null;
-  if(r) flowRec('tb_rec', r.cls, r.title, r.detail, r.note);
-  else flowRec('tb_rec', 'rec-idle', '請由上方步驟開始選擇', '', '');
+ /* 步驟 2：只有已確診 SAH 或 angiogram-negative 才需要分級 */
+ const show2 = sa.dx==='ct' || sa.dx==='negative';
+ flowShow('sa_c2', show2); flowShow('sa_s2', show2);
+ if(!show2) flowClearSel('sa_s2');
 
-  /* 建議 B：依嚴重度的內科／ICU 處置 */
-  const m = (r && tb.sev) ? TB_MED[tb.sev] : null;
-  if(m) flowRec('tb_rec2', m.cls, m.title, m.detail, m.note);
-  else flowRec('tb_rec2', 'rec-idle', '請完成步驟 3', '', '');
-  flowShow('tb_rec2', !!m);
+ /* 步驟 3：僅在已確診且有動脈瘤可談時出現 */
+ const show3 = show2 && !!sa.grade && sa.dx==='ct';
+ flowShow('sa_c3', show3); flowShow('sa_s3', show3);
+ /* 上游改選時 sa.aneu 已被清空，選取狀態也要跟著清——否則按鈕還亮著、建議卻回到未完成 */
+ if(!show3 || !sa.aneu) flowClearSel('sa_s3');
+
+ /* 建議 B */
+ let b = sa.aneu ? SA_ANEU[sa.aneu] : null;
+ if(b && show3){
+ flowRec('sa_rec2', b.cls, b.title, saGradeLine() + b.detail, b.note);
+ } else {
+ flowRec('sa_rec2', 'rec-idle', '請完成步驟 3', '', '');
+ }
+ flowShow('sa_rec2', show3);
+
+ /* 步驟 4：動脈瘤已處理或仍在住院療程中都需要 */
+ const show4 = show3 && !!sa.aneu;
+ flowShow('sa_c4', show4); flowShow('sa_s4', show4);
+ if(!show4 || !sa.phase) flowClearSel('sa_s4');
+
+ const c = sa.phase ? SA_PHASE[sa.phase] : null;
+ if(c && show4) flowRec('sa_rec3', c.cls, c.title, c.detail, c.note);
+ else flowRec('sa_rec3', 'rec-idle', '請完成步驟 4', '', '');
+ flowShow('sa_rec3', show4);
 }
 
-function tbReset(){
-  Object.keys(tb).forEach(k=>tb[k]=null);
-  document.querySelectorAll('#tab-tbi .flow-opt').forEach(b=>b.classList.remove('selected'));
-  tbRender();
+function saReset(){
+ Object.keys(sa).forEach(k=>sa[k]=null);
+ document.querySelectorAll('#tab-sah .flow-opt').forEach(b=>b.classList.remove('selected'));
+ saRender();
 }
 
-/* ---- 初始化：支援 #tab=tbi 直接開啟 ---- */
+/* ---- 初始化：支援 #tab=sah 直接開啟 ---- */
 icReset();
-tbReset();
+saReset();
 (function(){
-  var m = /#tab=(spon|tbi)/.exec(location.hash);
-  if(m) icTab(m[1]);
+ var m = /#tab=(spon|sah)/.exec(location.hash);
+ if(m) icTab(m[1]);
 })();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('../sw.js').catch(function (e) {
-        console.warn('SW 註冊失敗:', e);
-      });
-    });
-  }
+ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+ window.addEventListener('load', function () {
+ navigator.serviceWorker.register('../sw.js').catch(function (e) {
+ console.warn('SW 註冊失敗:', e);
+ });
+ });
+ }
 </script>
 </body>
 </html>
