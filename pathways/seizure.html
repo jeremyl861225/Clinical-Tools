@@ -15,6 +15,33 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<style>
+  /* ── 劑量輸出：一藥一列 ────────────────────────────────────────
+     原本三個階段各是一整段連續文字，藥名、劑量、速率、注意事項全擠在
+     同一行，掃不出「這一格要給幾 mg」。改成固定的三層結構：
+     藥名（左欄）→ 劑量（大字，唯一要抄進醫囑的數字）→ 細節（小字）。
+     .result 面板恆為深色，故色值與該面板同組、不走亮/暗色 token。 */
+  .sz-lead{font-family:var(--mono); font-size:11.5px; letter-spacing:.03em; color:#9fb3ae; margin:2px 0 6px;}
+  .sz-row{display:grid; grid-template-columns:138px 1fr; gap:2px 14px; padding:9px 0; border-top:1px solid #24363a;}
+  .sz-row:first-of-type{border-top:none; padding-top:2px;}
+  .sz-nm{font-family:var(--mono); font-size:12.5px; font-weight:700; color:#8ec8bd; padding-top:3px; overflow-wrap:anywhere;}
+  .sz-nm .sz-route{display:block; font-weight:400; font-size:10.5px; letter-spacing:.05em; color:#7d938f; margin-top:2px;}
+  .sz-dose{font-family:var(--mono); font-size:17px; font-weight:700; color:#fff; line-height:1.35;}
+  .sz-dose .sz-arrow{color:#7d938f; font-weight:400; margin:0 3px;}
+  .sz-dose .sz-unit{font-size:12.5px; font-weight:400; color:#c9d6d2; margin-left:1px;}
+  .sz-cap{display:inline-block; margin-left:6px; padding:1px 6px; border:1px solid #4a6a63; border-radius:2px;
+          font-family:var(--mono); font-size:10px; font-weight:400; letter-spacing:.04em; color:#8ec8bd; vertical-align:2px;}
+  .sz-det{font-size:11.5px; line-height:1.65; color:#b6c4c0; margin-top:4px;}
+  .sz-det b{color:#e4e0d4;}
+  .sz-warn{color:#e89a8c;}
+  .sz-sub{font-size:11.5px; line-height:1.65; color:#93a5a1; margin-top:10px; padding-left:9px; border-left:2px solid #2a3a3a;}
+  @media(max-width:520px){
+    .sz-row{grid-template-columns:1fr; gap:0; padding:10px 0;}
+    .sz-nm{padding-top:0;}
+    .sz-nm .sz-route{display:inline; margin-left:6px;}
+    .sz-dose{font-size:16px; margin-top:2px;}
+  }
+</style>
 </head>
 <body>
 <div class="sheet">
@@ -265,7 +292,7 @@
     <div class="section-title">病人資料 Patient</div>
     <div class="field-row">
       <label>體重</label>
-      <input type="number" id="se_wt" step="1" placeholder="—">
+      <input type="number" id="se_wt" step="1" value="60" placeholder="—">
       <span class="unit">kg</span>
     </div>
     <div class="field-row">
@@ -280,11 +307,11 @@
 
   <div class="result">
     <div class="metric-label">Initial therapy（5–20 分）— benzodiazepine，一次給足</div>
-    <div style="font-size:15px; margin-top:4px;" id="se_first">請輸入體重。</div>
-    <div class="metric-label" style="margin-top:14px;">Second therapy（20–40 分）— 三選一，無優劣</div>
-    <div style="font-size:15px; margin-top:4px;" id="se_second">請輸入體重。</div>
-    <div class="metric-label" style="margin-top:14px;">Third therapy（&gt;40 分，RSE）— 麻醉劑量連續輸注，全程 cEEG</div>
-    <div style="font-size:15px; margin-top:4px;" id="se_third">請輸入體重。</div>
+    <div id="se_first" style="margin-top:6px;"></div>
+    <div class="metric-label" style="margin-top:20px;">Second therapy（20–40 分）— 三選一，無優劣</div>
+    <div id="se_second" style="margin-top:6px;"></div>
+    <div class="metric-label" style="margin-top:20px;">Third therapy（&gt;40 分，RSE）— 麻醉劑量連續輸注，全程 cEEG</div>
+    <div id="se_third" style="margin-top:6px;"></div>
     <div class="risk-note">一線 benzodiazepine 依 AES 2016 演算法（IM midazolam 為 RAMPART 固定劑量）；二線三藥依 ESETT 2019；<b>給藥速率與麻醉輸注劑量依 NCS 2012 指引之 Table 7／Table 8</b>。<b>benzodiazepine 一次給足單一完整劑量</b>，lorazepam 與 diazepam 可各重複一次。二線選擇依禁忌調整（valproate 避開肝病、粒線體疾病與孕婦；fosphenytoin 留意低血壓與心律不整；levetiracetam 依腎功能調整）。</div>
   </div>
 
@@ -545,14 +572,23 @@ function szNum(id){ const el=document.getElementById(id); if(!el) return null; c
 function szCap(perKg, wt, max){ const d=perKg*wt; return d>max ? {v:max, capped:true} : {v:Math.round(d), capped:false}; }
 function szRange(lo, hi, wt, dp){ const f=Math.pow(10, dp||0); return Math.round(lo*wt*f)/f + '–' + Math.round(hi*wt*f)/f; }
 
+/* 一藥一列：藥名（＋途徑）｜劑量（大字）｜細節（小字） */
+function szRow(name, route, dose, det){
+  return '<div class="sz-row"><div class="sz-nm">'+name+(route?'<span class="sz-route">'+route+'</span>':'')+'</div>' +
+         '<div><div class="sz-dose">'+dose+'</div>'+(det?'<div class="sz-det">'+det+'</div>':'')+'</div></div>';
+}
+const SZ_CAP='<span class="sz-cap">已達上限</span>';
+const SZ_ARROW=' <span class="sz-arrow">→</span> ';
+function szUnit(u){ return ' <span class="sz-unit">'+u+'</span>'; }
+
 function szCalc(){
   const wt=szNum('se_wt');
   const iv=document.getElementById('se_iv').value;
 
   if(wt===null || wt<=0){
-    document.getElementById('se_first').innerHTML='請輸入體重。';
-    document.getElementById('se_second').innerHTML='請輸入體重。';
-    document.getElementById('se_third').innerHTML='請輸入體重。';
+    ['se_first','se_second','se_third'].forEach(function(id){
+      document.getElementById(id).innerHTML='<div class="sz-lead">請輸入體重。</div>';
+    });
     return;
   }
 
@@ -560,16 +596,21 @@ function szCalc(){
   const lz=szCap(0.1, wt, 4);
   const dz=szCap(0.2, wt, 10);          /* 0.15–0.2；取上界 0.2 計最大單次 */
   const imMid = wt>40 ? 10 : (wt>=13 ? 5 : Math.round(0.2*wt));
+  const imNote = wt>40 ? '&gt;40 kg 固定 10 mg' : (wt>=13 ? '13–40 kg 固定 5 mg' : '&lt;13 kg 依 0.2 mg/kg');
   let first;
   if(iv==='no'){
-    first = '<b>首選 IM midazolam '+imMid+' mg</b>'+(wt>40?'（&gt;40 kg 固定 10 mg）':(wt>=13?'（13–40 kg 固定 5 mg）':'（&lt;13 kg 依 0.2 mg/kg）'))+' 肌肉注射，單次——無 IV 時 RAMPART 證實優於 IV lorazepam。<br>' +
-      '替代（AES 2016 列為院前或無上述選項時合理，Level B）：<b>buccal midazolam、intranasal midazolam、rectal diazepam</b>；<span class="note">NCS 2012 表列之每公斤劑量在兒童欄——鼻內 0.2 mg/kg（≈'+Math.round(0.2*wt)+' mg）、口頰 0.5 mg/kg（≈'+Math.round(0.5*wt)+' mg）。</span><br>建立 IV 後若仍發作，改走下方 IV 選項。';
+    first = '<div class="sz-lead">無靜脈路徑 — 首選肌肉注射，單次</div>' +
+      szRow('midazolam','IM 肌肉注射', imMid+szUnit('mg'),
+            imNote+' · <b>RAMPART 證實無 IV access 時優於 IV lorazepam</b>（到院時已無發作 73.4% vs 63.4%，Level A）') +
+      '<div class="sz-sub"><b>替代途徑</b>（AES 2016 列為院前或無上述選項時合理，Level B）：buccal midazolam、intranasal midazolam、rectal diazepam。NCS 2012 表列之每公斤劑量在兒童欄——鼻內 0.2 mg/kg（≈'+Math.round(0.2*wt)+' mg）、口頰 0.5 mg/kg（≈'+Math.round(0.5*wt)+' mg）。<br><b>建立 IV 後若仍發作，改走 IV 選項。</b></div>';
   } else {
-    first = '擇一，<b>一次給足</b>：<br>' +
-      '・<b>IV lorazepam '+lz.v+' mg</b>（0.1 mg/kg，上限 4 mg'+(lz.capped?'，已達上限':'')+'，速率 ≤2 mg/min），5–10 分鐘可重複一次。<br>' +
-      '・<b>IV diazepam '+dz.v+' mg</b>（0.15–0.2 mg/kg，上限 10 mg'+(dz.capped?'，已達上限':'')+'，速率 ≤5 mg/min），5 分鐘可重複一次。<br>' +
-      '・無 IV 時 <b>IM midazolam '+imMid+' mg</b>。<br>' +
-      '<span class="note">替代：IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg，起效較慢）。</span>';
+    first = '<div class="sz-lead">擇一 — 一次給足單一完整劑量，不要拆成多次小劑量</div>' +
+      szRow('lorazepam','IV 靜脈注射', lz.v+szUnit('mg')+(lz.capped?SZ_CAP:''),
+            '0.1 mg/kg（上限 4 mg）· 速率 ≤2 mg/min · <b>5–10 分鐘可重複一次</b>') +
+      szRow('diazepam','IV 靜脈注射', dz.v+szUnit('mg')+(dz.capped?SZ_CAP:''),
+            '0.15–0.2 mg/kg（上限 10 mg）· 速率 ≤5 mg/min · <b>5 分鐘可重複一次</b>') +
+      szRow('midazolam','IM（無 IV 時）', imMid+szUnit('mg'), imNote+' · RAMPART：無 IV access 時優於 IV lorazepam') +
+      '<div class="sz-sub"><b>替代</b>：IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg），起效較慢，AES 列為替代而非首選。</div>';
   }
   document.getElementById('se_first').innerHTML=first;
 
@@ -580,20 +621,31 @@ function szCalc(){
   const levMin=Math.ceil(lev.v/(5*wt)), levMax=Math.ceil(lev.v/(2*wt));
   const valMin=Math.ceil(val.v/(6*wt)), valMax=Math.ceil(val.v/(3*wt));
   const fosMin=Math.ceil(fos.v/150);
-  const second = '擇一，<b>三者等效</b>（依禁忌選）：<br>' +
-    '・<b>levetiracetam '+lev.v+' mg</b>（60 mg/kg，上限 4500'+(lev.capped?'，已達上限':'')+'）——依 2–5 mg/kg/min 約需 '+levMin+'–'+levMax+' 分鐘；副作用最少，腎功能不良需調整。<br>' +
-    '・<b>fosphenytoin '+fos.v+' mgPE</b>（20 mgPE/kg，上限 1500'+(fos.capped?'，已達上限':'')+'）——速率 ≤150 mgPE/min，至少 '+fosMin+' 分鐘；留意低血壓與心律不整。<br>' +
-    '・<b>valproate '+val.v+' mg</b>（40 mg/kg，上限 3000'+(val.capped?'，已達上限':'')+'）——依 3–6 mg/kg/min 約需 '+valMin+'–'+valMax+' 分鐘；避開肝病、粒線體疾病、孕婦。<br>' +
-    '<span class="note">三者皆無時 IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg）為替代（NICE 第三線為 phenobarbital 或全身麻醉）。</span>';
+  const second = '<div class="sz-lead">三者等效（ESETT 60 分鐘終止率 47%／45%／46%）— 依禁忌擇一</div>' +
+    szRow('levetiracetam','IV', lev.v+szUnit('mg')+(lev.capped?SZ_CAP:''),
+          '60 mg/kg（上限 4500 mg）· 依 2–5 mg/kg/min 約需 '+levMin+'–'+levMax+' 分鐘 · <b>副作用最少</b>，腎功能不良需調整') +
+    szRow('fosphenytoin','IV', fos.v+szUnit('mgPE')+(fos.capped?SZ_CAP:''),
+          '20 mgPE/kg（上限 1500 mgPE）· 速率 ≤150 mgPE/min，至少 '+fosMin+' 分鐘 · <b class="sz-warn">留意低血壓與心律不整</b>') +
+    szRow('valproate','IV', val.v+szUnit('mg')+(val.capped?SZ_CAP:''),
+          '40 mg/kg（上限 3000 mg）· 依 3–6 mg/kg/min 約需 '+valMin+'–'+valMax+' 分鐘 · <b class="sz-warn">避開肝病、粒線體疾病、孕婦</b>') +
+    '<div class="sz-sub"><b>三者皆無時</b>：IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg）為替代；NICE 的第三線為 phenobarbital 或全身麻醉。</div>';
   document.getElementById('se_second').innerHTML=second;
 
   /* 三線：麻醉輸注（NCS 2012 Table 8） */
-  const third =
-    '・<b>midazolam</b>：bolus <b>'+Math.round(0.2*wt)+' mg</b>（0.2 mg/kg，以 2 mg/min 給）→ 輸注 <b>'+szRange(0.05,2,wt,1)+' mg/hr</b>（0.05–2 mg/kg/hr）；突破性發作 bolus '+szRange(0.1,0.2,wt,1)+' mg，每 3–4 小時加 '+szRange(0.05,0.1,wt,1)+' mg/hr。<br>' +
-    '・<b>propofol</b>：負荷 <b>'+szRange(1,2,wt,0)+' mg</b>（1–2 mg/kg），自 <b>'+Math.round(20*wt*60/1000)+' mg/hr</b>（20 mcg/kg/min）起始 → <b>'+Math.round(30*wt*60/1000)+'–'+Math.round(200*wt*60/1000)+' mg/hr</b>（30–200 mcg/kg/min）；<b>&gt;'+Math.round(80*wt*60/1000)+' mg/hr（80 mcg/kg/min）且超過 48 小時要小心 PRIS</b>。<br>' +
-    '・<b>pentobarbital</b>：<b>'+szRange(5,15,wt,0)+' mg</b>（5–15 mg/kg，速率 ≤50 mg/min，可再加 '+szRange(5,10,wt,0)+' mg）→ 輸注 <b>'+szRange(0.5,5,wt,0)+' mg/hr</b>（0.5–5 mg/kg/hr）；突破性發作 bolus '+Math.round(5*wt)+' mg，每 12 小時加 '+szRange(0.5,1,wt,0)+' mg/hr。<br>' +
-    '・<b>thiopental</b>：<b>'+szRange(2,7,wt,0)+' mg</b>（2–7 mg/kg，速率 ≤50 mg/min）→ 輸注 <b>'+szRange(0.5,5,wt,0)+' mg/hr</b>。<br>' +
-    '<span class="note">全程<b>持續 EEG</b>、以腦波（非血中濃度）決定治療強度；常需輔助通氣、心血管監測與升壓劑。發作控制後<b>維持 24–48 小時再逐步減量</b>（ICS 2025：至少 24 小時、不做每日鎮靜中斷）。</span>';
+  const third = '<div class="sz-lead">擇一連續輸注，依 EEG 滴定（NCS 2012：資料不足以判定何者較優）</div>' +
+    szRow('midazolam','bolus → 輸注',
+          Math.round(0.2*wt)+szUnit('mg')+SZ_ARROW+szRange(0.05,2,wt,1)+szUnit('mg/hr'),
+          'bolus 0.2 mg/kg 以 2 mg/min 給 · 輸注 0.05–2 mg/kg/hr · 突破性發作 bolus '+szRange(0.1,0.2,wt,1)+' mg，每 3–4 小時加 '+szRange(0.05,0.1,wt,1)+' mg/hr · 久用出現耐受性，<b>不含 propylene glycol</b>') +
+    szRow('propofol','負荷 → 輸注',
+          szRange(1,2,wt,0)+szUnit('mg')+SZ_ARROW+Math.round(30*wt*60/1000)+'–'+Math.round(200*wt*60/1000)+szUnit('mg/hr'),
+          '負荷 1–2 mg/kg，自 '+Math.round(20*wt*60/1000)+' mg/hr（20 mcg/kg/min）起始 · 輸注 30–200 mcg/kg/min · <b class="sz-warn">&gt;'+Math.round(80*wt*60/1000)+' mg/hr（80 mcg/kg/min）且超過 48 小時要小心 PRIS</b> · 須計入熱量 1.1 kcal/mL') +
+    szRow('pentobarbital','負荷 → 輸注',
+          szRange(5,15,wt,0)+szUnit('mg')+SZ_ARROW+szRange(0.5,5,wt,0)+szUnit('mg/hr'),
+          '負荷 5–15 mg/kg，速率 ≤50 mg/min，可再加 '+szRange(5,10,wt,0)+' mg · 輸注 0.5–5 mg/kg/hr · 突破性發作 bolus '+Math.round(5*wt)+' mg，每 12 小時加 '+szRange(0.5,1,wt,0)+' mg/hr · <b class="sz-warn">高劑量下神經學功能完全消失</b>') +
+    szRow('thiopental','負荷 → 輸注',
+          szRange(2,7,wt,0)+szUnit('mg')+SZ_ARROW+szRange(0.5,5,wt,0)+szUnit('mg/hr'),
+          '負荷 2–7 mg/kg，速率 ≤50 mg/min · 輸注 0.5–5 mg/kg/hr · 部分國家以此取代 pentobarbital') +
+    '<div class="sz-sub">全程<b>持續 EEG</b>、以腦波（非血中濃度）決定治療強度；常需輔助通氣、心血管監測與升壓劑。發作控制後<b>維持 24–48 小時再逐步減量</b>（ICS 2025：至少 24 小時、不做每日鎮靜中斷）。</div>';
   document.getElementById('se_third').innerHTML=third;
 }
 
