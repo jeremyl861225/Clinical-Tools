@@ -34,7 +34,7 @@
      方磚若不在表內，就以方磚本身當成該類唯一的項目，因此日後新增一類方磚仍會自動出現。 */
   var HUB_PAGES = {
     'tools/antibiotics.html': [
-      { href: 'tools/antibiotics.html#mode=empiric',  zh: '依部位（經驗性）', en: 'Empiric by Site' },
+      { href: 'tools/antibiotics.html#mode=empiric',  zh: '依部位', en: 'Empiric by Site' },
       { href: 'tools/antibiotics.html#mode=bacteria', zh: '依病原菌',         en: 'By Pathogen' },
       { href: 'tools/antibiotics.html#mode=lookup',   zh: '藥物查詢',         en: 'Drug Lookup' },
       { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' },
