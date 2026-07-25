@@ -125,15 +125,23 @@
      dpr 依總面積設上限：查詢展開時文件很長，bitmap 太大會撞上行動版 Safari 的
      canvas 面積限制（整張直接擺爛不顯示），寧可整體略糊。 */
   var dprEff = 1;
+  var sizing = false;              // 下面會自己改高度，擋掉 ResizeObserver 的回頭呼叫
   function syncCanvasSize() {
+    if (sizing) return false;
+    sizing = true;
+    // 量文件高度前先把畫布縮成 0：畫布本身也是文件的一部分（absolute 但仍撐開祖先的
+    // scrollHeight），帶著上一次的高度去量，量到的是「含畫布」的高度，於是高度只增不減。
+    // 症狀：進了分類頁（文件很長）再返回主選單，畫布仍是分類頁那個高度，主選單就多出
+    // 一大段空白可以往下捲，且再也縮不回來。
+    canvas.style.height = '0px';
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
     var r = canvas.getBoundingClientRect();
     var w0 = r.width || document.documentElement.clientWidth;
     var h0 = Math.max(document.documentElement.scrollHeight, window.innerHeight || 0);
     var cap = Math.sqrt(16000000 / Math.max(1, w0 * h0));
     if (dpr > cap) dpr = Math.max(0.5, cap);
-    var hpx = h0 + 'px';
-    if (canvas.style.height !== hpx) canvas.style.height = hpx;
+    canvas.style.height = h0 + 'px';
+    sizing = false;
     dprEff = dpr;
     var w = Math.round(w0 * dpr);
     var h = Math.round(h0 * dpr);
