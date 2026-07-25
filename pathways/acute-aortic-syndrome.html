@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>急性主動脈症候群決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-aas-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性主動脈症候群決策</h1><div class="sub">Acute Aortic Syndrome · ADD-RS 風險分層與處置（2022 ACC/AHA）</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-aas-path'">← 返回主選單</button>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">先降心率，再降血壓 Rate Before Pressure</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      Acute aortic syndrome（AAS）的急性藥物處置有一個<b>不能顛倒的順序</b>：<b>先給 IV β 阻斷劑</b>把心率壓到 <b>60–80 bpm</b>（同時降心肌收縮力／dP/dt），<b>之後血壓仍高才加 IV 血管擴張劑</b>降到 <b>SBP &lt;120 mmHg</b>。<br>
+      <b>順序反了會出事</b>：先用血管擴張劑降血壓會引發<b>反射性心搏過速</b>，增加主動脈壁剪應力（dP/dt），反而促進 dissection 延伸。<br>
+      <span class="note">AAS 涵蓋三種：aortic dissection、intramural hematoma（IMH）、penetrating atherosclerotic ulcer（PAU）——三者的急性藥物處置相同，分型與介入決策依侵犯範圍。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>三型定義、分型、ADD-RS、影像、anti-impulse 與介入適應症 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 三種 AAS：</b><br>
+      ・<b>Aortic dissection</b>：內膜撕裂，血液進入中層形成真假腔。<br>
+      ・<b>Intramural hematoma（IMH）</b>：中層出血但無明顯內膜撕裂口；可進展為典型 dissection。<br>
+      ・<b>Penetrating atherosclerotic ulcer（PAU）</b>：動脈粥樣斑塊潰瘍穿透內彈性膜。<br><br>
+
+      <b>◆ 分型（決定手術 vs 內科）：</b><br>
+      ・<b>Stanford A</b>：侵犯<b>升主動脈</b>（不論起點）——<b>外科急症</b>。<br>
+      ・<b>Stanford B</b>：僅侵犯<b>左鎖骨下動脈遠端的降主動脈</b>——內科優先。<br>
+      ・DeBakey I（升＋降）、II（僅升）、III（僅降）。<br><br>
+
+      <b>◆ ADD-RS（Aortic Dissection Detection Risk Score，2022 指引表 24）：</b>三類，<b>每類只要 ≥1 項存在就給 1 分</b>，總分 0–3。<br>
+      ・<b>High-risk conditions</b>：Marfan／其他結締組織病、主動脈疾病家族史、已知主動脈瓣疾病、近期主動脈操作、已知胸主動脈瘤。<br>
+      ・<b>High-risk pain</b>：胸／背／腹痛且為<b>突發、劇烈、撕裂樣</b>。<br>
+      ・<b>High-risk exam</b>：脈搏差異或收縮壓差異、局部神經缺損（合併疼痛）、新的主動脈瓣逆流雜音（合併疼痛）、低血壓或休克。<br>
+      ・<b>0 = 低風險、1 = 中風險、2–3 = 高風險</b>。<br><br>
+
+      <b>◆ 影像與診斷路徑：</b><br>
+      ・<b>CTA</b>（電腦斷層血管攝影）為首選確診影像；不適合 CT（顯影劑過敏、太不穩無法移動）時以 <b>TEE</b> 或 MRI 替代。<br>
+      ・<b>ADD-RS ≤1 且 D-dimer 陰性</b>可協助排除；<b>ADD-RS ≥1</b> 或臨床高度懷疑者應做確診影像，<b>不因等 D-dimer 而延誤</b>。<br>
+      ・胸部 X 光的提示徵象（非用於排除）：縱膈腔增寬、主動脈結輪廓消失、「鈣化徵」（內膜鈣化與外壁分離 &gt;5 mm）、氣管右偏。<br><br>
+
+      <b>◆ 急性藥物處置（2022 ACC/AHA，COR 1）：</b><br>
+      ・<b>anti-impulse therapy ＋ 動脈導管侵入性血壓監測 ＋ ICU</b>（B-NR）。<br>
+      ・目標 <b>SBP &lt;120 mmHg</b>（或維持器官灌流的最低血壓）＋<b>心率 60–80 bpm</b>（C-LD）。<br>
+      ・<b>先給 IV β 阻斷劑</b>（除非禁忌）；β 阻斷劑禁忌／不耐受者用 <b>IV non-dihydropyridine 鈣離子通道阻斷劑</b>控心率（B-NR／2a）。<br>
+      ・β 阻斷劑後血壓仍未控制<b>才加 IV 血管擴張劑</b>（C-LD）。<br>
+      ・<b>疼痛控制</b>——疼痛本身會升高交感張力與血壓。<br><br>
+
+      <b>◆ 介入適應症：</b><br>
+      ・<b>Type A dissection（及侵犯升主動脈的 IMH／PAU）：緊急外科手術</b>——未手術的 type A 每小時死亡率遞增，是外科急症。<br>
+      ・<b>Uncomplicated type B</b>：<b>內科優先</b>（anti-impulse therapy）。<br>
+      ・<b>Complicated type B</b>（<b>malperfusion、破裂或即將破裂、持續／復發疼痛、難以控制的高血壓、主動脈快速擴大</b>）：<b>TEVAR（胸主動脈腔內修復）</b>（ADSORB、INSTEAD 支持腔內優於單純內科）。<br><br>
+
+      <b>◆ 結締組織病：</b>Marfan、Loeys-Dietz、血管型 Ehlers-Danlos 等患者的 AAS 風險與手術閾值不同，長期以 β 阻斷劑 ±ARB 延緩主動脈根部生長，並須多專科主動脈團隊追蹤。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">ADD-RS — 勾選存在的高風險特徵</div>
+    <div class="section-title" style="font-size:12px; margin-top:6px;">A. 高風險病史 High-Risk Conditions</div>
+    <label class="toggle-inline"><input type="checkbox" class="aas-cond"> Marfan／其他結締組織病</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-cond"> 主動脈疾病家族史</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-cond"> 已知主動脈瓣疾病</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-cond"> 近期主動脈操作</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-cond"> 已知胸主動脈瘤</label>
+
+    <div class="section-title" style="font-size:12px; margin-top:10px;">B. 高風險疼痛 High-Risk Pain</div>
+    <label class="toggle-inline"><input type="checkbox" class="aas-pain"> 胸／背／腹痛：突發</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-pain"> 劇烈</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-pain"> 撕裂樣</label>
+
+    <div class="section-title" style="font-size:12px; margin-top:10px;">C. 高風險理學 High-Risk Examination</div>
+    <label class="toggle-inline"><input type="checkbox" class="aas-exam"> 脈搏差異或收縮壓差異</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-exam"> 局部神經缺損（合併疼痛）</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-exam"> 新主動脈瓣逆流雜音（合併疼痛）</label>
+    <label class="toggle-inline"><input type="checkbox" class="aas-exam"> 低血壓或休克</label>
+
+    <div class="result" style="margin-top:12px;">
+      <div class="result-grid">
+        <div><div class="metric-label">ADD-RS</div><div class="metric-value big" id="aas_score">0</div></div>
+        <div><div class="metric-label">風險</div><div class="metric-value big" id="aas_risk" style="font-size:26px;">低</div></div>
+      </div>
+      <div style="font-size:14px; margin-top:8px;" id="aas_score_txt">每類 ≥1 項計 1 分，共三類。</div>
+    </div>
+  </div>
+
+  <div class="flow-step" id="aas_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">影像確診後的分型？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="aasPick('type','a',this)">Stanford A<span class="fo-sub">侵犯升主動脈——外科急症</span></button>
+      <button class="flow-opt" onclick="aasPick('type','bunc',this)">Uncomplicated type B<span class="fo-sub">僅降主動脈，無併發症</span></button>
+      <button class="flow-opt" onclick="aasPick('type','bcomp',this)">Complicated type B<span class="fo-sub">malperfusion／破裂／持續疼痛／難控血壓／快速擴大</span></button>
+      <button class="flow-opt" onclick="aasPick('type','pending',this)">尚未取得影像／診斷未定<span class="fo-sub">臨床高度懷疑</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="aas_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請選擇分型</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="aasReset()">重置</button></div>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/36334952/" target="_blank" rel="noopener" class="ref-link">Isselbacher EM, Preventza O, Hamilton Black J 3rd, et al. 2022 ACC/AHA Guideline for the Diagnosis and Management of Aortic Disease. J Am Coll Cardiol. 2022;80(24):e223-e393.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+const st = { type:null };
+
+function aasScore(){
+  const c = document.querySelectorAll('.aas-cond:checked').length>0 ? 1 : 0;
+  const p = document.querySelectorAll('.aas-pain:checked').length>0 ? 1 : 0;
+  const e = document.querySelectorAll('.aas-exam:checked').length>0 ? 1 : 0;
+  const s = c+p+e;
+  document.getElementById('aas_score').textContent=s;
+  const risk = s===0 ? '低' : (s===1 ? '中' : '高');
+  document.getElementById('aas_risk').textContent=risk;
+  let txt;
+  if(s===0) txt='<b>0 分（低風險）</b>：ADD-RS 0 且 D-dimer 陰性可協助排除；臨床仍懷疑時不排除做影像。';
+  else if(s===1) txt='<b>1 分（中風險）</b>：應安排確診影像（CTA），不因等 D-dimer 而延誤。';
+  else txt='<b>'+s+' 分（高風險）</b>：<b>立即 CTA 確診</b>並同步啟動 anti-impulse therapy；高度懷疑 type A 時聯絡心臟外科。';
+  document.getElementById('aas_score_txt').innerHTML=txt;
+}
+
+function aasPick(key, val, btn){
+  flowSelect(btn);
+  st.type=val;
+  render();
+}
+
+const AAS_MED =
+  '<li><b>anti-impulse therapy（順序不可顛倒）</b>：<b>先 IV β 阻斷劑</b>把心率壓到 <b>60–80 bpm</b>；<b>血壓仍高才加 IV 血管擴張劑</b>降到 <b>SBP &lt;120 mmHg</b>（或維持器官灌流的最低血壓）。β 阻斷劑禁忌者改 IV non-dihydropyridine 鈣離子通道阻斷劑控心率。</li>' +
+  '<li><b>動脈導管侵入性血壓監測 ＋ ICU</b>；<b>疼痛控制</b>（疼痛升高交感張力與血壓）。</li>';
+
+function render(){
+  let cls='rec-idle', title='請選擇分型', detail='', note='';
+
+  if(st.type==='a'){
+    cls='rec-urgent'; title='Stanford A — 外科急症，立即心臟外科';
+    detail='<li><b>立即聯絡心臟外科手術</b>——侵犯升主動脈的 dissection（及 IMH／PAU）未手術者每小時死亡率遞增，是不能等的外科急症。</li>' +
+      AAS_MED +
+      '<li><b>同時評估併發症</b>：心包填塞、急性主動脈瓣逆流、冠狀動脈或分支血管 malperfusion、腦／脊髓／腸／腎／肢體缺血。</li>' +
+      '<li>低血壓／休克者要想到<b>心包填塞或破裂</b>——此時血壓目標須權衡灌流，不可一味降壓。</li>';
+    note='2022 ACC/AHA aortic guideline：AAS 急性藥物處置 COR 1；type A 為外科急症。';
+  } else if(st.type==='bunc'){
+    cls='rec-blue'; title='Uncomplicated type B — 內科優先';
+    detail='<li><b>內科 anti-impulse therapy 為第一線</b>——uncomplicated type B 的存活優於 type A，初期以藥物控制心率與血壓。</li>' +
+      AAS_MED +
+      '<li><b>密切監測是否轉為 complicated</b>：新發或復發疼痛、malperfusion 徵象、血壓難以控制、影像顯示假腔擴大或即將破裂——一旦出現即需 TEVAR。</li>' +
+      '<li>穩定後長期以 β 阻斷劑 ±其他降壓藥控制，並定期影像追蹤主動脈大小。</li>';
+    note='2022 ACC/AHA：uncomplicated type B 內科優先（ADSORB、INSTEAD）。';
+  } else if(st.type==='bcomp'){
+    cls='rec-urgent'; title='Complicated type B — TEVAR';
+    detail='<li><b>TEVAR（胸主動脈腔內修復）</b>：complicated type B——<b>malperfusion、破裂或即將破裂、持續／復發疼痛、難以控制的高血壓、主動脈快速擴大</b>——腔內修復的病率與死亡率優於單純內科（ADSORB、INSTEAD）。</li>' +
+      AAS_MED +
+      '<li><b>malperfusion</b>（腸、腎、肢體、脊髓）須緊急處理；血管外科／介入團隊評估分支重建或開窗。</li>' +
+      '<li>藥物處置持續進行至介入，不因要手術而停止 anti-impulse therapy。</li>';
+    note='2022 ACC/AHA：complicated type B 建議 TEVAR。';
+  } else if(st.type==='pending'){
+    cls='rec-elective'; title='診斷未定但高度懷疑 — 先啟動藥物與影像';
+    detail='<li><b>不要等分型才開始治療</b>：臨床高度懷疑 AAS（尤其 ADD-RS ≥1）時，<b>立即啟動 anti-impulse therapy 並安排 CTA</b>。</li>' +
+      AAS_MED +
+      '<li><b>CTA 為首選</b>確診影像；不適合 CT 者以 TEE／MRI 替代。取得分型後回到步驟 1 選擇對應處置。</li>' +
+      '<li>低血壓／休克者警覺 type A 併心包填塞或破裂——這類病人優先確診並聯絡外科。</li>';
+    note='2022 ACC/AHA：AAS 立即藥物處置的同時完成確診影像。';
+  }
+  flowRec('aas_rec', cls, title, detail, note);
+}
+
+function aasReset(){
+  st.type=null;
+  document.querySelectorAll('#view-aas-path .flow-opt').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('#view-aas-path input[type=checkbox]').forEach(b=>b.checked=false);
+  aasScore();
+  render();
+}
+document.querySelectorAll('.aas-cond, .aas-pain, .aas-exam').forEach(el=>el.addEventListener('change', aasScore));
+aasReset();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
