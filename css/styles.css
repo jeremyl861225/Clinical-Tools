@@ -378,6 +378,8 @@
   table.def-table th,table.def-table td{border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; vertical-align:top;}
   table.def-table th{font-family:var(--mono); font-size:11px; color:var(--accent); white-space:nowrap;}
   table.def-table td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--accent2); font-weight:700;}
+  /* .dt-pair：左右兩組欄位其實是同一序列的前後段（如 PEEP/FiO₂ 對照表），第 3 欄的鍵值要與第 1 欄同樣式 */
+  table.def-table.dt-pair td:nth-child(3){font-family:var(--mono); white-space:nowrap; color:var(--accent2); font-weight:700;}
   table.def-table tr.dt-warn td{color:var(--accent2);}
 
   /* Drug calculator */

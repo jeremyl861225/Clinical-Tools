@@ -138,10 +138,23 @@
   <div class="card">
     <div class="section-title">② PEEP／FiO₂ 對照表 ARDSNet PEEP/FiO₂ Tables</div>
     <div class="note" style="margin-bottom:8px;">氧合目標 <b>PaO₂ 55–80 mmHg 或 SpO₂ 88–95%</b>，<b>PEEP 最低 5</b>。ARDSNet 協定寫明這兩張表是<b>可用而非強制</b>的達標方式。中重度（P/F ≤200）採較高 PEEP 表有 ATS 2024／SSC 2026 的條件式建議與 Briel 2010 的分層支持；<b>ESICM 2023 建議 6.1 對此無法做出建議</b>。</div>
+
+    <div class="lede" style="margin-bottom:10px;">
+      <div class="lede-title">怎麼看、怎麼調 How To Use</div>
+      <div class="lede-body">
+        <div class="dot-line">・<b>表是一條「成對組合」的序列，不是各自獨立的兩欄</b>。每張表<b>左半讀完再接右半</b>：低 PEEP 表由 FiO₂ 0.3／PEEP 5 起，讀到 0.7／12 之後<b>接右半的 0.7／14</b>；高 PEEP 表讀到 0.5／16 之後<b>接右半的 0.5／18</b>。</div>
+        <div class="dot-line">・<b>先選一張，全程用同一張</b>。中重度（P/F ≤200）優先用高 PEEP／低 FiO₂ 表；<b>同一位病人不要在兩張表之間跳</b>——同樣的 FiO₂ 在兩表對應的 PEEP 差很多（例如 FiO₂ 0.5：低 PEEP 表為 8–10，高 PEEP 表為 16–18）。</div>
+        <div class="dot-line">・<b>氧合不夠就整格往下走一格，達標就停</b>。目標是 PaO₂ 55–80 mmHg 或 SpO₂ 88–95%，<b>超過目標就往回退一格</b>，不追求更漂亮的數字。這張表的用意就是<b>不讓 FiO₂ 單獨衝到 1.0 而 PEEP 停在 5</b>。</div>
+        <div class="dot-line">・<b>每動一格就重測三件事</b>：SpO₂／PaO₂、<b>Pplat（0.5 秒吸氣暫停）</b>、血壓。Pplat &gt;30 先降潮氣容積；升 PEEP 後血壓下降要想到靜脈回流受阻與 auto-PEEP。</div>
+        <div class="dot-line">・<b>好轉時反向退回</b>。退到 <b>FiO₂ ≤0.40 且 PEEP ≤8</b>（或 FiO₂ &lt;0.50 且 PEEP &lt;5）即符合每日自主呼吸試驗的門檻。</div>
+        <div class="lede-foot">協定卡的原文只說「可使用如下的 FiO₂／PEEP 遞增組合（<b>非必須</b>）以達成氧合目標」——<b>並沒有規定多久調一格、一次前進幾格</b>。上述讀法是床邊的操作慣例，不是協定條文；升 PEEP 是否真的有效，看 ΔP（=Pplat−PEEP）的走向比看表格位置可靠。</div>
+      </div>
+    </div>
+
     <div class="drug-row-grid">
       <div>
         <div class="metric-label" style="color:var(--accent); margin-bottom:4px;">低 PEEP／高 FiO₂ 表</div>
-        <table class="def-table">
+        <table class="def-table dt-pair">
           <tr><th>FiO₂</th><th>PEEP</th><th>FiO₂</th><th>PEEP</th></tr>
           <tr><td>0.3</td><td>5</td><td>0.7</td><td>14</td></tr>
           <tr><td>0.4</td><td>5</td><td>0.8</td><td>14</td></tr>
@@ -155,7 +168,7 @@
       </div>
       <div>
         <div class="metric-label" style="color:var(--accent); margin-bottom:4px;">高 PEEP／低 FiO₂ 表</div>
-        <table class="def-table">
+        <table class="def-table dt-pair">
           <tr><th>FiO₂</th><th>PEEP</th><th>FiO₂</th><th>PEEP</th></tr>
           <tr><td>0.3</td><td>5</td><td>0.5</td><td>18</td></tr>
           <tr><td>0.3</td><td>8</td><td>0.5–0.8</td><td>20</td></tr>
