@@ -76,45 +76,33 @@
 
   <div class="card" id="lf_apap_card">
     <div class="section-title">Acetaminophen — King's College Criteria</div>
-    <div class="field-row">
-      <label>動脈 pH</label>
-      <input type="number" id="lf_ph" step="0.01" placeholder="—">
-    </div>
-    <div class="note" style="margin:2px 0 8px;">— 或以下三者皆備 —</div>
-    <div class="field-row">
-      <label>INR</label>
-      <input type="number" id="lf_inr_a" step="0.1" placeholder="—">
-      <span class="unit">&gt;6.5 計入</span>
-    </div>
-    <div class="field-row">
-      <label>肌酸酐 Cr</label>
-      <input type="number" id="lf_cr" step="0.1" placeholder="—">
-      <span class="unit">mg/dL（&gt;3.4 計入）</span>
-    </div>
-    <label class="toggle-inline"><input type="checkbox" id="lf_enc_a"> grade III/IV 肝性腦病</label>
+    <div class="note" style="margin:0 0 6px;">勾選<b>已達閾值</b>的項目。符合任一即為陽性：單獨的 pH 項，<b>或</b>下方三項全數符合。</div>
+    <label class="item"><input type="checkbox" id="lf_ph"><span class="it-t">動脈 pH &lt; 7.3（充分復甦後）</span> <span class="pt-badge">單項即符合</span></label>
+    <div class="note" style="margin:6px 0 2px;">— 或以下三者皆備 —</div>
+    <label class="item"><input type="checkbox" id="lf_inr_a"><span class="it-t">INR &gt; 6.5 <span class="unit">(PT &gt; 100 秒)</span></span></label>
+    <label class="item"><input type="checkbox" id="lf_cr"><span class="it-t">肌酸酐 Cr &gt; 3.4 mg/dL <span class="unit">(&gt; 300 µmol/L)</span></span></label>
+    <label class="item"><input type="checkbox" id="lf_enc_a"><span class="it-t">grade III/IV 肝性腦病 <span class="unit">(明顯混亂、嗜睡可喚醒或昏迷)</span></span></label>
   </div>
 
   <div class="card" id="lf_non_card" style="display:none;">
     <div class="section-title">Non-acetaminophen — King's College Criteria</div>
-    <div class="field-row">
-      <label>INR</label>
-      <input type="number" id="lf_inr_n" step="0.1" placeholder="—">
-      <span class="unit">&gt;6.5 單項即符合</span>
-    </div>
-    <div class="note" style="margin:2px 0 8px;">— 或以下五項符合三項 —</div>
-    <label class="toggle-inline"><input type="checkbox" id="lf_n1"> 年齡 &lt;11 或 &gt;40 歲</label>
-    <label class="toggle-inline"><input type="checkbox" id="lf_n2"> 病因：非 A 非 B 型肝炎、halothane 或藥物特異體質反應</label>
-    <label class="toggle-inline"><input type="checkbox" id="lf_n3"> 黃疸到腦病 &gt;7 天</label>
-    <label class="toggle-inline"><input type="checkbox" id="lf_n4"> INR &gt;3.5（PT &gt;50 秒）</label>
-    <label class="toggle-inline"><input type="checkbox" id="lf_n5"> 血清 bilirubin &gt;17.5 mg/dL（&gt;300 µmol/L）</label>
+    <div class="note" style="margin:0 0 6px;">勾選<b>已達閾值</b>的項目。符合任一即為陽性：單獨的 INR &gt; 6.5，<b>或</b>下方五項中任三項。</div>
+    <label class="item"><input type="checkbox" id="lf_inr_n"><span class="it-t">INR &gt; 6.5（不論腦病程度）</span> <span class="pt-badge">單項即符合</span></label>
+    <div class="note" style="margin:6px 0 2px;">— 或以下五項符合三項 —</div>
+    <label class="item"><input type="checkbox" id="lf_n1"><span class="it-t">年齡 &lt; 11 或 &gt; 40 歲</span></label>
+    <label class="item"><input type="checkbox" id="lf_n2"><span class="it-t">病因為非 A 非 B 型肝炎、halothane 肝炎或藥物特異體質反應 <span class="unit">(indeterminate／drug)</span></span></label>
+    <label class="item"><input type="checkbox" id="lf_n3"><span class="it-t">黃疸到腦病 &gt; 7 天</span></label>
+    <label class="item"><input type="checkbox" id="lf_n4"><span class="it-t">INR &gt; 3.5 <span class="unit">(PT &gt; 50 秒)</span></span></label>
+    <label class="item"><input type="checkbox" id="lf_n5"><span class="it-t">血清 bilirubin &gt; 17.5 mg/dL <span class="unit">(&gt; 300 µmol/L)</span></span></label>
   </div>
 
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">King's College Criteria</div><div class="metric-value big" id="lf_kcc" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label" id="lf_count_label">組合項目</div><div class="metric-value big" id="lf_count" style="font-size:26px;">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀與處置</div>
-    <div style="font-size:15px; margin-top:2px;" id="lf_interp">請輸入數值。</div>
+    <div style="font-size:15px; margin-top:2px;" id="lf_interp">請勾選符合的項目。</div>
     <div class="risk-note">KCC 陽性代表<b>預後極差、需緊急移植評估</b>；<b>陰性不能排除移植需求</b>（KCC 特異度高、敏感度中等），須合併乳酸、第 V 因子（Clichy）與臨床動態綜合判斷。無論 KCC 結果，<b>一診斷 ALF 就聯絡移植中心</b>，並依病因給專屬治療（acetaminophen 必給 NAC）。</div>
   </div>
 
@@ -122,35 +110,37 @@
 </div>
 </div>
 <script>
-function lfNum(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function lfChk(id){ return document.getElementById(id).checked; }
 
 function lfCalc(){
   const cause=document.getElementById('lf_cause').value;
   document.getElementById('lf_apap_card').style.display = cause==='apap' ? '' : 'none';
   document.getElementById('lf_non_card').style.display = cause==='non' ? '' : 'none';
 
-  let met=false, detail='';
+  let met=false, detail='', count='', countLabel='';
 
   if(cause==='apap'){
-    const ph=lfNum('lf_ph'), inr=lfNum('lf_inr_a'), cr=lfNum('lf_cr');
-    const enc=document.getElementById('lf_enc_a').checked;
-    const phMet = ph!==null && ph<7.3;
-    const triad = (inr!==null && inr>6.5) && (cr!==null && cr>3.4) && enc;
+    const phMet = lfChk('lf_ph');
+    const n = ['lf_inr_a','lf_cr','lf_enc_a'].filter(lfChk).length;
+    const triad = n===3;
     met = phMet || triad;
-    detail = phMet ? '符合：<b>動脈 pH &lt;7.3</b>。'
+    countLabel = '三者皆備'; count = n+'/3';
+    detail = phMet ? '符合：<b>動脈 pH &lt;7.3</b>（單項即符合）。'
       : (triad ? '符合：<b>INR &gt;6.5 ＋ Cr &gt;3.4 ＋ grade III/IV 腦病（三者皆備）</b>。'
-      : '尚未符合（pH ≥7.3，且 INR/Cr/腦病三者未全備）。');
+      : '尚未符合（pH 未低於 7.3，且 INR／Cr／腦病三者僅 '+n+'/3）。');
   } else {
-    const inr=lfNum('lf_inr_n');
-    const inrMet = inr!==null && inr>6.5;
-    const n = ['lf_n1','lf_n2','lf_n3','lf_n4','lf_n5'].filter(i=>document.getElementById(i).checked).length;
+    const inrMet = lfChk('lf_inr_n');
+    const n = ['lf_n1','lf_n2','lf_n3','lf_n4','lf_n5'].filter(lfChk).length;
     met = inrMet || n>=3;
+    countLabel = '五項中符合'; count = n+'/5';
     detail = inrMet ? '符合：<b>INR &gt;6.5</b>（單項即符合）。'
       : (n>=3 ? '符合：<b>五項中已符合 '+n+' 項</b>（≥3 項）。'
-      : '尚未符合（INR ≤6.5，五項中僅 '+n+' 項）。');
+      : '尚未符合（INR 未 &gt;6.5，五項中僅 '+n+' 項）。');
   }
 
   document.getElementById('lf_kcc').textContent = met ? '陽性' : '未達';
+  document.getElementById('lf_count_label').textContent = countLabel;
+  document.getElementById('lf_count').textContent = count;
 
   let interp;
   if(met){
