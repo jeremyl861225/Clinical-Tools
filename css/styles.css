@@ -347,6 +347,20 @@
     .plain-list.cols li{break-inside:avoid;}
   }
 
+  /* 導言框（.lede）：分頁最上方那段「先讀這個」——版本提醒、最初數小時、使用前必讀。
+     刻意與 .card 不同：紙色底而非白卡，讓它與下方的互動卡片分層；內文用 --ink 正常
+     字色（早期版本誤用 .note 的 --muted-soft 灰，把整頁最重要的一段做成最不顯眼的
+     一段）。①②③ 用 .lede-item 懸吊對齊，續行不再回到行首；補充說明用 .lede-foot
+     收在虛線下，取代原本內嵌的 <span class="note">。 */
+  .lede{background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:2px; padding:14px 16px 13px; margin-bottom:14px;}
+  .lede-title{font-family:var(--mono); font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent2); font-weight:700; margin-bottom:9px;}
+  .lede-body{font-size:13.5px; line-height:1.8; color:var(--ink);}
+  .lede-body>p{margin:0 0 6px;}
+  .lede-body>p:last-child{margin-bottom:0;}
+  .lede-item{display:grid; grid-template-columns:1.5em 1fr; margin:0 0 5px;}
+  .lede-item>span:first-child{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+  .lede-foot{margin-top:9px; padding-top:8px; border-top:1px dashed var(--line); font-size:12px; line-height:1.7; color:var(--muted);}
+
   details.def-box{margin:8px 0;}
   details.def-box summary{cursor:pointer; font-family:var(--mono); font-size:12px; color:var(--accent); list-style:none; font-weight:700;}
   details.def-box summary::-webkit-details-marker{display:none;}
