@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>癲癇發作與癲癇重積處置決策 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+</head>
+<body>
+<div class="sheet">
+<div class="view active" id="view-seizure-path">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>癲癇發作與癲癇重積處置</h1><div class="sub">Seizures &amp; Status Epilepticus · 診斷、分類、藥物與重積計時劑量</div></div>
+    <button class="back-btn" onclick="location.href='../index.html#card-view-seizure-path'">← 返回主選單</button>
+  </div>
+
+  <div class="tab-row" id="sz_tabs">
+    <button class="tab-btn active" data-tab="dx"   onclick="szTab('dx')">診斷與鑑別</button>
+    <button class="tab-btn"        data-tab="cls"  onclick="szTab('cls')">發作與重積分類</button>
+    <button class="tab-btn"        data-tab="se"   onclick="szTab('se')">癲癇重積處置</button>
+    <button class="tab-btn"        data-tab="drug" onclick="szTab('drug')">藥物</button>
+    <button class="tab-btn"        data-tab="sp"   onclick="szTab('sp')">特殊情境與後續</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 16px;">
+    急性處置依 <b>AES 2016</b> 演算法與 <b>ESETT</b> 的一手劑量，並補上 <b>Intensive Care Society 2025</b> 的重症端指引（cEEG、難治／超難治、找病因）；分類依 <b>ILAE 2025 發作分類</b>（取代 2017）與 <b>ILAE 2015 癲癇重積分類</b>；診斷與維持用藥依 <b>NICE NG217（2022）</b>與 <b>AAN／AES 2015</b> 首次發作指引。<b>各指引之間有幾處不一致（例如二線藥的順位與抗癲癇藥預防性使用），本頁逐條標明出處而不合併。</b>
+  </div>
+
+<!-- ==================== 分頁一：診斷與鑑別 ==================== -->
+<div id="tab-dx">
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">先分開的三個問題 Three Separate Questions</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      ① <b>這是不是癲癇發作？</b>——<b>ESETT 收案的「癲癇重積」病人中有 10% 最後判定為心因性非癲癇發作</b>（psychogenic non-epileptic seizure），這是在急診最容易被連續給藥、插管的一群人。<br>
+      ② <b>是誘發性（acute symptomatic）還是非誘發性？</b>——低血糖、低血鈉、酒精戒斷、子癲症、藥物中毒引起的發作，<b>治的是病因不是癲癇</b>，也不等於可以診斷癲癇。<br>
+      ③ <b>要不要開始長期抗癲癇藥？</b>——這是<b>與急性止痙分開的決定</b>；首次非誘發性發作立即用藥可降低 2 年內復發，但<b>不改善生活品質、也不改善 3 年以上的長期緩解率</b>（AAN／AES 2015）。<br>
+      <span class="note">本頁以成人為主。<b>兒童、新生兒與孕產婦</b>另有專屬指引（ILAE 2025 分類明訂<b>不涵蓋新生兒發作</b>；ICS 2025 明訂<b>排除產科族群</b>）。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>首次發作的評估與檢查 First Seizure Work-up（NICE NG217）</summary>
+    <div class="box-inner">
+      <b>◆ 轉診與時效：</b><br>
+      <div class="dot-line">・<b>首次疑似發作應緊急轉診、2 週內完成評估</b>（NICE 1.1.1）；<b>緩解一段時間後再發作者同樣 2 週內轉診</b>（1.1.2）。</div>
+      <div class="dot-line">・成人須評估可修正的再發危險因子：<b>精神健康問題（憂鬱、焦慮、精神病、酒精或藥物濫用）、血管危險因子（糖尿病、高血壓、心房顫動）、敗血症</b>（1.1.4）。</div><br>
+
+      <b>◆ 基本檢查：</b><br>
+      <div class="dot-line">・<b>詳細病史＋目擊者描述，可能的話看發作影片</b>（1.2.1）——影像紀錄常比任何檢查更有診斷力。</div>
+      <div class="dot-line">・<b>所有首次疑似發作者做 12 導程心電圖</b>（1.2.2）——找出會偽裝成發作的心律問題（長 QT、Brugada、傳導阻滞）。</div>
+      <div class="dot-line">・<b>代謝異常（含低血糖）本身即可造成發作</b>（1.2.3）。</div>
+      <div class="dot-line">・懷疑結構性病因時安排腦部影像（1.2.4）。</div><br>
+
+      <b>◆ EEG 的正確位置：</b><br>
+      <div class="dot-line">・病史像癲癇發作、且懷疑癲癇時，<b>考慮</b>清醒的常規 EEG 以支持診斷、判斷發作型或症候群（1.2.5）。</div>
+      <div class="dot-line">・<b>不可用 EEG 來排除癲癇診斷</b>（1.2.6）——這是最常見的誤用。</div>
+      <div class="dot-line">・首次發作後若要做 EEG，<b>越快越好（理想上 72 小時內）</b>（1.2.7）；常規 EEG 正常可考慮<b>睡眠剝奪 EEG</b>（1.2.9），仍正常且診斷不確定時考慮<b>可攜式 EEG（至多 48 小時）</b>（1.2.10）。</div><br>
+
+      <b>◆ 影像：</b><br>
+      <div class="dot-line">・確診癲癇者<b>應做 MRI</b>（依區域癲癇 MRI protocol、轉介後 6 週內），<b>但特發性全般性癲癇與中央顳區棘波之自限性癲癇除外</b>（1.3.1）；MRI 禁忌時考慮 CT（1.3.2）。</div>
+      <div class="dot-line">・<b>已知癲癇的病人在急診發生「典型」發作，不要例行照 CT</b>（1.3.7）——除非另有臨床疑慮。</div><br>
+
+      <b>◆ 抗體與基因：</b>懷疑<b>自體免疫腦炎</b>的新發癲癇，與神經科討論後<b>考慮抗體檢測</b>（1.5.1）；&lt;2 歲發病、疑似特定基因症候群、或合併學習障礙／自閉症／結構異常／認知退化者考慮<b>全基因體定序</b>（1.4.4）。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>重症端的檢查清單與找病因 ICU Work-up（Intensive Care Society 2025）</summary>
+    <div class="box-inner">
+      <b>◆ 入 ICU 時的基本檢查：</b><br>
+      <div class="dot-line">・<b>血液</b>：全血球計數與凝血、<b>尿素電解質、肝功能、鈣、鎂、血糖</b>、CRP、動脈血液氣體與乳酸、周邊血液培養。</div>
+      <div class="dot-line">・<b>尿液</b>：懷疑中毒時送毒物篩檢（典型為 <b>三環抗憂鬱劑、安非他命、古柯鹼、tramadol、部分 NSAID 如 mefenamic acid</b>）；<b>所有育齡病人驗孕</b>。</div>
+      <div class="dot-line">・<b>影像</b>：胸部 X 光（吸入性肺炎）；<b>無明顯病因者做腦部 CT</b>；MRI 依專科判斷。</div>
+      <div class="dot-line">・<b>腰椎穿刺</b>（臨床檢查與 CT 無禁忌、且由有經驗者判讀 CT 後）：微生物、細胞計數、培養含 AFB／結核 PCR、<b>HSV 1/2、VZV、腸病毒 PCR</b>（免疫低下者擴大套組），蛋白、<b>糖（同時送血糖配對）</b>，並留存檢體。</div>
+      <div class="dot-line">・<b>其他</b>：心電圖（<b>使用 propofol 期間建議每日 ECG 監測 PRIS</b>）；仍昏迷而無可見抽搐者<b>入院即做 EEG</b>；<b>propofol &gt;4 mg/kg/h</b> 或疑似橫紋肌溶解時驗 <b>CK ±三酸甘油酯</b>；<b>phenytoin 盡量走靜脈並確認濃度</b>（腸道給藥吸收不穩、且需停餵食數小時）。</div><br>
+
+      <b>◆ 無癲癇病史者的延伸檢查（找不到病因時）：</b><br>
+      <div class="dot-line">・<b>氨、尿有機酸、血中胺基酸</b>。</div>
+      <div class="dot-line">・<b>血管炎篩檢</b>：ANA、ENA、ANCA、補體、血清 ACE。</div>
+      <div class="dot-line">・<b>自體免疫腦炎抗體</b>：NMDAR、LGI1／CASPR2、GABA<sub>B</sub>R、AMPAR、GABA<sub>A</sub>R、GAD、抗神經元（副腫瘤）抗體（Hu／Yo／Ri／Ma2／CV2／amphiphysin／SOX1／Titin／Zic4／DNER）、TPO 抗體。</div>
+      <div class="dot-line">・<b>胸腹骨盆電腦斷層（含顯影）</b>找隱匿腫瘤與副腫瘤性邊緣系統腦炎的間接證據。</div>
+      <div class="dot-line">・<b>抗癲癇藥物血中濃度</b>——評估劑量是否足夠與服藥順從性。</div>
+      <span class="note"><b>沒有找到並矯正病因，任何一線再加一線都會失效</b>：ICS 2025 明列「未建立適當的維持性抗癲癇藥物治療」與「持續的 NCSE 未被 EEG 發現」為治療失敗的兩大常見原因。</span>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>鑑別診斷、癲癇的定義與何時開始用藥 Mimics, Definition &amp; When to Treat</summary>
+    <div class="box-inner">
+      <b>◆ 最常見的鑑別：</b><br>
+      <div class="dot-line">・<b>暈厥（含抽搐性暈厥 convulsive syncope）</b>——短暫的肌抽躍常被當成癲癇；<b>先做心電圖</b>（NICE 1.2.2）。</div>
+      <div class="dot-line">・<b>心因性非癲癇發作／解離性發作（PNES／dissociative seizures）</b>：ICS 2025 明訂<b>「pseudoseizure（假性發作）」一詞已廢棄</b>；治療主軸是<b>心理治療</b>，不是加抗癲癇藥。NICE 也特別提醒<b>解離性發作在表現上可以與抽搐型癲癇重積極為相似</b>（7.1.6）。</div>
+      <div class="dot-line">・其他：偏頭痛、短暫腦缺血、動作障礙、睡眠疾患（含 REM 行為障礙）、代謝性腦病變。</div><br>
+
+      <b>◆ 誘發性（急性症狀性）發作：</b>低血糖、低血鈉、低血鈣／低血鎂、尿毒、肝性腦病變、<b>酒精戒斷</b>、藥物中毒或戒斷、<b>子癲症</b>、中樞感染、急性中風或出血、缺氧。NICE 特別點名<b>低血糖、子癲症、酒精戒斷</b>三者是癲癇重積下可能需要「額外藥物」的病因（7.1.4），並提醒<b>抗癲癇藥物未按時服用本身就是重積的常見原因</b>（7.1.5）。<br><br>
+
+      <b>◆ 癲癇（疾病）的定義（ILAE 2014 實務臨床定義）：</b>符合下列任一者<br>
+      <div class="dot-line">・<b>兩次間隔超過 24 小時的非誘發性（或反射性）發作</b>；</div>
+      <div class="dot-line">・<b>一次非誘發性發作，但未來 10 年再發風險與兩次發作後相當（≥60%）</b>；</div>
+      <div class="dot-line">・診斷為某個<b>癲癇症候群</b>。</div>
+      <span class="note"><b>「Resolved（已消解）」</b>：年齡依賴型癲癇症候群且已過該年齡，或<b>近 10 年無發作、且停用抗癲癇藥物至少 5 年</b>。</span><br><br>
+
+      <b>◆ 首次非誘發性發作的再發風險（AAN／AES 2015）：</b><br>
+      <div class="dot-line">・<b>再發風險以最初 2 年最高：21–45%</b>（Level A）。</div>
+      <div class="dot-line">・提高風險的臨床變項：<b>先前腦部損傷</b>（Level A）、<b>EEG 有癲癇樣異常</b>（Level A）、<b>影像有顯著異常</b>（Level B）、<b>夜間發作</b>（Level B）。</div>
+      <div class="dot-line">・<b>立即用藥可降低 2 年內再發（Level B），但可能不改善生活品質（Level C）；超過 3 年則不改善持續緩解率（Level B）</b>；抗癲癇藥不良反應機率 <b>7–31%</b>，多為輕微可逆（Level B）。</div><br>
+
+      <b>◆ 何時開始抗癲癇藥（NICE 4.2）：</b>確診癲癇即開始（4.2.1）。<b>首次非誘發性發作</b>後，符合下列任一即可考慮開始（4.2.2）：<b>神經學檢查有缺損</b>、<b>EEG 呈現明確癲癇活動</b>、<b>影像顯示結構異常</b>，或<b>與病人討論再發風險後，病人認為該風險不可接受</b>。
+    </div>
+  </details>
+
+  <div class="flow-step" id="sz_d1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">這次事件屬於哪一種？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="szPick('ev','first',this)">首次非誘發性發作<span class="fo-sub">已排除急性代謝／中毒／急性腦傷等誘因</span></button>
+      <button class="flow-opt" onclick="szPick('ev','provoked',this)">急性症狀性（誘發性）發作<span class="fo-sub">低血糖、低血鈉、酒精戒斷、中毒、子癲症、急性腦傷</span></button>
+      <button class="flow-opt" onclick="szPick('ev','known',this)">已知癲癇病人的發作<span class="fo-sub">與平常型態相同或近似</span></button>
+      <button class="flow-opt" onclick="szPick('ev','doubt',this)">懷疑非癲癇事件<span class="fo-sub">暈厥、解離性發作（PNES）、動作障礙</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="sz_dc2">↓</div>
+  <div class="flow-step hidden" id="sz_d2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">有沒有下列任何一項再發高風險因子？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="szPick('risk','yes',this)">有<span class="fo-sub">神經學缺損／EEG 癲癇樣放電／影像結構異常／夜間發作／先前腦部損傷</span></button>
+      <button class="flow-opt" onclick="szPick('risk','no',this)">都沒有<span class="fo-sub">檢查與影像皆正常</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="sz_drec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="szResetDx()">重置</button></div>
+</div>
+
+<!-- ==================== 分頁二：發作與重積分類 ==================== -->
+<div id="tab-cls" class="hidden">
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">兩套不同的分類，不要混用 Two Different Classifications</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>發作型（seizure type）</b>用 <b>ILAE 2025</b>——2025 年 4 月發表，<b>取代 2017 年版</b>，把 2017 年的 63 種發作型精簡為<b>四大類、21 種發作型</b>。<br>
+      <b>癲癇重積（status epilepticus）</b>用 <b>ILAE 2015</b> 的四軸分類（症狀學／病因／EEG／年齡），以及 <b>t₁／t₂</b> 兩個操作型時間點。<b>兩者是不同的東西：前者描述「這一次發作長什麼樣」，後者描述「這個持續狀態屬於哪一型、該何時介入」。</b><br>
+      <span class="note">ILAE 2025 明訂<b>不涵蓋新生兒發作</b>（另有專門文件），且<b>只涵蓋臨床發作</b>——僅由腦波活動辨識、無臨床表現者不在此分類內。</span>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;" open>
+    <summary>ILAE 2025 發作分類：四大類、21 種發作型 Seizure Types</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>主類別</th><th>發作型（seizure type）</th></tr>
+        <tr><td>1. 局部性<br>Focal (F)</td><td>1.1 <b>局部性、意識保留</b>（focal preserved consciousness, FPC）<br>1.2 <b>局部性、意識受損</b>（focal impaired consciousness, FIC）<br>1.3 <b>局部起始演變為雙側強直陣攣</b>（focal-to-bilateral tonic–clonic, FBTC）</td></tr>
+        <tr><td>2. 不明<br>Unknown (U)</td><td>2.1 不明是局部或全般、<b>意識保留</b>（PC）<br>2.2 不明是局部或全般、<b>意識受損</b>（IC）<br>2.3 <b>雙側強直陣攣</b>、起源不明（BTC）</td></tr>
+        <tr><td>3. 全般性<br>Generalized (G)</td><td><b>3.1 失神發作（absence seizures, AS）</b>：3.1.1 典型失神（TA）／3.1.2 非典型失神（AA）／3.1.3 肌陣攣失神（MA）／3.1.4 眼瞼肌陣攣併或不併失神（EMA）<br><b>3.2 全般強直陣攣（GTC）</b>：3.2.1 肌陣攣—強直陣攣／3.2.2 失神演變為強直陣攣<br><b>3.3 其他全般性發作</b>：3.3.1 全般肌陣攣（GM）／3.3.2 全般陣攣（GC）／3.3.3 <b>全般負性肌陣攣（GNM，2025 新列為發作型）</b>／3.3.4 全般癲癇痙攣（GES）／3.3.5 全般強直（GT）／3.3.6 全般失張（GA）／3.3.7 全般肌陣攣—失張（GMA）</td></tr>
+        <tr><td>4. 未分類<br>Unclassified</td><td>確定是癲癇發作，但沒有任何可供分類的資訊；<b>取得資訊後應重新分類</b></td></tr>
+      </table>
+      <span class="note">主類別 1／2／3 底下被列為「發作型」者共 21 項（失神發作 AS 本身亦計為一型），加上未分類。上表依原文之 Table 1 分類階層與 Box 2 定義重建；原文之 Table 1 與 Figure 4 為圖檔，本頁未逐格轉載其排版。</span><br><br>
+
+      <b>◆ 2017 → 2025 的六項關鍵改變（原文 Table 3）：</b><br>
+      <div class="dot-line">・<b>主類別名稱拿掉「onset（起始）」</b>——因有證據顯示全般性發作亦可能有局部起始，故改稱 focal seizure／generalized seizure／unknown whether focal or generalized。</div>
+      <div class="dot-line">・區分<b>分類子（classifier）</b>與<b>描述子（descriptor）</b>：主類別、發作型、意識狀態是分類子；症狀學特徵是描述子。</div>
+      <div class="dot-line">・<b>用「意識（consciousness）」取代「覺察（awareness）」作為分類子</b>，並以<b>覺察＋反應性</b>兩者操作型定義之。（2017 年後把「沒有反應」寫成「awareness 受損」的習慣是不準確的。）</div>
+      <div class="dot-line">・<b>「運動／非運動（motor vs nonmotor）」二分改為「有無可觀察到的表現」</b>——失神發作也常有運動現象（眼瞼肌陣攣、口部自動症），故失神不再冠上 nonmotor。</div>
+      <div class="dot-line">・<b>以症狀學的時序（chronological sequence）描述發作</b>，不再只憑第一個徵象。</div>
+      <div class="dot-line">・<b>癲癇性負性肌陣攣（epileptic negative myoclonus）列為發作型</b>。</div><br>
+
+      <b>◆ 癲癇痙攣（epileptic spasm）的雙重身分：</b>在<b>全般性</b>主類別中<b>是發作型</b>（常對應 IESS 嬰兒癲癇痙攣症候群）；在<b>局部性與不明</b>主類別中<b>是描述子</b>（寫成 focal epileptic spasm）。<b>嬰兒最關鍵的是及時辨識並啟動痙攣專屬治療，延誤會使發展預後變差</b>；局部性痙攣（單側或不對稱）或影像提示局部起源者，痙攣專屬治療失敗後應<b>早期考慮手術</b>。<br><br>
+
+      <b>◆ 意識判定的實務：</b>以<b>反應性（responsiveness）</b>與<b>回憶（recall，作為覺察的指標）</b>兩者判定；<b>意識狀態無法判定時，歸在該主類別的親代名稱底下</b>（即只寫 focal seizure）。注意<b>發作期失語（ictal aphasia）或持續的動作本身會讓病人「無法反應」，但意識可能是保留的</b>——原文以病例明示這種情形應歸為「意識保留」。<br><br>
+
+      <b>◆ 描述子（症狀學）分七類（原文 Table 2）：</b>① 基本運動現象（失張、陣攣、肌張力不全、癲癇性眼震、癲癇痙攣、眨眼、眼偏斜、旋轉、頭部定向、發作期輕癱、肌陣攣、肌陣攣—失張、負性肌陣攣、強直含 <i>chapeau de gendarme</i>／擊劍姿、強直陣攣含 figure-of-four、versive）② 複雜運動現象（各種自動症：遠端／近端／生殖器手勢自動症、發作期抓握、表情自動症含 gelastic／dacrystic、口部消化道自動症、言語與發聲自動症；過動行為）③ 感覺現象 ④ 認知與語言現象（失語、混亂、記憶障礙、déjà vu、強迫思考等）⑤ 自律神經現象（發作期心跳停止／心搏過緩／過速、潮紅、豎毛、發汗、上腹部感覺、噁心嘔吐、流涎、吐口水、瞳孔、呼吸暫停、失禁等）⑥ 情緒現象 ⑦ 無法描述的預兆。另有<b>發作後現象</b>（自律神經徵象、失明、混亂、頭痛、語言障礙、<b>擦鼻</b>、Todd 氏輕癱、精神症狀、無反應）與<b>體位修飾語</b>（左／右／雙側對稱／雙側不對稱＋身體部位）。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>ILAE 2015 癲癇重積：定義、t₁／t₂ 與四軸分類 Status Epilepticus Classification</summary>
+    <div class="box-inner">
+      <b>◆ 概念型定義：</b>癲癇重積是「<b>終止發作的機轉失效</b>，或<b>啟動了導致異常延長發作的機轉</b>（在時間點 t₁ 之後）的狀態；<b>並且在時間點 t₂ 之後可能造成長期後果</b>，包括神經元死亡、神經元損傷與神經網路改變」。<br><br>
+
+      <b>◆ 兩個操作型時間點（原文 Table 1）：</b>
+      <table class="def-table">
+        <tr><th>重積型別</th><th>t₁：應開始緊急治療</th><th>t₂：可能出現長期後果</th></tr>
+        <tr><td>強直陣攣型 SE</td><td><b>5 分鐘</b></td><td><b>30 分鐘</b></td></tr>
+        <tr><td>局部性 SE 併意識受損</td><td><b>10 分鐘</b></td><td><b>&gt;60 分鐘</b></td></tr>
+        <tr><td>失神重積</td><td>10–15 分鐘<sup>*</sup></td><td>不明</td></tr>
+      </table>
+      <span class="note"><sup>*</sup>原文註明失神重積的時間框證據有限，未來資料可能修正。<b>t₁／t₂ 因型別而異，別把「5 分鐘、30 分鐘」套用到所有重積。</b></span><br><br>
+
+      <b>◆ 軸一：症狀學（分類的骨幹）</b>——兩個判準是<b>有無明顯運動症狀</b>與<b>意識受損的程度</b>。<br>
+      <b>（A）有明顯運動症狀</b><br>
+      <div class="dot-line">・A.1 <b>抽搐型 SE（CSE，即強直陣攣型）</b>：A.1.a 全般抽搐／A.1.b 局部起始演變為雙側抽搐／A.1.c 不明是局部或全般</div>
+      <div class="dot-line">・A.2 <b>肌陣攣重積</b>：A.2.a 併昏迷／A.2.b 不併昏迷</div>
+      <div class="dot-line">・A.3 <b>局部運動型</b>：A.3.a 重複局部運動發作（Jacksonian）／A.3.b <b>持續性局部癲癇（epilepsia partialis continua, EPC）</b>／A.3.c adversive status／A.3.d oculoclonic status／A.3.e 發作期輕癱（局部抑制型 SE）</div>
+      <div class="dot-line">・A.4 強直型重積　・A.5 過動型 SE</div>
+      <b>（B）無明顯運動症狀（即非抽搐型重積 NCSE）</b><br>
+      <div class="dot-line">・B.1 <b>NCSE 併昏迷</b>（含所謂 subtle SE）</div>
+      <div class="dot-line">・B.2 NCSE 不併昏迷：<b>全般型</b>（典型／非典型／肌陣攣失神重積）；<b>局部型</b>（不伴意識受損之 aura continua——自律、感覺、視覺、嗅覺、味覺、情緒／精神／體驗性或聽覺症狀；失語重積；伴意識受損）；<b>不明是局部或全般</b>（自律神經性 SE）</div>
+      <span class="note"><b>「界線症候群（boundary syndromes）」</b>——癲癇性腦病變、<b>昏迷併不演變的癲癇樣 EEG 型態</b>、癲癇病人的行為障礙（如精神病）、<b>合併癲癇樣 EEG 的急性混亂狀態（如譫妄）</b>——原文列為「目前不確定」的狀況，不逕自歸類為重積。</span><br><br>
+
+      <b>◆ 軸二：病因</b>——<b>已知（症狀性）</b>：急性（中風、中毒、腦炎…）、遠期（外傷後、腦炎後、中風後…）、進行性（腦瘤、進行性肌陣攣癲癇、失智）、特定電臨床症候群中的 SE；<b>未知（隱因性）</b>。<b>原文明訂「idiopathic／genetic」不適用於重積的病因</b>——即使是原發性全般癲癇（如青少年肌陣攣癲癇），其重積往往是<b>用藥不當、突然停藥或中毒</b>所觸發。<br><br>
+
+      <b>◆ 軸三：EEG</b>——原文說明<b>目前沒有任何實證的 SE 腦波判準</b>，建議以六個面向描述：位置、型態名稱（週期性放電／節律性 delta／棘慢波及其亞型）、形態（含三相波形態、振幅、極性）、時間特徵（頻率、持續、是否演變或波動）、調控（刺激誘發或自發）、<b>介入（給藥）後的變化</b>。<br><br>
+
+      <b>◆ 軸四：年齡</b>——新生兒（0–30 天）、嬰兒（1 個月–2 歲）、兒童（&gt;2–12 歲）、青少年與成人（&gt;12–59 歲）、老年（≥60 歲）。<br><br>
+
+      <b>◆ 重症端常用的三個延伸定義（ICS 2025）：</b><br>
+      <div class="dot-line">・<b>難治性 SE（RSE）</b>：對<b>初始藥物治療（一個 benzodiazepine ＋ 一個非 benzodiazepine 抗癲癇藥）</b>無反應；需入重症並以靜脈麻醉抑制發作。</div>
+      <div class="dot-line">・<b>超難治性 SE（SRSE）</b>：<b>已用足量連續靜脈麻醉超過 24 小時</b>仍持續或復發。</div>
+      <div class="dot-line">・<b>NORSE</b>：無癲癇病史、無相關神經疾病者的<b>新發難治性重積</b>，且無明確結構、代謝或中毒病因（含病毒與自體免疫病因）；廣泛評估後仍找不到原因者稱<b>cryptogenic NORSE</b>。<b>FIRES</b> 是 NORSE 的次類，<b>需在難治性重積前 1–14 天有發燒性疾病</b>（發作當下可以沒有發燒）。</div>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 分頁三：癲癇重積處置 ==================== -->
+<div id="tab-se" class="hidden">
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">整條治療線只有一句重點 The Clock</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>benzodiazepine 要「一次給足單一完整劑量」</b>——AES 2016 明訂初始治療不可拆成多次小劑量；<b>劑量不足是重積演變成難治性的最大可修正因素</b>。<br>
+      <b>不要因為怕呼吸抑制而給不夠</b>：AES 2016 以 Level A 指出，<b>接受 benzodiazepine 者的呼吸抑制發生率低於接受安慰劑者</b>——呼吸問題主要來自未被終止的重積本身。<br>
+      <b>第二線比第一線差、第三線又差很多</b>（AES 2016，成人 Level A）——所以第一線給對、給足的價值遠高於後面補救。<b>維持性抗癲癇藥物要與急救藥物並行開立</b>（ICS 2025），原本的藥物<b>維持原劑量、近期減量者要加回去</b>。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>四階段時間分期與各線處置 AES 2016 Algorithm</summary>
+    <div class="box-inner">
+      <b>◆ 穩定期 Stabilization（0–5 分）：</b>氣道、呼吸、循環、生命徵象；建立靜脈路徑；<b>驗血糖</b>（低血糖給葡萄糖，慢性酒精或營養不良者併 thiamine）；抽血（電解質、鈣、鎂、藥物濃度、毒物）。<br>
+      <b>◆ 初始治療 Initial therapy（5–20 分）：</b><b>benzodiazepine 為首選</b>（Level A，四篇 class I RCT）。<br>
+      <b>◆ 第二線 Second therapy（20–40 分）：</b>fosphenytoin、valproate、levetiracetam <b>三選一，無實證優劣</b>（ESETT 證實三者等效）。<br>
+      <b>◆ 第三線 Third therapy（&gt;40 分）：</b>無明確實證——<b>重複二線</b>或用<b>麻醉劑量</b>的 thiopental／midazolam／pentobarbital／propofol，<b>皆須持續 EEG 監測</b>。<br>
+      <span class="note">重症或 ICU 病人可能<b>更快通過或跳過某階段</b>，直接進入第三階段。</span><br><br>
+
+      <b>◆ 一線 benzodiazepine（AES 2016，成人）：</b><br>
+      <div class="dot-line">・<b>無靜脈路徑時首選 IM midazolam 10 mg</b>（&gt;40 kg；13–40 kg 為 5 mg）——<b>RAMPART</b> 試驗證實在無 IV access 時<b>優於</b> IV lorazepam（Level A；到院時已無發作且不需救援治療者 73.4% vs 63.4%）。</div>
+      <div class="dot-line">・<b>IV lorazepam 0.1 mg/kg（單次上限 4 mg）</b>，可<b>重複一次</b>；<b>IV diazepam 0.15–0.2 mg/kg（單次上限 10 mg）</b>，可<b>重複一次</b>；兩者效果<b>無顯著差異</b>（Level A）。</div>
+      <div class="dot-line">・替代：IV phenobarbital 15 mg/kg 單次（起效較慢）；院前或無上述選項時 rectal diazepam、intranasal midazolam、buccal midazolam 合理（Level B）。</div>
+      <div class="dot-line">・<b>NICE NG217 的社區版本</b>：有個人化緊急處置計畫就照計畫給；沒有的話<b>社區給 buccal midazolam 或 rectal diazepam</b>，<b>若靜脈路徑與急救設備立即可用則用 IV lorazepam</b>（7.1.3）。<b>第一劑無效：社區叫救護車、院內找專家</b>（7.1.7）；<b>5–10 分鐘內未停止給第二劑</b>（7.1.8）。</div><br>
+
+      <b>◆ 二線（ESETT 2019 一手劑量）：</b>levetiracetam <b>60 mg/kg（上限 4500 mg）</b>／fosphenytoin <b>20 mgPE/kg（上限 1500 mgPE）</b>／valproate <b>40 mg/kg（上限 3000 mg）</b>。60 分鐘時終止發作且意識改善者分別為 <b>47%／45%／46%</b>，<b>三者等效</b>（試驗因無法分出優劣而提前中止）。fosphenytoin 組低血壓與插管數值上較多、levetiracetam 組死亡數值上較多，<b>但差異均不顯著</b>。<br>
+      <span class="note">ESETT <b>排除肝病與嚴重腎功能不全</b>、且<b>65 歲以上收案極少</b>；<b>該試驗有 10% 收案者最後判定為心因性非癲癇發作</b>。NICE 的順位寫法略有不同：兩劑 benzodiazepine 無效後 <b>levetiracetam／phenytoin／sodium valproate 三者任一</b>，並註明「<b>levetiracetam 可能給藥較快、不良反應較少</b>」（7.1.9）。</span><br><br>
+
+      <b>◆ 第三線／難治（RSE）：</b>二線失敗即為 refractory。選項為<b>重複二線</b>或<b>麻醉劑量</b>（midazolam／propofol／pentobarbital／thiopental），全程<b>持續 EEG</b>。<b>NCS 2012 明言目前資料不足以判定 midazolam、propofol 或 pentobarbital 何者較優</b>：propofol 要考慮 PRIS；<b>midazolam 不含 propylene glycol，低血壓可能較少</b>；<b>pentobarbital 急性控制率可能較高但副作用較多</b>。<br>
+      <b>◆ 強度與時間：</b>NCS 2012——<b>以 cEEG 而非血中藥物濃度指導治療</b>；慣例是<b>維持電生理發作控制 24–48 小時後再逐步減量</b>。ICS 2025——<b>不做每日鎮靜中斷（sedation hold）</b>，改為漸進式減量；<b>至少 24 小時後才開始減量，復發即回到原劑量</b>。
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">病人資料 Patient</div>
+    <div class="field-row">
+      <label>體重</label>
+      <input type="number" id="se_wt" step="1" placeholder="—">
+      <span class="unit">kg</span>
+    </div>
+    <div class="field-row">
+      <label>靜脈路徑</label>
+      <select id="se_iv">
+        <option value="yes">已建立 IV</option>
+        <option value="no">尚無 IV（考慮 IM／IN／buccal）</option>
+      </select>
+    </div>
+    <div class="note">輸入體重後，下方各線藥物即依 AES 2016／ESETT 的每公斤劑量與上限、以及 NCS 2012 的麻醉輸注建議自動換算；達上限者以上限值顯示。<b>ESETT 排除肝病與嚴重腎功能不全者，高齡與極端體重的最適劑量仍在討論中</b>（ICS 2025）。</div>
+  </div>
+
+  <div class="result">
+    <div class="metric-label">Initial therapy（5–20 分）— benzodiazepine，一次給足</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_first">請輸入體重。</div>
+    <div class="metric-label" style="margin-top:14px;">Second therapy（20–40 分）— 三選一，無優劣</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_second">請輸入體重。</div>
+    <div class="metric-label" style="margin-top:14px;">Third therapy（&gt;40 分，RSE）— 麻醉劑量連續輸注，全程 cEEG</div>
+    <div style="font-size:15px; margin-top:4px;" id="se_third">請輸入體重。</div>
+    <div class="risk-note">一線 benzodiazepine 依 AES 2016 演算法（IM midazolam 為 RAMPART 固定劑量）；二線三藥依 ESETT 2019；<b>給藥速率與麻醉輸注劑量依 NCS 2012 指引之 Table 7／Table 8</b>。<b>benzodiazepine 一次給足單一完整劑量</b>，lorazepam 與 diazepam 可各重複一次。二線選擇依禁忌調整（valproate 避開肝病、粒線體疾病與孕婦；fosphenytoin 留意低血壓與心律不整；levetiracetam 依腎功能調整）。</div>
+  </div>
+
+  <div class="flow-step" id="sz_s1" style="margin-top:16px;">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">現在走到哪一階段？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="szPick('stage','stab',this)">發作中，&lt;5 分鐘<span class="fo-sub">穩定期：ABC、驗血糖、建立 IV</span></button>
+      <button class="flow-opt" onclick="szPick('stage','init',this)">已達 5 分鐘（t₁）<span class="fo-sub">尚未給或正要給第一線 benzodiazepine</span></button>
+      <button class="flow-opt" onclick="szPick('stage','second',this)">足量 benzodiazepine 後仍發作<span class="fo-sub">20–40 分，進入第二線</span></button>
+      <button class="flow-opt" onclick="szPick('stage','rse',this)">二線也失敗（RSE）<span class="fo-sub">一個 benzo ＋ 一個非 benzo 抗癲癇藥無效</span></button>
+      <button class="flow-opt" onclick="szPick('stage','srse',this)">麻醉 &gt;24 小時仍發作或減量復發（SRSE）</button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="sz_srec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
+  <div class="flow-connector" id="sz_c2">↓</div>
+  <div class="flow-step" id="sz_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">抽搐停止之後，意識恢復了嗎？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="szPick('post','awake',this)">10 分鐘內回到基準<span class="fo-sub">可交談、可配合指令</span></button>
+      <button class="flow-opt" onclick="szPick('post','notback',this)">超過 10 分鐘未回到基準</button>
+      <button class="flow-opt" onclick="szPick('post','coma',this)">仍昏迷／已插管鎮靜中</button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="sz_prec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請完成步驟 2</div>
+  </div>
+
+  <details class="def-box" style="margin:12px 0;">
+    <summary>持續腦波監測：何時做、做多久、看什麼 cEEG（NCS 2012 ＋ ICS 2025）</summary>
+    <div class="box-inner">
+      <b>◆ 適應症（NCS 2012 Table 10）：</b><br>
+      <div class="dot-line">・<b>臨床發作或重積後超過 10 分鐘未回到基準</b>——<b>抽搐停止後仍有 18–50% 存在持續的非抽搐性重積</b>（Class I, level B）。</div>
+      <div class="dot-line">・<b>昏迷（含心跳停止後）</b>——<b>非抽搐性發作發生率 20–60%</b>（Class I, level B）。</div>
+      <div class="dot-line">・初次 30 分鐘 EEG 出現癲癇樣活動或週期性放電。</div>
+      <div class="dot-line">・<b>使用連續輸注抗癲癇／麻醉藥物、臨床抽搐已消失者——cEEG 是唯一能知道治療是否成功的方法。</b></div><br>
+
+      <b>◆ 時機與長度：</b><b>懷疑仍有發作時應在重積發生 1 小時內開始 cEEG</b>（strong recommendation, low quality）；急性腦傷後的昏迷病人<b>至少監測 48 小時</b>；<b>電生理發作停止後或減藥期間再監測 24 小時</b>。ICS 2025 亦要求<b>發作停止後在鎮靜期間至少再監測 24 小時</b>；無法全程監測時，至少監測到確認發作已控制、排除潛在的次臨床重積。<br><br>
+
+      <b>◆ 技術與人力（ICS 2025）：</b>判讀者須受過 cEEG 訓練，能看原始波形與量化腦波；<b>八導程的簡化蒙太奇可接受</b>（前提是涵蓋足夠腦區）；<b>BIS 不能取代 EEG——會漏掉局部發作</b>。無 cEEG 時可用<b>延長時間的間歇性 EEG</b> 確認發作是否停止，並與三級神經重症中心密切合作。<br><br>
+
+      <b>◆ 治療終點（NCS 2012 Table 11）：</b><b>非抽搐性發作停止</b>（Class I, level B）；其餘如<b>瀰漫性 beta 活動</b>（驗證麻醉藥效果）、<b>爆發抑制 burst suppression（爆發間隔 8–20 秒）</b>、<b>完全抑制</b>皆為 Class IIb, level C。<b>治療強度應由 cEEG 而非血中濃度決定。</b>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>非抽搐性重積 NCSE：怎麼認、怎麼決定要不要治</summary>
+    <div class="box-inner">
+      <b>◆ 定義與臨床分流（ICS 2025）：</b>NCSE 是<b>沒有明顯（臨床上顯而易見）運動成分</b>的重積，<b>診斷依賴 EEG</b>。<br>
+      <div class="dot-line">・<b>NCSE 併意識受損：死亡率高，應比照抽搐型重積治療</b>；可在抽搐型重積之後接續發生，是<b>可治療的昏迷原因</b>。</div>
+      <div class="dot-line">・<b>NCSE 表現為與基準值不同的精神狀態或行為改變</b>者：風險較不明確，<b>多數不需要入重症</b>；共識仍認為<b>早期積極治療是可取的</b>，本指引其餘建議大多仍適用。</div><br>
+
+      <b>◆ Salzburg 判準（Leitinger, Lancet Neurol 2016 驗證版）：</b>以 ACNS 標準化重症腦波術語為描述基礎——<br>
+      <div class="dot-line">・<b>癲癇樣放電 &gt;2.5 Hz</b>；或</div>
+      <div class="dot-line">・<b>癲癇樣放電 ≤2.5 Hz，或節律性 delta／theta 活動（&gt;0.5 Hz）</b>，<b>再加上下列任一項</b>：① <b>靜脈抗癲癇藥物後臨床與腦波同時改善</b>；② 細微的臨床發作現象；③ 典型的時空演變（spatiotemporal evolution）。</div>
+      <div class="dot-line">・<b>已知癲癇性腦病變者另有修改版</b>：與基線相比放電更明顯或更頻繁，<b>且伴隨可觀察到的臨床狀態改變</b>，並在靜脈抗癲癇藥物後臨床與腦波同時改善。</div>
+      <div class="dot-line">・<b>診斷準確度</b>：驗證世代（n=120，其中 36% 確為 NCSE）<b>敏感度 97.7%、特異度 89.6%、整體準確度 92.5%</b>，陰性預測值 98.6%；判讀者間一致性 κ=0.87。</div>
+      <span class="note"><b>「possible NCSE」＝ ACNS 2021 所稱的「發作—發作間期連續體（ictal–interictal continuum, IIC）」</b>。<b>這一區的病人是否該積極治療仍有爭議</b>——NCS 2012 即指出「這些型態是否造成額外腦損傷、是否值得積極抗癲癇治療仍具爭議」。</span><br><br>
+
+      <b>◆ 診斷性藥物試驗的陷阱：</b>Salzburg 判準把「給靜脈抗癲癇藥後<b>臨床與腦波同時</b>改善」列為條件——<b>只有腦波改善、意識沒有跟著改善並不算數</b>（鎮靜作用本身就會壓下腦波）。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>超難治性重積 SRSE 與 NORSE／FIRES</summary>
+    <div class="box-inner">
+      <b>◆ 一般原則（ICS 2025）：</b>麻醉藥物<b>至少維持 24 小時後才減量</b>，臨床或腦波上發作復發即重新開始。<b>沒有任何單一介入有足夠證據</b>，治療必須指向可矯正的病因；由重症與神經科<b>共同決策</b>，理想上轉三級神經重症中心。<b>只要 MRI 上沒有毀滅性腦損傷的證據就應繼續治療</b>——注意<b>MRI 上的皮質高訊號可能是發作本身造成的可逆變化</b>，其意義並不確定；<b>超難治性重積後數週至數月才出現良好恢復是可能的</b>。<br><br>
+
+      <b>◆ 可考慮的介入（ICS 2025）：</b><br>
+      <div class="dot-line">・<b>換另一種麻醉藥（如 thiopentone）再連續輸注 48 小時</b>以抑制腦波上的病理變化。</div>
+      <div class="dot-line">・<b>ketamine 靜脈輸注</b>或<b>吸入性麻醉（如 isoflurane）</b>。</div>
+      <div class="dot-line">・<b>加上其他抗癲癇藥物，例如 lacosamide 或 phenobarbitone</b>。</div>
+      <div class="dot-line">・<b>確認鎂離子在正常範圍</b>；部分單位額外給輸注、目標血中濃度 1.0–1.5 mmol/L。</div>
+      <div class="dot-line">・持續發作時：<b>重新影像</b>找潛在腦損傷；若為局部標的病灶<b>考慮神經外科</b>；三級中心偶爾採用<b>生酮飲食</b>（⚠<b>與 propofol 併用要小心——脂肪酸氧化受損會提高 PRIS 風險</b>）、<b>SPECT</b>、<b>迷走神經刺激</b>。</div>
+      <span class="note"><b>ketamine 的證據等級</b>：迄今皆為系統性回顧與病例系列（無隨機試驗），統合分析之整體發作終止率約 <b>56%</b>（成人約 59%、兒童約 50%），且<b>越早使用效果越好</b>——重積約 3 天內使用的有效率明顯高於拖到數週後才用；<b>劑量在各研究間差異極大，不是獨立預後因子</b>。本頁不轉載未經一手核對的固定劑量。</span><br><br>
+
+      <b>◆ 想到免疫（ICS 2025 ＋ NORSE/FIRES 2022 國際共識）：</b>自體免疫腦炎、免疫媒介性難治重積、<b>NORSE／FIRES</b>——<b>即使血清抗體陰性也可能需要免疫調節治療</b>，應由神經科主導。<br>
+      <div class="dot-line">・<b>第一線</b>：<b>脈衝式 methylprednisolone 1 g/day × 3 天</b>、<b>靜脈免疫球蛋白（IVIG）</b>或<b>血漿置換</b>。</div>
+      <div class="dot-line">・<b>第二線</b>：<b>rituximab</b>（375 mg/m² 每週 × 4 次，成人亦可 1 g 於第 1、14 天各一次）、<b>cyclophosphamide</b>（500–1000 mg/m² 每月 × 3–6 個月）、<b>tocilizumab</b>（抗 IL-6 受體，8 mg/kg 每月至少 2 次）、<b>anakinra</b>（IL-1 受體拮抗劑，最高 5 mg/kg BD）、<b>cannabidiol</b>、<b>bortezomib</b>（尤其 NMDAR 腦炎）。</div>
+      <span class="note">NORSE／FIRES 的<b>85 條國際共識建議（Delphi 法、48 位專家）</b>分為疾病特徵、診斷檢查、急性治療、急性後期治療與研究方向五節，並附診斷評估與急性治療兩張流程表。二線免疫治療的實證仍僅止於病例系列：一篇回顧統計 75 位病人（anakinra 52、tocilizumab 21、鞘內 dexamethasone 8），<b>兩週內發作控制率分別約 73%／70%／50%</b>，但<b>多數病人仍留下長期失能與難治性癲癇</b>，且<b>治療時機與長期功能預後之間未見明確相關</b>。</span>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 分頁四：藥物 ==================== -->
+<div id="tab-drug" class="hidden">
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">急救用藥的三個常見錯誤 Three Dosing Errors</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      ① <b>benzodiazepine 給不足</b>——拆成多次小劑量是 AES 2016 明文反對的做法。<br>
+      ② <b>忘了同時開維持性抗癲癇藥</b>——ICS 2025 把「未在早期建立適當的維持治療」列為治療失敗的三大原因之一；<b>phenytoin 在負荷劑量後的頭幾天特別容易掉到治療濃度以下</b>。<br>
+      ③ <b>忽略給藥速率</b>——fosphenytoin／phenytoin 給太快會低血壓與心律不整，valproate 與 levetiracetam 則有各自的速率上限。
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;" open>
+    <summary>間歇（bolus）給藥劑量表 Intermittent Dosing（NCS 2012 Table 7 ＋ ESETT 上限）</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>藥物</th><th>起始劑量</th><th>給藥速率／替代途徑</th><th>嚴重不良反應</th><th>備註</th></tr>
+        <tr><td>Diazepam</td><td>0.15 mg/kg IV，單次上限 10 mg，<b>5 分鐘可重複</b></td><td>≤5 mg/min（IV push）；兒童直腸給藥 0.2–0.5 mg/kg（依年齡）</td><td>低血壓、呼吸抑制</td><td>快速再分布（作用短）、有活性代謝物、針劑含 propylene glycol</td></tr>
+        <tr><td>Lorazepam</td><td>0.1 mg/kg IV，單次上限 4 mg，<b>5–10 分鐘可重複</b></td><td>≤2 mg/min（IV push）</td><td>低血壓、呼吸抑制</td><td>與生理食鹽水 1:1 稀釋；針劑含 propylene glycol</td></tr>
+        <tr><td>Midazolam</td><td><b>0.2 mg/kg IM，上限 10 mg</b></td><td>&gt;40 kg 給 10 mg IM；13–40 kg 給 5 mg IM；<b>鼻內 0.2 mg/kg、口頰 0.5 mg/kg（NCS 原表列於兒童欄）</b></td><td>呼吸抑制、低血壓</td><td>有活性代謝物、經腎排除、快速再分布</td></tr>
+        <tr><td>Fosphenytoin</td><td>20 mgPE/kg IV（<b>ESETT 上限 1500 mgPE</b>），可再加 5 mg/kg</td><td>≤150 mgPE/min；負荷後 10 分鐘可追加。兒童 ≤3 mg/kg/min</td><td>低血壓、心律不整</td><td>可與生理食鹽水、葡萄糖、乳酸林格液相容；<b>有 fosphenytoin 時優於 phenytoin</b>（耐受性，AES Level A）</td></tr>
+        <tr><td>Phenytoin</td><td>20 mg/kg IV，可再加 5–10 mg/kg</td><td>≤50 mg/min；兒童 ≤1 mg/kg/min</td><td>心律不整、低血壓、<b>紫手套症候群</b></td><td><b>只與生理食鹽水相容</b>；含 propylene glycol</td></tr>
+        <tr><td>Levetiracetam</td><td>1000–3000 mg IV；<b>ESETT 為 60 mg/kg，上限 4500 mg</b></td><td>2–5 mg/kg/min IV</td><td>—</td><td>藥物交互作用少、<b>非肝臟代謝</b>；腎功能不良需調整</td></tr>
+        <tr><td>Valproate sodium</td><td>20–40 mg/kg IV，可再加 20 mg/kg；<b>ESETT 為 40 mg/kg，上限 3000 mg</b></td><td>3–6 mg/kg/min；兒童 1.5–3 mg/kg/min</td><td>高血氨、胰臟炎、血小板低下、肝毒性</td><td><b>頭部外傷者謹慎使用</b>；多形性膠質母細胞瘤病人可能為優先選擇</td></tr>
+        <tr><td>Phenobarbital</td><td>20 mg/kg IV，可再加 5–10 mg/kg（<b>AES 一線替代為 15 mg/kg 單次</b>）</td><td>50–100 mg/min；負荷後 10 分鐘可追加</td><td>低血壓、呼吸抑制</td><td>含 propylene glycol</td></tr>
+        <tr><td>Lacosamide</td><td>200–400 mg IV</td><td>200 mg 靜脈輸注 15 分鐘以上</td><td>PR 間期延長、低血壓</td><td>藥物交互作用少；<b>用於重積的經驗有限</b>（NCS 2012 列為 Class IIb, level C）</td></tr>
+        <tr><td>Topiramate</td><td>200–400 mg 經鼻胃管／口服</td><td>300–1600 mg/day 分 2–4 次</td><td>代謝性酸中毒</td><td><b>無靜脈劑型</b></td></tr>
+      </table>
+      <span class="note">上表劑量、速率、不良反應與備註取自 <b>NCS 2012 指引 Table 7</b>；ESETT 的每公斤劑量與上限另行標注。<b>NICE 的三個二線選項為 levetiracetam／phenytoin／sodium valproate</b>（7.1.9），第三線為 <b>phenobarbital 或全身麻醉</b>（7.1.11）。</span>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>難治性重積的連續輸注麻醉劑量表 RSE Infusions（NCS 2012 Table 8）</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>藥物</th><th>起始劑量</th><th>連續輸注（依 EEG 滴定）</th><th>突破性發作</th><th>嚴重不良反應／注意</th></tr>
+        <tr><td>Midazolam</td><td>0.2 mg/kg，以 2 mg/min 速率給</td><td>0.05–2 mg/kg/hr</td><td>0.1–0.2 mg/kg bolus，每 3–4 小時將輸注速率增加 0.05–0.1 mg/kg/hr</td><td>呼吸抑制、低血壓；<b>久用會出現耐受性（tachyphylaxis）</b>。有活性代謝物、經腎排除、<b>不含 propylene glycol</b></td></tr>
+        <tr><td>Propofol</td><td>負荷 1–2 mg/kg，自 20 mcg/kg/min 起始</td><td>30–200 mcg/kg/min</td><td>每 5 分鐘增加 5–10 mcg/kg/min，或 1 mg/kg bolus 加速率調整</td><td>低血壓（尤其重症病人給負荷劑量時）、呼吸抑制、心衰竭、橫紋肌溶解、代謝性酸中毒、腎衰竭（<b>PRIS</b>）。<b>&gt;80 mcg/kg/min 且超過 48 小時要特別小心</b>；兒童 &gt;65 mcg/kg/min 謹慎、幼童禁用。<b>需計入每日熱量（1.1 kcal/mL）</b></td></tr>
+        <tr><td>Pentobarbital</td><td>5–15 mg/kg，可再加 5–10 mg/kg，速率 ≤50 mg/min</td><td>0.5–5 mg/kg/hr</td><td>5 mg/kg bolus，每 12 小時將速率增加 0.5–1 mg/kg/hr</td><td>低血壓、呼吸抑制、心肌抑制、麻痺性腸阻塞；<b>高劑量下神經學功能完全消失</b>。需機械通氣，含 propylene glycol</td></tr>
+        <tr><td>Thiopental</td><td>2–7 mg/kg，速率 ≤50 mg/min</td><td>0.5–5 mg/kg/hr</td><td>—</td><td>同 pentobarbital；在部分國家用以取代 pentobarbital</td></tr>
+      </table>
+      <span class="note">使用連續輸注常需<b>輔助通氣與心血管監測</b>，並可能因低血壓與心肺抑制而需要<b>升壓劑</b>（NCS 2012）。<b>治療終點由 cEEG 決定</b>，不是血中濃度。</span>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>維持治療：依發作型選藥 Maintenance ASM by Seizure Type（NICE NG217, 2022）</summary>
+    <div class="box-inner">
+      <table class="def-table">
+        <tr><th>發作型</th><th>第一線</th><th>後線</th></tr>
+        <tr><td>全般強直陣攣</td><td><b>sodium valproate</b>（男性；&lt;10 歲且未來不太可能需要生育期用藥的女孩；無生育可能的女性）<br><b>lamotrigine 或 levetiracetam</b>（有生育可能的女性與女孩）</td><td>valproate 失敗 → lamotrigine 或 levetiracetam；單一治療失敗 → 加上 clobazam、lamotrigine、levetiracetam…等</td></tr>
+        <tr><td>局部性發作<br>（含演變為雙側強直陣攣）</td><td><b>lamotrigine 或 levetiracetam</b>（考慮使用）</td><td>第二線單一治療：<b>carbamazepine／oxcarbazepine／zonisamide</b>；第三線單一治療：<b>lacosamide</b>；加上去的選項另含 topiramate</td></tr>
+        <tr><td>失神發作</td><td><b>ethosuximide</b></td><td>第二線 <b>sodium valproate</b>（同上之性別限制）；第三線 lamotrigine 或 levetiracetam</td></tr>
+        <tr><td>肌陣攣發作</td><td><b>sodium valproate</b>（男性等同上）／<b>levetiracetam</b>（有生育可能的女性與女孩）</td><td>valproate 失敗 → levetiracetam；再失敗 → brivaracetam、clobazam…等</td></tr>
+      </table>
+      <span class="note">上表只列成人最常遇到的四種發作型；<b>強直或失張發作（NICE 5.5）、特發性全般癲癇（5.6）與兒童期發病的癲癇症候群（Dravet、Lennox–Gastaut、嬰兒癲癇痙攣症候群等，NICE 第 6 章）另有專節，本表未涵蓋</b>。</span><br><br>
+      <b>◆ 會讓某些發作惡化的藥（NICE 5.3.4，失神發作族群）：</b><b>carbamazepine、gabapentin、oxcarbazepine、phenobarbital、phenytoin、pregabalin、tiagabine、vigabatrin</b>。<b>在原發性全般癲癇誤用鈉離子通道阻斷劑，會讓失神與肌陣攣惡化</b>——這也是 ILAE 2015 提醒的重積誘因之一（如 phenytoin 用於進行性肌陣攣癲癇、carbamazepine 用於青少年肌陣攣癲癇或失神癲癇）。<br><br>
+      <b>◆ Valproate 的性別限制：</b>NICE 明訂<b>有生育可能的女性與女孩不得使用 valproate 單一治療</b>，除非其他選項皆失敗、已充分討論（含對胎兒的風險）、並已納入懷孕預防計畫（5.1.4）；須遵循 MHRA 對 valproate 的安全性建議。<br><br>
+      <b>◆ 交互作用：</b>ICS 2025 提醒「<b>許多用於重積的藥物有顯著交互作用，包括與其他抗癲癇藥、以及重要的抗生素與抗黴菌藥</b>，請諮詢藥師」。<span class="sys-caveat">臨床上最常撞到的例子是 <b>carbapenem 類（如 meropenem）會使 valproate 血中濃度急遽下降</b>——此為藥品仿單／交互作用資料庫層級的資訊，非上述指引條文，實際處置請依院內藥師建議。</span>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 分頁五：特殊情境與後續 ==================== -->
+<div id="tab-sp" class="hidden">
+
+  <div class="card" style="border-left:3px solid var(--accent2);">
+    <div class="section-title">四種「不照重積演算法走」的情況 Four Exceptions</div>
+    <div class="note" style="font-size:13px; line-height:1.7;">
+      <b>子癲症</b>（第一線是硫酸鎂不是 benzodiazepine）、<b>酒精戒斷發作</b>（benzodiazepine，而 phenytoin 無效）、<b>心跳停止後的節律性／週期性腦波型態</b>（抑制它並不改善預後）、<b>急性腦傷後的預防性用藥</b>（多數情況不建議或僅建議短期）。<b>這四種情況若照一般重積演算法一路加藥，做的是無效甚至有害的事。</b>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>子癲症 Eclampsia（NICE NG133）</summary>
+    <div class="box-inner">
+      <b>◆ 硫酸鎂是第一線，不是抗癲癇藥：</b>NICE NG133 採用 <b>Collaborative Eclampsia Trial 給藥法</b>——<b>負荷劑量 4 g 靜脈輸注 5–15 分鐘，接著 1 g/hour 維持 24 小時</b>；<b>已發生子癲發作者，最後一次發作後再續 24 小時</b>。<br>
+      <b>◆ 適應症：</b>重症照護情境下，已發生或曾發生子癲發作的重度高血壓／重度子癲前症孕產婦應給靜脈硫酸鎂。<br>
+      <b>◆ 注意：</b>孕期使用硫酸鎂<b>超過 5–7 天</b>與新生兒骨骼不良影響、低血鈣與高血鎂有關，長期或重複使用時應監測新生兒鈣與鎂。<br>
+      <span class="note">ICS 2025 的重積指引<b>明文排除產科族群</b>，並指向產科專屬指引；NICE NG217 亦把子癲症列為「可能需要額外藥物治療」的重積病因（7.1.4）。</span>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>酒精戒斷發作 Alcohol Withdrawal Seizures（ASAM 2020）</summary>
+    <div class="box-inner">
+      <div class="dot-line">・<b>benzodiazepine 是第一線</b>——因其在減少戒斷發作與戒斷性譫妄上的實證最完整。</div>
+      <div class="dot-line">・<b>不要用 phenytoin</b>，除非病人另有需要治療的癲癇疾患。</div>
+      <div class="dot-line">・benzodiazepine 有禁忌時，輕中度戒斷可用 <b>carbamazepine 或 gabapentin</b>，<b>但兩者都不建議作為第一線</b>——尚未確立能明確減少發作與戒斷性譫妄。</div>
+      <div class="dot-line">・慢性酒精或營養不良者在急救階段給葡萄糖時<b>併用 thiamine</b>（AES 2016 穩定期）。</div>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>心跳停止後的腦波型態與肌陣攣 Post-Arrest（TELSTAR）</summary>
+    <div class="box-inner">
+      <b>◆ TELSTAR（NEJM 2022，n=172）：</b>心跳停止後昏迷、cEEG 出現<b>節律性或週期性腦波型態（RPP）</b>者，隨機分派為「以階梯式抗癲癇藥物<b>抑制 RPP 至少 48 小時</b>＋標準照護」或「單純標準照護」。<br>
+      <div class="dot-line">・RPP 出現的中位時間為心跳停止後 <b>35 小時</b>；<b>157 位有資料者中 62% 有肌陣攣</b>。</div>
+      <div class="dot-line">・完全抑制達 48 小時者：治療組 56%、對照組 2%。</div>
+      <div class="dot-line">・<b>3 個月不良神經學結果：治療組 90% vs 對照組 92%（差 2 個百分點，95% CI −7 至 11，p=0.68）</b>；死亡率 80% vs 82%；<b>治療組的 ICU 住院天數與機械通氣時間略長</b>。</div>
+      <span class="note"><b>結論是「抑制 RPP 並不改善預後」</b>，不是「不必做 cEEG」——cEEG 仍是找出可治療之非抽搐性重積的必要工具（NCS 2012 將昏迷含心跳停止後列為 cEEG 適應症，非抽搐性發作發生率 20–60%）。<b>缺氧後肌陣攣不可單獨用來判定預後</b>，預後判定應多模態並延後定論。</span>
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>急性腦傷後要不要預防性用抗癲癇藥 Seizure Prophylaxis（NCS 2024 ×2 ＋ AHA/ASA 2022）</summary>
+    <div class="box-inner">
+      <b>◆ 中重度創傷性腦損傷（NCS 2024，GRADE）：</b><br>
+      <div class="dot-line">・<b>無臨床或腦波發作病史者，「給」或「不給」抗癲癇藥皆可</b>（weak recommendation, low quality）——統合分析<b>未偵測到對早期發作、晚期發作、不良事件或死亡率的顯著影響</b>。</div>
+      <div class="dot-line">・<b>若要給，建議 levetiracetam 優於 phenytoin／fosphenytoin</b>（weak, very low）——點估計傾向 LEV 的晚期發作與不良事件較少。</div>
+      <div class="dot-line">・<b>若要給，建議短期（≤7 天）</b>（weak, low）——<b>長期使用的認知結果與不良事件看起來更差</b>。</div><br>
+
+      <b>◆ 非創傷性腦出血（NCS 2024，GRADE）：</b><br>
+      <div class="dot-line">・<b>建議避免預防性抗癲癇藥</b>（weak, very low）——雖未見對早期／晚期發作或死亡率的顯著影響，但統合分析顯示<b>不良事件增加、90 天不良功能結果的相對風險較高</b>。</div>
+      <div class="dot-line">・若仍要給：<b>levetiracetam 優於 phenytoin／fosphenytoin</b>、<b>短期（≤7 天）</b>（皆 weak, very low）。</div><br>
+
+      <b>◆ 與 AHA/ASA 2022 自發性腦出血指引一致：</b><b>沒有發作證據者，預防性抗癲癇藥對功能預後、發作控制或死亡率均無助益（Class 3：No Benefit）</b>；<b>意識受損且已確認有電生理發作者，應給抗癲癇藥（Class 1）</b>。詳見<a class="tool-link" href="ich.html">自發性腦出血處置決策</a>與<a class="tool-link" href="tbi.html">創傷性腦損傷處置決策</a>。
+    </div>
+  </details>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>找得回來的病因與住院後的事 Reversible Causes &amp; Disposition</summary>
+    <div class="box-inner">
+      <b>◆ 一定要並行處理的可逆病因：</b>低血糖、電解質（<b>鈉、鈣、鎂</b>）、藥物中毒或戒斷、<b>抗癲癇藥物濃度不足或未按時服用</b>、中樞感染、出血或缺血性中風、缺氧、子癲前症／子癲症、肝性或尿毒性腦病變、自體免疫腦炎。<b>找到並矯正可逆病因，往往比再加一線藥更關鍵。</b><br>
+      <span class="sys-caveat">若懷疑特定毒物，另有專屬解毒處置（例如 isoniazid 中毒之 pyridoxine、局部麻醉劑全身毒性之脂肪乳劑、三環抗憂鬱劑中毒之鹼化）——<b>這些屬毒物學處置範疇，不在本頁所引之癲癇指引條文內</b>，請依毒物諮詢中心與中毒處置指引執行。ICS 2025 僅列出應送尿液毒物篩檢的典型毒物：三環抗憂鬱劑、安非他命、古柯鹼、tramadol 與部分 NSAID。</span><br><br>
+
+      <b>◆ 何時收重症（ICS 2025）：</b>① <b>需插管與機械通氣才能終止的重積</b>；② 發作終止後<b>意識仍低到無法保護呼吸道</b>；③ 緊急用藥（尤其 benzodiazepine）後<b>呼吸抑制無法在一般病房安全處理</b>；④ 生理與代謝異常顯著、需一般病房無法提供的監測或治療。<br>
+      <b>◆ 入 ICU 後的照護重點（ICS 2025）：</b><b>詳實記錄每次發作的頻率與時間</b>；插管者採<b>肺保護通氣</b>（潮氣容積 6–8 mL/kg 理想體重、plateau pressure &lt;30 cmH₂O、PEEP &gt;5、PaO₂ &gt;8 kPa）；MAP 65 mmHg 並注意每日輸出入；<b>不做例行每日鎮靜中斷</b>；<b>血糖 8–12 mmol/L（約 144–216 mg/dL）為務實選擇</b>（無專屬於重積的血糖指引）；<b>48 小時內開始腸道營養</b>；懷疑腦膜炎或腦炎即積極治療。<br>
+      <b>◆ 會診與轉院（ICS 2025）：</b><b>最大劑量 benzodiazepine 加上足量非鎮靜抗癲癇藥仍未停止發作時，應及早請重症會診</b>；<b>RSE 或病因不明者應在入住重症 24 小時內取得神經科意見</b>；<b>SRSE 應與三級神經重症單位討論並強烈考慮轉院</b>。<br><br>
+
+      <b>◆ 出院前（NICE NG217）：</b>重積之後若擔心再發，<b>應與病人共同擬定個人化緊急處置計畫</b>（7.1.12）；<b>反覆或叢集性發作（典型為 24 小時內 3 次以上可自行終止的發作）視為醫療急症</b>（7.2.1），沒有計畫時<b>考慮立即給 clobazam 或 midazolam 等 benzodiazepine</b>（7.2.2）；<b>「延長型發作」＝比病人平常的發作多持續 2 分鐘以上</b>，同樣視為急症（7.3.1）。<br>
+      <span class="note"><b>駕駛與生活安全</b>依各國法令規定（台灣依道路交通安全規則之體格檢查規定辦理），請依現行法條與神經科意見處理；NICE 另有降低<b>癲癇相關死亡與 SUDEP</b> 風險的專章。<b>台灣在地參考</b>：台灣癲癇醫學會《癲癇診療指引》（2013 年第一版，現行為 2025 年第七版）、《兒童癲癇診療指引》（2023）、《台灣腦電圖指引》第四版（2023）、《中風後癲癇治療指引》（2019）——<span class="sys-caveat">本次查核未取得其全文，故本頁未引用其條文內容，僅列出版本供在地對照。</span></span>
+    </div>
+  </details>
+</div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/26900382/" target="_blank" rel="noopener" class="ref-link">Glauser T, Shinnar S, Gloss D, et al. Evidence-Based Guideline: Treatment of Convulsive Status Epilepticus in Children and Adults: Report of the Guideline Committee of the American Epilepsy Society. Epilepsy Curr. 2016;16(1):48-61.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/40352678/" target="_blank" rel="noopener" class="ref-link">Mullhi R, Hayton T, Midgley-Hunt A, et al. Guidance for: The acute management of status epilepticus in adult patients. J Intensive Care Soc. 2025;26(2):249-262.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22528274/" target="_blank" rel="noopener" class="ref-link">Brophy GM, Bell R, Claassen J, et al. Guidelines for the evaluation and management of status epilepticus. Neurocrit Care. 2012;17(1):3-23.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/31774955/" target="_blank" rel="noopener" class="ref-link">Kapur J, Elm J, Chamberlain JM, et al. Randomized Trial of Three Anticonvulsant Medications for Status Epilepticus (ESETT). N Engl J Med. 2019;381(22):2103-2113.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22335736/" target="_blank" rel="noopener" class="ref-link">Silbergleit R, Durkalski V, Lowenstein D, et al. Intramuscular versus intravenous therapy for prehospital status epilepticus (RAMPART). N Engl J Med. 2012;366(7):591-600.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/26336950/" target="_blank" rel="noopener" class="ref-link">Trinka E, Cock H, Hesdorffer D, et al. A definition and classification of status epilepticus — Report of the ILAE Task Force on Classification of Status Epilepticus. Epilepsia. 2015;56(10):1515-1523.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/40264351/" target="_blank" rel="noopener" class="ref-link">Beniczky S, Trinka E, Wirrell E, et al. Updated classification of epileptic seizures: Position paper of the International League Against Epilepsy. Epilepsia. 2025;66(6):1804-1823.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24730690/" target="_blank" rel="noopener" class="ref-link">Fisher RS, Acevedo C, Arzimanoglou A, et al. ILAE official report: a practical clinical definition of epilepsy. Epilepsia. 2014;55(4):475-482.</a> ｜ <a href="https://www.nice.org.uk/guidance/ng217" target="_blank" rel="noopener" class="ref-link">NICE. Epilepsies in children, young people and adults. NICE guideline NG217. 2022.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/25901057/" target="_blank" rel="noopener" class="ref-link">Krumholz A, Wiebe S, Gronseth GS, et al. Evidence-based guideline: Management of an unprovoked first seizure in adults (AAN／AES). Neurology. 2015;84(16):1705-1713.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27571157/" target="_blank" rel="noopener" class="ref-link">Leitinger M, Trinka E, Gardella E, et al. Diagnostic accuracy of the Salzburg EEG criteria for non-convulsive status epilepticus: a retrospective study. Lancet Neurol. 2016;15(10):1054-1062.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/33475321/" target="_blank" rel="noopener" class="ref-link">Hirsch LJ, Fong MWK, Leitinger M, et al. American Clinical Neurophysiology Society's Standardized Critical Care EEG Terminology: 2021 Version. J Clin Neurophysiol. 2021;38(1):1-29.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35196426/" target="_blank" rel="noopener" class="ref-link">Ruijter BJ, Keijzer HM, Tjepkema-Cloostermans MC, et al. Treating Rhythmic and Periodic EEG Patterns in Comatose Survivors of Cardiac Arrest (TELSTAR). N Engl J Med. 2022;386(8):724-734.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38316735/" target="_blank" rel="noopener" class="ref-link">Frontera JA, Gilmore EJ, Johnson EL, et al. Guidelines for Seizure Prophylaxis in Adults Hospitalized with Moderate-Severe Traumatic Brain Injury. Neurocrit Care. 2024;40(3):819-844.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/39707127/" target="_blank" rel="noopener" class="ref-link">Frontera JA, Rayi A, Tesoro E, et al. Guidelines for Seizure Prophylaxis in Patients Hospitalized with Nontraumatic Intracerebral Hemorrhage. Neurocrit Care. 2025;42(1):1-21.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/35951466/" target="_blank" rel="noopener" class="ref-link">Wickstrom R, Taraschenko O, Dilena R, et al. International consensus recommendations for management of New Onset Refractory Status Epilepticus (NORSE) including Febrile Infection-Related Epilepsy Syndrome (FIRES). Epilepsia. 2022;63(11):2827-2839.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38430119/" target="_blank" rel="noopener" class="ref-link">Hanin A, Muscal E, Hirsch LJ. Second-line immunotherapy in new onset refractory status epilepticus. Epilepsia. 2024;65(5):1203-1223.</a> ｜ <a href="https://www.nice.org.uk/guidance/ng133" target="_blank" rel="noopener" class="ref-link">NICE. Hypertension in pregnancy: diagnosis and management. NICE guideline NG133.</a> ｜ <a href="https://www.asam.org/quality-care/clinical-guidelines/alcohol-withdrawal-management-guideline" target="_blank" rel="noopener" class="ref-link">ASAM. The ASAM Clinical Practice Guideline on Alcohol Withdrawal Management. J Addict Med. 2020;14(3S Suppl 1):1-72.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+/* ---------- 分頁 ---------- */
+function szTab(k){
+  ['dx','cls','se','drug','sp'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==k);
+  });
+  document.querySelectorAll('#sz_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-tab')===k);
+  });
+  try{ history.replaceState(null,'','#tab='+k); }catch(e){}
+}
+
+/* ---------- 狀態 ---------- */
+const szSt = { ev:null, risk:null, stage:null, post:null };
+
+function szPick(key, val, btn){
+  flowSelect(btn);
+  if(key==='ev'){ szSt.ev=val; szSt.risk=null; }
+  else if(key==='risk'){ szSt.risk=val; }
+  else if(key==='stage'){ szSt.stage=val; }
+  else if(key==='post'){ szSt.post=val; }
+  szRender();
+}
+
+/* ---------- 劑量換算 ---------- */
+function szNum(id){ const el=document.getElementById(id); if(!el) return null; const v=parseFloat(el.value); return isNaN(v)?null:v; }
+function szCap(perKg, wt, max){ const d=perKg*wt; return d>max ? {v:max, capped:true} : {v:Math.round(d), capped:false}; }
+function szRange(lo, hi, wt, dp){ const f=Math.pow(10, dp||0); return Math.round(lo*wt*f)/f + '–' + Math.round(hi*wt*f)/f; }
+
+function szCalc(){
+  const wt=szNum('se_wt');
+  const iv=document.getElementById('se_iv').value;
+
+  if(wt===null || wt<=0){
+    document.getElementById('se_first').innerHTML='請輸入體重。';
+    document.getElementById('se_second').innerHTML='請輸入體重。';
+    document.getElementById('se_third').innerHTML='請輸入體重。';
+    return;
+  }
+
+  /* 一線 */
+  const lz=szCap(0.1, wt, 4);
+  const dz=szCap(0.2, wt, 10);          /* 0.15–0.2；取上界 0.2 計最大單次 */
+  const imMid = wt>40 ? 10 : (wt>=13 ? 5 : Math.round(0.2*wt));
+  let first;
+  if(iv==='no'){
+    first = '<b>首選 IM midazolam '+imMid+' mg</b>'+(wt>40?'（&gt;40 kg 固定 10 mg）':(wt>=13?'（13–40 kg 固定 5 mg）':'（&lt;13 kg 依 0.2 mg/kg）'))+' 肌肉注射，單次——無 IV 時 RAMPART 證實優於 IV lorazepam。<br>' +
+      '替代（AES 2016 列為院前或無上述選項時合理，Level B）：<b>buccal midazolam、intranasal midazolam、rectal diazepam</b>；<span class="note">NCS 2012 表列之每公斤劑量在兒童欄——鼻內 0.2 mg/kg（≈'+Math.round(0.2*wt)+' mg）、口頰 0.5 mg/kg（≈'+Math.round(0.5*wt)+' mg）。</span><br>建立 IV 後若仍發作，改走下方 IV 選項。';
+  } else {
+    first = '擇一，<b>一次給足</b>：<br>' +
+      '・<b>IV lorazepam '+lz.v+' mg</b>（0.1 mg/kg，上限 4 mg'+(lz.capped?'，已達上限':'')+'，速率 ≤2 mg/min），5–10 分鐘可重複一次。<br>' +
+      '・<b>IV diazepam '+dz.v+' mg</b>（0.15–0.2 mg/kg，上限 10 mg'+(dz.capped?'，已達上限':'')+'，速率 ≤5 mg/min），5 分鐘可重複一次。<br>' +
+      '・無 IV 時 <b>IM midazolam '+imMid+' mg</b>。<br>' +
+      '<span class="note">替代：IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg，起效較慢）。</span>';
+  }
+  document.getElementById('se_first').innerHTML=first;
+
+  /* 二線 */
+  const lev=szCap(60, wt, 4500);
+  const fos=szCap(20, wt, 1500);
+  const val=szCap(40, wt, 3000);
+  const levMin=Math.ceil(lev.v/(5*wt)), levMax=Math.ceil(lev.v/(2*wt));
+  const valMin=Math.ceil(val.v/(6*wt)), valMax=Math.ceil(val.v/(3*wt));
+  const fosMin=Math.ceil(fos.v/150);
+  const second = '擇一，<b>三者等效</b>（依禁忌選）：<br>' +
+    '・<b>levetiracetam '+lev.v+' mg</b>（60 mg/kg，上限 4500'+(lev.capped?'，已達上限':'')+'）——依 2–5 mg/kg/min 約需 '+levMin+'–'+levMax+' 分鐘；副作用最少，腎功能不良需調整。<br>' +
+    '・<b>fosphenytoin '+fos.v+' mgPE</b>（20 mgPE/kg，上限 1500'+(fos.capped?'，已達上限':'')+'）——速率 ≤150 mgPE/min，至少 '+fosMin+' 分鐘；留意低血壓與心律不整。<br>' +
+    '・<b>valproate '+val.v+' mg</b>（40 mg/kg，上限 3000'+(val.capped?'，已達上限':'')+'）——依 3–6 mg/kg/min 約需 '+valMin+'–'+valMax+' 分鐘；避開肝病、粒線體疾病、孕婦。<br>' +
+    '<span class="note">三者皆無時 IV phenobarbital 15 mg/kg（≈'+Math.round(15*wt)+' mg）為替代（NICE 第三線為 phenobarbital 或全身麻醉）。</span>';
+  document.getElementById('se_second').innerHTML=second;
+
+  /* 三線：麻醉輸注（NCS 2012 Table 8） */
+  const third =
+    '・<b>midazolam</b>：bolus <b>'+Math.round(0.2*wt)+' mg</b>（0.2 mg/kg，以 2 mg/min 給）→ 輸注 <b>'+szRange(0.05,2,wt,1)+' mg/hr</b>（0.05–2 mg/kg/hr）；突破性發作 bolus '+szRange(0.1,0.2,wt,1)+' mg，每 3–4 小時加 '+szRange(0.05,0.1,wt,1)+' mg/hr。<br>' +
+    '・<b>propofol</b>：負荷 <b>'+szRange(1,2,wt,0)+' mg</b>（1–2 mg/kg），自 <b>'+Math.round(20*wt*60/1000)+' mg/hr</b>（20 mcg/kg/min）起始 → <b>'+Math.round(30*wt*60/1000)+'–'+Math.round(200*wt*60/1000)+' mg/hr</b>（30–200 mcg/kg/min）；<b>&gt;'+Math.round(80*wt*60/1000)+' mg/hr（80 mcg/kg/min）且超過 48 小時要小心 PRIS</b>。<br>' +
+    '・<b>pentobarbital</b>：<b>'+szRange(5,15,wt,0)+' mg</b>（5–15 mg/kg，速率 ≤50 mg/min，可再加 '+szRange(5,10,wt,0)+' mg）→ 輸注 <b>'+szRange(0.5,5,wt,0)+' mg/hr</b>（0.5–5 mg/kg/hr）；突破性發作 bolus '+Math.round(5*wt)+' mg，每 12 小時加 '+szRange(0.5,1,wt,0)+' mg/hr。<br>' +
+    '・<b>thiopental</b>：<b>'+szRange(2,7,wt,0)+' mg</b>（2–7 mg/kg，速率 ≤50 mg/min）→ 輸注 <b>'+szRange(0.5,5,wt,0)+' mg/hr</b>。<br>' +
+    '<span class="note">全程<b>持續 EEG</b>、以腦波（非血中濃度）決定治療強度；常需輔助通氣、心血管監測與升壓劑。發作控制後<b>維持 24–48 小時再逐步減量</b>（ICS 2025：至少 24 小時、不做每日鎮靜中斷）。</span>';
+  document.getElementById('se_third').innerHTML=third;
+}
+
+/* ---------- 建議 ---------- */
+const SZ_SE_CORE =
+  '<li><b>同時開立維持性抗癲癇藥物</b>：原有藥物維持全劑量、近期減量者加回；盡快取得藥物濃度確認是否為劑量不足或未按時服藥（ICS 2025）。</li>' +
+  '<li><b>同步找病因</b>：血糖、鈉鈣鎂、肝腎功能、毒物、中樞感染、影像；懷疑腦膜炎或腦炎即開始經驗性治療。</li>';
+
+function szRender(){
+  /* --- 分頁一：首次發作 --- */
+  const showRisk = szSt.ev==='first';
+  flowShow('sz_dc2', showRisk); flowShow('sz_d2', showRisk);
+  if(!showRisk) flowClearSel('sz_d2');
+
+  let c='rec-idle', t='請由上方步驟開始選擇', d='', n='';
+  if(szSt.ev==='first'){
+    if(szSt.risk==='yes'){
+      c='rec-elective'; t='首次非誘發性發作＋高風險因子 — 可以考慮立即開始抗癲癇藥';
+      d='<li><b>NICE 4.2.2</b>：神經學缺損、<b>EEG 有明確癲癇活動</b>、影像有結構異常，或病人認為再發風險不可接受者，<b>首次非誘發性發作後即可考慮開始用藥</b>。</li>' +
+        '<li><b>AAN／AES 2015</b>：立即用藥可<b>降低 2 年內再發（Level B）</b>，但<b>可能不改善生活品質（Level C）</b>，<b>超過 3 年不改善持續緩解率（Level B）</b>；<b>不良反應 7–31%</b>，多為輕微可逆——這是與病人共同決策的內容，不是自動開藥的理由。</li>' +
+        '<li><b>2 週內完成專科評估</b>（NICE 1.1.1）；安排 <b>MRI</b>（6 週內，特發性全般癲癇與中央顳區棘波自限性癲癇除外）與 <b>EEG</b>（首次發作後理想上 72 小時內）。</li>' +
+        '<li>選藥依<b>發作型</b>（見「藥物」分頁的 NICE 表）：局部性 → lamotrigine 或 levetiracetam；全般強直陣攣 → valproate（男性）或 lamotrigine／levetiracetam（有生育可能的女性與女孩）。</li>';
+      n='再發風險最高的是最初 2 年（21–45%）；四項危險因子為先前腦部損傷、EEG 癲癇樣異常、影像顯著異常、夜間發作。';
+    } else if(szSt.risk==='no'){
+      c='rec-blue'; t='首次非誘發性發作、無高風險因子 — 先評估與衛教，不急著用藥';
+      d='<li><b>不必然要開始抗癲癇藥</b>：無上述四項因子時，<b>延後到第二次發作再治療是合理選項</b>（AAN／AES 2015 的核心是個別化權衡，不是一律用藥）。</li>' +
+        '<li><b>2 週內轉診專科</b>（NICE 1.1.1）；完成 <b>12 導程心電圖</b>（1.2.2，排除心因性暈厥）、必要的影像與 EEG。</li>' +
+        '<li><b>衛教與安全</b>（NICE 1.1.8）：如何辨識下一次發作、發作時的急救與安全措施、可降低再發風險的生活調整（睡眠、酒精）、再發時該聯絡誰。</li>' +
+        '<li>評估<b>可修正的再發風險因子</b>（1.1.4）：精神健康問題、酒精或藥物濫用、血管危險因子、敗血症。</li>';
+      n='EEG 正常不能排除癲癇（NICE 1.2.6）；診斷不確定時可循常規 EEG → 睡眠剝奪 EEG → 48 小時可攜式 EEG。';
+    } else {
+      c='rec-idle'; t='請完成步驟 2';
+    }
+  } else if(szSt.ev==='provoked'){
+    c='rec-urgent'; t='急性症狀性（誘發性）發作 — 治病因，不等於診斷癲癇';
+    d='<li><b>立刻找出並矯正誘因</b>：低血糖、低血鈉、低血鈣／鎂、酒精戒斷、藥物中毒或戒斷、子癲症、中樞感染、急性中風或出血、缺氧。</li>' +
+      '<li><b>三個不照重積演算法走的情況</b>：<b>子癲症用硫酸鎂</b>（NICE NG133：4 g 靜脈 5–15 分鐘 → 1 g/hr 維持 24 小時）；<b>酒精戒斷用 benzodiazepine、不要用 phenytoin</b>（ASAM 2020）；<b>心跳停止後的節律性／週期性腦波抑制治療不改善預後</b>（TELSTAR）。</li>' +
+      '<li><b>誘發性發作不等於癲癇</b>（ILAE 2014）——不應據此直接下癲癇診斷或長期用藥；是否需要短期抗癲癇藥依病因與再發風險個別判斷。</li>' +
+      SZ_SE_CORE;
+    n='NICE 7.1.4 特別點名低血糖、子癲症與酒精戒斷是「可能需要額外藥物」的重積病因。';
+  } else if(szSt.ev==='known'){
+    c='rec-elective'; t='已知癲癇病人的發作 — 先問「為什麼這次會發作」';
+    d='<li><b>最常見的原因是沒有按時服藥</b>（NICE 7.1.5、ICS 2025）——<b>入院時就抽藥物濃度</b>，但<b>不要為了等報告而漏掉任何一劑</b>；懷疑未按時服藥時可依演算法<b>重新給負荷劑量</b>。</li>' +
+      '<li><b>不要例行照 CT</b>：已知癲癇者在急診發生典型發作，除非另有臨床疑慮，NICE 1.3.7 明訂不做 CT。</li>' +
+      '<li>找其他誘因：睡眠剝奪、感染發燒、酒精、新加的藥物（含<b>會惡化發作的藥</b>：carbamazepine、gabapentin、oxcarbazepine、phenobarbital、phenytoin、pregabalin、tiagabine、vigabatrin 用於失神／肌陣攣族群）、電解質。</li>' +
+      '<li><b>反覆或叢集性發作（24 小時內 ≥3 次可自行終止的發作）視為醫療急症</b>（NICE 7.2.1）：先照個人化緊急處置計畫，沒有計畫時考慮立即給 clobazam 或 midazolam。</li>';
+    n='出院前若擔心再發，應與病人共同擬定個人化緊急處置計畫（NICE 7.1.12）。';
+  } else if(szSt.ev==='doubt'){
+    c='rec-blue'; t='懷疑非癲癇事件 — 別讓「重積」的標籤把病人一路推到插管';
+    d='<li><b>ESETT 收案的重積病人中有 10% 最後判定為心因性非癲癇發作</b>——在急診反覆給藥、升階到麻醉之前，這是必須主動想到的診斷。</li>' +
+      '<li><b>解離性發作（PNES）在表現上可與抽搐型重積極為相似</b>（NICE 7.1.6）；ICS 2025 明訂<b>「假性發作 pseudoseizure」一詞已廢棄</b>，主要治療是<b>心理治療</b>而非加抗癲癇藥。</li>' +
+      '<li><b>先排除心因性暈厥</b>：所有首次疑似發作都要做 <b>12 導程心電圖</b>（NICE 1.2.2）。</li>' +
+      '<li><b>取得客觀證據</b>：目擊者描述與<b>發作影片</b>（NICE 1.2.1）；診斷仍不確定時安排<b>影像腦波監測</b>由專科判讀。<b>EEG 正常不能排除癲癇</b>（1.2.6），反之亦然。</li>';
+    n='此分支的重點是「停下來重新評估」，不是「不治療」——若無法排除真正的重積，仍應依重積演算法處理並儘早取得 EEG。';
+  }
+  flowRec('sz_drec', c, t, d, n);
+
+  /* --- 分頁三：重積階段 --- */
+  let c2='rec-idle', t2='請由上方步驟開始選擇', d2='', n2='';
+  if(szSt.stage==='stab'){
+    c2='rec-blue'; t2='穩定期（0–5 分）— 把 5 分鐘的鬧鐘按下去';
+    d2='<li><b>ABC 與生命徵象</b>、給氧、建立靜脈路徑、<b>驗血糖</b>（低血糖給葡萄糖；慢性酒精或營養不良者<b>併 thiamine</b>）。</li>' +
+      '<li><b>抽血</b>：電解質、鈣、鎂、肝腎功能、<b>抗癲癇藥物濃度</b>、毒物；育齡病人驗孕。</li>' +
+      '<li><b>記下發作開始的時間</b>——t₁（強直陣攣型為 <b>5 分鐘</b>）一到就要給第一線 benzodiazepine，不要等它自己停。</li>' +
+      '<li>局部性重積併意識受損的 t₁ 是 <b>10 分鐘</b>、t₂ 是 <b>&gt;60 分鐘</b>（ILAE 2015）——<b>時間門檻依重積型別而異</b>。</li>';
+    n2='ILAE 2015：t₁ 是「應開始緊急治療」的時間，t₂ 是「可能開始出現長期後果」的時間。';
+  } else if(szSt.stage==='init'){
+    c2='rec-urgent'; t2='初始治療（5–20 分）— benzodiazepine，一次給足單一完整劑量';
+    d2='<li><b>依上方計算器給足一線劑量</b>：有 IV → lorazepam 0.1 mg/kg（上限 4 mg）或 diazepam 0.15–0.2 mg/kg（上限 10 mg）；<b>無 IV → IM midazolam 10 mg（&gt;40 kg）</b>。</li>' +
+      '<li><b>不要拆成多次小劑量</b>（AES 2016）；<b>不要因為怕呼吸抑制而給不足</b>——benzodiazepine 組的呼吸抑制率低於安慰劑組（Level A）。</li>' +
+      '<li><b>5–10 分鐘內未停止就給第二劑</b>（NICE 7.1.8）；社區叫救護車、院內找專家（7.1.7）。</li>' +
+      SZ_SE_CORE;
+    n2='AES 2016 演算法；RAMPART 證實無 IV access 時 IM midazolam 優於 IV lorazepam（73.4% vs 63.4%）。';
+  } else if(szSt.stage==='second'){
+    c2='rec-urgent'; t2='第二線（20–40 分）— 三藥等效，依禁忌選一個並給足';
+    d2='<li><b>levetiracetam 60 mg/kg（上限 4500 mg）／fosphenytoin 20 mgPE/kg（上限 1500 mgPE）／valproate 40 mg/kg（上限 3000 mg）</b>——ESETT 顯示 60 分鐘終止率 47%／45%／46%，<b>三者無優劣</b>。</li>' +
+      '<li><b>選擇依禁忌</b>：valproate 避開肝病、粒線體疾病與孕婦；fosphenytoin 留意低血壓與心律不整（心臟病者謹慎）；levetiracetam 依腎功能調整、副作用最少。<b>NICE 註明 levetiracetam 可能給藥較快、不良反應較少</b>。</li>' +
+      '<li><b>注意給藥速率</b>（見上方計算器換算的最短輸注時間）——給太快是低血壓與心律不整的主因。</li>' +
+      '<li><b>此時就該請重症會診</b>：ICS 2025——最大劑量 benzodiazepine 加上足量非鎮靜抗癲癇藥仍未停止發作時，應及早會診。</li>' +
+      SZ_SE_CORE;
+    n2='AES 2016：第二線比第一線效果差、第三線又差很多（成人 Level A）——所以第一線給足最關鍵。';
+  } else if(szSt.stage==='rse'){
+    c2='rec-urgent'; t2='難治性重積 RSE — 插管、麻醉輸注、全程 cEEG';
+    d2='<li><b>定義</b>：一個 benzodiazepine ＋ 一個非 benzodiazepine 抗癲癇藥仍無效（ICS 2025）——<b>需入重症並以靜脈麻醉抑制發作</b>。</li>' +
+      '<li><b>麻醉輸注擇一</b>（劑量見上方計算器）：midazolam／propofol／pentobarbital／thiopental。<b>NCS 2012 明言資料不足以判定何者較優</b>：propofol 顧慮 PRIS；midazolam 不含 propylene glycol、低血壓可能較少；pentobarbital 急性控制率可能較高但副作用較多。</li>' +
+      '<li><b>cEEG 是唯一能知道治療是否成功的方法</b>——臨床抽搐停止不等於發作停止；<b>1 小時內開始</b>，終點為<b>非抽搐性發作停止</b>（Class I），爆發抑制或完全抑制為 Class IIb。</li>' +
+      '<li><b>維持 24–48 小時發作控制後再逐步減量</b>；<b>不做每日鎮靜中斷</b>（ICS 2025）。減量太快造成反彈性發作是治療失敗的常見原因。</li>' +
+      '<li><b>入住重症 24 小時內取得神經科意見</b>（ICS 2025），並確認維持性抗癲癇藥物已足量開立。</li>';
+    n2='NCS 2012 Table 8 劑量；ICS 2025 的重症端流程。低血壓與心肺抑制常需升壓劑。';
+  } else if(szSt.stage==='srse'){
+    c2='rec-urgent'; t2='超難治性重積 SRSE — 換藥、想免疫、找病灶，並轉三級中心';
+    d2='<li><b>定義</b>：足量連續靜脈麻醉<b>超過 24 小時</b>仍持續或復發。<b>應與三級神經重症單位討論並強烈考慮轉院</b>（ICS 2025）。</li>' +
+      '<li><b>換另一種麻醉藥再輸注 48 小時</b>（如 thiopentone）；或考慮 <b>ketamine</b> 靜脈輸注、<b>isoflurane</b> 吸入麻醉；加上 <b>lacosamide 或 phenobarbitone</b>。</li>' +
+      '<li><b>確認鎂在正常範圍</b>（部分單位額外輸注、目標 1.0–1.5 mmol/L）。</li>' +
+      '<li><b>想免疫</b>：自體免疫腦炎、<b>NORSE／FIRES</b>——<b>即使抗體陰性也可能需要免疫治療</b>。第一線 <b>methylprednisolone 1 g/day × 3 天、IVIG 或血漿置換</b>；第二線 rituximab／cyclophosphamide／tocilizumab／anakinra／cannabidiol／bortezomib。</li>' +
+      '<li><b>重新影像</b>找潛在腦損傷；局部標的病灶考慮<b>神經外科</b>；三級中心偶採<b>生酮飲食</b>（與 propofol 併用要小心 PRIS）、SPECT、迷走神經刺激。</li>' +
+      '<li><b>只要 MRI 沒有毀滅性腦損傷就繼續治療</b>——皮質高訊號可能是發作造成的可逆變化；<b>良好恢復可能在數週至數月後才出現</b>。</li>';
+    n2='ICS 2025 的超難治性重積清單＋NORSE／FIRES 2022 國際共識（85 條 Delphi 建議）。';
+  }
+  flowRec('sz_srec', c2, t2, d2, n2);
+
+  /* --- 分頁三：抽搐停止後 --- */
+  let c3='rec-idle', t3='請完成步驟 2', d3='', n3='';
+  if(szSt.post==='awake'){
+    c3='rec-blue'; t3='已回到基準 — 轉向找病因與後續安排';
+    d3='<li>完成病因檢查與<b>維持性抗癲癇藥物</b>的調整；取得<b>神經科意見</b>指導後續劑量或減量。</li>' +
+      '<li>重積之後<b>需要住院觀察並規劃後續照護</b>（ICS 2025）；出院前<b>與病人共同擬定個人化緊急處置計畫</b>（NICE 7.1.12）。</li>' +
+      '<li>已知癲癇者請確認<b>為什麼這次會發作</b>（未按時服藥、感染、睡眠剝奪、新藥物、酒精）。</li>';
+    n3='此分支不需要例行 cEEG，但若之後意識再度變差應重新評估。';
+  } else if(szSt.post==='notback'){
+    c3='rec-urgent'; t3='超過 10 分鐘未回到基準 — 這是 cEEG 的明確適應症';
+    d3='<li><b>抽搐停止後仍有 18–50% 存在持續的非抽搐性重積</b>（NCS 2012，Class I／level B）——<b>臨床抽搐停止不等於發作停止</b>。</li>' +
+      '<li><b>1 小時內開始 cEEG</b>；無 cEEG 時做<b>延長時間的間歇性 EEG</b>，並與三級神經重症中心討論（ICS 2025）。</li>' +
+      '<li><b>依 Salzburg 判準判讀</b>：癲癇樣放電 &gt;2.5 Hz；或 ≤2.5 Hz／節律性 delta-theta 加上「靜脈抗癲癇藥後<b>臨床與腦波同時</b>改善」、細微臨床發作現象、或典型時空演變其中之一。</li>' +
+      '<li><b>NCSE 併意識受損應比照抽搐型重積治療</b>（ICS 2025）；同時排除其他昏迷原因（藥物殘留、代謝、新的腦部病灶）。</li>';
+    n3='Salzburg 判準驗證世代：敏感度 97.7%、特異度 89.6%、陰性預測值 98.6%（Lancet Neurol 2016）。';
+  } else if(szSt.post==='coma'){
+    c3='rec-urgent'; t3='仍昏迷或鎮靜中 — cEEG 是唯一能知道治療有沒有成功的方法';
+    d3='<li><b>昏迷病人（含心跳停止後）非抽搐性發作發生率 20–60%</b>（NCS 2012，Class I／level B）。</li>' +
+      '<li><b>監測長度</b>：急性腦傷後昏迷<b>至少 48 小時</b>；<b>發作停止後或減藥期間再 24 小時</b>；ICS 2025 要求在鎮靜期間發作停止後<b>至少再 24 小時</b>。</li>' +
+      '<li><b>八導程簡化蒙太奇可接受</b>；<b>BIS 不能取代 EEG</b>（會漏掉局部發作）；判讀者須受過 cEEG 訓練。</li>' +
+      '<li><b>心跳停止後例外</b>：TELSTAR 顯示<b>以抗癲癇藥抑制節律性／週期性腦波型態並不改善 3 個月神經學結果</b>（不良結果 90% vs 92%）——<b>但這不等於不必做 cEEG</b>，仍需辨識可治療的非抽搐性重積。</li>' +
+      '<li>缺氧後肌陣攣<b>不可單獨用來判定預後</b>；預後判定應多模態並延後定論。</li>';
+    n3='NCS 2012 Table 10／11 的適應症與治療終點；TELSTAR（NEJM 2022, n=172）。';
+  }
+  flowRec('sz_prec', c3, t3, d3, n3);
+}
+
+function szResetDx(){
+  szSt.ev=null; szSt.risk=null;
+  document.querySelectorAll('#tab-dx .flow-opt').forEach(function(b){ b.classList.remove('selected'); });
+  szRender();
+}
+
+document.querySelectorAll('#se_wt, #se_iv').forEach(function(el){
+  el.addEventListener('input', szCalc); el.addEventListener('change', szCalc);
+});
+
+/* ---- 初始化：支援 #tab=xxx 直接開啟 ---- */
+(function(){
+  var m = /#tab=(dx|cls|se|drug|sp)/.exec(location.hash);
+  if(m) szTab(m[1]);
+  szCalc();
+  szRender();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
