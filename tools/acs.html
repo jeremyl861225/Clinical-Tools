@@ -217,7 +217,7 @@
         </ul>
         <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
           <a class="flow-link" href="grace.html?from=acs">→ GRACE Score 計算器</a>
-          <a class="flow-link" href="syntax.html?from=acs">→ SYNTAX Score 參考</a>
+          <a class="flow-link" href="#syntax" onclick="acsTab('syntax');return false;">→ SYNTAX Score 分頁</a>
         </div>
       </div>
       <div class="kbox alert">
@@ -343,7 +343,7 @@
         </ul>
       </div>
       <div style="margin-top:6px;">
-        <a class="flow-link" href="syntax.html?from=acs">→ SYNTAX Score：解剖複雜度與 PCI／CABG 選擇</a>
+        <a class="flow-link" href="#syntax" onclick="acsTab('syntax');return false;">→ SYNTAX Score：解剖複雜度與 PCI／CABG 選擇</a>
       </div>
     </div>
 
@@ -387,10 +387,38 @@
     </div>
 
     <div class="kbox">
-      <div class="kbox-t">計算方式</div>
-      完整 SYNTAX 分數必須<b>對著血管攝影影像、逐一病灶</b>計算（節段權重 × 阻塞倍率，再加分岔、鈣化、扭曲、長度、血栓等不良特徵），本頁不列各項加分點數——請用<b>官方計算器</b>搭配影像計算。
+      <div class="kbox-t">分數怎麼組成（原理）</div>
+      三個層次相乘再相加：<b>① 節段權重</b>——依該節段供應左心室血流的比重給權重，並<b>隨左右優勢型（dominance）而不同</b>；<b>② 阻塞倍率</b>——狹窄 50–99%（obstructive）<b>×2</b>、完全阻塞 100%（occluded）<b>×5</b>；<b>③ 不良特徵加分</b>——完全阻塞的次特徵（阻塞 &gt;3 個月、鈍頭殘端、橋接側支、遠端無法顯影、分支受累）、三分岔、分岔（Medina 型別）、主動脈開口病灶、嚴重扭曲、長度 &gt;20 mm、嚴重鈣化、血栓、瀰漫性病變／小血管。<b>各項點數需對影像逐一計算，本頁不列。</b>
+    </div>
+
+    <div class="card">
+      <div class="section-title">節段權重（供對照，非計算用）</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>節段</th><th>右優勢</th><th>左優勢</th></tr>
+          <tr><td>5. 左主幹 Left main</td><td>5</td><td>6*</td></tr>
+          <tr><td>6. 近段 LAD</td><td>3.5</td><td>3.5</td></tr>
+          <tr><td>7. 中段 LAD</td><td>2.5</td><td>2.5</td></tr>
+          <tr><td>8. 心尖 LAD</td><td>1</td><td>1</td></tr>
+          <tr><td>9. 第一對角枝</td><td>1</td><td>1</td></tr>
+          <tr><td>10. 第二對角枝</td><td>0.5</td><td>0.5</td></tr>
+          <tr><td>11. 近段迴旋枝 LCx</td><td>1.5</td><td>2.5</td></tr>
+          <tr><td>12. 中間枝／前側枝</td><td>1</td><td>1</td></tr>
+          <tr><td>13. 遠段迴旋枝</td><td>0.5</td><td>1.5</td></tr>
+          <tr><td>14. 左後側枝</td><td>0.5</td><td>1</td></tr>
+          <tr><td>15. 後降枝（源自 LCx）</td><td>—</td><td>1</td></tr>
+          <tr><td>1／2／3. 近／中／遠段 RCA</td><td>1／1／1</td><td>0／0／0</td></tr>
+          <tr><td>4. 後降枝（源自 RCA）</td><td>1</td><td>—</td></tr>
+          <tr><td>16. 源自 RCA 之後側枝</td><td>0.5（每支）</td><td>—</td></tr>
+        </table>
+      </div>
+      <div class="note"><b>*</b> 左主幹在左優勢型的權重，二手來源有 5 與 6 兩種寫法（原始 Sianos 表為 6）——這正是不宜依二手表格自建計算器的原因，請以官方計算器為準。</div>
+    </div>
+
+    <div class="kbox alert">
+      <div class="kbox-t">這是判讀依據，不是計算器</div>
+      完整分數必須<b>對著血管攝影影像、逐一病灶</b>計算，並加上上述不良特徵的點數，本頁未實作該加分規則。寫出看似精確卻可能錯誤的數字，比不提供更危險——請以<b>官方計算器</b>搭配影像計算。
       <div style="margin-top:8px;">
-        <a class="pmid" href="syntax.html?from=acs" style="margin-right:10px;">→ 本站 SYNTAX 參考頁（節段權重對照與決策）</a>
         <a class="pmid" href="https://syntaxscore.org/" target="_blank" rel="noopener">官方計算器 syntaxscore.org ↗</a>
       </div>
     </div>

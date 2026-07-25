@@ -1047,14 +1047,50 @@
       <div class="sys-sub">用法：這是會移動的動態分級</div>
       SCAI stage 在病程中<b>可上下移動</b>，須反覆重評（<b>乳酸與灌流是最靈敏的指標</b>），分級越高死亡率越高。它取代舊有的「有／無休克」二分，把 <b>preshock（B）</b>與<b>惡化中（D）</b>獨立出來，好在真正崩潰前就升級照護。
 
-      <div class="note" style="margin:10px 0;">
-        <a class="tool-link" href="cardiogenic-shock.html">→ 互動分級器、逐級處置與機械循環支持（IABP／VA-ECMO／Impella）的試驗證據，見「心因性休克 SCAI 分級」工具</a>
+      <div class="sys-sub">互動分級：選 stage 看逐級處置</div>
+      <div class="card" style="margin:6px 0 4px;">
+        <div class="field-row"><label>Stage</label>
+          <select id="cs_stage" style="flex:1;">
+            <option value="a">A — At Risk（有風險，無 shock）</option>
+            <option value="b">B — Beginning（不穩但無低灌流）</option>
+            <option value="c">C — Classic（低灌流，乳酸 ≥2）</option>
+            <option value="d">D — Deteriorating（支持失敗、惡化中）</option>
+            <option value="e">E — Extremis（循環崩潰）</option>
+          </select>
+        </div>
+        <label class="toggle-inline"><input type="checkbox" id="cs_arrest"> 合併心跳停止（A-modifier，預後更差）</label>
       </div>
-      <span class="sys-caveat">※ 處置重點（詳見上方工具）：<b>norepinephrine 為第一線升壓劑</b>；AMI-CS 緊急 culprit-only 血運重建；<b>IABP 與 routine VA-ECMO 無存活益處</b>，microaxial flow pump（Impella CP）於 STEMI-CS 降低死亡但併發症增加（DanGer Shock）——裝置決策交由 shock team。</span>
+      <div class="result">
+        <div class="result-grid">
+          <div><div class="metric-label">SCAI Stage</div><div class="metric-value big" id="cs_out">A</div></div>
+          <div><div class="metric-label">狀態</div><div class="metric-value big" id="cs_label" style="font-size:20px;">At Risk</div></div>
+        </div>
+        <div class="metric-label" style="margin-top:10px;">處置重點</div>
+        <ul style="font-size:14px; line-height:1.7; margin:4px 0 0; padding-left:18px;" id="cs_mgmt"></ul>
+        <div class="risk-note">SCAI 分級可在病程中<b>上下移動</b>，須反覆重評（乳酸與灌流最靈敏）。分級越高死亡率越高。</div>
+      </div>
+
+      <div class="sys-sub">升壓與強心</div>
+      <table class="def-table">
+        <tr><td style="width:22%;"><b>norepinephrine</b></td><td>第一線升壓劑——優於 dopamine（SOAP II 心律不整與死亡較多）與 epinephrine（OptimaCC 較多難治性休克與乳酸酸中毒）。</td></tr>
+        <tr><td><b>強心劑</b></td><td>dobutamine 或 milrinone——<b>DOREMI 兩者結果無差異</b>；依心律、血壓與腎功能選擇（milrinone 半衰期長、經腎排除）。</td></tr>
+        <tr><td>目標</td><td>恢復<b>器官灌流</b>（乳酸下降、尿量、意識），而非單一血壓數字；用最低有效劑量以免增加心肌耗氧與心律不整。</td></tr>
+      </table>
+
+      <div class="sys-sub">病因治療（最重要）</div>
+      <b>AMI-CS 應緊急血運重建</b>——<b>CULPRIT-SHOCK</b> 顯示只處理<b>罪犯病灶（culprit-only）PCI</b> 優於常規多血管 PCI。找出並處理可逆病因（急性瓣膜病變、心包填塞、肺栓塞、心律不整、藥物）往往比升級循環支持更關鍵。
+
+      <div class="sys-sub">機械循環支持（MCS）：別把「有裝置」當成「有幫助」</div>
+      <table class="def-table">
+        <tr><td style="width:22%;"><b>IABP</b><br>主動脈內氣球</td><td><b>IABP-SHOCK II</b>（NEJM 2012）：對 AMI-CS <b>無 30 天死亡益處</b>——<b>不建議常規使用</b>。</td></tr>
+        <tr><td><b>VA-ECMO</b></td><td><b>ECLS-SHOCK</b>（NEJM 2023）：routine 使用對 AMI-CS <b>30 天死亡無差異</b>（47.8% vs 49.0%），且併發症（出血、缺血）增加——<b>不建議常規使用</b>，保留給選擇性個案。</td></tr>
+        <tr class="dt-warn"><td><b>微軸流幫浦</b><br>Impella CP</td><td><b>DanGer Shock</b>（NEJM 2024）：對 <b>STEMI-CS</b> <b>降低 180 天死亡</b>（45.8% vs 58.5%，HR 0.74，95% CI 0.55–0.99）——<b>但安全複合終點（併發症）增加</b>。目前<b>唯一</b>顯示存活益處的 MCS，仍須權衡併發症並慎選病人。</td></tr>
+      </table>
+      <span class="sys-caveat">※ MCS 的裝置選擇、置放時機與病人選擇應由<b>多專科 shock team</b> 決定；早期辨識、及早轉介 shock team 與 tertiary 中心，比任何單一裝置更影響預後。</span>
     </div>
   </div>
 
-  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/35181179/" target="_blank" rel="noopener" class="ref-link">Naidu SS, Baran DA, Jentzer JC, et al. SCAI SHOCK Stage Classification Expert Consensus Update. J Am Coll Cardiol. 2022;79(9):933-946.</a></footer>
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/35181179/" target="_blank" rel="noopener" class="ref-link">Naidu SS, Baran DA, Jentzer JC, et al. SCAI SHOCK Stage Classification Expert Consensus Update. J Am Coll Cardiol. 2022;79(9):933-946.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/38587239/" target="_blank" rel="noopener" class="ref-link">Møller JE, et al. Microaxial Flow Pump or Standard Care in Infarct-Related Cardiogenic Shock (DanGer Shock). N Engl J Med. 2024;390(15):1382-1393.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/37634145/" target="_blank" rel="noopener" class="ref-link">Thiele H, et al. Extracorporeal Life Support in Infarct-Related Cardiogenic Shock (ECLS-SHOCK). N Engl J Med. 2023;389(14):1286-1297.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22920912/" target="_blank" rel="noopener" class="ref-link">Thiele H, et al. Intraaortic balloon support for MI with cardiogenic shock (IABP-SHOCK II). N Engl J Med. 2012;367(14):1287-1296.</a></footer>
 </div>
 
 <div id="tab-misc" class="hidden">
@@ -1562,6 +1598,47 @@ function frCalc(){
 }
 document.getElementById('fr_sel').addEventListener('change',frCalc);
 frCalc();
+
+/* ---------------- SCAI 心因性休克互動分級（循環分頁） ---------------- */
+(function(){
+  var sel=document.getElementById('cs_stage'); if(!sel) return;
+  var CS_DATA={
+    a:{label:'At Risk', mgmt:
+      '<li><b>治療原發的急性心臟病</b>（AMI、急性心衰竭、心律不整等）並<b>避免惡化</b>——A 級是「有風險但尚無 shock」。</li>'+
+      '<li><b>密切監測</b>血壓、乳酸、尿量與末梢灌流；A 級可在數小時內進展為 B/C。</li>'+
+      '<li>避免不必要的降壓與利尿造成低灌流；審慎用藥。</li>'},
+    b:{label:'Beginning（preshock）', mgmt:
+      '<li><b>此時尚無低灌流</b>（乳酸正常、溫暖）——重點是<b>阻止進展</b>並找病因。</li>'+
+      '<li><b>謹慎評估容積狀態</b>：低血容者小心補液；已有肺充血／容積過載者不宜補液。<b>通常還不需要升壓劑</b>。</li>'+
+      '<li><b>緊急處理病因</b>：AMI-CS 準備緊急血運重建；心律不整矯正；密切追蹤乳酸——一旦出現低灌流即進入 C。</li>'},
+    c:{label:'Classic', mgmt:
+      '<li><b>已出現低灌流（乳酸 ≥2、尿量 &lt;30 mL/h、冷濕、意識改變）</b>，需要至少一項介入。</li>'+
+      '<li><b>升壓：norepinephrine 為第一線</b>（優於 dopamine 與 epinephrine）；心輸出量低時加<b>強心劑 dobutamine 或 milrinone</b>（DOREMI 兩者無差異）。目標是<b>灌流恢復（乳酸下降）</b>而非單一血壓。</li>'+
+      '<li><b>強烈建議侵入性血行動力學監測</b>（cardiac index &lt;2.2、PCWP &gt;15 支持診斷並導引治療）。</li>'+
+      '<li><b>緊急治療病因</b>：AMI-CS 行 <b>culprit-only PCI</b>（CULPRIT-SHOCK）。及早聯絡 <b>shock team</b>。</li>'},
+    d:{label:'Deteriorating', mgmt:
+      '<li><b>初始支持失敗、仍在惡化</b>（乳酸持續 &gt;2 且上升、血行動力學惡化）——需<b>升級支持</b>。</li>'+
+      '<li><b>重新檢視病因是否已處理</b>（未打通的罪犯血管、未引流的填塞、未矯正的瓣膜或心律問題）。</li>'+
+      '<li><b>由 shock team 評估機械循環支持</b>：注意 <b>IABP 與 routine VA-ECMO 無存活益處</b>；<b>microaxial flow pump 於 STEMI-CS 降低死亡</b>（DanGer Shock）但併發症增加——慎選病人與時機。</li>'+
+      '<li><b>及早轉介 tertiary／MCS 中心</b>；越晚轉介預後越差。</li>'},
+    e:{label:'Extremis', mgmt:
+      '<li><b>實際或即將循環崩潰</b>（近乎無脈、乳酸 ≥8、pH &lt;7.2）——最大化支持並考慮<b>eCPR</b>。</li>'+
+      '<li><b>VA-ECMO</b> 可作為挽救／橋接（routine 使用無存活益處，但極重症或 eCPR 情境仍是選項），由 shock team 即時決定。</li>'+
+      '<li><b>同時處理可逆病因</b>並確認<b>照護目標</b>——極高死亡率下，須與家屬溝通治療極限。</li>'+
+      '<li>bolus 升壓劑維持最低灌流；持續評估是否有神經學或多重器官的不可逆終點。</li>'}
+  };
+  function csCalc(){
+    var s=sel.value, arrest=document.getElementById('cs_arrest').checked, d=CS_DATA[s];
+    document.getElementById('cs_out').textContent = s.toUpperCase() + (arrest?'（A-modifier）':'');
+    document.getElementById('cs_label').textContent = d.label + (arrest?' ＋ 心跳停止':'');
+    var mgmt=d.mgmt;
+    if(arrest) mgmt='<li><b>A-modifier（合併心跳停止）</b>：預後顯著較差——同時進行高品質 CPR／復甦後照護、體溫管理與神經學評估，並在下列處置中納入照護目標的討論。</li>'+mgmt;
+    document.getElementById('cs_mgmt').innerHTML=mgmt;
+  }
+  sel.addEventListener('change',csCalc);
+  document.getElementById('cs_arrest').addEventListener('change',csCalc);
+  csCalc();
+})();
 
 /* 分頁與捲動位置最後才決定：上面各區塊都渲染完，捲動目標的高度才是對的 */
 clApplyHash();
