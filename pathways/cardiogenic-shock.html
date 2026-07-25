@@ -78,6 +78,16 @@
   .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
   .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
   .tw table{min-width:560px;}
+  /* 敘述型對照表一律用共用的 .def-table（.score-ref 是「數值→分數」兩欄專用，末欄會被
+     強制等寬、紅字、靠右，用在整段文字上會變成一片右靠的紅字）。以下兩個修飾類別只調
+     整欄位角色，不動配色：
+       .dt-rec  建議表——第一欄是整句建議而非鍵值，還原為內文字體；Class／Level 置中。
+       .dt-dose 劑量表——第 2、3 欄是數字，改等寬字以便對齊比較。 */
+  .def-table td{line-height:1.7;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal;
+                                   color:var(--ink); font-weight:400;}
+  .def-table.dt-rec th:nth-child(n+2),.def-table.dt-rec td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  .def-table.dt-dose td:nth-child(n+2){font-family:var(--mono); font-size:11.5px; line-height:1.6;}
   .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
   .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
         text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
@@ -109,7 +119,7 @@
   </div>
 
   <div class="note" style="margin:-8px 0 14px;">
-    分級依 <b>SCAI SHOCK 2022 更新版</b>；急性冠心症相關之血運重建與裝置建議<b>逐條引用 2023 ESC ACS 指引原文之 Class／Level</b>；系統性照護（shock team、侵入性血行動力學表型、1 小時／24 小時路線圖）依 <b>2025 ACC Concise Clinical Guidance</b>；藥物劑量以<b>台大醫院藥劑部仿單</b>與<b>台大心血管中心心衰竭指引第三版表 8-3</b> 為準，禁忌症另引<b>各藥品仿單</b>。<b>指引與新試驗之間有一處明顯時間差（微軸流幫浦），本頁並列而不合併，見「機械循環支持與證據」分頁。</b>
+    分級依 <b>SCAI SHOCK 2022 更新版</b>；急性冠心症相關之血管重建與裝置建議<b>逐條引用 2023 ESC ACS 指引原文之 Class／Level</b>；系統性照護（shock team、侵入性血行動力學表型、1 小時／24 小時路線圖）依 <b>2025 ACC Concise Clinical Guidance</b>；藥物劑量以<b>台大醫院藥劑部仿單</b>與<b>台大心血管中心心衰竭指引第三版表 8-3</b> 為準，禁忌症另引<b>各藥品仿單</b>。<b>指引與新試驗之間有一處明顯時間差（微軸流幫浦），本頁並列而不合併，見「機械循環支持與證據」分頁。</b>
   </div>
 
 <!-- ==================== 分頁一：辨識與分級 ==================== -->
@@ -118,8 +128,8 @@
   <div class="lede">
     <div class="lede-title">先分開的三個問題 Three Separate Questions</div>
     <div class="lede-body">
-      <div class="lede-item"><span>①</span><span><b>這是不是心因性的休克？</b>——低血壓＋冰冷末梢不等於心因性。<b>低血容、出血、敗血、肺栓塞、心包填塞、張力性氣胸</b>都能長成同一個樣子，而處置南轅北轍。<b>心臟超音波是分岔點</b>。</span></div>
-      <div class="lede-item"><span>②</span><span><b>病因是什麼、可不可逆？</b>——<b>唯一被證明能降低死亡率的治療是處理病因</b>（AMI 的緊急血運重建、機械併發症的手術、填塞的引流、心律的整流）。升壓劑與裝置只是替病因治療爭取時間。</span></div>
+      <div class="lede-item"><span>①</span><span><b>這是不是心因性的休克？</b>——低血壓＋冰冷末梢不等於心因性。<b>低血容、出血、敗血、肺栓塞、心包膜填塞、張力性氣胸</b>都能長成同一個樣子，而處置南轅北轍。<b>心臟超音波是分岔點</b>。</span></div>
+      <div class="lede-item"><span>②</span><span><b>病因是什麼、可不可逆？</b>——<b>唯一被證明能降低死亡率的治療是處理病因</b>——急性心肌梗塞的<b>緊急血管重建術</b>（PCI 或 CABG）、機械性併發症的<b>外科修補術</b>、心包膜填塞的<b>心包膜穿刺引流術</b>、致命性心律不整的<b>電擊整流或心律調節</b>。升壓劑與裝置只是替病因治療爭取時間。</span></div>
       <div class="lede-item"><span>③</span><span><b>現在在哪一級、往哪個方向走？</b>——SCAI 分級是<b>會移動的</b>；決定升階或轉院的不是入院當下那一格，而是<b>治療後 1–2 小時的軌跡</b>（乳酸有沒有降、要不要加第二種藥）。</span></div>
       <div class="lede-foot">本頁以成人為主。<b>血壓正常仍可能是休克</b>（normotensive CS：已有低灌流但血壓靠代償撐住），約占 CS 的一部分且死亡率不低——不要用「血壓還可以」排除診斷。</div>
     </div>
@@ -143,7 +153,7 @@
       <div class="dot-line">・<b>抽血</b>：全血球計數、生化（含腎功能、肝功能、電解質）、<b>troponin</b>、<b>NT-proBNP／BNP</b>、<b>乳酸</b>、動脈或靜脈血液氣體分析。</div>
       <div class="dot-line">・<b>12 導程心電圖</b>（含<b>右側導程 V4R</b>——下壁梗塞必做，否則右室梗塞會被漏掉）。</div>
       <div class="dot-line">・<b>胸部 X 光</b>。</div>
-      <div class="dot-line">・<b>心臟超音波或 POCUS，越早越好</b>——同時回答「是不是心因性」「左心還是右心」「有沒有機械併發症或填塞」三個問題。台大指引第三版明列<b>血行動力不穩（特別是心因性休克）者必須立即做心超</b>。</div>
+      <div class="dot-line">・<b>心臟超音波或 POCUS，越早越好</b>——同時回答「是不是心因性」「左心還是右心」「有沒有機械性併發症或填塞」三個問題。台大指引第三版明列<b>血行動力不穩（特別是心因性休克）者必須立即做心超</b>。</div>
       <div class="dot-line">・<b>侵入性血行動力學（肺動脈導管）</b>：2025 ACC CCG 把完整血行動力學表型視為核心工具（觀察性資料中與較低院內死亡率相關），用來<b>分表型、選裝置、判斷脫離時機</b>；<b>惟此為觀察性證據，非隨機試驗</b>。</div>
     </div>
   </details>
@@ -152,11 +162,11 @@
     <summary>SCAI SHOCK 五級（2022 更新版）與 A-modifier</summary>
     <div class="box-inner">
       <b>兩條軸線，不是看血壓高低：</b>① 有沒有<b>低灌流</b>；② 對支持治療<b>有沒有反應</b>。<br><br>
-      <div class="tw"><table class="score-ref">
+      <div class="tw"><table class="def-table">
         <tr><th style="width:88px">級別</th><th>判準</th></tr>
         <tr><td><b>A</b> At Risk</td><td>有急性心臟診斷、具風險，但<b>無 preshock 或 shock</b>；血壓與灌流正常、<b>乳酸正常</b>。</td></tr>
         <tr><td><b>B</b> Beginning<br>（preshock）</td><td><b>SBP &lt; 90 或 MAP &lt; 60，或較基準降 &gt; 30 mmHg；或心搏過速</b>，但<b>無低灌流</b>——溫暖、灌流佳、乳酸正常。</td></tr>
-        <tr><td><b>C</b> Classic</td><td><b>出現低灌流，且需要一項超出單純容積復甦的介入</b>（藥物或機械）。冷濕、意識改變、<b>尿量 &lt; 30 mL/h、乳酸 ≥ 2</b>、Cr 升至 1.5× 基準；血行動力學 <b>CI &lt; 2.2、PCWP &gt; 15</b>。</td></tr>
+        <tr><td><b>C</b> Classic</td><td><b>出現低灌流，且需要一項超出單純輸液復甦的介入</b>（藥物或機械）。冷濕、意識改變、<b>尿量 &lt; 30 mL/h、乳酸 ≥ 2</b>、Cr 升至 1.5× 基準；血行動力學 <b>CI &lt; 2.2、PCWP &gt; 15</b>。</td></tr>
         <tr><td><b>D</b> Deteriorating</td><td>與 C 相似但<b>惡化中</b>——<b>初始支持策略未能恢復灌流</b>，需再加一種血管活性藥或再加一個裝置、或劑量／支持設定持續往上。<b>定義上必須經過一段時間</b>，剛到院就同時用兩種藥仍算 C。</td></tr>
         <tr><td><b>E</b> Extremis</td><td><b>實際或即將循環崩潰</b>。近乎無脈、反覆去顫、<b>乳酸 ≥ 8、pH ≤ 7.2、base deficit &gt; 10</b>，最大支持下仍需 bolus 升壓。</td></tr>
       </table></div>
@@ -172,7 +182,7 @@
     <summary>表型 Phenotypes：鬱血 × 灌流，以及左心／右心</summary>
     <div class="box-inner">
       <b>◆ 四象限（Stevenson 分類，急性心衰竭通用）：</b>
-      <div class="tw"><table class="score-ref">
+      <div class="tw"><table class="def-table">
         <tr><th style="width:110px"></th><th>灌流良好（warm）</th><th>灌流不足（cold）</th></tr>
         <tr><td><b>無鬱血 dry</b></td><td>warm–dry：代償</td><td><b>cold–dry</b>：低灌流但充填壓不高——<b>先想低血容或右心</b>，此時給利尿劑會更糟</td></tr>
         <tr><td><b>鬱血 wet</b></td><td>warm–wet：典型急性肺水腫</td><td><b>cold–wet</b>：<b>典型心因性休克</b>（多數 CS 落在此格）</td></tr>
@@ -205,7 +215,7 @@
     <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">心電圖與心臟超音波的主要發現是什麼？</span></div>
     <div class="flow-opts">
       <button class="flow-opt" onclick="ePick('type','acs',this)">ST 段上升或新發缺血變化<span class="fo-sub">STEMI／NSTE-ACS 併休克，區域性室壁運動異常</span></button>
-      <button class="flow-opt" onclick="ePick('type','mech',this)">機械併發症<span class="fo-sub">心室中隔破裂、急性重度二尖瓣逆流／乳突肌斷裂、游離壁破裂或心包填塞</span></button>
+      <button class="flow-opt" onclick="ePick('type','mech',this)">機械性併發症<span class="fo-sub">心室中隔破裂、急性重度二尖瓣逆流／乳突肌斷裂、游離壁破裂或心包膜填塞</span></button>
       <button class="flow-opt" onclick="ePick('type','rv',this)">右心室為主<span class="fo-sub">下壁梗塞併 V4R 上升、RV 擴大、JVP 高而肺野乾淨；或懷疑大量肺栓塞</span></button>
       <button class="flow-opt" onclick="ePick('type','adhf',this)">慢性心衰竭急性惡化<span class="fo-sub">已知 HFrEF／心肌病變，兩心室擴大、無新發缺血</span></button>
       <button class="flow-opt" onclick="ePick('type','arrhy',this)">心律問題為主<span class="fo-sub">持續性快速心律不整或高度房室阻滯／嚴重心搏過緩</span></button>
@@ -243,15 +253,15 @@
   <details class="def-box" style="margin-top:14px;">
     <summary>2023 ESC ACS 指引：心因性休克建議表（Recommendation Table 9 與相關條文）</summary>
     <div class="box-inner">
-      <div class="tw"><table class="score-ref">
+      <div class="tw"><table class="def-table dt-rec">
         <tr><th>建議</th><th style="width:80px">Class</th><th style="width:70px">Level</th></tr>
         <tr><td>ACS 併心因性休克者，<b>立即冠狀動脈攝影並對罪犯血管施行 PCI</b>（若適應）</td><td><span class="cor">I</span></td><td>B</td></tr>
         <tr><td>罪犯血管 PCI <b>不可行或失敗</b>時，<b>緊急 CABG</b></td><td><span class="cor">I</span></td><td>B</td></tr>
-        <tr><td>血行動力不穩者，經 Heart Team 討論後<b>緊急手術或導管修補機械併發症</b></td><td><span class="cor">I</span></td><td>C</td></tr>
-        <tr><td>STEMI 併休克若<b>無法在診斷後 120 分鐘內執行直接 PCI</b>、且<b>已排除機械併發症</b>，可考慮溶栓</td><td><span class="cor">IIa</span></td><td>C</td></tr>
+        <tr><td>血行動力不穩者，經 Heart Team 討論後<b>緊急外科修補或經導管修補機械性併發症</b></td><td><span class="cor">I</span></td><td>C</td></tr>
+        <tr><td>STEMI 併休克若<b>無法在診斷後 120 分鐘內執行直接 PCI</b>、且<b>已排除機械性併發症</b>，可考慮溶栓</td><td><span class="cor">IIa</span></td><td>C</td></tr>
         <tr><td>ACS 併<b>嚴重／難治性</b>休克，<b>可考慮</b>短期機械循環支持</td><td><span class="cor">IIb</span></td><td>C</td></tr>
-        <tr><td><b>無機械併發症</b>的 ACS 併休克，<b>不建議常規使用 IABP</b></td><td><span class="cor c3">III</span></td><td>B</td></tr>
-        <tr><td>但 <b>ACS 相關機械併發症</b>造成之血行動力不穩／休克，<b>應考慮 IABP</b>（等待手術期間）</td><td><span class="cor">IIa</span></td><td>C</td></tr>
+        <tr><td><b>無機械性併發症</b>的 ACS 併休克，<b>不建議常規使用 IABP</b></td><td><span class="cor c3">III</span></td><td>B</td></tr>
+        <tr><td>但 <b>ACS 相關機械性併發症</b>造成之血行動力不穩／休克，<b>應考慮 IABP</b>（等待手術期間）</td><td><span class="cor">IIa</span></td><td>C</td></tr>
       </table></div>
       <b>多血管疾病：</b>CULPRIT-SHOCK 之後，指引明訂<b>index 手術只處理罪犯血管</b>，非罪犯血管留待分階段處理。
     </div>
@@ -457,7 +467,7 @@
     <div class="dg-kin">&gt; 20 mcg/kg/min 對血壓未必再有幫助，卻明顯增加心搏過速與心律不整 ｜ <b>不可加入鹼性溶液</b>（會失活）</div>
     <div class="dg-grid">
       <div class="dg-col dg-pro"><h4>殘存的位置</h4><ul>
-        <li>合併<b>症狀性心搏過緩</b>而暫時無法起搏時的過渡選擇。</li>
+        <li>合併<b>症狀性心搏過緩</b>而暫時無法置放心律調節器時的過渡選擇。</li>
         <li>無中心靜脈、短時間內找不到其他升壓劑時的權宜。</li>
       </ul></div>
       <div class="dg-col dg-con"><h4>為什麼降級</h4><ul>
@@ -598,7 +608,7 @@
 
   <div class="kbox">
     <div class="kbox-t">台大心血管中心指引第三版 表 8-3（強心劑與升壓劑）</div>
-    <div class="tw"><table class="score-ref">
+    <div class="tw"><table class="def-table dt-dose">
       <tr><th style="width:120px">藥物</th><th style="width:34%">單次給藥</th><th>滴注速率</th></tr>
       <tr><td>Dobutamine <sup>a</sup></td><td>不建議</td><td>2–20 mcg/kg/min</td></tr>
       <tr><td>Dopamine</td><td>不建議</td><td>3–5 mcg/kg/min：強心作用；&gt; 5 mcg/kg/min：併血管收縮</td></tr>
@@ -620,13 +630,13 @@
   </div>
 
   <div class="sect"><div class="section-title">隨機試驗證據 <span class="en">Randomized Evidence</span></div></div>
-  <div class="tw"><table class="score-ref">
+  <div class="tw"><table class="def-table">
     <tr><th style="width:118px">試驗</th><th style="width:150px">族群</th><th>結果</th></tr>
-    <tr><td><b>SHOCK</b><br>NEJM 1999</td><td>AMI 併 CS，302 人</td><td>緊急血運重建 vs 初始藥物穩定：<b>30 天死亡無差異，但 6 個月死亡較低</b>——<b>「緊急血運重建」這件事的原始證據</b>。</td></tr>
+    <tr><td><b>SHOCK</b><br>NEJM 1999</td><td>AMI 併 CS，302 人</td><td>緊急血管重建 vs 初始藥物穩定：<b>30 天死亡無差異，但 6 個月死亡較低</b>——<b>「緊急血管重建」這件事的原始證據</b>。</td></tr>
     <tr><td><b>IABP-SHOCK II</b><br>NEJM 2012</td><td>AMI 併 CS，600 人</td><td>IABP vs 無 IABP：30 天死亡 <b>39.7% vs 41.3%（RR 0.96，p=0.69）</b>，乳酸、升壓劑用量、住院天數皆無差異 → <b>不建議常規使用</b>。</td></tr>
     <tr><td><b>CULPRIT-SHOCK</b><br>NEJM 2017</td><td>AMI＋多血管＋CS，706 人</td><td>只做罪犯血管 vs 立即多血管 PCI：30 天死亡或腎臟替代 <b>45.9% vs 55.4%（RR 0.83，p=0.01）</b>；死亡 RR 0.84 → <b>index 手術只處理罪犯血管</b>。1 年死亡兩組無顯著差異。</td></tr>
     <tr><td><b>ECMO-CS</b><br>Circulation 2023</td><td>快速惡化或重度 CS，122 人</td><td>立即 VA-ECMO vs 初始保守（可事後轉 ECMO）：<b>複合終點無差異</b>；保守組約 40% 交叉使用 ECMO，判讀受限。</td></tr>
-    <tr><td><b>ECLS-SHOCK</b><br>NEJM 2023</td><td>AMI 併 CS 且計畫早期血運重建，417 人</td><td>早期 ECLS vs 一般治療：30 天死亡 <b>47.8% vs 49.0%（RR 0.98，p=0.81）</b>，但<b>中重度出血 23.4% vs 9.6%</b>、<b>需介入之周邊血管併發症 11.0% vs 3.8%</b> → <b>不建議常規使用</b>。</td></tr>
+    <tr><td><b>ECLS-SHOCK</b><br>NEJM 2023</td><td>AMI 併 CS 且計畫早期血管重建，417 人</td><td>早期 ECLS vs 一般治療：30 天死亡 <b>47.8% vs 49.0%（RR 0.98，p=0.81）</b>，但<b>中重度出血 23.4% vs 9.6%</b>、<b>需介入之周邊血管併發症 11.0% vs 3.8%</b> → <b>不建議常規使用</b>。</td></tr>
     <tr><td><b>DanGer Shock</b><br>NEJM 2024</td><td><b>STEMI</b> 併 CS，355 人</td><td>微軸流幫浦（Impella CP）＋標準治療 vs 標準治療：<b>180 天死亡 45.8% vs 58.5%（HR 0.74，95% CI 0.55–0.99，p=0.04）</b>。代價：<b>安全複合終點 24.0% vs 6.2%（RR 4.74）</b>、<b>需腎臟替代治療 41.9% vs 26.7%</b>。</td></tr>
     <tr><td><b>DOREMI</b><br>NEJM 2021</td><td>心因性休克，192 人</td><td>milrinone vs dobutamine：主要複合終點 <b>49% vs 54%（RR 0.90，p=0.47）</b>，各次要終點亦無差異。</td></tr>
     <tr><td><b>SOAP II</b><br>NEJM 2010</td><td>各類休克 1,679 人（CS 280 人）</td><td>dopamine vs norepinephrine：整體 28 天死亡無差異，<b>dopamine 心律不整 24.1% vs 12.4%</b>，<b>心因性休克次族群 dopamine 死亡率較高（p=0.03）</b>。</td></tr>
@@ -640,11 +650,11 @@
     <div class="dg-kin">機轉：舒張期充氣提升冠狀動脈灌流壓、收縮期洩氣降低後負荷 ｜ <b>心輸出量增益有限（約 0.5–1 L/min）</b>，需自身心律與心搏出量配合</div>
     <div class="dg-grid">
       <div class="dg-col dg-pro"><h4>仍有位置的情境</h4><ul>
-        <li><b>ACS 相關機械併發症（VSR、急性 MR）等待手術期間</b>——2023 ESC <span class="cor">IIa C</span>。</li>
+        <li><b>ACS 相關機械性併發症（VSR、急性 MR）等待手術期間</b>——2023 ESC <span class="cor">IIa C</span>。</li>
         <li>缺血性心臟病需增加冠狀動脈灌流支持、高風險 PCI（台大指引第三版）。</li>
       </ul></div>
       <div class="dg-col dg-con"><h4>不該做的事</h4><ul>
-        <li><b>無機械併發症之 ACS 併休克不建議常規使用</b>——2023 ESC <span class="cor c3">III B</span>。</li>
+        <li><b>無機械性併發症之 ACS 併休克不建議常規使用</b>——2023 ESC <span class="cor c3">III B</span>。</li>
         <li>併發症：出血、下肢缺血、氣球破裂、位置不正影響主動脈分枝、主動脈破裂。</li>
       </ul></div>
     </div>
@@ -682,7 +692,7 @@
 
   <div class="dg">
     <div class="dg-head"><span class="dg-name">VA-ECMO</span><span class="dg-zh">靜脈–動脈體外膜氧合</span><span class="dg-tag">全循環＋氧合支持</span></div>
-    <div class="dg-kin">機轉：完全繞過心肺，同時支持循環與氣體交換 ｜ <b>但股動脈逆行血流會增加左心室後負荷</b>——左心室無法射出時需搭配減壓（IABP、微軸流幫浦或房間隔造口）</div>
+    <div class="dg-kin">機轉：完全繞過心肺，同時支持循環與氣體交換 ｜ <b>但股動脈逆行血流會增加左心室後負荷</b>——左心室無法射出時需搭配減壓（IABP、微軸流幫浦或心房中隔造口術）</div>
     <div class="dg-grid">
       <div class="dg-col dg-pro"><h4>什麼時候仍要用</h4><ul>
         <li><b>難治性休克或瀕臨崩潰（SCAI E）</b>、需同時支持氧合者；ACS 情境為 2023 ESC <span class="cor">IIb C</span>。</li>
@@ -782,8 +792,8 @@ function eRender(){
   if(eSt.type === 'acs'){
     if(eSt.pci === 'no'){
       cls='rec-elective'; title='先溶栓，同時安排轉送導管室';
-      detail='<li><b>已排除機械併發症</b>後，STEMI 併休克且無法於診斷後 120 分鐘內直接 PCI 者，<b>可考慮溶栓</b>（2023 ESC IIa C）。</li>'+
-             '<li>溶栓<b>不能取代</b>血運重建：給藥同時就啟動轉送，到院後仍需冠狀動脈攝影。</li>'+
+      detail='<li><b>已排除機械性併發症</b>後，STEMI 併休克且無法於診斷後 120 分鐘內直接 PCI 者，<b>可考慮溶栓</b>（2023 ESC IIa C）。</li>'+
+             '<li>溶栓<b>不能取代</b>血管重建：給藥同時就啟動轉送，到院後仍需冠狀動脈攝影。</li>'+
              '<li>轉送途中維持 norepinephrine 與監測，避免因搬運中斷升壓。</li>';
       note='2023 ESC ACS 指引 Recommendation Table 9。溶栓在休克病人的成功率較低（低灌流影響藥物送達），故僅為時間限制下的次佳選項。';
     } else if(eSt.pci === 'yes'){
@@ -814,20 +824,20 @@ function eRender(){
     }
   }
   else if(eSt.type === 'mech'){
-    cls='rec-urgent'; title='機械併發症：Heart Team 立即討論，緊急手術或導管修補';
-    detail='<li><b>血行動力不穩者，緊急外科或導管修補為 Class I C</b>（2023 ESC）——這是少數「越快越好、藥物撐不住」的情境。</li>'+
+    cls='rec-urgent'; title='機械性併發症：Heart Team 立即討論，緊急外科或經導管修補';
+    detail='<li><b>血行動力不穩者，緊急外科修補或經導管修補為 Class I C</b>（2023 ESC）——這是少數「越快越好、藥物撐不住」的情境。</li>'+
            '<li><b>等待手術期間應考慮 IABP</b>（2023 ESC IIa C）；這是 IABP 唯一被指引正面建議的心因性休克情境。</li>'+
-           '<li><b>心室中隔破裂者禁用微軸流幫浦</b>；心包填塞者立即心包穿刺或外科引流。</li>'+
+           '<li><b>心室中隔破裂者禁用微軸流幫浦</b>；心包膜填塞者立即心包膜穿刺引流術（pericardiocentesis）或外科心包膜開窗引流。</li>'+
            '<li>急性重度二尖瓣逆流：降低後負荷有助前向血流，但在低血壓時仍須先以升壓維持灌流。</li>';
     note='2023 ESC ACS Recommendation Table 9（I C）與 Table 14（IABP IIa C）。';
   }
   else if(eSt.type === 'rv'){
     cls='rec-elective'; title='右心為主的休克：保前負荷、降肺阻力、找病因';
-    detail='<li><b>下壁梗塞務必做 V4R</b>；確認為右室梗塞則<b>盡快打通右冠狀動脈</b>（血運重建原則同 ACS 路徑）。</li>'+
+    detail='<li><b>下壁梗塞務必做 V4R</b>；確認為右室梗塞則<b>盡快恢復右冠狀動脈血流</b>（血管重建原則同 ACS 路徑）。</li>'+
            '<li><b>維持前負荷</b>：小量分次輸液（如 250 mL 後重評），<b>但過量輸液會讓右心過度擴張、經心室互賴壓迫左心</b>而更糟。</li>'+
            '<li><b>避免硝酸鹽與大劑量利尿</b>；避免低血氧、高碳酸與酸中毒（皆會拉高肺血管阻力）；呼吸器 PEEP 盡量壓低。</li>'+
            '<li>血壓不足先用 <b>norepinephrine</b>（可加 vasopressin，較不升高肺動脈壓）；心輸出仍不足加 <b>dobutamine 或 milrinone</b>。</li>'+
-           '<li>維持竇性節律與房室同步（右室對心房收縮貢獻依賴度高）；<b>高度房室阻滯考慮心房–心室順序起搏</b>。</li>'+
+           '<li>維持竇性節律與房室同步（右室對心房收縮貢獻依賴度高）；<b>高度房室阻滯考慮房室順序性心律調節（AV sequential pacing）</b>。</li>'+
            '<li>若病因為<b>大量肺栓塞</b>，走的是溶栓／導管取栓的路徑，不是本頁的左心邏輯。</li>';
     note='血行動力學指標：RA:PCWP &gt; 0.8、PAPi 偏低（急性下壁梗塞研究中 PAPi ≤ 0.9 與院內死亡或需右心輔助高度相關，Korabathina 2012，樣本數小）。';
   }
@@ -842,7 +852,7 @@ function eRender(){
   else if(eSt.type === 'arrhy'){
     cls='rec-elective'; title='先解決心律，其他都是次要';
     detail='<li><b>快速心律不整併休克 → 立即同步電擊整流</b>；心室顫動／無脈性心室頻脈 → 去顫並進入 ACLS。</li>'+
-           '<li><b>嚴重心搏過緩／高度房室阻滯 → atropine、經皮或經靜脈起搏</b>；藥物過量（β 阻斷劑、鈣離子阻斷劑）另有解毒路徑。</li>'+
+           '<li><b>嚴重心搏過緩／高度房室阻滯 → atropine、經皮或經靜脈暫時性心律調節（pacing）</b>；藥物過量（β 阻斷劑、鈣離子阻斷劑）另有解毒路徑。</li>'+
            '<li>心律矯正後<b>重新評估血行動力學</b>：若休克隨之緩解，多數不需要升壓劑久留；若仍休克，回到本流程尋找另一個病因。</li>'+
            '<li>反覆惡性心律不整（electrical storm）：矯正電解質與缺血、考慮 amiodarone／β 阻斷劑、深度鎮靜，難治者才考慮機械支持。</li>';
     note='詳細劑量與演算法見 ACLS 工具頁。';
@@ -926,7 +936,7 @@ function tRender(){
     lines.push('<li>需插管時<b>優先 midazolam</b>（propofol 心臟抑制易低血壓，台大指引第三版）；插管前先備好升壓劑。</li>');
     lines.push('<li><b>啟動 shock team</b>、放置動脈導管，評估是否需肺動脈導管做表型判讀；無禁忌者給預防性抗凝。</li>');
     detail = lines.join('');
-    note='SCAI 2022：需要「超出容積復甦的介入」即為 C 級。用最低有效劑量維持灌流，因為每一分升壓與強心都在增加心肌耗氧與心律不整。';
+    note='SCAI 2022：需要「超出輸液復甦的介入」即為 C 級。用最低有效劑量維持灌流，因為每一分升壓與強心都在增加心肌耗氧與心律不整。';
   }
 
   flowRec('t_rec', cls, title, detail, note);
@@ -945,7 +955,7 @@ function tRender(){
   } else if(tSt.traj === 'same'){
     c2='rec-urgent'; t2='SCAI D（初始支持失敗）：這是轉診與升階的分水嶺';
     d2='<li><b>需要加第二種血管活性藥或加第二個裝置＝D 級</b>——SCAI 明訂<b>此時就該啟動轉診討論，不要等到 E 級</b>。</li>'+
-        '<li>重新確認<b>病因是否已處理</b>（殘餘缺血？機械併發症被漏掉？填塞？心律？藥物中毒？）以及<b>是否有右心或血管擴張成分</b>被忽略。</li>'+
+        '<li>重新確認<b>病因是否已處理</b>（殘餘缺血？機械性併發症被漏掉？填塞？心律？藥物中毒？）以及<b>是否有右心或血管擴張成分</b>被忽略。</li>'+
         '<li>考慮<b>肺動脈導管</b>做完整血行動力學表型，用 CI、CPO、RA:PCWP、PAPi 決定要加強心、加升壓，還是需要裝置與哪一種。</li>'+
         '<li><b>短期機械循環支持：2023 ESC 於 ACS 併嚴重／難治性休克為 IIb C</b>；DanGer Shock 支持在<b>選擇性 STEMI-CS</b> 使用微軸流幫浦（180 天死亡下降，但併發症與腎臟替代治療增加）。<b>裝機前先想清楚出口策略。</b></li>';
     n2='SCAI 2022 hub-and-spoke：spoke 中心照顧多數 C 級，進展到 D 級即應考慮轉往具完整能力之 hub。';
