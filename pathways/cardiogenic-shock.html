@@ -425,7 +425,7 @@
   <!-- Vasopressin -->
   <div class="dg" data-drug="avp">
     <div class="dg-head">
-      <span class="dg-name">Vasopressin</span><span class="dg-zh">加壓素（台大藥品資料庫之心血管用藥分類未收載，院內供應請先確認）</span>
+      <span class="dg-name">Vasopressin</span><span class="dg-zh">必壓生 Pitressin Injection 20 U/1 mL/amp（台大歸在內分泌用藥，不在心血管分類下）</span>
       <span class="dg-tag">輔助升壓</span><span class="dg-tag">V1 受體</span>
     </div>
     <div class="dg-dose">
@@ -658,8 +658,16 @@
       <span class="dg-tag ctrl">休克狀態為仿單禁忌</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">起始</span><span class="dd-v">5 mcg/min，每 3–5 分鐘增加 5 mcg/min</span></span>
-      <span><span class="dd-k">達 20 mcg/min 仍無效</span><span class="dd-v alt">改以 10–20 mcg/min 增幅</span></span>
+      <span><span class="dd-k">起始</span><span class="dd-v">5 mcg/min，每 3–5 分鐘增加 5 mcg/min</span><span class="dd-ml" data-ml="ntg_start"></span></span>
+      <span><span class="dd-k">達 20 mcg/min 仍無效</span><span class="dd-v alt">改以 10–20 mcg/min 增幅</span><span class="dd-ml" data-ml="ntg_20"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="ntg" value="25" min="0" step="any" aria-label="nitroglycerin 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="ntg" value="250" min="1" step="any" aria-label="nitroglycerin 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="ntg">—</span>
     </div>
     <div class="dg-kin">台大仿單適應症含<b>急性心肌梗塞導致之鬱血性心衰竭</b>；<b>須用非 PVC 輸注套</b>；靜脈使用應有血行動力學監測（如 PCWP）</div>
     <div class="dg-ci">
@@ -1066,12 +1074,16 @@ var CS_DOSE = [
   { k:'mil_load', d:'mil',  lo:0.05,  hi:0.05, kg:true,  dp:2, type:'bolus', unit:'mg（10 分鐘內）' },
   { k:'mil_std',  d:'mil',  lo:0.375, hi:0.75, kg:true,  dp:1 },
   { k:'mil_low',  d:'mil',  lo:0.125, hi:0.75, kg:true,  dp:1 },
+  /* nitroglycerin 的兩列劑量本身是敘述句（含滴定方式），不由本表改寫文字，
+     只借用其中的固定數值算出 mL/hr——故這兩列在 HTML 只有 data-ml、沒有 data-out。 */
+  { k:'ntg_start', d:'ntg', lo:5,    hi:5,    kg:false, dp:0 },
+  { k:'ntg_20',    d:'ntg', lo:20,   hi:20,   kg:false, dp:0 },
   // furosemide 沒有泡法欄（依院內配置差異大），只做體重換算
   { k:'fur_inf',  d:null,   lo:0.05,  hi:0.4,  kg:true,  dp:1, unit:'mg/hr' }
 ];
 
 // 泡法輸入的單位：mg 要換成 mcg 才能跟 mcg/min 對得起來；vasopressin 用 U
-var CS_MIX_UNIT = { ne:'mg', avp:'U', epi:'mg', dopa:'mg', dob:'mg', mil:'mg' };
+var CS_MIX_UNIT = { ne:'mg', avp:'U', epi:'mg', dopa:'mg', dob:'mg', mil:'mg', ntg:'mg' };
 
 function csRound(x, dp){
   var p = Math.pow(10, dp);
