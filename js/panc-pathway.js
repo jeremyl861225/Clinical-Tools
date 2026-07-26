@@ -24,7 +24,7 @@
 
   /* ---------- 版面 helpers ---------- */
   function opt(key, val, title, sub) {
-    return '<button class="flow-opt" onclick="pcPick(\'' + key + '\',\'' + val + '\',this)">' +
+    return '<button class="flow-opt" onclick="pancPick(\'' + key + '\',\'' + val + '\',this)">' +
       title + (sub ? '<span class="fo-sub">' + sub + '</span>' : '') + '</button>';
   }
   function step(id, num, q, optsHtml, extra) {
@@ -365,7 +365,7 @@
       '<div class="rec-title">請完成上方步驟</div></div>';
     h += '<div class="flow-fu hidden" id="pc_fu"></div>';
 
-    h += '<div class="flow-reset"><button class="btn-reset" onclick="pcReset()">重置</button></div>';
+    h += '<div class="flow-reset"><button class="btn-reset" onclick="pancReset()">重置</button></div>';
     h += '</div>'; // pcPath
     return h;
   }
@@ -685,7 +685,7 @@
   }
 
   /* ---------- 事件 ---------- */
-  function pcPick(key, val, btn) {
+  function pancPick(key, val, btn) {
     pcSel(btn);
     var s = pcSt;
     if (key === 'ext') {
@@ -717,7 +717,7 @@
     pcRender();
   }
 
-  function pcReset() {
+  function pancReset() {
     for (var k in pcSt) { if (pcSt.hasOwnProperty(k)) pcSt[k] = null; }
     var root = document.getElementById('pcPath');
     if (root) root.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
@@ -726,11 +726,15 @@
     pcRender();
   }
 
-  function initPancPathway() { pcReset(); }
+  function initPancPathway() { pancReset(); }
 
   // 匯出
+  /* ⚠ 匯出名稱必須是「全癌別唯一」的：所有 *-pathway.js 都掛在同一個 window 上，
+     後載入者會無聲覆蓋先載入者的同名函式，且不會有任何錯誤訊息——流程圖只是
+     點了沒反應。本檔曾因與 rcc-pathway.js 同樣使用 rcPick／rcReset 而失效，
+     panc 與 prostate 亦曾同用 pcPick／pcReset。新增模組時請用夠長的專屬前綴。 */
   global.pancPathwayHTML = pancPathwayHTML;
   global.initPancPathway = initPancPathway;
-  global.pcPick = pcPick;
-  global.pcReset = pcReset;
+  global.pancPick = pancPick;
+  global.pancReset = pancReset;
 })(window);

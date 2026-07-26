@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
            border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
@@ -117,7 +118,10 @@
       <h1>急性冠心症 ACS／AMI</h1>
       <div class="sub">Acute Coronary Syndrome — 分流、判讀、再灌流時機、抗栓藥物與劑量</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-acs'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-acs'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="rsi-bar">
@@ -216,7 +220,7 @@
           <li><b>SYNTAX</b>：不是急性期分層工具，而是<b>確定解剖後</b>決定 PCI 或 CABG 的複雜度評分。</li>
         </ul>
         <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
-          <a class="flow-link" href="grace.html?from=acs">→ GRACE Score 計算器</a>
+          <a class="flow-link" href="grace.html">→ GRACE Score 計算器</a>
           <a class="flow-link" href="#syntax" onclick="acsTab('syntax');return false;">→ SYNTAX Score 分頁</a>
         </div>
       </div>
@@ -303,8 +307,22 @@
           <tr class="dt-warn"><td><b>高出血風險（HBR）</b></td><td>縮短至 <b>1–3 個月</b></td><td>轉 P2Y₁₂ 單一治療（MASTER DAPT）</td></tr>
           <tr><td><b>ACS + BMS</b></td><td><b>仍為 12 個月</b>（同 DES）</td><td>BMS 現已極少使用；縮短至 1 個月僅適用於<b>穩定型冠心症</b>，不適用 ACS</td></tr>
           <tr><td><b>藥物治療（未放支架）的 ACS</b></td><td>12 個月</td><td>時長由 ACS 本身決定，與有無支架無關</td></tr>
-          <tr><td><b>合併需長期抗凝</b>（如心房顫動）</td><td>三合一儘量縮短（多為 ≤ 1 週～1 個月）</td><td>轉 <b>抗凝＋單一 P2Y₁₂</b>（多選 clopidogrel），1 年後多為單獨抗凝</td></tr>
+          <tr class="dt-warn"><td><b>合併需長期抗凝＋有放支架</b><br><span style="font-weight:400;">（如心房顫動接受 PCI）</span></td><td>三合一（OAC＋aspirin＋P2Y₁₂）<b>儘量縮短</b>：多為住院期間～1 週，缺血風險高才延長至 1 個月</td><td>轉 <b>OAC＋單一 P2Y₁₂</b>（clopidogrel）至 12 個月 → 之後<b>單獨 OAC</b>，停掉抗血小板</td></tr>
+          <tr><td><b>合併需長期抗凝、未放支架</b><br><span style="font-weight:400;">（藥物治療的 ACS）</span></td><td><b>通常不需三合一</b></td><td>直接 <b>OAC＋單一 P2Y₁₂</b> 至 12 個月 → 之後單獨 OAC</td></tr>
         </table>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">心房顫動＋放了支架：最容易做錯的一組</div>
+        <b>「有放支架」不是繼續給三合一的理由，而是「短暫給、然後儘快減掉 aspirin」的理由。</b>
+        關鍵試驗收的正是這群人——AUGUSTUS 收「AF 且發生 ACS <b>或接受 PCI</b>」者，WOEST 更是純 PCI 族群。
+        <ul>
+          <li><b>先減掉的是 aspirin，不是抗凝劑。</b>AUGUSTUS 中含 aspirin 者大出血／臨床相關出血 16.1% vs 安慰劑 9.0%（HR 1.89），
+            而缺血事件無顯著差異；WOEST 中三合一出血 44.4% vs 雙合一 19.4%（HR 0.36），血栓事件亦未增加。</li>
+          <li><b>P2Y₁₂ 選 clopidogrel</b>，不要用 ticagrelor 或 prasugrel（與抗凝併用出血過高）。</li>
+          <li><b>抗凝劑優先用 DOAC</b>（非瓣膜性 AF），優於 warfarin；劑量用該藥<b>中風預防的核准劑量</b>，不可自行減量。</li>
+          <li><b>滿 12 個月後停掉抗血小板、單獨用 OAC</b>——體內有支架也一樣。長期「OAC＋aspirin」只是徒增出血。</li>
+          <li>三合一的長度取決於<b>缺血與出血風險的拉鋸</b>：多數人住院期間至 1 週即可；左主幹／分岔／長支架等高缺血風險才延長至 1 個月。</li>
+        </ul>
       </div>
       <div class="kbox">
         <div class="kbox-t">高出血風險（HBR）常見條件</div>
@@ -542,6 +560,8 @@
           <tr><td>HEART score 外部驗證</td><td>BMC Emerg Med 2025;25:165（HEART/TIMI/GRACE 比較）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40847270/" target="_blank" rel="noopener">40847270</a></td></tr>
           <tr><td>GRACE 分數原始推導</td><td>Granger CB, et al. Arch Intern Med 2003;163:2345</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/14563598/" target="_blank" rel="noopener">14563598</a></td></tr>
           <tr class="dt-warn"><td>高出血風險縮短 DAPT</td><td>MASTER DAPT, N Engl J Med 2021;385:1643</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34449185/" target="_blank" rel="noopener">34449185</a></td></tr>
+          <tr class="dt-warn"><td>AF + ACS／PCI：去掉 aspirin</td><td>AUGUSTUS, N Engl J Med 2019;380:1509（含 aspirin 出血 16.1% vs 9.0%，缺血無差異）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/30883055/" target="_blank" rel="noopener">30883055</a></td></tr>
+          <tr><td>AF + PCI：雙合一優於三合一</td><td>WOEST, Lancet 2013;381:1107（出血 19.4% vs 44.4%）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/23415013/" target="_blank" rel="noopener">23415013</a></td></tr>
           <tr><td>血管重建指引（PCI vs CABG）</td><td>2021 ACC/AHA/SCAI, Circulation 2022;145:e18</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34882435/" target="_blank" rel="noopener">34882435</a></td></tr>
           <tr><td>左主幹 PCI vs CABG</td><td>Sabatine MS, et al. Lancet 2021;398:2247（個體資料統合）</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34793745/" target="_blank" rel="noopener">34793745</a></td></tr>
           <tr><td>術前 P2Y₁₂ 停藥與出血</td><td>Voetsch A, et al. Ann Thorac Surg 2021;111:77</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/32565086/" target="_blank" rel="noopener">32565086</a></td></tr>
