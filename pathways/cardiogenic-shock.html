@@ -46,8 +46,24 @@
   .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
            display:flex; gap:14px; flex-wrap:wrap; align-items:baseline;}
   .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
-  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);
+                 display:block;}
   .dg-dose .dd-v.alt{color:var(--accent2);}
+  /* 由該藥自己的泡法換算出的輸注速率，接在 mcg/min 之下 */
+  .dg-dose .dd-ml{font-family:var(--mono); font-size:12.5px; font-weight:700; color:var(--ink);
+                  display:block; margin-top:1px;}
+  .dg-dose .dd-ml:empty{display:none;}
+
+  /* ── 泡法列：每張藥卡各自輸入，換算出 mL/hr ── */
+  .dg-mix{display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+          margin-top:6px; padding:6px 9px; border:1px dashed var(--line); border-radius:2px;}
+  .dg-mix label{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+                text-transform:uppercase; letter-spacing:.04em;}
+  .dg-mix input[type=number]{width:66px; font-family:var(--mono); font-size:13px; font-weight:700;
+      padding:3px 6px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .dg-mix .mix-u{font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .dg-mix .mix-c{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:2px;}
   .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px; line-height:1.6;}
   .dg-kin b{color:var(--ink); font-weight:700;}
   .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
@@ -373,9 +389,17 @@
       <span class="dg-tag">第一線升壓劑</span><span class="dg-tag">α1 &gt; β1</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">仿單劑量 0.05–0.4 mcg/kg/min</span><span class="dd-v" data-out="ne_std">—</span></span>
-      <span><span class="dd-k">難治性休克 1–3.3 mcg/kg/min</span><span class="dd-v alt" data-out="ne_hi">—</span></span>
-      <span><span class="dd-k">指引表 8-3：0.2–1.0 mcg/kg/min</span><span class="dd-v" data-out="ne_gl">—</span></span>
+      <span><span class="dd-k">仿單劑量 0.05–0.4 mcg/kg/min</span><span class="dd-v" data-out="ne_std">—</span><span class="dd-ml" data-ml="ne_std"></span></span>
+      <span><span class="dd-k">難治性休克 1–3.3 mcg/kg/min</span><span class="dd-v alt" data-out="ne_hi">—</span><span class="dd-ml" data-ml="ne_hi"></span></span>
+      <span><span class="dd-k">指引表 8-3：0.2–1.0 mcg/kg/min</span><span class="dd-v" data-out="ne_gl">—</span><span class="dd-ml" data-ml="ne_gl"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="ne" value="8" min="0" step="any" aria-label="ne 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="ne" value="100" min="1" step="any" aria-label="ne 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="ne">—</span>
     </div>
     <div class="dg-kin">稀釋 <b>D5W 或 GS（不建議單用生理食鹽水稀釋）</b>，濃度 4–64 mcg/mL ｜ 常用滴速 2–30 mcg/min ｜ 限水者台大建議 <b>2 amp 泡 100 mL、run 8 mL/hr</b> ｜ 稀釋後室溫 24 小時</div>
     <div class="dg-grid">
@@ -405,7 +429,15 @@
       <span class="dg-tag">輔助升壓</span><span class="dg-tag">V1 受體</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">成人固定劑量（不依體重）</span><span class="dd-v">0.03–0.04 U/min</span></span>
+      <span><span class="dd-k">成人固定劑量（不依體重）</span><span class="dd-v" data-out="avp_std">0.03–0.04 U/min</span><span class="dd-ml" data-ml="avp_std"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="avp" value="20" min="0" step="any" aria-label="avp 藥量">
+      <span class="mix-u">U</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="avp" value="100" min="1" step="any" aria-label="avp 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="avp">—</span>
     </div>
     <div class="dg-kin">不經腎上腺素受體作用，<b>不增加心率</b>；相對<b>不升高肺血管阻力</b>，故在右心衰竭／肺高壓時常被選為第二種升壓劑</div>
     <div class="dg-grid">
@@ -434,8 +466,16 @@
       <span class="dg-tag ctrl">非第一線</span><span class="dg-tag">α＋β</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">指引表 8-3 滴注 0.05–0.5 mcg/kg/min</span><span class="dd-v" data-out="epi_inf">—</span></span>
+      <span><span class="dd-k">指引表 8-3 滴注 0.05–0.5 mcg/kg/min</span><span class="dd-v" data-out="epi_inf">—</span><span class="dd-ml" data-ml="epi_inf"></span></span>
       <span><span class="dd-k">心跳停止</span><span class="dd-v alt">1 mg IV q3–5 min</span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="epi" value="1" min="0" step="any" aria-label="epi 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="epi" value="250" min="1" step="any" aria-label="epi 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="epi">—</span>
     </div>
     <div class="dg-kin">台大仿單注射濃度 2–4 mcg/mL、滴速 1–10 mcg/min ｜ 兼具強心與升壓，但代謝副作用最明顯</div>
     <div class="dg-grid">
@@ -464,8 +504,16 @@
       <span class="dg-tag ctrl">心因性休克應避免</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">仿單 0.5–20 mcg/kg/min（max 50）</span><span class="dd-v" data-out="dopa_std">—</span></span>
-      <span><span class="dd-k">指引表 8-3：3–5 強心／&gt; 5 併升壓</span><span class="dd-v" data-out="dopa_gl">—</span></span>
+      <span><span class="dd-k">仿單 0.5–20 mcg/kg/min（max 50）</span><span class="dd-v" data-out="dopa_std">—</span><span class="dd-ml" data-ml="dopa_std"></span></span>
+      <span><span class="dd-k">指引表 8-3：3–5 強心／&gt; 5 併升壓</span><span class="dd-v" data-out="dopa_gl">—</span><span class="dd-ml" data-ml="dopa_gl"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="dopa" value="400" min="0" step="any" aria-label="dopa 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="dopa" value="250" min="1" step="any" aria-label="dopa 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="dopa">—</span>
     </div>
     <div class="dg-kin">&gt; 20 mcg/kg/min 對血壓未必再有幫助，卻明顯增加心搏過速與心律不整 ｜ <b>不可加入鹼性溶液</b>（會失活）</div>
     <div class="dg-grid">
@@ -502,9 +550,17 @@
       <span class="dg-tag">β1 agonist</span><span class="dg-tag">強心＋輕度血管擴張</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">起始 0.5–1 mcg/kg/min</span><span class="dd-v" data-out="dob_init">—</span></span>
-      <span><span class="dd-k">維持 2–20 mcg/kg/min</span><span class="dd-v" data-out="dob_std">—</span></span>
-      <span><span class="dd-k">仿單上限 40 mcg/kg/min</span><span class="dd-v alt" data-out="dob_max">—</span></span>
+      <span><span class="dd-k">起始 0.5–1 mcg/kg/min</span><span class="dd-v" data-out="dob_init">—</span><span class="dd-ml" data-ml="dob_init"></span></span>
+      <span><span class="dd-k">維持 2–20 mcg/kg/min</span><span class="dd-v" data-out="dob_std">—</span><span class="dd-ml" data-ml="dob_std"></span></span>
+      <span><span class="dd-k">仿單上限 40 mcg/kg/min</span><span class="dd-v alt" data-out="dob_max">—</span><span class="dd-ml" data-ml="dob_max"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="dob" value="250" min="0" step="any" aria-label="dob 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="dob" value="250" min="1" step="any" aria-label="dob 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="dob">—</span>
     </div>
     <div class="dg-kin">稀釋 <b>NS／D5W／LR</b>，濃度 0.5–5 mg/mL ｜ 走大靜脈、避免外滲 ｜ <b>與 sodium bicarbonate、furosemide 等鹼性溶液不相容</b> ｜ 稀釋液變粉紅色是輕微氧化，24 小時內使用力價無明顯下降</div>
     <div class="dg-grid">
@@ -536,9 +592,17 @@
       <span class="dg-tag">PDE3 抑制劑</span><span class="dg-tag">inodilator</span>
     </div>
     <div class="dg-dose">
-      <span><span class="dd-k">負荷（可省略）50 mcg/kg over 10 min</span><span class="dd-v" data-out="mil_load">—</span></span>
-      <span><span class="dd-k">維持 0.375–0.75 mcg/kg/min</span><span class="dd-v" data-out="mil_std">—</span></span>
-      <span><span class="dd-k">ACCF/AHA 版下限 0.125</span><span class="dd-v alt" data-out="mil_low">—</span></span>
+      <span><span class="dd-k">負荷（可省略）50 mcg/kg over 10 min</span><span class="dd-v" data-out="mil_load">—</span><span class="dd-ml" data-ml="mil_load"></span></span>
+      <span><span class="dd-k">維持 0.375–0.75 mcg/kg/min</span><span class="dd-v" data-out="mil_std">—</span><span class="dd-ml" data-ml="mil_std"></span></span>
+      <span><span class="dd-k">ACCF/AHA 版下限 0.125</span><span class="dd-v alt" data-out="mil_low">—</span><span class="dd-ml" data-ml="mil_low"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="mil" value="20" min="0" step="any" aria-label="mil 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="mil" value="100" min="1" step="any" aria-label="mil 溶液體積">
+      <span class="mix-u">mL</span>
+      <span class="mix-c" data-conc="mil">—</span>
     </div>
     <div class="dg-kin">稀釋 NS／D5W 至 0.1–0.2 mg/mL ｜ <b>腎功能不全須減量</b>：台大資料 CCr 50 mL/min/1.73m² 者 <b>0.43 mcg/kg/min</b> ｜ 半衰期較 dobutamine 長，低血壓不易立刻回頭</div>
     <div class="dg-grid">
@@ -980,39 +1044,100 @@ function tReset(){
   tRender();
 }
 
-/* ── 體重換算（藥物分頁） ───────────────────────────────────── */
+/* ── 劑量換算（藥物分頁） ───────────────────────────────────────────────
+   一份資料算兩件事：依體重換算的絕對劑量（mcg/min），以及依各藥自己的泡法
+   換算的輸注速率（mL/hr）。兩者共用同一組上下限，不會各寫一份而失準。
+
+   dose：k＝對應 HTML 的 data-out／data-ml；d＝藥品代號（對應 data-mix）；
+         lo/hi＝劑量上下限（lo===hi 表示單一值）；kg＝是否為 mcg/kg/min；
+         dp＝顯示小數位；unit 預設 mcg/min。
+   type 'bolus'＝一次性負荷量（milrinone），單位是 mg，算出來的是「該推幾 mL」。 */
+var CS_DOSE = [
+  { k:'ne_std',   d:'ne',   lo:0.05,  hi:0.4,  kg:true,  dp:1 },
+  { k:'ne_hi',    d:'ne',   lo:1,     hi:3.3,  kg:true,  dp:0 },
+  { k:'ne_gl',    d:'ne',   lo:0.2,   hi:1.0,  kg:true,  dp:0 },
+  { k:'avp_std',  d:'avp',  lo:0.03,  hi:0.04, kg:false, dp:2, unit:'U/min' },
+  { k:'epi_inf',  d:'epi',  lo:0.05,  hi:0.5,  kg:true,  dp:1 },
+  { k:'dopa_std', d:'dopa', lo:0.5,   hi:20,   kg:true,  dp:0 },
+  { k:'dopa_gl',  d:'dopa', lo:3,     hi:5,    kg:true,  dp:0 },
+  { k:'dob_init', d:'dob',  lo:0.5,   hi:1,    kg:true,  dp:0 },
+  { k:'dob_std',  d:'dob',  lo:2,     hi:20,   kg:true,  dp:0 },
+  { k:'dob_max',  d:'dob',  lo:40,    hi:40,   kg:true,  dp:0 },
+  { k:'mil_load', d:'mil',  lo:0.05,  hi:0.05, kg:true,  dp:2, type:'bolus', unit:'mg（10 分鐘內）' },
+  { k:'mil_std',  d:'mil',  lo:0.375, hi:0.75, kg:true,  dp:1 },
+  { k:'mil_low',  d:'mil',  lo:0.125, hi:0.75, kg:true,  dp:1 },
+  // furosemide 沒有泡法欄（依院內配置差異大），只做體重換算
+  { k:'fur_inf',  d:null,   lo:0.05,  hi:0.4,  kg:true,  dp:1, unit:'mg/hr' }
+];
+
+// 泡法輸入的單位：mg 要換成 mcg 才能跟 mcg/min 對得起來；vasopressin 用 U
+var CS_MIX_UNIT = { ne:'mg', avp:'U', epi:'mg', dopa:'mg', dob:'mg', mil:'mg' };
+
+function csRound(x, dp){
+  var p = Math.pow(10, dp);
+  return (Math.round(x * p) / p).toString();
+}
+// mL/hr 的位數隨數值大小調整：個位數要看到小數，三位數不必
+function csMl(x){
+  if(!isFinite(x) || x <= 0) return '';
+  return x < 10 ? csRound(x, 1) : (x < 100 ? csRound(x, 0) : csRound(x, 0));
+}
+
+/* 讀某藥的泡法，回傳「每 mL 含多少劑量單位」——mg 者換算為 mcg/mL，U 者為 U/mL。
+   欄位空白或不合理時回傳 0，呼叫端據此不顯示 mL/hr（寧可留白也不給錯的速率）。 */
+function csConc(d){
+  if(!d) return 0;
+  var a = document.querySelector('.mix-amt[data-mix="' + d + '"]');
+  var v = document.querySelector('.mix-vol[data-mix="' + d + '"]');
+  if(!a || !v) return 0;
+  var amt = parseFloat(a.value), vol = parseFloat(v.value);
+  if(!(amt > 0) || !(vol > 0)) return 0;
+  return (CS_MIX_UNIT[d] === 'U' ? amt : amt * 1000) / vol;
+}
+
 function csCalc(){
   var wt = parseFloat(document.getElementById('cs_wt').value);
   if(!(wt > 0)) wt = 0;
-  function rng(lo, hi, unit, dp){
-    if(!wt) return '—';
-    var f = function(x){ return (Math.round(x * Math.pow(10, dp)) / Math.pow(10, dp)).toString(); };
-    return f(lo * wt) + '–' + f(hi * wt) + ' ' + unit;
-  }
-  function one(v, unit, dp){
-    if(!wt) return '—';
-    return (Math.round(v * wt * Math.pow(10, dp)) / Math.pow(10, dp)) + ' ' + unit;
-  }
-  var out = {
-    ne_std:  rng(0.05, 0.4, 'mcg/min', 1),
-    ne_hi:   rng(1, 3.3, 'mcg/min', 0),
-    ne_gl:   rng(0.2, 1.0, 'mcg/min', 0),
-    epi_inf: rng(0.05, 0.5, 'mcg/min', 1),
-    dopa_std: rng(0.5, 20, 'mcg/min', 0),
-    dopa_gl:  rng(3, 5, 'mcg/min', 0),
-    dob_init: rng(0.5, 1, 'mcg/min', 0),
-    dob_std:  rng(2, 20, 'mcg/min', 0),
-    dob_max:  one(40, 'mcg/min', 0),
-    mil_load: one(0.05, 'mg（10 分鐘內）', 2),
-    mil_std:  rng(0.375, 0.75, 'mcg/min', 1),
-    mil_low:  rng(0.125, 0.75, 'mcg/min', 1),
-    fur_inf:  rng(0.05, 0.4, 'mg/hr', 1)
-  };
-  Object.keys(out).forEach(function(k){
-    document.querySelectorAll('[data-out="' + k + '"]').forEach(function(el){ el.textContent = out[k]; });
+
+  // 各藥卡的濃度標示
+  Object.keys(CS_MIX_UNIT).forEach(function(d){
+    var el = document.querySelector('[data-conc="' + d + '"]');
+    if(!el) return;
+    var c = csConc(d);
+    el.textContent = c ? ('＝ ' + csMl(c) + (CS_MIX_UNIT[d] === 'U' ? ' U/mL' : ' mcg/mL')) : '';
+  });
+
+  CS_DOSE.forEach(function(r){
+    var unit = r.unit || 'mcg/min';
+    var lo = r.kg ? r.lo * wt : r.lo;
+    var hi = r.kg ? r.hi * wt : r.hi;
+    var ok = r.kg ? wt > 0 : true;
+
+    var txt = !ok ? '—'
+      : (r.lo === r.hi ? csRound(lo, r.dp) + ' ' + unit
+                       : csRound(lo, r.dp) + '–' + csRound(hi, r.dp) + ' ' + unit);
+    document.querySelectorAll('[data-out="' + r.k + '"]').forEach(function(el){ el.textContent = txt; });
+
+    // mL/hr：劑量 ÷ 每 mL 含量。連續輸注是每分鐘給，故 ×60 成每小時
+    var conc = csConc(r.d), ml = '';
+    if(ok && conc){
+      if(r.type === 'bolus'){
+        // 負荷量單位是 mg，換算成 mL 要跟 mg/mL 對齊（conc 為 mcg/mL）
+        var v = lo * 1000 / conc;
+        ml = '≈ ' + csMl(v) + ' mL（10 分鐘內）';
+      } else if(r.lo === r.hi){
+        ml = '≈ ' + csMl(lo * 60 / conc) + ' mL/hr';
+      } else {
+        ml = '≈ ' + csMl(lo * 60 / conc) + '–' + csMl(hi * 60 / conc) + ' mL/hr';
+      }
+    }
+    document.querySelectorAll('[data-ml="' + r.k + '"]').forEach(function(el){ el.textContent = ml; });
   });
 }
 document.getElementById('cs_wt').addEventListener('input', csCalc);
+document.querySelectorAll('.mix-amt, .mix-vol').forEach(function(el){
+  el.addEventListener('input', csCalc);
+});
 
 /* 體重列已改為隨頁面捲動，不再需要貼頂偵測 */
 
