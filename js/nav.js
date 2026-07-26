@@ -97,7 +97,10 @@
     });
     // 英文副標只留中間點之前那段（「Appendicitis · Operative Decision」→「Appendicitis」）：
     // 後半在導覽列裡是贅詞，整句照抄會折成兩三行，一屏放不了幾項。
-    var en = txt(card.querySelector('.tool-en')).split(/\s[·・]\s/)[0];
+    // 少數工具截到第一段就認不出來（「體型與劑量體重」只剩 BMI、「藥物劑量換算」只剩 Steroid），
+    // 卡片加 data-nav-en 即以該字串為準，首頁顯示的副標不受影響。
+    var en = card.getAttribute('data-nav-en')
+      || txt(card.querySelector('.tool-en')).split(/\s[·・]\s/)[0];
     return {
       href: m[1], zh: zh.trim() || txt(nameEl), en: en,
       pathway: card.classList.contains('deci-card')

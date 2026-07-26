@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動脈血氣分析判讀 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  .ab-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
+  .ab-out:first-child{margin-top:0; padding-top:0; border-top:none;}
+  .ab-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .ab-v{font-family:var(--serif); font-size:26px; font-weight:600;}
+  .ab-u{font-family:var(--mono); font-size:11px; opacity:.62;}
+  .ab-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
+  .ab-d ul{margin:4px 0 0; padding-left:17px;}
+  .ab-d li{margin-bottom:3px;}
+  /* 診斷名以英文為主體：使用者要的就是「acute respiratory acidosis」這一行 */
+  .ab-dx{font-family:var(--serif); font-size:23px; font-weight:600; line-height:1.3;}
+  .ab-dx-zh{font-family:var(--sans); font-size:14px; opacity:.86; margin-top:3px;}
+  /* 次要（併存）障礙一列一個，與主障礙區隔 */
+  .ab-plus{font-family:var(--mono); font-size:11.5px; margin-top:7px; opacity:.9;}
+  .ab-plus span{display:inline-block; border:1px solid rgba(255,255,255,.28); border-radius:2px;
+        padding:2px 8px; margin:0 6px 5px 0;}
+</style>
+</head>
+<body data-back-label="血氣分析">
+<div class="sheet">
+<div class="view active" id="view-abg">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">General Calculation Tool</div>
+      <h1>動脈血氣分析判讀</h1>
+      <div class="sub">原發性障礙分型 · 代償是否適當（急性／慢性）· 陰離子間隙與代謝性酸中毒的後續分流</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-abg'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="lede">
+    <div class="lede-title">使用前必讀 Before You Use</div>
+    <div class="lede-body">
+      <p><b>「急性」與「慢性」不是數字算出來的，是病史決定的。</b>公式只能告訴你 HCO₃⁻ 的高低<b>比較像</b>哪一種代償型態；同一組 pH／PaCO₂／HCO₃⁻ 可以是「急性呼吸性酸中毒合併代謝性鹼中毒」，也可以是「慢性呼吸性酸中毒」。腎臟的代償要 <b>3–5 天</b>才完成，所以請把病程欄當成臨床資訊填入，而不是等本頁猜。</p>
+      <p><b>pH 正常不等於沒有酸鹼障礙。</b>兩個方向相反的障礙可以把 pH 拉回正常區間。三個最常被漏掉的：①<b>AG ≥ 20 幾乎必然有代謝性酸中毒</b>，不論 pH 與 HCO₃⁻ 是多少；②<b>低白蛋白會把 AG 壓低</b>——白蛋白每低 1 g/dL，AG 被低估約 2.5，重症病人一半以上白蛋白 &lt; 2 g/dL；③ 高 AG 代謝性酸中毒底下可以同時藏著正常 AG 酸中毒或代謝性鹼中毒，要靠 delta gap 才看得到。</p>
+      <div class="lede-foot">本頁判的是「這組數字符合哪一型」，<b>不是診斷病因</b>，也不取代臨床判斷。血氣機報告的 HCO₃⁻ 是由 pH 與 PaCO₂ 以 Henderson-Hasselbalch 反推的計算值，與生化的 total CO₂ 通常差 1–2 mmol/L；<b>兩者差距過大時先懷疑檢體問題</b>（空氣泡、延遲送檢、非動脈血）。台大檢驗醫學部 <span class="mono">Blood gas(STAT)</span> 動脈參考值：pH 7.350–7.450、pCO₂ 32.0–48.0 mmHg、pO₂ 83.0–108.0 mmHg、HCO₃⁻ 21.0–28.0 mmol/L、Base excess −2.0～+3.0 mmol/L；Cl 98–107、Albumin 3.5–5.7 g/dL。</div>
+    </div>
+  </div>
+
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>判讀五步驟、代償公式、AG 校正、delta gap 與各分流的判準 Definitions</summary>
+    <div class="box-inner">
+      <b>◆ 步驟一：看 pH</b><br>
+      <span class="note">pH &lt; 7.35 為 acidemia（酸血症）、&gt; 7.45 為 alkalemia（鹼血症）。pH 在區間內時<b>不能就此收工</b>——若 PaCO₂ 或 HCO₃⁻ 異常，代表兩個方向相反的障礙互相抵消。</span><br><br>
+
+      <b>◆ 步驟二：找原發性障礙</b><br>
+      <div class="dot-line">・酸血症 ＋ HCO₃⁻ ↓ → <b>代謝性酸中毒</b>；酸血症 ＋ PaCO₂ ↑ → <b>呼吸性酸中毒</b>；兩者皆有 → <b>混合型酸中毒</b>（此時談「代償」沒有意義）。</div>
+      <div class="dot-line">・鹼血症 ＋ HCO₃⁻ ↑ → <b>代謝性鹼中毒</b>；鹼血症 ＋ PaCO₂ ↓ → <b>呼吸性鹼中毒</b>。</div>
+      <div class="dot-line">・<b>代償永遠不會矯枉過正</b>：代償不會把 pH 拉過中線。pH 越過中線就代表有第二個原發性障礙。</div><br>
+
+      <b>◆ 步驟三：代償是否落在預期範圍</b>（急性 &lt; 3–5 天、慢性 &gt; 3–5 天）<br>
+      <table class="score-ref">
+        <tr><th>原發性障礙</th><th>預期的次發反應</th></tr>
+        <tr><td>代謝性酸中毒</td><td>預期 PaCO₂ ＝ (1.5 × HCO₃⁻) ＋ 8 ± 2（Winter's）</td></tr>
+        <tr><td>代謝性鹼中毒</td><td>預期 PaCO₂ ＝ (0.7 × HCO₃⁻) ＋ 20 ± 5</td></tr>
+        <tr><td>急性呼吸性酸中毒</td><td>PaCO₂ 每升高 10 mmHg，HCO₃⁻ 升 <b>1</b>；預期 pH ＝ 7.40 − 0.008 × (PaCO₂ − 40)</td></tr>
+        <tr><td>慢性呼吸性酸中毒</td><td>PaCO₂ 每升高 10 mmHg，HCO₃⁻ 升 <b>4</b>；預期 pH ＝ 7.40 − 0.003 × (PaCO₂ − 40)</td></tr>
+        <tr><td>急性呼吸性鹼中毒</td><td>PaCO₂ 每降低 10 mmHg，HCO₃⁻ 降 <b>2</b>；預期 pH ＝ 7.40 ＋ 0.008 × (40 − PaCO₂)</td></tr>
+        <tr><td>慢性呼吸性鹼中毒</td><td>PaCO₂ 每降低 10 mmHg，HCO₃⁻ 降 <b>5</b>；預期 pH ＝ 7.40 ＋ 0.003 × (40 − PaCO₂)</td></tr>
+      </table>
+      <span class="note">代謝性鹼中毒的預期 PaCO₂ 另有「40 ＋ 0.7 × (HCO₃⁻ − 24)」的遞增寫法，HCO₃⁻ 很高時兩式可差 3–4 mmHg；本頁採上表的形式並同時顯示另一式，差距落在 ±5 內就不要過度解讀。呼吸性障礙的 HCO₃⁻ 判讀本頁採 <b>±2 mmol/L</b> 的容許範圍，這是慣用近似值而非原始論文的統計顯著帶。慢性呼吸性鹼中毒即使 PaCO₂ 極低，HCO₃⁻ 也很少低於 12–14。</span><br><br>
+
+      <b>◆ 步驟四：陰離子間隙 AG ＝ Na⁻ − (Cl⁻ ＋ HCO₃⁻)</b><br>
+      <div class="dot-line">・參考值 <b>8–12 mmol/L</b>；但 <b>AG 的正常值高度依賴檢驗方法與族群</b>，現行離子選擇性電極測 Cl⁻ 者常落在更低的區間，各院應以自家參考值為準。</div>
+      <div class="dot-line">・<b>低白蛋白校正（Figge 1998）：校正 AG ＝ AG ＋ 2.5 × (4.0 − 白蛋白 g/dL)</b>。原文以 g/L 表述為每低 1 g/L 加 0.25，r² ＝ 0.94；該研究中 49% 的重症病人白蛋白 &lt; 2 g/dL。<b>不校正就會把高 AG 酸中毒讀成正常 AG。</b></div>
+      <div class="dot-line">・<b>AG ≥ 20 時，代謝性酸中毒幾乎必然存在</b>，不論 pH 與 HCO₃⁻。</div>
+      <div class="dot-line">・AG <b>偏低</b>（&lt; 8）：低白蛋白最常見，其次為多發性骨髓瘤／副蛋白血症、鋰／溴／碘中毒、嚴重高血鈣或高血鎂、檢驗誤差。</div><br>
+
+      <b>◆ 步驟五：delta gap／delta ratio——找出被蓋住的第二、第三個障礙</b><br>
+      <div class="dot-line">・<b>delta gap ＝ (校正 AG − 12) − (24 − HCO₃⁻)</b>。單純高 AG 酸中毒時，AG 上升幾與 HCO₃⁻ 下降等量，故正常範圍 <b>−6 ～ ＋6</b>。<b>&gt; ＋6</b> → 另有代謝性鹼中毒；<b>&lt; −6</b> → 另有正常 AG（高氯性）代謝性酸中毒。</div>
+      <div class="dot-line">・<b>delta ratio ＝ (校正 AG − 12) ÷ (24 − HCO₃⁻)</b>：&lt; 0.4 幾乎全為正常 AG 型｜0.4–0.8 高 AG 與正常 AG 併存｜0.8–2.0 單純高 AG 型（DKA 常近 1，乳酸酸中毒常 1.5 上下）｜&gt; 2.0 另有代謝性鹼中毒，或本來就有慢性呼吸性酸中毒使 HCO₃⁻ 基礎值偏高。</div>
+      <div class="dot-line">・<b>Rastegar 2007 的警告要記住</b>：這個比值的<b>群體平均</b>接近 1，但<b>個別病人的變異極大</b>，單憑比值診斷混合型障礙並不可靠——它是提示，不是判準。</div>
+      <div class="dot-line">・<b>最多同時三個障礙</b>：兩個代謝性（一酸一鹼）可以並存，但呼吸性只能有一個——同一個人不可能同時換氣過度又換氣不足。</div><br>
+
+      <b>◆ 高 AG 代謝性酸中毒的鑑別：GOLDMARK</b>（Mehta &amp; Emmett 2008，取代舊的 MUDPILES）<br>
+      <span class="note"><b>G</b>lycols（乙二醇、丙二醇）｜<b>O</b>xoproline（5-oxoproline／pyroglutamic acid：長期 acetaminophen ＋ 營養不良／敗血症，女性居多）｜<b>L</b>-lactate｜<b>D</b>-lactate（短腸症候群、細菌過度增生）｜<b>M</b>ethanol｜<b>A</b>spirin（水楊酸）｜<b>R</b>enal failure｜<b>K</b>etoacidosis（糖尿病、酒精性、飢餓）。<b>滲透壓間隙 &gt; 10 指向甲醇／乙二醇</b>；<b>呼吸性鹼中毒 ＋ 高 AG 酸中毒併存是水楊酸中毒的典型型態</b>。</span><br><br>
+
+      <b>◆ 正常 AG（高氯性）代謝性酸中毒的鑑別：尿液陰離子間隙 UAG ＝ (尿 Na ＋ 尿 K) − 尿 Cl</b><br>
+      <div class="dot-line">・UAG 是<b>尿中銨（NH₄⁺）排泄量的粗略指標</b>——腎臟排酸能力正常時大量排出 NH₄Cl，Cl⁻ 超過 Na⁺＋K⁺，UAG 呈負值。</div>
+      <div class="dot-line">・<b>負值 → 腸道流失（腹瀉、腸廔管、迴腸導管）</b>：Batlle 1988 的腹瀉組為 <b>−20 ± 5.7</b>，正常人給氯化銨後為 −27 ± 9.8。</div>
+      <div class="dot-line">・<b>正值 → 腎性（腎小管酸中毒 RTA）</b>：同研究中典型 RTA ＋23 ± 4.1、高血鉀型遠端 RTA ＋30 ± 4.2、選擇性醛固酮缺乏 ＋39 ± 4.2。</div>
+      <div class="dot-line">・<b>尿液 pH 會騙人</b>：Batlle 的腹瀉組尿 pH 平均 5.64（&gt; 5.3）但 UAG 仍是負值——<b>單看尿 pH 會把腹瀉誤判成 RTA</b>。</div>
+      <div class="dot-line">・<b>UAG 不可靠的情境</b>：尿中有其他未測陰離子（酮體、甲苯代謝物 hippurate、青黴素類）、尿 Na &lt; 20 mmol/L、多尿或少尿。此時改用<b>尿液滲透壓間隙</b>估算 NH₄⁺。</div>
+      <div class="dot-line">・<b>RTA 分型</b>：低血鉀 ＋ 尿 pH 持續 &gt; 5.5 → <b>第一型（遠端）</b>，常伴結石與腎鈣質沉著；低血鉀 ＋ 酸中毒時尿 pH 可 &lt; 5.5、併 Fanconi（糖尿、磷酸尿、胺基酸尿）→ <b>第二型（近端）</b>；<b>高血鉀</b> ＋ 尿 pH &lt; 5.5 → <b>第四型（醛固酮不足／阻斷）</b>，臨床上最常見（糖尿病腎病變、CKD、ACEI／ARB、spironolactone、TMP-SMX、heparin、NSAID）。</div>
+      <div class="dot-line">・<b>非 RTA 的正常 AG 酸中毒</b>：大量 0.9% NaCl 輸注（高氯性）、acetazolamide、尿路腸道分流、低碳酸血症矯正後、含氯的胺基酸營養液、cholestyramine。</div><br>
+
+      <b>◆ 代謝性鹼中毒的鑑別：尿液氯 Urine Cl⁻</b>（Emmett 2020 的 ECF 容積導向架構）<br>
+      <div class="dot-line">・<b>&lt; 20 mmol/L → 氯反應型</b>（嘔吐、鼻胃管引流、利尿劑停用後、高碳酸血症矯正後、收縮性鹼中毒）：<b>補生理食鹽水 ＋ KCl 有效</b>。</div>
+      <div class="dot-line">・<b>&gt; 20 mmol/L → 氯抗性型</b>（原發性醛固酮過多、Cushing、Bartter／Gitelman、嚴重低血鉀、甘草／甘草次酸）：<b>補鹽無效</b>，要處理原因並積極補鉀。</div>
+      <div class="dot-line">・<b>陷阱</b>：正在使用利尿劑時尿 Cl⁻ 會偏高，看起來像氯抗性型；要問清楚最後一劑的時間。</div><br>
+
+      <b>◆ 氧合：肺泡−動脈氧分壓差 A–a gradient</b><br>
+      <span class="note">A–a ＝ [FiO₂ × (Patm − 47) − PaCO₂ / 0.8] − PaO₂，本頁 Patm 取 760 mmHg（台灣本島近海平面）。室內空氣下的預期值 ≈ <b>年齡 ÷ 4 ＋ 4</b>。<b>A–a 正常的低氧或高碳酸血症 → 單純換氣不足</b>（中樞抑制、神經肌肉、上呼吸道阻塞）；<b>A–a 升高 → 肺實質或血管病變</b>（V/Q 不均、分流、擴散障礙）。注意這條「正常值」只在<b>室內空氣</b>下驗證過；給氧下 A–a 本來就會上升，此時看 PaO₂/FiO₂ 較有意義。</span>
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="section-title">① 血氣與電解質 Blood Gas &amp; Electrolytes　<span class="unit">判型必填</span></div>
+    <div class="meld-field">
+      <label class="mf-label">pH</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_ph" step="0.01" placeholder="—"></div>
+      <span class="mf-note">動脈 7.350–7.450</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">PaCO₂</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_pco2" step="0.1" placeholder="—"><span class="unit">mmHg</span></div>
+      <span class="mf-note">動脈 32.0–48.0；判型以 35／45 為界</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">HCO₃⁻</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_hco3" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">動脈 21.0–28.0；判型以 22／26 為界</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血鈉 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_na" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大 136–145；供陰離子間隙</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血氯 Cl</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_cl" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">台大 98–107</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">白蛋白 Albumin</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_alb" step="0.1" placeholder="4.0"><span class="unit">g/dL（選填）</span></div>
+      <span class="mf-note">留空＝以 4.0 計，不做校正</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">病程 Course</label>
+      <div class="mf-inputwrap"><select id="ab_course">
+        <option value="">未知／由數字推測</option>
+        <option value="acute">急性（&lt; 3–5 天）</option>
+        <option value="chronic">慢性（&gt; 3–5 天）</option>
+      </select></div>
+      <span class="mf-note">只影響呼吸性障礙的分型；腎臟代償需 3–5 天</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">② 氧合 Oxygenation　<span class="unit">選填</span></div>
+    <div class="meld-field">
+      <label class="mf-label">PaO₂</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_po2" step="1" placeholder="—"><span class="unit">mmHg</span></div>
+      <span class="mf-note">動脈 83.0–108.0</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">FiO₂</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_fio2" step="1" placeholder="21"><span class="unit">%</span></div>
+      <span class="mf-note">室內空氣＝21</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">年齡 Age</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_age" step="1" placeholder="—"><span class="unit">歲</span></div>
+      <span class="mf-note">供 A–a 預期值（年齡÷4＋4）</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">③ 後續分流 Further Workup　<span class="unit">選填；依判型結果只用得到其中幾項</span></div>
+    <div class="meld-field">
+      <label class="mf-label">乳酸 Lactate</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_lac" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">高 AG 用；每 1 mmol/L 約貢獻 1 的 AG</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">酮體 Ketones</label>
+      <div class="mf-inputwrap"><select id="ab_ket">
+        <option value="">未驗</option><option value="neg">陰性</option><option value="pos">陽性</option>
+      </select></div>
+      <span class="mf-note">血中 β-hydroxybutyrate 優於尿試紙</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血糖 Glucose</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_glu" step="1" placeholder="—"><span class="unit">mg/dL</span></div>
+      <span class="mf-note">供滲透壓間隙</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血尿素氮 UN</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_un" step="0.1" placeholder="—"><span class="unit">mg/dL（即 BUN）</span></div>
+      <span class="mf-note">台大 7–25；供滲透壓間隙</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">實測滲透壓</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_osm" step="1" placeholder="—"><span class="unit">mOsm/kg</span></div>
+      <span class="mf-note">須與電解質同一管血、冰點下降法</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">血鉀 K</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_k" step="0.1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">供 RTA 分型</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿液 Na</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_una" step="1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">&lt; 20 時 UAG 不可靠</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿液 K</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_uk" step="1" placeholder="—"><span class="unit">mmol/L</span></div>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿液 Cl</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_ucl" step="1" placeholder="—"><span class="unit">mmol/L</span></div>
+      <span class="mf-note">同時供 UAG 與代謝性鹼中毒分型</span>
+    </div>
+    <div class="meld-field">
+      <label class="mf-label">尿液 pH</label>
+      <div class="mf-inputwrap"><input type="number" id="ab_uph" step="0.1" placeholder="—"></div>
+      <span class="mf-note">單看尿 pH 會誤判，須與 UAG 併看</span>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="ab-out">
+      <div class="metric-label">① 酸鹼狀態 Acid–base status</div>
+      <div class="ab-row"><span class="ab-v" id="ab_s1">—</span><span class="risk-band b0" id="ab_s1_band" style="display:none;"></span></div>
+      <div class="ab-d" id="ab_s1_d">請輸入 pH、PaCO₂ 與 HCO₃⁻。</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">② 判型 Primary disorder</div>
+      <div class="ab-dx" id="ab_dx">—</div>
+      <div class="ab-dx-zh" id="ab_dx_zh"></div>
+      <div class="ab-plus" id="ab_plus"></div>
+      <div class="ab-d" id="ab_dx_d">填入三個數字後即判型。</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">③ 代償是否適當 Expected compensation</div>
+      <div class="ab-row"><span class="ab-v" id="ab_comp">—</span><span class="risk-band b0" id="ab_comp_band" style="display:none;"></span></div>
+      <div class="ab-d" id="ab_comp_d">—</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">④ 陰離子間隙 Anion gap</div>
+      <div class="ab-row"><span class="metric-value big" id="ab_ag" style="font-size:34px;">—</span><span class="ab-u">mmol/L（校正後）</span><span class="risk-band b0" id="ab_ag_band" style="display:none;"></span></div>
+      <div class="ab-d" id="ab_ag_d">填入血鈉與血氯即可計算。</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">⑤ Delta gap／Delta ratio</div>
+      <div class="ab-row"><span class="ab-v" id="ab_delta">—</span><span class="risk-band b0" id="ab_delta_band" style="display:none;"></span></div>
+      <div class="ab-d" id="ab_delta_d">高 AG 代謝性酸中毒時才有意義。</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">⑥ 後續分流 Next step</div>
+      <div class="ab-d" id="ab_next">—</div>
+    </div>
+
+    <div class="ab-out">
+      <div class="metric-label">氧合 Oxygenation（選填）</div>
+      <div class="ab-d" id="ab_oxy">填入 PaO₂、FiO₂ 與年齡即可計算 A–a 差。</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formula</div>
+      <div class="formula-list">
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">AG</span><span class="fvar">＝ Na − (Cl ＋ HCO₃)</span></div>
+        <div class="formula-term"><span class="fop">＋</span><span class="fcoef">2.5</span><span class="fvar">× (4.0 − 白蛋白 g/dL)　→ 校正 AG</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">Δgap</span><span class="fvar">＝ (校正 AG − 12) − (24 − HCO₃)</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">UAG</span><span class="fvar">＝ (尿 Na ＋ 尿 K) − 尿 Cl</span></div>
+        <div class="formula-term"><span class="fop"> </span><span class="fcoef">A–a</span><span class="fvar">＝ FiO₂×(760−47) − PaCO₂/0.8 − PaO₂</span></div>
+      </div>
+      <div class="formula-result">代償公式見上方 Definitions 的對照表；急性／慢性以 3–5 天為界，由病史而非數字決定</div>
+    </div>
+
+    <table class="ref">
+      <tr><th>原發性障礙</th><th>預期次發反應</th><th>偏離的意義</th></tr>
+      <tr><td>代謝性酸中毒</td><td>PaCO₂ ＝ 1.5×HCO₃ ＋ 8 ± 2</td><td>高於 → 併呼吸性酸中毒；低於 → 併呼吸性鹼中毒</td></tr>
+      <tr><td>代謝性鹼中毒</td><td>PaCO₂ ＝ 0.7×HCO₃ ＋ 20 ± 5</td><td>同上</td></tr>
+      <tr><td>急性呼吸性酸中毒</td><td>HCO₃ ↑1／每 10 mmHg</td><td>HCO₃ 更高 → 併代謝性鹼中毒或已是慢性</td></tr>
+      <tr><td>慢性呼吸性酸中毒</td><td>HCO₃ ↑4／每 10 mmHg</td><td>HCO₃ 更低 → 併代謝性酸中毒</td></tr>
+      <tr><td>急性呼吸性鹼中毒</td><td>HCO₃ ↓2／每 10 mmHg</td><td>HCO₃ 更低 → 併代謝性酸中毒或已是慢性</td></tr>
+      <tr><td>慢性呼吸性鹼中毒</td><td>HCO₃ ↓5／每 10 mmHg</td><td>HCO₃ 更高 → 併代謝性鹼中毒</td></tr>
+    </table>
+
+    <div class="risk-note"><b>本頁只做型態判讀，不判斷病因，也不取代臨床判斷。</b>急性／慢性由病史決定；delta ratio 的個別變異極大（Rastegar 2007），只能當提示。滲透壓間隙的完整判讀與毒性酒精換算見<a href="osmolality.html" class="ref-link">血清滲透壓與滲透壓間隙</a>；DKA／HHS 的診斷與嚴重度見 <a href="dka-hhs.html" class="ref-link">DKA／HHS</a>；低白蛋白的校正鈣與高血糖的校正鈉見<a href="corrected-labs.html" class="ref-link">校正鈉／校正鈣</a>；急性腎損傷分期見 <a href="kdigo-aki.html" class="ref-link">KDIGO AKI</a>。</div>
+  </div>
+
+  <footer class="tool-footer">
+    判讀架構與代償對照表 — <a href="https://pubmed.ncbi.nlm.nih.gov/40336441/" target="_blank" rel="noopener" class="ref-link">Habib T, Nair A, Murphy S, Saeed H, Ishaya N. Mastering blood gas interpretation: A practical guide for primary care providers. S Afr Fam Pract. 2025;67(1):e1-e7.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/25295502/" target="_blank" rel="noopener" class="ref-link">Berend K, de Vries AP, Gans RO. Physiological approach to assessment of acid-base disturbances. N Engl J Med. 2014;371(15):1434-1445.</a><br>
+    Winter's formula — <a href="https://pubmed.ncbi.nlm.nih.gov/6016545/" target="_blank" rel="noopener" class="ref-link">Albert MS, Dell RB, Winters RW. Quantitative displacement of acid-base equilibrium in metabolic acidosis. Ann Intern Med. 1967;66(2):312-322.</a>｜
+    低白蛋白之 AG 校正 — <a href="https://pubmed.ncbi.nlm.nih.gov/9824071/" target="_blank" rel="noopener" class="ref-link">Figge J, Jabor A, Kazda A, Fencl V. Anion gap and hypoalbuminemia. Crit Care Med. 1998;26(11):1807-1810.</a><br>
+    AG 的用途與限制 — <a href="https://pubmed.ncbi.nlm.nih.gov/17699401/" target="_blank" rel="noopener" class="ref-link">Kraut JA, Madias NE. Serum anion gap: its uses and limitations in clinical medicine. Clin J Am Soc Nephrol. 2007;2(1):162-174.</a>｜
+    delta ratio 的變異 — <a href="https://pubmed.ncbi.nlm.nih.gov/17656477/" target="_blank" rel="noopener" class="ref-link">Rastegar A. Use of the ΔAG/ΔHCO₃⁻ ratio in the diagnosis of mixed acid-base disorders. J Am Soc Nephrol. 2007;18(9):2429-2431.</a><br>
+    高 AG 之鑑別（GOLDMARK）— <a href="https://pubmed.ncbi.nlm.nih.gov/18790311/" target="_blank" rel="noopener" class="ref-link">Mehta AN, Emmett JB, Emmett M. GOLD MARK: an anion gap mnemonic for the 21st century. Lancet. 2008;372(9642):892.</a>｜
+    尿液陰離子間隙 — <a href="https://pubmed.ncbi.nlm.nih.gov/3344005/" target="_blank" rel="noopener" class="ref-link">Batlle DC, Hizon M, Cohen E, Gutterman C, Gupta R. The use of the urinary anion gap in the diagnosis of hyperchloremic metabolic acidosis. N Engl J Med. 1988;318(10):594-599.</a>｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/3752165/" target="_blank" rel="noopener" class="ref-link">Goldstein MB, Bear R, Richardson RM, Marsden PA, Halperin ML. The urine anion gap: a clinically useful index of ammonium excretion. Am J Med Sci. 1986;292(4):198-202.</a><br>
+    代謝性鹼中毒 — <a href="https://pubmed.ncbi.nlm.nih.gov/32586924/" target="_blank" rel="noopener" class="ref-link">Emmett M. Metabolic Alkalosis: A Brief Pathophysiologic Review. Clin J Am Soc Nephrol. 2020;15(12):1848-1856.</a>｜
+    參考值：臺大醫院檢驗醫學部臨床檢驗目錄（Blood gas(STAT)、Chloride、Albumin(Blood)、Sodium、UN）
+  </footer>
+</div>
+</div>
+<script>
+function abN(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function abSet(id,html){ document.getElementById(id).innerHTML=html; }
+function abBand(id,text,cls){
+  var e=document.getElementById(id);
+  if(!text){ e.style.display='none'; e.textContent=''; return; }
+  e.style.display=''; e.textContent=text; e.className='risk-band '+cls;
+}
+function ab1(x){ return (x>=0?'':'−')+Math.abs(x).toFixed(1); }   // 負號用全形減號，與頁面其餘一致
+
+/* 呼吸性障礙：把實測 HCO₃ 放到「急性預期」與「慢性預期」兩條線上比對。
+   容許範圍取 ±2 mmol/L（慣用近似值，見 Definitions）。
+   回傳 kind：metAcid／acute／between／chronic／metAlk */
+function abRespBand(pco2, hco3, isAcidosis){
+  var d = (pco2 - 40) / 10;                                  // 酸中毒為正、鹼中毒為負
+  var expA = 24 + (isAcidosis ? 1 : 2) * d;
+  var expC = 24 + (isAcidosis ? 4 : 5) * d;
+  var TOL = 2, kind;
+  if(isAcidosis){                                            // expC > expA
+    if(hco3 < expA - TOL)      kind='metAcid';
+    else if(hco3 <= expA+TOL)  kind='acute';
+    else if(hco3 < expC - TOL) kind='between';
+    else if(hco3 <= expC+TOL)  kind='chronic';
+    else                       kind='metAlk';
+  } else {                                                   // expC < expA
+    if(hco3 > expA + TOL)      kind='metAlk';
+    else if(hco3 >= expA-TOL)  kind='acute';
+    else if(hco3 > expC + TOL) kind='between';
+    else if(hco3 >= expC-TOL)  kind='chronic';
+    else                       kind='metAcid';
+  }
+  return { expA:expA, expC:expC, kind:kind,
+           phA: 7.40 + (isAcidosis ? -0.008 : 0.008) * Math.abs(pco2-40),
+           phC: 7.40 + (isAcidosis ? -0.003 : 0.003) * Math.abs(pco2-40) };
+}
+
+function abCalc(){
+  var pH=abN('ab_ph'), pco2=abN('ab_pco2'), hco3=abN('ab_hco3');
+  var na=abN('ab_na'), cl=abN('ab_cl'), alb=abN('ab_alb');
+  var course=document.getElementById('ab_course').value;
+
+  abOxy();
+
+  if(pH===null || pco2===null || hco3===null){
+    document.getElementById('ab_s1').textContent='—'; abBand('ab_s1_band','','b0');
+    abSet('ab_s1_d','請輸入 pH、PaCO₂ 與 HCO₃⁻ 三個數字。');
+    abSet('ab_dx','—'); abSet('ab_dx_zh',''); abSet('ab_plus','');
+    abSet('ab_dx_d','填入三個數字後即判型。');
+    document.getElementById('ab_comp').textContent='—'; abBand('ab_comp_band','','b0');
+    abSet('ab_comp_d','—');
+    abAG(na,cl,hco3,alb,null,null);
+    abSet('ab_next','—');
+    return;
+  }
+
+  /* ---- ① 酸鹼狀態 ---- */
+  var ACID = pH < 7.35, ALK = pH > 7.45;
+  var s1, s1b, s1c;
+  if(ACID){ s1='Acidemia 酸血症'; s1b='pH < 7.35'; s1c = pH<7.20 ? 'b3':'b2'; }
+  else if(ALK){ s1='Alkalemia 鹼血症'; s1b='pH > 7.45'; s1c = pH>7.60 ? 'b3':'b2'; }
+  else { s1='pH 在參考範圍內'; s1b='7.35–7.45'; s1c='b0'; }
+  document.getElementById('ab_s1').textContent=s1;
+  abBand('ab_s1_band', s1b, s1c);
+  abSet('ab_s1_d', ACID||ALK
+    ? 'pH 已偏離參考範圍，方向即為原發性障礙的方向——<b>代償不會把 pH 拉過中線</b>，越過中線就代表有第二個原發性障礙。'
+    : '<b>pH 正常不等於沒有酸鹼障礙。</b>兩個方向相反的障礙可以互相抵消；下方仍會逐項檢查 PaCO₂、HCO₃⁻ 與陰離子間隙。');
+
+  /* ---- ② 判型 ---- */
+  var loH = hco3 < 22, hiH = hco3 > 26, loC = pco2 < 35, hiC = pco2 > 45;
+  var prim;
+  if(ACID){
+    if(hiC && loH) prim='BOTH_ACID';
+    else if(loH)   prim='MAC';
+    else if(hiC)   prim='RAC';
+    else           prim='ODD_ACID';
+  } else if(ALK){
+    if(loC && hiH) prim='BOTH_ALK';
+    else if(hiH)   prim='MAL';
+    else if(loC)   prim='RAL';
+    else           prim='ODD_ALK';
+  } else {
+    if(!hiC && !loC && !hiH && !loH) prim='NORMAL';
+    else if(hiC && hiH) prim='RAC';        // 完全代償的慢性呼吸性酸中毒，或呼酸＋代鹼平衡
+    else if(loC && loH) prim='RAL';        // 完全代償的慢性呼吸性鹼中毒，或代酸＋呼鹼平衡
+    else prim='ODD_NORM';
+  }
+  var respAcid = (prim==='RAC'), respAlk = (prim==='RAL');
+  var extra = [];                          // 併存的次要障礙
+  var hhBad = false;                       // Henderson-Hasselbalch 內部一致性不通過
+
+  /* ---- ③ 代償 ---- */
+  var dxEn='', dxZh='', dxNote='', compV='—', compB='', compC='b0', compD='—';
+
+  if(prim==='MAC' || prim==='MAL'){
+    var isAcid = (prim==='MAC');
+    var exp = isAcid ? (1.5*hco3 + 8) : (0.7*hco3 + 20);
+    var tol = isAcid ? 2 : 5;
+    var alt = 40 + 0.7*(hco3 - 24);        // 代謝性鹼中毒的另一種寫法
+    dxEn = isAcid ? 'Metabolic acidosis' : 'Metabolic alkalosis';
+    dxZh = isAcid ? '代謝性酸中毒' : '代謝性鹼中毒';
+    compV = '預期 PaCO₂ ' + exp.toFixed(1) + ' ± ' + tol + '（實測 ' + pco2.toFixed(1) + '）';
+    if(pco2 > exp + tol){
+      compB='代償不足'; compC='b3'; extra.push('Respiratory acidosis 呼吸性酸中毒');
+      compD = '實測 PaCO₂ <b>高於</b>預期範圍 ' + (exp-tol).toFixed(1) + '–' + (exp+tol).toFixed(1)
+            + ' mmHg，代表<b>另有呼吸性酸中毒</b>（換氣不足）。'
+            + (isAcid ? '代謝性酸中毒的病人本應過度換氣；沒有做到，先想<b>呼吸肌疲乏、中樞抑制、呼吸器設定不足</b>——這是要插管或調呼吸器的訊號。' : '');
+    } else if(pco2 < exp - tol){
+      compB='代償過度'; compC='b2'; extra.push('Respiratory alkalosis 呼吸性鹼中毒');
+      compD = '實測 PaCO₂ <b>低於</b>預期範圍 ' + (exp-tol).toFixed(1) + '–' + (exp+tol).toFixed(1)
+            + ' mmHg，代表<b>另有呼吸性鹼中毒</b>。'
+            + (isAcid ? '代謝性酸中毒併呼吸性鹼中毒的典型情境是<b>水楊酸中毒</b>與<b>敗血症</b>。' : '');
+    } else {
+      compB='代償適當'; compC='b0';
+      compD = '實測 PaCO₂ 落在預期範圍 ' + (exp-tol).toFixed(1) + '–' + (exp+tol).toFixed(1)
+            + ' mmHg 內，為<b>單純（simple）</b>的' + dxZh + '。';
+    }
+    compD += '<br><span class="note">'
+          + (isAcid ? 'Winter\'s formula：預期 PaCO₂ ＝ 1.5 × HCO₃⁻ ＋ 8 ± 2。'
+                    : '本頁採 0.7 × HCO₃⁻ ＋ 20 ± 5；另一種遞增寫法 40 ＋ 0.7 × (HCO₃⁻ − 24) ＝ ' + alt.toFixed(1) + ' mmHg，兩式在 HCO₃⁻ 很高時可差 3–4 mmHg，差距在 ±5 內不要過度解讀。')
+          + '</span>';
+
+  } else if(respAcid || respAlk){
+    var r = abRespBand(pco2, hco3, respAcid);
+    var numeric = (r.kind==='acute') ? 'acute' : (r.kind==='chronic' ? 'chronic' : null);
+    var use = course || numeric;           // 病史優先；沒填就用數字推測
+    var word = use==='acute' ? 'Acute' : (use==='chronic' ? 'Chronic' : '');
+    dxEn = (word ? word + ' respiratory ' : 'Respiratory ') + (respAcid ? 'acidosis' : 'alkalosis');
+    dxZh = (use==='acute' ? '急性' : use==='chronic' ? '慢性' : '') + '呼吸性' + (respAcid ? '酸中毒' : '鹼中毒');
+    compV = '預期 HCO₃⁻：急性 ' + r.expA.toFixed(1) + '、慢性 ' + r.expC.toFixed(1) + '（實測 ' + hco3.toFixed(1) + '）';
+
+    if(r.kind==='metAcid'){
+      compB='低於兩條預期線'; compC='b3'; extra.push('Metabolic acidosis 代謝性酸中毒');
+      compD='實測 HCO₃⁻ 比<b>急性</b>代償的預期值還低，代表<b>另有代謝性酸中毒</b>。';
+    } else if(r.kind==='metAlk'){
+      compB='高於兩條預期線'; compC='b2'; extra.push('Metabolic alkalosis 代謝性鹼中毒');
+      compD='實測 HCO₃⁻ 比<b>慢性</b>代償的預期值還高，代表<b>另有代謝性鹼中毒</b>（利尿劑、嘔吐／鼻胃管引流、大量類固醇最常見）。';
+    } else if(r.kind==='between'){
+      compB='介於急性與慢性之間'; compC='b1';
+      compD='實測 HCO₃⁻ 落在急性與慢性兩條預期線<b>之間</b>：可能是<b>代償進行到一半</b>（發生 1–3 天），也可能是<b>慢性基礎上再急性惡化（acute-on-chronic）</b>——例如 COPD 病人急性發作。<b>這一格只能靠病史分辨。</b>';
+    } else {
+      compB = (r.kind==='acute' ? '符合急性代償' : '符合慢性代償'); compC='b0';
+      compD='實測 HCO₃⁻ 落在<b>' + (r.kind==='acute'?'急性':'慢性') + '</b>代償的預期值 ±2 mmol/L 內，為單純的' + dxZh + '。';
+    }
+    if(course && numeric && course!==numeric){
+      compD += '<br><b>注意：你填的病程是「' + (course==='acute'?'急性':'慢性')
+            + '」，但數字比較像「' + (numeric==='acute'?'急性':'慢性') + '」。</b>'
+            + '若病史確定，就代表<b>另有一個代謝性障礙</b>把 HCO₃⁻ 推離該有的位置；判型欄以你填的病程為準。';
+      extra.push(course==='acute'
+        ? (respAcid ? 'Metabolic alkalosis 代謝性鹼中毒' : 'Metabolic acidosis 代謝性酸中毒')
+        : (respAcid ? 'Metabolic acidosis 代謝性酸中毒' : 'Metabolic alkalosis 代謝性鹼中毒'));
+    }
+    compD += '<br><span class="note">交叉檢查：若為急性，預期 pH ≈ ' + r.phA.toFixed(2)
+          + '；若為慢性，預期 pH ≈ ' + r.phC.toFixed(2) + '（實測 ' + pH.toFixed(2) + '）。'
+          + (respAlk ? '慢性呼吸性鹼中毒即使 PaCO₂ 極低，HCO₃⁻ 也很少低於 12–14。' : '')
+          + '</span>';
+    if(!ACID && !ALK){
+      compD += '<br><b>pH 已回到正常範圍</b>，代表代償（或第二個障礙）完全抵消了原發障礙——'
+            + '這在<b>慢性</b>呼吸性障礙很常見，但也可能是兩個原發性障礙剛好平衡。';
+    }
+
+  } else if(prim==='BOTH_ACID' || prim==='BOTH_ALK'){
+    var isA = (prim==='BOTH_ACID');
+    dxEn = isA ? 'Combined metabolic and respiratory acidosis' : 'Combined metabolic and respiratory alkalosis';
+    dxZh = isA ? '代謝性＋呼吸性酸中毒（混合型）' : '代謝性＋呼吸性鹼中毒（混合型）';
+    compV = '不適用';
+    compB='混合型'; compC='b3';
+    compD = 'HCO₃⁻ 與 PaCO₂ <b>同時往同一個方向惡化</b>，兩者互為代償的可能性被排除——這是<b>兩個原發性障礙並存</b>，不要再套代償公式。'
+          + (isA ? '<b>混合型酸中毒的 pH 掉得最快</b>（如心跳停止、嚴重休克合併呼吸衰竭），處理要同時針對兩邊。' : '');
+
+  } else if(prim==='NORMAL'){
+    dxEn='Normal acid–base status'; dxZh='pH、PaCO₂、HCO₃⁻ 均在參考範圍內';
+    compV='不適用'; compB=''; compC='b0';
+    compD='三個數字都正常。<b>但仍要看陰離子間隙</b>——AG 升高時可能同時存在高 AG 代謝性酸中毒與代謝性鹼中毒，把 pH 與 HCO₃⁻ 拉回正常。';
+
+  } else {   /* ODD_* —— pH 的方向無法由另外兩個數字解釋 */
+    /* 先分辨是「檢體／報告有問題」還是「只是卡在判型門檻邊緣」——後者其實很常見，
+       22／26／35／45 都是約定俗成的切點，不該一律報成資料錯誤。 */
+    var hh = 6.1 + Math.log(hco3/(0.03*pco2))/Math.LN10;
+    hhBad = Math.abs(hh - pH) > 0.05;
+    compV='不適用'; compC='b3';
+    if(hhBad){
+      dxEn='Inconsistent values'; dxZh='數值彼此不相容，請先確認檢體與報告';
+      compB='請覆核';
+      compD='pH 的方向無法由 PaCO₂ 或 HCO₃⁻ 解釋，且<b>內部一致性也不通過</b>。Henderson-Hasselbalch：'
+          + '<b>pH ＝ 6.1 ＋ log[ HCO₃⁻ ÷ (0.03 × PaCO₂) ]</b>，本組數字算出 <b>' + hh.toFixed(2)
+          + '</b>，與報告的 ' + pH.toFixed(2) + ' 相差 ' + Math.abs(hh-pH).toFixed(2)
+          + '（&gt; 0.05）。這代表<b>檢體或報告有問題</b>——空氣泡、延遲送檢、非動脈血、抗凝劑過量、'
+          + '或 HCO₃⁻ 與血氣不是同一次採檢。<b>先重驗，不要在這組數字上做判讀。</b>';
+    } else {
+      dxEn='Borderline values'; dxZh='數值落在判型門檻邊緣'; compB='邊緣值'; compC='b1';
+      compD='內部一致性沒有問題（Henderson-Hasselbalch 算出 pH ' + hh.toFixed(2) + '，與報告相符），'
+          + '但 pH 的偏離方向無法單獨歸給 PaCO₂ 或 HCO₃⁻——兩者都<b>剛好卡在門檻上</b>。'
+          + '本頁用的 22／26 mmol/L 與 35／45 mmHg 都是約定俗成的切點，不是生理上的斷崖；'
+          + '<b>請以臨床脈絡與趨勢（前後兩次血氣）判讀</b>，並記得檢查陰離子間隙——輕微的酸鹼障礙常常只在 AG 上看得出來。';
+    }
+  }
+
+  abSet('ab_dx', dxEn);
+  abSet('ab_dx_zh', dxZh);
+  document.getElementById('ab_comp').textContent = compV;
+  abBand('ab_comp_band', compB, compC);
+  abSet('ab_comp_d', compD);
+  abSet('ab_dx_d', dxNote || '判型依 pH 的方向，再看 PaCO₂（35／45）與 HCO₃⁻（22／26）哪一個與 pH 同向。急性／慢性請以病史為準。');
+
+  /* ---- ④⑤ 陰離子間隙與 delta ---- */
+  var agr = abAG(na, cl, hco3, alb, prim, extra);
+
+  /* AG 認定有高 AG 酸中毒、但判型的主障礙不是代謝性酸中毒時（典型如水楊酸中毒的
+     呼吸性鹼中毒＋高 AG 酸中毒），要把它補進併存清單，否則標題只寫呼吸性障礙會漏掉重點。 */
+  if(agr.hagma && prim!=='MAC' && prim!=='BOTH_ACID'
+     && extra.join(' ').indexOf('Metabolic acidosis') < 0){
+    extra.push('Metabolic acidosis 代謝性酸中毒（高 AG）');
+  }
+
+  /* ---- 併存障礙徽章 ---- */
+  var uniq=[], seen={};
+  extra.forEach(function(x){ if(!seen[x]){ seen[x]=1; uniq.push(x); } });
+  abSet('ab_plus', uniq.length ? '併存：' + uniq.map(function(x){ return '<span>'+x+'</span>'; }).join('') : '');
+
+  /* ---- ⑥ 分流 ---- */
+  if(hhBad){
+    abSet('ab_plus','');            // 資料本身可疑時不掛任何診斷徽章
+    abSet('ab_next','<b>本組數字未通過內部一致性檢查，先重驗再判讀。</b>'
+      + '在確認檢體無誤之前，往下做陰離子間隙與尿液分流只會把錯誤放大。');
+    return;
+  }
+  abNext(prim, agr, uniq, respAcid, respAlk, hco3, pco2);
+}
+
+/* 陰離子間隙、校正與 delta；回傳給分流用的旗標 */
+function abAG(na, cl, hco3, alb, prim, extra){
+  var out = { ag:null, cag:null, hagma:false, nagma:false, metAlk:false, dRatio:null, dGap:null };
+  if(na===null || cl===null || hco3===null){
+    document.getElementById('ab_ag').textContent='—'; abBand('ab_ag_band','','b0');
+    abSet('ab_ag_d','填入血鈉與血氯即可計算陰離子間隙。');
+    document.getElementById('ab_delta').textContent='—'; abBand('ab_delta_band','','b0');
+    abSet('ab_delta_d','需要陰離子間隙才能計算。');
+    return out;
+  }
+  var ag = na - cl - hco3;
+  var cag = (alb===null) ? ag : ag + 2.5*(4.0 - alb);
+  out.ag=ag; out.cag=cag;
+
+  document.getElementById('ab_ag').textContent = cag.toFixed(1);
+  var agb, agc;
+  if(cag >= 20){ agb='顯著升高（≥ 20）'; agc='b3'; }
+  else if(cag > 12){ agb='升高（> 12）'; agc='b2'; }
+  else if(cag < 8){ agb='偏低（< 8）'; agc='b1'; }
+  else { agb='參考範圍內（8–12）'; agc='b0'; }
+  abBand('ab_ag_band', agb, agc);
+
+  var d = 'AG ＝ ' + na.toFixed(1) + ' − ' + cl.toFixed(1) + ' − ' + hco3.toFixed(1) + ' ＝ <b>' + ag.toFixed(1) + '</b>';
+  if(alb===null){
+    d += '。<b>尚未填入白蛋白</b>——重症病人低白蛋白極常見，不校正會把高 AG 酸中毒讀成正常 AG，請補填。';
+  } else if(Math.abs(alb-4.0) >= 0.05){
+    d += '；白蛋白 ' + alb.toFixed(1) + ' g/dL，校正後 ＝ AG ＋ 2.5 × (4.0 − ' + alb.toFixed(1) + ') ＝ <b>' + cag.toFixed(1) + '</b>'
+       + (cag>12 && ag<=12 ? '——<b>未校正時看起來是正常 AG，校正後其實是高 AG</b>。' : '。');
+  } else {
+    d += '；白蛋白正常，校正後不變。';
+  }
+  if(cag >= 20) d += '<br><b>AG ≥ 20：代謝性酸中毒幾乎必然存在</b>，不論 pH 與 HCO₃⁻ 是多少。';
+  else if(cag < 8) d += '<br>AG 偏低的原因：低白蛋白（最常見）、多發性骨髓瘤／副蛋白血症、鋰／溴／碘中毒、嚴重高血鈣或高血鎂、檢驗誤差。'
+                     + '<b>先確認這不是檢驗問題</b>，再去想別的。';
+  /* AG 升高本身不等於高 AG 酸中毒：代謝性鹼中毒會讓 AG 上升數點（白蛋白負電荷增加、乳酸生成），
+     若判型裡沒有代謝性酸中毒的脈絡，就不該把病人推進 GOLDMARK。AG ≥ 20 例外——那時酸中毒幾乎必然存在。
+     不可以拿「HCO₃ ＜ 24」當作酸中毒的證據——慢性呼吸性鹼中毒的 HCO₃ 本來就低，那是代償。
+     是否真有代謝性酸中毒，只認判型（MAC／混合型）、步驟③代償比對的結論，以及 AG ≥ 20 這三件事。 */
+  var acidCtx = (prim==='MAC' || prim==='BOTH_ACID' || cag >= 20
+                 || (extra && extra.join(' ').indexOf('Metabolic acidosis') >= 0));
+  out.hagma = cag > 12 && acidCtx;
+  if(cag > 12 && !acidCtx){
+    d += '<br><b>AG 升高，但目前的判型沒有代謝性酸中毒的脈絡</b>（HCO₃⁻ ≥ 24 且 AG &lt; 20）。'
+       + '<b>代謝性鹼中毒本身就會讓 AG 上升數點</b>（白蛋白負電荷增加、乳酸輕微生成）；其餘要想的是高磷酸鹽血症、'
+       + '副蛋白血症與檢驗誤差。故本頁不把它當高 AG 酸中毒處理——但若臨床上懷疑酸中毒被鹼中毒掩蓋，仍應回頭看病史與乳酸。';
+  }
+  d += '<br><span class="note">AG 的正常值依檢驗方法與族群而異（Kraut &amp; Madias 2007），本頁採 8–12；各院應以自家參考值為準。</span>';
+  abSet('ab_ag_d', d);
+
+  /* delta gap / delta ratio */
+  var dGap = (cag - 12) - (24 - hco3);
+  out.dGap = dGap;
+  if(!out.hagma){
+    document.getElementById('ab_delta').textContent='—'; abBand('ab_delta_band','','b0');
+    abSet('ab_delta_d', (cag <= 12 && hco3 < 22)
+      ? 'AG 未升高而 HCO₃⁻ 偏低 → 屬<b>正常 AG（高氯性）代謝性酸中毒</b>，delta ratio 不適用，直接看下方的尿液陰離子間隙。'
+      : (cag > 12
+          ? 'AG 雖然 &gt; 12，但沒有代謝性酸中毒的脈絡（見上一欄），delta gap／ratio 不適用。'
+          : 'AG 未升高，delta gap／ratio 不適用。'));
+    /* 這裡不可以用「HCO₃ 高就是代謝性鹼中毒、低就是 NAGMA」——慢性呼吸性障礙的 HCO₃
+       本來就會偏離 24，那是代償而非第二個障礙。是不是真的多一個代謝性障礙，
+       已由步驟③的代償比對寫進 extra；此處交給 abNext 依 prim 與 extra 判斷。 */
+    out.nagma = false;
+    out.metAlk = false;
+    return out;
+  }
+  var dHco3 = 24 - hco3;
+  var ratio = (dHco3 > 0) ? (cag - 12)/dHco3 : null;
+  out.dRatio = ratio;
+
+  var dv = 'Δgap ' + ab1(dGap);
+  if(ratio!==null) dv += '｜Δratio ' + ratio.toFixed(2);
+  document.getElementById('ab_delta').textContent = dv;
+
+  var db, dc, dd;
+  if(dGap > 6){
+    db='另有代謝性鹼中毒'; dc='b2'; out.metAlk=true;
+    dd='AG 上升的幅度<b>大於</b> HCO₃⁻ 下降的幅度（Δgap ＞ ＋6），代表 HCO₃⁻ 被另一個力量撐住——<b>併有代謝性鹼中毒</b>'
+      + '（嘔吐／鼻胃管引流、利尿劑），或病人本來就有<b>慢性呼吸性酸中毒</b>使 HCO₃⁻ 的基礎值高於 24。';
+  } else if(dGap < -6){
+    db='另有正常 AG 酸中毒'; dc='b2'; out.nagma=true;
+    dd='AG 上升的幅度<b>小於</b> HCO₃⁻ 下降的幅度（Δgap ＜ −6），代表有一部分的 HCO₃⁻ 是被<b>不產生 AG 的機制</b>消耗掉的——'
+      + '<b>高 AG 與正常 AG 代謝性酸中毒併存</b>（如 DKA 大量輸注生理食鹽水後、腹瀉合併乳酸酸中毒）。下方兩條分流都要走。';
+  } else {
+    db='單純高 AG 型'; dc='b0';
+    dd='Δgap 落在 −6 ～ ＋6，AG 的上升與 HCO₃⁻ 的下降大致等量，符合<b>單純的高 AG 代謝性酸中毒</b>。';
+  }
+  if(ratio!==null){
+    dd += '<br>Δratio ＝ (' + cag.toFixed(1) + ' − 12) ÷ (24 − ' + hco3.toFixed(1) + ') ＝ <b>' + ratio.toFixed(2) + '</b>：'
+       + (ratio < 0.4 ? 'HCO₃⁻ 的下降絕大部分由正常 AG（高氯性）機制造成，高 AG 只佔一小部分'
+        : ratio < 0.8 ? '高 AG 與正常 AG 併存'
+        : ratio <= 2  ? '單純高 AG 型（DKA 常近 1，乳酸酸中毒常 1.5 上下）'
+                      : '另有代謝性鹼中毒，或既有的慢性呼吸性酸中毒把 HCO₃⁻ 基礎值墊高') + '。';
+    if(ratio < 0.8) out.nagma = true;
+    if(ratio > 2) out.metAlk = true;
+  } else {
+    dd += '<br>HCO₃⁻ ≥ 24，分母為零或負，Δratio 不適用；此時 <b>AG 升高但 HCO₃⁻ 沒掉</b>，本身就強烈指向<b>高 AG 酸中毒＋代謝性鹼中毒併存</b>。';
+    out.metAlk = true;
+  }
+  dd += '<br><span class="note"><b>Rastegar 2007</b>：這個比值的群體平均雖接近 1，但<b>個別病人的變異極大</b>，'
+     + '不能單憑它診斷混合型障礙——要併同病史、電解質與臨床脈絡判斷。</span>';
+  abBand('ab_delta_band', db, dc);
+  abSet('ab_delta_d', dd);
+  return out;
+}
+
+/* ⑥ 後續分流：依判型與 AG 結果只顯示用得到的那幾段 */
+function abNext(prim, agr, extra, respAcid, respAlk, hco3, pco2){
+  var blocks = [];
+  var extraStr = extra.join(' ');
+  var hasMetAlk = agr.metAlk || prim==='MAL' || prim==='BOTH_ALK' || extraStr.indexOf('Metabolic alkalosis')>=0;
+  var hasNagma  = agr.nagma  || (!agr.hagma && (prim==='MAC' || prim==='BOTH_ACID' || extraStr.indexOf('Metabolic acidosis')>=0));
+
+  /* 高 AG 代謝性酸中毒 */
+  if(agr.hagma){
+    var lac=abN('ab_lac'), ket=document.getElementById('ab_ket').value;
+    var glu=abN('ab_glu'), un=abN('ab_un'), osm=abN('ab_osm'), na=abN('ab_na');
+    var h = '<b>■ 高陰離子間隙代謝性酸中毒 HAGMA → GOLDMARK</b><ul>';
+    h += '<li><b>G</b>lycols 乙二醇／丙二醇（丙二醇＝大量 lorazepam／diazepam 注射液的溶劑）｜'
+      +  '<b>O</b>xoproline（長期 acetaminophen ＋ 營養不良／敗血症，女性居多）｜'
+      +  '<b>L</b>-lactate｜<b>D</b>-lactate（短腸症候群、細菌過度增生）｜'
+      +  '<b>M</b>ethanol｜<b>A</b>spirin 水楊酸｜<b>R</b>enal failure｜<b>K</b>etoacidosis（糖尿病／酒精性／飢餓）</li>';
+
+    if(lac!==null){
+      var lacTxt = lac>=4 ? '<b>顯著升高</b>' : lac>2 ? '升高' : '未升高';
+      h += '<li>乳酸 <b>' + lac.toFixed(1) + ' mmol/L</b>（' + lacTxt + '）：乳酸每 1 mmol/L 約貢獻 1 的 AG，'
+        +  '約可解釋 ΔAG（' + (agr.cag-12).toFixed(1) + '）中的 <b>' + Math.max(0, lac-1).toFixed(1) + '</b>。'
+        +  (lac>2 && (lac-1) < (agr.cag-12)*0.5 ? '<b>乳酸只解釋了不到一半，剩下的缺口要另外找</b>（酮體、腎衰竭、毒物）。' : '')
+        +  (lac<=2 ? '<b>乳酸正常，不要停在這裡</b>——酮酸、尿毒、毒性酒精、水楊酸都不會讓乳酸升高。' : '') + '</li>';
+    } else {
+      h += '<li>尚未填乳酸——<b>乳酸是 HAGMA 最常見也最急的原因</b>，先驗。</li>';
+    }
+    if(ket==='pos') h += '<li>酮體<b>陽性</b>：糖尿病、酒精性或飢餓性酮酸中毒。'
+                      +  'DKA 的診斷與嚴重度、有效滲透壓判準見 <a href="dka-hhs.html" class="ref-link">DKA／HHS</a>。'
+                      +  '<b>isopropanol 中毒會有酮體但不會酸中毒</b>，可作區分。</li>';
+    else if(ket==='neg') h += '<li>酮體陰性——但<b>尿試紙的 nitroprusside 反應測不到 β-hydroxybutyrate</b>，'
+                           +  '嚴重酮酸中毒（尤其酒精性、缺氧）以 β-hydroxybutyrate 為主時可能假陰性，臨床高度懷疑就驗血中酮體。</li>';
+    else h += '<li>尚未驗酮體——血中 β-hydroxybutyrate 優於尿試紙。</li>';
+
+    if(glu!==null && un!==null && osm!==null && na!==null){
+      var calcOsm = 2*na + glu/18 + un/2.8;
+      var og = osm - calcOsm;
+      h += '<li>滲透壓間隙 ＝ ' + osm.toFixed(0) + ' − ' + calcOsm.toFixed(0) + ' ＝ <b>' + ab1(og) + ' mOsm</b>：'
+        + (og > 10
+            ? '<b>升高（&gt; 10）。滲透壓間隙升高 ＋ 高 AG 酸中毒 → 先當甲醇／乙二醇處理</b>（fomepizole、必要時血液透析、毒物科諮詢），不要等確認報告。'
+            : '未升高。<b>但正常間隙不排除毒性酒精</b>——晚期就診時母醇已代謝完，此時只剩高 AG 酸中毒。')
+        + '完整判讀與濃度換算見<a href="osmolality.html" class="ref-link">血清滲透壓與滲透壓間隙</a>。</li>';
+    } else {
+      h += '<li>要算滲透壓間隙請補填<b>血糖、UN 與實測滲透壓</b>（實測須與電解質同一管血、冰點下降法）。'
+        +  '完整判讀見<a href="osmolality.html" class="ref-link">血清滲透壓與滲透壓間隙</a>。</li>';
+    }
+    if(respAlk || extraStr.indexOf('Respiratory alkalosis')>=0){
+      h += '<li><b>本組數字同時有呼吸性鹼中毒與高 AG 代謝性酸中毒——這是水楊酸中毒的典型型態</b>，'
+        +  '有相符病史（耳鳴、過度換氣、發燒、意識改變）就驗水楊酸濃度。敗血症也會出現同樣組合。</li>';
+    }
+    h += '<li>其餘要一起釐清的：<b>腎功能</b>（尿毒性酸中毒通常要 eGFR 很低，見 <a href="kdigo-aki.html" class="ref-link">KDIGO AKI</a>）、'
+      +  '近期是否輸注 <b>propylene glycol</b> 為溶劑的藥物、長期 acetaminophen 使用史。</li></ul>';
+    blocks.push(h);
+  }
+
+  /* 正常 AG 代謝性酸中毒 */
+  if(hasNagma){
+    var una=abN('ab_una'), uk=abN('ab_uk'), ucl=abN('ab_ucl'), uph=abN('ab_uph'), k=abN('ab_k');
+    var n = '<b>■ 正常 AG（高氯性）代謝性酸中毒 NAGMA → 尿液陰離子間隙</b><ul>';
+    if(una!==null && uk!==null && ucl!==null){
+      var uag = una + uk - ucl;
+      n += '<li>UAG ＝ (' + una.toFixed(0) + ' ＋ ' + uk.toFixed(0) + ') − ' + ucl.toFixed(0) + ' ＝ <b>' + ab1(uag) + ' mmol/L</b>：'
+        + (uag < 0
+            ? '<b>負值 → 腸道（腎外）流失</b>——腹瀉、腸廔管、迴腸導管。腎臟排 NH₄⁺ 的能力正常。'
+              + '（Batlle 1988 腹瀉組 −20 ± 5.7）'
+            : '<b>正值 → 腎性，即腎小管酸中毒 RTA</b>——腎臟排 NH₄⁺ 的能力受損。'
+              + '（Batlle 1988：典型 RTA ＋23、高血鉀型遠端 RTA ＋30、選擇性醛固酮缺乏 ＋39）')
+        + '</li>';
+      if(una < 20) n += '<li><b>尿 Na ＜ 20 mmol/L，UAG 此時不可靠</b>（鈉不足時銨無法以 NH₄Cl 形式大量排出）。改用<b>尿液滲透壓間隙</b>估算 NH₄⁺。</li>';
+    } else {
+      n += '<li>請補填<b>尿液 Na／K／Cl</b> 以計算 UAG ＝ (尿 Na ＋ 尿 K) − 尿 Cl。<b>負值＝腸道流失、正值＝腎性（RTA）</b>。</li>';
+    }
+    if(uph!==null){
+      n += '<li>尿液 pH <b>' + uph.toFixed(1) + '</b>：<b>不可單獨使用</b>——Batlle 的腹瀉組尿 pH 平均 5.64（&gt; 5.3）但 UAG 仍是負值，'
+        +  '單看尿 pH 會把腹瀉誤判成 RTA。要與 UAG 併看。</li>';
+    }
+    if(k!==null){
+      n += '<li>血鉀 <b>' + k.toFixed(1) + ' mmol/L</b> → '
+        + (k > 5.0
+            ? '<b>高血鉀 ＋ 正常 AG 酸中毒 ＋ 尿 pH ＜ 5.5 → 第四型 RTA</b>（醛固酮不足或阻斷），臨床上最常見：糖尿病腎病變、CKD、ACEI／ARB、spironolactone、TMP-SMX、heparin、NSAID。'
+            : k < 3.5
+              ? '<b>低血鉀 → 第一型（遠端）或第二型（近端）RTA</b>：尿 pH 持續 &gt; 5.5 且伴腎結石／腎鈣質沉著 → 第一型；酸中毒時尿 pH 可 &lt; 5.5 且併 Fanconi（糖尿、磷酸尿、胺基酸尿） → 第二型。'
+              : '血鉀正常，RTA 分型需併看尿 pH 與 Fanconi 的表現。')
+        + '</li>';
+    } else {
+      n += '<li>請補填<b>血鉀</b>：高血鉀指向第四型 RTA（最常見），低血鉀指向第一／二型。</li>';
+    }
+    n += '<li><b>先排除非 RTA 的原因</b>（比 RTA 常見得多）：大量 0.9% NaCl 輸注造成的高氯性酸中毒、acetazolamide、'
+      +  '尿路腸道分流、低碳酸血症矯正後、含氯的胺基酸營養液、cholestyramine。</li></ul>';
+    blocks.push(n);
+  }
+
+  /* 代謝性鹼中毒 */
+  if(hasMetAlk){
+    var ucl2=abN('ab_ucl');
+    var m = '<b>■ 代謝性鹼中毒 → 尿液氯</b><ul>';
+    if(ucl2!==null){
+      m += '<li>尿液 Cl⁻ <b>' + ucl2.toFixed(0) + ' mmol/L</b>：'
+        + (ucl2 < 20
+            ? '<b>&lt; 20 → 氯反應型（chloride-responsive）</b>：嘔吐、鼻胃管引流、利尿劑停用後、高碳酸血症矯正後、收縮性鹼中毒。'
+              + '<b>補生理食鹽水 ＋ KCl 有效</b>。'
+            : '<b>&gt; 20 → 氯抗性型（chloride-resistant）</b>：原發性醛固酮過多、Cushing、Bartter／Gitelman、嚴重低血鉀、甘草。'
+              + '<b>補鹽無效</b>，要處理原因並積極補鉀。')
+        + '</li>';
+    } else {
+      m += '<li>請補填<b>尿液 Cl⁻</b>：&lt; 20 為氯反應型（補食鹽水有效）、&gt; 20 為氯抗性型（補鹽無效）。</li>';
+    }
+    m += '<li><b>陷阱：正在使用利尿劑時尿 Cl⁻ 會偏高</b>，看起來像氯抗性型——要問清楚最後一劑的時間。</li>';
+    m += '<li><b>低血鉀本身會維持鹼中毒</b>（促進近端 HCO₃⁻ 再吸收與遠端排酸），不補鉀就矯正不了。</li></ul>';
+    blocks.push(m);
+  }
+
+  /* 呼吸性 */
+  if(respAcid || extraStr.indexOf('Respiratory acidosis')>=0){
+    blocks.push('<b>■ 呼吸性酸中毒 → 找換氣不足的原因</b><ul>'
+      + '<li><b>中樞抑制</b>（鴉片、鎮靜劑、腦幹病變）｜<b>神經肌肉</b>（重症肌無力、GBS、頸髓損傷、橫膈麻痺、肌鬆劑殘留）｜'
+      + '<b>氣道／肺</b>（COPD、氣喘、上呼吸道阻塞）｜<b>胸壁</b>（連枷胸、肥胖低通氣、腹腔內高壓）｜<b>呼吸器設定或管路問題</b>。</li>'
+      + '<li><b>用 A–a 差分辨</b>（見下方氧合欄）：A–a <b>正常</b>而 PaCO₂ 高 → 單純換氣不足（中樞／神經肌肉／氣道阻塞）；'
+      + 'A–a <b>升高</b> → 同時有肺實質或血管病變。</li>'
+      + '<li><b>慢性者不要急著把 PaCO₂ 壓回 40</b>：腎臟保留的 HCO₃⁻ 要數天才排掉，快速降 CO₂ 會造成 post-hypercapnic metabolic alkalosis。</li></ul>');
+  }
+  if(respAlk || extraStr.indexOf('Respiratory alkalosis')>=0){
+    blocks.push('<b>■ 呼吸性鹼中毒 → 找過度換氣的原因</b><ul>'
+      + '<li><b>低氧</b>（任何原因）｜<b>敗血症</b>｜<b>肺栓塞</b>｜<b>疼痛／焦慮</b>｜<b>肝衰竭</b>｜<b>懷孕</b>｜'
+      + '<b>水楊酸中毒</b>（中樞直接刺激呼吸）｜中樞神經病變｜<b>呼吸器設定過度</b>。</li>'
+      + '<li><b>先排除低氧與肺栓塞再歸因於焦慮</b>——把過度換氣當成心理因素是最常見的誤判。</li>'
+      + '<li>合併高 AG 代謝性酸中毒時，<b>水楊酸中毒與敗血症</b>是兩個必須先排除的診斷。</li></ul>');
+  }
+
+  if(!blocks.length){
+    abSet('ab_next', prim==='NORMAL'
+      ? '三個數字與陰離子間隙都在參考範圍內，沒有需要分流的代謝性障礙。'
+      : '目前的判型不需要進一步分流；補上白蛋白與電解質可讓陰離子間隙的判讀更準確。');
+    return;
+  }
+  abSet('ab_next', blocks.join('<div style="height:9px;"></div>'));
+}
+
+/* 氧合：A–a 差與 P/F */
+function abOxy(){
+  var po2=abN('ab_po2'), fio2=abN('ab_fio2'), age=abN('ab_age'), pco2=abN('ab_pco2');
+  if(po2===null || pco2===null){
+    abSet('ab_oxy','填入 PaO₂（與 PaCO₂）即可計算 A–a 差；補上年齡才有預期值。');
+    return;
+  }
+  var f = (fio2===null ? 21 : fio2) / 100;
+  var pAO2 = f * (760 - 47) - pco2/0.8;
+  var aa = pAO2 - po2;
+  var pf = po2 / f;
+  var t = '肺泡氧分壓 P<sub>A</sub>O₂ ＝ ' + f.toFixed(2) + ' × (760 − 47) − ' + pco2.toFixed(1) + '/0.8 ＝ <b>' + pAO2.toFixed(0)
+        + '</b>；<b>A–a ＝ ' + aa.toFixed(0) + ' mmHg</b>（PaO₂/FiO₂ ＝ ' + pf.toFixed(0) + '）。';
+  if(age!==null){
+    var exp = age/4 + 4;
+    t += '<br>室內空氣下的預期值 ≈ 年齡÷4＋4 ＝ <b>' + exp.toFixed(0) + '</b>：'
+      + (aa > exp
+          ? '<b>A–a 升高</b> → 有肺實質或血管病變（V/Q 不均、分流、擴散障礙）。'
+          : '<b>A–a 未升高</b> → 低氧或高碳酸血症以<b>單純換氣不足</b>解釋得通（中樞抑制、神經肌肉、上呼吸道阻塞），或吸入氧分壓不足。');
+  } else {
+    t += '<br>補上年齡即可比對預期值（年齡÷4＋4）。';
+  }
+  if(fio2!==null && fio2 > 21){
+    t += '<br><span class="note"><b>「年齡÷4＋4」只在室內空氣下驗證過</b>；給氧時 A–a 本來就會上升，'
+      +  '此時看 <b>PaO₂/FiO₂</b> 較有意義（' + pf.toFixed(0) + '；ARDS 的分級見 <a href="ards.html" class="ref-link">ARDS</a>）。</span>';
+  }
+  abSet('ab_oxy', t);
+}
+
+document.querySelectorAll('#view-abg input, #view-abg select')
+  .forEach(function(el){ el.addEventListener('input',abCalc); el.addEventListener('change',abCalc); });
+abCalc();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

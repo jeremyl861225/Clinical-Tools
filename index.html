@@ -418,14 +418,22 @@
     <div class="gs-empty hidden" id="sc-empty">沒有符合的計分工具，換個關鍵字或用主選單的全站查詢試試。</div>
 
     <div class="tool-group">
-      <div class="group-head"><span class="group-title">一般計算</span><span class="group-en">General Calculations</span><span class="group-count">4 項</span></div>
+      <div class="group-head"><span class="group-title">一般計算</span><span class="group-en">General Calculations</span><span class="group-count">5 項</span></div>
       <div class="home-list">
+        <div class="tool-card" id="card-view-abg" onclick="location.href='tools/abg.html'"
+             data-nav-en="ABG interpretation"
+             data-search-kw="動脈血氣 血氣分析 ABG arterial blood gas 酸鹼 acid-base 酸血症 acidemia 鹼血症 alkalemia 代謝性酸中毒 metabolic acidosis 代謝性鹼中毒 metabolic alkalosis 呼吸性酸中毒 respiratory acidosis 呼吸性鹼中毒 respiratory alkalosis 急性 acute 慢性 chronic 代償 compensation Winter 溫特公式 混合型 mixed 陰離子間隙 anion gap AG 校正 corrected albumin Figge delta gap delta ratio 高陰離子間隙 HAGMA 正常陰離子間隙 NAGMA 高氯性 hyperchloremic GOLDMARK MUDPILES 乳酸 lactate 酮酸 ketoacidosis 甲醇 methanol 乙二醇 ethylene glycol 水楊酸 salicylate 尿毒 尿液陰離子間隙 urine anion gap UAG 腎小管酸中毒 RTA 尿液氯 urine chloride 滲透壓間隙 osmolal gap A-a gradient 肺泡動脈氧分壓差 PaO2 FiO2">
+          <div class="tool-name">動脈血氣分析判讀 <span class="tool-en">ABG interpretation · Acid–base</span></div>
+          <div class="tool-desc">輸入 pH／PaCO₂／HCO₃⁻ 即判出<b>是哪一型</b>（含急性／慢性呼吸性障礙與混合型），並以 <b>Winter's 等六條代償公式</b>抓出被蓋住的第二個障礙；再由<b>白蛋白校正後的陰離子間隙</b>與 delta gap 自動分流到 <b>GOLDMARK</b>（含滲透壓間隙）、<b>尿液陰離子間隙／RTA 分型</b>或<b>尿液氯</b></div>
+        </div>
         <div class="tool-card" id="card-view-body-metrics" onclick="location.href='tools/body-metrics.html'"
+             data-nav-en="BMI · BSA · IBW · ABW"
              data-search-kw="BMI 身體質量指數 body mass index 體位 過重 肥胖 國健署 國民健康署 腰圍 BSA 體表面積 body surface area Mosteller Du Bois 化療劑量 IBW 理想體重 ideal body weight Devine PBW predicted body weight 潮氣容積 tidal volume 6 mL/kg ABW 調整體重 adjusted body weight aminoglycoside LBW 去脂體重 lean body weight Janmahasatian propofol 劑量體重 dosing weight">
           <div class="tool-name">體型與劑量體重 <span class="tool-en">BMI · BSA · IBW · ABW</span></div>
           <div class="tool-desc">一次算出 BMI（<b>國民健康署體位分類</b>＋WHO 亞洲切點）、BSA（Mosteller 與 Du Bois 並列）、IBW／ABW／LBW，並直接給出 <b>6 mL/kg PBW 的潮氣容積</b>與「實際體重是 IBW 的幾 %、該不該改用 ABW」的判斷</div>
         </div>
         <div class="tool-card" id="card-view-dose-conversion" onclick="location.href='tools/dose-conversion.html'"
+             data-nav-en="Med conversion"
              data-search-kw="劑量換算 等效劑量 conversion equivalent dose 類固醇 steroid corticosteroid glucocorticoid hydrocortisone prednisolone prednisone methylprednisolone dexamethasone betamethasone triamcinolone 礦皮質素 fludrocortisone 鴉片 opioid MME morphine milligram equivalent 嗎啡 morphine oxycodone hydromorphone fentanyl 貼片 patch codeine tramadol methadone buprenorphine pethidine meperidine 交叉耐受 cross-tolerance 換藥 opioid rotation CDC 2022 環利尿劑 loop diuretic furosemide lasix bumetanide torsemide ethacrynic acid 生體可用率 bioavailability">
           <div class="tool-name">藥物劑量換算 <span class="tool-en">Steroid · Opioid · Loop Diuretic</span></div>
           <div class="tool-desc">三類藥物選「從哪一種換到哪一種」即出等效劑量。類固醇同時顯示<b>礦皮質素活性與作用時間並不等效</b>；鴉片類依 <b>CDC 2022 MME 係數</b>算出每日當量後，<b>把「等效劑量」與「折減 25–50% 後的建議起始劑量」分成兩個數字</b>（methadone／buprenorphine 刻意不提供換入）</div>
