@@ -33,7 +33,13 @@
   var STACK = 'ct-back-stack';       // sessionStorage：本次逛的動線
   var NAMES = 'ct-page-labels';      // localStorage：頁面 → 簡稱
   var FLAG = 'ct-back-going';        // sessionStorage：按下返回鍵的一次性記號
+  var SRC = 'ct-back-src';           // sessionStorage：離開前最後一次點擊是內文還是導覽
   var MAX = 8;                       // 逛得再深也不必記到底，超過就丟最舊的
+
+  /* 導覽介面（不是內文動線）——由這些地方跳到別頁不算「從某頁連過來」，
+     目的地不該長出返回鍵。側邊導覽與搜尋是「跳到任一工具」的捷徑，
+     跟流程圖裡「這一步要用這個分數」的連結性質完全不同。 */
+  var CHROME = '#side-nav, #nav-toggle, #nav-scrim, #gs-results, .gs-box, .back-btn';
 
   // 以自身 script 位置反推站台根目錄（與 nav.js 同一套作法），
   // 故 tools/ 與 pathways/ 深一層也能組出正確連結
@@ -85,8 +91,24 @@
     jset(localStorage, NAMES, names);
   }
 
+  /* ---- 記下離開本頁前，最後一次點的是內文還是導覽介面 ----
+     referrer 只說得出「從哪一頁來」，說不出「怎麼來的」。側邊導覽與搜尋跳過來的，
+     使用者要的是「回主選單」而不是「回上一個工具」（PESI 頁一度出現
+     「← 返回營養風險評估」就是這樣來的：兩者只是先後用側欄點開，毫無關聯）。
+     以「離開前最後一次點擊」判定：導覽介面內的點擊記 0，其餘記 1。
+     用最後一次而非第一次，是因為使用者可能先在內文點了東西才改用側欄。 */
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || t.nodeType !== 1) return;
+    var chrome = !!(t.closest && t.closest(CHROME));
+    try { sessionStorage.setItem(SRC, chrome ? '0' : '1'); } catch (e) { }
+  }, true);
+
   /* ---- 依 referrer 更新動線 ---- */
-  function originFromReferrer() {
+  function originFromReferrer(viaContent) {
+    // 不是從內文連結點過來的（側欄／搜尋／直接輸入網址／外部連結），不算動線
+    if (!viaContent) return null;
+
     var ref = document.referrer;
     if (!ref || ref.indexOf(location.origin) !== 0) return null;   // 外部連結或無 referrer
     var id = pageId(ref);
@@ -101,11 +123,17 @@
   }
 
   function updateStack() {
+    // 兩個一次性記號都在這裡讀掉，免得殘留下來影響下一次導覽
+    var going = sessionStorage.getItem(FLAG);
+    var viaContent = sessionStorage.getItem(SRC) === '1';
+    try {
+      sessionStorage.removeItem(FLAG);
+      sessionStorage.removeItem(SRC);
+    } catch (e) { }
+
     if (IS_HOME) { sessionStorage.removeItem(STACK); return []; }
 
     var stack = jget(sessionStorage, STACK, []);
-    var going = sessionStorage.getItem(FLAG);
-    sessionStorage.removeItem(FLAG);
 
     if (going) {
       // 剛按下返回鍵回到這一頁：把本頁（及其之後）從動線上退掉，不要再把來路壓回去
@@ -114,9 +142,9 @@
       return stack;
     }
 
-    var origin = originFromReferrer();
+    var origin = originFromReferrer(viaContent);
     if (!origin) {
-      // 直接輸入網址／從外部連結進來＝新的起點
+      // 由側欄／搜尋跳過來、直接輸入網址、從外部連結進來＝新的起點
       stack = [];
     } else if (!stack.length || stack[stack.length - 1].id !== origin.id) {
       stack.push(origin);
@@ -163,9 +191,11 @@
        本檔認出後就不再插一顆看起來一樣的。 */
     var own = backBtns();
     for (var i = 0; i < own.length; i++) {
-      var to = own[i].getAttribute('data-back-to') || own[i].getAttribute('onclick') || '';
-      // onclick 是一整段 JS（location.href='…'），先把裡面的網址挑出來再比對
-      var m = to.match(/[\w./-]+\.html/);
+      // data-back-to 寫的是相對站台根目錄的代號，要對著 ROOT 解析
+      var bt = own[i].getAttribute('data-back-to');
+      if (bt && pageId(ROOT + bt) === origin.id) return;
+      // onclick 是一整段 JS（location.href='../x.html'），把網址挑出來、對著本頁解析
+      var m = (own[i].getAttribute('onclick') || '').match(/[\w./-]+\.html/);
       if (m && pageId(m[0]) === origin.id) return;
     }
 
