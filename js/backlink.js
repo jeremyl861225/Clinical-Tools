@@ -42,12 +42,22 @@
     return s[s.length - 1];
   })();
   var ROOT = me.src.replace(/js\/backlink\.js.*$/, '');
+  // 站台根目錄的路徑。GitHub Pages 部署在子路徑（/Clinical-Tools/），
+  // 本機開發伺服器則在網域根目錄（/），頁面識別必須相對於這裡算，不能只看檔名。
+  var ROOT_PATH = new URL(ROOT, location.href).pathname;
 
-  // 站內頁面識別一律用「目錄/檔名」（首頁可能是 / 或 /index.html）
+  /* 站內頁面識別＝相對站台根目錄的「目錄/檔名」，例如 index.html、tools/sofa.html。
+     曾經只取路徑末端的「目錄/檔名」，在子路徑部署時首頁會被算成
+     「Clinical-Tools/index.html」而不是「index.html」——於是首頁既沒被當成首頁
+     （不清空動線），又被當成一個普通來源頁，害每個從首頁點進去的工具都長出
+     一顆「← 返回臨床工具箱」。本機在網域根目錄跑，剛好看不出來。 */
   function pageId(url) {
-    var p = String(url).split('?')[0].split('#')[0].replace(/\/$/, '/index.html');
-    var m = p.match(/([^/]+\/)?([^/]+\.html)$/);
-    return m ? (m[1] || '') + m[2] : '';
+    var p;
+    try { p = new URL(url, location.href).pathname; }
+    catch (e) { return ''; }
+    if (p.indexOf(ROOT_PATH) === 0) p = p.slice(ROOT_PATH.length);
+    if (p === '' || p.charAt(p.length - 1) === '/') p += 'index.html';
+    return p.replace(/^\//, '');
   }
   var HERE = pageId(location.pathname) || 'index.html';
   var IS_HOME = HERE === 'index.html';
@@ -154,7 +164,9 @@
     var own = backBtns();
     for (var i = 0; i < own.length; i++) {
       var to = own[i].getAttribute('data-back-to') || own[i].getAttribute('onclick') || '';
-      if (to && pageId(to) === origin.id) return;
+      // onclick 是一整段 JS（location.href='…'），先把裡面的網址挑出來再比對
+      var m = to.match(/[\w./-]+\.html/);
+      if (m && pageId(m[0]) === origin.id) return;
     }
 
     var btn = document.createElement('button');
