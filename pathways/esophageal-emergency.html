@@ -13,14 +13,20 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="臨床工具">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="食道急症流程">
 <div class="sheet">
 <div class="view active" id="view-esoph">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>食道急症處置決策</h1>
       <div class="sub">Esophageal Emergencies · 穿孔／Boerhaave · 腐蝕性吞入 · 異物（WSES 2019）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-esoph'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-esoph'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box">
@@ -146,7 +152,7 @@
       <button class="flow-opt" onclick="esPick('nom','yes',this)">全部符合<span class="fo-sub">&lt;24 小時、無敗血症、侷限性、無既存食道疾病、具全天候監測</span></button>
       <button class="flow-opt" onclick="esPick('nom','no',this)">任一項不符<span class="fo-sub">延遲、敗血症、非侷限性滲漏、既存食道疾病或無監測能力</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/pss.html?from=esoph'">🧮 開啟 Pittsburgh 嚴重度分數</button>
+    <button class="flow-link" onclick="location.href='../tools/pss.html'">🧮 開啟 Pittsburgh 嚴重度分數</button>
     <div class="note" style="margin-top:8px;">指引亦引用 Pittsburgh 分數：「<b>低分（≤2）者可能適合非手術治療</b>」。
       但這點與 2025 年多中心資料相衝突（見計分工具頁），<b>Altorjay 條件仍是主要門檻</b>，分數只作輔助。</div>
   </div>
@@ -423,6 +429,7 @@ function esReset(){
 
 esReset();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

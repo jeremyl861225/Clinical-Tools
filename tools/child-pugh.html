@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Child-Pugh">
 <div class="sheet">
 <div class="view active" id="view-childpugh">
   <div class="app-header">
     <div><div class="eyebrow">Hepatology Scoring Tool</div><h1>Child-Pugh Score</h1><div class="sub">肝硬化嚴重度分級</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-childpugh'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-childpugh'">← 返回主選單</button>
+    </div>
   </div>
   <div class="card">
     <div class="field-row"><label>總膽紅素 Bilirubin</label>

@@ -15,8 +15,9 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="臨床分級表">
 <div class="sheet">
 <div class="view active" id="view-classifications">
   <div class="app-header">
@@ -25,9 +26,8 @@
       <h1>分類與分級系統</h1>
       <div class="sub">腹部急症與神經重症各疾病之嚴重度分級、解剖分型與影像分期，集中於一頁對照</div>
     </div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <!-- 由流程圖以 ?from= 進來時才顯示，讓使用者查完分級能原路返回 -->
-      <button class="back-btn hidden" id="cl_back" style="border-color:var(--accent2); color:var(--accent2);"></button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
       <button class="back-btn" onclick="location.href='../index.html#card-view-classifications'">← 返回主選單</button>
     </div>
   </div>
@@ -96,7 +96,7 @@
 
   <div class="result">
     <div class="metric-label">描述 Description</div>
-    <div class="metric-value" id="ae_desc" style="font-size:19px;"></div>
+    <div class="result-headline" id="ae_desc"></div>
     <div class="metric-label" style="margin-top:12px;">判定準則（AAST 原文）</div>
     <table class="ref">
       <tr><th style="width:22%;">Clinical</th><td id="ae_c"></td></tr>
@@ -498,7 +498,7 @@
       <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="ctsi_class">輕度</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">公式</div>
-    <div style="font-size:14px; margin-top:2px;">CTSI ＝ Balthazar 分級分數（0–4） ＋ 壞死分數（0–6），範圍 0–10</div>
+    <div class="result-interp">CTSI ＝ Balthazar 分級分數（0–4） ＋ 壞死分數（0–6），範圍 0–10</div>
     <table class="ref">
       <tr><th>總分</th><th>嚴重度</th></tr>
       <tr><td>0–3</td><td>輕度 Mild</td></tr>
@@ -631,7 +631,7 @@
       <div>未治療再出血率 <b id="fr_rb">55%</b></div><div>止血後再出血率 <b id="fr_rbtx">22.5%</b></div><div>Rockall SRH <b id="fr_rock">2分</b></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">建議處置（ESGE 2026）</div>
-    <div id="fr_rx" style="font-size:14px; margin-top:4px; line-height:1.65;"></div>
+    <div id="fr_rx" class="result-interp" style="line-height:1.65;"></div>
     <div class="risk-note" id="fr_note"></div>
     <div class="risk-note">
       <b>Rockall SRH 是什麼</b>：SRH＝<span class="mono">stigmata of recent haemorrhage</span>（近期出血痕跡），是 Rockall score 五個項目中的最後一項，<b>必須做過內視鏡才填得出來</b>。原始論文（Gut 1996 Table III）只分兩級：<b>上消化道內有血、黏附血塊、可見血管或噴血 → 2 分</b>；<b>無痕跡或僅暗色斑點 → 0 分</b>。<br>
@@ -1063,10 +1063,10 @@
       <div class="result">
         <div class="result-grid">
           <div><div class="metric-label">SCAI Stage</div><div class="metric-value big" id="cs_out">A</div></div>
-          <div><div class="metric-label">狀態</div><div class="metric-value big" id="cs_label" style="font-size:20px;">At Risk</div></div>
+          <div><div class="metric-label">狀態</div><div class="result-interp" id="cs_label">At Risk</div></div>
         </div>
         <div class="metric-label" style="margin-top:10px;">處置重點</div>
-        <ul style="font-size:14px; line-height:1.7; margin:4px 0 0; padding-left:18px;" id="cs_mgmt"></ul>
+        <ul class="result-interp" style="margin-bottom:0; padding-left:18px;" id="cs_mgmt"></ul>
         <div class="risk-note">SCAI 分級可在病程中<b>上下移動</b>，須反覆重評（乳酸與灌流最靈敏）。分級越高死亡率越高。</div>
       </div>
 
@@ -1387,24 +1387,10 @@ function clApplyHash(){
   clTab('cross',true);
 }
 
-/* 由流程圖進來時（?from=）給一個原路返回鍵 */
-var FROM={
-  chole:['../pathways/cholecystitis.html?restore=1','← 返回膽囊炎決策'],
-  panc:['../pathways/pancreatitis.html?restore=1','← 返回胰臟炎決策'],
-  'gi-bleed':['../pathways/gi-bleeding.html?restore=1','← 返回消化道出血決策'],
-  divert:['../pathways/diverticulitis.html?restore=1','← 返回憩室炎決策'],
-  hernia:['../pathways/hernia.html?restore=1','← 返回疝氣決策'],
-  sah:['../pathways/ich.html?restore=1#tab=sah','← 返回自發性腦出血決策']
-};
-(function(){
-  var m=(location.search||'').match(/[?&]from=([\w-]+)/);
-  if(!m) return;
-  var f=FROM[m[1]]; if(!f) return;
-  var b=document.getElementById('cl_back');
-  b.textContent=f[1];
-  b.onclick=function(){ location.href=f[0]; };
-  b.classList.remove('hidden');
-})();
+/* 原路返回鍵改由 js/backlink.js 統一產生。
+   本頁曾自備一份 ?from= 代號對照表，但共有 9 個流程圖連進本頁，表內只列了 6 個，
+   其餘三頁（腹腔內腔室症候群、食道急症、心因性休克）進來就沒有返回鍵——
+   正是這種「每加一條連結就要記得回頭改表」的作法要淘汰的原因。 */
 
 /* ---------------- AAST EGS ---------------- */
 var AAST=[

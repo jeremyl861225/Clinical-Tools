@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="內分泌危象決策">
 <div class="sheet">
 <div class="view active" id="view-endo-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>內分泌危象處置決策</h1><div class="sub">甲狀腺風暴與腎上腺危機 · ATA 2016 ／ Society for Endocrinology 2016</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-endo-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-endo-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -83,7 +87,7 @@
       <button class="flow-opt" onclick="enPick('bw','impending',this)">25–44 — 即將發生</button>
       <button class="flow-opt" onclick="enPick('bw','unlikely',this)">&lt; 25 — 不太可能（但臨床仍疑）</button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/thyroid-storm.html?from=endo'">🧮 開啟 Burch-Wartofsky 計分</button>
+    <button class="flow-link" onclick="location.href='../tools/thyroid-storm.html'">🧮 開啟 Burch-Wartofsky 計分</button>
   </div>
 
   <div class="flow-connector hidden" id="en_ca">↓</div>

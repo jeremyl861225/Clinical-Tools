@@ -15,15 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Modified Marshall Score">
 <div class="sheet">
 <div class="view active" id="view-marshall">
   <div class="app-header">
     <div><div class="eyebrow">Pancreatitis Scoring Tool</div><h1>Modified Marshall Score</h1><div class="sub">急性胰臟炎器官衰竭評分（Revised Atlanta 2012）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="ms_back_panc" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/pancreatitis.html?restore=1'">← 返回胰臟炎決策</button>
-      <button class="back-btn" id="ms_back_chole" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/cholecystitis.html?restore=1'">← 返回膽囊炎決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-marshall'">← 返回主選單</button>
     </div>
   </div>
@@ -89,7 +88,7 @@
       <div><div class="metric-label">器官衰竭</div><div class="metric-value big" id="ms_of">無</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判定規則</div>
-    <div style="font-size:14px; margin-top:2px;" id="ms_rule">三個器官系統中<b>任一項 ≥ 2 分</b>即定義為器官衰竭；<b>不是</b>加總三項分數。</div>
+    <div class="result-interp" id="ms_rule">三個器官系統中<b>任一項 ≥ 2 分</b>即定義為器官衰竭；<b>不是</b>加總三項分數。</div>
     <table class="ref">
       <tr><th>持續時間</th><th>分類</th><th>Revised Atlanta 嚴重度</th></tr>
       <tr><td>無器官衰竭</td><td>—</td><td>輕度 Mild（且無局部／全身併發症）</td></tr>
@@ -142,9 +141,6 @@ function msCalc(){
 document.querySelectorAll('#view-marshall input, #view-marshall select')
   .forEach(el => { el.addEventListener('input', msCalc); el.addEventListener('change', msCalc); });
 msCalc();
-/* 由胰臟炎決策流程進入時顯示返回鍵 */
-if(location.search.indexOf('from=panc')>=0){var _b=document.getElementById('ms_back_panc'); if(_b) _b.style.display='';}
-if(location.search.indexOf('from=chole')>=0){var _bc=document.getElementById('ms_back_chole'); if(_bc) _bc.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

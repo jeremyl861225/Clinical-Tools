@@ -15,8 +15,9 @@
 <meta name="apple-mobile-web-app-title" content="臨床計分">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Wells Score (PE)">
 <div class="sheet">
 <div class="view active" id="view-wells-pe">
   <div class="app-header">
@@ -26,8 +27,6 @@
       <div class="sub">肺栓塞臨床機率評估 · 同時顯示三分法與兩分法</div>
     </div>
     <div class="back-stack">
-      <!-- 由肺栓塞頁點進來時（?from=pe）才顯示 -->
-      <button class="back-btn hidden" id="wp-back-pe" onclick="location.href='pe.html#dx'">← 返回急性肺栓塞</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-wells-pe'">← 返回主選單</button>
     </div>
   </div>
@@ -51,11 +50,11 @@
     <div class="result-grid" style="margin-top:10px;">
       <div>
         <div class="metric-label">三分法 Three-tier</div>
-        <div class="metric-value" id="wp_t3">低機率</div>
+        <div class="result-interp" id="wp_t3">低機率</div>
       </div>
       <div>
         <div class="metric-label">兩分法 Two-tier</div>
-        <div class="metric-value" id="wp_t2">PE 不太可能</div>
+        <div class="result-interp" id="wp_t2">PE 不太可能</div>
       </div>
     </div>
 
@@ -110,10 +109,6 @@ function wpCalc(){
     : '兩分法 &gt; 4（PE 可能）→ <b>直接安排 CTPA</b>，不要用 D-dimer 排除。顯影劑禁忌或懷孕可改 V/Q。';
 }
 document.querySelectorAll('#view-wells-pe input[type=checkbox]').forEach(function(el){ el.addEventListener('change', wpCalc); });
-(function(){
-  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='pe'){ var b=document.getElementById('wp-back-pe'); if(b) b.classList.remove('hidden'); }
-})();
 wpCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

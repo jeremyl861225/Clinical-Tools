@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .dc-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
         padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
@@ -37,7 +38,7 @@
   .dc-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
   .dc-d ul{margin:4px 0 0; padding-left:17px;}
   .dc-flag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
-        border-radius:2px; padding:2px 8px; vertical-align:2px; color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+        border-radius:2px; padding:2px 8px; vertical-align:2px;}
 
   /* 窄螢幕：表格自己橫向捲動，不讓整頁出現水平捲軸 */
   .dc-tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:8px 0 4px;}
@@ -59,7 +60,10 @@
       <h1>藥物劑量換算</h1>
       <div class="sub">類固醇 · 鴉片類 · 環利尿劑 — 選「從哪一種換到哪一種」，輸入目前劑量</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-dose-conversion'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-dose-conversion'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="dc_tabs">
@@ -171,7 +175,7 @@
   <div class="result">
     <div class="dc-out">
       <div class="metric-label">每日口服嗎啡當量 MME／day</div>
-      <div class="dc-row"><span class="metric-value big" id="op_mme" style="font-size:34px;">—</span><span class="dc-u">MME/day</span><span class="dc-flag" id="op_mme_flag" style="display:none;"></span></div>
+      <div class="dc-row"><span class="metric-value big" id="op_mme" style="font-size:34px;">—</span><span class="dc-u">MME/day</span><span class="dc-flag risk-band b3" id="op_mme_flag" style="display:none;"></span></div>
       <div class="dc-d" id="op_mme_d">請選擇目前用藥並輸入 24 小時總量。</div>
     </div>
     <div class="dc-out">

@@ -108,6 +108,7 @@
 </style>
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -118,7 +119,10 @@
       <h1>創傷後抗生素</h1>
       <div class="sub">依損傷部位整理創傷後預防性抗生素的建議、療程與證據強度，並含破傷風預防決策</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    </div>
   </div>
 
   <!-- 抗生素指引的第六分頁 -->

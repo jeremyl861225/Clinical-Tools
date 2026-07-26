@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
            border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
@@ -118,7 +119,10 @@
       <h1>急性肺栓塞 PE</h1>
       <div class="sub">Acute Pulmonary Embolism — 診斷路徑、危險分層、抗凝與再灌流（2019 ESC）</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-pe'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-pe'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="rsi-bar">
@@ -162,8 +166,8 @@
             用 Wells 或修訂 Geneva 分「PE 不太可能 vs 可能」。可搭配 <b>PERC</b>（低機率者八項全陰可免驗 D-dimer）。
             兩者表現相當，擇一使用即可——Wells 較快，Geneva <b>全為客觀項目</b>、不含「PE 是否為最可能診斷」的主觀判斷。
             <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
-              <a class="flow-link" href="wells-pe.html?from=pe">→ Wells Score 計算器</a>
-              <a class="flow-link" href="geneva.html?from=pe">→ Revised Geneva 計算器</a>
+              <a class="flow-link" href="wells-pe.html">→ Wells Score 計算器</a>
+              <a class="flow-link" href="geneva.html">→ Revised Geneva 計算器</a>
             </div>
           </div>
         </div>
@@ -205,7 +209,7 @@
           <li><b>右心功能</b>：超音波 RV/LV &gt; 1、TAPSE 下降、McConnell 徵象；或 CT 上 RV/LV &gt; 1。</li>
           <li><b>心肌指標</b>：troponin 上升、BNP/NT-proBNP 升高提示右心受累。</li>
         </ul>
-        <a class="flow-link" href="pesi.html?from=pe">→ PESI／sPESI 計算器</a>
+        <a class="flow-link" href="pesi.html">→ PESI／sPESI 計算器</a>
       </div>
       <div class="kbox">
         <div class="kbox-t">早期出院／門診治療的條件（低危）</div>

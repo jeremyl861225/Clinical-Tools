@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="../css/antibiotics.css">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body data-backtotop>
 <div class="sheet">
@@ -24,11 +25,12 @@
     <div>
       <div class="eyebrow">Antibiotic Guide</div>
       <h1>抗生素指引</h1>
+      <div class="sub">抗生素指引、菌譜資料庫、手術預防與創傷用藥</div>
     </div>
-    <div class="abx-backs">
-      <!-- 由菌譜資料庫點藥名進來時（?from=spectrum）才顯示，返回後由該頁還原原本捲動位置 -->
-      <button class="back-btn hidden" id="back-to-spectrum"
-              onclick="location.href='spectrum-database.html'">← 返回菌譜資料庫</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上；
+           原本這裡硬寫一顆「返回菌譜資料庫」並靠 ?from=spectrum 顯示，已不需要。
+           菌譜資料庫的捲動位置由該頁自己的 sessionStorage 還原，與返回鍵無關。 -->
       <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
     </div>
   </div>

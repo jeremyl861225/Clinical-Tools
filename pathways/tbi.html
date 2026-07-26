@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="創傷性腦損傷決策">
 <div class="sheet">
 <div class="view active" id="view-tbi-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>創傷性腦損傷處置決策</h1><div class="sub">Traumatic Brain Injury · Brain Trauma Foundation 4th Edition · Bullock 2006 · PECARN 2009（兒童影像決策）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-tbi-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-tbi-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="note" style="margin:0 0 16px;">
@@ -404,7 +408,7 @@
       <button class="flow-opt" onclick="tbPick('crit','huge',this)">任何病灶 &gt;50 cm³</button>
       <button class="flow-opt" onclick="tbPick('crit','stable',this)">神經學穩定、ICP 可控、無顯著 mass effect</button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=tbi'">🧮 用 ABC/2 估算 hematoma 體積</button>
+    <button class="flow-link" onclick="location.href='../tools/ich-score.html'">🧮 用 ABC/2 估算 hematoma 體積</button>
   </div>
 
   <div class="flow-step hidden" id="tb_s3_tsah">

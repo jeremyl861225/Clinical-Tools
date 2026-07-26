@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Wassmer Score">
 <div class="sheet">
 <div class="view active" id="view-wassmer">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Wassmer Clinical Severity Score</h1><div class="sub">預測黏連性小腸阻塞（aSBO）是否需手術切除腸段</div></div>
     <div class="back-stack">
-      <button class="back-btn" id="wassmer_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="boReturn()">← 返回腸阻塞決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-wassmer'">← 返回主選單</button>
     </div>
   </div>
@@ -48,7 +48,7 @@
     <div class="metric-label" style="margin-top:8px;">預估需腸切除機率</div>
     <div class="metric-value" id="wm_prob" style="font-size:26px; color:#f0a875;">0%</div>
     <div class="metric-label" style="margin-top:6px;">風險分層</div>
-    <div id="wm_interp" style="font-size:15px;">低風險</div>
+    <div id="wm_interp" class="result-interp">低風險</div>
     <table class="ref">
       <tr><th>分數</th><th>需腸切除比例</th></tr>
       <tr><td>0</td><td>0%</td></tr><tr><td>1</td><td>約6.1%</td></tr><tr><td>2</td><td>約16.1%</td></tr>
@@ -70,8 +70,6 @@ function wassmerCalc(){
 }
 document.querySelectorAll('.wassmer-cb').forEach(cb=>cb.addEventListener('change',wassmerCalc));
 wassmerCalc();
-function boReturn(){location.href='../pathways/bowel-obstruction.html?restore=1';}
-if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('wassmer_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

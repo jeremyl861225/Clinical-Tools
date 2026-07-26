@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-emerg-op">
   <div class="app-header">
     <div><div class="eyebrow">Emergency Surgery Priority</div><h1>緊急手術分級</h1><div class="sub">台大醫院緊急手術作業規範 · 依術式／病況查詢急刀級數與合理等候時間</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-emerg-op'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-emerg-op'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="card">

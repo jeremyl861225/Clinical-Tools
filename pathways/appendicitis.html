@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="闌尾炎決策">
 <div class="sheet">
 <div class="view active" id="view-appy-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>闌尾炎手術決策</h1><div class="sub">Acute Appendicitis · Operative vs Non-operative（WSES 2025 Jerusalem Guidelines · Podda, JAMA Surg 2026）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-appy-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-appy-path'">← 返回主選單</button>
+    </div>
   </div>
 
 
@@ -68,10 +72,10 @@
       <button class="flow-opt" onclick="appyPick('dx','mid',this)">中度風險 — 診斷未定，需影像或觀察<span class="fo-sub">AIR 5–8／AAS 11–15／Alvarado 5–6；症狀不典型或病程過短</span></button>
       <button class="flow-opt" onclick="appyPick('dx','conf',this)">診斷成立 — 進入處置決策<span class="fo-sub">高風險分數（AIR 9–12／AAS ≥16／Alvarado ≥7）＋影像陽性（闌尾外徑 &gt;6 mm、壁增厚、周圍脂肪浸潤），或已有明確腹膜炎徵象</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/aas.html?from=appy'">🧮 開啟 AAS 成人闌尾炎分數（Adult Appendicitis Score，可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/alvarado.html?from=appy'">🧮 開啟 Alvarado Score（可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/air.html?from=appy'">🧮 開啟 AIR Score（Appendicitis Inflammatory Response，可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/parc.html?from=appy'">🧮 開啟 pARC（兒童 5–18 歲連續機率量表，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/aas.html'">🧮 開啟 AAS 成人闌尾炎分數（Adult Appendicitis Score，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/alvarado.html'">🧮 開啟 Alvarado Score（可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/air.html'">🧮 開啟 AIR Score（Appendicitis Inflammatory Response，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/parc.html'">🧮 開啟 pARC（兒童 5–18 歲連續機率量表，可從該頁返回本決策）</button>
     <div class="note" style="margin-top:8px;">影像選擇：年輕／兒童首選超音波；成人、肥胖、高齡首選<b>低劑量 CT（&lt;2–3 mSv）</b>；孕婦先 US，陰性／不確定時改 <b>MRI</b>。診斷不確定時 CT 為診斷標準；影像同時決定下一步的<b>複雜度分型</b>。</div>
   </div>
 

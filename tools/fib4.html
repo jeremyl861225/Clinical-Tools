@@ -15,17 +15,13 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .fb-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
   .fb-out:first-child{margin-top:0; padding-top:0; border-top:none;}
   .fb-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
   .fb-v{font-family:var(--serif); font-size:22px; font-weight:600;}
   .fb-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
-  .fb-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
-        border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .fb-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .fb-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .fb-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
 </style>
 </head>
 <body>
@@ -37,7 +33,10 @@
       <h1>FIB-4</h1>
       <div class="sub">Fibrosis-4 Index — 進行性肝纖維化的非侵入性初篩（同時列出 MASLD 與原始 HIV/HCV 兩套切點）</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-fib4'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-fib4'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -107,7 +106,7 @@
   <div class="result">
     <div class="fb-out">
       <div class="metric-label">FIB-4</div>
-      <div class="fb-row"><span class="metric-value big" id="fb_val">—</span><span class="fb-band b1" id="fb_band" style="display:none;"></span></div>
+      <div class="fb-row"><span class="metric-value big" id="fb_val">—</span><span class="risk-band b0" id="fb_band" style="display:none;"></span></div>
       <div class="fb-d" id="fb_d">請輸入年齡、AST、ALT 與血小板。</div>
     </div>
 
@@ -174,7 +173,7 @@ function fbCalc(){
 
   var tier, cls, next;
   if(v < lo){
-    tier='低風險 Low'; cls='b1';
+    tier='低風險 Low'; cls='b0';
     next = ctx==='masld'
       ? '<b>可排除進行性纖維化。</b>不需第二階檢查；持續控制代謝危險因子（體重、血糖、血脂、酒精），<b>1–3 年後再評估</b>一次。'
       : '<b>可排除進行性纖維化</b>（Ishak 4–6），原文陰性預測值 90%。依病毒治療計畫追蹤即可。';
@@ -187,7 +186,7 @@ function fbCalc(){
     tier='高風險 High'; cls='b3';
     next = '<b>轉介肝膽科</b>，視為疑似進行性纖維化（F3–F4）處理：安排彈性造影／影像確認、評估門脈高壓與肝細胞癌篩檢，並檢視所有肝毒性藥物與酒精。<b>高值不等於已確診，仍需第二階檢查。</b>';
   }
-  bandEl.style.display=''; bandEl.textContent=tier; bandEl.className='fb-band '+cls;
+  bandEl.style.display=''; bandEl.textContent=tier; bandEl.className='risk-band '+cls;
 
   var d = '採用切點：<b>'+setName+'</b> → '+tier+'。';
   if(aged) d += ' <b>已自動改用 ≥65 歲的 2.0 低風險切點</b>（1.30 在此族群偽陽性過多）。';

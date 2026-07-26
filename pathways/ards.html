@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="ARDS 決策">
 <div class="sheet">
 <div class="view active" id="view-ards-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性低血氧呼吸衰竭與 ARDS 處置決策</h1><div class="sub">AHRF &amp; ARDS · ESICM 2023 ＋ ATS 2024 ＋ SSC 2026（呼吸支持段）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-ards-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-ards-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -86,7 +90,7 @@
       <button class="flow-opt" onclick="adPick('stage','ahrf',this)">未插管的急性低血氧呼吸衰竭<span class="fo-sub">非心因性肺水腫、非 COPD 急性惡化</span></button>
       <button class="flow-opt" onclick="adPick('stage','vent',this)">已插管、接受侵襲性機械通氣<span class="fo-sub">符合 ARDS 的氧合與影像判準</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ards.html?from=ards'">🧮 開啟 ARDS 診斷與分級（新全球定義 2024）</button>
+    <button class="flow-link" onclick="location.href='../tools/ards.html'">🧮 開啟 ARDS 診斷與分級（新全球定義 2024）</button>
   </div>
 
   <div class="flow-connector hidden" id="ad_c2">↓</div>
@@ -97,7 +101,7 @@
       <button class="flow-opt" onclick="adPick('resp','gray',this)">未明顯改善<span class="fo-sub">ROX 介於失敗切點與 4.88 之間，尚可維持</span></button>
       <button class="flow-opt" onclick="adPick('resp','fail',this)">失敗或已有插管指徵<span class="fo-sub">ROX 低於時點切點；或血行動力學不穩、意識改變、無法保護呼吸道、呼吸功過大</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/rox.html?from=ards'">🧮 開啟 ROX Index（2h &lt;2.85／6h &lt;3.47／12h &lt;3.85 預測失敗）</button>
+    <button class="flow-link" onclick="location.href='../tools/rox.html'">🧮 開啟 ROX Index（2h &lt;2.85／6h &lt;3.47／12h &lt;3.85 預測失敗）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="ad_rec">
@@ -113,7 +117,7 @@
       <button class="flow-opt" onclick="adPick('sev','severe',this)">&lt; 150 mmHg<span class="fo-sub">已達 ESICM 的俯臥門檻（且 PEEP ≥5 cmH₂O、設定已最佳化）</span></button>
     </div>
     <div class="note" style="margin-top:8px;">此問題須在<b>低潮氣容積與 PEEP 調整後的穩定期結束時</b>回答——ESICM 2023 建議 7.2 正是以這個時點的 P/F 決定要不要俯臥。</div>
-    <button class="flow-link" onclick="location.href='lung-protective-ventilation.html?from=ards'">🫁 肺保護通氣設定與調整（起始設定、PEEP/FiO₂ 表、四路排查）</button>
+    <button class="flow-link" onclick="location.href='lung-protective-ventilation.html'">🫁 肺保護通氣設定與調整（起始設定、PEEP/FiO₂ 表、四路排查）</button>
   </div>
 
   <div class="flow-connector hidden" id="ad_c4">↓</div>

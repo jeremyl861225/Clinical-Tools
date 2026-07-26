@@ -21,9 +21,6 @@
         color:var(--accent2); font-weight:700; display:block; margin-bottom:3px;}
   .ps-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
-  .ps-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .ps-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .ps-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
   .ps-out{margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.16);}
   .ps-out-h{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; opacity:.62; margin-bottom:6px;}
   .ps-out-d{font-size:12.5px; line-height:1.75; opacity:.9;}
@@ -38,8 +35,11 @@
   .ps-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
   .ps-list li{margin-bottom:3px;}
 </style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Pittsburgh PSS">
 <div class="sheet">
 <div class="view active" id="view-pss">
   <div class="app-header">
@@ -49,7 +49,6 @@
       <div class="sub">Pittsburgh Esophageal Perforation Severity Score（PSS）· Abbas 2009 · 多國驗證 Schweigert 2016</div>
     </div>
     <div class="back-stack">
-      <button class="back-btn hidden" id="ps-back-flow">← 返回食道急症流程</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-pss'">← 返回主選單</button>
     </div>
   </div>
@@ -84,7 +83,7 @@
     <div class="ps-out">
       <div class="ps-out-h">Pittsburgh Severity Score</div>
       <div class="metric-value big" id="ps_total">0</div>
-      <div class="vt-out-v" id="ps_band" style="font-family:var(--serif); font-size:19px; font-weight:600;">—</div>
+      <div class="result-headline" id="ps_band">—</div>
     </div>
 
     <div class="ps-out">
@@ -187,32 +186,23 @@ function psCalc(){
     m='<b>此層存在指引與資料的衝突</b>：Int J Surg 2025 顯示低＋中風險合併時，手術治療的 90 天死亡率顯著較低'
      +'（OR 0.211, 95% CI 0.064–0.701, p=0.011）。WSES 2019 則僅就 ≤2 分提及非手術之可能。';
   }else{
-    band='低風險 Low'; cls='b1';
+    band='低風險 Low'; cls='b0';
     d='此層在 Schweigert 世代為 n=63。Int J Surg 2025 自發性破裂世代之 90 天死亡率為 <b>14.8%</b>。';
     m='<b>WSES 2019</b>：「低分（≤2）者<u>可能</u>適合非手術治療」——原文用的是 suggested，非強建議。'
      +'<br><b>但 Int J Surg 2025 的結果相反</b>：於低＋中風險族群，手術組 90 天死亡率 15.0% vs 非手術組 34.1%'
      +'（p=0.031）。<b>此處請勿把分數當作非手術的許可證</b>，仍須符合 Altorjay 的非手術條件'
      +'（早期、侷限性穿孔、無敗血症、無既存食道疾病、且具備全天候監測能力）。';
   }
-  document.getElementById('ps_band').innerHTML=band+'<span class="ps-band '+cls+'">'
+  document.getElementById('ps_band').innerHTML=band+'<span class="ps-band risk-band '+cls+'">'
     +(total>5?'&gt;5':(total>=3?'3–5':'≤2'))+'</span>';
   document.getElementById('ps_d').innerHTML=d;
   document.getElementById('ps_mgmt').innerHTML=m;
 }
 
-(function(){
-  var from='';
-  try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='esoph'){
-    var b=document.getElementById('ps-back-flow');
-    if(b){ b.classList.remove('hidden');
-      b.addEventListener('click',function(){ location.href='../pathways/esophageal-emergency.html?restore=1'; }); }
-  }
-})();
-
 document.querySelectorAll('.ps-cb').forEach(function(cb){ cb.addEventListener('change',psCalc); });
 psCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

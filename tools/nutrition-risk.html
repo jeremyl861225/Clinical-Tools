@@ -44,9 +44,6 @@
   .nu-out-d li{margin-bottom:3px;}
   .nu-tag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
-  .nu-tag.ok{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .nu-tag.mid{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .nu-tag.hi{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
 
   .nu-two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   @media(max-width:620px){ .nu-two{grid-template-columns:1fr;} }
@@ -64,6 +61,9 @@
   .nu-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
   .nu-list li{margin-bottom:3px;}
 </style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -74,7 +74,10 @@
       <h1>營養風險評估</h1>
       <div class="sub">NRS-2002 篩檢 · GLIM 診斷 · 再餵食症候群風險（ESPEN 外科指引 2025）</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-nutrition-risk'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-nutrition-risk'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="nu_tabs">
@@ -531,14 +534,14 @@ function nrsCalc(){
 
   var band,det;
   if(total>=3){
-    band='有營養風險 At risk<span class="nu-tag hi">≥3</span>';
+    band='有營養風險 At risk<span class="nu-tag risk-band b3">≥3</span>';
     det='<b>啟動營養照護計畫。</b>'
       +'<br>若為外科病人，請至「外科指引」分頁確認是否同時符合<b>高代謝風險</b>——'
       +'ESPEN 2025 的高代謝風險定義之一即為 <b>NRS ≥5</b>，達此程度者術前應接受營養治療，'
       +'<b>即使因此延後手術</b>（Rec 20，等級 A）。';
     if(total>=5) det+='<br><b>本例 NRS ≥5，已符合該項高代謝風險準則。</b>';
   }else{
-    band='未達風險門檻<span class="nu-tag ok">&lt;3</span>';
+    band='未達風險門檻<span class="nu-tag risk-band b0">&lt;3</span>';
     det='<b>每週重新篩檢一次。</b>'
       +'<br>但原文特別註明：若病人<b>已排定接受大手術</b>，仍應考慮預防性的營養照護計畫，'
       +'以避免其進入風險狀態——<u>不要因為分數未達 3 就當作不必處理</u>。';
@@ -572,8 +575,8 @@ function glimCalc(){
 
   var dx = (pCount>=1 && eCount>=1);
   document.getElementById('glim_dx').innerHTML = dx
-    ? '符合營養不良診斷<span class="nu-tag hi">表現型 '+pCount+'／病因型 '+eCount+'</span>'
-    : '未符合診斷<span class="nu-tag ok">表現型 '+pCount+'／病因型 '+eCount+'</span>';
+    ? '符合營養不良診斷<span class="nu-tag risk-band b3">表現型 '+pCount+'／病因型 '+eCount+'</span>'
+    : '未符合診斷<span class="nu-tag risk-band b0">表現型 '+pCount+'／病因型 '+eCount+'</span>';
   document.getElementById('glim_dx_d').innerHTML = dx
     ? 'GLIM 要求<b>表現型至少 1 項＋病因型至少 1 項</b>，本例兩者皆具備。'
     : '尚缺'+(pCount<1?'<b>表現型</b>準則':'')+(pCount<1&&eCount<1?'與':'')+(eCount<1?'<b>病因型</b>準則':'')
@@ -584,14 +587,14 @@ function glimCalc(){
     document.getElementById('glim_sev').innerHTML='—';
     document.getElementById('glim_sev_d').innerHTML='未成立診斷者不進行嚴重度分級。';
   }else if(maxP>=2){
-    document.getElementById('glim_sev').innerHTML='第 2 期 · 重度<span class="nu-tag hi">Stage 2</span>';
+    document.getElementById('glim_sev').innerHTML='第 2 期 · 重度<span class="nu-tag risk-band b3">Stage 2</span>';
     document.getElementById('glim_sev_d').innerHTML='符合任一項達第 2 期門檻之表現型準則即為重度。'
       +(pop==='asia'&&bmi>=2&&wl<2&&mm<2
-        ?'<br><b style="color:#f0c9c0;">注意：本例的第 2 期僅由 BMI 構成，而嚴重度分級表沒有亞洲版</b>——'
+        ?'<br><b><span class="risk-band b3">注意</span> 本例的第 2 期僅由 BMI 構成，而嚴重度分級表沒有亞洲版</b>——'
          +'其數值與亞洲的診斷門檻相同，等於「一達到診斷標準就被判為重度」。'
          +'GLIM 原文明言亞洲族群的嚴重度參考數據仍待研究，<b>請併同體重下降與肌肉量再行判斷</b>。':'');
   }else{
-    document.getElementById('glim_sev').innerHTML='第 1 期 · 中度<span class="nu-tag mid">Stage 1</span>';
+    document.getElementById('glim_sev').innerHTML='第 1 期 · 中度<span class="nu-tag risk-band b2">Stage 1</span>';
     document.getElementById('glim_sev_d').innerHTML='表現型準則均未達第 2 期門檻。';
   }
 }
@@ -605,8 +608,8 @@ function rfCalc(){
   document.getElementById('rf_c_b').textContent=b;
   var niceHi = (a>=1 || b>=2);
   document.getElementById('rf_nice').innerHTML = niceHi
-    ? '<span style="color:#f0c9c0;">高風險</span><span class="nu-tag hi">'+(a>=1?'任一項 ✓':'兩項以上 ✓')+'</span>'
-    : '未達高風險<span class="nu-tag ok">—</span>';
+    ? '<span class="risk-band b3">高風險</span><span class="nu-tag risk-band b3">'+(a>=1?'任一項 ✓':'兩項以上 ✓')+'</span>'
+    : '未達高風險<span class="nu-tag risk-band b0">—</span>';
 
   var sig=0, mod=0;
   document.querySelectorAll('.asp').forEach(function(s){
@@ -615,10 +618,10 @@ function rfCalc(){
   });
   var aspLevel;
   if(sig>=1){ aspLevel='significant'; document.getElementById('rf_aspen').innerHTML=
-      '<span style="color:#f0c9c0;">顯著風險</span><span class="nu-tag hi">1 項顯著 ✓</span>'; }
+      '<span class="risk-band b3">顯著風險</span><span class="nu-tag risk-band b3">1 項顯著 ✓</span>'; }
   else if(mod>=2){ aspLevel='moderate'; document.getElementById('rf_aspen').innerHTML=
-      '<span style="color:#f0dcb4;">中度風險</span><span class="nu-tag mid">2 項中度 ✓</span>'; }
-  else { aspLevel='none'; document.getElementById('rf_aspen').innerHTML='未達風險門檻<span class="nu-tag ok">—</span>'; }
+      '<span class="risk-band b2">中度風險</span><span class="nu-tag risk-band b2">2 項中度 ✓</span>'; }
+  else { aspLevel='none'; document.getElementById('rf_aspen').innerHTML='未達風險門檻<span class="nu-tag risk-band b0">—</span>'; }
 
   var d='';
   if(niceHi){
@@ -670,6 +673,7 @@ document.querySelectorAll('#tab-rf input, #tab-rf select').forEach(function(el){
 })();
 nrsCalc(); glimCalc(); rfCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

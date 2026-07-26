@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="創傷復甦決策">
 <div class="sheet">
 <div class="view active" id="view-trauma-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>重大創傷出血復甦決策</h1><div class="sub">Damage Control Resuscitation · 歐洲創傷大出血指引第六版（2023）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-trauma-resus'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-trauma-resus'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">

@@ -48,8 +48,6 @@
   .pa-out-d li{margin-bottom:3px;}
   .pa-flag{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 7px; vertical-align:2px; margin-left:7px;}
-  .pa-flag.no{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
-  .pa-flag.yes{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
 
   /* 日曆條 */
   .pa-cal{margin-top:9px; display:grid; gap:2px; font-family:var(--mono); font-size:10px;}
@@ -82,6 +80,9 @@
   .pa-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
   .pa-list li{margin-bottom:2px;}
 </style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -92,7 +93,10 @@
       <h1>圍手術期抗栓藥物管理</h1>
       <div class="sub">停藥、橋接與重啟 · Perioperative Antithrombotic Management（CHEST 2022 · EHRA 2021 · ASRA 5th 2025）</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-periop-anticoag'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-periop-anticoag'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="pa_tabs">
@@ -962,10 +966,10 @@ function paCalc(){
     }
 
     if(bleed==='min'){
-      elBr.innerHTML='不需要 <span class="pa-flag no">NO BRIDGING</span>';
+      elBr.innerHTML='不需要 <span class="pa-flag risk-band b3">NO BRIDGING</span>';
       elBrD.innerHTML='未中斷抗凝，自然不需橋接。';
     }else if(hiRisk){
-      elBr.innerHTML='可考慮橋接 <span class="pa-flag yes">SELECTED</span>';
+      elBr.innerHTML='可考慮橋接 <span class="pa-flag risk-band b0">SELECTED</span>';
       elBrD.innerHTML='<b>注意：這是例外，不是通則。</b>CHEST 對三種適應症的主建議<u>全部是不橋接</u>'
         +'（機械瓣 G5 conditional、心房顫動 G6 <b>strong</b>、單純 VTE G7 conditional）。'
         +'但其實作註記指出，符合下列高血栓風險特徵的<b>選擇性病人</b>建議橋接——您勾選的項目正落在其中。'
@@ -974,7 +978,7 @@ function paCalc(){
         +'<br>術後：先以低劑量 LMWH（enoxaparin 40 mg qd 或 dalteparin 5000 IU qd）作 VTE 預防 24–72 小時，'
         +'全劑量 LMWH 於術後 2–3 天恢復。';
     }else{
-      elBr.innerHTML='不建議橋接 <span class="pa-flag no">NO BRIDGING</span>';
+      elBr.innerHTML='不建議橋接 <span class="pa-flag risk-band b3">NO BRIDGING</span>';
       var strength = (ind==='af')
         ? 'CHEST G6：心房顫動病人<b>建議不橋接（strong recommendation）</b>——這是全份指引 44 條建議中僅有的兩條 strong 之一。'
         : (ind==='mhv'
@@ -1054,7 +1058,7 @@ function paCalc(){
     document.getElementById('pa_cal').innerHTML=paCalendar(omit);
   }
 
-  elBr.innerHTML='不需要 <span class="pa-flag no">NO BRIDGING</span>';
+  elBr.innerHTML='不需要 <span class="pa-flag risk-band b3">NO BRIDGING</span>';
   elBrD.innerHTML='CHEST G26：需中斷 DOAC 者<b>建議不做圍手術期肝素橋接</b>（conditional，very low certainty）。'
     +'DOAC 起效與消退都快，本身即具備橋接的藥動特性。EHRA 2021 亦持相同立場。'
     +'<br><br>CHEST G28：<b>不建議常規檢測術前 DOAC 濃度</b>來指引處置（conditional，very low）；'
@@ -1115,7 +1119,7 @@ function ugCalc(){
 
   /* ── 抗血小板 ── */
   if(drug==='apt'){
-    need='沒有反轉劑<span class="pa-flag no">NO ANTIDOTE</span>';
+    need='沒有反轉劑<span class="pa-flag risk-band b3">NO ANTIDOTE</span>';
     needD='抗血小板藥沒有專一反轉劑。可考慮的是<b>血小板輸注</b>與 <b>DDAVP</b>，'
       +'但兩者在「非神經外科急刀」這個情境下<b>都沒有附強度的指引建議</b>——這是真實的證據空白，見下方表格。';
     give='<ul>'
@@ -1138,16 +1142,16 @@ function ugCalc(){
     var band = (inr==='24')?{d:25,max:2500,t:'2 – &lt;4'} : (inr==='46')?{d:35,max:3500,t:'4 – 6'}
              : (inr==='gt6')?{d:50,max:5000,t:'&gt; 6'} : null;
     if(lv>=5){
-      need='多數可先靠維生素 K<span class="pa-flag no">通常免 PCC</span>';
+      need='多數可先靠維生素 K<span class="pa-flag risk-band b3">通常免 PCC</span>';
       needD='第 5 級（24–36 小時）通常來得及讓靜脈維生素 K 發揮作用（<b>4–6 小時</b>起 INR 下降）。'
         +'若屆時 INR 仍不理想再加 4F-PCC。';
     }else if(inr==='lt2'){
-      need='INR &lt; 2，多數情況不需反轉<span class="pa-flag no">NO REVERSAL</span>';
+      need='INR &lt; 2，多數情況不需反轉<span class="pa-flag risk-band b3">NO REVERSAL</span>';
       needD='仿單之 4F-PCC 劑量分段自 INR 2 起。INR &lt; 2 時是否仍需處置，應依手術出血風險個別判斷。'
         +'<span class="pa-src">註：查無任何文件載明「急刀的目標 INR」——Kcentra 是依<b>治療前</b> INR 分段給量，'
         +'不是回推目標值。本頁不代為訂定目標 INR。</span>';
     }else{
-      need='需要反轉<span class="pa-flag yes">4F-PCC ＋ 維生素 K</span>';
+      need='需要反轉<span class="pa-flag risk-band b0">4F-PCC ＋ 維生素 K</span>';
       needD='<b>4F-PCC 是唯一把「需緊急手術／侵入性處置」寫進仿單適應症的反轉劑</b>，'
         +'不像其他製劑只涵蓋出血。';
     }
@@ -1174,7 +1178,7 @@ function ugCalc(){
   else{
     var isDabi=(drug==='dabi');
     if(lv>=5){
-      need='通常不需反轉<span class="pa-flag no">等待清除</span>';
+      need='通常不需反轉<span class="pa-flag risk-band b3">等待清除</span>';
       needD='第 5 級（24–36 小時）<b>已接近 elective 的停藥區間</b>——低／中出血風險的標準作法本來就只省略 1 天劑量。'
         +'<b>ISTH 明文：手術可延到藥物自行清除時，不應使用專一反轉劑。</b>'
         +'請先回「抗凝血劑」分頁依標準流程處理。';
@@ -1182,7 +1186,7 @@ function ugCalc(){
         +'<li>若院內可驗濃度，可用以確認而非用以決定反轉。</li></ul>';
       caut='別把「急刀」自動等同於「要反轉」。這一級最常見的錯誤是給了不必要的反轉劑。';
     }else if(lv===4){
-      need='多數可等待清除<span class="pa-flag no">優先驗濃度</span>';
+      need='多數可等待清除<span class="pa-flag risk-band b3">優先驗濃度</span>';
       needD='第 4 級（8–12 小時）多數情況可等待清除。ISTH 的髖部骨折示例即為此情境：'
         +'<b>濃度 &lt;50 ng/mL 可於 6–8 小時內開刀</b>；<b>50–100 ng/mL 則延後 20–24 小時</b>'
         +'（預期屆時可降至 50 ng/mL 以下）。';
@@ -1194,24 +1198,24 @@ function ugCalc(){
       /* 第 1–3 級 */
       var byLevel = (lvl==='lt50') ? 'no' : (lvl==='50100' ? 'defer' : (lvl==='gt100' ? 'yes' : 'unknown'));
       if(byLevel==='no'){
-        need='不需反轉<span class="pa-flag no">&lt; 50 ng/mL</span>';
+        need='不需反轉<span class="pa-flag risk-band b3">&lt; 50 ng/mL</span>';
         needD='ISTH：<b>濃度 &lt; 50 ng/mL 時可不反轉逕行手術</b>。'
           +'（若為神經軸麻醉，ASRA 的門檻更嚴：需 &lt; 30 ng/mL 或 anti-Xa ≤ 0.1 IU/mL。）';
         give='<ul><li>直接進行手術，不需專一反轉劑。</li></ul>';
         caut='ASRA 明確建議<b>不要</b>為了讓神經軸介入可行而給反轉劑（grade IIC）。';
       }else if(byLevel==='defer'){
-        need='可延則延，不可延則反轉<span class="pa-flag yes">50–100 ng/mL</span>';
+        need='可延則延，不可延則反轉<span class="pa-flag risk-band b0">50–100 ng/mL</span>';
         needD='ISTH 髖部骨折示例：<b>50–100 ng/mL 時延後 20–24 小時</b>，預期屆時降至 50 ng/mL 以下。'
           +'第 '+lv+' 級若無法等待，則依下方給予反轉。';
         give=ugAgent(isDabi);
         caut='ISTH 表格註記：專一解毒劑<b>僅在殘餘濃度 &gt; 50–75 ng/mL（依術式而定）</b>時才應考慮。';
       }else if(byLevel==='yes'){
-        need='建議反轉<span class="pa-flag yes">&gt; 100 ng/mL</span>';
+        need='建議反轉<span class="pa-flag risk-band b0">&gt; 100 ng/mL</span>';
         needD='濃度明顯高於 50 ng/mL 的門檻，且第 '+lv+' 級無法等待清除。';
         give=ugAgent(isDabi);
         caut='';
       }else{
-        need='依最後一劑時間決策<span class="pa-flag yes">濃度不可得</span>';
+        need='依最後一劑時間決策<span class="pa-flag risk-band b0">濃度不可得</span>';
         needD='第 '+lv+' 級'+(lv<=2?'（來不及驗濃度）':'')+'且濃度不可得時，'
           +'ISTH 的兩個選項為：<b>給予反轉</b>以使手術能在 24 小時內進行，'
           +'或<b>不反轉而等待至少 48 小時</b>——後者在此級數顯然不可行。'
@@ -1317,6 +1321,7 @@ paCalc();
 ugCalc();
 if(/[?&]restore=1/.test(location.search)) paRestore();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

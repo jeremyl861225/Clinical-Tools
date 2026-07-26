@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="臨床計分">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .pc-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
         padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
@@ -40,7 +41,7 @@
   .pc-fail b{color:#fff;}
 </style>
 </head>
-<body>
+<body data-back-label="PERC Rule">
 <div class="sheet">
 <div class="view active" id="view-perc">
   <div class="app-header">
@@ -50,7 +51,6 @@
       <div class="sub">肺栓塞排除準則 · 八項全陰且臨床機率低時，可不驗 D-dimer 直接排除</div>
     </div>
     <div class="back-stack">
-      <button class="back-btn hidden" id="pc-back-pe" onclick="location.href='pe.html#dx'">← 返回急性肺栓塞</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-perc'">← 返回主選單</button>
     </div>
   </div>
@@ -70,8 +70,8 @@
     </label>
     <div class="pc-lockmsg" id="pc_lockmsg">尚未確認前提——PERC <b>僅適用於臨床機率已經為低</b>的病人。在中／高機率者使用會漏診。</div>
     <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
-      <a class="flow-link" href="wells-pe.html?from=perc">→ 先算 Wells Score</a>
-      <a class="flow-link" href="geneva.html?from=perc">→ 先算 Revised Geneva</a>
+      <a class="flow-link" href="wells-pe.html">→ 先算 Wells Score</a>
+      <a class="flow-link" href="geneva.html">→ 先算 Revised Geneva</a>
     </div>
   </div>
 
@@ -165,10 +165,6 @@ function pcCalc(){
 }
 document.querySelectorAll('#view-perc input[type=checkbox]')
   .forEach(function(el){ el.addEventListener('change', pcCalc); });
-(function(){
-  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='pe'){ var b=document.getElementById('pc-back-pe'); if(b) b.classList.remove('hidden'); }
-})();
 pcCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

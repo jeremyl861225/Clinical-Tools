@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="肺保護通氣">
 <div class="sheet">
 <div class="view active" id="view-lpv">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>肺保護通氣設定與調整</h1><div class="sub">Lung-Protective Ventilation · 起始設定 → 四種「調不好」的排查（ARDSNet 協定 ＋ ESICM 2023／ATS 2024／SSC 2026）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="lpv_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html'">← 返回呼吸衰竭決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-lpv'">← 返回主選單</button>
     </div>
   </div>
@@ -264,7 +264,7 @@
   </div>
 
   <button class="flow-link" onclick="location.href='../pathways/ards.html'">🧭 回到 ARDS 完整升階流程（HFNO → 插管 → 俯臥 → NMBA → ECMO）</button>
-  <button class="flow-link" onclick="location.href='../tools/ards.html?from=lpv'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
+  <button class="flow-link" onclick="location.href='../tools/ards.html'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
   <button class="flow-link" onclick="location.href='../tools/iah.html'">🧮 腹內壓與腹腔內腔室症候群（Pplat 高但跨肺壓未必高時）</button>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="lpvReset()">重置</button></div>
@@ -466,7 +466,6 @@ function lpvReset(){
 
 lpvCalc();
 lpvReset();
-if(location.search.indexOf('from=ards')>=0){ var _b=document.getElementById('lpv_back_path'); if(_b) _b.style.display=''; }
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

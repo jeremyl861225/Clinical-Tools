@@ -64,8 +64,11 @@
   .cv-list{margin:4px 0 0; padding-left:17px; font-size:12.5px; line-height:1.8;}
   .cv-list li{margin-bottom:3px;}
 </style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="CHA₂DS₂-VASc">
 <div class="sheet">
 <div class="view active" id="view-cha2ds2-vasc">
   <div class="app-header">
@@ -75,8 +78,10 @@
       <div class="sub">心房顫動之中風風險評估 · 併同顯示 ESC 2024 改用的 CHA₂DS₂-VA</div>
     </div>
     <div class="back-stack">
-      <!-- 由圍手術期抗栓工具點進來時（?from=periop-anticoag）才顯示；返回後該頁自 sessionStorage 還原表單與捲動位置 -->
-      <button class="back-btn hidden" id="cv-back-periop">← 返回圍手術期抗栓</button>
+      <!-- 由圍手術期抗栓工具點進來時（?from=periop-anticoag）才顯示；返回後該頁自 sessionStorage 還原表單與捲動位置。
+           這顆鍵不只是導覽，還要把算好的分數帶回去，故不能改用 js/backlink.js 的通用返回鍵；
+           data-back-to 讓 backlink.js 認出這條動線已有專屬返回鍵，不會再重複插一顆。 -->
+      <button class="back-btn hidden back-origin" id="cv-back-periop" data-back-to="tools/periop-anticoag.html">← 返回圍手術期抗栓</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-cha2ds2-vasc'">← 返回主選單</button>
     </div>
   </div>
@@ -386,6 +391,7 @@ document.querySelectorAll('#view-cha2ds2-vasc input, #view-cha2ds2-vasc select')
   .forEach(function(el){ el.addEventListener('input',cvCalc); el.addEventListener('change',cvCalc); });
 cvCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

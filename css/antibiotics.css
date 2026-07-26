@@ -152,4 +152,3 @@
 
 /* 頁首返回鍵群組：由菌譜資料庫點藥名進來時會多一顆「返回菌譜資料庫」，
    窄螢幕允許換行，避免與標題擠在同一列。 */
-.abx-backs{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}

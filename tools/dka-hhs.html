@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="DKA／HHS 診斷與嚴重度">
 <div class="sheet">
 <div class="view active" id="view-dka-hhs">
   <div class="app-header">
     <div><div class="eyebrow">Hyperglycemic Crisis Diagnostic Tool</div><h1>DKA／HHS 診斷與嚴重度</h1><div class="sub">糖尿病酮酸中毒與高血糖高滲透壓狀態 · ADA／EASD／JBDS／AACE／DTS 2024 共識</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="dk_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/dka-hhs.html?restore=1'">← 返回高血糖危象決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-dka-hhs'">← 返回主選單</button>
     </div>
   </div>
@@ -126,12 +126,12 @@
 
   <div class="result">
     <div class="result-grid">
-      <div><div class="metric-label">診斷</div><div class="metric-value big" id="dk_dx" style="font-size:26px;">—</div></div>
-      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="dk_sev" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label">診斷</div><div class="metric-value big" id="dk_dx">—</div></div>
+      <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="dk_sev">—</div></div>
       <div><div class="metric-label">有效滲透壓</div><div class="metric-value big" id="dk_osm" style="font-size:30px;">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀與建議照護層級</div>
-    <div style="font-size:15px; margin-top:2px;" id="dk_interp">請輸入血糖、酮體與血氣數值。</div>
+    <div class="result-interp" id="dk_interp">請輸入血糖、酮體與血氣數值。</div>
     <div class="breakdown" style="margin-top:10px;">
       <div><div class="metric-label">D 判準</div><div id="dk_d">—</div></div>
       <div><div class="metric-label">K 判準</div><div id="dk_k">—</div></div>
@@ -246,7 +246,6 @@ function dkCalc(){
 document.querySelectorAll('#view-dka-hhs input, #view-dka-hhs select')
   .forEach(el => { el.addEventListener('input', dkCalc); el.addEventListener('change', dkCalc); });
 dkCalc();
-if(location.search.indexOf('from=dka')>=0){var _b=document.getElementById('dk_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

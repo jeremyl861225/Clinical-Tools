@@ -124,6 +124,7 @@
 </style>
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -134,7 +135,10 @@
       <h1>手術預防性抗微生物</h1>
       <div class="sub">依台大醫院《手術預防性抗微生物製劑使用規範》（文件 15650-2-000016，版次 8）表一，並以 ASHP／IDSA／SIS／SHEA 2013 指引補充台大表一未列之術式</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    </div>
   </div>
 
   <!-- 抗生素指引的第五分頁 -->

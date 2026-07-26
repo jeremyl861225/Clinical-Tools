@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Glasgow-Blatchford Score">
 <div class="sheet">
 <div class="view active" id="view-gbs">
   <div class="app-header">
     <div><div class="eyebrow">Upper GI Bleeding Scoring Tool</div><h1>Glasgow-Blatchford Score</h1><div class="sub">GBS · 上消化道出血內視鏡前風險分層（預測是否需住院介入或死亡）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="gbs_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html?restore=1'">← 返回消化道出血決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-gbs'">← 返回主選單</button>
     </div>
   </div>
@@ -83,7 +83,7 @@
       <div>心跳 <b id="gbs_k_pulse">0</b></div><div>黑便／暈厥 <b id="gbs_k_pres">0</b></div><div>共病 <b id="gbs_k_com">0</b></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
-    <div id="gbs_interp" style="font-size:15px; margin-top:2px;">極低風險</div>
+    <div id="gbs_interp" class="result-interp">極低風險</div>
     <table class="ref">
       <tr><th>分數</th><th>判讀</th></tr>
       <tr><td>0</td><td>極低風險。NICE CG141 建議可考慮直接出院、門診安排內視鏡</td></tr>
@@ -154,10 +154,6 @@ function gbsReset(){
 document.querySelectorAll('#view-gbs input, #view-gbs select')
   .forEach(el=>{ el.addEventListener('input',gbsCalc); el.addEventListener('change',gbsCalc); });
 gbsCalc();
-</script>
-<script>
-/* 由消化道出血決策流程開啟時，顯示暫時性返回鍵 */
-if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('gbs_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="LRINEC Score">
 <div class="sheet">
 <div class="view active" id="view-lrinec">
   <div class="app-header">
     <div><div class="eyebrow">Soft Tissue Infection Scoring Tool</div><h1>LRINEC Score</h1><div class="sub">壞死性筋膜炎實驗室風險指標 · Laboratory Risk Indicator for Necrotizing Fasciitis（Wong 2004）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="lr_back_nsti" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/nsti.html?restore=1'">← 返回壞死性感染決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-lrinec'">← 返回主選單</button>
     </div>
   </div>
@@ -116,10 +116,10 @@
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">LRINEC Score</div><div class="metric-value big" id="lr_total">0</div></div>
-      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="lr_band" style="font-size:26px;">低風險</div></div>
+      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="lr_band">低風險</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
-    <div style="font-size:15px; margin-top:2px;" id="lr_interp">壞死性感染風險 &lt; 50%，但<b>不足以排除</b>。</div>
+    <div class="result-interp" id="lr_interp">壞死性感染風險 &lt; 50%，但<b>不足以排除</b>。</div>
     <table class="ref">
       <tr><th>分數</th><th>風險分層</th><th>NSTI 機率</th></tr>
       <tr><td>≤ 5</td><td>低 Low</td><td>&lt; 50%</td></tr>
@@ -183,8 +183,6 @@ function lrCalc(){
 document.querySelectorAll('#view-lrinec input, #view-lrinec select')
   .forEach(el => { el.addEventListener('input', lrCalc); el.addEventListener('change', lrCalc); });
 lrCalc();
-/* 由壞死性軟組織感染決策流程進入時顯示返回鍵 */
-if(location.search.indexOf('from=nsti')>=0){var _b=document.getElementById('lr_back_nsti'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="ROX Index">
 <div class="sheet">
 <div class="view active" id="view-rox">
   <div class="app-header">
     <div><div class="eyebrow">High-Flow Nasal Cannula Outcome Index</div><h1>ROX Index</h1><div class="sub">高流量鼻導管失敗預測 · (SpO₂/FiO₂) ÷ 呼吸速率（Roca 2019）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="rx_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html?restore=1'">← 返回呼吸衰竭決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-rox'">← 返回主選單</button>
     </div>
   </div>
@@ -87,10 +87,10 @@
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">ROX Index</div><div class="metric-value big" id="rx_val">—</div></div>
-      <div><div class="metric-label">判讀</div><div class="metric-value big" id="rx_band" style="font-size:24px;">—</div></div>
+      <div><div class="metric-label">判讀</div><div class="result-interp" id="rx_band">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床意義</div>
-    <div style="font-size:15px; margin-top:2px;" id="rx_interp">請輸入 SpO₂、FiO₂ 與呼吸速率。</div>
+    <div class="result-interp" id="rx_interp">請輸入 SpO₂、FiO₂ 與呼吸速率。</div>
     <table class="ref">
       <tr><th>時點</th><th>預測失敗</th><th>預測成功</th></tr>
       <tr><td>2 小時</td><td>&lt; 2.85</td><td>≥ 4.88</td></tr>
@@ -137,7 +137,6 @@ function rxCalc(){
 document.querySelectorAll('#view-rox input, #view-rox select')
   .forEach(el => { el.addEventListener('input', rxCalc); el.addEventListener('change', rxCalc); });
 rxCalc();
-if(location.search.indexOf('from=ards')>=0){var _b=document.getElementById('rx_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

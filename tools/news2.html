@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="NEWS2">
 <div class="sheet">
 <div class="view active" id="view-news2">
   <div class="app-header">
     <div><div class="eyebrow">Sepsis Screening &amp; Deterioration Score</div><h1>NEWS2</h1><div class="sub">國家早期預警分數第二版 · National Early Warning Score 2（RCP 2017）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="nw_back_sepsis" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/sepsis.html?restore=1'">← 返回敗血症決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-news2'">← 返回主選單</button>
     </div>
   </div>
@@ -171,11 +171,11 @@
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">NEWS2 Total</div><div class="metric-value big" id="nw_total">0</div></div>
-      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="nw_band" style="font-size:26px;">低</div></div>
-      <div><div class="metric-label">監測頻率</div><div class="metric-value big" id="nw_freq" style="font-size:22px;">每 12 小時</div></div>
+      <div><div class="metric-label">風險分層</div><div class="metric-value big" id="nw_band">低</div></div>
+      <div><div class="metric-label">監測頻率</div><div class="metric-value big" id="nw_freq">每 12 小時</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床反應 Clinical Response</div>
-    <div style="font-size:15px; margin-top:2px;" id="nw_interp">常規照護。</div>
+    <div class="result-interp" id="nw_interp">常規照護。</div>
     <table class="ref">
       <tr><th>總分</th><th>風險</th><th>監測頻率</th><th>反應</th></tr>
       <tr><td>0</td><td>低</td><td>每 12 小時</td><td>常規照護</td></tr>
@@ -287,8 +287,6 @@ function nwCalc(){
 document.querySelectorAll('#view-news2 input, #view-news2 select')
   .forEach(el => { el.addEventListener('input', nwCalc); el.addEventListener('change', nwCalc); });
 nwCalc();
-/* 由敗血症決策流程進入時顯示返回鍵 */
-if(location.search.indexOf('from=sepsis')>=0){var _b=document.getElementById('nw_back_sepsis'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

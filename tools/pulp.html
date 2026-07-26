@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="PULP Score">
 <div class="sheet">
 <div class="view active" id="view-pulp">
   <div class="app-header">
     <div><div class="eyebrow">Peptic Ulcer Perforation Scoring Tool</div><h1>PULP Score</h1><div class="sub">Peptic Ulcer Perforation Score（預測穿孔性消化性潰瘍30天死亡率）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="pulp_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-perforation.html?restore=1'">← 返回腸胃道穿孔決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-pulp'">← 返回主選單</button>
     </div>
   </div>
@@ -45,7 +45,7 @@
     <div class="metric-label">PULP Score（0–18）</div>
     <div class="metric-value big" id="pulp_total">0</div>
     <div class="metric-label" style="margin-top:8px;">風險分層</div>
-    <div id="pulp_interp" style="font-size:15px;">低風險（≤7分）</div>
+    <div id="pulp_interp" class="result-interp">低風險（≤7分）</div>
     <table class="ref">
       <tr><th>分數</th><th>風險分層</th><th>30天死亡風險</th></tr>
       <tr><td>0–7</td><td>低風險 Low risk</td><td>&lt;25%</td></tr>
@@ -69,10 +69,6 @@ function pulpCalc(){
 document.querySelectorAll('.pulp-cb').forEach(cb=>cb.addEventListener('change',pulpCalc));
 document.getElementById('pulp_asa').addEventListener('change',pulpCalc);
 pulpCalc();
-</script>
-<script>
-/* 由腸胃道穿孔決策流程開啟時，顯示暫時性返回鍵 */
-if(location.search.indexOf('from=gi-perf')>=0){var _b=document.getElementById('pulp_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

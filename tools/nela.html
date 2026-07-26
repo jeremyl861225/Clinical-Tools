@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-nela">
   <div class="app-header">
     <div><div class="eyebrow">Surgical Risk Scoring Tool</div><h1>NELA PRS</h1><div class="sub">National Emergency Laparotomy Audit · 簡約風險分數 — 急診剖腹術後 30 天死亡率（2023 年版）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-nela'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-nela'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="exclusive-note" style="margin-bottom:14px;">

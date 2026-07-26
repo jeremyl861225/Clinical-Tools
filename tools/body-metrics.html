@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* 一頁多個並列指標：每個指標一行，右側為數值＋單位，下方一行小字說明來源公式 */
   .bm-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
@@ -26,10 +27,6 @@
   .bm-d b{font-weight:700;}
   .bm-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .bm-band.b0{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
-  .bm-band.b1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .bm-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .bm-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
 </style>
 </head>
 <body>
@@ -41,7 +38,10 @@
       <h1>體型與劑量體重</h1>
       <div class="sub">BMI · BSA · IBW · ABW（adjusted body weight）— 體位分類採國民健康署標準</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-body-metrics'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-body-metrics'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -117,7 +117,7 @@
   <div class="result">
     <div class="bm-out">
       <div class="metric-label">BMI</div>
-      <div class="bm-row"><span class="bm-v" id="bm_bmi">—</span><span class="bm-u">kg/m²</span><span class="bm-band b0" id="bm_bmi_band" style="display:none;"></span></div>
+      <div class="bm-row"><span class="bm-v" id="bm_bmi">—</span><span class="bm-u">kg/m²</span><span class="bm-band risk-band b1" id="bm_bmi_band" style="display:none;"></span></div>
       <div class="bm-d" id="bm_bmi_d">請輸入身高與體重。</div>
     </div>
 
@@ -135,7 +135,7 @@
 
     <div class="bm-out">
       <div class="metric-label">ABW 調整體重</div>
-      <div class="bm-row"><span class="bm-v" id="bm_abw">—</span><span class="bm-u">kg</span><span class="bm-band b2" id="bm_abw_band" style="display:none;"></span></div>
+      <div class="bm-row"><span class="bm-v" id="bm_abw">—</span><span class="bm-u">kg</span><span class="bm-band risk-band b2" id="bm_abw_band" style="display:none;"></span></div>
       <div class="bm-d" id="bm_abw_d">—</div>
     </div>
 
@@ -196,12 +196,12 @@ function bmCalc(){
     bmSet('bm_bmi', bmi.toFixed(1));
     var zh,cls,who;
     if(bmi<18.5){ zh='體重過輕'; cls='b2'; who='WHO underweight'; }
-    else if(bmi<24){ zh='健康體重'; cls='b1'; who='WHO normal'; }
+    else if(bmi<24){ zh='健康體重'; cls='b0'; who='WHO normal'; }
     else if(bmi<27){ zh='體重過重'; cls='b2'; who='WHO 尚屬 normal 上緣～overweight'; }
     else if(bmi<30){ zh='輕度肥胖'; cls='b2'; who='WHO overweight'; }
     else if(bmi<35){ zh='中度肥胖'; cls='b3'; who='WHO obese class I'; }
     else { zh='重度肥胖'; cls='b3'; who='WHO obese class II 以上'; }
-    band.style.display=''; band.textContent=zh; band.className='bm-band '+cls;
+    band.style.display=''; band.textContent=zh; band.className='bm-band risk-band '+cls;
     var d='國民健康署體位：<b>'+zh+'</b>（'+who+'）。';
     if(bmi>=23 && bmi<27.5) d+=' WHO 亞洲族群補充切點：≥23 屬<b>風險增加</b>。';
     else if(bmi>=27.5) d+=' WHO 亞洲族群補充切點：≥27.5 屬<b>高風險</b>。';
@@ -245,13 +245,13 @@ function bmCalc(){
     var pct = wt/ibw*100;
     bmSet('bm_abw', abw.toFixed(1));
     var ad='實際體重為 IBW 的 <b>'+pct.toFixed(0)+'%</b>。';
-    if(pct>=130){ abwBand.style.display=''; abwBand.className='bm-band b3'; abwBand.textContent='建議改用 ABW';
+    if(pct>=130){ abwBand.style.display=''; abwBand.className='bm-band risk-band b3'; abwBand.textContent='建議改用 ABW';
       ad+=' 已超過 130%，aminoglycoside 等藥物<b>應以 ABW 計算</b>。'; }
-    else if(pct>=120){ abwBand.style.display=''; abwBand.className='bm-band b2'; abwBand.textContent='可考慮 ABW';
+    else if(pct>=120){ abwBand.style.display=''; abwBand.className='bm-band risk-band b2'; abwBand.textContent='可考慮 ABW';
       ad+=' 落在 120–130% 的灰帶，是否改用 ABW 依藥物與各院慣例。'; }
-    else if(pct>=100){ abwBand.style.display=''; abwBand.className='bm-band b0'; abwBand.textContent='用實際體重';
+    else if(pct>=100){ abwBand.style.display=''; abwBand.className='bm-band risk-band b1'; abwBand.textContent='用實際體重';
       ad+=' 未達 120%，<b>直接用實際體重</b>即可，不需 ABW。'; }
-    else { abwBand.style.display=''; abwBand.className='bm-band b2'; abwBand.textContent='體重低於 IBW';
+    else { abwBand.style.display=''; abwBand.className='bm-band risk-band b2'; abwBand.textContent='體重低於 IBW';
       ad+=' <b>實際體重低於 IBW，此時 ABW 會小於實際體重而低估劑量——請改用實際體重。</b>'; }
     bmHtml('bm_abw_d', ad);
   } else { bmSet('bm_abw','—'); abwBand.style.display='none'; bmHtml('bm_abw_d','—'); }

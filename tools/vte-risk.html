@@ -52,13 +52,11 @@
   .vt-out-v{font-family:var(--serif); font-size:19px; font-weight:600; line-height:1.4;}
   .vt-out-d{font-size:12.5px; line-height:1.75; margin-top:6px; opacity:.9;}
   .vt-out-d ul{margin:4px 0 0; padding-left:17px;}
-  .vt-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
-        border-radius:2px; padding:2px 8px; vertical-align:2px; margin-left:8px;}
-  .vt-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .vt-band.b1{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
-  .vt-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .vt-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
+  .vt-band{font-weight:700; vertical-align:2px; margin-left:8px;}
 </style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -69,7 +67,10 @@
       <h1>VTE 風險評估</h1>
       <div class="sub">Caprini · Padua · IMPROVE 出血風險 — 靜脈血栓栓塞風險與預防</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-vte-risk'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-vte-risk'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="vt_tabs">
@@ -481,7 +482,7 @@ function capCalc(){
     rec='除<b>早期下床活動</b>外，不需特別的藥物預防（<b>Grade 1B</b>）或機械預防（<b>2C</b>）。'
        +'<br>AT9 推估此層未預防者之基礎 VTE 風險 <b>&lt;0.5%</b>。';
   }
-  document.getElementById('cap_band').innerHTML=band+'<span class="vt-band '+cls+'">AT9</span>';
+  document.getElementById('cap_band').innerHTML=band+'<span class="risk-band vt-band '+cls+'">AT9</span>';
   document.getElementById('cap_rec').innerHTML=rec
     +'<br><br><span class="vt-src">所有層級：不建議以下腔靜脈濾網作初級預防（2C）；不建議常規壓迫超音波監測（2C）。</span>';
 
@@ -503,7 +504,7 @@ function padCalc(){
   document.getElementById('pad_total').textContent=total;
   var hi=total>=4;
   document.getElementById('pad_band').innerHTML=(hi?'高風險 High':'低風險 Low')
-    +'<span class="vt-band '+(hi?'b3':'b0')+'">切點 ≥4</span>';
+    +'<span class="risk-band vt-band '+(hi?'b3':'b0')+'">切點 ≥4</span>';
   document.getElementById('pad_d').innerHTML= hi
     ? '推導世代中 469/1,180（39.7%）落在高風險。'
       +'<br>高風險<b>未</b>接受預防者：VTE 31/283 = <b>11.0%</b>；'
@@ -521,7 +522,7 @@ function impCalc(){
   document.getElementById('imp_total').textContent=total;
   var hi=total>=7;
   document.getElementById('imp_band').innerHTML=(hi?'高出血風險 High':'非高出血風險')
-    +'<span class="vt-band '+(hi?'b3':'b0')+'">切點 ≥7</span>';
+    +'<span class="risk-band vt-band '+(hi?'b3':'b0')+'">切點 ≥7</span>';
   document.getElementById('imp_d').innerHTML= hi
     ? '≥7 分者：任何出血 <b>7.9%</b>、大出血 <b>4.1%</b>。'
       +'<br>此族群若同時具高 VTE 風險，AT9 建議<b>先用機械預防（以 IPC 為佳）</b>，待出血風險下降後再改藥物預防（2C）。'
@@ -542,6 +543,7 @@ document.querySelectorAll('#tab-imp input, #tab-imp select').forEach(function(el
 })();
 capCalc(); padCalc(); impCalc();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

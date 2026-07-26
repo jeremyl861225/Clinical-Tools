@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="CCI 共病指數">
 <div class="sheet">
 <div class="view active" id="view-cci">
   <div class="app-header">
     <div><div class="eyebrow">Comorbidity Scoring Tool</div><h1>CCI 共病指數</h1><div class="sub">Charlson Comorbidity Index</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="cci_back_chole" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/cholecystitis.html?restore=1'">← 返回膽囊炎決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-cci'">← 返回主選單</button>
     </div>
   </div>
@@ -77,7 +77,7 @@
       <div><div class="metric-label">Age-adjusted CCI</div><div class="metric-value" id="cci_adj">0</div></div>
     </div>
     <div class="metric-label">10 年預估存活率</div>
-    <div class="metric-value" id="cci_survival" style="font-size:26px;">100%</div>
+    <div class="metric-value" id="cci_survival">100%</div>
     <div class="risk-note">公式：10 年存活率 = 0.983^(e^(score×0.9))。僅供臨床參考，非個別病人精確預後估計。</div>
   </div>
   <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn-reset" onclick="cciReset()">重置</button></div>
@@ -120,10 +120,6 @@ function cciReset(){
   cciCalc();
 }
 cciCalc();
-
-/* 從膽囊炎決策頁進入時，顯示返回鈕 */
-if(location.search.indexOf('from=chole')>=0){var _b=document.getElementById('cci_back_chole'); if(_b) _b.style.display='';}
-
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

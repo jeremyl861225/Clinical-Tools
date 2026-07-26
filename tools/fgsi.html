@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="FGSI / UFGSI">
 <div class="sheet">
 <div class="view active" id="view-fgsi">
   <div class="app-header">
     <div><div class="eyebrow">Fournier's Gangrene Scoring Tool</div><h1>FGSI / UFGSI</h1><div class="sub">Fournier's gangrene 嚴重度指數 · Fournier's Gangrene Severity Index（Laor 1995）與 Uludağ 修訂版（Yilmazlar 2010）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="fg_back_nsti" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/nsti.html?restore=1'">← 返回壞死性感染決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-fgsi'">← 返回主選單</button>
     </div>
   </div>
@@ -161,7 +161,7 @@
       <div><div class="metric-label">年齡 c</div><div class="metric-value" id="fg_b_c">0</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
-    <div style="font-size:15px; margin-top:2px;" id="fg_interp">FGSI ≤9 且 UFGSI ≤9：屬相對低風險組。</div>
+    <div class="result-interp" id="fg_interp">FGSI ≤9 且 UFGSI ≤9：屬相對低風險組。</div>
     <table class="ref">
       <tr><th>分數</th><th>切點來源</th><th>判讀</th></tr>
       <tr><td>FGSI &gt; 9</td><td>Laor 1995（n=30）</td><td>死亡機率 75%；≤9 存活機率 78%</td></tr>
@@ -254,8 +254,6 @@ function fgCalc(){
 document.querySelectorAll('#view-fgsi input, #view-fgsi select')
   .forEach(el => { el.addEventListener('input', fgCalc); el.addEventListener('change', fgCalc); });
 fgCalc();
-/* 由壞死性軟組織感染決策流程進入時顯示返回鍵 */
-if(location.search.indexOf('from=nsti')>=0){var _b=document.getElementById('fg_back_nsti'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .os-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
   .os-out:first-child{margin-top:0; padding-top:0; border-top:none;}
@@ -25,9 +26,6 @@
   .os-d ul{margin:4px 0 0; padding-left:17px;}
   .os-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .os-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .os-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .os-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
 </style>
 </head>
 <body>
@@ -39,7 +37,10 @@
       <h1>血清滲透壓與滲透壓間隙</h1>
       <div class="sub">計算滲透壓 · 有效滲透壓（tonicity）· osmolal gap 與毒性酒精之估算</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-osmolality'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-osmolality'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -113,13 +114,13 @@
 
     <div class="os-out">
       <div class="metric-label">有效滲透壓 Tonicity（2×Na ＋ Glu/18）</div>
-      <div class="os-row"><span class="os-v" id="os_eff">—</span><span class="os-u">mOsm/L</span><span class="os-band b0" id="os_eff_band" style="display:none;"></span></div>
+      <div class="os-row"><span class="os-v" id="os_eff">—</span><span class="os-u">mOsm/L</span><span class="os-band risk-band b0" id="os_eff_band" style="display:none;"></span></div>
       <div class="os-d" id="os_eff_d">不含尿素；這才是決定腦細胞脹縮的那一個。</div>
     </div>
 
     <div class="os-out">
       <div class="metric-label">滲透壓間隙 Osmolal gap</div>
-      <div class="os-row"><span class="metric-value big" id="os_gap" style="font-size:34px;">—</span><span class="os-u">mOsm</span><span class="os-band b0" id="os_gap_band" style="display:none;"></span></div>
+      <div class="os-row"><span class="metric-value big" id="os_gap" style="font-size:34px;">—</span><span class="os-u">mOsm</span><span class="os-band risk-band b0" id="os_gap_band" style="display:none;"></span></div>
       <div class="os-d" id="os_gap_d">填入實測滲透壓即可計算。</div>
     </div>
 
@@ -202,7 +203,7 @@ function osCalc(){
   else if(eff>300){ et='高滲（&gt;300）'; ecls='b2'; }
   else if(eff<275){ et='低滲（&lt;275）'; ecls='b2'; }
   else { et='正常範圍'; ecls='b0'; }
-  eb.style.display=''; eb.textContent=et; eb.className='os-band '+ecls;
+  eb.style.display=''; eb.textContent=et; eb.className='os-band risk-band '+ecls;
   var ed = '不含尿素。<b>有效滲透壓 &gt;300 mOsm/kg 是 HHS 的判準之一</b>（見 DKA／HHS 頁），也是決定血鈉與滲透壓矯正速率的依據。';
   if(un/2.8 > 15) ed += ' 本例的尿素貢獻達 <b>'+(un/2.8).toFixed(0)+' mOsm</b>——<b>總滲透壓被尿素推高，但這部分不造成有效滲透梯度</b>。';
   document.getElementById('os_eff_d').innerHTML = ed;
@@ -220,7 +221,7 @@ function osCalc(){
   if(gap>10){ gt='升高（&gt;10）'; gcls='b3'; }
   else if(gap>=-8 && gap<=10){ gt='在參考範圍內'; gcls='b0'; }
   else { gt='偏負值'; gcls='b2'; }
-  gb.style.display=''; gb.textContent=gt; gb.className='os-band '+gcls;
+  gb.style.display=''; gb.textContent=gt; gb.className='os-band risk-band '+gcls;
 
   var d = '間隙 ＝ 實測 '+meas.toFixed(0)+' − 計算 '+calc.toFixed(0)+' ＝ <b>'+gap.toFixed(0)+' mOsm</b>。'
         + '（Hoffman 1993 之參考值 −2 ± 6）';

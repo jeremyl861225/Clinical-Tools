@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="膽囊炎決策">
 <div class="sheet">
 <div class="view active" id="view-chole-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性膽囊炎手術決策</h1><div class="sub">Acute Cholecystitis · TG18 severity + surgical risk（Tokyo Guidelines / WSES / AAST）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-chole-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-chole-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -48,7 +52,7 @@
       ・<b>可逆性器官障礙 FOSF（favorable organ system failure）：</b>心血管（升壓）或腎功能障礙若對初始治療（輸液、抗生素、器官支持）<b>快速反應而恢復</b>，屬 favorable，仍可能適合早期手術。<br><br>
       <b>手術風險與 CCI 切點：</b>Grade I／II 低風險 ≈ CCI ≤5、ASA ≤2；Grade III 可早期手術之嚴格條件為 CCI ≤3、ASA ≤2、無 NPF、器官障礙屬 FOSF，且於醫學中心（具進階腹腔鏡經驗）。<br>
       <b>AAST 解剖分級：</b>另可用 AAST EGS 解剖嚴重度（I–V）輔助描述局部病灶嚴重程度。
-      <a class="tool-link" href="../tools/classifications.html?from=chole#sys=tg18-gb">→ 本流程用到的各套分級（TG18／ASGE／Parkland／Nassar／Csendes／AAST）完整對照見「分類與分級系統」</a>
+      <a class="tool-link" href="../tools/classifications.html#sys=tg18-gb">→ 本流程用到的各套分級（TG18／ASGE／Parkland／Nassar／Csendes／AAST）完整對照見「分類與分級系統」</a>
     </div>
   </details>
 
@@ -63,7 +67,7 @@
       <b>◆ 嚴重度：</b>Grade III = 出現任一器官功能障礙；Grade II = 符合 5 項中<b>任兩項</b>；Grade I = 兩者皆不符合。Grade I 為<b>否定式定義</b>，且係「初診當下」的判定 — TG18 並未要求「對初始治療有反應」（那是 TG07 的舊定義）。<br><br>
       <b>◆ 引流時機（TG18）：</b>Grade I 多數僅需抗生素、對初始治療無反應時才引流；Grade II 早期引流（證據基礎為 24 小時內）；Grade III 器官支持穩定後儘速引流。<b>ESGE 2019 的時窗不同</b>（重度合併敗血性休克 12 小時內；中度放寬至 48–72 小時），臨床採用哪一套請明示。引流途徑首選<b>內視鏡經乳突引流（ERCP）</b>，ENBD 與支架效果相當；單純引流不需常規 EST。ERCP 失敗或無法執行時，EUS-BD 與 PTBD 為第二線，手術引流為最後手段。<br><br>
       原文用字的三處歧義（Grade II 白血球 &gt;12,000 vs ≥12,000、Grade III 寡尿未定義、白蛋白 STD 取正常值下限）與本頁的處理方式，以及「TOKYO criteria 2024 並未取代 TG18」一節，見
-      <a class="tool-link" href="../tools/classifications.html?from=chole#sys=tg18-cholangitis">→ 分類與分級系統</a>。
+      <a class="tool-link" href="../tools/classifications.html#sys=tg18-cholangitis">→ 分類與分級系統</a>。
     </div>
   </details>
 
@@ -81,7 +85,7 @@
       ・腹腔鏡多限於 Type I（含部分 II）；整體轉開腹率約 34%，Csendes 分型是轉開腹的獨立危險因子。<br>
       ・<b>膽囊癌風險：</b>Mirizzi 合併膽囊癌約 5.3%，高於單純膽石症之 1% — 標本務必送病理。<br><br>
       三者之流行病學、術前診斷率與次全膽囊切除（Strasberg fenestrating／reconstituting）之取捨，見
-      <a class="tool-link" href="../tools/classifications.html?from=chole#sys=niemeier">→ 分類與分級系統</a>。
+      <a class="tool-link" href="../tools/classifications.html#sys=niemeier">→ 分類與分級系統</a>。
     </div>
   </details>
 
@@ -112,7 +116,7 @@
 
       <b>◆ 高分級的處置意涵：</b>任一套達 <b>4 級以上</b>時轉開腹與膽道損傷風險顯著上升（CholeS：IV–V 轉開腹 27.2%、總膽管損傷 1.7%），應<b>及早</b>考慮 bailout——次全膽囊切除（fenestrating／reconstituting）、順行式切除或轉開腹，並確保達成 <b>critical view of safety</b> 才切斷任何管狀構造。<b>Nassar Grade V</b> 屬瘻管性病灶，需計畫性處理瘻管與膽道重建的可能。<br><br>
       各級完整預後數據、兩套皆未獲學會採認之限制、以及 Parkland 轉開腹率的引用出處，見
-      <a class="tool-link" href="../tools/classifications.html?from=chole#sys=parkland">→ 分類與分級系統</a>。
+      <a class="tool-link" href="../tools/classifications.html#sys=parkland">→ 分類與分級系統</a>。
     </div>
   </details>
 
@@ -169,8 +173,8 @@
       <button class="flow-opt" onclick="cholePick('pSev','mod',this)">中重度 Moderately severe<span class="fo-sub">暫時性器官衰竭（&lt;48h）和／或局部／全身併發症、共病惡化</span></button>
       <button class="flow-opt" onclick="cholePick('pSev','severe',this)">重度 Severe<span class="fo-sub">持續性器官衰竭 &gt;48h（modified Marshall ≥2）；DBC 之 Critical（＋感染性壞死）併入本項</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/marshall.html?from=chole'">🧮 開啟 Modified Marshall Score 計算機（判定有無器官衰竭，可從該頁返回本決策）</button>
-    <button class="flow-link" onclick="location.href='../tools/classifications.html?from=chole#sys=ctsi'">🧮 開啟 CT Severity Index 計算機（影像壞死範圍，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/marshall.html'">🧮 開啟 Modified Marshall Score 計算機（判定有無器官衰竭，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/classifications.html#sys=ctsi'">🧮 開啟 CT Severity Index 計算機（影像壞死範圍，可從該頁返回本決策）</button>
     <div class="note" style="margin-top:8px;">完整的胰臟炎處置（病因、監測層級、step-up 介入時機）見<a class="tool-link" href="pancreatitis.html">急性胰臟炎處置決策</a>；本步驟只決定<b>膽囊切除時機</b>。</div>
   </div>
 
@@ -255,7 +259,7 @@
       <button class="flow-opt" onclick="cholePick('risk','low',this)">低風險<span class="fo-sub" id="chole_low_sub"></span></button>
       <button class="flow-opt" onclick="cholePick('risk','high',this)">高風險<span class="fo-sub" id="chole_high_sub"></span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/cci.html?from=chole'">🧮 開啟 CCI 計算機（可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/cci.html'">🧮 開啟 CCI 計算機（可從該頁返回本決策）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="chole_rec">

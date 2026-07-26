@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="pARC">
 <div class="sheet">
 <div class="view active" id="view-parc">
   <div class="app-header">
     <div><div class="eyebrow">Pediatric Appendicitis Scoring Tool</div><h1>pARC</h1><div class="sub">Pediatric Appendicitis Risk Calculator（連續機率量表，適用5–18歲）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="parc_back_appy" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/appendicitis.html?restore=1'">← 返回闌尾炎決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-parc'">← 返回主選單</button>
     </div>
   </div>
@@ -51,7 +51,7 @@
     <div class="metric-label">預測闌尾炎機率 Predicted risk of appendicitis</div>
     <div class="metric-value big" id="parc_prob">—</div>
     <div class="metric-label" style="margin-top:8px;">風險分層</div>
-    <div id="parc_interp" style="font-size:15px;">—</div>
+    <div id="parc_interp" class="result-interp">—</div>
     <table class="ref">
       <tr><th>風險機率</th><th>分層</th><th>建議</th></tr>
       <tr><td>&lt;5%</td><td>極低風險</td><td>可考慮安全出院或觀察</td></tr>
@@ -164,9 +164,6 @@ document.querySelectorAll('#view-parc input, #view-parc select').forEach(el=>{el
 parcCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
-<script>
-if(location.search.indexOf('from=appy')>=0){var _ba=document.getElementById('parc_back_appy'); if(_ba) _ba.style.display='';}
-</script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

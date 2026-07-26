@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="KDIGO AKI 分期">
 <div class="sheet">
 <div class="view active" id="view-kdigo-aki">
   <div class="app-header">
     <div><div class="eyebrow">Acute Kidney Injury Staging</div><h1>KDIGO AKI 分期</h1><div class="sub">急性腎損傷 · Kidney Disease: Improving Global Outcomes 2012</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="ak_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/aki-crrt.html?restore=1'">← 返回 AKI 決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-kdigo-aki'">← 返回主選單</button>
     </div>
   </div>
@@ -111,11 +111,11 @@
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">AKI 分期</div><div class="metric-value big" id="ak_stage">—</div></div>
-      <div><div class="metric-label">SCr 倍數</div><div class="metric-value big" id="ak_ratio" style="font-size:30px;">—</div></div>
-      <div><div class="metric-label">判定依據</div><div class="metric-value big" id="ak_by" style="font-size:22px;">—</div></div>
+      <div><div class="metric-label">SCr 倍數</div><div class="metric-value big" id="ak_ratio">—</div></div>
+      <div><div class="metric-label">判定依據</div><div class="metric-value big" id="ak_by">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀</div>
-    <div style="font-size:15px; margin-top:2px;" id="ak_interp">請輸入肌酸酐或尿量。</div>
+    <div class="result-interp" id="ak_interp">請輸入肌酸酐或尿量。</div>
     <table class="ref">
       <tr><th>分期</th><th>血清肌酸酐</th><th>尿量</th></tr>
       <tr><td>1</td><td>1.5–1.9× 基準，或上升 ≥0.3 mg/dL</td><td>&lt;0.5 mL/kg/h × 6–12 小時</td></tr>
@@ -192,7 +192,6 @@ function akCalc(){
 document.querySelectorAll('#view-kdigo-aki input')
   .forEach(el => { el.addEventListener('input', akCalc); el.addEventListener('change', akCalc); });
 akCalc();
-if(location.search.indexOf('from=aki')>=0){var _b=document.getElementById('ak_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Millet Score">
 <div class="sheet">
 <div class="view active" id="view-millet">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Millet Score</h1><div class="sub">結合CT徵象評估黏連性小腸阻塞絞窄（strangulation）風險</div></div>
     <div class="back-stack">
-      <button class="back-btn" id="millet_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="boReturn()">← 返回腸阻塞決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-millet'">← 返回主選單</button>
     </div>
   </div>
@@ -35,7 +35,7 @@
     <div class="metric-label">Millet Score（0–6）</div>
     <div class="metric-value big" id="millet_total">0</div>
     <div class="metric-label" style="margin-top:8px;">臨床判讀</div>
-    <div id="millet_interp" style="font-size:15px;">三項皆無：低機率絞窄</div>
+    <div id="millet_interp" class="result-interp">三項皆無：低機率絞窄</div>
     <table class="ref">
       <tr><th>分數</th><th>臨床意義</th></tr>
       <tr><td>0</td><td>三項CT徵象皆無，NPV 97%，可高信心排除絞窄</td></tr>
@@ -61,8 +61,6 @@ function milletCalc(){
 }
 document.querySelectorAll('.millet-cb').forEach(cb=>cb.addEventListener('change',milletCalc));
 milletCalc();
-function boReturn(){location.href='../pathways/bowel-obstruction.html?restore=1';}
-if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('millet_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

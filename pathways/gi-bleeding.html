@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="消化道出血決策">
 <div class="sheet">
 <div class="view active" id="view-gi-bleed-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>消化道出血處置決策</h1><div class="sub">GI Bleeding · 上消化道（靜脈曲張與非靜脈曲張）與下消化道（ESGE 2026 · Baveno VII · ACG 2021／2023）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-gi-bleed-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-gi-bleed-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -119,9 +123,9 @@
       <button class="flow-opt" onclick="gbPick('gbs','low',this)">GBS ≤1<span class="fo-sub">極低風險：30 天再出血、死亡與需院內介入之風險 &lt;1%</span></button>
       <button class="flow-opt" onclick="gbPick('gbs','high',this)">GBS ≥2<span class="fo-sub">非低風險：須住院並安排內視鏡</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/gbs.html?from=gi-bleed'">🧮 開啟 Glasgow-Blatchford Score</button>
-    <button class="flow-link" onclick="location.href='../tools/aims65.html?from=gi-bleed'">🧮 開啟 AIMS65（死亡風險／是否需加護照護）</button>
-    <button class="flow-link" onclick="location.href='../tools/rockall.html?from=gi-bleed'">🧮 開啟 Rockall Score</button>
+    <button class="flow-link" onclick="location.href='../tools/gbs.html'">🧮 開啟 Glasgow-Blatchford Score</button>
+    <button class="flow-link" onclick="location.href='../tools/aims65.html'">🧮 開啟 AIMS65（死亡風險／是否需加護照護）</button>
+    <button class="flow-link" onclick="location.href='../tools/rockall.html'">🧮 開啟 Rockall Score</button>
   </div>
 
   <div class="flow-connector hidden" id="gb_c4u">↓</div>
@@ -133,7 +137,7 @@
       <button class="flow-opt" onclick="gbPick('forrest','IIb',this)">Forrest IIb<span class="fo-sub">黏附血塊 — 高風險</span></button>
       <button class="flow-opt" onclick="gbPick('forrest','low',this)">Forrest IIc／III<span class="fo-sub">扁平色素斑／乾淨潰瘍底 — 低風險</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/classifications.html?from=gi-bleed#sys=forrest'">🧮 開啟 Forrest 分類對照</button>
+    <button class="flow-link" onclick="location.href='../tools/classifications.html#sys=forrest'">🧮 開啟 Forrest 分類對照</button>
   </div>
 
   <!-- ===== 靜脈曲張路徑 ===== -->
@@ -178,7 +182,7 @@
       <button class="flow-opt" onclick="gbPick('oak','mid',this)">Oakland 9–10<span class="fo-sub">放寬閾值下仍屬低風險（敏感度 96%）</span></button>
       <button class="flow-opt" onclick="gbPick('oak','high',this)">Oakland &gt;10<span class="fo-sub">未達低風險閾值</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/oakland.html?from=gi-bleed'">🧮 開啟 Oakland Score</button>
+    <button class="flow-link" onclick="location.href='../tools/oakland.html'">🧮 開啟 Oakland Score</button>
   </div>
 
   <div class="flow-connector hidden" id="gb_c3l">↓</div>

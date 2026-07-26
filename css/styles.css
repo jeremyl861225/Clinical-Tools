@@ -41,6 +41,10 @@
   /* 兩顆返回鍵直向堆疊（來源流程圖在上、主選單在下）；靠右對齊以貼齊 app-header 右緣 */
   .back-stack{display:flex; flex-direction:column; gap:6px; align-items:flex-end;}
   .back-btn:hover{background:var(--accent-soft);}
+  /* 由某頁連進來時自動長出的「返回來源頁」鍵（js/backlink.js 注入）：
+     以第二強調色與主選單鍵區隔，原本各頁是寫成 inline style，現統一於此。 */
+  .back-origin{border-color:var(--accent2); color:var(--accent2);}
+  .back-origin:hover{background:var(--accent2-soft);}
 
   /* 返回首頁時，剛才所在的卡片短暫高亮（配合置中捲動） */
   .tool-card.card-return{animation:cardReturn 1.6s ease-out;}
@@ -405,6 +409,22 @@
   .result-body{font-size:13.5px; line-height:1.75; color:#e4e0d4; margin-top:5px;}
   .result-notes{margin:9px 0 0; padding-left:16px; font-size:12.5px; line-height:1.7; color:#c9c4b4;}
   .result-notes li{margin:5px 0;}
+  /* 判讀句：結果面板裡「這個分數代表什麼」的那一段。
+     原本各頁自行寫 inline font-size，全站散出 14／15／19／24／26／32px 六種寫法，
+     同一種資訊在不同工具之間忽大忽小；一律改用本類別。 */
+  .result-interp{font-size:15px; line-height:1.7; color:#f4f2ec; margin-top:2px;}
+  .result-interp b{color:#fff;}
+
+  /* 風險分級徽章：低→高共 b0–b3。
+     這組色碼原本被複製到 15 個以上的頁面各自命名（.bm-band、.ni-band、.vt-band…），
+     改一處就得記得改其餘十幾處；統一收在此。
+     位於恆深色的 .result 面板內，故不走亮/暗色 token（與上方註解同理）。 */
+  .risk-band{display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+             padding:3px 9px; border-radius:2px; white-space:nowrap;}
+  .risk-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
+  .risk-band.b1{color:#d8e4c4; background:#2f3d1b; border:1px solid #5c6b35;}
+  .risk-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
+  .risk-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
   table.ref{width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;}
   table.ref th,table.ref td{border-bottom:1px solid #2a3a3a; padding:5px 6px; text-align:left; color:#c9c4b4;}
   table.ref th{color:#fff; font-family:var(--mono); font-size:11px;}

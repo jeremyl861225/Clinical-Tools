@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .eg-out{margin-top:13px; padding-top:11px; border-top:1px solid rgba(255,255,255,.16);}
   .eg-out:first-child{margin-top:0; padding-top:0; border-top:none;}
@@ -22,12 +23,6 @@
   .eg-v{font-family:var(--serif); font-size:26px; font-weight:600;}
   .eg-u{font-family:var(--mono); font-size:11px; opacity:.62;}
   .eg-d{font-size:12px; line-height:1.7; margin-top:4px; opacity:.85;}
-  .eg-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
-        border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .eg-band.g1{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .eg-band.g2{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
-  .eg-band.g3{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .eg-band.g4{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
   .eg-used{font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
         color:var(--accent); background:var(--accent-soft); border-radius:2px; padding:2px 7px; margin-left:6px;}
 </style>
@@ -41,7 +36,10 @@
       <h1>eGFR</h1>
       <div class="sub">2021 CKD-EPI creatinine ／ creatinine-cystatin C — 有填 cystatin C 即自動改用雙標記式</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-egfr'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-egfr'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -116,7 +114,7 @@
   <div class="result">
     <div class="eg-out">
       <div class="metric-label">eGFR<span class="eg-used" id="eg_used">CKD-EPI 2021 cr</span></div>
-      <div class="eg-row"><span class="metric-value big" id="eg_main">—</span><span class="eg-u">mL/min/1.73 m²</span><span class="eg-band g1" id="eg_stage" style="display:none;"></span></div>
+      <div class="eg-row"><span class="metric-value big" id="eg_main">—</span><span class="eg-u">mL/min/1.73 m²</span><span class="risk-band b0" id="eg_stage" style="display:none;"></span></div>
       <div class="eg-d" id="eg_main_d">請輸入年齡與血清肌酸酐。</div>
     </div>
 
@@ -172,12 +170,12 @@ function egCrCys(scr, cys, age, sex){
        * Math.pow(0.9961, age) * (sex==='F' ? 0.963 : 1);
 }
 function egStage(v){
-  if(v>=90)  return {t:'G1',  c:'g1'};
-  if(v>=60)  return {t:'G2',  c:'g1'};
-  if(v>=45)  return {t:'G3a', c:'g2'};
-  if(v>=30)  return {t:'G3b', c:'g3'};
-  if(v>=15)  return {t:'G4',  c:'g4'};
-  return {t:'G5', c:'g4'};
+  if(v>=90)  return {t:'G1',  c:'b0'};
+  if(v>=60)  return {t:'G2',  c:'b0'};
+  if(v>=45)  return {t:'G3a', c:'b1'};
+  if(v>=30)  return {t:'G3b', c:'b2'};
+  if(v>=15)  return {t:'G4',  c:'b3'};
+  return {t:'G5', c:'b3'};
 }
 
 function egCalc(){
@@ -201,7 +199,7 @@ function egCalc(){
     document.getElementById('eg_main').textContent = main.toFixed(0);
     document.getElementById('eg_used').textContent = useCys ? 'CKD-EPI 2021 cr-cys' : 'CKD-EPI 2021 cr';
     var st=egStage(main);
-    stageEl.style.display=''; stageEl.textContent=st.t; stageEl.className='eg-band '+st.c;
+    stageEl.style.display=''; stageEl.textContent=st.t; stageEl.className='risk-band '+st.c;
 
     var d = useCys
       ? '已填入 cystatin C，主要輸出採<b>雙標記式</b>（準確度優於單一標記，P<sub>30</sub> &gt; 90%）。'

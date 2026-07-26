@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .hb-grp{display:flex; align-items:baseline; gap:8px; margin:14px 0 2px; padding-bottom:4px;
         border-bottom:2px solid var(--accent-soft);}
@@ -28,9 +29,6 @@
   .hb-d ul{margin:4px 0 0; padding-left:17px;}
   .hb-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .hb-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .hb-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .hb-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
   .hb-mod{font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; color:var(--accent2);
         border:1px solid var(--accent2); border-radius:2px; padding:1px 5px; margin-left:6px;}
 </style>
@@ -44,7 +42,10 @@
       <h1>HAS-BLED</h1>
       <div class="sub">心房顫動抗凝之出血風險（Pisters 2010，總分 0–9）— 用來矯正因子，不是用來停藥</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-has-bled'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-has-bled'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -114,7 +115,7 @@
       <div class="metric-label">HAS-BLED</div>
       <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <span class="metric-value big" id="hb_total">0</span>
-        <span class="hb-band b0" id="hb_band">低出血風險</span>
+        <span class="hb-band risk-band b0" id="hb_band">低出血風險</span>
       </div>
       <div class="hb-d" id="hb_d">未勾選任何項目。</div>
     </div>
@@ -172,7 +173,7 @@ function hbCalc(){
   if(total>=3){ t='高出血風險（≥3）'; cls='b3'; }
   else if(total>=1){ t='低至中出血風險'; cls='b2'; }
   else { t='低出血風險'; cls='b0'; }
-  band.textContent=t; band.className='hb-band '+cls;
+  band.textContent=t; band.className='hb-band risk-band '+cls;
 
   var d;
   if(total===0){

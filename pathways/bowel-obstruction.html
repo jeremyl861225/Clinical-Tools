@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="腸阻塞決策">
 <div class="sheet">
 <div class="view active" id="view-bo-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸阻塞處置決策</h1><div class="sub">Bowel Obstruction · 病因分流 + 立即手術指標（WSES / ASCRS / MASCC）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-bo-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-bo-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -166,9 +170,9 @@
       <button class="flow-opt" onclick="boPick('risk','high',this)">高風險<span class="fo-sub">Millet ≥2/3（LR+ 14.7～43.8）、Wassmer ≥4（切除機率 ≥70%）或 Angers ≥5</span></button>
       <button class="flow-opt" onclick="boPick('risk','na',this)">未評估／無顯影劑 CT<span class="fo-sub">Millet 與 Wassmer 之 CT 項目需增強 CT；Wassmer 另有免顯影劑 7 項版</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/millet.html?from=bo'">🧮 Millet Score（絞窄，3 項 CT）</button>
-    <button class="flow-link" onclick="location.href='../tools/wassmer.html?from=bo'">🧮 Wassmer Score（需腸切除，8 項）</button>
-    <button class="flow-link" onclick="location.href='../tools/angers.html?from=bo'">🧮 Angers CT Score（保守治療失敗，6 項）</button>
+    <button class="flow-link" onclick="location.href='../tools/millet.html'">🧮 Millet Score（絞窄，3 項 CT）</button>
+    <button class="flow-link" onclick="location.href='../tools/wassmer.html'">🧮 Wassmer Score（需腸切除，8 項）</button>
+    <button class="flow-link" onclick="location.href='../tools/angers.html'">🧮 Angers CT Score（保守治療失敗，6 項）</button>
     <div class="note" style="margin-top:8px;">三個評分<b>皆非指引建議項目</b>（WSES Bologna 2018 全文未提及），且都是<b>入院／初次 CT 的分流工具</b>，不是 NOM 途中的再評估工具。分層結果只調整警覺程度與手術門檻，<b>不改變「先試 NOM」的預設</b>。</div>
   </div>
 

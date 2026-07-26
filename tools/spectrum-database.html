@@ -22,8 +22,13 @@
     :root{ --s2:#3d8272; --s1:#7d9c81; --s0:#b8945a; --sn:#9c6d66;
            --s1t:#0f1a12; --s0t:#221a0c; }
   }
-  /* 台大 %S 分級文字色 */
-  .sHi{color:#0c8a3e} .sOk{color:#2f7a2a} .sMid{color:#b5751a} .sLo{color:#c0392b}
+  /* 台大 %S 分級文字色。這幾個字印在一般頁面底色上（不是 .result 那種恆深色面板），
+     故必須跟著亮/暗色切換——原本只有亮色一組，暗色模式下深綠字壓在深底上幾乎看不見。 */
+  :root{ --sh-hi:#0c8a3e; --sh-ok:#2f7a2a; --sh-mid:#b5751a; --sh-lo:#c0392b; }
+  @media (prefers-color-scheme: dark){
+    :root{ --sh-hi:#5cc98a; --sh-ok:#7fc086; --sh-mid:#d6a44e; --sh-lo:#e2897c; }
+  }
+  .sHi{color:var(--sh-hi)} .sOk{color:var(--sh-ok)} .sMid{color:var(--sh-mid)} .sLo{color:var(--sh-lo)}
 
   /* ---- toolbar ---- */
   .sd-toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-bottom:14px;}
@@ -190,13 +195,17 @@
 </style>
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-spectrumdb">
   <div class="app-header">
     <div><div class="eyebrow">Antimicrobial · Spectrum Database</div><h1>抗生素菌譜資料庫</h1><div class="sub">β-內醯胺酶分類、抗細菌／抗黴菌感受性菌譜、CR-GNB 新藥抗菌譜，整合台大 2025 上半年在地感受性 %S</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    </div>
   </div>
 
   <!-- 抗生素指引的第四分頁：前三分頁在 antibiotics.html，以 #mode= 指定開啟的分頁 -->
@@ -475,7 +484,7 @@ const SDX_DRUG={
   "Posa":"posaconazole", "Vori":"voriconazole", "Itra":"itraconazole",
   "Flu":"fluconazole", "5FC":"flucytosine"
 };
-const sdHref=k=>`antibiotics.html?from=spectrum#drug=${encodeURIComponent(k)}`;
+const sdHref=k=>`antibiotics.html#drug=${encodeURIComponent(k)}`;
 
 /* 離開前存捲動位置：window 捲動＋各矩陣自身的 .sd-mshell 內捲動（表格有
    max-height:80vh，內捲動不存的話返回時只會回到表格頂端而非原本那一列）。 */

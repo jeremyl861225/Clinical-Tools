@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="ARDS 診斷與分級">
 <div class="sheet">
 <div class="view active" id="view-ards">
   <div class="app-header">
     <div><div class="eyebrow">Respiratory Failure Diagnostic Tool</div><h1>ARDS 診斷與分級</h1><div class="sub">急性呼吸窘迫症候群 · New Global Definition 2024（含 Berlin 2012 對照）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="ar_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ards.html?restore=1'">← 返回呼吸衰竭決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-ards'">← 返回主選單</button>
     </div>
   </div>
@@ -147,7 +147,7 @@
       <div><div class="metric-label">嚴重度</div><div class="metric-value big" id="ar_sev" style="font-size:24px;">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀</div>
-    <div style="font-size:15px; margin-top:2px;" id="ar_interp">請輸入氧合數值與共通判準。</div>
+    <div class="result-interp" id="ar_interp">請輸入氧合數值與共通判準。</div>
     <table class="ref">
       <tr><th>類別</th><th>PaO₂/FiO₂</th><th>SpO₂/FiO₂（SpO₂ ≤97%）</th></tr>
       <tr><td>插管 · 輕度 Mild</td><td>200–300</td><td>235–315</td></tr>
@@ -272,7 +272,6 @@ function arCalc(){
 document.querySelectorAll('#view-ards input, #view-ards select')
   .forEach(el => { el.addEventListener('input', arCalc); el.addEventListener('change', arCalc); });
 arCalc();
-if(location.search.indexOf('from=ards')>=0){var _b=document.getElementById('ar_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

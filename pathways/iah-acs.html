@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* ── Björck 分類：以「腹壁固定程度 × 污染狀態」矩陣呈現 ──────────
      原本借用 score-ref（數值→分數兩欄專用，末欄強制靠右）排出來的清單
@@ -50,12 +51,15 @@
   }
 </style>
 </head>
-<body>
+<body data-back-label="腹腔內腔室症候群">
 <div class="sheet">
 <div class="view active" id="view-iah-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腹腔內腔室症候群</h1><div class="sub">IAH / ACS · WSACS 2013 階梯式處置 → 減壓 → Björck 開腹分級與關腹策略（WSES 2018）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-iah-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-iah-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">

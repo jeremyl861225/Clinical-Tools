@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-acute-liver-failure">
   <div class="app-header">
     <div><div class="eyebrow">Acute Liver Failure Tool</div><h1>急性肝衰竭</h1><div class="sub">Acute Liver Failure · King's College Criteria 與移植判準</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-acute-liver-failure'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-acute-liver-failure'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -98,11 +102,11 @@
 
   <div class="result">
     <div class="result-grid">
-      <div><div class="metric-label">King's College Criteria</div><div class="metric-value big" id="lf_kcc" style="font-size:26px;">—</div></div>
-      <div><div class="metric-label" id="lf_count_label">組合項目</div><div class="metric-value big" id="lf_count" style="font-size:26px;">—</div></div>
+      <div><div class="metric-label">King's College Criteria</div><div class="metric-value big" id="lf_kcc">—</div></div>
+      <div><div class="metric-label" id="lf_count_label">組合項目</div><div class="metric-value big" id="lf_count">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀與處置</div>
-    <div style="font-size:15px; margin-top:2px;" id="lf_interp">請勾選符合的項目。</div>
+    <div class="result-interp" id="lf_interp">請勾選符合的項目。</div>
     <div class="risk-note">KCC 陽性代表<b>預後極差、需緊急移植評估</b>；<b>陰性不能排除移植需求</b>（KCC 特異度高、敏感度中等），須合併乳酸、第 V 因子（Clichy）與臨床動態綜合判斷。無論 KCC 結果，<b>一診斷 ALF 就聯絡移植中心</b>，並依病因給專屬治療（acetaminophen 必給 NAC）。</div>
   </div>
 

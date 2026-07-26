@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="AIR Score">
 <div class="sheet">
 <div class="view active" id="view-air">
   <div class="app-header">
     <div><div class="eyebrow">Acute Abdomen Scoring Tool</div><h1>AIR Score</h1><div class="sub">Appendicitis Inflammatory Response Score</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="air_back_appy" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/appendicitis.html?restore=1'">← 返回闌尾炎決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-air'">← 返回主選單</button>
     </div>
   </div>
@@ -47,7 +47,7 @@
     <div class="metric-label">AIR Score</div>
     <div class="metric-value big" id="air_total">0</div>
     <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
-    <div id="air_interp" style="font-size:15px; margin-top:2px;">低度懷疑</div>
+    <div id="air_interp" class="result-interp">低度懷疑</div>
     <table class="ref">
       <tr><th>分數</th><th>判讀</th></tr>
       <tr><td>0–4</td><td>低度懷疑</td></tr>
@@ -79,9 +79,6 @@ document.querySelectorAll('#view-air select').forEach(el=>el.addEventListener('c
 airCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
-<script>
-if(location.search.indexOf('from=appy')>=0){var _ba=document.getElementById('air_back_appy'); if(_ba) _ba.style.display='';}
-</script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

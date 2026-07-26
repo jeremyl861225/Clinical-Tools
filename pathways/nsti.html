@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="壞死性感染決策">
 <div class="sheet">
 <div class="view active" id="view-nsti-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>壞死性軟組織感染處置決策</h1><div class="sub">Necrotizing Soft Tissue Infection · 腹壁／會陰（Fournier's gangrene）／四肢（WSES／SIS-E 2018）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-nsti-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-nsti-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -81,7 +85,7 @@
       <button class="flow-opt" onclick="nsPick('sus','uncertain',this)">疑似但診斷未定<span class="fo-sub">臨床像蜂窩組織炎，但進展快或有危險因子，無法確定是否為壞死性</span></button>
     </div>
     <div class="note" style="margin-top:8px;">臨床已足以確立者<b>直接進手術室</b>，不應為了影像而延後（1A）。</div>
-    <button class="flow-link" onclick="location.href='../tools/lrinec.html?from=nsti'">🧮 開啟 LRINEC Score（提高警覺用，<b>不可用於排除</b>）</button>
+    <button class="flow-link" onclick="location.href='../tools/lrinec.html'">🧮 開啟 LRINEC Score（提高警覺用，<b>不可用於排除</b>）</button>
   </div>
 
   <div class="flow-connector hidden" id="ns_c2">↓</div>
@@ -112,7 +116,7 @@
       <button class="flow-opt" onclick="nsPick('fecal','yes',this)">有糞便污染<span class="fo-sub">肛門直腸來源、括約肌受累或持續糞便污染創面</span></button>
       <button class="flow-opt" onclick="nsPick('fecal','no',this)">無糞便污染<span class="fo-sub">泌尿生殖或局部皮膚來源，創面未受糞便污染</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/fgsi.html?from=nsti'">🧮 開啟 FGSI / UFGSI（Fournier's gangrene 預後分層）</button>
+    <button class="flow-link" onclick="location.href='../tools/fgsi.html'">🧮 開啟 FGSI / UFGSI（Fournier's gangrene 預後分層）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="ns_rec">

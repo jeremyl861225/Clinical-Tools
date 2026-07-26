@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="AAS 成人闌尾炎分數">
 <div class="sheet">
 <div class="view active" id="view-aas">
   <div class="app-header">
     <div><div class="eyebrow">Appendicitis Scoring Tool</div><h1>AAS 成人闌尾炎分數</h1><div class="sub">Adult Appendicitis Score（Sammalkorpi 2014）· 0–24 分</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="aas_back_appy" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/appendicitis.html?restore=1'">← 返回闌尾炎決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-aas'">← 返回主選單</button>
     </div>
   </div>
@@ -98,7 +98,7 @@
       <div><div class="metric-label">AAS 總分（0–24）</div><div class="metric-value big" id="aas_total">0</div></div>
       <div><div class="metric-label">判讀</div><div class="metric-value big" id="aas_band">低度可能</div></div>
     </div>
-    <div id="aas_note" style="font-size:15px; margin-top:10px;"></div>
+    <div id="aas_note" class="result-interp"></div>
     <table class="ref">
       <tr><th>分數</th><th>判讀</th></tr>
       <tr><td>0–10</td><td>低度可能 Low probability</td></tr>
@@ -160,7 +160,6 @@ document.querySelectorAll('#view-aas input, #view-aas select').forEach(function(
 });
 aasFillCrp();
 aasCalc();
-if(location.search.indexOf('from=appy')>=0){var _b=document.getElementById('aas_back_appy'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

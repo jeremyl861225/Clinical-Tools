@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* ── 體重列：藥物分頁所有換算的唯一輸入（與 tools/rsi.html 同一套做法） ── */
   .cs-bar{position:sticky; top:0; z-index:20; background:var(--paper);
@@ -98,7 +99,7 @@
   .cor.c3{background:var(--accent2-soft); color:var(--accent2);}
 </style>
 </head>
-<body>
+<body data-back-label="心因性休克">
 <div class="sheet">
 <div class="view active" id="view-cardiogenic-shock">
   <div class="app-header">
@@ -107,7 +108,10 @@
       <h1>心因性休克</h1>
       <div class="sub">Cardiogenic Shock — 辨識、病因分流、支持治療、藥物劑量與機械循環支持</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-cs-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-cs-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="cs_tabs">
@@ -1026,6 +1030,7 @@ document.getElementById('cs_wt').addEventListener('input', csCalc);
   eReset(); tReset(); csCalc();
 })();
 </script>
+<script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

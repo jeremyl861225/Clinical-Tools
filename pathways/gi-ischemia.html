@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="腸胃道缺血決策">
 <div class="sheet">
 <div class="view active" id="view-gi-isch-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腸胃道缺血處置決策</h1><div class="sub">GI Ischemia · AMI / CI / CMI — subtype, distribution, revascularisation（ESVS 2025 · WSES 2022 · ACG 2015）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-gi-isch-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-gi-isch-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -275,7 +279,7 @@
       <button class="flow-opt" onclick="giPick('acute','perit',this)">有腹膜炎徵象／血行動力學不穩<span class="fo-sub">腸段已可能壞死 — 立即探查，不因等待血管處置而延遲</span></button>
       <button class="flow-opt" onclick="giPick('acute','stable',this)">無腹膜炎且血行動力學穩定<span class="fo-sub">可先行血流重建（ESVS Rec 37：血管內為第一線）或藥物治療</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/radial.html?from=gi-isch'">🧮 開啟 RADIAL Score（AMI 住院死亡率，可從該頁返回本決策）</button>
+    <button class="flow-link" onclick="location.href='../tools/radial.html'">🧮 開啟 RADIAL Score（AMI 住院死亡率，可從該頁返回本決策）</button>
   </div>
 
   <div class="flow-step hidden" id="gi_s3b">

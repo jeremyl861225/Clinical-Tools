@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="呼吸衰竭總論">
 <div class="sheet">
 <div class="view active" id="view-resp-failure">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>呼吸衰竭總論與分流</h1><div class="sub">Acute Respiratory Failure · 分型 → 病因 → 支持與藥物 → 難治性升階與 ECMO（GOLD 2026／ESC 2021／ESICM 2023／ELSO 2021）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-resp-failure'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-resp-failure'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -156,7 +160,7 @@
       <button class="flow-opt" onclick="rfPick('cause','ahrf',this)">非心因性急性低血氧呼吸衰竭／ARDS<span class="fo-sub">一週內急性發生、雙側浸潤、非主要心因性</span></button>
       <button class="flow-opt" onclick="rfPick('cause','vasc',this)">肺血管或機械性原因<span class="fo-sub">肺栓塞、氣胸、大量肋膜積液、肺出血</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ards.html?from=rf'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
+    <button class="flow-link" onclick="location.href='../tools/ards.html'">🧮 ARDS 診斷與分級（新全球定義 2024）</button>
   </div>
 
   <div class="flow-connector hidden" id="rf_c2b">↓</div>

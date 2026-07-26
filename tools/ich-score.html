@@ -15,14 +15,15 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="ICH Score">
 <div class="sheet">
 <div class="view active" id="view-ich-score">
   <div class="app-header">
     <div><div class="eyebrow">Intracerebral Hemorrhage Scoring Tool</div><h1>ICH Score</h1><div class="sub">自發性腦內出血嚴重度 · 含 ABC/2 血腫體積估算（Hemphill 2001）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="is_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/ich.html?restore=1'">← 返回自發性腦出血決策</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
       <button class="back-btn" onclick="location.href='../index.html#card-view-ich-path'">← 返回主選單</button>
     </div>
   </div>
@@ -129,10 +130,10 @@
   <div class="result">
     <div class="result-grid">
       <div><div class="metric-label">ICH Score</div><div class="metric-value big" id="is_total">0</div></div>
-      <div><div class="metric-label">血腫體積</div><div class="metric-value big" id="is_vol2" style="font-size:30px;">—</div></div>
+      <div><div class="metric-label">血腫體積</div><div class="metric-value big" id="is_vol2">—</div></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">判讀</div>
-    <div style="font-size:15px; margin-top:2px;" id="is_interp">請輸入 GCS、年齡與血腫資訊。</div>
+    <div class="result-interp" id="is_interp">請輸入 GCS、年齡與血腫資訊。</div>
     <table class="ref">
       <tr><th>項目</th><th>條件</th><th>分數</th></tr>
       <tr><td>GCS</td><td>3–4 ／ 5–12 ／ 13–15</td><td>2 ／ 1 ／ 0</td></tr>
@@ -211,11 +212,6 @@ function isCalc(){
 document.querySelectorAll('#view-ich-score input, #view-ich-score select')
   .forEach(el => { el.addEventListener('input', isCalc); el.addEventListener('change', isCalc); });
 isCalc();
-var _from=(location.search.match(/from=(ich|tbi)/)||[])[1];
-if(_from){var _b=document.getElementById('is_back_path');
-  if(_b){ _b.style.display='';
-    if(_from==='tbi'){ _b.textContent='← 返回創傷性腦損傷決策'; _b.setAttribute('onclick',"location.href='../pathways/tbi.html?restore=1'"); }
-  }}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

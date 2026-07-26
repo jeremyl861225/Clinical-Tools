@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="AKI 決策">
 <div class="sheet">
 <div class="view active" id="view-aki-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性腎損傷與腎臟替代療法決策</h1><div class="sub">AKI &amp; RRT Timing · KDIGO 2012 ＋ ELAIN／AKIKI／IDEAL-ICU／STARRT-AKI／AKIKI-2</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-aki-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-aki-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -83,7 +87,7 @@
       <button class="flow-opt" onclick="aiPick('emerg','yes',this)">有<span class="fo-sub">頑固性高鉀、治療無效的代謝性酸中毒、利尿劑無效的容積過載併肺水腫、尿毒併發症（心包炎／腦病變／出血傾向）、可透析的中毒</span></button>
       <button class="flow-opt" onclick="aiPick('emerg','no',this)">無<span class="fo-sub">腎功能異常但代謝與容積尚可控制</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/kdigo-aki.html?from=aki'">🧮 開啟 KDIGO AKI 分期</button>
+    <button class="flow-link" onclick="location.href='../tools/kdigo-aki.html'">🧮 開啟 KDIGO AKI 分期</button>
   </div>
 
   <div class="flow-connector hidden" id="ai_c2">↓</div>

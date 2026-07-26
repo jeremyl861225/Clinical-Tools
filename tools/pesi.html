@@ -15,8 +15,9 @@
 <meta name="apple-mobile-web-app-title" content="臨床計分">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="PESI／sPESI">
 <div class="sheet">
 <div class="view active" id="view-pesi">
   <div class="app-header">
@@ -26,8 +27,6 @@
       <div class="sub">Pulmonary Embolism Severity Index · 確診 PE 後的 30 天死亡風險分層</div>
     </div>
     <div class="back-stack">
-      <!-- 由肺栓塞頁點進來時（?from=pe）才顯示 -->
-      <button class="back-btn hidden" id="pesi-back-pe" onclick="location.href='pe.html#risk'">← 返回急性肺栓塞</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-pesi'">← 返回主選單</button>
     </div>
   </div>
@@ -55,12 +54,12 @@
       <div>
         <div class="metric-label">原始 PESI Total</div>
         <div class="metric-value big" id="pe_total">—</div>
-        <div class="metric-value" id="pe_class" style="font-size:19px; margin-top:2px;">請輸入年齡</div>
+        <div class="result-headline" id="pe_class">請輸入年齡</div>
       </div>
       <div>
         <div class="metric-label">簡化 sPESI</div>
         <div class="metric-value big" id="spe_total">—</div>
-        <div class="metric-value" id="spe_risk" style="font-size:19px; margin-top:2px;">—</div>
+        <div class="result-headline" id="spe_risk">—</div>
       </div>
     </div>
     <div class="risk-note" id="pe_advice" style="margin-top:10px;">請輸入年齡並勾選符合的項目。</div>
@@ -178,10 +177,6 @@ document.querySelectorAll('#view-pesi input').forEach(function(el){
   el.addEventListener('change', pesiCalc);
   el.addEventListener('input', pesiCalc);
 });
-(function(){
-  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='pe'){ var b=document.getElementById('pesi-back-pe'); if(b) b.classList.remove('hidden'); }
-})();
 pesiCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

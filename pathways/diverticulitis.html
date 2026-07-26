@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="憩室炎決策">
 <div class="sheet">
 <div class="view active" id="view-divert-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>急性大腸憩室炎處置決策</h1><div class="sub">Acute Colonic Diverticulitis · WSES CT-driven classification（WSES 2020 · 含右側 ARCD）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-divert-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-divert-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -37,7 +41,7 @@
       <span class="mono" style="font-size:11.5px;">※ 1A 與 2B 的 5 cm 指的是<b>氣體距發炎腸段</b>的距離，不是病灶本身的大小。</span><br>
       <span class="mono" style="font-size:11.5px;">※ 此分類為專家共識，無衍生或驗證世代。WSES 2020 自陳：多種 ALCD 分類「<i>None has been conclusively proven to be superior in predicting patient outcomes</i>」，故未建議特定分類。</span><br><br>
       <b>Hinchey 分類（手術所見）：</b>I 周邊膿瘍／II 骨盆腔、腹腔內或後腹膜膿瘍／III 全腹化膿性腹膜炎／IV 全腹糞性腹膜炎。CT 分期 3 ≈ Hinchey III、4 ≈ Hinchey IV。<br><br>
-      <b>◆ 膿瘍引流切點：</b>WSES 2020 為 &lt;4–5 cm 單用抗生素（2C，弱建議），ASCRS 2020 為 &gt;3 cm 即引流（1B，強建議）；此議題<b>從未有任何隨機試驗</b>，各學會切點不一致的來由見 <a class="tool-link" href="../tools/classifications.html?from=divert#sys=wses-ct">→ 分類與分級系統</a>。<br><br>
+      <b>◆ 膿瘍引流切點：</b>WSES 2020 為 &lt;4–5 cm 單用抗生素（2C，弱建議），ASCRS 2020 為 &gt;3 cm 即引流（1B，強建議）；此議題<b>從未有任何隨機試驗</b>，各學會切點不一致的來由見 <a class="tool-link" href="../tools/classifications.html#sys=wses-ct">→ 分類與分級系統</a>。<br><br>
       <b>◆ 右側憩室炎 ARCD：</b>WSES 2020 之立場為「<i>We suggest that all the statements for ALCD also apply to ARCD</i>」——<b>此為全篇唯一未標註 GRADE 強度與證據等級之 statement</b>，屬專家共識外推；同節並自陳「<i>the management of ARCD is not well defined, and no unique guidelines have been proposed</i>」。<br>
       ・<b>流行病學：</b>歐美手術檢體 1–2%、亞洲 43–50%。韓國世代右側佔 77–93%；以色列 10%；北美 &lt;5%。台灣 Chou 2001（榮總，934 例不明原因右下腹痛）ARCD 佔 2.5%。<br>
       ・<b>與左側之差異：</b>好發中年男性、年齡較輕（台灣 Fang 2003 平均 53.1 歲，較同院左側年輕 11.6 歲）、BMI 較低、多為單一憩室、併發率遠低。統合分析（Hajibandeh 2020，9 篇 n=2933）右側 vs 左側：complicated OR 0.21、保守失敗 OR 0.14、急診手術 OR 0.13、復發 OR 0.49（0.25–0.98）、年齡差 −14.16 歲。<br>
@@ -86,7 +90,7 @@
   <div class="note">
     <b>Hinchey 分類</b>（術中所見）：I 周邊膿瘍／II 骨盆腔、腹腔內或後腹膜膿瘍／III 全腹化膿性腹膜炎／IV 全腹糞性腹膜炎。CT 分期 3 ≈ Hinchey III、4 ≈ Hinchey IV。
     modified Hinchey（Wasvary 加分期、Kaiser 加 CT 準則）與 WSES CT 分期的<b>逐級對照、兩處實質不等價之處</b>，以及膿瘍引流 3 cm／4 cm 切點的爭議，見
-    <a class="tool-link" href="../tools/classifications.html?from=divert#sys=hinchey">→ 分類與分級系統</a>。
+    <a class="tool-link" href="../tools/classifications.html#sys=hinchey">→ 分類與分級系統</a>。
   </div>
 
   <div class="flow-step" id="dv_s1">

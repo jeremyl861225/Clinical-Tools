@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Rockall Score">
 <div class="sheet">
 <div class="view active" id="view-rockall">
   <div class="app-header">
     <div><div class="eyebrow">Upper GI Bleeding Scoring Tool</div><h1>Rockall Score</h1><div class="sub">上消化道出血死亡風險分層：內視鏡前（0–7）與完整（0–11）兩段</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="rk_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html?restore=1'">← 返回消化道出血決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-rockall'">← 返回主選單</button>
     </div>
   </div>
@@ -90,7 +90,7 @@
     <div id="rk_rebleed_wrap"><div class="metric-label">對應再出血率</div>
       <div class="metric-value" id="rk_rebleed" style="margin-bottom:10px;">—</div></div>
     <div class="metric-label">臨床判讀</div>
-    <div id="rk_interp" style="font-size:15px; margin-top:2px;">請輸入年齡與生命徵象</div>
+    <div id="rk_interp" class="result-interp">請輸入年齡與生命徵象</div>
     <table class="ref" id="rk_table"></table>
     <div class="risk-note">
       <b>死亡率與再出血率取自 Rockall 1996 年英國全國性前瞻研究（n=4185 推導、1625 驗證）之族群統計，僅供參考。</b>
@@ -198,9 +198,6 @@ function rkReset(){
 document.querySelectorAll('#view-rockall input, #view-rockall select')
   .forEach(el=>{ el.addEventListener('input',rkCalc); el.addEventListener('change',rkCalc); });
 rkCalc();
-</script>
-<script>
-if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('rk_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

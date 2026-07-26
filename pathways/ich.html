@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="自發性腦出血決策">
 <div class="sheet">
 <div class="view active" id="view-ich-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>自發性腦出血處置決策</h1><div class="sub">Spontaneous Intracerebral Hemorrhage · Aneurysmal Subarachnoid Hemorrhage</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-ich-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-ich-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="ic_tabs">
@@ -154,7 +158,7 @@
       <button class="flow-opt" onclick="icPick('bp','high',this)">SBP &gt; 220 mmHg</button>
       <button class="flow-opt" onclick="icPick('bp','low',this)">SBP &lt; 150 mmHg</button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 開啟 ICH Score（含 ABC/2 體積估算）</button>
+    <button class="flow-link" onclick="location.href='../tools/ich-score.html'">🧮 開啟 ICH Score（含 ABC/2 體積估算）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="ic_rec">
@@ -183,7 +187,7 @@
       <button class="flow-opt" onclick="icPick('sub','mis',this)">Hematoma &gt;20–30 mL 且 GCS 5–12<span class="fo-sub">AHA 2022 minimally invasive surgery 的族群</span></button>
       <button class="flow-opt" onclick="icPick('sub','med',this)">上述皆非<span class="fo-sub">小量出血、意識清楚、無 midline shift</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算 hematoma 體積</button>
+    <button class="flow-link" onclick="location.href='../tools/ich-score.html'">🧮 用 ABC/2 估算 hematoma 體積</button>
   </div>
 
   <div class="flow-step hidden" id="ic_s4b">
@@ -192,7 +196,7 @@
       <button class="flow-opt" onclick="icPick('sub','cevac',this)">神經學惡化／brainstem compression／obstructive hydrocephalus，或 volume ≥15 mL<span class="fo-sub">符合任一項即成立</span></button>
       <button class="flow-opt" onclick="icPick('sub','cobs',this)">volume &lt;15 mL、意識清楚、fourth ventricle 未被壓扁、無 hydrocephalus</button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/ich-score.html?from=ich'">🧮 用 ABC/2 估算 hematoma 體積</button>
+    <button class="flow-link" onclick="location.href='../tools/ich-score.html'">🧮 用 ABC/2 估算 hematoma 體積</button>
   </div>
 
   <div class="flow-step hidden" id="ic_s4c">
@@ -432,7 +436,7 @@
         <div><div class="metric-label">陽性項目</div><div class="metric-value big" id="ot_count">0</div></div>
       </div>
       <div class="metric-label" style="margin-top:10px;">判讀</div>
-      <div style="font-size:15px; margin-top:2px;" id="ot_interp">請先確認四項適用條件。</div>
+      <div class="result-interp" id="ot_interp">請先確認四項適用條件。</div>
       <div class="risk-note">原始世代 2,131 人、SAH 盛行率 <b>6.2%</b>。此規則<b>只用於決定要不要檢查</b>，<b>不能用來診斷或排除已在檢查中的病人</b>。神經學檢查異常、外傷、或頭痛超過 1 小時才達峰者<b>不適用</b>。</div>
     </div>
   </div>
@@ -460,7 +464,7 @@
       <button class="flow-opt" onclick="saPick('grade','mid',this)">WFNS 3／Hunt-Hess 3</button>
       <button class="flow-opt" onclick="saPick('grade','poor',this)">Poor grade<span class="fo-sub">WFNS 4–5／Hunt-Hess 4–5</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/classifications.html?from=sah#sys=hunt-hess'">📋 開啟 SAH 分級四表對照（分類與分級系統）</button>
+    <button class="flow-link" onclick="location.href='../tools/classifications.html#sys=hunt-hess'">📋 開啟 SAH 分級四表對照（分類與分級系統）</button>
   </div>
 
   <div class="flow-connector hidden" id="sa_c3">↓</div>

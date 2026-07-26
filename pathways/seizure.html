@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* ── 劑量輸出：一藥一列 ────────────────────────────────────────
      原本三個階段各是一整段連續文字，藥名、劑量、速率、注意事項全擠在
@@ -43,12 +44,15 @@
   }
 </style>
 </head>
-<body>
+<body data-back-label="癲癇處置">
 <div class="sheet">
 <div class="view active" id="view-seizure-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>癲癇發作與癲癇重積處置</h1><div class="sub">Seizures &amp; Status Epilepticus · 診斷、分類、藥物與重積計時劑量</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-seizure-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-seizure-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="tab-row" id="sz_tabs">

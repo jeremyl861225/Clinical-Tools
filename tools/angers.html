@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Angers CT Score">
 <div class="sheet">
 <div class="view active" id="view-angers">
   <div class="app-header">
     <div><div class="eyebrow">Bowel Obstruction Scoring Tool</div><h1>Angers CT Score</h1><div class="sub">預測黏連性小腸阻塞保守治療失敗風險</div></div>
     <div class="back-stack">
-      <button class="back-btn" id="angers_back_bo" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="boReturn()">← 返回腸阻塞決策</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-angers'">← 返回主選單</button>
     </div>
   </div>
@@ -38,7 +38,7 @@
     <div class="metric-label">Angers CT Score（0–6）</div>
     <div class="metric-value big" id="angers_total">0</div>
     <div class="metric-label" style="margin-top:8px;">風險分層</div>
-    <div id="angers_interp" style="font-size:15px;">低風險</div>
+    <div id="angers_interp" class="result-interp">低風險</div>
     <div class="risk-note">Angers CT score ≥5 為保守治療失敗之獨立風險因子（多中心前瞻研究OR 2.39，95%CI 1.01–5.69）；首次發作病人為保守治療成功之保護因子。此分數依6項CT徵象計算，各1分。</div>
   </div>
   <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Paisant+A%2C+et+al.+World+J+Surg.+2023%3B47%284%29%3A975-984" target="_blank" rel="noopener" class="ref-link">Paisant A, et al. World J Surg. 2023;47(4):975-984.</a></footer>
@@ -53,8 +53,6 @@ function angersCalc(){
 }
 document.querySelectorAll('.angers-cb').forEach(cb=>cb.addEventListener('change',angersCalc));
 angersCalc();
-function boReturn(){location.href='../pathways/bowel-obstruction.html?restore=1';}
-if(location.search.indexOf('from=bo')>=0){var _b=document.getElementById('angers_back_bo'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

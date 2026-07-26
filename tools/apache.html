@@ -15,18 +15,26 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  /* 本頁標籤中英並列較長，維持較小字級以避免換行 */
+  #view-apache .organ-name{font-size:14.5px;}
+</style>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-apache">
   <div class="app-header">
     <div><div class="eyebrow">Critical Care Scoring Tool</div><h1>APACHE II</h1><div class="sub">Acute Physiology and Chronic Health Evaluation II</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-apache'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-apache'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="section-title" style="margin-top:0;">A｜急性生理評分（每項 0–4 分）</div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">體溫 Temperature</div><div class="organ-score" id="ap_pt_temp">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">體溫 Temperature</div><div class="organ-score" id="ap_pt_temp">0</div></div>
     <div class="field-row"><input type="number" id="ap_temp" step="0.1"><span class="unit">°C</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤29.9</td><td>4分</td></tr><tr><td>30–31.9</td><td>3分</td></tr><tr><td>32–33.9</td><td>2分</td></tr><tr><td>34–35.9</td><td>1分</td></tr>
@@ -34,21 +42,21 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">平均動脈壓 MAP</div><div class="organ-score" id="ap_pt_map">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">平均動脈壓 MAP</div><div class="organ-score" id="ap_pt_map">0</div></div>
     <div class="field-row"><input type="number" id="ap_map" step="1"><span class="unit">mmHg</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤49</td><td>4分</td></tr><tr><td>50–69</td><td>2分</td></tr><tr><td>70–109</td><td>0分</td></tr><tr><td>110–129</td><td>2分</td></tr><tr><td>130–159</td><td>3分</td></tr><tr><td>≥160</td><td>4分</td></tr>
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">心率 Heart Rate</div><div class="organ-score" id="ap_pt_hr">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">心率 Heart Rate</div><div class="organ-score" id="ap_pt_hr">0</div></div>
     <div class="field-row"><input type="number" id="ap_hr" step="1"><span class="unit">bpm</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤39</td><td>4分</td></tr><tr><td>40–54</td><td>3分</td></tr><tr><td>55–69</td><td>2分</td></tr><tr><td>70–109</td><td>0分</td></tr><tr><td>110–139</td><td>2分</td></tr><tr><td>140–179</td><td>3分</td></tr><tr><td>≥180</td><td>4分</td></tr>
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">呼吸速率 Respiratory Rate</div><div class="organ-score" id="ap_pt_rr">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">呼吸速率 Respiratory Rate</div><div class="organ-score" id="ap_pt_rr">0</div></div>
     <div class="field-row"><input type="number" id="ap_rr" step="1"><span class="unit">breaths/min</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤5</td><td>4分</td></tr><tr><td>6–9</td><td>2分</td></tr><tr><td>10–11</td><td>1分</td></tr><tr><td>12–24</td><td>0分</td></tr>
@@ -56,7 +64,7 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">氧合狀態 Oxygenation</div><div class="organ-score" id="ap_pt_ox">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">氧合狀態 Oxygenation</div><div class="organ-score" id="ap_pt_ox">0</div></div>
     <div class="field-row"><label>FiO₂</label><input type="number" id="ap_fio2" step="1" placeholder="例如 40"><span class="unit">%</span></div>
     <div class="field-row" id="ap_row_pao2"><label>PaO₂</label><input type="number" id="ap_pao2" step="1"><span class="unit">FiO₂&lt;50%</span></div>
     <div class="field-row" id="ap_row_aado2"><label>A-aDO₂</label><input type="number" id="ap_aado2" step="1"><span class="unit">FiO₂≥50%</span></div>
@@ -66,7 +74,7 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">動脈血 Arterial pH</div><div class="organ-score" id="ap_pt_ph">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">動脈血 Arterial pH</div><div class="organ-score" id="ap_pt_ph">0</div></div>
     <div class="field-row"><input type="number" id="ap_ph" step="0.01"></div>
     <div class="note">無ABG可填 HCO₃⁻：<input type="number" id="ap_hco3" step="0.1" style="width:80px;"></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
@@ -78,7 +86,7 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血清鈉 Sodium</div><div class="organ-score" id="ap_pt_na">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">血清鈉 Sodium</div><div class="organ-score" id="ap_pt_na">0</div></div>
     <div class="field-row"><input type="number" id="ap_na" step="1"><span class="unit">mEq/L</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤110</td><td>4分</td></tr><tr><td>111–119</td><td>3分</td></tr><tr><td>120–129</td><td>2分</td></tr><tr><td>130–149</td><td>0分</td></tr>
@@ -86,7 +94,7 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血清鉀 Potassium</div><div class="organ-score" id="ap_pt_k">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">血清鉀 Potassium</div><div class="organ-score" id="ap_pt_k">0</div></div>
     <div class="field-row"><input type="number" id="ap_k" step="0.1"><span class="unit">mEq/L</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>&lt;2.5</td><td>4分</td></tr><tr><td>2.5–2.9</td><td>2分</td></tr><tr><td>3–3.4</td><td>1分</td></tr><tr><td>3.5–5.4</td><td>0分</td></tr>
@@ -94,7 +102,7 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">肌酸酐 Creatinine</div><div class="organ-score" id="ap_pt_cr">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">肌酸酐 Creatinine</div><div class="organ-score" id="ap_pt_cr">0</div></div>
     <div class="field-row"><input type="number" id="ap_cr" step="0.1"><span class="unit">mg/dL</span></div>
     <label class="toggle-inline"><input type="checkbox" id="ap_arf"> 急性腎損傷 ×2</label>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
@@ -103,27 +111,27 @@
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">血球容積比 Hematocrit</div><div class="organ-score" id="ap_pt_hct">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">血球容積比 Hematocrit</div><div class="organ-score" id="ap_pt_hct">0</div></div>
     <div class="field-row"><input type="number" id="ap_hct" step="0.1"><span class="unit">%</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>&lt;20</td><td>4分</td></tr><tr><td>20–29.9</td><td>2分</td></tr><tr><td>30–45.9</td><td>0分</td></tr><tr><td>46–49.9</td><td>1分</td></tr><tr><td>50–59.9</td><td>2分</td></tr><tr><td>≥60</td><td>4分</td></tr>
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">白血球 WBC</div><div class="organ-score" id="ap_pt_wbc">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">白血球 WBC</div><div class="organ-score" id="ap_pt_wbc">0</div></div>
     <div class="field-row"><input type="number" id="ap_wbc" step="0.1"><span class="unit">×10³/mm³</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>&lt;1</td><td>4分</td></tr><tr><td>1–2.9</td><td>2分</td></tr><tr><td>3–14.9</td><td>0分</td></tr><tr><td>15–19.9</td><td>1分</td></tr><tr><td>20–39.9</td><td>2分</td></tr><tr><td>≥40</td><td>4分</td></tr>
     </table></div></details>
   </div>
 
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">意識 GCS</div><div class="organ-score" id="ap_pt_gcs">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">意識 GCS</div><div class="organ-score" id="ap_pt_gcs">0</div></div>
     <div class="field-row"><input type="number" id="ap_gcs" min="3" max="15" step="1"></div>
     <div class="note">分數 = 15 − GCS</div>
   </div>
 
   <div class="section-title">B｜年齡分數</div>
-  <div class="card"><div class="organ-head"><div class="organ-name" style="font-size:14.5px;">年齡 Age</div><div class="organ-score" id="ap_pt_age">0</div></div>
+  <div class="card"><div class="organ-head"><div class="organ-name">年齡 Age</div><div class="organ-score" id="ap_pt_age">0</div></div>
     <div class="field-row"><input type="number" id="ap_age" step="1"><span class="unit">歲</span></div>
     <details class="info-box"><summary></summary><div class="box-inner"><table class="score-ref">
       <tr><td>≤44</td><td>0分</td></tr><tr><td>45–54</td><td>2分</td></tr><tr><td>55–64</td><td>3分</td></tr>
@@ -133,7 +141,7 @@
 
   <div class="section-title">C｜慢性健康分數</div>
   <div class="card">
-    <div class="organ-head"><div class="organ-name" style="font-size:14.5px;">嚴重器官不全／免疫抑制</div><div class="organ-score" id="ap_pt_chronic">0</div></div>
+    <div class="organ-head"><div class="organ-name">嚴重器官不全／免疫抑制</div><div class="organ-score" id="ap_pt_chronic">0</div></div>
     <label class="toggle-inline"><input type="checkbox" id="ap_chronic"> 具相關病史</label>
     <div class="field-row" style="margin-top:8px;">
       <label><input type="radio" name="ap_surg" value="5" checked> 非手術/緊急術後(+5)</label>

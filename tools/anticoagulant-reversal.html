@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-anticoag-reversal">
   <div class="app-header">
     <div><div class="eyebrow">Anticoagulant Reversal Tool</div><h1>抗凝／抗血小板緊急逆轉</h1><div class="sub">Reversal of Antithrombotics · 依 ACC 2020 出血處置決策路徑</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-anticoag-reversal'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-anticoag-reversal'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -128,7 +132,7 @@
 
   <div class="result">
     <div class="metric-label">逆轉方案 Reversal Strategy</div>
-    <div style="font-size:15px; margin-top:4px;" id="ar_out">請選擇抗栓藥。</div>
+    <div class="result-interp" id="ar_out">請選擇抗栓藥。</div>
     <div class="risk-note">逆轉劑僅用於<b>危及生命出血或無法止住的重大出血</b>。同時進行停藥、局部止血、輸血與找出血源。ACC 2020 出血決策路徑主要涵蓋口服抗凝劑（VKA 與 DOAC）；肝素、抗血小板與溶栓相關出血的建議依標準與 AHA 2022。止血後應重新評估<b>恢復抗凝的時機</b>。</div>
   </div>
 

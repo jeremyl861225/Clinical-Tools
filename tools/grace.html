@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="臨床計分">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   .gr-warn{background:var(--accent2-soft); border:1px solid var(--accent2); border-left-width:3px; border-radius:2px;
         padding:10px 13px; margin-bottom:14px; font-size:12.5px; line-height:1.75;}
@@ -29,7 +30,7 @@
   .gr-sc-m{font-family:var(--mono); font-size:10.5px; opacity:.55;}
 </style>
 </head>
-<body>
+<body data-back-label="GRACE Score">
 <div class="sheet">
 <div class="view active" id="view-grace">
   <div class="app-header">
@@ -39,7 +40,6 @@
       <div class="sub">急性冠心症死亡風險分層 · 決定 NSTE-ACS 侵入性檢查時機</div>
     </div>
     <div class="back-stack">
-      <button class="back-btn hidden" id="gr-back-acs" onclick="location.href='acs.html#dx'">← 返回急性冠心症</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-grace'">← 返回主選單</button>
     </div>
   </div>
@@ -204,10 +204,6 @@ function grCalc(){
 }
 document.querySelectorAll('#view-grace input, #view-grace select')
   .forEach(function(el){ el.addEventListener('input', grCalc); el.addEventListener('change', grCalc); });
-(function(){
-  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='acs'){ var b=document.getElementById('gr-back-acs'); if(b) b.classList.remove('hidden'); }
-})();
 grCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

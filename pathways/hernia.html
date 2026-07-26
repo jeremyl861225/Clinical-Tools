@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="疝氣決策">
 <div class="sheet">
 <div class="view active" id="view-hernia-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>腹股溝疝氣手術決策</h1><div class="sub">Incarcerated / Strangulated Groin Hernia · TAXIS ＆ Operative Approach（WSES 2017 · HerniaSurge 2023）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-hernia-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-hernia-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <details class="def-box" style="margin-bottom:12px;">
@@ -83,7 +87,7 @@
 
   <div class="note" style="margin-bottom:12px;">
     腹股溝疝氣分類（<b>EHS</b>／<b>Nyhus</b>／<b>Gilbert-Rutkow-Robbins</b>）為術中分類，本流程未用於分流，完整對照表與限制見
-    <a class="tool-link" href="../tools/classifications.html?from=hernia#sys=ehs">→ 分類與分級系統</a>。
+    <a class="tool-link" href="../tools/classifications.html#sys=ehs">→ 分類與分級系統</a>。
     急診疝氣沒有公認的嚴重度分類；本流程的分層軸是下方的 <b>CDC 傷口分類</b>。
   </div>
 

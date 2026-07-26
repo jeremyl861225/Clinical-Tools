@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
 <div class="view active" id="view-cci-clavien">
   <div class="app-header">
     <div><div class="eyebrow">Perioperative Scoring Tool</div><h1>CCI 綜合併發症指數</h1><div class="sub">Comprehensive Complication Index · 把一次住院期間<b>所有</b>併發症合併為 0–100 的連續量尺（Slankamenac 2013）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-cci-clavien'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-cci-clavien'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="exclusive-note" style="margin-bottom:14px;">

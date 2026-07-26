@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* 分頁列沿用全站共用的 .tab-row／.tab-btn（見 css/styles.css），此處只定義內容面板 */
   .sg-panel{display:none;} .sg-panel.on{display:block;}
@@ -109,7 +110,7 @@
   .sg-hint b{color:#fff;}
 </style>
 </head>
-<body>
+<body data-back-label="Swan-Ganz 判讀">
 <div class="sheet">
 <div class="view active" id="view-swan-ganz">
   <div class="app-header">
@@ -118,7 +119,10 @@
       <h1>Swan-Ganz 導管判讀</h1>
       <div class="sub">Pulmonary Artery Catheter — 置放波形、數值換算、血行動力學型態、異常波形與量測陷阱</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-swan'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-swan'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">

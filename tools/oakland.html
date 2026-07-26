@@ -15,14 +15,14 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="Oakland Score">
 <div class="sheet">
 <div class="view active" id="view-oakland">
   <div class="app-header">
     <div><div class="eyebrow">Lower GI Bleeding Scoring Tool</div><h1>Oakland Score</h1><div class="sub">下消化道出血安全出院評估（0–35 分，分數越低越安全）</div></div>
-    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-      <button class="back-btn" id="oak_back_path" style="display:none; border-color:var(--accent2); color:var(--accent2);" onclick="location.href='../pathways/gi-bleeding.html?restore=1'">← 返回消化道出血決策</button>
+    <div class="back-stack">
       <button class="back-btn" onclick="location.href='../index.html#card-view-oakland'">← 返回主選單</button>
     </div>
   </div>
@@ -79,7 +79,7 @@
       <div>心跳 <b id="oak_k_hr">0</b></div><div>收縮壓 <b id="oak_k_sbp">0</b></div><div>血紅素 <b id="oak_k_hb">0</b></div>
     </div>
     <div class="metric-label" style="margin-top:10px;">臨床判讀</div>
-    <div id="oak_interp" style="font-size:15px; margin-top:2px;">請輸入資料</div>
+    <div id="oak_interp" class="result-interp">請輸入資料</div>
     <table class="ref">
       <tr><th>分數</th><th>判讀</th><th>安全出院敏感度</th></tr>
       <tr><td>≤8</td><td>低風險，原始論文之安全出院閾值（95% 機率安全出院）</td><td>98.4%</td></tr>
@@ -164,9 +164,6 @@ function oakReset(){
 document.querySelectorAll('#view-oakland input, #view-oakland select')
   .forEach(el=>{ el.addEventListener('input',oakCalc); el.addEventListener('change',oakCalc); });
 oakCalc();
-</script>
-<script>
-if(location.search.indexOf('from=gi-bleed')>=0){var _b=document.getElementById('oak_back_path'); if(_b) _b.style.display='';}
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->

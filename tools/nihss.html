@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* 15 個項目：每列＝編號＋名稱＋下拉＋該項分數 */
   .ni-item{display:flex; align-items:center; gap:9px; flex-wrap:wrap; padding:9px 0; border-bottom:1px dotted var(--line);}
@@ -32,10 +33,6 @@
   .ni-d{font-size:12.5px; line-height:1.75; margin-top:5px; opacity:.88;}
   .ni-band{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em;
         border-radius:2px; padding:2px 8px; vertical-align:2px;}
-  .ni-band.b0{color:#cfe6d8; background:#1b3d2e; border:1px solid #356b4f;}
-  .ni-band.b1{color:#d6e4c0; background:#2b3a1c; border:1px solid #526b34;}
-  .ni-band.b2{color:#f0dcb4; background:#4a3a15; border:1px solid #7d6426;}
-  .ni-band.b3{color:#f0c9c0; background:#4a1d15; border:1px solid #7d3626;}
 </style>
 </head>
 <body>
@@ -47,7 +44,10 @@
       <h1>NIHSS</h1>
       <div class="sub">NIH Stroke Scale — 15 個項目、0–42 分（Brott 1989）</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-nihss'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-nihss'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -259,7 +259,7 @@
       <div class="metric-label">NIHSS 總分</div>
       <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <span class="metric-value big" id="ni_total">0</span>
-        <span class="ni-band b0" id="ni_band">無中風症狀</span>
+        <span class="ni-band risk-band b0" id="ni_band">無中風症狀</span>
       </div>
       <div class="ni-d" id="ni_d">全部項目 0 分。0 分不代表沒有中風——後循環與右半球病灶在本量表上可能完全不顯現。</div>
     </div>
@@ -315,7 +315,7 @@ function niCalc(){
   else if(total<=15){ t='中度 Moderate'; cls='b2'; }
   else if(total<=20){ t='中至重度 Moderate-severe'; cls='b3'; }
   else { t='重度 Severe'; cls='b3'; }
-  band.textContent=t; band.className='ni-band '+cls;
+  band.textContent=t; band.className='ni-band risk-band '+cls;
 
   var d='總分 <b>'+total+'</b> 分（'+t+'）。';
   if(total===0) d+=' <b>0 分不代表沒有中風</b>——後循環與右半球病灶在本量表上可能完全不顯現。';

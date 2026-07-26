@@ -572,20 +572,11 @@ function applyHash(){
   return false;
 }
 
-/* 由菌譜資料庫（spectrum-database.html）點藥名進來時帶 ?from=spectrum，
-   顯示「返回菌譜資料庫」；返回後由該頁自 sessionStorage 還原原本捲動位置。 */
-function applyBackContext(){
-  var from='';
-  try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='spectrum'){
-    var b=document.getElementById('back-to-spectrum');
-    if(b) b.classList.remove('hidden');
-  }
-}
+/* 「返回菌譜資料庫」改由 js/backlink.js 統一產生（依 referrer 判斷來源頁），
+   本頁不再需要 ?from=spectrum 與專屬按鈕；菌譜頁的捲動位置仍由該頁自己還原。 */
 
 document.addEventListener('DOMContentLoaded', function () {
   renderSites();
-  applyBackContext();
   applyHash();
 });
 window.addEventListener('hashchange', applyHash);

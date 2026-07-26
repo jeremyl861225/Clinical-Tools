@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="臨床計分">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 <style>
   /* 兩套計分並列：完整版與簡化版的分數不同、判讀切點也不同，必須各自顯示 */
   .gv-two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
@@ -29,7 +30,7 @@
   .pt-badge.pt-simp{background:var(--accent-soft); color:var(--accent);}
 </style>
 </head>
-<body>
+<body data-back-label="Revised Geneva">
 <div class="sheet">
 <div class="view active" id="view-geneva">
   <div class="app-header">
@@ -39,7 +40,6 @@
       <div class="sub">肺栓塞臨床機率評估 · 完整版與簡化版並列（不需主觀判斷，全為客觀項目）</div>
     </div>
     <div class="back-stack">
-      <button class="back-btn hidden" id="gv-back-pe" onclick="location.href='pe.html#dx'">← 返回急性肺栓塞</button>
       <button class="back-btn" onclick="location.href='../index.html#card-view-geneva'">← 返回主選單</button>
     </div>
   </div>
@@ -174,10 +174,6 @@ function gvCalc(){
 }
 document.querySelectorAll('#view-geneva input[type=checkbox], #view-geneva select')
   .forEach(function(el){ el.addEventListener('change', gvCalc); });
-(function(){
-  var from=''; try{ from=new URLSearchParams(location.search).get('from')||''; }catch(e){}
-  if(from==='pe'){ var b=document.getElementById('gv-back-pe'); if(b) b.classList.remove('hidden'); }
-})();
 gvCalc();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>

@@ -16,6 +16,7 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
 <body>
 <div class="sheet">
@@ -24,8 +25,12 @@
     <div>
       <div class="eyebrow">Cancer Staging &amp; Treatment</div>
       <h1>癌症分期與治療</h1>
+      <div class="sub">分期、淋巴結分群與治療決策</div>
     </div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-cancer'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-cancer'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="gs-box">

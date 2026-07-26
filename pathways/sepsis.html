@@ -15,13 +15,17 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
 </head>
-<body>
+<body data-back-label="敗血症決策">
 <div class="sheet">
 <div class="view active" id="view-sepsis-path">
   <div class="app-header">
     <div><div class="eyebrow">Clinical Decision Pathway</div><h1>敗血症與敗血性休克處置決策</h1><div class="sub">Sepsis &amp; Septic Shock · 依 Surviving Sepsis Campaign 2026（成人）</div></div>
-    <button class="back-btn" onclick="location.href='../index.html#card-view-sepsis-path'">← 返回主選單</button>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-sepsis-path'">← 返回主選單</button>
+    </div>
   </div>
 
   <div class="lede">
@@ -115,8 +119,8 @@
       <button class="flow-opt" onclick="spPick('cat','unlikely',this)">感染可能性低<span class="fo-sub">臨床表現另有更合理的解釋</span></button>
     </div>
     <div class="note" style="margin-top:8px;">SSC 2026 以「可能／很可能／確定」三級決定抗生素時機，但<b>指引未提供這三級的正式定義</b>，此處依臨床判斷選擇。</div>
-    <button class="flow-link" onclick="location.href='../tools/news2.html?from=sepsis'">🧮 開啟 NEWS2（SSC 2026 指名的篩檢工具，優於 qSOFA）</button>
-    <button class="flow-link" onclick="location.href='../tools/sofa.html?from=sepsis'">🧮 開啟 SOFA（Sepsis-3 的器官功能障礙判準）</button>
+    <button class="flow-link" onclick="location.href='../tools/news2.html'">🧮 開啟 NEWS2（SSC 2026 指名的篩檢工具，優於 qSOFA）</button>
+    <button class="flow-link" onclick="location.href='../tools/sofa.html'">🧮 開啟 SOFA（Sepsis-3 的器官功能障礙判準）</button>
   </div>
 
   <div class="flow-rec rec-idle" id="sp_rec">
@@ -141,7 +145,7 @@
       <button class="flow-opt" onclick="spPick('hemo','escalate',this)">仍未達標，norepinephrine 需求持續上升<span class="fo-sub">已需中高劑量且仍在加</span></button>
       <button class="flow-opt" onclick="spPick('hemo','cardiac',this)">血壓可，但持續低灌流併心功能不全<span class="fo-sub">乳酸不降、心輸出量低、超音波顯示收縮功能受損</span></button>
     </div>
-    <button class="flow-link" onclick="location.href='../tools/vasopressor.html?from=sepsis'">🧮 開啟升壓／強心藥物流速換算</button>
+    <button class="flow-link" onclick="location.href='../tools/vasopressor.html'">🧮 開啟升壓／強心藥物流速換算</button>
   </div>
 
   <div class="flow-rec rec-idle hidden" id="sp_rec2">
