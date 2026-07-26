@@ -17,12 +17,12 @@
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
 <style>
-  /* ── 體重列：藥物分頁所有換算的唯一輸入（與 tools/rsi.html 同一套做法） ── */
-  .cs-bar{position:sticky; top:0; z-index:20; background:var(--paper);
-          border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  /* ── 體重列：藥物分頁所有換算的唯一輸入。
+        原本貼頂（position:sticky），但本分頁的藥卡各自標示劑量，捲動時不需要一直看到
+        體重欄，貼頂只是佔掉版面上緣，故改為隨頁面捲動。 ── */
+  .cs-bar{background:var(--paper); border-bottom:1px solid var(--line);
+          padding:8px 0 9px; margin-bottom:10px;}
   .cs-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
-  .cs-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
-  @media (max-width:1023px){ .cs-bar.stuck .cs-bar-in{padding-left:52px;} }
   .cs-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
                 text-transform:uppercase; letter-spacing:.04em;}
   .cs-bar input[type=number]{width:84px; font-family:var(--mono); font-size:15px; font-weight:700;
@@ -352,7 +352,6 @@
 <!-- ==================== 分頁四：藥物 ==================== -->
 <div class="cs-panel" id="p-drug">
 
-  <div id="cs_sentinel" aria-hidden="true" style="height:1px;"></div>
   <div class="cs-bar" id="cs_bar">
     <div class="cs-bar-in">
       <label for="cs_wt">體重 Weight</label>
@@ -810,7 +809,7 @@ function eRender(){
       } else if(eSt.mvd === 'mvd'){
         cls='rec-elective'; title='只做病灶血管 PCI；非病灶血管分階段處理';
         detail='<li><b>index 手術限於病灶血管</b>——CULPRIT-SHOCK：30 天死亡或腎臟替代 <b>45.9% vs 55.4%（RR 0.83，p=0.01）</b>，立即多血管 PCI 反而更差。</li>'+
-               '<li>非罪犯病灶<b>擇期分階段</b>處理（1 年死亡兩組無顯著差異，故無須急於一次做完）。</li>'+
+               '<li>其他非病灶狹窄<b>擇期分階段</b>處理（1 年死亡兩組無顯著差異，故無須急於一次做完）。</li>'+
                '<li>顯影劑量與手術時間都要克制——腎臟替代治療正是此族群的主要不良結果之一。</li>';
         note='2023 ESC ACS 指引第 10.1 節與 CULPRIT-SHOCK（NEJM 2017）。';
       } else if(eSt.mvd === 'nopci'){
@@ -1015,14 +1014,7 @@ function csCalc(){
 }
 document.getElementById('cs_wt').addEventListener('input', csCalc);
 
-/* 體重列貼頂偵測 */
-(function(){
-  var bar = document.getElementById('cs_bar'), sen = document.getElementById('cs_sentinel');
-  function mark(){ bar.classList.toggle('stuck', sen.getBoundingClientRect().top <= 0); }
-  window.addEventListener('scroll', mark, {passive:true});
-  window.addEventListener('resize', mark);
-  mark();
-})();
+/* 體重列已改為隨頁面捲動，不再需要貼頂偵測 */
 
 (function init(){
   var h = (location.hash || '').replace('#','');
