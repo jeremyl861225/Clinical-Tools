@@ -460,7 +460,7 @@ window.CANCERS = [
   id:'panc', zh:'胰臟癌', en:'Pancreatic Ductal Adenocarcinoma', group:'消化系 GI',
   pathway:'panc',
   edition:'AJCC 8th（2017）／治療依台大胰臟癌診療指引 版次 11（2026/06/16，PANC-1～PANC-E）',
-  staging_note:'AJCC 8th 之 T 改為以「腫瘤大小」為主（取代舊版之是否超出胰臟）。<b>可切除性判定另依台大指引 PANC-B 所載之 <u>M. D. Anderson criteria</u></b>（非 NCCN）：依腫瘤與腸繫膜上動脈（SMA）、腹腔動脈幹／總肝動脈、腸繫膜上靜脈／門靜脈（SMV/PV）之關係，分為可切除／臨界可切除／局部晚期，另依部位（頭／體／尾）與淋巴結狀態列出不可切除條件（切除範圍以外之淋巴結轉移應視為不可切除）。<b>腹腔鏡或剖腹時腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。',
+  staging_note:'AJCC 8th 之 T 改為以「腫瘤大小」為主（取代舊版之是否超出胰臟）。<b>可切除性判定另依台大指引 PANC-B 所載之 <u>M. D. Anderson criteria</u></b>（非 NCCN）：依腫瘤與腸繫膜上動脈（SMA）、腹腔動脈幹／總肝動脈、腸繫膜上靜脈／門靜脈（SMV/PV）之關係，分為可切除／臨界可切除／局部晚期，另依部位（頭／體／尾）與淋巴結狀態列出不可切除條件（切除範圍以外之淋巴結轉移應視為不可切除）。<b>腹腔鏡或剖腹時腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。<b>IPMN／MCN 相關之侵襲癌</b>：T 分期<b>以侵襲成分計</b>——該成分之大小應與 IPMN <b>分開量測、分開記載</b>（建議以顯微鏡量測、以 cm 表示；Kyoto 2024 CQ4-7）；<b>高度分化不良（HGD）＝ Tis</b>，Kyoto 明載 HGD 可與 carcinoma in situ 互用、<b>不建議使用「malignant IPMN」</b>一詞（CQ4-1）。',
   t:[
     ['Tis','原位癌 Carcinoma in situ（含 PanIN-3、高度分化不良之 IPMN／MCN、ITPN）'],
     ['T1','腫瘤最大徑 ≤2cm　Tumor ≤2cm in greatest dimension（T1a ≤0.5cm；T1b >0.5–<1cm；T1c 1–2cm）'],
