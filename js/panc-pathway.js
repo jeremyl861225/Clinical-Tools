@@ -62,6 +62,11 @@
       (sub ? '<span class="rx-sub">' + sub + '</span>' : '') + '</div>' +
       '<ul class="rx-items"><li>' + items.join('</li><li>') + '</li></ul></div>';
   }
+  /* 步驟方塊內的清單用安靜版：不再畫框（外層 .flow-step 本身已經是一個框），標題降一級。 */
+  function plainList(head, items) {
+    return '<div class="rx-line plain"><div class="rx-line-h"><span class="rx-h">' + head + '</span></div>' +
+      '<ul class="rx-items"><li>' + items.join('</li><li>') + '</li></ul></div>';
+  }
 
   /* ---------- PANC-B：可切除性判定準則（M. D. Anderson criteria）---------- */
   function resectCriteriaHtml() {
@@ -425,7 +430,7 @@
       opt('ext', 'meta', '轉移性 Metastatic disease', '影像或理學檢查發現轉移（PANC-1 → PANC-9）') +
       opt('ext', 'rec', '切除後復發 Recurrence after resection', '（PANC-10）') +
       opt('ext', 'cyst', '囊性腫瘤 IPMN／MCN（非腺癌）', '台大指引未涵蓋 → 依 Kyoto 2024／European 2018／ACG 2018'),
-      rxLine('初始檢查 WORK UP', 'PANC-1／PANC-2 · ★ 為關鍵項目', [
+      plainList('初始檢查 WORK UP', [
         '<b>★</b>　胰臟 protocol CT 或 MRI（PANC-A）',
         '<b>★</b>　多專科團隊會診 Multidisciplinary review',
         '考慮內視鏡超音波 EUS',
@@ -624,7 +629,16 @@
       opt('adj', 'metafound', '發現轉移性疾病 Metastatic disease', '→ 轉移性疾病之治療（PANC-9）'),
       cbx('術前基準檢查 Baseline pretreatment（PANC-6）', '', [
         cb('', 'CT scan'), cb('', 'CA 19-9'), cb('', 'CEA')
-      ]));
+      ]) +
+      plainList('監測 SURVEILLANCE（PANC-6）', [
+        '<b>頻率：每 3 個月一次、共 2 年；之後每年一次</b>（Surveillance every 3 mo for 2 years, then annually）。',
+        '<b>每次內容</b>：<b>病史與理學檢查（H&amp;P）以評估症狀</b>、<b>CA 19-9 與 CEA</b>、<b>CT scan</b>——三項並列。',
+        '<b>發現復發</b> → 依<b>切除後復發（PANC-10）</b>處理；可返回步驟 1 改選「切除後復發」查詢處置。'
+      ]) +
+      '<div class="note"><b>PANC-6 註 k（輔助治療之時機）</b>：' +
+      '<b>已接受新輔助化放療或化療者，術後為「追加化療」之候選人</b>；' +
+      '輔助治療應給予<b>未曾接受新輔助化療</b>且<b>已自手術充分恢復</b>者，並<b>於術後 4–8 週內開始</b>。' +
+      '<b>若全身性化療先於化放療，每一治療模式結束後應以 CT 重新分期</b>。</div>');
     h = h.replace('id="pc_sadj"', 'id="pc_sadj" class="hidden"');
 
     h += '<div class="flow-rec rec-idle hidden" id="pc_rec3"><div class="rec-label">輔助治療 Adjuvant</div>' +

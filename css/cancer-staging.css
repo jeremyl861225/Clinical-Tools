@@ -434,6 +434,14 @@
   .rx-line{min-width:0; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18);
     border-left:3px solid rgba(255,255,255,.45); border-radius:3px; padding:9px 11px;}
   .rx-line-h{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; margin-bottom:3px;}
+  /* 安靜版：同樣的清單結構，但不畫框、標題降一級。用於步驟方塊內的檢查清單——
+     那裡本來就已經被 .flow-step 框住，再套一層框只是噪音。 */
+  .rx-line.plain{background:none; border:0; padding:0; margin-top:2px;}
+  .rx-line.plain .rx-line-h{margin-bottom:2px;}
+  .rx-line.plain .rx-h{font-family:var(--mono); font-size:10.5px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+    border:0; padding:0; margin:0;}
+  .flow-rec.rec-idle .rx-line.plain{background:none; border:0;}
   .rx-items{margin:0; padding-left:16px; font-size:12.5px; line-height:1.75; list-style:disc;}
   .rx-items li{margin:2px 0; overflow-wrap:anywhere;}
   .rx-more > summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; opacity:.9;

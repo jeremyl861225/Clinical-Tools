@@ -457,10 +457,10 @@ window.CANCERS = [
 },
 /* ============================ 胰臟癌 ============================ */
 {
-  id:'panc', zh:'胰臟癌', en:'Pancreatic Ductal Adenocarcinoma', group:'消化系 GI',
+  id:'panc', zh:'胰臟癌', en:'Ductal Adenocarcinoma & IPMN / MCN', group:'消化系 GI',
   pathway:'panc',
   edition:'AJCC 8th（2017）／治療依台大胰臟癌診療指引 版次 11（2026/06/16，PANC-1～PANC-E）',
-  staging_note:'AJCC 8th 之 T 改為以「腫瘤大小」為主（取代舊版之是否超出胰臟）。<b>可切除性判定另依台大指引 PANC-B 所載之 <u>M. D. Anderson criteria</u></b>（非 NCCN）：依腫瘤與腸繫膜上動脈（SMA）、腹腔動脈幹／總肝動脈、腸繫膜上靜脈／門靜脈（SMV/PV）之關係，分為可切除／臨界可切除／局部晚期，另依部位（頭／體／尾）與淋巴結狀態列出不可切除條件（切除範圍以外之淋巴結轉移應視為不可切除）。<b>腹腔鏡或剖腹時腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。<b>IPMN／MCN 相關之侵襲癌</b>：T 分期<b>以侵襲成分計</b>——該成分之大小應與 IPMN <b>分開量測、分開記載</b>（建議以顯微鏡量測、以 cm 表示；Kyoto 2024 CQ4-7）；<b>高度分化不良（HGD）＝ Tis</b>，Kyoto 明載 HGD 可與 carcinoma in situ 互用、<b>不建議使用「malignant IPMN」</b>一詞（CQ4-1）。',
+  staging_note:'AJCC 8th 之 T 改為以「腫瘤大小」為主（取代舊版之是否超出胰臟）。<b>可切除性判定另依台大指引 PANC-B 所載之 <u>M. D. Anderson criteria</u></b>（非 NCCN）：依腫瘤與腸繫膜上動脈（SMA）、腹腔動脈幹／總肝動脈、腸繫膜上靜脈／門靜脈（SMV/PV）之關係，分為可切除／臨界可切除／局部晚期，另依部位（頭／體／尾）與淋巴結狀態列出不可切除條件（切除範圍以外之淋巴結轉移應視為不可切除）。<b>腹腔鏡或剖腹時腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。<b>下方 T／N／M 與矩陣為<u>胰管腺癌（PDAC）</u>之分期</b>；<b>IPMN／MCN 之分期規則另列於本頁最下方</b>——差別不在有沒有另一套 TNM（沒有），而在<b>哪些病灶進得了 TNM</b>、以及 <b>T 該量什麼</b>。',
   t:[
     ['Tis','原位癌 Carcinoma in situ（含 PanIN-3、高度分化不良之 IPMN／MCN、ITPN）'],
     ['T1','腫瘤最大徑 ≤2cm　Tumor ≤2cm in greatest dimension（T1a ≤0.5cm；T1b >0.5–<1cm；T1c 1–2cm）'],
@@ -491,6 +491,36 @@ window.CANCERS = [
     ],
     m1:'<b>Tis N0 M0 → 0 期</b>。T4 不論 N 分類均為 <b>III</b> 期。',
   },
+  /* 上方矩陣為 PDAC；囊性腫瘤另立一張獨立表，因為「哪些病灶進得了 TNM」本身就與 PDAC 不同，
+     混在 staging_note 一段文字裡會被略過。stages 與 matrix 並存，各自回答不同問題。 */
+  stages_title:'IPMN／MCN 之分期規則 Staging of IPMN / MCN',
+  stages_code_label:'病灶',
+  stages_crit_label:'AJCC 第 8 版之處理方式（與 PDAC 之異同）',
+  stages:[
+    ['IPMN／MCN<br>低度分化不良 LGD',
+      '<b>無對應之 T 分類</b>——AJCC 之 <b>Tis 僅涵蓋高度分化不良</b>，低度分化不良不符 Tis 定義，' +
+      '<b>不進入 TNM</b>。臨床上以<b>監測排程</b>而非分期來管理（見治療分頁之囊性腫瘤分支）。'],
+    ['IPMN／MCN<br>高度分化不良 HGD',
+      '<b>Tis</b>（＝ 0 期）。<b>與 PanIN-3、ITPN 同格</b>，見上方 T 表。' +
+      '<b>Kyoto 2024 CQ4-1</b>：<b>HGD 可與「carcinoma in situ」互用</b>；' +
+      '<b>不建議使用「malignant IPMN」</b>一詞（語意不清）。'],
+    ['IPMN／MCN<br>相關之侵襲癌',
+      '<b>沿用與 PDAC <u>完全相同</u>的一套 TNM 與分期組合</b>（即上方矩陣），AJCC 未另立系統。' +
+      '<b>唯一但關鍵的差別在 T 的量法：以<u>侵襲成分</u>之大小計，不計囊腫或非侵襲成分</b>' +
+      '——該成分應與 IPMN <b>分開量測、分開記載</b>（建議顯微鏡量測、以 cm 表示；Kyoto 2024 CQ4-7）。' +
+      '<b>T1 仍細分 T1a／T1b／T1c</b>。'],
+    ['與 IPMN <u>併存</u>之胰管腺癌<br>concomitant PDAC',
+      '<b>屬另一顆獨立的腫瘤，依該 PDAC 自身分期</b>，不與 IPMN 合併量測。' +
+      '<b>Kyoto CQ4-5</b>：臨床與病理特徵在多數情況下足以區分「IPMN <b>相關</b>（associated）」與「<b>併存</b>（concomitant）」之癌；' +
+      '疑難個案可用<b>基因變異是否一致</b>協助判定。'],
+  ],
+  stages_foot:'<b>⚠ AJCC 第 8 版對侵襲性 IPMN 的鑑別度有疑義。</b>該版之依據為 <b>PanIN-derived PDAC</b>，' +
+    '與 IPMN-derived 之生物行為不同。SEER 1216 例已切除之侵襲性 IPMN 顯示：第 8 版之 <b>IIA 期風險比（HR 1.26）反而低於 IB 期（HR 1.48）</b>，' +
+    '且腫瘤 &gt;2cm 者<b>大小不再是獨立預後因子</b>；作者結論為<b>第 7 版對侵襲性 IPMN 較適用</b>（Fan Z et al. World J Surg Oncol 2019）。' +
+    '<b>本頁仍依現行之第 8 版</b>，此處僅提示解讀時的限制。<br>' +
+    '<b>組織亞型亦影響預後</b>（Kyoto CQ4-2）：<b>腸型</b> IPMN 多對應 <b>colloid carcinoma，預後優於一般 PDAC</b>；' +
+    '<b>胃型與胰膽管型</b>多對應 tubular ductal adenocarcinoma。' +
+    '<b>IOPN 已自 IPMN 獨立為不同疾病實體</b>（CQ4-3，PRKACA／PRKACB 融合基因）。',
   node_note:'<b>站別命名來源：日本膵臓学会（JPS）《膵癌取扱い規約》之淋巴結編號</b>——此命名經 <b>ISGPS（國際胰臟外科研究小組）2014 年共識全體與會者採納</b>，本表之標準／擴大廓清範圍即依該共識（Tol JAMG et al. Surgery 2014）。<b>本院指引（PANC-1～PANC-E）未定義任何淋巴結站別表</b>，故站別不引用自本院指引。<br><b>注意：胰臟的兩軸與胃癌不同。</b>AJCC 第 8 版對胰臟<b>依區域淋巴結陽性顆數分期</b>（N1 1–3 顆、N2 ≥4 顆），<b>並未建立站別式的區域／M1 地圖</b>——因此本表<b>不標 N／M1</b>，只標<b>該站是否屬該術式的標準廓清範圍</b>。請勿將「不在標準廓清範圍」誤讀為「非區域淋巴結」，兩者是不同的軸。<br>本院指引之相關敘述僅有二處：<b>PANC-B「轉移至切除範圍以外之淋巴結應視為不可切除」</b>；以及 PANC-D 放療靶區以<b>解剖區域名</b>（pancreatico-duodenal、suprapancreatic、celiac、porta hepatis、entire duodenal loop；體尾部另加 lateral suprapancreatic、splenic hilum）描述選擇性淋巴結照射範圍——該處未使用站號。',
   node_op_label:'術式 Resection',
   node_sort_label:'廓清範圍',
@@ -548,6 +578,8 @@ window.CANCERS = [
     ['〔IPMN／MCN — 台大指引未涵蓋〕Kyoto 2024 國際實證指引 — Ohtsuka T et al. Pancreatology 2024;24:255-270（IPMN 之 HRS／WF、非切除與切除後之監測、病理與囊液分子標記；治療分頁囊性腫瘤分支之主要依據）', PM('38182527')],
     ['〔IPMN／MCN〕European evidence-based guidelines on pancreatic cystic neoplasms — Gut 2018;67:789-804（IPMN 絕對／相對手術指徵、MCN ≥40mm 之切除門檻、切除範圍與輔助治療；MCN 部分之主要依據）', PM('29574408')],
     ['〔IPMN／MCN〕ACG Clinical Guideline: Diagnosis and Management of Pancreatic Cysts — Elta GH et al. Am J Gastroenterol 2018;113:464-479（高風險特徵、依大小之監測排程、停止監測之時機）', PM('29485131')],
+    ['〔IPMN 分期之限制〕Fan Z et al. World J Surg Oncol 2019;17:137（SEER 1216 例已切除之侵襲性 IPMN：AJCC 第 8 版 IIA 期 HR 反低於 IB 期，&gt;2cm 者大小非獨立預後因子，作者結論第 7 版較適用）', PM('31387646')],
+    ['〔AJCC 第 8 版胰臟／肝膽章節之修訂概要〕Chun YS, Pawlik TM, Vauthey JN. Ann Surg Oncol 2018;25:845-847', PM('28752469')],
   ],
 },
 /* ============================ 乳癌 ============================ */
