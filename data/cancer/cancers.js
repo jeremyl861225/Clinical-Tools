@@ -545,6 +545,9 @@ window.CANCERS = [
     ['PANC-E #16 PRODIGE 24 — Conroy T et al. NEJM 2018（輔助 FOLFIRINOX vs gemcitabine；本指引列為參考文獻，惟未據以指定首選）', PM('30575490')],
     ['PANC-E #17 ESPAC-4 — Neoptolemos JP et al. Lancet 2017（輔助 gemcitabine + capecitabine）', PM('28129987')],
     ['〔本指引範圍外〕POLO — Golan T et al. NEJM 2019（gBRCA 突變、鉑類反應後 olaparib 維持）', PM('31157963')],
+    ['〔IPMN／MCN — 台大指引未涵蓋〕Kyoto 2024 國際實證指引 — Ohtsuka T et al. Pancreatology 2024;24:255-270（IPMN 之 HRS／WF、非切除與切除後之監測、病理與囊液分子標記；治療分頁囊性腫瘤分支之主要依據）', PM('38182527')],
+    ['〔IPMN／MCN〕European evidence-based guidelines on pancreatic cystic neoplasms — Gut 2018;67:789-804（IPMN 絕對／相對手術指徵、MCN ≥40mm 之切除門檻、切除範圍與輔助治療；MCN 部分之主要依據）', PM('29574408')],
+    ['〔IPMN／MCN〕ACG Clinical Guideline: Diagnosis and Management of Pancreatic Cysts — Elta GH et al. Am J Gastroenterol 2018;113:464-479（高風險特徵、依大小之監測排程、停止監測之時機）', PM('29485131')],
   ],
 },
 /* ============================ 乳癌 ============================ */

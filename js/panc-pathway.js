@@ -2,9 +2,19 @@
    胰臟癌治療互動決策流程 Pancreatic Adenocarcinoma Treatment Pathway
    資料來源：國立臺灣大學醫學院附設醫院 胰臟癌診療指引
    版次 11（2026/06/16 第 87 次癌症醫療委員會修訂通過），PANC-1 ～ PANC-E
-   ※ 本模組僅涵蓋胰臟腺癌（pancreatic adenocarcinoma）；
+   ※ 腺癌部分僅涵蓋胰臟腺癌（pancreatic adenocarcinoma）；
      神經內分泌腫瘤、壺腹癌、遠端膽管癌不在此流程內。
    ※ 可切除性判定依 PANC-B 之 M. D. Anderson criteria（非 NCCN）。
+
+   ※ IPMN／MCN 區塊之資料來源與上述不同——台大指引 v11 全文（PANC-1～PANC-E）
+     檢索 IPMN／MCN／cyst／mucinous／intraductal／囊 皆為 0 筆，本院指引未涵蓋囊性腫瘤。
+     該區塊改依國際指引：Kyoto 2024（Pancreatology 2024;24:255-270，PMID 38182527）、
+     European 2018（Gut 2018;67:789-804，PMID 29574408）、ACG 2018（Am J Gastroenterol
+     2018;113:464-479，PMID 29485131）。三者切點不一致，差異處一律於文內標明來源。
+
+   ※ 版面採三段式：術前可得之條件 →〔建議處置〕→ 治療結果 →〔後續處置〕→ 術後病理 →〔輔助治療〕。
+     手術／新輔助之結果是「照建議動刀之後」才有的資訊，不可排在建議之前（因果順序）。
+     步驟編號由 renumber() 依當下可見的步驟動態計算，故各分支的編號各自連續。
    本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
@@ -19,7 +29,14 @@
     ps: null,     // good | poor                    （PANC-7／PANC-8／PANC-9）
     rsite: null,  // local | distant                （PANC-10 復發型態）
     rtime: null,  // gt6 | lt6                      （PANC-10 距初次治療完成時間）
-    adj: null     // noevid | metafound             （PANC-6 術後基準檢查）
+    adj: null,    // noevid | metafound             （PANC-6 術後基準檢查）
+    /* 以下為囊性腫瘤分支（Kyoto 2024／European 2018／ACG 2018，非台大指引） */
+    cyst: null,   // bd | mdmt | mcn | indet        （囊性腫瘤型態）
+    crisk: null,  // hrs | wf | none                （IPMN：Kyoto HRS／WF 分層）
+    cwf: null,    // aug | only30 | other           （WF 陽性者之加權因子）
+    csize: null,  // lt20 | mid | ge30              （無 HRS／WF 者依最大囊腫大小定監測間隔）
+    mrisk: null,  // op | obs                       （MCN：European 5.1／5.2 手術指徵）
+    cpath: null   // ic | hgd | lgd                 （囊性腫瘤切除標本之病理結果）
   };
 
   /* ---------- 版面 helpers ---------- */
@@ -242,12 +259,162 @@
       '</div>';
   }
 
+  /* ============================================================
+     囊性腫瘤 IPMN／MCN（台大指引未涵蓋，改依國際指引）
+     ============================================================ */
+
+  /* 資料來源宣告——放在囊性分支的每一個入口，避免被誤讀成台大院內共識 */
+  var cystSrc = '<div class="note"><b>⚠ 本區塊之資料來源與本頁其他區塊不同。</b>' +
+    '<b>台大醫院胰臟癌診療指引 版次 11 全文（PANC-1～PANC-E）未涵蓋 IPMN／MCN</b>' +
+    '（逐頁檢索 IPMN／MCN／cyst／mucinous／intraductal／囊，皆 0 筆）。以下依<b>國際指引</b>：' +
+    '<b>Kyoto 2024</b>（IAP 國際實證指引，僅涵蓋 IPMN）、<b>European 2018</b>（European Study Group，涵蓋 IPMN 與 MCN）、' +
+    '<b>ACG 2018</b>。<b>三份指引之切點並不一致</b>，凡有分歧處均於文內標明出處；院內採用前請確認科內共識。</div>';
+
+  function cystTypeHtml() {
+    return '<details class="kps-details"><summary>囊性病灶之鑑別與典型特徵 Typical features of pancreatic cysts ▸</summary>' +
+      '<ul class="rx-items">' +
+      '<li><b>BD-IPMN 分支型</b>：男≒女、好發第 7 個十年；<b>與主胰管相通</b>、可多發；囊液 <b>CEA 高、amylase 高</b>。<b>最常見之偶發囊腫，癌化風險低</b>（ACG Table 2）。</li>' +
+      '<li><b>MD-IPMN 主胰管型</b>：主胰管擴張（可為節段性），約半數十二指腸乳頭開口擴大（patulous orifice）；<b>癌化風險高</b>。</li>' +
+      '<li><b>MT-IPMN 混合型</b>：少見；<b>癌化風險與 MD-IPMN 相當，適合手術者應切除</b>（European 4.8，GRADE 2C）。</li>' +
+      '<li><b>MCN 黏液性囊性腫瘤</b>：<b>幾乎全為女性</b>、第 5–7 個十年；<b>絕大多數位於胰體尾</b>；單房、可有分隔或囊壁鈣化，<b>與主胰管不相通</b>；病理具卵巢型基質。囊液 CEA 高、amylase 不定。</li>' +
+      '<li><b>SCN 漿液性囊腺瘤</b>：75% 為女性、第 6 個十年；蜂窩狀微囊；囊液 <b>CEA 低、amylase／lipase 低</b>。<b>本質為良性、特異死亡率近乎零</b>，僅在鄰近器官壓迫症狀時手術（European 6.1、6.4）；診斷明確者追蹤 1 年後改為依症狀追蹤（6.2）。</li>' +
+      '<li><b>假性囊腫</b>：有急／慢性胰臟炎病史；囊液 <b>amylase／lipase 高、CEA 低</b>（amylase &lt;250 U/L 敏感度 0.44、特異度 0.98，可排除假性囊腫）。</li>' +
+      '<li><b>SPN 實性偽乳頭狀腫瘤</b>：女男比 10:1、多見於 20 多歲 → <b>轉多專科團隊評估手術切除</b>（ACG #12）；術後每年追蹤至少 5 年（ACG #20）。</li>' +
+      '<li><b>IOPN</b>：因反覆出現 <b>PRKACA／PRKACB 融合基因</b>，Kyoto 2024 已將其<b>自 IPMN 獨立為另一疾病實體</b>（CQ4-3）。</li>' +
+      '<li><b>影像判定型別之準確度有限</b>：MRI／MRCP 判定囊腫型別 40–50%、良惡性 55–76%（ACG #3）。' +
+      '<b>MRI／MRCP 為首選</b>（無輻射，最能顯示與主胰管之相通；European 2.2、ACG #2、#13）；' +
+      '<b>EUS 為輔助而非取代</b>（European 3.1）。</li>' +
+      '<li><b>囊液分子標記</b>：<b>KRAS／GNAS</b> 支持黏液性（IPMN／MCN）；<b>VHL 而無 KRAS／GNAS</b> 對 SCN 敏感度 &gt;99%；' +
+      '<b>TP53／SMAD4／CDKN2A／PIK3CA</b> 有助辨識 HGD／侵襲癌（敏感度 9–39%、特異度 92–98%）——Kyoto CQ5-1／CQ5-2（證據 1+、等級 B）。' +
+      '<b>囊液 CEA 可區分黏液性與否，但無法判定分化不良程度</b>（ACG #6；Kyoto：達 30% 之 IPMN CEA 偏低，且與分化不良程度無相關）。</li>' +
+      '</ul></details>';
+  }
+
+  /* Kyoto 2024 Fig.3 之 HRS／WF 全表，並列三份指引之切點差異 */
+  function hrsWfHtml() {
+    return '<div class="crit-box">' +
+      cbx('高風險徵象 High-risk stigmata（HRS）', 'Kyoto 2024 Fig.3 · 任一項即屬之', [
+        cb('黃疸', '<b>胰頭部囊性病灶</b>造成之阻塞性黃疸（敏感度 75–83%、特異度 61–65%）'),
+        cb('壁結節', '<b>強化壁結節 ≥5mm</b> 或<b>實質成分</b> solid component'),
+        cb('主胰管', '<b>MPD ≥10mm</b>'),
+        cb('細胞學', '<b>可疑或陽性</b>（若有執行）——「陽性」指 <b>HGD 或腺癌</b>；WHO 分級之可疑者 HGD／IC 絕對風險 91–100%，陽性者 100%')
+      ]) +
+      cbx('令人擔憂之特徵 Worrisome features（WF）', 'Kyoto 2024 Fig.3 · 臨床 3 項＋影像 7 項', [
+        cb('臨床', '<b>急性胰臟炎</b>'),
+        cb('臨床', '血清 <b>CA 19-9 升高</b>（&gt;37 U/mL；對 IPMN 併侵襲癌敏感度 41–74%、特異度 85–96%）'),
+        cb('臨床', '<b>一年內新發生或急性惡化之糖尿病</b>　<b>← 2024 年新增</b>'),
+        cb('影像', '囊腫 <b>≥30mm</b>'),
+        cb('影像', '<b>強化壁結節 &lt;5mm</b>'),
+        cb('影像', '<b>囊壁增厚／強化</b>'),
+        cb('影像', '<b>MPD ≥5mm 且 &lt;10mm</b>'),
+        cb('影像', '<b>胰管口徑驟變併遠端胰腺萎縮</b>'),
+        cb('影像', '<b>淋巴結腫大</b>'),
+        cb('影像', '<b>囊腫生長速率 ≥2.5mm／年</b>　<b>← 2024 年由「≥5mm／2 年」改為此值</b>')
+      ]) +
+      '<div class="note"><b>壁結節之量測</b>：EUS 以結節<b>「高度」</b>量測，非寬度或最大徑；MDCT／MRI 則以最大徑量測（Kyoto CQ1-2）。' +
+      '<b>壁結節與實質成分於術前影像難以明確區分，實務上一律視為高風險發現</b>（CQ1-1）。' +
+      '<b>單一項目的預測力有限</b>：壁結節 OR 僅 1.19–3.16、MPD ≥10mm 單獨 OR 僅 1.06–1.76；' +
+      '<b>HRS／WF 項目愈多，HGD／侵襲癌之可能性愈高</b>，多項並存時建議借助 nomogram 判斷手術指徵（CQ1-5）。</div>' +
+      '<div class="note"><b>三份指引之切點分歧（務必確認採用何者）</b>：' +
+      '① <b>主胰管</b>——Kyoto：≥10mm 為 HRS、5–&lt;10mm 為 WF；<b>European：切除門檻為 MPD &gt;5mm</b>（4.10，MD／MT-IPMN 皆然），' +
+      '且將 ≥10mm 列為絕對指徵、5–9.9mm 列為相對指徵；ACG：&gt;5mm 即屬需進一步評估之高風險特徵。' +
+      '② <b>生長速率</b>——Kyoto <b>≥2.5mm／年</b>；European <b>≥5mm／年</b>；ACG <b>&gt;3mm／年</b>。' +
+      '③ <b>用語</b>——Kyoto 刻意<b>維持 HRS／WF 而不改為「絕對／相對手術指徵」</b>，因手術與否還需併同體能、共病、餘命與病人意願判斷（Kyoto 5.2）；' +
+      'European 則直接以絕對／相對指徵表述。</div>' +
+      '</div>';
+  }
+
+  /* 非切除 IPMN 之監測排程（Kyoto Fig.3）＋三指引對照 */
+  function cystSurvPanel() {
+    return '<div class="rec-detail rx-panel">' +
+      '<div class="rx-panel-h">非切除 IPMN 之監測 Surveillance of non-resected IPMN<span class="rx-panel-src">Kyoto 2024 Fig.3</span></div>' +
+      '<div class="rx-def"><b>先做一次 6 個月的短期追蹤</b>，其後依<b>最大囊腫大小</b>決定間隔（CQ2-2，證據 2+、等級 B）。' +
+      '影像以 <b>MDCT／MRI-MRCP／EUS 組合</b>，併血液腫瘤標記與 <b>HbA1c</b>，依院內政策安排（Fig.3 註 f）。</div>' +
+      rxLine('依大小之監測間隔', 'Kyoto CQ2-1／CQ2-2', [
+        '<b>&lt;20mm</b>：6 個月一次<b>共 1 次</b>，其後若穩定<b>每 18 個月</b>。',
+        '<b>≥20mm 且 &lt;30mm</b>：6 個月一次<b>共 2 次</b>，其後若穩定<b>每 12 個月</b>。',
+        '<b>≥30mm</b>：<b>每 6 個月</b>。',
+        '<b>監測中出現進展</b> → <b>回到最上方重新評估 HRS／WF</b>（Fig.3 之回饋箭頭）。'
+      ]) +
+      rxLine('何時可停止監測', 'Kyoto CQ2-3（證據 2+、等級 C）', [
+        '<b>囊腫 &lt;20mm、監測滿 5 年、無形態變化亦無 WF</b> 者，得<b>「停止監測」或「因併發胰管腺癌之可能而繼續監測」</b>——' +
+        '<b>兩個選項並列</b>，須併同病人狀況與餘命判斷。',
+        '<b>下列族群不適用停止監測之建議</b>：<b>年輕之 BD-IPMN 病人</b>、<b>具家族性或遺傳性風險者</b>（胰癌風險隨時間累積）。',
+        '<b>長期監測之必要性仍未定論</b>，取決於地區醫療經濟、併發胰管腺癌之風險與病人年齡、狀況、餘命與意願（Fig.3 註 g）。'
+      ]) +
+      '<div class="rx-warn"><b>⚠ 監測的目標不只是囊腫本身</b>：IPMN 病人另有<b>併發（concomitant）胰管腺癌</b>之風險，' +
+      '且該風險<b>在 5 年監測期後依然持續</b>——監測範圍應涵蓋<b>整個胰腺</b>，不可只盯著囊腫（Kyoto；European 4.1、4.6 同旨）。</div>' +
+      '<div class="rx-def"><b>他家指引之排程（供對照，數字不同請勿混用）</b>——' +
+      '<b>European 4.2</b>：無手術指徵者<b>第 1 年每 6 個月、其後每年</b>；具<b>相對</b>手術指徵者、高齡或重大共病者<b>每 6 個月</b>；' +
+      '<b>只要仍適合手術即應持續追蹤、不建議中斷</b>（4.5）。｜' +
+      '<b>ACG #14 Fig.2</b> 依大小：<b>&lt;1cm</b> MRI 每 2 年 ×4 年；<b>1–2cm</b> MRI 每年 ×3 年；' +
+      '<b>2–3cm</b> MRI 或 EUS 每 6–12 個月 ×3 年；<b>&gt;3cm</b> 轉多專科團隊，MRI 與 EUS 交替每 6 個月 ×3 年；' +
+      '穩定者得延長間隔，<b>不再適合手術即停止監測</b>（#15），<b>&gt;75 歲應重新評估監測之效益</b>（#16）。</div>' +
+      '</div>';
+  }
+
+  /* 囊性腫瘤之手術原則（Kyoto Fig.5 ＋ European 4.9／4.13～4.18／5.5） */
+  function cystOpPanel() {
+    return '<div class="rec-detail rx-panel">' +
+      '<div class="rx-panel-h">囊性腫瘤之手術原則 Operative principles<span class="rx-panel-src">Kyoto 2024 Fig.5 ＋ European 2018</span></div>' +
+      rxLine('Kyoto Fig.5 手術原則', '六項', [
+        '<b>術前充分告知</b>：外科醫師常在<b>不知最終病理</b>的情況下於術中決定切除範圍；若術中發現切緣為 HGD／侵襲癌，<b>切除範圍可能延伸至全胰切除</b>；切緣之 LGD 或小的惰性分支型病灶<b>可能被刻意留在殘胰</b>；因 IPMN 具<b>多發性與跳躍性進展</b>，<b>即使切緣陰性仍需長期術後監測</b>。',
+        '<b>懷疑侵襲癌</b> → <b>根治性胰切除併淋巴結廓清</b>。',
+        '<b>懷疑非侵襲性病灶</b> → 可行<b>保留器官之胰切除</b>（中段胰切除、保脾遠端胰切除）；BD-IPMN 通常以<b>部分胰切除</b>即可完整移除。',
+        '<b>不建議預防性全胰切除</b>（內外分泌代謝後果），惟<b>須事先告知有此可能</b>。',
+        '<b>切緣為低度分化不良（LGD）不需追加切除</b>（CQ4-6；European 4.17 同旨）。',
+        '<b>輔助或新輔助治療為選項</b>（option）。'
+      ]) +
+      rxLine('術中冰凍切片 Frozen section', 'Kyoto CQ4-6／European 4.16～4.18', [
+        '<b>European 4.16</b>：所有<b>部分胰切除與保留實質之切除</b>皆應對胰臟切緣做冰凍切片（GRADE 1C）。',
+        '<b>切緣為侵襲癌</b> → <b>強烈建議延伸切除</b>；<b>切緣為 HGD</b> → <b>應考慮</b>延伸切除；<b>LGD</b> → 不需延伸。',
+        '<b>切緣「裸露胰管（denuded duct）」不等於陰性</b>，可能時應考慮追加切除（Kyoto CQ4-6）。',
+        '<b>已存在侵襲癌時，切緣之 HGD 未必須追加切除</b>——預後由侵襲成分決定，' +
+        '在高齡或衰弱病人保留 HGD 切緣以避免全胰切除可能是合理的（Kyoto）。',
+        '<b>冰凍切片無法排除跳躍性病灶</b>（skip lesions，發生率 6–42%）。'
+      ]) +
+      rxLine('切除範圍', 'European 4.9／4.13～4.14／5.5', [
+        '<b>全長主胰管擴張</b> → <b>胰十二指腸切除＋切緣冰凍切片</b>；若遠端胰管另有壁結節或屬胰癌高風險（如家族性胰癌），<b>可考慮全胰切除</b>（4.9）。',
+        '<b>胰頭之 IPMN 相關侵襲癌</b>：<b>不建議全胰切除</b>——預後由該癌決定（4.9）。',
+        '<b>具絕對手術指徵之 IPMN</b> → <b>腫瘤學切除併標準淋巴結廓清</b>（4.14，GRADE 1C）；' +
+        '<b>保留實質之胰切除（PSP）屬非腫瘤學術式</b>，僅適用於惡性機率極低者（4.13）。',
+        '<b>MCN</b>（5.5）：具 HGD／癌之影像特徵者 → <b>標準腫瘤學切除＋淋巴結廓清＋脾切除</b>（<b>90–95% 為遠端胰切除</b>，GRADE 1B）；' +
+        '無可疑特徵、惡性風險低者 → <b>非腫瘤學切除</b>（保脾遠端胰切除，或 PSP）。',
+        '<b>多發性 BD-IPMN</b>（4.15）：<b>每一顆囊腫各自評估</b>；無可疑特徵者<b>可留置觀察</b>，不需為此擴大切除範圍。'
+      ]) +
+      '<div class="rx-warn"><b>⚠ 不可對符合手術指徵但不適合手術者施行消融</b>：EUS 導引酒精／paclitaxel 注射、射頻或冷凍消融<b>療效與安全性未確立</b>，' +
+      '且缺乏判定消融是否完全的可靠標記——<b>不應於臨床試驗（經 IRB 核准）以外施行</b>（European 4.24，GRADE 1C）。</div>' +
+      '</div>';
+  }
+
+  /* 囊性腫瘤之全身性治療（European 第 8 節） */
+  function cystSystemicPanel() {
+    return '<div class="rec-detail rx-panel">' +
+      '<div class="rx-panel-h">囊性腫瘤相關侵襲癌之全身性治療<span class="rx-panel-src">European 2018 §8</span></div>' +
+      rxLine('輔助治療 Adjuvant', 'European 8.1', [
+        '<b>IPMN 併侵襲癌</b>：<b>不論淋巴結陰性或陽性，均建議輔助全身性化療</b>（GRADE 1C）——其生物行為較具侵襲性；' +
+        '惟<b>淋巴結陰性者之建議並無科學證據支持</b>（原文明載）。',
+        '<b>MCN 併侵襲癌</b>：輔助治療<b>比照散發性胰臟腺癌</b>（GRADE 2C；無證據可支持或推翻）。',
+        '<b>無法指定特定藥物</b>：各研究異質性大；<b>最常用者為 5-FU 與 gemcitabine</b>，同胰臟腺癌之輔助治療（GRADE 2C）。' +
+        '處方細目可沿用本頁 <b>PANC-6 ＋ PANC-E</b> 之輔助治療選單。'
+      ]) +
+      rxLine('新輔助與其他情境', 'European 8.2／8.4／8.5', [
+        '<b>局部晚期之 IPMN／MCN 相關侵襲癌</b>：<b>資料不足，無法對新輔助治療做出建議</b>（8.2，GRADE 2C）；' +
+        '因兩病相似，<b>可考慮比照胰臟腺癌</b>之作法。',
+        '<b>不可切除或復發之惡性囊性腫瘤</b>：<b>可比照胰臟腺癌施行緩和性化療</b>（8.4，GRADE 2C；無證據支持或推翻）。',
+        '<b>轉移或局部復發之切除</b>：<b>無研究可據，不建議</b>（8.5，GRADE 2C）。'
+      ]) +
+      '</div>';
+  }
+
   /* ---------- 版面 HTML ---------- */
   function pancPathwayHTML() {
     var h = '';
     h += '<p class="onc-note">依 <b>台大醫院胰臟癌診療指引 版次 11（2026/06/16）</b>（NTUH，PANC-1～PANC-E）之互動決策流程。' +
       '可切除性判定依 <b>PANC-B 之 M. D. Anderson criteria</b>。逐步點選以取得對應建議處置、藥物療程與追蹤方式。' +
-      '<b>本指引各線別處方多為並列選單並以臨床試驗為 preferred，未指定單一首選。</b></p>';
+      '<b>本指引各線別處方多為並列選單並以臨床試驗為 preferred，未指定單一首選。</b><br>' +
+      '<b>囊性腫瘤（IPMN／MCN）不在台大指引範圍內</b>，該分支改依 <b>Kyoto 2024／European 2018／ACG 2018</b>，' +
+      '其建議處置區塊均標明所依之國際指引。</p>';
     h += '<div class="onc-path" id="pcPath">';
 
     // Step 1 — 疾病範圍
@@ -256,7 +423,8 @@
       opt('ext', 'bord', '臨界可切除 Borderline resectable', '無轉移（PANC-4／PANC-5）') +
       opt('ext', 'la', '局部晚期不可切除 Locally advanced unresectable', '無遠處轉移（PANC-7／PANC-8）') +
       opt('ext', 'meta', '轉移性 Metastatic disease', '影像或理學檢查發現轉移（PANC-1 → PANC-9）') +
-      opt('ext', 'rec', '切除後復發 Recurrence after resection', '（PANC-10）'),
+      opt('ext', 'rec', '切除後復發 Recurrence after resection', '（PANC-10）') +
+      opt('ext', 'cyst', '囊性腫瘤 IPMN／MCN（非腺癌）', '台大指引未涵蓋 → 依 Kyoto 2024／European 2018／ACG 2018'),
       rxLine('初始檢查 WORK UP', 'PANC-1／PANC-2 · ★ 為關鍵項目', [
         '<b>★</b>　胰臟 protocol CT 或 MRI（PANC-A）',
         '<b>★</b>　多專科團隊會診 Multidisciplinary review',
@@ -273,15 +441,10 @@
       ]) +
       resectCriteriaHtml() + stagingPrinciplesHtml());
 
-    // Step 2r — 可切除：剖腹探查結果（PANC-3）
-    h += connH('pc_c2r');
-    h += step('pc_s2r', '2', '手術探查結果（PANC-3 TREATMENT）',
-      opt('surg', 'resected', '手術切除 Surgical resection', '完成切除 → 術後輔助治療與監測（PANC-6）') +
-      opt('surg', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 切片確認 → PANC-7／PANC-9'),
-      '<div class="note"><b>PANC-3 註 e</b>：可考慮<b>臨床試驗之新輔助治療</b>，惟<b>須有腺癌之切片確認</b>；' +
-      '有膽道阻塞者<b>須先達成持久之膽道減壓</b>。<b>註 f</b>：高風險病人或臨床有需要時，' +
-      '可考慮<b>分期腹腔鏡（選擇性 optional）</b>（PANC-A #6）。</div>');
-    h = h.replace('id="pc_s2r"', 'id="pc_s2r" class="hidden"');
+    /* ==========================================================
+       第一段：術前即可取得之條件（決定原發治療）
+       手術／新輔助之「結果」一律排在建議處置之後，見第二段。
+       ========================================================== */
 
     // Step 2b — 臨界可切除：治療策略（PANC-4 vs PANC-5）
     h += connH('pc_c2b');
@@ -298,22 +461,6 @@
         cb('未確認癌症', '→ <b>重複切片</b>；仍未確認（須排除自體免疫胰臟炎 AIP）→ 見 PANC-5 計畫切除／腹腔鏡')
       ]));
     h = h.replace('id="pc_s2b"', 'id="pc_s2b" class="hidden"');
-
-    // Step 3bn — 新輔助後再評估（PANC-4）
-    h += connH('pc_c3bn');
-    h += step('pc_s3bn', '3', '新輔助治療後重複影像之再評估結果（PANC-4）',
-      opt('bneo', 'resected', '手術切除 Surgical resection', '→ 術後輔助治療與監測（PANC-6）') +
-      opt('bneo', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 依有無黃疸處置 → PANC-7／PANC-9') +
-      opt('bneo', 'prog', '疾病進展致無法手術 Disease progression precluding surgery', '→ 依有無黃疸處置 → PANC-7／PANC-9'),
-      '<div class="note"><b>重複影像（PANC-4）</b>：腹部（胰臟 protocol）、骨盆與胸部影像。</div>');
-    h = h.replace('id="pc_s3bn"', 'id="pc_s3bn" class="hidden"');
-
-    // Step 3bp — 計畫切除之探查結果（PANC-5）
-    h += connH('pc_c3bp');
-    h += step('pc_s3bp', '3', '剖腹探查結果（PANC-5 Planned Resection）',
-      opt('bres', 'resected', '手術切除 Surgical resection', '→ 術後輔助治療與監測（PANC-6）') +
-      opt('bres', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 切片確認 → 依有無黃疸處置'));
-    h = h.replace('id="pc_s3bp"', 'id="pc_s3bp" class="hidden"');
 
     // Step 2la — 局部晚期：體能狀態（PANC-7）
     h += connH('pc_c2la');
@@ -350,9 +497,129 @@
       opt('rtime', 'lt6', '&lt; 6 個月', '&lt; 6 mo from completion of primary therapy'));
     h = h.replace('id="pc_s3rec"', 'id="pc_s3rec" class="hidden"');
 
-    // Step adj — 術後基準檢查（PANC-6）
+    // Step 2cy — 囊性腫瘤型態（Kyoto／European／ACG）
+    h += connH('pc_c2cy');
+    h += step('pc_s2cy', '2', '囊性腫瘤之型態 Type of pancreatic cystic neoplasm',
+      opt('cyst', 'bd', '分支型 IPMN（BD-IPMN）', '與主胰管相通、MPD &lt;5mm；最常見之偶發囊腫') +
+      opt('cyst', 'mdmt', '主胰管型／混合型 IPMN（MD／MT-IPMN）', '主胰管節段性或瀰漫性擴張；癌化風險最高') +
+      opt('cyst', 'mcn', '黏液性囊性腫瘤 MCN', '幾乎全為女性、胰體尾、與主胰管不相通、卵巢型基質') +
+      opt('cyst', 'indet', '診斷未明之囊性病灶 Indeterminate cyst', '影像判定型別之準確度僅 40–50%'),
+      cystSrc +
+      cbx('起始評估 Diagnostic work-up', 'Kyoto 5.1／European §2–3／ACG #2、#6', [
+        cb('影像', '<b>MRI／MRCP 為首選</b>（無輻射，最能顯示與主胰管之相通）；不能做 MRI 者以<b>胰臟 protocol CT</b> 或 <b>EUS</b> 替代'),
+        cb('EUS', '<b>作為其他影像之輔助</b>；有臨床或影像上之可疑特徵時建議執行（European 3.1）'),
+        cb('EUS-FNA', '<b>僅在診斷不明、且結果會改變處置時</b>執行（ACG #6；Kyoto 同旨）'),
+        cb('細胞學', '<b>影像不足以支持手術時</b>應送囊液細胞學查有無 HGD／癌（ACG #7）'),
+        cb('血清', '<b>CA 19-9</b>（疑有惡性轉化時可測；European 1.1）'),
+        cb('不適合手術者', '<b>不論囊腫大小，不應再進一步評估偶發之胰臟囊腫</b>（ACG #4，強建議）')
+      ]) +
+      cystTypeHtml());
+    h = h.replace('id="pc_s2cy"', 'id="pc_s2cy" class="hidden"');
+
+    // Step 3cy — IPMN：Kyoto HRS／WF 風險分層
+    h += connH('pc_c3cy');
+    h += step('pc_s3cy', '3', 'IPMN 之風險分層（Kyoto 2024 Fig.3）',
+      opt('crisk', 'hrs', '具高風險徵象 HRS（任一項）', '阻塞性黃疸／強化壁結節 ≥5mm 或實質成分／MPD ≥10mm／細胞學可疑或陽性') +
+      opt('crisk', 'wf', '無 HRS，但有令人擔憂之特徵 WF', '臨床 3 項＋影像 7 項，見下方全表') +
+      opt('crisk', 'none', '無 HRS 亦無 WF', '→ 依最大囊腫大小定監測間隔'),
+      hrsWfHtml());
+    h = h.replace('id="pc_s3cy"', 'id="pc_s3cy" class="hidden"');
+
+    // Step 3mcn — MCN：手術指徵（European 5.1／5.2）
+    h += connH('pc_c3mcn');
+    h += step('pc_s3mcn', '3', 'MCN 之手術指徵（European 2018 §5）',
+      opt('mrisk', 'op', '具手術指徵（任一項）', '囊腫 ≥40mm／有症狀／有壁結節等風險特徵（後兩者不論大小）') +
+      opt('mrisk', 'obs', '&lt;40mm 且無症狀、無壁結節', '→ 可安全追蹤（European 5.2，GRADE 2C）'),
+      '<div class="note"><b>European 5.1（GRADE 1B）</b>：<b>MCN ≥40mm 應手術切除</b>；' +
+      '<b>有症狀</b>或<b>具風險特徵（如壁結節）</b>者<b>不論大小</b>亦建議切除。<br>' +
+      '<b>30–40mm 者</b>可併同年齡、共病、手術風險與病人意願個別判斷；<b>&lt;30mm 者常難以確立 MCN 之診斷</b>，' +
+      '故 <b>&lt;3cm 之 MCN 與 IPMN 採相同監測</b>（5.2）。<br>' +
+      '<b>懷孕</b>：曾有 MCN 於孕期快速增大甚至破裂之個案報告，<b>孕期應密切觀察</b>（5.1）。<br>' +
+      '<b>Kyoto 2024 不涵蓋 MCN</b>（其僅適用於 IPMN），故本步驟之切點來自 European 2018；' +
+      'ACG 則將 MCN 與 IPMN 併同一套高風險特徵處理（#9～#11）。</div>');
+    h = h.replace('id="pc_s3mcn"', 'id="pc_s3mcn" class="hidden"');
+
+    // Step 4wf — WF 陽性者之加權因子（Kyoto Fig.3 中段方塊）
+    h += connH('pc_c4wf');
+    h += step('pc_s4wf', '4', 'WF 陽性者：是否具下列加權因子？（Kyoto Fig.3）',
+      opt('cwf', 'aug', '具加權因子（任一項）', '反覆急性胰臟炎影響生活品質／多項 WF 疊加／年輕且適合手術') +
+      opt('cwf', 'only30', '無加權因子，且 WF <b>僅為</b>囊腫 ≥30mm', '→ 進入依大小之監測（≥30mm ＝ 每 6 個月）') +
+      opt('cwf', 'other', '無加權因子，屬其他 WF', '→ 依估計風險以 1–6 個月間隔監測'),
+      '<div class="note"><b>Kyoto Fig.3 三項加權因子</b>：' +
+      '① <b>反覆之急性胰臟炎且影響生活品質</b>——約 20% 接受切除之 IPMN 病人有胰臟炎病史，' +
+      '<b>大型系列顯示併胰臟炎者之 HGD／IC 發生率與 LGD 相當</b>，故手術理由在於症狀而非癌化風險；' +
+      '② <b>多項 WF 疊加而提高 HGD／IC 之可能</b>（可參考 nomogram，註 d）；' +
+      '③ <b>年輕且適合手術</b>（註 e：此類因素難以明確定義，須依醫師判斷與病人年齡、狀況、餘命、意願及囊腫位置決定）。<br>' +
+      '<b>WF 陽性者於決定前應先以 EUS（含 CE-EUS、必要時 EUS-FNA）進一步評估</b>（Kyoto CQ1-6）。</div>');
+    h = h.replace('id="pc_s4wf"', 'id="pc_s4wf" class="hidden"');
+
+    // Step 4sz — 無 HRS／WF 者依最大囊腫大小（Kyoto Fig.3 下段）
+    h += connH('pc_c4sz');
+    h += step('pc_s4sz', '4', '最大囊腫之大小（決定監測間隔，Kyoto Fig.3）',
+      opt('csize', 'lt20', '&lt; 20mm', '6 個月一次共 1 次 → 穩定則每 18 個月') +
+      opt('csize', 'mid', '≥ 20mm 且 &lt; 30mm', '6 個月一次共 2 次 → 穩定則每 12 個月') +
+      opt('csize', 'ge30', '≥ 30mm', '每 6 個月'),
+      '<div class="note"><b>Kyoto CQ2-1</b>：不同大小之 IPMN 生長速率與進展時間不同，<b>監測排程（含期程）應依囊腫大小最佳化</b>。' +
+      '<b>監測期間出現進展</b>即<b>回到 HRS／WF 重新評估</b>。</div>');
+    h = h.replace('id="pc_s4sz"', 'id="pc_s4sz" class="hidden"');
+
+    /* ---------- 第一段建議：原發治療（不讀取任何治療後才有的資訊）---------- */
+    h += '<div class="flow-rec rec-idle" id="pc_rec"><div class="rec-label">建議處置 Recommendation</div>' +
+      '<div class="rec-title">請完成上方步驟</div></div>';
+
+    /* ==========================================================
+       第二段：依上述建議治療之後才會取得的結果
+       ========================================================== */
+
+    // Step 2r — 可切除：手術探查結果（PANC-3）
+    h += connH('pc_c2r');
+    h += step('pc_s2r', '2', '手術探查結果（PANC-3 TREATMENT）',
+      opt('surg', 'resected', '手術切除 Surgical resection', '完成切除 → 術後輔助治療與監測（PANC-6）') +
+      opt('surg', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 切片確認 → PANC-7／PANC-9'),
+      '<div class="note"><b>PANC-3 註 e</b>：可考慮<b>臨床試驗之新輔助治療</b>，惟<b>須有腺癌之切片確認</b>；' +
+      '有膽道阻塞者<b>須先達成持久之膽道減壓</b>。<b>註 f</b>：高風險病人或臨床有需要時，' +
+      '可考慮<b>分期腹腔鏡（選擇性 optional）</b>（PANC-A #6）。</div>');
+    h = h.replace('id="pc_s2r"', 'id="pc_s2r" class="hidden"');
+
+    // Step 3bn — 新輔助後再評估（PANC-4）
+    h += connH('pc_c3bn');
+    h += step('pc_s3bn', '3', '新輔助治療後重複影像之再評估結果（PANC-4）',
+      opt('bneo', 'resected', '手術切除 Surgical resection', '→ 術後輔助治療與監測（PANC-6）') +
+      opt('bneo', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 依有無黃疸處置 → PANC-7／PANC-9') +
+      opt('bneo', 'prog', '疾病進展致無法手術 Disease progression precluding surgery', '→ 依有無黃疸處置 → PANC-7／PANC-9'),
+      '<div class="note"><b>重複影像（PANC-4）</b>：腹部（胰臟 protocol）、骨盆與胸部影像。</div>');
+    h = h.replace('id="pc_s3bn"', 'id="pc_s3bn" class="hidden"');
+
+    // Step 3bp — 計畫切除之探查結果（PANC-5）
+    h += connH('pc_c3bp');
+    h += step('pc_s3bp', '3', '剖腹探查結果（PANC-5 Planned Resection）',
+      opt('bres', 'resected', '手術切除 Surgical resection', '→ 術後輔助治療與監測（PANC-6）') +
+      opt('bres', 'unres_surg', '術中發現不可切除 Unresectable at surgery', '→ 切片確認 → 依有無黃疸處置'));
+    h = h.replace('id="pc_s3bp"', 'id="pc_s3bp" class="hidden"');
+
+    // Step cpath — 囊性腫瘤切除標本之病理結果（Kyoto Fig.5）
+    h += connH('pc_ccpath');
+    h += step('pc_scpath', '4', '切除標本之病理結果（Kyoto 2024 Fig.5）',
+      opt('cpath', 'ic', '侵襲癌 Invasive carcinoma', '→ 監測比照胰臟腺癌；輔助化療見下') +
+      opt('cpath', 'hgd', '非侵襲性 · 高度分化不良 HGD', '＝ carcinoma in situ；殘胰風險較高') +
+      opt('cpath', 'lgd', '非侵襲性 · 低度分化不良 LGD', '仍需長期監測（多發性與跳躍性進展）'),
+      '<div class="note"><b>Kyoto CQ4-1</b>：<b>HGD 可與「carcinoma in situ」互用</b>；' +
+      '<b>不建議使用「malignant IPMN」一詞</b>（語意不清）。<br>' +
+      '<b>CQ4-7</b>：<b>侵襲成分之大小應與 IPMN 分開量測並分開記載</b>（建議以顯微鏡量測、以 cm 表示），T 分期依該侵襲成分。<br>' +
+      '<b>CQ4-2</b>：形態亞型具預後意義——<b>腸型</b>多為 colloid carcinoma（預後優於一般 PDAC）；' +
+      '<b>胃型與胰膽管型</b>多為 tubular ductal adenocarcinoma。' +
+      '<b>低度分化不良之胃型 IPMN 是同時存在之高度病灶的前驅，不可視為零風險</b>。</div>');
+    h = h.replace('id="pc_scpath"', 'id="pc_scpath" class="hidden"');
+
+    /* ---------- 第二段建議：治療結果之後續處置（第一段建議保留不被取代）---------- */
+    h += '<div class="flow-rec rec-idle hidden" id="pc_rec2"><div class="rec-label">後續處置 Next step</div>' +
+      '<div class="rec-title">請選擇上方步驟</div></div>';
+
+    /* ==========================================================
+       第三段：術後基準檢查（腺癌切除後才有）
+       ========================================================== */
     h += connH('pc_cadj');
-    h += step('pc_sadj', '4', '術後基準檢查結果（PANC-6 POST-OPERATIVE）',
+    h += step('pc_sadj', '3', '術後基準檢查結果（PANC-6 POST-OPERATIVE）',
       opt('adj', 'noevid', '無復發或轉移證據 No evidence of recurrence or metastatic disease', '→ 輔助治療＋監測') +
       opt('adj', 'metafound', '發現轉移性疾病 Metastatic disease', '→ 轉移性疾病之治療（PANC-9）'),
       cbx('術前基準檢查 Baseline pretreatment（PANC-6）', '', [
@@ -360,9 +627,9 @@
       ]));
     h = h.replace('id="pc_sadj"', 'id="pc_sadj" class="hidden"');
 
-    // 建議處置 + 追蹤
-    h += '<div class="flow-rec rec-idle" id="pc_rec"><div class="rec-label">建議處置 Recommendation</div>' +
-      '<div class="rec-title">請完成上方步驟</div></div>';
+    h += '<div class="flow-rec rec-idle hidden" id="pc_rec3"><div class="rec-label">輔助治療 Adjuvant</div>' +
+      '<div class="rec-title">請選擇術後基準檢查結果</div></div>';
+
     h += '<div class="flow-fu hidden" id="pc_fu"></div>';
 
     h += '<div class="flow-reset"><button class="btn-reset" onclick="pancReset()">重置</button></div>';
@@ -383,12 +650,30 @@
       if (s) s.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
     });
   }
-  function ulRec(id, cls, title, lines, note, extra) {
+  /* 步驟編號依「當下可見的步驟」動態計算——各分支可見的步驟數不同，
+     寫死編號會讓可切除分支出現 1、2、4 這種跳號（使用者實際回報過）。 */
+  var STEP_ORDER = ['pc_s1',
+    'pc_s2b', 'pc_s2la', 'pc_s2m', 'pc_s2rec', 'pc_s3rec',
+    'pc_s2cy', 'pc_s3cy', 'pc_s3mcn', 'pc_s4wf', 'pc_s4sz',
+    'pc_s2r', 'pc_s3bn', 'pc_s3bp', 'pc_scpath',
+    'pc_sadj'];
+  function renumber() {
+    var n = 0;
+    STEP_ORDER.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el || el.classList.contains('hidden')) return;
+      n++;
+      var num = el.querySelector('.flow-num');
+      if (num) num.textContent = String(n);
+    });
+  }
+
+  function ulRec(id, cls, title, lines, note, extra, label) {
     var el = document.getElementById(id);
     if (!el) return;
     el.className = 'flow-rec ' + cls;
-    var label = el.querySelector('.rec-label');
-    var labelTxt = label ? label.textContent : '建議處置 Recommendation';
+    var lab = el.querySelector('.rec-label');
+    var labelTxt = label || (lab ? lab.textContent : '建議處置 Recommendation');
     el.innerHTML = '<div class="rec-label">' + labelTxt + '</div>' +
       '<div class="rec-title">' + title + '</div>' +
       (lines && lines.length ? '<ul class="rec-detail"><li>' + lines.join('</li><li>') + '</li></ul>' : '') +
@@ -397,13 +682,15 @@
   }
 
   /* ---------- 追蹤區塊 ---------- */
-  function renderFollowup(type) {
+  function renderFollowup(type, html) {
     var el = document.getElementById('pc_fu');
     if (!el) return;
     if (!type) { el.classList.add('hidden'); el.innerHTML = ''; return; }
     el.classList.remove('hidden');
     var h;
-    if (type === 'curative') {
+    if (type === 'custom') {
+      h = html || '';
+    } else if (type === 'curative') {
       h = '<div class="fu-label">追蹤與監測 Surveillance（PANC-6）</div><ul class="fu-list">' +
         '<li><b>每 3 個月追蹤一次，共 2 年；之後每年一次</b>。</li>' +
         '<li>每次追蹤內容：<b>病史與理學檢查（H&amp;P）以評估症狀</b>、<b>CA 19-9 與 CEA</b>、<b>CT scan</b>。</li>' +
@@ -422,11 +709,34 @@
     }
     el.innerHTML = h;
   }
-  function result(cls, title, lines, note, fuType, extra) {
-    ulRec('pc_rec', cls, title, lines, note, extra);
+  /* 第一段（原發治療）建議。fuType 傳 null 者代表尚未到終點，追蹤區塊不顯示。 */
+  function result(cls, title, lines, note, fuType, extra, fuHtml) {
+    ulRec('pc_rec', cls, title, lines, note, extra, '建議處置 Recommendation');
+    renderFollowup(fuType, fuHtml);
+  }
+  function idleRec(title) {
+    ulRec('pc_rec', 'rec-idle', title, [], '', '', '建議處置 Recommendation');
+    renderFollowup(null);
+  }
+  /* 第二段（治療結果之後續處置）。第一段建議一律保留，兩段可同時對照。 */
+  function result2(cls, title, lines, note, fuType, extra, label, fuHtml) {
+    var el = document.getElementById('pc_rec2');
+    if (el) el.classList.remove('hidden');
+    ulRec('pc_rec2', cls, title, lines, note, extra, label || '後續處置 Next step');
+    if (fuType !== undefined) renderFollowup(fuType, fuHtml);
+  }
+  /* 第三段（術後基準檢查後之輔助治療）。 */
+  function result3(cls, title, lines, note, fuType, extra) {
+    var el = document.getElementById('pc_rec3');
+    if (el) el.classList.remove('hidden');
+    ulRec('pc_rec3', cls, title, lines, note, extra, '輔助治療 Adjuvant');
     renderFollowup(fuType);
   }
-  function idleRec(title) { ulRec('pc_rec', 'rec-idle', title, [], ''); renderFollowup(null); }
+  function hideRec(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'flow-rec rec-idle hidden';
+  }
 
   /* 術中不可切除／進展致無法手術之共用處置（PANC-3／PANC-4／PANC-5） */
   function unresAtSurgery(src) {
@@ -450,16 +760,11 @@
     var s = pcSt;
 
     var isRes = s.ext === 'res', isBord = s.ext === 'bord',
-      isLa = s.ext === 'la', isMeta = s.ext === 'meta', isRec = s.ext === 'rec';
+      isLa = s.ext === 'la', isMeta = s.ext === 'meta', isRec = s.ext === 'rec',
+      isCyst = s.ext === 'cyst';
 
-    pcShow('pc_c2r', isRes); pcShow('pc_s2r', isRes);
+    /* --- 第一段：術前條件 --- */
     pcShow('pc_c2b', isBord); pcShow('pc_s2b', isBord);
-
-    var showNeo = isBord && s.bstrat === 'neo';
-    pcShow('pc_c3bn', showNeo); pcShow('pc_s3bn', showNeo);
-    var showPlan = isBord && s.bstrat === 'planres';
-    pcShow('pc_c3bp', showPlan); pcShow('pc_s3bp', showPlan);
-
     pcShow('pc_c2la', isLa); pcShow('pc_s2la', isLa);
     pcShow('pc_c2m', isMeta); pcShow('pc_s2m', isMeta);
     pcShow('pc_c2rec', isRec); pcShow('pc_s2rec', isRec);
@@ -467,67 +772,68 @@
     var showRtime = isRec && s.rsite === 'distant';
     pcShow('pc_c3rec', showRtime); pcShow('pc_s3rec', showRtime);
 
-    // 已完成切除 → 術後輔助（PANC-6），三條路徑共用
+    pcShow('pc_c2cy', isCyst); pcShow('pc_s2cy', isCyst);
+    var isIpmn = isCyst && (s.cyst === 'bd' || s.cyst === 'mdmt');
+    var isMcn = isCyst && s.cyst === 'mcn';
+    pcShow('pc_c3cy', isIpmn); pcShow('pc_s3cy', isIpmn);
+    pcShow('pc_c3mcn', isMcn); pcShow('pc_s3mcn', isMcn);
+    var showWf = isIpmn && s.crisk === 'wf';
+    pcShow('pc_c4wf', showWf); pcShow('pc_s4wf', showWf);
+    // 大小分層只在「無 HRS 亦無 WF」時才是待決問題；
+    // 「WF 僅為囊腫 ≥30mm」本身已指定大小，再問一次會讓人選出自相矛盾的答案。
+    var showSize = isIpmn && s.crisk === 'none';
+    pcShow('pc_c4sz', showSize); pcShow('pc_s4sz', showSize);
+
+    /* --- 第二段：依建議治療之後才有的結果 --- */
+    var showNeo = isBord && s.bstrat === 'neo';
+    var showPlan = isBord && s.bstrat === 'planres';
+    pcShow('pc_c2r', isRes); pcShow('pc_s2r', isRes);
+    pcShow('pc_c3bn', showNeo); pcShow('pc_s3bn', showNeo);
+    pcShow('pc_c3bp', showPlan); pcShow('pc_s3bp', showPlan);
+
+    // 囊性腫瘤走到手術者，才會有切除標本可判讀
+    var cystOp = (isIpmn && (s.crisk === 'hrs' || (showWf && s.cwf === 'aug'))) || (isMcn && s.mrisk === 'op');
+    pcShow('pc_ccpath', cystOp); pcShow('pc_scpath', cystOp);
+
+    /* --- 第三段：腺癌切除後之基準檢查 --- */
     var resected = (isRes && s.surg === 'resected') ||
       (showNeo && s.bneo === 'resected') ||
       (showPlan && s.bres === 'resected');
     pcShow('pc_cadj', resected); pcShow('pc_sadj', resected);
 
-    renderRec(resected);
+    renumber();
+    renderRec(resected, cystOp);
   }
 
-  function renderRec(resected) {
+  function renderRec(resected, cystOp) {
     var s = pcSt;
+    hideRec('pc_rec2'); hideRec('pc_rec3');
     if (!s.ext) { idleRec('請選擇步驟 1（疾病範圍與初始情境）'); return; }
 
-    /* ===== 已切除 → 術後輔助（PANC-6），共用分支 ===== */
-    if (resected) {
-      if (!s.adj) {
-        result('rec-elective', '已完成手術切除 → 進行術後基準檢查（PANC-6）', [
-          '<b>基準檢查（Baseline pretreatment）</b>：<b>CT scan</b>、<b>CA 19-9</b>、<b>CEA</b>。',
-          '請於<b>步驟 4</b> 選擇基準檢查結果以取得輔助治療建議。'
-        ], 'PANC-6：Surgical resection → Baseline pretreatment（CT scan／CA19-9／CEA）→ 依有無復發或轉移分流。', null);
-        return;
-      }
-      if (s.adj === 'metafound') {
-        result('rec-nonop', '術後基準檢查發現轉移性疾病 → 依轉移性疾病治療（PANC-9）', [
-          '<b>不進入輔助治療</b>；直接依<b>轉移性疾病之治療</b>處理（PANC-9）。',
-          '請返回<b>步驟 1</b> 選擇「轉移性 Metastatic disease」以取得依體能狀態之完整處方選單與救援治療。'
-        ], 'PANC-6：Baseline pretreatment → Metastatic disease → See Metastatic Disease（PANC-9）。' + '｜' + chemoNote,
-          'palliative', systemicPanel('good') + salvagePanel('meta') + palliationHtml());
-        return;
-      }
-      // noevid
-      result('rec-elective', '無復發或轉移證據 → 術後輔助治療＋監測（PANC-6）', [
-        '<b>本指引未指定首選處方</b>：PANC-6 以 <span class="rx">Clinical trial preferred</span> 冠首，其餘選項<b>以 or 並列</b>（詳見下方選單）。',
-        '<b>開始時機</b>：未曾接受新輔助化療且已自手術充分恢復者，<b>術後 4–8 週內</b>開始（PANC-6 註 k）。',
-        '<b>已接受新輔助化放療／化療者</b>：為<b>術後追加化療</b>之候選人（PANC-6 註 k）。'
-      ], 'PANC-6：No evidence of recurrence or metastatic disease → Clinical trial preferred / systemic gemcitabine or 5-FU/leucovorin before or after chemoradiation / chemotherapy alone（Gemcitabine · 5-FU/leucovorin · Capecitabine · TS-1）→ Surveillance。輔助處方細目見 PANC-E（2 of 4）。',
-        'curative', adjuvantPanel());
-      return;
-    }
+    /* ===== F. 囊性腫瘤 IPMN／MCN（Kyoto 2024／European 2018／ACG 2018）===== */
+    if (s.ext === 'cyst') { renderCyst(cystOp); return; }
 
     /* ===== A. 可切除（PANC-3）===== */
     if (s.ext === 'res') {
-      if (!s.surg) {
-        result('rec-elective', '可切除 → 手術切除（必要時先行分期腹腔鏡）', [
+      /* 第一段建議恆為「手術切除」，不因術中結果而被取代 */
+      result('rec-elective', '可切除 → 手術切除（必要時先行分期腹腔鏡）', [
           '<b>分期腹腔鏡（選擇性 optional）</b>：<b>高風險病人</b>或臨床有需要時考慮' +
           '（PANC-A #6：尤其<b>胰體、胰尾</b>病灶；臨界可切除、<b>CA 19-9 顯著升高</b>、原發腫瘤大、區域淋巴結大者）。',
           '<b>剖腹手術 Laparotomy</b> → 手術切除（Surgical resection）→ 術後輔助治療與監測（PANC-6）。',
           '<b>手術量（PANC-A #1）</b>：胰臟切除術應在<b>每年執行 15–20 例</b>之院所進行。',
           '<b>切片非必要（PANC-A #5）</b>：手術切除前<b>不需病理證實</b>；臨床高度懷疑時不應因切片未確診而延遲手術。',
           '<b>腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。',
-          '請於<b>步驟 2</b> 選擇手術探查結果。'
+          '請於<b>下方步驟</b>選擇手術探查結果。'
         ], 'PANC-3：Resectable → Consider staging laparoscopy in high-risk patients or as clinically indicated（optional）→ Laparotomy → Surgical resection（→ PANC-6）或 Unresectable at surgery。', null);
-        return;
-      }
+      if (!s.surg) return;
       if (s.surg === 'unres_surg') {
-        result('rec-nonop', '術中發現不可切除（PANC-3）→ 切片確認 → 分流治療', unresAtSurgery('panc3'),
+        result2('rec-nonop', '術中發現不可切除（PANC-3）→ 切片確認 → 分流治療', unresAtSurgery('panc3'),
           'PANC-3：Unresectable at surgery → Aspiration/biopsy confirmation of adenocarcinoma, if not performed previously → See Locally Advanced Unresectable（PANC-7）／See Metastatic Disease（PANC-9）／Bypass surgery if estimated survival > 6 mo。' + '｜' + chemoNote,
           'palliative', systemicPanel('good') + salvagePanel('la') + palliationHtml());
         return;
       }
-      return; // resected 已於上方處理
+      renderResected();
+      return;
     }
 
     /* ===== B. 臨界可切除（PANC-4／PANC-5）===== */
@@ -539,53 +845,51 @@
           '<b>證據限制（PANC-4 註 h）</b>：<b>非試驗情境下推薦特定新輔助處方之證據有限</b>，' +
           '各院對化療與化放療之使用做法不一；<b>切除後高度可能為切緣陽性者，不建議手術</b>。',
           '<b>未確認癌症者</b>：重複切片；仍未確認（<b>須排除自體免疫胰臟炎 AIP</b>）→ 見 <b>PANC-5 計畫切除</b>／<b>腹腔鏡</b>。',
-          '請於<b>步驟 2</b> 選擇治療策略。'
+          '請於<b>上方步驟</b>選擇治療策略。'
         ], 'PANC-4：Borderline resectable, no metastases, planned neoadjuvant therapy；PANC-5：Borderline resectable, no metastases, planned resection。', null);
         return;
       }
       if (s.bstrat === 'neo') {
-        if (!s.bneo) {
-          result('rec-nonop', '臨界可切除 → 新輔助治療 → 重複影像再評估（PANC-4）', [
-            '<b>新輔助治療</b>（PANC-4 註 h）：<b>無標準處方</b>；PANC-E 明載「雖<b>證據不足以推薦特定新輔助處方</b>，' +
-            '惟<b>多數新輔助處方納入放射治療，且此情境以化放療為首選</b>」。',
-            '<b>治療後重複影像</b>：腹部（胰臟 protocol）、骨盆與胸部影像 → 再評估可切除性。',
-            '<b>全身性處方</b>可參考下方 PANC-E 選單（新輔助情境無專屬處方清單）。',
-            '請於<b>步驟 3</b> 選擇再評估結果。'
-          ], 'PANC-4：Biopsy positive → Neoadjuvant therapy → Repeat: Abdominal（pancreas protocol）, pelvic, and chest imaging → Surgical resection／Unresectable at surgery／Disease progression precluding surgery。PANC-E（2 of 4）Neoadjuvant：insufficient evidence to recommend specific neoadjuvant regimens; most incorporate RT and chemoradiation is preferred in this setting。',
-            null, rtHtml('neo') + systemicPanel('good'));
-          return;
-        }
+        result('rec-nonop', '臨界可切除 → 新輔助治療 → 重複影像再評估（PANC-4）', [
+          '<b>新輔助治療</b>（PANC-4 註 h）：<b>無標準處方</b>；PANC-E 明載「雖<b>證據不足以推薦特定新輔助處方</b>，' +
+          '惟<b>多數新輔助處方納入放射治療，且此情境以化放療為首選</b>」。',
+          '<b>治療後重複影像</b>：腹部（胰臟 protocol）、骨盆與胸部影像 → 再評估可切除性。',
+          '<b>全身性處方</b>可參考下方 PANC-E 選單（新輔助情境無專屬處方清單）。',
+          '請於<b>下方步驟</b>選擇再評估結果。'
+        ], 'PANC-4：Biopsy positive → Neoadjuvant therapy → Repeat: Abdominal（pancreas protocol）, pelvic, and chest imaging → Surgical resection／Unresectable at surgery／Disease progression precluding surgery。PANC-E（2 of 4）Neoadjuvant：insufficient evidence to recommend specific neoadjuvant regimens; most incorporate RT and chemoradiation is preferred in this setting。',
+          null, rtHtml('neo') + systemicPanel('good'));
+        if (!s.bneo) return;
         if (s.bneo === 'unres_surg') {
-          result('rec-nonop', '新輔助後術中發現不可切除（PANC-4）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc4'),
+          result2('rec-nonop', '新輔助後術中發現不可切除（PANC-4）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc4'),
             'PANC-4：Unresectable at surgery → No jaundice → See Locally Advanced Unresectable（PANC-7）／See Metastatic Disease（PANC-9）；Jaundice → Biliary drainage or Bypass surgery（if estimated survival > 6 mo）± open ethanol celiac plexus block。' + '｜' + chemoNote,
             'palliative', systemicPanel('good') + salvagePanel('la') + palliationHtml());
           return;
         }
         if (s.bneo === 'prog') {
-          result('rec-nonop', '新輔助後疾病進展致無法手術（PANC-4）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc4'),
+          result2('rec-nonop', '新輔助後疾病進展致無法手術（PANC-4）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc4'),
             'PANC-4：Disease progression precluding surgery → No jaundice → PANC-7／PANC-9；Jaundice → Biliary drainage or Bypass surgery（if estimated survival > 6 mo）± open ethanol celiac plexus block。' +
             '｜PANC-E（2 of 4）Locally-advanced：<b>已出現轉移而進展者，除非為緩解所需，否則不應接受化放療</b>。',
             'palliative', systemicPanel('good') + salvagePanel('la') + palliationHtml());
           return;
         }
-        return; // resected 已於上方處理
-      }
-      // planres
-      if (!s.bres) {
-        result('rec-elective', '臨界可切除 → 計畫直接切除（PANC-5）', [
-          '<b>剖腹手術 Laparotomy</b> → 手術切除（Surgical resection）→ 術後輔助治療與監測（PANC-6）。',
-          '<b>切除後高度可能為切緣陽性者，不建議手術</b>（PANC-4 註 h）。',
-          '<b>腹腔沖洗液細胞學陽性等同 M1</b>；若已切除，應依 M1 治療（PANC-A #7）。',
-          '請於<b>步驟 3</b> 選擇剖腹探查結果。'
-        ], 'PANC-5：Borderline resectable, no metastases, planned resection → Laparotomy → Surgical resection（→ PANC-6）或 Unresectable at surgery。', null);
+        renderResected();
         return;
       }
+      // planres
+      result('rec-elective', '臨界可切除 → 計畫直接切除（PANC-5）', [
+        '<b>剖腹手術 Laparotomy</b> → 手術切除（Surgical resection）→ 術後輔助治療與監測（PANC-6）。',
+        '<b>切除後高度可能為切緣陽性者，不建議手術</b>（PANC-4 註 h）。',
+        '<b>腹腔沖洗液細胞學陽性等同 M1</b>；若已切除，應依 M1 治療（PANC-A #7）。',
+        '請於<b>下方步驟</b>選擇剖腹探查結果。'
+      ], 'PANC-5：Borderline resectable, no metastases, planned resection → Laparotomy → Surgical resection（→ PANC-6）或 Unresectable at surgery。', null);
+      if (!s.bres) return;
       if (s.bres === 'unres_surg') {
-        result('rec-nonop', '計畫切除但術中發現不可切除（PANC-5）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc5'),
+        result2('rec-nonop', '計畫切除但術中發現不可切除（PANC-5）→ 依有無黃疸處置 → 分流', unresAtSurgery('panc5'),
           'PANC-5：Unresectable at surgery → Aspiration/biopsy confirmation of adenocarcinoma if not performed previously → No jaundice → See Locally Advanced Unresectable（PANC-7）／See Metastatic Disease（PANC-9）；Jaundice → Biliary drainage or biliary bypass（if estimated survival > 6 mo）± open ethanol celiac plexus block。' + '｜' + chemoNote,
           'palliative', systemicPanel('good') + salvagePanel('la') + palliationHtml());
         return;
       }
+      renderResected();
       return;
     }
 
@@ -684,6 +988,260 @@
     }
   }
 
+  /* 已完成切除之共用後段（PANC-6）：第二段＝進行術後基準檢查，第三段＝輔助治療 */
+  function renderResected() {
+    var s = pcSt;
+    result2('rec-elective', '已完成手術切除 → 進行術後基準檢查（PANC-6）', [
+      '<b>基準檢查（Baseline pretreatment）</b>：<b>CT scan</b>、<b>CA 19-9</b>、<b>CEA</b>。',
+      '請於<b>下方步驟</b>選擇基準檢查結果以取得輔助治療建議。'
+    ], 'PANC-6：Surgical resection → Baseline pretreatment（CT scan／CA19-9／CEA）→ 依有無復發或轉移分流。', null);
+    if (!s.adj) return;
+    if (s.adj === 'metafound') {
+      result3('rec-nonop', '術後基準檢查發現轉移性疾病 → 依轉移性疾病治療（PANC-9）', [
+        '<b>不進入輔助治療</b>；直接依<b>轉移性疾病之治療</b>處理（PANC-9）。',
+        '請返回<b>步驟 1</b> 選擇「轉移性 Metastatic disease」以取得依體能狀態之完整處方選單與救援治療。'
+      ], 'PANC-6：Baseline pretreatment → Metastatic disease → See Metastatic Disease（PANC-9）。' + '｜' + chemoNote,
+        'palliative', systemicPanel('good') + salvagePanel('meta') + palliationHtml());
+      return;
+    }
+    result3('rec-elective', '無復發或轉移證據 → 術後輔助治療＋監測（PANC-6）', [
+      '<b>本指引未指定首選處方</b>：PANC-6 以 <span class="rx">Clinical trial preferred</span> 冠首，其餘選項<b>以 or 並列</b>（詳見下方選單）。',
+      '<b>開始時機</b>：未曾接受新輔助化療且已自手術充分恢復者，<b>術後 4–8 週內</b>開始（PANC-6 註 k）。',
+      '<b>已接受新輔助化放療／化療者</b>：為<b>術後追加化療</b>之候選人（PANC-6 註 k）。'
+    ], 'PANC-6：No evidence of recurrence or metastatic disease → Clinical trial preferred / systemic gemcitabine or 5-FU/leucovorin before or after chemoradiation / chemotherapy alone（Gemcitabine · 5-FU/leucovorin · Capecitabine · TS-1）→ Surveillance。輔助處方細目見 PANC-E（2 of 4）。',
+      'curative', adjuvantPanel());
+  }
+
+  /* ============================================================
+     囊性腫瘤分支之建議處置
+     來源：Kyoto 2024（IPMN）、European 2018（IPMN＋MCN）、ACG 2018
+     ============================================================ */
+  var CYST_SRC_NOTE = '本區塊非台大指引內容——台大胰臟癌診療指引 v11 未涵蓋 IPMN／MCN。';
+
+  /* 非切除囊腫之追蹤區塊 */
+  function cystFu(kind) {
+    var li;
+    if (kind === 'postop') {
+      li = '<div class="fu-label">術後監測 Post-operative surveillance（Kyoto 2024 Fig.5／CQ3）</div><ul class="fu-list">' +
+        '<li><b>切除非侵襲性 IPMN 後，殘胰仍會出現具臨床意義之病灶</b>：5 年風險中位數 <b>10%</b>（範圍 0–21%）——' +
+        '術後監測之目的即在<b>於進展為侵襲癌之前及早發現高風險病灶</b>（CQ3-1）。</li>' +
+        '<li><b>間隔</b>：無額外風險因子者<b>每年一次影像</b>；<b>具家族性胰癌病史或 HGD 者每 6 個月</b>（CQ3-2、CQ3-4）。' +
+        '<b>只要病人仍適合接受後續治療即應持續監測</b>。</li>' +
+        '<li><b>應留意之影像變化</b>：<b>實質成分、主胰管擴張、囊性病灶增大</b>（CQ3-3）。' +
+        '<b>監測中新出現之主胰管擴張須釐清是 MD-IPMN 進展，還是胰腸吻合處狹窄等其他原因</b>。</li>' +
+        '<li><b>方式</b>：理學檢查＋影像（MDCT／MRI-MRCP／EUS）＋血液腫瘤標記與 HbA1c，依院內政策組合（Fig.5 註 c）。</li>' +
+        '<li><b>因非侵襲性病灶而接受全胰切除者</b>，若術後 5 年監測期間無事件，<b>IPMN 專屬之監測可停止</b>（Fig.5 註 c）。</li>' +
+        '<li><b>European 4.20</b>：<b>IPMN 切除後終身追蹤</b>（只要仍適合且願意再手術）；<b>HGD 或 MD-IPMN 者前 2 年每 6 個月、其後每年</b>；' +
+        'LGD 者比照未切除之 IPMN。<b>ACG #18 則認為切除且無癌之 MCN 不需術後監測</b>（強建議）——<b>此處三份指引不一致</b>。</li>' +
+        '</ul>';
+    } else {
+      li = '<div class="fu-label">囊腫監測 Cyst surveillance</div><ul class="fu-list">' +
+        '<li><b>影像以 MRI／MRCP 為主</b>（European 4.4、ACG #13）；<b>應盡量固定同一種影像模式</b>，' +
+        '以維持大小量測之一致性（ACG Fig.2 註）。</li>' +
+        '<li><b>監測中出現 HRS／WF 或形態變化</b> → <b>回到風險分層重新評估</b>（Kyoto Fig.3 回饋箭頭）。</li>' +
+        '<li><b>症狀改變應即刻觸發檢查</b>（European 4.2）。</li>' +
+        '<li><b>監測範圍涵蓋整個胰腺</b>——IPMN 病人另有併發胰管腺癌之風險，且該風險於 5 年後仍持續。</li>' +
+        '<li><b>不再適合手術即停止監測</b>（ACG #15，強建議）；<b>&gt;75 歲宜重新評估監測之效益</b>，76–85 歲採個別化決策（ACG #16）。</li>' +
+        '<li><b>IPMN 病人不需為此做常規之胰外腫瘤篩檢</b>（European 4.6，GRADE 1C）。</li>' +
+        '<li><b>有胰癌家族史之 IPMN，處置與散發性 IPMN 相同</b>（European 4.22）；<b>器官移植者亦與非移植者相同</b>（4.23，GRADE 1B）。</li>' +
+        '</ul>';
+    }
+    return li;
+  }
+
+  function renderCyst(cystOp) {
+    var s = pcSt;
+    if (!s.cyst) { idleRec('請選擇上方步驟（囊性腫瘤之型態）'); return; }
+
+    /* --- 診斷未明之囊性病灶（European §7） --- */
+    if (s.cyst === 'indet') {
+      result('rec-nonop', '診斷未明之囊性病灶 → 補齊檢查並依大小監測（European 2018 §7）', [
+        '<b>&lt;15mm</b>：<b>橫斷影像或 EUS 擇一即可</b>（7.1）。',
+        '<b>≥15mm，或診斷仍不明</b>：<b>橫斷影像與 EUS 兩者皆做</b>，必要時加做 <b>EUS-FNA</b>（7.1）。',
+        '<b>監測（7.2）</b>：<b>&lt;15mm 且無惡性風險因子</b> → <b>1 年後複查</b>；<b>穩定 3 年</b>後可延長為<b>每 2 年</b>。' +
+        '<b>≥15mm</b> → <b>第 1 年每 6 個月、其後每年</b>。',
+        '<b>理由</b>：未定性之囊腫本質上可能為黏液性，故仍需監測；惡性轉化風險隨大小上升。',
+        '<b>囊液分子標記</b>可在診斷不明且結果會改變處置時使用：<b>KRAS／GNAS</b> 支持黏液性、' +
+        '<b>VHL 而無 KRAS／GNAS</b> 高度支持 SCN（Kyoto CQ5-1，證據 1+、等級 B）。',
+        '<b>已確診為假性囊腫或漿液性囊腺瘤等極低惡性風險者，不需治療或進一步評估</b>（ACG #5）。'
+      ], 'European 2018 §7.1、7.2；ACG 2018 #5、#6、#8；Kyoto 2024 CQ5-1。' + CYST_SRC_NOTE,
+        'custom', '', cystFu('surv'));
+      return;
+    }
+
+    /* --- MCN（European §5） --- */
+    if (s.cyst === 'mcn') {
+      if (!s.mrisk) { idleRec('請選擇上方步驟（MCN 之手術指徵）'); return; }
+      if (s.mrisk === 'obs') {
+        result('rec-nonop', 'MCN &lt;40mm 且無症狀、無壁結節 → 可安全追蹤（European 5.2／5.3）', [
+          '<b>可安全追蹤</b>（5.2，GRADE 2C）：<b>&lt;40mm 且無可疑壁結節與症狀</b>者。',
+          '<b>監測方式</b>：<b>MRI、EUS 或兩者併用</b>；<b>第 1 年每 6 個月，其後若無變化改為每年</b>；' +
+          '<b>只要仍適合手術即終身監測</b>（5.3，GRADE 2C）。',
+          '<b>30–40mm</b> 者可併同年齡、共病、手術風險與病人意願個別決定是否手術（5.2）。',
+          '<b>&lt;30mm</b> 常難以與其他囊性病灶區分，故<b>比照 IPMN 之監測</b>（5.2）。',
+          '<b>懷孕</b>：有 MCN 於孕期快速增大甚至破裂之報告，<b>孕期須密切觀察</b>（5.1）。',
+          '<b>出現 ≥40mm、症狀或壁結節</b> → 依手術指徵處理（回到上方步驟改選）。'
+        ], 'European 2018 §5.1～5.3。Kyoto 2024 不涵蓋 MCN；ACG 2018 將 MCN 與 IPMN 併用同一套高風險特徵（#9～#11）。' + CYST_SRC_NOTE,
+          'custom', cystSurvPanel(), cystFu('surv'));
+        return;
+      }
+      result('rec-elective', 'MCN 具手術指徵 → 手術切除（European 5.1／5.5）', [
+        '<b>手術指徵（5.1，GRADE 1B）</b>：<b>≥40mm</b>；或<b>有症狀</b>；或<b>具風險特徵（如壁結節）</b>——後兩者<b>不論大小</b>。',
+        '<b>術式（5.5）</b>：具 HGD／癌之影像特徵者 → <b>標準腫瘤學切除＋淋巴結廓清＋脾切除</b>' +
+        '（<b>90–95% 為遠端胰切除</b>，GRADE 1B），以免侵襲癌治療不完全。',
+        '<b>無可疑特徵、惡性風險低者</b> → <b>非腫瘤學切除</b>：保脾遠端胰切除（可併或不併保留脾血管），或保留實質之切除（PSP）。',
+        '<b>PSP 可用於選擇性病人以降低長期糖尿病風險</b>，惟須解剖位置合適；<b>PSP 之早期併發症與住院天數較高</b>（5.5）。',
+        '<b>腹腔鏡途徑可行</b>，其相對於開腹之優劣與其他適應症相當。',
+        '請於<b>下方步驟</b>選擇切除標本之病理結果。'
+      ], 'European 2018 §5.1、5.5。' + CYST_SRC_NOTE, null, cystOpPanel());
+      renderCystPath();
+      return;
+    }
+
+    /* --- IPMN（Kyoto 2024 Fig.3） --- */
+    var mdmt = s.cyst === 'mdmt';
+    if (!s.crisk) { idleRec('請選擇上方步驟（IPMN 之風險分層）'); return; }
+
+    if (s.crisk === 'hrs') {
+      result('rec-elective', '具高風險徵象（HRS）→ 於臨床合宜時考慮手術切除', [
+        '<b>Kyoto 2024</b>：<b>適合手術之病人若具 HRS，建議手術切除</b>；' +
+        '惟本指引<b>刻意保留「HRS／WF」而不改稱「絕對／相對指徵」</b>——' +
+        '<b>HRS 之特異度並不完美</b>，是否手術仍須併同<b>全身狀況、共病、餘命與病人意願</b>判斷（5.2）。',
+        '<b>European 2018 之對應表述</b>：<b>黃疸、細胞學為 HGD／癌、強化壁結節 ≥5mm、實質腫塊、MPD ≥10mm</b> 屬<b>絕對手術指徵</b>（4.11，GRADE 1B）。',
+        mdmt ? '<b>MD／MT-IPMN 另有獨立之切除理由</b>：<b>適合手術之 MD-IPMN 應予切除</b>（European 4.7，GRADE 1B）；' +
+          '<b>MT-IPMN 之惡性轉化風險與 MD-IPMN 相當，亦建議切除</b>（4.8）。' +
+          '<b>European 之主胰管切除門檻為 &gt;5mm</b>（4.10，GRADE 2C／弱共識），<u>低於 Kyoto 之 ≥10mm</u>。'
+          : '<b>BD-IPMN 通常以部分胰切除即可完整移除</b>（Kyoto 6.3）；懷疑侵襲癌時則需根治性切除併淋巴結廓清。',
+        '<b>術前評估</b>：建議加做 <b>EUS（含 CE-EUS，必要時 EUS-FNA）</b>以評估 HGD／侵襲癌（Kyoto CQ1-6，證據 2++）。',
+        '<b>IPMN 相關侵襲癌之術前分期，比照胰臟腺癌之流程</b>（European 4.21，GRADE 1C）。',
+        '請於<b>下方步驟</b>選擇切除標本之病理結果。'
+      ], 'Kyoto 2024 Fig.3、§5.2、§6.3、CQ1-6；European 2018 §4.7、4.8、4.10、4.11、4.21。' + CYST_SRC_NOTE,
+        null, cystOpPanel());
+      renderCystPath();
+      return;
+    }
+
+    if (s.crisk === 'wf') {
+      if (!s.cwf) { idleRec('請選擇上方步驟（WF 陽性者之加權因子）'); return; }
+      if (s.cwf === 'aug') {
+        result('rec-elective', '具 WF 併加權因子 → 於臨床合宜時考慮手術切除（Kyoto Fig.3）', [
+          '<b>Kyoto Fig.3</b>：無 HRS 但有 WF 者，若併<b>反覆急性胰臟炎影響生活品質</b>、' +
+          '<b>多項 WF 疊加</b>或<b>年輕且適合手術</b>，即進入<b>「於臨床合宜時考慮手術」</b>。',
+          '<b>反覆胰臟炎之手術理由在症狀</b>：大型系列顯示併急性胰臟炎者之 HGD／IC 發生率與 LGD 相當，' +
+          '<b>但反覆發作明顯損害生活品質，故應考慮手術</b>（Kyoto 5.4）。',
+          '<b>多項 WF</b>：<b>項目愈多，HGD／IC 之可能性愈高</b>，建議借助 nomogram 綜合判斷（CQ1-5、Fig.3 註 d）。',
+          '<b>術前先以 EUS 評估</b>（CQ1-6）；<b>細胞學為可疑或陽性者即升級為 HRS</b>（CQ4-8）。',
+          '<b>European 之對應</b>：生長速率 ≥5mm／年、CA 19-9 &gt;37 U/mL（無黃疸時）、MPD 5–9.9mm、囊腫 ≥40mm、' +
+          '新發生之糖尿病、IPMN 引起之急性胰臟炎、強化壁結節 &lt;5mm 均屬<b>相對</b>手術指徵（4.12，GRADE 2C）。',
+          '請於<b>下方步驟</b>選擇切除標本之病理結果。'
+        ], 'Kyoto 2024 Fig.3、§5.4、CQ1-5、CQ1-6；European 2018 §4.12。' + CYST_SRC_NOTE,
+          null, cystOpPanel());
+        renderCystPath();
+        return;
+      }
+      if (s.cwf === 'other') {
+        result('rec-nonop', '具 WF 但無加權因子 → 依估計風險以 1–6 個月間隔密切監測', [
+          '<b>Kyoto Fig.3</b>：此格為 <b>「以 1–6 個月間隔監測，間隔依估計風險而定」</b>——' +
+          '<b>比無 WF 者密集</b>，且<b>一旦進展即回到最上方重新評估 HRS／WF</b>。',
+          '<b>先排除惡性</b>：決定監測而非手術之前，<b>應先以 EUS（含 CE-EUS、必要時 EUS-FNA）完成初步評估</b>（Kyoto CQ1-6）。',
+          '<b>European 4.2 之對應</b>：<b>具相對手術指徵者、高齡者、重大共病者，建議每 6 個月追蹤</b>（GRADE 1B）。',
+          '<b>ACG #10、#11 之對應</b>：<b>新發生或惡化之糖尿病</b>、<b>囊腫每年增大 &gt;3mm</b> → <b>短間隔 MRI 或 EUS±FNA</b>；' +
+          '具黃疸、胰臟炎、CA 19-9 顯著升高、壁結節／實質成分、主胰管 &gt;5mm、口徑改變併上游萎縮、' +
+          '黏液性囊腫 ≥3cm、細胞學 HGD／癌者 → <b>EUS±FNA 並轉多專科團隊</b>（強建議）。'
+        ], 'Kyoto 2024 Fig.3、CQ1-6；European 2018 §4.2；ACG 2018 #10、#11。' + CYST_SRC_NOTE,
+          'custom', cystSurvPanel(), cystFu('surv'));
+        return;
+      }
+      // only30 → 落入依大小之監測（≥30mm）
+    }
+
+    /* 無 HRS／WF（或 WF 僅為囊腫 ≥30mm）→ 依大小之監測 */
+    var only30 = s.crisk === 'wf' && s.cwf === 'only30';
+    var size = only30 ? 'ge30' : s.csize;   // only30 已隱含 ≥30mm，不再另問
+    if (!size) { idleRec('請選擇上方步驟（最大囊腫之大小）'); return; }
+    var sched = {
+      lt20: ['&lt; 20mm', '<b>6 個月一次共 1 次</b>，其後若<b>穩定則每 18 個月</b>'],
+      mid: ['≥ 20mm 且 &lt; 30mm', '<b>6 個月一次共 2 次</b>，其後若<b>穩定則每 12 個月</b>'],
+      ge30: ['≥ 30mm', '<b>每 6 個月</b>']
+    }[size];
+    var lines = [
+      '<b>監測排程（Kyoto Fig.3／CQ2-2，證據 2+、等級 B）</b>：' + sched[0] + ' → ' + sched[1] + '。',
+      '<b>先做一次 6 個月之短期追蹤</b>再進入上述間隔。',
+      '<b>監測中出現進展</b> → <b>回到最上方重新評估 HRS／WF</b>。'
+    ];
+    if (only30) {
+      lines.unshift('<b>本情境</b>：WF <u>僅有</u>「囊腫 ≥30mm」一項且無加權因子——' +
+        'Kyoto Fig.3 將其導回<b>依大小之監測</b>（即 ≥30mm → 每 6 個月），<b>而非直接手術</b>。' +
+        '<b>單以大小為手術指徵並不恰當</b>：囊腫 ≥30mm 而無其他風險因子者，惡性之陽性預測值僅 <b>27–33%</b>（European 4.1、4.3）。');
+    }
+    if (size === 'lt20') {
+      lines.push('<b>停止監測之條件（CQ2-3）</b>：<b>&lt;20mm、滿 5 年、無形態變化亦無 WF</b> 者，' +
+        '得<b>「停止監測」或「因併發胰管腺癌之可能而繼續監測」</b>——<b>兩選項並列</b>，須併同病人狀況與餘命判斷。' +
+        '<b>年輕者、具家族性或遺傳性風險者不適用</b>（胰癌風險隨時間累積）。');
+    } else {
+      lines.push('<b>≥20mm 者在 Kyoto Fig.3 中無「停止監測」之出口</b>：未進展者標示為<b>「繼續監測」</b>。');
+    }
+    if (mdmt) {
+      lines.push('<b>⚠ 型態不符</b>：本步驟之排程為 <b>BD-IPMN</b> 之監測。' +
+        '<b>MD／MT-IPMN 只要適合手術即建議切除</b>（European 4.7、4.8，GRADE 1B／2C）；' +
+        '若因不適合手術而僅能觀察，應循<b>更密集之個別化追蹤</b>，不宜套用本表。');
+    }
+    lines.push('<b>合併之支持性處置</b>：如出現胰臟外分泌功能不全，依需要補充胰酵素（PANC-C）。');
+    result(only30 ? 'rec-nonop' : 'rec-elective',
+      (only30 ? 'WF 僅為囊腫 ≥30mm' : '無 HRS 亦無 WF') + ' → 依最大囊腫大小監測（Kyoto Fig.3）',
+      lines,
+      'Kyoto 2024 Fig.3、CQ2-1～CQ2-3；European 2018 §4.1～4.3、4.5；ACG 2018 #14～#16。' + CYST_SRC_NOTE,
+      'custom', cystSurvPanel(), cystFu('surv'));
+  }
+
+  /* 囊性腫瘤切除後之病理分流（Kyoto Fig.5） */
+  function renderCystPath() {
+    var s = pcSt;
+    if (!s.cpath) {
+      result2('rec-idle', '請選擇切除標本之病理結果', [], '', undefined, '', '術後處置與監測 Post-operative');
+      return;
+    }
+    if (s.cpath === 'ic') {
+      result2('rec-nonop', '侵襲癌 Invasive carcinoma → 比照胰臟腺癌之輔助治療與監測', [
+        '<b>監測（Kyoto Fig.5）</b>：<b>與一般胰管腺癌相同</b>——即本頁 <b>PANC-6</b> 之監測（每 3 個月共 2 年，其後每年；' +
+        '每次含 H&amp;P、CA 19-9 與 CEA、CT）。',
+        '<b>輔助化療（European 8.1，GRADE 1C）</b>：<b>IPMN 併侵襲癌不論淋巴結陰陽性均建議輔助全身性化療</b>；' +
+        '<b>MCN 併侵襲癌則比照散發性胰臟腺癌</b>（GRADE 2C）。<b>無法指定特定藥物</b>，最常用者為 <b>5-FU</b> 與 <b>gemcitabine</b>。',
+        '<b>處方選單</b>見下方（同 PANC-6 ＋ PANC-E 之輔助治療內容）。',
+        '<b>T 分期以侵襲成分計</b>：侵襲成分之大小應與 IPMN <b>分開量測、分開記載</b>（Kyoto CQ4-7）。',
+        '<b>切緣為侵襲癌</b> → <b>強烈建議延伸切除</b>（European 4.18）；<b>但胰頭之 IPMN 相關侵襲癌不建議全胰切除</b>——預後由該癌決定（4.9）。',
+        '<b>不建議切除轉移或局部復發病灶</b>（European 8.5，無研究可據）；<b>不可切除或復發者可比照胰臟腺癌施行緩和性化療</b>（8.4）。'
+      ], 'Kyoto 2024 Fig.5、CQ4-7；European 2018 §4.9、4.18、8.1、8.4、8.5。' + CYST_SRC_NOTE,
+        'curative', cystSystemicPanel() + adjuvantPanel(), '術後處置與監測 Post-operative');
+      return;
+    }
+    if (s.cpath === 'hgd') {
+      result2('rec-elective', '非侵襲性 · 高度分化不良（HGD）→ 每 6 個月影像監測', [
+        '<b>間隔（Kyoto Fig.5／CQ3-2、CQ3-4）</b>：<b>HGD 或有胰癌家族史者，每 6 個月</b>影像監測；' +
+        '<b>只要仍適合接受後續治療即持續監測</b>。',
+        '<b>理由</b>：<b>HGD 與胰癌家族史是切除非侵襲性 IPMN 後、殘胰出現具臨床意義病灶之高風險特徵</b>（CQ3-4）。',
+        '<b>切緣為 HGD</b> → <b>應考慮延伸切除</b>（European 4.17／4.18；Kyoto CQ4-6）；' +
+        '<b>惟已存在侵襲癌時，保留切緣之 HGD 以避免全胰切除，於高齡或衰弱病人可能是合理的</b>（Kyoto 6.3）。',
+        '<b>HGD 可與 carcinoma in situ 互用；不建議使用「malignant IPMN」</b>（CQ4-1）。',
+        '<b>European 4.20</b>：<b>HGD 或 MD-IPMN 者前 2 年每 6 個月、其後每年</b>；' +
+        'HGD 或 IPMN 相關侵襲癌之復發風險 <b>&gt;50%</b>、無病存活中位數約 <b>29 個月</b>。'
+      ], 'Kyoto 2024 Fig.5、CQ3-2、CQ3-4、CQ4-1、CQ4-6；European 2018 §4.17、4.18、4.20。' + CYST_SRC_NOTE,
+        'custom', '', '術後處置與監測 Post-operative', cystFu('postop'));
+      return;
+    }
+    result2('rec-elective', '非侵襲性 · 低度分化不良（LGD）→ 每年影像監測', [
+      '<b>間隔（Kyoto Fig.5／CQ3-2）</b>：<b>無額外風險因子者每年一次影像</b>；' +
+      '<b>只要仍適合接受後續治療即持續監測</b>。',
+      '<b>切緣為 LGD 不需追加切除</b>（Kyoto CQ4-6；European 4.17）——' +
+      '術後復發常為<b>與原切除病灶無關之獨立新生病灶</b>，且小的 BD-IPMN 常是<b>刻意留在殘胰</b>的。',
+      '<b>但「裸露胰管」不等於切緣陰性</b>，可能時應考慮追加切除（CQ4-6）。',
+      '<b>不可視為零風險</b>：分子研究顯示<b>低度分化不良之胃型 IPMN 是同時存在之高度病灶的前驅</b>（CQ4-2）；' +
+      '且 IPMN 具<b>多發性與多克隆性</b>，被認為是<b>全胰腺的疾病</b>（CQ4-4）。',
+      '<b>European 4.20</b>：LGD 者<b>比照未切除之 IPMN 追蹤</b>；其復發風險 5.4–10%，無病存活中位數約 52 個月。'
+    ], 'Kyoto 2024 Fig.5、CQ3-2、CQ4-2、CQ4-4、CQ4-6；European 2018 §4.17、4.20。' + CYST_SRC_NOTE,
+      'custom', '', '術後處置與監測 Post-operative', cystFu('postop'));
+  }
+
   /* ---------- 事件 ---------- */
   function pancPick(key, val, btn) {
     pcSel(btn);
@@ -691,7 +1249,25 @@
     if (key === 'ext') {
       s.ext = val;
       s.surg = s.bstrat = s.bneo = s.bres = s.ps = s.rsite = s.rtime = s.adj = null;
-      pcClearSel(['pc_s2r', 'pc_s2b', 'pc_s3bn', 'pc_s3bp', 'pc_s2la', 'pc_s2m', 'pc_s2rec', 'pc_s3rec', 'pc_sadj']);
+      s.cyst = s.crisk = s.cwf = s.csize = s.mrisk = s.cpath = null;
+      pcClearSel(['pc_s2r', 'pc_s2b', 'pc_s3bn', 'pc_s3bp', 'pc_s2la', 'pc_s2m', 'pc_s2rec', 'pc_s3rec', 'pc_sadj',
+        'pc_s2cy', 'pc_s3cy', 'pc_s3mcn', 'pc_s4wf', 'pc_s4sz', 'pc_scpath']);
+    } else if (key === 'cyst') {
+      s.cyst = val; s.crisk = s.cwf = s.csize = s.mrisk = s.cpath = null;
+      pcClearSel(['pc_s3cy', 'pc_s3mcn', 'pc_s4wf', 'pc_s4sz', 'pc_scpath']);
+    } else if (key === 'crisk') {
+      s.crisk = val; s.cwf = s.csize = s.cpath = null;
+      pcClearSel(['pc_s4wf', 'pc_s4sz', 'pc_scpath']);
+    } else if (key === 'cwf') {
+      s.cwf = val; s.csize = s.cpath = null;
+      pcClearSel(['pc_s4sz', 'pc_scpath']);
+    } else if (key === 'csize') {
+      s.csize = val;
+    } else if (key === 'mrisk') {
+      s.mrisk = val; s.cpath = null;
+      pcClearSel(['pc_scpath']);
+    } else if (key === 'cpath') {
+      s.cpath = val;
     } else if (key === 'surg') {
       s.surg = val; s.adj = null;
       pcClearSel(['pc_sadj']);
@@ -723,6 +1299,7 @@
     if (root) root.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
     var fu = document.getElementById('pc_fu');
     if (fu) { fu.classList.add('hidden'); fu.innerHTML = ''; }
+    hideRec('pc_rec2'); hideRec('pc_rec3');
     pcRender();
   }
 
