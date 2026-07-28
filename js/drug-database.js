@@ -19,6 +19,7 @@ const TOP_ZH = {
   'III. Neurologic Drugs': '神經科用藥',
   'IV. Agents Used in Anesthesia': '麻醉用藥',
   'V. Musculoskeletal And Joint Diseases': '骨骼肌肉與關節用藥',
+  'VIII. Enzyme': '酵素製劑',
   'VI. Cardiovascular-renal Drugs': '心血管與腎臟用藥',
   'VII. Nutritional Agents, Electrolytic, and Water Balance': '營養／電解質與水分平衡',
   'IX. Hematological Agents': '血液用藥',
@@ -34,7 +35,10 @@ const TOP_ZH = {
   'XIX. Diagnostic Aids': '診斷用劑',
   'XX. Dental preparations': '牙科製劑',
   'XXI. Dermatological Preparations': '皮膚科製劑',
-  'XXIII. Ophthalmic Preparations': '眼科製劑'
+  'XXII. ENT Preparations': '耳鼻喉製劑',
+  'XXIII. Ophthalmic Preparations': '眼科製劑',
+  'XXIV. Miscellaneous': '其他',
+  'XXV. Radiopharmaceuticals': '放射性藥品'
 };
 
 const IDX = window.DRUGDB_INDEX || [];
