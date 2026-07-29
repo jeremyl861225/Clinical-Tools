@@ -459,7 +459,7 @@ window.CANCERS = [
 {
   id:'panc', zh:'胰臟癌', en:'Ductal Adenocarcinoma & IPMN / MCN', group:'消化系 GI',
   pathway:'panc',
-  edition:'AJCC 8th（2017）／治療依台大胰臟癌診療指引 版次 11（2026/06/16，PANC-1～PANC-E）',
+  edition:'AJCC 8th（2017）／腺癌治療依台大胰臟癌診療指引 版次 11（2026/06/16，PANC-1～PANC-E）／IPMN・MCN 依 Kyoto 2024・European 2018・ACG 2018',
   staging_note:'AJCC 8th 之 T 改為以「腫瘤大小」為主（取代舊版之是否超出胰臟）。<b>可切除性判定另依台大指引 PANC-B 所載之 <u>M. D. Anderson criteria</u></b>（非 NCCN）：依腫瘤與腸繫膜上動脈（SMA）、腹腔動脈幹／總肝動脈、腸繫膜上靜脈／門靜脈（SMV/PV）之關係，分為可切除／臨界可切除／局部晚期，另依部位（頭／體／尾）與淋巴結狀態列出不可切除條件（切除範圍以外之淋巴結轉移應視為不可切除）。<b>腹腔鏡或剖腹時腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。<b>下方 T／N／M 與矩陣為<u>胰管腺癌（PDAC）</u>之分期</b>；<b>IPMN／MCN 之分期規則另列於本頁最下方</b>——差別不在有沒有另一套 TNM（沒有），而在<b>哪些病灶進得了 TNM</b>、以及 <b>T 該量什麼</b>。',
   t:[
     ['Tis','原位癌 Carcinoma in situ（含 PanIN-3、高度分化不良之 IPMN／MCN、ITPN）'],
