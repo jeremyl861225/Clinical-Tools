@@ -52,6 +52,7 @@
 
   var KEY = 'ct-nav-open';
   var SNAP = 'ct-nav-snapshot-v2';    // 清單快照；格式變更時改版號即可作廢舊檔
+  var FOLD = 'ct-nav-folded';         // 使用者收起來的大類（以中文標題為鍵）
   var DESKTOP = '(min-width:1024px)';
   var root = document.documentElement;
 
@@ -63,6 +64,22 @@
   // 記住的是「使用者在這種寬度下的選擇」；沒選過就用預設（電腦展開、手機收合）
   function stored() { return lsGet(KEY + (desktop() ? '-d' : '-m')); }
   function remember(open) { lsSet(KEY + (desktop() ? '-d' : '-m'), open ? '1' : '0'); }
+
+  /* ---- 大類的收合狀態 ---- */
+  // 預設全部展開（與加上這個功能之前看到的一樣），只記「被收起來的是哪幾類」；
+  // 大類以中文標題為鍵，日後新增／改名的類別一律當成展開。
+  function folded() {
+    var a = null;
+    try { a = JSON.parse(lsGet(FOLD) || 'null'); } catch (e) { a = null; }
+    return Array.isArray(a) ? a : [];
+  }
+  function isFolded(title) { return folded().indexOf(title) !== -1; }
+  function setFolded(title, fold) {
+    var a = folded(), i = a.indexOf(title);
+    if (fold && i === -1) a.push(title);
+    if (!fold && i !== -1) a.splice(i, 1);
+    lsSet(FOLD, JSON.stringify(a));
+  }
 
   function setOpen(open, persist) {
     root.classList.toggle('nav-open', open);
@@ -201,6 +218,14 @@
     var h = a.getAttribute('data-href').split('#')[1];
     return h ? '#' + h : '';
   }
+  // 目前所在的那一項若落在收起來的大類裡，把該類展開（不寫回 localStorage：
+  // 只是「這一次讓你看得到自己在哪」，使用者原本的收合選擇留著）
+  function reveal(a) {
+    var g = a && a.closest ? a.closest('.nav-group') : null;
+    if (g && g.classList.contains('is-folded') && g.foldFn) g.foldFn(false, false);
+    return a;
+  }
+
   function markCurrent(nav) {
     var hash = location.hash;
     var mine = Array.prototype.filter.call(nav.querySelectorAll('.nav-item'), function (a) {
@@ -211,7 +236,7 @@
     var want = hash || null;
     if (!want) {
       var plain = mine.filter(function (a) { return !itemHash(a); })[0];
-      if (plain) { plain.classList.add('is-current'); return plain; }
+      if (plain) { plain.classList.add('is-current'); return reveal(plain); }
       want = DEFAULT_HASH[mine[0].getAttribute('data-href').split('#')[0]] || null;
     }
     var cur = want && mine.filter(function (a) { return itemHash(a) === want; })[0];
@@ -219,7 +244,7 @@
     // 退回本頁的無-hash 項，才不會整個側欄都沒有標記當前頁。
     if (!cur) cur = mine.filter(function (a) { return !itemHash(a); })[0];
     if (cur) cur.classList.add('is-current');
-    return cur || null;
+    return cur ? reveal(cur) : null;
   }
 
   /* ---- 注入 ---- */
@@ -228,22 +253,49 @@
     // 重畫：標題列留著，只換清單
     Array.prototype.forEach.call(nav.querySelectorAll('.nav-group'), function (g) { g.remove(); });
 
-    groups.forEach(function (g) {
+    groups.forEach(function (g, gi) {
       var box = el('div', 'nav-group');
       var n = g.items.filter(function (it) { return !it.head; }).length;
+
+      /* 標題列＝「連結」＋「收合鈕」兩塊：點文字仍然到該分類（首頁區塊或該類的頁面），
+         點右側的箭頭才是收合／展開。兩者分開才不會一按就跳走、按鈕也不能包在 <a> 裡。 */
+      var row = el('div', 'nav-group-row');
       var h = el(g.href ? 'a' : 'div', 'nav-group-head',
         '<span class="nav-group-zh"></span><span class="nav-group-en"></span><span class="nav-group-n"></span>');
       if (g.href) h.href = ROOT + g.href;
-      box.appendChild(h);
       h.children[0].textContent = g.title;
       h.children[1].textContent = g.en;
       h.children[2].textContent = n || '';
+      row.appendChild(h);
+
+      var body = el('div', 'nav-group-body');
+      var items = el('div', 'nav-group-items');
+      body.id = 'nav-g' + gi;
+      body.appendChild(items);
+
+      var tog = el('button', 'nav-group-fold');
+      tog.type = 'button';
+      tog.setAttribute('aria-controls', body.id);
+      var fold = function (on, persist) {
+        box.classList.toggle('is-folded', on);
+        tog.setAttribute('aria-expanded', on ? 'false' : 'true');
+        tog.setAttribute('aria-label', (on ? '展開' : '收合') + g.title);
+        if (persist) setFolded(g.title, on);
+      };
+      tog.addEventListener('click', function () {
+        fold(!box.classList.contains('is-folded'), true);
+      });
+      box.foldFn = fold;                 // markCurrent 用來展開目前所在的那一類
+      row.appendChild(tog);
+      box.appendChild(row);
+      box.appendChild(body);
+      fold(isFolded(g.title), false);
 
       g.items.forEach(function (it) {
         if (it.head) {                       // 癌別分群小標
           var sh = el('div', 'nav-subhead');
           sh.textContent = it.head;
-          box.appendChild(sh);
+          items.appendChild(sh);
           return;
         }
         var a = el('a', 'nav-item' + (it.pathway ? ' is-pathway' : ''),
@@ -255,7 +307,7 @@
         a.querySelector('.nav-en').textContent = (it.en && it.en !== it.zh) ? it.en : '';
         a.href = ROOT + it.href;
         a.setAttribute('data-href', it.href);
-        box.appendChild(a);
+        items.appendChild(a);
       });
       nav.appendChild(box);
     });
@@ -266,17 +318,21 @@
   // 捲到目前頁面那一項（項目多，計分工具與癌別都在下面），置於導覽列正中。
   // 自行算 scrollTop 而非 scrollIntoView：後者會連整頁一起捲。
   function center(nav, cur) {
+    var done = false;
     function centerCurrent() {
-      if (!cur || !nav.clientHeight) return;
+      if (done || !cur || !nav.clientHeight) return;
       nav.scrollTop = cur.offsetTop + cur.offsetHeight / 2 - nav.clientHeight / 2;
     }
     centerCurrent();
+    // 目前這一項所在的大類若是被 reveal 展開的，高度要等展開動畫跑完才定案，再算一次
+    setTimeout(centerCurrent, 260);
     // 導覽列高度＝視窗高度；開頁初期視窗尺寸未必已定案（PWA 啟動、行動版工具列、旋轉），
     // 故高度一變就重算。使用者一動到導覽列就停手，之後不再干涉他的捲動位置。
     if (cur && window.ResizeObserver) {
       var ro = new ResizeObserver(centerCurrent);
       ro.observe(nav);
       var stop = function () {
+        done = true;
         ro.disconnect();
         ['pointerdown', 'wheel', 'touchstart'].forEach(function (t) { nav.removeEventListener(t, stop); });
       };

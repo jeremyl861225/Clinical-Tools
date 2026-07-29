@@ -29,7 +29,8 @@ html.has-nav body{ padding-top:56px; transition:padding-left .22s ease; }
 html.has-nav:not(.nav-ready) body,
 html.has-nav:not(.nav-ready) .side-nav,
 html.has-nav:not(.nav-ready) .nav-scrim,
-html.has-nav:not(.nav-ready) .nav-toggle span{ transition:none !important; }
+html.has-nav:not(.nav-ready) .nav-toggle span,
+html.has-nav:not(.nav-ready) .nav-group-body{ transition:none !important; }
 
 /* ---- 三橫槓按鈕：永遠固定在左上角；展開時正好落在導覽列的標題列上 ---- */
 .nav-toggle{
@@ -83,22 +84,60 @@ html.nav-open .side-nav{ transform:none; visibility:visible; transition:transfor
 .nav-head.is-current{ background:var(--nv-current); }
 
 .nav-group{ margin:14px 0 0; }
+/* 標題列＝「大類連結」＋「收合鈕」；底線畫在整列上，兩塊才連成同一條 */
+.nav-group-row{
+  display:flex; align-items:stretch;
+  border-bottom:1px solid var(--nv-line); margin:0 0 5px;
+  transition:border-color .13s;
+}
+.nav-group-row:hover{ border-bottom-color:var(--nv-accent); }
+
 /* 大類標題本身也是連結：點了到該分類（首頁的分類區塊，或該類自己的頁面） */
 /* 250px 的欄寬放不下「急重症處置 EMERGENCY & CRITICAL CARE」這種長標題。
    允許整列折行，但中文與英文各自 nowrap：折的是中英之間，中文永遠一整行，
    英文（連同項目數）整段落到第二行，不會斷在 & 或單字中間。 */
 .nav-group-head{
+  flex:1; min-width:0;
   display:flex; flex-wrap:wrap; align-items:baseline; gap:0 7px;
   font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--nv-accent); border-bottom:1px solid var(--nv-line);
-  padding:5px 14px 4px; margin:0 0 5px;
-  text-decoration:none; cursor:pointer; transition:background .13s, border-color .13s;
+  color:var(--nv-accent);
+  padding:5px 4px 4px 14px;
+  text-decoration:none; cursor:pointer; transition:background .13s;
 }
-.nav-group-head:hover{ background:var(--nv-hover); border-bottom-color:var(--nv-accent); }
+.nav-group-head:hover{ background:var(--nv-hover); }
 .nav-group-head:hover .nav-group-zh{ text-decoration:underline; }
 .nav-group-zh{ white-space:nowrap; }
 .nav-group-en{ color:var(--nv-muted); white-space:nowrap; }
 .nav-group-n{ margin-left:auto; color:var(--nv-muted); }
+
+/* 收合鈕：與標題分開，點文字仍然是「到該分類」，點箭頭才收合 */
+.nav-group-fold{
+  flex:none; width:34px; min-height:26px; padding:0;
+  display:flex; align-items:center; justify-content:center;
+  background:none; border:0; color:var(--nv-muted); cursor:pointer;
+  transition:background .13s, color .13s;
+}
+.nav-group-fold:hover{ background:var(--nv-hover); color:var(--nv-accent); }
+/* 觸控裝置沒有游標，箭頭再小就按不準，加寬到手指按得到的尺寸 */
+@media (hover:none){ .nav-group-fold{ width:42px; } }
+.nav-group-fold::before{                      /* 箭頭：展開時朝下，收合時朝右 */
+  content:''; width:5px; height:5px; margin-top:-3px;
+  border-right:1.4px solid currentColor; border-bottom:1.4px solid currentColor;
+  transform:rotate(45deg); transition:transform .2s ease;
+}
+.nav-group.is-folded .nav-group-fold::before{ margin:0 0 0 -2px; transform:rotate(-45deg); }
+
+/* 收合本體：0fr↔1fr 才能從「內容有多高就多高」平順收起來（不必寫死 max-height）。
+   收起後 visibility:hidden，鍵盤 Tab 才不會走進看不見的項目。 */
+.nav-group-body{
+  display:grid; grid-template-rows:1fr;
+  transition:grid-template-rows .2s ease, visibility 0s;
+}
+.nav-group-items{ min-height:0; overflow:hidden; }
+.nav-group.is-folded .nav-group-body{
+  grid-template-rows:0fr; visibility:hidden;
+  transition:grid-template-rows .2s ease, visibility 0s linear .2s;
+}
 
 /* 癌別的分群小標（消化系 GI、胸腔 Thoracic…）：比分類標題輕，只用來斷開 30 個癌別 */
 .nav-subhead{
@@ -140,7 +179,8 @@ html.nav-open .nav-scrim{ opacity:1; pointer-events:auto; }
 
 /* 動畫敏感者：直接切換，不滑動 */
 @media (prefers-reduced-motion:reduce){
-  .side-nav, .nav-scrim, .nav-toggle span, html.has-nav body{ transition:none; }
+  .side-nav, .nav-scrim, .nav-toggle span, html.has-nav body,
+  .nav-group-body, .nav-group-fold::before{ transition:none; }
 }
 
 @media print{
