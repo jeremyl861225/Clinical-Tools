@@ -18,6 +18,9 @@
  *
  * 預設狀態：電腦（≥1024px）展開、手機收合；使用者手動開合後記在 localStorage，
  * 之後每頁都照使用者的選擇（換到另一種螢幕寬度時重新套用預設）。
+ *
+ * 大類（腹部急症、抗微生物…）預設收合，點標題右側的箭頭展開；展開過哪幾類同樣記在
+ * localStorage。目前所在頁面的那一類一律自動展開（不寫回設定），才看得到自己在哪。
  */
 (function () {
   'use strict';
@@ -52,7 +55,7 @@
 
   var KEY = 'ct-nav-open';
   var SNAP = 'ct-nav-snapshot-v2';    // 清單快照；格式變更時改版號即可作廢舊檔
-  var FOLD = 'ct-nav-folded';         // 使用者收起來的大類（以中文標題為鍵）
+  var FOLD = 'ct-nav-open-groups';    // 使用者展開的大類（以中文標題為鍵；預設全收合）
   var DESKTOP = '(min-width:1024px)';
   var root = document.documentElement;
 
@@ -66,18 +69,20 @@
   function remember(open) { lsSet(KEY + (desktop() ? '-d' : '-m'), open ? '1' : '0'); }
 
   /* ---- 大類的收合狀態 ---- */
-  // 預設全部展開（與加上這個功能之前看到的一樣），只記「被收起來的是哪幾類」；
-  // 大類以中文標題為鍵，日後新增／改名的類別一律當成展開。
-  function folded() {
+  // 預設全部收合：一屏內就看得完六個大類，要哪一類再點開；目前所在的那一類
+  // 由 reveal() 自動展開，故落地時看得到自己在哪。
+  // 只記「使用者自己展開的是哪幾類」，大類以中文標題為鍵，
+  // 日後新增／改名的類別一律回到預設（收合）。
+  function unfolded() {
     var a = null;
     try { a = JSON.parse(lsGet(FOLD) || 'null'); } catch (e) { a = null; }
     return Array.isArray(a) ? a : [];
   }
-  function isFolded(title) { return folded().indexOf(title) !== -1; }
+  function isFolded(title) { return unfolded().indexOf(title) === -1; }
   function setFolded(title, fold) {
-    var a = folded(), i = a.indexOf(title);
-    if (fold && i === -1) a.push(title);
-    if (!fold && i !== -1) a.splice(i, 1);
+    var a = unfolded(), i = a.indexOf(title);
+    if (!fold && i === -1) a.push(title);
+    if (fold && i !== -1) a.splice(i, 1);
     lsSet(FOLD, JSON.stringify(a));
   }
 
