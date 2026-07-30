@@ -8,6 +8,8 @@
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
  */
 const CACHE_VERSION = 'clinical-tools-v213';
+// 同一 origin（GitHub Pages）上還有其他 PWA，清舊快取時只能動自己前綴的，否則會刪掉別人的離線快取。
+const CACHE_PREFIX = 'clinical-tools-';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -231,12 +233,14 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 啟用：清除舊版本快取
+// 啟用：清除本 app 的舊版本快取（不碰同 origin 其他 PWA 的快取）
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))
+        keys
+          .filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE_VERSION)
+          .map((k) => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
