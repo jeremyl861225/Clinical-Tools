@@ -215,10 +215,15 @@ const PRECACHE_URLS = [
   './assets/organs/npc.png',
   './assets/organs/sts.png',
   './assets/organs/heme.png',
+  './icons/icon.svg',
   './icons/icon-192.png',
+  './icons/icon-192-dark.png',
   './icons/icon-512.png',
+  './icons/icon-512-dark.png',
   './icons/maskable-192.png',
+  './icons/maskable-192-dark.png',
   './icons/maskable-512.png',
+  './icons/maskable-512-dark.png',
   './icons/apple-touch-icon.png'
 ];
 
