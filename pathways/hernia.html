@@ -78,7 +78,7 @@
       <b>CDC 傷口分類與修補：</b><br>
       ・<b>Class I（clean）</b>：嵌頓無缺血、無腸切除 → <b>合成網片</b>修補（grade 1A）。<br>
       ・<b>Class II（clean-contaminated）</b>：腸切除、無明顯腸內容外溢 → 緊急<b>合成網片</b>修補（不增 30 天傷口併發症、顯著降低復發，grade 1A）。<br>
-      ・<b>Class III–IV（contaminated–dirty）、穩定、缺損 &lt;3 cm</b> → <b>一期組織修補</b>（grade 2C）；不可行時用<b>生物網片</b>，或 polyglactin 網片／開放傷口延遲修補（grade 2C）。<br>
+      ・<b>Class III–IV（contaminated–dirty）、穩定、缺損 &lt;3 cm</b> → <b>當次組織修補</b>（grade 2C）；不可行時用<b>生物網片</b>，或 polyglactin 網片／開放傷口延遲修補（grade 2C）。<br>
       ・<b>不穩定（嚴重敗血／休克）</b> → <b>開放腹部</b>損傷控制，穩定後及早關腹（grade 1C／2C）；大型中線缺損可用 component separation（grade 1B）。<br><br>
       <b>抗生素預防／治療：</b>Class I <b>短療程預防</b>；Class II／III <b>48 小時預防</b>；Class IV（腹膜炎）<b>治療性抗生素</b>（均 grade 2C）。<br>
       <b>麻醉：</b>無腸壞疽者可用<b>局部麻醉</b>，心肺併發症較少、ICU／住院較短（grade 1C）。
@@ -152,7 +152,7 @@
   <div class="flow-step hidden" id="hern_s4">
     <div class="flow-step-head"><span class="flow-num">S4</span><span class="flow-q">CDC 傷口分類與修補（污染／骯髒場）</span></div>
     <div class="flow-opts">
-      <button class="flow-opt" onclick="hernPick('wound','small',this)">穩定、缺損 &lt; 3 cm<span class="fo-sub">→ 一期組織修補（Bassini／McVay／Shouldice）</span></button>
+      <button class="flow-opt" onclick="hernPick('wound','small',this)">穩定、缺損 &lt; 3 cm<span class="fo-sub">→ 當次組織修補（Bassini／McVay／Shouldice）</span></button>
       <button class="flow-opt" onclick="hernPick('wound','large',this)">穩定、缺損 &gt; 3 cm<span class="fo-sub">→ 生物網片／polyglactin／延遲修補</span></button>
       <button class="flow-opt" onclick="hernPick('wound','unstable',this)">不穩定（嚴重敗血／敗血性休克）<span class="fo-sub">→ 開放腹部損傷控制</span></button>
     </div>
@@ -293,8 +293,8 @@ function hernRender(){
       noteB='WSES 2017；staged TEP：Chihara N, et al. J Laparoendosc Adv Surg Tech A 2019。';
     } else if(s.viab==='contam' || (s.spont==='no' && s.hemo==='unstable')){
       if(s.wound==='small'){
-        clsB='rec-urgent'; titleB='CDC III–IV、穩定、缺損 <3 cm → 一期組織修補';
-        detailB='<li>污染（III：腸切除有外溢）／骯髒（IV：穿孔腹膜炎）之<b>穩定</b>病人，缺損 <b>&lt;3 cm</b>：建議<b>一期組織修補</b>（grade 2C）— 如 Bassini、McVay、Shouldice。</li>'+
+        clsB='rec-urgent'; titleB='CDC III–IV、穩定、缺損 <3 cm → 當次組織修補';
+        detailB='<li>污染（III：腸切除有外溢）／骯髒（IV：穿孔腹膜炎）之<b>穩定</b>病人，缺損 <b>&lt;3 cm</b>：建議<b>當次組織修補</b>（grade 2C）— 如 Bassini、McVay、Shouldice。</li>'+
                 '<li>直接縫合不可行時 → <b>生物網片</b>；若無，則 polyglactin 網片或開放傷口延遲修補（grade 2C）。</li>'+
                 '<li>'+ABX_IIIIV+'</li>';
         noteB='WSES 2017。';
@@ -307,7 +307,7 @@ function hernRender(){
       } else if(s.wound==='unstable'){
         clsB='rec-urgent'; titleB='不穩定（嚴重敗血／敗血性休克）→ 損傷控制、開放腹部';
         detailB='<li>不穩定病人：<b>開放腹部（open abdomen）</b>管理以預防腹腔室隔症候群；穩定後<b>及早確定性關腹</b>。</li>'+
-                '<li>無法一期筋膜關閉時，<b>僅皮膚關閉</b>為可行選項，日後再以<b>延遲關腹 + 合成網片</b>處理（grade 1C）。</li>'+
+                '<li>無法當次筋膜關閉時，<b>僅皮膚關閉</b>為可行選項，日後再以<b>延遲關腹 + 合成網片</b>處理（grade 1C）。</li>'+
                 '<li>抗生素：治療性抗生素（腹膜炎，class IV）。</li>';
         noteB='WSES 2017。';
       } else {

@@ -594,7 +594,7 @@
     if (s.pres === 'nonobs') {
       lead.push('<b>Colectomy with en bloc removal of regional lymph nodes</b>（結腸切除併區域淋巴結整塊切除）。');
     } else if (s.pres === 'obs') {
-      lead.push('<b>一期結腸切除併區域淋巴結整塊切除</b>（One-stage colectomy with en bloc removal of regional lymph nodes）；');
+      lead.push('<b>當次結腸切除併區域淋巴結整塊切除</b>（One-stage colectomy with en bloc removal of regional lymph nodes）；');
       lead.push('<b>或</b> 切除併轉流（Resection with diversion）；<b>或</b> 轉流（Diversion）；<b>或</b> 支架置放（Stent，選擇性病例）。');
       lead.push('先行轉流或支架者 → 後續再行<b>結腸切除併區域淋巴結整塊切除</b>。');
     } else { // t4b
