@@ -192,28 +192,99 @@
 
   <!-- ═══════════ 危險分層 ═══════════ -->
   <div class="rsi-panel" id="p-risk">
-    <p class="lead">確診後<b>立即分層</b>——它決定要不要再灌流、在哪裡照護。四個軸：血流動力學、sPESI、右心功能（超音波／CT）、心肌指標（troponin）。</p>
+    <p class="lead">確診後<b>立即分層</b>——它決定要不要再灌流、在哪裡照護。四個軸：血流動力學、PESI／sPESI、右心功能（超音波或 CT）、心肌指標（troponin）。關鍵在後兩軸的<b>組合方式</b>：ESC 只把「右心異常<b>且</b>troponin 升高」兩者同時成立者列為中高危。</p>
 
     <div class="card">
       <div class="section-title">2019 ESC 四級分層</div>
       <div class="risk-row">
-        <div class="risk-chip r-hi"><div class="rc-t">高危 High</div><div class="rc-b">血流動力學不穩（休克／持續低血壓／需升壓）。無論其他指標 → <b>再灌流</b>。早期死亡最高。</div></div>
-        <div class="risk-chip r-mh"><div class="rc-t">中高危 Interm.-High</div><div class="rc-b">穩定，但 <b>右心功能異常「且」troponin 上升</b>。密切監測，惡化即救援再灌流。</div></div>
-        <div class="risk-chip r-ml"><div class="rc-t">中低危 Interm.-Low</div><div class="rc-b">穩定，右心異常「或」troponin 上升（僅其一，或皆輕微）。住院抗凝。</div></div>
-        <div class="risk-chip r-lo"><div class="rc-t">低危 Low</div><div class="rc-b">穩定、sPESI = 0、無右心負荷、troponin 正常。可考慮早期出院／門診治療。</div></div>
+        <div class="risk-chip r-hi"><div class="rc-t">高危 High</div><div class="rc-b">血流動力學不穩。加上 CTPA 確診<b>或</b>超音波右心負荷即可歸類 → 立即<b>再灌流</b>；<b>不必等 troponin／BNP</b>。早期死亡最高。</div></div>
+        <div class="risk-chip r-mh"><div class="rc-t">中高危 Interm.-High</div><div class="rc-b">穩定，PESI III–V 或 sPESI ≥ 1，且<b>右心功能異常「且」troponin 升高</b>（兩者同時）。密切監測，惡化即救援再灌流。</div></div>
+        <div class="risk-chip r-ml"><div class="rc-t">中低危 Interm.-Low</div><div class="rc-b">穩定，PESI III–V 或 sPESI ≥ 1，右心與 troponin <b>僅一項</b>陽性、或兩者皆陰性。住院抗凝。</div></div>
+        <div class="risk-chip r-lo"><div class="rc-t">低危 Low</div><div class="rc-b">穩定、PESI I–II 或 sPESI = 0，且（若有檢測）右心與 troponin 皆陰性。可考慮早期出院／門診治療。</div></div>
       </div>
       <div class="kbox">
         <div class="kbox-t">分層要件</div>
         <ul>
-          <li><b>sPESI</b>（簡化 PESI）任一項為 1 即 ≥ 1：年齡 &gt; 80、癌症、慢性心肺病、脈搏 ≥ 110、SBP &lt; 100、SpO₂ &lt; 90%。0 分屬低危。</li>
-          <li><b>右心功能</b>：超音波 RV/LV &gt; 1、TAPSE 下降、McConnell 徵象；或 CT 上 RV/LV &gt; 1。</li>
-          <li><b>心肌指標</b>：troponin 上升、BNP/NT-proBNP 升高提示右心受累。</li>
+          <li><b>血流動力學不穩</b>（三者之一）：心臟停止；<b>阻塞性休克</b>（SBP &lt; 90 或需升壓才能維持 ≥ 90，<b>且</b>合併末端器官灌流不足）；<b>持續低血壓</b>（SBP &lt; 90 或 SBP 下降 ≥ 40 mmHg 且持續 &gt; 15 分，且非新發心律不整、低血容或敗血症所致）。</li>
+          <li><b>sPESI</b>（簡化 PESI）任一項為 1 即 ≥ 1：年齡 &gt; 80、癌症、慢性心肺病、脈搏 ≥ 110、SBP &lt; 100、SpO₂ &lt; 90%。0 分屬低危（原始 PESI 則為 class I–II）。</li>
+          <li><b>右心功能</b>與<b>心肌指標</b>：見下方三張表。</li>
+          <li><b>例外（常被忽略）</b>：sPESI = 0／PESI I–II 卻驗出右心異常或 troponin 升高者，ESC 要求歸<b>中低危</b>、不可當低危出院。這類病人約占「臨床低危」的 <b>1/3</b>（34%），全因死亡 OR 4.2。</li>
         </ul>
         <a class="flow-link" href="pesi.html">→ PESI／sPESI 計算器</a>
       </div>
       <div class="kbox">
         <div class="kbox-t">早期出院／門診治療的條件（低危）</div>
         Hestia 準則或 sPESI = 0，且無右心負荷、社會支持足、能取得口服抗凝、無其他住院理由。用 DOAC 銜接最方便。
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">右心功能異常 — 心臟超音波 TTE</div>
+      <p class="lead">ESC 2019 Figure 3 的八項參數。分層時 ESC 主推的是<b>可量化、觀察者間變異小</b>的兩項：RV/LV 比與 TAPSE；其餘屬特異度高但敏感度低的「支持性」徵象。</p>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>參數</th><th>異常門檻</th><th>判讀重點</th></tr>
+          <tr><td>RV/LV 基底徑比</td><td>≥ 1.0</td><td>四腔切面量基底徑。與不良預後關聯最常被重現的兩項之一；RV 擴大見於 ≥ 25% 的 PE 病人。&gt; 0.9 與 &gt; 1.0 的陰性預測值 97%／94%，陽性預測值僅 13%／14% <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24412192/" target="_blank" rel="noopener">24412192</a></td></tr>
+          <tr><td>TAPSE</td><td>&lt; 16 mm</td><td>M-mode 量三尖瓣環位移。多變項分析中<b>唯一</b>的獨立預測因子，判別力優於 RV/LV 比（AUC 0.91 vs 0.64）。≤ 15 mm：HR 27.9、NPV 99%；<b>&gt; 20 mm 可視為極低風險</b>（NPV 100%）<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24412192/" target="_blank" rel="noopener">24412192</a></td></tr>
+          <tr><td>三尖瓣環 S′</td><td>&lt; 9.5 cm/s</td><td>組織多普勒（TDI）收縮波峰速。與 wall strain 一樣，單獨使用敏感度低——血流動力學穩定的 PE 病人可能完全正常</td></tr>
+          <tr><td>心室間隔</td><td>變平／向左膨出</td><td>胸骨旁短軸的 D-sign。壓力負荷的形態學表現，非定量</td></tr>
+          <tr><td>下腔靜脈 IVC</td><td>擴張＋吸氣塌陷減少</td><td>肋下切面。反映右心充填壓上升</td></tr>
+          <tr><td>60/60 徵象</td><td>肺動脈射血加速時間（AcT）&lt; 60 ms<br>＋ 三尖瓣收縮期壓差（TRPG）&lt; 60 mmHg</td><td>「加速時間短、壓差卻不高」＝急性負荷的特徵，常伴收縮中期 notch。只出現在約 <b>12%</b> 的 PE，但即使有既存心肺疾病仍保有高陽性預測值 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/12208411/" target="_blank" rel="noopener">12208411</a></td></tr>
+          <tr><td>McConnell 徵象</td><td>RV 游離壁中段無動作／低動作，心尖仍收縮</td><td>約 <b>20%</b> 的 PE 出現。<b>RV 心肌梗塞可完全模仿</b>——靠「有無 RV 壓力負荷徵象」區分（RV 梗塞不會有壓力負荷） <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/8752195/" target="_blank" rel="noopener">8752195</a></td></tr>
+          <tr><td>右心腔活動性血栓</td><td>有／無</td><td>TTE／TOE／CT 上 &lt; 4%（加護病房可達 18%）。等同確診 PE，且合併 RV 功能不良者早期死亡率高</td></tr>
+        </table>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">別把慢性當急性</div>
+        三尖瓣逆流波速 <b>&gt; 3.8 m/s</b>（＝TRPG &gt; 60 mmHg）或 <b>RV 游離壁增厚</b>，已超出急性右心可產生的壓力範圍 → 應想<b>慢性栓塞性肺高壓（CTEPH）</b>或其他肺高壓，而非單純急性 PE。這也是 60/60 徵象要求 TRPG &lt; 60 mmHg 的道理。
+      </div>
+      <div class="note">
+        TTE 對 PE 的陰性預測值僅 40–50%，<b>正常不能排除 PE</b>；反之右心負荷徵象也可能來自既有心肺疾病。統合分析中右心功能不良對「PE 相關死亡」的陽性預測值 &lt; 10%——它的力量在陰性排除，以及在不穩病人身上支持經驗性再灌流。約 10% 的 PE 病人 TTE 會出現誤導性的意外所見（明顯 LV 收縮不良、瓣膜疾病）。
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">右心功能異常 — CT 肺動脈攝影 CTPA</div>
+      <p class="lead">同一次 CTPA 就能同時確診與分層，不必再排超音波。定量指標只有一個真正站得住腳：<b>RV/LV 徑比</b>。</p>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>參數</th><th>異常門檻</th><th>判讀重點</th></tr>
+          <tr><td>RV/LV 徑比</td><td>≥ 1.0（ESC 採用）<br>≥ 0.9（原始定義）</td><td>橫斷面或四腔重組量。49 篇、13,162 人的統合分析：橫斷面 RV/LV 上升 → 全因死亡 OR 2.5、<b>PE 相關死亡 OR 5.0</b>，是所有 CT 參數中證據最紮實者 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25680885/" target="_blank" rel="noopener">25680885</a>。≥ 0.9 的原始定義來自 457 人前瞻研究（院內不良結果 HR 3.5；穩定者 3.8）<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/21504936/" target="_blank" rel="noopener">21504936</a></td></tr>
+          <tr class="dt-warn"><td>輕度 RV 擴大</td><td>RV/LV 略高於 0.9</td><td><b>陷阱</b>：見於 &gt; 50% 的血流動力學穩定 PE 病人，預後意義很小。比值越高特異度越高，所以 ESC 改採 <b>≥ 1.0</b> 而非 0.9</td></tr>
+          <tr><td>心室間隔形態</td><td>變平／向左膨出</td><td>質性指標，與造影劑逆流同列為統合分析中的 qualitative RV dysfunction 參數 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25680885/" target="_blank" rel="noopener">25680885</a></td></tr>
+          <tr><td>造影劑逆流入 IVC</td><td>逆流分級 4–6（1 = 無、6 = 嚴重）</td><td>1,065 例研究中 18% 屬 4–6 級。<b>非特異</b>：肺高壓（OR 5.4）、心衰竭（3.7）、慢性心房顫動（2.3）都比急性 PE（1.8）更相關——當右心功能不良的旁證，不能單獨拿來分層 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22074991/" target="_blank" rel="noopener">22074991</a></td></tr>
+          <tr class="dt-warn"><td>血栓量／中央位置</td><td>—</td><td><b>不要用來分層</b>：統合分析中兩者<b>都不</b>預測全因死亡（OR 1.6、1.7，皆不顯著）。栓子看起來多寡與右心撐不撐得住是兩件事 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25680885/" target="_blank" rel="noopener">25680885</a></td></tr>
+        </table>
+      </div>
+      <div class="note">ESC 對「右心功能異常」不區分 TTE 或 CTPA——兩者任一符合即算陽性。</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">心肌與心室張力指標 Cardiac biomarkers</div>
+      <p class="lead">Troponin 反映<b>心肌損傷</b>，NT-proBNP／BNP 反映<b>心肌牽張</b>；兩者在穩定病人身上的陽性預測值都低，價值在於<b>低值可安心</b>（高陰性預測值）。只有「右心異常＋troponin 陽性」這個組合曾在大型 RCT（PEITHO）中被真正用來指導治療決策。</p>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>指標</th><th>Cut-off</th><th>判讀重點</th></tr>
+          <tr><td>hs-cTnT<br><span style="font-weight:400">高敏感 troponin T</span></td><td><b>≥ 14 pg/mL</b>（＝14 ng/L）</td><td>ESC 分層採用的門檻。&lt; 14 pg/mL 對院內不良結果的<b>陰性預測值 98%</b>（526 人前瞻世代）<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22082681/" target="_blank" rel="noopener">22082681</a>；原始 156 人世代中敏感度與 NPV 皆 100% <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/20584774/" target="_blank" rel="noopener">20584774</a></td></tr>
+          <tr><td>hs-cTnT<br>（年齡校正）</td><td>&lt; 75 歲：<b>≥ 14 pg/mL</b><br>≥ 75 歲：<b>≥ 45 pg/mL</b></td><td>682 人研究：老年人用 14 pg/mL <b>無法</b>預測不良結果，改用 45 pg/mL 才有預測力；ROC 算出的整體最佳值 33 pg/mL 反而不如年齡校正法。可疊加在 sPESI 與超音波之上提供獨立預後訊息 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25614162/" target="_blank" rel="noopener">25614162</a></td></tr>
+          <tr><td>cTnI／傳統 cTnT</td><td>各檢驗方法的<br>正常上限（99th URL）</td><td>ESC <b>不給</b>統一數字——門檻依 assay 而定。傳統方法只有 30% 的 PE 病人會升高（高敏感方法 60%），且傳統 cTnT 用 0.03 ng/mL 會把<b>一半</b>的早期不良結果病人誤判為低危 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/20584774/" target="_blank" rel="noopener">20584774</a></td></tr>
+          <tr><td>NT-proBNP</td><td><b>≥ 600 pg/mL</b>（＝600 ng/L）</td><td>688 人驗證研究：600 優於 1000／500／300，預後表現最佳（敏感度 86%、特異度 50%，OR 6.0），且在 sPESI 與超音波右心功能之外仍有獨立預後價值 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24627529/" target="_blank" rel="noopener">24627529</a></td></tr>
+          <tr><td>NT-proBNP<br><span style="font-weight:400">（居家治療篩選）</span></td><td>&lt; 500 pg/mL</td><td>用途不同：600 是為了<b>抓出</b>高風險（提高特異度），500 是多中心研究用來<b>挑出</b>可回家治療的人。BNP／NT-proBNP 升高見於 51% 的 PE 病人，這群人早期死亡率 10%</td></tr>
+          <tr><td>H-FABP</td><td>≥ 6 ng/mL</td><td>心肌損傷的早期敏感指標。1,680 人統合分析：不良短期結果 OR 17.7、全因死亡 OR 32.9 <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26111917/" target="_blank" rel="noopener">26111917</a></td></tr>
+          <tr><td>Copeptin</td><td>≥ 24 pmol/L</td><td>壓力／低血壓時釋放的 vasopressin 替代指標。可把 hsTnT 與 NT-proBNP 皆升高者再分成中低危與中高危（不良結果 5.6% vs 20.0%）<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26493800/" target="_blank" rel="noopener">26493800</a></td></tr>
+          <tr><td>Lactate（動脈）</td><td>≥ 2 mmol/L</td><td>組織供氧失衡＝已經或即將血流動力學崩壞，在穩定病人身上也能預測 PE 相關併發症</td></tr>
+        </table>
+      </div>
+      <div class="kbox">
+        <div class="kbox-t">台大檢驗項目對照</div>
+        <ul>
+          <li><b>Troponin-T (STAT)</b>（心肌旋轉蛋白 T，醫令 09098B00）——報告所附的 99th percentile 上限就是 <b>14 ng/L</b>，與 ESC 的 PE 分層門檻<b>同一個數字</b>，直接對照即可（1 ng/L = 1 pg/mL）。高劑量生物素（&gt; 5 mg/天）者須停藥 8 小時後採檢。</li>
+          <li><b>NT-pro BNP (STAT)</b>（醫令 12193B00）——單位 pg/mL。報告附的 <b>450／900／1800</b> 是<b>心衰竭</b>的年齡分層 cut-off（18–49／50–74／≥ 75 歲），<b>不是</b> PE 分層值；PE 請用 600 pg/mL。</li>
+        </ul>
+      </div>
+      <div class="kbox alert">
+        <div class="kbox-t">高危 PE 不必等生化</div>
+        血流動力學不穩者，只要 CTPA 確診或超音波見右心負荷即可歸高危並送再灌流——ESC 明文寫 <b>不需計算 PESI、也不需驗 troponin 或其他心臟生化指標</b>。等報告只會延誤再灌流。
       </div>
     </div>
   </div>
@@ -359,6 +430,24 @@
           <tr><td>年齡校正 D-dimer</td><td>ADJUST-PE, JAMA 2014;311:1117</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24643601/" target="_blank" rel="noopener">24643601</a></td></tr>
           <tr><td>大孔取栓 vs 導管溶栓（中危）</td><td>PEERLESS, Circulation 2025;151:260</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/39470698/" target="_blank" rel="noopener">39470698</a></td></tr>
           <tr><td>孕婦 PE 診斷策略</td><td>YEARS-pregnancy 個體資料統合, J Thromb Haemost 2023;21:606</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36696189/" target="_blank" rel="noopener">36696189</a></td></tr>
+        </table>
+      </div>
+      <div class="section-title sect">危險分層指標的原始文獻</div>
+      <div class="tw">
+        <table class="def-table">
+          <tr><th>指標</th><th>來源</th><th>PMID</th></tr>
+          <tr><td>TAPSE／RV-LV 比（超音波）</td><td>Pruszczyk P, et al. JACC Cardiovasc Imaging 2014;7:553</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24412192/" target="_blank" rel="noopener">24412192</a></td></tr>
+          <tr><td>60/60 徵象</td><td>Kurzyna M, et al. Am J Cardiol 2002;90:507</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/12208411/" target="_blank" rel="noopener">12208411</a></td></tr>
+          <tr><td>McConnell 徵象</td><td>McConnell MV, et al. Am J Cardiol 1996;78:469</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/8752195/" target="_blank" rel="noopener">8752195</a></td></tr>
+          <tr><td>CT 參數統合分析（49 篇）</td><td>Meinel FG, et al. Am J Med 2015;128:747</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25680885/" target="_blank" rel="noopener">25680885</a></td></tr>
+          <tr><td>CT RV/LV ≥ 0.9 原始定義</td><td>Becattini C, et al. Eur Heart J 2011;32:1657</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/21504936/" target="_blank" rel="noopener">21504936</a></td></tr>
+          <tr><td>IVC 造影劑逆流分級</td><td>Aviram G, et al. Am J Cardiol 2012;109:432</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22074991/" target="_blank" rel="noopener">22074991</a></td></tr>
+          <tr><td>hs-TnT 14 pg/mL</td><td>Lankeit M, et al. Eur Heart J 2010;31:1836</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/20584774/" target="_blank" rel="noopener">20584774</a></td></tr>
+          <tr><td>hs-TnT ＋ sPESI 驗證（NPV 98%）</td><td>Lankeit M, et al. Circulation 2011;124:2716</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22082681/" target="_blank" rel="noopener">22082681</a></td></tr>
+          <tr><td>hs-TnT 年齡校正（≥ 75 歲用 45）</td><td>Kaeberich A, et al. Eur Respir J 2015;45:1323</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/25614162/" target="_blank" rel="noopener">25614162</a></td></tr>
+          <tr><td>NT-proBNP 600 pg/mL 驗證</td><td>Lankeit M, et al. Eur Respir J 2014;43:1669</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24627529/" target="_blank" rel="noopener">24627529</a></td></tr>
+          <tr><td>H-FABP 6 ng/mL</td><td>Bajaj A, et al. J Crit Care 2015;30:1151.e1</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26111917/" target="_blank" rel="noopener">26111917</a></td></tr>
+          <tr><td>Copeptin 24 pmol/L</td><td>Hellenkamp K, et al. Eur Respir J 2015;46:1701</td><td><a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26493800/" target="_blank" rel="noopener">26493800</a></td></tr>
         </table>
       </div>
     </div>
