@@ -86,6 +86,49 @@
   ul.tp li{margin:6px 0;}
 
   .disclaimer{margin-top:20px; font-size:11.5px; color:var(--muted-soft); line-height:1.7; border-top:1px solid var(--line); padding-top:12px;}
+
+  /* ---------- 心電圖判讀 ECG Pattern Atlas ----------
+     心電圖紙的粉紅格線與描跡色在全站 token 裡沒有對應項（那是這個領域自己的視覺語彙），
+     故於此定義四個頁面層級變數：亮色＝心電圖紙（米白底、粉紅格、黑筆），
+     暗色＝床邊監視器（深底、青綠描跡）。除這四個以外不另外寫死顏色。 */
+  :root{
+    --ekg-paper:#fdf7f4; --ekg-minor:#f2d3cc; --ekg-major:#e2a89e;
+    --ekg-trace:#1c2226; --ekg-label:#a1655c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ekg-paper:#12181a; --ekg-minor:#2c3a3a; --ekg-major:#425252;
+      --ekg-trace:#6fdcae; --ekg-label:#7f9a96;
+    }
+  }
+  .ekg-fig{margin:0 0 4px;}
+  .ekg-wrap{position:relative; border:1px solid var(--line); border-radius:2px; overflow:hidden; background:var(--ekg-paper);}
+  .ekg-svg{display:block; width:100%; height:auto;}
+  /* 線寬一律 non-scaling-stroke：5 秒長條與 1.7 秒短條的 viewBox 寬度差三倍，
+     若用一般 stroke-width，短條的線會粗上三倍（手機單欄時最明顯）。 */
+  .eg-minor{stroke:var(--ekg-minor); stroke-width:.7px; fill:none; vector-effect:non-scaling-stroke;}
+  .eg-major{stroke:var(--ekg-major); stroke-width:1.1px; fill:none; vector-effect:non-scaling-stroke;}
+  .eg-trace{stroke:var(--ekg-trace); stroke-width:1.9px; fill:none; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .eg-spike{stroke:var(--ekg-trace); stroke-width:1.4px; vector-effect:non-scaling-stroke;}
+  .ekg-lead{position:absolute; left:5px; top:4px; font-family:var(--mono); font-size:10px; font-weight:700;
+            letter-spacing:.06em; color:var(--ekg-label); background:var(--ekg-paper); padding:0 4px; border-radius:2px;}
+  .ekg-cap{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); margin:4px 0 12px; line-height:1.65;}
+  .ekg-multi{display:grid; gap:10px; grid-template-columns:1fr 1fr;}
+  .ekg-multi.three{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:620px){ .ekg-multi, .ekg-multi.three{grid-template-columns:1fr;} }
+  /* 校正說明列：每個心電圖分頁最上方那一行「這是示意圖、紙速與增益」 */
+  .ekg-cal{font-family:var(--mono); font-size:10.5px; line-height:1.7; color:var(--muted); background:var(--box-bg);
+           border:1px dashed var(--line); border-radius:2px; padding:7px 10px; margin-bottom:14px;}
+  /* 「像什麼」一句話：卡片最上方的辨識句，比判讀準則早一步 */
+  .ekg-gist{font-size:13px; line-height:1.75; background:var(--soft-bg); border-left:3px solid var(--accent);
+            border-radius:2px; padding:9px 12px; margin-bottom:11px;}
+  .ekg-gist b{color:var(--accent);}
+  .ekg-cause{margin:4px 0 0; padding-left:16px; font-size:12.5px; line-height:1.75;}
+  .ekg-cause li{margin:1px 0;}
+  @media(min-width:640px){ .ekg-cause.cols{column-count:2; column-gap:22px;} .ekg-cause.cols li{break-inside:avoid;} }
+  .ekg-flag{display:block; font-size:12.5px; line-height:1.7; color:var(--accent2);
+            border:1px dashed var(--accent2); border-radius:2px; padding:8px 10px; margin-top:10px;}
+  .ekg-note-link{margin-top:10px;}
 </style>
 </head>
 <body data-back-label="ACLS">
@@ -131,6 +174,19 @@
     <div class="navgroup">
       <span class="ng-label">新生兒 Neonatal</span>
       <button data-v="neonatal" onclick="showView('neonatal',this)">新生兒復甦</button>
+    </div>
+    <div class="navgroup">
+      <span class="ng-label">心電圖 ECG</span>
+      <button data-v="ekgsinus" onclick="showView('ekgsinus',this)">竇性</button>
+      <button data-v="ekgatrial" onclick="showView('ekgatrial',this)">心房</button>
+      <button data-v="ekgvent" onclick="showView('ekgvent',this)">心室</button>
+      <button data-v="ekgav" onclick="showView('ekgav',this)">房室阻滯</button>
+      <button data-v="ekgbbb" onclick="showView('ekgbbb',this)">束支</button>
+      <button data-v="ekgcham" onclick="showView('ekgcham',this)">腔室肥大</button>
+      <button data-v="ekgpace" onclick="showView('ekgpace',this)">節律器</button>
+      <button data-v="ekgisch" onclick="showView('ekgisch',this)">缺血梗塞</button>
+      <button data-v="ekgsys" onclick="showView('ekgsys',this)">全身因素</button>
+      <button data-v="ekgother" onclick="showView('ekgother',this)">其他型態</button>
     </div>
     <div class="navgroup">
       <span class="ng-label">參考 Reference</span>
@@ -759,11 +815,1554 @@
     </footer>
   </div>
 
+  <!-- ============================================================
+       心電圖判讀 ECG Pattern Atlas
+       波形由 js/ekg-waveforms.js 依判讀準則即時合成，非真實病人心電圖。
+       ============================================================ -->
+
+  <!-- ================= 心電圖・竇性 ================= -->
+  <div class="view" id="view-ekgsinus">
+    <div class="view-head"><div class="vh-t">心電圖判讀・竇性節律</div><div class="vh-s">Sinus Rhythms</div></div>
+
+    <div class="intro-box">
+      <div class="ib-t">判讀順序固定五步</div>
+      跳步驟就是漏診的來源：<br>
+      <b>① 速率</b> 規則時 300 ÷ 大格數（300／150／100／75／60／50）；不規則時數 6 秒內的 QRS ×10<br>
+      <b>② 節律</b> 規則嗎？每個 QRS 前有 P 嗎？每個 P 後有 QRS 嗎？P 與 QRS 有固定關係嗎？<br>
+      <b>③ 電軸</b> 看 I 與 aVF 的主波方向（兩者皆正＝正常象限）<br>
+      <b>④ 間期</b> PR 120–200 ms、QRS &lt;120 ms、QT／QTc<br>
+      <b>⑤ 波形</b> P、Q 波、R 波遞增、ST 段、T 波、U 波，並<b>與舊片比較</b>
+    </div>
+    <div class="ekg-cal">本頁所有波形皆為<b>依判讀準則以程式合成的示意描跡，不是真實病人的心電圖</b>（真實心電圖有雜訊、基線飄移與個體差異）｜ 紙速 25 mm/s、增益 10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-nsr">
+      <span class="sys-name">正常竇性心律</span>
+      <span class="sys-en">Normal Sinus Rhythm (NSR)</span>
+      <span class="sys-src">60–100 bpm</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="nsr"></div></div>
+        <div class="ekg-cap">75 bpm ｜ P–QRS–T 逐拍相同、間距相等；PR 160 ms、QRS 88 ms</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">每一個 QRS 前面都有一個 <b>P</b>，每一個 P 後面都跟著一個 <b>QRS</b>，比例 <b>1:1</b>，而且 P 在 II 導程是<b>直立</b>的。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><th style="width:20%;">項目</th><th>準則</th></tr>
+          <tr><td>速率</td><td>成人 60–100 bpm</td></tr>
+          <tr><td>P 波軸</td><td>II、III、aVF <b>直立</b>，aVR <b>倒置</b>——衝動由右上（竇房結）往左下走。V1 可為雙相</td></tr>
+          <tr><td>P:QRS</td><td>1:1，且每一拍的 P 型態一致</td></tr>
+          <tr><td>PR</td><td>120–200 ms 且<b>逐拍固定</b></td></tr>
+          <tr><td>QRS</td><td>&lt;120 ms（無心室內傳導障礙）</td></tr>
+          <tr><td>規則度</td><td>RR 規則。隨呼吸變動的<b>竇性心律不整</b>（吸氣加快、吐氣變慢）在兒童與年輕人是正常變異</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        正常生理節律，本身不是疾病。
+        <span class="sys-caveat">※ 陷阱：aVR 的 P 若是<b>直立</b>、II 倒置，先想到<b>肢導聯左右接反</b>，其次才是心房異位節律或右位心——接反遠比後兩者常見。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-stach">
+      <span class="sys-name">竇性心搏過速</span>
+      <span class="sys-en">Sinus Tachycardia</span>
+      <span class="sys-src">&gt;100 bpm</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="stach"></div></div>
+        <div class="ekg-cap">140 bpm ｜ TP 段幾乎消失，P 波緊貼在前一拍 T 波的尾巴上——再快一點就會完全埋進 T 裡，變成「T 波多一個駝峰」</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">節律仍是竇性，只是變快；<b>快到 150 以上時 P 會躲進前一個 T 波裡</b>，這時要找的是「T 波形狀變了」。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>速率</td><td>成人 &gt;100 bpm；生理上限約 <b>220 − 年齡</b>，超過此值就不該再叫竇性心搏過速</td></tr>
+          <tr><td>P 波</td><td>型態與竇性相同（II 直立、aVR 倒置），只是被壓縮進 T 波。找不到時看 <b>V1</b> 或 <b>Lewis lead</b></td></tr>
+          <tr><td>起止</td><td><b>漸快漸慢</b>（warm-up／cool-down）；PSVT 則是<b>突發突止</b></td></tr>
+          <tr><td>迷走操作</td><td>頸動脈按摩／Valsalva／adenosine 只會讓它<b>暫時減速再回來</b>，不會終止；若「啪」一聲終止就不是竇性</td></tr>
+          <tr><td>150 bpm 這個數字</td><td>規則、窄 QRS、速率恰在 150 附近時，先假設是<b>心房撲動 2:1</b>，直到證明不是為止</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>低血容／出血、脫水</li>
+          <li>發燒、感染、敗血症</li>
+          <li>疼痛、焦慮、術後</li>
+          <li>貧血、缺氧</li>
+          <li>肺栓塞（最常見的 PE 心電圖變化）</li>
+          <li>心衰竭、心因性休克</li>
+          <li>甲狀腺亢進</li>
+          <li>酒精／苯二氮平戒斷</li>
+          <li>藥物：β 刺激劑、抗膽鹼、擬交感、咖啡因、salbutamol、升壓劑</li>
+          <li>不適當竇性心搏過速（IST）——排除性診斷</li>
+        </ul>
+        <span class="ekg-flag">⚑ 竇性心搏過速幾乎都是<b>症狀而非診斷</b>：先找為什麼快（找出血、找缺氧、找感染），<b>不要先壓速率</b>——它常是維持心輸出的代償。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-sbrady">
+      <span class="sys-name">竇性心搏過緩</span>
+      <span class="sys-en">Sinus Bradycardia</span>
+      <span class="sys-src">&lt;60 bpm</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="sbrady"></div></div>
+        <div class="ekg-cap">43 bpm ｜ 節律仍完全是竇性（P 直立、1:1、PR 固定），只是每一拍之間拉得很開</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">形態完全正常，只有<b>速率 &lt;60</b>。真正要回答的是「<b>這個慢，病人有沒有症狀</b>」而不是「數字有多低」。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>準則</td><td>竇性 P 波、P:QRS 1:1、PR 固定，速率 &lt;60 bpm</td></tr>
+          <tr><td>要不要處理</td><td>看<b>症狀與灌流</b>（意識改變、低血壓、缺血性胸痛、急性心衰竭）；無症狀的竇性心搏過緩（運動員、睡眠中）不需治療</td></tr>
+          <tr><td>下一步一定要做的事</td><td>確認<b>不是房室阻滯</b>——數 P 的數量：P 比 QRS 多就不是單純竇緩；並看 QRS 寬度與有無逸搏</td></tr>
+          <tr><td>不穩定時</td><td>Atropine 1 mg（每 3–5 分鐘，最大 3 mg）→ 無效則<b>經皮起搏</b>或 dopamine／epinephrine 輸注</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>迷走張力高：運動員、睡眠、嘔吐、抽痰、按壓眼球、排便</li>
+          <li>藥物：β 阻斷劑、非二氫吡啶類 CCB、digoxin、amiodarone、ivabradine、dexmedetomidine、opioid</li>
+          <li><b>下壁</b>心肌梗塞（右冠供應竇房結與房室結）</li>
+          <li>顱內壓升高（Cushing 反應：高血壓＋心搏過緩）</li>
+          <li>低體溫、甲狀腺低下、高血鉀</li>
+          <li>阻塞性睡眠呼吸中止</li>
+          <li>病竇症候群、老化性竇房結退化</li>
+          <li>脊髓損傷（神經源性休克）、缺氧末期</li>
+        </ul>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('brady')">→ 心搏過緩處置演算法（atropine、經皮起搏、輸注劑量）</button></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-spause">
+      <span class="sys-name">竇性停頓與病竇症候群</span>
+      <span class="sys-en">Sinus Pause / Sick Sinus Syndrome</span>
+      <span class="sys-src">ACC/AHA/HRS 2018</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="spause"></div></div>
+        <div class="ekg-cap">竇性心律中間出現一段 2.4 秒的停頓：<b>停頓期間連 P 波都沒有</b>（是竇房結沒放電，不是傳不下去）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">停頓時<b>看有沒有 P</b>：<b>連 P 都不見</b> ＝ 竇性停頓／竇房阻滯；<b>有 P 但後面沒 QRS</b> ＝ 房室阻滯。兩者處置方向不同。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>竇性停頓</td><td>停頓與基礎 PP 間距<b>沒有倍數關係</b>；竇房出口阻滯則停頓約為 PP 的整數倍</td></tr>
+          <tr><td>臨界值</td><td>&gt;3 秒的停頓（清醒時）通常視為異常；睡眠或運動員可較長而無意義</td></tr>
+          <tr><td>病竇症候群</td><td>竇性心搏過緩、竇性停頓、竇房阻滯、變時不全（運動時心率上不去）、<b>快—慢症候群</b>（心房顫動終止後長停頓）的統稱</td></tr>
+          <tr><td>與症狀綁定才算數</td><td>要有<b>症狀與心電圖同時記錄到</b>（暈厥、頭暈、運動耐受下降）才構成節律器適應症；無症狀者不放</td></tr>
+          <tr><td>先排除可逆原因</td><td>藥物（尤其 β 阻斷劑／CCB／digoxin）、高血鉀、甲狀腺低下、缺氧、低體溫、迷走反射</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>竇房結纖維化退化（老化，最常見）</li>
+          <li>藥物（可逆，一定要先停）</li>
+          <li>下壁心肌梗塞、缺血</li>
+          <li>浸潤性疾病：澱粉樣、類肉瘤、血色素沉著</li>
+          <li>心臟手術後（尤其心房手術、迷宮手術）</li>
+          <li>高血鉀、甲狀腺低下、低體溫</li>
+          <li>阻塞性睡眠呼吸中止</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/19281931/" target="_blank" rel="noopener" class="ref-link">Rautaharju PM, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part IV. J Am Coll Cardiol. 2009;53(11):982-991.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/30586772/" target="_blank" rel="noopener" class="ref-link">Kusumoto FM, et al. 2018 ACC/AHA/HRS Guideline on the Evaluation and Management of Patients With Bradycardia and Cardiac Conduction Delay. Circulation. 2019;140(8):e382-e482.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・心房／上心室 ================= -->
+  <div class="view" id="view-ekgatrial">
+    <div class="view-head"><div class="vh-t">心電圖判讀・心房與上心室</div><div class="vh-s">Atrial &amp; Supraventricular Rhythms</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-pac">
+      <span class="sys-name">心房早期收縮</span>
+      <span class="sys-en">Premature Atrial Complex (PAC)</span>
+      <span class="sys-src">常見良性</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="pac"></div></div>
+        <div class="ekg-cap">第 3 拍提早出現，P 波形態與竇性不同，QRS 仍窄；其後為<b>非完全代償</b>間歇</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">提早的一拍，<b>前面有 P</b>（但形狀跟竇性不一樣），<b>QRS 仍然窄</b>——這是與心室早期收縮最快的區分點。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>核心</td><td>提早的 P′＋窄 QRS；P′ 常藏在前一拍的 T 波裡，把 T 的形狀改掉</td></tr>
+          <tr><td>代償間歇</td><td>多為<b>非完全代償</b>（竇房結被重設）；PVC 則多為完全代償</td></tr>
+          <tr><td>差異性傳導</td><td>PAC 太早時右束支還沒恢復 → QRS 變寬呈 RBBB 樣（Ashman 現象），<b>不是 PVC</b>：看它前面有沒有 P′</td></tr>
+          <tr><td>受阻的 PAC</td><td>P′ 太早、房室結不應 → 只有 P′ 沒有 QRS，表現為<b>一個停頓</b>。這是<b>停頓最常見的原因</b>，常被誤判為第二度房室阻滯或竇性停頓——把 T 波逐拍比對就會看到多出來的 P′</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>正常變異（幾乎人人都有）</li>
+          <li>咖啡因、酒精、尼古丁、疲勞、壓力</li>
+          <li>電解質異常（低鉀、低鎂）</li>
+          <li>缺氧、COPD、肺炎</li>
+          <li>心房牽張：心衰竭、瓣膜疾病、心房肥大</li>
+          <li>甲狀腺亢進、擬交感藥物</li>
+          <li>頻繁 PAC 與日後<b>心房顫動</b>風險上升相關</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-af">
+      <span class="sys-name">心房顫動</span>
+      <span class="sys-en">Atrial Fibrillation (AF)</span>
+      <span class="sys-src">ESC 2024</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="af"></div></div>
+        <div class="ekg-cap">心室速率約 108 ｜ 無 P 波、基線為細碎顫動波，RR 間距每一拍都不一樣</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">找兩件事就夠：<b>沒有 P 波</b>、<b>RR「不規則的不規則」</b>（沒有任何可預測的規律）。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>節律</td><td><b>irregularly irregular</b>——用卡尺量三拍以上都對不上</td></tr>
+          <tr><td>P 波</td><td>完全消失，代之以顫動（f）波，<b>V1 最看得出來</b>；粗顫 vs 細顫無臨床意義</td></tr>
+          <tr><td>QRS</td><td>通常窄；快速傳導時可出現差異性傳導（aberrancy）而變寬</td></tr>
+          <tr><td>診斷門檻</td><td>ESC 2024：需<b>單導程連續 ≥30 秒</b>或一張完整 12 導程的紀錄</td></tr>
+          <tr><td>RR 變規則了</td><td>AF 卻出現<b>規則且慢</b>的心室率 → 合併<b>完全房室阻滯</b>（regularized AF），常見於毛地黃中毒</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>年齡、高血壓（最大宗）</li>
+          <li>心衰竭、瓣膜疾病（尤其二尖瓣狹窄）</li>
+          <li>肥胖、阻塞性睡眠呼吸中止</li>
+          <li>酒精（holiday heart）、咖啡因</li>
+          <li>甲狀腺亢進</li>
+          <li>術後（心臟、胸腔與大型手術後尤高）</li>
+          <li>敗血症、肺炎、肺栓塞、COPD</li>
+          <li>電解質異常、心包炎、心肌炎</li>
+        </ul>
+        <span class="ekg-flag">⚑ <b>極快（&gt;250 bpm）、不規則、QRS 寬窄不一</b>的 AF ＝ 預激性心房顫動（WPW 併 AF）。此時 AV 節點阻斷劑（adenosine、verapamil、diltiazem、digoxin、β 阻斷劑）會把衝動全部趕上旁路而誘發心室顫動——<b>屬禁忌</b>，改用電擊整流或 procainamide。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-afl">
+      <span class="sys-name">心房撲動</span>
+      <span class="sys-en">Atrial Flutter (AFL)</span>
+      <span class="sys-src">心房 ~300/min</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="afl"></div></div>
+        <div class="ekg-cap">心房 300／心室 150（2:1 傳導）｜ 基線為連續無等電位段的鋸齒波，兩個鋸齒配一個 QRS</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">基線<b>沒有平的地方</b>——鋸齒（sawtooth）一個接一個。看到<b>規則的 150 bpm 窄 QRS</b>，先想它。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>心房速率</td><td>250–350／min（典型約 300），撲動波之間<b>沒有等電位基線</b></td></tr>
+          <tr><td>典型（三尖瓣峽部依賴、逆時鐘）</td><td>II／III／aVF <b>負向鋸齒</b>，V1 <b>正向</b>；順時鐘型則反過來</td></tr>
+          <tr><td>傳導比</td><td>2:1 最常見 → 心室 150；亦可 3:1、4:1 或不固定（此時 RR 不規則，易誤判為 AF）</td></tr>
+          <tr><td>讓鋸齒現形</td><td>頸動脈按摩／Valsalva／adenosine 暫時阻斷房室結，撲動波即露出——<b>AVNRT 會終止、撲動不會</b>（這是最好用的鑑別法）</td></tr>
+          <tr><td>抗凝</td><td>血栓風險與中風預防評估<b>比照心房顫動</b>辦理</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>與心房顫動大致相同（兩者常在同一病人身上交替出現）</li>
+          <li>高血壓性心臟病、心衰竭</li>
+          <li>COPD、肺栓塞、肺高壓</li>
+          <li>心臟手術後、心房疤痕（電燒或先天性心臟病矯正後）</li>
+          <li>甲狀腺亢進、酒精</li>
+        </ul>
+        <span class="sys-caveat">※ 2:1 傳導時鋸齒波常有一個埋在 QRS 或 T 波裡，只看到「一個 P」而誤判為竇性心搏過速。凡是<b>心率死守在 150 附近、幾乎不隨活動變動</b>者，要主動用迷走操作或 adenosine 拆穿。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-psvt">
+      <span class="sys-name">陣發性上心室心搏過速</span>
+      <span class="sys-en">PSVT (AVNRT / AVRT)</span>
+      <span class="sys-src">ESC 2019</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="psvt"></div></div>
+        <div class="ekg-cap">176 bpm ｜ 規則、窄 QRS、看不到 P；QRS 尾端多出一個小凹（II 的 pseudo-S ＝逆行 P）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>規則、窄、快（150–250）、突發突止</b>，而且<b>找不到 P</b>——P 藏在 QRS 裡面或緊貼其後。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><th style="width:22%;">型別</th><th>心電圖線索</th></tr>
+          <tr><td>典型 AVNRT<br>（最常見）</td><td>逆行 P 幾乎與 QRS 同時 → <b>V1 出現偽 r′、II／III／aVF 出現偽 S</b>（與竇性時的舊片比對才看得出來是多出來的）；RP 間期 &lt;70 ms</td></tr>
+          <tr><td>正向型 AVRT<br>（經旁路折返）</td><td>逆行 P 落在 QRS 之後但分得開（<b>RP &gt;70 ms</b>）；常見 <b>QRS 電交替</b>；竇性時可能看得到 delta 波（WPW）</td></tr>
+          <tr><td>心房頻脈</td><td>P 在 QRS 之前、型態與竇性不同；常有 warm-up，adenosine 常只造成暫時房室阻斷而不終止</td></tr>
+          <tr><td>終止的樣子</td><td>折返性心搏過速終止時<b>最後一個波是 QRS</b>（AVNRT／AVRT）；若停在 P 波後，偏向心房性</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>房室結雙路徑（AVNRT，約占 PSVT 六成，女性居多）</li>
+          <li>房室旁路（AVRT／WPW，較年輕族群）</li>
+          <li>心房異位病灶（atrial tachycardia）</li>
+          <li>誘因：咖啡因、酒精、疲勞、交感刺激、甲狀腺亢進、擬交感藥物</li>
+          <li>多數無結構性心臟病</li>
+        </ul>
+        <span class="sys-caveat">※ 給 adenosine 時<b>務必全程錄心律紙</b>：即使沒終止，那幾秒的房室阻斷常是全程唯一一次看清楚心房活動（撲動波、心房頻脈的 P）的機會。</span>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('tachy')">→ 心搏過速處置演算法（穩定／不穩定、窄／寬）</button></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-junc">
+      <span class="sys-name">接合部節律</span>
+      <span class="sys-en">Junctional Rhythm</span>
+      <span class="sys-src">40–60 bpm</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="junc"></div></div>
+        <div class="ekg-cap">48 bpm ｜ 規則、<b>QRS 窄</b>、看不到正向 P；QRS 之後有一個小的<b>倒置</b>逆行 P</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>窄 QRS ＋ 慢 ＋ 沒有正向 P</b>。節律點掉到房室接合部，逆行去極化心房 → II／III／aVF 的 P <b>倒置</b>，且可在 QRS 之前、之中或之後。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>速率分層</td><td>接合部<b>逸搏</b> 40–60；<b>加速性</b>接合部節律 60–100；接合部<b>頻脈</b> &gt;100</td></tr>
+          <tr><td>P 波</td><td>II 倒置；RP 很短或看不到。P 在 QRS 前時 PR &lt;120 ms</td></tr>
+          <tr><td>QRS</td><td><b>窄</b>（除非合併束支阻滯）——這是與心室逸搏節律的分界</td></tr>
+          <tr><td>意義</td><td>逸搏節律是<b>保護機制</b>，不要去壓它；要處理的是「為什麼上游停了」（竇房結衰竭、房室阻滯、藥物）</td></tr>
+          <tr><td>加速性接合部節律</td><td>屬於<b>異常自律性升高</b>，典型見於<b>毛地黃中毒</b>、心臟手術後、心肌炎、下壁心梗</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>竇房結功能不良、病竇症候群</li>
+          <li>房室阻滯（接合部承接）</li>
+          <li>藥物：digoxin、β 阻斷劑、CCB、amiodarone</li>
+          <li>下壁心肌梗塞</li>
+          <li>心臟手術後、心肌炎、風濕熱</li>
+          <li>高迷走張力、高血鉀</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/31504425/" target="_blank" rel="noopener" class="ref-link">Brugada J, et al. 2019 ESC Guidelines for the management of patients with supraventricular tachycardia. Eur Heart J. 2020;41(5):655-720.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/39210723/" target="_blank" rel="noopener" class="ref-link">Van Gelder IC, et al. 2024 ESC Guidelines for the management of atrial fibrillation. Eur Heart J. 2024;45(36):3314-3414.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・心室 ================= -->
+  <div class="view" id="view-ekgvent">
+    <div class="view-head"><div class="vh-t">心電圖判讀・心室性心律</div><div class="vh-s">Ventricular Rhythms</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-pvc">
+      <span class="sys-name">心室早期收縮</span>
+      <span class="sys-en">Premature Ventricular Complex (PVC)</span>
+      <span class="sys-src">寬、無 P</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="pvc"></div></div>
+        <div class="ekg-cap">第 3 拍為提早的<b>寬</b> QRS、前面沒有 P、T 波與主波反向，其後接<b>完全代償</b>間歇（前後兩個竇性 RR 之和恰為 2 倍）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">提早、<b>寬</b>、<b>前面沒有 P</b>、<b>T 波與 QRS 主波反向</b>。四項齊備就是 PVC。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>代償間歇</td><td>多為<b>完全代償</b>（竇房結未被重設）；夾在兩拍之間而不影響節律者稱<b>插入性</b> PVC</td></tr>
+          <tr><td>型態命名</td><td>單型 vs 多型；<b>二聯律</b>（每一竇性後接一 PVC）、三聯律、<b>成對</b>（couplet）、連續 ≥3 拍即為<b>非持續性 VT</b></td></tr>
+          <tr><td>來源</td><td>左束支型（V1 主波向下）＝<b>右</b>心室來源，常見右心室流出道 PVC（下壁導程高 R，多屬良性）；右束支型＝<b>左</b>心室來源</td></tr>
+          <tr><td>R-on-T</td><td>PVC 落在前一拍 T 波的頂點附近 → 可誘發多型性 VT／VF，尤其在 QT 延長或急性缺血時</td></tr>
+          <tr><td>要不要處理</td><td>結構性心臟病陰性且無症狀者<b>不需抗心律不整藥</b>；PVC 負荷 &gt;10–15%（24 小時 Holter）可致<b>PVC 誘發心肌病變</b>，此時考慮電燒</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>正常變異（隨年齡增加）</li>
+          <li>缺血、心肌梗塞、心肌病變</li>
+          <li>低鉀、低鎂、酸鹼異常</li>
+          <li>缺氧、高碳酸血症</li>
+          <li>咖啡因、酒精、尼古丁、擬交感藥物</li>
+          <li>甲狀腺亢進</li>
+          <li>中央靜脈導管／肺動脈導管尖端刺激</li>
+          <li>毛地黃中毒</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-vt">
+      <span class="sys-name">心室頻脈</span>
+      <span class="sys-en">Ventricular Tachycardia (VT)</span>
+      <span class="sys-src">ESC 2022</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="vt"></div></div>
+        <div class="ekg-cap">158 bpm、QRS 約 165 ms ｜ 寬、圓鈍、起始上升緩慢（RS &gt;100 ms）、規則；基線上另有一組自己走的小 P 波（房室分離）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>連續 ≥3 拍、速率 &gt;100、QRS ≥120 ms</b>。寬 QRS 心搏過速在<b>有結構性心臟病或曾心肌梗塞</b>的病人約 8–9 成是 VT——<b>不確定就當 VT 治療</b>。</div>
+        <div class="sys-sub">支持 VT 而非「上心室頻脈併差異性傳導」的線索</div>
+        <table class="def-table">
+          <tr><td>房室分離</td><td>P 波與 QRS 各走各的（本圖示意）——<b>最特異</b>，但只在約三分之一看得到</td></tr>
+          <tr><td>融合波／捕捉波</td><td>中間夾一拍窄的（捕捉）或半寬半窄（融合）＝心房衝動偶然下傳 → 幾乎確診 VT</td></tr>
+          <tr><td>電軸</td><td>極度右上（−90°～±180°，「無人區／northwest axis」）</td></tr>
+          <tr><td>胸前導程一致性</td><td>V1–V6 <b>全部正向或全部負向</b>（concordance）</td></tr>
+          <tr><td>Brugada 四步驟</td><td>① 胸前導程<b>全無 RS</b> → VT；② 任一導程 R 起點到 S 谷底 <b>&gt;100 ms</b> → VT；③ 有房室分離 → VT；④ V1／V6 型態符合 VT</td></tr>
+          <tr><td>分類</td><td>單型 vs 多型；<b>持續性</b>＝&gt;30 秒或因血行動力學崩潰須立即終止</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>陳舊性心肌梗塞疤痕折返（最常見）</li>
+          <li>急性心肌缺血／梗塞</li>
+          <li>擴張性／肥厚性心肌病變、心衰竭</li>
+          <li>心肌炎、類肉瘤、澱粉樣</li>
+          <li>低鉀、低鎂、酸中毒、缺氧</li>
+          <li>藥物毒性（毛地黃、抗心律不整藥致心律不整）</li>
+          <li>遺傳性：ARVC、Brugada、長／短 QT、CPVT</li>
+          <li>電擊傷、心臟挫傷、導管刺激</li>
+        </ul>
+        <span class="ekg-flag">⚑ 有脈搏但不穩定 → <b>同步電擊整流</b>；無脈搏 VT → 比照心室顫動<b>非同步去顫</b>。切勿對寬 QRS 心搏過速常規給 verapamil。</span>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('tachy')">→ 心搏過速演算法</button> <button class="flow-link" onclick="goView('arrest')">→ 心跳停止演算法</button></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-aivr">
+      <span class="sys-name">加速性心室自主節律</span>
+      <span class="sys-en">Accelerated Idioventricular Rhythm (AIVR)</span>
+      <span class="sys-src">再灌流指標</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="aivr"></div></div>
+        <div class="ekg-cap">83 bpm ｜ 寬 QRS、規則、無相關 P 波——型態像 VT 但<b>速率不快</b></div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">長得像 VT，但<b>速率只有 50–110</b>。最常見的場景是<b>再灌流之後</b>（PCI 或溶栓成功），多為良性、自限。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>準則</td><td>心室源寬 QRS（≥120 ms），速率 <b>50–110</b> bpm，連續 ≥3 拍；&gt;110 就叫 VT</td></tr>
+          <tr><td>起止</td><td>常在竇性心律變慢時「接手」，並在竇性回快時自行退場；起止處常見<b>融合波</b></td></tr>
+          <tr><td>血行動力學</td><td>多可耐受；少數因失去心房收縮貢獻而血壓下降，此時可用 atropine 加快竇性心律奪回主導</td></tr>
+          <tr><td>處置</td><td><b>多數不需治療</b>，尤其不要壓抑它——它常是唯一維持心輸出的節律</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li><b>再灌流</b>（PCI／溶栓後，最典型）</li>
+          <li>急性心肌梗塞（尤其下壁）</li>
+          <li>心肌炎、心肌病變</li>
+          <li>毛地黃中毒</li>
+          <li>電解質異常、可卡因</li>
+          <li>心臟手術後、運動員（少見的正常變異）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-vf">
+      <span class="sys-name">心室顫動</span>
+      <span class="sys-en">Ventricular Fibrillation (VF)</span>
+      <span class="sys-src">可去顫節律</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="vf"></div></div>
+        <div class="ekg-cap">粗顫（coarse VF）｜ 振幅與週期都亂、無任何重複性，指不出哪裡是 QRS、哪裡是 ST 或 T</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">波形<b>沒有任何可辨識的 QRS</b>、振幅與週期都亂。<b>看到就是 CPR ＋ 立刻去顫</b>。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>波形</td><td>不規則、振幅與頻率持續變動；<b>粗顫</b>（振幅 &gt;3 mm）久了會退化成<b>細顫</b>再變心搏停止</td></tr>
+          <tr><td>臨床對照</td><td>心電圖是 VF <b>而病人清醒</b> → 幾乎一定是<b>假象</b>（電極鬆脫、震顫、刷牙、CPR 按壓、搬運）。<b>先看病人，再看螢幕</b></td></tr>
+          <tr><td>與多型性 VT 的界線</td><td>多型性 VT 尚可辨識出個別 QRS；退化到認不出來就叫 VF——臨床處置相同</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>急性心肌缺血／梗塞（最常見）</li>
+          <li>陳舊疤痕、心肌病變、心衰竭</li>
+          <li>低鉀、低鎂</li>
+          <li>QT 延長 → 尖端扭轉退化而來</li>
+          <li>缺氧、酸中毒、低體溫</li>
+          <li>電擊傷、雷擊、commotio cordis（胸前撞擊）</li>
+          <li>遺傳性離子通道病（Brugada、LQTS、CPVT）</li>
+          <li>藥物中毒（三環抗鬱劑、古柯鹼、毛地黃）</li>
+        </ul>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('arrest')">→ 心跳停止演算法、去顫能量與難治性 VF 用藥</button></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-tdp">
+      <span class="sys-name">尖端扭轉型心室頻脈</span>
+      <span class="sys-en">Torsades de Pointes (TdP)</span>
+      <span class="sys-src">AHA 2010</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="tdp"></div></div>
+        <div class="ekg-cap">竇性一拍（QT 明顯延長）→ 早期收縮 → 代償停頓 → 第二拍後之 <b>短—長—短</b> 序列與 R-on-T 起跑 → 連續寬複合波，振幅與極性繞著基線扭轉</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">多型性 VT ＋ <b>基礎心律的 QT 是延長的</b>。振幅與主波方向<b>每 5–20 拍繞基線翻轉一次</b>，像沿著軸線扭轉的緞帶。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>定義要件</td><td>多型性 VT，且<b>發作前的竇性心搏 QT／QTc 延長</b>。QT 不長的多型性 VT 應優先想<b>急性心肌缺血</b>，處置方向不同</td></tr>
+          <tr><td>起跑型態</td><td><b>短—長—短</b>序列：早期收縮 → 代償停頓（讓 QT 更長）→ 下一拍落在 T 波上（R-on-T）</td></tr>
+          <tr><td>速率</td><td>常 160–250 bpm</td></tr>
+          <tr><td>轉歸</td><td>多數數秒內自行終止而以暈厥表現；可退化為<b>心室顫動</b></td></tr>
+          <tr><td>處置</td><td><b>硫酸鎂 IV 1–2 g</b>（即使血鎂正常）、把鉀補到 4.5–5.0、停掉所有延長 QT 的藥；反覆發作者以 <b>isoproterenol 或超速起搏把心率提到 90–110</b>（心率快 QT 才會縮短）。不穩定時<b>非同步</b>去顫——極性一直變，同步不上</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>藥物：class Ia／III 抗心律不整（quinidine、sotalol、amiodarone、ibutilide）</li>
+          <li>抗生素：macrolide、fluoroquinolone、azole 抗黴菌</li>
+          <li>精神科／止吐：haloperidol、TCA、citalopram、ondansetron、droperidol、methadone</li>
+          <li>低鉀、低鎂、低鈣</li>
+          <li>心搏過緩、完全房室阻滯、長時間停頓</li>
+          <li>先天性長 QT 症候群</li>
+          <li>顱內事件（尤其蛛網膜下腔出血）、低體溫、飢餓／極低熱量飲食</li>
+        </ul>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('ekgsys')">→ QT 如何量、QTc 怎麼算、誰是高風險</button></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-asystole">
+      <span class="sys-name">心搏停止</span>
+      <span class="sys-en">Asystole</span>
+      <span class="sys-src">不可電擊</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="asystole"></div></div>
+        <div class="ekg-cap">近乎平線，只剩極微的基線飄移——真正的平線（毫無起伏）反而要先想到導線脫落</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">「平線」在按下去顫器之前必須先做三件事：<b>確認導線、確認導程、把增益開大</b>。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>確認步驟</td><td>檢查電極與導線是否脫落 → 換<b>至少兩個導程</b>確認 → 把<b>增益（gain）調大</b>；細顫在小增益下看起來就像平線，而細顫是<b>可電擊</b>的</td></tr>
+          <tr><td>心室靜止</td><td>只有 P 波、完全沒有 QRS（P-wave asystole）＝完全房室阻滯合併逸搏失效 → <b>起搏</b>可能有效</td></tr>
+          <tr><td>處置</td><td>不可電擊：高品質 CPR ＋ 儘早 epinephrine 1 mg，每 3–5 分鐘一次；全力尋找可逆原因</td></tr>
+          <tr><td>可逆原因（H's &amp; T's）</td><td>缺氧、低血容、酸中毒、高／低血鉀、低體溫；張力性氣胸、心包填塞、毒物、肺栓塞、冠狀動脈血栓</td></tr>
+          <tr><td>無脈搏電氣活動（PEA）</td><td>心電圖<b>看起來有組織節律</b>卻摸不到脈搏——處置與心搏停止相同，重點在<b>找可逆原因</b>（POCUS 很有用）</td></tr>
+        </table>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('arrest')">→ 心跳停止演算法</button> <button class="flow-link" onclick="goView('tor')">→ 終止復甦</button></div>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/36017572/" target="_blank" rel="noopener" class="ref-link">Zeppenfeld K, et al. 2022 ESC Guidelines for the management of patients with ventricular arrhythmias and the prevention of sudden cardiac death. Eur Heart J. 2022;43(40):3997-4126.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/2022022/" target="_blank" rel="noopener" class="ref-link">Brugada P, et al. A new approach to the differential diagnosis of a regular tachycardia with a wide QRS complex. Circulation. 1991;83(5):1649-1659.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/20142454/" target="_blank" rel="noopener" class="ref-link">Drew BJ, et al. Prevention of torsade de pointes in hospital settings. Circulation. 2010;121(8):1047-1060.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・房室阻滯 ================= -->
+  <div class="view" id="view-ekgav">
+    <div class="view-head"><div class="vh-t">心電圖判讀・房室阻滯</div><div class="vh-s">Atrioventricular Block</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-avb1">
+      <span class="sys-name">第一度房室阻滯</span>
+      <span class="sys-en">First-degree AV Block</span>
+      <span class="sys-src">PR &gt;200 ms</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="avb1"></div></div>
+        <div class="ekg-cap">67 bpm、PR 300 ms ｜ 每一個 P 都下傳，只是慢；PR 逐拍固定</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">PR &gt;200 ms 但<b>每個 P 都下傳</b>——嚴格說不是「阻滯」而是「傳導延遲」。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>準則</td><td>PR &gt;200 ms（成人），P:QRS 仍 1:1，無漏拍</td></tr>
+          <tr><td>PR 很長時</td><td>PR &gt;300 ms 者，P 可能落到前一拍的 T 波上；心房收縮對上關閉的二尖瓣 → <b>類節律器症候群</b>（頸靜脈砲擊波、運動耐受下降）</td></tr>
+          <tr><td>意義</td><td>單獨存在多屬良性、不需治療；但合併雙束支阻滯或暈厥時，要想到病灶其實在希氏束以下</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>迷走張力高（運動員、睡眠）</li>
+          <li>房室結阻斷藥：β 阻斷劑、非二氫吡啶類 CCB、digoxin、amiodarone</li>
+          <li>下壁心肌梗塞（右冠供應房室結）</li>
+          <li>傳導系統退化（老化）</li>
+          <li>心肌炎（Lyme 病、風濕熱）、心內膜炎併瓣環膿瘍</li>
+          <li>高鉀、甲狀腺低下</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-avb2a">
+      <span class="sys-name">第二度房室阻滯・第一型</span>
+      <span class="sys-en">Mobitz I (Wenckebach)</span>
+      <span class="sys-src">多在房室結</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="avb2a"></div></div>
+        <div class="ekg-cap">PP 固定 800 ms；PR 由 160 → 240 → 320 ms 後掉一拍，然後重來（4:3 傳導）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>PR 一拍比一拍長，長到有一個 P 下不去</b>，然後從頭開始——外觀是「一群一群」的心搏（group beating）。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>核心</td><td>PR 漸進延長 → 掉一個 QRS → 掉拍後的第一個 PR <b>最短</b></td></tr>
+          <tr><td>次級線索</td><td>PR 每次增加的<b>幅度</b>遞減，故 <b>RR 反而逐漸縮短</b>；含掉拍的那個 RR <b>短於兩個 PP 之和</b></td></tr>
+          <tr><td>PP</td><td>固定（心房規律不受影響）</td></tr>
+          <tr><td>QRS</td><td>多為<b>窄</b>（阻滯位於房室結內）</td></tr>
+          <tr><td>臨床</td><td>多屬良性、無症狀者不需節律器；運動或 atropine 通常<b>改善</b></td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>迷走張力高（年輕人、運動員、夜間）</li>
+          <li><b>下壁</b>心肌梗塞</li>
+          <li>房室結阻斷藥</li>
+          <li>心肌炎（Lyme）、風濕熱</li>
+          <li>心臟手術後（暫時性）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-avb2b">
+      <span class="sys-name">第二度房室阻滯・第二型</span>
+      <span class="sys-en">Mobitz II</span>
+      <span class="sys-src">多在希氏束以下</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="avb2b"></div></div>
+        <div class="ekg-cap">PP 固定 800 ms；PR 一律 200 ms 不變，第 4 個 P 毫無預警地掉了（4:3 傳導）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>PR 從頭到尾一樣長</b>，卻突然有一個 P 沒有跟 QRS。<b>沒有預兆</b>是它最危險的地方。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>核心</td><td>PR <b>固定不變</b>（無論下傳或掉拍前後），突發性漏拍</td></tr>
+          <tr><td>RR</td><td>含掉拍的 RR 恰為兩個 PP 之和（因為 PR 沒變）</td></tr>
+          <tr><td>QRS</td><td><b>常較寬</b>（合併束支阻滯），反映病灶在希氏—浦金氏系統</td></tr>
+          <tr><td>atropine／運動</td><td>會加快心房速率而<b>使阻滯更嚴重</b>（與 Mobitz I 相反）——這是床邊最好用的鑑別</td></tr>
+          <tr><td>臨床</td><td>易進展為<b>完全房室阻滯與心搏停止</b>；即使無症狀，多數需<b>永久節律器</b></td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li><b>前壁</b>心肌梗塞（廣泛間隔壞死）</li>
+          <li>傳導系統原發退化（Lev／Lenègre 病）</li>
+          <li>浸潤性疾病：類肉瘤、澱粉樣、血色素沉著</li>
+          <li>心臟手術／TAVI 後、瓣膜鈣化蔓延</li>
+          <li>Lyme 心臟炎、心內膜炎併膿瘍</li>
+          <li>肌肉萎縮症（myotonic dystrophy、Lamin A/C）</li>
+        </ul>
+        <span class="ekg-flag">⚑ <b>2:1 房室阻滯無法只憑一張圖分型</b>——沒有連續兩個下傳的 P 可比 PR。線索：QRS 窄＋PR 長 → 偏 Mobitz I；<b>QRS 寬＋PR 正常 → 偏 Mobitz II</b>。用長條紀錄、運動或 atropine 測試釐清；分不出來時<b>按 Mobitz II 準備</b>。連續 ≥2 個 P 未下傳則稱<b>高度（high-grade）房室阻滯</b>。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-avb3">
+      <span class="sys-name">第三度（完全）房室阻滯</span>
+      <span class="sys-en">Third-degree / Complete Heart Block</span>
+      <span class="sys-src">房室分離</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="avb3"></div></div>
+        <div class="ekg-cap">心房 80／心室 38 ｜ P 波以固定間距一路走過去（有的埋進 QRS 與 T），逸搏 QRS 寬而規則，兩者毫無關係</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">P 走 P 的、QRS 走 QRS 的，<b>各自規則但互不相干</b>，且<b>心房速率快於心室速率</b>。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>核心</td><td>完全房室分離：PP 規則、RR 規則、PR 無固定關係；<b>心房率 &gt; 心室率</b>（若心室率反而較快，那是加速性交界／心室節律，不是完全阻滯）</td></tr>
+          <tr><td>逸搏來源</td><td><b>交界性</b>：40–60 bpm、QRS <b>窄</b>、較穩定（阻滯位於房室結）<br><b>心室性</b>：20–40 bpm、QRS <b>寬</b>、不穩定，易停跳（阻滯位於希氏束以下）</td></tr>
+          <tr><td>找 P 波</td><td>P 常埋在 QRS 或 T 裡，把 T 波形狀逐拍比對就看得出「多出來的凸起」；用卡尺以固定 PP 往前推最可靠</td></tr>
+          <tr><td>處置</td><td>atropine 對<b>希氏束以下</b>的阻滯常無效甚至有害；備<b>經皮起搏</b>與 isoproterenol／epinephrine，儘早放暫時性經靜脈節律器並找可逆原因</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>傳導系統退化（最常見，老年）</li>
+          <li><b>下壁</b>心梗：房室結型、逸搏窄、常可逆</li>
+          <li><b>前壁</b>心梗：廣泛壞死、逸搏寬、預後差</li>
+          <li>藥物過量（β 阻斷劑、CCB、digoxin）</li>
+          <li>高鉀</li>
+          <li>心臟手術、TAVI、電燒術後</li>
+          <li>感染：Lyme、心內膜炎併瓣環膿瘍、Chagas</li>
+          <li>浸潤性心肌病、先天性（母體抗 Ro／La 抗體）</li>
+        </ul>
+        <div class="ekg-note-link"><button class="flow-link" onclick="goView('brady')">→ 心搏過緩處置演算法</button></div>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/30586772/" target="_blank" rel="noopener" class="ref-link">Kusumoto FM, et al. 2018 ACC/AHA/HRS Guideline on the Evaluation and Management of Patients With Bradycardia and Cardiac Conduction Delay. Circulation. 2019;140(8):e382-e482.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・束支與分支阻滯 ================= -->
+  <div class="view" id="view-ekgbbb">
+    <div class="view-head"><div class="vh-t">心電圖判讀・束支與分支阻滯</div><div class="vh-s">Bundle Branch &amp; Fascicular Blocks</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-rbbb">
+      <span class="sys-name">右束支阻滯</span>
+      <span class="sys-en">Right Bundle Branch Block (RBBB)</span>
+      <span class="sys-src">AHA Part III</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="rbbb-v1" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V6</span><div class="ekg-strip" data-ekg="rbbb-v6" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">V1 的 rSR′（兔耳，第二個 R 較高）＋ V6 的寬 S 波；QRS 約 130 ms（≥120 ms 即為完全性）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">口訣 <b>「MaRRoW」</b>：V1 像 <b>M</b>（rSR′），V6 像 <b>W</b>（寬 S）。右心室最後才去極化，所以晚到的向量指向右前方（V1）。</div>
+        <div class="sys-sub">判讀要點（AHA/ACCF/HRS 完全性 RBBB）</div>
+        <table class="def-table">
+          <tr><td>QRS 寬度</td><td>成人 <b>≥120 ms</b>（110–120 ms 且型態相符者為<b>不完全性</b> RBBB）</td></tr>
+          <tr><td>V1／V2</td><td>rsr′、rsR′ 或 rSR′，<b>R′ 通常高於初始 R</b>；少數呈寬而有切跡的單相 R</td></tr>
+          <tr><td>I 與 V6</td><td>S 波<b>比 R 波寬</b>或 <b>&gt;40 ms</b></td></tr>
+          <tr><td>R 峰時間</td><td>V1 <b>&gt;50 ms</b>，而 V5／V6 正常</td></tr>
+          <tr><td>ST-T</td><td>V1–V3 的 ST 壓低與 T 倒置是<b>續發性、正常的</b>（與 QRS 主波反向）</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>正常變異（尤其 &lt;40 歲，盛行率隨年齡上升）</li>
+          <li>右心室負荷：肺栓塞、COPD、肺高壓、心房中隔缺損</li>
+          <li>缺血性心臟病、傳導系統退化</li>
+          <li>心肌病變、心肌炎、Chagas</li>
+          <li>Brugada 症候群（V1–V2 的 coved ST 抬高，形似 RBBB 但不是）</li>
+          <li>右心導管／電生理術中之機械性刺激（多為暫時）</li>
+        </ul>
+        <span class="sys-caveat">※ RBBB <b>不影響 ST 段抬高的判讀</b>（不像 LBBB）：V1–V3 若出現與續發性改變不相稱的 ST 抬高，照樣按 STEMI 走。新出現的 RBBB 合併胸痛，要想到<b>前降支近端</b>阻塞或大面積肺栓塞。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-lbbb">
+      <span class="sys-name">左束支阻滯</span>
+      <span class="sys-en">Left Bundle Branch Block (LBBB)</span>
+      <span class="sys-src">AHA Part III</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="lbbb-v1" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V6</span><div class="ekg-strip" data-ekg="lbbb-v6" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">V1 深而寬的 QS（ST 代償性抬高）＋ V6 寬而有切跡的單相 R（ST 代償性壓低、T 倒置）；QRS 約 140 ms</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">口訣 <b>「WiLLiaM」</b>：V1 像 <b>W</b>（QS／rS），V6 像 <b>M</b>（寬而切跡的 R）。<b>ST-T 一定與 QRS 主波反向</b>，這叫「合宜的反向」（appropriate discordance）。</div>
+        <div class="sys-sub">判讀要點（AHA/ACCF/HRS 完全性 LBBB）</div>
+        <table class="def-table">
+          <tr><td>QRS 寬度</td><td>成人 <b>≥120 ms</b></td></tr>
+          <tr><td>I、aVL、V5、V6</td><td>寬、有切跡或頓挫的 <b>R 波</b>；<b>沒有 q 波</b>（aVL 偶可有窄 q）</td></tr>
+          <tr><td>V1／V2</td><td><b>QS</b> 或 rS（r 很小）；V1–V3 的 r 波可完全消失</td></tr>
+          <tr><td>R 峰時間</td><td>V5／V6 <b>&gt;60 ms</b>，而 V1–V3 正常</td></tr>
+          <tr><td>ST-T</td><td>與 QRS 主波<b>反向</b>；<b>同向（concordant）的 ST 偏移就是不正常</b></td></tr>
+        </table>
+
+        <div class="sys-sub">合併 LBBB／心室節律時如何診斷急性梗塞（Sgarbossa）</div>
+        <table class="def-table">
+          <tr><th style="width:16%;">分數</th><th>準則（1996 原始版）</th></tr>
+          <tr><td>5 分</td><td>與 QRS <b>同向</b>之 ST 抬高 ≥1 mm</td></tr>
+          <tr><td>3 分</td><td>V1–V3 <b>同向</b>之 ST 壓低 ≥1 mm</td></tr>
+          <tr><td>2 分</td><td>與 QRS <b>反向</b>之 ST 抬高 ≥5 mm</td></tr>
+          <tr class="dt-warn"><td>≥3 分</td><td>具高特異度；但整體敏感度低，尤以單靠第三項判定為差</td></tr>
+        </table>
+        <div class="dot-line">・<b>Smith 2012 修正版</b>：把第三項改為<b>比例式</b>——反向 ST 抬高 ÷ 同一導程 S 波深度 <b>≤ −0.25</b>。三項<b>任一</b>符合即算陽性，敏感度 <b>91%</b>、特異度 <b>90%</b>（原始加權版僅 52%／98%）。</div>
+        <div class="dot-line">・同一套準則亦適用於<b>心室節律器</b>造成的寬 QRS。</div>
+
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>高血壓性心臟病、左心室肥厚</li>
+          <li>主動脈瓣狹窄（鈣化蔓延至傳導系統）</li>
+          <li>缺血性與擴張性心肌病變</li>
+          <li>急性前壁心肌梗塞</li>
+          <li>傳導系統退化（Lev／Lenègre）</li>
+          <li>TAVI／瓣膜手術後、中隔電燒後</li>
+          <li>高鉀（可致非特異性寬 QRS）</li>
+        </ul>
+        <span class="ekg-flag">⚑ 「<b>新發生的 LBBB ＝ STEMI</b>」這條舊規則<b>已不再成立</b>（第四版心肌梗塞通用定義起）：多數新 LBBB 並非急性阻塞，且常無法確定它是不是真的「新」的。應改用 <b>Sgarbossa／Smith 修正準則</b>，並依症狀與血行動力學決定是否啟動導管室。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-fascicular">
+      <span class="sys-name">分支阻滯</span>
+      <span class="sys-en">Fascicular Blocks (LAFB / LPFB)</span>
+      <span class="sys-src">QRS 不變寬</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">I（LAFB）</span><div class="ekg-strip" data-ekg="lafb-i" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">III（LAFB）</span><div class="ekg-strip" data-ekg="lafb-iii" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">左前分支阻滯：I／aVL 呈 <b>qR</b>（主波向上），II／III／aVF 呈 <b>rS</b>（主波向下）→ 電軸左偏；QRS 仍 &lt;120 ms</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">分支阻滯<b>不會把 QRS 變寬</b>，它改變的是<b>電軸</b>。看 I 與 III 的主波方向就能定型。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><th style="width:26%;">型別</th><th>準則</th></tr>
+          <tr><td>左前分支阻滯<br>LAFB</td><td>電軸 <b>−45° ～ −90°</b>（左偏）；I／aVL 呈 <b>qR</b>、II／III／aVF 呈 <b>rS</b>；QRS &lt;120 ms；aVL 的 R 峰時間 ≥45 ms。<b>最常見的分支阻滯</b></td></tr>
+          <tr><td>左後分支阻滯<br>LPFB</td><td>電軸 <b>+90° ～ +180°</b>（右偏）；I／aVL 呈 <b>rS</b>、II／III／aVF 呈 <b>qR</b>；QRS &lt;120 ms。<b>少見</b>，且必須先排除右心室肥大、側壁梗塞、瘦高體型與肺部疾病才能下診斷</td></tr>
+          <tr><td>雙束支阻滯</td><td>RBBB ＋ LAFB（最常見）或 RBBB ＋ LPFB；只剩一條分支在傳導</td></tr>
+          <tr><td>三束支阻滯</td><td>雙束支阻滯 ＋ 第一度房室阻滯（嚴格說是「傳導延遲」而非真三束支）；合併暈厥時進展為完全阻滯的風險高</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>傳導系統退化（老化，最常見）</li>
+          <li>高血壓性心臟病、主動脈瓣疾病</li>
+          <li>缺血性心臟病、前壁心梗</li>
+          <li>心肌病變、浸潤性疾病</li>
+          <li>高血鉀（可致暫時性）</li>
+          <li>先天性心臟病矯正手術後</li>
+        </ul>
+        <span class="sys-caveat">※ LAFB 會讓 V1–V3 出現細小 q 波而<b>假裝成前間隔梗塞</b>；反過來，LAFB 也會<b>掩蓋</b>下壁梗塞的 Q 波。與舊片比較是唯一可靠的辦法。</span>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/19281930/" target="_blank" rel="noopener" class="ref-link">Surawicz B, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part III: intraventricular conduction disturbances. J Am Coll Cardiol. 2009;53(11):976-981.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/8559200/" target="_blank" rel="noopener" class="ref-link">Sgarbossa EB, et al. Electrocardiographic diagnosis of evolving acute myocardial infarction in the presence of left bundle-branch block. N Engl J Med. 1996;334(8):481-487.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22939607/" target="_blank" rel="noopener" class="ref-link">Smith SW, et al. Diagnosis of STEMI in the presence of LBBB with the ST-elevation to S-wave ratio in a modified Sgarbossa rule. Ann Emerg Med. 2012;60(6):766-776.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・腔室肥大 ================= -->
+  <div class="view" id="view-ekgcham">
+    <div class="view-head"><div class="vh-t">心電圖判讀・心房與心室肥大</div><div class="vh-s">Chamber Enlargement &amp; Hypertrophy</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-rae">
+      <span class="sys-name">右心房肥大</span>
+      <span class="sys-en">Right Atrial Enlargement (P pulmonale)</span>
+      <span class="sys-src">P 高但不寬</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="rae-ii" data-dur="2500"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="rae-v1" data-dur="2500"></div></div></div>
+        </div>
+        <div class="ekg-cap">II 的 P 高聳而尖（3 mm）但<b>寬度正常</b>；V1 的 P 起始正向成分明顯</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">右心房先去極化，所以肥大時 P 波<b>變高不變寬</b>（「高山」）；左心房後去極化，肥大時<b>變寬變雙峰</b>（「駱駝」）。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>II／III／aVF</td><td>P 波高度 <b>≥2.5 mm（0.25 mV）</b>、尖峰狀，<b>寬度仍 &lt;120 ms</b></td></tr>
+          <tr><td>V1／V2</td><td>P 波<b>起始正向</b>成分 ≥1.5 mm</td></tr>
+          <tr><td>常伴隨</td><td>右軸偏、RVH 型態、順時鐘轉位、低電壓（肺氣腫）</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>慢性肺病與肺心症（COPD 最常見）</li>
+          <li>肺動脈高壓、慢性肺栓塞</li>
+          <li>三尖瓣狹窄或逆流</li>
+          <li>肺動脈瓣狹窄、法洛四重症</li>
+          <li>心房中隔缺損、Ebstein 畸形</li>
+          <li>急性肺栓塞（暫時性）</li>
+        </ul>
+        <span class="sys-caveat">※ 心電圖對心房「肥大」的診斷力有限，嚴格說量到的是<b>心房去極化異常</b>；確診靠心臟超音波。COPD 病人的 P 高聳也可能只是橫膈下移造成的電軸改變（P pulmonale 的「假象」）。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-lae">
+      <span class="sys-name">左心房肥大</span>
+      <span class="sys-en">Left Atrial Enlargement (P mitrale)</span>
+      <span class="sys-src">P 寬且雙峰</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="lae-ii" data-dur="2500"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="lae-v1" data-dur="2500"></div></div></div>
+        </div>
+        <div class="ekg-cap">II 的 P 寬達 150 ms 且呈<b>雙峰</b>（兩峰間距 &gt;40 ms）；V1 的 P <b>終末負向</b>成分又深又寬</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">P 波<b>變寬（≥120 ms）並出現兩個駝峰</b>，V1 的 P 尾巴往下掉得又深又久。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>II</td><td>P 波寬度 <b>≥120 ms</b>，呈雙峰（notched），<b>兩峰間距 &gt;40 ms</b></td></tr>
+          <tr><td>V1（Morris index）</td><td>P 波<b>終末負向</b>成分 <b>深 ≥1 mm 且寬 ≥40 ms</b>（面積 ≥1 mm·s）</td></tr>
+          <tr><td>臨床意義</td><td>是<b>心房顫動</b>與中風的獨立危險因子；在心衰竭病人代表左心房壓力長期升高</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li><b>二尖瓣狹窄</b>（P mitrale 名稱的由來）與二尖瓣逆流</li>
+          <li>高血壓性心臟病、左心室肥厚</li>
+          <li>主動脈瓣疾病</li>
+          <li>HFpEF、任何左心室舒張功能障礙</li>
+          <li>肥厚性心肌病</li>
+          <li>心房顫動的基質（常先於 AF 出現）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-rvh">
+      <span class="sys-name">右心室肥大</span>
+      <span class="sys-en">Right Ventricular Hypertrophy (RVH)</span>
+      <span class="sys-src">AHA Part V</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="rvh-v1" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V6</span><div class="ekg-strip" data-ekg="rvh-v6" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">V1 出現<b>高 R 波、R/S &gt;1</b> 並帶 ST 壓低與 T 倒置（strain）；V6 則為深 S 波</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">正常 V1 是「小 r、深 S」；<b>V1 變成以 R 為主</b>就是最強的線索（先排除後壁梗塞、RBBB、WPW A 型與正常年輕人）。</div>
+        <div class="sys-sub">判讀要點（AHA/ACCF/HRS Part V）</div>
+        <table class="def-table">
+          <tr><td>V1 電壓</td><td><b>R/S &gt;1 且 R &gt;0.5 mV</b>；或 R &gt;0.7 mV（7 mm）</td></tr>
+          <tr><td>電軸</td><td>右軸偏 <b>&gt;+100°</b></td></tr>
+          <tr><td>V5／V6</td><td>S 波加深（&gt;0.7 mV），R/S &lt;1</td></tr>
+          <tr><td>strain 型態</td><td>V1–V3 ST 壓低＋<b>不對稱</b> T 倒置——與右心室壓力負荷相關</td></tr>
+          <tr><td>常伴隨</td><td>右心房肥大（P pulmonale）、完全或不完全 RBBB、S₁S₂S₃ 型態</td></tr>
+          <tr><td>診斷效能</td><td>敏感度低（多數 RVH 的心電圖是正常的），特異度尚可；確診仍靠<b>心臟超音波</b></td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>肺動脈高壓（各類）</li>
+          <li>慢性阻塞性肺病、慢性肺栓塞</li>
+          <li>肺動脈瓣狹窄</li>
+          <li>二尖瓣狹窄</li>
+          <li>先天性心臟病：ASD、VSD、法洛四重症</li>
+          <li>阻塞性睡眠呼吸中止</li>
+        </ul>
+        <span class="sys-caveat">※ V1 高 R 波的鑑別：<b>後壁心肌梗塞</b>（合併 V1–V3 ST 壓低與直立 T）、<b>RBBB</b>（R′ 在寬 QRS 中）、<b>WPW A 型</b>（短 PR＋delta）、<b>肥厚性心肌病</b>、瘦高年輕人與導極位置放太高。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-lvh">
+      <span class="sys-name">左心室肥厚</span>
+      <span class="sys-en">Left Ventricular Hypertrophy (LVH)</span>
+      <span class="sys-src">AHA Part V</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="lvh-v1" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V5</span><div class="ekg-strip" data-ekg="lvh-v5" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">V1 深 S（17.5 mm）＋ V5 高 R（21.5 mm）＝ Sokolow-Lyon 39 mm ｜ V5 另有<b>不對稱、下斜型</b>的 ST 壓低與 T 倒置（strain）與寬雙峰 P（左心房肥大）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">先看<b>電壓</b>（V1 的深 S ＋ V5/V6 的高 R），再看有沒有<b>strain</b>（下斜型 ST 壓低＋不對稱 T 倒置）。有 strain 者預後較差。</div>
+        <div class="sys-sub">常用電壓準則</div>
+        <table class="def-table">
+          <tr><th style="width:30%;">準則</th><th>門檻</th></tr>
+          <tr><td>Sokolow-Lyon</td><td><b>S(V1) ＋ R(V5 或 V6) ≥35 mm</b>（3.5 mV）；或 R(aVL) ≥11 mm</td></tr>
+          <tr><td>Cornell 電壓</td><td><b>R(aVL) ＋ S(V3)</b>：男 &gt;28 mm、女 &gt;20 mm</td></tr>
+          <tr><td>Romhilt-Estes 計分</td><td>綜合電壓、strain、左心房肥大、電軸、QRS 寬度與 R 峰時間；<b>≥5 分為確定、4 分為可能</b></td></tr>
+          <tr><td>strain 型態</td><td>I、aVL、V5、V6 之 <b>下斜型 ST 壓低 ＋ 不對稱倒 T</b>（下降支較陡、上升支較緩）</td></tr>
+          <tr><td>其他支持</td><td>左心房肥大、左軸偏、R 峰時間 V5／V6 &gt;50 ms、胸前導程 R 波遞增不良</td></tr>
+        </table>
+        <div class="sys-sub">解讀時的限制</div>
+        <div class="dot-line">・<b>敏感度低（約 20–50%）、特異度高</b>：心電圖沒有 LVH <b>不能</b>排除；確診靠心臟超音波。</div>
+        <div class="dot-line">・電壓受<b>體型</b>影響很大：瘦、年輕、男性、非洲裔容易假陽性；肥胖、肺氣腫、心包積液容易假陰性。</div>
+        <div class="dot-line">・<b>strain 型態容易與缺血混淆</b>——LVH 的 T 倒置多為不對稱且出現在高電壓的導程；急性缺血的倒 T 較對稱、範圍與冠脈分佈相符，且會動態變化。</div>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>高血壓（最常見）</li>
+          <li>主動脈瓣狹窄或逆流</li>
+          <li>肥厚性心肌病</li>
+          <li>主動脈窄縮</li>
+          <li>慢性腎病、末期腎病</li>
+          <li>運動員心臟（生理性）</li>
+          <li>浸潤性疾病（澱粉樣：<b>電壓反而低</b>，卻有心室壁增厚——電壓與影像不符時要想到它）</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/19281932/" target="_blank" rel="noopener" class="ref-link">Hancock EW, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part V: electrocardiogram changes associated with cardiac chamber hypertrophy. J Am Coll Cardiol. 2009;53(11):992-1002.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・節律器 ================= -->
+  <div class="view" id="view-ekgpace">
+    <div class="view-head"><div class="vh-t">心電圖判讀・節律器心律</div><div class="vh-s">Paced Rhythms</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-pace-basic">
+      <span class="sys-name">起搏訊號與奪獲</span>
+      <span class="sys-en">Pacing Spikes &amp; Capture</span>
+      <span class="sys-src">先看訊號在哪</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi three">
+          <div><div class="ekg-wrap"><span class="ekg-lead">心房起搏 AAI</span><div class="ekg-strip" data-ekg="aai" data-dur="2100"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">心室起搏 VVI</span><div class="ekg-strip" data-ekg="vvi" data-dur="2100"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">雙腔 DDD</span><div class="ekg-strip" data-ekg="ddd" data-dur="2100"></div></div></div>
+        </div>
+        <div class="ekg-cap">① 訊號→P→<b>窄</b> QRS（心房起搏，心室是自己傳下來的）｜ ② 訊號→<b>寬</b> QRS（心室起搏；P 波與它無關）｜ ③ <b>兩個</b>訊號：心房訊號→P、間隔一段 AV delay 後心室訊號→寬 QRS</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">判讀節律器心電圖只有三個問題：<b>訊號在哪裡？（心房前 or 心室前）</b>、<b>訊號後面有沒有跟出東西？（奪獲）</b>、<b>該有訊號的時候有沒有？（感知）</b></div>
+        <div class="sys-sub">正常起搏型態</div>
+        <table class="def-table">
+          <tr><th style="width:22%;">位置</th><th>心電圖</th></tr>
+          <tr><td>心房起搏</td><td>訊號緊接一個 P 波，QRS 為病人自己的（<b>窄</b>，除非另有束支阻滯）</td></tr>
+          <tr><td>心室起搏（右心室心尖）</td><td>訊號緊接<b>寬 QRS</b>，型態為 <b>LBBB 樣＋左軸偏</b>；ST-T 與主波反向（合宜的反向）</td></tr>
+          <tr><td>右心室流出道起搏</td><td>LBBB 樣但電軸<b>朝下</b>（II／III／aVF 主波向上）</td></tr>
+          <tr><td>雙心室起搏（CRT）</td><td>QRS 較窄，V1 常出現<b>主波向上（RBBB 樣）</b>、I／aVL 主波向下；判斷 CRT 有沒有在做事，就看 V1 是不是變成以 R 為主</td></tr>
+          <tr><td>融合與偽融合</td><td><b>融合波</b>＝自身心搏與起搏同時去極化，型態介於兩者之間；<b>偽融合</b>＝訊號落在自身 QRS 上但沒有貢獻。<b>兩者都是正常現象</b>，不要當成故障</td></tr>
+        </table>
+        <div class="sys-sub">模式代碼（NBG）</div>
+        <table class="def-table">
+          <tr><td>第 1 位</td><td>起搏的腔室：A 心房、V 心室、D 雙腔、O 無</td></tr>
+          <tr><td>第 2 位</td><td>感知的腔室：A、V、D、O</td></tr>
+          <tr><td>第 3 位</td><td>感知後的反應：<b>I</b> 抑制、<b>T</b> 觸發、<b>D</b> 兩者皆有</td></tr>
+          <tr><td>第 4 位</td><td><b>R</b> ＝速率調節（rate modulation）</td></tr>
+          <tr class="dt-warn"><td>常見組合</td><td><b>VVI</b>（心室起搏、心室感知、感知到就抑制——多用於慢速心房顫動）、<b>DDD</b>（雙腔全功能）、<b>AAI</b>（僅心房，需房室傳導完好）、<b>VOO／DOO</b>（非同步、不感知——<b>磁鐵置於裝置上時的模式</b>）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-pace-fail">
+      <span class="sys-name">節律器故障</span>
+      <span class="sys-en">Pacemaker Malfunction</span>
+      <span class="sys-src">奪獲／感知／輸出</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">未奪獲</span><div class="ekg-strip" data-ekg="pacefail" data-dur="5000"></div></div>
+        <div class="ekg-cap">第 3 與第 5 個起搏訊號後面<b>沒有任何 QRS</b>——訊號有出來、心肌沒有被帶動，即<b>失去奪獲</b>（failure to capture）</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-sub">三類故障怎麼分</div>
+        <table class="def-table">
+          <tr><th style="width:24%;">型態</th><th>心電圖與常見原因</th></tr>
+          <tr><td>失去奪獲<br>Failure to capture</td><td><b>有訊號、沒有隨之而來的 P 或 QRS</b>。原因：導線移位或斷裂、電池耗竭、閾值上升（<b>高血鉀、酸中毒、抗心律不整藥、心肌梗塞或纖維化</b>）、輸出設定太低</td></tr>
+          <tr><td>失去輸出<br>Failure to output</td><td><b>該有訊號的時候完全沒有訊號</b>（出現長停頓）。原因：導線斷裂、接頭鬆脫、電池耗竭、<b>過度感知</b>（把肌電或雜訊當成心搏而抑制輸出）</td></tr>
+          <tr><td>感知不足<br>Undersensing</td><td>看不到自身心搏，於是<b>在不該起搏的時候放訊號</b>（訊號落在自身 QRS 或 T 波上）。原因：導線移位、訊號振幅太小、感知靈敏度設太鈍。危險在於<b>訊號落在 T 波上可能誘發 VT／VF</b></td></tr>
+          <tr><td>過度感知<br>Oversensing</td><td>把 T 波、肌電位或電磁干擾當成心搏 → <b>不當抑制</b> → 心搏過緩或停頓</td></tr>
+        </table>
+        <div class="sys-sub">臨床上一定要記得的幾件事</div>
+        <div class="dot-line">・<b>節律器心律的 QRS 是寬的（LBBB 樣），會蓋掉一般的 ST 判讀</b>——懷疑急性梗塞時用 <b>Sgarbossa／Smith 修正準則</b>，與 LBBB 同一套。</div>
+        <div class="dot-line">・<b>磁鐵</b>放在節律器上 → 轉為<b>非同步</b>（VOO／DOO）；放在<b>ICD</b> 上 → <b>只關掉抗心搏過速治療與電擊</b>，不會讓它變成非同步起搏。兩者作用不同，勿混。</div>
+        <div class="dot-line">・電燒（單極電刀）可造成過度感知與抑制：術前依裝置與依賴程度決定是否重設或用磁鐵，並備<b>經皮起搏貼片</b>。</div>
+        <div class="dot-line">・<b>節律器誘發性心搏過速（PMT）</b>：雙腔節律器把逆行 P 感知後再觸發心室起搏，形成環路頻脈，速率頂到上限追蹤速率；磁鐵可終止。</div>
+        <div class="sys-sub">致病／誘發原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>導線移位（多在植入後數週內）、導線斷裂</li>
+          <li>電池耗竭（追蹤時的磁鐵速率下降是線索）</li>
+          <li><b>高血鉀</b>、嚴重酸中毒（閾值上升）</li>
+          <li>抗心律不整藥（class Ic、amiodarone）</li>
+          <li>植入處心肌梗塞或纖維化</li>
+          <li>電磁干擾：電燒、MRI、強磁場</li>
+          <li>Twiddler 症候群（病人反覆轉動裝置致導線捲繞）</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/30586772/" target="_blank" rel="noopener" class="ref-link">Kusumoto FM, et al. 2018 ACC/AHA/HRS Guideline on the Evaluation and Management of Patients With Bradycardia and Cardiac Conduction Delay. Circulation. 2019;140(8):e382-e482.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/22939607/" target="_blank" rel="noopener" class="ref-link">Smith SW, et al. Diagnosis of STEMI in the presence of LBBB with the ST-elevation to S-wave ratio in a modified Sgarbossa rule. Ann Emerg Med. 2012;60(6):766-776.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・缺血／梗塞 ================= -->
+  <div class="view" id="view-ekgisch">
+    <div class="view-head"><div class="vh-t">心電圖判讀・缺血與梗塞</div><div class="vh-s">Ischaemia &amp; Infarction</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-stemi">
+      <span class="sys-name">ST 段抬高型心肌梗塞</span>
+      <span class="sys-en">STEMI</span>
+      <span class="sys-src">第四版通用定義</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi three">
+          <div><div class="ekg-wrap"><span class="ekg-lead">① 超急性期</span><div class="ekg-strip" data-ekg="stemi-hyper" data-dur="2000"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">② ST 抬高</span><div class="ekg-strip" data-ekg="stemi-elev" data-dur="2000"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">③ Q 波／T 倒置</span><div class="ekg-strip" data-ekg="stemi-evol" data-dur="2000"></div></div></div>
+        </div>
+        <div class="ekg-cap">同一導程的三個階段：① 寬底、高聳、對稱的超急性 T 波（最早、最容易被忽略）→ ② 凸面向上的 ST 抬高、與 T 融成單一墓碑 → ③ 病理性 Q 波形成、ST 回落、T 波倒置</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">在<b>兩個解剖相鄰導程</b>量 <b>J 點</b>相對於 <b>PR 段基線</b>的抬高幅度，達下表門檻即成立。</div>
+        <div class="sys-sub">J 點抬高門檻（第四版心肌梗塞通用定義）</div>
+        <table class="def-table">
+          <tr><th style="width:34%;">導程</th><th>門檻</th></tr>
+          <tr><td>V2–V3・男 &lt;40 歲</td><td>≥2.5 mm</td></tr>
+          <tr><td>V2–V3・男 ≥40 歲</td><td>≥2.0 mm</td></tr>
+          <tr><td>V2–V3・女（不分年齡）</td><td>≥1.5 mm</td></tr>
+          <tr><td>其餘所有導程</td><td>≥1.0 mm</td></tr>
+          <tr><td>後壁 V7–V9</td><td>≥0.5 mm（男 &lt;40 歲 ≥1.0 mm）</td></tr>
+          <tr><td>右心室 V3R–V4R</td><td>≥0.5 mm（男 &lt;30 歲 ≥1.0 mm）</td></tr>
+        </table>
+        <div class="sys-sub">定位與延伸導程</div>
+        <table class="def-table">
+          <tr><td>下壁</td><td>II、III、aVF（右冠或迴旋支）→ <b>務必加做 V3R–V4R</b> 找右心室梗塞（低血壓、頸靜脈怒張、清澈肺野；<b>忌硝酸鹽與利尿</b>）</td></tr>
+          <tr><td>前壁／間隔</td><td>V1–V4（左前降支）；V1–V6＋I／aVL 為廣泛前壁（近端 LAD）</td></tr>
+          <tr><td>側壁</td><td>I、aVL、V5、V6</td></tr>
+          <tr><td>後壁</td><td><b>V1–V3 ST 壓低＋高 R 波＋直立 T</b>（「鏡像」）→ 加做 V7–V9 才看得到抬高</td></tr>
+          <tr><td>左主幹／三血管</td><td><b>aVR ST 抬高</b>＋廣泛（≥6 導程）ST 壓低</td></tr>
+        </table>
+        <div class="sys-sub">對側變化與鑑別</div>
+        <div class="ekg-fig" style="margin-top:6px;">
+          <div class="ekg-multi">
+            <div><div class="ekg-wrap"><span class="ekg-lead">III（下壁）</span><div class="ekg-strip" data-ekg="stemi-elev" data-dur="2000"></div></div></div>
+            <div><div class="ekg-wrap"><span class="ekg-lead">aVL（對側）</span><div class="ekg-strip" data-ekg="stemi-recip" data-dur="2000"></div></div></div>
+          </div>
+          <div class="ekg-cap">下壁抬高時，aVL 出現鏡像的 ST 壓低——<b>有對側變化</b>強烈支持真的是阻塞，而非早期再極化或心包炎</div>
+        </div>
+        <table class="def-table">
+          <tr><th style="width:26%;">會冒充 STEMI 的</th><th>怎麼分</th></tr>
+          <tr><td>早期再極化</td><td>年輕、凹面向上、J 點有切跡、廣泛且<b>無對側壓低</b>、隨時間不變</td></tr>
+          <tr><td>急性心包炎</td><td>廣泛凹面抬高＋<b>PR 段壓低</b>（aVR 則 PR 抬高）、無對側壓低、無 Q 波</td></tr>
+          <tr><td>左心室肥厚／LBBB</td><td>抬高出現在深 S 的導程且與 QRS 反向；用 <b>Sgarbossa／Smith 比例</b>判定</td></tr>
+          <tr><td>Brugada</td><td>V1–V2 coved 型抬高＋RBBB 樣</td></tr>
+          <tr><td>高鉀</td><td>帳篷狀 T、P 消失、QRS 增寬</td></tr>
+          <tr><td>Takotsubo</td><td>心尖球型；<b>aVR 的 T 直立且 V1 無 T 倒置</b>時較偏它（Kosuge）</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>斑塊破裂／糜爛併血栓（第一型，最常見）</li>
+          <li>供需失衡（第二型；多不呈 ST 抬高）</li>
+          <li>冠狀動脈痙攣（Prinzmetal、古柯鹼）</li>
+          <li>自發性冠狀動脈剝離（SCAD，年輕女性、產後）</li>
+          <li>冠狀動脈栓塞（心內膜炎、AF、人工瓣膜）</li>
+          <li>支架血栓、術後、剝離主動脈侵犯冠脈開口</li>
+        </ul>
+        <div class="ekg-note-link"><a class="tool-link" href="acs.html">→ 再灌流時機、抗栓藥物與劑量：急性冠心症</a></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-dewinter">
+      <span class="sys-name">de Winter 型態</span>
+      <span class="sys-en">de Winter T-wave Pattern</span>
+      <span class="sys-src">STEMI 等效</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V3</span><div class="ekg-strip" data-ekg="dewinter" data-dur="2400"></div></div>
+        <div class="ekg-cap">J 點<b>壓低</b>約 2 mm、ST 段<b>上斜</b>，直接接到<b>高聳而對稱的 T 波</b>——ST 從頭到尾沒有抬高</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>ST 壓低配上高聳 T 波</b>而不是抬高，卻代表<b>前降支近端完全阻塞</b>。約占 LAD 阻塞的 2%，且<b>型態常持續不變、不會自己演變成 ST 抬高</b>。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>核心</td><td>V1–V6 <b>J 點壓低 ≥1 mm 且 ST 上斜</b>，接續<b>高、寬底、對稱</b>的 T 波</td></tr>
+          <tr><td>常伴隨</td><td>aVR 輕度 ST 抬高（0.5–1 mm）；胸前導程 R 波遞增不良</td></tr>
+          <tr><td>為什麼重要</td><td>不符合 STEMI 的門檻，<b>但屬 STEMI 等效型</b>——處置應比照 STEMI 啟動再灌流，不要當成 NSTEMI 慢慢等</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-wellens">
+      <span class="sys-name">Wellens 症候群</span>
+      <span class="sys-en">Wellens Syndrome</span>
+      <span class="sys-src">不痛時的警訊</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">A 型（雙相 T）</span><div class="ekg-strip" data-ekg="wellensa" data-dur="2400"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">B 型（深倒 T）</span><div class="ekg-strip" data-ekg="wellensb" data-dur="2400"></div></div></div>
+        </div>
+        <div class="ekg-cap">V2–V3：A 型 T 波先正後負（雙相，約占 25%）｜ B 型深而<b>對稱</b>的倒置 T（約占 75%）；兩者的 R 波都還在、沒有 Q 波、ST 幾乎在基線</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">出現在<b>胸痛已經緩解</b>的時候（所以最容易被當成「已經好了」而漏掉），代表<b>前降支近端次全阻塞</b>——隨時可能變成大面積前壁梗塞。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>成立條件</td><td>① V2–V3（可延伸至 V1–V4）之特徵性 T 波變化；② <b>症狀緩解時</b>記錄到；③ <b>R 波仍保留、無病理性 Q 波</b>；④ ST 段無抬高或僅極輕微（&lt;1 mm）；⑤ troponin 正常或僅輕度升高</td></tr>
+          <tr><td>兩型</td><td><b>A 型</b>：T 波雙相（先正後負）｜ <b>B 型</b>：深而對稱的倒置 T。A 型常先出現，之後演變為 B 型</td></tr>
+          <tr><td>胸痛再發時</td><td>T 波變化可<b>暫時「假性正常化」</b>——這時的心電圖看起來反而正常，是最危險的陷阱</td></tr>
+        </table>
+        <span class="ekg-flag">⚑ <b>不可做運動壓力測試</b>：這是近端 LAD 的臨界病灶，運動可能直接誘發大面積梗塞或心跳停止。應安排<b>冠狀動脈攝影</b>。</span>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/30165617/" target="_blank" rel="noopener" class="ref-link">Thygesen K, et al. Fourth universal definition of myocardial infarction (2018). Eur Heart J. 2019;40(3):237-269.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19281933/" target="_blank" rel="noopener" class="ref-link">Wagner GS, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part VI: acute ischemia/infarction. J Am Coll Cardiol. 2009;53(11):1003-1011.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24062927/" target="_blank" rel="noopener" class="ref-link">Kosuge M, et al. Differences in negative T waves among acute coronary syndrome, acute pulmonary embolism, and Takotsubo cardiomyopathy. Eur Heart J Acute Cardiovasc Care. 2012;1(4):349-357.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・全身因素 ================= -->
+  <div class="view" id="view-ekgsys">
+    <div class="view-head"><div class="vh-t">心電圖判讀・全身性因素</div><div class="vh-s">Systemic Causes of ECG Change</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-rvstrain">
+      <span class="sys-name">右心室負荷型態</span>
+      <span class="sys-en">RV Strain / Acute Cor Pulmonale</span>
+      <span class="sys-src">ESC 2019 PE</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi three">
+          <div><div class="ekg-wrap"><span class="ekg-lead">I</span><div class="ekg-strip" data-ekg="rvs-i" data-dur="1700"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">III</span><div class="ekg-strip" data-ekg="rvs-iii" data-dur="1700"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="rvs-v1" data-dur="1700"></div></div></div>
+        </div>
+        <div class="ekg-cap">竇性心搏過速（110 bpm）＋ <b>S₁Q₃T₃</b>（I 有 S、III 有 Q 與倒 T）＋ V1–V4 T 波倒置與高聳 P（P pulmonale）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">急性肺栓塞最常見的心電圖是<b>竇性心搏過速</b>；<b>心電圖正常也不能排除 PE</b>。這些型態的價值在於<b>提示右心室在承受壓力</b>（與較差預後相關），而不是拿來診斷。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>右胸導程 T 倒置</td><td>V1–V4 對稱倒 T——<b>急性 PE 最常見的右心室負荷表現</b></td></tr>
+          <tr><td>S₁Q₃T₃</td><td>僅約 <b>兩成</b>病人出現，特異度也不高；<b>沒有它完全不能排除 PE</b></td></tr>
+          <tr><td>其他</td><td>新發完全／不完全 RBBB、右軸偏、順時鐘轉位（胸前 R 波遞增延遲）、P pulmonale（II 的 P ≥2.5 mm）、心房顫動</td></tr>
+          <tr><td>與 ACS 的區辨</td><td>Kosuge：<b>III 與 V1 同時出現倒 T</b> 指向 PE 而非前降支 ACS（敏感度約 90%、特異度約 97%）；ACS 的倒 T 通常更深、導程更多且 V1 常無倒 T</td></tr>
+          <tr><td>慢性 RVH（AHA Part V）</td><td>V1 的 R/S &gt;1 且 R &gt;0.5 mV、電軸 &gt;+100°、V1 R &gt;0.7 mV、V5／V6 S 加深</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>急性肺栓塞</li>
+          <li>COPD 急性惡化、氣喘重積</li>
+          <li>肺動脈高壓（各類）</li>
+          <li>ARDS、大範圍肺炎</li>
+          <li>右心室梗塞（下壁 STEMI 延伸）</li>
+          <li>張力性氣胸、心包填塞（阻塞性）</li>
+          <li>先天性心臟病、心房中隔缺損</li>
+          <li>睡眠呼吸中止、肥胖低通氣</li>
+        </ul>
+        <div class="ekg-note-link"><a class="tool-link" href="pe.html">→ 臨床機率、D-dimer、危險分層與再灌流：肺栓塞</a></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-ich">
+      <span class="sys-name">顱內出血的心電圖</span>
+      <span class="sys-en">Cerebral T Waves / Neurogenic ECG Changes</span>
+      <span class="sys-src">van Bree 2010</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V3</span><div class="ekg-strip" data-ekg="ich" data-h="34" data-base="14"></div></div>
+        <div class="ekg-cap">巨大、深、寬且對稱的倒 T 波（cerebral T waves）＋ 明顯延長的 QT ＋ 突出的 U 波；心率偏慢</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">腦部急症會透過<b>交感神經風暴</b>把心電圖改得像急性冠心症——但冠狀動脈是通的。<b>看到這種圖，先問「這個病人的頭有沒有事」</b>。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>特徵波形</td><td><b>又深又寬又對稱</b>的倒 T（可達 10 mm 以上），常見於前胸導程；ST 可抬可壓，完全模仿 ACS</td></tr>
+          <tr><td>QT</td><td>顯著延長，並常伴突出 U 波 → <b>尖端扭轉風險</b></td></tr>
+          <tr><td>心律</td><td>竇性心搏過緩或過速、房性與室性心律不整；Cushing 反應時為<b>高血壓＋心搏過緩</b></td></tr>
+          <tr><td>實際頻率（ICH，n=31）</td><td>81% 至少一項異常：<b>QTc 延長 36%</b>、ST-T 變化 23%、竇性心搏過緩 16%、T 倒置 16%。QTc 延長與<b>腦島受累、腦室內出血與水腦</b>相關</td></tr>
+          <tr><td>預後（SAH 統合分析）</td><td>ST 段壓低、T 波異常、Q 波與 troponin／BNP 上升，皆與<b>死亡、不良預後與延遲性腦缺血</b>相關</td></tr>
+          <tr><td>病生理</td><td>兒茶酚胺激增 → 神經源性心肌頓抑／Takotsubo 型心肌病變；troponin 可上升，<b>但不是冠狀動脈阻塞</b></td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>蛛網膜下腔出血（最典型、變化最劇）</li>
+          <li>腦出血（尤其影響腦島皮質者）</li>
+          <li>大範圍缺血性中風</li>
+          <li>頭部外傷、腦水腫、腦疝</li>
+          <li>癲癇重積</li>
+          <li>細菌性腦膜炎、腦炎</li>
+        </ul>
+        <span class="ekg-flag">⚑ 這是<b>最危險的誤判之一</b>：把神經源性心電圖變化當成 ACS 而給抗血小板、抗凝或溶栓，對出血性中風是災難。<b>突發劇烈頭痛、意識改變或局灶神經學表現＋心電圖像 ACS</b> → 先做腦部影像。</span>
+        <div class="ekg-note-link"><a class="tool-link" href="../pathways/ich.html">→ 顱內出血處置流程</a></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-lyte">
+      <span class="sys-name">電解質異常</span>
+      <span class="sys-en">Electrolyte Abnormalities</span>
+      <span class="sys-src">Diercks 2004</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi three">
+          <div><div class="ekg-wrap"><span class="ekg-lead">高鉀・早期</span><div class="ekg-strip" data-ekg="hyperk1" data-dur="1700"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">高鉀・QRS 增寬</span><div class="ekg-strip" data-ekg="hyperk2" data-dur="1700"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">高鉀・正弦波</span><div class="ekg-strip" data-ekg="hyperk3" data-dur="1700"></div></div></div>
+        </div>
+        <div class="ekg-cap">高鉀的三個階段：帳篷狀 T（窄底、高聳、對稱）→ P 波變平消失、PR 延長、QRS 增寬 → QRS 與 T 融合成正弦波（瀕臨心跳停止）</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-sub">高血鉀 Hyperkalemia</div>
+        <table class="def-table">
+          <tr><th style="width:24%;">大致血鉀</th><th>心電圖</th></tr>
+          <tr><td>5.5–6.5</td><td><b>帳篷狀 T 波</b>：高、窄底、對稱、尖（V2–V4 最明顯）——與超急性 T 波的<b>寬底</b>不同</td></tr>
+          <tr><td>6.5–7.5</td><td>P 波變平變寬、PR 延長，最終 <b>P 波消失</b>（竇室傳導）</td></tr>
+          <tr><td>7.0–8.0</td><td>QRS 進行性增寬、束支阻滯樣、電軸偏移；可有 Brugada 樣型態</td></tr>
+          <tr class="dt-warn"><td>&gt;8.0</td><td>QRS 與 T 融合成<b>正弦波</b> → 心室顫動／心搏停止</td></tr>
+        </table>
+        <span class="ekg-flag">⚑ Montague 2008（n=90，K ≥6）：<b>心電圖對高血鉀既不敏感也不特異</b>，找不到可用的 T 波振幅切點。<b>不要用「心電圖還好」來決定不治療</b>——依血鉀數值、變化速率與臨床情境處置；反之，一旦出現 QRS 增寬就是<b>立刻給鈣</b>的指徵。</span>
+
+        <div class="sys-sub">低血鉀 Hypokalemia、鈣與鎂</div>
+        <div class="ekg-fig">
+          <div class="ekg-multi three">
+            <div><div class="ekg-wrap"><span class="ekg-lead">低鉀</span><div class="ekg-strip" data-ekg="hypok" data-dur="2000"></div></div></div>
+            <div><div class="ekg-wrap"><span class="ekg-lead">低鈣</span><div class="ekg-strip" data-ekg="hypoca" data-dur="2000"></div></div></div>
+            <div><div class="ekg-wrap"><span class="ekg-lead">高鈣</span><div class="ekg-strip" data-ekg="hyperca" data-dur="2000"></div></div></div>
+          </div>
+          <div class="ekg-cap">低鉀：T 波變平、<b>U 波突出</b>（U &gt; T）、ST 輕度壓低 ｜ 低鈣：<b>ST 段被拉長</b>而 T 波寬度與形狀正常 ｜ 高鈣：<b>ST 段幾乎消失</b>，T 波緊接在 QRS 之後（QT 縮短）</div>
+        </div>
+        <table class="def-table">
+          <tr><td>低鉀</td><td>T 波變平／倒置、<b>U 波突出</b>（V2–V3 最明顯）、ST 壓低、QU 延長（常被機器判讀成「QT 延長」）、房性與室性早期收縮，<b>TdP 風險</b>（常合併低鎂）</td></tr>
+          <tr><td>低鈣</td><td><b>QT 延長，但延長的是 ST 段</b>、T 波本身寬度正常；重度可致心搏過緩與心衰竭</td></tr>
+          <tr><td>高鈣</td><td><b>QT 縮短</b>（ST 段縮短甚至消失，T 幾乎接在 QRS 之後）；PR 可延長，極高時可見 Osborn 樣波</td></tr>
+          <tr><td>低鎂</td><td>常與低鉀低鈣並存；QT 延長、T 平、U 波；為 <b>TdP 的首選治療</b>（硫酸鎂）</td></tr>
+        </table>
+        <div class="ekg-note-link"><a class="tool-link" href="../pathways/electrolyte-emergency.html">→ 高低血鉀鈉鈣鎂的急性處置：電解質急症流程</a></div>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-qt">
+      <span class="sys-name">QT 間期延長</span>
+      <span class="sys-en">QT Prolongation</span>
+      <span class="sys-src">AHA Part IV</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-multi">
+          <div><div class="ekg-wrap"><span class="ekg-lead">正常 QT</span><div class="ekg-strip" data-ekg="qt-normal" data-dur="2000"></div></div></div>
+          <div><div class="ekg-wrap"><span class="ekg-lead">QT 延長</span><div class="ekg-strip" data-ekg="qt-long" data-dur="2000"></div></div></div>
+        </div>
+        <div class="ekg-cap">兩者心率同為 75 bpm（RR 800 ms）：左 QT 約 380 ms（QTc 425）；右 QT 約 540 ms（QTc 604）＋ T 波變寬、出現 U 波</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-sub">怎麼量 How to measure</div>
+        <table class="def-table">
+          <tr><td>起點與終點</td><td>QRS <b>起點</b> → T 波<b>結束</b>。終點取「T 波下降支最陡處的切線與基線交點」；<b>有 U 波時不要把 U 算進去</b>（否則量到的是 QU）</td></tr>
+          <tr><td>選哪個導程</td><td>用 T 波終點最清楚者（通常 <b>II、V5、V6</b>），取<b>最長</b>的那個；至少量 3 拍取平均</td></tr>
+          <tr><td>心率校正</td><td><b>Bazett</b> QTc＝QT/√RR 最通行，但<b>心率快時高估、慢時低估</b>；<b>Fridericia</b>（QT/RR^⅓）與 <b>Framingham</b> 校正表現較佳，且對死亡率的預測較準（Vandenberk 2016）</td></tr>
+          <tr><td>異常門檻</td><td>QTc <b>&gt;450 ms（男）／&gt;460 ms（女）</b>為延長；<b>&gt;500 ms</b> 為尖端扭轉高風險門檻</td></tr>
+          <tr><td>QRS 寬時</td><td>束支阻滯、心室節律或高鉀使 QRS 增寬時，QT 會被一起拉長 → 改看 <b>JT 間期</b>（QT − QRS）或使用校正公式</td></tr>
+          <tr><td>心房顫動時</td><td>RR 變異大，取 <b>8–10 拍平均</b>；心率極快或極慢時任何公式都不可盡信</td></tr>
+        </table>
+
+        <div class="sys-sub">QTc 計算器</div>
+        <div class="field-row"><label>QT 間期</label><input type="number" id="qt_qt" value="440" min="200" max="800" step="1"><span class="unit">ms</span></div>
+        <div class="field-row"><label>心率</label><input type="number" id="qt_hr" value="75" min="20" max="220" step="1"><span class="unit">bpm</span></div>
+        <div class="field-row"><label>性別</label>
+          <select id="qt_sex"><option value="m">男性</option><option value="f">女性</option></select>
+        </div>
+        <div class="note">RR 由心率換算（RR ＝ 60 ÷ HR 秒）。三種公式並列，因為它們在快慢心率下的偏差方向不同。</div>
+        <div class="result">
+          <div class="result-grid">
+            <div><div class="metric-label">Bazett QTc</div><div class="metric-value big" id="qt_baz">—</div></div>
+            <div><div class="metric-label">Fridericia</div><div class="metric-value" id="qt_fri">—</div></div>
+            <div><div class="metric-label">Framingham</div><div class="metric-value" id="qt_fra">—</div></div>
+          </div>
+          <div id="qt_band"></div>
+          <div class="result-interp" id="qt_interp"></div>
+          <div class="risk-note">依 Bazett 判定風險等級（臨床門檻多以此公式訂定）。心率 &lt;60 或 &gt;100 時，Bazett 與 Fridericia 的差距會放大，請兩者併看。</div>
+        </div>
+
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>藥物（最常見；見「心室」分頁的 TdP 藥物清單）</li>
+          <li>低鉀、低鎂、低鈣</li>
+          <li>心搏過緩、完全房室阻滯</li>
+          <li>顱內事件（SAH、ICH、中風）</li>
+          <li>心肌缺血、心肌炎、心衰竭</li>
+          <li>低體溫、甲狀腺低下</li>
+          <li>飢餓、極低熱量／液態蛋白飲食、神經性厭食</li>
+          <li>先天性長 QT 症候群（LQT1 運動／游泳、LQT2 聲音刺激、LQT3 睡眠中）</li>
+        </ul>
+        <span class="ekg-flag">⚑ 尖端扭轉的高風險輪廓（Drew 2010）：<b>QTc &gt;500 ms</b>、給藥後 <b>QTc 增加 &gt;60 ms</b>、女性、低鉀低鎂、心搏過緩或長停頓、剛從心房顫動整流回竇性、心衰竭、<b>同時使用多種延長 QT 藥物</b>、腎或肝功能不全（藥物蓄積）。住院病人具上述條件時應持續監測 QT。</span>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/31504429/" target="_blank" rel="noopener" class="ref-link">Konstantinides SV, et al. 2019 ESC Guidelines for the diagnosis and management of acute pulmonary embolism. Eur Heart J. 2020;41(4):543-603.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/24305633/" target="_blank" rel="noopener" class="ref-link">Kosuge M, et al. Differences in negative T waves between acute pulmonary embolism and acute coronary syndrome. Circ J. 2014;78(2):483-489.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19813104/" target="_blank" rel="noopener" class="ref-link">van Bree MDR, et al. Prevalence and characterization of ECG abnormalities after intracerebral hemorrhage. Neurocrit Care. 2010;12(1):50-55.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19221297/" target="_blank" rel="noopener" class="ref-link">van der Bilt IAC, et al. Impact of cardiac complications on outcome after aneurysmal subarachnoid hemorrhage: a meta-analysis. Neurology. 2009;72(7):635-642.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15261358/" target="_blank" rel="noopener" class="ref-link">Diercks DB, et al. Electrocardiographic manifestations: electrolyte abnormalities. J Emerg Med. 2004;27(2):153-160.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/18235147/" target="_blank" rel="noopener" class="ref-link">Montague BT, et al. Retrospective review of the frequency of ECG changes in hyperkalemia. Clin J Am Soc Nephrol. 2008;3(2):324-330.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/27317349/" target="_blank" rel="noopener" class="ref-link">Vandenberk B, et al. Which QT correction formulae to use for QT monitoring? J Am Heart Assoc. 2016;5(6):e003264.</a></footer>
+  </div>
+
+  <!-- ================= 心電圖・其他重要型態 ================= -->
+  <div class="view" id="view-ekgother">
+    <div class="view-head"><div class="vh-t">心電圖判讀・其他重要型態</div><div class="vh-s">Other Important Patterns</div></div>
+    <div class="ekg-cal">示意描跡（非真實病人心電圖）｜ 25 mm/s、10 mm/mV：小格 0.04 s × 0.1 mV，大格 0.2 s × 0.5 mV</div>
+
+    <div class="sys-head" id="sys-wpw">
+      <span class="sys-name">預激症候群</span>
+      <span class="sys-en">Wolff-Parkinson-White (WPW)</span>
+      <span class="sys-src">短 PR＋delta 波</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V4</span><div class="ekg-strip" data-ekg="wpw" data-dur="2400"></div></div>
+        <div class="ekg-cap">PR 僅 92 ms；QRS 起始為緩慢上升的 <b>delta 波</b>，使 QRS 總寬達 130 ms；ST-T 與主波反向</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>PR 很短 ＋ QRS 起始有一段「斜坡」</b>（delta 波）＋ QRS 因此變寬。旁路讓心室提早一部分被激動。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>三要素</td><td><b>PR &lt;120 ms</b>、<b>delta 波</b>（QRS 起始頓挫上升）、<b>QRS &gt;120 ms</b>；常伴續發性 ST-T 改變</td></tr>
+          <tr><td>分型</td><td><b>A 型</b>：V1 的 delta／主波<b>向上</b>（左側旁路）——易被誤認為 RBBB、右心室肥大或後壁梗塞<br><b>B 型</b>：V1 主波向下（右側旁路）——易被誤認為 LBBB</td></tr>
+          <tr><td>假 Q 波</td><td>負向 delta 波會在下壁或側壁導程做出<b>假性 Q 波</b>，被誤讀成陳舊性梗塞</td></tr>
+          <tr><td>症候群 vs 型態</td><td>只有心電圖型態叫「<b>WPW 型態</b>」；合併心搏過速發作才叫「<b>WPW 症候群</b>」</td></tr>
+        </table>
+        <div class="sys-sub">會怎麼發作</div>
+        <div class="dot-line">・<b>正向型 AVRT</b>（最常見）：衝動下走房室結、上走旁路 → <b>窄</b> QRS 規則頻脈，看起來就像 PSVT。</div>
+        <div class="dot-line">・<b>反向型 AVRT</b>：下走旁路 → <b>寬</b> QRS 頻脈，與 VT 難分。</div>
+        <div class="dot-line">・<b>預激性心房顫動</b>：不規則、寬窄不一、極快（可 &gt;250 bpm）→ 可退化為<b>心室顫動</b>。</div>
+        <span class="ekg-flag">⚑ 預激性心房顫動時，<b>房室結阻斷劑（adenosine、verapamil、diltiazem、digoxin、β 阻斷劑）屬禁忌</b>——阻斷房室結會把衝動全部趕上旁路。不穩定 → <b>同步電擊整流</b>；穩定 → procainamide 或 ibutilide。</span>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>先天性房室旁路（Kent 束），盛行率約 0.1–0.3%</li>
+          <li>多數心臟結構正常</li>
+          <li>可合併 Ebstein 畸形（常為右側旁路、多條）</li>
+          <li>肥厚性心肌病、部分家族性（PRKAG2 突變）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-brugada">
+      <span class="sys-name">Brugada 型態</span>
+      <span class="sys-en">Brugada Pattern (Type 1)</span>
+      <span class="sys-src">右胸導程</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V1</span><div class="ekg-strip" data-ekg="brugada" data-dur="2400"></div></div>
+        <div class="ekg-cap">V1 呈 rSR′ 樣，其後為<b>穹窿型（coved）</b>的 ST 抬高 ≥2 mm，並<b>下降接到倒置的 T 波</b>——全段沒有回到基線</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">V1–V2 的 ST 像<b>一道下滑的穹窿</b>（coved）直接接到倒 T。這是<b>猝死風險</b>的型態，不是缺血。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>第 1 型（唯一可診斷）</td><td>V1／V2 之 <b>coved 型 ST 抬高 ≥2 mm</b>，接續<b>倒置</b> T 波；可只出現在<b>高位</b>導程（第 2 或第 3 肋間）</td></tr>
+          <tr><td>第 2 型</td><td>馬鞍型（saddleback）ST 抬高，<b>不足以診斷</b>——需以藥物激發（ajmaline／flecainide／procainamide）轉為第 1 型才算</td></tr>
+          <tr><td>誘發與放大因子</td><td><b>發燒</b>（最重要且可逆）、鈉離子通道阻斷劑、三環抗鬱劑、古柯鹼、酒精、迷走張力高（夜間、餐後）、電解質異常</td></tr>
+          <tr><td>症候群</td><td>第 1 型型態 ＋ 心室顫動／多型性 VT、心因性猝死家族史、夜間瀕死呼吸或無法解釋的暈厥 → <b>Brugada 症候群</b></td></tr>
+          <tr><td>會被誤認為</td><td>RBBB（但 Brugada 的 I／V6 沒有寬 S）、右心室流出道異常、急性心包炎、<b>高血鉀</b>、鈉通道阻斷劑中毒、ARVC</td></tr>
+        </table>
+        <span class="ekg-flag">⚑ 加護病房裡看到新出現的 Brugada 樣型態，先找<b>可逆的擬態</b>：<b>發燒、高血鉀、鈉離子通道阻斷劑（含三環抗鬱劑中毒）</b>。這些矯正後型態多會消失。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-pericarditis">
+      <span class="sys-name">急性心包炎</span>
+      <span class="sys-en">Acute Pericarditis</span>
+      <span class="sys-src">廣泛抬高＋PR 壓低</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="pericarditis" data-dur="2400"></div></div>
+        <div class="ekg-cap">ST 段<b>凹面向上</b>輕度抬高（約 1.5 mm），且 <b>PR 段壓低</b>（P 波之後、QRS 之前那一小段掉到基線以下）</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">兩個關鍵：<b>抬高範圍不照冠脈分佈（廣泛且凹面向上）</b>、<b>PR 段壓低</b>。而且<b>沒有對側壓低</b>（aVR 例外）。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>ST</td><td>廣泛（I、II、aVL、aVF、V3–V6）<b>凹面向上</b>抬高；<b>aVR 與 V1 反而壓低</b></td></tr>
+          <tr><td>PR 段</td><td><b>壓低</b>（心房受累），aVR 的 PR 則<b>抬高</b>——這是與 STEMI 最有用的區別之一</td></tr>
+          <tr><td>沒有的東西</td><td><b>沒有</b>對側性 ST 壓低、<b>沒有</b>病理性 Q 波、<b>沒有</b>R 波振幅下降</td></tr>
+          <tr><td>四個階段</td><td>I 廣泛 ST 抬高＋PR 壓低 → II ST 回到基線、T 波變平 → III 廣泛 T 波倒置 → IV 恢復正常（可歷時數週）</td></tr>
+          <tr><td>與早期再極化的區分</td><td><b>V6 的 ST 抬高 ÷ T 波高度 &gt;0.25</b> 偏向心包炎（早期再極化多 &lt;0.25）</td></tr>
+          <tr><td>合併大量積液時</td><td><b>低電壓 ＋ 電交替 ＋ 竇性心搏過速</b> → 想到心包填塞</td></tr>
+        </table>
+        <div class="sys-sub">致病原因 Etiology</div>
+        <ul class="ekg-cause cols">
+          <li>病毒性／特發性（最常見）</li>
+          <li>心肌梗塞後（早期心外膜炎、晚期 Dressler 症候群）</li>
+          <li>心臟手術後、電燒或導管術後</li>
+          <li>尿毒症、透析不足</li>
+          <li>結締組織疾病（SLE、類風濕）</li>
+          <li>結核、化膿性、惡性腫瘤浸潤</li>
+          <li>放射線治療、藥物</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-earlyrepol">
+      <span class="sys-name">早期再極化</span>
+      <span class="sys-en">Early Repolarization</span>
+      <span class="sys-src">常見良性變異</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V4</span><div class="ekg-strip" data-ekg="earlyrepol" data-dur="2400"></div></div>
+        <div class="ekg-cap">J 點處有一個明顯的<b>切跡（notch）</b>並抬高約 1.5 mm，ST 段<b>凹面向上</b>，T 波高聳而不對稱</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">年輕、無症狀、<b>J 點有切跡或頓挫</b>、ST 凹面向上、<b>與舊片一模一樣不會變</b>——這四點就是良性變異的樣子。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>型態</td><td><b>J 點抬高並帶切跡或頓挫（slur）</b>，ST 段凹面向上，T 波高聳、通常不對稱</td></tr>
+          <tr><td>分佈</td><td>典型見於 V2–V5；也可出現在下壁導程（此型與較高的心律不整風險相關）</td></tr>
+          <tr><td>族群</td><td>年輕、男性、運動員、非洲裔常見；心率慢時明顯，<b>運動後反而消失</b></td></tr>
+          <tr><td>與 STEMI 的區分</td><td>沒有對側壓低、沒有動態變化、有 J 點切跡、ST/T 比值低；不確定時<b>連續心電圖與 troponin</b> 才是答案</td></tr>
+          <tr><td>名詞區分</td><td><b>早期再極化「型態」</b>是良性心電圖發現；<b>早期再極化「症候群」</b>是指該型態合併不明原因心室顫動或猝死存活——後者罕見</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-osborn">
+      <span class="sys-name">低體溫與 Osborn 波</span>
+      <span class="sys-en">Hypothermia / Osborn (J) Wave</span>
+      <span class="sys-src">J 點駝峰</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="osborn" data-dur="4500"></div></div>
+        <div class="ekg-cap">40 bpm ｜ QRS 結束處出現一個明顯的圓頂狀<b>駝峰（Osborn 波）</b>，各間期（PR、QRS、QT）都被拉長</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist">QRS 的<b>尾巴上多一個駝峰</b>（J 波），加上<b>全面性的心搏過緩與各間期延長</b>——先量核心體溫。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>Osborn 波</td><td>J 點處的正向圓頂偏折；<b>振幅隨體溫下降而變大</b>，在下壁與左側胸前導程最明顯</td></tr>
+          <tr><td>其他變化</td><td>竇性心搏過緩 → 心房顫動（常見於 &lt;32°C）→ 心室顫動（&lt;28°C）→ 心搏停止；PR／QRS／QT 全面延長；<b>肌顫抖造成的基線雜訊</b></td></tr>
+          <tr><td>處置注意</td><td>低體溫心臟極易被刺激而誘發 VF：<b>搬運要輕、避免不必要的中心靜脈導管操作</b>；體溫未回升前去顫與藥物常無效（多數建議 &lt;30°C 時電擊以一次為限、暫停給藥）</td></tr>
+          <tr><td>復溫前不宣告死亡</td><td>「<b>没有回溫就不算死</b>」——嚴重低體溫者應持續復甦並考慮體外復溫（ECMO）</td></tr>
+        </table>
+        <div class="sys-sub">Osborn 波的其他原因</div>
+        <ul class="ekg-cause cols">
+          <li>低體溫（最典型）</li>
+          <li>高血鈣</li>
+          <li>腦部損傷、蛛網膜下腔出血</li>
+          <li>Brugada 症候群</li>
+          <li>早期再極化（J 波家族）</li>
+          <li>嚴重高血鉀、藥物中毒</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-digoxin">
+      <span class="sys-name">毛地黃效應與中毒</span>
+      <span class="sys-en">Digoxin Effect &amp; Toxicity</span>
+      <span class="sys-src">效應≠中毒</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">V5</span><div class="ekg-strip" data-ekg="digoxin" data-dur="2400"></div></div>
+        <div class="ekg-cap">ST 段呈<b>杓狀（sagging）下凹壓低</b>——像被勾了一筆的「達利的鬍子」；T 波變平、QT 縮短、PR 略長</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>杓狀 ST 壓低 ＋ QT 縮短</b> ＝ 毛地黃<b>效應</b>，代表病人有在吃藥，<b>不代表中毒</b>。中毒看的是<b>心律不整的種類</b>。</div>
+        <div class="sys-sub">毛地黃效應（治療濃度即可出現）</div>
+        <table class="def-table">
+          <tr><td>ST-T</td><td><b>杓狀（scooped／sagging）ST 壓低</b>，多見於側壁導程；T 波變平或倒置</td></tr>
+          <tr><td>間期</td><td><b>QT 縮短</b>；PR 輕度延長（迷走作用）；U 波可變明顯</td></tr>
+        </table>
+        <div class="sys-sub">毛地黃中毒（心律不整的種類才是關鍵）</div>
+        <table class="def-table">
+          <tr><td>最具特徵</td><td><b>心房頻脈合併房室阻滯</b>（atrial tachycardia with block）、<b>雙向性心室頻脈</b>（bidirectional VT）</td></tr>
+          <tr><td>其他常見</td><td>加速性接合部節律、<b>規則化的心房顫動</b>（AF 卻變成規則且慢）、頻發 PVC 與二聯律、各度房室阻滯、竇性心搏過緩</td></tr>
+          <tr><td>促發因子</td><td><b>低血鉀、低血鎂、高血鈣</b>、腎功能惡化、脫水；併用 amiodarone、verapamil、macrolide、quinidine 會使濃度上升</td></tr>
+          <tr><td>處置重點</td><td>矯正低鉀低鎂；<b>中毒時的高血鉀不可用鈣</b>（傳統的「石頭心」顧慮，作法上仍偏保守）；嚴重心律不整或高血鉀 → <b>digoxin 免疫 Fab 抗體</b></td></tr>
+        </table>
+        <span class="sys-caveat">※ 「毛地黃效應」與「毛地黃中毒」是兩件事：<b>杓狀 ST 壓低本身完全不能用來判斷中毒</b>，而血中濃度也與症狀關聯不佳；診斷靠<b>臨床表現＋心律不整型態＋電解質</b>。</span>
+      </div>
+    </div>
+
+    <div class="sys-head" id="sys-alternans">
+      <span class="sys-name">電交替與低電壓</span>
+      <span class="sys-en">Electrical Alternans &amp; Low Voltage</span>
+      <span class="sys-src">心包填塞</span>
+    </div>
+    <div class="card">
+      <div class="ekg-fig">
+        <div class="ekg-wrap"><span class="ekg-lead">II</span><div class="ekg-strip" data-ekg="alternans" data-dur="5000"></div></div>
+        <div class="ekg-cap">整體電壓偏低，且 QRS 振幅<b>一大一小交替出現</b>，同時有竇性心搏過速——大量心包積液使心臟在液體中晃動</div>
+      </div>
+      <div class="sys-body">
+        <div class="ekg-gist"><b>低電壓 ＋ 電交替 ＋ 竇性心搏過速</b>這個三聯，對<b>大量心包積液／填塞</b>有高度提示性——看到就去做床邊超音波。</div>
+        <div class="sys-sub">判讀要點 How to read</div>
+        <table class="def-table">
+          <tr><td>電交替</td><td>QRS 振幅<b>逐拍高低交替</b>（2:1 週期）；由心臟在積液中前後擺盪造成</td></tr>
+          <tr><td>低電壓定義</td><td><b>肢導程 QRS &lt;5 mm</b> 或<b>胸前導程 &lt;10 mm</b></td></tr>
+          <tr><td>填塞的其他線索</td><td>竇性心搏過速、PR 段壓低（若合併心包炎）；<b>心電圖不能診斷填塞</b>——診斷靠臨床（低血壓、頸靜脈怒張、心音遙遠）與超音波</td></tr>
+          <tr><td>要注意的是</td><td>電交替<b>不等於</b>填塞：也見於嚴重心衰竭、大量胸腔積液與重度肺氣腫；反之填塞也常<b>沒有</b>電交替</td></tr>
+        </table>
+        <div class="sys-sub">低電壓的其他原因</div>
+        <ul class="ekg-cause cols">
+          <li>心包積液、填塞</li>
+          <li>肥胖、乳房組織、皮下水腫（全身性水腫、anasarca）</li>
+          <li>肺氣腫、氣胸</li>
+          <li><b>心臟澱粉樣變性</b>（低電壓卻有心室壁增厚，是經典組合）</li>
+          <li>甲狀腺低下、黏液水腫</li>
+          <li>廣泛心肌梗塞、末期心肌病變</li>
+          <li>技術性：增益設錯、導極放置不當</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/19281931/" target="_blank" rel="noopener" class="ref-link">Rautaharju PM, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part IV: the ST segment, T and U waves, and the QT interval. J Am Coll Cardiol. 2009;53(11):982-991.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/19281930/" target="_blank" rel="noopener" class="ref-link">Surawicz B, et al. AHA/ACCF/HRS recommendations for the standardization and interpretation of the ECG: part III: intraventricular conduction disturbances. J Am Coll Cardiol. 2009;53(11):976-981.</a> ｜ <a href="https://pubmed.ncbi.nlm.nih.gov/15261358/" target="_blank" rel="noopener" class="ref-link">Diercks DB, et al. Electrocardiographic manifestations: electrolyte abnormalities. J Emerg Med. 2004;27(2):153-160.</a></footer>
+  </div>
+
   <div class="disclaimer">
     本頁為<b>教育與參考用途</b>，非醫療指示。內容依 2025 AHA CPR &amp; ECC 官方演算法講義整理；實際處置應依最新原文指引、當地流程與臨床判斷，<b>劑量請於用藥前再次核對</b>。整體證據等級偏弱（僅約 1.4% 建議為 Level A）。
   </div>
 </div>
 
+<script src="../js/ekg-waveforms.js"></script>
 <script>
 /* ---- 決策流程共用 helpers ---- */
 function flowShow(id,on){ const el=document.getElementById(id); if(el) el.classList.toggle('hidden',!on); }
@@ -947,6 +2546,60 @@ function tReset(){ T.mode=null; T.urhythm=null; T.qrs=null;
 }
 
 aReset(); bReset(); tReset();
+
+/* ================= 心電圖判讀 ================= */
+/* 卡片內的「→ 去看某個演算法」按鈕：切分頁並同步標記導覽列 */
+function goView(n){ showView(n, document.querySelector('#navwrap button[data-v="'+n+'"]')); }
+
+/* ---- QTc 計算器（QT 延長卡片內） ---- */
+(function () {
+  var qt = document.getElementById('qt_qt'), hr = document.getElementById('qt_hr'), sex = document.getElementById('qt_sex');
+  if (!qt) return;
+  function calc() {
+    var q = +qt.value, h = +hr.value;
+    if (!(q > 0 && h > 0)) {
+      document.getElementById('qt_baz').textContent = '—';
+      document.getElementById('qt_fri').textContent = '—';
+      document.getElementById('qt_fra').textContent = '—';
+      document.getElementById('qt_band').innerHTML = '';
+      document.getElementById('qt_interp').textContent = '請輸入 QT 與心率。';
+      return;
+    }
+    var rr = 60 / h;                                   // 秒
+    var baz = q / Math.sqrt(rr);
+    var fri = q / Math.pow(rr, 1 / 3);
+    var fra = q + 154 * (1 - rr);
+    document.getElementById('qt_baz').textContent = Math.round(baz);
+    document.getElementById('qt_fri').textContent = Math.round(fri);
+    document.getElementById('qt_fra').textContent = Math.round(fra);
+
+    var lim = sex.value === 'f' ? 460 : 450;
+    var band, label, msg;
+    if (baz >= 500) {
+      band = 'b3'; label = '高風險';
+      msg = '<b>QTc ≥500 ms</b>——尖端扭轉的高風險門檻。檢視並停用所有延長 QT 的藥物，把鉀補到 4.5–5.0 mmol/L、鎂補到 ≥2.0 mg/dL，持續心律監測。';
+    } else if (baz >= lim) {
+      band = 'b2'; label = '延長';
+      msg = '<b>QTc 超過' + (sex.value === 'f' ? '女性 460' : '男性 450') + ' ms</b> 之上限。找可矯正原因（藥物、低鉀低鎂低鈣、心搏過緩、顱內事件），並在加用任何延長 QT 藥物前重新評估。';
+    } else if (baz >= 440) {
+      band = 'b1'; label = '臨界';
+      msg = '落在<b>臨界區間</b>。單次數值意義有限，若即將使用延長 QT 的藥物，建議留一張基準心電圖以便日後比較（給藥後增加 &gt;60 ms 本身就是危險訊號）。';
+    } else if (baz < 340) {
+      band = 'b1'; label = '偏短';
+      msg = '<b>QTc 偏短</b>，考慮高血鈣、高血鉀、毛地黃效應，罕見為短 QT 症候群。';
+    } else {
+      band = 'b0'; label = '正常範圍';
+      msg = 'QTc 在正常範圍。若正在使用延長 QT 的藥物，仍建議追蹤變化量而非只看單次絕對值。';
+    }
+    document.getElementById('qt_band').innerHTML = '<span class="risk-band ' + band + '">' + label + '</span>';
+    document.getElementById('qt_interp').innerHTML = msg;
+  }
+  [qt, hr, sex].forEach(function (e) { e.addEventListener('input', calc); e.addEventListener('change', calc); });
+  calc();
+})();
+
+/* 波形一次全部畫好（含尚未顯示的分頁，切過去才不會是空的） */
+if (window.ekgDrawAll) window.ekgDrawAll();
 </script>
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
