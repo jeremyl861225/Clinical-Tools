@@ -72,7 +72,11 @@
   }
 
   var QN  = [[22, -0.07], [46, 1.15], [34, -0.22]];              // 標準窄 QRS ≈ 88 ms
-  var QVW = [[80, 1.15, 'r', 0.42], [72, 1.02, 'r'], [70, -0.46, 'r']]; // 心室源寬 QRS ≈ 170 ms（寬 R 帶切跡＋寬 S）
+  /* 心室源寬 QRS 有兩種常見長相，分開定義（照臨床心律紙的樣子）：
+     QVT＝主波向下（小 r → 又深又尖的 S → 緩慢回升），其後接一個寬大的反向 T 圓頂；
+     QAI＝主波向上（高 R → 深 S → 緩慢回升），同樣接寬大的反向 T。 */
+  var QVT = [[36, 0.30], [82, -1.32, 'r'], [72, 0.26, 'r']];      // 心室頻脈 ≈ 173 ms（rS 型）
+  var QAI = [[42, 1.38], [72, -0.82, 'r'], [58, 0.16, 'r']];      // 加速性心室自主節律 ≈ 155 ms（Rs 型）
   var QPV = [[72, 1.08, 'r', 0.42], [64, 0.95, 'r'], [64, -0.42, 'r']]; // 心室早期收縮 ≈ 153 ms
   var QLB = [[90, 1.02, 'r', 0.5], [95, 1.20, 'r']];              // LBBB 型（V6、右心室起搏）≈ 140 ms，寬 R 帶切跡
 
@@ -170,13 +174,13 @@
       y += beat(t, 1560, { p: 0, pr: 0, qrs: QPV, stD: 60, td: 190, t: -0.34 });
       return y;
     } };
-  SPEC.vt = { h: 32, base: 19, f: function (t) {
-      var y = series(t, every(380, 14, 40), function (tt, t0) {
-        return beat(tt, t0, { p: 0, pr: 0, qrs: QVW, stD: 40, td: 170, t: -0.30 });
+  SPEC.vt = { h: 34, base: 14, f: function (t) {
+      var y = series(t, every(400, 14, 30), function (tt, t0) {
+        return beat(tt, t0, { p: 0, pr: 0, qrs: QVT, stD: 8, td: 230, t: 0.76 });
       });
-      return y + series(t, every(700, 8, 180), function (tt, t0) { return gau(tt, t0, 100, 0.10); });
+      return y + series(t, every(700, 8, 210), function (tt, t0) { return gau(tt, t0, 100, 0.08); });
     } };
-  SPEC.aivr = { h: 32, base: 19, f: rhythm(720, 8, 60, { p: 0, pr: 0, qrs: QVW, stD: 45, td: 200, t: -0.30 }) };
+  SPEC.aivr = { h: 32, base: 18, f: rhythm(800, 7, 50, { p: 0, pr: 0, qrs: QAI, stD: 20, td: 250, t: 0.62 }) };
 
   /* 心室顫動：不能用幾個正弦波疊出來（那會太規律、像正弦波節律）。
      改以固定種子的亂數產生「間距 52–140 ms、振幅與極性都亂」的圓鈍隆起串，才是真正的雜亂。 */
