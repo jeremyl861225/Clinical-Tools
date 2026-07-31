@@ -51,6 +51,20 @@
     return v;
   }
 
+  /* 折線 QRS：直接給頂點 [[相對毫秒, 毫伏], ...]，中間線性內插。
+     真實心電圖的 QRS 是「由直線段構成、轉折銳利」的，只有 P／ST／T 才是圓弧；
+     用圓鈍隆起疊出來的寬 QRS 雖然夠寬，看起來卻像卡通而不像心律紙上的描跡，
+     心室源的複合波（VT／AIVR／PVC）一律改用這個元件。 */
+  function poly(t, j, pts) {
+    var n = pts.length;
+    if (t < j + pts[0][0] || t > j + pts[n - 1][0]) return 0;
+    for (var i = 1; i < n; i++) {
+      var a = pts[i - 1], b = pts[i];
+      if (t <= j + b[0]) return a[1] + (b[1] - a[1]) * ((t - (j + a[0])) / (b[0] - a[0]));
+    }
+    return 0;
+  }
+
   /* QRS＝數個成分依序相接。成分寫成 [寬度, 振幅] 為尖銳三角；加第三個值 'r' 為圓鈍隆起。
      推進距離必須跟著形狀走（尖 0.8×、圓鈍 0.92×）：寬 QRS 若照尖波的重疊比例排，
      後一段會抵消前一段的下降支，畫出來又變回一根根細尖峰、看起來反而像窄 QRS。 */
@@ -72,12 +86,13 @@
   }
 
   var QN  = [[22, -0.07], [46, 1.15], [34, -0.22]];              // 標準窄 QRS ≈ 88 ms
-  /* 心室源寬 QRS 有兩種常見長相，分開定義（照臨床心律紙的樣子）：
-     QVT＝主波向下（小 r → 又深又尖的 S → 緩慢回升），其後接一個寬大的反向 T 圓頂；
-     QAI＝主波向上（高 R → 深 S → 緩慢回升），同樣接寬大的反向 T。 */
-  var QVT = [[30, 0.28], [64, -1.30, 'r'], [56, 0.24, 'r']];      // 心室頻脈 ≈ 138 ms（rS 型）
-  var QAI = [[42, 1.38], [72, -0.82, 'r'], [58, 0.16, 'r']];      // 加速性心室自主節律 ≈ 155 ms（Rs 型）
-  var QPV = [[72, 1.08, 'r', 0.42], [64, 0.95, 'r'], [64, -0.42, 'r']]; // 心室早期收縮 ≈ 153 ms
+  /* 心室源複合波（折線頂點：毫秒／毫伏）。寬度來自「每一段的斜率都慢」，
+     而不是把波形磨圓——轉折仍然是尖的，才像心律紙上的描跡。
+     PVT＝主波向下的 rS 型（心室頻脈）；PAI＝主波向上的 Rs 型（加速性心室自主節律）；
+     PPV＝心室早期收縮。三者的共同特徵是「終末回升緩慢」與「T 波與主波反向」。 */
+  var PVT = [[0, 0], [20, 0.30], [34, 0.12], [74, -1.32], [104, -0.42], [140, 0]];        // ≈ 140 ms
+  var PAI = [[0, 0], [12, -0.06], [50, 1.40], [74, 0.40], [100, -0.85], [128, -0.20], [155, 0]]; // ≈ 155 ms
+  var PPV = [[0, 0], [14, -0.08], [52, 1.32], [78, 0.28], [104, -0.66], [130, -0.14], [150, 0]]; // ≈ 150 ms
   var QLB = [[90, 1.02, 'r', 0.5], [95, 1.20, 'r']];              // LBBB 型（V6、右心室起搏）≈ 140 ms，寬 R 帶切跡
 
   /* 一個完整心搏。t0＝P 波起點（無 P 時即 QRS 起點，並給 pr:0）。 */
@@ -88,8 +103,9 @@
     var pD = o.pd || 100;
     var pr = (o.pr === undefined) ? 160 : o.pr;
     if (pA) y += (o.pshape === 'bifid' ? bifid : gau)(t, t0, pD, pA);
-    var k = o.qrs || QN, j = t0 + pr, w = qw(k);
-    y += qrs(t, j, k);
+    var j = t0 + pr, w;
+    if (o.poly) { w = o.poly[o.poly.length - 1][0]; y += poly(t, j, o.poly); }
+    else { var k = o.qrs || QN; w = qw(k); y += qrs(t, j, k); }
     if (o.prDep) y += plat(t, t0 + pD, j, o.prDep, 12);      // PR 段壓低（急性心包炎）
     var stD = (o.stD === undefined) ? 90 : o.stD;
     var tD = o.td || 160, tOn = j + w + stD;
@@ -171,18 +187,18 @@
   /* ---- 心室 ---- */
   SPEC.pvc = { f: function (t) {                             // 竇性＋單一 PVC＋完全代償間歇
       var y = series(t, [60, 860, 2460, 3260, 4060], function (tt, t0) { return beat(tt, t0); });
-      y += beat(t, 1560, { p: 0, pr: 0, qrs: QPV, stD: 60, td: 190, t: -0.34 });
+      y += beat(t, 1560, { p: 0, pr: 0, poly: PPV, stD: 60, td: 190, t: -0.34 });
       return y;
     } };
   /* 180 bpm：RR 333 ms，複合波與 T 波幾乎首尾相接（參考臨床心律紙的密度） */
   SPEC.vt = { h: 34, base: 14, f: function (t) {
       var y = series(t, every(333, 17, 25), function (tt, t0) {
-        return beat(tt, t0, { p: 0, pr: 0, qrs: QVT, stD: 6, td: 168, t: 0.72 });
+        return beat(tt, t0, { p: 0, pr: 0, poly: PVT, stD: 6, td: 168, t: 0.72 });
       });
       return y + series(t, every(700, 8, 210), function (tt, t0) { return gau(tt, t0, 100, 0.08); });
     } };
   /* 58 bpm：RR 1035 ms，慢而寬——「像 VT 但速率不快」的重點就在這個密度 */
-  SPEC.aivr = { h: 32, base: 18, f: rhythm(1035, 6, 60, { p: 0, pr: 0, qrs: QAI, stD: 20, td: 250, t: 0.62 }) };
+  SPEC.aivr = { h: 32, base: 18, f: rhythm(1035, 6, 60, { p: 0, pr: 0, poly: PAI, stD: 20, td: 250, t: 0.62 }) };
 
   /* 心室顫動：不能用幾個正弦波疊出來（那會太規律、像正弦波節律）。
      改以固定種子的亂數產生「間距 52–140 ms、振幅與極性都亂」的圓鈍隆起串，才是真正的雜亂。 */
@@ -210,9 +226,9 @@
   SPEC.tdp = { h: 36, base: 18, f: function (t) {
       var LQ = { pr: 170, stD: 210, td: 210, t: 0.26, u: 0.09 };
       var y = beat(t, 40, LQ)
-            + beat(t, 700, { p: 0, pr: 0, qrs: QPV, stD: 60, td: 180, t: -0.30 })
+            + beat(t, 700, { p: 0, pr: 0, poly: PPV, stD: 60, td: 180, t: -0.30 })
             + beat(t, 1560, LQ)
-            + beat(t, 2120, { p: 0, pr: 0, qrs: QPV, stD: 50, td: 140, t: -0.18 });
+            + beat(t, 2120, { p: 0, pr: 0, poly: PPV, stD: 50, td: 140, t: -0.18 });
       var start = 2340;
       if (t >= start) {
         var w = 2 * Math.PI / 228;                       // 約 260 bpm 的連續振盪
