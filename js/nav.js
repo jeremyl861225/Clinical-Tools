@@ -21,7 +21,26 @@
  *
  * 大類（腹部急症、抗微生物…）預設收合，點標題右側的箭頭展開；展開過哪幾類同樣記在
  * localStorage。目前所在頁面的那一類一律自動展開（不寫回設定），才看得到自己在哪。
+ *
+ * 文末另附「鎖住縮放」一段：與導覽無關，但它必須每一頁都生效，而本檔正是全站唯一
+ * 每頁都載入的腳本，故搭在這裡，不另開一支檔案（另開就得動 sw.js 的預快取清單）。
  */
+
+/* 鎖住縮放 —— 頁面固定在版面寬度，不以手指縮放。
+   各頁的 <meta viewport> 已寫 user-scalable=no，PWA 獨立視窗與 Android 照做；
+   但 iOS Safari 自 10 起一律忽略該設定，只能攔掉手勢本身：
+   雙指的 touchmove 與 Safari 專有的 gesture* 事件。輕點兩下放大則由 css/styles.css
+   的 touch-action:manipulation 處理。 */
+(function () {
+  'use strict';
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
+    document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false });
+  });
+})();
+
 (function () {
   'use strict';
 

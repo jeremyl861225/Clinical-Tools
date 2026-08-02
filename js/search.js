@@ -91,7 +91,9 @@
         label: name,
         en: txt(enEl),
         sub: desc.length > 90 ? desc.slice(0, 90) + '…' : desc,
-        kw: desc,                       // 全文納入關鍵字：卡片說明常列出代表性藥名／涵蓋範圍
+        // 卡片說明全文（常列出代表性藥名／涵蓋範圍）＋卡片自己的 data-search-kw；
+        // 後者是縮寫與同義詞的唯一來源（RSI、ACS、AECOPD…），名稱與說明裡都沒有
+        kw: desc + ' ' + (card.getAttribute('data-search-kw') || ''),
         url: m[1]
       });
     });
@@ -272,6 +274,20 @@
   }
 
   /* ---- 比對與排序 ---- */
+  /* 英文縮寫夾在別的字中間也會命中：查 rsi 時，Dispersible、diversion、cardioversion、
+     irreversible、parsimonious 全部算命中，而且落在「名稱內含」這種高分級距，
+     真正的 RSI 反而被擠下去。故英數字查詢的「內含」再分兩級：前後皆非英數者
+     （＝獨立的一個字）為整字命中，夾在字中間者降一級。中文沒有詞界，一律以整字計。 */
+  var LATIN = /^[a-z0-9][a-z0-9\s.\-]*$/;
+  var ALNUM = /[a-z0-9]/;
+  function wholeWord(hay, q) {
+    if (!LATIN.test(q)) return true;
+    for (var i = hay.indexOf(q); i > -1; i = hay.indexOf(q, i + 1)) {
+      if (!ALNUM.test(hay.charAt(i - 1) || ' ') && !ALNUM.test(hay.charAt(i + q.length) || ' ')) return true;
+    }
+    return false;
+  }
+
   function scoreOf(item, q) {
     var label = item.label.toLowerCase();
     var en = (item.en || '').toLowerCase();
@@ -280,9 +296,9 @@
     if (label === q || en === q) return 100;
     if (label.indexOf(q) === 0) return 85;
     if (en.indexOf(q) === 0) return 80;
-    if (label.indexOf(q) > -1) return 65;
-    if (en.indexOf(q) > -1) return 55;
-    if (kw.indexOf(q) > -1) return 35;
+    if (label.indexOf(q) > -1) return wholeWord(label, q) ? 65 : 40;
+    if (en.indexOf(q) > -1) return wholeWord(en, q) ? 55 : 30;
+    if (kw.indexOf(q) > -1) return wholeWord(kw, q) ? 45 : 25;
     if (sub.indexOf(q) > -1) return 20;
     return 0;
   }
@@ -302,7 +318,11 @@
     return {
       total: hits.length,
       urls: urls,                     // 供內文搜尋排除已命中的頁面，避免同一頁重複列出
-      items: hits.slice(0, MAX_HITS).map(function (h) { return h.item; })
+      // 分數帶著走：畫面上的分組順序由各組最佳命中決定（見 render）
+      items: hits.slice(0, MAX_HITS).map(function (h) {
+        return { type: h.item.type, label: h.item.label, en: h.item.en,
+                 sub: h.item.sub, url: h.item.url, score: h.score };
+      })
     };
   }
 
@@ -418,9 +438,17 @@
         '</div>';
       return;
     }
-    var byType = {};
-    hits.forEach(function (h) { (byType[h.type] = byType[h.type] || []).push(h); });
-    var order = Object.keys(byType).sort(function (a, b) { return TYPES[a].order - TYPES[b].order; });
+    var byType = {}, best = {};
+    hits.forEach(function (h) {
+      (byType[h.type] = byType[h.type] || []).push(h);
+      if (!(h.type in best) || h.score > best[h.type]) best[h.type] = h.score;
+    });
+    // 分組先比各組最佳命中，同分才照型別的既定順序：查 rsi 時「評分工具」裡有整字命中的
+    // 快速誘導插管，就不該排在只沾到 diversion／irreversible 的「決策流程」後面
+    var order = Object.keys(byType).sort(function (a, b) {
+      if (best[b] !== best[a]) return best[b] - best[a];
+      return TYPES[a].order - TYPES[b].order;
+    });
     var html = '<div class="gs-count">' + res.total + ' 筆結果' +
       (res.total > hits.length ? '（顯示前 ' + hits.length + ' 筆，請輸入更完整的關鍵字）' : '') +
       (textHits && textHits.length ? ' · 另有 ' + textHits.length + ' 頁內文提及' : '') +
@@ -493,14 +521,37 @@
     var parts = href.split('#');
     return parts.length > 1 && (parts[0] === '' || /(^|\/)index\.html$/.test(parts[0]));
   }
-  function goResult(href) {
-    if (!isHomeAnchor(href)) { location.href = href; return; }
-    var same = location.hash === '#' + href.split('#')[1];
+  function clearQuery() {
+    if (!input || !input.value) return;
     input.value = '';
     setActive(false);
     results.innerHTML = '';
+    // 補送一次 input 事件收掉清除鍵（見 js/searchbar.js）
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  function goResult(href) {
+    if (!isHomeAnchor(href)) { location.href = href; return; }
+    var same = location.hash === '#' + href.split('#')[1];
+    clearQuery();
     location.href = href;
     if (same) window.dispatchEvent(new Event('hashchange'));
+  }
+
+  /* 側欄的「腹部急症／急重症處置／計分工具」指向首頁自己的錨點（index.html#abdomen…），
+     點下去只換 hash、不重新載入；而查詢進行中 #home-body 整塊是隱藏的，路由把分類展開了
+     也仍蓋在查詢結果底下，看起來像沒反應。故凡是走向本頁錨點的連結，先把查詢收乾淨再讓它跳。
+     另三個大類（抗微生物／癌症治療／藥物資料庫）是各自的 .html，整頁換掉，本來就不受影響。 */
+  function wireHomeAnchors() {
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || !input.value) return;
+      if (a.closest('#gs-results')) return;              // 結果列自己走 goResult
+      if (a.host !== location.host || a.pathname !== location.pathname || !a.hash) return;
+      clearQuery();
+    }, true);
+    // 上一頁／下一頁造成的 hash 變動同樣要收（點連結那次已先清空，這裡不會重複作用）
+    window.addEventListener('hashchange', clearQuery);
+    window.addEventListener('popstate', clearQuery);
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -535,6 +586,7 @@
       e.preventDefault();
       goResult(href);
     });
+    wireHomeAnchors();
     // 清除鍵（.gs-clear）由 js/searchbar.js 統一處理：清空後會補送 input 事件，
     // 上面的 input 監聽照樣收得到，本檔不必再自行接線。
   });
