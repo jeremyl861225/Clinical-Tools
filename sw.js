@@ -6,8 +6,13 @@
  * 註：曾採 network-first，但每個資源都要等網路（且以 no-cache 逐一向伺服器驗證），
  *     手機網路下每頁數十次往返，開啟明顯變慢，故改為本策略。
  * CACHE_VERSION 僅在需要強制清除舊快取時修改。
+ *
+ * 注意：本 App 與其他 PWA（book-reader、todo-app、pubmed-daily…）共用同一個
+ *      github.io origin，快取空間是共通的。清理舊快取時務必只刪 CACHE_PREFIX
+ *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
-const CACHE_VERSION = 'clinical-tools-v219';
+const CACHE_PREFIX = 'clinical-tools-';
+const CACHE_VERSION = CACHE_PREFIX + 'v219';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -242,7 +247,9 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))
+        keys
+          .filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE_VERSION)
+          .map((k) => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
