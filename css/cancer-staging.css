@@ -54,10 +54,17 @@
     transform:translateZ(0);
   }
   .onc-card .oc-scrim{position:absolute; inset:0; pointer-events:none; background:var(--scrim); transition:background .5s;}
+  /* 字後方另加一層只落在文字周圍的暗角。整片的 .oc-scrim 是依「一般圖版亮度」
+     調的，遇到底色特別亮的圖版（鼻咽癌那張最明顯）就壓不住：像素採樣量到
+     「Nasopharyngeal Carcinoma」實際落在畫面上的對比只有 1.32——那已經是看不見。
+     不把 .oc-scrim 整體加深（那會讓其餘 29 張圖版一起變濁、失去圖鑑感），
+     改成只在標籤所在的中央加一圈徑向暗角，邊緣完全透明，圖版本身幾乎不受影響。 */
   .onc-card .oc-label{
     position:absolute; inset:0; z-index:2;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:3px; text-align:center; padding:8px;
+    background:radial-gradient(ellipse 78% 52% at 50% 50%,
+      rgba(10,8,6,.46) 0%, rgba(10,8,6,.34) 58%, rgba(10,8,6,0) 84%);
   }
   /* 癌別名最長六字（胃腸道基質瘤、神經內分泌瘤、上泌尿道腫瘤），一律不換行：
      折成兩行時方磚上的名稱會被英文病名擠在一起，手機上尤其難讀。

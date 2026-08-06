@@ -918,6 +918,25 @@
   display: none;
 }
 
+/* ---- 首頁換場的其餘兩件：側邊導覽與像素貓 ----
+ * 使用者指定「若改成 04 sentence，則畫面採用 work 中的 index（不需要側邊欄……
+ * 先不要有貓咪）」。兩者都只在**首頁**收起來：
+ *   · 側邊欄——在造句模式的首頁，導覽就是句子本身，抽屜式選單是第二套走法，
+ *     兩套並存只會讓人不知道該用哪一個。107 個內頁不在此列（那裡的句子軌跡
+ *     是唯讀的，側邊欄仍是那些頁面唯一的跳頁方式，收掉會讓人走不出去）。
+ *   · #cat-canvas／#cat-strip——像素貓是正式版首頁的彩蛋，原型沒有。
+ * 用 body:has(#sentHome) 限定首頁：#sentHome 只由 js/sentence-nav.js 在首頁插入，
+ * 內頁插的是 #sentTrail，天然分得開，不必再靠頁面路徑判斷。
+ * 一律只用 display:none，節點與 js/nav.js、js/pixel-cat.js 都原封不動——
+ * 關掉造句設計，兩者立刻原樣回來。 */
+[data-ui="sentence"] body:has(#sentHome) .nav-toggle,
+[data-ui="sentence"] body:has(#sentHome) .side-nav,
+[data-ui="sentence"] body:has(#sentHome) .nav-scrim,
+[data-ui="sentence"] body:has(#sentHome) #cat-canvas,
+[data-ui="sentence"] body:has(#sentHome) #cat-strip {
+  display: none;
+}
+
 /* ---- 詞塊／空格插槽／連接詞（首頁大字 vs 目標頁唯讀軌跡，兩者分開） ---- */
 /* ────────────────────────────────────────────────────────────────────────
    §1 詞塊／空格插槽／連接詞
@@ -1302,17 +1321,30 @@
  * P7–P10 換成看得見的骨白／墨色框線，同時解決「問題 2：整段沒有套到設計
  * 語言」在追蹤與支持治療區塊（P9）之外，同一類元件也存在的部分。
  *
- * 特異度策略：下面涉及 .rec-detail 內部徽章的規則，選擇器一律寫到
- * `.flow-rec .rec-detail X`（屬性選擇器 + 2 個祖先 class + 目標 class
- * = 4 個 class 當量），用意是打平 cancer-staging.css 對應的
- * `.flow-rec.rec-idle .rec-detail X` 系列規則（同樣 4 個 class 疊起來的
- * 特異度）——兩者打平後，靠本檔在 <head> 內排在 cancer-staging.css 之後
- * 勝出（來源順序，不用 !important）。用 `.flow-rec .rec-detail X`（不寫
- * 中間的 .rx-line／.rx-panel／.cbx-items 等包裝層 class）是刻意的：
- * CSS 子孫選擇器不管中間隔幾層，只要祖先鏈都命中就算數，不必窮舉每一種
- * 包裝方式（各癌別的 *-pathway.js 包裝法不盡相同，見下面各節開頭的來源
- * 清單）。同一批 class 若出現在 .flow-rec 之外（.tx-body 靜態卡片、
- * .crc-supp 補充面板），另外各寫一條同深度的規則，不共用選擇器。
+ * 特異度策略（P7／P8 最終版；過程留在那兩節的註解裡，值得一讀——第一版
+ * 只打 `.flow-rec .rec-detail X`，30 個癌別逐一 getComputedStyle 掃過才
+ * 發現同一批 class 至少落在三種不同祖先下：多數癌別在 .rec-detail 內；
+ * 大腸直腸癌 COL-10 處方、pNET／NET 在 `.flow-rec > details.rx-more >
+ * .rx-stack > .rx-line`，不經過 .rec-detail；NET／UTUC 甚至出現在
+ * .flow-step 的 extra 參數裡，不在 .flow-rec 內。窮舉祖先組合每次都漏，
+ * 故最終版不設祖先條件，直接打 class 本身：attribute + 1 class，
+ * 特異度 (0,2,0)。
+ * 老實說這個特異度**打不贏** cancer-staging.css 的
+ * `.flow-rec.rec-idle .rec-detail X`（4 個 class，(0,4,0)）——CSS
+ * 特異度比較是先比 a 再比 b，(0,2,0) 的 b=2 小於 (0,4,0) 的 b=4，
+ * 來源順序救不了低特異度，這點在此更正，不要被字面上的位置唬到。
+ * 能維持 0 隱形文字（30 癌別 × 亮暗 × 390/1440 全掃過）不是靠贏過這條
+ * 特異度更高的規則，是因為 `.rec-idle` 且 `.rec-detail` 內同時含
+ * `.rx-h`／`.rx`／`.drug`／`.cb`／`.cbx-h` 這批 class 的情境，在現有
+ * 30 個癌別的原始碼裡**不存在**——唯一「rec-idle 且有實質內容」的案例
+ * （js/aml-pathway.js 的 renderOther()，AML-1 分流至非 AML 白血病時）
+ * 內文只用純 `<b>`，沒有這批徽章 class，該處已被本檔 (0,2,0) 對
+ * `.rec-detail .rx-h` 等「非 idle 版」(同為 (0,2,0)，靠來源順序勝出)
+ * 正常覆寫。**這是現況成立、不是規則保證**：往後若哪個癌別的 idle 狀態
+ * 塞進帶這批 class 的內容，這裡會重新破功，需要另外補一條
+ * `.flow-rec.rec-idle X`（4 class 當量）比照辦理，不能只加 !important
+ * 了事。.tx-body 靜態卡片、.crc-supp 補充面板兩處的淺底覆寫邏輯本來就
+ * 與深底這組不同，各自獨立一條規則，不共用選擇器。
  * ================================================================ */
 
 /* ---- P1. 癌別詳情頁頭（.onc-back／.onc-title／.onc-edition／.onc-note／.onc-sec-h／.onc-wip）---- */
@@ -1655,6 +1687,45 @@
 [data-ui="sentence"] .rx-note,
 [data-ui="sentence"] .crc-supp .rx-note { color: var(--sentence-fg2); }
 [data-ui="sentence"] .rx-stack { gap: 8px; }
+
+/* ---- P8a. 補上 P7／P8 開頭坦白說明的那個缺口：.flow-rec.rec-idle 內同時
+   帶這批徽章 class 的情境，現有 30 個癌別找不到真實案例（唯一「idle 且有
+   內容」的 js/aml-pathway.js renderOther() 只用純 <b>），但沒有真實案例
+   不代表規則本身站得住腳——4 個 class 疊出的 (0,4,0) 就是贏得了 P7／P8
+   那組 (0,2,0)。這裡直接把同一批數值再寫一次到 `.flow-rec.rec-idle X`
+   （attribute + 4 class，(0,4,0)，正面打贏 cancer-staging.css 同名規則,
+   不必再靠「現況沒人這樣用」這種脆弱前提撐著）。數值刻意與上面 P7／P8
+   完全相同——sentence 設計的 .rec-detail 文字色不分 idle／非 idle
+   （見 I 段 `.flow-rec .rec-detail li` 沒有另外的 .rec-idle 版本），
+   這裡純粹補特異度，不是要換一套「未作答」專用配色。 ---- */
+[data-ui="sentence"] .flow-rec.rec-idle .rx-h { color: var(--sentence-fg); border-bottom: 1.5px solid var(--sentence-line2); padding-bottom: 1px; }
+[data-ui="sentence"] .flow-rec.rec-idle .rx { color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-rec.rec-idle .rx-sub { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .flow-rec.rec-idle .drug {
+  font-family: var(--sentence-sans); background: var(--sentence-bg); border: 1px solid var(--sentence-line2);
+  border-bottom: 2px solid var(--sentence-fg); border-radius: 0; padding: 0 6px; font-size: 12px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .flow-rec.rec-idle .cbx-h, [data-ui="sentence"] .flow-rec.rec-idle .hrf-h { color: var(--sentence-fg); opacity: 1; }
+[data-ui="sentence"] .flow-rec.rec-idle .cbx-h .cbx-sub { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .flow-rec.rec-idle .cb {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-bottom: 2px solid var(--sentence-fg); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .flow-rec.rec-idle .cb .cb-k { color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-rec.rec-idle .fu-gap { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .flow-rec.rec-idle .rx-panel-h {
+  font-family: var(--sentence-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+  opacity: 1; color: var(--sentence-fg); border-bottom: 1px solid var(--sentence-line2); padding-bottom: 6px;
+}
+[data-ui="sentence"] .flow-rec.rec-idle .rx-panel-src { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .flow-rec.rec-idle .rx-def { background: var(--sentence-bg); border: 1px dashed var(--sentence-line2); border-radius: 0; color: var(--sentence-fg2); }
+[data-ui="sentence"] .flow-rec.rec-idle .rx-warn {
+  background: color-mix(in srgb, var(--sentence-hot) 10%, var(--sentence-bg)); border: 1px solid var(--sentence-hot); border-radius: 0; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .flow-rec.rec-idle .rx-line {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-fg); border-radius: 0;
+}
+[data-ui="sentence"] .flow-rec.rec-idle .rx-items { color: var(--sentence-fg2); }
+[data-ui="sentence"] .flow-rec.rec-idle .rx-note { color: var(--sentence-fg2); }
 
 /* ---- P9. 追蹤與支持治療（.flow-fu）——使用者回報的問題 2：正式版底色／
    邊框吃的是 --box-bg／--line／--accent，未被本檔調色，在造句設計裡因此
