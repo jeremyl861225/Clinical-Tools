@@ -534,6 +534,21 @@
   background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); border-color: var(--sentence-inv-bg); font-weight: 400;
 }
 [data-ui="sentence"] .flow-opt.selected::before { content: "✓"; color: inherit; }
+/* **選中態底色是反轉的，裡面所有自帶顏色的元素都必須改吃 inherit。**
+   漏掉的後果是字色撞上底色、完全隱形——使用者實機回報過一次：
+   選了「功能性（麻痺性）腸阻塞」之後，選項裡的 <b>（英文病名、關鍵特徵）
+   在暗色主題是 rgb(236,230,216) 壓在 rgb(236,230,216) 上，亮色主題是
+   rgb(20,33,28) 壓在 rgb(20,33,28) 上，**兩個主題都看不到**。
+   成因是本檔前面那條全域的 `b, strong { color: var(--sentence-fg) }`——
+   它抓的是固定的前景色，不會跟著底色反轉。
+   `.fo-sub` 當初有補 inherit，`b`／`strong` 漏了。
+   注意：這類錯**逐字比對抓不到**（innerText 讀得到隱形文字），
+   只有量「字色 vs 自己的背景色」才抓得到。 */
+[data-ui="sentence"] .flow-opt.selected b,
+[data-ui="sentence"] .flow-opt.selected strong,
+[data-ui="sentence"] .flow-opt.selected i,
+[data-ui="sentence"] .flow-opt.selected em,
+[data-ui="sentence"] .flow-opt.selected span { color: inherit; }
 [data-ui="sentence"] .flow-opt .fo-sub { color: var(--sentence-dim); font-size: 11px; line-height: 1.55; margin-top: 3px; }
 [data-ui="sentence"] .flow-opt.selected .fo-sub { color: inherit; opacity: .8; }
 /* 注意：不可把 display 改成 block——原樣是 inline-block，多顆 .flow-link 相鄰時
