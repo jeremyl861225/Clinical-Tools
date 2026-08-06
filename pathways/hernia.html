@@ -11,6 +11,10 @@
 <link rel="stylesheet" href="../css/ui-sentence.css">
 <script src="../js/ui-mode.js" defer></script>
 <!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
 <meta name="theme-color" content="#1f5a6b">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -108,6 +112,12 @@
     </div>
   </div>
 
+  <!-- 建議處置 A：術式決策 -->
+  <div class="flow-rec rec-idle" id="hern_rec">
+    <div class="rec-label">建議處置 Recommendation</div>
+    <div class="rec-title">請由上方步驟開始選擇</div>
+  </div>
+
   <!-- 步驟 2a：TAXIS 結果 -->
   <div class="flow-connector hidden" id="hern_c2a">↓</div>
   <div class="flow-step hidden" id="hern_s2a">
@@ -138,10 +148,10 @@
     </div>
   </div>
 
-  <!-- 建議處置 A：術式決策 -->
-  <div class="flow-rec rec-idle" id="hern_rec">
-    <div class="rec-label">建議處置 Recommendation</div>
-    <div class="rec-title">請由上方步驟開始選擇</div>
+  <!-- 建議處置 B：修補決策 -->
+  <div class="flow-rec rec-idle hidden" id="hern_rec2">
+    <div class="rec-label">修補建議 Repair</div>
+    <div class="rec-title">術中評估後顯示</div>
   </div>
 
   <!-- 手術路徑 步驟 S3：腸道存活（術中，處置後評估） -->
@@ -164,12 +174,6 @@
       <button class="flow-opt" onclick="hernPick('wound','large',this)">穩定、缺損 &gt; 3 cm<span class="fo-sub">→ 生物網片／polyglactin／延遲修補</span></button>
       <button class="flow-opt" onclick="hernPick('wound','unstable',this)">不穩定（嚴重敗血／敗血性休克）<span class="fo-sub">→ 開放腹部損傷控制</span></button>
     </div>
-  </div>
-
-  <!-- 建議處置 B：修補決策 -->
-  <div class="flow-rec rec-idle hidden" id="hern_rec2">
-    <div class="rec-label">修補建議 Repair</div>
-    <div class="rec-title">術中評估後顯示</div>
   </div>
 
   <div style="display:flex; justify-content:flex-end;" class="flow-reset"><button class="btn-reset" onclick="hernReset()">重置</button></div>

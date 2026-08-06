@@ -107,6 +107,11 @@
  *   K. 分級清單（.lv-*／.dept-*／.op-item，急診手術分級頁）
  *   L. 頁尾與連結（footer.tool-footer/.ref-link/.tool-link/.ind-badge/.mono）
  *   M. 通用觸控目標安全網 ＋ 動態降級
+ *   （N／O 兩段見檔案後段——N 側欄導覽觸控目標，O 造句導覽本體 js/sentence-nav.js，
+ *   非本次交付範圍，維持原樣不動）
+ *   P. 癌症頁（tools/cancer.html）專屬元件——js/cancer-staging.js 與
+ *      30 個癌別共用的 js/*-pathway.js 各自的 render 函式輸出的 markup，
+ *      不吃 A–N 段的全站共用慣例，見該段開頭說明。
  *
  * 範圍聲明：本檔不含 tools/drug-database.html、tools/antibiotics.html、
  * tools/spectrum-database.html 等頁面專屬的 dc-*／db-*／abx-*／bac-*／cov-*／
@@ -206,8 +211,12 @@
 [data-ui="sentence"] .back-origin:hover { background: var(--sentence-shade); }
 
 /* ---------- C. 卡片與容器 ---------- */
+/* 底色與頁面一致、只留一條髮絲框：使用者看 tools/vasopressor.html 的體重輸入列
+   後指定「體重輸入匡的區塊請與底色一樣即可」。原本填 --sentence-bg2 會在頁面上
+   浮出一塊比底色亮的長條，和這一款「零陰影、零圓角、只用線條分隔」的語彙相違；
+   框線保留，區塊的界線還在，只是不再另外塗一層底色。 */
 [data-ui="sentence"] .card {
-  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
   padding: 14px 15px 10px; margin-bottom: 16px;
 }
 [data-ui="sentence"] .section-title {
@@ -238,8 +247,15 @@
    在載入當下沒有可見建議框的頁面（cardiogenic-shock／divert-path／swan-ganz）
    會讓畫面上最大的東西變成頁面標題，違反「最大的東西必須是臨床內容」。
    拉到 h1 之上。計分頁不受影響——那裡最大的仍是 .metric-value（48–68px）。 */
+/* text-transform: none 是**必要**的，不是順手加的：css/styles.css:364 的
+   .lede-title 有 text-transform:uppercase，本檔沒有重設就會沿用下去。
+   後果是把藥名與分數名的大小寫吃掉——tools/news2.html 原始碼寫的是
+   「為什麼是 NEWS2 而不是 qSOFA」，畫面上卻變成 qSOFA→QSOFA。原型
+   （style-04-sentence）在同一段文字上是正確的小寫 q，使用者指名要以原型為母本。
+   （正式版也有同樣的大寫問題，那要動 styles.css、會改到正式版每一頁的外觀，
+   已另外列出來讓使用者決定，這裡只修造句設計這一側。） */
 [data-ui="sentence"] .lede-title {
-  font-family: var(--sentence-serif);
+  font-family: var(--sentence-serif); text-transform: none;
   font-size: clamp(24px, 5.6vw, 34px); letter-spacing: .02em; line-height: 1.28;
   color: var(--sentence-fg); font-weight: 500; margin-bottom: 10px;
 }
@@ -352,9 +368,21 @@
 }
 
 /* ---------- F. 表格 ---------- */
+/* 三條表格規則都**不**設 display:block——這裡踩過一次坑，留紀錄避免有人改回去：
+   `display:block` 加在 <table> 上，表格就不再是表格盒了。它的 <tbody> 仍是
+   table-row-group，父層卻不是 table，瀏覽器只好在中間生一個**匿名 table 盒**；
+   匿名盒是 shrink-to-fit，原本寫在 <table> 上的 width:100% 落在外層 block 上、
+   對匿名盒無效，欄寬因此縮到「剛好包住內容」為止。
+   實測（tools/drug-database.html 藥卡展開，1280px）：
+     正式版   三張 renal-tbl 皆 display:table，首列欄寬 269 / 521，三張完全一致
+     加了 block 之後  皆 display:block，首列欄寬 62 / 120、62 / 120、57 / 111
+   ——同一張藥卡裡每張表的欄位落點都不一樣，這就是使用者說的「表格排版很亂」。
+   要防溢出得靠外層捲動容器，不能拿 <table> 自己當容器。這些表格在正式版本來
+   就不溢出（正式版 390px 已驗過），造句設計沒有放大它們的字級，維持 display:table
+   等於維持正式版的溢出行為，不需要另外補防線。 */
 [data-ui="sentence"] table.score-ref {
   border-collapse: collapse; width: 100%; font-family: var(--sentence-mono); font-size: 11.5px;
-  display: block; overflow-x: auto; max-width: 100%;
+  max-width: 100%;
 }
 [data-ui="sentence"] table.score-ref td,
 [data-ui="sentence"] table.score-ref th {
@@ -366,7 +394,7 @@
 
 [data-ui="sentence"] table.def-table {
   border-collapse: collapse; width: 100%; font-family: var(--sentence-sans); font-size: 11.5px;
-  display: block; overflow-x: auto; max-width: 100%; margin: 8px 0;
+  max-width: 100%; margin: 8px 0;
 }
 [data-ui="sentence"] table.def-table th,
 [data-ui="sentence"] table.def-table td {
@@ -384,12 +412,11 @@
 }
 [data-ui="sentence"] table.def-table tr.dt-warn td { color: var(--sentence-hot); }
 
-/* 通用防溢出：任何沒有專屬 class 的 <table>（含極少數尚未列出的頁面專屬表格）
-   一律可自行橫向捲動，不把整頁撐寬。只補 overflow 行為，不改配色與字級，
-   避免踩進「另一位負責的藥物資料庫樣式」範圍（那邊的 renal-tbl 等表格
-   仍走它們自己的 [data-ui="sentence"] 規則，本規則只是它們沒接住時的最後防線，
-   單純 display:block+overflow-x:auto 不影響配色，故不衝突）。 */
-[data-ui="sentence"] table { display: block; overflow-x: auto; max-width: 100%; }
+/* 原本這裡有一條通用防溢出 `table { display:block; overflow-x:auto; max-width:100% }`，
+   出發點是「沒有專屬 class 的表格也不要把整頁撐寬」，但它把**全站每一張表格**都
+   拆成了上面說的匿名 shrink-to-fit 盒——包含藥卡裡的 renal-tbl（那本來是宣告
+   不歸本檔管的元件，這條卻管到了）。防的溢出沒發生過，弄壞的欄位對齊是實際
+   被使用者回報的。整條移除，表格一律維持 display:table。 */
 
 /* ---------- G. 結果面板 ---------- */
 [data-ui="sentence"] .result {
@@ -398,7 +425,11 @@
   padding: 16px 16px 13px; margin-top: 20px;
 }
 [data-ui="sentence"] .result-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px 14px; margin-bottom: 8px;
+  /* 最小欄寬跟正式版對齊（styles.css:407 是 120px）。原本寫 110px，430px 寬下
+     會多擠出第三欄（3 × 112.7px vs 正式版 2 × 172px），欄一窄，上面依欄寬計算的
+     巨型數值就被壓到下限 30px，比正式版的 44px 還小——反而失去「最大的東西是
+     臨床數值」這件事。對齊之後量到 2 欄 × 176px、字級 45.8px。 */
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px 14px; margin-bottom: 8px;
 }
 [data-ui="sentence"] .metric-label {
   font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
@@ -411,11 +442,23 @@
   font-family: var(--sentence-serif); font-size: 22px; font-weight: 600; color: var(--sentence-fg);
   line-height: 1.2; margin-top: 3px;
 }
-/* DESIGN-LANGUAGE 訂的「巨型數值」是 48–72px；手機下限原本 32px（8vw 在 390 寬只
-   算出 31.2px，被下限 32px 卡住），量測不到位。分數／比值／百分比內容最長不過
-   6 字元（如「0.2%」「100%」），48–68px 在 .result-grid 最窄欄（110px）仍不會溢出。 */
+/* DESIGN-LANGUAGE 訂的「巨型數值」是 48–72px。原本寫 clamp(48px, 11vw, 68px)，
+   並在註解裡宣稱「分數／比值／百分比內容最長不過 6 字元，48–68px 在 .result-grid
+   最窄欄（110px）仍不會溢出」——那個前提是錯的，而且沒有實際去看過畫面。
+   .metric-value.big 不是只掛在數字上：tools/news2.html 三格全掛 big，其中兩格是
+   **文字**（`低`、`每 12 小時`）。`每 12 小時` 在 430px 寬用 48px 字級，實測斷成三行，
+   結果面板整個被撐開，畫面上最大的東西變成監測頻率而不是分數。
+
+   改用容器查詢單位而不是 vw：字級跟著**自己那一欄的寬度**走，不是跟著整個
+   視窗走。三格並排時每欄約 110–130px，算出來約 30–34px，長字串頂多兩行；
+   單獨一格的頁面（如 tools/vasopressor.html 的 VIS）欄寬就是整個面板，
+   仍然吃到上限 68px，巨型數值的設計意圖沒有被犧牲。
+   沒有祖先宣告 container-type 時（.result 底下不經 .result-grid 的那些），
+   cqw 依規範回退成小視窗尺寸，等同原本的 vw 行為，不會壞掉。 */
+[data-ui="sentence"] .result-grid > * { container-type: inline-size; }
 [data-ui="sentence"] .metric-value.big {
-  font-size: clamp(48px, 11vw, 68px); line-height: 1.05; margin-top: 2px;
+  font-size: clamp(30px, 26cqw, 68px); line-height: 1.05; margin-top: 2px;
+  overflow-wrap: break-word;
 }
 [data-ui="sentence"] .result-headline {
   font-family: var(--sentence-serif); font-size: 18px; font-weight: 500; color: var(--sentence-fg); margin-top: 4px;
@@ -723,6 +766,46 @@
   min-height: 45px; min-width: 45px;
 }
 
+/* ---- M-1. 例外：三個查閱頁的行內徽章鈕，維持正式版密度 ----
+ * 本檔開頭的範圍聲明寫著藥物資料庫／抗生素／菌譜三頁的 dc-*／db-*／cov-* 元件
+ * 「不在此檔動它們」，但上面那條通用安全網只挑 <button>，不看 class，
+ * 於是把這三頁**當徽章用的按鈕**全部撐成 45px 見方——那些是文字標籤，
+ * 不是版面上的主要控制項，撐高之後整份清單鬆散到不能看。使用者實機回報：
+ * 「抗生素與藥物的各個項目與 badge 太高了，排版疏鬆，原正式版的高度較佳」。
+ *
+ * 實測（1280px，中位數，正式版 → 造句設計・修正前）：
+ *   抗生素指引  菌譜徽章 cov-tag   20.1 → 45   (+24.9)
+ *               類別徽章 dc-class    19 → 45   (+26)
+ *               藥卡列首           82.2 → 128  (+45.8)   ← 徽章撐高整列
+ *               藥卡本體           84.2 → 130  (+45.8)
+ *               排序鈕               22 → 45   (+23)
+ *   藥物資料庫  分類方磚 db-cat      31 → 45   (+14)
+ *               機轉籤 db-clschip    22 → 45   (+23)
+ *               更多鈕 db-clsmore    21 → 45   (+24)
+ *               藥卡列首             46 → 67   (+21)
+ * 這一段把它們放回各自 CSS 原本的尺寸（min-height/min-width 歸零，padding
+ * 與字級本來就沒被本檔改過，因此結果等於正式版高度）。
+ *
+ * 代價要講清楚：這九類元件在本設計下不再滿足 ≥44px 觸控目標，是**明知而為**
+ * 的取捨——使用者兩度指名要正式版的密度，而它們在正式版本來就是這個尺寸、
+ * 一直是這樣用的。cdp.py small_targets() 因此會在這三頁報出這些元件，
+ * 那是預期內的，不是回歸。真正的主要控制項（搜尋框、分頁鈕、模式鈕、
+ * 新增藥物等）仍留在上面的通用規則裡，不在這份例外名單內。 */
+/* 選擇器一律寫成 `button.xxx` 而不是 `.xxx`：上面那條安全網是
+   `[data-ui="sentence"] button:not(.ui-mode-toggle)`，特異度 (0,2,1)——
+   屬性 1 ＋ :not() 裡的 class 1 ＋ 元素 1。只寫 `[data-ui="sentence"] .db-cat`
+   是 (0,2,0)，寫在後面也蓋不過去（第一版就是這樣寫的，量出來 db-cat 仍是 45px）。
+   補上元素選擇器打成平手，再靠出現在後面取勝。 */
+[data-ui="sentence"] button.cov-tag,
+[data-ui="sentence"] button.dc-class,
+[data-ui="sentence"] button.drug-chip,
+[data-ui="sentence"] button.abx-sortbtn,
+[data-ui="sentence"] button.db-cat,
+[data-ui="sentence"] button.db-clschip,
+[data-ui="sentence"] button.db-clsmore {
+  min-height: 0; min-width: 0;
+}
+
 /* 通用 checkbox／radio：appearance:none 自畫方塊／圓點，量到的 <input>
    元素本身就是 45×45，視覺記號維持 20px 密度。不靠外層 label 撐熱區——
    cdp.py 的 small_targets() 逐一量每個 <input>，外層 label 再大也救不了
@@ -806,3 +889,859 @@
 [data-ui="sentence"] .nav-toggle { width: 44px; height: 44px; }
 [data-ui="sentence"] .nav-group-fold { width: 44px; min-height: 44px; }
 [data-ui="sentence"] .nav-item { min-height: 44px; padding-top: 9px; padding-bottom: 9px; }
+
+/* ================================================================
+ * O. 造句導覽本體（第 2a 段：js/sentence-nav.js）
+ * ================================================================
+ * 兩個進場點，DOM 都由 js/sentence-nav.js 動態插入（正式版模式下完全不存在）：
+ *   · #sentHome  —— 首頁（index.html）唯一整頁換掉的地方：句子造句列取代
+ *                    六大類方磚，插在搜尋框之前，一律用文件流排版。
+ *   · #sentTrail —— 107 個工具／流程頁：插在 .app-header 之後的唯讀句子軌跡，
+ *                    同樣是文件流（不是 fixed 疊層），內容自然被推開，
+ *                    parity.py 規則 B 要求的「不可遮住／不可造成橫向溢出」
+ *                    因此是版面結構本身保證的。
+ * 兩者最外層都帶 data-ui-chrome，parity.py 規則 A 逐字比對時整棵排除。
+ * 觸控目標：<button> 已被上面 M 段的通用規則覆蓋到 ≥45px，這裡只需要另外
+ * 處理 <a>（M 段只挑 button/input/select，不含 a）。
+ */
+
+/* ---- 首頁換場：搜尋框／六大類方磚整段隱藏，讓 #sentHome 取代它們的版位 ----
+ * 只用 display:none 換版位，不刪節點、不改 markup——關掉造句設計（移除
+ * data-ui 屬性）時，#gs-home／#gs-results／#home-body 原樣還在、原樣顯示，
+ * js/search.js／首頁其餘互動完全不受影響。index.html 是 parity.py 規則 A
+ * 唯一的例外頁（見該檔檔頭「首頁是唯一例外」），這裡的整頁換場正是
+ * briefs/PHASE2-SENTENCE-NAV.md 明訂「首頁在造句模式下顯示句子列」的交付物本身，
+ * 不適用「內容區逐字不變」。 */
+[data-ui="sentence"] #gs-home,
+[data-ui="sentence"] #gs-results,
+[data-ui="sentence"] #home-body {
+  display: none;
+}
+
+/* ---- 詞塊／空格插槽／連接詞（首頁大字 vs 目標頁唯讀軌跡，兩者分開） ---- */
+/* ────────────────────────────────────────────────────────────────────────
+   §1 詞塊／空格插槽／連接詞
+   取代原 843–874 行。首頁（.sent-*）走大字級襯線，目標頁（.st-*）原樣保留。
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* ---- 目標頁唯讀軌跡：值與併入前完全相同，只是從共用選擇器裡拆出來 ---- */
+[data-ui="sentence"] .st-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-family: var(--sentence-sans); font-size: 13px; color: var(--sentence-fg);
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2);
+  border-radius: 0; margin: 3px 4px 3px 0;
+  padding: 4px 10px; min-height: 32px;
+}
+[data-ui="sentence"] .st-chip-tool { border-color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] .st-lx {
+  font-family: var(--sentence-serif); font-size: 13px; color: var(--sentence-dim);
+  margin: 0 2px;
+}
+
+/* ---- 首頁句子列：全站唯一的大字（原型 css/sentence.css .sent／.slot／.chip） ----
+ * 面向記號一律走底線樣式，不靠顏色：主體＝實線、狀況＝虛線、動作＝雙線、
+ * 範圍＝點線。色弱與黑白列印下仍分得出這一格是哪個面向。 */
+[data-ui="sentence"] .sent-row .f-s { border-bottom: 3px solid currentColor; }
+[data-ui="sentence"] .sent-row .f-c { border-bottom: 3px dashed currentColor; }
+[data-ui="sentence"] .sent-row .f-a { border-bottom: 3px double currentColor; }
+[data-ui="sentence"] .sent-row .f-g { border-bottom: 3px dotted currentColor; }
+
+[data-ui="sentence"] .sent-slot {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 46px; min-width: 46px; padding: 0 12px;
+  font-family: var(--sentence-sans);
+  font-size: max(14px, .46em);          /* 跟著 .sent-row 的大字級一起長 */
+  letter-spacing: .08em;
+  color: var(--sentence-dim);
+  background: transparent;
+  border: 1.5px dashed var(--sentence-line2);
+  border-radius: 0;
+  transition: color var(--sentence-fast) var(--sentence-ease),
+              background var(--sentence-fast) var(--sentence-ease),
+              border-color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-slot:hover {
+  color: var(--sentence-fg); background: var(--sentence-shade); border-color: var(--sentence-fg);
+}
+/* ▢ 跟著 .sent-slot 的 sans 走（原型 css/sentence.css .slot .box 只設 font-size）——
+   併入前這條掛的是 --sentence-mono，同一個字元在等寬字裡會被畫成另一種方框，
+   跟原型看起來不是同一顆記號 */
+[data-ui="sentence"] .ss-box { font-size: 1.05em; }
+
+[data-ui="sentence"] .sent-chip {
+  display: inline-flex; align-items: stretch; max-width: 100%;
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg);
+  border: 0; border-radius: 0; padding: 0; margin: 0;
+}
+[data-ui="sentence"] .sent-chip.f-s,
+[data-ui="sentence"] .sent-chip.f-c,
+[data-ui="sentence"] .sent-chip.f-a,
+[data-ui="sentence"] .sent-chip.f-g { border-bottom-color: var(--sentence-line2); }
+[data-ui="sentence"] .sc-w {
+  min-height: 46px; min-width: 46px; padding: 2px 4px 2px 10px;
+  display: inline-flex; align-items: center;
+  background: transparent; border: 0; color: inherit;
+  font-family: var(--sentence-serif); font-size: inherit; letter-spacing: .06em;
+  white-space: normal; overflow-wrap: anywhere; text-align: left;
+}
+[data-ui="sentence"] .sc-x {
+  min-height: 46px; min-width: 46px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; color: inherit; opacity: .72;
+  font-family: var(--sentence-mono); font-size: 15px; padding: 0;
+}
+[data-ui="sentence"] .sc-x:hover { opacity: 1; background: rgba(128, 128, 128, .28); color: inherit; }
+[data-ui="sentence"] .sent-lx {
+  font-family: var(--sentence-serif); font-size: inherit; font-weight: 400;
+  color: var(--sentence-dim); margin: 0;
+}
+
+/* ---- 首頁：#sentHome ---- */
+[data-ui="sentence"] .sent-home { margin: 6px 0 18px; }
+
+/* 造句列＝左邊一顆 ⌕ 說整句 ＋ 右邊句子本體（原型 css/sentence.css .rail） */
+[data-ui="sentence"] .sent-rail {
+  display: flex; align-items: flex-start; gap: 10px;
+  border-top: 2px solid var(--sentence-fg);
+  border-bottom: 1px solid var(--sentence-line2);
+  padding: 12px 0 10px; margin-bottom: 10px;
+}
+[data-ui="sentence"] .sent-say-btn {
+  flex: 0 0 auto; align-self: flex-start;
+  min-height: 46px; min-width: 46px; padding: 0 12px;
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); font-family: var(--sentence-mono);
+  font-size: 10px; letter-spacing: .12em;
+}
+[data-ui="sentence"] .sent-say-btn:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] .sent-say-btn .mag { font-size: 15px; line-height: 1; }
+[data-ui="sentence"] .sent-say-btn[aria-expanded="true"] {
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); border-color: var(--sentence-inv-bg);
+}
+
+/* 句子本體：全站唯一的大字 */
+[data-ui="sentence"] .sent-row {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
+  font-family: var(--sentence-serif);
+  font-size: clamp(18px, 4.4vw, 28px);
+  line-height: 1.35; letter-spacing: .05em;
+  color: var(--sentence-fg);
+  border: 0; padding: 0; margin: 0;
+}
+
+/* 說整句面板攤開時，句子與底下的常用句／清單先讓位，避免同一組字重複出現在兩處 */
+[data-ui="sentence"] .sent-home.asking .sent-row,
+[data-ui="sentence"] .sent-home.asking .sent-hubs-zone,
+[data-ui="sentence"] .sent-home.asking .sent-results,
+[data-ui="sentence"] .sent-home.asking .sent-point { display: none; }
+
+[data-ui="sentence"] .sent-ask { padding: 10px 0 4px; }
+[data-ui="sentence"] .sent-ask-in {
+  width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px;
+  background: var(--sentence-bg); color: var(--sentence-fg);
+  border: 1px solid var(--sentence-fg); border-radius: 0;
+  font-family: var(--sentence-sans); font-size: 15px;
+}
+[data-ui="sentence"] .sent-ask-list { margin-top: 8px; max-height: 60vh; overflow-y: auto; }
+[data-ui="sentence"] .sent-ask-hint {
+  font-family: var(--sentence-mono); font-size: 11px; line-height: 1.7; color: var(--sentence-dim);
+  padding: 6px 0;
+}
+[data-ui="sentence"] .sent-ask-fuzzy { color: var(--sentence-warn); }
+[data-ui="sentence"] .sent-ask-item {
+  display: flex; flex-direction: column; gap: 2px;
+  min-height: 46px; box-sizing: border-box; padding: 8px 10px;
+  border-bottom: 1px solid var(--sentence-line); text-decoration: none;
+}
+[data-ui="sentence"] .sent-ask-item:hover,
+[data-ui="sentence"] .sent-ask-item.sel { background: var(--sentence-shade); }
+[data-ui="sentence"] .sai-say {
+  font-family: var(--sentence-serif); font-size: 15px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .sai-say em { font-style: normal; color: var(--sentence-fg); }
+[data-ui="sentence"] .sai-arw { color: var(--sentence-dim); }
+[data-ui="sentence"] .sai-meta {
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+}
+
+/* 一行極小註腳（原本壓在句子上方那整段灰色免責文字的替代品） */
+[data-ui="sentence"] .sent-foot-note {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em;
+  color: var(--sentence-dim); padding: 14px 0 0;
+}
+[data-ui="sentence"] .sent-panel {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 10px 12px; margin-bottom: 14px;
+}
+[data-ui="sentence"] .sent-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--sentence-dim); margin-bottom: 8px;
+}
+[data-ui="sentence"] .sent-panel-close {
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-fg); padding: 0 10px;
+}
+[data-ui="sentence"] .sent-panel-body {
+  display: flex; flex-wrap: wrap; gap: 6px; max-height: 46vh; overflow-y: auto;
+}
+[data-ui="sentence"] .sent-tok {
+  font-family: var(--sentence-sans); font-size: 12.5px; color: var(--sentence-fg);
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 0 6px 0 10px; display: inline-flex; align-items: center; gap: 6px; min-height: 40px;
+}
+[data-ui="sentence"] .sent-tok:hover { border-color: var(--sentence-fg); }
+[data-ui="sentence"] .sent-tok.cur { background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); border-color: var(--sentence-inv-bg); }
+[data-ui="sentence"] .sent-tok i {
+  font-style: normal; font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 1px 5px;
+}
+[data-ui="sentence"] .sent-tok.cur i { color: inherit; border-color: var(--sentence-inv-fg); opacity: .8; }
+[data-ui="sentence"] .sent-tok-empty { font-family: var(--sentence-mono); font-size: 11.5px; color: var(--sentence-dim); }
+
+[data-ui="sentence"] .sent-point {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .1em;
+  color: var(--sentence-dim);
+  border-top: 1px solid var(--sentence-line);
+  padding: 9px 0 8px; margin-bottom: 4px;
+}
+[data-ui="sentence"] .sent-point-n b { color: var(--sentence-fg); font-weight: 700; font-size: 14px; }
+[data-ui="sentence"] .sent-point-hint { letter-spacing: .04em; }
+[data-ui="sentence"] .sent-clear {
+  margin-left: auto;
+  min-height: 44px; padding: 0 12px;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sent-clear:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] .sent-relax {
+  flex-basis: 100%; font-family: var(--sentence-sans); font-size: 11.5px; line-height: 1.6;
+  color: var(--sentence-warn); border-left: 3px solid var(--sentence-warn); padding-left: 8px;
+}
+[data-ui="sentence"] .sent-relax-empty { color: var(--sentence-hot); border-left-color: var(--sentence-hot); }
+[data-ui="sentence"] .sent-empty { font-family: var(--sentence-sans); font-size: 12.5px; color: var(--sentence-dim); padding: 10px 0; }
+
+[data-ui="sentence"] .sent-group { margin-bottom: 16px; }
+[data-ui="sentence"] .sent-group-head {
+  display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--sentence-fg);
+  padding-bottom: 5px; margin-bottom: 6px;
+}
+[data-ui="sentence"] .sgh-zh { font-family: var(--sentence-serif); font-size: 14.5px; font-weight: 500; color: var(--sentence-fg); }
+[data-ui="sentence"] .sgh-en { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+[data-ui="sentence"] .sent-subgroup { margin-bottom: 8px; }
+[data-ui="sentence"] .sent-subgroup-name {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .08em; color: var(--sentence-dim);
+  margin: 6px 0 3px;
+}
+[data-ui="sentence"] .sent-hit {
+  display: inline-flex; flex-direction: column; justify-content: center; gap: 1px;
+  min-height: 44px; min-width: 44px; box-sizing: border-box;
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 6px 11px; margin: 0 6px 6px 0; text-decoration: none;
+  transition: border-color var(--sentence-fast) var(--sentence-ease), background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-hit:hover { border-color: var(--sentence-fg); background: var(--sentence-shade); }
+[data-ui="sentence"] .sh-name { font-family: var(--sentence-sans); font-size: 13px; color: var(--sentence-fg); }
+[data-ui="sentence"] .sh-en { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+
+/* ---- 目標頁：#sentTrail（插在 .app-header 之後，文件流，內容被推開不被蓋住） ---- */
+[data-ui="sentence"] .sent-trail {
+  background: transparent; border: 0;
+  border-bottom: 1px solid var(--sentence-line);
+  padding: 6px 0 8px; margin: 10px 0 14px;
+  max-width: 100%; box-sizing: border-box; overflow-wrap: break-word;
+}
+[data-ui="sentence"] .st-rail { display: flex; align-items: flex-start; gap: 10px; }
+[data-ui="sentence"] .sent-fold {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column; align-items: stretch;
+  min-height: 46px; padding: 4px 2px; gap: 3px;
+  text-align: left; color: var(--sentence-fg);
+  background: transparent; border: 0; border-radius: 0;
+  border-bottom: 1.5px dashed var(--sentence-line2);
+}
+[data-ui="sentence"] .sent-fold .sf-line1 {
+  font-family: var(--sentence-serif); font-size: clamp(11.5px, 3.4vw, 13.5px);
+  letter-spacing: .03em; color: var(--sentence-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+[data-ui="sentence"] .sent-fold .sf-line1:empty { display: none; }
+[data-ui="sentence"] .sent-fold .sf-line2 {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0;
+}
+[data-ui="sentence"] .sent-fold .sf-arrow { flex: 0 0 auto; color: var(--sentence-dim); }
+[data-ui="sentence"] .sent-fold .sf-tool {
+  flex: 1 1 auto; min-width: 0;
+  font-family: var(--sentence-serif); font-size: clamp(15px, 4.6vw, 18px);
+  font-weight: 600; letter-spacing: .03em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+[data-ui="sentence"] .sent-fold .sf-chev {
+  flex: 0 0 auto;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .08em;
+  color: var(--sentence-dim);
+}
+[data-ui="sentence"] .st-full { padding-top: 8px; }
+[data-ui="sentence"] .st-line { display: flex; flex-wrap: wrap; align-items: center; }
+/* 誠實標示：內容沒有變少，只是壓成一行極小字，不再比句子本身還重 */
+[data-ui="sentence"] .st-honest {
+  font-family: var(--sentence-mono); font-size: 9.5px; line-height: 1.6;
+  letter-spacing: .04em; color: var(--sentence-dim);
+  margin: 0; padding: 2px 0 0; border: 0;
+}
+/* 軌跡裡的指向行不再自己畫上緣線——上面那條虛線（.sent-fold 的 border-bottom）
+   已經是分隔，兩條線疊在一起只是噪音 */
+[data-ui="sentence"] .sent-trail .sent-point {
+  border-top: 0; padding: 7px 0 2px; margin-bottom: 0;
+}
+[data-ui="sentence"] .sent-trail.asking .st-rail .sent-fold,
+[data-ui="sentence"] .sent-trail.asking .st-full,
+[data-ui="sentence"] .sent-trail.asking .sent-point,
+[data-ui="sentence"] .sent-trail.asking .st-honest { display: none; }
+
+
+/* ---- 值班常用句六格（空句子＝主選單） ---- */
+[data-ui="sentence"] .sent-hubs-h {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--sentence-dim); padding: 12px 0 6px;
+}
+[data-ui="sentence"] .sent-hubs {
+  display: grid; gap: 1px;
+  background: var(--sentence-line);
+  border: 1px solid var(--sentence-line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 700px)  { [data-ui="sentence"] .sent-hubs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1050px) { [data-ui="sentence"] .sent-hubs { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+[data-ui="sentence"] .sent-hub {
+  background: var(--sentence-bg);
+  min-height: 72px; padding: 9px 10px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  text-align: left; border: 0; border-radius: 0; color: var(--sentence-fg);
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-hub:hover { background: var(--sentence-bg2); }
+[data-ui="sentence"] .shb-say  { font-family: var(--sentence-mono); font-size: 9px; letter-spacing: .16em; color: var(--sentence-dim); }
+[data-ui="sentence"] .shb-zh   { font-family: var(--sentence-serif); font-size: 17px; letter-spacing: .08em; }
+[data-ui="sentence"] .shb-en   { font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em; color: var(--sentence-dim); }
+[data-ui="sentence"] .shb-sub  { font-family: var(--sentence-sans); font-size: 10.5px; color: var(--sentence-fg2); line-height: 1.4; }
+
+/* ---- 「怎麼用？」摺疊 ＋ 三軌熱門詞 ---- */
+[data-ui="sentence"] .sent-empty-state { padding: 6px 0 8px; }
+[data-ui="sentence"] .sent-howto { margin-bottom: 10px; }
+[data-ui="sentence"] .sent-howto > summary {
+  min-height: 44px; display: flex; align-items: center;
+  font-family: var(--sentence-sans); font-size: 13px; letter-spacing: .04em;
+  color: var(--sentence-fg2); background: transparent;
+  border-left: 4px solid var(--sentence-line2); padding: 4px 0 4px 12px;
+  cursor: pointer; list-style: none;
+}
+[data-ui="sentence"] .sent-howto > summary::-webkit-details-marker { display: none; }
+[data-ui="sentence"] .sent-howto > summary::before { content: "▸ "; color: var(--sentence-dim); }
+[data-ui="sentence"] .sent-howto[open] > summary::before { content: "▾ "; }
+[data-ui="sentence"] .sent-howto > summary:hover { color: var(--sentence-fg); border-left-color: var(--sentence-fg); }
+[data-ui="sentence"] .sent-howto-body {
+  font-family: var(--sentence-sans); font-size: 13px; line-height: 1.7; color: var(--sentence-fg2);
+  border-left: 4px solid var(--sentence-line2); padding: 6px 0 4px 12px; margin-top: 2px;
+  max-width: 58ch;
+}
+[data-ui="sentence"] .sent-es-slot {
+  border-top: 1px solid var(--sentence-line); margin-top: 16px; padding-top: 8px;
+}
+[data-ui="sentence"] .sent-es-h {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--sentence-dim); padding-bottom: 6px;
+}
+[data-ui="sentence"] .sent-es-words { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---- 畫面下緣固定列 ---- */
+[data-ui="sentence"] .sent-mbar { display: none; }
+@media (max-width: 680px) {
+  [data-ui="sentence"] .sent-mbar {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    background: var(--sentence-line); gap: 1px;
+    border-top: 1px solid var(--sentence-line);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  [data-ui="sentence"] .smb-btn {
+    flex: 1 1 33.33%; min-height: 50px;
+    background: var(--sentence-bg); color: var(--sentence-fg);
+    border: 0; border-radius: 0;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em;
+  }
+  [data-ui="sentence"] .smb-btn:active { background: var(--sentence-shade); }
+  [data-ui="sentence"] .smb-btn[disabled] { opacity: .4; }
+  [data-ui="sentence"] .smb-btn[disabled]:active { background: var(--sentence-bg); }
+  [data-ui="sentence"] body:has(#sentBar) { padding-bottom: 72px; }
+}
+
+/* ================================================================
+ * P. 癌症頁（tools/cancer.html）—— js/cancer-staging.js 與各
+ *    js/*-pathway.js（30 個癌別共用同一套 markup 慣例）專屬元件
+ * ================================================================
+ * 這一頁的內容由 js/cancer-staging.js 動態產生，用的是它自己的一套
+ * class（.onc-*／.tx-*／.rx-*／.node-item／.smx 表格…），A–N 段打的是
+ * 全站共用的 markup 慣例，打不到這裡——這一段才是這一頁真正吃到樣式的地方。
+ *
+ * 隱形文字根因（使用者實機回報）：cancer-staging.css 的 .rx-h／.rx／.drug／
+ * .cb／.cbx-h／.rx-def／.rx-warn／.rx-line／.rx-panel-h／.pt1-flow .pt1-node
+ * 這些「建議處置色塊內的療程徽章」樣式，原本是為正式版 .flow-rec 的**實色
+ * 深底**（rec-elective 等變體 background:#123028 這類）設計的半透明淺色／
+ * 白字。但本設計的 .flow-rec 不分 rec-urgent/elective/nonop/blue，一律是
+ * --sentence-bg2 骨白底（見 I 段）——那組白字／半透明白底疊在骨白上等於
+ * 白紙畫白字。用 getComputedStyle 量過字色 vs 沿父鏈找到的實際背景色，
+ * 確認 .rx-h／.rx 對比 <1.5（幾乎隱形，胃癌 M1 系統性治療段：FOLFOX／CAPOX／
+ * FP／HDFL／化療骨架 BACKBONE／一線 1ST LINE…），P7 修掉；其餘同一系統的
+ * 徽章（.drug／.cb／.rx-def／.rx-warn／.rx-line／.pt1-node）本身不到「隱形」
+ * 門檻（文字色其實繼承自 .rec-detail li 的 --sentence-fg2，本來就讀得到），
+ * 但半透明白色的底／框在骨白背景上等於沒畫，看起來像沒套用設計——一併在
+ * P7–P10 換成看得見的骨白／墨色框線，同時解決「問題 2：整段沒有套到設計
+ * 語言」在追蹤與支持治療區塊（P9）之外，同一類元件也存在的部分。
+ *
+ * 特異度策略：下面涉及 .rec-detail 內部徽章的規則，選擇器一律寫到
+ * `.flow-rec .rec-detail X`（屬性選擇器 + 2 個祖先 class + 目標 class
+ * = 4 個 class 當量），用意是打平 cancer-staging.css 對應的
+ * `.flow-rec.rec-idle .rec-detail X` 系列規則（同樣 4 個 class 疊起來的
+ * 特異度）——兩者打平後，靠本檔在 <head> 內排在 cancer-staging.css 之後
+ * 勝出（來源順序，不用 !important）。用 `.flow-rec .rec-detail X`（不寫
+ * 中間的 .rx-line／.rx-panel／.cbx-items 等包裝層 class）是刻意的：
+ * CSS 子孫選擇器不管中間隔幾層，只要祖先鏈都命中就算數，不必窮舉每一種
+ * 包裝方式（各癌別的 *-pathway.js 包裝法不盡相同，見下面各節開頭的來源
+ * 清單）。同一批 class 若出現在 .flow-rec 之外（.tx-body 靜態卡片、
+ * .crc-supp 補充面板），另外各寫一條同深度的規則，不共用選擇器。
+ * ================================================================ */
+
+/* ---- P1. 癌別詳情頁頭（.onc-back／.onc-title／.onc-edition／.onc-note／.onc-sec-h／.onc-wip）---- */
+[data-ui="sentence"] .onc-back {
+  font-family: var(--sentence-mono); font-size: 11px; background: transparent;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 0 12px;
+  min-height: 44px; display: inline-flex; align-items: center; color: var(--sentence-fg);
+  margin-bottom: 12px;
+}
+[data-ui="sentence"] .onc-back:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+/* .onc-title 本身是 <h2 class="onc-title">，已被 A 段的通用
+   `[data-ui="sentence"] h2` 規則（clamp(18px,3.6vw,22px)）蓋過
+   ——attribute+type 的特異度比 cancer-staging.css 的 .onc-title 單一
+   class 高，這裡只需補它的英文病名子節點 .oct-en（cancer-staging.css
+   對它的顏色是 --muted-soft，正式版變數，不隨本檔調色）。 */
+[data-ui="sentence"] .onc-title .oct-en { font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); font-weight: 400; }
+[data-ui="sentence"] .onc-edition {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .04em;
+  color: var(--sentence-dim); background: transparent; border: 1px solid var(--sentence-line2);
+  border-radius: 0; padding: 2px 9px; display: inline-block; margin: 8px 0 4px;
+}
+[data-ui="sentence"] .onc-note { font-size: 12px; line-height: 1.7; color: var(--sentence-fg2); margin: 8px 0; }
+[data-ui="sentence"] .onc-note b { color: var(--sentence-fg); }
+[data-ui="sentence"] .onc-sec-h {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--sentence-dim); margin: 18px 0 8px; border-bottom: 1px solid var(--sentence-line); padding-bottom: 4px;
+}
+[data-ui="sentence"] .onc-wip {
+  font-family: var(--sentence-mono); font-size: 12.5px; letter-spacing: .06em; color: var(--sentence-dim);
+  border: 1px dashed var(--sentence-line2); border-radius: 0; padding: 36px 16px; text-align: center; margin-top: 14px;
+}
+[data-ui="sentence"] .onc-group-head {
+  font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sentence-dim); border-bottom: 1px solid var(--sentence-line); padding-bottom: 5px; font-weight: 400;
+}
+[data-ui="sentence"] .onc-empty { color: var(--sentence-dim); font-family: var(--sentence-mono); font-size: 12.5px; }
+/* 這一頁是可瀏覽的分期／淋巴結參考表，不是單一數值的計分結論——沒有一個
+   天然的「巨大數字」。比照 B 段既有的 #view-classifications／#view-emerg-op
+   降級手法（同一份說明見 B 段那三行），把本頁 h1 降到本頁真正的臨床內容
+   （下面 .rec-title 24–34px、.onc-title 18–22px、静態卡片版 .tx-label 見
+   P6）之下。新增獨立規則，不動 B 段既有那條多 id 並列的選擇器一個字。
+   用固定 16px（不用 clamp）：.onc-title 的 h2 規則下限是 18px，兩條若都用
+   同一個 3.6vw 係數的 clamp，理論上在某個中段視窗寬度會打平（見交付說明），
+   固定值可以完全避開這個問�，390／1440 兩個檢核點皆確認 16 < 18。 */
+[data-ui="sentence"] #view-cancer .app-header h1 { font-size: 16px; letter-spacing: .04em; }
+
+/* ---- P2. 分頁列（分期 TNM／淋巴結分群／治療建議）---- */
+[data-ui="sentence"] .onc-tabs { border-bottom: 2px solid var(--sentence-fg); gap: 6px; margin: 14px 0 18px; }
+[data-ui="sentence"] .onc-tab {
+  font-family: var(--sentence-mono); font-size: 12px; letter-spacing: .03em;
+  background: transparent; border: 1px solid var(--sentence-line2); border-bottom: none; border-radius: 0;
+  padding: 9px 6px; min-height: 44px; color: var(--sentence-dim); top: 2px; position: relative;
+}
+[data-ui="sentence"] .onc-tab:hover { background: var(--sentence-shade); color: var(--sentence-fg); }
+[data-ui="sentence"] .onc-tab.active {
+  color: var(--sentence-fg); background: var(--sentence-bg2); border-color: var(--sentence-fg); font-weight: 700;
+}
+
+/* ---- P3. 分期表格（table.tnm／table.stage／table.smx 矩陣）---- */
+[data-ui="sentence"] table.tnm, [data-ui="sentence"] table.stage, [data-ui="sentence"] table.smx {
+  font-family: var(--sentence-mono); font-size: 12px; border-collapse: collapse; margin: 6px 0 12px;
+}
+[data-ui="sentence"] table.tnm td { padding: 6px 8px; border-bottom: 1px dotted var(--sentence-line); color: var(--sentence-fg2); vertical-align: top; }
+[data-ui="sentence"] table.tnm td:first-child { color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] table.stage th {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--sentence-dim); text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--sentence-fg);
+}
+[data-ui="sentence"] table.stage td { padding: 6px 8px; border-bottom: 1px dotted var(--sentence-line); color: var(--sentence-fg2); vertical-align: top; }
+[data-ui="sentence"] table.stage td:first-child { color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] table.stage.stage-map td.st-c1 { color: var(--sentence-fg); }
+[data-ui="sentence"] table.tnm.tnm-figo th { color: var(--sentence-dim); font-weight: 400; }
+
+/* 分期深淺著色：改吃 calm→warn→hot 三色漸層（I–II 期＝calm、III 期＝warn、
+   IV 期＝hot），不再用正式版的 --accent（藍綠色，未被本檔調色，與骨白墨
+   綠的整體色調不同系，屬於「問題 2：沒套到設計語言」的一部分）。分期本身
+   仍是「文字（儲存格內印著的羅馬數字期別，如 IIIA／IV）＋ 色」雙重編碼，
+   色只是輔助掃讀用，不是唯一線索。 */
+[data-ui="sentence"] .sm-s0 { background: transparent; color: var(--sentence-dim); }
+[data-ui="sentence"] .sm-s1 { background: color-mix(in srgb, var(--sentence-calm) 14%, var(--sentence-bg)); color: var(--sentence-fg); }
+[data-ui="sentence"] .sm-s2 { background: color-mix(in srgb, var(--sentence-calm) 28%, var(--sentence-bg)); color: var(--sentence-fg); }
+[data-ui="sentence"] .sm-s3 { background: color-mix(in srgb, var(--sentence-warn) 24%, var(--sentence-bg)); color: var(--sentence-fg); }
+[data-ui="sentence"] .sm-s4 { background: color-mix(in srgb, var(--sentence-warn) 40%, var(--sentence-bg)); color: var(--sentence-fg); }
+[data-ui="sentence"] .sm-s5 { background: color-mix(in srgb, var(--sentence-warn) 62%, var(--sentence-bg)); color: var(--sentence-fg); }
+[data-ui="sentence"] .sm-s6 { background: color-mix(in srgb, var(--sentence-hot) 58%, var(--sentence-bg)); color: var(--sentence-inv-fg); }
+[data-ui="sentence"] .sm-s7 { background: var(--sentence-hot); color: var(--sentence-inv-fg); }
+[data-ui="sentence"] table.stage td.st-code.sm-s4, [data-ui="sentence"] table.stage td.st-code.sm-s5,
+[data-ui="sentence"] table.stage td.st-code.sm-s6, [data-ui="sentence"] table.stage td.st-code.sm-s7,
+[data-ui="sentence"] table.tnm.tnm-figo td.tf-figo.sm-s4, [data-ui="sentence"] table.tnm.tnm-figo td.tf-figo.sm-s5,
+[data-ui="sentence"] table.tnm.tnm-figo td.tf-figo.sm-s6, [data-ui="sentence"] table.tnm.tnm-figo td.tf-figo.sm-s7 { color: var(--sentence-inv-fg); }
+[data-ui="sentence"] table.tnm.tnm-figo td.tf-figo { font-family: var(--sentence-mono); }
+
+[data-ui="sentence"] .smx .sm-corner, [data-ui="sentence"] .smx .sm-nh, [data-ui="sentence"] .smx .sm-ng {
+  background: var(--sentence-bg2); color: var(--sentence-dim);
+}
+[data-ui="sentence"] .smx .sm-nh span { color: var(--sentence-dim); }
+[data-ui="sentence"] .smx .sm-th { color: var(--sentence-fg); background: var(--sentence-bg2); }
+[data-ui="sentence"] table.smx th, [data-ui="sentence"] table.smx td { border-color: var(--sentence-line); }
+[data-ui="sentence"] .smx tr.sm-mrow th.sm-nth { color: var(--sentence-dim); }
+[data-ui="sentence"] .smx tr.sm-mrow th.sm-mth { color: var(--sentence-fg); }
+[data-ui="sentence"] .smx tr.sm-mrow:first-of-type td, [data-ui="sentence"] .smx tr.sm-mrow:first-of-type th { border-top: 2px solid var(--sentence-fg); }
+[data-ui="sentence"] .sm-m1 {
+  font-size: 12px; color: var(--sentence-fg2); background: var(--sentence-bg2); border: 1px solid var(--sentence-line2);
+  border-left: 4px solid var(--sentence-fg); border-radius: 0; padding: 8px 11px; margin-top: 6px;
+}
+[data-ui="sentence"] .sm-m1 b { color: var(--sentence-fg); font-family: var(--sentence-mono); }
+[data-ui="sentence"] .sm-legend { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); gap: 8px 14px; }
+[data-ui="sentence"] .sm-legend i { border: 1px solid var(--sentence-line2); border-radius: 0; }
+
+/* ---- P4. 淋巴結分群（.nd-*／.node-item／.node-group／.dl-*／.ni-*）---- */
+[data-ui="sentence"] .onc-subtype { border-left: 4px solid var(--sentence-fg); background: var(--sentence-bg2); border-radius: 0; }
+[data-ui="sentence"] .onc-subtype .nd-h { color: var(--sentence-fg); }
+[data-ui="sentence"] .nd-ctrl { background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0; padding: 10px 12px; margin: 8px 0 10px; }
+[data-ui="sentence"] .nd-h { font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--sentence-dim); }
+[data-ui="sentence"] .nd-btn {
+  font-family: var(--sentence-mono); font-size: 11.5px; background: var(--sentence-bg); border: 1px solid var(--sentence-line2);
+  border-radius: 0; padding: 6px 10px; min-height: 40px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .nd-btn:hover { border-color: var(--sentence-fg); background: var(--sentence-shade); }
+[data-ui="sentence"] .nd-btn.active { background: var(--sentence-inv-bg); border-color: var(--sentence-inv-bg); color: var(--sentence-inv-fg); font-weight: 700; }
+[data-ui="sentence"] .nd-def {
+  font-family: var(--sentence-mono); font-size: 11.5px; line-height: 1.65; color: var(--sentence-fg2);
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-fg);
+  border-radius: 0; padding: 8px 11px; margin-bottom: 10px;
+}
+
+[data-ui="sentence"] .node-item {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-line2);
+  border-radius: 0; padding: 8px 11px; margin-bottom: 6px; font-size: 12.5px; line-height: 1.55; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .node-item .ni-code { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); margin-right: 6px; }
+[data-ui="sentence"] .node-item .ni-en { font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); }
+[data-ui="sentence"] .node-group {
+  font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); background: transparent;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 1px 8px; margin-left: 6px; white-space: nowrap;
+}
+/* D 級（廓清範圍：D1／D1+／D2、必要／可省略、常規／條件／N+加做）本身不是
+   臨床嚴重度，是廓清範圍分類——D2 不代表比 D1「更危險」，只是範圍更大——
+   故不套用 hot/warn/calm（該三色依本檔開頭第 2 條鐵律保留給真正的嚴重度）。
+   等級差異已經由徽章上的文字本身（D1／D1+／D2…）承載，這裡再疊一層邊框
+   粗細當第二channel。dl-warn 是唯一例外：這一級原文命名就是「擴大」
+   （胰臟癌：標準／擴大），語意上真的是風險升高，才吃 warn 色。 */
+[data-ui="sentence"] .node-item.dl-1 { border-left-color: var(--sentence-fg); border-left-width: 3px; }
+[data-ui="sentence"] .node-item.dl-1p { border-left-color: var(--sentence-fg); border-left-width: 5px; }
+[data-ui="sentence"] .node-item.dl-2 { border-left-color: var(--sentence-fg); border-left-width: 8px; }
+[data-ui="sentence"] .node-item.dl-warn { border-left-color: var(--sentence-warn); border-left-width: 5px; }
+[data-ui="sentence"] .node-item.dl-none { border-left-color: var(--sentence-line2); border-left-style: dashed; opacity: .72; }
+[data-ui="sentence"] .node-group.dl-1, [data-ui="sentence"] .node-group.dl-1p, [data-ui="sentence"] .node-group.dl-2 {
+  color: var(--sentence-inv-fg); background: var(--sentence-inv-bg); border-color: var(--sentence-inv-bg);
+}
+[data-ui="sentence"] .node-group.dl-warn { color: var(--sentence-warn); background: transparent; border-color: var(--sentence-warn); font-weight: 700; }
+[data-ui="sentence"] .node-group.dl-none { color: var(--sentence-dim); background: transparent; border-style: dashed; }
+[data-ui="sentence"] .ni-reg {
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .04em; border-radius: 0;
+  padding: 1px 7px; margin-left: 5px; white-space: nowrap; color: var(--sentence-fg); border: 1px solid var(--sentence-line2);
+}
+[data-ui="sentence"] .ni-reg.is-m { color: var(--sentence-hot); border-color: var(--sentence-hot); }
+[data-ui="sentence"] .ni-alt { color: var(--sentence-dim); }
+[data-ui="sentence"] .ni-note { color: var(--sentence-dim); border-top: 1px dashed var(--sentence-line); }
+
+/* ---- P5. 判讀準則（Favorable／Unfavorable／High-risk、檢查清單、高風險特徵徽章）
+   來源：gastric（ESD 適應症）、colon（COL-1 息肉病理、COL-2 檢查清單、
+   COL-3 第 II 期高風險特徵）等——這批是 <div class="flow-step">…<div class="note">
+   或 step() 的 extra 參數內，本來就是淺底（.flow-step 是 I 段既有樣式），
+   不是隱形文字，這裡只是把顏色從正式版 --accent 系換成本設計的調色盤。 ---- */
+[data-ui="sentence"] .crit {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-line2);
+  border-radius: 0; padding: 8px 11px;
+}
+[data-ui="sentence"] .crit-h { font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .04em; }
+[data-ui="sentence"] .crit-h .crit-zh { font-family: var(--sentence-sans); font-weight: 600; color: var(--sentence-fg2); }
+[data-ui="sentence"] .crit ul, [data-ui="sentence"] .crit ol { color: var(--sentence-fg2); }
+[data-ui="sentence"] .crit-note { color: var(--sentence-dim); }
+/* 良好／不良預後因子與高風險特徵是真正的臨床嚴重度，套 calm／warn／hot，
+   ＋ 邊框粗細遞增 ＋ 標題本身既有的文字（FAVORABLE／UNFAVORABLE／HIGH RISK
+   FEATURES）三重編碼。 */
+[data-ui="sentence"] .crit-fav { border-left-color: var(--sentence-calm); border-left-width: 3px; }
+[data-ui="sentence"] .crit-fav .crit-h { color: var(--sentence-calm); }
+[data-ui="sentence"] .crit-unfav { border-left-color: var(--sentence-warn); border-left-width: 5px; }
+[data-ui="sentence"] .crit-unfav .crit-h { color: var(--sentence-warn); }
+[data-ui="sentence"] .crit-hr {
+  border-left-color: var(--sentence-hot); border-left-width: 7px;
+  background: color-mix(in srgb, var(--sentence-hot) 8%, var(--sentence-bg2));
+}
+[data-ui="sentence"] .crit-hr .crit-h { color: var(--sentence-hot); }
+
+[data-ui="sentence"] .cbx-h { font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700; color: var(--sentence-fg); }
+[data-ui="sentence"] .cbx-h .cbx-sub { font-family: var(--sentence-sans); font-weight: 600; color: var(--sentence-dim); }
+[data-ui="sentence"] .cb {
+  font-size: 11.5px; line-height: 1.6; border-radius: 0; padding: 1px 8px;
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-bottom: 2px solid var(--sentence-fg);
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .cb .cb-k { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); margin-right: 5px; }
+
+[data-ui="sentence"] .hrf {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-left: 5px solid var(--sentence-warn);
+  border-radius: 0; padding: 9px 11px;
+}
+[data-ui="sentence"] .hrf-h { font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700; color: var(--sentence-warn); }
+[data-ui="sentence"] .hrf-h .hrf-sub { font-family: var(--sentence-sans); font-weight: 600; color: var(--sentence-dim); }
+[data-ui="sentence"] .hrf-b {
+  font-size: 11.5px; line-height: 1.6; white-space: nowrap; border-radius: 0; padding: 1px 8px;
+  background: color-mix(in srgb, var(--sentence-warn) 16%, var(--sentence-bg2)); border: 1px solid var(--sentence-warn); color: var(--sentence-fg);
+}
+
+/* ---- P6. 治療區塊 —— 無互動流程之癌別（gist／anal／appendix／cca）的靜態卡片
+   （js/cancer-staging.js renderTx() 之 fallback：.tx／.tx-head／.tx-role／
+   .tx-label／.tx-body，c.tx 陣列直接渲染，非 *-pathway.js 產生）---- */
+[data-ui="sentence"] .tx {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 13px 15px; margin-bottom: 10px;
+}
+[data-ui="sentence"] .tx.neo, [data-ui="sentence"] .tx.surg, [data-ui="sentence"] .tx.adj, [data-ui="sentence"] .tx.sys {
+  border-left: 4px solid var(--sentence-fg);
+}
+[data-ui="sentence"] .tx-head { gap: 9px; margin-bottom: 6px; }
+[data-ui="sentence"] .tx-role {
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  border-radius: 0; padding: 2px 9px; color: var(--sentence-inv-fg); background: var(--sentence-inv-bg);
+}
+/* cancer-staging.css 對 .tx 卡片內的 .tx-role 另外依角色分底色（4 條
+   `.tx.neo/.surg/.adj/.sys .tx-role`，各 3 個 class 疊出的特異度），
+   比上面這條 attribute+1class 高，會贏。量過 `.tx.adj .tx-role`
+   （固定 #6b8f8a）配本檔 --sentence-inv-fg：亮色主題對比只有 2.999——
+   四種角色色只是分類（手術／術前輔助／術後輔助／轉移），不是嚴重度，
+   本檔不需要保留這四色，統一收回本檔的反轉配色即可。用同深度
+   （attribute + .tx + .tx-role 兩個 class）打平，來源順序勝出。 */
+[data-ui="sentence"] .tx .tx-role {
+  color: var(--sentence-inv-fg); background: var(--sentence-inv-bg);
+}
+/* .tx-role 也被拿來當行內小標籤用，且部分呼叫端帶了 inline style 直接指定
+   底色（js/all-pathway.js／cml／mds／mpn 之「來源提醒」固定用 #a33a2f 磚紅、
+   不隨主題變化；CSS 覆寫不了 inline style 的屬性本身，只能覆寫沒被 inline
+   蓋掉的 color）。量過：inline 背景是 var(--accent) 或 var(--muted-soft)
+   時，本規則的 --sentence-inv-fg 在兩個主題都量得出 ≥5:1；只有 #a33a2f
+   這個固定磚紅在暗色主題量到 2.84（inv-fg 在暗色主題變淺色，配深色文字，
+   而磚紅本身不隨主題變淺，兩者對不上）。用屬性選擇器只鎖定這個固定值，
+   不影響另外兩種 inline 底色，也不影響沒有 inline style 的預設徽章。 */
+[data-ui="sentence"] .tx-role[style*="a33a2f"] { color: #f2ece4; }
+/* .tx-label 是這 4 個癌別在治療分頁載入當下最大的臨床內容（沒有互動流程、
+   沒有 .rec-title）——放大到接近 .rec-title 的量級，理由與 P1 的 h1 降級
+   同一組：確保這 4 頁畫面上最大的東西仍是臨床內容，不是裝飾用的頁面標題。 */
+[data-ui="sentence"] .tx-label { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(19px, 3.6vw, 24px); color: var(--sentence-fg); }
+[data-ui="sentence"] .tx-body { font-size: 12.5px; line-height: 1.7; color: var(--sentence-fg2); }
+[data-ui="sentence"] .tx-body .rx { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); }
+[data-ui="sentence"] .tx-body .drug {
+  font-family: var(--sentence-sans); background: var(--sentence-bg); border: 1px solid var(--sentence-line2);
+  border-bottom: 2px solid var(--sentence-fg); border-radius: 0; padding: 1px 6px; font-size: 12px; white-space: nowrap;
+  color: var(--sentence-fg);
+}
+
+/* ---- P7. 建議處置色塊內的療程徽章 —— 隱形文字修正（本檔頂端已說明根因）。
+   選擇器故意不要求任何特定祖先（不寫 `.flow-rec X`、也不寫
+   `.flow-rec .rec-detail X`）：這批 class 出現的位置比第一版設想的更分散——
+   現場 getComputedStyle 逐一癌別量過三種真實包裝，同一組 class 在不同癌別
+   會落在不同祖先下：
+     · 多數癌別：.flow-rec > .rec-detail（ul/li）內
+     · 大腸直腸癌 COL-10 輔助化療處方（js/crc-regimens.js）、pNET／NET：
+       .flow-rec > details.rx-more > .rx-stack > .rx-line，不經過 .rec-detail
+     · NET／UTUC：同一組 class 甚至出現在 .flow-step 的 extra 參數裡
+       （尚未作答、位於問題步驟本身的說明框，不在 .flow-rec 內）
+   窮舉每一種祖先組合太容易漏（已經漏兩次），改成直接打 class 本身、
+   不设祖先條件，attribute+1 class 的特異度（0,2,0）已經打得過
+   cancer-staging.css 所有同名規則的最高特異度（.flow-rec.rec-idle
+   .rec-detail X 系列，(0,4,0)，來源順序：本檔排在後面）——CSS 特異度
+   比較不看選擇器「寫得多長」，只看 attribute／class／id 的計數，
+   本檔在後述兩者特異度打平時一律勝出。.crc-supp 面板另外處理
+   （見各條第二個選擇器），因為它有自己一套淺底覆寫、不吃這裡的深底假設。 ---- */
+[data-ui="sentence"] .rx-h,
+[data-ui="sentence"] .crc-supp .rec-detail .rx-h {
+  color: var(--sentence-fg); border-bottom: 1.5px solid var(--sentence-line2); padding-bottom: 1px;
+}
+[data-ui="sentence"] .rx,
+[data-ui="sentence"] .crc-supp .rec-detail .rx {
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .rx-sub,
+[data-ui="sentence"] .crc-supp .rec-detail .rx-sub {
+  color: var(--sentence-dim); opacity: 1;
+}
+[data-ui="sentence"] .rec-detail .drug, [data-ui="sentence"] .rx-line .drug, [data-ui="sentence"] .cbx-items .drug,
+[data-ui="sentence"] .crc-supp .rec-detail .drug {
+  font-family: var(--sentence-sans); background: var(--sentence-bg); border: 1px solid var(--sentence-line2);
+  border-bottom: 2px solid var(--sentence-fg); border-radius: 0; padding: 0 6px; font-size: 12px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .cbx-h,
+[data-ui="sentence"] .hrf-h {
+  color: var(--sentence-fg); opacity: 1;
+}
+[data-ui="sentence"] .cbx-h .cbx-sub {
+  color: var(--sentence-dim); opacity: 1;
+}
+[data-ui="sentence"] .rec-detail .cb, [data-ui="sentence"] .flow-step .cb {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-bottom: 2px solid var(--sentence-fg);
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .rec-detail .cb .cb-k, [data-ui="sentence"] .flow-step .cb .cb-k { color: var(--sentence-fg); }
+[data-ui="sentence"] .rec-detail .fu-gap,
+[data-ui="sentence"] .rec-note .fu-gap { color: var(--sentence-dim); opacity: 1; }
+
+/* ---- P8. 系統性治療分層面板 .rx-panel 家族（colon／rectal／panc／hcc／sts／
+   pnet／net／cervix／endo／utsarc／ovarian／utuc／rcc／bladder／prostate…
+   多癌別共用，同樣是為深底設計的半透明白框，換成看得見的骨白／墨色框；
+   選擇器策略同 P7 開頭說明，不設祖先條件） ---- */
+[data-ui="sentence"] .rx-panel-h,
+[data-ui="sentence"] .crc-supp .rx-panel-h {
+  font-family: var(--sentence-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+  opacity: 1; color: var(--sentence-fg); border-bottom: 1px solid var(--sentence-line2); padding-bottom: 6px;
+}
+[data-ui="sentence"] .rx-panel-src,
+[data-ui="sentence"] .crc-supp .rx-panel-src { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .rx-def,
+[data-ui="sentence"] .crc-supp .rx-def {
+  background: var(--sentence-bg); border: 1px dashed var(--sentence-line2); border-radius: 0; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .rx-warn,
+[data-ui="sentence"] .crc-supp .rx-warn {
+  background: color-mix(in srgb, var(--sentence-hot) 10%, var(--sentence-bg)); border: 1px solid var(--sentence-hot);
+  border-radius: 0; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .rx-line,
+[data-ui="sentence"] .crc-supp .rx-line {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-fg);
+  border-radius: 0;
+}
+[data-ui="sentence"] .rx-line.plain,
+[data-ui="sentence"] .crc-supp .rx-line.plain { background: none; border: 0; }
+[data-ui="sentence"] .rx-line.plain .rx-h {
+  font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--sentence-dim); border: 0;
+}
+[data-ui="sentence"] .rx-items,
+[data-ui="sentence"] .crc-supp .rx-items { color: var(--sentence-fg2); }
+[data-ui="sentence"] .rx-more > summary,
+[data-ui="sentence"] .crc-supp .rx-more > summary {
+  font-family: var(--sentence-mono); font-size: 11.5px; opacity: 1; color: var(--sentence-fg);
+  text-decoration: underline; text-underline-offset: 2px;
+}
+[data-ui="sentence"] .rx-note,
+[data-ui="sentence"] .crc-supp .rx-note { color: var(--sentence-fg2); }
+[data-ui="sentence"] .rx-stack { gap: 8px; }
+
+/* ---- P9. 追蹤與支持治療（.flow-fu）——使用者回報的問題 2：正式版底色／
+   邊框吃的是 --box-bg／--line／--accent，未被本檔調色，在造句設計裡因此
+   維持正式版外觀，跟周圍骨白墨字完全不同調。 ---- */
+[data-ui="sentence"] .flow-fu {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-left: 4px solid var(--sentence-fg);
+  border-radius: 0; padding: 13px 15px; margin-top: 10px;
+}
+[data-ui="sentence"] .flow-fu .fu-label {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sentence-fg); margin-bottom: 6px;
+}
+[data-ui="sentence"] .flow-fu .fu-list { color: var(--sentence-fg2); font-size: 12.5px; line-height: 1.7; }
+[data-ui="sentence"] .flow-fu .fu-list b { color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-fu .fu-gap { color: var(--sentence-dim); }
+
+/* ---- P10. pT1 內視鏡切除後迷你流程圖（結腸癌，.pt1-flow 家族；位於
+   .flow-rec 內但不在 .rec-detail 內，另外處理）---- */
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-node {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-root { color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-sub { color: var(--sentence-dim); }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-arrow { color: var(--sentence-dim); opacity: 1; }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-foot { color: var(--sentence-dim); opacity: 1; }
+/* 三態是真正的臨床分流結果（追蹤 vs 個案討論考慮追加手術 vs 追加手術），
+   套 calm／warn／hot；邊框 ＋ 終點格加粗底色 ＋ 文字（追蹤／個案討論／
+   追加手術，本身已是內容）三重編碼。 */
+[data-ui="sentence"] .flow-rec .pt1-flow .is-go { border-left: 4px solid var(--sentence-calm); }
+[data-ui="sentence"] .flow-rec .pt1-flow .is-warn { border-left: 4px solid var(--sentence-warn); }
+[data-ui="sentence"] .flow-rec .pt1-flow .is-stop { border-left: 4px solid var(--sentence-hot); }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-term.is-go { background: color-mix(in srgb, var(--sentence-calm) 16%, var(--sentence-bg)); border-left-width: 6px; font-weight: 700; }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-term.is-warn { background: color-mix(in srgb, var(--sentence-warn) 18%, var(--sentence-bg)); border-left-width: 6px; font-weight: 700; }
+[data-ui="sentence"] .flow-rec .pt1-flow .pt1-term.is-stop { background: color-mix(in srgb, var(--sentence-hot) 16%, var(--sentence-bg)); border-left-width: 6px; font-weight: 700; }
+
+/* ---- P11. T×N 術後病理分期格（結腸癌，.tn-* 家族；位於 .flow-step 之
+   extra 參數內，不在 .flow-rec 內，本來就是淺底，只換色盤） ---- */
+[data-ui="sentence"] .tn-cap { font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--sentence-dim); }
+[data-ui="sentence"] .tn-corner { color: var(--sentence-dim); }
+[data-ui="sentence"] .tn-ch, [data-ui="sentence"] .tn-rh { color: var(--sentence-fg2); font-weight: 700; }
+[data-ui="sentence"] .tn-cell {
+  font-family: var(--sentence-mono); border: 1px solid var(--sentence-line2); border-radius: 0;
+  background: var(--sentence-bg); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .tn-cell:hover { box-shadow: 0 0 0 1px var(--sentence-fg) inset; }
+[data-ui="sentence"] .tn-cell.selected { box-shadow: 0 0 0 3px var(--sentence-fg) inset; }
+[data-ui="sentence"] .tn-na { border: 1px dashed var(--sentence-line2); border-radius: 0; color: var(--sentence-dim); }
+[data-ui="sentence"] .tn-lg { color: var(--sentence-fg2); }
+[data-ui="sentence"] .tn-sw { border-radius: 0; border: 1px solid var(--sentence-line2); }
+/* g-none/g-ii/g-low/g-high 四組＝四種輔助治療決策風險分層，本身即嚴重度
+   序列，改吃 calm→warn(淡)→warn(深)→hot；仍是「文字（COL-3 決策分組本身
+   已用文字標明）＋色＋邊框粗細」三重編碼。 */
+[data-ui="sentence"] .tn-cell.g-none, [data-ui="sentence"] .tn-sw.g-none {
+  background: color-mix(in srgb, var(--sentence-calm) 16%, var(--sentence-bg)); border-color: var(--sentence-calm); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .tn-cell.g-ii, [data-ui="sentence"] .tn-sw.g-ii {
+  background: color-mix(in srgb, var(--sentence-warn) 18%, var(--sentence-bg)); border-color: var(--sentence-warn); color: var(--sentence-fg); border-width: 2px;
+}
+[data-ui="sentence"] .tn-cell.g-low, [data-ui="sentence"] .tn-sw.g-low {
+  background: color-mix(in srgb, var(--sentence-warn) 34%, var(--sentence-bg)); border-color: var(--sentence-warn); color: var(--sentence-fg); border-width: 2px;
+}
+[data-ui="sentence"] .tn-cell.g-high, [data-ui="sentence"] .tn-sw.g-high {
+  background: color-mix(in srgb, var(--sentence-hot) 26%, var(--sentence-bg)); border-color: var(--sentence-hot); color: var(--sentence-fg); border-width: 3px;
+}
+
+/* ---- P12. 大腸直腸癌補充參考面板（.crc-supp 本身；.rec-detail 系列徽章
+   已併入 P7／P8） ---- */
+[data-ui="sentence"] .crc-supp { border-top: 1px solid var(--sentence-line2); padding-top: 14px; }
+[data-ui="sentence"] .crc-supp-h { font-family: var(--sentence-serif); font-size: 15.5px; font-weight: 500; color: var(--sentence-fg); }
+[data-ui="sentence"] .crc-supp > details > summary { color: var(--sentence-fg); font-family: var(--sentence-sans); }
+[data-ui="sentence"] .crc-supp > details > summary:hover { color: var(--sentence-dim); }
+[data-ui="sentence"] .crc-supp table { border-collapse: collapse; }
+[data-ui="sentence"] .crc-supp th, [data-ui="sentence"] .crc-supp td { border: 1px solid var(--sentence-line); color: var(--sentence-fg2); }
+[data-ui="sentence"] .crc-supp th { background: var(--sentence-bg2); font-family: var(--sentence-mono); color: var(--sentence-fg); }
+
+/* ---- P13. KPS 分級表／診斷細節摺疊（.kps-details／.dx-details） ---- */
+[data-ui="sentence"] .kps-details table { border-collapse: collapse; font-size: 11px; }
+[data-ui="sentence"] .kps-details td { border: 1px solid var(--sentence-line); padding: 3px 8px; color: var(--sentence-fg2); }
+[data-ui="sentence"] .kps-details td:first-child { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); }
+[data-ui="sentence"] .dx-details summary { color: var(--sentence-dim); font-family: var(--sentence-mono); text-underline-offset: 2px; }
+[data-ui="sentence"] .dx-details .dx-h { font-family: var(--sentence-sans); font-weight: 700; color: var(--sentence-dim); }
+[data-ui="sentence"] .dx-details ul.dx-list { color: var(--sentence-dim); }
+[data-ui="sentence"] .dx-details ul.dx-list b { color: var(--sentence-fg2); }
+
+/* ---- P14. 主要文獻 References ---- */
+[data-ui="sentence"] .onc-reflist { border-top: 1px solid var(--sentence-line2); margin-top: 16px; padding-top: 10px; }
+[data-ui="sentence"] .onc-reflist .rl-h { font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--sentence-dim); }
+[data-ui="sentence"] .onc-reflist a { color: var(--sentence-fg2); font-family: var(--sentence-mono); font-size: 11.5px; text-decoration: none; }
+[data-ui="sentence"] .onc-reflist a:hover { color: var(--sentence-fg); text-decoration: underline; }
+[data-ui="sentence"] .onc-reflist a:before { color: var(--sentence-dim); }
