@@ -49,9 +49,10 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
 .db-foot{margin-top:12px; padding-top:8px; border-top:1px solid var(--line);
   font-family:var(--mono); font-size:10px; color:var(--muted-soft); line-height:1.6;}
 
-/* 標題列的含量（同商品名多規格時用來分辨） */
+/* 標題列的含量（同商品名多規格時用來分辨）；多數規格是短字串維持單行徽章，
+   但少數品項（如透析液）規格描述本身很長，改用可換行避免撐寬整列 */
 .db-strength{font-family:var(--mono); font-size:10.5px; color:var(--accent); background:var(--accent-soft);
-  border-radius:8px; padding:1px 7px; white-space:nowrap;}
+  border-radius:8px; padding:1px 7px; white-space:normal; max-width:100%; overflow-wrap:break-word;}
 
 /* 健保給付規定：原頁就是一長段條列，節錄後仍偏長，收在可捲動的小框裡免得洗掉整張卡 */
 .db-nhi{max-height:190px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);

@@ -68,12 +68,31 @@
   var HERE = pageId(location.pathname) || 'index.html';
   var IS_HOME = HERE === 'index.html';
 
-  function jget(store, k, dflt) {
-    try { return JSON.parse(store.getItem(k)) || dflt; } catch (e) { return dflt; }
+  // localStorage 專用：Cookie／站台資料被封鎖時，光是讀取 window.localStorage
+  // 這個屬性就會拋 SecurityError（比呼叫 getItem/setItem 更早發生）。
+  // 若寫成共用函式 jget(store, k, dflt) 讓呼叫端傳 localStorage 進來，
+  // store 這個識別字是在呼叫端（call site）求值，不在函式內部的 try/catch
+  // 範圍內，一樣包不到——同 js/nav.js 第 83–84 行的 lsGet／lsSet。
+  // 因此存取與 JSON 包裝都各自獨立成 ls* 函式，讓 localStorage 一律只在
+  // try 區塊內被提及。
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 無痕模式等寫不進去 */ } }
+  function jgetLS(k, dflt) {
+    try { return JSON.parse(lsGet(k)) || dflt; } catch (e) { return dflt; }
   }
-  function jset(store, k, v) {
-    try { store.setItem(k, JSON.stringify(v)); } catch (e) { /* 無痕模式等寫不進去 */ }
+  function jsetLS(k, v) { lsSet(k, JSON.stringify(v)); }
+
+  // sessionStorage 專用：同一顆地雷，window.sessionStorage 屬性存取一樣會拋
+  // SecurityError（「封鎖所有 Cookie 與網站資料」這種瀏覽器設定下兩者都封）。
+  // 比照上面 ls* 的做法，每一處直接碰 sessionStorage 的地方都改走這幾支，
+  // 不再把 sessionStorage 當參數傳給共用函式。
+  function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* 無痕模式等寫不進去 */ } }
+  function ssRemove(k) { try { sessionStorage.removeItem(k); } catch (e) { /* 同上 */ } }
+  function jgetSS(k, dflt) {
+    try { return JSON.parse(ssGet(k)) || dflt; } catch (e) { return dflt; }
   }
+  function jsetSS(k, v) { ssSet(k, JSON.stringify(v)); }
 
   /* ---- 本頁在返回鍵上該叫什麼，並登記到查表 ---- */
   function myLabel() {
@@ -85,10 +104,10 @@
   function registerLabel() {
     var lab = myLabel();
     if (!lab) return;
-    var names = jget(localStorage, NAMES, {});
+    var names = jgetLS(NAMES, {});
     if (names[HERE] === lab) return;
     names[HERE] = lab;
-    jset(localStorage, NAMES, names);
+    jsetLS(NAMES, names);
   }
 
   /* ---- 記下離開本頁前，最後一次點的是內文還是導覽介面 ----
@@ -101,7 +120,7 @@
     var t = ev.target;
     if (!t || t.nodeType !== 1) return;
     var chrome = !!(t.closest && t.closest(CHROME));
-    try { sessionStorage.setItem(SRC, chrome ? '0' : '1'); } catch (e) { }
+    ssSet(SRC, chrome ? '0' : '1');
   }, true);
 
   /* ---- 依 referrer 更新動線 ---- */
@@ -113,7 +132,7 @@
     if (!ref || ref.indexOf(location.origin) !== 0) return null;   // 外部連結或無 referrer
     var id = pageId(ref);
     if (!id || id === HERE || id === 'index.html') return null;    // 同頁重整、由主選單進入
-    var names = jget(localStorage, NAMES, {});
+    var names = jgetLS(NAMES, {});
     return {
       id: id,
       // 流程圖帶 ?restore=1 回去，才會回到離開前的選項與捲動位置（見 js/common.js）
@@ -124,21 +143,19 @@
 
   function updateStack() {
     // 兩個一次性記號都在這裡讀掉，免得殘留下來影響下一次導覽
-    var going = sessionStorage.getItem(FLAG);
-    var viaContent = sessionStorage.getItem(SRC) === '1';
-    try {
-      sessionStorage.removeItem(FLAG);
-      sessionStorage.removeItem(SRC);
-    } catch (e) { }
+    var going = ssGet(FLAG);
+    var viaContent = ssGet(SRC) === '1';
+    ssRemove(FLAG);
+    ssRemove(SRC);
 
-    if (IS_HOME) { sessionStorage.removeItem(STACK); return []; }
+    if (IS_HOME) { ssRemove(STACK); return []; }
 
-    var stack = jget(sessionStorage, STACK, []);
+    var stack = jgetSS(STACK, []);
 
     if (going) {
       // 剛按下返回鍵回到這一頁：把本頁（及其之後）從動線上退掉，不要再把來路壓回去
       while (stack.length && stack[stack.length - 1].id === HERE) stack.pop();
-      jset(sessionStorage, STACK, stack);
+      jsetSS(STACK, stack);
       return stack;
     }
 
@@ -150,7 +167,7 @@
       stack.push(origin);
       if (stack.length > MAX) stack.shift();
     }
-    jset(sessionStorage, STACK, stack);
+    jsetSS(STACK, stack);
     return stack;
   }
 
@@ -204,14 +221,14 @@
     btn.className = 'back-btn back-origin';
     btn.textContent = '← 返回' + origin.label;
     btn.addEventListener('click', function () {
-      try { sessionStorage.setItem(FLAG, '1'); } catch (e) { }
+      ssSet(FLAG, '1');
       location.href = ROOT + origin.href;
     });
     stackBox(home).insertBefore(btn, home);
 
     // 按「返回主選單」＝這一輪動線結束
     home.addEventListener('click', function () {
-      try { sessionStorage.removeItem(STACK); } catch (e) { }
+      ssRemove(STACK);
     });
   }
 

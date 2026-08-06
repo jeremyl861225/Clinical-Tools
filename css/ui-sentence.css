@@ -1,0 +1,793 @@
+/* css/ui-sentence.css — 「04 造句設計」的設計語言
+ *
+ * 使用者可以在正式版與這一套設計之間切換（右上角切換鈕，見 js/ui-mode.js）。
+ * 選擇存在 localStorage['ct-ui']，每頁 <head> 內有一段 inline script 在樣式表
+ * 之前把 data-ui 補回 <html> 上，避免載入時閃一下另一套樣式。
+ *
+ * **這一批只換外觀，不換導覽方式**：側邊欄與返回鍵仍是正式版那一套。
+ * 造句導覽本體（句子即狀態、退詞即返回、網址即句子）是下一批的工作。
+ *
+ * 鐵律：本檔所有規則一律寫在 [data-ui="sentence"] 之下——
+ * 這是「不破壞正式版」能被證明的原因：屬性不存在時，本檔等於不存在。
+ * css/styles.css、css/nav.css 等既有檔案的既有選擇器一條都不動。
+ * 驗證方式：workspace/work/restyle/baseline.py --compare 比對的是**關閉態**
+ * 與改動前的基準（108 頁 × 亮暗 × 390/1440）；parity.py 比對的是同一頁
+ * 在開／關兩態下的可見文字必須完全相同。
+ *
+ * 色票／字體來源：workspace/work/restyle/style-04-sentence/css/proof.css
+ * （04 造句設計的排字校樣底層），變數改名加上 --sentence- 前綴，
+ * 避免與 css/styles.css 既有的 --ink／--paper 等變數同名互相覆蓋。
+ */
+
+/* ---------- 色票：亮＝骨白底配墨字，暗＝極深墨綠底配骨白字 ---------- */
+:root[data-ui="sentence"] {
+  --sentence-bg:      #efece1;
+  --sentence-bg2:     #e6e2d4;
+  --sentence-bg3:     #dcd7c6;
+  --sentence-fg:      #14211c;
+  --sentence-fg2:     #3b4a43;
+  --sentence-dim:     #64726a;
+  --sentence-line:    #c3bda9;
+  --sentence-line2:   #a8a18b;
+  --sentence-inv-bg:  #14211c;
+  --sentence-inv-fg:  #efece1;
+  --sentence-hot:     #97331d;   /* 硃砂：最高急迫度／危險 */
+  --sentence-warn:    #7d5a10;   /* 琥珀：中 */
+  --sentence-calm:    #2b5f45;   /* 墨綠：低／安全 */
+  --sentence-sel:     #14211c;
+  --sentence-shade:   rgba(20,33,28,.06);
+  --sentence-scrim:   rgba(239,236,225,.94);
+
+  /* ---------- 字體堆疊（全部系統字，無外部載入） ---------- */
+  --sentence-serif: "Iowan Old Style", Georgia, "Noto Serif TC", "Songti TC", serif;
+  --sentence-sans:  -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", sans-serif;
+  --sentence-mono:  ui-monospace, "SF Mono", Menlo, "Roboto Mono", monospace;
+
+  /* ---------- 動態時間軸 ---------- */
+  --sentence-fast: 180ms;
+  --sentence-slow: 260ms;
+  --sentence-ease: cubic-bezier(.22,.61,.36,1);
+
+  /* ---------- 排版基本鉤子：零陰影、零圓角、髮絲線 ---------- */
+  --sentence-radius: 0px;
+  --sentence-shadow: none;
+  --sentence-border-w: 1px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ui="sentence"] {
+    --sentence-bg:     #0a1512;
+    --sentence-bg2:    #0f1e19;
+    --sentence-bg3:    #162922;
+    --sentence-fg:     #ece6d8;
+    --sentence-fg2:    #cfc8b8;
+    --sentence-dim:    #8b9a90;
+    --sentence-line:   #2a3b34;
+    --sentence-line2:  #3d5349;
+    --sentence-inv-bg: #ece6d8;
+    --sentence-inv-fg: #0a1512;
+    --sentence-hot:    #e0715a;
+    --sentence-warn:   #d3a247;
+    --sentence-calm:   #79b58e;
+    --sentence-sel:    #ece6d8;
+    --sentence-shade:  rgba(236,230,216,.07);
+    --sentence-scrim:  rgba(10,21,18,.94);
+  }
+}
+
+/* ================================================================
+ * 第 3 段 — 把 04 的設計語言套進 108 頁
+ * ================================================================
+ * 做法：打全站共用的 markup 慣例（schema/check_pages.py 驗的就是這些：
+ * .app-header 內的 .eyebrow／h1／.sub、.back-stack、卡片、表格、徽章、
+ * <details><summary>、輸入列……），不逐檔案改 markup。
+ *
+ * 三條鐵律（貫穿以下所有規則）：
+ *   1. 只加樣式，不加/刪/搬文字節點——不用 text-overflow:ellipsis 截字、
+ *      不用 display:none 藏內容、不用 order／flex-direction:row-reverse
+ *      改變閱讀順序。document.body.innerText 經驗證不含 ::before/::after
+ *      的 content（用 cdp.py 對 news2.html 現場量過），故本檔可以放心用
+ *      生成內容做圖形記號（▸／▮▯／○✓…），不會被 parity.py 誤判成內容被改。
+ *   2. 嚴重度一律三重（以上）編碼：格數／邊框粗細 ＋ 文字 ＋ 色。
+ *      hot／warn／calm 三色只用於臨床嚴重度，不當導覽或裝飾色。
+ *   3. 觸控目標 ≥44px（僅本設計要求）；表格與橫向清單一律自己
+ *      overflow-x:auto，不讓整頁橫向溢出。
+ *
+ * 章節：
+ *   A. 全站基礎排版
+ *   B. 頁首三件組／返回鍵（.app-header/.eyebrow/h1/.sub/.back-stack/.back-btn）
+ *   C. 卡片與容器（.card/.section-title/.organ-*／.lede）
+ *   D. 摺疊區塊（details.def-box/.info-box/.box-inner/.dot-line/.plain-list）
+ *   E. 輸入列與控制項（.field-row/.toggle-inline/label.item/.pt-badge/.exclusive-note）
+ *   F. 表格（.score-ref/.def-table/.ref/通用 table 防溢出）
+ *   G. 結果面板（.result/.metric-*／.risk-band/.risk-note/.breakdown）
+ *   H. 公式顯示（.meld-field/.formula-box）
+ *   I. 決策流程（.flow-*／.rec-*）
+ *   J. 分級／分類查閱頁（.tab-row/.sys-*）
+ *   K. 分級清單（.lv-*／.dept-*／.op-item，急診手術分級頁）
+ *   L. 頁尾與連結（footer.tool-footer/.ref-link/.tool-link/.ind-badge/.mono）
+ *   M. 通用觸控目標安全網 ＋ 動態降級
+ *
+ * 範圍聲明：本檔不含 tools/drug-database.html、tools/antibiotics.html、
+ * tools/spectrum-database.html 等頁面專屬的 dc-*／db-*／abx-*／bac-*／cov-*／
+ * drugcard 類別——那是另一位負責的「藥物資料庫的樣式」，不在此檔動它們。
+ * 這些頁面仍會吃到本檔的全站共用層（A/B/C/D/L/M 段），只是它們自己的
+ * 藥卡／查閱元件維持原樣，交由對應的 css/antibiotics.css、
+ * css/drug-database.css 各自的 [data-ui="sentence"] 區塊處理。
+ *
+ * 例外：spectrum-database.html 的 .sd-colhead／a.dlink 不算在上面排除的
+ * dc-*／db-*／abx-*／bac-*／cov-*／drugcard 名單內，且該頁自己的 inline
+ * <style> 與 antibiotics.css／drug-database.css 都沒人補過 44px 觸控目標
+ * ——這不是別人的地盤，是缺口，M 段補上，見那裡的說明。
+ * ================================================================ */
+
+/* ---------- A. 全站基礎排版 ---------- */
+[data-ui="sentence"] body {
+  background: var(--sentence-bg);
+  color: var(--sentence-fg);
+  font-family: var(--sentence-sans);
+  font-size: 13px;
+  line-height: 1.62;
+}
+[data-ui="sentence"] .sheet { max-width: 860px; }
+[data-ui="sentence"] ::selection { background: var(--sentence-fg); color: var(--sentence-bg); }
+[data-ui="sentence"] :focus-visible { outline: 2px solid var(--sentence-fg); outline-offset: 2px; }
+[data-ui="sentence"] a { color: inherit; }
+[data-ui="sentence"] b, [data-ui="sentence"] strong { color: var(--sentence-fg); }
+/* 沒有專屬樣式的散裝標題（例：tools/heart-failure.html 的 <h3>）也要跟上字級階層，
+   不然全頁只剩正文與巨大數值兩級，中間斷層。 */
+[data-ui="sentence"] h2 {
+  font-family: var(--sentence-serif); font-weight: 500;
+  font-size: clamp(18px, 3.6vw, 22px); letter-spacing: .06em;
+  margin: 18px 0 8px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] h3 {
+  font-family: var(--sentence-serif); font-weight: 500;
+  font-size: 15.5px; letter-spacing: .04em;
+  margin: 14px 0 6px; color: var(--sentence-fg);
+}
+
+/* ---------- B. 頁首三件組／返回鍵（全站每頁保證都有，schema/check_pages.py 驗過） ---------- */
+[data-ui="sentence"] .app-header {
+  border-bottom: 0; border-top: 2px solid var(--sentence-fg);
+  margin-top: 4px; padding-top: 12px; padding-bottom: 4px;
+}
+[data-ui="sentence"] .eyebrow {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .app-header h1 {
+  font-family: var(--sentence-serif); font-weight: 500;
+  font-size: clamp(22px, 5vw, 32px); letter-spacing: .06em;
+  margin: 4px 0 5px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .app-header .sub {
+  font-family: var(--sentence-sans); font-size: 11.5px; color: var(--sentence-fg2); line-height: 1.55;
+}
+/* 兩個「查閱頁」（緊急手術分級／分類與分級系統）沒有單一臨床數值可以放大——
+   內容是可瀏覽的清單，不是計分或決策結論，硬把 .dept-name／.sys-name 撐到
+   跟 .rec-title 一樣大會不成比例。改成反過來：這兩頁的 h1 降級到低於它們
+   自己內容區的字級（.dept-name／.sys-name 見 K／J 段，已各自調到 20px），
+   讓清單內容仍是畫面上最大的東西。只用頁面根 id 掛鉤，不動全站共用的
+   .app-header h1 規則，其餘 106 頁的頁首完全不受影響。 */
+[data-ui="sentence"] #view-emerg-op .app-header h1,
+[data-ui="sentence"] #view-classifications .app-header h1,
+/* divert-path 同理：它沒有 .lede-title、載入當下也沒有可見的結論框，
+   內容是可瀏覽的流程（最大的臨床內容是 .flow-q 20–24px），
+   1440px 下的 h1 32px 仍會蓋過它，所以一併降級。 */
+[data-ui="sentence"] #view-divert-path .app-header h1 {
+  font-size: clamp(16px, 3.6vw, 19px);
+}
+/* （cardiogenic-shock／divert-path／swan-ganz 這三頁載入當下沒有可見的 .rec-title，
+   一度想比照上面降 h1，實測後放棄：降完之後 h1 仍是最大的，因為那三頁的內文都
+   小於 19px——**問題不在標題太大，是內容太小**。改成把 .lede-title 放大（見上），
+   那才是這三頁載入時真正的臨床內容。註記在這裡，免得下一位又走一次同樣的冤枉路。
+   另外也不能改成把隱藏的建議框顯示出來——那會改變渲染文字，parity.py 立刻擋下。 */
+[data-ui="sentence"] .back-stack { gap: 8px; }
+[data-ui="sentence"] .back-btn {
+  font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .04em;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); padding: 0 12px; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background var(--sentence-fast) var(--sentence-ease), border-color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .back-btn:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+/* 陷阱：部分頁面的來源返回鍵預設帶 .hidden（例：CHA₂DS₂-VASc 頁的
+   <button class="back-btn hidden back-origin">，靠頁面自己的 JS 依 ?from= 才解除隱藏）。
+   基準樣式表的 .hidden{display:none;} 沒有 !important，本檔給 .back-btn 設
+   display:inline-flex 的特異度（attribute+class）比它高，會反而把它「解除隱藏」——
+   已用 parity.py 對 tools/cha2ds2-vasc.html 現場驗證抓到這個問題。這裡補一條
+   特異度更高的規則把 .hidden 的 display:none 效果找回來。 */
+[data-ui="sentence"] .back-btn.hidden { display: none; }
+/* 用次要強調色而不是 --sentence-hot：本檔第 86 行訂了「hot／warn／calm 三色只用於
+   臨床嚴重度，不當導覽或裝飾色」，而「返回來源頁」是純導覽。原本用 hot 會讓一顆
+   返回鍵跟最高臨床急迫度同色。正式版這顆鍵用的也是次要強調色，不是嚴重度色。 */
+[data-ui="sentence"] .back-origin { border-color: var(--sentence-fg); color: var(--sentence-fg); font-weight: 600; }
+[data-ui="sentence"] .back-origin:hover { background: var(--sentence-shade); }
+
+/* ---------- C. 卡片與容器 ---------- */
+[data-ui="sentence"] .card {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 14px 15px 10px; margin-bottom: 16px;
+}
+[data-ui="sentence"] .section-title {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sentence-dim); border-bottom: 1px solid var(--sentence-fg); padding-bottom: 7px; margin: 4px 0 10px;
+}
+[data-ui="sentence"] .organ-head {
+  border-bottom: 1px solid var(--sentence-line); padding-bottom: 7px; margin-bottom: 10px;
+}
+[data-ui="sentence"] .organ-name { font-family: var(--sentence-serif); font-size: 16px; font-weight: 500; color: var(--sentence-fg); }
+[data-ui="sentence"] .organ-en { font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-dim); }
+/* .organ-score 兼作「單項得分徽章」。E 段原本另外寫過一組依 data-p="0".."4"
+   分三／四級變色的版本，已證實 data-p 全站實際帶的是分頁 id（dx/risk/wave…）
+   從未是 0–4、那組規則永遠 0 命中，整組已刪除（見 E 段對應位置的說明）。
+   這裡是唯一剩下的樣式：不分等級的中性樣式，8 個用到 .organ-score 的頁面
+   （news2/sofa/apache/fgsi/marshall/lrinec/ich-score/thyroid-storm）都吃這條。 */
+[data-ui="sentence"] .organ-score {
+  font-family: var(--sentence-mono); font-size: 15px; font-weight: 700; color: var(--sentence-fg);
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0; padding: 3px 11px;
+}
+[data-ui="sentence"] .lede {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2);
+  border-left: 5px solid var(--sentence-fg); border-radius: 0;
+  padding: 12px 13px 11px; margin: 0 0 16px;
+}
+/* .lede-title 是 36 個頁面載入時的第一段臨床內容（「先分開的三個問題」「使用前必讀」…），
+   也就是「這一頁現在要你想什麼」。原本 15px、比裝飾用的 h1（22/32px）還小，
+   在載入當下沒有可見建議框的頁面（cardiogenic-shock／divert-path／swan-ganz）
+   會讓畫面上最大的東西變成頁面標題，違反「最大的東西必須是臨床內容」。
+   拉到 h1 之上。計分頁不受影響——那裡最大的仍是 .metric-value（48–68px）。 */
+[data-ui="sentence"] .lede-title {
+  font-family: var(--sentence-serif);
+  font-size: clamp(24px, 5.6vw, 34px); letter-spacing: .02em; line-height: 1.28;
+  color: var(--sentence-fg); font-weight: 500; margin-bottom: 10px;
+}
+[data-ui="sentence"] .lede-body { font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2); }
+/* 只留 b：全站 .lede-body 內文一律用 <b>，0 頁用過 <strong>（死樣式掃描實測，見交付說明）。 */
+[data-ui="sentence"] .lede-body b { color: var(--sentence-fg); }
+[data-ui="sentence"] .lede-item > span:first-child { color: var(--sentence-hot); font-family: var(--sentence-mono); }
+[data-ui="sentence"] .lede-foot { border-top: 1px dotted var(--sentence-line); color: var(--sentence-dim); }
+/* ---------- D. 摺疊區塊 ---------- */
+[data-ui="sentence"] details.def-box,
+[data-ui="sentence"] details.info-box {
+  border: 1px solid var(--sentence-line2); background: var(--sentence-bg2); border-radius: 0;
+  margin: 14px 0;
+}
+[data-ui="sentence"] details.def-box > summary,
+[data-ui="sentence"] details.info-box > summary {
+  min-height: 48px; padding: 9px 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; list-style: none;
+  font-family: var(--sentence-sans); font-size: 12.5px; font-weight: 700; letter-spacing: .03em;
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] details.def-box > summary::-webkit-details-marker,
+[data-ui="sentence"] details.info-box > summary::-webkit-details-marker { display: none; }
+[data-ui="sentence"] details.def-box > summary::marker,
+[data-ui="sentence"] details.info-box > summary::marker { content: ""; }
+[data-ui="sentence"] details.def-box > summary::before,
+[data-ui="sentence"] details.info-box > summary::before {
+  content: "＋"; font-family: var(--sentence-mono); color: var(--sentence-dim); flex: none;
+}
+[data-ui="sentence"] details.def-box[open] > summary::before,
+[data-ui="sentence"] details.info-box[open] > summary::before { content: "－"; }
+[data-ui="sentence"] details.def-box[open] > summary,
+[data-ui="sentence"] details.info-box[open] > summary { border-bottom: 1px solid var(--sentence-line); }
+/* 空 <summary></summary>（NEWS2／SOFA 系列的區間表摺疊列）靠 CSS content 補一段固定字，
+   已驗證 ::before/::after 不進 innerText，兩種設計下的可見文字不受影響。 */
+[data-ui="sentence"] details.info-box > summary:empty::after {
+  content: "顯示評分區間表"; font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .box-inner { padding: 4px 13px 13px; font-size: 12px; line-height: 1.8; color: var(--sentence-fg2); }
+[data-ui="sentence"] .box-inner b, [data-ui="sentence"] .box-inner strong { color: var(--sentence-fg); }
+[data-ui="sentence"] .box-inner ul { padding-left: 1.3em; }
+[data-ui="sentence"] .dot-line { padding-left: 1.2em; text-indent: -1.2em; margin: 2px 0; }
+[data-ui="sentence"] .plain-list { font-size: 12.5px; line-height: 1.75; }
+
+/* ---------- E. 輸入列與控制項 ---------- */
+[data-ui="sentence"] .field-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  min-height: 48px; border-bottom: 1px dotted var(--sentence-line); padding: 7px 0; margin: 0;
+}
+[data-ui="sentence"] .field-row label {
+  flex: 1 1 160px; font-size: 12.5px; letter-spacing: .02em; color: var(--sentence-fg2); min-width: 0;
+}
+[data-ui="sentence"] .field-row input[type="number"],
+/* 全站唯一一條「目前 0 命中」的規則，刻意保留：208 個 .field-row 底下的 input
+   現在全是 type="number"，沒有 type="text"。留著不是猜錯 tag，是為了未來新增
+   文字型輸入時不必再補一次樣式。**下一輪跑死樣式掃描的人會再抓到它，這是預期的**，
+   看到這行註解就知道它是已知且刻意的，不要當成漏網的死樣式刪掉。 */
+[data-ui="sentence"] .field-row input[type="text"] {
+  flex: 0 1 120px; min-width: 92px; min-height: 44px;
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); color: var(--sentence-fg);
+  padding: 0 10px; font-size: 16px; font-family: var(--sentence-mono); border-radius: 0;
+}
+[data-ui="sentence"] .field-row select {
+  /* max-width/min-width 缺一不可：flex 項目預設 min-width:auto，長選項字串會撐開版面。 */
+  flex: 1 1 220px; min-height: 44px; max-width: 100%; min-width: 0;
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); color: var(--sentence-fg);
+  padding: 0 10px; font-size: 13.5px; font-family: var(--sentence-sans); border-radius: 0;
+}
+[data-ui="sentence"] .unit { font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); letter-spacing: .05em; }
+[data-ui="sentence"] .note { font-size: 11.5px; line-height: 1.65; color: var(--sentence-dim); margin-top: 4px; }
+[data-ui="sentence"] .note b, [data-ui="sentence"] .note strong { color: var(--sentence-fg); }
+[data-ui="sentence"] .exclusive-note {
+  border-left: 4px solid var(--sentence-warn); background: var(--sentence-bg2); border-radius: 0;
+  padding: 8px 10px; margin: 7px 0; font-family: var(--sentence-sans);
+  font-size: 11.5px; line-height: 1.6; color: var(--sentence-fg2);
+}
+/* 只留 b：.exclusive-note 內文全站 0 頁用過 <strong>（死樣式掃描實測）。 */
+[data-ui="sentence"] .exclusive-note b { color: var(--sentence-warn); }
+
+/* 得分徽章 .organ-score：本來想靠 data-p="0".."4" 做三重編碼（數字 ＋ 格數 ＋ 色），
+   但實測 8 個用到 .organ-score 的頁面（news2/sofa/apache/fgsi/marshall/lrinec/
+   ich-score/thyroid-storm）該元素只有 id 與 class，JS 只寫 .textContent，
+   從未設過 data-p 或任何 class／attribute 當嚴重度鉤子——這條路徑不存在，
+   已刪除整組永遠 0 命中的死選擇器（原本的 data-p="0"~"4" 五級 ＋ ::after
+   格數記號），不再假裝這是已交付的功能。.organ-score 目前維持 C 段設的中性樣式
+   （字級／邊框），沒有依分數變色或加格數記號；要做到需改各頁 HTML 內的 inline
+   script（不在本檔／本輪範圍內）。 */
+[data-ui="sentence"] .field-row .organ-score {
+  min-width: 46px; min-height: 34px; padding: 2px 9px; margin-left: auto;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+}
+
+/* 一列一個判準的勾選（label.item）：44px 觸控目標，視覺方塊仍小。
+   實際尺寸靠下方 M 段的通用 checkbox 規則（appearance:none 自畫方塊）達成——
+   這裡不再另外把 input 縮成 20px，那樣量到的是 input 元素本身而非外層 label，
+   cdp.py 的 small_targets() 是逐一量每個 <input>，label 再大也救不了裡面的它。 */
+[data-ui="sentence"] label.item {
+  min-height: 44px; padding: 6px 4px; font-family: var(--sentence-sans); font-size: 13px; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] label.item:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] .toggle-inline {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 9px; min-height: 48px;
+  border-bottom: 1px dotted var(--sentence-line); padding: 7px 0;
+  font-family: var(--sentence-sans); font-size: 12.5px; color: var(--sentence-fg2); cursor: pointer;
+}
+[data-ui="sentence"] .pt-badge {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .08em;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 2px 7px; color: var(--sentence-dim);
+  margin-left: auto; white-space: nowrap;
+}
+
+/* ---------- F. 表格 ---------- */
+[data-ui="sentence"] table.score-ref {
+  border-collapse: collapse; width: 100%; font-family: var(--sentence-mono); font-size: 11.5px;
+  display: block; overflow-x: auto; max-width: 100%;
+}
+[data-ui="sentence"] table.score-ref td,
+[data-ui="sentence"] table.score-ref th {
+  border-bottom: 1px dotted var(--sentence-line); padding: 4px 6px; text-align: left;
+}
+[data-ui="sentence"] table.score-ref td:first-child { color: var(--sentence-fg2); }
+[data-ui="sentence"] table.score-ref td:last-child { text-align: right; font-weight: 700; white-space: nowrap; color: var(--sentence-fg); }
+[data-ui="sentence"] table.score-ref th { letter-spacing: .1em; font-size: 10px; color: var(--sentence-dim); border-bottom: 1px solid var(--sentence-line2); }
+
+[data-ui="sentence"] table.def-table {
+  border-collapse: collapse; width: 100%; font-family: var(--sentence-sans); font-size: 11.5px;
+  display: block; overflow-x: auto; max-width: 100%; margin: 8px 0;
+}
+[data-ui="sentence"] table.def-table th,
+[data-ui="sentence"] table.def-table td {
+  border: 1px solid var(--sentence-line); padding: 5px 7px; text-align: left; vertical-align: top;
+}
+[data-ui="sentence"] table.def-table th {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .06em; color: var(--sentence-dim);
+  background: var(--sentence-bg2); white-space: nowrap;
+}
+[data-ui="sentence"] table.def-table td:first-child {
+  font-family: var(--sentence-mono); white-space: nowrap; color: var(--sentence-fg); font-weight: 700;
+}
+[data-ui="sentence"] table.def-table.dt-pair td:nth-child(3) {
+  font-family: var(--sentence-mono); white-space: nowrap; color: var(--sentence-fg); font-weight: 700;
+}
+[data-ui="sentence"] table.def-table tr.dt-warn td { color: var(--sentence-hot); }
+
+/* 通用防溢出：任何沒有專屬 class 的 <table>（含極少數尚未列出的頁面專屬表格）
+   一律可自行橫向捲動，不把整頁撐寬。只補 overflow 行為，不改配色與字級，
+   避免踩進「另一位負責的藥物資料庫樣式」範圍（那邊的 renal-tbl 等表格
+   仍走它們自己的 [data-ui="sentence"] 規則，本規則只是它們沒接住時的最後防線，
+   單純 display:block+overflow-x:auto 不影響配色，故不衝突）。 */
+[data-ui="sentence"] table { display: block; overflow-x: auto; max-width: 100%; }
+
+/* ---------- G. 結果面板 ---------- */
+[data-ui="sentence"] .result {
+  background: var(--sentence-bg2); color: var(--sentence-fg);
+  border: 2px solid var(--sentence-fg); border-radius: 0;
+  padding: 16px 16px 13px; margin-top: 20px;
+}
+[data-ui="sentence"] .result-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px 14px; margin-bottom: 8px;
+}
+[data-ui="sentence"] .metric-label {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--sentence-dim);
+}
+/* 全頁最大的文字：值班的人只想看這個。同一 .result 內若有多個 .big
+  （例：NEWS2 同時秀總分／風險分層／監測頻率），三者等重也是合理呈現——
+   scoped 樣式表沒有頁面專屬 id 可用來再分主副。 */
+[data-ui="sentence"] .metric-value {
+  font-family: var(--sentence-serif); font-size: 22px; font-weight: 600; color: var(--sentence-fg);
+  line-height: 1.2; margin-top: 3px;
+}
+/* DESIGN-LANGUAGE 訂的「巨型數值」是 48–72px；手機下限原本 32px（8vw 在 390 寬只
+   算出 31.2px，被下限 32px 卡住），量測不到位。分數／比值／百分比內容最長不過
+   6 字元（如「0.2%」「100%」），48–68px 在 .result-grid 最窄欄（110px）仍不會溢出。 */
+[data-ui="sentence"] .metric-value.big {
+  font-size: clamp(48px, 11vw, 68px); line-height: 1.05; margin-top: 2px;
+}
+[data-ui="sentence"] .result-headline {
+  font-family: var(--sentence-serif); font-size: 18px; font-weight: 500; color: var(--sentence-fg); margin-top: 4px;
+}
+[data-ui="sentence"] .result-body { font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2); margin-top: 6px; }
+[data-ui="sentence"] .result-notes { font-size: 11.5px; line-height: 1.7; color: var(--sentence-fg2); padding-left: 1.2em; }
+[data-ui="sentence"] .result-interp {
+  border: 1px solid var(--sentence-line2); border-left: 5px solid var(--sentence-fg);
+  background: var(--sentence-bg); border-radius: 0;
+  padding: 10px 12px; margin: 10px 0; font-family: var(--sentence-sans);
+  font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2);
+}
+/* 只留 b：.result-interp 內文全站 0 頁用過 <strong>（死樣式掃描實測）。 */
+[data-ui="sentence"] .result-interp b { color: var(--sentence-fg); }
+
+[data-ui="sentence"] table.ref {
+  border-collapse: collapse; width: 100%; font-size: 11.5px; margin-top: 8px;
+  display: block; overflow-x: auto; max-width: 100%;
+}
+[data-ui="sentence"] table.ref th,
+[data-ui="sentence"] table.ref td {
+  border-bottom: 1px dotted var(--sentence-line); padding: 5px 6px; text-align: left; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] table.ref th {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .08em; color: var(--sentence-dim);
+  border-bottom: 1px solid var(--sentence-line2);
+}
+[data-ui="sentence"] table.ref tr.ref-current td { background: var(--sentence-shade); font-weight: 700; color: var(--sentence-fg); }
+[data-ui="sentence"] table.ref tr.ref-current td:first-child::before { content: "▶ "; }
+[data-ui="sentence"] .risk-note {
+  font-size: 11.5px; line-height: 1.7; color: var(--sentence-fg2);
+  border-top: 1px dotted var(--sentence-line); padding-top: 9px; margin-top: 9px;
+}
+/* 只留 b：.risk-note 內文全站 0 頁用過 <strong>（死樣式掃描實測）。 */
+[data-ui="sentence"] .risk-note b { color: var(--sentence-fg); }
+
+/* 風險徽章 b0–b3：格數 ＋ 邊框粗細 ＋ 色，三重以上編碼 */
+[data-ui="sentence"] .risk-band {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .04em;
+  border-radius: 0; padding: 3px 9px; display: inline-flex; align-items: center; gap: 5px;
+  background: transparent; border: 1px solid var(--sentence-line2); white-space: nowrap;
+}
+[data-ui="sentence"] .risk-band::before { font-size: 9px; letter-spacing: .04em; }
+[data-ui="sentence"] .risk-band.b0 { color: var(--sentence-calm); border-color: var(--sentence-calm); }
+[data-ui="sentence"] .risk-band.b0::before { content: "▮▯▯▯"; }
+[data-ui="sentence"] .risk-band.b1 { color: var(--sentence-calm); border-color: var(--sentence-calm); border-width: 1px; }
+[data-ui="sentence"] .risk-band.b1::before { content: "▮▮▯▯"; }
+[data-ui="sentence"] .risk-band.b2 { color: var(--sentence-warn); border-color: var(--sentence-warn); border-width: 2px; }
+[data-ui="sentence"] .risk-band.b2::before { content: "▮▮▮▯"; }
+[data-ui="sentence"] .risk-band.b3 { color: var(--sentence-hot); border-color: var(--sentence-hot); border-width: 2px; font-weight: 700; }
+[data-ui="sentence"] .risk-band.b3::before { content: "▮▮▮▮"; }
+
+[data-ui="sentence"] .breakdown {
+  font-family: var(--sentence-mono); font-size: 11.5px; color: var(--sentence-fg2);
+  gap: 8px; margin-bottom: 14px;
+}
+[data-ui="sentence"] .breakdown div { background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0; padding: 7px 9px; }
+[data-ui="sentence"] .breakdown b { color: var(--sentence-fg); font-size: 14px; }
+
+/* ---------- H. 公式顯示（MELD／水分缺乏……） ---------- */
+[data-ui="sentence"] .meld-field .mf-label { color: var(--sentence-fg2); font-weight: 600; font-family: var(--sentence-sans); }
+[data-ui="sentence"] .meld-field .mf-note { color: var(--sentence-dim); font-family: var(--sentence-mono); }
+[data-ui="sentence"] .meld-field input,
+[data-ui="sentence"] .meld-field select { min-height: 44px; }
+
+[data-ui="sentence"] .formula-box {
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 15px 16px; margin-top: 10px;
+}
+[data-ui="sentence"] .formula-title {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--sentence-dim);
+  margin-bottom: 10px;
+}
+[data-ui="sentence"] .formula-term { font-family: var(--sentence-mono); font-size: 13px; color: var(--sentence-fg2); }
+[data-ui="sentence"] .formula-term .fop { color: var(--sentence-dim); }
+[data-ui="sentence"] .formula-term .fcoef { color: var(--sentence-hot); font-weight: 700; }
+[data-ui="sentence"] .formula-term .fvar { color: var(--sentence-fg2); }
+[data-ui="sentence"] .formula-result {
+  border-top: 1px dashed var(--sentence-line2); font-family: var(--sentence-mono);
+  font-size: clamp(18px, 4vw, 24px); font-weight: 700; color: var(--sentence-fg); margin-top: 10px; padding-top: 10px;
+}
+
+/* ---------- I. 決策流程 ---------- */
+[data-ui="sentence"] .flow-step {
+  background: transparent; border: 0; border-top: 2px solid var(--sentence-fg);
+  border-radius: 0; padding: 15px 0 6px; margin-top: 18px; margin-bottom: 0;
+}
+[data-ui="sentence"] .flow-step-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+[data-ui="sentence"] .flow-num {
+  background: transparent; color: var(--sentence-fg);
+  border: 1px solid var(--sentence-fg); border-radius: 0;
+  width: auto; height: auto; min-width: 26px; text-align: center; padding: 2px 6px;
+  font-family: var(--sentence-mono); font-size: 11px; font-weight: 700;
+}
+/* .flow-q 是「現在要你回答的那個臨床問題」，在沒有結論框的流程頁（例如 divert-path）
+   它就是載入當下畫面上唯一的臨床內容。原本 15–19px 比裝飾用的 h1 還小。
+   拉到 20–24px：在 appendicitis 這種有結論框的頁面仍小於 .rec-title（24–34px），
+   層次是「結論 > 問題 > 選項」，不會跟結論搶。 */
+[data-ui="sentence"] .flow-q { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(20px, 4.2vw, 24px); letter-spacing: .02em; line-height: 1.35; color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-connector { color: var(--sentence-dim); font-family: var(--sentence-mono); margin: 10px 0; }
+[data-ui="sentence"] .flow-opts { gap: 7px; }
+@media (min-width: 760px) {
+  [data-ui="sentence"] .flow-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+[data-ui="sentence"] .flow-opt {
+  min-height: 48px; text-align: left; padding: 9px 12px 9px 30px; position: relative;
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-sans); font-size: 13px; line-height: 1.5; color: var(--sentence-fg);
+  transition: background var(--sentence-fast) var(--sentence-ease), border-color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .flow-opt:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-opt::before {
+  content: "○"; position: absolute; left: 10px; top: 9px; font-family: var(--sentence-mono); color: var(--sentence-dim);
+}
+[data-ui="sentence"] .flow-opt.selected {
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); border-color: var(--sentence-inv-bg); font-weight: 400;
+}
+[data-ui="sentence"] .flow-opt.selected::before { content: "✓"; color: inherit; }
+[data-ui="sentence"] .flow-opt .fo-sub { color: var(--sentence-dim); font-size: 11px; line-height: 1.55; margin-top: 3px; }
+[data-ui="sentence"] .flow-opt.selected .fo-sub { color: inherit; opacity: .8; }
+/* 注意：不可把 display 改成 block——原樣是 inline-block，多顆 .flow-link 相鄰時
+   同屬一個 innerText 行；改成 block 會在瀏覽器的 innerText 演算法裡於每顆之間
+   插入換行，逐字比對就會被判定「內容不同」（parity.py 現場量測驗證過這件事：
+   闌尾炎頁 4 顆「開啟計分工具」鈕在關閉狀態合併成一行，開啟後若誤用 display:block
+   會被拆成 4 行，字元一樣但行陣列結構不同，仍算不通過）。故只補視覺樣式，
+   維持原本的 inline-block 排列方式。 */
+[data-ui="sentence"] .flow-link {
+  min-height: 48px; padding: 9px 12px; margin: 6px 6px 0 0;
+  background: transparent; border: 1px dashed var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-sans); font-size: 12px; line-height: 1.45; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .flow-link:hover { background: var(--sentence-shade); border-style: solid; }
+
+[data-ui="sentence"] .flow-rec {
+  border-radius: 0; padding: 13px 14px; margin-top: 14px;
+  border: 1px solid var(--sentence-line2); background: var(--sentence-bg2); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .flow-rec .rec-label {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  opacity: 1; margin-bottom: 5px; display: inline-block;
+}
+/* 臨床建議標題：DESIGN-LANGUAGE 第一條「畫面上最大的東西必須是臨床結論」——
+   這條 clamp 的下限／上限都比 .app-header h1 的 clamp(22px,5vw,32px) 高，
+   兩條曲線在 0–2000px 全寬度區間內逐一代入驗證過不會交叉（差距最小處仍有 2px），
+   故不需要另外比大小的 JS，靠純 CSS 就能保證 .rec-title 在任何斷點都比 h1 大。 */
+[data-ui="sentence"] .flow-rec .rec-title { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(24px, 5.5vw, 34px); line-height: 1.3; margin-bottom: 4px; }
+[data-ui="sentence"] .flow-rec .rec-detail { padding-left: 1.2em; font-size: 12px; line-height: 1.72; }
+[data-ui="sentence"] .flow-rec .rec-detail li { margin: 3px 0; color: var(--sentence-fg2); }
+[data-ui="sentence"] .flow-rec .rec-detail li b, [data-ui="sentence"] .flow-rec .rec-detail li strong { color: var(--sentence-fg); }
+[data-ui="sentence"] .flow-rec .rec-detail li.ev { opacity: .82; }
+[data-ui="sentence"] .flow-rec .rec-note {
+  border-top: 1px dotted var(--sentence-line); border-top-color: var(--sentence-line);
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-dim); opacity: 1;
+}
+/* 急迫度：邊框粗細 ＋ 標籤格數 ＋ 色，三重編碼 */
+[data-ui="sentence"] .flow-rec.rec-urgent { border: 4px solid var(--sentence-hot); }
+[data-ui="sentence"] .flow-rec.rec-urgent .rec-label { color: var(--sentence-hot); font-weight: 700; }
+[data-ui="sentence"] .flow-rec.rec-urgent .rec-label::before { content: "▮▮▮▮ "; }
+[data-ui="sentence"] .flow-rec.rec-elective { border: 3px solid var(--sentence-warn); }
+[data-ui="sentence"] .flow-rec.rec-elective .rec-label { color: var(--sentence-warn); }
+[data-ui="sentence"] .flow-rec.rec-elective .rec-label::before { content: "▮▮▮▯ "; }
+[data-ui="sentence"] .flow-rec.rec-nonop { border: 2px solid var(--sentence-calm); }
+[data-ui="sentence"] .flow-rec.rec-nonop .rec-label { color: var(--sentence-calm); }
+[data-ui="sentence"] .flow-rec.rec-nonop .rec-label::before { content: "▮▮▯▯ "; }
+[data-ui="sentence"] .flow-rec.rec-blue { border: 1px solid var(--sentence-line2); }
+[data-ui="sentence"] .flow-rec.rec-blue .rec-label { color: var(--sentence-dim); }
+[data-ui="sentence"] .flow-rec.rec-blue .rec-label::before { content: "▮▯▯▯ "; }
+[data-ui="sentence"] .flow-rec.rec-idle { border: 1px dashed var(--sentence-line2); background: var(--sentence-bg); }
+/* 字級不再另外縮小——沿用上面 .flow-rec .rec-title 的 clamp，尚未作答時
+   畫面上最大的字仍是「請由步驟…開始選擇」這行本身也是一種臨床狀態提示，
+   不應該比裝飾用的 h1 小。只保留字族／顏色／字重的區別，維持「未決定」的視覺弱化。 */
+[data-ui="sentence"] .flow-rec.rec-idle .rec-title { color: var(--sentence-dim); font-family: var(--sentence-sans); font-weight: 600; }
+[data-ui="sentence"] .flow-rec.rec-idle .rec-label { color: var(--sentence-dim); }
+[data-ui="sentence"] .flow-rec.rec-idle .rec-label::before { content: "▯▯▯▯ "; }
+/* 這條規則第一版曾被我判定「永遠 0 命中」而刪掉——只查了 31 個 pathways/*.html，
+   全部 33 處 cls='rec-idle' 賦值確實都與 note='' 同一敘述句成對出現。但
+   tools/cancer.html 掛的 js/aml-pathway.js 用的是它自己另一份 ulRec()（非
+   js/common.js 的 flowRec()），第 585–589 行 renderOther() 把「本指引之化療
+   章節未涵蓋此類白血病」這個分流結果同時標成 cls='rec-idle' 又帶非空 note
+   （'AML-1：分流後之四個出口中…'），ulRec() 對 note 是否輸出 <div class="rec-note">
+   只看 note 真假、不看 cls——找回來了，這裡補回這條規則。教訓：本檔各處提到
+   「全部 33 頁」的死樣式判斷，只涵蓋 pathways/*.html，沒有涵蓋 tools/*.html
+   與 js/*-pathway.js 共用同一套 markup 慣例但各自獨立實作 render 函式的頁面。 */
+[data-ui="sentence"] .flow-rec.rec-idle .rec-note { color: var(--sentence-dim); }
+
+[data-ui="sentence"] .flow-reset { margin-top: 6px; }
+[data-ui="sentence"] .btn-reset {
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .08em;
+  padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center;
+}
+[data-ui="sentence"] .btn-reset:hover { background: var(--sentence-shade); }
+
+/* ---------- J. 分級／分類查閱頁 ---------- */
+[data-ui="sentence"] .tab-row { border-bottom: 2px solid var(--sentence-fg); gap: 6px; margin-bottom: 18px; }
+[data-ui="sentence"] .tab-btn {
+  font-family: var(--sentence-mono); font-size: 11.5px; letter-spacing: .04em;
+  background: transparent; border: 1px solid var(--sentence-line2); border-bottom: none; border-radius: 0;
+  padding: 9px 13px; min-height: 44px; color: var(--sentence-dim); top: 2px; position: relative;
+}
+[data-ui="sentence"] .tab-btn:hover { background: var(--sentence-shade); color: var(--sentence-fg); }
+[data-ui="sentence"] .tab-btn.active {
+  color: var(--sentence-fg); background: var(--sentence-bg2); border-color: var(--sentence-fg); font-weight: 700;
+}
+[data-ui="sentence"] .sys-head {
+  border-bottom: 2px solid var(--sentence-fg); margin: 26px 0 8px; padding-bottom: 6px;
+  display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+}
+[data-ui="sentence"] .sys-name { font-family: var(--sentence-serif); font-weight: 500; font-size: 20px; color: var(--sentence-fg); }
+[data-ui="sentence"] .sys-en { font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); }
+[data-ui="sentence"] .sys-src {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em; color: var(--sentence-dim); margin-left: auto;
+  border: 1px solid var(--sentence-line2); padding: 1px 6px;
+}
+[data-ui="sentence"] .sys-head.sys-hit { background: var(--sentence-shade); }
+[data-ui="sentence"] .sys-body { font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2); }
+[data-ui="sentence"] .sys-body table.def-table { margin: 8px 0 10px; }
+[data-ui="sentence"] .sys-sub {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em; color: var(--sentence-dim);
+  margin: 14px 0 4px; padding-bottom: 3px; border-bottom: 1px solid var(--sentence-line);
+}
+[data-ui="sentence"] .sys-caveat { font-family: var(--sentence-mono); font-size: 10.5px; line-height: 1.65; color: var(--sentence-dim); }
+
+/* ---------- K. 分級清單（急診手術分級：紫→紅→橘→黃→灰） ---------- */
+[data-ui="sentence"] .lv-legend { gap: 7px; }
+[data-ui="sentence"] .lv-chip {
+  border: 1px solid var(--sentence-line2); background: var(--sentence-bg); border-radius: 0;
+  padding: 8px 10px; font-family: var(--sentence-sans); font-size: 12px; color: var(--sentence-fg);
+  min-height: 44px; justify-content: center;
+}
+[data-ui="sentence"] .lv-chip:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] .lv-chip.selected { border-color: var(--sentence-fg); background: var(--sentence-shade); }
+[data-ui="sentence"] .lv-chip .lv-wait { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+/* lv1–lv5：不再用實心底色塊當唯一識別，改成邊框粗細（1–5 級遞減）＋ 序號 ＋ 文字色，
+   顏色仍保留原本紫→紅→橘→黃→灰的五級視覺記憶，但不再是唯一線索。 */
+[data-ui="sentence"] .lv-badge {
+  background: transparent; border-radius: 0; color: var(--sentence-fg);
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .04em;
+  padding: 2px 7px; display: inline-flex; align-items: center; gap: 4px;
+}
+[data-ui="sentence"] .lv-badge.lv1 { border: 3px solid #6b3fa0; color: #6b3fa0; }
+[data-ui="sentence"] .lv-badge.lv1::before { content: "①"; }
+[data-ui="sentence"] .lv-badge.lv2 { border: 3px solid var(--sentence-hot); color: var(--sentence-hot); }
+[data-ui="sentence"] .lv-badge.lv2::before { content: "②"; }
+[data-ui="sentence"] .lv-badge.lv3 { border: 2px solid #b25c0e; color: #b25c0e; }
+[data-ui="sentence"] .lv-badge.lv3::before { content: "③"; }
+[data-ui="sentence"] .lv-badge.lv4 { border: 1px solid var(--sentence-warn); color: var(--sentence-warn); }
+[data-ui="sentence"] .lv-badge.lv4::before { content: "④"; }
+[data-ui="sentence"] .lv-badge.lv5 { border: 1px dashed var(--sentence-line2); color: var(--sentence-dim); }
+[data-ui="sentence"] .lv-badge.lv5::before { content: "⑤"; }
+@media (prefers-color-scheme: dark) {
+  [data-ui="sentence"] .lv-badge.lv1 { color: #b9a0e0; border-color: #b9a0e0; }
+  [data-ui="sentence"] .lv-badge.lv3 { color: #e0a566; border-color: #e0a566; }
+}
+[data-ui="sentence"] .dept-block { background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0; padding: 12px 14px; margin-bottom: 10px; }
+[data-ui="sentence"] .dept-head { border-bottom: 1px solid var(--sentence-line); }
+[data-ui="sentence"] .dept-name { font-family: var(--sentence-serif); font-weight: 500; font-size: 20px; color: var(--sentence-fg); }
+[data-ui="sentence"] .dept-en { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+[data-ui="sentence"] .dept-n { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+[data-ui="sentence"] .op-item { border-bottom: 1px dotted var(--sentence-line); font-size: 12.5px; color: var(--sentence-fg2); }
+[data-ui="sentence"] .op-note { color: var(--sentence-dim); }
+[data-ui="sentence"] .op-hl { background: var(--sentence-shade); }
+[data-ui="sentence"] .list-empty { color: var(--sentence-dim); }
+
+/* ---------- L. 頁尾與連結 ---------- */
+[data-ui="sentence"] footer.tool-footer {
+  border-top: 1px solid var(--sentence-line2); margin-top: 26px; padding: 12px 0 6px;
+  font-family: var(--sentence-mono); font-size: 10.5px; line-height: 1.85; color: var(--sentence-dim);
+}
+[data-ui="sentence"] footer.tool-footer a.ref-link,
+[data-ui="sentence"] a.ref-link {
+  color: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
+[data-ui="sentence"] a.ref-link:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] a.tool-link { color: inherit; text-decoration-color: var(--sentence-line2); }
+[data-ui="sentence"] .ind-badge { border-color: currentColor; border-radius: 0; }
+[data-ui="sentence"] .mono { font-family: var(--sentence-mono); }
+
+/* ---------- M. 通用觸控目標安全網 ＋ 動態降級 ---------- */
+/* 沒被上面任何具名規則覆蓋到的互動元件，仍要達到 ≥44px（僅本設計要求）。
+   排除 checkbox／radio（下面用 appearance:none 自畫視覺方塊另外處理，
+   原生方塊撐大會很醜，要保持小方塊＋大熱區）。45px 而非 44px：cdp.py
+   small_targets() 量到的是未四捨五入的實際 px，44.00 剛好卡在邊界時，
+   box-sizing／次像素捨入偶爾會量出 43.6xx 這種「四捨五入顯示 44 但實際
+   小於 44」的假陽性（tools/acls.html 的 BLS 分頁鈕現場遇到），多留 1px
+   安全邊界。 */
+[data-ui="sentence"] button:not(.ui-mode-toggle),
+[data-ui="sentence"] input:not([type="checkbox"]):not([type="radio"]),
+[data-ui="sentence"] select {
+  min-height: 45px; min-width: 45px;
+}
+
+/* 通用 checkbox／radio：appearance:none 自畫方塊／圓點，量到的 <input>
+   元素本身就是 45×45，視覺記號維持 20px 密度。不靠外層 label 撐熱區——
+   cdp.py 的 small_targets() 逐一量每個 <input>，外層 label 再大也救不了
+   裡面那顆 20px 的原生方塊。這條通用規則涵蓋全站所有 checkbox／radio，
+   包含各頁自訂的 class（.hb-cb／.cv-cb／.cap-cb／.pa-rf……用不著逐一列名）；
+   .toggle-inline input[type="checkbox"] 仍保留自己那份（class+type 特異度更高），
+   兩者視覺結果一致，只是各自獨立維護、互不依賴。 */
+[data-ui="sentence"] input[type="checkbox"],
+[data-ui="sentence"] input[type="radio"] {
+  appearance: none; -webkit-appearance: none;
+  width: 45px; height: 45px; min-width: 45px; min-height: 45px; margin: 0; flex-shrink: 0;
+  position: relative; background: transparent; border: 0; cursor: pointer; vertical-align: middle;
+}
+[data-ui="sentence"] input[type="checkbox"]::before,
+[data-ui="sentence"] input[type="radio"]::before {
+  content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 20px; height: 20px; border: 2px solid var(--sentence-line2); background: var(--sentence-bg);
+}
+[data-ui="sentence"] input[type="radio"]::before { border-radius: 50%; }
+[data-ui="sentence"] input[type="checkbox"]:checked::before,
+[data-ui="sentence"] input[type="radio"]:checked::before {
+  background: var(--sentence-fg); border-color: var(--sentence-fg);
+}
+[data-ui="sentence"] input[type="checkbox"]:checked::after {
+  content: "✓"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: var(--sentence-inv-fg); font-size: 13px; font-weight: 700; line-height: 1;
+}
+[data-ui="sentence"] input[type="radio"]:checked::after {
+  content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 8px; height: 8px; border-radius: 50%; background: var(--sentence-inv-fg);
+}
+/* 不強制 display:flex——def-box／info-box 已各自指定過（皆為區塊層級，
+   list-item→flex 不影響 innerText 換行分段，已現場驗證）；這裡只補
+   min-height，避免影響「另一位負責」的藥卡等頁面尚未命名到的 <summary>
+   版面（例如 .drugcard > summary 目前是多個徽章並排，改 display 有風險）。 */
+[data-ui="sentence"] details > summary { min-height: 44px; }
+
+/* tools/spectrum-database.html 的 .sd-colhead／.dlink：這兩個 class 前綴是 sd-／dlink，
+   不在本檔開頭聲明排除的 dc-*／db-*／abx-*／bac-*／cov-*／drugcard 名單內，
+   而且全站 grep 找不到任何一支 css/*.css 定義過它們——連該頁面自己 <style> 內
+   都只寫了 28px 高的欄首與 inline 的列首連結，從未有人補過 44px。不是「另一位
+   負責的範圍」，是缺口，這裡補上：
+     · div.sd-colhead（29 個）—— 帶 onclick="toggleCol(...)" 的欄首切換鈕，真控制項。
+     · a.sd-colhead.dlink（9 個）—— 同一列欄首、點了直接連去該藥藥卡，同樣是控制項，
+       且和上面那 29 個同一個 <tr>，撐高不會多花版面。
+     · a.dlink（36 個，th.rowhead 內的列首藥名連結）—— 也是控制項不是行內引用，
+       分布在資料列的列首，一併補上。
+       版面代價：實測頁面 scrollHeight 設計關 5015px、設計開 5001px——**沒有變高**，
+       因為同列的資料格本來就已經 ≥44px，列首連結長高不會再撐高那一列。
+       （原本這裡寫「52 列 × 增高 7px ≈ 多 364px（5091→5455px）」是沒有量過的推估，
+       與實測相反，已刪除。出貨檔案裡不留沒量過的數字。） */
+[data-ui="sentence"] .sd-colhead {
+  min-height: 44px; justify-content: center;
+}
+/* :not(.sd-colhead)：a.sd-colhead.dlink 那 9 個已經被上面那條 flex-column 規則
+   撐到 44px，這裡只再處理單純的列首連結（th.rowhead 內、display 預設 inline，
+   min-height 對 inline 元素無效，需要先改成 inline-flex 才吃得到）。 */
+[data-ui="sentence"] a.dlink:not(.sd-colhead) {
+  display: inline-flex; align-items: center; min-height: 44px; min-width: 44px;
+  /* 部分藥名縮寫很短（1st／2nd／Colistin 縮到 42px 這種），min-height 補完後
+     量出來的寬還是 <44px——列首欄有 ~92px 空間，補寬不會撐破欄位。 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-ui="sentence"] *, [data-ui="sentence"] *::before, [data-ui="sentence"] *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- N. 側欄導覽的觸控目標（css/nav.css／js/nav.js，每頁都有） ----------
+ * nav.js 在執行期把整座抽屜式導覽（.nav-toggle／.side-nav／.nav-item…）插進
+ * <body>，不是靜態 markup，但仍會被 document.body.innerText 量到（parity.py／
+ * cdp.py 的量測都是頁面載入完成後才讀取）。這裡只補尺寸，不動 display／
+ * position／transform——那些屬性由 nav.js 的開合動畫依賴，改了會連動壞掉；
+ * .nav-toggle／.nav-group-fold 是純裝飾符號（三橫槓／小箭頭），沒有文字節點，
+ * 放心調大。.nav-item 含真正的頁面名稱文字，只加 min-height，不改 display，
+ * 已現場以 parity.py 驗證兩態逐字相同。 */
+[data-ui="sentence"] .nav-toggle { width: 44px; height: 44px; }
+[data-ui="sentence"] .nav-group-fold { width: 44px; min-height: 44px; }
+[data-ui="sentence"] .nav-item { min-height: 44px; padding-top: 9px; padding-bottom: 9px; }
