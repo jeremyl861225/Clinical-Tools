@@ -1,0 +1,46 @@
+# 部署到 GitHub Pages
+#
+# 為什麼不用傳統的 Jekyll 建置：
+# 這個站是純靜態 HTML/CSS/JS，本來就不需要 Jekyll。而傳統建置在 2026-08-06
+# 連續失敗三次，兩次都是**開始後恰好 10 分鐘**才回報失敗——那是它的逾時上限。
+# 推測是過去每個 commit 只動幾個檔可以走增量，而「雙設計切換」那一批一次動了
+# 108 個檔，逼出一次完整重建就超時了。
+# 改用 Actions：不跑 Jekyll、直接把檔案打包上傳，不會再撞到那個上限。
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:      # 需要時可以在 Actions 頁面手動重跑
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時只跑一個部署；不取消進行中的那一個，避免半途中斷留下壞掉的線上版本
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 取出原始碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包整個站台
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
