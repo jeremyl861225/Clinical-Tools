@@ -107,13 +107,15 @@
  *   K. 分級清單（.lv-*／.dept-*／.op-item，急診手術分級頁）
  *   L. 頁尾與連結（footer.tool-footer/.ref-link/.tool-link/.ind-badge/.mono）
  *   M. 通用觸控目標安全網 ＋ 動態降級
+ *   Q. 藥物與抗生素查閱頁（drugcard／dc-*／db-*／cov-* 的造句設計配色，見該段開頭）
  *   （N／O 兩段見檔案後段——N 側欄導覽觸控目標，O 造句導覽本體 js/sentence-nav.js，
  *   非本次交付範圍，維持原樣不動）
  *   P. 癌症頁（tools/cancer.html）專屬元件——js/cancer-staging.js 與
  *      30 個癌別共用的 js/*-pathway.js 各自的 render 函式輸出的 markup，
  *      不吃 A–N 段的全站共用慣例，見該段開頭說明。
  *
- * 範圍聲明：本檔不含 tools/drug-database.html、tools/antibiotics.html、
+ * 範圍聲明（**已於 Q 段作廢，保留原文供對照**）：本檔原本不含
+ * tools/drug-database.html、tools/antibiotics.html、
  * tools/spectrum-database.html 等頁面專屬的 dc-*／db-*／abx-*／bac-*／cov-*／
  * drugcard 類別——那是另一位負責的「藥物資料庫的樣式」，不在此檔動它們。
  * 這些頁面仍會吃到本檔的全站共用層（A/B/C/D/L/M 段），只是它們自己的
@@ -474,9 +476,15 @@
 /* 只留 b：.result-interp 內文全站 0 頁用過 <strong>（死樣式掃描實測）。 */
 [data-ui="sentence"] .result-interp b { color: var(--sentence-fg); }
 
+/* 這一條當初漏掉了：score-ref 與 def-table 的 display:block 已經因為「表格排版很亂」
+   移除，通用的 table{display:block} 也整條刪了，唯獨 table.ref 還留著同一個寫法。
+   症狀一樣——表格退化成匿名 shrink-to-fit 盒，width:100% 失效。
+   實測 tools/nihss.html（1280px）：正式版 display:table、寬 776、首列欄寬 283/493；
+   造句設計 display:block、首列欄寬 46/81——整張表縮到左邊一小條。
+   影響 kdigo-aki／fib4／osmolality／nihss／air 等所有用 table.ref 的頁面。 */
 [data-ui="sentence"] table.ref {
   border-collapse: collapse; width: 100%; font-size: 11.5px; margin-top: 8px;
-  display: block; overflow-x: auto; max-width: 100%;
+  max-width: 100%;
 }
 [data-ui="sentence"] table.ref th,
 [data-ui="sentence"] table.ref td {
@@ -1998,3 +2006,555 @@
 [data-ui="sentence"] .onc-reflist a { color: var(--sentence-fg2); font-family: var(--sentence-mono); font-size: 11.5px; text-decoration: none; }
 [data-ui="sentence"] .onc-reflist a:hover { color: var(--sentence-fg); text-decoration: underline; }
 [data-ui="sentence"] .onc-reflist a:before { color: var(--sentence-dim); }
+
+/* ═══ Q1. 模式分頁列（.abx-modes／.abx-mode） ═══════════════════════════════
+   打 antibiotics.css 的 `.abx-modes`(0,1,0)／`.abx-mode`(0,1,0)／
+   `.abx-mode.active`(0,2,0)。視覺語彙直接沿用 J 段的 .tab-row/.tab-btn：
+   2px 墨線當基線、分頁是無底色的髮絲框、選中才反白。 */
+[data-ui="sentence"] .abx-modes {                      /* (0,2,0) > (0,1,0) */
+  border-bottom: 2px solid var(--sentence-fg);
+  gap: 5px; margin-bottom: 16px; padding-bottom: 0;
+}
+[data-ui="sentence"] button.abx-mode {                 /* (0,2,1) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 11.5px; letter-spacing: .04em;
+  background: transparent; color: var(--sentence-dim);
+  border: 1px solid var(--sentence-line2); border-bottom: none; border-radius: 0;
+  padding: 0 13px; min-height: 45px; position: relative; top: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background var(--sentence-fast) var(--sentence-ease),
+              color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] button.abx-mode:hover {           /* (0,2,1)+pseudo-class */
+  background: var(--sentence-shade); color: var(--sentence-fg); filter: none;
+}
+[data-ui="sentence"] button.abx-mode.active {          /* (0,3,1) > (0,2,0) */
+  color: var(--sentence-fg); background: var(--sentence-bg2);
+  border-color: var(--sentence-fg); font-weight: 700;
+}
+/* antibiotics.css 在 max-width:520px 另給 `.abx-mode{flex:1 1 30%; padding:9px 4px;
+   font-size:11.5px}`(0,1,0)。上面那條 (0,2,1) 在窄螢幕也會贏，等於把 flex:1 1 30%
+   吃掉、六顆分頁擠成一排會溢出——必須在同樣的斷點補回來。 */
+@media (max-width: 520px) {
+  [data-ui="sentence"] button.abx-mode {
+    flex: 1 1 30%; padding: 0 4px; font-size: 11px; text-align: center;
+  }
+}
+
+
+/* ═══ Q2. 搜尋框（.gs-*，僅這兩頁；理由見檔頭「刻意偏離」第 4 點） ═══════════
+   打 styles.css 的 `.gs-field`(0,1,0)／`.gs-field .gs-input`(0,2,0)／
+   `.gs-field:focus-within`(0,1,0)+pc。id 前綴讓每一條都是 (1,x,y)，穩贏。 */
+[data-ui="sentence"] #view-antibiotics .gs-field,
+[data-ui="sentence"] #view-drugdb .gs-field {
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 0 12px; gap: 9px;
+}
+[data-ui="sentence"] #view-antibiotics .gs-field:focus-within,
+[data-ui="sentence"] #view-drugdb .gs-field:focus-within {
+  border-color: var(--sentence-fg); box-shadow: none;
+  outline: 1px solid var(--sentence-fg); outline-offset: -2px;
+}
+[data-ui="sentence"] #view-antibiotics .gs-field .gs-input,
+[data-ui="sentence"] #view-drugdb .gs-field .gs-input {
+  font-family: var(--sentence-sans); font-size: 14px; color: var(--sentence-fg);
+  padding: 0; background: transparent;
+}
+[data-ui="sentence"] #view-antibiotics .gs-input::placeholder,
+[data-ui="sentence"] #view-drugdb .gs-input::placeholder {
+  color: var(--sentence-dim); font-size: 12px;
+}
+[data-ui="sentence"] #view-antibiotics .gs-icon,
+[data-ui="sentence"] #view-drugdb .gs-icon { color: var(--sentence-dim); font-size: 15px; }
+[data-ui="sentence"] #view-antibiotics .gs-field:focus-within .gs-icon,
+[data-ui="sentence"] #view-drugdb .gs-field:focus-within .gs-icon { color: var(--sentence-fg); }
+[data-ui="sentence"] #view-antibiotics button.gs-clear,
+[data-ui="sentence"] #view-drugdb button.gs-clear { color: var(--sentence-dim); }
+[data-ui="sentence"] #view-antibiotics button.gs-clear:hover,
+[data-ui="sentence"] #view-drugdb button.gs-clear:hover { color: var(--sentence-fg); }
+[data-ui="sentence"] #view-antibiotics .gs-box,
+[data-ui="sentence"] #view-drugdb .gs-box { margin-bottom: 10px; }
+
+
+/* ═══ Q3. 藥卡本體（.drugcard／summary／.dc-body），兩頁共用 ══════════════════
+   打 antibiotics.css 的 `.drugcard`(0,1,0)／`.drugcard summary`(0,1,1)／
+   `.drugcard summary:before`(0,1,1)／`.drugcard[open] summary`(0,2,1)／
+   `.dc-body`(0,1,0)。
+   卡 → 索引列：見檔頭「刻意偏離」第 1 點。 */
+[data-ui="sentence"] details.drugcard {                        /* (0,2,1) > (0,1,0) */
+  background: transparent; border: 0; border-bottom: 1px solid var(--sentence-line);
+  border-radius: 0; margin: 0; scroll-margin-top: 16px;
+}
+[data-ui="sentence"] details.drugcard[open] {                  /* (0,3,1) */
+  border-left: 3px solid var(--sentence-fg); border-bottom-color: var(--sentence-fg);
+  padding-left: 11px; margin: 10px 0;
+}
+[data-ui="sentence"] details.drugcard > summary {              /* (0,2,2) > (0,1,1) */
+  padding: 8px 0; gap: 4px 8px; align-items: baseline;
+  line-height: 1.35; min-height: 0;
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] details.drugcard > summary:hover { background: var(--sentence-shade); }
+/* 展開記號：正式版是 --accent 藍綠的 ▸／▾，換成墨色。字級收到 10px、右邊距 0
+   （改由 summary 的 gap 供距），一列省下 2px 寬。 */
+[data-ui="sentence"] details.drugcard > summary::before {      /* (0,2,2) > (0,1,1) */
+  content: "▸"; font-family: var(--sentence-mono); font-size: 10px;
+  color: var(--sentence-dim); margin-right: 0;
+}
+[data-ui="sentence"] details.drugcard[open] > summary::before { content: "▾"; color: var(--sentence-fg); }
+[data-ui="sentence"] details.drugcard[open] > summary {        /* (0,3,2) > (0,2,1) */
+  border-bottom: 1px solid var(--sentence-line);
+}
+[data-ui="sentence"] .drugcard .dc-body { padding: 2px 0 14px; }  /* (0,3,0) > (0,1,0) */
+
+/* 藥名三件組。`.dc-name` 是這一列真正的臨床內容，維持襯線、其餘降成輔助。 */
+[data-ui="sentence"] .drugcard .dc-name {                      /* (0,3,0) > (0,1,0) */
+  font-family: var(--sentence-serif); font-weight: 500; font-size: 15px;
+  letter-spacing: .01em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .drugcard .dc-zh {
+  font-family: var(--sentence-sans); font-size: 11.5px; color: var(--sentence-fg2); margin-left: 0;
+}
+[data-ui="sentence"] .drugcard .dc-nameen {
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+}
+
+
+/* ═══ Q4. 分級徽章 .cov-tag —— 感受性燈號（本輪的重點） ══════════════════════
+   打 `.cov-tag`(0,1,0)、`.dc-cov .cov-tag`(0,2,0)、`button.cov-tag`(0,1,1)。
+   用 `button.cov-tag`／`span.cov-tag`(0,2,1) 一次贏過三者（見檔頭特異度說明）。
+
+   固定 height:20px + box-sizing:border-box：四級**外框高度完全相同**，
+   2px 粗框那一級不會像正式版那樣比鄰居高 2px 把整列頂開。
+   padding 收到 0 6px（正式版 2px 8px），省下的橫向空間剛好給燈號立柱，
+   一顆徽章的**總寬與正式版持平**——這是不讓收合列多換一行的關鍵。 */
+[data-ui="sentence"] button.cov-tag,
+[data-ui="sentence"] span.cov-tag {                            /* (0,2,1) */
+  box-sizing: border-box; height: 20px; padding: 0 6px;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: .02em; line-height: 1; white-space: nowrap;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg2); opacity: 1; text-decoration: none;
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] button.cov-tag:hover {
+  filter: none; background: var(--sentence-shade); outline: none;
+}
+[data-ui="sentence"] button.cov-tag:focus-visible {
+  outline: 2px solid var(--sentence-fg); outline-offset: 1px;
+}
+
+/* ---- 燈號立柱：4px × 11px 的「軌道 + 填充」直條。
+   幾何量（填充比例）＝第一重非顏色編碼；黑白列印與色覺缺陷下仍可判讀。
+   只掛在四個分級 class 上，`.cov-tag.cat`（無分級的類別標籤）不長立柱。 */
+[data-ui="sentence"] .cov-tag.sy-hi::before,
+[data-ui="sentence"] .cov-tag.yes::before,
+[data-ui="sentence"] .cov-tag.partial::before,
+[data-ui="sentence"] .cov-tag.no::before {                     /* (0,3,0)+pseudo-element */
+  content: ""; flex: none; align-self: center;
+  width: 4px; height: 11px;
+  background: linear-gradient(to top,
+              currentColor 0 var(--tier-fill),
+              var(--sentence-line) var(--tier-fill) 100%);
+}
+
+/* ---- 四級。色相仍照頁面自己印出來的規則（≥90／80–89 墨綠、60–79 琥珀、
+   <60 暗），但色相已經是第四重，不是唯一線索。 */
+[data-ui="sentence"] .cov-tag.sy-hi {                          /* (0,3,0) > (0,2,0) */
+  --tier-fill: 100%;
+  color: var(--sentence-calm); border: 2px solid currentColor; font-weight: 800;
+}
+[data-ui="sentence"] .cov-tag.yes {                            /* (0,3,0) */
+  --tier-fill: 66%;
+  color: var(--sentence-calm); border: 1px solid currentColor;
+}
+[data-ui="sentence"] .cov-tag.partial {                        /* (0,3,0) */
+  --tier-fill: 33%;
+  color: var(--sentence-warn); border: 1px dashed currentColor;
+}
+/* `no` 的邊框用 --sentence-dim 而不是 --sentence-line2：邊框在這裡是**承重的
+   分級線索**（線型是第二重編碼），適用 WCAG 1.4.11 非文字對比 ≥3:1。
+   實測 line2 對骨白底只有 2.18:1（不合格），dim 是 4.27:1（合格）。
+   其餘四級的邊框都是 currentColor，跟著字色走，自然過關（5.31–8.00）。 */
+[data-ui="sentence"] .cov-tag.no {                             /* (0,3,0) */
+  --tier-fill: 12%;
+  color: var(--sentence-fg2); border: 1px dotted var(--sentence-dim);
+  font-weight: 400; text-decoration: line-through; opacity: 1;
+}
+[data-ui="sentence"] button.cov-tag.no:hover { opacity: 1; background: var(--sentence-shade); }
+/* 無分級的單一類別標籤（抗結核／抗病毒…，js 的 catBtn）：中性、不長燈號，
+   免得被誤讀成某一級。
+   字色用 fg2 不用 dim：dim 在亮色主題對骨白底是 4.27:1，9.5px 小字不到
+   WCAG AA 的 4.5（實測值，不是估的）。這顆徽章寫的是藥物類別，是內容不是裝飾。 */
+[data-ui="sentence"] .cov-tag.cat {                            /* (0,3,0) > (0,2,0) */
+  color: var(--sentence-fg2); border: 1px solid var(--sentence-line2);
+  letter-spacing: .08em; font-weight: 700;
+}
+
+/* ---- 徽章列容器：正式版 gap 4px / margin-top 8px，收成 3px / 5px。 */
+[data-ui="sentence"] .dc-cov { gap: 3px 4px; margin-top: 5px; }        /* (0,2,0) > (0,1,0) */
+[data-ui="sentence"] .cov-tags { gap: 3px 4px; margin-top: 6px; }
+[data-ui="sentence"] .dc-susc { margin-top: 10px; }
+[data-ui="sentence"] .dc-susc .dc-cov { margin-top: 0; }               /* (0,3,0) > (0,2,0) */
+/* 感受性區的抬頭（js 印的「台大 2025 上半年在地感受性 %S · ≥90 粗框 /…」）。
+   它是燈號的圖例，字要讀得到 → fg2 不用 dim。 */
+[data-ui="sentence"] .dc-susc-cap {                                    /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; line-height: 1.55;
+  letter-spacing: .02em; color: var(--sentence-fg2); margin-bottom: 5px;
+}
+
+
+/* ═══ Q5. 類別徽章 .dc-class（藥卡列首右端） ═══════════════════════════════
+   打 `.dc-class`(0,1,0) 與 `button.cov-tag, button.dc-class`(0,1,1)。 */
+[data-ui="sentence"] .dc-class {                               /* (0,2,0) > (0,1,1)：b 2>1 */
+  box-sizing: border-box; height: 18px; padding: 0 6px; margin-left: auto;
+  display: inline-flex; align-items: center;
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 400;
+  letter-spacing: .04em; line-height: 1; white-space: nowrap;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg2);
+}
+[data-ui="sentence"] button.dc-class:hover {
+  filter: none; background: var(--sentence-shade); border-color: var(--sentence-fg); outline: none;
+}
+[data-ui="sentence"] button.dc-class:focus-visible {
+  outline: 2px solid var(--sentence-fg); outline-offset: 1px;
+}
+
+
+/* ═══ Q6. 藥卡展開內容：欄位、劑量條列 ═════════════════════════════════════
+   打 `.dc-field`(0,1,0)／`.dc-flabel`(0,1,0)／`.dc-ftext`(0,1,0)／
+   `.dose-fmt .dl-*`(0,2,0)／`.dose-fmt .dl-item::before`(0,2,1)。
+   欄位標籤加一條下髮絲線：這是 04 把「標籤 / 內容」分層的固定手法
+   （同 J 段 .sys-sub、P 段 .onc-sec-h），也是「這一段真的套到設計語言了」
+   最直接的視覺證據。 */
+[data-ui="sentence"] .drugcard .dc-field { margin-top: 12px; }         /* (0,3,0) */
+[data-ui="sentence"] .drugcard .dc-field:first-child { margin-top: 6px; }
+[data-ui="sentence"] .dc-flabel {                                      /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+  border-bottom: 1px solid var(--sentence-line); padding-bottom: 3px; margin-bottom: 5px;
+}
+[data-ui="sentence"] .dc-ftext {                                       /* (0,2,0) > (0,1,0) */
+  font-size: 12.5px; line-height: 1.7; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .dc-ftext b, [data-ui="sentence"] .dc-ftext strong { color: var(--sentence-fg); }
+[data-ui="sentence"] .dc-ftext .sub { font-family: var(--sentence-mono); color: var(--sentence-dim); }
+/* 「禁忌與警示」欄：正式版 --accent2（磚紅）。這是臨床嚴重度，可以用 hot。 */
+[data-ui="sentence"] .dc-ftext.dc-warn, [data-ui="sentence"] .dc-warn { color: var(--sentence-hot); }
+
+[data-ui="sentence"] .dose-fmt .dl-head,
+[data-ui="sentence"] .dose-fmt .dl-sect {                              /* (0,3,0) > (0,2,0) */
+  color: var(--sentence-fg); font-weight: 600;
+}
+[data-ui="sentence"] .dose-fmt .dl-sub { color: var(--sentence-dim); }
+[data-ui="sentence"] .dose-fmt .dl-item::before { color: var(--sentence-fg2); }   /* (0,3,1) > (0,2,1) */
+[data-ui="sentence"] .dose-fmt .dl-sub::before { color: var(--sentence-dim); }
+
+
+/* ═══ Q7. 藥卡內的小徽章：懷孕分級／剝半磨粉／飲食交互作用 ══════════════════
+   `.crush-tag.yes/.no`(0,2,0)、`.food-sev.hi/.mid`(0,2,0) → 補到 (0,3,0)。
+   這兩組本來就自帶「可／不可」「禁忌／重大」的**文字**，非顏色編碼已經在
+   字面上；本檔再補一重線型（實線 vs 虛線），黑白下也分得出來。 */
+[data-ui="sentence"] .dc-preg {                                        /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700;
+  color: var(--sentence-fg); background: transparent;
+  border: 1px solid var(--sentence-fg); border-radius: 0; padding: 1px 7px;
+}
+[data-ui="sentence"] .dc-pregnote { color: var(--sentence-fg2); font-size: 11.5px; }
+
+[data-ui="sentence"] .crush-tag,
+[data-ui="sentence"] .food-sev {                                       /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; font-weight: 700;
+  border-radius: 0; padding: 1px 7px; letter-spacing: .03em; background: transparent;
+}
+[data-ui="sentence"] .crush-tag.yes { color: var(--sentence-calm); border: 1px solid currentColor; }
+[data-ui="sentence"] .crush-tag.no  { color: var(--sentence-hot);  border: 1px dashed currentColor; }
+[data-ui="sentence"] .food-sev.hi   { color: var(--sentence-hot);  border: 1px solid currentColor; }
+[data-ui="sentence"] .food-sev.mid  { color: var(--sentence-fg2);  border: 1px dashed var(--sentence-line2); }
+[data-ui="sentence"] .crush-note, [data-ui="sentence"] .food-note {
+  color: var(--sentence-fg2); font-size: 11.5px; line-height: 1.65;
+}
+[data-ui="sentence"] .crush-note b, [data-ui="sentence"] .food-note b,
+[data-ui="sentence"] .food-name { color: var(--sentence-fg); }
+
+
+/* ═══ Q8. 藥卡內的兩張小表（renal-tbl／inj-tbl） ═════════════════════════════
+   **只換顏色與線型，一個幾何量都不動**——理由見檔頭「刻意偏離」第 3 點。
+   沒有 display、沒有 font-size／font-family、沒有 padding／white-space，
+   `td:first-child{width:34%|30%}` 由正式版那一條繼續生效（層疊逐宣告，
+   本檔沒有覆蓋 width，就等於保留）。 */
+[data-ui="sentence"] table.renal-tbl td,
+[data-ui="sentence"] table.inj-tbl td {                        /* (0,2,2) > (0,1,2) */
+  border-bottom: 1px dotted var(--sentence-line); color: var(--sentence-fg2);
+}
+/* 正式版這一欄是 --muted，對紙色實測 6.10:1；--sentence-dim 只有 4.27，
+   換過去等於讓欄位名比正式版更難讀。用 fg2（7.90:1）。 */
+[data-ui="sentence"] table.renal-tbl td:first-child,
+[data-ui="sentence"] table.inj-tbl td:first-child {            /* (0,3,2) > (0,2,2) */
+  color: var(--sentence-fg2);
+}
+[data-ui="sentence"] table.renal-tbl tr:last-child td,
+[data-ui="sentence"] table.inj-tbl tr:last-child td {          /* (0,2,3) — 與正式版同特異度，
+   但本檔在 antibiotics.css **之前**載入，會輸。補一個 class 到 (0,3,3)：*/
+  border-bottom: none;
+}
+[data-ui="sentence"] table.renal-tbl tbody tr:last-child td,
+[data-ui="sentence"] table.inj-tbl tbody tr:last-child td { border-bottom: none; }  /* (0,2,4) > (0,1,3) */
+/* 同一支藥多列時的分隔列（drug-database.css，(0,2,3)）→ 補到 (0,3,3)。
+   只換顏色，height:6px／padding:0 原樣保留。 */
+[data-ui="sentence"] table.renal-tbl tr.tbl-sep td {           /* (0,3,3) > (0,2,3) */
+  border-bottom: 1px solid var(--sentence-line2);
+}
+
+
+/* ═══ Q9. 藥物資料庫：分類方磚 .db-cat ══════════════════════════════════════
+   打 `.db-cat`(0,1,0)／`.db-cat.active`(0,2,0)／`.db-cat span`(0,1,1)／
+   `.db-cat.active span`(0,2,1)。
+   選中態用反白（同 I 段 .flow-opt.selected）——而且**裡面的品項數 <span>
+   一定要改吃 inherit**：ui-sentence.css 前面那次「反白底 + 自帶顏色的子元素
+   = 隱形字」的實機回報就是這樣來的，這裡不重蹈。 */
+[data-ui="sentence"] .db-cats { gap: 5px; margin-bottom: 8px; }
+[data-ui="sentence"] button.db-cat {                           /* (0,2,1) > (0,1,0) */
+  box-sizing: border-box; height: 30px; padding: 0 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--sentence-sans); font-size: 12px; line-height: 1;
+  background: transparent; color: var(--sentence-fg);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] button.db-cat:hover {
+  background: var(--sentence-shade); border-color: var(--sentence-fg);
+}
+[data-ui="sentence"] button.db-cat span {                      /* (0,2,2) > (0,1,1) */
+  font-family: var(--sentence-mono); font-size: 9.5px; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] button.db-cat.active {                    /* (0,3,1) > (0,2,0) */
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg);
+  border-color: var(--sentence-inv-bg); font-weight: 600;
+}
+[data-ui="sentence"] button.db-cat.active span {               /* (0,3,2) > (0,2,1) */
+  color: inherit; opacity: .72;
+}
+
+
+/* ═══ Q10. 藥物資料庫：藥理機轉籤 .db-clschip／.db-clsmore ═══════════════════ */
+[data-ui="sentence"] .db-clsrow { gap: 4px; margin-bottom: 8px; }
+[data-ui="sentence"] .db-cls-lbl {                             /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] button.db-clschip {                       /* (0,2,1) > (0,1,0) */
+  box-sizing: border-box; height: 21px; padding: 0 8px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--sentence-sans); font-size: 11px; line-height: 1;
+  background: transparent; color: var(--sentence-fg2);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] button.db-clschip:hover {                 /* (0,2,1)+pc > (0,2,0) */
+  filter: none; background: var(--sentence-shade); border-color: var(--sentence-fg);
+}
+[data-ui="sentence"] button.db-clschip span {                  /* (0,2,2) > (0,1,1) */
+  font-family: var(--sentence-mono); font-size: 9px; color: var(--sentence-fg2); opacity: 1;
+}
+[data-ui="sentence"] button.db-clschip.active {                /* (0,3,1) > (0,2,0) */
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg);
+  border-color: var(--sentence-inv-bg); font-weight: 600;
+}
+[data-ui="sentence"] button.db-clschip.active span { color: inherit; opacity: .72; }  /* (0,3,2) */
+[data-ui="sentence"] button.db-clsmore {                       /* (0,2,1) > (0,1,0) */
+  box-sizing: border-box; height: 20px; padding: 0 8px;
+  display: inline-flex; align-items: center;
+  font-family: var(--sentence-mono); font-size: 10px; line-height: 1;
+  background: transparent; color: var(--sentence-dim);
+  border: 1px dashed var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] button.db-clsmore:hover {                 /* (0,2,1)+pc > (0,2,0) */
+  background: var(--sentence-shade); border-color: var(--sentence-fg); color: var(--sentence-fg);
+}
+
+
+/* ═══ Q11. 藥物資料庫：列首小標、含量分頁、機轉徽章、頁尾、計數 ════════════ */
+/* 列首的前綴小標（兒／管N／專案／《O》）與含量。兩者都可能長字串換行，
+   所以**不設固定高度**，只設 line-height——固定高度會把換行的內容裁掉。 */
+[data-ui="sentence"] .db-tag {                                 /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; line-height: 1.5;
+  color: var(--sentence-fg2); background: transparent;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 0 5px;
+}
+[data-ui="sentence"] .db-strength {                            /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; line-height: 1.5;
+  color: var(--sentence-fg2); background: transparent;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 0 5px;
+}
+[data-ui="sentence"] .db-moas { gap: 5px; }
+[data-ui="sentence"] .db-moa {                                 /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; line-height: 1.6;
+  color: var(--sentence-fg2); background: transparent;
+  border: 1px solid var(--sentence-line2); border-radius: 0; padding: 0 7px;
+}
+/* 含量規格分頁：主要控制項，維持 M 段的 45px（見檔頭「刻意偏離」第 5 點），
+   只換形狀與顏色。 */
+[data-ui="sentence"] .db-vtabs { gap: 5px; margin: 12px 0 4px; }
+[data-ui="sentence"] .db-vtabs-lbl {                           /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] button.db-vtab {                          /* (0,2,1) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 11px; padding: 0 11px;
+  display: inline-flex; align-items: center;
+  background: transparent; color: var(--sentence-fg2);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] button.db-vtab:hover { filter: none; background: var(--sentence-shade); }
+[data-ui="sentence"] button.db-vtab.active {                   /* (0,3,1) > (0,2,0) */
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg);
+  border-color: var(--sentence-inv-bg); font-weight: 600;
+}
+/* 健保給付規定：可捲動的節錄框。--box-bg 換成 bg2，維持 max-height 不動。 */
+[data-ui="sentence"] .db-nhi {                                 /* (0,2,0) > (0,1,0) */
+  background: var(--sentence-bg2); border: 1px solid var(--sentence-line);
+  border-radius: 0; font-size: 12px; line-height: 1.7; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .db-foot {                                /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; line-height: 1.7;
+  color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
+}
+[data-ui="sentence"] .db-count,
+[data-ui="sentence"] .abx-lookup-count {                       /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--sentence-fg2); margin-bottom: 7px;
+}
+[data-ui="sentence"] .db-empty,
+[data-ui="sentence"] .db-loading,
+[data-ui="sentence"] .bac-empty {                              /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 12px; color: var(--sentence-dim);
+}
+
+
+/* ═══ Q12. 抗生素・藥物查詢分頁專屬的列與鈕 ════════════════════════════════ */
+[data-ui="sentence"] .abx-hint {                               /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--sentence-dim); margin: 14px 0 6px;
+}
+[data-ui="sentence"] .lookup-sort { gap: 5px; margin: 2px 0 6px; }
+[data-ui="sentence"] .lookup-sort-lbl,
+[data-ui="sentence"] .lf-lbl {                                 /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] button.abx-sortbtn {                      /* (0,2,1) > (0,1,0) */
+  box-sizing: border-box; height: 21px; padding: 0 11px;
+  display: inline-flex; align-items: center;
+  font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700; line-height: 1;
+  background: transparent; color: var(--sentence-fg2);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] button.abx-sortbtn:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+[data-ui="sentence"] button.abx-sortbtn.active {               /* (0,3,1) > (0,2,0) */
+  background: var(--sentence-inv-bg); color: var(--sentence-inv-fg);
+  border-color: var(--sentence-inv-bg);
+}
+/* 篩選中的晶片（點徽章之後出現的「篩選 ▸ MRSA ×」）。
+   `.lf-x` 是真的移除鈕，維持 M 段的 45px 熱區，不放進例外名單。 */
+[data-ui="sentence"] .lf-chip {                                /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; font-weight: 700;
+  color: var(--sentence-fg); background: transparent;
+  border: 1px solid var(--sentence-fg); border-radius: 0; padding: 0 2px 0 10px;
+}
+[data-ui="sentence"] button.lf-x { color: var(--sentence-fg); }
+/* 「種類」排序時的可摺疊類別標頭（button.bac-group-head，(0,1,1)）。
+   div.bac-group-head（依病原菌的菌種分組）也吃同一組視覺。 */
+[data-ui="sentence"] .bac-group-head {                         /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-fg2);
+  border-bottom: 1px solid var(--sentence-fg); padding-bottom: 4px; margin: 16px 0 6px;
+}
+[data-ui="sentence"] button.bac-group-head {                   /* (0,2,1) > (0,1,1) */
+  background: transparent; border: 0; border-bottom: 1px solid var(--sentence-fg);
+}
+[data-ui="sentence"] button.bac-group-head:hover {             /* (0,2,1)+pc > (0,1,1)+pc */
+  color: var(--sentence-fg); background: var(--sentence-shade); border-bottom-color: var(--sentence-fg);
+}
+[data-ui="sentence"] button.bac-group-head.collapsed { color: var(--sentence-dim); }
+[data-ui="sentence"] .grp-caret { color: var(--sentence-dim); }
+[data-ui="sentence"] .grp-count {                              /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; color: var(--sentence-fg2);
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0; padding: 0 5px;
+}
+[data-ui="sentence"] .grp-allctl { gap: 5px; margin: 2px 0 6px; }
+
+
+/* ═══ Q13. 抗生素頁另外兩個分頁（依部位／依病原菌）的共用元件 ════════════════
+   不在本輪的重點範圍，但它們與「藥物查詢」同頁、同一組藥卡，
+   放著不改會變成「同一頁一半骨白一半藍綠」。只做等價換色，不動幾何量。 */
+[data-ui="sentence"] .abx-crumb {                              /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .abx-crumb b { color: var(--sentence-fg); }
+[data-ui="sentence"] .abx-crumb .sep { color: var(--sentence-line2); }
+[data-ui="sentence"] .abx-type-note { font-size: 11.5px; color: var(--sentence-fg2); }
+[data-ui="sentence"] button.abx-back {                         /* (0,2,1) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 11px; padding: 0 12px;
+  display: inline-flex; align-items: center;
+  background: transparent; color: var(--sentence-fg);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] button.abx-back:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+[data-ui="sentence"] .rgm {                                    /* (0,2,0) > (0,1,0) */
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] .rgm.first { border-left: 3px solid var(--sentence-fg); }        /* (0,3,0) */
+[data-ui="sentence"] .rgm.alt,
+[data-ui="sentence"] .rgm.none { border-left: 3px solid var(--sentence-line2); }
+[data-ui="sentence"] .rgm.special { border-left: 3px solid var(--sentence-fg2); }
+[data-ui="sentence"] .rgm-role {                               /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .12em;
+  border-radius: 0; padding: 1px 8px;
+}
+[data-ui="sentence"] .rgm.first .rgm-role {                    /* (0,3,0) > (0,2,0) */
+  color: var(--sentence-inv-fg); background: var(--sentence-inv-bg);
+}
+[data-ui="sentence"] .rgm.alt .rgm-role,
+[data-ui="sentence"] .rgm.none .rgm-role {                     /* (0,3,0) > (0,2,0) */
+  color: var(--sentence-fg2); background: transparent; border: 1px solid var(--sentence-line2);
+}
+[data-ui="sentence"] .rgm.special .rgm-role {
+  color: var(--sentence-fg); background: transparent; border: 1px solid var(--sentence-fg);
+}
+[data-ui="sentence"] .rgm-label {                              /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-serif); font-weight: 500; font-size: 14px; color: var(--sentence-fg);
+}
+[data-ui="sentence"] button.drug-chip {                        /* (0,2,1) > (0,1,0) */
+  font-family: var(--sentence-sans); font-size: 12.5px; padding: 4px 9px;
+  background: transparent; color: var(--sentence-fg);
+  border: 1px solid var(--sentence-line2); border-bottom: 2px solid var(--sentence-fg); border-radius: 0;
+}
+[data-ui="sentence"] button.drug-chip:hover { background: var(--sentence-shade); border-color: var(--sentence-fg); }
+[data-ui="sentence"] .drug-chip .dc-en {                       /* (0,2,0) > (0,1,1)：b 2>1 */
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .rgm-plus { font-family: var(--sentence-mono); color: var(--sentence-dim); }
+[data-ui="sentence"] .rgm-dur {                                /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-fg2);
+  background: transparent; border: 1px solid var(--sentence-line); border-radius: 0; padding: 3px 8px;
+}
+[data-ui="sentence"] .rgm-note {
+  font-size: 11.5px; color: var(--sentence-fg2);
+  border-top: 1px dotted var(--sentence-line);
+}
+[data-ui="sentence"] button.bac-item {                         /* (0,2,1) > (0,1,0) */
+  background: transparent; color: var(--sentence-fg);
+  border: 1px solid var(--sentence-line2); border-left: 3px solid var(--sentence-line2);
+  border-radius: 0; margin-bottom: 5px;
+}
+[data-ui="sentence"] button.bac-item:hover {
+  background: var(--sentence-shade); border-color: var(--sentence-fg); border-left-color: var(--sentence-fg);
+}
+[data-ui="sentence"] .bac-item .bi-name {                      /* (0,3,0) > (0,2,0) */
+  font-family: var(--sentence-serif); font-weight: 500; font-size: 14px;
+}
+[data-ui="sentence"] .bac-item .bi-en {
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .bac-crumb-lg b { font-family: var(--sentence-serif); font-weight: 500; }
