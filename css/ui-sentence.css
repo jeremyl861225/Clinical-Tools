@@ -140,6 +140,13 @@
 [data-ui="sentence"] .sheet { max-width: 860px; }
 [data-ui="sentence"] ::selection { background: var(--sentence-fg); color: var(--sentence-bg); }
 [data-ui="sentence"] :focus-visible { outline: 2px solid var(--sentence-fg); outline-offset: 2px; }
+/* 組合式搜尋欄（.gs-field > .gs-icon + .gs-input + .gs-clear，全站十頁共用）：
+   聚焦一律由外層 .gs-field 表達（:focus-within 的邊框／描邊），input 本體不畫圈。
+   styles.css 的 `.gs-field .gs-input{outline:0}` 本來就是這個意思，但它 (0,2,0)
+   與上面那條全域 :focus-visible 同特異度、本檔又載在後——文字框在手機上一點擊
+   就算 :focus-visible，於是外框之內再套一圈 2px，就是實機截圖的「雙重框框」
+   （藥物資料庫與抗生素藥物查詢回報，其餘八頁同構造同病）。 */
+[data-ui="sentence"] .gs-field .gs-input:focus-visible { outline: none; }
 [data-ui="sentence"] a { color: inherit; }
 [data-ui="sentence"] b, [data-ui="sentence"] strong { color: var(--sentence-fg); }
 /* 沒有專屬樣式的散裝標題（例：tools/heart-failure.html 的 <h3>）也要跟上字級階層，
