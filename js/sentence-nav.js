@@ -359,6 +359,15 @@
     var mine = TOOLS.filter(function (t) { return samePage(t.href); });
     if (!mine.length) return null;
     var hash = location.hash;
+    /* `#site=N` 是本檔自己產生的深層形式（見 deepLanding()），facets.js 裡沒有
+       這個 href，落到下面的比對會變成「這一頁對到藥物查詢」——軌跡的
+       trailHint()／trailGo() 會因此判成「不是本頁」。它就是「依部位」那一個模式
+       指到某一格，這裡折回去。`#bac=`／`#drug=` 刻意不動：這一輪沒有升級那兩個
+       落點（量過沒有鑑別力，見 deepLanding()），順手改它們等於在這一輪之外
+       搬動既有行為。 */
+    if (/^#site=\d+$/.test(hash || '')) {
+      for (var si = 0; si < mine.length; si++) if (mine[si].k === 'abx-mode-empiric') return mine[si];
+    }
     if (hash) {
       var exact = mine.filter(function (t) { return t.href.indexOf('#') !== -1 && t.href.slice(t.href.indexOf('#')) === hash; });
       if (exact.length) return exact[0];
@@ -1001,11 +1010,20 @@
    * 那兩個欄位是 buildSubIndex() 從真實資料檔算出來的，這裡沒有另存一份清單。
    * hub-drugdb（處方集 1111 張藥卡）刻意**不列入**：1111 筆攤不進一列底下，
    * 那一頁本來就有自己的查詢框，硬展開只會變成一片藥名牆。 */
+  /* src＝這一組頁內項目**是哪一個 SUB_FILES 來源給的**。只有 subsInlineHTML()
+     的「載入中／取不到」判斷會讀它，不參與 act==='subs' 的 only 決策（那一顆
+     維持原本抓第一波四個來源的行為，一個字都沒動）。
+     為什麼要補這一欄：先前那裡是拿 `subIdx.length` 當「載入完了沒」的訊號，
+     而 subIdx 是四個來源**共用**的一份陣列——只載了其中一個（分級系統的自動
+     載入，或本輪新增的 abxsite 自動載入）時 subIdx 已經有東西，另外三顆按鈕
+     一攤開就會誤報「頁內項目取不到（離線且未快取）」，其實只是還沒抓。
+     實測今天就走得到：句子收斂 → 自動抓 classifications.html（49 筆）→
+     攤開「藥物查詢」→ 那一行紅字閃一下才被補上的資料蓋掉。 */
   var SUBTARGET_OF = {
-    'abx-mode-empiric':  { grp: 'abx', w: 0, label: '感染部位' },
-    'abx-mode-bacteria': { grp: 'abx', w: 1, label: '病原菌' },
-    'hub-antibiotics':   { grp: 'abx', w: 2, label: '抗生素藥卡' },
-    'classifications':   { grp: 'classif', label: '分級系統' }
+    'abx-mode-empiric':  { grp: 'abx', w: 0, label: '感染部位',   src: 'abxsite' },
+    'abx-mode-bacteria': { grp: 'abx', w: 1, label: '病原菌',     src: 'abxsite' },
+    'hub-antibiotics':   { grp: 'abx', w: 2, label: '抗生素藥卡', src: 'abxdrug' },
+    'classifications':   { grp: 'classif', label: '分級系統',     src: 'classif' }
   };
 
   /* ---------------- 13 個分頁式頁面（第 9 輪新增） ----------------
@@ -1073,6 +1091,138 @@
     return true;
   }
   function stNarrows(st) { return !!(st && (st.s || st.c)); }
+
+  /* ---------------- 落點升級：句子的部位直接落到「依部位」的那一格（第 11 輪） ----
+   * 上面兩段長註解的結論是「句子自動幫你挑一格＝假精準，所以不做」。使用者實機
+   * 回報的正是被那個決定擋下來的一件事：句子已經說了「肺與氣道」，落點卻只到
+   * 抗生素指引的 STEP 1，還得自己再點一次「肺炎 / 呼吸道」才會到 STEP 2。
+   *
+   * 重看當時量到的那兩條證據，會發現**兩條都不是在講部位這一格**：
+   *   · 「感染與敗血」的別名 infection 命中 10 個部位裡的 6 個——那是**狀況**
+   *     性質的詞被拿去當部位用，鑑別力當然是零；
+   *   · 「手術排程」的別名 OR 撞進 Pneumonia / Respirat**or**y——那是**動作**
+   *     面向的詞，而且敗在子字串比對沒有詞界、長度也不設限。
+   * 該被擋的是「沒有鑑別力的詞」與「沒有詞界的比對」，不是「用部位挑部位」。
+   * 所以這一輪的規則是**有條件的**，而且門檻是先量再定，不是先定再說：
+   *
+   *   比對：句子的部位詞展開集（expand('s', w)＝自己＋別名＋下位詞）逐一比對
+   *         SITES 那一筆的「中文名 ＋ 英文名 ＋ id」。
+   *         · 拉丁字母的詞：長度 ≥3 而且**要有詞界**
+   *           （`(^|非字母數字) tok (非字母數字|$)`）。OR／PE／SB／CBD 這類
+   *           兩三字母縮寫因此不是被特判掉的，是被這一條規則本身擋掉的。
+   *         · 中文的詞：子字串命中即可，**不設長度下限**。實測 62 個部位詞裡，
+   *           從「≥2 字」放寬到「≥1 字」只多出三筆：心臟→感染性心內膜炎（對）、
+   *           病原菌→菌血症、血液與骨髓→菌血症。後兩個詞根本走不到「依部位」
+   *           這個標的（它的 s 標註裡沒有這兩個詞），實際生效的只有心臟那一筆。
+   *   門檻：**命中數恰好 1** 才升級。0 個或 ≥2 個一律維持 facets.js 給的落點
+   *         （停在分頁，由使用者自己在 STEP 1 選）。「感染與敗血」命中 6 個，
+   *         正好被這一條擋下——上一輪放棄整件事的那個理由，在這裡被保住了。
+   *
+   * 實測（62 個部位詞 × 10 個 SITES）：真的走得到「依部位」的部位詞有 11 個，
+   * 其中 6 個唯一命中（腹部→腹腔內感染 IAI、軟組織→皮膚軟組織 SSTI、
+   * 心臟→感染性心內膜炎、肺與氣道→肺炎 / 呼吸道、泌尿系統→泌尿道感染 UTI、
+   * 神經系統→中樞神經系統感染），1 個命中 6 個（感染與敗血，不升級），
+   * 4 個一個都沒命中（膽道／腹膜／腎臟／腦，不升級）。沒有一筆是「唯一但錯」。
+   *
+   * 這一招**只用在這一個索引**。另外四個頁內索引都量過，理由見 deepLanding()。 */
+  var ABX_SITE_PATH = '抗生素指引 › 依部位';
+  var LAT_MIN = 3;                       // 拉丁字母的詞至少要這麼長才參與比對
+  var CJK_CH = /[一-鿿]/;        // 中日韓統一表意文字（部位詞的中文都落在這一段）
+  function siteHay(s) {
+    return ((s.name || '') + ' ' + (s.en || '') + ' ' + (s.id || '')).toLowerCase();
+  }
+  function tokInHay(tok, hay) {
+    if (!tok) return false;
+    if (CJK_CH.test(tok)) return hay.indexOf(tok.toLowerCase()) >= 0;
+    // 別名裡有連字號與斜線的複合詞（small-bowel、mechanical-ventilation…），
+    // 拆成子詞後**每一個**都要以詞界命中才算，避免半個詞蒙到。
+    var parts = tok.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/^\s+|\s+$/g, '').split(/\s+/);
+    if (!parts[0]) return false;
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].length < LAT_MIN) return false;
+      var p = parts[i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (!new RegExp('(^|[^a-z0-9])' + p + '($|[^a-z0-9])').test(hay)) return false;
+    }
+    return true;
+  }
+  var soleSiteCache = {};
+  /* 部位詞 → 唯一對得上的 SITES 索引；0 個或 ≥2 個都回 -1。 */
+  function soleSiteIdx(w) {
+    if (!w) return -1;
+    var arr = window.SITES;
+    // regimens.js 還沒到（首頁本來不載它）：這一次先不升級，等 autoloadSubsFor()
+    // 把它抓回來重畫一次再說。**刻意在寫進快取之前就回**，否則會把「還沒載到」
+    // 這個暫時狀態記成永久答案。
+    if (!arr || !arr.length) return -1;
+    if (soleSiteCache[w] != null) return soleSiteCache[w];
+    var exp = expand('s', w), found = -1, n = 0;
+    for (var i = 0; i < arr.length && n < 2; i++) {
+      var hay = siteHay(arr[i]);
+      for (var j = 0; j < exp.length; j++) {
+        if (!tokInHay(exp[j], hay)) continue;
+        n++; found = i; break;
+      }
+    }
+    soleSiteCache[w] = (n === 1) ? found : -1;
+    return soleSiteCache[w];
+  }
+
+  /* 這一句話真正該落在哪裡；回 null＝維持 facets.js 給的原落點。
+   * 只認 abx-mode-empiric 一個標的。另外四個頁內索引都量過，都不做：
+   *   · #bac=（44 隻菌）：走得到「依病原菌」的詞只有 3 個，其中兩個各命中 41 隻，
+   *     唯一命中 0 個——沒有任何鑑別力。
+   *   · #drug=（155 張抗生素藥卡）：走得到「藥物查詢」的詞 105 個，只有 5 個
+   *     唯一命中，而那 5 個裡「膽道→Amphotericin B」「抗黴菌藥→Nystatin」
+   *     「ESBL→Piperacillin/Tazobactam」都是錯的——正是上一輪講的假精準。
+   *   · #code=（1111 張處方集藥卡）：走得到的詞只有 4 個——一般藥物命中 154、
+   *     懷孕用藥與藥物禁忌各 0、處方集 1（Everolimus，純屬字面巧合）。
+   *   · #sys=（49 套分級系統）：**有鑑別力**（703 個「部位×狀況」組合裡有 106 個
+   *     恰好收斂到 1 套），但它不需要這一招——那一組頁內項目在 data/facets.js
+   *     有逐筆面向標註，subsAuto() 早就把那一格**自動攤開**印在候選項底下，
+   *     使用者按一下就到。省下的點擊數因此是：分級系統 0 次、依部位 1 次
+   *     （依部位的 10 個部位沒有標註，那顆按鈕永遠是收著的，才會要按兩次）。 */
+  function deepLanding(t, st) {
+    if (!t || t.k !== 'abx-mode-empiric' || !st || !st.s) return null;
+    var i = soleSiteIdx(st.s);
+    if (i < 0) return null;
+    var s = window.SITES[i];
+    return {
+      href: 'tools/antibiotics.html#site=' + i,
+      name: t.name + ' › ' + s.name,      // 候選項上就寫明它會落到哪一格
+      en: s.en || t.en
+    };
+  }
+  /* 人已經站在 #site=N 上時，軌跡那一行要寫到那一格為止——不論他是被升級後的
+     落點帶過來的，還是從候選項底下那份頁內清單點過來的（那份清單本來就產生
+     `#site=N`，先前落地後軌跡一樣只寫「依部位」）。 */
+  function landedSite() {
+    var m = /^#site=(\d+)$/.exec(location.hash || '');
+    if (!m) return null;
+    return (window.SITES || [])[+m[1]] || null;
+  }
+  /* 看得見的那一行**只寫到「依部位 › 那一格」**，不含最前面的「抗生素指引」。
+     不是漏掉，是量出來的：`.sf-tool` 是 white-space:nowrap ＋ text-overflow:ellipsis
+     （css/ui-sentence.css，本輪不動那一支），實測 430×932 它的可用寬度 253px——
+       「抗生素指引 › 依部位 › 肺炎 / 呼吸道」 296px → 截斷
+       「依部位 › 肺炎 / 呼吸道」              253px → 剛好完整
+     而 ellipsis 砍的是**字尾**，正好是整條麵包屑裡最該被看到的那一格。
+     最前面那一層並沒有消失：它就印在這條軌跡正上方、那一頁自己的 h1
+     （tools/antibiotics.html 的「抗生素指引」），同一屏寫兩次只會把那一行擠掉。
+     完整三層仍然進 .sent-fold 的 aria-label（螢幕閱讀器聽得到全路徑）。
+     390×844 下十個部位裡有兩個名字更長的（皮膚軟組織 SSTI 差 1px、
+     中樞神經系統感染 差 8px）仍會被 ellipsis 砍掉尾巴，那是 .sf-tool 本來就有的
+     行為（長工具名一樣如此），不在這一輪另外處理。
+     「依部位」三個字向 facets.js 要，不在這裡再抄一次。 */
+  function landedSitePath() {
+    var s = landedSite();
+    if (!s) return '';
+    var t = byKey['abx-mode-empiric'];
+    return (t ? t.name : '依部位') + ' › ' + s.name;
+  }
+  function landedSiteFullPath() {
+    var s = landedSite();
+    return s ? (ABX_SITE_PATH + ' › ' + s.name) : '';
+  }
 
   /* st 傳 null＝不看句子，列出這一頁的全部項目（也就是這一輪之前的行為）。
      句子沒收斂時**不列 AAST 的 16 個子疾病**：那 16 筆的母項（AAST EGS 統一分級）
@@ -1142,7 +1292,8 @@
        是獨立的來源，所以判斷要看**這一頁自己**的載入狀態，不是看整個 subIdx
        有沒有東西——否則第一波載完（subIdx 有 1353 筆）而 tools/pe.html 還沒抓，
        畫面會誤報「取不到（離線且未快取）」。 */
-    if (m.file && subFileState[m.file] !== 2) {
+    var srcId = m.file || m.src;
+    if (srcId && subFileState[srcId] !== 2) {
       return '<div class="sent-subs"><div class="sent-subs-note is-loading">頁內項目載入中…</div></div>';
     }
     if (!subIdx.length) {
@@ -1187,6 +1338,13 @@
     var desc = t.desc || '';
     var sub = SUBTARGET_OF[t.k];
     var cs0 = curSt();
+    /* 落點升級（見 deepLanding()）。六大分類攤開時**不升級**：那份清單對使用者的
+       承諾是「句子一個字都不動、列出這一類的全部條目」，在瀏覽狀態下偷偷把連結
+       換成句子挑的那一格，跟那句承諾互相矛盾。 */
+    var deep = openTile ? null : deepLanding(t, cs0);
+    var hitHref = deep ? deep.href : t.href;
+    var hitName = deep ? deep.name : t.name;
+    var hitEn = deep ? deep.en : t.en;
     var on = sub ? subsOpen(t.k, cs0) : false;
     /* 「頁內還有一層」那顆：索引還沒載時不印數量（印不出來，也不該為了印一個
        數字就先抓 911 KB——首頁零成本那條線比這顆按鈕重要）；載過之後才補上
@@ -1207,12 +1365,12 @@
         '<span class="shs-chev" aria-hidden="true">' + (on ? ' ⌃' : ' ⌄') + '</span></button>'
       : '';
     return '<div class="sent-hit-row' + (on ? ' subs-open' : '') + '">' +
-      '<a class="sent-hit" href="' + esc(withSentQuery(t.href, completeSentenceFor(t))) + '">' +
+      '<a class="sent-hit" href="' + esc(withSentQuery(hitHref, completeSentenceFor(t))) + '">' +
         '<span class="sh-top">' +
           '<span class="sh-kind ' + m.cls + '" aria-hidden="true">' + m.shape + '</span>' +
           '<span class="sh-kind-l ' + m.cls + '">' + m.label + '</span>' +
-          '<span class="sh-name">' + esc(t.name) + '</span>' +
-          '<span class="sh-en">' + esc(t.en) + '</span>' +
+          '<span class="sh-name">' + esc(hitName) + '</span>' +
+          '<span class="sh-en">' + esc(hitEn) + '</span>' +
         '</span>' +
         (desc ? '<span class="sh-desc">' + esc(desc) + '</span>' : '') +
       '</a>' +
@@ -1694,7 +1852,7 @@
       var head = (s.name + ' ' + (s.en || '')).toLowerCase();
       var nType = (s.types || []).length;
       subPush(out, {
-        grp: 'abx', w: 0, path: '抗生素指引 › 依部位',
+        grp: 'abx', w: 0, path: ABX_SITE_PATH,       // 同一份麵包屑也給軌跡用，見 landedSitePath()
         name: s.name, en: s.en || '',
         meta: nType ? (nType + ' 種型態') : '',
         href: 'tools/antibiotics.html#site=' + i,
@@ -1947,12 +2105,26 @@
      頁內項目沒有面向標註，句子過濾對它們不成立，抓回來也只是多一顆按鈕上的
      數字，不值 733 KB。 */
   var SENT_AUTOLOAD = { classif: 'classif' };   // SUBTARGET_OF[].grp → SUB_FILES[].id
+  /* 第二個自動載入的來源（第 11 輪）：落點升級（deepLanding()）要讀 window.SITES
+     才知道句子的部位對到哪一格，而首頁本來不載 data/antibiotics/regimens.js。
+     所以句子裡**真的有部位**、而且候選清單裡真的有「依部位」時，才去抓那一個檔
+     ——56 KB，四個來源裡最小的一個，而且它本來就在 sw.js 的 PRECACHE_URLS 裡
+     （逐一核對過），第二次造訪與離線走的是 service worker 快取。
+     抓回來會再 renderHome() 一次，連結才從 #mode=empiric 換成 #site=N；在那之前
+     點下去仍然是原本的落點（慢一步，不會壞）。
+     其餘兩個抗生素來源（藥卡 363 KB）與處方集（314 KB）一個位元組都不抓：
+     它們的頁內索引量過沒有鑑別力，見 deepLanding() 上面那段。
+     鍵是**標的 key** 不是 grp：abx 這個 grp 底下三個標的共用，但只有「依部位」
+     需要 regimens.js，用 grp 當鍵會把另外兩顆也拖下水。 */
+  var SENT_AUTOLOAD_K = { 'abx-mode-empiric': 'abxsite' };
   function autoloadSubsFor(list, st) {
     if (!stNarrows(st)) return;
     var want = {};
     list.forEach(function (t) {
       var m = SUBTARGET_OF[t.k];
       if (m && SENT_AUTOLOAD[m.grp] && !subFileState[SENT_AUTOLOAD[m.grp]]) want[SENT_AUTOLOAD[m.grp]] = true;
+      var kf = st.s ? SENT_AUTOLOAD_K[t.k] : '';
+      if (kf && !subFileState[kf]) want[kf] = true;
     });
     var ids = Object.keys(want);
     if (!ids.length) return;
@@ -2831,7 +3003,8 @@
   function trailHTML(st, exact) {
     var t = st.t && byKey[st.t];
     var summary = [st.s, st.c, st.a].filter(Boolean).join(' · ');
-    var toolName = t ? t.name : (st.a || st.c || st.s || '');
+    // 落點升級到 #site=N 之後這一行不能還只寫「依部位」——寫到那一格為止
+    var toolName = landedSitePath() || (t ? t.name : (st.a || st.c || st.s || ''));
     var list = matches({ g: st.g, s: st.s, c: st.c, a: st.a });
     var hint = trailHint(list.length);
     /* 誠實標示壓成一行極小字：兩種來源仍然分得出來，只是不再各佔三行。
@@ -2844,7 +3017,9 @@
         'aria-label="直接說整句：打字找一整句話，Enter 直達">' +
         '<span class="mag" aria-hidden="true">⌕</span><span class="lbl">說整句</span></button>' +
         '<button type="button" class="sent-fold" data-act="tfold" aria-expanded="false" ' +
-        'aria-controls="sentTrailFull" aria-label="句子摘要：' + esc(summary + (summary ? ' → ' : '') + toolName) +
+        // 看得見的那一行被寬度砍成兩層，可讀的名字（aria-label）給完整三層
+        'aria-controls="sentTrailFull" aria-label="句子摘要：' +
+        esc(summary + (summary ? ' → ' : '') + (landedSiteFullPath() || toolName)) +
         '。點一下展開，展開後可以逐格改詞">' +
           '<span class="sf-line1">' + esc(summary) + '</span>' +
           '<span class="sf-line2">' +
@@ -2902,7 +3077,7 @@
     var l1 = bar.querySelector('.sf-line1');
     if (l1) l1.textContent = [st.s, st.c, st.a].filter(Boolean).join(' · ');
     var tn = bar.querySelector('.sf-tool');
-    if (tn) tn.textContent = t ? t.name : (st.a || st.c || st.s || '');
+    if (tn) tn.textContent = landedSitePath() || (t ? t.name : (st.a || st.c || st.s || ''));
     renderRow();
     renderPanel();
     var n = matches({ g: st.g, s: st.s, c: st.c, a: st.a }).length;
@@ -2939,6 +3114,13 @@
          而且空格本身仍然是一顆可以點的 ▢，要補是使用者自己補。 */
       var only = list[0], cur = currentPageTool();
       var next = { g: st.g, s: st.s, c: st.c, a: st.a, t: only.k };
+      /* 這裡**沒有**為落點升級補「改一格就換頁內那一格」的分支，理由是先量再決定：
+         人要走到這一條（留在本頁）必須句子恰好只指向本頁那一個標的。實測 2 744 280
+         個「範圍×主體×狀況×動作」組合裡，只指向 abx-mode-empiric 的有 16 個，
+         而那 16 個的主體**全部**是「腎臟」——它對不到任何一個 SITES（見
+         deepLanding() 上面那張表），永遠不會升級。也就是說補了也永遠跑不到，
+         那就是死程式碼。實際會發生的是另一條：改一格之後句子指向 2 件事
+         （「依部位」與「藥物查詢」都收同一批部位詞），照原規則帶著句子回首頁。 */
       if (cur && cur.k === only.k) { targetSt = next; syncTrailUrl(); renderTrail(); return; }
       location.href = withSentQuery(ROOT + only.href, next);
       return;
