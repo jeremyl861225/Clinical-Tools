@@ -54,18 +54,6 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
 .db-strength{font-family:var(--mono); font-size:10.5px; color:var(--accent); background:var(--accent-soft);
   border-radius:8px; padding:1px 7px; white-space:normal; max-width:100%; overflow-wrap:break-word;}
 
-/* 抗微生物劑清單項：整列是 <a>，連往抗生素指引頁的完整藥卡（本資料庫不另建卡）。
-   版面沿用 .drugcard summary 的排列，展開箭頭換成外連箭頭 */
-a.drugcard.abx-card{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
-  padding:11px 14px; text-decoration:none; color:inherit;}
-a.drugcard.abx-card:before{content:'↗'; font-family:var(--mono); color:var(--accent);
-  font-size:12px; margin-right:2px;}
-a.drugcard.abx-card:hover{border-color:var(--accent); background:var(--hover-bg);}
-.abx-right{margin-left:auto; display:inline-flex; align-items:baseline; gap:6px;}
-.abx-right .dc-class{margin-left:0;}
-.db-abxgo{font-family:var(--sans); font-size:10.5px; color:var(--accent); background:var(--accent-soft);
-  border-radius:8px; padding:1px 8px; white-space:nowrap;}
-
 /* 健保給付規定：原頁就是一長段條列，節錄後仍偏長，收在可捲動的小框裡免得洗掉整張卡 */
 .db-nhi{max-height:190px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);
   border-radius:2px; padding:8px 10px; font-size:12.5px;}

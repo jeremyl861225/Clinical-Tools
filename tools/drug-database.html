@@ -50,7 +50,7 @@
     <div class="gs-field">
       <span class="gs-icon">⌕</span>
       <input type="search" id="db-search" class="gs-input" autocomplete="off" autocapitalize="off" spellcheck="false"
-             placeholder="搜尋學名／商品名／中文品名／機轉（例：sitagliptin、Januvia、佳糖維、meropenem）…"
+             placeholder="搜尋學名／商品名／中文品名／機轉（例：sitagliptin、Januvia、佳糖維、DPP-4）…"
              oninput="onSearch(this.value)">
       <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
     </div>
@@ -65,17 +65,12 @@
     資料來源：<a href="https://dept.ntuh.gov.tw/phar/" target="_blank" rel="noopener" class="ref-link">台大醫院藥劑部 藥品查詢系統</a>
     （藥品明細、腎功能／肝功能／透析／CVVH 劑量調整、注射給藥指引各子頁）。
     藥理機轉標籤依台大藥品分類之末端節點標註。
-    抗微生物劑（抗生素／抗黴菌／抗病毒／抗結核）在此可搜尋，點擊連往「抗生素指引」頁的完整藥卡
-    （台大官方劑量、腎肝透析調整、注射給藥指引與在地感受性）。
     藥價為擷取當時之健保價／自費價，僅供參考。臨床使用前請對照原始頁面與最新仿單。
   </footer>
 </div>
 </div>
 
 <script src="../data/drugs/index.js"></script>
-<!-- 抗生素指引的藥物資料：本頁只拿來衍生抗微生物劑的清單項（點擊連往該頁藥卡），
-     不在本資料庫另建一份，維持單一資料來源 -->
-<script src="../data/antibiotics/drugs.js"></script>
 <script src="../js/drug-database.js"></script>
 <script src="../js/searchbar.js" defer></script>
 
