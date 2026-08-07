@@ -1156,8 +1156,17 @@
   padding: 0 10px;
 }
 [data-ui="sentence"] .sent-panel-close:hover { background: var(--sentence-shade); }
+/* align-content 一定要寫死 flex-start，不能留 normal。
+   flex-wrap:wrap 的容器，align-content 預設等同 stretch：**行**會被拉開去填滿容器。
+   上面那條給了 min-height:96px（保留高度、避免面板開合時版面跳動），於是候選詞只有
+   一行時，那一行就被拉成 96px 高，每顆詞塊跟著變成 96px——詞塊自己的 min-height
+   是 45px，被拉高的是「行」不是詞塊，所以單看詞塊的規則怎麼查都正常。
+   候選詞多到兩行以上時總高超過 96px，不再 stretch，看起來又正常了——這就是使用者
+   回報的「有時候選項高度太高（有時候正常）」。
+   實測（1440px、句子收斂到只剩 8 個主體候選）：修前每顆 96px，修後 45px。 */
 [data-ui="sentence"] .sent-panel-body {
-  display: flex; flex-wrap: wrap; gap: 6px; max-height: 46vh; overflow-y: auto;
+  display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px;
+  max-height: 46vh; overflow-y: auto;
 }
 [data-ui="sentence"] .sent-tok {
   font-family: var(--sentence-sans); font-size: 12.5px; color: var(--sentence-fg);
