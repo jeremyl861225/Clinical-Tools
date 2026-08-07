@@ -408,6 +408,18 @@
   .metric-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:#9fb3ae; margin-bottom:3px;}
   .metric-value{font-family:var(--serif); font-size:32px; color:#fff; font-weight:600;}
   .metric-value.big{font-size:44px;}
+/* ── §A → css/styles.css（新增，不取代 .metric-value.big 的 44px）───────── */
+
+.result-grid > * { container-type: inline-size; }
+
+.metric-value.big.is-text {
+  /* 上限 44px＝正式版 .metric-value.big 的固定字級。不可寫 68px：補了 container-type
+     之後 1280px 的 tools/aas.html 欄寬 405px，17cqw 會算到 64.8px，判讀就比總分（44px）
+     還大，剛好把「畫面上最大的東西是臨床數值」弄反。實測踩過一次。 */
+  font-size: clamp(22px, 17cqw, 44px);
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
   /* .result 面板恆為深色，故以下色值與該面板同組，不走亮/暗色 token。 */
   .result-headline{font-family:var(--serif); font-size:18px; color:#fff; font-weight:600; margin-top:2px;}
   .result-body{font-size:13.5px; line-height:1.75; color:#e4e0d4; margin-top:5px;}

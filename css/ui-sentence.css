@@ -204,13 +204,29 @@
    一起收掉了——從決策流程點進計分工具之後就回不去原本那份流程，正式版有、
    造句設計沒有。使用者要移除的是「返回主選單」那一顆（跟「清空句子」用途重疊），
    不是帶來路的那一顆。改成只收沒有 .back-origin 的那些。 */
-/* .back-stack 在造句設計下**維持正式版原樣顯示**。
-   曾經整排收掉（理由：跟軌跡裡的「清空句子」用途重疊），結果把 js/backlink.js
-   動態產生的 .back-origin（「← 返回闌尾炎決策」這種帶來路的返回鍵）一起弄不見，
-   從決策流程點進計分工具後就回不去——使用者實機回報。
-   之後試過三種選擇器（子代、:not(.back-origin)、[onclick*=index.html]）都因為
-   對 backlink.js 的 DOM 結構假設有誤而打錯目標。**在真的把那份 DOM 讀清楚之前，
-   這裡不再放任何隱藏規則**：多一顆返回鍵只是重複，少一顆是走不出去。 */
+/* 造句設計下收掉「返回主選單」，保留 js/backlink.js 依來路產生的返回鍵。
+   使用者：「04sentence 設計中還是有許多頁面有『返回主畫面』，請全部刪掉，
+   且請確保有『清空句子』的按鈕」。
+
+   認法：靜態那顆的 onclick 一律是 `location.href='../index.html#card-view-…'`，
+   用屬性選擇器認它。這是**讀過真實 DOM 之後**的寫法——先前試過子代選擇器、
+   :not(.back-origin) 都因為對結構的假設沒有查證而打錯目標，其中一次還把
+   backlink.js 產生的「← 返回闌尾炎決策」一起弄不見，害人從決策流程點進計分
+   工具後回不去。實際 DOM 是：
+     <div class="back-stack">
+       <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+       <button class="back-btn" onclick="location.href='../index.html#card-view-abg'">← 返回主選單</button>
+     </div>
+
+   回首頁的路沒有斷：句子軌跡裡的「清空句子」每一頁都有、桌機手機皆然，
+   按下去導回 index.html（本檔合併時實測過）。 */
+/* body:has(#sentTrail) 是必要條件，不是保險：tools/ich-score.html 與 tools/pss.html
+   不在 facets.js 的 136 個標的裡，句子軌跡（#sentTrail）在那兩頁根本不會插入，
+   也就沒有「清空句子」。若無條件收掉「返回主選單」，那兩頁在造句設計下會**完全
+   走不出去**。加上這個條件之後，沒有軌跡的頁面自動保留正式版的返回鍵。 */
+[data-ui="sentence"] body:has(#sentTrail) .back-stack .back-btn[onclick*="index.html"] { display: none; }
+/* 整排只剩那一顆時，連外框的間距一起收掉，不要留一塊空白。 */
+[data-ui="sentence"] body:has(#sentTrail) .back-stack:not(:has(.back-origin)) { display: none; }
 [data-ui="sentence"] .back-btn {
   font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .04em;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
@@ -480,6 +496,15 @@
 [data-ui="sentence"] .result-grid > * { container-type: inline-size; }
 [data-ui="sentence"] .metric-value.big {
   font-size: clamp(30px, 26cqw, 68px); line-height: 1.05; margin-top: 2px;
+  overflow-wrap: break-word;
+}
+
+/* ── §B → css/ui-sentence.css（新增，不取代 26cqw 那條）────────────────── */
+
+[data-ui="sentence"] .metric-value.big.is-text {
+  font-size: clamp(22px, 17cqw, 68px);
+  line-height: 1.1;
+  margin-top: 2px;
   overflow-wrap: break-word;
 }
 [data-ui="sentence"] .result-headline {
