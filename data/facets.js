@@ -152,7 +152,8 @@ window.FACETS = {
     {"w": "疝氣", "al": "hernia inguinal 腹股溝 脫腸 凸出來"},
     {"w": "嵌頓", "al": "incarceration incarcerated strangulated 箝頓 卡住 推不回去"},
     {"w": "腸缺血", "al": "mesenteric-ischemia AMI CMI 腸繫膜缺血 缺血性大腸炎 腸子缺血"},
-    {"w": "消化道穿孔", "al": "perforation free-air 破洞 游離氣體 穿孔 破掉 腸破"},
+    {"w": "食道穿孔", "al": "esophageal perforation Boerhaave 食道破裂 食道裂傷"},
+    {"w": "消化道穿孔", "al": "perforation free-air 破洞 游離氣體 穿孔 破掉 腸破 食道穿孔 esophageal perforation"},
     {"w": "消化性潰瘍穿孔", "al": "peptic ulcer PPU 潰瘍穿孔 胃穿孔 十二指腸穿孔"},
     // 第 7 輪補 sub：腹膜炎在臨床上幾乎都是「續發性」的——先有破口才有腹膜炎。
     // 使用者原話：「腹膜的發炎也要顯示 PPU」。gi-perforation.html 自己的頁面文字就寫
@@ -582,7 +583,7 @@ window.FACETS = {
     // 第 7 輪 c 補「阻塞」：本頁異物段落逐條處理「完全阻塞的食團有吸入與穿孔風險」與
     // 「其他未造成完全阻塞的食道異物，建議 24 小時內以軟式內視鏡處理」，
     // 食道異物／食團嵌頓本來就是阻塞。原本「食道的阻塞」查不到。
-    {"k": "esoph", "name": "食道急症", "en": "Esophageal Emergencies", "desc": "穿孔／Boerhaave 依 Altorjay 條件決定手術與否、依位置決定術式；腐蝕性吞入採CT 優先（非內視鏡優先）以管壁不強化判定透壁壞死；異物依性質分 2 小時／24 小時兩級時限。附 Pittsburgh 嚴重度分數往返（WSES 2019，Oxford CEBM 分級而非 GRADE）", "kind": "pathway", "href": "pathways/esophageal-emergency.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["食道"], "c": ["食道急症", "消化道穿孔", "阻塞"], "a": ["要不要開刀", "判時機", "選術式", "定嚴重度", "找原因"], "impl": ""},
+    {"k": "esoph", "name": "食道急症", "en": "Esophageal Emergencies", "desc": "穿孔／Boerhaave 依 Altorjay 條件決定手術與否、依位置決定術式；腐蝕性吞入採CT 優先（非內視鏡優先）以管壁不強化判定透壁壞死；異物依性質分 2 小時／24 小時兩級時限。附 Pittsburgh 嚴重度分數往返（WSES 2019，Oxford CEBM 分級而非 GRADE）", "kind": "pathway", "href": "pathways/esophageal-emergency.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["食道"], "c": ["食道急症", "消化道穿孔", "阻塞", "食道穿孔"], "a": ["要不要開刀", "判時機", "選術式", "定嚴重度", "找原因"], "impl": ""},
     // 第 6 輪 c 補「出血」：本頁 desc 明寫「依血行動力學反應與 E-FAST 決定是否
     // 立即剖腹」，那個決策點問的就是腹內出血。原本「我遇到腹部的出血，我要開刀嗎」
     // 只查得到消化道出血一頁，腹內出血反而漏掉。
@@ -762,7 +763,7 @@ window.FACETS = {
        .back-stack 那一段）。使用者指定補進來，並要求「搜尋欄找得到（例如 pss）」，
        所以縮寫一律寫進 en 欄，說整句的索引才吃得到。 */
     {"k": "ich-score", "name": "ICH Score", "en": "ICH Score · Intracerebral Hemorrhage Score", "desc": "自發性腦內出血 30 天死亡率分層（Hemphill 2001），含 ABC/2 血腫體積估算", "kind": "tool", "href": "tools/ich-score.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "神經", "grpEn": "Neurology", "cnt": "2 項", "s": ["腦", "腦血管"], "c": ["腦出血", "出血", "意識障礙"], "a": ["算分數", "定嚴重度", "判時機"], "impl": ""},
-    {"k": "pss", "name": "Pittsburgh 食道穿孔嚴重度", "en": "PSS · Pittsburgh Esophageal Perforation Severity Score", "desc": "食道穿孔嚴重度分數（Abbas 2009，Schweigert 2016 多國驗證），用於分流保守、內視鏡處置或手術", "kind": "tool", "href": "tools/pss.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "食道", "grpEn": "Esophagus", "cnt": "1 項", "s": ["食道"], "c": ["食道急症", "消化道穿孔"], "a": ["算分數", "定嚴重度", "要不要開刀"], "impl": ""},
+    {"k": "pss", "name": "Pittsburgh 食道穿孔嚴重度", "en": "PSS · Pittsburgh Esophageal Perforation Severity Score", "desc": "食道穿孔嚴重度分數（Abbas 2009，Schweigert 2016 多國驗證），用於分流保守、內視鏡處置或手術", "kind": "tool", "href": "tools/pss.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "食道", "grpEn": "Esophagus", "cnt": "1 項", "s": ["食道"], "c": ["食道急症", "消化道穿孔", "食道穿孔"], "a": ["算分數", "定嚴重度", "要不要開刀"], "impl": ""},
   ],
 
   /* ══════════════════════════════════════════════════════════════════════
