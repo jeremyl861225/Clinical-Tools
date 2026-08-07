@@ -49,6 +49,13 @@ window.FACETS = {
     {"w": "氣道", "al": "airway intubation trachea 插管 喉頭 呼吸道 氣管 聲門"},
     {"w": "呼吸器", "al": "ventilator mechanical-ventilation vent 呼吸機 通氣 上呼吸器 呼吸器設定"},
     {"w": "腎臟", "al": "kidney kidneys renal 腎 CRRT 腎臟功能 洗腎 透析"},
+    // 脾臟：先前「脾臟的創傷」查不到——不是標註漏掉，是詞表根本沒有這個詞，
+    // 使用者指名要能查到。只掛 trauma-path 一個標的，依據是該頁本身：
+    // 輸血門檻「在脾／腎／十二指腸-胰臟／骨盆指引為 4–6 U」、E-FAST 左上腹切面
+    // 「看脾腎隱窩與脾膈間」、AAST-OIS 逐臟器處置含脾修補。
+    // 「脾曲」（volvulus／bowel-obstruction／gi-ischemia）是大腸的解剖標記不是脾臟，
+    // 「脾動脈／保脾遠端胰切除」（panc-pathway）是胰臟手術的鄰接構造，都不掛。
+    {"w": "脾臟", "al": "spleen splenic 脾 脾臟破裂 脾破裂 脾損傷 脾切除 splenectomy 無脾 asplenia 脾臟外傷"},
     // sub 收體液與酸鹼：電解質異常與滲透壓、酸鹼在值班上是同一件事的三個面向。
     {"w": "電解質", "al": "electrolyte electrolytes sodium potassium 鈉 鉀 鈣 離子 血鈉 血鉀 鎂 磷", "sub": ["體液與滲透壓", "酸鹼"]},
     {"w": "酸鹼", "al": "acid base acid-base pH 血氣 ABG 酸中毒 鹼中毒 動脈血氣"},
@@ -563,7 +570,8 @@ window.FACETS = {
     // 十二指腸（十二指腸-胰臟 2019 GoR 2A）、大腸、膀胱。原本部位只掛「腹部」，
     // 「肝臟的創傷」「腎臟的創傷」全部 0 件。另補腹膜（頁面寫腹腔游離液體最先積於肝上緣，
     // 即血腹）。脾臟在 s 詞表裡沒有對應的詞，故無法標。
-    {"k": "trauma-path", "name": "腹部創傷", "en": "Abdominal Trauma", "desc": "依血行動力學反應與 E-FAST 決定是否立即剖腹，可安全影像者依 AAST-OIS 2018 分級給各臟器處置（WSES 2017–2020 · EAST 2010 · WTA 2018–2019）", "kind": "pathway", "href": "pathways/abdominal-trauma.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "創傷", "肝臟", "胰臟", "腎臟", "胃十二指腸", "大腸", "泌尿系統", "腹膜"], "c": ["腹部創傷", "創傷", "出血"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因", "要不要照CT"], "impl": ""},
+    {"k": "trauma-path", "name": "腹部創傷", "en": "Abdominal Trauma", "desc": "依血行動力學反應與 E-FAST 決定是否立即剖腹，可安全影像者依 AAST-OIS 2018 分級給各臟器處置（WSES 2017–2020 · EAST 2010 · WTA 2018–2019）", "kind": "pathway", "href": "pathways/abdominal-trauma.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", // 脾臟：AAST-OIS 逐臟器處置含脾修補，E-FAST 左上腹切面就是看脾腎隱窩與脾膈間
+"s": ["腹部", "創傷", "肝臟", "胰臟", "腎臟", "脾臟", "胃十二指腸", "大腸", "泌尿系統", "腹膜"], "c": ["腹部創傷", "創傷", "出血"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因", "要不要照CT"], "impl": ""},
     {"k": "iah-path", "name": "腹腔內腔室症候群", "en": "IAH / ACS & Open Abdomen", "desc": "依 IAP 分級與器官功能障礙區分 IAH 與 ACS，腹部打開後以 Björck 分類決定暫時性關腹與確定性關腹策略（WSACS 2013 · Björck 2016 · WSES 2018）", "kind": "pathway", "href": "pathways/iah-acs.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "腹膜"], "c": ["腹腔高壓"], "a": ["定嚴重度", "要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
     {"k": "emerg-op", "name": "緊急手術分級", "en": "Emergency Surgery Priority Levels", "desc": "依台大醫院緊急手術作業規範查詢急刀級數（第一～五級）與合理等候時間；可用病況或術式關鍵字搜尋，一般外科列於首位，另附排程與滿線徵用原則", "kind": "tool", "href": "tools/emergency-surgery.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["手術排程", "病人整體"], "c": ["急刀分級", "手術"], "a": ["判時機", "定嚴重度"], "impl": ""},
     {"k": "classifications", "name": "分類與分級系統", "en": "Grading & Classification Systems", "desc": "腹部急症各疾病的嚴重度分級、解剖分型與影像分期集中於一頁：AAST EGS（16 疾病）、TG18 膽囊炎／膽管炎、ASGE 總膽管結石、Parkland／Nassar、Niemeier、Mirizzi Csendes、WSES CT／Hinchey、Revised Atlanta／DBC／Balthazar CTSI、EHS／Nyhus／Gilbert-Rutkow-Robbins、Forrest；圍手術期之 Clavien-Dindo、ISREC 吻合口漏（併 ISGLS／ISGPS／ECCG 對照）、Clinical Frailty Scale；神經外傷之 Marshall CT 分類與 Rotterdam CT 分數；以及 C. difficile、腸皮／腸道－大氣瘻管、腹腔念珠菌、減重術後急症、乙狀結腸扭轉；循環之 SCAI SHOCK 心因性休克分級（A–E）", "kind": "mega", "href": "tools/classifications.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["腹部", "病人整體"], "c": ["分類分級", "膽囊炎", "消化道出血", "胰臟炎", "出血", "總膽管結石", "衰弱", "困難梭菌"], "a": ["定嚴重度", "查分期", "找原因"], "impl": ""},
