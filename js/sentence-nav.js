@@ -160,6 +160,20 @@
  *      `a < 160` 分支）只捲上去、沒有捲回來，於是每選一格句子列就往上跑一截。
  *      見 clampPanelBody()／closePanel() 附近的 scrollAnchor 那一段。
  *
+ *  17. **「說整句」查得到覆蓋菌種**（本輪新增）：使用者原話——「請讓我在
+ *      『說整句』的查詢欄可以查詢『esbl』／『原蟲』或某類菌種即可查詢到所有有
+ *      該菌種感受性的 badge 的抗生素（效果如同點選藥物敏感性的徽章）」。
+ *      這一輪之前打 `esbl`／`原蟲` 都是 0 筆——第 10 條建的藥名索引只收藥自己的
+ *      身分（學名／中文品名／商品名／藥理次分類），一個菌名都沒有。
+ *      新增的是**第六組**候選（依覆蓋菌種），索引在執行期從已經載入的
+ *      window.DRUGS 的 cov 欄位現場算，四組標籤表向 window.COV_LABELS*
+ *      （data/antibiotics/regimens.js，本來就是 SUB_FILES 的第三個來源）要，
+ *      **不新增任何靜態菌名清單檔**，首頁打字前一樣一個位元組都不多抓。
+ *      三件關鍵決定寫在下面「17. 覆蓋菌種索引」那一整段：只收強效／涵蓋／變異
+ *      三級（`no` 收進來會讓打 MRSA 跑出一堆對 MRSA 無效的藥）、
+ *      為什麼不是把菌名塞進藥的 hay（會跟藥名命中混成一堆且抹掉分級）、
+ *      以及徽章為什麼直接沿用藥卡那一套 `.cov-tag` class。
+ *
  * 清點時確認**已經**對齊、不必動的（避免有人日後「補」出重複的東西）：
  * 範圍（g）詞塊未選時不顯示成空格 ▢、選了才長出「腹部急症 ×，我遇到…」
  * （renderRow() 本來就是這樣）；指向行的收斂提示「再選一個主體可從 18 縮到 1」
@@ -1126,6 +1140,9 @@
    *
    * 這一招**只用在這一個索引**。另外四個頁內索引都量過，理由見 deepLanding()。 */
   var ABX_SITE_PATH = '抗生素指引 › 依部位';
+  // 藥卡那一層的麵包屑：藥名命中（buildSubIndex）與覆蓋菌種命中（covSearch）
+  // 落在同一頁的同一個模式，麵包屑前段共用同一份字，免得兩邊日後各寫各的。
+  var ABX_LOOKUP_PATH = '抗生素指引 › 藥物查詢';
   var LAT_MIN = 3;                       // 拉丁字母的詞至少要這麼長才參與比對
   var CJK_CH = /[一-鿿]/;        // 中日韓統一表意文字（部位詞的中文都落在這一段）
   function siteHay(s) {
@@ -1892,7 +1909,7 @@
       });
       var head = (d.name + ' ' + (d.zh || '') + ' ' + brands.join(' ')).toLowerCase();
       subPush(out, {
-        grp: 'abx', w: 2, path: '抗生素指引 › 藥物查詢',
+        grp: 'abx', w: 2, path: ABX_LOOKUP_PATH,
         name: d.name, en: d.zh || '',
         meta: [brands.join('／'), d.cls || ''].filter(Boolean).join(' · '),
         href: 'tools/antibiotics.html#drug=' + encodeURIComponent(k),
@@ -1987,8 +2004,166 @@
     var n = { abx: 0, db: 0, classif: 0, tab: 0 };
     out.forEach(function (x) { n[x.grp]++; });
     subIdx = out;
+    buildCovIndex();       // 覆蓋菌種索引：同一批 window.DRUGS 再掃一次，不多抓任何檔
     subStat = { abx: n.abx, db: n.db, classif: n.classif, tab: n.tab,
                 ms: ((window.performance && performance.now) ? performance.now() : 0) - t0 };
+  }
+
+  /* ================================================================
+   * 17. 覆蓋菌種索引：打菌名／菌類 → 列出所有涵蓋牠的抗生素
+   * ================================================================
+   * 使用者原話：「請讓我在『說整句』的查詢欄可以查詢『esbl』／『原蟲』或某類
+   * 菌種即可查詢到所有有該菌種感受性的 badge 的抗生素（效果如同點選藥物敏感性
+   * 的徽章）」。在這一輪之前打 `esbl` 是 0 筆、打 `原蟲` 也是 0 筆——藥卡那 155 筆
+   * 的比對字串（buildSubIndex() 的 head／hay）只收藥自己的身分（學名／中文品名／
+   * 商品名／藥理次分類／key），**一個菌名都沒有**。
+   *
+   * ---------------------------------------------------------------
+   * 為什麼不是「把菌名塞進藥的 hay」（原本的第一直覺，量過之後改掉）
+   * ---------------------------------------------------------------
+   * 塞進 hay 最省事，但那樣命中的藥會落在既有的「抗生素指引」那一組，跟
+   * **藥名命中**的結果混在同一份清單裡，而且一律是 R_HAY 同一級——使用者看不出
+   * 「這一筆是因為藥名有這幾個字」還是「這一筆是因為牠涵蓋這隻菌」，更看不出
+   * 涵蓋到什麼程度。點徽章列出來的清單本身是有分級的（藥卡上四級燈號），
+   * 抹掉分級就不是「效果如同點選徽章」。所以改成**獨立的一組**：
+   * 獨立索引、獨立標頭（依覆蓋菌種）、每一列掛一顆與藥卡上同一套語彙的
+   * `.cov-tag` 燈號徽章（強效／涵蓋／變異）。藥名命中那一組行為一個字都沒動。
+   *
+   * ---------------------------------------------------------------
+   * 只收三級，`no` 一律不進索引
+   * ---------------------------------------------------------------
+   * covTier() 的四級（js/antibiotics.js 第 7 行）：2＝強效、1＝涵蓋、'p'＝部分／
+   * 變異、0 或缺＝不涵蓋。**只收前三級**——把「不涵蓋」也收進來的話，打 MRSA
+   * 會跑出一堆對 MRSA 無效的藥，那比找不到更危險。
+   * 這條線與 tools/antibiotics.html 點徽章之後那一段篩選逐字相同
+   * （js/antibiotics.js renderLookup()：`v===2||v===1||v==='p'`），所以「說整句」
+   * 列出來的清單與點徽章列出來的清單**成員一致**（實測逐筆比對過，數量與成員
+   * 全等）。'p'（變異）刻意**收**而不是丟：丟掉就與徽章那條路對不上，而且它在
+   * 畫面上是琥珀虛線框的獨立一級，不會被誤讀成「有效」。
+   *
+   * ---------------------------------------------------------------
+   * 標籤從哪裡來（不新增任何靜態菌名清單）
+   * ---------------------------------------------------------------
+   * 四組標籤表是 data/antibiotics/regimens.js 匯出的 window.COV_LABELS／
+   * COV_LABELS_FUNGAL／COV_LABELS_VIRAL／COV_LABELS_PARA，那個檔本來就是
+   * SUB_FILES 的第三個來源（id:'abxsite'，56 KB），打字時本來就會抓。
+   * 這裡唯一「抄」的是 covSet → 哪一張表 的三行對照（與 js/antibiotics.js 的
+   * COV_SETS 同一份語意）——那是**繫結**不是資料：菌名一個字都沒有寫在這裡，
+   * 全部向 window.COV_LABELS* 要，表改了這裡跟著變。萬一 regimens.js 取不到
+   * （離線未快取），標籤退回 cov 的 key 本身（`esbl`／`ameba`），仍然查得到、
+   * 只是徽章上印的是英數鍵——不假裝有中文名。
+   *
+   * 分級的中文字（強效／涵蓋／變異）取自 js/antibiotics.js 第 7 行自己寫的字，
+   * class 名（sy-hi／yes／partial）則直接沿用 css/ui-sentence.css §Q4 那套
+   * `.cov-tag` 燈號（4px 立柱填 100%／66%／33% ＋ 2px 實線／1px 實線／1px 虛線），
+   * 所以候選清單上的徽章與藥卡上的徽章**是同一顆東西**，不是另外畫一組。 */
+  var COV_TIER = {
+    '2': { c: 'sy-hi',   zh: '強效', o: 0 },
+    '1': { c: 'yes',     zh: '涵蓋', o: 1 },
+    'p': { c: 'partial', zh: '變異', o: 2 }
+  };
+  function covTierOf(v) {
+    if (v === 2) return COV_TIER['2'];
+    if (v === 1) return COV_TIER['1'];
+    if (v === 'p') return COV_TIER['p'];
+    return null;                       // 0／undefined／其他 → 不涵蓋，不進索引
+  }
+  function covTables() {
+    return { 'default': window.COV_LABELS, fungal: window.COV_LABELS_FUNGAL,
+             viral: window.COV_LABELS_VIRAL, para: window.COV_LABELS_PARA };
+  }
+  var covOrgs = [];                                    // [{set,key,label,hay,drugs[]}]
+  var covStat = { orgs: 0, pairs: 0, nolabel: 0 };
+  function buildCovIndex() {
+    var A = window.DRUGS || {}, tbl = covTables();
+    var bucket = {}, order = [], pairs = 0, nolabel = 0;
+    Object.keys(A).forEach(function (k) {
+      var d = A[k];
+      if (!d || !d.cov || !d.name) return;
+      var set = d.covSet || 'default';
+      Object.keys(d.cov).forEach(function (key) {
+        var tier = covTierOf(d.cov[key]);
+        if (!tier) return;
+        var id = set + '|' + key;
+        if (!bucket[id]) {
+          var lab = (tbl[set] && tbl[set][key]) || '';
+          if (!lab) nolabel++;
+          bucket[id] = { set: set, key: key, label: lab || key,
+                         hay: ((lab || '') + ' ' + key).toLowerCase(), drugs: [] };
+          order.push(id);
+        }
+        bucket[id].drugs.push({ k: k, d: d, tier: tier });
+        pairs++;
+      });
+    });
+    // 同一隻菌底下先照分級（強效→涵蓋→變異）再照學名排，與藥卡上燈號由亮到暗一致
+    order.forEach(function (id) {
+      bucket[id].drugs.sort(function (x, y) {
+        return x.tier.o - y.tier.o ||
+          (x.d.name < y.d.name ? -1 : x.d.name > y.d.name ? 1 : 0);
+      });
+    });
+    covOrgs = order.map(function (id) { return bucket[id]; });
+    covStat = { orgs: covOrgs.length, pairs: pairs, nolabel: nolabel };
+  }
+
+  /* 菌名比對只做三級（前綴／整詞／子字串），**不做子序列容錯**——理由與藥名
+     那一段同源：28 隻菌的名字都很短，子序列會把 `hbv`／`hiv`／`hsv` 這種三個
+     字母的東西互相撈出來。查詢對到不只一隻菌是正常的（打「原蟲」同時對到
+     「原蟲 ameba」與「瘧原蟲 malaria」），兩隻都算命中、按名次先後展開；
+     同一顆藥被兩隻菌各撈一次時只留名次較前的那一筆，另一隻的名字併進
+     meta 那一行的「同時涵蓋：…」——列兩次會讓「共幾種藥」這個數字失真。 */
+  function covSearch(q) {
+    var res = { list: [], note: '' };
+    if (!covOrgs.length || !q) return res;
+    var orgs = [];
+    covOrgs.forEach(function (o) {
+      var r = -1;
+      if (o.hay.indexOf(q) === 0) r = R_PREFIX;
+      else if ((' ' + o.hay).indexOf(' ' + q) >= 0) r = R_WORD;
+      else if (o.hay.indexOf(q) >= 0) r = R_SUB;
+      if (r >= 0) orgs.push({ r: r, o: o });
+    });
+    if (!orgs.length) return res;
+    orgs.sort(function (x, y) { return x.r - y.r; });
+    var seen = {}, out = [];
+    orgs.forEach(function (g) {
+      g.o.drugs.forEach(function (x) {
+        if (seen[x.k]) {
+          if (seen[x.k].more.indexOf(g.o.label) < 0) seen[x.k].more.push(g.o.label);
+          return;
+        }
+        var e = {
+          grp: 'cov', w: x.tier.o, key: x.k,
+          path: ABX_LOOKUP_PATH + ' › 涵蓋 ' + g.o.label,
+          name: x.d.name, en: x.d.zh || '',
+          meta: x.d.cls || '',
+          href: 'tools/antibiotics.html#drug=' + encodeURIComponent(x.k),
+          tier: x.tier, org: g.o.label, more: [],
+          head: '', hay: ''
+        };
+        seen[x.k] = e;
+        out.push({ r: g.r, kind: 'sub', d: e });
+      });
+    });
+    out.sort(function (x, y) {
+      return x.r - y.r || x.d.w - y.d.w ||
+        (x.d.name < y.d.name ? -1 : x.d.name > y.d.name ? 1 : 0);
+    });
+    res.list = out;
+    /* 副標把「命中了哪幾顆徽章、各幾種藥」唸出來——這一組跟藥名命中不一樣，
+       使用者得看得到「為什麼是這幾顆藥」。但徽章名最多只唸 NOTE_CAP 顆：
+       單一個拉丁字母（打了 `esbl` 之後刪成 `e`）會對到 12 顆徽章、61 種藥，
+       全部唸出來會變成一整段字牆（實測 `a` 對到 20 顆／77 種）。
+       超過就講「等 N 顆徽章」——截斷了照樣講清楚，不靜悄悄少講。 */
+    var NOTE_CAP = 4;
+    var names = orgs.slice(0, NOTE_CAP).map(function (g) {
+      return g.o.label + '（' + g.o.drugs.length + ' 種）';
+    }).join('、');
+    res.note = '命中徽章：' + names +
+      (orgs.length > NOTE_CAP ? ' 等 ' + orgs.length + ' 顆徽章' : '') +
+      ' · 只列強效／涵蓋／變異三級，藥卡上暗掉（不涵蓋）的不列';
+    return res;
   }
 
   /* 四個來源**各自到齊各自生效**，不等最慢的那一個：合計約 911 KB
@@ -2167,9 +2342,22 @@
        麵包屑（肺栓塞 › 危險分層 Risk）標出它落在哪一頁——理由與抗生素那三層
        不再各自分組相同（分成 13 組會變成一堆只有一列的標頭）。 */
     tab:     { zh: '頁內分頁', en: 'Page Tabs',
-               note: '13 個分頁式頁面 · 直接落在那一個分頁', cap: 12 }
+               note: '13 個分頁式頁面 · 直接落在那一個分頁', cap: 12 },
+    /* 覆蓋菌種這一組的 cap 是 30 而不是 12：它的存在理由就是「列出**所有**
+       涵蓋這隻菌的藥」，截掉一半等於沒做。28 隻菌裡最長的一份是 HIV 26 種
+       （實測，其次 Pseudomonas 19、HBV 16），30 剛好裝得下任何單一徽章的
+       完整清單；查詢同時對到多隻菌而超過 30 時，既有那行「這一組還有 N 筆
+       沒列出來」照樣會出現，不會靜悄悄截斷。 */
+    cov:     { zh: '依覆蓋菌種', en: 'By Organism Coverage',
+               note: '', cap: 30 }
   };
-  var SAY_GROUP_ORDER = ['tool', 'abx', 'db', 'classif', 'tab'];
+  /* 覆蓋菌種排在抗生素指引**前面**（同分時），這是量過才調的：打 `esbl` 兩組
+     都是前綴命中（R_PREFIX），依病原菌那一筆的 head 也是 `esbl…` 開頭，
+     排在後面的話使用者要的那 11 種藥會被兩列菌名壓在下面。使用者這一輪要的
+     就是「打菌名 → 列出涵蓋牠的藥」，同分時讓它先講。
+     排在**工具與流程之後**則不動：打 `candida` 時 Candida Score 是不折不扣的
+     工具名前綴命中，把它壓到 13 種抗黴菌藥底下才是錯的。 */
+  var SAY_GROUP_ORDER = ['tool', 'cov', 'abx', 'db', 'classif', 'tab'];
 
   /* 四組怎麼排？——**照各組最好的那一筆的比對等級排，同級才用固定順序
      （工具 → 抗生素 → 藥物資料庫 → 分類分級）**。這樣兩種需求同時成立：
@@ -2184,10 +2372,15 @@
     q = String(q || '').trim().toLowerCase();
     var res = { groups: [], flat: [] };
     if (!q) return res;
-    var hits = { tool: sayToolSearch(q), abx: [], db: [], classif: [], tab: [] };
+    var hits = { tool: sayToolSearch(q), abx: [], cov: [], db: [], classif: [], tab: [] };
     if (subIdx.length) {
       subSearch(q).forEach(function (it) { hits[it.d.grp].push(it); });
     }
+    /* 覆蓋菌種那一組不是從 subIdx 撈的（它索引的是「菌」不是「頁內項目」），
+       所以另外查一次再併進來。covOrgs 是空的（regimens.js／drugs.js 還沒到齊）
+       時回 0 筆，這一組整個不會出現，其餘四組行為不變。 */
+    var cv = covSearch(q);
+    hits.cov = cv.list;
     /* 子序列容錯（R_FUZZY）是**最後手段**：只要整份結果裡有任何一筆是字面命中，
        模糊命中就全部丟掉。原本這條規則只表現在文案上（fuzzyOnly 時改口說
        「你是不是要找…」），命中清單本身照列，所以會出現「第一筆是對的、
@@ -2213,6 +2406,9 @@
     live.sort(function (x, y) { return x.best - y.best || x.ord - y.ord; });
     live.forEach(function (g) {
       g.n = g.hits.length;
+      // 覆蓋菌種那一組的副標是**算出來的**（命中了哪幾顆徽章、各幾種藥），
+      // 不是 SAY_GROUP 上那句固定的話——見 renderSay() 的 g.note || m.note。
+      if (g.id === 'cov') g.note = cv.note;
       g.shown = g.hits.slice(0, SAY_GROUP[g.id].cap);
       g.shown.forEach(function (it) { res.flat.push(it); });
       res.groups.push(g);
@@ -2244,11 +2440,19 @@
       /* 路徑那一行是這一批東西存在的理由：候選項如果只印「腹腔內感染 IAI」，
          使用者不知道它會把自己帶到哪一頁的哪一格。印成
          「抗生素指引 › 依部位 › 腹腔內感染 IAI」才看得出層級。 */
+      /* 覆蓋菌種那一組多兩件東西，其餘完全沿用藥名候選項的版型：
+         · 分級徽章：class 直接用藥卡那一套 `.cov-tag.sy-hi/.yes/.partial`
+           （css/ui-sentence.css §Q4 已經定義好燈號立柱與線型），所以清單上的
+           徽章與藥卡上的徽章長得一模一樣，不是另外畫一顆。
+         · 同一顆藥被查詢對到的第二隻以上的菌，併進 meta 那一行講明白。 */
       var meta = [d.meta].filter(Boolean).join(' · ');
-      return '<a class="' + cls + ' sai-drug" data-i="' + i + '"' + tabHashAttr(d) +
+      if (d.more && d.more.length) meta = [meta, '同時涵蓋：' + d.more.join('、')].filter(Boolean).join(' · ');
+      var tier = d.tier
+        ? '<span class="cov-tag ' + d.tier.c + ' sai-tier">' + esc(d.tier.zh) + '</span>' : '';
+      return '<a class="' + cls + ' sai-drug' + (d.tier ? ' sai-covhit' : '') + '" data-i="' + i + '"' + tabHashAttr(d) +
         ' href="' + esc(sayHref(item)) + '">' +
         '<span class="sai-path">' + esc(d.path) + ' <span class="sai-sep">›</span> </span>' +
-        '<span class="sai-dname"><em>' + esc(d.name) + '</em>' +
+        '<span class="sai-dname">' + tier + '<em>' + esc(d.name) + '</em>' +
           (d.en ? '<span class="sai-dzh">' + esc(d.en) + '</span>' : '') + '</span>' +
         (meta ? '<span class="sai-meta">' + esc(meta) + '</span>' : '') + '</a>';
     }
@@ -2293,11 +2497,19 @@
       if (subDone[f.id] === false) missing.push(f.url);
       else if (!subFileState[f.id]) notAsked.push(f.url);
     });
+    /* 覆蓋菌種不是第五種「頁內項目」——它索引的是同一批 155 張藥卡上的**燈號**，
+       所以不加進上面那個總和，另外用一句話交代（幾隻菌、幾條藥菌對應）。
+       標籤表沒到齊時（regimens.js 取不到）也講明白：查得到，但徽章上印的是
+       cov 的英數鍵而不是中文菌名。 */
+    var covTxt = covOrgs.length
+      ? '；覆蓋菌種 ' + covStat.orgs + ' 隻／' + covStat.pairs + ' 條藥菌對應' +
+        (covStat.nolabel ? '（其中 ' + covStat.nolabel + ' 隻沒有標籤表，以英數鍵顯示）' : '')
+      : '';
     return '<div class="sent-ask-note" title="建索引 ' + subStat.ms.toFixed(1) + ' ms">' +
       '頁內索引：抗生素指引 ' + subStat.abx + ' ＋ 處方集 ' + subStat.db +
       ' ＋ 分級系統 ' + subStat.classif + ' ＋ 頁內分頁 ' + subStat.tab +
       '（' + w2got + ' / ' + w2n + ' 頁' + (w2bad ? '，' + w2bad + ' 頁取不到' : '') + '）' +
-      ' ＝ ' + got + ' 筆' +
+      ' ＝ ' + got + ' 筆' + covTxt +
       (missing.length ? '（' + missing.join('、') + ' 取不到，這次只建了拿得到的那些）' : '') +
       // 造句那條路只會抓 classifications.html 一個來源（見 autoloadSubsFor()），
       // 這時另外三份還沒抓；不講的話畫面會顯得像「抗生素那 209 筆消失了」。
@@ -2315,6 +2527,8 @@
       box.innerHTML = '<div class="sent-ask-hint">打幾個字：工具名（NEWS2、闌尾）、狀況（敗血症、腸阻塞）、' +
         '動作（開刀、劑量）、癌別（胃癌）、藥名（tazocin、萬古黴素）、' +
         '感染部位（腹腔內感染）、病原菌（E. coli）、分級系統（Hinchey、Forrest）都行。' +
+        '打菌種／菌類（ESBL、MRSA、原蟲、Candida）會另外列出所有涵蓋牠的抗生素，' +
+        '每一筆掛著與藥卡上同一顆的分級徽章。' +
         '候選項是一整句話，或是某一頁「裡面」的那一格，Enter 直接抵達。</div>' +
         subNoteHTML();
       saySel = 0; sayLastQ = q; return;
@@ -2339,7 +2553,7 @@
              '<span class="sag-en">' + esc(m.en) + '</span>' +
              '<span class="sag-n">' + g.n + ' 筆</span>' +
            '</div>' +
-           (m.note ? '<div class="sent-ask-gnote">' + esc(m.note) + '</div>' : '');
+           ((g.note || m.note) ? '<div class="sent-ask-gnote">' + esc(g.note || m.note) + '</div>' : '');
       g.shown.forEach(function (item) { h += sayItemHTML(item, i, i === saySel); i++; });
       if (g.n > g.shown.length) {
         h += '<div class="sent-ask-more">這一組還有 ' + (g.n - g.shown.length) +
@@ -2598,7 +2812,7 @@
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
-        'placeholder="查詢工具、癌別、狀況、動作、藥名…（例：NEWS2、闌尾、胃癌、tazocin）">' +
+        'placeholder="查詢工具、癌別、狀況、動作、藥名、菌種…（例：NEWS2、闌尾、胃癌、tazocin、ESBL）">' +
         '<div class="sent-ask-list" id="sentAskList"></div>' +
       '</div>' +
       '<div class="sent-panel" id="sentPanel" hidden></div>' +
@@ -3043,7 +3257,7 @@
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
-        'placeholder="查詢工具、癌別、狀況、動作、藥名…（例：NEWS2、闌尾、胃癌、tazocin）">' +
+        'placeholder="查詢工具、癌別、狀況、動作、藥名、菌種…（例：NEWS2、闌尾、胃癌、tazocin、ESBL）">' +
         '<div class="sent-ask-list" id="sentAskList"></div>' +
       '</div>';
   }

@@ -2507,6 +2507,63 @@
 [data-ui="sentence"] .onc-reflist a:hover { color: var(--sentence-fg); text-decoration: underline; }
 [data-ui="sentence"] .onc-reflist a:before { color: var(--sentence-dim); }
 
+[data-ui="sentence"] button.cov-tag,
+       [data-ui="sentence"] span.cov-tag` 與 `.cov-tag.sy-hi/.yes/.partial`）。
+       這裡只補一件 §Q4 管不到的事：它原本長在藥卡的 `.dc-cov` 裡（block 容器），
+       現在改長在 `.sai-dname` 這個 `align-items: baseline` 的 flex 容器裡。
+       **沒有改任何顏色、線型或字級**——改了就不是「與藥卡上同一顆徽章」了。
+       選擇器特異度 (0,4,0)（`[data-ui]` ＋ `.sai-dname` ＋ `.cov-tag`
+       ＋ `.sai-tier`），高於 §Q4 的 (0,2,1)／(0,3,0)。但它**只宣告
+       `align-self`** 這一個 §Q4 完全沒有寫的屬性，所以誰高誰低都不影響四級的
+       顏色與線型——不必靠併入順序決勝，放哪裡都是 §Q4 說了算。
+
+     · `.sai-covhit .sai-path` ── `.sai-covhit` 是新的修飾類別（只掛在覆蓋菌種
+       命中的那幾列）。既有 §12 的 `.sai-path` 是 (0,2,0)，這裡是 (0,3,0)，
+       **只加 `font-weight`**，字級／字距／行高／顏色全部沿用 §12 那一條。
+       目的：麵包屑末端那句「› 涵蓋 ESBL」是這一列存在的理由（它回答「為什麼
+       這顆藥會出現在這裡」），要比一般麵包屑再重一點點，但仍然是 9.5px 的
+       mono 小字——主角還是下一行的學名。
+
+   刻意沒做的事
+   ──────────────────────────────────────────────────────────────────────
+   · **沒有給這一組另外的底色或左邊界。** 「這一組跟藥名命中不一樣」已經由三件
+     既有元件講清楚了：分組標頭（依覆蓋菌種 / BY ORGANISM COVERAGE）、分組副標
+     （命中徽章：ESBL（11 種）· 只列強效／涵蓋／變異三級…）、以及每一列的
+     徽章本身。再加底色是第四重編碼，只會讓清單變花。
+   · **沒有改 `.sent-ask-list` 的 max-height（60vh）。** 這一組 cap 是 30 筆，
+     比其他組的 12 長，但清單本來就會自己捲，而且分組標頭是 sticky 的
+     （§1，1167 行），捲到第 20 筆時「現在在看依覆蓋菌種這一組」仍然看得見。
+   · **沒有為窄螢幕另外收字級。** 徽章是 §Q4 的 20px 固定高 ＋ 9.5px mono，
+     430×932／390×844 × 亮暗四種組合實測 overflow_x 皆為 0、console 錯誤 0
+     （`.sai-dname` 本來就 flex-wrap，徽章塞不下時整顆換行，不會把清單撐寬）。
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── §16 覆蓋菌種命中那一列的分級徽章 ─────────────────────────────────
+   `.sai-dname` 是 `display:flex; align-items:baseline`（§3，1207 行）。
+   徽章是 20px 高的 inline-flex 盒子，它自己的基線比 14px 學名的基線高，
+   基線對齊的結果是**學名整行被往下推**、那一行也跟著長高。
+
+   實測（430×932 與 390×844 兩個尺寸數字相同，查詢字「厭氧」，量 6 列）：
+     不加這一條： .sai-dname 20.3px、.sent-ask-item 71.8px，
+                  學名 <em> 的框頂比徽章框頂低 1.5px（看得出來沒對齊）。
+     加了這一條： .sai-dname 20.0px、.sent-ask-item 71.4px，
+                  學名 <em> 與徽章框頂齊平（0px）。
+   也就是它換到的是**齊平**，不是省高度（每列只差 0.4px）——寫清楚免得日後
+   有人以為這條是在做版面壓縮而把它調大。
+
+   `flex: none` 試過但**沒有留**：同樣兩個尺寸量下來，加或不加，徽章寬度都是
+   43.4px（`變異`／`涵蓋`）與 41.4px（`強效`），一次都沒有被壓縮過——
+   flex 項目的 `min-width:auto` 已經擋住了。沒有量到效果的規則不留在這裡。 */
+[data-ui="sentence"] .sai-dname .cov-tag.sai-tier {
+  align-self: center;
+}
+
+/* ── §17 覆蓋菌種命中那一列的麵包屑 ───────────────────────────────────
+   「抗生素指引 › 藥物查詢 › 涵蓋 ESBL」。只加字重，其餘沿用 §12。 */
+[data-ui="sentence"] .sai-covhit .sai-path {
+  font-weight: 600;
+}
+
 /* ═══ Q1. 模式分頁列（.abx-modes／.abx-mode） ═══════════════════════════════
    打 antibiotics.css 的 `.abx-modes`(0,1,0)／`.abx-mode`(0,1,0)／
    `.abx-mode.active`(0,2,0)。視覺語彙直接沿用 J 段的 .tab-row/.tab-btn：
