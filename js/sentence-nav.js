@@ -38,7 +38,7 @@
  * 句子在分頁內部不會繼續變長——這一批沒有搬原型的 pages.js／page-abx.js
  * （那是原型自己重做的 NEWS2／闌尾炎／抗生素，repo 已有正式實作，重做一份
  * 就是製造第二個真相來源，見 briefs/PHASE2-SENTENCE-NAV.md 第三節）。
- * 目標頁的句子列因此是**唯讀**的完成式句子＋一句明講「這裡不會再長」的
+ * 目標頁的句子列當時是**唯讀**的完成式句子＋一句明講「這裡不會再長」的
  * 說明，不是一支被閹割卻假裝完整的造句列。頁內子目標（讓句子真的能收斂到
  * 293 個頁內深層連結）留給第 2b 段；收起正式版 .back-stack 避免兩套返回鍵
  * 並存留給第 2c 段——這裡完全不動 .back-stack。
@@ -132,6 +132,28 @@
  *        · 句子把頁內篩窄時自動攤開那一層，並且只抓 classifications.html
  *          一個來源（178 KB）而不是四個來源合計 911 KB，見 ensureSubIndex()
  *          的 only 參數與 autoloadSubsFor()。
+ *
+ *  15. **13 個分頁式頁面的頁內分頁**（本輪新增，第 12 條刻意留白的最後一塊）：
+ *      第 12 條當時明講「分頁名稱只存在各自的 HTML 裡，要嘛多 13 次 fetch，
+ *      要嘛硬寫一份對照表」，所以沒做。使用者裁決要補，走的是前者：
+ *      fetch ＋ DOMParser 現場解析，與 classif 那一筆同一個模式（見 parseTabs()）。
+ *      68 個分頁全部由那 13 頁自己的 HTML＋JS 讀出來——**沒有任何寫死的分頁名稱
+ *      或 hash 對照表**（TAB_PAGES 那串只寫「要去抓誰」的 facets key，網址向
+ *      facets.js 要）。hash 形式逐頁不同（7 頁裸名 `#dx`、6 頁 `#tab=spon`），
+ *      一律以那一頁自己的 JS 判定，再用「窗格元素存不存在」驗一次；
+ *      驗不過就是 0 筆，不會產生「點了跳到頁首」的假連結。
+ *      974 KB 排在**第二波**（見 startWave2()）：第一波四個來源落地之後才開始，
+ *      一頁一頁串著抓、到一筆併一筆，首頁打字前仍然一個位元組都不多抓。
+ *
+ *  16. **內頁的句子軌跡改成可編輯**（本輪新增）：使用者原話「改成點選這邊則
+ *      可以編輯句子（可以只改一個輸入匡）」。上面第 41 行那句「目標頁的句子列
+ *      因此是唯讀的」以及畫面上「句子在這一頁不會再變長」都已經不成立，兩處
+ *      一起改掉。實作**一行都沒有複製首頁那一套**：展開區放的就是同名的
+ *      #sentRow／#sentPanel，畫它們的是同一支 renderRow()／renderPanel()，
+ *      狀態是同一個 homeSt，點擊與鍵盤走同一批 data-act 分支。內頁與首頁只差
+ *      兩件事，各自寫在自己的函式上：改完往哪裡走（trailGo()：句子指到哪裡就
+ *      去哪裡，四種情況一條規則）、以及「只改一格＝真的只改那一格」
+ *      （act==='pick' 的內頁分支：不套用 applyWord() 那條由句尾往前清的規則）。
  *
  *  14. **選完詞之後把句子列還原到可視範圍內**（本輪新增）：第 12 條之前為了
  *      「鍵盤把候選詞面板擠掉」加的那段自動捲動（clampPanelBody() 的
@@ -985,6 +1007,35 @@
     'hub-antibiotics':   { grp: 'abx', w: 2, label: '抗生素藥卡' },
     'classifications':   { grp: 'classif', label: '分級系統' }
   };
+
+  /* ---------------- 13 個分頁式頁面（第 9 輪新增） ----------------
+   * 上一輪把這一批**刻意留白**，當時的理由原話是「分頁名稱只存在各自的 HTML
+   * 裡，要嘛多 13 次 fetch，要嘛硬寫一份對照表（＝第二個真相來源）」。
+   * 使用者裁決要補，做法是前者：fetch ＋ DOMParser 現場解析，與 classif
+   * 那一筆同一個模式（見 SUB_FILES 的 kind:'html'），**沒有另立第二套**。
+   *
+   * 這裡唯一寫死的是「哪 13 個標的是分頁式頁面」這串 facets key，而且刻意
+   * 只寫 key、不寫網址、不寫任何分頁名稱：
+   *   · 網址向 facets.js 要（byKey[k].href）；
+   *   · 分頁 id／中英名稱／hash 形式全部由 parseTabs() 從那一頁自己的
+   *     HTML ＋ JS 現場讀出來。
+   * 也就是說這串 key 只回答「要去抓誰」，不回答「抓到的東西長什麼樣」——
+   * 那 13 頁改分頁時這裡一個字都不必動，改的是它們自己，我們照著讀；
+   * 讀不出來就是 0 筆（看得見的壞），不會出現「連結還在但跳錯地方」。
+   *
+   * 為什麼不能自動推出這 13 個是誰：facets.js 沒有「這一頁有分頁」這個欄位，
+   * 唯一能確定的辦法是把 136 個標的全抓回來看一遍，那顯然不划算。 */
+  var TAB_PAGES = ['pe', 'acs', 'rsi', 'stroke', 'hf', 'periop-anticoag',
+                   'dose-conversion', 'cs-path', 'ich-path', 'seizure-path',
+                   'swan', 'vte-risk', 'nutrition-risk'];
+  var tabsOf = {};            // facets 的 k → parseTabs() 解析出來的分頁陣列
+  /* 這 13 頁的頁內清單也掛進候選清單那顆「N 個分頁 ⌄」。與抗生素／分級系統
+     那三顆不同的是它多帶一個 file：按下去只抓**那一頁自己**（22–169 KB），
+     不是把第一波四個來源 911 KB 全抓回來——見 act==='subs' 的處理。 */
+  TAB_PAGES.forEach(function (k) {
+    if (!byKey[k]) return;
+    SUBTARGET_OF[k] = { grp: 'tab', w: null, pk: k, label: '分頁', file: 'tab:' + k };
+  });
   var SUB_INLINE_CAP = 12;
   /* 句子已經挑過的清單放寬到 20：12 是「整頁 1111 張藥卡攤不進一列底下」的
      上限，對**被句子挑出來的**結果不適用——那正是使用者要的那幾筆，截掉就
@@ -1032,7 +1083,9 @@
     var m = SUBTARGET_OF[k];
     if (!m) return [];
     return subIdx.filter(function (e) {
-      return e.grp === m.grp && (m.w == null || e.w === m.w);
+      // pk（頁面 key）只有分頁那一組會用到：13 頁共用 grp='tab'，
+      // 沒有這一格的話按「肺栓塞」那顆會攤出 13 頁全部的分頁。
+      return e.grp === m.grp && (m.w == null || e.w === m.w) && (!m.pk || e.pk === m.pk);
     });
   }
   function subsFor(k, st) {
@@ -1059,9 +1112,39 @@
     return (openSubs[k] == null) ? subsAuto(k, st) : !!openSubs[k];
   }
 
+  /* ---------------- 「人已經在那一頁」時的分頁連結 ----------------
+   * 那 13 頁**沒有 hashchange 監聽器**：它們只在解析期讀一次 location.hash
+   * （見 parseTabs() 的第 (2) 段）。所以人已經站在 tools/pe.html、又從候選
+   * 清單點了 tools/pe.html#risk 時，瀏覽器只換 hash、不重載文件，那一頁不會
+   * 切分頁——**點了完全沒反應**，正是這一輪要避免的假功能（實測：在 pe.html
+   * 上把 hash 換成 #risk，可見窗格仍然是 p-dx）。
+   * 這裡只在「解析後指到同一份文件」這個情況補一次重載，跨頁點擊是真的導覽，
+   * 一個字都不動。其他來源不在處理範圍：#drug=／#code=／#sys=／#site=／#bac=
+   * 那幾頁本來就各自掛了 hashchange 監聽器（見 reapplyDeepLink() 的註解）。 */
+  function tabHashAttr(e) { return (e && e.grp === 'tab') ? ' data-tabhash="1"' : ''; }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+    var a = (e.target && e.target.closest) ? e.target.closest('a[data-tabhash]') : null;
+    if (!a) return;
+    var u;
+    try { u = new URL(a.href, location.href); } catch (err) { return; }
+    if (u.pathname !== location.pathname || u.search !== location.search) return;  // 真的換頁，交給瀏覽器
+    if (u.hash === location.hash) return;                                          // 已經在這一個分頁上
+    e.preventDefault();
+    location.hash = u.hash;
+    try { location.reload(); } catch (err2) { /* 重載被擋就維持換 hash 的行為，不拋錯 */ }
+  });
+
   function subsInlineHTML(t) {
     var m = SUBTARGET_OF[t.k];
     if (!m) return '';
+    /* 「還沒抓回來」與「抓不到」是兩件事，訊息不能共用一句。分頁那 13 頁各自
+       是獨立的來源，所以判斷要看**這一頁自己**的載入狀態，不是看整個 subIdx
+       有沒有東西——否則第一波載完（subIdx 有 1353 筆）而 tools/pe.html 還沒抓，
+       畫面會誤報「取不到（離線且未快取）」。 */
+    if (m.file && subFileState[m.file] !== 2) {
+      return '<div class="sent-subs"><div class="sent-subs-note is-loading">頁內項目載入中…</div></div>';
+    }
     if (!subIdx.length) {
       return '<div class="sent-subs"><div class="sent-subs-note is-loading">頁內項目載入中…</div></div>';
     }
@@ -1084,7 +1167,8 @@
       : '';
     return '<div class="sent-subs">' + head +
       shown.map(function (e) {
-        return '<a class="sent-sub' + (e.child ? ' is-child' : '') + '" href="' + esc(ROOT + e.href) + '">' +
+        return '<a class="sent-sub' + (e.child ? ' is-child' : '') + '"' + tabHashAttr(e) +
+          ' href="' + esc(ROOT + e.href) + '">' +
           (e.crumb ? '<span class="ssb-crumb">' + esc(e.crumb) + '</span>' : '') +
           '<span class="ssb-name">' + esc(e.name) + '</span>' +
           (e.en ? '<span class="ssb-en">' + esc(e.en) + '</span>' : '') +
@@ -1383,11 +1467,23 @@
     { id: 'classif', url: 'tools/classifications.html', kind: 'html',
       have: function () { return !!(classifSys && classifSys.length); } }
   ];
+  /* 第五個來源（13 筆，各自一個檔）：分頁式頁面的頁內分頁。
+     宣告方式與上面四個一樣是 SUB_FILES 的一員，只多一個 wave:2 標記——
+     排在第二波，理由與排程見 startWave2()。網址取自 facets.js，
+     這裡不重抄一份路徑。 */
+  TAB_PAGES.forEach(function (k) {
+    var t = byKey[k];
+    if (!t || !t.href) return;
+    SUB_FILES.push({
+      id: 'tab:' + k, url: t.href, kind: 'tabs', pk: k, wave: 2,
+      have: function () { return !!tabsOf[k]; }
+    });
+  });
   var DRUG_MIN_Q = 2;
   var subState = 0;           // 0 未載入 ／ 1 載入中（可能已有部分結果）／ 2 全部塵埃落定
   var subIdx = [];
   var subDone = {};           // 每個來源各自的結果：true 拿到了／false 取不到
-  var subStat = { abx: 0, db: 0, classif: 0, ms: 0 };
+  var subStat = { abx: 0, db: 0, classif: 0, tab: 0, ms: 0 };
   var classifSys = null;      // tools/classifications.html 解析出來的 33 筆
   var classifAast = null;     // 同一份 HTML 裡 AAST EGS 的 16 個疾病
 
@@ -1409,6 +1505,18 @@
         classifAast = parseAast(txt);
         done(classifSys.length ? null : f.id);
       })['catch'](function () { done(f.id); });
+      return;
+    }
+    if (f.kind === 'tabs') {
+      if (!window.fetch || !window.DOMParser) { done(f.id); return; }
+      fetch(ROOT + f.url).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      }).then(function (txt) {
+        var got = parseTabs(txt);
+        tabsOf[f.pk] = got;
+        done(got.tabs.length ? null : f.id);
+      })['catch'](function () { tabsOf[f.pk] = { name: '', tabs: [] }; done(f.id); });
       return;
     }
     var s = document.createElement('script');
@@ -1462,6 +1570,110 @@
       while ((m = re.exec(html))) out.push({ k: m[1], zh: m[2], en: m[3] });
     } catch (e) { return []; }
     return out;
+  }
+
+  /* ---------------------------------------------------------------
+   * 一個分頁式頁面的分頁清單怎麼讀出來（回傳 [{id, label, en, hash}]）
+   * ---------------------------------------------------------------
+   * 讀不出來、或驗不過，就回 []——寧可那一頁在索引裡是 0 筆（看得見的壞），
+   * 也不要產生一條「點了跳到頁首」的假連結，那比不做還糟。
+   *
+   * (1) 分頁 id 與名稱
+   *     12 頁寫在 markup 裡，兩種屬性名各半：
+   *       <button class="rsi-tab" data-p="dx">診斷 Diagnosis</button>
+   *       <button class="tab-btn" data-tab="spon">自發性 Spontaneous ICH</button>
+   *     兩者一起收，DOMParser 讀得到。
+   *     tools/heart-failure.html 是唯一的例外：它的 <nav id="tabbar"> 在原始
+   *     HTML 裡是**空的**，14 顆按鈕由該頁自己的 JS 從
+   *     `var TABS = [['definition','壹 定義・病因','Definition'], …]` 生出來，
+   *     而 **DOMParser 不執行 <script>**（parseAast() 已經踩過同一個坑並在
+   *     註解裡寫明）。所以那一頁改用正規式從同一份原文抓那個陣列——抓的是
+   *     它自己寫的字，不是另抄一份清單；它改欄位這裡會一起變成 0 筆。
+   *     那個陣列本來就把中文名與英文名分成兩欄，所以 en 直接有。
+   *
+   * (2) hash 形式：**一律以那一頁自己的 JS 為準，不從 markup 猜**
+   *     實測這 13 頁至少有兩套，而且 markup 相同的頁面未必同一套：
+   *       · `location.hash.match(/#tab=(\w+)/)`（4 頁）
+   *         `/#tab=(spon|sah)/.exec(location.hash)`（2 頁）  → 要寫 `#tab=<id>`
+   *       · `(location.hash||'').replace('#','')` ＋ `getElementById('p-'+h)`（6 頁）
+   *         `location.hash.slice(1)`（1 頁）                → 要寫裸名 `#<id>`
+   *     判斷依據就是「這一頁有沒有把 #tab= 拿去跟 location.hash 一起用」，
+   *     兩種寫法都在同一行，所以用同一行內的共現去認。
+   *
+   * (3) 驗證：每個分頁 id 都要在這一頁的 DOM 裡找得到對應的窗格元素
+   *     窗格的 id 前綴也是**讀出來的**，不是寫死 'p-'／'tab-'（實測三種都有：
+   *     p-／tab-／t-，而且 pathways/ich.html 連 'tab-'+k 這種串接都沒有，
+   *     它寫的是 getElementById('tab-spon') 字面值，靠掃原文抓前綴會漏掉它）。
+   *     做法純靠 DOM：找出 id 以「第一個分頁 id」結尾的元素、取它們的前綴當
+   *     候選，再要求同一個前綴對**每一個**分頁都找得到元素。這樣前綴是被
+   *     驗證出來的，不是被猜出來的。
+   *
+   * (4) 麵包屑前段那個頁名，也向這一份 HTML 要
+   *     直接用 facets.js 的 tools[].name 會印出「腦出血與 SAH Spontaneous ICH &
+   *     Aneurysmal SAH Pathway › 動脈瘤性 Aneurysmal SAH」這種一行塞不下的東西。
+   *     repo 本來就有「頁面簡稱」這個欄位：<body data-back-label="自發性腦出血決策">
+   *     ——js/backlink.js 生返回鍵時用的就是它（見 schema/check_pages.py 的規則）。
+   *     所以有 data-back-label 就用它，沒有的（頁名本來就短的那幾頁）才退回
+   *     facets 的 name。兩者都是既有的真實欄位，這裡沒有新編任何名字。 */
+  function parseTabs(html) {
+    var out = [], pageName = '';
+    try {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var bd = doc.body;
+      if (bd && bd.getAttribute) pageName = (bd.getAttribute('data-back-label') || '').trim();
+
+      [].slice.call(doc.querySelectorAll('button[data-p],button[data-tab]')).forEach(function (b) {
+        var id = b.getAttribute('data-p') || b.getAttribute('data-tab');
+        var label = (b.textContent || '').replace(/\s+/g, ' ').trim();
+        if (id && label) out.push({ id: id, label: label, en: '' });
+      });
+      if (!out.length) {
+        var blk = /\bTABS\s*=\s*\[([\s\S]*?)\]\s*;/.exec(html);
+        if (blk) {
+          var re = /\[\s*'([\w-]+)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\]/g, m;
+          while ((m = re.exec(blk[1]))) out.push({ id: m[1], label: m[2], en: m[3] });
+        }
+      }
+      if (!out.length) return { name: pageName, tabs: [] };
+
+      // 這一頁根本不讀 hash：連不進去
+      if (!/location\.hash/.test(html)) return { name: pageName, tabs: [] };
+      var qForm = /location\.hash[^\n]*#tab=|#tab=[^\n]*location\.hash/.test(html);
+
+      var first = out[0].id, cand = [];
+      [].slice.call(doc.querySelectorAll('[id]')).forEach(function (el) {
+        var id = el.id || '';
+        if (id.length > first.length && id.slice(-first.length) === first) {
+          var p = id.slice(0, id.length - first.length);
+          if (cand.indexOf(p) < 0) cand.push(p);
+        }
+      });
+      var pfx = null;
+      cand.forEach(function (p) {
+        if (pfx !== null) return;
+        var ok = true;
+        out.forEach(function (o) { if (!doc.getElementById(p + o.id)) ok = false; });
+        if (ok) pfx = p;
+      });
+      if (pfx === null) return { name: pageName, tabs: [] };
+
+      out.forEach(function (o) { o.hash = qForm ? ('#tab=' + o.id) : ('#' + o.id); });
+    } catch (e) { return { name: '', tabs: [] }; }
+    return { name: pageName, tabs: out };
+  }
+
+  /* 分頁名稱在 markup 裡是**一個字串**（「診斷 Diagnosis」），classif 那一批
+     則本來就是 .sys-name／.sys-en 兩個節點。為了讓兩批在候選清單上長得一樣
+     （中文大字 ＋ 英文小字，見 sayItemHTML() 的 .sai-dname／.sai-dzh），
+     這裡把「中文 ＋ 空白 ＋ 純西文尾巴」拆成兩段。拆不開的整串當中文名——
+     「急刀／反轉」（沒有英文）、「Caprini（外科）」「NRS-2002 篩檢」
+     「IMPROVE 出血」（西文在前、中文在後）都屬於這一類，硬拆只會拆錯。
+     比對字串（head）仍然是兩段合起來，與 classif 的 head 同一條規則。 */
+  function splitTabLabel(s, en) {
+    s = String(s || '').trim();
+    if (en) return { name: s, en: String(en).trim() };
+    var m = /^(.*[^\x00-\x7F])\s+([A-Za-z][A-Za-z0-9 .+\-\/]*)$/.exec(s);
+    return m ? { name: m[1].trim(), en: m[2].trim() } : { name: s, en: '' };
   }
 
   /* 每個候選項長什麼樣：grp 決定它落在哪一組（也就是哪一頁），path 是麵包屑的
@@ -1586,10 +1798,38 @@
       });
     });
 
-    var n = { abx: 0, db: 0, classif: 0 };
+    /* ── 13 個分頁式頁面的頁內分頁（第 9 輪新增）──
+       hash 由 parseTabs() 依那一頁自己的 JS 判定（`#tab=<id>` 或裸名 `#<id>`，
+       逐頁不同，不是同一套），這裡只負責把它接到 facets.js 給的 href 後面。
+       path 用 facets 的頁名（「肺栓塞」），與抗生素那三層同一套麵包屑寫法，
+       候選項因此印成「肺栓塞 › 危險分層 Risk」而不是只有分頁名。
+       head 只收分頁自己的中英名（打「危險分層」要命中的是那一個分頁）；
+       頁名與頁面英文名收在 hay（第四級），這樣打「肺栓塞」時工具那一筆仍然
+       排在前面，五個分頁跟在後面當延伸，不會反過來把工具淹掉。 */
+    TAB_PAGES.forEach(function (k) {
+      var t = byKey[k], got = tabsOf[k];
+      if (!t || !got || !got.tabs || !got.tabs.length) return;
+      var list = got.tabs, pname = got.name || t.name;
+      list.forEach(function (o, i) {
+        var lab = splitTabLabel(o.label, o.en);
+        var head = (lab.name + ' ' + lab.en).toLowerCase();
+        subPush(out, {
+          grp: 'tab', w: i, pk: k, key: k + '/' + o.id,
+          path: pname,
+          name: lab.name, en: lab.en,
+          meta: '第 ' + (i + 1) + ' / ' + list.length + ' 個分頁',
+          href: t.href + o.hash,
+          head: head,
+          // 頁名兩種都收（頁面簡稱與 facets 的全名），打哪一個都找得到這幾個分頁
+          hay: (head + ' ' + pname + ' ' + t.name + ' ' + (t.en || '') + ' ' + o.id).toLowerCase()
+        });
+      });
+    });
+
+    var n = { abx: 0, db: 0, classif: 0, tab: 0 };
     out.forEach(function (x) { n[x.grp]++; });
     subIdx = out;
-    subStat = { abx: n.abx, db: n.db, classif: n.classif,
+    subStat = { abx: n.abx, db: n.db, classif: n.classif, tab: n.tab,
                 ms: ((window.performance && performance.now) ? performance.now() : 0) - t0 };
   }
 
@@ -1619,10 +1859,14 @@
   }
   function ensureSubIndex(onReady, only) {
     var todo = SUB_FILES.filter(function (f) {
+      // 第二波的 13 個檔平常由 startWave2() 自己排隊，不跟第一波擠；
+      // 但點名要某一頁（候選清單那顆「5 個分頁 ⌄」）時可以直接插隊。
+      if (f.wave === 2 && !(only && only.indexOf(f.id) >= 0)) return false;
       if (only && only.indexOf(f.id) < 0) return false;
       return !subFileState[f.id];
     });
-    if (!todo.length) { if (onReady) onReady(); return; }
+    if (!only) wave2Want = true;
+    if (!todo.length) { if (onReady) onReady(); startWave2(); return; }
     todo.forEach(function (f) { subFileState[f.id] = 1; });
     refreshSubState();
     todo.forEach(function (f) {
@@ -1632,10 +1876,70 @@
         refreshSubState();
         buildSubIndex();
         if (onReady) onReady();
+        startWave2();
       }
       if (f.have()) { done(null); return; }   // 這一頁本來就載過了（抗生素頁／藥物資料庫頁）
       loadSubFile(f, done);
     });
+  }
+
+  /* ---------------------------------------------------------------
+   * 第二波：13 個分頁式頁面（約 974 KB）背景一頁一頁抓
+   * ---------------------------------------------------------------
+   * 為什麼要分兩波，不是把 13 個檔加進上面那一批一起發：
+   *   第一波四個來源合計約 911 KB（處方集 314 ＋ 抗生素藥卡 363 ＋ regimens 56
+   *   ＋ classifications 178），這 13 頁另外約 974 KB。擠在同一波，等於使用者
+   *   為了查一個藥名先付 1.8 MB，而且最小的 regimens（56 KB）會被 13 個 HTML
+   *   一起排在後面拖著。所以：第一波四個各自到齊各自生效（原行為不變），
+   *   四個都塵埃落定之後才開始第二波；第二波**串著抓、一頁一頁來**（不是 13 個
+   *   一起發），每抓完一頁就併進索引重畫一次，搜尋結果逐步變完整。
+   *
+   * 「首頁打字之前一個位元組都不抓」那條線兩波都守：第二波只由**不帶 only 的**
+   * ensureSubIndex()（＝使用者真的在「說整句」打了 DRUG_MIN_Q 個字）叫醒，
+   * autoloadSubsFor() 那條帶 only 的路（句子收斂到分級系統）不會把它拖下水。
+   *
+   * 這 13 頁本來就在 sw.js 的 PRECACHE_URLS 裡（逐一核對過，13 個全在），
+   * 所以第二次造訪與離線時走的是 service worker 快取，不是每次都上網路。 */
+  var wave2Want = false, wave2Busy = false;
+  function wave2Files() { return SUB_FILES.filter(function (f) { return f.wave === 2; }); }
+  function wave1Settled() {
+    var ok = true;
+    SUB_FILES.forEach(function (f) {
+      if (f.wave !== 2 && subFileState[f.id] !== 2) ok = false;
+    });
+    return ok;
+  }
+  /* 第二波每併進一頁就重畫一次。看的是使用者現在在看哪一塊：「說整句」開著
+     就重畫候選清單（那正是他打字要的東西），否則才重畫首頁（可能有人把某一頁的
+     「5 個分頁 ⌄」攤開著）。內頁沒有這兩塊，什麼都不畫。 */
+  function wave2Paint() {
+    if (sayOpen) { renderSay(sayQ); return; }
+    if (isHome() && sentenceOn()) renderHome();
+  }
+  function startWave2() {
+    if (wave2Busy || !wave2Want || !wave1Settled()) return;
+    var todo = wave2Files().filter(function (f) { return !subFileState[f.id]; });
+    if (!todo.length) return;
+    wave2Busy = true;
+    (function next(i) {
+      if (i >= todo.length) { wave2Busy = false; refreshSubState(); wave2Paint(); return; }
+      var f = todo[i];
+      // 排隊期間使用者可能已經自己點開了這一頁（ensureSubIndex 的插隊路徑），
+      // 那就跳過，不要重抓一次。
+      if (subFileState[f.id]) { next(i + 1); return; }
+      subFileState[f.id] = 1;
+      refreshSubState();
+      function done(err) {
+        subFileState[f.id] = 2;
+        subDone[f.id] = !err;
+        refreshSubState();
+        buildSubIndex();
+        wave2Paint();
+        next(i + 1);
+      }
+      if (f.have()) { done(null); return; }
+      loadSubFile(f, done);
+    })(0);
   }
 
   /* 造句收斂到某個「頁內還有一層」的標的時，把那一層的資料先抓回來。
@@ -1686,9 +1990,14 @@
     db:      { zh: '藥物資料庫', en: 'NTUH Formulary',
                note: '台大處方集 · 一商品名一張藥卡', cap: 12 },
     classif: { zh: '分類與分級系統', en: 'Grading & Classification',
-               note: '頁內 33 套分級系統 ＋ AAST EGS 的 16 個疾病 · 直接落在該格', cap: 12 }
+               note: '頁內 33 套分級系統 ＋ AAST EGS 的 16 個疾病 · 直接落在該格', cap: 12 },
+    /* 分頁這一組是唯一橫跨多頁的：13 個分頁式頁面共用一個標頭，每一列自己的
+       麵包屑（肺栓塞 › 危險分層 Risk）標出它落在哪一頁——理由與抗生素那三層
+       不再各自分組相同（分成 13 組會變成一堆只有一列的標頭）。 */
+    tab:     { zh: '頁內分頁', en: 'Page Tabs',
+               note: '13 個分頁式頁面 · 直接落在那一個分頁', cap: 12 }
   };
-  var SAY_GROUP_ORDER = ['tool', 'abx', 'db', 'classif'];
+  var SAY_GROUP_ORDER = ['tool', 'abx', 'db', 'classif', 'tab'];
 
   /* 四組怎麼排？——**照各組最好的那一筆的比對等級排，同級才用固定順序
      （工具 → 抗生素 → 藥物資料庫 → 分類分級）**。這樣兩種需求同時成立：
@@ -1703,7 +2012,7 @@
     q = String(q || '').trim().toLowerCase();
     var res = { groups: [], flat: [] };
     if (!q) return res;
-    var hits = { tool: sayToolSearch(q), abx: [], db: [], classif: [] };
+    var hits = { tool: sayToolSearch(q), abx: [], db: [], classif: [], tab: [] };
     if (subIdx.length) {
       subSearch(q).forEach(function (it) { hits[it.d.grp].push(it); });
     }
@@ -1764,7 +2073,8 @@
          使用者不知道它會把自己帶到哪一頁的哪一格。印成
          「抗生素指引 › 依部位 › 腹腔內感染 IAI」才看得出層級。 */
       var meta = [d.meta].filter(Boolean).join(' · ');
-      return '<a class="' + cls + ' sai-drug" data-i="' + i + '" href="' + esc(sayHref(item)) + '">' +
+      return '<a class="' + cls + ' sai-drug" data-i="' + i + '"' + tabHashAttr(d) +
+        ' href="' + esc(sayHref(item)) + '">' +
         '<span class="sai-path">' + esc(d.path) + ' <span class="sai-sep">›</span> </span>' +
         '<span class="sai-dname"><em>' + esc(d.name) + '</em>' +
           (d.en ? '<span class="sai-dzh">' + esc(d.en) + '</span>' : '') + '</span>' +
@@ -1788,22 +2098,34 @@
       return '<div class="sent-ask-note">藥名、感染部位、病原菌、分級系統打滿 ' + DRUG_MIN_Q +
         ' 個字才開始查——頁內索引第一次用到才抓，不拖慢開頁。</div>';
     }
-    var got = subStat.abx + subStat.db + subStat.classif;
+    var got = subStat.abx + subStat.db + subStat.classif + subStat.tab;
+    /* 第二波那 13 個檔如果逐一列進 missing／notAsked，這一行會變成一整片檔名牆，
+       所以它們只用「已抓 N / 13」這個數字交代，取不到的另外用一句話帶過。 */
+    var w2n = 0, w2got = 0, w2bad = 0;
+    SUB_FILES.forEach(function (f) {
+      if (f.wave !== 2) return;
+      w2n++;
+      if (subFileState[f.id] === 2) { w2got++; if (subDone[f.id] === false) w2bad++; }
+    });
+    var w2txt = '；13 個分頁式頁面 ' + w2got + ' / ' + w2n;
     if (subState === 1) {
       return '<div class="sent-ask-note is-loading">頁內索引載入中…' +
-        (got ? '（已可查 ' + got + ' 筆）' : '') + '</div>';
+        (got ? '（已可查 ' + got + ' 筆' + (wave2Busy ? w2txt + ' 背景載入中' : '') + '）' : '') + '</div>';
     }
     if (!got) {
       return '<div class="sent-ask-note is-fail">頁內索引取不到（離線且未快取）——工具與流程仍然查得到。</div>';
     }
     var missing = [], notAsked = [];
     SUB_FILES.forEach(function (f) {
+      if (f.wave === 2) return;
       if (subDone[f.id] === false) missing.push(f.url);
       else if (!subFileState[f.id]) notAsked.push(f.url);
     });
     return '<div class="sent-ask-note" title="建索引 ' + subStat.ms.toFixed(1) + ' ms">' +
       '頁內索引：抗生素指引 ' + subStat.abx + ' ＋ 處方集 ' + subStat.db +
-      ' ＋ 分級系統 ' + subStat.classif + ' ＝ ' + got + ' 筆' +
+      ' ＋ 分級系統 ' + subStat.classif + ' ＋ 頁內分頁 ' + subStat.tab +
+      '（' + w2got + ' / ' + w2n + ' 頁' + (w2bad ? '，' + w2bad + ' 頁取不到' : '') + '）' +
+      ' ＝ ' + got + ' 筆' +
       (missing.length ? '（' + missing.join('、') + ' 取不到，這次只建了拿得到的那些）' : '') +
       // 造句那條路只會抓 classifications.html 一個來源（見 autoloadSubsFor()），
       // 這時另外三份還沒抓；不講的話畫面會顯得像「抗生素那 209 筆消失了」。
@@ -2161,11 +2483,12 @@
         var full = document.getElementById('sentTrailFull');
         var btn = document.querySelector('#sentTrail .sent-fold');
         if (!full || !btn) return;
-        var openNow = full.hidden;
-        full.hidden = !openNow;
-        btn.setAttribute('aria-expanded', openNow ? 'true' : 'false');
+        trailOpen = !!full.hidden;
+        full.hidden = !trailOpen;
+        btn.setAttribute('aria-expanded', trailOpen ? 'true' : 'false');
         var chev = btn.querySelector('.sf-chev');
-        if (chev) chev.textContent = openNow ? '收合 ⌃' : '展開 ⌄';
+        if (chev) chev.textContent = trailOpen ? '收合 ⌃' : '改句子 ⌄';
+        if (!trailOpen && openFacet) { openFacet = null; panelFilter = ''; renderPanel(); }
         return;
       }
       if (act === 'tclear' || act === 'clear') { e.preventDefault(); location.href = ROOT + 'index.html'; return; }
@@ -2175,10 +2498,13 @@
         if (href) location.href = href;
         return;
       }
-      return;
+      /* open／pick／drop／closepanel **故意不在這裡處理**：內頁的詞塊列與候選詞
+         面板跟首頁是同一套 DOM、同一批函式，直接讓事件落到下面共用的分支去，
+         不複製第二份。內頁與首頁行為不同的那兩處寫在那些分支自己裡面。 */
+      if (act !== 'open' && act !== 'pick' && act !== 'drop' && act !== 'closepanel') return;
     }
 
-    /* ---- 首頁 ---- */
+    /* ---- 首頁與內頁共用 ---- */
     if (act === 'open') {
       // 剛剛才用字輪換完詞的那一下放手，不可以順便把清單也展開（原型的 _wheeled 旗標）
       if (el._wheeled) { el._wheeled = false; return; }
@@ -2188,7 +2514,7 @@
       openTile = null;   // 開始挑詞＝離開「瀏覽某一類」那個模式，清單換回句子的結果
       panelWantsFocus = !wasOpen;   // 這一下是「打開」→ 焦點直接送進過濾框
       if (sayOpen) showSay(false);
-      renderHome();
+      repaint();
       if (wasOpen) focusFacetControl(f);
       return;
     }
@@ -2208,7 +2534,12 @@
       // 目前是開是關要看**有效狀態**（可能是句子自動攤開的），不是只看 openSubs：
       // 直接用 !openSubs[sk] 會讓「自動攤開後按一下」變成再攤開一次（按了沒反應）。
       openSubs[sk] = !subsOpen(sk, curSt());
-      if (openSubs[sk]) ensureSubIndex(function () { renderHome(); });
+      if (openSubs[sk]) {
+        /* 分頁那 13 頁各自是一個獨立來源，所以點名只抓**那一頁**（22–169 KB）。
+           不點名（抗生素／分級系統那三顆）維持原本抓第一波四個來源的行為。 */
+        var sm = SUBTARGET_OF[sk];
+        ensureSubIndex(function () { renderHome(); }, (sm && sm.file) ? [sm.file] : null);
+      }
       renderHome();
       return;
     }
@@ -2247,7 +2578,12 @@
       renderHome();
       return;
     }
-    if (act === 'drop') { homeSt[f] = ''; openTile = null; renderHome(); return; }
+    if (act === 'drop') {
+      homeSt[f] = '';
+      // 內頁退一格＝句子變寬，落點通常不只一件，交給同一條規則決定去哪裡
+      if (!isHome()) { trailGo(); return; }
+      openTile = null; renderHome(); return;
+    }
     if (act === 'droptail') {
       // 句子還有詞就先退詞；一個詞都沒有、卻正攤著某一格分類時，退的就是那一步瀏覽。
       if (dropTail()) { renderHome(); return; }
@@ -2291,6 +2627,20 @@
     }
     if (act === 'pick') {
       var w = el.getAttribute('data-w');
+      /* ---- 內頁：「只改一格」就是**真的只改那一格** ----
+       * 首頁的 applyWord() 會在句子指不到東西時，由句尾往前把別格清掉。那條規則
+       * 在首頁成本是看得見的（整條句子列與件數就在眼前，而且清掉是為了讓候選
+       * 清單不變成空的）；搬到內頁就不一樣了——使用者原話是「可以只改一個輸入
+       * 匡」，他改主體卻發現動作被順手清掉，是最意外的一種結果。
+       * 所以內頁**不套用清除**：指不到東西時一格都不動，整句原樣帶回首頁，由
+       * 首頁既有的 relax() 自動放寬並把放寬了哪一格印成黃字（見 trailGo()）。
+       * 淨結果是「沒有任何一個詞被靜悄悄地丟掉」，而不是「改一格連帶少一格」。 */
+      if (!isHome()) {
+        homeSt[f] = (homeSt[f] === w) ? '' : w;
+        openFacet = null; panelFilter = ''; panelSel = 0;
+        trailGo();
+        return;
+      }
       if (homeSt[f] === w) homeSt[f] = ''; else applyWord(f, w);
       openFacet = null; panelFilter = ''; openTile = null;
       renderHome();
@@ -2337,7 +2687,7 @@
       if (e.key === 'Escape') {
         e.preventDefault();
         openFacet = null; panelFilter = ''; panelSel = 0;
-        renderPanel(); focusFacetControl(pf);
+        renderPanel(); focusFacetControl(pf);   // 首頁／內頁同一支面板，這一段不必分岔
         return;
       }
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -2358,6 +2708,13 @@
         e.preventDefault();
         var chosen = panelList[panelSel] || panelList[0];
         if (!chosen) return;   // 一個都沒命中：Enter 不動作，畫面上那句「找不到…」就是回饋
+        // 內頁：與滑鼠那條路同一套語意（只改這一格、不清別格，改完由 trailGo() 決定去哪）
+        if (!isHome()) {
+          homeSt[pf] = (homeSt[pf] === chosen.w) ? '' : chosen.w;
+          openFacet = null; panelFilter = ''; panelSel = 0;
+          trailGo();
+          return;
+        }
         if (homeSt[pf] === chosen.w) homeSt[pf] = ''; else applyWord(pf, chosen.w);
         openFacet = null; panelFilter = ''; panelSel = 0;
         renderHome();
@@ -2438,7 +2795,7 @@
   });
 
   /* ================================================================
-   * 目標頁：唯讀句子軌跡（107 個工具／流程頁）
+   * 目標頁：可編輯的句子軌跡（107 個工具／流程頁）
    * ================================================================ */
   var selfScript = document.currentScript || (function () {
     var s = document.getElementsByTagName('script');
@@ -2456,30 +2813,30 @@
    * 先前這裡是「每個詞各包一個方框、橫著排成一大塊」＋三行灰字誠實標示，
    * 整條軌跡比它所在頁面的標題還重。原型在頁內是**輕的**：一行摘要、一行
    * 工具名，其餘收進「展開 ⌄」。誠實標示保留，但壓成一行極小字——
-   * 該講的內容沒有變少，只是不再佔掉一屏的份量。 */
-  function trailChipsHTML(st) {
-    var t = st.t && byKey[st.t];
-    var parts = [];
-    if (st.g && SECT_TITLE[st.g]) parts.push('<span class="st-chip">' + esc(SECT_TITLE[st.g].title) + '</span>' +
-      '<span class="st-lx">' + esc(F.lex.scopePost) + '</span>');
-    parts.push('<span class="st-lx">' + esc(F.lex.p0) + '</span>');
-    if (st.s) parts.push('<span class="st-chip">' + esc(st.s) + '</span>');
-    parts.push('<span class="st-lx">' + esc(F.lex.p1) + '</span>');
-    if (st.c) parts.push('<span class="st-chip">' + esc(st.c) + '</span>');
-    // p2 本身已帶前導逗號（"，我要"）——這裡不可以再補一個，否則印出「，，我要」
-    parts.push('<span class="st-lx">' + esc(F.lex.p2) + '</span>');
-    if (st.a) parts.push('<span class="st-chip">' + esc(st.a) + '</span>');
-    if (t) parts.push('<span class="st-chip st-chip-tool">→ ' + esc(t.name) + '</span>');
-    return parts.join('');
-  }
-
+   * 該講的內容沒有變少，只是不再佔掉一屏的份量。
+   *
+   * ---------------------------------------------------------------
+   * 展開之後那一列是**可編輯的**（第 10 輪；先前是唯讀）
+   * ---------------------------------------------------------------
+   * 使用者原話：「改成點選這邊則可以編輯句子（可以只改一個輸入匡）」。
+   * 先前展開只是把完成式句子的詞塊攤出來看，底下還寫著「句子在這一頁不會再
+   * 變長」——那句話現在不成立了，一起改掉（見下面的 srcNote）。
+   *
+   * 實作上**一行都沒有複製首頁那一套**：展開區裡放的就是首頁同名的
+   * `#sentRow` 與 `#sentPanel` 兩個容器，畫它們的是同一支 renderRow()／
+   * renderPanel()／panelTokensHTML()，狀態是同一個 homeSt，點擊與鍵盤走的
+   * 是同一批 data-act 分支（open／pick／drop／closepanel）。內頁與首頁的差別
+   * 只有兩處，各自寫在它自己的函式上：改完往哪裡走（trailGo()）、
+   * 以及「只改一格就真的只改一格」（見 act==='pick' 的內頁分支）。 */
   function trailHTML(st, exact) {
     var t = st.t && byKey[st.t];
     var summary = [st.s, st.c, st.a].filter(Boolean).join(' · ');
     var toolName = t ? t.name : (st.a || st.c || st.s || '');
     var list = matches({ g: st.g, s: st.s, c: st.c, a: st.a });
-    var hint = t ? '句子已完成 · 退掉句尾的詞塊就回到上一層' : '這一頁的句子是唯讀的';
-    // 誠實標示壓成一行極小字：兩種來源仍然分得出來，只是不再各佔三行。
+    var hint = trailHint(list.length);
+    /* 誠實標示壓成一行極小字：兩種來源仍然分得出來，只是不再各佔三行。
+       後半句原本是「句子在這一頁不會再變長」——句子在這一頁變成可編輯之後
+       那句話就是假的了，換成現在真正成立的說法。 */
     var srcNote = exact ? '這是你在造句列選的句子' : '本頁在詞表裡的預設歸類，不是你造的句子';
 
     return '<div class="st-rail">' +
@@ -2487,24 +2844,27 @@
         'aria-label="直接說整句：打字找一整句話，Enter 直達">' +
         '<span class="mag" aria-hidden="true">⌕</span><span class="lbl">說整句</span></button>' +
         '<button type="button" class="sent-fold" data-act="tfold" aria-expanded="false" ' +
-        'aria-controls="sentTrailFull" aria-label="句子摘要：' + esc(summary + (summary ? ' → ' : '') + toolName) + '。點一下展開完整句子">' +
+        'aria-controls="sentTrailFull" aria-label="句子摘要：' + esc(summary + (summary ? ' → ' : '') + toolName) +
+        '。點一下展開，展開後可以逐格改詞">' +
           '<span class="sf-line1">' + esc(summary) + '</span>' +
           '<span class="sf-line2">' +
             '<span class="sf-arrow" aria-hidden="true">→</span>' +
             '<span class="sf-tool">' + esc(toolName) + '</span>' +
-            '<span class="sf-chev" aria-hidden="true">展開 ⌄</span>' +
+            '<span class="sf-chev" aria-hidden="true">' + (trailOpen ? '收合 ⌃' : '改句子 ⌄') + '</span>' +
           '</span>' +
         '</button>' +
       '</div>' +
-      '<div class="st-full" id="sentTrailFull" hidden>' +
-        '<div class="st-line">' + trailChipsHTML(st) + '</div>' +
+      '<div class="st-full" id="sentTrailFull"' + (trailOpen ? '' : ' hidden') + '>' +
+        '<div class="sent-row" id="sentRow"></div>' +
+        '<div class="sent-panel" id="sentPanel" hidden></div>' +
+        '<div class="st-edit-note">點任何一格只改那一格，其餘幾格一個字都不動。</div>' +
       '</div>' +
       '<div class="sent-point">' +
         '<span class="sent-point-n">這句話目前指向 <b>' + list.length + '</b> 件事</span>' +
         '<span class="sent-point-hint">' + esc(hint) + '</span>' +
         '<button type="button" class="sent-clear" data-act="tclear">清空句子</button>' +
       '</div>' +
-      '<div class="st-honest">' + esc(srcNote) + ' · 句子在這一頁不會再變長</div>' +
+      '<div class="st-honest">' + esc(srcNote) + ' · 展開後可以改任何一格，改完就帶你到新的落點</div>' +
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
@@ -2514,6 +2874,87 @@
   }
 
   var targetSt = null;
+  var trailOpen = false;      // 展開／收合狀態（重畫時要留住，否則改一格就自己收起來）
+  var trailExact = false;     // 這句話是 ?sent= 帶進來的，還是本頁的預設歸類
+  var trailSeeded = false;
+
+  /* 指向行後半那句話。內頁改詞是**會換頁**的動作，所以在按下去之前就要講清楚
+     會被帶到哪裡——四種情況各有各的說法，與 trailGo() 的四個分支一一對應。 */
+  function trailHint(n) {
+    if (n === 1) {
+      var only = matches({ g: homeSt.g, s: homeSt.s, c: homeSt.c, a: homeSt.a })[0];
+      var cur = currentPageTool();
+      if (only && cur && cur.k === only.k) return '這句話只指向本頁 · 改一格就換一個落點';
+      return '這句話指向「' + (only ? only.name : '') + '」· 改完會直接過去';
+    }
+    if (!n) return '這句話目前指不到東西 · 改完會回首頁，由首頁自動放寬並說明放寬了哪一格';
+    return '指向 ' + n + ' 件事 · 改完會回首頁，在候選清單裡繼續收斂';
+  }
+
+  /* 內頁的軌跡重畫。刻意**不整段換 innerHTML**：那會把「說整句」面板連同使用者
+     打到一半的字一起換掉。只改真的會變的四處（摘要兩行、詞塊列、候選詞面板、
+     指向行），其餘節點原地不動。 */
+  function renderTrail() {
+    var bar = document.getElementById('sentTrail');
+    if (!bar) return;
+    var st = { g: homeSt.g, s: homeSt.s, c: homeSt.c, a: homeSt.a, t: targetSt ? targetSt.t : '' };
+    var t = st.t && byKey[st.t];
+    var l1 = bar.querySelector('.sf-line1');
+    if (l1) l1.textContent = [st.s, st.c, st.a].filter(Boolean).join(' · ');
+    var tn = bar.querySelector('.sf-tool');
+    if (tn) tn.textContent = t ? t.name : (st.a || st.c || st.s || '');
+    renderRow();
+    renderPanel();
+    var n = matches({ g: st.g, s: st.s, c: st.c, a: st.a }).length;
+    var nb = bar.querySelector('.sent-point-n b');
+    if (nb) nb.textContent = n;
+    var hi = bar.querySelector('.sent-point-hint');
+    if (hi) hi.textContent = trailHint(n);
+    renderBar();
+  }
+
+  /* 首頁與內頁共用同一批 data-act 分支，重畫的入口因此也要共用一個。 */
+  function repaint() { if (isHome()) renderHome(); else renderTrail(); }
+
+  /* ---------------- 改完一格之後去哪裡 ----------------
+   * 規則只有一條：**句子指到哪裡，就把人帶到哪裡**。四種情況都由它決定，
+   * 所以不會出現「有時候跳、有時候不跳」：
+   *   · 剛好 1 件、而且就是現在這一頁 → 原地更新，不重載。這不是例外，
+   *     是同一條規則的結果（目的地就是本頁），重載只會白閃一下並且把使用者
+   *     捲回頁首；網址的 ?sent= 照樣跟著改，分享網址仍然等於分享這句話。
+   *   · 剛好 1 件、是別的頁 → 直接過去，句子用 ?sent= 帶著走。
+   *   · 0 件或 2 件以上   → 回首頁帶著這句話。理由是**候選清單只長在首頁**：
+   *     指向 6 件事的時候該給的是那 6 件的清單，內頁沒有那塊版面，硬在軌跡裡
+   *     塞一份就是把首頁複製第二份。0 件那條同時解決了「只改一格」的副作用
+   *     （見下面 act==='pick' 的內頁分支）——首頁既有的 relax() 會自動放寬，
+   *     而且 renderPointer() 會把「放寬了哪一格」印成黃字，不是靜悄悄地丟。 */
+  function trailGo() {
+    var st = { g: homeSt.g, s: homeSt.s, c: homeSt.c, a: homeSt.a };
+    var list = matches(st);
+    if (list.length === 1) {
+      /* 這裡刻意**不呼叫 completeSentenceFor()**（首頁點候選項時會呼叫它，把使用者
+         沒填的格子用該工具的第一個標註補滿）。內頁不能補：使用者剛按掉主體那顆 ×、
+         句子仍然只指向本頁，補格會讓那個詞當場長回來——按了 × 東西還在，是最糟的
+         一種回饋。內頁的規矩是「你的句子就是你留下的那幾個字」，空格就讓它空著，
+         而且空格本身仍然是一顆可以點的 ▢，要補是使用者自己補。 */
+      var only = list[0], cur = currentPageTool();
+      var next = { g: st.g, s: st.s, c: st.c, a: st.a, t: only.k };
+      if (cur && cur.k === only.k) { targetSt = next; syncTrailUrl(); renderTrail(); return; }
+      location.href = withSentQuery(ROOT + only.href, next);
+      return;
+    }
+    location.href = withSentQuery(ROOT + 'index.html', { g: st.g, s: st.s, c: st.c, a: st.a, t: '' });
+  }
+
+  /* 留在本頁時網址也要跟上（replaceState，不塞歷史紀錄）——首頁的
+     syncHomeUrl() 是同一件事，這裡是內頁版。 */
+  function syncTrailUrl() {
+    if (!history || !history.replaceState || !targetSt) return;
+    var q = location.search.replace(/[?&]sent=[^&]*/, '').replace(/^&/, '?');
+    if (q === '?') q = '';
+    q += (q ? '&' : '?') + QKEY + '=' + encodeSt(targetSt);
+    try { history.replaceState(null, '', location.pathname + q + location.hash); } catch (e) { /* file:// 等情境不支援 */ }
+  }
 
   function renderTarget() {
     var anchor = document.querySelector('.app-header');
@@ -2526,6 +2967,14 @@
       st = { g: t.sec, s: t.s[0] || '', c: t.c[0] || '', a: t.a[0] || '', t: t.k };
     }
     targetSt = st;
+    trailExact = !!incoming;
+    /* 內頁的句子也放在 homeSt——不是圖方便，是為了讓 renderRow()／renderPanel()／
+       candidates()／panelTokensHTML() 這一整批**原封不動**地共用。只在第一次
+       畫的時候灌進去；之後使用者改的就是它本身。 */
+    if (!trailSeeded) {
+      trailSeeded = true;
+      homeSt = { g: st.g || '', s: st.s || '', c: st.c || '', a: st.a || '' };
+    }
     var bar = document.getElementById('sentTrail');
     var fresh = !bar;
     if (!bar) {
@@ -2535,7 +2984,9 @@
       bar.setAttribute('data-ui-chrome', 'sentence-trail');
       anchor.insertAdjacentElement('afterend', bar);
     }
-    bar.innerHTML = trailHTML(st, !!incoming);
+    bar.innerHTML = trailHTML(st, trailExact);
+    renderRow();
+    renderPanel();
     buildBar();
     renderBar();
     if (fresh) { applyAastParam(); reapplyDeepLink(); }
@@ -2624,8 +3075,12 @@
     if (trail) trail.remove();
     var bar = document.getElementById('sentBar');
     if (bar) bar.remove();     // 下緣固定列是首頁／內頁共用的，兩邊拆除都要收掉
+    unbindVV();                // 可編輯的軌跡會綁 visualViewport（候選詞面板），拆掉要解綁
     targetSt = null;
     sayOpen = false;
+    trailOpen = false; trailSeeded = false; trailExact = false;
+    openFacet = null; panelFilter = ''; panelSel = 0;
+    panelLastFacet = null; panelAnchorTop = null; panelScrolled = false;
   }
 
   /* 目標頁的「退一個詞」：這一頁是一份獨立文件，退詞沒辦法原地讓句子變短——
