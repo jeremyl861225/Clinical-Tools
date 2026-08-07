@@ -9,6 +9,11 @@
  *   data/drugs/<pid>.js  各藥理分類的完整藥卡；使用者展開某張卡時才注入 <script> 載入，
  *                        載過就留在 window.DRUGDB_DATA 不再重載。
  * 兩者皆由 work/drugcards/build_cards.py 產生，勿手改。
+ *
+ * 抗微生物劑（抗生素／抗黴菌／抗病毒／抗結核…）不在本資料庫建卡——完整藥卡
+ * （台大劑量、腎肝透析、注射指引、在地感受性徽章）維護在抗生素指引頁的
+ * data/antibiotics/drugs.js。本頁直接載入同一份資料做成可搜尋的清單項，
+ * 點擊即連往 antibiotics.html#drug=<key> 的該張藥卡，避免兩處各養一份。
  */
 'use strict';
 
@@ -42,6 +47,33 @@ const TOP_ZH = {
 };
 
 const IDX = window.DRUGDB_INDEX || [];
+
+/* 抗微生物劑清單項：由抗生素指引的 DRUGS 現場衍生（單一資料來源，勿另建索引檔）。
+   欄位對齊 DRUGDB_INDEX 的形狀（name／brand／zh／cls／tops），另帶
+   abx=藥物 key（點擊連往 antibiotics.html#drug=<key>）與 kw=全部商品名（含中文，供搜尋）。 */
+const ABX_TOP = 'XVI. Antiinfective Agents';
+const ABX = Object.keys(window.DRUGS || {}).map(k => {
+  const d = window.DRUGS[k];
+  const prods = d.ntuhProducts || [];
+  const kw = [k].concat(d.brands || []);
+  prods.forEach(p => { if (p.en) kw.push(p.en); if (p.zh) kw.push(p.zh); });
+  return {
+    abx: k,
+    name: d.name || k,
+    brand: (prods.find(p => p.en) || {}).en || (d.brands || [])[0] || '',
+    zh: (prods.find(p => p.zh) || {}).zh || d.zh || '',
+    cls: d.cls ? [d.cls] : [],
+    tops: [ABX_TOP],
+    kw: kw.join(' ')
+  };
+});
+
+/* 合併清單：與 index.js 相同以學名排序（穩定排序，原索引的相對次序不變）。 */
+const ALL = IDX.concat(ABX).sort((a, b) => {
+  const x = (a.name || '').toLowerCase(), y = (b.name || '').toLowerCase();
+  return x < y ? -1 : x > y ? 1 : 0;
+});
+
 let curTop = '';        // 目前選的藥理大類（空字串＝全部）
 let curCls = '';        // 目前選的機轉標籤
 let curQ = '';          // 搜尋字串
@@ -75,17 +107,17 @@ function matches(d) {
   if (curCls && (d.cls || []).indexOf(curCls) < 0) return false;
   if (!curQ) return true;
   const hay = [d.name, d.brand, d.zh, (d.cls || []).join(' '),
-    (d.strengths || []).join(' '), (d.codes || [d.code]).join(' ')]
+    (d.strengths || []).join(' '), (d.codes || [d.code]).join(' '), d.kw || '']
     .join(' ').toLowerCase();
   return curQ.split(/\s+/).every(t => hay.indexOf(t) >= 0);
 }
 
 function renderTops() {
   const n = {};
-  IDX.forEach(d => (d.tops || []).forEach(t => { n[t] = (n[t] || 0) + 1; }));
+  ALL.forEach(d => (d.tops || []).forEach(t => { n[t] = (n[t] || 0) + 1; }));
   const keys = Object.keys(n).sort((a, b) => n[b] - n[a]);
   el('db-tops').innerHTML =
-    `<button class="db-cat ${curTop ? '' : 'active'}" onclick="pickTop('')">全部<span>${IDX.length}</span></button>` +
+    `<button class="db-cat ${curTop ? '' : 'active'}" onclick="pickTop('')">全部<span>${ALL.length}</span></button>` +
     keys.map(t => `<button class="db-cat ${curTop === t ? 'active' : ''}" onclick="pickTop('${esc(t)}')">
       ${esc(TOP_ZH[t] || t)}<span>${n[t]}</span></button>`).join('');
 }
@@ -97,7 +129,7 @@ let clsOpen = false;
 
 function renderCls() {
   const n = {};
-  IDX.forEach(d => {
+  ALL.forEach(d => {
     if (curTop && (d.tops || []).indexOf(curTop) < 0) return;
     (d.cls || []).forEach(c => { n[c] = (n[c] || 0) + 1; });
   });
@@ -122,11 +154,26 @@ function pickCls(c) { curCls = c; renderCls(); renderList(); }
 function onSearch(v) { curQ = (v || '').trim().toLowerCase(); renderList(); }
 
 function renderList() {
-  const hits = IDX.filter(matches);
+  const hits = ALL.filter(matches);
   el('db-count').textContent = `${hits.length} 個品項` +
     (hits.length > 400 ? '（品項較多，可用上方分類或搜尋縮小範圍）' : '');
   // 同學名的品項排在一起，商品名為次序；未展開的卡片只畫標題列，展開時才載入該分類資料
   el('db-list').innerHTML = hits.map(d => {
+    // 抗微生物劑：整列是連結，開啟抗生素指引頁的完整藥卡（台大劑量／腎肝透析／在地感受性）
+    if (d.abx) return `
+    <a class="drugcard abx-card" href="antibiotics.html#drug=${encodeURIComponent(d.abx)}"
+       title="開啟抗生素指引的完整藥卡">
+      <span class="dc-name">${esc(d.brand || d.name)}</span>
+      ${zhName(d.zh) ? `<span class="dc-zh">${esc(zhName(d.zh))}</span>` : ''}
+      <span class="dc-nameen">${esc(d.name)}</span>
+      <span class="abx-right">
+        ${(d.cls && d.cls[0])
+          ? `<button type="button" class="dc-class" title="列出同機轉藥物"
+               onclick="event.preventDefault();event.stopPropagation();pickCls('${esc(d.cls[0])}')"
+             >${esc(d.cls[0])}</button>` : ''}
+        <span class="db-abxgo">抗生素指引 ↗</span>
+      </span>
+    </a>`;
     const badges = (d.strengths || []).map(s => `<span class="db-strength">${esc(s)}</span>`).join('');
     const tags = (d.tags || []).map(t => `<span class="db-tag">${esc(t)}</span>`).join('');
     return `
