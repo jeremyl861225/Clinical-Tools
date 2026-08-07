@@ -113,6 +113,31 @@
  *      以及「範圍」格的入口怎麼補回來（tilescope 那顆）。
  *      第 1 條的另外兩件（三軌熱門詞、「怎麼用？」摺疊）維持不變。
  *
+ *  13. **句子直接指到分級系統那一格**（本輪新增，第 12 條沒做完的那一半）：
+ *      使用者原話——「請將分類與分級系統中的每個頁面（包含 AAST EGS 的每個
+ *      項目的表格）都可以在句子中找到（例如我遇到闌尾炎，我要術中分級）」。
+ *      第 12 條當時**刻意不做**「句子自動幫你挑一格」，理由是量過會假精準；
+ *      這一輪不是把那個判斷推翻，是把它的前提解掉——問題出在「facets.js 的
+ *      詞表是為了選頁面標的，不是為了選頁內那一格」，所以這一輪就**把頁內
+ *      那一格的標註補上**（data/facets.js 新增 FACETS.classif，33 套分級系統
+ *      ＋ AAST EGS 的 16 個疾病各自標 s／c，只有面向詞、沒有臨床文字）。
+ *      有標註的來源才做句子過濾，沒標註的（抗生素 209 筆、處方集 1111 筆）
+ *      一筆都不濾，行為與這一輪之前逐字相同——那一段實測數字仍然成立。
+ *      連帶三件：
+ *        · 動作面向新增「查分級系統」（別名收「術中分級」「分級標準」「用哪一套」
+ *          等口語；排在 a 陣列最後面，不搶既有詞的別名）。
+ *        · AAST EGS 的 16 個疾病沒有深層連結（那一頁只認 #sys= 與 #tab=），
+ *          改走 `?aast=<k>#sys=aast`，由 applyAastParam() 在該頁切下拉選單——
+ *          **一個字都沒有動 tools/classifications.html**。
+ *        · 句子把頁內篩窄時自動攤開那一層，並且只抓 classifications.html
+ *          一個來源（178 KB）而不是四個來源合計 911 KB，見 ensureSubIndex()
+ *          的 only 參數與 autoloadSubsFor()。
+ *
+ *  14. **選完詞之後把句子列還原到可視範圍內**（本輪新增）：第 12 條之前為了
+ *      「鍵盤把候選詞面板擠掉」加的那段自動捲動（clampPanelBody() 的
+ *      `a < 160` 分支）只捲上去、沒有捲回來，於是每選一格句子列就往上跑一截。
+ *      見 clampPanelBody()／closePanel() 附近的 scrollAnchor 那一段。
+ *
  * 清點時確認**已經**對齊、不必動的（避免有人日後「補」出重複的東西）：
  * 範圍（g）詞塊未選時不顯示成空格 ▢、選了才長出「腹部急症 ×，我遇到…」
  * （renderRow() 本來就是這樣）；指向行的收斂提示「再選一個主體可從 18 縮到 1」
@@ -504,6 +529,7 @@
        時機捲，使用者自己捲動時不搶（scroll 事件傳 false）。 */
     if (allowScroll && a < 160) {
       try { window.scrollBy(0, panel.getBoundingClientRect().top - 8); } catch (e) {}
+      panelScrolled = true;   // ← 捲上去了就記一筆，面板收起時要還原（見 trackPanelScroll()）
       a = avail();
     }
     var cap = window.innerHeight * 0.46;   // CSS 原本的 max-height:46vh
@@ -524,9 +550,76 @@
     vvBound = false;
   }
 
+  /* ---------------- 面板收起之後把句子列還原回去（第 8 輪） ----------------
+   * 上面那段 `a < 160 就先把面板捲到可視區頂端` 解掉的是真問題（390×844 模擬
+   * 鍵盤時不捲的話候選詞只看得見 3 個），但它**只捲上去、沒有捲回來**：
+   * 使用者選完詞、鍵盤收起，捲動位置還留在原地，句子列被推到畫面外，
+   * 每選一格就再累積一次。使用者原話：「請將句子本身放在頁面上方（目前頁面會
+   * 自動往下跑，每次都要手動往上拉到句子的地方）」。
+   *
+   * 兩種做法之中選了「記住開面板前的位置、收起時還原」，理由：
+   *   · 還原的是**句子列在視窗裡的相對位置**（不是絕對 scrollY）——鍵盤彈出、
+   *     候選清單長短不同都會改變版面高度，記絕對 scrollY 會還原到別的地方。
+   *     所以記的是開面板當下 `#sentRow` 的 getBoundingClientRect().top，
+   *     收起時把它調回同一個值，使用者看到的就是「跟我按下去之前一模一樣」。
+   *   · 另一種做法「收起後一律把句子列捲到可視區頂端」會在使用者本來就在
+   *     畫面頂端（scrollY=0，句子列 top=196、下面還看得到 app-header）時
+   *     反而把畫面往下推一截——那是新的位移，不是還原。
+   * 沒有改成 position:sticky：句子列是 clamp(18px,4.4vw,28px) 的大字襯線，
+   * 選滿三格會變兩到三行；實測 390×844 選滿三格時 #sentRow 高 96px＝
+   * 視窗高度的 11.4%，永久釘住等於每一屏都先扣掉一成多，不划算。
+   *
+   * 只有「我們自己捲過」（panelScrolled）才還原——沒有鍵盤的桌機／平板尺寸
+   * 全程不捲，也就不會多做一次沒必要的捲動。 */
+  var panelAnchorTop = null;   // 開面板當下句子列在視窗裡的位置
+  var panelScrolled = false;   // 這一輪有沒有被 clampPanelBody() 捲過
+  var panelLastFacet = null;   // 上一次 render 時面板是開在哪一格（偵測開／關的轉折）
+
+  /* 參數 top 一定要用**傳的**，不可以在函式裡讀 panelAnchorTop：這一支是排在
+     下一幀跑的，而 trackPanelScroll() 排完就同步把 panelAnchorTop 歸零了，
+     讀變數會拿到 null 然後整支靜悄悄不做事（實測就是這個坑：還原完全沒發生，
+     句子列停在 top=-45）。 */
+  function restoreSentenceRow(top) {
+    var el = document.getElementById('sentRow');
+    if (!el || top == null) return;
+    var y0 = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var y = Math.max(0, Math.round(y0 + (el.getBoundingClientRect().top - top)));
+    try { window.scrollTo(0, y); } catch (e) { return; }
+    /* 還原之後再確認一次：這段期間版面可能整個變矮（候選清單收掉、結果變少），
+       瀏覽器會把 scrollTo 夾到文件底部，句子列還是可能落在視窗外。
+       那種時候才退而求其次，把句子列直接捲到可視區頂端。 */
+    var t = el.getBoundingClientRect().top;
+    if (t < 0 || t > window.innerHeight - 24) {
+      try { el.scrollIntoView({ block: 'start', behavior: 'auto' }); } catch (e2) {}
+    }
+  }
+
+  function trackPanelScroll() {
+    var f = openFacet;
+    if (!panelLastFacet && f) {
+      // null → 某一格＝剛打開。中途從主體換到狀況（f 換值但沒關過）不重記，
+      // 這樣一路換下去最後收起時還原的仍是「最初按下去之前」那個位置。
+      var el = document.getElementById('sentRow');
+      panelAnchorTop = el ? el.getBoundingClientRect().top : null;
+      panelScrolled = false;
+    } else if (panelLastFacet && !f) {
+      if (panelScrolled) {
+        /* 排到下一幀再還原：這一支是在 renderHome() 中段被呼叫的
+           （renderPanel 之後還有 renderPointer／renderResults 會改變版面高度），
+           當場捲會被隨後的版面變動夾掉。 */
+        var top0 = panelAnchorTop;
+        var run = function () { restoreSentenceRow(top0); };
+        if (window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+      }
+      panelAnchorTop = null; panelScrolled = false;
+    }
+    panelLastFacet = f;
+  }
+
   function renderPanel() {
     var panel = document.getElementById('sentPanel');
     if (!panel) return;
+    trackPanelScroll();
     if (!openFacet) { panel.hidden = true; panel.innerHTML = ''; unbindVV(); return; }
     var f = openFacet;
     /* 這一支每次 renderHome() 都會整段重畫 innerHTML，輸入框會被換成新節點。
@@ -893,30 +986,106 @@
     'classifications':   { grp: 'classif', label: '分級系統' }
   };
   var SUB_INLINE_CAP = 12;
-  var openSubs = {};          // 哪幾個標的的頁內清單正攤開著（key＝facets 的 t.k）
+  /* 句子已經挑過的清單放寬到 20：12 是「整頁 1111 張藥卡攤不進一列底下」的
+     上限，對**被句子挑出來的**結果不適用——那正是使用者要的那幾筆，截掉就
+     等於白挑。實測最大的一組是「我遇到感染，我要查分級系統」的 15 筆
+     （c 的上位詞「感染」sub 含闌尾炎／膽囊炎／膽管炎／憩室炎／腹膜炎／腹內膿瘍／
+     皮膚軟組織感染／侵襲性念珠菌感染），20 收得下。 */
+  var SUB_PICKED_CAP = 20;
+  var openSubs = {};          // 哪幾個標的的頁內清單被使用者手動開／關過（key＝facets 的 t.k）
 
-  function subsFor(k) {
+  /* ---------------- 句子指到頁內哪一格（第 8 輪新增） ----------------
+   * 上面那一段長註解說的是**當時**的實情：facets.js 的詞表是為了選頁面而標的，
+   * 拿它去猜頁內那一格會出現假精準。這一輪使用者指名要「分類與分級系統的每一個
+   * 分級系統都能用造句找到（我遇到闌尾炎，我要術中分級）」，所以那個問題必須
+   * 正面解掉——解法不是把比對放寬，是**把標註補到位**：
+   *
+   *   data/facets.js 新增 FACETS.classif ——33 套分級系統 ＋ AAST EGS 的 16 個
+   *   疾病，每一筆逐條標上部位（s）與狀況（c）。那份標註**只有面向詞、沒有
+   *   任何臨床文字**；名稱／英文名／出處／分頁／深層連結仍然是這裡從
+   *   tools/classifications.html 現場讀出來的，所以沒有製造第二個真相來源。
+   *
+   * 因此本檔的頁內過濾規則只有一條，而且是「有標註才過濾」：
+   *   · 帶標註的來源（目前只有分級系統）→ 句子的 s／c 逐格比對標註，命中才留。
+   *   · 沒標註的來源（抗生素的 10 個部位／44 隻菌／155 張藥卡、處方集 1111 張）
+   *     → **一筆都不濾**，行為與這一輪之前逐字相同。上面那段實測（infection
+   *     命中 10 個部位裡的 6 個、OR 撞進 Respiratory）講的正是這些來源，
+   *     它們的頁內項目至今沒有面向標註，硬濾就會重演假精準。
+   * 動作面向（a）不參與頁內過濾：a 已經在**頁面層**濾過一次（「查分級系統」
+   * 只標在分類與分級系統這一個標的上），頁內再濾一次沒有增加鑑別力。 */
+  var CLASSIF_TAG = F.classif || {};
+  function subTagged(e) { return !!(e.fs || e.fc); }
+  function subMatch(e, st) {
+    if (!subTagged(e)) return true;
+    if (st.s && !hit('s', st.s, e.fs || [])) return false;
+    if (st.c && !hit('c', st.c, e.fc || [])) return false;
+    return true;
+  }
+  function stNarrows(st) { return !!(st && (st.s || st.c)); }
+
+  /* st 傳 null＝不看句子，列出這一頁的全部項目（也就是這一輪之前的行為）。
+     句子沒收斂時**不列 AAST 的 16 個子疾病**：那 16 筆的母項（AAST EGS 統一分級）
+     本來就在清單裡，一起列出來等於同一張表印 17 次。句子一收斂才把子疾病放進來
+     ——那時候使用者要的正是「闌尾炎那一張表」，不是那個下拉選單本身。 */
+  // 這一頁**可以被指到**的全部項目（含 AAST 的 16 個子疾病）＝分母。
+  function subsAll(k) {
     var m = SUBTARGET_OF[k];
     if (!m) return [];
     return subIdx.filter(function (e) {
       return e.grp === m.grp && (m.w == null || e.w === m.w);
     });
   }
+  function subsFor(k, st) {
+    var all = subsAll(k);
+    if (!all.length) return all;
+    if (!stNarrows(st)) return all.filter(function (e) { return !e.child; });
+    var out = all.filter(function (e) { return subMatch(e, st); });
+    // 子疾病命中時就不必再列母項（同一句話會同時命中兩者，畫面上是同一張表兩次）
+    var parents = {};
+    out.forEach(function (e) { if (e.parent) parents[e.parent] = true; });
+    return out.filter(function (e) { return !(e.key && parents[e.key]); });
+  }
+
+  /* 句子真的把這一頁收窄了（命中數 < 全部）就**自動攤開**，不必再按一下：
+     使用者說的「我遇到闌尾炎，我要術中分級」要一眼看到那張表，不是看到一顆
+     「49 個分級系統 ⌄」。使用者自己按過那顆按鈕之後（openSubs 有值）一律以
+     他按的為準——自動展開不可以把人家手動收起來的東西再打開。 */
+  function subsAuto(k, st) {
+    if (!subIdx.length || !stNarrows(st)) return false;
+    var hitl = subsFor(k, st);
+    return hitl.length > 0 && hitl.length < subsAll(k).length;
+  }
+  function subsOpen(k, st) {
+    return (openSubs[k] == null) ? subsAuto(k, st) : !!openSubs[k];
+  }
 
   function subsInlineHTML(t) {
     var m = SUBTARGET_OF[t.k];
     if (!m) return '';
-    var list = subsFor(t.k);
     if (!subIdx.length) {
       return '<div class="sent-subs"><div class="sent-subs-note is-loading">頁內項目載入中…</div></div>';
     }
-    if (!list.length) {
+    var st = curSt();
+    var all = subsFor(t.k, null);
+    var nAll = subsAll(t.k).length;
+    if (!all.length) {
       return '<div class="sent-subs"><div class="sent-subs-note is-fail">頁內項目取不到（離線且未快取）。</div></div>';
     }
-    var shown = list.slice(0, SUB_INLINE_CAP);
-    return '<div class="sent-subs">' +
+    var list = subsFor(t.k, st);
+    var byQuery = stNarrows(st) && list.length && list.length < nAll;
+    /* 句子收斂了、頁內卻一個都對不上——多半是 relax() 已經放寬過某一格，
+       清單裡的東西其實是放寬後的結果。這時候退回列全部，並把理由講出來，
+       不留下一片空白讓人以為索引壞了。 */
+    if (!list.length) list = all;
+    var shown = list.slice(0, byQuery ? SUB_PICKED_CAP : SUB_INLINE_CAP);
+    var head = byQuery
+      ? '<div class="sent-subs-note is-picked">依句子挑出 ' + list.length + ' / ' + nAll +
+        ' 個' + esc(m.label) + '——點下去直接落在那一格。</div>'
+      : '';
+    return '<div class="sent-subs">' + head +
       shown.map(function (e) {
-        return '<a class="sent-sub" href="' + esc(ROOT + e.href) + '">' +
+        return '<a class="sent-sub' + (e.child ? ' is-child' : '') + '" href="' + esc(ROOT + e.href) + '">' +
+          (e.crumb ? '<span class="ssb-crumb">' + esc(e.crumb) + '</span>' : '') +
           '<span class="ssb-name">' + esc(e.name) + '</span>' +
           (e.en ? '<span class="ssb-en">' + esc(e.en) + '</span>' : '') +
           (e.meta ? '<span class="ssb-meta">' + esc(e.meta) + '</span>' : '') +
@@ -933,16 +1102,24 @@
     var m = KIND_META[t.kind] || KIND_META.tool;
     var desc = t.desc || '';
     var sub = SUBTARGET_OF[t.k];
-    var on = !!openSubs[t.k];
+    var cs0 = curSt();
+    var on = sub ? subsOpen(t.k, cs0) : false;
     /* 「頁內還有一層」那顆：索引還沒載時不印數量（印不出來，也不該為了印一個
        數字就先抓 911 KB——首頁零成本那條線比這顆按鈕重要）；載過之後才補上
-       「10 個感染部位」。按下去才觸發載入。 */
-    var n = subIdx.length ? subsFor(t.k).length : 0;
+       「10 個感染部位」。按下去才觸發載入。
+       句子已經把頁內項目篩窄時，數字印的是**篩完的**那一個（並在括號裡註明
+       總數），否則按鈕上寫 49、攤開只有 1 個，看起來像壞掉。 */
+    var n = subIdx.length ? subsFor(t.k, cs0).length : 0;
+    var nAll = subIdx.length ? subsAll(t.k).length : 0;
+    var picked = !!(n && stNarrows(cs0) && n < nAll);
+    var nTxt = !n ? ('頁內' + esc(sub ? sub.label : ''))
+      : (picked ? (n + ' / ' + nAll + ' 個' + esc(sub.label)) : (n + ' 個' + esc(sub.label)));
     var subBtn = sub
-      ? '<button type="button" class="sent-hit-subs' + (on ? ' open' : '') + '" data-act="subs" ' +
+      ? '<button type="button" class="sent-hit-subs' + (on ? ' open' : '') +
+        (picked ? ' picked' : '') + '" data-act="subs" ' +
         'data-k="' + esc(t.k) + '" aria-expanded="' + (on ? 'true' : 'false') + '" ' +
         'aria-label="' + (on ? '收合' : '展開') + '「' + esc(t.name) + '」的頁內' + esc(sub.label) + '">' +
-        (n ? (n + ' 個' + esc(sub.label)) : ('頁內' + esc(sub.label))) +
+        nTxt +
         '<span class="shs-chev" aria-hidden="true">' + (on ? ' ⌃' : ' ⌄') + '</span></button>'
       : '';
     return '<div class="sent-hit-row' + (on ? ' subs-open' : '') + '">' +
@@ -1036,6 +1213,9 @@
       return;
     }
     results.innerHTML = groupsHTML(list, { interactive: true });
+    // 畫完才去抓頁內資料：抓回來會再 renderHome() 一次，把「49 個分級系統 ⌄」
+    // 換成「1 / 33 個分級系統」＋直接攤開的那一格。
+    autoloadSubsFor(list, cs);
   }
 
   /* ================================================================
@@ -1209,6 +1389,7 @@
   var subDone = {};           // 每個來源各自的結果：true 拿到了／false 取不到
   var subStat = { abx: 0, db: 0, classif: 0, ms: 0 };
   var classifSys = null;      // tools/classifications.html 解析出來的 33 筆
+  var classifAast = null;     // 同一份 HTML 裡 AAST EGS 的 16 個疾病
 
   /* 注入的 <script> 是造句設計唯一會留在 DOM 上的殘留物（實測：關掉 data-ui
      之後 body.innerText 逐字相同、零殘留可見節點，只多這幾個 <head> 裡的
@@ -1225,6 +1406,7 @@
         return r.text();
       }).then(function (txt) {
         classifSys = parseClassif(txt);
+        classifAast = parseAast(txt);
         done(classifSys.length ? null : f.id);
       })['catch'](function () { done(f.id); });
       return;
@@ -1262,6 +1444,22 @@
         out.push({ id: id, name: pick('.sys-name'), en: pick('.sys-en'),
                    src: pick('.sys-src'), tab: tabName[tab] || '' });
       });
+    } catch (e) { return []; }
+    return out;
+  }
+
+  /* AAST EGS 那一格是**一個下拉選單裡的 16 個疾病**，不是 16 個 sys-head，
+     所以 DOMParser 讀不到——它們在那一頁的 <script> 裡，是一個名為 AAST 的
+     陣列（`{k:'A',zh:'急性闌尾炎',en:'Acute Appendicitis',img:…,val:…,g:[…]}`）。
+     DOMParser **不執行** <script>，這裡因此改用正規式從同一份 HTML 原文抓
+     k／zh／en 三個欄位。抓的是那一頁自己寫的字，不是另抄一份清單；
+     欄位順序 k→zh→en 與該頁的 aeFill()（`d.k+'. '+d.zh+'（'+d.en+'）'`）
+     取用的是同三個欄位，那一頁改欄位名時這裡會一起變成 0 筆（＝看得見的壞），
+     不會出現「連結還在但指到別的疾病」這種沉默的錯。 */
+  function parseAast(html) {
+    var out = [], re = /\{k:'([A-Z])',zh:'([^']*)',en:'([^']*)'/g, m;
+    try {
+      while ((m = re.exec(html))) out.push({ k: m[1], zh: m[2], en: m[3] });
     } catch (e) { return []; }
     return out;
   }
@@ -1347,15 +1545,44 @@
       });
     });
 
-    /* ── 分類與分級系統（33 筆）：#sys=<id> ── */
+    /* ── 分類與分級系統（33 筆）：#sys=<id> ──
+       fs／fc 是 data/facets.js 的 FACETS.classif 給的面向標註（只有面向詞，
+       沒有臨床文字）；沒對到標註的系統照樣列出來，只是不會被句子挑中——
+       這比為了湊滿而亂標好。 */
     (classifSys || []).forEach(function (s) {
       var head = (s.name + ' ' + (s.en || '')).toLowerCase();
+      var tag = CLASSIF_TAG[s.id] || null;
       subPush(out, {
-        grp: 'classif', w: 0,
+        grp: 'classif', w: 0, key: s.id,
         path: '分類與分級系統' + (s.tab ? ' › ' + s.tab : ''),
         name: s.name, en: s.en || '', meta: s.src || '',
         href: 'tools/classifications.html#sys=' + encodeURIComponent(s.id),
-        head: head, hay: (head + ' ' + (s.src || '') + ' ' + s.id).toLowerCase()
+        head: head, hay: (head + ' ' + (s.src || '') + ' ' + s.id).toLowerCase(),
+        fs: tag && tag.s, fc: tag && tag.c
+      });
+    });
+
+    /* ── AAST EGS 的 16 個疾病（各一張表）：?aast=<k>#sys=aast ──
+       那一頁**沒有**為 16 個疾病提供深層連結（clApplyHash 只認 #sys= 與 #tab=），
+       所以走查詢字串：`?aast=A` 由本檔在該頁載入後把下拉選單切過去
+       （見 applyAastParam()），hash 仍是 #sys=aast 讓那一頁自己的 clGoto()
+       負責切分頁與捲動——兩邊各做各的，沒有動到 tools/classifications.html。
+       母項（AAST EGS 統一分級）就是 classifSys 裡 id='aast' 的那一筆，
+       這 16 筆用 parent 指回去，句子命中子疾病時母項會被讓開。 */
+    var aastHead = null;
+    (classifSys || []).forEach(function (s) { if (s.id === 'aast') aastHead = s; });
+    (classifAast || []).forEach(function (d) {
+      var head = (d.zh + ' ' + d.en).toLowerCase();
+      var tag = CLASSIF_TAG['aast/' + d.k] || null;
+      subPush(out, {
+        grp: 'classif', w: 1, key: 'aast/' + d.k, child: true, parent: 'aast',
+        path: '分類與分級系統' + (aastHead && aastHead.tab ? ' › ' + aastHead.tab : '') +
+              ' › ' + (aastHead ? aastHead.name : 'AAST EGS'),
+        crumb: (aastHead ? aastHead.name : 'AAST EGS') + ' ' + d.k,
+        name: d.zh, en: d.en, meta: '',
+        href: 'tools/classifications.html?aast=' + encodeURIComponent(d.k) + '#sys=aast',
+        head: head, hay: (head + ' aast ' + d.k).toLowerCase(),
+        fs: tag && tag.s, fc: tag && tag.c
       });
     });
 
@@ -1371,20 +1598,61 @@
      等全部到齊才顯示的話，最小的 regimens（56 KB，10 個部位 ＋ 44 隻菌）
      會被最大的那份拖著一起等。所以每一個 done() 都重建一次索引再重畫一次
      （建索引實測 5 ms 上下，重建四次的成本遠低於讓人乾等）。 */
-  function ensureSubIndex(onReady) {
-    if (subState !== 0) return;       // 已載入／載入中：都不重來
-    subState = 1;
-    var left = SUB_FILES.length;
+  /* only（可選）＝只載這幾個來源。第 8 輪加這個參數的理由：
+     造句收斂到分類與分級系統時要**自動**把頁內那一格攤開給使用者看，而
+     原本的 ensureSubIndex() 一次抓四個來源合計約 911 KB。分級系統只需要
+     tools/classifications.html 一個（178 KB），為了顯示一行「闌尾炎那張表」
+     去抓另外 733 KB 的藥名資料是白付的。「說整句」那條路仍然不帶 only，
+     行為與這一輪之前逐字相同（打字才抓、抓全部）。 */
+  var subFileState = {};      // 每個來源各自的載入狀態：undefined 未要求／1 進行中／2 已塵埃落定
+  function subFileById(id) {
+    for (var i = 0; i < SUB_FILES.length; i++) if (SUB_FILES[i].id === id) return SUB_FILES[i];
+    return null;
+  }
+  function refreshSubState() {
+    var inflight = false, asked = false;
     SUB_FILES.forEach(function (f) {
+      if (subFileState[f.id]) asked = true;
+      if (subFileState[f.id] === 1) inflight = true;
+    });
+    subState = inflight ? 1 : (asked ? 2 : 0);
+  }
+  function ensureSubIndex(onReady, only) {
+    var todo = SUB_FILES.filter(function (f) {
+      if (only && only.indexOf(f.id) < 0) return false;
+      return !subFileState[f.id];
+    });
+    if (!todo.length) { if (onReady) onReady(); return; }
+    todo.forEach(function (f) { subFileState[f.id] = 1; });
+    refreshSubState();
+    todo.forEach(function (f) {
       function done(err) {
+        subFileState[f.id] = 2;
         subDone[f.id] = !err;
-        if (--left <= 0) subState = 2;
+        refreshSubState();
         buildSubIndex();
         if (onReady) onReady();
       }
       if (f.have()) { done(null); return; }   // 這一頁本來就載過了（抗生素頁／藥物資料庫頁）
       loadSubFile(f, done);
     });
+  }
+
+  /* 造句收斂到某個「頁內還有一層」的標的時，把那一層的資料先抓回來。
+     只認 classif 一個來源，理由寫在 subMatch() 上面那段：抗生素與處方集的
+     頁內項目沒有面向標註，句子過濾對它們不成立，抓回來也只是多一顆按鈕上的
+     數字，不值 733 KB。 */
+  var SENT_AUTOLOAD = { classif: 'classif' };   // SUBTARGET_OF[].grp → SUB_FILES[].id
+  function autoloadSubsFor(list, st) {
+    if (!stNarrows(st)) return;
+    var want = {};
+    list.forEach(function (t) {
+      var m = SUBTARGET_OF[t.k];
+      if (m && SENT_AUTOLOAD[m.grp] && !subFileState[SENT_AUTOLOAD[m.grp]]) want[SENT_AUTOLOAD[m.grp]] = true;
+    });
+    var ids = Object.keys(want);
+    if (!ids.length) return;
+    ensureSubIndex(function () { if (isHome() && sentenceOn()) renderHome(); }, ids);
   }
 
   function subSearch(q) {
@@ -1418,7 +1686,7 @@
     db:      { zh: '藥物資料庫', en: 'NTUH Formulary',
                note: '台大處方集 · 一商品名一張藥卡', cap: 12 },
     classif: { zh: '分類與分級系統', en: 'Grading & Classification',
-               note: '頁內 33 個分級系統 · 直接落在該系統那一格', cap: 12 }
+               note: '頁內 33 套分級系統 ＋ AAST EGS 的 16 個疾病 · 直接落在該格', cap: 12 }
   };
   var SAY_GROUP_ORDER = ['tool', 'abx', 'db', 'classif'];
 
@@ -1528,12 +1796,18 @@
     if (!got) {
       return '<div class="sent-ask-note is-fail">頁內索引取不到（離線且未快取）——工具與流程仍然查得到。</div>';
     }
-    var missing = [];
-    SUB_FILES.forEach(function (f) { if (subDone[f.id] === false) missing.push(f.url); });
+    var missing = [], notAsked = [];
+    SUB_FILES.forEach(function (f) {
+      if (subDone[f.id] === false) missing.push(f.url);
+      else if (!subFileState[f.id]) notAsked.push(f.url);
+    });
     return '<div class="sent-ask-note" title="建索引 ' + subStat.ms.toFixed(1) + ' ms">' +
       '頁內索引：抗生素指引 ' + subStat.abx + ' ＋ 處方集 ' + subStat.db +
       ' ＋ 分級系統 ' + subStat.classif + ' ＝ ' + got + ' 筆' +
       (missing.length ? '（' + missing.join('、') + ' 取不到，這次只建了拿得到的那些）' : '') +
+      // 造句那條路只會抓 classifications.html 一個來源（見 autoloadSubsFor()），
+      // 這時另外三份還沒抓；不講的話畫面會顯得像「抗生素那 209 筆消失了」。
+      (notAsked.length ? '（' + notAsked.join('、') + ' 這次還沒用到，打字查詢時才抓）' : '') +
       '</div>';
   }
 
@@ -1858,6 +2132,9 @@
     sayOpen = false;
     openTile = null;     // 攤開的分類是畫面狀態，不是句子；整塊拆掉時一起歸零
     openSubs = {};       // 頁內子目標的展開狀態同理
+    // 面板的捲動還原狀態也歸零——整塊 DOM 都拆了，再去還原一個不存在的句子列
+    // 只會在關掉造句設計的那一刻無端捲一次頁面。
+    panelLastFacet = null; panelAnchorTop = null; panelScrolled = false;
     syncHomeUrl(true);   // 關掉造句設計：網址上的 ?sent= 一起清掉，正式版不留痕跡
   }
 
@@ -1928,7 +2205,9 @@
       e.preventDefault();
       var sk = el.getAttribute('data-k');
       if (!sk) return;
-      openSubs[sk] = !openSubs[sk];
+      // 目前是開是關要看**有效狀態**（可能是句子自動攤開的），不是只看 openSubs：
+      // 直接用 !openSubs[sk] 會讓「自動攤開後按一下」變成再攤開一次（按了沒反應）。
+      openSubs[sk] = !subsOpen(sk, curSt());
       if (openSubs[sk]) ensureSubIndex(function () { renderHome(); });
       renderHome();
       return;
@@ -2259,7 +2538,47 @@
     bar.innerHTML = trailHTML(st, !!incoming);
     buildBar();
     renderBar();
-    if (fresh) reapplyDeepLink();
+    if (fresh) { applyAastParam(); reapplyDeepLink(); }
+  }
+
+  /* ---------------- ?aast=<k>：落在 AAST EGS 的那一張表 ----------------
+   * tools/classifications.html 的 33 套分級系統都有 `#sys=<id>` 可以直接連過去，
+   * **AAST EGS 是唯一的例外**：它一顆 sys-head 底下是一個含 16 個疾病的下拉選單
+   * （`<select id="ae_dz">`，由該頁自己的 aeFill() 填），那 16 張表沒有任何
+   * 深層連結語法——clApplyHash() 只認 `#sys=` 與 `#tab=`。
+   *
+   * 所以這裡補的是**那一頁沒有、而使用者指名要**的那一段：用查詢字串
+   * `?aast=A`（A–P 就是該頁 AAST 陣列自己的 k 欄位），hash 維持 `#sys=aast`
+   * 讓那一頁自己的 clGoto() 照常切分頁＋捲動。兩者不互相干擾——查詢字串不進
+   * location.hash，clApplyHash() 的正規式看不到它。
+   *
+   * 做法上刻意只碰 `<select>` 的 selectedIndex 再補送一次 change：
+   *   · 不改 tools/classifications.html 一個字（該頁的 aeRender() 本來就掛在
+   *     change 上，切完值它自己會把四欄準則與驗證狀態重畫）；
+   *   · 只在造句設計開著時才動作（sentenceOn()），而且要網址真的帶了參數——
+   *     正式版永遠不會產生這個參數，所以正式版的行為零變動。
+   * 本檔是 defer，該頁的 aeFill()／aeRender() 是 body 內的同步 <script>，
+   * 解析期就跑完了，所以這裡讀得到已經填好的 16 個 option。 */
+  function applyAastParam() {
+    if (!sentenceOn()) return;
+    var m = /[?&]aast=([A-Za-z])(?:[&#]|$)/.exec(location.search);
+    if (!m) return;
+    var sel = document.getElementById('ae_dz');
+    if (!sel || !sel.options || !sel.options.length) return;
+    var pre = m[1].toUpperCase() + '.';
+    for (var i = 0; i < sel.options.length; i++) {
+      if ((sel.options[i].textContent || '').indexOf(pre) !== 0) continue;
+      if (sel.selectedIndex === i) return;
+      sel.selectedIndex = i;
+      var ev;
+      try { ev = new Event('change', { bubbles: true }); }
+      catch (e) {
+        try { ev = document.createEvent('Event'); ev.initEvent('change', true, false); }
+        catch (e2) { return; }
+      }
+      try { sel.dispatchEvent(ev); } catch (e3) { /* 送不出去就維持預設那一張表，不拋錯 */ }
+      return;
+    }
   }
 
   /* 造句設計把一整塊軌跡插在 .app-header 之後（文件流，不是疊層），內容因此被
