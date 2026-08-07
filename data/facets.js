@@ -524,6 +524,24 @@ window.FACETS = {
     // 只標到 24 個「可手術」的實體癌——術後／術前輔助治療是這些癌別才有的決策點；六個血液腫瘤（白血病／淋巴癌／MDS／MPN）治療模式不是「手術＋輔助」，不標。
     {"w": "要不要輔助治療", "al": "adjuvant neoadjuvant 輔助治療 術後化療 術前化療 要不要化療 開完刀還要做什麼 術前要不要先化療"},
 
+    /* ══ 第 8 輪新增：「我要一套分級／分型系統」這個動作 ══════════════════
+       使用者原話舉的例子是「我遇到闌尾炎，我要術中分級」。動作面向原本 31 個詞
+       裡沒有任何一個表達「請給我一套分級系統」——最接近的兩個都在講別的事：
+         · 「定嚴重度」問的是**這個病人多嚴重**（NEWS2、qSOFA、SOFA 都算），
+           不是「有哪一套分級表可以套」；
+         · 「找原因」的別名裡雖有「分型／分類」，但那條詞是鑑別診斷用的。
+       所以新增這一條，別名收三種講法：正式名（分級系統／分類系統／分級量表）、
+       值班口語（用哪一套／是第幾級／怎麼分級）、以及**判定情境**——
+       「術中分級」不是我發明的說法，tools/classifications.html 自己就有：
+       AAST EGS 四個判定欄位之一是「術中（Operative）」、Parkland 的英文名寫著
+       「術中第一眼」、Nassar 是手術困難度分級、Hinchey 的出處欄寫「術中所見＋CT」。
+
+       ⚠ 位置刻意排在陣列**最後面**（只在「怎麼處理」之前）：buildFacetIndex()
+       建別名索引是先到先得（`if(!idx[a]) idx[a]=o`），排在前面會把「分級」「嚴重度」
+       從「定嚴重度」手上搶走、把「分類」「分型」從「找原因」手上搶走，
+       等於改掉既有兩個詞的行為。排最後就只認自己這幾個沒人用過的別名。 ══ */
+    {"w": "查分級系統", "al": "grading classification grading-scale grading-system classification-system 分級系統 分類系統 分級表 分級量表 分級標準 分類標準 術中分級 術中分期 術中所見 哪一套分級 用哪一套 是第幾級 屬於第幾型 查分級 查分類 查分型 怎麼分級 有沒有分級"},
+
     /* ══ 第 6 輪新增的上位動作詞。值班打字時最常出現的其實是「怎麼辦」三個字，
        原本一個標的都對不到。這一條不新增任何臨床內容，只是把「怎麼辦」接到
        既有的六個動作詞上（找原因→定嚴重度→要不要開刀→看治療→查劑量→判時機
@@ -577,7 +595,7 @@ window.FACETS = {
 "s": ["腹部", "創傷", "肝臟", "胰臟", "腎臟", "脾臟", "胃十二指腸", "大腸", "泌尿系統", "腹膜"], "c": ["腹部創傷", "創傷", "出血"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因", "要不要照CT"], "impl": ""},
     {"k": "iah-path", "name": "腹腔內腔室症候群", "en": "IAH / ACS & Open Abdomen", "desc": "依 IAP 分級與器官功能障礙區分 IAH 與 ACS，腹部打開後以 Björck 分類決定暫時性關腹與確定性關腹策略（WSACS 2013 · Björck 2016 · WSES 2018）", "kind": "pathway", "href": "pathways/iah-acs.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "腹膜"], "c": ["腹腔高壓"], "a": ["定嚴重度", "要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
     {"k": "emerg-op", "name": "緊急手術分級", "en": "Emergency Surgery Priority Levels", "desc": "依台大醫院緊急手術作業規範查詢急刀級數（第一～五級）與合理等候時間；可用病況或術式關鍵字搜尋，一般外科列於首位，另附排程與滿線徵用原則", "kind": "tool", "href": "tools/emergency-surgery.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["手術排程", "病人整體"], "c": ["急刀分級", "手術"], "a": ["判時機", "定嚴重度"], "impl": ""},
-    {"k": "classifications", "name": "分類與分級系統", "en": "Grading & Classification Systems", "desc": "腹部急症各疾病的嚴重度分級、解剖分型與影像分期集中於一頁：AAST EGS（16 疾病）、TG18 膽囊炎／膽管炎、ASGE 總膽管結石、Parkland／Nassar、Niemeier、Mirizzi Csendes、WSES CT／Hinchey、Revised Atlanta／DBC／Balthazar CTSI、EHS／Nyhus／Gilbert-Rutkow-Robbins、Forrest；圍手術期之 Clavien-Dindo、ISREC 吻合口漏（併 ISGLS／ISGPS／ECCG 對照）、Clinical Frailty Scale；神經外傷之 Marshall CT 分類與 Rotterdam CT 分數；以及 C. difficile、腸皮／腸道－大氣瘻管、腹腔念珠菌、減重術後急症、乙狀結腸扭轉；循環之 SCAI SHOCK 心因性休克分級（A–E）", "kind": "mega", "href": "tools/classifications.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["腹部", "病人整體"], "c": ["分類分級", "膽囊炎", "消化道出血", "胰臟炎", "出血", "總膽管結石", "衰弱", "困難梭菌"], "a": ["定嚴重度", "查分期", "找原因"], "impl": ""},
+    {"k": "classifications", "name": "分類與分級系統", "en": "Grading & Classification Systems", "desc": "腹部急症各疾病的嚴重度分級、解剖分型與影像分期集中於一頁：AAST EGS（16 疾病）、TG18 膽囊炎／膽管炎、ASGE 總膽管結石、Parkland／Nassar、Niemeier、Mirizzi Csendes、WSES CT／Hinchey、Revised Atlanta／DBC／Balthazar CTSI、EHS／Nyhus／Gilbert-Rutkow-Robbins、Forrest；圍手術期之 Clavien-Dindo、ISREC 吻合口漏（併 ISGLS／ISGPS／ECCG 對照）、Clinical Frailty Scale；神經外傷之 Marshall CT 分類與 Rotterdam CT 分數；以及 C. difficile、腸皮／腸道－大氣瘻管、腹腔念珠菌、減重術後急症、乙狀結腸扭轉；循環之 SCAI SHOCK 心因性休克分級（A–E）", "kind": "mega", "href": "tools/classifications.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["腹部", "病人整體", "闌尾", "膽道", "胰臟", "肝臟", "食道", "胃十二指腸", "小腸", "大腸", "腹壁與疝氣", "腹膜", "腸繫膜血管", "軟組織", "會陰", "乳房", "婦科", "肺與氣道", "心臟", "休克循環", "腦", "腦血管", "意識", "抗黴菌藥", "圍手術期"], "c": ["分類分級", "膽囊炎", "消化道出血", "胰臟炎", "出血", "總膽管結石", "衰弱", "困難梭菌", "闌尾炎", "腹腔感染", "腹內膿瘍", "腹膜炎", "膽管炎", "膽道阻塞", "憩室炎", "消化道穿孔", "消化性潰瘍穿孔", "食道急症", "疝氣", "嵌頓", "腸阻塞", "腸扭轉", "腸缺血", "感染", "皮膚軟組織感染", "侵襲性念珠菌感染", "器官衰竭", "上消化道出血", "術後併發症", "創傷性腦損傷", "蜘蛛膜下腔出血", "心因性休克", "腹腔高壓"], "a": ["定嚴重度", "查分期", "找原因", "查分級系統"], "impl": ""},
     {"k": "periop-anticoag", "name": "圍手術期抗栓藥物管理", "en": "Perioperative Antithrombotic Management", "desc": "依藥物、CrCl 與處置出血風險輸出 DOAC／warfarin 的術前停藥天數、是否橋接、術後重啟時機，附術前用藥日曆；另含抗血小板與支架後手術延遲。刻意並列 CHEST 2022／EHRA 2021／ASRA 第 5 版三套方案而不合併——同一病人三者可差一至兩天，神經軸麻醉與機械瓣橋接的分歧另有標示。另設「急刀／反轉」分頁：以台大急刀五級對應反轉決策與劑量（idarucizumab、4F-PCC、維生素 K），標明 andexanet 已於 2025-12 退出美國市場且 ISTH 列急刀為不應使用", "kind": "tool", "href": "tools/periop-anticoag.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["圍手術期", "凝血", "一般藥物"], "c": ["抗栓管理", "出血", "中風風險", "手術"], "a": ["判時機", "查劑量", "查禁忌", "停藥", "逆轉"], "impl": ""},
     {"k": "acls", "name": "ACLS", "en": "Advanced Cardiovascular Life Support", "desc": "依 2025 AHA CPR & ECC 官方 18 張演算法整理：成人之終止復甦、BLS、心跳停止、心搏過速／過緩、電擊整流、復甦後照護、異物哽塞、孕婦停止與 LVAD；另含兒科 PALS 與新生兒復甦。並附心電圖判讀圖鑑十個分頁——竇性、心房、心室、房室阻滯、束支與分支、腔室肥大、節律器、缺血梗塞、全身因素、其他重要型態，每型一張示意波形圖＋判讀準則＋致病原因，另含 QTc 計算器", "kind": "tool", "href": "tools/acls.html", "sec": "critical", "secTitle": "急重症處置", "secEn": "Emergency & Critical Care", "grp": "休克與復甦", "grpEn": "Shock & Resuscitation", "cnt": "6 項", "s": ["心臟", "意識", "兒科"], "c": ["心跳停止", "心律不整", "意識障礙"], "a": ["查劑量", "判時機", "定嚴重度", "怎麼復甦"], "impl": ""},
     {"k": "sepsis-path", "name": "敗血性休克 Sepsis & Septic Shock Pathway", "en": "Sepsis & Septic Shock", "desc": "依 SSC 2026（2021 版已被取代）：抗生素時機依「可能／很可能／確定」三級分流（3 小時 vs 1 小時）、感染源控制 6 小時、30 mL/kg 平衡鹽液，到 norepinephrine → vasopressin → epinephrine 的升階；≥65 歲 MAP 目標降為 60–65、升壓劑可先走周邊靜脈", "kind": "pathway", "href": "pathways/sepsis.html", "sec": "critical", "secTitle": "急重症處置", "secEn": "Emergency & Critical Care", "grp": "休克與復甦", "grpEn": "Shock & Resuscitation", "cnt": "6 項", "s": ["感染與敗血", "休克循環"], "c": ["敗血症", "敗血性休克", "菌血症", "發燒", "感染", "休克"], "a": ["定嚴重度", "查劑量", "判時機", "找原因", "怎麼復甦", "給升壓劑"], "impl": ""},
@@ -718,5 +736,142 @@ window.FACETS = {
     {"k": "abx-surgical-prophylaxis", "name": "手術預防", "en": "Surgical Prophylaxis", "desc": "依台大醫院《手術預防性抗微生物製劑使用規範》（文件 15650-2-000016，版次 8）表一，並以 ASHP／IDSA／SIS／SHEA 2013 指引補充台大表一未列之術式", "kind": "tool", "href": "tools/surgical-prophylaxis.html", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "抗微生物", "grpEn": "Antimicrobials", "cnt": "6 項", "s": ["抗生素"], "c": ["抗生素選擇", "手術預防性抗生素", "手術"], "a": ["查覆蓋菌譜", "給抗生素"], "kw": "抗生素 抗微生物 菌譜 手術預防 創傷", "impl": ""},
     {"k": "abx-trauma-abx", "name": "創傷用藥", "en": "Trauma Antibiotics", "desc": "依損傷部位整理創傷後預防性抗生素的建議、療程與證據強度，並含破傷風預防決策", "kind": "tool", "href": "tools/trauma-abx.html", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "抗微生物", "grpEn": "Antimicrobials", "cnt": "6 項", "s": ["抗生素"], "c": ["抗生素選擇", "創傷後抗生素", "創傷"], "a": ["查覆蓋菌譜", "給抗生素"], "kw": "抗生素 抗微生物 菌譜 手術預防 創傷", "impl": ""},
   ],
+
+  /* ══════════════════════════════════════════════════════════════════════
+     classif ── tools/classifications.html 頁內 33 套分級系統 ＋ AAST EGS
+                16 個疾病的**查詢標註**（第 8 輪新增）
+     ══════════════════════════════════════════════════════════════════════
+     使用者原話：「請將分類與分級系統中的每個頁面（包含 AAST EGS 的每個項目的
+     表格）都可以在句子中找到（例如我遇到闌尾炎，我要術中分級）」。
+
+     ── 這裡放的是什麼，不放什麼 ──────────────────────────────────────────
+     只有**面向標註**（s／c 兩個陣列）。中文名、英文名、出處、所屬分頁、
+     深層連結一律**不在這裡**——那些是 tools/classifications.html 自己的
+     內容，由 js/sentence-nav.js 在執行期把該頁抓回來用 DOMParser 讀出來
+     （parseClassif()／parseAast()，那一段本來就存在）。這一份因此不是
+     第二個真相來源：它一個字的臨床內容都沒有，抄不走也漂移不了；
+     頁面改了名字、改了出處、換了分頁，這裡完全不必動。
+
+     ── 為什麼不是新增 33 個 tools[] 標的 ────────────────────────────────
+     tools[] 是「136 個標的」那份清單，首頁的指向數、六大分類每一格的「N 件」、
+     內頁軌跡的件數全部靠它數出來。把 33 套分級系統加進去會讓 136 變成 169，
+     那是**另一件事**（分級系統是頁內的一格，不是一個頁面）。所以標的數維持
+     136 不變，這 33＋16 筆走的是既有的「頁內子目標」那條路——與抗生素指引的
+     10 個感染部位、44 隻病原菌、155 張藥卡同一個層級。
+
+     ── 每一筆的 s／c 是怎麼決定的 ───────────────────────────────────────
+     逐條回 tools/classifications.html 讀該系統自己的區塊（sys-head 的中英文名
+     ＋ 底下 .sys-body 的內容）決定，沒有一條是憑印象對照的；理由寫在各行 //。
+     只用既有詞表的詞，不為此新增任何 s／c 詞條。
+     刻意**不標上位詞**（感染／創傷／出血／阻塞／結石／衰竭／手術）：那七個詞
+     的 sub 陣列已經涵蓋這裡用到的窄詞，expand() 會自己帶出來，重複標只會讓
+     日後兩邊不一致。唯一的例外是 c「感染」本身——AAST 的感染性大腸炎、
+     骨盆腔發炎、肛周膿瘍、肋膜腔感染、手術部位感染這五個疾病，詞表裡**沒有**
+     對應的窄詞，標上位詞是唯一誠實的選擇（見各行註解）。
+
+     鍵值：33 套用該頁自己的 sys-<id>（＝ #sys= 深層連結的值）；
+           AAST 的 16 個疾病用「aast/<k>」，<k> 是該頁 AAST 陣列自己的 k 欄位
+           （A–P，也就是下拉選單印出來的那個字母），不是陣列索引——
+           索引會因為排序改變而指錯，字母不會。 */
+  "classif": {
+    /* ── 跨疾病 ────────────────────────────────────────────────────────
+       AAST 那一顆**母項**只標通用詞：它是一個含 16 個疾病的下拉選單，
+       真正的部位／狀況落在 16 個子項上（見下）。母項若也標了各疾病的詞，
+       同一句話會同時命中母項與子項，畫面上就是同一張表出現兩次。 */
+    "aast": {"s": ["腹部", "病人整體"], "c": ["分類分級"]},
+
+    // AAST EGS 16 個疾病：名稱逐字取自該頁 AAST 陣列的 zh／en 欄位。
+    "aast/A": {"s": ["闌尾"], "c": ["闌尾炎", "腹腔感染"]},                 // 急性闌尾炎 Acute Appendicitis
+    // 乳房感染：Grade I 原文即 breast cellulitis（本頁譯「乳房蜂窩組織炎」），故用皮膚軟組織感染。
+    "aast/B": {"s": ["乳房", "軟組織"], "c": ["皮膚軟組織感染"]},            // 乳房感染 Breast Infections
+    "aast/C": {"s": ["膽道"], "c": ["膽囊炎", "腹腔感染"]},                  // 急性膽囊炎 Acute Cholecystitis
+    "aast/D": {"s": ["大腸"], "c": ["憩室炎", "腹腔感染"]},                  // 急性大腸憩室炎
+    "aast/E": {"s": ["食道"], "c": ["食道急症", "消化道穿孔"]},              // 食道穿孔 Esophageal Perforation
+    // Grade II–V 逐級寫 incarcerated／gangrenous，故一併標嵌頓。
+    "aast/F": {"s": ["腹壁與疝氣"], "c": ["疝氣", "嵌頓"]},                  // 疝氣（內疝或腹壁疝）
+    // 感染性大腸炎：詞表沒有對應的窄詞（困難梭菌太窄——本條含所有 infectious colitis），標上位詞「感染」。
+    "aast/G": {"s": ["大腸"], "c": ["感染"]},                               // 感染性大腸炎 Infectious Colitis
+    "aast/H": {"s": ["小腸"], "c": ["腸阻塞"]},                             // 黏連性腸阻塞
+    "aast/I": {"s": ["腸繫膜血管", "小腸"], "c": ["腸缺血"]},                // 腸道動脈缺血
+    "aast/J": {"s": ["胰臟"], "c": ["胰臟炎"]},                             // 急性胰臟炎
+    // 骨盆腔發炎疾病：詞表沒有 PID 的窄詞；婦科的別名本來就收「骨盆腔」。
+    "aast/K": {"s": ["婦科"], "c": ["感染"]},                               // 骨盆腔發炎疾病 PID
+    "aast/L": {"s": ["胃十二指腸"], "c": ["消化性潰瘍穿孔", "消化道穿孔"]},   // 消化性潰瘍穿孔（胃或十二指腸）
+    // 肛周膿瘍：不標「腹內膿瘍」——那一條講的是腹腔內，肛周不在腹腔內。
+    "aast/M": {"s": ["會陰"], "c": ["感染"]},                               // 肛周膿瘍 Perirectal Abscess
+    // 肋膜腔感染：詞表沒有膿胸／肋膜腔的窄詞，部位落在肺與氣道（其別名含「胸腔」）。
+    "aast/N": {"s": ["肺與氣道"], "c": ["感染"]},                           // 肋膜腔感染 Pleural Space Infection
+    "aast/O": {"s": ["軟組織"], "c": ["皮膚軟組織感染"]},                    // 軟組織感染 Soft Tissue Infections
+    // 手術部位感染：SSI 是術後併發症，同時詞表沒有 SSI 的窄詞，故另標上位詞「感染」。
+    "aast/P": {"s": ["圍手術期", "軟組織"], "c": ["術後併發症", "感染"]},     // 手術部位感染 Surgical Site Infections
+
+    /* ── 膽道分頁 ─────────────────────────────────────────────────────── */
+    "tg18-gb":          {"s": ["膽道"], "c": ["膽囊炎", "腹腔感染"]},        // TG18 急性膽囊炎嚴重度分級
+    "tg18-cholangitis": {"s": ["膽道"], "c": ["膽管炎", "腹腔感染"]},        // TG18 急性膽管炎
+    // ASGE：本頁表格的判準是 CBD 結石／T-Bil／CBD 擴張，處置是 ERCP，故兼標膽道阻塞。
+    "asge":             {"s": ["膽道"], "c": ["總膽管結石", "膽道阻塞"]},     // 總膽管結石風險分層
+    "parkland":         {"s": ["膽道"], "c": ["膽囊炎"]},                   // Parkland 膽囊發炎分級（術中第一眼）
+    // Nassar：評的是膽囊這台刀多難開，三欄全是膽囊／膽囊管蒂／沾黏。
+    "nassar":           {"s": ["膽道"], "c": ["膽囊炎"]},                   // Nassar 手術困難度分級
+    // Niemeier：Type I 自由穿孔＝瀰漫性膽汁性腹膜炎、Type II 局部穿孔＝膽囊周圍膿瘍。
+    "niemeier":         {"s": ["膽道"], "c": ["膽囊炎", "腹膜炎", "腹內膿瘍"]}, // Niemeier 膽囊破裂分型
+    // Mirizzi：Csendes 分型的軸是「總膽管受侵程度」，本質是膽道阻塞；
+    // 不標「總膽管結石」——嵌頓的結石在 Hartmann pouch／膽囊管，不是總膽管內的結石。
+    "mirizzi":          {"s": ["膽道"], "c": ["膽道阻塞"]},                  // Mirizzi syndrome — Csendes 分型
+
+    /* ── 大腸憩室分頁 ─────────────────────────────────────────────────── */
+    "wses-ct": {"s": ["大腸"], "c": ["憩室炎"]},                                     // WSES CT 分期
+    // Hinchey：III／IV 期就是化膿性／糞性腹膜炎，Ib／II 期是結腸旁與遠處膿瘍。
+    "hinchey": {"s": ["大腸"], "c": ["憩室炎", "腹膜炎", "腹內膿瘍"]},                 // Hinchey／Modified Hinchey
+
+    /* ── 胰臟分頁 ─────────────────────────────────────────────────────── */
+    // Atlanta／DBC 兩套的軸都含「器官衰竭」（Marshall ≥2 / SOFA ≥2）。
+    "atlanta": {"s": ["胰臟"], "c": ["胰臟炎", "器官衰竭"]},                 // Revised Atlanta
+    "dbc":     {"s": ["胰臟"], "c": ["胰臟炎", "器官衰竭"]},                 // DBC 決定因子分類
+    "ctsi":    {"s": ["胰臟"], "c": ["胰臟炎"]},                            // Balthazar CTSI（純影像，無全身因子）
+
+    /* ── 疝氣分頁：三套都是腹股溝疝的解剖分型 ─────────────────────────── */
+    "ehs":     {"s": ["腹壁與疝氣"], "c": ["疝氣"]},                        // EHS 腹股溝疝氣分類
+    "nyhus":   {"s": ["腹壁與疝氣"], "c": ["疝氣"]},                        // Nyhus 分類
+    "gilbert": {"s": ["腹壁與疝氣"], "c": ["疝氣"]},                        // Gilbert／Rutkow-Robbins
+
+    /* ── 消化道出血分頁 ───────────────────────────────────────────────── */
+    // Forrest：英文名即 Peptic Ulcer Bleeding，是內視鏡下的上消化道出血分級。
+    "forrest": {"s": ["胃十二指腸"], "c": ["上消化道出血", "消化道出血"]},    // Forrest 分類
+
+    /* ── 圍手術期分頁 ─────────────────────────────────────────────────── */
+    "clavien":     {"s": ["圍手術期"], "c": ["術後併發症"]},                 // Clavien-Dindo 手術併發症分級
+    // ISREC：本頁明寫「只限直腸前位切除」，故部位兼標大腸。
+    "isrec":       {"s": ["圍手術期", "大腸"], "c": ["術後併發症"]},          // 吻合口漏 ISREC 嚴重度分級
+    // 四套「漏」：本頁對照表的器官欄依序是直腸、肝膽胰、胰臟手術、食道切除。
+    "leak-family": {"s": ["圍手術期", "大腸", "肝臟", "胰臟", "食道"], "c": ["術後併發症"]}, // 四套「漏」的分級
+    // CFS 不分部位（衰弱是全人狀態），對到的是 s「病人整體」；本頁收在圍手術期分頁。
+    "cfs":         {"s": ["病人整體", "圍手術期"], "c": ["衰弱"]},           // 臨床衰弱量表 CFS
+
+    /* ── 神經分頁 ─────────────────────────────────────────────────────── */
+    // Marshall／Rotterdam 的英文名／內文都寫 Traumatic Brain Injury。
+    "marshall-ct": {"s": ["腦"], "c": ["創傷性腦損傷"]},                     // Marshall CT 分類
+    "rotterdam":   {"s": ["腦"], "c": ["創傷性腦損傷"]},                     // Rotterdam CT 分數
+    // 以下四套的內文都是 SAH（Hunt-Hess 原文講顱內動脈瘤手術時機、Fisher 講腦池
+    // 蜘蛛膜下腔血液厚度、mFisher 的世代是 1,355 名 SAH 病人、WFNS 是 SAH 分級）。
+    "hunt-hess": {"s": ["腦", "腦血管"], "c": ["蜘蛛膜下腔出血"]},            // Hunt & Hess 分級
+    "wfns":      {"s": ["腦", "腦血管", "意識"], "c": ["蜘蛛膜下腔出血"]},    // WFNS 分級（軸是 GCS）
+    "fisher":    {"s": ["腦", "腦血管"], "c": ["蜘蛛膜下腔出血"]},            // Fisher 分級
+    "mfisher":   {"s": ["腦", "腦血管"], "c": ["蜘蛛膜下腔出血"]},            // modified Fisher 分級
+
+    /* ── 循環分頁 ─────────────────────────────────────────────────────── */
+    // 休克不必另標：c「休克」的 sub 已含心因性休克，expand() 會帶到。
+    "scai": {"s": ["心臟", "休克循環"], "c": ["心因性休克"]},                 // SCAI SHOCK 分級 A–E
+
+    /* ── 其他分頁 ─────────────────────────────────────────────────────── */
+    "cdiff":     {"s": ["大腸"], "c": ["困難梭菌"]},                         // 困難梭狀桿菌大腸炎 嚴重度
+    // ECF／EAF：本頁的 Björck 修訂分類講的是開放腹腔（open abdomen）底下的腸道滲漏。
+    "ecf":       {"s": ["小腸", "腹部"], "c": ["術後併發症", "腹腔高壓"]},    // 腸皮／腸道－大氣瘻管
+    "iac":       {"s": ["腹膜", "腹部", "抗黴菌藥"], "c": ["侵襲性念珠菌感染", "腹腔感染"]}, // 腹腔內念珠菌感染
+    // OBA 只涵蓋 LSG／LRYGB 術後晚期併發症，本頁最長的一段是內疝造成的腸阻塞。
+    "bariatric": {"s": ["胃十二指腸", "圍手術期"], "c": ["術後併發症", "腸阻塞"]}, // 減重手術後急症
+    "volvulus":  {"s": ["大腸"], "c": ["腸扭轉", "腸阻塞"]}                  // 乙狀結腸扭轉
+  },
+
   "lex": {"scopePre": "在", "scopePost": "，", "p0": "我遇到", "p1": "的", "p2": "，我要", "phS": "部位／主體", "phC": "狀況", "phA": "我要做的事"}
 };
