@@ -78,6 +78,41 @@
  *      不是模糊比對放太寬。另補原型 js/say.js 有而這裡沒有的兩件：↑ ↓ 時把
  *      選取項捲進可視範圍、「/」直接叫出輸入框。
  *
+ *  10. 「說整句」查得到**藥名**（本輪新增，見下面「藥名索引」那一大段）：
+ *      原本打 `tazocin` 是 0 筆——136 個標的裡沒有一個是藥。索引在執行期
+ *      從 repo 既有的兩個資料檔建出來（data/drugs/index.js 1111 筆、
+ *      data/antibiotics/drugs.js 155 筆），**不新增任何靜態藥名清單檔**：
+ *      原型那份 drugnames.js（126 筆手抄）刻意沒搬，理由與第 9 條同源——
+ *      同一件事有兩個真相來源，日後一定會漂移。兩個資料檔合計 677 KB，
+ *      所以是**打字才抓**，首頁載入不多付一個位元組。藥名與 136 個標的
+ *      分成三組各自帶標頭與筆數（工具與流程／抗生素／藥物資料庫），
+ *      讓人一眼看得出這是兩種不同的東西。三格造句（主體／狀況／動作）
+ *      完全不碰——1266 個藥名塞進候選詞面板只會變成一片藥名牆。
+ *
+ *  12. **查詢深入各分頁**（本輪新增）：使用者原話——「請將查詢深入各分頁
+ *      （例如若查詢『腹腔內的感染查抗生素』，可以導引到『抗生素指引』的
+ *      『依部位』的『腹腔內感染』）」。句子收斂完只停在頁面、停不進頁內那一格，
+ *      是先前一直記著沒做的「頁內子目標」。這一輪補上，分兩條路：
+ *        · 「說整句」直接查得到頁內項目（1353 筆），候選項標出完整路徑
+ *          「抗生素指引 › 依部位 › 腹腔內感染 IAI」——見 buildSubIndex()。
+ *        · 候選清單每一列多一顆「10 個感染部位 ⌄」，攤開就是那一頁的下一層
+ *          ——見 SUBTARGET_OF／subsInlineHTML() 的長註解，裡面寫了為什麼
+ *          **不做**「句子自動幫你挑一格」（實測是假精準，量過的數字在那裡）。
+ *      四個資料來源全部是 repo 既有的真檔案，執行期建索引，
+ *      **不新增任何靜態子目標清單檔**（原型 data/sub-*.js 那 323 筆刻意沒搬，
+ *      理由與第 10 條同源）。
+ *
+ *  11. 六格從「值班常用句」改成**分類入口**（本輪新增，取代第 1 條的一半）：
+ *      使用者原話——「取消『值班常用句 · 點一下就把句子說完一半』，並設計成
+ *      並非把句子說完一半，而是如原主畫面方磚一樣，點選後顯示所有條目列表」。
+ *      所以第 1 條裡「值班常用句六格」那一半已經被取代掉了：標頭那行、每格
+ *      上緣的「說『…』」預告、以及點下去寫 homeSt 的行為，三件一起拿掉。
+ *      現在點一格＝句子一個字都不動，底下換成那一類的完整清單（沿用候選清單
+ *      同一套版型）。細節見下面 TILE／tileViewHTML() 的長註解，包含：
+ *      哪一格對到哪一批標的、藥物資料庫那格為什麼只能直接連過去、
+ *      以及「範圍」格的入口怎麼補回來（tilescope 那顆）。
+ *      第 1 條的另外兩件（三軌熱門詞、「怎麼用？」摺疊）維持不變。
+ *
  * 清點時確認**已經**對齊、不必動的（避免有人日後「補」出重複的東西）：
  * 範圍（g）詞塊未選時不顯示成空格 ▢、選了才長出「腹部急症 ×，我遇到…」
  * （renderRow() 本來就是這樣）；指向行的收斂提示「再選一個主體可從 18 縮到 1」
@@ -585,6 +620,19 @@
   function renderPointer(list, lastRelax, relaxFailed) {
     var point = document.getElementById('sentPoint');
     if (!point) return;
+    /* 六大分類攤開時，句子的狀態沒有改變——這一行如果照原本印「句子還是空的 ·
+       空句子就是主選單」，畫面上就會出現「主選單」三個字配著一整份分類清單，
+       自相矛盾。改印一句把兩件事都講清楚的話：現在在瀏覽誰、句子沒被動過。 */
+    if (openTile) {
+      var TL = tileLabel(openTile);
+      point.innerHTML =
+        '<span class="sent-point-n">正在瀏覽「' + esc(TL.zh) + '」的全部 <b>' + tileList(openTile).length + '</b> 件</span>' +
+        '<span class="sent-point-hint">句子沒有被改動 · 按下面「← 回六大分類」或 Esc 回去</span>';
+      /* 這裡**不再**放第二顆「回六大分類」：清單本體最上面那條工具列已經有一顆
+         （.sent-tile-bar 的 .sent-tile-back），兩顆同名按鈕上下相隔不到 60px，
+         實測 390×844 截圖看起來像壞掉。指向行維持純敘述，動作只留一個地方。 */
+      return;
+    }
     var any = homeSt.g || homeSt.s || homeSt.c || homeSt.a;
     var n = list.length;
     var relaxNote = '', hint;
@@ -610,38 +658,150 @@
       (any ? '<button type="button" class="sent-clear" data-act="clear">清空句子</button>' : '');
   }
 
-  /* ---------------- 值班常用句：六格入口 ----------------
+  /* ---------------- 六大分類：六格入口 ----------------
    * 文案（中文名／英文名／描述）一律現場從 index.html 既有的六張 .hub-card
    * 讀出來（data-label／data-en／data-sub），不在這裡另抄一份——正式版改了文案，
    * 造句設計這邊跟著變，不會有兩份對不上的字。
-   * 每格上緣那行「說『…』」是這一格按下去會把句子填成什麼樣子的預告，
-   * 對照的就是下面 set 裡真正寫進 homeSt 的欄位（四格填範圍、兩格填動作），
-   * 不是裝飾文字。 */
-  var HUB_SAY = {
-    'card-view-abdomen':     { say: '說「' + F.lex.scopePre + ' 腹部急症 …」',   set: { g: 'abdomen' } },
-    'card-view-antibiotics': { say: '說「…' + F.lex.p2.replace(/^，/, '') + ' 查覆蓋菌譜」', set: { a: '查覆蓋菌譜' } },
-    'card-view-critical':    { say: '說「' + F.lex.scopePre + ' 急重症處置 …」', set: { g: 'critical' } },
-    'card-view-cancer':      { say: '說「' + F.lex.scopePre + ' 癌症治療 …」',   set: { g: 'cancer' } },
-    'card-view-scores':      { say: '說「' + F.lex.scopePre + ' 計分工具 …」',   set: { g: 'scores' } },
-    'card-view-drugdb':      { say: '說「…' + F.lex.p2.replace(/^，/, '') + ' 查劑量」',     set: { a: '查劑量' } }
+   *
+   * ---------------------------------------------------------------
+   * 這六格做什麼（改過一次，這是第二版）
+   * ---------------------------------------------------------------
+   * 第一版：這六格叫「值班常用句」，按下去會**把句子說完一半**（四格填範圍、
+   * 兩格填動作），每格上緣還印一行「說『在 腹部急症 …』」預告它會填什麼。
+   * 使用者要求取消：不要幫他把句子說一半，要**跟正式版首頁的方磚一樣，
+   * 點下去就列出這一類的全部條目**。
+   *
+   * 所以現在：點一格 → 句子一個字都不動 → 底下換成那一類的完整清單
+   * （沿用候選清單的版型：分區標頭 → 群組標頭 → 候選項含簡介）。
+   * 標頭那行也跟著改掉——行為不再是「說完一半」，就不該再那樣寫。
+   *
+   * ---------------------------------------------------------------
+   * 每一格底下到底是哪一批標的（先數再決定，不硬湊）
+   * ---------------------------------------------------------------
+   * 正式版那六張方磚本身就不是同一種東西：三張開的是**頁內分類清單**
+   * （href="#abdomen"／"#critical"／"#scores"，見 index.html 檔尾的
+   * showSection()），另外三張是**直接連到別的頁面**
+   * （tools/antibiotics.html／cancer.html／drug-database.html）。
+   * 這裡照 facets.js 實際數得出來的東西分成三種：
+   *
+   *   by:'sec'  腹部急症 18 件／急重症處置 22 件／計分工具 59 件／癌症治療 30 件
+   *             ——這四格在 facets.js 就是四個範圍（sec），直接列該範圍全部標的。
+   *             癌症治療在正式版是直接連過去的，但 facets 有 30 個癌別標的，
+   *             列得出來就列，比丟去一個總站好用。
+   *   by:'grp'  抗微生物 6 件——它不是一個範圍，是 sec="hubs" 底下的一個群組
+   *             （藥物查詢／依部位／依病原菌／菌譜資料庫／手術預防／創傷用藥）。
+   *             用 grp 比對，數字與 facets 自己標的 cnt:"6 項" 對得上。
+   *   by:'go'   藥物資料庫——facets.js 裡它**只有它自己一筆**（k="hub-drugdb"，
+   *             kind="mega"，grp="直接指向頁面的入口"）。1111 張藥卡不在
+   *             facets 裡，也不該被攤進這個清單（那正是「一整片藥名牆」）。
+   *             列不出「全部條目」就不假裝列得出來：這一格維持正式版的行為，
+   *             **直接連過去**，並在格子上把「直接前往」四個字寫出來，
+   *             其餘五格則印出件數——使用者按下去之前就知道會發生哪一種事。 */
+  var TILE = {
+    'card-view-abdomen':     { by: 'sec', v: 'abdomen' },
+    'card-view-antibiotics': { by: 'grp', v: '抗微生物' },
+    'card-view-critical':    { by: 'sec', v: 'critical' },
+    'card-view-cancer':      { by: 'sec', v: 'cancer' },
+    'card-view-scores':      { by: 'sec', v: 'scores' },
+    'card-view-drugdb':      { by: 'go',  v: 'hub-drugdb' }
   };
+  var openTile = null;        // 目前攤開哪一格（null＝六格還收著）
+
+  function tileList(id) {
+    var m = TILE[id];
+    if (!m || m.by === 'go') return [];
+    return TOOLS.filter(function (t) { return m.by === 'sec' ? t.sec === m.v : t.grp === m.v; });
+  }
+  function tileLabel(id) {
+    var a = document.getElementById(id);
+    return {
+      zh: (a && a.getAttribute('data-label')) || '',
+      en: (a && a.getAttribute('data-en')) || '',
+      sub: (a && a.getAttribute('data-sub')) || ''
+    };
+  }
+
   function hubsHTML() {
     var cards = [].slice.call(document.querySelectorAll('#hub .hub-card'));
     var body = cards.map(function (a) {
-      var m = HUB_SAY[a.id];
+      var m = TILE[a.id];
       if (!m) return '';
-      var label = a.getAttribute('data-label') || '', en = a.getAttribute('data-en') || '',
-          sub = a.getAttribute('data-sub') || '';
-      return '<button type="button" class="sent-hub" data-act="hub" data-hub="' + esc(a.id) + '" ' +
-        'aria-label="值班常用句：' + esc(label) + '，' + esc(m.say) + '">' +
-        '<span class="shb-say">' + esc(m.say) + '</span>' +
-        '<span class="shb-zh">' + esc(label) + '</span>' +
-        '<span class="shb-en">' + esc(en) + '</span>' +
-        '<span class="shb-sub">' + esc(sub) + '</span></button>';
+      var L = tileLabel(a.id);
+      if (m.by === 'go') {
+        // 直接連過去的那一格：真的做成 <a>，長按可以複製網址、中鍵可以開新分頁，
+        // 跟正式版那張方磚一樣是一條連結，不是一顆假裝成連結的按鈕。
+        var t = byKey[m.v];
+        var href = t ? withSentQuery(t.href, completeSentenceFor(t)) : 'tools/drug-database.html';
+        return '<a class="sent-hub sent-hub-go" href="' + esc(href) + '" ' +
+          'aria-label="' + esc(L.zh) + '：直接前往這一頁">' +
+          '<span class="shb-zh">' + esc(L.zh) + '</span>' +
+          '<span class="shb-en">' + esc(L.en) + '</span>' +
+          '<span class="shb-sub">' + esc(L.sub) + '</span>' +
+          '<span class="shb-n">直接前往 →</span></a>';
+      }
+      var n = tileList(a.id).length;
+      return '<button type="button" class="sent-hub" data-act="tile" data-tile="' + esc(a.id) + '" ' +
+        'aria-expanded="false" ' +
+        'aria-label="' + esc(L.zh) + '：列出這一類的全部 ' + n + ' 件（不會改動句子）">' +
+        '<span class="shb-zh">' + esc(L.zh) + '</span>' +
+        '<span class="shb-en">' + esc(L.en) + '</span>' +
+        '<span class="shb-sub">' + esc(L.sub) + '</span>' +
+        '<span class="shb-n">' + n + ' 件 ⌄</span></button>';
     }).join('');
     if (!body) return '';
-    return '<div class="sent-hubs-h">值班常用句 · 點一下就把句子說完一半</div>' +
+    return '<div class="sent-hubs-h">六大分類 · 點一下列出這一類的全部條目</div>' +
       '<div class="sent-hubs">' + body + '</div>';
+  }
+
+  /* 攤開後的那一區：一條工具列（返回／把這一區當範圍開始造句）＋ 該類的完整清單。
+   *
+   * 版面照正式版：正式版按 #abdomen 是**把六張方磚整個收起來**、換成那一類的
+   * 區塊，並在區塊裡給一顆「返回主選單」（index.html 的 goHome()）。這裡逐項對上，
+   * 所以退路有四條，主要那條就是工具列最左邊那顆「← 回六大分類」：
+   *   1. 「← 回六大分類」（主要，永遠在清單最上面，不必捲回去找）
+   *   2. Esc
+   *   3. 畫面下緣的「← 退一個詞」——句子是空的時候，退的就是這一步瀏覽
+   *   4. 畫面下緣的「清空句子」
+   *
+   * 工具列第二顆「以『腹部急症』為範圍開始造句」是**補回**被拿掉的能力：
+   * 舊版那六格會寫 homeSt.g，那是句子的「範圍」格唯一的入口（renderRow() 沒有
+   * 為 g 畫空格 ▢，g 的候選詞面板只有在已經有 g 詞塊時才點得開）。行為改成
+   * 「不動句子」之後，空句子狀態下就再也選不到範圍了。所以把它做成一顆**寫明
+   * 用途的按鈕**，而不是讓點方磚偷偷改句子——同一個能力還在，只是不再是副作用。
+   * 只有 by:'sec' 那四格有這顆；抗微生物那格對到的是群組不是範圍，沒有這顆。
+   *
+   * 清單裡的分區標頭與群組標頭在這裡是**不可點的**（groupsHTML 傳 false）：
+   * 這一區是「瀏覽」，不是造句，兩顆標頭原本的動作（收斂範圍／平行換題）都會
+   * 改動句子，跟這一格的承諾（點下去不動句子）互相矛盾。 */
+  function tileViewHTML(id) {
+    var L = tileLabel(id);
+    var list = tileList(id);
+    var m = TILE[id];
+    var scope = (m && m.by === 'sec')
+      ? '<button type="button" class="sent-tile-scope" data-act="tilescope" data-g="' + esc(m.v) + '" ' +
+        'aria-label="以「' + esc(L.zh) + '」為範圍開始造句：把句子的範圍格填成 ' + esc(L.zh) + '">' +
+        '以「' + esc(L.zh) + '」為範圍開始造句</button>'
+      : '';
+    return '<div class="sent-tile-view">' +
+      '<div class="sent-tile-bar">' +
+        '<button type="button" class="sent-tile-back" data-act="tileback" ' +
+        'aria-label="回到六大分類">← 回六大分類</button>' + scope +
+      '</div>' +
+      '<div class="sent-tile-head">' +
+        '<span class="stv-en">' + esc(L.en) + '</span>' +
+        '<span class="stv-zh">' + esc(L.zh) + '</span>' +
+        '<span class="stv-n">' + list.length + ' 件</span>' +
+      '</div>' +
+      (L.sub ? '<div class="sent-tile-sub">' + esc(L.sub) + '</div>' : '') +
+      /* secHead:false ＋ soloGrp——上面 .sent-tile-head 已經印過「英文眉標／中文
+         大字／件數」，清單裡的分區標頭印的是同一組字（實測 390×844 攤開急重症
+         處置：同一屏連印兩遍「EMERGENCY & CRITICAL CARE／急重症處置／22 件」）。
+         抗微生物那一格更誇張：大標題「抗微生物」、分區標頭「入口」、群組標頭
+         又是「抗微生物」，三層裡有兩層是廢話。soloGrp 傳目前這一格的中文名，
+         只有在「整份清單就這一個群組、而且群組名正好等於大標題」時才把群組標頭
+         也吃掉；名字對不上就照印，不會誤刪別格的群組標頭。 */
+      groupsHTML(list, { interactive: false, secHead: false, soloGrp: L.zh }) +
+      '</div>';
   }
 
   /* ---------------- 空句子＝主選單（不可攤開 136 個工具） ----------------
@@ -664,8 +824,8 @@
   }
   function mainMenuHTML() {
     var h = '<details class="sent-howto"><summary>怎麼用？</summary>' +
-      '<div class="sent-howto-body">句子還是空的——這就是主選單。先點一句「值班常用句」把句子說完一半，' +
-      '或點一個熱門詞直接填一格；也可以逐格點 ▢ 自己選詞。選好的詞塊點一下會把清單重開在原位，' +
+      '<div class="sent-howto-body">句子還是空的——這就是主選單。上面六大分類點一格，會列出那一類的全部條目' +
+      '（不會改動句子）；要造句就點一個熱門詞直接填一格，也可以逐格點 ▢ 自己選詞。選好的詞塊點一下會把清單重開在原位，' +
       '長按則不用重開清單就能原地換詞（桌機：按住後 ← →，或聚焦後按 ↑ ↓），按 × 退掉這一格。' +
       '畫面下緣的「← 退一個詞」（等同鍵盤 Backspace）退掉句尾一個詞，「清空句子」回到這裡。' +
       '左邊的「⌕ 說整句」（或直接按 /）可以打字找一整句話，不必逐格點選。' +
@@ -705,10 +865,87 @@
     mode:    { shape: '◐', label: '模式', cls: 'k-mode' },
     cancer:  { shape: '▪', label: '癌別', cls: 'k-cancer' }
   };
+  /* ---------------- 頁內子目標：句子的最後一步 ----------------
+   * 句子收斂完之後只停在「抗生素指引」這個**頁面**，可是使用者要的是頁內的
+   * 那一格（依部位 › 腹腔內感染）。這裡把那一步補上。
+   *
+   * 為什麼是「使用者自己按一下展開」，不是「句子自動挑好」——這件事試過而且
+   * 量過，不是偷懶：本來想用句子已經選好的詞去比對子目標的名字（主體「腹膜」
+   * → 找到 SITES 裡的「腹腔內感染」）。實測那條路產生的是**假精準**：
+   *   · 「感染與敗血」的別名 infection 出現在 10 個部位裡的 6 個，
+   *     等於沒有鑑別力；
+   *   · 短別名會撞進不相干的字裡——「手術排程」的別名 OR 命中了
+   *     Pneumonia / Respirat**or**y。
+   * facets.js 的詞表是**為了選頁面**標的，不是為了選頁內那一格；硬把它當成
+   * 頁內索引用，就會出現「句子自動幫你挑了一格，而且挑錯」。所以這裡只做
+   * 兩件誠實的事：(1) 明講這一頁裡面還有更細的一層、有幾個；(2) 把那一層
+   * 原原本本列出來讓使用者自己點。要一步到位的人走「說整句」打名字（那條路
+   * 是**字面命中**，不是猜的）。
+   *
+   * 對照表只認 facets 標的的 k，右邊是子目標索引裡的 grp＋w 兩個欄位——
+   * 那兩個欄位是 buildSubIndex() 從真實資料檔算出來的，這裡沒有另存一份清單。
+   * hub-drugdb（處方集 1111 張藥卡）刻意**不列入**：1111 筆攤不進一列底下，
+   * 那一頁本來就有自己的查詢框，硬展開只會變成一片藥名牆。 */
+  var SUBTARGET_OF = {
+    'abx-mode-empiric':  { grp: 'abx', w: 0, label: '感染部位' },
+    'abx-mode-bacteria': { grp: 'abx', w: 1, label: '病原菌' },
+    'hub-antibiotics':   { grp: 'abx', w: 2, label: '抗生素藥卡' },
+    'classifications':   { grp: 'classif', label: '分級系統' }
+  };
+  var SUB_INLINE_CAP = 12;
+  var openSubs = {};          // 哪幾個標的的頁內清單正攤開著（key＝facets 的 t.k）
+
+  function subsFor(k) {
+    var m = SUBTARGET_OF[k];
+    if (!m) return [];
+    return subIdx.filter(function (e) {
+      return e.grp === m.grp && (m.w == null || e.w === m.w);
+    });
+  }
+
+  function subsInlineHTML(t) {
+    var m = SUBTARGET_OF[t.k];
+    if (!m) return '';
+    var list = subsFor(t.k);
+    if (!subIdx.length) {
+      return '<div class="sent-subs"><div class="sent-subs-note is-loading">頁內項目載入中…</div></div>';
+    }
+    if (!list.length) {
+      return '<div class="sent-subs"><div class="sent-subs-note is-fail">頁內項目取不到（離線且未快取）。</div></div>';
+    }
+    var shown = list.slice(0, SUB_INLINE_CAP);
+    return '<div class="sent-subs">' +
+      shown.map(function (e) {
+        return '<a class="sent-sub" href="' + esc(ROOT + e.href) + '">' +
+          '<span class="ssb-name">' + esc(e.name) + '</span>' +
+          (e.en ? '<span class="ssb-en">' + esc(e.en) + '</span>' : '') +
+          (e.meta ? '<span class="ssb-meta">' + esc(e.meta) + '</span>' : '') +
+          '</a>';
+      }).join('') +
+      (list.length > shown.length
+        ? '<div class="sent-subs-note">這一頁裡還有 ' + (list.length - shown.length) +
+          ' 個' + esc(m.label) + '——用上面「⌕ 說整句」打名字可以一步到位。</div>'
+        : '') +
+      '</div>';
+  }
+
   function hitHTML(t) {
     var m = KIND_META[t.kind] || KIND_META.tool;
     var desc = t.desc || '';
-    return '<div class="sent-hit-row">' +
+    var sub = SUBTARGET_OF[t.k];
+    var on = !!openSubs[t.k];
+    /* 「頁內還有一層」那顆：索引還沒載時不印數量（印不出來，也不該為了印一個
+       數字就先抓 911 KB——首頁零成本那條線比這顆按鈕重要）；載過之後才補上
+       「10 個感染部位」。按下去才觸發載入。 */
+    var n = subIdx.length ? subsFor(t.k).length : 0;
+    var subBtn = sub
+      ? '<button type="button" class="sent-hit-subs' + (on ? ' open' : '') + '" data-act="subs" ' +
+        'data-k="' + esc(t.k) + '" aria-expanded="' + (on ? 'true' : 'false') + '" ' +
+        'aria-label="' + (on ? '收合' : '展開') + '「' + esc(t.name) + '」的頁內' + esc(sub.label) + '">' +
+        (n ? (n + ' 個' + esc(sub.label)) : ('頁內' + esc(sub.label))) +
+        '<span class="shs-chev" aria-hidden="true">' + (on ? ' ⌃' : ' ⌄') + '</span></button>'
+      : '';
+    return '<div class="sent-hit-row' + (on ? ' subs-open' : '') + '">' +
       '<a class="sent-hit" href="' + esc(withSentQuery(t.href, completeSentenceFor(t))) + '">' +
         '<span class="sh-top">' +
           '<span class="sh-kind ' + m.cls + '" aria-hidden="true">' + m.shape + '</span>' +
@@ -720,30 +957,47 @@
       '</a>' +
       (desc ? '<button type="button" class="sent-hit-more" data-act="more" aria-expanded="false" ' +
               'aria-label="展開或收合「' + esc(t.name) + '」的完整說明">＋</button>' : '') +
+      subBtn +
+      (on ? subsInlineHTML(t) : '') +
       '</div>';
   }
 
-  function renderResults(list) {
-    var results = document.getElementById('sentResults');
-    if (!results) return;
-    var cs = curSt();
-    var any = cs.g || cs.s || cs.c || cs.a;
-    if (!any) { results.innerHTML = mainMenuHTML(); return; }
-    if (!list.length) {
-      results.innerHTML = '<div class="sent-empty">找不到符合的項目——按上面「清空句子」可以回到全部 ' + TOOLS.length + ' 項，不會卡住到不了任何一頁。</div>';
-      return;
-    }
+  /* 兩層標頭＋候選項的清單本體。opt 有三個開關，預設值＝造句候選清單原本的行為：
+     · interactive（預設 true）：兩顆標頭是**按鈕**還是**純文字**。
+       造句的候選清單要按鈕（分區標頭＝收斂範圍、群組標頭＝平行換題）；
+       六大分類攤開後的瀏覽清單承諾「不動句子」，所以降成 <div>，
+       不進 Tab 順序、沒有 hover、按了也不會有事。
+     · secHead（預設 true）：要不要印分區標頭那一層。攤開的分類清單本身已經有
+       一個大標題（.sent-tile-head：英文眉標 ＋ 中文大字 ＋ 件數），分區標頭
+       印的是同一組字，同一屏出現兩次只是把清單變長（實測 390×844 攤開
+       急重症處置：「EMERGENCY & CRITICAL CARE／急重症處置／22 件」連印兩遍）。
+     · soloGrp：整份清單只有這一個群組、而且群組名就等於外面那個大標題時，
+       連群組標頭也不印（抗微生物那一格：大標題「抗微生物」，底下唯一的群組
+       也叫「抗微生物」）。傳的是要被吃掉的那個名字，不是布林值——名字對不上
+       就照印，不會誤刪別的群組標頭。 */
+  function groupsHTML(list, opt) {
+    opt = opt || {};
+    var interactive = opt.interactive !== false;
+    var wantSec = opt.secHead !== false;
     var groups = groupList(list);
-    results.innerHTML = groups.map(function (g) {
+    var soloName = (opt.soloGrp && groups.length === 1 && groups[0].groups.length === 1 &&
+                    groups[0].groups[0].name === opt.soloGrp) ? opt.soloGrp : null;
+    return groups.map(function (g) {
       /* 分區標頭可點（原型 .sec-h data-act="hub"）：把句子的**範圍**收斂到這一區。
          英文小字在上、中文大字在下、右側「N 件」——排列順序照原型。 */
+      var secHead = interactive
+        ? '<button type="button" class="sent-group-head" data-act="sec" data-g="' + esc(g.id) + '" ' +
+          'aria-label="從 ' + esc(g.title) + ' 這一區重新說一次（目前 ' + g.n + ' 件）：只留範圍，其餘詞塊清空">'
+        : '<div class="sent-group-head is-static">';
+      var secTail = interactive ? '</button>' : '</div>';
       return '<div class="sent-group">' +
-        '<button type="button" class="sent-group-head" data-act="sec" data-g="' + esc(g.id) + '" ' +
-          'aria-label="從 ' + esc(g.title) + ' 這一區重新說一次（目前 ' + g.n + ' 件）：只留範圍，其餘詞塊清空">' +
-          '<span class="sgh-en">' + esc(g.en) + '</span>' +
-          '<span class="sgh-zh">' + esc(g.title) + '</span>' +
-          '<span class="sgh-n">' + g.n + ' 件</span>' +
-        '</button>' +
+        (wantSec
+          ? (secHead +
+              '<span class="sgh-en">' + esc(g.en) + '</span>' +
+              '<span class="sgh-zh">' + esc(g.title) + '</span>' +
+              '<span class="sgh-n">' + g.n + ' 件</span>' +
+             secTail)
+          : '') +
         g.groups.map(function (grp) {
           /* 群組標頭可點（原型 .grp-h data-act="swap"）＝**平行換題**：只把「狀況」
              換成這個群組最具代表性的那個詞，句子其他部分不動。數量印成
@@ -751,20 +1005,37 @@
           var total = GRP_N[grp.name] || grp.tools.length;
           var nTxt = grp.tools.length === total ? (total + ' 項') : (grp.tools.length + ' / ' + total + ' 項');
           var top = grpTop(grp.name);
-          return '<div class="sent-subgroup">' +
-            (grp.name
+          var grpHead = '';
+          if (grp.name && grp.name !== soloName) {
+            grpHead = (interactive
               ? '<button type="button" class="sent-subgroup-name" data-act="swap" data-f="c" data-w="' + esc(top) + '" ' +
-                'aria-label="平行換題：把句子的狀況換成 ' + esc(top) + '，其餘詞塊不動">' +
-                '<span class="ssg-zh">' + esc(grp.name) + '</span>' +
-                '<span class="ssg-en">' + esc(grp.en) + '</span>' +
-                '<span class="ssg-n">' + esc(nTxt) + '</span>' +
-                '</button>'
-              : '') +
-            grp.tools.map(hitHTML).join('') +
-            '</div>';
+                'aria-label="平行換題：把句子的狀況換成 ' + esc(top) + '，其餘詞塊不動">'
+              : '<div class="sent-subgroup-name is-static">') +
+              '<span class="ssg-zh">' + esc(grp.name) + '</span>' +
+              '<span class="ssg-en">' + esc(grp.en) + '</span>' +
+              '<span class="ssg-n">' + esc(nTxt) + '</span>' +
+              (interactive ? '</button>' : '</div>');
+          }
+          return '<div class="sent-subgroup">' + grpHead + grp.tools.map(hitHTML).join('') + '</div>';
         }).join('') +
         '</div>';
     }).join('');
+  }
+
+  function renderResults(list) {
+    var results = document.getElementById('sentResults');
+    if (!results) return;
+    // 六大分類攤開時，這一格印的是那一類的完整清單，不是句子的結果——句子沒被改動，
+    // 所以下面那兩個以句子為準的分支（空句子＝主選單／找不到）都不該搶先。
+    if (openTile) { results.innerHTML = tileViewHTML(openTile); return; }
+    var cs = curSt();
+    var any = cs.g || cs.s || cs.c || cs.a;
+    if (!any) { results.innerHTML = mainMenuHTML(); return; }
+    if (!list.length) {
+      results.innerHTML = '<div class="sent-empty">找不到符合的項目——按上面「清空句子」可以回到全部 ' + TOOLS.length + ' 項，不會卡住到不了任何一頁。</div>';
+      return;
+    }
+    results.innerHTML = groupsHTML(list, { interactive: true });
   }
 
   /* ================================================================
@@ -775,7 +1046,7 @@
    * 但索引只吃 repo 自己的 data/facets.js（136 個標的與三個詞表的別名）——
    * 原型另外併進來的 drugnames.js／sub-*.js 不搬進 repo，那會變成第二份真相。
    */
-  var sayIdx = null, sayOpen = false, saySel = 0, sayCur = [], sayLastQ = null;
+  var sayIdx = null, sayOpen = false, saySel = 0, sayCur = [], sayLastQ = null, sayQ = '';
 
   /* 面向同義詞餵進索引之前，先把該詞自己的**下位詞**（entry.sub）濾掉。
    *
@@ -829,9 +1100,7 @@
     'tbi': '創傷性腦損傷', 'pe': '肺栓塞', 'dvt': '深部靜脈栓塞', 'acs': '急性冠心症'
   };
   var R_PREFIX = 0, R_WORD = 1, R_SUB = 2, R_HAY = 3, R_FUZZY = 4;
-  function saySearch(q) {
-    q = String(q || '').trim().toLowerCase();
-    if (!q) return [];
+  function sayToolSearch(q) {
     var q2 = SAY_ALIAS[q] ? SAY_ALIAS[q].toLowerCase() : null;
     var out = [];
     buildSayIndex().forEach(function (e) {
@@ -845,11 +1114,363 @@
         else if (q2 && e.hay.indexOf(q2) >= 0) r = R_HAY;
         else if (q.length >= 3 && e.head.length < 40 && isSubseq(q, e.head)) r = R_FUZZY;
       }
-      if (r >= 0) out.push({ r: r, e: e });
+      if (r >= 0) out.push({ r: r, kind: 'tool', e: e });
     });
     out.sort(function (x, y) { return x.r - y.r || x.e.t.name.length - y.e.t.name.length; });
-    return out.slice(0, 14);
+    return out;
   }
+
+  /* ================================================================
+   * 藥名索引（延後載入；不建立第二份藥名清單）
+   * ================================================================
+   * 使用者打 `tazocin` 原本 0 筆——136 個標的裡沒有一個是「藥」。原型
+   * （style-04-sentence/data/drugnames.js）當初是自己抄了 126 筆藥名進去，
+   * repo 刻意沒搬：repo 本來就有兩份**真的**藥物資料，再抄一份就是第二個
+   * 真相來源，日後兩邊會各自漂移。所以這裡的索引一律在**執行期**從既有資料
+   * 檔建出來，本專案不新增任何靜態藥名清單檔。
+   *
+   * 兩個資料來源（都是既有檔案，本次一個位元組都沒改）：
+   *   · data/drugs/index.js        → window.DRUGDB_INDEX（陣列，台大處方集全庫輕量索引）
+   *                                  深層連結 tools/drug-database.html#code=<code>
+   *   · data/antibiotics/drugs.js  → window.DRUGS（物件，key 是藥名鍵）
+   *                                  深層連結 tools/antibiotics.html#drug=<key>
+   *
+   * ---------------------------------------------------------------
+   * 為什麼一定要延後載入
+   * ---------------------------------------------------------------
+   * 兩個檔合計約 677 KB，是首頁現有全部資源的好幾倍。首頁不該為了「使用者
+   * *可能* 會打藥名」先付這個代價，所以改成：**在「說整句」輸入框真的打到
+   * DRUG_MIN_Q 個字才動態插 <script>**，載完建索引留在記憶體，之後同一份
+   * 文件內不再重載。載入中畫面下緣有一行明確狀態（不是靜默等待）。
+   * 兩個檔本來就在 sw.js 的 PRECACHE_URLS 裡（第 74 行與第 80 行），
+   * 所以第二次以後（含離線）是從快取拿，不會再走網路。
+   *
+   * 已經在頁面上的就不重載：tools/antibiotics.html 本來就有 window.DRUGS、
+   * tools/drug-database.html 本來就有 window.DRUGDB_INDEX，那兩頁只補抓另一個檔。
+   *
+   * ---------------------------------------------------------------
+   * 兩邊都有的藥怎麼辦（先量再決定，不憑印象）
+   * ---------------------------------------------------------------
+   * 實際數過：處方集 1111 筆裡歸在「XVI. Antiinfective Agents」的**只有 1 筆**
+   * ——台大處方集的抗感染藥本來就幾乎不在這份索引裡，抗生素那 155 筆是另一套
+   * 資料。用正規化學名逐筆比對，兩邊同名的只有 **3 筆**（Acyclovir 眼藥膏、
+   * Levofloxacin 眼藥水、Potassium Iodide 口服液）——而且三筆全是**眼用等
+   * 局部劑型**，抗生素卡講的是全身性用藥，兩者不能互相取代。
+   * 所以規則是：**兩邊都列、各自標明來源，抗生素排在前面**（同分時 abx 先於 db，
+   * 見 subSearch() 的 sort）。不做「抗生素吃掉處方集那一筆」的去重——那會把
+   * 眼藥膏的藥卡藏起來，而它是使用者真正要找的東西時就找不到了。
+   *
+   * ---------------------------------------------------------------
+   * 比對字串收哪些欄位（避免重演「窄詞條搶走通用字」）
+   * ---------------------------------------------------------------
+   * 先前 alOf() 那個坑的本質是**交叉污染**：A 的比對字串裡混進了 B 的身分字，
+   * 於是打「闌尾」會跑出肺癌。這裡從一開始就把欄位收窄，只收「這一筆自己的
+   * 身分」：
+   *   head（第一級比對）＝ 學名 ＋ 中文品名 ＋ 商品名
+   *   hay （第四級比對）＝ head ＋ 八碼代碼 ＋ 藥理次分類（cls）＋ 管制級別（tags）
+   * **刻意不收**的欄位與理由：
+   *   · 抗生素的 spectrum／usualDose／contra 等長文字——裡面會提到**別的藥**
+   *     （「與 vancomycin 併用時…」），收進來就是同一個坑再挖一次。
+   *   · 處方集的 tops（「X. Endocrine and Metabolic Agents」這種羅馬數字章節名）
+   *     ——通用英文字（Agents／Drugs）會讓一堆不相干的藥被撈進來。cls 才是
+   *     真正有辨識度的次分類（Antiepileptic、Z-drug…），所以只收 cls。
+   *   · 處方集的 strengths（「100 mg/cap」）——打「100」會炸開。
+   * 另一半的風險是**反過來收太窄**：打 `insulin` 應該出一批而不是一筆。這裡
+   * head 是純子字串比對、沒有做任何「一個學名只留一筆」的合併，處方集本來
+   * 就是一商品名一張卡，所以 12 張含 insulin 的卡會全部各自命中（實測 12 筆）。
+   *
+   * 藥名不做子序列容錯（R_FUZZY）：1266 筆下子序列會把毫不相干的藥撈成一片，
+   * 而藥名的打錯多半是拼字錯不是漏字。工具那 136 筆維持原本的容錯不變。 */
+  /* ---------------------------------------------------------------
+   * 四個來源：三個 JS 資料檔 ＋ 一份頁面自己的 HTML
+   * ---------------------------------------------------------------
+   * `kind:'html'` 那一筆是唯一的特例，理由寫在這裡免得日後有人以為是隨手寫的：
+   * tools/classifications.html 的 33 個分級系統**沒有對應的資料檔**，它們是
+   * 直接寫在那一頁的 HTML 裡（`<div class="sys-head" id="sys-hinchey">` …）。
+   * 那一頁自己的 clGoto() 也正是用 `document.getElementById('sys-'+id)` 去找，
+   * 所以「那一頁的 DOM」就是這批東西唯一的真相來源。與其在這裡抄一份 33 筆的
+   * 對照表（＝第二個真相來源，改一邊忘一邊），不如把那一頁抓回來用 DOMParser
+   * 讀它自己的節點——選擇器跟 clGoto() 指的是同一個 id 前綴，那一頁改版時
+   * 兩邊會一起壞、不會出現「連結還在但跳錯地方」這種沉默的錯。
+   * DOMParser 不執行 <script>、不載子資源，只是把字串解析成一棵離線的 DOM。 */
+  var SUB_FILES = [
+    { id: 'db',      url: 'data/drugs/index.js',
+      have: function () { return !!(window.DRUGDB_INDEX && window.DRUGDB_INDEX.length); } },
+    { id: 'abxdrug', url: 'data/antibiotics/drugs.js',
+      have: function () { return !!(window.DRUGS && Object.keys(window.DRUGS).length); } },
+    { id: 'abxsite', url: 'data/antibiotics/regimens.js',
+      have: function () { return !!(window.SITES && window.SITES.length); } },
+    { id: 'classif', url: 'tools/classifications.html', kind: 'html',
+      have: function () { return !!(classifSys && classifSys.length); } }
+  ];
+  var DRUG_MIN_Q = 2;
+  var subState = 0;           // 0 未載入 ／ 1 載入中（可能已有部分結果）／ 2 全部塵埃落定
+  var subIdx = [];
+  var subDone = {};           // 每個來源各自的結果：true 拿到了／false 取不到
+  var subStat = { abx: 0, db: 0, classif: 0, ms: 0 };
+  var classifSys = null;      // tools/classifications.html 解析出來的 33 筆
+
+  /* 注入的 <script> 是造句設計唯一會留在 DOM 上的殘留物（實測：關掉 data-ui
+     之後 body.innerText 逐字相同、零殘留可見節點，只多這幾個 <head> 裡的
+     <script>）。刻意**不在 teardown 時移除**：資料已經在 window.DRUGDB_INDEX／
+     window.DRUGS／window.SITES 上，拿掉標籤不會把它們從記憶體釋放，那只是把帳
+     做漂亮而已；反過來若真的拿掉，下次切回造句設計又得重抓一次。改成標上
+     data-ui-chrome，讓 parity.py 的規則 A（querySelectorAll('[data-ui-chrome]')
+     整棵子樹排除）跟其他造句 chrome 一視同仁地把它排掉。 */
+  function loadSubFile(f, done) {
+    if (f.kind === 'html') {
+      if (!window.fetch || !window.DOMParser) { done(f.id); return; }
+      fetch(ROOT + f.url).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      }).then(function (txt) {
+        classifSys = parseClassif(txt);
+        done(classifSys.length ? null : f.id);
+      })['catch'](function () { done(f.id); });
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = ROOT + f.url;
+    s.async = true;
+    s.setAttribute('data-ui-chrome', 'sentence-subdata');
+    s.onload = function () { done(null); };
+    s.onerror = function () { done(f.id); };
+    (document.head || document.documentElement).appendChild(s);
+  }
+
+  /* 從 tools/classifications.html 的 HTML 讀出 33 個分級系統。
+     取三段：id（＝深層連結 #sys=<id> 的值）、中文名 .sys-name、英文名 .sys-en、
+     出處 .sys-src；分頁名稱從它所在的 <div id="tab-xxx"> 反查 #cl_tabs 裡
+     那顆按鈕的文字（「膽道」「圍手術期」…），拿來當麵包屑的中間那一層。 */
+  function parseClassif(html) {
+    var out = [];
+    try {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var tabName = {};
+      [].slice.call(doc.querySelectorAll('#cl_tabs .tab-btn[data-tab]')).forEach(function (b) {
+        tabName[b.getAttribute('data-tab')] = (b.textContent || '').trim();
+      });
+      [].slice.call(doc.querySelectorAll('.sys-head[id^="sys-"]')).forEach(function (h) {
+        var id = h.id.replace(/^sys-/, '');
+        if (!id) return;
+        function pick(sel) {
+          var e = h.querySelector(sel);
+          return e ? (e.textContent || '').trim() : '';
+        }
+        var pane = h.closest ? h.closest('[id^="tab-"]') : null;
+        var tab = pane ? pane.id.replace(/^tab-/, '') : '';
+        out.push({ id: id, name: pick('.sys-name'), en: pick('.sys-en'),
+                   src: pick('.sys-src'), tab: tabName[tab] || '' });
+      });
+    } catch (e) { return []; }
+    return out;
+  }
+
+  /* 每個候選項長什麼樣：grp 決定它落在哪一組（也就是哪一頁），path 是麵包屑的
+     前段（不含自己），w 是同組同分時的先後（依部位 → 依病原菌 → 藥物查詢，
+     跟 tools/antibiotics.html 自己那三個模式的排序一致）。 */
+  function subPush(out, o) { out.push(o); }
+
+  function buildSubIndex() {
+    var t0 = (window.performance && performance.now) ? performance.now() : 0;
+    var out = [];
+
+    /* ── 抗生素 · 依部位（10 筆）：#site=<index> ──
+       深層連結收的是**陣列索引**不是 id（js/antibiotics.js 的 applyHash 是
+       `/^site=(\d+)$/` 再 `SITES[i]`），所以這裡必須用 forEach 的 i，
+       不能改用 s.id——用錯了會連到別的部位，而且不會報錯。 */
+    (window.SITES || []).forEach(function (s, i) {
+      if (!s || !s.name) return;
+      var head = (s.name + ' ' + (s.en || '')).toLowerCase();
+      var nType = (s.types || []).length;
+      subPush(out, {
+        grp: 'abx', w: 0, path: '抗生素指引 › 依部位',
+        name: s.name, en: s.en || '',
+        meta: nType ? (nType + ' 種型態') : '',
+        href: 'tools/antibiotics.html#site=' + i,
+        head: head, hay: (head + ' ' + (s.id || '')).toLowerCase()
+      });
+    });
+
+    /* ── 抗生素 · 依病原菌（44 筆）：#bac=<en> ──
+       applyHash 是拿 `b.en === m[1]` 逐一比對，所以連結值必須是 en 原字串
+       （含逗號與空格，encodeURIComponent 之後仍解得回來）。 */
+    (window.BACTERIA || []).forEach(function (g) {
+      (g.items || []).forEach(function (b) {
+        if (!b || !b.en) return;
+        var head = ((b.name || '') + ' ' + b.en).toLowerCase();
+        subPush(out, {
+          grp: 'abx', w: 1, path: '抗生素指引 › 依病原菌 › ' + (g.group || ''),
+          name: b.name || b.en, en: b.name ? b.en : '',
+          meta: (b.regimens || []).length ? ((b.regimens || []).length + ' 組建議') : '',
+          href: 'tools/antibiotics.html#bac=' + encodeURIComponent(b.en),
+          head: head, hay: (head + ' ' + (b.kw || '')).toLowerCase()
+        });
+      });
+    });
+
+    /* ── 抗生素 · 藥物查詢（155 筆）：#drug=<key> ── */
+    var A = window.DRUGS || {};
+    Object.keys(A).forEach(function (k) {
+      var d = A[k];
+      if (!d || !d.name) return;
+      // 商品名兩處都要收：brands[]（常用商品名）與 ntuhProducts[]（台大院內品項，
+      // 含中文品名）。`tazocin` 命中的正是 brands[0]／ntuhProducts[0].en。
+      var brands = [];
+      (d.brands || []).forEach(function (b) { if (b) brands.push(b); });
+      (d.ntuhProducts || []).forEach(function (p) {
+        if (p && p.en && brands.indexOf(p.en) < 0) brands.push(p.en);
+        if (p && p.zh && brands.indexOf(p.zh) < 0) brands.push(p.zh);
+      });
+      var head = (d.name + ' ' + (d.zh || '') + ' ' + brands.join(' ')).toLowerCase();
+      subPush(out, {
+        grp: 'abx', w: 2, path: '抗生素指引 › 藥物查詢',
+        name: d.name, en: d.zh || '',
+        meta: [brands.join('／'), d.cls || ''].filter(Boolean).join(' · '),
+        href: 'tools/antibiotics.html#drug=' + encodeURIComponent(k),
+        head: head, hay: (head + ' ' + (d.cls || '') + ' ' + k).toLowerCase()
+      });
+    });
+
+    /* ── 藥物資料庫（1111 筆）：#code=<code> ── */
+    (window.DRUGDB_INDEX || []).forEach(function (d) {
+      if (!d || !d.name) return;
+      var head = (d.name + ' ' + (d.brand || '') + ' ' + (d.zh || '')).toLowerCase();
+      subPush(out, {
+        grp: 'db', w: 0, path: '藥物資料庫',
+        name: d.name, en: d.zh || '',
+        meta: [d.brand || '', (d.cls && d.cls.length) ? d.cls.join('／') : ''].filter(Boolean).join(' · '),
+        href: 'tools/drug-database.html#code=' + encodeURIComponent(d.code),
+        head: head,
+        hay: (head + ' ' + (d.codes || [d.code]).join(' ') + ' ' +
+              (d.cls || []).join(' ') + ' ' + (d.tags || []).join(' ')).toLowerCase()
+      });
+    });
+
+    /* ── 分類與分級系統（33 筆）：#sys=<id> ── */
+    (classifSys || []).forEach(function (s) {
+      var head = (s.name + ' ' + (s.en || '')).toLowerCase();
+      subPush(out, {
+        grp: 'classif', w: 0,
+        path: '分類與分級系統' + (s.tab ? ' › ' + s.tab : ''),
+        name: s.name, en: s.en || '', meta: s.src || '',
+        href: 'tools/classifications.html#sys=' + encodeURIComponent(s.id),
+        head: head, hay: (head + ' ' + (s.src || '') + ' ' + s.id).toLowerCase()
+      });
+    });
+
+    var n = { abx: 0, db: 0, classif: 0 };
+    out.forEach(function (x) { n[x.grp]++; });
+    subIdx = out;
+    subStat = { abx: n.abx, db: n.db, classif: n.classif,
+                ms: ((window.performance && performance.now) ? performance.now() : 0) - t0 };
+  }
+
+  /* 四個來源**各自到齊各自生效**，不等最慢的那一個：合計約 911 KB
+     （處方集 314 ＋ 抗生素藥卡 363 ＋ regimens 56 ＋ classifications 178），
+     等全部到齊才顯示的話，最小的 regimens（56 KB，10 個部位 ＋ 44 隻菌）
+     會被最大的那份拖著一起等。所以每一個 done() 都重建一次索引再重畫一次
+     （建索引實測 5 ms 上下，重建四次的成本遠低於讓人乾等）。 */
+  function ensureSubIndex(onReady) {
+    if (subState !== 0) return;       // 已載入／載入中：都不重來
+    subState = 1;
+    var left = SUB_FILES.length;
+    SUB_FILES.forEach(function (f) {
+      function done(err) {
+        subDone[f.id] = !err;
+        if (--left <= 0) subState = 2;
+        buildSubIndex();
+        if (onReady) onReady();
+      }
+      if (f.have()) { done(null); return; }   // 這一頁本來就載過了（抗生素頁／藥物資料庫頁）
+      loadSubFile(f, done);
+    });
+  }
+
+  function subSearch(q) {
+    var out = [];
+    for (var i = 0; i < subIdx.length; i++) {
+      var e = subIdx[i], r = -1;
+      if (e.head.indexOf(q) === 0) r = R_PREFIX;
+      else if ((' ' + e.head).indexOf(' ' + q) >= 0) r = R_WORD;
+      else if (e.head.indexOf(q) >= 0) r = R_SUB;
+      else if (e.hay.indexOf(q) >= 0) r = R_HAY;
+      if (r >= 0) out.push({ r: r, kind: 'sub', d: e });
+    }
+    out.sort(function (x, y) {
+      return x.r - y.r || x.d.w - y.d.w ||
+        x.d.name.length - y.d.name.length ||
+        (x.d.name < y.d.name ? -1 : x.d.name > y.d.name ? 1 : 0);
+    });
+    return out;
+  }
+
+  /* 四組的標頭與各自的上限。工具維持原本的 14；三個頁內組各 12——超過的用
+     「還有 N 筆」誠實講出來，不靜悄悄截斷（截斷了卻不講，使用者會以為詞庫沒收）。
+     組別＝**落在哪一頁**，所以一頁一組：抗生素指引底下的三種子目標
+     （依部位／依病原菌／藥物查詢）不再各自分組，改由每一列自己的麵包屑
+     （抗生素指引 › 依部位 › 腹腔內感染 IAI）標出層級——分成六組會讓
+     只命中一兩筆的查詢變成一堆只有一列的標頭。 */
+  var SAY_GROUP = {
+    tool:    { zh: '工具與流程', en: 'Tools & Pathways', note: '', cap: 14 },
+    abx:     { zh: '抗生素指引', en: 'Antibiotic Guide',
+               note: '頁內三層：依部位 10 · 依病原菌 44 · 藥物查詢 155', cap: 12 },
+    db:      { zh: '藥物資料庫', en: 'NTUH Formulary',
+               note: '台大處方集 · 一商品名一張藥卡', cap: 12 },
+    classif: { zh: '分類與分級系統', en: 'Grading & Classification',
+               note: '頁內 33 個分級系統 · 直接落在該系統那一格', cap: 12 }
+  };
+  var SAY_GROUP_ORDER = ['tool', 'abx', 'db', 'classif'];
+
+  /* 四組怎麼排？——**照各組最好的那一筆的比對等級排，同級才用固定順序
+     （工具 → 抗生素 → 藥物資料庫 → 分類分級）**。這樣兩種需求同時成立：
+       · 打 `NEWS2`：工具是前綴命中（R_PREFIX），排最前面。
+       · 打 `vanco`：工具那邊頂多是 hay 命中（R_HAY），抗生素是前綴命中，
+         抗生素就排到工具前面——不會為了「工具永遠優先」把使用者真正要的
+         那一筆壓到清單底下。
+     打 `tazocin` 則根本沒有工具命中，只會出現藥的組別；
+     打 `Hinchey` 以前只到得了 tools/classifications.html 的頁首，
+     現在分類分級那一組會直接給 `#sys=hinchey`。 */
+  function saySearch(q) {
+    q = String(q || '').trim().toLowerCase();
+    var res = { groups: [], flat: [] };
+    if (!q) return res;
+    var hits = { tool: sayToolSearch(q), abx: [], db: [], classif: [] };
+    if (subIdx.length) {
+      subSearch(q).forEach(function (it) { hits[it.d.grp].push(it); });
+    }
+    /* 子序列容錯（R_FUZZY）是**最後手段**：只要整份結果裡有任何一筆是字面命中，
+       模糊命中就全部丟掉。原本這條規則只表現在文案上（fuzzyOnly 時改口說
+       「你是不是要找…」），命中清單本身照列，所以會出現「第一筆是對的、
+       後面跟著一串莫名其妙」的畫面。實測案例：打 `IAI` 命中
+       「抗生素指引 › 依部位 › 腹腔內感染 IAI」（R_SUB，字面命中），
+       底下卻跟著 24 筆工具——那 24 筆全是把 I·A·I 三個字母當子序列湊出來的
+       （MPI、急性闌尾炎…）。加上這一條之後，那 24 筆整組消失；
+       真的一筆字面命中都沒有時，模糊命中照樣會出現，文案也照樣改口。
+       藥名／部位／菌名／分級系統本來就不做模糊比對，所以這條只影響工具那一組。 */
+    var exact = false;
+    SAY_GROUP_ORDER.forEach(function (id) {
+      hits[id].forEach(function (it) { if (it.r < R_FUZZY) exact = true; });
+    });
+    if (exact) {
+      SAY_GROUP_ORDER.forEach(function (id) {
+        hits[id] = hits[id].filter(function (it) { return it.r < R_FUZZY; });
+      });
+    }
+    var live = [];
+    SAY_GROUP_ORDER.forEach(function (id, ord) {
+      if (hits[id].length) live.push({ id: id, hits: hits[id], best: hits[id][0].r, ord: ord });
+    });
+    live.sort(function (x, y) { return x.best - y.best || x.ord - y.ord; });
+    live.forEach(function (g) {
+      g.n = g.hits.length;
+      g.shown = g.hits.slice(0, SAY_GROUP[g.id].cap);
+      g.shown.forEach(function (it) { res.flat.push(it); });
+      res.groups.push(g);
+    });
+    return res;
+  }
+
   // 一律接在 ROOT（本檔 <script src> 反推出來的站台根）之後——「說整句」在
   // 首頁與 107 個內頁共用同一支，內頁的相對路徑基準是 tools/ 或 pathways/，
   // 直接用 t.href（相對站台根）會指到不存在的 tools/tools/xxx.html。
@@ -858,17 +1479,80 @@
       g: t.sec, s: t.s[0] || '', c: t.c[0] || '', a: t.a[0] || '', t: t.k
     });
   }
+  /* 頁內子目標的候選項落地在哪裡：**不帶 ?sent=**。句子是使用者一格一格造出來的
+     東西，打藥名／部位／菌名命中的不是——硬塞一句由工具預設值拼出來的話進網址，
+     目標頁的軌跡就會印出「這是你在造句列選的句子」，那是一句假話。不帶參數時
+     目標頁走 currentPageTool() 的退路，印的是「本頁在詞表裡的預設歸類，不是你
+     造的句子」，這才是實情。工具候選項維持原本帶 ?sent= 的行為不變。 */
+  function sayHref(item) {
+    return item.kind === 'sub' ? (ROOT + item.d.href) : sayItemHref(item.e.t);
+  }
+
+  function sayItemHTML(item, i, sel) {
+    var cls = 'sent-ask-item' + (sel ? ' sel' : '');
+    if (item.kind === 'sub') {
+      var d = item.d;
+      /* 路徑那一行是這一批東西存在的理由：候選項如果只印「腹腔內感染 IAI」，
+         使用者不知道它會把自己帶到哪一頁的哪一格。印成
+         「抗生素指引 › 依部位 › 腹腔內感染 IAI」才看得出層級。 */
+      var meta = [d.meta].filter(Boolean).join(' · ');
+      return '<a class="' + cls + ' sai-drug" data-i="' + i + '" href="' + esc(sayHref(item)) + '">' +
+        '<span class="sai-path">' + esc(d.path) + ' <span class="sai-sep">›</span> </span>' +
+        '<span class="sai-dname"><em>' + esc(d.name) + '</em>' +
+          (d.en ? '<span class="sai-dzh">' + esc(d.en) + '</span>' : '') + '</span>' +
+        (meta ? '<span class="sai-meta">' + esc(meta) + '</span>' : '') + '</a>';
+    }
+    var t = item.e.t;
+    return '<a class="' + cls + '" data-i="' + i + '" href="' + esc(sayHref(item)) + '">' +
+      '<span class="sai-say">' + esc(F.lex.p0) + ' <em>' + esc(t.s[0] || '') + '</em> ' + esc(F.lex.p1) +
+      ' <em>' + esc(t.c[0] || '') + '</em>' + esc(F.lex.p2) + ' <em>' + esc(t.a[0] || '') + '</em> ' +
+      '<span class="sai-arw">→</span> ' + esc(t.name) + '</span>' +
+      '<span class="sai-meta">' + esc(t.en) + ' · ' + esc(t.secTitle + ' · ' + t.grp) + '</span></a>';
+  }
+
+  /* 清單最後一行固定講一句「頁內索引現在是什麼狀態」——四種狀態各有各的說法。
+     沒有這一行的話，打了藥名／部位卻沒東西時，使用者分不出是「索引還沒載」
+     還是「真的沒有這個東西」。載完之後那行也留著，順便把筆數講清楚。
+     載入中還會把**已經到齊的那幾筆**算出來（四個來源各自生效），
+     不會在還有東西可用的時候只說「載入中」。 */
+  function subNoteHTML() {
+    if (subState === 0) {
+      return '<div class="sent-ask-note">藥名、感染部位、病原菌、分級系統打滿 ' + DRUG_MIN_Q +
+        ' 個字才開始查——頁內索引第一次用到才抓，不拖慢開頁。</div>';
+    }
+    var got = subStat.abx + subStat.db + subStat.classif;
+    if (subState === 1) {
+      return '<div class="sent-ask-note is-loading">頁內索引載入中…' +
+        (got ? '（已可查 ' + got + ' 筆）' : '') + '</div>';
+    }
+    if (!got) {
+      return '<div class="sent-ask-note is-fail">頁內索引取不到（離線且未快取）——工具與流程仍然查得到。</div>';
+    }
+    var missing = [];
+    SUB_FILES.forEach(function (f) { if (subDone[f.id] === false) missing.push(f.url); });
+    return '<div class="sent-ask-note" title="建索引 ' + subStat.ms.toFixed(1) + ' ms">' +
+      '頁內索引：抗生素指引 ' + subStat.abx + ' ＋ 處方集 ' + subStat.db +
+      ' ＋ 分級系統 ' + subStat.classif + ' ＝ ' + got + ' 筆' +
+      (missing.length ? '（' + missing.join('、') + ' 取不到，這次只建了拿得到的那些）' : '') +
+      '</div>';
+  }
+
   function renderSay(q) {
     var box = document.getElementById('sentAskList');
     if (!box) return;
-    sayCur = saySearch(q);
+    sayQ = q;
+    var res = saySearch(q);
+    sayCur = res.flat;
     if (!String(q || '').trim()) {
       box.innerHTML = '<div class="sent-ask-hint">打幾個字：工具名（NEWS2、闌尾）、狀況（敗血症、腸阻塞）、' +
-        '動作（開刀、劑量）、癌別（胃癌）都行。候選項是一整句話，Enter 直接抵達。</div>';
+        '動作（開刀、劑量）、癌別（胃癌）、藥名（tazocin、萬古黴素）、' +
+        '感染部位（腹腔內感染）、病原菌（E. coli）、分級系統（Hinchey、Forrest）都行。' +
+        '候選項是一整句話，或是某一頁「裡面」的那一格，Enter 直接抵達。</div>' +
+        subNoteHTML();
       saySel = 0; sayLastQ = q; return;
     }
     if (!sayCur.length) {
-      box.innerHTML = '<div class="sent-ask-hint">找不到符合的句子。</div>';
+      box.innerHTML = '<div class="sent-ask-hint">找不到符合的句子或藥名。</div>' + subNoteHTML();
       saySel = -1; sayLastQ = q; return;
     }
     // 最高分只有子序列容錯：沒有一項是精確命中，換成「你是不是要找」的口吻，
@@ -876,17 +1560,25 @@
     var fuzzyOnly = sayCur[0].r >= R_FUZZY;
     if (q !== sayLastQ) { saySel = fuzzyOnly ? -1 : 0; sayLastQ = q; }
     else if (saySel >= sayCur.length) saySel = sayCur.length - 1;
-    var head = fuzzyOnly
+    var h = fuzzyOnly
       ? '<div class="sent-ask-hint sent-ask-fuzzy">沒有精確命中「' + esc(String(q).trim()) + '」，你是不是要找…（↑ ↓ 選一項才能 Enter 直達）</div>'
       : '';
-    box.innerHTML = head + sayCur.map(function (item, i) {
-      var t = item.e.t;
-      return '<a class="sent-ask-item' + (i === saySel ? ' sel' : '') + '" data-i="' + i + '" href="' + esc(sayItemHref(t)) + '">' +
-        '<span class="sai-say">' + esc(F.lex.p0) + ' <em>' + esc(t.s[0] || '') + '</em> ' + esc(F.lex.p1) +
-        ' <em>' + esc(t.c[0] || '') + '</em>' + esc(F.lex.p2) + ' <em>' + esc(t.a[0] || '') + '</em> ' +
-        '<span class="sai-arw">→</span> ' + esc(t.name) + '</span>' +
-        '<span class="sai-meta">' + esc(t.en) + ' · ' + esc(t.secTitle + ' · ' + t.grp) + '</span></a>';
-    }).join('');
+    var i = 0;
+    res.groups.forEach(function (g) {
+      var m = SAY_GROUP[g.id];
+      h += '<div class="sent-ask-gh">' +
+             '<span class="sag-zh">' + esc(m.zh) + '</span>' +
+             '<span class="sag-en">' + esc(m.en) + '</span>' +
+             '<span class="sag-n">' + g.n + ' 筆</span>' +
+           '</div>' +
+           (m.note ? '<div class="sent-ask-gnote">' + esc(m.note) + '</div>' : '');
+      g.shown.forEach(function (item) { h += sayItemHTML(item, i, i === saySel); i++; });
+      if (g.n > g.shown.length) {
+        h += '<div class="sent-ask-more">這一組還有 ' + (g.n - g.shown.length) +
+          ' 筆沒列出來——多打幾個字會更準。</div>';
+      }
+    });
+    box.innerHTML = h + subNoteHTML();
   }
   /* ↑ ↓ 換選取項時把它捲進可視範圍（原型 js/say.js scrollSel()）——候選項最多
      14 筆、清單本身 max-height:60vh 會自己捲，沒有這一段的話按到第 5 筆之後
@@ -1090,8 +1782,10 @@
   function renderBar() {
     var bar = document.getElementById('sentBar');
     if (!bar) return;
+    // 六大分類攤開時也算「有東西可退」——這時「← 退一個詞」退的是這一步瀏覽，
+    // 「清空句子」則連瀏覽帶句子一起回到最初的畫面（見 click 的兩個分支）。
     var has = isHome()
-      ? !!(homeSt.g || homeSt.s || homeSt.c || homeSt.a)
+      ? !!(homeSt.g || homeSt.s || homeSt.c || homeSt.a || openTile)
       : !!targetSt;   // 內頁一定有一句完成式句子，退詞／清空一律可用
     var d = document.getElementById('sentBarDrop'), c = document.getElementById('sentBarClear');
     if (d) d.disabled = !has;
@@ -1109,8 +1803,10 @@
     renderWhHint('');
     renderPanel();
     renderPointer(list, lastRelax, relaxFailed);
+    // 攤開某一格時，六格整個收起來（正式版 showSection() 也是把 #hub 收掉，
+    // 不是把清單接在方磚底下——59 件的計分工具接在方磚後面會捲不完）。
     var hubs = document.getElementById('sentHubs');
-    if (hubs && !hubs.innerHTML) hubs.innerHTML = hubsHTML();
+    if (hubs) hubs.innerHTML = openTile ? '' : hubsHTML();
     renderResults(list);
     renderBar();
     syncHomeUrl(false);
@@ -1134,7 +1830,7 @@
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
-        'placeholder="查詢工具、癌別、狀況、動作…（例：NEWS2、闌尾、敗血症、胃癌）">' +
+        'placeholder="查詢工具、癌別、狀況、動作、藥名…（例：NEWS2、闌尾、胃癌、tazocin）">' +
         '<div class="sent-ask-list" id="sentAskList"></div>' +
       '</div>' +
       '<div class="sent-panel" id="sentPanel" hidden></div>' +
@@ -1160,6 +1856,8 @@
     var bar = document.getElementById('sentBar');
     if (bar) bar.remove();
     sayOpen = false;
+    openTile = null;     // 攤開的分類是畫面狀態，不是句子；整塊拆掉時一起歸零
+    openSubs = {};       // 頁內子目標的展開狀態同理
     syncHomeUrl(true);   // 關掉造句設計：網址上的 ?sent= 一起清掉，正式版不留痕跡
   }
 
@@ -1210,6 +1908,7 @@
       var wasOpen = (openFacet === f);
       openFacet = wasOpen ? null : f;
       panelFilter = ''; panelSel = 0;
+      openTile = null;   // 開始挑詞＝離開「瀏覽某一類」那個模式，清單換回句子的結果
       panelWantsFocus = !wasOpen;   // 這一下是「打開」→ 焦點直接送進過濾框
       if (sayOpen) showSay(false);
       renderHome();
@@ -1221,6 +1920,17 @@
       openFacet = null; panelFilter = ''; panelSel = 0;
       renderPanel();
       if (cf) focusFacetControl(cf);
+      return;
+    }
+    if (act === 'subs') {
+      /* 頁內子目標的展開／收合。索引要用到才載——首頁「打字前不多抓一個位元組」
+         那條線在這裡一樣成立：這一下點擊就是使用者主動要求的那一下。 */
+      e.preventDefault();
+      var sk = el.getAttribute('data-k');
+      if (!sk) return;
+      openSubs[sk] = !openSubs[sk];
+      if (openSubs[sk]) ensureSubIndex(function () { renderHome(); });
+      renderHome();
       return;
     }
     if (act === 'more') {
@@ -1258,30 +1968,72 @@
       renderHome();
       return;
     }
-    if (act === 'drop') { homeSt[f] = ''; renderHome(); return; }
-    if (act === 'droptail') { if (dropTail()) renderHome(); return; }
-    if (act === 'hub') {
-      var m = HUB_SAY[el.getAttribute('data-hub')];
-      if (!m) return;
-      Object.keys(m.set).forEach(function (k) { homeSt[k] = m.set[k]; });
-      openFacet = null;
+    if (act === 'drop') { homeSt[f] = ''; openTile = null; renderHome(); return; }
+    if (act === 'droptail') {
+      // 句子還有詞就先退詞；一個詞都沒有、卻正攤著某一格分類時，退的就是那一步瀏覽。
+      if (dropTail()) { renderHome(); return; }
+      if (openTile) { openTile = null; renderHome(); }
+      return;
+    }
+    /* ---- 六大分類的三顆 ---- */
+    if (act === 'tile') {
+      e.preventDefault();
+      var tid = el.getAttribute('data-tile');
+      openTile = (openTile === tid) ? null : tid;   // 再點同一格＝收起來
+      openFacet = null; panelFilter = '';
       if (sayOpen) showSay(false);
       renderHome();
+      try { window.scrollTo(0, 0); } catch (err) {}
+      return;
+    }
+    if (act === 'tileback') {
+      e.preventDefault();
+      var backTo = openTile;
+      openTile = null;
+      renderHome();
+      // 焦點還給剛才那一格，鍵盤使用者不必重新 Tab 一輪
+      var again = backTo && document.querySelector('#sentHubs [data-tile="' + backTo + '"]');
+      if (again) { try { again.focus(); } catch (err) {} }
+      return;
+    }
+    if (act === 'tilescope') {
+      /* 「以『腹部急症』為範圍開始造句」——這是舊版點方磚時偷偷做的那件事，
+         現在變成一顆寫明用途的按鈕。做完就收起分類清單、回到造句畫面，
+         否則使用者會看不出剛才那一下到底改了什麼。 */
+      e.preventDefault();
+      var gid2 = el.getAttribute('data-g');
+      if (!gid2) return;
+      homeSt = { g: gid2, s: '', c: '', a: '' };
+      openTile = null; openFacet = null; panelFilter = '';
+      if (sayOpen) showSay(false);
+      renderHome();
+      try { window.scrollTo(0, 0); } catch (err) {}
       return;
     }
     if (act === 'pick') {
       var w = el.getAttribute('data-w');
       if (homeSt[f] === w) homeSt[f] = ''; else applyWord(f, w);
-      openFacet = null; panelFilter = '';
+      openFacet = null; panelFilter = ''; openTile = null;
       renderHome();
       return;
     }
-    if (act === 'clear') { homeSt = { g: '', s: '', c: '', a: '' }; openFacet = null; panelFilter = ''; if (sayOpen) showSay(false); renderHome(); return; }
+    if (act === 'clear') { homeSt = { g: '', s: '', c: '', a: '' }; openFacet = null; panelFilter = ''; openTile = null; openSubs = {}; if (sayOpen) showSay(false); renderHome(); return; }
   });
 
   document.addEventListener('input', function (e) {
     if (!e.target) return;
-    if (e.target.id === 'sentAskIn') { renderSay(e.target.value); return; }
+    if (e.target.id === 'sentAskIn') {
+      var v = e.target.value;
+      renderSay(v);
+      /* 藥名索引就是在這一行被叫醒的——**打字之前一個位元組都不抓**。
+         門檻 DRUG_MIN_Q 個字：一個字（尤其中文單字）命中面太寬，為它抓 677 KB
+         不划算；兩個字起才有意義。ensureSubIndex() 本身是冪等的，
+         之後每一次打字都會呼叫，但只有第一次真的做事。 */
+      if (String(v).trim().length >= DRUG_MIN_Q) {
+        ensureSubIndex(function () { if (sayOpen) renderSay(sayQ); });
+      }
+      return;
+    }
     /* 候選詞面板的過濾框：只重畫詞的部分，不重畫整個面板——重畫整個面板會把
        <input> 換成新節點，使用者打到一半的焦點與游標位置就沒了。 */
     if (e.target.id === 'sentPanelFilter' && openFacet) {
@@ -1370,12 +2122,24 @@
     }
 
     if (!sayOpen) {
+      // Esc 收起攤開的那一類分類（＝「← 回六大分類」的鍵盤路徑）。
+      // 面板開著的時候 Esc 屬於面板，那一段在上面就已經 return 了，不會走到這裡。
+      if (e.key === 'Escape' && !typing && onHome && openTile && !openFacet) {
+        e.preventDefault();
+        var was = openTile;
+        openTile = null;
+        renderHome();
+        var back = document.querySelector('#sentHubs [data-tile="' + was + '"]');
+        if (back) { try { back.focus(); } catch (err) {} }
+        return;
+      }
       // 「/」直接叫出說整句的輸入框（原型 js/say.js 同一條，同樣的打字防護）
       if (e.key === '/' && !typing) { e.preventDefault(); showSay(true); return; }
       // Backspace 退掉句尾一個詞（不在輸入框裡打字時才算）
       if (e.key === 'Backspace' && !typing) {
         if (onHome) {
           if (dropTail()) { e.preventDefault(); renderHome(); }
+          else if (openTile) { e.preventDefault(); openTile = null; renderHome(); }
         } else {
           var h = targetDropTailHref();
           if (h) { e.preventDefault(); location.href = h; }
@@ -1389,7 +2153,7 @@
     if (e.key === 'Enter') {
       e.preventDefault();
       var item = sayCur[saySel];   // saySel === -1（只有模糊命中、未確認選取）時不動作
-      if (item) location.href = sayItemHref(item.e.t);
+      if (item) location.href = sayHref(item);
       return;
     }
   });
@@ -1465,7 +2229,7 @@
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
-        'placeholder="查詢工具、癌別、狀況、動作…（例：NEWS2、闌尾、敗血症、胃癌）">' +
+        'placeholder="查詢工具、癌別、狀況、動作、藥名…（例：NEWS2、闌尾、胃癌、tazocin）">' +
         '<div class="sent-ask-list" id="sentAskList"></div>' +
       '</div>';
   }
@@ -1484,6 +2248,7 @@
     }
     targetSt = st;
     var bar = document.getElementById('sentTrail');
+    var fresh = !bar;
     if (!bar) {
       bar = document.createElement('div');
       bar.id = 'sentTrail';
@@ -1494,6 +2259,45 @@
     bar.innerHTML = trailHTML(st, !!incoming);
     buildBar();
     renderBar();
+    if (fresh) reapplyDeepLink();
+  }
+
+  /* 造句設計把一整塊軌跡插在 .app-header 之後（文件流，不是疊層），內容因此被
+     往下推。問題出在**時序**：藥物資料庫頁的 js/drug-database.js 是在解析期
+     就跑 `renderList(); applyHash();`，applyHash() 當場 scrollIntoView 捲到那張
+     藥卡；本檔的軌跡是 DOMContentLoaded 之後才插進去的，於是捲好的位置整個
+     往下位移了一段（實測 430×932 開 tools/drug-database.html#code=NOR4DE18：
+     正式版藥卡 top=442、畫面正中央在卡內；造句設計 top=627、正中央掉到下一張
+     卡上）。這是**我們造成的位移，就由我們還原**——插完軌跡之後補送一次
+     hashchange，讓那一頁用它自己的 applyHash() 依新版面重捲一次。
+
+     刻意只認 `#drug=`、`#code=`、`#sys=` 這三種 hash：它們正是本檔的頁內索引
+     會產生、而且**目標頁會 scrollIntoView** 的三種深層連結，分別對應
+     js/antibiotics.js、js/drug-database.js、tools/classifications.html 內嵌的
+     三支 applyHash()／clApplyHash()，三支都是冪等的（切模式＋展開藥卡再捲／
+     切分頁再捲）而且三支都掛了 hashchange 監聽器。實測 430×932：
+       · #code=NOR4DE18 補送前藥卡 top=627（畫面正中央掉到下一張卡），補送後 -346；
+       · #sys=hinchey   補送前 top=221（block:'start' 卻不在頂端），補送後 3。
+     `#site=`／`#bac=` **不在名單內**：那兩支 applyHash 走的是
+     `window.scrollTo({top:0})` 而不是 scrollIntoView，本檔插入軌跡造成的位移
+     對它們沒有影響（實測兩者 scrollY 都是 0、目標內容都在第一屏），
+     補送只是白做一次。其餘既有的 hash（#mode=、#cancer=…）同樣不碰——
+     那些頁面的 hashchange 監聽器本檔沒有逐一驗過，不該順手替它們決定要不要重跑。
+     延後 260ms 是為了讓頁面自己那一次 smooth 捲動先跑完，兩次捲動不打架。 */
+  function reapplyDeepLink() {
+    if (!/^#(drug|code|sys)=/.test(location.hash || '')) return;
+    setTimeout(function () {
+      var ev;
+      try {
+        ev = new HashChangeEvent('hashchange', { oldURL: location.href, newURL: location.href });
+      } catch (e) {
+        try {
+          ev = document.createEvent('Event');
+          ev.initEvent('hashchange', false, false);
+        } catch (e2) { return; }
+      }
+      try { window.dispatchEvent(ev); } catch (e3) { /* 舊瀏覽器不支援：維持原本的位移，不拋錯 */ }
+    }, 260);
   }
 
   function teardownTarget() {

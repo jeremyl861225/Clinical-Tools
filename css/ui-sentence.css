@@ -1116,6 +1116,382 @@
   font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
 }
 
+/* ── §1 分組標頭 ────────────────────────────────────────────────────────
+   sticky 黏在 .sent-ask-list 的頂端：清單捲到第 20 筆藥的時候，使用者還看得見
+   「現在在看的是藥物資料庫這一組」。sticky 必須有不透明底色，否則捲到它下面的
+   那一列會透出來疊在字上。 */
+[data-ui="sentence"] .sent-ask-gh {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 1px 8px;
+  background: var(--sentence-bg);
+  border-bottom: 1px solid var(--sentence-fg);
+  padding: 8px 0 4px; margin: 0;
+}
+[data-ui="sentence"] .sent-ask-gh:first-child { padding-top: 2px; }
+[data-ui="sentence"] .sag-en {
+  flex: 0 0 100%;
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--sentence-dim);
+  order: -1;                    /* 英文眉標在上、中文在下，與 .sgh-en 同一個排法 */
+}
+[data-ui="sentence"] .sag-zh {
+  font-family: var(--sentence-serif); font-size: 13.5px; font-weight: 500;
+  letter-spacing: .06em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sag-n {
+  margin-left: auto;
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+  white-space: nowrap;
+}
+
+/* ── §2 分組副標：這一組的資料是什麼 ──────────────────────────────────
+   「台大處方集 · 一商品名一張藥卡」這種一句話的來源說明。它不是標頭的一部分
+   （不跟著 sticky），捲過去就過去了——它只需要在使用者第一次看到這一組時
+   講清楚一次。 */
+[data-ui="sentence"] .sent-ask-gnote {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em;
+  line-height: 1.6; color: var(--sentence-dim);
+  padding: 3px 0 2px;
+}
+
+/* ── §3 藥的候選項 ─────────────────────────────────────────────────────
+   跟工具那一列（.sai-say：襯線體、整句話、中間夾 <em> 的詞塊）刻意長得不一樣：
+   學名用**無襯線體**（拉丁藥名在襯線體下辨識度差，Illl／rn 那幾組容易看錯），
+   中文品名接在同一行後面用 dim 色，商品名與藥理分類落到既有的 .sai-meta。
+   .sai-drug 本身不設 padding／min-height／border——那三件由既有的
+   .sent-ask-item 提供，這裡只換裡面的字。 */
+[data-ui="sentence"] .sai-dname {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px;
+  font-family: var(--sentence-sans); font-size: 14px; line-height: 1.45;
+}
+[data-ui="sentence"] .sai-dname em {
+  font-style: normal; font-weight: 600; letter-spacing: .01em;
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sai-dzh {
+  font-family: var(--sentence-serif); font-size: 12.5px; letter-spacing: .04em;
+  color: var(--sentence-dim);
+}
+/* 商品名那一行常常很長（「Humalog Mix50 KwikPen, 300 U/3 mL/pen」），
+   一律截成一行——它是辨識用的第二層資訊，不是要讀完的內容。
+   截斷之後整條寬度就鎖住了，不會把 .sent-ask-list 撐出橫向捲軸。 */
+[data-ui="sentence"] .sai-drug .sai-meta {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ── §4 一組截斷時的誠實交代 ──────────────────────────────────────────
+   「這一組還有 37 筆沒列出來」。用 warn 色（琥珀）而不是 dim：它講的是
+   「你看到的不是全部」，那是需要被注意到的事，不是註腳。 */
+[data-ui="sentence"] .sent-ask-more {
+  font-family: var(--sentence-mono); font-size: 10px; line-height: 1.7;
+  color: var(--sentence-warn);
+  padding: 5px 0 2px;
+}
+
+/* ── §5 藥名索引的狀態行（清單最後一行，四種狀態） ──────────────────
+   未載入／載入中／已建好／取不到，四種都靠這一條。載入中那一種左邊多一顆
+   閃爍的方點——不用 spinner（本設計全站沒有任何旋轉元件），用同一組
+   直角語彙的方塊淡入淡出。 */
+[data-ui="sentence"] .sent-ask-note {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em;
+  line-height: 1.7; color: var(--sentence-dim);
+  border-top: 1px solid var(--sentence-line);
+  padding: 7px 0 2px; margin-top: 6px;
+}
+[data-ui="sentence"] .sent-ask-note.is-fail { color: var(--sentence-warn); }
+[data-ui="sentence"] .sent-ask-note.is-loading {
+  display: flex; align-items: center; gap: 6px; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .sent-ask-note.is-loading::before {
+  content: ''; flex: 0 0 auto; width: 7px; height: 7px;
+  background: var(--sentence-fg);
+  animation: sent-ask-pulse 1s steps(2, end) infinite;
+}
+@keyframes sent-ask-pulse { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .18; } }
+/* 使用者關掉動態效果時不閃，改成固定半透明（本檔既有的 prefers-reduced-motion
+   處理方式一致：停掉動畫但保留可辨識的靜態外觀）。 */
+@media (prefers-reduced-motion: reduce) {
+  [data-ui="sentence"] .sent-ask-note.is-loading::before { animation: none; opacity: .5; }
+}
+
+/* ── §6 窄螢幕（430×932／390×844）───────────────────────────────────
+   實測 430 寬時 .sai-dname 的學名＋中文品名多半塞得下同一行；390 寬遇到
+   「50% Insulin Lispro and 50% Insulin Lispro Protamine」這種長學名會折成
+   兩行，flex-wrap 已經處理掉。這裡只把兩個字級再收 .5–1px，讓一列維持在
+   兩行以內（三行的話 12 筆就佔掉一屏半，捲不完）。 */
+@media (max-width: 430px) {
+  [data-ui="sentence"] .sai-dname { font-size: 13px; }
+  [data-ui="sentence"] .sai-dzh { font-size: 11.5px; }
+  [data-ui="sentence"] .sag-zh { font-size: 13px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §7–§11 六大分類：方磚變成分類入口
+   ───────────────────────────────────────────────────────────────────────
+   （同一份 patches/sentence-home-4.css 的第二節。上面 §1–§6 是「說整句」的
+     藥名索引，這一節是六格方磚的改版，兩者互不相干，分開併也可以。）
+
+   ───────────────────────────────────────────────────────────────────────
+   併進 O 段的哪裡、取代哪幾條
+   ───────────────────────────────────────────────────────────────────────
+   插入點（行號以 83ee667 為準）：接在既有 `.shb-sub`（1425 行）之後、
+   「怎麼用？摺疊 ＋ 三軌熱門詞」那段註解與 `.sent-empty-state`（1428 行）之前。
+
+   **要刪掉一條既有規則**（唯一一條）：
+     · `[data-ui="sentence"] .shb-say`（1422 行）
+       ——那是每格上緣「說『在 腹部急症 …』」那行小字的樣式。JS 已經不再輸出
+       `.shb-say` 節點（行為改成不動句子，就不該再預告會填什麼），這條規則
+       留著是死規則。§7 的 `.shb-n` 接替它在版面上的位置（同樣是格子裡的
+       第四行小字），但語意完全不同：它印的是「這一格底下有幾件」。
+
+   會沾到但**不改**的既有規則：
+     · `.sent-hubs`（1406 行，grid 2/3/6 欄）、`.sent-hub`（1414 行，flex 直排
+       ＋ 72px 最小高）原樣沿用；`.sent-hub-go` 只是多一個 class，版型完全共用。
+     · `.sent-group / .sent-group-head / .sgh-* / .sent-subgroup-name / .ssg-*`
+       （1221–1270 行附近）在攤開的清單裡照用，§9 只在它們掛上 `.is-static`
+       時把「看起來可以按」的那幾件（hover 底色、左邊界變色、游標）拿掉。
+     · `.sent-hit-row / .sent-hit / .sh-*`（候選項一列六層資訊）完全沿用，
+       攤開的清單與造句的候選清單長得一模一樣——那是刻意的，同一種東西
+       就該長同一個樣子。
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── §7 方磚右下角的件數 ────────────────────────────────────────────────
+   五格印「18 件 ⌄」（⌄ 暗示按下去會往下展開），藥物資料庫那格印「直接前往 →」
+   （→ 暗示會離開這一頁）。兩個記號的方向差異就是這一格會發生哪一種事的預告，
+   不必等使用者按下去才知道。 */
+[data-ui="sentence"] .shb-n {
+  margin-top: 2px;
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .12em;
+  color: var(--sentence-dim);
+}
+/* 直接連過去的那一格是 <a>，要跟另外五顆 <button> 對齊：<a> 沒有 button 的
+   預設 text-align/box-sizing，這裡補齊，讓六格在 grid 裡完全等高等寬。 */
+[data-ui="sentence"] .sent-hub-go {
+  box-sizing: border-box; text-align: left; text-decoration: none;
+}
+[data-ui="sentence"] .sent-hub-go .shb-n { color: var(--sentence-fg2); }
+/* 目前攤開的那一格：六格這時是收起來的，這條只在「再點一次收起」那一瞬間
+   （aria-expanded 已翻成 true、DOM 還沒重畫）看得到，留著是為了讓
+   aria-expanded 有對應的視覺，不是靠它撐畫面。 */
+[data-ui="sentence"] .sent-hub[aria-expanded="true"] {
+  background: var(--sentence-bg3);
+}
+
+/* ── §8 攤開後的工具列（退路） ────────────────────────────────────────
+   兩顆並排：左邊「← 回六大分類」是主要退路，右邊「以『X』為範圍開始造句」
+   是補回舊行為的那顆。兩顆都做成 46px 高的實體按鈕（觸控目標下限），
+   而且**永遠在清單最上面**——59 件的計分工具捲到底再找返回鍵是不合理的。 */
+[data-ui="sentence"] .sent-tile-bar {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 2px 0 10px;
+}
+[data-ui="sentence"] .sent-tile-back,
+[data-ui="sentence"] .sent-tile-scope {
+  min-height: 46px; box-sizing: border-box; padding: 0 14px;
+  display: inline-flex; align-items: center;
+  background: var(--sentence-bg); color: var(--sentence-fg);
+  border: 1px solid var(--sentence-fg); border-radius: 0;
+  font-family: var(--sentence-sans); font-size: 12.5px; letter-spacing: .08em;
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-tile-back:hover,
+[data-ui="sentence"] .sent-tile-scope:hover { background: var(--sentence-shade); }
+/* 「開始造句」那顆是次要動作：同樣的尺寸與觸控面積，但邊界降成細線、
+   字色降一階，兩顆並排時看得出哪一顆是主要退路。 */
+[data-ui="sentence"] .sent-tile-scope {
+  border-color: var(--sentence-line2); color: var(--sentence-fg2);
+}
+
+/* ── §9 攤開後的標題 ──────────────────────────────────────────────────
+   英文眉標在上、中文大字在下、右側件數——跟清單裡的分區標頭（.sgh-*）同一套
+   排法，但字級大一級，因為它是這一整區的名字。底下再一行 data-sub 的描述，
+   那句話是 index.html 的方磚自己帶的（「決策流程、分類分級、緊急手術分級與
+   圍手術期抗栓」），不在這裡另抄。 */
+[data-ui="sentence"] .sent-tile-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px;
+  border-bottom: 2px solid var(--sentence-fg);
+  padding: 4px 0 6px;
+}
+[data-ui="sentence"] .stv-en {
+  flex: 0 0 100%;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .stv-zh {
+  font-family: var(--sentence-serif); font-size: 24px; font-weight: 500;
+  letter-spacing: .06em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .stv-n {
+  margin-left: auto;
+  font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim);
+  white-space: nowrap;
+}
+[data-ui="sentence"] .sent-tile-sub {
+  font-family: var(--sentence-sans); font-size: 11.5px; line-height: 1.6;
+  color: var(--sentence-fg2);
+  padding: 6px 0 2px;
+}
+
+/* ── §10 瀏覽模式下的兩層標頭：看起來就不能按 ────────────────────────
+   同樣的字級與排版（沿用 .sgh-* / .ssg-*），只把「可以按」的訊號拿掉：
+   沒有 hover 底色、群組標頭的左邊界不再變色、游標維持箭頭。
+   `all: unset` 之類的重置一律不用——那會連字級一起吃掉；這裡只補 <div>
+   跟 <button> 之間會不一樣的那幾個屬性（display、寬度、盒模型）。 */
+[data-ui="sentence"] .sent-group-head.is-static,
+[data-ui="sentence"] .sent-subgroup-name.is-static {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  width: 100%; box-sizing: border-box; text-align: left;
+  cursor: default;
+}
+[data-ui="sentence"] .sent-group-head.is-static { gap: 2px 10px; }
+[data-ui="sentence"] .sent-subgroup-name.is-static { gap: 2px 8px; }
+[data-ui="sentence"] .sent-group-head.is-static:hover,
+[data-ui="sentence"] .sent-subgroup-name.is-static:hover { background: transparent; }
+[data-ui="sentence"] .sent-subgroup-name.is-static:hover {
+  border-left-color: var(--sentence-line2);
+}
+
+/* ── §11 窄螢幕 ───────────────────────────────────────────────────────
+   430 以下兩顆退路鍵各佔一整行（並排時「以『急重症處置』為範圍開始造句」
+   會被擠成兩行、按鈕高度撐到 70px 以上）。標題字級同時收一級。 */
+@media (max-width: 430px) {
+  [data-ui="sentence"] .sent-tile-back,
+  [data-ui="sentence"] .sent-tile-scope { flex: 1 1 100%; justify-content: center; }
+  [data-ui="sentence"] .stv-zh { font-size: 21px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §12–§15 頁內子目標（查詢深入各分頁）
+   ───────────────────────────────────────────────────────────────────────
+   （patches/sentence-home-4.css 的第三節。§1–§6 是「說整句」的藥名索引，
+     §7–§11 是六格方磚改版，這一節是頁內子目標。三節互不相干，可分開併。）
+
+   ───────────────────────────────────────────────────────────────────────
+   併進 O 段的哪裡、取代哪幾條
+   ───────────────────────────────────────────────────────────────────────
+   兩個插入點（行號以 4db4a08 為準）：
+
+     §12     接在 §1–§6 那一節的尾巴（也就是既有 `.sai-meta`／1107 行之後
+             那一整段新增規則的最後面）。它是「說整句」候選項的一部分。
+     §13–§15 接在既有 `.sent-hit-more`（1290 行附近，候選項右側那顆「＋」）
+             之後、`.sent-empty`（1300 行附近）之前。
+
+   **不取代任何既有規則。** 會沾到但不改的：
+     · `.sent-hit-row`（1296 行）是
+           display: grid; grid-template-columns: 1fr 46px;
+       ——左欄整列連結 `.sent-hit`、右欄那顆 46px 的「＋」`.sent-hit-more`。
+       **這一點踩過坑，寫清楚免得再犯**：新加的兩個子節點若不指定 grid 位置，
+       會被自動排進第二列，而且 `.sent-subs` 正好落在那個 **46px 寬的右欄**裡，
+       整塊子清單被壓成一條直的、一行一個字（實測 390 寬的截圖就是這樣）。
+       所以 §13／§14 兩條都必須寫 `grid-column: 1 / -1` 讓它們各自獨占一整列。
+       這也是為什麼它們不去搶右欄那 46px：那格是「＋」的，390 寬只塞得下一顆。
+     · `.sent-ask-item` / `.sai-dname` / `.sai-dzh` / `.sai-meta`（§1–§3 與
+       既有規則）由子目標候選項沿用，§12 只多加「路徑」那一行。
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── §12 「說整句」候選項的麵包屑 ────────────────────────────────────
+   「抗生素指引 › 依部位 › 腹腔內感染 IAI」。路徑那一段用 mono 小字＋dim 色，
+   末端名字才是主角（.sai-dname 的 em）。整行允許折行——路徑最長的一種是
+   「抗生素指引 › 依病原菌 › Gram 陰性桿菌」，390 寬會折成兩行，不截斷，
+   因為路徑被截掉的話這一行就失去存在的意義了。 */
+[data-ui="sentence"] .sai-path {
+  display: block;
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .08em;
+  line-height: 1.5; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .sai-sep { opacity: .6; }
+
+/* ── §13 候選項那一列的「頁內還有一層」 ──────────────────────────────
+   落在整列底下自成一行、靠左，與 .sh-desc 的縮排對齊。它是**次要**動作
+   （主要動作是點整列進那一頁），所以用細框小字，不用實心按鈕。
+   min-height 34px 而不是 44：它與整列的連結區（.sent-hit，本身已 ≥46px）
+   在同一列內，整列的可觸控面積是足夠的；把它也撐成 46 會讓每一列多長一截。
+   → 這一條是刻意偏離 44px 下限的地方，理由如上，不是漏掉。 */
+[data-ui="sentence"] .sent-hit-subs {
+  grid-column: 1 / -1;                 /* 見本節檔頭：不寫會被塞進右欄那 46px */
+  justify-self: start;
+  display: inline-flex; align-items: center;
+  min-height: 34px; box-sizing: border-box; padding: 0 10px;
+  margin: 2px 0 6px 26px;
+  background: transparent; color: var(--sentence-fg2);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  transition: background var(--sentence-fast) var(--sentence-ease),
+              border-color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-hit-subs:hover {
+  background: var(--sentence-shade); border-color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sent-hit-subs.open {
+  border-color: var(--sentence-fg); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .shs-chev { opacity: .7; }
+
+/* ── §14 攤開後的頁內項目 ────────────────────────────────────────────
+   縮排 26px（對齊上面那顆按鈕），左邊一條實線把「這是那一列的下一層」畫出來。
+   每一項自己是 46px 的觸控目標——這些是真的會離開本頁的連結，不能縮。 */
+[data-ui="sentence"] .sent-subs {
+  grid-column: 1 / -1;                 /* 同上——這一條沒寫，整塊子清單會被壓成一行一個字 */
+  min-width: 0;
+  margin: 0 0 8px 26px;
+  border-left: 2px solid var(--sentence-line2);
+  padding-left: 10px;
+}
+[data-ui="sentence"] .sent-sub {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px;
+  min-height: 46px; box-sizing: border-box; padding: 6px 8px;
+  border-bottom: 1px solid var(--sentence-line);
+  text-decoration: none; color: var(--sentence-fg);
+  transition: background var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-sub:last-child { border-bottom: 0; }
+[data-ui="sentence"] .sent-sub:hover { background: var(--sentence-shade); }
+/* min-width:0 ＋ overflow-wrap:anywhere 兩件缺一不可，實測 430 寬會橫向溢出 62px：
+   flex 項目的 min-width 預設是 auto（＝ min-content），所以
+   「Post-transplant / Immunocompromised」這種長英文的盒子**縮不到**該行剩下的
+   40px，就直接凸出去。min-width:0 解除那道下限，overflow-wrap:anywhere 讓
+   min-content 本身也能被拆開（單字比剩餘寬度還長時仍然有斷點）。
+   兩條都加上去之後 430×932 與 390×844 的 overflow_x 都回到 0。 */
+[data-ui="sentence"] .ssb-name {
+  min-width: 0; overflow-wrap: anywhere;
+  font-family: var(--sentence-sans); font-size: 13px; font-weight: 600;
+  letter-spacing: .04em;
+}
+[data-ui="sentence"] .ssb-en {
+  min-width: 0; overflow-wrap: anywhere;
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .ssb-meta {
+  flex: 0 0 100%;
+  font-family: var(--sentence-mono); font-size: 9.5px; color: var(--sentence-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
+}
+
+/* ── §15 攤開區的狀態行（載入中／取不到／還有 N 個沒列） ────────────
+   沿用 §5 那三種狀態的語彙（dim／warn／閃爍方點），只是縮到子清單裡。 */
+[data-ui="sentence"] .sent-subs-note {
+  font-family: var(--sentence-mono); font-size: 9.5px; line-height: 1.7;
+  color: var(--sentence-warn); padding: 6px 8px 2px;
+}
+[data-ui="sentence"] .sent-subs-note.is-fail { color: var(--sentence-warn); }
+[data-ui="sentence"] .sent-subs-note.is-loading {
+  display: flex; align-items: center; gap: 6px; color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .sent-subs-note.is-loading::before {
+  content: ''; flex: 0 0 auto; width: 7px; height: 7px;
+  background: var(--sentence-fg);
+  animation: sent-ask-pulse 1s steps(2, end) infinite;   /* §5 already defines it */
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui="sentence"] .sent-subs-note.is-loading::before { animation: none; opacity: .5; }
+}
+
+@media (max-width: 430px) {
+  [data-ui="sentence"] .sent-hit-subs { margin-left: 0; }
+  [data-ui="sentence"] .sent-subs { margin-left: 0; }
+}
+
 /* 一行極小註腳（原本壓在句子上方那整段灰色免責文字的替代品） */
 [data-ui="sentence"] .sent-foot-note {
   font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em;
@@ -1427,7 +1803,6 @@
   transition: background var(--sentence-fast) var(--sentence-ease);
 }
 [data-ui="sentence"] .sent-hub:hover { background: var(--sentence-bg2); }
-[data-ui="sentence"] .shb-say  { font-family: var(--sentence-mono); font-size: 9px; letter-spacing: .16em; color: var(--sentence-dim); }
 [data-ui="sentence"] .shb-zh   { font-family: var(--sentence-serif); font-size: 17px; letter-spacing: .08em; }
 [data-ui="sentence"] .shb-en   { font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em; color: var(--sentence-dim); }
 [data-ui="sentence"] .shb-sub  { font-family: var(--sentence-sans); font-size: 10.5px; color: var(--sentence-fg2); line-height: 1.4; }
