@@ -51,6 +51,39 @@
  *   3. 畫面下緣固定列：⌕ 說整句 ／ ← 退一個詞（＝ Backspace）／ 清空句子。
  *   4. 句子列字面修正：範圍不再多一格空格、連接詞不再印出「，，」。
  *
+ * **首頁第二輪**：使用者要求「一定要有 04 prototype 的各個元素與編排」。
+ * 逐項並排清點（430×932，原型 vs repo）之後，補的是下面五件——每一件都先在
+ * 原型量過長什麼樣子才動手，沒有一件是憑空發明的：
+ *
+ *   5. 候選清單的兩層標頭（原型 js/views.js renderRefs()）：
+ *      · 分區標頭 .sec-h ＝ 英文小字 ＋ 中文大字 ＋「N 件」，**可點**（收斂範圍 g）。
+ *      · 群組標頭 .grp-h ＝ 中文 ＋ 英文 ＋「命中 / 全部 項」，**可點**——原型
+ *        這一顆掛的正是 data-act="swap"（平行換題：只把「狀況」換成這個群組最
+ *        具代表性的那個詞，句子其他部分不動）。
+ *      repo 併入前兩層都只有純文字、沒有數量、不能點。
+ *   6. 候選項一列六層資訊（原型 js/views.js rowHTML()）：型別記號 ◆ ＋ 型別
+ *      標籤「流程」＋ 中文名 ＋ 英文名 ＋ desc（2 行截斷）＋ 右側「＋」展開。
+ *      repo 併入前只有中文名與英文名兩層。原型第七層那顆「本款重製／嵌入正式版」
+ *      徽章**刻意不搬**：那是原型標示自己哪三頁真的重做過，repo 的 136 個標的
+ *      全部是真頁面，沒有對應的區別可標，搬過來只會是一句假話。
+ *   7. 平行換題（原型 index.html 檔頭第三條互動）：長按已選定的詞塊 → 字輪，
+ *      原地循環替換這一格的詞，不必重新展開清單；桌機按住後 ← →、鍵盤 Tab
+ *      聚焦後 ↑ ↓ 是同一件事。換完之後「下游依賴它的詞塊」照原型
+ *      js/sentence.js set()：句子指不到任何東西時，由句尾往前（動作→狀況→
+ *      主體→範圍）把**不是這次換的那幾格**清掉，直到句子重新指得到東西。
+ *   8. 候選詞面板補兩件原型有的（原型 .tokrail）：打字過濾框，以及指向被點
+ *      詞塊的箭頭——「清單重開在原位」要看得見重開在哪一格上。
+ *   9. 「說整句」索引除噪：面向同義詞（al）裡凡是該詞自己的**下位詞**（sub）
+ *      一律不進索引——見 alOf() 的長註解，那才是「打闌尾跑出肺癌」的原因，
+ *      不是模糊比對放太寬。另補原型 js/say.js 有而這裡沒有的兩件：↑ ↓ 時把
+ *      選取項捲進可視範圍、「/」直接叫出輸入框。
+ *
+ * 清點時確認**已經**對齊、不必動的（避免有人日後「補」出重複的東西）：
+ * 範圍（g）詞塊未選時不顯示成空格 ▢、選了才長出「腹部急症 ×，我遇到…」
+ * （renderRow() 本來就是這樣）；指向行的收斂提示「再選一個主體可從 18 縮到 1」
+ * （renderPointer() 的 bestNarrow()）；收斂之後值班常用句六格仍然在
+ * （renderResults() 只換 #sentResults，不碰 #sentHubs）；自動放寬的黃字說明。
+ *
  * ---------------------------------------------------------------
  * 只在 [data-ui="sentence"] 時才有 DOM
  * ---------------------------------------------------------------
@@ -286,15 +319,23 @@
 
   function isHome() { return !!document.getElementById('hub'); }
 
+  /* 字輪（見下面「平行換題」那一段）轉動時，畫面要即時預覽「換成這個詞會剩幾件事」，
+     可是這時候使用者還沒放手、句子還沒定案，不可以先寫進 homeSt——寫進去等於每轉
+     一格就真的改一次句子（網址也會跟著跳）。預覽期間的暫時句子放這裡，凡是「讀
+     句子來畫東西」的地方一律走 curSt()，放手或取消時歸 null。 */
+  var previewSt = null;
+  function curSt() { return previewSt || homeSt; }
+
   function completeSentenceFor(t) {
     // 導覽到某個工具時，把使用者還沒填的格子用該工具自己的第一個標註補滿，
     // 這樣目標頁收到的一律是「完整的一句話」——跟 js/sentence.js 的 open()
     // 同一個規則（優先保留使用者自己選的字，缺的才補）。
+    var q = curSt();
     return {
-      g: homeSt.g || t.sec,
-      s: homeSt.s && hit('s', homeSt.s, t.s) ? homeSt.s : (t.s[0] || ''),
-      c: homeSt.c && hit('c', homeSt.c, t.c) ? homeSt.c : (t.c[0] || ''),
-      a: homeSt.a && hit('a', homeSt.a, t.a) ? homeSt.a : (t.a[0] || ''),
+      g: q.g || t.sec,
+      s: q.s && hit('s', q.s, t.s) ? q.s : (t.s[0] || ''),
+      c: q.c && hit('c', q.c, t.c) ? q.c : (t.c[0] || ''),
+      a: q.a && hit('a', q.a, t.a) ? q.a : (t.a[0] || ''),
       t: t.k
     };
   }
@@ -339,37 +380,91 @@
     row.innerHTML = h;
   }
 
+  /* 候選詞面板 ＝ 原型的詞軌 .tokrail。原型有而這裡併入前沒有的兩件：
+     · 打字過濾框（原型 #trfilter）——主體有 57 個候選詞，沒有過濾就只能一路捲。
+       過濾字面同時比對詞本身與它的同義詞（原型 trackHTML() 就是這樣比的），
+       所以打 "abdomen" 也找得到「腹部」。
+     · 指向被點詞塊的箭頭（原型 .tokrail::before 的 --caret）——「清單重開在原位」
+       要看得見是重開在**哪一格**上。面板本身維持整條寬（句子會折行，詞塊的位置
+       每次都不一樣，把面板縮到詞塊底下反而會跳來跳去）。 */
+  var panelFilter = '';
+  function panelTokensHTML(f) {
+    var list = candidates(f, homeSt).filter(function (o) { return o.n > 0 || homeSt[f] === o.w; });
+    list.sort(function (x, y) { return (y.n > 0) - (x.n > 0) || y.n - x.n; });
+    var q = panelFilter.trim().toLowerCase();
+    if (q) list = list.filter(function (o) {
+      var e = f === 'g' ? null : facetEntry(f, o.w);
+      return (o.label + ' ' + o.w + ' ' + (o.en || '') + ' ' + (e ? (e.al || '') : '')).toLowerCase().indexOf(q) >= 0;
+    });
+    if (!list.length) {
+      return '<div class="sent-tok-empty">' +
+        (q ? '沒有符合「' + esc(panelFilter.trim()) + '」的詞' : '沒有可選的詞（目前的句子已經篩掉全部候選）') +
+        '</div>';
+    }
+    return list.map(function (o) {
+      var cur = homeSt[f] === o.w;
+      var e = f === 'g' ? null : facetEntry(f, o.w);
+      return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + '" role="option" ' +
+        'aria-selected="' + (cur ? 'true' : 'false') + '" data-act="pick" data-f="' + f + '" ' +
+        'data-w="' + esc(o.w) + '" title="' + esc(e ? (e.al || '') : (o.en || '')) + '">' +
+        esc(o.label) + '<i>' + o.n + '</i></button>';
+    }).join('');
+  }
+
   function renderPanel() {
     var panel = document.getElementById('sentPanel');
     if (!panel) return;
     if (!openFacet) { panel.hidden = true; panel.innerHTML = ''; return; }
     var f = openFacet;
-    var list = candidates(f, homeSt).filter(function (o) { return o.n > 0 || homeSt[f] === o.w; });
-    list.sort(function (x, y) { return (y.n > 0) - (x.n > 0) || y.n - x.n; });
-    var body = list.length
-      ? list.map(function (o) {
-          var cur = homeSt[f] === o.w;
-          return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + '" data-act="pick" data-f="' + f + '" data-w="' + esc(o.w) + '">' +
-            esc(o.label) + '<i>' + o.n + '</i></button>';
-        }).join('')
-      : '<div class="sent-tok-empty">沒有可選的詞（目前的句子已經篩掉全部候選）</div>';
     panel.hidden = false;
-    panel.innerHTML = '<div class="sent-panel-head">選' + FKEY[f] + '<button type="button" class="sent-panel-close" data-act="closepanel">收起</button></div>' +
-      '<div class="sent-panel-body">' + body + '</div>';
+    panel.innerHTML =
+      '<div class="sent-panel-head">' +
+        '<span class="sent-panel-title">選' + FKEY[f] + '</span>' +
+        '<input class="sent-panel-filter" id="sentPanelFilter" type="text" autocomplete="off" spellcheck="false" ' +
+          'aria-label="打字過濾' + esc(FKEY[f]) + '的候選詞" ' +
+          'placeholder="打字過濾' + esc(f === 'g' ? '範圍' : (FPH[f] || '')) + '…" value="' + esc(panelFilter) + '">' +
+        '<button type="button" class="sent-panel-close" data-act="closepanel">收起</button>' +
+      '</div>' +
+      '<div class="sent-panel-body" id="sentPanelBody" role="listbox" aria-label="' + esc(FKEY[f]) + '候選詞">' +
+        panelTokensHTML(f) + '</div>';
+    var anchor = document.querySelector('#sentRow .f-' + f);
+    if (anchor) {
+      var ar = anchor.getBoundingClientRect(), pr = panel.getBoundingClientRect();
+      var x = ar.left + ar.width / 2 - pr.left;
+      panel.style.setProperty('--sent-caret', Math.max(16, Math.min(Math.max(16, pr.width - 16), x)) + 'px');
+    }
   }
 
   function groupList(list) {
     var bySec = {}, order = [];
     list.forEach(function (t) {
-      if (!bySec[t.sec]) { bySec[t.sec] = { title: t.secTitle, en: t.secEn, groups: {}, order: [] }; order.push(t.sec); }
+      if (!bySec[t.sec]) { bySec[t.sec] = { title: t.secTitle, en: t.secEn, n: 0, groups: {}, order: [] }; order.push(t.sec); }
       var sec = bySec[t.sec];
+      sec.n++;
       if (!sec.groups[t.grp]) { sec.groups[t.grp] = []; sec.order.push(t.grp); }
       sec.groups[t.grp].push(t);
     });
     return order.map(function (id) {
       var s = bySec[id];
-      return { id: id, title: s.title, en: s.en, groups: s.order.map(function (g) { return { name: g, tools: s.groups[g] }; }) };
+      return { id: id, title: s.title, en: s.en, n: s.n, groups: s.order.map(function (g) {
+        return { name: g, en: s.groups[g][0].grpEn || '', tools: s.groups[g] };
+      }) };
     });
+  }
+
+  /* 群組標頭按下去要把句子收斂到什麼？——這個群組底下出現最多次的那個「狀況」
+     （原型 js/views.js grpTop()）。掃 F.c 的順序決定同票時取誰，跟原型一致。
+     GRP_N 是「這個群組總共幾個標的」，用來印出「命中 / 全部 項」。 */
+  var GRP_C = {}, GRP_N = {};
+  TOOLS.forEach(function (t) {
+    GRP_N[t.grp] = (GRP_N[t.grp] || 0) + 1;
+    var m = GRP_C[t.grp] = GRP_C[t.grp] || {};
+    (t.c || []).forEach(function (c) { m[c] = (m[c] || 0) + 1; });
+  });
+  function grpTop(g) {
+    var m = GRP_C[g] || {}, best = '', n = 0;
+    (F.c || []).forEach(function (o) { if ((m[o.w] || 0) > n) { n = m[o.w]; best = o.w; } });
+    return best;
   }
 
   /* 還沒填的那幾格裡，哪一格填下去最有效？（原型 js/sentence.js bestNarrow()）
@@ -469,9 +564,10 @@
   function mainMenuHTML() {
     var h = '<details class="sent-howto"><summary>怎麼用？</summary>' +
       '<div class="sent-howto-body">句子還是空的——這就是主選單。先點一句「值班常用句」把句子說完一半，' +
-      '或點一個熱門詞直接填一格；也可以逐格點 ▢ 自己選詞，選好的詞塊點一下可以原地換詞、' +
-      '按 × 退掉。畫面下緣的「← 退一個詞」（等同鍵盤 Backspace）退掉句尾一個詞，' +
-      '「清空句子」回到這裡。左邊的「⌕ 說整句」可以直接打字找一整句話，不必逐格點選。' +
+      '或點一個熱門詞直接填一格；也可以逐格點 ▢ 自己選詞。選好的詞塊點一下會把清單重開在原位，' +
+      '長按則不用重開清單就能原地換詞（桌機：按住後 ← →，或聚焦後按 ↑ ↓），按 × 退掉這一格。' +
+      '畫面下緣的「← 退一個詞」（等同鍵盤 Backspace）退掉句尾一個詞，「清空句子」回到這裡。' +
+      '左邊的「⌕ 說整句」（或直接按 /）可以打字找一整句話，不必逐格點選。' +
       '</div></details>';
     ['s', 'c', 'a'].forEach(function (f) {
       var words = hotWords(f, 8);
@@ -485,10 +581,52 @@
     return '<div class="sent-empty-state">' + h + '</div>';
   }
 
+  /* ---------------- 候選項一列長什麼樣（原型 js/views.js rowHTML()） ----------------
+   * 原型一列有六層資訊，repo 併入前只有其中兩層（中文名、英文名）：
+   *   ┌ ◆ 流程  急性闌尾炎  Appendicitis          ← .sh-top（型別記號＋型別標籤＋中英名）
+   *   └ 依複雜度、族群與膿瘍年齡分流，決定…      ← .sh-desc（-webkit-line-clamp:2）
+   *   右側 46px：「＋」展開這一列的完整說明        ← .sent-hit-more
+   * 型別用**形狀 ＋ 文字標籤兩者並呈**（原型 KIND_META 的做法，色弱與黑白列印
+   * 下仍分得出來），形狀與字面逐字照抄。repo 的 136 筆每一筆都有 kind
+   * （實際數過：tool 69／pathway 31／cancer 30／mega 3／mode 3）。
+   * 截斷策略也是抄的不是發明的：原型 css/proof.css .row-desc 用
+   * -webkit-line-clamp:2，.row.open 解除，沒有「候選少才顯示簡介」這種條件——
+   * 18 筆清單因此是 18 列 × 最多兩行，不是一整片牆。
+   * 原型第七層那顆「本款重製／嵌入正式版」徽章刻意不搬：那是原型標示自己哪三頁
+   * 真的重做過，repo 的 136 個標的全部是真頁面，沒有對應的區別可標。
+   * 分類尾巴（secTitle／grp）也不搬進這一列——它們就是這一列的上兩層標頭，
+   * 同一組字在同一屏印兩次只會把清單變長。「說整句」的候選項才需要那條尾巴
+   * （見 .sai-meta），因為那份清單是平的、沒有分組標頭。 */
+  var KIND_META = {
+    tool:    { shape: '●', label: '計分', cls: 'k-tool' },
+    pathway: { shape: '◆', label: '流程', cls: 'k-pathway' },
+    mega:    { shape: '◎', label: '總站', cls: 'k-mega' },
+    mode:    { shape: '◐', label: '模式', cls: 'k-mode' },
+    cancer:  { shape: '▪', label: '癌別', cls: 'k-cancer' }
+  };
+  function hitHTML(t) {
+    var m = KIND_META[t.kind] || KIND_META.tool;
+    var desc = t.desc || '';
+    return '<div class="sent-hit-row">' +
+      '<a class="sent-hit" href="' + esc(withSentQuery(t.href, completeSentenceFor(t))) + '">' +
+        '<span class="sh-top">' +
+          '<span class="sh-kind ' + m.cls + '" aria-hidden="true">' + m.shape + '</span>' +
+          '<span class="sh-kind-l ' + m.cls + '">' + m.label + '</span>' +
+          '<span class="sh-name">' + esc(t.name) + '</span>' +
+          '<span class="sh-en">' + esc(t.en) + '</span>' +
+        '</span>' +
+        (desc ? '<span class="sh-desc">' + esc(desc) + '</span>' : '') +
+      '</a>' +
+      (desc ? '<button type="button" class="sent-hit-more" data-act="more" aria-expanded="false" ' +
+              'aria-label="展開或收合「' + esc(t.name) + '」的完整說明">＋</button>' : '') +
+      '</div>';
+  }
+
   function renderResults(list) {
     var results = document.getElementById('sentResults');
     if (!results) return;
-    var any = homeSt.g || homeSt.s || homeSt.c || homeSt.a;
+    var cs = curSt();
+    var any = cs.g || cs.s || cs.c || cs.a;
     if (!any) { results.innerHTML = mainMenuHTML(); return; }
     if (!list.length) {
       results.innerHTML = '<div class="sent-empty">找不到符合的項目——按上面「清空句子」可以回到全部 ' + TOOLS.length + ' 項，不會卡住到不了任何一頁。</div>';
@@ -496,18 +634,32 @@
     }
     var groups = groupList(list);
     results.innerHTML = groups.map(function (g) {
+      /* 分區標頭可點（原型 .sec-h data-act="hub"）：把句子的**範圍**收斂到這一區。
+         英文小字在上、中文大字在下、右側「N 件」——排列順序照原型。 */
       return '<div class="sent-group">' +
-        '<div class="sent-group-head"><span class="sgh-zh">' + esc(g.title) + '</span><span class="sgh-en">' + esc(g.en) + '</span></div>' +
+        '<button type="button" class="sent-group-head" data-act="sec" data-g="' + esc(g.id) + '" ' +
+          'aria-label="從 ' + esc(g.title) + ' 這一區重新說一次（目前 ' + g.n + ' 件）：只留範圍，其餘詞塊清空">' +
+          '<span class="sgh-en">' + esc(g.en) + '</span>' +
+          '<span class="sgh-zh">' + esc(g.title) + '</span>' +
+          '<span class="sgh-n">' + g.n + ' 件</span>' +
+        '</button>' +
         g.groups.map(function (grp) {
+          /* 群組標頭可點（原型 .grp-h data-act="swap"）＝**平行換題**：只把「狀況」
+             換成這個群組最具代表性的那個詞，句子其他部分不動。數量印成
+             「命中 / 全部 項」，全中時只印總數（原型 renderRefs() 同一條規則）。 */
+          var total = GRP_N[grp.name] || grp.tools.length;
+          var nTxt = grp.tools.length === total ? (total + ' 項') : (grp.tools.length + ' / ' + total + ' 項');
+          var top = grpTop(grp.name);
           return '<div class="sent-subgroup">' +
-            (grp.name ? '<div class="sent-subgroup-name">' + esc(grp.name) + '</div>' : '') +
-            grp.tools.map(function (t) {
-              var st = completeSentenceFor(t);
-              return '<a class="sent-hit" href="' + esc(withSentQuery(t.href, st)) + '">' +
-                '<span class="sh-name">' + esc(t.name) + '</span>' +
-                '<span class="sh-en">' + esc(t.en) + '</span>' +
-                '</a>';
-            }).join('') +
+            (grp.name
+              ? '<button type="button" class="sent-subgroup-name" data-act="swap" data-f="c" data-w="' + esc(top) + '" ' +
+                'aria-label="平行換題：把句子的狀況換成 ' + esc(top) + '，其餘詞塊不動">' +
+                '<span class="ssg-zh">' + esc(grp.name) + '</span>' +
+                '<span class="ssg-en">' + esc(grp.en) + '</span>' +
+                '<span class="ssg-n">' + esc(nTxt) + '</span>' +
+                '</button>'
+              : '') +
+            grp.tools.map(hitHTML).join('') +
             '</div>';
         }).join('') +
         '</div>';
@@ -523,9 +675,35 @@
    * 原型另外併進來的 drugnames.js／sub-*.js 不搬進 repo，那會變成第二份真相。
    */
   var sayIdx = null, sayOpen = false, saySel = 0, sayCur = [], sayLastQ = null;
+
+  /* 面向同義詞餵進索引之前，先把該詞自己的**下位詞**（entry.sub）濾掉。
+   *
+   * 為什麼要濾（實測出來的根因，不是猜的）：data/facets.js 的狀況詞「癌症」，
+   * al 欄位裡列著 30 個癌別的名字（胃癌 食道癌 … 闌尾癌 …），sub 欄位列的是
+   * 同一批字。那份清單存在的理由是**面向層**的：打「胃癌」時要找得到上位詞
+   * 「癌症」、選了「癌症」時要能連同下位詞一起命中（expand()／hit() 已經在做
+   * 這件事）。但索引是**逐工具**建的：30 個癌別工具每一個都標了 c:["癌症",…]，
+   * 於是每一顆癌別的 hay 裡都被塞進另外 29 顆癌別的名字。使用者實測到的
+   * 「打『闌尾』第三筆跑出肺癌」就是這樣來的——「闌尾」是「闌尾癌」的子字串，
+   * 而「闌尾癌」出現在肺癌的 hay 裡。**這不是模糊比對（R_FUZZY）放太寬**：
+   * R_FUZZY 要求查詢 ≥3 字，「闌尾」只有 2 字，走的是 R_HAY 精確子字串那一級。
+   * 原型 js/say.js 的 al() 沒有這道濾網，因此原型有一模一樣的症狀（實測：原型
+   * 打「闌尾」同樣在第三筆給出肺癌，14 筆結果與 repo 逐筆相同）。
+   *
+   * 濾掉的準則是資料自己講的，不是我挑的字：只丟 al ∩ sub。三個詞表 1276 個
+   * al 詞元裡符合的有 27 個（癌症 25 個、衰竭←器官衰竭、缺氧←低血氧），
+   * 其餘 1249 個同義詞原樣留著。被丟掉的字沒有因此搜不到——它們本來就是各自
+   * 獨立的詞條，工具若真的標了它，那個字就在 t.c.join(' ') 裡。 */
+  var alSayCache = {};
   function alOf(f, w) {
     var e = facetEntry(f, w);
-    return e ? (e.al || '') : '';
+    if (!e) return '';
+    var ck = f + ' ' + (e.w || w);
+    if (alSayCache[ck] != null) return alSayCache[ck];
+    var subs = {};
+    (e.sub || []).forEach(function (x) { subs[x] = true; });
+    alSayCache[ck] = splitWords(e.al).filter(function (tok) { return !subs[tok]; }).join(' ');
+    return alSayCache[ck];
   }
   function buildSayIndex() {
     if (sayIdx) return sayIdx;
@@ -609,6 +787,14 @@
         '<span class="sai-meta">' + esc(t.en) + ' · ' + esc(t.secTitle + ' · ' + t.grp) + '</span></a>';
     }).join('');
   }
+  /* ↑ ↓ 換選取項時把它捲進可視範圍（原型 js/say.js scrollSel()）——候選項最多
+     14 筆、清單本身 max-height:60vh 會自己捲，沒有這一段的話按到第 5 筆之後
+     選取框就跑到看不見的地方去了。 */
+  function scrollSaySel() {
+    var el = document.querySelector('.sent-ask-item.sel');
+    if (el && el.scrollIntoView) { try { el.scrollIntoView({ block: 'nearest' }); } catch (e) { el.scrollIntoView(false); } }
+  }
+
   function showSay(v) {
     var panel = document.getElementById('sentAsk');
     if (!panel) return;
@@ -635,6 +821,138 @@
       try { inp.blur(); } catch (e) {}
     }
   }
+
+  /* ================================================================
+   * 平行換題：長按已選定的詞塊 → 字輪，原地循環替換這一格的詞
+   * ================================================================
+   * 原型 index.html 檔頭列的互動，這裡逐條對上（實作抄自原型 js/sentence.js
+   * startWheel()／paint()／endWheel() 與它的 pointerdown／keydown 兩個監聽）：
+   *   · 點已選定的詞塊 → 清單重開在原位，可直接原地換詞。（併入前就有，實測
+   *     確認：面板開在句子列正下方、目前的詞標成 .cur、點另一個詞真的換掉。
+   *     這一輪只補上指向該詞塊的箭頭與打字過濾框，見 renderPanel()。）
+   *   · 長按已選定的詞塊（桌機：按住後方向鍵 ← →；鍵盤：Tab 聚焦後 ↑ ↓）→
+   *     不用重新展開清單，直接原地循環替換這一格的詞。（這一段是新的。）
+   *
+   * 「下游依賴它的詞塊」怎麼處理——照原型 js/sentence.js set()：換完之後如果
+   * 句子指不到任何東西，就由句尾往前（動作 → 狀況 → 主體 → 範圍）把**不是這次
+   * 換的那幾格**清掉，一格一格清到句子重新指得到東西為止。實測記錄：repo 這邊
+   * 這條規則多半不會觸發，因為候選詞（candidates／siblings）本來就已經濾掉
+   * 「選了會變成 0 件」的詞；它是給 ?sent= 網址帶進來的怪句子與日後資料改版
+   * 用的安全網，不是每次換詞都會動到別格。 */
+  var LONG_PRESS_MS = 420;
+  var wh = null;
+
+  function siblings(f) {
+    return candidates(f, homeSt).filter(function (o) { return o.n > 0; });
+  }
+
+  function applyWord(f, w) {
+    homeSt[f] = w;
+    ['a', 'c', 's', 'g'].forEach(function (k) {
+      if (k === f) return;
+      if (matches(homeSt).length) return;
+      if (homeSt[k]) homeSt[k] = '';
+    });
+  }
+
+  /* 字輪的一行提示（原型 #whhint）：平時講「長按可原地換詞」，轉動中換成
+     「上下滑（或 ← →）…放開定案」。句子還是空的時候不出現。 */
+  function renderWhHint(text) {
+    var el = document.getElementById('sentWhHint');
+    if (!el) return;
+    if (text) { el.hidden = false; el.textContent = text; return; }
+    var any = homeSt.g || homeSt.s || homeSt.c || homeSt.a;
+    el.hidden = !any;
+    if (any) el.textContent = '長按詞塊可原地換詞（桌機：按住後 ← →，或聚焦後按 ↑ ↓）· Backspace 退掉句尾一個詞';
+  }
+
+  function startWheel(btn, f) {
+    var sib = siblings(f);
+    if (sib.length < 2) return false;
+    var chip = btn.closest('.sent-chip');
+    if (!chip) return false;
+    var idx = 0;
+    for (var i = 0; i < sib.length; i++) if (sib[i].w === homeSt[f]) idx = i;
+    chip.classList.add('wheeling');
+    btn.innerHTML = '<span class="wh-vp"><span class="wh-stack">' +
+      sib.map(function (o, i2) {
+        return '<span class="wh-it' + (i2 === idx ? ' cur' : '') + '">' + esc(o.label) + '</span>';
+      }).join('') + '</span></span>';
+    var stack = btn.querySelector('.wh-stack');
+    var itH = (btn.querySelector('.wh-it').getBoundingClientRect().height) || 20;
+    wh = { btn: btn, f: f, sib: sib, idx: idx, base: idx, stack: stack, itH: itH, chip: chip, moved: false };
+    renderWhHint('字輪：上下滑（或 ← →）在同面向的兄弟詞之間跳，放開定案；Esc 取消。');
+    paintWheel();
+    return true;
+  }
+
+  function paintWheel() {
+    if (!wh) return;
+    wh.stack.style.transform = 'translateY(' + (-(wh.idx - 1) * wh.itH) + 'px)';
+    [].slice.call(wh.stack.querySelectorAll('.wh-it')).forEach(function (el, i) {
+      el.classList.toggle('cur', i === wh.idx);
+    });
+    // 轉到哪一格，畫面就預覽那一格的結果（原型 paint() → renderStage()）。
+    previewSt = { g: homeSt.g, s: homeSt.s, c: homeSt.c, a: homeSt.a };
+    previewSt[wh.f] = wh.sib[wh.idx].w;
+    var list = matches(previewSt);
+    var b = document.querySelector('#sentPoint .sent-point-n b');
+    if (b) b.textContent = list.length;
+    /* 件數是即時的，指向行後半那句「再選一個狀況可從 16 縮到 1」卻是轉動前算的，
+       兩句擺在一起會互相打臉（螢幕同時說 3 件與 16 件）。轉動中換成一句誠實的
+       狀態字，放開後 renderHome() 會把真正的提示算回來。 */
+    var hintEl = document.querySelector('#sentPoint .sent-point-hint');
+    if (hintEl) hintEl.textContent = '字輪預覽中 · 放開定案';
+    renderResults(list);
+  }
+
+  function endWheel(commit) {
+    if (!wh) return;
+    var f = wh.f, w = wh.sib[wh.idx].w, moved = wh.moved;
+    wh.chip.classList.remove('wheeling');
+    wh = null;
+    previewSt = null;
+    if (commit && moved) applyWord(f, w);
+    renderHome();
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    if (!sentenceOn() || !isHome()) return;
+    var btn = e.target.closest && e.target.closest('#sentRow .sent-chip .sc-w');
+    if (!btn) return;
+    var f = btn.getAttribute('data-f');
+    if (!f) return;
+    var y0 = e.clientY, pid = e.pointerId;
+    btn._wheeled = false;
+    var timer = setTimeout(function () {
+      try { btn.setPointerCapture(pid); } catch (err) { /* 舊瀏覽器沒有指標捕捉，改由 document 上的監聽收尾 */ }
+      if (!startWheel(btn, f)) cleanup();
+    }, LONG_PRESS_MS);
+    function mv(ev) {
+      if (!wh) {
+        // 還沒進字輪就先滑動了 → 使用者是要捲頁面，不是要長按
+        if (Math.abs(ev.clientY - y0) > 12) { clearTimeout(timer); cleanup(); }
+        return;
+      }
+      if (ev.cancelable) ev.preventDefault();
+      var n = wh.base - Math.round((ev.clientY - y0) / Math.max(18, wh.itH));
+      n = Math.max(0, Math.min(wh.sib.length - 1, n));
+      if (n !== wh.idx) { wh.idx = n; wh.moved = true; paintWheel(); }
+    }
+    function up() {
+      clearTimeout(timer);
+      if (wh) { btn._wheeled = true; endWheel(true); }
+      cleanup();
+    }
+    function cleanup() {
+      document.removeEventListener('pointermove', mv);
+      document.removeEventListener('pointerup', up);
+      document.removeEventListener('pointercancel', up);
+    }
+    document.addEventListener('pointermove', mv, { passive: false });
+    document.addEventListener('pointerup', up);
+    document.addEventListener('pointercancel', up);
+  });
 
   /* ---------------- 退一個詞：句尾優先，動作 → 狀況 → 主體 → 範圍 ---------------- */
   var TAIL_ORDER = ['a', 'c', 's', 'g'];
@@ -687,6 +1005,7 @@
       if (r) { lastRelax = r; list = r.list; } else relaxFailed = true;
     }
     renderRow();
+    renderWhHint('');
     renderPanel();
     renderPointer(list, lastRelax, relaxFailed);
     var hubs = document.getElementById('sentHubs');
@@ -710,6 +1029,7 @@
         '<span class="mag" aria-hidden="true">⌕</span><span class="lbl">說整句</span></button>' +
         '<div class="sent-row" id="sentRow"></div>' +
       '</div>' +
+      '<div class="sent-wh-hint" id="sentWhHint" hidden></div>' +
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
@@ -782,8 +1102,51 @@
     }
 
     /* ---- 首頁 ---- */
-    if (act === 'open') { openFacet = (openFacet === f) ? null : f; if (sayOpen) showSay(false); renderHome(); return; }
-    if (act === 'closepanel') { openFacet = null; renderPanel(); return; }
+    if (act === 'open') {
+      // 剛剛才用字輪換完詞的那一下放手，不可以順便把清單也展開（原型的 _wheeled 旗標）
+      if (el._wheeled) { el._wheeled = false; return; }
+      openFacet = (openFacet === f) ? null : f;
+      panelFilter = '';
+      if (sayOpen) showSay(false);
+      renderHome();
+      return;
+    }
+    if (act === 'closepanel') { openFacet = null; panelFilter = ''; renderPanel(); return; }
+    if (act === 'more') {
+      e.preventDefault();
+      var row = el.closest('.sent-hit-row');
+      if (!row) return;
+      var on = row.classList.toggle('open');
+      el.textContent = on ? '－' : '＋';
+      el.setAttribute('aria-expanded', on ? 'true' : 'false');
+      return;
+    }
+    if (act === 'sec') {
+      /* 分區標頭＝「從這一區重新說一次」：只留範圍，其餘詞塊清掉，然後回到頁首。
+         這是原型 js/views.js .sec-h（data-act="hub"）落到 js/sentence.js 的
+         `set({g: …, s:'', c:'', a:'', t:''})` ＋ `window.scrollTo(0,0)`，逐字同一件事。
+         按下去有可能讓件數**變多**（例：我遇到腹部的感染 6 件 → 腹部急症 18 件），
+         那是這一顆本來的語意（跳進這個範圍重來），不是收斂失效——所以 aria-label
+         把「其餘詞塊會清空」講出來，不讓使用者按下去才發現詞不見了。 */
+      e.preventDefault();
+      var gid = el.getAttribute('data-g');
+      homeSt = { g: gid, s: '', c: '', a: '' };
+      openFacet = null; panelFilter = '';
+      if (sayOpen) showSay(false);
+      renderHome();
+      try { window.scrollTo(0, 0); } catch (err) {}
+      return;
+    }
+    if (act === 'swap') {
+      // 平行換題：只換一個詞塊，句子其他部分不動（原型 js/sentence.js 的 swap 分支）
+      e.preventDefault();
+      var sw = el.getAttribute('data-w');
+      if (!sw) return;
+      applyWord(f, sw);
+      openFacet = null;
+      renderHome();
+      return;
+    }
     if (act === 'drop') { homeSt[f] = ''; renderHome(); return; }
     if (act === 'droptail') { if (dropTail()) renderHome(); return; }
     if (act === 'hub') {
@@ -797,22 +1160,67 @@
     }
     if (act === 'pick') {
       var w = el.getAttribute('data-w');
-      homeSt[f] = (homeSt[f] === w) ? '' : w;
-      openFacet = null;
+      if (homeSt[f] === w) homeSt[f] = ''; else applyWord(f, w);
+      openFacet = null; panelFilter = '';
       renderHome();
       return;
     }
-    if (act === 'clear') { homeSt = { g: '', s: '', c: '', a: '' }; openFacet = null; if (sayOpen) showSay(false); renderHome(); return; }
+    if (act === 'clear') { homeSt = { g: '', s: '', c: '', a: '' }; openFacet = null; panelFilter = ''; if (sayOpen) showSay(false); renderHome(); return; }
   });
 
   document.addEventListener('input', function (e) {
-    if (e.target && e.target.id === 'sentAskIn') renderSay(e.target.value);
+    if (!e.target) return;
+    if (e.target.id === 'sentAskIn') { renderSay(e.target.value); return; }
+    /* 候選詞面板的過濾框：只重畫詞的部分，不重畫整個面板——重畫整個面板會把
+       <input> 換成新節點，使用者打到一半的焦點與游標位置就沒了。 */
+    if (e.target.id === 'sentPanelFilter' && openFacet) {
+      panelFilter = e.target.value;
+      var body = document.getElementById('sentPanelBody');
+      if (body) body.innerHTML = panelTokensHTML(openFacet);
+      return;
+    }
   });
   document.addEventListener('keydown', function (e) {
     var onHome = !!document.getElementById('sentHome'), onTrail = !!document.getElementById('sentTrail');
     if (!onHome && !onTrail) return;
     var typing = /^(input|textarea|select)$/i.test(e.target.tagName || '') || e.target.isContentEditable;
+
+    /* 字輪轉動中：← ↑ 上一個、→ ↓ 下一個、Enter／空白定案、Esc 取消
+       （鍵位照原型 js/sentence.js 的 keydown，四個方向鍵都吃）。 */
+    if (wh) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); wh.idx = Math.max(0, wh.idx - 1); wh.moved = true; paintWheel(); return;
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault(); wh.idx = Math.min(wh.sib.length - 1, wh.idx + 1); wh.moved = true; paintWheel(); return;
+      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); endWheel(true); return; }
+      if (e.key === 'Escape') { e.preventDefault(); endWheel(false); return; }
+    }
+    /* 鍵盤路徑：Tab 聚焦到詞塊之後按 ↑ ↓ 直接原地換掉這一格，不必先長按也不必
+       展開清單（原型同一段）。換完把焦點放回同一格，可以連按。 */
+    if (onHome && !typing && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      var cw = e.target.closest && e.target.closest('#sentRow .sent-chip .sc-w');
+      if (cw) {
+        var kf = cw.getAttribute('data-f');
+        var sib = siblings(kf);
+        if (sib.length > 1) {
+          var ci = 0;
+          for (var si = 0; si < sib.length; si++) if (sib[si].w === homeSt[kf]) ci = si;
+          ci = e.key === 'ArrowUp' ? Math.max(0, ci - 1) : Math.min(sib.length - 1, ci + 1);
+          e.preventDefault();
+          applyWord(kf, sib[ci].w);
+          renderHome();
+          var again = document.querySelector('#sentRow .sent-chip.f-' + kf + ' .sc-w');
+          if (again) { try { again.focus(); } catch (err) {} }
+          return;
+        }
+      }
+    }
+
     if (!sayOpen) {
+      // 「/」直接叫出說整句的輸入框（原型 js/say.js 同一條，同樣的打字防護）
+      if (e.key === '/' && !typing) { e.preventDefault(); showSay(true); return; }
       // Backspace 退掉句尾一個詞（不在輸入框裡打字時才算）
       if (e.key === 'Backspace' && !typing) {
         if (onHome) {
@@ -825,8 +1233,8 @@
       return;
     }
     if (e.key === 'Escape') { e.preventDefault(); showSay(false); return; }
-    if (e.key === 'ArrowDown') { e.preventDefault(); saySel = Math.min(sayCur.length - 1, saySel + 1); renderSay(document.getElementById('sentAskIn').value); return; }
-    if (e.key === 'ArrowUp') { e.preventDefault(); saySel = Math.max(0, saySel - 1); renderSay(document.getElementById('sentAskIn').value); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); saySel = Math.min(sayCur.length - 1, saySel + 1); renderSay(document.getElementById('sentAskIn').value); scrollSaySel(); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); saySel = Math.max(0, saySel - 1); renderSay(document.getElementById('sentAskIn').value); scrollSaySel(); return; }
     if (e.key === 'Enter') {
       e.preventDefault();
       var item = sayCur[saySel];   // saySel === -1（只有模糊命中、未確認選取）時不動作

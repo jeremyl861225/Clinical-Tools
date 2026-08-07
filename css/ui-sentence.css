@@ -1015,6 +1015,21 @@
   color: var(--sentence-dim); margin: 0;
 }
 
+[data-ui="sentence"] .sent-chip.wheeling {
+  outline: 2px solid var(--sentence-fg); outline-offset: 2px;
+}
+[data-ui="sentence"] .wh-vp {
+  display: block; position: relative; overflow: hidden;
+  height: 3.75em; min-width: 3em;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26%, #000 74%, transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 26%, #000 74%, transparent 100%);
+}
+[data-ui="sentence"] .wh-stack { display: block; will-change: transform; }
+[data-ui="sentence"] .wh-it {
+  display: block; height: 1.25em; line-height: 1.25em; white-space: nowrap; opacity: .3;
+}
+[data-ui="sentence"] .wh-it.cur { opacity: 1; }
+
 /* ---- 首頁：#sentHome ---- */
 [data-ui="sentence"] .sent-home { margin: 6px 0 18px; }
 
@@ -1054,7 +1069,15 @@
 [data-ui="sentence"] .sent-home.asking .sent-row,
 [data-ui="sentence"] .sent-home.asking .sent-hubs-zone,
 [data-ui="sentence"] .sent-home.asking .sent-results,
-[data-ui="sentence"] .sent-home.asking .sent-point { display: none; }
+[data-ui="sentence"] .sent-home.asking .sent-point,
+[data-ui="sentence"] .sent-home.asking .sent-wh-hint { display: none; }
+
+[data-ui="sentence"] .sent-wh-hint {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  line-height: 1.6; color: var(--sentence-dim);
+  padding: 0 0 8px;
+}
+[data-ui="sentence"] .sent-home.asking .sent-wh-hint { display: none; }
 
 [data-ui="sentence"] .sent-ask { padding: 10px 0 4px; }
 [data-ui="sentence"] .sent-ask-in {
@@ -1091,18 +1114,42 @@
   color: var(--sentence-dim); padding: 14px 0 0;
 }
 [data-ui="sentence"] .sent-panel {
-  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
-  padding: 10px 12px; margin-bottom: 14px;
+  position: relative;
+  background: var(--sentence-bg2);
+  border: 1px solid var(--sentence-line2); border-top: 2px solid var(--sentence-fg);
+  border-radius: 0; padding: 10px 12px; margin-bottom: 14px;
+}
+[data-ui="sentence"] .sent-panel::before {
+  content: ""; position: absolute; top: -2px; left: var(--sent-caret, 40px);
+  width: 0; height: 0; margin-left: -7px;
+  border-left: 7px solid transparent; border-right: 7px solid transparent;
+  border-top: 7px solid var(--sentence-fg);
 }
 [data-ui="sentence"] .sent-panel-head {
-  display: flex; align-items: center; justify-content: space-between;
-  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--sentence-dim); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+[data-ui="sentence"] .sent-panel-title {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--sentence-dim); white-space: nowrap;
+}
+/* 過濾框（原型 #trfilter）：主體有 57 個候選詞，沒有它就只能一路捲。 */
+[data-ui="sentence"] .sent-panel-filter {
+  flex: 1 1 auto; min-width: 0; box-sizing: border-box;
+  min-height: 45px; padding: 0 10px;
+  background: var(--sentence-bg); color: var(--sentence-fg);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-sans); font-size: 13px;
+}
+[data-ui="sentence"] .sent-panel-filter:focus {
+  outline: 2px solid var(--sentence-fg); outline-offset: -2px;
 }
 [data-ui="sentence"] .sent-panel-close {
+  flex: 0 0 auto;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
-  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-fg); padding: 0 10px;
+  font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-fg);
+  padding: 0 10px;
 }
+[data-ui="sentence"] .sent-panel-close:hover { background: var(--sentence-shade); }
 [data-ui="sentence"] .sent-panel-body {
   display: flex; flex-wrap: wrap; gap: 6px; max-height: 46vh; overflow-y: auto;
 }
@@ -1144,27 +1191,120 @@
 [data-ui="sentence"] .sent-empty { font-family: var(--sentence-sans); font-size: 12.5px; color: var(--sentence-dim); padding: 10px 0; }
 
 [data-ui="sentence"] .sent-group { margin-bottom: 16px; }
+/* ---- 分區標頭（取代併入前的 .sent-group-head / .sgh-zh / .sgh-en）---- */
 [data-ui="sentence"] .sent-group-head {
-  display: flex; align-items: baseline; gap: 8px; border-bottom: 2px solid var(--sentence-fg);
-  padding-bottom: 5px; margin-bottom: 6px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px;
+  width: 100%; box-sizing: border-box; text-align: left;
+  background: transparent; border: 0; border-bottom: 2px solid var(--sentence-fg);
+  border-radius: 0; padding: 6px 0 5px; margin-bottom: 6px;
+  transition: background var(--sentence-fast) var(--sentence-ease);
 }
-[data-ui="sentence"] .sgh-zh { font-family: var(--sentence-serif); font-size: 14.5px; font-weight: 500; color: var(--sentence-fg); }
-[data-ui="sentence"] .sgh-en { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
-[data-ui="sentence"] .sent-subgroup { margin-bottom: 8px; }
+[data-ui="sentence"] .sent-group-head:hover { background: var(--sentence-shade); }
+/* 英文當眉標：整條先換行，中文大字自己一行（原型 .sec-h 的 .sh-eye 在上、
+   .sh-zh 在下）。flex-basis:100% 是換行的手段，不是版面寬度。 */
+[data-ui="sentence"] .sgh-en {
+  flex: 0 0 100%;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .sgh-zh {
+  font-family: var(--sentence-serif); font-size: 20px; font-weight: 500;
+  letter-spacing: .06em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sgh-n {
+  margin-left: auto;
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+  white-space: nowrap;
+}
+
+/* ---- 群組標頭（取代併入前的 .sent-subgroup-name）----
+ * 這一顆按下去是**平行換題**：只把句子的「狀況」換成這個群組最具代表性的詞，
+ * 其他詞塊不動。它是可點的，所以不能再是一行灰色小標——給它一條左邊界線與
+ * 一格 hover 底色，讓「可以按」看得出來（原型 .grp-h 用的是同一組手法）。 */
 [data-ui="sentence"] .sent-subgroup-name {
-  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .08em; color: var(--sentence-dim);
-  margin: 6px 0 3px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px;
+  width: 100%; box-sizing: border-box; text-align: left;
+  background: transparent; border: 0; border-left: 3px solid var(--sentence-line2);
+  border-radius: 0; padding: 4px 8px; margin: 6px 0 3px;
+  transition: background var(--sentence-fast) var(--sentence-ease),
+              border-color var(--sentence-fast) var(--sentence-ease);
+}
+[data-ui="sentence"] .sent-subgroup-name:hover {
+  background: var(--sentence-shade); border-left-color: var(--sentence-fg);
+}
+[data-ui="sentence"] .ssg-zh {
+  font-family: var(--sentence-sans); font-size: 12.5px; font-weight: 700;
+  letter-spacing: .09em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .ssg-en {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .08em;
+  color: var(--sentence-dim);
+}
+[data-ui="sentence"] .ssg-n {
+  margin-left: auto;
+  font-family: var(--sentence-mono); font-size: 9.5px; color: var(--sentence-dim);
+  white-space: nowrap;
+}
+
+/* ---- 候選項一列（取代併入前的 .sent-hit / :hover / .sh-name / .sh-en）----
+ * 併入前 .sent-hit 是 inline-flex 藥丸，一列擠好幾顆；原型是**整條寬的一列**
+ * （grid 1fr 46px），因為它要放得下一句 desc。這裡照原型改成整條寬。 */
+[data-ui="sentence"] .sent-hit-row {
+  display: grid; grid-template-columns: 1fr 46px;
+  border-bottom: 1px dotted var(--sentence-line);
+  max-width: 100%;
 }
 [data-ui="sentence"] .sent-hit {
-  display: inline-flex; flex-direction: column; justify-content: center; gap: 1px;
-  min-height: 44px; min-width: 44px; box-sizing: border-box;
-  background: var(--sentence-bg2); border: 1px solid var(--sentence-line2); border-radius: 0;
-  padding: 6px 11px; margin: 0 6px 6px 0; text-decoration: none;
-  transition: border-color var(--sentence-fast) var(--sentence-ease), background var(--sentence-fast) var(--sentence-ease);
+  display: block; width: 100%; box-sizing: border-box; min-width: 0;
+  min-height: 46px; padding: 7px 8px 7px 0; margin: 0;
+  text-align: left; text-decoration: none;
+  background: transparent; border: 0; border-radius: 0;
+  transition: background var(--sentence-fast) var(--sentence-ease);
 }
-[data-ui="sentence"] .sent-hit:hover { border-color: var(--sentence-fg); background: var(--sentence-shade); }
-[data-ui="sentence"] .sh-name { font-family: var(--sentence-sans); font-size: 13px; color: var(--sentence-fg); }
-[data-ui="sentence"] .sh-en { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+[data-ui="sentence"] .sent-hit:hover { background: var(--sentence-shade); border-color: transparent; }
+[data-ui="sentence"] .sh-top {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+}
+/* 型別：形狀 ＋ 文字標籤兩者並呈，不單靠顏色（原型 .kind-badge / .kind-label） */
+[data-ui="sentence"] .sh-kind {
+  font-size: 12px; line-height: 1; width: 1.2em; text-align: center; flex: none;
+}
+[data-ui="sentence"] .sh-kind-l {
+  font-family: var(--sentence-mono); font-size: 9px; letter-spacing: .1em;
+  border: 1px solid var(--sentence-line2); padding: 1px 5px; white-space: nowrap;
+}
+[data-ui="sentence"] .sh-kind.k-tool,    [data-ui="sentence"] .sh-kind-l.k-tool    { color: var(--sentence-fg2); }
+[data-ui="sentence"] .sh-kind.k-pathway, [data-ui="sentence"] .sh-kind-l.k-pathway { color: var(--sentence-hot); }
+[data-ui="sentence"] .sh-kind.k-mega,    [data-ui="sentence"] .sh-kind-l.k-mega    { color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] .sh-kind.k-mode,    [data-ui="sentence"] .sh-kind-l.k-mode    { color: var(--sentence-dim); }
+[data-ui="sentence"] .sh-kind.k-cancer,  [data-ui="sentence"] .sh-kind-l.k-cancer  { color: var(--sentence-warn); }
+[data-ui="sentence"] .sh-name {
+  font-family: var(--sentence-serif); font-size: 15px; letter-spacing: .05em;
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sh-en {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .04em;
+  color: var(--sentence-dim);
+}
+/* 簡介：兩行截斷。原型 css/proof.css .row-desc 逐字同一組值
+   （11.5px / 1.5 / -webkit-line-clamp:2），只有顏色換成 --sentence-fg2。 */
+[data-ui="sentence"] .sh-desc {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-family: var(--sentence-sans); font-size: 11.5px; line-height: 1.5;
+  color: var(--sentence-fg2); margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+[data-ui="sentence"] .sent-hit-row.open .sh-desc {
+  -webkit-line-clamp: unset; overflow: visible;
+}
+[data-ui="sentence"] .sent-hit-more {
+  min-width: 46px; min-height: 46px; padding: 0;
+  background: transparent; border: 0; border-left: 1px dotted var(--sentence-line);
+  border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 15px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .sent-hit-more:hover { background: var(--sentence-shade); color: var(--sentence-fg); }
 
 /* ---- 目標頁：#sentTrail（插在 .app-header 之後，文件流，內容被推開不被蓋住） ---- */
 [data-ui="sentence"] .sent-trail {
@@ -1296,6 +1436,12 @@
   [data-ui="sentence"] .smb-btn[disabled] { opacity: .4; }
   [data-ui="sentence"] .smb-btn[disabled]:active { background: var(--sentence-bg); }
   [data-ui="sentence"] body:has(#sentBar) { padding-bottom: 72px; }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  [data-ui="sentence"] .sh-kind-l { border-color: currentColor; opacity: .92; }
+  [data-ui="sentence"] .sent-hit-row { border-bottom-color: var(--sentence-line); }
 }
 
 /* ================================================================
