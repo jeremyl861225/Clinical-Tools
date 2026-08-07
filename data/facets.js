@@ -246,7 +246,10 @@ window.FACETS = {
     {"w": "中風風險", "al": "stroke risk CHA2DS2 抗凝適應症"},
     {"w": "侵襲性念珠菌感染", "al": "invasive candidiasis candida 念珠菌"},
     {"w": "肝纖維化", "al": "fibrosis FIB-4 纖維化"},
-    {"w": "肝硬化", "al": "cirrhosis Child-Pugh MELD 肝功能失代償 肝差"},
+    // 硬化／肝纖維化：使用者回報「肝臟的硬化」找不到 FIB-4。FIB-4 的 c 標的是
+    // 「肝纖維化」，而肝硬化就是纖維化的終末期——查硬化的人要的正是纖維化評估工具，
+    // 故以 sub 讓上位的「肝硬化」展開到「肝纖維化」；反向不設（查纖維化不必然要看硬化）。
+    {"w": "肝硬化", "al": "cirrhosis Child-Pugh MELD 肝功能失代償 肝差 硬化 肝臟硬化 肝變硬", "sub": ["肝纖維化"]},
     // 通用字 failure 讓給下方的上位詞「衰竭」。
     {"w": "急性肝衰竭", "al": "acute-liver-failure ALF King's-College 猛爆性肝炎 肝昏迷"},
     {"w": "肝移植排序", "al": "transplant listing 移植 等候名單"},
@@ -654,8 +657,12 @@ window.FACETS = {
     {"k": "wassmer", "name": "Wassmer Score", "en": "Clinical Severity Score for SBO", "desc": "預測黏連性小腸阻塞是否需手術切除腸段，≥4分列為高風險", "kind": "tool", "href": "tools/wassmer.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸阻塞", "grpEn": "Bowel Obstruction", "cnt": "3 項", "s": ["小腸"], "c": ["腸阻塞", "腸絞窄", "阻塞"], "a": ["算分數", "要不要開刀"], "impl": ""},
     {"k": "angers", "name": "Angers CT Score", "en": "Angers CT Score", "desc": "依CT影像特徵預測黏連性小腸阻塞保守治療失敗風險，≥5分為高風險", "kind": "tool", "href": "tools/angers.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸阻塞", "grpEn": "Bowel Obstruction", "cnt": "3 項", "s": ["小腸"], "c": ["腸阻塞", "腸絞窄", "阻塞"], "a": ["算分數", "要不要開刀"], "impl": ""},
     {"k": "millet", "name": "Millet Score", "en": "Combined CT Findings for Strangulation", "desc": "結合3項CT徵象評估小腸阻塞絞窄風險，三項皆無時可高信心排除絞窄", "kind": "tool", "href": "tools/millet.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸阻塞", "grpEn": "Bowel Obstruction", "cnt": "3 項", "s": ["小腸"], "c": ["腸阻塞", "腸絞窄", "阻塞"], "a": ["算分數", "要不要開刀"], "impl": ""},
-    {"k": "radial", "name": "RADIAL Score", "en": "RADIAL Score for AMI Mortality", "desc": "預測急性腸繫膜缺血住院死亡率，分數越高（0–13分）死亡率越高", "kind": "tool", "href": "tools/radial.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸繫膜缺血", "grpEn": "Mesenteric Ischemia", "cnt": "2 項", "s": ["腸繫膜血管"], "c": ["腸缺血"], "a": ["算分數", "定嚴重度"], "impl": ""},
-    {"k": "amiscore", "name": "AMI Diagnostic Score", "en": "Novel Scoring System for AMI Diagnosis", "desc": "以常規血液檢驗（WBC、RDW、MPV、D-dimer）輔助急診鑑別急性腸繫膜缺血", "kind": "tool", "href": "tools/ami.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸繫膜缺血", "grpEn": "Mesenteric Ischemia", "cnt": "2 項", "s": ["腸繫膜血管"], "c": ["腸缺血"], "a": ["算分數", "定嚴重度"], "impl": ""},
+    {"k": "radial", "name": "RADIAL Score", "en": "RADIAL Score for AMI Mortality", "desc": "預測急性腸繫膜缺血住院死亡率，分數越高（0–13分）死亡率越高", "kind": "tool", "href": "tools/radial.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸繫膜缺血", "grpEn": "Mesenteric Ischemia", "cnt": "2 項", // 小腸：AMI 就是小腸缺血——pathways/gi-ischemia.html 標題即「Acute mesenteric
+     // ischaemia — 小腸為主」，該流程本身也已掛「小腸」。使用者回報「小腸的缺血」查不到這兩支。
+     "s": ["腸繫膜血管", "小腸"], "c": ["腸缺血"], "a": ["算分數", "定嚴重度"], "impl": ""},
+    {"k": "amiscore", "name": "AMI Diagnostic Score", "en": "Novel Scoring System for AMI Diagnosis", "desc": "以常規血液檢驗（WBC、RDW、MPV、D-dimer）輔助急診鑑別急性腸繫膜缺血", "kind": "tool", "href": "tools/ami.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "腸繫膜缺血", "grpEn": "Mesenteric Ischemia", "cnt": "2 項", // 小腸：AMI 就是小腸缺血——pathways/gi-ischemia.html 標題即「Acute mesenteric
+     // ischaemia — 小腸為主」，該流程本身也已掛「小腸」。使用者回報「小腸的缺血」查不到這兩支。
+     "s": ["腸繫膜血管", "小腸"], "c": ["腸缺血"], "a": ["算分數", "定嚴重度"], "impl": ""},
     {"k": "fib4", "name": "FIB-4", "en": "Fibrosis-4 Index", "desc": "進行性肝纖維化的非侵入性初篩。並列兩套切點——脂肪肝（MASLD）用 1.30／2.67、原始 HIV/HCV 用 1.45／3.25，依病因自動選讀；≥65 歲自動改用 2.0 低風險切點，<35 歲標示敏感度不足。中間帶必須做彈性造影或 ELF，不可停在這一步", "kind": "tool", "href": "tools/fib4.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "肝臟", "grpEn": "Hepatology", "cnt": "4 項", "s": ["肝臟"], "c": ["肝纖維化"], "a": ["算分數", "定嚴重度"], "impl": ""},
     {"k": "acute-liver-failure", "name": "急性肝衰竭", "en": "Acute Liver Failure", "desc": "King's College Criteria 移植判準（acetaminophen 與非 acetaminophen 分軌，自動判陽性/未達）；KCC 陰性不排除移植需求。含 NAC 適應症、肝性腦病與顱內壓管理、病因專屬治療（O'Grady 1989／ACG 2023）", "kind": "tool", "href": "tools/acute-liver-failure.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "肝臟", "grpEn": "Hepatology", "cnt": "4 項", "s": ["肝臟"], "c": ["急性肝衰竭", "肝移植排序", "衰竭"], "a": ["定嚴重度", "判時機", "算分數", "判預後"], "impl": ""},
     {"k": "childpugh", "name": "Child-Pugh", "en": "Child-Pugh Score", "desc": "評估肝硬化嚴重度分級A/B/C，C級病人手術風險顯著升高", "kind": "tool", "href": "tools/child-pugh.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "肝臟", "grpEn": "Hepatology", "cnt": "4 項", "s": ["肝臟"], "c": ["肝硬化", "衰竭"], "a": ["算分數", "定嚴重度", "查腎肝調整", "怎麼調", "判預後"], "impl": ""},

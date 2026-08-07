@@ -190,7 +190,15 @@
    小於 19px——**問題不在標題太大，是內容太小**。改成把 .lede-title 放大（見上），
    那才是這三頁載入時真正的臨床內容。註記在這裡，免得下一位又走一次同樣的冤枉路。
    另外也不能改成把隱藏的建議框顯示出來——那會改變渲染文字，parity.py 立刻擋下。 */
-[data-ui="sentence"] .back-stack { gap: 8px; }
+/* 造句設計下整組收起。使用者實機回報兩件事，其實是同一個原因：
+     · 每一頁的「← 返回主選單」與句子軌跡裡的「清空句子」用途重疊
+     · 抗生素那六個分頁互相跳時還會多長出「← 返回抗生素指引」，
+       但那六頁本來就有分頁列可以互跳，那顆按鈕是多餘的
+   造句設計已經有自己的一套返回：句子軌跡內的「清空句子」（每一頁都有、
+   桌機手機皆然，實測按下去會導回 index.html）＋ 手機下緣固定列的「退一個詞」。
+   兩套返回鍵並存只是讓人不知道該按哪一個。
+   只用 display:none：節點與 js/backlink.js 都沒動，關掉造句設計立刻原樣回來。 */
+[data-ui="sentence"] .back-stack { display: none; }
 [data-ui="sentence"] .back-btn {
   font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .04em;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
@@ -871,8 +879,15 @@
 /* :not(.sd-colhead)：a.sd-colhead.dlink 那 9 個已經被上面那條 flex-column 規則
    撐到 44px，這裡只再處理單純的列首連結（th.rowhead 內、display 預設 inline，
    min-height 對 inline 元素無效，需要先改成 inline-flex 才吃得到）。 */
+/* min-height 拿掉了。當初補 44px 是為了觸控目標，附註寫著「實測頁面 scrollHeight
+   設計關 5015px、設計開 5001px——沒有變高」。那個數字現在不成立：實測
+   tools/spectrum-database.html 資料格中位數 37px（正式版）→ 55px（造句設計），
+   1044 個格子受影響，整頁 5344 → 5573px。使用者實機看到後要求「將這個表格的
+   每格高度節省」。這是明知而為的取捨——列首藥名連結不再滿足 44px 觸控目標，
+   與 M-1 段對藥物／抗生素查閱頁徽章鈕做的取捨同一個理由：使用者兩度指名要密度。
+   min-width 保留（那是為了「1st／2nd」這種極短縮寫，不影響列高）。 */
 [data-ui="sentence"] a.dlink:not(.sd-colhead) {
-  display: inline-flex; align-items: center; min-height: 44px; min-width: 44px;
+  display: inline-flex; align-items: center; min-width: 44px;
   /* 部分藥名縮寫很短（1st／2nd／Colistin 縮到 42px 這種），min-height 補完後
      量出來的寬還是 <44px——列首欄有 ~92px 空間，補寬不會撐破欄位。 */
 }
@@ -1587,8 +1602,13 @@
   border-left: 3px solid var(--sentence-line2);
 }
 
+/* align-items 用 baseline 不用 center：這一行混了兩種字級（「136」是 14px、
+   旁邊的說明是 11px），center 是各自把「盒子」置中，字級不同盒高就不同，
+   兩段文字的基線因此差開——使用者實機截圖圈出來的就是這個。實測 center 下
+   .sent-point-n top=335、.sent-point-hint top=338，差 3px。baseline 對的是
+   文字本身而不是盒子，兩段字才會坐在同一條線上。 */
 [data-ui="sentence"] .sent-point {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
   font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .1em;
   color: var(--sentence-dim);
   border-top: 1px solid var(--sentence-line);
@@ -1798,7 +1818,12 @@
 [data-ui="sentence"] .sent-hub {
   background: var(--sentence-bg);
   min-height: 72px; padding: 9px 10px;
-  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  /* justify-content 用 flex-start 不用 center：六格的描述文字行數不一樣
+     （「急重症處置」三行、「癌症治療」兩行），置中會讓同一列兩張卡的標題
+     一高一低。實測 center 下同一列的標題頂端差 7px（急重症處置 9px vs
+     癌症治療 16px），使用者實機截圖圈出來的就是這個。改成從頂端排起，
+     所有卡片的標題一律對齊。 */
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 2px;
   text-align: left; border: 0; border-radius: 0; color: var(--sentence-fg);
   transition: background var(--sentence-fast) var(--sentence-ease);
 }
