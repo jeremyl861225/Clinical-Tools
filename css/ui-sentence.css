@@ -199,7 +199,18 @@
    桌機手機皆然，實測按下去會導回 index.html）＋ 手機下緣固定列的「退一個詞」。
    兩套返回鍵並存只是讓人不知道該按哪一個。
    只用 display:none：節點與 js/backlink.js 都沒動，關掉造句設計立刻原樣回來。 */
-[data-ui="sentence"] .back-stack { display: none; }
+   **修正（使用者實機回報）**：原本整個 .back-stack 都收掉，把 js/backlink.js
+   動態產生的那顆 `.back-origin`（「← 返回闌尾炎手術決策」這種**帶來路**的返回鍵）
+   一起收掉了——從決策流程點進計分工具之後就回不去原本那份流程，正式版有、
+   造句設計沒有。使用者要移除的是「返回主選單」那一顆（跟「清空句子」用途重疊），
+   不是帶來路的那一顆。改成只收沒有 .back-origin 的那些。 */
+/* .back-stack 在造句設計下**維持正式版原樣顯示**。
+   曾經整排收掉（理由：跟軌跡裡的「清空句子」用途重疊），結果把 js/backlink.js
+   動態產生的 .back-origin（「← 返回闌尾炎決策」這種帶來路的返回鍵）一起弄不見，
+   從決策流程點進計分工具後就回不去——使用者實機回報。
+   之後試過三種選擇器（子代、:not(.back-origin)、[onclick*=index.html]）都因為
+   對 backlink.js 的 DOM 結構假設有誤而打錯目標。**在真的把那份 DOM 讀清楚之前，
+   這裡不再放任何隱藏規則**：多一顆返回鍵只是重複，少一顆是走不出去。 */
 [data-ui="sentence"] .back-btn {
   font-family: var(--sentence-mono); font-size: 11px; letter-spacing: .04em;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
