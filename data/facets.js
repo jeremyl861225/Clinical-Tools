@@ -8,150 +8,225 @@
    · 每個新詞、每一筆補上的標註前面都有 // 註解說明為什麼對到那個項目。 */
 window.FACETS = {
   "s": [
-    {"w": "腹部", "al": "abdomen abdominal 腹腔 肚子"},
-    {"w": "闌尾", "al": "appendix appendicitis 盲腸"},
-    {"w": "膽道", "al": "biliary gallbladder 膽囊 膽管 CBD"},
-    {"w": "胰臟", "al": "pancreas pancreatic 胰"},
-    {"w": "肝臟", "al": "liver hepatic 肝"},
-    {"w": "食道", "al": "esophagus esophageal 食管"},
-    {"w": "胃十二指腸", "al": "stomach gastric duodenum 胃 十二指腸 PU"},
-    {"w": "小腸", "al": "small bowel jejunum ileum 空腸 迴腸"},
-    {"w": "大腸", "al": "colon colorectal 結腸 直腸 乙狀結腸"},
-    {"w": "腹壁與疝氣", "al": "hernia abdominal wall 腹壁 疝"},
-    {"w": "腹膜", "al": "peritoneum peritoneal 腹膜腔"},
-    {"w": "腸繫膜血管", "al": "mesenteric SMA SMV 腸繫膜"},
-    {"w": "軟組織", "al": "soft tissue skin 皮膚 筋膜"},
-    {"w": "會陰", "al": "perineum Fournier 陰囊 會陰部"},
-    {"w": "心臟", "al": "heart cardiac myocardium 心肌"},
-    {"w": "冠狀動脈", "al": "coronary PCI CABG 冠脈"},
-    {"w": "主動脈", "al": "aorta aortic 主動脈弓"},
-    {"w": "周邊動脈", "al": "peripheral artery limb 下肢 動脈"},
-    {"w": "肺循環", "al": "pulmonary vasculature PE 肺動脈"},
-    {"w": "肺與氣道", "al": "lung pulmonary 肺部 肺葉"},
-    {"w": "氣道", "al": "airway intubation 插管 喉頭"},
-    {"w": "呼吸器", "al": "ventilator mechanical ventilation 呼吸機 通氣"},
-    {"w": "腎臟", "al": "kidney renal 腎 CRRT"},
-    {"w": "電解質", "al": "electrolyte sodium potassium 鈉 鉀 鈣"},
-    {"w": "酸鹼", "al": "acid base pH 血氣 ABG"},
-    {"w": "體液與滲透壓", "al": "fluid osmolality 水分 補液 滲透壓"},
-    {"w": "血糖", "al": "glucose glycemia DKA HHS 血醣"},
-    {"w": "甲狀腺", "al": "thyroid 甲狀腺素 T4"},
-    {"w": "腎上腺", "al": "adrenal cortisol 皮質醇"},
-    {"w": "腦", "al": "brain cerebral ICP 顱內"},
-    {"w": "腦血管", "al": "cerebrovascular stroke 中風 動脈瘤"},
-    {"w": "意識", "al": "consciousness GCS ACVPU 昏迷"},
-    {"w": "凝血", "al": "coagulation anticoagulant 抗凝 抗血小板 出血"},
-    {"w": "感染與敗血", "al": "infection sepsis 敗血 感染源"},
-    {"w": "病原菌", "al": "organism pathogen 細菌 菌種 培養"},
-    {"w": "抗生素", "al": "antibiotic antibacterial 抗菌 抗生素"},
-    {"w": "抗黴菌藥", "al": "antifungal candida 黴菌 念珠菌"},
-    {"w": "抗病毒藥", "al": "antiviral 病毒 抗病毒"},
-    {"w": "一般藥物", "al": "drug medication formulary 處方 藥品 藥物"},
-    {"w": "升壓與強心藥", "al": "vasopressor inotrope 升壓劑 強心"},
-    {"w": "鎮靜止痛", "al": "sedation analgesia opioid 麻醉 鎮靜"},
-    {"w": "病人整體", "al": "patient whole 全身 共病 病況"},
-    {"w": "圍手術期", "al": "perioperative 術前 術後 圍術期"},
-    {"w": "手術排程", "al": "scheduling priority 排刀 急刀 開刀房"},
-    {"w": "創傷", "al": "trauma injury 外傷 車禍"},
-    {"w": "燒燙傷", "al": "burn 燙傷 灼傷"},
-    {"w": "營養", "al": "nutrition 營養 餵食 TPN"},
-    {"w": "靜脈血栓", "al": "VTE DVT 血栓 深部靜脈"},
-    {"w": "心房顫動", "al": "atrial fibrillation AF Afib 心房纖維顫動"},
-    {"w": "休克循環", "al": "shock hemodynamics 血壓 循環 灌流"},
-    {"w": "兒科", "al": "pediatric child 小兒 兒童 新生兒"},
+    /* 第 6 輪（字詞查詢廣度）對 s 表做的三件事，逐條理由見各行 // 註解：
+       (1) 每個部位補口語俗名／簡稱／英文，讓「肚子」「肺」「骨頭」「脖子」查得到；
+       (2) 器官型部位補 sub，讓上位詞帶得出下位詞（腹部→腹內各器官、腦→腦血管與意識…）；
+       (3) 新增四個上位部位詞（腸道／消化道／血管／神經系統），見本陣列末端。 */
+    // 上位詞。口語只會說「肚子」「肚」「腹」；sub 收編所有腹內器官與腹壁，
+    // 這樣「我遇到腹部的癌症」帶得出胃癌／大腸直腸癌／胰臟癌／肝細胞癌／膽管癌／
+    // GIST／NET，而不是只有直接標了「腹部」的那幾張流程頁。食道一併收進來的
+    // 理由是本檔 tools[] 自己把 esoph 歸在 sec="abdomen"（腹部急症）。
+    {"w": "腹部", "al": "abdomen abdominal 腹腔 肚子 肚 腹 腹內 腹腔內 intraabdominal belly", "sub": ["闌尾", "膽道", "胰臟", "肝臟", "食道", "胃十二指腸", "小腸", "大腸", "腹壁與疝氣", "腹膜", "腸繫膜血管"]},
+    // 「盲腸」是闌尾的俗名（既有）；「蟲垂」是舊譯名。
+    {"w": "闌尾", "al": "appendix appendicitis appendiceal 盲腸 蟲垂"},
+    // 值班多半只說一個「膽」字；膽結石／總膽管／膽囊管的說法都要落到膽道。
+    {"w": "膽道", "al": "biliary gallbladder cholecyst bile 膽囊 膽管 CBD 膽 膽道系統 總膽管 膽囊管 膽結石"},
+    {"w": "胰臟", "al": "pancreas pancreatic 胰 胰腺 胰頭 胰尾 胰體"},
+    {"w": "肝臟", "al": "liver hepatic hepato 肝 肝膽 肝門 肝葉"},
+    {"w": "食道", "al": "esophagus esophageal oesophagus 食管 食道下端 賁門"},
+    // 「上消化道」在臨床上就是指胃與十二指腸這一段。
+    {"w": "胃十二指腸", "al": "stomach gastric duodenum duodenal gastroduodenal 胃 十二指腸 PU 胃部 胃竇 幽門 上消化道"},
+    // 「small」「bowel」兩個通用 token 讓給新的上位詞「腸道」（見本陣列末端）——
+    // 打 bowel 的人多半沒有分大小腸，收窄成小腸就是使用者抱怨的「查不到」。
+    {"w": "小腸", "al": "small-bowel small-intestine jejunum ileum SB 空腸 迴腸 小腸段"},
+    {"w": "大腸", "al": "colon colorectal rectum cecum sigmoid 結腸 直腸 乙狀結腸 升結腸 橫結腸 降結腸 大腸直腸"},
+    {"w": "腹壁與疝氣", "al": "hernia abdominal-wall inguinal groin 腹壁 疝 疝氣 腹股溝 脫腸"},
+    {"w": "腹膜", "al": "peritoneum peritoneal intraperitoneal 腹膜腔 腹膜炎部位"},
+    {"w": "腸繫膜血管", "al": "mesenteric SMA SMV IMA 腸繫膜 腸子血管"},
+    {"w": "軟組織", "al": "soft tissue skin 皮膚 筋膜 傷口 肌肉 蜂窩組織 表皮"},
+    {"w": "會陰", "al": "perineum perianal Fournier 陰囊 會陰部 肛門 肛周 生殖器"},
+    // sub 收冠狀動脈：「我遇到心臟的…」要帶得出 ACS 與 GRACE，不是只有心衰竭與 ACLS。
+    {"w": "心臟", "al": "heart cardiac myocardium cardio 心肌 心 心室 心房 心臟功能", "sub": ["冠狀動脈"]},
+    {"w": "冠狀動脈", "al": "coronary PCI CABG 冠脈 心導管 支架 stent"},
+    {"w": "主動脈", "al": "aorta aortic 主動脈弓 大動脈 升主動脈 降主動脈 胸主動脈 腹主動脈"},
+    // 通用字「動脈」讓給新的上位詞「血管」（見本陣列末端）——單打「動脈」的人
+    // 未必是問下肢動脈，收窄在周邊動脈會漏掉主動脈與腸繫膜血管。
+    {"w": "周邊動脈", "al": "peripheral-artery limb PAD 下肢 下肢動脈 周邊血管 腳 手腳"},
+    // 通用字「pulmonary」讓給「肺與氣道」（那才是使用者說「肺」時要的那一大群）。
+    {"w": "肺循環", "al": "pulmonary-vasculature PE 肺動脈 肺血管 肺循環系統"},
+    // sub 收氣道／呼吸器／肺循環：打一個「肺」字要帶得出插管、呼吸器設定與肺栓塞。
+    {"w": "肺與氣道", "al": "lung lungs pulmonary 肺 肺部 肺葉 呼吸 呼吸系統 胸腔 chest", "sub": ["氣道", "呼吸器", "肺循環"]},
+    {"w": "氣道", "al": "airway intubation trachea 插管 喉頭 呼吸道 氣管 聲門"},
+    {"w": "呼吸器", "al": "ventilator mechanical-ventilation vent 呼吸機 通氣 上呼吸器 呼吸器設定"},
+    {"w": "腎臟", "al": "kidney kidneys renal 腎 CRRT 腎臟功能 洗腎 透析"},
+    // sub 收體液與酸鹼：電解質異常與滲透壓、酸鹼在值班上是同一件事的三個面向。
+    {"w": "電解質", "al": "electrolyte electrolytes sodium potassium 鈉 鉀 鈣 離子 血鈉 血鉀 鎂 磷", "sub": ["體液與滲透壓", "酸鹼"]},
+    {"w": "酸鹼", "al": "acid base acid-base pH 血氣 ABG 酸中毒 鹼中毒 動脈血氣"},
+    {"w": "體液與滲透壓", "al": "fluid osmolality 水分 補液 滲透壓 輸液 點滴 脫水 水腫"},
+    {"w": "血糖", "al": "glucose glycemia DKA HHS 血醣 糖尿病 diabetes 胰島素 insulin"},
+    {"w": "甲狀腺", "al": "thyroid 甲狀腺素 T4 TSH 甲亢 甲狀腺功能"},
+    {"w": "腎上腺", "al": "adrenal cortisol 皮質醇 類固醇 steroid ACTH"},
+    // sub 收腦血管與意識：打「頭」「腦」的人要的是中風、腦出血、TBI、癲癇一整群。
+    {"w": "腦", "al": "brain cerebral ICP 顱內 頭 頭部 大腦 腦部 顱骨 腦壓", "sub": ["腦血管", "意識"]},
+    {"w": "腦血管", "al": "cerebrovascular stroke 中風 動脈瘤 腦中風 腦動脈 腦血管疾病"},
+    {"w": "意識", "al": "consciousness GCS ACVPU 昏迷 神智 意識狀態 清醒度 mental-status"},
+    {"w": "凝血", "al": "coagulation anticoagulant coagulopathy 抗凝 抗血小板 出血 血小板 INR warfarin DOAC 凝血功能"},
+    // sub 收病原菌：說「我遇到感染」的人也該看得到「依病原菌」那條路。
+    {"w": "感染與敗血", "al": "infection sepsis 敗血 感染源 感染科 感染症", "sub": ["病原菌"]},
+    {"w": "病原菌", "al": "organism pathogen microbiology 細菌 菌種 培養 菌 微生物 革蘭氏"},
+    {"w": "抗生素", "al": "antibiotic antibacterial antimicrobial abx 抗菌 抗生素 抗微生物"},
+    {"w": "抗黴菌藥", "al": "antifungal candida 黴菌 念珠菌 真菌 黴菌感染"},
+    {"w": "抗病毒藥", "al": "antiviral antivirals 病毒 抗病毒 病毒感染"},
+    // sub 收五類專科用藥：打一個「藥」字要帶得出抗生素、升壓劑、鎮靜止痛的所有藥頁。
+    {"w": "一般藥物", "al": "drug drugs medication medications formulary 處方 藥品 藥物 藥 用藥 開藥 藥單", "sub": ["抗生素", "抗黴菌藥", "抗病毒藥", "升壓與強心藥", "鎮靜止痛"]},
+    {"w": "升壓與強心藥", "al": "vasopressor vasoactive inotrope 升壓劑 強心 升壓 血壓藥 levophed norepinephrine dopamine dobutamine"},
+    {"w": "鎮靜止痛", "al": "sedation sedative analgesia opioid 麻醉 鎮靜 止痛 疼痛 pain 嗎啡 fentanyl"},
+    {"w": "病人整體", "al": "patient whole 全身 共病 病況 病人 整體 一般狀況 全人"},
+    {"w": "圍手術期", "al": "perioperative preop postop 術前 術後 圍術期 手術前 手術後 開刀前 開刀後"},
+    {"w": "手術排程", "al": "scheduling priority 排刀 急刀 開刀房 排程 開刀時間 OR"},
+    // sub 收燒燙傷：燒燙傷本來就是創傷的一種，打「創傷」不該漏掉燒燙傷補液。
+    {"w": "創傷", "al": "trauma injury 外傷 車禍 撞到 摔倒 跌倒 墜落 刀傷 槍傷 鈍傷 穿刺傷", "sub": ["燒燙傷"]},
+    {"w": "燒燙傷", "al": "burn burns scald 燙傷 灼傷 火燒 熱傷害"},
+    {"w": "營養", "al": "nutrition nutritional enteral parenteral 營養 餵食 TPN 進食 灌食 靜脈營養"},
+    {"w": "靜脈血栓", "al": "VTE DVT 血栓 深部靜脈 靜脈栓塞 血栓預防"},
+    {"w": "心房顫動", "al": "atrial fibrillation AF Afib 心房纖維顫動 不規則心跳"},
+    {"w": "休克循環", "al": "shock hemodynamics perfusion 血壓 循環 灌流 血行動力學 血壓低 循環衰竭"},
+    {"w": "兒科", "al": "pediatric pediatrics child 小兒 兒童 新生兒 嬰兒 小朋友 孩子"},
     // 乳癌唯一對應的解剖部位；原本乳癌被誤標成 s=['癌症']，這裡給它真正的部位。
-    {"w": "乳房", "al": "breast mammary 乳腺"},
+    {"w": "乳房", "al": "breast mammary 乳腺 乳 乳部"},
     // 白血病／淋巴癌／MDS／MPN 六個血液腫瘤共用的部位——這些是全身性血液疾病，沒有單一解剖器官可掛，比照「感染與敗血」「病人整體」的做法給一個系統級部位。
-    {"w": "血液與骨髓", "al": "hematologic heme blood marrow 血液系統 骨髓 血液腫瘤 造血"},
+    // sub 收凝血：凝血功能異常本來就是血液系統的問題，打「血」要看得到抗凝逆轉與 VTE 那幾頁。
+    {"w": "血液與骨髓", "al": "hematologic haematology heme blood marrow 血液系統 骨髓 血液腫瘤 造血 血 血球 白血球 血液科", "sub": ["凝血"]},
     // 子宮頸癌／子宮內膜癌／子宮肉瘤／卵巢癌四個婦癌共用的部位。
-    {"w": "婦科", "al": "gynecologic uterus ovary cervix 子宮 卵巢 婦產 婦癌"},
+    {"w": "婦科", "al": "gynecologic gynecology uterus ovary cervix 子宮 卵巢 婦產 婦癌 婦女 陰道 子宮頸 輸卵管 骨盆腔"},
     // 上泌尿道腫瘤／腎細胞癌／膀胱癌／攝護腺癌四個泌尿癌別共用的部位；也用來讓「依部位」抗生素模式能接住泌尿道感染的查詢（見下方 abx-mode-empiric 的部位擴充）。
-    {"w": "泌尿系統", "al": "urologic urinary tract kidney ureter bladder prostate 泌尿 腎盂輸尿管 泌尿道"},
+    // 補中文器官名（膀胱／攝護腺／輸尿管…）——原本只有英文 bladder／prostate，中文打不到。
+    // sub 收腎臟：腎臟是泌尿道的一部分，打「泌尿」不該漏掉 eGFR 與 AKI。
+    {"w": "泌尿系統", "al": "urologic urinary tract ureter bladder prostate 泌尿 腎盂輸尿管 泌尿道 膀胱 攝護腺 前列腺 輸尿管 腎盂 尿道 尿路 泌尿科", "sub": ["腎臟"]},
     // 鼻咽癌／頭頸癌共用的部位；原本兩者都掛在錯誤的 s=['癌症']。
-    {"w": "頭頸", "al": "head neck 頭頸部 鼻咽 咽喉 口腔"},
+    // sub 收甲狀腺：甲狀腺長在脖子上，打「脖子」「頸部」要看得到甲狀腺那兩頁。
+    {"w": "頭頸", "al": "head neck 頭頸部 鼻咽 咽喉 口腔 脖子 頸部 頸 喉嚨 舌 扁桃腺 下咽", "sub": ["甲狀腺"]},
     // 第 5 輪合併頁內子目標新增：c 已有「骨關節感染」卻沒有對應部位詞
     // （data/sub-abx.js 的「骨與關節感染」#site 子目標需要，s 標註逐字沿用該檔）。
-    {"w": "骨與關節", "al": "bone joint osteomyelitis 骨科 骨骼 關節 骨髓炎 化膿性關節炎 人工關節"},
+    {"w": "骨與關節", "al": "bone joint osteomyelitis 骨科 骨骼 關節 骨髓炎 化膿性關節炎 人工關節 骨頭 骨 脊椎 spine 髖 膝"},
+
+    /* ══ 第 6 輪新增的四個上位部位詞：值班說話時很少一開口就講到器官層級，
+       「腸子」「消化道」「血管」「神經」這四種說法原本一個都查不到。 ══ */
+    // 「腸」「腸子」不分大小腸——sub 兩邊都收，不逼使用者先決定是小腸還是大腸。
+    {"w": "腸道", "al": "bowel intestine gut 腸 腸子 腸管 腸道系統", "sub": ["小腸", "大腸"]},
+    // 從食道到大腸一整條；「消化道出血」「消化道穿孔」這類說法的部位面向落點。
+    {"w": "消化道", "al": "GI gastrointestinal digestive 消化系統 腸胃 腸胃道", "sub": ["食道", "胃十二指腸", "小腸", "大腸"]},
+    // 通用字「動脈」在此收編（見上方周邊動脈的註解）；涵蓋主動脈剝離、肢體缺血、
+    // 腸繫膜缺血、肺栓塞、腦血管五群——問「血管」的人要的就是這一整組。
+    {"w": "血管", "al": "vascular vessel vessels 動脈 靜脈 血管系統 大血管 血流", "sub": ["主動脈", "周邊動脈", "腸繫膜血管", "肺循環", "腦血管"]},
+    // 腦＋腦血管＋意識三者的上位詞；「神經」「CNS」原本查不到任何東西。
+    {"w": "神經系統", "al": "neurologic neurology neuro nervous CNS 神經 中樞神經 神經科", "sub": ["腦", "腦血管", "意識"]},
   ],
   "c": [
-    {"w": "闌尾炎", "al": "appendicitis 盲腸炎"},
-    {"w": "腹腔感染", "al": "intra-abdominal infection IAI 腹內感染"},
-    {"w": "腹內膿瘍", "al": "abscess 膿瘍 膿包"},
-    {"w": "膽囊炎", "al": "cholecystitis 膽囊發炎 Tokyo"},
-    {"w": "膽管炎", "al": "cholangitis 膽道感染"},
-    {"w": "憩室炎", "al": "diverticulitis Hinchey"},
-    {"w": "胰臟炎", "al": "pancreatitis Atlanta"},
-    {"w": "壞死性軟組織感染", "al": "necrotizing fasciitis NSTI 壞死性筋膜炎"},
-    {"w": "腸阻塞", "al": "bowel obstruction SBO ileus 腸道阻塞"},
-    {"w": "腸絞窄", "al": "strangulation 絞窄 缺血性腸阻塞"},
-    {"w": "腸扭轉", "al": "volvulus 乙狀結腸扭轉"},
-    {"w": "腸套疊", "al": "intussusception"},
-    {"w": "疝氣", "al": "hernia inguinal 腹股溝"},
-    {"w": "嵌頓", "al": "incarceration strangulated 箝頓"},
-    {"w": "腸缺血", "al": "mesenteric ischemia AMI 腸繫膜缺血 缺血性大腸炎"},
-    {"w": "消化道穿孔", "al": "perforation free air 破洞 游離氣體 穿孔"},
-    {"w": "消化性潰瘍穿孔", "al": "peptic ulcer perforation PPU 穿孔"},
-    {"w": "腹膜炎", "al": "peritonitis"},
-    {"w": "消化道出血", "al": "GI bleeding 腸胃道出血"},
-    {"w": "上消化道出血", "al": "upper GI bleeding UGIB 吐血"},
-    {"w": "下消化道出血", "al": "lower GI bleeding LGIB 血便"},
-    {"w": "食道急症", "al": "esophageal Boerhaave 異物 腐蝕性"},
-    {"w": "腹部創傷", "al": "abdominal trauma FAST AAST"},
-    {"w": "腹腔高壓", "al": "IAH ACS intra-abdominal hypertension 腹腔室症候群 open abdomen"},
-    {"w": "急刀分級", "al": "emergency priority 急刀 等候時間"},
-    {"w": "分類分級", "al": "classification grading 分類系統 Csendes Forrest"},
-    {"w": "抗栓管理", "al": "antithrombotic bridging 停藥 橋接 抗凝"},
+    /* 第 6 輪（字詞查詢廣度）對 c 表做的四件事，逐條理由見各行 // 註解：
+       (1) 把被窄詞條搶走的通用字還給上位詞。buildFacetIndex() 是先到先得
+           （`if(!idx[a]) idx[a]=o`），窄的詞條排在前面就會把 infection／
+           obstruction／bleeding／hemorrhage／trauma／shock／failure／cancer／
+           tumor／carcinoma 這些通用字整個吃掉，使用者打那個字只會查到窄的那
+           一撮——這正是使用者兩次抱怨的「過度收斂」。通用字一律改由上位詞持有，
+           窄詞條改用連字號寫法（intra-abdominal-infection、septic-shock…），
+           查得到的東西只增不減。
+       (2) 上位詞補 sub，讓「阻塞」「感染」「出血」「意識障礙」帶得出下位診斷。
+       (3) 30 個癌別的 al 原本只是把英文名整串抄進來，切出來的 token 全是
+           Cancer／Carcinoma／Tumor／Leukemia／(Acute／&／／ 這種通用字與雜訊；
+           改寫成真正的別名（縮寫＋中文俗名＋專屬英文），通用字讓給「癌症」。
+       (4) 末端新增缺血／發炎／結石／白血病／膽道阻塞／創傷後抗生素六個詞。 */
+    {"w": "闌尾炎", "al": "appendicitis 盲腸炎 闌尾發炎"},
+    // 通用字 infection 讓給下方的上位詞「感染」；sub 收編所有腹內感染來源，
+    // 這是使用者原話「出現所有腹內感染」要的那一組。
+    {"w": "腹腔感染", "al": "intra-abdominal-infection IAI cIAI 腹內感染 腹腔內感染", "sub": ["闌尾炎", "膽囊炎", "膽管炎", "憩室炎", "腹內膿瘍", "腹膜炎", "消化道穿孔"]},
+    {"w": "腹內膿瘍", "al": "abscess 膿瘍 膿包 積膿 化膿"},
+    {"w": "膽囊炎", "al": "cholecystitis 膽囊發炎 Tokyo TG18"},
+    {"w": "膽管炎", "al": "cholangitis 膽道感染 膽管發炎"},
+    {"w": "憩室炎", "al": "diverticulitis Hinchey 憩室發炎"},
+    {"w": "胰臟炎", "al": "pancreatitis Atlanta 胰臟發炎"},
+    {"w": "壞死性軟組織感染", "al": "necrotizing fasciitis NSTI 壞死性筋膜炎 爛肉 食肉菌"},
+    // 通用字 obstruction 讓給下方的上位詞「阻塞」；sub 收絞窄／扭轉／套疊／嵌頓——
+    // 使用者原話抱怨「我遇到小腸的腸阻塞」只跑出腸套疊，反過來也要成立。
+    {"w": "腸阻塞", "al": "bowel-obstruction SBO LBO ileus 腸道阻塞 小腸阻塞 大腸阻塞 麻痺性腸阻塞 腸不通 脹氣", "sub": ["腸絞窄", "腸扭轉", "腸套疊", "嵌頓"]},
+    {"w": "腸絞窄", "al": "strangulation 絞窄 缺血性腸阻塞 腸子壞死"},
+    {"w": "腸扭轉", "al": "volvulus 乙狀結腸扭轉 腸子扭到"},
+    {"w": "腸套疊", "al": "intussusception 腸子套住"},
+    {"w": "疝氣", "al": "hernia inguinal 腹股溝 脫腸 凸出來"},
+    {"w": "嵌頓", "al": "incarceration incarcerated strangulated 箝頓 卡住 推不回去"},
+    {"w": "腸缺血", "al": "mesenteric-ischemia AMI CMI 腸繫膜缺血 缺血性大腸炎 腸子缺血"},
+    {"w": "消化道穿孔", "al": "perforation free-air 破洞 游離氣體 穿孔 破掉 腸破"},
+    {"w": "消化性潰瘍穿孔", "al": "peptic ulcer PPU 潰瘍穿孔 胃穿孔 十二指腸穿孔"},
+    {"w": "腹膜炎", "al": "peritonitis 腹膜發炎 板硬 全腹壓痛"},
+    // 通用字 bleeding 讓給下方的上位詞「出血」；sub 收上／下消化道出血。
+    {"w": "消化道出血", "al": "GI-bleeding GIB 腸胃道出血 腸胃出血 消化道大出血", "sub": ["上消化道出血", "下消化道出血"]},
+    {"w": "上消化道出血", "al": "UGIB upper-GI-bleeding 吐血 咖啡色嘔吐物 黑便 melena"},
+    {"w": "下消化道出血", "al": "LGIB lower-GI-bleeding 血便 解血便 鮮血便 hematochezia"},
+    {"w": "食道急症", "al": "Boerhaave 食道穿孔 食道異物 異物 腐蝕性 吞入"},
+    // 通用字 trauma 讓給下方的上位詞「創傷」。
+    {"w": "腹部創傷", "al": "abdominal-trauma FAST AAST 腹部外傷 鈍傷 穿刺傷 肚子撞到"},
+    // 通用字 ACS 改由「急性冠心症」持有——臨床上單講 ACS 十次有九次是急性冠心症；
+    // 這一頁另有 IAH／腹腔室症候群／abdominal compartment syndrome 三種說法可查，
+    // 「說整句」的全文搜尋也吃得到本頁 en 欄的「IAH / ACS & Open Abdomen」。
+    {"w": "腹腔高壓", "al": "IAH intra-abdominal-hypertension abdominal-compartment-syndrome 腹腔室症候群 腹腔內高壓 open-abdomen 開腹減壓 肚子壓力高"},
+    {"w": "急刀分級", "al": "emergency priority 急刀 等候時間 幾級刀 排刀"},
+    {"w": "分類分級", "al": "classification grading 分類系統 Csendes Forrest 分型"},
+    {"w": "抗栓管理", "al": "antithrombotic bridging 停藥 橋接 抗凝 抗血小板 術前停藥"},
     // 同義詞：IHCA＝院內心跳停止＝心跳停止。ACLS 是 136 項裡唯一對得上的項目，沒有 sub 可補。
-    {"w": "心跳停止", "al": "cardiac arrest CPR ROSC 復甦 IHCA OHCA 院內心跳停止 院外心跳停止 復甦後照護"},
-    {"w": "心律不整", "al": "arrhythmia tachycardia bradycardia 心搏過速 心搏過緩 EKG 心電圖"},
-    {"w": "敗血症", "al": "sepsis 敗血"},
-    {"w": "敗血性休克", "al": "septic shock"},
-    {"w": "心因性休克", "al": "cardiogenic shock SCAI"},
-    {"w": "血行動力學監測", "al": "hemodynamic Swan-Ganz PAC 肺動脈導管"},
-    // 同義詞：掉血壓＝低血壓（al 已有）＝休克。補 sub 讓「休克」接得到敗血性休克（sepsis-path 原本只標了敗血性休克，沒有字面「休克」）。
-    {"w": "休克", "al": "shock hypotension 低血壓 灌流不足 掉血壓", "sub": ["敗血性休克", "心因性休克", "創傷大出血"]},
-    {"w": "肺栓塞", "al": "pulmonary embolism PE CTPA D-dimer"},
-    {"w": "創傷大出血", "al": "hemorrhage damage control 大量輸血 MTP"},
-    {"w": "急性冠心症", "al": "ACS STEMI NSTEMI 心肌梗塞"},
-    {"w": "心臟衰竭", "al": "heart failure HFrEF 心衰竭"},
-    {"w": "呼吸衰竭", "al": "respiratory failure 呼吸衰竭"},
-    {"w": "ARDS", "al": "acute respiratory distress syndrome 急性呼吸窘迫"},
-    {"w": "低血氧", "al": "hypoxemia 缺氧 SpO2"},
-    {"w": "機械通氣", "al": "mechanical ventilation 肺保護 潮氣容積 PEEP"},
-    {"w": "高流量氧氣", "al": "HFNC high flow 高流量鼻導管"},
-    {"w": "插管", "al": "intubation RSI 快速誘導"},
-    {"w": "急性腎損傷", "al": "AKI acute kidney injury 腎衰竭"},
-    {"w": "透析時機", "al": "RRT dialysis CRRT 洗腎"},
-    {"w": "腎功能", "al": "eGFR creatinine 肌酸酐 腎絲球"},
-    {"w": "腦出血", "al": "ICH intracerebral hemorrhage 顱內出血"},
-    {"w": "蜘蛛膜下腔出血", "al": "SAH aneurysm 動脈瘤"},
-    {"w": "創傷性腦損傷", "al": "TBI head injury 頭部外傷"},
-    {"w": "缺血性中風", "al": "ischemic stroke tPA thrombectomy 血栓溶解"},
-    {"w": "癲癇重積", "al": "status epilepticus seizure 抽搐"},
-    {"w": "意識障礙", "al": "altered consciousness coma GCS 昏迷 譫妄"},
-    {"w": "肢體缺血", "al": "acute limb ischaemia ALI Rutherford"},
+    // 補口語與波形名（沒脈搏／壓胸／VF／asystole），值班喊的就是這些字。
+    {"w": "心跳停止", "al": "cardiac-arrest CPR ROSC 復甦 IHCA OHCA 院內心跳停止 院外心跳停止 復甦後照護 沒有脈搏 沒心跳 壓胸 asystole VF pulseless"},
+    {"w": "心律不整", "al": "arrhythmia tachycardia bradycardia 心搏過速 心搏過緩 EKG 心電圖 心跳快 心跳慢"},
+    {"w": "敗血症", "al": "sepsis 敗血 感染合併器官衰竭", "sub": ["敗血性休克", "菌血症"]},
+    // 通用字 shock 讓給下方的上位詞「休克」（原本被這一條先搶走，打 shock 只出得來敗血性休克那一頁）。
+    {"w": "敗血性休克", "al": "septic-shock 敗血症休克 感染性休克"},
+    {"w": "心因性休克", "al": "cardiogenic-shock SCAI 心源性休克 心臟打不動"},
+    {"w": "血行動力學監測", "al": "hemodynamic Swan-Ganz PAC 肺動脈導管 右心導管"},
+    // 同義詞：掉血壓＝低血壓（al 已有）＝休克。sub 除既有三型外再收肺栓塞（阻塞型休克）
+    // 與腎上腺危機（分佈型休克）——這兩個是值班「血壓掉了」時最常被漏掉的可逆原因。
+    {"w": "休克", "al": "shock hypotension hypoperfusion 低血壓 灌流不足 掉血壓 血壓掉 血壓低 血壓不穩 休克狀態", "sub": ["敗血性休克", "心因性休克", "創傷大出血", "肺栓塞", "腎上腺危機"]},
+    {"w": "肺栓塞", "al": "pulmonary-embolism PE CTPA D-dimer 肺動脈栓塞"},
+    // 通用字 hemorrhage 讓給下方的上位詞「出血」。
+    {"w": "創傷大出血", "al": "massive-hemorrhage damage-control 大量輸血 MTP 失血性休克 大出血 血流不止"},
+    // 通用字 ACS 在此收編（見上方腹腔高壓的註解）。
+    {"w": "急性冠心症", "al": "ACS STEMI NSTEMI 心肌梗塞 心絞痛 胸痛 MI"},
+    // 通用字 failure 讓給下方的上位詞「衰竭」（原本被這一條先搶走）。
+    {"w": "心臟衰竭", "al": "heart-failure HFrEF HFpEF HFmrEF 心衰竭 心臟功能不全 肺水腫 喘"},
+    // 同上，讓出 failure；補值班會用的口語（喘不過氣／二氧化碳蓄積）與 sub。
+    {"w": "呼吸衰竭", "al": "respiratory-failure ARF 呼吸功能不全 換氣不足 二氧化碳蓄積 喘不過氣 呼吸喘", "sub": ["低血氧", "ARDS", "機械通氣", "高流量氧氣", "插管"]},
+    {"w": "ARDS", "al": "acute-respiratory-distress-syndrome 急性呼吸窘迫 兩側肺浸潤"},
+    {"w": "低血氧", "al": "hypoxemia desaturation 缺氧 SpO2 血氧掉 血氧低 氧氣不夠"},
+    {"w": "機械通氣", "al": "mechanical-ventilation 肺保護 潮氣容積 PEEP 呼吸器設定 上呼吸器"},
+    {"w": "高流量氧氣", "al": "HFNC HFNO high-flow 高流量鼻導管 氧氣治療"},
+    {"w": "插管", "al": "intubation RSI 快速誘導 氣管內管 放管"},
+    {"w": "急性腎損傷", "al": "AKI acute-kidney-injury 腎衰竭 腎功能惡化 肌酸酐上升", "sub": ["透析時機", "少尿", "腎功能"]},
+    {"w": "透析時機", "al": "RRT dialysis CRRT 洗腎 血液透析 上機"},
+    {"w": "腎功能", "al": "eGFR creatinine 肌酸酐 腎絲球 腎功能不全 CKD"},
+    {"w": "腦出血", "al": "ICH intracerebral-hemorrhage 顱內出血 腦溢血 出血性中風"},
+    {"w": "蜘蛛膜下腔出血", "al": "SAH aSAH aneurysm 動脈瘤 蛛網膜下腔出血 動脈瘤破裂 爆炸性頭痛"},
+    {"w": "創傷性腦損傷", "al": "TBI head-injury 頭部外傷 撞到頭 腦挫傷 EDH SDH"},
+    {"w": "缺血性中風", "al": "ischemic-stroke tPA thrombectomy 血栓溶解 腦梗塞 中風 取栓"},
+    {"w": "癲癇重積", "al": "status-epilepticus seizure 抽搐 癲癇 發作 痙攣 convulsion 全身抽"},
+    // 使用者原話：「我遇到意識障礙→也要出現腦出血與 SAH」。除了 ich-path 本來就標了
+    // 意識障礙之外，sub 再收整組「叫不醒要先排除什麼」的鑑別——中風、TBI、癲癇後狀態、
+    // 低血鈉、DKA／HHS，這些都是值班遇到意識改變時會一起想到的。
+    {"w": "意識障礙", "al": "altered-consciousness coma confusion delirium GCS 昏迷 譫妄 意識不清 神智不清 叫不醒 意識改變 沒反應", "sub": ["腦出血", "蜘蛛膜下腔出血", "缺血性中風", "創傷性腦損傷", "癲癇重積", "低血鈉", "DKA", "HHS"]},
+    {"w": "肢體缺血", "al": "acute-limb-ischaemia ALI Rutherford 急性肢體缺血 腳冰冷 摸不到脈"},
     {"w": "主動脈剝離", "al": "aortic dissection IMH PAU 剝離"},
     {"w": "甲狀腺風暴", "al": "thyroid storm Burch-Wartofsky 甲亢危象"},
     {"w": "腎上腺危機", "al": "adrenal crisis hydrocortisone 腎上腺功能不全"},
-    {"w": "高血鉀", "al": "hyperkalemia K 鉀離子過高"},
-    {"w": "低血鈉", "al": "hyponatremia Na 鈉離子過低"},
-    {"w": "高血鈉", "al": "hypernatremia 自由水缺乏 free water"},
-    {"w": "DKA", "al": "diabetic ketoacidosis 糖尿病酮酸中毒"},
-    {"w": "HHS", "al": "hyperosmolar hyperglycemic 高滲透壓高血糖"},
-    {"w": "高血糖", "al": "hyperglycemia 血糖過高"},
-    {"w": "酸鹼失衡", "al": "acid-base disorder 代謝性酸中毒 呼吸性鹼中毒 anion gap"},
-    {"w": "電解質異常", "al": "electrolyte disorder 低血鈣 校正"},
-    {"w": "滲透壓間隙", "al": "osmolal gap 滲透壓差"},
-    {"w": "劑量體重", "al": "dosing weight IBW ABW BSA 體表面積"},
-    {"w": "劑量換算", "al": "conversion equivalent 等效劑量 類固醇 嗎啡"},
+    {"w": "高血鉀", "al": "hyperkalemia hyperkalaemia K 鉀離子過高 鉀高 血鉀高"},
+    {"w": "低血鈉", "al": "hyponatremia hyponatraemia Na 鈉離子過低 鈉低 血鈉低"},
+    {"w": "高血鈉", "al": "hypernatremia hypernatraemia 自由水缺乏 free-water 鈉高 血鈉高"},
+    {"w": "DKA", "al": "diabetic-ketoacidosis 糖尿病酮酸中毒 酮酸中毒 酮體"},
+    {"w": "HHS", "al": "hyperosmolar hyperglycemic 高滲透壓高血糖 高糖高滲透壓"},
+    {"w": "高血糖", "al": "hyperglycemia hyperglycaemia 血糖過高 血糖高 糖太高"},
+    {"w": "酸鹼失衡", "al": "acid-base-disorder acidosis alkalosis 代謝性酸中毒 呼吸性鹼中毒 anion-gap 陰離子間隙 酸中毒 鹼中毒"},
+    // sub 收四種具體離子異常：打「電解質異常」不必再自己想是鉀還是鈉。
+    {"w": "電解質異常", "al": "electrolyte-disorder 低血鈣 校正 離子異常 電解質不平衡", "sub": ["高血鉀", "低血鈉", "高血鈉", "滲透壓間隙"]},
+    {"w": "滲透壓間隙", "al": "osmolal-gap 滲透壓差 毒性酒精"},
+    {"w": "劑量體重", "al": "dosing-weight IBW ABW BSA 體表面積 理想體重 校正體重"},
+    {"w": "劑量換算", "al": "conversion equivalent 等效劑量 類固醇 嗎啡 換藥 換算劑量"},
     // 補 sub：消化道出血・顱內出血（腦出血）・SAH・創傷大出血，讓「出血」這個既有詞也能當上位詞用。
-    {"w": "出血", "al": "bleeding hemorrhage 出血風險 逆轉", "sub": ["消化道出血", "上消化道出血", "下消化道出血", "腦出血", "蜘蛛膜下腔出血", "創傷大出血"]},
-    {"w": "燒燙傷", "al": "burn Parkland TBSA 補液"},
-    {"w": "共病負荷", "al": "comorbidity Charlson 共病"},
-    {"w": "器官衰竭", "al": "organ failure SOFA 多重器官"},
-    {"w": "重症死亡風險", "al": "ICU mortality APACHE 死亡率"},
-    {"w": "病情惡化", "al": "deterioration early warning 早期預警 惡化 rapid response"},
-    {"w": "手術死亡風險", "al": "operative mortality NELA POSSUM 術後死亡"},
+    // 通用字 bleeding／hemorrhage 由這一條持有（已從消化道出血與創傷大出血讓出，見上）。
+    {"w": "出血", "al": "bleeding hemorrhage haemorrhage 出血風險 逆轉 流血 失血 血紅素掉", "sub": ["消化道出血", "上消化道出血", "下消化道出血", "腦出血", "蜘蛛膜下腔出血", "創傷大出血"]},
+    {"w": "燒燙傷", "al": "burn Parkland TBSA 補液 燙傷 灼傷"},
+    {"w": "共病負荷", "al": "comorbidity Charlson 共病 慢性病"},
+    // 通用字 failure 讓給下方的上位詞「衰竭」。
+    {"w": "器官衰竭", "al": "MODS SOFA 多重器官 多重器官衰竭"},
+    {"w": "重症死亡風險", "al": "ICU mortality APACHE 死亡率 重症預後"},
+    {"w": "病情惡化", "al": "deterioration early-warning 早期預警 惡化 rapid-response 變差 掉下去"},
+    // 通用字 operative 讓給下方的上位詞「手術」。
+    {"w": "手術死亡風險", "al": "operative-mortality NELA POSSUM 術後死亡 開刀死亡率 開刀風險"},
     {"w": "術後併發症", "al": "complication Clavien-Dindo 併發症"},
     {"w": "營養不良", "al": "malnutrition GLIM NRS 營養風險"},
     {"w": "再餵食症候群", "al": "refeeding syndrome 再餵食"},
@@ -159,8 +234,9 @@ window.FACETS = {
     {"w": "中風風險", "al": "stroke risk CHA2DS2 抗凝適應症"},
     {"w": "侵襲性念珠菌感染", "al": "invasive candidiasis candida 念珠菌"},
     {"w": "肝纖維化", "al": "fibrosis FIB-4 纖維化"},
-    {"w": "肝硬化", "al": "cirrhosis Child-Pugh MELD 肝功能失代償"},
-    {"w": "急性肝衰竭", "al": "acute liver failure ALF King's College 猛爆性肝炎"},
+    {"w": "肝硬化", "al": "cirrhosis Child-Pugh MELD 肝功能失代償 肝差"},
+    // 通用字 failure 讓給下方的上位詞「衰竭」。
+    {"w": "急性肝衰竭", "al": "acute-liver-failure ALF King's-College 猛爆性肝炎 肝昏迷"},
     {"w": "肝移植排序", "al": "transplant listing 移植 等候名單"},
     {"w": "抗生素選擇", "al": "empiric therapy 經驗性用藥 換藥 降階"},
     {"w": "MRSA", "al": "methicillin resistant 抗藥性金黃色葡萄球菌 vancomycin"},
@@ -185,57 +261,94 @@ window.FACETS = {
     {"w": "懷孕用藥", "al": "pregnancy 孕婦 哺乳 懷孕分級"},
     {"w": "藥物禁忌", "al": "contraindication allergy 過敏 交互作用"},
     {"w": "處方集", "al": "formulary 藥卡 台大藥劑部 商品名"},
-    {"w": "癌症分期", "al": "staging TNM AJCC FIGO 分期"},
-    {"w": "淋巴結分群", "al": "lymph node station 淋巴結"},
-    {"w": "癌症治療", "al": "chemotherapy adjuvant neoadjuvant 化療 標靶 免疫治療"},
+    /* 這三個詞在 HEAD 就是死詞：沒有任何標的的 c 陣列掛過它們（「癌症治療」在
+       tools[] 裡出現 30 次是 secTitle 欄，不是 c 標註），選了會得到 0 件事。
+       第 6 輪補 sub: ["癌症"]——展開會遞迴到癌症自己的 30 個癌別，於是這三個
+       說法都落到同一批癌別頁上（30 個癌別頁本來就同時含分期／淋巴結／治療三塊）。 */
+    {"w": "癌症分期", "al": "staging TNM AJCC FIGO 分期 期別 第幾期", "sub": ["癌症"]},
+    {"w": "淋巴結分群", "al": "lymph node station 淋巴結 分群 淋巴", "sub": ["癌症"]},
+    {"w": "癌症治療", "al": "chemotherapy adjuvant neoadjuvant 化療 標靶 免疫治療 抗癌治療", "sub": ["癌症"]},
     {"w": "少尿", "al": "oliguria urine output 尿量"},
     {"w": "發燒", "al": "fever pyrexia 體溫"},
     {"w": "呼吸急促", "al": "tachypnea 喘 呼吸速率"},
     {"w": "兒童病人", "al": "pediatric child 小兒 兒童"},
-    {"w": "肺癌", "al": "Lung Cancer"},
-    {"w": "食道癌", "al": "Esophageal Cancer"},
-    {"w": "胃癌", "al": "Gastric Cancer"},
-    {"w": "胰臟癌", "al": "Ductal Adenocarcinoma & IPMN / MCN"},
-    {"w": "胃腸道基質瘤", "al": "Gastrointestinal Stromal Tumor"},
-    {"w": "大腸直腸癌", "al": "Colorectal Cancer"},
-    {"w": "肛門癌", "al": "Anal Cancer (Squamous)"},
-    {"w": "闌尾癌", "al": "Appendiceal Cancer"},
-    {"w": "肝細胞癌", "al": "Hepatocellular Carcinoma"},
-    {"w": "膽管癌", "al": "Cholangiocarcinoma"},
-    {"w": "神經內分泌瘤", "al": "Neuroendocrine Tumor"},
-    {"w": "乳癌", "al": "Breast Cancer"},
-    {"w": "甲狀腺癌", "al": "Thyroid Cancer"},
-    {"w": "軟組織肉瘤", "al": "Soft Tissue Sarcoma"},
-    {"w": "急性骨髓性白血病", "al": "Leukemia (Acute Myeloid Leukemia)"},
-    {"w": "淋巴癌", "al": "Lymphoma (Hodgkin & Non-Hodgkin)"},
-    {"w": "急性淋巴性白血病", "al": "Acute Lymphoblastic Leukemia"},
-    {"w": "慢性骨髓性白血病", "al": "Chronic Myeloid Leukemia"},
-    {"w": "骨髓分化不良症候群", "al": "Myelodysplastic Syndromes / Neoplasms"},
-    {"w": "骨髓增生性腫瘤", "al": "Myeloproliferative Neoplasms (PV / ET / MF)"},
-    {"w": "子宮頸癌", "al": "Cervical Cancer"},
-    {"w": "子宮內膜癌", "al": "Endometrial Carcinoma"},
-    {"w": "子宮肉瘤", "al": "Uterine Sarcoma"},
-    {"w": "卵巢癌", "al": "Ovarian / Fallopian Tube / Primary Peritoneal Cancer"},
-    {"w": "上泌尿道腫瘤", "al": "Upper Tract Urothelial Carcinoma"},
-    {"w": "腎細胞癌", "al": "Renal Cell Carcinoma"},
-    {"w": "膀胱癌", "al": "Urinary Bladder Cancer"},
-    {"w": "攝護腺癌", "al": "Prostate Cancer"},
-    {"w": "鼻咽癌", "al": "Nasopharyngeal Carcinoma"},
-    {"w": "頭頸癌", "al": "Head & Neck Cancer"},
+    /* 30 個癌別的 al 改寫（第 6 輪）。原本每一條都只是把 tools[].en 整串抄過來，
+       splitWords() 切出來的是 Cancer／Carcinoma／Tumor／Sarcoma／Leukemia／
+       Neoplasms／(Acute／(PV／&／／ 這些通用字與雜訊：先到先得的結果是打
+       「cancer」只出得來肺癌一頁、打「tumor」只出得來 GIST、打「carcinoma」
+       只出得來肝細胞癌。這裡改成真正的別名——臨床縮寫（NSCLC／HCC／CRC／GIST／
+       AML／CML／RCC／UTUC／NPC…）＋中文俗名＋各自專屬的英文，通用字一律讓給
+       下方的上位詞「癌症」。英文全名不會因此查不到：「說整句」的全文索引吃的是
+       tools[].name／en／desc，那三欄一個字都沒動。 */
+    {"w": "肺癌", "al": "lung NSCLC SCLC 非小細胞肺癌 小細胞肺癌 肺腺癌 肺部腫瘤"},
+    {"w": "食道癌", "al": "esophageal oesophageal 食道腫瘤 食道鱗狀細胞癌 食道腺癌"},
+    {"w": "胃癌", "al": "gastric stomach 胃部腫瘤 胃腺癌 印戒細胞癌"},
+    {"w": "胰臟癌", "al": "PDAC pancreatic ductal-adenocarcinoma IPMN MCN 胰腺癌 胰臟腫瘤 胰管腺癌 胰臟囊性腫瘤"},
+    {"w": "胃腸道基質瘤", "al": "GIST gastrointestinal-stromal 基質瘤 間質瘤 KIT"},
+    {"w": "大腸直腸癌", "al": "CRC colorectal colon-cancer rectal-cancer 結腸癌 直腸癌 大腸癌"},
+    {"w": "肛門癌", "al": "anal squamous 肛管癌 肛門鱗狀細胞癌"},
+    {"w": "闌尾癌", "al": "appendiceal 闌尾腫瘤 黏液性腫瘤 假性黏液瘤 pseudomyxoma"},
+    {"w": "肝細胞癌", "al": "HCC hepatocellular 肝癌 肝腫瘤 肝細胞肝癌"},
+    {"w": "膽管癌", "al": "CCA cholangiocarcinoma iCCA pCCA dCCA 膽道癌 Klatskin 肝門膽管癌"},
+    {"w": "神經內分泌瘤", "al": "NET NEN pNET neuroendocrine 類癌 carcinoid 神經內分泌腫瘤"},
+    {"w": "乳癌", "al": "breast 乳房腫瘤 乳腺癌 HER2 三陰性"},
+    {"w": "甲狀腺癌", "al": "thyroid-cancer PTC FTC MTC ATC 乳突癌 濾泡癌 髓質癌 未分化癌"},
+    {"w": "軟組織肉瘤", "al": "STS soft-tissue-sarcoma 肉瘤 脂肪肉瘤 平滑肌肉瘤"},
+    {"w": "急性骨髓性白血病", "al": "AML myeloid 急性骨髓白血病 骨髓性白血病"},
+    {"w": "淋巴癌", "al": "lymphoma Hodgkin Non-Hodgkin DLBCL 淋巴瘤 何杰金氏"},
+    {"w": "急性淋巴性白血病", "al": "ALL lymphoblastic 急性淋巴球性白血病 淋巴性白血病"},
+    {"w": "慢性骨髓性白血病", "al": "CML chronic-myeloid BCR-ABL 慢性骨髓白血病 費城染色體"},
+    {"w": "骨髓分化不良症候群", "al": "MDS myelodysplastic 骨髓化生不良 骨髓分化不良"},
+    {"w": "骨髓增生性腫瘤", "al": "MPN myeloproliferative PV ET MF 真性紅血球增多症 原發性血小板增多症 骨髓纖維化"},
+    {"w": "子宮頸癌", "al": "cervical-cancer 子宮頸腫瘤 HPV FIGO 子宮頸"},
+    {"w": "子宮內膜癌", "al": "endometrial 子宮體癌 子宮內膜腫瘤"},
+    {"w": "子宮肉瘤", "al": "uterine-sarcoma leiomyosarcoma 子宮平滑肌肉瘤"},
+    {"w": "卵巢癌", "al": "ovarian fallopian-tube primary-peritoneal 卵巢腫瘤 輸卵管癌 原發性腹膜癌 CA-125"},
+    {"w": "上泌尿道腫瘤", "al": "UTUC upper-tract-urothelial 腎盂癌 輸尿管癌 上泌尿道尿路上皮癌"},
+    {"w": "腎細胞癌", "al": "RCC renal-cell 腎癌 腎臟腫瘤 clear-cell"},
+    {"w": "膀胱癌", "al": "bladder-cancer NMIBC MIBC urothelial 尿路上皮癌 膀胱腫瘤"},
+    {"w": "攝護腺癌", "al": "prostate-cancer PSA Gleason 前列腺癌 攝護腺腫瘤"},
+    {"w": "鼻咽癌", "al": "NPC nasopharyngeal EBV 鼻咽腫瘤"},
+    {"w": "頭頸癌", "al": "HNSCC head-neck-cancer 口腔癌 喉癌 下咽癌 舌癌 頭頸部腫瘤"},
     // 從 s 表移過來——「癌症」是狀況不是部位。30 個癌別已直接掛上這個字（見上），這裡的 sub 供未來展開式比對／字輪過濾使用。
-    {"w": "癌症", "al": "cancer tumor oncology 腫瘤 癌 胃癌 食道癌 大腸直腸癌 胰臟癌 肝細胞癌 肺癌 乳癌 攝護腺癌 膀胱癌 腎細胞癌 膽管癌 甲狀腺癌 鼻咽癌 頭頸癌 淋巴癌 子宮頸癌 子宮內膜癌 卵巢癌 胃腸道基質瘤 神經內分泌瘤 肛門癌 闌尾癌 軟組織肉瘤 上泌尿道腫瘤 泌尿癌 婦癌 白血病 骨髓增生性腫瘤", "sub": ["肺癌", "食道癌", "胃癌", "胰臟癌", "胃腸道基質瘤", "大腸直腸癌", "肛門癌", "闌尾癌", "肝細胞癌", "膽管癌", "神經內分泌瘤", "乳癌", "甲狀腺癌", "軟組織肉瘤", "急性骨髓性白血病", "淋巴癌", "急性淋巴性白血病", "慢性骨髓性白血病", "骨髓分化不良症候群", "骨髓增生性腫瘤", "子宮頸癌", "子宮內膜癌", "子宮肉瘤", "卵巢癌", "上泌尿道腫瘤", "腎細胞癌", "膀胱癌", "攝護腺癌", "鼻咽癌", "頭頸癌"]},
+    // 第 6 輪：通用字 cancer／carcinoma／tumor／neoplasm／malignancy 已從 30 個癌別的 al 讓出來給這一條（見上方癌別區塊的說明），另補「惡性腫瘤」「長瘤」等口語。
+    {"w": "癌症", "al": "cancer carcinoma tumor tumour neoplasm neoplasms malignancy oncology ca 腫瘤 癌 惡性腫瘤 惡性 長瘤 腫塊 泌尿癌 婦癌 血液腫瘤", "sub": ["肺癌", "食道癌", "胃癌", "胰臟癌", "胃腸道基質瘤", "大腸直腸癌", "肛門癌", "闌尾癌", "肝細胞癌", "膽管癌", "神經內分泌瘤", "乳癌", "甲狀腺癌", "軟組織肉瘤", "急性骨髓性白血病", "淋巴癌", "急性淋巴性白血病", "慢性骨髓性白血病", "骨髓分化不良症候群", "骨髓增生性腫瘤", "子宮頸癌", "子宮內膜癌", "子宮肉瘤", "卵巢癌", "上泌尿道腫瘤", "腎細胞癌", "膀胱癌", "攝護腺癌", "鼻咽癌", "頭頸癌"]},
     // 涵蓋呼吸／心臟／肝／腎衰竭；肝硬化＝慢性肝衰竭、腎功能＝腎功能不全的量測都算進來，才接得到 Child-Pugh／MELD／eGFR 這類臨床上真的會被叫成「腎衰竭」「肝衰竭」查詢的項目。
-    {"w": "衰竭", "al": "organ failure insufficiency 衰竭 器官衰竭 multi-organ failure", "sub": ["呼吸衰竭", "心臟衰竭", "急性肝衰竭", "肝硬化", "器官衰竭", "急性腎損傷", "腎功能"]},
+    // 第 6 輪：通用字 failure 已從心臟／呼吸／急性肝／器官衰竭四條讓出來給這一條；sub 再補 ARDS 與透析時機（腎衰竭問到底就是要不要洗腎）。
+    {"w": "衰竭", "al": "failure insufficiency organ-failure multi-organ-failure 衰竭 器官衰竭 功能不全 撐不住", "sub": ["呼吸衰竭", "心臟衰竭", "急性肝衰竭", "肝硬化", "器官衰竭", "急性腎損傷", "腎功能", "ARDS", "透析時機"]},
     // 涵蓋腹部創傷・TBI・燒燙傷・創傷後抗生素・創傷大出血。
-    {"w": "創傷", "al": "trauma injury 外傷 車禍", "sub": ["腹部創傷", "創傷性腦損傷", "燒燙傷", "創傷後抗生素", "創傷大出血"]},
+    // 第 6 輪：通用字 trauma／injury 已從腹部創傷與急性腎損傷讓出來給這一條；補口語（撞到／摔倒／刀傷）與開放性骨折。
+    {"w": "創傷", "al": "trauma injury 外傷 車禍 撞到 摔倒 跌倒 墜落 刀傷 槍傷 受傷", "sub": ["腹部創傷", "創傷性腦損傷", "燒燙傷", "創傷後抗生素", "創傷大出血", "開放性骨折"]},
     // 涵蓋圍手術期各站：NELA／P-POSSUM／SORT（手術死亡風險）、CCI 綜合併發症指數（術後併發症）、緊急手術分級（急刀分級）、手術預防（手術預防性抗生素）、圍手術期抗栓／CHA2DS2-VASc／HAS-BLED（抗栓管理）。
-    {"w": "手術", "al": "surgery operative perioperative 手術 開刀 圍手術期", "sub": ["手術死亡風險", "術後併發症", "急刀分級", "手術預防性抗生素", "抗栓管理"]},
+    // 第 6 輪 sub 再補：衰弱（CFS 是術前評估）、營養不良（ESPEN 外科術前營養）、VTE 風險（Caprini 就是外科版）。
+    {"w": "手術", "al": "surgery operative operation perioperative 手術 開刀 圍手術期 上刀 排刀", "sub": ["手術死亡風險", "術後併發症", "急刀分級", "手術預防性抗生素", "抗栓管理", "衰弱", "營養不良", "VTE 風險"]},
     // 涵蓋腹腔感染、敗血症、NSTI 等；刻意收得廣，因為值班喊「感染」時通常還沒鎖定器官。
-    {"w": "感染", "al": "infection sepsis 敗血 感染源 感染症", "sub": ["腹腔感染", "敗血症", "敗血性休克", "壞死性軟組織感染", "肺炎", "侵襲性念珠菌感染", "菌血症", "泌尿道感染", "皮膚軟組織感染", "心內膜炎", "骨關節感染", "中樞神經感染", "導管相關感染"]},
+    // 第 6 輪：通用字 infection 已從腹腔感染讓出來給這一條；sub 再補闌尾炎／膽囊炎／膽管炎／憩室炎／腹膜炎／腹內膿瘍（這些本來就是感染，只是原本得靠各頁自己直標「感染」才查得到，計分工具那幾頁沒有直標就漏掉），另收抗結核／破傷風／抗黴菌／抗病毒。
+    {"w": "感染", "al": "infection infectious 感染源 感染症 發燒感染 有沒有感染", "sub": ["腹腔感染", "敗血症", "敗血性休克", "壞死性軟組織感染", "肺炎", "侵襲性念珠菌感染", "菌血症", "泌尿道感染", "皮膚軟組織感染", "心內膜炎", "骨關節感染", "中樞神經感染", "導管相關感染", "闌尾炎", "膽囊炎", "膽管炎", "憩室炎", "腹膜炎", "腹內膿瘍", "抗結核", "破傷風", "抗黴菌治療", "抗病毒治療"]},
     // 涵蓋腸阻塞・腸扭轉・腸套疊・膽道阻塞。
-    {"w": "阻塞", "al": "obstruction blockage 阻塞 塞住", "sub": ["腸阻塞", "腸扭轉", "腸套疊", "腸絞窄", "膽道阻塞"]},
+    // 第 6 輪：通用字 obstruction 已從腸阻塞讓出來給這一條；再補嵌頓（嵌頓疝氣就是機械性阻塞）。
+    {"w": "阻塞", "al": "obstruction obstructive blockage 阻塞 塞住 不通 堵住", "sub": ["腸阻塞", "腸扭轉", "腸套疊", "腸絞窄", "膽道阻塞", "嵌頓"]},
     // 低血氧／呼吸衰竭／ARDS／高流量氧氣，值班喊「缺氧」時這四個都算數。
-    {"w": "缺氧", "al": "hypoxia hypoxemia 低血氧 desaturation 血氧下降 SpO2 下降", "sub": ["低血氧", "呼吸衰竭", "ARDS", "高流量氧氣"]},
+    // 第 6 輪 sub 再補機械通氣與插管——「缺氧」問到底就是要不要插管、呼吸器怎麼設。
+    {"w": "缺氧", "al": "hypoxia hypoxemia hypoxaemia desaturation 低血氧 血氧下降 血氧掉 SpO2 喘 氧氣不夠", "sub": ["低血氧", "呼吸衰竭", "ARDS", "高流量氧氣", "機械通氣", "插管"]},
+
+    /* ══ 第 6 輪新增的六個狀況詞。前三個是值班會脫口而出、原本卻一個字都
+       對不上的上位詞（缺血／發炎／結石）；後三個補的是「別的地方已經在用、
+       詞表卻沒有這一筆」的漏洞——白血病是三種白血病的共同說法，膽道阻塞與
+       創傷後抗生素則是 tools[] 與上位詞 sub 都已經引用、詞表卻查無此詞
+       （expand() 雖然仍會拿字面去比對而查得到，但詞輪列不出來，等於選不到）。 ══ */
+    // 涵蓋腸繫膜缺血、急性肢體缺血、心肌缺血（ACS）與腦梗塞——四個器官的缺血是同一句話。
+    {"w": "缺血", "al": "ischemia ischaemia ischemic 缺血性 血流不足 不通血 血管塞住", "sub": ["腸缺血", "肢體缺血", "急性冠心症", "缺血性中風"]},
+    // 「發炎」是病人與值班最常用的字；對應到本工具箱裡以「炎」為名的那一整排。
+    {"w": "發炎", "al": "inflammation inflammatory 炎症 發炎反應 紅腫熱痛 CRP 高", "sub": ["闌尾炎", "膽囊炎", "膽管炎", "憩室炎", "胰臟炎", "腹膜炎", "肺炎", "皮膚軟組織感染"]},
+    // 膽結石／總膽管結石的查詢落點；ASGE 分層在分類與分級系統頁，處置在膽囊炎流程頁。
+    {"w": "結石", "al": "stone stones calculus gallstone choledocholithiasis 膽結石 膽道結石 石頭", "sub": ["總膽管結石", "膽囊炎", "膽管炎"]},
+    // 三種白血病的共同上位詞；通用字 leukemia 由這一條持有（已從 AML／ALL／CML 讓出）。
+    {"w": "白血病", "al": "leukemia leukaemia 血癌 白血球過高", "sub": ["急性骨髓性白血病", "急性淋巴性白血病", "慢性骨髓性白血病"]},
+    // chole-path 的 c 陣列與上位詞「阻塞」的 sub 都已經在用這個字，詞表卻沒有這一筆。
+    {"w": "膽道阻塞", "al": "biliary-obstruction 膽道塞住 黃疸 阻塞性黃疸 總膽管結石阻塞"},
+    // abx-trauma-abx 的 c 陣列與上位詞「創傷」的 sub 都已經在用這個字，詞表卻沒有這一筆。
+    {"w": "創傷後抗生素", "al": "trauma-antibiotics 創傷用藥 外傷抗生素 開放傷口抗生素"},
 
     /* ══ 第 5 輪：合併 323 個頁內子目標時補的新詞（見 data/sub-abx.js／sub-drugs.js／
        sub-classif.js 的檔頭說明）。33 個病原菌名的中文名與英文別名逐字取自
@@ -330,56 +443,74 @@ window.FACETS = {
     {"w": "衰弱", "al": "frailty Clinical Frailty Scale CFS Rockwood"},
   ],
   "a": [
-    {"w": "算分數", "al": "score calculate 計分 分數"},
-    {"w": "定嚴重度", "al": "severity grade 分級 嚴重度 風險分層"},
-    {"w": "要不要開刀", "al": "operative surgery 手術 開刀 保守"},
-    {"w": "選術式", "al": "procedure approach 術式 手術方式"},
-    {"w": "判時機", "al": "timing when 時機 多久 幾小時 追蹤 監測頻率 多久追蹤"},
-    {"w": "查劑量", "al": "dose dosing 劑量 用法 給藥"},
-    {"w": "查腎肝調整", "al": "renal hepatic adjustment 腎功能 肝功能 透析 CVVH"},
-    {"w": "查覆蓋菌譜", "al": "spectrum coverage 菌譜 覆蓋 感受性"},
-    {"w": "查分期", "al": "staging TNM 分期 期別"},
-    {"w": "查禁忌", "al": "contraindication warning 禁忌 警示 副作用"},
+    /* ══ 第 6 輪：動作面向的口語擴充 ══════════════════════════════════
+       使用者原話：「我打『我遇到腹膜的感染，我要』後面可以輸入『給抗生素』或
+       『找原因』…以上只是舉例，請拓展到其他用詞。」
+       動作格是三個面向裡最薄的一塊（30 個詞、平均 5.5 個別名），而值班真正
+       打出來的是「怎麼辦」「該開刀嗎」「開多少」「幾分」「多嚴重」「什麼時候」
+       這種口語，不是「定嚴重度」這種標題語。以下每一條都補上同義的口語問法、
+       英文與縮寫；另在末端新增一個上位動作詞「怎麼處理」，把最常見的那句
+       「這個要怎麼辦」接到整條處置鏈上。
+       原則同其他兩個面向：只增不減，寧可多給候選。 ══════════════════════ */
+    {"w": "算分數", "al": "score scoring calculate calculator 計分 分數 算一下 幾分 評分 計算 算出來"},
+    {"w": "定嚴重度", "al": "severity grade grading risk-stratification 分級 嚴重度 風險分層 多嚴重 嚴不嚴重 分幾級 危不危險 重不重"},
+    {"w": "要不要開刀", "al": "operative surgery operation 手術 開刀 保守 要不要手術 需不需要手術 該不該開 要開嗎 開不開 該開刀嗎 保守治療 非手術治療 NOM"},
+    {"w": "選術式", "al": "procedure approach technique 術式 手術方式 怎麼開刀 開什麼刀 用什麼術式 入路 腹腔鏡 開腹 切多少"},
+    {"w": "判時機", "al": "timing when 時機 多久 幾小時 追蹤 監測頻率 多久追蹤 什麼時候 何時 幾天 要等多久 現在還是等 等得了嗎 多久一次"},
+    {"w": "查劑量", "al": "dose dosing dosage 劑量 用法 給藥 開多少 要開多少 幾毫克 mg 濃度 泡法 輸注 infusion 稀釋 給多少 一天幾次"},
+    {"w": "查腎肝調整", "al": "renal hepatic adjustment 腎功能 肝功能 透析 CVVH 腎調整 肝調整 洗腎劑量 renal-dose 腎不好怎麼給"},
+    {"w": "查覆蓋菌譜", "al": "spectrum coverage susceptibility 菌譜 覆蓋 感受性 涵蓋 打得到 蓋不蓋得住 有沒有涵蓋 抗菌範圍"},
+    {"w": "查分期", "al": "staging stage TNM 分期 期別 第幾期 期數 早期晚期 幾期"},
+    {"w": "查禁忌", "al": "contraindication warning adverse 禁忌 警示 副作用 可不可以給 能不能用 有沒有禁忌 不良反應 會不會有問題"},
     // 決策流程的本質就是鑑別與分流，31 個 pathway 全部直標；另加兩個以分型／分類為主的查閱頁（分類與分級系統、菌譜資料庫、依病原菌模式）。
-    {"w": "找原因", "al": "鑑別診斷 是什麼 查病因 differential diagnosis etiology 怎麼分型 分型 分類"},
+    // 第 6 輪補：值班第一句話多半是「這是什麼」「為什麼會這樣」，不是「找原因」這三個字。
+    {"w": "找原因", "al": "鑑別診斷 是什麼 查病因 differential diagnosis etiology workup 怎麼分型 分型 分類 為什麼 原因 病因 怎麼會 什麼病 診斷 鑑別 找病灶 怎麼來的"},
     // 疑似感染時值班的第一個念頭。sub 沿用 brief 給的三個精確動作詞，但本檔案只材化到查覆蓋菌譜這一支真正專屬抗生素的動作詞（見下方「七、抗微生物六個入口」）——查劑量／查禁忌是幾十個劑量計算器共用的泛用動作詞，若展開式比對（js/sentence.js）直接把 sub 三個字都當成 OR 條件用來單獨搜尋（不靠 s／c 同時收斂），會把不相干的項目也掃進來，請那邊實作時注意。
-    {"w": "給抗生素", "al": "選抗生素 怎麼給藥 要給什麼藥 經驗性治療 antibiotics empiric therapy", "sub": ["查覆蓋菌譜", "查劑量", "查禁忌"]},
+    // 第 6 輪補：「要不要給抗生素」「上抗生素」「換藥」「降階」都是同一件事。
+    {"w": "給抗生素", "al": "選抗生素 怎麼給藥 要給什麼藥 經驗性治療 antibiotics empiric therapy 給藥 用藥 開藥 要不要抗生素 上抗生素 用什麼抗生素 換抗生素 降階 de-escalation 抗生素怎麼給 打什麼抗生素", "sub": ["查覆蓋菌譜", "查劑量", "查禁忌"]},
     // 腎功能不好時要調劑量。sub 沿用 brief 給的兩個精確動作詞，但材化只用查腎肝調整這一支（查劑量太泛用，理由同「給抗生素」的註解）——材化後命中 eGFR／Child-Pugh／藥物資料庫等已含查腎肝調整的項目。
-    {"w": "怎麼調", "al": "腎功能調整 換算 劑量調整 dose adjustment renal adjustment conversion", "sub": ["查劑量", "查腎肝調整"]},
+    {"w": "怎麼調", "al": "腎功能調整 換算 劑量調整 dose-adjustment renal-adjustment conversion 怎麼算 要調嗎 需不需要調 減量 減半 調劑量", "sub": ["查劑量", "查腎肝調整"]},
     // 術前抗栓藥要不要停，直接標到 periop-anticoag（唯一對得上的項目）。
-    {"w": "停藥", "al": "橋接 bridging hold stop 術前停藥 antithrombotic"},
+    {"w": "停藥", "al": "橋接 bridging hold stop 術前停藥 antithrombotic 要不要停 停多久 何時停 停幾天 先停藥"},
     // 出血病人要拮抗抗凝劑，直標到 anticoag-reversal 與 periop-anticoag（其「急刀／反轉」分頁本來就講反轉劑量）。
-    {"w": "逆轉", "al": "拮抗 antidote reverse reversal 反轉"},
+    {"w": "逆轉", "al": "拮抗 antidote reverse reversal 反轉 解藥 反轉劑 拮抗劑 中和"},
     // chole-path：desc 明寫「膽囊引流」是治療選項之一；divert-path：desc 明寫「經皮引流」；panc-path：desc 明寫「壞死感染之 step-up 引流時機」；gi-perf-path：desc 明寫「決定 NOM、引流或手術入路」
-    {"w": "要不要引流", "al": "drainage percutaneous 引流 percutaneous drainage"},
+    {"w": "要不要引流", "al": "drainage percutaneous 引流 percutaneous-drainage 放管子 pigtail 引流管 穿刺引流 要不要放管"},
     // rsi：整頁就是快速誘導插管本身；ards-path：desc 明寫升階路徑 HFNO → 插管 → 肺保護通氣
-    {"w": "要不要插管", "al": "intubate intubation 插管 airway"},
+    {"w": "要不要插管", "al": "intubate intubation 插管 airway 插不插管 該插管嗎 要不要放管 airway-management"},
     // trauma-resus：desc 明寫 FFP:pRBC ≥1:2、fibrinogen 給法，屬大量輸血協定；ich-path：desc 明寫「不需開刀者輸血小板都是 Class 3 有害」，輸血本身是決策點
-    {"w": "要不要輸血", "al": "transfusion blood product 輸血 MTP"},
+    {"w": "要不要輸血", "al": "transfusion blood-product 輸血 MTP 輸幾袋 給血 血品 要不要給血 輸血小板"},
     // aki-path：整頁副標就是 AKI & RRT Timing Pathway
-    {"w": "要不要洗腎", "al": "dialysis RRT CRRT 洗腎 透析"},
+    {"w": "要不要洗腎", "al": "dialysis RRT CRRT 洗腎 透析 上洗腎 需不需要透析 要洗嗎 上機時機"},
     // trauma-path：desc 明寫依血行動力學與 E-FAST 決定「可安全影像者」才做 CT，即影像 vs 剖腹的分流；aas-path：desc 明寫 ADD-RS 計分是用來「分流影像」
-    {"w": "要不要照CT", "al": "CT imaging 影像 電腦斷層"},
+    {"w": "要不要照CT", "al": "CT imaging image 影像 電腦斷層 要不要影像 做什麼檢查 要照什麼 超音波 X光 要不要掃"},
     // fgsi：desc 明寫「用於加護病房收治判斷，非手術判準」——原文就是這個問句
-    {"w": "要不要轉ICU", "al": "ICU admission 加護病房 收治"},
+    {"w": "要不要轉ICU", "al": "ICU admission 加護病房 收治 要不要收 收加護 轉加護病房 需不需要ICU 要不要升級照護"},
     // acls：整頁就是 2025 AHA 復甦演算法；trauma-resus：整頁就是 Damage Control Resuscitation Pathway；sepsis-path：desc 明寫 30 mL/kg 平衡鹽液起始復甦
-    {"w": "怎麼復甦", "al": "CPR resuscitation 復甦 急救 resuscitate"},
+    {"w": "怎麼復甦", "al": "CPR resuscitation resuscitate ACLS 復甦 急救 壓胸 電擊 救回來 怎麼急救 怎麼壓"},
     // vasopressor：整頁就是升壓/強心藥流速計算；cs-path：desc 明寫「不先給強心劑」的升壓策略；sepsis-path：desc 明寫 norepinephrine → vasopressin → epinephrine 升階；hf：desc 明寫急性心衰竭的處置涵蓋這一塊
-    {"w": "給升壓劑", "al": "vasopressor pressor inotrope 升壓 強心"},
+    {"w": "給升壓劑", "al": "vasopressor pressor inotrope 升壓 強心 升血壓 血壓拉不起來 需不需要升壓 要不要上升壓 用哪一支升壓"},
     // lpv：整頁就是肺保護通氣設定；resp-failure：c 已含機械通氣，整頁是四型呼吸衰竭的支持治療階梯；ards-path：desc 明寫 HFNO → 插管 → 肺保護通氣 → 俯臥 → NMBA → ECMO
-    {"w": "怎麼通氣", "al": "ventilate ventilation 呼吸器設定 通氣設定"},
+    {"w": "怎麼通氣", "al": "ventilate ventilation vent-setting 呼吸器設定 通氣設定 呼吸器怎麼設 潮氣量 PEEP 設定 參數怎麼調 呼吸器參數"},
     // tbi-path：desc 明寫 ICP >22 才治療、CPP 60–70、decompressive craniectomy
-    {"w": "降腦壓", "al": "ICP intracranial pressure 顱內壓 降腦壓"},
+    {"w": "降腦壓", "al": "ICP intracranial-pressure 顱內壓 降腦壓 腦壓高 減壓 開顱減壓"},
     // gi-bleed-path：desc 明寫「選擇止血方式」；trauma-resus：desc 明寫 TXA／fibrinogen 等止血藥物協定；anticoag-reversal：逆轉抗凝本身就是止血手段之一
-    {"w": "怎麼止血", "al": "hemostasis control bleeding 止血"},
+    {"w": "怎麼止血", "al": "hemostasis haemostasis 止血 血止不住 止不住 止血方式 怎麼止 止血劑"},
     // 跟家屬解釋時要有數字；直標到七個明確以死亡率／移植優先序／預後分級為內容的項目。
-    {"w": "判預後", "al": "prognosis outcome 預後 存活率 會不會死 死亡率 mortality"},
+    {"w": "判預後", "al": "prognosis outcome survival 預後 存活率 會不會死 死亡率 mortality 預後如何 活多久 有沒有救 跟家屬解釋 病情解釋"},
     // 30 個癌別頁本來就同時含分期／淋巴結／治療三塊（見 catalog 的癌症治療 hub 說明），直標到全部 30 個。
-    {"w": "看治療", "al": "治療 治療決策 chemotherapy regimen adjuvant neoadjuvant 化療 標靶 免疫治療"},
+    {"w": "看治療", "al": "治療 治療決策 chemotherapy regimen treatment adjuvant neoadjuvant 化療 標靶 免疫治療 怎麼治療 要怎麼治 治療方式 怎麼治 處方 治療計畫"},
     // 24 個有實體手術的癌別 ＋ 淋巴癌（本身就是以淋巴結分期）＝ 25 個；白血病／MDS／MPN 是全身性血液腫瘤，沒有 TNM 的 N 分期，不標。
-    {"w": "查淋巴結", "al": "lymph node station 淋巴結 分群 N 分期"},
+    {"w": "查淋巴結", "al": "lymph node station dissection 淋巴結 分群 N分期 淋巴 清掃 幾群 要清到哪"},
     // 只標到 24 個「可手術」的實體癌——術後／術前輔助治療是這些癌別才有的決策點；六個血液腫瘤（白血病／淋巴癌／MDS／MPN）治療模式不是「手術＋輔助」，不標。
-    {"w": "要不要輔助治療", "al": "adjuvant neoadjuvant 輔助治療 術後化療 術前化療"},
+    {"w": "要不要輔助治療", "al": "adjuvant neoadjuvant 輔助治療 術後化療 術前化療 要不要化療 開完刀還要做什麼 術前要不要先化療"},
+
+    /* ══ 第 6 輪新增的上位動作詞。值班打字時最常出現的其實是「怎麼辦」三個字，
+       原本一個標的都對不到。這一條不新增任何臨床內容，只是把「怎麼辦」接到
+       既有的六個動作詞上（找原因→定嚴重度→要不要開刀→看治療→查劑量→判時機
+       就是一次完整的處置鏈），選了它等於一次看到這條線上的所有標的。
+       刻意收得很寬，因為問「怎麼辦」的人正是還沒想清楚要問什麼的人。 ══ */
+    {"w": "怎麼處理", "al": "management manage next-step 怎麼辦 該怎麼做 該怎麼辦 下一步 處置 怎麼處置 怎麼做 要做什麼 handle 處理方式", "sub": ["找原因", "定嚴重度", "要不要開刀", "看治療", "查劑量", "判時機"]},
   ],
   "tools": [
     {"k": "appy-path", "name": "急性闌尾炎", "en": "Appendicitis", "desc": "依複雜度、族群與膿瘍年齡分流，決定手術或非手術治療（WSES 2025 Jerusalem Guidelines · JAMA Surg 2026）", "kind": "pathway", "href": "pathways/appendicitis.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "感染", "grpEn": "Infection", "cnt": "5 項", "s": ["闌尾", "腹部", "腹膜"], "c": ["闌尾炎", "腹腔感染", "腹內膿瘍", "免疫低下", "感染"], "a": ["要不要開刀", "判時機", "選術式", "定嚴重度", "找原因"], "impl": "appy"},
@@ -388,14 +519,20 @@ window.FACETS = {
     {"k": "panc-path", "name": "急性胰臟炎", "en": "Acute Pancreatitis", "desc": "ERCP 適應症與膽囊切除時機、依 Revised Atlanta 嚴重度處置，及壞死感染之 step-up 引流時機（WSES 2019 · Atlanta 2012）", "kind": "pathway", "href": "pathways/pancreatitis.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "感染", "grpEn": "Infection", "cnt": "5 項", "s": ["胰臟", "腹部", "腹膜"], "c": ["胰臟炎", "腹腔感染", "器官衰竭", "衰竭", "感染"], "a": ["定嚴重度", "要不要開刀", "判時機", "選術式", "找原因", "要不要引流"], "impl": ""},
     {"k": "nsti-path", "name": "壞死性軟組織感染", "en": "Necrotizing Soft Tissue Infection", "desc": "確立是否為壞死性後，依部位與糞便污染決定清創範圍與改道，再依再探查所見決定重複清創（WSES／SIS-E 2018）", "kind": "pathway", "href": "pathways/nsti.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "感染", "grpEn": "Infection", "cnt": "5 項", "s": ["軟組織", "會陰", "感染與敗血"], "c": ["壞死性軟組織感染", "皮膚軟組織感染", "感染"], "a": ["要不要開刀", "判時機", "定嚴重度", "選術式", "找原因"], "impl": ""},
     {"k": "bo-path", "name": "腸阻塞", "en": "Bowel Obstruction", "desc": "先分機械性／功能性（含麻痺性腸阻塞、ACPO 與毒性巨結腸之鑑別），再定病因並判斷立即手術指標（WSES · ASCRS · MASCC · EAST）", "kind": "pathway", "href": "pathways/bowel-obstruction.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["小腸", "大腸", "腹部"], "c": ["腸阻塞", "腸絞窄", "阻塞"], "a": ["要不要開刀", "判時機", "定嚴重度", "選術式", "找原因"], "impl": ""},
-    {"k": "volv-path", "name": "腸扭轉", "en": "Volvulus", "desc": "先以生理狀態分流，再依部位決定術式——乙狀結腸、盲腸、橫結腸、脾曲、迴腸乙狀結腸打結、小腸、中腸、胃（ASCRS 2021 · WSES 2023 · SAGES 2013）", "kind": "pathway", "href": "pathways/volvulus.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["大腸", "腹部"], "c": ["腸扭轉", "腸阻塞", "阻塞"], "a": ["要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
+    // 第 6 輪 s 補「小腸」「胃十二指腸」：本頁 desc 自己就列了「…迴腸乙狀結腸打結、
+    // 小腸、中腸、胃」，部位面向卻只掛大腸／腹部。使用者原話抱怨「我遇到小腸的腸阻塞，
+    // 我要選術式」給的東西太少，小腸扭轉本來就在這一頁裡。（逐字引用 desc，不新增臨床內容。）
+    {"k": "volv-path", "name": "腸扭轉", "en": "Volvulus", "desc": "先以生理狀態分流，再依部位決定術式——乙狀結腸、盲腸、橫結腸、脾曲、迴腸乙狀結腸打結、小腸、中腸、胃（ASCRS 2021 · WSES 2023 · SAGES 2013）", "kind": "pathway", "href": "pathways/volvulus.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["大腸", "腹部", "小腸", "胃十二指腸"], "c": ["腸扭轉", "腸阻塞", "阻塞"], "a": ["要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
     {"k": "iss-path", "name": "腸套疊", "en": "Intussusception", "desc": "兒童與成人分流，依超音波／CT 型態決定灌腸復位、觀察或 en-bloc 切除（APSA 2021 · 日本小兒急診 2012）", "kind": "pathway", "href": "pathways/intussusception.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["小腸", "兒科", "腹部"], "c": ["腸套疊", "腸阻塞", "兒童病人", "阻塞"], "a": ["要不要開刀", "判時機", "選術式", "找原因"], "impl": ""},
     {"k": "hernia-path", "name": "腹股溝疝氣", "en": "Groin Hernia", "desc": "嵌頓／絞窄疝氣依 TAXIS 禁忌決定徒手復位或緊急手術，再依腸道存活與 CDC 傷口分類選擇修補（WSES 2017 · HerniaSurge 2023）", "kind": "pathway", "href": "pathways/hernia.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["腹壁與疝氣", "腹部"], "c": ["疝氣", "嵌頓", "腸阻塞", "阻塞"], "a": ["要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
     {"k": "gi-isch-path", "name": "腸胃道缺血", "en": "GI Ischemia", "desc": "分辨急性腸繫膜缺血 (AMI)、大腸缺血 (CI) 與慢性腸繫膜缺血 (CMI)，依 CTA 型態與腹膜炎決定血管內重建、抗凝或損害控制（ESVS 2025 · WSES 2022 · ACG 2015）", "kind": "pathway", "href": "pathways/gi-ischemia.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["腸繫膜血管", "大腸", "腹部"], "c": ["腸缺血"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因"], "impl": ""},
     {"k": "gi-perf-path", "name": "腸胃道穿孔", "en": "GI Perforation", "desc": "依病因分流消化性潰瘍、憩室、醫源性大腸鏡與小腸穿孔，決定 NOM、引流或手術入路（WSES 2017–2020）", "kind": "pathway", "href": "pathways/gi-perforation.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "阻塞 / 缺血 / 穿孔", "grpEn": "Obstruction · Ischemia · Perforation", "cnt": "6 項", "s": ["胃十二指腸", "大腸", "腹部", "腹膜"], "c": ["消化道穿孔", "腹膜炎", "消化性潰瘍穿孔", "腹腔感染", "感染"], "a": ["要不要開刀", "選術式", "判時機", "找原因", "要不要引流"], "impl": ""},
     {"k": "gi-bleed-path", "name": "消化道出血", "en": "GI Bleeding", "desc": "上消化道依 GBS 分流與 Forrest 分類選擇止血方式，下消化道以 Oakland score 判定可否出院（ESGE 2026 · ACG 2021 · ACG 2023）", "kind": "pathway", "href": "pathways/gi-bleeding.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["胃十二指腸", "大腸", "腹部"], "c": ["消化道出血", "上消化道出血", "下消化道出血", "出血"], "a": ["定嚴重度", "判時機", "要不要開刀", "選術式", "找原因", "怎麼止血"], "impl": ""},
     {"k": "esoph", "name": "食道急症", "en": "Esophageal Emergencies", "desc": "穿孔／Boerhaave 依 Altorjay 條件決定手術與否、依位置決定術式；腐蝕性吞入採CT 優先（非內視鏡優先）以管壁不強化判定透壁壞死；異物依性質分 2 小時／24 小時兩級時限。附 Pittsburgh 嚴重度分數往返（WSES 2019，Oxford CEBM 分級而非 GRADE）", "kind": "pathway", "href": "pathways/esophageal-emergency.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["食道"], "c": ["食道急症", "消化道穿孔"], "a": ["要不要開刀", "判時機", "選術式", "定嚴重度", "找原因"], "impl": ""},
-    {"k": "trauma-path", "name": "腹部創傷", "en": "Abdominal Trauma", "desc": "依血行動力學反應與 E-FAST 決定是否立即剖腹，可安全影像者依 AAST-OIS 2018 分級給各臟器處置（WSES 2017–2020 · EAST 2010 · WTA 2018–2019）", "kind": "pathway", "href": "pathways/abdominal-trauma.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "創傷"], "c": ["腹部創傷", "創傷"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因", "要不要照CT"], "impl": ""},
+    // 第 6 輪 c 補「出血」：本頁 desc 明寫「依血行動力學反應與 E-FAST 決定是否
+    // 立即剖腹」，那個決策點問的就是腹內出血。原本「我遇到腹部的出血，我要開刀嗎」
+    // 只查得到消化道出血一頁，腹內出血反而漏掉。
+    {"k": "trauma-path", "name": "腹部創傷", "en": "Abdominal Trauma", "desc": "依血行動力學反應與 E-FAST 決定是否立即剖腹，可安全影像者依 AAST-OIS 2018 分級給各臟器處置（WSES 2017–2020 · EAST 2010 · WTA 2018–2019）", "kind": "pathway", "href": "pathways/abdominal-trauma.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "創傷"], "c": ["腹部創傷", "創傷", "出血"], "a": ["要不要開刀", "定嚴重度", "判時機", "選術式", "找原因", "要不要照CT"], "impl": ""},
     {"k": "iah-path", "name": "腹腔內腔室症候群", "en": "IAH / ACS & Open Abdomen", "desc": "依 IAP 分級與器官功能障礙區分 IAH 與 ACS，腹部打開後以 Björck 分類決定暫時性關腹與確定性關腹策略（WSACS 2013 · Björck 2016 · WSES 2018）", "kind": "pathway", "href": "pathways/iah-acs.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "出血 / 創傷 / 腹腔高壓", "grpEn": "Hemorrhage · Trauma · Intra-abdominal Hypertension", "cnt": "4 項", "s": ["腹部", "腹膜"], "c": ["腹腔高壓"], "a": ["定嚴重度", "要不要開刀", "選術式", "判時機", "找原因"], "impl": ""},
     {"k": "emerg-op", "name": "緊急手術分級", "en": "Emergency Surgery Priority Levels", "desc": "依台大醫院緊急手術作業規範查詢急刀級數（第一～五級）與合理等候時間；可用病況或術式關鍵字搜尋，一般外科列於首位，另附排程與滿線徵用原則", "kind": "tool", "href": "tools/emergency-surgery.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["手術排程", "病人整體"], "c": ["急刀分級", "手術"], "a": ["判時機", "定嚴重度"], "impl": ""},
     {"k": "classifications", "name": "分類與分級系統", "en": "Grading & Classification Systems", "desc": "腹部急症各疾病的嚴重度分級、解剖分型與影像分期集中於一頁：AAST EGS（16 疾病）、TG18 膽囊炎／膽管炎、ASGE 總膽管結石、Parkland／Nassar、Niemeier、Mirizzi Csendes、WSES CT／Hinchey、Revised Atlanta／DBC／Balthazar CTSI、EHS／Nyhus／Gilbert-Rutkow-Robbins、Forrest；圍手術期之 Clavien-Dindo、ISREC 吻合口漏（併 ISGLS／ISGPS／ECCG 對照）、Clinical Frailty Scale；神經外傷之 Marshall CT 分類與 Rotterdam CT 分數；以及 C. difficile、腸皮／腸道－大氣瘻管、腹腔念珠菌、減重術後急症、乙狀結腸扭轉；循環之 SCAI SHOCK 心因性休克分級（A–E）", "kind": "mega", "href": "tools/classifications.html", "sec": "abdomen", "secTitle": "腹部急症", "secEn": "Abdominal Emergencies", "grp": "排程 / 分級 / 圍手術期", "grpEn": "Scheduling · Classification · Perioperative", "cnt": "3 項", "s": ["腹部", "病人整體"], "c": ["分類分級", "膽囊炎", "消化道出血", "胰臟炎", "出血", "總膽管結石", "衰弱", "困難梭菌"], "a": ["定嚴重度", "查分期", "找原因"], "impl": ""},
@@ -448,7 +585,10 @@ window.FACETS = {
     {"k": "sofa", "name": "SOFA", "en": "Sequential Organ Failure Assessment", "desc": "六大器官系統評分；疑似感染病人SOFA上升≥2分，符合Sepsis-3敗血症定義", "kind": "tool", "href": "tools/sofa.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "重症 / 多器官功能", "grpEn": "Critical Care", "cnt": "9 項", "s": ["病人整體", "感染與敗血"], "c": ["器官衰竭", "敗血症", "衰竭", "感染"], "a": ["算分數", "定嚴重度"], "impl": ""},
     {"k": "apache", "name": "APACHE II", "en": "Acute Physiology & Chronic Health Eval.", "desc": "評估ICU入住24小時內疾病嚴重度，分數越高住院死亡風險越高", "kind": "tool", "href": "tools/apache.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "重症 / 多器官功能", "grpEn": "Critical Care", "cnt": "9 項", "s": ["病人整體"], "c": ["重症死亡風險", "器官衰竭", "衰竭"], "a": ["算分數", "定嚴重度", "判預後"], "impl": ""},
     {"k": "vasopressor", "name": "Vasopressor Calc", "en": "Vasoactive-Inotropic Score", "desc": "計算多重升壓/強心藥物流速並加總VIS，數值越高代表循環支持需求越大", "kind": "tool", "href": "tools/vasopressor.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "重症 / 多器官功能", "grpEn": "Critical Care", "cnt": "9 項", "s": ["升壓與強心藥", "休克循環"], "c": ["休克", "心因性休克"], "a": ["查劑量", "算分數", "給升壓劑"], "impl": ""},
-    {"k": "nela", "name": "NELA PRS", "en": "NELA Parsimonious Risk Score", "desc": "急診剖腹術後 30 天死亡率預測，13 項術前變項。本頁為 2023 年 4 月起的新版 PRS，2018 年舊版已由 NELA 明令停用；含 5%／10% 高風險門檻與未經台灣族群校準之警示", "kind": "tool", "href": "tools/nela.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "一般手術風險", "grpEn": "Surgical Risk", "cnt": "4 項", "s": ["病人整體", "圍手術期"], "c": ["手術死亡風險", "手術"], "a": ["算分數", "定嚴重度", "判預後"], "impl": ""},
+    // 第 6 輪 s 補「腹部」：NELA 的 desc 明寫「急診剖腹術後 30 天死亡率預測」，
+    // 部位就是腹部。原本只掛病人整體／圍手術期，「我遇到腹部的手術，我要判預後」查不到東西。
+    // （P-POSSUM 與 SORT 是全術式通用的風險模型，不是腹部專屬，故不比照補。）
+    {"k": "nela", "name": "NELA PRS", "en": "NELA Parsimonious Risk Score", "desc": "急診剖腹術後 30 天死亡率預測，13 項術前變項。本頁為 2023 年 4 月起的新版 PRS，2018 年舊版已由 NELA 明令停用；含 5%／10% 高風險門檻與未經台灣族群校準之警示", "kind": "tool", "href": "tools/nela.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "一般手術風險", "grpEn": "Surgical Risk", "cnt": "4 項", "s": ["病人整體", "圍手術期", "腹部"], "c": ["手術死亡風險", "手術"], "a": ["算分數", "定嚴重度", "判預後"], "impl": ""},
     {"k": "possum", "name": "P-POSSUM", "en": "Portsmouth POSSUM", "desc": "預測手術術後 30 天死亡率，常用於手術品質稽核與族群風險校正", "kind": "tool", "href": "tools/p-possum.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "一般手術風險", "grpEn": "Surgical Risk", "cnt": "4 項", "s": ["病人整體", "圍手術期"], "c": ["手術死亡風險", "手術"], "a": ["算分數", "定嚴重度", "判預後"], "impl": ""},
     {"k": "sort", "name": "SORT", "en": "Surgical Outcome Risk Tool", "desc": "以 ASA、緊急度、手術別與嚴重度、癌症、年齡預估 30 天全因死亡率，用於術前風險溝通與稽核校正", "kind": "tool", "href": "tools/sort.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "一般手術風險", "grpEn": "Surgical Risk", "cnt": "4 項", "s": ["病人整體", "圍手術期"], "c": ["手術死亡風險", "手術"], "a": ["算分數", "定嚴重度", "判預後"], "impl": ""},
     {"k": "iah", "name": "WSACS IAH", "en": "IAH / ACS Grading", "desc": "輸入 IAP 與 MAP 判定 IAH 分級（Grade I–IV）、是否成立 ACS 與 APP；含 primary／secondary／recurrent 分類對減壓時機的影響、WSACS 完整風險因子清單，以及兒童專屬閾值（兒科小組未採納成人分級，故兒童模式不輸出 Grade）", "kind": "tool", "href": "tools/iah.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "一般手術風險", "grpEn": "Surgical Risk", "cnt": "4 項", "s": ["腹部", "腹膜"], "c": ["腹腔高壓"], "a": ["算分數", "定嚴重度", "查分期"], "impl": ""},
@@ -481,7 +621,12 @@ window.FACETS = {
     {"k": "marshall", "name": "Modified Marshall Score", "en": "Organ Failure in Acute Pancreatitis", "desc": "Revised Atlanta 2012 定義器官衰竭之評分：呼吸（PaO₂/FiO₂）、腎臟（Cr）、心血管（收縮壓）任一項 ≥2 分即為器官衰竭；持續 >48 小時為重度", "kind": "tool", "href": "tools/marshall.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "胰臟炎", "grpEn": "Pancreatitis", "cnt": "1 項", "s": ["胰臟"], "c": ["胰臟炎", "器官衰竭", "衰竭"], "a": ["算分數", "定嚴重度"], "impl": ""},
     {"k": "lrinec", "name": "LRINEC", "en": "Laboratory Risk Indicator for Necrotizing Fasciitis", "desc": "以 CRP／WBC／Hb／Na／Cr／Glucose 六項常規檢驗（0–13 分）提高壞死性感染的警覺；敏感度僅 68%，不可用於排除診斷", "kind": "tool", "href": "tools/lrinec.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "壞死性軟組織感染", "grpEn": "Necrotizing Soft Tissue Infection", "cnt": "2 項", "s": ["軟組織"], "c": ["壞死性軟組織感染", "皮膚軟組織感染", "感染"], "a": ["算分數", "定嚴重度"], "impl": ""},
     {"k": "fgsi", "name": "FGSI / UFGSI", "en": "Fournier's Gangrene Severity Index · Uludağ", "desc": "Fournier's gangrene 預後分層：九項生理參數加總（FGSI），再加侵犯範圍與年齡（UFGSI）；用於加護病房收治判斷，非手術判準", "kind": "tool", "href": "tools/fgsi.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "壞死性軟組織感染", "grpEn": "Necrotizing Soft Tissue Infection", "cnt": "2 項", "s": ["會陰", "軟組織"], "c": ["壞死性軟組織感染", "感染"], "a": ["算分數", "定嚴重度", "要不要轉ICU"], "impl": ""},
-    {"k": "hub-antibiotics", "name": "藥物查詢", "en": "Drug Lookup", "desc": "抗生素指引、菌譜資料庫、手術預防與創傷用藥", "kind": "mode", "href": "tools/antibiotics.html#mode=lookup", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "抗微生物", "grpEn": "Antimicrobials", "cnt": "6 項", "s": ["抗生素", "病原菌", "感染與敗血", "抗黴菌藥", "抗病毒藥", "骨與關節"], "c": ["抗生素選擇", "MRSA", "綠膿桿菌", "ESBL", "厭氧菌", "腸球菌", "菌血症", "肺炎", "泌尿道感染", "皮膚軟組織感染", "心內膜炎", "骨關節感染", "中樞神經感染", "導管相關感染", "腹腔感染", "手術預防性抗生素", "開放性骨折", "破傷風", "抗結核", "抗病毒治療", "侵襲性念珠菌感染", "免疫低下", "懷孕用藥", "藥物禁忌", "敗血症", "手術", "感染", "金黃色葡萄球菌", "肺炎鏈球菌", "李斯特菌", "鮑氏不動桿菌", "嗜麥芽窄食單胞菌", "A 群鏈球菌", "B 群鏈球菌", "AmpC 型", "創傷弧菌", "卡他莫拉菌", "困難梭菌", "多殺巴斯德氏菌", "大腸桿菌 / 克雷伯氏菌", "少動鞘胺醇單胞菌", "抗碳青黴烯腸道菌", "新型隱球菌", "曲狀桿菌", "毛黴菌", "洋蔥伯克霍爾德氏菌", "流感嗜血桿菌", "淋病雙球菌", "產吲哚金黃桿菌", "產氣單胞菌", "腦膜炎雙球菌", "草綠色鏈球菌", "表皮／凝固酶陰性葡萄球菌", "諾卡氏菌", "變形桿菌／摩根氏菌／普羅威登斯菌", "退伍軍人桿菌", "非傷寒沙門氏菌", "類鼻疽伯克霍爾德氏菌", "麴菌", "黴漿菌 / 披衣菌", "Aspergillus", "Mucorales", "glabrata/krusei", "Histoplasma", "Blastomyces", "Coccidioides", "Fusarium", "HIV", "HBV", "HCV", "CMV", "HSV/VZV", "Influenza", "SARS-CoV-2", "RSV", "瘧原蟲", "原蟲", "線蟲", "絛蟲", "吸蟲", "外寄生蟲", "抗黴菌治療", "抗寄生蟲治療", "抗麻風", "非典型", "局部黴菌感染"], "a": ["查劑量", "查腎肝調整", "查覆蓋菌譜", "查禁忌", "怎麼調", "給抗生素"], "kw": "抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌 手術預防 預防性抗生素 創傷 外傷 開放性骨折 破傷風 抗病毒 抗寄生蟲 麻風 念珠菌 麴菌 毛黴菌", "impl": "abx"},
+    // 第 6 輪 s 補八個感染部位（腹膜／腹部／膽道／軟組織／肺與氣道／泌尿系統／心臟／腦）：
+    // 本頁的 c 陣列早就列著腹腔感染、肺炎、泌尿道感染、皮膚軟組織感染、心內膜炎、
+    // 中樞神經感染，部位面向卻只有「抗生素／病原菌／感染與敗血／骨與關節」，
+    // 於是「我遇到腹膜的感染，我要給抗生素」只出得來 abx-mode-empiric 一件。
+    // 這裡的部位清單逐字比照 abx-mode-empiric（同一份抗生素指引的兩個入口），不新增任何臨床內容。
+    {"k": "hub-antibiotics", "name": "藥物查詢", "en": "Drug Lookup", "desc": "抗生素指引、菌譜資料庫、手術預防與創傷用藥", "kind": "mode", "href": "tools/antibiotics.html#mode=lookup", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "抗微生物", "grpEn": "Antimicrobials", "cnt": "6 項", "s": ["抗生素", "病原菌", "感染與敗血", "抗黴菌藥", "抗病毒藥", "骨與關節", "腹膜", "腹部", "膽道", "軟組織", "肺與氣道", "泌尿系統", "心臟", "腦"], "c": ["抗生素選擇", "MRSA", "綠膿桿菌", "ESBL", "厭氧菌", "腸球菌", "菌血症", "肺炎", "泌尿道感染", "皮膚軟組織感染", "心內膜炎", "骨關節感染", "中樞神經感染", "導管相關感染", "腹腔感染", "手術預防性抗生素", "開放性骨折", "破傷風", "抗結核", "抗病毒治療", "侵襲性念珠菌感染", "免疫低下", "懷孕用藥", "藥物禁忌", "敗血症", "手術", "感染", "金黃色葡萄球菌", "肺炎鏈球菌", "李斯特菌", "鮑氏不動桿菌", "嗜麥芽窄食單胞菌", "A 群鏈球菌", "B 群鏈球菌", "AmpC 型", "創傷弧菌", "卡他莫拉菌", "困難梭菌", "多殺巴斯德氏菌", "大腸桿菌 / 克雷伯氏菌", "少動鞘胺醇單胞菌", "抗碳青黴烯腸道菌", "新型隱球菌", "曲狀桿菌", "毛黴菌", "洋蔥伯克霍爾德氏菌", "流感嗜血桿菌", "淋病雙球菌", "產吲哚金黃桿菌", "產氣單胞菌", "腦膜炎雙球菌", "草綠色鏈球菌", "表皮／凝固酶陰性葡萄球菌", "諾卡氏菌", "變形桿菌／摩根氏菌／普羅威登斯菌", "退伍軍人桿菌", "非傷寒沙門氏菌", "類鼻疽伯克霍爾德氏菌", "麴菌", "黴漿菌 / 披衣菌", "Aspergillus", "Mucorales", "glabrata/krusei", "Histoplasma", "Blastomyces", "Coccidioides", "Fusarium", "HIV", "HBV", "HCV", "CMV", "HSV/VZV", "Influenza", "SARS-CoV-2", "RSV", "瘧原蟲", "原蟲", "線蟲", "絛蟲", "吸蟲", "外寄生蟲", "抗黴菌治療", "抗寄生蟲治療", "抗麻風", "非典型", "局部黴菌感染"], "a": ["查劑量", "查腎肝調整", "查覆蓋菌譜", "查禁忌", "怎麼調", "給抗生素"], "kw": "抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌 手術預防 預防性抗生素 創傷 外傷 開放性骨折 破傷風 抗病毒 抗寄生蟲 麻風 念珠菌 麴菌 毛黴菌", "impl": "abx"},
     {"k": "hub-drugdb", "name": "藥物資料庫", "en": "Drug Database", "desc": "台大醫院藥劑部處方集 · 一商品名一張藥卡", "kind": "mega", "href": "tools/drug-database.html", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "直接指向頁面的入口", "grpEn": "Direct Hubs", "cnt": "3 項", "s": ["一般藥物"], "c": ["處方集", "藥物禁忌", "懷孕用藥"], "a": ["查劑量", "查腎肝調整", "查禁忌", "怎麼調"], "kw": "藥物 藥品 藥卡 處方集 formulary 台大藥劑部 學名 商品名 中文品名 機轉 藥理分類 劑量 腎功能 肝功能 透析 CVVH 注射給藥指引 懷孕分級 健保價 自費價 藥價", "impl": ""},
     {"k": "cancer-lung", "name": "肺癌", "en": "Lung Cancer", "desc": "分期、淋巴結分群與治療決策", "kind": "cancer", "href": "tools/cancer.html#cancer=lung", "sec": "cancer", "secTitle": "癌症治療", "secEn": "Cancer Treatment", "grp": "其他實體腫瘤", "grpEn": "Other Solid Tumors", "cnt": "4 項", "s": ["肺與氣道"], "c": ["肺癌", "癌症"], "a": ["查分期", "選術式", "看治療", "查淋巴結", "要不要輔助治療"], "kw": "癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫", "impl": ""},
     {"k": "cancer-esoph", "name": "食道癌", "en": "Esophageal Cancer", "desc": "分期、淋巴結分群與治療決策", "kind": "cancer", "href": "tools/cancer.html#cancer=esoph", "sec": "cancer", "secTitle": "癌症治療", "secEn": "Cancer Treatment", "grp": "消化道癌", "grpEn": "GI Cancers", "cnt": "10 項", "s": ["食道"], "c": ["食道癌", "癌症"], "a": ["查分期", "選術式", "看治療", "查淋巴結", "要不要輔助治療"], "kw": "癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫", "impl": ""},
