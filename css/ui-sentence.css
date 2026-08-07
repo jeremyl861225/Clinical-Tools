@@ -1143,6 +1143,12 @@
 [data-ui="sentence"] .sent-panel-filter:focus {
   outline: 2px solid var(--sentence-fg); outline-offset: -2px;
 }
+
+[data-ui="sentence"] .sent-panel-filter {
+  font-size: 16px;
+}
+[data-ui="sentence"] .sent-panel { scroll-margin-top: 12px; }
+[data-ui="sentence"] .sent-panel-body { min-height: 96px; }
 [data-ui="sentence"] .sent-panel-close {
   flex: 0 0 auto;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
@@ -1160,12 +1166,33 @@
 }
 [data-ui="sentence"] .sent-tok:hover { border-color: var(--sentence-fg); }
 [data-ui="sentence"] .sent-tok.cur { background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); border-color: var(--sentence-inv-bg); }
+
+[data-ui="sentence"] .sent-tok.sel {
+  border-color: var(--sentence-fg); border-width: 2px;
+  outline: 2px solid var(--sentence-fg); outline-offset: 2px;
+}
+[data-ui="sentence"] .sent-tok.cur.sel {
+  outline-color: var(--sentence-fg);
+}
+/* 鍵盤游標不是滑鼠焦點：面板開著時焦點一直在過濾框上，候選詞本身不會拿到
+   :focus-visible，所以這一圈描邊是唯一的位置指示，必須夠明顯。
+   prefers-reduced-motion 下不需要特別處理（這裡沒有動畫）。 */
+@media (prefers-contrast: more) {
+  [data-ui="sentence"] .sent-tok.sel { outline-width: 3px; }
+}
 [data-ui="sentence"] .sent-tok i {
   font-style: normal; font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
   border: 1px solid var(--sentence-line2); border-radius: 0; padding: 1px 5px;
 }
 [data-ui="sentence"] .sent-tok.cur i { color: inherit; border-color: var(--sentence-inv-fg); opacity: .8; }
 [data-ui="sentence"] .sent-tok-empty { font-family: var(--sentence-mono); font-size: 11.5px; color: var(--sentence-dim); }
+
+[data-ui="sentence"] .sent-tok-empty {
+  flex: 1 1 100%; width: 100%; box-sizing: border-box;
+  padding: 10px 0 10px 10px; margin: 2px 0;
+  line-height: 1.7;
+  border-left: 3px solid var(--sentence-line2);
+}
 
 [data-ui="sentence"] .sent-point {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;

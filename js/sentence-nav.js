@@ -388,34 +388,117 @@
        要看得見是重開在**哪一格**上。面板本身維持整條寬（句子會折行，詞塊的位置
        每次都不一樣，把面板縮到詞塊底下反而會跳來跳去）。 */
   var panelFilter = '';
+  var panelList = [];        // 目前過濾後、實際畫在面板上的候選詞（Enter／↑↓ 都吃這一份）
+  var panelSel = 0;          // 鍵盤游標落在第幾個候選詞
+  var panelWantsFocus = false;
+
+  /* 過濾要吃**別名**，不是只比對畫出來的那幾個字：使用者打「肚子」要命中「腹部」、
+     打 "abdomen" 也要命中。別名字串來自 data/facets.js 的 al 欄位（那個檔正在被
+     另一個人擴充，這裡只讀不寫，他加的字會自動生效，不必改這裡）。 */
+  function panelHay(f, o) {
+    var e = f === 'g' ? null : facetEntry(f, o.w);
+    return (o.label + ' ' + o.w + ' ' + (o.en || '') + ' ' + (e ? (e.al || '') : '')).toLowerCase();
+  }
   function panelTokensHTML(f) {
-    var list = candidates(f, homeSt).filter(function (o) { return o.n > 0 || homeSt[f] === o.w; });
+    var all = candidates(f, homeSt);
+    var list = all.filter(function (o) { return o.n > 0 || homeSt[f] === o.w; });
     list.sort(function (x, y) { return (y.n > 0) - (x.n > 0) || y.n - x.n; });
     var q = panelFilter.trim().toLowerCase();
-    if (q) list = list.filter(function (o) {
-      var e = f === 'g' ? null : facetEntry(f, o.w);
-      return (o.label + ' ' + o.w + ' ' + (o.en || '') + ' ' + (e ? (e.al || '') : '')).toLowerCase().indexOf(q) >= 0;
-    });
+    if (q) list = list.filter(function (o) { return panelHay(f, o).indexOf(q) >= 0; });
+    panelList = list;
+    if (panelSel >= list.length) panelSel = list.length - 1;
+    if (panelSel < 0) panelSel = 0;
     if (!list.length) {
-      return '<div class="sent-tok-empty">' +
-        (q ? '沒有符合「' + esc(panelFilter.trim()) + '」的詞' : '沒有可選的詞（目前的句子已經篩掉全部候選）') +
-        '</div>';
+      /* 一個都沒有的時候，「找不到」有兩種完全不同的原因，講錯會讓人以為詞表沒收：
+         (a) 真的沒有這個詞；
+         (b) 詞有，但接在目前這句話後面會變成 0 件，所以本來就沒被列出來。
+         (b) 要把對到的詞唸出來，並講清楚該怎麼辦（退一個詞），不能含混說找不到。
+         實測案例：句子是「腹部 + 胰臟炎」時打「膽」——膽道確實存在，只是配不上。 */
+      if (!q) return '<div class="sent-tok-empty">沒有可選的詞（目前的句子已經篩掉全部候選）</div>';
+      var ruled = all.filter(function (o) {
+        return o.n === 0 && homeSt[f] !== o.w && panelHay(f, o).indexOf(q) >= 0;
+      });
+      if (ruled.length) {
+        var names = ruled.slice(0, 3).map(function (o) { return o.label; }).join('、');
+        return '<div class="sent-tok-empty">「' + esc(panelFilter.trim()) + '」對到了 ' +
+          esc(names) + (ruled.length > 3 ? ' 等 ' + ruled.length + ' 個詞' : '') +
+          '，但接在目前這句話後面會變成 0 件——先退掉一個詞再選。</div>';
+      }
+      return '<div class="sent-tok-empty">找不到符合「' + esc(panelFilter.trim()) +
+        '」的詞——換個講法，或按 Esc 收起。</div>';
     }
-    return list.map(function (o) {
+    return list.map(function (o, i) {
       var cur = homeSt[f] === o.w;
       var e = f === 'g' ? null : facetEntry(f, o.w);
-      return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + '" role="option" ' +
-        'aria-selected="' + (cur ? 'true' : 'false') + '" data-act="pick" data-f="' + f + '" ' +
-        'data-w="' + esc(o.w) + '" title="' + esc(e ? (e.al || '') : (o.en || '')) + '">' +
+      return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + (i === panelSel ? ' sel' : '') +
+        '" role="option" aria-selected="' + (i === panelSel ? 'true' : 'false') + '" ' +
+        'data-act="pick" data-f="' + f + '" data-w="' + esc(o.w) + '" ' +
+        'title="' + esc(e ? (e.al || '') : (o.en || '')) + '">' +
         esc(o.label) + '<i>' + o.n + '</i></button>';
     }).join('');
+  }
+
+  /* 面板收起時，焦點要還給原來的那一格（空格插槽或已選詞塊），不可以掉回 <body>
+     ——掉回 body 的話鍵盤使用者按 Esc 之後就得重新 Tab 一輪才回得到句子。 */
+  function focusFacetControl(f) {
+    var el = document.querySelector('#sentRow .sent-chip.f-' + f + ' .sc-w') ||
+             document.querySelector('#sentRow .sent-slot.f-' + f);
+    if (el) { try { el.focus(); } catch (e) {} }
+  }
+
+  /* 鍵盤彈出來會把面板往上擠。visualViewport.height 在鍵盤彈出時會縮小，
+     這裡用它把候選詞區的高度改成「面板頭部下緣到可視區底部」的剩餘空間——
+     清單自己變矮、自己捲，而不是整段被推到鍵盤底下看不到。沒有鍵盤時算出來的
+     剩餘空間很大，會被 46vh（＝ CSS 原本的值）壓回去，畫面跟併入前一樣。
+     只寫 inline max-height 這一個屬性，面板一拆掉就跟著消失。 */
+  var vvBound = false;
+  var MIN_BODY = 96;
+  function clampPanelBody(allowScroll) {
+    var panel = document.getElementById('sentPanel');
+    var body = document.getElementById('sentPanelBody');
+    if (!panel || panel.hidden || !body) return;
+    var vv = window.visualViewport;
+    if (!vv) return;
+    function avail() { return vv.height - (body.getBoundingClientRect().top - (vv.offsetTop || 0)) - 12; }
+    var a = avail();
+    /* 小螢幕實測（390×844，把可視高縮到 450 模擬鍵盤佔掉下半）：面板本身落在
+       y≈337，剩下的空間裝不下清單的最小高度，底部會掉到可視區外面。
+       這種時候先把面板捲到可視區頂端再算一次——句子列會被捲出去，但使用者這一刻
+       正在挑詞，看得見「在挑哪一格」的是面板標題（「選主體」）與過濾框，不是句子。
+       只有在真的擠不下（<160px）時才捲，而且只在「剛打開」與「鍵盤高度變了」兩個
+       時機捲，使用者自己捲動時不搶（scroll 事件傳 false）。 */
+    if (allowScroll && a < 160) {
+      try { window.scrollBy(0, panel.getBoundingClientRect().top - 8); } catch (e) {}
+      a = avail();
+    }
+    var cap = window.innerHeight * 0.46;   // CSS 原本的 max-height:46vh
+    body.style.maxHeight = Math.max(MIN_BODY, Math.min(Math.round(a), Math.round(cap))) + 'px';
+  }
+  function onVVResize() { clampPanelBody(true); }
+  function onVVScroll() { clampPanelBody(false); }
+  function bindVV() {
+    if (vvBound || !window.visualViewport) return;
+    window.visualViewport.addEventListener('resize', onVVResize);
+    window.visualViewport.addEventListener('scroll', onVVScroll);
+    vvBound = true;
+  }
+  function unbindVV() {
+    if (!vvBound || !window.visualViewport) return;
+    window.visualViewport.removeEventListener('resize', onVVResize);
+    window.visualViewport.removeEventListener('scroll', onVVScroll);
+    vvBound = false;
   }
 
   function renderPanel() {
     var panel = document.getElementById('sentPanel');
     if (!panel) return;
-    if (!openFacet) { panel.hidden = true; panel.innerHTML = ''; return; }
+    if (!openFacet) { panel.hidden = true; panel.innerHTML = ''; unbindVV(); return; }
     var f = openFacet;
+    /* 這一支每次 renderHome() 都會整段重畫 innerHTML，輸入框會被換成新節點。
+       正在打字時（例如按了某一格的 ×）不可以把焦點與游標位置弄掉，先記下來。 */
+    var act0 = document.activeElement;
+    var hadFocus = !!(act0 && act0.id === 'sentPanelFilter');
+    var caret = hadFocus ? act0.selectionStart : null;
     panel.hidden = false;
     panel.innerHTML =
       '<div class="sent-panel-head">' +
@@ -433,6 +516,24 @@
       var x = ar.left + ar.width / 2 - pr.left;
       panel.style.setProperty('--sent-caret', Math.max(16, Math.min(Math.max(16, pr.width - 16), x)) + 'px');
     }
+    /* 打開面板＝直接可以打字。使用者實測回報「三個輸入框只能選取」，量到的原因是
+       面板開了、輸入框也畫出來了，但 document.activeElement 還停在 <body>——
+       手機上等於要先看到那個小框、再點一次才打得了字。**原型也是這個行為**
+       （實測原型的 #trfilter 焦點同樣是 BODY），所以這一處是刻意做得比原型好。
+       focus() 必須留在使用者那一下點擊的同步呼叫鏈裡（click → renderHome →
+       renderPanel → focus），不可以包 setTimeout：iOS Safari 只在使用者手勢的
+       同步過程中才肯把軟體鍵盤叫出來，延後就變成「焦點有了、鍵盤沒出來」。 */
+    var inp = document.getElementById('sentPanelFilter');
+    if (inp && (panelWantsFocus || hadFocus)) {
+      try {
+        inp.focus({ preventScroll: true });
+        if (caret != null) inp.setSelectionRange(caret, caret);
+        else inp.setSelectionRange(inp.value.length, inp.value.length);
+      } catch (e) { try { inp.focus(); } catch (e2) {} }
+    }
+    panelWantsFocus = false;
+    bindVV();
+    clampPanelBody(true);   // 剛打開：擠不下就把面板捲上來
   }
 
   function groupList(list) {
@@ -1054,6 +1155,7 @@
   function teardownHome() {
     var box = document.getElementById('sentHome');
     if (!box) return;
+    unbindVV();
     box.remove();
     var bar = document.getElementById('sentBar');
     if (bar) bar.remove();
@@ -1105,13 +1207,22 @@
     if (act === 'open') {
       // 剛剛才用字輪換完詞的那一下放手，不可以順便把清單也展開（原型的 _wheeled 旗標）
       if (el._wheeled) { el._wheeled = false; return; }
-      openFacet = (openFacet === f) ? null : f;
-      panelFilter = '';
+      var wasOpen = (openFacet === f);
+      openFacet = wasOpen ? null : f;
+      panelFilter = ''; panelSel = 0;
+      panelWantsFocus = !wasOpen;   // 這一下是「打開」→ 焦點直接送進過濾框
       if (sayOpen) showSay(false);
       renderHome();
+      if (wasOpen) focusFacetControl(f);
       return;
     }
-    if (act === 'closepanel') { openFacet = null; panelFilter = ''; renderPanel(); return; }
+    if (act === 'closepanel') {
+      var cf = openFacet;
+      openFacet = null; panelFilter = ''; panelSel = 0;
+      renderPanel();
+      if (cf) focusFacetControl(cf);
+      return;
+    }
     if (act === 'more') {
       e.preventDefault();
       var row = el.closest('.sent-hit-row');
@@ -1175,8 +1286,10 @@
        <input> 換成新節點，使用者打到一半的焦點與游標位置就沒了。 */
     if (e.target.id === 'sentPanelFilter' && openFacet) {
       panelFilter = e.target.value;
+      panelSel = 0;              // 每打一個字，鍵盤游標回到第一個命中（Enter 就是選它）
       var body = document.getElementById('sentPanelBody');
       if (body) body.innerHTML = panelTokensHTML(openFacet);
+      clampPanelBody(false);  // 打字中不搶捲動位置
       return;
     }
   });
@@ -1184,6 +1297,44 @@
     var onHome = !!document.getElementById('sentHome'), onTrail = !!document.getElementById('sentTrail');
     if (!onHome && !onTrail) return;
     var typing = /^(input|textarea|select)$/i.test(e.target.tagName || '') || e.target.isContentEditable;
+
+    /* 候選詞面板的過濾框拿著焦點時：↑ ↓ 在命中的詞之間走、Enter 選定、
+       Esc 收面板並把焦點還給原來那一格。這一段要放在所有 typing 判斷之前，
+       否則下面的 Backspace／「/」／字輪那幾條會先把按鍵吃掉。 */
+    if (e.target && e.target.id === 'sentPanelFilter' && openFacet) {
+      var pf = openFacet;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        openFacet = null; panelFilter = ''; panelSel = 0;
+        renderPanel(); focusFacetControl(pf);
+        return;
+      }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!panelList.length) return;
+        e.preventDefault();
+        panelSel = e.key === 'ArrowDown'
+          ? Math.min(panelList.length - 1, panelSel + 1)
+          : Math.max(0, panelSel - 1);
+        var pb = document.getElementById('sentPanelBody');
+        if (pb) pb.innerHTML = panelTokensHTML(pf);
+        var selEl = document.querySelector('#sentPanelBody .sent-tok.sel');
+        if (selEl && selEl.scrollIntoView) {
+          try { selEl.scrollIntoView({ block: 'nearest' }); } catch (err) { selEl.scrollIntoView(false); }
+        }
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        var chosen = panelList[panelSel] || panelList[0];
+        if (!chosen) return;   // 一個都沒命中：Enter 不動作，畫面上那句「找不到…」就是回饋
+        if (homeSt[pf] === chosen.w) homeSt[pf] = ''; else applyWord(pf, chosen.w);
+        openFacet = null; panelFilter = ''; panelSel = 0;
+        renderHome();
+        focusFacetControl(pf);   // 選完焦點回到那一格，可以接著按 ↑ ↓ 微調
+        return;
+      }
+      return;   // 其餘按鍵（含 Backspace）留給輸入框自己處理
+    }
 
     /* 字輪轉動中：← ↑ 上一個、→ ↓ 下一個、Enter／空白定案、Esc 取消
        （鍵位照原型 js/sentence.js 的 keydown，四個方向鍵都吃）。 */
