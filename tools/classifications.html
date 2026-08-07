@@ -1390,10 +1390,36 @@ function clGoto(sys){
   return true;
 }
 
+/* 深層連結進到 AAST EGS 時，順便把「疾病」那一格選好。
+   AAST 這一區不是 16 個可以掛錨點的區塊，而是一個 <select id="ae_dz"> ＋
+   一組共用的結果面板——所以「連到 AAST 裡的闌尾炎」沒辦法用 #anchor 表示，
+   要用查詢字串把疾病代號帶進來，落地後改選單再重繪。
+   網址形如 tools/classifications.html?aast=A#sys=aast（A＝AAST[] 的 k 欄）。
+   沒有這個參數、或代號對不到任何疾病時，這個函式什麼都不做，
+   #sys=aast 仍照原本的行為捲到 AAST 區塊——正式版的既有動線一步都沒改。
+   必須在 aeFill() 之後才呼叫（選項要先長出來），clApplyHash() 本身就排在
+   全部區塊渲染完之後，時序天然成立。 */
+function clPickAast(){
+  var m=(location.search||'').match(/[?&]aast=([^&]*)/);
+  if(!m) return;
+  var k=decodeURIComponent(m[1]);
+  var i=-1;
+  for(var n=0;n<AAST.length;n++){ if(AAST[n].k===k){ i=n; break; } }
+  if(i<0) return;
+  var sel=document.getElementById('ae_dz');
+  if(!sel||!sel.options.length) return;
+  sel.value=String(i);
+  aeRender();               // 程式設定 value 不會觸發 change，要自己重繪
+  /* 讓使用者看得出來「是這一格被挑好的」，沿用 .sys-hit 那套一次性高亮，
+     不另外發明視覺語彙。 */
+  var row=sel.closest?sel.closest('.field-row'):null;
+  if(row){ row.classList.remove('sys-hit'); void row.offsetWidth; row.classList.add('sys-hit'); }
+}
+
 function clApplyHash(){
   var h=(location.hash||'').replace(/^#/,'');
   var m=h.match(/^sys=([\w-]+)$/);
-  if(m && clGoto(m[1])) return;
+  if(m && clGoto(m[1])){ if(m[1]==='aast') clPickAast(); return; }
   m=h.match(/^tab=(\w+)$/);
   if(m && TABS.indexOf(m[1])>=0){ clTab(m[1],true); return; }
   clTab('cross',true);
