@@ -382,6 +382,160 @@ window.SITES = [
         {role:'special', label:'導管相關血流感染：見「菌血症 → CRBSI」', drugs:['vancomycin'], dur:'見 CRBSI'},
         {role:'special', label:'C. difficile 腸炎', drugs:['vancomycinPO'], dur:'10 天', note:'口服 vancomycin 125 mg q6h（或 fidaxomicin，本表未列）；停用誘發之抗生素。'}
       ]}
+   ]},
+
+  {id:'sti', name:'性傳染病 STI', en:'Sexually Transmitted Infections', icon:'🧫',
+   types:[
+     {name:'尿道炎 / 子宮頸炎', en:'Urethritis / Cervicitis (NGU)',
+      note:'先以 NAAT 驗淋病與披衣菌，但不等結果即經驗治療。非淋菌性尿道炎（NGU）首選 doxycycline。治療期間及性伴侶完成治療前禁性行為 7 天。性伴侶（症狀出現／診斷前 60 天內）須一併評估治療。持續／復發者查 M. genitalium 與 T. vaginalis。',
+      regimens:[
+        {role:'first', label:'非淋菌性尿道炎 NGU／子宮頸炎：Doxycycline', drugs:['doxycycline'], dur:'100 mg bid ×7 天', note:'子宮頸炎若淋病風險高或當地盛行率高，同時給 ceftriaxone 500 mg IM。'},
+        {role:'alt', label:'替代：Azithromycin 單劑', drugs:['azithromycin'], dur:'1 g 單劑；或 500 mg 首劑後 250 mg qd ×4 天'},
+        {role:'special', label:'持續／復發 NGU：先驗 M. genitalium／T. vaginalis', drugs:['metronidazole'], dur:'滴蟲 2 g 單劑（或 tinidazole 2 g）', note:'與女性有性行為之男性且當地滴蟲盛行者，可先推定治療滴蟲；其餘（含 MSM）驗 M. genitalium 後依抗藥性給兩階段療法。'}
+      ]},
+     {name:'淋病・單純性（子宮頸／尿道／直腸／咽部）', en:'Uncomplicated gonorrhea',
+      note:'CDC 2021 起改為 ceftriaxone <b>單藥</b>（不再常規併 azithromycin）。未排除披衣菌者加 doxycycline。泌尿生殖道與直腸感染不需 test-of-cure；<b>咽部感染須於治療後 7–14 天以培養或 NAAT 做 test-of-cure</b>。3 個月後重驗（再感染率高）。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone 500 mg IM 單劑（≥150 kg 用 1 g）', drugs:['ceftriaxone'], dur:'單劑', note:'未排除披衣菌者加 doxycycline 100 mg bid ×7 天。孕婦亦同此方案。'},
+        {role:'alt', label:'Cephalosporin 過敏：Gentamicin 240 mg IM ＋ Azithromycin 2 g 口服', drugs:['gentamicin','azithromycin'], dur:'各單劑', note:'直腸／咽部感染之證據不足；嚴重過敏（過敏性休克、SJS）請會診感染科。'},
+        {role:'alt', label:'無法取得 ceftriaxone：Cefixime 800 mg 口服單劑', drugs:['cefixime'], dur:'單劑', note:'<b>咽部感染療效不足，不建議</b>；亦為性伴侶加速治療（EPT）之口服選項。'},
+        {role:'special', label:'疑似治療失敗', drugs:['ceftriaxone'], dur:'先以原方案 ceftriaxone 500 mg IM 重治', note:'多數其實是再感染。若再感染機會低，取檢體做培養＋藥敏（NAAT 無法測藥敏），並會診感染科／通報衛生單位。'}
+      ]},
+     {name:'淋病・結膜炎與瀰漫性感染 DGI', en:'Gonococcal conjunctivitis / DGI',
+      note:'DGI 表現為關節炎－皮疹症候群或化膿性關節炎；少數為腦膜炎／心內膜炎。住院評估、抽血與關節液培養。',
+      regimens:[
+        {role:'first', label:'淋菌結膜炎：Ceftriaxone 1 g IM 單劑', drugs:['ceftriaxone'], dur:'單劑', note:'併生理食鹽水沖洗患眼一次。'},
+        {role:'first', label:'關節炎／皮疹症候群：Ceftriaxone 1 g IM/IV q24h', drugs:['ceftriaxone'], dur:'臨床改善 24–48 小時後可改口服，總療程 ≥7 天'},
+        {role:'first', label:'淋菌腦膜炎／心內膜炎：Ceftriaxone 1–2 g IV q12–24h', drugs:['ceftriaxone'], dur:'腦膜炎 10–14 天；心內膜炎 ≥4 週'},
+        {role:'alt', label:'替代：Cefotaxime 1 g IV q8h（或 ceftizoxime 1 g q8h）', drugs:['cefotaxime'], dur:'同上', note:'ceftizoxime 台灣未上市。未排除披衣菌者加 doxycycline 100 mg bid ×7 天。'}
+      ]},
+     {name:'披衣菌感染', en:'Chlamydia trachomatis infection',
+      note:'CDC 2021 已把首選由 azithromycin 改為 <b>doxycycline</b>（直腸與咽部療效較佳）。非孕婦不需 test-of-cure，但 3 個月後應重驗。孕婦須於療程結束 4 週後做 test-of-cure。',
+      regimens:[
+        {role:'first', label:'Doxycycline 100 mg bid ×7 天', drugs:['doxycycline'], dur:'7 天'},
+        {role:'alt', label:'替代：Azithromycin 1 g 單劑 或 Levofloxacin 500 mg qd ×7 天', drugs:['azithromycin','levofloxacin'], dur:'單劑／7 天'},
+        {role:'first', label:'孕期：Azithromycin 1 g 口服單劑', drugs:['azithromycin'], dur:'單劑', note:'孕期禁用 doxycycline；療程結束 4 週後做 test-of-cure。'},
+        {role:'alt', label:'孕期替代：Amoxicillin 500 mg tid ×7 天', drugs:['amoxicillin'], dur:'7 天'}
+      ]},
+     {name:'生殖道黴漿菌 M. genitalium', en:'Mycoplasma genitalium',
+      note:'持續／復發之 NGU 或子宮頸炎的常見原因。一律採兩階段療法：先 doxycycline 降菌量，再依 macrolide 抗藥性給 azithromycin 或 moxifloxacin。',
+      regimens:[
+        {role:'first', label:'可測抗藥性・macrolide 感受性：Doxycycline ×7 天 → Azithromycin', drugs:['doxycycline','azithromycin'], dur:'doxy 100 mg bid ×7 天；接 azithro 1 g 首劑後 500 mg qd ×3 天（共 2.5 g）'},
+        {role:'first', label:'可測抗藥性・macrolide 抗藥：Doxycycline ×7 天 → Moxifloxacin', drugs:['doxycycline','moxifloxacin'], dur:'doxy 100 mg bid ×7 天；接 moxi 400 mg qd ×7 天'},
+        {role:'first', label:'無法測抗藥性（NAAT 陽性）：Doxycycline ×7 天 → Moxifloxacin', drugs:['doxycycline','moxifloxacin'], dur:'同上'}
+      ]},
+     {name:'骨盆腔發炎 PID', en:'Pelvic inflammatory disease',
+      note:'最低診斷條件：子宮頸舉痛／子宮壓痛／附件壓痛任一，性活躍年輕女性即可經驗治療（門檻宜低）。住院指徵：無法排除外科急症、輸卵管卵巢膿瘍、懷孕、重症或高燒 >38.5°C、無法耐受口服、口服治療無效。門診治療 72 小時內須改善，否則住院重新評估。裝有 IUD 者不必移除。',
+      regimens:[
+        {role:'first', label:'靜脈：Ceftriaxone 1 g q24h ＋ Doxycycline ＋ Metronidazole', drugs:['ceftriaxone','doxycycline','metronidazole'], dur:'臨床改善 24–48 小時後改口服，總共 14 天', note:'doxycycline 100 mg 口服／IV q12h、metronidazole 500 mg 口服／IV q12h；能口服就口服（靜脈 doxycycline 疼痛）。'},
+        {role:'first', label:'靜脈：Cefoxitin 2 g q6h ＋ Doxycycline（或 Cefotetan 2 g q12h＋Doxycycline）', drugs:['cefoxitin','doxycycline'], dur:'總共 14 天', note:'cefotetan 台灣未上市。'},
+        {role:'first', label:'肌注／口服（輕中度）：Ceftriaxone 500 mg IM 單劑 ＋ Doxycycline ＋ Metronidazole', drugs:['ceftriaxone','doxycycline','metronidazole'], dur:'doxycycline 與 metronidazole 各 ×14 天', note:'或 cefoxitin 2 g IM＋probenecid 1 g 口服同時給。體重 >150 kg 且確診淋病者 ceftriaxone 用 1 g。'},
+        {role:'alt', label:'替代靜脈：Ampicillin-sulbactam 3 g q6h ＋ Doxycycline', drugs:['ampsulbactam','doxycycline'], dur:'總共 14 天', note:'對輸卵管卵巢膿瘍覆蓋佳。'},
+        {role:'alt', label:'替代靜脈：Clindamycin 900 mg q8h ＋ Gentamicin', drugs:['clindamycin','gentamicin'], dur:'改善後改口服 clindamycin 450 mg qid 或 doxycycline 100 mg bid，滿 14 天', note:'gentamicin loading 2 mg/kg 後 1.5 mg/kg q8h，或每日一次 3–5 mg/kg。有輸卵管卵巢膿瘍時以 clindamycin 或 metronidazole 續行以覆蓋厭氧菌。'},
+        {role:'none', label:'不建議：含 quinolone 之方案', drugs:[], note:'因淋球菌 quinolone 抗藥普遍，CDC 不建議以 quinolone 治療 PID。'}
+      ]},
+     {name:'急性副睪炎', en:'Acute epididymitis',
+      note:'依可能病原選方案：<35 歲性活躍者多為披衣菌／淋病；行插入性肛交者須同時覆蓋腸道菌；年長、近期泌尿處置者以腸道菌為主。48–72 小時未改善須重新評估（睪丸扭轉、膿瘍、腫瘤）。',
+      regimens:[
+        {role:'first', label:'披衣菌／淋病為主：Ceftriaxone 500 mg IM 單劑 ＋ Doxycycline', drugs:['ceftriaxone','doxycycline'], dur:'doxycycline 100 mg bid ×10 天'},
+        {role:'first', label:'披衣菌／淋病＋腸道菌（插入性肛交）：Ceftriaxone ＋ Levofloxacin', drugs:['ceftriaxone','levofloxacin'], dur:'levofloxacin 500 mg qd ×10 天'},
+        {role:'first', label:'僅腸道菌（年長／泌尿處置後）：Levofloxacin 單藥', drugs:['levofloxacin'], dur:'500 mg qd ×10 天'}
+      ]},
+     {name:'急性直腸炎', en:'Acute proctitis',
+      note:'肛交後之肛門直腸疼痛、裡急後重、分泌物。經驗治療同時涵蓋淋病與披衣菌，並驗 HSV 與梅毒。',
+      regimens:[
+        {role:'first', label:'Ceftriaxone 500 mg IM 單劑 ＋ Doxycycline', drugs:['ceftriaxone','doxycycline'], dur:'doxycycline 100 mg bid ×7 天'},
+        {role:'special', label:'血性分泌物／肛周或黏膜潰瘍／裡急後重且直腸披衣菌陽性（疑 LGV）', drugs:['doxycycline'], dur:'延長為 100 mg bid ×21 天'}
+      ]},
+     {name:'梅毒（依分期）', en:'Syphilis by stage',
+      note:'<b>Penicillin 是唯一有充分實證的藥</b>。追蹤非螺旋體試驗（RPR／VDRL）titer，6–12 個月應下降四倍。治療後 24 小時內可能出現 Jarisch-Herxheimer 反應。孕婦與 HIV 感染者劑量同一般族群，孕婦青黴素過敏須<b>減敏後仍用 penicillin</b>。',
+      regimens:[
+        {role:'first', label:'初期／二期／早期潛伏：Benzathine penicillin G 2.4 MU IM 單劑', drugs:['penG'], dur:'單劑', note:'嬰兒與兒童 50,000 units/kg IM（上限 2.4 MU）單劑。'},
+        {role:'first', label:'晚期潛伏／病期不明／三期（CSF 正常）：Benzathine penicillin G 7.2 MU', drugs:['penG'], dur:'2.4 MU IM 每週一次 ×3 次（共 7.2 MU）'},
+        {role:'first', label:'神經性／眼／耳梅毒：水溶性 Penicillin G 18–24 MU/day', drugs:['penG'], dur:'3–4 MU IV q4h 或連續輸注 ×10–14 天', note:'替代：procaine penicillin G 2.4 MU IM qd＋probenecid 500 mg 口服 qid ×10–14 天（台大未收錄此二品項）。'},
+        {role:'first', label:'先天性梅毒（確診／高度可能）：水溶性 Penicillin G 10 天', drugs:['penG'], dur:'50,000 units/kg/dose IV，出生 7 天內 q12h、其後 q8h，共 10 天', note:'或 procaine penicillin G 50,000 units/kg IM qd ×10 天。可能性較低者（scenario 3）可用 benzathine 50,000 units/kg IM 單劑。'},
+        {role:'alt', label:'非孕、非神經性梅毒之青黴素過敏替代：Doxycycline', drugs:['doxycycline'], dur:'100 mg bid ×14 天（晚期潛伏 28 天）', note:'資料有限、須密切血清追蹤；孕婦不可用。'}
+      ]},
+     {name:'生殖器疱疹 HSV', en:'Genital herpes',
+      note:'初次臨床發作一律給抗病毒藥（可縮短病程但無法根除潛伏病毒）。復發可選發作性治療（前驅期或 24 小時內開始）或每日抑制療法（可降低傳染給伴侶之風險）。',
+      regimens:[
+        {role:'first', label:'初次發作（10 天未癒可延長）', drugs:['acyclovir','valacyclovir','famciclovir'], dur:'7–10 天', note:'acyclovir 400 mg tid；valacyclovir 1 g bid；famciclovir 250 mg tid。'},
+        {role:'first', label:'復發・發作性治療', drugs:['acyclovir','valacyclovir','famciclovir'], dur:'1–5 天（依方案）', note:'acyclovir 800 mg bid ×5 天或 800 mg tid ×2 天；valacyclovir 500 mg bid ×3 天或 1 g qd ×5 天；famciclovir 1 g bid ×1 天、或 500 mg 單次後 250 mg bid ×2 天、或 125 mg bid ×5 天。'},
+        {role:'first', label:'復發・每日抑制療法', drugs:['acyclovir','valacyclovir','famciclovir'], dur:'長期', note:'acyclovir 400 mg bid；valacyclovir 500 mg qd（一年 ≥10 次者用 1 g qd）；famciclovir 250 mg bid。'},
+        {role:'special', label:'HIV 感染者', drugs:['acyclovir','valacyclovir','famciclovir'], dur:'發作性 5–10 天；抑制療法長期', note:'抑制：acyclovir 400–800 mg 每日 2–3 次、valacyclovir 500 mg bid、famciclovir 500 mg bid。發作性：acyclovir 400 mg tid、valacyclovir 1 g bid、famciclovir 500 mg bid。'},
+        {role:'special', label:'孕期抑制療法（自 36 週起，減少剖腹產）', drugs:['acyclovir','valacyclovir'], dur:'自 36 週至分娩', note:'acyclovir 400 mg tid 或 valacyclovir 500 mg bid。分娩時有活動性病灶或前驅症狀者建議剖腹產。'},
+        {role:'special', label:'重症／併發症（瀰漫性、肺炎、肝炎、腦膜炎、腦炎）：靜脈 Acyclovir', drugs:['acyclovir'], dur:'5–10 mg/kg IV q8h，臨床改善後改口服滿 ≥10 天'}
+      ]},
+     {name:'軟性下疳 / LGV / 腹股溝肉芽腫', en:'Chancroid / LGV / Donovanosis',
+      note:'生殖器潰瘍之鑑別診斷，均須同時驗梅毒與 HIV。LGV 好發於 MSM，常表現為出血性直腸炎。',
+      regimens:[
+        {role:'first', label:'軟性下疳（H. ducreyi）', drugs:['azithromycin','ceftriaxone','ciprofloxacin','erythromycin'], dur:'依方案', note:'azithromycin 1 g 單劑；或 ceftriaxone 250 mg IM 單劑；或 ciprofloxacin 500 mg bid ×3 天；或 erythromycin base 500 mg tid ×7 天。HIV 感染者癒合較慢，可能需重複療程。'},
+        {role:'first', label:'LGV（C. trachomatis L1–L3）：Doxycycline', drugs:['doxycycline'], dur:'100 mg bid ×21 天'},
+        {role:'alt', label:'LGV 替代：Azithromycin 或 Erythromycin', drugs:['azithromycin','erythromycin'], dur:'azithro 1 g 每週 ×3 週；erythro base 500 mg qid ×21 天'},
+        {role:'first', label:'腹股溝肉芽腫（donovanosis）：Azithromycin', drugs:['azithromycin'], dur:'1 g 每週一次或 500 mg qd，≥3 週且病灶完全癒合'},
+        {role:'alt', label:'腹股溝肉芽腫替代', drugs:['doxycycline','tmpsmx','erythromycin'], dur:'皆 ≥3 週且病灶完全癒合', note:'doxycycline 100 mg bid；TMP-SMX 1 顆 DS bid；erythromycin base 500 mg qid。'}
+      ]},
+     {name:'細菌性陰道炎 BV', en:'Bacterial vaginosis',
+      note:'僅治療有症狀者。性伴侶（男性）不需治療。復發常見，可換用另一建議方案。孕婦有症狀即治療，可用任一建議方案。CDC 2021 指出並無證據支持 metronidazole 之類 disulfiram 反應，已取消治療期間禁酒警語。',
+      regimens:[
+        {role:'first', label:'Metronidazole 口服 500 mg bid ×7 天', drugs:['metronidazole'], dur:'7 天'},
+        {role:'first', label:'Metronidazole 0.75% 陰道凝膠 5 g qd ×5 天', drugs:['metronidazole'], dur:'5 天', note:'台大品項：素女潔陰道用凝膠 7.5 mg/g。'},
+        {role:'first', label:'Clindamycin 2% 陰道乳膏 5 g 睡前 ×7 天', drugs:['clindamycin'], dur:'7 天', note:'油性基劑，治療期間及其後 72 小時內會減弱保險套與陰道隔膜。'},
+        {role:'alt', label:'替代：口服 Clindamycin／Tinidazole／Secnidazole', drugs:['clindamycin','tinidazole'], dur:'依方案', note:'clindamycin 300 mg bid ×7 天，或陰道栓劑 100 mg 睡前 ×3 天；tinidazole 2 g qd ×2 天或 1 g qd ×5 天；secnidazole 2 g 口服顆粒單劑（台灣未上市）。'}
+      ]},
+     {name:'陰道滴蟲症', en:'Trichomoniasis',
+      note:'唯一有效的藥物類別為 nitroimidazole。所有性伴侶須同時治療，且至雙方治療完成、症狀消失前禁性行為。所有患者於治療後 3 個月重驗（再感染率高）。',
+      regimens:[
+        {role:'first', label:'女性：Metronidazole 500 mg bid ×7 天', drugs:['metronidazole'], dur:'7 天', note:'隨機試驗顯示 7 天療程優於 2 g 單劑；HIV 感染女性一律用此方案。'},
+        {role:'first', label:'男性：Metronidazole 2 g 口服單劑', drugs:['metronidazole'], dur:'單劑'},
+        {role:'alt', label:'替代（男女皆可）：Tinidazole 2 g 口服單劑', drugs:['tinidazole'], dur:'單劑', note:'腸胃道副作用較少。'},
+        {role:'special', label:'持續感染（已排除再暴露）', drugs:['metronidazole','tinidazole'], dur:'重覆 metronidazole 500 mg bid ×7 天；仍失敗改 tinidazole 2 g qd ×7 天', note:'metronidazole 抗藥率 4–10%。仍失敗者須送藥敏並會診專家。nitroimidazole IgE 型過敏者須減敏，無替代藥物類別。'}
+      ]},
+     {name:'外陰陰道念珠菌感染 VVC', en:'Vulvovaginal candidiasis',
+      note:'分未併發症（偶發、輕中度、C. albicans、免疫正常）與併發症型（復發、嚴重、非 albicans、糖尿病／免疫低下）。非性傳染病，但列於 CDC STI 指引之陰道炎章節。孕期<b>只能用局部 azole 塗抹 7 天</b>。',
+      regimens:[
+        {role:'first', label:'未併發症・局部 azole', drugs:['clotrimazole','miconazole','fenticonazole','nystatin'], dur:'1–7 天（依劑型）', note:'CDC：clotrimazole 1% 乳膏 5 g ×7–14 天或 2% ×3 天；miconazole 2% ×7 天、4% ×3 天，或栓劑 100 mg ×7 天／200 mg ×3 天／1200 mg 單劑。台大院內品項：fenticonazole 陰道軟膠囊 200 mg ×3 天或 600 mg 單劑、nystatin 陰道錠 10 萬單位 qd ×2 週。'},
+        {role:'first', label:'未併發症・口服：Fluconazole 150 mg 單劑', drugs:['fluconazole'], dur:'單劑'},
+        {role:'special', label:'嚴重型（廣泛紅腫、糜爛、龜裂）', drugs:['fluconazole'], dur:'150 mg ×2 劑間隔 72 小時；或局部 azole 7–14 天'},
+        {role:'special', label:'復發型（一年 ≥3 次）', drugs:['fluconazole'], dur:'誘導 100／150／200 mg 於第 1、4、7 天共 3 劑；維持 100–200 mg 每週一次 ×6 個月'},
+        {role:'special', label:'非 albicans 念珠菌', drugs:['fluconazole'], dur:'改用非 fluconazole 之 azole 7–14 天', note:'復發者陰道用硼酸 600 mg 膠囊 qd ×3 週（清除率約 70%）；仍復發轉介專科。'},
+        {role:'none', label:'孕期：禁用口服 fluconazole', drugs:[], note:'單劑 150 mg 與自然流產及先天異常相關；孕婦僅能用局部 azole 塗抹 7 天。'}
+      ]},
+     {name:'肛門生殖器疣（HPV）', en:'Anogenital warts',
+      note:'治療目的為去除病灶症狀，無法根除 HPV 感染。依疣體大小、位置、數目與病人偏好選擇；3 個月內無反應應換方案。孕婦禁用 podofilox、podophyllin 與 sinecatechins，imiquimod 亦建議避免。',
+      regimens:[
+        {role:'first', label:'病人自行塗抹：Imiquimod 3.75% 或 5% 乳膏', drugs:['imiquimod'], dur:'5% 每週 3 次最長 16 週；3.75% 每晚最長 8 週', note:'可能削弱保險套與陰道隔膜。'},
+        {role:'first', label:'病人自行塗抹：Podofilox 0.5% 溶液／凝膠', drugs:['podofilox'], dur:'bid ×3 天後停 4 天為一週期，最多 4 週期', note:'單次面積 ≤10 cm²、每日 ≤0.5 mL。孕婦禁用。'},
+        {role:'first', label:'病人自行塗抹：Sinecatechins 15% 軟膏', drugs:[], dur:'tid 至疣體清除，最長 16 週', note:'綠茶萃取物，台灣未上市；孕婦禁用，可能削弱保險套。'},
+        {role:'first', label:'醫師施行：冷凍治療／手術切除／三氯醋酸（TCA）或二氯醋酸（BCA）80–90%', drugs:[], dur:'冷凍與 TCA/BCA 每 1–2 週重複', note:'陰道、子宮頸、尿道口、肛門內之疣只能用冷凍或手術／TCA-BCA（陰道內不可用冷凍探頭，有穿孔與瘻管風險）；子宮頸疣須先排除高度鱗狀上皮內病變（HSIL）並會診專科；肛門內疣會診大腸直腸專科。'}
+      ]},
+     {name:'陰蝨 / 疥瘡', en:'Pediculosis pubis / Scabies',
+      note:'性接觸者與同住者須一併治療，衣物寢具以熱水洗滌高溫烘乾。疥瘡治療後搔癢可持續 2 週，非治療失敗。',
+      regimens:[
+        {role:'first', label:'陰蝨：Permethrin 1% cream rinse（或 pyrethrin＋piperonyl butoxide）', drugs:['permethrin'], dur:'塗患部 10 分鐘後洗掉', note:'抗藥性增加中；治療失敗可改 malathion 0.5% 乳液塗 8–12 小時（台灣未上市）。'},
+        {role:'first', label:'疥瘡：Permethrin 5% 乳膏', drugs:['permethrin'], dur:'頸部以下全身塗抹，8–14 小時後洗掉', note:'嬰幼兒須連頭皮、臉、頸一併塗；孕婦與哺乳婦首選。'},
+        {role:'first', label:'疥瘡：口服 Ivermectin 200 µg/kg', drugs:['ivermectin'], dur:'第 1 天與第 14 天各一次', note:'對蟲卵活性有限，第二劑不可省略；<15 kg 兒童安全性未確立。台大核准適應症即為疥瘡。'},
+        {role:'alt', label:'陰蝨口服替代：Ivermectin 250 µg/kg', drugs:['ivermectin'], dur:'7–14 天後重複一次'},
+        {role:'special', label:'結痂型（挪威型）疥瘡', drugs:['permethrin','ivermectin'], dur:'局部 permethrin 每日 ×7 天後改每週 2 次；併 ivermectin 第 1、2、8、9、15 天（重症加第 22、29 天）', note:'免疫低下者高傳染性，須隔離並會診。'},
+        {role:'none', label:'不建議：Lindane 1%', drugs:[], note:'僅在無法耐受或其他方案失敗時使用；孕婦、哺乳婦、<10 歲兒童禁用（神經毒性）。'}
+      ]},
+     {name:'性侵害後預防性治療', en:'Post–sexual assault prophylaxis',
+      note:'除抗生素外，同時評估：緊急避孕、B 型肝炎疫苗（未接種者，不需 HBIG）、HPV 疫苗（9–26 歲）、HIV 暴露後預防（<72 小時內開始，28 天療程，須會診）。追蹤複驗。',
+      regimens:[
+        {role:'first', label:'女性：Ceftriaxone 500 mg IM ＋ Doxycycline ＋ Metronidazole', drugs:['ceftriaxone','doxycycline','metronidazole'], dur:'doxycycline 100 mg bid ×7 天；metronidazole 500 mg bid ×7 天', note:'體重 ≥150 kg 者 ceftriaxone 用 1 g。'},
+        {role:'first', label:'男性：Ceftriaxone 500 mg IM ＋ Doxycycline', drugs:['ceftriaxone','doxycycline'], dur:'doxycycline 100 mg bid ×7 天'}
+      ]},
+     {name:'新生兒 / 嬰幼兒', en:'Neonatal & pediatric STI',
+      note:'新生兒感染源自產程暴露；預防的關鍵是孕期篩檢與治療。嬰幼兒若診斷淋病或披衣菌（非產程感染年齡），須通報並評估性侵害。',
+      regimens:[
+        {role:'first', label:'預防新生兒淋菌眼炎：0.5% Erythromycin 眼膏', drugs:['erythromycin'], dur:'出生時雙眼各單次塗抹'},
+        {role:'first', label:'淋菌性新生兒眼炎（治療）：Ceftriaxone 25–50 mg/kg IV/IM 單劑（max 250 mg）', drugs:['ceftriaxone'], dur:'單劑', note:'高膽紅素新生兒改用 cefotaxime。'},
+        {role:'first', label:'新生兒瀰漫性淋病：Ceftriaxone 25–50 mg/kg/day IV/IM qd', drugs:['ceftriaxone','cefotaxime'], dur:'7 天（確診腦膜炎 10–14 天）', note:'或 cefotaxime 25 mg/kg q12h。'},
+        {role:'first', label:'新生兒披衣菌結膜炎／嬰兒披衣菌肺炎：口服 Erythromycin', drugs:['erythromycin'], dur:'base 或 ethylsuccinate 50 mg/kg/day 分 4 次 ×14 天', note:'療效僅約 80%，可能需第二療程；<6 週齡須留意肥厚性幽門狹窄。替代：azithromycin 懸液 20 mg/kg/day qd ×3 天。'},
+        {role:'first', label:'先天性梅毒：水溶性 Penicillin G ×10 天', drugs:['penG'], dur:'50,000 units/kg/dose IV，出生 7 天內 q12h、其後 q8h，共 10 天', note:'或 procaine penicillin G 50,000 units/kg IM qd ×10 天；可能性低者 benzathine 50,000 units/kg IM 單劑。'},
+        {role:'first', label:'兒童披衣菌感染（<45 kg）：口服 Erythromycin', drugs:['erythromycin','azithromycin','doxycycline'], dur:'依體重與年齡', note:'<45 kg：erythromycin base／ethylsuccinate 50 mg/kg/day 分 4 次 ×14 天；≥45 kg 但 <8 歲：azithromycin 1 g 單劑；≥8 歲：azithromycin 1 g 單劑或 doxycycline 100 mg bid ×7 天。'},
+        {role:'first', label:'兒童單純性淋病（≤45 kg）：Ceftriaxone 25–50 mg/kg IV/IM 單劑（max 250 mg IM）', drugs:['ceftriaxone'], dur:'單劑', note:'>45 kg 者比照成人方案。菌血症／關節炎：≤45 kg 用 50 mg/kg（max 2 g）qd ×7 天；>45 kg 用 1 g qd ×7 天。'}
+      ]}
    ]}
 ];
 
@@ -512,9 +666,15 @@ window.BACTERIA = [
        {role:'first', label:'Ceftriaxone', drugs:['ceftriaxone']},
        {role:'alt', label:'Penicillin G（感受性）', drugs:['penG']}
      ]},
-    {name:'淋病雙球菌', en:'Neisseria gonorrhoeae', kw:'gonorrhea 淋病',
-     note:'合併 Chlamydia 覆蓋。',
-     regimens:[{role:'first', label:'Ceftriaxone（＋Azithromycin／Doxycycline）', drugs:['ceftriaxone','azithromycin']}]},
+    {name:'淋病雙球菌', en:'Neisseria gonorrhoeae', kw:'gonorrhea 淋病 gc',
+     note:'CDC 2021 起單純性感染改為 <b>ceftriaxone 單藥</b>（不再常規併 azithromycin）；未排除披衣菌者加 doxycycline。咽部感染須做 test-of-cure。詳見「依部位 → 性傳染病 STI」。',
+     regimens:[
+       {role:'first', label:'單純性感染：Ceftriaxone 500 mg IM 單劑（≥150 kg 用 1 g）', drugs:['ceftriaxone']},
+       {role:'special', label:'未排除披衣菌：加 Doxycycline 100 mg bid ×7 天', drugs:['doxycycline']},
+       {role:'alt', label:'Cephalosporin 過敏：Gentamicin 240 mg IM ＋ Azithromycin 2 g', drugs:['gentamicin','azithromycin']},
+       {role:'alt', label:'無法取得 ceftriaxone：Cefixime 800 mg 口服單劑（咽部無效）', drugs:['cefixime']},
+       {role:'special', label:'瀰漫性感染 DGI：Ceftriaxone 1 g IM/IV q24h', drugs:['ceftriaxone']}
+     ]},
     {name:'變形桿菌／摩根氏菌／普羅威登斯菌', en:'Proteus / Morganella / Providencia', kw:'proteus morganella providencia 變形桿菌 摩根 普羅威登斯',
      note:'對 nitrofurantoin／colistin 天然抗藥。Morganella／Providencia 具誘導型 AmpC，避免第三代 cephalosporin 單用。下方在地感受性分「奇異變形桿菌」與「Proteus／Morganella／Providencia 群」兩列。',
      regimens:[
@@ -637,8 +797,84 @@ window.BACTERIA = [
      ]},
     {name:'巨細胞病毒', en:'Cytomegalovirus (CMV)', kw:'CMV 巨細胞病毒 移植',
      regimens:[{role:'first', label:'Valganciclovir／Ganciclovir', drugs:['valganciclovir','ganciclovir']}]},
-    {name:'單純疱疹病毒', en:'Herpes simplex virus (HSV)', kw:'HSV 疱疹 腦炎',
-     regimens:[{role:'first', label:'Acyclovir', drugs:['acyclovir']}]}
+    {name:'單純疱疹病毒', en:'Herpes simplex virus (HSV)', kw:'HSV 疱疹 腦炎 生殖器',
+     note:'腦炎用靜脈 acyclovir 10 mg/kg q8h ×14–21 天。生殖器疱疹三種口服藥（acyclovir／valacyclovir／famciclovir）療效相當，依方案見下；詳見「依部位 → 性傳染病 STI → 生殖器疱疹」。',
+     regimens:[
+       {role:'first', label:'腦炎／重症：靜脈 Acyclovir', drugs:['acyclovir']},
+       {role:'first', label:'生殖器疱疹初次發作（7–10 天）', drugs:['acyclovir','valacyclovir','famciclovir']},
+       {role:'first', label:'復發之發作性治療（1–5 天）／每日抑制療法', drugs:['valacyclovir','famciclovir']}
+     ]}
+  ]},
+  {group:'性傳染病病原體', items:[
+    {name:'梅毒螺旋體', en:'Treponema pallidum', kw:'syphilis treponema 梅毒 螺旋體 硬性下疳',
+     note:'<b>Penicillin 為唯一有充分實證之藥物</b>，依分期給藥。孕婦青黴素過敏須減敏後仍用 penicillin。追蹤 RPR／VDRL titer，6–12 個月應下降四倍。',
+     regimens:[
+       {role:'first', label:'初期／二期／早期潛伏：Benzathine penicillin G 2.4 MU IM 單劑', drugs:['penG']},
+       {role:'first', label:'晚期潛伏／病期不明／三期：Benzathine penicillin G 2.4 MU IM 每週 ×3', drugs:['penG']},
+       {role:'first', label:'神經／眼／耳梅毒：水溶性 Penicillin G 18–24 MU/day ×10–14 天', drugs:['penG']},
+       {role:'alt', label:'非孕、非神經性之過敏替代：Doxycycline 100 mg bid ×14 天（晚期 28 天）', drugs:['doxycycline']}
+     ]},
+    {name:'砂眼披衣菌', en:'Chlamydia trachomatis', kw:'chlamydia 披衣菌 砂眼 LGV 尿道炎 子宮頸炎',
+     note:'CDC 2021 首選已由 azithromycin 改為 doxycycline（直腸與咽部療效較佳）。血清型 L1–L3 造成 LGV，療程 21 天。孕期改 azithromycin。',
+     regimens:[
+       {role:'first', label:'泌尿生殖道／直腸／咽部：Doxycycline 100 mg bid ×7 天', drugs:['doxycycline']},
+       {role:'alt', label:'替代：Azithromycin 1 g 單劑／Levofloxacin 500 mg qd ×7 天', drugs:['azithromycin','levofloxacin']},
+       {role:'first', label:'孕期：Azithromycin 1 g 單劑（替代 amoxicillin 500 mg tid ×7 天）', drugs:['azithromycin','amoxicillin']},
+       {role:'first', label:'LGV（L1–L3）：Doxycycline 100 mg bid ×21 天', drugs:['doxycycline']},
+       {role:'first', label:'新生兒結膜炎／嬰兒肺炎：口服 Erythromycin 50 mg/kg/day 分 4 次 ×14 天', drugs:['erythromycin']}
+     ]},
+    {name:'生殖道黴漿菌', en:'Mycoplasma genitalium', kw:'mycoplasma genitalium 黴漿菌 NGU 尿道炎',
+     note:'持續／復發性 NGU 與子宮頸炎之常見病原。細胞壁缺乏 → β-lactam 無效。一律兩階段療法（先 doxycycline 降菌量）。',
+     regimens:[
+       {role:'first', label:'Macrolide 感受性：Doxycycline ×7 天 → Azithromycin 1 g 後 500 mg qd ×3 天', drugs:['doxycycline','azithromycin']},
+       {role:'first', label:'Macrolide 抗藥或無法檢測：Doxycycline ×7 天 → Moxifloxacin 400 mg qd ×7 天', drugs:['doxycycline','moxifloxacin']}
+     ]},
+    {name:'陰道滴蟲', en:'Trichomonas vaginalis', kw:'trichomonas 滴蟲 陰道炎 原蟲',
+     note:'唯一有效之藥物類別為 nitroimidazole。性伴侶須同治，治療後 3 個月重驗。',
+     regimens:[
+       {role:'first', label:'女性：Metronidazole 500 mg bid ×7 天（優於單劑；HIV 感染者亦同）', drugs:['metronidazole']},
+       {role:'first', label:'男性：Metronidazole 2 g 口服單劑', drugs:['metronidazole']},
+       {role:'alt', label:'替代：Tinidazole 2 g 口服單劑', drugs:['tinidazole']},
+       {role:'special', label:'持續感染：重覆 7 天療程；仍失敗改 Tinidazole 2 g qd ×7 天', drugs:['tinidazole']}
+     ]},
+    {name:'杜克雷嗜血桿菌（軟性下疳）', en:'Haemophilus ducreyi', kw:'ducreyi chancroid 軟性下疳 生殖器潰瘍',
+     note:'疼痛性生殖器潰瘍＋壓痛性腹股溝淋巴結腫（可化膿破潰）。須同時排除梅毒與 HSV，並驗 HIV。',
+     regimens:[
+       {role:'first', label:'Azithromycin 1 g 單劑 或 Ceftriaxone 250 mg IM 單劑', drugs:['azithromycin','ceftriaxone']},
+       {role:'alt', label:'Ciprofloxacin 500 mg bid ×3 天 或 Erythromycin base 500 mg tid ×7 天', drugs:['ciprofloxacin','erythromycin']}
+     ]},
+    {name:'肉芽腫克雷伯氏菌（腹股溝肉芽腫）', en:'Klebsiella granulomatis', kw:'donovanosis granuloma inguinale 腹股溝肉芽腫 鼠蹊',
+     note:'無痛、進行性、易出血之肉芽性潰瘍。療程須持續至病灶完全癒合（≥3 週），癒合前復發常見。',
+     regimens:[
+       {role:'first', label:'Azithromycin 1 g 每週一次（或 500 mg qd），≥3 週且癒合', drugs:['azithromycin']},
+       {role:'alt', label:'Doxycycline 100 mg bid／TMP-SMX 1 DS bid／Erythromycin base 500 mg qid', drugs:['doxycycline','tmpsmx','erythromycin']}
+     ]},
+    {name:'細菌性陰道炎菌叢', en:'Bacterial vaginosis-associated flora', kw:'BV gardnerella 細菌性陰道炎 陰道菌叢 厭氧',
+     note:'乳酸桿菌減少、Gardnerella vaginalis 與厭氧菌過度增生之菌叢失衡（非單一致病菌）。僅治療有症狀者；男性伴侶不需治療。',
+     regimens:[
+       {role:'first', label:'Metronidazole 口服 500 mg bid ×7 天，或 0.75% 陰道凝膠 5 g qd ×5 天', drugs:['metronidazole']},
+       {role:'first', label:'Clindamycin 2% 陰道乳膏 5 g 睡前 ×7 天', drugs:['clindamycin']},
+       {role:'alt', label:'口服 Clindamycin 300 mg bid ×7 天／Tinidazole 2 g qd ×2 天', drugs:['clindamycin','tinidazole']}
+     ]},
+    {name:'人類乳突病毒', en:'Human papillomavirus (HPV)', kw:'HPV 菜花 尖形濕疣 疣 乳突',
+     note:'無全身性抗病毒藥；治療只去除疣體、不能根除感染。疫苗為主要預防手段。子宮頸疣須先排除 HSIL。',
+     regimens:[
+       {role:'first', label:'病人自行塗抹：Imiquimod 3.75%／5% 乳膏', drugs:['imiquimod']},
+       {role:'first', label:'病人自行塗抹：Podofilox 0.5% 溶液／凝膠（孕婦禁用）', drugs:['podofilox']},
+       {role:'first', label:'醫師施行：冷凍治療／手術切除／TCA 或 BCA 80–90%', drugs:[]}
+     ]},
+    {name:'陰蝨', en:'Phthirus pubis', kw:'pediculosis pubis 陰蝨 蝨 外寄生蟲',
+     regimens:[
+       {role:'first', label:'Permethrin 1% cream rinse 塗 10 分鐘後洗掉', drugs:['permethrin']},
+       {role:'alt', label:'口服 Ivermectin 250 µg/kg，7–14 天後重複', drugs:['ivermectin']}
+     ]},
+    {name:'疥蟎', en:'Sarcoptes scabiei', kw:'scabies 疥瘡 疥蟎 外寄生蟲 結痂型',
+     note:'治療後搔癢可持續 2 週，非治療失敗。同住者與性接觸者須一併治療。',
+     regimens:[
+       {role:'first', label:'Permethrin 5% 乳膏頸部以下全身，8–14 小時後洗掉', drugs:['permethrin']},
+       {role:'first', label:'口服 Ivermectin 200 µg/kg，第 1、14 天各一次', drugs:['ivermectin']},
+       {role:'special', label:'結痂型：局部 permethrin ＋ 口服 ivermectin 多劑', drugs:['permethrin','ivermectin']}
+     ]}
   ]}
 ];
 

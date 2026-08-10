@@ -112,7 +112,7 @@ function selectSite(i){
 function selectType(j){
   curType=curSite.types[j];
   el('abx-crumb2').innerHTML=`<span>${curSite.name}</span><span class="sep">›</span><b>${curType.name}</b>`;
-  el('abx-typenote').textContent=curType.note||'';
+  el('abx-typenote').innerHTML=curType.note||'';      // note 允許 <b> 等行內標記（與 rgm-note 一致）
   el('abx-regimens').innerHTML = curType.regimens.map(renderRegimen).join('');
   el('abx-drugcards').innerHTML = uniqueDrugs(curType).map(renderDrugCard).join('');
   show('abx-step-type',false); show('abx-step-result',true);
@@ -375,7 +375,7 @@ function suscDrugsFor(b){
 function selectBacteria(gi,bi){
   curBac=BACTERIA[gi].items[bi];
   el('bac-crumb').innerHTML=`<b>${curBac.name}</b> <span class="sep">·</span> ${curBac.en}`;
-  el('bac-note').textContent=curBac.note||'';
+  el('bac-note').innerHTML=curBac.note||'';           // 同上，允許行內標記
   el('bac-regimens').innerHTML=curBac.regimens.map(renderRegimen).join('');
   el('bac-susc').innerHTML=abgForBac(curBac);
   const seen=[]; curBac.regimens.forEach(r=>r.drugs.forEach(k=>{if(!seen.includes(k))seen.push(k);}));
@@ -403,6 +403,7 @@ const DRUG_GROUPS = [
   ['唑類 Azoles',                 d=>d.covSet==='fungal' && /azole/i.test(d.cls||'')],
   ['抗黴菌（其他） Antifungals (other)',              d=>d.covSet==='fungal'],
   ['抗寄生蟲 Antiparasitics',     d=>d.covSet==='para'],
+  ['外用抗疣 Anogenital wart therapy', d=>d.catLabel==='外用抗疣'],
   ['HIV 抗反轉錄病毒 HIV ART',    d=>d.covSet==='viral' && /\bHIV\b/i.test(d.cls||'')],
   ['肝炎抗病毒 Hepatitis B／C',   d=>d.covSet==='viral' && /\bHBV\b|\bHCV\b/i.test(d.cls||'')],
   ['抗病毒 Antivirals',           d=>d.covSet==='viral'],
@@ -428,6 +429,7 @@ const GROUP_ORDER = [
   '多烯類 Polyenes','棘白菌素 Echinocandins','唑類 Azoles','抗黴菌（其他） Antifungals (other)',
   'HIV 抗反轉錄病毒 HIV ART','肝炎抗病毒 Hepatitis B／C','抗病毒 Antivirals',
   '抗結核 Anti-TB','抗麻風 Anti-leprosy','抗寄生蟲 Antiparasitics',
+  '外用抗疣 Anogenital wart therapy',
 ];
 function drugGroupIdx(d){ for(let i=0;i<DRUG_GROUPS.length;i++) if(DRUG_GROUPS[i][1](d||{})) return i; return DRUG_GROUPS.length-1; }
 function groupSortIdx(d){
