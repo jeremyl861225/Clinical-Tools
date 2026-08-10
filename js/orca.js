@@ -605,7 +605,9 @@
       }
 
       var dx = o.tx - s0.x, dy = o.ty - s0.y;
-      var urgent = o.mode !== 'cruise';
+      /* 冷卻不該把牠壓在畫面邊緣磨蹭：前方已經沒路了就算緊急，立刻轉。 */
+      var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
+      var urgent = o.mode !== 'cruise' || noRoom;
       if (!o.turn && Math.abs(dx) > D.L * (urgent ? .35 : .8)) {
         startTurn(dx > 0 ? 1 : -1, urgent);
       }
