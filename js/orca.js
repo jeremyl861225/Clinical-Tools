@@ -439,11 +439,20 @@
     g.restore();
   }
 
-  /* 吻端在畫面上的位置（餵食判定用） */
-  function snout() {
-    var S = Math.sin(o.th), a = o.pitch * S, d = D.span / 2 * S;
-    return { x: o.x + Math.cos(a) * d, y: o.y + Math.sin(a) * d };
+  /* 把身上任一點（體長座標 u、偏離體軸 off）換算成畫面座標。
+     用的是與 drawWhale 完全相同的那串變換：
+       T(中心) · R(俯仰·sinθ) · S(1, roll) · T(半個身長·sinθ, 0)
+     餵食判定必須走這一支，才會與畫面上真正看到的位置一致。 */
+  function bodyPoint(u, off) {
+    var S = Math.sin(o.th), a = o.pitch * S;
+    var px = -u * D.L * S + D.span / 2 * S, py = (spine(u) + off) * o.roll;
+    return { x: o.x + px * Math.cos(a) - py * Math.sin(a),
+             y: o.y + px * Math.sin(a) + py * Math.cos(a) };
   }
+  function snout() { return bodyPoint(0, 0); }
+  /* 嘴的位置：吻端與嘴角的中間、貼在嘴線上。飼料要碰到**這一點**才算吃到，
+     不是碰到吻端前方一大圈就消失（那看起來就是隔空吸魚）。 */
+  function mouth() { return bodyPoint(.09, botH(.09) * .55); }
 
   /* ================================================================
    * 行為
@@ -588,10 +597,11 @@
            半個身長，魚永遠從牠身側掠過，繞一圈也吃不到。 */
         if (target) {
           o.mode = 'chase'; o.tx = target.x; o.ty = target.y;
-          var md = Math.hypot(target.x - s0.x, target.y - s0.y);
-          if (md < D.H * 1.1) {                          // 吞下
+          var mp = mouth();
+          var md = Math.hypot(target.x - mp.x, target.y - mp.y);
+          if (md < D.H * .72) {                          // 真的碰到嘴了才吞
             food.splice(food.indexOf(target), 1);
-            o.gape = 1; o.gapeWant = 0; blow(6);          // 合起來＝咬下去
+            o.gape = 1; o.gapeWant = 0;                    // 合起來＝咬下去
           } else if (md < D.L * .55) {
             o.gapeWant = Math.min(1, (D.L * .55 - md) / (D.L * .38));
           } else o.gapeWant = 0;
@@ -604,23 +614,39 @@
         }
       }
 
-      var dx = o.tx - s0.x, dy = o.ty - s0.y;
+      /* ---- 操舵誤差：用「身體中心 → 前導點」，不可以用吻端 ----
+         這裡是先前抖動的真正來源。吻端的位置本身就是俯仰算出來的
+         （snout = 中心 + 前向×半個身長），拿它去算誤差，等於
+             俯仰 → 吻端 → 誤差 → 俯仰
+         接成一個沒有阻尼的閉迴路：目標在正前方時，抬頭會讓吻端跑到目標上方，
+         誤差立刻翻負、頭又壓下去，來回擺盪。愈靠近目標分母愈小、增益愈大，
+         所以追餌追到嘴邊那一刻抖得最兇——但平常巡游也一直在小幅震動。
+         正解是標準的純追蹤（pure pursuit）：把目標往後retreat 半個身長當作
+         「中心要去的點」，再用**中心**算誤差。中心的位置與俯仰無關，迴路就斷了。 */
+      var fx = Math.cos(o.pitch) * Math.sin(o.th), fy = Math.sin(o.pitch);
+      var aimX = o.tx - fx * D.span * .5, aimY = o.ty - fy * D.span * .5;
+      var dx = aimX - o.x, dy = aimY - o.y;
+      var aimD = Math.hypot(dx, dy);
+
       /* 冷卻不該把牠壓在畫面邊緣磨蹭：前方已經沒路了就算緊急，立刻轉。 */
       var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
       var urgent = o.mode !== 'cruise' || noRoom;
       if (!o.turn && Math.abs(dx) > D.L * (urgent ? .35 : .8)) {
         startTurn(dx > 0 ? 1 : -1, urgent);
       }
-      /* 俯仰上限依情境放寬：
-         · 追餌 87°——使用者要求「筆直游向飼料」，所以連分母的那個下限也拿掉，
-           算的是真正的視線角；魚在正下方時牠就整條豎起來直直往下衝。
-         · 游回畫面 80°——只能沿著頭的方向走，不准豎起來就只能繞遠路。
-         · 平常巡游 66°，並保留 L*0.3 的分母下限，姿態才不會一直大起大落。 */
+      /* 俯仰上限依情境放寬：追餌 87°（要能整條豎起來直直往下衝）、
+         游回畫面 80°、平常巡游 66°。 */
       var pmax = o.mode === 'chase' ? 1.52 : o.mode === 'return' ? 1.4 : 1.15;
-      var den = o.mode === 'chase' ? Math.max(1, Math.abs(dx))
-                                   : Math.max(D.L * .3, Math.abs(dx));
-      o.pitchWant = Math.max(-pmax, Math.min(pmax, Math.atan2(dy, den))) *
-                    (o.turn ? .6 : 1);
+      /* 死區：離前導點已經很近時就不要再修正角度了，讓牠滑過去。
+         沒有死區的話，誤差在原點附近正負翻面，方向就會一直左右橫跳。 */
+      if (aimD > D.span * .28) {
+        var raw = Math.max(-pmax, Math.min(pmax,
+          Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx))))) * (o.turn ? .6 : 1);
+        /* 再過一階低通：即使誤差本身有雜訊（飼料在晃、鯨魚在擺尾），
+           想去的角度也是平滑變化的。 */
+        var k = Math.min(1, dt / .16);
+        o.pitchWant += (raw - o.pitchWant) * k;
+      }
 
       if (o.turn) {                                      /* ---- 轉身 ---- */
         var tn = o.turn; tn.t += dt;
