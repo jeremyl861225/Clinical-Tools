@@ -127,6 +127,7 @@
     phase: 0, thrust: 1, thrustWant: 1, gape: 0, gapeWant: 0,
     gliding: false, beatT: 2.5,    // 衝刺—滑行：虎鯨不會整天勻速擺尾
     turnCool: 0,                   // 轉身冷卻，避免一直翻來覆去
+    pmx: 0, pmy: 0,                // 上一幀嘴的位置（命中判定用線段而非單點）
     roll: 1,                       // 翻滾特技用的上下鏡射（1 → −1 → 1）
     tx: 0, ty: 0, wait: 0,
     turn: null,                    // { from, to, t, dur }
@@ -452,6 +453,42 @@
   /* 嘴的位置：吻端與嘴角的中間、貼在嘴線上。飼料要碰到**這一點**才算吃到，
      不是碰到吻端前方一大圈就消失（那看起來就是隔空吸魚）。 */
   function mouth() { return bodyPoint(.09, botH(.09) * .55); }
+  /* 中心到嘴沿著體軸的距離：操舵時把目標往後退這麼多，落點才會剛好是**嘴**，
+     不是吻尖前方。 */
+  function reach() { return D.span / 2 - D.L * .09; }
+
+  /* ---- 攔截預測 ----
+     追「飼料現在的位置」等於永遠追著它的殘影：魚一直在下沉，等牠游到，魚
+     已經又低了一截，於是變成一路吊在魚後面斜著追。這裡解真正的攔截問題——
+         |r + u·t| = s·t
+     r 是嘴到魚的向量、u 是魚的速度、s 是自己的泳速，展開就是一條二次式；
+     取最小的正根當交會時間，魚在那個時刻會在哪裡，就往哪裡游。
+     魚落到底之後不再移動，所以預測點的 y 夾在 floorY 之內。 */
+  function intercept(f) {
+    var mp = mouth();
+    var vy = f.rest ? 0 : f.vy;
+    var vx = f.rest ? 0 : Math.sin(f.t * 2.4 + f.s) * 9;
+    var rx = f.x - mp.x, ry = f.y - mp.y;
+    var sp = Math.max(80, o.speed);
+    var a = vx * vx + vy * vy - sp * sp;
+    var b = 2 * (rx * vx + ry * vy);
+    var c = rx * rx + ry * ry;
+    var t = 0, disc = b * b - 4 * a * c;
+    if (a !== 0 && disc >= 0) {
+      var q = Math.sqrt(disc);
+      var t1 = (-b + q) / (2 * a), t2 = (-b - q) / (2 * a);
+      var best = Math.min(t1 > 0 ? t1 : 1e9, t2 > 0 ? t2 : 1e9);
+      if (best < 1e9) t = Math.min(best, 5);
+    }
+    return { x: f.x + vx * t, y: Math.min(floorY, f.y + vy * t) };
+  }
+  /* 點到線段的距離（命中判定用，避免高速掉幀時直接穿過飼料） */
+  function segDist(px, py, ax, ay, bx, by) {
+    var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    var t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (ax + dx * t), py - (ay + dy * t));
+  }
 
   /* ================================================================
    * 行為
@@ -582,9 +619,14 @@
         /* 追什麼都以**吻端**為準，不是身體中心：中心對準飼料的話，吻端會超前
            半個身長，魚永遠從牠身側掠過，繞一圈也吃不到。 */
         if (target) {
-          o.mode = 'chase'; o.tx = target.x; o.ty = target.y;
+          o.mode = 'chase';
+          var pt = intercept(target);                    // 預測攔截點，不是追現在位置
+          o.tx = pt.x; o.ty = pt.y;
           var mp = mouth();
-          var md = Math.hypot(target.x - mp.x, target.y - mp.y);
+          /* 命中判定走「上一幀的嘴 → 這一幀的嘴」這一段線段，不是單看當前點：
+             追餌泳速 168 px/s，掉幀時一步可以走十幾 px，只比對端點會從魚身上
+             穿過去卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。 */
+          var md = segDist(target.x, target.y, o.pmx, o.pmy, mp.x, mp.y);
           if (md < D.H * .72) {                          // 真的碰到嘴了才吞
             food.splice(food.indexOf(target), 1);
             o.gape = 1; o.gapeWant = 0;                    // 合起來＝咬下去
@@ -610,7 +652,8 @@
          正解是標準的純追蹤（pure pursuit）：把目標往後retreat 半個身長當作
          「中心要去的點」，再用**中心**算誤差。中心的位置與俯仰無關，迴路就斷了。 */
       var fx = Math.cos(o.pitch) * Math.sin(o.th), fy = Math.sin(o.pitch);
-      var aimX = o.tx - fx * D.span * .5, aimY = o.ty - fy * D.span * .5;
+      var rch = reach();
+      var aimX = o.tx - fx * rch, aimY = o.ty - fy * rch;
       var dx = aimX - o.x, dy = aimY - o.y;
       var aimD = Math.hypot(dx, dy);
 
@@ -665,6 +708,8 @@
     }
     /* 張嘴幅度一律走速率上限的平滑，不直接吃「吻端到魚的距離」——那個距離
        本身隨擺尾一直在抖，直接用會讓嘴巴每一幀開合一次（使用者看到的抖動）。 */
+    var mNow = mouth();                 // 這一幀結束時的嘴，供下一幀做線段命中判定
+    o.pmx = mNow.x; o.pmy = mNow.y;
     if (o.turnCool > 0) o.turnCool -= dt;
     if (!food.length || o.trick) o.gapeWant = 0;
     o.gape += Math.max(-dt * 2.6, Math.min(dt * 3.4, o.gapeWant - o.gape));
@@ -770,6 +815,8 @@
     ctx = canvas.getContext('2d');
     resize();
     pickTarget();
+    // 線段命中判定要有「上一幀的嘴」；不初始化的話第一幀那條線是從原點拉過來的
+    var m0 = mouth(); o.pmx = m0.x; o.pmy = m0.y;
     if (reduced) { step(.016); draw(); return; }
     alive = true; last = performance.now();
     raf = requestAnimationFrame(loop);
