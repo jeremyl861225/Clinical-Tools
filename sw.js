@@ -35,6 +35,7 @@ const PRECACHE_URLS = [
   './js/search.js',
   './js/searchbar.js',
   './js/pixel-cat.js',
+  './js/orca.js',
   './js/antibiotics.js',
   './js/drug-database.js',
   './js/cancer-staging.js',

@@ -1004,6 +1004,22 @@
   display: none;
 }
 
+/* ---- 造句首頁的殺人鯨疊層（節點由 js/orca.js 建，只在首頁存在） ----
+ * fixed 而非 absolute：牠不依附任何元素，也就沒有「疊層與文件逐像素對齊」的
+ * 需求（那才是像素貓非得用 absolute 的理由）。fixed 的三個好處正好對上使用者
+ * 的三項要求——活動範圍＝整個視口、捲動不走位、畫布不進文件流所以不可能跑版。
+ * z-index 介於內容與下緣固定列（.sent-mbar 的 40）之間：牠游在字的前面，
+ * 但永遠壓不到工具列與右上角的設計切換鈕（.ui-mode-toggle 是 70）。
+ * pointer-events:none：點擊一律由 document 收（見 js/orca.js 的檔尾），
+ * 疊層不會擋住底下任何一顆按鈕。 */
+[data-ui="sentence"] #orca-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 30;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui="sentence"] #orca-canvas { opacity: .55; }
+}
+
 /* ---- 詞塊／空格插槽／連接詞（首頁大字 vs 目標頁唯讀軌跡，兩者分開） ---- */
 /* ────────────────────────────────────────────────────────────────────────
    §1 詞塊／空格插槽／連接詞
