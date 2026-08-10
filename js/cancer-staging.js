@@ -308,8 +308,11 @@ function renderStage(c){
     // 每列即 [分期碼, 第2欄, 第3欄…]。第 2 欄以等寬字呈現（設計上放 TNM 等代碼）。
     var cols = c.stages_cols;
     var shaded = 0;
+    var codeW = stageCodeColWidth(c.stages.map(function(s){ return s[0]; }));
+    var codeCol = '<colgroup><col style="width:'+codeW+'px">';
     if(cols && cols.length){
-      h += '<table class="stage stage-map"><tr>';
+      for(var ci = 1; ci < cols.length; ci++) codeCol += '<col>';
+      h += '<table class="stage stage-map">'+codeCol+'</colgroup><tr>';
       cols.forEach(function(t){ h += '<th>'+escapeHtml(t)+'</th>'; });
       h += '</tr>';
       c.stages.forEach(function(s){
@@ -323,7 +326,8 @@ function renderStage(c){
       });
       h += '</table>';
     } else {
-      h += '<table class="stage"><tr><th>'+escapeHtml(c.stages_code_label || '分期')+'</th><th>'+
+      h += '<table class="stage">'+codeCol+'<col></colgroup>'+
+           '<tr><th>'+escapeHtml(c.stages_code_label || '分期')+'</th><th>'+
            escapeHtml(c.stages_crit_label || '條件')+'</th></tr>';
       // 只有當分期碼真的是 AJCC 期別（I/II/III/IV…）時才著色並附圖例；
       // 非 TNM 系統（BCLC、風險分級、WHO grade）的代碼不是期別，著色會誤導。
@@ -355,18 +359,37 @@ function shadeClass(s){ var r = STAGE_RANK[s]; return 'sm-s'+(r==null?0:r); }
 /* 以 canvas 依 sm-th 字體實測列標籤（T／N／M）之最大寬度，決定標籤欄寬。
    如此 table-layout:fixed 可保證資料欄等寬，標籤欄又剛好容納各表自身之標籤
    （短如「T1」一律 40px、長如食道之判別式標籤才加寬），避免欄寬忽窄忽寬。 */
-var _lblCtx = null;
-function labelColWidth(labels){
-  if(!_lblCtx){
-    var cv = document.createElement('canvas'); _lblCtx = cv.getContext('2d');
-    var mono = (getComputedStyle(document.body).getPropertyValue('--mono') || 'monospace').trim();
-    _lblCtx.font = '700 11.5px ' + mono;
-  }
+var _lblCtx = null, _lblMono = '';
+function maxTextWidth(labels, font){
+  if(!_lblCtx) _lblCtx = document.createElement('canvas').getContext('2d');
+  _lblCtx.font = font;
   var w = 0;
   labels.forEach(function(t){ w = Math.max(w, _lblCtx.measureText(String(t).replace(/<[^>]+>/g,'')).width); });
+  return w;
+}
+function monoFamily(){
+  if(!_lblMono) _lblMono = (getComputedStyle(document.body).getPropertyValue('--mono') || 'monospace').trim();
+  return _lblMono;
+}
+function labelColWidth(labels){
   // 下限 64px：舊值 40px 是「剛好容納 M1a」的極限，短標籤的表（NET、大腸直腸…）會被壓到下限，
   // 而資料欄可寬達 390px，比例約 1:10，標籤欄看起來像被擠掉。+22 為左右留白預算。
-  return Math.min(150, Math.max(64, Math.ceil(w) + 22));   // 上限 150px；超過者由 sm-th 換行
+  // 上限隨畫面寬給（約四成，夾在 96–150px）；超過者由 sm-th 換行。固定 150px 在 320px 以下的
+  // 畫面會吃掉半個表寬，食道 pSQ 那種四欄矩陣的資料欄只剩 30px，連「IIIB」都放不下而溢出。
+  var cap = Math.min(150, Math.max(96, Math.round(window.innerWidth * 0.42)));
+  return Math.min(cap, Math.max(64, Math.ceil(maxTextWidth(labels, '700 11.5px ' + monoFamily())) + 22));
+}
+
+/* 分期表首欄（分期碼）之欄寬，同樣實測後 inline 指定。
+   此欄若放著讓自動版面決定，會被條件欄的長文吃掉——瀏覽器是依「最大／最小內容寬之差」
+   分配不足的寬度，條件欄動輒上千 px、分期碼欄只有幾十 px，於是幾乎所有不足都由分期碼欄吸收，
+   「慢性期 CP」會被壓成一行一個字。給了實測寬度就不會，而超過上限者（ALL 之風險因子名
+   長達 197px）才折行——原先一律 nowrap，那張表會把整頁推出橫向捲軸。
+   上限隨畫面寬給（約三分之一，夾在 110–150px）：分期碼再長也不該吃掉條件欄一半的寬度，
+   320px 的手機若照桌機的 150px 給，條件欄只剩 140px，每列都被拉成十幾行。 */
+function stageCodeColWidth(codes){
+  var cap = Math.max(110, Math.min(150, Math.round(window.innerWidth * 0.36)));
+  return Math.min(cap, Math.ceil(maxTextWidth(codes, '700 12.5px ' + monoFamily())) + 18);
 }
 
 function renderMatrix(mx){

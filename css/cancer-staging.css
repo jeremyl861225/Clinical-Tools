@@ -129,7 +129,10 @@
   .onc-note{font-size:12px; color:var(--muted); line-height:1.65; margin:6px 0;}
 
   table.tnm{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
-  table.tnm td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.55;}
+  /* 定義欄用 anywhere 而非 break-word：兩者的斷行結果相同（都是放不下才斷），但只有 anywhere
+     會讓「最小內容寬」跟著縮——表格寬度是照最小內容算的，膀胱癌那句夾著
+     Microscopically 的定義在 280px 畫面會把整張表撐得比容器寬。 */
+  table.tnm td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.55; overflow-wrap:anywhere;}
   /* 代碼欄：width:1% + nowrap = 收縮至內容所需寬度（NET 之「十二指腸／壺腹 T1」等長標籤亦不折行），
      剩餘寬度全歸定義欄。原本的 width:64px 在 nowrap 下不生效，代碼與定義之間僅剩 7px 而顯得壓迫，
      故改以 padding-right 拉出固定間距。 */
@@ -139,18 +142,24 @@
 
   table.stage{width:100%; border-collapse:collapse; font-size:12.5px; margin:4px 0 10px;}
   table.stage th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); text-align:left; padding:4px 7px; border-bottom:2px solid var(--accent-soft);}
-  table.stage td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5;}
-  table.stage td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent2); white-space:nowrap;}
+  table.stage td{padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5; overflow-wrap:anywhere;}
+  /* 分期碼欄不設 nowrap：期別碼（IA、IIIC…）本來就短，自動版面不會把它折掉；
+     但少數表的首欄放的是長標籤（ALL 之「Ph-like（BCR::ABL1-like）」等風險因子名），
+     nowrap 會把整張表撐得比畫面寬，連頁面都被推出橫向捲軸。 */
+  table.stage td:first-child{font-family:var(--mono); font-weight:700; color:var(--accent2); overflow-wrap:break-word;}
   /* 非 TNM 系統（FIGO／BCLC…）之分期欄：沿用 T×N 表之深淺著色 */
   table.stage td.st-code{text-align:center; border-radius:2px;}
   table.stage td.st-code.sm-s4, table.stage td.st-code.sm-s5,
   table.stage td.st-code.sm-s6, table.stage td.st-code.sm-s7{color:var(--sm-strong-text);}
   table.stage tr:last-child td{border-bottom:none;}
   /* 多欄分期表（FIGO｜TNM｜定義 對照）：第 2 欄放代碼，以等寬字與定義欄拉開層次，
-     使「分期碼 ↔ TNM 組合」一眼可對，不必在兩張表之間來回找。 */
+     使「分期碼 ↔ TNM 組合」一眼可對，不必在兩張表之間來回找。
+     多欄表（攝護腺為五欄：分期｜T｜N／M｜PSA｜Grade Group）在手機寬度下已無餘裕，
+     故此欄不收縮成 width:1% 亦不 nowrap——否則「cT1a–c、cT2a，或 pT2」這類長組合
+     會把表撐到 416px，在 320–414px 的畫面一律爆出頁面右緣。 */
   table.stage.stage-map td.st-c1{font-family:var(--mono); font-size:11.5px; color:var(--accent2);
-    white-space:nowrap; width:1%; padding-right:16px; font-weight:600;}
-  table.stage.stage-map th{white-space:nowrap;}
+    padding-right:16px; font-weight:600; overflow-wrap:break-word;}
+  table.stage.stage-map th{overflow-wrap:break-word;}
   /* T／N／M 表之 FIGO 對照欄：沿用分期深淺著色，與矩陣、分期表同一套視覺語言 */
   table.tnm.tnm-figo td.tf-figo{font-family:var(--mono); font-weight:700; font-size:11.5px;
     text-align:center; white-space:nowrap; width:1%; padding:5px 9px; border-radius:2px;}
@@ -172,7 +181,12 @@
   .smx .sm-th{white-space:normal; overflow-wrap:anywhere;}
   .smx .sm-corner{background:var(--soft-bg);}
   .smx .sm-nh{font-size:11px; font-weight:700; color:var(--muted); background:var(--soft-bg);}
-  .smx .sm-nh span{display:block; font-size:9px; font-weight:400; color:var(--muted-soft); margin-top:1px;}
+  /* 欄首之註解（顆數／部位，如乳癌之「≥10 顆／鎖骨下上」）允許換行：
+     table-layout:fixed 之下，資料欄寬由剩餘寬度平均分配，欄首註解常比欄寬長；
+     若維持 nowrap，字會整條溢出格線、蓋到相鄰欄甚至衝出表格右緣（手機上尤其明顯）。
+     改為可折行，寬度不夠時往下長而不往右衝。 */
+  .smx .sm-nh span{display:block; font-size:9px; font-weight:400; color:var(--muted-soft); margin-top:1px;
+    white-space:normal; overflow-wrap:break-word; line-height:1.3;}
   /* 靠右對齊時，欄寬增加只會把標籤往右推，故間距須由 padding-right 拉開（原 8px 貼著資料欄） */
   .smx .sm-th{font-size:11.5px; font-weight:700; color:var(--accent); background:var(--soft-bg); text-align:right; padding-right:12px;}
   .smx .sm-cell{font-weight:700; color:var(--ink);}
@@ -195,6 +209,15 @@
   .smx tr.sm-mrow:first-of-type td, .smx tr.sm-mrow:first-of-type th{border-top:2px solid var(--accent2-soft);}
   .sm-m1{font-size:12px; color:var(--label-ink); background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent2); border-radius:2px; padding:7px 11px; margin-top:4px;}
   .sm-m1 b{color:var(--accent2); font-family:var(--mono);}
+  /* 極窄畫面（Galaxy Fold 之外螢幕 280px、舊機 320px）：矩陣有五欄時，資料欄僅剩約 30px，
+     連「IIIB」這種期別碼都放不下而溢出格線。期別碼折行只會更難讀，故改為縮字級與內距。 */
+  @media(max-width:340px){
+    table.smx{font-size:11px;}
+    .smx th, .smx td{padding:6px 3px;}
+    .smx .sm-th{font-size:11px; padding-right:8px;}
+    .smx .sm-nh{font-size:10.5px;}
+    .smx .sm-cell{font-size:10.5px;}   /* 卵巢之 IIIA1(ii) 是全站最長的期別碼 */
+  }
   .sm-legend{display:flex; flex-wrap:wrap; gap:8px 14px; margin:8px 0 2px; font-family:var(--mono); font-size:10px; color:var(--muted-soft);}
   .sm-legend span{display:inline-flex; align-items:center; gap:4px;}
   .sm-legend i{width:12px; height:12px; border:1px solid var(--line); display:inline-block; border-radius:2px;}
@@ -202,7 +225,13 @@
   .node-item{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft); border-radius:2px; padding:8px 11px; margin-bottom:6px; font-size:12.5px; line-height:1.55;}
   .node-item .ni-code{font-family:var(--mono); font-weight:700; color:var(--accent); margin-right:6px;}
   .node-item .ni-en{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
-  .node-group{font-family:var(--mono); font-size:11px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; margin-left:6px; white-space:nowrap;}
+  /* 分群徽章多半只有幾個字，放不下時整顆換到下一行即可；但 NET 的「區域：N0／N1（不計顆數）；
+     非清單內之淋巴結 → M1b」單顆就有 291px，在 320px 的畫面 nowrap 會把整頁推出橫向捲軸。
+     inline-block + max-width:100%：寬度以容器（非該行剩餘空間）縮放，故短徽章仍是完整一顆、
+     整顆換行，只有寬過容器的長徽章才在內部折行；box-decoration-break 讓折行後兩段都有圓角。 */
+  .node-group{font-family:var(--mono); font-size:11px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; margin-left:6px;
+    display:inline-block; max-width:100%; overflow-wrap:break-word;
+    box-decoration-break:clone; -webkit-box-decoration-break:clone;}
 
   /* ---- 判讀準則區塊（流程步驟內的 Favorable / Unfavorable / High-risk 清單）---- */
   .crit-box{margin-top:9px; display:flex; flex-direction:column; gap:7px;}
