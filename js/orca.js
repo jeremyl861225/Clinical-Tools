@@ -144,7 +144,9 @@
     // 暗色底的亮度判斷：#0a…／#1… 開頭一律當暗底
     var dark = /^#[01]/.test(bg);
     return {
-      skin:  dark ? '#26362f' : '#16241f',
+      /* 暗底不能用純黑（會與背景 #0a1512 糊在一起看不出輪廓），取比背景亮一階
+         的墨綠黑；亮底則直接壓到接近純黑。 */
+      skin:  dark ? '#182420' : '#0d1714',
       belly: dark ? (v('--sentence-fg') || '#ece6d8') : bg,   // 兩邊都是骨白
       ink:   '#0a1512',
       food:  v('--sentence-warn') || '#7d5a10'
@@ -223,50 +225,62 @@
   function edgeBot(u) { return spine(u) + botH(u); }
   function edgeVent(u) { return spine(u) + botH(u) - ventH(u); }
 
-  function bodyRibs(g, S, C) {                       // 側向鼓起（正臉時的圓胖身體）
-    var ac = Math.abs(C), M = 34, i, d = 1 / M;
-    // 完全側面時解析輪廓已經是精確解，肋條一點也不必畫
-    if (ac < .06) { g.beginPath(); return; }
-    g.beginPath();
-    for (i = 0; i <= M; i++) {
-      var u = i / M;
+  /* ---- 逐斷面的側向鼓起：**由遠而近**，暗色面與腹白交錯畫 ----
+     這裡的順序是關鍵。轉到正臉時 sinθ→0，所有斷面都疊在同一個 x 上；先前
+     是「整條身體畫完、再把整條腹白蓋上去」，於是後半身那一大片白直接印在
+     臉上。正確的作法是畫家演算法：從最遠的斷面往最近的畫，每一個斷面先畫
+     自己的暗色橫斷面、再畫自己的腹白，近的暗面因此會把遠的白蓋掉。
+     吻端朝著使用者（cosθ≥0）時由尾往頭畫，背對時反過來。
+     完全側面（|cosθ|<0.06）時斷面不重疊，解析輪廓已經是精確解，整段跳過。 */
+  function ribs(g, S, C, P) {
+    var ac = Math.abs(C);
+    if (ac < .06) return;
+    var M = 30, d = 1 / M, headNear = C >= 0, k, i, u;
+    for (k = 0; k <= M; k++) {
+      i = headNear ? M - k : k;
+      u = i / M;
       var hw = halfW(u) * ac + D.L * Math.abs(S) / M * .55 + .5;
       var y0 = ribSpan(u, d, edgeTop, 1);
       var y1 = ribSpan(u, d, u < MU ? edgeVent : edgeBot, -1);
-      if (y1 - y0 < 1) continue;
-      rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0,
-            Math.min(hw, (y1 - y0) / 2) * ac);
+      if (y1 - y0 > 1) {
+        g.beginPath();
+        rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0,
+              Math.min(hw, (y1 - y0) / 2) * ac);
+        g.fillStyle = P.skin; g.fill();
+      }
+      if (u >= MU && ventH(u) > .5) {
+        var vw = halfW(u) * .58 * ac + D.L * Math.abs(S) / M * .55 + .4;
+        var v0 = ribSpan(u, d, edgeVent, 1), v1 = ribSpan(u, d, edgeBot, -1);
+        if (v1 - v0 > 1) {
+          g.beginPath();
+          rrect(g, -u * D.L * S - vw, v0, vw * 2, v1 - v0,
+                Math.min(vw, (v1 - v0) / 2) * ac);
+          g.fillStyle = P.belly; g.fill();
+        }
+      }
     }
   }
-  /* 腹白同理拆成兩次。它不必再 clip 回身體裡：ventH 已夾在 0.82×總高之內、
-     橫向只取 0.58×半寬（正臉時白色才不會糊成一整片），兩端又收斂到 0，
-     構造上就跑不出輪廓。 */
+  /* 解析腹白：提供**平滑的上緣**，所以必須畫在肋條「之後」——逐斷面的肋條
+     上下緣是一條條水平線，只靠它們，白帶的邊就是一階一階的。
+     但它涵蓋整條身體、沒有深度資訊，正臉時就會把後半身的白印到臉上。解法是
+     依偏航角收縮它的範圍：|sinθ| 大（接近側面，前後不重疊）時畫滿整條；
+     |sinθ| 小（接近正臉）時只畫到 u≈0.34，也就是從正面真的看得到的胸腹那一段，
+     再往後的白本來就被自己的身體擋住了。 */
   function ventOutline(g, S) {
+    var e = Math.min(1, Math.max(0, (Math.abs(S) - .12) / .38));
+    var uEnd = MU + (1 - MU) * (.18 + .82 * e);
     var N = 30, i, u;
     g.beginPath();
     for (i = 0; i <= N; i++) {                       // 腹緣：嘴角 → 尾柄
-      u = MU + (1 - MU) * i / N;
+      u = MU + (uEnd - MU) * i / N;
       var x = -u * D.L * S, y = edgeBot(u);
       i ? g.lineTo(x, y) : g.moveTo(x, y);
     }
     for (i = N; i >= 0; i--) {                       // 腹白上緣折回
-      u = MU + (1 - MU) * i / N;
+      u = MU + (uEnd - MU) * i / N;
       g.lineTo(-u * D.L * S, edgeVent(u));
     }
     g.closePath();
-  }
-  function ventRibs(g, S, C) {
-    var ac = Math.abs(C), M = 30, i, d = 1 / M;
-    if (ac < .06) { g.beginPath(); return; }
-    g.beginPath();
-    for (i = 0; i <= M; i++) {
-      var u = i / M;
-      if (u < MU || ventH(u) <= .5) continue;
-      var hw = halfW(u) * .58 * ac + D.L * Math.abs(S) / M * .55 + .4;
-      var y0 = ribSpan(u, d, edgeVent, 1), y1 = ribSpan(u, d, edgeBot, -1);
-      if (y1 - y0 < 1) continue;
-      rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0, Math.min(hw, (y1 - y0) / 2) * ac);
-    }
   }
   function rrect(g, x, y, w, h, r) {
     if (h <= 0 || w <= 0) return;
@@ -405,15 +419,10 @@
       if (dorsalBlade(g, S, C)) g.fill();
       flukePath(g, S, C); g.fill();
     }
-    function trunk() {
-      bodyOutline(g, S); g.fill();
-      bodyRibs(g, S, C); g.fill();
+    /* 下顎：整片繞嘴角轉開。閉著（gape=0）時它剛好貼回原位，合起來與「一片
+       完整的身體」逐像素相同；張開時上下顎之間不填任何顏色，那道縫是真的透空。 */
+    function jaw() {
       g.fillStyle = P.belly;
-      ventOutline(g, S); g.fill();
-      ventRibs(g, S, C); g.fill();
-      /* 下顎：整片繞嘴角轉開。閉著（gape=0）時它剛好貼回原位，
-         合起來與「一片完整的身體」逐像素相同；張開時上下顎之間不填任何顏色，
-         那道縫是真的透空的。 */
       var ja = jawAngle(S);
       g.save();
       if (ja) {
@@ -422,6 +431,16 @@
       }
       jawPath(g, S); g.fill();
       g.restore();
+      g.fillStyle = P.skin;
+    }
+    function trunk() {
+      if (!headNear) jaw();                          // 背對：頭在最遠端，先畫再被身體蓋掉
+      g.fillStyle = P.skin;
+      bodyOutline(g, S); g.fill();                   // 平滑的暗色輪廓（側面時的真值）
+      ribs(g, S, C, P);                              // 逐斷面、由遠而近（處理前後遮擋）
+      g.fillStyle = P.belly;
+      ventOutline(g, S); g.fill();                   // 平滑的腹白上緣，蓋掉肋條的階梯
+      if (headNear) jaw();
       g.fillStyle = P.skin;
     }
 
