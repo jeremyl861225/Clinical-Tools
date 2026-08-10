@@ -47,15 +47,18 @@
                 window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
   /* ---- 剖面控制點（值＝最大半高的比例，最大處為 1） ---- */
-  var PK   = [0, .03, .08, .16, .28, .40, .55, .70, .82, .92, 1];
-  var PTOP = [.34, .64, .84, .97, 1, .96, .82, .60, .40, .26, .17];
-  var PBOT = [.30, .62, .84, .97, 1, .96, .82, .58, .36, .22, .14];
+  /* 頭部（u<0.2）刻意多給兩個控制點並抬高前端：只用 0→.03→.08 三點時，前端是
+     一段幾乎直線的陡坡，側面看就是一顆被削平的楔形頭。改成 .46 起跳、在 .09
+     就到九成高，額隆才是圓的。 */
+  var PK   = [0, .015, .04, .09, .17, .28, .40, .55, .70, .82, .92, 1];
+  var PTOP = [.46, .64, .80, .91, .98, 1, .96, .82, .60, .40, .26, .17];
+  var PBOT = [.40, .60, .78, .90, .98, 1, .96, .82, .58, .36, .22, .14];
   /* 腹白：下顎一路到肛門，近尾處往上翹一撇（虎鯨側面最好認的一筆） */
   var VK   = [0, .04, .10, .30, .52, .63, .70, .78, .86, 1];
   var VH   = [0, .30, .50, .46, .52, .74, .58, .26, .04, 0];
   /* 側向半寬：胸圍處近乎圓，尾柄側扁 */
-  var WK   = [0, .04, .12, .28, .45, .62, .78, .90, 1];
-  var WV   = [.26, .52, .70, .78, .72, .56, .36, .22, .13];
+  var WK   = [0, .03, .10, .22, .35, .50, .66, .80, .90, 1];
+  var WV   = [.40, .58, .72, .80, .78, .66, .48, .30, .20, .13];
 
   /* 剖面內插：**單調三次**（Fritsch–Carlson），不是均勻參數的 Catmull-Rom。
      控制點的間距差到五倍（0.04 一格接著 0.20 一格），均勻 CR 公式算出來的切線在
@@ -195,6 +198,23 @@
       g.lineTo(-u * D.L * S, edgeVent(u));
     }
     g.closePath();
+  }
+  /* 下顎的側向鼓起。少了這一段，正臉時（sinθ→0）整片下顎會塌成一條沒有寬度
+     的白線，而 u=0 那一端收斂成一個點——畫面上就是從嘴巴中央往上戳的一根白尖刺。
+     虎鯨從正面看，白色下顎本來就跟頭一樣寬。 */
+  function jawRibs(g, S, C) {
+    var ac = Math.abs(C);
+    if (ac < .06) { g.beginPath(); return; }
+    var M = 10, d = MU / M, i;
+    g.beginPath();
+    for (i = 0; i <= M; i++) {
+      var u = MU * i / M;
+      var hw = halfW(u) * .62 * ac + D.L * Math.abs(S) * MU / M * .55 + .4;
+      var y0 = ribSpan(u, d, edgeVent, 1), y1 = ribSpan(u, d, edgeBot, -1);
+      if (y1 - y0 < .8) continue;
+      rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0,
+            Math.min(hw, (y1 - y0) / 2) * ac);
+    }
   }
   /* 下顎：u∈[0,MU] 之間、嘴線與腹緣之間的那一片。整片繞嘴角旋轉，
      張開後上下顎之間就是**沒有填色的空隙**——從那裡看得到後面的頁面。 */
@@ -429,17 +449,23 @@
         var hx = -MU * D.L * S, hy = edgeVent(MU);
         g.translate(hx, hy); g.rotate(ja); g.translate(-hx, -hy);
       }
-      jawPath(g, S); g.fill();
+      jawRibs(g, S, C); g.fill();
+      if (!THIN) { jawPath(g, S); g.fill(); }
       g.restore();
       g.fillStyle = P.skin;
     }
+    /* 幾乎正對鏡頭時，三條解析路徑（身體輪廓、腹白、下顎）全部退化成寬度不到
+       一個像素的長條——它們不再描述任何形狀，卻會從肋條堆出來的圓身體裡戳出來，
+       畫面上就是嘴巴中央那根往上的白尖刺。這種角度一律交給肋條，它們本來就是
+       為了正臉而存在的。 */
+    var THIN = Math.abs(S) < .12;
     function trunk() {
       if (!headNear) jaw();                          // 背對：頭在最遠端，先畫再被身體蓋掉
       g.fillStyle = P.skin;
-      bodyOutline(g, S); g.fill();                   // 平滑的暗色輪廓（側面時的真值）
+      if (!THIN) { bodyOutline(g, S); g.fill(); }    // 平滑的暗色輪廓（側面時的真值）
       ribs(g, S, C, P);                              // 逐斷面、由遠而近（處理前後遮擋）
       g.fillStyle = P.belly;
-      ventOutline(g, S); g.fill();                   // 平滑的腹白上緣，蓋掉肋條的階梯
+      if (!THIN) { ventOutline(g, S); g.fill(); }    // 平滑的腹白上緣，蓋掉肋條的階梯
       if (headNear) jaw();
       g.fillStyle = P.skin;
     }
