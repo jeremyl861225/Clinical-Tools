@@ -133,7 +133,7 @@
     trick: null,                   // { kind, t, dur }
     mode: 'cruise'
   };
-  var food = [], bubbles = [];
+  var food = [];
 
   /* ---- 色票：跟著 04 造句設計的骨白／墨綠走 ---- */
   function palette() {
@@ -146,8 +146,7 @@
       skin:  dark ? '#26362f' : '#16241f',
       belly: dark ? (v('--sentence-fg') || '#ece6d8') : bg,   // 兩邊都是骨白
       ink:   '#0a1512',
-      food:  v('--sentence-warn') || '#7d5a10',
-      bub:   dark ? (v('--sentence-fg') || '#ece6d8') : '#16241f'
+      food:  v('--sentence-warn') || '#7d5a10'
     };
   }
 
@@ -514,14 +513,6 @@
     var kind = r < .3 ? 'spin' : r < .58 ? 'roll' : r < .84 ? 'loop' : 'slap';
     o.trick = { kind: kind, t: 0, dur: kind === 'loop' ? 1.5 : kind === 'slap' ? 1.4 : 1.1 };
     o.turn = null;
-    if (kind === 'slap') blow(4);
-  }
-  function blow(n) {
-    var s = snout();
-    for (var i = 0; i < n; i++)
-      bubbles.push({ x: s.x + (Math.random() - .5) * D.H * 2,
-                     y: s.y + (Math.random() - .5) * D.H,
-                     r: 1 + Math.random() * 2.6, t: 0, life: 1 + Math.random() });
   }
 
   function step(dt) {
@@ -543,10 +534,6 @@
         if (f.y >= floorY) { f.y = floorY; f.rest = true; }
       }
     }
-    for (i = bubbles.length - 1; i >= 0; i--) {
-      var b = bubbles[i]; b.t += dt; b.y -= dt * 30; b.x += Math.sin(b.t * 4) * 7 * dt;
-      if (b.t > b.life) bubbles.splice(i, 1);
-    }
 
     /* ---- 特技 ---- */
     if (o.trick) {
@@ -564,7 +551,6 @@
         o.thrust = o.thrustWant = 1.6;
       } else {                                         // 拍尾
         o.thrust = o.thrustWant = 2.6;
-        if (Math.random() < dt * 6) blow(1);
       }
       if (k >= 1) {
         o.trick = null; o.thrust = o.thrustWant = 1; o.roll = 1;
@@ -628,20 +614,28 @@
       var dx = aimX - o.x, dy = aimY - o.y;
       var aimD = Math.hypot(dx, dy);
 
-      /* 冷卻不該把牠壓在畫面邊緣磨蹭：前方已經沒路了就算緊急，立刻轉。 */
+      /* 錯過飼料就往下追，不要掉頭 ----------------------------------
+         飼料一直在下沉，掉頭是最笨的選擇（偏航轉身要 1.5 秒，這段時間魚又沉
+         更遠）。追餌時改用「真正的視線角」 P = atan2(dy, dx·sinθ)：dx·sinθ 是
+         目標落在體軸前方的分量，為負（＝魚已經在身後）時 P 會超過 90°，牠就
+         整條壓過垂直往下鑽、順帶往後退著追——那正是虎鯨錯身後的動作。
+         只有「魚在身後、而且不在下方」時才真的需要偏航轉身。 */
+      var chasing = o.mode === 'chase';
+      var fwd = dx * Math.sin(o.th);
       var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
       var urgent = o.mode !== 'cruise' || noRoom;
-      if (!o.turn && Math.abs(dx) > D.L * (urgent ? .35 : .8)) {
-        startTurn(dx > 0 ? 1 : -1, urgent);
-      }
-      /* 俯仰上限依情境放寬：追餌 87°（要能整條豎起來直直往下衝）、
-         游回畫面 80°、平常巡游 66°。 */
-      var pmax = o.mode === 'chase' ? 1.52 : o.mode === 'return' ? 1.4 : 1.15;
+      var needYaw = chasing ? (fwd < -D.L * .35 && dy < D.H * 1.5)
+                            : Math.abs(dx) > D.L * (urgent ? .35 : .8);
+      if (!o.turn && needYaw) startTurn(dx > 0 ? 1 : -1, urgent);
+
+      /* 俯仰上限：追餌 115°（可以壓過垂直）、游回畫面 80°、平常巡游 66°。 */
+      var pmax = chasing ? 2.0 : o.mode === 'return' ? 1.4 : 1.15;
       /* 死區：離前導點已經很近時就不要再修正角度了，讓牠滑過去。
          沒有死區的話，誤差在原點附近正負翻面，方向就會一直左右橫跳。 */
       if (aimD > D.span * .28) {
-        var raw = Math.max(-pmax, Math.min(pmax,
-          Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx))))) * (o.turn ? .6 : 1);
+        var raw = chasing ? Math.atan2(dy, fwd)
+                          : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
+        raw = Math.max(-pmax, Math.min(pmax, raw)) * (o.turn ? .6 : 1);
         /* 再過一階低通：即使誤差本身有雜訊（飼料在晃、鯨魚在擺尾），
            想去的角度也是平滑變化的。 */
         var k = Math.min(1, dt / .16);
@@ -664,7 +658,7 @@
         o.gliding = !o.gliding;
         o.beatT = o.gliding ? 1.3 + Math.random() * 2.1 : 2.4 + Math.random() * 2.8;
       }
-      if (o.mode === 'chase') { o.gliding = false; o.spdWant = 108; o.thrustWant = 1.35; }
+      if (o.mode === 'chase') { o.gliding = false; o.spdWant = 168; o.thrustWant = 1.6; }
       else if (o.mode === 'return') { o.gliding = false; o.spdWant = 132; o.thrustWant = 1.45; }
       else if (o.gliding) { o.spdWant = 24; o.thrustWant = .22; }
       else { o.spdWant = 54; o.thrustWant = 1; }
@@ -683,7 +677,7 @@
     }
     if (o.trick) o.spdWant = o.trick.kind === 'slap' ? 4 : 150;
     o.thrust += Math.max(-dt * 2.4, Math.min(dt * 3.2, o.thrustWant - o.thrust));
-    var acc = o.trick ? 300 : 58;
+    var acc = o.trick ? 300 : o.mode === 'chase' ? 150 : 58;
     o.speed += Math.max(-dt * 90, Math.min(dt * acc, o.spdWant - o.speed));
 
     /* ---- 位移：嚴格沿著頭指的方向，沒有任何側向分量 ----
@@ -730,14 +724,6 @@
       ctx.closePath(); ctx.fill();
       ctx.restore();
     }
-    for (i = 0; i < bubbles.length; i++) {
-      var b = bubbles[i];
-      ctx.globalAlpha = Math.max(0, 1 - b.t / b.life) * .6;
-      ctx.strokeStyle = P.bub; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(b.x, b.y - sc, b.r, 0, TAU); ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
     drawWhale(ctx, sc);
   }
 
@@ -792,7 +778,7 @@
     alive = false;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
     if (canvas) { canvas.remove(); canvas = null; ctx = null; }
-    food.length = 0; bubbles.length = 0;
+    food.length = 0;
   }
 
   /* 只在造句設計的首頁：#sentHome 由 js/sentence-nav.js 在首頁插入，
