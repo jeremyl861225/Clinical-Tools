@@ -235,10 +235,18 @@ function linkify(text) {
     `<a href="${u}" target="_blank" rel="noopener" class="ref-link">${esc(linkLabel(u))}</a>`);
 }
 
+/* 台大原始資料在抗菌譜、懷孕分級等欄位用 <b> 排版。逐字 esc 會把標籤原樣印出來，
+   所以比照 doseField 的做法：只放行 <b>／<i>／<br>，其餘一律轉義。 */
+const TAG_OK = /&lt;(\/?)(b|i|br)\s*\/?&gt;/gi;
+function richText(t) {
+  return linkify(t).replace(TAG_OK, (m, close, tag) =>
+    `<${close}${tag.toLowerCase()}>`);
+}
+
 function field(label, text, warn) {
   if (!text || !String(text).trim()) return '';
   return `<div class="dc-field"><div class="dc-flabel">${label}</div>
-    <div class="dc-ftext ${warn ? 'dc-warn' : ''}">${linkify(text)}</div></div>`;
+    <div class="dc-ftext ${warn ? 'dc-warn' : ''}">${richText(text)}</div></div>`;
 }
 
 function rowTbl(label, rows, cols) {
@@ -269,7 +277,7 @@ function pregField(v) {
   const note = (m ? m[2] : String(v)).replace(/^[;；,，\s]+/, '').trim();
   return `<div class="dc-field"><div class="dc-flabel">懷孕藥品分級</div><div class="dc-ftext">` +
     (grade ? `<span class="dc-preg">Category ${grade}</span>` : '') +
-    (note ? `<span class="dc-pregnote">${esc(note)}</span>` : '') + `</div></div>`;
+    (note ? `<span class="dc-pregnote">${richText(note)}</span>` : '') + `</div></div>`;
 }
 
 /* 常用劑量排版：台大原文是一整段英文（"PO with meals. Adults, ... ; ... . Children, ..."），
