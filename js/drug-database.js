@@ -380,13 +380,16 @@ function variantBody(v) {
     ${doseField(v.dose)}
     ${field('最大劑量', v.maxDose)}
     ${field('兒科劑量', v.peds)}
+    ${rowTbl('剝半／磨粉／管餵', v.crush, [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'],
+      ['cap', '膠囊可打開'], ['why', '說明'], ['note', '備註']])}
     ${rowTbl('腎功能調整', v.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
     ${rowTbl('透析劑量', v.dialysis, [['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
       ['pd_dose', 'PD 劑量'], ['pd_removal', 'PD 移除比例'], ['pd_supp', 'PD 後補充'], ['remark', '備註']])}
     ${rowTbl('CVVH／CRRT 劑量', v.cvvh, [['cvvh', 'CVVH'], ['cvvhd', 'CVVHD'], ['cvvhdf', 'CVVHDF'], ['remark', '備註']])}
     ${rowTbl('注射給藥指引', v.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
-      ['diluent', '稀釋液及體積'], ['conc', '給藥濃度'], ['time', '輸注時間／速率'], ['notes', '注意事項'],
+      ['diluent', '稀釋液及體積'], ['volume', '每劑體積'], ['conc', '給藥濃度'],
+      ['time', '輸注時間／速率'], ['alt_routes', '替代給藥途徑'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性'], ['stab_note', '安定性備註']])}
     ${field('抗菌譜', v.spectrum)}
@@ -407,6 +410,10 @@ function variantBody(v) {
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
+    ${v.abxKey ? `<div class="dc-field"><div class="dc-flabel">完整版</div>
+       <div class="dc-ftext"><a class="ref-link" target="_blank" rel="noopener"
+       href="antibiotics.html#drug=${encodeURIComponent(v.abxKey)}"
+       >在抗生素指引查看這支藥（含依部位／依菌種的用法建議）</a></div></div>` : ''}
     <div class="db-foot">${v.src
       ? `${esc(v.src)}　·　分類：${esc(v.cat || '')}`
       : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;

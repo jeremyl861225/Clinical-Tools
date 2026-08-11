@@ -1917,7 +1917,7 @@
       });
     });
 
-    /* ── 藥物資料庫（2,392 筆，含抗生素卡與非台大處方）：#code=<code> ── */
+    /* ── 藥物資料庫（2,390 筆，含抗生素卡與非台大處方）：#code=<code> ── */
     (window.DRUGDB_INDEX || []).forEach(function (d) {
       if (!d || !d.name) return;
       var head = (d.name + ' ' + (d.brand || '') + ' ' + (d.zh || '')).toLowerCase();
@@ -2334,7 +2334,9 @@
   var SAY_GROUP = {
     tool:    { zh: '工具與流程', en: 'Tools & Pathways', note: '', cap: 14 },
     abx:     { zh: '抗生素指引', en: 'Antibiotic Guide',
-               note: '頁內三層：依部位 10 · 依病原菌 44 · 藥物查詢 155', cap: 12 },
+               /* 這三個數字是頁內子目標的實際筆數；改資料時要同步，
+                  回歸測試 U 會比對（scripts/regress_ext_cards.py）。 */
+               note: '頁內三層：依部位 11 · 依病原菌 54 · 藥物查詢 162', cap: 12 },
     db:      { zh: '藥物資料庫', en: 'Formulary',
                note: '台大處方集（一商品名一卡）＋非台大處方（一成分一卡）', cap: 12 },
     classif: { zh: '分類與分級系統', en: 'Grading & Classification',
