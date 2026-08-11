@@ -45,6 +45,7 @@ const IDX = window.DRUGDB_INDEX || [];
 let curTop = '';        // 目前選的藥理大類（空字串＝全部）
 let curCls = '';        // 目前選的機轉標籤
 let curQ = '';          // 搜尋字串
+let curSrc = '';        // 來源：'' 全部／'ntuh' 台大處方集／'ext' 非台大處方
 
 const el = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
@@ -70,7 +71,12 @@ const zhName = z => (!z || z.indexOf('無正式中文名') >= 0) ? '' : z;
 
 /* ---------------- 清單與篩選 ---------------- */
 
+const EXT_TAG = '非台大處方';
+const isExt = d => (d.tags || []).indexOf(EXT_TAG) >= 0;
+
 function matches(d) {
+  if (curSrc === 'ntuh' && isExt(d)) return false;
+  if (curSrc === 'ext' && !isExt(d)) return false;
   if (curTop && (d.tops || []).indexOf(curTop) < 0) return false;
   if (curCls && (d.cls || []).indexOf(curCls) < 0) return false;
   if (!curQ) return true;
@@ -83,12 +89,30 @@ function matches(d) {
   return curQ.split(/\s+/).every(t => hay.indexOf(t) >= 0);
 }
 
+/* 來源列：台大處方集的卡與公開資料建的卡混在一起，欄位深度差很多
+   （非台大那批沒有腎／肝／透析／CVVH／注射給藥指引），所以要能分開看。 */
+function renderSrc() {
+  const nExt = IDX.filter(isExt).length;
+  const opts = [['', '全部', IDX.length],
+                ['ntuh', '台大處方集', IDX.length - nExt],
+                ['ext', '非台大處方', nExt]];
+  el('db-src').innerHTML = opts.map(([v, label, n]) =>
+    `<button class="db-src-btn ${curSrc === v ? 'active' : ''}" onclick="pickSrc('${v}')">
+      ${label}<span>${n}</span></button>`).join('');
+}
+
 function renderTops() {
   const n = {};
-  IDX.forEach(d => (d.tops || []).forEach(t => { n[t] = (n[t] || 0) + 1; }));
+  IDX.forEach(d => {
+    if (curSrc === 'ntuh' && isExt(d)) return;
+    if (curSrc === 'ext' && !isExt(d)) return;
+    (d.tops || []).forEach(t => { n[t] = (n[t] || 0) + 1; });
+  });
   const keys = Object.keys(n).sort((a, b) => n[b] - n[a]);
+  const tot = IDX.filter(d => !(curSrc === 'ntuh' && isExt(d)) &&
+                              !(curSrc === 'ext' && !isExt(d))).length;
   el('db-tops').innerHTML =
-    `<button class="db-cat ${curTop ? '' : 'active'}" onclick="pickTop('')">全部<span>${IDX.length}</span></button>` +
+    `<button class="db-cat ${curTop ? '' : 'active'}" onclick="pickTop('')">全部<span>${tot}</span></button>` +
     keys.map(t => `<button class="db-cat ${curTop === t ? 'active' : ''}" onclick="pickTop('${esc(t)}')">
       ${esc(TOP_ZH[t] || t)}<span>${n[t]}</span></button>`).join('');
 }
@@ -101,6 +125,8 @@ let clsOpen = false;
 function renderCls() {
   const n = {};
   IDX.forEach(d => {
+    if (curSrc === 'ntuh' && isExt(d)) return;
+    if (curSrc === 'ext' && !isExt(d)) return;
     if (curTop && (d.tops || []).indexOf(curTop) < 0) return;
     (d.cls || []).forEach(c => { n[c] = (n[c] || 0) + 1; });
   });
@@ -119,6 +145,11 @@ function renderCls() {
 }
 
 function toggleCls() { clsOpen = !clsOpen; renderCls(); }
+
+function pickSrc(v) {
+  curSrc = v; curTop = ''; curCls = ''; clsOpen = false;
+  renderSrc(); renderTops(); renderCls(); renderList();
+}
 
 function pickTop(t) { curTop = t; curCls = ''; clsOpen = false; renderTops(); renderCls(); renderList(); }
 function pickCls(c) { curCls = c; renderCls(); renderList(); }
@@ -187,10 +218,24 @@ function onCardToggle(node) {
 
 /* ---------------- 藥卡內容 ---------------- */
 
+/* 欄位內文裡的網址（健保給付規定 PDF、食藥署仿單 PDF）做成可點的連結。
+   一定要**先 esc() 再 linkify**——反過來等於讓資料內容注入 HTML。
+   長網址直接印出來很難讀，所以認得出來的換成標籤，其餘才顯示原網址。 */
+const URL_RE = /https?:\/\/[^\s，、）)】」"'<>]+/g;
+function linkLabel(u) {
+  if (/INAE3000.*getPDF/i.test(u)) return '給付規定 PDF';
+  if (/mcp\.fda\.gov\.tw/i.test(u)) return '仿單 PDF';
+  return u.length > 48 ? u.slice(0, 45) + '…' : u;
+}
+function linkify(text) {
+  return esc(text).replace(URL_RE, u =>
+    `<a href="${u}" target="_blank" rel="noopener" class="ref-link">${esc(linkLabel(u))}</a>`);
+}
+
 function field(label, text, warn) {
   if (!text || !String(text).trim()) return '';
   return `<div class="dc-field"><div class="dc-flabel">${label}</div>
-    <div class="dc-ftext ${warn ? 'dc-warn' : ''}">${esc(text)}</div></div>`;
+    <div class="dc-ftext ${warn ? 'dc-warn' : ''}">${linkify(text)}</div></div>`;
 }
 
 function rowTbl(label, rows, cols) {
@@ -323,7 +368,7 @@ function variantBody(v) {
     ${field('飲食交互作用', v.food)}
     ${field('備註', v.note)}
     ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
-       <div class="dc-ftext db-nhi">${esc(v.nhiRule)}</div></div>` : ''}
+       <div class="dc-ftext db-nhi">${linkify(v.nhiRule)}</div></div>` : ''}
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
@@ -384,6 +429,7 @@ function applyHash() {
   if (card) { card.open = true; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 }
 
+renderSrc();
 renderTops();
 renderCls();
 renderList();
