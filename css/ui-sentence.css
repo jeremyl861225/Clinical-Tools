@@ -996,9 +996,16 @@
  * 內頁插的是 #sentTrail，天然分得開，不必再靠頁面路徑判斷。
  * 一律只用 display:none，節點與 js/nav.js、js/pixel-cat.js 都原封不動——
  * 關掉造句設計，兩者立刻原樣回來。 */
-[data-ui="sentence"] body:has(#sentHome) .nav-toggle,
-[data-ui="sentence"] body:has(#sentHome) .side-nav,
-[data-ui="sentence"] body:has(#sentHome) .nav-scrim,
+/* 【2026-08 改版】側邊欄改成**全站**收起，不再只收首頁那一份。使用者原話：
+ * 「確保每個分頁中都不要有側邊欄（只在貓咪主題才出現）」。上面那段舊理由
+ * （內頁靠側邊欄才走得出去）已經不成立：句子軌跡的「清空句子」每一頁都有，
+ * 手機下緣固定列還有「說整句」可以直接跳到任何一個標的。
+ * 唯二沒有軌跡的 tools/ich-score.html 與 tools/pss.html 不受影響——那兩頁的
+ * 「← 返回主選單」本來就因為 body:has(#sentTrail) 的條件而保留著（見本檔前段），
+ * 收掉側邊欄不會讓它們變成死路。 */
+[data-ui="sentence"] .nav-toggle,
+[data-ui="sentence"] .side-nav,
+[data-ui="sentence"] .nav-scrim,
 [data-ui="sentence"] body:has(#sentHome) #cat-canvas,
 [data-ui="sentence"] body:has(#sentHome) #cat-strip {
   display: none;
@@ -1009,7 +1016,8 @@
  * 需求（那才是像素貓非得用 absolute 的理由）。fixed 的三個好處正好對上使用者
  * 的三項要求——活動範圍＝整個視口、捲動不走位、畫布不進文件流所以不可能跑版。
  * z-index 介於內容與下緣固定列（.sent-mbar 的 40）之間：牠游在字的前面，
- * 但永遠壓不到工具列與右上角的設計切換鈕（.ui-mode-toggle 是 70）。
+ * 但永遠壓不到下緣工具列。（主題切換鈕已於 2026-08 從右上角的 fixed 疊層
+ * 改成頁尾文件流的一行小字「找貓咪」，不再參與這裡的疊層順序。）
  * pointer-events:none：點擊一律由 document 收（見 js/orca.js 的檔尾），
  * 疊層不會擋住底下任何一顆按鈕。 */
 [data-ui="sentence"] #orca-canvas {
@@ -2003,6 +2011,13 @@
   [data-ui="sentence"] .smb-btn[disabled] { opacity: .4; }
   [data-ui="sentence"] .smb-btn[disabled]:active { background: var(--sentence-bg); }
   [data-ui="sentence"] body:has(#sentBar) { padding-bottom: 72px; }
+  /* 「回到最上面」的箭頭（css/styles.css 的 .to-top，右下角 fixed）原本 bottom:18px，
+     正好壓在固定列第三顆「清空句子」上面。固定列高 51px（50 + 上框線）另加
+     safe-area，所以把箭頭抬到 51 + 12 = 63px 再加同一段 safe-area。
+     只在真的有固定列時抬——沒有 #sentBar 的頁面維持原位。 */
+  [data-ui="sentence"] body:has(#sentBar) .to-top {
+    bottom: calc(63px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 
