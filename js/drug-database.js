@@ -224,6 +224,22 @@ function onCardToggle(node) {
 /* 欄位內文裡的網址（健保給付規定 PDF、食藥署仿單 PDF）做成可點的連結。
    一定要**先 esc() 再 linkify**——反過來等於讓資料內容注入 HTML。
    長網址直接印出來很難讀，所以認得出來的換成標籤，其餘才顯示原網址。 */
+const NAMED_ENT = { ge: '≥', le: '≤', lt: '<', gt: '>', amp: '&', nbsp: ' ',
+  emsp: ' ', ensp: ' ', reg: '®', copy: '©', deg: '°', times: '×', middot: '·',
+  ndash: '–', mdash: '—', hellip: '…', plusmn: '±', micro: 'µ' };
+function decodeEnt(html) {
+  return html
+    .replace(/&amp;#(\d{2,6});/g, (m, n) => {
+      const c = Number(n);
+      /* 私用區（Wingdings 項目符號那類）解出來是空白方框，不如留原樣 */
+      if (c >= 0xE000 && c <= 0xF8FF) return '';
+      return (c === 60 || c === 62 || c === 38) ? m : String.fromCodePoint(c);
+    })
+    .replace(/&amp;([a-z]{2,8});/gi, (m, name) => {
+      const v = NAMED_ENT[name.toLowerCase()];
+      return (v === undefined || v === '<' || v === '>' || v === '&') ? m : v;
+    });
+}
 const URL_RE = /https?:\/\/[^\s，、）)】」"'<>]+/g;
 function linkLabel(u) {
   if (/INAE3000.*getPDF/i.test(u)) return '給付規定 PDF';
@@ -231,13 +247,19 @@ function linkLabel(u) {
   return u.length > 48 ? u.slice(0, 45) + '…' : u;
 }
 function linkify(text) {
-  return esc(text).replace(URL_RE, u =>
+  /* 實體解碼放在這裡而不是 richText：nhiRule 等欄位直接走 linkify，
+     只掛在 richText 上會漏（Apixaban 的 ≥ 在給付規定欄仍是字面實體）。 */
+  return decodeEnt(esc(text)).replace(URL_RE, u =>
     `<a href="${u}" target="_blank" rel="noopener" class="ref-link">${esc(linkLabel(u))}</a>`);
 }
 
 /* 台大原始資料在抗菌譜、懷孕分級等欄位用 <b> 排版。逐字 esc 會把標籤原樣印出來，
    所以比照 doseField 的做法：只放行 <b>／<i>／<br>，其餘一律轉義。 */
 const TAG_OK = /&lt;(\/?)(b|i|br)\s*\/?&gt;/gi;
+/* 台大原始頁面把符號寫成 HTML 實體（Apixaban 減量準則的 ≥／≤ 就是 &#8805;／&#8804;）。
+   esc() 會把 & 轉成 &amp;，畫面就印出字面「&#8805;」，三個門檻的不等號全看不到。
+   在渲染端一次解回真字元：只認數字實體與一小張具名表，不放行任何標籤。
+   放在 esc() 之後、只還原成**文字符號**，不會破壞 esc→linkify 的安全順序。 */
 function richText(t) {
   return linkify(t).replace(TAG_OK, (m, close, tag) =>
     `<${close}${tag.toLowerCase()}>`);
@@ -330,14 +352,14 @@ function fmtDose(text) {
   }
   if (cur.trim()) segs.push(cur.trim());
 
-  let html = head ? `<div class="dl-head">${esc(head)}</div>` : '';
+  let html = head ? `<div class="dl-head">${richText(head)}</div>` : '';
   segs.forEach(seg => {
     seg.split('†').forEach((chunk, ci) => {
       chunk = chunk.trim();
       if (!chunk) return;
       if (ci > 0) {                                  // 適應症標頭：Xxx: rest
         const mi = chunk.indexOf(':');
-        html += `<div class="dl-sect">${esc(chunk.slice(0, mi).replace(/[‡†]/g, '').trim())}</div>`;
+        html += `<div class="dl-sect">${richText(chunk.slice(0, mi).replace(/[‡†]/g, '').trim())}</div>`;
         chunk = chunk.slice(mi + 1).trim();
         if (!chunk) return;
       }
@@ -355,9 +377,9 @@ function fmtDose(text) {
             bits[bits.length - 1] += '；' + seg;
           else bits.push(seg);
         });
-        html += `<div class="dl-line">${esc(bits[0])}</div>`;
+        html += `<div class="dl-line">${richText(bits[0])}</div>`;
         for (let k = 1; k < bits.length; k++)
-          html += `<div class="dl-sub">${esc(bits[k])}</div>`;
+          html += `<div class="dl-sub">${richText(bits[k])}</div>`;
       });
     });
   });
