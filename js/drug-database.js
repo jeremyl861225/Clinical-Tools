@@ -390,7 +390,7 @@ function variantBody(v) {
       ['cap', '膠囊可打開'], ['why', '說明'], ['note', '備註']])}
     ${rowTbl('腎功能調整', v.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
-    ${rowTbl('透析劑量', v.dialysis, [['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
+    ${rowTbl('透析劑量', v.dialysis, [['form', '劑型'], ['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
       ['pd_dose', 'PD 劑量'], ['pd_removal', 'PD 移除比例'], ['pd_supp', 'PD 後補充'], ['remark', '備註']])}
     ${rowTbl('CVVH／CRRT 劑量', v.cvvh, [['cvvh', 'CVVH'], ['cvvhd', 'CVVHD'], ['cvvhdf', 'CVVHDF'], ['remark', '備註']])}
     ${rowTbl('注射給藥指引', v.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
