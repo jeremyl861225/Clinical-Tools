@@ -172,9 +172,9 @@ function renderList() {
     <details class="drugcard" id="drug-${esc(d.code)}" data-pid="${d.pid}" data-code="${esc(d.code)}"
              data-codes="${esc((d.codes || [d.code]).join(' '))}" ontoggle="onCardToggle(this)">
       <summary>
-        <span class="dc-name">${esc(shortBrand(d.brand))}</span>
+        <span class="dc-name">${decodeEnt(esc(shortBrand(d.brand)))}</span>
         ${tags}
-        ${zhName(d.zh) ? `<span class="dc-zh">${esc(zhName(d.zh))}</span>` : ''}
+        ${zhName(d.zh) ? `<span class="dc-zh">${decodeEnt(esc(zhName(d.zh)))}</span>` : ''}
         ${badges}
         <span class="dc-nameen">${esc(d.name)}</span>
         ${(d.cls && d.cls[0])
@@ -324,6 +324,12 @@ const DOSE_ABBR = new Set(['max', 'min', 'approx', 'appro', 'no', 'cf', 'viz', '
   'wk', 'wks', 'hr', 'hrs', 'mo', 'mos', 'yr', 'yrs']);
 
 function fmtDose(text) {
+  /* 先解實體再斷句：分號是斷句符號，而數字實體正好以分號結尾，
+     `Scr &#8805; 1.5 mg/dL` 會被切成 `Scr &amp;#8805` ＋ 斷行，門檻的 ≥ 直接消失。
+     目前 0 例（唯一在 dose 帶實體的走 <br> 分支），但這是顆地雷。 */
+  text = decodeEnt(esc(String(text == null ? '' : text)))
+    .replace(/&amp;/g, '\u0000AMP\u0000').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/\u0000AMP\u0000/g, '&');
   let t = String(text || '').replace(/\s+/g, ' ').trim();
   if (!t) return '';
   let head = '';
