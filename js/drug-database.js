@@ -87,7 +87,7 @@ function matches(d) {
      不納進來就只有「說整句」查得到、這裡查不到，兩個搜尋欄行為會不一致 */
   const hay = [d.name, d.brand, d.zh, (d.cls || []).join(' '),
     (d.strengths || []).join(' '), (d.codes || [d.code]).join(' '),
-    (d.tags || []).join(' '), (d.atc || []).join(' ')]
+    (d.tags || []).join(' '), (d.atc || []).join(' '), (d.alias || []).join(' ')]
     .join(' ').toLowerCase();
   return curQ.split(/\s+/).every(t => hay.indexOf(t) >= 0);
 }
@@ -251,6 +251,12 @@ function field(label, text, warn) {
 
 function rowTbl(label, rows, cols) {
   if (!rows || !rows.length) return '';
+  /* 型別防線：同一個欄位在兩批資料裡型別不同（台大的 food 是字串、抗生素卡是
+     物件陣列）。字串走 rows.map 會 throw，整張卡的 catch 只會顯示「明細載入失敗」——
+     第十輪就是這樣一次打壞 129 張台大卡（warfarin、14 支胰島素、amiodarone…）。
+     字串一律退回純文字欄位。 */
+  if (typeof rows === 'string') return field(label, rows);
+  if (!Array.isArray(rows)) return '';
   /* 表格內文也可能帶 <b>／<br>（台大 acyclovir 透析、foscarnet 腎功能就是），
      跟 field() 走同一套白名單，否則標籤會原樣印出來。 */
   const body = rows.map(r => cols.map(([k, t]) => r[k]

@@ -1929,7 +1929,8 @@
         head: head,
         hay: (head + ' ' + (d.codes || [d.code]).join(' ') + ' ' +
               (d.cls || []).join(' ') + ' ' + (d.tags || []).join(' ') + ' ' +
-              (d.atc || []).join(' ')).toLowerCase()
+              (d.atc || []).join(' ') + ' ' +
+              (d.alias || []).join(' ')).toLowerCase()
       });
     });
 

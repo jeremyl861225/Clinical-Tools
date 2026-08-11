@@ -182,7 +182,7 @@
            三個搜尋欄行為就不一致（打「非台大處方」只有兩欄查得到）。 */
         kw: [d.name, d.brand, d.zh, cls, strengths,
              (d.codes || []).join(' '), (d.tags || []).join(' '),
-             (d.atc || []).join(' ')].join(' '),
+             (d.atc || []).join(' '), (d.alias || []).join(' ')].join(' '),
         url: 'tools/drug-database.html#code=' + encodeURIComponent(d.code)
       });
     });
