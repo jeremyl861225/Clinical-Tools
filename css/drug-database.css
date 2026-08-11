@@ -38,6 +38,16 @@
 .db-src-btn span{font-family:var(--mono); font-size:10.5px; margin-left:5px; opacity:.75;}
 .db-src-btn.active{border-color:var(--accent); color:var(--accent); background:transparent;}
 
+/* 抗生素卡：來源徽章與抗菌覆蓋 */
+.db-tag-abx{font-family:inherit; color:var(--accent); border-color:var(--accent); background:transparent;}
+.db-covs{display:flex; flex-wrap:wrap; gap:6px;}
+.db-cov{font-size:12px; padding:2px 9px; border-radius:999px; border:1px solid var(--line);}
+.db-cov b{font-weight:600; margin-left:5px;}
+.db-cov-full{color:#2d7a4f; border-color:#2d7a4f;}
+.db-cov-part{color:#8a5a1f; border-color:#8a5a1f;}
+@media(prefers-color-scheme:dark){.db-cov-full{color:#7fc59b; border-color:#4d7a62;}
+  .db-cov-part{color:#d3a86a; border-color:#8a6a3a;}}
+
 /* 標題列移到名稱後面的前綴小標（兒／管N／專案／《O》） */
 .db-tag{font-family:var(--mono); font-size:10px; color:var(--muted); background:var(--box-bg);
   border:1px solid var(--line); border-radius:8px; padding:1px 6px; white-space:nowrap;}

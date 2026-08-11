@@ -72,11 +72,14 @@ const zhName = z => (!z || z.indexOf('無正式中文名') >= 0) ? '' : z;
 /* ---------------- 清單與篩選 ---------------- */
 
 const EXT_TAG = '非台大處方';
+const ABX_TAG = '抗生素';
 const isExt = d => (d.tags || []).indexOf(EXT_TAG) >= 0;
+const isAbx = d => (d.tags || []).indexOf(ABX_TAG) >= 0;
+/* 來源三分：台大處方集／台大抗生素／非台大處方 */
+const srcOf = d => isExt(d) ? 'ext' : (isAbx(d) ? 'abx' : 'ntuh');
 
 function matches(d) {
-  if (curSrc === 'ntuh' && isExt(d)) return false;
-  if (curSrc === 'ext' && !isExt(d)) return false;
+  if (curSrc && srcOf(d) !== curSrc) return false;
   if (curTop && (d.tops || []).indexOf(curTop) < 0) return false;
   if (curCls && (d.cls || []).indexOf(curCls) < 0) return false;
   if (!curQ) return true;
@@ -92,10 +95,12 @@ function matches(d) {
 /* 來源列：台大處方集的卡與公開資料建的卡混在一起，欄位深度差很多
    （非台大那批沒有腎／肝／透析／CVVH／注射給藥指引），所以要能分開看。 */
 function renderSrc() {
-  const nExt = IDX.filter(isExt).length;
+  const n = {};
+  IDX.forEach(d => { n[srcOf(d)] = (n[srcOf(d)] || 0) + 1; });
   const opts = [['', '全部', IDX.length],
-                ['ntuh', '台大處方集', IDX.length - nExt],
-                ['ext', '非台大處方', nExt]];
+                ['ntuh', '台大處方集', n.ntuh || 0],
+                ['abx', '台大抗生素', n.abx || 0],
+                ['ext', '非台大處方', n.ext || 0]];
   el('db-src').innerHTML = opts.map(([v, label, n]) =>
     `<button class="db-src-btn ${curSrc === v ? 'active' : ''}" onclick="pickSrc('${v}')">
       ${label}<span>${n}</span></button>`).join('');
@@ -104,13 +109,11 @@ function renderSrc() {
 function renderTops() {
   const n = {};
   IDX.forEach(d => {
-    if (curSrc === 'ntuh' && isExt(d)) return;
-    if (curSrc === 'ext' && !isExt(d)) return;
+    if (curSrc && srcOf(d) !== curSrc) return;
     (d.tops || []).forEach(t => { n[t] = (n[t] || 0) + 1; });
   });
   const keys = Object.keys(n).sort((a, b) => n[b] - n[a]);
-  const tot = IDX.filter(d => !(curSrc === 'ntuh' && isExt(d)) &&
-                              !(curSrc === 'ext' && !isExt(d))).length;
+  const tot = IDX.filter(d => !curSrc || srcOf(d) === curSrc).length;
   el('db-tops').innerHTML =
     `<button class="db-cat ${curTop ? '' : 'active'}" onclick="pickTop('')">全部<span>${tot}</span></button>` +
     keys.map(t => `<button class="db-cat ${curTop === t ? 'active' : ''}" onclick="pickTop('${esc(t)}')">
@@ -125,8 +128,7 @@ let clsOpen = false;
 function renderCls() {
   const n = {};
   IDX.forEach(d => {
-    if (curSrc === 'ntuh' && isExt(d)) return;
-    if (curSrc === 'ext' && !isExt(d)) return;
+    if (curSrc && srcOf(d) !== curSrc) return;
     if (curTop && (d.tops || []).indexOf(curTop) < 0) return;
     (d.cls || []).forEach(c => { n[c] = (n[c] || 0) + 1; });
   });
@@ -164,7 +166,8 @@ function renderList() {
     const badges = (d.strengths || []).map(s => `<span class="db-strength">${esc(s)}</span>`).join('');
     /* 「非台大處方」給不同底色——那批不是台大處方集，清單上要一眼分得出來 */
     const tags = (d.tags || []).map(t =>
-      `<span class="db-tag${t === '非台大處方' ? ' db-tag-ext' : ''}">${esc(t)}</span>`).join('');
+      `<span class="db-tag${t === '非台大處方' ? ' db-tag-ext'
+        : (t === '抗生素' ? ' db-tag-abx' : '')}">${esc(t)}</span>`).join('');
     return `
     <details class="drugcard" id="drug-${esc(d.code)}" data-pid="${d.pid}" data-code="${esc(d.code)}"
              data-codes="${esc((d.codes || [d.code]).join(' '))}" ontoggle="onCardToggle(this)">
@@ -246,6 +249,16 @@ function rowTbl(label, rows, cols) {
   if (!body.replace(/<tr class="tbl-sep">.*?<\/tr>/g, '')) return '';
   return `<div class="dc-field"><div class="dc-flabel">${label}</div>
     <div class="dc-ftext"><table class="renal-tbl"><tbody>${body}</tbody></table></div></div>`;
+}
+
+/* 抗菌覆蓋徽章（抗生素卡專有）：涵蓋／部分兩級，與抗生素指引頁同一組標籤。 */
+function covField(cov) {
+  if (!cov || !cov.length) return '';
+  const chips = cov.map(c =>
+    `<span class="db-cov db-cov-${c.v === '涵蓋' ? 'full' : 'part'}">${esc(c.k)}
+      <b>${esc(c.v)}</b></span>`).join('');
+  return `<div class="dc-field"><div class="dc-flabel">抗菌覆蓋</div>
+    <div class="dc-ftext db-covs">${chips}</div></div>`;
 }
 
 /* 懷孕分級：台大有的寫字母（B、C(AUS)），有的只寫敘述，字母才做成徽章 */
@@ -337,6 +350,13 @@ function fmtDose(text) {
 
 function doseField(text) {
   if (!text || !String(text).trim()) return '';
+  /* 抗生素頁的劑量原文用 <br> 排版（台大原始資料就是這樣寫的），
+     fmtDose 是為台大處方集那種一整段英文設計的，套上去會把 <br> 當內文。
+     含標籤的走簡單路徑：只放行 <br>，其餘一律轉義。 */
+  if (/<br\s*\/?>/i.test(text)) {
+    return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
+      <div class="dc-ftext">${esc(text).replace(/&lt;br\s*\/?&gt;/gi, '<br>')}</div></div>`;
+  }
   return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
     <div class="dc-ftext">${fmtDose(text)}</div></div>`;
 }
@@ -358,6 +378,10 @@ function variantBody(v) {
       ['diluent', '稀釋液及體積'], ['conc', '給藥濃度'], ['time', '輸注時間／速率'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性']])}
+    ${field('抗菌譜', v.spectrum)}
+    ${covField(v.cov)}
+    ${rowTbl('台大 2025H1 在地感受性', v.abg,
+      [['ab', '抗生素'], ['org', '菌種'], ['s', '敏感率 S'], ['n', '菌株數']])}
     ${pregField(v.preg)}
     ${v.ctrl ? field('管制藥品分級', v.ctrl) : ''}
     ${field('適應症（衛福部許可證）', v.ind)}
