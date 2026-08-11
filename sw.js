@@ -12,7 +12,7 @@
  *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
 const CACHE_PREFIX = 'clinical-tools-';
-const CACHE_VERSION = CACHE_PREFIX + 'v233';
+const CACHE_VERSION = CACHE_PREFIX + 'v234';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -83,6 +83,29 @@ const PRECACHE_URLS = [
      ./data/drugs/<pid>.js，漏掉的後果是離線時有 174/1111 張藥卡點開後空白
      ——不會報錯、只是沒有內容，所以一直沒被發現。造句導覽的 #code= 深層
      連結直接依賴這些檔，一併補齊。 */
+  /* 非台大處方藥卡（食藥署／健保署公開資料）。與台大分片同理，離線時漏掉
+     不會報錯、只是點開空白，所以 21 個分片一個都不能少。 */
+  './data/drugs/x-I.js',
+  './data/drugs/x-II.js',
+  './data/drugs/x-III.js',
+  './data/drugs/x-IV.js',
+  './data/drugs/x-IX.js',
+  './data/drugs/x-V.js',
+  './data/drugs/x-VI.js',
+  './data/drugs/x-VII.js',
+  './data/drugs/x-X.js',
+  './data/drugs/x-XI.js',
+  './data/drugs/x-XII.js',
+  './data/drugs/x-XIII.js',
+  './data/drugs/x-XIV.js',
+  './data/drugs/x-XV.js',
+  './data/drugs/x-XVI.js',
+  './data/drugs/x-XVII.js',
+  './data/drugs/x-XVIII.js',
+  './data/drugs/x-XX.js',
+  './data/drugs/x-XXI.js',
+  './data/drugs/x-XXII.js',
+  './data/drugs/x-XXIII.js',
   './data/drugs/8.js',
   './data/drugs/19.js',
   './data/drugs/21.js',
