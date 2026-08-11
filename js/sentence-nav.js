@@ -1928,7 +1928,8 @@
         href: 'tools/drug-database.html#code=' + encodeURIComponent(d.code),
         head: head,
         hay: (head + ' ' + (d.codes || [d.code]).join(' ') + ' ' +
-              (d.cls || []).join(' ') + ' ' + (d.tags || []).join(' ')).toLowerCase()
+              (d.cls || []).join(' ') + ' ' + (d.tags || []).join(' ') + ' ' +
+              (d.atc || []).join(' ')).toLowerCase()
       });
     });
 
@@ -2334,8 +2335,8 @@
     tool:    { zh: '工具與流程', en: 'Tools & Pathways', note: '', cap: 14 },
     abx:     { zh: '抗生素指引', en: 'Antibiotic Guide',
                note: '頁內三層：依部位 10 · 依病原菌 44 · 藥物查詢 155', cap: 12 },
-    db:      { zh: '藥物資料庫', en: 'NTUH Formulary',
-               note: '台大處方集 · 一商品名一張藥卡', cap: 12 },
+    db:      { zh: '藥物資料庫', en: 'Formulary',
+               note: '台大處方集（一商品名一卡）＋非台大處方（一成分一卡）', cap: 12 },
     classif: { zh: '分類與分級系統', en: 'Grading & Classification',
                note: '頁內 33 套分級系統 ＋ AAST EGS 的 16 個疾病 · 直接落在該格', cap: 12 },
     /* 分頁這一組是唯一橫跨多頁的：13 個分頁式頁面共用一個標頭，每一列自己的

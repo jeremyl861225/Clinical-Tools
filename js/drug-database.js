@@ -74,8 +74,11 @@ function matches(d) {
   if (curTop && (d.tops || []).indexOf(curTop) < 0) return false;
   if (curCls && (d.cls || []).indexOf(curCls) < 0) return false;
   if (!curQ) return true;
+  /* tags／atc 也進 hay：非台大處方那批用 tags 標來源、atc 帶 ATC 碼，
+     不納進來就只有「說整句」查得到、這裡查不到，兩個搜尋欄行為會不一致 */
   const hay = [d.name, d.brand, d.zh, (d.cls || []).join(' '),
-    (d.strengths || []).join(' '), (d.codes || [d.code]).join(' ')]
+    (d.strengths || []).join(' '), (d.codes || [d.code]).join(' '),
+    (d.tags || []).join(' '), (d.atc || []).join(' ')]
     .join(' ').toLowerCase();
   return curQ.split(/\s+/).every(t => hay.indexOf(t) >= 0);
 }
@@ -128,7 +131,9 @@ function renderList() {
   // 同學名的品項排在一起，商品名為次序；未展開的卡片只畫標題列，展開時才載入該分類資料
   el('db-list').innerHTML = hits.map(d => {
     const badges = (d.strengths || []).map(s => `<span class="db-strength">${esc(s)}</span>`).join('');
-    const tags = (d.tags || []).map(t => `<span class="db-tag">${esc(t)}</span>`).join('');
+    /* 「非台大處方」給不同底色——那批不是台大處方集，清單上要一眼分得出來 */
+    const tags = (d.tags || []).map(t =>
+      `<span class="db-tag${t === '非台大處方' ? ' db-tag-ext' : ''}">${esc(t)}</span>`).join('');
     return `
     <details class="drugcard" id="drug-${esc(d.code)}" data-pid="${d.pid}" data-code="${esc(d.code)}"
              data-codes="${esc((d.codes || [d.code]).join(' '))}" ontoggle="onCardToggle(this)">
@@ -322,7 +327,9 @@ function variantBody(v) {
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
-    <div class="db-foot">藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}</div>`;
+    <div class="db-foot">${v.src
+      ? `${esc(v.src)}　·　分類：${esc(v.cat || '')}`
+      : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;
 }
 
 /* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */
