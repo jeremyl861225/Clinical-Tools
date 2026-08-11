@@ -388,7 +388,7 @@ function variantBody(v) {
       ['pd_dose', 'PD 劑量'], ['pd_removal', 'PD 移除比例'], ['pd_supp', 'PD 後補充'], ['remark', '備註']])}
     ${rowTbl('CVVH／CRRT 劑量', v.cvvh, [['cvvh', 'CVVH'], ['cvvhd', 'CVVHD'], ['cvvhdf', 'CVVHDF'], ['remark', '備註']])}
     ${rowTbl('注射給藥指引', v.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
-      ['diluent', '稀釋液及體積'], ['volume', '每劑體積'], ['conc', '給藥濃度'],
+      ['diluent', '稀釋液及體積'], ['volume', '體積（每劑／每瓶）'], ['conc', '給藥濃度'],
       ['time', '輸注時間／速率'], ['alt_routes', '替代給藥途徑'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性'], ['stab_note', '安定性備註']])}
@@ -403,7 +403,9 @@ function variantBody(v) {
     ${field('副作用', v.adverse)}
     ${field('禁忌', v.contra, true)}
     ${field('安全警訊', v.alert, true)}
-    ${field('飲食交互作用', v.food)}
+    ${rowTbl('飲食交互作用', v.food, [['f', '食品'], ['s', '嚴重度'],
+      ['e', '影響'], ['m', '處置']])}
+    ${field('儲存條件', v.storage)}
     ${field('備註', v.note)}
     ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
        <div class="dc-ftext db-nhi">${linkify(v.nhiRule)}</div></div>` : ''}
