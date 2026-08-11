@@ -168,8 +168,12 @@
         label: dbShortBrand(d.brand) || d.name,                    // 商品名（去劑型／含量）
         en: d.name,                                                // 學名
         sub: [d.zh, strengths, cls].filter(Boolean).join(' · '),
+        /* tags／atc 也要進 kw：非台大處方那批用 tags 標來源、atc 帶 ATC 碼。
+           藥物資料庫與「說整句」兩欄都吃這兩個欄位，首頁全站查詢漏掉的話，
+           三個搜尋欄行為就不一致（打「非台大處方」只有兩欄查得到）。 */
         kw: [d.name, d.brand, d.zh, cls, strengths,
-             (d.codes || []).join(' ')].join(' '),
+             (d.codes || []).join(' '), (d.tags || []).join(' '),
+             (d.atc || []).join(' ')].join(' '),
         url: 'tools/drug-database.html#code=' + encodeURIComponent(d.code)
       });
     });
