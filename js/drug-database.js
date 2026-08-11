@@ -75,8 +75,10 @@ const EXT_TAG = '非台大處方';
 const ABX_TAG = '抗生素';
 const isExt = d => (d.tags || []).indexOf(EXT_TAG) >= 0;
 const isAbx = d => (d.tags || []).indexOf(ABX_TAG) >= 0;
-/* 來源三分：台大處方集／台大抗生素／非台大處方 */
-const srcOf = d => isExt(d) ? 'ext' : (isAbx(d) ? 'abx' : 'ntuh');
+/* 來源兩分：台大（處方集＋抗生素藥物查詢）／非台大處方。
+   抗生素本來就是台大的資料，分成兩顆按鈕只是把同一個來源切開，
+   還把來源列擠到超出螢幕寬；卡上的「抗生素」標籤已經分得出是哪一批。 */
+const srcOf = d => isExt(d) ? 'ext' : 'ntuh';
 
 function matches(d) {
   if (curSrc && srcOf(d) !== curSrc) return false;
@@ -98,8 +100,7 @@ function renderSrc() {
   const n = {};
   IDX.forEach(d => { n[srcOf(d)] = (n[srcOf(d)] || 0) + 1; });
   const opts = [['', '全部', IDX.length],
-                ['ntuh', '台大處方集', n.ntuh || 0],
-                ['abx', '台大抗生素', n.abx || 0],
+                ['ntuh', '台大處方', n.ntuh || 0],
                 ['ext', '非台大處方', n.ext || 0]];
   el('db-src').innerHTML = opts.map(([v, label, n]) =>
     `<button class="db-src-btn ${curSrc === v ? 'active' : ''}" onclick="pickSrc('${v}')">
@@ -157,6 +158,18 @@ function pickTop(t) { curTop = t; curCls = ''; clsOpen = false; renderTops(); re
 function pickCls(c) { curCls = c; renderCls(); renderList(); }
 function onSearch(v) { curQ = (v || '').trim().toLowerCase(); renderList(); }
 
+/* 抗生素卡的抗菌覆蓋徽章：收合狀態就要能判讀，所以畫在 <summary> 內。
+   四級與抗生素頁同義：2＝強效／在地 %S ≥ 90（粗框）、1＝涵蓋、'p'＝部分（琥珀）、
+   0＝不涵蓋（暗＋刪除線）。整組菌別都要列出——只列涵蓋的就看不出這支藥不涵蓋什麼。
+   徽章順序由 index.js 的 covs 決定（＝抗生素頁 COV_LABELS 的順序），這裡不再排序。 */
+const COV_TIER = { 2: 'sy-hi', 1: 'yes', p: 'partial' };
+function covStrip(d) {
+  if (d.catLabel) return `<div class="dc-cov"><span class="cov-tag cat">${esc(d.catLabel)}</span></div>`;
+  if (!d.covs || !d.covs.length) return '';
+  return `<div class="dc-cov">` + d.covs.map(c =>
+    `<span class="cov-tag ${COV_TIER[c[1]] || 'no'}">${esc(c[0])}</span>`).join('') + `</div>`;
+}
+
 function renderList() {
   const hits = IDX.filter(matches);
   el('db-count').textContent = `${hits.length} 個品項` +
@@ -181,6 +194,7 @@ function renderList() {
           ? `<button type="button" class="dc-class" title="列出同機轉藥物"
                onclick="event.preventDefault();event.stopPropagation();pickCls('${esc(d.cls[0])}')"
              >${esc(d.cls[0])}</button>` : ''}
+        ${covStrip(d)}
       </summary>
       <div class="dc-body"><div class="db-loading">載入中…</div></div>
     </details>`;
