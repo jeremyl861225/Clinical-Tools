@@ -124,11 +124,20 @@
     return out;
   }
 
+  /* 抗生素頁的 162 支現在同時也在藥物資料庫（data/drugs/abx.js）。兩邊都建索引，
+     同一支藥在全站搜尋會列兩次。藥物資料庫那張欄位較全（多了抗菌譜與在地感受性），
+     所以這裡以學名為鍵跳過重複，抗生素頁的深層連結由那張卡的內文提供。 */
   function indexDrugs() {
     var out = [];
+    var dbNames = {};
+    (window.DRUGDB_INDEX || []).forEach(function (d) {
+      if ((d.tags || []).indexOf('抗生素') >= 0) dbNames[String(d.name).toLowerCase()] = 1;
+    });
     if (!window.DRUGS) return out;
     Object.keys(DRUGS).forEach(function (k) {
       var d = DRUGS[k];
+      // 藥物資料庫已有同名抗生素卡（欄位較全）就不再列一次
+      if (d.name && dbNames[String(d.name).toLowerCase()]) return;
       var brands = (d.brands || []).slice();
       if (d.ntuhProducts) d.ntuhProducts.forEach(function (p) {
         if (p.en) brands.push(p.en);

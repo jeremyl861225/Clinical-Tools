@@ -251,8 +251,10 @@ function field(label, text, warn) {
 
 function rowTbl(label, rows, cols) {
   if (!rows || !rows.length) return '';
+  /* 表格內文也可能帶 <b>／<br>（台大 acyclovir 透析、foscarnet 腎功能就是），
+     跟 field() 走同一套白名單，否則標籤會原樣印出來。 */
   const body = rows.map(r => cols.map(([k, t]) => r[k]
-    ? `<tr><td>${t}</td><td>${esc(r[k])}</td></tr>` : '').join('')).join(
+    ? `<tr><td>${t}</td><td>${richText(r[k])}</td></tr>` : '').join('')).join(
       rows.length > 1 ? '<tr class="tbl-sep"><td colspan="2"></td></tr>' : '');
   if (!body.replace(/<tr class="tbl-sep">.*?<\/tr>/g, '')) return '';
   return `<div class="dc-field"><div class="dc-flabel">${label}</div>
@@ -363,7 +365,7 @@ function doseField(text) {
      含標籤的走簡單路徑：只放行 <br>，其餘一律轉義。 */
   if (/<br\s*\/?>/i.test(text)) {
     return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
-      <div class="dc-ftext">${esc(text).replace(/&lt;br\s*\/?&gt;/gi, '<br>')}</div></div>`;
+      <div class="dc-ftext">${richText(text)}</div></div>`;
   }
   return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
     <div class="dc-ftext">${fmtDose(text)}</div></div>`;
@@ -377,6 +379,7 @@ function variantBody(v) {
     ${field('商品名／含量', v.brand)}
     ${doseField(v.dose)}
     ${field('最大劑量', v.maxDose)}
+    ${field('兒科劑量', v.peds)}
     ${rowTbl('腎功能調整', v.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
     ${rowTbl('透析劑量', v.dialysis, [['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
@@ -385,7 +388,7 @@ function variantBody(v) {
     ${rowTbl('注射給藥指引', v.injection, [['route', '給藥途徑'], ['reconstitute', '溶解液及體積'],
       ['diluent', '稀釋液及體積'], ['conc', '給藥濃度'], ['time', '輸注時間／速率'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
-      ['container', '容器相容性']])}
+      ['container', '容器相容性'], ['stab_note', '安定性備註']])}
     ${field('抗菌譜', v.spectrum)}
     ${covField(v.cov)}
     ${rowTbl('台大 2025H1 在地感受性', v.abg,

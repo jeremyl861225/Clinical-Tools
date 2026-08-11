@@ -1917,7 +1917,7 @@
       });
     });
 
-    /* ── 藥物資料庫（1111 筆）：#code=<code> ── */
+    /* ── 藥物資料庫（2,392 筆，含抗生素卡與非台大處方）：#code=<code> ── */
     (window.DRUGDB_INDEX || []).forEach(function (d) {
       if (!d || !d.name) return;
       var head = (d.name + ' ' + (d.brand || '') + ' ' + (d.zh || '')).toLowerCase();
