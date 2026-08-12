@@ -483,6 +483,38 @@ function variantBody(v) {
       : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;
 }
 
+/* Liverpool 交互作用查核外連。
+   University of Liverpool 的使用條款禁止重製與衍生（"No modification, reproduction,
+   re-use, further distribution or transmission in any form is allowed, including
+   creation of derivative works, without our prior written consent"），所以這裡
+   只做導流、不落地任何他們的資料。
+   他們的 checker 是「主要藥（ARV／DAA／腫瘤藥）× 併用藥」的結構，掛在降血壓藥之類的
+   卡上只是雜訊，因此僅在該卡本身可能是主要藥時才出現。
+   注意 checker 不吃網址參數（前端沒有任何 $location.search() 處理），只能落在查詢頁，
+   所以按鈕文案要讓使用者知道到站後仍需自己選藥。 */
+const LP_ARV = /(tenofovir|emtricitabine|lamivudine|abacavir|zidovudine|dolutegravir|raltegravir|bictegravir|efavirenz|rilpivirine|nevirapine|doravirine|darunavir|atazanavir|lopinavir|ritonavir|cobicistat|maraviroc|etravirine|cabotegravir|lenacapavir|fostemsavir|elvitegravir)/i;
+/* interferon 要挑掉 beta-1a（多發性硬化症）與 ropeginterferon alfa-2b（真性紅血球增多症），
+   那兩個不是肝炎用藥。beta 靠限定 alfa 排除；ropeginterferon 因為字串本身含
+   「peginterferon alfa」，得再擋一次詞首（不用 lookbehind，iOS Safari 舊版不支援）。 */
+const LP_HEP = /(sofosbuvir|velpatasvir|ledipasvir|glecaprevir|pibrentasvir|elbasvir|grazoprevir|daclatasvir|voxilaprevir|ribavirin|entecavir|(^|[^a-z])peginterferon alfa)/i;
+
+function liverpoolLinks(d) {
+  const n = d.name || '';
+  const sites = [];
+  if (LP_ARV.test(n)) sites.push(['HIV', 'https://www.hiv-druginteractions.org/checker']);
+  if (LP_HEP.test(n)) sites.push(['肝炎', 'https://www.hep-druginteractions.org/checker']);
+  if ((d.tops || []).some(t => /Antineoplastic/i.test(t)))
+    sites.push(['腫瘤', 'https://cancer-druginteractions.org/']);
+  if (!sites.length) return '';
+  const links = sites.map(([label, url]) =>
+    `<a href="${url}" target="_blank" rel="noopener" class="db-lpbtn">Liverpool ${label} checker</a>`
+  ).join('');
+  return `<div class="dc-field"><div class="dc-flabel">交互作用查核（外部）</div>
+    <div class="dc-ftext db-lp">${links}
+    <span class="db-lpnote">University of Liverpool 維護，紅黃綠燈分級。
+      到站後請自行選取本藥與併用藥；資料留在對方網站，本站未收錄。</span></div></div>`;
+}
+
 /* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */
 function cardBody(d) {
   const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
@@ -490,7 +522,8 @@ function cardBody(d) {
     ${field('學名', d.name)}
     ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
        <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
-    ${field('劑型', d.form)}`;
+    ${field('劑型', d.form)}
+    ${liverpoolLinks(d)}`;
   const vs = (d.variants || []).map(v => ({ cat: d.cat, ...v }));
   if (vs.length <= 1) return header + (vs[0] ? variantBody(vs[0]) : '');
 
