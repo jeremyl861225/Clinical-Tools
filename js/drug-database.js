@@ -303,15 +303,33 @@ function rowTbl(label, rows, cols) {
     <div class="dc-ftext"><table class="renal-tbl"><tbody>${body}</tbody></table></div></div>`;
 }
 
-/* 抗菌覆蓋徽章（抗生素卡專有）：涵蓋／部分兩級，與抗生素指引頁同一組標籤。 */
-function covField(cov) {
-  if (!cov || !cov.length) return '';
-  const chips = cov.map(c =>
-    `<span class="db-cov db-cov-${c.v === '涵蓋' ? 'full' : 'part'}">${esc(c.k)}
-      <b>${esc(c.v)}</b></span>`).join('');
-  return `<div class="dc-field"><div class="dc-flabel">抗菌覆蓋</div>
-    <div class="dc-ftext db-covs">${chips}</div></div>`;
+/* 台大在地感受性：一支藥動輒 15 個菌種，逐列排成表格會變成十幾張小表把整張卡洗掉。
+   改成與 tools/antibiotics.html 的 abgSpectrum() 同一套徽章列——一菌一枚，級別
+   由資料自帶（build_abx_cards.py 的 abg_tier）：≥90 粗框／80–89 亮／60–79 琥珀／
+   <60 暗＋刪除線。菌株數放 title，不佔版面但查得到。 */
+const ABG_TIER = { 2: 'sy-hi', 1: 'yes', p: 'partial' };
+function suscStrip(rows, proxy) {
+  if (!rows || !rows.length) return '';
+  const cells = rows.map(r =>
+    `<span class="cov-tag ${ABG_TIER[r.t] || 'no'}"${r.n ? ` title="菌株數 ${esc(r.n)}"` : ''}
+     >${esc(r.org)} ${esc(r.s)}</span>`).join('');
+  const cap = '台大 2025 上半年在地感受性 %S'
+    + (proxy ? `（以 ${esc(proxy)} 為同類代表）` : '')
+    + '　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗';
+  return `<div class="dc-susc"><div class="dc-susc-cap">${cap}</div>
+    <div class="dc-cov">${cells}</div></div>`;
 }
+
+/* 抗菌譜與備註：文字譜與感受性徽章同屬一欄（抗生素頁就是這樣排的），
+   拆成兩欄會讓「這支藥涵蓋什麼」被中間的欄名切斷。抗菌覆蓋那六／八枚旗標
+   不在這裡重畫——清單摘要列已經有了（covStrip），與抗生素頁的版面一致。 */
+function spectrumField(v) {
+  const susc = suscStrip(v.abg, v.abgProxy);
+  if (!v.spectrum && !susc) return '';
+  return `<div class="dc-field"><div class="dc-flabel">抗菌譜與備註</div>
+    <div class="dc-ftext">${v.spectrum ? richText(v.spectrum) : ''}${susc}</div></div>`;
+}
+
 
 /* 懷孕分級：台大有的寫字母（B、C(AUS)），有的只寫敘述，字母才做成徽章 */
 function pregField(v) {
@@ -440,11 +458,11 @@ function variantBody(v) {
       ['time', '輸注時間／速率'], ['alt_routes', '替代給藥途徑'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性'], ['stab_note', '安定性備註']])}
-    ${field('抗菌譜', v.spectrum)}
-    ${covField(v.cov)}
-    ${rowTbl('台大 2025H1 在地感受性', v.abg,
-      [['ab', '抗生素'], ['org', '菌種'], ['s', '敏感率 S'], ['n', '菌株數']])}
     ${pregField(v.preg)}
+    ${field('口服生體可用率 Bioavailability', v.bioav)}
+    ${field('分布 / 組織穿透 Distribution', v.dist)}
+    ${field('代謝途徑', v.metab)}
+    ${spectrumField(v)}
     ${v.ctrl ? field('管制藥品分級', v.ctrl) : ''}
     ${field('適應症（衛福部許可證）', v.ind)}
     ${field('藥理作用', v.action)}
@@ -460,10 +478,6 @@ function variantBody(v) {
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
-    ${v.abxKey ? `<div class="dc-field"><div class="dc-flabel">完整版</div>
-       <div class="dc-ftext"><a class="ref-link" target="_blank" rel="noopener"
-       href="antibiotics.html#drug=${encodeURIComponent(v.abxKey)}"
-       >在抗生素指引查看這支藥（含依部位／依菌種的用法建議）</a></div></div>` : ''}
     <div class="db-foot">${v.src
       ? `${esc(v.src)}　·　分類：${esc(v.cat || '')}`
       : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;
