@@ -4789,3 +4789,248 @@
    死亡率給 hot（那是這一頁最該被看見的數字），註解回 fg2。 */
 [data-ui="sentence"] [style*="#f0a875"] { color: var(--sentence-hot) !important; }
 [data-ui="sentence"] [style*="#c9c4b4"] { color: var(--sentence-fg2) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AC. 2026-08 新增的四頁：CRRT／節律器模式／血管活性藥物／電解質失衡
+   ═══════════════════════════════════════════════════════════════════════
+   四頁都在自己的 <style> 裡另立了一批 class，若不在這裡打一次，就會原封不動
+   吃正式版色票——這正是 §「頁面專屬 class」那一輪記下的漏網情形，這次是新頁
+   一開始就補上，不再事後掃。
+
+   涵蓋範圍：
+     AC1 CRRT 處方計算器（.rxbox／.rx-*）與模式示意（.modefig）
+     AC2 GRADE 徽章 .gr（CRRT ＋ 電解質共用）
+     AC3 節律器 NBG 編碼器（.nbg／.nbg-*）
+     AC4 節律器模式卡（.mc／.mc-*）
+     AC5 血管活性藥物的血行動力學矩陣（.hemo／.ar／.hemo-key）與體重列（.va-*）
+     AC6 藥卡的兩個新修飾（.dg.na 院內開不到／.dg-tag.off）
+     AC7 電解質的參考值列（.refbar）、高低段標頭（.dirhead）、鑑別步驟（.steps）
+     AC8 兩個表格修飾（.dt-cor 短碼欄置中／.dt-wrap 全欄可換行）
+
+   **特異度**：頁面內嵌 <style> 在 <head> 內排在本檔之後，同特異度時它贏。
+   所以凡是頁面寫成 `.x.modifier`（兩個 class）的，這裡一律要寫成
+   `[data-ui="sentence"] .x.modifier`（三段）才壓得過，不能只寫 `[data-ui] .x`。 */
+
+/* ---- AC1. CRRT 處方計算器 ----
+   輸入區走「透明底＋髮絲框」，輸出面板比照 G 段的 .result：骨白底＋2px 墨框，
+   而不是頁面原本寫死的 #132126 深塊（那是正式版的語彙）。 */
+[data-ui="sentence"] .rxbox {
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  padding: 13px 14px; margin: 12px 0 14px;
+}
+[data-ui="sentence"] .rxbox-t {
+  font-family: var(--sentence-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--sentence-dim); margin-bottom: 10px;
+}
+[data-ui="sentence"] .rx-row label { font-size: 12.5px; color: var(--sentence-fg); line-height: 1.45; }
+[data-ui="sentence"] .rx-row label .rx-en {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .rx-row .rx-u { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+[data-ui="sentence"] .rx-row input[type=number] {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); font-family: var(--sentence-mono); font-weight: 700;
+  /* 16px：iOS 聚焦時字級 <16px 會自動放大整頁（全站輸入框同一條，見 AA 段） */
+  font-size: 16px; width: 86px; padding: 5px 7px;
+}
+[data-ui="sentence"] .rx-out {
+  background: var(--sentence-bg2); color: var(--sentence-fg);
+  border: 2px solid var(--sentence-fg); border-radius: 0; padding: 13px 14px; margin-top: 13px;
+}
+[data-ui="sentence"] .rx-metric .rx-lab {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .rx-metric .rx-val {
+  font-family: var(--sentence-serif); font-size: 24px; font-weight: 600; color: var(--sentence-fg); line-height: 1.2;
+}
+[data-ui="sentence"] .rx-metric .rx-val small {
+  font-family: var(--sentence-mono); font-size: 10px; font-weight: 400; color: var(--sentence-dim);
+}
+/* 三段語意色：偏離目標＝硃砂、落在目標＝墨綠。兩者都要壓過頁面的 .rx-val.warn／.ok */
+[data-ui="sentence"] .rx-metric .rx-val.warn { color: var(--sentence-hot); }
+[data-ui="sentence"] .rx-metric .rx-val.ok   { color: var(--sentence-calm); }
+[data-ui="sentence"] .rx-flag {
+  font-family: var(--sentence-mono); font-size: 11px; line-height: 1.8; color: var(--sentence-fg2);
+  margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--sentence-line);
+}
+[data-ui="sentence"] .rx-flag .f-bad { color: var(--sentence-hot); }
+[data-ui="sentence"] .rx-flag .f-ok  { color: var(--sentence-calm); }
+[data-ui="sentence"] .rx-note { font-size: 11.5px; line-height: 1.75; color: var(--sentence-fg2); margin-top: 10px; }
+[data-ui="sentence"] .rx-note b { color: var(--sentence-fg); }
+
+/* 模式示意那一行（血液 →［濾器］→ 回血）：等寬、髮絲框、無底色 */
+[data-ui="sentence"] .modefig {
+  background: transparent; border: 1px solid var(--sentence-line); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 11px; line-height: 2; color: var(--sentence-fg2);
+  padding: 10px 12px;
+}
+[data-ui="sentence"] .modefig b { color: var(--sentence-fg); }
+[data-ui="sentence"] .modefig i { color: var(--sentence-hot); }
+
+/* ---- AC2. GRADE 徽章 .gr（1B／2C／2026 草案）----
+   與 .cor 同一個處理原則：徽章本身中性，靠字面表達強弱；
+   .gr.w（草案／尚未定稿）改虛線框，讓「這條還不算數」在版面上看得出來。 */
+[data-ui="sentence"] .gr {
+  font-family: var(--sentence-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg2); padding: 1px 5px;
+}
+/* background 必須在這兩條（(0,3,0)）各自重申一次，不能只靠上面 `[data-ui] .gr`：
+   頁面的 `.gr.w{background:var(--accent2-soft)}` 也是兩個 class，與 `[data-ui] .gr`
+   同為 (0,2,0)，而內嵌 <style> 排在本檔之後 → 頁面贏。leak.py 掃出來的就是這一格。 */
+[data-ui="sentence"] .gr.w {
+  background: transparent; border-style: dashed;
+  border-color: var(--sentence-warn); color: var(--sentence-warn);
+}
+[data-ui="sentence"] .gr.d {
+  background: transparent; border-style: dotted;
+  border-color: var(--sentence-line); color: var(--sentence-dim);
+}
+
+/* ---- AC3. 節律器 NBG 編碼器 ----
+   輸出面板同 AC1 的邏輯（骨白＋墨框）。代碼本身是這一區唯一該最大的東西。 */
+[data-ui="sentence"] .nbg {
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0; padding: 14px;
+}
+[data-ui="sentence"] .nbg-t {
+  font-family: var(--sentence-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .nbg-slot label {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .nbg-slot label b { color: var(--sentence-fg); font-size: 10.5px; }
+[data-ui="sentence"] .nbg-slot select {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); font-family: var(--sentence-mono); font-size: 16px; padding: 6px 7px;
+}
+[data-ui="sentence"] .nbg-out {
+  background: var(--sentence-bg2); border: 2px solid var(--sentence-fg); border-radius: 0; padding: 14px;
+}
+[data-ui="sentence"] .nbg-code {
+  font-family: var(--sentence-mono); font-size: 34px; font-weight: 700;
+  letter-spacing: .12em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .nbg-name { font-family: var(--sentence-serif); font-size: 16px; color: var(--sentence-calm); }
+[data-ui="sentence"] .nbg-read { font-size: 12.5px; line-height: 1.8; color: var(--sentence-fg2); }
+[data-ui="sentence"] .nbg-read b { color: var(--sentence-fg); }
+[data-ui="sentence"] .nbg-warn {
+  font-size: 12px; line-height: 1.8; color: var(--sentence-hot);
+  border-top: 1px solid var(--sentence-line); padding-top: 9px; margin-top: 10px;
+}
+[data-ui="sentence"] .nbg-warn b { color: var(--sentence-fg); }
+
+/* ---- AC4. 節律器模式卡 .mc ----
+   結構與藥卡 .dg 同源（左緣色條分主／警），色票沿用 R4 那一套。 */
+[data-ui="sentence"] .mc {
+  background: transparent; border: 1px solid var(--sentence-line);
+  border-left: 3px solid var(--sentence-fg); border-radius: 0; padding: 12px 14px; margin: 11px 0;
+}
+[data-ui="sentence"] .mc.warn { border-left-color: var(--sentence-hot); }
+[data-ui="sentence"] .mc-code {
+  font-family: var(--sentence-mono); font-size: 19px; font-weight: 700;
+  letter-spacing: .08em; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .mc-zh { font-size: 12px; color: var(--sentence-dim); }
+[data-ui="sentence"] .mc-tag {
+  font-family: var(--sentence-mono); font-size: 9.5px; letter-spacing: .06em;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg2); padding: 1px 5px;
+}
+/* 三段選擇器：頁面寫的是 `.mc-tag.bad`（0,2,0），與 `[data-ui] .mc-tag` 同分且排在後面 */
+[data-ui="sentence"] .mc-tag.bad { border-color: var(--sentence-hot); color: var(--sentence-hot); background: transparent; }
+[data-ui="sentence"] .mc-body { font-size: 12.5px; line-height: 1.8; color: var(--sentence-fg2); }
+[data-ui="sentence"] .mc-body b, [data-ui="sentence"] .mc-body strong { color: var(--sentence-fg); }
+
+/* ---- AC5. 血管活性藥物：血行動力學矩陣 ----
+   這張表是本頁的賣點，箭頭要一眼分得出方向：升＝硃砂、降＝墨綠、不變＝灰。
+   （不是「升＝壞」的意思——是讓兩個方向在單色底上分得開，圖例寫在表下。） */
+[data-ui="sentence"] .hemo th, [data-ui="sentence"] .hemo td {
+  border: 1px solid var(--sentence-line); padding: 6px 7px;
+}
+[data-ui="sentence"] .hemo thead th {
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em;
+  background: var(--sentence-shade); color: var(--sentence-fg); border-bottom-color: var(--sentence-line2);
+}
+[data-ui="sentence"] .hemo thead th .hz { font-size: 9.5px; color: var(--sentence-dim); font-weight: 400; }
+[data-ui="sentence"] .hemo tbody th {
+  font-family: var(--sentence-mono); font-size: 10.5px; background: transparent; color: var(--sentence-fg);
+}
+[data-ui="sentence"] .hemo tbody th .hz { font-size: 9.5px; color: var(--sentence-dim); font-weight: 400; }
+[data-ui="sentence"] .hemo tr.hr-txt td { font-size: 11px; line-height: 1.7; color: var(--sentence-fg2); }
+[data-ui="sentence"] .hemo tr.hr-txt td b { color: var(--sentence-fg); }
+[data-ui="sentence"] .ar { font-family: var(--sentence-mono); font-size: 15px; font-weight: 700; }
+[data-ui="sentence"] .ar.up  { color: var(--sentence-hot); }
+[data-ui="sentence"] .ar.dn  { color: var(--sentence-calm); }
+[data-ui="sentence"] .ar.eq  { color: var(--sentence-dim); }
+[data-ui="sentence"] .ar.mix { color: var(--sentence-fg2); }
+[data-ui="sentence"] .ar sub { color: var(--sentence-dim); }
+[data-ui="sentence"] .hemo-key { font-family: var(--sentence-mono); font-size: 10.5px; line-height: 1.9; color: var(--sentence-dim); }
+[data-ui="sentence"] .hemo-key b { color: var(--sentence-fg); }
+
+/* 體重列：與心因性休克的 .cs-bar 同一件事，色票同 R 段 */
+[data-ui="sentence"] .va-bar { background: transparent; border-bottom: 1px solid var(--sentence-line); }
+[data-ui="sentence"] .va-bar label {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .va-bar input[type=number] {
+  background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
+  color: var(--sentence-fg); font-family: var(--sentence-mono); font-weight: 700; font-size: 16px;
+}
+[data-ui="sentence"] .va-bar .va-hint { font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-dim); }
+
+/* ---- AC6. 藥卡的兩個新修飾（R4 的 .dg 家族本來就已收斂，這裡只補新的兩個）----
+   .dg.na＝台大處方集查無的品項：不是「危險」而是「這裡開不到」，所以走虛線框＋
+   降一階的字色，與 .dg.warn（硃砂實線）在語意上分開。 */
+[data-ui="sentence"] .dg.na {
+  background: transparent; border-style: dashed; border-color: var(--sentence-line2);
+  border-left: 3px dashed var(--sentence-dim);
+}
+[data-ui="sentence"] .dg.na .dg-name { color: var(--sentence-fg2); }
+[data-ui="sentence"] .dg-tag.off {
+  background: transparent; border: 1px dashed var(--sentence-line2); color: var(--sentence-dim);
+}
+
+/* ---- AC7. 電解質失衡 ----
+   參考值列（台大檢驗醫學部的單位與區間）：一整頁都要靠它校正單位，
+   所以給 shade 底而不是透明，讓它在六個分頁裡都是同一個固定錨點。 */
+[data-ui="sentence"] .refbar {
+  background: var(--sentence-shade); border: 1px solid var(--sentence-line);
+  border-left: 3px solid var(--sentence-fg); border-radius: 0; padding: 9px 12px;
+}
+[data-ui="sentence"] .refbar .rb { font-family: var(--sentence-mono); font-size: 11.5px; color: var(--sentence-fg); }
+[data-ui="sentence"] .refbar .rb b { color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] .refbar .rb i { color: var(--sentence-dim); }
+[data-ui="sentence"] .refbar .rb-src { font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim); }
+
+/* 高／低兩端的段標頭：低端中性、高端硃砂——一頁十二段，這是唯一的方位感 */
+[data-ui="sentence"] .dirhead { border-bottom: 1px solid var(--sentence-line2); }
+[data-ui="sentence"] .dirhead .dh-n { font-family: var(--sentence-serif); font-size: 19px; color: var(--sentence-fg); }
+[data-ui="sentence"] .dirhead .dh-e { font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim); }
+[data-ui="sentence"] .dirhead.hi { border-bottom-color: var(--sentence-hot); }
+[data-ui="sentence"] .dirhead.hi .dh-n { color: var(--sentence-hot); }
+
+/* 鑑別步驟：序號只是等寬數字，不做圓底（實心圓點在一頁六組的密度下太吵） */
+[data-ui="sentence"] .step { font-size: 12.5px; line-height: 1.8; color: var(--sentence-fg2); }
+[data-ui="sentence"] .step b, [data-ui="sentence"] .step strong { color: var(--sentence-fg); }
+[data-ui="sentence"] .step:before {
+  background: none; border-radius: 0; width: auto; height: auto; display: inline;
+  font-family: var(--sentence-mono); font-size: 12px; font-weight: 700;
+  color: var(--sentence-dim); margin-top: 0;
+}
+[data-ui="sentence"] .step.alt:before { color: var(--sentence-hot); }
+[data-ui="sentence"] .step .sq { color: var(--sentence-fg); font-weight: 700; }
+
+/* ---- AC8. 兩個表格修飾 ----
+   .dt-cor：第 2 欄以後是 Class／Level 這種短碼，置中不換行。
+   .dt-wrap：全欄都是文字，第一欄也要能換行（不加這條，第一欄會被 .def-table
+   的 `td:first-child{white-space:nowrap}` 逼成一字一行——2026-08 實機踩過）。 */
+[data-ui="sentence"] .def-table.dt-cor th:nth-child(n+2),
+[data-ui="sentence"] .def-table.dt-cor td:nth-child(n+2) { text-align: center; white-space: nowrap; }
+[data-ui="sentence"] .def-table.dt-wrap td:first-child { white-space: normal; }
+[data-ui="sentence"] .def-table.dt-wrap td,
+[data-ui="sentence"] .def-table.dt-wrap th { vertical-align: top; }

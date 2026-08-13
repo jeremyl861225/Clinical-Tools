@@ -53,11 +53,11 @@
   .steps{counter-reset:st; margin:8px 0 10px;}
   .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
         font-size:12.5px; line-height:1.75;}
-  .step:before{counter-increment:st; content:counter(st); font-family:var(--mono); font-size:11px;
-               font-weight:700; color:#fff; background:var(--accent); border-radius:50%;
-               width:19px; height:19px; display:flex; align-items:center; justify-content:center;
-               margin-top:2px;}
-  .step.alt:before{background:var(--accent2);}
+  /* 序號只用等寬數字＋句點，不做實心圓底——與 .lede-item 的 ①②③ 同一種安靜程度。
+     原本是白字填色圓點，在一頁六個分頁、每個分頁都有一組的密度下太吵。 */
+  .step:before{counter-increment:st; content:counter(st) "."; font-family:var(--mono); font-size:12px;
+               font-weight:700; color:var(--accent); line-height:1.75; letter-spacing:.02em;}
+  .step.alt:before{color:var(--accent2);}
   .step .sq{font-weight:700; color:var(--ink);}
 
   /* ── 通用小元件 ── */

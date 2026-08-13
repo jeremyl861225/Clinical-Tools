@@ -70,7 +70,13 @@
   .sect{margin-top:16px;}
   .def-table td{line-height:1.7;}
   .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
-  .def-table.dt-rec th:nth-child(n+2),.def-table.dt-rec td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  /* 置中＋不換行只給「第 2 欄以後真的是 Class／Level 這種短碼」的表（.dt-cor）。
+     原本掛在 .dt-rec 上是錯的：本頁另外三張表第 2、3 欄是整段文字，nowrap 讓那幾欄
+     吃掉所有寬度，第一欄被擠成一字一行、右側整段被切掉（實機截圖才看出來）。 */
+  .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  /* 全欄都是文字的表：每一欄都要能換行，第一欄保留鍵值樣式但不 nowrap */
+  .def-table.dt-wrap td:first-child{white-space:normal;}
+  .def-table.dt-wrap td,.def-table.dt-wrap th{vertical-align:top;}
   .cor{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
        background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
   .cor.c3{background:var(--accent2-soft); color:var(--accent2);}
@@ -331,7 +337,7 @@
   </div>
 
   <div class="tw">
-    <table class="def-table dt-rec" style="min-width:640px;">
+    <table class="def-table dt-rec dt-wrap" style="min-width:640px;">
       <thead><tr><th style="width:34%">情境</th><th style="width:16%">模式</th><th style="width:14%">依據</th><th style="width:36%">理由</th></tr></thead>
       <tbody>
         <tr><td><b>竇房結功能不良、房室傳導完好、無傳導異常</b></td>
@@ -361,7 +367,7 @@
 
   <div class="section-title">什麼時候該裝（節錄，非完整適應症） <span class="en">When to Pace</span></div>
   <div class="tw">
-    <table class="def-table dt-rec" style="min-width:620px;">
+    <table class="def-table dt-rec dt-cor" style="min-width:620px;">
       <thead><tr><th style="width:52%">建議</th><th style="width:14%">Class</th><th style="width:10%">Level</th><th style="width:24%">出處</th></tr></thead>
       <tbody>
         <tr><td>竇性心律者出現<b>永久性或陣發性三度、二度 II 型、His 束以下的 2:1，或高度房室阻滯</b>，<b>不論有無症狀</b>都建議起搏</td>
@@ -414,7 +420,7 @@
 
   <div class="section-title">建議等級 <span class="en">2018 ACC/AHA/HRS</span></div>
   <div class="tw">
-    <table class="def-table dt-rec" style="min-width:600px;">
+    <table class="def-table dt-rec dt-cor" style="min-width:600px;">
       <thead><tr><th style="width:62%">建議（房室阻滯所致之心搏過緩）</th><th style="width:14%">COR</th><th style="width:24%">LOE</th></tr></thead>
       <tbody>
         <tr><td>二度或三度房室阻滯併症狀或血行動力學不穩、<b>對藥物治療無效</b>者，<b>暫時性經靜脈起搏是合理的</b></td>
@@ -498,7 +504,7 @@
 
   <div class="section-title">術中 <span class="en">Intraoperative</span></div>
   <div class="tw">
-    <table class="def-table dt-rec" style="min-width:600px;">
+    <table class="def-table dt-rec dt-wrap" style="min-width:600px;">
       <thead><tr><th style="width:26%">情境</th><th style="width:36%">做法</th><th style="width:38%">為什麼</th></tr></thead>
       <tbody>
         <tr><td><b>依賴節律器＋預期有電磁干擾</b></td>
@@ -546,7 +552,7 @@
   </div>
 
   <div class="tw">
-    <table class="def-table dt-rec" style="min-width:660px;">
+    <table class="def-table dt-rec dt-wrap" style="min-width:660px;">
       <thead><tr><th style="width:16%">問題</th><th style="width:22%">心電圖上看到什麼</th><th style="width:34%">原因</th><th style="width:28%">怎麼辦</th></tr></thead>
       <tbody>
         <tr>
