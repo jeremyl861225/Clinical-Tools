@@ -276,6 +276,12 @@ window.FACETS = {
     {"w": "免疫低下", "al": "immunocompromised neutropenia 嗜中性球低下"},
     {"w": "懷孕用藥", "al": "pregnancy 孕婦 哺乳 懷孕分級"},
     {"w": "藥物禁忌", "al": "contraindication allergy 過敏 交互作用"},
+    // 交互作用本來只是「藥物禁忌」的一個 al，但現在有一頁專門在做這件事
+    // （tools/ddi.html，10 萬組配對），值得升成自己的概念詞，否則造句造不到那一頁。
+    // al 收三類寫法：英文正式名與縮寫（DDI／drug-drug interaction）、口語（撞藥／會不會撞／
+    // 可不可以一起吃）、以及機轉關鍵字（CYP／P-gp／QT／血清素症候群）——
+    // 值班上問的常常是「這兩支一起下會不會有事」而不是「交互作用」四個字。
+    {"w": "交互作用", "al": "interaction interactions drug-drug DDI drug-interaction 藥物交互作用 藥品交互作用 藥物相互作用 相互作用 併用 合併用藥 一起吃 一起給 同時使用 撞藥 對撞 會不會撞 CYP CYP450 P-gp P-glycoprotein QT 延長 血清素症候群 serotonin DDInter"},
     {"w": "處方集", "al": "formulary 藥卡 台大藥劑部 商品名"},
     /* 這三個詞在 HEAD 就是死詞：沒有任何標的的 c 陣列掛過它們（「癌症治療」在
        tools[] 裡出現 30 次是 secTitle 欄，不是 c 標註），選了會得到 0 件事。
@@ -482,6 +488,9 @@ window.FACETS = {
     {"w": "查覆蓋菌譜", "al": "spectrum coverage susceptibility 菌譜 覆蓋 感受性 涵蓋 打得到 蓋不蓋得住 有沒有涵蓋 抗菌範圍"},
     {"w": "查分期", "al": "staging stage TNM 分期 期別 第幾期 期數 早期晚期 幾期"},
     {"w": "查禁忌", "al": "contraindication warning adverse 禁忌 警示 副作用 可不可以給 能不能用 有沒有禁忌 不良反應 會不會有問題"},
+    // 與「查禁忌」分開：禁忌問的是「這一支能不能給這個病人」，交互作用問的是
+    // 「這幾支湊在一起會不會出事」，兩者落到不同的頁面。
+    {"w": "查交互作用", "al": "interaction interactions DDI drug-drug 交互作用 相互作用 會不會撞 撞不撞 可不可以一起吃 可不可以一起給 能不能併用 併用 合併用藥 一起下 對撞"},
     // 決策流程的本質就是鑑別與分流，31 個 pathway 全部直標；另加兩個以分型／分類為主的查閱頁（分類與分級系統、菌譜資料庫、依病原菌模式）。
     // 第 6 輪補：值班第一句話多半是「這是什麼」「為什麼會這樣」，不是「找原因」這三個字。
     {"w": "找原因", "al": "鑑別診斷 是什麼 查病因 differential diagnosis etiology workup 怎麼分型 分型 分類 為什麼 原因 病因 怎麼會 什麼病 診斷 鑑別 找病灶 怎麼來的"},
@@ -718,6 +727,10 @@ window.FACETS = {
     // 這裡的部位清單逐字比照 abx-mode-empiric（同一份抗生素指引的兩個入口），不新增任何臨床內容。
     {"k": "hub-antibiotics", "name": "藥物查詢", "en": "Drug Lookup", "desc": "抗生素指引、菌譜資料庫、手術預防與創傷用藥", "kind": "mode", "href": "tools/antibiotics.html#mode=lookup", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "抗微生物", "grpEn": "Antimicrobials", "cnt": "6 項", "s": ["抗生素", "病原菌", "感染與敗血", "抗黴菌藥", "抗病毒藥", "骨與關節", "腹膜", "腹部", "膽道", "軟組織", "肺與氣道", "泌尿系統", "心臟", "腦"], "c": ["抗生素選擇", "MRSA", "綠膿桿菌", "ESBL", "厭氧菌", "腸球菌", "菌血症", "肺炎", "泌尿道感染", "皮膚軟組織感染", "心內膜炎", "骨關節感染", "中樞神經感染", "導管相關感染", "腹腔感染", "手術預防性抗生素", "開放性骨折", "破傷風", "抗結核", "抗病毒治療", "侵襲性念珠菌感染", "免疫低下", "懷孕用藥", "藥物禁忌", "敗血症", "手術", "感染", "金黃色葡萄球菌", "肺炎鏈球菌", "李斯特菌", "鮑氏不動桿菌", "嗜麥芽窄食單胞菌", "A 群鏈球菌", "B 群鏈球菌", "AmpC 型", "創傷弧菌", "卡他莫拉菌", "困難梭菌", "多殺巴斯德氏菌", "大腸桿菌 / 克雷伯氏菌", "少動鞘胺醇單胞菌", "抗碳青黴烯腸道菌", "新型隱球菌", "曲狀桿菌", "毛黴菌", "洋蔥伯克霍爾德氏菌", "流感嗜血桿菌", "淋病雙球菌", "產吲哚金黃桿菌", "產氣單胞菌", "腦膜炎雙球菌", "草綠色鏈球菌", "表皮／凝固酶陰性葡萄球菌", "諾卡氏菌", "變形桿菌／摩根氏菌／普羅威登斯菌", "退伍軍人桿菌", "非傷寒沙門氏菌", "類鼻疽伯克霍爾德氏菌", "麴菌", "黴漿菌 / 披衣菌", "Aspergillus", "Mucorales", "glabrata/krusei", "Histoplasma", "Blastomyces", "Coccidioides", "Fusarium", "HIV", "HBV", "HCV", "CMV", "HSV/VZV", "Influenza", "SARS-CoV-2", "RSV", "瘧原蟲", "原蟲", "線蟲", "絛蟲", "吸蟲", "外寄生蟲", "抗黴菌治療", "抗寄生蟲治療", "抗麻風", "非典型", "局部黴菌感染"], "a": ["查劑量", "查腎肝調整", "查覆蓋菌譜", "查禁忌", "怎麼調", "給抗生素"], "kw": "抗生素 抗微生物 經驗性用藥 菌譜 感受性 antibiogram 敗血症 菌血症 IAI UTI 肺炎 SSTI 心內膜炎 骨關節 CNS 術後預防 IDSA SIS AHA β-lactamase Ambler 抗黴菌 手術預防 預防性抗生素 創傷 外傷 開放性骨折 破傷風 抗病毒 抗寄生蟲 麻風 念珠菌 麴菌 毛黴菌", "impl": "abx"},
     {"k": "hub-drugdb", "name": "藥物資料庫", "en": "Drug Database", "desc": "台大醫院藥劑部處方集 · 一商品名一張藥卡", "kind": "mega", "href": "tools/drug-database.html", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "直接指向頁面的入口", "grpEn": "Direct Hubs", "cnt": "3 項", "s": ["一般藥物"], "c": ["處方集", "藥物禁忌", "懷孕用藥"], "a": ["查劑量", "查腎肝調整", "查禁忌", "怎麼調"], "kw": "藥物 藥品 藥卡 處方集 formulary 台大藥劑部 學名 商品名 中文品名 機轉 藥理分類 劑量 腎功能 肝功能 透析 CVVH 注射給藥指引 懷孕分級 健保價 自費價 藥價", "impl": ""},
+    // kw 除了正式名稱，刻意收了病房口語（撞藥／會不會撞／可不可以一起吃）與機轉字
+    // （CYP3A4／P-gp／QT／血清素症候群）——「說整句」是打字查的，使用者不會先想到
+    //「交互作用」四個字。severity 三級的英文也收，因為藥師交班會直接講 major。
+    {"k": "hub-ddi", "name": "交互作用查核", "en": "Drug Interactions", "desc": "把病人的藥一個一個加進來，列出所有兩兩配對的交互作用、機轉與處置建議，重大的排最前面 · DDInter 2.0", "kind": "mega", "href": "tools/ddi.html", "sec": "hubs", "secTitle": "入口", "secEn": "Hubs", "grp": "直接指向頁面的入口", "grpEn": "Direct Hubs", "cnt": "3 項", "s": ["一般藥物"], "c": ["交互作用", "藥物禁忌", "處方集"], "a": ["查交互作用", "查禁忌", "怎麼處理"], "kw": "DDI ddi drug-drug interaction drug-drug interactions drug drug interaction drug interaction interactions drug-interaction 交互作用 藥物交互作用 藥品交互作用 藥物相互作用 相互作用 併用 合併用藥 一起吃 一起給 同時使用 撞藥 對撞 會不會撞 撞不撞 可不可以一起吃 能不能併用 多重用藥 polypharmacy DDInter major moderate minor 重大 中度 輕度 機轉 處置 management mechanism CYP CYP450 CYP3A4 CYP2C9 CYP2C19 P-gp P-glycoprotein QT QT延長 血清素症候群 serotonin syndrome 橫紋肌溶解 rhabdomyolysis INR", "impl": ""},
     {"k": "cancer-lung", "name": "肺癌", "en": "Lung Cancer", "desc": "分期、淋巴結分群與治療決策", "kind": "cancer", "href": "tools/cancer.html#cancer=lung", "sec": "cancer", "secTitle": "癌症治療", "secEn": "Cancer Treatment", "grp": "其他實體腫瘤", "grpEn": "Other Solid Tumors", "cnt": "4 項", "s": ["肺與氣道"], "c": ["肺癌", "癌症"], "a": ["查分期", "選術式", "看治療", "查淋巴結", "要不要輔助治療"], "kw": "癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫", "impl": ""},
     {"k": "cancer-esoph", "name": "食道癌", "en": "Esophageal Cancer", "desc": "分期、淋巴結分群與治療決策", "kind": "cancer", "href": "tools/cancer.html#cancer=esoph", "sec": "cancer", "secTitle": "癌症治療", "secEn": "Cancer Treatment", "grp": "消化道癌", "grpEn": "GI Cancers", "cnt": "10 項", "s": ["食道"], "c": ["食道癌", "癌症"], "a": ["查分期", "選術式", "看治療", "查淋巴結", "要不要輔助治療"], "kw": "癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫", "impl": ""},
     {"k": "cancer-gastric", "name": "胃癌", "en": "Gastric Cancer", "desc": "分期、淋巴結分群與治療決策", "kind": "cancer", "href": "tools/cancer.html#cancer=gastric", "sec": "cancer", "secTitle": "癌症治療", "secEn": "Cancer Treatment", "grp": "消化道癌", "grpEn": "GI Cancers", "cnt": "10 項", "s": ["胃十二指腸"], "c": ["胃癌", "癌症"], "a": ["查分期", "選術式", "看治療", "查淋巴結", "要不要輔助治療"], "kw": "癌症 分期 TNM AJCC FIGO 淋巴結 治療 neoadjuvant adjuvant 化療 標靶 免疫", "impl": ""},

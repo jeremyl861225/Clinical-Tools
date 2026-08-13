@@ -1,0 +1,264 @@
+/* css/ddi.css — 交互作用查核
+ *
+ * 主題是「04 造句設計」（排字校樣：零陰影、零圓角、字距放寬、髮絲線，
+ * 面向靠底線樣式與符號區分而不是只靠顏色）。但 ui-sentence.css 的鐵律是
+ * 所有規則只能寫在 [data-ui="sentence"] 之下，正式版不得被污染，
+ * 所以這裡用一組本檔自己的變數：預設指向 css/styles.css 的正式版色票，
+ * 造句模式下整組重新指向 --sentence-*。一套規則、兩套外觀，都不越界。
+ */
+
+#view-ddi {
+  --d-fg: var(--ink);
+  --d-fg2: var(--muted);
+  --d-dim: var(--muted-soft);
+  --d-line: var(--line);
+  --d-line2: var(--line);
+  --d-bg: var(--paper);
+  --d-bg2: var(--box-bg);
+  --d-inv-bg: var(--ink);
+  --d-inv-fg: var(--paper);
+  --d-hot: var(--accent2);
+  --d-warn: #8a6a12;
+  --d-calm: var(--accent);
+  --d-serif: var(--serif);
+  --d-sans: var(--sans);
+  --d-mono: var(--mono);
+  --d-radius: 3px;
+}
+[data-ui="sentence"] #view-ddi {
+  --d-fg: var(--sentence-fg);
+  --d-fg2: var(--sentence-fg2);
+  --d-dim: var(--sentence-dim);
+  --d-line: var(--sentence-line);
+  --d-line2: var(--sentence-line2);
+  --d-bg: var(--sentence-bg);
+  --d-bg2: var(--sentence-bg2);
+  --d-inv-bg: var(--sentence-inv-bg);
+  --d-inv-fg: var(--sentence-inv-fg);
+  --d-hot: var(--sentence-hot);
+  --d-warn: var(--sentence-warn);
+  --d-calm: var(--sentence-calm);
+  --d-serif: var(--sentence-serif);
+  --d-sans: var(--sentence-sans);
+  --d-mono: var(--sentence-mono);
+  --d-radius: 0px;
+}
+
+/* 按鈕 reset：原型的 proof.css 有全域 `button{background:none;border:0}`，
+   但 css/styles.css 沒有，本頁的按鈕會吃到瀏覽器預設的 buttonface 灰底與 2px outset 邊框
+   （暗色模式下整排 × 與「全部清掉」變成灰方塊）。限定在本頁內補回來，不動全站。
+   外層包 :where() 讓這條的優先權歸零（等同 `button`），下面各元件的 class 規則
+   才不會被這個 id 選擇器蓋掉——否則就得到處補 !important。 */
+:where(#view-ddi) button { background: none; border: 0; border-radius: 0; cursor: pointer; color: inherit; }
+
+/* ---------- 選藥列 ---------- */
+.ddi-pick { position: relative; margin: 10px 0 4px; }
+.ddi-field {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--d-line2); background: var(--d-bg);
+  border-radius: var(--d-radius); padding: 0 10px;
+}
+.ddi-field:focus-within { border-color: var(--d-fg); }
+.ddi-mag { font-family: var(--d-mono); font-size: 15px; color: var(--d-dim); }
+/* 用 #view-ddi 提高優先權：ui-sentence.css 有一條
+   `[data-ui="sentence"] input[type="search"]`(0,2,1) 會給所有沒人管的搜尋框
+   補上邊框，優先權高於單一 class，不壓過去就會在 .ddi-field 的框裡再畫一個框
+   （聚焦時再加一個 outline，變成三層）。
+   font-size 一定要 16px——那條規則的註解寫明這是 iOS Safari 聚焦時不放大整頁的門檻，
+   寫 15px 手機一點輸入框版面就會被拉大。 */
+#view-ddi .ddi-input {
+  flex: 1 1 auto; min-width: 0; min-height: 48px;
+  background: none; border: 0; border-radius: 0;
+  font-family: var(--d-sans); font-size: 16px; color: var(--d-fg);
+  -webkit-appearance: none; appearance: none;
+}
+/* 聚焦的視覺回饋交給外框 .ddi-field:focus-within，input 自己不要再長一圈 outline */
+#view-ddi .ddi-input:focus, #view-ddi .ddi-input:focus-visible { outline: none; }
+/* 已經有自己的 × 鈕，不要再疊瀏覽器原生的清除圖示 */
+#view-ddi .ddi-input::-webkit-search-cancel-button,
+#view-ddi .ddi-input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+.ddi-clear {
+  min-height: 44px; min-width: 44px;
+  font-family: var(--d-mono); font-size: 17px; color: var(--d-dim);
+}
+.ddi-clear:hover { color: var(--d-fg); }
+
+/* 候選清單：疊在輸入框下方，不把下面的結果推走 */
+.ddi-sugg {
+  position: absolute; z-index: 25; left: 0; right: 0;
+  max-height: 46vh; overflow-y: auto;
+  background: var(--d-bg); border: 1px solid var(--d-fg); border-top: 0;
+}
+.ddi-si {
+  display: block; width: 100%; text-align: left;
+  min-height: 48px; padding: 6px 10px;
+  border-bottom: 1px dotted var(--d-line);
+}
+.ddi-si:last-child { border-bottom: 0; }
+.ddi-si:hover, .ddi-si.sel { background: var(--d-bg2); }
+.ddi-si-en { font-family: var(--d-serif); font-size: 15px; letter-spacing: .04em; color: var(--d-fg); }
+.ddi-si-en em { font-style: normal; background: var(--d-inv-bg); color: var(--d-inv-fg); padding: 0 3px; }
+.ddi-si-zh { font-family: var(--d-sans); font-size: 12px; color: var(--d-fg2); margin-left: 8px; }
+.ddi-si-meta { display: block; font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .05em; color: var(--d-dim); margin-top: 1px; }
+.ddi-sugg-empty { padding: 12px 10px; font-family: var(--d-mono); font-size: 11px; color: var(--d-dim); }
+
+/* ---------- 已選的藥：實心詞塊（造句設計的 .chip 語彙） ---------- */
+.ddi-picked { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ddi-chip {
+  display: inline-flex; align-items: stretch; max-width: 100%;
+  background: var(--d-inv-bg); color: var(--d-inv-fg); border-radius: var(--d-radius);
+}
+.ddi-chip .cw {
+  min-height: 44px; padding: 2px 4px 2px 11px;
+  display: inline-flex; align-items: center;
+  font-family: var(--d-serif); font-size: 15px; letter-spacing: .05em;
+  white-space: normal; overflow-wrap: anywhere;
+}
+.ddi-chip .cx {
+  min-height: 44px; min-width: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--d-mono); font-size: 15px; opacity: .72;
+}
+.ddi-chip .cx:hover { opacity: 1; background: rgba(128,128,128,.28); }
+.ddi-wipe {
+  min-height: 44px; padding: 0 12px;
+  font-family: var(--d-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--d-dim);
+  border: 1px dashed var(--d-line2); border-radius: var(--d-radius);
+}
+.ddi-wipe:hover { color: var(--d-fg); border-color: var(--d-fg); }
+
+/* ---------- 指向行：現在這句話指向幾組 ---------- */
+.ddi-pointer {
+  font-family: var(--d-mono); font-size: 11px; letter-spacing: .1em; color: var(--d-dim);
+  border-top: 1px solid var(--d-line);
+  padding: 9px 0 8px; margin-top: 10px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.ddi-pointer:empty { display: none; }
+.ddi-pointer b { color: var(--d-fg); font-weight: 700; }
+.ddi-pointer .hot { color: var(--d-hot); font-weight: 700; }
+
+/* ---------- 嚴重度：三重編碼（格數＋文字＋色），色盲下仍可辨 ---------- */
+.sevmark {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  font-family: var(--d-mono); font-size: 10.5px; letter-spacing: .08em;
+}
+.sevmark .pips { letter-spacing: .14em; }
+.sev-3 { color: var(--d-hot); font-weight: 700; }
+.sev-2 { color: var(--d-warn); }
+.sev-1 { color: var(--d-calm); }
+.sev-0 { color: var(--d-dim); }
+
+/* ---------- 結果分組 ---------- */
+.ddi-sec {
+  border-top: 2px solid var(--d-fg);
+  margin-top: 20px; padding: 9px 0 4px;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.ddi-sec .zh { font-family: var(--d-serif); font-size: 19px; letter-spacing: .1em; color: var(--d-fg); }
+.ddi-sec .n { font-family: var(--d-mono); font-size: 10px; color: var(--d-dim); margin-left: auto; }
+.ddi-sec.s3 { border-top-color: var(--d-hot); }
+.ddi-sec.s2 { border-top-color: var(--d-warn); }
+
+/* ---------- 一組配對 ---------- */
+.pair { border-bottom: 1px dotted var(--d-line); }
+.pair > summary {
+  min-height: 48px; padding: 8px 4px 8px 0;
+  display: flex; align-items: baseline; gap: 6px 10px; flex-wrap: wrap;
+  cursor: pointer; list-style: none;
+}
+.pair > summary::-webkit-details-marker { display: none; }
+.pair > summary:hover { background: var(--d-bg2); }
+.pair-names { font-family: var(--d-serif); font-size: 15.5px; letter-spacing: .04em; color: var(--d-fg); }
+.pair-names .x { color: var(--d-dim); padding: 0 3px; }
+.pair-zh { font-family: var(--d-sans); font-size: 11.5px; color: var(--d-fg2); }
+.pair-mech {
+  font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .1em; color: var(--d-dim);
+  border: 1px solid var(--d-line); border-radius: var(--d-radius); padding: 1px 6px;
+}
+.pair-chev { margin-left: auto; font-family: var(--d-mono); font-size: 10px; color: var(--d-dim); }
+.pair[open] .pair-chev { transform: none; }
+
+.pair-body { padding: 2px 0 14px; }
+.pf { margin: 9px 0 0; }
+.pf-l {
+  font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--d-dim); padding-bottom: 3px;
+}
+/* 不設 max-width：內容欄本身已被 .sheet 收到 860px，再壓一層 74ch（12.5px 下約 480px）
+   會讓機轉那段在寬螢幕上提前換行、右邊空掉一大塊。 */
+.pf-t {
+  font-size: 12.5px; line-height: 1.68; color: var(--d-fg2);
+  border-left: 3px solid var(--d-line2); padding-left: 10px;
+}
+.pf-t.mgmt { border-left-color: var(--d-fg); color: var(--d-fg); }
+.pf-none { font-family: var(--d-mono); font-size: 11px; color: var(--d-dim); padding-left: 10px; }
+.pf-refbtn {
+  min-height: 44px; padding: 0 11px; margin-top: 8px;
+  font-family: var(--d-mono); font-size: 10px; letter-spacing: .1em; color: var(--d-dim);
+  border: 1px dashed var(--d-line2); border-radius: var(--d-radius);
+}
+.pf-refbtn:hover { color: var(--d-fg); border-color: var(--d-fg); }
+.pf-refs {
+  font-family: var(--d-mono); font-size: 10.5px; line-height: 1.6; color: var(--d-dim);
+  border-left: 3px dotted var(--d-line2); padding-left: 10px; margin-top: 8px;
+  max-height: 240px; overflow-y: auto;
+}
+
+/* ---------- 空狀態 ---------- */
+.ddi-empty { padding: 4px 0 30px; }
+.ddi-howto { margin: 6px 0 14px; }
+.ddi-howto > summary {
+  min-height: 44px; display: flex; align-items: center;
+  font-size: 13px; letter-spacing: .03em; color: var(--d-fg2);
+  border-left: 4px solid var(--d-line2); padding: 4px 0 4px 12px; cursor: pointer;
+}
+.ddi-howto > summary::before { content: "▸ "; color: var(--d-dim); }
+.ddi-howto[open] > summary::before { content: "▾ "; }
+.ddi-howto > summary::-webkit-details-marker { display: none; }
+.ddi-howto-body {
+  font-size: 13px; line-height: 1.72; color: var(--d-fg2);
+  border-left: 4px solid var(--d-line2); padding: 6px 0 4px 12px; margin-top: 2px;
+  max-width: 60ch;
+}
+.ddi-eg-h {
+  font-family: var(--d-mono); font-size: 10px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--d-dim);
+  border-top: 1px solid var(--d-line); margin-top: 14px; padding: 12px 0 6px;
+}
+/* 每格自己畫框、容器不鋪底色：示範組合的數量會隨資料庫收錄情形變動，
+   用 .hubs 那種「容器鋪底色＋1px gap」的作法，格數湊不滿一列時尾端會露出一大塊底色。 */
+.ddi-egs { display: grid; gap: 8px; }
+@media (min-width: 640px) { .ddi-egs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .ddi-egs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ddi-eg {
+  background: var(--d-bg); border: 1px solid var(--d-line); border-radius: var(--d-radius);
+  min-height: 74px; padding: 9px 11px;
+  display: flex; flex-direction: column; justify-content: center; gap: 3px; text-align: left;
+}
+.ddi-eg:hover { border-color: var(--d-fg); }
+.ddi-eg:hover { background: var(--d-bg2); }
+.ddi-eg .eg-say { font-family: var(--d-serif); font-size: 15px; letter-spacing: .05em; color: var(--d-fg); }
+.ddi-eg .eg-sub { font-size: 10.5px; line-height: 1.45; color: var(--d-fg2); }
+
+/* ---------- 沒撞到 / 載入中 ---------- */
+.ddi-clear-msg {
+  border: 1px solid var(--d-line2); border-left: 5px solid var(--d-calm);
+  background: var(--d-bg2); padding: 11px 12px; margin: 14px 0;
+  font-size: 12.5px; line-height: 1.65; color: var(--d-fg2);
+}
+.ddi-clear-msg b { color: var(--d-fg); }
+.ddi-loading { font-family: var(--d-mono); font-size: 11px; color: var(--d-dim); padding: 12px 0; }
+
+/* 單藥模式：只選一個藥時列出它的全部交互作用，量大，提示可再加藥收斂 */
+.ddi-solo-note {
+  font-family: var(--d-sans); font-size: 12px; line-height: 1.6; color: var(--d-fg2);
+  border-left: 4px solid var(--d-warn); background: var(--d-bg2);
+  padding: 8px 11px; margin: 12px 0 2px;
+}
+.ddi-more {
+  min-height: 46px; width: 100%; margin-top: 10px;
+  font-family: var(--d-mono); font-size: 11px; letter-spacing: .1em; color: var(--d-dim);
+  border: 1px dashed var(--d-line2); border-radius: var(--d-radius);
+}
+.ddi-more:hover { color: var(--d-fg); border-color: var(--d-fg); }

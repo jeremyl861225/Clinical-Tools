@@ -1,6 +1,38 @@
 /* 藥物資料庫 —— 藥卡本體沿用 antibiotics.css（.drugcard／.dc-*／.renal-tbl），
    本檔只補這一頁特有的：藥理大類方格、機轉標籤列、卡片內的機轉徽章與頁尾註記。 */
 
+/* 交互作用查核入口。
+   造句設計的語彙：髮絲線、零圓角、serif 標題配 mono 眉標，hover 整塊反白
+   （跟 .chip／.tok 的「選中即反白」同一套視覺回饋）。
+   正式版模式維持 accent 色與 3px 圓角，不把造句設計漏進去——
+   ui-sentence.css 的鐵律是所有規則只能寫在 [data-ui="sentence"] 之下，
+   所以這裡用本頁自己的變數，兩套模式各自對應。 */
+.db-xlink{
+  --x-fg:var(--ink); --x-dim:var(--muted); --x-line:var(--line); --x-bg:var(--box-bg);
+  --x-inv-bg:var(--accent); --x-inv-fg:var(--paper); --x-radius:3px;
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:0 14px;
+  margin:12px 0 4px; padding:12px 14px; text-decoration:none;
+  border:1px solid var(--x-line); border-left:4px solid var(--x-inv-bg);
+  border-radius:var(--x-radius); background:var(--x-bg); color:var(--x-fg);
+  transition:background 180ms cubic-bezier(.22,.61,.36,1), color 180ms cubic-bezier(.22,.61,.36,1);
+}
+[data-ui="sentence"] .db-xlink{
+  --x-fg:var(--sentence-fg); --x-dim:var(--sentence-dim); --x-line:var(--sentence-line2);
+  --x-bg:var(--sentence-bg2); --x-inv-bg:var(--sentence-inv-bg); --x-inv-fg:var(--sentence-inv-fg);
+  --x-radius:0px;
+}
+.db-xlink-eye{grid-column:1; font-family:var(--mono); font-size:9.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--x-dim);}
+.db-xlink-zh{grid-column:1; font-family:var(--serif); font-size:19px; letter-spacing:.09em; margin-top:1px;}
+.db-xlink-sub{grid-column:1; font-size:11.5px; line-height:1.5; color:var(--x-dim); margin-top:3px;}
+/* 箭頭跨三列置中：靠 grid-row 而不是 align-self，副標長度變了也不會跟著跑掉 */
+.db-xlink-go{grid-column:2; grid-row:1 / 4; align-self:center;
+  font-family:var(--mono); font-size:20px; color:var(--x-dim);}
+.db-xlink:hover, .db-xlink:focus-visible{background:var(--x-inv-bg); color:var(--x-inv-fg);}
+.db-xlink:hover .db-xlink-eye, .db-xlink:hover .db-xlink-sub, .db-xlink:hover .db-xlink-go,
+.db-xlink:focus-visible .db-xlink-eye, .db-xlink:focus-visible .db-xlink-sub,
+.db-xlink:focus-visible .db-xlink-go{color:inherit; opacity:.85;}
+
 /* 藥理大類：一列橫捲的方格，各自帶品項數 */
 .db-cats{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px;}
 .db-cat{font-family:var(--sans); font-size:12.5px; color:var(--ink); background:var(--panel);

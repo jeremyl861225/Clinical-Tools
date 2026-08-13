@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>交互作用查核 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/ddi.css">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+</head>
+<body data-backtotop>
+<div class="sheet">
+<div class="view active" id="view-ddi">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Drug Interactions</div>
+      <h1>交互作用查核</h1>
+      <div class="sub">把這位病人的藥一個一個加進來，會列出所有兩兩配對的交互作用，重大的排在最前面 · 資料來源 DDInter 2.0</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- 選藥：打字→候選→加入。已加入的藥用實心詞塊呈現，跟造句設計的 .chip 同語彙。 -->
+  <div class="ddi-pick">
+    <div class="ddi-field">
+      <span class="ddi-mag">⌕</span>
+      <input type="search" id="ddi-q" class="ddi-input" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="加入藥物：學名／中文品名／商品名（例：warfarin、可邁丁、Amiodarone）…"
+             aria-describedby="ddi-count" aria-controls="ddi-sugg">
+      <button type="button" class="ddi-clear" id="ddi-clear" aria-label="清除輸入" hidden>×</button>
+    </div>
+    <div class="ddi-sugg" id="ddi-sugg" role="listbox" hidden></div>
+    <div class="ddi-picked" id="ddi-picked"></div>
+  </div>
+
+  <div class="ddi-pointer" id="ddi-count"></div>
+
+  <div id="ddi-out"></div>
+
+  <footer class="tool-footer">
+    交互作用資料來源：<a href="https://ddinter2.scbdd.com/" target="_blank" rel="noopener" class="ref-link">DDInter 2.0</a>
+    （Central South University 計算生物與藥物設計組），依
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener" class="ref-link">CC BY-NC-SA 4.0</a>
+    授權使用，僅供非商業之臨床教學與參考。原始文獻：
+    Xiong G. et al. <i>Nucleic Acids Research</i> 2022;50(D1):D1200–D1207；2025;53(D1):D1356–D1362。
+    <br><br>
+    <b>嚴重度分級沿用 DDInter 原始標註</b>（Major／Moderate／Minor／未分級），
+    未經台大醫院或任何本土指引重新評等；機轉與處置建議為原始資料庫之英文敘述，
+    其參考文獻多為各藥廠仿單（Product Information）。
+    藥名對映以本站藥卡之學名為準，複方以成分逐一比對，
+    <b>比對不到的成分不會出現在結果中</b>——沒跳出警示不等於沒有交互作用。
+    <br><br>
+    <b>此頁不能取代臨床判斷。</b>HIV、C 型肝炎與腫瘤用藥的交互作用請另以
+    <a href="https://www.druginteractions.org/" target="_blank" rel="noopener" class="ref-link">University of Liverpool</a>
+    的專科 checker 覆核（該站資料未收錄於本站）。
+  </footer>
+</div>
+</div>
+
+<script src="../data/ddi/index.js"></script>
+<script src="../js/ddi.js"></script>
+<script src="../js/searchbar.js" defer></script>
+
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
