@@ -272,21 +272,24 @@ function render() {
        這時**不能**讓畫面空白——空白會被讀成「壞掉」或「沒查到」，
        但真相是「查過了，這支跟院內其他藥沒有已知交互作用」，要講明白。 */
     if (!all.length) {
-      out.innerHTML = `<div class="ddi-clear-msg">
+      out.innerHTML = extraHTML('food') + extraHTML('dis')
+        + ddHead(0) + `<div class="ddi-clear-msg">
         <b>${esc(nameOf(id))} 在收錄範圍內，但沒有任何一組已知交互作用。</b>
         這類多半是生物製劑、外用製劑或解毒劑。<b>不等於安全</b>——
-        資料庫沒有記錄不代表不會發生，用藥前仍請對照仿單。</div>`
-        + extraHTML('food') + extraHTML('dis');
+        資料庫沒有記錄不代表不會發生，用藥前仍請對照仿單。</div>`;
       return;
     }
     const shown = all.slice(0, soloLimit);
-    out.innerHTML = `<div class="ddi-solo-note">目前只放了一種藥，列出的是它<b>全部</b>的交互作用。
-        再加入這位病人的其他藥，就只會留下真正會撞的那幾組。</div>`
-      + groupHTML(shown)
+    /* 單藥模式把藥×藥排到飲食／共病之後：這時候的藥×藥是「這支藥跟全世界的藥」
+       那份幾百列的總表，不是這位病人的問題；而飲食與共病只有幾列、且對單一支藥
+       就已經可以照著做。總表排前面會把那幾列直接推出螢幕外。
+       多藥模式相反——那時藥×藥才是使用者真正在問的事，仍然排第一。 */
+    out.innerHTML = extraHTML('food') + extraHTML('dis')
+      + groupHTML(shown, `<div class="ddi-solo-note">目前只放了一種藥，列出的是它<b>全部</b>的交互作用。
+          再加入這位病人的其他藥，就只會留下真正會撞的那幾組。</div>`, all.length)
       + (all.length > shown.length
         ? `<button type="button" class="ddi-more" data-more="1">再顯示 60 組（還有 ${all.length - shown.length} 組）</button>`
-        : '')
-      + extraHTML('food') + extraHTML('dis');
+        : '');
     return;
   }
 
@@ -304,7 +307,10 @@ function render() {
   ptr.innerHTML = `<span><b>${picked.length}</b> 種藥 · <b>${combos}</b> 組兩兩組合 · 命中 <b>${hits.length}</b> 組</span>
     ${n3 ? `<span class="hot">Major ${n3} 組</span>` : ''}`;
 
-  out.innerHTML = (hits.length ? groupHTML(hits) : `
+  out.innerHTML = (hits.length
+    ? groupHTML(hits, `<div class="ddi-exnote">這幾支藥兩兩配對後，DDInter 有記錄的組數。
+        依嚴重度分組，Major 排在最前面。</div>`)
+    : ddHead(0) + `
     <div class="ddi-clear-msg"><b>這 ${combos} 組組合在 DDInter 裡都沒有收錄。</b>
       這代表「這個資料庫沒有這筆記錄」，<b>不等於安全</b>——新藥、生物製劑與本站藥卡對映不到的成分
       本來就不在收錄範圍內。臨床上仍請對照仿單與專科 checker。</div>`)
@@ -360,9 +366,22 @@ function extraHTML(kind) {
     }).join('');
 }
 
+/* 藥×藥的區塊標題。跟飲食／共病用同一組樣式（點線頂框＋中英標題＋計數），
+   三區看起來才是同一層級的三類問題；沒有它的話，畫面上直接跳出一條
+   「Moderate 中度」的實線，讀不出那是「藥×藥」的結果。
+   n 給總數：單藥模式畫面上只先放 60 列，標題要講的是全部有幾組。 */
+function ddHead(n, hot) {
+  return `<div class="ddi-sec ex s${hot ? 3 : 2}">
+      <span class="zh">藥物交互作用</span>
+      <span class="en">Drug</span>
+      <span class="n">${n} 組</span>
+    </div>`;
+}
+
 /* list 元素一律是 {p, lead}——單藥模式的 lead 是被查的藥，多藥模式是先加入的那個。 */
-function groupHTML(list) {
-  let h = '';
+function groupHTML(list, note, total) {
+  let h = ddHead(total == null ? list.length : total, list.some(x => x.p[2] === 3))
+    + (note || '');
   for (const s of [3, 2, 1, 0]) {
     const g = list.filter(x => x.p[2] === s);
     if (!g.length) continue;
@@ -448,7 +467,14 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('toggle', e => {
-  if (e.target.classList && e.target.classList.contains('pair') && e.target.open) fillPair(e.target);
+  const d = e.target;
+  if (!d.classList || !d.classList.contains('pair')) return;
+  /* 「展開」點下去之後要變成「收合 ▴」——按鍵上的字講的是「按下去會發生什麼」，
+     停在「展開」會讓人以為沒生效，三角形也要跟著翻。
+     不用 CSS ::after 做：那樣的字選不起來、複製不到，樣式沒載到時整個標籤會消失。 */
+  const chev = d.querySelector(':scope > summary .pair-chev');
+  if (chev) chev.textContent = d.open ? '收合 ▴' : '展開 ▾';
+  if (d.open) fillPair(d);
 }, true);
 
 /* ---------- 返回鍵的位置（只在造句模式） ----------

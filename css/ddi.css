@@ -184,9 +184,12 @@
 .ddi-sec.s3 { border-top-color: var(--d-hot); }
 .ddi-sec.s2 { border-top-color: var(--d-warn); }
 
-/* 飲食／共病兩區：排在藥×藥之下，用點線頂框跟上面的嚴重度分組區隔開
+/* 藥×藥／飲食／共病三個大區：點線頂框，跟區內的嚴重度分組區隔開
    （那幾組是實線／依嚴重度上色），一眼看得出「這是另一類問題」。 */
 .ddi-sec.ex { border-top-style: dotted; border-top-width: 2px; }
+/* 大區標題與說明之後緊接著的嚴重度分組（只發生在藥×藥區）不要再空 20px，
+   否則標題會跟自己的第一組內容斷開，看起來像各自獨立的兩塊。 */
+.ddi-exnote + .ddi-sec, .ddi-solo-note + .ddi-sec { margin-top: 9px; }
 .ddi-sec .en {
   font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .18em;
   text-transform: uppercase; color: var(--d-dim);
@@ -213,8 +216,13 @@
   font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .1em; color: var(--d-dim);
   border: 1px solid var(--d-line); border-radius: var(--d-radius); padding: 1px 6px;
 }
-.pair-chev { margin-left: auto; font-family: var(--d-mono); font-size: 10px; color: var(--d-dim); }
-.pair[open] .pair-chev { transform: none; }
+/* 字由 js/ddi.js 的 toggle 事件換成「收合 ▴」，這裡只固定寬度，
+   免得展開／收合兩個字的寬度差讓右緣跳動。 */
+.pair-chev {
+  margin-left: auto; font-family: var(--d-mono); font-size: 10px; color: var(--d-dim);
+  white-space: nowrap;
+}
+.pair[open] > summary .pair-chev { color: var(--d-fg2); }
 
 .pair-body { padding: 2px 0 14px; }
 .pf { margin: 9px 0 0; }
