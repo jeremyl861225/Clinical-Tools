@@ -2977,6 +2977,57 @@
   border-bottom: 1px solid var(--sentence-line2);
 }
 
+/* 輸注流速調整表（.dc-titr／table.titr-tbl，drug-database.css 新增）。
+   與 renal-tbl 不同，這張是**五欄對照表**而不是鍵值表，所以除了顏色線型，
+   表頭也要處理——正式版的表頭是 accent 藍字配 --soft-bg 藍灰底，在骨白紙上
+   會變成整張表最搶眼的一條。改成 04 既有的表頭手法（同 F 段 table.ref／
+   score-ref 的 th）：mono 小字、dim 灰、只留一條 line2 實線。
+
+   目標治療區間那列照抄 F 段 `table.ref tr.ref-current` 的寫法——shade 底、
+   粗體、fg 字、第一欄 ▶ 前綴。那是全站「這一列就是你要的」的固定表達，
+   不另外發明；▶ 給 calm 墨綠（A 段定義的「低／安全」），與這一列的語意
+   （在治療區間內、不用動）一致，而且顏色只是第四重線索（底色／粗體／
+   ▶ 符號／欄內的 No change 文字本身都說得出來）。
+
+   容器：正式版的 2px 圓角與 --box-bg 底在這裡都要收掉（--sentence-radius 是 0，
+   04 不用填色盒），只留一條框線；橫向捲動的幾何量不動。 */
+[data-ui="sentence"] .dc-titr-cap {                            /* (0,2,0) > (0,1,0) */
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .04em;
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .dc-titr-cap span {                       /* (0,2,1) > (0,1,1) */
+  color: var(--sentence-dim);
+}
+[data-ui="sentence"] .dc-titr-wrap {                           /* (0,2,0) > (0,1,0) */
+  background: transparent; border: 1px solid var(--sentence-line);
+  border-radius: var(--sentence-radius);
+}
+[data-ui="sentence"] table.titr-tbl th {                       /* (0,2,2) > (0,1,2) */
+  font-family: var(--sentence-mono); letter-spacing: .1em;
+  color: var(--sentence-dim); background: transparent;
+  border-bottom: 1px solid var(--sentence-line2);
+}
+[data-ui="sentence"] table.titr-tbl td {                       /* (0,2,2) > (0,1,2) */
+  border-bottom: 1px dotted var(--sentence-line); color: var(--sentence-fg2);
+}
+[data-ui="sentence"] table.titr-tbl td:first-child,
+[data-ui="sentence"] table.titr-tbl td:nth-child(2) {          /* (0,3,2) > (0,2,2) */
+  font-family: var(--sentence-mono); color: var(--sentence-fg2);
+}
+[data-ui="sentence"] table.titr-tbl tbody tr:last-child td { border-bottom: none; }
+[data-ui="sentence"] table.titr-tbl tr.titr-hi td {            /* (0,3,3) > (0,2,3) */
+  background: var(--sentence-shade); font-weight: 700; color: var(--sentence-fg);
+}
+[data-ui="sentence"] table.titr-tbl tr.titr-hi td:first-child {  /* (0,4,3) > (0,3,3) */
+  box-shadow: none; color: var(--sentence-fg);
+}
+[data-ui="sentence"] table.titr-tbl tr.titr-hi td:first-child::before {
+  content: "▶ "; color: var(--sentence-calm);
+}
+[data-ui="sentence"] .dc-titr-note {                           /* (0,2,0) > (0,1,0) */
+  color: var(--sentence-fg2);
+}
+
 
 /* ═══ Q9. 藥物資料庫：分類方磚 .db-cat ══════════════════════════════════════
    打 `.db-cat`(0,1,0)／`.db-cat.active`(0,2,0)／`.db-cat span`(0,1,1)／
@@ -3090,6 +3141,39 @@
   font-family: var(--sentence-mono); font-size: 9.5px; line-height: 1.7;
   color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
 }
+/* 欄位末尾的來源小字（DDInter 飲食交互作用、流速調整表）：與 .db-foot 同一件事
+   ——一條分隔線加一行出處。先前漏收，兩處都還在吃正式版的 --muted-soft／--line。
+   leak.py 掃不到它：藥卡要展開才有內容，那支只讀收合狀態的頁面。 */
+[data-ui="sentence"] .db-food-src {                            /* (0,2,0) > (0,1,0) */
+  color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
+}
+/* DDInter 飲食交互作用的逐項展開區（.db-food*）——整組先前都沒收，還在吃
+   --ink／--muted／--muted-soft／--line／--accent，以及深色模式寫死的 #d3a86a。
+   嚴重度沿用 Q7 的三段（hot／warn／dim）；「處置」那條左標線是全區唯一的
+   accent，改吃 fg2——04 沒有強調色，層級由線的深淺表達。 */
+[data-ui="sentence"] .db-food { border-bottom-color: var(--sentence-line); }
+/* antibiotics.css 的 `.drugcard[open] summary` (0,2,1) 是後代選擇器，會一路掃到
+   飲食那層的 <summary>。本檔載入在它之前，同分就輸，所以要補到 (0,3,1)。 */
+[data-ui="sentence"] .drugcard .db-food > summary {            /* (0,3,1) > (0,2,1) */
+  border-bottom-color: var(--sentence-line);
+}
+[data-ui="sentence"] .db-food > summary::after,
+[data-ui="sentence"] .db-food-d { color: var(--sentence-dim); }
+[data-ui="sentence"] .db-food-n { color: var(--sentence-fg); }
+[data-ui="sentence"] .db-food-l {
+  font-family: var(--sentence-mono); color: var(--sentence-dim);
+}
+[data-ui="sentence"] .db-food-t {
+  color: var(--sentence-fg2); border-left-color: var(--sentence-line);
+}
+[data-ui="sentence"] .db-food-t.mg {                           /* (0,3,0) > (0,2,0) */
+  color: var(--sentence-fg); border-left-color: var(--sentence-fg2);
+}
+[data-ui="sentence"] .db-food-lv { font-family: var(--sentence-mono); }
+[data-ui="sentence"] .db-food-lv.lv-3 { color: var(--sentence-hot); }
+[data-ui="sentence"] .db-food-lv.lv-2 { color: var(--sentence-warn); }
+[data-ui="sentence"] .db-food-lv.lv-1,
+[data-ui="sentence"] .db-food-lv.lv-0 { color: var(--sentence-dim); }
 [data-ui="sentence"] .db-count,
 [data-ui="sentence"] .abx-lookup-count {                       /* (0,2,0) > (0,1,0) */
   font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
@@ -4138,9 +4222,18 @@
 
 /* ---- X1. 頁首警語 .X-warn ---- */
 [data-ui="sentence"] .nu-warn, [data-ui="sentence"] .vt-warn, [data-ui="sentence"] .cv-warn,
-[data-ui="sentence"] .ps-warn, [data-ui="sentence"] .gr-warn, [data-ui="sentence"] .pc-warn,
-[data-ui="sentence"] .dc-warn {
+[data-ui="sentence"] .ps-warn, [data-ui="sentence"] .gr-warn, [data-ui="sentence"] .pc-warn {
   background: transparent; border: 1px solid var(--sentence-hot); border-left-width: 5px;
+  border-radius: 0; color: var(--sentence-fg2);
+}
+/* `.dc-warn` 原本混在上面那組裡，跟著吃了 `border-left-width: 5px`。
+   那條粗左邊是**頁首警語**的手法：整頁一條、橫跨版面、標示「這頁的前提」。
+   但 .dc-warn 不是頁首警語——它是藥卡裡「禁忌」與「安全警訊」兩個欄位的
+   內文框，一張卡就有兩個，還夾在十幾個同寬的欄位之間；粗左邊在那個密度下
+   變成整張卡最重的一筆，反而把欄位的節奏打斷（使用者實機指出）。
+   四邊一律 1px，強調交給硃砂框線本身。 */
+[data-ui="sentence"] .dc-warn {
+  background: transparent; border: 1px solid var(--sentence-hot);
   border-radius: 0; color: var(--sentence-fg2);
 }
 [data-ui="sentence"] .nu-warn b, [data-ui="sentence"] .vt-warn b, [data-ui="sentence"] .cv-warn b,
