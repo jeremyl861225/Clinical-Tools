@@ -200,9 +200,13 @@
   font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .22em;
   text-transform: uppercase; color: var(--sentence-dim);
 }
+/* 2026-08-13 使用者實機指示「縮小字體」後整組下修（h1 與 .lede-title 一起，
+   見下方 C 段 .lede-title 的註解）。**手機端幾乎不動、寬螢幕才明顯收斂**：
+   390px 下 32→? 其實本來就吃 clamp 下限 22px，現為 20px；1280px 下由 32px 降到 26px。
+   下修的是**上限與 vw 係數**，因為使用者看到的過大只發生在寬螢幕。 */
 [data-ui="sentence"] .app-header h1 {
   font-family: var(--sentence-serif); font-weight: 500;
-  font-size: clamp(22px, 5vw, 32px); letter-spacing: .06em;
+  font-size: clamp(20px, 3.6vw, 26px); letter-spacing: .06em;
   margin: 4px 0 5px; color: var(--sentence-fg);
 }
 [data-ui="sentence"] .app-header .sub {
@@ -329,9 +333,18 @@
    （style-04-sentence）在同一段文字上是正確的小寫 q，使用者指名要以原型為母本。
    （正式版也有同樣的大寫問題，那要動 styles.css、會改到正式版每一頁的外觀，
    已另外列出來讓使用者決定，這裡只修造句設計這一側。） */
+/* 2026-08-13 下修：34px 對**純中文全形**標題太重——使用者實機指出 CRRT 的
+   「開一張 CRRT 醫囑要決定的六件事」（18 字全形）在寬螢幕上佔滿整行。
+   實測全站 48 個 .lede-title，中位數 20 字，但多數是「短中文＋英文副標」
+   （「先分開的三個問題 Three Separate Questions」中文只有 8 字），全形密度低得多。
+   與 .app-header h1 一起等比下修，**三層階序仍然成立且不交叉**：
+     .rec-title  clamp(24, 5.5vw, 34)   ← 臨床結論，維持不動、現在是唯一的最大者
+     .lede-title clamp(22, 4.0vw, 28)   ← 本條
+     .app-header h1 clamp(20, 3.6vw, 26)
+   三條曲線在 0–2000px 全區間逐一代入驗證過，最小間距 2px。 */
 [data-ui="sentence"] .lede-title {
   font-family: var(--sentence-serif); text-transform: none;
-  font-size: clamp(24px, 5.6vw, 34px); letter-spacing: .02em; line-height: 1.28;
+  font-size: clamp(22px, 4vw, 28px); letter-spacing: .02em; line-height: 1.3;
   color: var(--sentence-fg); font-weight: 500; margin-bottom: 10px;
 }
 [data-ui="sentence"] .lede-body { font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2); }
@@ -706,9 +719,13 @@
   opacity: 1; margin-bottom: 5px; display: inline-block;
 }
 /* 臨床建議標題：DESIGN-LANGUAGE 第一條「畫面上最大的東西必須是臨床結論」——
-   這條 clamp 的下限／上限都比 .app-header h1 的 clamp(22px,5vw,32px) 高，
-   兩條曲線在 0–2000px 全寬度區間內逐一代入驗證過不會交叉（差距最小處仍有 2px），
-   故不需要另外比大小的 JS，靠純 CSS 就能保證 .rec-title 在任何斷點都比 h1 大。 */
+   這條 clamp 的下限／上限都比 .app-header h1 高，兩條曲線在 0–2000px 全寬度區間內
+   逐一代入驗證過不會交叉，故不需要另外比大小的 JS，靠純 CSS 就能保證 .rec-title
+   在任何斷點都比 h1 大。
+   **2026-08-13 起 h1 與 .lede-title 一起下修（見 B／C 段），本條刻意不動**——
+   下修之後 .rec-title 成為唯一的最大者，那正是這條設計語言要的結果
+   （在此之前它與 .lede-title 同為 24/34，並列最大）。現行三層：
+   .rec-title clamp(24,5.5vw,34) ＞ .lede-title clamp(22,4vw,28) ＞ h1 clamp(20,3.6vw,26)。 */
 [data-ui="sentence"] .flow-rec .rec-title { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(24px, 5.5vw, 34px); line-height: 1.3; margin-bottom: 4px; }
 [data-ui="sentence"] .flow-rec .rec-detail { padding-left: 1.2em; font-size: 12px; line-height: 1.72; }
 [data-ui="sentence"] .flow-rec .rec-detail li { margin: 3px 0; color: var(--sentence-fg2); }
