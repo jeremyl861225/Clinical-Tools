@@ -39,6 +39,11 @@
       <h1>交互作用查核</h1>
       <div class="sub">把這位病人的藥一個一個加進來，會列出所有兩兩配對的交互作用，重大的排在最前面 · 資料來源 DDInter 2.0</div>
     </div>
+    <!-- 造句模式下這一整組會被 js/ddi.js 收起來：「← 返回主選單」與「清空句子」
+         是同一件事（清空句子的 aria-label 就是「清空整句，回到主選單」），
+         「← 返回<來源頁>」則被搬到「清空句子」左邊。
+         但這顆主選單鍵不能刪——backlink.js 拿它當錨點（homeBtn() 找不到就整個不處理），
+         而且正式版模式沒有句子列，刪了就變成回不去的死路。 -->
     <div class="back-stack">
       <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
       <button class="back-btn" onclick="location.href='../index.html'">← 返回主選單</button>

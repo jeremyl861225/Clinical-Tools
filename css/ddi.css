@@ -51,6 +51,20 @@
    才不會被這個 id 選擇器蓋掉——否則就得到處補 !important。 */
 :where(#view-ddi) button { background: none; border: 0; border-radius: 0; cursor: pointer; color: inherit; }
 
+/* 被 js/ddi.js 搬進「清空句子」那一列的來源頁返回鍵。
+   外觀比照 .sent-clear（同一列的兩顆鍵長得不一樣會很怪），但保留 .back-btn 的
+   語意不動。原本 .sent-clear 自己帶 margin-left:auto 把自己推到最右；
+   現在改由返回鍵扛這個 auto，兩顆才會並排靠右而不是一左一右分開。 */
+[data-ui="sentence"] .sent-point .back-origin {
+  margin-left: auto;
+  min-height: 44px; padding: 0 12px;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em;
+  color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sent-point .back-origin:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] .sent-point .back-origin ~ .sent-clear { margin-left: 0; }
+
 /* ---------- 選藥列 ---------- */
 .ddi-pick { position: relative; margin: 10px 0 4px; }
 .ddi-field {

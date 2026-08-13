@@ -334,6 +334,37 @@ document.addEventListener('toggle', e => {
   if (e.target.classList && e.target.classList.contains('pair') && e.target.open) fillPair(e.target);
 }, true);
 
+/* ---------- 返回鍵的位置（只在造句模式） ----------
+ * 「← 返回主選單」跟「清空句子」是同一件事——後者的 aria-label 就寫著
+ * 「清空整句，回到主選單」，兩顆並排是重複的。所以造句模式下把整組 .back-stack
+ * 收起來，只把 backlink.js 產生的「← 返回<來源頁>」搬到「清空句子」左邊。
+ *
+ * 為什麼不直接把主選單那顆從 HTML 刪掉：backlink.js 用它當錨點
+ * （homeBtn() 找不到就 return，來源頁返回鍵根本不會生出來），
+ * 而且正式版模式沒有句子列，刪了那一頁就沒有任何返回入口。
+ *
+ * 為什麼要 MutationObserver：.sent-point 由 sentence-nav.js 的 renderTrail()
+ * 整塊重建（展開「改句子」、改任何一格都會重畫），搬過去的按鈕會被一起洗掉，
+ * 所以每次重畫都要再搬一次。
+ */
+function relocateBackBtn() {
+  if (document.documentElement.getAttribute('data-ui') !== 'sentence') return;
+  const point = document.querySelector('.sent-point');
+  const clear = point && point.querySelector('.sent-clear');
+  if (!clear) return;
+  const stack = document.querySelector('.app-header .back-stack');
+  const origin = document.querySelector('.back-origin');
+  if (origin && origin.parentNode !== point) point.insertBefore(origin, clear);
+  /* 搬完才收起 .back-stack：先收的話 backlink.js 還沒插入時會閃一下 */
+  if (stack) stack.hidden = true;
+}
+
+function watchBackBtn() {
+  relocateBackBtn();
+  const host = document.querySelector('.sent-trail, .rail-zone, .sheet') || document.body;
+  new MutationObserver(relocateBackBtn).observe(host, { childList: true, subtree: true });
+}
+
 function boot() {
   const q = el('ddi-q');
   /* placeholder 沒辦法用 CSS 做 RWD，窄螢幕上長版會被切在半句（「商品名（例：」）。
@@ -356,6 +387,7 @@ function boot() {
   });
   el('ddi-clear').addEventListener('click', () => { q.value = ''; suggest(''); q.focus(); });
   render();
+  watchBackBtn();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
