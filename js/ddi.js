@@ -23,9 +23,15 @@ let soloLimit = 60;
 /* ---------- 搜尋索引 ---------- */
 /* drugs[id] = [英文名, [中文名…], [商品名…]]；把所有可搜字串攤平成一條小寫字串， */
 /* 打「可邁丁」「warfarin」「Coumadin」都要找得到同一個成分。 */
+/* 第 4 欄是台大藥卡的英文學名，只有跟 DDInter 寫法不同時才存在
+   （Rifampin/Rifampicin、Valacyclovir/Valaciclovir、Aspirin/Acetylsalicylic acid…）。
+   一定要進 hay：使用者是照著藥卡上的名字打的，不收就整支查不到。 */
 const SEARCH = Object.keys(IDX.drugs).map(id => {
-  const [en, zh, br] = IDX.drugs[id];
-  return { id, en, zh: zh || [], br: br || [], hay: [en, ...(zh || []), ...(br || [])].join(' ').toLowerCase() };
+  const [en, zh, br, alt] = IDX.drugs[id];
+  return {
+    id, en, zh: zh || [], br: br || [], alt: alt || [],
+    hay: [en, ...(zh || []), ...(br || []), ...(alt || [])].join(' ').toLowerCase(),
+  };
 });
 
 /* ---------- 配對查表 ---------- */
@@ -101,7 +107,7 @@ function suggest(q) {
     if (i < 0) continue;
     let rank = 2;
     if (d.en.toLowerCase().startsWith(q)) rank = 0;
-    else if ([...d.zh, ...d.br].some(x => x.toLowerCase().startsWith(q))) rank = 1;
+    else if ([...d.zh, ...d.br, ...d.alt].some(x => x.toLowerCase().startsWith(q))) rank = 1;
     hits.push({ d, rank, len: d.en.length });
   }
   hits.sort((a, b) => a.rank - b.rank || a.len - b.len || a.d.en.localeCompare(b.d.en));
@@ -115,7 +121,7 @@ function suggest(q) {
   buildMaps();
   box.innerHTML = hits.slice(0, 30).map(({ d }) => {
     const n = (byDrug.get(d.id) || []).length;
-    const alias = [...d.zh, ...d.br].slice(0, 2).join(' · ');
+    const alias = [...d.zh, ...d.br, ...d.alt].slice(0, 2).join(' · ');
     const hi = esc(d.en).replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i'),
       '<em>$1</em>');
     return `<button type="button" class="ddi-si" role="option" data-id="${esc(d.id)}">
@@ -227,6 +233,16 @@ function render() {
     const n3 = all.filter(x => x.p[2] === 3).length;
     ptr.innerHTML = `<span><b>${esc(nameOf(id))}</b> 收錄 <b>${all.length}</b> 組交互作用</span>
       ${n3 ? `<span class="hot">其中 Major ${n3} 組</span>` : ''}`;
+    /* 收錄範圍內但一組配對都沒有（多為生物製劑、外用藥、解毒劑）。
+       這時**不能**讓畫面空白——空白會被讀成「壞掉」或「沒查到」，
+       但真相是「查過了，這支跟院內其他藥沒有已知交互作用」，要講明白。 */
+    if (!all.length) {
+      out.innerHTML = `<div class="ddi-clear-msg">
+        <b>${esc(nameOf(id))} 在收錄範圍內，但沒有任何一組已知交互作用。</b>
+        這類多半是生物製劑、外用製劑或解毒劑。<b>不等於安全</b>——
+        資料庫沒有記錄不代表不會發生，用藥前仍請對照仿單。</div>`;
+      return;
+    }
     const shown = all.slice(0, soloLimit);
     out.innerHTML = `<div class="ddi-solo-note">目前只放了一種藥，列出的是它<b>全部</b>的交互作用。
         再加入這位病人的其他藥，就只會留下真正會撞的那幾組。</div>`

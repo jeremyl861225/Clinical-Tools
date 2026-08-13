@@ -223,10 +223,15 @@
   border: 1px dashed var(--d-line2); border-radius: var(--d-radius);
 }
 .pf-refbtn:hover { color: var(--d-fg); border-color: var(--d-fg); }
+/* 只准上下捲、不准左右捲。原始文獻是一整串沒有空格可斷的長字（期刊縮寫、
+   "Product Information. Xxx (yyy)." 這種），mono 字體下會把方框撐寬並長出橫向捲軸，
+   捲到右邊時左緣的字被切掉、讀起來像壞掉。改成強制斷行：
+   overflow-wrap 處理一般長字，word-break:break-word 補 Safari 對 mono 長串的漏網。 */
 .pf-refs {
   font-family: var(--d-mono); font-size: 10.5px; line-height: 1.6; color: var(--d-dim);
   border-left: 3px dotted var(--d-line2); padding-left: 10px; margin-top: 8px;
-  max-height: 240px; overflow-y: auto;
+  max-height: 240px; overflow-y: auto; overflow-x: hidden;
+  overflow-wrap: anywhere; word-break: break-word; white-space: normal;
 }
 
 /* ---------- 空狀態 ---------- */
