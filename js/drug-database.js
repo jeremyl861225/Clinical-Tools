@@ -516,6 +516,33 @@ function doseField(text) {
     <div class="dc-ftext">${fmtDose(text)}</div></div>`;
 }
 
+/* 輸注流速調整（nomogram）：資料在 data/drugs/extras.js 的手寫補充層，以藥品八碼掛在
+   **單一規格**上——同一張卡的封管沖洗液、透析用抗凝血劑不能照這張表調流速。
+
+   不走 rowTbl：那是「標籤｜內容」的兩欄鍵值表，這裡是五欄對照表，一列＝一個檢驗
+   區間，欄名是共用表頭而不是每列重複的標籤。表頭壓成兩欄會把「anti-Xa 0.3–0.7 對
+   應 aPTT 60–85」這個同列關係拆散，那正是這張表唯一要傳達的事。 */
+function titrateField(code) {
+  const ex = (window.DRUGDB_EXTRA || {})[code];
+  if (!ex || !ex.titrate || !ex.titrate.length) return '';
+  const tables = ex.titrate.map(t => `
+    <div class="dc-titr">
+      <div class="dc-titr-cap">${esc(t.title)}${t.sub ? `<span>${esc(t.sub)}</span>` : ''}</div>
+      <div class="dc-titr-wrap"><table class="titr-tbl">
+        <thead><tr><th>anti-Xa<br>(U/mL)</th><th>aPTT<br>(sec)</th><th>Bolus</th>
+          <th>停輸注</th><th>流速調整</th></tr></thead>
+        <tbody>${(t.rows || []).map(r =>
+          `<tr class="${r.hi ? 'titr-hi' : ''}"><td>${esc(r.x)}</td><td>${esc(r.a)}</td>` +
+          `<td>${esc(r.b)}</td><td>${esc(r.s)}</td><td>${esc(r.r)}</td></tr>`).join('')}
+        </tbody></table></div>
+    </div>`).join('');
+  return `<div class="dc-field"><div class="dc-flabel">輸注流速調整</div>
+    <div class="dc-ftext">${tables}
+      ${ex.titrateNote ? `<div class="dc-titr-note">${richText(ex.titrateNote)}</div>` : ''}
+      ${ex.titrateSrc ? `<div class="db-food-src">來源：${esc(ex.titrateSrc)}</div>` : ''}
+    </div></div>`;
+}
+
 /* 單一規格（variant）的明細欄位 */
 function variantBody(v) {
   const price = [v.nhi ? `健保 NT$ ${esc(v.nhi)}` : '', v.selfpay ? `自費 NT$ ${esc(v.selfpay)}` : '']
@@ -523,6 +550,7 @@ function variantBody(v) {
   return `
     ${field('商品名／含量', v.brand)}
     ${doseField(v.dose)}
+    ${titrateField(v.code)}
     ${field('最大劑量', v.maxDose)}
     ${field('兒科劑量', v.peds)}
     ${rowTbl('剝半／磨粉／管餵', v.crush, [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'],

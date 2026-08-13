@@ -165,6 +165,29 @@ table.renal-tbl.renal-thr td:first-child{white-space:normal; width:40%; overflow
   border:1px dashed var(--line); border-radius:10px; padding:2px 9px; cursor:pointer;}
 .db-clsmore:hover{border-color:var(--accent); background:var(--accent-soft);}
 
+/* 輸注流速調整表（titrateField()）。五欄的對照表：手機寬度放不下五欄，
+   所以外面包一層自己的橫向捲軸——讓整張藥卡（甚至整頁）橫捲是不行的。
+   目標治療區間那列用站上的 accent 底色＋左側標線，不用原表的螢光綠：
+   綠色在深色模式下會刺眼，而且顏色不是唯一線索（那列的「No change」本身
+   也讀得出來），符合不只靠顏色編碼。 */
+.dc-titr{margin-top:8px;}
+.dc-titr:first-child{margin-top:2px;}
+.dc-titr-cap{font-family:var(--mono); font-size:11px; color:var(--accent2); margin-bottom:3px;
+  display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+.dc-titr-cap span{font-size:10px; color:var(--muted-soft); letter-spacing:.04em;}
+.dc-titr-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;
+  border:1px solid var(--line); border-radius:2px; background:var(--box-bg);}
+table.titr-tbl{border-collapse:collapse; font-size:12px; min-width:100%; white-space:nowrap;}
+table.titr-tbl th{font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; font-weight:600;
+  color:var(--accent); text-align:left; padding:5px 8px; line-height:1.35;
+  border-bottom:1px solid var(--line); background:var(--soft-bg);}
+table.titr-tbl td{padding:4px 8px; border-bottom:1px solid var(--line); color:var(--label-ink);}
+table.titr-tbl tr:last-child td{border-bottom:none;}
+table.titr-tbl td:first-child, table.titr-tbl td:nth-child(2){font-family:var(--mono); color:var(--muted);}
+table.titr-tbl tr.titr-hi td{background:var(--accent-soft); font-weight:600; color:var(--ink);}
+table.titr-tbl tr.titr-hi td:first-child{box-shadow:inset 3px 0 0 var(--accent);}
+.dc-titr-note{font-size:11.5px; line-height:1.65; color:var(--muted); margin-top:8px;}
+
 /* 常用劑量分行排版：給藥途徑標頭、適應症段標、族群行與分號子項的縮排 */
 .dose-fmt{display:flex; flex-direction:column; gap:1px;}
 .dose-fmt .dl-head{font-weight:600; color:var(--label-ink); margin-bottom:2px;}
