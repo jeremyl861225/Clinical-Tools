@@ -70,6 +70,16 @@
 /* 一支藥在腎／透析表可能有多列（不同適應症或不同廠牌寫法），列間留一條分隔 */
 table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); padding:0; height:6px;}
 
+/* 門檻型腎功能調整表（js/drug-database.js 的 renalTbl()，一列一個 CCr 門檻）。
+   antibiotics.css 的 `.renal-tbl td:first-child` 是為「欄位名」設計的：
+   mono、nowrap、width:34%。門檻表的第一欄放的不是欄位名而是**門檻本身**——
+   多數只有「CCr 35–54」這種 13 字元（全庫中位數），但台大原始資料裡最長的
+   Apixaban 減量準則是一整句 144 字元（"Scr ≥1.5 mg/dL with age ≥80 y/o,
+   or Scr ≥1.5 mg/dL with BW ≤60 kg, or age ≥80 y/o with BW ≤60 kg"），
+   套著 nowrap 會把整張藥卡撐出橫向捲軸。這一欄改成可換行；寬度略放寬到 40%，
+   短門檻仍然一行、長門檻自己折行，右欄的劑量不會被擠成一字一行。 */
+table.renal-tbl.renal-thr td:first-child{white-space:normal; width:40%; overflow-wrap:break-word;}
+
 .db-foot{margin-top:12px; padding-top:8px; border-top:1px solid var(--line);
   font-family:var(--mono); font-size:10px; color:var(--muted-soft); line-height:1.6;}
 

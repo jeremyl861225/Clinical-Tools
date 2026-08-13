@@ -303,6 +303,51 @@ function rowTbl(label, rows, cols) {
     <div class="dc-ftext"><table class="renal-tbl"><tbody>${body}</tbody></table></div></div>`;
 }
 
+/* 腎功能調整專用：**一個門檻一列**，不要一個欄位一列。
+
+   rowTbl() 的通則（一欄位一列）在透析、CVVH、注射那幾欄是對的——那些欄位
+   每一列的標籤都不同（HD 劑量／PD 劑量／給藥途徑／稀釋液…），一列一欄位讀起來
+   就是一張鍵值表。但腎功能調整不是：它是「門檻 → 劑量」的對照，同一組標籤
+   （CCr／建議劑量）會隨門檻數重複 N 次。Cefazolin 四個門檻就排成
+       CCr｜CCr ≥55        建議劑量｜常規劑量
+       CCr｜CCr 35–54      建議劑量｜常規劑量，間隔 ≥q8h        …
+   共 8 列加 3 條分隔線；vancomycin／peramivir／colistin 有 8 個門檻，
+   會長到 24 列。使用者實機回報「過於冗長」，並指名照 tools/antibiotics.html
+   藥物查詢那張卡的編排——那邊的資料本來就是 {k, v} 一列一門檻（見
+   js/antibiotics.js 的 renalField），四個門檻就是四列。這裡把 drug-database
+   的 {ccr, dose, freq} 收斂成同一個形狀。
+
+   套用條件（掃過全庫 1,343 張有 renal 的卡定出來的）：
+     · 必須**每一列都有 ccr**——全庫 0 張卡是「有些列有門檻、有些沒有」，
+       所以 any/all 不會出現灰色地帶；沒有門檻的（657 張只有 adjust、
+       88 張只有 dose）本來就不是對照表，維持 rowTbl 原樣。
+     · 必須**至少一列有 dose 或 freq**——另有 17 列是「有 ccr 但沒有劑量」
+       （如 Luspatercept：adjust=N、ccr=eGFR 30-89，意思是這個範圍不用調），
+       壓成一列會讓右欄空著只剩一個破折號，那比原樣還難讀，故退回 rowTbl。
+     · adjust 只印**一列**，不逐門檻重複：全庫 0 張卡的 adjust 在同一張卡內
+       有第二種值，所以去重是無損的。 */
+function renalTbl(rows) {
+  if (typeof rows === 'string') return field('腎功能調整', rows);
+  if (!Array.isArray(rows) || !rows.length) return '';
+  const cell = k => rows.some(r => r[k] && String(r[k]).trim());
+  const everyCcr = rows.every(r => r.ccr && String(r.ccr).trim());
+  if (!everyCcr || !(cell('dose') || cell('freq'))) {
+    return rowTbl('腎功能調整', rows,
+      [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']]);
+  }
+  const adj = [...new Set(rows.map(r => r.adjust).filter(x => x && String(x).trim()))];
+  const head = adj.length
+    ? `<tr><td>是否調整</td><td>${adj.map(richText).join('；')}</td></tr>` : '';
+  /* dose 與 freq 併成同一格，中間用全形間隔號——台大原始資料裡這兩欄是
+     「2.5 mg」＋「BID (1,2)」這種一句話被拆成兩欄的關係，不是兩件事。 */
+  const body = rows.map(r => {
+    const v = [r.dose, r.freq].filter(x => x && String(x).trim()).map(richText).join('　');
+    return `<tr><td>${richText(r.ccr)}</td><td>${v}</td></tr>`;
+  }).join('');
+  return `<div class="dc-field"><div class="dc-flabel">腎功能調整</div>
+    <div class="dc-ftext"><table class="renal-tbl renal-thr"><tbody>${head}${body}</tbody></table></div></div>`;
+}
+
 /* 台大在地感受性：一支藥動輒 15 個菌種，逐列排成表格會變成十幾張小表把整張卡洗掉。
    改成與 tools/antibiotics.html 的 abgSpectrum() 同一套徽章列——一菌一枚，級別
    由資料自帶（build_abx_cards.py 的 abg_tier）：≥90 粗框／80–89 亮／60–79 琥珀／
@@ -448,7 +493,7 @@ function variantBody(v) {
     ${field('兒科劑量', v.peds)}
     ${rowTbl('剝半／磨粉／管餵', v.crush, [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'],
       ['cap', '膠囊可打開'], ['why', '說明'], ['note', '備註']])}
-    ${rowTbl('腎功能調整', v.renal, [['adjust', '是否調整'], ['ccr', 'CCr'], ['dose', '建議劑量'], ['freq', '建議頻次']])}
+    ${renalTbl(v.renal)}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
     ${rowTbl('透析劑量', v.dialysis, [['form', '劑型'], ['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
       ['pd_dose', 'PD 劑量'], ['pd_removal', 'PD 移除比例'], ['pd_supp', 'PD 後補充'], ['remark', '備註']])}
