@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>輸液營養 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  .iv-panel{display:none;} .iv-panel.on{display:block;}
+
+  /* ── 處方計算器（與 CRRT 那頁同一套 .rxbox/.rx-*，樣式在 ui-sentence.css AC 段已收） ── */
+  .rxbox{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:11px 13px; margin:10px 0 12px;}
+  .rxbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .rx-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px 14px;}
+  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }
+  .rx-row{display:flex; align-items:center; gap:7px;}
+  .rx-row label{font-size:12px; color:var(--ink); flex:1 1 auto; line-height:1.4;}
+  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .rx-row input[type=number]{width:78px; font-family:var(--mono); font-size:14px; font-weight:700;
+      padding:4px 6px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
+  .rx-row .rx-u{font-family:var(--mono); font-size:10.5px; color:var(--muted); width:62px;}
+  /* 深色結果面板：底色寫死 #132126，不能用 var(--ink)——暗色模式下 --ink 會翻成淺色，
+     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */
+  .rx-out{margin-top:11px; background:#132126; border-radius:2px; padding:10px 12px;}
+  .rx-out-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:9px;}
+  .rx-metric .rx-lab{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:#9fb3b8;}
+  .rx-metric .rx-val{font-family:var(--serif); font-size:23px; font-weight:600; color:#f4f2ec; line-height:1.2;}
+  .rx-metric .rx-val small{font-family:var(--mono); font-size:11px; font-weight:400; color:#9fb3b8;}
+  .rx-metric .rx-val.warn{color:#f0a58e;}
+  .rx-metric .rx-val.ok{color:#93d3b0;}
+  .rx-flag{margin-top:9px; font-family:var(--mono); font-size:11px; line-height:1.7; color:#d8d3c4;}
+  .rx-flag .f-bad{color:#f0a58e;} .rx-flag .f-ok{color:#93d3b0;}
+  .rx-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:8px;}
+
+  /* ── 參考值列 ── */
+  .refbar{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline;
+          background:var(--soft-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:2px; padding:8px 11px; margin:2px 0 12px;}
+  .refbar .rb{font-family:var(--mono); font-size:11.5px; color:var(--ink);}
+  .refbar .rb b{color:var(--accent); font-weight:700;}
+  .refbar .rb i{font-style:normal; color:var(--muted);}
+  .refbar .rb-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:auto;}
+
+  /* ── 區塊標頭 ── */
+  .dirhead{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+           margin:22px 0 7px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
+  .dirhead:first-child{margin-top:2px;}
+  .dirhead .dh-n{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink);}
+  .dirhead .dh-e{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft);}
+  .dirhead.hi{border-bottom-color:var(--accent2-soft);}
+  .dirhead.hi .dh-n{color:var(--accent2);}
+
+  /* ── 步驟條 ── */
+  .steps{counter-reset:st; margin:8px 0 10px;}
+  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
+        font-size:12.5px; line-height:1.75;}
+  .step:before{counter-increment:st; content:counter(st) "."; font-family:var(--mono); font-size:12px;
+               font-weight:700; color:var(--accent); line-height:1.75; letter-spacing:.02em;}
+  .step.alt:before{color:var(--accent2);}
+  .step .sq{font-weight:700; color:var(--ink);}
+
+  /* ── 通用小元件 ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .def-table td{line-height:1.7;}
+  .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  /* 輸液對照表：品名只留短代號（使用者 2026-08-13 指定），第一欄因此可以收窄且不換行；
+     全名、濃度與各自的適應症移到表下的說明與 Taita 那一格，不佔欄寬。 */
+  .fl-tbl td:first-child,.fl-tbl th:first-child{white-space:nowrap; width:1%;}
+  .def-table.dt-wrap td:first-child{white-space:normal;}
+  .def-table.dt-wrap td,.def-table.dt-wrap th{vertical-align:top;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+      background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .gr.w{background:var(--accent2-soft); color:var(--accent2);}
+</style>
+</head>
+<body data-back-label="輸液營養">
+<div class="sheet">
+<div class="view active" id="view-nutrition">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Decision Pathway</div>
+      <h1>輸液營養</h1>
+      <div class="sub">晶體輸液成分對比 · 靜脈營養液 · 添加劑 · 水分熱量氮脂計算 · 重症 TPN 時機</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-nutrition'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="iv_tabs">
+    <button class="tab-btn active" data-p="fluid" onclick="ivTab('fluid')">晶體輸液</button>
+    <button class="tab-btn"        data-p="pn"    onclick="ivTab('pn')">靜脈營養液</button>
+    <button class="tab-btn"        data-p="add"   onclick="ivTab('add')">添加劑</button>
+    <button class="tab-btn"        data-p="rx"    onclick="ivTab('rx')">處方計算</button>
+    <button class="tab-btn"        data-p="tpn"   onclick="ivTab('tpn')">重症營養時機</button>
+    <button class="tab-btn"        data-p="ev"    onclick="ivTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>數字來源分兩批，頁面上逐處標明，不混在一起</b>。
+    晶體輸液與添加劑的成分取自<b>台大醫院藥劑部藥品資料庫</b>；
+    Taita 1–5 號、Bfluid、Clinimix、Oliclinomel、Nutriflex、Smoflipid、Addaven、Lyo-Povigent
+    取自<b>食藥署核准的官方仿單／外盒標籤</b>（各品項附許可證字號）。
+    <b>抓資料當天（2026-08-13）台大藥劑部網站在維護中，回「系統維護中」</b>，
+    所以靜脈營養液那一頁的<b>院內備藥狀況沒能即時查證</b>，只查得到全國藥證與仿單——
+    這件事寫在該頁最上方，不假裝查過。
+    治療決策依 <b>ESPEN 2023 重症營養實用版指引</b>與 <b>ASPEN 2022</b>，兩家熱量建議不同，並列不合併。
+  </div>
+
+<!-- ==================== 晶體輸液 ==================== -->
+<div class="iv-panel on" id="p-fluid">
+
+  <div class="refbar">
+    <span class="rb"><b>血漿</b> Na 140・K 4・Cl 103・HCO₃ 24 <i>mEq/L</i></span>
+    <span class="rb"><b>血漿滲透壓</b> 275–295 <i>mOsm/kg</i></span>
+    <span class="rb"><b>維持水分</b> 25–30 <i>mL/kg/day</i></span>
+    <span class="rb-src">NICE CG174</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">成分對照總表</span><span class="dh-e">Composition of common IV fluids</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-cor fl-tbl" style="min-width:760px;">
+      <thead><tr>
+        <th>輸液</th><th>Na</th><th>K</th><th>Ca</th><th>Mg</th><th>Cl</th>
+        <th>緩衝鹼</th><th>磷</th><th>葡萄糖</th><th>熱量</th><th>滲透壓</th><th>台大品項</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><b>血漿</b></td><td>140</td><td>4</td><td>5</td><td>2</td><td>103</td><td>HCO₃ 24</td><td>1.0</td><td>0.7–1.1</td><td>—</td><td>275–295</td><td>—</td></tr>
+        <tr><td><b>N/S</b></td><td>154</td><td>–</td><td>–</td><td>–</td><td>154</td><td>–</td><td>–</td><td>0</td><td>0</td><td>308</td><td>諾沙林／沙林 100・250・500・1000 mL</td></tr>
+        <tr><td><b>Half saline</b></td><td>77</td><td>–</td><td>–</td><td>–</td><td>77</td><td>–</td><td>–</td><td>0</td><td>0</td><td>154</td><td>沙林 0.45% 500 mL</td></tr>
+        <tr><td><b>3% NaCl</b></td><td>513</td><td>–</td><td>–</td><td>–</td><td>513</td><td>–</td><td>–</td><td>0</td><td>0</td><td>1026</td><td>氯化鈉 3% 500 mL・瓶／袋</td></tr>
+        <tr><td><b>D5W</b></td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>50</td><td>170</td><td>278</td><td>吉多士／滴滋樂 5%</td></tr>
+        <tr><td><b>D10W</b></td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>100</td><td>340</td><td>555</td><td>滴舒樂／吉多士 10%</td></tr>
+        <tr><td><b>Dext-saline</b></td><td>77</td><td>–</td><td>–</td><td>–</td><td>77</td><td>–</td><td>–</td><td>25</td><td>85</td><td>293</td><td>滴沙林 2.5:0.45 500 mL</td></tr>
+        <tr><td><b>D5-saline</b></td><td>154</td><td>–</td><td>–</td><td>–</td><td>154</td><td>–</td><td>–</td><td>50</td><td>170</td><td>586</td><td>沙多士 Suntose 500 mL</td></tr>
+        <tr><td><b>L/R</b></td><td>130</td><td>4</td><td>2.7</td><td>–</td><td>109</td><td>Lactate 28</td><td>–</td><td>0</td><td>0</td><td>≈273</td><td>乳酸林格氏乙 1000 mL（葉克膜用）</td></tr>
+        <tr><td><b>Hartmann's</b></td><td>131</td><td>5</td><td>4</td><td>–</td><td>111</td><td>Lactate 29</td><td>–</td><td>0</td><td>0</td><td>≈280</td><td>福多命安 500 mL</td></tr>
+        <tr><td><b>Ringer's</b></td><td>147</td><td>4</td><td>4.5</td><td>–</td><td>156</td><td>–</td><td>–</td><td>0</td><td>0</td><td>≈309</td><td>林克氏 500 mL</td></tr>
+        <tr><td><b>Taita No.1</b></td><td>25</td><td>18</td><td>–</td><td>3</td><td>20</td><td>Acetate 20</td><td>6</td><td>38</td><td>129</td><td>300</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.2</b></td><td>40</td><td>12</td><td>–</td><td>–</td><td>26</td><td>Acetate 20</td><td>6</td><td>33</td><td>112</td><td>287</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.3</b></td><td>75</td><td>12</td><td>–</td><td>–</td><td>61</td><td>Acetate 20</td><td>6</td><td>20</td><td>68</td><td>285</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.4</b></td><td>110</td><td>20</td><td>–</td><td>–</td><td>102</td><td>Acetate 16</td><td>12</td><td>8</td><td>27</td><td>300</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.5</b></td><td>36</td><td>18</td><td>–</td><td>3</td><td>17</td><td>Acetate 28</td><td>12</td><td>100</td><td>340</td><td>669</td><td>大塚 400 mL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    單位：電解質 <b>mEq/L</b>、磷 <b>mmol/L</b>、葡萄糖 <b>g/L</b>、熱量 <b>kcal/L</b>、滲透壓 <b>mOsm/L</b>。<br>
+    <b>品名只寫短代號，對照如下</b>：N/S ＝ 0.9% NaCl・Half saline ＝ 0.45% NaCl・
+    Dext-saline ＝ 2.5% dextrose ＋ 0.45% NaCl・D5-saline ＝ 5% dextrose ＋ 0.9% NaCl・
+    L/R ＝ Lactated Ringer's B・Hartmann's ＝ 台大的另一支乳酸林格・Ringer's ＝ 不含乳酸的林格氏液。<br>
+    <b>葡萄糖有兩套換算，本表各用一套，先講清楚免得被抓包</b>：
+    <b>熱量</b>用臨床慣例的 <b>3.4 kcal/g</b>（一水合葡萄糖）；
+    <b>滲透壓</b>用無水葡萄糖分子量 180 計算（D5W ＝ 278）——
+    若該品項實際用的是一水合葡萄糖，滲透壓要再低約一成（D5W ＝ 252）。
+    <b>兩個數字都是量級參考，不是拿來精算的。</b>
+    靜脈營養三合一袋的仿單則是用<b>無水葡萄糖 4 kcal/g</b>，
+    所以「靜脈營養液」那一頁<b>直接抄仿單自己的 kcal，不由本表換算過去</b>。
+    <b>Taita 1–5 號的數字是仿單「電解質量」表原值</b>（衛署藥製字第021632／021630／021629／024258／022682 號），
+    不是我算的。<b>台大同時有兩支乳酸林格</b>，福多命安（Hartmann's）與乳酸林格氏乙的電解質<b>不完全一樣</b>，
+    上表分開列——這是台大藥品資料庫自己的欄位。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">四個常被搞混的點</span><span class="dh-e">Traps</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">① D5W 在袋子裡是等張，進了身體是純水</div>
+    D5W 掛上去時滲透壓 278 mOsm/L 接近血漿，<b>但葡萄糖一被代謝掉就只剩水</b>。
+    1 公升 D5W 最後只有約 <b>1/12 留在血管內</b>，其餘分布到全身體液。
+    所以 D5W <b>不是擴容液</b>，是給自由水與少量熱量的液體；拿它衝血壓等於什麼都沒做，
+    還會把血鈉稀釋下去。低血鈉的處置見
+    <a href="electrolyte.html#na" class="pmid">電解質失衡・鈉</a>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">② 「生理」食鹽水一點都不生理</div>
+    N/S 的 Cl 是 <b>154 mEq/L</b>，血漿只有 103。大量給會造成
+    <b>高氯性代謝性酸中毒</b>（陰離子間隙正常、強離子差變小）。
+    平衡鹽（L/R、Hartmann's）的 Cl 只有 109–111，代價是<b>含鉀、含鈣、且是低張</b>。
+    <b>含鈣的輸液不可與 ceftriaxone 走同一條管路</b>（新生兒為絕對禁忌，成人不可同時經 Y-site 給）；
+    <b>L/R 也不建議拿來稀釋含檸檬酸鹽的血品</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">③ Taita 系列的差別「主要在鈉」，不是在糖</div>
+    仿單原話：<b>各注射液之差異，主要在於 Na 之濃度</b>——1 號 25 → 2 號 40 → 3 號 75 → 4 號 110 mEq/L。<br>
+    仿單各自的適應症：<b>1 號</b>水分電解質養分補充、新生兒維持液；<b>2 號</b>高張性下痢及小兒下痢；
+    <b>3 號</b>維持液、等張性下痢、糖尿病酮病；<b>4 號</b>低張性下痢；<b>5 號</b>手術前後與未能進食者的熱量維持。
+    <b>Taita 5 號是另一件事</b>：鈉只有 36，但葡萄糖 100 g/L、滲透壓 <b>669 mOsm/L</b>，
+    是「術後熱量維持液」不是「補鈉液」。這個滲透壓<b>已超過周邊靜脈的一般上限</b>，
+    連續給要留意輸注部位。台大另有現成的
+    <b>KCl 10 mEq + Taita No.5 400 mL</b>（全袋含 K⁺ 17.2 mEq）預混品項。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">④ 維持輸液不等於營養</div>
+    NICE CG174 的維持處方是 <b>25–30 mL/kg/day 水、Na/K/Cl 各約 1 mmol/kg/day、
+    葡萄糖 50–100 g/day</b>，而且指引自己註明<b>「這個量不足以滿足營養需求」</b>——
+    葡萄糖那 50–100 g 只是為了壓住飢餓性酮症。
+    每日超過 <b>2.5 L</b> 會增加低血鈉風險；<b>年長、衰弱、腎功能或心衰竭、有再餵食風險者
+    改用 20–25 mL/kg/day</b>。真的要餵，走「重症營養時機」那一頁。
+  </div>
+</div>
+
+<!-- ==================== 靜脈營養液 ==================== -->
+<div class="iv-panel" id="p-pn">
+
+  <div class="kbox alert">
+    <div class="kbox-t">先說清楚這一頁的資料來源</div>
+    抓資料當天（<b>2026-08-13</b>）<b>台大藥劑部藥品資料庫網站在維護中</b>（回「系統維護中」），
+    所以以下品項的<b>台大院內備藥與院內注射給藥指引沒能查證</b>。
+    表中的成分數字全部來自<b>食藥署核准的官方仿單</b>，每一項都附許可證字號，可以自行覆核。<br>
+    這些製劑在本站
+    <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>裡的藥卡也都標著
+    <b>「非台大處方」</b>——意思是<b>本站的台大處方集快照裡沒有它們</b>，
+    但那份快照只涵蓋部分藥理分類（「靜脈營養」那一類當初沒抓到），
+    <b>所以「非台大處方」不等於「台大沒有」</b>。
+    <b>開單前請照院內藥品目錄確認。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">周邊還是中央？先看滲透壓</span><span class="dh-e">Peripheral vs central line</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">一條規則</div>
+    <b>Clinimix 仿單原文：溶液或混合液的滲透壓超過 800 mOsm/L，就應採用中央靜脈給藥。</b>
+    這條同時適用於「加了東西之後」的最終混合液——<b>加完維生素、微量元素、電解質要重算滲透壓再決定路徑</b>。
+    對照下表：只有 <b>Bfluid、Oliclinomel N4-550E、Clinimix N9G15E</b> 落在周邊可行的範圍，
+    <b>Nutriflex special 的仿單／外盒直接寫明「For central venous infusion only」</b>。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:900px;">
+      <thead><tr>
+        <th>製劑（每 1 L 混合後）</th><th>胺基酸</th><th>氮</th><th>葡萄糖</th><th>脂肪</th>
+        <th>總熱量</th><th>Na</th><th>K</th><th>滲透壓</th><th>路徑</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><b>Bfluid</b> 必富力得<br><a href="../tools/drug-database.html#code=X5ADB8A5" class="pmid">藥卡</a><br><span class="gr">025179</span></td><td>30</td><td>4.7</td><td>75</td><td>–</td><td>420</td><td>35</td><td>20</td><td>≈3×NS</td><td><span class="gr">周邊</span></td></tr>
+        <tr><td><b>Clinimix N9G15E</b> 克里密絲<br><a href="../tools/drug-database.html#code=X77DE002" class="pmid">藥卡</a><br><span class="gr">023224</span></td><td>28</td><td>4.6</td><td>75</td><td>–</td><td>410</td><td>35</td><td>30</td><td>845</td><td><span class="gr">周邊可</span></td></tr>
+        <tr><td><b>Clinimix N17G35E</b> 克里密絲<br><a href="../tools/drug-database.html#code=X76E8E63" class="pmid">藥卡</a><br><span class="gr">023218</span></td><td>50</td><td>8.3</td><td>175</td><td>–</td><td>900</td><td>35</td><td>30</td><td>1625</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Oliclinomel N4-550E</b> 歐諾美<br><span class="gr">024679</span></td><td>22</td><td>3.6</td><td>80</td><td>20</td><td>610</td><td>21</td><td>16</td><td>750</td><td><span class="gr">周邊可</span></td></tr>
+        <tr><td><b>Oliclinomel N7-1000E</b> 歐諾美<br><a href="../tools/drug-database.html#code=X51122AB" class="pmid">藥卡</a><br><span class="gr">024270</span></td><td>40</td><td>6.6</td><td>160</td><td>40</td><td>1200</td><td>32</td><td>24</td><td>1450</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Nutriflex special</b> 欣保康優<br><a href="../tools/drug-database.html#code=XD53960C" class="pmid">藥卡</a><br><span class="gr">020975</span></td><td>70</td><td>10</td><td>240</td><td>–</td><td>1240</td><td>40.5</td><td>25.7</td><td>2100</td><td><span class="gr w">只限中央</span></td></tr>
+        <tr><td><b>Smoflipid 20%</b> 斯莫脂肪<br><a href="../tools/drug-database.html#code=X3DBF473" class="pmid">藥卡</a><br><span class="gr">024519</span></td><td>–</td><td>–</td><td>–</td><td>200</td><td>2000</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    單位：胺基酸／氮／葡萄糖／脂肪 <b>g/L</b>、熱量 <b>kcal/L</b>、Na／K <b>mmol/L</b>、滲透壓 <b>mOsm/L</b>。
+    <b>數字全部照仿單原值抄，包含熱量</b>（三合一袋的仿單用無水葡萄糖 4 kcal/g）。
+    <b>*Smoflipid 的 380 是 mOsm/kg H₂O（滲透莫耳濃度重量制），與其他欄位的容積制不能直接比。</b>
+    Bfluid 仿單不給 mOsm/L，只給「對 0.9% saline 的滲透壓比約 3」，換算約 860 mOsm/L——
+    <b>仿單同時寫明成人由末梢靜脈輸注</b>，兩件事並存，照仿單走。<br>
+    每一列的「藥卡」連到本站
+    <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>那一張。
+    <b>Oliclinomel N4-550E 沒有連結，因為本站藥卡目前只收了 N7-1000E</b>——
+    N4-550E 的藥證有效（衛署藥輸字第024679號），只是還沒建卡。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">逐支的重點</span><span class="dh-e">What each bag is for</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">Bfluid｜週邊用、含維生素 B1、有 12 條禁忌</div>
+    上室是胺基酸電解質液、下室是維生素 B1 葡萄糖電解質液，<b>用前要壓破隔膜混合</b>。
+    500 mL 給 <b>210 kcal（非蛋白 150 kcal）、胺基酸 15 g、葡萄糖 37.5 g、thiamine 0.75 mg（以 thiamine 計）</b>，
+    非蛋白熱量／氮比 64。成人一次 500 mL 週邊靜脈，<b>標準 120 分鐘輸完，老年與重症要放慢</b>，
+    每日上限 2500 mL。<br>
+    <b>禁忌很長，值得一看</b>：肝性昏迷或有其虞、重症腎病或高氮血症（透析／血液過濾者除外）、
+    寡尿（同上除外）、鬱血性心衰竭、嚴重酸中毒（含高乳酸血症）、高血鉀、Addison 氏症、
+    高血磷或副甲狀腺低下、高血鎂或甲狀腺低下、高血鈣、尿路阻塞致尿少、胺基酸代謝異常、
+    對維生素 B1 過敏。<b>它含 K 20、P 10 mmol、Mg 5、Ca 5 mEq／L，這些禁忌不是形式</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Clinimix｜雙腔、胺基酸＋葡萄糖，沒有脂肪</div>
+    兩腔分別是「含電解質的胺基酸液」與「含鈣的葡萄糖液」。
+    <b>仿單自己說：長期使用者建議另外加脂質，否則熱量與必需脂肪酸不夠。</b>
+    最大速率與每日上限兩型不同——<b>N9G15E 3 mL/kg/h、40 mL/kg/day</b>；
+    <b>N17G35E 1.4 mL/kg/h、30 mL/kg/day</b>（60–70 kg 約 1800–2100 mL/day）。
+    輸注時間應 <b>≥8 小時</b>，第一小時逐步加速，<b>停藥前最後一小時逐步減速以免反彈低血糖</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Oliclinomel｜三腔、含橄欖油＋大豆油</div>
+    脂肪相是<b>精製橄欖油約 80% ＋ 精製大豆油約 20%</b>。1 L 袋＝脂肪乳 200 mL＋胺基酸 400 mL＋葡萄糖 400 mL。
+    <b>N4-550E 滲透壓只有 750，仿單明說可經週邊或中央</b>；N7-1000E 是 1450，走中央。
+    每日上限依熱量定義：<b>N7-1000E 33 mL/kg/day、N4-550E 40 mL/kg/day</b>。
+    兒科（2–18 歲）仿單附有依 <b>2018 ESPGHAN/ESPEN/ESPR</b> 對照的上限表，
+    並註明<b>鎂濃度是兩個年齡層的限量因子</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Nutriflex｜台灣只剩「special」這一張有效藥證</div>
+    <b>欣保康優 Nutriflex special</b>：1 L 給胺基酸 70 g、氮 10 g、葡萄糖 240 g、
+    <b>1240 kcal</b>、滲透壓 <b>2100 mOsm/L</b>、<b>only for central venous infusion</b>。
+    沒有脂肪。<br>
+    <b>要留意的是：含脂肪的 NuTRIflex Lipid peri／plus／special、Omega plus／special
+    在台灣全部已註銷</b>（食藥署藥證資料庫查證）。文獻或國外教材寫「用 NuTRIflex Lipid」，在台灣拿不到藥。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Smoflipid｜四種油、有 omega-3</div>
+    每 1 L：<b>大豆油 60 g、中鏈三酸甘油酯 60 g、橄欖油 50 g、富含 omega-3 的魚油 30 g，共 2000 kcal</b>。
+    成人標準劑量 <b>1–2 g 脂肪/kg/day</b>（＝5–10 mL/kg/day），
+    <b>建議速率 0.125 g/kg/h（0.63 mL/kg/h），不得超過 0.15 g/kg/h</b>。<br>
+    <b>輸注期間血清三酸甘油酯不得超過 3 mmol/L</b>；超過就減量或停。
+    禁忌：對蛋、大豆或花生蛋白過敏、嚴重高血脂、嚴重肝功能不全、嚴重凝血異常、
+    <b>未接受透析／血液過濾的嚴重腎功能不全</b>、急性休克、急性肺水腫／體液過多／失代償心衰竭，
+    以及<b>不穩定狀態（嚴重創傷後、失代償糖尿病、急性心肌梗塞、中風、栓塞、代謝性酸中毒、
+    嚴重敗血症、低張性脫水）</b>。仿單註明<b>無兒科使用經驗、不建議用於兒科</b>。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">兩個會出人命的配伍問題</div>
+    <b>① 鈣磷沉澱。</b>Clinimix 仿單警語：曾有<b>肺血管沉澱致死</b>的報告；
+    鈣與磷酸鹽加太多會增加磷酸鈣沉澱風險，<b>而且沒有磷酸鹽的溶液也曾發生沉澱</b>。
+    出現肺部窘迫徵象要<b>停止輸注並評估</b>，輸液套與導管都要定期檢查有無沉澱。<br>
+    <b>② Ceftriaxone × 含鈣輸液。</b>新生兒（出生未滿 28 天）<b>即使分開管路也絕對禁止併用</b>；
+    <b>超過 28 天者（含成人）不得以同一條管路（例如 Y 型接頭）同時給</b>，
+    連續使用同一組管路時，兩次之間必須用相容液體徹底沖洗。
+  </div>
+</div>
+
+<!-- ==================== 添加劑 ==================== -->
+<div class="iv-panel" id="p-add">
+
+  <div class="dirhead"><span class="dh-n">微量元素與維生素</span><span class="dh-e">Trace elements &amp; vitamins</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:700px;">
+      <thead><tr><th>品項</th><th>用途與劑量</th><th>不能忽略的那一條</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Addaven</b><br>微達穩注射液<br>10 mL/amp<br><a href="../tools/drug-database.html#code=AD%201FAJ1" class="pmid">藥卡</a></td>
+          <td><b>成人每日 10 mL（1 支）</b>，兒童 ≥15 kg 為 0.1 mL/kg/day。<br>
+              每支含：Zn 5 mg・Fe 1.1 mg・Cu 380 µg・I 130 µg・F 950 µg・
+              Se 79 µg・Mn 55 µg・Cr 10 µg・Mo 19 µg。<br>
+              台大另有一支標<b>「TPN 調配專用」</b>。</td>
+          <td><b>絕對不可未稀釋直接給</b>（仿單原文 Must not be given undiluted）。<br>
+              禁忌：<b>全膽道阻塞、Wilson 氏症、血鐵沉著症、體重 &lt;15 kg 兒童</b>。<br>
+              <b>治療超過 4 週必須驗血中微量元素濃度，尤其是錳</b>——銅與錳走膽汁排除，
+              膽汁鬱積時會累積。</td>
+        </tr>
+        <tr>
+          <td><b>Peditrace</b><br>10 mL/vial<br><span class="gr">TPN 調配專用</span><br><a href="../tools/drug-database.html#code=PED1FAI9" class="pmid">藥卡</a></td>
+          <td>兒童 <b>1 mL/kg/day，每日上限 15 mL</b>。台大歸在「Mixtures of Trace Elements」，
+              別名就寫 Trace Elements。</td>
+          <td>同樣<b>不可未稀釋給</b>。這是小兒配方，成人用 Addaven。</td>
+        </tr>
+        <tr>
+          <td><b>Lyo-Povigent</b><br>利保維源注射劑<br>vial＋amp 兩部分<br><a href="../tools/drug-database.html#code=XE70A489" class="pmid">藥卡</a></td>
+          <td>靜脈營養時的<b>綜合維生素</b>，13 種。<br>
+              <b>PART I（vial，水溶性）</b>：ascorbic acid 100 mg・niacinamide 40 mg・
+              D-panthenol 14 mg・pyridoxine HCl 4.9 mg・riboflavin-5′-phosphate Na 4.6 mg・
+              <b>thiamine HCl 3.9 mg</b>・folic acid 0.4 mg・cyanocobalamin 0.005 mg・biotin。<br>
+              <b>PART II（amp，脂溶性）</b>：vitamin A palmitate 3300 IU・
+              cholecalciferol 0.005 mg（200 IU）・dl-α-tocopheryl acetate・
+              <b>phytonadione（維生素 K₁）</b>。<br>
+              <b>冷藏 2–8 ℃、避光</b>。</td>
+          <td><b>兩件事會被漏掉：</b><br>
+              ① <b>它含維生素 K₁</b>——正在吃 warfarin 的病人加上去，INR 會掉。<br>
+              ② <b>thiamine 只有約 3 mg（以 thiamine 計）</b>，
+              這是「日常補充量」不是「治療量」。<b>再餵食症候群或 Wernicke 的預防／治療必須另外開 thiamine</b>，
+              不能靠這一支。<br>
+              <span class="gr w">數字缺口</span> 維生素 E 與 K₁ 的劑量落在外盒摺線上判讀不出來，
+              台大網站恢復後要補查。</td>
+        </tr>
+        <tr>
+          <td><b>Zinc sulfate</b><br>硫酸鋅注射液<br>6.75 mg Zn/5 mL<br><a href="../tools/drug-database.html#code=ZNS1FC20" class="pmid">藥卡</a></td>
+          <td>加進相容輸液或 TPN 治療鋅缺乏。<br>
+              <b>TPN 成人 2.5–4 mg Zn/day</b>；足月兒與 ≤5 歲 100 µg Zn/kg/day；
+              早產兒（出生體重 &lt;1500 g、≤3 kg）300 µg Zn/kg/day。<br>
+              <b>小腸液流失補充：每流失 1 L 小腸液補 12.2 mg Zn</b>；
+              每 1 kg 糞便或迴腸造口排出補 17.1 mg。</td>
+          <td>安瓿濃度是 <b>1.35 mg Zn/mL</b>，不是 6.75 mg/mL——
+              整支 5 mL 才 6.75 mg。開 <b>「Zinc 4 mg」需要約 3 mL</b>，算錯會差五倍。<br>
+              高輸出瘻管、大量腹瀉、燒傷的鋅流失遠超過 Addaven 那 5 mg，要另外補。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">電解質添加</span><span class="dh-e">Electrolyte additives</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">台大現成的預混品項（就不用自己加了）</div>
+    <ul>
+      <li><b>KCl 20 mEq in NS 100 mL</b>、<b>KCl 20 mEq in D5W 50 mL</b>（限 6PE 使用）、
+          <b>KCl 20 mEq/500 mL 0.298% KCl in NaCl</b></li>
+      <li><b>KCl 10 mEq + Taita No.5 400 mL</b>（全袋總 K⁺ <b>17.2 mEq</b>——
+          因為 Taita 5 本身就有 18 mEq/L × 0.4 L ＝ 7.2 mEq）</li>
+      <li><b>Vitacal</b>（Calcium chloride + Dextrose）2% 20 mL，<b>Ca 0.27 mEq/mL</b></li>
+    </ul>
+    <b>自己加鉀之前先看袋子裡本來有沒有鉀</b>——Taita 全系列、Bfluid、Clinimix、Oliclinomel、
+    Nutriflex、L/R、Ringer's <b>全部本來就含鉀</b>。上面那個 17.2 mEq 就是這麼來的。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">加東西進 PN 袋之前的三個檢查</div>
+    <ol style="margin:3px 0; padding-left:18px; line-height:1.75;">
+      <li><b>算最終滲透壓</b>——超過 800 mOsm/L 就必須走中央靜脈（Clinimix 仿單）。</li>
+      <li><b>看鈣與磷酸鹽的總量</b>——磷酸鈣沉澱會致命，且無磷配方也曾發生沉澱。</li>
+      <li><b>確認相容性</b>——仿單原話「除非確定能相容，否則一般得避免在 Smoflipid 添加其他藥物或成分」。
+          脂肪乳劑破乳看不太出來，但一樣會塞住肺血管。</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ==================== 處方計算 ==================== -->
+<div class="iv-panel" id="p-rx">
+
+  <div class="refbar">
+    <span class="rb"><b>水分</b> 25–30 <i>mL/kg/d</i></span>
+    <span class="rb"><b>熱量</b> ESPEN 20–25／ASPEN 12–25 <i>kcal/kg/d</i></span>
+    <span class="rb"><b>蛋白</b> 1.3 <i>g/kg/d</i></span>
+    <span class="rb"><b>葡萄糖</b> ≤5 <i>mg/kg/min</i></span>
+    <span class="rb"><b>脂肪</b> ≤1.5 <i>g/kg/d</i></span>
+    <span class="rb-src">NICE CG174・ESPEN 2023・ASPEN 2022</span>
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">營養處方計算器</div>
+    <div class="rx-grid">
+      <div class="rx-row"><label>體重<span class="rx-en">Weight</span></label>
+        <input type="number" id="nw" value="60" min="1" max="250" step="0.5"><span class="rx-u">kg</span></div>
+      <div class="rx-row"><label>熱量目標<span class="rx-en">Energy target</span></label>
+        <input type="number" id="nkcal" value="20" min="5" max="45" step="1"><span class="rx-u">kcal/kg/d</span></div>
+      <div class="rx-row"><label>蛋白質目標<span class="rx-en">Protein target</span></label>
+        <input type="number" id="npro" value="1.3" min="0.2" max="3" step="0.1"><span class="rx-u">g/kg/d</span></div>
+      <div class="rx-row"><label>葡萄糖液・濃度<span class="rx-en">Dextrose concentration</span></label>
+        <input type="number" id="ngc" value="10" min="0" max="70" step="1"><span class="rx-u">%</span></div>
+      <div class="rx-row"><label>葡萄糖液・速率<span class="rx-en">Infusion rate</span></label>
+        <input type="number" id="ngr" value="80" min="0" max="500" step="5"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>脂肪乳 20%・速率<span class="rx-en">20% lipid emulsion</span></label>
+        <input type="number" id="nlip" value="0" min="0" max="200" step="1"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>Propofol 1%・速率<span class="rx-en">Propofol 1% — 也是脂肪</span></label>
+        <input type="number" id="nprop" value="0" min="0" max="60" step="1"><span class="rx-u">mL/hr</span></div>
+    </div>
+
+    <div class="rx-out">
+      <div class="rx-out-grid">
+        <div class="rx-metric"><div class="rx-lab">維持水分 Water</div><div class="rx-val" id="o_water">—<small> mL/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">熱量目標 Energy</div><div class="rx-val" id="o_kcal">—<small> kcal/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">蛋白質 Protein</div><div class="rx-val" id="o_pro">—<small> g/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">葡萄糖輸注率 GIR</div><div class="rx-val" id="o_gir">—<small> mg/kg/min</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">葡萄糖熱量 CHO kcal</div><div class="rx-val" id="o_gkcal">—<small> kcal/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">脂肪總量 Total lipid</div><div class="rx-val" id="o_lip">—<small> g/kg/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">脂肪熱量 Lipid kcal</div><div class="rx-val" id="o_lkcal">—<small> kcal/d</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">已給／目標 Delivered</div><div class="rx-val" id="o_pct">—<small> %</small></div></div>
+      </div>
+      <div class="rx-flag" id="o_flag"></div>
+    </div>
+
+    <div class="rx-note">
+      <b>換算基準</b>：靜脈葡萄糖 <b>3.4 kcal/g</b>；20% 脂肪乳 <b>0.2 g/mL、2.0 kcal/mL</b>；
+      <b>propofol 1% 是 10% 脂肪乳基劑 → 0.1 g 脂肪/mL、1.1 kcal/mL</b>；蛋白質 4 kcal/g，氮＝蛋白/6.25。<br>
+      <b>「已給／目標」只算葡萄糖＋脂肪（非蛋白熱量）</b>，蛋白質熱量不列入分子——
+      這是 PN 處方的慣例，因為蛋白質是拿來合成不是拿來燒的。<br>
+      <b>Propofol 的脂肪一定要算進去。</b>ESPEN 2023 R25 原文就把 propofol 這類「非營養性脂肪來源」
+      納入 1.5 g/kg/d 的上限內。60 kg 的人單靠 propofol 20 mL/hr 一天就是 <b>48 g 脂肪、528 kcal</b>，
+      已經是 0.8 g/kg/d，把脂肪額度用掉一半。
+    </div>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">五個上限的來源</span><span class="dh-e">Where the ceilings come from</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:640px;">
+      <thead><tr><th>項目</th><th>數字</th><th>出處與等級</th></tr></thead>
+      <tbody>
+        <tr><td><b>水分</b></td><td>25–30 mL/kg/day（年長／衰弱／腎心衰竭／再餵食風險 20–25）；<b>&gt;2.5 L/day 增加低血鈉風險</b></td><td>NICE CG174 §1.4.1、1.4.3</td></tr>
+        <tr><td><b>熱量</b></td><td><b>ESPEN</b>：無間接測熱法時用 20–25 kcal/kg/d；用預測公式則<b>第一週低於估計值 70%</b>；第 3 天後可升到測得 EE 的 80–100%。<br><b>ASPEN</b>：<b>12–25 kcal/kg/day</b></td><td>ESPEN 2023 R19（Grade B）／R18（Grade 0）；ASPEN 2022 <a href="https://pubmed.ncbi.nlm.nih.gov/34784064/" target="_blank" rel="noopener" class="pmid">PMID 34784064</a></td></tr>
+        <tr><td><b>蛋白質</b></td><td>1.3 g/kg/d <b>漸進</b>給。<b>沒有證據支持給更高</b></td><td>ESPEN 2023 R22（Grade 0）；EFFORT Protein <a href="https://pubmed.ncbi.nlm.nih.gov/36708732/" target="_blank" rel="noopener" class="pmid">PMID 36708732</a></td></tr>
+        <tr><td><b>葡萄糖</b></td><td>PN 的葡萄糖或 EN 的碳水 <b>不得超過 5 mg/kg/min</b></td><td>ESPEN 2023 R23（GPP，強共識 100%）</td></tr>
+        <tr><td><b>脂肪</b></td><td>建議上限 <b>1 g/kg/d，可容忍到 1.5 g/kg/d</b>，<b>含 propofol 等非營養性脂肪</b></td><td>ESPEN 2023 R25（GPP，強共識 100%）</td></tr>
+        <tr><td><b>血糖</b></td><td><b>&gt;10 mmol/L（180 mg/dL）就給胰島素</b>；前兩天至少每 4 小時測一次</td><td>ESPEN 2023 R54（<b>Grade A</b>）、R53</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">GIR 為什麼是 5 mg/kg/min</div>
+    這個數字對應的是<b>成人葡萄糖氧化能力的上限</b>。超過的葡萄糖不會變成能量，
+    會走脂肪生成（lipogenesis）——結果是<b>高血糖、CO₂ 產量上升（脫離呼吸器更難）、脂肪肝、膽汁鬱積</b>。
+    <b>重症本身就有胰島素阻抗</b>，所以實際能耐受的往往比 5 更低。<br>
+    順帶一提：<b>D50W 20 mL 推一次是 10 g 葡萄糖</b>，60 kg 的人若在 1 分鐘內推完，
+    瞬時 GIR 是 <b>167 mg/kg/min</b>——低血糖急救可以，但不能拿來當熱量給。
+  </div>
+</div>
+
+<!-- ==================== 重症營養時機 ==================== -->
+<div class="iv-panel" id="p-tpn">
+
+  <div class="dirhead"><span class="dh-n">一句話版本</span><span class="dh-e">The short answer</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">重症營養最重要的一條，是「不要早、不要多」</div>
+    ESPEN 2023 R8（<b>Grade A</b>，強共識 100%）原文：
+    <b>為避免過度餵食，早期全量 EN 與 PN 都不可用於重症病人，而應在 3 到 7 天內才給到處方量。</b><br>
+    理由是<b>急性期身體自己會產生 500–1400 kcal/day 的內源性能量</b>，
+    你給的量是「加上去」不是「補起來」。EPaNIC、NUTRIREA-3、PermiT 三個試驗
+    都指向<b>早期給少一點反而恢復快</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">路徑決策</span><span class="dh-e">Route &amp; timing</span></div>
+
+  <div class="steps">
+    <div class="step"><span>
+      <span class="sq">住 ICU 超過 48 小時就當有營養不良風險。</span>
+      ESPEN 2023 S1（共識 96%）。<b>沒有任何營養評分是為重症驗證過的</b>——
+      NRS 2002、MUST 都不是為 ICU 設計，NUTRIC 也一樣。指引的務實作法是看
+      <b>住超過兩天、需要呼吸器、有感染、餵不足超過五天、或有嚴重慢性病</b>。
+    </span></div>
+    <div class="step"><span>
+      <span class="sq">能吃就吃。</span>ESPEN R3（GPP，100%）：口服優先於 EN 與 PN。
+      判準是<b>第 3–7 天能不能靠自己吃到需求的 70%</b>，且沒有嘔吐或吸入風險。
+    </span></div>
+    <div class="step"><span>
+      <span class="sq">不能經口 → 48 小時內開始 EN，而且 EN 優先於 PN。</span>
+      R4（Grade B）與 <b>R5（Grade A）</b>。
+      早期 EN 相對早期 PN 減少感染併發症（RR 0.50, 95%CI 0.37–0.67）、縮短 ICU 與住院天數，
+      <b>死亡率沒有差別</b>。
+    </span></div>
+    <div class="step alt"><span>
+      <span class="sq">這些情況 EN 要延後（R38, Grade B）。</span>
+      <b>休克未控制</b>（血行動力與組織灌流目標未達成）——
+      但<b>只要用輸液與升壓／強心藥把休克壓住，就可以開始低劑量 EN</b>，同時警覺腸缺血徵象；
+      危及生命的低血氧、高碳酸血症或酸中毒未控制；<b>活動性上消化道出血</b>；
+      <b>明確的腸缺血</b>；高輸出腸瘻管且無法在瘻管遠端建立餵食路徑；
+      <b>腹腔室症候群</b>；<b>胃殘餘量 &gt;500 mL/6 小時</b>。
+    </span></div>
+    <div class="step alt"><span>
+      <span class="sq">這些情況給低劑量 EN 就好（R39, Grade B）。</span>
+      治療性低體溫（回溫後再加量）；<b>腹內高壓但未達腹腔室症候群</b>
+      （壓力在 EN 之下續升就要減量或暫停）；急性肝衰竭且致命代謝異常已控制者
+      （<b>與腦病變分級無關</b>）。
+    </span></div>
+    <div class="step"><span>
+      <span class="sq">EN 有禁忌 → PN 在 3 到 7 天內開始（R6, Grade B）。</span>
+      不是「立刻」，也不是「等到餓壞」。
+      <b>但嚴重營養不良且 EN 有禁忌者，可以早一點、漸進地給 PN（R7, Grade 0）</b>——
+      代價是要同時提防過度餵食與再餵食。
+    </span></div>
+    <div class="step"><span>
+      <span class="sq">補充性 PN（EN 餵不到量）→ 逐案權衡，時機大約在第 4 到 7 天。</span>
+      R20（GPP）：第一週 EN 餵不到全量者，<b>加 PN 的安全性與好處要逐案衡量</b>。
+      ESPEN 的註解寫得很白：<b>最佳時機仍有爭議，但建議落在第四到第七天。</b>
+    </span></div>
+    <div class="step"><span>
+      <span class="sq">開 PN 之前，先把改善 EN 耐受度的招數用完（R21, GPP, 100%）。</span>
+      促動力藥（metoclopramide 10 mg tid、erythromycin 3–7 mg/kg/d）、
+      幽門後餵食、連續而非間歇灌食（腹瀉較少，RR 0.42）。
+      <b>胃是標準起始路徑（R10）；高吸入風險才走幽門後（R12）。</b>
+    </span></div>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">再餵食症候群</span><span class="dh-e">Refeeding syndrome</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">ASPEN 2020 的定義：看「掉多少」，不是看「多低」</div>
+    <b>在重新給熱量的 5 天內</b>，血中<b>磷、鉀、鎂</b>任一項、兩項或三項下降：<br>
+    <b>10–20% ＝ 輕度・20–30% ＝ 中度・&gt;30%，或因此出現器官功能障礙、或因缺 thiamine
+    而出現器官功能障礙 ＝ 重度</b>。<br>
+    <span class="gr w">關鍵</span> 判準是<b>相對降幅</b>——
+    從 4.5 掉到 3.4 mg/dL 還在「正常範圍」，但那是 24% 的跌幅，已經是中度。
+    <a href="https://pubmed.ncbi.nlm.nih.gov/32115791/" target="_blank" rel="noopener" class="pmid">PMID 32115791</a>
+    （另有勘誤 PMID 32383800）
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">ESPEN 2023 的監測與處置</div>
+    <ul>
+      <li><b>第一週每天至少測一次 K、Mg、磷</b>（R55, GPP, 92%）。
+          指引特別點名：<b>鉀大家都會測，磷常常沒測。</b></li>
+      <li>出現<b>再餵食低血磷（&lt;0.65 mmol/L，或下降 &gt;0.16 mmol/L）</b>時，
+          <b>改成一天測 2–3 次</b>並補充（R56, GPP, 100%）。</li>
+      <li><b>確認再餵食低血磷 → 熱量供應限制 48 小時，再逐步增加</b>（R57, <b>Grade B</b>）。
+          依據是 Doig 的 RCT：兩組補磷相同，<b>單純限制熱量 48 小時就改善存活</b>。</li>
+      <li><b>電解質異常在重症不限於明顯營養不良的人</b>——指引原文，不要只對瘦的人警覺。</li>
+    </ul>
+    磷、鉀、鎂本身的補法見 <a href="electrolyte.html" class="pmid">電解質失衡</a>；
+    致命高血鉀與低血鈉的急救見 <a href="electrolyte-emergency.html" class="pmid">致命電解質急症決策</a>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">thiamine 要另外開</div>
+    綜合維生素（Lyo-Povigent）裡的 thiamine 只有約 <b>3 mg</b>，是每日補充量。
+    <b>再餵食高風險或懷疑 Wernicke 時，thiamine 必須另外開治療劑量，而且要在給糖之前給。</b>
+    ASPEN 2020 的重度再餵食定義裡，<b>「因缺 thiamine 而出現器官功能障礙」本身就算重度</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">監測</span><span class="dh-e">Monitoring</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:600px;">
+      <thead><tr><th>項目</th><th>頻率</th><th>依據</th></tr></thead>
+      <tbody>
+        <tr><td><b>血糖</b></td><td>進 ICU 或開始人工營養後，<b>前兩天至少每 4 小時</b>；&gt;180 mg/dL 給胰島素</td><td>ESPEN R53、<b>R54（Grade A）</b></td></tr>
+        <tr><td><b>K・Mg・磷</b></td><td><b>第一週每天至少一次</b>；有再餵食低血磷則一天 2–3 次</td><td>ESPEN R55、R56</td></tr>
+        <tr><td><b>三酸甘油酯</b></td><td>用脂肪乳期間，<b>不得超過 3 mmol/L</b>；超過就減量或停</td><td>Smoflipid 仿單</td></tr>
+        <tr><td><b>肝功能</b></td><td>PN 期間定期，偵測 PN 相關肝功能異常與膽汁鬱積</td><td>ESPEN 2023；EPaNIC 早 PN 組膽汁鬱積較多</td></tr>
+        <tr><td><b>微量元素</b></td><td>Addaven 用 <b>超過 4 週</b>要驗血中濃度，<b>尤其錳</b></td><td>Addaven 仿單</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 證據 ==================== -->
+<div class="iv-panel" id="p-ev">
+
+  <div class="dirhead"><span class="dh-n">改變處方的六個試驗</span><span class="dh-e">Trials that changed practice</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:760px;">
+      <thead><tr><th>試驗</th><th>設計</th><th>結果</th><th>對處方的意義</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>EPaNIC</b> 2011<br><a href="https://pubmed.ncbi.nlm.nih.gov/21714640/" target="_blank" rel="noopener" class="pmid">PMID 21714640</a></td>
+          <td>n=4640。48 小時內開始 PN（歐洲式）vs 第 8 天才開始（美加式），兩組都跑早期 EN 協定並用胰島素控血糖</td>
+          <td><b>晚 PN 組</b>提早活著出 ICU 的機率相對高 6.3%（HR 1.06, p=0.04）、
+              <b>ICU 感染較少 22.8% vs 26.2%（p=0.008）</b>、膽汁鬱積較少（p&lt;0.001）、
+              需要 &gt;2 天呼吸器者相對少 9.7%、腎替代療法中位少 3 天。<b>死亡率兩組一樣。</b></td>
+          <td>「補上熱量缺口」這個直覺被推翻。<b>早給 PN 不但沒好處，還多感染。</b></td>
+        </tr>
+        <tr>
+          <td><b>NUTRIREA-2</b> 2018<br><a href="https://pubmed.ncbi.nlm.nih.gov/29128300/" target="_blank" rel="noopener" class="pmid">PMID 29128300</a></td>
+          <td>n=2410。<b>使用升壓劑的休克病人</b>，插管 24 小時內開始 EN vs PN，兩組都給 20–25 kcal/kg/d</td>
+          <td>28 天死亡 37% vs 35%（p=0.33），<b>沒有差</b>。EN 組
+              <b>嘔吐（34% vs 20%）、腹瀉、腸缺血（2% vs &lt;1%，HR 3.84, p=0.007）、
+              急性結腸假性阻塞都較多</b>。</td>
+          <td>休克病人身上，<b>「EN 一定比較好」不成立</b>。這就是 ESPEN 把休克未控制列為 EN 延後條件的來源。</td>
+        </tr>
+        <tr>
+          <td><b>NUTRIREA-3</b> 2023<br><a href="https://pubmed.ncbi.nlm.nih.gov/36958363/" target="_blank" rel="noopener" class="pmid">PMID 36958363</a></td>
+          <td>n=3036。休克且插管者，前 7 天 <b>6 kcal/kg/d ＋ 0.2–0.4 g/kg/d 蛋白</b>
+              vs <b>25 kcal/kg/d ＋ 1.0–1.3 g/kg/d</b></td>
+          <td>90 天死亡 41.3% vs 42.8%（p=0.41，<b>無差</b>）。
+              <b>低量組準備好出 ICU 的中位時間較短（8 vs 9 天，HR 1.12, p=0.015）</b>，
+              嘔吐、腹瀉、<b>腸缺血（HR 0.50, p=0.030）</b>、肝功能異常都較少。</td>
+          <td>急性期<b>刻意少給</b>不但安全，併發症還更少。</td>
+        </tr>
+        <tr>
+          <td><b>EFFORT Protein</b> 2023<br><a href="https://pubmed.ncbi.nlm.nih.gov/36708732/" target="_blank" rel="noopener" class="pmid">PMID 36708732</a></td>
+          <td>n=1301，16 國 85 家 ICU。高蛋白 <b>≥2.2 g/kg/d</b> vs 常規 <b>≤1.2 g/kg/d</b></td>
+          <td>60 天內活著出院的累積發生率 46.1% vs 50.2%（HR 0.91, p=0.27）；60 天死亡 34.6% vs 32.1%。
+              <b>次族群分析：急性腎損傷與器官衰竭分數高者，高蛋白可能更糟。</b></td>
+          <td>把蛋白往上加沒有好處。<b>AKI 病人不要加蛋白</b>——這是這個試驗最實用的一句。</td>
+        </tr>
+        <tr>
+          <td><b>TARGET</b> 2018<br><a href="https://pubmed.ncbi.nlm.nih.gov/30346225/" target="_blank" rel="noopener" class="pmid">PMID 30346225</a></td>
+          <td>n≈4000。高熱量密度 EN 配方 vs 常規配方</td>
+          <td>90 天死亡率<b>沒有差別</b>。</td>
+          <td>單純把 EN 濃度調高、熱量灌進去，改變不了結果。</td>
+        </tr>
+        <tr>
+          <td><b>PLUS</b> 2022<br><a href="https://pubmed.ncbi.nlm.nih.gov/35041780/" target="_blank" rel="noopener" class="pmid">PMID 35041780</a></td>
+          <td>平衡多電解質液 vs 生理食鹽水，重症成人</td>
+          <td>90 天死亡率無顯著差異。</td>
+          <td>與 SMART／SALT-ED 一起看：<b>平衡液的好處在大量輸注時才明顯</b>，
+              日常維持輸液選哪一支不是生死問題，<b>Cl 負荷與含鉀含鈣的禁忌才是</b>。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">兩家指引的熱量建議不一樣</span><span class="dh-e">ESPEN vs ASPEN</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">不要合併成一句話</div>
+    <b>ESPEN 2023</b>：優先用<b>間接測熱法</b>測能量消耗（R15, Grade B）；
+    沒有測熱法就用 <b>20–25 kcal/kg/d</b>；<b>用預測公式時第一週要低於估計值的 70%</b>（R19, Grade B）；
+    第 3 天後可升到測得 EE 的 <b>80–100%</b>（R18）。<br>
+    <b>ASPEN 2022</b>：把熱量處方<b>下修到 12–25 kcal/kg/day</b>，
+    摘要原話是「因為對傷害的不確定性」（owing to a lack of certainty regarding harm）。
+    ASPEN 這篇同時說：<b>更高熱量、更高蛋白、PN vs EN、補充性 PN、不同脂肪乳，
+    在 36 個試驗、20,578 人裡都沒看到差別</b>；唯一訊號是含魚油者肺炎較少，臨床意義不確定。<br>
+    <span class="gr w">實務</span> 兩家的下緣差很多（12 vs 20）。
+    <b>本頁計算器預設 20 kcal/kg/d，但那只是預設值不是規定</b>；
+    急性期照 ESPEN 的邏輯本來就該更低。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">這一頁沒有的東西</div>
+    <b>免疫營養（arginine、glutamine、omega-3 高劑量）、微量元素的治療劑量、
+    腸道營養配方的品項比較、小兒 PN 的完整處方</b>都不在這一頁。
+    小兒的部分只保留 Oliclinomel 仿單引用的
+    <b>2018 ESPGHAN/ESPEN/ESPR 兒科 PN 指引</b>上限表，其餘請回原指引。
+  </div>
+</div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37517372/" target="_blank" rel="noopener" class="ref-link">Singer P, Blaser AR, Berger MM, et al. ESPEN practical and partially revised guideline: Clinical nutrition in the intensive care unit. Clin Nutr. 2023;42(9):1671-1689.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34784064/" target="_blank" rel="noopener" class="ref-link">Compher C, Bingham AL, McCall M, et al. Guidelines for the provision of nutrition support therapy in the adult critically ill patient: ASPEN. JPEN J Parenter Enteral Nutr. 2022;46(1):12-41.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/32115791/" target="_blank" rel="noopener" class="ref-link">da Silva JSV, Seres DS, Sabino K, et al. ASPEN Consensus Recommendations for Refeeding Syndrome. Nutr Clin Pract. 2020;35(2):178-195.（另有勘誤 PMID 32383800）</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/35365361/" target="_blank" rel="noopener" class="ref-link">Berger MM, Shenkin A, Schweinlin A, et al. ESPEN micronutrient guideline. Clin Nutr. 2022;41(6):1357-1424.</a> ｜
+    <a href="https://www.nice.org.uk/guidance/cg174" target="_blank" rel="noopener" class="ref-link">NICE. Intravenous fluid therapy in adults in hospital. Clinical guideline CG174.</a>
+    ｜ 晶體輸液與添加劑的品項、電解質濃度與劑量：<b>台大醫院藥劑部藥品資料庫</b>。
+    Taita 1–5 號、Bfluid、Clinimix、Oliclinomel、Nutriflex、Smoflipid、Addaven、Lyo-Povigent 的成分：
+    <b>衛生福利部食品藥物管理署核准之官方仿單／外盒標籤</b>（許可證字號標於各處）。
+    <b>2026-08-13 台大藥劑部網站維護中，靜脈營養液的院內備藥狀況未能查證，已於該分頁標明。</b>
+  </footer>
+</div>
+
+</div>
+</div>
+
+<script src="../js/common.js"></script>
+<script>
+/* ── 分頁切換 ───────────────────────────────────────────────── */
+function ivTab(name){
+  document.querySelectorAll('#iv_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.iv-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+  window.scrollTo(0, 0);
+}
+
+/* ── 營養處方計算 ───────────────────────────────────────────── */
+function num(id){ var v = parseFloat((document.getElementById(id)||{}).value); return isFinite(v) ? v : 0; }
+
+function set(id, val, unit, cls){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = (val === null || !isFinite(val) ? '—' : val) + '<small> ' + unit + '</small>';
+  el.className = 'rx-val' + (cls ? ' ' + cls : '');
+}
+
+function nuCalc(){
+  var wt   = num('nw');
+  var kcal = num('nkcal');
+  var pro  = num('npro');
+  var gc   = num('ngc');      // 葡萄糖濃度 %
+  var gr   = num('ngr');      // mL/hr
+  var lip  = num('nlip');     // 20% 脂肪乳 mL/hr
+  var prop = num('nprop');    // propofol 1% mL/hr
+
+  if(wt <= 0){
+    ['o_water','o_kcal','o_pro','o_gir','o_gkcal','o_lip','o_lkcal','o_pct'].forEach(function(id){
+      set(id, null, '');
+    });
+    document.getElementById('o_flag').innerHTML = '<span class="f-bad">請輸入體重</span>';
+    return;
+  }
+
+  /* 水分：NICE 25–30 mL/kg/d，顯示區間。
+     上緣放進 <small> 裡：手機 390px 寬時「1500–1800」＋單位在 23px 襯線下會把
+     單位擠到第二行，看起來像壞掉。只放大下緣、其餘縮小，一行放得下。 */
+  var w1 = Math.round(wt * 25), w2 = Math.round(wt * 30);
+  var elW = document.getElementById('o_water');
+  elW.innerHTML = w1 + '<small>–' + w2 + ' mL/d</small>';
+  elW.className = 'rx-val';
+
+  /* 熱量與蛋白目標 */
+  var kcalTgt = wt * kcal;
+  var proG    = wt * pro;
+  var nitro   = proG / 6.25;
+  set('o_kcal', Math.round(kcalTgt), 'kcal/d');
+  var elP = document.getElementById('o_pro');
+  elP.innerHTML = proG.toFixed(1) + '<small> g/d ・ N ' + nitro.toFixed(1) + ' g</small>';
+  elP.className = 'rx-val';
+
+  /* 葡萄糖：GIR mg/kg/min 與每日熱量（3.4 kcal/g） */
+  var gPerHr = gr * gc / 100;                    // g/hr
+  var gir    = gPerHr * 1000 / 60 / wt;          // mg/kg/min
+  var gKcal  = gPerHr * 24 * 3.4;
+  set('o_gir', gir.toFixed(2), 'mg/kg/min', gir > 5 ? 'warn' : (gir > 0 ? 'ok' : ''));
+  set('o_gkcal', Math.round(gKcal), 'kcal/d');
+
+  /* 脂肪：20% 乳劑 0.2 g/mL；propofol 1% 是 10% 脂肪基劑 0.1 g/mL */
+  var lipG   = (lip * 0.2 + prop * 0.1) * 24;    // g/day
+  var lipKg  = lipG / wt;
+  var lipKcal= lip * 2.0 * 24 + prop * 1.1 * 24; // 20% 乳劑 2.0 kcal/mL；propofol 1.1 kcal/mL
+  set('o_lip', lipKg.toFixed(2), 'g/kg/d', lipKg > 1.5 ? 'warn' : (lipKg > 0 ? 'ok' : ''));
+  set('o_lkcal', Math.round(lipKcal), 'kcal/d');
+
+  /* 非蛋白熱量達成率 */
+  var npc = gKcal + lipKcal;
+  var pct = kcalTgt > 0 ? npc / kcalTgt * 100 : NaN;
+  set('o_pct', isFinite(pct) ? Math.round(pct) : null, '%',
+      !isFinite(pct) ? '' : (pct > 110 ? 'warn' : (pct >= 70 ? 'ok' : '')));
+
+  /* 提示 */
+  var f = [];
+  if(gir > 5) f.push('<span class="f-bad">▲ GIR ' + gir.toFixed(2) + ' mg/kg/min 已超過 5 的上限（ESPEN R23）——超出的葡萄糖走脂肪生成，會推高血糖與 CO₂ 產量。</span>');
+  else if(gir > 4) f.push('<span class="f-bad">△ GIR 接近 5 mg/kg/min 的上限，重症有胰島素阻抗，實際耐受度常更低。</span>');
+  if(lipKg > 1.5) f.push('<span class="f-bad">▲ 脂肪 ' + lipKg.toFixed(2) + ' g/kg/d 超過 1.5 的上限（ESPEN R25，含 propofol）。</span>');
+  else if(prop > 0 && lipKg > 0.7) f.push('<span class="f-bad">△ propofol 已佔掉不少脂肪額度，開脂肪乳前先扣掉。</span>');
+  if(prop > 0){
+    f.push('<span>propofol ' + prop + ' mL/hr → 脂肪 ' + (prop * 0.1 * 24).toFixed(1) +
+           ' g/d、' + Math.round(prop * 1.1 * 24) + ' kcal/d，這是「非營養性」熱量但一樣要算。</span>');
+  }
+  if(isFinite(pct) && pct > 110) f.push('<span class="f-bad">▲ 非蛋白熱量已達目標的 ' + Math.round(pct) + '%，急性期過度餵食。</span>');
+  if(kcal < 12) f.push('<span>熱量目標低於 ASPEN 的 12 kcal/kg/d 下緣，確認是刻意的（如再餵食風險）。</span>');
+  if(pro > 1.3) f.push('<span class="f-bad">△ 蛋白 &gt;1.3 g/kg/d 沒有試驗支持；EFFORT Protein 顯示 AKI 與高器官衰竭分數者可能更糟。</span>');
+  if(!f.length) f.push('<span class="f-ok">目前輸入沒有超過任何一條上限。</span>');
+  document.getElementById('o_flag').innerHTML = f.join('<br>');
+}
+
+document.addEventListener('input', function(e){
+  if(e.target.closest('.rxbox')) nuCalc();
+});
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) ivTab(h);
+  nuCalc();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
