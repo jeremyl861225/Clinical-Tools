@@ -815,7 +815,7 @@
      畫的時候才扣掉捲動量。使用者滑動頁面，牠就跟著頁面一起移動；被推出畫面時
      由 step() 的 'return' 模式優先把牠帶回看得到的地方。 */
   /* ---- 飼料＝藥物 ----
-     五款：膠囊、圓錠、長橢圓錠、菱形錠、軟膠囊。每一顆在落下時隨機挑款式與
+     五款：膠囊、圓錠（帶刻痕）、長橢圓錠、素面圓錠、軟膠囊。每一顆落下時隨機挑款式與
      配色，並帶一個自己的翻滾角速度；沉到底之後轉正躺平（就近取 0 或 π，
      不會在地上繼續打轉）。 */
   function drawPill(g, f, sc) {
@@ -840,10 +840,8 @@
       g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4); g.fill();
       g.fillStyle = b;
       g.beginPath(); rrect(g, -.8, -2.6, 1.6, 5.2, .8); g.fill();
-    } else if (f.kind === 3) {                         // 菱形錠
-      g.beginPath();
-      g.moveTo(6.8, 0); g.lineTo(0, 4.6); g.lineTo(-6.8, 0); g.lineTo(0, -4.6);
-      g.closePath(); g.fill();
+    } else if (f.kind === 3) {                         // 圓錠（素面、無刻痕）
+      g.beginPath(); g.arc(0, 0, 5.8, 0, TAU); g.fill();
     } else {                                           // 軟膠囊（含反光）
       g.beginPath(); g.ellipse(0, 0, 7, 4.6, 0, 0, TAU); g.fill();
       g.globalAlpha = .55; g.fillStyle = b;
