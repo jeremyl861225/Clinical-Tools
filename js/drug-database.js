@@ -396,6 +396,35 @@ function pregField(v) {
 const DOSE_ROUTE = /^(?:PO|IV|IM|SC|SL|PR|IN|IT|IO|ID|Top|Topical|Inhal\w*|Nebuli\w*|Intra\w*|Oral|Rectal|Buccal|Transdermal|Ophthalmic)\b[^.]*\./i;
 const DOSE_POP = /\b(?:Adults?|Children|Child|Neonates?|Infants?(?:\s+and\s+children)?|Adolescents?|Elderly|Geriatric|Pediatric|Paediatric)\b[,:]/g;
 const DOSE_HEADER = /(^|[.;]\s+)([A-Z][A-Za-z][A-Za-z0-9 /()\-,&]{1,60}?):\s+/g;
+/* 台大原文偶爾**掉了句點**，新適應症的標頭直接黏在上一段的劑量後面：
+     「…Children, 1 mg/kg; max. 6 mg/kg Edema: Slow IV or IM. Adults, 20-40 mg…」
+   （Rasitol／furosemide，使用者實機回報）。DOSE_HEADER 要求標頭前面是行首、
+   句點或分號，這種情形一個都接不到，於是「Edema:」被當成上一行的續句印在
+   「max. 6 mg/kg」後面——畫面上 Edema 看起來像 Acute pulmonary edema 的內容，
+   實際上它是同一層的適應症標頭。
+   補一條：**數字＋單位**（可帶 /kg、/day 這種分母）之後緊接一個大寫標頭時，
+   視為掉了句點的段落邊界。左邊界原樣留著（`$1` 回填），不新增任何字元。
+   全庫 1,581 段走 fmtDose 的劑量字串實測只命中 30 處、11 種標頭，逐一看過
+   都是真的掉句點：furosemide 的 Edema、albumin 的 Hypoproteinemia、
+   medroxyprogesterone 的兩個癌別、lidocaine 的 Transtracheal injection、
+   protamine 的 Antagonise heparin infusion，其餘是被壓平的表格（NOTE:／
+   Vial B contains:），做成標頭也不會更差。 */
+const DOSE_UNIT = '(?:mg|g|mcg|µg|ug|ng|kg|mL|ml|L|U|IU|KIU|units?|mmol|mEq|%|hrs?|mins?|days?|wks?|mos?|yrs?)';
+const DOSE_DROP = new RegExp(
+  '(\\d[\\d.,–\\-]*\\s*' + DOSE_UNIT + '(?:/[A-Za-z²]+)*)\\s+' +
+  '([A-Z][A-Za-z][A-Za-z0-9 /()\\-,&]{1,60}?):\\s+', 'g');
+/* 給藥方式／劑量階段的標籤（Continuous infusion、Loading dose…）：它們前面
+   確實有句點，DOSE_HEADER 接得到，但**它們不是適應症**——furosemide 的
+   「Continuous infusion」是 Edema 底下的給法之一，做成與 Acute pulmonary
+   edema、Edema 同級的粗體段標，就把層級講錯了（使用者實機回報）。
+   改判成子層 .dl-stage：字仍然是粗的（它是個標籤），但縮排、不占段標的
+   上下留白，讀起來就是「上一個適應症底下的一種給法」。
+   形狀限定為「階段詞 ＋ dose／infusion」，可帶一個括號補述；全庫實測命中
+   38 處、11 種（Maintenance dose 16、Initial dose 8、Loading dose 5、
+   Continuous infusion 5、Usual Dose 4…），沒有一個是適應症。
+   刻意**不**收 Low／Moderate／High dose、Total daily dose、Pediatric dose、
+   Test dose for oliguria… 那些帶了額外語意或本來就可以當段標的字串。 */
+const DOSE_STAGE = /^(?:continuous|intermittent|loading|maintenance|initial|usual|starting|subsequent|single|target)\s+(?:iv\s+|slow\s+)?(?:dose|infusion)(?:\s*\([^)]*\))?$/i;
 // 這些「單字＋句點」是劑量修飾語或縮寫，不視為句尾，不在其後斷行
 const DOSE_ABBR = new Set(['max', 'min', 'approx', 'appro', 'no', 'cf', 'viz', 'etc',
   'wk', 'wks', 'hr', 'hrs', 'mo', 'mos', 'yr', 'yrs']);
@@ -414,6 +443,9 @@ function fmtDose(text) {
   if (rm) { head = rm[0].trim(); t = t.slice(rm[0].length).trim(); }
 
   // 以 †(適應症標頭) 與 ‡(族群) 作為換行標記，稍後轉成 HTML；標記字元本身不出現在資料裡
+  /* 掉句點的邊界先補標記。必須在 DOSE_HEADER **之前**跑：跑完之後那個標頭前面
+     是「† 」而不是句點，DOSE_HEADER 的 (^|[.;]\s+) 接不到它，不會重複標記。 */
+  t = t.replace(DOSE_DROP, (m, lead, h) => `${lead} †${h}: `);
   t = t.replace(DOSE_HEADER, (m, pre, h) => `${pre}†${h}: `);
   t = t.replace(DOSE_POP, m => `‡${m}`);
 
@@ -442,7 +474,9 @@ function fmtDose(text) {
       if (!chunk) return;
       if (ci > 0) {                                  // 適應症標頭：Xxx: rest
         const mi = chunk.indexOf(':');
-        html += `<div class="dl-sect">${richText(chunk.slice(0, mi).replace(/[‡†]/g, '').trim())}</div>`;
+        const label = chunk.slice(0, mi).replace(/[‡†]/g, '').trim();
+        // 給藥方式／劑量階段降一層，不與適應症同級（見 DOSE_STAGE 的說明）
+        html += `<div class="${DOSE_STAGE.test(label) ? 'dl-stage' : 'dl-sect'}">${richText(label)}</div>`;
         chunk = chunk.slice(mi + 1).trim();
         if (!chunk) return;
       }

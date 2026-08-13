@@ -110,6 +110,11 @@ table.renal-tbl.renal-thr td:first-child{white-space:normal; width:40%; overflow
 .dose-fmt{display:flex; flex-direction:column; gap:1px;}
 .dose-fmt .dl-head{font-weight:600; color:var(--label-ink); margin-bottom:2px;}
 .dose-fmt .dl-sect{font-weight:600; color:var(--accent2); margin:6px 0 1px;}
+/* 給藥方式／劑量階段（Continuous infusion、Loading dose…）：是上一個適應症
+   底下的一種給法，不是新的適應症。字仍然粗（它是標籤），但縮排到與 .dl-sub
+   同一個層級、不占段標的上下留白、不用段標的強調色——一眼就看得出它屬於
+   上面那個 .dl-sect，而不是與它並列。 */
+.dose-fmt .dl-stage{font-weight:600; color:var(--label-ink); padding-left:1.5em; margin:3px 0 0;}
 .dose-fmt .dl-line{margin:1px 0;}
 /* 子項：整段縮排，破折號在縮排內作為行首（inline，不懸掛出段落前緣）；
    換行時後續行對齊到破折號後的文字（hanging indent，但不突出段落左緣）。 */

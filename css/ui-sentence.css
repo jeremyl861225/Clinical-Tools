@@ -2875,6 +2875,9 @@
 [data-ui="sentence"] .dose-fmt .dl-sect {                              /* (0,3,0) > (0,2,0) */
   color: var(--sentence-fg); font-weight: 600;
 }
+/* 給藥方式／劑量階段（.dl-stage，drug-database.css 新增）：比 .dl-sect 低一層，
+   用 fg2 而不是 fg——縮排已經表達了層級，顏色再重一次就變成兩個同級標題。 */
+[data-ui="sentence"] .dose-fmt .dl-stage { color: var(--sentence-fg2); font-weight: 600; }
 [data-ui="sentence"] .dose-fmt .dl-sub { color: var(--sentence-dim); }
 [data-ui="sentence"] .dose-fmt .dl-item::before { color: var(--sentence-fg2); }   /* (0,3,1) > (0,2,1) */
 [data-ui="sentence"] .dose-fmt .dl-sub::before { color: var(--sentence-dim); }
@@ -4048,6 +4051,18 @@
   background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
   color: var(--sentence-fg); font-family: var(--sentence-mono); font-size: 16px;
 }
+/* 上面那條的例外：`.gs-input` 不是「沒有人管的」，它本來就住在自己畫框的
+ * `.gs-field` 裡（styles.css:103 就寫了 `border:0`，只是那條是 (0,2,0)，
+ * 壓不過上面的 (0,2,1)）。不排除就會在 .gs-field 的框裡再畫一個框，
+ * 聚焦時外框變色又多一層——全站 9 頁 11 個查詢欄都中：
+ * index、藥物資料庫、抗生素（菌種／藥物查詢兩個）、菌譜資料庫、癌症指引、
+ * 腹部急症、心臟衰竭（兩個）、手術預防、創傷用藥。
+ * 寫成 (0,3,0) 才壓得過 (0,2,1)——只多一層 class 的兩層選取器 (0,2,0) 不夠。
+ * 只清 border／radius，字體字級仍沿用上面那條（16px 是 iOS Safari 不放大的門檻）。 */
+[data-ui="sentence"] .gs-field .gs-input {
+  border: 0; border-radius: 0; background: transparent;
+}
+
 [data-ui="sentence"] select {
   background: var(--sentence-bg); border: 1px solid var(--sentence-line2); border-radius: 0;
   color: var(--sentence-fg); font-family: var(--sentence-sans); font-size: 14px;
