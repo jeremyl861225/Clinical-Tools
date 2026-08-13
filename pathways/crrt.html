@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CRRT 連續性腎臟替代療法 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  .cr-panel{display:none;} .cr-panel.on{display:block;}
+
+  /* ── 處方計算器 ─────────────────────────────────────────────── */
+  .rxbox{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:11px 13px; margin:10px 0 12px;}
+  .rxbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .rx-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px 14px;}
+  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }
+  .rx-row{display:flex; align-items:center; gap:7px;}
+  .rx-row label{font-size:12px; color:var(--ink); flex:1 1 auto; line-height:1.4;}
+  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .rx-row input[type=number]{width:78px; font-family:var(--mono); font-size:14px; font-weight:700;
+      padding:4px 6px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
+  .rx-row .rx-u{font-family:var(--mono); font-size:10.5px; color:var(--muted); width:62px;}
+  /* 深色結果面板：底色寫死 #132126，不能用 var(--ink)——暗色模式下 --ink 會翻成淺色，
+     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */
+  .rx-out{margin-top:11px; background:#132126; border-radius:2px; padding:10px 12px;}
+  .rx-out-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:9px;}
+  .rx-metric .rx-lab{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:#9fb3b8;}
+  .rx-metric .rx-val{font-family:var(--serif); font-size:23px; font-weight:600; color:#f4f2ec; line-height:1.2;}
+  .rx-metric .rx-val small{font-family:var(--mono); font-size:11px; font-weight:400; color:#9fb3b8;}
+  .rx-metric .rx-val.warn{color:#f0a58e;}
+  .rx-metric .rx-val.ok{color:#93d3b0;}
+  .rx-flag{margin-top:9px; font-family:var(--mono); font-size:11px; line-height:1.7; color:#d8d3c4;}
+  .rx-flag .f-bad{color:#f0a58e;} .rx-flag .f-ok{color:#93d3b0;}
+  .rx-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:8px;}
+
+  /* ── 通用小元件（與心因性休克／Swan-Ganz 同一套） ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .def-table td{line-height:1.7;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .def-table.dt-dose td:nth-child(n+2){font-family:var(--mono); font-size:11.5px; line-height:1.6;}
+  /* 建議強度徽章：1B／2C 這種 GRADE 記號 */
+  .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+      background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .gr.w{background:var(--accent2-soft); color:var(--accent2);}
+  .gr.d{background:var(--soft-bg); color:var(--muted); border:1px dashed var(--line);}
+
+  /* ── 模式示意：一條血流線，標出哪裡加液、哪裡出液 ── */
+  .modefig{border:1px solid var(--line); border-radius:2px; background:var(--soft-bg);
+           padding:9px 11px; margin:7px 0 3px; font-family:var(--mono); font-size:11px;
+           line-height:1.9; color:var(--ink); overflow-x:auto; white-space:nowrap;}
+  .modefig b{color:var(--accent);} .modefig i{color:var(--accent2); font-style:normal;}
+</style>
+</head>
+<body data-back-label="CRRT">
+<div class="sheet">
+<div class="view active" id="view-crrt">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Decision Pathway</div>
+      <h1>CRRT 連續性腎臟替代療法</h1>
+      <div class="sub">CVVH · CVVHD · CVVHDF — 模式原理、處方計算、抗凝與疑難排解</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-crrt'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="cr_tabs">
+    <button class="tab-btn active" data-p="mode" onclick="crTab('mode')">模式與原理</button>
+    <button class="tab-btn"        data-p="rx"   onclick="crTab('rx')">處方與計算</button>
+    <button class="tab-btn"        data-p="ac"   onclick="crTab('ac')">抗凝</button>
+    <button class="tab-btn"        data-p="tbl"  onclick="crTab('tbl')">併發症與疑難排解</button>
+    <button class="tab-btn"        data-p="ev"   onclick="crTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>本頁只談「已經決定要洗，接下來怎麼開」</b>——<b>該不該開始、什麼時候開始</b>在
+    <a href="aki-crrt.html" class="pmid">急性腎損傷與 RRT 時機</a>那一頁。
+    條文出處逐條標明：<span class="gr">2012</span> ＝ <b>KDIGO 2012 AKI 指引（現行已發表版）</b>；
+    <span class="gr w">2026 草案</span> ＝ <b>KDIGO 2026 AKI/AKD 指引公開評論草案</b>（2026-03 發布，評論期至 2026-05-11，<b>尚未定稿，不可當定案引用</b>）。
+    兩版在<b>抗凝與模式</b>上方向一致但強度不同，本頁並列而不合併。溶液品項為<b>台大醫院藥劑部</b>實際院內品項。
+  </div>
+
+<!-- ==================== 分頁一：模式與原理 ==================== -->
+<div class="cr-panel on" id="p-mode">
+
+  <div class="lede">
+    <div class="lede-title">三個字母決定的其實只有兩件事</div>
+    <div class="lede-body">
+      <div class="lede-item"><span>①</span><span><b>溶質怎麼過去？</b>——只有兩種機轉。
+        <b>對流 convection</b>：靠壓力把水推過膜，溶質「被水拖著走」（solvent drag），
+        <b>中大分子清得比較好</b>；<b>擴散 diffusion</b>：靠濃度差，<b>小分子（尿素、鉀、肌酸酐）清得比較快</b>。
+        <b>H＝hemofiltration＝對流，D＝dialysis＝擴散</b>，兩個字母都在就是兩者都用（<b>DF＝diafiltration</b>）。</span></div>
+      <div class="lede-item"><span>②</span><span><b>液體從哪裡進？</b>——對流會把血漿水一起帶走，所以要補回置換液（replacement fluid）；
+        擴散不帶走血漿水，補的是透析液（dialysate），走膜的另一側、與血液反向流。
+        <b>CVVH 只有置換液、CVVHD 只有透析液、CVVHDF 兩者都有</b>——這就是全部的差別。</span></div>
+      <div class="lede-item"><span>③</span><span><b>「CVV」是什麼？</b>——Continuous Veno-Venous：連續、<b>由靜脈引出再回靜脈</b>（現代都是這樣，
+        以幫浦驅動）。舊的 CAVH（arterio-venous，靠病人自己的血壓推）已不用。</span></div>
+      <div class="lede-foot"><b>臨床上四種模式的死亡率沒有被證明有差別</b>。選哪一種主要看：機器與液體的可及性、
+      要不要清中大分子、以及<b>濾器容易凝血時哪一種比較撐得住</b>（見下方 2026 草案的 Practice Point 5.6.2）。</div>
+    </div>
+  </div>
+
+  <div class="section-title">四種連續模式 <span class="en">The Four Continuous Modalities</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">SCUF · 緩慢連續超過濾</div>
+    <div class="modefig">血液 → <b>［濾器］</b> → 回血　　　　濾液 <i>↓</i>（<b>只移除水</b>，不補液）</div>
+    <b>只脫水，不清溶質。</b>用於<b>單純的體液過載</b>（利尿劑無效的心衰竭）而尿素、鉀、酸鹼都還可以的人。
+    因為沒有置換液也沒有透析液，<b>溶質清除幾乎是零</b>（KDIGO 2026 草案 Table 43：尿素清除 1–5 mL/min）。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">CVVH · 連續性靜脈—靜脈血液過濾（純對流）</div>
+    <div class="modefig">置換液 <i>↓前稀釋</i>　血液 → <b>［濾器］</b> → <i>↑後稀釋</i>置換液 → 回血　　濾液 <i>↓</i></div>
+    <b>只有對流。</b>大量濾液被移除，同時補回等量（減去要脫的水）的置換液。
+    <ul>
+      <li><b>優點</b>：中大分子（β₂-microglobulin、部分細胞激素、myoglobin）清除優於純擴散。</li>
+      <li><b>缺點</b>：要達到同樣的小分子清除需要<b>高置換液流量</b>；<b>後稀釋時濾器內血液被濃縮</b>，
+        是四種模式裡<b>最容易凝血</b>的一種——2026 草案因此建議<b>優先用 CVVHD 或 CVVHDF</b>來延長濾器壽命。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">CVVHD · 連續性靜脈—靜脈血液透析（純擴散）</div>
+    <div class="modefig">血液 → <b>［濾器］</b> → 回血　　透析液 <i>→ 逆向流過膜的另一側 →</i> 廢液</div>
+    <b>只有擴散。</b>透析液以逆流方式流過膜的另一側，溶質順濃度差擴散過去。
+    <ul>
+      <li><b>優點</b>：小分子（尿素、肌酸酐、鉀）清除效率高；<b>濾器內不被濃縮，較不易凝血</b>。</li>
+      <li><b>缺點</b>：中大分子清除較差。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">CVVHDF · 連續性靜脈—靜脈血液透析過濾（對流＋擴散）</div>
+    <div class="modefig">置換液 <i>↓</i>　血液 → <b>［濾器］</b> → <i>↑</i>置換液 → 回血　　透析液 <i>→</i> 廢液</div>
+    <b>兩種機轉都用</b>，是目前多數加護病房的預設。可以在總劑量固定的情況下，
+    <b>調整「多少來自置換液、多少來自透析液」</b>——想多清中大分子就把置換液比例拉高，
+    想省一點抗凝壓力就把透析液比例拉高。
+  </div>
+
+  <div class="section-title">各模式參數對照 <span class="en">Modality Parameters</span></div>
+  <div class="lead">下表逐格取自 <b>KDIGO 2026 AKI/AKD 指引公開評論草案 Table 43</b>（成人）。<b>該表為草案內容</b>，
+    引用時請標明；但它是目前把 SCUF／CVVH／CVVHD／CVVHDF 與間歇模式放在同一張表上比較的最完整版本。</div>
+  <div class="tw">
+    <table class="def-table dt-dose" style="min-width:700px;">
+      <thead><tr>
+        <th>參數</th><th>IHD</th><th>SLED</th><th>SCUF</th><th>CVVH</th><th>CVVHD</th><th>CVVHDF</th><th>腹膜透析</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>血流 Q<sub>B</sub> (mL/min)</td><td>300–500</td><td>100–300</td><td>100–200</td><td>80–200</td><td>80–200</td><td>80–200</td><td>不適用</td></tr>
+        <tr><td>溶質傳送機轉</td><td>擴散*</td><td>擴散</td><td>對流</td><td><b>對流</b></td><td><b>擴散</b></td><td><b>擴散＋對流</b></td><td>擴散</td></tr>
+        <tr><td>淨超過濾 UF<sub>NET</sub> (mL/kg/h)</td><td>0–15</td><td>0–8</td><td>0–8</td><td>0–3</td><td>0–3</td><td>0–3</td><td>不定</td></tr>
+        <tr><td>透析液 Q<sub>D</sub> (mL/h)</td><td>300–500 mL/min</td><td>100–300 mL/min</td><td>—</td><td>—</td><td>250–2000</td><td>250–2000</td><td>每次交換 1–2 L</td></tr>
+        <tr><td>置換液 Q<sub>R</sub> (mL/h)</td><td>HDF 時不定</td><td>0</td><td>—</td><td>250–4000</td><td>0</td><td>250–4000</td><td>0</td></tr>
+        <tr><td>尿素清除 (mL/min)</td><td>200–350</td><td>80–90</td><td><b>1–5</b></td><td>25–33</td><td>25–33</td><td>25–33</td><td>15–25</td></tr>
+        <tr><td>主要通路</td><td colspan="6">中心靜脈（SCUF 可周邊）</td><td>腹腔</td></tr>
+        <tr class="dt-warn"><td>滲透壓波動<br>／顱內壓影響</td><td>＋＋＋<br>可能升高 ICP</td><td>＋＋</td><td>＋</td><td colspan="3">較小（中斷治療時仍可能發生）</td><td>無／通常不變</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">＊ IHD 併用血液透析過濾（HDF）時為擴散＋對流。</div>
+
+  <div class="section-title">分子量與清除機轉 <span class="en">Molecular Size &amp; Clearance</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>小分子（&lt; 500 Da）</b>：尿素 60、鉀 39、肌酸酐 113、磷 95 Da——<b>擴散最有效率</b>。這也是為什麼
+        「鉀降不下來」時加透析液流量比加置換液有效。</li>
+      <li><b>中分子（500–15,000 Da）</b>：vancomycin 1,449、myoglobin 17,000 Da——<b>對流的優勢區</b>。
+        橫紋肌溶解症時常有人主張走高對流比例，但<b>沒有證據顯示能改善腎臟預後或死亡率</b>。</li>
+      <li><b>大分子與蛋白結合藥物</b>：白蛋白（66,000 Da）與結合在白蛋白上的東西（bilirubin、多數蛋白結合率高的藥）
+        <b>一般濾器過不去</b>——這正是為什麼「洗腎可以清掉高膽紅素」是錯的。</li>
+      <li><b>對藥物的意義</b>：<b>親水、蛋白結合率低、分佈體積小</b>的藥被 CRRT 清得多（多數 β-lactam、
+        aminoglycoside、vancomycin、levetiracetam）；<b>親脂、高蛋白結合</b>的清得少。
+        逐藥的台大 CVVH 建議劑量見<a href="../tools/antibiotics.html" class="pmid">抗生素指引</a>與
+        <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>的 CVVH 欄。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">為什麼選連續而不是間歇 <span class="en">CRRT vs IRRT</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:24%">情境</th><th style="width:16%">建議</th><th style="width:14%">強度</th><th style="width:46%">出處與理由</th></tr></thead>
+      <tbody>
+        <tr><td><b>血行動力學不穩</b></td><td>CRRT 優於間歇</td><td><span class="gr">2B</span></td>
+          <td><b>KDIGO 2012 §5.6.2</b>。統合分析其實<b>沒看到死亡率差異</b>，但多數比較試驗把不穩定的病人排除掉，
+            所以「沒有差異」不能直接套用在這一群。</td></tr>
+        <tr><td><b>血行動力學不穩</b></td><td>CRRT <b>或急性腹膜透析</b>優於傳統間歇</td><td><span class="gr w">2C · 2026 草案</span></td>
+          <td><b>2026 草案 Recommendation 5.2.1</b>。相對 2012 的變動是<b>把急性腹膜透析納入同一格</b>
+            （在資源有限或兒科族群特別重要）。</td></tr>
+        <tr><td><b>急性腦損傷／顱內壓升高／腦水腫</b></td><td>CRRT 優於間歇</td><td><span class="gr">2B</span>／<span class="gr w">2026 草案 Practice Point</span></td>
+          <td>間歇治療的<b>快速滲透壓下降會加重腦水腫</b>，且透析中低血壓危害腦灌流。兩版方向一致。</td></tr>
+        <tr><td><b>延長式間歇（PIRRT／SLED）</b></td><td>可作為 CRRT 的替代</td><td><span class="gr w">2026 草案 Practice Point 5.2.4</span></td>
+          <td>2012 只說「連續與間歇是互補療法」（未分級）；2026 草案把 PIRRT 明確寫成可接受的替代。</td></tr>
+        <tr><td><b>從 CRRT 轉回間歇</b></td><td>血行動力學穩定後可考慮</td><td><span class="gr w">2026 草案 Practice Point 5.2.5</span></td>
+          <td>最佳轉換時機<b>沒有定論</b>，草案自己也這樣寫。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 分頁二：處方與計算 ==================== -->
+<div class="cr-panel" id="p-rx">
+
+  <div class="lede">
+    <div class="lede-title">開一張 CRRT 醫囑要決定的六件事</div>
+    <div class="lede-body">
+      <div class="lede-item"><span>①</span><span><b>模式</b>（CVVH／CVVHD／CVVHDF／SCUF）</span></div>
+      <div class="lede-item"><span>②</span><span><b>劑量</b>：濾出液總量 <b>20–25 mL/kg/h</b>——<b>這是要「送到」的量，不是「開出去」的量</b></span></div>
+      <div class="lede-item"><span>③</span><span><b>血流量 Q<sub>B</sub></b>（多數在 100–200 mL/min；決定濾過分率的分母）</span></div>
+      <div class="lede-item"><span>④</span><span><b>置換液的前／後稀釋比例</b>與<b>透析液流量</b></span></div>
+      <div class="lede-item"><span>⑤</span><span><b>淨脫水量 UF<sub>NET</sub></b>——<b>每天都要重開</b>，不是設定一次就放著</span></div>
+      <div class="lede-item"><span>⑥</span><span><b>抗凝</b>（見下一分頁）與<b>溶液配方</b>（緩衝劑、鉀、磷）</span></div>
+      <div class="lede-foot"><b>劑量與脫水是兩件事</b>，最常被混在一起：劑量（clearance）決定尿素與鉀降多快，
+      脫水（UF<sub>NET</sub>）決定體液平衡。<b>把劑量開大並不會多脫水</b>，反之亦然。</div>
+    </div>
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">CRRT 處方計算器</div>
+    <div class="rx-grid">
+      <div class="rx-row"><label>體重<span class="rx-en">Weight</span></label>
+        <input type="number" id="cw" value="60" min="1" max="250" step="0.5"><span class="rx-u">kg</span></div>
+      <div class="rx-row"><label>血比容<span class="rx-en">Hematocrit</span></label>
+        <input type="number" id="chct" value="30" min="10" max="65" step="1"><span class="rx-u">%</span></div>
+      <div class="rx-row"><label>血流量 Q<sub>B</sub><span class="rx-en">Blood flow</span></label>
+        <input type="number" id="cqb" value="150" min="20" max="400" step="10"><span class="rx-u">mL/min</span></div>
+      <div class="rx-row"><label>透析液 Q<sub>D</sub><span class="rx-en">Dialysate</span></label>
+        <input type="number" id="cqd" value="800" min="0" max="4000" step="50"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>置換液・<b>前</b>稀釋<span class="rx-en">Pre-dilution replacement</span></label>
+        <input type="number" id="cqpre" value="600" min="0" max="4000" step="50"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>置換液・<b>後</b>稀釋<span class="rx-en">Post-dilution replacement</span></label>
+        <input type="number" id="cqpost" value="0" min="0" max="4000" step="50"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>淨脫水 UF<sub>NET</sub><span class="rx-en">Net ultrafiltration</span></label>
+        <input type="number" id="cufn" value="100" min="0" max="1000" step="10"><span class="rx-u">mL/hr</span></div>
+      <div class="rx-row"><label>預期治療中斷<span class="rx-en">Expected downtime</span></label>
+        <input type="number" id="cdown" value="15" min="0" max="60" step="5"><span class="rx-u">% / 天</span></div>
+    </div>
+
+    <div class="rx-out">
+      <div class="rx-out-grid">
+        <div class="rx-metric"><div class="rx-lab">濾出液總量 Effluent</div><div class="rx-val" id="o_eff">—<small> mL/hr</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">開出的劑量 Prescribed</div><div class="rx-val" id="o_rx">—<small> mL/kg/h</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">前稀釋校正後</div><div class="rx-val" id="o_corr">—<small> mL/kg/h</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">扣中斷後實送 Delivered</div><div class="rx-val" id="o_del">—<small> mL/kg/h</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">濾過分率 FF</div><div class="rx-val" id="o_ff">—<small> %</small></div></div>
+        <div class="rx-metric"><div class="rx-lab">每日脫水 Daily UF</div><div class="rx-val" id="o_day">—<small> mL/day</small></div></div>
+      </div>
+      <div class="rx-flag" id="o_flag"></div>
+    </div>
+
+    <div class="rx-note">
+      <b>算法</b>：濾出液＝透析液＋前稀釋＋後稀釋＋淨脫水。<b>前稀釋校正</b>＝濾出液 × 血液水流量 ÷（血液水流量＋前稀釋流量），
+      血液水流量取 Q<sub>B</sub> ×（1−Hct）× 0.93。<b>濾過分率 FF</b>＝（後稀釋＋淨脫水）÷（血液水流量＋前稀釋流量）。
+      <b>實送劑量</b>＝校正後劑量 ×（1−中斷比例）。
+      <b>BMI ≥ 30 者，2026 草案 Practice Point 5.3.1 建議以理想或校正體重代入</b>，以免劑量開得過高。
+    </div>
+  </div>
+
+  <div class="section-title">劑量：20–25 是「送到」的量 <span class="en">Dose</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:34%">條文</th><th style="width:13%">強度</th><th style="width:53%">實務意義</th></tr></thead>
+      <tbody>
+        <tr><td>CRRT 濾出液 <b>20–25 mL/kg/h</b>；「通常需要開出更高的濾出液處方量」</td>
+          <td><span class="gr">1A · 2012</span></td>
+          <td>2012 版把「開出的量要比目標高」寫成獨立的未分級敘述——<b>因為治療一定會中斷</b>（換濾器、做檢查、下刀房、警報）。
+            實務上常見的做法是<b>開 25–30 以送到 20–25</b>。</td></tr>
+        <tr><td>CRRT <b>20–25 mL/kg/h</b> 優於更高劑量；間歇或延長式 <b>Kt/V 3.9／週</b></td>
+          <td><span class="gr w">1B · 2026 草案</span></td>
+          <td>數字沒變，<b>證據等級由 1A 降為 1B</b>，且方向改寫成「不要開更高」。</td></tr>
+        <tr><td><b>不建議</b>對敗血症／敗血性休克使用<b>高容量血液過濾（HVHF）</b></td>
+          <td><span class="gr w">1B · 2026 草案</span></td>
+          <td>2012 沒有這一條。<b>「敗血症要洗掉細胞激素所以要開大」在指引層級已被明確否定</b>。</td></tr>
+        <tr><td>BMI ≥ 30 者以<b>理想或校正體重</b>計算起始劑量</td>
+          <td><span class="gr w">2026 草案 PP 5.3.1</span></td>
+          <td>用實際體重會把劑量開到不必要的高，增加電解質耗竭與抗生素清除過度。</td></tr>
+        <tr><td><b>每天檢視</b>劑量是否足以矯正電解質、酸鹼與含氮廢物</td>
+          <td><span class="gr w">2026 草案 PP 5.3.2</span></td>
+          <td>劑量不是設定一次就好；<b>2012 也已有「頻繁評估實際送達劑量以調整處方」</b><span class="gr">1B</span>。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">兩個最常見的劑量錯誤</div>
+    <ul>
+      <li><b>把「開出的量」當成「送到的量」</b>：機器上顯示 25 mL/kg/h，但一天有 4 小時在換濾器與外出檢查，
+        實際送到只有約 21。<b>報告劑量時要問的是這一天總濾出液除以 24 小時</b>。</li>
+      <li><b>大量前稀釋卻不校正</b>：前稀釋把血液先稀釋掉，濾出液裡的溶質濃度比血漿低——
+        <b>同樣的濾出液流量，前稀釋的實際清除比後稀釋低</b>（本頁計算器已代入校正）。
+        後稀釋雖然效率高，但濾器內血液被濃縮、更容易凝血，所以實務是兩者混用。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">濾過分率與血流量 <span class="en">Filtration Fraction</span></div>
+  <div class="kbox">
+    <b>濾過分率（FF）＝被濾掉的血漿水 ÷ 進入濾器的血漿水。</b>
+    <ul>
+      <li><b>目標 &lt; 20–25%</b>。FF 太高代表濾器出口端的血液被嚴重濃縮（血比容與蛋白濃度飆高），
+        <b>直接導致濾器凝血與壽命縮短</b>。</li>
+      <li>FF 太高時的三個解法，效果由大到小：<b>把置換液從後稀釋改成前稀釋</b>、<b>提高血流量 Q<sub>B</sub></b>、
+        <b>把置換液換成透析液（改走 CVVHD／CVVHDF）</b>。</li>
+      <li><b>血流量拉高不會增加對流清除</b>——它增加的是分母，讓同樣的濾液量對應較低的 FF；
+        對擴散清除倒是有幫助（提高膜兩側的濃度差維持）。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">台大院內的 CRRT 溶液 <span class="en">NTUH CRRT Solutions</span></div>
+  <div class="tw">
+    <table class="def-table dt-dose" style="min-width:620px;">
+      <thead><tr><th style="width:26%">品項</th><th style="width:14%">用途</th><th style="width:38%">電解質（mEq/L）</th><th style="width:22%">要注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>CVVH A Solution</b><br>3000 mL/bag<br>連續性血液過濾補充液甲</td>
+          <td>置換液</td>
+          <td>Na 147.2、Cl 155.26、<b>Ca 5.2</b>、Mg 2.86</td>
+          <td><b>含鈣</b>——走局部檸檬酸抗凝時不是用這一袋，改用下面的無鈣透析液</td></tr>
+        <tr><td><b>CRRT non Ca Dialysate</b><br>A 液 4750 mL＋B 液 250 mL／set<br>舒凱連續無鈣透析液</td>
+          <td><b>透析液</b>（檸檬酸抗凝專用）</td>
+          <td><b>不含鈣</b></td>
+          <td>仿單寫得很明確：<b>採局部檸檬酸抗凝進行 CVVHD 時</b>作為透析液，<b>搭配 4% 檸檬酸鈉溶液與鈣補充液</b>使用。
+            <b>A、B 液使用前混合，混合後 48 小時內用完</b>；<b>不可直接靜脈輸注</b></td></tr>
+        <tr><td><b>Sodium Chloride (for CVVH B)</b><br>0.45% 2760 mL/bag</td>
+          <td>置換液（B 液基底）</td>
+          <td>與 <b>sodium bicarbonate 注射液混合後</b>才成為 CVVH B 液</td>
+          <td><b>要現場混合</b>；混錯比例就是酸鹼與鈉離子一起錯</td></tr>
+        <tr><td><b>Prismasol B0</b><br>5000 mL/bag<br>補利壽 B0</td>
+          <td>置換液<b>或</b>透析液</td>
+          <td>Na 140、Ca 3.5、Mg 1.0、Cl 109.5、lactate 3、<b>HCO₃ 32</b>；287 mOsm/L</td>
+          <td><b>雙腔袋，使用前必須先擠壓混合</b>；<b>不含鉀、不含磷</b>——低血鉀與低血磷要另外補</td></tr>
+        <tr><td><b>Regiocit</b><br>5000 mL/bag<br>局部抗凝檸檬酸血液過濾用溶液</td>
+          <td><b>濾器前</b>置換液（局部檸檬酸抗凝專用）</td>
+          <td>檸檬酸鈉＋氯化鈉；<b>不含鈣</b></td>
+          <td>仿單禁忌：<b>嚴重肝功能不全</b>、<b>休克併肌肉低灌流</b>；<b>不可直接靜脈輸注</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">緩衝劑：碳酸氫鹽還是乳酸鹽</div>
+    <ul>
+      <li><b>循環休克者：碳酸氫鹽優於乳酸鹽</b> <span class="gr">1B · 2012 §5.7.2</span>——這是 2012 版在緩衝劑上唯一的強建議。</li>
+      <li>肝衰竭或乳酸血症者亦建議碳酸氫鹽 <span class="gr">2B</span>；一般 AKI 病人為 <span class="gr">2C</span>。</li>
+      <li>2026 草案把這三格合併成一條 Practice Point 5.7.1：<b>循環休克、肝衰竭或乳酸血症時用碳酸氫鹽</b>。</li>
+      <li>理由是<b>乳酸要靠肝臟代謝成碳酸氫鹽才有緩衝作用</b>——肝不好或已經在乳酸堆積的人，
+        給乳酸緩衝等於把乳酸再加上去，而且會讓乳酸失去監測價值。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">溶液不含鉀與磷，是低血鉀／低血磷的主因</div>
+    <ul>
+      <li>連續 24 小時、20–25 mL/kg/h 的清除，<b>磷與鉀會被持續帶走</b>。Prismasol B0 兩者都不含。</li>
+      <li>對策：<b>每天（不穩定時每 6–12 小時）追蹤 K、P、Mg、離子鈣</b>；
+        用<b>含磷的透析／置換液</b>（若院內有）或另由靜脈補（台大品項：Potassium Phosphate 44 mEq K/100 mL，
+        K 0.44 mEq/mL、P 0.3 mmol/mL；Glycophos 20 mmol/20 mL）。</li>
+      <li><b>低血磷會讓病人脫離不了呼吸器</b>——橫膈無力，是 CRRT 病人最常被漏掉的一項。
+        逐項處置見<a href="electrolyte.html#p" class="pmid">電解質失衡 › 磷</a>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁三：抗凝 ==================== -->
+<div class="cr-panel" id="p-ac">
+
+  <div class="lead">
+    <b>抗凝的目的是延長濾器壽命，不是治療病人的血栓。</b>先問三個問題：<b>病人本來就在用全身抗凝嗎？</b>
+    （是的話通常不必再加）<b>有沒有出血風險？</b><b>有沒有檸檬酸的禁忌（嚴重肝衰竭、休克併組織低灌流）？</b>
+  </div>
+
+  <div class="section-title">兩版指引的差異 <span class="en">2012 vs 2026 Draft</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:620px;">
+      <thead><tr><th style="width:30%">情境</th><th style="width:26%">KDIGO 2012（現行）</th><th style="width:30%">KDIGO 2026 草案</th><th style="width:14%">變化</th></tr></thead>
+      <tbody>
+        <tr><td><b>CRRT，無出血風險、無檸檬酸禁忌</b></td>
+          <td><b>建議用局部檸檬酸抗凝優於肝素</b> <span class="gr">2B</span></td>
+          <td><b>建議用局部檸檬酸抗凝優於肝素</b>（在有此品項的地方） <span class="gr w">1B</span></td>
+          <td><b>由弱建議升為強建議</b></td></tr>
+        <tr><td><b>CRRT，有檸檬酸禁忌或無此品項</b></td>
+          <td>用未分餾或低分子量肝素 <span class="gr">2C</span></td>
+          <td>未分餾肝素、<b>epoprostenol 或 nafamostat</b> 皆可 <span class="gr w">PP 5.5.1</span></td>
+          <td>替代選項變多</td></tr>
+        <tr><td><b>CRRT，出血風險高、未在用抗凝</b></td>
+          <td><b>用檸檬酸優於完全不抗凝</b> <span class="gr">2C</span>；<b>避免局部肝素化</b> <span class="gr">2C</span></td>
+          <td>同方向（併入上列強建議）</td>
+          <td>一致</td></tr>
+        <tr><td><b>間歇性血液透析</b></td>
+          <td>用未分餾或低分子量肝素優於其他 <span class="gr">1C</span></td>
+          <td>無增加出血風險且未在用全身抗凝者可考慮 <span class="gr w">PP 5.5.3</span></td>
+          <td>由建議降為實務要點</td></tr>
+        <tr><td><b>急性肝素引起之血小板低下（HIT）</b></td>
+          <td>（2012 未專章）</td>
+          <td>需全身抗凝者用 <b>argatroban、danaparoid 或 bivalirudin</b> <span class="gr w">PP 5.5.4</span>；
+            亞急性或久遠 HIT 且不需全身抗凝者<b>優先用檸檬酸</b> <span class="gr w">PP 5.5.5</span></td>
+          <td><b>新增</b></td></tr>
+        <tr><td><b>高凝狀態</b></td>
+          <td>（未提）</td>
+          <td>可在全身抗凝之外<b>再加上局部檸檬酸</b> <span class="gr w">PP 5.5.2</span></td>
+          <td><b>新增</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">局部檸檬酸抗凝怎麼運作 <span class="en">Regional Citrate Anticoagulation</span></div>
+  <div class="kbox">
+    <div class="modefig">檸檬酸 <i>↓（濾器前）</i> 血液 → <b>［濾器］</b> → 回血 <i>↑</i> 補鈣（回血端或另一條中心靜脈）</div>
+    <ul>
+      <li><b>原理</b>：檸檬酸在<b>濾器前</b>螯合離子鈣 → 濾器內離子鈣降到 <b>0.25–0.35 mmol/L</b> → 凝血級聯無法進行。
+        <b>抗凝只發生在體外迴路裡</b>，血回到病人身上前補鈣，病人本身的凝血功能不受影響。</li>
+      <li><b>兩個要分開看的鈣</b>：<b>迴路後（post-filter）離子鈣</b>反映抗凝夠不夠（目標 0.25–0.35 mmol/L）；
+        <b>病人（systemic）離子鈣</b>反映補鈣夠不夠（目標維持正常）。<b>這兩個數字調的是不同的幫浦</b>——
+        調錯了會愈調愈亂。</li>
+      <li><b>檸檬酸也是鹼</b>：進到體內的檸檬酸經肝臟／肌肉／腎臟的三羧酸循環代謝，<b>1 mmol 檸檬酸產生 3 mmol 碳酸氫鹽</b>。
+        所以檸檬酸抗凝常伴隨<b>代謝性鹼中毒</b>；相對地代謝不掉時就變成問題（見下）。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">檸檬酸蓄積（citrate lock）——怎麼認、怎麼辦</div>
+    <ul>
+      <li><b>怎麼發生</b>：<b>肝衰竭</b>或<b>休克併組織低灌流</b>時檸檬酸代謝不掉，在體內堆積並繼續螯合鈣。</li>
+      <li><b>典型組合</b>：<b>總鈣上升、離子鈣下降</b>（螯合形式的鈣被算進總鈣但沒有活性）、
+        <b>代謝性酸中毒（不是鹼中毒）加重</b>、<b>補鈣需求持續往上爬</b>、陰離子間隙擴大。</li>
+      <li><b>最常用的判定指標</b>：<b>總鈣 ÷ 離子鈣（同單位）比值 &gt; 2.5</b> 高度懷疑蓄積；
+        <b>&gt; 2.1</b> 就該提高警覺並密集追蹤。<b>這個比值是實務上的閾值，不是指引條文</b>。</li>
+      <li><b>怎麼辦</b>：降低檸檬酸輸注速率或<b>停用檸檬酸改肝素／無抗凝</b>；同時處理低灌流本身。</li>
+      <li><b>台大 Regiocit 仿單的兩條禁忌正好對應這兩個機轉</b>：嚴重肝功能不全、休克併肌肉低灌流。</li>
+      <li><b>台大走檸檬酸抗凝的三件一組</b>：<b>Regiocit</b>（濾器前置換液）或 <b>CRRT non Ca Dialysate 舒凱無鈣透析液</b>（走 CVVHD 時的透析液），
+        加上<b>4% 檸檬酸鈉溶液</b>與<b>另一路的鈣補充</b>——<b>三者要一起開，少一項就不成立</b>。
+        含鈣的 CVVH A 液不是這條路徑用的。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">其他抗凝方式與無抗凝 <span class="en">Alternatives</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:20%">方式</th><th style="width:34%">怎麼用</th><th style="width:46%">要注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>未分餾肝素</b></td>
+          <td>迴路前持續輸注，依 aPTT 或迴路後 ACT 調整</td>
+          <td><b>是全身抗凝</b>——出血風險落在病人身上；HIT 風險；<b>2012 明確不建議「局部肝素化」</b>（肝素＋魚精蛋白）用在高出血風險者 <span class="gr">2C</span></td></tr>
+        <tr><td><b>低分子量肝素</b></td>
+          <td>間歇性透析較常用</td>
+          <td>腎衰竭時蓄積、監測不便（要測抗 Xa）</td></tr>
+        <tr><td><b>Argatroban／bivalirudin／danaparoid</b></td>
+          <td>急性 HIT 且需要全身抗凝時 <span class="gr w">2026 草案 PP 5.5.4</span></td>
+          <td>argatroban 經肝代謝（肝衰竭要減量）、bivalirudin 經腎為主</td></tr>
+        <tr><td><b>Nafamostat</b></td>
+          <td>2026 草案列為檸檬酸的可接受替代之一</td>
+          <td>半衰期極短、幾乎只作用在體外迴路；<b>台大處方集查無此品項</b></td></tr>
+        <tr><td><b>不抗凝</b></td>
+          <td>凝血功能已嚴重受損、或活動性大出血</td>
+          <td><b>濾器壽命明顯縮短</b>；可用的補救：<b>前稀釋</b>、提高 Q<sub>B</sub>、降低 FF、
+            以及<b>用含肝素的溶液預沖迴路</b> <span class="gr w">2026 草案 PP 5.6.3</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 分頁四：併發症與疑難排解 ==================== -->
+<div class="cr-panel" id="p-tbl">
+
+  <div class="section-title">濾器一直凝血 <span class="en">Frequent Clotting</span></div>
+  <div class="kbox">
+    <b>依「先便宜再麻煩」的順序排查：</b>
+    <ul>
+      <li><b>① 導管</b>——這是最常見的原因。<b>抽吸壓力（access pressure）過度負值</b>代表引流不良：
+        導管貼壁、位置太淺、扭折、或病人體位改變。<b>先確認導管位置（右心房入口附近）與有無扭折</b>。
+        2026 草案 PP 5.6.2 把「把導管尖端調到右心房」列為非藥物延壽策略的第一項。</li>
+      <li><b>② 濾過分率太高</b>——FF &gt; 25% 幾乎必然縮短濾器壽命。改前稀釋、提高 Q<sub>B</sub>、或把置換液改成透析液。</li>
+      <li><b>③ 模式</b>——<b>2026 草案明文建議 CVVHD 或 CVVHDF 優於 CVVH</b>（純對流最容易濃縮）。</li>
+      <li><b>④ 抗凝</b>——檸檬酸者看<b>迴路後離子鈣</b>是否確實落在 0.25–0.35；肝素者看 aPTT。</li>
+      <li><b>⑤ 病人因素</b>——高凝狀態（惡性腫瘤、抗磷脂抗體、嚴重發炎）；2026 草案 PP 5.5.2 允許<b>全身抗凝再加上局部檸檬酸</b>。</li>
+      <li><b>⑥ 迴路本身</b>——空氣捕捉室（air trap）內血液滯留、迴路扭折、幫浦段老化。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">代謝與電解質併發症 <span class="en">Metabolic Complications</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:640px;">
+      <thead><tr><th style="width:18%">併發症</th><th style="width:30%">為什麼會發生</th><th style="width:52%">處理</th></tr></thead>
+      <tbody>
+        <tr><td><b>低血磷</b></td>
+          <td>連續清除＋<b>多數置換液不含磷</b>（Prismasol B0 即不含）</td>
+          <td>用含磷溶液，或靜脈補（台大：Potassium Phosphate 44 mEq K/100 mL；Glycophos 20 mmol/20 mL）。
+            <b>脫離呼吸器困難時先看磷</b></td></tr>
+        <tr><td><b>低血鉀</b></td>
+          <td>同上；Prismasol B0 不含鉀</td>
+          <td>改用含鉀濃度較高的溶液，或另加鉀。<b>目標不是「正常低標」而是穩定在 4 上下</b>（心律不整風險）</td></tr>
+        <tr><td><b>低血鎂</b></td>
+          <td>溶液鎂濃度（1.0 mEq/L）低於一般補充需求，且連續清除</td>
+          <td>常規追蹤並補充；<b>低血鎂會讓低血鉀與低血鈣補不起來</b></td></tr>
+        <tr><td><b>低體溫</b></td>
+          <td>體外迴路持續散熱（每小時數百毫升液體被加熱到體溫再回輸）</td>
+          <td>使用加溫器。<b>真正的危險是它會遮住發燒</b>——CRRT 病人的感染常常不發燒</td></tr>
+        <tr><td><b>代謝性鹼中毒</b></td>
+          <td>檸檬酸代謝產生碳酸氫鹽（1 mmol 檸檬酸 → 3 mmol HCO₃⁻）</td>
+          <td>降低檸檬酸劑量或改用低碳酸氫鹽濃度的溶液</td></tr>
+        <tr><td><b>代謝性酸中毒惡化</b></td>
+          <td><b>檸檬酸蓄積</b>（見抗凝分頁）或緩衝劑不足</td>
+          <td>查總鈣／離子鈣比值；必要時停檸檬酸</td></tr>
+        <tr><td><b>低血糖／高血糖</b></td>
+          <td>溶液含或不含葡萄糖；同時清除胰島素</td>
+          <td>密集追蹤血糖，尤其換液配方時</td></tr>
+        <tr><td><b>藥物濃度不足</b></td>
+          <td>親水、低蛋白結合的藥被大量清除</td>
+          <td><b>抗生素最常被洗掉而劑量不足</b>——查台大 CVVH 欄；
+            β-lactam 常需<b>不減量甚至加量</b>，見<a href="../tools/antibiotics.html" class="pmid">抗生素指引</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">血管通路 <span class="en">Vascular Access</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>不要為了預防感染而定期換管</b> <span class="gr w">2026 草案 PP 5.4.6</span>——常規換管沒有降低導管相關感染。</li>
+      <li><b>不要用既有的動靜脈瘻管或人工血管做 CRRT</b> <span class="gr w">2026 草案 PP 5.4.4</span>——長時間穿刺有針脫落與瘻管損傷之虞
+        （間歇性透析則可用 <span class="gr w">PP 5.4.3</span>）。</li>
+      <li>功能不良的非隧道式導管要換時，<b>新穿刺或導引線交換都可以，個案決定</b> <span class="gr w">PP 5.4.5</span>。</li>
+      <li>預期需要長期治療、或準備出院仍依賴透析者，<b>轉為帶隧道的長期導管</b> <span class="gr w">PP 5.4.7／5.4.8</span>。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">什麼時候可以停 <span class="en">Weaning</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>2012 §5.2.1</b>（未分級）：腎功能恢復到足以滿足需求，或 RRT 已不符合照護目標時停止。</li>
+      <li><b>2026 草案 PP 5.9.3</b>：<b>未用利尿劑而尿量 &gt; 450 mL/24 小時</b>是可以考慮停止的訊號之一。</li>
+      <li><b>2012 §5.2.2</b> <span class="gr">2B</span>：<b>不建議用利尿劑來促進腎功能恢復或縮短 RRT 時間</b>；
+        2026 草案 PP 5.9.4 則允許在停止前後使用利尿劑<b>協助體液管理</b>——兩者不衝突，
+        <b>差別在目的是「幫助腎臟恢復」還是「處理水」</b>。</li>
+      <li>停掉之後仍要追蹤：<b>再次需要 RRT 是常見的</b>，尤其在感染或再次低灌流之後。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">CRRT 併用體外維生系統（ECMO）</div>
+    <ul>
+      <li>2026 草案 PP 5.11.1–5.11.3 首次專門處理這一段：<b>CRRT 可整合進既有的體外迴路，也可獨立建立通路</b>，
+        策略應事前約定（誰負責哪一段、壓力監測怎麼設）。</li>
+      <li>多數接受 ECLS 的病人<b>同時有血行動力學不穩與體液堆積</b>，藥物治療無效的體液堆積本身就是啟動 RRT 的理由之一。</li>
+      <li>接到 ECMO 迴路上時要注意<b>壓力來源改變</b>（機器的壓力警報是為獨立迴路設計的），以及<b>抗凝是共用的</b>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁五：證據 ==================== -->
+<div class="cr-panel" id="p-ev">
+
+  <div class="section-title">劑量的三個大型試驗 <span class="en">Dose Trials</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:640px;">
+      <thead><tr><th style="width:16%">試驗</th><th style="width:30%">比較</th><th style="width:30%">結果</th><th style="width:24%">影響</th></tr></thead>
+      <tbody>
+        <tr><td><b>ATN</b><br>2008, n=1,124</td>
+          <td>密集（CVVHDF 35 mL/kg/h 或 IHD 每週 6 次）vs 較不密集（20 mL/kg/h 或每週 3 次）</td>
+          <td>60 天死亡率<b>無差異</b>（53.6% vs 51.5%）；密集組低血壓與電解質異常較多</td>
+          <td rowspan="2">兩者共同支撐 <b>20–25 mL/kg/h</b> 的建議，<b>並終結「洗愈多愈好」</b></td></tr>
+        <tr><td><b>RENAL</b><br>2009, n=1,508</td>
+          <td>CVVHDF <b>40 vs 25 mL/kg/h</b></td>
+          <td>90 天死亡率<b>無差異</b>（44.7% 兩組相同）；高劑量組<b>低血磷顯著較多</b>（65% vs 54%）</td></tr>
+        <tr><td><b>IVOIRE</b><br>2013, 收案 140／分析 137</td>
+          <td>敗血性休克併 AKI：<b>HVHF 70 vs 35 mL/kg/h</b>，共 96 小時</td>
+          <td>28 天死亡率 <b>37.9% vs 40.8%（p=0.94）</b>；血行動力學與器官功能亦無改善。<b>因收案緩慢提前中止</b></td>
+          <td>與其他 HVHF 試驗一起成為 <b>2026 草案「不建議 HVHF」<span class="gr w">1B</span></b> 的依據</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">抗凝的證據 <span class="en">Anticoagulation Evidence</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>RICH（2020，隨機 638／完成 596）</b>：局部檸檬酸 vs 全身肝素，德國 26 家中心。
+        <b>濾器壽命中位 47 vs 26 小時（差 15 小時，p&lt;0.001）</b>；
+        <b>出血併發症 5.1% vs 16.9%（p&lt;0.001）</b>；
+        <b>90 天死亡率 51.2% vs 53.6%，未達顯著</b>（未校正 p=0.38；校正後 p=0.054）；
+        <b>但檸檬酸組新發感染顯著較多：68.0% vs 55.4%（p=0.002）</b>。
+        <b>本試驗提前中止，對死亡率而言檢定力不足</b>——作者自己這樣寫。</li>
+      <li>這是 2026 草案把檸檬酸<b>由 2B 升到 1B</b> 的主要依據——<b>升級的理由是濾器壽命與出血，不是死亡率</b>。
+        引用時要說清楚，否則會變成「檸檬酸救命」這種過度延伸；<b>感染事件較多這一項也不該略過</b>。</li>
+      <li><b>RICH 的迴路後離子鈣目標寫成 1.0–1.40 mg/dL</b>——換算即 <b>0.25–0.35 mmol/L</b>。
+        台灣報告多用 mmol/L，<b>看到 mg/dL 的數字不要直接抄進醫囑</b>。</li>
+      <li><b>台大有 Regiocit 品項</b>，代表院內具備走檸檬酸的條件；但<b>肝衰竭與休克低灌流者仍是禁忌</b>。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">開始的時機（另有專頁） <span class="en">Timing</span></div>
+  <div class="kbox">
+    <b>五個隨機試驗（ELAIN、AKIKI、IDEAL-ICU、STARRT-AKI、AKIKI-2）顯示提早啟動不改善死亡率</b>，
+    但 AKIKI-2 顯示拖太久有害。2026 草案 Recommendation 5.1.1 已把這件事寫成
+    <b>「建議採取延遲啟動策略」</b>。完整的時機判斷、緊急適應症與五個試驗的對照，
+    請見<a href="aki-crrt.html" class="pmid">急性腎損傷與 RRT 時機</a>——本頁不重複。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">引用時請注意版本</div>
+    <ul>
+      <li><b>KDIGO 2012 是目前唯一已發表的正式版本</b>，寫病歷、寫報告請引它。</li>
+      <li><b>KDIGO 2026 AKI/AKD 是 2026-03 發布的公開評論草案</b>（評論期至 2026-05-11），<b>尚未定稿</b>。
+        本頁引用它是因為它把 CRRT 的模式參數、劑量與抗凝寫得比 2012 完整得多，
+        <b>但每一處都標成「2026 草案」，定稿後條文與分級可能改變</b>。</li>
+      <li>2026 草案自己在頁尾逐頁印著 DRAFT。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://kdigo.org/guidelines/acute-kidney-injury/" target="_blank" rel="noopener" class="ref-link">KDIGO Clinical Practice Guideline for Acute Kidney Injury. Kidney Int Suppl. 2012;2(1):1-138（第 5 章 腎臟替代療法）.</a> ｜
+    <a href="https://kdigo.org/kdigo-2026-aki-akd-guideline-draft-available-for-public-review/" target="_blank" rel="noopener" class="ref-link">KDIGO 2026 Clinical Practice Guideline for AKI and AKD — Public Review Draft, March 2026（<b>草案</b>，Chapter 5 與 Table 43）.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/18492867/" target="_blank" rel="noopener" class="ref-link">VA/NIH Acute Renal Failure Trial Network. Intensity of renal support in critically ill patients with acute kidney injury (ATN). N Engl J Med. 2008;359(1):7-20.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/19846848/" target="_blank" rel="noopener" class="ref-link">RENAL Replacement Therapy Study Investigators. Intensity of continuous renal-replacement therapy in critically ill patients. N Engl J Med. 2009;361(17):1627-1638.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/23740278/" target="_blank" rel="noopener" class="ref-link">Joannes-Boyau O, et al. High-volume versus standard-volume haemofiltration for septic shock patients with acute kidney injury (IVOIRE). Intensive Care Med. 2013;39(9):1535-1546.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33095849/" target="_blank" rel="noopener" class="ref-link">Zarbock A, et al. Effect of Regional Citrate Anticoagulation vs Systemic Heparin Anticoagulation During Continuous Kidney Replacement Therapy on Filter Lifespan and Mortality (RICH). JAMA. 2020;324(16):1629-1639.</a>
+    ｜ 溶液品項、電解質組成與仿單禁忌：<b>台大醫院藥劑部藥品資料庫</b>（CVVH A Solution、Sodium Chloride for CVVH B、Prismasol B0、Regiocit）。
+  </footer>
+</div>
+
+</div>
+</div>
+
+<script src="../js/common.js"></script>
+<script>
+/* ── 分頁切換 ───────────────────────────────────────────────── */
+function crTab(name){
+  document.querySelectorAll('#cr_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.cr-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+
+/* ── 處方計算 ───────────────────────────────────────────────
+   濾出液          = Qd + Qpre + Qpost + UFnet                    (mL/hr)
+   血液水流量 Qbw  = Qb × (1 − Hct) × 0.93 × 60                   (mL/hr)
+                     0.93 是血漿中水的比例（其餘為蛋白與脂質）
+   前稀釋校正      = 濾出液 × Qbw / (Qbw + Qpre)
+   濾過分率 FF     = (Qpost + UFnet) / (Qbw + Qpre)
+                     —— 前稀釋液進入濾器一起被濾，故列在分母
+   實送劑量        = 校正後劑量 × (1 − 中斷比例)                          ── */
+function n(id, d){ var v = parseFloat((document.getElementById(id)||{}).value); return isFinite(v) ? v : d; }
+function f1(x){ return isFinite(x) ? (x >= 100 ? x.toFixed(0) : x.toFixed(1)) : '—'; }
+
+function crCalc(){
+  var wt = n('cw',60), hct = n('chct',30)/100, qb = n('cqb',150);
+  var qd = n('cqd',0), qpre = n('cqpre',0), qpost = n('cqpost',0), ufn = n('cufn',0);
+  var down = n('cdown',0)/100;
+  if(wt <= 0) wt = 60;
+
+  var eff  = qd + qpre + qpost + ufn;              // mL/hr
+  var qbw  = qb * (1 - hct) * 0.93 * 60;           // mL/hr
+  var rx   = eff / wt;
+  var corr = qbw > 0 ? eff * qbw / (qbw + qpre) / wt : NaN;
+  var del  = corr * (1 - down);
+  var ff   = (qbw + qpre) > 0 ? (qpost + ufn) / (qbw + qpre) * 100 : NaN;
+
+  function put(id, val, unit, cls){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = (isFinite(val) ? f1(val) : '—') + '<small> ' + unit + '</small>';
+    el.className = 'rx-val' + (cls ? ' ' + cls : '');
+  }
+  put('o_eff', eff, 'mL/hr');
+  put('o_rx',  rx,  'mL/kg/h');
+  put('o_corr',corr,'mL/kg/h');
+  put('o_del', del, 'mL/kg/h', (del >= 20 && del <= 25) ? 'ok' : 'warn');
+  put('o_ff',  ff,  '%',       (ff < 20) ? 'ok' : (ff <= 25 ? '' : 'warn'));
+  put('o_day', ufn * 24, 'mL/day');
+
+  var msg = [];
+  if(isFinite(del)){
+    if(del < 20) msg.push('<span class="f-bad">▲ 實送劑量低於 20 mL/kg/h</span>——把濾出液調高，或減少前稀釋比例。');
+    else if(del > 25) msg.push('<span class="f-bad">▲ 實送劑量高於 25 mL/kg/h</span>——KDIGO 建議不要開更高（電解質耗竭與抗生素清除過度）。');
+    else msg.push('<span class="f-ok">✓ 實送劑量落在 20–25 mL/kg/h</span>');
+  }
+  if(isFinite(ff)){
+    if(ff > 25) msg.push('<span class="f-bad">▲ 濾過分率 &gt; 25%</span>——濾器容易凝血。依序考慮：把後稀釋改前稀釋、提高血流量、或把置換液改成透析液。');
+    else if(ff > 20) msg.push('濾過分率 20–25%，仍在可接受範圍但已偏高。');
+  }
+  if(qpost > 0 && qpre === 0) msg.push('全部走後稀釋：清除效率最高，但濾器內濃縮最嚴重。');
+  if(qpre > 0 && qpost === 0 && qd === 0) msg.push('純前稀釋 CVVH：校正後的實際清除會明顯低於機器顯示的濾出液量。');
+  if(ufn === 0) msg.push('淨脫水設為 0（等容治療）——請確認這是本日的目標，而非忘了開。');
+  document.getElementById('o_flag').innerHTML = msg.join('<br>');
+}
+
+document.addEventListener('input', function(e){
+  if(e.target.closest('.rxbox')) crCalc();
+});
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) crTab(h);
+  crCalc();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1059,7 +1059,10 @@
    * 唯一能確定的辦法是把 136 個標的全抓回來看一遍，那顯然不划算。 */
   var TAB_PAGES = ['pe', 'acs', 'rsi', 'stroke', 'hf', 'periop-anticoag',
                    'dose-conversion', 'cs-path', 'ich-path', 'seizure-path',
-                   'swan', 'vte-risk', 'nutrition-risk'];
+                   'swan', 'vte-risk', 'nutrition-risk',
+                   /* 2026-08 新增的四頁，分頁形式與上面同一套（button[data-p] ＋ 裸名 hash ＋ p- 前綴的窗格）：
+                      vasoactive 4 個、pacemaker 6 個、crrt 5 個、lyte-all 6 個（鈉鉀氯鈣鎂磷各一）。 */
+                   'vasoactive', 'pacemaker', 'crrt', 'lyte-all'];
   var tabsOf = {};            // facets 的 k → parseTabs() 解析出來的分頁陣列
   /* 這 13 頁的頁內清單也掛進候選清單那顆「N 個分頁 ⌄」。與抗生素／分級系統
      那三顆不同的是它多帶一個 file：按下去只抓**那一頁自己**（22–169 KB），
@@ -2342,11 +2345,13 @@
                note: '台大處方集（一商品名一卡）＋非台大處方（一成分一卡）', cap: 12 },
     classif: { zh: '分類與分級系統', en: 'Grading & Classification',
                note: '頁內 33 套分級系統 ＋ AAST EGS 的 16 個疾病 · 直接落在該格', cap: 12 },
-    /* 分頁這一組是唯一橫跨多頁的：13 個分頁式頁面共用一個標頭，每一列自己的
+    /* 分頁這一組是唯一橫跨多頁的：所有分頁式頁面共用一個標頭，每一列自己的
        麵包屑（肺栓塞 › 危險分層 Risk）標出它落在哪一頁——理由與抗生素那三層
-       不再各自分組相同（分成 13 組會變成一堆只有一列的標頭）。 */
+       不再各自分組相同（一頁一組會變成一堆只有一列的標頭）。
+       筆數直接由 TAB_PAGES.length 算，不再寫死——2026-08 由 13 頁加到 17 頁時
+       這一行曾經漏改，變成畫面上印著 13 而實際有 17。 */
     tab:     { zh: '頁內分頁', en: 'Page Tabs',
-               note: '13 個分頁式頁面 · 直接落在那一個分頁', cap: 12 },
+               note: TAB_PAGES.length + ' 個分頁式頁面 · 直接落在那一個分頁', cap: 12 },
     /* 覆蓋菌種這一組的 cap 是 30 而不是 12：它的存在理由就是「列出**所有**
        涵蓋這隻菌的藥」，截掉一半等於沒做。28 隻菌裡最長的一份是 HIV 26 種
        （實測，其次 Pseudomonas 19、HBV 16），30 剛好裝得下任何單一徽章的

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>節律器模式 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  .pm-panel{display:none;} .pm-panel.on{display:block;}
+
+  /* ── NBG 編碼器 ─────────────────────────────────────────────── */
+  .nbg{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:12px 13px; margin:10px 0 12px;}
+  .nbg-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+         text-transform:uppercase; letter-spacing:.04em; margin-bottom:9px;}
+  .nbg-slots{display:grid; grid-template-columns:repeat(5,1fr); gap:7px;}
+  @media (max-width:620px){ .nbg-slots{grid-template-columns:repeat(2,1fr);} }
+  .nbg-slot label{display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.05em;
+                  text-transform:uppercase; color:var(--muted); margin-bottom:3px; line-height:1.4;}
+  .nbg-slot label b{display:block; color:var(--accent); font-size:10.5px;}
+  .nbg-slot select{width:100%; font-family:var(--mono); font-size:12.5px; padding:5px 6px;
+      border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
+  /* 深色結果面板：底色寫死 #132126，不能用 var(--ink)——暗色模式下 --ink 會翻成淺色，
+     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */
+  .nbg-out{margin-top:12px; background:#132126; border-radius:2px; padding:12px 13px;}
+  .nbg-code{font-family:var(--mono); font-size:34px; font-weight:700; color:#f4f2ec; letter-spacing:.10em; line-height:1.1;}
+  .nbg-name{font-family:var(--serif); font-size:16px; color:#93d3b0; margin-top:4px;}
+  .nbg-read{font-size:12.5px; color:#d8d3c4; line-height:1.75; margin-top:8px;}
+  .nbg-read b{color:#f4f2ec;}
+  .nbg-warn{margin-top:9px; padding-top:8px; border-top:1px dashed #3a4a4f;
+            font-size:12px; line-height:1.75; color:#f0a58e;}
+  .nbg-warn:empty{display:none;}
+  .nbg-warn b{color:#f4f2ec;}
+
+  /* ── 通用小元件 ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .def-table td{line-height:1.7;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .def-table.dt-rec th:nth-child(n+2),.def-table.dt-rec td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  .cor{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+       background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .cor.c3{background:var(--accent2-soft); color:var(--accent2);}
+
+  /* ── 模式卡 ── */
+  .mc{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .mc.warn{border-left-color:var(--accent2);}
+  .mc-head{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;}
+  .mc-code{font-family:var(--mono); font-size:19px; font-weight:700; color:var(--accent); letter-spacing:.06em;}
+  .mc-zh{font-size:12px; color:var(--muted);}
+  .mc-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .mc-tag.bad{background:var(--accent2-soft); color:var(--accent2);}
+  .mc-body{font-size:12.5px; line-height:1.75; margin-top:6px;}
+  .mc-body ul{margin:4px 0; padding-left:17px;}
+</style>
+</head>
+<body data-back-label="節律器模式">
+<div class="sheet">
+<div class="view active" id="view-pacemaker">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Cardiac Rhythm Reference</div>
+      <h1>節律器模式</h1>
+      <div class="sub">Pacemaker Modes — NBG 五碼、模式選擇、暫時性節律器、圍手術期與疑難排解</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-pacemaker'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="pm_tabs">
+    <button class="tab-btn active" data-p="code"   onclick="pmTab('code')">NBG 五碼</button>
+    <button class="tab-btn"        data-p="modes"  onclick="pmTab('modes')">常用模式</button>
+    <button class="tab-btn"        data-p="pick"   onclick="pmTab('pick')">怎麼選模式</button>
+    <button class="tab-btn"        data-p="temp"   onclick="pmTab('temp')">暫時性節律器</button>
+    <button class="tab-btn"        data-p="periop" onclick="pmTab('periop')">圍手術期與磁鐵</button>
+    <button class="tab-btn"        data-p="tshoot" onclick="pmTab('tshoot')">疑難排解</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    編碼依 <b>2002 修訂版 NASPE/BPEG 通用節律器碼（NBG code）</b>；適應症與模式建議逐條標明
+    <b>2021 ESC 心臟節律器與 CRT 指引</b>或 <b>2018 ACC/AHA/HRS 心搏過緩與傳導延遲指引</b>之 Class／Level。
+    <b>心電圖上的節律器判讀圖鑑</b>（起搏訊號、奪獲、感知不足／過度感知的波形）在
+    <a href="acls.html" class="pmid">ACLS</a> 的「心電圖判讀・節律器」分頁；本頁講的是<b>模式與處置</b>，不重複波形圖。
+  </div>
+
+<!-- ==================== 分頁一：NBG 五碼 ==================== -->
+<div class="pm-panel on" id="p-code">
+
+  <div class="lede">
+    <div class="lede-title">五個位置，各自只回答一個問題</div>
+    <div class="lede-body">
+      <div class="lede-item"><span>Ⅰ</span><span><b>電它哪裡？</b>（Chamber Paced）</span></div>
+      <div class="lede-item"><span>Ⅱ</span><span><b>聽它哪裡？</b>（Chamber Sensed）</span></div>
+      <div class="lede-item"><span>Ⅲ</span><span><b>聽到之後怎麼反應？</b>（Response to Sensing）——抑制 I、觸發 T、或兩者 D</span></div>
+      <div class="lede-item"><span>Ⅳ</span><span><b>會不會依活動量加快？</b>（Rate Modulation）——只有 O 或 <b>R</b></span></div>
+      <div class="lede-item"><span>Ⅴ</span><span><b>同一個腔室有沒有多點起搏？</b>（Multisite Pacing）——雙心房 A、雙心室 V、兩者 D</span></div>
+      <div class="lede-foot"><b>2002 年修訂版與 1987 版只差兩件事</b>：第 Ⅳ 碼<b>只</b>表示有無頻率調節（不再表示程控／遙測能力），
+      第 Ⅴ 碼<b>只</b>表示多部位起搏的位置（抗頻脈功能移交 NBD 除顫器碼）。所以看到舊書上 <b>DDDRP</b> 這種寫法，
+      那是<b>舊碼</b>。</div>
+    </div>
+  </div>
+
+  <div class="nbg">
+    <div class="nbg-t">NBG 編碼器 · 選出來看它是什麼意思</div>
+    <div class="nbg-slots">
+      <div class="nbg-slot"><label>Ⅰ<b>起搏腔室</b>Paced</label>
+        <select id="s1">
+          <option value="O">O — 無</option>
+          <option value="A">A — 心房</option>
+          <option value="V" selected>V — 心室</option>
+          <option value="D">D — 雙腔（A＋V）</option>
+        </select></div>
+      <div class="nbg-slot"><label>Ⅱ<b>感知腔室</b>Sensed</label>
+        <select id="s2">
+          <option value="O">O — 無（非同步）</option>
+          <option value="A">A — 心房</option>
+          <option value="V" selected>V — 心室</option>
+          <option value="D">D — 雙腔（A＋V）</option>
+        </select></div>
+      <div class="nbg-slot"><label>Ⅲ<b>感知後反應</b>Response</label>
+        <select id="s3">
+          <option value="O">O — 無反應</option>
+          <option value="I" selected>I — 抑制</option>
+          <option value="T">T — 觸發</option>
+          <option value="D">D — 抑制＋觸發</option>
+        </select></div>
+      <div class="nbg-slot"><label>Ⅳ<b>頻率調節</b>Rate mod.</label>
+        <select id="s4">
+          <option value="O" selected>O — 無</option>
+          <option value="R">R — 有（依活動加速）</option>
+        </select></div>
+      <div class="nbg-slot"><label>Ⅴ<b>多部位起搏</b>Multisite</label>
+        <select id="s5">
+          <option value="O" selected>O — 無</option>
+          <option value="A">A — 雙心房</option>
+          <option value="V">V — 雙心室（CRT）</option>
+          <option value="D">D — 心房＋心室皆多部位</option>
+        </select></div>
+    </div>
+    <div class="nbg-out">
+      <div class="nbg-code" id="nbgCode">VVI</div>
+      <div class="nbg-name" id="nbgName">—</div>
+      <div class="nbg-read" id="nbgRead">—</div>
+      <div class="nbg-warn" id="nbgWarn"></div>
+    </div>
+  </div>
+
+  <div class="section-title">五個位置的完整字母表 <span class="en">Letter Table</span></div>
+  <div class="tw">
+    <table class="def-table" style="min-width:600px;">
+      <thead><tr><th>位置</th><th>問的是</th><th>O</th><th>A</th><th>V</th><th>D</th><th>其他</th></tr></thead>
+      <tbody>
+        <tr><td>Ⅰ 起搏</td><td>電哪裡</td><td>無</td><td>心房</td><td>心室</td><td>雙腔 A＋V</td><td>S＝單腔（僅原廠出廠標示用）</td></tr>
+        <tr><td>Ⅱ 感知</td><td>聽哪裡</td><td>無</td><td>心房</td><td>心室</td><td>雙腔 A＋V</td><td>S＝單腔（同上）</td></tr>
+        <tr><td>Ⅲ 反應</td><td>聽到之後</td><td>不反應</td><td colspan="2">T＝觸發／I＝抑制</td><td>D＝T＋I</td><td>—</td></tr>
+        <tr><td>Ⅳ 頻率調節</td><td>會不會加速</td><td>無</td><td colspan="3">R＝有頻率調節（rate modulation）</td><td>—</td></tr>
+        <tr><td>Ⅴ 多部位</td><td>同腔多點</td><td>無</td><td>雙心房</td><td>雙心室</td><td>兩者皆是</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">「抑制」與「觸發」差在哪</div>
+    <ul>
+      <li><b>抑制 Inhibited（I）</b>：聽到自己的心跳就<b>不電</b>。這是絕大多數模式的行為——節律器是備援，不是主角。</li>
+      <li><b>觸發 Triggered（T）</b>：聽到就<b>跟著電</b>。實務上唯一常見的用法是 <b>DDD 的心房追蹤</b>：
+        聽到心房自己跳，就在 AV 間期之後電心室——<b>讓心室跟著竇房結走</b>，這正是 DDD 能維持房室同步的機制。</li>
+      <li><b>D（兩者都有）</b>：對心房是抑制、對心室是追蹤（觸發）。<b>DDD 的第三個 D 就是這個意思</b>。</li>
+      <li><b>O（不反應）</b>＝<b>非同步</b>：不管你自己跳不跳，時間到就電。<b>VOO／DOO／AOO</b> 都屬此類，
+        代價是<b>可能電在 T 波上（R-on-T）</b>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁二：常用模式 ==================== -->
+<div class="pm-panel" id="p-modes">
+
+  <div class="lead">實務上會遇到的其實只有八種。每一張卡的重點是：<b>它假設了什麼</b>——假設不成立時就是它出事的時候。</div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">DDD／DDDR</span><span class="mc-zh">雙腔房室同步</span>
+      <span class="mc-tag">最常用</span><span class="mc-tag">維持房室同步</span></div>
+    <div class="mc-body">
+      兩條線（心房＋心室）。心房自己跳就抑制心房輸出、並在 AV 間期後追蹤起搏心室；心房不跳就先電心房。
+      <ul>
+        <li><b>假設</b>：心房有可用的組織（<b>不是永久性心房顫動</b>）。</li>
+        <li><b>房室阻滯首選</b>：ESC 2021 —— 房室阻滯病人<b>DDD 應優於單腔心室起搏</b>，以避免節律器症候群並改善生活品質
+          <span class="cor">IIa A</span>。</li>
+        <li><b>加 R</b>：合併變時性不全（chronotropic incompetence）時。ESC 2021 —— 竇房結功能不良且運動時有明確症狀者，
+          <b>應考慮 DDD 加頻率反應</b> <span class="cor">IIa B</span>。</li>
+        <li><b>要注意</b>：心房被追蹤到快速心律不整時心室會跟著快（見 DDI 與 mode switch）；
+          <b>逆行性 VA 傳導可能造成節律器介導頻脈（PMT）</b>。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">DDI／DDIR</span><span class="mc-zh">雙腔、不追蹤心房</span>
+      <span class="mc-tag">心房快速心律不整時</span></div>
+    <div class="mc-body">
+      兩條線都有，但<b>第三碼是 I 不是 D</b>——聽到心房只會抑制，<b>不會追蹤</b>。
+      <ul>
+        <li><b>用途</b>：陣發性心房頻脈／顫動時避免心室被追著跑。現代裝置多以 <b>mode switch</b> 自動由 DDD 切成 DDI(R) 達成同一件事。</li>
+        <li><b>代價</b>：心房自己跳而心室需要起搏時，<b>房室同步不保證</b>（因為不追蹤）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">VVI／VVIR</span><span class="mc-zh">單腔心室</span>
+      <span class="mc-tag">永久性心房顫動</span><span class="mc-tag bad">無房室同步</span></div>
+    <div class="mc-body">
+      一條心室線。心室自己跳就抑制，不跳就電。
+      <ul>
+        <li><b>正解的適應症</b>：<b>永久性心房顫動併心室率過慢</b>——心房已無同步可言，多一條心房線沒有意義。
+          ESC 2021 —— 永久性心房顫動需要節律器者，<b>建議心室起搏加頻率反應功能</b> <span class="cor">I C</span>。</li>
+        <li><b>2018 ACC/AHA/HRS</b>：症狀性竇房結功能不良者，<b>若預期不會頻繁心室起搏、或有其他決定預後的重大共病</b>，
+          單腔心室起搏是合理的 <span class="cor">IIa C-EO</span>。</li>
+        <li><b>代價</b>：竇性心律的人用 VVI 會<b>失去房室同步</b> → <b>節律器症候群</b>（疲倦、喘、頸部搏動感、低血壓）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">AAI／AAIR</span><span class="mc-zh">單腔心房</span>
+      <span class="mc-tag bad">房室阻滯絕對不能用</span></div>
+    <div class="mc-body">
+      一條心房線。<b>電心房、聽心房、聽到就抑制</b>——心室完全靠病人自己的房室傳導。
+      <ul>
+        <li><b>假設</b>：<b>房室傳導完好</b>。這個假設一旦不成立（發生房室阻滯），<b>心房被起搏但心室不動，等於沒有起搏</b>。</li>
+        <li><b>2018 ACC/AHA/HRS</b>：症狀性竇房結功能不良<b>且房室傳導完好、無傳導異常證據</b>者，
+          <b>雙腔或單腔心房起搏皆建議</b> <span class="cor">I B-R</span>。</li>
+        <li><b>但</b>：植入後 5 年內發生房室阻滯的風險文獻上落在 <b>3–35%</b>，
+          所以多數中心仍放 DDD（多一條線的手術風險 vs 日後需要心室線）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">VDD</span><span class="mc-zh">單線、心房感知＋心室起搏</span>
+      <span class="mc-tag">單一導線</span></div>
+    <div class="mc-body">
+      一條特殊導線，在心房位置有感知電極、尖端在心室。<b>聽心房＋聽心室，電心室</b>。
+      <ul>
+        <li><b>假設</b>：<b>竇房結功能正常</b>（因為它沒有能力起搏心房）。</li>
+        <li><b>典型適應症</b>：年輕、單純的<b>完全房室阻滯而竇房結正常</b>者。</li>
+        <li><b>不適用</b>：竇房結功能不良、或心房感知不穩定者。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc warn">
+    <div class="mc-head"><span class="mc-code">DOO／VOO／AOO</span><span class="mc-zh">非同步（固定頻率）</span>
+      <span class="mc-tag bad">R-on-T 風險</span><span class="mc-tag">磁鐵／手術房</span></div>
+    <div class="mc-body">
+      <b>完全不感知</b>，時間到就電。
+      <ul>
+        <li><b>什麼時候要它</b>：<b>手術中電燒的電磁干擾會被誤判成心跳而抑制輸出</b>——對<b>依賴節律器</b>的病人，
+          這是致命的。改成非同步就不會被干擾抑制。</li>
+        <li><b>代價</b>：<b>電擊可能落在自身心搏的 T 波上（R-on-T）誘發心室頻脈／顫動</b>。
+          所以<b>只在依賴節律器且真的有干擾風險時才用，不是常規</b>。</li>
+        <li><b>怎麼進入</b>：程控改模式，或<b>放磁鐵</b>（見「圍手術期與磁鐵」分頁——但磁鐵在 ICD 上的效果完全不同）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-head"><span class="mc-code">DDD-V／CRT</span><span class="mc-zh">雙心室起搏（心臟再同步化）</span>
+      <span class="mc-tag">第Ⅴ碼＝V</span></div>
+    <div class="mc-body">
+      在 DDD 之上多一條冠狀靜脈竇導線起搏左心室——<b>第五碼寫 V</b>。用於心衰竭合併寬 QRS（尤其左束支傳導阻滯）者，
+      目的不是治療心搏過緩，而是<b>讓兩心室重新同步收縮</b>。適應症與 EF、QRS 寬度、束支型態有關，屬心臟科決策，本頁不展開。
+    </div>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">最重要的一件事：把心室起搏降到最低</div>
+    <ul>
+      <li><b>ESC 2021 <span class="cor">I A</span></b>：竇房結功能不良且裝 DDD 者，<b>建議以程控減少不必要的心室起搏</b>。</li>
+      <li><b>2018 ACC/AHA/HRS <span class="cor">IIa B-R</span></b>：竇房結功能不良、有 DDD 且房室傳導完好者，
+        <b>程控以減少心室起搏是合理的</b>。</li>
+      <li><b>為什麼</b>：右心室心尖起搏造成的心室不同步，長期會導致<b>左心室功能惡化與心衰竭</b>——
+        這是「裝了節律器之後心臟反而變差」的主要機轉。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁三：怎麼選模式 ==================== -->
+<div class="pm-panel" id="p-pick">
+
+  <div class="lead">
+    <b>三個問題就決定了模式</b>：①<b>心房還能用嗎？</b>（永久性心房顫動＝不能）
+    ②<b>房室傳導完好嗎？</b> ③<b>運動時心率上得去嗎？</b>（變時性不全 → 加 R）。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:640px;">
+      <thead><tr><th style="width:34%">情境</th><th style="width:16%">模式</th><th style="width:14%">依據</th><th style="width:36%">理由</th></tr></thead>
+      <tbody>
+        <tr><td><b>竇房結功能不良、房室傳導完好、無傳導異常</b></td>
+          <td><b>DDD(R) 或 AAI(R)</b></td><td><span class="cor">I B-R</span><br>2018 ACC/AHA/HRS</td>
+          <td>心房起搏優於單腔心室起搏（<span class="cor">I B-R</span>）；四個隨機試驗最一致的好處是<b>降低心房顫動發生率</b></td></tr>
+        <tr><td><b>竇房結功能不良、預期不會頻繁心室起搏，或有其他決定預後的重大共病</b></td>
+          <td><b>VVI(R)</b></td><td><span class="cor">IIa C-EO</span><br>2018 ACC/AHA/HRS</td>
+          <td>少一條導線、少一次手術風險</td></tr>
+        <tr><td><b>變時性不全且運動時有明確症狀</b></td>
+          <td><b>加 R（DDDR）</b></td><td><span class="cor">IIa B</span><br>ESC 2021</td>
+          <td>2018 版亦有「症狀性變時性不全者以頻率反應程控是合理的」<span class="cor">IIa C-EO</span></td></tr>
+        <tr><td><b>房室阻滯（竇性心律）</b></td>
+          <td><b>DDD</b></td><td><span class="cor">IIa A</span><br>ESC 2021</td>
+          <td><b>DDD 應優於單腔心室起搏</b>，以避免節律器症候群並改善生活品質</td></tr>
+        <tr><td><b>永久性心房顫動需要節律器</b></td>
+          <td><b>VVIR</b></td><td><span class="cor">I C</span><br>ESC 2021</td>
+          <td>建議<b>心室起搏加頻率反應功能</b>；心房已無同步可維持</td></tr>
+        <tr><td><b>完全房室阻滯但竇房結正常、希望單一導線</b></td>
+          <td><b>VDD</b></td><td>—</td>
+          <td>沒有心房起搏能力，竇房結一旦不好就不適用</td></tr>
+        <tr><td><b>DDD 且房室傳導完好</b></td>
+          <td><b>程控減少心室起搏</b></td><td><span class="cor">I A</span> ESC 2021<br><span class="cor">IIa B-R</span> 2018</td>
+          <td>避免右心室起搏造成的不同步與心衰竭</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">什麼時候該裝（節錄，非完整適應症） <span class="en">When to Pace</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:620px;">
+      <thead><tr><th style="width:52%">建議</th><th style="width:14%">Class</th><th style="width:10%">Level</th><th style="width:24%">出處</th></tr></thead>
+      <tbody>
+        <tr><td>竇性心律者出現<b>永久性或陣發性三度、二度 II 型、His 束以下的 2:1，或高度房室阻滯</b>，<b>不論有無症狀</b>都建議起搏</td>
+          <td><span class="cor">I</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr><td>合併心房心律不整（主要為心房顫動）且有<b>永久性或陣發性三度或高度房室阻滯</b>，不論有無症狀</td>
+          <td><span class="cor">I</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr><td><b>二度 I 型房室阻滯</b>造成症狀，或電生理檢查證實阻滯位在 His 束內／以下</td>
+          <td><span class="cor">IIa</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr><td>症狀<b>直接歸因於竇房結功能不良</b>者，建議永久起搏</td>
+          <td><span class="cor">I</span></td><td>C-LD</td><td>2018 ACC/AHA/HRS</td></tr>
+        <tr><td>因<b>指引指定治療（如 β 阻斷劑）而出現症狀性竇性心搏過緩</b>、無替代治療且必須繼續用藥者</td>
+          <td><span class="cor">I</span></td><td>C-EO</td><td>2018 ACC/AHA/HRS</td></tr>
+        <tr class="dt-warn"><td><b>可矯正、可預防的暫時性原因</b>造成的房室阻滯，<b>不建議</b>起搏</td>
+          <td><span class="cor c3">III</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr class="dt-warn"><td>心臟手術後之高度或完全房室阻滯：<b>建議先臨床觀察至少 5 天</b>看是否自行恢復；
+          若完全房室阻滯而逸搏極慢或無逸搏、恢復機會低，觀察期可縮短</td>
+          <td><span class="cor">I</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr class="dt-warn"><td><b>機械性三尖瓣置換</b>後需要起搏者，<b>應避免</b>放置穿瓣的右心室導線</td>
+          <td><span class="cor c3">III</span></td><td>C</td><td>ESC 2021</td></tr>
+        <tr><td><b>TAVI 後</b>完全或高度房室阻滯<b>持續 24–48 小時</b>者，建議永久起搏</td>
+          <td><span class="cor">I</span></td><td>B</td><td>ESC 2021</td></tr>
+        <tr><td>TAVI 後<b>新出現交替性束支傳導阻滯</b>者，建議永久起搏</td>
+          <td><span class="cor">I</span></td><td>C</td><td>ESC 2021</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    上表為<b>節錄</b>，供值班時快速定位；完整適應症（反射性昏厥、束支阻滯、心肌梗塞後、先天性心臟病、
+    神經肌肉疾病、心臟結節病等）請回原指引。
+  </div>
+</div>
+
+<!-- ==================== 分頁四：暫時性節律器 ==================== -->
+<div class="pm-panel" id="p-temp">
+
+  <div class="lede">
+    <div class="lede-title">先做的永遠不是插線</div>
+    <div class="lede-body">
+      <div class="lede-item"><span>①</span><span><b>找可矯正的原因</b>——<b>高血鉀</b>、藥物（β 阻斷劑、鈣離子阻斷劑、毛地黃、
+        抗心律不整藥）、<b>急性下壁心肌梗塞</b>、低體溫、甲狀腺功能低下、缺氧、顱內壓升高、感染（萊姆病）。
+        <b>可矯正、可預防的暫時性原因不建議永久起搏</b>（ESC 2021 <span class="cor c3">III C</span>）。</span></div>
+      <div class="lede-item"><span>②</span><span><b>先給藥</b>——atropine 1 mg IV（可重複至 3 mg）；無效時 <b>epinephrine 或 dopamine 輸注</b>，
+        或 <b>isoproterenol 2–10 mcg/min</b>（台大有 0.2 mg/1 mL/amp，劑量與泡法見
+        <a href="vasoactive.html#drug" class="pmid">血管活性藥物</a>）。演算法見 <a href="acls.html" class="pmid">ACLS · 心搏過緩</a>。</span></div>
+      <div class="lede-item"><span>③</span><span><b>藥物無效才是暫時性起搏</b>——先<b>經皮</b>爭取時間，同時準備<b>經靜脈</b>。</span></div>
+      <div class="lede-foot"><b>暫時性經靜脈起搏的證據其實很少</b>——2018 指引在這一節明白寫「使用了近六十年，
+      但幾乎沒有資料可以指導其適當使用」，所以建議等級都停在 IIa／IIb。</div>
+    </div>
+  </div>
+
+  <div class="section-title">建議等級 <span class="en">2018 ACC/AHA/HRS</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:62%">建議（房室阻滯所致之心搏過緩）</th><th style="width:14%">COR</th><th style="width:24%">LOE</th></tr></thead>
+      <tbody>
+        <tr><td>二度或三度房室阻滯併症狀或血行動力學不穩、<b>對藥物治療無效</b>者，<b>暫時性經靜脈起搏是合理的</b></td>
+          <td><span class="cor">IIa</span></td><td>B-NR</td></tr>
+        <tr><td>需要<b>長時間</b>暫時性經靜脈起搏者，<b>選用外接式的永久型主動固定導線</b>優於一般被動固定的暫時導線是合理的</td>
+          <td><span class="cor">IIa</span></td><td>B-NR</td></tr>
+        <tr><td>血行動力學不穩且對抗心搏過緩藥物無效者，<b>可考慮暫時性經皮起搏</b>，直到經靜脈或永久節律器置放、或心律恢復</td>
+          <td><span class="cor">IIb</span></td><td>B-R</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">經皮起搏 <span class="en">Transcutaneous Pacing</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>貼片位置</b>：前—後（胸骨左緣＋左肩胛下）或前—側。<b>避開節律器／ICD 機體至少 8 公分</b>。</li>
+      <li><b>設定</b>：頻率 <b>60–80/min</b>；輸出由低往上調到<b>看到奪獲</b>（每個起搏訊號後面都有寬 QRS），
+        再<b>加約 10% 作為安全邊界</b>。</li>
+      <li><b>一定要確認「真的奪獲」</b>——<b>螢幕上看到 QRS 不等於有輸出</b>。
+        <b>摸股動脈或看動脈導管波形／脈搏血氧波形</b>；胸壁肌肉抽動很容易被誤認為奪獲。</li>
+      <li><b>會很痛</b>：清醒病人必須<b>鎮靜與止痛</b>。這是經皮起搏無法久用的主因。</li>
+      <li><b>定位是過渡</b>：一旦穩定就安排經靜脈或永久節律器。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">經靜脈起搏 <span class="en">Temporary Transvenous Pacing</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>通路</b>：右頸內靜脈或左鎖骨下靜脈路徑最順（導線自然彎向右心室）。
+        <b>若已預期要裝永久節律器，要先想好之後要用哪一側，不要把該側的鎖骨下靜脈先用掉</b>。</li>
+      <li><b>輸出（output, mA）</b>：置放後先測<b>奪獲閾值</b>——由高往低調到失去奪獲，
+        再把輸出設在<b>閾值的 2–3 倍</b>。閾值理想上 &lt; 1 mA；<b>閾值持續上升代表導線移位或接觸不良</b>。</li>
+      <li><b>感知度（sensitivity, mV）</b>：<b>數字越小＝越敏感</b>（這是最常搞反的一格）。
+        設得太敏感（數字太小）＝過度感知 → 該電的時候被抑制；設得太不敏感（數字太大）＝感知不足 → 電在自身心搏上。</li>
+      <li><b>模式</b>：多數暫時性機器走 <b>VVI</b>；有心房線時可走 AAI 或 DDD。</li>
+      <li><b>併發症</b>：心室穿孔與心包填塞（<b>新出現的低血壓＋奪獲喪失＋頸靜脈怒張要立刻想到</b>）、
+        導線移位、感染、氣胸、心律不整、三尖瓣損傷。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">心臟手術後的心外膜起搏線 <span class="en">Epicardial Wires</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>怎麼分心房線與心室線</b>：<b>多數中心的慣例是心房線由胸骨的病人右側穿出、心室線由左側穿出</b>——
+        <b>但這是慣例不是標準，一定要跟開刀的團隊確認</b>，接錯就是「打了半天沒有奪獲」。</li>
+      <li><b>心房線的診斷用途</b>：接上心電圖的胸前導程可錄到<b>心房電位圖（atrial electrogram）</b>——
+        寬 QRS 頻脈分不出是心室頻脈還是室上性合併差異傳導時，<b>看得到 P 波與 QRS 的關係就能定案</b>。
+        這是心外膜線最被低估的用處。</li>
+      <li><b>心房超速起搏</b>：心房撲動可用心房線做超速起搏嘗試終止。</li>
+      <li><b>房室同步很重要</b>：術後心輸出對心房收縮的貢獻依賴度高，<b>有心房線就盡量走 DDD 而不是 VVI</b>。</li>
+      <li><b>拔線</b>：拔除時可能出血甚至心包填塞——<b>拔完要留觀</b>，並確認凝血功能與抗凝藥狀態。</li>
+      <li><b>觀察期</b>：心臟手術後高度或完全房室阻滯，<b>ESC 2021 建議先觀察至少 5 天</b> <span class="cor">I C</span>；
+        但<b>完全房室阻滯而逸搏極慢或沒有逸搏、恢復機會低者，觀察期可以縮短</b>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁五：圍手術期與磁鐵 ==================== -->
+<div class="pm-panel" id="p-periop">
+
+  <div class="kbox alert">
+    <div class="kbox-t">整個主題最重要的一句話</div>
+    <b>磁鐵放在節律器上 → 變成非同步起搏（DOO／VOO）。<br>
+    磁鐵放在 ICD 上 → 只暫停抗頻脈治療（不放電），<u>起搏模式完全不變</u>。</b>
+    <div style="margin-top:5px;">
+      所以<b>對一個依賴節律器的 ICD 病人放磁鐵，並不能防止電燒干擾造成的起搏抑制</b>——
+      那個情境需要的是<b>程控改成非同步</b>，不是磁鐵。這是圍手術期最常見的誤解。
+    </div>
+  </div>
+
+  <div class="section-title">術前要問清楚的五件事 <span class="en">Preoperative</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>① 是節律器還是 ICD？</b>（連 CRT-P 與 CRT-D 也要分清楚）廠牌、型號、上次檢測日期、電池狀態。</li>
+      <li><b>② 病人依賴節律器嗎？</b>——<b>自身心律是什麼、有沒有逸搏</b>。這一題決定後面所有處置。</li>
+      <li><b>③ 手術部位離機體多遠？</b>——<b>臍以上</b>的單極電燒，電流路徑比較可能經過機體與導線。</li>
+      <li><b>④ 會用到什麼能量源？</b>單極電燒、雙極電燒、射頻燒灼、體外震波碎石、MRI、放射治療、神經監測。</li>
+      <li><b>⑤ 術後誰負責檢測？</b>——事先約定好，不要留到出院前才發現沒人查。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">術中 <span class="en">Intraoperative</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:26%">情境</th><th style="width:36%">做法</th><th style="width:38%">為什麼</th></tr></thead>
+      <tbody>
+        <tr><td><b>依賴節律器＋預期有電磁干擾</b></td>
+          <td><b>術前程控為非同步（DOO／VOO）</b>；或在確認該裝置磁鐵反應為非同步後<b>放磁鐵</b></td>
+          <td>干擾被誤判為自身心跳 → <b>輸出被抑制 → 心搏停止</b></td></tr>
+        <tr><td><b>不依賴節律器</b></td>
+          <td>通常<b>不需要改模式</b>，備妥經皮起搏貼片即可</td>
+          <td>短暫抑制不致命；改成非同步反而有 R-on-T 風險</td></tr>
+        <tr><td><b>帶 ICD 且預期有干擾</b></td>
+          <td><b>暫停抗頻脈治療</b>（程控或磁鐵），<b>並在旁備妥體外去顫貼片</b>；術後務必恢復</td>
+          <td>電燒雜訊可能被判讀為心室顫動而<b>不當放電</b>。<b>「暫停」期間病人沒有 ICD 保護，所以外部貼片是必要的</b></td></tr>
+        <tr><td><b>電燒</b></td>
+          <td><b>優先用雙極</b>；必須用單極時<b>短脈衝、間斷使用</b>，
+            <b>回電貼片貼在讓電流路徑遠離機體與導線的位置</b></td>
+          <td>雙極電流只在兩極之間，幾乎不產生遠場干擾</td></tr>
+        <tr><td><b>術中監測</b></td>
+          <td><b>要有能顯示機械性搏動的監測</b>：動脈導管波形或脈搏血氧波形</td>
+          <td>電燒期間心電圖被雜訊蓋住，<b>只有機械性訊號能告訴你還有沒有心輸出</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">植入與圍手術期的指引條文 <span class="en">ESC 2021</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>術前抗生素預防應於劃刀前 1 小時內給予</b>，以降低 CIED 感染 <span class="cor">I A</span>。</li>
+      <li><b>不建議對使用抗凝劑的病人做肝素橋接</b> <span class="cor c3">III</span>——橋接反而增加囊袋血腫。</li>
+      <li>術後檢測與傷口照護依各院規範；<b>暫停過抗頻脈治療的 ICD 一定要在離開監測環境前恢復並記錄</b>。</li>
+    </ul>
+    <div style="font-size:11.5px;color:var(--muted);margin-top:6px;">
+      本分頁的操作細節（磁鐵反應、電燒策略、監測）為圍手術期 CIED 的通行共識。
+      <b>HRS/ASA 2011 共識與 AHA 2024 科學聲明的全文在製作本頁時無法取得</b>（站台拒絕存取），
+      因此本頁未逐條引用其條號；有 Class／Level 標註者一律出自 ESC 2021 或 2018 ACC/AHA/HRS 兩份已取得全文的指引。
+      <b>各廠牌的磁鐵反應可被程控關閉，實際處置前請確認該裝置的原廠說明或請心臟科檢測。</b>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 分頁六：疑難排解 ==================== -->
+<div class="pm-panel" id="p-tshoot">
+
+  <div class="lead">
+    <b>先把問題分成三類</b>：該電沒電（<b>輸出／奪獲</b>）、不該電卻電（<b>感知不足</b>）、被雜訊嚇到不敢電（<b>過度感知</b>）。
+    心電圖上的樣子見 <a href="acls.html" class="pmid">ACLS</a> 的「心電圖判讀・節律器」分頁。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:660px;">
+      <thead><tr><th style="width:16%">問題</th><th style="width:22%">心電圖上看到什麼</th><th style="width:34%">原因</th><th style="width:28%">怎麼辦</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>未奪獲</b><br>Failure to capture</td>
+          <td><b>有起搏訊號，後面沒有相對應的 P 波或 QRS</b></td>
+          <td>導線移位、<b>閾值上升（出口阻滯／纖維化）</b>、輸出設太低、導線斷裂或絕緣破損、電池耗竭、
+            <b>代謝因素：高血鉀、嚴重酸中毒、缺氧</b>、抗心律不整藥物、導線接觸處的心肌梗塞</td>
+          <td><b>先把輸出調高</b>；查電解質（<b>高血鉀最常被漏掉</b>）；照胸部 X 光看導線位置；請心臟科檢測</td>
+        </tr>
+        <tr>
+          <td><b>無輸出</b><br>Failure to output</td>
+          <td><b>該有起搏訊號的地方連訊號都沒有</b></td>
+          <td><b>過度感知</b>（把雜訊當成心跳而抑制）、導線斷裂或接頭鬆脫、電池耗竭、
+            <b>交叉感知（crosstalk）</b>：心房輸出被心室通道感知</td>
+          <td>降低感知度（<b>數字調大</b>）；查接頭與導線；磁鐵可暫時變成非同步作為救急；備妥經皮起搏</td>
+        </tr>
+        <tr>
+          <td><b>感知不足</b><br>Undersensing</td>
+          <td><b>自身心搏之後仍出現不該有的起搏訊號</b>（可能落在 T 波上）</td>
+          <td>感知度數字設太大（不夠敏感）、導線移位、<b>自身訊號振幅變小</b>（心肌梗塞、高血鉀、纖維化）、導線斷裂</td>
+          <td><b>提高敏感度（數字調小）</b>；查電解質；<b>有 R-on-T 風險，要儘快處理</b></td>
+        </tr>
+        <tr>
+          <td><b>過度感知</b><br>Oversensing</td>
+          <td><b>該起搏的時候停住（出現長間歇）</b></td>
+          <td>感知度數字設太小（太敏感）、<b>肌電位</b>（橫膈、胸肌）、<b>T 波過度感知</b>、
+            絕緣破損、外界電磁干擾（電燒、手機、防盜門）</td>
+          <td><b>降低敏感度（數字調大）</b>；移除干擾源；檢查導線完整性</td>
+        </tr>
+        <tr>
+          <td><b>節律器介導頻脈</b><br>PMT／endless loop</td>
+          <td><b>DDD 病人出現接近上限頻率的規則心搏過速</b>，每個 QRS 前有起搏訊號</td>
+          <td><b>逆行性 VA 傳導</b>：心室起搏 → 逆傳到心房 → 心房線感知 → 追蹤起搏心室 → 無限循環</td>
+          <td><b>放磁鐵</b>（切成非同步即打斷迴路）；根本解法是<b>延長心房不反應期（PVARP）</b>或關閉心房追蹤</td>
+        </tr>
+        <tr>
+          <td><b>節律器症候群</b><br>Pacemaker syndrome</td>
+          <td>心電圖可能完全正常——<b>症狀才是線索</b></td>
+          <td><b>失去房室同步</b>（多見於 VVI 而竇房結仍在運作、且有逆行性 VA 傳導）：
+            心房對關閉的房室瓣收縮 → <b>頸部搏動感（cannon A wave）、疲倦、喘、低血壓</b></td>
+          <td>升級為雙腔起搏，或程控降低心室起搏比例</td>
+        </tr>
+        <tr>
+          <td><b>頻率過快</b><br>Runaway pacemaker</td>
+          <td>極快而固定的起搏頻率</td>
+          <td>元件故障（現代裝置罕見）</td>
+          <td>緊急：磁鐵、必要時外科取出；同時準備循環支持</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">感知度（sensitivity）的方向，寫在牆上都不嫌多</div>
+    <b>感知度的單位是 mV，代表「多大的訊號才算數」。</b>
+    <ul>
+      <li><b>數字調小 → 更敏感 → 容易「過度感知」→ 不該停的時候停住。</b></li>
+      <li><b>數字調大 → 更不敏感 → 容易「感知不足」→ 不該電的時候電（R-on-T）。</b></li>
+      <li>暫時性節律器上調錯這一格，是加護病房裡最常見的節律器事故。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">先想到高血鉀</div>
+    <ul>
+      <li>高血鉀會<b>同時</b>造成<b>奪獲閾值上升（未奪獲）</b>與<b>自身訊號振幅下降（感知不足）</b>——
+        一個病人同時出現這兩種故障時，<b>先驗血鉀再叫心臟科</b>。</li>
+      <li>處置見<a href="../pathways/electrolyte-emergency.html" class="pmid">致命電解質急症</a>與
+        <a href="../pathways/electrolyte.html#k" class="pmid">電解質失衡 › 鉀</a>。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/11916002/" target="_blank" rel="noopener" class="ref-link">Bernstein AD, Daubert JC, Fletcher RD, et al. The revised NASPE/BPEG generic code for antibradycardia, adaptive-rate, and multisite pacing. Pacing Clin Electrophysiol. 2002;25(2):260-264.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34455430/" target="_blank" rel="noopener" class="ref-link">Glikson M, Nielsen JC, Kronborg MB, et al. 2021 ESC Guidelines on cardiac pacing and cardiac resynchronization therapy. Eur Heart J. 2021;42(35):3427-3520.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/30412709/" target="_blank" rel="noopener" class="ref-link">Kusumoto FM, Schoenfeld MH, Barrett C, et al. 2018 ACC/AHA/HRS Guideline on the Evaluation and Management of Patients With Bradycardia and Cardiac Conduction Delay. J Am Coll Cardiol. 2019;74(7):e51-e156.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/35174860/" target="_blank" rel="noopener" class="ref-link">Corrigendum to: 2021 ESC Guidelines on cardiac pacing and cardiac resynchronization therapy. Eur Heart J. 2022;43(17):1651.</a>
+    ｜ 暫時性起搏與圍手術期之操作細節為通行共識，凡標有 Class／Level 者均出自上列兩份指引；
+    磁鐵反應依各廠牌設定而異，實際處置前應確認原廠說明或請心臟科檢測。
+  </footer>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ── 分頁切換 ───────────────────────────────────────────────── */
+function pmTab(name){
+  document.querySelectorAll('#pm_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.pm-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+
+/* ── NBG 編碼器 ─────────────────────────────────────────────
+   把五個位置翻成白話，並對「臨床上會出事的組合」提出警告。
+   警告的判準只用編碼本身推得出來的事，不猜病人狀況。 ── */
+var CH  = {O:'不起搏', A:'心房', V:'心室', D:'心房與心室'};
+var SN  = {O:'不感知（非同步）', A:'心房', V:'心室', D:'心房與心室'};
+var RSP = {O:'不作反應', I:'抑制輸出', T:'觸發輸出', D:'抑制＋觸發（心房抑制、心室追蹤）'};
+var RM  = {O:'無頻率調節', R:'有頻率調節（依活動量加快）'};
+var MS  = {O:'無多部位起搏', A:'雙心房起搏', V:'雙心室起搏（CRT）', D:'心房與心室皆多部位'};
+var NAMES = {
+  DDD:'雙腔房室同步起搏', DDDR:'雙腔房室同步＋頻率反應',
+  DDI:'雙腔、不追蹤心房', DDIR:'雙腔不追蹤＋頻率反應',
+  VVI:'單腔心室起搏', VVIR:'單腔心室＋頻率反應',
+  AAI:'單腔心房起搏', AAIR:'單腔心房＋頻率反應',
+  VDD:'單線心房感知、心室起搏',
+  VOO:'心室非同步', DOO:'雙腔非同步', AOO:'心房非同步',
+  VVT:'心室觸發式', AAT:'心房觸發式'
+};
+
+function nbgRender(){
+  var v = ['s1','s2','s3','s4','s5'].map(function(id){ return document.getElementById(id).value; });
+  var p = v[0], s = v[1], r = v[2], m = v[3], x = v[4];
+
+  /* 顯示規則同臨床習慣：第 Ⅳ、Ⅴ 位為 O 時省略不寫；但第 Ⅴ 位有值時，
+     第 Ⅳ 位就算是 O 也必須佔位寫出來（DDDOV），否則會被讀成第四碼是 V。 */
+  var code = p + s + r + (m === 'O' ? (x === 'O' ? '' : 'O') : m) + (x === 'O' ? '' : x);
+  document.getElementById('nbgCode').textContent = code;
+  /* 名稱查表只查前四碼（多部位起搏是加在既有模式之上的一層，不另立名稱），
+     再把第 Ⅴ 碼的意思接在後面——否則 DDDRV 這種標準的 CRT 寫法會被判成「非標準」。 */
+  var base = p + s + r + (m === 'O' ? '' : m);
+  var nm = NAMES[base] || '（非標準或少用的組合）';
+  if (x !== 'O') nm += ' ＋ ' + MS[x];
+  document.getElementById('nbgName').textContent = nm;
+
+  document.getElementById('nbgRead').innerHTML =
+    '<b>Ⅰ 起搏</b>：' + CH[p] + '　<b>Ⅱ 感知</b>：' + SN[s] + '<br>' +
+    '<b>Ⅲ 感知後</b>：' + RSP[r] + '<br>' +
+    '<b>Ⅳ</b>：' + RM[m] + '　<b>Ⅴ</b>：' + MS[x];
+
+  var w = [];
+  if(s === 'O' && p !== 'O')
+    w.push('<b>非同步模式</b>：完全不感知自身心搏，<b>電擊可能落在 T 波上（R-on-T）誘發心室頻脈或顫動</b>。只在依賴節律器且有電磁干擾風險時暫時使用。');
+  if(p === 'A' && s === 'A')
+    w.push('<b>心房單腔</b>：<b>心室完全靠病人自己的房室傳導</b>。一旦發生房室阻滯，心房被起搏而心室不動——等於沒有起搏。');
+  if(p === 'V' && s === 'V' && r === 'I')
+    w.push('<b>失去房室同步</b>：竇性心律的病人用 VVI 可能出現<b>節律器症候群</b>。正解的適應症是<b>永久性心房顫動</b>。');
+  if(p === 'D' && s === 'D' && r === 'D')
+    w.push('心房追蹤存在：<b>心房快速心律不整時心室會被追著跑</b>（靠 mode switch 切成 DDI 處理）；<b>逆行性 VA 傳導可能造成節律器介導頻脈（PMT）</b>。');
+  if(p === 'V' && s === 'D' && r === 'D')
+    w.push('<b>VDD 沒有心房起搏能力</b>：<b>竇房結功能必須正常</b>，否則心房慢下來時就退化成 VVI 的行為。');
+  if(r === 'T' && s !== 'O' && p !== 'D')
+    w.push('純觸發式（T）現代已極少單獨使用；多半只在測試或特殊情境出現。');
+  if(r === 'O' && s !== 'O')
+    w.push('<b>設定了感知腔室，卻把「感知後反應」設為 O</b>——感知到的訊號不會被使用，實際行為就是非同步。標準寫法是把第 Ⅱ 碼一起寫成 O（<b>VOO／DOO／AOO</b>）。');
+  if(p === 'O' && s !== 'O')
+    w.push('<b>只感知不起搏</b>——這不是治療心搏過緩的模式（相當於監測）。');
+  if(x === 'V')
+    w.push('第 Ⅴ 碼為 V＝<b>雙心室起搏（CRT）</b>：目的是讓兩心室重新同步，不是治療心搏過緩。');
+  document.getElementById('nbgWarn').innerHTML = w.join('<br>');
+}
+
+['s1','s2','s3','s4','s5'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', nbgRender);
+});
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) pmTab(h);
+  nbgRender();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

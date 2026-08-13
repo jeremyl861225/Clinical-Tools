@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>電解質失衡 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  .el-panel{display:none;} .el-panel.on{display:block;}
+
+  /* ── 參考值列：每個分頁最上方，台大檢驗醫學部的單位與區間 ── */
+  .refbar{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline;
+          background:var(--soft-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:2px; padding:8px 11px; margin:2px 0 12px;}
+  .refbar .rb{font-family:var(--mono); font-size:11.5px; color:var(--ink);}
+  .refbar .rb b{color:var(--accent); font-weight:700;}
+  .refbar .rb i{font-style:normal; color:var(--muted);}
+  .refbar .rb-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:auto;}
+
+  /* ── 高／低兩端的區塊標頭 ── */
+  .dirhead{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+           margin:22px 0 7px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
+  .dirhead:first-child{margin-top:2px;}
+  .dirhead .dh-n{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink);}
+  .dirhead .dh-e{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft);}
+  .dirhead.hi{border-bottom-color:var(--accent2-soft);}
+  .dirhead.hi .dh-n{color:var(--accent2);}
+
+  /* ── 步驟條：鑑別診斷的一條路徑 ── */
+  .steps{counter-reset:st; margin:8px 0 10px;}
+  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
+        font-size:12.5px; line-height:1.75;}
+  .step:before{counter-increment:st; content:counter(st); font-family:var(--mono); font-size:11px;
+               font-weight:700; color:#fff; background:var(--accent); border-radius:50%;
+               width:19px; height:19px; display:flex; align-items:center; justify-content:center;
+               margin-top:2px;}
+  .step.alt:before{background:var(--accent2);}
+  .step .sq{font-weight:700; color:var(--ink);}
+
+  /* ── 通用小元件 ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .def-table td{line-height:1.7;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .def-table.dt-dose td:nth-child(n+2){font-family:var(--mono); font-size:11.5px; line-height:1.6;}
+  .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+      background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .gr.w{background:var(--accent2-soft); color:var(--accent2);}
+</style>
+</head>
+<body data-back-label="電解質失衡">
+<div class="sheet">
+<div class="view active" id="view-electrolyte">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Decision Pathway</div>
+      <h1>電解質失衡</h1>
+      <div class="sub">Na · K · Cl · Ca · Mg · P — 高低兩端的分級、鑑別路徑與處置</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-electrolyte'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="el_tabs">
+    <button class="tab-btn active" data-p="na" onclick="elTab('na')">鈉 Na</button>
+    <button class="tab-btn"        data-p="k"  onclick="elTab('k')">鉀 K</button>
+    <button class="tab-btn"        data-p="cl" onclick="elTab('cl')">氯 Cl</button>
+    <button class="tab-btn"        data-p="ca" onclick="elTab('ca')">鈣 Ca</button>
+    <button class="tab-btn"        data-p="mg" onclick="elTab('mg')">鎂 Mg</button>
+    <button class="tab-btn"        data-p="p"  onclick="elTab('p')">磷 P</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>本頁是六種電解質的「分級＋鑑別路徑＋處置」總表</b>。
+    <b>高血鉀與低血鈉的急救演算法</b>（含低鈉矯正速率追蹤器）在
+    <a href="electrolyte-emergency.html" class="pmid">致命電解質急症決策</a>那一頁，本頁不重複、只互相指路。
+    參考區間一律取自<b>台大醫院檢驗醫學部臨床檢驗目錄</b>（2026-08 查），
+    <b>單位在台大是混用的</b>——鈉鉀氯鈣鎂用 mmol/L、<b>磷用 mg/dL</b>，看報告時先看單位再看數字。
+    有指引可依的段落逐條標明出處；<b>沒有指引等級文件的（低血鉀、鎂、氯）一律標為回顧文獻或生理學推論，不假裝有指引</b>。
+  </div>
+
+<!-- ==================== 鈉 ==================== -->
+<div class="el-panel on" id="p-na">
+  <div class="refbar">
+    <span class="rb"><b>血鈉</b> 136–145 <i>mmol/L</i></span>
+    <span class="rb"><b>尿鈉</b> 40–220 <i>mmol/day</i></span>
+    <span class="rb"><b>血漿滲透壓</b> &lt;60 歲 275–295；≥60 歲 280–301 <i>mOsm/kg</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血鈉</span><span class="dh-e">Hyponatremia · Na &lt; 135 mmol/L</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">先分「有沒有症狀」，不是先分「多低」</div>
+    <b>嚴重症狀（嘔吐、心肺窘迫、抽搐、意識程度明顯下降、昏迷）＝ 不必等鑑別診斷，立刻給高張鹽水。</b>
+    急救劑量、矯正速率上限與過度矯正的回頭處理，見
+    <a href="electrolyte-emergency.html" class="pmid">致命電解質急症決策</a>（依 SfE 2022 與歐洲 2014 指引，內建 24 小時額度追蹤器）。
+    <b>本段講的是「症狀不嚴重、要找原因」的那條路</b>。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-dose" style="min-width:520px;">
+      <thead><tr><th>分級（生化）</th><th>血鈉 mmol/L</th><th>分級（時間）</th><th>定義</th></tr></thead>
+      <tbody>
+        <tr><td>輕度 Mild</td><td>130–134</td><td>急性 Acute</td><td>有紀錄顯示<b>發生 &lt; 48 小時</b></td></tr>
+        <tr><td>中度 Moderate</td><td>125–129</td><td rowspan="2">慢性 Chronic</td><td rowspan="2"><b>≥ 48 小時</b>，或<b>時間不明</b>（無證據時一律當慢性處理）</td></tr>
+        <tr><td>重度 Profound</td><td>&lt; 125</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">分級用語依<b>歐洲 2014 低血鈉指引</b>。<b>時間分級決定矯正速率的安全上限</b>——慢性者腦部已適應，快速矯正才會造成滲透性脫髓鞘。</div>
+
+  <div class="section-title">鑑別路徑 <span class="en">Diagnostic Sequence</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">先量血漿滲透壓，把「假的」挑掉。</span>
+      <b>等張（275–295）</b>＝<b>假性低血鈉</b>：嚴重高血脂、高蛋白血症（骨髓瘤）——水相被脂質或蛋白佔掉。
+      <b>高張（&gt; 295）</b>＝<b>轉移性低血鈉</b>：高血糖、mannitol、免疫球蛋白中的甘露醇、泌尿手術沖洗液中的 glycine。
+      <b>只有低張（&lt; 275）才是真正的低血鈉</b>。高血糖者請先用
+      <a href="../tools/corrected-labs.html" class="pmid">校正鈉</a>（Katz 1.6 與 Hillier 2.4 並列）。</span></div>
+    <div class="step"><span><span class="sq">量尿液滲透壓。</span>
+      <b>≤ 100 mOsm/kg</b>＝腎臟正常地在排水，問題在<b>進來的水太多或溶質太少</b>：
+      原發性多渴症、啤酒多飲症（beer potomania）、極低溶質攝取（茶與吐司飲食）。
+      <b>&gt; 100</b> 代表抗利尿荷爾蒙在作用，往下走。</span></div>
+    <div class="step"><span><span class="sq">量尿鈉，並同時判斷體液狀態。</span>
+      <b>尿鈉 &lt; 30 mmol/L</b>＝有效動脈血量不足（真正的低血容、或心衰竭／肝硬化／腎病症候群這種「水多但循環覺得少」）。
+      <b>尿鈉 &gt; 30</b> 則看體液狀態：<b>低血容</b>→ 利尿劑、嘔吐腹瀉合併補水、腎上腺功能不全、腦性失鹽；
+      <b>等血容</b>→ <b>SIADH</b>、甲狀腺功能低下、糖皮質素缺乏。</span></div>
+    <div class="step alt"><span><span class="sq">SIADH 是排除性診斷。</span>
+      要件：<b>低張低血鈉、尿滲透壓 &gt; 100、尿鈉 &gt; 30、臨床上等血容、甲狀腺與腎上腺功能正常、近期未用利尿劑</b>。
+      找原因：<b>肺（肺炎、結核、正壓通氣）、腦（出血、腫瘤、感染、手術後）、藥物（SSRI、carbamazepine、
+      cyclophosphamide、NSAID、thiazide）、惡性腫瘤（小細胞肺癌最典型）、疼痛與噁心本身</b>。</span></div>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">值班最常誤判的三個</div>
+    <ul>
+      <li><b>Thiazide 造成的低血鈉像 SIADH</b>——尿鈉高、尿滲高、看起來等血容。<b>看藥歷</b>；停藥後會恢復。</li>
+      <li><b>腎上腺功能不全</b>常合併<b>高血鉀與低血糖</b>；低血鈉找不到原因時要想到它（見
+        <a href="adrenal-crisis.html" class="pmid">腎上腺危象</a>）。</li>
+      <li><b>腦性失鹽（CSW）vs SIADH</b>：兩者尿鈉都高，差別在<b>體液狀態</b>——CSW 是真的脫水（該補鹽水），
+        SIADH 補鹽水反而可能更低。在蜘蛛膜下腔出血族群特別要分清楚。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">處置原則 <span class="en">Management</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:560px;">
+      <thead><tr><th style="width:26%">類型</th><th style="width:36%">處置</th><th style="width:38%">要小心的</th></tr></thead>
+      <tbody>
+        <tr><td><b>有嚴重症狀</b></td><td><b>3% 高張鹽水推注</b>，不等鑑別診斷</td>
+          <td>台大有 <b>Sodium Chloride Injection 3% 500 mL/bag（Na 與 Cl 各 513 mEq/L）</b>，<b>仿單指定中央靜脈給予</b>。劑量與速率見急症頁</td></tr>
+        <tr><td><b>低血容</b></td><td>等張晶體液補足血容</td>
+          <td><b>血容一補足，抗利尿荷爾蒙會突然關掉 → 大量排水 → 血鈉暴衝</b>。這是過度矯正最常見的機轉</td></tr>
+        <tr><td><b>SIADH</b></td><td>限水；效果不足時加溶質（鹽片、尿素）或考慮 vaptan</td>
+          <td>台大有 <b>Samsca（tolvaptan）15 mg/tab</b>，仿單起始 15 mg qd，<b>治療期間不可限水、需住院起始並密集監測、不超過 30 天</b>（肝毒性）</td></tr>
+        <tr><td><b>心衰竭／肝硬化</b></td><td>限水＋治療原發病</td><td>不要為了「把鈉補上去」而給生理食鹽水——會加重鬱血</td></tr>
+        <tr><td><b>藥物引起</b></td><td>停藥</td><td>thiazide、SSRI、carbamazepine、PPI 都要查</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血鈉</span><span class="dh-e">Hypernatremia · Na &gt; 145 mmol/L</span></div>
+
+  <div class="kbox">
+    <b>高血鈉幾乎都是「水不夠」，不是「鈉太多」。</b>
+    一個口渴機制與飲水能力正常的人幾乎不會高血鈉——所以看到高血鈉，先問<b>這個人為什麼喝不到水</b>：
+    <b>意識不清、插管、臥床、失語、極老或極小、被限制飲水</b>。
+  </div>
+
+  <div class="steps">
+    <div class="step"><span><span class="sq">先看體液狀態。</span>
+      <b>低血容</b>（失水多於失鈉）：腸胃道流失、發燒與大量流汗、燒燙傷、滲透性利尿（高血糖、mannitol、高蛋白灌食）。
+      <b>等血容</b>（純失水）：<b>尿崩症</b>（中樞性／腎因性）、不感蒸發。
+      <b>高血容</b>（鈉進太多）：<b>高張碳酸氫鈉</b>、3% 鹽水、高張營養、原發性高醛固酮症。</span></div>
+    <div class="step"><span><span class="sq">量尿滲透壓。</span>
+      <b>&lt; 300</b>＝腎臟濃縮不了 → <b>尿崩症</b>；<b>300–600</b>＝部分濃縮缺陷或滲透性利尿；
+      <b>&gt; 600–800</b>＝腎臟濃縮功能正常，問題在<b>水攝取不足或腎外失水</b>。</span></div>
+    <div class="step alt"><span><span class="sq">尿崩症再分中樞或腎因。</span>
+      給 <b>desmopressin</b> 後尿滲透壓明顯上升＝<b>中樞性</b>（台大有 Minirin 注射 4 mcg/mL、口服 0.1 mg/tab）；
+      沒有反應＝<b>腎因性</b>（鋰鹽、高血鈣、低血鉀、慢性腎病、輸尿管阻塞解除後）。</span></div>
+    <div class="step"><span><span class="sq">算自由水缺乏，再決定補多少。</span>
+      本站有現成計算器：<a href="../tools/water-deficit.html" class="pmid">自由水缺乏</a>——
+      別忘了<b>持續性的流失（尿量、腸胃道、不感蒸發）要另外加上去</b>，只補「缺口」會補不夠。</span></div>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">矯正速率：這裡的證據其實不像低血鈉那麼硬</div>
+    <ul>
+      <li><b>傳統教法</b>：慢性高血鈉每天下降<b>不超過 10–12 mmol/L</b>，以免腦水腫。這仍是多數教科書與臨床常規。</li>
+      <li><b>但</b>：近年的大型成人世代研究<b>並未觀察到快速矯正與腦水腫或死亡率上升的關聯</b>。
+        「≤10 mmol/L/day」在成人身上<b>缺乏強力的直接證據</b>，它更像一個安全邊界而不是被證實的閾值。</li>
+      <li><b>兒童不同</b>：兒科族群的腦水腫風險有較多實證支持，仍應嚴格限速。</li>
+      <li><b>實務結論</b>：慢性高血鈉仍照 ≤10–12 mmol/L/day 走（沒有理由冒險），
+        但<b>不要因為「怕降太快」而讓一個明顯脫水的病人補液不足</b>——兩害相權，脫水是眼前的。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 鉀 ==================== -->
+<div class="el-panel" id="p-k">
+  <div class="refbar">
+    <span class="rb"><b>血鉀</b> 3.5–5.1 <i>mmol/L</i></span>
+    <span class="rb"><b>尿鉀</b> 25–125 <i>mmol/day</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血鉀</span><span class="dh-e">Hyperkalaemia · UKKA 2023</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-dose" style="min-width:520px;">
+      <thead><tr><th>分級</th><th>血鉀 mmol/L</th><th>UKKA 2023 的處置門檻</th></tr></thead>
+      <tbody>
+        <tr><td>輕度 Mild</td><td>5.5–5.9</td><td>找原因、調整用藥；急性不適者仍應到院評估 <span class="gr">2C</span></td></tr>
+        <tr><td>中度 Moderate</td><td>6.0–6.4</td><td>建議<b>胰島素—葡萄糖</b> <span class="gr">2C</span>、<b>salbutamol 輔助</b> <span class="gr">2C</span></td></tr>
+        <tr><td>重度 Severe</td><td>≥ 6.5</td><td><b>緊急到院</b> <span class="gr">1B</span>；<b>至少三導程連續心電圖監測</b>；胰島素—葡萄糖 <span class="gr">1B</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">四個步驟 <span class="en">UKKA 2023 Four Steps</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:620px;">
+      <thead><tr><th style="width:16%">步驟</th><th style="width:48%">做法</th><th style="width:14%">強度</th><th style="width:22%">台大的品項</th></tr></thead>
+      <tbody>
+        <tr><td><b>① 保護心臟</b></td>
+          <td><b>有心電圖變化時給鈣</b>：<b>10% 葡萄糖酸鈣 30 mL 於 10 分鐘</b>，
+            <b>或</b> 10% 氯化鈣 10 mL 於 5 分鐘（兩者皆為 <b>6.8 mmol</b> 的鈣）</td>
+          <td><span class="gr">1C</span></td>
+          <td><b>Calglon 10% 10 mL/amp（Ca 0.465 mEq/mL）→ 需要 3 支</b>。<b>台大的氯化鈣是 Vitacal 2%</b>（Ca 0.27 mEq/mL），<b>不是 10%</b>——沒有可以直接照抄的「10 mL 10% CaCl₂」</td></tr>
+        <tr><td></td>
+          <td>復甦情境（心跳停止或瀕臨停止）優先用<b>氯化鈣</b>；其餘有心電圖變化者用<b>葡萄糖酸鈣</b></td>
+          <td><span class="gr">1C</span></td><td>同上</td></tr>
+        <tr><td><b>② 把鉀趕進細胞</b></td>
+          <td><b>胰島素—葡萄糖：10 units 常規胰島素 ＋ 25 g 葡萄糖靜脈輸注</b></td>
+          <td><span class="gr">1B</span>（≥6.5）<br><span class="gr">2C</span>（6.0–6.4）</td>
+          <td>—</td></tr>
+        <tr><td></td>
+          <td><b>治療前血糖 &lt; 7.0 mmol/L（≈126 mg/dL）者，接著給 10% 葡萄糖 50 mL/hr × 5 小時</b>以免低血糖</td>
+          <td><span class="gr">2B</span></td><td>—</td></tr>
+        <tr><td></td>
+          <td><b>噴霧 salbutamol 10–20 mg</b> 作為<b>輔助</b>治療</td>
+          <td><span class="gr">1B</span>（≥6.5）</td>
+          <td><b>不可單獨使用</b> <span class="gr">1A</span></td></tr>
+        <tr><td></td>
+          <td><b>不建議常規使用靜脈碳酸氫鈉</b>治療急性高血鉀</td>
+          <td><span class="gr">2C</span></td><td>—</td></tr>
+        <tr><td><b>③ 把鉀移出體外</b></td>
+          <td><b>Sodium zirconium cyclosilicate</b>（≥6.5 建議 <span class="gr">1B</span>；6.0–6.4 可考慮）；
+            <b>Patiromer</b>（≥6.0 <span class="gr">1C</span>）</td>
+          <td><span class="gr">1B</span></td>
+          <td class="dt-warn"><b>台大處方集兩者皆查無</b>——UKKA 這一條在台大無法照做</td></tr>
+        <tr><td></td>
+          <td><b>calcium resonium 不應再常規用於急性高血鉀</b></td>
+          <td><span class="gr">2B</span></td>
+          <td class="dt-warn">台大的 <b>Kalimate（calcium polystyrene sulfonate）</b>正是這一類。<b>台大能開到的離子交換樹脂，恰好是指引說不要常規用的那一種</b></td></tr>
+        <tr><td></td>
+          <td>透析病人 K ≥ 6.5 <b>緊急透析</b> <span class="gr">1A</span>；即使能立刻透析，<b>有毒性心電圖變化仍要先給鈣</b> <span class="gr">1C</span></td>
+          <td><span class="gr">1A</span></td><td>—</td></tr>
+        <tr><td><b>④ 監測</b></td>
+          <td><b>血鉀在辨識與治療後 1、2、4、6、24 小時各測一次</b>（<b>反彈性高血鉀</b>）；
+            <b>血糖在 0、30、60、90、120、180、240、300、360 分鐘各測一次</b></td>
+          <td><span class="gr">2C</span>／<span class="gr">1C</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">互動式的高血鉀步驟流程在
+    <a href="electrolyte-emergency.html" class="pmid">致命電解質急症決策</a>；心電圖變化見
+    <a href="../tools/acls.html" class="pmid">ACLS</a> 的「全身因素」心電圖分頁。</div>
+
+  <div class="kbox">
+    <div class="kbox-t">找原因：先排除假的</div>
+    <ul>
+      <li><b>假性高血鉀</b>：溶血（最常見）、抽血時握拳、血小板增多、白血球增多、單核球增多症、
+        <b>從有鉀點滴的同一條路抽血</b>。<b>沒有心電圖變化又沒有理由的高血鉀，先重抽</b>。</li>
+      <li><b>轉移出細胞</b>：酸中毒、胰島素不足（DKA）、β 阻斷劑、succinylcholine、
+        <b>橫紋肌溶解、腫瘤溶解、大量輸血、燒燙傷</b>、高血鉀性週期性麻痺、毛地黃中毒。</li>
+      <li><b>排出減少</b>：<b>急慢性腎衰竭</b>（最重要）、有效循環血量不足、
+        <b>藥物：ACEI／ARB、MRA（spironolactone）、保鉀利尿劑、NSAID、heparin、trimethoprim、calcineurin 抑制劑</b>、
+        腎上腺功能不全、第四型腎小管酸中毒（糖尿病腎病變最常見）。</li>
+      <li><b>進來太多</b>：靜脈輸液含鉀、大量輸血（庫存血）、含鉀的營養品——單獨很少造成高血鉀，<b>除非腎臟同時有問題</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血鉀</span><span class="dh-e">Hypokalaemia · K &lt; 3.5 mmol/L</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">先補鎂，否則補不起來</div>
+    <b>低血鎂會讓低血鉀變成難治性。</b>機轉是鎂缺乏解除了腎小管 ROMK 通道的抑制，鉀持續由尿液漏掉。
+    <b>補了鉀還是上不來的病人，先驗鎂並補鎂</b>（見<a href="#mg" onclick="elTab('mg');return false;" class="pmid">鎂分頁</a>）。
+    同樣的道理也適用於難治性低血鈣。
+  </div>
+
+  <div class="section-title">鑑別路徑 <span class="en">Diagnostic Sequence</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">先排除「跑進細胞」而不是真的少。</span>
+      <b>鹼中毒、胰島素、β₂ 促效劑（含 salbutamol）、再餵食症候群、甲狀腺毒性週期性麻痺、
+      維生素 B₁₂ 治療後、大量白血球增生</b>。這一類<b>身體總鉀量正常</b>，補太多會在轉移結束後變成高血鉀。</span></div>
+    <div class="step"><span><span class="sq">量尿鉀，分出腎內或腎外。</span>
+      <b>24 小時尿鉀 &lt; 20–25 mmol/day</b>（或隨機尿鉀／肌酸酐比值偏低）＝<b>腎外流失</b>：
+      腹瀉、瘻管、大量引流、腸道準備、皮膚流失。
+      <b>&gt; 25–30 mmol/day</b>＝<b>腎臟在漏</b>，往下走。</span></div>
+    <div class="step"><span><span class="sq">腎臟在漏時，看血壓。</span>
+      <b>血壓高</b>→ 原發性高醛固酮症、腎血管性高血壓、腎素分泌腫瘤、庫欣症候群、Liddle 症候群。
+      <b>血壓正常</b>→ 看酸鹼與尿氯（下一步）。</span></div>
+    <div class="step alt"><span><span class="sq">血壓正常時，用<b>尿氯</b>把嘔吐與利尿劑分開。</span>
+      <b>代謝性鹼中毒＋尿氯 &lt; 10–25 mmol/L</b>＝<b>嘔吐或鼻胃管引流</b>（氯已被腎臟保留）。
+      <b>代謝性鹼中毒＋尿氯 &gt; 10–25</b>＝<b>正在用利尿劑、Bartter 或 Gitelman 症候群、低血鎂</b>。
+      <b>代謝性酸中毒</b>＋低血鉀 → <b>腎小管酸中毒（第一或第二型）</b>、輸尿管乙狀結腸吻合、acetazolamide。
+      <span style="color:var(--muted)">這正是尿氯在低血鉀鑑別上的唯一用途，也是本頁「氯」分頁的重點之一。</span></span></div>
+  </div>
+
+  <div class="section-title">補鉀 <span class="en">Replacement · 台大仿單</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:26%">情境</th><th style="width:38%">台大仿單所載</th><th style="width:36%">注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>周邊靜脈</b></td><td><b>≤ 10 mEq/hr</b></td>
+          <td>濃度高會痛、會靜脈炎；<b>建議用輸液幫浦或精密輸液套</b></td></tr>
+        <tr><td><b>中心靜脈</b></td><td><b>≤ 20 mEq/hr</b></td><td>需監測</td></tr>
+        <tr><td><b>K &lt; 2 mmol/L 且有症狀</b></td><td><b>可至 40 mEq/hr，須持續心電圖監測</b>；每日上限 400 mEq</td>
+          <td>這是<b>加護病房等級</b>的處置，不是一般病房</td></tr>
+        <tr><td><b>K &gt; 2.5 mmol/L</b></td><td>至 10 mEq/hr，每日上限 200 mEq</td><td>—</td></tr>
+        <tr><td><b>口服</b></td><td>缺鉀 40–100 mEq/day 分次；<b>單次不超過 20 mEq</b>；成人每日不超過 150 mEq</td>
+          <td>台大品項：Const-K 持續釋放錠 750 mg（K 10 mEq）、K-Glu 口服液 20 mEq/15 mL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <ul>
+      <li><b>粗估</b>：血鉀每低 1 mmol/L，全身缺鉀約 <b>100–200 mmol</b>——所以「補一支就好」通常不夠，而且<b>要邊補邊追</b>。</li>
+      <li><b>腎功能不良者補鉀要減速並密集追蹤</b>；同時在用 ACEI／ARB／MRA 者更要小心反彈。</li>
+      <li>台大另有<b>已配好的成品</b>：0.298% KCl in NaCl 20 mEq/500 mL、KCl in Water 20 mEq/100 mL、
+        KCl 20 mEq in D5W 50 mL（<b>限 6PE 使用</b>）——<b>用成品比在病房自己加鉀安全</b>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 氯 ==================== -->
+<div class="el-panel" id="p-cl">
+  <div class="refbar">
+    <span class="rb"><b>血氯</b> 98–107 <i>mmol/L</i></span>
+    <span class="rb"><b>尿氯</b> 110–250 <i>mmol/day</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="kbox">
+    <b>氯是六個裡面最少被單獨處理的一個</b>——因為它幾乎總是「別的東西的影子」：
+    <b>酸鹼的影子</b>（陰離子間隙、強離子差）、<b>鈉與水的影子</b>、<b>治療的影子</b>（我們灌了多少生理食鹽水）。
+    <b>本分頁沒有指引等級的文件可以引用</b>，內容為生理學與臨床試驗結果，已逐項標明。
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血氯</span><span class="dh-e">Hyperchloremia</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>最常見的原因是我們自己</b>：<b>0.9% 生理食鹽水的氯是 154 mmol/L</b>，遠高於血漿的 98–107。
+        大量輸注會造成<b>高血氯性代謝性酸中毒（陰離子間隙正常）</b>。</li>
+      <li><b>其他</b>：腎小管酸中毒、腹瀉（喪失碳酸氫鹽）、輸尿管腸道改道、acetazolamide、
+        <b>高張鹽水治療</b>、TPN 中的氯化物、尿崩症所致的自由水缺乏。</li>
+      <li><b>怎麼分</b>：<b>陰離子間隙正常的代謝性酸中毒</b>幾乎就是「氯上來了」；
+        算 <b>尿液陰離子間隙</b>可再分腎因（正值＝腎小管酸中毒）或腸道（負值＝腹瀉）。</li>
+      <li><b>臨床意義</b>：<b>SMART</b>（重症，n=15,802）<b>MAKE30 14.3% vs 15.4%（p=0.04）</b>；
+        <b>SALT-ED</b>（急診非重症，n=13,347）<b>無住院天數無差異，但 MAKE30 4.7% vs 5.6%（p=0.01）</b>。
+        <b>平衡鹽溶液相較生理食鹽水，主要不良腎臟事件較低</b>——絕對差距約 1 個百分點，效果不大但方向一致，
+        這也是現行敗血症指引建議<b>優先使用平衡鹽溶液</b>的依據之一。
+        <b>但腦損傷病人不同</b>：低張的平衡液可能加重腦水腫，此族群仍多用生理食鹽水或高張鹽水。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血氯</span><span class="dh-e">Hypochloremia</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>原因</b>：<b>嘔吐與鼻胃管引流</b>（胃液氯濃度高）、<b>環利尿劑與 thiazide</b>、
+        高碳酸血症的代償、SIADH／低血鈉時的稀釋、囊性纖維化的汗液流失。</li>
+      <li><b>結果是低氯性代謝性鹼中毒</b>——而且會<b>自我延續</b>：氯不足時腎臟為了保鈉必須重吸收碳酸氫鹽，
+        鹼中毒因此下不來，這就是所謂的「<b>維持相 maintenance phase</b>」。</li>
+      <li><b>低血氯在心衰竭是獨立的不良預後指標</b>，且與<b>利尿劑抗性</b>相關（觀察性研究，非隨機證據）。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">尿氯：這一格才是氯的臨床價值 <span class="en">Urine Chloride</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:560px;">
+      <thead><tr><th style="width:22%">尿氯</th><th style="width:30%">意義</th><th style="width:48%">典型情境與處置</th></tr></thead>
+      <tbody>
+        <tr><td><b>&lt; 10–25 mmol/L</b></td><td><b>對生理食鹽水有反應</b><br>（chloride-responsive）</td>
+          <td><b>嘔吐、鼻胃管引流、利尿劑停用後、瀉劑</b>。
+            <b>補氯（生理食鹽水＋氯化鉀）就會好</b></td></tr>
+        <tr><td><b>&gt; 25–40 mmol/L</b></td><td><b>對生理食鹽水無反應</b><br>（chloride-resistant）</td>
+          <td><b>原發性高醛固酮症、庫欣、Bartter／Gitelman、嚴重低血鉀、<u>正在使用中</u>的利尿劑</b>。
+            <b>補鹽水不會好，要處理原因</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">同一個病人在不同時間會落在不同格</div>
+    <b>利尿劑使用中</b>尿氯是高的（藥還在作用），<b>停藥之後</b>尿氯會掉下來變成「有反應」。
+    所以<b>尿氯要搭配「最後一次利尿劑是什麼時候給的」一起讀</b>——單看一個數字會把同一個病人分到相反的兩邊。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">代謝性鹼中毒難治時</div>
+    <ul>
+      <li>先補<b>氯與鉀</b>（多數人缺的是這兩個），並停掉還在製造鹼的原因（利尿劑、鼻胃管抽吸）。</li>
+      <li><b>Acetazolamide</b> 可促進碳酸氫鹽由尿排出；代價是低血鉀會更嚴重，且會造成呼吸驅動改變。</li>
+      <li><b>極重度（pH &gt; 7.6）且上述無效</b>時才考慮鹽酸輸注或透析——<b>這是罕見情境，應會診腎臟科</b>。</li>
+      <li>酸鹼判讀本身見 <a href="../tools/abg.html" class="pmid">動脈血氣分析</a>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 鈣 ==================== -->
+<div class="el-panel" id="p-ca">
+  <div class="refbar">
+    <span class="rb"><b>血鈣</b> 2.15–2.58 <i>mmol/L</i></span>
+    <span class="rb"><b>游離鈣 iCa</b> 1.15–1.33 <i>mmol/L</i></span>
+    <span class="rb"><b>尿鈣</b> 2.5–7.5 <i>mmol/day</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台大的血鈣是 mmol/L，不是 mg/dL</div>
+    <b>1 mmol/L ≈ 4.0 mg/dL。</b>教科書與國外指引的門檻幾乎都用 mg/dL，
+    <b>看到「&gt; 14」就要先想清楚那是 mg/dL 還是 mmol/L</b>——差四倍。本分頁一律兩種單位並列。
+    白蛋白低下時的校正見 <a href="../tools/corrected-labs.html" class="pmid">校正鈣</a>；
+    <b>只要決策會因這個數字改變，就直接驗游離鈣</b>（台大項目名 <span style="font-family:var(--mono)">Plasma free Ca++ (STAT)</span>，需冰浴送檢）。
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血鈣</span><span class="dh-e">Hypercalcemia</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-dose" style="min-width:520px;">
+      <thead><tr><th>分級</th><th>mg/dL</th><th>mmol/L</th><th>處置急迫性</th></tr></thead>
+      <tbody>
+        <tr><td>輕度</td><td>&lt; 12</td><td>&lt; 3.0</td><td>多無症狀；找原因、停可疑藥物、避免脫水</td></tr>
+        <tr><td>中度</td><td>12–14</td><td>3.0–3.5</td><td>依症狀與上升速度決定；急性上升即使數字不高也可能有症狀</td></tr>
+        <tr><td>重度</td><td>&gt; 14</td><td>&gt; 3.5</td><td><b>需要立即處置</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">鑑別路徑：先看 PTH <span class="en">Start with PTH</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">重覆確認並驗 PTH（同時抽）。</span>
+      這一個數字就把病因分成兩大類，其他檢查都是在這之後。</span></div>
+    <div class="step"><span><span class="sq">PTH 升高或「不恰當地正常」＝副甲狀腺在作怪。</span>
+      <b>原發性副甲狀腺功能亢進</b>（門診高血鈣最常見）、<b>三發性</b>（長期腎病）、<b>鋰鹽</b>、
+      <b>家族性低尿鈣性高血鈣（FHH）</b>。<b>用 24 小時尿鈣分</b>：
+      <b>尿鈣高</b>（&gt; 200 mg/24h ≈ 5 mmol）傾向原發性亢進；
+      <b>尿鈣低</b>（&lt; 100 mg/24h ≈ 2.5 mmol）或<b>鈣／肌酸酐清除率比 &lt; 0.01</b> 傾向 <b>FHH</b>——
+      <b>FHH 不需要也不應該開刀</b>，這是最重要的分岔。</span></div>
+    <div class="step alt"><span><span class="sq">PTH 被壓低＝非副甲狀腺來源，住院病人多屬此類。</span>
+      依序驗 <b>PTHrP、1,25(OH)₂D、25(OH)D、蛋白電泳（SPEP/UPEP）</b>：
+      <b>PTHrP 高</b>＝惡性腫瘤體液性高血鈣（鱗狀細胞癌、腎細胞癌、乳癌）；
+      <b>1,25(OH)₂D 高</b>＝<b>淋巴瘤或肉芽腫性疾病</b>（結核、結節病）；
+      <b>25(OH)D 高</b>＝維生素 D 中毒；
+      <b>兩者都不高</b>＝溶骨性轉移、多發性骨髓瘤（<b>務必做 SPEP</b>）。</span></div>
+    <div class="step"><span><span class="sq">別忘了藥物與其他。</span>
+      <b>thiazide、鋰鹽、維生素 A、鈣片＋制酸劑（milk-alkali）、teriparatide</b>；
+      <b>甲狀腺毒症、腎上腺功能不全、長期臥床、橫紋肌溶解恢復期</b>。</span></div>
+  </div>
+
+  <div class="section-title">重度高血鈣的處置 <span class="en">Treatment</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:620px;">
+      <thead><tr><th style="width:20%">治療</th><th style="width:30%">劑量</th><th style="width:16%">起效</th><th style="width:34%">要注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>等張生理食鹽水</b></td>
+          <td><b>200–300 mL/hr</b>，調整到<b>尿量 100–150 mL/hr</b></td>
+          <td>數小時</td>
+          <td><b>第一步永遠是補水</b>——高血鈣本身造成腎因性尿崩與脫水。<b>心衰竭與腎衰竭者要減速</b></td></tr>
+        <tr><td><b>Calcitonin</b></td>
+          <td><b>4 U/kg 皮下或肌肉 q12h</b>；反應不佳可增至 8 U/kg q12h，
+            極限 8 U/kg q6h</td>
+          <td><b>4–6 小時（最快）</b></td>
+          <td><b>48 小時後產生耐受性（tachyphylaxis）</b>——只能當<b>橋接</b>，等雙磷酸鹽起效。
+            台大有 Miacalcic 100 IU/amp</td></tr>
+        <tr><td><b>抗骨吸收藥（主軸）</b><br>雙磷酸鹽<b>或</b> denosumab</td>
+          <td><b>Zoledronic acid 4 mg 靜脈輸注 15 分鐘</b>（惡性高血鈣單劑，<b>至少間隔 7 天才重複</b>）；
+            或 pamidronate 60–90 mg 輸注 ≥2 小時；<br>
+            <b>Denosumab 120 mg 皮下，第一個月加打 D8 與 D15</b></td>
+          <td><b>雙磷酸鹽 2–4 天</b><br>denosumab 數天</td>
+          <td><b>Endocrine Society 2023 對「用抗骨吸收藥」是強建議</b>（denosumab 或靜脈雙磷酸鹽皆可）；
+            <b>並「條件式建議 denosumab 優於靜脈雙磷酸鹽」（低度證據）</b>。
+            台大兩類皆有。雙磷酸鹽在<b>腎功能不全</b>要減量或改用其他、補水不足時會傷腎；
+            denosumab <b>不經腎臟清除</b>但<b>低血鈣風險更高</b>，兩者都要追蹤鈣與顎骨狀況</td></tr>
+        <tr><td><b>重度時的起始組合</b></td>
+          <td><b>calcitonin ＋（靜脈雙磷酸鹽 或 denosumab）</b>一起開始</td>
+          <td>—</td>
+          <td>Endocrine Society 2023 <b>條件式建議</b>：重度高血鈣的<b>起始</b>治療用這個組合，
+            讓 calcitonin 先撐住等抗骨吸收藥起效</td></tr>
+        <tr><td><b>雙磷酸鹽治療後仍難治或復發</b></td>
+          <td><b>改用 denosumab</b></td><td>—</td>
+          <td>Endocrine Society 2023 條件式建議。副甲狀腺癌所致者則可用<b>擬鈣劑或抗骨吸收藥</b></td></tr>
+        <tr><td><b>糖皮質素</b></td>
+          <td>如 prednisolone 20–40 mg/day</td><td>2–5 天</td>
+          <td><b>只對 1,25(OH)₂D 過多者有效</b>：淋巴瘤、肉芽腫性疾病、維生素 D 中毒</td></tr>
+        <tr><td><b>透析</b></td><td>—</td><td>立即</td>
+          <td>重度高血鈣併<b>腎衰竭或心衰竭無法大量補水</b>時</td></tr>
+        <tr class="dt-warn"><td><b>環利尿劑</b></td><td>—</td><td>—</td>
+          <td><b>不再建議常規使用</b>——沒有降鈣好處，且會加重脫水。<b>只在補水後出現體液過載時使用</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血鈣</span><span class="dh-e">Hypocalcemia</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">外科最相關的兩個原因</div>
+    <ul>
+      <li><b>甲狀腺或副甲狀腺手術後的副甲狀腺功能低下</b>——術後 24–72 小時最明顯。
+        <b>口周麻木與手足抽搐是第一個症狀</b>；<b>Chvostek 徵象（敲顏面神經）與 Trousseau 徵象（壓脈帶 3 分鐘）</b>。</li>
+      <li><b>大量輸血的檸檬酸螯合</b>——與 CRRT 的檸檬酸抗凝同一個機轉。
+        <b>創傷大量輸血時要常規補鈣並追蹤游離鈣</b>（見<a href="trauma-resuscitation.html" class="pmid">創傷大出血</a>）。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">其他原因</div>
+    <ul>
+      <li><b>低血鎂</b>（同時抑制 PTH 分泌與作用）——<b>補鈣沒反應時先驗鎂</b>。</li>
+      <li><b>維生素 D 缺乏</b>、慢性腎病（1,25(OH)₂D 生成不足＋高血磷）。</li>
+      <li><b>急性胰臟炎</b>（皂化）、<b>橫紋肌溶解與腫瘤溶解</b>（磷結合鈣）、敗血症。</li>
+      <li><b>藥物</b>：雙磷酸鹽、denosumab、foscarnet、質子幫浦抑制劑（經低血鎂）、
+        <b>大量檸檬酸（輸血、CRRT）</b>。</li>
+      <li><b>呼吸性鹼中毒</b>：總鈣不變但<b>游離鈣下降</b>——過度換氣造成手足抽搐就是這個機轉。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">補鈣 <span class="en">Replacement · 台大品項</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:26%">情境</th><th style="width:40%">做法</th><th style="width:34%">注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>有症狀（抽搐、喉頭痙攣、QT 延長、癲癇）</b></td>
+          <td><b>10% 葡萄糖酸鈣 10–20 mL 稀釋後靜脈給予 10–20 分鐘</b>，之後接續輸注</td>
+          <td>台大 <b>Calglon 10% 10 mL/amp，Ca 0.465 mEq/mL</b>（一支約 4.65 mEq ≈ 93 mg 元素鈣）</td></tr>
+        <tr><td><b>持續輸注</b></td>
+          <td>稀釋於 D5W 緩慢輸注，依游離鈣調整</td>
+          <td><b>不可與含碳酸氫鹽或磷酸鹽的溶液同一條路</b>——會沉澱</td></tr>
+        <tr><td><b>氯化鈣</b></td>
+          <td>元素鈣濃度約為同體積同百分比葡萄糖酸鈣的 <b>3 倍</b></td>
+          <td><b>台大只有 Vitacal 2%（Ca 0.27 mEq/mL）</b>，並非國外常見的 10%。
+            <b>刺激性強，原則上只走中心靜脈</b></td></tr>
+        <tr><td><b>慢性／術後副甲狀腺低下</b></td>
+          <td>口服鈣＋<b>活性維生素 D</b></td>
+          <td><b>台大處方集查無 calcitriol</b>（本機 2026-07 快照）——實際開立前請確認院內現況</td></tr>
+        <tr><td><b>合併低血鎂</b></td><td><b>先補鎂</b></td><td>不補鎂，鈣補不上來</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 鎂 ==================== -->
+<div class="el-panel" id="p-mg">
+  <div class="refbar">
+    <span class="rb"><b>血鎂</b> 0.78–1.11 <i>mmol/L</i>（≈1.9–2.7 mg/dL）</span>
+    <span class="rb"><b>尿鎂</b> 0.99–10.49 <i>mmol/24h</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="kbox">
+    <b>鎂沒有指引等級的專屬文件</b>，本分頁內容為回顧文獻與生理學，劑量以台大仿單為準。
+    <b>但它是「其他電解質補不起來」的共同答案</b>——難治性低血鉀、難治性低血鈣、torsades，第一個要想到的都是鎂。
+    <b>血中鎂只佔全身鎂的約 1%</b>，所以<b>血鎂正常不能排除鎂缺乏</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血鎂</span><span class="dh-e">Hypomagnesemia</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">原因</div>
+    <ul>
+      <li><b>腸胃道</b>：慢性腹瀉、短腸症、吸收不良、<b>質子幫浦抑制劑（長期使用的典型原因，常被忽略）</b>、
+        急性胰臟炎、酒精。</li>
+      <li><b>腎臟流失</b>：<b>環利尿劑與 thiazide</b>、<b>aminoglycoside、amphotericin B、cisplatin、
+        calcineurin 抑制劑（cyclosporine／tacrolimus）、cetuximab</b>、高血鈣、糖尿病（滲透性利尿）、
+        阻塞解除後利尿、Gitelman 與 Bartter 症候群。</li>
+      <li><b>轉移進細胞</b>：<b>再餵食症候群</b>、DKA 治療後、<b>飢餓骨症候群（副甲狀腺切除後）</b>。</li>
+      <li><b>持續清除</b>：<b>CRRT</b>——置換液鎂濃度低（Prismasol B0 為 1.0 mEq/L），連續清除會慢慢帶走。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">低血鎂的三個後果</div>
+    <ul>
+      <li><b>難治性低血鉀</b>：鎂缺乏解除了對腎小管鉀通道的抑制 → 鉀持續漏掉。<b>補鉀無效時先補鎂</b>。</li>
+      <li><b>難治性低血鈣</b>：鎂缺乏同時抑制 PTH 分泌與周邊對 PTH 的反應。</li>
+      <li><b>心律不整</b>：<b>QT 延長與尖端扭轉型室速（torsades de pointes）</b>；也促成毛地黃毒性。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">補鎂 <span class="en">Replacement · 台大仿單</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:580px;">
+      <thead><tr><th style="width:28%">情境</th><th style="width:40%">台大仿單所載</th><th style="width:32%">注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>嚴重低血鎂</b></td><td><b>40 mEq 溶於 1 L 的 D5W 或生理食鹽水，輸注 3 小時</b></td>
+          <td>品項：<b>Magnesium Sulfate 10% 20 mL/amp（Mg 0.8 mEq/mL）</b>——一支 16 mEq</td></tr>
+        <tr><td><b>尖端扭轉型室速</b></td><td>靜脈給予硫酸鎂（<b>不論血鎂是否正常</b>）</td>
+          <td>演算法見 <a href="../tools/acls.html" class="pmid">ACLS</a>；同時找並停掉延長 QT 的藥</td></tr>
+        <tr><td><b>子癲前症／子癲症</b></td><td>負荷 32–48 mEq，之後 8–16 mEq/hr 至少 24 小時</td>
+          <td>需監測深部肌腱反射、呼吸與尿量</td></tr>
+        <tr><td><b>口服維持</b></td><td>MGO 錠 250 mg</td><td><b>腹瀉是劑量限制因素</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <ul>
+      <li><b>補得快，漏得也快</b>：靜脈給的鎂約有一半直接由尿液排掉，<b>所以慢慢補比一次推有效</b>。</li>
+      <li><b>腎功能不全者要減量並密集追蹤</b>——鎂由腎排除，是高血鎂最常見的前提。</li>
+      <li>補鎂的同時<b>把鉀與鈣一起追</b>，三者常一起缺。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血鎂</span><span class="dh-e">Hypermagnesemia</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>幾乎都需要兩個條件同時成立</b>：<b>腎功能不良</b> ＋ <b>鎂進來</b>（含鎂制酸劑與瀉劑、
+        灌腸、TPN、產科硫酸鎂治療）。<b>問藥歷比驗什麼都快</b>。</li>
+      <li><b>症狀依濃度遞進</b>：噁心與臉部潮紅 → <b>深部肌腱反射消失（最早也最有用的床邊徵象）</b> →
+        嗜睡、低血壓、心搏過緩 → <b>呼吸抑制、完全房室阻滯、心跳停止</b>。
+        <b>深部肌腱反射還在，通常還沒到危險區</b>。</li>
+      <li><b>處置</b>：<b>停掉所有含鎂的東西</b>；<b>靜脈鈣鹽</b>拮抗心臟與神經肌肉毒性（與高血鉀同一個道理）；
+        生理食鹽水＋環利尿劑促進排出（腎功能尚可時）；<b>腎功能不良或有嚴重症狀者直接透析</b>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 磷 ==================== -->
+<div class="el-panel" id="p-p">
+  <div class="refbar">
+    <span class="rb"><b>血磷（≥18 歲）</b> 2.5–5.0 <i>mg/dL</i></span>
+    <span class="rb"><b>尿磷</b> 300–1300 <i>mg/24h</i></span>
+    <span class="rb-src">台大檢驗醫學部</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台大的磷是 mg/dL，鈣與鎂卻是 mmol/L</div>
+    同一張報告上三種單位混用。<b>1 mmol/L 磷 ≈ 3.1 mg/dL。</b>
+    國外文獻常以 mmol/L 表示（正常 0.81–1.45 mmol/L），換算錯會差三倍。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">低血磷</span><span class="dh-e">Hypophosphatemia · &lt; 2.5 mg/dL</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">為什麼外科與加護病房要特別在意</div>
+    <ul>
+      <li><b>脫離不了呼吸器</b>——磷是 ATP 的骨幹，<b>橫膈與呼吸肌無力</b>是重度低血磷最實際的後果。
+        <b>SBT 一直失敗又找不到原因時，先看磷。</b></li>
+      <li>其他：橫紋肌溶解、溶血、心肌收縮力下降與心律不整、<b>2,3-DPG 下降使氧不易釋出到組織</b>、
+        意識改變與癲癇、白血球與血小板功能異常。</li>
+      <li><b>重度定義通常取 &lt; 1.0–1.5 mg/dL</b>，此時多需靜脈補充。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">鑑別路徑 <span class="en">Diagnostic Sequence</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">先問「是不是跑進細胞了」。</span>
+      <b>再餵食症候群</b>（最重要）、<b>胰島素／葡萄糖輸注</b>、<b>呼吸性鹼中毒</b>（過度換氣、敗血症早期）、
+      <b>飢餓骨症候群</b>（副甲狀腺或甲狀腺手術後）、白血病急速增生。
+      <b>這一類的全身磷不一定少，但補的需求是真的</b>。</span></div>
+    <div class="step"><span><span class="sq">量尿磷，把腎因與非腎因分開。</span>
+      <b>24 小時尿磷 &lt; 100 mg</b>（或磷排泄分率 FE<sub>PO₄</sub> &lt; 5%）＝<b>腎臟正常保留</b>，
+      問題在<b>攝取不足、吸收不良或轉移</b>。<b>&gt; 100 mg 或 FE<sub>PO₄</sub> ≥ 5%</b>＝<b>腎臟在漏</b>。</span></div>
+    <div class="step"><span><span class="sq">腎臟在漏時，看 PTH 與 FGF23。</span>
+      <b>PTH 高</b>＝原發或次發性副甲狀腺功能亢進。
+      <b>PTH 正常而 FGF23 高</b>＝<b>腫瘤性骨軟化症</b>、<b>靜脈鐵劑 ferric carboxymaltose</b>（常被忽略的醫源性原因）、
+      X 性聯低磷佝僂症。<b>兩者皆正常</b>＝<b>Fanconi 症候群</b>（多發性骨髓瘤、tenofovir、順鉑、重金屬）。</span></div>
+    <div class="step alt"><span><span class="sq">別忘了醫源性的兩個。</span>
+      <b>CRRT</b>——多數置換液不含磷（台大 Prismasol B0 即不含），連續清除是加護病房低血磷的常見原因，
+      見 <a href="crrt.html#tbl" class="pmid">CRRT › 併發症</a>；<b>制酸劑與磷結合劑</b>長期使用。</span></div>
+  </div>
+
+  <div class="section-title">補磷 <span class="en">Replacement · 台大品項</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:600px;">
+      <thead><tr><th style="width:28%">品項</th><th style="width:34%">內容</th><th style="width:38%">注意</th></tr></thead>
+      <tbody>
+        <tr><td><b>Potassium Phosphate</b><br>44 mEq K/100 mL/bag</td>
+          <td><b>K 0.44 mEq/mL；P 0.3 mmol/mL</b></td>
+          <td><b>同時是補鉀</b>——高血鉀或腎衰竭者要重新計算。仿單寫「依所需之 mmol 磷與 mEq 鉀個別計算」</td></tr>
+        <tr><td><b>Glycophos</b><br>20 mmol/20 mL/amp</td>
+          <td>甘油磷酸鈉，<b>不含鉀</b></td>
+          <td>仿單：成人靜脈營養補磷 <b>10–20 mmol/day</b>；嬰幼兒 1–1.5 mmol/kg/day</td></tr>
+        <tr><td><b>口服磷溶液</b><br>20 mL/btl</td><td>P 0.97 mmol/mL</td>
+          <td>仿單：成人起始 <b>30–90 mL/day 分次</b>。<b>腹瀉是主要副作用</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <ul>
+      <li><b>靜脈補磷要慢</b>：太快會造成<b>低血鈣、轉移性鈣化、高血鉀（若用磷酸鉀）</b>。</li>
+      <li><b>補完要追鈣</b>——磷與鈣互相牽動。</li>
+      <li><b>再餵食症候群</b>是最需要「事前預防」而非事後補救的情境：高風險者<b>從低熱量開始、先補磷鉀鎂與硫胺（B₁）、
+        前幾天每天驗</b>。ASPEN 2020 有專門的共識（<b>並附有勘誤，引用時請一併確認</b>）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血磷</span><span class="dh-e">Hyperphosphatemia · &gt; 5.0 mg/dL</span></div>
+
+  <div class="steps">
+    <div class="step"><span><span class="sq">先排除假性高血磷。</span>
+      <b>副蛋白血症（骨髓瘤）、高膽紅素血症、高血脂、溶血、<u>脂質體 amphotericin B</u></b>
+      都會干擾檢驗而造出假數字。<b>與臨床完全不符時，換方法重驗</b>。</span></div>
+    <div class="step"><span><span class="sq">看腎功能。</span>
+      <b>腎功能正常</b>而磷高 → 想<b>大量磷進入</b>：<b>腫瘤溶解症候群、橫紋肌溶解</b>（細胞崩解釋出）、
+      <b>含磷灌腸劑或口服磷酸鈉腸道準備</b>、維生素 D 中毒。
+      <b>腎功能不良</b>（急性或慢性）→ 排不掉，是最常見的原因。</span></div>
+    <div class="step alt"><span><span class="sq">再看副甲狀腺與其他。</span>
+      <b>副甲狀腺功能低下</b>（含術後）、肢端肥大症、雙磷酸鹽、<b>FGF23 缺乏</b>。</span></div>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">處置</div>
+    <ul>
+      <li><b>限制飲食磷</b>並停掉含磷的藥物與灌腸劑。</li>
+      <li><b>磷結合劑隨餐服用</b>（不隨餐等於沒作用）：台大有 <b>Procal（calcium acetate）667 mg/tab</b>，
+        仿單為末期腎病之高血磷，起始 2 錠、維持 3–4 錠 tid，每日不超過 12 錠。</li>
+      <li><b>急性且嚴重（腫瘤溶解、橫紋肌溶解併急性腎損傷）</b>：<b>大量輸液</b>促進排出；
+        <b>合併少尿或症狀性低血鈣時考慮腎臟替代療法</b>（見 <a href="aki-crrt.html" class="pmid">AKI 與 RRT 時機</a>）。</li>
+      <li><b>高血磷合併低血鈣時不要急著大量補鈣</b>——鈣磷乘積過高會造成<b>轉移性鈣化</b>；
+        <b>先把磷降下來</b>，除非低血鈣已有症狀。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0" target="_blank" rel="noopener" class="ref-link">UK Kidney Association. Clinical Practice Guidelines: Treatment of Acute Hyperkalaemia in Adults. October 2023.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/24569496/" target="_blank" rel="noopener" class="ref-link">Spasovski G, Vanholder R, Allolio B, et al. Clinical practice guideline on diagnosis and treatment of hyponatraemia. Nephrol Dial Transplant. 2014;29(Suppl 2):i1-i39.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36545746/" target="_blank" rel="noopener" class="ref-link">El-Hajj Fuleihan G, Clines GA, Hu MI, et al. Treatment of Hypercalcemia of Malignancy in Adults: An Endocrine Society Clinical Practice Guideline. J Clin Endocrinol Metab. 2023;108(3):507-528.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/32115791/" target="_blank" rel="noopener" class="ref-link">da Silva JSV, Seres DS, Sabino K, et al. ASPEN Consensus Recommendations for Refeeding Syndrome. Nutr Clin Pract. 2020;35(2):178-195.（<b>另有勘誤 PMID 32383800</b>）</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29485925/" target="_blank" rel="noopener" class="ref-link">Semler MW, Self WH, Wanderer JP, et al. Balanced Crystalloids versus Saline in Critically Ill Adults (SMART). N Engl J Med. 2018;378(9):829-839.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29485926/" target="_blank" rel="noopener" class="ref-link">Self WH, Semler MW, Wanderer JP, et al. Balanced Crystalloids versus Saline in Noncritically Ill Adults (SALT-ED). N Engl J Med. 2018;378(9):819-828.</a>
+    ｜ 參考區間：<b>台大醫院檢驗醫學部臨床檢驗目錄</b>（2026-08 查）。
+    劑量與品項：<b>台大醫院藥劑部藥品資料庫</b>。
+    <b>低血鉀、氯、鎂三段無指引等級文件，內容為回顧文獻與生理學，已於各段標明。</b>
+  </footer>
+</div>
+
+</div>
+</div>
+
+<script src="../js/common.js"></script>
+<script>
+/* ── 分頁切換 ───────────────────────────────────────────────── */
+function elTab(name){
+  document.querySelectorAll('#el_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.el-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+  window.scrollTo(0, 0);
+}
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) elTab(h);
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

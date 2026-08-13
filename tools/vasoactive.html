@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>血管活性藥物對照 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  /* 分頁列沿用共用的 .tab-row／.tab-btn，此處只定義內容面板 */
+  .va-panel{display:none;} .va-panel.on{display:block;}
+
+  /* ── 體重列：全頁 mcg/kg/min ↔ mcg/min ↔ mL/hr 的唯一輸入 ── */
+  .va-bar{background:var(--paper); border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
+  .va-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .va-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
+                text-transform:uppercase; letter-spacing:.04em;}
+  .va-bar input[type=number]{width:84px; font-family:var(--mono); font-size:15px; font-weight:700;
+      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .va-bar .va-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
+
+  /* ── 血行動力學效應矩陣 ───────────────────────────────────────
+     一列一個參數、一欄一支藥；欄多必然要橫捲，故整張表包在 .tw 內。
+     箭頭本身帶顏色（升＝主色、降＝次色、不變＝灰），不靠字義硬讀。 ── */
+  .hemo{width:100%; border-collapse:collapse; font-size:12px; min-width:720px;}
+  .hemo th,.hemo td{border:1px solid var(--line); padding:5px 6px; text-align:center; vertical-align:middle;}
+  .hemo thead th{font-family:var(--mono); font-size:11px; color:var(--accent);
+                 background:var(--accent-soft); line-height:1.4;}
+  .hemo thead th .hz{display:block; font-size:10px; color:var(--muted); font-weight:400;}
+  .hemo tbody th{font-family:var(--mono); font-size:11px; color:var(--ink); text-align:left;
+                 background:var(--soft-bg); white-space:nowrap;}
+  .hemo tbody th .hz{display:block; font-size:10px; color:var(--muted); font-weight:400;}
+  .hemo tr.hr-txt td{font-size:11px; text-align:left; line-height:1.6; color:var(--ink);}
+  .hemo tr.hr-txt th{vertical-align:top;}
+  .ar{font-family:var(--mono); font-size:15px; font-weight:700; line-height:1;}
+  .ar.up{color:var(--accent2);} .ar.dn{color:var(--accent);}
+  .ar.eq{color:var(--muted-soft); font-size:13px;}
+  .ar.mix{color:var(--muted); font-size:13px;}
+  .ar sub{font-size:9px; font-weight:400; color:var(--muted); vertical-align:baseline;}
+  .hemo-key{font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.8; margin:2px 0 12px;}
+  .hemo-key b{color:var(--ink);}
+
+  /* ── 藥物卡（同 RSI／心因性休克頁的元件，禁忌症獨立框出） ── */
+  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+      background:var(--panel); padding:10px 12px; margin:9px 0;}
+  .dg.warn{border-left-color:var(--accent2);}
+  .dg.na{border-left-color:var(--muted-soft); background:var(--soft-bg);}
+  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
+  .dg-zh{font-size:11.5px; color:var(--muted);}
+  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
+  .dg-tag.off{background:var(--soft-bg); color:var(--muted); border:1px solid var(--line);}
+  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:14px; flex-wrap:wrap; align-items:baseline;}
+  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
+  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent); display:block;}
+  .dg-dose .dd-v.alt{color:var(--accent2);}
+  .dg-dose .dd-ml{font-family:var(--mono); font-size:12.5px; font-weight:700; color:var(--ink);
+                  display:block; margin-top:1px;}
+  .dg-dose .dd-ml:empty{display:none;}
+  .dg-mix{display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+          margin-top:6px; padding:6px 9px; border:1px dashed var(--line); border-radius:2px;}
+  .dg-mix label{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+                text-transform:uppercase; letter-spacing:.04em;}
+  .dg-mix input[type=number]{width:66px; font-family:var(--mono); font-size:13px; font-weight:700;
+      padding:3px 6px; border:1px solid var(--line); border-radius:2px;
+      background:var(--field-bg); color:var(--ink);}
+  .dg-mix .mix-u{font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .dg-mix .mix-c{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:2px;}
+  .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px; line-height:1.6;}
+  .dg-kin b{color:var(--ink); font-weight:700;}
+  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
+  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
+  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em; text-transform:uppercase;}
+  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
+  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
+  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
+  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
+         background:var(--accent2-soft); padding:7px 10px;}
+  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
+  .dg-ci .abs{font-weight:700;}
+  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
+
+  /* ── 通用小元件（與心因性休克頁同一套） ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .sect{margin-top:16px;}
+  .def-table td{line-height:1.7;}
+  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .def-table.dt-dose td:nth-child(n+2){font-family:var(--mono); font-size:11.5px; line-height:1.6;}
+</style>
+</head>
+<body data-back-label="血管活性藥物">
+<div class="sheet">
+<div class="view active" id="view-vasoactive">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Critical Care Reference</div>
+      <h1>血管活性藥物對照</h1>
+      <div class="sub">Vasopressors, Inotropes &amp; Inodilators — 血行動力學效應矩陣、受體機轉、台大劑量與泡法</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-vasoactive'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="va_tabs">
+    <button class="tab-btn active" data-p="grid" onclick="vaTab('grid')">效應對照表</button>
+    <button class="tab-btn"        data-p="drug" onclick="vaTab('drug')">藥物卡與泡法</button>
+    <button class="tab-btn"        data-p="pick" onclick="vaTab('pick')">依休克型態選藥</button>
+    <button class="tab-btn"        data-p="evid" onclick="vaTab('evid')">證據與陷阱</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>效應矩陣的方向</b>取自標準血行動力學藥理（受體分佈與臨床血行動力學研究），並與使用者提供之
+    <b>Vanderbilt Heart「BOX 3.3」對照表</b>逐格比對——<b>不一致的三格已標出並說明理由</b>（見表下對照）。
+    <b>劑量與泡法一律以台大醫院藥劑部處方集為準</b>，心衰竭情境另引<b>台大心血管中心心臟衰竭診療指引第三版表 8-3</b>；
+    禁忌症取自各藥品仿單。<b>附圖是美國某醫學中心的護理用表，不是指引</b>，其劑量單位與濃度與台大不同，請看「藥物卡與泡法」分頁。
+  </div>
+
+<!-- ==================== 分頁一：效應對照表 ==================== -->
+<div class="va-panel on" id="p-grid">
+
+  <div class="lede">
+    <div class="lede-title">看這張表之前先決定的三件事</div>
+    <div class="lede-body">
+      <div class="lede-item"><span>①</span><span><b>血壓不夠，還是流量不夠？</b>——低血壓靠 <b>SVR</b>（升壓劑），低灌流靠 <b>CO</b>（強心劑）。
+        兩者混在一起是最常見的錯誤：<b>乳酸高＋四肢冰冷但血壓正常</b>的人加升壓劑不會變好，
+        <b>血壓 60 但四肢溫暖</b>的人加強心劑會更低。先看末梢、乳酸、尿量與（若有）CO/SvO₂，再挑欄位。</span></div>
+      <div class="lede-item"><span>②</span><span><b>前負荷夠不夠？</b>——<b>未矯正的低血容不能只靠升壓劑</b>。
+        升壓劑把血壓撐在一個空的循環上，等於把灌流壓加在已缺血的組織；表上每一支藥都預設前負荷已處理。</span></div>
+      <div class="lede-item"><span>③</span><span><b>右心還是左心？</b>——右心衰竭時 <b>PVR</b> 那一列比 SVR 重要：
+        會拉高肺血管阻力的藥（大劑量 α 促效）反而讓右心更走不動；<b>milrinone 與 dobutamine 降 PVR</b>，
+        <b>vasopressin 在低劑量相對不升肺壓</b>，所以右心休克常見的組合是 norepinephrine ＋ 強心劑而不是加倍 α。</span></div>
+      <div class="lede-foot">本表是「方向」不是「幅度」，且<b>方向會隨劑量改變</b>——dopamine、epinephrine 在低劑量偏 β、高劑量偏 α。
+      任何一格都不能單獨拿來決定處方。</div>
+    </div>
+  </div>
+
+  <div class="section-title">升壓劑 <span class="en">Vasopressors</span></div>
+  <div class="tw">
+    <table class="hemo">
+      <thead>
+        <tr>
+          <th style="text-align:left">參數<span class="hz">Parameter</span></th>
+          <th>Norepinephrine<span class="hz">力復菲德</span></th>
+          <th>Phenylephrine<span class="hz">台大無注射劑</span></th>
+          <th>Epinephrine<span class="hz">安得理那寧</span></th>
+          <th>Dopamine<span class="hz">得保命／易多巴</span></th>
+          <th>Vasopressin<span class="hz">必壓生</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>CO<span class="hz">心輸出量</span></th>
+          <td><span class="ar up">↑</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar mix">↔／↓</span></td></tr>
+        <tr><th>PAOP<span class="hz">肺動脈楔壓</span></th>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td></tr>
+        <tr><th>SVR<span class="hz">體循環阻力</span></th>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar up">↑↑</span></td>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑↑</span></td></tr>
+        <tr><th>MAP<span class="hz">平均動脈壓</span></th>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td></tr>
+        <tr><th>HR<span class="hz">心率</span></th>
+          <td><span class="ar eq">↔</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar up">↑↑</span></td>
+          <td><span class="ar mix">↔／↓</span></td></tr>
+        <tr><th>CVP<span class="hz">中心靜脈壓</span></th>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td></tr>
+        <tr><th>PVR<span class="hz">肺血管阻力</span></th>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar eq">↔<sub>低劑量</sub></span></td></tr>
+        <tr class="hr-txt"><th>受體<span class="hz">Receptor</span></th>
+          <td>α₁ ≫ β₁</td><td>純 α₁</td><td>α₁、β₁、β₂<br>（低劑量偏 β、高劑量偏 α）</td>
+          <td>DA₁ → β₁ → α₁<br>（劑量依賴）</td><td>V₁（非腎上腺素受體）</td></tr>
+        <tr class="hr-txt"><th>台大劑量<span class="hz">NTUH</span></th>
+          <td>仿單 <b>0.05–0.4 mcg/kg/min</b><br>難治 1–3.3；表 8-3 為 0.2–1.0</td>
+          <td>—<br>（台大處方集<b>查無注射劑</b>）</td>
+          <td>表 8-3 <b>0.05–0.5 mcg/kg/min</b><br>心跳停止 1 mg IV q3–5 min</td>
+          <td>仿單 <b>0.5–20 mcg/kg/min</b>（max 50）<br>表 8-3：3–5 強心／&gt;5 併升壓</td>
+          <td><b>0.03–0.04 U/min 固定劑量</b><br>不依體重、不隨意加減</td></tr>
+        <tr class="hr-txt"><th>主要用途<span class="hz">Uses</span></th>
+          <td>各型休克的<b>第一線升壓劑</b>；敗血性、心因性、術後血管麻痺</td>
+          <td>需要純升 SVR 而<b>不想增加心率</b>時（如流出道阻塞、麻醉中低血壓）</td>
+          <td>心跳停止、過敏性休克；升壓＋強心皆不足時的過渡</td>
+          <td>已少用；心搏過緩併低血壓時偶用</td>
+          <td>norepinephrine 節省劑（catecholamine-sparing）；右心／肺高壓時的第二支</td></tr>
+        <tr class="hr-txt"><th>臨床要點<span class="hz">Key points</span></th>
+          <td><b>外滲會壞死</b>；劑量以 base 表示（2 mg bitartrate ＝ 1 mg base）；<b>不建議單用生理食鹽水稀釋</b></td>
+          <td><b>反射性心搏過緩</b>；心輸出量本來就低的人會更低——心臟術後不是第一線</td>
+          <td>致心律不整、<b>乳酸上升會讓乳酸失去監測價值</b>、高血糖</td>
+          <td><b>心律不整事件約為 norepinephrine 的兩倍</b>（SOAP II）；心因性休克族群死亡率較高</td>
+          <td><b>無強心作用</b>——CO 本來就低時單用會更低；周邊／腸繫膜缺血</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">強心劑、擴張劑與其他 <span class="en">Inotropes, Inodilators &amp; Vasodilators</span></div>
+  <div class="tw">
+    <table class="hemo">
+      <thead>
+        <tr>
+          <th style="text-align:left">參數<span class="hz">Parameter</span></th>
+          <th>Dobutamine<span class="hz">健多博</span></th>
+          <th>Milrinone<span class="hz">哌明克</span></th>
+          <th>Isoproterenol<span class="hz">台大有 0.2 mg/amp</span></th>
+          <th>Nitroglycerin<span class="hz">敏佐心</span></th>
+          <th>Nitroprusside<span class="hz">台大查無</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>CO<span class="hz">心輸出量</span></th>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar up">↑↑</span></td>
+          <td><span class="ar up">↑↑</span></td><td><span class="ar mix">↔／↑</span></td>
+          <td><span class="ar up">↑</span></td></tr>
+        <tr><th>PAOP<span class="hz">肺動脈楔壓</span></th>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓↓</span></td>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓↓</span></td>
+          <td><span class="ar dn">↓</span></td></tr>
+        <tr><th>SVR<span class="hz">體循環阻力</span></th>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓↓</span></td>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar dn">↓↓</span></td></tr>
+        <tr><th>MAP<span class="hz">平均動脈壓</span></th>
+          <td><span class="ar mix">↑／↔</span></td><td><span class="ar mix">↔／↓</span></td>
+          <td><span class="ar mix">↔／↓</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar dn">↓↓</span></td></tr>
+        <tr><th>HR<span class="hz">心率</span></th>
+          <td><span class="ar up">↑</span></td><td><span class="ar mix">↔／↑</span></td>
+          <td><span class="ar up">↑↑↑</span></td><td><span class="ar up">↑</span></td>
+          <td><span class="ar up">↑</span></td></tr>
+        <tr><th>CVP<span class="hz">中心靜脈壓</span></th>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓↓</span></td>
+          <td><span class="ar dn">↓</span></td></tr>
+        <tr><th>PVR<span class="hz">肺血管阻力</span></th>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓↓</span></td>
+          <td><span class="ar dn">↓</span></td><td><span class="ar dn">↓</span></td>
+          <td><span class="ar dn">↓</span></td></tr>
+        <tr class="hr-txt"><th>受體／機轉<span class="hz">Receptor / MOA</span></th>
+          <td>β₁ &gt; β₂ 促效</td>
+          <td><b>PDE-3 抑制劑</b>——cAMP 上升、心肌鈣增加，<b>不經腎上腺素受體</b></td>
+          <td>純 β₁＋β₂ 促效</td>
+          <td>一氧化氮供給者，<b>靜脈 ≫ 動脈</b></td>
+          <td>一氧化氮供給者，<b>動脈與靜脈均衡</b></td></tr>
+        <tr class="hr-txt"><th>台大劑量<span class="hz">NTUH</span></th>
+          <td>仿單起始 0.5–1，調整至 <b>2–20 mcg/kg/min</b>（max 40）；表 8-3 亦為 2–20</td>
+          <td>維持 <b>0.375–0.75 mcg/kg/min</b>；負荷 50 mcg/kg 10 分（表 8-3 為 25–75 mcg/kg 10–20 分，<b>低血壓不建議給負荷</b>）；<b>依腎功能減量</b></td>
+          <td>心搏過緩／房室阻滯 <b>2–10 mcg/min</b>（可至 20）</td>
+          <td>起始 <b>5 mcg/min</b>，每 3–5 分加 5 mcg/min，到 20 mcg/min 無效再以 10–20 遞增</td>
+          <td>—<br>（台大處方集<b>查無</b>）</td></tr>
+        <tr class="hr-txt"><th>主要用途<span class="hz">Uses</span></th>
+          <td>低心輸出、心臟術後、右心衰竭；<b>血壓還撐得住</b>時的第一支強心劑</td>
+          <td>低心輸出併<b>高後負荷或肺高壓</b>；已用 β 阻斷劑者（不經 β 受體，仍有效）</td>
+          <td><b>症狀性心搏過緩的化學性節律器</b>（等節律器裝上前）、torsades 提高基礎心率</td>
+          <td>心肌缺血、急性心衰竭鬱血、高血壓合併肺水腫</td>
+          <td>高血壓急症、急性重度二尖瓣／主動脈瓣逆流之後負荷降低</td></tr>
+        <tr class="hr-txt"><th>臨床要點<span class="hz">Key points</span></th>
+          <td><b>72 小時後易心搏過速與心律不整</b>；與 <b>bicarbonate、furosemide 等鹼性液不相容</b>；藥液變粉紅是輕微氧化，24 小時內用完不影響力價</td>
+          <td><b>半衰期長（2–4 小時），停藥後不會馬上退</b>；<b>血小板低下</b>；腎功能差時蓄積——低血壓時它最難救回來</td>
+          <td>心肌耗氧大增，<b>缺血性心臟病要非常小心</b>；<b>不可與 bicarbonate 混合</b>（會變色沉澱）</td>
+          <td><b>PVC 輸液管會吸附 40–80% 的藥</b>——台大仿單指定<b>非 PVC 管路</b>、且<b>不要用過濾器</b>；24–48 小時內用完</td>
+          <td><b>氰化物毒性</b>（尤其腎功能不全、高劑量、長時間）；避光；<b>&gt;10 mcg/kg/min 只能用 ≤10 分鐘</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="hemo-key">
+    <b>↑ ↑↑ ↑↑↑</b>＝上升（幅度）　<b>↓ ↓↓</b>＝下降　<b>↔</b>＝大致不變　<b>↔／↓</b>＝方向不定或依劑量而異。
+    CO＝cardiac output；PAOP＝pulmonary artery occlusion（wedge）pressure；SVR／PVR＝體循環／肺血管阻力；CVP＝中心靜脈壓。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">與附圖不一致的三格（刻意不照抄）</div>
+    <ul>
+      <li><b>Vasopressin 的 PVR</b>：附圖標 ↑。本表標<b>低劑量 ↔</b>——vasopressin 的 V₁ 受體在肺血管分佈相對稀少，
+        <b>0.03–0.04 U/min 的低劑量對肺動脈壓的影響小於等效升壓的 norepinephrine</b>，這正是右心衰竭／肺高壓時選它當第二支的理由。
+        高劑量則無此保證，且此族群的直接比較資料有限。</li>
+      <li><b>給藥途徑「一律中心靜脈」</b>：附圖把五支升壓劑全標 Central。<b>現行敗血症指引已明確允許先由周邊靜脈開始</b>，
+        以免為了放中心導管而延誤升壓（見<a href="../pathways/sepsis.html" class="pmid">敗血性休克流程</a>）。
+        原則是<b>近端大靜脈、短時間、密切看穿刺處</b>，並儘早改中心；<b>不是</b>「周邊可以一直用下去」。</li>
+      <li><b>劑量單位</b>：附圖的 norepinephrine／phenylephrine／epinephrine 用 <b>mcg/min（不乘體重）</b>，
+        台大仿單用 <b>mcg/kg/min</b>。<b>同一個數字在 60 kg 病人身上差 60 倍</b>——這是本頁最需要小心的一格，
+        換算請用下一個分頁的計算器。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">台大處方集查無的品項（2026-07 快照）</div>
+    <ul>
+      <li><b>Phenylephrine 注射劑</b>——處方集內只有眼用溶液與複方口服感冒製劑。附圖把它列為五大升壓劑之一，是美國的用藥習慣。</li>
+      <li><b>Nitroprusside</b>——完全查無。附圖 BOX 3.3 的四支藥有一支在台大開不到。</li>
+      <li><b>Levosimendan</b>、<b>Angiotensin II</b>——皆查無。</li>
+      <li>有而附圖沒有的：<b>Isoproterenol</b>（0.2 mg/1 mL/amp）與 <b>Methylene blue</b>（1% 100 mg/10 mL）。</li>
+    </ul>
+    <div style="font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono);">
+      來源為台大醫院藥劑部處方集之本機快照（1,916 品項，2026-07 擷取）。院內品項會變動，開立前仍以 HIS 為準。
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 分頁二：藥物卡與泡法 ==================== -->
+<div class="va-panel" id="p-drug">
+
+  <div class="va-bar" id="va_bar">
+    <div class="va-bar-in">
+      <label for="va_wt">體重 Weight</label>
+      <input type="number" id="va_wt" min="1" max="250" step="1" value="60">
+      <span class="va-hint">kg — 以下所有 mcg/kg/min 即時換算為 mcg/min 與 mL/hr</span>
+    </div>
+  </div>
+
+  <div class="lead">
+    每張卡的<b>泡法欄位可以改</b>：輸入實際的藥量與溶液體積，右邊直接算出該劑量對應的 <b>mL/hr</b>。
+    預設值取自台大仿單建議濃度。<b>強心劑與升壓劑都沒有被證明能降低休克的死亡率</b>——用最低有效劑量、儘早減量。
+  </div>
+
+  <div class="sect"><div class="section-title">升壓劑 <span class="en">Vasopressors</span></div></div>
+
+  <div class="dg" data-drug="ne">
+    <div class="dg-head">
+      <span class="dg-name">Norepinephrine</span><span class="dg-zh">力復菲德 Levophed 0.2%（0.1% base），4 mg norepinephrine／4 mL／vial</span>
+      <span class="dg-tag">第一線</span><span class="dg-tag">α₁ ≫ β₁</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單 0.05–0.4 mcg/kg/min</span><span class="dd-v" data-out="ne_std">—</span><span class="dd-ml" data-ml="ne_std"></span></span>
+      <span><span class="dd-k">難治性休克 1–3.3</span><span class="dd-v alt" data-out="ne_hi">—</span><span class="dd-ml" data-ml="ne_hi"></span></span>
+      <span><span class="dd-k">心衰竭指引表 8-3：0.2–1.0</span><span class="dd-v" data-out="ne_gl">—</span><span class="dd-ml" data-ml="ne_gl"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="ne" value="8" min="0" step="any" aria-label="norepinephrine 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="ne" value="100" min="1" step="any" aria-label="norepinephrine 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="ne">—</span>
+    </div>
+    <div class="dg-kin">稀釋 <b>D5W 或 GS</b>（<b>不建議單用生理食鹽水稀釋</b>），濃度 4–64 mcg/mL ｜ 常用滴速 2–30 mcg/min ｜
+      限水者台大建議 <b>2 amp 泡 100 mL、run 8 mL/hr</b> ｜ 稀釋後室溫 24 小時 ｜ 藥液變粉紅／黃棕或有沉澱即不可使用</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">仿單</span> 現行美國仿單禁忌欄為 <b>None</b>（無絕對禁忌）。</li>
+        <li><span class="ci-k">但</span> <span class="abs">未矯正的低血容不可只靠升壓劑</span>。</li>
+        <li><span class="ci-k">注意</span> 劑量以 base 表示（<b>2 mg bitartrate ＝ 1 mg base</b>）；<b>外滲會造成局部壞死</b>，走大靜脈。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg" data-drug="avp">
+    <div class="dg-head">
+      <span class="dg-name">Vasopressin</span><span class="dg-zh">必壓生 Pitressin Injection 20 U／1 mL／amp</span>
+      <span class="dg-tag">節省兒茶酚胺</span><span class="dg-tag">V₁ 受體</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">成人固定劑量（不依體重）</span><span class="dd-v">0.03–0.04 U/min</span><span class="dd-ml" data-ml="avp_std"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="avp" value="20" min="0" step="any" aria-label="vasopressin 藥量">
+      <span class="mix-u">U</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="avp" value="100" min="1" step="any" aria-label="vasopressin 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="avp">—</span>
+    </div>
+    <div class="dg-kin">不經腎上腺素受體，<b>不增加心率</b>；低劑量相對<b>不升高肺血管阻力</b> ｜ <b>不要因為血壓不夠就往上加</b>——超過 0.04 U/min 的缺血風險上升而升壓效益有限</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">仿單</span> <span class="abs">對 8-L-arginine vasopressin 過敏</span>。</li>
+        <li><span class="ci-k">注意</span> <b>無強心作用</b>：CO 已低者單用會使 CI 更低；周邊、腸繫膜與皮膚缺血。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg warn" data-drug="epi">
+    <div class="dg-head">
+      <span class="dg-name">Epinephrine</span><span class="dg-zh">安得理那寧 Adrenalin 1 mg／1 mL／amp</span>
+      <span class="dg-tag ctrl">非第一線（休克）</span><span class="dg-tag">α＋β</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">表 8-3 滴注 0.05–0.5 mcg/kg/min</span><span class="dd-v" data-out="epi_inf">—</span><span class="dd-ml" data-ml="epi_inf"></span></span>
+      <span><span class="dd-k">心跳停止</span><span class="dd-v alt">1 mg IV q3–5 min</span></span>
+      <span><span class="dd-k">過敏性休克</span><span class="dd-v alt">0.5 mg IM 大腿外側</span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="epi" value="1" min="0" step="any" aria-label="epinephrine 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="epi" value="250" min="1" step="any" aria-label="epinephrine 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="epi">—</span>
+    </div>
+    <div class="dg-kin">台大仿單注射濃度 2–4 mcg/mL、滴速 1–10 mcg/min ｜ 兼具強心與升壓，代謝副作用最明顯</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">仿單</span> 禁忌欄為 <b>None</b>——救命情境無絕對禁忌。</li>
+        <li><span class="ci-k">相對</span> <span class="abs">快速心律不整、進行中的嚴重心肌缺血</span>會直接惡化。</li>
+        <li><span class="ci-k">注意</span> <b>會使乳酸上升</b>（β₂ 促進糖解），此時乳酸不再能代表灌流。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg warn" data-drug="dopa">
+    <div class="dg-head">
+      <span class="dg-name">Dopamine</span><span class="dg-zh">得保命 200 mg／5 mL；易多巴 400 mg／250 mL</span>
+      <span class="dg-tag ctrl">心因性休克應避免</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單 0.5–20 mcg/kg/min（max 50）</span><span class="dd-v" data-out="dopa_std">—</span><span class="dd-ml" data-ml="dopa_std"></span></span>
+      <span><span class="dd-k">表 8-3：3–5 強心／&gt;5 併升壓</span><span class="dd-v" data-out="dopa_gl">—</span><span class="dd-ml" data-ml="dopa_gl"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="dopa" value="400" min="0" step="any" aria-label="dopamine 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="dopa" value="250" min="1" step="any" aria-label="dopamine 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="dopa">—</span>
+    </div>
+    <div class="dg-kin"><b>「腎臟劑量 renal dose dopamine」已被推翻</b>——低劑量 dopamine 不能預防或治療急性腎損傷，不應為此使用</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">美國仿單</span> <span class="abs">嗜鉻細胞瘤</span>（現行標籤禁忌欄僅此一項；舊版標籤另列未矯正的快速心律不整與心室顫動）。</li>
+        <li><span class="ci-k">證據</span> SOAP II：心律不整 <b>24.1% vs 12.4%</b>；<b>心因性休克次族群死亡率較高</b>。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg na" data-drug="phe">
+    <div class="dg-head">
+      <span class="dg-name">Phenylephrine</span><span class="dg-zh">台大處方集<b>查無注射劑</b>（僅眼用與口服複方）</span>
+      <span class="dg-tag off">院內開不到</span><span class="dg-tag">純 α₁</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">美國仿單 · 靜脈推注</span><span class="dd-v">50–250 mcg</span></span>
+      <span><span class="dd-k">美國仿單 · 持續輸注</span><span class="dd-v">0.5–1.4 mcg/kg/min</span></span>
+      <span><span class="dd-k">附圖（Vanderbilt）</span><span class="dd-v alt">20–200 mcg/min</span></span>
+    </div>
+    <div class="dg-kin">列在此處是因為<b>附圖把它當五大升壓劑之一</b>，且外院轉入或麻醉科紀錄上會看到。<b>台大要用同樣效果請走 norepinephrine</b>（α 為主、心率影響小）。</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">為什麼不是心臟術後第一線</div>
+      <ul>
+        <li>純 α 升壓伴<b>反射性心搏過緩</b>與<b>心輸出量下降</b>——心臟術後低心輸出的病人會更差。</li>
+        <li>它的合理位置是<b>「CO 夠、SVR 太低、又不想加心率」</b>：如流出道阻塞（HOCM）、麻醉誘導後低血壓。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sect"><div class="section-title">強心劑與強心擴張劑 <span class="en">Inotropes &amp; Inodilators</span></div></div>
+
+  <div class="dg" data-drug="dobu">
+    <div class="dg-head">
+      <span class="dg-name">Dobutamine</span><span class="dg-zh">健多博 Gendobu Injection 250 mg／20 mL／vial</span>
+      <span class="dg-tag">第一線強心劑</span><span class="dg-tag">β₁ &gt; β₂</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單／表 8-3 2–20 mcg/kg/min</span><span class="dd-v" data-out="dobu_std">—</span><span class="dd-ml" data-ml="dobu_std"></span></span>
+      <span><span class="dd-k">仿單上限 40</span><span class="dd-v alt" data-out="dobu_max">—</span><span class="dd-ml" data-ml="dobu_max"></span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="dobu" value="250" min="0" step="any" aria-label="dobutamine 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="dobu" value="250" min="1" step="any" aria-label="dobutamine 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="dobu">—</span>
+    </div>
+    <div class="dg-kin">稀釋 NS／D5W／LR，濃度 0.5–5 mg/mL ｜ <b>與 sodium bicarbonate、furosemide 等鹼性液不相容</b> ｜
+      <b>藥液呈粉紅是輕微氧化</b>，24 小時內用完力價不受影響 ｜ 走大靜脈、避免外滲</div>
+    <div class="dg-grid">
+      <div class="dg-col dg-pro"><h4>優點</h4><ul>
+        <li>起效快、半衰期短（約 2 分鐘），<b>調錯了停掉就退</b>。</li>
+        <li>同時降 PAOP 與 PVR，右心衰竭時比純升壓有利。</li>
+      </ul></div>
+      <div class="dg-col dg-con"><h4>缺點</h4><ul>
+        <li><b>會降 SVR</b>——血壓邊緣的人單用會掉血壓，常需併 norepinephrine。</li>
+        <li><b>約 72 小時後心搏過速與心律不整明顯增加</b>（受體減敏）。</li>
+        <li>長期使用者若正在服 β 阻斷劑，效果被削弱（此時改 milrinone）。</li>
+      </ul></div>
+    </div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌</div>
+      <ul><li><span class="ci-k">美國仿單</span> <span class="abs">特發性肥厚性主動脈瓣下狹窄（IHSS／HOCM）</span>、對本品或其成分過敏。</li></ul>
+    </div>
+  </div>
+
+  <div class="dg" data-drug="mil">
+    <div class="dg-head">
+      <span class="dg-name">Milrinone</span><span class="dg-zh">哌明克 Primacor Injection 10 mg（as lactate）／10 mL／amp</span>
+      <span class="dg-tag">強心＋擴張</span><span class="dg-tag">PDE-3 抑制</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">維持 0.375–0.75 mcg/kg/min</span><span class="dd-v" data-out="mil_std">—</span><span class="dd-ml" data-ml="mil_std"></span></span>
+      <span><span class="dd-k">負荷（低血壓時不建議）</span><span class="dd-v alt" data-out="mil_load">—</span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="mil" value="20" min="0" step="any" aria-label="milrinone 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="mil" value="100" min="1" step="any" aria-label="milrinone 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="mil">—</span>
+    </div>
+    <div class="dg-kin">稀釋 NS／D5W，濃度 0.1–0.2 mg/mL ｜ 台大仿單負荷為 <b>50 mcg/kg over 10 min</b>，心衰竭指引表 8-3 寫 <b>25–75 mcg/kg over 10–20 min</b>（兩者並列，<b>血壓低時兩者都不建議給負荷</b>）</div>
+    <div class="kbox" style="margin:8px 0 0;">
+      <div class="kbox-t">依腎功能減量（台大仿單所附之對照）</div>
+      <div class="tw"><table class="def-table dt-dose" style="min-width:420px;">
+        <tr><th>CrCl (mL/min/1.73 m²)</th><th>50</th><th>40</th><th>30</th><th>20</th><th>10</th><th>5</th></tr>
+        <tr><td>輸注速率 (mcg/kg/min)</td><td>0.43</td><td>0.38</td><td>0.33</td><td>0.28</td><td>0.23</td><td>0.20</td></tr>
+      </table></div>
+      <div style="font-size:11.5px;color:var(--muted);">洗腎與 CRRT 病人另依實際清除率調整；<b>本頁不提供 CRRT 下的 milrinone 劑量</b>——資料不足，請個案討論。</div>
+    </div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">仿單</span> 對 milrinone 過敏。</li>
+        <li><span class="ci-k">注意</span> <b>半衰期 2–4 小時</b>——與 dobutamine 最大的差別：<b>低血壓時停藥不會馬上回來</b>。</li>
+        <li><span class="ci-k">注意</span> 血小板低下；腎功能不全會蓄積。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg" data-drug="iso">
+    <div class="dg-head">
+      <span class="dg-name">Isoproterenol</span><span class="dg-zh">Isoproternol Injection 0.2 mg／1 mL／amp（原名 Proternol-L）</span>
+      <span class="dg-tag">化學性節律器</span><span class="dg-tag">純 β₁＋β₂</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">心搏過緩、房室阻滯</span><span class="dd-v">2–10 mcg/min</span><span class="dd-ml" data-ml="iso_std"></span></span>
+      <span><span class="dd-k">仿單輸注範圍</span><span class="dd-v alt">起始 5，續 2–20 mcg/min</span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="iso" value="1" min="0" step="any" aria-label="isoproterenol 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="iso" value="250" min="1" step="any" aria-label="isoproterenol 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="iso">—</span>
+    </div>
+    <div class="dg-kin">稀釋 NS／D5W，濃度 0.4–20 mcg/mL ｜ <b>不可與 sodium bicarbonate 混合</b>（變色沉澱即不可用） ｜
+      與<a href="pacemaker.html#temp" class="pmid">節律器模式 › 暫時性節律器</a>同一個情境：<b>它是等節律器裝上前的橋，不是終點</b></div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">美國仿單</span> <span class="abs">心搏過速</span>、<span class="abs">心室性心律不整</span>、<span class="abs">心絞痛</span>。</li>
+        <li><span class="ci-k">注意</span> <b>大幅增加心肌耗氧</b>——缺血性心臟病者可能誘發心絞痛或梗塞。台大處方集此藥的「禁忌」欄為空白，以上取自美國標籤。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sect"><div class="section-title">血管擴張劑與其他 <span class="en">Vasodilators &amp; Others</span></div></div>
+
+  <div class="dg" data-drug="ntg">
+    <div class="dg-head">
+      <span class="dg-name">Nitroglycerin</span><span class="dg-zh">敏佐心 Mifiry Injection 5 mg／10 mL／amp</span>
+      <span class="dg-tag">靜脈 ≫ 動脈</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單起始</span><span class="dd-v">5 mcg/min</span><span class="dd-ml" data-ml="ntg_lo"></span></span>
+      <span><span class="dd-k">每 3–5 分 ＋5，至 20 後改 ＋10–20</span><span class="dd-v alt">上限依血壓</span></span>
+    </div>
+    <div class="dg-mix">
+      <label>泡法 Mix</label>
+      <input type="number" class="mix-amt" data-mix="ntg" value="25" min="0" step="any" aria-label="nitroglycerin 藥量">
+      <span class="mix-u">mg</span><span class="mix-u">in</span>
+      <input type="number" class="mix-vol" data-mix="ntg" value="250" min="1" step="any" aria-label="nitroglycerin 溶液體積">
+      <span class="mix-u">mL</span><span class="mix-c" data-conc="ntg">—</span>
+    </div>
+    <div class="dg-kin"><b>PVC 管路會吸附 40–80% 的藥</b>——台大仿單指定<b>非 PVC 輸液套</b>、<b>避免使用過濾器</b> ｜ 濃度 0.05–0.5 mg/mL ｜ 室溫 48 小時</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌</div>
+      <ul>
+        <li><span class="ci-k">美國仿單</span> <span class="abs">合併使用 PDE-5 抑制劑（avanafil、sildenafil、tadalafil、vardenafil）或可溶性鳥苷酸環化酶刺激劑</span>——會嚴重低血壓。</li>
+        <li><span class="ci-k">美國仿單</span> <span class="abs">循環衰竭與休克</span>、<span class="abs">顱內壓升高</span>、<span class="abs">嚴重貧血</span>、對硝酸鹽類過敏。</li>
+        <li><span class="ci-k">注意</span> 靜脈劑型之標籤另列<b>心包填塞、限制型心肌病變、收縮性心包炎</b>；<b>右室梗塞</b>雖非標籤所列禁忌，但因其依賴前負荷，臨床上視同不可給。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg na" data-drug="snp">
+    <div class="dg-head">
+      <span class="dg-name">Nitroprusside</span><span class="dg-zh">台大處方集<b>查無</b></span>
+      <span class="dg-tag off">院內開不到</span><span class="dg-tag">動脈＋靜脈</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單起始</span><span class="dd-v">0.3 mcg/kg/min</span></span>
+      <span><span class="dd-k">一般範圍</span><span class="dd-v">0.3–3</span></span>
+      <span><span class="dd-k">絕對上限</span><span class="dd-v alt">10 mcg/kg/min，且僅限 ≤10 分鐘</span></span>
+    </div>
+    <div class="dg-kin">附圖 BOX 3.3 的四支藥之一。<b>台大要達到同樣的「快速降後負荷」</b>，實務上走 nitroglycerin（偏靜脈）、
+      口服／靜脈的其他降壓劑，或直接處理病因；<b>沒有院內品項可以直接代換</b>。</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">為什麼它需要特別小心</div>
+      <ul>
+        <li><b>氰化物毒性</b>：代謝產生 cyanide，經肝臟轉為 thiocyanate 由腎排除——<b>腎功能不全、高劑量、長時間</b>三者任一即升高風險。
+          表現為<b>不明原因的代謝性酸中毒、混合靜脈血氧異常高、意識改變</b>。</li>
+        <li>對光不安定，須避光輸注；起效與消退都以秒計，<b>一定要有動脈導管監測</b>。</li>
+        <li>會造成<b>冠狀動脈盜血</b>與顱內壓上升。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dg" data-drug="mb">
+    <div class="dg-head">
+      <span class="dg-name">Methylene blue</span><span class="dg-zh">Methylene Blue Injection 1%（100 mg／10 mL／vial）</span>
+      <span class="dg-tag ctrl">血管麻痺時的救援</span><span class="dg-tag off">此用途為仿單外</span>
+    </div>
+    <div class="dg-dose">
+      <span><span class="dd-k">仿單適應症（變性血紅素血症）</span><span class="dd-v">1–2 mg/kg 緩慢靜注 3–10 分</span></span>
+      <span><span class="dd-k">腎功能 eGFR 15–59</span><span class="dd-v alt">1 mg/kg 單劑</span></span>
+    </div>
+    <div class="dg-kin"><b>不可用生理食鹽水稀釋</b>（氯離子降低溶解度）——用 D5W ｜ 避光 ｜
+      抑制一氧化氮／cGMP 途徑，用於<b>難治性血管麻痺</b>（心臟手術後、敗血症）屬<b>仿單外用途</b>，證據以小型試驗為主</div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">禁忌與注意</div>
+      <ul>
+        <li><span class="ci-k">仿單警語</span> <span class="abs">G6PD 缺乏</span>——會誘發<b>嚴重溶血性貧血</b>（現行標籤列於警語而非禁忌欄，但實務上視同禁用）。</li>
+        <li><span class="ci-k">交互作用</span> <b>血清素症候群</b>——與 SSRI／SNRI／MAOI 併用有風險（本身是可逆的 MAO-A 抑制劑）。</li>
+        <li><span class="ci-k">注意</span> 會讓<b>脈搏血氧飽和度假性下降</b>與尿液／皮膚變藍綠色。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">相關工具</div>
+    <ul>
+      <li>多支藥同時使用、想算<b>血管活性藥物負荷分數</b>：<a href="vasopressor.html" class="pmid">升壓／強心藥物流速換算 ＋ VIS</a>。</li>
+      <li>心因性休克的<b>完整處置流程與機械循環支持</b>：<a href="../pathways/cardiogenic-shock.html" class="pmid">心因性休克流程</a>。</li>
+      <li>敗血性休克的<b>升階順序與 MAP 目標</b>：<a href="../pathways/sepsis.html" class="pmid">敗血性休克流程</a>。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁三：依休克型態選藥 ==================== -->
+<div class="va-panel" id="p-pick">
+
+  <div class="lead">
+    <b>先確定休克型態，再挑藥。</b>下表的「第一支」是各型休克在現行指引或主流共識下的起始選擇；
+    「加什麼」是第一支已到合理劑量仍不足時的下一步。<b>每一型的前提都是前負荷已處理、病因治療已啟動</b>。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:660px;">
+      <thead><tr>
+        <th style="width:14%">休克型態</th><th style="width:18%">血行動力學特徵</th>
+        <th style="width:16%">第一支</th><th style="width:22%">不夠時加什麼</th><th style="width:30%">這一型特別要避開的</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><b>敗血性／分佈性</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Septic / distributive</span></td>
+          <td>SVR ↓↓、CO ↑或正常、PAOP 低—正常</td>
+          <td><b>Norepinephrine</b></td>
+          <td>加 <b>vasopressin 0.03 U/min</b>；仍不足加 <b>epinephrine</b>；心因性成分明顯（CO 低）加 <b>dobutamine</b></td>
+          <td>單用 vasopressin（無強心作用）；為了放中心導管而<b>延後開始升壓</b></td>
+        </tr>
+        <tr>
+          <td><b>心因性</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Cardiogenic</span></td>
+          <td>CO ↓↓、SVR ↑、PAOP ↑、末梢冰冷</td>
+          <td><b>Norepinephrine</b>（先把灌流壓拉回來）</td>
+          <td>灌流壓夠了才加 <b>dobutamine 或 milrinone</b>；再不夠評估機械循環支持</td>
+          <td><b>Dopamine</b>（SOAP II 次族群死亡率較高）；<b>灌流沒回來就先利尿或先給強心劑</b></td>
+        </tr>
+        <tr>
+          <td><b>右心衰竭為主</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">RV failure</span></td>
+          <td>CVP ↑↑、PAOP 相對低、RA:PCWP &gt; 0.8</td>
+          <td><b>Norepinephrine</b></td>
+          <td>加 <b>vasopressin</b>（相對不升肺壓）；CO 仍不足加 <b>dobutamine 或 milrinone</b>（兩者降 PVR）</td>
+          <td><b>大量輸液</b>（右心過脹經心室互賴壓迫左心）；<b>硝酸鹽</b>；低血氧／高碳酸／酸中毒（都拉高 PVR）</td>
+        </tr>
+        <tr>
+          <td><b>低血容／出血</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Hypovolemic</span></td>
+          <td>CVP ↓、PAOP ↓、CO ↓、SVR ↑</td>
+          <td><b>血品與止血，不是升壓劑</b></td>
+          <td>升壓劑僅作為<b>輸血到位前的短暫橋接</b>，且不應延誤止血</td>
+          <td>用升壓劑<b>把血壓修飾到看起來正常</b>而延後開刀或栓塞</td>
+        </tr>
+        <tr>
+          <td><b>阻塞性</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Obstructive</span></td>
+          <td>依病因（填塞、張力性氣胸、大量肺栓塞）</td>
+          <td><b>解除阻塞</b>；同時 norepinephrine 維持灌流</td>
+          <td>肺栓塞併休克：再灌流治療；填塞：心包膜穿刺引流</td>
+          <td><b>硝酸鹽與利尿劑</b>（填塞與右室梗塞都依賴前負荷）；正壓通氣會讓靜脈回流更差</td>
+        </tr>
+        <tr>
+          <td><b>過敏性</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Anaphylactic</span></td>
+          <td>SVR ↓↓、血管通透性 ↑</td>
+          <td><b>Epinephrine 0.5 mg IM 大腿外側</b>（第一線就是它）</td>
+          <td>大量輸液；反覆 IM 無效改<b>靜脈滴注</b>；已服 β 阻斷劑者加 <b>glucagon</b></td>
+          <td>把抗組織胺或類固醇當第一線；<b>因為「怕心律不整」而不給 epinephrine</b></td>
+        </tr>
+        <tr>
+          <td><b>神經性</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Neurogenic</span></td>
+          <td>SVR ↓、<b>心搏過緩</b>（交感輸出中斷）</td>
+          <td><b>Norepinephrine</b>（同時有 α 與些微 β₁）</td>
+          <td>心率仍慢加 <b>atropine／isoproterenol</b>，必要時暫時性節律器</td>
+          <td><b>純 α（phenylephrine）</b>會加重心搏過緩；先排除合併出血性休克</td>
+        </tr>
+        <tr>
+          <td><b>術後血管麻痺</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">Vasoplegia（心臟手術後）</span></td>
+          <td>SVR ↓↓、CO 正常或高、對兒茶酚胺反應差</td>
+          <td><b>Norepinephrine</b></td>
+          <td>加 <b>vasopressin</b>；難治時考慮 <b>methylene blue</b>（仿單外）、hydroxocobalamin</td>
+          <td>一味往上加 norepinephrine 而不加第二機轉的藥</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">四個「數字看起來對、病人卻更差」的情況</div>
+    <ul>
+      <li><b>MAP 達標但乳酸仍上升</b>：升壓劑把壓力做出來了，流量沒有。看 CO／SvO₂／末梢，考慮加強心劑或機械支持，不是再加升壓劑。</li>
+      <li><b>CO 上去了但血壓掉下來</b>：強心劑同時降 SVR。這時要的是併用升壓劑，不是把強心劑停掉（停掉流量又沒了）。</li>
+      <li><b>加了 epinephrine 之後乳酸更高</b>：β₂ 促進糖解本身就會升乳酸，<b>不一定代表灌流更差</b>——但也因此乳酸在此時失去監測價值，改看末梢、尿量與 SvO₂。</li>
+      <li><b>右心休克時血壓有了，CVP 卻一路往上</b>：右心被撐大，接下來左心會被擠。停止繼續灌液，重新評估 PVR 與後負荷。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 分頁四：證據與陷阱 ==================== -->
+<div class="va-panel" id="p-evid">
+
+  <div class="section-title">關鍵試驗 <span class="en">Landmark Trials</span></div>
+  <div class="tw">
+    <table class="def-table dt-rec" style="min-width:640px;">
+      <thead><tr><th style="width:16%">試驗</th><th style="width:26%">比較</th><th style="width:34%">結果</th><th style="width:24%">現在怎麼用</th></tr></thead>
+      <tbody>
+        <tr><td><b>SOAP II</b><br>2010, n=1,679</td>
+          <td>Dopamine vs norepinephrine 作為休克第一線</td>
+          <td>28 天死亡率整體無差異；<b>dopamine 心律不整 24.1% vs 12.4%</b>；<b>心因性休克次族群（n=280）dopamine 死亡率較高</b></td>
+          <td>Norepinephrine 成為預設第一線；<b>心因性休克避免 dopamine</b></td></tr>
+        <tr><td><b>OptimaCC</b><br>2018, n=57</td>
+          <td>Epinephrine vs norepinephrine（AMI 併心因性休克）</td>
+          <td><b>因 epinephrine 組難治性休克顯著較多而提前中止</b>；心率、乳酸與心肌耗氧皆較高</td>
+          <td>心因性休克<b>不以 epinephrine 為第一線</b></td></tr>
+        <tr><td><b>DOREMI</b><br>2021, n=192</td>
+          <td>Milrinone vs dobutamine（心因性休克）</td>
+          <td>主要複合結果<b>無顯著差異</b></td>
+          <td>兩者可互換；選擇依<b>腎功能（milrinone 會蓄積）、血壓、是否在用 β 阻斷劑</b></td></tr>
+        <tr><td><b>VASST</b><br>2008, n=778</td>
+          <td>加 vasopressin vs 加大 norepinephrine（敗血性休克）</td>
+          <td>整體 28 天死亡率<b>無差異</b>；較不嚴重的次族群可能較好</td>
+          <td>vasopressin 定位為<b>節省兒茶酚胺</b>而非降低死亡率的藥</td></tr>
+        <tr><td><b>VANISH</b><br>2016, n=409</td>
+          <td>Vasopressin ± hydrocortisone vs norepinephrine</td>
+          <td>無腎衰竭天數<b>無顯著差異</b>；vasopressin 組較少接受腎臟替代</td>
+          <td>不支持以 vasopressin 取代 norepinephrine 當第一線</td></tr>
+        <tr><td><b>ATHOS-3</b><br>2017, n=321</td>
+          <td>Angiotensin II vs 安慰劑（難治性血管擴張性休克）</td>
+          <td>達到 MAP 目標的比例顯著較高；死亡率未達顯著</td>
+          <td><b>台大無此藥</b>；列此為了讓外院轉入的紀錄看得懂</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">三個已被推翻的舊觀念 <span class="en">Debunked</span></div>
+  <div class="kbox alert">
+    <ul>
+      <li><b>「腎臟劑量 dopamine」</b>（2–3 mcg/kg/min 保護腎臟）——隨機試驗與統合分析皆<b>未顯示能預防或治療急性腎損傷</b>，
+        反而增加心律不整。不應為了腎臟而使用。</li>
+      <li><b>「升壓劑一定要等中心導管」</b>——延後升壓的傷害大於短時間周邊給藥的風險。<b>現行敗血症指引允許先由周邊靜脈開始</b>，
+        條件是近端大靜脈、密切觀察、儘早改中心。</li>
+      <li><b>「血壓正常就不是休克」</b>——normotensive shock 存在：低灌流已發生、血壓靠代償撐住。<b>看乳酸、末梢、尿量與意識</b>。</li>
+    </ul>
+  </div>
+
+  <div class="section-title">外滲的處理 <span class="en">Extravasation</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>立刻停止輸注</b>，但<b>先不要拔針</b>——由原針回抽殘留藥液。</li>
+      <li>患肢抬高；<b>兒茶酚胺類外滲用溫敷，不是冰敷</b>（冰敷會加重血管收縮）。</li>
+      <li><b>Phentolamine</b> 局部浸潤是標準解毒（5–10 mg 稀釋於 10–15 mL 生理食鹽水，於外滲區多點注射）；
+        <b>台大處方集查無 phentolamine 注射劑</b>，實務上會以局部 nitroglycerin 藥膏等替代方案處理，
+        <b>發生時應立即與藥劑部及外科（整形外科）討論</b>，不要照抄國外流程。</li>
+      <li>最好的處理是不要發生：<b>大靜脈、可視的穿刺處、定時檢查、儘早改中心靜脈</b>。</li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/20200382/" target="_blank" rel="noopener" class="ref-link">De Backer D, et al. Comparison of dopamine and norepinephrine in the treatment of shock (SOAP II). N Engl J Med. 2010;362(9):779-789.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29976291/" target="_blank" rel="noopener" class="ref-link">Levy B, et al. Epinephrine Versus Norepinephrine for Cardiogenic Shock After Acute Myocardial Infarction (OptimaCC). J Am Coll Cardiol. 2018;72(2):173-182.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34347952/" target="_blank" rel="noopener" class="ref-link">Mathew R, et al. Milrinone as Compared with Dobutamine in the Treatment of Cardiogenic Shock (DOREMI). N Engl J Med. 2021;385(6):516-525.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/18305265/" target="_blank" rel="noopener" class="ref-link">Russell JA, et al. Vasopressin versus norepinephrine infusion in patients with septic shock (VASST). N Engl J Med. 2008;358(9):877-887.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/27483065/" target="_blank" rel="noopener" class="ref-link">Gordon AC, et al. Effect of Early Vasopressin vs Norepinephrine on Kidney Failure in Septic Shock (VANISH). JAMA. 2016;316(5):509-518.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/28528561/" target="_blank" rel="noopener" class="ref-link">Khanna A, et al. Angiotensin II for the Treatment of Vasodilatory Shock (ATHOS-3). N Engl J Med. 2017;377(5):419-430.</a> ｜
+    <a href="https://pubmed.ncbi.nlm.nih.gov/18765387/" target="_blank" rel="noopener" class="ref-link">Overgaard CB, Džavík V. Inotropes and vasopressors: review of physiology and clinical use in cardiovascular disease. Circulation. 2008;118(10):1047-1056.</a>
+    ｜ 劑量、泡法、相容性與禁忌：<b>台大醫院藥劑部藥品資料庫</b>（品項、常用劑量、中央靜脈輸注給藥指引、腎功能調整欄）；
+    心衰竭情境劑量：<b>台大醫院心血管中心心臟衰竭診療指引第三版（2026/06 修訂）表 8-3</b>。
+    血行動力學效應矩陣之版面藍本為使用者提供之 <b>Vanderbilt Heart BOX 3.3</b> 對照表（非指引文件），內容已逐格查證，差異處已於表下標明。
+  </footer>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ── 分頁切換 ───────────────────────────────────────────────── */
+function vaTab(name){
+  document.querySelectorAll('#va_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.va-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+
+/* ── 劑量換算 ───────────────────────────────────────────────
+   每一支藥有自己的泡法（mg 或 U in mL）。mcg/kg/min → mcg/min → mL/hr：
+     mL/hr = mcg/min × 60 ÷ (mcg per mL)
+   固定劑量藥（vasopressin、isoproterenol、nitroglycerin）不乘體重，
+   故 DOSES 的 wt 欄位標 false。 ── */
+var DOSES = {
+  ne_std:   {mix:'ne',   wt:true,  lo:0.05, hi:0.4},
+  ne_hi:    {mix:'ne',   wt:true,  lo:1,    hi:3.3},
+  ne_gl:    {mix:'ne',   wt:true,  lo:0.2,  hi:1.0},
+  avp_std:  {mix:'avp',  wt:false, lo:0.03, hi:0.04, unit:'U'},
+  epi_inf:  {mix:'epi',  wt:true,  lo:0.05, hi:0.5},
+  dopa_std: {mix:'dopa', wt:true,  lo:0.5,  hi:20},
+  dopa_gl:  {mix:'dopa', wt:true,  lo:3,    hi:5},
+  dobu_std: {mix:'dobu', wt:true,  lo:2,    hi:20},
+  dobu_max: {mix:'dobu', wt:true,  lo:40,   hi:40},
+  mil_std:  {mix:'mil',  wt:true,  lo:0.375,hi:0.75},
+  iso_std:  {mix:'iso',  wt:false, lo:2,    hi:10},
+  ntg_lo:   {mix:'ntg',  wt:false, lo:5,    hi:5}
+};
+
+function num(el, dflt){ var v = parseFloat(el && el.value); return isFinite(v) && v > 0 ? v : dflt; }
+function fmt(n){
+  if(!isFinite(n)) return '—';
+  if(n >= 100) return n.toFixed(0);
+  if(n >= 10)  return n.toFixed(1);
+  return n.toFixed(2);
+}
+
+function vaCalc(){
+  var wt = num(document.getElementById('va_wt'), 60);
+
+  /* 各藥泡法 → 每 mL 含多少 mcg（vasopressin 則是每 mL 多少 U） */
+  var conc = {};
+  document.querySelectorAll('.mix-amt').forEach(function(a){
+    var k = a.getAttribute('data-mix');
+    var v = document.querySelector('.mix-vol[data-mix="' + k + '"]');
+    var amt = num(a, 0), vol = num(v, 1);
+    var perMl = amt / vol;                        // mg/mL 或 U/mL
+    conc[k] = (k === 'avp') ? perMl : perMl * 1000;   // vasopressin 用 U，其餘轉 mcg
+    var box = document.querySelector('.mix-c[data-conc="' + k + '"]');
+    if(box) box.textContent = '＝ ' + fmt(conc[k]) + (k === 'avp' ? ' U/mL' : ' mcg/mL');
+  });
+
+  Object.keys(DOSES).forEach(function(key){
+    var d = DOSES[key];
+    var loMin = d.wt ? d.lo * wt : d.lo;          // mcg/min（或 U/min）
+    var hiMin = d.wt ? d.hi * wt : d.hi;
+    var out = document.querySelector('[data-out="' + key + '"]');
+    if(out && d.wt){
+      out.textContent = (d.lo === d.hi ? fmt(loMin) : fmt(loMin) + '–' + fmt(hiMin)) + ' mcg/min';
+    }
+    var mlBox = document.querySelector('[data-ml="' + key + '"]');
+    if(mlBox){
+      var c = conc[d.mix];
+      if(!c || !isFinite(c)){ mlBox.textContent = ''; return; }
+      var loMl = loMin * 60 / c, hiMl = hiMin * 60 / c;
+      mlBox.textContent = (d.lo === d.hi ? fmt(loMl) : fmt(loMl) + '–' + fmt(hiMl)) + ' mL/hr';
+    }
+  });
+
+  /* milrinone 負荷劑量：仿單 50 mcg/kg 與指引 25–75 mcg/kg 並列 */
+  var ml = document.querySelector('[data-out="mil_load"]');
+  if(ml) ml.textContent = fmt(50 * wt / 1000) + ' mg（仿單 50 mcg/kg）／' +
+                          fmt(25 * wt / 1000) + '–' + fmt(75 * wt / 1000) + ' mg（表 8-3）';
+}
+
+document.addEventListener('input', function(e){
+  if(e.target.matches('#va_wt, .mix-amt, .mix-vol')) vaCalc();
+});
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) vaTab(h);
+  vaCalc();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
