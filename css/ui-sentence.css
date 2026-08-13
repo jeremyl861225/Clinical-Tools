@@ -234,7 +234,8 @@
    造句設計已經有自己的一套返回：句子軌跡內的「清空句子」（每一頁都有、
    桌機手機皆然，實測按下去會導回 index.html）＋ 手機下緣固定列的「退一個詞」。
    兩套返回鍵並存只是讓人不知道該按哪一個。
-   只用 display:none：節點與 js/backlink.js 都沒動，關掉造句設計立刻原樣回來。 */
+   只用 display:none：節點與 js/backlink.js 都沒動，關掉造句設計立刻原樣回來。
+
    **修正（使用者實機回報）**：原本整個 .back-stack 都收掉，把 js/backlink.js
    動態產生的那顆 `.back-origin`（「← 返回闌尾炎手術決策」這種**帶來路**的返回鍵）
    一起收掉了——從決策流程點進計分工具之後就回不去原本那份流程，正式版有、
@@ -1889,7 +1890,10 @@
 [data-ui="sentence"] .sent-trail.asking .sent-point,
 [data-ui="sentence"] .sent-trail.asking .st-honest { display: none; }
 
-[data-ui="sentence"] .sent-trail.asking …
+/* ==========================================================================
+ * （本段開頭的 `/*` 原本漏掉了，於是這一整段說明被當成 CSS 解析，
+ *   連同它後面第一條規則 `.sent-trail .sent-row` 一起被解析器丟掉。）
+ * 插在 `[data-ui="sentence"] .sent-trail.asking …
  *         { display: none; }` 那四條選擇器結束的地方，約第 1804 行）。
  * 取代誰：一條都沒有取代。全部是新增規則，既有規則一條都不必改。
  * 已一併刪除：`.st-line`、`.st-chip`、`.st-chip-tool` 三條。內頁軌跡的唯讀詞塊
@@ -2574,7 +2578,10 @@
 [data-ui="sentence"] .onc-reflist a:hover { color: var(--sentence-fg); text-decoration: underline; }
 [data-ui="sentence"] .onc-reflist a:before { color: var(--sentence-dim); }
 
-[data-ui="sentence"] button.cov-tag,
+/* ── §Q4 的覆蓋徽章沿用，這裡只補 flex 基線對齊 ──────────────────────
+       （本段開頭的 `/*` 原本漏掉了，於是這一整段說明被當成 CSS 解析，
+         連同它後面第一條規則 `.sai-dname .cov-tag.sai-tier` 一起被丟掉。）
+       顏色／線型／字級一律沿用 §Q4（`[data-ui="sentence"] button.cov-tag,
        [data-ui="sentence"] span.cov-tag` 與 `.cov-tag.sy-hi/.yes/.partial`）。
        這裡只補一件 §Q4 管不到的事：它原本長在藥卡的 `.dc-cov` 裡（block 容器），
        現在改長在 `.sai-dname` 這個 `align-items: baseline` 的 flex 容器裡。

@@ -347,6 +347,9 @@
   .dx-details ul.dx-list li{margin:2px 0;}
   .dx-details ul.dx-list b{color:var(--label-ink);}
 
+  /* ============================================================
+     （本段開頭的 `/*` 原本漏掉了，於是這一整段說明被當成 CSS 解析，
+       連同它後面第一條規則 `.pt1-flow` 一起被解析器丟掉。）
      結腸癌流程專用（js/colon-pathway.js）
      1) pT1 內視鏡切除後迷你流程圖（COL-1-1）
      2) 術後病理分期 T×N 可點選格（COL-3）

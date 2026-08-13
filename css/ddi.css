@@ -57,13 +57,23 @@
    現在改由返回鍵扛這個 auto，兩顆才會並排靠右而不是一左一右分開。 */
 [data-ui="sentence"] .sent-point .back-origin {
   margin-left: auto;
-  min-height: 44px; padding: 0 12px;
+  padding: 0 12px;
   background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
   font-family: var(--sentence-mono); font-size: 10.5px; letter-spacing: .06em;
   color: var(--sentence-fg);
 }
 [data-ui="sentence"] .sent-point .back-origin:hover { background: var(--sentence-shade); }
 [data-ui="sentence"] .sent-point .back-origin ~ .sent-clear { margin-left: 0; }
+/* 兩顆鍵要一樣高、上緣要對齊。原本差在兩件事：
+   .sent-clear 是 min-height:45px + display:block，返回鍵是 44px + display:flex；
+   而 .sent-point 是 align-items:baseline，block 與 flex 的基線算法不同，
+   於是不只高度差 1px，連上緣都錯開。這裡把兩顆的盒模型與對齊方式都寫死成一致，
+   不靠基線去猜。 */
+[data-ui="sentence"] .sent-point .back-origin,
+[data-ui="sentence"] .sent-point .sent-clear {
+  min-height: 45px; align-self: center;
+  display: inline-flex; align-items: center; justify-content: center;
+}
 
 /* ---------- 選藥列 ---------- */
 .ddi-pick { position: relative; margin: 10px 0 4px; }

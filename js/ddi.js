@@ -371,7 +371,9 @@ function boot() {
      手機給短版，桌機維持完整說明。要跟著 resize 走——只在載入時判一次的話，
      視窗由窄拉寬（或 iPad 轉向）會一直停在短版。 */
   const LONG = q.placeholder;
-  const SHORT = '加入藥物：warfarin、可邁丁…';
+  /* 可化凝錠＝台大的 warfarin（Cofarin）。原本寫「可邁丁」是錯的——那是 Coumadin
+     的中文名，台大處方集裡沒有這個品項，照著打會查不到東西。 */
+  const SHORT = '加入藥物：warfarin、可化凝錠…';
   const fitPlaceholder = () => { q.placeholder = window.innerWidth < 480 ? SHORT : LONG; };
   fitPlaceholder();
   window.addEventListener('resize', fitPlaceholder);

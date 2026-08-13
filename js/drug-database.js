@@ -577,10 +577,17 @@ const LP_ARV = /(tenofovir|emtricitabine|lamivudine|abacavir|zidovudine|dolutegr
    「peginterferon alfa」，得再擋一次詞首（不用 lookbehind，iOS Safari 舊版不支援）。 */
 const LP_HEP = /(sofosbuvir|velpatasvir|ledipasvir|glecaprevir|pibrentasvir|elbasvir|grazoprevir|daclatasvir|voxilaprevir|ribavirin|entecavir|(^|[^a-z])peginterferon alfa)/i;
 
+/* COVID 抗病毒藥。Paxlovid（Nirmatrelvir/Ritonavir）的 ritonavir 只是藥動 booster，
+   不是拿來治 HIV 的——照 LP_ARV 判會被送到 HIV checker，但它該去 COVID checker。
+   所以 COVID 先判，命中就不再掛 HIV。單獨的 ritonavir（HIV booster）不受影響。 */
+const LP_COVID = /(nirmatrelvir|molnupiravir|remdesivir|ensitrelvir|paxlovid)/i;
+
 function liverpoolLinks(d) {
   const n = d.name || '';
   const sites = [];
-  if (LP_ARV.test(n)) sites.push(['HIV', 'https://www.hiv-druginteractions.org/checker']);
+  const isCovid = LP_COVID.test(n);
+  if (isCovid) sites.push(['COVID', 'https://www.covid19-druginteractions.org/checker']);
+  if (!isCovid && LP_ARV.test(n)) sites.push(['HIV', 'https://www.hiv-druginteractions.org/checker']);
   if (LP_HEP.test(n)) sites.push(['肝炎', 'https://www.hep-druginteractions.org/checker']);
   if ((d.tops || []).some(t => /Antineoplastic/i.test(t)))
     sites.push(['腫瘤', 'https://cancer-druginteractions.org/']);
