@@ -739,8 +739,16 @@
       if (aimD > D.span * .28) {
         var raw = chasing ? Math.atan2(dy, fwd)
                           : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
+        /* **取與現在同一圈的等價角**——這是「藥丸吃不順時會抖」的最後一個病灶。
+           追餌用的是真正的視線角 atan2(dy, fwd)，當鯨魚已經越過藥丸（fwd<0）
+           而兩者又差不多高（dy 在 0 附近上下穿）時，atan2 會在 +π 與 −π 之間
+           跳整整一圈；低通與速率限制都攔不住這種跳變，只會把它變成一次大幅度
+           的甩頭，看起來就是抖。把 raw 換成與 pitchWant 相差不超過 ±π 的等價角，
+           跳變就變成連續的小角度修正。 */
+        var delta = ((raw - o.pitchWant + Math.PI * 3) % TAU) - Math.PI;
+        raw = o.pitchWant + delta;
         raw = Math.max(-pmax, Math.min(pmax, raw)) * (o.turn ? .6 : 1);
-        /* 再過一階低通：即使誤差本身有雜訊（飼料在晃、鯨魚在擺尾），
+        /* 再過一階低通：即使誤差本身有雜訊（藥丸在晃、鯨魚在擺尾），
            想去的角度也是平滑變化的。 */
         var k = Math.min(1, dt / .16);
         o.pitchWant += (raw - o.pitchWant) * k;
