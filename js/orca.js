@@ -118,7 +118,7 @@
   /* ================================================================
    * 狀態
    * ================================================================ */
-  var W = 0, Hv = 0, dpr = 1, floorY = 0, docH = 0;
+  var W = 0, Hv = 0, dpr = 1, floorY = 0, docH = 0, barH = 0;
   var canvas = null, ctx = null, raf = null, last = 0, alive = false;
   var P = null;
 
@@ -526,7 +526,7 @@
     var vy = f.rest ? 0 : f.vy;
     var vx = f.rest ? 0 : Math.sin(f.t * 2.4 + f.s) * 9;
     var rx = f.x - mp.x, ry = f.y - mp.y;
-    var sp = Math.max(80, o.speed);
+    var sp = Math.max(120, (o.speed + 168) / 2);   // 追餌會加速到 168，用當下速度會把交會點估得太遠
     var a = vx * vx + vy * vy - sp * sp;
     var b = 2 * (rx * vx + ry * vy);
     var c = rx * rx + ry * ry;
@@ -574,7 +574,9 @@
                         : o.x + Math.random() * Math.max(20, W - mx - o.x);
     }
     o.ty = top + my + Math.random() * Math.max(20, Hv - my * 2);
-    o.wait = .4 + Math.random() * 2.2;
+    /* 到點之後的停頓要短：停頓期間牠不再修正方向，只是直直漂——停太久就變成
+       「游一段、停一段、再轉一段」，動作的段落感就是這樣來的。 */
+    o.wait = .15 + Math.random() * .9;
   }
 
   /* 轉身：從一側連續掃到另一側，中途經過正臉（θ=0）。整整 1.5 秒，
@@ -616,11 +618,13 @@
                (o.trick && o.trick.kind === 'slap' ? 2.4 : 1);
 
     var i, f;
+    floorY = foodFloor();
     /* 飼料：自由落下、中途沒有任何平台擋著。沉降速度刻意壓在 52 px/s——
        追餌的泳速是它的兩倍以上，所以無論丟在哪裡，牠一定追得上；
        落到底就躺著等（不會沉出畫外消失）。 */
     for (i = food.length - 1; i >= 0; i--) {
       f = food[i]; f.t += dt;
+      if (f.rest && f.y < floorY - 2) f.rest = false;   // 使用者往下捲：底變低了，繼續沉
       if (!f.rest) {
         f.vy = Math.min(52, f.vy + dt * 90);
         f.y += f.vy * dt;
@@ -664,7 +668,8 @@
       var s0 = snout();
 
       /* 被使用者捲出畫面 → 什麼都先放下，游回看得到的地方 */
-      var outUp = o.y < top - Hv * .10, outDn = o.y > top + Hv * 1.10;
+      var pad = food.length ? Hv * .35 : Hv * .10;      // 正在追餌時容忍多一點
+      var outUp = o.y < top - pad, outDn = o.y > top + Hv + pad;
       var target = null;
       if (outUp || outDn) {
         o.mode = 'return';
@@ -688,7 +693,7 @@
              追餌泳速 168 px/s，掉幀時一步可以走十幾 px，只比對端點會從魚身上
              穿過去卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。 */
           var md = segDist(target.x, target.y, o.pmx, o.pmy, mp.x, mp.y);
-          if (md < D.H * .72) {                          // 真的碰到嘴了才吞
+          if (md < D.H * .88) {                          // 真的碰到嘴了才吞
             food.splice(food.indexOf(target), 1);
             o.gape = 1; o.gapeWant = 0;                    // 合起來＝咬下去
           } else if (md < D.L * .55) {
@@ -728,15 +733,23 @@
       var fwd = dx * Math.sin(o.th);
       var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
       var urgent = o.mode !== 'cruise' || noRoom;
-      var needYaw = chasing ? (fwd < -D.L * .35 && dy < D.H * 1.5)
+      /* 藥丸在下方就壓下去鑽（掉頭要 1.5 秒，這段時間它又沉更遠）；
+         只有「在後方、而且不在下方」才真的需要偏航掉頭。門檻放寬到 1/4 身長，
+         先前的 0.35 太鈍，常常兩邊都不成立、就一直斜著追。 */
+      var below = dy > D.H * 1.2, behind = fwd < -D.L * .25;
+      var needYaw = chasing ? (behind && !below)
                             : Math.abs(dx) > D.L * (urgent ? .35 : .8);
       if (!o.turn && needYaw) startTurn(dx > 0 ? 1 : -1, urgent);
 
       /* 俯仰上限：追餌 115°（可以壓過垂直）、游回畫面 80°、平常巡游 66°。 */
       var pmax = chasing ? 2.0 : o.mode === 'return' ? 1.4 : 1.15;
-      /* 死區：離前導點已經很近時就不要再修正角度了，讓牠滑過去。
-         沒有死區的話，誤差在原點附近正負翻面，方向就會一直左右橫跳。 */
-      if (aimD > D.span * .28) {
+      /* 原本是硬性死區（近了就完全不修正）。那會出兩個問題：一是修正突然斷掉、
+         再突然接上，動作看起來一段一段的；二是追餌時最後那 40 px 完全不修正，
+         而藥丸還在沉，滑過去的 0.3 秒就掉了十幾 px——剛好夠讓牠咬空。
+         改成增益隨距離連續淡出，追餌時只在最後一小段（0.08 個身長）才淡。 */
+      var fade = D.span * (chasing ? .08 : .30);
+      var gain = Math.min(1, aimD / fade);
+      if (gain > 0) {
         var raw = chasing ? Math.atan2(dy, fwd)
                           : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
         /* **取與現在同一圈的等價角**——這是「藥丸吃不順時會抖」的最後一個病灶。
@@ -747,10 +760,11 @@
            跳變就變成連續的小角度修正。 */
         var delta = ((raw - o.pitchWant + Math.PI * 3) % TAU) - Math.PI;
         raw = o.pitchWant + delta;
-        raw = Math.max(-pmax, Math.min(pmax, raw)) * (o.turn ? .6 : 1);
+        raw = Math.max(-pmax, Math.min(pmax, raw));
         /* 再過一階低通：即使誤差本身有雜訊（藥丸在晃、鯨魚在擺尾），
-           想去的角度也是平滑變化的。 */
-        var k = Math.min(1, dt / .16);
+           想去的角度也是平滑變化的。轉身當中不再另外打折——那個折扣在轉身的
+           起點與終點各製造一次姿態跳變，正是動作「一段一段」的來源之一。 */
+        var k = Math.min(1, dt / .16) * gain;
         o.pitchWant += (raw - o.pitchWant) * k;
       }
 
@@ -768,11 +782,11 @@
       o.beatT -= dt;
       if (o.beatT <= 0) {
         o.gliding = !o.gliding;
-        o.beatT = o.gliding ? 1.3 + Math.random() * 2.1 : 2.4 + Math.random() * 2.8;
+        o.beatT = o.gliding ? 1.6 + Math.random() * 2.4 : 3.2 + Math.random() * 3.4;
       }
       if (o.mode === 'chase') { o.gliding = false; o.spdWant = 168; o.thrustWant = 1.6; }
       else if (o.mode === 'return') { o.gliding = false; o.spdWant = 132; o.thrustWant = 1.45; }
-      else if (o.gliding) { o.spdWant = 24; o.thrustWant = .22; }
+      else if (o.gliding) { o.spdWant = 34; o.thrustWant = .40; }
       else { o.spdWant = 54; o.thrustWant = 1; }
     }
     /* 張嘴幅度一律走速率上限的平滑，不直接吃「吻端到魚的距離」——那個距離
@@ -900,7 +914,14 @@
   function measure() {
     docH = Math.max(document.documentElement.scrollHeight, Hv);
     var bar = document.getElementById('sentBar');
-    floorY = docH - ((bar && bar.offsetParent) ? bar.offsetHeight : 0) - 10;
+    barH = (bar && bar.offsetParent) ? bar.offsetHeight : 0;
+  }
+  /* 藥丸的「底」必須是**目前看得到的那一帶**的底，不是整份文件的底。
+     用文件底會出事：頁面比視窗高好幾倍時，藥丸會一路沉到畫面外幾百 px，
+     鯨魚追下去就離開可視範圍、被 return 模式拉回來、回來又看到藥丸再追下去——
+     來回擺盪、永遠吃不到，畫面上就是「牠跑出頁面不見了」。 */
+  function foodFloor() {
+    return Math.min(docH, scrollTop() + Hv) - barH - 10;
   }
 
   function mount() {
