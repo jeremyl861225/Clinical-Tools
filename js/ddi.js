@@ -8,7 +8,34 @@
  * 而 DDInter 的敘述高度重複（不重複率僅約 5%），抽成共用池後索引才塞得下。
  */
 
-const IDX = window.DDI_INDEX || { drugs: {}, pairs: [], shard: 400 };
+/* 索引改用 fetch 載 data/ddi/index.json，不再由 <script> 注入。
+   關鍵是**失敗要抓得到**：<script src> 載入失敗或解析失敗都沒有可攔截的訊號，
+   DDI_INDEX 就是 undefined，而介面照常運作、每一次查詢都回「查無」——
+   臨床上會被讀成「這兩支藥沒有交互作用」，但真相是資料根本沒載到。
+   這是本頁最危險的失效模式，所以寧可整頁停用也不能讓它靜默降級。 */
+let IDX = { drugs: {}, pairs: [], shard: 400 };
+let SEARCH = [];
+let INDEX_OK = false;
+let INDEX_ERR = '';
+
+async function loadIndex() {
+  const res = await fetch('../data/ddi/index.json', { cache: 'force-cache' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if (!data || !data.pairs || !data.pairs.length) throw new Error('索引內容是空的');
+  IDX = data;
+  /* 第 4 欄是台大藥卡的英文學名，只有跟 DDInter 寫法不同時才存在
+     （Rifampin/Rifampicin、Valacyclovir/Valaciclovir、Aspirin/Acetylsalicylic acid…）。
+     一定要進 hay：使用者是照著藥卡上的名字打的，不收就整支查不到。 */
+  SEARCH = Object.keys(IDX.drugs).map(id => {
+    const [en, zh, br, alt] = IDX.drugs[id];
+    return {
+      id, en, zh: zh || [], br: br || [], alt: alt || [],
+      hay: [en, ...(zh || []), ...(br || []), ...(alt || [])].join(' ').toLowerCase(),
+    };
+  });
+  INDEX_OK = true;
+}
 const SEV_ZH = ['未分級', 'Minor 輕度', 'Moderate 中度', 'Major 重大'];
 const SEV_PIPS = ['▫▫▫', '◼▫▫', '◼◼▫', '◼◼◼'];
 const MECH_ZH = {
@@ -19,20 +46,6 @@ const MECH_ZH = {
 /* 選定的藥（DDInter 短碼），順序即使用者加入的順序 */
 let picked = [];
 let soloLimit = 60;
-
-/* ---------- 搜尋索引 ---------- */
-/* drugs[id] = [英文名, [中文名…], [商品名…]]；把所有可搜字串攤平成一條小寫字串， */
-/* 打「可邁丁」「warfarin」「Coumadin」都要找得到同一個成分。 */
-/* 第 4 欄是台大藥卡的英文學名，只有跟 DDInter 寫法不同時才存在
-   （Rifampin/Rifampicin、Valacyclovir/Valaciclovir、Aspirin/Acetylsalicylic acid…）。
-   一定要進 hay：使用者是照著藥卡上的名字打的，不收就整支查不到。 */
-const SEARCH = Object.keys(IDX.drugs).map(id => {
-  const [en, zh, br, alt] = IDX.drugs[id];
-  return {
-    id, en, zh: zh || [], br: br || [], alt: alt || [],
-    hay: [en, ...(zh || []), ...(br || []), ...(alt || [])].join(' ').toLowerCase(),
-  };
-});
 
 /* ---------- 配對查表 ---------- */
 /* 106,454 組配對每次重掃太慢（換一個藥就要重算），建一次雙向 Map： */
@@ -220,9 +233,28 @@ async function showRefs(btn) {
 
 /* ---------- 主渲染 ---------- */
 function render() {
-  renderPicked();
   const out = el('ddi-out'), ptr = el('ddi-count');
 
+  /* 索引沒載到就整頁停用——寧可明白說「壞了」，也不能讓它看起來能查卻永遠查無。 */
+  if (!INDEX_OK) {
+    ptr.innerHTML = '';
+    el('ddi-picked').innerHTML = '';
+    const q = el('ddi-q');
+    q.disabled = true;
+    q.placeholder = '資料未載入，暫時無法查詢';
+    out.innerHTML = `<div class="ddi-fail">
+      <b>交互作用資料沒有載入成功，這一頁現在查不到任何東西。</b>
+      <p>這不是「查無交互作用」——是資料檔（約 4.7 MB）沒下載完或沒解析成功，
+      常見於網路中斷、或裝置的離線快取壞掉。<br>失敗原因：<code>${esc(INDEX_ERR || '未知')}</code><br><b>請不要把空白結果當成沒有交互作用。</b></p>
+      <button type="button" class="ddi-retry" data-retry="1">清除離線快取並重新載入</button>
+      <p class="ddi-fail-alt">若重試後仍然失敗，請改用
+        <a href="https://ddinter2.scbdd.com/" target="_blank" rel="noopener">DDInter</a> 或
+        <a href="https://www.druginteractions.org/" target="_blank" rel="noopener">University of Liverpool</a>
+        的線上工具。</p></div>`;
+    return;
+  }
+
+  renderPicked();
   if (!picked.length) { ptr.innerHTML = ''; out.innerHTML = emptyHTML(); return; }
   buildMaps();
 
@@ -339,6 +371,20 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-more]')) { soloLimit += 60; render(); return; }
   const ref = e.target.closest('.pf-refbtn');
   if (ref) { showRefs(ref); return; }
+  /* 資料載入失敗的自救鍵：把本站的離線快取整個丟掉再重來。
+     只刪 clinical-tools- 開頭的——同一個 github.io origin 還住著 book-reader、
+     todo-app、patient-list，砍到別人的快取會把他們的離線能力一起清掉。 */
+  if (e.target.closest('[data-retry]')) {
+    const done = () => location.reload();
+    Promise.resolve()
+      .then(() => (self.caches ? caches.keys() : []))
+      .then(ks => Promise.all(ks.filter(k => k.startsWith('clinical-tools-')).map(k => caches.delete(k))))
+      .then(() => navigator.serviceWorker
+        ? navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.unregister())))
+        : null)
+      .then(done, done);
+    return;
+  }
   /* 點在候選清單以外就收起清單 */
   if (!e.target.closest('.ddi-pick')) {
     const box = el('ddi-sugg');
@@ -381,8 +427,18 @@ function watchBackBtn() {
   new MutationObserver(relocateBackBtn).observe(host, { childList: true, subtree: true });
 }
 
-function boot() {
+async function boot() {
   const q = el('ddi-q');
+  /* 先把索引載進來再渲染。載入期間先給一個明確的過渡狀態——4.7 MB 在
+     手機網路下要幾秒，空白畫面會讓人以為壞了。 */
+  el('ddi-out').innerHTML = '<div class="ddi-loading">載入交互作用資料（約 4.7 MB）…</div>';
+  try {
+    await loadIndex();
+  } catch (e) {
+    INDEX_ERR = e && e.message ? e.message : String(e);
+    console.error('DDI 索引載入失敗:', e);
+  }
+
   /* placeholder 沒辦法用 CSS 做 RWD，窄螢幕上長版會被切在半句（「商品名（例：」）。
      手機給短版，桌機維持完整說明。要跟著 resize 走——只在載入時判一次的話，
      視窗由窄拉寬（或 iPad 轉向）會一直停在短版。 */

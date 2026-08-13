@@ -12,7 +12,7 @@
  *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
 const CACHE_PREFIX = 'clinical-tools-';
-const CACHE_VERSION = CACHE_PREFIX + 'v256';
+const CACHE_VERSION = CACHE_PREFIX + 'v257';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -76,14 +76,14 @@ const PRECACHE_URLS = [
   './data/antibiotics/regimens.js',
   './data/antibiotics/drugs.js',
   './data/cancer/cancers.js',
-  /* 交互作用查核：只收開頁即載的 index.js（配對索引，4.2MB）。
+  /* 交互作用查核：只收開頁即載的 index.json（配對索引，4.6MB）。
      機轉／處置（data/ddi/t/*.js，2.7MB）與參考文獻（data/ddi/r/*.js，6.5MB）
      是展開某一組配對時才注入的分片，**刻意不放進 precache**——
      全部收進來會讓安裝時多下載 13MB，而本檔是全站共用的安裝清單，
      每一頁的首次安裝都要付這個代價。分片走 stale-while-revalidate，
      使用者查過的那幾組自然會留在快取裡，離線時仍讀得到。
      代價講清楚：全新裝置在完全離線的狀態下，配對列得出來、點開會空。 */
-  './data/ddi/index.js',
+  './data/ddi/index.json',
   /* 藥物資料庫：index.js 是開頁即載的輕量索引，其餘 <pid>.js 是各藥理分類的
      完整藥卡，原本只在使用者展開某張卡時才注入 <script>。離線時網路取不到，
      故整批預先快取（合計約 3.4MB，是本清單最大的一塊）。

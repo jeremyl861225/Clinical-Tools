@@ -270,6 +270,24 @@
 .ddi-eg .eg-say { font-family: var(--d-serif); font-size: 15px; letter-spacing: .05em; color: var(--d-fg); }
 .ddi-eg .eg-sub { font-size: 10.5px; line-height: 1.45; color: var(--d-fg2); }
 
+/* 資料載入失敗：用 hot 色（本站保留給最高臨床嚴重度）——這一頁失效等於
+   使用者可能把空白讀成「沒有交互作用」，那就是臨床風險，不是普通的錯誤訊息。 */
+.ddi-fail {
+  border: 1px solid var(--d-hot); border-left: 5px solid var(--d-hot);
+  background: var(--d-bg2); border-radius: var(--d-radius);
+  padding: 13px 15px; margin: 14px 0;
+  font-size: 13px; line-height: 1.7; color: var(--d-fg2);
+}
+.ddi-fail b { color: var(--d-fg); }
+.ddi-fail p { margin: 8px 0 0; }
+.ddi-fail-alt { font-size: 12px; }
+.ddi-retry {
+  min-height: 46px; margin-top: 12px; padding: 0 14px;
+  font-family: var(--d-mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--d-fg); border: 1px solid var(--d-hot); border-radius: var(--d-radius);
+}
+.ddi-retry:hover { background: var(--d-hot); color: var(--d-bg); }
+
 /* ---------- 沒撞到 / 載入中 ---------- */
 .ddi-clear-msg {
   border: 1px solid var(--d-line2); border-left: 5px solid var(--d-calm);
