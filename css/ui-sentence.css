@@ -333,19 +333,19 @@
    （style-04-sentence）在同一段文字上是正確的小寫 q，使用者指名要以原型為母本。
    （正式版也有同樣的大寫問題，那要動 styles.css、會改到正式版每一頁的外觀，
    已另外列出來讓使用者決定，這裡只修造句設計這一側。） */
-/* 2026-08-13 下修：34px 對**純中文全形**標題太重——使用者實機指出 CRRT 的
-   「開一張 CRRT 醫囑要決定的六件事」（18 字全形）在寬螢幕上佔滿整行。
-   實測全站 48 個 .lede-title，中位數 20 字，但多數是「短中文＋英文副標」
-   （「先分開的三個問題 Three Separate Questions」中文只有 8 字），全形密度低得多。
-   與 .app-header h1 一起等比下修，**三層階序仍然成立且不交叉**：
-     .rec-title  clamp(24, 5.5vw, 34)   ← 臨床結論，維持不動、現在是唯一的最大者
-     .lede-title clamp(22, 4.0vw, 28)   ← 本條
-     .app-header h1 clamp(20, 3.6vw, 26)
-   三條曲線在 0–2000px 全區間逐一代入驗證過，最小間距 2px。 */
+/* ⚠ 2026-08-13 使用者裁決：「**畫面上最大的東西必須是臨床內容**」這條原則
+   **不再遵守**。本檔多處字級（.lede-title／.flow-q／.rec-title／.rt／.pc-v-t／
+   .tx-label）當初都是為了滿足它而被推到 24–34px，實機上過大。
+   現在一律回到「**接近正式版、以好讀為準**」的尺度——正式版那組是使用者用了
+   很久沒有抱怨過的：h1 25px、.rec-title 20px、.flow-q 15.5px。
+   **下一位不要再因為那條原則把這些字級調回去。**
+
+   本條（導言標題）：clamp(24,5.6vw,34) → clamp(22,4vw,28) → 現在 clamp(17,2.8vw,20)。
+   text-transform:none 仍然是必要的（見下段），與字級無關。 */
 [data-ui="sentence"] .lede-title {
   font-family: var(--sentence-serif); text-transform: none;
-  font-size: clamp(22px, 4vw, 28px); letter-spacing: .02em; line-height: 1.3;
-  color: var(--sentence-fg); font-weight: 500; margin-bottom: 10px;
+  font-size: clamp(17px, 2.8vw, 20px); letter-spacing: .02em; line-height: 1.4;
+  color: var(--sentence-fg); font-weight: 500; margin-bottom: 9px;
 }
 [data-ui="sentence"] .lede-body { font-size: 12.5px; line-height: 1.75; color: var(--sentence-fg2); }
 /* 只留 b：全站 .lede-body 內文一律用 <b>，0 頁用過 <strong>（死樣式掃描實測，見交付說明）。 */
@@ -656,11 +656,12 @@
   width: auto; height: auto; min-width: 26px; text-align: center; padding: 2px 6px;
   font-family: var(--sentence-mono); font-size: 11px; font-weight: 700;
 }
-/* .flow-q 是「現在要你回答的那個臨床問題」，在沒有結論框的流程頁（例如 divert-path）
-   它就是載入當下畫面上唯一的臨床內容。原本 15–19px 比裝飾用的 h1 還小。
-   拉到 20–24px：在 appendicitis 這種有結論框的頁面仍小於 .rec-title（24–34px），
-   層次是「結論 > 問題 > 選項」，不會跟結論搶。 */
-[data-ui="sentence"] .flow-q { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(20px, 4.2vw, 24px); letter-spacing: .02em; line-height: 1.35; color: var(--sentence-fg); }
+/* .flow-q 是「現在要你回答的那個臨床問題」。
+   2026-08-13 由 clamp(20,4.2vw,24) 降回 clamp(15.5,2.6vw,18)——與正式版的 15.5px 同級。
+   當初拉大的理由是「不應該比裝飾用的 h1 小」，那條原則已由使用者取消（見 C 段）。
+   「結論 > 問題 > 選項」的相對層次仍然保留（.rec-title 18–21 > .flow-q 15.5–18），
+   但整組不再往上頂。 */
+[data-ui="sentence"] .flow-q { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(15.5px, 2.6vw, 18px); letter-spacing: .02em; line-height: 1.35; color: var(--sentence-fg); }
 [data-ui="sentence"] .flow-connector { color: var(--sentence-dim); font-family: var(--sentence-mono); margin: 10px 0; }
 [data-ui="sentence"] .flow-opts { gap: 7px; }
 @media (min-width: 760px) {
@@ -718,15 +719,14 @@
   font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
   opacity: 1; margin-bottom: 5px; display: inline-block;
 }
-/* 臨床建議標題：DESIGN-LANGUAGE 第一條「畫面上最大的東西必須是臨床結論」——
-   這條 clamp 的下限／上限都比 .app-header h1 高，兩條曲線在 0–2000px 全寬度區間內
-   逐一代入驗證過不會交叉，故不需要另外比大小的 JS，靠純 CSS 就能保證 .rec-title
-   在任何斷點都比 h1 大。
-   **2026-08-13 起 h1 與 .lede-title 一起下修（見 B／C 段），本條刻意不動**——
-   下修之後 .rec-title 成為唯一的最大者，那正是這條設計語言要的結果
-   （在此之前它與 .lede-title 同為 24/34，並列最大）。現行三層：
-   .rec-title clamp(24,5.5vw,34) ＞ .lede-title clamp(22,4vw,28) ＞ h1 clamp(20,3.6vw,26)。 */
-[data-ui="sentence"] .flow-rec .rec-title { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(24px, 5.5vw, 34px); line-height: 1.3; margin-bottom: 4px; }
+/* 臨床建議標題。2026-08-13 由 clamp(24,5.5vw,34) 降回 clamp(18,3.2vw,21)，
+   與正式版的 20px 同級。
+   ⚠ 這條原本掛的是 DESIGN-LANGUAGE 第一條「畫面上最大的東西必須是臨床結論」，
+   並且用「兩條 clamp 曲線不交叉」來保證它永遠比 h1 大。**該原則已由使用者
+   在 2026-08-13 明確取消**（原話：「畫面上最大的東西必須是臨床內容請不用遵守」），
+   所以現在 h1（20–26）反而比它大，這是預期的、不是回歸。
+   下一位不要再為了那條原則把這裡調回去。 */
+[data-ui="sentence"] .flow-rec .rec-title { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(18px, 3.2vw, 21px); line-height: 1.35; margin-bottom: 4px; }
 [data-ui="sentence"] .flow-rec .rec-detail { padding-left: 1.2em; font-size: 12px; line-height: 1.72; }
 [data-ui="sentence"] .flow-rec .rec-detail li { margin: 3px 0; color: var(--sentence-fg2); }
 [data-ui="sentence"] .flow-rec .rec-detail li b, [data-ui="sentence"] .flow-rec .rec-detail li strong { color: var(--sentence-fg); }
@@ -749,10 +749,14 @@
 [data-ui="sentence"] .flow-rec.rec-blue .rec-label { color: var(--sentence-dim); }
 [data-ui="sentence"] .flow-rec.rec-blue .rec-label::before { content: "▮▯▯▯ "; }
 [data-ui="sentence"] .flow-rec.rec-idle { border: 1px dashed var(--sentence-line2); background: var(--sentence-bg); }
-/* 字級不再另外縮小——沿用上面 .flow-rec .rec-title 的 clamp，尚未作答時
-   畫面上最大的字仍是「請由步驟…開始選擇」這行本身也是一種臨床狀態提示，
-   不應該比裝飾用的 h1 小。只保留字族／顏色／字重的區別，維持「未決定」的視覺弱化。 */
-[data-ui="sentence"] .flow-rec.rec-idle .rec-title { color: var(--sentence-dim); font-family: var(--sentence-sans); font-weight: 600; }
+/* 2026-08-13 改回縮小：使用者實機指出「請由步驟 1（診斷）開始選擇」這行太大。
+   先前不縮小的理由是「不應該比裝飾用的 h1 小」——那條原則已由使用者取消（見 C 段）。
+   這行是**還沒作答時的佔位提示，不是臨床結論**，正式版本來就把它做成 15px 的
+   sans 灰字，這裡回到同一個意思。 */
+[data-ui="sentence"] .flow-rec.rec-idle .rec-title {
+  color: var(--sentence-dim); font-family: var(--sentence-sans); font-weight: 600;
+  font-size: clamp(14.5px, 2.4vw, 16px);
+}
 [data-ui="sentence"] .flow-rec.rec-idle .rec-label { color: var(--sentence-dim); }
 [data-ui="sentence"] .flow-rec.rec-idle .rec-label::before { content: "▯▯▯▯ "; }
 /* 這條規則第一版曾被我判定「永遠 0 命中」而刪掉——只查了 31 個 pathways/*.html，
@@ -2366,7 +2370,7 @@
 /* .tx-label 是這 4 個癌別在治療分頁載入當下最大的臨床內容（沒有互動流程、
    沒有 .rec-title）——放大到接近 .rec-title 的量級，理由與 P1 的 h1 降級
    同一組：確保這 4 頁畫面上最大的東西仍是臨床內容，不是裝飾用的頁面標題。 */
-[data-ui="sentence"] .tx-label { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(19px, 3.6vw, 24px); color: var(--sentence-fg); }
+[data-ui="sentence"] .tx-label { font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(17px, 2.9vw, 20px); color: var(--sentence-fg); }
 [data-ui="sentence"] .tx-body { font-size: 12.5px; line-height: 1.7; color: var(--sentence-fg2); }
 [data-ui="sentence"] .tx-body .rx { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); }
 [data-ui="sentence"] .tx-body .drug {
@@ -3792,10 +3796,10 @@
   text-transform: uppercase; opacity: 1; color: var(--sentence-dim);
 }
 [data-ui="sentence"] .flow-rec .rt {
-  font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(20px, 4.6vw, 26px);
-  line-height: 1.3; color: var(--sentence-fg);
+  font-family: var(--sentence-serif); font-weight: 500; font-size: clamp(17px, 2.9vw, 20px);
+  line-height: 1.35; color: var(--sentence-fg);
 }
-[data-ui="sentence"] .flow-rec .rt.rt-sm { font-size: clamp(17px, 4vw, 21px); }
+[data-ui="sentence"] .flow-rec .rt.rt-sm { font-size: clamp(15px, 2.5vw, 17px); }
 [data-ui="sentence"] .flow-rec ul { color: var(--sentence-fg2); }
 [data-ui="sentence"] .flow-rec.rec-red,
 [data-ui="sentence"] .flow-rec.rec-amber,
@@ -4288,7 +4292,7 @@
 [data-ui="sentence"] .pc-verdict.idle .pc-v-l::before { content: "▯▯▯▯ "; }
 [data-ui="sentence"] .pc-v-t {
   font-family: var(--sentence-serif); font-weight: 500; color: var(--sentence-fg);
-  font-size: clamp(20px, 4.6vw, 26px);
+  font-size: clamp(17px, 2.9vw, 20px);
 }
 [data-ui="sentence"] .pc-v-b { color: var(--sentence-fg2); }
 [data-ui="sentence"] .pc-v-b b { color: var(--sentence-fg); }
