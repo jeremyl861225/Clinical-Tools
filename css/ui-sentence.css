@@ -1813,16 +1813,26 @@
   transition: background var(--sentence-fast) var(--sentence-ease);
 }
 [data-ui="sentence"] .sent-hit:hover { background: var(--sentence-shade); border-color: transparent; }
+/* 2026-08-13 由 flex 改回**行內流**。使用者實機指出兩件事，其實是同一個原因：
+   標題與前面的「計分／流程」沒對齊、而且長名稱整塊掉到下一行。
+   原本 `display:flex; flex-wrap:wrap` 讓 .sh-name 成為一個 flex item——
+   擠不下時它是**整塊**換行（「敗血性休克 Sepsis & Septic Shock Pathway」因此
+   自己占一整行，標籤獨留上一行），而不是像一般文字那樣在行末斷字。
+   改成行內流之後：標籤與名稱是同一段文字、基線自動對齊，名稱接在標籤後面，
+   太長就自然折行，不會刻意另起一行。 */
 [data-ui="sentence"] .sh-top {
-  display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+  display: block; line-height: 1.55;
 }
 /* 型別：形狀 ＋ 文字標籤兩者並呈，不單靠顏色（原型 .kind-badge / .kind-label） */
 [data-ui="sentence"] .sh-kind {
-  font-size: 12px; line-height: 1; width: 1.2em; text-align: center; flex: none;
+  display: inline-block; font-size: 12px; line-height: 1;
+  width: 1.2em; text-align: center; margin-right: 1px;
 }
 [data-ui="sentence"] .sh-kind-l {
+  display: inline-block;
   font-family: var(--sentence-mono); font-size: 9px; letter-spacing: .1em;
   border: 1px solid var(--sentence-line2); padding: 1px 5px; white-space: nowrap;
+  margin-right: 6px;
 }
 [data-ui="sentence"] .sh-kind.k-tool,    [data-ui="sentence"] .sh-kind-l.k-tool    { color: var(--sentence-fg2); }
 [data-ui="sentence"] .sh-kind.k-pathway, [data-ui="sentence"] .sh-kind-l.k-pathway { color: var(--sentence-hot); }
@@ -1833,9 +1843,10 @@
   font-family: var(--sentence-serif); font-size: 15px; letter-spacing: .05em;
   color: var(--sentence-fg);
 }
+/* 英文名同樣接在中文名後面（原本靠 flex 的 gap:8px，改行內流之後自己留左邊距） */
 [data-ui="sentence"] .sh-en {
   font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .04em;
-  color: var(--sentence-dim);
+  color: var(--sentence-dim); margin-left: 6px;
 }
 /* 簡介：兩行截斷。原型 css/proof.css .row-desc 逐字同一組值
    （11.5px / 1.5 / -webkit-line-clamp:2），只有顏色換成 --sentence-fg2。 */
