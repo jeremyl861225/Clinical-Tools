@@ -126,7 +126,7 @@
     x: 0, y: 0,                    // 身體中心（**文件座標**：捲動時牠跟著頁面走）
     th: Math.PI / 2,               // 偏航角：+π/2 面向右、−π/2 面向左
     face: 1,
-    pitch: 0, pitchWant: 0,
+    pitch: 0, pitchWant: 0, pitchV: 0, bank: 0,   // pitchV＝二階濾波的角速度、bank＝轉身弧
     speed: 40, spdWant: 40,        // 加減速有慣性，速度不會瞬間切換
     phase: 0, thrust: 1, thrustWant: 1, gape: 0, gapeWant: 0,
     gliding: false, beatT: 2.5,    // 衝刺—滑行：虎鯨不會整天勻速擺尾
@@ -566,7 +566,7 @@
        只有真的沒空間了才挑後方、也才需要轉身。上下則不受限制——垂直移動
        靠俯仰就夠了，不必掉頭，所以整個畫面都巡得到而不會一直翻身。 */
     var room = o.face > 0 ? (W - mx - o.x) : (o.x - mx);
-    if (room > W * .34 && Math.random() < .85) {
+    if (room > W * .22 && Math.random() < .96) {
       o.tx = o.face > 0 ? o.x + room * (.45 + .55 * Math.random())
                         : o.x - room * (.45 + .55 * Math.random());
     } else {
@@ -584,11 +584,16 @@
   /* 轉身有冷卻時間：巡游時至少隔 TURN_COOL 秒才准再轉一次。少了這一條，
      每換一個目標點就轉一次身，畫面上就是一條一直在原地翻來覆去的鯨魚。
      追餌與游回畫面（urgent）不受冷卻限制——那兩件事本來就該立刻掉頭。 */
-  var TURN_COOL = 4.5;
+  var TURN_COOL = 9;
   function startTurn(face, urgent) {
     if (o.turn || o.face === face) return;
     if (!urgent && o.turnCool > 0) return;
-    o.turn = { from: o.face, t: 0, dur: 1.5 };
+    /* bank：轉身當中額外疊一段平緩的仰俯弧（隨機朝上或朝下）。
+       沒有它的話，轉身的 1.5 秒裡 sinθ→0，畫面上的水平速度也跟著歸零，
+       看起來就是「原地停住轉一圈」——那正是使用者說的動作段落感。
+       疊上這段弧之後，牠在轉身期間仍然沿著一條圓滑的曲線移動。 */
+    o.turn = { from: o.face, t: 0, dur: 1.5,
+               bank: (Math.random() < .5 ? -1 : 1) * (.28 + Math.random() * .22) };
     o.turnCool = TURN_COOL;
     o.face = face;
   }
@@ -656,7 +661,7 @@
       }
       if (k >= 1) {
         o.trick = null; o.thrust = o.thrustWant = 1; o.roll = 1;
-        o.th = o.face * Math.PI / 2; o.pitch = 0; o.pitchWant = 0;
+        o.th = o.face * Math.PI / 2; o.pitch = 0; o.pitchWant = 0; o.pitchV = 0;
         pickTarget();
       }
     } else {
@@ -730,19 +735,38 @@
          整條壓過垂直往下鑽、順帶往後退著追——那正是虎鯨錯身後的動作。
          只有「魚在身後、而且不在下方」時才真的需要偏航轉身。 */
       var chasing = o.mode === 'chase';
-      var fwd = dx * Math.sin(o.th);
+      /* 體軸前方分量。轉身當中改用**轉完之後**的朝向來算：轉身的 1.5 秒裡
+         sinθ 會掃過 0 並換號，若照當下的 sinθ 算，目標會在「前方／後方」之間
+         來回翻面，操舵跟著大幅擺盪。用 face 算則與轉身結束的那一刻連續。 */
+      var fwd = dx * (o.turn ? o.face : Math.sin(o.th));
       var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
       var urgent = o.mode !== 'cruise' || noRoom;
-      /* 藥丸在下方就壓下去鑽（掉頭要 1.5 秒，這段時間它又沉更遠）；
-         只有「在後方、而且不在下方」才真的需要偏航掉頭。門檻放寬到 1/4 身長，
-         先前的 0.35 太鈍，常常兩邊都不成立、就一直斜著追。 */
-      var below = dy > D.H * 1.2, behind = fwd < -D.L * .25;
-      var needYaw = chasing ? (behind && !below)
+      /* ---- 需要的體軸角，以及「俯仰夠不夠用」 ----
+         一個方向有三個等價角（base、base±2π）。先前是「取離現在最近的那一個」，
+         那會出災難：例如現在的俯仰被夾在 −2.0、藥丸卻在正下方（base=+1.2），
+         最近的等價角是 −5.06，夾限之後仍然是 −2.0——**永遠出不來**。實測 240 次
+         裡的每一次脫靶都是這一種：鯨魚釘在畫面角落、頭朝上後方、藥丸躺在正下方。
+         正解是先問「哪些等價角落在俯仰能到的範圍內」：
+           · 有 → 取其中離現在最近的那一個（既不跳圈、也不會撞夾限鎖死）；
+           · 沒有 → 代表這個方向靠俯仰根本構不到（目標實質在身後），
+             那就該偏航掉頭，而不是硬把頭往夾限上壓。
+         這條規則同時解掉了原本的 ±π 跳圈：越過藥丸又同高時 base≈±π，
+         兩個等價角都出界，於是直接判定要掉頭，不會在 +π 與 −π 之間甩頭。 */
+      var pmax = chasing ? 2.0 : o.mode === 'return' ? 1.4 : 1.15;
+      var base = chasing ? Math.atan2(dy, fwd)
+                         : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
+      var rawT = 0, inRange = false, bestD = 1e9;
+      for (var ci = -1; ci <= 1; ci++) {
+        var cand = base + ci * TAU;
+        if (Math.abs(cand) > pmax) continue;
+        var dd = Math.abs(cand - o.pitchWant);
+        if (dd < bestD) { bestD = dd; rawT = cand; inRange = true; }
+      }
+      if (!inRange) rawT = Math.max(-pmax, Math.min(pmax, base));
+      var needYaw = chasing ? !inRange
                             : Math.abs(dx) > D.L * (urgent ? .35 : .8);
       if (!o.turn && needYaw) startTurn(dx > 0 ? 1 : -1, urgent);
 
-      /* 俯仰上限：追餌 115°（可以壓過垂直）、游回畫面 80°、平常巡游 66°。 */
-      var pmax = chasing ? 2.0 : o.mode === 'return' ? 1.4 : 1.15;
       /* 原本是硬性死區（近了就完全不修正）。那會出兩個問題：一是修正突然斷掉、
          再突然接上，動作看起來一段一段的；二是追餌時最後那 40 px 完全不修正，
          而藥丸還在沉，滑過去的 0.3 秒就掉了十幾 px——剛好夠讓牠咬空。
@@ -750,17 +774,11 @@
       var fade = D.span * (chasing ? .08 : .30);
       var gain = Math.min(1, aimD / fade);
       if (gain > 0) {
-        var raw = chasing ? Math.atan2(dy, fwd)
-                          : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
-        /* **取與現在同一圈的等價角**——這是「藥丸吃不順時會抖」的最後一個病灶。
-           追餌用的是真正的視線角 atan2(dy, fwd)，當鯨魚已經越過藥丸（fwd<0）
-           而兩者又差不多高（dy 在 0 附近上下穿）時，atan2 會在 +π 與 −π 之間
-           跳整整一圈；低通與速率限制都攔不住這種跳變，只會把它變成一次大幅度
-           的甩頭，看起來就是抖。把 raw 換成與 pitchWant 相差不超過 ±π 的等價角，
-           跳變就變成連續的小角度修正。 */
-        var delta = ((raw - o.pitchWant + Math.PI * 3) % TAU) - Math.PI;
-        raw = o.pitchWant + delta;
-        raw = Math.max(-pmax, Math.min(pmax, raw));
+        /* rawT 已在上面算好並修正過 ±π 跳圈——那是「藥丸吃不順時會抖」的病灶：
+           追餌用的是真正的視線角 atan2(dy, fwd)，當鯨魚越過藥丸（fwd<0）而兩者
+           又差不多高（dy 在 0 附近上下穿）時，atan2 會在 +π 與 −π 之間跳整整
+           一圈，低通與速率限制都攔不住，只會變成一次大幅度的甩頭。 */
+        var raw = Math.max(-pmax, Math.min(pmax, rawT));
         /* 再過一階低通：即使誤差本身有雜訊（藥丸在晃、鯨魚在擺尾），
            想去的角度也是平滑變化的。轉身當中不再另外打折——那個折扣在轉身的
            起點與終點各製造一次姿態跳變，正是動作「一段一段」的來源之一。 */
@@ -772,9 +790,14 @@
         var tn = o.turn; tn.t += dt;
         var q = Math.min(1, tn.t / tn.dur);
         o.th = turnAngle(tn, q);
-        if (q >= 1) { o.turn = null; o.th = o.face * Math.PI / 2; }
+        // 轉身弧：疊在操舵目標之上的加項，兩端為 0、中段最大，接得上前後
+        // 只在巡游時加轉身弧：追餌時多這一段偏置會把瞄準推偏，實測平均命中
+        // 時間從 1.58 秒退到 1.8 秒、最壞從 3.3 秒退到 16 秒。
+        o.bank = o.mode === 'chase' ? 0 : tn.bank * Math.sin(Math.PI * q);
+        if (q >= 1) { o.turn = null; o.bank = 0; o.th = o.face * Math.PI / 2; }
       } else {
         o.th = o.face * Math.PI / 2;
+        o.bank = 0;
       }
 
       /* 衝刺—滑行：野生虎鯨巡游時是「擺幾下、然後收尾滑一段」，不是整天
@@ -798,15 +821,27 @@
     o.gape += Math.max(-dt * 2.6, Math.min(dt * 3.4, o.gapeWant - o.gape));
     if (o.gape < .004) o.gape = 0;
 
-    if (!o.trick || o.trick.kind !== 'loop') {
-      // 追餌時對正的速度快一倍：先把頭指向魚，之後就是一條直線
-      var pr = dt * (o.mode === 'chase' ? 3.4 : 1.9);
-      o.pitch += Math.max(-pr, Math.min(pr, o.pitchWant - o.pitch));
+    /* 俯仰改用**臨界阻尼二階濾波**，不再用速率上限。
+       速率上限的動態是「等速轉到定位、然後突然停住」——加速度是兩個階躍，
+       眼睛看到的就是一段一段的動作。臨界阻尼（ζ=1）則是加速度連續、無過衝，
+       起步與收尾都是圓的。自然頻率 ω 決定跟隨速度：追餌 6.5、平常 3.2
+       （時間常數約 1/ω，也就是 0.15 秒與 0.31 秒）。
+       ω·dt 最大只有 0.33，顯式積分穩定。 */
+    if (o.trick && o.trick.kind === 'loop') {
+      o.pitchV = 0;                                   // 特技直接指定角度，濾波器歸零
+    } else {
+      var w = o.mode === 'chase' ? 6.5 : 3.2;
+      var set = o.pitchWant + o.bank;                 // 操舵目標 ＋ 轉身弧
+      o.pitchV += (w * w * (set - o.pitch) - 2 * w * o.pitchV) * dt;
+      o.pitch += o.pitchV * dt;
     }
     if (o.trick) o.spdWant = o.trick.kind === 'slap' ? 4 : 150;
-    o.thrust += Math.max(-dt * 2.4, Math.min(dt * 3.2, o.thrustWant - o.thrust));
-    var acc = o.trick ? 300 : o.mode === 'chase' ? 150 : 58;
-    o.speed += Math.max(-dt * 90, Math.min(dt * acc, o.spdWant - o.speed));
+    /* 速度與擺尾幅度同樣改成指數趨近（一階遲滯），不用硬性加速度上限——
+       理由與俯仰相同：夾限會做出「等速加速到目標、然後突然不再變化」的折線。
+       時間常數：追餌 0.30 秒（要衝得出去）、特技 0.18 秒、其餘 0.55 秒。 */
+    var tauS = o.trick ? .18 : o.mode === 'chase' ? .30 : .55;
+    o.speed += (o.spdWant - o.speed) * (1 - Math.exp(-dt / tauS));
+    o.thrust += (o.thrustWant - o.thrust) * (1 - Math.exp(-dt / .40));
 
     /* ---- 位移：嚴格沿著頭指的方向，沒有任何側向分量 ----
        體軸在 3D 是 (cosP·sinθ, sinP, cosP·cosθ)，前兩項就是畫面上的速度向量。
