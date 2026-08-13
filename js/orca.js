@@ -153,7 +153,14 @@
       skin:  dark ? '#182420' : '#0d1714',
       belly: dark ? (v('--sentence-fg') || '#ece6d8') : bg,   // 兩邊都是骨白
       ink:   '#0a1512',
-      food:  v('--sentence-warn') || '#7d5a10'
+      /* 藥丸的五組配色（主色／次色）。暗底用亮一階的色、亮底用暗一階的色，
+         兩邊都不會與背景糊在一起。次色用在膠囊的另一半、錠劑的刻痕與軟膠囊
+         的反光。 */
+      pill: dark
+        ? [['#d3a247', '#ece6d8'], ['#79b58e', '#ece6d8'], ['#c9706a', '#ece6d8'],
+           ['#ece6d8', '#a99f8c'], ['#cdb894', '#7f7460']]
+        : [['#a9761a', '#f3eee0'], ['#2b5f45', '#e3ecdf'], ['#8c3f3a', '#f0e2de'],
+           ['#3d4744', '#cfc9b8'], ['#6b5a33', '#e2d8bd']]
     };
   }
 
@@ -618,7 +625,11 @@
         f.vy = Math.min(52, f.vy + dt * 90);
         f.y += f.vy * dt;
         f.x += Math.sin(f.t * 2.4 + f.s) * 9 * dt;
-        if (f.y >= floorY) { f.y = floorY; f.rest = true; }
+        if (f.y >= floorY) {
+          f.y = floorY; f.rest = true;
+          // 躺平：就近取 0 或 π，不要在地上繼續打轉
+          f.settle = Math.round((f.spin + f.t * f.rot) / Math.PI) * Math.PI;
+        }
       }
     }
 
@@ -803,22 +814,52 @@
   /* 疊層是 fixed（不進文件流、不可能跑版），但鯨魚與飼料的座標是**文件座標**，
      畫的時候才扣掉捲動量。使用者滑動頁面，牠就跟著頁面一起移動；被推出畫面時
      由 step() 的 'return' 模式優先把牠帶回看得到的地方。 */
+  /* ---- 飼料＝藥物 ----
+     五款：膠囊、圓錠、長橢圓錠、菱形錠、軟膠囊。每一顆在落下時隨機挑款式與
+     配色，並帶一個自己的翻滾角速度；沉到底之後轉正躺平（就近取 0 或 π，
+     不會在地上繼續打轉）。 */
+  function drawPill(g, f, sc) {
+    var c = P.pill[f.tint % P.pill.length], a = c[0], b = c[1];
+    var ang = f.rest ? f.settle : f.spin + f.t * f.rot;
+    g.save();
+    g.translate(f.x, f.y - sc);
+    g.rotate(ang);
+    g.fillStyle = a;
+    if (f.kind === 0) {                                // 膠囊：兩色對半
+      g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6); g.fill();
+      g.save();
+      g.beginPath(); g.rect(0, -4, 8, 8); g.clip();
+      g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6);
+      g.fillStyle = b; g.fill();
+      g.restore();
+    } else if (f.kind === 1) {                         // 圓錠＋刻痕
+      g.beginPath(); g.arc(0, 0, 5.4, 0, TAU); g.fill();
+      g.fillStyle = b;
+      g.beginPath(); rrect(g, -.9, -4.4, 1.8, 8.8, .9); g.fill();
+    } else if (f.kind === 2) {                         // 長橢圓錠（caplet）＋刻痕
+      g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4); g.fill();
+      g.fillStyle = b;
+      g.beginPath(); rrect(g, -.8, -2.6, 1.6, 5.2, .8); g.fill();
+    } else if (f.kind === 3) {                         // 菱形錠
+      g.beginPath();
+      g.moveTo(6.8, 0); g.lineTo(0, 4.6); g.lineTo(-6.8, 0); g.lineTo(0, -4.6);
+      g.closePath(); g.fill();
+    } else {                                           // 軟膠囊（含反光）
+      g.beginPath(); g.ellipse(0, 0, 7, 4.6, 0, 0, TAU); g.fill();
+      g.globalAlpha = .55; g.fillStyle = b;
+      g.beginPath(); g.ellipse(-2.2, -1.5, 2.4, 1.2, -.5, 0, TAU); g.fill();
+      g.globalAlpha = 1;
+    }
+    g.restore();
+  }
+
   function draw() {
     var sc = scrollTop();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, Hv);
 
     var i;
-    for (i = 0; i < food.length; i++) {                // 小魚
-      var f = food[i];
-      ctx.save(); ctx.translate(f.x, f.y - sc);
-      ctx.rotate(f.rest ? 1.4 : Math.sin(f.t * 3 + f.s) * .5);
-      ctx.fillStyle = P.food;
-      ctx.beginPath(); ctx.ellipse(0, 0, 6, 3, 0, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(5, 0); ctx.lineTo(10, -3.4); ctx.lineTo(10, 3.4);
-      ctx.closePath(); ctx.fill();
-      ctx.restore();
-    }
+    for (i = 0; i < food.length; i++) drawPill(ctx, food[i], sc);
     drawWhale(ctx, sc);
   }
 
@@ -906,8 +947,15 @@
                                '[data-act], .sent-chip, .sent-slot, .sent-tok, .sent-hub')) return;
     if (hitWhale(e.clientX, e.clientY)) { startTrick(); return; }
     if (food.length > 14) food.shift();
-    food.push({ x: e.clientX, y: e.clientY + scrollTop(),
-                vy: 0, t: 0, s: Math.random() * 6, rest: false });
+    food.push({
+      x: e.clientX, y: e.clientY + scrollTop(), vy: 0, t: 0,
+      s: Math.random() * 6, rest: false,
+      kind: Math.floor(Math.random() * 5),             // 五款藥物隨機
+      tint: Math.floor(Math.random() * 5),
+      spin: Math.random() * TAU,
+      rot: (Math.random() - .5) * 1.8,                 // 落下時自己翻滾
+      settle: 0
+    });
   });
 
   window.addEventListener('resize', resize);
