@@ -204,13 +204,16 @@ async function fillPair(node) {
     return;
   }
   const inter = textOf('t', ti), mgmt = textOf('t', mi);
+  /* 疾病那類只有一段敘述、沒有獨立的處置欄，標題也不該叫「機轉」——
+     它講的是「這個病人有這個病時用這支藥會怎樣」。 */
+  const isDis = node.dataset.kind === 'dis';
   body.innerHTML = `
-    <div class="pf"><div class="pf-l">機轉 Mechanism</div>
+    <div class="pf"><div class="pf-l">${isDis ? '風險與說明 Risk' : '機轉 Mechanism'}</div>
       ${inter ? `<div class="pf-t">${esc(inter)}</div>`
-              : '<div class="pf-none">原始資料庫未提供機轉敘述。</div>'}</div>
-    <div class="pf"><div class="pf-l">處置 Management</div>
+              : '<div class="pf-none">原始資料庫未提供敘述。</div>'}</div>
+    ${isDis ? '' : `<div class="pf"><div class="pf-l">處置 Management</div>
       ${mgmt ? `<div class="pf-t mgmt">${esc(mgmt)}</div>`
-             : '<div class="pf-none">原始資料庫未提供處置建議。</div>'}</div>
+             : '<div class="pf-none">原始資料庫未提供處置建議。</div>'}</div>`}
     ${ri >= 0 ? `<button type="button" class="pf-refbtn" data-ref="${ri}">參考文獻 ▾</button>
       <div class="pf-refs" hidden></div>` : ''}`;
 }
@@ -272,7 +275,8 @@ function render() {
       out.innerHTML = `<div class="ddi-clear-msg">
         <b>${esc(nameOf(id))} 在收錄範圍內，但沒有任何一組已知交互作用。</b>
         這類多半是生物製劑、外用製劑或解毒劑。<b>不等於安全</b>——
-        資料庫沒有記錄不代表不會發生，用藥前仍請對照仿單。</div>`;
+        資料庫沒有記錄不代表不會發生，用藥前仍請對照仿單。</div>`
+        + extraHTML('food') + extraHTML('dis');
       return;
     }
     const shown = all.slice(0, soloLimit);
@@ -281,7 +285,8 @@ function render() {
       + groupHTML(shown)
       + (all.length > shown.length
         ? `<button type="button" class="ddi-more" data-more="1">再顯示 60 組（還有 ${all.length - shown.length} 組）</button>`
-        : '');
+        : '')
+      + extraHTML('food') + extraHTML('dis');
     return;
   }
 
@@ -299,10 +304,60 @@ function render() {
   ptr.innerHTML = `<span><b>${picked.length}</b> 種藥 · <b>${combos}</b> 組兩兩組合 · 命中 <b>${hits.length}</b> 組</span>
     ${n3 ? `<span class="hot">Major ${n3} 組</span>` : ''}`;
 
-  out.innerHTML = hits.length ? groupHTML(hits) : `
+  out.innerHTML = (hits.length ? groupHTML(hits) : `
     <div class="ddi-clear-msg"><b>這 ${combos} 組組合在 DDInter 裡都沒有收錄。</b>
       這代表「這個資料庫沒有這筆記錄」，<b>不等於安全</b>——新藥、生物製劑與本站藥卡對映不到的成分
-      本來就不在收錄範圍內。臨床上仍請對照仿單與專科 checker。</div>`;
+      本來就不在收錄範圍內。臨床上仍請對照仿單與專科 checker。</div>`)
+    + extraHTML('food') + extraHTML('dis');
+}
+
+/* ---------- 藥×食物、藥×疾病 ----------
+ * 資料在索引裡（IDX.food / IDX.dis），量小所以不分片，但文字仍走同一個 t 分片池，
+ * 所以展開時同樣要 loadShard。
+ * 位置固定排在藥×藥之下——使用者是先問「這幾支藥會不會撞」，
+ * 食物與共病是接著才想到的第二層問題。
+ */
+const EXTRA = {
+  food: { key: 'food', zh: '飲食', en: 'Food', ico: '食',
+          note: '同時服用的飲食／嗜好品。分級沿用 DDInter 原始標註。' },
+  dis:  { key: 'dis',  zh: '共病', en: 'Disease', ico: '病',
+          note: '病人本身的疾病狀態下用這支藥的風險。<b>這裡不取代藥卡的「禁忌」欄</b>——'
+              + '那一欄的來源是台大藥劑部，兩者不一致時以台大為準。' },
+};
+
+/* 把使用者選的每一支藥的食物／疾病條目攤平，標上是哪一支藥的 */
+function extraRows(kind) {
+  const rows = [];
+  for (const id of picked) {
+    for (const r of (IDX[kind] && IDX[kind][id]) || []) rows.push({ id, r });
+  }
+  return rows.sort((a, b) => b.r[1] - a.r[1]);
+}
+
+function extraHTML(kind) {
+  const meta = EXTRA[kind];
+  const rows = extraRows(kind);
+  if (!rows.length) return '';
+  const n3 = rows.filter(x => x.r[1] === 3).length;
+  return `<div class="ddi-sec ex s${n3 ? 3 : 2}">
+      <span class="zh">${esc(meta.zh)}交互作用</span>
+      <span class="en">${esc(meta.en)}</span>
+      <span class="n">${rows.length} 項</span>
+    </div>
+    <div class="ddi-exnote">${meta.note}</div>`
+    + rows.map(({ id, r }) => {
+      /* r = [名稱, 分級, 文字編號…]；食物有機轉＋處置兩段，疾病只有一段敘述 */
+      const ti = r[2], mi = r.length > 3 ? r[3] : -1;
+      return `<details class="pair ex" data-kind="${kind}" data-ti="${ti}" data-mi="${mi}">
+        <summary>
+          ${sevMark(r[1])}
+          <span class="pair-names">${esc(r[0])}</span>
+          <span class="pair-zh">對 ${esc(nameOf(id))}</span>
+          <span class="pair-chev">展開 ▾</span>
+        </summary>
+        <div class="pair-body"><div class="ddi-loading">載入中…</div></div>
+      </details>`;
+    }).join('');
 }
 
 /* list 元素一律是 {p, lead}——單藥模式的 lead 是被查的藥，多藥模式是先加入的那個。 */

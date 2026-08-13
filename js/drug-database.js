@@ -601,6 +601,39 @@ function liverpoolLinks(d) {
       到站後請自行選取本藥與併用藥；資料留在對方網站，本站未收錄。</span></div></div>`;
 }
 
+/* DDInter 的飲食交互作用。
+   **跟台大自己的「飲食交互作用」欄分開顯示，不合併。** 台大那一欄（v.food）
+   是院方資料、只有 182 個規格有且很簡略（例「檳榔 [4]」）；這一區是外部來源、
+   含完整機轉與處置。依台大資料優先的原則，兩者不一致時以台大為準，
+   所以這裡標明來源、擺在台大那欄之後，讓人分得出誰是誰。
+   資料在 data/ddi/food-cards.js（約 0.9 MB，以藥卡學名為鍵），
+   本頁不載 4.7 MB 的交互作用總索引。 */
+const DDI_LV = ['未分級', 'Minor 輕度', 'Moderate 中度', 'Major 重大'];
+const DDI_PIPS = ['▫▫▫', '◼▫▫', '◼◼▫', '◼◼◼'];
+
+function ddiFoodField(d) {
+  const rows = (window.DDI_FOOD_CARDS || {})[d.name];
+  if (!rows || !rows.length) return '';
+  const items = rows.map(r => `
+    <details class="db-food">
+      <summary>
+        <span class="db-food-lv lv-${r.lv}">${DDI_PIPS[r.lv]} ${esc(DDI_LV[r.lv])}</span>
+        <span class="db-food-n">${esc(r.n)}</span>
+        ${rows.some(x => x.d !== r.d) ? `<span class="db-food-d">對 ${esc(r.d)}</span>` : ''}
+      </summary>
+      <div class="db-food-b">
+        ${r.i ? `<div class="db-food-l">機轉</div><div class="db-food-t">${esc(r.i)}</div>` : ''}
+        ${r.m ? `<div class="db-food-l">處置</div><div class="db-food-t mg">${esc(r.m)}</div>` : ''}
+      </div>
+    </details>`).join('');
+  return `<div class="dc-field"><div class="dc-flabel">飲食交互作用（DDInter）</div>
+    <div class="dc-ftext">${items}
+      <div class="db-food-src">來源 DDInter 2.0（CC BY-NC-SA 4.0），非台大藥劑部資料；
+        與上方台大「飲食交互作用」欄不一致時，以台大為準。
+        <a href="ddi.html" class="ref-link">完整交互作用查核 →</a></div>
+    </div></div>`;
+}
+
 /* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */
 function cardBody(d) {
   const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
@@ -609,7 +642,8 @@ function cardBody(d) {
     ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
        <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
     ${field('劑型', d.form)}
-    ${liverpoolLinks(d)}`;
+    ${liverpoolLinks(d)}
+    ${ddiFoodField(d)}`;
   const vs = (d.variants || []).map(v => ({ cat: d.cat, ...v }));
   if (vs.length <= 1) return header + (vs[0] ? variantBody(vs[0]) : '');
 

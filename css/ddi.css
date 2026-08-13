@@ -184,6 +184,19 @@
 .ddi-sec.s3 { border-top-color: var(--d-hot); }
 .ddi-sec.s2 { border-top-color: var(--d-warn); }
 
+/* 飲食／共病兩區：排在藥×藥之下，用點線頂框跟上面的嚴重度分組區隔開
+   （那幾組是實線／依嚴重度上色），一眼看得出「這是另一類問題」。 */
+.ddi-sec.ex { border-top-style: dotted; border-top-width: 2px; }
+.ddi-sec .en {
+  font-family: var(--d-mono); font-size: 9.5px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--d-dim);
+}
+.ddi-exnote {
+  font-size: 11.5px; line-height: 1.6; color: var(--d-fg2);
+  border-left: 3px solid var(--d-line2); padding-left: 10px; margin: 2px 0 6px;
+}
+.ddi-exnote b { color: var(--d-fg); }
+
 /* ---------- 一組配對 ---------- */
 .pair { border-bottom: 1px dotted var(--d-line); }
 .pair > summary {

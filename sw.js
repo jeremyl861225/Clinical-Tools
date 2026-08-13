@@ -12,7 +12,7 @@
  *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
 const CACHE_PREFIX = 'clinical-tools-';
-const CACHE_VERSION = CACHE_PREFIX + 'v257';
+const CACHE_VERSION = CACHE_PREFIX + 'v258';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -84,6 +84,9 @@ const PRECACHE_URLS = [
      使用者查過的那幾組自然會留在快取裡，離線時仍讀得到。
      代價講清楚：全新裝置在完全離線的狀態下，配對列得出來、點開會空。 */
   './data/ddi/index.json',
+  /* 藥卡的飲食交互作用（0.9MB）：藥物資料庫每張卡都可能用到，且那一頁不載
+     4.7MB 的交互作用總索引，所以這支要進 precache。 */
+  './data/ddi/food-cards.js',
   /* 藥物資料庫：index.js 是開頁即載的輕量索引，其餘 <pid>.js 是各藥理分類的
      完整藥卡，原本只在使用者展開某張卡時才注入 <script>。離線時網路取不到，
      故整批預先快取（合計約 3.4MB，是本清單最大的一塊）。
