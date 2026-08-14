@@ -572,7 +572,7 @@ function variantBody(v, ddi) {
     ${titrateField(v.code)}
     ${field('最大劑量', v.maxDose)}
     ${field('兒科劑量', v.peds)}
-    ${crushField(v.crush)}
+    ${crushField(v)}
     ${renalTbl(v.renal)}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
     ${rowTbl('透析劑量', v.dialysis, [['form', '劑型'], ['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
@@ -689,24 +689,50 @@ function ddiFoodField(d) {
    這一欄是照顧管灌病人時的判斷依據，要一眼分辨。
    判不出可否的（台大只寫「Embryo-Fetal Toxicity」那 151 支）沒有徽章，只留理由。 */
 const CRUSH_LABELS = [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'], ['cap', '膠囊可打開']];
+const NTUH_SRC = '台大醫院藥劑部';
 
-function crushField(rows) {
+/* 兩個來源：台大處方集這一欄（v.crush）只有 53% 的口服品項有值，其餘由
+   data/drugs/crush-ext.js 的美國 FDA 仿單補上。使用者指定**外部可蓋過台大**
+   （2026-08-15），但兩邊判定不同時要講出來，不能默默換掉——所以徽章走外部，
+   衝突的欄位在徽章上標 ⚠ 並在下面把台大原判定並排列出。 */
+function crushField(v) {
+  const rows = v.crush;
   if (typeof rows === 'string') return field('剝半 / 磨粉 / 管餵', rows);
-  if (!Array.isArray(rows) || !rows.length) return '';
-  const blocks = rows.map(r => {
-    const tags = CRUSH_LABELS.filter(([k]) => r[k]).map(([k, t]) => {
-      const yes = String(r[k]).indexOf('不') < 0;
-      return `<span class="db-crush ${yes ? 'ok' : 'no'}">${t}<b>${esc(r[k])}</b></span>`;
-    }).join('');
-    const line = (lbl, txt) => txt
-      ? `<div class="db-crush-l"><b>${lbl}</b>${richText(txt)}</div>` : '';
-    if (!tags && !r.why && !r.note) return '';
-    return `${tags ? `<div class="db-crushes">${tags}</div>` : ''}
-      ${line('理由：', r.why)}${line('管餵處理：', r.note)}`;
-  }).filter(Boolean).join('<div class="db-crush-sep"></div>');
-  if (!blocks) return '';
+  const ext = (window.DRUG_CRUSH_EXT || {})[v.code8 || v.code];
+  const base = (Array.isArray(rows) && rows.length) ? rows[0] : null;
+  if (!base && !ext) return '';
+
+  const merged = Object.assign({}, base || {}, ext || {});
+  const conflict = (ext && ext.conflict) || [];
+  const tags = CRUSH_LABELS.filter(([k]) => merged[k]).map(([k, t]) => {
+    const yes = String(merged[k]).indexOf('不') < 0;
+    const warn = conflict.indexOf(k) >= 0;
+    return `<span class="db-crush ${yes ? 'ok' : 'no'}${warn ? ' clash' : ''}">${t}<b>${esc(merged[k])}</b>${warn ? '<i>⚠</i>' : ''}</span>`;
+  }).join('');
+
+  const line = (lbl, txt) => txt
+    ? `<div class="db-crush-l"><b>${lbl}</b>${richText(txt)}</div>` : '';
+  // 衝突明細：哪一項、台大說什麼、仿單說什麼
+  const clash = conflict.length ? `<div class="db-crush-clash">⚠ 兩個來源不一致：${
+    conflict.map(k => {
+      const t = (CRUSH_LABELS.find(x => x[0] === k) || [, k])[1];
+      return `${t}　${NTUH_SRC}「${esc((ext.ntuh || {})[k] || '')}」／仿單「${esc(ext[k])}」`;
+    }).join('；')}　<b>此處採仿單</b></div>` : '';
+
+  const quotes = (ext && ext.why || []).slice(0, 3)
+    .map(s => `<div class="db-crush-q">${esc(s)}</div>`).join('');
+  const srcs = [base && (base.why || base.h || base.c) ? NTUH_SRC : '', ext ? ext.src : '']
+    .filter(Boolean).join('　·　');
+
+  if (!tags && !(base && (base.why || base.note)) && !quotes) return '';
   return `<div class="dc-field"><div class="dc-flabel">剝半 / 磨粉 / 管餵</div>
-    <div class="dc-ftext">${blocks}</div></div>`;
+    <div class="dc-ftext">
+      ${tags ? `<div class="db-crushes">${tags}</div>` : ''}
+      ${clash}
+      ${base ? line('理由：', base.why) + line('管餵處理：', base.note) : ''}
+      ${quotes ? `<div class="db-crush-qs"><b>仿單原文：</b>${quotes}</div>` : ''}
+      ${srcs ? `<div class="db-crush-src">來源：${esc(srcs)}</div>` : ''}
+    </div></div>`;
 }
 
 /* ---------------- 藥品外觀照 ----------------

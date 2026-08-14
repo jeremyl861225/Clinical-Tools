@@ -49,6 +49,17 @@ a.db-xlink:focus-visible{outline:2px solid var(--x-bg); outline-offset:2px;}
 .db-crush-l{font-size:13px; line-height:1.6; margin-top:2px;}
 .db-crush-l b{font-weight:700; margin-right:2px;}
 .db-crush-sep{height:1px; background:var(--line); margin:8px 0;}
+/* 台大與仿單判定不一致：徽章加 ⚠，底下用外框把兩邊並排講清楚。
+   不能只換掉徽章了事——使用者授權外部蓋過台大，但要看得到被蓋掉的是什麼。 */
+.db-crush.clash{border-style:dashed;}
+.db-crush i{font-style:normal; font-size:11px; opacity:.9;}
+.db-crush-clash{font-size:12px; line-height:1.6; color:var(--accent2);
+  border:1px dashed var(--accent2); border-radius:2px; padding:6px 9px; margin:2px 0 6px;}
+.db-crush-clash b{font-weight:700;}
+.db-crush-qs{font-size:12.5px; line-height:1.6; margin-top:5px;}
+.db-crush-qs b{font-weight:700;}
+.db-crush-q{color:var(--muted); padding-left:10px; border-left:2px solid var(--line); margin:3px 0;}
+.db-crush-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-top:6px;}
 
 /* 藥品外觀照：一列橫捲的縮圖，點開看台大原圖（見 drug-database.js 的 photoField）。
    縮圖是台大的 180×120，固定框高、object-fit:contain，長寬比不一的照片才不會被拉扯。
