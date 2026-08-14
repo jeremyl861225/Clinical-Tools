@@ -24,10 +24,10 @@
  *     深度 d = X·cosθ − Z·sinθ        （d 大者近）
  *
  * θ=±90° 是完全側面，θ=0 是正臉（吻端朝著使用者），θ=180° 是正後方。
- * 因此**轉身是連續的一個角度掃過去**，不是左右鏡射：
- *     完全側 → 側臉 → 正臉 → 另一邊側臉 → 轉身完成（使用者指定的順序）
- * 掃到中段時 sinθ→0，畫面上的水平速度自然趨近零——牠是「朝著你游一段再轉開」，
- * 不是原地翻牌。轉身曲線刻意在中段放慢（見 turnEase），正臉那一格才看得清楚。
+ * 牠有一個真正的深度座標 z，速度就是體軸方向乘上泳速：偏航因此是一個**連續的
+ * 操舵量**，往哪裡去就把頭轉去哪裡。轉身不再是一段腳本動畫，而是操舵的自然結果，
+ * 而且會自己走完「完全側 → 側臉 → 正臉 → 另一邊側臉」這一串。z 另外給一個弱透視
+ * 縮放（近的大一點），深度才讀得出來；藥丸躺在 z=0 那一面，牠得游到玻璃前才吃得到。
  *
  * 身體是**一張切成四邊形的參數曲面**（u 沿體軸、ψ 繞體軸），逐片投影、逐片用
  * 有向面積剔除背面。身體是凸的，所以背面剔除本身就等於完整的消隱，不必排深度。
@@ -108,6 +108,8 @@
     D.pecU = .26; D.pecLen = L * .190; D.pecW = L * .086;
     D.eyeU = .105;
     D.span = L + D.flukeLen;
+    D.zMax = L * .80;               // 水族箱的深度（前後各這麼多）
+    D.foc = L * 8.5;                // 透視焦距：近端放大約 1.14 倍、遠端 0.89 倍
   }
 
   function topH(u) { return at(C_TOP, Math.min(1, u)) * D.H; }
@@ -126,18 +128,17 @@
   var P = null;
 
   var o = {
-    x: 0, y: 0,                    // 身體中心（**文件座標**：捲動時牠跟著頁面走）
-    th: Math.PI / 2,               // 偏航角：+π/2 面向右、−π/2 面向左
-    face: 1,
-    pitch: 0, pitchWant: 0, pitchV: 0, bank: 0,   // pitchV＝二階濾波的角速度、bank＝轉身弧
+    x: 0, y: 0, z: 0,              // 身體中心：x,y 是**文件座標**（捲動時牠跟著頁面走），
+                                   // z 是深度（px，正的比較遠），弱透視縮放由它決定
+    th: Math.PI / 2,               // 偏航角：+π/2 面向右、−π/2 面向左、0 面向使用者
+    thWant: Math.PI / 2, thV: 0,   // 偏航是連續操舵量，不再是兩個值＋腳本轉身
+    pitch: 0, pitchWant: 0, pitchV: 0,
+    rollA: 0, rollV: 0,            // 滾轉：協調轉彎會自動傾身（繞體軸的真旋轉）
     speed: 40, spdWant: 40,        // 加減速有慣性，速度不會瞬間切換
     phase: 0, thrust: 1, thrustWant: 1, gape: 0, gapeWant: 0,
     gliding: false, beatT: 2.5,    // 衝刺—滑行：虎鯨不會整天勻速擺尾
-    turnCool: 0,                   // 轉身冷卻，避免一直翻來覆去
-    pmx: 0, pmy: 0,                // 上一幀嘴的位置（命中判定用線段而非單點）
-    rollA: 0,                      // 滾轉角（繞體軸的**真旋轉**，不是上下鏡射）
-    tx: 0, ty: 0, wait: 0,
-    turn: null,                    // { from, to, t, dur }
+    pmx: 0, pmy: 0, pmz: 0,        // 上一幀嘴的位置（命中判定用線段而非單點）
+    tx: 0, ty: 0, tz: 0, wait: 0, hold: 0, turnCool: 0,
     trick: null,                   // { kind, t, dur }
     mode: 'cruise'
   };
@@ -192,13 +193,16 @@
    * 行列式都是 +1，所以背面剔除的符號規則在任何姿態下都成立。先前的滾轉是
    * scale(1,-1) 的鏡射，那會把符號翻掉。
    */
-  var TR = { cr: 1, sr: 0, cp: 1, sp: 0, S: 1, C: 0, ox: 0, oy: 0 };
-  function setPose(roll, pitch, th, ox, oy) {
+  var TR = { cr: 1, sr: 0, cp: 1, sp: 0, S: 1, C: 0, ox: 0, oy: 0, k: 1 };
+  function setPose(roll, pitch, th, ox, oy, k) {
     TR.cr = Math.cos(roll); TR.sr = Math.sin(roll);
     TR.cp = Math.cos(pitch); TR.sp = Math.sin(pitch);
     TR.S = Math.sin(th); TR.C = Math.cos(th);
-    TR.ox = ox; TR.oy = oy;
+    TR.ox = ox; TR.oy = oy; TR.k = k === undefined ? 1 : k;
   }
+  /* 弱透視：牠游近一點就大一點。少了這一筆，深度方向的移動在畫面上完全
+     看不出來（正投影下朝著你游＝原地不動），三維就白做了。 */
+  function persp() { return D.foc / (D.foc + o.z); }
   /* 體座標 →（螢幕 x, 螢幕 y, 深度）。深度大者近。
      投影是仿射的，所以貝茲曲線的控制點可以直接投影後照用（仿射把貝茲映成
      同階的貝茲）——鰭因此不必切網格。 */
@@ -206,8 +210,8 @@
   function proj(X, Y, Z, out) {
     var y1 = Y * TR.cr - Z * TR.sr, z1 = Y * TR.sr + Z * TR.cr;
     var x2 = X * TR.cp - y1 * TR.sp, y2 = X * TR.sp + y1 * TR.cp;
-    out[0] = TR.ox + x2 * TR.S + z1 * TR.C;
-    out[1] = TR.oy + y2;
+    out[0] = TR.ox + (x2 * TR.S + z1 * TR.C) * TR.k;
+    out[1] = TR.oy + y2 * TR.k;
     out[2] = x2 * TR.C - z1 * TR.S;
     return out;
   }
@@ -493,7 +497,7 @@
   }
   var iDor = 0, iPec = 0;
   function drawWhale(g, sc) {
-    setPose(o.rollA, o.pitch, o.th, o.x, o.y - (sc || 0));
+    setPose(o.rollA, o.pitch, o.th, o.x, o.y - (sc || 0), persp());
 
     var ja = o.gape * .62;
     JX = bx(MU); JY = edgeVent(MU); JC = Math.cos(ja); JS = Math.sin(ja);
@@ -555,9 +559,9 @@
   /* 把身上任一點（體長座標 u、偏離體軸 off）換算成**文件座標**。
      走的是與 drawWhale 完全相同的那一串旋轉，餵食判定才會與畫面一致。 */
   function bodyPoint(u, off) {
-    setPose(o.rollA, o.pitch, o.th, o.x, o.y);
+    setPose(o.rollA, o.pitch, o.th, o.x, o.y, persp());
     proj(bx(u), spine(u) + off, 0, _q2);
-    return { x: _q2[0], y: _q2[1] };
+    return { x: _q2[0], y: _q2[1], z: o.z + _q2[2] };
   }
   function snout() { return bodyPoint(0, 0); }
   /* 嘴的位置：吻端與嘴角的中間、貼在嘴線上。飼料要碰到**這一點**才算吃到，
@@ -566,6 +570,8 @@
   /* 中心到嘴沿著體軸的距離：操舵時把目標往後退這麼多，落點才會剛好是**嘴**，
      不是吻尖前方。 */
   function reach() { return D.span / 2 - D.L * .09; }
+
+  var CHASE_SPD = 172;              // 追餌泳速
 
   /* ---- 攔截預測 ----
      追「飼料現在的位置」等於永遠追著它的殘影：魚一直在下沉，等牠游到，魚
@@ -578,11 +584,12 @@
     var mp = mouth();
     var vy = f.rest ? 0 : f.vy;
     var vx = f.rest ? 0 : Math.sin(f.t * 2.4 + f.s) * 9;
-    var rx = f.x - mp.x, ry = f.y - mp.y;
-    var sp = Math.max(120, (o.speed + 168) / 2);   // 追餌會加速到 168，用當下速度會把交會點估得太遠
+    // 藥丸永遠在 z=0 那一面，所以深度差整段算進「還要游多遠」裡
+    var rx = f.x - mp.x, ry = f.y - mp.y, rz = -mp.z;
+    var sp = Math.max(120, (o.speed + CHASE_SPD) / 2);   // 用當下速度會把交會點估得太遠
     var a = vx * vx + vy * vy - sp * sp;
     var b = 2 * (rx * vx + ry * vy);
-    var c = rx * rx + ry * ry;
+    var c = rx * rx + ry * ry + rz * rz;
     var t = 0, disc = b * b - 4 * a * c;
     if (a !== 0 && disc >= 0) {
       var q = Math.sqrt(disc);
@@ -592,12 +599,25 @@
     }
     return { x: f.x + vx * t, y: Math.min(floorY, f.y + vy * t) };
   }
-  /* 點到線段的距離（命中判定用，避免高速掉幀時直接穿過飼料） */
-  function segDist(px, py, ax, ay, bx, by) {
-    var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+  /* 點到線段的距離（命中判定用，避免高速掉幀時直接穿過飼料）。
+     三維版把深度方向的權重壓到 0.22。理由是**深度在畫面上幾乎看不出來**：
+     整個透視縮放只有 1.13 倍，深度的唯一線索是誰蓋住誰。實測 200 次追餌裡，
+     脫靶的每一次都是「嘴在螢幕上已經壓在藥丸上（誤差 3 px），深度卻差 63 px」
+     ——那一格畫面看起來就是咬到了卻沒反應，比放寬判定更難接受。 */
+  function segDist(px, py, ax, ay, bx1, by1) {
+    var dx = bx1 - ax, dy = by1 - ay, l2 = dx * dx + dy * dy;
     var t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
     t = Math.max(0, Math.min(1, t));
     return Math.hypot(px - (ax + dx * t), py - (ay + dy * t));
+  }
+  var ZW = .22;
+  function segDist3(px, py, pz, ax, ay, az, bx1, by1, bz1) {
+    var dx = bx1 - ax, dy = by1 - ay, dz = (bz1 - az) * ZW;
+    var ex = px - ax, ey = py - ay, ez = (pz - az) * ZW;
+    var l2 = dx * dx + dy * dy + dz * dz;
+    var t = l2 ? (ex * dx + ey * dy + ez * dz) / l2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(ex - dx * t, ey - dy * t, ez - dz * t);
   }
 
   /* ================================================================
@@ -606,67 +626,54 @@
   function scrollTop() {
     return window.pageYOffset || document.documentElement.scrollTop || 0;
   }
-  /* 巡游目標（＝吻端要去的點，文件座標）。兩件事：
+  /* 巡游目標：文件座標 ＋ 一個深度。挑法有三件事：
      · 只在「現在看得到的那一帶」裡挑，捲到哪裡牠就在哪裡巡；
-     · 新目標必須離現在的位置夠遠（至少 45% 的短邊），否則牠會一直在原地繞小圈，
-       看起來像被關在畫面中央——使用者要的是整個畫面都巡得到。
-     邊界只留約 1/3 身長與 2.5 倍體高的餘裕，那不是牆（飼料丟在角落照樣游過去、
+     · 水平方向優先挑在**現在頭朝的那一側**，牠因此會一路游過整個畫面寬度；
+     · 深度只在現在的深度附近挑（±0.75 個水族箱）。一次跨越整個深度的話，牠會有
+       很長一段時間幾乎正對鏡頭——畫面上幾乎不動、又看不出是什麼，那不好看。
+     邊界只留約 1/4 身長與 2.5 倍體高的餘裕，那不是牆（飼料丟在角落照樣游過去、
      身子探出畫外一截，見 step() 結尾的夾限），只是不會自己挑一個必然半身出畫的點。 */
   function pickTarget() {
-    var top = scrollTop();
-    var mx = Math.min(D.span * .3, W * .3), my = Math.min(D.H * 2.5, Hv * .28);
-    /* 目標優先挑在**現在頭朝的那一側**：牠因此會一路游過整個畫面寬度，
-       只有真的沒空間了才挑後方、也才需要轉身。上下則不受限制——垂直移動
-       靠俯仰就夠了，不必掉頭，所以整個畫面都巡得到而不會一直翻身。 */
-    var room = o.face > 0 ? (W - mx - o.x) : (o.x - mx);
-    if (room > W * .22 && Math.random() < .96) {
-      o.tx = o.face > 0 ? o.x + room * (.45 + .55 * Math.random())
-                        : o.x - room * (.45 + .55 * Math.random());
-    } else {
-      o.tx = o.face > 0 ? mx + Math.random() * Math.max(20, o.x - mx)
-                        : o.x + Math.random() * Math.max(20, W - mx - o.x);
+    var top = scrollTop(), face = Math.sin(o.th) >= 0 ? 1 : -1;
+    var mx = Math.min(D.span * .28, W * .3), my = Math.min(D.H * 2.5, Hv * .28);
+    var room = face > 0 ? (W - mx - o.x) : (o.x - mx);
+    var band = Math.max(20, Hv - my * 2);
+    if (room > W * .20) {                       // 前面還有空間：一路往前
+      o.tx = o.x + face * room * (.45 + .55 * Math.random());
+      o.ty = top + my + Math.random() * band;
+    } else if (o.turnCool > 0) {
+      /* 前面沒空間了，但還不到該掉頭的時候：改成沿著這一側走一段**垂直**的行程。
+         垂直移動靠俯仰就夠、不必掉頭——「不要一直頻繁轉身」與「整個畫面都巡得到」
+         這兩件事因此可以同時成立。少了這一條，牠一到邊就掉頭，實測每分鐘掉頭
+         18.6 次（每 3.2 秒一次），畫面上就是一條一直在翻來覆去的鯨魚。 */
+      o.tx = o.x + face * Math.max(12, room);
+      o.ty = o.y - top < Hv * .5
+             ? top + my + band * (.55 + .45 * Math.random())
+             : top + my + band * .45 * Math.random();
+      o.wait = .1;
+    } else {                                    // 真的該掉頭了
+      o.tx = face > 0 ? mx + Math.random() * Math.max(20, o.x - mx)
+                      : o.x + Math.random() * Math.max(20, W - mx - o.x);
+      o.ty = top + my + Math.random() * band;
+      o.turnCool = 8;
     }
-    o.ty = top + my + Math.random() * Math.max(20, Hv - my * 2);
+    /* 深度只有四成的機會換新的，而且步幅只有半個水族箱：每換一個目標就換一次
+       深度的話，牠有很長一段時間幾乎正對鏡頭——畫面上幾乎不動、又看不出是什麼。
+       實測那樣的偏航分布是平的（每個角度各佔八分之一），完全側面反而變少了。 */
+    if (Math.random() < .32) {
+      o.tz = Math.max(-D.zMax * .8, Math.min(D.zMax * .8,
+               o.z + (Math.random() - .5) * D.zMax));
+    }
     /* 到點之後的停頓要短：停頓期間牠不再修正方向，只是直直漂——停太久就變成
        「游一段、停一段、再轉一段」，動作的段落感就是這樣來的。 */
     o.wait = .15 + Math.random() * .9;
   }
 
-  /* 轉身：從一側連續掃到另一側，中途經過正臉（θ=0）。整整 1.5 秒，
-     五個階段（完全側→側臉→正臉→另一邊側臉→完全側）每一段都看得清楚。 */
-  /* 轉身有冷卻時間：巡游時至少隔 TURN_COOL 秒才准再轉一次。少了這一條，
-     每換一個目標點就轉一次身，畫面上就是一條一直在原地翻來覆去的鯨魚。
-     追餌與游回畫面（urgent）不受冷卻限制——那兩件事本來就該立刻掉頭。 */
-  var TURN_COOL = 9;
-  function startTurn(face, urgent) {
-    if (o.turn || o.face === face) return;
-    if (!urgent && o.turnCool > 0) return;
-    /* bank：轉身當中額外疊一段平緩的仰俯弧（隨機朝上或朝下）。
-       沒有它的話，轉身的 1.5 秒裡 sinθ→0，畫面上的水平速度也跟著歸零，
-       看起來就是「原地停住轉一圈」——那正是使用者說的動作段落感。
-       疊上這段弧之後，牠在轉身期間仍然沿著一條圓滑的曲線移動。 */
-    o.turn = { from: o.face, t: 0, dur: 1.5,
-               bank: (Math.random() < .5 ? -1 : 1) * (.28 + Math.random() * .22) };
-    o.turnCool = TURN_COOL;
-    o.face = face;
-  }
-  /* **補間走 sinθ，不走 θ** —— 這是轉身末段會卡幀的根因：畫面上看到的身長正比
-     於 sinθ，愈接近完全側面 cosθ→0，同樣的角速度換算成視覺變化量愈小；再乘上
-     一條末端導數也是 0 的緩動曲線，兩個零疊在一起，最後那 0.2 秒就整個停住。
-     改成直接補間 S＝sinθ、再用 θ=asin(S) 反推（asin 的值域保證 cosθ≥0，也就是
-     一路走正臉那半邊，不會抄後腦勺），視覺變化率就從頭到尾均勻。
-     ease 只保留「正臉附近略慢」這一件事：導數在兩端 1.57、中段 0.44。 */
-  function turnEase(t) { return t + .09 * Math.sin(TAU * t); }
-  function turnAngle(tn, q) {
-    var S = tn.from * (1 - 2 * turnEase(q));
-    return Math.asin(Math.max(-1, Math.min(1, S)));
-  }
-
   function startTrick() {
     var r = Math.random();
     var kind = r < .3 ? 'spin' : r < .58 ? 'roll' : r < .84 ? 'loop' : 'slap';
-    o.trick = { kind: kind, t: 0, dur: kind === 'loop' ? 1.5 : kind === 'slap' ? 1.4 : 1.1 };
-    o.turn = null;
+    o.trick = { kind: kind, t: 0, dur: kind === 'loop' ? 1.5 : kind === 'slap' ? 1.4 : 1.1,
+                th0: o.th };
   }
 
   function step(dt) {
@@ -678,7 +685,7 @@
     var i, f;
     floorY = foodFloor();
     /* 飼料：自由落下、中途沒有任何平台擋著。沉降速度刻意壓在 52 px/s——
-       追餌的泳速是它的兩倍以上，所以無論丟在哪裡，牠一定追得上；
+       追餌的泳速是它的三倍以上，所以無論丟在哪裡，牠一定追得上；
        落到底就躺著等（不會沉出畫外消失）。 */
     for (i = food.length - 1; i >= 0; i--) {
       f = food[i]; f.t += dt;
@@ -695,15 +702,17 @@
       }
     }
 
+    var rollWant = 0;
     /* ---- 特技 ---- */
     if (o.trick) {
       var tr = o.trick; tr.t += dt;
       var k = Math.min(1, tr.t / tr.dur);
-      if (tr.kind === 'spin') {                        // 原地轉一圈（側→正→背→側）
-        o.th = o.face * Math.PI / 2 + TAU * k * o.face;
+      o.thV = 0; o.rollV = 0;
+      if (tr.kind === 'spin') {                        // 原地水平轉一圈
+        o.th = tr.th0 + TAU * k;
         o.thrust = o.thrustWant = 1.4;
       } else if (tr.kind === 'roll') {                 // 桶滾：繞體軸滾一整圈
-        o.rollA = TAU * k;
+        rollWant = o.rollA = TAU * k;
         o.thrust = o.thrustWant = 1.5;
       } else if (tr.kind === 'loop') {                 // 垂直繞一圈
         o.pitch = TAU * k;
@@ -712,17 +721,13 @@
         o.thrust = o.thrustWant = 2.6;
       }
       if (k >= 1) {
-        o.trick = null; o.thrust = o.thrustWant = 1; o.rollA = 0;
-        o.th = o.face * Math.PI / 2; o.pitch = 0; o.pitchWant = 0; o.pitchV = 0;
+        o.trick = null; o.thrust = o.thrustWant = 1;
+        o.rollA = 0; o.pitch = 0; o.pitchWant = 0; o.pitchV = 0;
+        o.thWant = o.th; o.thV = 0;
         pickTarget();
       }
     } else {
-      /* ---- 操舵：轉身當中也照樣算 ----
-         轉身那 1.5 秒若把俯仰壓成 0（先前的作法），牠等於每轉一次身就被扶正一次，
-         結果永遠在同一條水平帶上來回，巡不到畫面的上下兩端。這裡改成照常算俯仰、
-         轉身時只把它打個六折（轉彎本來就會收斂動作），θ 則交給轉身自己掃。 */
       var top = scrollTop();
-      var s0 = snout();
 
       /* 被使用者捲出畫面 → 什麼都先放下，游回看得到的地方 */
       var pad = food.length ? Hv * .35 : Hv * .10;      // 正在追餌時容忍多一點
@@ -732,125 +737,91 @@
         o.mode = 'return';
         o.tx = Math.max(D.span * .3, Math.min(W - D.span * .3, o.x));
         o.ty = outUp ? top + Hv * .30 : top + Hv * .70;
+        o.tz = 0;
         o.wait = .2;
       } else {
-        var bd = 1e9;
+        var bd = 1e9, mp0 = mouth();
         for (i = 0; i < food.length; i++) {
-          var d = Math.hypot(food[i].x - o.x, food[i].y - o.y);
+          var d = Math.hypot(food[i].x - o.x, food[i].y - o.y, o.z);
           if (d < bd) { bd = d; target = food[i]; }
         }
-        /* 追什麼都以**吻端**為準，不是身體中心：中心對準飼料的話，吻端會超前
-           半個身長，魚永遠從牠身側掠過，繞一圈也吃不到。 */
         if (target) {
           o.mode = 'chase';
-          var pt = intercept(target);                    // 預測攔截點，不是追現在位置
-          o.tx = pt.x; o.ty = pt.y;
-          var mp = mouth();
+          var pt = intercept(target);                  // 預測攔截點，不是追現在位置
+          o.tx = pt.x; o.ty = pt.y; o.tz = 0;          // 藥丸落在 z=0 那一面，牠得游到玻璃前
           /* 命中判定走「上一幀的嘴 → 這一幀的嘴」這一段線段，不是單看當前點：
-             追餌泳速 168 px/s，掉幀時一步可以走十幾 px，只比對端點會從魚身上
-             穿過去卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。 */
-          var md = segDist(target.x, target.y, o.pmx, o.pmy, mp.x, mp.y);
-          if (md < D.H * .88) {                          // 真的碰到嘴了才吞
+             追餌泳速 172 px/s，掉幀時一步可以走十幾 px，只比對端點會從藥丸身上
+             穿過去卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。
+             深度方向的權重見 segDist3。 */
+          var md = segDist3(target.x, target.y, 0,
+                            o.pmx, o.pmy, o.pmz, mp0.x, mp0.y, mp0.z);
+          if (md < D.H * 1.0) {                        // 真的碰到嘴了才吞
             food.splice(food.indexOf(target), 1);
-            o.gape = 1; o.gapeWant = 0;                    // 合起來＝咬下去
+            o.gape = 1; o.gapeWant = 0;                // 合起來＝咬下去
           } else if (md < D.L * .55) {
             o.gapeWant = Math.min(1, (D.L * .55 - md) / (D.L * .38));
           } else o.gapeWant = 0;
-        } else {
-          if (o.mode !== 'cruise') { o.mode = 'cruise'; pickTarget(); }
-          if (Math.hypot(o.tx - s0.x, o.ty - s0.y) < D.L * .28) {
-            o.wait -= dt;
-            if (o.wait <= 0) pickTarget();
-          }
-        }
+        } else if (o.mode !== 'cruise') { o.mode = 'cruise'; o.hold = 0; pickTarget(); }
       }
 
-      /* ---- 操舵誤差：用「身體中心 → 前導點」，不可以用吻端 ----
-         這裡是先前抖動的真正來源。吻端的位置本身就是俯仰算出來的
-         （snout = 中心 + 前向×半個身長），拿它去算誤差，等於
-             俯仰 → 吻端 → 誤差 → 俯仰
-         接成一個沒有阻尼的閉迴路：目標在正前方時，抬頭會讓吻端跑到目標上方，
-         誤差立刻翻負、頭又壓下去，來回擺盪。愈靠近目標分母愈小、增益愈大，
-         所以追餌追到嘴邊那一刻抖得最兇——但平常巡游也一直在小幅震動。
-         正解是標準的純追蹤（pure pursuit）：把目標往後retreat 半個身長當作
-         「中心要去的點」，再用**中心**算誤差。中心的位置與俯仰無關，迴路就斷了。 */
-      var fx = Math.cos(o.pitch) * Math.sin(o.th), fy = Math.sin(o.pitch);
-      var rch = reach();
-      var aimX = o.tx - fx * rch, aimY = o.ty - fy * rch;
-      var dx = aimX - o.x, dy = aimY - o.y;
-      var aimD = Math.hypot(dx, dy);
-
-      /* 錯過飼料就往下追，不要掉頭 ----------------------------------
-         飼料一直在下沉，掉頭是最笨的選擇（偏航轉身要 1.5 秒，這段時間魚又沉
-         更遠）。追餌時改用「真正的視線角」 P = atan2(dy, dx·sinθ)：dx·sinθ 是
-         目標落在體軸前方的分量，為負（＝魚已經在身後）時 P 會超過 90°，牠就
-         整條壓過垂直往下鑽、順帶往後退著追——那正是虎鯨錯身後的動作。
-         只有「魚在身後、而且不在下方」時才真的需要偏航轉身。 */
+      /* ---- 操舵：三維純追蹤（pure pursuit），誤差從**身體中心**量 ----
+         不可以用吻端：吻端的位置本身就是姿態算出來的（吻端 = 中心 + 體軸×半身長），
+         拿它去算誤差等於接成「姿態 → 吻端 → 誤差 → 姿態」一個沒有阻尼的閉迴路，
+         愈靠近目標增益愈大，於是追到嘴邊那一刻抖得最兇。正解是把目標沿著現在的
+         體軸往後退半個身長當成「中心要去的點」，中心的位置與姿態無關，迴路就斷了。 */
+      var cp = Math.cos(o.pitch), sp = Math.sin(o.pitch);
+      var fX = cp * Math.sin(o.th), fY = sp, fZ = cp * Math.cos(o.th);
+      var ex = o.tx - o.x, ey = o.ty - o.y, ez = o.tz - o.z;
+      var tDist = Math.hypot(ex, ey, ez);
       var chasing = o.mode === 'chase';
-      /* 體軸前方分量。轉身當中改用**轉完之後**的朝向來算：轉身的 1.5 秒裡
-         sinθ 會掃過 0 並換號，若照當下的 sinθ 算，目標會在「前方／後方」之間
-         來回翻面，操舵跟著大幅擺盪。用 face 算則與轉身結束的那一刻連續。 */
-      var fwd = dx * (o.turn ? o.face : Math.sin(o.th));
-      var noRoom = o.face > 0 ? (o.x > W - D.span * .45) : (o.x < D.span * .45);
-      var urgent = o.mode !== 'cruise' || noRoom;
-      /* ---- 需要的體軸角，以及「俯仰夠不夠用」 ----
-         一個方向有三個等價角（base、base±2π）。先前是「取離現在最近的那一個」，
-         那會出災難：例如現在的俯仰被夾在 −2.0、藥丸卻在正下方（base=+1.2），
-         最近的等價角是 −5.06，夾限之後仍然是 −2.0——**永遠出不來**。實測 240 次
-         裡的每一次脫靶都是這一種：鯨魚釘在畫面角落、頭朝上後方、藥丸躺在正下方。
-         正解是先問「哪些等價角落在俯仰能到的範圍內」：
-           · 有 → 取其中離現在最近的那一個（既不跳圈、也不會撞夾限鎖死）；
-           · 沒有 → 代表這個方向靠俯仰根本構不到（目標實質在身後），
-             那就該偏航掉頭，而不是硬把頭往夾限上壓。
-         這條規則同時解掉了原本的 ±π 跳圈：越過藥丸又同高時 base≈±π，
-         兩個等價角都出界，於是直接判定要掉頭，不會在 +π 與 −π 之間甩頭。 */
-      var pmax = chasing ? 2.0 : o.mode === 'return' ? 1.4 : 1.15;
-      var base = chasing ? Math.atan2(dy, fwd)
-                         : Math.atan2(dy, Math.max(D.H * 1.2, Math.abs(dx)));
-      var rawT = 0, inRange = false, bestD = 1e9;
-      for (var ci = -1; ci <= 1; ci++) {
-        var cand = base + ci * TAU;
-        if (Math.abs(cand) > pmax) continue;
-        var dd = Math.abs(cand - o.pitchWant);
-        if (dd < bestD) { bestD = dd; rawT = cand; inRange = true; }
-      }
-      if (!inRange) rawT = Math.max(-pmax, Math.min(pmax, base));
-      var needYaw = chasing ? !inRange
-                            : Math.abs(dx) > D.L * (urgent ? .35 : .8);
-      if (!o.turn && needYaw) startTurn(dx > 0 ? 1 : -1, urgent);
+      /* 後退量：**只有追餌才要**，而且固定就是「中心到嘴」那一段。
+         · 追餌要退：目標是「嘴要去的地方」。曾經試過隨距離收掉，那會把身體中心
+           開到藥丸上、嘴還在半個身長之外，實測 25% 脫靶，每一次姿態都一樣。
+         · 巡游不能退：巡游的目標只是一個航路點，退了之後，人一旦比那半個身長還
+           近，瞄準點就落到身後，牠只好一直繞——實測巡游時偏航幾乎全程貼著角速度
+           上限（每 0.5 秒轉 48°），畫面上就是一條不停打轉的鯨魚。 */
+      var rch = chasing ? reach() : 0;
+      var dx = ex - fX * rch, dy = ey - fY * rch, dz = ez - fZ * rch;
+      var horiz = Math.hypot(dx, dz), aimD = Math.hypot(horiz, dy);
 
-      /* 原本是硬性死區（近了就完全不修正）。那會出兩個問題：一是修正突然斷掉、
-         再突然接上，動作看起來一段一段的；二是追餌時最後那 40 px 完全不修正，
-         而藥丸還在沉，滑過去的 0.3 秒就掉了十幾 px——剛好夠讓牠咬空。
-         改成增益隨距離連續淡出，追餌時只在最後一小段（0.08 個身長）才淡。 */
-      var fade = D.span * (chasing ? .08 : .30);
-      var gain = Math.min(1, aimD / fade);
-      if (gain > 0) {
-        /* rawT 已在上面算好並修正過 ±π 跳圈——那是「藥丸吃不順時會抖」的病灶：
-           追餌用的是真正的視線角 atan2(dy, fwd)，當鯨魚越過藥丸（fwd<0）而兩者
-           又差不多高（dy 在 0 附近上下穿）時，atan2 會在 +π 與 −π 之間跳整整
-           一圈，低通與速率限制都攔不住，只會變成一次大幅度的甩頭。 */
-        var raw = Math.max(-pmax, Math.min(pmax, rawT));
-        /* 再過一階低通：即使誤差本身有雜訊（藥丸在晃、鯨魚在擺尾），
-           想去的角度也是平滑變化的。轉身當中不再另外打折——那個折扣在轉身的
-           起點與終點各製造一次姿態跳變，正是動作「一段一段」的來源之一。 */
-        var k = Math.min(1, dt / .16) * gain;
-        o.pitchWant += (raw - o.pitchWant) * k;
+      /* 增益隨距離連續淡出，不用硬性死區：死區會讓修正突然斷掉再突然接上，
+         動作看起來就一段一段的；而且追餌時最後那一小段不修正，藥丸還在沉，
+         滑過去的 0.3 秒就掉了十幾 px——剛好夠讓牠咬空。 */
+      var gain = Math.min(1, aimD / (D.span * (chasing ? .10 : .45)));
+
+      /* 「到了沒」一律用**操舵誤差本身**判定，不要另外量吻端到目標的距離：
+         純追蹤的瞄準點會隨著姿態移動，用別的量去判定，會出現「誤差已經收斂、
+         判定卻永遠不成立」的情形——牠就繞著目標一直轉圈。實測那時偏航的分布
+         是平的、每分鐘換邊 32 次，畫面上就是一條在原地打轉的鯨魚。
+         另外加一個 14 秒的逾時，任何沒收斂的情況都會被打斷。 */
+      if (!chasing && o.mode === 'cruise') {
+        o.hold += dt;
+        if (aimD < D.span * .40) {
+          o.wait -= dt;
+          if (o.wait <= 0) { o.hold = 0; pickTarget(); }
+        }
+        if (o.hold > 14) { o.hold = 0; pickTarget(); }
       }
 
-      if (o.turn) {                                      /* ---- 轉身 ---- */
-        var tn = o.turn; tn.t += dt;
-        var q = Math.min(1, tn.t / tn.dur);
-        o.th = turnAngle(tn, q);
-        // 轉身弧：疊在操舵目標之上的加項，兩端為 0、中段最大，接得上前後
-        // 只在巡游時加轉身弧：追餌時多這一段偏置會把瞄準推偏，實測平均命中
-        // 時間從 1.58 秒退到 1.8 秒、最壞從 3.3 秒退到 16 秒。
-        o.bank = o.mode === 'chase' ? 0 : tn.bank * Math.sin(Math.PI * q);
-        if (q >= 1) { o.turn = null; o.bank = 0; o.th = o.face * Math.PI / 2; }
-      } else {
-        o.th = o.face * Math.PI / 2;
-        o.bank = 0;
-      }
+      /* 偏航：目標的水平方位。角度會繞圈，所以每一幀由**現在的 th 加上最短
+         角差**得到一個連續的 thWant，二階濾波器因此永遠不會在 ±π 的接縫上甩頭
+         ——先前那套「±2π 等價角挑最近的」會在夾限處鎖死，整個問題在這裡消失了，
+         因為偏航沒有夾限，任何方向都轉得到。 */
+      var dth = Math.atan2(dx, dz) - o.th;
+      dth -= TAU * Math.round(dth / TAU);
+      o.thWant = o.th + dth * gain;
+
+      /* 俯仰：目標的仰角。有了自由偏航，俯仰再也不必超過 ±75°。 */
+      var pmax = chasing ? 1.55 : 1.00;
+      var pT = Math.atan2(dy, Math.max(horiz, D.H * .6));
+      pT = Math.max(-pmax, Math.min(pmax, pT));
+      o.pitchWant += (pT - o.pitchWant) *
+                     Math.min(1, dt / (chasing ? .06 : .14)) * gain;
+
+      /* 協調轉彎：偏航角速度愈大、身體往轉彎內側傾得愈多。這一筆是立體感的
+         主要來源——牠不再是平貼著螢幕滑，而是真的傾身繞彎。俯仰很陡時收掉，
+         不然頭朝下又側傾會像失控。 */
+      rollWant = Math.max(-.9, Math.min(.9, o.thV * .40)) * cp * cp;
 
       /* 衝刺—滑行：野生虎鯨巡游時是「擺幾下、然後收尾滑一段」，不是整天
          勻速踩踏板。滑行段擺尾振幅收到兩成、速度掉一半，看起來才是在省力。 */
@@ -859,60 +830,77 @@
         o.gliding = !o.gliding;
         o.beatT = o.gliding ? 1.6 + Math.random() * 2.4 : 3.2 + Math.random() * 3.4;
       }
-      if (o.mode === 'chase') { o.gliding = false; o.spdWant = 168; o.thrustWant = 1.6; }
+      /* 追到最後一段要**減速**。等速全力衝的話，轉彎半徑（泳速÷最大角速度）
+         比撲擊距離還大，牠就繞著藥丸打轉、永遠差那麼一點——實測脫靶 18.5%。
+         真的掠食者也是這樣：衝過去、到跟前收力氣、再咬。 */
+      if (chasing) {
+        o.gliding = false;
+        o.spdWant = CHASE_SPD * (.40 + .60 * Math.min(1, tDist / (D.span * .95)));
+        o.thrustWant = 1.6;
+      }
       else if (o.mode === 'return') { o.gliding = false; o.spdWant = 132; o.thrustWant = 1.45; }
       else if (o.gliding) { o.spdWant = 34; o.thrustWant = .40; }
       else { o.spdWant = 54; o.thrustWant = 1; }
     }
-    /* 張嘴幅度一律走速率上限的平滑，不直接吃「吻端到魚的距離」——那個距離
-       本身隨擺尾一直在抖，直接用會讓嘴巴每一幀開合一次（使用者看到的抖動）。 */
-    var mNow = mouth();                 // 這一幀結束時的嘴，供下一幀做線段命中判定
-    o.pmx = mNow.x; o.pmy = mNow.y;
+
     if (o.turnCool > 0) o.turnCool -= dt;
     if (!food.length || o.trick) o.gapeWant = 0;
     o.gape += Math.max(-dt * 2.6, Math.min(dt * 3.4, o.gapeWant - o.gape));
     if (o.gape < .004) o.gape = 0;
 
-    /* 俯仰改用**臨界阻尼二階濾波**，不再用速率上限。
+    /* ---- 三個姿態角一律走**臨界阻尼二階濾波** ----
        速率上限的動態是「等速轉到定位、然後突然停住」——加速度是兩個階躍，
-       眼睛看到的就是一段一段的動作。臨界阻尼（ζ=1）則是加速度連續、無過衝，
-       起步與收尾都是圓的。自然頻率 ω 決定跟隨速度：追餌 6.5、平常 3.2
-       （時間常數約 1/ω，也就是 0.15 秒與 0.31 秒）。
-       ω·dt 最大只有 0.33，顯式積分穩定。 */
-    if (o.trick && o.trick.kind === 'loop') {
-      o.pitchV = 0;                                   // 特技直接指定角度，濾波器歸零
-    } else {
-      var w = o.mode === 'chase' ? 6.5 : 3.2;
-      var set = o.pitchWant + o.bank;                 // 操舵目標 ＋ 轉身弧
-      o.pitchV += (w * w * (set - o.pitch) - 2 * w * o.pitchV) * dt;
-      o.pitch += o.pitchV * dt;
+       眼睛看到的就是一段一段的動作。臨界阻尼（ζ=1）則是加速度連續、無過衝。
+       自然頻率 ω 就是跟隨速度（時間常數約 1/ω）。偏航另外壓一個角速度上限，
+       那是「這隻動物轉得多快」的物理限制，不是為了平滑。 */
+    if (!o.trick) {
+      var wY = o.mode === 'chase' ? 4.3 : 2.1;
+      o.thV += (wY * wY * (o.thWant - o.th) - 2 * wY * o.thV) * dt;
+      var ymax = o.mode === 'chase' ? 3.9 : 1.7;
+      if (o.thV > ymax) o.thV = ymax; else if (o.thV < -ymax) o.thV = -ymax;
+      o.th += o.thV * dt;
+      if (o.th > Math.PI) o.th -= TAU; else if (o.th < -Math.PI) o.th += TAU;
     }
+    if (!(o.trick && o.trick.kind === 'loop')) {
+      var wP = o.mode === 'chase' ? 6.5 : 3.2;
+      o.pitchV += (wP * wP * (o.pitchWant - o.pitch) - 2 * wP * o.pitchV) * dt;
+      o.pitch += o.pitchV * dt;
+    } else o.pitchV = 0;
+    if (!(o.trick && o.trick.kind === 'roll')) {
+      var wR = 2.6;
+      o.rollV += (wR * wR * (rollWant - o.rollA) - 2 * wR * o.rollV) * dt;
+      o.rollA += o.rollV * dt;
+    }
+
     if (o.trick) o.spdWant = o.trick.kind === 'slap' ? 4 : 150;
-    /* 速度與擺尾幅度同樣改成指數趨近（一階遲滯），不用硬性加速度上限——
-       理由與俯仰相同：夾限會做出「等速加速到目標、然後突然不再變化」的折線。
-       時間常數：追餌 0.30 秒（要衝得出去）、特技 0.18 秒、其餘 0.55 秒。 */
+    /* 速度與擺尾幅度改成指數趨近（一階遲滯），不用硬性加速度上限——理由與
+       姿態角相同：夾限會做出「等速加速到目標、然後突然不再變化」的折線。 */
     var tauS = o.trick ? .18 : o.mode === 'chase' ? .30 : .55;
     o.speed += (o.spdWant - o.speed) * (1 - Math.exp(-dt / tauS));
     o.thrust += (o.thrustWant - o.thrust) * (1 - Math.exp(-dt / .40));
 
     /* ---- 位移：嚴格沿著頭指的方向，沒有任何側向分量 ----
-       體軸在 3D 是 (cosP·sinθ, sinP, cosP·cosθ)，前兩項就是畫面上的速度向量。
-       牠因此不可能平移——要往別的方向走，只能先把頭轉過去。
-       轉身掃到正臉時 sinθ→0，水平速度自然歸零：那一刻牠是朝著你游，不是停住。 */
-    var S = Math.sin(o.th);
-    o.x += Math.cos(o.pitch) * S * o.speed * dt;
+       體軸在 3D 是 (cosP·sinθ, sinP, cosP·cosθ)，位移就是它乘上泳速。
+       牠因此不可能平移——要往別的方向走，只能先把頭轉過去。 */
+    var CP = Math.cos(o.pitch);
+    o.x += CP * Math.sin(o.th) * o.speed * dt;
     o.y += Math.sin(o.pitch) * o.speed * dt;
+    o.z += CP * Math.cos(o.th) * o.speed * dt;
+
+    var mNow = mouth();                 // 這一幀結束時的嘴，供下一幀做線段命中判定
+    o.pmx = mNow.x; o.pmy = mNow.y; o.pmz = mNow.z;
 
     /* ---- 邊界：沒有牆，只有「探出去一截就到頭」＋「靠邊提早換目標」 ----
        夾限放在「身體中心」上，且刻意留得比身長寬鬆：牠可以把頭探出畫面外去咬
-       貼邊丟下的魚，但不會整隻飛到畫外變成一片空白。 */
-    var bx = D.span * .35, by = D.H * 1.4;
-    if (o.x < -bx || o.x > W + bx || o.y < -by || o.y > docH + by) {
-      o.x = Math.max(-bx, Math.min(W + bx, o.x));
-      o.y = Math.max(-by, Math.min(docH + by, o.y));
+       貼邊丟下的藥丸，但不會整隻飛到畫外變成一片空白。 */
+    var mgx = D.span * .35, mgy = D.H * 1.4;
+    if (o.z < -D.zMax) { o.z = -D.zMax; if (!o.trick && o.mode === 'cruise') pickTarget(); }
+    else if (o.z > D.zMax) { o.z = D.zMax; if (!o.trick && o.mode === 'cruise') pickTarget(); }
+    if (o.x < -mgx || o.x > W + mgx || o.y < -mgy || o.y > docH + mgy) {
+      o.x = Math.max(-mgx, Math.min(W + mgx, o.x));
+      o.y = Math.max(-mgy, Math.min(docH + mgy, o.y));
       if (!o.trick && o.mode === 'cruise') pickTarget();
-    } else if (!o.trick && !o.turn && o.mode === 'cruise' &&
-               (o.x < bx || o.x > W - bx)) {
+    } else if (!o.trick && o.mode === 'cruise' && (o.x < mgx || o.x > W - mgx)) {
       if (o.wait > .25) o.wait = .25;                   // 快到邊了：提早換目標
     }
   }
@@ -965,9 +953,12 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, Hv);
 
+    /* 藥丸躺在 z=0 那一面。鯨魚游到那一面後方時，藥丸就該蓋在牠身上——
+       這一筆是深度最直接的線索，少了它「牠在藥丸後面」根本讀不出來。 */
     var i;
+    if (o.z > 0) drawWhale(ctx, sc);
     for (i = 0; i < food.length; i++) drawPill(ctx, food[i], sc);
-    drawWhale(ctx, sc);
+    if (o.z <= 0) drawWhale(ctx, sc);
   }
 
   function loop(ts) {
@@ -991,8 +982,10 @@
     measure();
     if (!o.x) {
       var sc = scrollTop();
-      o.x = W * .68; o.y = sc + Hv * .42; o.tx = W * .25; o.ty = sc + Hv * .55;
+      o.x = W * .68; o.y = sc + Hv * .42; o.z = -D.zMax * .25;
+      o.tx = W * .25; o.ty = sc + Hv * .55; o.tz = 0;
     }
+    o.z = Math.max(-D.zMax, Math.min(D.zMax, o.z));
     o.x = Math.max(0, Math.min(o.x, W));
   }
   /* 文件高度與飼料的「底」。底要讓開下緣固定列（.sent-mbar 的 z-index 是 40，
