@@ -106,7 +106,6 @@
     D.flukeH = L * .115;
     D.dorU = .44; D.dorW = L * .16; D.dorH = L * .235; D.dorSweep = L * .095;
     D.pecU = .26; D.pecLen = L * .190; D.pecW = L * .086;
-    D.eyeU = .105;
     D.span = L + D.flukeLen;
     D.zMax = L * .80;               // 水族箱的深度（前後各這麼多）
     D.foc = L * 8.5;                // 透視焦距：近端放大約 1.14 倍、遠端 0.89 倍
@@ -162,9 +161,11 @@
          的反光。 */
       pill: dark
         ? [['#d3a247', '#ece6d8'], ['#79b58e', '#ece6d8'], ['#c9706a', '#ece6d8'],
-           ['#ece6d8', '#a99f8c'], ['#cdb894', '#7f7460']]
+           ['#ece6d8', '#a99f8c'], ['#cdb894', '#7f7460'], ['#7fa5c4', '#ece6d8'],
+           ['#b394c0', '#ece6d8']]
         : [['#a9761a', '#f3eee0'], ['#2b5f45', '#e3ecdf'], ['#8c3f3a', '#f0e2de'],
-           ['#3d4744', '#cfc9b8'], ['#6b5a33', '#e2d8bd']]
+           ['#3d4744', '#cfc9b8'], ['#6b5a33', '#e2d8bd'], ['#31556f', '#dee6ec'],
+           ['#5c3f6b', '#e8dfec']]
     };
   }
 
@@ -912,38 +913,91 @@
      畫的時候才扣掉捲動量。使用者滑動頁面，牠就跟著頁面一起移動；被推出畫面時
      由 step() 的 'return' 模式優先把牠帶回看得到的地方。 */
   /* ---- 飼料＝藥物 ----
-     五款：膠囊、圓錠（帶刻痕）、長橢圓錠、素面圓錠、軟膠囊。每一顆落下時隨機挑款式與
-     配色，並帶一個自己的翻滾角速度；沉到底之後轉正躺平（就近取 0 或 π，
-     不會在地上繼續打轉）。 */
+     十款外形（硬膠囊、圓錠、長錠、橢圓錠、軟膠囊、十字刻痕錠、雙層錠、微粒膠囊、
+     糖衣錠、膜衣長錠），七組配色，另外每一顆有自己的大小（0.82–1.18 倍）與翻滾
+     角速度。沉到底之後轉正躺平（就近取 0 或 π，不會在地上繼續打轉）。
+     刻意全部是圓的、橢圓的或圓角長條——沒有任何稜角形：稜角一多就不像藥，
+     像寶石（使用者已經退過菱形錠一次）。 */
   function drawPill(g, f, sc) {
     var c = P.pill[f.tint % P.pill.length], a = c[0], b = c[1];
     var ang = f.rest ? f.settle : f.spin + f.t * f.rot;
     g.save();
     g.translate(f.x, f.y - sc);
     g.rotate(ang);
+    g.scale(f.size || 1, f.size || 1);
     g.fillStyle = a;
-    if (f.kind === 0) {                                // 膠囊：兩色對半
-      g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6); g.fill();
-      g.save();
-      g.beginPath(); g.rect(0, -4, 8, 8); g.clip();
-      g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6);
-      g.fillStyle = b; g.fill();
-      g.restore();
-    } else if (f.kind === 1) {                         // 圓錠＋刻痕
-      g.beginPath(); g.arc(0, 0, 5.4, 0, TAU); g.fill();
-      g.fillStyle = b;
-      g.beginPath(); rrect(g, -.9, -4.4, 1.8, 8.8, .9); g.fill();
-    } else if (f.kind === 2) {                         // 長橢圓錠（caplet）＋刻痕
-      g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4); g.fill();
-      g.fillStyle = b;
-      g.beginPath(); rrect(g, -.8, -2.6, 1.6, 5.2, .8); g.fill();
-    } else if (f.kind === 3) {                         // 圓錠（素面、無刻痕）
-      g.beginPath(); g.arc(0, 0, 5.8, 0, TAU); g.fill();
-    } else {                                           // 軟膠囊（含反光）
-      g.beginPath(); g.ellipse(0, 0, 7, 4.6, 0, 0, TAU); g.fill();
-      g.globalAlpha = .55; g.fillStyle = b;
-      g.beginPath(); g.ellipse(-2.2, -1.5, 2.4, 1.2, -.5, 0, TAU); g.fill();
-      g.globalAlpha = 1;
+    var i;
+    switch (f.kind) {
+      case 0:                                          // 硬膠囊：兩色對半
+        g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6); g.fill();
+        g.save();
+        g.beginPath(); g.rect(0, -4, 8, 8); g.clip();
+        g.beginPath(); rrect(g, -7.5, -3.6, 15, 7.2, 3.6);
+        g.fillStyle = b; g.fill();
+        g.restore();
+        break;
+      case 1:                                          // 圓錠＋單刻痕
+        g.beginPath(); g.arc(0, 0, 5.4, 0, TAU); g.fill();
+        g.fillStyle = b;
+        g.beginPath(); rrect(g, -.9, -4.4, 1.8, 8.8, .9); g.fill();
+        break;
+      case 2:                                          // 長錠（caplet）＋刻痕
+        g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4); g.fill();
+        g.fillStyle = b;
+        g.beginPath(); rrect(g, -.8, -2.6, 1.6, 5.2, .8); g.fill();
+        break;
+      case 3:                                          // 圓錠（素面）
+        g.beginPath(); g.arc(0, 0, 5.8, 0, TAU); g.fill();
+        break;
+      case 4:                                          // 軟膠囊＋反光
+        g.beginPath(); g.ellipse(0, 0, 7, 4.6, 0, 0, TAU); g.fill();
+        g.globalAlpha = .55; g.fillStyle = b;
+        g.beginPath(); g.ellipse(-2.2, -1.5, 2.4, 1.2, -.5, 0, TAU); g.fill();
+        g.globalAlpha = 1;
+        break;
+      case 5:                                          // 圓錠＋十字刻痕（可四分割）
+        g.beginPath(); g.arc(0, 0, 6.1, 0, TAU); g.fill();
+        g.fillStyle = b;
+        g.beginPath(); rrect(g, -.85, -5.0, 1.7, 10.0, .85);
+        rrect(g, -5.0, -.85, 10.0, 1.7, .85); g.fill();
+        break;
+      case 6:                                          // 橢圓錠（素面）
+        g.beginPath(); g.ellipse(0, 0, 6.6, 4.9, 0, 0, TAU); g.fill();
+        break;
+      case 7:                                          // 雙層錠：沿長軸兩色
+        g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4); g.fill();
+        g.save();
+        g.beginPath(); g.rect(-8, 0, 16, 5); g.clip();
+        g.beginPath(); rrect(g, -7, -3.4, 14, 6.8, 3.4);
+        g.fillStyle = b; g.fill();
+        g.restore();
+        break;
+      case 8:                                          // 微粒膠囊：一端透出裡面的顆粒
+        g.beginPath(); rrect(g, -7.5, -3.5, 15, 7, 3.5); g.fill();
+        g.save();
+        g.beginPath(); g.rect(-8, -4, 8, 8); g.clip();
+        g.beginPath(); rrect(g, -7.5, -3.5, 15, 7, 3.5);
+        g.fillStyle = b; g.fill();
+        g.restore();
+        g.fillStyle = a;
+        g.beginPath();
+        for (i = 0; i < 5; i++) {
+          var px = -6.4 + i * 1.35, py = ((i * 7) % 3 - 1) * 1.5;
+          g.moveTo(px + .7, py); g.arc(px, py, .72, 0, TAU);
+        }
+        g.fill();
+        break;
+      case 9:                                          // 糖衣錠：邊緣亮一圈
+        g.beginPath(); g.arc(0, 0, 6.2, 0, TAU);
+        g.fillStyle = b; g.fill();
+        g.beginPath(); g.arc(0, 0, 5.0, 0, TAU);
+        g.fillStyle = a; g.fill();
+        break;
+      default:                                         // 膜衣長錠：一端一道壓印線
+        g.beginPath(); rrect(g, -7.6, -3.1, 15.2, 6.2, 3.1); g.fill();
+        g.fillStyle = b;
+        g.beginPath(); rrect(g, 2.0, -2.0, 1.5, 4.0, .75);
+        rrect(g, 4.4, -2.0, 1.5, 4.0, .75); g.fill();
     }
     g.restore();
   }
@@ -1055,8 +1109,9 @@
     food.push({
       x: e.clientX, y: e.clientY + scrollTop(), vy: 0, t: 0,
       s: Math.random() * 6, rest: false,
-      kind: Math.floor(Math.random() * 5),             // 五款藥物隨機
-      tint: Math.floor(Math.random() * 5),
+      kind: Math.floor(Math.random() * 11),            // 十一款外形隨機
+      tint: Math.floor(Math.random() * 7),              // 七組配色
+      size: .82 + Math.random() * .36,                  // 每一顆大小也不一樣
       spin: Math.random() * TAU,
       rot: (Math.random() - .5) * 1.8,                 // 落下時自己翻滾
       settle: 0
