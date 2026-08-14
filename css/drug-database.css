@@ -146,9 +146,11 @@ table.renal-tbl tr.tbl-sep td{border-bottom:1px solid var(--accent-soft); paddin
    多數只有「CCr 35–54」這種 13 字元（全庫中位數），但台大原始資料裡最長的
    Apixaban 減量準則是一整句 144 字元（"Scr ≥1.5 mg/dL with age ≥80 y/o,
    or Scr ≥1.5 mg/dL with BW ≤60 kg, or age ≥80 y/o with BW ≤60 kg"），
-   套著 nowrap 會把整張藥卡撐出橫向捲軸。這一欄改成可換行；寬度略放寬到 40%，
-   短門檻仍然一行、長門檻自己折行，右欄的劑量不會被擠成一字一行。 */
-table.renal-tbl.renal-thr td:first-child{white-space:normal; width:40%; overflow-wrap:break-word;}
+   套著 nowrap 會把整張藥卡撐出橫向捲軸。這一欄改成可換行。
+   **寬度必須跟其他 renal-tbl 一樣是 34%**：一張藥卡裡「腎功能調整／肝功能調整／
+   透析劑量」三張表上下相鄰，這一欄曾放寬到 40%，右欄就比上下兩張表晚 21px 開始，
+   看起來像沒對齊（使用者實機圈出）。長門檻靠折行處理，不靠加寬。 */
+table.renal-tbl.renal-thr td:first-child{white-space:normal; width:34%; overflow-wrap:break-word;}
 
 .db-foot{margin-top:12px; padding-top:8px; border-top:1px solid var(--line);
   font-family:var(--mono); font-size:10px; color:var(--muted-soft); line-height:1.6;}
