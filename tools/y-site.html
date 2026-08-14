@@ -97,6 +97,14 @@
 
   /* 徽章列的容器（沿用 .tt-opts 的 flex-wrap） */
   .tt-opts{display:flex; flex-wrap:wrap; gap:6px;}
+
+  /* 相容性清單的密集排版。一藥一列時 52 種要捲很久，改成 chip 流式排版，
+     同樣的內容大約只佔三分之一的高度。外觀整個沿用 .sp-chip（ui-sentence.css
+     Y2 段已收），這裡**只管排版與游標／底線**、一個顏色都不碰，
+     所以造句設計下不會漏套色票。 */
+  .ys-grid{display:flex; flex-wrap:wrap; gap:5px;}
+  .ys-grid .sp-chip{cursor:default; padding:4px 9px; font-size:11px;}
+  .ys-grid a.sp-chip{cursor:pointer; text-decoration:underline; text-underline-offset:2px;}
 </style>
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
@@ -289,11 +297,13 @@ function drugLink(key, label){
              : label;
 }
 
-/* 第 1 節：八支 β-lactam 的延長輸注一覽（劑量方案在各自藥卡，此處不重複） */
+/* 第 1 節：八支 β-lactam 的延長輸注一覽（劑量方案在各自藥卡，此處不重複）。
+   藥名一律用完整英文學名，不用中文也不用縮寫（使用者指示）；左欄的三字母代碼
+   留著，是因為「全部並列」模式的徽章非用它不可，這裡等於它的對照表。 */
 function renderBL(){
   document.getElementById('bl-list').innerHTML = BL.map(function(b){
     return '<div class="sp-fld"><span class="k">' + b.ab + '</span><span class="v">' +
-      '<b>' + drugLink(b.key, b.en) + '</b>　' + b.zh +
+      '<b>' + drugLink(b.key, b.en) + '</b>' +
       (b.gone ? '<span class="tr-cav">' + b.gone + '</span>' : '') +
       '<span class="sp-refs" style="display:block; margin-top:3px">' + b.sol + '</span>' +
       '<span class="sp-refs" style="display:block">延長輸注 4 小時的門檻：<b>' + b.mic +
@@ -305,7 +315,7 @@ function renderBL(){
 function renderChips(){
   var html = BL.map(function(b, i){
     return '<button class="sp-chip' + (curBL === i ? ' on' : '') + '" onclick="setBL(' + i + ')">' +
-           b.ab + ' <span style="opacity:.6">' + b.zh + '</span></button>';
+           b.en + '</button>';
   }).join('');
   html += '<button class="sp-chip' + (curBL === -1 ? ' on' : '') + '" onclick="setBL(-1)">全部並列</button>';
   document.getElementById('bl-chips').innerHTML = html;
@@ -313,6 +323,7 @@ function renderChips(){
 
 function setBL(i){ curBL = i; renderYS(); }
 
+/* 畫面上不顯示中文藥名，但**搜尋仍吃中文**——打「嗎啡」「胰島素」要找得到。 */
 function matches(d, q){
   return !q || (d.en + ' ' + d.zh).toLowerCase().indexOf(q) > -1;
 }
@@ -326,15 +337,15 @@ function renderYS(){
   if (!list.length){ box.innerHTML = '<div class="sp-empty">沒有符合的藥品。</div>'; return; }
 
   if (curBL === -1){
-    // 全部並列：一列一藥，八個徽章依 BL 順序
+    // 全部並列：一列一藥，八個徽章依 BL 順序。徽章非用三字母代碼不可
+    // （八個全名放不進一列），對照表就是上一節那張。
     box.innerHTML = '<div class="sp-dept"><div class="sp-dept-head">' +
       '<span class="sp-dept-zh">全部 β-lactam 並列</span>' +
       '<span class="sp-dept-en">' + BL.map(function(b){ return b.ab; }).join(' · ') + '</span>' +
       '<span class="sp-dept-n">' + list.length + ' 種</span></div>' +
       list.map(function(d){
         return '<div class="sp-op"><div class="sp-op-head">' +
-          '<span class="sp-op-t"><span class="sp-op-zh">' + d.zh + '</span>' +
-          '<span class="sp-op-en">' + drugLink(d.key, d.en) + '</span></span>' +
+          '<span class="sp-op-t"><span class="sp-op-zh">' + drugLink(d.key, d.en) + '</span></span>' +
           '<span class="tt-opts" style="margin-top:6px">' +
           BL.map(function(b, i){
             return '<span class="tr-rec ' + TIER[d.a[i]] + '">' + b.ab + ' ' + d.a[i] + '</span>';
@@ -343,7 +354,9 @@ function renderYS(){
     return;
   }
 
-  // 單一 β-lactam：拆成相容／不相容／無資料三組，最常問的是「能不能一起推」
+  /* 單一 β-lactam：拆成相容／不相容／無資料三組，最常問的是「能不能一起推」。
+     三組都是流式 chip（.ys-grid）而不是一藥一列——52 種藥一藥一列要捲很久，
+     這樣同樣的內容大約只佔三分之一的高度。有底線的可以點進該藥的藥卡。 */
   var b = BL[curBL];
   var groups = [
     {s:'Y',  zh:'相容　可同一條路線 Y-site 併行', en:'Compatible'},
@@ -351,8 +364,7 @@ function renderYS(){
     {s:'NA', zh:'原文件無資料　比照不相容處理', en:'No data'}
   ];
   box.innerHTML = '<div class="tr-cav" style="margin-bottom:12px">正在打的是 <b>' +
-      drugLink(b.key, b.en) + '（' + b.zh + '）</b>' +
-      (b.gone ? '——' + b.gone : '') + '</div>' +
+      drugLink(b.key, b.en) + '</b>' + (b.gone ? '——' + b.gone : '') + '</div>' +
     groups.map(function(g){
       var items = list.filter(function(d){ return d.a[curBL] === g.s; });
       if (!items.length) return '';
@@ -360,12 +372,11 @@ function renderYS(){
         '<span class="sp-dept-zh">' + badge(g.s) + '　' + g.zh + '</span>' +
         '<span class="sp-dept-en">' + g.en + '</span>' +
         '<span class="sp-dept-n">' + items.length + ' 種</span></div>' +
-        items.map(function(d){
-          return '<div class="sp-op"><div class="sp-op-head"><span class="sp-op-t">' +
-            '<span class="sp-op-zh">' + d.zh + '</span>' +
-            '<span class="sp-op-en">' + drugLink(d.key, d.en) + '</span>' +
-            '</span></div></div>';
-        }).join('') + '</div>';
+        '<div class="ys-grid">' + items.map(function(d){
+          return d.key
+            ? '<a class="sp-chip" href="antibiotics.html#drug=' + encodeURIComponent(d.key) + '">' + d.en + '</a>'
+            : '<span class="sp-chip">' + d.en + '</span>';
+        }).join('') + '</div></div>';
     }).join('');
 }
 

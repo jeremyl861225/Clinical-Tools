@@ -426,8 +426,9 @@ function renderList(){
       html += '<div class="sp-op" id="sw-' + i + '">' +
         '<button class="sp-op-head" onclick="toggleDrug(' + i + ')">' +
           '<span class="sp-caret">▸</span>' +
-          '<span class="sp-op-t"><span class="sp-op-zh">' + d.zh + '</span>' +
-            '<span class="sp-op-en">' + d.en + '</span>' +
+          /* 藥名一律用完整英文學名，不用中文（與輸注與藥物相容性頁一致）；
+             中文名仍留在資料與搜尋索引裡，打「萬古」「泊沙康唑」照樣找得到。 */
+          '<span class="sp-op-t"><span class="sp-op-zh">' + d.en + '</span>' +
             '<span class="tr-rec r' + d.lvl + '">' + LVL_LABEL[d.lvl] + '</span>' +
             (d.iv.charAt(0) === 'Y' ? '<span class="sp-src ntuh">院內有注射劑型</span>' : '') +
             (d.tube !== 'Y' ? '<span class="sp-src supp">管灌 ' + esc(d.tube) + '</span>' : '') +
