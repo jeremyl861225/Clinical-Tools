@@ -5199,10 +5199,20 @@
   background: linear-gradient(var(--sentence-shade), var(--sentence-shade)), var(--sentence-bg);
 }
 
-/* 靜脈營養液表：品名底下那行袋裝規格（.pn-sz）。頁面寫的是正式版的 --muted，
-   造句設計下要換成 --sentence-dim，否則暗色主題會偏綠、亮色偏暖，
-   與同一格內的品名不同調（leak.py 掃出 7 筆）。 */
-[data-ui="sentence"] table.def-table .pn-sz {
+/* 靜脈營養液表（.pn-tbl）：品名連結、容量欄與配方註記。
+   頁面寫的是正式版的 --ink／--accent／--muted，造句設計下這三個 token 不同調，
+   要整組換掉（leak.py 掃出 37 筆：連結字色 11、連結底線 11、容量欄 11、配方註記 4）。
+   選擇器寫 `table.def-table` 前綴是為了壓過同檔前面的 def-table 規則。 */
+[data-ui="sentence"] table.def-table td.pn-n a {
+  color: var(--sentence-fg);
+  border-bottom-color: var(--sentence-hot);
+}
+[data-ui="sentence"] table.def-table td.pn-n a:hover { color: var(--sentence-hot); }
+[data-ui="sentence"] table.def-table td.pn-v {
   font-family: var(--sentence-mono);
+  color: var(--sentence-dim);
+}
+[data-ui="sentence"] table.def-table .pn-sub {
+  font-family: var(--sentence-sans);
   color: var(--sentence-dim);
 }
