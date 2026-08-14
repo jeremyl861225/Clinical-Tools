@@ -46,7 +46,7 @@
 | `volume` | string | 每劑體積。 |
 | `conc` | string | 給藥濃度。 |
 | `time` | string | 輸注時間。 |
-| `notes` | string | 注意事項（配伍禁忌等）。 |
+| `notes` | string | 注意事項（藥物不相容等）。 |
 
 以上子欄位皆為選填字串，`renderDrugCard` 逐一以 `row(t,v)` 判斷有值才輸出對應 `<tr>`。
 
