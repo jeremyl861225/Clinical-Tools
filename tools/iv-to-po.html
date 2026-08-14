@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>注射轉口服 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<style>
+  /* 本頁刻意只用 css/ui-sentence.css 已收斂過的 class（.sp-*／.tr-*／.tt-*），
+     樣式整段自 surgical-prophylaxis.html 與 trauma-abx.html 複製，
+     不另立新名字——否則造句設計下這些元件會漏套色票（見 ui-sentence.css Y 段）。 */
+
+  /* ── 原則清單 ───────────────────────────────────────────────── */
+  .sp-rules{margin:0; padding:0; list-style:none; counter-reset:r;}
+  .sp-rules li{position:relative; padding:7px 0 7px 30px; font-size:13px; line-height:1.7; border-bottom:1px dotted var(--line);}
+  .sp-rules li:last-child{border-bottom:none;}
+  .sp-rules li::before{counter-increment:r; content:"(" counter(r) ")"; position:absolute; left:0; top:7px;
+                       font-family:var(--mono); font-size:11px; color:var(--accent);}
+  .sp-rules b{color:var(--accent2);}
+
+  /* ── 工具列 ─────────────────────────────────────────────────── */
+  .sp-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;}
+  .sp-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .sp-chip{font-family:var(--mono); font-size:11.5px; border:1px solid var(--line); background:var(--panel);
+           color:var(--muted); border-radius:12px; padding:5px 11px; cursor:pointer;}
+  .sp-chip:hover{background:var(--hover-bg); color:var(--ink);}
+  .sp-chip.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent); font-weight:700;}
+  .sp-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
+  .sp-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
+
+  /* ── 分類分組與藥物列 ───────────────────────────────────────── */
+  .sp-dept{margin-bottom:16px;}
+  .sp-dept-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 8px;
+                padding-bottom:4px; border-bottom:2px solid var(--accent-soft);}
+  .sp-dept-zh{font-family:var(--serif); font-size:16px; font-weight:600; color:var(--accent);}
+  .sp-dept-en{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft);}
+  .sp-dept-n{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+
+  .sp-op{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft);
+         border-radius:2px; margin-bottom:7px; overflow:hidden;}
+  .sp-op.open{border-left-color:var(--accent);}
+  .sp-op-head{display:block; width:100%; text-align:left; background:none; border:none; cursor:pointer;
+              padding:11px 13px; font-family:var(--sans); color:var(--ink);}
+  .sp-op-head:hover{background:var(--hover-bg);}
+  .sp-op-t{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap;}
+  .sp-op-zh{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .sp-op-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .sp-op-rec{display:block; font-size:12.5px; color:var(--accent); font-family:var(--mono); margin-top:4px; line-height:1.6;}
+  .sp-caret{float:right; font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:8px;}
+
+  /* 來源／劑型徽章 */
+  .sp-src{display:inline-block; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.04em;
+          border-radius:2px; padding:1px 6px; white-space:nowrap; vertical-align:1px;}
+  .sp-src.ntuh{color:#fff; background:var(--accent);}
+  .sp-src.supp{color:var(--accent2); background:var(--accent2-soft); border:1px solid var(--accent2);}
+
+  /* 展開內容 */
+  .sp-op-body{display:none; padding:0 13px 13px; border-top:1px dashed var(--line); margin-top:2px;}
+  .sp-op.open .sp-op-body{display:block;}
+  .sp-fld{display:grid; grid-template-columns:82px 1fr; gap:4px 10px; padding:8px 0; border-bottom:1px dotted var(--line);
+          font-size:12.5px; line-height:1.65;}
+  .sp-fld:last-child{border-bottom:none;}
+  .sp-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft); text-transform:uppercase; padding-top:2px;}
+  .sp-fld .v b{font-family:var(--mono); font-weight:700;}
+  .sp-refs{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  @media(max-width:480px){ .sp-fld{grid-template-columns:1fr; gap:1px;} }
+
+  /* ── 附註 ───────────────────────────────────────────────────── */
+  .sp-notes{margin:0; padding:0; list-style:none;}
+  .sp-notes li{display:grid; grid-template-columns:56px 1fr; gap:9px; padding:8px 0;
+               border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}
+  .sp-notes li:last-child{border-bottom:none;}
+  .sp-notes .lt{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+
+  /* ── 吸收率四級徽章（沿用創傷用藥的建議強度四級，色系與全站一致）───── */
+  .tr-rec{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em;
+          border-radius:9px; padding:1px 8px; white-space:nowrap; vertical-align:1px;}
+  .tr-rec.r3{color:#fff; background:#2f6b5c;}                              /* 吸收率高 */
+  .tr-rec.r2{color:#1b2b1f; background:#a9c7ae; border:1px solid #7fa085;} /* 中等 */
+  .tr-rec.r1{color:#2b2110; background:#e6d3a8; border:1px solid #c2a468;} /* 偏低 */
+  .tr-rec.r0{color:#fff; background:#a8756d;}                              /* 幾乎不吸收／無資料 */
+  @media (prefers-color-scheme: dark){
+    .tr-rec.r3{background:#3d8272;}
+    .tr-rec.r2{color:#0f1a12; background:#7d9c81; border-color:#5c7a61;}
+    .tr-rec.r1{color:#221a0c; background:#b8945a; border-color:#8d7040;}
+    .tr-rec.r0{background:#9c6d66;}
+  }
+  .tr-legend{display:flex; flex-wrap:wrap; gap:7px 14px; align-items:center; margin-bottom:12px;}
+  .tr-legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);}
+  .tr-cav{display:block; background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
+          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
+
+  /* ── 轉換條件檢核（沿用創傷用藥的破傷風決策樹元件）────────────── */
+  .tt-q{margin-bottom:13px;}
+  .tt-lbl{font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--muted); margin-bottom:6px;}
+  .tt-opts{display:flex; flex-wrap:wrap; gap:6px;}
+  .tt-opt{font-family:var(--sans); font-size:12.5px; border:1px solid var(--line); background:var(--panel);
+          color:var(--muted); border-radius:2px; padding:7px 12px; cursor:pointer; text-align:left; line-height:1.5;}
+  .tt-opt:hover{background:var(--hover-bg); border-color:var(--accent);}
+  .tt-opt.on{color:#fff; background:var(--accent); border-color:var(--accent); font-weight:600;}
+  .tt-opt small{display:block; font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-top:2px;}
+  .tt-opt.on small{color:inherit; opacity:.8;}
+  .tt-out{background:var(--box-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:2px; padding:12px 14px; margin-top:14px;}
+  .tt-out .h{font-family:var(--serif); font-size:15px; font-weight:600; color:var(--accent); margin-bottom:8px;}
+  .tt-line{display:grid; grid-template-columns:74px 1fr; gap:9px; padding:7px 0; border-bottom:1px solid var(--line);
+           font-size:12.5px; line-height:1.7;}
+  .tt-line:last-child{border-bottom:none;}
+  .tt-line .n{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); padding-top:2px;}
+  .tt-det{display:block; font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.65;}
+  .tt-yes{color:var(--accent); font-weight:700;}
+  .tt-no{color:var(--muted); font-weight:700;}
+  .tt-note{font-size:11.5px; color:var(--muted-soft); line-height:1.7; margin-top:10px; padding-top:8px;
+           border-top:1px dashed var(--line);}
+  @media(max-width:480px){ .tt-line{grid-template-columns:1fr; gap:1px;} }
+</style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+</head>
+<body data-backtotop data-back-label="注射轉口服">
+<div class="sheet">
+<div class="view active">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Antimicrobial · IV to PO Switch</div>
+      <h1>注射轉口服</h1>
+      <div class="sub">依台大醫院《抗微生物製劑注射轉口服劑型建議》表一，查各口服抗微生物製劑的吸收率、吸收部位與管灌可行性，並附轉換條件檢核</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- 抗生素指引的第七分頁 -->
+  <div class="abx-modes">
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=empiric'">依部位</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=bacteria'">依病原菌</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=lookup'">藥物查詢</button>
+    <button class="abx-mode" onclick="location.href='spectrum-database.html'">菌譜資料庫</button>
+    <button class="abx-mode" onclick="location.href='surgical-prophylaxis.html'">手術預防</button>
+    <button class="abx-mode" onclick="location.href='trauma-abx.html'">創傷用藥</button>
+    <button class="abx-mode active">注射轉口服</button>
+    <button class="abx-mode" onclick="location.href='y-site.html'">輸注與配伍</button>
+  </div>
+
+  <!-- ══ 1 轉換條件 ══ -->
+  <div class="section-title">1 · 轉換條件　Criteria for Switching</div>
+  <div class="card">
+    <p class="lead" style="margin-top:0">接受注射型抗微生物製劑的<b>成年住院病人</b>，欲轉換為口服劑型應符合下列條件。</p>
+    <ol class="sp-rules">
+      <li><b>血液培養陰性</b>，且已接受注射型抗微生物製劑<b>超過 48 小時</b>。</li>
+      <li><b>臨床狀況穩定</b>：發炎指數下降、無發燒或體溫過低、無免疫不全、無未可解釋之心跳過快／低血壓／呼吸急促。</li>
+      <li><b>無口服吸收障礙</b>（腹瀉、嘔吐、意識不清、吞嚥困難等）。使用鼻胃管／造口者應另行考量藥品吸收問題。</li>
+      <li>本院<b>具有有效的口服藥物選項</b>。</li>
+      <li><b>無需要延長注射型治療之適應症</b>——腦膜炎、壞死性軟組織感染、無法移除的植入物感染、金黃色葡萄球菌菌血症、骨髓炎、敗血性關節炎、心內膜炎、中高風險低嗜中性球發燒，以及其他尚未有適當處置的深部感染（如膿瘍）。<span class="tr-cav">泌尿道感染、腹腔內感染及社區性肺炎的轉換建議<b>另有個別指引</b>，不適用本頁的一般原則。</span></li>
+      <li><b>抗微生物製劑治療仍需持續</b>（還沒到停藥時機）。</li>
+      <li>多重抗藥性菌株感染若符合上述條件、<b>感染源已適當處置</b>，且有具感受性的口服藥可換，<b>仍應考慮轉換口服</b>——抗藥性本身不是繼續打針的理由。</li>
+    </ol>
+  </div>
+
+  <!-- ══ 2 檢核 ══ -->
+  <div class="section-title">2 · 這位病人可以轉了嗎　Bedside Check</div>
+  <div class="card">
+    <div id="ck-qs"></div>
+    <div class="tt-out" id="ck-out"></div>
+    <p class="tt-note">本檢核只把上一節的七條條件逐項問過一遍，<b>不取代臨床判斷</b>；個別部位感染（UTI、腹腔內感染、社區性肺炎）請依各自指引。本建議得視病人臨床狀況調整。</p>
+  </div>
+
+  <!-- ══ 3 表一 ══ -->
+  <div class="section-title">3 · 口服吸收率與管灌可行性　Bioavailability &amp; Tube Feeding</div>
+  <p class="lead">台大醫院現有口服抗微生物製劑共 <b>34 項</b>。點藥名展開吸收部位與備註；再點一次英文藥名旁的連結可跳到該藥的完整藥卡。</p>
+  <div class="tr-legend">
+    <span class="lg"><span class="tr-rec r3">高</span>≥ 90％／完全吸收</span>
+    <span class="lg"><span class="tr-rec r2">中</span>50–89％</span>
+    <span class="lg"><span class="tr-rec r1">低</span>&lt; 50％</span>
+    <span class="lg"><span class="tr-rec r0">局部／無資料</span>幾乎不吸收或原表未載</span>
+  </div>
+  <div class="tr-cav">吸收率的<b>四級分類是本頁為了好掃視所做的換算，不是原文件內容</b>；原表所載的數值與文字一律完整列在每一列上，臨床判斷請以原始數值為準。</div>
+  <div class="sp-bar">
+    <div class="gs-field gs-field--inline">
+      <span class="gs-icon">⌕</span>
+      <input type="search" class="gs-input" id="sw-q" autocomplete="off" spellcheck="false"
+             placeholder="搜尋藥名或分類（如：levo、萬古、fluconazole、抗黴菌）…" oninput="renderList()">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+    </div>
+  </div>
+  <div class="sp-chips" id="sw-chips"></div>
+  <div class="sp-count" id="sw-count"></div>
+  <div id="sw-list"></div>
+
+  <!-- ══ 4 附註 ══ -->
+  <div class="section-title">4 · 縮寫與附註　Abbreviations</div>
+  <div class="card">
+    <ul class="sp-notes">
+      <li><span class="lt">NJ</span><span>naso-jejunal，鼻空腸管。原表凡標「NJ」的備註，都是指改由空腸給藥時吸收會受影響。</span></li>
+      <li><span class="lt">NSSD</span><span>no specific site documented，文獻未記載特定吸收部位。</span></li>
+      <li><span class="lt">TDM</span><span>therapeutic drug monitoring，治療藥物濃度監測。</span></li>
+      <li><span class="lt">HSCT</span><span>haematopoietic stem cell transplant，造血幹細胞移植。</span></li>
+      <li><span class="lt">管灌</span><span>原表的 Tube feeding 欄。<b>Y</b>＝可經管灌給藥、<b>N</b>＝不可。全表只有 posaconazole 是 N。</span></li>
+      <li><span class="lt">注射劑型</span><span>原表的 IV form availability 欄，指<b>本院同時備有該成分的注射劑型</b>——這一批是「同藥換劑型」，轉換最單純；標 N 者則需換成別的成分。</span></li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    本頁全部內容出自 <b>國立臺灣大學醫學院附設醫院藥劑部《抗微生物製劑注射轉口服劑型建議》</b>（文件編號 15660-3-000005，版次 1；111 年 7 月 22 日第 256 次藥事委員會通過，2022-08-09 公告，2026-03-11 檢視）之表一與第三節內容。該文件所列參考資料：
+    <a href="https://www.sahealth.sa.gov.au/" target="_blank" rel="noopener" class="ref-link">South Australian expert Advisory Group on Antimicrobial Resistance. IV to Oral Switch Clinical Guideline for adult patients: Can antibiotics S.T.O.P. 2017.</a> ·
+    <a href="https://www.idsociety.org/practice-guideline/amr-guidance-2.0/" target="_blank" rel="noopener" class="ref-link">IDSA Guidance on the Treatment of Antimicrobial-Resistant Gram-Negative Infections: Version 2.0.</a> ·
+    <a href="https://med.stanford.edu/bugsanddrugs/guidebook.html" target="_blank" rel="noopener" class="ref-link">Mui E. Pharmacist-Managed Intravenous to Oral Therapy Interchange Protocol. Stanford Health Care. 2019.</a> ·
+    Clarkson A, Weston V, Hills T. Guideline for the intravenous to oral switch of antibiotic therapy. Nottingham University Hospitals NHS Trust. 2010. ·
+    Lexicomp（UpToDate）／IBM Micromedex DRUGDEX，2022-03-13 擷取。 ·
+    White R, Bradnam V. Handbook of Drug Administration via Enteral Feeding Tubes, 3rd ed. Pharmaceutical Press; 2015. ·
+    各藥的完整劑量、腎肝調整與注射給藥指引見 <a href="antibiotics.html#mode=lookup" class="ref-link">藥物查詢</a> 分頁的藥卡。
+  </footer>
+</div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   表一、本院抗微生物製劑口服吸收率及管灌可行性
+   （台大醫院藥劑部 15660-3-000005 v1，2026-03-11 檢視）
+
+   欄位對應原表：
+     c    Category（分類）          en   Antimicrobials (PO)
+     iv   IV form availability      ba   Bioavailability（原文照錄）
+     site Primary absorption site   tube Tube feeding
+     note Note
+   額外欄位：
+     zh   中文名（取自本站藥卡，原表無此欄）
+     key  對應 antibiotics.html 的藥卡鍵（#drug=<key>），原表無此欄
+     lvl  吸收率四級，本頁依 ba 換算而來**非原文件內容**：
+          3＝≥90%／almost complete／well absorbed、2＝50–89%、1＝<50%、
+          0＝幾乎不吸收或原表載明 not available。區間值取中點分級
+          （cefixime 40~50% → 45% → 低；dicloxacillin 49~76% → 62.5% → 中）。
+   ───────────────────────────────────────────────────────────────── */
+var CATS = [
+  {k:'tet',  zh:'四環素類',        en:'Tetracyclines'},
+  {k:'pen',  zh:'青黴素類',        en:'Penicillins'},
+  {k:'ce1',  zh:'第一代頭孢菌素',  en:'1st Cephalosporins'},
+  {k:'ce2',  zh:'第二代頭孢菌素',  en:'2nd Cephalosporins'},
+  {k:'ce3',  zh:'第三代頭孢菌素',  en:'3rd Cephalosporins'},
+  {k:'sul',  zh:'磺胺類／三甲氧芐啶', en:'Sulfonamides, trimethoprim'},
+  {k:'mac',  zh:'巨環內酯類',      en:'Macrolides'},
+  {k:'lin',  zh:'林可醯胺類',      en:'Lincosamides'},
+  {k:'ami',  zh:'胺基醣苷類',      en:'Aminoglycosides'},
+  {k:'fq',   zh:'氟喹諾酮類',      en:'Fluoroquinolones'},
+  {k:'q',    zh:'喹諾酮類',        en:'Quinolone'},
+  {k:'oth',  zh:'其他抗細菌藥',    en:'Antibacterials (others)'},
+  {k:'af',   zh:'抗黴菌藥',        en:'Antifungals'},
+  {k:'av',   zh:'抗病毒藥',        en:'Antivirals'}
+];
+
+var SW = [
+  {c:'tet', en:'Doxycycline HCl', zh:'去氧羥四環素／多西環素', key:'doxycycline',
+   iv:'N', ba:'Almost complete（幾近完全吸收）', lvl:3, site:'十二指腸 Duodenum', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時吸收可能下降。'},
+  {c:'tet', en:'Tetracycline HCl', zh:'四環素', key:'tetracycline',
+   iv:'N', ba:'77~88%', lvl:2, site:'胃與十二指腸 Stomach &amp; duodenum', tube:'Y', note:''},
+  {c:'tet', en:'Minocycline HCl', zh:'米諾環素', key:'minocycline',
+   iv:'N', ba:'Well absorbed（吸收良好）', lvl:3, site:'無資料 No data', tube:'Y', note:''},
+
+  {c:'pen', en:'Amoxicillin', zh:'安莫西林', key:'amoxicillin',
+   iv:'N', ba:'Well absorbed（吸收良好）', lvl:3, site:'十二指腸與空腸 Duodenum &amp; jejunum', tube:'Y', note:''},
+  {c:'pen', en:'Dicloxacillin Sodium', zh:'雙氯西林', key:'dicloxacillin',
+   iv:'N', ba:'49~76%', lvl:2, site:'無資料 No data', tube:'Y', note:''},
+  {c:'pen', en:'Amoxicillin/clavulanate', zh:'安莫西林／克拉維酸', key:'amoxclav',
+   iv:'N', ba:'Well absorbed（吸收良好）', lvl:3, site:'NSSD', tube:'Y', note:''},
+
+  {c:'ce1', en:'Cephalexin', zh:'頭孢氨苄', key:'cefalexin',
+   iv:'N', ba:'~90%', lvl:3, site:'十二指腸 Duodenum', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時吸收可能下降。'},
+
+  {c:'ce2', en:'Cefuroxime Axetil', zh:'頭孢呋辛', key:'cefuroxime',
+   iv:'Y', ba:'空腹 37%；<b>隨餐 52%</b>', lvl:2, site:'NSSD', tube:'Y', note:''},
+
+  {c:'ce3', en:'Cefixime', zh:'頭孢克肟', key:'cefixime',
+   iv:'N', ba:'40~50%', lvl:1, site:'NSSD', tube:'Y',
+   note:'<b>與食物併服時吸收下降</b>。'},
+
+  {c:'sul', en:'Trimethoprim/sulfamethoxazole', zh:'磺胺甲噁唑／三甲氧芐啶', key:'tmpsmx',
+   iv:'Y', ba:'90~100%', lvl:3, site:'NSSD', tube:'Y', note:''},
+
+  {c:'mac', en:'Clarithromycin', zh:'克拉黴素', key:'clarithromycin',
+   iv:'Y', ba:'~50%', lvl:2, site:'空腸 Jejunum', tube:'Y*',
+   note:'管灌<b>僅限速效（immediate release）劑型</b>。'},
+  {c:'mac', en:'Azithromycin Dihydrate', zh:'阿奇黴素', key:'azithromycin',
+   iv:'N', ba:'錠劑 34~52%；懸液 28~43%', lvl:1, site:'無資料 No data', tube:'Y', note:''},
+
+  {c:'lin', en:'Clindamycin HCl', zh:'克林達黴素', key:'clindamycin',
+   iv:'Y', ba:'~90%', lvl:3, site:'NSSD', tube:'Y', note:''},
+
+  {c:'ami', en:'Neomycin Sulfate', zh:'新黴素', key:'neomycin',
+   iv:'N', ba:'Poor（3%）', lvl:0, site:'幾乎不吸收 Minimal absorption', tube:'Y',
+   note:'<b>療效僅為局部作用</b>，藥效只發生在給藥的那一段腸道。'},
+
+  {c:'fq', en:'Ciprofloxacin HCl', zh:'環丙沙星', key:'ciprofloxacin',
+   iv:'Y', ba:'70%', lvl:2, site:'小腸 Small intestine', tube:'Y', note:''},
+  {c:'fq', en:'Levofloxacin', zh:'左氧氟沙星', key:'levofloxacin',
+   iv:'Y', ba:'~99%', lvl:3, site:'NSSD', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時，劑量取範圍的<b>高端</b>。'},
+  {c:'fq', en:'Moxifloxacin HCl', zh:'莫西沙星', key:'moxifloxacin',
+   iv:'Y', ba:'~90%', lvl:3, site:'無資料 No data', tube:'Y', note:''},
+
+  {c:'q', en:'Pipemidic Acid Trihydrate', zh:'吡哌酸', key:'pipemidic',
+   iv:'N', ba:'Not available（原表未載）', lvl:0, site:'無資料 No data', tube:'Y', note:''},
+  {c:'q', en:'Nemonoxacin Malate Hemihydrate', zh:'奈諾沙星', key:'nemonoxacin',
+   iv:'N', ba:'空腹幾近完全吸收', lvl:3, site:'無資料 No data', tube:'Y', note:''},
+
+  {c:'oth', en:'Fusidate Sodium', zh:'夫西地酸', key:'fusidicAcid',
+   iv:'N', ba:'91%', lvl:3, site:'無資料 No data', tube:'Y', note:''},
+  {c:'oth', en:'Metronidazole', zh:'甲硝唑', key:'metronidazole',
+   iv:'Y', ba:'Well absorbed（吸收良好）', lvl:3, site:'胃 Stomach', tube:'Y', note:''},
+  {c:'oth', en:'Linezolid', zh:'利奈唑胺', key:'linezolid',
+   iv:'Y', ba:'~100%', lvl:3, site:'胃與小腸 Stomach &amp; small intestine', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時應做 <b>TDM</b>。'},
+
+  {c:'af', en:'Fluconazole', zh:'氟康唑', key:'fluconazole',
+   iv:'Y', ba:'&gt;90%', lvl:3, site:'NSSD', tube:'Y', note:''},
+  {c:'af', en:'Itraconazole', zh:'伊曲康唑', key:'itraconazole',
+   iv:'N', ba:'隨餐 ~55%', lvl:2, site:'NSSD', tube:'Y', note:''},
+  {c:'af', en:'Voriconazole', zh:'伏立康唑', key:'voriconazole',
+   iv:'Y', ba:'96%', lvl:3, site:'NSSD', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時應做 <b>TDM</b>。'},
+  {c:'af', en:'Posaconazole', zh:'泊沙康唑', key:'posaconazole',
+   iv:'Y', ba:'緩釋錠：空腹 54%，高脂餐後更高', lvl:2, site:'NSSD', tube:'N',
+   note:'<b>全表唯一不可管灌</b>的品項。'},
+  {c:'af', en:'Isavuconazole', zh:'艾沙康唑', key:'isavuconazole',
+   iv:'Y', ba:'98%', lvl:3, site:'無資料 No data', tube:'Y',
+   note:'經<b>鼻空腸管（NJ）</b>給藥時應做 <b>TDM</b>。'},
+  {c:'af', en:'Flucytosine', zh:'氟胞嘧啶', key:'flucytosine',
+   iv:'N', ba:'78~89%', lvl:2, site:'無資料 No data', tube:'Y', note:''},
+
+  {c:'av', en:'Acyclovir', zh:'阿昔洛韋', key:'acyclovir',
+   iv:'Y', ba:'10~20%', lvl:1, site:'NSSD', tube:'Y', note:''},
+  {c:'av', en:'Valacyclovir HCl', zh:'伐昔洛韋', key:'valacyclovir',
+   iv:'Y（以 acyclovir 劑型）', ba:'~55%', lvl:2, site:'NSSD', tube:'Y',
+   note:'無鼻空腸管（NJ）給藥的專門資料。'},
+  {c:'av', en:'Valganciclovir HCl', zh:'纈更昔洛韋', key:'valganciclovir',
+   iv:'Y（以 ganciclovir 劑型）', ba:'隨餐 60%', lvl:2, site:'無資料 No data', tube:'Y', note:''},
+  {c:'av', en:'Letermovir', zh:'來特莫韋', key:'letermovir',
+   iv:'Y', ba:'94%（未併用 cyclosporine）；<b>造血幹細胞移植病人 35~85%</b>', lvl:2, site:'無資料 No data', tube:'Y',
+   note:'造血幹細胞移植（HSCT）病人：<b>未併用 cyclosporine 為 35%、併用為 85%</b>——同一支藥在這個族群差距極大。'},
+  {c:'av', en:'Oseltamivir Phosphate', zh:'奧司他韋', key:'oseltamivir',
+   iv:'N', ba:'75%', lvl:2, site:'NSSD', tube:'Y',
+   note:'無鼻空腸管（NJ）給藥的專門資料。'},
+  {c:'av', en:'Baloxavir Marboxil', zh:'巴洛沙韋', key:'baloxavir',
+   iv:'N', ba:'Not available（原表未載）', lvl:0, site:'無資料 No data', tube:'Y', note:''}
+];
+
+var LVL_LABEL = {3:'高', 2:'中', 1:'低', 0:'局部／無資料'};
+
+/* 篩選條件。fn 回傳 true 才留下；每一條都對得上原表的某一欄，不做主觀取捨。 */
+var FILTERS = [
+  {k:'all',  zh:'全部',           fn:function(){ return true; }},
+  {k:'ivy',  zh:'院內有注射劑型', fn:function(d){ return d.iv.charAt(0) === 'Y'; }},
+  {k:'hi',   zh:'吸收率高',       fn:function(d){ return d.lvl === 3; }},
+  {k:'tube', zh:'管灌要注意',     fn:function(d){ return d.tube !== 'Y' || /NJ|TDM|鼻空腸/.test(d.note); }}
+];
+var curFilter = 'all';
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function matches(d, q){
+  if (!q) return true;
+  var cat = CATS.filter(function(c){ return c.k === d.c; })[0] || {};
+  return (d.en + ' ' + d.zh + ' ' + d.ba + ' ' + d.site + ' ' + (cat.zh||'') + ' ' + (cat.en||''))
+         .toLowerCase().indexOf(q) > -1;
+}
+
+function renderChips(){
+  var q = (document.getElementById('sw-q').value || '').trim().toLowerCase();
+  document.getElementById('sw-chips').innerHTML = FILTERS.map(function(f){
+    var n = SW.filter(function(d){ return f.fn(d) && matches(d, q); }).length;
+    return '<button class="sp-chip' + (curFilter === f.k ? ' on' : '') + '" data-k="' + f.k +
+           '" onclick="setFilter(\'' + f.k + '\')">' + f.zh +
+           ' <span style="opacity:.6">' + n + '</span></button>';
+  }).join('');
+}
+
+function setFilter(k){ curFilter = k; renderList(); }
+
+function renderList(){
+  var q = (document.getElementById('sw-q').value || '').trim().toLowerCase();
+  var f = FILTERS.filter(function(x){ return x.k === curFilter; })[0] || FILTERS[0];
+  var list = SW.filter(function(d){ return f.fn(d) && matches(d, q); });
+  renderChips();
+  document.getElementById('sw-count').textContent =
+    '顯示 ' + list.length + ' / ' + SW.length + ' 項';
+  if (!list.length){
+    document.getElementById('sw-list').innerHTML = '<div class="sp-empty">沒有符合的品項。</div>';
+    return;
+  }
+  var html = '';
+  CATS.forEach(function(cat){
+    var items = list.filter(function(d){ return d.c === cat.k; });
+    if (!items.length) return;
+    html += '<div class="sp-dept"><div class="sp-dept-head">' +
+            '<span class="sp-dept-zh">' + cat.zh + '</span>' +
+            '<span class="sp-dept-en">' + cat.en + '</span>' +
+            '<span class="sp-dept-n">' + items.length + ' 項</span></div>';
+    items.forEach(function(d){
+      var i = SW.indexOf(d);
+      html += '<div class="sp-op" id="sw-' + i + '">' +
+        '<button class="sp-op-head" onclick="toggleDrug(' + i + ')">' +
+          '<span class="sp-caret">▸</span>' +
+          '<span class="sp-op-t"><span class="sp-op-zh">' + d.zh + '</span>' +
+            '<span class="sp-op-en">' + d.en + '</span>' +
+            '<span class="tr-rec r' + d.lvl + '">' + LVL_LABEL[d.lvl] + '</span>' +
+            (d.iv.charAt(0) === 'Y' ? '<span class="sp-src ntuh">院內有注射劑型</span>' : '') +
+            (d.tube !== 'Y' ? '<span class="sp-src supp">管灌 ' + esc(d.tube) + '</span>' : '') +
+          '</span>' +
+          '<span class="sp-op-rec">吸收率 ' + d.ba + '</span>' +
+        '</button>' +
+        '<div class="sp-op-body">' +
+          fld('吸收率', d.ba) +
+          fld('吸收部位', d.site) +
+          fld('注射劑型', d.iv.charAt(0) === 'Y'
+                ? '<b>Y</b>　本院同時備有注射劑型，屬同藥換劑型' + (d.iv.length > 1 ? '（' + d.iv.slice(2, -1) + '）' : '')
+                : '<b>N</b>　本院無此成分的注射劑型') +
+          fld('管灌', d.tube === 'Y' ? '<b>Y</b>　可經管灌給藥'
+                : (d.tube === 'N' ? '<b>N</b>　<b>不可</b>經管灌給藥' : '<b>' + esc(d.tube) + '</b>　可，但有條件（見備註）')) +
+          (d.note ? fld('備註', d.note) : '') +
+          '<div class="sp-fld"><span class="k">完整藥卡</span><span class="v sp-refs">' +
+            '<a class="ref-link" href="antibiotics.html#drug=' + encodeURIComponent(d.key) + '">' +
+            '劑量／腎肝調整／抗菌譜 →</a></span></div>' +
+        '</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('sw-list').innerHTML = html;
+}
+
+function fld(k, v){
+  return '<div class="sp-fld"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>';
+}
+
+function toggleDrug(i){
+  var el = document.getElementById('sw-' + i);
+  if (!el) return;
+  el.classList.toggle('open');
+  el.querySelector('.sp-caret').textContent = el.classList.contains('open') ? '▾' : '▸';
+}
+
+/* ── 轉換條件檢核 ────────────────────────────────────────────────
+   七條逐條問過。第 (7) 條在原文件是「多重抗藥性不是不換的理由」這個澄清，
+   不是可否轉換的門檻，所以放在結論下方當提醒，不列入六個是非題。 */
+var CK = [
+  {k:'bc',    q:'血液培養陰性，且已打針 > 48 小時？', d:'原文第 (一) 條'},
+  {k:'stable',q:'臨床狀況穩定？', d:'發炎指數下降、無發燒或體溫過低、無免疫不全、無未可解釋之心搏過速／低血壓／呼吸急促'},
+  {k:'gi',    q:'沒有口服吸收障礙？', d:'無腹瀉、嘔吐、意識不清、吞嚥困難；有鼻胃管／造口者另需考量吸收'},
+  {k:'oral',  q:'院內有有效的口服選項？', d:'見下方表一'},
+  {k:'deep',  q:'沒有需要延長注射治療的適應症？', d:'腦膜炎、壞死性軟組織感染、無法移除的植入物感染、S. aureus 菌血症、骨髓炎、敗血性關節炎、心內膜炎、中高風險嗜中性球低下發燒、未處置的深部感染'},
+  {k:'cont',  q:'抗微生物製劑治療仍需持續？', d:'若已達停藥時機，該做的是停藥而不是換口服'}
+];
+var ckState = {};
+
+function ckRender(){
+  document.getElementById('ck-qs').innerHTML = CK.map(function(c){
+    return '<div class="tt-q"><div class="tt-lbl">' + c.q + '</div><div class="tt-opts">' +
+      ['yes','no'].map(function(v){
+        return '<button class="tt-opt' + (ckState[c.k] === v ? ' on' : '') + '" onclick="ckSet(\'' +
+          c.k + '\',\'' + v + '\')">' + (v === 'yes' ? '是' : '否') +
+          (v === 'yes' ? '<small>' + c.d + '</small>' : '') + '</button>';
+      }).join('') + '</div></div>';
+  }).join('');
+  ckOut();
+}
+
+function ckSet(k, v){ ckState[k] = v; ckRender(); }
+
+function ckOut(){
+  var answered = CK.filter(function(c){ return ckState[c.k]; }).length;
+  var fail = CK.filter(function(c){ return ckState[c.k] === 'no'; });
+  var out = document.getElementById('ck-out');
+  if (answered < CK.length){
+    out.innerHTML = '<div class="h">尚未答完</div><div class="tt-line"><span class="n">進度</span>' +
+      '<span>已回答 ' + answered + ' / ' + CK.length + ' 題。' +
+      '<span class="tt-det">六題都要有答案才會給結論——漏掉的那一條往往就是不能換的那一條。</span></span></div>';
+    return;
+  }
+  if (!fail.length){
+    out.innerHTML = '<div class="h">六條都符合 — 可考慮轉為口服</div>' +
+      '<div class="tt-line"><span class="n">下一步</span><span><span class="tt-yes">依原病灶選擇口服藥</span>' +
+      '<span class="tt-det">從下方表一挑：<b>院內同時有注射劑型</b>的那批是同藥換劑型、最單純；' +
+      '有鼻胃管／鼻空腸管者，另看該藥的管灌欄與備註。</span></span></div>' +
+      '<div class="tt-line"><span class="n">仍需注意</span><span>' +
+      '泌尿道感染、腹腔內感染、社區性肺炎<b>另有個別轉換指引</b>，以那些指引為準。' +
+      '<span class="tt-det">多重抗藥性菌株若感染源已適當處置、又有具感受性的口服藥，仍應考慮轉換——抗藥性本身不是繼續打針的理由。</span></span></div>';
+    return;
+  }
+  out.innerHTML = '<div class="h">尚不符合 — 有 ' + fail.length + ' 條未達成</div>' +
+    fail.map(function(c){
+      return '<div class="tt-line"><span class="n">未達成</span><span><span class="tt-no">' + c.q + '</span>' +
+             '<span class="tt-det">' + c.d + '</span></span></div>';
+    }).join('') +
+    '<div class="tt-line"><span class="n">處置</span><span>維持注射給藥，待上述條件改善後再評估。' +
+    '<span class="tt-det">本建議得視病人臨床狀況調整。</span></span></div>';
+}
+
+renderList();
+ckRender();
+</script>
+
+<script src="../js/searchbar.js" defer></script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

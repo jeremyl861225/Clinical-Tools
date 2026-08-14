@@ -37,7 +37,7 @@
     <div>
       <div class="eyebrow">Antibiotic Guide</div>
       <h1>抗生素指引</h1>
-      <div class="sub">抗生素指引、菌譜資料庫、手術預防與創傷用藥</div>
+      <div class="sub">抗生素指引、菌譜資料庫、手術預防、創傷用藥、注射轉口服與輸注配伍</div>
     </div>
     <div class="back-stack">
       <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上；
@@ -52,10 +52,12 @@
     <button class="abx-mode active" data-mode="empiric" onclick="switchMode('empiric')">依部位</button>
     <button class="abx-mode" data-mode="bacteria" onclick="switchMode('bacteria')">依病原菌</button>
     <button class="abx-mode" data-mode="lookup" onclick="switchMode('lookup')">藥物查詢</button>
-    <!-- 第四～六分頁另存獨立頁（內容龐大、可獨立快取），以同一列分頁樣式串接 -->
+    <!-- 第四～八分頁另存獨立頁（內容龐大、可獨立快取），以同一列分頁樣式串接 -->
     <button class="abx-mode" onclick="location.href='spectrum-database.html'">菌譜資料庫</button>
     <button class="abx-mode" onclick="location.href='surgical-prophylaxis.html'">手術預防</button>
     <button class="abx-mode" onclick="location.href='trauma-abx.html'">創傷用藥</button>
+    <button class="abx-mode" onclick="location.href='iv-to-po.html'">注射轉口服</button>
+    <button class="abx-mode" onclick="location.href='y-site.html'">輸注與配伍</button>
   </div>
 
   <!-- 模式一：依部位（經驗性） -->

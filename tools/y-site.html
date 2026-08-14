@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>輸注與配伍 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<style>
+  /* 與 iv-to-po.html 同一套：只用 css/ui-sentence.css 已收斂過的 class
+     （.sp-*／.tr-*／.tt-*），樣式自 surgical-prophylaxis.html／trauma-abx.html 複製。 */
+
+  /* ── 原則清單 ───────────────────────────────────────────────── */
+  .sp-rules{margin:0; padding:0; list-style:none; counter-reset:r;}
+  .sp-rules li{position:relative; padding:7px 0 7px 30px; font-size:13px; line-height:1.7; border-bottom:1px dotted var(--line);}
+  .sp-rules li:last-child{border-bottom:none;}
+  .sp-rules li::before{counter-increment:r; content:"(" counter(r) ")"; position:absolute; left:0; top:7px;
+                       font-family:var(--mono); font-size:11px; color:var(--accent);}
+  .sp-rules b{color:var(--accent2);}
+
+  /* ── 工具列 ─────────────────────────────────────────────────── */
+  .sp-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;}
+  .sp-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .sp-chip{font-family:var(--mono); font-size:11.5px; border:1px solid var(--line); background:var(--panel);
+           color:var(--muted); border-radius:12px; padding:5px 11px; cursor:pointer;}
+  .sp-chip:hover{background:var(--hover-bg); color:var(--ink);}
+  .sp-chip.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent); font-weight:700;}
+  .sp-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
+  .sp-empty{font-size:12.5px; color:var(--muted-soft); font-family:var(--mono); padding:14px 2px;}
+
+  /* ── 分組與藥物列 ───────────────────────────────────────────── */
+  .sp-dept{margin-bottom:16px;}
+  .sp-dept-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 8px;
+                padding-bottom:4px; border-bottom:2px solid var(--accent-soft);}
+  .sp-dept-zh{font-family:var(--serif); font-size:16px; font-weight:600; color:var(--accent);}
+  .sp-dept-en{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft);}
+  .sp-dept-n{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+
+  .sp-op{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft);
+         border-radius:2px; margin-bottom:7px; overflow:hidden;}
+  .sp-op-head{display:block; width:100%; text-align:left; background:none; border:none;
+              padding:10px 13px; font-family:var(--sans); color:var(--ink);}
+  .sp-op-t{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap;}
+  .sp-op-zh{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .sp-op-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  .sp-op-rec{display:block; font-size:12.5px; color:var(--accent); font-family:var(--mono); margin-top:5px; line-height:1.6;}
+  .sp-fld{display:grid; grid-template-columns:130px 1fr; gap:4px 10px; padding:8px 0; border-bottom:1px dotted var(--line);
+          font-size:12.5px; line-height:1.65;}
+  .sp-fld:last-child{border-bottom:none;}
+  .sp-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft); padding-top:2px;}
+  .sp-fld .v b{font-family:var(--mono); font-weight:700;}
+  .sp-refs{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
+  @media(max-width:480px){ .sp-fld{grid-template-columns:1fr; gap:1px;} }
+
+  /* ── 附註 ───────────────────────────────────────────────────── */
+  .sp-notes{margin:0; padding:0; list-style:none;}
+  .sp-notes li{display:grid; grid-template-columns:56px 1fr; gap:9px; padding:8px 0;
+               border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}
+  .sp-notes li:last-child{border-bottom:none;}
+  .sp-notes .lt{font-family:var(--mono); font-weight:700; color:var(--accent2);}
+
+  /* ── 相容性三態徽章（沿用創傷用藥的四級色系）──────────────────── */
+  .tr-rec{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em;
+          border-radius:9px; padding:1px 8px; white-space:nowrap; vertical-align:1px;}
+  .tr-rec.r3{color:#fff; background:#2f6b5c;}                              /* Y 相容 */
+  .tr-rec.r1{color:#2b2110; background:#e6d3a8; border:1px solid #c2a468;} /* NA 無資料 */
+  .tr-rec.r0{color:#fff; background:#a8756d;}                              /* N 不相容 */
+  @media (prefers-color-scheme: dark){
+    .tr-rec.r3{background:#3d8272;}
+    .tr-rec.r1{color:#221a0c; background:#b8945a; border-color:#8d7040;}
+    .tr-rec.r0{background:#9c6d66;}
+  }
+  .tr-legend{display:flex; flex-wrap:wrap; gap:7px 14px; align-items:center; margin-bottom:12px;}
+  .tr-legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);}
+  .tr-cav{display:block; background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
+          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
+
+  /* 徽章列的容器（沿用 .tt-opts 的 flex-wrap） */
+  .tt-opts{display:flex; flex-wrap:wrap; gap:6px;}
+</style>
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+</head>
+<body data-backtotop data-back-label="輸注與配伍">
+<div class="sheet">
+<div class="view active">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">β-lactam · Infusion &amp; Y-site</div>
+      <h1>輸注與配伍</h1>
+      <div class="sub">依台大醫院《β-lactam 類抗生素輸注時間建議》，查延長輸注的原則與 52 種常用注射藥品和 8 種 β-lactam 的 Y-site 相容性</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- 抗生素指引的第八分頁 -->
+  <div class="abx-modes">
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=empiric'">依部位</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=bacteria'">依病原菌</button>
+    <button class="abx-mode" onclick="location.href='antibiotics.html#mode=lookup'">藥物查詢</button>
+    <button class="abx-mode" onclick="location.href='spectrum-database.html'">菌譜資料庫</button>
+    <button class="abx-mode" onclick="location.href='surgical-prophylaxis.html'">手術預防</button>
+    <button class="abx-mode" onclick="location.href='trauma-abx.html'">創傷用藥</button>
+    <button class="abx-mode" onclick="location.href='iv-to-po.html'">注射轉口服</button>
+    <button class="abx-mode active">輸注與配伍</button>
+  </div>
+
+  <!-- ══ 1 延長輸注原則 ══ -->
+  <div class="section-title">1 · 為什麼要延長輸注　Extended Infusion</div>
+  <div class="card">
+    <ol class="sp-rules">
+      <li>β-lactam（penicillins、cephalosporins、carbapenems）的抗菌活性，和<b>游離態濃度高於最低抑菌濃度的時間比例</b>（fT &gt; MIC）相關。三類的目標分別是 penicillins <b>&gt; 50%</b>、cephalosporins <b>60–70%</b>、carbapenems <b>40%</b>。</li>
+      <li>延長輸注時間可有效提高 fT &gt; MIC 的比率。臨床研究在<b>免疫不全者、抗藥性較強的細菌與重症病人</b>身上，看到治癒率與存活率顯著提升。</li>
+      <li>加護病房或重症病人使用 β-lactam 時，<b>建議採用延長靜脈輸注給藥，輸注時間 4 小時</b>。</li>
+    </ol>
+    <p class="lead" style="margin-bottom:0">各藥的<b>溶劑、最高濃度、安定時數、loading／maintenance 劑量與 MIC 門檻</b>已整合進各自的藥卡（下表點藥名即到）。</p>
+  </div>
+
+  <div class="card">
+    <div id="bl-list"></div>
+  </div>
+
+  <!-- ══ 2 Y-site 相容性 ══ -->
+  <div class="section-title">2 · Y-site 相容性　Y-site Compatibility</div>
+  <p class="lead">同一條靜脈路線要併行推注時查這裡。先選正在打的 β-lactam，再找要併上去的藥。</p>
+  <div class="tr-legend">
+    <span class="lg"><span class="tr-rec r3">Y</span>相容</span>
+    <span class="lg"><span class="tr-rec r0">N</span>不相容</span>
+    <span class="lg"><span class="tr-rec r1">NA</span>原文件無資料</span>
+  </div>
+  <div class="tr-cav"><b>NA 不等於可以混。</b>配伍資料從缺時，實務上應比照不相容處理——另建一條輸液路線，或前後以相容溶液沖洗，不可推定為相容。</div>
+  <div class="sp-chips" id="bl-chips"></div>
+  <div class="sp-bar">
+    <div class="gs-field gs-field--inline">
+      <span class="gs-icon">⌕</span>
+      <input type="search" class="gs-input" id="ys-q" autocomplete="off" spellcheck="false"
+             placeholder="搜尋要併行的藥品（如：norepinephrine、嗎啡、propofol、胰島素）…" oninput="renderYS()">
+      <button type="button" class="gs-clear" aria-label="清除查詢" hidden>×</button>
+    </div>
+  </div>
+  <div class="sp-count" id="ys-count"></div>
+  <div id="ys-list"></div>
+
+  <!-- ══ 3 附註 ══ -->
+  <div class="section-title">3 · 使用時的注意　Caveats</div>
+  <div class="card">
+    <ul class="sp-notes">
+      <li><span class="lt">範圍</span><span>相容性資料只涵蓋<b>原文件表三所列的 52 種注射藥品</b>。表上沒有的藥＝沒有查過，不是相容。</span></li>
+      <li><span class="lt">Y-site</span><span>指兩袋藥液在<b>Y 型接頭處短暫接觸</b>後一起進入血管；與「同一袋混合輸注」「同一針筒」不是同一回事，後兩者的相容性另有規定，不能拿本表推論。</span></li>
+      <li><span class="lt">濃度</span><span>相容性隨<b>濃度、稀釋液、接觸時間</b>而變。原表未列這些條件，臨床有疑慮時請洽藥劑部。</span></li>
+      <li><span class="lt">Doripenem</span><span>原文件（2023 年版）列有 doripenem，但比對台大全院藥品目錄<b>查無此品項</b>，本頁保留該欄以忠實呈現原表，實務上院內開不到。</span></li>
+      <li><span class="lt">D5W</span><span><b>meropenem 不可用 D5W 做延長輸注</b>（D5W 中安定性僅 1 小時，N/S 為 4 小時）——這是表一裡唯一針對溶劑的明文禁止。</span></li>
+    </ul>
+  </div>
+
+  <footer class="tool-footer">
+    本頁全部內容出自 <b>國立臺灣大學醫學院附設醫院藥劑部《β-lactam 類抗生素輸注時間建議》</b>（文件編號 15600-3-000002，版次 3；105-01-28 第 230 次、108-11-15 第 245 次、112-04-24 第 259 次藥事委員會通過，2023-05-01 公告，2026-03-11 檢視）之第三節、表一與表三。該文件所列參考資料：
+    Dulhunty JM, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/23074313/" target="_blank" rel="noopener" class="ref-link">Continuous infusion of beta-lactam antibiotics in severe sepsis: a multicenter double-blind, randomized controlled trial. Clin Infect Dis. 2013;56(2):236-44.</a> ·
+    Falagas ME, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/23074314/" target="_blank" rel="noopener" class="ref-link">Clinical outcomes with extended or continuous versus short-term intravenous infusion of carbapenems and piperacillin/tazobactam: a systematic review and meta-analysis. Clin Infect Dis. 2013;56(2):272-82.</a> ·
+    Lodise TP Jr, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/17205441/" target="_blank" rel="noopener" class="ref-link">Piperacillin-tazobactam for Pseudomonas aeruginosa infection: clinical implications of an extended-infusion dosing strategy. Clin Infect Dis. 2007;44(3):357-63.</a> ·
+    Lorente L, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/19150225/" target="_blank" rel="noopener" class="ref-link">Clinical cure of ventilator-associated pneumonia treated with piperacillin/tazobactam administered by continuous or intermittent infusion. Int J Antimicrob Agents. 2009;33(5):464-8.</a> ·
+    Bauer KA, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/23571547/" target="_blank" rel="noopener" class="ref-link">Extended-infusion cefepime reduces mortality in patients with Pseudomonas aeruginosa infections. Antimicrob Agents Chemother. 2013;57(7):2907-12.</a> ·
+    Fehér C, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/24855125/" target="_blank" rel="noopener" class="ref-link">Effect of meropenem administration in extended infusion on the clinical outcome of febrile neutropenia: a retrospective observational study. J Antimicrob Chemother. 2014;69(9):2556-62.</a> ·
+    Zasowski E, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/25381169/" target="_blank" rel="noopener" class="ref-link">Identification of optimal renal dosage adjustments for high-dose extended-infusion cefepime dosing regimens in hospitalized patients. J Antimicrob Chemother. 2015;70(3):877-81.</a> ·
+    Ram R, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/29608680/" target="_blank" rel="noopener" class="ref-link">Extended vs bolus infusion of broad-spectrum β-lactams for febrile neutropenia: an unblinded, randomized trial. Clin Infect Dis. 2018;67(8):1153-60.</a> ·
+    Roberts JA, et al. <a href="https://pubmed.ncbi.nlm.nih.gov/26974879/" target="_blank" rel="noopener" class="ref-link">Continuous versus intermittent β-lactam infusion in severe sepsis: a meta-analysis of individual patient data from randomized trials. Am J Respir Crit Care Med. 2016;194(6):681-91.</a> ·
+    表二之 imipenem/cilastatin 腎功能劑量：IBM Micromedex DRUGDEX。
+  </footer>
+</div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   表三、Y-site compatibility of medications with β-lactam antibiotics
+   （台大醫院藥劑部 15600-3-000002 v3，2026-03-11 檢視）
+
+   BL 的順序＝原表欄位順序，v 陣列逐格對應，不可調換。
+   前六欄取自表三（頁 5）、後兩欄取自表三續（頁 6）；兩頁的藥品清單經逐列比對
+   完全一致（52 列），故可橫向合併。
+   ───────────────────────────────────────────────────────────────── */
+var BL = [
+  {ab:'TZP', en:'Piperacillin/tazobactam', zh:'匹派拉西林／泰唑巴坦', key:'piptazo',
+   mic:'MIC ≧ 8', sol:'N/S 或 D5W，最高 80/10 mg/mL，25°C 安定 24 小時'},
+  {ab:'CAZ', en:'Ceftazidime', zh:'頭孢他啶', key:'ceftazidime',
+   mic:'MIC ≧ 4', sol:'N/S 或 D5W，最高 40 mg/mL，25°C 安定 24 小時'},
+  {ab:'FEP', en:'Cefepime', zh:'頭孢吡肟', key:'cefepime',
+   mic:'MIC ≧ 4', sol:'N/S 或 D5W，最高 40 mg/mL，25°C 安定 24 小時'},
+  {ab:'MEM', en:'Meropenem', zh:'美羅培南', key:'meropenem',
+   mic:'MIC ≧ 1', sol:'<b>N/S</b>，最高 20 mg/mL，25°C 安定 4 小時；<b>D5W 不可做延長輸注</b>（僅 1 小時）'},
+  {ab:'IPM', en:'Imipenem/cilastatin', zh:'亞胺培南／西司他丁', key:'imipenem',
+   mic:'MIC ≧ 1', sol:'N/S 或 D5W，最高 5 mg/mL，25°C 安定 4 小時'},
+  {ab:'DOR', en:'Doripenem', zh:'多利培南', key:'',
+   mic:'MIC ≧ 1', sol:'N/S 最高 10 mg/mL 安定 12 小時；D5W 同濃度 4 小時',
+   gone:'原文件列有此藥，但比對台大全院藥品目錄查無此品項。'},
+  {ab:'CZA', en:'Ceftazidime/avibactam', zh:'頭孢他啶／阿維巴坦', key:'ceftazavi',
+   mic:'MIC ≧ 4', sol:'N/S 或 D5W，最高 40/10 mg/mL，25°C 安定 12 小時'},
+  {ab:'C/T', en:'Ceftolozane/tazobactam', zh:'頭孢洛扎／他唑巴坦', key:'ceftolotazo',
+   mic:'MIC ≧ 2', sol:'N/S 或 D5W，最高 20/10 mg/mL，25°C 安定 24 小時'}
+];
+
+var YS = [
+  {en:"Acyclovir", zh:"阿昔洛韋", key:'acyclovir', v:'N,Y,N,N,Y,Y,NA,NA'},
+  {en:"Amiodarone", zh:"胺碘酮", v:'N,N,Y,N,N,Y,NA,Y'},
+  {en:"Amphotericin B (Ambisone)", zh:"微脂體兩性黴素 B", key:'amphoLipo', v:'N,N,N,N,N,N,NA,N'},
+  {en:"Amphotericin B (Fungizone)", zh:"兩性黴素 B（去氧膽酸鹽）", key:'amphoB', v:'N,N,N,N,N,N,NA,N'},
+  {en:"Anidulafungin", zh:"安尼芬淨", key:'anidulafungin', v:'Y,Y,Y,Y,Y,Y,NA,Y'},
+  {en:"Bumetanide", zh:"布美他尼", v:'Y,Y,Y,NA,Y,Y,NA,Y'},
+  {en:"Caspofungin", zh:"卡泊芬淨", key:'caspofungin', v:'N,N,N,Y,Y,Y,NA,N'},
+  {en:"Ciprofloxacin", zh:"環丙沙星", key:'ciprofloxacin', v:'N,Y,N,NA,NA,Y,NA,Y'},
+  {en:"Cisatracurium besylate", zh:"順式阿曲庫銨", v:'N,N,NA,NA,Y,NA,NA,Y'},
+  {en:"Cyclosporine", zh:"環孢素", v:'Y,Y,NA,Y,Y,Y,NA,N'},
+  {en:"Daptomycin", zh:"達托黴素", key:'daptomycin', v:'Y,Y,Y,Y,N,Y,Y,Y'},
+  {en:"Dexmedetomidine", zh:"右美托咪定", v:'Y,Y,Y,Y,Y,NA,Y,Y'},
+  {en:"Diltiazem", zh:"地爾硫卓", v:'N,Y,N,Y,Y,Y,NA,Y'},
+  {en:"Dobutamine HCl", zh:"多巴酚丁胺", v:'N,N,N,NA,N,Y,NA,Y'},
+  {en:"Dopamine HCl", zh:"多巴胺", v:'Y,Y,N,NA,Y,Y,Y,Y'},
+  {en:"Epinephrine", zh:"腎上腺素", v:'Y,Y,NA,NA,Y,NA,NA,Y'},
+  {en:"Erythromycin lactobionate", zh:"紅黴素（乳糖酸鹽）", key:'erythromycin', v:'Y,N,N,NA,Y,NA,NA,NA'},
+  {en:"Esomeprazole", zh:"埃索美拉唑", v:'NA,NA,NA,NA,NA,Y,NA,Y'},
+  {en:"Famotidine", zh:"法莫替丁", v:'N,Y,N,NA,Y,Y,NA,Y'},
+  {en:"Fentanyl citrate", zh:"吩坦尼", v:'Y,Y,NA,NA,Y,Y,NA,Y'},
+  {en:"Fluconazole", zh:"氟康唑", key:'fluconazole', v:'Y,N,Y,Y,N,Y,NA,NA'},
+  {en:"Foscarnet", zh:"膦甲酸鈉", key:'foscarnet', v:'Y,Y,Y,Y,Y,Y,NA,NA'},
+  {en:"Furosemide", zh:"呋塞米", v:'Y,Y,Y,Y,Y,Y,NA,Y'},
+  {en:"Ganciclovir", zh:"更昔洛韋", key:'ganciclovir', v:'N,N,N,NA,N,NA,NA,NA'},
+  {en:"Heparin", zh:"肝素", v:'Y,Y,NA,Y,Y,Y,Y,Y'},
+  {en:"Hydrocortisone sodium succinate", zh:"氫化可體松", v:'Y,Y,Y,NA,Y,Y,NA,Y'},
+  {en:"Insulin, regular", zh:"短效胰島素", v:'N,Y,Y,Y,Y,Y,NA,Y'},
+  {en:"Labetalol HCl", zh:"拉貝洛爾", v:'N,Y,NA,NA,Y,Y,NA,Y'},
+  {en:"Levofloxacin", zh:"左氧氟沙星", key:'levofloxacin', v:'N,Y,Y,NA,Y,Y,NA,Y'},
+  {en:"Linezolid", zh:"利奈唑胺", key:'linezolid', v:'Y,Y,Y,Y,Y,Y,Y,Y'},
+  {en:"Lorazepam", zh:"勞拉西泮", v:'Y,Y,Y,Y,N,Y,NA,Y'},
+  {en:"Methylprednisolone sodium succinate", zh:"甲基潑尼松龍", v:'Y,Y,Y,NA,Y,Y,NA,N'},
+  {en:"Metronidazole", zh:"甲硝唑", key:'metronidazole', v:'Y,Y,Y,Y,Y,Y,NA,Y'},
+  {en:"Micafungin", zh:"米卡芬淨", key:'micafungin', v:'NA,NA,NA,NA,NA,Y,NA,Y'},
+  {en:"Midazolam HCl", zh:"咪達唑侖", v:'N,N,N,NA,N,Y,NA,Y'},
+  {en:"Milrinone lactate", zh:"米力農", v:'Y,Y,Y,Y,N,Y,NA,Y'},
+  {en:"Minocycline HCl", zh:"米諾環素", key:'minocycline', v:'N,N,NA,NA,N,NA,NA,NA'},
+  {en:"Morphine HCl", zh:"嗎啡", v:'NA,NA,NA,NA,NA,NA,NA,NA'},
+  {en:"Moxifloxacin HCl", zh:"莫西沙星", key:'moxifloxacin', v:'NA,NA,NA,NA,NA,Y,NA,NA'},
+  {en:"Nicardipine HCl", zh:"尼卡地平", v:'N,N,N,N,N,NA,NA,Y'},
+  {en:"Nitroglycerin", zh:"硝化甘油", v:'Y,Y,NA,NA,Y,NA,NA,Y'},
+  {en:"Norepinephrine", zh:"正腎上腺素", v:'Y,Y,NA,Y,Y,Y,Y,Y'},
+  {en:"Pantoprazole", zh:"泮托拉唑", v:'N,N,N,N,Y,Y,NA,Y'},
+  {en:"Phenytoin", zh:"苯妥英", v:'N,N,N,NA,N,NA,NA,N'},
+  {en:"Propofol", zh:"異丙酚", v:'NA,N,N,N,Y,N,NA,N'},
+  {en:"Sulfamethoxazole/trimethoprim", zh:"磺胺甲噁唑／三甲氧芐啶", key:'tmpsmx', v:'Y,N,Y,NA,N,NA,NA,NA'},
+  {en:"Tigecycline", zh:"替加環素", key:'tigecycline', v:'Y,Y,Y,Y,Y,Y,NA,Y'},
+  {en:"Tranexamic acid", zh:"傳明酸", v:'N,NA,NA,NA,NA,NA,NA,NA'},
+  {en:"Valproate sodium", zh:"丙戊酸鈉", v:'NA,Y,Y,NA,NA,NA,NA,NA'},
+  {en:"Vancomycin HCl", zh:"萬古黴素", key:'vancomycin', v:'N,N,N,Y,N,Y,NA,Y'},
+  {en:"Vasopressin", zh:"血管加壓素", v:'Y,Y,Y,Y,Y,NA,Y,Y'},
+  {en:"Voriconazole", zh:"伏立康唑", key:'voriconazole', v:'Y,Y,N,Y,Y,Y,NA,NA'}
+];
+YS.forEach(function(d){ d.a = d.v.split(','); });
+
+var TIER = {Y:'r3', N:'r0', NA:'r1'};
+var STATE_ZH = {Y:'相容', N:'不相容', NA:'原文件無資料'};
+var curBL = 0;                       // 目前選定的 β-lactam；-1＝全部
+
+function badge(state){ return '<span class="tr-rec ' + TIER[state] + '">' + state + '</span>'; }
+
+function drugLink(key, label){
+  return key ? '<a class="ref-link" href="antibiotics.html#drug=' + encodeURIComponent(key) + '">' + label + '</a>'
+             : label;
+}
+
+/* 第 1 節：八支 β-lactam 的延長輸注一覽（劑量方案在各自藥卡，此處不重複） */
+function renderBL(){
+  document.getElementById('bl-list').innerHTML = BL.map(function(b){
+    return '<div class="sp-fld"><span class="k">' + b.ab + '</span><span class="v">' +
+      '<b>' + drugLink(b.key, b.en) + '</b>　' + b.zh +
+      (b.gone ? '<span class="tr-cav">' + b.gone + '</span>' : '') +
+      '<span class="sp-refs" style="display:block; margin-top:3px">' + b.sol + '</span>' +
+      '<span class="sp-refs" style="display:block">延長輸注 4 小時的門檻：<b>' + b.mic +
+      '</b>　·　' + (b.key ? drugLink(b.key, '完整劑量方案 →') : '院內無此品項') + '</span>' +
+      '</span></div>';
+  }).join('');
+}
+
+function renderChips(){
+  var html = BL.map(function(b, i){
+    return '<button class="sp-chip' + (curBL === i ? ' on' : '') + '" onclick="setBL(' + i + ')">' +
+           b.ab + ' <span style="opacity:.6">' + b.zh + '</span></button>';
+  }).join('');
+  html += '<button class="sp-chip' + (curBL === -1 ? ' on' : '') + '" onclick="setBL(-1)">全部並列</button>';
+  document.getElementById('bl-chips').innerHTML = html;
+}
+
+function setBL(i){ curBL = i; renderYS(); }
+
+function matches(d, q){
+  return !q || (d.en + ' ' + d.zh).toLowerCase().indexOf(q) > -1;
+}
+
+function renderYS(){
+  var q = (document.getElementById('ys-q').value || '').trim().toLowerCase();
+  var list = YS.filter(function(d){ return matches(d, q); });
+  renderChips();
+  document.getElementById('ys-count').textContent = '顯示 ' + list.length + ' / ' + YS.length + ' 種藥品';
+  var box = document.getElementById('ys-list');
+  if (!list.length){ box.innerHTML = '<div class="sp-empty">沒有符合的藥品。</div>'; return; }
+
+  if (curBL === -1){
+    // 全部並列：一列一藥，八個徽章依 BL 順序
+    box.innerHTML = '<div class="sp-dept"><div class="sp-dept-head">' +
+      '<span class="sp-dept-zh">全部 β-lactam 並列</span>' +
+      '<span class="sp-dept-en">' + BL.map(function(b){ return b.ab; }).join(' · ') + '</span>' +
+      '<span class="sp-dept-n">' + list.length + ' 種</span></div>' +
+      list.map(function(d){
+        return '<div class="sp-op"><div class="sp-op-head">' +
+          '<span class="sp-op-t"><span class="sp-op-zh">' + d.zh + '</span>' +
+          '<span class="sp-op-en">' + drugLink(d.key, d.en) + '</span></span>' +
+          '<span class="tt-opts" style="margin-top:6px">' +
+          BL.map(function(b, i){
+            return '<span class="tr-rec ' + TIER[d.a[i]] + '">' + b.ab + ' ' + d.a[i] + '</span>';
+          }).join('') + '</span></div></div>';
+      }).join('') + '</div>';
+    return;
+  }
+
+  // 單一 β-lactam：拆成相容／不相容／無資料三組，最常問的是「能不能一起推」
+  var b = BL[curBL];
+  var groups = [
+    {s:'Y',  zh:'相容　可同一條路線 Y-site 併行', en:'Compatible'},
+    {s:'N',  zh:'不相容　須分開路線', en:'Incompatible'},
+    {s:'NA', zh:'原文件無資料　比照不相容處理', en:'No data'}
+  ];
+  box.innerHTML = '<div class="tr-cav" style="margin-bottom:12px">正在打的是 <b>' +
+      drugLink(b.key, b.en) + '（' + b.zh + '）</b>' +
+      (b.gone ? '——' + b.gone : '') + '</div>' +
+    groups.map(function(g){
+      var items = list.filter(function(d){ return d.a[curBL] === g.s; });
+      if (!items.length) return '';
+      return '<div class="sp-dept"><div class="sp-dept-head">' +
+        '<span class="sp-dept-zh">' + badge(g.s) + '　' + g.zh + '</span>' +
+        '<span class="sp-dept-en">' + g.en + '</span>' +
+        '<span class="sp-dept-n">' + items.length + ' 種</span></div>' +
+        items.map(function(d){
+          return '<div class="sp-op"><div class="sp-op-head"><span class="sp-op-t">' +
+            '<span class="sp-op-zh">' + d.zh + '</span>' +
+            '<span class="sp-op-en">' + drugLink(d.key, d.en) + '</span>' +
+            '</span></div></div>';
+        }).join('') + '</div>';
+    }).join('');
+}
+
+renderBL();
+renderYS();
+</script>
+
+<script src="../js/searchbar.js" defer></script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
