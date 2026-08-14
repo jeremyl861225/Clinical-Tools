@@ -102,6 +102,21 @@
      全名、濃度與各自的適應症移到表下的說明與 Taita 那一格，不佔欄寬。 */
   .fz-tbl td:first-child,.fz-tbl th:first-child{white-space:nowrap; width:1%;}
 
+  /* ── 靜脈營養液表：品名與規格合併進第一欄（使用者 2026-08-14 指定）──────
+     第一欄要放得下「Oliclinomel N7-1000E 歐諾美＋1500 mL/bag＋藥卡」三行，
+     所以它是唯一允許換行的欄；其餘成分欄一律壓窄，數字本來就短。 */
+  .pn-tbl td:first-child,.pn-tbl th:first-child{white-space:normal; width:1%; min-width:190px;}
+  .pn-tbl .pn-sz{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);
+                 line-height:1.5;}
+  .pn-tbl .pn-sz .gr{margin-left:4px;}
+  /* 成分欄（胺基酸、氮、葡萄糖、脂肪、總熱量、Na、K、滲透壓）壓到剛好放得下數字。
+     不設的話瀏覽器會把剩餘寬度平均分給八欄，每欄都比內容寬一大截。 */
+  .pn-tbl th:nth-child(n+2):nth-child(-n+9),
+  .pn-tbl td:nth-child(n+2):nth-child(-n+9){width:1%; padding-left:4px; padding-right:4px;}
+  /* 路徑欄如果不一起壓，剩下的寬度會全部倒進它（實測 299px），
+     整張表被拉寬、成分欄縮窄的效果等於白做。 */
+  .pn-tbl th:last-child,.pn-tbl td:last-child{width:1%; white-space:nowrap;}
+
   /* ── 凍結第一欄 ──────────────────────────────────────────────────
      手機橫捲時品名要留在畫面上。兩個關鍵，缺任何一個都會壞：
      (1) **border-collapse 必須是 separate**。collapse 時框線屬於「表格」而不是格子，
@@ -258,16 +273,6 @@
 <!-- ==================== 靜脈營養液 ==================== -->
 <div class="iv-panel" id="p-pn">
 
-  <div class="kbox">
-    <div class="kbox-t">這一頁的品項與規格以台大為準</div>
-    <b>2026-08-13 於台大院內網域重新查證台大藥劑部藥品資料庫</b>（先前那次站台回「系統維護中」，
-    只查得到全國藥證）。下表的<b>品名、袋裝規格、劑量與注意事項一律採台大的欄位</b>；
-    成分的細項（胺基酸組成、電解質 mmol 數）才用食藥署官方仿單補，並各自標明。<br>
-    <b>先前依仿單推的規格有錯，已更正</b>：Bfluid 台大是 <b>1000 mL/bag</b>（不是 500）、
-    Clinimix N17G35E 與 Oliclinomel N7-1000E 都是 <b>1500 mL/bag</b>、
-    Smoflipid 是 <b>250 mL/btl</b>。
-  </div>
-
   <div class="kbox alert">
     <div class="kbox-t">台大的 TPN 有「藥局配製」與「成品袋」兩條路，開單方式不一樣</div>
     <b>成品袋</b>是現成規格（Clinimix／Nutriflex／Oliclinomel／Olimel／Bfluid），直接開品項。<br>
@@ -295,20 +300,31 @@
   </div>
 
   <div class="tw">
-    <table class="def-table dt-cor" style="min-width:900px;">
+    <table class="def-table dt-cor fz-tbl pn-tbl" style="min-width:640px;">
       <thead><tr>
-        <th>台大品項</th><th>規格</th><th>胺基酸</th><th>氮</th><th>葡萄糖</th><th>脂肪</th>
+        <th>台大品項</th><th>胺基酸</th><th>氮</th><th>葡萄糖</th><th>脂肪</th>
         <th>總熱量</th><th>Na</th><th>K</th><th>滲透壓</th><th>路徑</th>
       </tr></thead>
       <tbody>
-        <tr><td><b>Bfluid</b> 必富力得<br><a href="../tools/drug-database.html#code=BFL1FC92" class="pmid">藥卡</a></td><td>1000 mL/bag</td><td>30</td><td>4.7</td><td>75</td><td>–</td><td>420</td><td>35</td><td>20</td><td>≈3×NS</td><td><span class="gr">周邊</span></td></tr>
-        <tr><td><b>Clinimix N17G35E</b> 克里密絲<br><a href="../tools/drug-database.html#code=CLI1FC27" class="pmid">藥卡</a></td><td>1500 mL/bag</td><td>50</td><td>8.3</td><td>175</td><td>–</td><td>900</td><td>35</td><td>30</td><td>1625</td><td><span class="gr w">中央</span></td></tr>
-        <tr><td><b>Nutriflex 70/240</b> 欣保康優<br><a href="../tools/drug-database.html#code=NUT1FC16" class="pmid">藥卡</a></td><td>1000・1500 mL/bag</td><td>70</td><td>10</td><td>240</td><td>–</td><td>1240</td><td>40.5</td><td>25.7</td><td>2100</td><td><span class="gr w">只限中央</span></td></tr>
-        <tr><td><b>Oliclinomel N7-1000E</b> 歐諾美<br><a href="../tools/drug-database.html#code=OLI1FCB2" class="pmid">藥卡</a></td><td>1500 mL/bag</td><td>40</td><td>6.6</td><td>160</td><td>40</td><td>1200</td><td>32</td><td>24</td><td>1450</td><td><span class="gr w">中央</span></td></tr>
-        <tr><td><b>Olimel N12E</b> 歐立美<br><span class="gr w">血液透析室專用</span></td><td>650 mL/bag</td><td colspan="7">依胺基酸攝取量定劑量：成人與 12–18 歲 <b>26 mL/kg/day</b>、2–11 歲 <b>33 mL/kg/day</b></td><td>—</td><td><span class="gr w">中央</span></td></tr>
-        <tr><td><b>Smoflipid 20%</b> 斯莫脂肪<br><a href="../tools/drug-database.html#code=SMO1FC09" class="pmid">藥卡</a></td><td>250 mL/btl</td><td>–</td><td>–</td><td>–</td><td>200</td><td>2000</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
-        <tr><td><b>Omegaven</b> 奧美嘉<br><span class="gr w">需簽署</span></td><td>10 g/100 mL/btl</td><td>–</td><td>–</td><td>–</td><td>100</td><td>—</td><td>–</td><td>–</td><td>—</td><td><span class="gr">純魚油</span></td></tr>
-        <tr><td><b>Dipeptiven</b> 雙胜胺</td><td>20 g/100 mL/btl</td><td colspan="7"><b>Alanyl-glutamine</b>，是<b>加在胺基酸溶液裡的補充品</b>，不是單獨的營養液</td><td>—</td><td><span class="gr w">未稀釋只能中央</span></td></tr>
+        <tr><td><b>Bfluid</b> 必富力得<br><span class="pn-sz">1000 mL/bag</span>
+            <a href="../tools/drug-database.html#code=BFL1FC92" class="pmid">藥卡</a></td>
+            <td>30</td><td>4.7</td><td>75</td><td>–</td><td>420</td><td>35</td><td>20</td><td>≈860</td><td><span class="gr">周邊</span></td></tr>
+        <tr><td><b>Clinimix N17G35E</b> 克里密絲<br><span class="pn-sz">1500 mL/bag</span>
+            <a href="../tools/drug-database.html#code=CLI1FC27" class="pmid">藥卡</a></td>
+            <td>50</td><td>8.3</td><td>175</td><td>–</td><td>900</td><td>35</td><td>30</td><td>1625</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Nutriflex 70/240</b> 欣保康優<br><span class="pn-sz">1000・1500 mL/bag</span>
+            <a href="../tools/drug-database.html#code=NUT1FC16" class="pmid">藥卡</a></td>
+            <td>70</td><td>10</td><td>240</td><td>–</td><td>1240</td><td>40.5</td><td>25.7</td><td>2100</td><td><span class="gr w">只限中央</span></td></tr>
+        <tr><td><b>Oliclinomel N7-1000E</b> 歐諾美<br><span class="pn-sz">1500 mL/bag</span>
+            <a href="../tools/drug-database.html#code=OLI1FCB2" class="pmid">藥卡</a></td>
+            <td>40</td><td>6.6</td><td>160</td><td>40</td><td>1200</td><td>32</td><td>24</td><td>1450</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Olimel N12E</b> 歐立美<br><span class="pn-sz">650 mL/bag<span class="gr w">血液透析室專用</span></span></td>
+            <td>75.8</td><td>12</td><td>73.2</td><td>35</td><td>950</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
+        <tr><td><b>Smoflipid 20%</b> 斯莫脂肪<br><span class="pn-sz">250 mL/btl</span>
+            <a href="../tools/drug-database.html#code=SMO1FC09" class="pmid">藥卡</a></td>
+            <td>–</td><td>–</td><td>–</td><td>200</td><td>2000</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
+        <tr><td><b>Omegaven</b> 奧美嘉<br><span class="pn-sz">10 g/100 mL/btl<span class="gr w">需簽署</span></span></td>
+            <td>–</td><td>–</td><td>–</td><td>100</td><td>—</td><td>–</td><td>–</td><td>—</td><td><span class="gr">純魚油</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -317,6 +333,13 @@
     <b>品名、規格與路徑取自台大藥品資料庫；每 1 L 的成分數字取自食藥署官方仿單</b>
     （仿單熱量用無水葡萄糖 4 kcal/g，照抄不換算）。
     <b>*Smoflipid 的 380 是 mOsm/kg H₂O（重量制），與其他欄位的容積制不能直接比。</b>
+    <b>Olimel N12E 的每 1 L 數字是從外盒標籤的三室容量換算的</b>，不是仿單直接給的
+    （該品項在食藥署只有 exportpdf 連結、抓不到仿單）：650 mL 袋＝脂肪乳 130 mL（17.5 g/100 mL）
+    ＋胺基酸液 347 mL（14.2 g/100 mL）＋葡萄糖液 173 mL（27.5 g/100 mL）。
+    以 4／4／10 kcal/g 回推得 946 kcal/L，與外盒標示的 <b>950 kcal/l</b> 相符，換算可靠；
+    <b>電解質外盒沒印，故留空</b>。外盒同時印明「僅供中央靜脈輸注」。<br>
+    <b>Dipeptiven（雙胜胺）已移到「添加劑」那一頁</b>——它是加在胺基酸溶液裡的補充品，
+    不是可以單獨掛的營養液，放在這張表會被誤讀成一種 PN。<br>
     Bfluid 仿單不給 mOsm/L，只給「對 0.9% saline 的滲透壓比約 3」，換算約 860 mOsm/L——
     <b>台大的用法欄寫的是「IF over 4 hrs，成人 1000 mL，每日上限 2500 mL」</b>，
     比仿單的「500 mL / 120 分鐘」慢，<b>以台大為準</b>。
@@ -510,6 +533,17 @@
               開單時直接選那個配方即可，不必再另外加。<br>
               <b>甘油磷酸鹽是有機磷，比無機磷酸鹽不易與鈣形成沉澱</b>，
               這正是含鈣的 PN 配方選它的理由。</td>
+        </tr>
+        <tr>
+          <td><b>Dipeptiven</b><br>雙胜胺<br>20 g/100 mL/btl<br>
+              <a href="../tools/drug-database.html#code=DIP1FC88" class="pmid">藥卡</a></td>
+          <td><b>Alanyl-glutamine</b>（丙胺醯麩醯胺）。<b>不是單獨的營養液，是加在胺基酸溶液裡的補充品</b>，
+              所以放在添加劑而不在靜脈營養液那張表。<br>
+              仿單用法：<b>每日 1.5–2.0 mL/kg</b>（70 kg 約 100–140 mL），
+              且<b>不得超過總胺基酸供應量的 20%</b>。</td>
+          <td><b>絕不可未稀釋直接輸注</b>——滲透壓約 921 mOsm/L，必須先混進胺基酸液或含胺基酸的 PN 液，
+              混合後每 100 mL Dipeptiven 至少要配 1 L 載體液。<br>
+              嚴重腎功能不全（CCr &lt;25 mL/min）與嚴重肝衰竭為禁忌。</td>
         </tr>
       </tbody>
     </table>

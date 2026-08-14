@@ -5194,3 +5194,11 @@
 [data-ui="sentence"] table.fz-tbl thead tr > *:first-child {
   background: linear-gradient(var(--sentence-shade), var(--sentence-shade)), var(--sentence-bg);
 }
+
+/* 靜脈營養液表：品名底下那行袋裝規格（.pn-sz）。頁面寫的是正式版的 --muted，
+   造句設計下要換成 --sentence-dim，否則暗色主題會偏綠、亮色偏暖，
+   與同一格內的品名不同調（leak.py 掃出 7 筆）。 */
+[data-ui="sentence"] table.def-table .pn-sz {
+  font-family: var(--sentence-mono);
+  color: var(--sentence-dim);
+}
