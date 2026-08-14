@@ -29,11 +29,14 @@
  * 掃到中段時 sinθ→0，畫面上的水平速度自然趨近零——牠是「朝著你游一段再轉開」，
  * 不是原地翻牌。轉身曲線刻意在中段放慢（見 turnEase），正臉那一格才看得清楚。
  *
- * 身體輪廓＝「解析輪廓線」∪「逐斷面的圓角矩形」，兩者同色、分兩次不透明填滿
- * （疊起來就是聯集，沒有接縫；為什麼不能塞進同一條 path 見 bodyOutline 上方）：
- *   · 側面時 cosθ→0，圓角矩形收成一格寬，輪廓由解析曲線決定 —— 邊緣平滑；
- *   · 正臉時 sinθ→0，解析輪廓收成一條線，身體由一疊圓角矩形撐出圓胖的橫斷面。
- * 一個公式從側面連續走到正臉，中間每一格都是真的投影，不是補間動畫。
+ * 身體是**一張切成四邊形的參數曲面**（u 沿體軸、ψ 繞體軸），逐片投影、逐片用
+ * 有向面積剔除背面。身體是凸的，所以背面剔除本身就等於完整的消隱，不必排深度。
+ * 腹白不是疊上去的一塊，而是 |ψ| ≤ ψv(u) 的那一圈面片——黑白交界自己會繞著
+ * 身體轉，側面、斜四十五度、正臉是同一組公式算出來的，沒有任何一種角度需要特例。
+ * 眼斑與鞍斑同樣是貼在曲面上的網格，所以會順著身體包過去，不會壓扁或飄起來。
+ *
+ * 姿態是三個**真旋轉**：滾轉（繞體軸）→ 俯仰（繞側向軸）→ 偏航（繞垂直軸），
+ * 行列式都是 +1，背面剔除的符號規則因此在任何姿態下都成立。
  *
  * 尾鰭是水平的（鯨豚上下擺尾），所以純側面時它其實只會投影成一條線。真要那樣
  * 畫，側面看起來就沒有尾巴了——這裡給尾鰭一個隨 |cosθ| 消長的假二面角：側面時
@@ -102,7 +105,7 @@
     D.flukeLen = L * .10;
     D.flukeH = L * .115;
     D.dorU = .44; D.dorW = L * .16; D.dorH = L * .235; D.dorSweep = L * .095;
-    D.pecU = .26; D.pecLen = L * .155; D.pecW = L * .082; D.pecAng = .62;
+    D.pecU = .26; D.pecLen = L * .190; D.pecW = L * .086;
     D.eyeU = .105;
     D.span = L + D.flukeLen;
   }
@@ -132,7 +135,7 @@
     gliding: false, beatT: 2.5,    // 衝刺—滑行：虎鯨不會整天勻速擺尾
     turnCool: 0,                   // 轉身冷卻，避免一直翻來覆去
     pmx: 0, pmy: 0,                // 上一幀嘴的位置（命中判定用線段而非單點）
-    roll: 1,                       // 翻滾特技用的上下鏡射（1 → −1 → 1）
+    rollA: 0,                      // 滾轉角（繞體軸的**真旋轉**，不是上下鏡射）
     tx: 0, ty: 0, wait: 0,
     turn: null,                    // { from, to, t, dur }
     trick: null,                   // { kind, t, dur }
@@ -165,155 +168,63 @@
   }
 
   /* ================================================================
-   * 幾何 → 畫面
-   * ================================================================ */
+   * 幾何 → 畫面：一張真正的 3D 網格
+   * ================================================================
+   * 先前是「解析側面輪廓 ∪ 逐斷面圓角矩形」的混合作法。兩套幾何各自只在
+   * 一種角度是精確的，交界處就出毛病，而且兩個毛病都是它造成的：
+   *   · 正臉時解析路徑退化成寬度不到一像素、末端還收成一點的細片
+   *     ——畫面上就是從嘴巴往上戳的那根白尖刺；
+   *   · 側身時下顎與腹白是**兩次 fill**，共用的那一條邊各自只覆蓋半格像素，
+   *     疊起來是 0.75 不是 1，背景就從縫裡透出來——那條垂直的灰線。
+   *
+   * 現在只有一套幾何。體表當成參數曲面：
+   *     u ∈ [0,1] 沿體軸（0 吻端、1 尾柄末端）
+   *     ψ ∈ [0,2π) 繞體軸（0 腹中線、π 背中線、(0,π) 是鯨魚的右舷）
+   * 每個斷面是橢圓（背側半軸 topH、腹側 botH、側向 halfW）。整片曲面切成
+   * 四邊形，投影後**用有向面積的正負剔除背面**，留下的就是真正看得到的那一面
+   *（身體是凸的，背面剔除本身就等於完整的消隱）。
+   *
+   * 腹白不再是「疊上去的一塊」，而是 |ψ| ≤ ψv(u) 的那一圈面片，黑白交界
+   * 因此自己會繞著身體轉——側面、斜四十五度、正臉都是同一組公式算出來的，
+   * 沒有任何一種角度需要特例。
+   *
+   * 姿態是三個**真旋轉**：滾轉（繞體軸）→ 俯仰（繞側向軸）→ 偏航（繞垂直軸）。
+   * 行列式都是 +1，所以背面剔除的符號規則在任何姿態下都成立。先前的滾轉是
+   * scale(1,-1) 的鏡射，那會把符號翻掉。
+   */
+  var TR = { cr: 1, sr: 0, cp: 1, sp: 0, S: 1, C: 0, ox: 0, oy: 0 };
+  function setPose(roll, pitch, th, ox, oy) {
+    TR.cr = Math.cos(roll); TR.sr = Math.sin(roll);
+    TR.cp = Math.cos(pitch); TR.sp = Math.sin(pitch);
+    TR.S = Math.sin(th); TR.C = Math.cos(th);
+    TR.ox = ox; TR.oy = oy;
+  }
+  /* 體座標 →（螢幕 x, 螢幕 y, 深度）。深度大者近。
+     投影是仿射的，所以貝茲曲線的控制點可以直接投影後照用（仿射把貝茲映成
+     同階的貝茲）——鰭因此不必切網格。 */
+  var _q = [0, 0, 0], _q2 = [0, 0, 0];
+  function proj(X, Y, Z, out) {
+    var y1 = Y * TR.cr - Z * TR.sr, z1 = Y * TR.sr + Z * TR.cr;
+    var x2 = X * TR.cp - y1 * TR.sp, y2 = X * TR.sp + y1 * TR.cp;
+    out[0] = TR.ox + x2 * TR.S + z1 * TR.C;
+    out[1] = TR.oy + y2;
+    out[2] = x2 * TR.C - z1 * TR.S;
+    return out;
+  }
+  /* 體軸座標：X=0 是身體中心（也就是 o.x/o.y 那一點），+X 朝吻端。 */
+  function bx(u) { return D.span * .5 - u * D.L; }
+
   /* 行進波：虎鯨是上下擺尾（背腹向），不是魚那種左右擺。振幅隨 u^1.6 增大——
      頭幾乎不動、力量全在尾柄與尾鰭；頭部保留 0.07 的底噪，完全不動反而僵硬。 */
   function spine(u) {
     return D.amp * (.07 + Math.pow(Math.min(1.35, u), 1.6)) * o.thrust *
            Math.sin(o.phase - u * D.wave * TAU);
   }
-  /* 張嘴＝把**下顎整片**繞著嘴角轉開，身體本身一格都不動。
-     先前的作法是「u<0.24 的下緣往下掉」，有兩個毛病：一是嘴巴閉不出縫，
-     只是把頭腫大一塊；二是張嘴幅度由「吻端到魚的距離」即時算出，而吻端本身
-     隨著擺尾一直在動，於是整條腹線每一幀都被改寫一次——那就是使用者看到的抖動。
-     現在幅度另外做平滑（見 step()），而且只作用在下顎那一片上。
-     MU＝嘴角所在的體長座標；下顎的上緣就是腹白的上緣（虎鯨黑白的交界正是嘴線）。 */
-  var MU = .20;
-  function jawAngle(S) { return o.gape * .5 * (S < 0 ? -1 : 1); }
-
-  /* 身體＝「解析輪廓」∪「逐斷面圓角矩形」。
-     兩者一定要**分兩次 fill**，不可以塞進同一條 path 一次填：解析輪廓的繞行
-     方向（沿背緣往尾、再沿腹緣回頭）與 roundRect 的順時針相反，而且鯨魚朝左時
-     sinθ<0 會把整條輪廓再鏡射一次、方向又翻回來。同一條 path 用 nonzero 填，
-     繞向相反的重疊處會互相抵消 —— 畫面上是一條被梳成一格一格的斑馬鯨。
-     兩次 fill 同色不透明，疊起來就是乾淨的聯集，沒有接縫也沒有繞向問題。 */
-  /* 取樣刻意不均勻：u = t^1.8，樣點往吻端集中。均勻切 40 段時，第一段（u=0→0.025）
-     是一條直線，而額隆的曲率全在那 0.025 之內——整顆頭就被那一條直線削平了。
-     後半身曲率平緩，樣點少一點反而剛好。 */
-  function headU(t) { return Math.pow(t, 1.8); }
-  function bodyOutline(g, S) {
-    var N = 54, i, u;
-    g.beginPath();
-    for (i = 0; i <= N; i++) {                       // 背緣：吻 → 尾柄
-      u = headU(i / N);
-      var x = -u * D.L * S, y = spine(u) - topH(u);
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    for (i = N; i >= 0; i--) {                       // 腹緣：尾柄 → 嘴角
-      u = headU(i / N);
-      if (u < MU) break;
-      g.lineTo(-u * D.L * S, edgeBot(u));
-    }
-    for (i = 18; i >= 0; i--) {                      // 嘴角 → 吻：走嘴線（＝腹白上緣）
-      u = MU * Math.pow(i / 18, 1.6);
-      g.lineTo(-u * D.L * S, edgeVent(u));
-    }
-    g.closePath();
-  }
-  /* 下顎的側向鼓起。少了這一段，正臉時（sinθ→0）整片下顎會塌成一條沒有寬度
-     的白線，而 u=0 那一端收斂成一個點——畫面上就是從嘴巴中央往上戳的一根白尖刺。
-     虎鯨從正面看，白色下顎本來就跟頭一樣寬。 */
-  function jawRibs(g, S, C) {
-    var ac = Math.abs(C);
-    if (ac < .06) { g.beginPath(); return; }
-    var M = 10, d = MU / M, i;
-    g.beginPath();
-    for (i = 0; i <= M; i++) {
-      var u = MU * i / M;
-      var hw = halfW(u) * .62 * ac + D.L * Math.abs(S) * MU / M * .55 + .4;
-      var y0 = ribSpan(u, d, edgeVent, 1), y1 = ribSpan(u, d, edgeBot, -1);
-      if (y1 - y0 < .8) continue;
-      rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0,
-            Math.min(hw, (y1 - y0) / 2) * ac);
-    }
-  }
-  /* 下顎：u∈[0,MU] 之間、嘴線與腹緣之間的那一片。整片繞嘴角旋轉，
-     張開後上下顎之間就是**沒有填色的空隙**——從那裡看得到後面的頁面。 */
-  function jawPath(g, S) {
-    var N = 18, i, u;
-    g.beginPath();
-    for (i = 0; i <= N; i++) {
-      u = MU * Math.pow(i / N, 1.6);                 // 同樣往吻端集中
-      var x = -u * D.L * S, y = edgeVent(u);
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    for (i = N; i >= 0; i--) {
-      u = MU * Math.pow(i / N, 1.6);
-      g.lineTo(-u * D.L * S, edgeBot(u));
-    }
-    g.closePath();
-  }
-  /* 肋條的上下緣一律取「自己涵蓋的那一小段裡最保守的值」（上緣取最低、下緣取
-     最高）。每條肋條的頂是平的，而真正的輪廓在那 5–7 px 內是斜的，直接用中點
-     的值會讓平頂凸出平滑輪廓之外——側身時看起來就是白肚子上緣一排規律的扇貝，
-     使用者說的「奇怪的線條」就是它。取保守值之後肋條永遠縮在輪廓之內，中間
-     露出來的縫由解析輪廓本身補滿。 */
-  function ribSpan(u, d, fn, mode) {
-    var a = fn(Math.max(0, u - d)), b = fn(u), c = fn(Math.min(1, u + d));
-    return mode > 0 ? Math.max(a, b, c) : Math.min(a, b, c);
-  }
-  function edgeTop(u) { return spine(u) - topH(u); }
-  function edgeBot(u) { return spine(u) + botH(u); }
   function edgeVent(u) { return spine(u) + botH(u) - ventH(u); }
+  /* 嘴角所在的體長座標。u<MU 的那一段腹白就是**下顎**——虎鯨黑白的交界正是嘴線。 */
+  var MU = .20;
 
-  /* ---- 逐斷面的側向鼓起：**由遠而近**，暗色面與腹白交錯畫 ----
-     這裡的順序是關鍵。轉到正臉時 sinθ→0，所有斷面都疊在同一個 x 上；先前
-     是「整條身體畫完、再把整條腹白蓋上去」，於是後半身那一大片白直接印在
-     臉上。正確的作法是畫家演算法：從最遠的斷面往最近的畫，每一個斷面先畫
-     自己的暗色橫斷面、再畫自己的腹白，近的暗面因此會把遠的白蓋掉。
-     吻端朝著使用者（cosθ≥0）時由尾往頭畫，背對時反過來。
-     完全側面（|cosθ|<0.06）時斷面不重疊，解析輪廓已經是精確解，整段跳過。 */
-  function ribs(g, S, C, P) {
-    var ac = Math.abs(C);
-    if (ac < .06) return;
-    var M = 30, d = 1 / M, headNear = C >= 0, k, i, u;
-    for (k = 0; k <= M; k++) {
-      i = headNear ? M - k : k;
-      u = i / M;
-      var hw = halfW(u) * ac + D.L * Math.abs(S) / M * .55 + .5;
-      var y0 = ribSpan(u, d, edgeTop, 1);
-      var y1 = ribSpan(u, d, u < MU ? edgeVent : edgeBot, -1);
-      if (y1 - y0 > 1) {
-        g.beginPath();
-        rrect(g, -u * D.L * S - hw, y0, hw * 2, y1 - y0,
-              Math.min(hw, (y1 - y0) / 2) * ac);
-        g.fillStyle = P.skin; g.fill();
-      }
-      if (u >= MU && ventH(u) > .5) {
-        var vw = halfW(u) * .58 * ac + D.L * Math.abs(S) / M * .55 + .4;
-        var v0 = ribSpan(u, d, edgeVent, 1), v1 = ribSpan(u, d, edgeBot, -1);
-        if (v1 - v0 > 1) {
-          g.beginPath();
-          rrect(g, -u * D.L * S - vw, v0, vw * 2, v1 - v0,
-                Math.min(vw, (v1 - v0) / 2) * ac);
-          g.fillStyle = P.belly; g.fill();
-        }
-      }
-    }
-  }
-  /* 解析腹白：提供**平滑的上緣**，所以必須畫在肋條「之後」——逐斷面的肋條
-     上下緣是一條條水平線，只靠它們，白帶的邊就是一階一階的。
-     但它涵蓋整條身體、沒有深度資訊，正臉時就會把後半身的白印到臉上。解法是
-     依偏航角收縮它的範圍：|sinθ| 大（接近側面，前後不重疊）時畫滿整條；
-     |sinθ| 小（接近正臉）時只畫到 u≈0.34，也就是從正面真的看得到的胸腹那一段，
-     再往後的白本來就被自己的身體擋住了。 */
-  function ventOutline(g, S) {
-    var e = Math.min(1, Math.max(0, (Math.abs(S) - .12) / .38));
-    var uEnd = MU + (1 - MU) * (.18 + .82 * e);
-    var N = 30, i, u;
-    g.beginPath();
-    for (i = 0; i <= N; i++) {                       // 腹緣：嘴角 → 尾柄
-      u = MU + (uEnd - MU) * i / N;
-      var x = -u * D.L * S, y = edgeBot(u);
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    for (i = N; i >= 0; i--) {                       // 腹白上緣折回
-      u = MU + (uEnd - MU) * i / N;
-      g.lineTo(-u * D.L * S, edgeVent(u));
-    }
-    g.closePath();
-  }
+  /* 圓角矩形（只剩藥丸在用了） */
   function rrect(g, x, y, w, h, r) {
     if (h <= 0 || w <= 0) return;
     r = Math.max(0, Math.min(r, w / 2, h / 2));
@@ -326,185 +237,327 @@
     g.closePath();
   }
 
-  /* 背鰭：長在正中矢狀面上，所以水平方向隨 sinθ 收縮；正臉時仍留一點厚度，
-     否則牠會整片消失，而虎鯨從正面看，背鰭正是最先認出來的那一筆。 */
-  function dorsalPath(g, S) {
-    var u = D.dorU, sy = spine(u), bx = -u * D.L * S, by = sy - topH(u) + 2;
-    g.beginPath();
-    g.moveTo(bx + D.dorW / 2 * S, by);
-    g.quadraticCurveTo(bx + D.dorW * .16 * S, by - D.dorH * 1.02,
-                       bx - D.dorSweep * S, by - D.dorH);
-    g.quadraticCurveTo(bx - D.dorW * .26 * S, by - D.dorH * .30,
-                       bx - D.dorW / 2 * S, by + 1);
-    g.closePath();
-    /* 鰭的「厚度」（隨 cosθ 長出來）必須沿著基部→鰭尖那條後掠的軸做成一片漸細
-       的葉片。做成一根垂直的柱子會出事：鰭是往後掠的，柱子與三角形在頂端分岔，
-       畫面上會冒出兩根天線。 */
-  }
-  /* 鰭的「厚度」隨 cosθ 長出來，另外一次 fill（繞向理由同 bodyRibs）。
-     它必須沿著基部→鰭尖那條後掠的軸做成一片漸細的葉片：做成一根垂直的柱子，
-     頂端會與三角形分岔，畫面上冒出兩根天線。 */
-  function dorsalBlade(g, S, C) {
-    var th = D.dorW * .20 * Math.abs(C);
-    if (th <= .6) return false;
-    var u = D.dorU, by = spine(u) - topH(u) + 2, bx = -u * D.L * S;
-    var tx = bx - D.dorSweep * S, ty = by - D.dorH;
-    g.beginPath();
-    g.moveTo(bx - th, by);
-    g.quadraticCurveTo(bx - th, by - D.dorH * .5, tx - th * .34, ty);
-    g.lineTo(tx + th * .34, ty);
-    g.quadraticCurveTo(bx + th, by - D.dorH * .5, bx + th, by);
-    g.closePath();
-    return true;
+  /* 腹白的邊界落在哪一個 ψ：白帶從腹中線（ψ=0）往兩側包，包到 edgeVent 那個
+     高度為止。白帶爬過體軸（ventH > botH）時邊界跑到背側那一半，cos 為負，
+     acos 一體處理，不必分支。u=0 與 u=1 兩端 ventH=0，ψv=0，白帶自然收成一點。 */
+  function ventPsi(u) {
+    var b = botH(u), t = topH(u), y = b - ventH(u);
+    var c = y >= 0 ? (b > 1e-6 ? y / b : 1) : (t > 1e-6 ? y / t : -1);
+    return Math.acos(c < -1 ? -1 : c > 1 ? 1 : c);
   }
 
-  /* 胸鰭：基部在體側 Z=±hw，鰭尖再往外撇。side=+1／−1 是鯨魚的左右兩側，
-     哪一邊近由深度決定（見檔頭投影式），近的畫在身體之後。 */
-  function pecPath(g, S, C, side) {
-    var u = D.pecU, sy = spine(u);
-    var bz = halfW(u) * side, tz = (halfW(u) + D.pecLen * .5) * side;
-    var bX = -u * D.L, tX = bX - D.pecLen * Math.cos(D.pecAng);
-    var bx = bX * S + bz * C, by = sy + botH(u) * .45;
-    var tx = tX * S + tz * C, ty = by + D.pecLen * Math.sin(D.pecAng);
-    /* 槳狀：前緣（近吻側）微凸、後緣飽滿，鰭尖收成圓角。虎鯨的胸鰭是很寬的
-       一片槳，畫窄了就變成壓在白肚子上的一道刮痕——那正是使用者看到的怪線條。 */
-    var nx = (tx - bx) / D.pecLen, ny = (ty - by) / D.pecLen;   // 沿鰭的單位向量
-    var px = -ny, py = nx;                                      // 垂直方向
-    var w = D.pecW;
-    g.beginPath();
-    g.moveTo(bx + px * w * .35, by + py * w * .35);
-    g.quadraticCurveTo(bx + nx * D.pecLen * .55 + px * w * .55,
-                       by + ny * D.pecLen * .55 + py * w * .55,
-                       tx + px * w * .12, ty + py * w * .12);
-    g.quadraticCurveTo(tx - px * w * .3, ty - py * w * .3,
-                       tx - px * w * .34, ty - py * w * .34);
-    g.quadraticCurveTo(bx + nx * D.pecLen * .45 - px * w * .95,
-                       by + ny * D.pecLen * .45 - py * w * .95,
-                       bx - px * w * .75, by - py * w * .75);
-    g.closePath();
-  }
-
-  /* 尾鰭：橫向的一片板子（w 從 −1 到 1）。純側面時給它一個假的二面角，
-     兩葉張成新月；正臉時攤平成橫板。 */
-  function flukePt(w, S, C) {
-    var X = -D.L - D.flukeLen * (1 - .32 * Math.abs(w));
-    var Z = w * D.flukeH;
-    var lift = w * D.flukeH * .92 * (1 - Math.abs(C));
-    return { x: X * S + Z * C, y: spine(1 + .28 * Math.abs(w)) + lift };
-  }
-  function flukePath(g, S, C) {
-    var root = { x: -D.L * S, y: spine(1) };
-    var up = flukePt(1, S, C), dn = flukePt(-1, S, C);
-    var nk = flukePt(0, S, C);
-    var m1 = flukePt(.55, S, C), m2 = flukePt(-.55, S, C);
-    g.beginPath();
-    g.moveTo(root.x, root.y);
-    g.quadraticCurveTo(m1.x * .75 + root.x * .25, m1.y * .8 + root.y * .2, up.x, up.y);
-    g.quadraticCurveTo((up.x + nk.x) / 2, (up.y + nk.y) / 2 - (up.y - nk.y) * .18,
-                       nk.x, nk.y);
-    g.quadraticCurveTo((dn.x + nk.x) / 2, (dn.y + nk.y) / 2 - (dn.y - nk.y) * .18,
-                       dn.x, dn.y);
-    g.quadraticCurveTo(m2.x * .75 + root.x * .25, m2.y * .8 + root.y * .2, root.x, root.y);
-    g.closePath();
-  }
-
-  /* 臉：白眼斑（兩側各一）＋眼。眼斑貼在體側，正臉時看到的是掠角，
-     會收得很窄——留 0.3 的下限，正臉那一格才還看得出是一張臉。 */
-  function drawFace(g, S, C, P) {
-    var u = D.eyeU, sy = spine(u), hw = halfW(u);
-    var fx = .30 + .70 * Math.abs(S);
-    var pw = D.H * .95 * fx, ph = D.H * .42;
-    for (var i = 0; i < 2; i++) {
-      var side = i ? 1 : -1;
-      // 這一側是否朝著使用者：深度 d = −Z·sinθ（頭部 X≈0）
-      var near = -side * S;
-      if (near < -.12) continue;                       // 完全背對就不畫
-      var cx = -u * D.L * S + (hw * .92 * side) * C;
-      var cy = sy - topH(u) * .04;
-      g.save();
-      g.translate(cx, cy);
-      g.rotate(-.16 * (S >= 0 ? 1 : -1));
-      g.beginPath(); g.ellipse(0, 0, pw / 2, ph / 2, 0, 0, TAU);
-      g.fillStyle = P.belly; g.fill();
-      g.restore();
-    }
-    /* 眼珠拿掉了（使用者指定）。留下來的是白色眼斑——那是虎鯨的斑紋，
-       不是五官，也是這一款雙色平塗唯一需要的一筆。 */
-    /* 這裡曾經有一條半透明的嘴線。拿掉了：它畫在下顎，而下顎正是腹白的範圍，
-       側身時就變成一道橫過白肚子的深色刮痕——既不是虎鯨身上有的東西，也違背
-       這一款「雙色平塗、沒有描邊」的設定。嘴的位置本來就由深淺交界表達。 */
-  }
-
-  function drawWhale(g, sc) {
-    var S = Math.sin(o.th), C = Math.cos(o.th);
-    g.save();
-    g.translate(o.x, o.y - (sc || 0));
-    g.rotate(o.pitch * S);                 // 俯仰：面向左時方向相反，乘 S 自動處理
-    g.scale(1, o.roll);                    // 翻滾特技
-    g.translate(D.span / 2 * S, 0);        // 原點移到吻端
-
-    var headNear = C >= 0;                 // 吻端朝著使用者？決定前後遮擋順序
-    var farSide = S >= 0 ? 1 : -1;         // 遠側胸鰭
-
-    function fins() {
-      dorsalPath(g, S); g.fill();
-      if (dorsalBlade(g, S, C)) g.fill();
-      flukePath(g, S, C); g.fill();
-    }
-    /* 下顎：整片繞嘴角轉開。閉著（gape=0）時它剛好貼回原位，合起來與「一片
-       完整的身體」逐像素相同；張開時上下顎之間不填任何顏色，那道縫是真的透空。 */
-    function jaw() {
-      g.fillStyle = P.belly;
-      var ja = jawAngle(S);
-      g.save();
-      if (ja) {
-        var hx = -MU * D.L * S, hy = edgeVent(MU);
-        g.translate(hx, hy); g.rotate(ja); g.translate(-hx, -hy);
+  /* ---- 一個斷面的所有節點 ----
+     節點排法刻意讓「白帶邊界」剛好落在格點上（索引 KB 與 KB+1 都是 ψv），
+     黑白交界因此是精確的，不會被格點量化成階梯。
+     索引 0..KB      ：腹白那一圈（−ψv → +ψv）；u<MU 時這一段就是**下顎**，
+                       整片繞嘴角轉開，上下顎之間留下的縫是真的透空。
+     索引 KB+1..KN−1 ：暗色那一圈（+ψv → 2π−ψv），不跟著下顎轉。
+     兩圈之間那一格（KB → KB+1）不畫，那正是嘴。 */
+  var KB = 6, KD = 12, KN = KB + KD + 2;
+  var NA = new Float64Array(KN * 2), NB = new Float64Array(KN * 2);
+  var JX = 0, JY = 0, JC = 1, JS = 0;
+  function station(u, arr, jaw) {
+    if (u >= MU) jaw = 0;             // 只有嘴角前面那一段是下顎，後面的腹白不動
+    var sp = spine(u), t = topH(u), b = botH(u), w = halfW(u), X0 = bx(u);
+    var pv = ventPsi(u), k, ps, cs, sn, Y, Z, X, dx, dy;
+    for (k = 0; k < KN; k++) {
+      ps = k <= KB ? pv * (2 * k / KB - 1)
+                   : pv + (TAU - 2 * pv) * (k - KB - 1) / KD;
+      cs = Math.cos(ps); sn = Math.sin(ps);
+      Y = sp + (cs >= 0 ? b : t) * cs;
+      Z = w * sn;
+      X = X0;
+      if (jaw && k <= KB) {
+        dx = X - JX; dy = Y - JY;
+        X = JX + dx * JC - dy * JS; Y = JY + dx * JS + dy * JC;
       }
-      jawRibs(g, S, C); g.fill();
-      if (!THIN) { jawPath(g, S); g.fill(); }
-      g.restore();
-      g.fillStyle = P.skin;
+      proj(X, Y, Z, _q);
+      arr[k * 2] = _q[0]; arr[k * 2 + 1] = _q[1];
     }
-    /* 幾乎正對鏡頭時，三條解析路徑（身體輪廓、腹白、下顎）全部退化成寬度不到
-       一個像素的長條——它們不再描述任何形狀，卻會從肋條堆出來的圓身體裡戳出來，
-       畫面上就是嘴巴中央那根往上的白尖刺。這種角度一律交給肋條，它們本來就是
-       為了正臉而存在的。 */
-    var THIN = Math.abs(S) < .12;
-    function trunk() {
-      if (!headNear) jaw();                          // 背對：頭在最遠端，先畫再被身體蓋掉
-      g.fillStyle = P.skin;
-      if (!THIN) { bodyOutline(g, S); g.fill(); }    // 平滑的暗色輪廓（側面時的真值）
-      ribs(g, S, C, P);                              // 逐斷面、由遠而近（處理前後遮擋）
-      g.fillStyle = P.belly;
-      if (!THIN) { ventOutline(g, S); g.fill(); }    // 平滑的腹白上緣，蓋掉肋條的階梯
-      if (headNear) jaw();
-      g.fillStyle = P.skin;
+  }
+  /* 把兩個斷面之間 [k0,k1) 的四邊形加進**目前這條 path**。
+     有向面積 ≤ 0 就是背面（或退化），直接跳過。
+     一條帶的所有面片一定要收進同一條 path 一次 fill：同一條 path 內部相鄰的
+     子路徑不會產生抗鋸齒接縫（光柵器一次算完整條路徑的覆蓋率），拆成多次
+     fill 才會——那就是先前那條垂直灰線的成因。 */
+  function bandQuads(g, A, B, k0, k1) {
+    var k, x0, y0, x1, y1, x2, y2, x3, y3, ar, any = false;
+    for (k = k0; k < k1; k++) {
+      x0 = A[k * 2];     y0 = A[k * 2 + 1];
+      x1 = A[k * 2 + 2]; y1 = A[k * 2 + 3];
+      x2 = B[k * 2 + 2]; y2 = B[k * 2 + 3];
+      x3 = B[k * 2];     y3 = B[k * 2 + 1];
+      ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
+           (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
+      if (ar <= .03) continue;
+      g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
+      g.closePath(); any = true;
     }
-
-    g.fillStyle = P.skin;
-    pecPath(g, S, C, farSide); g.fill();      // 遠側胸鰭永遠在身體之後
-    if (headNear) {
-      fins(); trunk();
-      pecPath(g, S, C, -farSide); g.fill();
-      drawFace(g, S, C, P);
-    } else {                                  // 背面：尾鰭與背鰭在前，臉不畫
-      trunk();
-      pecPath(g, S, C, -farSide); g.fill();
-      fins();
-    }
-    g.restore();
+    return any;
   }
 
-  /* 把身上任一點（體長座標 u、偏離體軸 off）換算成畫面座標。
-     用的是與 drawWhale 完全相同的那串變換：
-       T(中心) · R(俯仰·sinθ) · S(1, roll) · T(半個身長·sinθ, 0)
-     餵食判定必須走這一支，才會與畫面上真正看到的位置一致。 */
+  /* ---- 貼在體表上的斑塊（眼斑、鞍斑）----
+     一樣切成網格、一樣逐片背面剔除，所以斑塊會**沿著身體的曲面包過去**，
+     轉到哪個角度都不會壓扁或飄在身體外面；跨過輪廓線的那一半自己就被剔掉了。
+     (uc,pc) 是斑塊中心、(ru,rp) 是兩個半徑、sk 是往體後上方的傾斜量。 */
+  var PAT = new Float64Array(4 * 16 * 2);
+  function surfPt(u, ps, out) {
+    var sp = spine(u), cs = Math.cos(ps);
+    return proj(bx(u), sp + (cs >= 0 ? botH(u) : topH(u)) * cs,
+                halfW(u) * Math.sin(ps), out);
+  }
+  function patchMesh(g, uc, ru, pc, rp, sk) {
+    var NR = 3, NT = 16, i, j, j2, r, a, ca, sa, any = false, base;
+    for (i = 0; i <= NR; i++) {
+      r = i / NR;
+      for (j = 0; j < NT; j++) {
+        a = TAU * j / NT; ca = Math.cos(a); sa = Math.sin(a);
+        surfPt(uc + ru * r * ca, pc + rp * r * sa + sk * r * ca, _q);
+        base = (i * NT + j) * 2;
+        PAT[base] = _q[0]; PAT[base + 1] = _q[1];
+      }
+    }
+    for (i = 0; i < NR; i++) {
+      for (j = 0; j < NT; j++) {
+        j2 = (j + 1) % NT;
+        var a0 = (i * NT + j) * 2, a1 = (i * NT + j2) * 2,
+            b1 = ((i + 1) * NT + j2) * 2, b0 = ((i + 1) * NT + j) * 2;
+        var x0 = PAT[a0], y0 = PAT[a0 + 1], x1 = PAT[a1], y1 = PAT[a1 + 1],
+            x2 = PAT[b1], y2 = PAT[b1 + 1], x3 = PAT[b0], y3 = PAT[b0 + 1];
+        var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
+                 (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
+        if (ar <= .02) continue;
+        g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
+        g.closePath(); any = true;
+      }
+    }
+    return any;
+  }
+
+  /* ---- 有厚度的板子：背鰭、胸鰭、尾鰭都走這一支 ----
+     正反兩面各一圈輪廓，再加上把兩圈接起來的側帶，全部收進同一條 path。
+     兩件事都不能省：
+       · 三種子路徑**強制成同一個繞向**——繞向不一致時 nonzero 會讓重疊處
+         互相抵消，畫面上是被挖空的鰭；
+       · 一定要有側帶——板子快要與視線平行時（背鰭轉到正臉那一刻）正反兩圈
+         在畫面上分得開，少了側帶，中間那條縫就裂成兩根天線。 */
+  var PPX = new Float64Array(64), PPY = new Float64Array(64),
+      QPX = new Float64Array(64), QPY = new Float64Array(64),
+      BX = new Float64Array(64), BY = new Float64Array(64),
+      BZ = new Float64Array(64), BT = new Float64Array(64);
+  function poly4(g, x0, y0, x1, y1, x2, y2, x3, y3) {
+    var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
+             (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
+    if (ar > -.02 && ar < .02) return;
+    g.moveTo(x0, y0);
+    if (ar > 0) { g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3); }
+    else { g.lineTo(x3, y3); g.lineTo(x2, y2); g.lineTo(x1, y1); }
+    g.closePath();
+  }
+  function loopPath(g, X, Y, n) {
+    var i, j, ar = 0;
+    for (i = 0; i < n; i++) { j = (i + 1) % n; ar += X[i] * Y[j] - X[j] * Y[i]; }
+    if (ar >= 0) {
+      g.moveTo(X[0], Y[0]);
+      for (i = 1; i < n; i++) g.lineTo(X[i], Y[i]);
+    } else {
+      g.moveTo(X[n - 1], Y[n - 1]);
+      for (i = n - 2; i >= 0; i--) g.lineTo(X[i], Y[i]);
+    }
+    g.closePath();
+  }
+  function plate(g, n, nx, ny, nz) {
+    var i, j, t;
+    for (i = 0; i < n; i++) {
+      t = BT[i];
+      proj(BX[i] - nx * t, BY[i] - ny * t, BZ[i] - nz * t, _q);
+      PPX[i] = _q[0]; PPY[i] = _q[1];
+      proj(BX[i] + nx * t, BY[i] + ny * t, BZ[i] + nz * t, _q);
+      QPX[i] = _q[0]; QPY[i] = _q[1];
+    }
+    loopPath(g, PPX, PPY, n);
+    loopPath(g, QPX, QPY, n);
+    for (i = 0; i < n; i++) {
+      j = (i + 1) % n;
+      poly4(g, PPX[i], PPY[i], PPX[j], PPY[j], QPX[j], QPY[j], QPX[i], QPY[i]);
+    }
+  }
+  function qbez(p0, p1, p2, t) {
+    var m = 1 - t;
+    return m * m * p0 + 2 * m * t * p1 + t * t * p2;
+  }
+
+  /* 背鰭：矢狀面上一片後掠的鐮刀。厚度從基部線性收到鰭尖的 0。 */
+  var FN = 20;
+  function dorsalFin(g) {
+    var u = D.dorU, X0 = bx(u), Y0 = spine(u) - topH(u) + 2;
+    var th = D.dorW * .20, i, t, n = FN >> 1;
+    var aX = X0 + D.dorW * .50, aY = Y0;
+    var cX = X0 + D.dorW * .14, cY = Y0 - D.dorH * .99;
+    var tX = X0 - D.dorSweep,   tY = Y0 - D.dorH;
+    var dX = X0 - D.dorW * .26, dY = Y0 - D.dorH * .30;
+    var eX = X0 - D.dorW * .50, eY = Y0 + 1;
+    for (i = 0; i < FN; i++) {
+      if (i < n) { t = i / (n - 1); BX[i] = qbez(aX, cX, tX, t); BY[i] = qbez(aY, cY, tY, t); }
+      else { t = (i - n + 1) / n; BX[i] = qbez(tX, dX, eX, t); BY[i] = qbez(tY, dY, eY, t); }
+      BZ[i] = 0;
+      BT[i] = th * Math.max(0, 1 - (Y0 - BY[i]) / D.dorH);
+    }
+    g.beginPath(); plate(g, FN, 0, 0, 1);
+  }
+
+  /* 胸鰭：真的長在體側 Z=±hw 上、往後下外方伸出去的一片槳。因為是 3D 的，
+     正臉時兩片會朝左右張開（先前是硬用 cosθ 湊出來的），側面時收成斜槳。
+     厚度沿板面的法線，所以完全側過去時它會收成一條細長條而不是一根髮絲。 */
+  function pecAxis(side, out) {
+    var u = D.pecU, w = halfW(u);
+    out[0] = -D.pecLen * .68; out[1] = D.pecLen * .46;
+    out[2] = (w * .02 + D.pecLen * .62) * side;
+    return out;
+  }
+  var _ax = [0, 0, 0];
+  function pecTip(side, out) {
+    var u = D.pecU, w = halfW(u);
+    pecAxis(side, _ax);
+    return proj(bx(u) + _ax[0], spine(u) + botH(u) * .40 + _ax[1],
+                w * .98 * side + _ax[2], out);
+  }
+  function pecFin(g, side) {
+    var u = D.pecU, w = halfW(u), N = 12, i, a, tp, c;
+    var bX = bx(u), bY = spine(u) + botH(u) * .40, bZ = w * .98 * side;
+    pecAxis(side, _ax);
+    // 板面法線＝弦向(1,0,0) × 鰭軸
+    var nx = 0 * _ax[2] - 0 * _ax[1], ny = 0 * _ax[0] - 1 * _ax[2], nz = 1 * _ax[1] - 0 * _ax[0];
+    var nm = Math.hypot(nx, ny, nz) || 1;
+    nx /= nm; ny /= nm; nz /= nm;
+    var th = D.pecW * .17;
+    for (i = 0; i <= N; i++) {                       // 前緣：基部 → 鰭尖
+      a = i / N;
+      tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
+      c = D.pecW * (.58 + .10 * a) * tp;
+      BX[i] = bX + _ax[0] * a + c; BY[i] = bY + _ax[1] * a; BZ[i] = bZ + _ax[2] * a;
+      BT[i] = th * tp;
+    }
+    for (i = 0; i <= N; i++) {                       // 後緣：鰭尖 → 基部
+      a = (N - i) / N;
+      tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
+      c = D.pecW * (1.04 - .76 * a * a) * tp;
+      BX[N + 1 + i] = bX + _ax[0] * a - c;
+      BY[N + 1 + i] = bY + _ax[1] * a;
+      BZ[N + 1 + i] = bZ + _ax[2] * a;
+      BT[N + 1 + i] = th * tp;
+    }
+    g.beginPath(); plate(g, 2 * N + 2, nx, ny, nz);
+  }
+
+  /* 尾鰭：橫向的一片板子。純側面時它其實只投影成一條線，真要那樣畫就沒有
+     尾巴了，所以給它一個隨「板面正對程度」消長的假二面角：邊緣朝我們時兩葉
+     張成新月，板面朝我們時攤平成橫板。這是全身唯一一處刻意的說謊。 */
+  function flukeEdge() {
+    var y1 = -TR.sr, z1 = TR.cr;
+    var x2 = -y1 * TR.sp, y2 = y1 * TR.cp;
+    var sx = x2 * TR.S + z1 * TR.C, sy = y2;
+    var m = Math.min(1, Math.hypot(sx, sy));
+    /* 不用 1−m 而用 1−m^1.7：直線衰減在斜四十五度就只剩三成，尾鰭變成一道
+       貼在尾柄後面的刮痕；這條曲線讓它在中間角度仍留得住新月的形狀。
+       另外保留 0.12 的底：真的尾鰭本來就有一點上翹，不會完全是一片平板。 */
+    return .12 + .88 * (1 - Math.pow(m, 1.7));
+  }
+  function flukeFin(g) {
+    var lift = flukeEdge(), N = 8, i, w, aw, X0 = bx(1), n = 0;
+    var th = D.flukeH * .085;
+    for (i = 0; i <= 2 * N; i++, n++) {              // 後緣：右翼尖 → 中央凹口 → 左翼尖
+      w = 1 - i / N; aw = Math.abs(w);
+      BX[n] = X0 - D.flukeLen * (.26 + .74 * aw);
+      BY[n] = spine(1 + .22 * aw) + w * D.flukeH * .86 * lift;
+      BZ[n] = w * D.flukeH;
+      BT[n] = th * (1 - .7 * aw);
+    }
+    for (i = 0; i <= 2 * N; i++, n++) {              // 前緣折回
+      w = -1 + i / N; aw = Math.abs(w);
+      BX[n] = X0 - D.flukeLen * .34 * aw;
+      BY[n] = spine(1 + .14 * aw) + w * D.flukeH * .66 * lift;
+      BZ[n] = w * D.flukeH * .88;
+      BT[n] = th * (1 - .7 * aw);
+    }
+    g.beginPath(); plate(g, n, 0, 1, 0);
+  }
+
+  /* ================================================================
+   * 一幀
+   * ================================================================ */
+  var NS = 28;                                  // 斷面帶數
+  function bandU(t) { return Math.pow(t, 1.7); } // 樣點往吻端集中（額隆的曲率全在那裡）
+  function bandOf(u) {
+    return Math.max(0, Math.min(NS - 1, Math.round(Math.pow(u, 1 / 1.7) * NS)));
+  }
+  var iDor = 0, iPec = 0;
+  function drawWhale(g, sc) {
+    setPose(o.rollA, o.pitch, o.th, o.x, o.y - (sc || 0));
+
+    var ja = o.gape * .62;
+    JX = bx(MU); JY = edgeVent(MU); JC = Math.cos(ja); JS = Math.sin(ja);
+    iDor = bandOf(D.dorU); iPec = bandOf(D.pecU);
+
+    var dHead = proj(bx(0), spine(0), 0, _q)[2];
+    var dTail = proj(bx(1), spine(1), 0, _q)[2];
+    var headNear = dHead >= dTail;
+    // 哪一側胸鰭在遠端：直接比深度，不再靠 sinθ 的正負去猜
+    var dR = pecTip(1, _q)[2], dL = pecTip(-1, _q2)[2];
+    var farSide = dR <= dL ? 1 : -1;
+
+    /* 帶與帶之間沿 u 各外擴 eu（螢幕上約 0.7 px）。兩條同色的帶若剛好相接，
+       共用的那一欄像素兩次各覆蓋一半、疊起來只有 75%，背景就從縫裡透出來，
+       整條身體會被梳成一排規律的直線。重疊掉就沒有這回事。 */
+    var eu = .7 / Math.max(1, D.L * Math.abs(TR.cp * TR.S));
+    var s, i, uA, uB, e;
+
+    if (headNear) { g.beginPath(); flukeFin(g); g.fillStyle = P.skin; g.fill(); }
+    for (s = 0; s < NS; s++) {
+      i = headNear ? NS - 1 - s : s;
+      uA = bandU(i / NS); uB = bandU((i + 1) / NS);
+      e = Math.min(eu, (uB - uA) * .4);
+
+      if (i === iPec) {                       // 遠側胸鰭在身體之後
+        g.beginPath(); pecFin(g, farSide); g.fillStyle = P.skin; g.fill();
+      }
+      station(Math.max(0, uA - e), NA, ja);
+      station(Math.min(1, uB + e), NB, ja);
+      /* 暗色先鋪滿整圈（含腹白那一段），白色再蓋上去。這樣黑白交界只有
+         白色那一次填的抗鋸齒，是正確的邊；分兩塊各填一次才會留下灰縫。 */
+      g.beginPath();
+      var q1 = bandQuads(g, NA, NB, 0, KB);
+      var q2 = bandQuads(g, NA, NB, KB + 1, KB + 1 + KD);
+      if (q1 || q2) { g.fillStyle = P.skin; g.fill(); }
+      if (q1) {
+        g.beginPath(); bandQuads(g, NA, NB, 0, KB);
+        g.fillStyle = P.belly; g.fill();
+      }
+
+      if (i === iDor) { g.beginPath(); dorsalFin(g); g.fillStyle = P.skin; g.fill(); }
+      if (i === iPec) {
+        g.beginPath(); pecFin(g, -farSide); g.fillStyle = P.skin; g.fill();
+      }
+    }
+    /* 斑塊畫在**所有斷面帶之後**，不能插在自己那一條帶旁邊：身體是凸的，
+       背面剔除已經保證留下來的斑塊面片一定看得見，不會被身體擋住；但斷面帶
+       是一條一條蓋過去的，插在中間的話後面那幾條帶會把斑塊切掉一半——側身時
+       鞍斑就只剩背鰭後面一小塊，像背上被咬了一口。 */
+    g.beginPath();
+    if (patchMesh(g, .63, .115, Math.PI, 1.05, 0)) { g.fillStyle = P.belly; g.fill(); }
+    g.beginPath();
+    var e1 = patchMesh(g, .135, .076, 2.03, .26, .020);
+    var e2 = patchMesh(g, .135, .076, -2.03, .26, -.020);
+    if (e1 || e2) { g.fillStyle = P.belly; g.fill(); }
+    if (!headNear) { g.beginPath(); flukeFin(g); g.fillStyle = P.skin; g.fill(); }
+  }
+
+  /* 把身上任一點（體長座標 u、偏離體軸 off）換算成**文件座標**。
+     走的是與 drawWhale 完全相同的那一串旋轉，餵食判定才會與畫面一致。 */
   function bodyPoint(u, off) {
-    var S = Math.sin(o.th), a = o.pitch * S;
-    var px = -u * D.L * S + D.span / 2 * S, py = (spine(u) + off) * o.roll;
-    return { x: o.x + px * Math.cos(a) - py * Math.sin(a),
-             y: o.y + px * Math.sin(a) + py * Math.cos(a) };
+    setPose(o.rollA, o.pitch, o.th, o.x, o.y);
+    proj(bx(u), spine(u) + off, 0, _q2);
+    return { x: _q2[0], y: _q2[1] };
   }
   function snout() { return bodyPoint(0, 0); }
   /* 嘴的位置：吻端與嘴角的中間、貼在嘴線上。飼料要碰到**這一點**才算吃到，
@@ -649,9 +702,8 @@
       if (tr.kind === 'spin') {                        // 原地轉一圈（側→正→背→側）
         o.th = o.face * Math.PI / 2 + TAU * k * o.face;
         o.thrust = o.thrustWant = 1.4;
-      } else if (tr.kind === 'roll') {                 // 翻身：肚皮朝上再翻回來
-        o.roll = Math.cos(TAU * k);
-        if (Math.abs(o.roll) < .06) o.roll = o.roll < 0 ? -.06 : .06;
+      } else if (tr.kind === 'roll') {                 // 桶滾：繞體軸滾一整圈
+        o.rollA = TAU * k;
         o.thrust = o.thrustWant = 1.5;
       } else if (tr.kind === 'loop') {                 // 垂直繞一圈
         o.pitch = TAU * k;
@@ -660,7 +712,7 @@
         o.thrust = o.thrustWant = 2.6;
       }
       if (k >= 1) {
-        o.trick = null; o.thrust = o.thrustWant = 1; o.roll = 1;
+        o.trick = null; o.thrust = o.thrustWant = 1; o.rollA = 0;
         o.th = o.face * Math.PI / 2; o.pitch = 0; o.pitchWant = 0; o.pitchV = 0;
         pickTarget();
       }
@@ -993,14 +1045,12 @@
      疊層是 pointer-events:none，事件一律從 document 收：點到鯨魚做特技，
      點到任何可操作的東西（按鈕、連結、輸入框、造句列的詞塊…）什麼都不做，
      其餘空白處丟一條魚。座標用 clientX/clientY——疊層是 fixed，兩者同一套座標系。 */
+  /* 打不打得到：直接量「點到**畫面上那條體軸**的距離」。體軸的兩端用同一套
+     投影算出來，所以不論牠正對、側身、翻滾還是抬頭，判定範圍都跟眼睛看到的
+     形狀一致——不必再為每種角度湊一個橢圓。 */
   function hitWhale(cx, cy) {
-    var S = Math.sin(o.th), a = o.pitch * S;
-    var dx = cx - o.x, dy = cy + scrollTop() - o.y;
-    var rx = dx * Math.cos(-a) - dy * Math.sin(-a);
-    var ry = dx * Math.sin(-a) + dy * Math.cos(-a);
-    var ax = D.span * .5 * Math.abs(S) + D.H * 1.4;
-    var ay = D.H * 2.2;
-    return (rx * rx) / (ax * ax) + (ry * ry) / (ay * ay) <= 1;
+    var a = bodyPoint(0, 0), b = bodyPoint(1, 0);
+    return segDist(cx, cy + scrollTop(), a.x, a.y, b.x, b.y) < D.H * 1.9;
   }
   document.addEventListener('click', function (e) {
     if (!canvas || !alive) return;
