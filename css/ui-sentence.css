@@ -4351,6 +4351,12 @@
      藥物資料庫與抗微生物藥物查詢兩頁共用這個 class，一起修好。 */
   padding: 10px 13px;
 }
+/* 剝半／磨粉／管餵徽章：跟抗菌覆蓋徽章講同一套顏色語彙——
+   「可」用 .cov-tag.yes 的綠（--sentence-calm），「不可」用禁忌框的硃砂（--sentence-hot）。
+   正式版沿用 drug-database.css 的 --accent／--accent2，不在這裡動。 */
+[data-ui="sentence"] .db-crush.ok { color: var(--sentence-calm); border-color: var(--sentence-calm); }
+[data-ui="sentence"] .db-crush.no { color: var(--sentence-hot); border-color: var(--sentence-hot); }
+
 [data-ui="sentence"] .nu-warn b, [data-ui="sentence"] .vt-warn b, [data-ui="sentence"] .cv-warn b,
 [data-ui="sentence"] .ps-warn b, [data-ui="sentence"] .gr-warn b, [data-ui="sentence"] .pc-warn b,
 [data-ui="sentence"] .dc-warn b { color: var(--sentence-fg); }

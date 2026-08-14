@@ -109,7 +109,8 @@
   /* 注射給藥指引小表 */
   table.inj-tbl{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px;}
   table.inj-tbl td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
-  table.inj-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted); width:30%;}
+  table.inj-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted);
+    width:30%; padding-left:0;}   /* 同 renal-tbl：左緣要跟上下的純文字欄位對齊 */
   table.inj-tbl tr:last-child td{border-bottom:none;}
 
   .drugcard{background:var(--panel); border:1px solid var(--line); border-radius:2px; margin-bottom:8px; scroll-margin-top:14px;}
@@ -124,7 +125,11 @@
   .dc-nameen{font-family:var(--mono); font-size:11px; color:var(--muted-soft);}
   table.renal-tbl{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px;}
   table.renal-tbl td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
-  table.renal-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted); width:34%;}
+  /* 第一欄不留左內距：藥卡裡表格欄位與純文字欄位是上下相鄰的，td 的 6px 左內距
+     會讓表格的字比上下欄位的內文晚 6px 開始，看起來像沒對齊（使用者實機圈出）。
+     欄與欄的間隔由第二欄自己的左內距負責。 */
+  table.renal-tbl td:first-child{font-family:var(--mono); white-space:nowrap; color:var(--muted);
+    width:34%; padding-left:0;}
   table.renal-tbl tr:last-child td{border-bottom:none;}
   .dc-class{margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--accent2); background:var(--accent2-soft); border-radius:8px; padding:1px 8px; white-space:nowrap;}
   .dc-body{padding:4px 14px 13px;}

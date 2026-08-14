@@ -572,8 +572,7 @@ function variantBody(v, ddi) {
     ${titrateField(v.code)}
     ${field('最大劑量', v.maxDose)}
     ${field('兒科劑量', v.peds)}
-    ${rowTbl('剝半／磨粉／管餵', v.crush, [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'],
-      ['cap', '膠囊可打開'], ['why', '說明'], ['note', '備註']])}
+    ${crushField(v.crush)}
     ${renalTbl(v.renal)}
     ${rowTbl('肝功能調整', v.hepatic, [['adjust', '是否調整'], ['dose', '調整建議']])}
     ${rowTbl('透析劑量', v.dialysis, [['form', '劑型'], ['hd_dose', 'HD 劑量'], ['hd_removal', 'HD 移除比例'], ['hd_supp', 'HD 後補充'],
@@ -683,6 +682,31 @@ function ddiFoodField(d) {
         與上方台大「飲食交互作用」欄不一致時，以台大為準。
         <a href="ddi.html" class="ref-link">完整交互作用查核 →</a></div>
     </div></div>`;
+}
+
+/* 剝半／磨粉／管餵：三件事各自「可／不可」做成徽章，理由與管餵處理放在下面。
+   原本走 rowTbl 印成「剝半｜可」的兩欄小表，一眼看不出哪個可哪個不可——
+   這一欄是照顧管灌病人時的判斷依據，要一眼分辨。
+   判不出可否的（台大只寫「Embryo-Fetal Toxicity」那 151 支）沒有徽章，只留理由。 */
+const CRUSH_LABELS = [['h', '剝半'], ['c', '磨粉'], ['t', '管餵'], ['cap', '膠囊可打開']];
+
+function crushField(rows) {
+  if (typeof rows === 'string') return field('剝半 / 磨粉 / 管餵', rows);
+  if (!Array.isArray(rows) || !rows.length) return '';
+  const blocks = rows.map(r => {
+    const tags = CRUSH_LABELS.filter(([k]) => r[k]).map(([k, t]) => {
+      const yes = String(r[k]).indexOf('不') < 0;
+      return `<span class="db-crush ${yes ? 'ok' : 'no'}">${t}<b>${esc(r[k])}</b></span>`;
+    }).join('');
+    const line = (lbl, txt) => txt
+      ? `<div class="db-crush-l"><b>${lbl}</b>${richText(txt)}</div>` : '';
+    if (!tags && !r.why && !r.note) return '';
+    return `${tags ? `<div class="db-crushes">${tags}</div>` : ''}
+      ${line('理由：', r.why)}${line('管餵處理：', r.note)}`;
+  }).filter(Boolean).join('<div class="db-crush-sep"></div>');
+  if (!blocks) return '';
+  return `<div class="dc-field"><div class="dc-flabel">剝半 / 磨粉 / 管餵</div>
+    <div class="dc-ftext">${blocks}</div></div>`;
 }
 
 /* ---------------- 藥品外觀照 ----------------

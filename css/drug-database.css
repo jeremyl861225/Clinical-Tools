@@ -37,6 +37,19 @@ a.db-xlink{
 a.db-xlink:hover{filter:brightness(1.08);}
 a.db-xlink:focus-visible{outline:2px solid var(--x-bg); outline-offset:2px;}
 
+/* 剝半／磨粉／管餵徽章（js/drug-database.js 的 crushField）。
+   綠框＝可、紅框＝不可，判不出來的不給徽章。用框線不用實心：一張卡裡最多四顆，
+   實心塊在這個密度下會比「禁忌」那個硃砂框還搶眼。 */
+.db-crushes{display:flex; flex-wrap:wrap; gap:7px; margin:2px 0 6px;}
+.db-crush{display:inline-flex; align-items:baseline; gap:7px; font-size:12.5px;
+  padding:4px 11px; border:1px solid; border-radius:2px; white-space:nowrap;}
+.db-crush b{font-weight:700;}
+.db-crush.ok{color:var(--accent); border-color:var(--accent);}
+.db-crush.no{color:var(--accent2); border-color:var(--accent2);}
+.db-crush-l{font-size:13px; line-height:1.6; margin-top:2px;}
+.db-crush-l b{font-weight:700; margin-right:2px;}
+.db-crush-sep{height:1px; background:var(--line); margin:8px 0;}
+
 /* 藥品外觀照：一列橫捲的縮圖，點開看台大原圖（見 drug-database.js 的 photoField）。
    縮圖是台大的 180×120，固定框高、object-fit:contain，長寬比不一的照片才不會被拉扯。
    底色用淺灰而不是 --panel：照片背景是淺藍檯面，白底會讓照片邊界消失。 */
