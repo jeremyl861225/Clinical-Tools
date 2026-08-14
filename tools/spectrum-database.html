@@ -213,7 +213,7 @@
 <div class="sheet">
 <div class="view active" id="view-spectrumdb">
   <div class="app-header">
-    <div><div class="eyebrow">Antimicrobial · Spectrum Database</div><h1>抗生素菌譜資料庫</h1><div class="sub">β-內醯胺酶分類、抗細菌／抗黴菌感受性菌譜、CR-GNB 新藥抗菌譜，整合台大 2025 上半年在地感受性 %S</div></div>
+    <div><div class="eyebrow">Antimicrobial · Spectrum Database</div><h1>抗生素菌譜資料庫</h1><div class="sub">β-內醯胺酶分類、抗細菌／抗黴菌感受性菌譜、CR-GNB 新藥抗菌譜，整合台大 2026 上半年在地感受性 %S</div></div>
     <div class="back-stack">
       <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
       <button class="back-btn" onclick="location.href='../index.html#card-view-antibiotics'">← 返回主選單</button>
@@ -238,7 +238,7 @@
       <span class="lg"><span class="sd-sw s1">+</span>有效</span>
       <span class="lg"><span class="sd-sw s0">±</span>變異</span>
       <span class="lg"><span class="sd-sw sn">−</span>無效</span>
-      <span class="sd-nt">· 格內數字＝台大 2025H1 在地 %S（≈ 為同類代表；顏色分級 ≥90/80–89/60–79/&lt;60）</span>
+      <span class="sd-nt">· 格內數字＝台大 2026H1 在地 %S（≈ 為同類代表；顏色分級 ≥90/80–89/60–79/&lt;60）</span>
     </div>
     <div class="sd-ctrl">
       <div class="gs-field gs-field--inline">
@@ -346,15 +346,15 @@
     REF —
     <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Sawa+T+beta-lactamase+J+Intensive+Care+2020" target="_blank" rel="noopener" class="ref-link">Sawa T, et al. J Intensive Care. 2020;8:13.</a> ·
     <a href="https://pubmed.ncbi.nlm.nih.gov/31054353/" target="_blank" rel="noopener" class="ref-link">Tamma PD, et al. J Pediatric Infect Dis Soc. 2019;8(3):251-260.</a> ·
-    台大醫院 2025 上半年抗生素感受性報表 (antibiogram)
+    台大醫院 2026 上半年（01~06 月）抗生素感受性報表 (antibiogram)
     <br>菌譜符號為定性抗菌譜；格內 %S 為台大在地實測（susceptible %），臨床仍以最新指引與個別藥敏 (AST) 為準。
   </footer>
 </div>
 </div>
 <script src="../data/antibiotics/antibiogram.js"></script>
 <script>
-/* 台大 2025H1 在地 %S 對照：key = 藥|菌欄；值 [S, n] 或 [S, n, 1(=同類代表)] */
-const NTUH_S={"Penicillin|Strep.":[100,725],"Penicillin|Efc":[98,1483],"Penicillin|Efm":[5,1317],"Penicillin|Anae.":[100,9],"Oxacillin|MSSA":[100,983],"Oxacillin|MRSA":[0,549],"Ampicillin|Efc":[99,1483],"Ampicillin|Efm":[5,1317],"Unasyn|GNB":[56,1969],"Unasyn|En.bac":[1,527],"Unasyn|AB":[82,909],"Unasyn|Anae.":[88,9],"Tazocin|GNB":[79,1969],"Tazocin|En.bac":[59,527],"Tazocin|PsA":[79,1455],"Tazocin|AB":[73,909],"1st|GNB":[61,1969],"Cefmetazole|GNB":[72,1969],"Cefmetazole|Anae.":[89,9],"Ceftriaxone|Strep.":[64,82],"Ceftriaxone|GNB":[69,1969],"Ceftriaxone|En.bac":[44,527],"Ceftazidime|GNB":[71,1969],"Ceftazidime|En.bac":[49,527],"Ceftazidime|PsA":[86,1455],"Ceftazidime|AB":[72,909],"Flomoxef|Anae.":[100,9],"Cefepime|GNB":[90,1969],"Cefepime|En.bac":[80,527],"Cefepime|PsA":[87,1455],"Cefepime|AB":[74,909],"Ertapenem|GNB":[89,1969],"Ertapenem|En.bac":[84,527],"Imipenem|GNB":[93,1969],"Imipenem|En.bac":[89,527],"Imipenem|PsA":[89,1455],"Imipenem|AB":[75,909],"Meropenem|GNB":[95,1969],"Meropenem|En.bac":[93,527],"Meropenem|PsA":[88,1455],"Meropenem|AB":[75,909],"Ciprofloxacin|MSSA":[96,983],"Ciprofloxacin|MRSA":[54,549],"Ciprofloxacin|Efc":[88,1483],"Ciprofloxacin|Efm":[5,1317],"Ciprofloxacin|GNB":[73,1969],"Ciprofloxacin|En.bac":[66,527],"Ciprofloxacin|PsA":[86,1455],"Ciprofloxacin|AB":[74,909],"Levofloxacin|Strep.":[93,725],"Levofloxacin|MSSA":[96,983],"Levofloxacin|MRSA":[54,549],"Levofloxacin|Efc":[89,1483],"Levofloxacin|Efm":[7,1317],"Levofloxacin|GNB":[59,1969],"Levofloxacin|En.bac":[61,527],"Levofloxacin|PsA":[83,1455],"Levofloxacin|AB":[75,909],"Moxifloxacin|Strep.":[98,82],"Vancomycin|Strep.":[100,82],"Vancomycin|MSSA":[100,983],"Vancomycin|MRSA":[100,549],"Vancomycin|Efc":[99,1483],"Vancomycin|Efm":[47,1317],"Daptomycin|MSSA":[100,983],"Daptomycin|MRSA":[100,549],"Daptomycin|Efc":[79,1483],"Linezolid|MSSA":[100,983],"Linezolid|MRSA":[99,549],"Linezolid|Efc":[83,1483],"Linezolid|Efm":[98,1317],"Tigecycline|GNB":[89,1969],"Tigecycline|En.bac":[81,527],"Fusidic acid|MSSA":[85,983],"Fusidic acid|MRSA":[90,549],"Doxycycline|Strep.":[21,725,1],"Doxycycline|MSSA":[55,983,1],"Doxycycline|MRSA":[70,549,1],"Doxycycline|Efc":[10,1483,1],"Doxycycline|Efm":[42,1317,1],"Colistin|GNB":[97,1969],"Colistin|En.bac":[95,527],"Colistin|PsA":[98,1455],"Colistin|AB":[99,909],"TMP-SMX|MSSA":[99,983],"TMP-SMX|MRSA":[92,549],"TMP-SMX|GNB":[63,1969],"TMP-SMX|En.bac":[64,527],"Gentamicin|MSSA":[73,983],"Gentamicin|MRSA":[74,549],"Gentamicin|GNB":[75,1969],"Gentamicin|En.bac":[84,527],"Gentamicin|AB":[77,909],"Amikacin|GNB":[94,1969],"Amikacin|En.bac":[88,527],"Clindamycin|Strep.":[49,725],"Clindamycin|MSSA":[86,983],"Clindamycin|MRSA":[53,549],"Clindamycin|Anae.":[83,9],"Metronidazole|Anae.":[100,9],"Azithromycin|Strep.":[52,725,1],"Azithromycin|MSSA":[62,983,1],"Azithromycin|MRSA":[24,549,1],"Mica|C. albicans":[100,16],"Caspo|C. albicans":[100,16],"Anidula|C. albicans":[100,16],"Vori|C. albicans":[100,16],"Flu|C. albicans":[100,16],"Mica|C. tropicalis":[100,23],"Caspo|C. tropicalis":[96,23],"Anidula|C. tropicalis":[100,23],"Vori|C. tropicalis":[48,23],"Flu|C. tropicalis":[70,23],"Mica|C. parapsilosis":[100,14],"Caspo|C. parapsilosis":[100,14],"Anidula|C. parapsilosis":[100,14],"Vori|C. parapsilosis":[100,14],"Flu|C. parapsilosis":[100,14],"Mica|C. glabrata":[100,16],"Caspo|C. glabrata":[75,16],"Anidula|C. glabrata":[100,16],"Flu|C. glabrata":[75,16]};
+/* 台大 2026H1 在地 %S 對照：key = 藥|菌欄；值 [S, n] 或 [S, n, 1(=同類代表)] */
+const NTUH_S={"Penicillin|Strep.":[100,763],"Penicillin|Efc":[98,1442],"Penicillin|Efm":[5,1447],"Penicillin|Anae.":[0,179],"Oxacillin|MSSA":[100,857],"Oxacillin|MRSA":[0,426],"Ampicillin|Strep.":[100,763],"Ampicillin|Efc":[99,1442],"Ampicillin|Efm":[5,1447],"Unasyn|GNB":[50,2177],"Unasyn|En.bac":[0,701],"Unasyn|AB":[76,375],"Unasyn|Anae.":[72,179],"Tazocin|GNB":[77,2177],"Tazocin|En.bac":[58,701],"Tazocin|PsA":[71,1782],"Tazocin|AB":[69,375],"1st|GNB":[56,2177],"Cefmetazole|GNB":[69,2177],"Cefmetazole|En.bac":[0,701],"Cefmetazole|Anae.":[76,179],"Ceftriaxone|Strep.":[100,763],"Ceftriaxone|GNB":[66,2177],"Ceftriaxone|En.bac":[45,701],"Ceftriaxone|AB":[0,375],"Ceftazidime|GNB":[67,2177],"Ceftazidime|En.bac":[48,701],"Ceftazidime|PsA":[80,1782],"Ceftazidime|AB":[69,375],"Flomoxef|Anae.":[68,179],"Cefepime|GNB":[88,2177],"Cefepime|En.bac":[81,701],"Cefepime|PsA":[83,1782],"Cefepime|AB":[71,375],"Ertapenem|GNB":[87,2177],"Ertapenem|En.bac":[82,701],"Imipenem|GNB":[90,2177],"Imipenem|En.bac":[87,701],"Imipenem|PsA":[84,1782],"Imipenem|AB":[73,375],"Meropenem|GNB":[93,2177],"Meropenem|En.bac":[92,701],"Meropenem|PsA":[84,1782],"Meropenem|AB":[73,375],"Ciprofloxacin|MSSA":[95,857],"Ciprofloxacin|MRSA":[44,426],"Ciprofloxacin|Efc":[85,1442],"Ciprofloxacin|Efm":[3,1447],"Ciprofloxacin|GNB":[68,2177],"Ciprofloxacin|En.bac":[65,701],"Ciprofloxacin|PsA":[80,1782],"Ciprofloxacin|AB":[71,375],"Levofloxacin|Strep.":[93,763],"Levofloxacin|MSSA":[96,857],"Levofloxacin|MRSA":[44,426],"Levofloxacin|Efc":[86,1442],"Levofloxacin|Efm":[3,1447],"Levofloxacin|GNB":[54,2177],"Levofloxacin|En.bac":[61,701],"Levofloxacin|PsA":[75,1782],"Levofloxacin|AB":[72,375],"Moxifloxacin|Strep.":[96,26],"Vancomycin|Strep.":[100,763],"Vancomycin|MSSA":[100,857],"Vancomycin|MRSA":[100,426],"Vancomycin|Efc":[99,1442],"Vancomycin|Efm":[43,1447],"Daptomycin|MSSA":[100,857],"Daptomycin|MRSA":[100,426],"Daptomycin|Efc":[65,1442],"Daptomycin|Efm":[66,1447],"Linezolid|MSSA":[99,857],"Linezolid|MRSA":[99,426],"Linezolid|Efc":[80,1442],"Linezolid|Efm":[98,1447],"Tigecycline|GNB":[86,2177],"Tigecycline|En.bac":[78,701],"Tigecycline|PsA":[0,1782],"Tigecycline|AB":[100,375],"Fusidic acid|MSSA":[79,857],"Fusidic acid|MRSA":[86,426],"Doxycycline|Strep.":[17,763,1],"Doxycycline|MSSA":[51,857,1],"Doxycycline|MRSA":[59,426,1],"Doxycycline|Efc":[9,1442,1],"Doxycycline|Efm":[36,1447,1],"Colistin|GNB":[95,2177],"Colistin|En.bac":[93,701],"Colistin|PsA":[98,1782],"Colistin|AB":[98,375],"TMP-SMX|MSSA":[98,857],"TMP-SMX|MRSA":[85,426],"TMP-SMX|GNB":[59,2177],"TMP-SMX|En.bac":[64,701],"TMP-SMX|AB":[100,375],"Gentamicin|MSSA":[77,857],"Gentamicin|MRSA":[72,426],"Gentamicin|GNB":[72,2177],"Gentamicin|En.bac":[86,701],"Gentamicin|AB":[74,375],"Amikacin|GNB":[92,2177],"Amikacin|En.bac":[88,701],"Clindamycin|Strep.":[42,763],"Clindamycin|MSSA":[80,857],"Clindamycin|MRSA":[51,426],"Clindamycin|Anae.":[38,179],"Metronidazole|Anae.":[98,179],"Azithromycin|Strep.":[45,763,1],"Azithromycin|MSSA":[62,857,1],"Azithromycin|MRSA":[22,426,1],"Azithromycin|Efc":[12,1442,1],"Azithromycin|Efm":[4,1447,1],"Flu|C. albicans":[100,40],"Vori|C. albicans":[100,40],"Anidula|C. albicans":[100,40],"Caspo|C. albicans":[100,40],"Mica|C. albicans":[100,40],"Flu|C. tropicalis":[87,24],"Vori|C. tropicalis":[87,24],"Anidula|C. tropicalis":[100,24],"Caspo|C. tropicalis":[91,24],"Mica|C. tropicalis":[95,24],"Flu|C. parapsilosis":[93,15],"Vori|C. parapsilosis":[93,15],"Anidula|C. parapsilosis":[100,15],"Caspo|C. parapsilosis":[100,15],"Mica|C. parapsilosis":[100,15]};
 
 /* 欄位分組（g）：相似欄以同一色系表頭標示，並在組與組之間加分隔線。
    表二依菌種分陽性／陰性／厭氧／非典；表三依藥理分 polyene／echinocandin／azole／pyrimidine。
@@ -606,7 +606,7 @@ document.getElementById("sd-hmbody").innerHTML=BL_ROWS.map(r=>
   `<tr><th>${r.rx}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
 
 /* ===================================================================
-   表二拆分版：致病菌依台大 2025H1 在地感受性拆細（antibiogram.js/window.ABG）。
+   表二拆分版：致病菌依台大 2026H1 在地感受性拆細（antibiogram.js/window.ABG）。
    每格沿用本表框架：底色＝質性等級 cls(v)＋符號 sym(v)；框起之 %S 徽章＝台大實測。
    質性等級 v 來源：粗欄 abxRows.v[ci] 繼承；Steno／B.cepacia／H.influenzae 台大 panel
    未涵蓋，改採文獻定性（→等級，不顯示 PMID）：
@@ -626,7 +626,7 @@ const SPLIT_COLS=[
   {abbr:'S.pneu',g:'strep',sec:'gram_positive',org:'Streptococcus pneumoniae',ci:0},
   {abbr:'MSSA',g:'staph',sec:'gram_positive',org:'MSSA',ci:1},
   {abbr:'MRSA',g:'staph',sec:'gram_positive',org:'MRSA',ci:2},
-  {abbr:'CoNS',g:'staph',sec:'gram_positive',org:'Coagulase-negative staphylococci',ci:2},
+  {abbr:'S.epi',g:'staph',sec:'gram_positive',org:'Staphylococcus epidermidis',ci:2},
   {abbr:'E.fcl',g:'entero',sec:'gram_positive',org:'Enterococcus faecalis',ci:3},
   {abbr:'E.fcm',g:'entero',sec:'gram_positive',org:'Enterococcus faecium',ci:4},
   {abbr:'E.coli',g:'ebac',sec:'gram_negative',org:'Escherichia coli',ci:5},
@@ -637,16 +637,16 @@ const SPLIT_COLS=[
   {abbr:'P.mir',g:'ebac',sec:'gram_negative',org:'Proteus mirabilis',ci:5},
   {abbr:'Salm',g:'ebac',sec:'gram_negative',org:'Salmonella (non-typhi)',ci:5},
   {abbr:'PsA',g:'nonf',sec:'gram_negative',org:'Pseudomonas aeruginosa',ci:7},
-  {abbr:'AB',g:'nonf',sec:'gram_negative',org:'Acinetobacter baumannii complex',ci:8},
+  {abbr:'AB',g:'nonf',sec:'gram_negative',org:'Acinetobacter baumannii',ci:8},
   {abbr:'CRAB',g:'nonf',sec:'gram_negative',org:'Carbapenem-resistant A. baumannii (CRAB)',ci:8},
   {abbr:'Steno',g:'nonf',sec:'gram_negative',org:'Stenotrophomonas maltophilia',ci:-1},
   {abbr:'B.cep',g:'nonf',sec:'gram_negative',org:'Burkholderia cepacia complex',ci:-1},
   {abbr:'H.inf',g:'fast',sec:'haemophilus',org:'Haemophilus influenzae',ci:-1},
   {abbr:'B.frag',g:'anae',sec:'anaerobic',org:'Bacteroides fragilis',ci:9},
-  {abbr:'Bact',g:'anae',sec:'anaerobic',org:'Bacteroides species (other than B. fragilis)',ci:9},
-  {abbr:'Prev',g:'anae',sec:'anaerobic',org:'Prevotella species',ci:9},
-  {abbr:'Fuso',g:'anae',sec:'anaerobic',org:'Fusobacterium species',ci:9},
-  {abbr:'Pepto',g:'anae',sec:'anaerobic',org:'Peptostreptococcus species (other than P. anaerobius)',ci:9},
+  {abbr:'B.theta',g:'anae',sec:'anaerobic',org:'Bacteroides thetaiotaomicron',ci:9},
+  {abbr:'Prev',g:'anae',sec:'anaerobic',org:'Prevotella bivia',ci:9},
+  {abbr:'Fuso',g:'anae',sec:'anaerobic',org:'Fusobacterium varium',ci:9},
+  {abbr:'Pepto',g:'anae',sec:'anaerobic',org:'Peptostreptococcus anaerobius',ci:9},
   {abbr:'M.pneu',g:'atyp',sec:null,org:null,ci:10},
   {abbr:'C.pneu',g:'atyp',sec:null,org:null,ci:10},
   {abbr:'Legio',g:'atyp',sec:null,org:null,ci:10},

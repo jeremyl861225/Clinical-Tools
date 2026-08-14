@@ -53,7 +53,7 @@ function abgSpectrum(d){
     });
   });
   if(!cells.length) return '';
-  const src = d.abgProxy ? `台大 2025 上半年在地感受性 %S（以 ${d.abgProxy} 為同類代表）` : '台大 2025 上半年在地感受性 %S';
+  const src = d.abgProxy ? `台大 2026 上半年在地感受性 %S（以 ${d.abgProxy} 為同類代表）` : '台大 2026 上半年在地感受性 %S';
   return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div><div class="dc-cov">${cells.join('')}</div></div>`;
 }
 
@@ -79,7 +79,7 @@ function abgForBac(b){
   });
   if(!blocks.length) return '';
   const n = (!Array.isArray(map)) ? `（n=${ABG[map.sec].org[map.org].n}）` : '';
-  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2025 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div>${blocks.join('')}</div>`;
+  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2026 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div>${blocks.join('')}</div>`;
 }
 
 /* =========================================================================
