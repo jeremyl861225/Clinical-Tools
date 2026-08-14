@@ -106,7 +106,9 @@
   table.sd-mx{border-collapse:separate; border-spacing:0; width:100%; font-size:12px;}
   table.sd-mx th,table.sd-mx td{white-space:nowrap;}
   table.sd-mx thead th{position:sticky; top:0; z-index:20; background:var(--accent-soft); border-bottom:2px solid var(--line); vertical-align:bottom; padding:0;}
-  table.sd-mx thead th.corner{left:0; z-index:30; text-align:left; padding:9px 12px; min-width:172px; font-family:var(--mono); font-size:11px; color:var(--accent);}
+  /* 角落標題改置中：欄名（.sd-colhead）是在格內垂直置中的，角落若沿用 thead 的
+     bottom 對齊會比欄名低十來 px，兩邊看起來沒對齊。 */
+  table.sd-mx thead th.corner{left:0; z-index:30; text-align:left; padding:9px 12px; min-width:172px; font-family:var(--mono); font-size:11px; color:var(--accent); vertical-align:middle;}
   .sd-colhead{display:flex; flex-direction:column; align-items:center; gap:1px; padding:8px 5px; cursor:pointer; user-select:none; min-width:52px;}
   .sd-colhead .abbr{font-family:var(--mono); font-weight:700; font-size:11.5px; color:var(--accent);}
   .sd-colhead .cn{display:none;}
@@ -140,15 +142,27 @@
   table.sd-mx thead th.gsep, table.sd-mx td.sd-cell.gsep{border-left:2px solid var(--line);}
   table.sd-mx thead th.gend, table.sd-mx td.sd-cell.gend{border-right:2px solid var(--line);}
   table.sd-mx thead th.corner{box-shadow:2px 0 0 var(--line);}
-  /* 表二拆分版：兩列表頭（群組帶 English ＋ 菌種縮寫），群組帶置頂、縮寫列接於其下 */
-  #sd-abx thead tr.grpband th{top:0; height:19px; padding:2px 4px; text-align:center; font-family:var(--mono); font-size:9.5px; letter-spacing:.03em; color:var(--accent); border-bottom:1px solid var(--line);}
-  #sd-abx thead tr.abbrrow th{top:19px;}
-  #sd-abx thead th.corner{top:0;}
+  /* 表二拆分版：兩列表頭（群組帶 English ＋ 菌種縮寫），群組帶置頂、縮寫列接於其下。
+     縮寫列的 sticky top 必須**正好等於群組帶的實高**；寫死 19px 而實際是 20.38px 時，
+     表頭下方會漏出一條約 1.4px 的資料列（俗稱露光）。實高由 sdSyncSticky() 量出來寫進
+     --band-h，隨字級／視窗變動自動跟上。角落標題再往下推同樣距離才會與縮寫列對齊。 */
+  /* 角落格是 rowspan=2、掛在 grpband 這一列裡，選擇器要排除它，否則群組帶的
+     padding／置中／字級會蓋掉角落自己的設定（且該選擇器比 th.corner 更specific）。 */
+  #sd-abx thead tr.grpband th:not(.corner){top:0; padding:2px 4px; text-align:center; font-family:var(--mono); font-size:9.5px; letter-spacing:.03em; color:var(--accent); border-bottom:1px solid var(--line);}
+  #sd-abx thead tr.abbrrow th{top:var(--band-h,20px);}
+  #sd-abx thead th.corner{top:0; padding-top:calc(var(--band-h,20px) + 4px);}
   #sd-abx .sd-colhead .abbr{font-size:10px;}
   table.sd-mx tbody th.rowhead{position:sticky; left:0; z-index:10; background:var(--panel); text-align:left; padding:6px 12px; border-bottom:1px solid var(--line); box-shadow:2px 0 0 var(--line);}
   table.sd-mx tbody th.rowhead .rx{font-family:var(--serif); font-weight:600; font-size:13px; color:var(--ink);}
   table.sd-mx tbody th.rowhead .cn{display:block; font-size:9.5px; color:var(--muted); line-height:1.2;}
-  tr.sd-grp th{position:sticky; left:0; background:var(--accent); color:#fff; text-align:left; padding:5px 12px; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; z-index:11;}
+  /* 群組帶（Penicillins／念珠菌 Candida…）橫跨整列，於是有兩個毛病：
+     ① 沒有欄界，凍結欄那條 2px 分隔線（藥名列靠 box-shadow 畫）在每條群組帶都斷掉；
+     ② 整格比容器寬，sticky 對它無效，往右捲時群組名會跟著跑出畫面。
+     兩者都靠「格內兩個 sticky 行內元素」解決：::before 是黏在 --sdcol（凍結欄實寬，
+     由 sdSyncSticky() 量）的補線，.gl 是黏在最左的群組名。padding 因此要移到 .gl 上。 */
+  tr.sd-grp th{position:sticky; left:0; background:var(--accent); color:#fff; text-align:left; padding:0; font-family:var(--mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; z-index:11;}
+  tr.sd-grp th::before{content:''; position:sticky; left:var(--sdcol,0); display:inline-block; width:2px; height:1.35em; margin-right:-2px; vertical-align:middle; background:var(--line);}
+  tr.sd-grp th .gl{position:sticky; left:0; display:inline-block; padding:5px 12px; vertical-align:middle;}
   tr.sd-grp th .en{opacity:.75; font-weight:400;}
   /* 表二群組名為純英文（Penicillins…），不像表三有中／英兩段，
      故整段對齊表三英文段的字重，兩表的藥物類別看起來才一致。 */
@@ -174,7 +188,8 @@
     /* 註解折行會撐高該列，.dot 若維持固定高度會在色塊上下留出空隙，故改為填滿整列 */
     td.sd-cell{height:1px;}
     td.sd-cell .dot{height:100%; min-height:36px; font-size:11px;}
-    tr.sd-grp th{font-size:9px; padding:3px 8px; letter-spacing:.03em;}
+    tr.sd-grp th{font-size:9px; padding:0; letter-spacing:.03em;}
+    tr.sd-grp th .gl{padding:3px 8px;}
     .sd-colhead{min-width:44px; padding:6px 3px;}
     .sd-colhead .abbr{font-size:10px;}
     .dot .sp{font-size:8px; padding:1px 3px;}
@@ -184,10 +199,12 @@
   /* 藥名欄凍結（sticky left:0）：捲看右邊的菌欄時藥名要留在畫面上。
      複方藥名由 blName() 斷成兩行，所以欄寬只要 118px、tbody th 不可 nowrap。 */
   .sd-hmshell{overflow-x:auto; border:1px solid var(--line); border-radius:3px;}
-  table.sd-hm{border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; font-size:12px; min-width:520px;}
-  table.sd-hm th.corner{position:sticky; left:0; z-index:3; width:118px; background:var(--accent-soft); text-align:left; padding:8px 10px; font-family:var(--mono); font-size:10.5px; line-height:1.35; color:var(--accent); border-bottom:2px solid var(--line);}
+  table.sd-hm{border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; font-size:12px; min-width:500px;}
+  /* 欄寬只留到最長藥名（斷行後為 Ceftolozane-／Eravacycline 約 76px）＋左右各 8px。
+     角落標題比藥名長，改成可折行，才不會反過來把欄撐寬。 */
+  table.sd-hm th.corner{position:sticky; left:0; z-index:3; width:94px; background:var(--accent-soft); text-align:left; padding:6px 8px; font-family:var(--mono); font-size:10px; line-height:1.35; white-space:normal; color:var(--accent); border-bottom:2px solid var(--line);}
   table.sd-hm thead th{background:var(--accent-soft); color:var(--accent); font-family:var(--mono); font-weight:700; padding:8px 4px; text-align:center; border-bottom:2px solid var(--line); font-size:11px; white-space:nowrap;}
-  table.sd-hm tbody th{position:sticky; left:0; z-index:2; background:var(--panel); text-align:left; padding:6px 10px; font-family:var(--serif); font-weight:600; font-size:11.5px; line-height:1.3; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
+  table.sd-hm tbody th{position:sticky; left:0; z-index:2; background:var(--panel); text-align:left; padding:6px 8px; font-family:var(--serif); font-weight:600; font-size:11.5px; line-height:1.3; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
   td.sd-hc{text-align:center; padding:0; border-bottom:1px solid var(--paper); border-left:1px solid var(--paper);}
   td.sd-hc .d{display:flex; align-items:center; justify-content:center; height:34px; font-family:var(--mono); font-weight:700; font-size:12px;}
   /* 三級 S／±／R 對映表二、三的四級色階（略過 --s1「涵蓋較弱」一級），深淺色模式一併繼承 */
@@ -564,7 +581,7 @@ function buildMatrix(tblId,cols,rows,keyFn,opts){
   let tb="<tbody>";
   rows.forEach(r=>{
     if(r.g){ const p=r.g.split(" "); const en=r.g.replace(p[0],"").trim();
-      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
+      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'><span class='gl'>${p[0]} <span class='en'>${en}</span></span></th></tr>`; return; }
     // rowDrug（表二）：列＝藥名
     const rk=opts.rowDrug ? SDX_DRUG[r.rx] : null;
     const nm=rk
@@ -696,7 +713,7 @@ function buildAbxSplit(tblId){
   let tb="<tbody>";
   abxRows.forEach(r=>{
     if(r.g){ const p=r.g.split(" "); const en=r.g.replace(p[0],"").trim();
-      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'>${p[0]} <span class='en'>${en}</span></th></tr>`; return; }
+      tb+=`<tr class='sd-grp'><th colspan='${cols.length+1}'><span class='gl'>${p[0]} <span class='en'>${en}</span></span></th></tr>`; return; }
     const rk=SDX_DRUG[r.rx];
     const nm=rk?`<a class='dlink' href='${sdHref(rk)}' onclick='sdSaveScroll()' title='查看 ${r.rx} 藥卡'><span class='rx'>${r.rx}</span></a>`:`<span class='rx'>${r.rx}</span>`;
     tb+=`<tr><th class='rowhead'>${nm}</th>`;   // 藥名備註（cn）依需求移除
@@ -724,6 +741,24 @@ function buildAbxSplit(tblId){
 buildAbxSplit("sd-abx");   // 表二：列＝藥名、欄＝拆細菌種
 buildMatrix("sd-afx",afxCols,afxRows,(rx,ab)=>ab+"|"+rx,{colDrug:true});   // 表三：欄＝藥名
 buildResistant();
+
+/* 兩個矩陣表有兩個幾何值不能寫死，字級／視窗一變就對不上：
+   ① --band-h：表二群組帶的實高。縮寫列的 sticky top 要**正好**等於它，短 1px 就會在
+      表頭下緣漏出一條資料列（露光），長 1px 則會蓋掉群組帶。
+   ② --sdcol：凍結欄的實寬。群組帶橫跨整列沒有欄界，左側 2px 分隔線要靠它補上。
+   量完寫進該表的 style，CSS 以 var() 取用；load 與 resize 後各重量一次。 */
+function sdSyncSticky(){
+  const abx=document.getElementById("sd-abx");
+  const band=abx&&abx.querySelector("thead tr.grpband th:not(.corner)");
+  if(band) abx.style.setProperty("--band-h", band.getBoundingClientRect().height.toFixed(2)+"px");
+  ["sd-abx","sd-afx"].forEach(id=>{
+    const t=document.getElementById(id), rh=t&&t.querySelector("tbody th.rowhead");
+    if(rh) t.style.setProperty("--sdcol", rh.getBoundingClientRect().width.toFixed(2)+"px");
+  });
+}
+sdSyncSticky();
+window.addEventListener("load", sdSyncSticky);
+window.addEventListener("resize", sdSyncSticky);
 // 還原捲動：須等 load（字體／表格版面底定）才捲得到位，見 sdRestoreScroll 註解
 window.addEventListener('load',sdRestoreScroll);
 

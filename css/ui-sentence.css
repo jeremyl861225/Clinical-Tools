@@ -4177,7 +4177,9 @@
 [data-ui="sentence"] table.sd-mx td.sd-cell.gsep { border-left-color: var(--sentence-line2); }
 [data-ui="sentence"] table.sd-mx thead th.gend,
 [data-ui="sentence"] table.sd-mx td.sd-cell.gend { border-right-color: var(--sentence-line2); }
-[data-ui="sentence"] #sd-abx thead tr.grpband th {
+/* 角落格 rowspan=2 掛在 grpband 那一列，且此選擇器帶 id 比 th.corner 更 specific，
+   不排除的話群組帶的字體與顏色會蓋掉角落自己的設定。 */
+[data-ui="sentence"] #sd-abx thead tr.grpband th:not(.corner) {
   font-family: var(--sentence-mono); color: var(--sentence-dim); border-bottom-color: var(--sentence-line);
 }
 [data-ui="sentence"] table.sd-mx tbody th.rowhead {
@@ -4191,6 +4193,8 @@
 [data-ui="sentence"] tr.sd-grp th {
   background: var(--sentence-inv-bg); color: var(--sentence-inv-fg); font-family: var(--sentence-mono);
 }
+/* 群組帶裡補的那段凍結欄分隔線，顏色要跟藥名列的 box-shadow 同一支變數，否則會看得出接縫 */
+[data-ui="sentence"] tr.sd-grp th::before { background: var(--sentence-line2); }
 [data-ui="sentence"] td.sd-cell { border-bottom-color: var(--sentence-line); border-left-color: var(--sentence-line); }
 [data-ui="sentence"] td.sd-cell.col-hi { outline-color: var(--sentence-fg); }
 /* 格內那顆「率」小藥丸原本是寫死的 rgba(255,255,255,.94) 白底，文字色卻繼承自
