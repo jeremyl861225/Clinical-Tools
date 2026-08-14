@@ -353,16 +353,31 @@ function renalTbl(rows) {
    由資料自帶（build_abx_cards.py 的 abg_tier）：≥90 粗框／80–89 亮／60–79 琥珀／
    <60 暗＋刪除線。菌株數放 title，不佔版面但查得到。 */
 const ABG_TIER = { 2: 'sy-hi', 1: 'yes', p: 'partial' };
+/* 台大報表收到 n≥5 的菌，廣效藥一支破百枚徽章會把常見菌淹掉；資料已依
+   「常見致病菌／抗藥分層在前、長尾依株數遞減在後」排序，故切前 ABG_FOLD 枚，
+   其餘按一下再展開。與 tools/antibiotics.html 的 covFold() 同一套。 */
+const ABG_FOLD = 24;
+let abgFoldSeq = 0;
 function suscStrip(rows, proxy) {
   if (!rows || !rows.length) return '';
   const cells = rows.map(r =>
     `<span class="cov-tag ${ABG_TIER[r.t] || 'no'}"${r.n ? ` title="菌株數 ${esc(r.n)}"` : ''}
-     >${esc(r.org)} ${esc(r.s)}</span>`).join('');
+     >${esc(r.org)} ${esc(r.s)}</span>`);
+  let body;
+  if (cells.length <= ABG_FOLD) {
+    body = `<div class="dc-cov">${cells.join('')}</div>`;
+  } else {
+    const id = 'dbabg' + (++abgFoldSeq);
+    body = `<div class="dc-cov">${cells.slice(0, ABG_FOLD).join('')}`
+      + `<span class="cov-tag" style="cursor:pointer" `
+      + `onclick="document.getElementById('${id}').hidden=false;this.remove()">`
+      + `＋還有 ${cells.length - ABG_FOLD} 種（依株數遞減）</span>`
+      + `<span id="${id}" hidden>${cells.slice(ABG_FOLD).join('')}</span></div>`;
+  }
   const cap = '台大 2026 上半年在地感受性 %S'
     + (proxy ? `（以 ${esc(proxy)} 為同類代表）` : '')
-    + '　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗';
-  return `<div class="dc-susc"><div class="dc-susc-cap">${cap}</div>
-    <div class="dc-cov">${cells}</div></div>`;
+    + '　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗　·　* ＝本期無資料、沿用 2025 上半年';
+  return `<div class="dc-susc"><div class="dc-susc-cap">${cap}</div>${body}</div>`;
 }
 
 /* 抗菌譜與備註：文字譜與感受性徽章同屬一欄（抗生素頁就是這樣排的），

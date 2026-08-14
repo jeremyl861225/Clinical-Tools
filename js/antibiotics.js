@@ -38,8 +38,23 @@ function abgCell(raw){
 }
 function abgTier(n){ return n>=90?'sy-hi':(n>=80?'yes':(n>=60?'partial':'no')); }
 
+/* 徽章太多時的摺疊：台大報表收到 n≥5 的菌，一支廣效藥動輒破百枚徽章，
+   整片攤開會把常見菌淹掉。資料是照「常見致病菌／抗藥分層在前、長尾依株數遞減在後」
+   排的，所以直接切前 ABG_FOLD 枚，其餘藏起來按一下再展開。 */
+const ABG_FOLD = 24;
+function covFold(cells){
+  if(cells.length <= ABG_FOLD) return `<div class="dc-cov">${cells.join('')}</div>`;
+  const id = 'abgmore'+(covFold._n = (covFold._n||0)+1);
+  return `<div class="dc-cov">${cells.slice(0,ABG_FOLD).join('')}`
+    + `<span class="cov-tag" id="${id}b" style="cursor:pointer" `
+    + `onclick="document.getElementById('${id}').hidden=false;this.remove()">`
+    + `＋還有 ${cells.length-ABG_FOLD} 種（依株數遞減）</span>`
+    + `<span id="${id}" hidden>${cells.slice(ABG_FOLD).join('')}</span></div>`;
+}
+
 /* 抗菌譜欄內的台大在地感受性徽章：依 d.abg（[{sec,col}]）列出該藥所在表格中「所有」有數值的菌種 %S。
-   門檻：%S ≥90 亮＋加粗框、80–89 亮燈、60–79 琥珀、<60 暗掉＋刪除線。NA／NI 略過。 */
+   門檻：%S ≥90 亮＋加粗框、80–89 亮燈、60–79 琥珀、<60 暗掉＋刪除線。NA／NI 略過。
+   值後面的 * ＝本期報表無資料、沿用 2025 上半年。 */
 function abgSpectrum(d){
   if(!d.abg) return '';
   const cells=[];
@@ -49,12 +64,12 @@ function abgSpectrum(d){
     Object.keys(sec.org).forEach(org=>{
       const c=abgCell(sec.org[org].S[ci]);
       if(!c) return;
-      cells.push(`<span class="cov-tag ${abgTier(c.num)}">${ABG_ORG_LABEL[org]||org} ${c.disp}</span>`);
+      cells.push(`<span class="cov-tag ${abgTier(c.num)}" title="菌株數 ${sec.org[org].n}">${ABG_ORG_LABEL[org]||org} ${c.disp}</span>`);
     });
   });
   if(!cells.length) return '';
   const src = d.abgProxy ? `台大 2026 上半年在地感受性 %S（以 ${d.abgProxy} 為同類代表）` : '台大 2026 上半年在地感受性 %S';
-  return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div><div class="dc-cov">${cells.join('')}</div></div>`;
+  return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗　·　* ＝本期無資料、沿用 2025 上半年</div>${covFold(cells)}</div>`;
 }
 
 /* 「依細菌」的在地感受性徽章：對選定菌，列出台大表中所有有數值的抗生素 %S。
@@ -79,7 +94,7 @@ function abgForBac(b){
   });
   if(!blocks.length) return '';
   const n = (!Array.isArray(map)) ? `（n=${ABG[map.sec].org[map.org].n}）` : '';
-  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2026 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗</div>${blocks.join('')}</div>`;
+  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2026 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗　·　* ＝本期無資料、沿用 2025 上半年</div>${blocks.join('')}</div>`;
 }
 
 /* =========================================================================
