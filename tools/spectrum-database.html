@@ -181,11 +181,13 @@
   }
 
   /* ---- CR-GNB 熱圖（欄寬平均）---- */
+  /* 藥名欄凍結（sticky left:0）：捲看右邊的菌欄時藥名要留在畫面上。
+     複方藥名由 blName() 斷成兩行，所以欄寬只要 118px、tbody th 不可 nowrap。 */
   .sd-hmshell{overflow-x:auto; border:1px solid var(--line); border-radius:3px;}
-  table.sd-hm{border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; font-size:12px; min-width:640px;}
-  table.sd-hm th.corner{position:sticky; left:0; z-index:2; width:184px; background:var(--accent-soft); text-align:left; padding:8px 12px; font-family:var(--mono); font-size:11px; color:var(--accent); border-bottom:2px solid var(--line);}
+  table.sd-hm{border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed; font-size:12px; min-width:520px;}
+  table.sd-hm th.corner{position:sticky; left:0; z-index:3; width:118px; background:var(--accent-soft); text-align:left; padding:8px 10px; font-family:var(--mono); font-size:10.5px; line-height:1.35; color:var(--accent); border-bottom:2px solid var(--line);}
   table.sd-hm thead th{background:var(--accent-soft); color:var(--accent); font-family:var(--mono); font-weight:700; padding:8px 4px; text-align:center; border-bottom:2px solid var(--line); font-size:11px; white-space:nowrap;}
-  table.sd-hm tbody th{position:sticky; left:0; z-index:1; background:var(--panel); text-align:left; padding:7px 12px; font-family:var(--serif); font-weight:600; font-size:12px; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line); white-space:nowrap;}
+  table.sd-hm tbody th{position:sticky; left:0; z-index:2; background:var(--panel); text-align:left; padding:6px 10px; font-family:var(--serif); font-weight:600; font-size:11.5px; line-height:1.3; border-bottom:1px solid var(--line); box-shadow:1px 0 0 var(--line);}
   td.sd-hc{text-align:center; padding:0; border-bottom:1px solid var(--paper); border-left:1px solid var(--paper);}
   td.sd-hc .d{display:flex; align-items:center; justify-content:center; height:34px; font-family:var(--mono); font-weight:700; font-size:12px;}
   /* 三級 S／±／R 對映表二、三的四級色階（略過 --s1「涵蓋較弱」一級），深淺色模式一併繼承 */
@@ -602,8 +604,11 @@ const BL_ROWS=[
  {rx:"Tigecycline",v:["g","g","g","r","g","g"]}
 ];
 const BL_SYM={g:"S",a:"±",r:"R"};
+/* 複方藥名（Ceftazidime-avibactam 這種）整串排一行會把凍結欄撐到近 200px，六個菌欄
+   只剩一點寬度。在連字號／全形斜線後斷行，欄寬砍半，凍結欄捲動時才不擋畫面。 */
+const blName=rx=>rx.replace(/-(?=[a-z])/,"-<br>").replace("／","／<br>");
 document.getElementById("sd-hmbody").innerHTML=BL_ROWS.map(r=>
-  `<tr><th>${r.rx}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
+  `<tr><th>${blName(r.rx)}</th>`+r.v.map(c=>`<td class="sd-hc ${c}"><div class="d">${BL_SYM[c]}</div></td>`).join("")+`</tr>`).join("");
 
 /* ===================================================================
    表二拆分版：致病菌依台大 2026H1 在地感受性拆細（antibiogram.js/window.ABG）。

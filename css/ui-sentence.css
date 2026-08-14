@@ -4049,6 +4049,10 @@
   [data-ui="sentence"] table.sd-bjm { border-color: var(--sentence-line2); border-radius: 0; }
   [data-ui="sentence"] table.sd-bjm tr { border-bottom-color: var(--sentence-line); }
   [data-ui="sentence"] table.sd-bjm td:nth-child(3) { font-family: var(--sentence-mono); color: var(--sentence-dim); }
+  /* 窄螢幕的 BJM 表已改成每組一塊（表格外框＋列分隔線），格子若再各自帶框就變三層盒中盒。
+     頁內 CSS 的 td{border:none} 敵不過這裡的屬性選擇器，所以要在這一段一併關掉。 */
+  [data-ui="sentence"] table.sd-bjm th,
+  [data-ui="sentence"] table.sd-bjm td { border: none; }
 }
 
 /* ---- U3. 表二／表三：藥物×菌種矩陣（.sd-mx）----
