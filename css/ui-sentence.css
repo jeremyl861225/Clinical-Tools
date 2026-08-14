@@ -4346,6 +4346,10 @@
 [data-ui="sentence"] .dc-warn {
   background: transparent; border: 1px solid var(--sentence-hot);
   border-radius: 0; color: var(--sentence-fg2);
+  /* 這個框原本 padding:0，字直接貼在硃砂框線上讀起來很壓迫（使用者實機指出）。
+     禁忌與安全警訊是整張卡最需要看得下去的兩欄，字要離框遠一點。
+     藥物資料庫與抗微生物藥物查詢兩頁共用這個 class，一起修好。 */
+  padding: 10px 13px;
 }
 [data-ui="sentence"] .nu-warn b, [data-ui="sentence"] .vt-warn b, [data-ui="sentence"] .cv-warn b,
 [data-ui="sentence"] .ps-warn b, [data-ui="sentence"] .gr-warn b, [data-ui="sentence"] .pc-warn b,

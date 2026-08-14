@@ -558,8 +558,11 @@ function titrateField(code) {
     </div></div>`;
 }
 
-/* 單一規格（variant）的明細欄位 */
-function variantBody(v) {
+/* 單一規格（variant）的明細欄位。
+   ddi＝交互作用（Liverpool 外連＋DDInter 飲食），由 cardBody 算好傳進來——
+   那兩塊掛在卡層而不是規格層，但要跟「禁忌／安全警訊」讀在一起（都是「這藥不能
+   跟什麼一起用」），所以排在禁忌之前，而不是留在卡片最上面。 */
+function variantBody(v, ddi) {
   const price = [v.nhi ? `健保 NT$ ${esc(v.nhi)}` : '', v.selfpay ? `自費 NT$ ${esc(v.selfpay)}` : '']
     .filter(Boolean).join('　·　');
   return `
@@ -593,10 +596,11 @@ function variantBody(v) {
     ${field('適應症（衛福部許可證）', v.ind)}
     ${field('藥理作用', v.action)}
     ${field('副作用', v.adverse)}
-    ${field('禁忌', v.contra, true)}
-    ${field('安全警訊', v.alert, true)}
+    ${ddi || ''}
     ${rowTbl('飲食交互作用', v.food, [['f', '食品'], ['s', '嚴重度'],
       ['e', '影響'], ['m', '處置']])}
+    ${field('禁忌', v.contra, true)}
+    ${field('安全警訊', v.alert, true)}
     ${field('儲存條件', v.storage)}
     ${field('備註', v.note)}
     ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
@@ -605,7 +609,7 @@ function variantBody(v) {
     ${field('藥商', v.company)}
     ${price ? field('藥價', price) : ''}
     <div class="db-foot">${v.src
-      ? `${esc(v.src)}　·　分類：${esc(v.cat || '')}`
+      ? `${esc(v.src)}${v.code8 ? `　·　藥品八碼 ${esc(v.code8)}` : ''}　·　分類：${esc(v.cat || '')}`
       : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;
 }
 
@@ -703,12 +707,14 @@ function imgUrl(code, sfx, big) {
 }
 
 function photoField(v) {
-  const sfxs = (window.DRUG_IMAGES || {})[v.code];
+  // 抗生素卡的 v.code 是建置端的雜湊，台大八碼另放 v.code8
+  const code = v.code8 || v.code;
+  const sfxs = (window.DRUG_IMAGES || {})[code];
   if (!sfxs) return '';
   const shots = [...sfxs].map((s, i) => `
-    <button type="button" class="db-shot" onclick="openShot('${esc(v.code)}','${sfxs}',${i})"
+    <button type="button" class="db-shot" onclick="openShot('${esc(code)}','${sfxs}',${i})"
             aria-label="放大第 ${i + 1} 張外觀照">
-      <img src="${imgUrl(v.code, s)}" alt="${esc(v.brand || v.name || '')} 外觀照 ${i + 1}"
+      <img src="${imgUrl(code, s)}" alt="${esc(v.brand || v.name || '')} 外觀照 ${i + 1}"
            decoding="async" onerror="this.closest('.db-shot').hidden=true">
     </button>`).join('');
   return `<div class="dc-field"><div class="dc-flabel">藥品外觀照</div>
@@ -781,11 +787,14 @@ function cardBody(d) {
     ${field('學名', d.name)}
     ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
        <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
-    ${field('劑型', d.form)}
-    ${liverpoolLinks(d)}
-    ${ddiFoodField(d)}`;
-  const vs = (d.variants || []).map(v => ({ cat: d.cat, ...v }));
-  if (vs.length <= 1) return header + (vs[0] ? variantBody(vs[0]) : '');
+    ${field('劑型', d.form)}`;
+  // 交互作用是卡層資料，但要排在規格層的「禁忌」之前，所以算好一次傳下去
+  const ddi = liverpoolLinks(d) + ddiFoodField(d);
+  /* d.shared＝整支藥共用的欄位（抗生素卡的劑量／腎肝／抗菌譜，對每個院內品項
+     都是同一份）。放在卡層而不是每個規格複製一份，abx.js 少 300 KB。
+     台大卡沒有這個欄位，展開空物件即可。 */
+  const vs = (d.variants || []).map(v => ({ cat: d.cat, ...(d.shared || {}), ...v }));
+  if (vs.length <= 1) return header + (vs[0] ? variantBody(vs[0], ddi) : '');
 
   // 多規格：以含量分頁，避免不同劑量的劑量／腎肝調整混在一起看不清
   const labels = uniqueLabels(vs);
@@ -793,7 +802,7 @@ function cardBody(d) {
     `<button type="button" class="db-vtab ${i === 0 ? 'active' : ''}"
        onclick="switchVariant(this, ${i})">${esc(labels[i])}</button>`).join('');
   const panes = vs.map((v, i) =>
-    `<div class="db-vpane ${i === 0 ? '' : 'hidden'}">${variantBody(v)}</div>`).join('');
+    `<div class="db-vpane ${i === 0 ? '' : 'hidden'}">${variantBody(v, ddi)}</div>`).join('');
   return header +
     `<div class="db-vtabs"><span class="db-vtabs-lbl">含量規格</span>${tabs}</div>
      <div class="db-vpanes">${panes}</div>`;
