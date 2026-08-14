@@ -12,7 +12,7 @@
  *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
 const CACHE_PREFIX = 'clinical-tools-';
-const CACHE_VERSION = CACHE_PREFIX + 'v272';
+const CACHE_VERSION = CACHE_PREFIX + 'v274';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -184,6 +184,8 @@ const PRECACHE_URLS = [
   './tools/spectrum-database.html',
   './tools/surgical-prophylaxis.html',
   './tools/trauma-abx.html',
+  './tools/iv-to-po.html',
+  './tools/y-site.html',
   './tools/drug-database.html',
   './tools/ddi.html',
   // 急重症處置

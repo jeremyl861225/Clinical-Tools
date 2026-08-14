@@ -100,20 +100,22 @@
   .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
   /* 輸液對照表：品名只留短代號（使用者 2026-08-13 指定），第一欄因此可以收窄且不換行；
      全名、濃度與各自的適應症移到表下的說明與 Taita 那一格，不佔欄寬。 */
-  .fl-tbl td:first-child,.fl-tbl th:first-child{white-space:nowrap; width:1%;}
-  /* 第一欄凍結（使用者實機指出手機橫向捲動時品名會捲掉，看不出在讀哪一列）。
-     sticky 的格子一定要有**不透明底色**，否則後面的數字會從底下透出來疊字；
-     底色分主題各給一組——正式版用 --paper/--soft-bg，造句設計在 ui-sentence.css
-     AD 段用 --sentence-bg/--sentence-bg2 覆蓋（同一條規則要連 background 一起重申，
-     只寫 position 會被頁面這條同分且較後的規則吃掉底色）。 */
-  .fl-tbl td:first-child{position:sticky; left:0; z-index:1; background:var(--paper);}
-  .fl-tbl th:first-child{position:sticky; left:0; z-index:3; background:var(--soft-bg);}
-  /* 捲動時的分界線：sticky 欄的右側補一條，讓「凍結」看得出來。
-     用 box-shadow 而非 border——border 會被 border-collapse 併掉。 */
-  .fl-tbl td:first-child,.fl-tbl th:first-child{box-shadow:1px 0 0 var(--line);}
-  .def-table.dt-wrap td:first-child{white-space:normal;}
-  .def-table.dt-wrap td,.def-table.dt-wrap th{vertical-align:top;}
-  .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
+  .fz-tbl td:first-child,.fz-tbl th:first-child{white-space:nowrap; width:1%;}
+
+  /* ── 凍結第一欄 ──────────────────────────────────────────────────
+     手機橫捲時品名要留在畫面上。兩個關鍵，缺任何一個都會壞：
+     (1) **border-collapse 必須是 separate**。collapse 時框線屬於「表格」而不是格子，
+         凍結欄一滑動，它的框線留在原地被捲走，左側就露出後面捲進來的內容
+         —— 2026-08-14 使用者實機回報的就是這個。separate 之後每格自己畫框線，
+         框線跟著凍結欄一起移動；border-spacing 設 0，外觀與 collapse 相同。
+     (2) 凍結的格子一定要有**不透明底色**，否則後面的數字會透出來疊字。
+     造句設計下的框線色與底色在 ui-sentence.css 的 AD 段重申（那邊 token 不同）。 */
+  table.fz-tbl{border-collapse:separate; border-spacing:0;}
+  table.fz-tbl th,table.fz-tbl td{border:0; border-bottom:1px solid var(--line);}
+  table.fz-tbl tr>*:first-child{position:sticky; left:0; z-index:2;
+                                background:var(--paper); box-shadow:1px 0 0 var(--line);}
+  table.fz-tbl thead tr>*:first-child{z-index:4; background:var(--soft-bg);}
+
   .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
       background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
   .gr.w{background:var(--accent2-soft); color:var(--accent2);}
@@ -166,7 +168,7 @@
   <div class="dirhead"><span class="dh-n">成分對照總表</span><span class="dh-e">Composition of common IV fluids</span></div>
 
   <div class="tw">
-    <table class="def-table dt-cor fl-tbl" style="min-width:760px;">
+    <table class="def-table dt-cor fz-tbl" style="min-width:760px;">
       <thead><tr>
         <th>輸液</th><th>Na</th><th>K</th><th>Ca</th><th>Mg</th><th>Cl</th>
         <th>緩衝鹼</th><th>磷</th><th>葡萄糖</th><th>熱量</th><th>滲透壓</th><th>台大品項</th>

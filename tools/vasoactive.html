@@ -60,6 +60,24 @@
   .ar.eq{color:var(--muted-soft); font-size:13px;}
   .ar.mix{color:var(--muted); font-size:13px;}
   .ar sub{font-size:9px; font-weight:400; color:var(--muted); vertical-align:baseline;}
+  /* ── 凍結第一欄（參數欄）──────────────────────────────────────────
+     欄多必然橫捲，捲走參數名就看不懂哪一列是什麼。兩個關鍵，缺任何一個都會壞：
+     (1) **border-collapse 必須是 separate**。collapse 時框線屬於「表格」而不是格子，
+         凍結欄一滑動，它的框線留在原地被捲走，左側就露出後面捲進來的內容
+         —— 2026-08-14 使用者實機回報的就是這個。separate 之後每格自己畫框線，
+         框線跟著凍結欄一起移動；border-spacing 設 0，外觀與 collapse 相同。
+         注意框線要拆成「每格畫左＋上、最後一欄補右、最後一列補下」，
+         直接沿用 border:1px 會在相鄰處疊成 2px。
+     (2) 凍結的格子一定要有**不透明底色**，否則後面的箭頭會透出來疊字。
+     造句設計下的框線色與底色在 ui-sentence.css 的 AD 段重申（那邊 token 不同）。 */
+  table.fz-tbl{border-collapse:separate; border-spacing:0;}
+  table.fz-tbl th,table.fz-tbl td{border:0;
+      border-left:1px solid var(--line); border-top:1px solid var(--line);}
+  table.fz-tbl tr>*:last-child{border-right:1px solid var(--line);}
+  table.fz-tbl tbody tr:last-child>*{border-bottom:1px solid var(--line);}
+  table.fz-tbl tr>*:first-child{position:sticky; left:0; z-index:2;
+      background:var(--soft-bg); box-shadow:1px 0 0 var(--line);}
+  table.fz-tbl thead tr>*:first-child{z-index:4; background:var(--accent-soft);}
   .hemo-key{font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.8; margin:2px 0 12px;}
   .hemo-key b{color:var(--ink);}
 
@@ -177,7 +195,7 @@
 
   <div class="section-title">升壓劑 <span class="en">Vasopressors</span></div>
   <div class="tw">
-    <table class="hemo">
+    <table class="hemo fz-tbl">
       <thead>
         <tr>
           <th style="text-align:left">參數<span class="hz">Parameter</span></th>
@@ -244,7 +262,7 @@
 
   <div class="section-title">強心劑、擴張劑與其他 <span class="en">Inotropes, Inodilators &amp; Vasodilators</span></div>
   <div class="tw">
-    <table class="hemo">
+    <table class="hemo fz-tbl">
       <thead>
         <tr>
           <th style="text-align:left">參數<span class="hz">Parameter</span></th>

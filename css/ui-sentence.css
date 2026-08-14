@@ -5160,22 +5160,37 @@
 [data-ui="sentence"] .def-table.dt-wrap td,
 [data-ui="sentence"] .def-table.dt-wrap th { vertical-align: top; }
 
-/* ---- AD. 輸液營養（pathways/nutrition.html）----
-   這一頁刻意沿用 AC 段既有的 class（.rxbox/.rx-*、.refbar、.dirhead、.steps、.kbox、
-   .tw、.lead、.pmid、.gr、.def-table.dt-cor/.dt-wrap），所以只剩「凍結欄」這一項要收。
+/* ---- AD. 凍結第一欄的表格（table.fz-tbl）----
+   輸液營養的成分對照總表與血管活性的兩張血行動力學矩陣共用同一個 class。
 
-   為什麼非收不可：sticky 的格子需要不透明底色，而頁面 <style> 寫的是正式版的
-   --paper/--soft-bg。造句設計下那兩個 token 不存在對應語意（骨白 vs 深墨），
-   不覆蓋的話手機橫捲時，凍結欄會頂著正式版底色出現在造句設計的頁面上。
-   **background 必須在這裡重申**——頁面內嵌樣式排在外部樣式表之後，同特異度時它贏，
-   只寫 position/z-index 而不寫 background，底色仍舊是 --paper。 */
-[data-ui="sentence"] .fl-tbl td:first-child {
-  position: sticky; left: 0; z-index: 1;
+   為什麼非收在這裡不可：sticky 的格子需要不透明底色與自己的框線，而頁面 <style>
+   用的是正式版 token（--paper／--soft-bg／--line）。造句設計下那組 token 不存在
+   對應語意（骨白 vs 深墨），不覆蓋的話手機橫捲時，凍結欄會頂著正式版底色出現。
+   **background 與 border 都必須在這裡重申**——頁面內嵌樣式排在外部樣式表之後，
+   同特異度時它贏；只寫 position/z-index 而不寫底色，底色仍舊是 --paper。
+
+   選擇器一律寫 `table.fz-tbl`（0,2,2）而不是 `.fz-tbl`（0,2,1）：
+   要壓過同檔前面的 `[data-ui="sentence"] table.def-table th`（也是 0,2,2），
+   靠的是「同分而本段在後」，少一個 table 就打不過。 */
+/* border-collapse 也得在這裡重申：前面的
+   `[data-ui="sentence"] table.def-table`（0,2,2）壓得過頁面的 `table.fz-tbl`（0,1,2），
+   只在頁面寫 separate 是不會生效的（實測 computed 仍是 collapse）。 */
+[data-ui="sentence"] table.fz-tbl { border-collapse: separate; border-spacing: 0; }
+[data-ui="sentence"] table.fz-tbl th,
+[data-ui="sentence"] table.fz-tbl td {
+  border: 0;
+  border-left: 1px solid var(--sentence-line);
+  border-top: 1px solid var(--sentence-line);
+}
+[data-ui="sentence"] table.fz-tbl tr > *:last-child { border-right: 1px solid var(--sentence-line); }
+[data-ui="sentence"] table.fz-tbl tbody tr:last-child > * { border-bottom: 1px solid var(--sentence-line); }
+[data-ui="sentence"] table.fz-tbl tr > *:first-child {
   background: var(--sentence-bg);
   box-shadow: 1px 0 0 var(--sentence-line);
 }
-[data-ui="sentence"] .fl-tbl th:first-child {
-  position: sticky; left: 0; z-index: 3;
-  background: var(--sentence-bg2);
-  box-shadow: 1px 0 0 var(--sentence-line);
+/* 表頭那一格的底色不能直接用 --sentence-shade：那是 **7% 的墨**，半透明，
+   捲動時後面的欄位會從底下透出來（正是使用者回報「左邊露出後面的內容」的另一半）。
+   疊一層 gradient 當作不透明底：上層鋪 shade、下層是實色 --sentence-bg。 */
+[data-ui="sentence"] table.fz-tbl thead tr > *:first-child {
+  background: linear-gradient(var(--sentence-shade), var(--sentence-shade)), var(--sentence-bg);
 }
