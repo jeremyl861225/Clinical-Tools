@@ -358,7 +358,7 @@ function suscStrip(rows, proxy) {
   const cells = rows.map(r =>
     `<span class="cov-tag ${ABG_TIER[r.t] || 'no'}"${r.n ? ` title="菌株數 ${esc(r.n)}"` : ''}
      >${esc(r.org)} ${esc(r.s)}</span>`).join('');
-  const cap = '台大 2025 上半年在地感受性 %S'
+  const cap = '台大 2026 上半年在地感受性 %S'
     + (proxy ? `（以 ${esc(proxy)} 為同類代表）` : '')
     + '　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗';
   return `<div class="dc-susc"><div class="dc-susc-cap">${cap}</div>
@@ -565,6 +565,9 @@ function variantBody(v) {
       ['time', '輸注時間／速率'], ['alt_routes', '替代給藥途徑'], ['notes', '注意事項'],
       ['storage', '原包裝儲存'], ['stab_recon', '溶解後安定性'], ['stab_dilute', '稀釋後安定性'],
       ['container', '容器相容性'], ['stab_note', '安定性備註']])}
+    ${rowTbl('延長輸注建議（重症／ICU · 4 小時）', v.eif, [['when', '建議時機'],
+      ['solvent', '溶劑／最高濃度／安定性'], ['ld', 'Loading dose'],
+      ['md', 'Maintenance dose（依 CLCr）'], ['note', '備註']])}
     ${pregField(v.preg)}
     ${field('口服生體可用率 Bioavailability', v.bioav)}
     ${field('分布 / 組織穿透 Distribution', v.dist)}

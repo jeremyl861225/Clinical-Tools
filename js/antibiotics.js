@@ -293,6 +293,25 @@ function renderDrugCard(k){
       row('容器相容性',j.container)+
       `</tbody></table></div></div>`;
   }
+  /* 延長輸注建議（extended infusion）——台大藥劑部《β-lactam 類抗生素輸注時間建議》
+     (15600-3-000002 v3) 表一。只有該表列到的 β-lactam 有此欄；其餘藥物不設，
+     避免對沒有院內建議的藥物無中生有。維持與 injection 同一組表格樣式
+     （inj-tbl／renal-tbl 皆為藥卡既有 class，ui-sentence.css Q8 段已收）。 */
+  let eifField='';
+  if(d.eif){
+    const e=d.eif;
+    const row=(t,v)=> v?`<tr><td>${t}</td><td>${v}</td></tr>`:'';
+    const mdRows=(e.md&&e.md.length)
+      ? `<table class="renal-tbl"><tbody>${e.md.map(r=>`<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join('')}</tbody></table>`
+      : '';
+    eifField=`<div class="dc-field"><div class="dc-flabel">延長輸注建議（重症／ICU · 4 小時）</div><div class="dc-ftext">`+
+      `<table class="inj-tbl"><tbody>`+
+      row('建議時機',e.when)+row('溶劑／最高濃度／安定性',e.solvent)+row('Loading dose',e.ld)+
+      `</tbody></table>`+
+      (mdRows?`<div class="dc-flabel" style="margin-top:9px">Maintenance dose（依 CLCr mL/min）</div>${mdRows}`:'')+
+      (e.note?`<table class="inj-tbl" style="margin-top:9px"><tbody>${row('備註',e.note)}</tbody></table>`:'')+
+      `</div></div>`;
+  }
   return `<details class="drugcard" id="drug-${k}">
     <summary><span class="dc-name">${d.name}</span>${zh}<span class="dc-nameen">${sub}</span><button type="button" class="dc-class" title="列出同類別藥物" onclick="drugFilter(event,'group',${drugGroupIdx(d)})">${d.cls}</button>${covStrip(d)}</summary>
     <div class="dc-body">
@@ -305,6 +324,7 @@ function renderDrugCard(k){
       ${field('透析劑量（HD／PD）',d.dialysis)}
       ${field('CVVH／CRRT 劑量',d.cvvh)}
       ${injField}
+      ${eifField}
       ${crushField}
       ${foodField}
       ${pregField}

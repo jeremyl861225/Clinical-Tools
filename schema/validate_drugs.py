@@ -222,6 +222,9 @@ OPTIONAL_STRING_FIELDS = [
     'hepatic', 'dialysis', 'cvvh', 'preg', 'spectrum', 'abgProxy',
 ]
 INJECTION_SUBFIELDS = ['route', 'reconstitute', 'diluent', 'volume', 'conc', 'time', 'notes']
+# eif＝延長輸注建議（台大藥劑部《β-lactam 類抗生素輸注時間建議》15600-3-000002 表一）。
+# 只有該表列到的 β-lactam 有此欄；`md` 另為 [{k,v}] 陣列，故不列入字串子欄位。
+EIF_STRING_SUBFIELDS = ['ld', 'solvent', 'when', 'note']
 COV_KEYS_BACTERIAL = {'mrsa', 'pseudo', 'anaerobe', 'atypical', 'esbl', 'enterococcus'}
 COV_KEYS_FUNGAL = {'candida', 'glabkrusei', 'aspergillus', 'mucor', 'fusarium', 'histo', 'blasto', 'cocci'}
 COV_KEYS_VIRAL = {'hsv', 'cmv', 'flu', 'cov2', 'hbv', 'hcv', 'hiv', 'rsv'}
@@ -309,6 +312,34 @@ def validate_drug(key, d, errors, warnings):
             for sub, val in inj.items():
                 if sub in INJECTION_SUBFIELDS and not _is_string(val):
                     errors.append(f'[{key}] `injection.{sub}` 應為字串，實際={val!r}')
+
+    # eif（延長輸注建議）
+    if 'eif' in d:
+        eif = d['eif']
+        if not isinstance(eif, dict):
+            errors.append(f'[{key}] `eif` 應為物件，實際型別={type(eif).__name__}')
+        else:
+            unknown = set(eif.keys()) - set(EIF_STRING_SUBFIELDS) - {'md'}
+            if unknown:
+                warnings.append(f'[{key}] `eif` 含未知子欄位：{sorted(unknown)}')
+            for sub in EIF_STRING_SUBFIELDS:
+                if sub in eif and not _is_string(eif[sub]):
+                    errors.append(f'[{key}] `eif.{sub}` 應為字串，實際={eif[sub]!r}')
+            # `when`（什麼情況才延長輸注）是這一欄唯一不可省的內容——沒有它就變成
+            # 「這支藥要延長輸注」的無條件宣稱，與原文件「高抗藥性菌／免疫不全／重症」
+            # 的限定條件不符。
+            if not eif.get('when'):
+                errors.append(f'[{key}] `eif` 缺少 `when`（延長輸注的適用時機）')
+            if 'md' in eif:
+                md = eif['md']
+                if not isinstance(md, list):
+                    errors.append(f'[{key}] `eif.md` 應為陣列，實際型別={type(md).__name__}')
+                else:
+                    for i, r in enumerate(md):
+                        if not isinstance(r, dict) or 'k' not in r or 'v' not in r:
+                            errors.append(f'[{key}] `eif.md[{i}]` 應為 {{k,v}} 物件，實際={r!r}')
+                        elif not _is_string(r['k']) or not _is_string(r['v']):
+                            errors.append(f'[{key}] `eif.md[{i}]` 的 k／v 應為字串，實際={r!r}')
 
     # abg: [{sec,col}]
     if 'abg' in d:
