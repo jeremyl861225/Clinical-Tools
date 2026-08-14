@@ -5159,3 +5159,23 @@
 [data-ui="sentence"] .def-table.dt-wrap td:first-child { white-space: normal; }
 [data-ui="sentence"] .def-table.dt-wrap td,
 [data-ui="sentence"] .def-table.dt-wrap th { vertical-align: top; }
+
+/* ---- AD. 輸液營養（pathways/nutrition.html）----
+   這一頁刻意沿用 AC 段既有的 class（.rxbox/.rx-*、.refbar、.dirhead、.steps、.kbox、
+   .tw、.lead、.pmid、.gr、.def-table.dt-cor/.dt-wrap），所以只剩「凍結欄」這一項要收。
+
+   為什麼非收不可：sticky 的格子需要不透明底色，而頁面 <style> 寫的是正式版的
+   --paper/--soft-bg。造句設計下那兩個 token 不存在對應語意（骨白 vs 深墨），
+   不覆蓋的話手機橫捲時，凍結欄會頂著正式版底色出現在造句設計的頁面上。
+   **background 必須在這裡重申**——頁面內嵌樣式排在外部樣式表之後，同特異度時它贏，
+   只寫 position/z-index 而不寫 background，底色仍舊是 --paper。 */
+[data-ui="sentence"] .fl-tbl td:first-child {
+  position: sticky; left: 0; z-index: 1;
+  background: var(--sentence-bg);
+  box-shadow: 1px 0 0 var(--sentence-line);
+}
+[data-ui="sentence"] .fl-tbl th:first-child {
+  position: sticky; left: 0; z-index: 3;
+  background: var(--sentence-bg2);
+  box-shadow: 1px 0 0 var(--sentence-line);
+}

@@ -101,6 +101,16 @@
   /* 輸液對照表：品名只留短代號（使用者 2026-08-13 指定），第一欄因此可以收窄且不換行；
      全名、濃度與各自的適應症移到表下的說明與 Taita 那一格，不佔欄寬。 */
   .fl-tbl td:first-child,.fl-tbl th:first-child{white-space:nowrap; width:1%;}
+  /* 第一欄凍結（使用者實機指出手機橫向捲動時品名會捲掉，看不出在讀哪一列）。
+     sticky 的格子一定要有**不透明底色**，否則後面的數字會從底下透出來疊字；
+     底色分主題各給一組——正式版用 --paper/--soft-bg，造句設計在 ui-sentence.css
+     AD 段用 --sentence-bg/--sentence-bg2 覆蓋（同一條規則要連 background 一起重申，
+     只寫 position 會被頁面這條同分且較後的規則吃掉底色）。 */
+  .fl-tbl td:first-child{position:sticky; left:0; z-index:1; background:var(--paper);}
+  .fl-tbl th:first-child{position:sticky; left:0; z-index:3; background:var(--soft-bg);}
+  /* 捲動時的分界線：sticky 欄的右側補一條，讓「凍結」看得出來。
+     用 box-shadow 而非 border——border 會被 border-collapse 併掉。 */
+  .fl-tbl td:first-child,.fl-tbl th:first-child{box-shadow:1px 0 0 var(--line);}
   .def-table.dt-wrap td:first-child{white-space:normal;}
   .def-table.dt-wrap td,.def-table.dt-wrap th{vertical-align:top;}
   .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
@@ -134,13 +144,12 @@
   </div>
 
   <div class="note" style="margin:-8px 0 14px;">
-    <b>數字來源分兩批，頁面上逐處標明，不混在一起</b>。
-    晶體輸液與添加劑的成分取自<b>台大醫院藥劑部藥品資料庫</b>；
-    Taita 1–5 號、Bfluid、Clinimix、Oliclinomel、Nutriflex、Smoflipid、Addaven、Lyo-Povigent
-    取自<b>食藥署核准的官方仿單／外盒標籤</b>（各品項附許可證字號）。
-    <b>抓資料當天（2026-08-13）台大藥劑部網站在維護中，回「系統維護中」</b>，
-    所以靜脈營養液那一頁的<b>院內備藥狀況沒能即時查證</b>，只查得到全國藥證與仿單——
-    這件事寫在該頁最上方，不假裝查過。
+    <b>品項與規格一律以台大為準</b>（2026-08-13 於院內網域查證台大醫院藥劑部藥品資料庫，
+    營養電解質全類 198 個品項）。<b>台大有公布的數字就用台大的</b>——
+    Taita 的 kcal/L、Bfluid 的袋裝與輸注時間、Smoflipid 的劑量與管路限制，都以台大欄位為準，
+    與仿單不同時<b>以台大為準並在該處標明差異</b>。<br>
+    成分的細項（胺基酸組成、電解質 mmol 數、滲透壓）台大沒有逐項公布，
+    才用<b>食藥署核准的官方仿單／外盒標籤</b>補，並標上許可證字號。
     治療決策依 <b>ESPEN 2023 重症營養實用版指引</b>與 <b>ASPEN 2022</b>，兩家熱量建議不同，並列不合併。
   </div>
 
@@ -174,11 +183,11 @@
         <tr><td><b>L/R</b></td><td>130</td><td>4</td><td>2.7</td><td>–</td><td>109</td><td>Lactate 28</td><td>–</td><td>0</td><td>0</td><td>≈273</td><td>乳酸林格氏乙 1000 mL（葉克膜用）</td></tr>
         <tr><td><b>Hartmann's</b></td><td>131</td><td>5</td><td>4</td><td>–</td><td>111</td><td>Lactate 29</td><td>–</td><td>0</td><td>0</td><td>≈280</td><td>福多命安 500 mL</td></tr>
         <tr><td><b>Ringer's</b></td><td>147</td><td>4</td><td>4.5</td><td>–</td><td>156</td><td>–</td><td>–</td><td>0</td><td>0</td><td>≈309</td><td>林克氏 500 mL</td></tr>
-        <tr><td><b>Taita No.1</b></td><td>25</td><td>18</td><td>–</td><td>3</td><td>20</td><td>Acetate 20</td><td>6</td><td>38</td><td>129</td><td>300</td><td>大塚 500 mL</td></tr>
-        <tr><td><b>Taita No.2</b></td><td>40</td><td>12</td><td>–</td><td>–</td><td>26</td><td>Acetate 20</td><td>6</td><td>33</td><td>112</td><td>287</td><td>大塚 500 mL</td></tr>
-        <tr><td><b>Taita No.3</b></td><td>75</td><td>12</td><td>–</td><td>–</td><td>61</td><td>Acetate 20</td><td>6</td><td>20</td><td>68</td><td>285</td><td>大塚 500 mL</td></tr>
-        <tr><td><b>Taita No.4</b></td><td>110</td><td>20</td><td>–</td><td>–</td><td>102</td><td>Acetate 16</td><td>12</td><td>8</td><td>27</td><td>300</td><td>大塚 500 mL</td></tr>
-        <tr><td><b>Taita No.5</b></td><td>36</td><td>18</td><td>–</td><td>3</td><td>17</td><td>Acetate 28</td><td>12</td><td>100</td><td>340</td><td>669</td><td>大塚 400 mL</td></tr>
+        <tr><td><b>Taita No.1</b></td><td>25</td><td>18</td><td>–</td><td>3</td><td>20</td><td>Acetate 20</td><td>6</td><td>38</td><td>152</td><td>300</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.2</b></td><td>40</td><td>12</td><td>–</td><td>–</td><td>26</td><td>Acetate 20</td><td>6</td><td>33</td><td>132</td><td>287</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.3</b></td><td>75</td><td>12</td><td>–</td><td>–</td><td>61</td><td>Acetate 20</td><td>6</td><td>20</td><td>80</td><td>285</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.4</b></td><td>110</td><td>20</td><td>–</td><td>–</td><td>102</td><td>Acetate 16</td><td>12</td><td>8</td><td>32</td><td>300</td><td>大塚 500 mL</td></tr>
+        <tr><td><b>Taita No.5</b></td><td>36</td><td>18</td><td>–</td><td>3</td><td>17</td><td>Acetate 28</td><td>12</td><td>100</td><td>400</td><td>669</td><td>大塚 400 mL</td></tr>
       </tbody>
     </table>
   </div>
@@ -187,15 +196,19 @@
     <b>品名只寫短代號，對照如下</b>：N/S ＝ 0.9% NaCl・Half saline ＝ 0.45% NaCl・
     Dext-saline ＝ 2.5% dextrose ＋ 0.45% NaCl・D5-saline ＝ 5% dextrose ＋ 0.9% NaCl・
     L/R ＝ Lactated Ringer's B・Hartmann's ＝ 台大的另一支乳酸林格・Ringer's ＝ 不含乳酸的林格氏液。<br>
-    <b>葡萄糖有兩套換算，本表各用一套，先講清楚免得被抓包</b>：
-    <b>熱量</b>用臨床慣例的 <b>3.4 kcal/g</b>（一水合葡萄糖）；
-    <b>滲透壓</b>用無水葡萄糖分子量 180 計算（D5W ＝ 278）——
-    若該品項實際用的是一水合葡萄糖，滲透壓要再低約一成（D5W ＝ 252）。
-    <b>兩個數字都是量級參考，不是拿來精算的。</b>
-    靜脈營養三合一袋的仿單則是用<b>無水葡萄糖 4 kcal/g</b>，
-    所以「靜脈營養液」那一頁<b>直接抄仿單自己的 kcal，不由本表換算過去</b>。
-    <b>Taita 1–5 號的數字是仿單「電解質量」表原值</b>（衛署藥製字第021632／021630／021629／024258／022682 號），
-    不是我算的。<b>台大同時有兩支乳酸林格</b>，福多命安（Hartmann's）與乳酸林格氏乙的電解質<b>不完全一樣</b>，
+    <b>熱量欄有兩個來源，不是同一套換算，講清楚免得被抓包</b>：<br>
+    <b>Taita 五列直接抄台大藥品資料庫自己的 kcal/L</b>（152／132／80／32／400），
+    台大是以<b>無水葡萄糖 4 kcal/g</b> 計——因為 Taita 的仿單成分寫的就是無水 glucose。
+    <b>台大的數字優先，不用我自己換算的。</b><br>
+    其餘含糖輸液（D5W／D10W／Dext-saline／D5-saline）台大沒有公布 kcal，
+    本表以臨床慣例的 <b>3.4 kcal/g</b>（一水合葡萄糖）計。<b>兩者差約 15%</b>，
+    所以同一欄裡 Taita 那五列與其他列不是同一個換算基準，
+    要橫向比熱量時記得這件事。<br>
+    <b>滲透壓</b>：Taita 五列同樣是台大／仿單原值；其餘以無水葡萄糖分子量 180 計算
+    （D5W ＝ 278），若該品項實際用一水合葡萄糖則要再低約一成（D5W ＝ 252）——
+    這一欄是量級參考，不是拿來精算的。
+    <b>Taita 1–5 號的電解質是仿單「電解質量」表原值</b>（衛署藥製字第021632／021630／021629／024258／022682 號），
+    <b>且與台大藥品資料庫自己那張表逐格核對過，完全一致</b>——兩個獨立來源對得起來。<b>台大同時有兩支乳酸林格</b>，福多命安（Hartmann's）與乳酸林格氏乙的電解質<b>不完全一樣</b>，
     上表分開列——這是台大藥品資料庫自己的欄位。
   </div>
 
@@ -243,17 +256,30 @@
 <!-- ==================== 靜脈營養液 ==================== -->
 <div class="iv-panel" id="p-pn">
 
+  <div class="kbox">
+    <div class="kbox-t">這一頁的品項與規格以台大為準</div>
+    <b>2026-08-13 於台大院內網域重新查證台大藥劑部藥品資料庫</b>（先前那次站台回「系統維護中」，
+    只查得到全國藥證）。下表的<b>品名、袋裝規格、劑量與注意事項一律採台大的欄位</b>；
+    成分的細項（胺基酸組成、電解質 mmol 數）才用食藥署官方仿單補，並各自標明。<br>
+    <b>先前依仿單推的規格有錯，已更正</b>：Bfluid 台大是 <b>1000 mL/bag</b>（不是 500）、
+    Clinimix N17G35E 與 Oliclinomel N7-1000E 都是 <b>1500 mL/bag</b>、
+    Smoflipid 是 <b>250 mL/btl</b>。
+  </div>
+
   <div class="kbox alert">
-    <div class="kbox-t">先說清楚這一頁的資料來源</div>
-    抓資料當天（<b>2026-08-13</b>）<b>台大藥劑部藥品資料庫網站在維護中</b>（回「系統維護中」），
-    所以以下品項的<b>台大院內備藥與院內注射給藥指引沒能查證</b>。
-    表中的成分數字全部來自<b>食藥署核准的官方仿單</b>，每一項都附許可證字號，可以自行覆核。<br>
-    這些製劑在本站
-    <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>裡的藥卡也都標著
-    <b>「非台大處方」</b>——意思是<b>本站的台大處方集快照裡沒有它們</b>，
-    但那份快照只涵蓋部分藥理分類（「靜脈營養」那一類當初沒抓到），
-    <b>所以「非台大處方」不等於「台大沒有」</b>。
-    <b>開單前請照院內藥品目錄確認。</b>
+    <div class="kbox-t">台大的 TPN 有「藥局配製」與「成品袋」兩條路，開單方式不一樣</div>
+    <b>成品袋</b>是現成規格（Clinimix／Nutriflex／Oliclinomel／Olimel／Bfluid），直接開品項。<br>
+    <b>藥局配製的 TPN 以 TPN 系統開方</b>，品項是「每毫升」計價的配方碼：<br>
+    成人 <b>TPN-Adult-1 一般／-2 高蛋白／-3 低蛋白／-4 BCAA</b>，另有 <b>modified</b> 與
+    <b>Glycophos</b>（把磷換成甘油磷酸鈉）版本；<br>
+    小兒 <b>TPN-Ped-A／B／C／D</b>、新生兒 <b>TPN-Neo-E／F／G／H</b>，各有 modified 與 Glycophos 版；<br>
+    <b>10 NEO_Starter 200 mL/bag</b> 是藥局即席調製，給<b>體重 ≤2000 g 或未滿 34 週的早產兒</b>，
+    每袋含 dextrose 20 g、Aminosteril Infant 6 g、Ca 3 mEq、<b>heparin 100 units</b>，
+    滲透壓約 830 mOsm/L，用法 80 mL/kg/day × 1 天。<br>
+    另有<b>把 Lyo-Povigent 與 Addaven 預先加好的成品袋</b>：
+    `Clinimix 1514 mL`＝Clinimix 1500 mL ＋ Lyo-Povigent 4 mL ＋ Addaven 10 mL；
+    <b>尾數 4 的（1504／1004／1504）是「不加 TE」版</b>，只加了維生素沒加微量元素——
+    <b>開單時看清楚尾數，差別就是有沒有微量元素。</b>
   </div>
 
   <div class="dirhead"><span class="dh-n">周邊還是中央？先看滲透壓</span><span class="dh-e">Peripheral vs central line</span></div>
@@ -269,30 +295,52 @@
   <div class="tw">
     <table class="def-table dt-cor" style="min-width:900px;">
       <thead><tr>
-        <th>製劑（每 1 L 混合後）</th><th>胺基酸</th><th>氮</th><th>葡萄糖</th><th>脂肪</th>
+        <th>台大品項</th><th>規格</th><th>胺基酸</th><th>氮</th><th>葡萄糖</th><th>脂肪</th>
         <th>總熱量</th><th>Na</th><th>K</th><th>滲透壓</th><th>路徑</th>
       </tr></thead>
       <tbody>
-        <tr><td><b>Bfluid</b> 必富力得<br><a href="../tools/drug-database.html#code=X5ADB8A5" class="pmid">藥卡</a><br><span class="gr">025179</span></td><td>30</td><td>4.7</td><td>75</td><td>–</td><td>420</td><td>35</td><td>20</td><td>≈3×NS</td><td><span class="gr">周邊</span></td></tr>
-        <tr><td><b>Clinimix N9G15E</b> 克里密絲<br><a href="../tools/drug-database.html#code=X77DE002" class="pmid">藥卡</a><br><span class="gr">023224</span></td><td>28</td><td>4.6</td><td>75</td><td>–</td><td>410</td><td>35</td><td>30</td><td>845</td><td><span class="gr">周邊可</span></td></tr>
-        <tr><td><b>Clinimix N17G35E</b> 克里密絲<br><a href="../tools/drug-database.html#code=X76E8E63" class="pmid">藥卡</a><br><span class="gr">023218</span></td><td>50</td><td>8.3</td><td>175</td><td>–</td><td>900</td><td>35</td><td>30</td><td>1625</td><td><span class="gr w">中央</span></td></tr>
-        <tr><td><b>Oliclinomel N4-550E</b> 歐諾美<br><span class="gr">024679</span></td><td>22</td><td>3.6</td><td>80</td><td>20</td><td>610</td><td>21</td><td>16</td><td>750</td><td><span class="gr">周邊可</span></td></tr>
-        <tr><td><b>Oliclinomel N7-1000E</b> 歐諾美<br><a href="../tools/drug-database.html#code=X51122AB" class="pmid">藥卡</a><br><span class="gr">024270</span></td><td>40</td><td>6.6</td><td>160</td><td>40</td><td>1200</td><td>32</td><td>24</td><td>1450</td><td><span class="gr w">中央</span></td></tr>
-        <tr><td><b>Nutriflex special</b> 欣保康優<br><a href="../tools/drug-database.html#code=XD53960C" class="pmid">藥卡</a><br><span class="gr">020975</span></td><td>70</td><td>10</td><td>240</td><td>–</td><td>1240</td><td>40.5</td><td>25.7</td><td>2100</td><td><span class="gr w">只限中央</span></td></tr>
-        <tr><td><b>Smoflipid 20%</b> 斯莫脂肪<br><a href="../tools/drug-database.html#code=X3DBF473" class="pmid">藥卡</a><br><span class="gr">024519</span></td><td>–</td><td>–</td><td>–</td><td>200</td><td>2000</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
+        <tr><td><b>Bfluid</b> 必富力得<br><a href="../tools/drug-database.html#code=BFL1FC92" class="pmid">藥卡</a></td><td>1000 mL/bag</td><td>30</td><td>4.7</td><td>75</td><td>–</td><td>420</td><td>35</td><td>20</td><td>≈3×NS</td><td><span class="gr">周邊</span></td></tr>
+        <tr><td><b>Clinimix N17G35E</b> 克里密絲<br><a href="../tools/drug-database.html#code=CLI1FC27" class="pmid">藥卡</a></td><td>1500 mL/bag</td><td>50</td><td>8.3</td><td>175</td><td>–</td><td>900</td><td>35</td><td>30</td><td>1625</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Nutriflex 70/240</b> 欣保康優<br><a href="../tools/drug-database.html#code=NUT1FC16" class="pmid">藥卡</a></td><td>1000・1500 mL/bag</td><td>70</td><td>10</td><td>240</td><td>–</td><td>1240</td><td>40.5</td><td>25.7</td><td>2100</td><td><span class="gr w">只限中央</span></td></tr>
+        <tr><td><b>Oliclinomel N7-1000E</b> 歐諾美<br><a href="../tools/drug-database.html#code=OLI1FCB2" class="pmid">藥卡</a></td><td>1500 mL/bag</td><td>40</td><td>6.6</td><td>160</td><td>40</td><td>1200</td><td>32</td><td>24</td><td>1450</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Olimel N12E</b> 歐立美<br><span class="gr w">血液透析室專用</span></td><td>650 mL/bag</td><td colspan="7">依胺基酸攝取量定劑量：成人與 12–18 歲 <b>26 mL/kg/day</b>、2–11 歲 <b>33 mL/kg/day</b></td><td>—</td><td><span class="gr w">中央</span></td></tr>
+        <tr><td><b>Smoflipid 20%</b> 斯莫脂肪<br><a href="../tools/drug-database.html#code=SMO1FC09" class="pmid">藥卡</a></td><td>250 mL/btl</td><td>–</td><td>–</td><td>–</td><td>200</td><td>2000</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
+        <tr><td><b>Omegaven</b> 奧美嘉<br><span class="gr w">需簽署</span></td><td>10 g/100 mL/btl</td><td>–</td><td>–</td><td>–</td><td>100</td><td>—</td><td>–</td><td>–</td><td>—</td><td><span class="gr">純魚油</span></td></tr>
+        <tr><td><b>Dipeptiven</b> 雙胜胺</td><td>20 g/100 mL/btl</td><td colspan="7"><b>Alanyl-glutamine</b>，是<b>加在胺基酸溶液裡的補充品</b>，不是單獨的營養液</td><td>—</td><td><span class="gr w">未稀釋只能中央</span></td></tr>
       </tbody>
     </table>
   </div>
   <div class="lead" style="margin-top:-4px;">
     單位：胺基酸／氮／葡萄糖／脂肪 <b>g/L</b>、熱量 <b>kcal/L</b>、Na／K <b>mmol/L</b>、滲透壓 <b>mOsm/L</b>。
-    <b>數字全部照仿單原值抄，包含熱量</b>（三合一袋的仿單用無水葡萄糖 4 kcal/g）。
-    <b>*Smoflipid 的 380 是 mOsm/kg H₂O（滲透莫耳濃度重量制），與其他欄位的容積制不能直接比。</b>
+    <b>品名、規格與路徑取自台大藥品資料庫；每 1 L 的成分數字取自食藥署官方仿單</b>
+    （仿單熱量用無水葡萄糖 4 kcal/g，照抄不換算）。
+    <b>*Smoflipid 的 380 是 mOsm/kg H₂O（重量制），與其他欄位的容積制不能直接比。</b>
     Bfluid 仿單不給 mOsm/L，只給「對 0.9% saline 的滲透壓比約 3」，換算約 860 mOsm/L——
-    <b>仿單同時寫明成人由末梢靜脈輸注</b>，兩件事並存，照仿單走。<br>
-    每一列的「藥卡」連到本站
-    <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>那一張。
-    <b>Oliclinomel N4-550E 沒有連結，因為本站藥卡目前只收了 N7-1000E</b>——
-    N4-550E 的藥證有效（衛署藥輸字第024679號），只是還沒建卡。
+    <b>台大的用法欄寫的是「IF over 4 hrs，成人 1000 mL，每日上限 2500 mL」</b>，
+    比仿單的「500 mL / 120 分鐘」慢，<b>以台大為準</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">器官專用胺基酸</span><span class="dh-e">Disease-specific amino acids（台大品項）</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:620px;">
+      <thead><tr><th>品項</th><th>總胺基酸</th><th>BCAA 佔比</th><th>E/N 比</th><th>滲透壓</th><th>規格</th><th>用在誰身上</th></tr></thead>
+      <tbody>
+        <tr><td><b>Moriamin-SN</b></td><td>10.0%</td><td>22.6%</td><td>1.38</td><td>900</td><td>1000 mL#</td><td>一般</td></tr>
+        <tr><td><b>Aminoven</b></td><td>15%</td><td>13.1%</td><td>0.62</td><td>1505</td><td>500 mL</td><td>一般・高濃度</td></tr>
+        <tr><td><b>Aminoleban</b></td><td>8%</td><td>35.5%</td><td>1.09</td><td>900</td><td>500 mL</td><td><b>肝</b>（肝昏迷）</td></tr>
+        <tr><td><b>Aminosteril N-Hepa</b></td><td>8%</td><td>42%</td><td>1.46</td><td>770</td><td>500 mL</td><td><b>肝</b></td></tr>
+        <tr><td><b>Aminosteril Infant</b></td><td>10%</td><td>30%</td><td>1.02</td><td>885</td><td>100 mL</td><td><b>嬰兒</b></td></tr>
+        <tr><td><b>Nephrosteril</b></td><td>7%</td><td>30.9%</td><td>1.37</td><td>645</td><td>250 mL</td><td><b>腎</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    整張表取自<b>台大藥品資料庫「常用劑量」欄自己附的比較表</b>，不是我拼的。
+    單位：滲透壓 mOsm/L。<b>#Moriamin-SN 1000 mL 是 pharmacy bulk package</b>。
+    <b>E/N 比</b>＝必需／非必需胺基酸比。<b>肝性腦病變用高 BCAA 的兩支</b>
+    （Aminoleban 35.5%、Aminosteril N-Hepa 42%），一般配方的 BCAA 只有 13–23%。
+    台大藥局配的 <b>TPN-Adult-4 就是 BCAA 配方</b>。
   </div>
 
   <div class="dirhead"><span class="dh-n">逐支的重點</span><span class="dh-e">What each bag is for</span></div>
@@ -300,9 +348,10 @@
   <div class="kbox">
     <div class="kbox-t">Bfluid｜週邊用、含維生素 B1、有 12 條禁忌</div>
     上室是胺基酸電解質液、下室是維生素 B1 葡萄糖電解質液，<b>用前要壓破隔膜混合</b>。
-    500 mL 給 <b>210 kcal（非蛋白 150 kcal）、胺基酸 15 g、葡萄糖 37.5 g、thiamine 0.75 mg（以 thiamine 計）</b>，
-    非蛋白熱量／氮比 64。成人一次 500 mL 週邊靜脈，<b>標準 120 分鐘輸完，老年與重症要放慢</b>，
-    每日上限 2500 mL。<br>
+    <b>台大是 1000 mL/bag</b>，一袋給 <b>420 kcal（非蛋白 300 kcal）、胺基酸 30 g、
+    葡萄糖 75 g、thiamine 1.5 mg（以 thiamine 計）</b>，非蛋白熱量／氮比 64。
+    <b>台大用法欄：IF over 4 hrs，成人 1000 mL，每日上限 2500 mL。</b>
+    （仿單寫的是 500 mL / 120 分鐘、老年與重症放慢，兩者不衝突——<b>以台大為準</b>。）<br>
     <b>禁忌很長，值得一看</b>：肝性昏迷或有其虞、重症腎病或高氮血症（透析／血液過濾者除外）、
     寡尿（同上除外）、鬱血性心衰竭、嚴重酸中毒（含高乳酸血症）、高血鉀、Addison 氏症、
     高血磷或副甲狀腺低下、高血鎂或甲狀腺低下、高血鈣、尿路阻塞致尿少、胺基酸代謝異常、
@@ -323,6 +372,9 @@
     脂肪相是<b>精製橄欖油約 80% ＋ 精製大豆油約 20%</b>。1 L 袋＝脂肪乳 200 mL＋胺基酸 400 mL＋葡萄糖 400 mL。
     <b>N4-550E 滲透壓只有 750，仿單明說可經週邊或中央</b>；N7-1000E 是 1450，走中央。
     每日上限依熱量定義：<b>N7-1000E 33 mL/kg/day、N4-550E 40 mL/kg/day</b>。
+    <b>台大只備 N7-1000E 1500 mL/bag，用中央靜脈（cIF/CVC）</b>；
+    台大註記：<b>輸注中 TG 不得超過 4 mmol/L</b>、<b>開袋後必須立即用完不可留待下次</b>、
+    <b>體積超過氣送筒負載，不可氣送</b>。
     兒科（2–18 歲）仿單附有依 <b>2018 ESPGHAN/ESPEN/ESPR</b> 對照的上限表，
     並註明<b>鎂濃度是兩個年齡層的限量因子</b>。
   </div>
@@ -339,9 +391,13 @@
   <div class="kbox">
     <div class="kbox-t">Smoflipid｜四種油、有 omega-3</div>
     每 1 L：<b>大豆油 60 g、中鏈三酸甘油酯 60 g、橄欖油 50 g、富含 omega-3 的魚油 30 g，共 2000 kcal</b>。
-    成人標準劑量 <b>1–2 g 脂肪/kg/day</b>（＝5–10 mL/kg/day），
-    <b>建議速率 0.125 g/kg/h（0.63 mL/kg/h），不得超過 0.15 g/kg/h</b>。<br>
-    <b>輸注期間血清三酸甘油酯不得超過 3 mmol/L</b>；超過就減量或停。
+    <b>台大 250 mL/btl。台大劑量欄：成人 1–2 g/kg/day 於 12–24 小時輸完、
+    上限 2.5 g/kg/day；兒童起始 1–2、上限 3 g/kg/day；嬰兒起始 0.5、上限 3 g/kg/day；
+    速率不得超過 0.15 g 脂肪/kg/hr。</b>（仿單的成人上限是 2 g/kg/day，台大放寬到 2.5——以台大為準。）<br>
+    <span class="gr w">台大註記</span> <b>必須用 non-DEHP 輸注套，不可用 PVC 管路。</b>
+    台大注射給藥指引另註：<b>輸注管線每 24 小時更換、可用 1.2 μm filter、
+    監測 TG，若血清 TG ≥250 mg/dL 應降低劑量或停止輸注</b>——
+    <b>這個門檻比仿單的 3 mmol/L（≈266 mg/dL）嚴，照台大的走。</b><br>
     禁忌：對蛋、大豆或花生蛋白過敏、嚴重高血脂、嚴重肝功能不全、嚴重凝血異常、
     <b>未接受透析／血液過濾的嚴重腎功能不全</b>、急性休克、急性肺水腫／體液過多／失代償心衰竭，
     以及<b>不穩定狀態（嚴重創傷後、失代償糖尿病、急性心肌梗塞、中風、栓塞、代謝性酸中毒、
@@ -394,7 +450,10 @@
               <b>PART II（amp，脂溶性）</b>：vitamin A palmitate 3300 IU・
               cholecalciferol 0.005 mg（200 IU）・dl-α-tocopheryl acetate・
               <b>phytonadione（維生素 K₁）</b>。<br>
-              <b>冷藏 2–8 ℃、避光</b>。</td>
+              <b>冷藏 2–8 ℃、避光</b>。<br>
+              <span class="gr">台大</span> 規格 <b>4 mL/vial</b>，
+              外觀是<b>小瓶凍晶粉末＋琥珀色安瓿溶劑各一，兩者混合溶解後使用</b>；
+              台大註記 <b>Must not be given undiluted</b>。</td>
           <td><b>兩件事會被漏掉：</b><br>
               ① <b>它含維生素 K₁</b>——正在吃 warfarin 的病人加上去，INR 會掉。<br>
               ② <b>thiamine 只有約 3 mg（以 thiamine 計）</b>，
@@ -402,6 +461,30 @@
               不能靠這一支。<br>
               <span class="gr w">數字缺口</span> 維生素 E 與 K₁ 的劑量落在外盒摺線上判讀不出來，
               台大網站恢復後要補查。</td>
+        </tr>
+        <tr>
+          <td><b>Vitamin B1</b><br>維他命乙１注射液<br>100 mg/2 mL/amp<br><a href="../tools/drug-database.html#code=VIA1FB11" class="pmid">藥卡</a></td>
+          <td>學名 <b>Thiamine HCl</b>。<b>台大劑量欄：</b><br>
+              <b>缺乏症</b>：IV 或 IM，<b>5–100 mg tid</b>。<br>
+              <b>Wernicke 腦病變</b>：<b>先 IV 100 mg，之後 IM 或 IV 50–100 mg/day，
+              直到能正常均衡進食為止</b>。<br>
+              適應症：腳氣、多發性神經炎、維他命 B1 缺乏症。</td>
+          <td><b>這一支就是「thiamine 要另外開」的那一支。</b>
+              綜合維生素（Lyo-Povigent）裡的 thiamine 是日常補充量，
+              <b>再餵食高風險或懷疑 Wernicke 時要開這支的治療劑量，而且要在給糖之前給</b>。<br>
+              <b>Bfluid 每 1000 mL 只含 thiamine 1.5 mg</b>，同樣不算治療量。</td>
+        </tr>
+        <tr>
+          <td><b>Vitacicol</b><br>美達康注射液<br>100 mg/2 mL/amp<br><a href="../tools/drug-database.html#code=VIT1FB02" class="pmid">藥卡</a></td>
+          <td>學名 <b>Ascorbic Acid</b>（維生素 C）。<b>台大劑量欄：</b>
+              IV／IM／SC，<b>壞血病成人 100–250 mg qd–bid</b>；
+              嬰幼兒與兒童 100–300 mg/day 分次給。<br>
+              適應症：<b>維他命 C 缺乏症</b>。</td>
+          <td><span class="gr w">安全訊息</span> 台大藥品資料庫掛著
+              <b>2025/2/5「含 ascorbic acid 單方成分注射劑型藥品安全資訊風險溝通表」</b>——
+              開之前先看過那份。<br>
+              <b>台大登記的適應症是「維他命 C 缺乏症」</b>——
+              敗血症的高劑量靜脈維生素 C 是另一回事，<b>不在這支藥的適應症內，本頁不談</b>。</td>
         </tr>
         <tr>
           <td><b>Zinc sulfate</b><br>硫酸鋅注射液<br>6.75 mg Zn/5 mL<br><a href="../tools/drug-database.html#code=ZNS1FC20" class="pmid">藥卡</a></td>
@@ -413,6 +496,18 @@
           <td>安瓿濃度是 <b>1.35 mg Zn/mL</b>，不是 6.75 mg/mL——
               整支 5 mL 才 6.75 mg。開 <b>「Zinc 4 mg」需要約 3 mL</b>，算錯會差五倍。<br>
               高輸出瘻管、大量腹瀉、燒傷的鋅流失遠超過 Addaven 那 5 mg，要另外補。</td>
+        </tr>
+        <tr>
+          <td><b>Glycophos</b><br>磷鈣穩注射液<br>20 mmol/20 mL/amp</td>
+          <td>學名 <b>Sodium Glycerophosphate</b>。靜脈營養的<b>補磷</b>品項。<br>
+              <b>台大劑量欄：成人 10–20 mmol/day</b>；嬰兒與新生兒 1–1.5 mmol/kg/day，
+              實際依個別狀況調整。</td>
+          <td>這是<b>再餵食低血磷時 TPN 裡要加的東西</b>。
+              台大的藥局配製 TPN 另有 <b>Glycophos 版本</b>
+              （TPN-Adult-Glycophos／TPN-Ped-Glycophos／TPN-Neo-Glycophos），
+              開單時直接選那個配方即可，不必再另外加。<br>
+              <b>甘油磷酸鹽是有機磷，比無機磷酸鹽不易與鈣形成沉澱</b>，
+              這正是含鈣的 PN 配方選它的理由。</td>
         </tr>
       </tbody>
     </table>
@@ -736,7 +831,8 @@
     ｜ 晶體輸液與添加劑的品項、電解質濃度與劑量：<b>台大醫院藥劑部藥品資料庫</b>。
     Taita 1–5 號、Bfluid、Clinimix、Oliclinomel、Nutriflex、Smoflipid、Addaven、Lyo-Povigent 的成分：
     <b>衛生福利部食品藥物管理署核准之官方仿單／外盒標籤</b>（許可證字號標於各處）。
-    <b>2026-08-13 台大藥劑部網站維護中，靜脈營養液的院內備藥狀況未能查證，已於該分頁標明。</b>
+    <b>2026-08-13 於台大院內網域查證，品項、袋裝規格、劑量與注意事項一律以台大欄位為準；
+    仿單只用來補台大未逐項公布的成分細節。</b>
   </footer>
 </div>
 
