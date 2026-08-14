@@ -100,19 +100,156 @@ window.SITES = [
         {role:'special', label:'加抗黴菌（念珠菌風險）', drugs:['micafungin'], dur:'依培養與反應'}
       ]},
      {name:'腹膜透析相關腹膜炎', en:'PD-associated peritonitis',
-      note:'腹膜透析（PD）病人的腹膜炎。<b>診斷</b>需符合三項中至少兩項：① 腹痛和／或透析引流液混濁；② 引流液白血球 &gt;100/μL（留置至少 2 小時）且多形核白血球比例 &gt;50%；③ 引流液培養陽性。一旦懷疑，立即送引流液細胞計數、白血球分類、革蘭氏染色與培養，並檢視導管出口與隧道是否感染；<b>採檢後不必等培養，先依腹膜炎給經驗性抗生素</b>，抗菌譜需同時涵蓋革蘭氏陽性與陰性菌。<b>給藥途徑以腹腔內（IP）注射為優先</b>（抗生素打入透析液後灌入腹腔留置），有敗血症表現時才改靜脈。<b>以下劑量皆為 IP 給藥，與藥卡上的靜脈劑量不同</b>：間歇給藥＝每天一袋、腹腔留置至少 6 小時，多為固定劑量或依體重計算；持續給藥＝每袋透析液都加，多先給 loading dose 再給 maintenance dose，以濃度表示、依透析液體積換算。多數 IP 劑量資料來自 CAPD 病人，若用於 APD 病人或使用未列於本表的藥物，建議會診腎臟科或臨床藥師。有明顯殘餘腎功能者抗生素清除較多、濃度偏低，治療失敗率上升，time-dependent 抗生素可考慮增量。治療 48 小時內多會明顯改善；若無改善，應於 72 小時內重新留取檢體評估，並考慮調整抗生素及續發性腹膜炎（腹內病灶）的可能。資料來源：台大醫院〈腹膜透析病人使用腹腔內注射抗生素之臨床處置建議〉（文件 15660-2-000005 v1，113 年 7 月 26 日第 264 次藥事委員會通過，2026/03/11 檢視），劑量表改編自 ISPD 2022 腹膜炎指引。',
+      note:'<div class="dose-fmt">'+
+        '<div class="dl-sect">診斷（三項中至少符合兩項）</div>'+
+        '<div class="dl-item">腹痛和／或透析引流液（dialysis effluent）混濁</div>'+
+        '<div class="dl-item">引流液白血球 &gt;100/μL（留置時間至少 2 小時），且多形核白血球比例 &gt;50%</div>'+
+        '<div class="dl-item">引流液培養陽性</div>'+
+        '<div class="dl-sect">一旦懷疑，先做這三件事</div>'+
+        '<div class="dl-item">立即收集引流液，送細胞計數、白血球分類、革蘭氏染色與細菌培養</div>'+
+        '<div class="dl-item">檢視透析導管出口（exit site）與隧道（tunnel）有無感染跡象</div>'+
+        '<div class="dl-item">採檢後不必等培養結果，先視為腹膜炎給經驗性抗生素；抗菌譜須同時涵蓋革蘭氏陽性與陰性菌</div>'+
+        '<div class="dl-sect">給藥途徑</div>'+
+        '<div class="dl-item"><b>優先用腹腔內（IP）注射</b>：抗生素注入透析液後，灌入腹腔留置</div>'+
+        '<div class="dl-item">有敗血症表現時，改為靜脈給藥</div>'+
+        '<div class="dl-item"><b>下方所有劑量都是 IP 給藥，與藥卡上的靜脈劑量不同</b></div>'+
+        '<div class="dl-sect">IP 給藥的兩種方式</div>'+
+        '<div class="dl-head">間歇（intermittent）</div>'+
+        '<div class="dl-item">每天一次把抗生素注入一袋透析液，腹腔留置至少 6 小時</div>'+
+        '<div class="dl-sub">劑量多為固定劑量或依體重計算</div>'+
+        '<div class="dl-head">持續（continuous）</div>'+
+        '<div class="dl-item">每一袋透析液都加藥，腹腔整日都有抗生素留置</div>'+
+        '<div class="dl-sub">多先給 loading dose，之後給固定 maintenance dose；劑量以濃度表示，依透析液體積換算</div>'+
+        '<div class="dl-sect">用藥注意</div>'+
+        '<div class="dl-item">多數 IP 劑量來自 CAPD 病人的臨床報告；用於 APD 病人或使用未列於下方的藥物時，建議會診腎臟科或臨床藥師</div>'+
+        '<div class="dl-item">殘餘腎功能明顯者抗生素清除較多、血中濃度較低，治療失敗率上升；time-dependent 抗生素可考慮增量</div>'+
+        '<div class="dl-sect">療效追蹤</div>'+
+        '<div class="dl-item">多數病人在治療 48 小時內明顯改善</div>'+
+        '<div class="dl-item">若無改善，應於 72 小時內重新留取檢體評估，並考慮調整抗生素及續發性腹膜炎（secondary peritonitis，腹內另有病灶）的可能</div>'+
+        '<div class="dl-item">治療期間定期追蹤引流液細胞計數與白血球分類，以評估成效</div>'+
+        '<div class="dl-sect">資料來源</div>'+
+        '<div class="dl-line">台大醫院〈腹膜透析病人使用腹腔內注射抗生素之臨床處置建議〉文件 15660-2-000005 v1（113 年 7 月 26 日第 264 次藥事委員會通過，2026/03/11 檢視）；劑量表改編自 ISPD 2022 腹膜炎指引。</div>'+
+      '</div>',
       regimens:[
-        {role:'first', label:'經驗性：IP Cefazolin ＋ Ceftazidime', drugs:['cefazolin','ceftazidime'], dur:'有效抗生素至少 2 週；S. aureus／腸球菌／GNB／多菌種 3 週', note:'第一代 cephalosporin 覆蓋革蘭氏陽性菌，ceftazidime 覆蓋含 Pseudomonas 的革蘭氏陰性菌。<b>間歇</b>（每日一袋）：cefazolin 1000 mg／日（台大常用固定劑量）或 15 mg/kg（long dwell）／20 mg/kg（short dwell）；ceftazidime 1000 mg／日（台大常用固定劑量）或 1000–1500 mg（long dwell）／20 mg/kg（short dwell）。<b>持續</b>（每袋）：兩者皆 LD 500 mg/L、MD 125 mg/L。兩者相容，可加在同一袋透析液。'},
-        {role:'first', label:'經驗性單藥：IP Cefepime', drugs:['cefepime'], dur:'有效抗生素至少 2 週；S. aureus／腸球菌／GNB／多菌種 3 週', note:'間歇 1000 mg／日；持續 LD 500 mg/L、MD 125 mg/L。單用即同時覆蓋革蘭氏陽性與陰性菌，已證實效果不劣於 cefazolin ＋ ceftazidime 併用。'},
-        {role:'first', label:'疑 MRSA 或已移生：IP Vancomycin ＋ Ceftazidime', drugs:['vancomycin','ceftazidime'], dur:'有效抗生素至少 2 週；S. aureus 3 週', note:'Vancomycin 間歇：LD 1000 mg，之後 500 mg Q3D（台大常用固定劑量）；或 APD 15 mg/kg 每 4 天、CAPD 15–30 mg/kg 每 5–7 天。持續：LD 20–25 mg/kg、MD 25 mg/L。vancomycin 與 ceftazidime、gentamicin 皆相容，可同袋。'},
-        {role:'alt', label:'革蘭氏陰性菌覆蓋替代：IP Aminoglycoside（只能間歇給藥）', drugs:['gentamicin','amikacin'], dur:'有效抗生素至少 2 週；GNB 3 週', note:'Gentamicin 40 mg／日（台大常用固定劑量）或 0.6 mg/kg／日；amikacin 2 mg/kg／日。屬濃度依賴型，建議間歇給藥以確保療效並減少毒性，<b>持續給藥不建議</b>。會影響殘餘腎功能，須權衡。<b>不可與 penicillin 類（penicillin G、ampicillin、ampicillin/sulbactam、piperacillin/tazobactam）或 heparin 加在同一袋</b>：混合會失效或沉澱，需併用時分別注射於不同袋透析液。'},
-        {role:'alt', label:'其他 IP 劑量對照：抗革蘭氏陽性菌', drugs:['teicoplanin','daptomycin','clindamycin'], dur:'依培養與臨床反應', note:'Teicoplanin 間歇 15 mg/kg Q5D；持續 LD 400 mg/袋、MD 20 mg/L。Daptomycin 間歇 300 mg／日；持續 LD 100 mg/L、MD 20 mg/L。Clindamycin 無間歇給藥資料；持續 MD 600 mg/袋。'},
-        {role:'alt', label:'其他 IP 劑量對照：Carbapenem／Penicillin 類等', drugs:['meropenem','imipenem','piptazo','ampsulbactam'], dur:'依培養與臨床反應', note:'Meropenem 間歇 1000 mg／日（APD long dwell 500 mg／CAPD short dwell 1000 mg）；持續 MD 125 mg/L。Imipenem/cilastatin 間歇 500 mg BID（台大常用固定劑量）或每隔一袋 500 mg；持續 LD 250 mg/L、MD 50 mg/L。Piperacillin/tazobactam 無間歇資料；持續 LD 4000/500 mg、MD 1000/125 mg。Ampicillin/sulbactam 持續 LD 1000/500 mg、MD 133.3/66.7 mg。另 ampicillin 間歇 4000 mg／日、持續 MD 125 mg/L；penicillin G 持續 LD 50,000 unit/L、MD 25,000 unit/L；cefotaxime 間歇 1000 mg／日；fosfomycin 間歇 4000 mg／日。'},
-        {role:'special', label:'難治菌（Pseudomonas、Stenotrophomonas）：合併兩種抗生素', drugs:[], dur:'3 週', note:'依引流液培養與感受性報告選兩種抗生素合併治療。培養出的菌種不一定是致病菌，須與臨床反應一併判讀；治療期間定期追蹤引流液細胞計數與白血球分類以評估成效。'},
-        {role:'special', label:'真菌性腹膜炎：立即移除導管', drugs:[], dur:'導管移除後仍需完成療程（至少 2 週）', note:'台大本建議僅載明真菌性腹膜炎應立即移除導管，未列 IP 抗黴菌劑量；抗黴菌藥物選擇請依培養結果並會診腎臟科／感染科。'},
-        {role:'special', label:'導管移除指徵', drugs:[], note:'① <b>難治性</b>：適當抗生素治療 5 天後引流液仍混濁或白血球持續 &gt;100/μL（若臨床明顯改善，未達標準仍可續觀察）；② <b>再發性</b>：前次治療結束 4 週內由<b>不同</b>致病菌再發；③ <b>復發性</b>：4 週內由<b>相同</b>致病菌或培養陰性再發；④ <b>重現性</b>：治療結束 4 週<b>之後</b>由相同致病菌再發（並找續發性腹膜炎病灶，如憩室炎）；⑤ 真菌性腹膜炎立即移除；⑥ 非結核分枝桿菌腹膜炎通常需考慮移除（結核分枝桿菌腹膜炎通常不需）；⑦ 出口或隧道感染合併腹膜炎，尤其 S. aureus 與 Pseudomonas。移除導管者術後仍須維持抗生素至少 2 週，完成療程後再考慮重新植管，以提高根除感染的成功率。'},
-        {role:'special', label:'輔助處置', drugs:[], note:'引流液出現纖維蛋白時可於透析液加 heparin 500 units/L（不可與 aminoglycoside 同袋）；給予適當止痛藥物；腹膜炎期間透析液糖分吸收增加，可能血糖上升與脫水失敗（ultrafiltration failure），需調整血糖藥物、透析液濃度與留置時間；每次發作應做根本原因分析並介入，預防再次感染。兩種以上藥品加入同一袋透析液前須查相容性（Micromedex IV compatibility）；抗生素於透析液中的安定性受透析液組成（dextrose-base 或 icodextrin-base）、是否加 heparin 與儲存環境影響，提前一日以上配製前須查證。'},
-        {role:'none', label:'不經 IP 給藥：Ceftriaxone；腸球菌腹膜炎不用 IP Ampicillin', drugs:[], note:'Ceftriaxone 依仿單有 ceftriaxone-calcium 沉澱風險，不以腹腔內途徑給藥。IP ampicillin 在腹膜液中對 E. faecalis 的抑菌效果大幅下降，不建議用於腸球菌腹膜炎。'}
+        {role:'first', label:'經驗性：IP Cefazolin ＋ Ceftazidime', drugs:['cefazolin','ceftazidime'], dur:'有效抗生素至少 2 週；S. aureus／腸球菌／GNB／多菌種 3 週',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-line">第一代 cephalosporin 覆蓋革蘭氏陽性菌，ceftazidime 覆蓋含 Pseudomonas 的革蘭氏陰性菌。</div>'+
+           '<div class="dl-head">間歇（每日一袋）</div>'+
+           '<div class="dl-item">Cefazolin 1000 mg／日（台大常用固定劑量）</div>'+
+           '<div class="dl-sub">或 15 mg/kg／日（long dwell）、20 mg/kg／日（short dwell）</div>'+
+           '<div class="dl-item">Ceftazidime 1000 mg／日（台大常用固定劑量）</div>'+
+           '<div class="dl-sub">或 1000–1500 mg／日（long dwell）、20 mg/kg／日（short dwell）</div>'+
+           '<div class="dl-head">持續（每袋）</div>'+
+           '<div class="dl-item">兩者皆 LD 500 mg/L、MD 125 mg/L</div>'+
+           '<div class="dl-line">兩者相容，可加在同一袋透析液。</div>'+
+         '</div>'},
+        {role:'first', label:'經驗性單藥：IP Cefepime', drugs:['cefepime'], dur:'有效抗生素至少 2 週；S. aureus／腸球菌／GNB／多菌種 3 週',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-head">間歇（每日一袋）</div>'+
+           '<div class="dl-item">1000 mg／日</div>'+
+           '<div class="dl-head">持續（每袋）</div>'+
+           '<div class="dl-item">LD 500 mg/L、MD 125 mg/L</div>'+
+           '<div class="dl-line">單用即同時覆蓋革蘭氏陽性與陰性菌，已證實效果不劣於 cefazolin ＋ ceftazidime 併用。</div>'+
+         '</div>'},
+        {role:'first', label:'疑 MRSA 或已移生：IP Vancomycin ＋ Ceftazidime', drugs:['vancomycin','ceftazidime'], dur:'有效抗生素至少 2 週；S. aureus 3 週',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-head">Vancomycin — 間歇</div>'+
+           '<div class="dl-item">LD 1000 mg，之後 500 mg Q3D（台大常用固定劑量）</div>'+
+           '<div class="dl-sub">或 APD 15 mg/kg 每 4 天；CAPD 15–30 mg/kg 每 5–7 天</div>'+
+           '<div class="dl-head">Vancomycin — 持續</div>'+
+           '<div class="dl-item">LD 20–25 mg/kg、MD 25 mg/L</div>'+
+           '<div class="dl-head">Ceftazidime</div>'+
+           '<div class="dl-item">劑量同上（間歇 1000 mg／日；持續 LD 500 mg/L、MD 125 mg/L）</div>'+
+           '<div class="dl-line">Vancomycin 與 ceftazidime、gentamicin 皆相容，可加在同一袋。</div>'+
+         '</div>'},
+        {role:'alt', label:'革蘭氏陰性菌覆蓋替代：IP Aminoglycoside（只能間歇給藥）', drugs:['gentamicin','amikacin'], dur:'有效抗生素至少 2 週；GNB 3 週',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-head">間歇（每日一袋）</div>'+
+           '<div class="dl-item">Gentamicin 40 mg／日（台大常用固定劑量）或 0.6 mg/kg／日</div>'+
+           '<div class="dl-item">Amikacin 2 mg/kg／日</div>'+
+           '<div class="dl-head">持續</div>'+
+           '<div class="dl-item">不建議（not advised）</div>'+
+           '<div class="dl-sect">注意</div>'+
+           '<div class="dl-item">屬濃度依賴型，採間歇給藥才能確保療效並減少毒性</div>'+
+           '<div class="dl-item">會影響殘餘腎功能，須權衡</div>'+
+           '<div class="dl-item"><b>不可與 penicillin 類同袋</b>（penicillin G、ampicillin、ampicillin/sulbactam、piperacillin/tazobactam）：化學不相容，混合會失效或沉澱</div>'+
+           '<div class="dl-item"><b>不可與 heparin 同袋</b>：混合可能發生沉澱</div>'+
+           '<div class="dl-sub">臨床需併用時，分別注射於不同袋透析液錯開</div>'+
+         '</div>'},
+        {role:'alt', label:'其他 IP 劑量對照：抗革蘭氏陽性菌', drugs:['teicoplanin','daptomycin','clindamycin'], dur:'依培養與臨床反應',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-head">Teicoplanin</div>'+
+           '<div class="dl-item">間歇 15 mg/kg Q5D</div>'+
+           '<div class="dl-item">持續 LD 400 mg/袋、MD 20 mg/L</div>'+
+           '<div class="dl-head">Daptomycin</div>'+
+           '<div class="dl-item">間歇 300 mg／日</div>'+
+           '<div class="dl-item">持續 LD 100 mg/L、MD 20 mg/L</div>'+
+           '<div class="dl-head">Clindamycin</div>'+
+           '<div class="dl-item">間歇：無資料</div>'+
+           '<div class="dl-item">持續 MD 600 mg/袋</div>'+
+         '</div>'},
+        {role:'alt', label:'其他 IP 劑量對照：Carbapenem／Penicillin 類等', drugs:['meropenem','imipenem','piptazo','ampsulbactam'], dur:'依培養與臨床反應',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-head">Meropenem</div>'+
+           '<div class="dl-item">間歇 1000 mg／日</div>'+
+           '<div class="dl-sub">APD long dwell 500 mg／日；CAPD short dwell 1000 mg／日</div>'+
+           '<div class="dl-item">持續 MD 125 mg/L</div>'+
+           '<div class="dl-head">Imipenem/cilastatin</div>'+
+           '<div class="dl-item">間歇 500 mg BID（台大常用固定劑量），或每隔一袋 500 mg</div>'+
+           '<div class="dl-item">持續 LD 250 mg/L、MD 50 mg/L</div>'+
+           '<div class="dl-head">Piperacillin/tazobactam</div>'+
+           '<div class="dl-item">間歇：無資料</div>'+
+           '<div class="dl-item">持續 LD 4000/500 mg、MD 1000/125 mg</div>'+
+           '<div class="dl-head">Ampicillin/sulbactam</div>'+
+           '<div class="dl-item">持續 LD 1000/500 mg、MD 133.3/66.7 mg</div>'+
+           '<div class="dl-sect">表中其餘藥物</div>'+
+           '<div class="dl-item">Ampicillin：間歇 4000 mg／日；持續 MD 125 mg/L</div>'+
+           '<div class="dl-item">Penicillin G：持續 LD 50,000 unit/L、MD 25,000 unit/L（間歇無資料）</div>'+
+           '<div class="dl-item">Cefotaxime：間歇 1000 mg／日（持續無資料）</div>'+
+           '<div class="dl-item">Fosfomycin：間歇 4000 mg／日（持續無資料）</div>'+
+         '</div>'},
+        {role:'special', label:'難治菌（Pseudomonas、Stenotrophomonas）：合併兩種抗生素', drugs:[], dur:'3 週',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-item">依引流液培養與感受性報告，選兩種抗生素合併治療</div>'+
+           '<div class="dl-item">培養出的菌種不一定就是致病菌，須與臨床反應一併判讀</div>'+
+         '</div>'},
+        {role:'special', label:'真菌性腹膜炎：立即移除導管', drugs:[], dur:'導管移除後仍需完成療程（至少 2 週）',
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-item">確診真菌性腹膜炎應<b>立即移除導管</b></div>'+
+           '<div class="dl-item">台大本建議未列 IP 抗黴菌劑量；抗黴菌藥物選擇依培養結果，並會診腎臟科／感染科</div>'+
+         '</div>'},
+        {role:'special', label:'導管移除指徵', drugs:[],
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-sect">四種再發型態（都要考慮移除導管）</div>'+
+           '<div class="dl-item"><b>難治性</b>（refractory）：適當抗生素治療 5 天後，引流液仍混濁或白血球持續 &gt;100/μL</div>'+
+           '<div class="dl-sub">若臨床表現顯示正在改善，儘管未達標準，仍可繼續觀察治療反應</div>'+
+           '<div class="dl-item"><b>再發性</b>（recurrent）：前次治療結束 4 週內，由<b>不同</b>致病菌再次發生</div>'+
+           '<div class="dl-item"><b>復發性</b>（relapsing）：前次治療結束 4 週內，由<b>相同</b>致病菌或培養陰性再次發生</div>'+
+           '<div class="dl-item"><b>重現性</b>（repeat）：前次治療結束 4 週<b>之後</b>，由相同致病菌再次發生</div>'+
+           '<div class="dl-sub">同時考慮其他腹腔疾病（如憩室炎等續發性腹膜炎）存在的可能</div>'+
+           '<div class="dl-sect">其他移除指徵</div>'+
+           '<div class="dl-item">真菌性腹膜炎：立即移除</div>'+
+           '<div class="dl-item">非結核分枝桿菌腹膜炎：通常需考慮移除（結核分枝桿菌腹膜炎通常不需）</div>'+
+           '<div class="dl-item">導管出口或隧道感染合併腹膜炎，尤其 S. aureus 與 Pseudomonas 相關感染</div>'+
+           '<div class="dl-sect">移除之後</div>'+
+           '<div class="dl-item">術後仍須維持抗生素至少 2 週</div>'+
+           '<div class="dl-item">完成抗生素療程後再考慮重新植入導管，以提高徹底根除感染的成功率</div>'+
+         '</div>'},
+        {role:'special', label:'輔助處置', drugs:[],
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-item">引流液出現纖維蛋白：透析液加 heparin 500 units/L（不可與 aminoglycoside 同袋）</div>'+
+           '<div class="dl-item">給予適當止痛藥物改善症狀</div>'+
+           '<div class="dl-item">透析液糖分吸收增加，可能血糖上升與脫水失敗（ultrafiltration failure）：調整血糖藥物、透析液濃度與留置時間</div>'+
+           '<div class="dl-item">每一次發作都應做根本原因分析並介入，預防再次感染</div>'+
+           '<div class="dl-sect">配製前要查的兩件事</div>'+
+           '<div class="dl-item"><b>相容性</b>：兩種以上藥品加入同一袋前，查 Micromedex 的 IV 相容性；不相容者分別注射於不同袋錯開</div>'+
+           '<div class="dl-item"><b>安定性</b>：受透析液組成（dextrose-base 或 icodextrin-base）、是否加 IP heparin 與儲存環境影響；提前一日以上配製須先查證（ISPD 指引）</div>'+
+         '</div>'},
+        {role:'none', label:'不經 IP 給藥：Ceftriaxone；腸球菌腹膜炎不用 IP Ampicillin', drugs:[],
+         note:'<div class="dose-fmt">'+
+           '<div class="dl-item"><b>Ceftriaxone 不以腹腔內途徑給藥</b>：依仿單有 ceftriaxone-calcium 沉澱風險</div>'+
+           '<div class="dl-item"><b>腸球菌腹膜炎不用 IP ampicillin</b>：腹膜液會大幅降低其對 E. faecalis 的抑菌效果</div>'+
+         '</div>'}
       ]},
      {name:'急性膽道感染', en:'Acute cholangitis / cholecystitis',
       note:'膽道感染以腸道 GNB 為主；中重度膽管炎需儘速膽道引流(ERCP)。腸球菌覆蓋依嚴重度。',

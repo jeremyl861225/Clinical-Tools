@@ -78,7 +78,9 @@
   <div id="abx-step-result" class="hidden">
     <button class="abx-back" onclick="backToTypes()">← 上一步：選感染型態</button>
     <div class="abx-crumb" id="abx-crumb2"></div>
-    <p class="abx-type-note" id="abx-typenote"></p>
+    <!-- 型態說明改用 div：部分型態（如腹膜透析腹膜炎）的說明是 .dose-fmt 分層結構，
+         內含 <div>，放在 <p> 裡不合法。樣式走 class，換成 div 不影響外觀。 -->
+    <div class="abx-type-note" id="abx-typenote"></div>
     <div id="abx-regimens"></div>
     <div class="abx-hint">相關抗生素資訊（點藥名展開）</div>
     <div id="abx-drugcards"></div>
