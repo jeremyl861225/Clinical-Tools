@@ -13,7 +13,9 @@
 a.db-xlink{
   --x-bg:var(--accent); --x-fg:var(--paper); --x-dim:var(--paper); --x-radius:3px;
   display:grid; grid-template-columns:1fr auto; align-items:center; gap:0 14px;
-  margin:12px 0 4px; padding:13px 15px; text-decoration:none;
+  /* 下緣留 16px：這顆實心塊原本只留 4px，在手機上跟搜尋框黏成一塊，
+     看起來像搜尋框是它的一部分。要讓「離開本頁」與「在本頁查」明顯是兩件事。 */
+  margin:12px 0 16px; padding:13px 15px; text-decoration:none;
   border:0; border-radius:var(--x-radius);
   background:var(--x-bg); color:var(--x-fg);
 }
