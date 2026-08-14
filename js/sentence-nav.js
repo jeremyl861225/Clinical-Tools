@@ -174,6 +174,20 @@
  *      為什麼不是把菌名塞進藥的 hay（會跟藥名命中混成一堆且抹掉分級）、
  *      以及徽章為什麼直接沿用藥卡那一套 `.cov-tag` class。
  *
+ *  18. **兩個查詢欄都有最近搜尋**（本輪新增）：使用者原話——「我想在主畫面的
+ *      查詢欄（構成句子的三個框框與說整句的查詢欄）都加上歷史搜尋的功能，
+ *      點擊框框但還未輸入文字時，列表優先顯示最近搜尋。說整句的查詢欄則可以
+ *      在點擊框框前直接在查詢欄下方呈現歷史查詢。」
+ *      兩欄各存一份、記的東西**不一樣**（理由見下面「最近搜尋」那一整段）：
+ *      說整句記查詢字串，三格造句記選定的詞。存 localStorage（ct-hist-say／
+ *      ct-hist-tok，各 8 筆），讀寫一律包 try——被封鎖時整個功能靜靜地不出現。
+ *      三格那一排只在過濾框還沒打字時出現（使用者指定的條件），而且只列
+ *      「現在還選得動」的詞；說整句那一排在面板一打開就畫好，focus 排在它後面，
+ *      所以使用者還沒點進輸入框就已經看得到（＝「點擊框框前」那句話）。
+ *      什麼時候記一筆：說整句是「點了候選項／Enter 直達／打完停手 1.5 秒且真的
+ *      有命中／收起面板時手上那句有命中」四條路，三格是「真的選上了一個詞」
+ *      那一下（再點一次同一顆是退掉它，不算；字輪與平行換題沒經過查詢欄，也不算）。
+ *
  * 清點時確認**已經**對齊、不必動的（避免有人日後「補」出重複的東西）：
  * 範圍（g）詞塊未選時不顯示成空格 ▢、選了才長出「腹部急症 ×，我遇到…」
  * （renderRow() 本來就是這樣）；指向行的收斂提示「再選一個主體可從 18 縮到 1」
@@ -228,6 +242,102 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
     });
+  }
+
+  /* ================================================================
+   * 最近搜尋（兩個查詢欄各存一份，localStorage）
+   * ================================================================
+   * 使用者原話：「我想在主畫面的查詢欄（構成句子的三個框框與說整句的查詢欄）
+   * 都加上歷史搜尋的功能，點擊框框但還未輸入文字時，列表優先顯示最近搜尋。
+   * 說整句的查詢欄則可以在點擊框框前直接在查詢欄下方呈現歷史查詢。」
+   *
+   * ---------------------------------------------------------------
+   * 兩個查詢欄記的東西**不一樣**
+   * ---------------------------------------------------------------
+   * 因為它們的「一次搜尋」本來就不是同一件事：
+   *   · 說整句（#sentAskIn）記**查詢字串**。那一欄是自由輸入，再查一次就是把
+   *     同一串字打回去，記字串才回得到同一個畫面。
+   *   · 三格造句（#sentPanelFilter）記**選定的詞**，不是打進過濾框的字。那一欄
+   *     的產物是候選詞面板上被按下的那顆詞塊（腹部／闌尾炎／查劑量），過濾字
+   *     只是找到它的手段——記字串的話使用者要再動兩次（字填回過濾框、再選一次
+   *     詞）才回到同一個地方，記詞則是一下就到。詞本身也還是「查得到的字」
+   *     （面板的過濾就吃它與它的別名），所以照使用者的說法叫「最近搜尋」不失真。
+   *
+   * ---------------------------------------------------------------
+   * 存法
+   * ---------------------------------------------------------------
+   * 比照 js/nav.js／js/backlink.js：localStorage 一律包在 try 裡（Cookie／
+   * 站台資料被封鎖時，光是**讀** window.localStorage 就會丟例外），讀不到就當成
+   * 沒有歷史——整個功能靜靜地不出現，其餘行為一個字都不變。存進去的東西是
+   * 使用者自己打的字與自己選的詞，不含任何頁面內容，也不隨網址帶出去
+   * （?sent= 的編碼完全不碰這兩個鍵）。
+   *
+   * 讀出來的內容一律當成不可信：換版本、或使用者自己動過 localStorage，都可能
+   * 是別的型別。型別不對就整份丟掉當空的，不讓壞資料把面板畫爛。
+   */
+  var HIST_SAY_KEY = 'ct-hist-say';   // 說整句：查詢字串，新的在前
+  var HIST_TOK_KEY = 'ct-hist-tok';   // 三格造句：{g:[…], s:[…], c:[…], a:[…]}
+  var HIST_CAP = 8;                   // 兩邊都只留 8 筆（一排塞得下、不必捲）
+  var HIST_MAX_LEN = 60;              // 單筆字數上限，整段貼進來的長文不進歷史
+  var HIST_FACETS = ['g', 's', 'c', 'a'];
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 無痕模式等寫不進去 */ } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  function histRead(key) {
+    var raw = lsGet(key);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+  function histClean(a) {
+    if (!Array.isArray(a)) return [];
+    var out = [], seen = {};
+    for (var i = 0; i < a.length && out.length < HIST_CAP; i++) {
+      var s = typeof a[i] === 'string' ? a[i].trim() : '';
+      if (!s || s.length > HIST_MAX_LEN || seen[s]) continue;
+      seen[s] = 1; out.push(s);
+    }
+    return out;
+  }
+  function histSayList() { return histClean(histRead(HIST_SAY_KEY)); }
+  function histTokList(f) {
+    var o = histRead(HIST_TOK_KEY);
+    return histClean(o && !Array.isArray(o) ? o[f] : null);
+  }
+
+  /* 新的一筆放最前面，並把「是這一筆的前綴」的舊紀錄一起吃掉——字是一個一個
+     送進來的，不濾的話「闌」「闌尾」「闌尾炎」會佔掉三格，而使用者實際上只查了
+     一次。反過來（新的那句是舊紀錄的前綴）不吃：那是另一次、比較寬的查詢。 */
+  function histSayPush(q) {
+    var s = String(q == null ? '' : q).trim();
+    if (!s || s.length > HIST_MAX_LEN) return;
+    var next = [s];
+    histSayList().forEach(function (x) {
+      if (x === s || s.indexOf(x) === 0) return;
+      next.push(x);
+    });
+    lsSet(HIST_SAY_KEY, JSON.stringify(next.slice(0, HIST_CAP)));
+  }
+  function histSayDrop(q) {
+    lsSet(HIST_SAY_KEY, JSON.stringify(histSayList().filter(function (x) { return x !== q; })));
+  }
+
+  /* 詞這邊**不做前綴合併**：面向詞是完整的詞條，「腹部」與「腹部外傷」是兩個
+     各自存在的詞，把前者當成後者打到一半而吃掉是錯的。 */
+  function histTokPush(f, w) {
+    if (HIST_FACETS.indexOf(f) < 0 || !w) return;
+    var o = {};
+    HIST_FACETS.forEach(function (k) { o[k] = histTokList(k); });
+    o[f] = [w].concat(o[f].filter(function (x) { return x !== w; })).slice(0, HIST_CAP);
+    lsSet(HIST_TOK_KEY, JSON.stringify(o));
+  }
+  function histClearSay() { lsDel(HIST_SAY_KEY); }
+  function histClearTok(f) {
+    if (HIST_FACETS.indexOf(f) < 0) return;
+    var o = {};
+    HIST_FACETS.forEach(function (k) { o[k] = k === f ? [] : histTokList(k); });
+    lsSet(HIST_TOK_KEY, JSON.stringify(o));
   }
 
   /* ---------------- 展開式比對（自 js/sentence.js 的比對核心搬過來） ----------------
@@ -532,15 +642,65 @@
       return '<div class="sent-tok-empty">找不到符合「' + esc(panelFilter.trim()) +
         '」的詞——換個講法，或按 Esc 收起。</div>';
     }
-    return list.map(function (o, i) {
-      var cur = homeSt[f] === o.w;
-      var e = f === 'g' ? null : facetEntry(f, o.w);
-      return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + (i === panelSel ? ' sel' : '') +
-        '" role="option" aria-selected="' + (i === panelSel ? 'true' : 'false') + '" ' +
-        'data-act="pick" data-f="' + f + '" data-w="' + esc(o.w) + '" ' +
-        'title="' + esc(e ? (e.al || '') : (o.en || '')) + '">' +
-        esc(o.label) + '<i>' + o.n + '</i></button>';
+    return panelHistHTML(f, all, list) + list.map(function (o, i) {
+      return tokHTML(f, o, i === panelSel, false);
     }).join('');
+  }
+
+  /* 一顆候選詞。sel＝鍵盤游標停在這一顆；hist＝這一顆是「最近搜尋」那一排的，
+     它與底下全清單裡的同一個詞是兩個節點，所以鍵盤游標（.sel）只給全清單那顆
+     ——同一個詞同時亮兩處會讓人以為是兩個不同的選項。 */
+  function tokHTML(f, o, sel, hist) {
+    var cur = homeSt[f] === o.w;
+    var e = f === 'g' ? null : facetEntry(f, o.w);
+    return '<button type="button" class="sent-tok' + (cur ? ' cur' : '') + (sel ? ' sel' : '') +
+      (hist ? ' is-hist' : '') + '" role="option" aria-selected="' + (sel ? 'true' : 'false') + '" ' +
+      'data-act="pick" data-f="' + f + '" data-w="' + esc(o.w) + '" ' +
+      'title="' + esc(e ? (e.al || '') : (o.en || '')) + '">' +
+      esc(o.label) + '<i>' + o.n + '</i></button>';
+  }
+
+  /* ---------------- 最近搜尋：三格造句的那一排 ----------------
+   * 使用者原話：「點擊框框但還未輸入文字時，列表優先顯示最近搜尋」。所以這一排
+   * 只在**過濾框還沒打字**時出現——打了字就是正在找特定的詞，這時再插一排跟
+   * 查詢無關的舊詞只會擋在命中結果前面。
+   *
+   * 只列「現在還選得動」的詞（n>0，或它正是這一格目前選的那個詞）。n===0 的詞
+   * 本來就被底下那份全清單濾掉了（選了會讓句子指到 0 件，見 panelTokensHTML()
+   * 開頭那個 filter），從歷史這一排放行等於偷偷開一條會踩空的路——而且踩下去
+   * 還會觸發 applyWord() 由句尾往前清詞，使用者會看到別格的詞莫名其妙消失。
+   *
+   * 歷史那幾顆詞在底下的全清單裡**還是會再出現一次**，這是刻意的：那份清單是
+   * 依件數排序的完整參考，從裡面挖掉幾顆會讓人以為詞不見了。兩處之間用一行
+   * 分區標題分開，不會看成重複。
+   *
+   * 標題列與底下的詞塊是 #sentPanelBody（role="listbox"）的平輩節點，這一點
+   * 沿用該容器既有的作法（.sent-tok-empty 那一行本來就是這樣放的）：包成
+   * role="group" 會多一層 flex 容器，詞塊的換行與間距要重調，換來的是同樣
+   * 不完美的 ARIA（群組裡照樣有一顆非 option 的「清除」鈕）。標題本身標成
+   * presentation，不假裝自己是一個選項。 */
+  function panelHistHTML(f, all, list0) {
+    if (panelFilter.trim()) return '';
+    var his = histTokList(f);
+    if (!his.length) return '';
+    var byW = {};
+    all.forEach(function (o) { byW[o.w] = o; });
+    var list = [];
+    his.forEach(function (w) {
+      var o = byW[w];
+      if (o && (o.n > 0 || homeSt[f] === o.w)) list.push(o);
+    });
+    if (!list.length) return '';
+    return '<div class="sent-tok-sec" role="presentation">' +
+        '<span class="sts-t">最近搜尋</span>' +
+        '<button type="button" class="sts-clear" data-act="histclear" data-kind="tok" data-f="' + f + '" ' +
+        'aria-label="清除' + esc(FKEY[f]) + '的最近搜尋">清除</button>' +
+      '</div>' +
+      list.map(function (o) { return tokHTML(f, o, false, true); }).join('') +
+      '<div class="sent-tok-sec" role="presentation">' +
+        '<span class="sts-t">全部' + esc(FKEY[f]) + '</span>' +
+        '<span class="sts-n">' + list0.length + ' 個</span>' +
+      '</div>';
   }
 
   /* 面板收起時，焦點要還給原來的那一格（空格插槽或已選詞塊），不可以掉回 <body>
@@ -1490,6 +1650,11 @@
    * 原型另外併進來的 drugnames.js／sub-*.js 不搬進 repo，那會變成第二份真相。
    */
   var sayIdx = null, sayOpen = false, saySel = 0, sayCur = [], sayLastQ = null, sayQ = '';
+  /* 「最近搜尋」那一排的鍵盤游標（-1＝沒選）。與 saySel 各管各的：查詢欄是空的
+     時候畫面上只有歷史，有字的時候只有候選項，兩者不會同時在畫面上。 */
+  var sayHistSel = -1;
+  var sayHistTimer = null;
+  var SAY_HIST_MS = 1500;     // 打完字停手這麼久，就算一次查詢（見 input 監聽）
 
   /* 面向同義詞餵進索引之前，先把該詞自己的**下位詞**（entry.sub）濾掉。
    *
@@ -2527,6 +2692,60 @@
       '</div>';
   }
 
+  /* ---------------- 最近搜尋：說整句的那一排 ----------------
+   * 使用者原話：「說整句的查詢欄則可以在點擊框框前直接在查詢欄下方呈現歷史查詢」。
+   * #sentAskList 就長在 #sentAskIn 正下方，而且是**面板一打開就畫**（renderSay('')
+   * 在 showSay() 裡先跑，輸入框的 focus 排在它後面），所以使用者還沒點進輸入框
+   * 就已經看得到這一排——不必先點一下才長出來。
+   *
+   * 排在那段用法說明（.sent-ask-hint）**之前**：說明是給第一次用的人看的，
+   * 有歷史的人要的是那幾句話本身。
+   *
+   * 一筆＝一顆詞塊 ＋ 一顆 ×。× 是這一邊才有、三格造句那一邊沒有的：這一欄是
+   * 自由輸入，打錯的字（「闌尾嚴」）也會被記下來，沒有單筆刪除就得等它自己被
+   * 擠掉。三格那邊記的是詞表裡的完整詞條，不會有打錯的東西，一顆「清除」夠用。 */
+  function histSayHTML() {
+    var his = histSayList();
+    if (!his.length) return '';
+    if (sayHistSel >= his.length) sayHistSel = his.length - 1;
+    return '<div class="sent-ask-gh sent-hist-gh">' +
+        '<span class="sag-zh">最近搜尋</span>' +
+        '<span class="sag-en">Recent</span>' +
+        '<button type="button" class="sent-hist-clear" data-act="histclear" data-kind="say" ' +
+        'aria-label="清除全部最近搜尋">清除</button>' +
+      '</div>' +
+      /* 副標沿用其他組別那一行的 class（.sent-ask-gnote）：這一排的三種操作
+         （點＝重查、↑ ↓ ＋ Enter、× ＝刪一筆）沒有一個是看得出來的。 */
+      '<div class="sent-ask-gnote">點一下再查一次 · ↑ ↓ 選、Enter 重查 · × 刪掉這一筆</div>' +
+      '<div class="sent-hist-row">' + his.map(function (s, i) {
+        return '<span class="sent-hist' + (i === sayHistSel ? ' sel' : '') + '">' +
+          '<button type="button" class="sh-q" data-act="histgo" data-q="' + esc(s) + '" ' +
+          'aria-label="再查一次「' + esc(s) + '」">' + esc(s) + '</button>' +
+          '<button type="button" class="sh-x" data-act="histdrop" data-q="' + esc(s) + '" ' +
+          'aria-label="從最近搜尋刪掉「' + esc(s) + '」">×</button>' +
+        '</span>';
+      }).join('') + '</div>';
+  }
+
+  /* 把一句舊查詢填回輸入框重查。點歷史那一顆詞塊、與鍵盤在歷史上按 Enter，
+     走的是同一支。**不是直接跳頁**：歷史記的是查詢字串，不是某一筆結果——
+     同一句話今天打出來的候選項可能比上次多（頁內索引載進來了），直接跳到
+     上次那一筆會擅自替使用者做決定。 */
+  function applySayQuery(q) {
+    var s = String(q == null ? '' : q);
+    var inp = document.getElementById('sentAskIn');
+    if (inp) {
+      inp.value = s;
+      try { inp.focus(); } catch (e) {}
+    }
+    sayHistSel = -1;
+    sayLastQ = null;          // 讓 renderSay() 重新決定選取項（等同剛把這串字打完）
+    renderSay(s);
+    if (s.trim().length >= DRUG_MIN_Q) {
+      ensureSubIndex(function () { if (sayOpen) renderSay(sayQ); });
+    }
+  }
+
   function renderSay(q) {
     var box = document.getElementById('sentAskList');
     if (!box) return;
@@ -2534,7 +2753,8 @@
     var res = saySearch(q);
     sayCur = res.flat;
     if (!String(q || '').trim()) {
-      box.innerHTML = '<div class="sent-ask-hint">打幾個字：工具名（NEWS2、闌尾）、狀況（敗血症、腸阻塞）、' +
+      box.innerHTML = histSayHTML() +
+        '<div class="sent-ask-hint">打幾個字：工具名（NEWS2、闌尾）、狀況（敗血症、腸阻塞）、' +
         '動作（開刀、劑量）、癌別（胃癌）、藥名（tazocin、萬古黴素）、' +
         '感染部位（腹腔內感染）、病原菌（E. coli）、分級系統（Hinchey、Forrest）都行。' +
         '打菌種／菌類（ESBL、MRSA、原蟲、Candida）會另外列出所有涵蓋牠的抗生素，' +
@@ -2600,9 +2820,17 @@
       if (document.getElementById('sentPanel')) renderPanel();
       inp.value = '';
       sayLastQ = null;
+      sayHistSel = -1;   // 每次重開都從「一個都沒選」開始，↓ 第一下落在最新那一筆
+      /* 這一支跑在 focus() 之前——「點擊框框前直接在查詢欄下方呈現歷史查詢」
+         靠的就是這個順序，使用者還沒碰到輸入框，底下那一排已經畫好了。 */
       renderSay('');
       setTimeout(function () { try { inp.focus(); } catch (e) {} }, 20);
     } else {
+      /* 收起面板前把手上這一句補記起來：打完字、看了結果、什麼都沒點就走人
+         （或按 Esc）也是一次查詢。要求「這一刻真的有命中」，打到一半的半句
+         （0 筆）不進歷史。計時器一併停掉，免得關掉之後才補記一次。 */
+      clearTimeout(sayHistTimer);
+      if (sayCur.length) histSayPush(sayQ);
       try { inp.blur(); } catch (e) {}
     }
   }
@@ -2866,11 +3094,47 @@
   }
 
   document.addEventListener('click', function (e) {
+    /* 說整句的候選項是 <a>，點下去馬上換頁——這一句查詢必須在導航之前寫進
+       最近搜尋。候選項本身沒有 data-act，寫在下面那些分支裡就來不及了。 */
+    if (e.target.closest && e.target.closest('#sentAskList .sent-ask-item')) histSayPush(sayQ);
     var el = e.target.closest && e.target.closest('[data-act]');
     if (!el || !inChrome(el)) return;
     var act = el.getAttribute('data-act');
     var f = el.getAttribute('data-f');
     if (act === 'say') { e.preventDefault(); showSay(!sayOpen); return; }
+
+    /* ---- 最近搜尋的三顆（首頁與內頁同一套；放在下面「內頁只放行四個 act」
+           那道關卡之前，兩邊才都吃得到） ---- */
+    if (act === 'histgo') { e.preventDefault(); applySayQuery(el.getAttribute('data-q') || ''); return; }
+    if (act === 'histdrop') {
+      e.preventDefault();
+      histSayDrop(el.getAttribute('data-q') || '');
+      sayHistSel = -1;
+      renderSay('');
+      // 焦點會跟著被刪掉的那顆 × 一起消失，還給輸入框（不然會掉回 <body>）
+      var hi = document.getElementById('sentAskIn');
+      if (hi) { try { hi.focus(); } catch (err) {} }
+      return;
+    }
+    if (act === 'histclear') {
+      e.preventDefault();
+      if (el.getAttribute('data-kind') === 'say') {
+        histClearSay();
+        sayHistSel = -1;
+        renderSay('');
+        var hi2 = document.getElementById('sentAskIn');
+        if (hi2) { try { hi2.focus(); } catch (err) {} }
+        return;
+      }
+      histClearTok(f);
+      /* 只重畫詞的部分，不重畫整個面板——重畫整個面板會把過濾框換成新節點
+         （理由與 input 監聽裡那一段相同）。 */
+      var pb0 = document.getElementById('sentPanelBody');
+      if (pb0 && openFacet) pb0.innerHTML = panelTokensHTML(openFacet);
+      var pf0 = document.getElementById('sentPanelFilter');
+      if (pf0) { try { pf0.focus(); } catch (err) {} }
+      return;
+    }
 
     /* ---- 內頁（有 #sentTrail、沒有 #sentHome）：展開／清空／退詞 ---- */
     if (!isHome()) {
@@ -3023,6 +3287,11 @@
     }
     if (act === 'pick') {
       var w = el.getAttribute('data-w');
+      /* 記進最近搜尋的是「真的選上了」那一下。再點一次同一顆詞是**退掉**它
+         （下面兩條分支都會把那一格清空），那一下不算一次搜尋。
+         字輪（endWheel）與群組標頭的平行換題（swap）也都不算：那兩條路沒有
+         經過查詢欄，記下去會讓「最近搜尋」變成「最近用過的詞」。 */
+      if (homeSt[f] !== w) histTokPush(f, w);
       /* ---- 內頁：「只改一格」就是**真的只改那一格** ----
        * 首頁的 applyWord() 會在句子指不到東西時，由句尾往前把別格清掉。那條規則
        * 在首頁成本是看得見的（整條句子列與件數就在眼前，而且清掉是為了讓候選
@@ -3057,6 +3326,15 @@
       if (String(v).trim().length >= DRUG_MIN_Q) {
         ensureSubIndex(function () { if (sayOpen) renderSay(sayQ); });
       }
+      /* 打完字停手 SAY_HIST_MS 就記一筆——不必點任何一筆候選項（看了結果就走人
+         也是一次查詢，而那條路上沒有任何一下點擊可以掛）。三道條件：面板還開著、
+         那一刻的查詢字串還是這一串（打到一半的前綴不算）、而且**真的有命中**。
+         打錯字（0 筆）因此不會進歷史；一路打進來的前綴則由 histSayPush() 的
+         前綴合併吃掉，不會佔掉三格。 */
+      clearTimeout(sayHistTimer);
+      sayHistTimer = setTimeout(function () {
+        if (sayOpen && sayQ === v && sayCur.length) histSayPush(v);
+      }, SAY_HIST_MS);
       return;
     }
     /* 候選詞面板的過濾框：只重畫詞的部分，不重畫整個面板——重畫整個面板會把
@@ -3104,6 +3382,7 @@
         e.preventDefault();
         var chosen = panelList[panelSel] || panelList[0];
         if (!chosen) return;   // 一個都沒命中：Enter 不動作，畫面上那句「找不到…」就是回饋
+        if (homeSt[pf] !== chosen.w) histTokPush(pf, chosen.w);   // 條件同滑鼠那條路
         // 內頁：與滑鼠那條路同一套語意（只改這一格、不清別格，改完由 trailGo() 決定去哪）
         if (!isHome()) {
           homeSt[pf] = (homeSt[pf] === chosen.w) ? '' : chosen.w;
@@ -3180,12 +3459,32 @@
       return;
     }
     if (e.key === 'Escape') { e.preventDefault(); showSay(false); return; }
+    /* 查詢欄還是空的時候，畫面上唯一可選的東西是「最近搜尋」那一排，
+       ↑ ↓ Enter 就歸它管（有字的時候它整排不存在，兩者不會互相搶鍵）。
+       Enter 是**把那句話填回去重查**，不是直接跳頁——理由見 applySayQuery()。 */
+    var askIn = document.getElementById('sentAskIn');
+    if (askIn && !askIn.value.trim()) {
+      var his = histSayList();
+      if (!his.length) return;   // 沒有歷史：這三顆鍵在空查詢下本來就不做事
+      if (e.key === 'ArrowDown') {
+        e.preventDefault(); sayHistSel = Math.min(his.length - 1, sayHistSel + 1); renderSay(''); return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault(); sayHistSel = Math.max(-1, sayHistSel - 1); renderSay(''); return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (sayHistSel >= 0 && his[sayHistSel]) applySayQuery(his[sayHistSel]);
+        return;
+      }
+      return;
+    }
     if (e.key === 'ArrowDown') { e.preventDefault(); saySel = Math.min(sayCur.length - 1, saySel + 1); renderSay(document.getElementById('sentAskIn').value); scrollSaySel(); return; }
     if (e.key === 'ArrowUp') { e.preventDefault(); saySel = Math.max(0, saySel - 1); renderSay(document.getElementById('sentAskIn').value); scrollSaySel(); return; }
     if (e.key === 'Enter') {
       e.preventDefault();
       var item = sayCur[saySel];   // saySel === -1（只有模糊命中、未確認選取）時不動作
-      if (item) location.href = sayHref(item);
+      if (item) { histSayPush(sayQ); location.href = sayHref(item); }
       return;
     }
   });

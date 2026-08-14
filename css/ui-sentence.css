@@ -1713,6 +1713,109 @@
   border-left: 3px solid var(--sentence-line2);
 }
 
+/* ── O-H. 最近搜尋（兩個查詢欄各一份，js/sentence-nav.js 的 histSayHTML()／
+ *         panelHistHTML()）─────────────────────────────────────────────────
+ * 兩處長得刻意**不一樣**，因為它們記的東西不一樣（見 js 檔那一大段）：
+ *   · 三格造句的那一排記的是**詞**，所以直接沿用 .sent-tok 的詞塊外觀——
+ *     它與底下全清單裡的同一個詞按下去是同一件事，長成兩種樣子才是騙人。
+ *     只加一顆 ⌕ 前綴記號（生成內容，不是文字節點，見本檔開頭鐵律 1）標出
+ *     「這一顆是從歷史來的」。
+ *   · 說整句的那一排記的是**一句查詢**，不是詞表裡的東西，所以自己一套詞塊
+ *     （.sent-hist），並且多一顆 × 可以單筆刪掉——那一欄是自由輸入，打錯的字
+ *     也會被記下來。
+ * 兩處的「清除」都是 <button>，會被 M 段的通用安全網撐成 45×45（本設計的觸控
+ * 目標下限）；標頭列因此比純文字的標頭高一截，這是預期內的，不另設例外——
+ * 它們是真的要按的控制項，不是徽章。 */
+
+/* (1) 候選詞面板裡的分區標題：「最近搜尋」／「全部主體 57 個」。
+   flex:1 1 100% 讓它在 .sent-panel-body（flex-wrap 的詞塊容器）裡自成一列，
+   作法與上面 .sent-tok-empty 那一條相同。 */
+[data-ui="sentence"] .sent-tok-sec {
+  flex: 1 1 100%; width: 100%; box-sizing: border-box;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--sentence-line);
+  padding: 2px 0; margin: 2px 0 0;
+}
+[data-ui="sentence"] .sent-tok-sec:first-child { margin-top: 0; }
+[data-ui="sentence"] .sts-t {
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .14em;
+  color: var(--sentence-dim); white-space: nowrap;
+}
+[data-ui="sentence"] .sts-n {
+  margin-left: auto;
+  font-family: var(--sentence-mono); font-size: 10px; color: var(--sentence-dim);
+  white-space: nowrap;
+}
+[data-ui="sentence"] button.sts-clear {
+  margin-left: auto;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--sentence-dim); padding: 0 10px;
+}
+[data-ui="sentence"] button.sts-clear:hover {
+  background: var(--sentence-shade); border-color: var(--sentence-fg); color: var(--sentence-fg);
+}
+/* 從歷史來的那幾顆詞塊：外觀與全清單那份一模一樣，只多一顆 ⌕ 記號。
+   ⌕ 與說整句那一排的記號同一顆，兩處讀起來因此是同一件事。 */
+[data-ui="sentence"] .sent-tok.is-hist::before {
+  content: "⌕";
+  font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] .sent-tok.is-hist.cur::before { color: inherit; opacity: .8; }
+
+/* (2) 說整句面板：標頭沿用候選清單的 .sent-ask-gh（sticky、上緣英文眉標），
+   這裡只把「清除」推到最右邊，位置與其他組別的「N 筆」（.sag-n）同一處。 */
+[data-ui="sentence"] button.sent-hist-clear {
+  margin-left: auto;
+  background: transparent; border: 1px solid var(--sentence-line2); border-radius: 0;
+  font-family: var(--sentence-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--sentence-dim); padding: 0 10px;
+}
+[data-ui="sentence"] button.sent-hist-clear:hover {
+  background: var(--sentence-shade); border-color: var(--sentence-fg); color: var(--sentence-fg);
+}
+[data-ui="sentence"] .sent-hist-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 6px 0 2px;
+}
+/* 一筆＝詞塊本體 ＋ ×，兩顆按鈕併在同一個框裡。結構與句子列的 .sent-chip／
+   .sc-w／.sc-x 同一套（那裡也是「一個詞塊 ＋ 一顆退掉它的 ×」），
+   只是配色反過來：句子列的詞塊是選定的狀態（反白），這裡是可選的候選。 */
+[data-ui="sentence"] .sent-hist {
+  display: inline-flex; align-items: stretch; max-width: 100%;
+  background: var(--sentence-bg);
+  border: 1px solid var(--sentence-line2); border-radius: 0;
+}
+[data-ui="sentence"] .sent-hist:hover { border-color: var(--sentence-fg); }
+/* 鍵盤游標（↑ ↓）。焦點一直留在輸入框上，這一圈描邊是唯一的位置指示，
+   規格照抄候選詞面板的 .sent-tok.sel。 */
+[data-ui="sentence"] .sent-hist.sel {
+  border-color: var(--sentence-fg);
+  outline: 2px solid var(--sentence-fg); outline-offset: 2px;
+}
+@media (prefers-contrast: more) {
+  [data-ui="sentence"] .sent-hist.sel { outline-width: 3px; }
+}
+[data-ui="sentence"] button.sh-q {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 4px 0 10px; min-width: 0;
+  background: transparent; border: 0; border-radius: 0; color: var(--sentence-fg);
+  font-family: var(--sentence-sans); font-size: 13px; letter-spacing: .02em;
+  text-align: left; white-space: normal; overflow-wrap: anywhere;
+}
+[data-ui="sentence"] button.sh-q::before {
+  content: "⌕"; flex: 0 0 auto;
+  font-family: var(--sentence-mono); font-size: 11px; color: var(--sentence-dim);
+}
+[data-ui="sentence"] button.sh-x {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; background: transparent; border: 0; border-radius: 0;
+  color: var(--sentence-dim); font-family: var(--sentence-mono); font-size: 14px;
+}
+[data-ui="sentence"] button.sh-x:hover {
+  background: rgba(128, 128, 128, .22); color: var(--sentence-fg);
+}
+
 /* align-items 用 baseline 不用 center：這一行混了兩種字級（「136」是 14px、
    旁邊的說明是 11px），center 是各自把「盒子」置中，字級不同盒高就不同，
    兩段文字的基線因此差開——使用者實機截圖圈出來的就是這個。實測 center 下
