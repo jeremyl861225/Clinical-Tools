@@ -564,6 +564,7 @@ function variantBody(v) {
     .filter(Boolean).join('　·　');
   return `
     ${field('商品名／含量', v.brand)}
+    ${photoField(v)}
     ${doseField(v.dose)}
     ${titrateField(v.code)}
     ${field('最大劑量', v.maxDose)}
@@ -678,6 +679,99 @@ function ddiFoodField(d) {
         與上方台大「飲食交互作用」欄不一致時，以台大為準。
         <a href="ddi.html" class="ref-link">完整交互作用查核 →</a></div>
     </div></div>`;
+}
+
+/* ---------------- 藥品外觀照 ----------------
+ *
+ * 照片**直接外連台大藥劑部原站**，一張都不落地：
+ *   縮圖 DrugImage/New/s/<八碼>-<A..D>.jpg （約 180×120、9 KB）
+ *   原圖 DrugImage/New/<八碼>-<A..D>.jpg   （1536 px、300 KB，點開才載）
+ * 這樣做的三個理由：(1) 4642 張原圖共 1.4 GB，放進 repo 不可能；(2) 照片是台大拍的
+ * 攝影著作，本 repo 是公開的，外連＝不重製、不散布；(3) 新的藥理分類匯入後，
+ * 圖片網址靠藥碼就拼得出來，不必重抓、不必轉檔。
+ *
+ * 代價是離線看不到照片（其餘欄位仍離線可用），所以載入失敗時要留一句說明而不是破圖。
+ * sw.js 只攔同源請求，這些跨網域圖片走瀏覽器自己的 HTTP 快取，看過就不會再抓。
+ *
+ * 只認 data/drugs/images.js 對照表裡的藥碼——非台大處方（x-*）與抗生素卡（abx）的
+ * code 不是台大八碼，樂觀嘗試只會打出一堆 404。新分類匯入後跑一次
+ * workspace/work/ntuh-drug-images/probe_codes.py 就會把新藥碼併進對照表。 */
+const NTUH_IMG = 'https://dept.ntuh.gov.tw/phar/DrugImage/New/';
+
+function imgUrl(code, sfx, big) {
+  return NTUH_IMG + (big ? '' : 's/') + encodeURIComponent(code + '-' + sfx + '.jpg');
+}
+
+function photoField(v) {
+  const sfxs = (window.DRUG_IMAGES || {})[v.code];
+  if (!sfxs) return '';
+  const shots = [...sfxs].map((s, i) => `
+    <button type="button" class="db-shot" onclick="openShot('${esc(v.code)}','${sfxs}',${i})"
+            aria-label="放大第 ${i + 1} 張外觀照">
+      <img src="${imgUrl(v.code, s)}" alt="${esc(v.brand || v.name || '')} 外觀照 ${i + 1}"
+           decoding="async" onerror="this.closest('.db-shot').hidden=true">
+    </button>`).join('');
+  return `<div class="dc-field"><div class="dc-flabel">藥品外觀照</div>
+    <div class="dc-ftext"><div class="db-shots">${shots}</div>
+      <div class="db-shots-src">台大醫院藥劑部原站照片（點圖放大）·　需連線</div></div></div>`;
+}
+
+/* 燈箱：全頁覆蓋、載原圖。多張時可左右切換。 */
+function openShot(code, sfxs, i) {
+  let box = el('db-lightbox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'db-lightbox';
+    box.className = 'db-lightbox';
+    box.innerHTML = `
+      <button type="button" class="db-lb-close" aria-label="關閉">×</button>
+      <button type="button" class="db-lb-nav db-lb-prev" aria-label="上一張">‹</button>
+      <img class="db-lb-img" alt="">
+      <button type="button" class="db-lb-nav db-lb-next" aria-label="下一張">›</button>
+      <div class="db-lb-cap"></div>`;
+    document.body.appendChild(box);
+    // 點背景（不是圖或按鈕）關閉
+    box.addEventListener('click', (e) => { if (e.target === box) closeShot(); });
+    box.querySelector('.db-lb-close').onclick = closeShot;
+    box.querySelector('.db-lb-prev').onclick = () => stepShot(-1);
+    box.querySelector('.db-lb-next').onclick = () => stepShot(1);
+    document.addEventListener('keydown', (e) => {
+      if (!document.body.classList.contains('db-lb-open')) return;
+      if (e.key === 'Escape') closeShot();
+      if (e.key === 'ArrowLeft') stepShot(-1);
+      if (e.key === 'ArrowRight') stepShot(1);
+    });
+  }
+  box.dataset.code = code;
+  box.dataset.sfxs = sfxs;
+  document.body.classList.add('db-lb-open');   // 鎖住背景捲動
+  showShot(i);
+}
+
+function showShot(i) {
+  const box = el('db-lightbox');
+  const sfxs = box.dataset.sfxs, code = box.dataset.code;
+  const n = sfxs.length;
+  i = (i + n) % n;
+  box.dataset.i = i;
+  const img = box.querySelector('.db-lb-img');
+  img.src = imgUrl(code, sfxs[i], true);
+  img.alt = `${code} 外觀照 ${i + 1}／${n}`;
+  // 原圖 300 KB，離線或台大站臨時不通時要講清楚，不要留一個破圖框
+  img.onerror = () => { box.querySelector('.db-lb-cap').textContent = '照片載入失敗——需要連線才看得到台大原站的照片'; };
+  box.querySelector('.db-lb-cap').textContent = n > 1 ? `${i + 1} / ${n}　·　${code}` : code;
+  box.querySelectorAll('.db-lb-nav').forEach(b => { b.hidden = n < 2; });
+}
+
+function stepShot(d) {
+  const box = el('db-lightbox');
+  showShot(Number(box.dataset.i || 0) + d);
+}
+
+function closeShot() {
+  document.body.classList.remove('db-lb-open');
+  const box = el('db-lightbox');
+  if (box) box.querySelector('.db-lb-img').removeAttribute('src');  // 停掉還在下載的原圖
 }
 
 /* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */

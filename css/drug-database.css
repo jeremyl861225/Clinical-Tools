@@ -37,6 +37,40 @@ a.db-xlink{
 a.db-xlink:hover{filter:brightness(1.08);}
 a.db-xlink:focus-visible{outline:2px solid var(--x-bg); outline-offset:2px;}
 
+/* 藥品外觀照：一列橫捲的縮圖，點開看台大原圖（見 drug-database.js 的 photoField）。
+   縮圖是台大的 180×120，固定框高、object-fit:contain，長寬比不一的照片才不會被拉扯。
+   底色用淺灰而不是 --panel：照片背景是淺藍檯面，白底會讓照片邊界消失。 */
+.db-shots{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch;}
+.db-shot{flex:0 0 auto; padding:0; border:1px solid var(--line); border-radius:3px;
+  background:var(--box-bg); cursor:zoom-in; line-height:0;}
+.db-shot[hidden]{display:none;}
+.db-shot img{width:112px; height:76px; object-fit:contain; display:block;}
+.db-shot:hover{border-color:var(--accent);}
+.db-shot:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.db-shots-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-top:5px;}
+
+/* 燈箱：固定覆蓋整個 viewport。用 body class 鎖背景捲動，不改 body 的 position
+   （改 position 會讓已展開的長藥卡整個跳回頂端）。 */
+body.db-lb-open{overflow:hidden;}
+.db-lightbox{display:none;}
+body.db-lb-open .db-lightbox{display:flex;}
+.db-lightbox{position:fixed; inset:0; z-index:9000; background:rgba(8,10,12,.96);
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center; padding:48px 8px 20px;}
+.db-lb-img{max-width:100%; max-height:100%; object-fit:contain; border-radius:2px;}
+.db-lb-close{position:absolute; top:8px; right:10px; width:40px; height:40px; font-size:26px; line-height:1;
+  color:#fff; background:rgba(255,255,255,.12); border:0; border-radius:50%; cursor:pointer;}
+.db-lb-nav{position:absolute; top:50%; transform:translateY(-50%); width:42px; height:60px;
+  font-size:30px; line-height:1; color:#fff; background:rgba(255,255,255,.12); border:0; cursor:pointer;}
+.db-lb-prev{left:4px; border-radius:0 3px 3px 0;}
+.db-lb-next{right:4px; border-radius:3px 0 0 3px;}
+.db-lb-nav[hidden]{display:none;}
+/* 說明擺頂部而不是底部：造句設計在頁底有一條固定工具列（.sent-mbar），
+   底部的說明字會跟它疊在同一行讀成一團。 */
+.db-lb-cap{position:absolute; top:18px; left:14px; right:58px; text-align:left;
+  font-family:var(--mono); font-size:11.5px; color:rgba(255,255,255,.8);}
+.db-lb-close:hover, .db-lb-nav:hover{background:rgba(255,255,255,.24);}
+
 /* 藥理大類：一列橫捲的方格，各自帶品項數 */
 .db-cats{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px;}
 .db-cat{font-family:var(--sans); font-size:12.5px; color:var(--ink); background:var(--panel);

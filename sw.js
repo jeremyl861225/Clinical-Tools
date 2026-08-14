@@ -12,7 +12,7 @@
  *      開頭的快取，否則會把別的 App 的離線能力一併清掉。
  */
 const CACHE_PREFIX = 'clinical-tools-';
-const CACHE_VERSION = CACHE_PREFIX + 'v278';
+const CACHE_VERSION = CACHE_PREFIX + 'v279';
 
 // 以相對路徑列出，方便部署於子路徑（如 GitHub Pages /clinical-scores/）
 const PRECACHE_URLS = [
@@ -95,6 +95,10 @@ const PRECACHE_URLS = [
   /* 手寫的藥卡補充層（流速調整 nomogram 等不在台大網頁上、build_cards.py 抓不到
      的院內資料）。與 index.js 同為開頁即載，漏掉的話離線時該欄整個不見。 */
   './data/drugs/extras.js',
+  /* 藥品外觀照的對照表（藥碼→有哪幾張圖，31KB）。照片本身外連台大原站、不落地，
+     所以離線時本來就看不到照片；但這張表要在，卡片才知道「這支藥有照片」而不是
+     每次都當作沒有。 */
+  './data/drugs/images.js',
   /* 這 8 個分片先前漏在 precache 外。藥卡是展開時才 <script> 注入
      ./data/drugs/<pid>.js，漏掉的後果是離線時有 174/1111 張藥卡點開後空白
      ——不會報錯、只是沒有內容，所以一直沒被發現。造句導覽的 #code= 深層
