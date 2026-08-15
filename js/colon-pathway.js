@@ -886,7 +886,7 @@
     for (var k in ccSt) { if (ccSt.hasOwnProperty(k)) ccSt[k] = null; }
     var root = document.getElementById('ccPath');
     if (root) root.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
-    ['cc_polyp_fu', 'cc_resect_fu', 'cc_adj_fu', 'cc_meta_fu'].forEach(function (id) {
+    ['cc_polyp_fu', 'cc_resect_fu', 'cc_adj_fu', 'cc_meta_fu', 'cc_recur_fu'].forEach(function (id) {
       var el = document.getElementById(id); if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
     });
     ccRender();

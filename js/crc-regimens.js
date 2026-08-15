@@ -33,11 +33,29 @@
     'EGFR：' + d('cetuximab') + '、' + d('panitumumab') + '）。</div>';
 
   /* ================= COL-10 · 輔助化療 ================= */
+  /* 用藥前的藥物基因體安全性：本院大腸直腸癌指引未列，但兩張仿單都有明文。
+     5-FU／capecitabine 與 irinotecan 幾乎出現在本頁每一個處方裡，放在最前面。 */
+  function pgxWarn() {
+    return '<div class="rx-warn"><b>開始化療前的兩個安全性檢查（本院指引未列，依藥品仿單）</b><br>' +
+      '<b>① DPYD／DPD 缺乏 —— 用 <span class="drug">5-FU</span> 或 <span class="drug">capecitabine</span> 之前</b>：' +
+      'capecitabine 現行仿單明文「<b>開始治療前應檢測 DPYD 基因變異，除非需立即治療</b>」。' +
+      '帶有導致<b>完全 DPD 缺乏</b>之同型合子或複合異型合子變異者<b>應避免使用</b>（無任何劑量被證明安全）；' +
+      '<b>部分缺乏</b>者風險亦升高，須個別化劑量並依耐受度調整。<br>' +
+      '<b>② UGT1A1 —— 用 <span class="drug">irinotecan</span> 之前</b>：' +
+      'irinotecan 仿單建議「<b>考慮檢測 UGT1A1 之 *28 與 *6 對偶基因</b>」。' +
+      '<b>*28/*28、*6/*6 或 *6/*28</b> 者為代謝不良型，嗜中性球低下風險顯著升高，' +
+      '<b>起始劑量應至少降一個階級</b>；異型合子（*1/*28、*1/*6）屬中間代謝型，亦可能風險升高，需密切監測。' +
+      '<b>*6 是東亞族群常見的變異</b>，只驗 *28 會漏掉。<br>' +
+      '<b>兩項檢測在台灣多屬自費，且非台大大腸直腸癌指引之條文</b>；開單前請確認可近性。' +
+      '未檢測者，一旦出現<b>第一個療程即發生的嚴重毒性</b>（黏膜炎、腹瀉、骨髓抑制），應立即把 DPD 缺乏列入鑑別。</div>';
+  }
+
   function adjuvantRegimens() {
     return '<details class="rx-more kps-details">' +
       '<summary>輔助化療處方與劑量 Adjuvant regimens（COL-10；適用於結腸癌及直腸癌）▸</summary>' +
       '<div class="rx-stack" style="margin-top:8px;">' +
         '<div class="rx-panel-h">輔助化療常用處方<span class="rx-panel-src">COL-10</span></div>' +
+        pgxWarn() +
         rxLine('（一）Oxaliplatin-based', '', [
           r('FOLFOX4') + '（Q2W × 12 循環）：' + d('oxaliplatin') + ' 85 mg/m² ＋ ' + d('LV') +
             ' 200 mg/m²／2 小時 D1；' + d('5-FU') + ' 400 mg/m² IV bolus D1 續 600 mg/m² 輸注 22 小時 D1；' +
@@ -91,6 +109,7 @@
       '<summary>晚期／轉移性疾病處方與劑量 Advanced or metastatic regimens（COL-11(1)(2)）▸</summary>' +
       '<div class="rx-stack" style="margin-top:8px;">' +
         '<div class="rx-panel-h">晚期／轉移性疾病常用處方<span class="rx-panel-src">COL-11(1)(2)</span></div>' +
+        pgxWarn() +
         '<div class="rx-warn"><b>與指引原文不一致之處（cetuximab 起始劑量）</b>：' +
         'COL-11(1) 原文寫「cetuximab <b>400mg</b> IV first infusion, then 250mg/m² weekly」，' +
         '但同一份文件的 COL-11(2) 寫「Cetuximab <b>400 mg/m²</b> followed by 250 mg/m² weekly」，' +

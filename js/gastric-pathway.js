@@ -201,7 +201,12 @@
         '<li><b>dMMR／MSI-H</b>：＋<span class="drug">nivolumab</span> 或 <span class="drug">pembrolizumab</span>（不分線別）。</li>' +
         '<li><b>CLDN18.2+</b>：＋<span class="drug">zolbetuximab</span>（SPOTLIGHT／GLOW，健保 115/04/01 起給付 HER2−）。</li>' +
         '</ul>',
-      '<span class="rx-h">二線 2nd line</span><br><span class="drug">docetaxel</span>（COUGAR-02）；<span class="drug">ramucirumab</span> ± <span class="drug">paclitaxel</span>（RAINBOW）；HER2+ 可用 <span class="drug">trastuzumab deruxtecan</span>（T-DXd）。',
+      '<span class="rx-h">二線 2nd line</span><br><span class="drug">docetaxel</span>（COUGAR-02）；' +
+      '<b>單一藥物或合併處方</b>：<span class="drug">cisplatin</span>、<span class="drug">oxaliplatin</span>、taxane 類、' +
+      '<span class="drug">irinotecan</span>、<span class="rx">5-FU/HDFL</span>、<span class="drug">capecitabine</span>、<span class="drug">S-1</span>' +
+      '（AGC-5 二線之第二條，原本漏列）；<span class="drug">ramucirumab</span> ± <span class="drug">paclitaxel</span>（RAINBOW）；' +
+      'HER2+ 可用 <span class="drug">trastuzumab deruxtecan</span>（T-DXd）—— <b>用之前應重新切片確認 HER2 仍為陽性</b>，' +
+      '一線治療後 HER2 轉陰並不少見；臨床試驗。',
       '<span class="rx-h">三線後 3rd line+</span><br><span class="drug">trifluridine/tipiracil</span>（TAGS）；<span class="drug">nivolumab</span>（ATTRACTION-2）；<span class="drug">pembrolizumab</span>（CPS ≥1 或 MSI-H／dMMR）；臨床試驗。'
     ];
   }
@@ -421,7 +426,12 @@
     } else if (key === 'strat') {
       s.strat = val; s.esdcur = s.rstatus = s.pstage = null;
       gcClearSel(['gc_s3b', 'gc_s4', 'gc_s4b']);
-    } else if (key === 'esdcur') { s.esdcur = val; }
+    } else if (key === 'esdcur') {
+      // 由「非治癒性」改回「治癒性」時，若不清掉下游的 R status／病理分期，
+      // 舊答案會留著並產生一張矛盾的建議卡。
+      s.esdcur = val; s.rstatus = s.pstage = null;
+      gcClearSel(['gc_s4', 'gc_s4b']);
+    }
     else if (key === 'rstatus') { s.rstatus = val; s.pstage = null; gcClearSel(['gc_s4b']); }
     else if (key === 'pstage') { s.pstage = val; }
     else if (key === 'restage') { s.restage = val; }
