@@ -136,8 +136,7 @@
     speed: 40, spdWant: 40,        // 加減速有慣性，速度不會瞬間切換
     phase: 0, thrust: 1, thrustWant: 1, gape: 0, gapeWant: 0,
     gliding: false, beatT: 2.5,    // 衝刺—滑行：虎鯨不會整天勻速擺尾
-    pmx: 0, pmy: 0, pmz: 0,        // 上一幀嘴的位置（命中判定用線段而非單點）
-    tx: 0, ty: 0, tz: 0, wait: 0, hold: 0, turnCool: 0,
+    tx: 0, ty: 0, tz: 0, wait: 0, hold: 0, turnCool: 0, brk: false, brkT: 0, chaseT: 0,
     trick: null,                   // { kind, t, dur }
     mode: 'cruise'
   };
@@ -258,10 +257,10 @@
                        整片繞嘴角轉開，上下顎之間留下的縫是真的透空。
      索引 KB+1..KN−1 ：暗色那一圈（+ψv → 2π−ψv），不跟著下顎轉。
      兩圈之間那一格（KB → KB+1）不畫，那正是嘴。 */
-  var KB = 6, KD = 12, KN = KB + KD + 2;
-  var NA = new Float64Array(KN * 2), NB = new Float64Array(KN * 2);
+  var KB = 6, KD = 12, KN = KB + KD + 2, NS = 28;
+  var STA = new Float64Array((NS + 1) * KN * 2);   // 全部斷面的節點，一幀算一次
   var JX = 0, JY = 0, JC = 1, JS = 0;
-  function station(u, arr, jaw) {
+  function station(u, off, jaw) {
     if (u >= MU) jaw = 0;             // 只有嘴角前面那一段是下顎，後面的腹白不動
     var sp = spine(u), t = topH(u), b = botH(u), w = halfW(u), X0 = bx(u);
     var pv = ventPsi(u), k, ps, cs, sn, Y, Z, X, dx, dy;
@@ -277,28 +276,25 @@
         X = JX + dx * JC - dy * JS; Y = JY + dx * JS + dy * JC;
       }
       proj(X, Y, Z, _q);
-      arr[k * 2] = _q[0]; arr[k * 2 + 1] = _q[1];
+      STA[off + k * 2] = _q[0]; STA[off + k * 2 + 1] = _q[1];
     }
   }
   /* 把兩個斷面之間 [k0,k1) 的四邊形加進**目前這條 path**。
-     有向面積 ≤ 0 就是背面（或退化），直接跳過。
-     一條帶的所有面片一定要收進同一條 path 一次 fill：同一條 path 內部相鄰的
-     子路徑不會產生抗鋸齒接縫（光柵器一次算完整條路徑的覆蓋率），拆成多次
-     fill 才會——那就是先前那條垂直灰線的成因。 */
-  function bandQuads(g, A, B, k0, k1) {
-    var k, x0, y0, x1, y1, x2, y2, x3, y3, ar, any = false;
+     有向面積 ≤ 0 就是背面（或退化），直接跳過——身體是凸的，凸體的背面剔除
+     本身就等於完整消隱，不必再排深度。 */
+  function bandQuads(g, oA, oB, k0, k1) {
+    var k, x0, y0, x1, y1, x2, y2, x3, y3, ar;
     for (k = k0; k < k1; k++) {
-      x0 = A[k * 2];     y0 = A[k * 2 + 1];
-      x1 = A[k * 2 + 2]; y1 = A[k * 2 + 3];
-      x2 = B[k * 2 + 2]; y2 = B[k * 2 + 3];
-      x3 = B[k * 2];     y3 = B[k * 2 + 1];
+      x0 = STA[oA + k * 2];     y0 = STA[oA + k * 2 + 1];
+      x1 = STA[oA + k * 2 + 2]; y1 = STA[oA + k * 2 + 3];
+      x2 = STA[oB + k * 2 + 2]; y2 = STA[oB + k * 2 + 3];
+      x3 = STA[oB + k * 2];     y3 = STA[oB + k * 2 + 1];
       ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
            (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
       if (ar <= .03) continue;
       g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
-      g.closePath(); any = true;
+      g.closePath();
     }
-    return any;
   }
 
   /* ---- 貼在體表上的斑塊（眼斑、鞍斑）----
@@ -415,40 +411,52 @@
      正臉時兩片會朝左右張開（先前是硬用 cosθ 湊出來的），側面時收成斜槳。
      厚度沿板面的法線，所以完全側過去時它會收成一條細長條而不是一根髮絲。 */
   function pecAxis(side, out) {
-    var u = D.pecU, w = halfW(u);
+    var w = halfW(D.pecU);
     out[0] = -D.pecLen * .68; out[1] = D.pecLen * .46;
     out[2] = (w * .02 + D.pecLen * .62) * side;
     return out;
   }
   var _ax = [0, 0, 0];
-  function pecTip(side, out) {
-    var u = D.pecU, w = halfW(u);
-    pecAxis(side, _ax);
-    return proj(bx(u) + _ax[0], spine(u) + botH(u) * .40 + _ax[1],
-                w * .98 * side + _ax[2], out);
+  /* 判斷這一片胸鰭在身體的近側還是遠側，要用**鰭基**的深度，不能用鰭尖：
+     鰭尖往後掠得很多，那個 −X 位移在深度式 d = X·cosθ − Z·sinθ 裡會壓過
+     Z 的貢獻，於是近側那一片也被算成「比體軸遠」，被畫在身體之後——畫面上
+     就是近側胸鰭被身體吃掉一截（使用者說的「雙鰭穿模」）。鰭基本來就貼在
+     體表 Z=±hw 上，它的深度才是這片鰭該排在身體前面還是後面的依據。 */
+  function pecBase(side, out) {
+    var u = D.pecU;
+    return proj(bx(u), spine(u) + botH(u) * .40, halfW(u) * .98 * side, out);
   }
   function pecFin(g, side) {
     var u = D.pecU, w = halfW(u), N = 12, i, a, tp, c;
     var bX = bx(u), bY = spine(u) + botH(u) * .40, bZ = w * .98 * side;
     pecAxis(side, _ax);
-    // 板面法線＝弦向(1,0,0) × 鰭軸
-    var nx = 0 * _ax[2] - 0 * _ax[1], ny = 0 * _ax[0] - 1 * _ax[2], nz = 1 * _ax[1] - 0 * _ax[0];
+    /* 弦向刻意不是純粹的 (1,0,0)，而是往上翹一點（前緣高、後緣低）。
+       純水平的弦向會讓鰭面所在的平面**包含體軸**，正臉時整片鰭剛好與視線平行、
+       投影成一條頭髮般的細線，看起來就像身上多了兩根鬍鬚。翹一點之後任何角度
+       都還看得出是一片槳。 */
+    var cdX = .925, cdY = -.38, cdZ = 0;
+    // 板面法線＝弦向 × 鰭軸
+    var nx = cdY * _ax[2] - cdZ * _ax[1];
+    var ny = cdZ * _ax[0] - cdX * _ax[2];
+    var nz = cdX * _ax[1] - cdY * _ax[0];
     var nm = Math.hypot(nx, ny, nz) || 1;
     nx /= nm; ny /= nm; nz /= nm;
-    var th = D.pecW * .17;
+    var th = D.pecW * .30;
     for (i = 0; i <= N; i++) {                       // 前緣：基部 → 鰭尖
       a = i / N;
       tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
       c = D.pecW * (.58 + .10 * a) * tp;
-      BX[i] = bX + _ax[0] * a + c; BY[i] = bY + _ax[1] * a; BZ[i] = bZ + _ax[2] * a;
+      BX[i] = bX + _ax[0] * a + c * cdX;
+      BY[i] = bY + _ax[1] * a + c * cdY;
+      BZ[i] = bZ + _ax[2] * a;
       BT[i] = th * tp;
     }
     for (i = 0; i <= N; i++) {                       // 後緣：鰭尖 → 基部
       a = (N - i) / N;
       tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
       c = D.pecW * (1.04 - .76 * a * a) * tp;
-      BX[N + 1 + i] = bX + _ax[0] * a - c;
-      BY[N + 1 + i] = bY + _ax[1] * a;
+      BX[N + 1 + i] = bX + _ax[0] * a - c * cdX;
+      BY[N + 1 + i] = bY + _ax[1] * a - c * cdY;
       BZ[N + 1 + i] = bZ + _ax[2] * a;
       BT[N + 1 + i] = th * tp;
     }
@@ -463,14 +471,16 @@
     var x2 = -y1 * TR.sp, y2 = y1 * TR.cp;
     var sx = x2 * TR.S + z1 * TR.C, sy = y2;
     var m = Math.min(1, Math.hypot(sx, sy));
-    /* 不用 1−m 而用 1−m^1.7：直線衰減在斜四十五度就只剩三成，尾鰭變成一道
-       貼在尾柄後面的刮痕；這條曲線讓它在中間角度仍留得住新月的形狀。
-       另外保留 0.12 的底：真的尾鰭本來就有一點上翹，不會完全是一片平板。 */
-    return .12 + .88 * (1 - Math.pow(m, 1.7));
+    /* m 是「側向軸在畫面上還剩多長」：0 是完全側面（尾鰭只投影成一條線）、
+       1 是側向軸整條攤在畫面上。假二面角要隨 m 收掉，但不能收太快——
+       用 1−m 或 1−m^1.7 的話，斜四十五度只剩三成，兩葉高度只有 ±4 px，
+       尾鰭就變成一道貼在尾柄後面的刮痕（使用者說的「鰭跑版」）。
+       1−0.75·m² 在四十五度還留六成多，任何角度都看得出是新月。 */
+    return 1 - .75 * m * m;
   }
   function flukeFin(g) {
     var lift = flukeEdge(), N = 8, i, w, aw, X0 = bx(1), n = 0;
-    var th = D.flukeH * .085;
+    var th = D.flukeH * .13;
     for (i = 0; i <= 2 * N; i++, n++) {              // 後緣：右翼尖 → 中央凹口 → 左翼尖
       w = 1 - i / N; aw = Math.abs(w);
       BX[n] = X0 - D.flukeLen * (.26 + .74 * aw);
@@ -491,70 +501,73 @@
   /* ================================================================
    * 一幀
    * ================================================================ */
-  var NS = 28;                                  // 斷面帶數
   function bandU(t) { return Math.pow(t, 1.7); } // 樣點往吻端集中（額隆的曲率全在那裡）
-  function bandOf(u) {
-    return Math.max(0, Math.min(NS - 1, Math.round(Math.pow(u, 1 / 1.7) * NS)));
-  }
-  var iDor = 0, iPec = 0;
+
+  /* ================================================================
+   * 一幀
+   * ================================================================
+   * 身體只用**兩條 path**：全部暗色面片一條、腹白面片一條，各填一次。
+   * 先前是「一條斷面帶填一次暗色、再填一次骨白」，白肚子上因此每一條帶的交界
+   * 都留下一道淡淡的暗線（實測 0.5 px、整條肚子二十幾道，就是使用者說的
+   * 「腹部白色出現許多灰線條」）。根因不是幾何沒接好，而是**覆蓋率合成不是
+   * 冪等的**：同一條帶的骨白蓋在自己的暗色之上，兩者在同一個位置各有一條抗鋸齒
+   * 邊，那一欄像素先被暗色吃掉一半、再被骨白補回一半——補不回全部
+   *（0.5 → 0.75，剩下的 0.25 是暗色）。把整條身體的暗色一次填完、骨白再一次
+   * 填完，身體內部就完全沒有抗鋸齒邊，這種接縫在幾何上就不可能存在，
+   * 相鄰的帶也不必再互相重疊。
+   *
+   * 三片鰭與身體的前後關係改成**逐片比深度**：拿鰭上一個代表點與同一個體長
+   * 座標上的體軸比深度，遠的畫在身體之前、近的畫在之後。先前是把鰭插在
+   * 「自己那一條斷面帶」旁邊，但帶是依 u 排序的——頭朝我們時頭部的帶最後畫，
+   * 於是近側胸鰭被頭蓋掉一半（使用者說的「雙鰭穿模」）。逐片比深度沒有這個問題，
+   * 滾轉時也正確。
+   */
   function drawWhale(g, sc) {
     setPose(o.rollA, o.pitch, o.th, o.x, o.y - (sc || 0), persp());
 
     var ja = o.gape * .62;
     JX = bx(MU); JY = edgeVent(MU); JC = Math.cos(ja); JS = Math.sin(ja);
-    iDor = bandOf(D.dorU); iPec = bandOf(D.pecU);
 
-    var dHead = proj(bx(0), spine(0), 0, _q)[2];
-    var dTail = proj(bx(1), spine(1), 0, _q)[2];
-    var headNear = dHead >= dTail;
-    // 哪一側胸鰭在遠端：直接比深度，不再靠 sinθ 的正負去猜
-    var dR = pecTip(1, _q)[2], dL = pecTip(-1, _q2)[2];
-    var farSide = dR <= dL ? 1 : -1;
+    var i, oA, oB;
+    for (i = 0; i <= NS; i++) station(bandU(i / NS), i * KN * 2, ja);
 
-    /* 帶與帶之間沿 u 各外擴 eu（螢幕上約 0.7 px）。兩條同色的帶若剛好相接，
-       共用的那一欄像素兩次各覆蓋一半、疊起來只有 75%，背景就從縫裡透出來，
-       整條身體會被梳成一排規律的直線。重疊掉就沒有這回事。 */
-    var eu = .7 / Math.max(1, D.L * Math.abs(TR.cp * TR.S));
-    var s, i, uA, uB, e;
+    /* 鰭與身體的前後：比深度，不比體長座標 */
+    var dDor = proj(bx(D.dorU), spine(D.dorU) - topH(D.dorU) - D.dorH * .5, 0, _q)[2];
+    var bDor = proj(bx(D.dorU), spine(D.dorU), 0, _q)[2];
+    var bPec = proj(bx(D.pecU), spine(D.pecU), 0, _q)[2];
+    var dPecR = pecBase(1, _q)[2], dPecL = pecBase(-1, _q2)[2];
+    var dFlk = proj(bx(1) - D.flukeLen * .6, spine(1), 0, _q)[2];
+    var bFlk = proj(bx(1), spine(1), 0, _q)[2];
 
-    if (headNear) { g.beginPath(); flukeFin(g); g.fillStyle = P.skin; g.fill(); }
-    for (s = 0; s < NS; s++) {
-      i = headNear ? NS - 1 - s : s;
-      uA = bandU(i / NS); uB = bandU((i + 1) / NS);
-      e = Math.min(eu, (uB - uA) * .4);
+    if (dFlk  <  bFlk) { flukeFin(g);     g.fillStyle = P.skin; g.fill(); }
+    if (dDor  <  bDor) { dorsalFin(g);    g.fillStyle = P.skin; g.fill(); }
+    if (dPecR <  bPec) { pecFin(g,  1);   g.fillStyle = P.skin; g.fill(); }
+    if (dPecL <  bPec) { pecFin(g, -1);   g.fillStyle = P.skin; g.fill(); }
 
-      if (i === iPec) {                       // 遠側胸鰭在身體之後
-        g.beginPath(); pecFin(g, farSide); g.fillStyle = P.skin; g.fill();
-      }
-      station(Math.max(0, uA - e), NA, ja);
-      station(Math.min(1, uB + e), NB, ja);
-      /* 暗色先鋪滿整圈（含腹白那一段），白色再蓋上去。這樣黑白交界只有
-         白色那一次填的抗鋸齒，是正確的邊；分兩塊各填一次才會留下灰縫。 */
-      g.beginPath();
-      var q1 = bandQuads(g, NA, NB, 0, KB);
-      var q2 = bandQuads(g, NA, NB, KB + 1, KB + 1 + KD);
-      if (q1 || q2) { g.fillStyle = P.skin; g.fill(); }
-      if (q1) {
-        g.beginPath(); bandQuads(g, NA, NB, 0, KB);
-        g.fillStyle = P.belly; g.fill();
-      }
-
-      if (i === iDor) { g.beginPath(); dorsalFin(g); g.fillStyle = P.skin; g.fill(); }
-      if (i === iPec) {
-        g.beginPath(); pecFin(g, -farSide); g.fillStyle = P.skin; g.fill();
-      }
+    g.beginPath();
+    for (i = 0; i < NS; i++) {
+      oA = i * KN * 2; oB = oA + KN * 2;
+      bandQuads(g, oA, oB, 0, KB);                 // 腹白那一圈也先鋪暗色
+      bandQuads(g, oA, oB, KB + 1, KB + 1 + KD);
     }
-    /* 斑塊畫在**所有斷面帶之後**，不能插在自己那一條帶旁邊：身體是凸的，
-       背面剔除已經保證留下來的斑塊面片一定看得見，不會被身體擋住；但斷面帶
-       是一條一條蓋過去的，插在中間的話後面那幾條帶會把斑塊切掉一半——側身時
-       鞍斑就只剩背鰭後面一小塊，像背上被咬了一口。 */
+    g.fillStyle = P.skin; g.fill();
+
+    g.beginPath();
+    for (i = 0; i < NS; i++) bandQuads(g, i * KN * 2, (i + 1) * KN * 2, 0, KB);
+    g.fillStyle = P.belly; g.fill();
+
+    /* 貼在體表的斑塊：背面剔除已經保證留下來的面片看得見，畫在身體之後即可。 */
     g.beginPath();
     if (patchMesh(g, .63, .115, Math.PI, 1.05, 0)) { g.fillStyle = P.belly; g.fill(); }
     g.beginPath();
     var e1 = patchMesh(g, .135, .076, 2.03, .26, .020);
     var e2 = patchMesh(g, .135, .076, -2.03, .26, -.020);
     if (e1 || e2) { g.fillStyle = P.belly; g.fill(); }
-    if (!headNear) { g.beginPath(); flukeFin(g); g.fillStyle = P.skin; g.fill(); }
+
+    if (dPecR >= bPec) { pecFin(g,  1);   g.fillStyle = P.skin; g.fill(); }
+    if (dPecL >= bPec) { pecFin(g, -1);   g.fillStyle = P.skin; g.fill(); }
+    if (dDor  >= bDor) { dorsalFin(g);    g.fillStyle = P.skin; g.fill(); }
+    if (dFlk  >= bFlk) { flukeFin(g);     g.fillStyle = P.skin; g.fill(); }
   }
 
   /* 把身上任一點（體長座標 u、偏離體軸 off）換算成**文件座標**。
@@ -678,6 +691,11 @@
   }
 
   function step(dt) {
+    /* 這一幀開始時的嘴。命中判定要用「位移**前** → 位移**後**」這一段線段，
+       不能像先前那樣把端點記在 step() 結尾、下一幀開頭再取：那兩個取樣之間
+       身體一格都沒動（位移與姿態積分都在記錄之後），線段長度只有次像素，
+       掃掠保護等於沒有，有效命中半徑縮水兩三成，擦邊的那些就掉了。 */
+    var mPrev = mouth(), chaseTarget = null;
     /* 擺尾頻率跟著速度走（滑行時尾巴幾乎不動），這是牠看起來像在「用力」
        還是「順水漂」的差別。 */
     o.phase += dt * (2.0 + 6.4 * o.speed / 60) *
@@ -690,7 +708,16 @@
        落到底就躺著等（不會沉出畫外消失）。 */
     for (i = food.length - 1; i >= 0; i--) {
       f = food[i]; f.t += dt;
-      if (f.rest && f.y < floorY - 2) f.rest = false;   // 使用者往下捲：底變低了，繼續沉
+      if (f.cool > 0) f.cool -= dt;
+      /* 躺平之後仍要**跟著「底」上下走**，兩個方向都要：
+         往下捲 → 底變低 → 繼續沉；往上捲（或下緣列展開）→ 底變高 → 要把它拉上來。
+         少了「拉上來」這一半會出大事：intercept() 把瞄準點的 y 夾在 floorY，命中卻用
+         藥丸的真實座標，於是藥丸被留在可視帶外面、鯨魚的瞄準點卻停在可視帶的底，
+         牠就在畫面下緣一直繞、永遠咬不到——使用者看到的「螺旋下潛吃不到」。 */
+      if (f.rest) {
+        if (f.y < floorY - 2) f.rest = false;
+        else if (f.y > floorY) f.y = floorY;
+      }
       if (!f.rest) {
         f.vy = Math.min(52, f.vy + dt * 90);
         f.y += f.vy * dt;
@@ -731,7 +758,10 @@
       var top = scrollTop();
 
       /* 被使用者捲出畫面 → 什麼都先放下，游回看得到的地方 */
-      var pad = food.length ? Hv * .35 : Hv * .10;      // 正在追餌時容忍多一點
+      /* 容忍牠追出可視範圍多少。追餌時放寬一點，但不能放到 0.35 個畫面高——
+         藥丸最低就躺在可視帶的底，牠不需要再往下鑽，放太寬只會讓牠鑽出畫面
+         下緣繞圈（頁面比視窗高時尤其明顯，牠有得是空間往下走）。 */
+      var pad = food.length ? Math.min(Hv * .22, D.span * .7) : Hv * .10;
       var outUp = o.y < top - pad, outDn = o.y > top + Hv + pad;
       var target = null;
       if (outUp || outDn) {
@@ -741,27 +771,43 @@
         o.tz = 0;
         o.wait = .2;
       } else {
-        var bd = 1e9, mp0 = mouth();
+        var bd = 1e9;
         for (i = 0; i < food.length; i++) {
+          if (food[i].cool > 0) continue;              // 剛剛追不到的那顆，先放著
           var d = Math.hypot(food[i].x - o.x, food[i].y - o.y, o.z);
           if (d < bd) { bd = d; target = food[i]; }
         }
+        if (!target) {                                 // 全部都在冷卻：還是挑最近的
+          for (i = 0; i < food.length; i++) {
+            var d2 = Math.hypot(food[i].x - o.x, food[i].y - o.y, o.z);
+            if (d2 < bd) { bd = d2; target = food[i]; }
+          }
+        }
         if (target) {
-          o.mode = 'chase';
+          if (o.mode !== 'chase') o.chaseT = 0;
+          o.chaseT += dt;
+          /* ---- 追餌看門狗 ----
+             追餌這一支本來沒有任何逾時（只有巡游有），一旦進了極限環就永遠出不來。
+             追同一顆超過五秒就放它冷卻兩秒、自己退開一個身長重新進場，
+             下一次是水平切入而不是垂直壓下去。 */
+          if (o.chaseT > 5) {
+            target.cool = 2; o.chaseT = 0; o.brk = false; o.mode = 'cruise';
+            o.hold = 0; o.wait = .4;
+            o.tx = Math.max(D.span * .3, Math.min(W - D.span * .3,
+                            target.x + (o.x < target.x ? -1 : 1) * D.L * 1.3));
+            o.ty = target.y - D.H * 2.2; o.tz = 0;
+            target = null;
+          }
+        }
+        if (target) {
+          o.mode = 'chase'; chaseTarget = target;
           var pt = intercept(target);                  // 預測攔截點，不是追現在位置
           o.tx = pt.x; o.ty = pt.y; o.tz = 0;          // 藥丸落在 z=0 那一面，牠得游到玻璃前
-          /* 命中判定走「上一幀的嘴 → 這一幀的嘴」這一段線段，不是單看當前點：
-             追餌泳速 172 px/s，掉幀時一步可以走十幾 px，只比對端點會從藥丸身上
-             穿過去卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。
-             深度方向的權重見 segDist3。 */
-          var md = segDist3(target.x, target.y, 0,
-                            o.pmx, o.pmy, o.pmz, mp0.x, mp0.y, mp0.z);
-          if (md < D.H * 1.0) {                        // 真的碰到嘴了才吞
-            food.splice(food.indexOf(target), 1);
-            o.gape = 1; o.gapeWant = 0;                // 合起來＝咬下去
-          } else if (md < D.L * .55) {
-            o.gapeWant = Math.min(1, (D.L * .55 - md) / (D.L * .38));
-          } else o.gapeWant = 0;
+          /* 命中判定不在這裡做——它必須跨過這一幀的位移，見 step() 結尾。
+             這裡只決定嘴要張多大。 */
+          var md0 = Math.hypot(target.x - mPrev.x, target.y - mPrev.y, (0 - mPrev.z) * ZW);
+          o.gapeWant = md0 < D.L * .55
+            ? Math.min(1, (D.L * .55 - md0) / (D.L * .38)) : 0;
         } else if (o.mode !== 'cruise') { o.mode = 'cruise'; o.hold = 0; pickTarget(); }
       }
 
@@ -783,6 +829,29 @@
            上限（每 0.5 秒轉 48°），畫面上就是一條不停打轉的鯨魚。 */
       var rch = chasing ? reach() : 0;
       var dx = ex - fX * rch, dy = ey - fY * rch, dz = ez - fZ * rch;
+
+      /* ---- 藥丸掉進「嘴掃過的那個圓」裡面時，要先游開再回頭 ----
+         嘴永遠在以身體中心為圓心、半徑 reach() 的球面上。藥丸若比那個半徑還近，
+         **怎麼轉頭都碰不到**：轉身只會讓嘴沿著球面滑過去，藥丸始終在球內。
+         純追蹤在這時會叫牠去追一個永遠在自己身後 reach() 的點——那是一隻狗在
+         追自己的尾巴。實測最壞的一次偏航角速度整整五秒貼在上限（−222°/s），
+         總共掃過 1050°，畫面上就是一路螺旋下潛卻咬不到。
+         解法是換一個目標：穿過藥丸、再往前 1.4 個 reach()。牠會像真的掠食者
+         那樣掠過去、拉開距離、再轉回來撲一次。用遲滯避免在邊界上來回切換。 */
+      if (!chasing) { o.brk = false; o.brkT = 0; }
+      else if (o.brk) {
+        o.brkT += dt;
+        if (tDist > rch * 1.30 || o.brkT > 2.5) { o.brk = false; o.brkT = 0; }
+      } else if (tDist < rch * .95) { o.brk = true; o.brkT = 0; }
+      if (o.brk) {
+        /* 脫離動作是**直直往前飛**，不是「朝藥丸飛過去再飛出來」。
+           後者一樣會繞圈：目標比最小轉彎半徑（泳速÷最大角速度）還近的時候，
+           純追蹤永遠繞著它轉，追不到——這是教科書結果，實測也是這樣，
+           脫靶的每一次都是「脫離旗標整整十五秒都亮著」。
+           把瞄準點放在正前方兩個 reach() 處，操舵誤差就是零，牠會筆直掠過去，
+           距離自然拉開；俯仰同時打對折，免得它就這樣一路鑽出畫面下緣。 */
+        dx = fX * rch * 2; dy = fY * rch * 1.1; dz = fZ * rch * 2;
+      }
       var horiz = Math.hypot(dx, dz), aimD = Math.hypot(horiz, dy);
 
       /* 增益隨距離連續淡出，不用硬性死區：死區會讓修正突然斷掉再突然接上，
@@ -810,6 +879,16 @@
          因為偏航沒有夾限，任何方向都轉得到。 */
       var dth = Math.atan2(dx, dz) - o.th;
       dth -= TAU * Math.round(dth / TAU);
+      /* 藥丸就在正上方或正下方時，偏航要**放手**。這種幾何下水平誤差幾乎只剩
+         「後退量自己造成的那一段」（−f̂·reach 的水平分量），方位角於是由姿態決定、
+         姿態又由方位角決定，頭會一路以最大角速度轉——實測「藥丸在正下方」那一組
+         單趟掃過 940°，那就是使用者看到的螺旋下潛。垂直方向沒有轉彎半徑的限制，
+         這一類本來就該交給俯仰去收。 */
+      if (chasing) {
+        var lead = rch * cp * 1.15;                    // 後退量在水平面上的投影
+        var hrT = Math.hypot(ex, ez);
+        if (hrT < lead) dth *= Math.max(.05, hrT / lead);
+      }
       o.thWant = o.th + dth * gain;
 
       /* 俯仰：目標的仰角。有了自由偏航，俯仰再也不必超過 ±75°。 */
@@ -831,12 +910,27 @@
         o.gliding = !o.gliding;
         o.beatT = o.gliding ? 1.6 + Math.random() * 2.4 : 3.2 + Math.random() * 3.4;
       }
-      /* 追到最後一段要**減速**。等速全力衝的話，轉彎半徑（泳速÷最大角速度）
-         比撲擊距離還大，牠就繞著藥丸打轉、永遠差那麼一點——實測脫靶 18.5%。
-         真的掠食者也是這樣：衝過去、到跟前收力氣、再咬。 */
+      /* 追餌的泳速由**兩件事**決定：還有多遠，以及有沒有對準。
+         只看距離不夠：牠可能離藥丸很近卻正朝著反方向，這時全速前進的轉彎半徑
+         （泳速 ÷ 最大角速度）比撲擊距離還大，牠就繞著藥丸畫圈——實測最壞的一次
+         整趟掃過 848°（兩圈半），畫面上就是一路螺旋下潛卻咬不到。
+         把「沒對準就幾乎停下來」加進去之後，沒對準時泳速掉到三成、轉彎半徑只剩
+         九個像素，牠會先原地把頭轉過去再衝。真的掠食者也是這樣收力氣再咬。 */
       if (chasing) {
         o.gliding = false;
-        o.spdWant = CHASE_SPD * (.40 + .60 * Math.min(1, tDist / (D.span * .95)));
+        if (o.brk) {
+          o.spdWant = CHASE_SPD * .80;               // 掠過去要快，慢下來反而繞不出去
+        } else {
+          /* 泳速由兩件事決定：還有多遠，以及有沒有對準。只看距離不夠——牠可能
+             離藥丸很近卻朝著反方向，這時全速的轉彎半徑（泳速÷最大角速度）比撲擊
+             距離還大，一樣會繞圈。沒對準就幾乎停下來，轉彎半徑只剩九個像素。 */
+          var align = tDist > 1e-3
+            ? (fX * ex + fY * ey + fZ * ez) / tDist  // 1＝體軸正對目標
+            : 1;
+          o.spdWant = Math.max(14, CHASE_SPD *
+            (.18 + .82 * Math.min(1, tDist / (D.span * .95))) *
+            (.34 + .66 * Math.max(0, align)));
+        }
         o.thrustWant = 1.6;
       }
       else if (o.mode === 'return') { o.gliding = false; o.spdWant = 132; o.thrustWant = 1.45; }
@@ -888,8 +982,6 @@
     o.y += Math.sin(o.pitch) * o.speed * dt;
     o.z += CP * Math.cos(o.th) * o.speed * dt;
 
-    var mNow = mouth();                 // 這一幀結束時的嘴，供下一幀做線段命中判定
-    o.pmx = mNow.x; o.pmy = mNow.y; o.pmz = mNow.z;
 
     /* ---- 邊界：沒有牆，只有「探出去一截就到頭」＋「靠邊提早換目標」 ----
        夾限放在「身體中心」上，且刻意留得比身長寬鬆：牠可以把頭探出畫面外去咬
@@ -903,6 +995,20 @@
       if (!o.trick && o.mode === 'cruise') pickTarget();
     } else if (!o.trick && o.mode === 'cruise' && (o.x < mgx || o.x > W - mgx)) {
       if (o.wait > .25) o.wait = .25;                   // 快到邊了：提早換目標
+    }
+
+    /* ---- 命中判定：走「位移前的嘴 → 位移後的嘴」這一段線段 ----
+       追餌泳速 172 px/s，掉幀時一步可以走十幾 px，只比對端點會從藥丸身上穿過去
+       卻判定沒吃到，畫面上就是「明明咬到了卻沒反應」。放在這裡才真的跨得過
+       這一幀的位移與邊界夾限。 */
+    if (chaseTarget && food.indexOf(chaseTarget) >= 0) {
+      var mNow = mouth();
+      var md = segDist3(chaseTarget.x, chaseTarget.y, 0,
+                        mPrev.x, mPrev.y, mPrev.z, mNow.x, mNow.y, mNow.z);
+      if (md < D.H * 1.0) {                             // 真的碰到嘴了才吞
+        food.splice(food.indexOf(chaseTarget), 1);
+        o.gape = 1; o.gapeWant = 0; o.chaseT = 0;       // 合起來＝咬下去
+      }
     }
   }
 
@@ -1067,8 +1173,6 @@
     ctx = canvas.getContext('2d');
     resize();
     pickTarget();
-    // 線段命中判定要有「上一幀的嘴」；不初始化的話第一幀那條線是從原點拉過來的
-    var m0 = mouth(); o.pmx = m0.x; o.pmy = m0.y;
     if (reduced) { step(.016); draw(); return; }
     alive = true; last = performance.now();
     raf = requestAnimationFrame(loop);
@@ -1112,6 +1216,7 @@
       kind: Math.floor(Math.random() * 11),            // 十一款外形隨機
       tint: Math.floor(Math.random() * 7),              // 七組配色
       size: .82 + Math.random() * .36,                  // 每一顆大小也不一樣
+      cool: 0,
       spin: Math.random() * TAU,
       rot: (Math.random() - .5) * 1.8,                 // 落下時自己翻滾
       settle: 0
