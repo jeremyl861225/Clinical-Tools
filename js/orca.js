@@ -342,14 +342,14 @@
          互相抵消，畫面上是被挖空的鰭；
        · 一定要有側帶——板子快要與視線平行時（背鰭轉到正臉那一刻）正反兩圈
          在畫面上分得開，少了側帶，中間那條縫就裂成兩根天線。 */
-  var PPX = new Float64Array(64), PPY = new Float64Array(64),
-      QPX = new Float64Array(64), QPY = new Float64Array(64),
-      BX = new Float64Array(64), BY = new Float64Array(64),
-      BZ = new Float64Array(64), BT = new Float64Array(64);
+  var PPX = new Float64Array(80), PPY = new Float64Array(80),
+      QPX = new Float64Array(80), QPY = new Float64Array(80),
+      BX = new Float64Array(80), BY = new Float64Array(80),
+      BZ = new Float64Array(80), BT = new Float64Array(80);
   function poly4(g, x0, y0, x1, y1, x2, y2, x3, y3) {
     var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
              (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
-    if (ar > -.02 && ar < .02) return;
+    if (ar > -1e-4 && ar < 1e-4) return;
     g.moveTo(x0, y0);
     if (ar > 0) { g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3); }
     else { g.lineTo(x3, y3); g.lineTo(x2, y2); g.lineTo(x1, y1); }
@@ -389,22 +389,34 @@
   }
 
   /* 背鰭：矢狀面上一片後掠的鐮刀。厚度從基部線性收到鰭尖的 0。 */
-  var FN = 20;
   function dorsalFin(g) {
     var u = D.dorU, X0 = bx(u), Y0 = spine(u) - topH(u) + 2;
-    var th = D.dorW * .20, i, t, n = FN >> 1;
+    var th = D.dorW * .20, i, t, n = 0;
     var aX = X0 + D.dorW * .50, aY = Y0;
     var cX = X0 + D.dorW * .14, cY = Y0 - D.dorH * .99;
     var tX = X0 - D.dorSweep,   tY = Y0 - D.dorH;
     var dX = X0 - D.dorW * .26, dY = Y0 - D.dorH * .30;
     var eX = X0 - D.dorW * .50, eY = Y0 + 1;
-    for (i = 0; i < FN; i++) {
-      if (i < n) { t = i / (n - 1); BX[i] = qbez(aX, cX, tX, t); BY[i] = qbez(aY, cY, tY, t); }
-      else { t = (i - n + 1) / n; BX[i] = qbez(tX, dX, eX, t); BY[i] = qbez(tY, dY, eY, t); }
-      BZ[i] = 0;
-      BT[i] = th * Math.max(0, 1 - (Y0 - BY[i]) / D.dorH);
+    function put(X, Y) {
+      BX[n] = X; BY[n] = Y; BZ[n] = 0;
+      BT[n] = th * Math.max(.10, 1 - (Y0 - Y) / D.dorH);   // 厚度不收到零，鰭尖才是圓的
+      n++;
     }
-    g.beginPath(); plate(g, FN, 0, 0, 1);
+    var N1 = 12, N2 = 12, NC = 5, LO = .92, HI = .08;
+    for (i = 0; i <= N1; i++) {                    // 前緣：基部 → 鰭尖之前
+      t = LO * i / N1; put(qbez(aX, cX, tX, t), qbez(aY, cY, tY, t));
+    }
+    /* 鰭尖：兩條二次貝茲原本直接在頂點交會，那是一個折角。改成用原本的頂點
+       當控制點，在兩端之間再畫一小段圓弧接起來。 */
+    var pax = qbez(aX, cX, tX, LO), pay = qbez(aY, cY, tY, LO);
+    var pbx = qbez(tX, dX, eX, HI), pby = qbez(tY, dY, eY, HI);
+    for (i = 1; i < NC; i++) {
+      t = i / NC; put(qbez(pax, tX, pbx, t), qbez(pay, tY, pby, t));
+    }
+    for (i = 0; i <= N2; i++) {                    // 後緣：鰭尖之後 → 基部
+      t = HI + (1 - HI) * i / N2; put(qbez(tX, dX, eX, t), qbez(tY, dY, eY, t));
+    }
+    g.beginPath(); plate(g, n, 0, 0, 1);
   }
 
   /* 胸鰭：真的長在體側 Z=±hw 上、往後下外方伸出去的一片槳。因為是 3D 的，
@@ -427,40 +439,50 @@
     return proj(bx(u), spine(u) + botH(u) * .40, halfW(u) * .98 * side, out);
   }
   function pecFin(g, side) {
-    var u = D.pecU, w = halfW(u), N = 12, i, a, tp, c;
+    var u = D.pecU, w = halfW(u), i, a, sc, n = 0;
     var bX = bx(u), bY = spine(u) + botH(u) * .40, bZ = w * .98 * side;
     pecAxis(side, _ax);
     /* 弦向刻意不是純粹的 (1,0,0)，而是往上翹一點（前緣高、後緣低）。
        純水平的弦向會讓鰭面所在的平面**包含體軸**，正臉時整片鰭剛好與視線平行、
-       投影成一條頭髮般的細線，看起來就像身上多了兩根鬍鬚。翹一點之後任何角度
-       都還看得出是一片槳。 */
-    var cdX = .925, cdY = -.38, cdZ = 0;
+       投影成一條頭髮般的細線，看起來就像身上多了兩根鬍鬚。 */
+    var cdX = .925, cdY = -.38;
     // 板面法線＝弦向 × 鰭軸
-    var nx = cdY * _ax[2] - cdZ * _ax[1];
-    var ny = cdZ * _ax[0] - cdX * _ax[2];
+    var nx = cdY * _ax[2];
+    var ny = -cdX * _ax[2];
     var nz = cdX * _ax[1] - cdY * _ax[0];
     var nm = Math.hypot(nx, ny, nz) || 1;
     nx /= nm; ny /= nm; nz /= nm;
     var th = D.pecW * .30;
-    for (i = 0; i <= N; i++) {                       // 前緣：基部 → 鰭尖
-      a = i / N;
-      tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
-      c = D.pecW * (.58 + .10 * a) * tp;
-      BX[i] = bX + _ax[0] * a + c * cdX;
-      BY[i] = bY + _ax[1] * a + c * cdY;
-      BZ[i] = bZ + _ax[2] * a;
-      BT[i] = th * tp;
+
+    /* 輪廓在鰭自己的 (s, c) 平面上組出來：s 沿鰭軸 0→1、c 沿弦向。
+       前緣走到 sT、繞一個**半橢圓的圓角尖端**、再沿後緣走回基部。
+       先前是讓弦長乘上 √(1−s⁵) 收到零：那條曲線在 s=1 的斜率是無限大，用十二段
+       均勻取樣一畫，最後一段就從 0.4 個弦長直接收到 0——畫面上是一根尖刺加一個
+       折角。圓角尖端＋尖端加密取樣＋厚度不收到零，任何角度看都是圓的。 */
+    var sT = .84, capS = .16;
+    var fT = D.pecW * (.58 + .10 * sT), bT = D.pecW * (1.04 - .76 * sT * sT);
+    var cMid = (fT - bT) * .5, cHalf = (fT + bT) * .5;
+    var SN = 14, CN = 10;
+    function put(sv, cv) {
+      BX[n] = bX + _ax[0] * sv + cv * cdX;
+      BY[n] = bY + _ax[1] * sv + cv * cdY;
+      BZ[n] = bZ + _ax[2] * sv;
+      BT[n] = th * (.30 + .70 * (1 - sv * sv * sv));
+      n++;
     }
-    for (i = 0; i <= N; i++) {                       // 後緣：鰭尖 → 基部
-      a = (N - i) / N;
-      tp = Math.sqrt(Math.max(0, 1 - Math.pow(a, 5)));
-      c = D.pecW * (1.04 - .76 * a * a) * tp;
-      BX[N + 1 + i] = bX + _ax[0] * a - c * cdX;
-      BY[N + 1 + i] = bY + _ax[1] * a - c * cdY;
-      BZ[N + 1 + i] = bZ + _ax[2] * a;
-      BT[N + 1 + i] = th * tp;
+    for (i = 0; i <= SN; i++) {                        // 前緣：基部 → 尖端前
+      sc = sT * i / SN;
+      put(sc, D.pecW * (.58 + .10 * sc));
     }
-    g.beginPath(); plate(g, 2 * N + 2, nx, ny, nz);
+    for (i = 1; i < CN; i++) {                         // 圓角尖端：前緣繞到後緣
+      a = Math.PI / 2 - Math.PI * i / CN;
+      put(sT + capS * Math.cos(a), cMid + cHalf * Math.sin(a));
+    }
+    for (i = SN; i >= 0; i--) {                        // 後緣：尖端後 → 基部
+      sc = sT * i / SN;
+      put(sc, -D.pecW * (1.04 - .76 * sc * sc));
+    }
+    g.beginPath(); plate(g, n, nx, ny, nz);
   }
 
   /* 尾鰭：橫向的一片板子。純側面時它其實只投影成一條線，真要那樣畫就沒有
@@ -479,22 +501,46 @@
     return 1 - .75 * m * m;
   }
   function flukeFin(g) {
-    var lift = flukeEdge(), N = 8, i, w, aw, X0 = bx(1), n = 0;
-    var th = D.flukeH * .13;
-    for (i = 0; i <= 2 * N; i++, n++) {              // 後緣：右翼尖 → 中央凹口 → 左翼尖
-      w = 1 - i / N; aw = Math.abs(w);
-      BX[n] = X0 - D.flukeLen * (.26 + .74 * aw);
-      BY[n] = spine(1 + .22 * aw) + w * D.flukeH * .86 * lift;
-      BZ[n] = w * D.flukeH;
-      BT[n] = th * (1 - .7 * aw);
+    var lift = flukeEdge(), X0 = bx(1), FL = D.flukeLen, FH = D.flukeH;
+    var th = FH * .18, n = 0, i, w;
+    var SN = 12, CN = 8, wT = .86, capW = .14;
+    /* 輪廓在 (w, 弦向) 平面上組出來：沿後緣從右翼尖走到左翼尖、繞一個**圓角
+       翼尖**、沿前緣走回來、再繞另一個圓角翼尖。先前前後緣直接在 |w|=1 交會，
+       翼尖就是一個銳角；斜著看的時候整片鰭收成一根針，那正是使用者說的尖刺。
+       弦長也放寬了（翼尖處由 0.66 個 flukeLen 加到 0.78），厚度加厚、取樣加密到
+       四十點，任何角度都不會再出現折角。 */
+    /* 弦長往翼尖收窄（taper），但**不收到零**——收到零就是先前那個銳角。
+       收到六成再接一個圓角帽，側面看仍是細長的新月，斜著看也不會變成針。 */
+    function taper(aw) { return 1 - .44 * aw * aw; }
+    function Xmid(wv) {
+      var aw = Math.abs(wv);
+      return X0 - FL * ((.30 + .70 * aw) + (.22 * aw)) * .5;
     }
-    for (i = 0; i <= 2 * N; i++, n++) {              // 前緣折回
-      w = -1 + i / N; aw = Math.abs(w);
-      BX[n] = X0 - D.flukeLen * .34 * aw;
-      BY[n] = spine(1 + .14 * aw) + w * D.flukeH * .66 * lift;
-      BZ[n] = w * D.flukeH * .88;
-      BT[n] = th * (1 - .7 * aw);
+    function Xhalf(wv) {
+      var aw = Math.abs(wv);
+      return FL * ((.30 + .70 * aw) - (.22 * aw)) * .5 * taper(aw);
     }
+    function Xt(wv) { return Xmid(wv) - Xhalf(wv); }                   // 後緣
+    function Xl(wv) { return Xmid(wv) + Xhalf(wv); }                   // 前緣
+    function put(wv, X) {
+      var aw = Math.abs(wv);
+      BX[n] = X;
+      BY[n] = spine(1 + .20 * aw) + wv * FH * .86 * lift;
+      BZ[n] = wv * FH;
+      BT[n] = th * (.45 + .55 * (1 - aw * aw));
+      n++;
+    }
+    function cap(sign) {
+      var mid = Xmid(wT), half = Xhalf(wT), k, ph;
+      for (k = 1; k < CN; k++) {
+        ph = -Math.PI / 2 + Math.PI * k / CN;
+        put(sign * (wT + capW * Math.cos(ph)), mid + half * Math.sin(ph));
+      }
+    }
+    for (i = 0; i <= SN; i++) { w = wT * (1 - 2 * i / SN); put(w, Xt(w)); }
+    cap(-1);
+    for (i = 0; i <= SN; i++) { w = wT * (-1 + 2 * i / SN); put(w, Xl(w)); }
+    cap(1);
     g.beginPath(); plate(g, n, 0, 1, 0);
   }
 
