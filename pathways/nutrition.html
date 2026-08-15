@@ -319,10 +319,6 @@
         <tr><td class="pn-n"><a href="../tools/drug-database.html#code=OLI1FCD5">Olimel</a></td><td class="pn-v">650 mL<br><span class="gr w">透析室</span></td><td>49.3</td><td>7.8</td><td>47.6</td><td>22.8</td><td>618</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
         <tr><td class="pn-n"><a href="../tools/drug-database.html#code=SMO1FC09">Smoflipid</a></td><td class="pn-v">250 mL</td><td>–</td><td>–</td><td>–</td><td>50</td><td>500</td><td>–</td><td>–</td><td>380*</td><td><span class="gr">周邊／中央</span></td></tr>
         <tr><td class="pn-n"><a href="../tools/drug-database.html#code=OME1FCD2">Omegaven</a></td><td class="pn-v">100 mL<br><span class="gr w">需簽署</span></td><td>–</td><td>–</td><td>–</td><td>10</td><td>—</td><td>–</td><td>–</td><td>—</td><td><span class="gr">純魚油</span></td></tr>
-        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA11FE49">TPN-Adult-1<br><span class="pn-sub">一般</span></a></td><td class="pn-v">每 mL 計價</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
-        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA21FE50">TPN-Adult-2<br><span class="pn-sub">高蛋白</span></a></td><td class="pn-v">每 mL 計價</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
-        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA31FE51">TPN-Adult-3<br><span class="pn-sub">低蛋白</span></a></td><td class="pn-v">每 mL 計價</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
-        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA41FE52">TPN-Adult-4<br><span class="pn-sub">BCAA</span></a></td><td class="pn-v">每 mL 計價</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="gr w">只限中央</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -336,15 +332,62 @@
     回推 615 kcal，與外盒標示的 950 kcal/l × 0.65 ＝ 618 相符）。
     <b>*Smoflipid 的 380 是 mOsm/kg H₂O（重量制），與其他列的容積制不能直接比。</b>
     Bfluid 仿單不給 mOsm/L，只給「對 0.9% saline 的滲透壓比約 3」，換算約 860 mOsm/L。<br>
-    <b>TPN-Adult-1～4 的成分整列留空，是因為台大藥品資料庫沒有登錄組成</b>——
-    那四筆明細頁只有品名、劑型與每毫升價格（健保每 mL 0.72 元，BCAA 配方 0.38 元），
-    腎／肝／透析三個子頁也都是空表。它們是<b>藥局依醫囑配製</b>的品項，
-    <b>實際組成看當次處方，不是固定配方</b>。<span class="gr w">待補</span>
-    下次進院內網域時回台大 TPN 系統確認四種配方的標準組成。<br>
+    <b>藥局配製的 TPN-Adult-1～4 不放在這張表</b>：它是濃度處方、體積由醫師開，
+    與成品袋的「整袋含量」單位語意不同，硬併會讀錯——<b>另立一張表在下面</b>。<br>
     Bfluid 台大的用法欄寫的是「<b>IF over 4 hrs，成人 1000 mL，每日上限 2500 mL</b>」，
     比仿單的「500 mL／120 分鐘」慢，以台大為準。<br>
     <b>Dipeptiven（雙胜胺）在「添加劑」那一頁</b>——它是加在胺基酸溶液裡的補充品，
     不是可以單獨掛的營養液。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">藥局配製的標準配方</span><span class="dh-e">NTUH compounded TPN — 台大 TPN 系統 2024 改版</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">這張表跟上面那張的單位不一樣，別混著看</div>
+    上面是<b>成品袋</b>：容量固定，數字是「整袋含有多少」。<br>
+    這張是<b>藥局配製</b>：<b>體積由你開</b>，所以系統給的是<b>濃度</b>（% 與 mEq/L）——
+    要換成實際給了多少，得自己乘上開立的毫升數。兩張表硬合在一起會讀錯，故分開。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor fz-tbl pn-tbl" style="min-width:600px;">
+      <thead><tr>
+        <th>配方</th><th>葡萄糖</th><th>胺基酸</th><th>熱量</th>
+        <th>Na</th><th>K</th><th>Cl</th><th>Ca</th><th>P</th><th>Mg</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA11FE49">TPN-Adult-1</a><span class="pn-sub">一般</span></td><td>15%</td><td>4%</td><td>670</td><td>50</td><td>30</td><td>50<br><span class="pn-sub">18–68</span></td><td>8</td><td>8</td><td>8</td></tr>
+        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA21FE50">TPN-Adult-2</a><span class="pn-sub">高蛋白</span></td><td>15%</td><td>6%</td><td>750</td><td>45</td><td>30</td><td>45<br><span class="pn-sub">22.5–67.5</span></td><td>8</td><td>5</td><td>5</td></tr>
+        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA31FE51">TPN-Adult-3</a><span class="pn-sub">低蛋白</span></td><td>22%</td><td>3%</td><td>868</td><td>40</td><td>0</td><td>35<br><span class="pn-sub">0–40</span></td><td>5</td><td>0</td><td>0</td></tr>
+        <tr><td class="pn-n"><a href="../tools/drug-database.html#code=TA41FE52">TPN-Adult-4</a><span class="pn-sub">BCAA</span></td><td>16%</td><td>4%<br><span class="pn-sub">BCAA rich</span></td><td>704</td><td>40</td><td>30</td><td>40<br><span class="pn-sub">18–58</span></td><td>8</td><td>8</td><td>5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    單位：葡萄糖／胺基酸 <b>%（w/v）</b>、熱量 <b>kcal/L</b>、Na／K／Cl／Ca／Mg <b>mEq/L</b>、
+    <b>P 是 mmol/L</b>（跟其他電解質不同單位，別看錯）。Cl 下方的小字是<b>系統給的可調範圍</b>。<br>
+    <b>濃度是台大 TPN 系統的預設值，逐格照抄；熱量是我換算的</b>
+    （葡萄糖 3.4、胺基酸 4 kcal/g），對應系統裡那欄「總熱量（不含 fat）」——
+    <b>脂肪要另外開 Smoflipid，這四種配方裡都沒有</b>。<br>
+    四種配方都預設 <b>multivitamins 4 mL</b>（就是 Lyo-Povigent 一支），
+    <b>ZnSO4 與 Addaven 預設是 0，要自己填</b>——不填就沒有微量元素。
+    ZnSO4 在系統裡標<b>自費</b>。<br>
+    給藥途徑預設 <b>cIF(CVC)</b>、輸注時間預設 <b>1440 分鐘</b>（24 小時連續）。
+    <b>藥局有調劑時間</b>，非上班時段開立時系統會把最小開始日推到下一個調劑日。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台大系統的建議量與 ESPEN 不完全一樣</div>
+    台大 TPN 系統畫面上列的「一般建議量／day」：<b>葡萄糖 5–6 g/kg</b>、
+    <b>胺基酸 0.8–1.2 g/kg</b>、Na 1–2 mEq/kg、K 1–2 mEq/kg、Cl as needed、
+    <b>Ca 10–15 mEq</b>、<b>P 20–40 mmol</b>、<b>Mg 8–20 mEq</b>（後三者是每日總量，不是每公斤），
+    <b>goal GIR 4–5 mg/kg/min</b>。<br>
+    <b>兩處與本頁其他段落不同，並列不合併：</b><br>
+    ① <b>胺基酸</b>台大寫 0.8–1.2 g/kg，<b>ESPEN 2023 R22 是 1.3 g/kg/d</b>——台大偏低。<br>
+    ② <b>GIR</b> 台大的目標 4–5，<b>ESPEN R23 的上限是 ≤5</b>——方向一致，台大把它當目標而非上限。<br>
+    <span class="gr w">實務</span> 以 65.5 kg 開 1500 mL 為例，TPN-Adult-1 只給到
+    葡萄糖 3.4 g/kg、<b>GIR 2.4</b>、胺基酸 0.92 g/kg——<b>都低於系統自己的建議區間</b>。
+    這四種是「標準起始配方」不是「目標配方」，要達標得靠加大體積或改用 modified 版。
   </div>
 
   <div class="dirhead"><span class="dh-n">逐支的重點</span><span class="dh-e">What each bag is for</span></div>
