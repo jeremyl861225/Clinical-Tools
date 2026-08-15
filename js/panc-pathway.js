@@ -149,7 +149,27 @@
         '<b>SBRT 或低分次放療</b>：目前無標準治療處方；<b>3 分次（總劑量 30～45 Gy）</b>或 <b>5 分次（25～50 Gy）</b>，每日一次；' +
         '另有<b>劑量升階／消融性選項：67.5 Gy／15 分次</b>或 <b>75 Gy／25 分次</b>。',
         '<b>頁碼落差提醒</b>：PANC-D（1 of 11）摘要頁之 5 分次寫 25–45 Gy 且未列消融性劑量；本頁採用較詳細的 <b>4 of 11</b>。',
-        '<b>標的體積</b>：原發腫瘤＋臨床陽性淋巴結。選擇性淋巴結照射（optional）— 胰頭病灶：胰十二指腸、胰上、腹腔淋巴結、肝門淋巴結與整段十二指腸環；胰體／尾病灶：胰十二指腸、肝門、外側胰上、脾門淋巴結。'
+        '<b>標的體積（依 PANC-D 4 of 11，NRG 2025 atlas）</b>：' +
+        '<b>高劑量 CTV／GTV</b> — 原發腫瘤＋臨床陽性淋巴結＋鄰近血管。' +
+        '<b>低劑量 CTV</b> — 原發腫瘤之微觀延伸 <b>0.5–1.5 cm</b>、臨床陽性淋巴結之微觀延伸 <b>0.5–1.5 cm</b>。' +
+        '<b>PTV</b> — 加 <b>0.3–2 cm</b> 以涵蓋腫瘤／呼吸移動與擺位誤差。',
+        '<b>選擇性淋巴結照射（optional）</b>：' +
+        '<b>胰頭病灶</b> — 胰十二指腸、胰上、腹腔淋巴結、肝門淋巴結、<b>整段十二指腸環</b>、' +
+        '<b>腸繫膜上動脈叢與肝總動脈叢</b>；' +
+        '<b>胰體／尾病灶</b> — 胰十二指腸、肝門、外側胰上、脾門淋巴結、<b>腹腔淋巴結</b>。' +
+        '（<b>PANC-D 1 of 11 的摘要頁漏列了粗體的幾項</b>，本頁採 4 of 11。）',
+        '<b>正常組織限量（PANC-D 10 of 11）</b>：脊髓最大劑量 &lt;45–50 Gy；胃／十二指腸／腸道最大劑量 &lt;54–60 Gy；' +
+        '肝臟平均劑量 &lt;30 Gy（根治性）或 ≤25 Gy（術後輔助）；腎臟 V18 &lt;30%。'
+      ]);
+    } else if (which === 'pall') {
+      body += rxLine('緩解性放療 Palliative RT', 'PANC-D（9–10 of 11）', [
+        '<b>適應症（optional）</b>：① <b>局部緩解</b> —— <b>阻塞、疼痛或出血</b>；' +
+        '② <b>年長者及／或因共病而非根治性治療候選人</b>；③ 由臨床醫師評估之其他緩解情境。',
+        '<b>標的體積</b>：<b>依臨床判斷</b>（based on clinical judgement）—— 指引未給固定範圍。',
+        '<b>與 PANC-C 的關係</b>：PANC-C 只寫「若尚未做過，可考慮緩解性化放療」；' +
+        '<b>單純的緩解性放療（不合併化療）在 PANC-D 9–10 of 11 才有完整適應症</b>。',
+        '常與其他緩解手段併用：<b>腹腔神經叢阻斷（celiac plexus neurolysis）</b>控制疼痛、' +
+        '<b>膽道或十二指腸支架</b>解除阻塞、胰酵素補充改善吸收不良。'
       ]);
     } else { // post-op
       body += rxLine('術後 Postoperative', 'PANC-D', [
@@ -170,7 +190,7 @@
     '治療目標應於開始前與病人討論，並<b>強烈鼓勵參加臨床試驗</b>；接受化療者須密切追蹤。';
 
   /* 轉移性／局部晚期之全身治療選單（PANC-E 1 of 4） */
-  function systemicPanel(ps) {
+  function systemicPanel(ps, where) {
     var h = '<div class="rec-detail rx-panel">' +
       '<div class="rx-panel-h">全身性治療處方（Metastatic 段落，局部晚期亦援用）<span class="rx-panel-src">PANC-E</span></div>' +
       '<div class="rx-def"><b>本指引之處方一律並列，未指定「首選」單一處方；' +
@@ -202,19 +222,39 @@
       ]);
     }
 
-    h += rxLine('二線 Second-line', '先前未用過 gemcitabine 者，二線可用 gemcitabine', [
+    h += rxLine('二線 Second-line', (where === 'la'
+      ? 'PANC-8 之體能不佳列為無條件三選一；以下二線清單取自 PANC-9'
+      : '先前未用過 gemcitabine 者，二線可用 gemcitabine'), [
       '<span class="drug">Capecitabine</span>',
       '<span class="rx">Fluoropyrimidine + oxaliplatin</span>（<span class="drug">capecitabine</span> 或 <span class="drug">5-FU</span> + <span class="drug">oxaliplatin</span>）',
       '<span class="rx">Nanoliposomal irinotecan + 5-FU/LV</span>　<b>（gemcitabine 失敗後）</b>',
       '<span class="rx">Clinical trial</span>。'
     ]);
 
-    h += '<div class="rx-warn"><b>⚠ 本指引未收錄 <span class="drug">olaparib</span>／PARP 抑制劑之 gBRCA 維持治療</b>' +
-      '（POLO trial，Golan T et al. NEJM 2019）。全文亦無 olaparib／PARP／BRCA／germline 之記載；' +
-      'PANC-E 中唯一與遺傳性癌症相關之內容為 <span class="rx">gemcitabine + cisplatin</span>' +
-      '「especially for possible hereditary cancers」。此處保留提示僅為臨床完整性，' +
-      '<b>屬本院指引範圍以外之選項</b>，使用前請依院內流程確認。</div>';
+    h += rxLine('毒性與減量 Toxicity &amp; dose modification', 'PANC-E：接受化療者須密切追蹤', [
+      '<b><span class="rx">FOLFIRINOX</span></b>：最常見的是<b>周邊神經病變、腹瀉、嗜中性球低下</b>。' +
+      '常用的降階順序是<b>先省略 bolus 5-FU</b>、再<b>下修 irinotecan 或 oxaliplatin</b>' +
+      '（即所謂 modified FOLFIRINOX），最後才考慮改為 gemcitabine 為基礎之處方。',
+      '<b><span class="rx">Gemcitabine + nab-paclitaxel</span></b>：最常見的是<b>血球低下與神經病變</b>。' +
+      '常用做法是<b>改為 3 週給 2 次或每 3 週一次</b>，再不行則改<b>單方 gemcitabine</b>。',
+      '<b>降階不等於放棄</b>：只有在體能狀態實際轉差（而非單次檢驗異常）時，才走「最佳支持治療」那一條。' +
+      '<b>以上為腫瘤內科實務作法，PANC-E 只寫「接受化療者須密切追蹤」，未逐條規範減量方式。</b>'
+    ]);
 
+    h += '<div class="rx-warn"><b>⚠ 本指引未收錄之選項（列出僅為臨床完整性，均屬本院指引範圍以外）</b><br>' +
+      '<b>① <span class="drug">olaparib</span>／PARP 抑制劑之 gBRCA 維持治療</b>（POLO trial，Golan T et al. NEJM 2019）：' +
+      '指引全文無 olaparib／PARP／BRCA／germline 之記載；PANC-E 中唯一與遺傳性癌症相關之內容為 ' +
+      '<span class="rx">gemcitabine + cisplatin</span>「especially for possible hereditary cancers」。' +
+      '<b>台灣健保 9.85 之四類適應症亦無胰臟癌，POLO 式用法不給付。</b><br>' +
+      '<b>② <span class="drug">daraxonrasib</span>（pan-RAS(ON) 抑制劑）</b>：' +
+      'RASolute 302 第三期試驗（O\'Reilly EM et al. NEJM 2026;395:325-337）收<b>先前治療過的轉移性胰臟腺癌</b>，' +
+      '<b>中位整體存活 13.2 vs 6.6 個月（HR 0.40）、中位無惡化存活 7.3 vs 3.5 個月（HR 0.45）</b>，' +
+      '相對於研究者選擇之化療。<b>需 KRAS G12 基因型</b>（試驗中 91.8% 為 RAS G12 突變）。' +
+      '<b>台灣之可及性與給付須先確認。</b><br>' +
+      '<b>③ 泛癌別標記</b>：<span class="drug">larotrectinib</span>（NTRK 融合）在台灣<b>有</b>健保條款（9.95），' +
+      '但胰臟癌限「至少一次全身性治療失敗後又惡化」；<b>MSI-H／dMMR 之 pembrolizumab 在台灣不涵蓋胰臟癌</b>。</div>';
+
+    h += pancNhiPanel();
     h += '</div>';
     return h;
   }
@@ -237,6 +277,53 @@
       '<div class="rx-def"><b>註 r</b>：救援治療<b>最適合保有良好體能狀態者</b>。</div>' +
       rxLine('救援治療 Salvage', '', items) +
       '</div>';
+  }
+
+  /* 健保給付（第 9 節現行條文，查詢日 2026-08-16）。
+     胰臟癌這一頁的瓶頸多半不是「該不該給」，而是「開不開得出來」。 */
+  function pancNhiPanel() {
+    return '<details class="rx-more"><summary>健保給付與可及性（查詢日 2026-08-16）▸</summary><div class="rx-note">' +
+      '<ul class="rx-items">' +
+      '<li><b><span class="drug">gemcitabine</span>（9.4）</b>：胰臟癌明列於適應症，<b>不分線別與期別</b>、無事前審查、無療程上限。' +
+      '（單一品項 Gemmis 另限「晚期或無法手術切除」。）</li>' +
+      '<li><b><span class="drug">nab-paclitaxel</span>（Abraxane，9.5.2）</b>：條文只有一句 ——' +
+      '「<b>限併用 gemcitabine，做為轉移性胰腺癌患者之第一線治療</b>」。' +
+      '也就是三個條件同時成立：<b>轉移性、第一線、必須與 gemcitabine 併用</b>。' +
+      '⚠ <b>「局部晚期無法切除」不在文字範圍內</b>；一般 paclitaxel 注射劑（9.5.1）完全沒有胰臟癌適應症，不可互相援引。</li>' +
+      '<li><b><span class="drug">liposomal irinotecan</span>（Onivyde，9.12.2）</b>：<b>兩條並存</b> ——' +
+      '① 與 5-FU／leucovorin 併用於<b>gemcitabine 治療後復發或惡化之轉移性胰腺癌</b>（107/8/1）；' +
+      '② <b>NALIRIFOX（與 oxaliplatin、5-FU、leucovorin 併用）作為轉移性胰腺癌第一線，已於 2025-12-01 納入給付</b>（114/12/1 新增）。' +
+      '兩條<b>均須事前審查</b>，且均限「<b>轉移性</b>」。</li>' +
+      '<li><b><span class="drug">oxaliplatin</span>（9.10 第 3 點）</b>：' +
+      '「與 5-FU、leucovorin 及 irinotecan 併用（<b>FOLFIRINOX</b>），作為<b>轉移性胰臟癌之第一線</b>治療」。' +
+      '⚠ <b>一般劑型 irinotecan 自己的條文（9.12.1）只寫轉移性大腸直腸癌</b>，' +
+      'FOLFIRINOX 中 irinotecan 的核付依據落在 oxaliplatin 那一條，' +
+      '實務上是否會被以適應症外核刪<b>無法從條文確認</b>，開單前建議先與審查窗口確認。</li>' +
+      '<li><b><span class="drug">TS-1</span>（9.46 第 1 點）</b>：' +
+      '「治療<b>局部晚期無法手術切除</b>或<b>轉移性</b>胰臟癌病人」—— <b>同時涵蓋兩種情境</b>，未限線別、不需事前審查。' +
+      '⚠ 條文<b>未涵蓋術後輔助</b>（JASPAC-01 式用法），輔助情境是否適格無法從條文確認。</li>' +
+      '<li><b><span class="drug">5-FU</span>／<span class="drug">leucovorin</span></b>：無個別給付規定條號，' +
+      '依藥證適應症申報；但仍受其所屬處方（9.10、9.12.2）之條文連帶約束。</li>' +
+      '<li><b>不給付於胰臟癌者</b>：' +
+      '<span class="drug">capecitabine</span>（9.17 全文<b>沒有胰臟癌</b> —— 所以 <b>GemCap 與 ESPAC-4 式的術後輔助 gemcitabine + capecitabine，' +
+      'capecitabine 那一半沒有給付依據</b>）；' +
+      '<span class="drug">erlotinib</span>（9.29 只有非小細胞肺癌）；' +
+      '<span class="drug">olaparib</span>（9.85 四類適應症<b>皆無胰臟癌</b> —— <b>POLO 式的 gBRCA 維持治療不給付</b>）；' +
+      '<span class="drug">pembrolizumab</span>（9.69 <b>無胰臟癌、也無泛癌別 MSI-H 條款</b>；' +
+      '台灣的 MSI-H 只在大腸直腸癌與子宮內膜癌各自成條）；' +
+      '<span class="drug">entrectinib</span>（9.93 只給付 ROS-1 陽性非小細胞肺癌）。</li>' +
+      '<li><b><span class="drug">larotrectinib</span>（9.95）是台灣少數的泛癌別條款</b>：' +
+      '需 <b>NTRK 基因融合</b>、為轉移性或切除將造成嚴重病症、且無合適替代治療；' +
+      '胰臟癌另限「<b>先前至少一次全身性治療失敗後又惡化</b>」，<b>不能第一線用</b>。' +
+      '事前審查每次 12 週，初次申請須檢附 NTRK 1/2/3 融合檢測報告並符合通則十二。' +
+      '⚠ 同為 NTRK 抑制劑的 entrectinib <b>不能</b>用於此條。</li>' +
+      '</ul>' +
+      '<div class="rx-warn"><b>一個反覆出現的分界：「轉移性」vs「局部晚期無法切除」。</b>' +
+      'nab-paclitaxel（9.5.2）與 Onivyde（9.12.2）兩條都寫「轉移性」，' +
+      '而 TS-1（9.46）與 Gemmis（9.4 第 2 點）明文包含「局部晚期無法手術切除」。' +
+      '同一個局部晚期病人，能開的藥因此不同 —— 這是本頁最常卡住的地方。<br>' +
+      '<b>給付條文會變，開單前請以健保署當期公告為準</b>；本表查詢日為 2026-08-16。</div>' +
+      '</div></details>';
   }
 
   /* 輔助治療選單（PANC-6 ＋ PANC-E 2 of 4） */
@@ -267,10 +354,18 @@
       'PANC-6 與 PANC-E 皆為<b>並列選單</b>；<span class="rx">FOLFIRINOX</span> 僅為 PANC-E 清單之一項' +
       '（且全文使用 <b>FOLFIRINOX</b>，未出現 <b>mFOLFIRINOX</b> 字樣）。PRODIGE 24（Conroy 2018）雖列於 PANC-E 參考文獻（#16），' +
       '但流程圖未據以指定首選處方。</div>' +
+      '<div class="rx-def"><b>〔指引外之療效比較，供選藥參考〕</b>指引把選項並列而不排序，但臨床上還是要選一個。' +
+      '<b>PRODIGE 24／CCTG PA6</b> 之 5 年結果（Conroy T et al. JAMA Oncol 2022;8:1571-1578，493 人，中位追蹤 69.7 個月）：' +
+      '<b>modified FOLFIRINOX vs gemcitabine</b> —— 中位整體存活 <b>53.5 vs 35.5 個月</b>（HR 0.68）、' +
+      '<b>5 年整體存活 43.2% vs 31.4%</b>；中位無病存活 21.4 vs 12.8 個月（HR 0.66）。' +
+      '<b>療程為 24 週（6 個月）。</b><br>' +
+      '<b>體能不佳或無法耐受三合一者</b>：gemcitabine ± capecitabine（ESPAC-4）或 <span class="drug">S-1</span>。' +
+      '⚠ <b>台灣健保之 capecitabine 條文（9.17）完全沒有胰臟癌</b>，GemCap 的 capecitabine 那一半沒有給付依據（見下方給付區塊）。</div>' +
       '<div class="rx-def"><b>時機（PANC-6 註 k）</b>：<b>已接受新輔助化放療或化療者，術後為追加化療之候選人</b>；' +
       '輔助治療應給予<b>未曾接受新輔助化療</b>且<b>已自手術充分恢復</b>者，並於<b>術後 4–8 週內開始</b>。' +
       '若全身性化療先於化放療，<b>每一治療模式結束後應以 CT 重新分期</b>。</div>' +
       rtHtml('post') +
+      pancNhiPanel() +
       '</div>';
   }
 
@@ -437,7 +532,7 @@
       opt('ext', 'res', '可切除 Resectable', '無轉移；符合 PANC-B 可切除準則（PANC-3）') +
       opt('ext', 'bord', '臨界可切除 Borderline resectable', '無轉移（PANC-4／PANC-5）') +
       opt('ext', 'la', '局部晚期不可切除 Locally advanced unresectable', '無遠處轉移（PANC-7／PANC-8）') +
-      opt('ext', 'meta', '轉移性 Metastatic disease', '影像或理學檢查發現轉移（PANC-1 → PANC-9）') +
+      opt('ext', 'meta', '轉移性 Metastatic disease', '影像或理學檢查發現轉移（PANC-1 → PANC-9；見下方註）') +
       opt('ext', 'rec', '切除後復發 Recurrence after resection', '（PANC-10）') +
       opt('ext', 'cyst', '囊性腫瘤 IPMN／MCN（非腺癌）', '台大指引未涵蓋 → 依 Kyoto 2024／European 2018／ACG 2018'),
       plainList('初始檢查 WORK UP', [
@@ -454,6 +549,22 @@
         cb('有黃疸＋膽管炎或發燒', '<b>暫時性膽道引流＋抗生素覆蓋</b> → 再測 CA 19-9、CEA'),
         cb('有黃疸、無膽管炎與發燒', '直接測術前 CA 19-9、CEA → 判定可切除性')
       ]) +
+      '<div class="crit crit-hr" style="margin-top:9px"><div class="crit-h">分子檢測　<span class="crit-zh">本院指引未載，2026 實務</span></div>' +
+      '<ul><li><b>不論家族史，所有胰臟腺癌病人都應做胚系（germline）基因套組</b>（BRCA1／BRCA2／PALB2／ATM／CDKN2A／TP53／MLH1）。' +
+      '理由是<b>沒有家族史的病人帶有致病性胚系變異的比例仍有 5.2%</b>（Hu C et al. JAMA 2018;319:2401-2409，3,030 例）—— ' +
+      '靠家族史篩選會漏掉大部分帶因者。BRCA2（勝算比 6.2）與 ATM（5.7）是最常見的兩個。</li>' +
+      '<li><b>轉移性者再加體細胞（somatic）檢測</b>：<b>KRAS 基因型</b>（決定能不能用 pan-RAS 抑制劑）、' +
+      '<b>MSI-H／dMMR</b>、<b>NTRK 融合</b>（健保 9.95 之泛癌別條款唯一開給 larotrectinib）。</li>' +
+      '<li>結果會影響三件事：<b>白金類化療的選擇</b>（指引 PANC-E 本身就寫 gemcitabine + cisplatin「especially for possible hereditary cancers」）、' +
+      '<b>維持治療的資格</b>（POLO 式 olaparib，<b>台灣健保不給付</b>）、以及<b>一等親的連鎖篩檢</b>。</li>' +
+      '<li><b>指引全文查無 BRCA／germline／PARP／MSI／NTRK／KRAS 之記載</b>；此段為指引外之實務補充。</li></ul></div>' +
+      '<div class="note"><b>兩個看指引時會被絆到的地方</b>：<br>' +
+      '① <b>PANC-1 的轉移性分支標註為「See Metastatic Disease (PANC-10)」，但 PANC-10 其實是「切除後復發」</b>；' +
+      '轉移性疾病的治療頁是 <b>PANC-9</b>。本流程依實際頁面導向 PANC-9，這是指引的交叉引用誤植，值得回報癌委會。<br>' +
+      '② 下方的可切除性判定表只以<b>動脈包覆角度與靜脈是否阻塞</b>分類，' +
+      '<b>未涵蓋現代 CT 報告上很常見的「SMV／PV 接觸 &gt;180° 但未阻塞」</b>，也<b>未納入「生物學上的臨界可切除」</b>' +
+      '（CA 19-9 顯著升高、疑似區域淋巴結）—— 但後者在 PANC-A #6（分期腹腔鏡）與 PANC-D 8 of 11（新輔助化放療適應症）' +
+      '確實會改變處置，判讀時不要只看血管角度。</div>' +
       resectCriteriaHtml() + stagingPrinciplesHtml());
 
     /* ==========================================================
@@ -468,7 +579,13 @@
       opt('bstrat', 'planres', '計畫直接切除 Planned resection', 'PANC-5'),
       '<div class="note"><b>PANC-4 註 h</b>：<b>非試驗情境下，推薦特定新輔助處方之證據有限</b>，' +
       '各院對化療與化放療之使用做法不一。<b>切除後高度可能為切緣陽性者，不建議手術</b>。' +
-      '<b>註 i</b>：EUS 導引 FNA 優於 CT 導引 FNA（PANC-A #1、#5）。</div>' +
+      '<b>註 i</b>：EUS 導引 FNA 優於 CT 導引 FNA（PANC-A #1、#5）。<br>' +
+      '<b>〔指引外，2026 實證〕這兩個按鈕在臨床上並不等權</b>：臨界可切除已<b>以新輔助為主流路徑</b>。' +
+      '<b>PREOPANC-2</b>（Janssen QP et al. Lancet Oncol 2025;26:1346-1356，375 人）比較兩種新輔助方式，' +
+      '<b>FOLFIRINOX 與 gemcitabine 為基礎之化放療存活相當（中位整體存活 21.9 vs 21.3 個月，HR 0.88，p=0.32）</b> —— ' +
+      '也就是<b>兩種新輔助都可以接受</b>，但比較的對象已經不是「直接開刀」。' +
+      '選擇「計畫直接切除（PANC-5）」時，<b>應說明理由</b>（診斷尚未確立、膽道問題需先處理、無法承受化療等），' +
+      '而不是把它當成預設。</div>' +
       cbx('新輔助前準備（PANC-4 WORKUP）', '', [
         cb('', '切片或 FNA（PANC-A #1、#5）'),
         cb('', '若有膽道阻塞 → 置放<b>暫時性引流</b>'),
@@ -720,6 +837,17 @@
         '<li>每次追蹤內容：<b>病史與理學檢查（H&amp;P）以評估症狀</b>、<b>CA 19-9 與 CEA</b>、<b>CT scan</b>。</li>' +
         '<li><b>切除後復發</b> → 見「切除後復發（PANC-10）」— 可返回步驟 1 選擇「切除後復發」查詢處置。</li>' +
         '<li>支持治療需求（膽道阻塞、胃出口阻塞、腹痛、胰功能不全、血栓）依 PANC-C 處理。</li>' +
+        '<li><b>術後功能追蹤（指引未列，但每個胰十二指腸切除病人都會遇到）</b>：' +
+        '<b>新發生或惡化之糖尿病</b> → 定期驗 HbA1c；' +
+        '<b>胰外分泌功能不全</b>（脂肪便、體重下降、脂溶性維生素缺乏）→ <b>胰酵素補充</b>' +
+        '（PANC-C 只在緩解情境提到補充酵素，術後同樣需要）；<b>體重與營養評估</b>。' +
+        '<b>遠端胰切除併脾臟切除者</b> → 脾切除後之疫苗接種與<b>猛爆性感染（OPSI）衛教</b>' +
+        '（本頁的黏液性囊性腫瘤 MCN 建議即為遠端胰切除併脾切除）。</li>' +
+        '<li><b>CA 19-9 上升但影像陰性怎麼辦</b>：<b>不要據此就開始治療</b>。' +
+        '先確認<b>膽道阻塞或膽管炎</b>是否造成偽性升高（阻塞本身就會拉高 CA 19-9），' +
+        '再<b>縮短影像間隔重新評估</b>；仍找不到病灶時可依 PANC-A #3 考慮 PET-CT。' +
+        '<b>此段為實務作法，PANC-6 之追蹤欄未規範。</b></li>' +
+        '<li><b>年度追蹤沒有明訂的停止時間點</b>；何時降頻或停止，依個別病人餘命與意願討論後決定。</li>' +
         '</ul>';
     } else { // palliative
       h = '<div class="fu-label">追蹤與支持治療 Follow-up / Supportive care（PANC-C）</div><ul class="fu-list">' +
@@ -887,6 +1015,17 @@
           '<b>新輔助治療</b>（PANC-4 註 h）：<b>無標準處方</b>；PANC-E 明載「雖<b>證據不足以推薦特定新輔助處方</b>，' +
           '惟<b>多數新輔助處方納入放射治療，且此情境以化放療為首選</b>」。',
           '<b>治療後重複影像</b>：腹部（胰臟 protocol）、骨盆與胸部影像 → 再評估可切除性。',
+          '<span class="rx-h">再評估要看什麼、什麼時候看</span>',
+          '<b>時機</b>：完成一段充分療程之後，實務上約 <b>2–4 個月</b>。',
+          '<b>判讀依三件事，不是只看影像</b>：' +
+          '① <b>影像</b> —— 但要有心理準備：<b>局部縮小常不明顯，血管接觸也未必消退</b>，' +
+          '影像「看起來沒變」不等於治療無效；' +
+          '② <b>CA 19-9 的趨勢</b> —— 指引自己的參考文獻第 14 篇即為此主題' +
+          '（Tzeng CWD et al. HPB 2014;16:430-438，「serum CA 19-9 represents a marker of response to neoadjuvant therapy in ' +
+          'patients with borderline resectable pancreatic cancer」）；' +
+          '③ <b>體能狀態與症狀</b>。',
+          '<b>影像未進展而 CA 19-9 下降者，仍應進行手術探查</b> —— 這是臨界可切除最常被誤判的一格。' +
+          '<b>此段之時機與判讀原則為指引外之實務補充</b>，PANC-4 只寫「repeat imaging」。',
           '<b>全身性處方</b>可參考下方 PANC-E 選單（新輔助情境無專屬處方清單）。',
           '請於<b>下方步驟</b>選擇再評估結果。'
         ], 'PANC-4：Biopsy positive → Neoadjuvant therapy → Repeat: Abdominal（pancreas protocol）, pelvic, and chest imaging → Surgical resection／Unresectable at surgery／Disease progression precluding surgery。PANC-E（2 of 4）Neoadjuvant：insufficient evidence to recommend specific neoadjuvant regimens; most incorporate RT and chemoradiation is preferred in this setting。',
@@ -951,8 +1090,9 @@
         '<b>或</b> <b>fluoropyrimidine 為基礎之化療</b>（PANC-8 poor PS 列 <b>Fluoropyrimidine-based chemotherapy</b>）；',
         '<b>或</b> <b>最佳支持治療</b>（best supportive care，<b>含安寧療護</b>；註 g、s）。',
         '<b>體能狀態不佳者不進入鞏固性化放療</b>（PANC-8 圖示：poor PS 直接進入本列選項）。'
-      ], 'PANC-8：Locally advanced unresectable · Poor performance status → Gemcitabine or Fluoropyrimidine-based chemotherapy or Best supportive care。' + '｜' + chemoNote,
-        'palliative', systemicPanel('poor') + palliationHtml());
+      ], 'PANC-8：Locally advanced unresectable · Poor performance status → Gemcitabine or Fluoropyrimidine-based chemotherapy or Best supportive care。' +
+        '<b>注意 PANC-8 此列之 fluoropyrimidine 為無條件三選一</b>，不像 PANC-9 附有「先前已接受 gemcitabine 為基礎治療者」的條件。' + '｜' + chemoNote,
+        'palliative', systemicPanel('poor', 'la') + rtHtml('pall') + palliationHtml());
       return;
     }
 
@@ -981,8 +1121,8 @@
         '<b>或</b> 先前已接受 <b>gemcitabine 為基礎</b>治療者 → <b>fluoropyrimidine 為基礎之化療</b>；',
         '<b>或</b> <b>最佳支持治療</b>（best supportive care，<b>含安寧療護</b>；註 g、s）。',
         '<b>有黃疸</b> → <b>膽道引流（首選永久性支架）</b>（註 l）。'
-      ], 'PANC-9：Metastatic disease · Poor performance status → Gemcitabine or Fluoropyrimidine-based chemotherapy if previously treated with gemcitabine-based therapy or Best supportive care。' + '｜' + chemoNote,
-        'palliative', systemicPanel('poor') + palliationHtml());
+      ], 'PANC-9：Metastatic disease · Poor performance status → Gemcitabine or Fluoropyrimidine-based chemotherapy <b>if previously treated with gemcitabine-based therapy</b> or Best supportive care。' + '｜' + chemoNote,
+        'palliative', systemicPanel('poor', 'meta') + rtHtml('pall') + palliationHtml());
       return;
     }
 
@@ -994,9 +1134,19 @@
           '<span class="rx">Clinical trial</span>　<b>preferred</b>；',
           '<b>或</b> 先前未曾執行者 → <b>考慮化放療</b>（Consider chemoradiation，PANC-D）；',
           '<b>或</b> <b>替代之全身性化療</b>（Alternative systemic chemotherapy，PANC-E）；',
-          '<b>或</b> <b>最佳支持治療</b>（best supportive care，PANC-C）。'
-        ], 'PANC-10：Recurrence after resection → Local recurrence → Clinical trial（preferred）or Consider chemoradiation if not previously done or Alternative systemic chemotherapy or Best supportive care。' + '｜' + chemoNote,
-          'palliative', systemicPanel('good') + rtHtml('la') + palliationHtml());
+          '<b>或</b> <b>最佳支持治療</b>（best supportive care，PANC-C）。',
+          '<span class="rx-h">先確定這真的是復發</span>',
+          '<b>術後吻合處的影像判讀很難</b>：胰腸吻合處的<b>術後纖維化與狹窄</b>在 CT 上可以長得很像局部復發。' +
+          '本頁在囊性腫瘤分支已經標過同樣的陷阱（「監測中新出現之主胰管擴張須釐清是 MD-IPMN 進展，還是胰腸吻合處狹窄」），' +
+          '術後復發判讀同理。<b>必要時做切片或以連續影像確認變化趨勢</b>，不要只憑單張 CT 就啟動治療。' +
+          'CA 19-9 上升但影像陰性者，先排除膽道阻塞造成的偽性升高。',
+          '<span class="rx-h">指引沒有列、但常被問到的兩件事</span>',
+          '<b>再切除（re-resection）與局部復發之 SBRT</b>：<b>PANC-10 的選項清單裡都沒有</b>。' +
+          '若團隊考慮，屬指引範圍以外，應經多專科團隊個案討論並記錄理由；' +
+          '本頁的囊性腫瘤段落亦記載「<b>轉移或局部復發之切除：無研究可據，不建議</b>」（European 8.5，GRADE 2C）。'
+        ], 'PANC-10：Recurrence after resection → Local recurrence → Clinical trial（preferred）or Consider chemoradiation if not previously done or Alternative systemic chemotherapy or Best supportive care。' +
+          '影像鑑別與再切除／SBRT 之討論為指引外之實務補充。' + '｜' + chemoNote,
+          'palliative', systemicPanel('good') + rtHtml('la') + rtHtml('pall') + palliationHtml());
         return;
       }
       if (!s.rtime) { idleRec('請選擇步驟 3（距初次治療完成之時間）'); return; }

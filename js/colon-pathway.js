@@ -87,7 +87,10 @@
           .map(function (x) { return '<span class="hrf-b">' + x + '</span>'; }).join('') +
       '</div></div>';
     h += '<div class="note"><b>無禁忌症者應於術後 6 週內開始輔助化療。</b>' +
-      'Tis 依定義為 N0，故 Tis／N1、Tis／N2 不適用。</div>';
+      'Tis 依定義為 N0，故 Tis／N1、Tis／N2 不適用。<br>' +
+      '<b>⚠ 本格適用於「未接受過新輔助治療」者。</b>COL-3(1)(2) 的分層全部標示為 <b>PATHOLOGIC STAGE</b>，' +
+      '其高風險特徵與 IDEA 的 3 vs 6 個月結論都是在未經新輔助治療的族群推導出來的。' +
+      '接受過新輔助化療者其檢體為 <b>ypT／ypN</b>，<b>輔助治療決策無 COL-3 之直接依據，須經多專科團隊個案討論</b>。</div>';
     h += '</div>';
     return h;
   }
@@ -106,16 +109,21 @@
       opt('entry', 'polyp', '惡性息肉 Malignant polyp', '有柄或無柄息肉（腺瘤）內含侵襲癌（COL-1）') +
       opt('entry', 'resect', '結腸癌 · 非轉移', 'Colon cancer appropriate for resection（non-metastatic，COL-2）') +
       opt('entry', 'meta', '疑似或證實遠處轉移', 'Suspected or proven metastatic adenocarcinoma（any T, any N, M1，COL-4）') +
-      opt('entry', 'recur', '復發 Recurrence', '治療後追蹤發現復發（血清 CEA 升高或已證實之異時性轉移，COL-9）'));
+      opt('entry', 'recur', '復發 Recurrence', '治療後追蹤發現復發（血清 CEA 升高或已證實之異時性轉移，COL-9）'),
+      '<div class="note"><b>小腸與闌尾腺癌也適用本頁的全身性化療</b>（COL-1 註 a 原文：' +
+      '「Small bowel and appendiceal adenocarcinoma may be treated with systemic chemotherapy according to the NTUH Guidelines for Colon Cancer」）—— ' +
+      '局部處置與分期不適用，但化療處方可依本指引辦理。</div>');
 
     /* ===================== A. 惡性息肉（COL-1）===================== */
     h += '<div id="cc_polyp" class="hidden">';
     h += conn('cc_c2p');
-    h += step('cc_s2p', '2', '病理檢視結果（COL-1 FINDINGS）',
-      opt('pfind', 'fav', '單一標本、完整切除、組織學特徵良好、切緣乾淨',
-        'Single specimen, completely removed, favorable histologic features and clear margins') +
-      opt('pfind', 'unfav', '標本破碎／切緣無法評估／組織學特徵不良／具高風險特徵',
-        'Fragmented · margin cannot be assessed · unfavorable histology · high-risk features'),
+    h += step('cc_s2p', '2', '病理檢視結果（COL-1／COL-1-1）',
+      opt('pfind', 'm_pos', '<b>切緣陽性</b>，或標本破碎／切緣無法評估',
+        'Margin positive · fragmented specimen · margin cannot be assessed → 追加手術') +
+      opt('pfind', 'fav', '<b>切緣陰性</b>，且四項條件<b>全部</b>良好',
+        '侵犯深度 Haggitt ≤3 或 SM ≤1mm；G1–G2；Ly(−) 且 V(−)；budding G1') +
+      opt('pfind', 'unfav', '<b>切緣陰性</b>，但四項中<b>任一</b>不良',
+        'Haggitt 4 或 SM >1mm；G3／G4；Ly 或 V(+)；budding G2/3 → 個案討論'),
       '<div class="crit-box">' +
         '<div class="crit-pair">' +
           '<div class="crit crit-fav">' +
@@ -317,7 +325,9 @@
     } else if (type === 'curative') {
       h = '<div class="fu-label">追蹤與監測 Surveillance（COL-3）</div><ul class="fu-list">' +
         '<li>病史＋理學檢查：<b>每 3–6 個月，共 2 年</b>；之後每 6 個月，總計 5 年。</li>' +
-        '<li><b>CEA</b>：每 3–6 個月，共 2 年；之後每 6 個月，總計 5 年（T2 以上病灶）。</li>' +
+        '<li><b>CEA</b>：每 3–6 個月，共 2 年；之後每 6 個月，總計 5 年。' +
+        '（<b>COL-3(2) 於第 III 期另加註「適用於 T2 以上病灶」</b>；COL-3(1) 的第 II 期追蹤欄<b>沒有</b>這個限定，' +
+        '本表兩期共用，請依實際期別判讀。）</li>' +
         '<li><b>胸部／腹部／骨盆 CT</b>：每 6–12 個月，共 5 年（復發高風險者；如腫瘤有神經或靜脈侵犯、或分化不良）。</li>' +
         '<li><b>大腸鏡</b>：1 年時；若有進階腺瘤 → 1 年後再做；若陰性 → 3 年後再做，之後每 5 年。' +
         '若因阻塞性病灶而術前未能完成大腸鏡 → <b>術後 3–6 個月做</b>。</li>' +
@@ -457,14 +467,63 @@
         '治療選擇依<b>醫師判斷</b>，或<b>最佳支持治療</b>（best supportive care）。'
       ]) +
 
-      '<details class="rx-more"><summary>用藥可近性與健保給付 Reimbursement ▸</summary><div class="rx-note">' +
+      '<details class="rx-more"><summary>用藥可近性與健保給付 Reimbursement —— <b>指引註記＋現行條文（查詢日 2026-08-16）</b> ▸</summary><div class="rx-note">' +
+        '<div class="rx-def"><b>先看懂兩件不同的事</b>：「主管機關核准與否」決定<b>能不能用</b>，' +
+        '「健保給付與否」決定<b>誰付錢</b>。指引 COL-8 註 e 的原文是' +
+        '「Bevacizumab continuation after progression is <b>FDA approved, but not by DOH</b>」—— ' +
+        '講的是<b>我國主管機關未核准該適應症</b>，不是健保不給付。本頁先前把兩者混為一談，已更正。</div>' +
         '<ul class="rx-items">' +
-        '<li><span class="drug">bevacizumab</span> 於疾病進展後續用經 <b>FDA 核准</b>，惟<b>健保未給付</b>。</li>' +
+        '<li><span class="drug">bevacizumab</span> 於疾病進展後續用：經 <b>美國 FDA 核准</b>，' +
+        '惟<b>我國主管機關未核准此適應症</b>（COL-8 註 e 原文之 DOH）。' +
+        '健保條文 9.37 亦無「惡化後可續用」之依據 —— 一線與二線兩處都要求續用時<b>提出影像學證據證實無惡化</b>，' +
+        '且二線條文限定病人須「<b>未曾接受過 bevacizumab</b>」。</li>' +
         '<li><span class="drug">ziv-aflibercept</span>、<span class="drug">ramucirumab</span>、' +
         '<span class="drug">nivolumab</span> ± <span class="drug">ipilimumab</span>、' +
         '<span class="drug">encorafenib</span> + <span class="drug">cetuximab</span>、' +
         '<span class="drug">pembrolizumab</span> 雖經 <b>TFDA 核准</b>，惟<b>均須自費</b>。</li>' +
-        '</ul></div></details>' +
+              '</ul>' +
+        '<div class="rx-panel-h" style="margin-top:10px">健保給付條件（第 9 節現行條文，查詢日 2026-08-16）<span class="rx-panel-src">健保署</span></div>' +
+        '<ul class="rx-items">' +
+        '<li><b>抗 EGFR（<span class="drug">cetuximab</span> 9.27／<span class="drug">panitumumab</span> 9.53）</b>：' +
+        '一線與 FOLFIRI 或 FOLFOX 併用，<b>限 RAS 原生型</b>，須檢附 <b>All-RAS 基因突變分析報告</b>並符合通則十二；' +
+        '<b>須事前審查，每次療程 18 週為限</b>，續用須以客觀證據證實無惡化。' +
+        '<b>cetuximab 與 panitumumab 只能擇一</b>；<b>不得與 bevacizumab 併用</b>；' +
+        '<b>R0 完全切除且查無轉移病灶者不得申請</b>（115/2/1 新增）。<br>' +
+        '<b>健保並未把抗 EGFR 綁在「左側原發」</b> —— 兩份條文全文都沒有原發部位的字樣（與國際指引的臨床偏好不同，勿混淆）。<br>' +
+        '<b>panitumumab 另有後線條文</b>（115/2/1 新增，目前唯一對新病人開放的後線抗 EGFR）：已用過含 5-FU、irinotecan 與 oxaliplatin 之二線以上治療失敗、RAS 原生型、' +
+        '且<b>先前未曾用過任何抗 EGFR</b>；每次 9 週、<b>總療程 18 週為上限</b>。</li>' +
+        '<li><b><span class="drug">bevacizumab</span>（9.37）</b>：一線與 FOLFIRI／FOLFOX／5-FU-LV 併用，' +
+        '<b>總療程 36 週為上限</b>，事前審查每次 18 週；<b>無 RAS／BRAF／MMR 前提，也無左右側限制</b>；不得與抗 EGFR 併用。' +
+        '二線另有一條（限先前用過抗 EGFR 無效、<b>未曾用過 bevacizumab</b>、RAS 無突變），需 All-RAS 報告，總療程 24 週為上限。</li>' +
+        '<li><b><span class="drug">encorafenib</span>（9.134）＋ cetuximab</b>：BRAF V600E 突變之<b>二線</b>治療；' +
+        '需曾用過 bevacizumab 併 FOLFIRI／FOLFOX／5-FU-LV、<b>未曾用過抗 EGFR</b>、ECOG ≤2、檢附 BRAF V600E 報告。' +
+        '事前審查每 12 週一次，<b>總療程 24 週為上限</b>；<b>用過本組合後即不得再申請抗 EGFR</b>。' +
+        '（9.27 之對應條文另要求 RAS 無突變，兩條須併看。）</li>' +
+        '<li><b><span class="drug">regorafenib</span>（9.51）</b>：需先前用過 fluoropyrimidine、oxaliplatin、irinotecan 與抗 VEGF；' +
+        '<b>K-ras 原生型者還要再用過抗 EGFR</b>。需 All-RAS 報告、事前審查每次 8 週。<b>不得與 trifluridine/tipiracil 併用。</b></li>' +
+        '<li><b><span class="drug">trifluridine/tipiracil</span>（Lonsurf，9.66）</b>：條件與 regorafenib 平行' +
+        '（先前用過三類化療＋抗 VEGF；RAS 原生型者再加抗 EGFR）。' +
+        '<b>不得與 regorafenib 或 fruquintinib 併用</b>。此條<b>無事前審查</b>，改採病歷留存備查、惡化即停藥。</li>' +
+        '<li><b><span class="drug">pembrolizumab</span>（9.69）</b>：大腸直腸癌<b>唯一入口是「無法切除或轉移性 MSI-H／dMMR 之第一線單用」</b>' +
+        '（114/6/1 新增）。ECOG ≤1；事前審查每次 12 週、每 12 週以 i-RECIST 評估；' +
+        '<b>連續兩次評估為 SD 者不得續用</b>；<b>給付時程自初次用藥起算 2 年</b>。' +
+        '每位病人每個適應症<b>限一種免疫檢查點抑制劑且不得互換</b>。</li>' +
+        '<li><b>不給付於大腸直腸癌者</b>：<span class="drug">nivolumab</span>（條文明文「限 pembrolizumab」）、' +
+        '<span class="drug">ipilimumab</span>、<span class="drug">atezolizumab</span>、' +
+        '<span class="drug">ramucirumab</span>（9.92 僅涵蓋肝細胞癌）；' +
+        '<b><span class="drug">ziv-aflibercept</span> 台灣健保完全未收載</b>（查無品項）。</li>' +
+        '<li><b>化療骨架</b>：<span class="drug">oxaliplatin</span>（9.10）與 5-FU／folinic acid 併用治療轉移性結腸直腸癌，' +
+        '<b>再加 irinotecan（即 FOLFOXIRI）則 oxaliplatin 不予給付</b>；輔助適應症條文寫的是「<b>第三期結腸癌</b>」，' +
+        '字面上<b>不含直腸癌、也不含高風險第二期</b>。' +
+        '<span class="drug">capecitabine</span>（9.17）輔助限第三期結腸癌、<b>以八個療程為限</b>。' +
+        '<span class="drug">UFUR</span>（9.11）之第 II／III 期結腸／直腸癌<b>術後輔助</b>使用期限<b>不得超過 2 年</b>' +
+        '（此 2 年上限<b>只適用於術後輔助</b>，不是轉移性用藥的上限）。' +
+        '<span class="drug">5-FU</span> 無個別給付規定條文。</li>' +
+        '</ul>' +
+        '<div class="rx-warn"><b>給付條文會變，開單前請以健保署當期公告為準。</b>' +
+        '本區塊之條文查詢日為 2026-08-16；「通則十二」（基因檢測須由何種認證實驗室執行、報告如何檢附）之逐字條文未能取得，' +
+        '實際檢附方式請與院內審查窗口確認。</div>' +
+        '</div></details>' +
 
       /* 上列為 COL-8 之「線別與適應症」；實際劑量與打法見 COL-11(1)(2)（結腸與直腸共用） */
       ((typeof crcMetastaticRegimens === 'function') ? crcMetastaticRegimens() : '') +
@@ -535,13 +594,35 @@
 
     if (!s.pfind) { idleRec(R, F, '請選擇步驟 2（病理檢視結果）'); return; }
 
-    // 標本破碎／切緣不明／不良組織學／高風險 → 進一步分期檢查 → 結腸切除
+    // 切緣陰性但任一項不良 → COL-1-1 明文為「個案討論考慮追加手術」，不是一律開刀
     if (s.pfind === 'unfav') {
-      result(R, F, 'rec-elective', '進一步檢查 → 結腸切除 + 區域淋巴結整塊切除', [
+      result(R, F, 'rec-nonop', '切緣陰性但有不良特徵 → <b>個案討論</b>考慮追加手術（不是一律開刀）', [
+        '<span class="rx-h">COL-1-1 的原文是「case by case」</span>',
+        '<b>切緣陰性</b>（腫瘤距切緣 &gt;1mm）但出現下列任一項 —— <b>侵犯深度 Haggitt level 4 或 SM &gt;1mm</b>、' +
+        '<b>G3／G4</b>、<b>Ly 或 V 陽性</b>、<b>budding G2/3</b> —— COL-1-1 寫的是' +
+        '「<b>個案討論考慮追加手術</b>（Consider additional surgery case by case）」，' +
+        '<b>而不是 COL-1 那句較強的「結腸切除併區域淋巴結整塊切除」</b>。同一份指引兩頁的強度不同，此處採較細緻的 COL-1-1。',
+        '<span class="rx-h">討論時要權衡的東西</span>',
+        '<b>一邊</b>：殘存淋巴結轉移的風險（不良特徵愈多風險愈高，尤其 SM &gt;1mm 併 Ly/V 陽性或 budding G2/3）。',
+        '<b>另一邊</b>：這位病人接受結腸切除的手術風險（年齡、共病、體能），以及病灶位置（低位直腸者代價更大）。',
+        '<b>決定追加手術者</b>：先完成分期檢查（CBC、BCS、CEA、胸部／腹部／骨盆 CT），' +
+        '再行<b>結腸切除併區域淋巴結整塊切除</b>；術後依病理分期決定輔助治療（COL-3）。',
+        '<b>決定不追加手術者</b>：進入下方的內視鏡追蹤排程，並明確記錄討論內容與病人意願。'
+      ], 'COL-1-1：Margin negative ＋（Ly 或 V(+)／Budding G2-3／G3-G4／Haggitt level 4／SM &gt;1mm）→ Consider additional surgery case by case。' +
+        'COL-1 對「unfavorable histologic features 或 High Risk Features」寫的是 Colectomy with en bloc removal of regional lymph nodes；兩頁強度不同。',
+        'scope', pT1FlowHtml());
+      return;
+    }
+
+    // 切緣陽性／標本破碎 → 追加手術（COL-1-1 之強建議）
+    if (s.pfind === 'm_pos') {
+      result(R, F, 'rec-urgent', '切緣陽性或無法評估 → 追加手術（COL-1-1 之強建議）', [
         '<b>檢查</b>：考慮骨盆 MRI（以區辨直腸癌與結腸癌，如低位乙狀結腸腫瘤；直腸位於 MRI 所定薦岬至恥骨聯合上緣虛擬連線之下）；CBC、BCS、CEA；胸部／腹部／骨盆 CT。',
-        '<b>處置</b>：<b>Colectomy with en bloc removal of regional lymph nodes</b>（結腸切除併區域淋巴結整塊切除）。',
+        '<b>處置</b>：<b>Colectomy with en bloc removal of regional lymph nodes</b>（結腸切除併區域淋巴結整塊切除）。' +
+        'COL-1-1 對<b>切緣陽性</b>只有這一個出口，沒有「個案討論」的餘地。',
+        '<b>切緣陰性的定義是腫瘤距切緣 &gt;1mm</b>（COL-1-1 註 a）；標本破碎或切緣無法評估者，視同無法確認陰性。',
         '術後依病理分期決定輔助治療（COL-3）— 可返回步驟 1 選擇「結腸癌 · 非轉移」查詢輔助治療。'
-      ], 'COL-1：Fragmented specimen／margin cannot be assessed／unfavorable histologic features／High Risk Features → 分期檢查後行結腸切除併區域淋巴結整塊切除 → COL-3。',
+      ], 'COL-1-1：Margin positive → Additional surgery。COL-1：Fragmented specimen／margin cannot be assessed → 分期檢查後行結腸切除併區域淋巴結整塊切除 → COL-3。',
         null, pT1FlowHtml());
       return;
     }
@@ -582,7 +663,14 @@
           '<b>初始治療（COL-2）</b>：系統性治療（Systemic therapy）；<b>或</b> 持續輸注 <span class="drug">5-FU</span> + 放射治療；' +
           '<b>或</b> <span class="drug">capecitabine</span> + 放射治療。',
           '<b>再評估</b>：Re-evaluation for conversion to resectable disease — 若轉換為可切除 → <b>手術 ± 系統性治療</b>。',
-          '無法轉換者 → 依進展性／轉移性疾病之系統性治療（COL-8，如下）。'
+          '無法轉換者 → 依進展性／轉移性疾病之系統性治療（COL-8，如下）。',
+          '<b>緩解性處置（COL-2 註 f）</b>：<b>無法控制之出血 → 放射治療</b>；<b>阻塞 → 支架置放</b>；以及支持性照護。' +
+          '這一條常被漏掉，但它正是這一支病人最可能需要的具體手段。',
+          '<span class="rx-h">放射治療在結腸癌的定位</span>　<span class="rx-sub">COL-14／COL-15</span>',
+          '<b>COL-14 明文</b>：放療「may be considered for initially unresectable／borderline resectable or medically inoperable ' +
+          '<b>non-metastatic T4 colon cancer</b>」—— 也就是這一格的病人。',
+          '<b>劑量（COL-15）</b>：每次 ≥1.8 Gy、每週 5 次；長程療程總量 <b>45–60 Gy</b>。' +
+          '<b>照野須依原發部位個別規劃</b>：COL-16 的標靶體積定義是直腸專屬的，<b>不可直接套用於結腸</b>。'
         ],
         systemicNote + '｜COL-2：Locally unresectable or medically inoperable → systemic therapy／5-FU 或 capecitabine + RT → re-evaluation for conversion → surgery ± systemic therapy → COL-8。',
         'palliative', systemicPanel());
@@ -599,7 +687,13 @@
       lead.push('先行轉流或支架者 → 後續再行<b>結腸切除併區域淋巴結整塊切除</b>。');
     } else { // t4b
       lead.push('<b>考慮新輔助化療</b>：<span class="rx">FOLFOX</span> 或 <span class="rx">CapeOx</span>（Consider neoadjuvant FOLFOX or CapeOx）。');
-      lead.push('之後行 <b>結腸切除併區域淋巴結整塊切除</b>。');
+      lead.push('<b>新輔助化療後必須先再評估，才決定是否進手術室</b>（COL-2 原圖未畫這一步，屬實務補充）：' +
+        '<b>① 降期或穩定</b> → 行結腸切除併區域淋巴結整塊切除；' +
+        '<b>② 未降期或進展</b> → <b>不要直接開刀</b>，改走 COL-2 的「局部無法切除」路徑' +
+        '（系統性治療；或持續輸注 <span class="drug">5-FU</span> ＋ 放療；或 <span class="drug">capecitabine</span> ＋ 放療），之後再評估轉換可能。');
+      lead.push('<b>⚠ 接受過新輔助化療者，術後檢體是 ypT／ypN</b>；' +
+        'COL-3 的輔助治療分層（第 II 期高風險特徵、IDEA 之 3 vs 6 個月）全部是在<b>未經新輔助治療</b>的 pTN 族群推導出來的，' +
+        '<b>ypTN 沒有 COL-3 的直接依據，須經多專科團隊個案討論</b>。');
     }
     lead.push('術後依<b>病理分期</b>決定輔助治療 → 請於下方步驟 3 點選 <b>T×N 格子</b>（COL-3）。');
     result(R, F, 'rec-elective',
@@ -704,11 +798,14 @@
     if (s.msite === 'periton') {
       result(R, F, 'rec-nonop', '同時性腹腔／腹膜轉移（COL-5）',
         [
-          '<b>無阻塞（Non-obstructing）</b> → 直接進行進展性／轉移性疾病之系統性治療（COL-8，如下）。',
-          '<b>阻塞或即將阻塞（Obstructed or imminent obstruction）</b> → <b>結腸切除</b>、<b>或</b>轉流造口（diverting ostomy）、' +
-          '<b>或</b>阻塞繞道（bypass of impending obstruction）、<b>或</b>支架置放（stenting）→ 之後系統性治療（COL-8）。',
-          '<b>無遠處轉移（No distant metastasis）</b> → <b>減積手術（Cytoreduction surgery）</b>：' +
-          '最佳減積手術（optimal cytoreduction surgery）± <b>HIPEC（腹腔溫熱化療，選擇性）</b> → 之後系統性治療（COL-8）。',
+          '<b>COL-5 原圖是三條平行分支，三者的處置完全不同 —— 先確認這位病人落在哪一條：</b>',
+          '<span class="rx-h">① 無阻塞 Non-obstructing</span>　<b>不開刀</b>，直接進行進展性／轉移性疾病之系統性治療（COL-8，如下）。',
+          '<span class="rx-h">② 阻塞或即將阻塞 Obstructed / imminent obstruction</span>　' +
+          '<b>先解決阻塞</b>：結腸切除、<b>或</b>轉流造口（diverting ostomy）、<b>或</b>阻塞繞道、<b>或</b>支架置放 —— ' +
+          '四者擇一，依阻塞位置、病人狀況與是否計畫後續全身治療決定；之後接系統性治療（COL-8）。',
+          '<span class="rx-h">③ 無遠處轉移 No distant metastasis</span>　' +
+          '<b>減積手術（cytoreduction surgery）</b>：最佳減積手術 ± <b>HIPEC（選擇性）</b>；之後接系統性治療（COL-8）。' +
+          '<b>注意這一條的前提是「腹膜之外沒有其他轉移」</b> —— 有肝或肺轉移者不走這條。',
           '<b>注意（COL-5 註 a）</b>：<b>積極的減積清創與／或腹腔化療，不建議於臨床試驗以外之情境施行</b>。',
           '<b>HIPEC（COL-5 註 b）</b>：與最佳減積手術併行之 HIPEC 屬<b>選擇性（optional）</b>程序，' +
           '依個別病人臨床狀況與外科醫師經驗決定。'
@@ -777,7 +874,14 @@
           '<b>每 2 個月</b>重新評估是否可轉換為可切除（若轉換為可切除是合理目標）。',
           '<b>轉換為可切除（Converted to resectable）</b> → 同時性或分期之結腸切除與轉移病灶切除 → ' +
           '輔助治療：系統性化療 ± 標靶治療，<b>或</b>考慮觀察或縮短化療療程（圍手術期治療至多 6 個月）→ 追蹤；復發見 COL-9。',
-          '<b>仍不可切除（Remain unresectable）</b> → 依進展性／轉移性疾病之系統性治療（COL-8，見下）。'
+          '<b>仍不可切除（Remain unresectable）</b> → 依進展性／轉移性疾病之系統性治療（COL-8，見下）。',
+          '<b>⚠ 第三種結果：治療中進展（Progression）</b> —— COL-7 的再評估只畫了「轉換成功」與「仍不可切除」兩條，' +
+          '但實務上第三種是<b>轉化治療期間腫瘤變大或出現新病灶</b>。此時應：' +
+          '① <b>換骨架</b>（oxaliplatin 骨架進展 → 改 irinotecan 骨架，反之亦然，依 COL-8 之線別）；' +
+          '② <b>重新評估「轉換為可切除」是否仍是合理目標</b> —— 進展本身通常代表腫瘤生物學不利，' +
+          '繼續以轉換為目標可能只是延後緩解治療；' +
+          '③ 出現阻塞、出血或穿孔等原發灶症狀 → 依 COL-2 註 f 給局部緩解處置。' +
+          '<b>此出口為 COL-7 原圖之外的實務補充。</b>'
         ]) +
         '<details class="rx-more"><summary>註記 Notes（標靶治療適用、FOLFOX + cetuximab）▸</summary><div class="rx-note"><ul class="rx-items">' +
           '<li><b>標靶治療（COL-7 註 e）</b>：僅適用於延續有良好新輔助反應者。</li>' +

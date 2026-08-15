@@ -26,6 +26,14 @@
   function r(n) { return '<span class="rx">' + n + '</span>'; }
 
   /* 指引於 COL-10 與 COL-11 兩處皆載之共同註記 */
+  var SRC_CONFLICT =
+    '<div class="rx-warn"><b>兩份院內文件對同一處方寫法不一致</b>（兩者檢視日期同為 2026/06/16，皆為現行文件）：' +
+    '本表依<b>診療指引 COL-10</b>；《大腸直腸癌治療藥物處方》版次 12 於下列三處與本表不同 —— ' +
+    '<b>Oxaliplatin-HDFL48</b>（COL-10：Q2W ×12 循環、D1 給藥；處方集：Q2W ×6 循環、D1+D15 給藥）、' +
+    '<b>輔助 XELOX 之 oxaliplatin 劑量</b>（COL-10：85–130 mg/m²；處方集：85 mg/m²）、' +
+    '<b>Modified LV5FU</b>（COL-10：LV D1 ＋ 5-FU 400 bolus ＋ 2400／46–48 小時；處方集：LV D1+D2 ＋ 5-FU 2000–2400／44–48 小時、<b>無 bolus</b>）。' +
+    '<b>開單前請確認採用哪一份。</b></div>';
+
   var DOSE_CAVEAT =
     '<div class="rx-def"><b>指引原註</b>：「以上處方劑量及打法僅供建議參考用，實際仍需視病人病情而定，' +
     '劑量及速率需由醫師評估後調整」。<b>溶液配製</b>：' + d('oxaliplatin') + ' 以 <b>D5W</b> 配製；' +
@@ -99,6 +107,7 @@
         '<div class="rx-warn"><b>⚠ 除非參與臨床試驗，' + d('bevacizumab') + '／' + d('irinotecan') +
         '／' + d('panitumumab') + '／' + d('cetuximab') + ' 不建議用於輔助化療</b>' +
         '（COL-10 註 2；COL-3 註 c 同旨）。</div>' +
+        SRC_CONFLICT +
         DOSE_CAVEAT +
       '</div></details>';
   }

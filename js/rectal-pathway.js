@@ -159,6 +159,14 @@
         '若因阻塞性病灶而術前未能完成大腸鏡 → <b>術後 3–6 個月做</b>。</li>' +
         '<li><b>直腸專屬：接受低前位切除（LAR）或經肛門切除者，考慮每 6 個月做 proctoscopy（直腸鏡），共 3–5 年</b>（COL-3）。</li>' +
         '<li><b>直腸癌不例行建議 PET-CT</b>（COL-3、COL-12(1) 註 e）。</li>' +
+        '<li><b>暫時性造口何時還納</b>：一般於<b>輔助治療完成、影像與吻合口確認無滲漏或狹窄之後</b>；' +
+        '還納前應以水溶性顯影劑攝影或內視鏡確認吻合口。<b>此為實務作法，台大指引未規範時機。</b></li>' +
+        '<li><b>低前位切除症候群（LARS）要主動問、不要等病人自己說</b>：頻便、急便、大便分次解不乾淨（clustering）、' +
+        '對氣體或稀便失禁 —— 這五項就是 <b>LARS 分數</b>（Emmertsen &amp; Laurberg, Ann Surg 2012）的核心題目，' +
+        '總分 0–42 分：<b>0–20 無 LARS、21–29 輕度、30–42 重度</b>。' +
+        '放療、腫瘤位置低於 5 cm、全直腸繫膜切除者分數較高。' +
+        '處置採階梯式：飲食與排便習慣調整 → 膨脹劑／止瀉藥 → 骨盆底復健與生物回饋 → 經肛門灌洗 → 少數需薦神經調節。' +
+        '<b>此段為指引外之補充</b>，台大指引未涵蓋。</li>' +
         '<li>復發 → 見復發與檢查（COL-9）。</li>' +
         '</ul>';
     } else if (type === 'ww') {
@@ -166,8 +174,13 @@
         '<li><b>僅適用於完全臨床反應（cCR）者</b>：肛門指診（DRE）、直腸 MRI 與直接內視鏡評估<b>三者皆無殘存病灶證據</b>。</li>' +
         '<li>應於<b>具經驗之多專科團隊中心</b>執行。</li>' +
         '<li><b>局部及／或遠處失敗風險相較標準手術切除是否升高，尚未被充分界定</b>；決策須與病人就其風險承受度充分討論。</li>' +
+        '<li><b>前 2 年是關鍵</b>：再生長 <b>94% 發生在 2 年內、99% 在 3 年內</b>（OPRA 5 年更新）。' +
+        '實務上前 2 年每 <b>1–3 個月</b>做肛門指診＋內視鏡、每 <b>6 個月</b>做直腸 MRI；' +
+        '<b>此頻率為文獻與實務作法，台大指引未逐條規範。</b></li>' +
         '<li>其餘追蹤項目同治癒性切除後（病史／理學、CEA、CT、大腸鏡），' +
         '並<b>每 6 個月 proctoscopy 共 3–5 年</b>（COL-3）。</li>' +
+        '<li><b>保留了直腸，仍可能有 LARS 樣症狀</b>（放療造成的直腸順應性下降）：頻便、急便、分次排空不全。' +
+        '追蹤時應主動詢問並給予階梯式處置。</li>' +
         '<li>再生長（regrowth）→ 補行經腹切除；復發 → COL-9。</li>' +
         '</ul>';
     } else if (type === 'resected_m1') {
@@ -422,8 +435,16 @@
       '<li><b>pMMR／MSS 者維持下方之標準流程。</b></li></ul></div>');
     h += connH('rc_c3b');
     h += step('rc_s3b', '3', '再分期結果（Restaging）→ 可否行經腹切除',
-      opt('rst1', 'rs_res', '<b>可行經腹切除</b> Transabdominal resection', '含 TME；達完全臨床反應（cCR）者可討論 watch &amp; wait（註 d）') +
-      opt('rst1', 'rs_no', '<b>手術禁忌</b> Resection contraindicated', '→ 系統性治療 Systemic therapy'));
+      opt('rst1', 'rs_ww', '<b>完全臨床反應（cCR）→ 選擇非手術處置</b>', 'Watch &amp; wait（註 d）；須 DRE、直腸 MRI 與內視鏡三者皆無殘存證據') +
+      opt('rst1', 'rs_res', '<b>經腹切除 ＋ TME</b>', '未達 cCR，或達 cCR 但病人／團隊選擇手術') +
+      opt('rst1', 'rs_no', '<b>手術禁忌</b> Resection contraindicated', '→ 系統性治療 Systemic therapy') +
+      opt('rst1', 'rs_pd', '<b>治療期間進展</b>', '局部進展或新出現遠處轉移 → 中止原計畫、重新分期'),
+      '<div class="note"><b>「立即 TME」與「watch &amp; wait」才是這一步真正的分岔</b>，指引把 watch &amp; wait 寫在註 d 裡：' +
+      '「a watch and wait, nonoperative management approach <b>may be considered in centers with experienced multidisciplinary teams</b>」。<br>' +
+      '<b>兩條路的無病存活相當</b>：OPRA 試驗中，再分期後直接接受 TME 者與進入 watch &amp; wait、之後因再生長才補做 TME 者，' +
+      '<b>5 年無病存活皆為 64%</b>（Verheij FS et al. J Clin Oncol 2024）—— ' +
+      '也就是說「先觀察、長回來再開」並沒有讓存活變差。<b>但再生長會發生：81 例再生長中 94% 發生在 2 年內、99% 在 3 年內</b>，' +
+      '所以前 2 年的監測密度是這條路成立的前提。</div>');
     h = h.replace('id="rc_s3b"', 'id="rc_s3b" class="hidden"');
     h += rec('rc_crmclear_rec', '建議處置 · CRM 乾淨之局部晚期直腸癌（COL-12(2)）');
     h += '<div class="flow-fu hidden" id="rc_crmclear_fu"></div>';
@@ -439,7 +460,9 @@
         'Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）→ Long-course chemo/RT 或 Short-course RT'),
       '<div class="note"><b>兩種順序怎麼選（指引列為並列選項，未給依據）</b>：' +
       '以<b>器官保留（watch &amp; wait）</b>為目標者，多優先選<b>先化放療、後化療（鞏固型）</b> —— ' +
-      'OPRA 隨機試驗顯示鞏固型之器官保留率較高、局部再生長較少，而無病存活與誘導型相當。' +
+      '<b>OPRA</b> 隨機第二期試驗（324 人）之 5 年結果：<b>免於全直腸繫膜切除之存活（TME-free survival）' +
+      '鞏固型 54% vs 誘導型 39%（P=0.012）</b>，而<b>5 年無病存活相當（69% vs 71%，P=0.68）</b>' +
+      '（Garcia-Aguilar J et al. J Clin Oncol 2022；5 年更新 Verheij FS et al. J Clin Oncol 2024）。' +
       '以<b>遠端微轉移風險</b>為主要顧慮者（如 cT4b、EMVI 陽性、側方淋巴結陽性）可考慮<b>誘導型</b>，' +
       '但須留意其後續化放療的完成率較低。<b>此為文獻依據，非台大指引條文。</b></div>' +
       '<div class="crit crit-hr" style="margin-top:9px"><div class="crit-h">先看 MMR／MSI 狀態　<span class="crit-zh">dMMR／MSI-H 的走法完全不同</span></div>' +
@@ -450,14 +473,30 @@
       '再決定是否走下方的 CCRT／TNT。</li>' +
       '<li>完全臨床反應（cCR）之判定同註 d：<b>肛門指診 ＋ 直腸 MRI ＋ 內視鏡</b>三者皆須符合。</li>' +
       '<li><b>pMMR／MSS 者維持下方之標準流程。</b></li></ul></div>' +
+      '<div class="crit crit-hr" style="margin-top:9px"><div class="crit-h">先處理原發灶症狀　<span class="crit-zh">阻塞、大量出血、劇烈裏急後重</span></div>' +
+      '<ul><li><b>次全阻塞或需輸血之出血</b>者，不要直接開始長療程化放療 —— ' +
+      '先做<b>轉流造口（diverting ostomy）</b>，或以<b>短程放療</b>爭取時間，再進入新輔助流程。' +
+      '長療程 CCRT 加 TNT 前後要 4–6 個月，中途發生完全阻塞是急診刀。</li>' +
+      '<li><b>造口位置應由造口治療師於術前定位並衛教</b> —— COL-12(1) 的檢查欄本來就列了這一項' +
+      '（Enterostomal therapist as indicated for preoperative marking of site, teaching）。</li>' +
+      '<li>支架置放在直腸中低段風險較高（疼痛、移位、裏急後重），一般不作為低位直腸癌的首選。</li>' +
+      '<li><b>此段為指引原圖之外的實務補充</b>：COL-12(1) 的症狀處置清單掛在 M1 分支下，非轉移但有症狀者在原圖中沒有入口。</li></ul></div>' +
       '<div class="note">COL-12(3) 對 <b>CRM 受侵犯／T4／局部無法切除或無法耐受手術</b>者，' +
       '<b>兩種順序皆為並列選項</b>，均屬全程新輔助治療（TNT）；' +
       '完成後再分期（best tumor response 6–12 週 after completion of RT）。' +
       '<b>FOLFOXIRI 於此情境不建議使用</b>（COL-12(3) 註 e）。</div>');
     h += connH('rc_c3c');
     h += step('rc_s3c', '3', '再分期結果（Restaging）→ 可否行經腹切除',
-      opt('rst2', 'rs_res', '<b>可行經腹切除</b> Transabdominal resection', '含 TME；達完全臨床反應（cCR）者可討論 watch &amp; wait（註 d）') +
-      opt('rst2', 'rs_no', '<b>手術禁忌</b> Resection contraindicated', '→ 系統性治療 Systemic therapy'));
+      opt('rst2', 'rs_ww', '<b>完全臨床反應（cCR）→ 選擇非手術處置</b>', 'Watch &amp; wait（註 d）；須 DRE、直腸 MRI 與內視鏡三者皆無殘存證據') +
+      opt('rst2', 'rs_res', '<b>經腹切除 ＋ TME</b>', '未達 cCR，或達 cCR 但病人／團隊選擇手術') +
+      opt('rst2', 'rs_no', '<b>手術禁忌</b> Resection contraindicated', '→ 系統性治療 Systemic therapy') +
+      opt('rst2', 'rs_pd', '<b>治療期間進展</b>', '局部進展或新出現遠處轉移 → 中止原計畫、重新分期'),
+      '<div class="note"><b>「立即 TME」與「watch &amp; wait」才是這一步真正的分岔</b>，指引把 watch &amp; wait 寫在註 d 裡：' +
+      '「a watch and wait, nonoperative management approach <b>may be considered in centers with experienced multidisciplinary teams</b>」。<br>' +
+      '<b>兩條路的無病存活相當</b>：OPRA 試驗中，再分期後直接接受 TME 者與進入 watch &amp; wait、之後因再生長才補做 TME 者，' +
+      '<b>5 年無病存活皆為 64%</b>（Verheij FS et al. J Clin Oncol 2024）—— ' +
+      '也就是說「先觀察、長回來再開」並沒有讓存活變差。<b>但再生長會發生：81 例再生長中 94% 發生在 2 年內、99% 在 3 年內</b>，' +
+      '所以前 2 年的監測密度是這條路成立的前提。</div>');
     h = h.replace('id="rc_s3c"', 'id="rc_s3c" class="hidden"');
     h += rec('rc_crminv_rec', '建議處置 · CRM 受侵犯／T4／局部不可切除（COL-12(3)）');
     h += '<div class="flow-fu hidden" id="rc_crminv_fu"></div>';
@@ -587,10 +626,20 @@
     // watch & wait 後局部再生長
     if (s.rpat === 'regrowth') {
       result(R, F, 'rec-elective', 'watch &amp; wait 後局部再生長 → 挽救性 TME（根治性手術）', [
-        '<b>局部再生長（local regrowth）</b> 多發生於<b>前 2 年</b>且位於<b>腸壁</b>——故 watch &amp; wait 須以<b>密集內視鏡 + 骨盆 MRI</b> 監測（IWWD）。',
-        '<b>大多數再生長可由 <u>挽救性全直腸繫膜切除（salvage TME）</u>根治</b>（IWWD，van der Valk 2018）。',
-        '<b>⚠ 諮商重點（非僅止於安撫）</b>：發生局部再生長者，其後<b>遠處轉移風險高於再分期即接受 TME 者</b>（3 年無遠轉存活 75% vs 87%；Fernandez 2025）。'
-      ], 'NCCN Rectal · organ preservation：cCR on watch & wait → local regrowth → salvage TME。IWWD（van der Valk, Lancet 2018）：再生長集中於前 2 年、腸壁，多可挽救；Fernandez（JCO 2025）：再生長者遠轉風險較高。', 'curative');
+        '<b>局部再生長多發生於前 2 年</b>：OPRA 試驗 81 例再生長中，<b>94% 發生在 2 年內、99% 在 3 年內</b>' +
+        '（Verheij FS et al. J Clin Oncol 2024）。再生長多位於<b>腸壁</b>，故 watch &amp; wait 的監測必須是' +
+        '<b>密集內視鏡 ＋ 骨盆 MRI</b>，且前 2 年最密。',
+        '<b>大多數再生長可由挽救性全直腸繫膜切除（salvage TME）根治。</b>',
+        '<b>諮商時可以講的一個數字</b>：OPRA 的 5 年資料顯示，' +
+        '<b>再分期後直接接受 TME 者與進入 watch &amp; wait、之後因再生長才補做 TME 者，無病存活相同（皆 64%）</b>' +
+        '（Verheij FS et al. J Clin Oncol 2024）。' +
+        '<b>先前本頁引用的「再生長者 3 年無遠轉存活 75% vs 87%」在 PubMed 無法定位到對應文獻，已移除。</b>',
+        '<b>維持 cCR 愈久，之後再生長的機率愈低</b>：國際 watch &amp; wait 資料庫（793 例）顯示，' +
+        '已維持 cCR <b>1 年</b>者，其後 2 年不再生長的機率為 <b>88.1%</b>；已維持 <b>3 年</b>者為 <b>97.3%</b>' +
+        '（Fernandez LM et al. Lancet Oncol 2021）。'
+      ], 'NCCN Rectal · organ preservation：cCR on watch &amp; wait → local regrowth → salvage TME。' +
+        'OPRA 5 年更新（Verheij FS et al. J Clin Oncol 2024;42:500-506）：再生長 94% 於 2 年內、99% 於 3 年內；兩組 DFS 皆 64%。' +
+        'IWWD（Fernandez LM et al. Lancet Oncol 2021;22:43-50）：持續 cCR 之條件機率。', 'curative');
       return;
     }
 
@@ -655,12 +704,27 @@
   function renderE12Rec() {
     var s = rcSt;
     if (s.entry !== 'e12') return;
-    result('rc_e12_rec', 'rc_e12_fu', 'rec-elective', 'cT1-2, N0 → 直接手術切除 Resection', [
+    result('rc_e12_rec', 'rc_e12_fu', 'rec-elective', 'cT1-2, N0 → 三個並列選項，先確認病灶高度與病人對造口的態度', [
+      '<span class="rx-h">① 經腹切除 ＋ TME（COL-12(1) 之標準路徑）</span>',
       '<b>Resection</b>：經腹切除併<b>全直腸繫膜切除（TME）</b>，以確保環周切緣（CRM）陰性。',
-      '<b>cT1-2, N0 之判定必須依骨盆 MRI（首選）或經直腸超音波</b>（COL-12(1) 註 f）— 分期不足會使需新輔助治療者被直接送上手術檯。',
-      '術後依<b>最終病理分期</b>決定：<b>Adjuvant CCRT for pT3-4 or pN1-2</b>（COL-12(1)、COL-14）；' +
-      '及 <b>Adjuvant chemotherapy</b>（COL-3）→ 請於下方步驟 2 點選 <b>T×N 格子</b>。'
-    ], 'COL-12(1)：T1-2, N0 → Resection · Adjuvant CCRT for pT3-4 or pN1-2 · Adjuvant chemotherapy（COL-3）。', null);
+      '<b>cT1-2, N0 之判定必須依骨盆 MRI（首選）或經直腸超音波</b>（COL-12(1) 註 f）—— 分期不足會使需新輔助治療者被直接送上手術檯。',
+      '<span class="rx-h">② 局部切除（transanal excision／TAMIS／ESD）</span>',
+      '<b>限 cT1、無不良組織學特徵</b>，且已以骨盆 MRI 或經直腸超音波確認。指引本身承認這條路存在 —— ' +
+      'COL-3 的追蹤欄寫「for patient status post LAR <b>or transanal excision</b>」，' +
+      'COL-12(1) 檢查欄亦寫經直腸超音波「consider for superficial lesions」。',
+      '<b>局部切除後病理不良者要補做根治性切除</b>：<b>黏膜下侵犯 &gt;1mm、G3–G4、淋巴血管侵犯陽性、切緣陽性</b> —— ' +
+      '任一項成立即應追加經腹切除＋TME。依英國 TEM 多中心前瞻資料（487 例），' +
+      '<b>pT1 與 pT2 病灶依不良病理及早轉為根治性手術是安全的</b>（Bach SP et al. Br J Surg 2009）。' +
+      '<b>此段為指引外之實務補充</b>：台大指引未逐條規範局部切除的適應症與補救條件。',
+      '<span class="rx-h">③ 低位病灶且以保肛為目標 → 考慮新輔助 CCRT／RT</span>',
+      '<b>COL-14 把「Anal preserving rectal cancer（保肛之直腸癌）」明列為新輔助 CCRT／RT 的適應症之一</b>。' +
+      '也就是說即使是 cT1-2N0，<b>為了保肛也可以先做化放療再手術</b> —— 對低位病灶而言這關係到病人要不要永久造口，應在術前就攤開來談。',
+      '<span class="rx-h">接下來</span>',
+      '走 ① 或 ② 者，術後依<b>最終病理分期</b>決定 <b>Adjuvant CCRT for pT3-4 or pN1-2</b>（COL-12(1)、COL-14）' +
+      '及 <b>Adjuvant chemotherapy</b>（COL-3）→ 請於下方步驟 2 點選 <b>T×N 格子</b>，並於步驟 3 回答切緣狀態。'
+    ], 'COL-12(1)：T1-2, N0 → Resection · Adjuvant CCRT for pT3-4 or pN1-2 · Adjuvant chemotherapy（COL-3）；COL-12(1) 註 f；' +
+      'COL-14（保肛之直腸癌為新輔助 CCRT/RT 適應症）；COL-3（經肛門切除後之 proctoscopy 追蹤）。' +
+      '局部切除之適應症與補救條件為指引外之實務補充。', null);
   }
 
   /* ---------- A2. 術後輔助治療（COL-12(1)／COL-14／COL-3）---------- */
@@ -807,6 +871,43 @@
       return;
     }
 
+    if (s.rst1 === 'rs_ww') {
+      result(R, F, 'rec-elective', '完全臨床反應（cCR）→ 非手術處置 watch &amp; wait', [
+        '<span class="rx-h">cCR 的判定是三項全陰性</span>　<span class="rx-sub">COL-12(2) 註 d</span>',
+        '<b>肛門指診（DRE）、直腸 MRI、直接內視鏡評估，三者皆無殘存病灶證據</b>才算完全臨床反應。' +
+        '任一項有疑慮就不是 cCR，應走經腹切除。',
+        '<b>指引原文</b>：「a watch and wait, nonoperative management approach <b>may be considered in centers with experienced multidisciplinary teams</b>」' +
+        '—— 條件是<b>具經驗的多專科團隊中心</b>，不是任何地方都能做。',
+        '<b>指引亦明文</b>：<b>局部及／或遠處失敗的風險相較標準手術切除是否升高，尚未被充分界定</b>；' +
+        '決策必須與病人就其風險承受度充分討論並記錄。',
+        '<span class="rx-h">監測強度是這條路能不能成立的前提</span>',
+        '<b>前 2 年最密</b>：再生長 94% 發生在 2 年內、99% 在 3 年內（OPRA 5 年更新）。' +
+        '實務上前 2 年每 1–3 個月做肛門指診＋內視鏡、每 6 個月做直腸 MRI，' +
+        '並依 COL-3 每 6 個月 proctoscopy 共 3–5 年。<b>監測頻率為文獻與實務作法，指引未逐條規範。</b>',
+        '<b>再生長 → 補行挽救性 TME</b>；請回步驟 1 選「復發」分支之「watch &amp; wait 後局部再生長」取得後續處置。',
+        '<b>存活可以這樣講</b>：OPRA 5 年資料中，再分期後直接 TME 者與因再生長才補做 TME 者，<b>無病存活相同（皆 64%）</b>。'
+      ], 'COL-12(2) 註 d：watch and wait, nonoperative management approach may be considered in centers with experienced multidisciplinary teams；' +
+        '局部／遠處失敗風險是否升高尚未充分界定。監測頻率與 OPRA 數字為指引外之文獻補充。', 'ww');
+      return;
+    }
+
+    if (s.rst1 === 'rs_pd') {
+      result(R, F, 'rec-urgent', '新輔助／全程新輔助治療期間進展 → 中止原計畫、重新分期', [
+        '<span class="rx-h">先分清楚是局部進展還是出現遠處轉移</span>',
+        '<b>重新完成分期</b>：胸部／腹部／骨盆 CT、骨盆 MRI；必要時重新切片。',
+        '<b>① 出現遠處轉移</b> → 治療目標改變，請回步驟 1 依 <b>M1 可切除／不可切除</b>重新選擇分支。',
+        '<b>② 僅局部進展、仍為 M0</b> → 依 COL-12(3) 走<b>不可切除／無法耐受手術</b>的路線：' +
+        '未做過放療者補做化放療；已做過者換化療骨架（oxaliplatin 骨架進展 → 改 irinotecan 骨架，反之亦然，依 COL-8）；' +
+        '之後再評估是否轉為可切除。',
+        '<b>③ 有原發灶症狀（次全阻塞、需輸血之出血、劇烈裏急後重）</b> → ' +
+        '<b>先做局部緩解處置</b>：轉流造口、支架置放，或短程放療，再談全身治療。',
+        '<b>不要為了跑完療程而繼續一個已被證明無效的處方。</b>',
+        '<b>此出口為指引原圖之外的實務補充</b>：COL-12(2)／COL-12(3) 的再分期方塊只畫了「可切除」與「手術禁忌」兩條。'
+      ], 'COL-12(2)：Restaging 之原圖僅有 Transabdominal resection 與 Resection contraindicated 兩條；' +
+        '「治療期間進展」之處置為依 COL-8 換線原則與 COL-12(1) 症狀處置之實務補充。', 'palliative', systemicPanel());
+      return;
+    }
+
     if (s.rst1 === 'rs_no') {
       result(R, F, 'rec-nonop', '再分期後<b>手術禁忌</b> → 系統性治療 Systemic therapy', [
         '<b>Resection contraindicated → Systemic therapy</b>（COL-12(2)）。',
@@ -860,6 +961,43 @@
         : '先 Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）→ 後 Long-course chemo/RT 或 Short-course RT';
       ulRec(R, 'rec-idle', '已選擇 TNT 順序：' + plan + '。請於步驟 3 選擇再分期結果。', [], '');
       renderFollowup(F, null);
+      return;
+    }
+
+    if (s.rst2 === 'rs_ww') {
+      result(R, F, 'rec-elective', '完全臨床反應（cCR）→ 非手術處置 watch &amp; wait', [
+        '<span class="rx-h">cCR 的判定是三項全陰性</span>　<span class="rx-sub">COL-12(3) 註 d</span>',
+        '<b>肛門指診（DRE）、直腸 MRI、直接內視鏡評估，三者皆無殘存病灶證據</b>才算完全臨床反應。' +
+        '任一項有疑慮就不是 cCR，應走經腹切除。',
+        '<b>指引原文</b>：「a watch and wait, nonoperative management approach <b>may be considered in centers with experienced multidisciplinary teams</b>」' +
+        '—— 條件是<b>具經驗的多專科團隊中心</b>，不是任何地方都能做。',
+        '<b>指引亦明文</b>：<b>局部及／或遠處失敗的風險相較標準手術切除是否升高，尚未被充分界定</b>；' +
+        '決策必須與病人就其風險承受度充分討論並記錄。',
+        '<span class="rx-h">監測強度是這條路能不能成立的前提</span>',
+        '<b>前 2 年最密</b>：再生長 94% 發生在 2 年內、99% 在 3 年內（OPRA 5 年更新）。' +
+        '實務上前 2 年每 1–3 個月做肛門指診＋內視鏡、每 6 個月做直腸 MRI，' +
+        '並依 COL-3 每 6 個月 proctoscopy 共 3–5 年。<b>監測頻率為文獻與實務作法，指引未逐條規範。</b>',
+        '<b>再生長 → 補行挽救性 TME</b>；請回步驟 1 選「復發」分支之「watch &amp; wait 後局部再生長」取得後續處置。',
+        '<b>存活可以這樣講</b>：OPRA 5 年資料中，再分期後直接 TME 者與因再生長才補做 TME 者，<b>無病存活相同（皆 64%）</b>。'
+      ], 'COL-12(3) 註 d：watch and wait, nonoperative management approach may be considered in centers with experienced multidisciplinary teams；' +
+        '局部／遠處失敗風險是否升高尚未充分界定。監測頻率與 OPRA 數字為指引外之文獻補充。', 'ww');
+      return;
+    }
+
+    if (s.rst2 === 'rs_pd') {
+      result(R, F, 'rec-urgent', '新輔助／全程新輔助治療期間進展 → 中止原計畫、重新分期', [
+        '<span class="rx-h">先分清楚是局部進展還是出現遠處轉移</span>',
+        '<b>重新完成分期</b>：胸部／腹部／骨盆 CT、骨盆 MRI；必要時重新切片。',
+        '<b>① 出現遠處轉移</b> → 治療目標改變，請回步驟 1 依 <b>M1 可切除／不可切除</b>重新選擇分支。',
+        '<b>② 僅局部進展、仍為 M0</b> → 依 COL-12(3) 走<b>不可切除／無法耐受手術</b>的路線：' +
+        '未做過放療者補做化放療；已做過者換化療骨架（oxaliplatin 骨架進展 → 改 irinotecan 骨架，反之亦然，依 COL-8）；' +
+        '之後再評估是否轉為可切除。',
+        '<b>③ 有原發灶症狀（次全阻塞、需輸血之出血、劇烈裏急後重）</b> → ' +
+        '<b>先做局部緩解處置</b>：轉流造口、支架置放，或短程放療，再談全身治療。',
+        '<b>不要為了跑完療程而繼續一個已被證明無效的處方。</b>',
+        '<b>此出口為指引原圖之外的實務補充</b>：COL-12(2)／COL-12(3) 的再分期方塊只畫了「可切除」與「手術禁忌」兩條。'
+      ], 'COL-12(3)：Restaging 之原圖僅有 Transabdominal resection 與 Resection contraindicated 兩條；' +
+        '「治療期間進展」之處置為依 COL-8 換線原則與 COL-12(1) 症狀處置之實務補充。', 'palliative', systemicPanel());
       return;
     }
 
