@@ -135,21 +135,31 @@
       body += rxLine('新輔助／臨界可切除 Neoadjuvant / borderline resectable', 'PANC-D', [
         '於全身性化療<b>之後或之間</b>施行。',
         '<b>目前無標準治療處方</b>。',
-        '劑量分次（選擇性）：<b>36 Gy／2.4 Gy 分次</b>；或 <b>45–54 Gy／1.8–2.2 Gy 分次</b>；或 <b>40 Gy／10 分次</b>。每日一次、每週 5 天。',
-        '<b>標的體積</b>：原發腫瘤。'
+        '劑量分次（選擇性；<b>依 PANC-D 8 of 11</b>）：<b>36 Gy／2.4 Gy 分次</b>；或 <b>45–55 Gy／1.8–2.2 Gy 分次</b>；' +
+        '或 <b>40 Gy／10 分次</b>；或 <b>33–40 Gy／5–10 分次</b>。每日一次、每週 5 天。',
+        '<b>適應症（PANC-D 8 of 11）</b>：① <b>臨界可切除</b>胰臟癌；② <b>可切除但具高風險特徵</b>者 — 腫瘤體積大、CA 19-9 顯著升高、疑似淋巴結侵犯。',
+        '<b>標的體積</b>：原發腫瘤。',
+        '<b>頁碼落差提醒</b>：PANC-D（1 of 11）之摘要頁寫 45–54 Gy 且未列 33–40 Gy／5–10 分次；本頁採用較詳細的 <b>8 of 11</b>。'
       ]);
     } else if (which === 'la') {
       body += rxLine('不可切除／局部晚期 Unresectable / locally advanced', 'PANC-D', [
         '於全身性化療<b>之後或之間</b>施行。',
         '劑量分次：<b>1.8～2.5 Gy／分次</b>，每日一次、每週 5 天；合併或不合併同步化療之<b>最高累積總劑量 ≥ 45～60 Gy</b>。',
-        '<b>SBRT</b>：目前無標準治療處方；<b>3 分次（總劑量 30–45 Gy）</b>或 <b>5 分次（25–45 Gy）</b>；<b>不合併同步化療</b>。',
+        '<b>適應症（PANC-D 4 of 11）</b>：① <b>醫療上／手術上不可開刀（medically／surgically inoperable）</b>；② 局部晚期無遠處轉移。',
+        '<b>SBRT 或低分次放療</b>：目前無標準治療處方；<b>3 分次（總劑量 30～45 Gy）</b>或 <b>5 分次（25～50 Gy）</b>，每日一次；' +
+        '另有<b>劑量升階／消融性選項：67.5 Gy／15 分次</b>或 <b>75 Gy／25 分次</b>。',
+        '<b>頁碼落差提醒</b>：PANC-D（1 of 11）摘要頁之 5 分次寫 25–45 Gy 且未列消融性劑量；本頁採用較詳細的 <b>4 of 11</b>。',
         '<b>標的體積</b>：原發腫瘤＋臨床陽性淋巴結。選擇性淋巴結照射（optional）— 胰頭病灶：胰十二指腸、胰上、腹腔淋巴結、肝門淋巴結與整段十二指腸環；胰體／尾病灶：胰十二指腸、肝門、外側胰上、脾門淋巴結。'
       ]);
     } else { // post-op
       body += rxLine('術後 Postoperative', 'PANC-D', [
         '於全身性化療<b>之後或之間</b>施行。',
-        '劑量分次：<b>1.8～2.2 Gy／分次</b>，每日一次、每週 5 天；<b>45–46 Gy</b>，可再對肉眼病灶加以 <b>5–9 Gy boost</b>。',
-        '<b>標的體積</b>：GTV（若有殘存腫瘤）— 殘存腫瘤；環周腫瘤床、手術吻合處、病理陽性淋巴結與鄰近淋巴引流區。'
+        '<b>適應症（optional；PANC-D 6 of 11）</b>：<b>肉眼殘存病灶（gross residual disease）</b>、' +
+        '<b>切緣陽性（positive margin）</b>、<b>病理淋巴結陽性</b>、或<b>由醫師評估之局部區域復發高風險</b>。',
+        '劑量分次（<b>依 PANC-D 6 of 11</b>）：<b>1.8～2.2 Gy／分次</b>，每日一次、每週 5 天；' +
+        '<b>45–50.4 Gy</b>，可再對肉眼病灶加以 <b>5–9 Gy boost</b>。',
+        '<b>標的體積</b>：GTV（若有殘存腫瘤）— 殘存腫瘤；環周腫瘤床、手術吻合處、病理陽性淋巴結與鄰近淋巴引流區。',
+        '<b>頁碼落差提醒</b>：PANC-D（1 of 11）摘要頁寫 45–46 Gy；本頁採用較詳細的 <b>6 of 11</b> 之 45–50.4 Gy。'
       ]);
     }
     return '<details class="kps-details"><summary>放射治療原則 Principles of Radiation Therapy（PANC-D）▸</summary>' + body + '</details>';
@@ -837,6 +847,15 @@
           '<b>手術量（PANC-A #1）</b>：胰臟切除術應在<b>每年執行 15–20 例</b>之院所進行。',
           '<b>切片非必要（PANC-A #5）</b>：手術切除前<b>不需病理證實</b>；臨床高度懷疑時不應因切片未確診而延遲手術。',
           '<b>腹腔沖洗液細胞學陽性等同 M1</b>（PANC-A #7）。',
+          '<span class="rx-h">兩個在進手術室之前要先問的問題</span>',
+          '<b>① 這個病人是不是手術候選人？</b> PANC-1 把整條可切除路徑掛在「<b>Surgical candidate</b>」這個判斷之下。' +
+          '若因體能（ECOG 3）、肝硬化、心肺共病、年齡衰弱或病人拒絕而<b>不適合手術</b>，' +
+          'PANC-D（4 of 11）之 <b>Definitive Chemoradiation</b> 適應症第一條即為「<b>medically／surgically inoperable disease</b>」——' +
+          '此類病人走<b>根治性化放療</b>加 PANC-C 之支持治療，而不是進開刀房。',
+          '<b>② 有沒有高風險特徵？</b> PANC-D（8 of 11）之新輔助同步化放療適應症除了臨界可切除之外，' +
+          '也包含「<b>可切除但具高風險特徵</b>者：腫瘤體積大、CA 19-9 顯著升高、疑似淋巴結侵犯」。' +
+          '符合者可考慮<b>先做新輔助化放療</b>，並依 PANC-A #6 併行分期腹腔鏡 —— ' +
+          '不必然直接剖腹。（PANC-3 註 e 之「on clinical trial」是另一條路，非唯一。）',
           '請於<b>下方步驟</b>選擇手術探查結果。'
         ], 'PANC-3：Resectable → Consider staging laparoscopy in high-risk patients or as clinically indicated（optional）→ Laparotomy → Surgical resection（→ PANC-6）或 Unresectable at surgery。', null);
       if (!s.surg) return;
@@ -1021,7 +1040,14 @@
     result3('rec-elective', '無復發或轉移證據 → 術後輔助治療＋監測（PANC-6）', [
       '<b>本指引未指定首選處方</b>：PANC-6 以 <span class="rx">Clinical trial preferred</span> 冠首，其餘選項<b>以 or 並列</b>（詳見下方選單）。',
       '<b>開始時機</b>：未曾接受新輔助化療且已自手術充分恢復者，<b>術後 4–8 週內</b>開始（PANC-6 註 k）。',
-      '<b>已接受新輔助化放療／化療者</b>：為<b>術後追加化療</b>之候選人（PANC-6 註 k）。'
+      '<b>已接受新輔助化放療／化療者</b>：為<b>術後追加化療</b>之候選人（PANC-6 註 k）。',
+      '<span class="rx-h">先看病理報告：要不要加同步化放療</span>　<span class="rx-sub">PANC-D（6 of 11）</span>',
+      '<b>術後同步化放療之適應症（optional）</b>：<b>肉眼殘存病灶</b>、<b>切緣陽性</b>、<b>病理淋巴結陽性</b>、' +
+      '或<b>由醫師評估之局部區域復發高風險</b>。符合其一即應與放射腫瘤科討論加入化放療；' +
+      '<b>四項皆無（R0、pN0、無高風險）者，維持單純輔助化療即可</b>。',
+      '劑量為 <b>45–50.4 Gy</b>（1.8～2.2 Gy／分次），可再對肉眼病灶加 <b>5–9 Gy boost</b>；' +
+      '同步化療以 fluoropyrimidine 或 gemcitabine 為基礎。',
+      '<b>「切緣陽性」在整份指引裡只出現在這一頁</b> —— 是術後病理拿到手上第一個要對照的條件。'
     ], 'PANC-6：No evidence of recurrence or metastatic disease → Clinical trial preferred / systemic gemcitabine or 5-FU/leucovorin before or after chemoradiation / chemotherapy alone（Gemcitabine · 5-FU/leucovorin · Capecitabine · TS-1）→ Surveillance。輔助處方細目見 PANC-E（2 of 4）。',
       'curative', adjuvantPanel());
   }
@@ -1154,7 +1180,7 @@
         return;
       }
       if (s.cwf === 'other') {
-        result('rec-nonop', '具 WF 但無加權因子 → 依估計風險以 1–6 個月間隔密切監測', [
+        var wfLines = [
           '<b>Kyoto Fig.3</b>：此格為 <b>「以 1–6 個月間隔監測，間隔依估計風險而定」</b>——' +
           '<b>比無 WF 者密集</b>，且<b>一旦進展即回到最上方重新評估 HRS／WF</b>。',
           '<b>先排除惡性</b>：決定監測而非手術之前，<b>應先以 EUS（含 CE-EUS、必要時 EUS-FNA）完成初步評估</b>（Kyoto CQ1-6）。',
@@ -1162,7 +1188,16 @@
           '<b>ACG #10、#11 之對應</b>：<b>新發生或惡化之糖尿病</b>、<b>囊腫每年增大 &gt;3mm</b> → <b>短間隔 MRI 或 EUS±FNA</b>；' +
           '具黃疸、胰臟炎、CA 19-9 顯著升高、壁結節／實質成分、主胰管 &gt;5mm、口徑改變併上游萎縮、' +
           '黏液性囊腫 ≥3cm、細胞學 HGD／癌者 → <b>EUS±FNA 並轉多專科團隊</b>（強建議）。'
-        ], 'Kyoto 2024 Fig.3、CQ1-6；European 2018 §4.2；ACG 2018 #10、#11。' + CYST_SRC_NOTE,
+        ];
+        if (mdmt) {
+          wfLines.unshift('<b>⚠ 型態不符：這一格的監測排程是為分支型（BD-IPMN）設計的。</b>' +
+            '<b>MD／MT-IPMN 只要適合手術即建議切除</b>（European 4.7、4.8，GRADE 1B／2C）；' +
+            '<b>European 之主胰管切除門檻為 &gt;5mm</b>（4.10），<u>低於 Kyoto 之 ≥10mm</u> —— ' +
+            '也就是說，一個主胰管 5–9.9mm 的 MD／MT-IPMN 在 Kyoto 只算 WF，在 European 已經是切除門檻。' +
+            '<b>不宜只憑本格就把病人放進單純監測</b>；若因不適合手術而僅能觀察，應循更密集之個別化追蹤。');
+        }
+        result('rec-nonop', '具 WF 但無加權因子 → 依估計風險以 1–6 個月間隔密切監測', wfLines,
+          'Kyoto 2024 Fig.3、CQ1-6；European 2018 §4.2、4.7、4.8、4.10；ACG 2018 #10、#11。' + CYST_SRC_NOTE,
           'custom', cystSurvPanel(), cystFu('surv'));
         return;
       }

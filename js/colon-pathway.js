@@ -659,6 +659,13 @@
 
     if (g === 'g-low') {
       result(R, F, 'rec-elective', '低風險第 III 期（T1–3, N1）→ 輔助化療', [
+      '<span class="rx-h">先確認 MMR／MSI 狀態</span>　<span class="rx-sub">COL-3 註 a：MMR 檢測應考慮用於所有 &lt; 70 歲病人</span>',
+      '<b>2026 年起，第 III 期的 MMR 狀態會改變輔助治療</b>：<b>ATOMIC</b> 第三期試驗（Sinicrope FA et al. NEJM 2026;394:1155-1166）'
+      + '收已切除之<b>第 III 期 dMMR 結腸癌</b>，在 <span class="rx">mFOLFOX6</span> 之上加 <span class="drug">atezolizumab</span> 6 個月、'
+      + '之後單用 atezolizumab 至滿 12 個月：<b>3 年無病存活 86.3% vs 76.2%（HR 0.50，p&lt;0.001）</b>；'
+      + 'Grade 3–4 不良事件 84.1% vs 71.9%。',
+      '<b>台大大腸直腸癌指引尚未納入此路徑</b>，台灣<b>此適應症亦尚未納保</b>；'
+      + 'dMMR／MSI-H 之第 III 期病人請經多專科討論，並先確認藥物取得與院內品項。<b>pMMR／MSS 者維持下列標準處方。</b>',
         '<span class="rx-h">建議 Preferred</span>　<span class="rx">CapeOX</span> <b>3 個月</b>；<b>或</b> <span class="rx">FOLFOX</span> <b>3–6 個月</b>。',
         '<span class="rx-h">其他選項 Other options</span>　<span class="drug">capecitabine</span>（6 個月）或 <span class="drug">5-FU</span>（6 個月）。',
         '<b>IDEA 分析（COL-3 註 h）</b>：T1–3, N1 低風險第 III 期，<b>3 個月 CapeOX 對無病存活不劣於 6 個月</b>；' +
@@ -670,6 +677,13 @@
 
     // g-high
     result(R, F, 'rec-elective', '高風險第 III 期（T4, N1–2；任何 T, N2）→ 輔助化療', [
+      '<span class="rx-h">先確認 MMR／MSI 狀態</span>　<span class="rx-sub">COL-3 註 a：MMR 檢測應考慮用於所有 &lt; 70 歲病人</span>',
+      '<b>2026 年起，第 III 期的 MMR 狀態會改變輔助治療</b>：<b>ATOMIC</b> 第三期試驗（Sinicrope FA et al. NEJM 2026;394:1155-1166）'
+      + '收已切除之<b>第 III 期 dMMR 結腸癌</b>，在 <span class="rx">mFOLFOX6</span> 之上加 <span class="drug">atezolizumab</span> 6 個月、'
+      + '之後單用 atezolizumab 至滿 12 個月：<b>3 年無病存活 86.3% vs 76.2%（HR 0.50，p&lt;0.001）</b>；'
+      + 'Grade 3–4 不良事件 84.1% vs 71.9%。',
+      '<b>台大大腸直腸癌指引尚未納入此路徑</b>，台灣<b>此適應症亦尚未納保</b>；'
+      + 'dMMR／MSI-H 之第 III 期病人請經多專科討論，並先確認藥物取得與院內品項。<b>pMMR／MSS 者維持下列標準處方。</b>',
       '<span class="rx-h">建議 Preferred</span>　<span class="rx">CapeOX</span> <b>3–6 個月</b>；<b>或</b> <span class="rx">FOLFOX</span> <b>6 個月</b>。',
       '<span class="rx-h">其他選項 Other options</span>　<span class="drug">capecitabine</span>（6 個月）或 <span class="drug">5-FU</span>（6 個月）。',
       '<b>IDEA 分析（COL-3 註 h）</b>：T4、N1–2 或任何 T、N2 之高風險第 III 期，<b>3 個月 FOLFOX 之無病存活劣於 6 個月</b>；' +
@@ -796,9 +810,15 @@
     if (s.rres === 'r_res') {
       result(R, F, 'rec-elective', '可切除之異時性轉移（COL-9）', [
         '<b>考慮 PET-CT。</b>',
-        '<b>切除及／或局部消融（Resection and/or local ablation）</b>；<b>或</b> <b>新輔助化療 2–3 個月</b>（COL-6）後再行切除及／或局部消融。',
-        '<b>術後系統性治療</b>：<span class="rx">FOLFOX</span>／<span class="rx">CapeOx</span>（<b>preferred</b>）± 標靶治療；' +
-        '<b>或</b> <span class="drug">capecitabine</span>／<span class="rx">5-FU/leucovorin</span> ± 標靶治療；<b>或</b> 觀察。',
+        '<b>兩條路線的術後系統性治療清單不同</b>（COL-9 原圖是兩個獨立的 ADJUVANT 方塊，不要合併看）：',
+        '<span class="rx-h">路線一 · 直接切除及／或局部消融</span>　術後：' +
+        '<span class="rx">FOLFOX</span>／<span class="rx">CapeOx</span>（<b>preferred</b>）± 標靶治療；' +
+        '<b>或</b> <span class="drug">capecitabine</span>／<span class="rx">5-FU/leucovorin</span> ± 標靶治療。' +
+        '<b>此路線的清單中沒有「觀察」。</b>',
+        '<span class="rx-h">路線二 · 先新輔助化療 2–3 個月（COL-6）再切除／消融</span>　術後：' +
+        '<span class="rx">FOLFOX</span>／<span class="rx">CapeOx</span> ± 標靶治療；' +
+        '<b>或</b> <span class="drug">capecitabine</span>／<span class="rx">5-FU/leucovorin</span> ± 標靶治療；<b>或觀察（observation）</b>。' +
+        '<b>此路線未標 preferred。</b>',
         '圍手術期治療總時程<b>不應超過 6 個月</b>。'
       ], 'COL-9：Documented metachronous metastases · Resectable → consider PET-CT → resection and/or local ablation 或 neoadjuvant chemo 2–3 mo（COL-6）then resection/ablation → adjuvant FOLFOX/CapeOx（preferred）± biologic 或 capecitabine/5-FU/LV ± biologic 或 observation。',
         'resected_m1');

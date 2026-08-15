@@ -91,11 +91,17 @@
       '<summary>晚期／轉移性疾病處方與劑量 Advanced or metastatic regimens（COL-11(1)(2)）▸</summary>' +
       '<div class="rx-stack" style="margin-top:8px;">' +
         '<div class="rx-panel-h">晚期／轉移性疾病常用處方<span class="rx-panel-src">COL-11(1)(2)</span></div>' +
+        '<div class="rx-warn"><b>與指引原文不一致之處（cetuximab 起始劑量）</b>：' +
+        'COL-11(1) 原文寫「cetuximab <b>400mg</b> IV first infusion, then 250mg/m² weekly」，' +
+        '但同一份文件的 COL-11(2) 寫「Cetuximab <b>400 mg/m²</b> followed by 250 mg/m² weekly」，' +
+        '且仿單與 Cunningham 等人之原始試驗均為 <b>400 mg/m²</b>。' +
+        '以體表面積 1.6 m² 計，照 400 mg 開只有應給劑量的六成左右，' +
+        '<b>本頁一律採 400 mg/m²</b>，並在此標明與 COL-11(1) 之落差。</div>' +
         rxLine('（一）Oxaliplatin-based', '', [
           r('mFOLFOX6') + ' ±標靶（Q2W）：' + d('oxaliplatin') + ' 85 mg/m² IV D1；' + d('LV') +
             ' 400 mg/m²／2 小時（於 5-FU 前）D1；' + d('5-FU') + ' 400 mg/m² bolus D1 續 2400 mg/m²／46 小時。' +
             '<br>±' + d('bevacizumab') + ' 5 mg/kg IV D1　±' + d('cetuximab') +
-            ' <b>首次輸注 400 mg</b>、其後每週 250 mg/m²　±' + d('panitumumab') + ' 6 mg/kg IV D1。',
+            ' <b>首次輸注 400 mg/m²</b>（120 分鐘）、其後每週 250 mg/m²（60 分鐘）　±' + d('panitumumab') + ' 6 mg/kg IV D1。',
           r('XELOX') + ' ±' + d('bevacizumab') + '（Q3W）：' + d('oxaliplatin') + ' 130 mg/m² IV D1 ＋ ' +
             d('capecitabine') + ' 850–1000 mg/m² 每日兩次 D1–14；±' + d('bevacizumab') + ' 7.5 mg/kg IV D1。',
           r('FOLFOX4') + '（Q2W）：' + d('oxaliplatin') + ' 85 mg/m² ＋ ' + d('LV') + ' 200 mg/m²／2 小時 D1；' +
@@ -109,7 +115,7 @@
           r('FOLFIRI') + ' ±標靶（Q2W）：' + d('irinotecan') + ' 150–180 mg/m² IV D1；' + d('LV') +
             ' 400 mg/m²／2 小時（於 5-FU 前）D1；' + d('5-FU') + ' 400 mg/m² IV D1 續 2400 mg/m²／46 小時。' +
             '<br>±' + d('bevacizumab') + ' 5 mg/kg D1　±' + d('ziv-aflibercept') + ' 4 mg/kg D1　±' +
-            d('cetuximab') + ' 首次 400 mg、其後每週 250 mg/m²　±' + d('panitumumab') +
+            d('cetuximab') + ' 首次 400 mg/m²、其後每週 250 mg/m²　±' + d('panitumumab') +
             ' 6 mg/kg D1 Q2W　±' + d('ramucirumab') + ' 8 mg/kg D1 Q2W。',
           r('FOLFOXIRI') + '（Q2W）：' + d('irinotecan') + ' 165 mg/m² D1、' + d('oxaliplatin') +
             ' 85 mg/m² D1、' + d('LV') + ' 400 mg/m² D1；' + d('5-FU') + ' 3200 mg/m²／48 小時。',
@@ -117,7 +123,7 @@
             ' 75 mg/m²／2–4 小時 D1、D8（D15）；' + d('5-FU') + ' 2000–3000 mg/m² ＋ ' + d('LV') +
             ' 300 mg/m²／24–48 小時 D1、D8（D15）。',
           d('Irinotecan') + ' 單方 ±抗 EGFR：100–125 mg/m²／2–4 小時 D1、D8 Q3W，' +
-            '或 180 mg/m²／30–90 分鐘 D1 Q3W；±' + d('cetuximab') + ' 首次 400 mg、其後每週 250 mg/m²；±' +
+            '或 180 mg/m²／30–90 分鐘 D1 Q3W；±' + d('cetuximab') + ' 首次 400 mg/m²、其後每週 250 mg/m²；±' +
             d('panitumumab') + ' 6 mg/kg Q2W。'
         ]) +
         rxLine('（三）Fluorouracil-based', '', [

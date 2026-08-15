@@ -14,6 +14,7 @@
   var rcSt = {
     entry: null,     // e12 | crmclear | crminv | m1res | m1unres  （COL-12(1) CLINICAL STAGE）
     tn: null,        // tis_n0 … t4_n2   （術後病理 T×N）
+    mar: null,       // m_neg | m_pos   （環周／遠端切緣；COL-14 之獨立適應症軸）
     s2: null,        // s2_msi | s2_low | s2_high （COL-3(1) 第 II 期分層）
     nastrat: null,   // na_crt | na_tnt  （COL-12(2) 新輔助策略）
     rst1: null,      // rs_res | rs_no   （COL-12(2) 再分期結果）
@@ -375,15 +376,24 @@
     h += conn('rc_c3a');
     h += step('rc_s3a', '2', '術後病理分期 → 輔助 CCRT 與輔助化療（COL-12(1)／COL-14／COL-3）', '', tnGridHtml());
 
+    h += connH('rc_c_mar');
+    h += step('rc_s_mar', '3', '環周／遠端切緣狀態（COL-14 的第三個軸）',
+      opt('mar', 'm_neg', '切緣陰性且不接近', '環周切緣（CRM）> 1 mm、遠端切緣乾淨') +
+      opt('mar', 'm_pos', '切緣<b>陽性或接近</b>', 'CRM ≤ 1 mm、或遠端切緣陽性／接近'),
+      '<div class="note"><b>為什麼要單獨問</b>：COL-14 之輔助 CCRT 適應症有<b>兩條互相獨立</b>的路 —— ' +
+      '「pT3-4 或 pN1-2」<b>以及</b>「直腸癌之切緣陽性或接近」。' +
+      '只看 T×N 會讓一個 <b>pT2N0 但切緣陽性</b>的病人拿到「不需輔助 CCRT」的建議，而那正是最需要補救放療的情境。</div>');
+    h = h.replace('id="rc_s_mar"', 'id="rc_s_mar" class="hidden"');
+
     h += connH('rc_c4a3');
-    h += step('rc_s4a3', '3', 'pT3, N0, M0 → 依 MMR 狀態與高風險特徵分層（COL-3(1)）',
+    h += step('rc_s4a3', '4', 'pT3, N0, M0 → 依 MMR 狀態與高風險特徵分層（COL-3(1)）',
       opt('s2', 's2_msi', 'MSI-H 或 dMMR', '錯配修復缺失／微衛星高度不穩定') +
       opt('s2', 's2_low', 'MSS／pMMR 且<b>無</b>高風險特徵', 'MSS/pMMR and no high risk features') +
       opt('s2', 's2_high', 'MSS／pMMR 且<b>具</b>全身性復發高風險特徵', 'High risk for systemic recurrence'));
     h = h.replace('id="rc_s4a3"', 'id="rc_s4a3" class="hidden"');
 
     h += connH('rc_c4a4');
-    h += step('rc_s4a4', '3', 'pT4, N0, M0 → 依 MMR 狀態分層（COL-3(1)）',
+    h += step('rc_s4a4', '4', 'pT4, N0, M0 → 依 MMR 狀態分層（COL-3(1)）',
       opt('s2', 's2_msi', 'MSI-H 或 dMMR', 'T3–4, N0, M0（MSI-H or dMMR）→ 輔助化療 None') +
       opt('s2', 's2_high', 'MSS／pMMR', 'T4, N0, M0（MSS/pMMR）→ 輔助化療'),
       '<div class="note">COL-3(1) 之 <b>T4, N0, M0（MSS/pMMR）</b>與「T3, N0, M0 具全身性復發高風險」同列，' +
@@ -401,7 +411,15 @@
       opt('nastrat', 'na_crt', '<b>單純新輔助化放療／放療</b>（術後再補輔助化療）',
         'Long-course chemo/RT（capecitabine 或 infusional 5-FU）或 Short-course RT → 手術 → 輔助 FOLFOX/CAPEOX 12–16 週') +
       opt('nastrat', 'na_tnt', '<b>全程新輔助治療 TNT</b>（化放療與化療皆於術前完成）',
-        'Total neoadjuvant therapy：chemo/RT 與 FOLFOX/CAPEOX（12–16 週）於術前依序完成 → 手術'));
+        'Total neoadjuvant therapy：chemo/RT 與 FOLFOX/CAPEOX（12–16 週）於術前依序完成 → 手術'),
+      '<div class="crit crit-hr" style="margin-top:9px"><div class="crit-h">先看 MMR／MSI 狀態　<span class="crit-zh">dMMR／MSI-H 的走法完全不同</span></div>' +
+      '<ul><li>COL-12(1) 的 WORKUP 方塊已把 <b>MMR testing</b> 列為必做，但院內流程之後沒有再用到這個結果。</li>' +
+      '<li><b>dMMR／MSI-H 之局部晚期直腸癌</b>：Cercek 等人（NEJM 2025;392:2297-2308）報告以 <b>PD-1 阻斷（dostarlimab）單獨治療 6 個月</b>，' +
+      '第一組完成治療的 49 例<b>全部達到完全臨床反應</b>並選擇非手術處置，2 年無復發存活 92% —— 免除化放療與手術。</li>' +
+      '<li><b>台大 COL-12 尚未納入此路徑，台灣亦未納保</b>。dMMR／MSI-H 病人請先經多專科團隊討論並確認藥物取得，' +
+      '再決定是否走下方的 CCRT／TNT。</li>' +
+      '<li>完全臨床反應（cCR）之判定同註 d：<b>肛門指診 ＋ 直腸 MRI ＋ 內視鏡</b>三者皆須符合。</li>' +
+      '<li><b>pMMR／MSS 者維持下方之標準流程。</b></li></ul></div>');
     h += connH('rc_c3b');
     h += step('rc_s3b', '3', '再分期結果（Restaging）→ 可否行經腹切除',
       opt('rst1', 'rs_res', '<b>可行經腹切除</b> Transabdominal resection', '含 TME；達完全臨床反應（cCR）者可討論 watch &amp; wait（註 d）') +
@@ -419,6 +437,19 @@
         'Long-course chemo/RT（capecitabine 或 infusional 5-FU）或 Short-course RT → Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）') +
       opt('tntord', 't_chemo1', '<b>先化療、後化放療</b>（誘導型 induction）',
         'Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）→ Long-course chemo/RT 或 Short-course RT'),
+      '<div class="note"><b>兩種順序怎麼選（指引列為並列選項，未給依據）</b>：' +
+      '以<b>器官保留（watch &amp; wait）</b>為目標者，多優先選<b>先化放療、後化療（鞏固型）</b> —— ' +
+      'OPRA 隨機試驗顯示鞏固型之器官保留率較高、局部再生長較少，而無病存活與誘導型相當。' +
+      '以<b>遠端微轉移風險</b>為主要顧慮者（如 cT4b、EMVI 陽性、側方淋巴結陽性）可考慮<b>誘導型</b>，' +
+      '但須留意其後續化放療的完成率較低。<b>此為文獻依據，非台大指引條文。</b></div>' +
+      '<div class="crit crit-hr" style="margin-top:9px"><div class="crit-h">先看 MMR／MSI 狀態　<span class="crit-zh">dMMR／MSI-H 的走法完全不同</span></div>' +
+      '<ul><li>COL-12(1) 的 WORKUP 方塊已把 <b>MMR testing</b> 列為必做，但院內流程之後沒有再用到這個結果。</li>' +
+      '<li><b>dMMR／MSI-H 之局部晚期直腸癌</b>：Cercek 等人（NEJM 2025;392:2297-2308）報告以 <b>PD-1 阻斷（dostarlimab）單獨治療 6 個月</b>，' +
+      '第一組完成治療的 49 例<b>全部達到完全臨床反應</b>並選擇非手術處置，2 年無復發存活 92% —— 免除化放療與手術。</li>' +
+      '<li><b>台大 COL-12 尚未納入此路徑，台灣亦未納保</b>。dMMR／MSI-H 病人請先經多專科團隊討論並確認藥物取得，' +
+      '再決定是否走下方的 CCRT／TNT。</li>' +
+      '<li>完全臨床反應（cCR）之判定同註 d：<b>肛門指診 ＋ 直腸 MRI ＋ 內視鏡</b>三者皆須符合。</li>' +
+      '<li><b>pMMR／MSS 者維持下方之標準流程。</b></li></ul></div>' +
       '<div class="note">COL-12(3) 對 <b>CRM 受侵犯／T4／局部無法切除或無法耐受手術</b>者，' +
       '<b>兩種順序皆為並列選項</b>，均屬全程新輔助治療（TNT）；' +
       '完成後再分期（best tumor response 6–12 週 after completion of RT）。' +
@@ -502,11 +533,13 @@
     // A. cT1-2 N0 → 術後病理 T×N
     renderE12Rec();
     var g = (s.entry === 'e12' && s.tn) ? TN_GROUP[s.tn] : null;
-    var showS2t3 = (g === 'g-ii' && s.tn === 't3_n0');
-    var showS2t4 = (g === 'g-ii' && s.tn === 't4_n0');
+    rcShow('rc_c_mar', !!g); rcShow('rc_s_mar', !!g);
+    var marDone = !!g && !!s.mar;
+    var showS2t3 = (marDone && s.mar === 'm_neg' && g === 'g-ii' && s.tn === 't3_n0');
+    var showS2t4 = (marDone && s.mar === 'm_neg' && g === 'g-ii' && s.tn === 't4_n0');
     rcShow('rc_c4a3', showS2t3); rcShow('rc_s4a3', showS2t3);
     rcShow('rc_c4a4', showS2t4); rcShow('rc_s4a4', showS2t4);
-    rcShow('rc_adj_rec', !!g);
+    rcShow('rc_adj_rec', marDone);
     renderAdjRec(g);
 
     // B. CRM 乾淨 → 選完策略才問再分期
@@ -642,9 +675,31 @@
     var seqNote = '<b>時序（COL-12(1) 註 d）</b>：CCRT 與手術之先後<b>不影響第 II／III 期（T3-4／N1-2）直腸癌之存活</b>；' +
       '惟<b>術前 CCRT 之毒性低於術後 CCRT</b>，且須留意冗長 CCRT 期間發生遠端進展之風險。';
 
+    if (!s.mar) { idleRec(R, F, '請於步驟 3 選擇環周／遠端切緣狀態'); return; }
+
+    // 切緣陽性／接近是 COL-14 與 T×N 並列的獨立適應症：不論落在哪一組都要 CCRT
+    if (s.mar === 'm_pos') {
+      result(R, F, 'rec-urgent', '切緣陽性或接近 → <b>應行輔助 CCRT</b>（COL-14），不受 T×N 分組影響', [
+        '<span class="rx-h">第一件事：能不能再切一次</span>',
+        '<b>先評估再切除（re-resection）之可行性</b> —— 若能取得陰性切緣，其局部控制優於單靠放療補救。' +
+        '無法再切除者才以輔助 CCRT 補救。',
+        '<span class="rx-h">輔助同步化放療</span>　<span class="rx-sub">COL-14</span>',
+        ccrtLine,
+        seqNote,
+        '<span class="rx-h">輔助化療</span>',
+        '仍<b>依 T×N 分組與 MMR 狀態</b>決定是否加輔助化療（COL-3(1)／COL-3(2)）；' +
+        '本步驟只覆寫「要不要做 CCRT」這一項。若 T×N 落在需要化療的組別，兩者都要。',
+        '<b>COL-14 原文</b>：輔助 CCRT 之適應症為「<b>直腸癌之切緣陽性或接近</b>」<b>或</b>「pT3-4 或 pN1-2」—— ' +
+        '兩者是<b>並列</b>的條件，不是必須同時成立。'
+      ], 'COL-14：For adjuvant CCRT setting — Positive or close margin for rectal cancer；pT3-4 or pN1-2。' +
+        '再切除之優先性為一般外科實務判斷，非本指引明文條列。', 'curative');
+      return;
+    }
+
     if (g === 'g-none') {
-      result(R, F, 'rec-elective', 'pTis／pT1, N0, M0／pT2, N0, M0 → 不需輔助 CCRT、不需輔助化療', [
-        '<b>輔助 CCRT：不需要</b> — 未達 COL-14 之 pT3-4 或 pN1-2 適應症（切緣陽性／接近、或保肛之直腸癌者除外）。',
+      result(R, F, 'rec-elective', 'pTis／pT1, N0, M0／pT2, N0, M0（切緣陰性）→ 不需輔助 CCRT、不需輔助化療', [
+        '<b>輔助 CCRT：不需要</b> — 未達 COL-14 之 pT3-4 或 pN1-2 適應症，且切緣陰性。' +
+        '（<b>保肛之直腸癌</b>亦為 COL-14 所列之適應症之一，若屬此情形請與放射腫瘤科討論。）',
         '<b>輔助化療：None</b>（COL-3(1)：Tis; T1, N0, M0; T2, N0, M0 → Adjuvant therapy = None）。',
         '進入追蹤（含直腸專屬之 proctoscopy，見下方）。'
       ], 'COL-12(1)：Adjuvant CCRT 僅適用 pT3-4 或 pN1-2；COL-3(1)：Tis; T1, N0, M0; T2, N0, M0 → Adjuvant therapy = None。', 'curative');
@@ -909,7 +964,10 @@
     } else if (key === 'dres') {
       s.dres = val;
     } else if (key === 'tn') {
-      s.tn = val; s.s2 = null;
+      s.tn = val; s.s2 = null; s.mar = null;
+      rcClearSel(['rc_s_mar', 'rc_s4a3', 'rc_s4a4']);
+    } else if (key === 'mar') {
+      s.mar = val; s.s2 = null;
       rcClearSel(['rc_s4a3', 'rc_s4a4']);
     } else if (key === 's2') {
       s.s2 = val;

@@ -71,7 +71,8 @@
     h += step('gc_s4', '4', '手術切除結果（R status）',
       opt('rstatus', 'R0', 'R0 切除', '無殘存腫瘤') +
       opt('rstatus', 'R1', 'R1 切除', '顯微鏡下殘存（microscopic）') +
-      opt('rstatus', 'R2', 'R2 切除', '肉眼可見殘存（gross residual）'));
+      opt('rstatus', 'R2', 'R2 切除', '肉眼可見殘存（gross residual）') +
+      opt('rstatus', 'M1', '術中發現 M1', '開腹後發現腹膜種植、肝轉移或遠處淋巴結轉移'));
     h = h.replace('id="gc_s4"', 'id="gc_s4" class="hidden"');
 
     h += connH('gc_c4b');
@@ -229,7 +230,7 @@
     var showPs = showR && s.rstatus === 'R0';
     gcShow('gc_c4b', showPs);
     gcShow('gc_s4b', showPs);
-    var unres = (s.fit === 'fit_unres');
+    var unres = (s.fit === 'fit_unres' || s.fit === 'unfit');
     gcShow('gc_c_restage', unres);
     gcShow('gc_s_restage', unres);
     renderLocoRec();
@@ -249,24 +250,44 @@
     if (s.fit === 'fit_unres') {
       if (!s.restage) {
         result(R, F, 'rec-nonop', '不可切除（M0）：系統性化療 → 再分期',
-          systemicLines(), systemicNote + ' 完成化療後依再分期反應決定後續（見下方步驟 3）。', 'palliative');
+          [palliativeSurgLine()].concat(systemicLines()),
+          systemicNote + '｜AGC-1：Medically fit, unresectable → Salvage therapy ± Palliative surgery。完成化療後依再分期反應決定後續（見下方步驟 3）。', null);
       } else if (s.restage === 'ccr') {
         result(R, F, 'rec-elective', '化療後 cCR／大幅反應 → 手術（若適合）',
           systemicLines().concat(['<b>再分期：臨床完全緩解（cCR）或大幅反應</b> → 若技術可行且體能允許，接受根治性手術（curative intent）；cCR 者亦可選擇密切追蹤（AGC-4）。']),
           systemicNote, 'curative');
       } else {
         result(R, F, 'rec-nonop', '化療後殘存／轉移 → Salvage therapy',
-          systemicLines().concat(['<b>再分期：殘存病灶／局部或遠處轉移</b> → 接續 salvage 系統性治療（如上）或臨床試驗；必要時局部治療（RT）。']),
+          systemicLines().concat(['<b>再分期：殘存病灶／局部或遠處轉移</b> → 接續 salvage 系統性治療（如上）或臨床試驗；必要時局部治療（RT）。',
+           palliativeSurgLine()]),
           systemicNote, 'palliative');
       }
       return;
     }
 
-    // 無法耐受大手術 → 系統性化療 或 BSC
+    // 無法耐受大手術 → 系統性化療 → 再分期（AGC-2 把「可耐受但不可切除」與「無法耐受手術」括在同一個括號裡，
+    // 兩者都是 M0 → Chemotherapy（AGC-5）→ Adjunctive Treatment Post-chemotherapy（AGC-3），
+    // 也就是說反應好的病人仍有回到手術的機會。原本這一支是死路，反應再好也走不到手術。）
     if (s.fit === 'unfit') {
-      result(R, F, 'rec-nonop', '無法耐受手術：系統性化療 或 最佳支持治療',
-        systemicLines().concat(['體能極差（KPS ≤50／ECOG 3）→ 最佳支持治療（BSC）／安寧療護。']),
-        systemicNote, 'palliative');
+      var unfitNote = '<b>「無法耐受大手術」與「體能狀態差」不是同一件事</b> —— ' +
+        '心肺共病導致無法接受大手術的病人，體能可能仍足以接受全劑量化療；' +
+        '化療骨架的選擇請依 <b>KPS／ECOG</b> 判斷（見下方），不要因為不能開刀就自動降階。';
+      if (!s.restage) {
+        result(R, F, 'rec-nonop', '無法耐受大手術（M0）：系統性化療 → 再分期',
+          [unfitNote].concat(systemicLines()),
+          systemicNote + '｜AGC-2（1 of 3）：Medically fit, unresectable <b>或</b> Medically unfit（M0）→ Chemotherapy（AGC-5）→ Adjunctive Treatment Post-chemotherapy（AGC-3）。完成化療後請於下方步驟 3 選擇再分期結果。', null);
+      } else if (s.restage === 'ccr') {
+        result(R, F, 'rec-elective', '化療後 cCR／大幅反應 → 重新評估手術可行性',
+          [unfitNote, '<b>再分期：臨床完全緩解（cCR）或大幅反應</b> → <b>若共病已改善且技術可行，仍可考慮根治性手術</b>（AGC-3 之 Surgery, if appropriate）；' +
+           'cCR 者亦可選擇密切追蹤（AGC-4）。'].concat(systemicLines()),
+          systemicNote, 'curative');
+      } else {
+        result(R, F, 'rec-nonop', '化療後殘存／轉移 → Salvage therapy',
+          [unfitNote, '<b>再分期：殘存病灶／局部或遠處轉移</b> → 接續 salvage 系統性治療或臨床試驗；必要時局部治療（RT）。',
+           palliativeSurgLine(),
+           '<b>體能極差（KPS ≤50／ECOG 3）→ 最佳支持治療（BSC）／安寧療護。</b>'].concat(systemicLines()),
+          systemicNote, 'palliative');
+      }
       return;
     }
 
@@ -319,15 +340,30 @@
     }
 
     if (s.rstatus === 'R1') {
-      result(R, F, 'rec-nonop', 'R1（顯微殘存）→ Salvage 化療 / 局部治療',
-        ['顯微鏡下殘存 → 接續系統性 salvage 治療；必要時再切除或局部 RT。'].concat(systemicLines()),
-        systemicNote, 'palliative');
+      result(R, F, 'rec-elective', 'R1（顯微殘存）→ 術後輔助化療（與 pT3-4／N+ 同一組）',
+        adjuvantLines().concat([
+          '<b>AGC-3（1 of 2）原圖：R1 的箭頭指向的是「ADJUVANT CHEMOTHERAPY」那個方塊</b>，' +
+          '與 pT3、pT4 或 Any T、N+ 共用同一份處方清單，之後接<b>追蹤（AGC-4）</b>。' +
+          '走 salvage 化療的是 <b>R2</b>，不是 R1。',
+          '<b>再切除與局部放療未見於本指引之 R1 條文</b>（放療只出現在 AGC-4 之支持治療：阻塞、疼痛、出血）。' +
+          '若團隊考慮再切除，屬指引之外，請經多專科討論並記錄。'
+        ]),
+        'AGC-3（1 of 2）：R1 resection（microscopically residual cancer）→ ADJUVANT CHEMOTHERAPY → Follow-up（see AGC-4）。', 'curative');
       return;
     }
     if (s.rstatus === 'R2') {
-      result(R, F, 'rec-urgent', 'R2（肉眼殘存）→ Salvage 化療 或 BSC',
-        ['肉眼可見殘存 → 系統性治療（如下）；體能極差者最佳支持治療。'].concat(systemicLines()),
-        systemicNote, 'palliative');
+      result(R, F, 'rec-urgent', 'R2（肉眼殘存）→ Salvage 化療 或 最佳支持治療',
+        ['肉眼可見殘存 → 系統性治療（如下）；<b>體能極差者為最佳支持治療</b>（AGC-3 原文即如此二選一）。',
+         palliativeSurgLine()].concat(systemicLines()),
+        systemicNote + '｜AGC-3（1 of 2）：R2 resection（grossly residual cancer）→ Salvage Chemotherapy（see AGC-5）or Best supportive care（very poor performance status）。', 'palliative');
+      return;
+    }
+    if (s.rstatus === 'M1') {
+      result(R, F, 'rec-urgent', '術中發現遠處／腹膜轉移（M1）→ Salvage 化療',
+        ['<b>AGC-3（1 of 2）之手術結果有四條箭頭，M1 是第四條</b> —— 開腹後才發現腹膜種植、肝轉移或遠處淋巴結轉移，' +
+         '在胃癌是常見情形，處置直接走 <b>Salvage Chemotherapy（AGC-5）</b>。',
+         palliativeSurgLine()].concat(systemicLines()),
+        systemicNote + '｜AGC-3（1 of 2）：M1 → Salvage Chemotherapy（see AGC-5）。', 'palliative');
       return;
     }
 
@@ -338,22 +374,37 @@
         '不需輔助化療；定期追蹤（見下方追蹤）。'
       ], '', 'curative');
     } else {
-      result(R, F, 'rec-elective', 'R0 + pT3–4 或 N+ → 術後輔助化療', [
-        '<span class="rx-h">最佳療程尚未確立</span>　<span class="rx-sub">Optimal regimen not established；可依病人狀況與醫病討論選擇</span>',
-        '<span class="rx">S-1</span> 單方（ACTS-GC）。',
-        '<span class="rx">HDFL</span>（週 24hr <span class="drug">5-FU</span> 2,000–2,600 mg/m²＋<span class="drug">leucovorin</span> 300 mg/m²）。',
-        '<span class="rx">XELOX</span>（<span class="drug">capecitabine</span>＋<span class="drug">oxaliplatin</span>，CLASSIC）。',
-        '<span class="rx">S-1 + docetaxel</span>（<span class="drug">S-1</span>＋<span class="drug">docetaxel</span>，JACCRO GC-07）— <b>pStage III 建議</b>。',
-        '<span class="rx">SOX</span>（<span class="drug">S-1</span>＋<span class="drug">oxaliplatin</span>，ARTIST 2）— <b>pStage III 建議</b>。'
-      ], 'AGC-5（1 of 3）：D2 切除後 pT3-4 或 pN+ → post-operative chemotherapy，最佳療程尚未確立。S-1+docetaxel 與 SOX 於 pStage III 之 3 年無復發存活優於 S-1 單方；惟 capecitabine／oxaliplatin／docetaxel 於 adjuvant 未納健保。', 'curative');
+      result(R, F, 'rec-elective', 'R0 + pT3–4 或 N+ → 術後輔助化療', adjuvantLines(),
+        'AGC-5（1 of 3）：D2 切除後 pT3-4 或 pN+ → post-operative chemotherapy，最佳療程尚未確立。S-1+docetaxel 與 SOX 於 pStage III 之 3 年無復發存活優於 S-1 單方；惟 capecitabine／oxaliplatin／docetaxel 於 adjuvant 未納健保。', 'curative');
     }
+  }
+
+  /* AGC-3 之 ADJUVANT CHEMOTHERAPY 方塊：R0 之 pT3-4／N+ 與 R1 共用同一份清單 */
+  function adjuvantLines() {
+    return [
+      '<span class="rx-h">最佳療程尚未確立</span>　<span class="rx-sub">Optimal regimen not established；可依病人狀況與醫病討論選擇</span>',
+      '<span class="rx">S-1</span> 單方（ACTS-GC）。',
+      '<span class="rx">HDFL</span>（週 24hr <span class="drug">5-FU</span> 2,000–2,600 mg/m²＋<span class="drug">leucovorin</span> 300 mg/m²）。',
+      '<span class="rx">XELOX</span>（<span class="drug">capecitabine</span>＋<span class="drug">oxaliplatin</span>，CLASSIC）。',
+      '<span class="rx">S-1 + docetaxel</span>（<span class="drug">S-1</span>＋<span class="drug">docetaxel</span>，JACCRO GC-07）— <b>pStage III 建議</b>。',
+      '<span class="rx">SOX</span>（<span class="drug">S-1</span>＋<span class="drug">oxaliplatin</span>，ARTIST 2）— <b>pStage III 建議</b>。'
+    ];
+  }
+
+  /* AGC-1 把三條非治癒路徑都收在「Salvage therapy ± Palliative surgery」，
+     其註 c 同時給了適應症與一條明確的禁止事項 —— 對外科使用者這是 AGC-1 最實用的一段。 */
+  function palliativeSurgLine() {
+    return '<span class="rx-h">姑息性手術 Palliative surgery</span>　<span class="rx-sub">AGC-1（2 of 2）註 c</span>　' +
+      '姑息性切除或繞道手術，用於<b>解除機械性阻塞</b>或<b>止住明顯的消化道出血</b>。' +
+      '<b>⚠ 腹膜癌症擴散合併惡性腹水者，不常規置放餵食空腸造廔或胃造廔。</b>';
   }
 
   function renderMetaRec() {
     var s = gcSt;
     if (s.scope !== 'm1') return;
-    result('gc_meta_rec', 'gc_meta_fu', 'rec-elective', '轉移性（M1）：系統性治療',
-      systemicLines(), systemicNote, 'palliative');
+    result('gc_meta_rec', 'gc_meta_fu', 'rec-elective', '轉移性（M1）：系統性治療 ± 姑息性手術',
+      [palliativeSurgLine()].concat(systemicLines()),
+      systemicNote + '｜AGC-1：Stage IV（M1）→ Salvage therapy ± Palliative surgery（see AGC-4）。', 'palliative');
   }
 
   /* ---------- 事件 ---------- */
