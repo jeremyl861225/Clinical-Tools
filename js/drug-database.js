@@ -569,6 +569,7 @@ function variantBody(v, ddi) {
     ${field('商品名／含量', v.brand)}
     ${photoField(v)}
     ${doseField(v.dose)}
+    ${field('劑量表（台大明細頁）', v.doseTable)}
     ${titrateField(v.code)}
     ${field('最大劑量', v.maxDose)}
     ${field('兒科劑量', v.peds)}
@@ -598,14 +599,18 @@ function variantBody(v, ddi) {
     ${ddi || ''}
     ${rowTbl('飲食交互作用', v.food, [['f', '食品'], ['s', '嚴重度'],
       ['e', '影響'], ['m', '處置']])}
+    ${field('食物的影響', v.foodEffect)}
     ${field('禁忌', v.contra, true)}
     ${field('安全警訊', v.alert, true)}
     ${field('儲存條件', v.storage)}
     ${field('備註', v.note)}
+    ${field('院內用藥指引', v.remark)}
+    ${field('兒童可用的同成分劑型', v.kidAlt)}
     ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
        <div class="dc-ftext db-nhi">${linkify(v.nhiRule)}</div></div>` : ''}
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
+    ${field('製造廠', v.factory)}
     ${price ? field('藥價', price) : ''}
     <div class="db-foot">${v.src
       ? `${esc(v.src)}${v.code8 ? `　·　藥品八碼 ${esc(v.code8)}` : ''}　·　分類：${esc(v.cat || '')}`
@@ -835,6 +840,7 @@ function cardBody(d) {
   const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
   const header = `
     ${field('學名', d.name)}
+    ${field('別名', (d.alias || []).join('、'))}
     ${cls ? `<div class="dc-field"><div class="dc-flabel">藥理機轉</div>
        <div class="dc-ftext db-moas">${cls}</div></div>` : ''}
     ${field('劑型', d.form)}`;
