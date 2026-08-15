@@ -162,6 +162,7 @@
     <button class="tab-btn"        data-p="pn"    onclick="ivTab('pn')">靜脈營養液</button>
     <button class="tab-btn"        data-p="add"   onclick="ivTab('add')">添加劑</button>
     <button class="tab-btn"        data-p="rx"    onclick="ivTab('rx')">處方計算</button>
+    <button class="tab-btn"        data-p="ntuh"  onclick="ivTab('ntuh')">台大 TPN 指引</button>
     <button class="tab-btn"        data-p="tpn"   onclick="ivTab('tpn')">重症營養時機</button>
     <button class="tab-btn"        data-p="ev"    onclick="ivTab('ev')">證據</button>
   </div>
@@ -174,6 +175,7 @@
     成分的細項（胺基酸組成、電解質 mmol 數、滲透壓）台大沒有逐項公布，
     才用<b>食藥署核准的官方仿單／外盒標籤</b>補，並標上許可證字號。
     治療決策依 <b>ESPEN 2023 重症營養實用版指引</b>與 <b>ASPEN 2022</b>，兩家熱量建議不同，並列不合併。
+    <b>「台大 TPN 指引」那一分頁是台大自己的院內文件全文整理</b>——滲透壓估算、熱量與蛋白質需求、Ca-P 相容性、陰陽離子平衡、再餵食升階表、開方時限，以及 Lyo-povigent 與 Addaven 逐項對照 ASPEN／ESPEN 建議量。
   </div>
 
 <!-- ==================== 晶體輸液 ==================== -->
@@ -506,8 +508,14 @@
               ② <b>thiamine 只有約 3 mg（以 thiamine 計）</b>，
               這是「日常補充量」不是「治療量」。<b>再餵食症候群或 Wernicke 的預防／治療必須另外開 thiamine</b>，
               不能靠這一支。<br>
-              <span class="gr w">數字缺口</span> 維生素 E 與 K₁ 的劑量落在外盒摺線上判讀不出來，
-              台大網站恢復後要補查。</td>
+              <span class="gr">已補齊</span> 先前外盒摺線判讀不出的兩項，
+              由台大《成人內科加護病房 TPN 指引》附件五補上：
+              <b>維生素 E 10 mg、維生素 K₁ 2 mg</b>。<br>
+              <b>K₁ 這個量是 ASPEN／ESPEN 每日建議（0.15 mg）的十三倍</b>，
+              台大指引正文也特別要求「使用 warfarin 時須注意 INR 變化」。
+              另有三項<b>低於</b>建議量：維生素 C 100 mg（ASPEN 200）、
+              B1 3.9 mg（ASPEN 6）、葉酸 400 mcg（ASPEN 600）。
+              完整對照見<b>「台大 TPN 指引」</b>分頁。</td>
         </tr>
         <tr>
           <td><b>Vitamin B1</b><br>維他命乙１注射液<br>100 mg/2 mL/amp<br><a href="../tools/drug-database.html#code=VIA1FB11" class="pmid">藥卡</a></td>
@@ -517,7 +525,7 @@
               直到能正常均衡進食為止</b>。<br>
               適應症：腳氣、多發性神經炎、維他命 B1 缺乏症。</td>
           <td><b>這一支就是「thiamine 要另外開」的那一支。</b>
-              綜合維生素（Lyo-Povigent）裡的 thiamine 是日常補充量，
+              綜合維生素（Lyo-Povigent）裡的 thiamine 只有 <b>3.9 mg</b>，是日常補充量，
               <b>再餵食高風險或懷疑 Wernicke 時要開這支的治療劑量，而且要在給糖之前給</b>。<br>
               <b>Bfluid 每 1000 mL 只含 thiamine 1.5 mg</b>，同樣不算治療量。</td>
         </tr>
@@ -663,7 +671,7 @@
         <tr><td><b>熱量</b></td><td><b>ESPEN</b>：無間接測熱法時用 20–25 kcal/kg/d；用預測公式則<b>第一週低於估計值 70%</b>；第 3 天後可升到測得 EE 的 80–100%。<br><b>ASPEN</b>：<b>12–25 kcal/kg/day</b></td><td>ESPEN 2023 R19（Grade B）／R18（Grade 0）；ASPEN 2022 <a href="https://pubmed.ncbi.nlm.nih.gov/34784064/" target="_blank" rel="noopener" class="pmid">PMID 34784064</a></td></tr>
         <tr><td><b>蛋白質</b></td><td>1.3 g/kg/d <b>漸進</b>給。<b>沒有證據支持給更高</b></td><td>ESPEN 2023 R22（Grade 0）；EFFORT Protein <a href="https://pubmed.ncbi.nlm.nih.gov/36708732/" target="_blank" rel="noopener" class="pmid">PMID 36708732</a></td></tr>
         <tr><td><b>葡萄糖</b></td><td>PN 的葡萄糖或 EN 的碳水 <b>不得超過 5 mg/kg/min</b></td><td>ESPEN 2023 R23（GPP，強共識 100%）</td></tr>
-        <tr><td><b>脂肪</b></td><td>建議上限 <b>1 g/kg/d，可容忍到 1.5 g/kg/d</b>，<b>含 propofol 等非營養性脂肪</b></td><td>ESPEN 2023 R25（GPP，強共識 100%）</td></tr>
+        <tr><td><b>脂肪</b></td><td><b>ESPEN</b>：建議上限 1 g/kg/d、<b>可容忍到 1.5</b>，含 propofol 等非營養性脂肪。<br><b>台大 MICU</b>：<b>≤1 g/kg/d（同樣含非營養性脂肪），沒有給 1.5 的空間</b>；且<b>入住加護病房 7 日後才開始</b>、佔總熱量 15–30%、<b>輸注速率 &lt;0.11 g/kg/hr（max 0.15）</b></td><td>ESPEN 2023 R25（GPP，強共識 100%）；<b>台大成人內科加護病房 TPN 指引 2025 修訂</b></td></tr>
         <tr><td><b>血糖</b></td><td><b>&gt;10 mmol/L（180 mg/dL）就給胰島素</b>；前兩天至少每 4 小時測一次</td><td>ESPEN 2023 R54（<b>Grade A</b>）、R53</td></tr>
       </tbody>
     </table>
@@ -677,6 +685,470 @@
     順帶一提：<b>D50W 20 mL 推一次是 10 g 葡萄糖</b>，60 kg 的人若在 1 分鐘內推完，
     瞬時 GIR 是 <b>167 mg/kg/min</b>——低血糖急救可以，但不能拿來當熱量給。
   </div>
+</div>
+
+<!-- ==================== 台大 TPN 指引 ==================== -->
+<div class="iv-panel" id="p-ntuh">
+
+  <div class="kbox">
+    <div class="kbox-t">這一頁整份照抄台大自己的文件，不是外部指引</div>
+    來源是台大藥品資料庫在 TPN 品項備註欄掛的三份院內文件：
+    <b>《Total parenteral nutrition (TPN) in adult medical ICU》2025 修訂</b>
+    （吳珮君、吳建志、戴志勳、王雪如藥師／賴聖如營養師／古世基醫師）、
+    <b>《成人標準配方》</b>與<b>《小兒TPN處方》2020-04-21</b>。<br>
+    <b>與 ESPEN／ASPEN 不同的地方一律以台大為準並標出差異</b>，兩邊都寫、不合併。
+    <b>TPN 相關問題洽無菌調劑組，分機 62533。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">先決定要不要用</span><span class="dh-e">Indications &amp; definition</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">定義：TPN 的滲透壓 &gt;900 mOsm/L，必須走中心靜脈</div>
+    <b>滲透壓自己估：蛋白質 1% ＝ 100、葡萄糖 1% ＝ 50、電解質 1 mEq/L ＝ 1 mOsm/L。</b><br>
+    例：1000 mL 含 3% protein ＋ 15% dextrose ＋ Na 40 ＋ K 40 ＋ Cl 80
+    → 3×100 ＋ 15×50 ＋ 40 ＋ 40 ＋ 80 ＝ <b>1210 mOsm/L</b>。
+  </div>
+
+  <div class="steps">
+    <div class="step"><span><span class="sq">營養狀態良好且病況穩定。</span>
+      <b>超過 7 天無法獲得足夠熱量</b>（≤50% 每日需求量）才開始。</span></div>
+    <div class="step"><span><span class="sq">中重度營養不良且腸道拿不到足夠熱量。</span>
+      判準：<b>無預警體重減輕 10–15%</b>，或<b>實際體重 &lt;90% 理想體重</b>。</span></div>
+    <div class="step"><span><span class="sq">重症病人。</span>
+      <b>急性期（入院後 48 小時）之後</b>評估，有營養風險就給。
+      評估工具可用 <b>NRS 2002、NUTRIC score</b>。</span></div>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">熱量怎麼算</span><span class="dh-e">Energy requirement</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">三個層級，由準到粗</div>
+    <b>① 間接測熱法（IC）是指引建議的首選。</b>
+    但<b>血行動力學不穩定、使用 ECMO、使用 CKRT 時不建議用</b>，結果會被干擾。<br>
+    <b>② IC 不能用時，改用 VO₂（肺動脈導管）或 VCO₂（呼吸器）</b>，比大多數估算公式準。
+    <b>熱量需求 ＝ VCO₂(mL/min) × 8.19</b>。
+    <b>但 FiO₂ &gt;60%、PEEP &gt;14 cmH₂O 時較無證據支持其準確度。</b><br>
+    <b>③ 以體重計算：25–30 kcal/kg/day。</b>
+    一般體重用實際體重；<b>肥胖（BMI &gt;30 或 &gt;130% 理想體重）用調整體重</b>：<br>
+    <b>調整體重 ＝（實際體重 − 理想體重）× 0.25 ＋ 理想體重</b>；
+    理想體重 ＝ 身高(m)² × 22，或男性〔身高(cm) − 80〕× 0.7、女性〔身高(cm) − 70〕× 0.6。<br>
+    <span class="gr w">注意</span> <b>水腫病人以乾體重計算。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">三大營養素</span><span class="dh-e">Macronutrients</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:520px;">
+      <thead><tr><th>病人狀況</th><th>蛋白質 g/kg/day</th></tr></thead>
+      <tbody>
+        <tr><td>一般病人</td><td><b>1.3</b></td></tr>
+        <tr><td>AKI 或 CKD <b>未透析</b></td><td>1 → 1.3（<b>若可耐受再逐漸提高</b>）</td></tr>
+        <tr><td>AKI 或 CKD <b>已透析</b></td><td>1.3–1.5</td></tr>
+        <tr><td><b>CKRT</b></td><td><b>1.5–1.7</b></td></tr>
+        <tr><td>肝硬化代償期、未營養不良</td><td>1.2</td></tr>
+        <tr><td>肝硬化<b>營養不良或肌少症</b></td><td>1.5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    台大調配成人 TPN 用 <b>Moriamin SN</b> 與 <b>Aminoleban</b> 供應蛋白質。
+    <b>Aminoleban 的 BCAA 比例較高（35.5% vs 22.6%），適合肝腦病變</b>
+    （refractory encephalopathy 或 &gt;grade 2 hepatic encephalopathy）——
+    BCAA 可直接讓肌肉利用、減少 ammonia 生成，並競爭性抑制芳香族胺基酸進入大腦。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">脂肪：台大比 ESPEN 嚴，而且要等七天</div>
+    <b>使用時機：入住加護病房「7 日後」。</b>建議劑量為<b>總熱量的 15–30%</b>。<br>
+    <b>≤1 g/kg/day</b>（含非營養性脂肪來源）——<b>ESPEN R25 是 ≤1.5，台大更嚴</b>。<br>
+    <b>輸注速率 &lt;0.11 g/kg/hr，最大 0.15 g/kg/hr。</b><br>
+    <b>propofol 是脂肪溶液，1.1 kcal/mL，必須算進熱量。</b><br>
+    <b>TG &gt;400 mg/dL</b> 建議減少頻次並持續追蹤（QD → BIW 或 TIW）。<br>
+    <b>脂肪至少要佔總熱量 5%</b>，可每週分次給，以避免必需脂肪酸缺乏。<br>
+    <b>禁忌</b>：TG &gt;1000 mg/dL；對蛋、大豆、花生、魚過敏；
+    <b>使用 ECMO 者</b>（脂肪可能破壞氧合器膜的疏水性造成 plasma leak，
+    主要出現在 <b>Medtronic Affinity®</b>，膜材質 microporous polypropylene）。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">醣類：主要熱量來源，但有下限也有上限</div>
+    <b>應維持至少 2 g/kg/day</b>；<b>GIR ≤5 mg/kg/min</b>；
+    <b>重症血糖目標 ≤180 mg/dL</b>。台大用 <b>50% glucose（3.4 kcal/g）</b>調配 TPN。<br>
+    <span class="gr w">院內限制</span> 台大的 TPN 是<b>二合一（蛋白質＋醣類）</b>，
+    <b>脂肪必須另外開方</b>——10% 脂肪乳約 1 kcal/mL、20% 為 2 kcal/mL。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">電解質</span><span class="dh-e">Electrolytes</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-wrap" style="min-width:560px;">
+      <thead><tr><th>離子</th><th>每日需求</th><th>需求會增加</th><th>需求會減少</th></tr></thead>
+      <tbody>
+        <tr><td><b>Na</b></td><td>1–2 mEq/kg</td><td>—</td><td rowspan="5"><b>腎衰竭</b><br>——密切監測後調整</td></tr>
+        <tr><td><b>K</b></td><td>1–2 mEq/kg</td><td>腹瀉、鹼中毒、<b>再餵食症候群</b>、<b>CKRT</b>、藥物（利尿劑、amphotericin B）</td></tr>
+        <tr><td><b>Ca</b></td><td>10–15 mEq</td><td>大量輸血</td></tr>
+        <tr><td><b>P</b></td><td>20–40 mmol</td><td><b>再餵食</b>、<b>CKRT</b></td></tr>
+        <tr><td><b>Mg</b></td><td>8–20 mEq</td><td><b>腸胃液流失</b>、再餵食</td></tr>
+        <tr><td><b>Cl</b></td><td colspan="3">用來平衡酸鹼</td></tr>
+        <tr><td><b>Acetate</b></td><td colspan="3">代謝性酸中毒時增加</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">兩個磷製劑的差別</div>
+    <b>Sodium Glycerophosphate（Glycophos）是有機磷</b>——
+    <b>可以搭配較高濃度的鈣而不會出現鈣磷沉澱</b>。<br>
+    <b>K₃PO₄ 用的時候要注意它同時補進大量鉀離子。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">微量營養素</span><span class="dh-e">Micronutrients — 台大品項對照 ASPEN／ESPEN</span></div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">Lyo-povigent 的維生素 K₁ 是 2 mg，建議量的十三倍</div>
+    <b>ASPEN 與 ESPEN 的每日建議量都是 0.15 mg，台大這支含 2 mg。</b>
+    指引正文特別寫明：<b>病人需使用 warfarin 時，須注意 INR 變化。</b><br>
+    另外三項<b>低於</b>建議量：<b>維生素 C 只有 100 mg（ASPEN 建議 200）</b>、
+    <b>B1 3.9 mg（ASPEN 6）</b>、<b>葉酸 400 mcg（ASPEN 600）</b>。
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:520px;">
+      <thead><tr><th>成分</th><th>Lyo-povigent<br>4 mL/vial</th><th>ASPEN<br>每日建議</th><th>ESPEN<br>每日建議</th></tr></thead>
+      <tbody>
+        <tr><td>Vitamin A</td><td>3300 IU</td><td>990 mcg（3300 IU）</td><td>800–1100 mcg</td></tr>
+        <tr><td>Vitamin D</td><td>200 IU</td><td>5 mcg（200 IU）</td><td>&gt;200 IU</td></tr>
+        <tr><td>Vitamin E（tocopheryl acetate）</td><td>10 mg</td><td>10</td><td>&gt;9</td></tr>
+        <tr><td><b>Vitamin K₁（phytonadione）</b></td><td><b>2 mg</b></td><td>0.15</td><td>0.15</td></tr>
+        <tr><td>Vitamin B1（thiamine）</td><td>3.9 mg</td><td>6</td><td>&gt;2.5</td></tr>
+        <tr><td>Vitamin B2（riboflavin）</td><td>4.6 mg</td><td>3.6</td><td>3.6–5</td></tr>
+        <tr><td>Vitamin B6（pyridoxine）</td><td>4.9 mg</td><td>6</td><td>4–6</td></tr>
+        <tr><td>Vitamin B12（cyanocobalamin）</td><td>5 mcg</td><td>5</td><td>&gt;5</td></tr>
+        <tr><td><b>Vitamin C（ascorbic acid）</b></td><td><b>100 mg</b></td><td>200</td><td>100–200</td></tr>
+        <tr><td>Niacinamide</td><td>40 mg</td><td>40</td><td>&gt;40</td></tr>
+        <tr><td><b>Folic acid</b></td><td><b>400 mcg</b></td><td>600</td><td>400–600</td></tr>
+        <tr><td>d-Panthenol</td><td>14 mg</td><td>15</td><td>&gt;15</td></tr>
+        <tr><td>Biotin</td><td>60 mcg</td><td>60</td><td>60</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:480px;">
+      <thead><tr><th>成分</th><th>Addaven<br>每 10 mL</th><th>ASPEN<br>每日建議</th><th>ESPEN<br>每日建議</th></tr></thead>
+      <tbody>
+        <tr><td>Chromium</td><td>10 μg</td><td>&lt;1000</td><td>10</td></tr>
+        <tr><td>Copper</td><td>380 μg</td><td>300–500</td><td>300–500</td></tr>
+        <tr><td>Iodide</td><td>130 μg</td><td>—</td><td>130</td></tr>
+        <tr><td>Manganese</td><td>55 μg</td><td>55</td><td>55</td></tr>
+        <tr><td>Zinc</td><td>5 mg</td><td>3–5</td><td>3–5</td></tr>
+        <tr><td>Fluoride</td><td>950 μg</td><td>—</td><td>—</td></tr>
+        <tr><td>Iron</td><td>1100 μg</td><td>—</td><td>&gt;1000</td></tr>
+        <tr><td>Molybdenum</td><td>19 μg</td><td>—</td><td>19–25</td></tr>
+        <tr><td>Selenium</td><td>79 μg</td><td>60–100</td><td>60–100</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">
+    <b>一般每日需求量為 10 mL。</b>
+    <b>Cu 與 Mn 主要經膽汁排除，膽汁鬱積的病人容易蓄積</b>——
+    <b>文獻建議總膽紅素 &gt;2 mg/dL 時微量元素應減量</b>（可改為每週給四天、休三天），
+    <b>但仍應額外補鋅</b>，尤其燒傷、腹瀉或大量體液流失者。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">三個特殊營養素</span><span class="dh-e">Zn · thiamine · glutamine</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">Zinc — 台大品項 Zinc Sulfate Injection 6.75 mg Zn/amp</div>
+    需求量 <b>女性 3.0–9.8、男性 4.2–14.0 mg/day</b>；
+    <b>燒傷 30–40 mg/day</b>；
+    <b>腸皮瘻管、腹瀉、腸液引流：每流失 1 L 需補到 12–17 mg</b>。<br>
+    缺乏會出現<b>落髮、皮膚炎、憂鬱</b>；經胰臟與腸道分泌排除。
+    <b>過量會噁心嘔吐、胰臟炎，並降低白血球與血小板功能。</b>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">Thiamine — 治療劑量遠高於 TPN 裡那 3.9 mg</div>
+    台大品項 <b>Vitamin B1 Injection 100 mg/2 mL/amp</b>。
+    <b>酗酒與葉酸缺乏會抑制 B1 吸收。</b>
+    <div class="tw">
+      <table class="def-table dt-wrap" style="min-width:440px;">
+        <thead><tr><th>臨床情境</th><th>劑量</th></tr></thead>
+        <tbody>
+          <tr><td>有缺乏風險</td><td>100 mg TID</td></tr>
+          <tr><td>高度懷疑或已證實缺乏</td><td>200 mg TID</td></tr>
+          <tr><td>不明原因腦病變，含 <b>Wernicke</b></td><td><b>500 mg TID</b></td></tr>
+          <tr><td><b>再餵食症候群</b></td><td><b>開始營養治療前先給 300 mg IV</b>，之後 200–300 mg IV 每日，至少再給 3 天</td></tr>
+          <tr><td>住院重症病人</td><td>100–300 mg/day</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Glutamine — 大多數 ICU 病人「不建議」補</div>
+    台大品項 Dipeptiven 0.2 g/mL, 100 mL/btl。<br>
+    <b>不穩定且嚴重的病人（APACHE II ≥15），尤其肝或腎衰竭者，不建議靜脈給 GLN。</b><br>
+    <b>燙傷與創傷以外的 ICU 病人，不建議腸道或靜脈額外補 GLN。</b><br>
+    例外：<b>燙傷 TBSA &gt;20%</b> 可考慮腸道加 GLN 0.3–0.5 g/kg/day、10–15 天；
+    <b>創傷病人</b>開始腸道營養前五天可腸道給 0.2–0.3 g/kg/day，傷口複雜可續用 10–15 天。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">監測</span><span class="dh-e">Monitoring</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:520px;">
+      <thead><tr><th>項目</th><th>Baseline</th><th>狀況不穩定</th><th>狀況穩定</th></tr></thead>
+      <tbody>
+        <tr><td>CBC</td><td>✓</td><td>每週</td><td>每週</td></tr>
+        <tr><td>PT／INR／PTT</td><td>✓</td><td>每週</td><td>每週</td></tr>
+        <tr><td><b>電解質</b> Na K Ca P Mg HCO₃</td><td>✓</td><td><b>每天直到穩定</b></td><td>每週 1–2 次</td></tr>
+        <tr><td>BUN、SCr</td><td>✓</td><td>每天直到穩定</td><td>每週 1–2 次</td></tr>
+        <tr><td>TG</td><td>✓</td><td>每週</td><td>每週</td></tr>
+        <tr><td>Albumin</td><td>✓</td><td>需要時</td><td>需要時</td></tr>
+        <tr><td><b>血糖</b></td><td>✓</td><td><b>每 6 小時直到穩定</b></td><td>每週 1–2 次</td></tr>
+        <tr><td>體重</td><td>✓</td><td>每天</td><td>每週 2–3 次</td></tr>
+        <tr><td>輸入輸出量</td><td>✓</td><td>每天</td><td>每天</td></tr>
+        <tr><td>ALT／T-bil／ALP</td><td>✓</td><td>每週</td><td>每月</td></tr>
+        <tr><td>氮平衡</td><td>需要時</td><td>需要時</td><td>需要時</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">氮平衡怎麼算</div>
+    <b>氮平衡 ＝ N₂(in) − N₂(out)</b>；
+    <b>N₂(in) ＝ 蛋白質 ÷ 6.25</b>（口服與靜脈都要算）；
+    <b>N₂(out) ＝ UUN(g/mL) × 24 小時尿量(mL) ＋ 2–4</b>（不感失水）。
+    <b>目標 ＋4 到 ＋6。</b>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">併發症</span><span class="dh-e">Complications</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">① 肝功能異常</div>
+    三個機轉：<b>脂質過量（&gt;1 g/kg/day）</b>；
+    <b>熱量過多（50 kcal/kg/day）或醣類輸注過快（GIR &gt;5 mg/kg/min）</b>——
+    insulin 過度釋放促進脂肪酸合成，肝臟來不及清除；<b>Cu 與 Mn 過量</b>。<br>
+    處理：儘可能轉為腸道營養，並<b>減少脂質（&lt;0.5 g/kg/day）、減少醣類（&lt;15 kcal/kg/day）、
+    減少微量元素</b>，或改<b>週期性 TPN（16–18 小時）</b>——
+    <b>但要注意休息期間可能低血糖。</b>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">② 高血糖</div>
+    目標 <b>≤180 mg/dL</b>。有高血糖就把 <b>GIR 調到 ≤5 mg/kg/min</b>。<br>
+    <b>起始可考慮每 10 g dextrose 加 1 U insulin</b>，把 RI 加在 TPN 裡，
+    另外開 prn insulin（血糖 &gt;180 時給），每日依額外用量回頭調整 TPN 內的 RI。<br>
+    <span class="gr w">上限</span> <b>TPN 中每 10 g dextrose 添加的 RI 以不超過 2 U 為原則。</b>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">③ 再餵食症候群 — 台大自己的升階表</div>
+    <b>高危險群</b>：BMI &lt;16；<b>過去 3–6 個月非刻意體重減少 &gt;15%</b>；
+    <b>未進食超過 10 天</b>；<b>餵食前 K、Mg、P 偏低</b>；入院營養不良篩檢屬高風險者。
+    <div class="tw">
+      <table class="def-table dt-wrap" style="min-width:460px;">
+        <thead><tr><th>天數</th><th>熱量（所有途徑合計）</th><th>補充</th></tr></thead>
+        <tbody>
+          <tr><td><b>第 1 天</b></td><td><b>10 kcal/kg/day</b><br>極端個案（<b>BMI &lt;14 或 &gt;15 天沒進食</b>）：<b>5 kcal/kg/day</b></td>
+              <td>K 1–3 mEq/kg/day<br>Mg 0.3–0.4 mEq/kg/day<br>P 0.5–0.8 mmol/kg/day<br><b>餵食前 30 分鐘先給 thiamine 100 mg IV</b></td></tr>
+          <tr><td>第 2–4 天</td><td>每天增加 5 kcal/kg/day</td><td>驗電解質並矯正異常<br><b>thiamine 100 mg IV 給到第 3 天</b></td></tr>
+          <tr><td>第 5–7 天</td><td>20–30 kcal/kg/day</td><td>依需要監測</td></tr>
+          <tr><td>第 8 天起</td><td>到達完整需求量</td><td>依需要監測</td></tr>
+        </tbody>
+      </table>
+    </div>
+    機轉：長期飢餓後重新餵食 → 血糖上升刺激 insulin → 醣類合成蛋白質與脂質，
+    <b>消耗 thiamine、Mg 與 P</b>，同時 insulin 把 <b>K、Mg、P 帶回細胞內</b> →
+    低血鉀、低血磷、低血鎂、thiamine 缺乏與高血糖 →
+    <b>心律不整、Wernicke 腦病變</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">配不出來的三個原因</span><span class="dh-e">Trouble shooting</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">① 水分不足</div>
+    調配原料的<b>蛋白質最高濃度 10%、醣類最高濃度 50%</b>，所以體積有下限：<br>
+    <b>最少體積 ＝ 蛋白質(g) × 10 ＋ 葡萄糖(g) × 2</b>，
+    <b>再加電解質＋維生素＋微量元素＋鋅約 100–200 mL</b>。<br>
+    例：50 g protein ＋ 250 g dextrose → 50×10 ＋ 250×2 ＝ <b>1000 mL</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">② 陰陽離子不平衡</div>
+    <b>Na ＋ K ＝ Cl ＋ P×4.4/3 ＋ acetate。</b>
+    台灣沒有 potassium acetate 製劑，所以調配受限。<br>
+    比例：<b>Na:Cl、K:Cl、Na:acetate 皆 1:1；K:P 為 4.4:3；Glycophos 內含 Na:P 為 2:1</b>。<br>
+    <b>處方介面看不到 acetate，所以只要 Cl ≤ Na＋K−P×4.4/3 就配得出來。</b>
+    K 由 KCl 與 K-phosphate 調配，<b>若 K−P×4.4/3 為正值，Cl 至少要大於它</b>。<br>
+    例：Na 80、K 50、P 30 → Cl 至少 ＝ 50 − 30×4.4/3 ＝ <b>6 mEq/L</b>；
+    此時 acetate ＝ 80 mEq/L。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">③ Ca-P 相容性 — 原表有疑點，照抄並標明</div>
+    依<b>胺基酸最終濃度</b>決定 Ca 與 P 的上限。<b>此表不可外推</b>；
+    必要時<b>把鈣從 TPN 外補，而不是加進營養液</b>。
+    <div class="tw">
+      <table class="def-table dt-cor" style="min-width:460px;">
+        <thead><tr><th>胺基酸 1.0–2.0%<br>Ca ／ P</th><th>2.1–3.0%<br>Ca ／ P</th><th>3.1–4.0%<br>Ca ／ P</th><th>&gt;4.0%<br>Ca ／ P</th></tr></thead>
+        <tbody>
+          <tr><td>15 ／ 3</td><td>18 ／ 5</td><td>15 ／ 3</td><td>18 ／ 5</td></tr>
+          <tr><td>12 ／ 3</td><td>15 ／ 6</td><td>12 ／ 3</td><td>15 ／ 6</td></tr>
+          <tr><td>10 ／ 5</td><td>12 ／ 8</td><td>10 ／ 5</td><td>12 ／ 8</td></tr>
+          <tr><td>8 ／ 7</td><td>10 ／ 10</td><td>8 ／ 7</td><td>10 ／ 10</td></tr>
+          <tr><td>5 ／ 12</td><td>8 ／ 15</td><td>5 ／ 12</td><td>8 ／ 15</td></tr>
+          <tr><td>3 ／ 20</td><td>5 ／ 40</td><td>3 ／ 20</td><td>5 ／ 40</td></tr>
+          <tr><td>2 ／ 30–40</td><td>—</td><td>2 ／ 30–40</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    單位：<b>Ca 是 mEq/L、P 是 mmol/L</b>。<br>
+    <span class="gr w">疑點</span> <b>原表「1.0–2.0%」與「3.1–4.0%」兩欄數值完全相同，
+    「2.1–3.0%」與「&gt;4.0%」也完全相同</b>（以 PDF 文字座標逐格核對過，不是我抄錯）。
+    照藥學原理，<b>胺基酸濃度越高應該能容納越多鈣與磷</b>，四欄中有兩欄重複不合理，
+    <b>疑為原文件排版時左右半邊複製重複</b>。<b>本頁照原表呈現、不自行更正</b>——
+    真的要用到邊界值時請洽<b>無菌調劑組（分機 62533）</b>確認。<br>
+    指引正文的例子是：<b>蛋白質 5% 時給 P 40 mmol/L，Ca 不可超過 5 mEq/L</b>——
+    與「&gt;4.0%」那一欄的最後一列相符。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">開方實務</span><span class="dh-e">How to order</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">四件會被退方或漏掉的事</div>
+    <ul>
+      <li><b>TPN-adult 1–4 的醣類與蛋白質比例固定、不可更改</b>；電解質可依臨床需求調整。
+          <b>要自訂醣類與蛋白質比例，選 TPN-modified。</b></li>
+      <li><b>TPN 室調配的 Clinimix 與 Nutriflex 都會加維生素</b>，
+          <b>但微量元素要自己在選項裡選</b>——
+          <b>因膽汁鬱積而不加微量元素時，維持原本的 0。</b></li>
+      <li><b>TPN 處方必須每日開方，且要在每日 16:30 前完成。</b></li>
+      <li><b>遇假日要開足天數</b>——例如星期五要開三天份。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">指引附的完整範例（65 歲男性，165 cm／60 kg，ESRD s/p HD ＋ DM，腸胃道出血插管）</div>
+    <b>① 熱量</b>：非肥胖、未用 IC，因使用鎮靜藥 → 25 kcal/kg × 60 ＝ <b>1500 kcal/day</b>。<br>
+    <b>② 蛋白質</b>：ESRD 規則透析 → 1.3 g/kg × 60 ＝ <b>78 g</b>，用 10% Moriamin SN 需 <b>780 mL</b>。<br>
+    <b>③ 脂肪</b>：約總熱量 30% ＝ 500 kcal → <b>20% 脂肪乳 250 mL</b>。<br>
+    <b>④ 葡萄糖</b>：1500 − 78×4 − 500 ＝ 688 kcal ÷ 3.4 ＝ <b>203 g</b>，用 50% glucose 需 <b>406 mL</b>。<br>
+    <b>⑤ 電解質</b>：ESRD、<b>P 偏高（6 mg/dL）故暫不加 P</b>，其餘給最少量並密切監測。<br>
+    <b>⑥ 維生素</b>：Lyo-povigent 4 mL。<br>
+    <b>⑦ 微量元素</b>：無膽汁鬱積 → 加 10 mL；無腹瀉腸液流失 → 不需額外補鋅。<br>
+    <b>⑧ 體積</b>：780 ＋ 406 ＋ 100 ＝ 1286 mL → 估 <b>1300 mL</b>。<br>
+    <b>⑨ Insulin</b>：AC sugar 284 mg/dL、dextrose 203 g → 可考慮 <b>TPN 內加 20 U</b>，並開 prn order。<br>
+    <b>⑩ 最終醫囑</b>：<b>TPN-modified 1320 mL、cIF(CVC)、流速 55 mL/hr、輸注 1440 分鐘、1 天</b>；
+    Dextrose 15.4%、AA 5.9%、Na 60、K 20、Cl 20、Ca 4、P 0、Mg 7 mEq/L、
+    MVI 4 mL、TE 10 mL；<b>另開 20% 脂肪乳 250 mL QD IF 輸注 420 分鐘</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">小兒與新生兒標準配方</span><span class="dh-e">《小兒TPN處方》2020-04-21・藥委會第 220 次通過</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-cor fz-tbl" style="min-width:480px;">
+      <thead><tr><th>Ped（&lt;40 kg）</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+      <tbody>
+        <tr><td>Dextrose</td><td>10%</td><td>15%</td><td>20%</td><td>25%</td></tr>
+        <tr><td>Amino acid</td><td colspan="4">2%（<b>一律用 10% Moriamin SN</b>）</td></tr>
+        <tr><td>Na (mEq/L)</td><td colspan="4">30</td></tr>
+        <tr><td>K (mEq/L)</td><td colspan="4">20</td></tr>
+        <tr><td>Cl (mEq/L)</td><td colspan="4">30</td></tr>
+        <tr><td>Ca (mEq/L)</td><td><b>0</b></td><td>15</td><td>15</td><td>15</td></tr>
+        <tr><td>P (mmol/L)</td><td colspan="4">3</td></tr>
+        <tr><td>Mg (mEq/L)</td><td colspan="4">10</td></tr>
+        <tr><td>Acetate (mEq/L)</td><td colspan="4">26.6</td></tr>
+        <tr><td><b>滲透壓 (mOsm/L)</b></td><td><b>824</b></td><td>1106</td><td>1367</td><td>1627</td></tr>
+        <tr><td>Heparin</td><td colspan="4">0.5 unit/mL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor fz-tbl" style="min-width:480px;">
+      <thead><tr><th>Neo（&lt;10 kg）</th><th>E</th><th>F</th><th>G</th><th>H</th></tr></thead>
+      <tbody>
+        <tr><td>Dextrose</td><td>10%</td><td>12%</td><td>15%</td><td>17%</td></tr>
+        <tr><td>Aminosteril Inf.</td><td>2.5%</td><td>3%</td><td>3%</td><td>3%</td></tr>
+        <tr><td>Na (mEq/L)</td><td>20</td><td>20</td><td>30</td><td>30</td></tr>
+        <tr><td>K (mEq/L)</td><td colspan="4">20</td></tr>
+        <tr><td>Cl (mEq/L)</td><td>20</td><td>20</td><td>30</td><td>30</td></tr>
+        <tr><td>Ca (mEq/L)</td><td>10</td><td>25</td><td>25</td><td>25</td></tr>
+        <tr><td>P (mmol/L)</td><td colspan="4">10</td></tr>
+        <tr><td>Mg (mEq/L)</td><td colspan="4">5</td></tr>
+        <tr><td><b>滲透壓 (mOsm/L)</b></td><td><b>834</b></td><td>1005</td><td>1181</td><td>1285</td></tr>
+        <tr><td>Heparin</td><td colspan="4">0.5 unit/mL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">小兒這兩張表的四個重點</div>
+    <ul>
+      <li><b>周邊靜脈長時間輸注必須 &lt;600 mOsm/L</b>（超過較易引發血栓靜脈炎）。
+          <b>所有配方都超過 600</b>——<b>Ped-A（824）與 Neo-E（834）也只能「短暫」用於周邊</b>，
+          其餘一律中央。</li>
+      <li><b>表上的葡萄糖與胺基酸是「最終濃度」</b>，不是原料濃度。</li>
+      <li><b>鋅的添加量要看有沒有加微量元素</b>：
+          <b>Ped 100 μg/kg（上限 5 mg）</b>；
+          <b>Neo 足月 200 μg/kg、早產 400 μg/kg</b>。
+          微量元素品項依體重選：<b>≥15 kg 用 Addaven 0.1 mL/kg/day；≤15 kg 用 Peditrace 1 mL/kg/day</b>。</li>
+      <li><b>新生兒要出生後 14 天才開始加微量元素</b>（Peditrace 1 mL/kg/day）。</li>
+    </ul>
+    標準處方不敷應用時可視需要修正。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">調配原料</span><span class="dh-e">Raw materials — 附件一、二、三</span></div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:420px;">
+      <thead><tr><th>蛋白質原料</th><th>Moriamin SN</th><th>Aminoleban</th></tr></thead>
+      <tbody>
+        <tr><td>總胺基酸 (%)</td><td>10.0</td><td>8</td></tr>
+        <tr><td><b>BCAA／總胺基酸 (%)</b></td><td>22.6</td><td><b>35.5</b></td></tr>
+        <tr><td>E／N 比</td><td>1.09</td><td>1.09</td></tr>
+        <tr><td>Na (mEq/L)</td><td>&lt;5</td><td>14</td></tr>
+        <tr><td>Acetate (mEq/L)</td><td>60</td><td>—</td></tr>
+        <tr><td>滲透壓 (mOsm/L)</td><td>900</td><td>900</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">E／N 比＝必需胺基酸對非必需胺基酸的比值。</div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:460px;">
+      <thead><tr><th>脂肪乳</th><th>SMOFlipid</th><th>Lipovenous MCT<br><span class="gr w">已停產</span></th><th>Lipofundin MCT/LCT<br><span class="gr w">已停產</span></th></tr></thead>
+      <tbody>
+        <tr><td>濃度 (%)</td><td>20</td><td>20</td><td>10</td></tr>
+        <tr><td>大豆油 (%)</td><td>6</td><td>10</td><td>5</td></tr>
+        <tr><td>MCT (%)</td><td>6</td><td>10</td><td>5</td></tr>
+        <tr><td><b>魚油 (%)</b></td><td><b>3</b></td><td>—</td><td>—</td></tr>
+        <tr><td><b>橄欖油 (%)</b></td><td><b>5</b></td><td>—</td><td>—</td></tr>
+        <tr><td>蛋黃磷脂 (%)</td><td>1.2</td><td>1.2</td><td>0.8</td></tr>
+        <tr><td>甘油 (%)</td><td>2.5</td><td>2.5</td><td>2.5</td></tr>
+        <tr><td>pH</td><td>8.0</td><td>6.5–8.7</td><td>6.5–8.8</td></tr>
+        <tr><td>kcal/mL</td><td>2</td><td>1.95</td><td>1</td></tr>
+        <tr><td>滲透壓 (mOsm/L)</td><td>380</td><td>273</td><td>345</td></tr>
+        <tr><td>mL/btl</td><td>250</td><td>250</td><td>250</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table class="def-table dt-cor" style="min-width:520px;">
+      <thead><tr><th>電解質原料</th><th>Na</th><th>K</th><th>Ca</th><th>P</th><th>Mg</th><th>Cl</th><th>Acetate</th></tr></thead>
+      <tbody>
+        <tr><td>3% Sodium chloride</td><td>0.513</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.513</td><td>—</td></tr>
+        <tr><td>Sodium acetate</td><td>4</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>4</td></tr>
+        <tr><td>Potassium chloride</td><td>—</td><td>2</td><td>—</td><td>—</td><td>—</td><td>2</td><td>—</td></tr>
+        <tr><td>Potassium phosphate</td><td>—</td><td>4.4</td><td>—</td><td>3</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><b>Sodium Glycerophosphate</b></td><td>2</td><td>—</td><td>—</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Calcium gluconate</td><td>—</td><td>—</td><td>0.465</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Magnesium sulfate</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.8</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead" style="margin-top:-4px;">單位皆為 <b>mEq/mL</b>，<b>P 為 mmol/mL</b>。</div>
 </div>
 
 <!-- ==================== 重症營養時機 ==================== -->
@@ -775,7 +1247,7 @@
 
   <div class="kbox">
     <div class="kbox-t">thiamine 要另外開</div>
-    綜合維生素（Lyo-Povigent）裡的 thiamine 只有約 <b>3 mg</b>，是每日補充量。
+    綜合維生素（Lyo-Povigent）裡的 thiamine 只有 <b>3.9 mg</b>，是每日補充量。<b>台大自己的治療劑量表在「台大 TPN 指引」分頁</b>——再餵食是<b>開始營養前先給 300 mg IV</b>、Wernicke 是 <b>500 mg TID</b>。
     <b>再餵食高風險或懷疑 Wernicke 時，thiamine 必須另外開治療劑量，而且要在給糖之前給。</b>
     ASPEN 2020 的重度再餵食定義裡，<b>「因缺 thiamine 而出現器官功能障礙」本身就算重度</b>。
   </div>
@@ -886,6 +1358,7 @@
     <a href="https://pubmed.ncbi.nlm.nih.gov/32115791/" target="_blank" rel="noopener" class="ref-link">da Silva JSV, Seres DS, Sabino K, et al. ASPEN Consensus Recommendations for Refeeding Syndrome. Nutr Clin Pract. 2020;35(2):178-195.（另有勘誤 PMID 32383800）</a> ｜
     <a href="https://pubmed.ncbi.nlm.nih.gov/35365361/" target="_blank" rel="noopener" class="ref-link">Berger MM, Shenkin A, Schweinlin A, et al. ESPEN micronutrient guideline. Clin Nutr. 2022;41(6):1357-1424.</a> ｜
     <a href="https://www.nice.org.uk/guidance/cg174" target="_blank" rel="noopener" class="ref-link">NICE. Intravenous fluid therapy in adults in hospital. Clinical guideline CG174.</a>
+    ｜ <a href="#ntuh" class="ref-link">台大醫院《Total parenteral nutrition (TPN) in adult medical ICU》2025 修訂（吳珮君、吳建志、戴志勳、王雪如藥師；賴聖如營養師；古世基醫師）</a> ｜ <a href="#ntuh" class="ref-link">台大醫院《成人標準配方》</a> ｜ <a href="#ntuh" class="ref-link">台大醫院《小兒TPN處方》2020-04-21（藥委會第 220 次通過）</a>
     ｜ 晶體輸液與添加劑的品項、電解質濃度與劑量：<b>台大醫院藥劑部藥品資料庫</b>。
     Taita 1–5 號、Bfluid、Clinimix、Oliclinomel、Nutriflex、Smoflipid、Addaven、Lyo-Povigent 的成分：
     <b>衛生福利部食品藥物管理署核准之官方仿單／外盒標籤</b>（許可證字號標於各處）。
@@ -980,6 +1453,7 @@ function nuCalc(){
   if(gir > 5) f.push('<span class="f-bad">▲ GIR ' + gir.toFixed(2) + ' mg/kg/min 已超過 5 的上限（ESPEN R23）——超出的葡萄糖走脂肪生成，會推高血糖與 CO₂ 產量。</span>');
   else if(gir > 4) f.push('<span class="f-bad">△ GIR 接近 5 mg/kg/min 的上限，重症有胰島素阻抗，實際耐受度常更低。</span>');
   if(lipKg > 1.5) f.push('<span class="f-bad">▲ 脂肪 ' + lipKg.toFixed(2) + ' g/kg/d 超過 1.5 的上限（ESPEN R25，含 propofol）。</span>');
+  else if(lipKg > 1) f.push('<span class="f-bad">△ 脂肪 ' + lipKg.toFixed(2) + ' g/kg/d 已超過台大 MICU 指引的 1 g/kg/d（ESPEN 才容忍到 1.5）。</span>');
   else if(prop > 0 && lipKg > 0.7) f.push('<span class="f-bad">△ propofol 已佔掉不少脂肪額度，開脂肪乳前先扣掉。</span>');
   if(prop > 0){
     f.push('<span>propofol ' + prop + ' mL/hr → 脂肪 ' + (prop * 0.1 * 24).toFixed(1) +

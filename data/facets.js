@@ -256,7 +256,7 @@ window.FACETS = {
     {"w": "營養不良", "al": "malnutrition GLIM NRS 營養風險"},
     {"w": "再餵食症候群", "al": "refeeding syndrome 再餵食"},
     {"w": "輸液選擇", "al": "IV fluid crystalloid 輸液 點滴 打點滴 掛水 補液 維持輸液 maintenance fluid 生理食鹽水 normal saline NS half saline D5W 葡萄糖水 乳酸林格 Lactated Ringer LR Hartmann Ringer Taita 台大一號 台大三號 台大五號 大塚"},
-    {"w": "靜脈營養", "al": "parenteral nutrition PN TPN PPN 全靜脈營養 周邊靜脈營養 營養針 高卡 三合一袋 Bfluid Clinimix Oliclinomel Nutriflex Smoflipid 脂肪乳 lipid emulsion 胺基酸 amino acid 微量元素 trace element Addaven 綜合維生素 Lyo-Povigent"},
+    {"w": "靜脈營養", "al": "parenteral nutrition PN TPN PPN 全靜脈營養 周邊靜脈營養 營養針 高卡 三合一袋 Bfluid Clinimix Oliclinomel Nutriflex Smoflipid Omegaven 脂肪乳 lipid emulsion 胺基酸 amino acid Moriamin Aminoleban Aminosteril Nephrosteril Dipeptiven glutamine 微量元素 trace element Addaven Peditrace 綜合維生素 multivitamin Lyo-Povigent 維生素K1 thiamine 鋅 zinc Glycophos 台大配方 TPN-Adult TPN-Ped TPN-Neo 藥局配製 鈣磷沉澱 Ca-P 相容性 陰陽離子平衡 氮平衡 nitrogen balance GIR 週期性 cyclic 無菌調劑組"},
     {"w": "VTE 風險", "al": "venous thromboembolism Caprini Padua 血栓風險"},
     {"w": "中風風險", "al": "stroke risk CHA2DS2 抗凝適應症"},
     {"w": "侵襲性念珠菌感染", "al": "invasive candidiasis candida 念珠菌"},
