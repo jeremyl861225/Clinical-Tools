@@ -425,6 +425,7 @@
   .bc-gene .bc-gene-list .rx-sub{font-size:11px; color:var(--muted);}
   .bc-gene .bc-gene-list ul.rec-sub{margin:3px 0 4px; padding-left:17px; list-style:disc; font-size:12.5px;}
   .bc-gene .bc-gene-list ul.rec-sub li{margin:3px 0;}
+  .bc-gene .bc-gene-more{margin-top:10px;}
   .bc-gene .bc-gene-list .drug{display:inline-block; font-family:var(--sans); font-size:11.5px; line-height:1.5;
     background:var(--field-bg); border:1px solid var(--line); border-radius:3px; padding:0 6px; white-space:nowrap;}
 
