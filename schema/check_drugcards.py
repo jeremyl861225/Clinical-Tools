@@ -24,7 +24,8 @@ def codes_in(pid):
 def cards_in_module(path):
     """從流程圖模組抓 ['<pid>', '<code>', '<商品名>'] 這種字面值。"""
     src = io.open(ROOT / path, encoding='utf-8').read()
-    return re.findall(r"\['(\d+)',\s*'([^']+)',\s*'[^']*'\]", src)
+    # 元組是 [pid, code, 商品名] 或 [pid, code, 商品名, 學名]，第 4 欄可有可無
+    return re.findall(r"\['(\d+)',\s*'([^']+)',\s*'[^']*'(?:,\s*'[^']*')?\]", src)
 
 MODULES = ['js/breast-pathway.js']
 

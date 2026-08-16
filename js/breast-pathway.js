@@ -71,24 +71,24 @@
     /* ── 內分泌治療 ───────────────────────────── */
     { key: 'tamoxifen', cards: [['12', 'NOL4CE01', 'Nolvadex 諾瓦得士錠 10 mg']] },
     { key: 'aromatase inhibitor',
-      cards: [['17', 'FEM4CB22', 'Femara 復乳納膜衣錠 2.5 mg（letrozole）'],
-              ['17', 'ARI4CB22', 'Arimidex 安美達錠 1 mg（anastrozole）'],
-              ['17', 'ARO4CB35', 'Aromasin 諾曼癌素糖衣錠 25 mg（exemestane）']] },
+      cards: [['17', 'FEM4CB22', 'Femara 復乳納膜衣錠 2.5 mg', 'letrozole'],
+              ['17', 'ARI4CB22', 'Arimidex 安美達錠 1 mg', 'anastrozole'],
+              ['17', 'ARO4CB35', 'Aromasin 諾曼癌素糖衣錠 25 mg', 'exemestane']] },
     { key: 'fulvestrant', cards: [['17', 'FAS1CE32', 'Faslodex 法洛德注射液 250 mg/5 mL']] },
     { key: 'GnRH 類似物', re: 'GnRH 類似物|卵巢功能抑制',
-      cards: [['12', 'ZOL1LD28', 'Zoladex 諾雷德 3.6 mg 皮下注射 q4w'],
-              ['12', 'ZOL1LD49', 'Zoladex LA 諾雷德 10.8 mg 皮下注射 q12w']] },
+      cards: [['12', 'ZOL1LD28', 'Zoladex 諾雷德 3.6 mg 皮下注射 q4w', 'goserelin'],
+              ['12', 'ZOL1LD49', 'Zoladex LA 諾雷德 10.8 mg 皮下注射 q12w', 'goserelin']] },
 
     /* ── 抗 HER2 ─────────────────────────────── */
     { key: 'trastuzumab',
       cards: [['17', 'HE 1CE35', 'Herceptin 賀癌平 440 mg 靜脈／600 mg 皮下'],
-              ['17', 'HER1CH25', 'Herzuma 赫珠瑪 440 mg（生物相似藥）'],
-              ['17', 'OGI1CH25', 'Ogivri 癌吉清 440 mg（生物相似藥）']] },
+              ['17', 'HER1CH25', 'Herzuma 赫珠瑪 440 mg（生物相似藥）', 'trastuzumab'],
+              ['17', 'OGI1CH25', 'Ogivri 癌吉清 440 mg（生物相似藥）', 'trastuzumab']] },
     { key: 'pertuzumab',
       cards: [['17', 'PER1CEG5', 'Perjeta 賀疾妥 420 mg/14 mL'],
-              ['17', 'PHE1CH54', 'Phesgo 賀雙妥 皮下（pertuzumab＋trastuzumab）']] },
-    { key: 'T-DM1', cards: [['17', 'KAD1CEG6', 'Kadcyla 賀癌寧 160 mg（trastuzumab emtansine）']] },
-    { key: 'T-DXd', cards: [['17', 'ENH1CH06', 'Enhertu 優赫得 100 mg（trastuzumab deruxtecan）']] },
+              ['17', 'PHE1CH54', 'Phesgo 賀雙妥 皮下注射', 'pertuzumab ＋ trastuzumab']] },
+    { key: 'T-DM1', cards: [['17', 'KAD1CEG6', 'Kadcyla 賀癌寧 160 mg', 'trastuzumab emtansine']] },
+    { key: 'T-DXd', cards: [['17', 'ENH1CH06', 'Enhertu 優赫得 100 mg', 'trastuzumab deruxtecan']] },
     { key: 'lapatinib', cards: [['17', 'TYK4CEA6', 'Tykerb 泰嘉錠 250 mg']] },
     { key: 'neratinib', cards: [['17', 'NER4CEZ8', 'Nerlynx 賀儷安 40 mg']], flag: '專案採購／自費' },
     { key: 'tucatinib', cards: [['17', 'TUK4CG58', 'Tukysa 150 mg']], flag: '專案採購／全自費' },
@@ -99,9 +99,9 @@
       flag: '乳癌健保限「有心臟風險之轉移性」' },
     { key: 'epirubicin', cards: [['17', 'PH 1CD10', 'Pharmorubicin 泛艾黴素 10 mg']] },
     { key: 'cyclophosphamide',
-      cards: [['16', 'END1CA09', 'Endoxan 癌得星注射劑 500 mg'],
-              ['16', 'END4CA04', 'Endoxan 癌德星錠 50 mg（口服，CMF 用）']] },
-    { key: 'methotrexate', cards: [['17', 'MET1CB07', 'Methotrexate 盈壽求得注射液（抗腫瘤劑量）']] },
+      cards: [['16', 'END1CA09', 'Endoxan 癌得星注射劑 500 mg', 'cyclophosphamide'],
+              ['16', 'END4CA04', 'Endoxan 癌德星錠 50 mg（口服，CMF 用）', 'cyclophosphamide']] },
+    { key: 'methotrexate', cards: [['17', 'MET1CB07', 'Methotrexate 盈壽求得注射液（抗腫瘤劑量）', 'methotrexate']] },
     { key: '5-FU', re: '5-FU', cards: [['17', '5FU1CB41', '5-FU 好復注射液 1000 mg/20 mL']] },
     { key: 'leucovorin', cards: [['11', 'FO 1QB04', 'Folina 芙琳亞注射液 100 mg/10 mL']] },
     { key: 'paclitaxel', re: '(?<!nab-)paclitaxel', cards: [['17', 'PHY1CC03', 'Phyxol 輝克癒蘇 30 mg（溶劑型）']] },
@@ -114,7 +114,7 @@
     { key: 'gemcitabine', cards: [['17', 'GEI1CB14', 'Gemmis 健仕注射液 200 mg/6 mL']] },
     { key: 'vinorelbine',
       cards: [['17', 'NAV1CC12', 'Navelbine 溫諾平注射液 50 mg/5 mL'],
-              ['17', 'NAV4CC24', 'Navelbine 溫諾平軟膠囊 20 mg（口服）']] },
+              ['17', 'NAV4CC24', 'Navelbine 溫諾平軟膠囊 20 mg（口服）', 'vinorelbine']] },
     { key: 'eribulin', cards: [['17', 'HAL1CEI4', 'Halaven 賀樂維注射液 1 mg/2 mL']] },
     { key: 'etoposide', cards: [['17', 'FYT1CC11', 'Fytosid 癌妥滅靜脈注射液 100 mg/5 mL']] },
     { key: 'TS-1', cards: [['17', 'TS14CB44', 'TS-1 愛斯萬膠囊 20 mg']], flag: '乳癌健保未給付' },
@@ -139,12 +139,12 @@
 
     /* ── 支持性治療 ──────────────────────────── */
     { key: 'zoledronate', re: 'zoledronate|zoledronic',
-      cards: [['12', 'BOL1FAB5', 'Bolenic 卓固尼 4 mg（骨轉移劑量）'],
-              ['12', 'ZOB1FAB5', 'Zobonic 抑骨 4 mg（骨轉移劑量）']] },
-    { key: 'denosumab', cards: [['12', 'XGS1FAG7', 'Xgeva 癌骨瓦 120 mg q4w（骨轉移）']] },
+      cards: [['12', 'BOL1FAB5', 'Bolenic 卓固尼 4 mg（骨轉移劑量）', 'zoledronic acid'],
+              ['12', 'ZOB1FAB5', 'Zobonic 抑骨 4 mg（骨轉移劑量）', 'zoledronic acid']] },
+    { key: 'denosumab', cards: [['12', 'XGS1FAG7', 'Xgeva 癌骨瓦 120 mg q4w（骨轉移）', 'denosumab']] },
     { key: 'G-CSF', re: 'G-CSF',
-      cards: [['11', 'FIL1EG01', 'Filgrastim 惠爾血添 75／300 mcg'],
-              ['11', 'FUL1EG24', 'Fulphila 福富血 6 mg（長效，生物相似藥）']] }
+      cards: [['11', 'FIL1EG01', 'Filgrastim 惠爾血添 75／300 mcg', 'filgrastim'],
+              ['11', 'FUL1EG24', 'Fulphila 福富血 6 mg（長效，生物相似藥）', 'pegfilgrastim']] }
   ];
 
   /* ==========================================================
@@ -184,6 +184,12 @@
 
   function fold(summary, inner) {
     return '<details class="kps-details"><summary>' + summary + ' ▸</summary>' + inner + '</details>';
+  }
+  /* 處方表專用。和 fold() 只差一個 rx-table class —— 最下方的藥卡掃描會把這種表
+     一起掃進去（裡面列的是真的要開的藥），其他參考表（健保條文、放療適應症、
+     OlympiA 條件…）則不掃，否則會把整本藥典列出來。 */
+  function foldRx(summary, inner) {
+    return '<details class="kps-details rx-table"><summary>' + summary + ' ▸</summary>' + inner + '</details>';
   }
   function panel(summary, inner) {
     return '<details class="rx-more"><summary>' + summary + ' ▸</summary><div class="rx-note">' + inner + '</div></details>';
@@ -331,7 +337,7 @@
 
   /* 3b. 化療處方（p28–p31） */
   function chemoReference() {
-    return fold('化療處方要開哪一個？<b>院內常用處方的藥名、劑量與療程</b>（p28–p31）', tbl([
+    return foldRx('化療處方要開哪一個？<b>院內常用處方的藥名、劑量與療程</b>（p28–p31）', tbl([
       ['怎麼選強度',
         '院內共識：<b>除了強烈建議用第三代處方的病人以外，原則上只建議「要化療」或「不必化療」，' +
         '強度由主治醫師與病人討論後共同決定</b>（p28）。<br>' +
@@ -642,7 +648,7 @@
 
   /* 轉移期化療處方 */
   function mbcChemoTable() {
-    return fold('轉移期的化療處方有哪些？（p42、p43、p44、p45）', tbl([
+    return foldRx('轉移期的化療處方有哪些？（p42、p43、p44、p45）', tbl([
       ['三個基本前提',
         '① <b>所有早期乳癌的處方，不管是合併處方或其中的單一藥物，轉移時都可以用。</b><br>' +
         '② 只有<b>已知抗藥性的疑慮（例如很快就復發）</b>，或 <b>anthracycline 已達累積劑量</b>時才不適合。<br>' +
@@ -856,6 +862,7 @@
     h += '</div>';
     /* 藥卡區塊刻意放在 #bcPath 之外：流程圖每次點選都會重寫建議框的 innerHTML，
        藥卡若放在裡面，使用者展開的卡會被銷毀重建、收起來，等於每點一次就白展開一次。 */
+    h += '<div class="bc-gene hidden" id="bc_gene"></div>';
     h += '<div class="bc-drugbox hidden" id="bc_drugs"></div>';
     return h;
   }
@@ -1436,7 +1443,9 @@
       path === 'up'
         ? 'p17（HER2 陽性）、p19／p20（三陰性）、p22（荷爾蒙受體陽性）、p21（BRCA）、p23／p24（內分泌治療）、p47／p48（放射治療）。'
         : 'p18（HER2 陽性術後）、p20（三陰性術後）、p21（BRCA 與 OlympiA）、p22、p23／p24（內分泌治療）、p49（術前治療後的放射治療）。',
-      more(etReference(), chemoReference(), rtReference(), olympiaTable(), nhiEarly()));
+      more(etReference(), chemoReference(), rtReference(),
+        /* OlympiA 與健保 9.85.4 都要求 HER2 陰性，HER2 陽性那兩型掛這張表只是雜訊 */
+        (s === 'erpos' || s === 'tnbc') ? olympiaTable() : '', nhiEarly()));
   }
 
   function adjSystemicUpfront(s, pt, pn, g) {
@@ -1466,6 +1475,10 @@
       }
       if (s === 'her2hr' && (pn === 'n1' || pn === 'n23')) {
         L.push('<b>荷爾蒙受體陽性且 HER2 陽性、淋巴結陽性者，可考慮延長輔助 ' + drug('neratinib') + ' 1 年</b>（p18）。');
+        L.push(EV('<b>這一型不能用輔助 ' + drug('abemaciclib') + '</b>，即使淋巴結 ≥ 4 顆也一樣 —— ' +
+          'monarchE 與健保 9.107 都同時要求「荷爾蒙受體陽性」<b>而且「HER2 陰性」</b>，' +
+          'HER2 陽性直接出局。這一條很容易漏掉，因為這一型同時符合「荷爾蒙受體陽性」與' +
+          '「淋巴結陽性」兩個條件，看起來很像該給。'));
         L.push(EV('指引對這裡的「高風險」只舉了兩個例子：<b>淋巴結陽性</b>，或<b>術前治療後未達 pCR</b>。' +
           '院內共識是 neratinib 可以提早開始 —— 化療結束後即可，與抗 HER2 治療、內分泌治療同時進行。' +
           '<b>neratinib 目前仍未納入健保給付。</b>'));
@@ -1958,6 +1971,42 @@
   }
 
 
+
+  /* ==========================================================
+     8b. 什麼時候要驗基因？（p4、p5）
+     ----------------------------------------------------------
+     放在流程圖最下方、最終建議之後（使用者指定）。這一段對每一條路徑都適用，
+     所以不掛在任何一張建議卡裡，避免同一段話在不同分支重複好幾次。
+     ========================================================== */
+  function geneticBlock() {
+    return '<div class="bc-gene-h">要不要驗基因？<span class="bc-gene-n">p4、p5</span></div>' +
+      '<ul class="rec-detail bc-gene-list">' + [
+        H('什麼時候要驗 germline BRCA1/2？', 'p5'),
+        '<b>符合下面任何一項就可以考慮做遺傳性基因套組檢測：</b>' + SUB([
+          '<b>符合遺傳諮詢的條件</b>（家族史、雙側乳癌，或發病年齡 &lt; 35 歲 —— 條件見下一段）',
+          '<b>早期乳癌</b>：HER2 陰性的第 II 或 III 期，而且符合 OlympiA 試驗條件 —— 也就是<b>可能因 PARP 抑制劑受益</b>者',
+          '<b>晚期乳癌</b>：HER2 陰性，而且<b>曾在術前、輔助或轉移情境接受過化療</b>'
+        ]),
+        EV('這一段是指引 p5 在 2023 年版新增的一頁。驗出來會直接改變治療：能不能用 ' +
+          drug('olaparib') + '（早期與轉移都要看這個）、要不要建議雙側預防性切除、' +
+          '以及乳房保留手術的取捨（已知或懷疑遺傳性乳癌基因是 BCT 的相對禁忌）。' +
+          '<b>等到要開藥才驗常常來不及</b> —— 輔助 olaparib 規定最後一次化療後 12 週內就要開始。'),
+        H('什麼時候要懷疑家族史、轉遺傳諮詢？', 'p4'),
+        '<b>三個大條件，符合任何一項就轉：家族史（定義見下）、雙側乳癌、發病年齡很輕（&lt; 35 歲）。</b>',
+        '<b>指引把「家族史」寫成八項明確定義</b>，符合任何一項即算：' + SUB([
+          '≥ 3 名女性家族成員罹患乳癌（<b>不限年齡</b>）',
+          '≥ 2 名女性罹患乳癌，其中<b>一人診斷時 ≤ 50 歲</b>',
+          '≥ 1 名女性罹患乳癌，<b>加上一名家族成員罹患卵巢癌</b>（可以是同一人）',
+          '≥ 1 名女性<b>&lt; 35 歲</b>確診乳癌',
+          '≥ 1 名女性罹患<b>雙側</b>乳癌（第一個乳癌確診時需 &lt; 50 歲）',
+          '≥ 1 名女性確診<b>卵巢癌</b>（確診時需 &lt; 40 歲）',
+          '≥ 2 名女性確診卵巢癌（<b>不限年齡</b>）',
+          '≥ 1 名<b>男性</b>家族成員確診乳癌（<b>不限年齡</b>）'
+        ]),
+        EV('第 ③、⑥、⑦ 項都把卵巢癌算進來 —— 問家族史時只問乳癌會漏掉一整類 BRCA 家庭。' +
+          '第 ⑧ 項的男性乳癌不限年齡，這一項最容易被跳過。')
+      ].map(liOf).join('') + '</ul>';
+  }
   /* ==========================================================
      9. 本路徑用藥的台大藥卡
      ----------------------------------------------------------
@@ -1970,13 +2019,23 @@
 
   function cardId(code) { return 'bc-drug-' + code.replace(/ /g, '_'); }
 
+  /* c = [pid, code, 商品名, 學名?]。第 4 欄用來讓同一組（例如三支 aromatase
+     inhibitor）的每張卡各自印出自己的學名，不寫就沿用整組的 key。 */
   function drugCardHTML(c, gen, flag) {
+    gen = c[3] || gen;
     return '<details class="drugcard" id="' + cardId(c[1]) + '" data-pid="' + c[0] +
       '" data-code="' + c[1] + '" ontoggle="onCardToggle(this)">' +
       '<summary><span class="dc-name">' + c[2] + '</span>' +
       (flag ? '<span class="db-tag db-tag-ext">' + flag + '</span>' : '') +
       '<span class="dc-nameen">' + gen + '</span></summary>' +
       '<div class="dc-body"><div class="db-loading">載入中…</div></div></details>';
+  }
+
+  function renderGeneBlock(hasRec) {
+    var g = el('bc_gene');
+    if (!g) return;
+    g.classList.toggle('hidden', !hasRec);
+    if (hasRec && !g.innerHTML) g.innerHTML = geneticBlock();
   }
 
   function renderDrugCards() {
@@ -1994,10 +2053,15 @@
         r.querySelectorAll('ul.rec-detail:not(.rec-more) > li:not(.ev)').forEach(function (li) {
           txt += li.textContent + '\n';
         });
+        /* 收合的處方表也要掃：裡面列的是真的會開的化療處方與藥名（使用者指定）。
+           其他參考表不掃 —— 健保條文那一段幾乎把整本藥典提過一次。 */
+        r.querySelectorAll('details.rx-table').forEach(function (d) { txt += d.textContent + '\n'; });
         var t = r.querySelector('.rec-title');
         if (t) txt += t.textContent + '\n';
       });
     }
+
+    renderGeneBlock(!!txt.trim());
 
     var picked = [];
     BC_DRUGS.forEach(function (d) {

@@ -2685,6 +2685,26 @@
   background: color-mix(in srgb, var(--sentence-hot) 38%, var(--sentence-bg)); border-color: var(--sentence-hot); color: var(--sentence-fg); border-width: 3px;
 }
 
+/* ---- P11a. 流程圖最下方的「要不要驗基因」區塊 ---- */
+[data-ui="sentence"] .bc-gene { border-top: 1px solid var(--sentence-line2); }
+[data-ui="sentence"] .bc-gene-h {
+  font-family: var(--sentence-mono); color: var(--sentence-fg2);
+  border-bottom-color: var(--sentence-line2);
+}
+[data-ui="sentence"] .bc-gene-n { color: var(--sentence-dim); }
+[data-ui="sentence"] .bc-gene .bc-gene-list { font-size: 12px; line-height: 1.72; color: var(--sentence-fg2); }
+[data-ui="sentence"] .bc-gene .bc-gene-list li b { color: var(--sentence-fg); }
+[data-ui="sentence"] .bc-gene .bc-gene-list li.ev { color: var(--sentence-dim); font-size: 11px; }
+[data-ui="sentence"] .bc-gene .bc-gene-list li.hd { margin-left: -1.2em; }
+[data-ui="sentence"] .bc-gene .bc-gene-list .rx-h {
+  font-family: var(--sentence-mono); color: var(--sentence-fg); border-bottom-color: var(--sentence-line2);
+}
+[data-ui="sentence"] .bc-gene .bc-gene-list .rx-sub { color: var(--sentence-dim); }
+[data-ui="sentence"] .bc-gene .bc-gene-list ul.rec-sub { font-size: 11.5px; }
+[data-ui="sentence"] .bc-gene .bc-gene-list .drug {
+  background: var(--sentence-bg2); border-color: var(--sentence-line2); color: var(--sentence-fg);
+}
+
 /* ---- P11b. 流程圖最下方的「本路徑用藥」藥卡區塊 ---- */
 [data-ui="sentence"] .bc-drugbox { border-top: 1px solid var(--sentence-line2); }
 [data-ui="sentence"] .bc-drugbox-h {

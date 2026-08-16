@@ -886,7 +886,13 @@ function closeShot() {
 
 /* 整張藥卡：共用表頭（學名／機轉／劑型）＋各規格分頁。單一規格則不顯示分頁。 */
 function cardBody(d) {
-  const cls = (d.cls || []).map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
+  /* 藥理機轉的覆寫層。d.cls 是 build_cards.py 取台大分類路徑的最後一段當機轉，
+     碰到「6) Miscellaneous」這種**分類桶**時就會印出「Miscellaneous」——
+     那不是機轉，是台大分類樹上的一個抽屜。這裡讓 data/drugs/extras.js 以八碼
+     指定正確的機轉；改的是我們自己的推導，不是台大的資料內容。 */
+  const exCls = (window.DRUGDB_EXTRA || {})[d.code];
+  const clsList = (exCls && exCls.cls) ? exCls.cls : (d.cls || []);
+  const cls = clsList.map(c => `<span class="db-moa">${esc(c)}</span>`).join('');
   const header = `
     ${field('學名', d.name)}
     ${field('別名', (d.alias || []).join('、'))}

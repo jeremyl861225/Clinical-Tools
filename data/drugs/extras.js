@@ -10,6 +10,19 @@
  */
 window.DRUGDB_EXTRA = {
 
+  /* ── 藥理機轉覆寫（cls）──────────────────────────────────
+     build_cards.py 是取台大分類路徑的最後一段當「藥理機轉」。
+     aromatase inhibitor 三支在台大分類樹上掛在
+     「XV. Antineoplastic Agents 3. Hormones and Antagonists 6) Miscellaneous」，
+     最後一段是 Miscellaneous —— 那是分類抽屜，不是機轉，印在藥卡上會誤導
+     （對照組：tamoxifen 掛在 4) Antiestrogens，就正確印出 Antiestrogen）。
+     這裡只改機轉這一個欄位，台大的其他內容一律不動。
+     鍵＝卡層主碼（cardBody 用 d.code 取）。 */
+  FEM4CB22: { cls: ['Aromatase inhibitor'] },   // Femara letrozole
+  LET4CB22: { cls: ['Aromatase inhibitor'] },   // Lovizol letrozole
+  ARI4CB22: { cls: ['Aromatase inhibitor'] },   // Arimidex anastrozole
+  ARO4CB35: { cls: ['Aromatase inhibitor'] },   // Aromasin exemestane
+
   /* Heparin Injection 25000 IU/5 mL/vial —— 治療性連續輸注的流速調整。
      來源：台大醫院 anti-Xa assay for heparin（2023）院內文件所附兩張表。
      兩表都以 **Heparin 濃度 100 U/mL** 為前提（25000 IU 稀釋至 250 mL），

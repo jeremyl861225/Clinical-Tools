@@ -340,7 +340,7 @@
   /* 左欄以往用 nowrap，欄名一長整張表就被撐得又窄又高。改成允許換行並限寬，
      右欄的內文才攤得開、表格總高度也短很多。 */
   .kps-details td:first-child{font-family:var(--mono); font-weight:700; text-align:right;
-    white-space:normal; width:20%; min-width:58px; line-height:1.35;}
+    white-space:normal; width:32%; min-width:94px; line-height:1.35;}
   /* 建議卡末尾的參考資料（.rec-more）：外面已經是一般的 li，行距與點點跟其他
      段落一致，details 本身就不要再自帶上下留白或另一套行距。 */
   .flow-rec .rec-detail.rec-more > li > details{margin:0;}
@@ -406,6 +406,28 @@
   /* ---- 流程圖最下方的「本路徑用藥」藥卡區塊 ----
      刻意放在 .onc-path 之外（見 breast-pathway.js 的說明），所以自己帶容器樣式。
      藥卡本體（.drugcard／.dc-*）沿用 antibiotics.css 與 drug-database.css。 */
+  /* ---- 流程圖最下方的「要不要驗基因」區塊 ---- */
+  .bc-gene{margin-top:18px; border-top:1px solid var(--line); padding-top:14px;}
+  .bc-gene.hidden{display:none;}
+  .bc-gene-h{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); border-bottom:1px solid var(--accent-soft); padding-bottom:4px;
+    display:flex; align-items:baseline; gap:8px;}
+  .bc-gene-n{margin-left:auto; color:var(--muted-soft); letter-spacing:.04em;}
+  /* 這一段不在建議卡（深底）裡，所以要自己指定一般內文的顏色與字級 */
+  .bc-gene .bc-gene-list{margin:9px 0 0; padding-left:18px; font-size:13px; line-height:1.75; color:var(--ink);}
+  .bc-gene .bc-gene-list li{margin:2px 0;}
+  .bc-gene .bc-gene-list li.hd{list-style:none; margin:13px 0 3px -18px;}
+  .bc-gene .bc-gene-list li.hd:first-child{margin-top:0;}
+  .bc-gene .bc-gene-list li.ev{font-size:11.5px; line-height:1.65; color:var(--muted); margin:3px 0 5px;}
+  .bc-gene .bc-gene-list .rx-h{display:inline-block; font-family:var(--mono); font-size:12.5px; font-weight:700;
+    letter-spacing:.03em; color:var(--ink); border-bottom:1.5px solid var(--accent-soft);
+    padding-bottom:1px; margin:2px 0;}
+  .bc-gene .bc-gene-list .rx-sub{font-size:11px; color:var(--muted);}
+  .bc-gene .bc-gene-list ul.rec-sub{margin:3px 0 4px; padding-left:17px; list-style:disc; font-size:12.5px;}
+  .bc-gene .bc-gene-list ul.rec-sub li{margin:3px 0;}
+  .bc-gene .bc-gene-list .drug{display:inline-block; font-family:var(--sans); font-size:11.5px; line-height:1.5;
+    background:var(--field-bg); border:1px solid var(--line); border-radius:3px; padding:0 6px; white-space:nowrap;}
+
   .bc-drugbox{margin-top:18px; border-top:1px solid var(--line); padding-top:14px;}
   .bc-drugbox.hidden{display:none;}
   .bc-drugbox-h{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
