@@ -217,7 +217,7 @@
       ['停經前',
         '<b>tamoxifen 至少 5 年</b>。5 年之後：<br>' +
         '· 仍停經前或無法確定 → 可再 5 年 tamoxifen（合計 10 年）。<br>' +
-        '· 已停經 → 換 <b>aromatase inhibitor</b>（aromatase inhibitor）再 5 年，或再 5 年 tamoxifen。<br>' +
+        '· 已停經 → 換 <b>aromatase inhibitor</b> 再 5 年，或再 5 年 tamoxifen。<br>' +
         '· 已做雙側卵巢切除 → 之後照停經後原則走。<br>' +
         '· <b>高風險者</b>可用 GnRH 類似物加 aromatase inhibitor 或 tamoxifen 共 5 年。'],
       ['停經後<br>（四選一）',
@@ -1318,7 +1318,7 @@
     if (s === 'erpos' || s === 'her2hr') {
       L.push(H('內分泌治療', 'p17、p23、p24'));
       L.push('<b>荷爾蒙受體陽性者一定要做內分泌治療</b>；<b>有化療的話，等化療結束後才開始</b>（p17）。');
-      L.push('<b>停經前先用 ' + drug('tamoxifen') + '；停經後先用 aromatase inhibitor</b>（aromatase inhibitor）。' +
+      L.push('<b>停經前先用 ' + drug('tamoxifen') + '；停經後先用 aromatase inhibitor</b>。' +
         '完整的排法見下方收合表。');
     }
 
