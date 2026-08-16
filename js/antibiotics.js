@@ -360,7 +360,11 @@ function openDrug(k){
     if(c.id==='drug-'+k && c.offsetParent!==null) target=c;
   });
   if(!target) target=el('drug-'+k);
-  if(target){ target.open=true; target.scrollIntoView({behavior:'smooth',block:'center'}); }
+  /* 落點與 js/drug-database.js applyHash() 同一條規則：卡片**上緣**（商品名那一行）
+     貼齊畫面上緣，behavior 用預設的 auto。理由見該檔註解——smooth 在長文件上會
+     靜默不捲，而且這裡前一步的 switchMode() 才剛下過一次 smooth 捲到頂，
+     兩次 smooth 疊在一起後面那次會被前面那次吃掉。 */
+  if(target){ target.open=true; target.scrollIntoView({block:'start'}); }
 }
 
 /* ---- 模式切換與新模組 ---- */

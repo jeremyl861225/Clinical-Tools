@@ -3041,6 +3041,13 @@
     var reset = flowResetBtn();
     if (!reset) return false;
     var keep = flowStack.slice(0, -1);
+    /* 重置＋重播這一趟會把版面整個拆掉再蓋回來，中途瀏覽器對捲動位置做的事
+       不是我們要的——實測乳癌 T×N 退一格：退之前 scrollY=1695，退完變成 2828，
+       畫面往下跳了一千多 px，人會以為自己按到別的東西。所以退之前記下位置，
+       重播完再放回去。退一步只會讓內容變少、上面的東西不動，放回原位看到的
+       就是同一段；真的塌到比原位還短時瀏覽器自己會夾到底部，也還在合理範圍。
+       （abxReset() 那種自帶 scrollTo(0) 的重置鍵一併蓋掉，同樣是要的。） */
+    var y0 = window.pageYOffset || document.documentElement.scrollTop || 0;
     flowReplaying = true;
     try {
       reset.click();
@@ -3055,6 +3062,12 @@
     } catch (e) { /* 某一支 pathway 的 pick 丟例外：狀態已經是重置後那一套，不再往下 */ }
     flowReplaying = false;
     flowStack = keep;
+    /* 當場放一次、下一幀再放一次：pathway 的 render() 大多是同步的，但
+       tools/cancer.html 那一套在 showDetail／switchTab 之後還掛了一輪掃描
+       （js/cancer-staging.js 的 sweepIdlePlaceholders），會在這一幀之後再改版面。 */
+    var put = function () { try { window.scrollTo(0, y0); } catch (e2) {} };
+    put();
+    if (window.requestAnimationFrame) requestAnimationFrame(put); else setTimeout(put, 0);
     return true;
   }
   document.addEventListener('click', function (e) {
@@ -3110,9 +3123,23 @@
     return true;   // 內頁最差也還有「帶著少一個詞的句子回首頁」
   }
 
+  /* 「同一份文件裡的上一層」目前只認一種：tools/cancer.html 的「← 返回癌症清單」
+     （.onc-back，js/cancer-staging.js backToPicker()）。那一頁把 30 個癌別的清單
+     與某一個癌別的內容做成同一份文件的兩個畫面，中間沒有 history 紀錄——不認它的話
+     在乳癌流程按上一步會一路跳回首頁，中間那一層被跳過。
+     刻意不把「分頁切換」（.onc-tab／.abx-mode／各頁的 #tab=）也算進來：那是同一層
+     裡的並列視角，不是上下層，退到「另一個分頁」沒有人會覺得是上一步。 */
+  function oncBackBtn() {
+    var b = document.querySelector('.onc-back');
+    return (b && b.offsetParent !== null) ? b : null;
+  }
+
   function stepBack() {
+    if (flowReplaying) return;   // 連按時上一次的重播還沒跑完，這一下先讓掉
     if (sayOpen) { showSay(false); try { window.scrollTo(0, 0); } catch (e) {} syncBar(); return; }
     if (flowUndo()) { syncBar(); return; }
+    var onc = oncBackBtn();
+    if (onc) { onc.click(); syncBar(); return; }
     if (isHome()) {
       if (dropTail()) { renderHome(); return; }
       if (openTile) { openTile = null; renderHome(); return; }
