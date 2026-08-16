@@ -334,7 +334,13 @@
   .flow-rec.rec-idle .rec-detail .fu-gap, .flow-rec.rec-idle .rec-note .fu-gap{color:var(--muted); opacity:1;}
   .kps-details{margin:6px 0 2px;}
   .kps-details summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; color:inherit; text-decoration:underline; opacity:.92;}
+  /* 原生的 ▶ 三角形要一起關掉。::-webkit-details-marker 是舊的非標準寫法，
+     現行 Chrome 已改用 ::marker，只寫舊的等於沒關 —— 結果每個 summary 都會同時
+     出現原生 ▶ 與我們自己加的 ▸，看起來像重複列點（使用者 2026-08-16 實機回報）。
+     已確認全庫 .kps-details／.dx-details 的 summary 都以 ▸ 結尾，關掉不會失去展開提示。 */
+  .kps-details summary{list-style:none;}
   .kps-details summary::-webkit-details-marker{display:none;}
+  .kps-details summary::marker{content:"";}
   .kps-details table{border-collapse:collapse; margin-top:7px; font-size:11px; line-height:1.4;}
   .kps-details td{border:1px solid rgba(190,190,190,.32); padding:3px 8px; vertical-align:top;}
   /* 左欄以往用 nowrap，欄名一長整張表就被撐得又窄又高。改成允許換行並限寬，
@@ -348,7 +354,9 @@
   /* 診斷／縮寫等參考區塊：安靜的可折疊清單（不用醒目的 rx-line 框） */
   .dx-details{margin:6px 0 2px;}
   .dx-details summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; color:var(--muted); text-decoration:underline; opacity:.92;}
+  .dx-details summary{list-style:none;}
   .dx-details summary::-webkit-details-marker{display:none;}
+  .dx-details summary::marker{content:"";}
   .dx-details .dx-h{font-family:var(--sans); font-size:11.5px; font-weight:700; color:var(--muted); margin:9px 0 2px;}
   .dx-details ul.dx-list{margin:0 0 4px; padding-left:17px; font-size:12px; line-height:1.65; color:var(--muted);}
   .dx-details ul.dx-list li{margin:2px 0;}
