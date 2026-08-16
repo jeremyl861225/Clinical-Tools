@@ -669,8 +669,51 @@ function applyHash(){
   return false;
 }
 
+/* ------------------------------------------------------------------
+   建議框佔位不顯示（2026-08-16）
+   ------------------------------------------------------------------
+   使用者要求：「不要在選擇選項前就出現建議處置框框」。各癌別流程原本會先
+   放一個 .flow-rec.rec-idle 的佔位框，寫「請完成上方步驟」之類的提示 ——
+   那是一個空的建議框，正是使用者指的東西。
+
+   這裡不動 25 個流程模組，改在共用層一次處理：只藏「標題以『請』開頭且
+   沒有任何 .rec-detail 內容」的 idle 框。這兩個條件同時成立才算佔位。
+   ⚠ 不可以直接藏掉全部 .rec-idle —— aml-pathway.js 的 renderOther() 會用
+   rec-idle 當作正常的低強度建議框並填入內容，那種要留著。
+
+   收斂方式：sweep 只在需要時改 class；改完之後下一輪 sweep 不再有變動，
+   MutationObserver 便停止觸發，不會無限迴圈。
+------------------------------------------------------------------- */
+function sweepIdlePlaceholders(){
+  var recs = document.querySelectorAll('.flow-rec.rec-idle');
+  for(var i=0;i<recs.length;i++){
+    var r = recs[i];
+    var t = r.querySelector('.rec-title');
+    var txt = t ? t.textContent.trim() : '';
+    var isPlaceholder = (txt === '' || txt.charAt(0) === '請') && !r.querySelector('.rec-detail');
+    if(isPlaceholder !== r.classList.contains('idle-hidden')){
+      r.classList.toggle('idle-hidden', isPlaceholder);
+    }
+  }
+}
+
+/* 掛法：showDetail／switchTab 之後掃一次（切換癌別與分頁），再加一個冒泡階段的
+   document click（跑在各流程模組的 inline onclick 之後）。兩者都是同步的，
+   不依賴 requestAnimationFrame —— 分頁被隱藏時 rAF 會停擺。 */
+['showDetail', 'switchTab'].forEach(function (name) {
+  var orig = window[name];
+  if (typeof orig !== 'function') return;
+  window[name] = function () {
+    var r = orig.apply(this, arguments);
+    sweepIdlePlaceholders();
+    return r;
+  };
+});
+document.addEventListener('click', function () { sweepIdlePlaceholders(); }, false);
+
 document.addEventListener('DOMContentLoaded', function () {
   renderPicker('');
   applyHash();
+  sweepIdlePlaceholders();
 });
 window.addEventListener('hashchange', applyHash);
