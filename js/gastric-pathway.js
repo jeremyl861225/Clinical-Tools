@@ -1031,11 +1031,11 @@
         L.push(EV('注意條文指定的鉑類是 <b>oxaliplatin</b>，不是 cisplatin —— ' +
           '和 trastuzumab 那條（指定 cisplatin）剛好相反，開單前要看清楚是哪一條在給付。'));
         L.push(H('若這位病人同時 CLDN18.2 陽性', '9.133、9.69(5) II'));
-        L.push('<b>zolbetuximab 與免疫檢查點抑制劑只能擇一給付、失敗時不可互換 —— 第一線就要決定。</b>');
+        L.push('<b>' + NR('zolbetuximab') + ' 與免疫檢查點抑制劑只能擇一給付、失敗時不可互換 —— 第一線就要決定。</b>');
       } else if (S.bio === 'cps1') {
         L.push('<b>加 pembrolizumab（CPS ≥ 1，用 Dako 22C3 驗）。</b>');
         L.push(H('但健保這一格是空的', '9.69 生物標記表'));
-        L.push('<b>胃癌第一線的免疫治療，健保只給付 nivolumab 且要求 CPS ≥ 5</b>；' +
+        L.push('<b>胃癌第一線的免疫治療，健保只給付 ' + NR('nivolumab') + ' 且要求 CPS ≥ 5</b>；' +
           'pembrolizumab 在這個適應症「尚未給付」。<b>CPS ≥ 1 但 < 5 的病人要自費。</b>');
         L.push(EV('CPS 的兩個切點對應兩支不同的抗體與兩支不同的藥：' +
           '<b>Dako 22C3 → pembrolizumab → 切點 1；Dako 28-8 → nivolumab → 切點 5</b>。' +
@@ -1184,7 +1184,10 @@
     function textOf(n) {
       var c = n.cloneNode(true);
       c.querySelectorAll('.no-rx').forEach(function (x) { x.remove(); });
-      return c.textContent;
+      /* ⚠ 不能直接讀 textContent —— '</b></td><td>' 這種標籤邊界在 textContent 裡是零寬度的，
+         會把 'FOLFIRINOX' 和 'oxaliplatin' 黏成 'FOLFIRINOXoxaliplatin'，
+         整字比對就抓不到 oxaliplatin，那張藥卡會無聲消失。改成把標籤換成空白。 */
+      return c.innerHTML.replace(/<[^>]*>/g, ' ');
     }
     var root = el('gcPath');
     if (root) {

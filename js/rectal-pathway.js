@@ -1372,7 +1372,10 @@
     function textOf(n) {
       var c = n.cloneNode(true);
       c.querySelectorAll('.no-rx').forEach(function (x) { x.remove(); });
-      return c.textContent;
+      /* ⚠ 不能直接讀 textContent —— '</b></td><td>' 這種標籤邊界在 textContent 裡是零寬度的，
+         會把 'FOLFIRINOX' 和 'oxaliplatin' 黏成 'FOLFIRINOXoxaliplatin'，
+         整字比對就抓不到 oxaliplatin，那張藥卡會無聲消失。改成把標籤換成空白。 */
+      return c.innerHTML.replace(/<[^>]*>/g, ' ');
     }
     var root = el('rcPath');
     if (root) {
