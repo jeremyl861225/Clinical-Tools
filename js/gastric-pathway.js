@@ -479,7 +479,13 @@
           '<b>無法耐受三合一者，鉑 + fluoropyrimidine 雙合一為替代方案</b>（指引明文）。',
           '<b>適應症</b>：臨界可切除（<b>cT4N+ 或 bulky N</b>）者「可考慮」使用，非強制。',
           '<b>durvalumab + FLOT（MATTERHORN）</b>：AGC-2 註 b 明文「僅美國 FDA 核准、<b>TFDA 尚未核准</b>」，' +
-          '健保亦未給付；可作為臨床試驗或自費討論之選項（指引狀態日期 2026/06）。'
+          '健保亦未給付；可作為臨床試驗或自費討論之選項（指引狀態日期 2026/06）。<br>' +
+          '<b>〔指引外之試驗數據，供討論用〕</b>MATTERHORN 第三期試驗（Janjigian YY et al. NEJM 2025;393:217-230，948 人）：' +
+          '<b>2 年無事件存活 67.4% vs 58.5%（HR 0.71，95% CI 0.58–0.86，P&lt;0.001）</b>、' +
+          '<b>病理完全緩解 19.2% vs 7.2%</b>；2 年整體存活 75.7% vs 70.4%。' +
+          '<b>⚠ 存活的比較未達其預設的顯著門檻</b>（P=0.03，門檻為 P&lt;0.0001）—— ' +
+          '主要指標是無事件存活，講給病人聽時這一點要說清楚。' +
+          'Grade 3/4 不良事件兩組相當（71.6% vs 71.2%）。'
         ];
         if (!s.prerest) {
           result(R, F, 'rec-nonop', '圍手術期化療（術前段）→ 完成後再分期', pre.concat([
@@ -613,7 +619,10 @@
         '<span class="drug">irinotecan</span>、<span class="rx">5-FU/HDFL</span>、<span class="drug">capecitabine</span>、<span class="drug">S-1</span>）；' +
         '<span class="drug">ramucirumab</span> ± <span class="drug">paclitaxel</span>（RAINBOW）；<b>臨床試驗</b>。',
         '<b>HER2 陽性者：<span class="drug">trastuzumab deruxtecan</span>（T-DXd）</b> —— ' +
-        '<b>用之前必須重新切片確認 HER2 仍為陽性</b>；胃癌的 HER2 表現本來就異質，一線 trastuzumab 之後轉陰並不罕見。',
+        '<b>用之前必須重新切片確認 HER2 仍為陽性</b>；胃癌的 HER2 表現本來就異質，一線 trastuzumab 之後轉陰並不罕見。' +
+        '<b>〔指引參考文獻第 30 篇即為此試驗〕</b>DESTINY-Gastric04（Shitara K et al. NEJM 2025;393:336-348，494 人）：' +
+        'T-DXd vs ramucirumab + paclitaxel，<b>中位整體存活 14.7 vs 11.4 個月（HR 0.70）</b>、客觀反應率 44.3% vs 29.1%。' +
+        '<b>⚠ 間質性肺病／肺炎 13.9% vs 1.3%</b> —— 用藥前後要交代咳嗽與喘的警訊並定期追蹤影像。',
         '<b>健保實務</b>：ramucirumab、paclitaxel、T-DXd 多需自費；' +
         '<b>irinotecan、capecitabine、S-1 這幾個「單方或合併」選項才是有給付、開得出來的那一組</b>，' +
         '不要因為它們排在清單第二條就忽略。',

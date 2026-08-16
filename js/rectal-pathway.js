@@ -458,7 +458,10 @@
         'Long-course chemo/RT（capecitabine 或 infusional 5-FU）或 Short-course RT → Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）') +
       opt('tntord', 't_chemo1', '<b>先化療、後化放療</b>（誘導型 induction）',
         'Chemotherapy 12–16 週（FOLFOX 或 CAPEOX）→ Long-course chemo/RT 或 Short-course RT'),
-      '<div class="note"><b>兩種順序怎麼選（指引列為並列選項，未給依據）</b>：' +
+      '<div class="note"><b>再分期時機：COL-12(3) 原圖之 Restaging 方塊<u>沒有標時間</u></b> —— ' +
+      '本頁採用的「完成放療後 6–12 週」是依 COL-12(2) 與 COL-12(1) 之「best tumor response 6–12 weeks after completion of RT」外推而來，' +
+      '<b>屬外推而非 COL-12(3) 之條文</b>。<br>' +
+      '<b>兩種順序怎麼選（指引列為並列選項，未給依據）</b>：' +
       '以<b>器官保留（watch &amp; wait）</b>為目標者，多優先選<b>先化放療、後化療（鞏固型）</b> —— ' +
       '<b>OPRA</b> 隨機第二期試驗（324 人）之 5 年結果：<b>免於全直腸繫膜切除之存活（TME-free survival）' +
       '鞏固型 54% vs 誘導型 39%（P=0.012）</b>，而<b>5 年無病存活相當（69% vs 71%，P=0.68）</b>' +
