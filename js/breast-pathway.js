@@ -1,2126 +1,1945 @@
 /* ============================================================
    乳癌治療互動決策流程 Breast Cancer Treatment Pathway
    ------------------------------------------------------------
+   2026-08-16 全部重寫（第二版）。舊版已刪除，未沿用其程式碼。
+
    主要資料來源：國立臺灣大學醫學院附設醫院 乳癌診療指引
    （NTUH Clinical Guidelines of Breast Cancer in Oncology, 2023.V1；
      文件編號 50710-2-000010，版次 14；修制訂 2023/12/28；
-     癌症醫療委員會檢視通過 2026/06/16）
-   指引內頁編號以 p1–p49 標於各建議之出處。
+     癌症醫療委員會檢視通過 2026/06/16）。頁碼以 p1–p49 標於各建議。
+   健保給付條文查詢日：2026-08-16。
 
-   流程順序刻意依臨床決策的實際發生順序編排：
-     影像發現 →（切片病理 + cTNM）→ 先開刀或先做術前輔助治療
-     → 怎麼開（乳房手術 + 腋下手術）→ 術後放療與輔助全身治療
-     → 復發／轉移之升階治療
-   分期（AJCC 8th）不屬本指引範圍，另見「分期 TNM」頁籤。
+   ── 本版遵守的六條版面規則 ────────────────────────────
+   1. 沒有選之前，下游的步驟與建議框一律不出現。每次 render 先把整個
+      流程關到只剩步驟 1（collapseAll），再依 state 逐層打開。
+   2. 建議框只講「它正上方那一步」的結論，不放下游或上游的處置。
+   3. 臨床決策用正常字；理由、試驗數據、與指引的差異一律降階成小灰字
+      （li.ev）或收合（details）。
+   4. 同一件事只寫一次。共用內容（內分泌治療、化療處方、腋下原則、
+      放療適應症、健保條文）各自只有一個函式，其他地方指過去。
+   5. 不縮寫。aromatase inhibitor 寫「芳香環酶抑制劑」，SLNB 寫
+      「前哨淋巴結切片」，其餘同理；英文只在括號內出現一次。
+   6. 凡是「高風險」「符合條件」這種字眼，一定要在同一格寫出條件內容。
+
    本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
   'use strict';
 
-  var bcSt = {
-    scope: null,   // dx | dcis | lcis | ebc | prog | mbc | recur
-    /* 影像診斷分支 */
-    img: null,     // im_calc | im_mass | im_skin | im_axilla
-    /* DCIS */
-    dloc: null,    // d_bct | d_sm
-    dmar: null,    // dm_neg | dm_close
-    /* 侵襲癌（M0）主線 */
-    sub: null,     // her2hr | her2 | erpos | tnbc
-    ctn: null,     // 臨床 cT×cN 格：t1ab_n0 … t4d_n23
-    strat: null,   // up | nact | noop
-    nresp: null,   // NACT 治療中反應：na_resp | na_pd
-    surg: null,    // sg_bct | sg_sm
-    ax: null,      // 腋下處置結果（upfront 與 NACT 共用一個 key，選項組不同）
-    ptn: null,     // 術後 pT×pN 格：t1mi_n0 … t4_n23
-    resp: null,    // NACT 後病理反應：pcr | nonpcr
-    /* 治療中／治療後早期進展 */
-    pg: null,      // pg_nact | pg_chemo | pg_et | pg_her2 | pg_cdk
-    pget: null,    // 內分泌抗性判定：et_prim | et_sec | et_late
-    /* 轉移性 */
-    msub: null,    // m_her2 | m_erpos | m_tnbc
-    mcrisis: null, // mc_no | mc_yes
-    /* 局部／區域復發 */
-    rsite: null    // r_bctrt | r_bctlndrt | r_nort | r_ax | r_scf | r_imn
-  };
+  /* ==========================================================
+     0. 狀態
+     ========================================================== */
+  var S = {};
+  var KEYS = [
+    'scope',   // dx | dcis | lcis | inv | mbc | recur | prog
+    'img',     // 影像分支：calc | mass | skin | axilla
+    'dloc',    // 原位管癌局部治療：bct | tm
+    'dmar',    // 原位管癌切緣：neg | close
+    'sub',     // 亞型：erpos | her2hr | her2 | tnbc
+    'ctn',     // 臨床 cT×cN 格
+    'plan',    // up（直接手術）| na（先做術前藥物治療）
+    'surg',    // 直接手術的乳房術式：bct | tm
+    'ptn',     // 術後病理 pT×pN 格
+    'nresp',   // 術前治療後：op_bct | op_tm | pd | inop
+    'ypath',   // 術前治療後的病理：pcr | res_n0 | npos
+    'mrisk',   // 轉移：crisis | high | mid | low
+    'mline',   // 轉移線別：l1 | l2 | l3
+    'mbio',    // 轉移生物標記：brca | pdl1 | none
+    'rsite',   // 局部區域復發位置：local | axilla | scf | imn
+    'rprev',   // 局部復發時的初始治療：bct_rt | bct_lnd_rt | nort
+    'pstage'   // 治療中進展的階段：na | chemo | et | her2
+  ];
+  KEYS.forEach(function (k) { S[k] = null; });
 
   /* ==========================================================
-     版面 helpers
+     1. 版面小工具
      ========================================================== */
   function opt(key, val, title, sub) {
     return '<button class="flow-opt" onclick="bcPick(\'' + key + '\',\'' + val + '\',this)">' +
       title + (sub ? '<span class="fo-sub">' + sub + '</span>' : '') + '</button>';
   }
-  function step(id, num, q, optsHtml, extra) {
-    return '<div class="flow-step" id="' + id + '"><div class="flow-step-head">' +
+
+  /* 一個節點 ＝ 箭頭 + 步驟卡，整包一起開關，箭頭不會單獨留在畫面上 */
+  function node(id, num, q, opts, extra) {
+    return '<div class="bc-node hidden" id="' + id + '">' +
+      '<div class="flow-connector">↓</div>' +
+      '<div class="flow-step"><div class="flow-step-head">' +
       '<span class="flow-num">' + num + '</span><span class="flow-q">' + q + '</span></div>' +
-      '<div class="flow-opts">' + optsHtml + '</div>' + (extra || '') + '</div>';
+      (opts ? '<div class="flow-opts">' + opts + '</div>' : '') + (extra || '') + '</div></div>';
   }
-  function conn(id) { return '<div class="flow-connector" id="' + id + '">↓</div>'; }
-  function connH(id) { return '<div class="flow-connector hidden" id="' + id + '">↓</div>'; }
-  function rec(id, label) {
-    return '<div class="flow-rec rec-idle" id="' + id + '"><div class="rec-label">' + label +
-      '</div><div class="rec-title">請完成上方步驟</div></div>';
+  function node0(id, num, q, opts) {
+    return '<div class="bc-node" id="' + id + '">' +
+      '<div class="flow-step"><div class="flow-step-head">' +
+      '<span class="flow-num">' + num + '</span><span class="flow-q">' + q + '</span></div>' +
+      '<div class="flow-opts">' + opts + '</div></div></div>';
   }
-  function lg(cls, txt) {
-    return '<div class="tn-lg"><span class="tn-sw ' + cls + '"></span><span>' + txt + '</span></div>';
+  function recBox(id, label) {
+    return '<div class="flow-rec rec-idle hidden" id="' + id + '">' +
+      '<div class="rec-label">' + label + '</div><div class="rec-title"></div></div>';
   }
-  function rxLine(head, sub, items) {
-    return '<div class="rx-line"><div class="rx-line-h"><span class="rx-h">' + head + '</span>' +
-      (sub ? '<span class="rx-sub">' + sub + '</span>' : '') + '</div>' +
-      '<ul class="rx-items"><li>' + items.join('</li><li>') + '</li></ul></div>';
+  function fuBox(id) { return '<div class="flow-fu hidden" id="' + id + '"></div>'; }
+
+  /* 建議條列的三個層級 */
+  function H(title, src) {
+    return '<span class="rx-h">' + title + '</span>' + (src ? '　<span class="rx-sub">' + src + '</span>' : '');
   }
+  function EV(t) { return '@ev ' + t; }
+  function SUB(items) { return '<ul class="rec-sub"><li>' + items.join('</li><li>') + '</li></ul>'; }
+
+  function fold(summary, inner) {
+    return '<details class="kps-details"><summary>' + summary + ' ▸</summary>' + inner + '</details>';
+  }
+  function panel(summary, inner) {
+    return '<details class="rx-more"><summary>' + summary + ' ▸</summary><div class="rx-note">' + inner + '</div></details>';
+  }
+  function tbl(rows) {
+    return '<table>' + rows.map(function (r) {
+      return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+    }).join('') + '</table>';
+  }
+  function drug(n) { return '<span class="drug">' + n + '</span>'; }
 
   /* ==========================================================
-     一、臨床分期格 cT×cN → 初始策略（p9、p11、p18、p19）
-     顏色隨「生物亞型」改變 —— 台大的 NACT 適應症本來就是分亞型寫的，
-     用同一張灰格子表達四種亞型會直接寫錯，故四種亞型各一張。
+     2. T×N 決策格
      ========================================================== */
-  var CTN_ROWS = [
-    ['t1ab', 'T1a–b', '≤10mm'],
-    ['t1c', 'T1c', '>10–20mm'],
-    ['t2', 'T2', '>2–5cm'],
-    ['t3', 'T3', '>5cm'],
-    ['t4ac', 'T4a–c', '胸壁／皮膚'],
-    ['t4d', 'T4d', '發炎性']
-  ];
-  var CTN_COLS = [['n0', 'cN0', '腋下臨床陰性'], ['n1', 'cN1', '可動腋下(+)'], ['n23', 'cN2–3', '固定／內乳／鎖骨上下']];
+  var GCLS = { none: 'g-none', ii: 'g-ii', low: 'g-low', high: 'g-high' };
 
-  /* g-none 直接手術｜g-low 兩者皆可｜g-ii 建議 NACT｜g-high 局部晚期強烈建議先全身治療 */
-  var CTN_GROUP = {
-    her2hr: {  // HR(+)/HER2(+)：台大 ≥T2N0、≥N1 建議 NACT；cT1abN0 走 APT 直接手術；cT1cN0 兩者皆可
-      t1ab: ['g-none', 'g-ii', 'g-high'],
-      t1c: ['g-low', 'g-ii', 'g-high'],
-      t2: ['g-ii', 'g-ii', 'g-high'],
-      t3: ['g-ii', 'g-ii', 'g-high'],
-      t4ac: ['g-high', 'g-high', 'g-high'],
-      t4d: ['g-high', 'g-high', 'g-high']
-    },
-    her2: {    // HR(−)/HER2(+)：多一條「≥T1cN0 亦建議 NACT」
-      t1ab: ['g-none', 'g-ii', 'g-high'],
-      t1c: ['g-ii', 'g-ii', 'g-high'],
-      t2: ['g-ii', 'g-ii', 'g-high'],
-      t3: ['g-ii', 'g-ii', 'g-high'],
-      t4ac: ['g-high', 'g-high', 'g-high'],
-      t4d: ['g-high', 'g-high', 'g-high']
-    },
-    tnbc: {    // 台大 ≥T2N0、≥N1；T1cN0 台大未列入而 ASCO 有 → 標為兩者皆可並註明差異
-      t1ab: ['g-none', 'g-ii', 'g-high'],
-      t1c: ['g-low', 'g-ii', 'g-high'],
-      t2: ['g-ii', 'g-ii', 'g-high'],
-      t3: ['g-ii', 'g-ii', 'g-high'],
-      t4ac: ['g-high', 'g-high', 'g-high'],
-      t4d: ['g-high', 'g-high', 'g-high']
-    },
-    erpos: {   // HR(+)/HER2(−)：NACT 為選擇性（降期以行 BCT）；局部晚期（stage III 或 T3N0）才強烈建議
-      t1ab: ['g-none', 'g-low', 'g-high'],
-      t1c: ['g-none', 'g-low', 'g-high'],
-      t2: ['g-none', 'g-low', 'g-high'],
-      t3: ['g-ii', 'g-ii', 'g-high'],
-      t4ac: ['g-high', 'g-high', 'g-high'],
-      t4d: ['g-high', 'g-high', 'g-high']
-    }
-  };
-
-  var SUB_LABEL = {
-    her2hr: 'HR(+) / HER2(+)',
-    her2: 'HR(−) / HER2(+)',
-    erpos: 'HR(+) / HER2(−)',
-    tnbc: 'HR(−) / HER2(−)（TNBC）'
-  };
-
-  function ctnGridHtml(sub) {
-    var G = CTN_GROUP[sub];
-    var h = '<div class="tn-wrap" id="bc_ctnwrap_' + sub + '">';
-    h += '<div class="tn-cap">臨床分期 clinical stage（M0）· 點選格子</div>';
-    h += '<div class="tn-sub">亞型：<b>' + SUB_LABEL[sub] + '</b>　—　台大之術前輔助治療（NACT）適應症<b>依亞型而異</b>，' +
-      '故切換亞型時整張表會重新上色（p9、p11、p18、p19）。</div>';
-    h += '<div class="tn-grid" id="bc_ctngrid_' + sub + '">';
-    h += '<div class="tn-corner">cT ＼ cN</div>';
-    CTN_COLS.forEach(function (c) { h += '<div class="tn-ch">' + c[1] + '<span class="tn-sub2">' + c[2] + '</span></div>'; });
-    CTN_ROWS.forEach(function (r) {
-      h += '<div class="tn-rh">' + r[1] + '<span class="tn-sub2">' + r[2] + '</span></div>';
-      CTN_COLS.forEach(function (c, i) {
+  function gridHTML(idBase, stateKey, cols, rows, groupOf, legend, note) {
+    var h = '<div class="tn-wrap"><div class="tn-grid' + (cols.length === 4 ? ' tn-c4' : '') + '">';
+    h += '<div class="tn-corner"></div>';
+    cols.forEach(function (c) {
+      h += '<div class="tn-ch">' + c[1] + (c[2] ? '<span class="tn-sub2">' + c[2] + '</span>' : '') + '</div>';
+    });
+    rows.forEach(function (r) {
+      h += '<div class="tn-rh">' + r[1] + (r[2] ? '<span class="tn-sub2">' + r[2] + '</span>' : '') + '</div>';
+      cols.forEach(function (c) {
         var key = r[0] + '_' + c[0];
-        var g = G[r[0]][i];
-        // id 必須帶亞型：四張表同時存在於 DOM，不帶亞型就會產生四組重複 id
-        h += '<button class="tn-cell ' + g + '" id="bc_ctnc_' + sub + '_' + key + '" ' +
-          'onclick="bcPick(\'ctn\',\'' + key + '\',this)">' + r[1] + c[1].replace('c', '') + '</button>';
+        h += '<button class="tn-cell ' + GCLS[groupOf(r[0], c[0])] + '" id="' + idBase + '_' + key + '" ' +
+          'onclick="bcPick(\'' + stateKey + '\',\'' + key + '\',this)">' + r[3] + c[3] + '</button>';
       });
     });
+    h += '</div><div class="tn-legend">';
+    legend.forEach(function (l) {
+      h += '<span class="tn-lg"><span class="tn-sw ' + GCLS[l[0]] + '"></span>' + l[1] + '</span>';
+    });
     h += '</div>';
-    h += '<div class="tn-legend">' +
-      lg('g-none', '直接手術 Upfront surgery') +
-      lg('g-low', '直接手術或術前輔助治療皆可（依 BCT 意願／降期需求）') +
-      lg('g-ii', '建議術前輔助治療 NACT（ER(+) 停經後亦可用 NAHT）') +
-      lg('g-high', '局部晚期 — 強烈建議先做全身治療，勿直接手術') +
-      '</div>';
-    h += '<div class="note"><b>台大 NACT 適應症原文（p9）</b>：術前輔助治療通常用於<b>局部晚期且體能適合（fit）</b>者，' +
-      '或希望接受乳房保留手術者；<b>建議用於</b> — HER2(+)：≥T2N0、或 ≥N1、或 HR(−)/HER2(+) 之 ≥T1cN0；' +
-      'TNBC：≥T2N0、或 ≥N1；以及臨床試驗收案。<br>' +
-      '<b>台大與 ASCO 的門檻差異</b>：ASCO 術前治療指引建議 TNBC <b>≥cT1c 或 cN(+)</b> 即給術前化療（cT1a／cT1bN0 不常規給），' +
-      '較台大的 ≥T2N0 低一級；HER2(+) 則兩者一致（T1aN0／T1bN0 不常規給）。此差異已反映在 TNBC 之 T1c／N0 格（標為「兩者皆可」）。<br>' +
-      '<b>發炎性乳癌（T4d）</b>：不論亞型一律先做全身治療，且<b>不做乳房保留手術</b>。<br>' +
-      '<b>前提</b>：只有在「術後本來就有化療適應症」時才把化療提前 — 復發風險低者，把化療前移並不會增加絕對效益。</div>';
-    h += '</div>';
-    return h;
+    if (note) h += '<div class="note">' + note + '</div>';
+    return h + '</div>';
   }
 
-  /* ==========================================================
-     二、術後病理格 pT×pN → 輔助全身治療（p17、p19、p22）
-     ========================================================== */
-  var PTN_ROWS = [
-    ['t1mi', 'T1mi', '≤1mm'],
-    ['t1a', 'T1a', '>1–5mm'],
-    ['t1b', 'T1b', '>5–10mm'],
-    ['t1c', 'T1c', '>10–20mm'],
-    ['t2', 'T2', '>2–5cm'],
-    ['t3', 'T3', '>5cm'],
-    ['t4', 'T4', '胸壁／皮膚']
+  /* ---------- 2a. 臨床 cT×cN ---------- */
+  var CT_ROWS = [
+    ['t1ab', 'cT1a–b', '≤ 1 cm', 'T1a-b'],
+    ['t1c', 'cT1c', '> 1–2 cm', 'T1c'],
+    ['t2', 'cT2', '> 2–5 cm', 'T2'],
+    ['t3', 'cT3', '> 5 cm', 'T3'],
+    ['t4abc', 'cT4a–c', '侵犯胸壁或皮膚', 'T4a-c'],
+    ['t4d', 'cT4d', '發炎性乳癌', 'T4d']
   ];
-  var PTN_COLS = [['n0', 'pN0', '含 ITC'], ['n1mi', 'pN1mi', '微轉移'], ['n1', 'pN1', '1–3 顆'], ['n23', 'pN2–3', '≥4 顆']];
-
-  var PTN_GROUP = {
-    her2hr: {
-      t1mi: ['g-none', 'g-ii', 'g-high', 'g-high'],
-      t1a: ['g-none', 'g-ii', 'g-high', 'g-high'],
-      t1b: ['g-ii', 'g-high', 'g-high', 'g-high'],
-      t1c: ['g-low', 'g-high', 'g-high', 'g-high'],
-      t2: ['g-low', 'g-high', 'g-high', 'g-high'],
-      t3: ['g-low', 'g-high', 'g-high', 'g-high'],
-      t4: ['g-low', 'g-high', 'g-high', 'g-high']
-    },
-    erpos: {
-      t1mi: ['g-ii', 'g-low', 'g-low', 'g-high'],
-      t1a: ['g-ii', 'g-low', 'g-low', 'g-high'],
-      t1b: ['g-ii', 'g-low', 'g-low', 'g-high'],
-      t1c: ['g-ii', 'g-low', 'g-low', 'g-high'],
-      t2: ['g-ii', 'g-low', 'g-low', 'g-high'],
-      t3: ['g-low', 'g-low', 'g-low', 'g-high'],
-      t4: ['g-low', 'g-low', 'g-low', 'g-high']
-    },
-    tnbc: {
-      t1mi: ['g-none', 'g-ii', 'g-high', 'g-high'],
-      t1a: ['g-ii', 'g-ii', 'g-high', 'g-high'],
-      t1b: ['g-ii', 'g-high', 'g-high', 'g-high'],
-      t1c: ['g-high', 'g-high', 'g-high', 'g-high'],
-      t2: ['g-high', 'g-high', 'g-high', 'g-high'],
-      t3: ['g-high', 'g-high', 'g-high', 'g-high'],
-      t4: ['g-high', 'g-high', 'g-high', 'g-high']
-    }
+  var CN_COLS = [
+    ['n0', 'cN0', '腋下摸不到、影像陰性', 'N0'],
+    ['n1', 'cN1', '同側腋下、可推動', 'N1'],
+    ['n23', 'cN2–3', '固定成團／內乳／鎖骨上下', 'N2-3']
+  ];
+  var CTN = {
+    her2hr: { t1ab: ['none', 'low', 'high'], t1c: ['ii', 'low', 'high'], t2: ['low', 'low', 'high'], t3: ['low', 'high', 'high'], t4abc: ['high', 'high', 'high'], t4d: ['high', 'high', 'high'] },
+    her2: { t1ab: ['none', 'low', 'high'], t1c: ['low', 'low', 'high'], t2: ['low', 'low', 'high'], t3: ['low', 'high', 'high'], t4abc: ['high', 'high', 'high'], t4d: ['high', 'high', 'high'] },
+    tnbc: { t1ab: ['none', 'low', 'high'], t1c: ['ii', 'low', 'high'], t2: ['low', 'low', 'high'], t3: ['low', 'high', 'high'], t4abc: ['high', 'high', 'high'], t4d: ['high', 'high', 'high'] },
+    erpos: { t1ab: ['none', 'ii', 'high'], t1c: ['none', 'ii', 'high'], t2: ['ii', 'ii', 'high'], t3: ['low', 'high', 'high'], t4abc: ['high', 'high', 'high'], t4d: ['high', 'high', 'high'] }
   };
-  PTN_GROUP.her2 = PTN_GROUP.her2hr;   // 化療／抗 HER2 之門檻兩者相同；差別在內分泌與 neratinib，寫在建議內文
+  var CTN_LEGEND = [
+    ['none', '直接開刀'],
+    ['ii', '兩條路都可以'],
+    ['low', '建議先給藥'],
+    ['high', '一定要先給藥']
+  ];
+  function ctnGroup(r, c) {
+    return CTN[S.sub][r][c === 'n0' ? 0 : (c === 'n1' ? 1 : 2)];
+  }
+
+  /* ---------- 2b. 術後病理 pT×pN ---------- */
+  var PT_ROWS = [
+    ['t1mi', 'pT1mi', '≤ 1 mm', 'T1mi'],
+    ['t1a', 'pT1a', '> 1–5 mm', 'T1a'],
+    ['t1b', 'pT1b', '> 5–10 mm', 'T1b'],
+    ['t1c', 'pT1c', '> 10–20 mm', 'T1c'],
+    ['t2', 'pT2', '> 20–50 mm', 'T2'],
+    ['t3', 'pT3', '> 50 mm', 'T3'],
+    ['t4', 'pT4', '侵犯胸壁或皮膚', 'T4']
+  ];
+  var PN_COLS = [
+    ['n0', 'pN0', '無轉移', 'N0'],
+    ['n1mi', 'pN1mi', '微轉移 0.2–2 mm', 'N1mi'],
+    ['n1', 'pN1', '1–3 顆', 'N1'],
+    ['n23', 'pN2–3', '≥ 4 顆', 'N2-3']
+  ];
+  var PTN = {
+    her2hr: { t1mi: ['none', 'ii', 'high', 'high'], t1a: ['none', 'ii', 'high', 'high'], t1b: ['ii', 'low', 'high', 'high'], t1c: ['low', 'low', 'high', 'high'], t2: ['low', 'low', 'high', 'high'], t3: ['low', 'low', 'high', 'high'], t4: ['high', 'high', 'high', 'high'] },
+    tnbc: { t1mi: ['none', 'ii', 'low', 'high'], t1a: ['ii', 'ii', 'low', 'high'], t1b: ['ii', 'low', 'low', 'high'], t1c: ['low', 'low', 'low', 'high'], t2: ['low', 'low', 'low', 'high'], t3: ['low', 'low', 'low', 'high'], t4: ['high', 'high', 'high', 'high'] },
+    erpos: { t1mi: ['none', 'low', 'low', 'high'], t1a: ['none', 'low', 'low', 'high'], t1b: ['none', 'low', 'low', 'high'], t1c: ['ii', 'low', 'low', 'high'], t2: ['ii', 'low', 'low', 'high'], t3: ['low', 'low', 'low', 'high'], t4: ['high', 'high', 'high', 'high'] }
+  };
+  PTN.her2 = PTN.her2hr;
 
   var PTN_LEGEND = {
-    her2hr: [
-      ['g-none', '±（化療 + trastuzumab 可給可不給）'],
-      ['g-ii', '可考慮 化療 + trastuzumab'],
-      ['g-low', '化療 + trastuzumab'],
-      ['g-high', '化療 + trastuzumab（LN(+) 建議再加 pertuzumab）']
-    ],
-    erpos: [
-      ['g-ii', '內分泌治療；或 化療 + 內分泌（依多基因檢測／IHC4／臨床病理分層）'],
-      ['g-low', '通常 化療 + 內分泌（多基因檢測低風險者可免化療）'],
-      ['g-high', '化療 + 內分泌治療']
-    ],
-    tnbc: [
-      ['g-none', '可省略化療'],
-      ['g-ii', '± 化療（與病人討論）'],
-      ['g-high', '建議化療']
-    ]
+    her2hr: [['none', '化療加抗 HER2：給或不給都行'], ['ii', '可以考慮化療加抗 HER2'], ['low', '要化療加抗 HER2'], ['high', '再加上 pertuzumab']],
+    erpos: [['none', '內分泌治療就夠'], ['ii', '要不要加化療看復發風險'], ['low', '通常化療加內分泌治療'], ['high', '化療加內分泌治療，並考慮加強']],
+    tnbc: [['none', '可以不化療'], ['ii', '化療給或不給都行'], ['low', '要化療'], ['high', '化療，並考慮加強']]
   };
   PTN_LEGEND.her2 = PTN_LEGEND.her2hr;
 
-  var PTN_NOTE = {
-    her2hr: '<b>p17 原文</b>：pT1mi–pT1aN0 ±（C/T + trastuzumab）；pT1bN0 或 pT1aN1mi 可考慮 C/T + trastuzumab；≥pT1cN0 給 C/T + trastuzumab；' +
-      'LN(+) 給輔助 C/T + trastuzumab 並<b>建議加 pertuzumab</b>。trastuzumab 未特別指定時<b>總計 1 年</b>。' +
-      'ER(+) 者輔助內分泌治療為必要，<b>於化療完成後才開始</b>。<br>' +
-      '<b>本表之外推</b>：指引未明列 <b>pT1mi／pN1mi</b>，此格比照其明列的 pT1aN1mi 標為「可考慮」，臨床請個案判斷。',
-    erpos: '<b>p22 原文</b>：≤pT2N0 給輔助內分泌治療（ET）或 化療＋ET，風險以<b>多基因檢測、IHC4 分數或臨床病理參數</b>評估；' +
-      '≥pT3N0 傾向 化療＋ET；pT1-2 N1mi–N1 通常 化療＋ET，除非多基因檢測顯示低復發風險；TanyN2-3 給 化療＋ET。' +
-      '高風險者可加 <b>abemaciclib 2 年</b>或 <b>TS-1 1 年</b>。<br>' +
-      '<b>本表之外推</b>：指引以「pT1-2 N1mi–N1」敘述，<b>pT3–4 且 N1mi–N1</b> 未明列，本表依「≥pT3N0 傾向加化療」與「LN(+)」兩條合併歸入同組。',
-    tnbc: '<b>p19 原文</b>：除非風險極低，否則有化療指徵 — pT1miN0 可省略；pT1aN0–N1mi、pT1bN0 ± 化療；優先考慮臨床試驗收案。' +
-      '<br><b>本表之外推</b>：pT1mi 且 pN1mi 指引未明列，比照 pT1aN1mi 標為「± 化療」。'
-  };
-  PTN_NOTE.her2 = PTN_NOTE.her2hr;
-
-  function ptnGridHtml(sub) {
-    var G = PTN_GROUP[sub];
-    var h = '<div class="tn-wrap" id="bc_ptnwrap_' + sub + '">';
-    h += '<div class="tn-cap">術後病理分期 pathologic stage（M0）· 點選格子</div>';
-    h += '<div class="tn-sub">亞型：<b>' + SUB_LABEL[sub] + '</b>　—　輔助全身治療的門檻<b>依亞型而異</b>（p17、p19、p22）。</div>';
-    h += '<div class="tn-grid tn-c4" id="bc_ptngrid_' + sub + '">';
-    h += '<div class="tn-corner">pT ＼ pN</div>';
-    PTN_COLS.forEach(function (c) { h += '<div class="tn-ch">' + c[1] + '<span class="tn-sub2">' + c[2] + '</span></div>'; });
-    PTN_ROWS.forEach(function (r) {
-      h += '<div class="tn-rh">' + r[1] + '<span class="tn-sub2">' + r[2] + '</span></div>';
-      PTN_COLS.forEach(function (c, i) {
-        var key = r[0] + '_' + c[0];
-        var g = G[r[0]][i];
-        h += '<button class="tn-cell ' + g + '" id="bc_ptn_' + sub + '_' + key + '" ' +
-          'onclick="bcPick(\'ptn\',\'' + key + '\',this)">' + r[1] + c[1].replace('p', '') + '</button>';
-      });
-    });
-    h += '</div>';
-    h += '<div class="tn-legend">' + PTN_LEGEND[sub].map(function (x) { return lg(x[0], x[1]); }).join('') + '</div>';
-    h += '<div class="note">' + PTN_NOTE[sub] + '<br>' +
-      '<b>化療起始時間（p28）</b>：除非傷口癒合不良或其他併發症，一般希望<b>術後六至八週內</b>開始化療。' +
-      '<b>pN0 欄含孤立腫瘤細胞 pN0(i+)</b>（≤0.2mm 且 ≤200 個細胞），分期上仍視為 N0。</div>';
-    h += '</div>';
-    return h;
+  function ptnGroup(r, c) {
+    return PTN[S.sub][r][c === 'n0' ? 0 : (c === 'n1mi' ? 1 : (c === 'n1' ? 2 : 3))];
   }
 
   /* ==========================================================
-     可折疊參考表
+     3. 共用參考區塊 —— 每一段只在這裡定義一次
      ========================================================== */
-  function vnpiDetails() {
-    var rows = [
-      ['腫瘤大小', '≤1.5 cm', '1.6–4.0 cm', '≥4.1 cm'],
-      ['病理', 'Non-high grade、壞死(−)', 'Non-high grade、壞死(+)', 'High grade'],
-      ['切緣', '≥1.0 cm', '0.1–0.9 cm', '＜0.1 cm'],
-      ['年齡', '>60 歲', '40–60 歲', '<40 歲']
-    ];
-    var t = '<details class="kps-details"><summary>Van Nuys Prognostic Index（VNPI）計分表（p46）▸</summary><table>' +
-      '<tr><td></td><td>1 分</td><td>2 分</td><td>3 分</td></tr>';
-    rows.forEach(function (r) { t += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; });
-    t += '<tr><td>4–6 分</td><td colspan="3">低風險：放療為選擇性（optional RT）</td></tr>' +
-      '<tr><td>7–9 分</td><td colspan="3">中風險：建議輔助放療</td></tr>' +
-      '<tr><td>10–12 分</td><td colspan="3">高風險：建議全乳切除</td></tr>' +
-      '<tr><td>另一準則</td><td colspan="3">ECOG E5194 條件：腫瘤 &lt;2.5 cm、低或中度分化、切緣 &gt;3 mm — 亦可作為省略放療之依據</td></tr>';
-    t += '</table></details>';
-    return t;
+
+  /* 3a. 內分泌治療（p23、p24） */
+  function etReference() {
+    return fold('內分泌治療怎麼排？<b>停經前與停經後的完整處方</b>（p23、p24）', tbl([
+      ['先確認<br>受體是否陽性',
+        '<b>ER ≥ 10%</b> → 用內分泌治療。<br>' +
+        '<b>1% ≤ ER &lt; 10%</b> → 用或不用都在指引內。<br>' +
+        '<b>ER &lt; 1%</b> → 不用。<br>' +
+        '<b>ER 陰性但 PR &gt; 10%</b> → 用或不用都在指引內。'],
+      ['停經前',
+        '<b>tamoxifen 至少 5 年</b>。5 年之後：<br>' +
+        '· 仍停經前或無法確定 → 可再 5 年 tamoxifen（合計 10 年）。<br>' +
+        '· 已停經 → 換<b>芳香環酶抑制劑</b>（aromatase inhibitor）再 5 年，或再 5 年 tamoxifen。<br>' +
+        '· 已做雙側卵巢切除 → 之後照停經後原則走。<br>' +
+        '· <b>高風險者</b>可用 GnRH 類似物加芳香環酶抑制劑或 tamoxifen 共 5 年。'],
+      ['停經後<br>（四選一）',
+        '① <b>芳香環酶抑制劑 5 年</b>；<br>' +
+        '② 芳香環酶抑制劑 2–3 年後換 tamoxifen，合計最多 10 年；<br>' +
+        '③ tamoxifen 2–3 年後換芳香環酶抑制劑 5 年，合計 7–8 年；<br>' +
+        '④ tamoxifen 5 年後，再 5 年 tamoxifen 或 5 年芳香環酶抑制劑。'],
+      ['什麼時候開始', '有做化療的話，<b>內分泌治療要等化療結束後才開始</b>（p17）。'],
+      ['吃藥期間要追什麼',
+        '· 吃 tamoxifen <b>且子宮還在</b> → 每年婦科評估。<br>' +
+        '· 吃芳香環酶抑制劑 → 定期骨密度檢查。<br>' +
+        '· <b>心血管疾病高風險或已有骨質疏鬆者，芳香環酶抑制劑要謹慎使用</b>。'],
+      ['指引與現況不符的一處',
+        '指引 p24 寫骨密度檢查「未給付」。<b>實際上有給付</b> —— 醫療服務給付項目 <b>33064B</b> 適應症第 5 項就是' +
+        '「乳癌病人接受 Aromatase Inhibitors 治療前與治療後」。兩次檢查之間有年限限制、終生也有次數上限。']
+    ]));
   }
 
-  function chemoGenDetails() {
-    return '<details class="kps-details"><summary>化療處方世代分類與常用處方（依 Adjuvant! Online；p28–p31）▸</summary><table>' +
-      '<tr><td>第一代</td><td>CMF；AC×4；EC×4</td></tr>' +
-      '<tr><td>第二代</td><td>CEF；FAC；AC-T／EC-T；TC（USO9735）；A- 或 E-CMF</td></tr>' +
-      '<tr><td>第三代</td><td>Dose dense ATC（CALGB9741）；TAC（BCIRG001）；TEC；FEC-T（PACS01）；AC-wT（E1199）</td></tr>' +
-      '<tr><td>AC-T／EC-T<br>（CALGB9344、BCIRG-005）</td><td>cyclophosphamide 500–600 mg/m² + epirubicin 75–100 mg/m²（或 doxorubicin 60 mg/m²）D1 ×4，接續 paclitaxel 175–225 mg/m²（或 docetaxel 75–100 mg/m²）×4；皆 q21d</td></tr>' +
-      '<tr><td>AC-wT（E1199）</td><td>AC／EC ×4（q21d）→ paclitaxel 80 mg/m² D1、D8、D15 共 12 劑</td></tr>' +
-      '<tr><td>TC ×4–6（USO9735）</td><td>docetaxel 75 mg/m² + cyclophosphamide 500–600 mg/m² D1 q21d</td></tr>' +
-      '<tr><td>TAC（BCIRG001）／TEC</td><td>docetaxel 75 mg/m² + doxorubicin 50（TEC 用 epirubicin 70）mg/m² + cyclophosphamide 500 mg/m² q21d ×6，須 G-CSF 支持</td></tr>' +
-      '<tr><td>其他可用</td><td>CEF、FAC、modified FEC-T（PACS01）、classical／modified CMF</td></tr>' +
-      '<tr><td>院內共識</td><td>第二代較第一代約降低 15% 相對復發率，第三代較第二代再降 15%。危險因子以<b>腫瘤大小、淋巴結轉移顆數、tumor grade</b> 最重要，再加年齡、ER、PR、HER2、Ki-67。' +
-      'NCCN 輔助處方中<b>無 liposomal doxorubicin</b>，故本院指引亦不含；若病人堅持以其取代 doxorubicin／epirubicin，基於有治療優於無治療仍可接受，但病歷須詳細註明。' +
-      'E1199：docetaxel 與 paclitaxel 可互換，以 q3w docetaxel 與每週 paclitaxel 為優先。</td></tr>' +
-      '</table></details>';
+  /* 3b. 化療處方（p28–p31） */
+  function chemoReference() {
+    return fold('化療處方要開哪一個？<b>院內常用處方與劑量</b>（p28–p31）', tbl([
+      ['怎麼選強度',
+        '院內共識：<b>除了強烈建議用第三代處方的病人以外，原則上只建議「要化療」或「不必化療」，' +
+        '強度由主治醫師與病人討論後共同決定</b>（p28）。<br>' +
+        '第二代比第一代約再降 15% 的相對復發率，第三代比第二代再降 15%。<br>' +
+        '風險因子中<b>最重要的是腫瘤大小、淋巴結轉移顆數、組織分化等級</b>，再加年齡、ER、PR、HER2、Ki-67。'],
+      ['第一代', 'CMF；AC ×4；EC ×4'],
+      ['第二代', 'CEF；FAC；AC-T 或 EC-T；TC（USO9735）；A-CMF 或 E-CMF'],
+      ['第三代', '劑量密集 ATC（CALGB9741）；TAC（BCIRG001）；TEC；FEC-T（PACS01）；AC-wT（E1199）'],
+      ['AC-T／EC-T',
+        'cyclophosphamide 500–600 mg/m² ＋ epirubicin 75–100 mg/m²（或 doxorubicin 60 mg/m²）D1，共 4 次；' +
+        '接 paclitaxel 175–225 mg/m²（或 docetaxel 75–100 mg/m²）共 4 次。全部每 21 天一次。'],
+      ['AC-wT（E1199）', 'AC 或 EC ×4（每 21 天）→ paclitaxel 80 mg/m² D1、D8、D15，共 12 劑。'],
+      ['TC ×4–6', 'docetaxel 75 mg/m² ＋ cyclophosphamide 500–600 mg/m² D1，每 21 天一次。'],
+      ['TAC／TEC', 'docetaxel 75 ＋ doxorubicin 50（TEC 用 epirubicin 70）＋ cyclophosphamide 500 mg/m²，每 21 天 ×6，<b>需要白血球生長素支持</b>。'],
+      ['什麼時候開始', '<b>除非傷口癒合不良或有其他併發症，希望在術後六至八週內開始化療</b>（p28）。'],
+      ['院內兩點特別說明',
+        'NCCN 推薦的輔助處方裡<b>沒有 liposomal doxorubicin</b>，本院指引也不含。若病人堅持以它取代 doxorubicin 或 epirubicin，' +
+        '基於有治療優於沒有治療，仍可接受，但<b>病歷須詳細註明</b>（p28）。<br>' +
+        'docetaxel 與 paclitaxel 可互換，以每 3 週 docetaxel 與每週 paclitaxel 為優先（E1199）。']
+    ]));
   }
 
-  function htDetails() {
-    return '<details class="kps-details"><summary>內分泌治療原則（p23、p24）▸</summary><table>' +
-      '<tr><td>ER 陽性定義</td><td>1% ≤ ER &lt; 10% → <b>±</b> 使用內分泌治療；ER &lt; 1% → 不使用；ER(−) 但 PR &gt; 10% → <b>±</b> 使用</td></tr>' +
-      '<tr><td>DCIS</td><td>接受乳房保留手術者建議輔助 tamoxifen 5 年</td></tr>' +
-      '<tr><td>停經前</td><td>tamoxifen 至少 5 年；之後 — 仍停經前或不確定：可再 5 年 tamoxifen（共 10 年）；已停經：換 AI 再 5 年，或再 5 年 tamoxifen（共 10 年）。' +
-      '雙側卵巢切除後依停經後原則。<b>高風險者可用 GnRH agonist + AI／tamoxifen 5 年</b>。</td></tr>' +
-      '<tr><td>停經後</td><td>AI 5 年；或 AI 2–3 年後換 tamoxifen（至多共 10 年）；或 tamoxifen 2–3 年後換 AI 5 年（共 7–8 年）；或 tamoxifen 5 年後再 5 年 tamoxifen 或 5 年 AI。' +
-      '<b>心血管疾病高風險或骨質疏鬆者，AI 應謹慎使用</b>。</td></tr>' +
-      '<tr><td>監測</td><td>使用 tamoxifen 且<b>子宮存在</b>者每年婦科評估；使用 AI 者建議定期骨密度（BMD）檢查 —— ' +
-      '指引 p24 寫「未給付」，但<b>醫療服務給付項目 33064B 之適應症第 5 項即為「乳癌病人接受 Aromatase Inhibitors 治療前與治療後」</b>，' +
-      '兩次檢查須間隔一定年限且終生有次數上限，開單前確認。</td></tr>' +
-      '</table></details>';
+  /* 3c. 腋下手術原則（p8、p13、p14） */
+  function axillaReference() {
+    return fold('腋下要開到什麼程度？<b>直接手術與術前治療後的規則不一樣</b>（p8、p13、p14）', tbl([
+      ['直接手術<br>臨床 cN0', '<b>做前哨淋巴結切片</b>（sentinel lymph node biopsy）。'],
+      ['直接手術<br>臨床腋下陽性',
+        '<b>做腋下淋巴結廓清</b>（axillary lymph node dissection）。<br>' +
+        '術前對可疑的淋巴結<b>應先做細針穿刺</b>確認（p10 註 b）。'],
+      ['前哨 1–2 顆陽性<br>可不可以免廓清？',
+        '<b>五個條件要全部符合</b>（ACOSOG Z0011，p8）：<br>' +
+        '① 臨床 cN0，前哨淋巴結<b>只有 1–2 顆</b>陽性；② <b>T1 或 T2</b>；' +
+        '③ 接受<b>乳房保留手術</b>且<b>已計畫術後放療</b>；④ 會接受<b>足量的輔助全身治療</b>；' +
+        '⑤ <b>尤其是 ER 陽性者</b>。<br>' +
+        '<b>五條全中才可以省略。全乳切除的人不適用</b>（第 ③ 條就不符合）。'],
+      ['術前治療後<br>原本 cN0',
+        '<b>做前哨淋巴結切片即可</b>；<b>但治療期間臨床惡化者不適用</b>，要做廓清（p13）。'],
+      ['術前治療後<br>原本 cN1–2、治療後轉陰',
+        '可以只做前哨淋巴結切片，但<b>必須是「足量」的取樣</b>，定義是二選一（p14）：<br>' +
+        '① <b>雙示蹤劑且取下 ≥ 3 顆</b>淋巴結；或 ② 前哨淋巴結切片<b>加上</b>取出術前做過標記的那一顆。<br>' +
+        '結果 pN0 → 不必廓清。<br>' +
+        '<b>只要有任何一顆陽性（含微轉移 pN1mi 與孤立腫瘤細胞 pN0(i+)）→ 要做腋下淋巴結廓清</b>。'],
+      ['術前治療後<br>腋下仍陽性', '<b>直接做腋下淋巴結廓清</b>（p14）。'],
+      ['標記夾的實務問題',
+        '<b>目前的標記夾多半在超音波下看不到，需要乳房攝影導引定位</b>（p13）。' +
+        '要做標記就得先跟放射科講好定位方式。']
+    ]));
   }
 
-  function favHistoDetails() {
-    return '<details class="kps-details"><summary>預後良好之組織型態（favorable histologies，p25、p26）▸</summary><table>' +
-      '<tr><td>涵蓋</td><td>黏液性（mucinous）、管狀（tubular）、乳突狀（papillary）</td></tr>' +
-      '<tr><td>手術</td><td>與一般侵襲癌相同</td></tr>' +
-      '<tr><td>ER 狀態</td><td>通常 ER(+)；若判為 ER(−) <b>必須重做 IHC</b>，仍為 ER(−) 則<b>比照一般風險侵襲癌處理</b></td></tr>' +
-      '<tr><td>輔助治療</td><td>ER(+) 者<b>單用內分泌治療</b>；LN(+) 者 ± 輔助化療</td></tr>' +
-      '<tr><td>黏液性</td><td>若為 hypercellular 亞型且 Ki-67 高，可討論輔助化療之適應症</td></tr>' +
-      '<tr><td>乳突狀</td><td>通常 p63(+)，比照原位癌處理。<b>Intracystic／encapsulated papillary carcinoma</b> 可能失去 p63，但臨床行為仍偏原位癌；' +
-      '惟<b>有 3% 淋巴結侵犯機會，應做 SLNB</b>。</td></tr>' +
-      '</table></details>';
+  /* 3d. 放射治療適應症（p47、p48、p49） */
+  function rtReference() {
+    return fold('放射治療的<b>完整適應症</b>（p47、p48、p49）', tbl([
+      ['乳房保留手術後',
+        '<b>原則上所有人都要做全乳放射治療</b>（p47）。<br>' +
+        '唯一可以討論省略的：<b>年齡 &gt; 70、臨床 cN0、切緣乾淨、荷爾蒙受體陽性且正在服用 tamoxifen 或芳香環酶抑制劑</b>' +
+        '—— 絕對獲益很小，<b>但放療仍然改善局部控制</b>。'],
+      ['全乳切除後<br>確定要照胸壁',
+        '符合<b>任何一項</b>即需要（p47）：<b>腋下淋巴結陽性 ≥ 4 顆</b>；<b>切緣陽性</b>；<b>侵犯皮膚</b>；' +
+        '<b>侵犯胸壁</b>（只碰到胸肌筋膜不算）；<b>T3 且腋下淋巴結陽性</b>。<br>' +
+        '腋下淋巴結陽性 1–3 顆 → <b>依風險因子個案判斷</b>。'],
+      ['前哨 1–2 顆陽性<br>但沒做完整廓清',
+        '情境：臨床 cN0、全乳切除加前哨淋巴結切片、pT1–2、前哨 1–2 顆陽性（p48）。<br>' +
+        '<b>原則上應完成腋下淋巴結廓清。</b>若取下的淋巴結不足 10 顆：<br>' +
+        '· <b>三陰性或有淋巴血管侵犯</b>（lymphovascular invasion）且陽性仍是 1–2 顆 → 建議完成廓清。<br>' +
+        '· 非三陰性且無淋巴血管侵犯 → 仍建議廓清，除非外科判斷困難、或病人充分討論後仍拒絕。<br>' +
+        '· 不做廓清時，依 AMAROS 試驗<b>改做區域放射治療（腋下加鎖骨上）± 胸壁</b>。'],
+      ['術前治療後<br>可以考慮省略',
+        '達到<b>病理完全緩解</b>，且符合其中一項（p49）：① 荷爾蒙受體陽性；② HER2 陽性且原本是 cT 任何 N0–1；' +
+        '③ 三陰性且原本是 cT1–2N0。'],
+      ['術前治療後<br>應該要做',
+        '① 沒有達到病理完全緩解，且依<b>原本的臨床分期</b>本來就有適應症；② <b>術前治療後淋巴結仍陽性</b>；' +
+        '③ <b>cT1–2N1 的 HER2 陽性且未達病理完全緩解</b>（p49）。'],
+      ['要請放射腫瘤科<br>評估的灰色地帶',
+        '① cT1–2N1 的荷爾蒙受體陽性或三陰性，<b>只剩乳房內殘存病灶</b>；② <b>cT3N0 但術後是 ypT1–2N0</b>（p49）。'],
+      ['順序', '需要化療時，<b>放療排在化療之後</b>（p10）。']
+    ]));
   }
 
-  /* ==========================================================
-     放射治療（p46、p47、p48、p49）
-     ========================================================== */
-  function rtLines(ctx) {
-    // ctx: 'bct' | 'sm' | 'nact'
-    var l = [];
-    if (ctx === 'bct') {
-      l.push('<b>乳房保留手術後全乳放療為必要</b>（p8）。<b>唯一的例外</b>：低風險年長者 — 年齡 &gt;70、cN0、切緣乾淨、HR(+) 且服用 tamoxifen 或 AI —' +
-        '因絕對效益小可考慮省略（<b>CALGB 9343</b>：&gt;70 歲、ER(+)、stage I 者 BCT 後放療<b>無整體存活效益</b>）；' +
-        '但即使在此族群，<b>放療仍改善局部控制</b>，故省略與否應與病人討論（p47）。');
-    }
-    if (ctx === 'sm') {
-      l.push('<b>全乳切除後胸壁放療（PMRT）之明確指徵</b>（p47）：腋下淋巴結 <b>≥4 顆(+)</b>；<b>切緣(+)</b>；' +
-        '侵犯<b>皮膚</b>；侵犯<b>胸壁</b>（僅侵犯 pectoral fascia 不算）；<b>T3 且腋下淋巴結(+)</b>。' +
-        '腋下 <b>1–3 顆(+)</b> 者依危險因子個別決定。');
-    }
-    if (ctx === 'nact') {
-      l.push('<b>NACT 後之輔助放療（NTUH 共識，p49）</b><ul>' +
-        '<li><b>可考慮省略</b> PMRT／Breast RT + 區域淋巴照射（RNI）：達 pCR 且符合其一 — HR(+)；HER2(+) 且初始 cTanyN0-1；TNBC 且初始 cT1-2N0。</li>' +
-        '<li><b>應接受</b> PMRT／Breast RT + RNI：未達 pCR 而依<b>臨床分期</b>本有指徵者；NACT 後 <b>pN(+)</b>；<b>cT1-2N1 之 HER2(+) 未達 pCR</b> 者。</li>' +
-        '<li><b>應由放射腫瘤科評估</b>後決定：cT1-2N1 之 HR(+)／TNBC <b>僅殘存乳房腫瘤</b>者；<b>cT3N0 且 ypT1-2N0</b> 者。</li></ul>' +
-        '<b>放療指徵依「治療前的臨床分期」而非只看術後病理</b> — 這是 NACT 情境最常被忽略的一點。');
-    }
-    l.push('<b>放療與化療的順序</b>（p10）：乳房保留手術後若有化療指徵，指引所列為 <b>xRT follow by C/T</b>（放療之後接化療）；' +
-      '全乳切除後若 pN2 或切緣(+) 則加放療。實務排序仍由放射腫瘤科與腫瘤內科共同決定。');
-    return l;
-  }
-
-  /* ==========================================================
-     健保給付（p17、p18、p19、p21、p35、p38、p39、p40、p41）
-     ========================================================== */
-  /* 台大指引為 2023 年版本，其「未給付」敘述在 2024–2026 之間已有九項反轉。
-     兩邊都要寫：指引原文是病人手上那份文件說的，現行條文才是今天送審會過的。 */
-  function nhiPanelEBC() {
-    return '<details class="rx-more"><summary>健保給付 · 早期乳癌（EBC）—— <b>指引 2023 年的敘述已有多項反轉，請看現行條文</b> ▸</summary><div class="rx-note">' +
-      '<div class="rx-warn"><b>台大指引（2023.V1）當時的敘述</b>：EBC 之 trastuzumab <b>僅給付淋巴結陽性者</b>（p17）；' +
-      'pertuzumab、T-DM1、neratinib 於 EBC <b>均未給付</b>（p17、p18）；abemaciclib 與 TS-1 <b>未給付</b>（p22）；' +
-      'olaparib 於 EBC <b>未給付</b>（p21）；pembrolizumab <b>未給付</b>（p19、p20）。<br>' +
-      '<b>這些敘述有五項已經不成立</b> —— 下表為健保署藥品給付規定第 9 節之現行條文（查詢日 2026-08-16）。</div>' +
+  /* 3e. 健保給付：早期乳癌 */
+  function nhiEarly() {
+    return panel('健保給付 · 早期乳癌 —— <b>指引 2023 年寫「未給付」的藥有五項已經反轉</b>',
+      '<div class="rx-warn"><b>台大指引（2023.V1）當時的敘述</b>：trastuzumab 只給付淋巴結陽性者（p17）；' +
+      'pertuzumab、T-DM1、neratinib 於早期乳癌均未給付（p17、p18）；abemaciclib 與 TS-1 未給付（p22）；' +
+      'olaparib 未給付（p21）；pembrolizumab 未給付（p19、p20）。<br>' +
+      '<b>其中五項已經不成立。</b>以下是健保署藥品給付規定第 9 節的現行條文，查詢日 2026-08-16。</div>' +
       '<ul class="rx-items">' +
-      '<li><span class="drug">trastuzumab</span>（<b>9.18.1</b>，現行版 2026-08-01）：<b>已不再限於淋巴結陽性</b>。' +
-      '除 LN(+) 之外，<b>淋巴結陰性早期乳癌亦納入</b>：術前情境腫瘤 &gt;2cm 且 ER(−)；直接手術者 ER(−) 腫瘤 &gt;0.5cm 或 ER(+) 腫瘤 &gt;1cm。' +
-      '需事前審查，早期乳癌每 24 週檢附療效再申請。<b>注意：ER(+) 淋巴結陰性與直接手術之淋巴結陰性兩支限用生物相似藥</b>（Eirgasun 420mg／Herzuma／Ogivri），原廠 Herceptin 不涵蓋。' +
-      '皮下劑型 600mg 同屬 9.18，無另訂條件。</li>' +
-      '<li><span class="drug">pertuzumab</span>（<b>9.70.1</b>）與 <b>Phesgo</b>（9.112.1）：<b>2024-12-01 起於 EBC 給付</b> —— ' +
-      'HER2 IHC3+/FISH(+) 且<b>腋下淋巴結轉移</b>、無遠處轉移者；術前使用且 pCR 者可續用，直接手術者亦可作輔助治療；' +
-      '與 trastuzumab、Phesgo <b>合併計算上限 18 個週期</b>。<b>淋巴結陰性仍不給付</b>。</li>' +
-      '<li><span class="drug">T-DM1</span>（<b>9.87.1</b>）：<b>2024-08-01 起於術前治療後殘存病灶給付</b> —— 需已接受 ≥6 週期化療（含 taxane ≥3 週期）與術前 trastuzumab ≥3 週期後仍有殘存，' +
-      '且符合<b>腋下淋巴結轉移</b>，或<b>淋巴結陰性但 ER(−) 且腫瘤 &gt;2cm</b>。上限 14 週期（與 trastuzumab 合計 18 週期）；須術後 12 週內申請；LVEF &lt;45% 或症狀性心衰竭不可用。' +
-      '<b>健保條件比 KATHERINE 窄</b>（KATHERINE 收所有殘存病灶者）。</li>' +
-      '<li><span class="drug">abemaciclib</span>（<b>9.107</b>）：<b>2024-03-01 起於輔助治療給付</b> —— 成年<b>女性</b>、HR(+)（ER 或 PR &gt;30%）、HER2(−)、' +
-      '淋巴結陽性且符合其一：<b>pALN ≥4 顆</b>／<b>pALN 1–3 顆且腫瘤 ≥5cm</b>／<b>pALN 1–3 顆且 grade 3</b>。' +
-      '須完成標準輔助化療與放療後才申請；先前內分泌治療不超過 12 週；<b>須術後 16 個月內開始</b>；最長 2 年。' +
-      '<b>台灣不看 Ki-67</b>（與 monarchE 不同），且<b>男性不在條文內</b>。⚠ 用此藥後進展者，<b>日後不得再申請任何 CDK4/6 抑制劑</b>（9.72.7）。</li>' +
-      '<li><span class="drug">olaparib</span>（<b>9.85.4</b>）：<b>2025-06-01 起於高復發風險早期乳癌給付</b> —— <b>生殖細胞</b> BRCA1/2 突變、HER2(−)；' +
-      '需完成 ≥6 週期含 anthracycline／taxane 之化療，並於最後一次治療後 12 週內開始，最長 1 年。' +
-      '高風險定義：<b>TNBC</b> — 術前化療後 non-pCR，或直接手術後 ≥pN1 或 pN0 但腫瘤 ≥2cm；' +
-      '<b>HR(+)/HER2(−)</b> — 術前化療後 non-pCR，或直接手術後<b>淋巴結 ≥4 顆</b>（<b>不走 CPS-EG 分數那條路</b>）。' +
+      '<li>' + drug('trastuzumab') + '（<b>9.18.1</b>）：<b>已經不限淋巴結陽性</b>。淋巴結陰性者亦納入 —— ' +
+      '術前情境限腫瘤 &gt; 2 cm 且 ER 陰性；直接手術者限 ER 陰性且腫瘤 &gt; 0.5 cm，或 ER 陽性且腫瘤 &gt; 1 cm。' +
+      '需事前審查，每 24 週檢附療效再申請。<br>' +
+      '<b>陷阱：ER 陽性淋巴結陰性、與直接手術的淋巴結陰性這兩支限用生物相似藥</b>' +
+      '（Eirgasun 420 mg／Herzuma／Ogivri），原廠 Herceptin 不涵蓋。皮下劑型 600 mg 同屬 9.18。</li>' +
+      '<li>' + drug('pertuzumab') + '（<b>9.70.1</b>）與 Phesgo（9.112.1）：<b>2024-12-01 起給付</b> —— ' +
+      'HER2 免疫組織化學 3+ 或 FISH 陽性、<b>腋下淋巴結有轉移</b>、無遠處轉移。' +
+      '術前用且達病理完全緩解者可續用，直接手術者也可作輔助治療；與 trastuzumab、Phesgo <b>合併計算上限 18 個週期</b>。' +
+      '<b>淋巴結陰性仍不給付。</b></li>' +
+      '<li>' + drug('T-DM1') + '（<b>9.87.1</b>）：<b>2024-08-01 起給付</b>，限術前治療後仍有殘存病灶者 —— ' +
+      '需已接受 ≥ 6 週期化療（其中 taxane ≥ 3 週期）與術前 trastuzumab ≥ 3 週期，且<b>腋下淋巴結有轉移</b>，' +
+      '或<b>淋巴結陰性但 ER 陰性且腫瘤 &gt; 2 cm</b>。上限 14 週期；須術後 12 週內申請；' +
+      '左心室射出分率 &lt; 45% 或有症狀心衰竭者不可用。<b>健保條件比 KATHERINE 試驗窄。</b></li>' +
+      '<li>' + drug('abemaciclib') + '（<b>9.107</b>）：<b>2024-03-01 起於輔助治療給付</b> —— 成年<b>女性</b>、' +
+      'ER 或 PR &gt; 30%、HER2 陰性，且<b>淋巴結陽性並符合下列其一</b>：' +
+      '<b>腋下淋巴結 ≥ 4 顆</b>／<b>1–3 顆且腫瘤 ≥ 5 cm</b>／<b>1–3 顆且組織分化等級 3</b>。' +
+      '須完成標準輔助化療與放療後才申請；先前內分泌治療不超過 12 週；<b>須術後 16 個月內開始</b>；最長 2 年。<br>' +
+      '<b>台灣不看 Ki-67</b>（與 monarchE 試驗不同），<b>男性不在條文內</b>。' +
+      '⚠ 用了這條之後進展者，<b>日後不得再申請任何 CDK4/6 抑制劑</b>（9.72.7）。</li>' +
+      '<li>' + drug('olaparib') + '（<b>9.85.4</b>）：<b>2025-06-01 起給付</b> —— <b>生殖細胞</b> BRCA1/2 突變、HER2 陰性。' +
+      '需完成 ≥ 6 週期含 anthracycline 或 taxane 的化療，並於最後一次治療後 12 週內開始，最長 1 年。<br>' +
+      '<b>高風險定義（健保版）</b>：三陰性 —— 術前化療後未達病理完全緩解，或直接手術後 ≥ pN1，或 pN0 但腫瘤 ≥ 2 cm；' +
+      '荷爾蒙受體陽性且 HER2 陰性 —— 術前化療後未達病理完全緩解，或直接手術後<b>淋巴結 ≥ 4 顆</b>。' +
+      '<b>健保不走 CPS+EG 分數那條路。</b><br>' +
       '⚠ 輔助情境<b>olaparib 與 pembrolizumab 只能擇一給付</b>。</li>' +
-      '<li><span class="drug">pembrolizumab</span>（<b>9.69.2(7)</b>）：<b>2025-06-01 起於早期三陰性乳癌給付</b> —— 非轉移之 stage II–IIIb' +
-      '（cT1cN1-2 或 T2-4N0-2）。術前：pembrolizumab + carboplatin + paclitaxel ×4，再接 pembrolizumab + cyclophosphamide +（doxorubicin 或 epirubicin）×4。' +
-      '<b>輔助期只給付未達 pCR 者</b>（單用 pembrolizumab ≤9 週期）；術前＋輔助合計上限 17 週期。<b>此適應症不需檢附 PD-L1 報告</b>。' +
-      '⚠ 術前治療中進展或輔助期復發即不得續用。</li>' +
-      '<li><span class="drug">ribociclib</span> 之輔助治療（NATALEE）：<b>仍未給付</b> —— ribociclib 只有 9.72（轉移性）一條，沒有輔助的支線。' +
-      '<b>台灣的輔助 CDK4/6 抑制劑只有 abemaciclib</b>，這個不對稱在臨床上很容易踩到。</li>' +
-      '<li><span class="drug">neratinib</span>：<b>仍未給付</b>（健保藥品清單查無此成分之品項）。指引 p18 的敘述仍然正確。</li>' +
-      '<li><span class="drug">capecitabine</span> 之術後強化（CREATE-X）與 <span class="drug">TS-1</span>：<b>仍未給付</b> —— ' +
-      'capecitabine 條文 9.17 之乳癌適應症只到「局部晚期／轉移性」，沒有輔助或術後強化那一條；TS-1 條文 9.46 完全沒有乳癌。</li>' +
-      '<li><b>Oncotype DX／MammaPrint</b> 等多基因復發風險檢測：<b>自費</b>。健保 2024-05-01 起的次世代定序給付，乳癌那一格<b>只涵蓋三陰性乳癌的 BRCA 檢測</b>，不含預後型多基因檢測。</li>' +
-      '<li><b>骨密度（DXA）檢查</b>：<b>有給付</b> —— 醫療服務給付項目 <b>33064B</b> 之適應症第 5 項即為「乳癌病人在接受 Aromatase Inhibitors 治療前與治療後」。' +
-      '（指引 p24 寫「未給付」，此處與現行支付標準不符。）兩次檢查須間隔一定年限且終生有次數上限，開單前確認。</li>' +
-      '<li><b>輔助用雙磷酸鹽／denosumab</b>（非轉移之骨骼保護）：<b>不給付</b> —— zoledronate 4mg（5.5.3.2.1）與 denosumab 120mg（5.5.4）都<b>只涵蓋蝕骨性骨轉移</b>。</li>' +
+      '<li>' + drug('pembrolizumab') + '（<b>9.69.2(7)</b>）：<b>2025-06-01 起於早期三陰性乳癌給付</b> —— ' +
+      '非轉移的第 II 至 IIIb 期（cT1cN1–2 或 T2–4N0–2）。處方固定：pembrolizumab ＋ carboplatin ＋ paclitaxel ×4，' +
+      '再接 pembrolizumab ＋ cyclophosphamide ＋（doxorubicin 或 epirubicin）×4。' +
+      '<b>輔助期只給付未達病理完全緩解者</b>（單用 ≤ 9 週期）；術前加輔助合計上限 17 週期。' +
+      '<b>此適應症不需檢附 PD-L1 報告。</b>⚠ 術前治療中進展、或輔助期復發，即不得續用。</li>' +
+      '<li>' + drug('neratinib') + '：<b>仍未給付</b>（健保藥品清單查無此成分）。指引 p18 的敘述仍然正確。</li>' +
+      '<li>' + drug('capecitabine') + ' 的術後強化與 ' + drug('TS-1') + '：<b>仍未給付</b> —— ' +
+      'capecitabine 條文 9.17 的乳癌適應症只到「局部晚期／轉移性」，沒有輔助那一條；TS-1 條文 9.46 完全沒有乳癌。</li>' +
+      '<li><b>輔助用 ribociclib（NATALEE 試驗）</b>：<b>未給付</b> —— ribociclib 只有 9.72（轉移性）一條。' +
+      '<b>台灣可用於輔助治療的 CDK4/6 抑制劑只有 abemaciclib</b>，這個不對稱很容易踩到。</li>' +
+      '<li><b>Oncotype DX、MammaPrint 等多基因復發風險檢測</b>：<b>自費</b>。' +
+      '健保 2024-05-01 起的次世代定序給付，乳癌那一格<b>只涵蓋三陰性乳癌的 BRCA 檢測</b>。</li>' +
+      '<li><b>輔助用雙磷酸鹽或 denosumab</b>（非轉移的骨骼保護）：<b>不給付</b> —— ' +
+      'zoledronate 4 mg（5.5.3.2.1）與 denosumab 120 mg（5.5.4）都只涵蓋蝕骨性骨轉移。</li>' +
       '</ul>' +
-      '<div class="rx-def"><b>院內立場（p21）</b>：現有研究顯示<b>不論淋巴結是否陽性</b>，術前／術後 trastuzumab-based 化療皆顯著降低 HER2(+) 病人之復發率與死亡率；' +
-      '因此對<b>淋巴結陰性但腫瘤有一定大小或風險較高</b>者，團隊仍建議使用 trastuzumab-based 治療。' +
-      'HER2(+) 病人之術前／術後化療，<b>文獻上可用但 NCCN 未提及之處方（如 CMF、TC）本院亦認為可用</b>。' +
-      '<b>這一段立場在 2026 年更站得住腳</b> —— 淋巴結陰性者現在多數已納入給付。</div>' +
-      '<div class="rx-warn"><b>實務提醒（p35 註二）</b>：健保並未給付所列全部藥物，<b>實際使用劑量與療程受病人經濟狀況限制</b>。' +
+      '<div class="rx-def"><b>院內立場（p21）</b>：研究顯示<b>不論淋巴結是否陽性</b>，術前或術後 trastuzumab 併化療都顯著降低' +
+      'HER2 陽性病人的復發率與死亡率。因此對<b>淋巴結陰性但腫瘤有一定大小或風險較高</b>者，團隊仍建議使用。' +
+      'HER2 陽性病人的化療處方，<b>文獻上可用但 NCCN 未提及者（如 CMF、TC）本院亦認為可用</b>。</div>' +
+      '<div class="rx-warn"><b>實務提醒</b>：健保並未給付所列全部藥物，實際劑量與療程<b>受病人經濟狀況限制</b>（p35 註二）。' +
       'trastuzumab 標準療程為 1 年，但<b>因給付因素，9–12 週亦被視為可接受</b>（p34）。<br>' +
-      '<b>給付條文會變，開藥前請以健保署當期公告為準</b>；本表資料查詢日為 2026-08-16。</div>' +
-      '</div></details>';
+      '<b>條文會變，開藥前請以健保署當期公告為準。</b>查詢日 2026-08-16。</div>');
   }
 
-  function nhiPanelMBC() {
-    return '<details class="rx-more"><summary>健保給付 · 轉移性乳癌（MBC）—— <b>2024–2026 有多項新增</b> ▸</summary><div class="rx-note">' +
-      '<div class="rx-warn"><b>台大指引（2023.V1）當時的敘述</b>：CDK4/6 + AI 自 2019/10/1 給付停經後一線（p38）；' +
-      'trastuzumab／pertuzumab／T-DM1／lapatinib 為有條件給付，<b>T-DXd 與 neratinib 未給付</b>（p39）；' +
-      'PARP 抑制劑<b>僅 TNBC 給付</b>（p41）；pembrolizumab 與 atezolizumab 於 TNBC <b>均未給付</b>（p40）。' +
-      '以下為健保署現行條文（查詢日 2026-08-16）。</div>' +
+  /* 3f. 健保給付：轉移性乳癌 */
+  function nhiMeta() {
+    return panel('健保給付 · 轉移性乳癌 —— <b>2024–2026 有多項新增，也有多組互斥</b>',
+      '<div class="rx-warn"><b>台大指引（2023.V1）當時的敘述</b>：CDK4/6 抑制劑加芳香環酶抑制劑自 2019-10-01 給付停經後第一線（p38）；' +
+      'trastuzumab、pertuzumab、T-DM1、lapatinib 為有條件給付，<b>T-DXd 與 neratinib 未給付</b>（p39）；' +
+      'PARP 抑制劑<b>只有三陰性給付</b>（p41）；pembrolizumab 與 atezolizumab 於三陰性均未給付（p40）。' +
+      '以下為現行條文，查詢日 2026-08-16。</div>' +
       '<ul class="rx-items">' +
-      '<li><b>CDK4/6 抑制劑</b>（<b>9.72</b>，現行版 2025-07-01）：<b>只涵蓋 ribociclib 與 palbociclib</b>（<b>abemaciclib 不在其中</b>）。' +
-      '條件：ER 或 PR &gt;30%、HER2(−)、<b>無內臟危象、無腦轉移</b>、<b>不可只有骨轉移</b>。' +
-      '停經後（9.72.1）需年齡 ≥55、曾雙側卵巢切除、或 FSH 與 estradiol 達停經後範圍；停經前／圍停經期與<b>男性</b>（9.72.2，2025-07-01 新增男性）須併用 AI ＋ GnRH 類似物。' +
-      '<b>已不限一線</b>（110/10/1 起解除）。<b>終生上限 24 個月</b>，兩藥只能擇一（僅因無法耐受可換）。' +
-      '⚠ 曾用 everolimus 失敗者不得申請 CDK4/6（9.72.6）；<b>輔助 abemaciclib 失敗者亦不得申請</b>（9.72.7）。</li>' +
-      '<li><span class="drug">abemaciclib</span>：<b>轉移性不給付</b> —— 它只有 9.107（輔助）一條。這一點很反直覺：藥有給付，但只在輔助情境。</li>' +
-      '<li><span class="drug">everolimus</span>（<b>9.36.1 第 4 項</b>）：與 <b>exemestane</b> 併用，HR(+)/HER2(−) 轉移性、<b>無內臟危象</b>、曾使用<b>非固醇類 AI 失敗</b>且未曾用過 exemestane。' +
-      '⚠ everolimus 失敗後<b>不得再申請 CDK4/6 抑制劑</b>。</li>' +
-      '<li><span class="drug">alpelisib</span>（<b>9.129</b>，2026-01-01 新增）：與 <b>fulvestrant</b> 併用，<b>停經後</b>、曾用 CDK4/6 抑制劑後進展、ER 或 PR &gt;30%、HER2(−)、<b>PIK3CA 突變</b>。</li>' +
-      '<li><span class="drug">capivasertib</span>（<b>9.135</b>，2026-06-01 新增）：與 <b>fulvestrant</b> 併用，<b>停經後</b>、曾用 CDK4/6 後進展、HR(+)、HER2(−)、' +
-      '<b>PIK3CA／AKT1／PTEN 任一變異</b>。⚠ 與 alpelisib+fulvestrant <b>擇一給付</b>。</li>' +
-      '<li><span class="drug">elacestrant</span>：<b>未給付</b>（健保藥品清單查無此成分）。</li>' +
-      '<li><b>抗 HER2</b>：<span class="drug">trastuzumab</span>（9.18.2）、<span class="drug">pertuzumab</span>／Phesgo（9.70.2／9.112.2，一線、上限 18 個月）、' +
-      '<span class="drug">T-DM1</span>（9.87.2，二線、上限 10 個月／13 週期）、<b><span class="drug">T-DXd</span>（9.115，<b>2025-02-01 起給付</b>）</b>' +
-      '—— HER2(+) 二線（上限 18 週期），以及 <b>HER2-low（ER 與 PR 皆陰性且 HER2 IHC1+ 或 2+/ISH−）</b>之晚期／轉移性乳癌；' +
-      '<span class="drug">lapatinib</span>（9.47，限<b>腦轉移</b>且已用過 anthracycline、taxane 與 trastuzumab 後進展者）。' +
-      '<b><span class="drug">tucatinib</span> 未給付</b>。<br>' +
-      '⚠ <b>最重要的一條限制：T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換</b>；<b>T-DXd 與 sacituzumab govitecan 亦互斥</b>。' +
-      '排治療順序前先把這條算進去。</li>' +
-      '<li><b>PARP 抑制劑</b>（<b>9.85.2</b>）：<span class="drug">olaparib</span>／<span class="drug">talazoparib</span> <b>仍僅限三陰性</b>' +
-      '（ER、PR、HER2 皆陰性）且<b>生殖細胞</b> BRCA1/2 突變者；<b>HR(+)/HER2(−) 的 gBRCA 轉移性乳癌仍不給付</b>。兩藥擇一。</li>' +
-      '<li><b>免疫治療</b>（<b>9.69</b>）：<b>轉移性 TNBC 仍不給付</b> —— 條文中乳癌只有「早期三陰性乳癌」一格。' +
-      'KEYNOTE-355（pembrolizumab + 化療）與 IMpassion130（atezolizumab + nab-paclitaxel）<b>皆不在給付範圍</b>；atezolizumab 於乳癌完全無適應症。</li>' +
-      '<li><span class="drug">sacituzumab govitecan</span>（<b>9.106</b>）：<b>TNBC</b>（2024-02-01）— 已failed ≥2 線全身治療（≥1 線用於晚期）、ECOG ≤1、曾用 taxane、<b>未曾用 T-DXd</b>；' +
-      '<b>HR(+)/HER2(−)</b>（2025-10-01 新增）— 無活動性腦轉移、<b>曾用 CDK4/6 抑制劑 ≤12 個月且有內臟轉移</b>、且已接受 ≥2 線轉移性化療。</li>' +
-      '<li><span class="drug">bevacizumab</span>（9.37）：<b>乳癌無適應症</b>（條文七項適應症中沒有乳癌）。指引 p43 的 <span class="rx">BEEP</span> 處方與 p45 「合併 bevacizumab 是合理的」屬<b>自費</b>使用。</li>' +
-      '<li><span class="drug">eribulin</span>（9.48.1）：轉移性乳癌且<b>先前已用過 anthracycline 與 taxane</b> 者；每 3 個週期評估反應並記錄。與 ixabepilone 互斥。</li>' +
-      '<li><b>骨轉移</b>：zoledronate 4mg（5.5.3.2.1）與 denosumab 120mg（5.5.4）皆給付，但<b>限蝕骨性（osteolytic）骨轉移</b>。' +
-      '（這兩條在第 5 節不在第 9 節，是常找不到的原因。）</li>' +
+      '<li><b>CDK4/6 抑制劑</b>（<b>9.72</b>）：<b>只涵蓋 ribociclib 與 palbociclib</b>，<b>abemaciclib 不在其中</b>。' +
+      '條件：ER 或 PR &gt; 30%、HER2 陰性、<b>沒有內臟危象、沒有腦轉移、不可以只有骨轉移</b>。' +
+      '停經後（9.72.1）需年齡 ≥ 55、曾雙側卵巢切除、或濾泡刺激素與雌二醇達停經後範圍；' +
+      '停經前、圍停經期與<b>男性</b>（9.72.2，2025-07-01 新增男性）須併用芳香環酶抑制劑加 GnRH 類似物。' +
+      '<b>已不限第一線</b>；<b>終生上限 24 個月</b>，兩種藥只能擇一。<br>' +
+      '⚠ 曾用 everolimus 失敗者不得申請；<b>輔助期用過 abemaciclib 失敗者亦不得申請</b>（9.72.7）。</li>' +
+      '<li>' + drug('abemaciclib') + '：<b>轉移性不給付</b> —— 它只有 9.107（輔助）一條。藥有給付，但只在輔助情境。</li>' +
+      '<li>' + drug('everolimus') + '（<b>9.36.1 第 4 項</b>）：與 exemestane 併用；荷爾蒙受體陽性、HER2 陰性、' +
+      '<b>無內臟危象</b>、曾用<b>非固醇類</b>芳香環酶抑制劑失敗且未曾用過 exemestane。' +
+      '⚠ 用了它失敗後<b>不得再申請 CDK4/6 抑制劑</b>。</li>' +
+      '<li>' + drug('alpelisib') + '（<b>9.129</b>，2026-01-01 新增）：與 fulvestrant 併用；<b>停經後</b>、曾用 CDK4/6 抑制劑後進展、' +
+      'ER 或 PR &gt; 30%、HER2 陰性、<b>PIK3CA 突變</b>。</li>' +
+      '<li>' + drug('capivasertib') + '（<b>9.135</b>，2026-06-01 新增）：與 fulvestrant 併用；<b>停經後</b>、曾用 CDK4/6 抑制劑後進展、' +
+      '荷爾蒙受體陽性、HER2 陰性、<b>PIK3CA／AKT1／PTEN 任一變異</b>。⚠ 與 alpelisib 加 fulvestrant <b>擇一給付</b>。</li>' +
+      '<li>' + drug('elacestrant') + '：<b>未給付</b>（健保藥品清單查無此成分）。</li>' +
+      '<li><b>抗 HER2 藥物</b>：trastuzumab（9.18.2）；pertuzumab 與 Phesgo（9.70.2／9.112.2，<b>限第一線</b>、上限 18 個月）；' +
+      'T-DM1（9.87.2，<b>第二線</b>、上限 10 個月／13 週期）；<b>T-DXd（9.115，2025-02-01 起給付）</b> —— ' +
+      'HER2 陽性第二線（上限 18 週期），以及 <b>HER2 低表現</b>（ER 與 PR 皆陰性且 HER2 免疫組織化學 1+，或 2+ 但 ISH 陰性）的晚期乳癌；' +
+      'lapatinib（9.47，<b>限腦轉移</b>且已用過 anthracycline、taxane 與 trastuzumab 後進展）。<b>tucatinib 未給付。</b><br>' +
+      '⚠ <b>最重要的一條：T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換</b>；' +
+      '<b>T-DXd 與 sacituzumab govitecan 也互斥</b>。排治療順序前先把這條算進去。</li>' +
+      '<li><b>PARP 抑制劑</b>（<b>9.85.2</b>）：olaparib 與 talazoparib <b>仍只限三陰性</b>' +
+      '（ER、PR、HER2 皆陰性）且<b>生殖細胞</b> BRCA1/2 突變。' +
+      '<b>荷爾蒙受體陽性的 BRCA 突變轉移性乳癌仍不給付。</b>兩藥擇一。</li>' +
+      '<li><b>免疫治療</b>（<b>9.69</b>）：<b>轉移性三陰性乳癌仍不給付</b> —— 條文中乳癌只有「早期三陰性乳癌」一格。' +
+      'KEYNOTE-355 與 IMpassion130 的處方<b>皆不在給付範圍</b>。</li>' +
+      '<li>' + drug('sacituzumab govitecan') + '（<b>9.106</b>）：三陰性（2024-02-01）—— 已失敗 ≥ 2 線全身治療' +
+      '（其中 ≥ 1 線用於晚期）、體能狀態 ECOG ≤ 1、曾用 taxane、<b>未曾用過 T-DXd</b>。' +
+      '荷爾蒙受體陽性且 HER2 陰性（2025-10-01 新增）—— 無活動性腦轉移、' +
+      '<b>曾用 CDK4/6 抑制劑 ≤ 12 個月且有內臟轉移</b>、且已接受 ≥ 2 線轉移性化療。</li>' +
+      '<li>' + drug('bevacizumab') + '（9.37）：<b>乳癌沒有適應症</b>。指引 p43 的 BEEP 處方與 p45「合併 bevacizumab 是合理的」屬<b>自費</b>。</li>' +
+      '<li>' + drug('eribulin') + '（9.48.1）：轉移性乳癌且<b>先前已用過 anthracycline 與 taxane</b>；每 3 個週期評估反應並記錄。</li>' +
+      '<li><b>骨轉移</b>：zoledronate 4 mg（5.5.3.2.1）與 denosumab 120 mg（5.5.4）皆給付，' +
+      '但<b>限蝕骨性骨轉移</b>。（這兩條在第 5 節不在第 9 節，所以常找不到。）</li>' +
       '</ul>' +
-      '<div class="rx-def"><b>伴隨式診斷（p40）</b>：IMpassion130 以 <b>Ventana SP142</b> 判讀 PD-L1 IC(+)，化療夥伴為 nab-paclitaxel；' +
-      'KEYNOTE-355 以 <b>Dako 22C3</b> 判讀 <b>CPS ≥ 10</b>，化療夥伴為 gemcitabine／platinum、nab-paclitaxel 或 paclitaxel。' +
-      '<b>NTUH 修正</b>：認同一線加入免疫治療的概念、依各自建議之伴隨式診斷選擇病人，但<b>化療夥伴可較寬</b>。<br>' +
-      '<b>給付條文會變，開藥前請以健保署當期公告為準</b>；本表資料查詢日為 2026-08-16。</div>' +
-      '</div></details>';
+      '<div class="rx-warn"><b>條文會變，開藥前請以健保署當期公告為準。</b>查詢日 2026-08-16。</div>');
   }
 
-  /* ==========================================================
-     腋下手術：可省略前哨淋巴結切片（SLNB）的情境
-     —— 台大指引本身未列成一張表，故此處註明各條之來源。
-     ========================================================== */
-  function omitAxDetails() {
-    return '<details class="kps-details"><summary>什麼時候<b>連 SLNB 都不用做</b>？▸</summary><table>' +
-      '<tr><td>純 DCIS<br>行乳房保留手術</td><td><b>不需</b>腋下分期。DCIS 本身的淋巴結轉移率僅約 1–2%；' +
-      '若最終病理升級為侵襲癌（各研究 7–28%，統合分析約 25.8%），<b>乳房保留手術後仍可回頭補做 SLNB</b>，因為乳房淋巴引流還在。<br>' +
-      '台大 p6 註 b：SLNB「<b>更強烈考慮</b>用於接受全乳切除者，以及切除位置可能影響日後 SLNB 者」——即單純 BCS 之 DCIS 並非必做。</td></tr>' +
-      '<tr><td>DCIS <b>要</b>做 SLNB<br>的四種情況</td><td>① <b>需行全乳切除</b>（切了就補不回來）；② 切除位置會破壞日後前哨定位（中央／乳暈後、外上象限、腋尾，或大範圍腫瘤整形手術）；' +
-      '③ 切片<b>已懷疑有侵襲或微侵襲</b>；④ <b>臨床與病理不相符</b>（例如可觸摸的大腫塊但報告只寫 DCIS）。' +
-      '<br>來源：台大 p6 註 b；美國乳房外科醫學會（ASBrS）與 NCCN 之 DCIS 腋下處置原則。</td></tr>' +
-      '<tr><td>LCIS</td><td>切除非必要、以追蹤為主（p7），<b>不做腋下分期</b>。多形性 LCIS 比照 DCIS 處理。</td></tr>' +
-      '<tr><td>年長且低風險<br>（Choosing Wisely）</td><td>全部符合：<b>年齡 ≥70</b>、臨床腋下陰性（不需超音波）、<b>T1（≤2cm）</b>、<b>HR(+) 且 HER2(−)</b>、' +
-      '<b>將接受內分泌治療</b>、接受乳房保留手術。<br>依據 <b>CALGB 9343</b>（≥70 歲、T1N0、ER(+)，lumpectomy + tamoxifen ± 放療；' +
-      '12.6 年追蹤：10 年局部區域無復發 98% vs 90%，但<b>遠處轉移、乳癌死亡與整體存活皆無差異</b>）。' +
-      '<b>若腋下結果會改變放療或全身治療決策，仍應個案考慮做腋下分期。</b></td></tr>' +
-      '<tr><td>停經後、小腫瘤、<br>超音波陰性<br>（SOUND／INSEMA）</td><td><b>SOUND</b>（JAMA Oncol 2023）：腫瘤 ≤2cm、<b>術前腋下超音波陰性</b>、接受 BCS + 放療。' +
-      '5 年無遠處疾病存活 98.0%（不做腋下手術）vs 97.7%（SLNB），達非劣性；<b>兩組腋下復發率皆 0.4%</b>。' +
-      '值得注意的是：SLNB 組其實有 13.7% 淋巴結陽性，但<b>知不知道結果並未改變輔助治療的比例</b>。<br>' +
-      '<b>INSEMA</b>（NEJM 2025）：影像 &lt;5cm、cN0/iN0、BCS + 全乳放療，5502 人。' +
-      '族群以 HR(+)/HER2(−)（95.2%）、grade 1–2（96.4%）、中位年齡 62 歲為主。<br>' +
-      '<b>ASCO 2025 據此把門檻從 ≥70 降到 ≥50</b>：需<b>七項全部符合</b>—— 停經後、年齡 ≥50、<b>術前腋下超音波陰性</b>、grade 1–2、' +
-      '腫瘤 ≤2cm、HR(+) 且 HER2(−)、接受乳房保留手術＋放療。<br>' +
-      '<b>台大指引尚未納入 SOUND／INSEMA，此屬院外實證</b>，採用前應經多專科討論並記錄。' +
-      '小葉癌與其他組織型在兩個試驗中都偏少（12.7%／8.5%），應保守。</td></tr>' +
-      '<tr><td>其他可省略者</td><td>預防性（風險降低）乳房切除 —— 意外發現癌症 &lt;5%、淋巴結轉移約 1%；乳房肉瘤／血管肉瘤／惡性葉狀腫瘤（走血行轉移）；' +
-      '<b>預期壽命有限或腋下結果不會改變輔助治療</b>者 —— 這是上面所有條件背後真正的共同原則。</td></tr>' +
-      '<tr><td><b>不可省略</b></td><td><b>三陰性與 HER2(+)</b>：淋巴結轉移率較高，且在 SOUND／INSEMA 中佔比極低（INSEMA 分別 1.2% 與 3.6%）。' +
-      '小的 HER2(+) 腫瘤更是要靠淋巴結狀態決定走 APT 還是升階治療。<br>' +
-      '<b>T1a／微侵襲不是省略的理由</b>——腫瘤小本身不夠，必須另外符合上面某一條。（INSEMA 中腫瘤 &lt;1cm 的次族群反而是唯一風險比偏向手術的一組。）<br>' +
-      '<b>男性乳癌</b>：兩個試驗都沒收男性，不可外推。<br>' +
-      '<b>grade 3、年齡 &lt;50、cT2 以上、小葉癌</b>：在驗證族群之外。<br>' +
-      '<b>全乳切除的侵襲癌</b>、<b>cN(+)</b>、<b>發炎性乳癌</b>（SLNB 為禁忌，應做 ALND）。<br>' +
-      '<b>術前化療之後</b>：省略腋下手術仍屬研究中，現階段應做 SLNB。<b>術前治療期間臨床惡化者不可只做 SLNB</b>（台大 p13）。</td></tr>' +
-      '</table></details>';
+  /* 3g. 連前哨淋巴結切片都可以省略的其他情況 */
+  function omitSlnbReference() {
+    return fold('連前哨淋巴結切片都可以省略的其他情況（<b>台大指引未列，屬院外實證</b>）', tbl([
+      ['小葉原位癌', '以追蹤為主，<b>不做腋下分期</b>（p7）。多形性小葉原位癌比照原位管癌處理。'],
+      ['預防性乳房切除', '意外發現癌症 &lt; 5%、淋巴結轉移約 1%。'],
+      ['乳房肉瘤、血管肉瘤<br>惡性葉狀腫瘤', '走血行轉移，不做腋下分期。'],
+      ['年長且低風險',
+        '<b>全部符合</b>：年齡 ≥ 70、臨床腋下陰性、T1（≤ 2 cm）、荷爾蒙受體陽性且 HER2 陰性、' +
+        '將接受內分泌治療、接受乳房保留手術。依據 CALGB 9343。<br>' +
+        '<b>若腋下結果會改變放療或全身治療決策，仍應個案考慮。</b>'],
+      ['停經後、小腫瘤<br>腋下超音波陰性',
+        '<b>七項全部符合</b>（ASCO 2025 據 INSEMA 試驗把門檻由 ≥ 70 降到 ≥ 50）：' +
+        '停經後、年齡 ≥ 50、<b>術前腋下超音波陰性</b>、組織分化等級 1–2、腫瘤 ≤ 2 cm、' +
+        '荷爾蒙受體陽性且 HER2 陰性、接受乳房保留手術<b>並做放療</b>。'],
+      ['<b>絕對不可以省略</b>',
+        '<b>三陰性與 HER2 陽性</b>；<b>男性乳癌</b>；組織分化等級 3、年齡 &lt; 50、cT2 以上、小葉癌；' +
+        '<b>臨床腋下陽性</b>；<b>發炎性乳癌</b>（前哨淋巴結切片為禁忌，應做腋下淋巴結廓清）；' +
+        '<b>術前治療期間臨床惡化者</b>（p13）。<br>' +
+        '<b>腫瘤小本身不是省略的理由</b> —— 必須另外符合上面某一整組條件。'],
+      ['總原則',
+        '上面所有條件背後的共同原則只有一句：<b>腋下的結果不會改變後續治療</b>，或<b>病人的預期壽命有限</b>。' +
+        '反過來說，只要腋下結果會改變放療或全身治療的決定，就不該省略。']
+    ]));
   }
 
-  function etResistDetails() {
-    return '<details class="kps-details"><summary>內分泌抗性的定義 —— 兩套數字不要搞混 ▸</summary><table>' +
-      '<tr><td>原發性抗性<br>primary</td><td><b>在輔助內分泌治療的前 2 年內復發</b>；或轉移期一線內分泌治療<b>開始後 6 個月內</b>進展（治療中）。' +
-      '（不因是否併用 CDK4/6 抑制劑而改變。）</td></tr>' +
-      '<tr><td>次發性抗性<br>secondary</td><td>其他情況，包括：輔助內分泌治療<b>滿 2 年之後</b>才復發（治療中）；轉移期一線內分泌治療<b>滿 6 個月後</b>才進展；' +
-      '二線以後任何時間點進展；<b>以及已知有 ESR1 突變</b>。</td></tr>' +
-      '<tr><td>內分泌不敏感<br>insensitivity</td><td>後線內分泌治療<b>2 個月內</b>即進展，且已無其他有意義的內分泌選項。' +
-      '這是四種分類中<b>對臨床決策影響最大</b>的一種。</td></tr>' +
-      '<tr><td>未曾使用<br>endocrine-naïve</td><td>從未接受過內分泌治療者；<b>實務上先當作敏感</b>，直到證明不是。</td></tr>' +
-      '<tr><td><b>兩套數字</b></td><td>上面的 <b>2 年</b>是 ESO-ESMO ABC 共識（第 6／7 版，2024）用來分類抗性型別的界線，' +
-      '目的主要是讓臨床試驗的族群可以互相比較。<br>' +
-      '但<b>治療演算法（NCCN、ESMO）與藥證所用的界線是 12 個月</b>：「在輔助內分泌治療中進展，或完成後 12 個月內復發」' +
-      '——符合這一條者，一線建議改為 <b>fulvestrant ＋ CDK4/6 抑制劑</b>（而非 AI ＋ CDK4/6）。' +
-      '所以本步驟依<b>可執行的 12 個月界線</b>分組，抗性型別另行標註。<br>' +
-      '<b>ABC 6/7 自己也提醒</b>：抗性與敏感是連續的，這些定義對臨床決策的用處其實有限。</td></tr>' +
-      '<tr><td>台大指引</td><td><b>台大乳癌診療指引未收錄內分泌抗性的定義</b>；本表為院外共識，僅供分類參考。</td></tr>' +
-      '</table></details>';
-  }
-
-  function z0011Box() {
-    return '<div class="cbx"><div class="cbx-h">ACOSOG Z0011 可免除進一步腋下廓清之條件（p8）　<span class="cbx-sub">五項須全部符合</span></div>' +
-      '<div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">a</span>cN0，前哨淋巴結僅 1–2 顆陽性</span>' +
-      '<span class="cb"><span class="cb-k">b</span>T1–T2</span>' +
-      '<span class="cb"><span class="cb-k">c</span>接受乳房保留手術且已規劃術後放療</span>' +
-      '<span class="cb"><span class="cb-k">d</span>有足量的輔助全身治療</span>' +
-      '<span class="cb"><span class="cb-k">e</span>尤其是 ER(+) 者</span>' +
-      '</div>' +
-      '<div class="note" style="margin-top:7px"><b>Z0011 不適用的情境</b>：可觸摸到的腋下病灶、超過 2 顆前哨淋巴結陽性、<b>全乳切除</b>、未做全乳放療、' +
-      '以及<b>接受過術前化療者</b> — 這些族群省略腋下廓清的安全性未被證實。<b>微轉移（≤2mm）不是 Z0011 的族群</b>，其證據來自 IBCSG 23-01。</div></div>';
-  }
-
-  /* ==========================================================
-     追蹤區塊（p27、p37）
-     ========================================================== */
-  function renderFollowup(fuId, type) {
-    var el = document.getElementById(fuId);
-    if (!el) return;
-    if (!type) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-    el.classList.remove('hidden');
-    var h;
-    if (type === 'curative') {
-      h = '<div class="fu-label">追蹤原則 Principles of Follow-up（p27）</div><ul class="fu-list">' +
-        '<li>門診追蹤：<b>每 3–6 個月共 5 年</b>，之後每年一次。</li>' +
-        '<li><b>每年乳房影像為必要</b>：乳房攝影及／或乳房超音波。</li>' +
-        '<li>腹部超音波、胸部 X 光：選擇性（optional）。</li>' +
-        '<li><b>不常規</b>安排 CT 或 bone scan，僅在臨床有指徵時。</li>' +
-        '<li><b>不建議</b>常規追蹤腫瘤標記。</li>' +
-        '<li>服用 tamoxifen 且子宮存在者，<b>每年婦科評估</b>；服用 AI 者建議<b>定期骨密度檢查</b>（健保項目 33064B 有給付，見治療建議內之給付表）。</li>' +
-        '<li>實際追蹤策略由醫病討論後決定（at the discretion of physician-patient discussion）。</li>' +
-        '<li>追蹤中發現復發 → 回步驟 1 選擇「局部／區域復發」或「轉移性乳癌」。</li>' +
-        '</ul>';
-    } else if (type === 'dcis') {
-      h = '<div class="fu-label">追蹤原則 · 原位癌（p27）</div><ul class="fu-list">' +
-        '<li>門診追蹤每 3–6 個月共 5 年，之後每年一次；<b>每年乳房影像為必要</b>。</li>' +
-        '<li>DCIS <b>完全不做全身分期</b>（CT／PET／bone scan 皆不考慮，p3）。</li>' +
+  /* 3h. 追蹤原則（p27） */
+  function followupHTML(kind) {
+    if (kind === 'insitu') {
+      return '<div class="fu-label">追蹤原則 · 原位癌（p27）</div><ul class="fu-list">' +
+        '<li>門診每 3–6 個月一次共 5 年，之後每年一次；<b>每年乳房影像是必要的</b>。</li>' +
+        '<li><b>原位管癌完全不做全身分期</b> —— 電腦斷層、正子造影、骨骼掃描都不考慮（p3）。</li>' +
         '<li>服用 tamoxifen 者每年婦科評估。</li>' +
-        '<li>若日後發現侵襲性復發 → 依侵襲癌流程重新評估。</li>' +
-        '</ul>';
-    } else if (type === 'inop') {
-      h = '<div class="fu-label">追蹤與再評估</div><ul class="fu-list">' +
-        '<li>治療期間<b>每次回診評估腫瘤反應</b>（p12）；反應良好且體能改善者，<b>重新評估手術可行性</b>。</li>' +
-        '<li>影像追蹤依臨床需要安排；不常規追蹤腫瘤標記。</li>' +
-        '<li>持續進展 → 依進展性／轉移性疾病處理。</li>' +
-        '</ul>';
-    } else {
-      h = '<div class="fu-label">追蹤與支持治療 Follow-up / Supportive care（p27、p37）</div><ul class="fu-list">' +
-        '<li>定期評估治療反應與毒性；疾病進展 → 次線／後線治療或臨床試驗。</li>' +
-        '<li>轉移期<b>不常規以腫瘤標記追蹤</b>；影像檢查依臨床需要安排。</li>' +
-        '<li>骨轉移者評估骨骼保護用藥與骨骼相關事件之預防。</li>' +
-        '<li>末期病人：<b>安寧緩和照護，照會安寧共同照護團隊</b>（依安寧緩和醫療條例）。</li>' +
-        '<li>最終治療決定仍取決於病人與醫師之討論。</li>' +
-        '</ul>';
+        '<li>日後若出現侵襲性復發，回步驟 1 改選「侵襲性乳癌」重新評估。</li></ul>';
     }
-    el.innerHTML = h;
+    if (kind === 'meta') {
+      return '<div class="fu-label">追蹤與支持治療（p27、p37）</div><ul class="fu-list">' +
+        '<li>定期評估治療反應與副作用；疾病進展就換次線治療或考慮臨床試驗。</li>' +
+        '<li>轉移期<b>不常規以腫瘤標記追蹤</b>；影像依臨床需要安排。</li>' +
+        '<li>骨轉移者評估骨骼保護用藥（<b>健保限蝕骨性骨轉移</b>）。</li>' +
+        '<li><b>末期病人：安寧緩和照護，照會安寧共同照護團隊</b>（p37）。</li>' +
+        '<li>最終治療決定仍取決於病人與醫師的討論。</li></ul>';
+    }
+    return '<div class="fu-label">追蹤原則（p27）</div><ul class="fu-list">' +
+      '<li>門診每 3–6 個月一次共 5 年，之後每年一次。</li>' +
+      '<li><b>每年乳房影像是必要的</b>：乳房攝影及／或乳房超音波。</li>' +
+      '<li>腹部超音波、胸部 X 光：可做可不做。</li>' +
+      '<li><b>不常規</b>安排電腦斷層或骨骼掃描，只在臨床有指徵時。</li>' +
+      '<li><b>不建議</b>常規追蹤腫瘤標記。</li>' +
+      '<li>服用 tamoxifen 且子宮還在者<b>每年婦科評估</b>；服用芳香環酶抑制劑者<b>定期骨密度檢查</b>。</li>' +
+      '<li>追蹤中發現復發 → 回步驟 1 選「局部或區域復發」或「轉移性乳癌」。</li></ul>';
+  }
+
+  /* 原位管癌用的兩張參考表 */
+  function vnpiTable() {
+    return fold('<b>VNPI 計分表</b>（Van Nuys Prognostic Index）—— 決定要不要放療、要不要改全乳切除（p46）',
+      '<table>' +
+      '<tr><td></td><td>1 分</td><td>2 分</td><td>3 分</td></tr>' +
+      '<tr><td>腫瘤大小</td><td>≤ 1.5 cm</td><td>1.6–4.0 cm</td><td>≥ 4.1 cm</td></tr>' +
+      '<tr><td>病理</td><td>非高分化等級、無壞死</td><td>非高分化等級、有壞死</td><td>高分化等級</td></tr>' +
+      '<tr><td>切緣</td><td>≥ 1.0 cm</td><td>0.1–0.9 cm</td><td>&lt; 0.1 cm</td></tr>' +
+      '<tr><td>年齡</td><td>&gt; 60 歲</td><td>40–60 歲</td><td>&lt; 40 歲</td></tr>' +
+      '<tr><td><b>4–6 分</b></td><td colspan="3">低風險：<b>放療是選擇性的</b></td></tr>' +
+      '<tr><td><b>7–9 分</b></td><td colspan="3">中風險：<b>建議做輔助放療</b></td></tr>' +
+      '<tr><td><b>10–12 分</b></td><td colspan="3">高風險：<b>建議改做全乳切除</b></td></tr>' +
+      '<tr><td>另一套準則</td><td colspan="3">ECOG E5194 條件：腫瘤 &lt; 2.5 cm、低或中度分化、切緣 &gt; 3 mm —— 亦可作為省略放療的依據</td></tr>' +
+      '</table>');
+  }
+  function bctContraTable() {
+    return fold('什麼情況不能做乳房保留手術？<b>絕對與相對禁忌</b>（台大指引未列，引自 NCCN）', tbl([
+      ['絕對禁忌',
+        '① <b>懷孕期間就必須放療</b>（部分病人可延到產後）；② <b>乳房攝影呈瀰漫性可疑或惡性微鈣化</b>；' +
+        '③ <b>病灶範圍太廣</b>，單一區段切除無法同時達到乾淨切緣與可接受外觀；④ <b>瀰漫性切緣陽性</b>；' +
+        '⑤ ATM 基因雙等位失活。'],
+      ['相對禁忌',
+        '① <b>同側胸壁或乳房曾接受放療</b>（一定要先問到當年的劑量與照野）；' +
+        '② <b>皮膚受侵犯的活動性結締組織疾病</b>，尤其硬皮症與紅斑性狼瘡；③ 局部切緣陽性；' +
+        '④ <b>已知或懷疑遺傳性乳癌基因</b>；⑤ 腫瘤 &gt; 5 cm。'],
+      ['原位管癌專屬', '<b>再切除仍達不到足夠切緣者，應改做全乳切除</b>；另 VNPI 10–12 分建議全乳切除（p46）。'],
+      ['出處',
+        'NCCN 乳癌指引 <b>BINV-G</b>（Special Considerations to Breast-Conserving Therapy Requiring RT）與 <b>DCIS-1</b> 註 e；' +
+        '本頁查核的公開版本為 v5.2020，該段自 2018 年版起未變動。<b>台大指引本身沒有列這些條件。</b>']
+    ]));
+  }
+
+  /* OlympiA 與 CPS+EG */
+  function olympiaTable() {
+    return fold('輔助 olaparib 的條件怎麼算？<b>OlympiA 試驗與健保條文不一樣</b>（p21）', tbl([
+      ['試驗版<br>直接手術者',
+        '<b>三陰性</b>：腋下淋巴結陽性（≥ pN1，任何腫瘤大小），或淋巴結陰性但侵襲性腫瘤病理大小 &gt; 2 cm（≥ pT2）。<br>' +
+        '<b>ER 及／或 PR 陽性、HER2 陰性</b>：<b>需要 ≥ 4 顆</b>病理確認的陽性淋巴結。'],
+      ['試驗版<br>術前化療後手術者',
+        '<b>三陰性</b>：乳房及／或切下的淋巴結還有殘存侵襲癌（未達病理完全緩解）。<br>' +
+        '<b>ER 及／或 PR 陽性、HER2 陰性</b>：未達病理完全緩解，<b>而且 CPS+EG 分數 ≥ 3</b>。'],
+      ['CPS+EG 怎麼算',
+        '把四項分數相加，總分 0–6：<br>' +
+        '<b>臨床分期</b>（治療前）：I、IIA = 0；IIB、IIIA = 1；IIIB、IIIC = 2。<br>' +
+        '<b>病理分期</b>（治療後）：0、I = 0；IIA、IIB、IIIA、IIIB = 1；IIIC = 2。<br>' +
+        '<b>ER 陰性</b>：1 分。<b>細胞核分化等級 3</b>：1 分。<br>' +
+        '（若無法判定細胞核分化等級，改用一般組織學分級；只有 Nottingham 總分 9 分才算 1 分。）'],
+      ['健保版（9.85.4）<br>與試驗的差別',
+        '<b>健保不採用 CPS+EG。</b>健保的高風險定義是：<br>' +
+        '<b>三陰性</b> —— 術前化療後未達病理完全緩解，或直接手術後 ≥ pN1，或 pN0 但腫瘤 ≥ 2 cm。<br>' +
+        '<b>荷爾蒙受體陽性、HER2 陰性</b> —— 術前化療後未達病理完全緩解，或直接手術後淋巴結 ≥ 4 顆。<br>' +
+        '所以荷爾蒙受體陽性者在健保下反而比試驗<b>寬</b>（不必算分數），三陰性則一致。'],
+      ['共同條件',
+        '<b>必須是生殖細胞（germline）BRCA1/2 突變、HER2 陰性</b>，療程 1 年。' +
+        '健保另外要求：完成 ≥ 6 週期含 anthracycline 或 taxane 的化療，並於最後一次治療後 12 週內開始。<br>' +
+        '⚠ <b>輔助情境的 olaparib 與 pembrolizumab 只能擇一給付。</b>'],
+      ['出處', 'OlympiA 試驗計畫書（NCT02032823）第 4.1 節與附錄 H；台大指引 p21；健保署藥品給付規定 9.85.4。']
+    ]));
+  }
+
+  /* 轉移期化療處方 */
+  function mbcChemoTable() {
+    return fold('轉移期的化療處方有哪些？（p42、p43、p44、p45）', tbl([
+      ['三個基本前提',
+        '① <b>所有早期乳癌的處方，不管是合併處方或其中的單一藥物，轉移時都可以用。</b><br>' +
+        '② 只有<b>已知抗藥性的疑慮（例如很快就復發）</b>，或 <b>anthracycline 已達累積劑量</b>時才不適合。<br>' +
+        '③ <b>沒有證據顯示哪個處方比較好，也沒有明確的第一線處方；病人的偏好是關鍵因素之一。</b>'],
+      ['單一藥物',
+        '<b>pegylated liposomal doxorubicin</b> 30–50 mg/m² 每 3–4 週；<b>eribulin</b> 1.4 mg/m² D1、D8；<br>' +
+        '<b>capecitabine</b> 850–1000 mg/m² 每日兩次 D1–14，每 21 天；<b>vinorelbine</b> 25–30 mg/m² D1、D8，每 3 週。'],
+      ['合併處方',
+        '<b>N-HDFL</b>：vinorelbine 25 mg/m² D1、D8 ＋（5-FU 2000–2600 mg/m² ± leucovorin 300 mg/m²）24 小時輸注 D1、D8。<br>' +
+        '<b>NP</b>：vinorelbine ＋ cisplatin 30–35 mg/m² D1、D8。<b>P-HDFL</b>：cisplatin ＋ 高劑量 5-FU，D1、D8。<br>' +
+        '<b>TG</b>：paclitaxel 80 mg/m² ＋ gemcitabine 800 mg/m²，D1、D8。<br>' +
+        '<b>BEEP</b>：bevacizumab 15 mg/kg D1 ＋ cisplatin 70 mg/m² D2 ＋ etoposide 70 mg/m² D2–4。'],
+      ['不建議當第一線', '<b>mitoxantrone、mitomycin C、ixabepilone</b> —— 保留給已治療過很多線、沒有其他選擇者（p45）。'],
+      ['健保注意',
+        '<b>bevacizumab 在乳癌沒有適應症</b>，所以 BEEP 處方屬<b>自費</b>。' +
+        '<b>eribulin</b> 限先前已用過 anthracycline 與 taxane 者（9.48.1）。']
+    ]));
+  }
+
+  /* 遺傳諮詢與 BRCA 檢測（p4、p5） */
+  function geneticTable() {
+    return fold('要不要轉遺傳諮詢？要不要驗 BRCA？（p4、p5）', tbl([
+      ['考慮遺傳諮詢的三個大條件', '<b>符合家族史條件</b>、<b>雙側乳癌</b>，或<b>發病年齡很輕（&lt; 35 歲）</b>。'],
+      ['家族史的八項定義',
+        '① ≥ 3 名女性家族成員罹患乳癌（不限年齡）；<br>' +
+        '② ≥ 2 名女性罹患乳癌，其中一人診斷時 ≤ 50 歲；<br>' +
+        '③ ≥ 1 名女性罹患乳癌，加上一名家族成員罹患卵巢癌（可以是同一人）；<br>' +
+        '④ ≥ 1 名女性 &lt; 35 歲確診乳癌；<br>' +
+        '⑤ ≥ 1 名女性罹患雙側乳癌（第一個乳癌確診時需 &lt; 50 歲）；<br>' +
+        '⑥ ≥ 1 名女性確診卵巢癌（確診時需 &lt; 40 歲）；<br>' +
+        '⑦ ≥ 2 名女性確診卵巢癌（不限年齡）；<br>' +
+        '⑧ ≥ 1 名男性家族成員確診乳癌（不限年齡）。'],
+      ['什麼人該驗生殖細胞 BRCA1/2',
+        '① 符合上面的遺傳諮詢條件者；<br>' +
+        '② <b>可能因 PARP 抑制劑受益者</b> —— 早期乳癌中 HER2 陰性的第 II／III 期且符合 OlympiA 條件者；' +
+        '晚期乳癌中 HER2 陰性且曾在術前、輔助或轉移情境接受過化療者。'],
+      ['為什麼要早點驗',
+        '<b>驗出來會改變治療</b>：影響能不能用 olaparib、影響要不要建議雙側預防性切除、' +
+        '也影響乳房保留手術的選擇（遺傳性乳癌基因是相對禁忌）。等到要開藥才驗常常來不及。']
+    ]));
   }
 
   /* ==========================================================
-     互動 helpers
-     ========================================================== */
-  function bcSel(btn) {
-    var sel = btn.classList.contains('tn-cell') ? '.tn-cell' : '.flow-opt';
-    var g = btn.parentNode;
-    g.querySelectorAll(sel).forEach(function (b) { b.classList.remove('selected'); });
-    btn.classList.add('selected');
-  }
-  function bcShow(id, on) { var el = document.getElementById(id); if (el) el.classList.toggle('hidden', !on); }
-  function bcClearSel(ids) {
-    ids.forEach(function (id) {
-      var s = document.getElementById(id);
-      if (s) s.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
-    });
-  }
-  function ulRec(id, cls, title, lines, note, extra) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    // className 直接覆寫會把 bcShow() 加上的 hidden 一起洗掉，
-    // 建議色塊就會在還不該出現的時候先冒出來（此處曾中招）。
-    var wasHidden = el.classList.contains('hidden');
-    el.className = 'flow-rec ' + cls + (wasHidden ? ' hidden' : '');
-    var label = el.querySelector('.rec-label');
-    var labelTxt = label ? label.textContent : '建議處置 Recommendation';
-    el.innerHTML = '<div class="rec-label">' + labelTxt + '</div>' +
-      '<div class="rec-title">' + title + '</div>' +
-      (lines && lines.length ? '<ul class="rec-detail"><li>' + lines.join('</li><li>') + '</li></ul>' : '') +
-      (extra || '') +
-      (note ? '<div class="rec-note">' + note + '</div>' : '');
-  }
-  function result(recId, fuId, cls, title, lines, note, fuType, extra) {
-    ulRec(recId, cls, title, lines, note, extra);
-    renderFollowup(fuId, fuType);
-  }
-  function idleRec(recId, fuId, title) {
-    ulRec(recId, 'rec-idle', title, [], '');
-    renderFollowup(fuId, null);
-  }
-
-  /* ==========================================================
-     版面 HTML
+     4. 版面 HTML
      ========================================================== */
   function breastPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note">依 <b>台大醫院乳癌診療指引</b>（NTUH，版次 14／2023.V1；2026/06/16 癌症醫療委員會檢視通過；' +
-      'base on 2023 NCCN、2023 St. Gallen consensus、ABC6 與新近試驗結果）之互動決策流程，' +
-      '步驟順序依<b>臨床決策實際發生的先後</b>編排：影像發現 →（病理 + cTNM）→ 先開刀或先做術前治療 → 怎麼開 → 術後放療與輔助治療 → 復發／轉移。' +
-      '<b>健保未給付之藥物於文中標註</b>；引用之指引頁碼標於各建議下方。</p>';
+    h += '<p class="onc-note">依<b>台大醫院乳癌診療指引</b>（版次 14／2023.V1，2026/06/16 癌症醫療委員會檢視通過；' +
+      '以 2023 NCCN、2023 St. Gallen 共識與 ABC6 為基礎）編成的互動決策流程。' +
+      '步驟照臨床決策實際發生的先後排：<b>影像發現 → 病理與臨床分期 → 先開刀還是先給藥 → 怎麼開 → 術後放療與輔助治療 → 復發或轉移</b>。<br>' +
+      '<b>每一步選完才會出現下一步與該步的建議。</b>建議框內：<b>正常字是要做的決定</b>，' +
+      '<span style="opacity:.72">小灰字是理由與證據</span>，可展開的橫列是參考資料、處方劑量與健保條文。' +
+      '分期本身（AJCC 第 8 版）另見「分期 TNM」頁籤。</p>';
     h += '<div class="onc-path" id="bcPath">';
 
-    /* ---------- 步驟 1 ---------- */
-    h += step('bc_s1', '1', '目前處在哪一步？',
-      opt('scope', 'dx', '影像發現異常，尚未確診', '乳房攝影微鈣化／超音波腫塊 → 切片與檢查') +
-      opt('scope', 'dcis', '原位管癌 DCIS（Tis N0M0）', '含柏哲德氏病無侵襲成分者') +
-      opt('scope', 'lcis', '小葉原位癌 LCIS', 'Lobular carcinoma in situ') +
-      opt('scope', 'ebc', '侵襲性乳癌 · 無遠處轉移（M0）', '管、小葉、混合、化生型（含 micropapillary、medullary）— 從初始策略走到輔助治療') +
-      opt('scope', 'prog', '治療中進展 或 治療後早期復發', '術前化療中惡化；輔助化療／內分泌／抗 HER2／CDK4/6 治療期間或剛結束就復發') +
-      opt('scope', 'mbc', '轉移性乳癌（M1）', 'Advanced / Metastatic Breast Cancer — 一線與後線') +
-      opt('scope', 'recur', '局部／區域復發', 'Local / regional recurrence（無遠處轉移）'));
+    /* 步驟 1 */
+    h += node0('bc_n1', '1', '這位病人目前在哪一個階段？',
+      opt('scope', 'dx', '影像有異常，還沒有病理診斷', '乳房攝影微鈣化、超音波腫塊、皮膚變化、腋下腫塊') +
+      opt('scope', 'dcis', '原位管癌（ductal carcinoma in situ）', 'Tis N0M0，含無侵襲成分的柏哲德氏病') +
+      opt('scope', 'lcis', '小葉原位癌（lobular carcinoma in situ）', '') +
+      opt('scope', 'inv', '侵襲性乳癌、沒有遠處轉移', '管狀、小葉、混合、化生型癌 —— 從決定先開刀還是先給藥開始') +
+      opt('scope', 'mbc', '轉移性乳癌（有遠處轉移）', '第一線到後線') +
+      opt('scope', 'recur', '局部或區域復發（沒有遠處轉移）', '乳房內、胸壁、腋下、鎖骨上、內乳淋巴結') +
+      opt('scope', 'prog', '治療中進展，或治療剛結束就復發', '術前治療中惡化；輔助治療期間或剛結束就復發'));
 
-    /* ===================== A. 影像 → 診斷 ===================== */
-    h += '<div id="bc_dx" class="hidden">';
-    h += conn('bc_dx1');
-    h += step('bc_s_dx', '2', '影像發現的型態',
-      opt('img', 'im_calc', '乳房攝影：微鈣化（無明顯腫塊）', 'Suspicious microcalcifications') +
-      opt('img', 'im_mass', '超音波／觸診：腫塊', 'Mass on ultrasound or palpation') +
-      opt('img', 'im_skin', '皮膚變化：紅腫、橘皮、潰瘍', '需排除發炎性乳癌') +
-      opt('img', 'im_axilla', '以腋下腫塊表現、乳房未見原發灶', 'Axillary presentation, occult primary'));
-    h += rec('bc_dx_rec', '建議處置 · 診斷與檢查（p1、p2、p3、p4、p5）');
-    h += '<div class="flow-fu hidden" id="bc_dx_fu"></div>';
+    /* A. 影像 → 診斷 */
+    h += '<div id="bc_b_dx" class="hidden">';
+    h += node('bc_n_dx', '2', '影像看到的是什麼？',
+      opt('img', 'calc', '乳房攝影：可疑微鈣化，摸不到腫塊', '') +
+      opt('img', 'mass', '超音波或觸診：腫塊', '') +
+      opt('img', 'skin', '皮膚變化：紅、腫、橘皮、潰瘍', '要先排除發炎性乳癌') +
+      opt('img', 'axilla', '以腋下腫塊表現，乳房找不到原發灶', ''));
+    h += recBox('bc_r_dx', '建議處置 · 取得診斷與分期前檢查');
+    h += fuBox('bc_f_dx');
     h += '</div>';
 
-    /* ===================== B. DCIS ===================== */
-    h += '<div id="bc_dcis" class="hidden">';
-    h += conn('bc_dc1');
-    h += step('bc_s_dcis', '2', '局部治療方式（p6）',
-      opt('dloc', 'd_bct', '乳房保留手術 BCT', '之後依 VNPI 或 E5194 條件決定是否放療') +
-      opt('dloc', 'd_sm', '全乳切除 SM(TM) ± SLNB ± 重建', '腫瘤過大／多發、VNPI 10–12 分或病人選擇'),
-      omitAxDetails());
-    h += connH('bc_dc2');
-    h += step('bc_s_dmar', '3', '乳房保留手術之切緣（p6）',
-      opt('dmar', 'dm_neg', '切緣乾淨', '') +
-      opt('dmar', 'dm_close', '切緣過近或陽性', '→ 再切除（re-excision），除非為深部或表淺切緣'));
-    h = h.replace('id="bc_s_dmar"', 'id="bc_s_dmar" class="hidden"');
-    h += rec('bc_dcis_rec', '建議處置 · 原位管癌 DCIS');
-    h += '<div class="flow-fu hidden" id="bc_dcis_fu"></div>';
+    /* B. 原位管癌 */
+    h += '<div id="bc_b_dcis" class="hidden">';
+    h += node('bc_n_dloc', '2', '局部治療打算怎麼做？（p6）',
+      opt('dloc', 'bct', '乳房保留手術', '') +
+      opt('dloc', 'tm', '全乳切除 ± 前哨淋巴結切片 ± 重建',
+        '再切除仍達不到乾淨切緣、乳房攝影呈瀰漫性惡性微鈣化、病灶範圍太廣單一切口切不乾淨、不能接受放射治療、VNPI 10–12 分，或病人選擇'),
+      vnpiTable() + bctContraTable());
+    h += node('bc_n_dmar', '3', '乳房保留手術的切緣結果？（p6）',
+      opt('dmar', 'neg', '切緣乾淨', '') +
+      opt('dmar', 'close', '切緣過近或陽性', ''));
+    h += recBox('bc_r_dcis', '建議處置 · 原位管癌');
+    h += fuBox('bc_f_dcis');
     h += '</div>';
 
-    /* ===================== C. LCIS ===================== */
-    h += '<div id="bc_lcis" class="hidden">';
-    h += conn('bc_lc1');
-    h += rec('bc_lcis_rec', '建議處置 · 小葉原位癌 LCIS（p7）');
-    h += '<div class="flow-fu hidden" id="bc_lcis_fu"></div>';
+    /* C. 小葉原位癌 */
+    h += '<div id="bc_b_lcis" class="hidden">';
+    h += recBox('bc_r_lcis', '建議處置 · 小葉原位癌（p7）');
+    h += fuBox('bc_f_lcis');
     h += '</div>';
 
-    /* ===================== D. 侵襲癌 M0（主線）===================== */
-    h += '<div id="bc_ebc" class="hidden">';
+    /* D. 侵襲癌主線 */
+    h += '<div id="bc_b_inv" class="hidden">';
+    h += node('bc_n_sub', '2', '生物亞型是哪一種？（依切片的 ER／PR 與 HER2；p2）',
+      opt('sub', 'erpos', '荷爾蒙受體陽性、HER2 陰性', '最常見；以內分泌治療為主軸') +
+      opt('sub', 'her2hr', '荷爾蒙受體陽性、HER2 陽性', '兩條軸線都要走') +
+      opt('sub', 'her2', '荷爾蒙受體陰性、HER2 陽性', '') +
+      opt('sub', 'tnbc', '三陰性（ER、PR、HER2 皆陰性）', ''),
+      fold('HER2 怎麼判讀？ER 幾 % 算陽性？（p2、p23）', tbl([
+        ['HER2 免疫組織化學 0 或 1+', '陰性，通常不做 FISH'],
+        ['HER2 免疫組織化學 2+', '<b>必須做 FISH</b> 才能定案'],
+        ['HER2 免疫組織化學 3+', '陽性，不需要 FISH'],
+        ['ER 陽性的定義', 'ER ≥ 10% → 用內分泌治療；1% ≤ ER &lt; 10% → 用或不用都在指引內；ER &lt; 1% → 不用；ER 陰性但 PR &gt; 10% → 用或不用都在指引內'],
+        ['術前治療之後', '<b>手術檢體要重做一次 ER、PR、HER2 染色</b>（p2）']
+      ])));
+    h += node('bc_n_ctn', '3', '臨床分期落在哪一格？（點 cT 與 cN 的交會格；p8、p9、p11）', '',
+      '<div id="bc_ctn_hold"></div>');
+    h += recBox('bc_r_ctn', '建議處置 · 先開刀還是先給藥');
+    h += node('bc_n_plan', '4', '實際決定走哪一條？',
+      opt('plan', 'up', '直接手術', '') +
+      opt('plan', 'na', '先做術前藥物治療，之後再手術', ''));
 
-    // 步驟 2：亞型
-    h += conn('bc_e1');
-    h += step('bc_s2', '2', '生物亞型（依切片之 ER／PR、HER2；p2、p16）',
-      opt('sub', 'her2hr', 'HR(+) / HER2(+)', 'Luminal B（HER2 陽性）— 化療＋抗 HER2＋內分泌') +
-      opt('sub', 'her2', 'HR(−) / HER2(+)', 'HER2-enriched — NACT 門檻最低（≥T1cN0）') +
-      opt('sub', 'erpos', 'HR(+) / HER2(−)', 'Luminal — 多數以內分泌為主軸') +
-      opt('sub', 'tnbc', 'HR(−) / HER2(−)（TNBC）', '三陰性'),
-      '<div class="cbx"><div class="cbx-h">HER2 判讀原則（p2）</div><div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">IHC 0–1+</span>陰性，通常不做 FISH</span>' +
-      '<span class="cb"><span class="cb-k">IHC 2+</span><b>須做 FISH</b></span>' +
-      '<span class="cb"><span class="cb-k">IHC 3+</span>陽性，不需 FISH</span>' +
-      '</div></div>' +
-      '<div class="note"><b>ER 陽性的門檻（p23）</b>：1% ≤ ER &lt; 10% → <b>±</b> 使用內分泌治療（此族群行為多接近 ER(−)，' +
-      '本流程請視臨床判斷選 HR(+) 或 HR(−) 分支）；ER &lt; 1% → 不使用內分泌治療；ER(−) 但 PR &gt; 10% → ± 使用。<br>' +
-      '<b>NACT 之後，手術檢體會重複做 ER／PR／HER2 染色</b>（p2）— 亞型可能改變，後續輔助治療應以術後結果為準。' +
-      favHistoDetails() + '</div>');
-
-    // 步驟 3：cT×cN 格（四張，依亞型顯示其一）
-    h += connH('bc_e2');
-    h += step('bc_s3', '3', '臨床分期 cT×cN → 先開刀還是先做全身治療？',
-      '',
-      '<div id="bc_ctn_her2hr" class="hidden">' + ctnGridHtml('her2hr') + '</div>' +
-      '<div id="bc_ctn_her2" class="hidden">' + ctnGridHtml('her2') + '</div>' +
-      '<div id="bc_ctn_erpos" class="hidden">' + ctnGridHtml('erpos') + '</div>' +
-      '<div id="bc_ctn_tnbc" class="hidden">' + ctnGridHtml('tnbc') + '</div>');
-    h = h.replace('id="bc_s3"', 'id="bc_s3" class="hidden"');
-
-    h += '<div class="flow-rec rec-idle hidden" id="bc_strat_rec"><div class="rec-label">建議處置 · 初始治療策略</div><div class="rec-title">請完成上方步驟</div></div>';
-
-    // 步驟 4：實際採取的策略
-    h += connH('bc_e3');
-    h += step('bc_s4', '4', '實際採取的初始治療',
-      opt('strat', 'up', '直接手術 Upfront surgery', '術後再依病理分期決定輔助治療') +
-      opt('strat', 'nact', '術前輔助治療（NACT／NAHT）→ 再手術', '含降期以行乳房保留手術、降期腋下') +
-      opt('strat', 'noop', '不適合手術 或 局部無法切除', '體能不佳、共病、或局部晚期無法切除'),
-      '<div class="note"><b>術前治療開始前必做（p12）</b>：與停經前女性<b>討論生育議題</b>並轉介婦產科考慮凍卵／胚胎保存；' +
-      '<b>腫瘤床至少置放 1 個 clip 標記</b>；<b>詳細評估腋下淋巴結</b>，臨床陽性者若可行則於治療前 clip 標記該顆淋巴結' +
-      '（<b>現行 clip 多無法以超音波辨識，需乳房攝影導引針定位</b>）；選擇性乳房 MRI。治療中<b>每次回診評估腫瘤反應</b>。' +
-      '治療後可行則做乳房保留手術＋適當腋下分期，否則全乳切除＋適當腋下分期。</div>');
-    h = h.replace('id="bc_s4"', 'id="bc_s4" class="hidden"');
-
-    // 步驟 5（NACT 分支）：治療中反應
-    h += connH('bc_e4n');
-    h += step('bc_s5n', '5', '術前治療期間的反應（p12、p13）',
-      opt('nresp', 'na_resp', '有反應或穩定 → 完成療程後手術', '') +
-      opt('nresp', 'na_pd', '治療中臨床惡化（clinical PD）', '腫瘤變大、腋下新病灶或出現遠處轉移'));
-    h = h.replace('id="bc_s5n"', 'id="bc_s5n" class="hidden"');
-    h += '<div class="flow-rec rec-idle hidden" id="bc_na_rec"><div class="rec-label">建議處置 · 術前輔助治療處方</div><div class="rec-title">請完成上方步驟</div></div>';
-
-    // 步驟 6：乳房手術方式
-    h += connH('bc_e5');
-    h += step('bc_s6', '6', '乳房手術方式（p8、p10、p11）',
-      opt('surg', 'sg_bct', '乳房保留手術 BCT + 全乳放療', '可行時優於全乳切除；切緣定義為 no ink on invasive tumor or DCIS') +
-      opt('surg', 'sg_sm', '全乳切除 SM ± 重建', '腫瘤／乳房比例不利、多中心病灶、無法放療、或病人選擇'),
-      '<div class="note"><b>手術原則（p8）</b>：<b>多數 cStage I／II 以直接手術為主</b>；可行時<b>乳房保留手術優於全乳切除</b>，' +
-      '尤其第 I 期，但應尊重病人意願；BCT 後<b>全乳放療為必要</b>。BCT 的陰性切緣定義為「<b>no ink on invasive tumor or DCIS</b>」。<br>' +
-      '<b>不做乳房保留者（p10）</b>：SM + ALND／SLND；若 <b>pN2 或切緣(+) 則加放療</b>。<b>做乳房保留者</b>：BCT + SLND／ALND + 放療；' +
-      '有化療指徵時<b>放療之後接化療</b>。<br>' +
-      '<b>對側預防性乳房切除（p9）</b>：單側乳癌而對側乳房正常，病人因自身焦慮希望同時切除正常側時，' +
-      '<b>應優先切除罹癌側，並照會精神科</b>，建議病人考慮 3~6 個月；若極度焦慮無法等待 3 個月，' +
-      '<b>必須在精神科醫師同意的狀況下才執行手術</b>。</div>');
-    h = h.replace('id="bc_s6"', 'id="bc_s6" class="hidden"');
-
-    // 步驟 7u：腋下（直接手術）
-    h += connH('bc_e6u');
-    h += step('bc_s7u', '7', '腋下處置與前哨淋巴結結果 · 直接手術（p8、p10、p15、p48）',
-      opt('ax', 'ax_omit', '未做腋下手術', '純 DCIS 之 BCS、LCIS，或年長低風險族群（見下表）') +
-      opt('ax', 'ax_neg', 'cN0 → SLNB：pN0(sn)（含 ITC）', '前哨陰性') +
-      opt('ax', 'ax_mi', 'cN0 → SLNB：pN1mi(sn) 微轉移', '>0.2mm 或 >200 細胞且 ≤2mm') +
-      opt('ax', 'ax_z11', 'cN0 → SLNB：1–2 顆巨轉移，<b>符合</b> Z0011', '') +
-      opt('ax', 'ax_noz', 'cN0 → SLNB：1–2 顆巨轉移，<b>不符合</b> Z0011', '如全乳切除、T3、未規劃放療') +
-      opt('ax', 'ax_3', 'cN0 → SLNB：≥3 顆陽性', '') +
-      opt('ax', 'ax_cnpos', 'cN(+) 術前已證實（FNA）→ ALND', '術前對可疑淋巴結應先做 FNA'),
-      z0011Box() + omitAxDetails());
-    h = h.replace('id="bc_s7u"', 'id="bc_s7u" class="hidden"');
-
-    // 步驟 7n：腋下（NACT 後）
-    h += connH('bc_e6n');
-    h += step('bc_s7n', '7', 'NACT 後的腋下分期（p13、p14）',
-      opt('ax', 'na_cn0_neg', '治療前 cN0 → 術後 SLNB 陰性 ypN0(sn)', '不需 ALND') +
-      opt('ax', 'na_cn0_pos', '治療前 cN0 → 術後 SLNB 陽性', '含 ypN1mi 與 ypN0(i+) — 均須後續 ALND') +
-      opt('ax', 'na_ycn0_neg', '治療前 cN1-2 → ycN0 → SLNB／TAD 陰性', '足量前哨即可免 ALND') +
-      opt('ax', 'na_ycn0_pos', '治療前 cN1-2 → ycN0 → SLNB／TAD 陽性', '') +
-      opt('ax', 'na_ycn1', '治療前 cN1-2 → 仍 ycN(+)', '直接 ALND'),
-      '<div class="cbx"><div class="cbx-h">「足量前哨淋巴結」的定義（p14 註 #）　<span class="cbx-sub">符合其一</span></div>' +
-      '<div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">1</span>雙示蹤劑（dual tracer）且取出 ≥3 顆淋巴結</span>' +
-      '<span class="cb"><span class="cb-k">2</span>SLNB + 標記淋巴結摘除（targeted node removal，TAD）</span>' +
-      '</div>' +
-      '<div class="note" style="margin-top:7px"><b>p13 原文</b>：cN0 者可術前 SLNB，或於 NACT 後單做 SLNB —— <b>除非治療中臨床惡化（PD）</b>。' +
-      'cN(+) 接受 NACT 者：若降為 ycN0，可單做 SLND（需雙示蹤劑且取 ≥3 顆），' +
-      '若治療前已 clip 標記淋巴結則<b>取出標記淋巴結 + SLND（不論顆數）</b>；' +
-      '<b>任一顆陽性（含 pNmi 與 pN0(i+)）即須後續 ALND</b>。若仍 ycN(+) → ALND。<br>' +
-      '<b>與 Z0011 的差別</b>：Z0011 的「1–2 顆陽性可免 ALND」<b>不適用於接受過術前化療者</b>；NACT 後只要有殘存腫瘤細胞就要 ALND。<br>' +
-      '<b>為什麼要求「足量前哨」</b>：術前化療後對原本 cN(+) 的腋下做 SLNB，偽陰性率超過 10%；' +
-      '取出<b>治療前標記的那顆淋巴結</b>、用<b>雙示蹤劑</b>、取到 <b>≥3 顆</b>，三者都能把偽陰性率壓下來（ACOSOG Z1071 與 TAD 相關研究）。<br>' +
-      '<b>要估算殘存非前哨淋巴結的機率？</b>已有納入<b>治療前 cN 分期（N1 vs N2/3）、乳房是否達 pCR、陽性前哨顆數</b>之 nomogram' +
-      '（Cheng M et al. J Surg Oncol 2020，見下方文獻列表）。<b>是討論用的輔助工具，不取代 p14 的規則</b> —— 台大的規則仍是「任一顆陽性即做 ALND」。</div></div>');
-    h = h.replace('id="bc_s7n"', 'id="bc_s7n" class="hidden"');
-
-    h += '<div class="flow-rec rec-idle hidden" id="bc_ax_rec"><div class="rec-label">建議處置 · 腋下手術與局部治療</div><div class="rec-title">請完成上方步驟</div></div>';
-
-    // 步驟 8u：術後病理格
-    h += connH('bc_e7u');
-    h += step('bc_s8u', '8', '術後病理分期 pT×pN → 輔助全身治療', '',
-      '<div id="bc_ptn_her2hr" class="hidden">' + ptnGridHtml('her2hr') + '</div>' +
-      '<div id="bc_ptn_her2" class="hidden">' + ptnGridHtml('her2') + '</div>' +
-      '<div id="bc_ptn_erpos" class="hidden">' + ptnGridHtml('erpos') + '</div>' +
-      '<div id="bc_ptn_tnbc" class="hidden">' + ptnGridHtml('tnbc') + '</div>');
-    h = h.replace('id="bc_s8u"', 'id="bc_s8u" class="hidden"');
-
-    // 步驟 8n：NACT 後病理反應
-    h += connH('bc_e7n');
-    h += step('bc_s8n', '8', '術後病理反應（p18、p20、p21）',
-      opt('resp', 'pcr', '病理完全緩解 pCR', '乳房與腋下皆無殘存侵襲癌（ypT0/is ypN0）') +
-      opt('resp', 'nonpcr', '殘存病灶 non-pCR', '乳房或腋下仍有殘存侵襲癌'));
-    h = h.replace('id="bc_s8n"', 'id="bc_s8n" class="hidden"');
-
-    h += '<div class="flow-rec rec-idle hidden" id="bc_adj_rec"><div class="rec-label">建議處置 · 輔助治療與放射治療</div><div class="rec-title">請完成上方步驟</div></div>';
-    h += '<div class="flow-fu hidden" id="bc_adj_fu"></div>';
-    h += '</div>'; // bc_ebc
-
-    /* ===================== E. 治療中進展／治療後早期復發 ===================== */
-    h += '<div id="bc_prog" class="hidden">';
-    h += conn('bc_pg1');
-    h += step('bc_s_pg', '2', '在哪一種治療當中（或剛結束）出現進展？',
-      opt('pg', 'pg_nact', '術前化療（NACT）進行中臨床惡化', '腫瘤變大、腋下新病灶') +
-      opt('pg', 'pg_chemo', '輔助化療進行中或剛結束即出現轉移', '含術前化療後已手術、輔助期出現遠處病灶') +
-      opt('pg', 'pg_et', '輔助內分泌治療期間或結束後復發', '需先判定原發性或次發性內分泌抗性') +
-      opt('pg', 'pg_her2', '輔助抗 HER2 治療期間或結束 12 個月內復發', '') +
-      opt('pg', 'pg_cdk', '輔助 CDK4/6 抑制劑（abemaciclib／ribociclib）期間或結束後復發', ''));
-    h += connH('bc_pg2');
-    h += step('bc_s_pget', '3', '復發與輔助內分泌治療的時間關係',
-      opt('pget', 'et_on', '<b>仍在</b>輔助內分泌治療中復發', '不論已服用幾年') +
-      opt('pget', 'et_le12', '完成輔助內分泌治療後 <b>≤12 個月</b>復發', '') +
-      opt('pget', 'et_gt12', '完成輔助內分泌治療後 <b>&gt;12 個月</b>才復發', '一般視為對內分泌治療仍敏感'),
-      etResistDetails());
-    h = h.replace('id="bc_s_pget"', 'id="bc_s_pget" class="hidden"');
-    h += rec('bc_prog_rec', '建議處置 · 治療中進展／治療後早期復發');
-    h += '<div class="flow-fu hidden" id="bc_prog_fu"></div>';
+    /* D-1 直接手術 */
+    h += '<div id="bc_b_up" class="hidden">';
+    h += recBox('bc_r_up_op', '建議處置 · 手術要怎麼開（乳房與腋下）');
+    h += node('bc_n_surg', '5', '乳房手術實際做了哪一種？',
+      opt('surg', 'bct', '乳房保留手術', '') +
+      opt('surg', 'tm', '全乳切除', ''));
+    h += node('bc_n_ptn', '6', '術後病理落在哪一格？（點 pT 與 pN 的交會格；p17、p19、p22）', '',
+      '<div id="bc_ptn_hold"></div>');
+    h += recBox('bc_r_up_adj', '建議處置 · 術後輔助治療與放射治療');
+    h += fuBox('bc_f_up');
     h += '</div>';
 
-    /* ===================== F. 轉移性（M1）===================== */
-    h += '<div id="bc_mbc" class="hidden">';
-    h += conn('bc_m1');
-    h += step('bc_s_msub', '2', '生物亞型（p37）',
-      opt('msub', 'm_erpos', 'HR(+) HER2(−)', '內分泌治療優先，除非 visceral crisis 或快速惡化') +
-      opt('msub', 'm_her2', 'HER2(+)', '抗 HER2 藥物須與化療併用') +
-      opt('msub', 'm_tnbc', 'TNBC（HR(−) HER2(−)）', '化療為主軸，一線可加免疫治療'),
-      '<div class="note"><b>晚期／轉移性乳癌總則（p37）</b>：依 ABC 與 NCCN 指引，<b>HR(+) 者應先用內分泌治療</b>，' +
-      '除非有 <b>visceral crisis</b> 或快速惡化；化療以<b>循序單一藥物優於合併化療</b>；' +
-      'HER2(+) 者抗 HER2 藥物<b>應與化療併用</b>；末期病人應轉介安寧緩和照護與安寧共同照護團隊。<br>' +
-      '<b>轉移期化療的三個原則（p43）</b>：① 所有早期乳癌的處方（合併或其中單一藥物）皆可於轉移時使用；' +
-      '② 僅在<b>已知抗藥（如快速復發）或 anthracycline 已達累積劑量</b>時才不適用；' +
-      '③ 因轉移無法治癒，劑量會依病人最佳臨床利益比調整，<b>不強求建議劑量</b>。<br>' +
-      '<b>轉移病灶應盡可能重新切片</b>確認 ER／PR／HER2 — 亞型可能與原發灶不同。</div>');
-    h += connH('bc_m2');
-    h += step('bc_s_mcrisis', '3', 'HR(+)：一線可否用內分泌治療（p37、p38）',
-      opt('mcrisis', 'mc_no', '無 visceral crisis、無快速惡化', '→ 內分泌治療 ± CDK4/6 抑制劑') +
-      opt('mcrisis', 'mc_yes', '有 visceral crisis 或快速惡化', '→ 先化療控制，之後再轉回內分泌治療'));
-    h = h.replace('id="bc_s_mcrisis"', 'id="bc_s_mcrisis" class="hidden"');
-    h += rec('bc_mbc_rec', '建議處置 · 轉移性乳癌（M1）');
-    h += '<div class="flow-fu hidden" id="bc_mbc_fu"></div>';
+    /* D-2 術前治療 */
+    h += '<div id="bc_b_na" class="hidden">';
+    h += recBox('bc_r_na_rx', '建議處置 · 術前藥物治療的處方與開始前的準備');
+    h += node('bc_n_nresp', '5', '術前治療結束、重新評估後是哪一種狀況？（p12）',
+      opt('nresp', 'op_bct', '腫瘤縮小，可以做乳房保留手術', '') +
+      opt('nresp', 'op_tm', '可以手術，但要做全乳切除', '') +
+      opt('nresp', 'pd', '治療期間腫瘤變大或臨床惡化', '') +
+      opt('nresp', 'inop', '治療後仍然無法手術', ''));
+    h += recBox('bc_r_na_op', '建議處置 · 手術與腋下處理');
+    h += node('bc_n_ypath', '6', '手術檢體的病理結果？（三選一）',
+      opt('ypath', 'pcr', '乳房與淋巴結都沒有殘存的侵襲癌',
+        '病理完全緩解（pathologic complete response）—— 依定義淋巴結必定陰性') +
+      opt('ypath', 'res_n0', '乳房還有殘存侵襲癌，但淋巴結陰性', '') +
+      opt('ypath', 'npos', '淋巴結有轉移', '含微轉移 ypN1mi 與孤立腫瘤細胞 ypN0(i+)'));
+    h += recBox('bc_r_na_adj', '建議處置 · 術後輔助治療與放射治療');
+    h += fuBox('bc_f_na');
+    h += '</div>';
     h += '</div>';
 
-    /* ===================== G. 局部／區域復發 ===================== */
-    h += '<div id="bc_recur" class="hidden">';
-    h += conn('bc_r1');
-    h += step('bc_s_rsite', '2', '復發的位置與初始治療方式（p36）',
-      opt('rsite', 'r_bctrt', '單純局部復發 · 初始為 BCT + 放療', 'Local recurrence only') +
-      opt('rsite', 'r_bctlndrt', '單純局部復發 · 初始為 BCT + 淋巴結廓清 + 放療', '') +
-      opt('rsite', 'r_nort', '單純局部復發 · 初始為 BCT 或全乳切除、<b>未</b>放療', '') +
-      opt('rsite', 'r_ax', '腋下復發 Axillary', '區域復發，或局部＋區域復發') +
-      opt('rsite', 'r_scf', '鎖骨上復發 Supraclavicular', '') +
-      opt('rsite', 'r_imn', '內乳淋巴結復發 Internal mammary', ''),
-      '<div class="note">復發時應<b>重新取得組織診斷並重測 ER／PR／HER2</b>，並完成分期檢查以排除同時存在的遠處轉移' +
-      '（若有遠處轉移 → 回步驟 1 選「轉移性乳癌」）。</div>');
-    h += rec('bc_recur_rec', '建議處置 · 局部／區域復發');
-    h += '<div class="flow-fu hidden" id="bc_recur_fu"></div>';
+    /* E. 轉移性 */
+    h += '<div id="bc_b_mbc" class="hidden">';
+    h += node('bc_n_msub', '2', '生物亞型是哪一種？（轉移病灶若能切片，應重驗；p2）',
+      opt('sub', 'erpos', '荷爾蒙受體陽性、HER2 陰性', '') +
+      opt('sub', 'her2hr', '荷爾蒙受體陽性、HER2 陽性', '走抗 HER2 那條路，再加上內分泌治療') +
+      opt('sub', 'her2', '荷爾蒙受體陰性、HER2 陽性', '') +
+      opt('sub', 'tnbc', '三陰性', ''));
+    h += node('bc_n_mrisk', '3', '疾病活性有多高？（p38，台灣乳房醫學會共識圖）',
+      opt('mrisk', 'crisis', '有內臟危象，或進展很快', '器官功能已經受影響，需要短時間內見效') +
+      opt('mrisk', 'high', '高風險（但沒有內臟危象）', '無病間隔短、內臟腫瘤負荷高、已有症狀') +
+      opt('mrisk', 'mid', '中風險', '') +
+      opt('mrisk', 'low', '低風險', '無病間隔長、只有骨或軟組織轉移、沒有症狀'),
+      fold('這幾格怎麼分？（p38 圖的兩條軸）', tbl([
+        ['第一條軸<br>疾病活性', '① <b>無病間隔短</b>；② <b>內臟腫瘤負荷高</b>；③ <b>已經有症狀</b>。'],
+        ['第二條軸<br>對內分泌治療的反應機率', '① <b>內分泌治療抗藥型別</b>（原發性／續發性）；② 內在亞型；③ 生物標記（如 ESR1 突變）。'],
+        ['抗藥型別的定義',
+          '<b>原發性抗藥</b>：輔助內分泌治療的前 2 年內就復發，或轉移後第一線內分泌治療 6 個月內就進展。<br>' +
+          '<b>續發性抗藥</b>：輔助內分泌治療 2 年後才復發，或結束後 12 個月內復發，或第一線內分泌治療 6 個月後才進展。'],
+        ['三格對應的第一線',
+          '<b>低風險</b> → 單用內分泌治療（也可以加 CDK4/6 抑制劑）。<br>' +
+          '<b>中風險</b> → 內分泌治療加 CDK4/6 抑制劑（單用內分泌治療、或化療也在選項內）。<br>' +
+          '<b>高風險</b> → 化療，或內分泌治療加 CDK4/6 抑制劑。'],
+        ['內臟危象是什麼',
+          '指<b>器官功能已經因為腫瘤而受損、需要在短時間內見效的治療</b>（例如快速惡化的肝衰竭、' +
+          '大量癌性淋巴管炎造成的呼吸衰竭）。<b>不是「有內臟轉移」就叫內臟危象。</b>' +
+          '這一格是唯一會讓荷爾蒙受體陽性病人跳過內分泌治療、直接化療的理由（p37）。']
+      ])));
+    h += node('bc_n_mline', '4', '現在要決定的是第幾線治療？',
+      opt('mline', 'l1', '第一線（轉移後還沒用過藥）', '') +
+      opt('mline', 'l2', '第二線', '') +
+      opt('mline', 'l3', '第三線以後', ''));
+    h += node('bc_n_mbio', '5', '生物標記的結果？',
+      opt('mbio', 'brca', '生殖細胞 BRCA1/2 有致病性突變', '') +
+      opt('mbio', 'pdl1', 'PD-L1 陽性（CPS ≥ 10，Dako 22C3）', '') +
+      opt('mbio', 'none', '都沒有，或還沒驗', ''));
+    h += recBox('bc_r_mbc', '建議處置 · 轉移性乳癌');
+    h += fuBox('bc_f_mbc');
     h += '</div>';
 
-    h += '<div class="flow-reset"><button class="btn-reset" onclick="bcReset()">重置</button></div>';
-    h += '</div>'; // bcPath
+    /* F. 局部區域復發 */
+    h += '<div id="bc_b_recur" class="hidden">';
+    h += node('bc_n_rsite', '2', '復發在哪裡？（p36）',
+      opt('rsite', 'local', '只有局部復發（乳房內或胸壁）', '') +
+      opt('rsite', 'axilla', '腋下淋巴結復發', '') +
+      opt('rsite', 'scf', '鎖骨上淋巴結復發', '') +
+      opt('rsite', 'imn', '內乳淋巴結復發', ''));
+    h += node('bc_n_rprev', '3', '當初的初始治療是哪一種？（p36）',
+      opt('rprev', 'bct_rt', '乳房保留手術＋放射治療', '') +
+      opt('rprev', 'bct_lnd_rt', '乳房保留手術＋腋下淋巴結手術＋放射治療', '') +
+      opt('rprev', 'nort', '乳房保留手術或全乳切除，但沒有做過放射治療', ''));
+    h += recBox('bc_r_recur', '建議處置 · 局部或區域復發');
+    h += fuBox('bc_f_recur');
+    h += '</div>';
+
+    /* G. 治療中進展 */
+    h += '<div id="bc_b_prog" class="hidden">';
+    h += node('bc_n_pstage', '2', '是在哪一段治療中出狀況？',
+      opt('pstage', 'na', '術前藥物治療期間，腫瘤變大或臨床惡化', '') +
+      opt('pstage', 'chemo', '輔助化療還沒做完就復發', '') +
+      opt('pstage', 'et', '輔助內分泌治療期間，或結束後 12 個月內復發', '') +
+      opt('pstage', 'her2', '抗 HER2 輔助治療期間或剛結束就復發', ''));
+    h += recBox('bc_r_prog', '建議處置 · 治療中進展或早期復發');
+    h += fuBox('bc_f_prog');
+    h += '</div>';
+
+    h += '<div class="flow-reset"><button class="back-btn" onclick="bcReset()">重置</button></div>';
+    h += '</div>';
     return h;
   }
 
   /* ==========================================================
-     主渲染
+     5. 顯示控制
      ========================================================== */
-  function bcRender() {
-    var s = bcSt;
+  function el(id) { return document.getElementById(id); }
+  function show(id, on) { var e = el(id); if (e) e.classList.toggle('hidden', !on); }
 
-    bcShow('bc_dx', s.scope === 'dx'); bcShow('bc_dx1', s.scope === 'dx');
-    bcShow('bc_dcis', s.scope === 'dcis'); bcShow('bc_dc1', s.scope === 'dcis');
-    bcShow('bc_lcis', s.scope === 'lcis'); bcShow('bc_lc1', s.scope === 'lcis');
-    bcShow('bc_ebc', s.scope === 'ebc'); bcShow('bc_e1', s.scope === 'ebc');
-    bcShow('bc_prog', s.scope === 'prog'); bcShow('bc_pg1', s.scope === 'prog');
-    bcShow('bc_mbc', s.scope === 'mbc'); bcShow('bc_m1', s.scope === 'mbc');
-    bcShow('bc_recur', s.scope === 'recur'); bcShow('bc_r1', s.scope === 'recur');
+  /* 先把整個流程關到只剩步驟 1，再由分支逐層打開。
+     這是「沒選之前不出現」的唯一保證，不要在別處另外開關。 */
+  function collapseAll() {
+    var root = el('bcPath');
+    if (!root) return;
+    root.querySelectorAll('.bc-node').forEach(function (n) {
+      if (n.id !== 'bc_n1') n.classList.add('hidden');
+    });
+    root.querySelectorAll('.flow-rec').forEach(function (r) { r.classList.add('hidden'); });
+    root.querySelectorAll('.flow-fu').forEach(function (f) { f.classList.add('hidden'); f.innerHTML = ''; });
+    ['bc_b_dx', 'bc_b_dcis', 'bc_b_lcis', 'bc_b_inv', 'bc_b_mbc', 'bc_b_recur', 'bc_b_prog',
+      'bc_b_up', 'bc_b_na'].forEach(function (id) { show(id, false); });
+  }
 
-    /* --- A 診斷 --- */
-    renderDxRec();
+  function liOf(t) {
+    if (t.indexOf('@ev ') === 0) return '<li class="ev">' + t.slice(4) + '</li>';
+    if (t.indexOf('<span class="rx-h">') === 0) return '<li class="hd">' + t + '</li>';
+    return '<li>' + t + '</li>';
+  }
 
-    /* --- B DCIS：只有乳房保留手術才問切緣 --- */
-    var showMar = (s.scope === 'dcis' && s.dloc === 'd_bct');
-    bcShow('bc_dc2', showMar); bcShow('bc_s_dmar', showMar);
-    renderDcisRec();
-    renderLcisRec();
+  function fill(id, cls, title, lines, src, extra) {
+    var e = el(id);
+    if (!e) return;
+    var label = e.querySelector('.rec-label');
+    var labelTxt = label ? label.textContent : '建議處置';
+    e.className = 'flow-rec ' + cls;
+    e.innerHTML = '<div class="rec-label">' + labelTxt + '</div>' +
+      '<div class="rec-title">' + title + '</div>' +
+      (lines && lines.length ? '<ul class="rec-detail">' + lines.map(liOf).join('') + '</ul>' : '') +
+      (extra || '') +
+      (src ? '<div class="rec-note">' + src + '</div>' : '');
+  }
 
-    /* --- D 侵襲癌主線 --- */
-    if (s.scope === 'ebc') {
-      // 步驟 3：依亞型顯示對應的 cT×cN 格
-      var hasSub = !!s.sub;
-      bcShow('bc_e2', hasSub); bcShow('bc_s3', hasSub);
-      ['her2hr', 'her2', 'erpos', 'tnbc'].forEach(function (k) {
-        bcShow('bc_ctn_' + k, hasSub && s.sub === k);
-        bcShow('bc_ptn_' + k, s.sub === k);
-      });
-      bcShow('bc_strat_rec', hasSub && !!s.ctn);
-      renderStratRec();
+  function fu(id, kind) {
+    var e = el(id);
+    if (!e) return;
+    e.classList.remove('hidden');
+    e.innerHTML = followupHTML(kind);
+  }
 
-      // 步驟 4：選了格子才問實際策略
-      var showS4 = hasSub && !!s.ctn;
-      bcShow('bc_e3', showS4); bcShow('bc_s4', showS4);
-
-      var isNact = s.strat === 'nact';
-      var isUp = s.strat === 'up';
-      var isNoop = s.strat === 'noop';
-
-      // 步驟 5（僅 NACT）：治療中反應
-      bcShow('bc_e4n', isNact); bcShow('bc_s5n', isNact);
-      bcShow('bc_na_rec', isNact);
-      renderNaRec();
-
-      // 步驟 6：手術方式 —— 直接手術者；或 NACT 有反應者
-      var toSurg = isUp || (isNact && s.nresp === 'na_resp');
-      bcShow('bc_e5', toSurg); bcShow('bc_s6', toSurg);
-
-      // 步驟 7：腋下（兩組選項擇一）
-      var showAxU = isUp && !!s.surg;
-      var showAxN = isNact && s.nresp === 'na_resp' && !!s.surg;
-      bcShow('bc_e6u', showAxU); bcShow('bc_s7u', showAxU);
-      bcShow('bc_e6n', showAxN); bcShow('bc_s7n', showAxN);
-      bcShow('bc_ax_rec', (showAxU || showAxN) && !!s.ax);
-      renderAxRec();
-
-      // 步驟 8：術後病理
-      var showPtn = showAxU && !!s.ax;
-      var showResp = showAxN && !!s.ax;
-      bcShow('bc_e7u', showPtn); bcShow('bc_s8u', showPtn);
-      bcShow('bc_e7n', showResp); bcShow('bc_s8n', showResp);
-      bcShow('bc_adj_rec', isNoop || showPtn || showResp);
-      renderAdjRec(isNoop, showPtn, showResp);
-    } else {
-      // 離開侵襲癌分支時，把它底下的建議色塊一併收起來
-      bcShow('bc_strat_rec', false); bcShow('bc_na_rec', false);
-      bcShow('bc_ax_rec', false); bcShow('bc_adj_rec', false);
-    }
-
-    /* --- E 治療中進展：只有內分泌那條需要再問時間點 --- */
-    var showPget = (s.scope === 'prog' && s.pg === 'pg_et');
-    bcShow('bc_pg2', showPget); bcShow('bc_s_pget', showPget);
-    renderProgRec();
-
-    /* --- F 轉移性：只有 HR(+) 需要問 visceral crisis --- */
-    var showCrisis = (s.scope === 'mbc' && s.msub === 'm_erpos');
-    bcShow('bc_m2', showCrisis); bcShow('bc_s_mcrisis', showCrisis);
-    renderMbcRec();
-
-    /* --- G 局部／區域復發 --- */
-    renderRecurRec();
+  function subLabel(s) {
+    return {
+      her2hr: '荷爾蒙受體陽性、HER2 陽性',
+      her2: '荷爾蒙受體陰性、HER2 陽性',
+      erpos: '荷爾蒙受體陽性、HER2 陰性',
+      tnbc: '三陰性'
+    }[s];
+  }
+  function ctnParts() {
+    var p = S.ctn.split('_');
+    return { t: p[0], n: p[1], g: ctnGroup(p[0], p[1]) };
+  }
+  function ctnName() {
+    var p = ctnParts();
+    var tr = CT_ROWS.filter(function (r) { return r[0] === p.t; })[0];
+    var cc = CN_COLS.filter(function (c) { return c[0] === p.n; })[0];
+    return tr[1] + ' ' + cc[1];
   }
 
   /* ==========================================================
-     A. 影像 → 診斷（p1–p5）
+     6. 各分支
      ========================================================== */
-  function workupBox() {
-    return '<div class="cbx"><div class="cbx-h">侵襲性乳癌之基本檢查 WORK-UP（p1）</div><div class="cbx-items">' +
-      '<span class="cb">病史與理學檢查</span>' +
-      '<span class="cb">CBC／DC</span>' +
-      '<span class="cb">肝功能（<b>含 ALP</b>）</span>' +
-      '<span class="cb">腎功能</span>' +
-      '<span class="cb"><span class="cb-k">必要</span>雙側診斷性乳房攝影（stage 0~III）</span>' +
-      '<span class="cb">超音波（必要時）</span>' +
-      '<span class="cb"><span class="cb-k">首選</span>組織診斷 — core biopsy</span>' +
-      '<span class="cb">切片或手術檢體之 ER／PR／HER2</span>' +
-      '</div></div>';
-  }
-  function stagingBox() {
-    return '<div class="cbx"><div class="cbx-h">全身分期檢查的取捨（p3）　<span class="cbx-sub">systemic staging = CT／MRI、PET 或 bone scan</span></div>' +
-      '<div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">不做</span>T1-3 N(−)：不常規做</span>' +
-      '<span class="cb"><span class="cb-k">例外</span>有相關症狀</span>' +
-      '<span class="cb"><span class="cb-k">例外</span>檢驗或理學檢查異常</span>' +
-      '<span class="cb"><span class="cb-k">不特別</span>cN0、pT1-2N1M0（Z0011）</span>' +
-      '<span class="cb"><span class="cb-k">強烈考慮</span>cT3N1</span>' +
-      '<span class="cb"><span class="cb-k">強烈考慮</span>cTanyN2、cTanyN3</span>' +
-      '<span class="cb"><span class="cb-k">強烈考慮</span>cT4Nany</span>' +
-      '<span class="cb"><span class="cb-k">強烈考慮</span>病理分期 III</span>' +
-      '<span class="cb"><span class="cb-k">完全不做</span>DCIS</span>' +
-      '</div><div class="note" style="margin-top:7px">最終決定仍由主治醫師判斷（final decision at attending physician’s discretion）。</div></div>';
-  }
-  function geneticDetails() {
-    return '<details class="kps-details"><summary>遺傳諮詢與 gBRCA1/2 檢測適應症（p4、p5）▸</summary><table>' +
-      '<tr><td>何時考慮<br>遺傳諮詢</td><td><b>家族史</b>、<b>雙側乳癌</b>、或<b>發病年齡極輕（&lt;35 歲）</b></td></tr>' +
-      '<tr><td>家族史之定義<br>（符合任一）</td><td>' +
-      '(1) ≥3 名女性家族成員罹患乳癌（年齡不限）<br>' +
-      '(2) ≥2 名女性家族成員罹患乳癌，其中一人確診時 ≤50 歲<br>' +
-      '(3) ≥1 名女性家族成員確診乳癌，且有一名家族成員確診卵巢癌（可為同一人）<br>' +
-      '(4) ≥1 名女性家族成員 &lt;35 歲確診乳癌<br>' +
-      '(5) ≥1 名女性家族成員確診雙側乳癌（第一個乳癌確診時需 &lt;50 歲）<br>' +
-      '(6) ≥1 名女性家族成員確診卵巢癌（確診時需 &lt;40 歲）<br>' +
-      '(7) ≥2 名女性家族成員確診卵巢癌（年齡不限）<br>' +
-      '(8) ≥1 名男性家族成員確診乳癌（年齡不限）</td></tr>' +
-      '<tr><td>gBRCA1/2 或<br>遺傳基因套組</td><td>符合上述遺傳諮詢條件者；或<b>可能受益於 PARP 抑制劑</b>者 —<br>' +
-      '<b>早期乳癌</b>：HER2(−) 且為第 II／III 期、符合 OlympiA 試驗條件者<br>' +
-      '<b>晚期乳癌</b>：HER2(−) 且曾於術前、術後或轉移期接受過化療者</td></tr>' +
-      '</table></details>';
-  }
 
-  function renderDxRec() {
-    var s = bcSt;
-    if (s.scope !== 'dx') return;
-    var R = 'bc_dx_rec', F = 'bc_dx_fu';
-    if (!s.img) { idleRec(R, F, '請選擇步驟 2（影像發現的型態）'); return; }
+  /* ---------- A. 影像 → 診斷 ---------- */
+  function renderDx() {
+    show('bc_b_dx', true);
+    show('bc_n_dx', true);
+    if (!S.img) return;
 
-    var lines = [];
-    if (s.img === 'im_calc') {
-      lines.push('<span class="rx-h">微鈣化 · 取得組織診斷</span>　<span class="rx-sub">p1</span>');
-      lines.push('影像判讀為 <b>BI-RADS 4 或 5</b> 之可疑微鈣化 → 取<b>組織診斷</b>，<b>core biopsy 為首選</b>。' +
-        '單純鈣化在超音波下常看不到，通常需<b>立體定位（stereotactic）／乳房攝影導引</b>切片，多以真空輔助切片（VAB）取得足量檢體。');
-      lines.push('<b>切片當下留下標記 clip</b>，並以<b>標本 X 光</b>確認取到目標鈣化 —— 否則後續無法定位，也無從判斷是否取樣失準。');
-      lines.push('BI-RADS 3（可能良性）者以<b>短期追蹤</b>為主；BI-RADS 0 者需補做加壓放大攝影或超音波再判讀。' +
-        '（BI-RADS 分類屬 ACR 系統，非台大乳癌診療指引之內容。）');
-    } else if (s.img === 'im_mass') {
-      lines.push('<span class="rx-h">腫塊 · 取得組織診斷</span>　<span class="rx-sub">p1</span>');
-      lines.push('<b>超音波導引粗針切片（core biopsy）為首選</b>；細針抽吸（FNA）不足以判定侵襲性與做完整 ER／PR／HER2 判讀，' +
-        '故 FNA 主要用於<b>可疑淋巴結</b>的術前確認（p10 註 b），不用於原發腫瘤的確診。');
-      lines.push('必做<b>雙側診斷性乳房攝影</b>（stage 0~III 為必要），必要時加超音波。');
-      lines.push('<b>同時仔細評估腋下</b>：術前對可疑淋巴結應做 FNA —— 這一步決定的是「cN0 走 SLNB、cN(+) 走 ALND」，是後面所有腋下決策的起點（p8、p10）。');
-    } else if (s.img === 'im_skin') {
-      lines.push('<span class="rx-h">皮膚變化 · 先排除發炎性乳癌</span>　<span class="rx-sub">p1、p9、p11</span>');
-      lines.push('<b>乳房病灶 core biopsy</b> ＋ <b>受累皮膚之 punch biopsy</b>（找真皮淋巴管栓 dermal lymphatic invasion）。');
-      lines.push('<b>發炎性乳癌（T4d）屬局部晚期</b> — 一律<b>先做全身治療</b>，且<b>不做乳房保留手術</b>；' +
-        '應完成全身分期檢查（cT4Nany 為強烈考慮之族群，p3）。');
-      lines.push('皮膚潰瘍、同側衛星結節、皮膚水腫（含橘皮）屬 <b>T4b</b>；侵犯胸壁屬 <b>T4a</b>（僅侵犯 pectoral fascia 不算）。');
+    var L = [], title = '';
+    if (S.img === 'calc') {
+      title = '可疑微鈣化 → 立體定位切片取得組織診斷';
+      L.push(H('先做什麼', 'p1'));
+      L.push('<b>雙側乳房攝影是必要的</b>（第 0 至 III 期都要做），必要時加乳房超音波。');
+      L.push('<b>用立體定位或導線定位取組織，優先用粗針切片</b>（core biopsy）。');
+      L.push(EV('指引 p1 原文是「Tissue diagnosis, core biopsy favored」。細針穿刺分不出原位癌與侵襲癌，' +
+        '也做不了 ER、PR、HER2 染色，所以微鈣化的病灶不用細針。'));
+    } else if (S.img === 'mass') {
+      title = '乳房腫塊 → 粗針切片取得組織診斷';
+      L.push(H('先做什麼', 'p1、p10'));
+      L.push('<b>雙側乳房攝影是必要的</b>，加乳房超音波。');
+      L.push('<b>對腫塊做粗針切片。</b>');
+      L.push('<b>同時評估腋下淋巴結；可疑者術前先做細針穿刺確認</b>（p10 註 b）。');
+      L.push(EV('腋下先驗過，是為了在開刀前就知道要做前哨淋巴結切片還是腋下淋巴結廓清 —— ' +
+        '這個結果也決定要不要在術前先放標記夾。'));
+    } else if (S.img === 'skin') {
+      title = '皮膚紅腫或橘皮 → 先排除發炎性乳癌';
+      L.push(H('先做什麼', 'p1、p9'));
+      L.push('<b>皮膚切片加乳房腫塊切片</b>；影像做雙側乳房攝影加超音波。');
+      L.push('<b>一旦確定是發炎性乳癌（cT4d），不可以直接開刀</b> —— 一律先做全身藥物治療。');
+      L.push(EV('發炎性乳癌屬局部晚期。前哨淋巴結切片在這一型是禁忌（皮下淋巴管已被腫瘤堵住，定位不準），' +
+        '腋下要做完整廓清；也不可以做乳房保留手術。'));
     } else {
-      lines.push('<span class="rx-h">以腋下腫塊表現、乳房未見原發灶</span>　<span class="rx-sub">p1、p3</span>');
-      lines.push('<b>腋下淋巴結 core biopsy</b>，並做 ER／PR／HER2 與乳房來源之免疫染色，以確認是乳癌轉移。');
-      lines.push('乳房攝影與超音波陰性者，<b>加做乳房 MRI</b> 尋找隱匿性原發灶。');
-      lines.push('此屬 <b>cTanyN(+)</b>，依 p3 應<b>強烈考慮全身分期</b>；治療上比照局部晚期處理。');
+      title = '腋下腫塊、乳房找不到原發灶 → 先確認是不是乳癌';
+      L.push(H('先做什麼', 'p1、p3'));
+      L.push('<b>腋下淋巴結切片</b>，並做 ER、PR、HER2 染色。');
+      L.push('<b>加做乳房磁振造影</b>找隱匿的原發灶。');
+      L.push(EV('磁振造影在這個情境是少數明確有用的地方；一般乳癌的術前磁振造影屬選擇性（p12）。'));
     }
-    lines.push('<b>病理報告拿到後</b>：依「是否為侵襲癌」與「ER／PR／HER2」回到步驟 1 選擇 <b>原位癌（DCIS）</b> 或 <b>侵襲性乳癌</b> 分支。' +
-      'NACT 之後手術檢體會<b>重複</b>做 ER／PR／HER2 染色（p2）。');
 
-    result(R, F, 'rec-elective', '診斷與治療前檢查', lines,
-      'p1（work-up）、p2（IHC 原則）、p3（全身分期原則）、p4（遺傳諮詢）、p5（gBRCA1/2 檢測適應症）。',
-      null,
-      '<div class="rec-detail">' + workupBox() + stagingBox() +
-      '<div class="cbx"><div class="cbx-h">HER2 判讀（p2）</div><div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">IHC 0–1+</span>陰性，通常不做 FISH</span>' +
-      '<span class="cb"><span class="cb-k">IHC 2+</span><b>須做 FISH</b></span>' +
-      '<span class="cb"><span class="cb-k">IHC 3+</span>陽性，不需 FISH</span>' +
-      '</div></div>' + geneticDetails() + '</div>');
+    L.push(H('不論哪一種都要做的基本檢查', 'p1'));
+    L.push('病史與理學檢查、<b>血球計數含分類</b>、<b>肝功能（含鹼性磷酸酶）</b>、<b>腎功能</b>。');
+    L.push('切片檢體做 <b>ER、PR、HER2</b>，以及 Ki-67。');
+
+    L.push(H('要不要做全身分期？', 'p3'));
+    L.push('<b>不常規做</b> —— T1–3 且淋巴結陰性者，除非<b>有相關症狀</b>，或<b>抽血、理學檢查有異常</b>。');
+    L.push('<b>強烈建議做的四種</b>：cT3N1、任何 T 但 cN2、任何 T 但 cN3、cT4 任何 N；另加術後病理第 III 期。');
+    L.push('<b>原位管癌完全不做。</b>');
+    L.push(EV('全身分期指電腦斷層或磁振造影、正子造影、骨骼掃描。' +
+      '臨床 cN0 但術後是 pT1–2N1M0 者「不強烈建議」做（Z0011 的族群本來就不靠影像決定治療）。' +
+      '最終仍由主治醫師判斷。'));
+
+    fill('bc_r_dx', 'rec-elective', title, L,
+      'p1（work-up）、p2（免疫組織化學原則）、p3（全身分期原則）、p4（遺傳諮詢）、p5（gBRCA1/2 檢測適應症）、p10 註 b。',
+      '<div class="rec-detail">' + geneticTable() + '</div>');
+    fu('bc_f_dx', null);
   }
 
-  /* ==========================================================
-     B. DCIS（p6、p46）
-     ========================================================== */
-  function renderDcisRec() {
-    var s = bcSt;
-    if (s.scope !== 'dcis') return;
-    var R = 'bc_dcis_rec', F = 'bc_dcis_fu';
-    if (!s.dloc) { idleRec(R, F, '請選擇步驟 2（局部治療方式）'); return; }
+  /* ---------- B. 原位管癌 ---------- */
+  function renderDcis() {
+    show('bc_b_dcis', true);
+    show('bc_n_dloc', true);
+    if (!S.dloc) return;
 
-    var lines = [];
-    if (s.dloc === 'd_bct') {
-      if (!s.dmar) { idleRec(R, F, '請選擇步驟 3（乳房保留手術之切緣）'); return; }
-      if (s.dmar === 'dm_close') {
-        result(R, F, 'rec-urgent', 'DCIS · 乳房保留手術切緣過近或陽性 → 再切除', [
-          '<span class="rx-h">局部處置</span>　<span class="rx-sub">p6</span>',
-          '<b>Re-excision（再切除）</b> —— <b>除非該切緣為深部（deep）或表淺（superficial）</b>，' +
-          '因為深部切緣已達胸肌筋膜、表淺切緣已達皮膚，再切也切不出更多組織。',
-          '再切除後仍無法達到乾淨切緣者 → 改行<b>全乳切除</b>（此時不需輔助放療）。',
-          '<b>VNPI 10–12 分（高風險）者本來就建議全乳切除</b>（p46）。'
-        ], 'p6：BCT（close or positive margin）→ re-excision，unless deep or superficial margin。', 'dcis',
-          '<div class="rec-detail">' + vnpiDetails() + '</div>');
+    if (S.dloc === 'bct') {
+      show('bc_n_dmar', true);
+      if (!S.dmar) return;
+
+      if (S.dmar === 'close') {
+        fill('bc_r_dcis', 'rec-urgent', '切緣過近或陽性 → 再切除一次', [
+          H('局部處置', 'p6'),
+          '<b>再切除（re-excision）</b> —— <b>除非那個切緣是深部或表淺</b>。',
+          EV('深部切緣已經切到胸肌筋膜、表淺切緣已經切到皮膚，這兩個方向再切也切不出更多組織。'),
+          '<b>再切除後仍達不到乾淨切緣 → 改做全乳切除</b>（此時不需要輔助放療）。',
+          EV('台大 p6 只寫 re-excision；「切不乾淨就改全乳切除」是 NCCN DCIS-1 註 e 的明文。' +
+            '另外 VNPI 10–12 分本來就建議全乳切除（p46，計分表在步驟 2）。')
+        ].concat(dcisAxLines(false)),
+          'p6：BCT（close or positive margin）→ re-excision，unless deep or superficial margin。', null);
+        fu('bc_f_dcis', 'insitu');
         return;
       }
-      result(R, F, 'rec-elective', 'DCIS · 乳房保留手術 → 依風險決定放療 ＋（ER(+)）tamoxifen', [
-        '<span class="rx-h">局部處置</span>　<span class="rx-sub">p6、p46</span>',
-        '<b>乳房保留手術</b>，陰性切緣後<b>依 VNPI 分數或 ECOG E5194 條件決定是否輔助放療</b>：' +
-        'VNPI 4–6 分（低風險）放療為選擇性；7–9 分（中風險）建議輔助放療；10–12 分（高風險）建議改行全乳切除。' +
-        'E5194 條件為腫瘤 &lt;2.5 cm、低或中度分化、切緣 &gt;3 mm。實際照野與劑量請依放射治療指引。',
-        '<b>腋下</b>：單純 BCS 之 DCIS <b>原則不需 SLNB</b>；' +
-        '若<b>切除位置可能影響日後 SLNB</b>（如外上象限大範圍切除），則應在此次手術一併做（p6 註 b）。',
-        '<span class="rx-h">輔助治療</span>　<span class="rx-sub">p6、p23</span>',
-        'ER(+) 者<b>建議 <span class="drug">tamoxifen</span> 5 年</b>；在乳房保留手術族群，其主要目的是<b>降低同側乳房復發</b>（p6 註 a）。',
-        '<b>DCIS 完全不做全身分期</b>（CT／PET／bone scan 皆不考慮，p3）。'
-      ], 'p6：Tis N0M0 → BCT → adjuvant RT or not（referred to radiotherapy guidelines）；if ER(+), suggest tamoxifen for 5 yr。p46：VNPI／E5194。', 'dcis',
-        '<div class="rec-detail">' + vnpiDetails() + htDetails() + '</div>');
+
+      fill('bc_r_dcis', 'rec-elective', '乳房保留手術 → 依風險決定放療，ER 陽性者加 tamoxifen', [
+        H('局部處置', 'p6、p46'),
+        '<b>乳房保留手術，切緣乾淨。要不要加輔助放療，用 VNPI 分數或 ECOG E5194 條件決定</b>（計分表在步驟 2）。',
+        EV('VNPI 4–6 分放療為選擇性；7–9 分建議放療；10–12 分建議改做全乳切除。' +
+          'E5194 條件是腫瘤 &lt; 2.5 cm、低或中度分化、切緣 &gt; 3 mm。實際照野與劑量依放射治療指引。')
+      ].concat(dcisAxLines(false)).concat([
+        H('輔助治療', 'p6、p23'),
+        'ER 陽性者<b>建議 ' + drug('tamoxifen') + ' 5 年</b>。',
+        EV('在乳房保留手術這一群，tamoxifen 的主要目的是<b>降低同側乳房復發</b>（p6 註 a）—— ' +
+          '和全乳切除那一群的用意不一樣。'),
+        '<b>原位管癌完全不做全身分期</b>（p3）。'
+      ]),
+        'p6：Tis N0M0 → BCT → adjuvant RT or not；if ER(+), suggest tamoxifen for 5 yr。p46：VNPI／E5194。',
+        '<div class="rec-detail">' + omitSlnbReference() + etReference() + '</div>');
+      fu('bc_f_dcis', 'insitu');
       return;
     }
 
-    result(R, F, 'rec-elective', 'DCIS · 全乳切除 ± SLNB ± 重建', [
-      '<span class="rx-h">局部處置</span>　<span class="rx-sub">p6、p46</span>',
-      '<b>單純全乳切除 SM(TM)</b> —— <b>不需輔助放療</b>（p46）。可同時做乳房重建。',
-      '<b>腋下：SLNB 在全乳切除族群「更強烈考慮」</b>（p6 註 b）。理由是全乳切除後乳房淋巴引流已破壞，' +
-      '若最終病理升級為侵襲癌就<b>再也補不回前哨淋巴結切片</b>；接受乳房保留手術者則仍可事後補做。',
-      '<span class="rx-h">輔助治療</span>　<span class="rx-sub">p6</span>',
-      'ER(+) 者建議 <span class="drug">tamoxifen</span> 5 年 —— 但在全乳切除族群，其性質<b>比較接近對側乳房的二級預防</b>（p6 註 c），' +
-      '而非降低同側復發，決定時應把這一點講清楚。'
-    ], 'p6：Tis N0M0 → SM(TM) ± SLNB ± Reconstruction；p46：Simple mastectomy — no need for adjuvant RT。', 'dcis',
-      '<div class="rec-detail">' + omitAxDetails() + htDetails() + '</div>');
+    fill('bc_r_dcis', 'rec-elective', '全乳切除 ± 前哨淋巴結切片 ± 重建', [
+      H('局部處置', 'p6、p46'),
+      '<b>單純全乳切除 —— 不需要輔助放療</b>（p46）。可以同時做乳房重建。'
+    ].concat(dcisAxLines(true)).concat([
+      H('輔助治療', 'p6'),
+      'ER 陽性者建議 ' + drug('tamoxifen') + ' 5 年。',
+      EV('但在全乳切除這一群，它的性質<b>比較接近對側乳房的二級預防</b>（p6 註 c），' +
+        '而不是降低同側復發 —— 同側乳房已經切掉了。決定要不要吃五年時，應該把這一點講清楚。')
+    ]),
+      'p6：Tis N0M0 → SM(TM) ± SLNB ± Reconstruction；p46：Simple mastectomy — no need for adjuvant RT。',
+      '<div class="rec-detail">' + omitSlnbReference() + etReference() + '</div>');
+    fu('bc_f_dcis', 'insitu');
   }
 
-  function renderLcisRec() {
-    if (bcSt.scope !== 'lcis') return;
-    result('bc_lcis_rec', 'bc_lcis_fu', 'rec-elective', 'LCIS · 不必然需要手術，以追蹤為主', [
-      '<span class="rx-h">處置</span>　<span class="rx-sub">p7</span>',
-      '<b>典型 LCIS：切除非必要（resection not mandatory），以追蹤（surveillance）為主。</b>',
-      '<b>多形性 LCIS（pleomorphic LCIS）：比照 DCIS 處理</b> —— 需完整切除並比照 DCIS 決定放療與內分泌治療。',
-      'LCIS <b>不做腋下分期</b>、不做全身分期。',
-      'LCIS 為<b>雙側乳癌的風險指標</b>而非直接前驅病灶；風險降低藥物（如 tamoxifen）之使用請個別討論並考慮遺傳諮詢（p4）。'
-    ], 'p7：LCIS Management — LCIS: resection not mandatory, surveillance；Pleomorphic LCIS: managed as DCIS。', 'dcis');
+  function dcisAxLines(mastectomy) {
+    var L = [H('腋下', 'p6 註 b')];
+    if (mastectomy) {
+      L.push('<b>要做全乳切除，就把前哨淋巴結切片一起做掉。</b>');
+      L.push(EV('台大 p6 註 b 原文是「more strongly considered for mastectomy patient」。' +
+        '理由不是原位管癌本身會轉移，而是<b>全乳切除後乳房的淋巴引流已經沒了</b>：' +
+        '萬一手術檢體升級為侵襲癌，就再也做不了前哨淋巴結定位，只剩腋下廓清一途。' +
+        '做乳房保留手術的人沒有這個問題，可以事後補做。'));
+      L.push('<b>不可以做腋下淋巴結廓清</b> —— 在沒有侵襲癌證據、也沒有證實腋下轉移之前，原位管癌一律不做。');
+      L.push(EV('升級的機率不低：原位管癌開刀後升級為侵襲癌者，各研究為 7–28%；' +
+        '但<b>純原位管癌本身的淋巴結轉移率只有約 1–2%</b>。<br>' +
+        '若最終病理出現侵襲癌，<b>整個療程改依第 I／II 期侵襲癌處理</b>，包含淋巴結分期 —— ' +
+        '請回步驟 1 改選「侵襲性乳癌」。'));
+      return L;
+    }
+    L.push('<b>純原位管癌做乳房保留手術 → 不需要腋下分期，連前哨淋巴結切片都不用做。</b>');
+    L.push(EV('理由有兩層：<b>純原位管癌的淋巴結轉移率只有約 1–2%</b>；' +
+      '而且即使手術檢體升級為侵襲癌（各研究 7–28%），' +
+      '<b>乳房保留手術後乳房的淋巴引流還在，可以回頭補做</b>，不會失去機會。'));
+    L.push('<b>但下面四種情況，前哨淋巴結切片要在這一次手術一併做：</b>' + SUB([
+      '<b>需要（或已改為）全乳切除</b> —— 切了就補不回來。',
+      '<b>切除位置會破壞日後的前哨定位</b> —— 中央區或乳暈後、外上象限、腋尾，或大範圍腫瘤整形手術。',
+      '<b>病理已經懷疑有侵襲或微侵襲。</b>',
+      '<b>臨床表現與病理不相符</b> —— 例如摸得到明顯腫塊，報告卻只寫原位管癌。'
+    ]));
+    L.push(EV('出處：台大 p6 註 b；美國乳房外科醫學會（ASBrS）《Axillary Management for Patients With ' +
+      'In-Situ and Invasive Breast Cancer》資源指引（2026-02-24 版）A 節；NCCN DCIS-1 註 f。'));
+    return L;
   }
 
-  /* ==========================================================
-     D-1. 初始策略（步驟 3 的格子）
-     ========================================================== */
-  var CTN_LABEL = {};
-  CTN_ROWS.forEach(function (r) {
-    CTN_COLS.forEach(function (c) { CTN_LABEL[r[0] + '_' + c[0]] = r[1] + ' ' + c[1]; });
-  });
+  /* ---------- C. 小葉原位癌 ---------- */
+  function renderLcis() {
+    show('bc_b_lcis', true);
+    fill('bc_r_lcis', 'rec-nonop', '不一定要開刀，以追蹤為主', [
+      H('處置', 'p7'),
+      '<b>典型小葉原位癌：切除不是必要的，以追蹤為主。</b>',
+      '<b>多形性小葉原位癌（pleomorphic LCIS）：比照原位管癌處理</b> —— 需完整切除，' +
+      '並依原位管癌的規則決定放療與內分泌治療。',
+      '<b>不做腋下分期，也不做全身分期。</b>',
+      EV('小葉原位癌被視為「風險指標」而不是真正的癌前病灶 —— 它預告的是<b>雙側</b>乳房日後的風險上升，' +
+        '不是那個位置一定會長出癌；所以把它切乾淨並不會降低風險，追蹤才是重點。多形性亞型是例外。'),
+      H('要跟病人講清楚的兩件事', ''),
+      '① 這不是癌症的第 0 期，<b>但兩側乳房日後的風險都會上升</b>，所以追蹤要做兩側。',
+      '② 若是<b>粗針切片</b>取得的診斷，要確認影像與病理是否相符；<b>不相符時仍需手術切除確認</b>。'
+    ], 'p7：LCIS — resection not mandatory, surveillance；Pleomorphic LCIS — managed as DCIS。', null);
+    fu('bc_f_lcis', 'insitu');
+  }
 
-  function renderStratRec() {
-    var s = bcSt;
-    if (s.scope !== 'ebc') return;
-    var R = 'bc_strat_rec';
-    if (!s.sub) { ulRec(R, 'rec-idle', '請先選擇步驟 2（生物亞型）', [], ''); return; }
-    if (!s.ctn) { ulRec(R, 'rec-idle', '請於步驟 3 點選 cT×cN 格子', [], ''); return; }
+  /* ---------- D. 侵襲癌主線 ---------- */
+  function renderInv() {
+    show('bc_b_inv', true);
+    show('bc_n_sub', true);
+    if (!S.sub) return;
 
-    var row = s.ctn.split('_')[0];
-    var colIdx = ['n0', 'n1', 'n23'].indexOf(s.ctn.split('_')[1]);
-    var g = CTN_GROUP[s.sub][row][colIdx];
-    var lab = CTN_LABEL[s.ctn];
-    var lines = [];
-    var title, cls;
-
-    if (g === 'g-none') {
-      cls = 'rec-elective';
-      title = lab + '（' + SUB_LABEL[s.sub] + '）→ 建議直接手術';
-      if (s.sub === 'her2hr' || s.sub === 'her2') {
-        lines.push('<b>cT1a–bN0 之 HER2(+) 建議直接手術</b>，理由是要符合 <b>APT 試驗</b>族群（T &lt; 3cm、淋巴結陰性），' +
-          '術後給 <span class="drug">paclitaxel</span> 每週 ×12 週 ＋ <span class="drug">trastuzumab</span> 共 1 年即可，' +
-          '<b>以免過度治療（prevent over treatment）</b>（p18）。');
-      } else if (s.sub === 'tnbc') {
-        lines.push('台大列出的 TNBC 術前化療門檻為 <b>≥T2N0 或 ≥N1</b>（p9），此格未達門檻 → 直接手術，術後再依病理分期決定化療。');
-      } else {
-        lines.push('HR(+)/HER2(−) 且分期在 <b>≤IIB 與 T3N1</b> 者，指引的預設情境即為<b>不做術前治療</b>（p10）：' +
-          '做乳房保留者 BCT + SLND／ALND + 放療；不做乳房保留者 SM + ALND／SLND。');
-        lines.push('<b>例外</b>：若腫瘤相對乳房體積偏大、病人希望保留乳房，仍可用術前化療或（停經後）術前內分泌治療降期以爭取 BCT（p11）。');
+    show('bc_n_ctn', true);
+    var hold = el('bc_ctn_hold');
+    if (hold) {
+      hold.innerHTML = '<div class="tn-cap">生物亞型：' + subLabel(S.sub) + '（換亞型時本表會跟著換）</div>' +
+        gridHTML('bc_ctnc_' + S.sub, 'ctn', CN_COLS, CT_ROWS, ctnGroup, CTN_LEGEND,
+          '<b>這裡的顏色代表「先開刀還是先給藥」，不是嚴重度。</b>建議術前治療的門檻依亞型不同：' +
+          'HER2 陽性是 ≥cT2N0、或 ≥cN1、或荷爾蒙受體陰性者的 ≥cT1cN0；三陰性是 ≥cT2N0 或 ≥cN1；' +
+          '荷爾蒙受體陽性且 HER2 陰性者指引沒有列門檻，只在局部晚期或想做乳房保留手術時考慮（p9、p11）。');
+      if (S.ctn) {
+        var b = el('bc_ctnc_' + S.sub + '_' + S.ctn);
+        if (b) b.classList.add('selected');
       }
-      lines.push('<b>先決條件</b>：把化療提前並不會增加絕對效益 —— <b>只有在術後本來就有化療適應症時才考慮術前化療</b>。');
-    } else if (g === 'g-low') {
-      cls = 'rec-elective';
-      title = lab + '（' + SUB_LABEL[s.sub] + '）→ 直接手術或術前治療皆可';
-      if (s.sub === 'her2hr') {
-        lines.push('<b>cT1cN0（p18）：可選擇直接手術，或選擇 NACT</b> —— 後者可用 <b>taxane + trastuzumab</b> 作為處方選項之一。');
-        lines.push('注意：同樣是 T1cN0，<b>HR(−)/HER2(+) 台大是「建議 NACT」</b>，HR(+)/HER2(+) 則兩者皆可 —— ' +
-          '差別在 HR(−)/HER2(+) 復發風險較高、對術前治療的反應率也較高。');
-      } else if (s.sub === 'tnbc') {
-        lines.push('<b>台大列的門檻是 ≥T2N0</b>，故 T1cN0 未達「建議 NACT」；' +
-          '但 <b>ASCO 術前治療指引建議 TNBC ≥cT1c 或 cN(+) 即給術前化療</b>（僅 cT1a／cT1bN0 不常規給）。' +
-          '兩者不一致，此格標為「兩者皆可」，實務上多數 T1c TNBC 會走術前化療以取得病理反應資訊。');
-        lines.push('走術前化療的額外理由：<b>殘存病灶（non-pCR）者可加 <span class="drug">capecitabine</span></b>（CREATE-X），' +
-          'gBRCA1/2(+) 者可加 <span class="drug">olaparib</span>（OlympiA）—— 這些後續選項<b>只有做了術前化療才拿得到</b>。');
-      } else {
-        lines.push('此分期（stage IIA／IIB）且<b>符合乳房保留條件</b>者，指引列為：<b>術前化療或（ER(+)）術前內分泌治療</b>，' +
-          '或<b>依病人意願直接手術</b>（p11）。');
-        lines.push('HR(+)/HER2(−) 對術前化療的 pCR 率較低，<b>降期以爭取乳房保留</b>是主要目的，而非取得預後資訊。');
-      }
-    } else if (g === 'g-ii') {
+    }
+    if (!S.ctn) return;
+
+    renderCtnRec();
+    show('bc_n_plan', true);
+    if (!S.plan) return;
+
+    if (S.plan === 'up') renderUpfront();
+    else renderNeo();
+  }
+
+  function renderCtnRec() {
+    var p = ctnParts(), L = [], cls, title;
+
+    if (p.g === 'none') {
       cls = 'rec-nonop';
-      title = lab + '（' + SUB_LABEL[s.sub] + '）→ 建議先做術前輔助治療（NACT／NAHT）';
-      if (s.sub === 'her2hr' || s.sub === 'her2') {
-        lines.push('台大 p9：HER2(+) 之 <b>≥T2N0、≥N1</b>' + (s.sub === 'her2' ? '，或 <b>HR(−)/HER2(+) 之 ≥T1cN0</b>' : '') +
-          ' 建議以術前治療取代直接手術。');
-        lines.push('<b>至少 18 週的術前治療</b>（p18）；<b>N(+) 者加上 <span class="drug">pertuzumab</span></b>。' +
-          '<b>指引寫「未給付」，但健保已自 2024-12-01 於早期乳癌給付</b>（條文 9.70.1，限<b>淋巴結陽性</b>、與 trastuzumab 合計上限 18 個週期）。');
-        lines.push('走術前治療的關鍵理由：<b>未達 pCR 者可換 <span class="drug">T-DM1</span></b>（KATHERINE），這是直接手術拿不到的資訊。');
-      } else if (s.sub === 'tnbc') {
-        lines.push('台大 p9：TNBC 之 <b>≥T2N0 或 ≥N1</b> 建議術前化療。');
-        lines.push('<b>≥cT1cN1 或 ≥cT2N0 建議在術前化療加上 <span class="drug">pembrolizumab</span></b>；' +
-          '若使用 pembrolizumab，<b>化療處方最好照 KEYNOTE-522 的做法走</b>（p19）。' +
-          '<b>指引寫「未給付」，但健保已自 2025-06-01 於早期三陰性乳癌給付</b>（條文 9.69.2(7)，stage II–IIIb，不需檢附 PD-L1 報告；' +
-          '<b>輔助期只給付未達 pCR 者</b>）。仍有免疫相關不良事件（irAE），須仔細討論。');
-        lines.push('未達 pCR 者的後續選項（capecitabine、olaparib）同樣<b>只有做了術前化療才存在</b>。');
-      } else {
-        lines.push('<b>局部晚期（通常為 stage III 或 T3N0）強烈建議先做全身治療</b>（p11）。');
-        lines.push('停經後 ER(+) 者可用<b>術前內分泌治療（NAHT）</b>取代術前化療 —— 對 HR(+)/HER2(−) 而言，' +
-          '降期效果相近而毒性低很多，代價是需時較久（通常 4–6 個月以上）。');
+      title = ctnName() + '（' + subLabel(S.sub) + '）→ 建議直接手術';
+      L.push(H('這一格為什麼是直接手術', 'p8、p9'));
+      L.push('<b>大部分臨床第 I、II 期的病人都是直接手術</b>（p8）；這一格沒有達到指引建議術前治療的門檻。');
+      if (S.sub === 'her2hr' || S.sub === 'her2') {
+        L.push(EV('HER2 陽性的 cT1a–bN0，指引明寫「建議直接手術，符合 APT 試驗族群，避免過度治療」（p18）。' +
+          'APT 只收腫瘤 &lt; 3 cm 且淋巴結陰性者，處方是每週 paclitaxel 12 週加 trastuzumab 滿 1 年。'));
       }
-      lines.push('<b>前提是體能適合（fit）</b>（p9）—— 體能無法承受術前化療者，直接手術反而是較好的選擇。');
+      if (S.sub === 'erpos') {
+        L.push(EV('荷爾蒙受體陽性且 HER2 陰性者，指引沒有列出建議術前治療的門檻 —— ' +
+          '這一型對化療的反應率本來就低；先開刀拿到完整的病理分期，反而比較好決定後面要不要化療。'));
+      }
+    } else if (p.g === 'ii') {
+      cls = 'rec-elective';
+      title = ctnName() + '（' + subLabel(S.sub) + '）→ 兩條路都可以，看想不想保留乳房';
+      L.push(H('這一格為什麼兩條都行', 'p9、p11'));
+      L.push('<b>沒有達到指引「建議」術前治療的門檻，但術前治療是合理選項</b> —— ' +
+        '主要理由是<b>把腫瘤縮小以便做乳房保留手術</b>（p11）。');
+      L.push('<b>先問病人想不想保留乳房</b>：想保留但目前腫瘤與乳房的比例不允許 → 走術前治療；沒有這個顧慮 → 直接手術。');
+      if (S.sub === 'her2hr') {
+        L.push(EV('HER2 陽性的 cT1cN0，指引把兩條路並列（p18）：直接手術，或術前治療（處方可用 taxane 加 trastuzumab）。' +
+          '荷爾蒙受體陰性的 cT1cN0 則明列在「建議術前治療」內 —— 差別就在 ER。'));
+      }
+      if (S.sub === 'tnbc') {
+        L.push(EV('三陰性的門檻是 ≥cT2N0 或 ≥cN1，cT1cN0 剛好在門檻之下。' +
+          '但三陰性走術前治療還有一個額外理由：<b>沒有達到病理完全緩解者，術後可以再加強</b>' +
+          '（capecitabine、olaparib）—— 直接手術就拿不到這個資訊。'));
+      }
+      if (S.sub === 'erpos') {
+        L.push(EV('這一格是臨床第 IIA 或 IIB 期。p11 說「符合乳房保留條件者可考慮術前化療或術前內分泌治療」，' +
+          '所以決定因素是乳房保留的意願與可行性，不是腫瘤本身。'));
+      }
+    } else if (p.g === 'low') {
+      cls = 'rec-elective';
+      title = ctnName() + '（' + subLabel(S.sub) + '）→ 建議先做術前藥物治療';
+      L.push(H('這一格為什麼建議先給藥', 'p9、p11'));
+      if (S.sub === 'her2hr' || S.sub === 'her2') {
+        L.push('<b>HER2 陽性，已達指引建議術前治療的門檻</b>：≥cT2N0、或 ≥cN1、或荷爾蒙受體陰性者的 ≥cT1cN0（p9）。');
+      } else if (S.sub === 'tnbc') {
+        L.push('<b>三陰性，已達指引建議術前治療的門檻</b>：≥cT2N0 或 ≥cN1（p9）。');
+      } else {
+        L.push('<b>cT3N0 屬局部晚期，指引明列「強烈建議」走術前治療</b>（p11）。');
+      }
+      L.push('<b>術前治療也讓後面多一個決策點</b>：手術檢體有沒有殘存病灶，會決定術後要不要再加強。');
+      L.push(EV('HER2 陽性未達病理完全緩解者可換 T-DM1；三陰性未達者可加 capecitabine，' +
+        '帶生殖細胞 BRCA 突變者可加 olaparib。直接手術的人拿不到這個資訊，也就用不到這些藥。'));
     } else {
       cls = 'rec-urgent';
-      title = lab + '（' + SUB_LABEL[s.sub] + '）→ 局部晚期，先做全身治療，勿直接手術';
-      lines.push('<b>T4（含胸壁／皮膚侵犯與發炎性乳癌）與 N2–3 屬局部晚期</b>，' +
-        '指引將 <b>stage IIIB／IIIC</b> 明列於「with neoadjuvant treatment」的情境（p11）。');
-      if (row === 't4d') {
-        lines.push('<b>發炎性乳癌（T4d）</b>：一律先做全身治療；<b>不做乳房保留手術</b>，術式為全乳切除 + 腋下淋巴結廓清，術後放療。');
+      title = ctnName() + '（' + subLabel(S.sub) + '）→ 局部晚期，一定要先做全身治療';
+      L.push(H('這一格為什麼不能先開刀', 'p11'));
+      L.push('<b>局部晚期（通常是第 III 期，或 cT3N0 以上）—— 指引寫「highly recommended」走術前治療</b>（p11）。');
+      if (p.t === 't4d') {
+        L.push('<b>發炎性乳癌（cT4d）：絕對不可以直接開刀。</b>一律先做全身藥物治療；之後<b>只能做全乳切除加腋下淋巴結廓清</b>，' +
+          '<b>不可以做乳房保留手術，也不可以只做前哨淋巴結切片</b>。');
+        L.push(EV('皮下淋巴管已被腫瘤堵住，前哨定位不可靠；而且發炎性乳癌的皮膚侵犯是瀰漫性的，切不出乾淨的切緣。'));
       }
-      lines.push('<b>應完成全身分期</b>（cTanyN2、cTanyN3、cT4Nany 皆為 p3 之「強烈考慮」族群）—— 先排除已經是 M1。');
-      lines.push('若治療後轉為可切除 → 依步驟 4 選「術前輔助治療 → 再手術」繼續；若始終無法切除或體能不允許 → 選「不適合手術」。');
+      if (p.n === 'n23') {
+        L.push('<b>cN2–3 屬第 III 期</b> —— 這一格也是<b>強烈建議做全身分期</b>的族群（p3）：先確認沒有遠處轉移再開始。');
+      }
     }
 
-    lines.push('<b>術前治療開始前的四件事（p12）</b>：① 停經前女性<b>討論生育議題</b>、必要時轉介婦產科凍卵／胚胎保存；' +
-      '② <b>腫瘤床至少放 1 個 clip</b>；③ 詳細評估腋下，臨床陽性者若可行則<b>先 clip 標記該顆淋巴結</b>；④ 選擇性乳房 MRI。');
-    if (g !== 'g-none') {
-      lines.push('<b>想估算這個病人達到 pCR 的機率？</b> 已有納入<b>年齡、分化度、HR／HER2 狀態、T 分期、N 分期與是否化療</b>之 nomogram 可預測病理完全緩解' +
-        '（Ye K et al. Cancer Med 2025，見下方文獻列表）。<b>這類模型是討論用的輔助工具，不取代指引的適應症</b>；' +
-        '術前治療的門檻仍以 p9 的條文為準。');
+    L.push(H('決定之前先確認的三件事', 'p9、p11'));
+    L.push('① <b>病人體能適合</b>（指引 2023 年版特地加了「fit」這個字）；② 有沒有臨床試驗可以收案；③ 病人的意願。');
+    if (p.g !== 'high') {
+      L.push(EV('指引把術前治療的定位寫得很清楚（p9）：<b>通常用於局部晚期且體能適合者，或想做乳房保留手術者</b>。' +
+        '不是所有能給的都該給。'));
     }
 
-    ulRec(R, cls, title, lines,
-      'p9（Principles of Operation：NACT 適應症）、p10（無術前治療之局部治療）、p11（有術前治療之情境）、p18（HER2(+) 之細節）、p19（TNBC 之細節）、p12（術前治療之一般原則）。');
+    fill('bc_r_ctn', cls, title, L,
+      'p8（手術原則）、p9（術前治療的適應症）、p11（術前治療的情境）、p3（全身分期）。', null);
   }
 
-  /* ==========================================================
-     D-2. 術前輔助治療處方（步驟 5）
-     ========================================================== */
-  function naRegimenLines(sub) {
-    var l = [];
-    if (sub === 'her2hr' || sub === 'her2') {
-      l.push('<span class="rx-h">HER2(+) 之術前處方</span>　<span class="rx-sub">p18、p34、p35</span>');
-      l.push('<b>至少 18 週</b>的術前治療（p18）。<b>N(+) 者加 <span class="drug">pertuzumab</span></b>。' +
-        '<b>指引寫「未給付」，但健保已自 2024-12-01 於早期乳癌給付</b>（條文 9.70.1，限淋巴結陽性）。');
-      l.push('<span class="rx">TCHP</span>：<span class="drug">docetaxel</span> 75 mg/m² ＋ ' +
-        '<span class="drug">carboplatin</span> AUC 5–6（或 <span class="drug">cisplatin</span> 50–70 mg/m²）＋ ' +
-        '<span class="drug">trastuzumab</span> ±<span class="drug">pertuzumab</span>，q21d ×6 週期。' +
-        '<b>院內共識可調整</b>：taxane 改 <span class="drug">paclitaxel</span> 80 mg/m² D1、8、15；' +
-        'platinum 改 carboplatin AUC 1.5 D1、8、15 —— 都符合 taxane+platinum 的概念。');
-      l.push('<span class="rx">AC／EC → TH 或 THP</span>；或先 TH／THP 再接 (F)EC／(F)AC。' +
-        '<b>抗 HER2 抗體不與 anthracycline 併用</b>（心毒性），與 taxane 併用（p34）。');
-      l.push('<span class="drug">trastuzumab</span> 劑量：6 mg/kg q3W（首劑另加 2 mg/kg、輸注時間拉長，無反應後可縮短）、' +
-        '或 2 mg/kg q1W、或 4 mg/kg q2W；<b>皮下劑型 600 mg 固定劑量 SC 3–5 分鐘 q3W，不需首劑加量</b>。' +
-        '<span class="drug">pertuzumab</span>：首劑 840 mg，第 2 週期起 420 mg，q3W。');
-      l.push('<b>療程長度與給付</b>：trastuzumab／pertuzumab 典型為 1 年；<b>因給付因素，9–12 週亦被視為可接受</b>（p34）。');
-    } else if (sub === 'tnbc') {
-      l.push('<span class="rx-h">TNBC 之術前處方</span>　<span class="rx-sub">p19、p32、p33</span>');
-      l.push('<b>≥cT1cN1 或 ≥cT2N0 建議加上 <span class="drug">pembrolizumab</span></b>；一旦使用 pembrolizumab，' +
-        '<b>化療處方最好照 KEYNOTE-522 的做法走</b>（p19）。');
-      l.push('<span class="rx">[EC/AC + T-carbo] + pembro</span>（KEYNOTE-522 處方，p32）：<br>' +
-        '<b>週期 1–4（q21d）</b>：<span class="drug">pembrolizumab</span> 200 mg D1 ＋ ' +
-        '<span class="drug">paclitaxel</span> 80 mg/m² D1、8、15 ＋ ' +
-        '<span class="drug">carboplatin</span> AUC 5 D1（或 AUC 1.5 D1、8、15）<br>' +
-        '<b>週期 5–8（q21d）</b>：<span class="drug">pembrolizumab</span> 200 mg D1 ＋ ' +
-        '<span class="drug">doxorubicin</span> 60 mg/m²（或 <span class="drug">epirubicin</span> 90 mg/m²）＋ ' +
-        '<span class="drug">cyclophosphamide</span> 600 mg/m² D1<br>' +
-        '<b>術後接續</b>：輔助 <span class="drug">pembrolizumab</span> 200 mg q21d ×9 週期。');
-      l.push('<b>不用 pembrolizumab 時的白金加法（p33）</b>：常見為 EC／AC 之後接 <b>taxane + platinum ×4 週期</b>；' +
-        '部分病人可走<b>不含 anthracycline</b> 的 <b>T + platinum ×6 週期</b>。' +
-        'platinum 可用 carboplatin AUC 5 D1、AUC 1.5 D1/8/15，或 cisplatin 50–70 mg/m² D1 q21d。');
-      l.push('<b>優先考慮臨床試驗收案</b>（p19）。');
+  /* ---------- D-1 直接手術 ---------- */
+  function renderUpfront() {
+    show('bc_b_up', true);
+
+    var p = ctnParts();
+    var L = [H('乳房', 'p8、p10')];
+    L.push('<b>可行的話，乳房保留手術優於全乳切除</b>；第 I 期尤其如此，但要尊重病人的選擇。');
+    L.push('<b>做了乳房保留手術就一定要做術後放療</b> —— 這兩件事綁在一起，不能只做前半。');
+    L.push('<b>乾淨切緣的定義是「墨汁沒有沾到侵襲癌或原位管癌」</b>（no ink on tumor）。');
+    L.push(EV('這個定義比一般想像的寬 —— 只要腫瘤沒有碰到染色的切緣面就算乾淨，不需要留幾 mm 的距離。' +
+      '（原位管癌的標準不同，見原位管癌流程。）'));
+
+    L.push(H('腋下', 'p8、p10 註 b'));
+    if (p.n === 'n0') {
+      L.push('<b>臨床 cN0 → 做前哨淋巴結切片。</b>');
+      L.push('<b>前哨若是 1–2 顆陽性，能不能免掉腋下淋巴結廓清？五個條件要全部符合</b>（ACOSOG Z0011）：' + SUB([
+        '臨床 cN0，而且<b>前哨淋巴結只有 1–2 顆陽性</b>',
+        '<b>T1 或 T2</b>',
+        '接受<b>乳房保留手術</b>，而且<b>已經計畫要做術後放療</b>',
+        '會接受<b>足量的輔助全身治療</b>',
+        '<b>尤其是 ER 陽性者</b>'
+      ]));
+      L.push(EV('五條全中才能省略。<b>全乳切除的人不適用</b>（第 3 條就不符合）—— 這是最常搞錯的地方。' +
+        '若因故沒做完整廓清、取下的淋巴結不足 10 顆，處理方式見下方放射治療適應症表的 p48 那一列。'));
     } else {
-      l.push('<span class="rx-h">HR(+)/HER2(−) 之術前處方</span>　<span class="rx-sub">p11、p22、p28–p31</span>');
-      l.push('<b>術前化療（NACT）或術前內分泌治療（NAHT，限 ER(+)）二擇一</b>（p11）。' +
-        'NAHT 主要用於<b>停經後</b>病人，毒性遠低於化療，代價是需時較久。');
-      l.push('化療處方沿用早期乳癌的標準處方（AC-T／EC-T、AC-wT、TC、TAC／TEC 等，見下表）。' +
-        '<b>本院共識</b>：除了強烈建議用第三代化療者以外，原則上只建議「化療或不化療」，<b>處方強度由主治醫師與病人討論後共同決定</b>（p28）。');
-      l.push('HR(+)/HER2(−) 的 pCR 率本來就低，因此<b>術前治療的目的多半是降期以爭取乳房保留</b>，' +
-        '而不是靠 pCR 來調整術後藥物。');
+      L.push('<b>臨床腋下淋巴結陽性 → 做腋下淋巴結廓清。</b>');
+      L.push('<b>術前對可疑的淋巴結應該先做細針穿刺確認</b>（p10 註 b）—— 影像可疑不等於轉移。');
+      L.push(EV('Z0011 只適用於臨床 cN0 的病人，這一格用不到。'));
     }
-    l.push('<b>治療期間每次回診評估腫瘤反應</b>（p12）—— 反應不佳時要及早發現，而不是等療程跑完。');
-    return l;
+
+    L.push(H('這一台刀之前還要處理的一件事', 'p9'));
+    L.push('若病人因焦慮而要求同時切除<b>健康的對側乳房</b>：<b>先切罹癌側，照會精神科，建議病人再考慮 3 至 6 個月</b>；' +
+      '若極度焦慮無法等待 3 個月，<b>必須在精神科醫師同意的狀況下才執行</b>。');
+
+    fill('bc_r_up_op', 'rec-elective', '直接手術 —— 乳房與腋下要怎麼開', L,
+      'p8（手術原則）、p9（對側預防性切除）、p10（第 ≤IIB 期與 T3N1 的局部治療）。',
+      '<div class="rec-detail">' + axillaReference() + '</div>');
+
+    show('bc_n_surg', true);
+    if (!S.surg) return;
+
+    show('bc_n_ptn', true);
+    var hold = el('bc_ptn_hold');
+    if (hold) {
+      hold.innerHTML = '<div class="tn-cap">生物亞型：' + subLabel(S.sub) + '（每個亞型的分組準則不一樣）</div>' +
+        gridHTML('bc_ptnc_' + S.sub, 'ptn', PN_COLS, PT_ROWS, ptnGroup, PTN_LEGEND[S.sub],
+          '<b>pN0 這一欄包含孤立腫瘤細胞 pN0(i+)</b>（≤ 0.2 mm 且 ≤ 200 個細胞），分期上仍當作 N0。' +
+          '<b>pN1mi 是微轉移</b>（0.2–2 mm）。<b>pN2–3 是 ≥ 4 顆</b> —— 這一欄同時也是胸壁放射治療與輔助 abemaciclib 的門檻。');
+      if (S.ptn) {
+        var b = el('bc_ptnc_' + S.sub + '_' + S.ptn);
+        if (b) b.classList.add('selected');
+      }
+    }
+    if (!S.ptn) return;
+
+    renderAdjuvant('bc_r_up_adj', 'up');
+    fu('bc_f_up', null);
   }
 
-  function renderNaRec() {
-    var s = bcSt;
-    if (s.scope !== 'ebc' || s.strat !== 'nact') return;
-    var R = 'bc_na_rec';
-    if (!s.sub) { ulRec(R, 'rec-idle', '請先選擇步驟 2（生物亞型）', [], ''); return; }
-    if (!s.nresp) {
-      ulRec(R, 'rec-nonop', '術前輔助治療處方（' + SUB_LABEL[s.sub] + '）', naRegimenLines(s.sub),
-        'p18（HER2(+)）、p19／p32／p33（TNBC）、p11／p28（HR(+)HER2(−)）、p34／p35（抗 HER2 處方與劑量）。' +
-        '請於步驟 5 選擇治療期間的反應。', null,
-        '<div class="rec-detail">' + chemoGenDetails() + nhiPanelEBC() + '</div>');
+  /* ---------- D-2 術前治療 ---------- */
+  function renderNeo() {
+    show('bc_b_na', true);
+
+    var L = [];
+    L.push(H('開始之前一定要做的五件事', 'p12'));
+    L.push('① <b>停經前女性要討論生育議題</b>，有需要就轉介婦產科做卵子或胚胎冷凍保存。');
+    L.push('② <b>在腫瘤處至少放一個標記夾</b>標出腫瘤床。');
+    L.push('③ <b>詳細評估腋下淋巴結。</b>');
+    L.push('④ <b>臨床腋下陽性者，可行的話在治療前先對那顆淋巴結做標記。</b>');
+    L.push('⑤ 選擇性：部分病人做乳房磁振造影。');
+    L.push(EV('第 ② 和第 ④ 點是同一個道理：腫瘤縮掉之後就找不到原來的位置了。' +
+      '<b>沒有放標記夾，達到完全緩解時外科不知道要切哪裡。</b>' +
+      '實務上要注意 —— <b>目前的標記夾多半在超音波下看不到，需要乳房攝影導引定位</b>（p13），要事先跟放射科講好。'));
+
+    L = L.concat(neoRegimenLines());
+
+    L.push(H('治療期間', 'p12'));
+    L.push('<b>每一次回診都要評估腫瘤反應</b> —— 目的是及早發現沒有反應的人，而不是等療程跑完才知道。');
+
+    fill('bc_r_na_rx', 'rec-elective', '術前藥物治療 —— 處方與開始前的準備', L,
+      'p12（術前治療的一般原則）、p18／p19（各亞型的術前處方）、p32–p35（處方劑量）。',
+      '<div class="rec-detail">' + chemoReference() + nhiEarly() + '</div>');
+
+    show('bc_n_nresp', true);
+    if (!S.nresp) return;
+
+    if (S.nresp === 'pd') {
+      fill('bc_r_na_op', 'rec-urgent', '治療期間進展 —— 換路線，而且腋下不能只做前哨', [
+        H('先做什麼', 'p3、p12'),
+        '<b>重新影像評估，確認是局部進展還是已經出現遠處轉移。</b>出現遠處轉移就改走轉移性乳癌流程（回步驟 1）。',
+        H('仍是局部疾病時', 'p13'),
+        '<b>腋下不可以只做前哨淋巴結切片，要做腋下淋巴結廓清。</b>',
+        EV('指引原文是「after NACT, SLNB alone, <b>unless clinical PD</b>」（p13）。' +
+          '對治療沒有反應的腫瘤，前哨淋巴結的偽陰性率無法接受。'),
+        '<b>換一個沒有交叉抗藥性的處方</b>，或評估直接手術（若仍可切除）。<b>優先考慮臨床試驗收案。</b>',
+        H('這是一個要多專科討論的節點', ''),
+        '術前治療中進展的病人預後差，<b>建議提到多專科團隊會議討論</b>，不宜單一科別決定。'
+      ], 'p12（治療期間每次評估反應）、p13（clinical PD 時不可只做前哨淋巴結切片）、p3（全身分期）。', null);
       return;
     }
-    if (s.nresp === 'na_pd') {
-      ulRec(R, 'rec-urgent', '術前治療期間臨床惡化（clinical PD）→ 停止現行處方、重新分期', [
-        '<span class="rx-h">立即處置</span>',
-        '<b>停止現行術前處方</b>，重新做影像與必要時重新切片 —— <b>先確認是不是已經出現遠處轉移</b>（若是 → 回步驟 1 走「轉移性乳癌」）。',
-        '<b>仍為 M0 且可切除者：直接手術</b>，不要為了「跑完療程」而繼續無效的處方。',
-        '<b>仍為 M0 但不可切除者</b>：換另一類全身治療（改用未曾用過的機轉／藥物類別），或先做<b>放射治療</b>爭取局部控制，' +
-        '之後再重新評估手術可行性。',
-        '<span class="rx-h">腋下處置會改變</span>　<span class="rx-sub">p13</span>',
-        '<b>p13 明文：cN0 者「NACT 後可單做 SLNB —— 除非臨床惡化（unless clinical PD）」。</b>' +
-        '也就是說<b>治療中惡化的病人不能只做前哨淋巴結切片</b>，應做腋下淋巴結廓清（ALND）。' +
-        '這一條很容易被漏掉，因為它藏在一個 unless 子句裡。',
-        '<span class="rx-h">乳房手術方式也要重新評估</span>',
-        '原本規劃靠降期換乳房保留的病人，惡化後<b>多半已不符合乳房保留條件</b>，應重新討論全乳切除。',
-        '<b>治療期間每次回診都要評估腫瘤反應</b>（p12）—— 這一步的存在就是為了避免整個療程結束才發現無效。'
-      ], 'p12（During NA(C)T: assess tumor response every time）、p13（cN0：after NACT, SLNB alone, unless clinical PD）。' +
-        '「改用何種處方」台大乳癌指引未逐條規範，實務上依未用過之藥物類別選擇，並考慮臨床試驗。');
+    if (S.nresp === 'inop') {
+      fill('bc_r_na_op', 'rec-urgent', '治療後仍無法手術 —— 改以全身治療與放射治療控制', [
+        H('處置', 'p11、p12'),
+        '<b>換用另一線全身治療</b>；荷爾蒙受體陽性者可考慮術前內分泌治療（p11）。',
+        '<b>照會放射腫瘤科評估局部放射治療。</b>',
+        '<b>優先考慮臨床試驗收案。</b>',
+        H('要持續做的事', 'p12'),
+        '<b>每次回診評估反應；反應好、體能改善時要回頭重新評估手術可行性</b> —— 「現在不能開」不等於「以後都不能開」。',
+        EV('若持續進展，就依轉移性疾病處理，並同時評估安寧共同照護的介入時機（p37）。')
+      ], 'p11（局部晚期）、p12（治療期間評估）、p37（末期病人之安寧照護）。', null);
       return;
     }
-    ulRec(R, 'rec-nonop', '術前輔助治療處方（' + SUB_LABEL[s.sub] + '）· 有反應 → 完成療程後手術', naRegimenLines(s.sub),
-      'p18（HER2(+)）、p19／p32／p33（TNBC）、p11／p28（HR(+)HER2(−)）、p34／p35（抗 HER2 處方與劑量）。' +
-      'p12：治療後可行則做乳房保留手術＋適當腋下分期，否則全乳切除＋適當腋下分期。', null,
-      '<div class="rec-detail">' + chemoGenDetails() + nhiPanelEBC() + '</div>');
-  }
 
-  /* ==========================================================
-     D-3. 腋下與局部治療（步驟 7）
-     ========================================================== */
-  function renderAxRec() {
-    var s = bcSt;
-    if (s.scope !== 'ebc' || !s.ax) return;
-    var R = 'bc_ax_rec';
-    var isSm = s.surg === 'sg_sm';
-    var lines = [], title, cls = 'rec-elective';
-
-    switch (s.ax) {
-      case 'ax_omit':
-        cls = 'rec-elective';
-        title = '未做腋下手術 —— 確認確實落在可省略的族群';
-        lines = [
-          '<span class="rx-h">可省略腋下分期的情境</span>',
-          '<b>純 DCIS 且行乳房保留手術</b>：原則不需要（p6 註 b 僅對全乳切除者與可能影響日後 SLNB 之切除位置「更強烈考慮」）。',
-          '<b>LCIS</b>：以追蹤為主，不做腋下分期（p7）。',
-          '<b>年長且低風險</b>（&gt;70 歲、cN0、HR(+)/HER2(−)、T1、將接受內分泌治療）：腋下結果不改變治療決策。' +
-          '<b>此條為院外實證（CALGB 9343 族群、Choosing Wisely），台大指引未明文列出</b>，採用前須個案討論並記錄。',
-          '<span class="rx-h">不可省略者</span>',
-          '<b>侵襲癌接受全乳切除</b>（切了就補不回來）、<b>cN(+)</b>、<b>接受過術前化療</b>（腋下病理決定放療與後續藥物）、' +
-          '<b>發炎性乳癌</b>、<b>術前治療期間臨床惡化者</b>（p13）。',
-          '省略腋下手術者，<b>放療照野與輔助全身治療只能依原發腫瘤的特徵決定</b> —— 決定省略時就要接受這個限制。'
-        ];
-        break;
-      case 'ax_neg':
-        title = '前哨淋巴結陰性 pN0(sn) → 不需進一步腋下手術';
-        lines = [
-          '<b>SLNB 陰性即完成腋下分期</b>，不做 ALND。',
-          '<b>孤立腫瘤細胞 pN0(i+)</b>（≤0.2mm 且 ≤200 個細胞）<b>在分期上視為 N0</b>，同樣不需 ALND。' +
-          '（注意：這一條只適用於<b>直接手術</b>；術前化療後的 ypN0(i+) 依 p13 仍須 ALND。）',
-          isSm ? '全乳切除後之胸壁放療依 p47 的明確指徵決定（此處 pN0，通常不需要，除非切緣(+)、侵犯皮膚或胸壁）。'
-            : '乳房保留手術後<b>全乳放療為必要</b>（低風險年長者例外，見下）。'
-        ].concat(rtLines(isSm ? 'sm' : 'bct'));
-        break;
-      case 'ax_mi':
-        title = '前哨淋巴結微轉移 pN1mi(sn)';
-        lines = [
-          '<b>微轉移（&gt;0.2mm 或 &gt;200 細胞，且 ≤2mm）不是 Z0011 的族群</b> —— Z0011 收的是巨轉移。' +
-          '微轉移可免除腋下廓清的證據來自 <b>IBCSG 23-01</b>（乳房保留＋放療族群，10 年追蹤無差異）。',
-          isSm ? '<b>本例為全乳切除</b>：台大 p48 的規範是針對 SLN 巨轉移（1–2 顆）寫的，微轉移未逐條規範；' +
-            '應以多專科討論決定「完成 ALND」或「依 AMAROS 概念給區域放療」。'
-            : '<b>本例為乳房保留 + 全乳放療</b>：多數情況可<b>不做腋下廓清</b>。',
-          '<b>分期上 pN1mi 屬 N1</b>，故輔助全身治療請依步驟 8 的 pN1mi 欄判讀（HER2(+) 之 pT1aN1mi 是指引明列的「可考慮化療＋trastuzumab」格）。'
-        ].concat(rtLines(isSm ? 'sm' : 'bct'));
-        break;
-      case 'ax_z11':
-        title = '前哨 1–2 顆巨轉移且符合 Z0011 → 可免除進一步腋下廓清';
-        lines = [
-          '<b>五項條件全部符合才成立</b>（p8）：cN0 且 SLN 僅 1–2 顆(+)、T1–T2、接受乳房保留手術且已規劃術後放療、' +
-          '有足量的輔助全身治療、尤其是 ER(+) 者。',
-          '<b>免除 ALND 的代價是要有全乳放療</b> —— Z0011 的族群全部接受了乳房切線放療。' +
-          '若病人最後沒做放療，這個免除就失去依據。',
-          '此族群依 p3 <b>不特別考慮全身分期</b>（cN0、pT1-2N1M0）。'
-        ].concat(rtLines('bct'));
-        break;
-      case 'ax_noz':
-        cls = 'rec-nonop';
-        title = '前哨 1–2 顆巨轉移但不符合 Z0011 → 完成腋下廓清（或以區域放療替代）';
-        lines = [
-          '<span class="rx-h">台大 p48 的逐條規範</span>　<span class="rx-sub">cLN(−)、s/p SM+SLND、pT1-2、SLN 1–2 顆(+)</span>',
-          '<b>原則應完成腋下淋巴結廓清（complete ALND）。</b>',
-          '<b>若腋下廓清不完整（取出淋巴結 &lt;10 顆）</b>：<br>' +
-          '· <b>TNBC 或有淋巴血管侵犯 LVI(+)</b>，且殘存陽性淋巴結為 1–2 顆 → <b>建議完成 ALND</b>。<br>' +
-          '· <b>非 TNBC 且 LVI(−)</b>（任何淋巴結陽性）→ 建議 ALND，<b>除非外科醫師認為完成廓清有困難、或病人在充分討論後仍拒絕</b> —— ' +
-          '此時<b>依 AMAROS 試驗建議改給區域放療（腋下＋鎖骨上窩）± 胸壁放療</b>。',
-          '<b>不符合 Z0011 的常見原因</b>：全乳切除、T3 以上、未規劃全乳放療、術前已做過化療。'
-        ].concat(rtLines(isSm ? 'sm' : 'bct'));
-        break;
-      case 'ax_3':
-        cls = 'rec-nonop';
-        title = '前哨 ≥3 顆陽性 → 腋下淋巴結廓清 ＋ 放療';
-        lines = [
-          '<b>超過 2 顆前哨陽性已在 Z0011 的收案範圍之外</b> → 完成腋下淋巴結廓清。',
-          '<b>腋下 ≥4 顆陽性是全乳切除後胸壁放療的明確指徵</b>（p47）；1–3 顆陽性者依危險因子決定。',
-          '此族群（cTanyN2 以上）依 p3 應<b>強烈考慮全身分期</b>。'
-        ].concat(rtLines(isSm ? 'sm' : 'bct'));
-        break;
-      case 'ax_cnpos':
-        cls = 'rec-nonop';
-        title = 'cN(+) 術前已證實 → 腋下淋巴結廓清（ALND）';
-        lines = [
-          '<b>cN0 首選 SLNB、cN(+) 行 ALND</b>（p8）；<b>術前對可疑淋巴結應先做 FNA</b> 確認（p10 註 b）—— ' +
-          '這一步決定了整條腋下路線，不能省。',
-          '<b>如果這位病人本來就要做全身治療</b>，可考慮改走「術前治療 → 降期後再評估腋下」的路線（p13、p14），' +
-          '降為 ycN0 者有機會以 SLNB／TAD 取代 ALND，減少淋巴水腫。這是把 cN(+) 病人排進術前治療的重要理由之一。',
-          '此族群依 p3 應<b>強烈考慮全身分期</b>（cT3N1、cTanyN2、cTanyN3）。'
-        ].concat(rtLines(isSm ? 'sm' : 'bct'));
-        break;
-      case 'na_cn0_neg':
-        title = 'NACT 前 cN0 → 術後前哨陰性 ypN0(sn) → 不需 ALND';
-        lines = [
-          '<b>p13、p14</b>：cN0 者可術前 SLNB，或於 NACT 後單做 SLNB —— <b>除非治療中臨床惡化（PD）</b>。',
-          '本例前哨陰性 → <b>不做腋下淋巴結廓清</b>。'
-        ].concat(rtLines('nact'));
-        break;
-      case 'na_cn0_pos':
-        cls = 'rec-nonop';
-        title = 'NACT 前 cN0 → 術後前哨陽性 → 須做 ALND';
-        lines = [
-          '<b>p14 明文：任一顆陽性，包括 ypN1mi 與 ypN0(i+)，均須後續 ALND。</b>',
-          '<b>這裡不能套 Z0011</b> —— Z0011 排除了接受術前化療的病人。術前化療後的殘存腫瘤細胞，' +
-          '代表的是「對化療不敏感的殘存病灶」，臨床意義與未治療過的 1–2 顆陽性完全不同。',
-          '<b>NACT 後 pN(+) 是接受 PMRT／Breast RT + 區域淋巴照射的明確指徵</b>（p49）。'
-        ].concat(rtLines('nact'));
-        break;
-      case 'na_ycn0_neg':
-        title = 'cN1-2 降期為 ycN0 → SLNB／TAD 陰性 → 可免除 ALND';
-        lines = [
-          '<b>前提是取到「足量前哨」</b>（p14 註 #）：<b>雙示蹤劑且取出 ≥3 顆</b>，或 <b>SLNB + 標記淋巴結摘除（TAD）</b>。' +
-          '取不到這個量，偽陰性率會高到不能接受。',
-          '<b>治療前已 clip 標記淋巴結者：取出標記淋巴結 + SLND，不論顆數</b>（p13）。' +
-          '<b>現行 clip 多無法以超音波辨識，需乳房攝影導引針定位</b> —— 這件事要在手術排程時就先安排。',
-          '<b>放療不能一起省</b>：降階腋下手術的安全性建立在有做區域淋巴照射的前提上；' +
-          '是否照射依 p49 的 NTUH 共識判定。'
-        ].concat(rtLines('nact'));
-        break;
-      case 'na_ycn0_pos':
-        cls = 'rec-nonop';
-        title = 'cN1-2 降期為 ycN0 → SLNB／TAD 仍有陽性 → 須做 ALND';
-        lines = [
-          '<b>p14：任一顆陽性（含 pNmi、pN0(i+)）即須後續 ALND。</b>',
-          '<b>NACT 後 pN(+) 為 PMRT／Breast RT + 區域淋巴照射的明確指徵</b>（p49）。',
-          '腋下有殘存病灶意味著<b>未達 pCR</b> → 請於步驟 8 選「殘存病灶 non-pCR」，' +
-          '以取得 T-DM1（HER2(+)）、capecitabine／olaparib（TNBC）等術後強化選項。'
-        ].concat(rtLines('nact'));
-        break;
-      case 'na_ycn1':
-        cls = 'rec-nonop';
-        title = '術前治療後腋下仍臨床陽性 ycN(+) → 直接 ALND';
-        lines = [
-          '<b>p13、p14：若 ycN(+)，做 ALND</b>，不再嘗試前哨淋巴結切片。',
-          '腋下未降期代表<b>對術前治療反應不佳</b>，必為 non-pCR → 步驟 8 請選「殘存病灶」。',
-          '<b>PMRT／Breast RT + 區域淋巴照射有明確指徵</b>（p49：NACT 後 pN(+)）。'
-        ].concat(rtLines('nact'));
-        break;
+    var pn = ctnParts().n;
+    var OL = [H('乳房', 'p12')];
+    if (S.nresp === 'op_bct') {
+      OL.push('<b>做乳房保留手術，並做適當的腋下分期</b>（p12）。');
+      OL.push('<b>切除範圍以術前放的標記夾定位</b>；乾淨切緣一樣是「墨汁沒有沾到腫瘤」。');
+      if (ctnParts().t === 't4d') {
+        OL.push('<b>但發炎性乳癌不可以做乳房保留手術</b> —— 本例原本是 cT4d，請改選「要做全乳切除」。');
+      }
+    } else {
+      OL.push('<b>做全乳切除，並做適當的腋下分期</b>（p12）。可以同時討論乳房重建。');
     }
 
-    ulRec(R, cls, title, lines,
-      'p8（手術與 Z0011 原則）、p10（無術前治療之局部治療）、p13／p14（術前化療情境之腋下分期）、p15（直接 SLNB 之情境）、' +
-      'p47（放療指徵）、p48（SLN 1–2 顆陽性且腋下廓清不完整之處理）、p49（NACT 後放療之 NTUH 共識）。',
-      null, '<div class="rec-detail">' + omitAxDetails() + '</div>');
+    OL.push(H('腋下 —— 術前治療後的規則和直接手術不一樣', 'p13、p14'));
+    if (pn === 'n0') {
+      OL.push('<b>原本是臨床 cN0 → 術前治療後做前哨淋巴結切片即可。</b>');
+      OL.push(EV('前提是治療期間沒有臨床惡化。若曾經惡化，就要做腋下淋巴結廓清（p13）。'));
+    } else {
+      OL.push('<b>原本臨床腋下陽性、治療後腋下轉為陰性 → 可以只做前哨淋巴結切片，但取樣必須「足量」，' +
+        '定義是二選一</b>：' + SUB([
+          '<b>用雙示蹤劑，而且取下 ≥ 3 顆</b>淋巴結；或',
+          '<b>前哨淋巴結切片，加上取出術前做過標記的那一顆</b>（不論總顆數）'
+        ]));
+      OL.push('<b>結果 pN0 → 不必廓清。只要有任何一顆陽性 —— 包含微轉移 pN1mi 與孤立腫瘤細胞 pN0(i+) —— 就要做腋下淋巴結廓清</b>（p14）。');
+      OL.push('<b>治療後腋下仍然陽性 → 直接做腋下淋巴結廓清。</b>');
+      OL.push(EV('這裡和直接手術最大的不同：<b>直接手術可以套 Z0011 免廓清，術前治療後不行。</b>' +
+        '術前治療後任何殘存的淋巴結轉移都代表對治療反應不完全，門檻因此拉到「一顆都不能有」。'));
+    }
+
+    fill('bc_r_na_op', 'rec-elective',
+      (S.nresp === 'op_bct' ? '乳房保留手術' : '全乳切除') + ' ＋ 腋下分期', OL,
+      'p12（術前治療後的手術原則）、p13、p14（術前治療情境的腋下分期策略）。',
+      '<div class="rec-detail">' + axillaReference() + '</div>');
+
+    show('bc_n_ypath', true);
+    if (!S.ypath) return;
+
+    renderAdjuvant('bc_r_na_adj', 'na');
+    fu('bc_f_na', null);
   }
 
-  /* ==========================================================
-     D-4. 輔助全身治療（步驟 8）
-     ========================================================== */
-  function olympiaDetails() {
-    return '<details class="kps-details"><summary>OlympiA 條件 — gBRCA1/2(+) 早期乳癌之延長輔助 olaparib（p21）▸</summary><table>' +
-      '<tr><td>療程</td><td><span class="drug">olaparib</span> 1 年；改善無侵襲性疾病存活（IDFS）與無遠處疾病存活（DDFS）</td></tr>' +
-      '<tr><td>基本條件</td><td><b>HER2(−)</b> 且帶有 <b>gBRCA1/2 生殖細胞突變</b></td></tr>' +
-      '<tr><td>做過術前化療者</td><td>TNBC：<b>non-pCR</b>；ER(+)：<b>non-pCR 且 CPS-EG 分數 ≥ 3</b></td></tr>' +
-      '<tr><td>直接手術者</td><td>TNBC：<b>≥pT2 或 ≥pN1</b>；ER(+)：<b>淋巴結 ≥4 顆</b>；或其他高風險</td></tr>' +
-      '<tr><td>給付與討論</td><td>指引當時寫<b>健保未給付</b>；<b>健保已自 2025-06-01 納入</b>（條文 9.85.4）。' +
-      '健保之高風險定義與 OlympiA 略有不同：三陰性為「術前化療後 non-pCR」或「直接手術後 ≥pN1、或 pN0 但腫瘤 ≥2cm」；' +
-      'HR(+)/HER2(−) 為「術前化療後 non-pCR」或「直接手術後<b>淋巴結 ≥4 顆</b>」（<b>不採 CPS-EG 分數</b>）。' +
-      '須完成 ≥6 週期含 anthracycline／taxane 之化療，並於最後一次治療後 12 週內開始。' +
-      '仍需完整討論並搭配<b>遺傳諮詢</b>（僅生殖細胞 BRCA 計入）。⚠ 輔助情境與 pembrolizumab 擇一給付。</td></tr>' +
-      '</table></details>';
-  }
-  function tnbcOptionDetails() {
-    return '<details class="kps-details"><summary>TNBC 的其他輔助選項與其證據強度（p21 之院內說明）▸</summary><table>' +
-      '<tr><td>CREATE-X</td><td>第三期隨機非雙盲試驗。HER2(−) 早期乳癌，經<b>足量</b>術前化療後<b>未達 pCR</b>者，' +
-      '術後加 <b>24 週 capecitabine</b> 顯著增加無病存活（DFS），<b>在 TNBC 次族群效益更明顯</b>。</td></tr>' +
-      '<tr><td>IBCSG 22-00</td><td>針對 <b>ER &lt; 10%</b> 者，標準輔助化療後再加<b>一年低劑量口服化療</b>（cyclophosphamide + MTX）。' +
-      '<b>未達統計顯著</b>，但 TNBC 次族群有增加 DFS 的趨勢。</td></tr>' +
-      '<tr><td>院內立場</td><td>兩者<b>證據強度有限</b>；但因 TNBC 預後較差、治療選擇少，團隊認為<b>針對高風險病人與病患討論以上選擇有合理的學術依據</b>。</td></tr>' +
-      '<tr><td>劑量（p33）</td><td><span class="drug">capecitabine</span> 1000–1250 mg/m² BID D1–14，q3W，共 6–8 週期</td></tr>' +
-      '</table></details>';
+  function neoRegimenLines() {
+    var L = [], s = S.sub, p = ctnParts();
+
+    if (s === 'her2hr' || s === 'her2') {
+      L.push(H('處方 · HER2 陽性', 'p18、p34、p35'));
+      L.push('<b>化療加 ' + drug('trastuzumab') + '，至少 18 週。</b>');
+      L.push('<b>淋巴結陽性者建議再加上 ' + drug('pertuzumab') + '</b>（p17、p18）。');
+      L.push('常見排法：EC 或 AC 之後接 taxane 加抗 HER2；或先打 taxane 加抗 HER2，再接 EC 或 AC。');
+      L.push('<b>抗 HER2 抗體不要和 anthracycline 同時打</b>（心臟毒性），要和 taxane 一起（p34）。');
+      L.push('<b>trastuzumab 總療程未特別指定時應為滿 1 年</b>（p17）。');
+      L.push(EV('TCHP 處方：docetaxel 75 mg/m² ＋ carboplatin AUC 5–6（或 cisplatin 50–70 mg/m²）每 21 天 ×6，' +
+        '搭配 trastuzumab（±pertuzumab）。院內共識：taxane 改成每週 paclitaxel 80 mg/m²（D1、D8、D15）、' +
+        '或白金改成 carboplatin AUC 1.5 每週，都符合「taxane 加白金」的概念（p35）。<br>' +
+        'trastuzumab 劑量：6 mg/kg 每 3 週（首劑加 2 mg/kg 負荷劑量），或 2 mg/kg 每週，或 4 mg/kg 每 2 週；' +
+        '皮下劑型為固定 600 mg 每 3 週、不需負荷劑量。pertuzumab 首劑 840 mg，之後 420 mg 每 3 週。'));
+    } else if (s === 'tnbc') {
+      L.push(H('處方 · 三陰性', 'p19、p32、p33'));
+      L.push('<b>≥cT1cN1 或 ≥cT2N0 者，建議在術前化療中加上 ' + drug('pembrolizumab') + '</b>（p19）。');
+      L.push('<b>一旦決定用 pembrolizumab，就照 KEYNOTE-522 的處方走，不要自己拼</b>（p19、p32）：' + SUB([
+        '<b>第 1–4 週期</b>（每 21 天）：pembrolizumab 200 mg ＋ paclitaxel 80 mg/m²（D1、D8、D15）＋ carboplatin AUC 5（D1）或 AUC 1.5（D1、D8、D15）',
+        '<b>第 5–8 週期</b>（每 21 天）：pembrolizumab 200 mg ＋（doxorubicin 60 mg/m² 或 epirubicin 90 mg/m²）＋ cyclophosphamide 600 mg/m²',
+        '<b>術後</b>：單用 pembrolizumab 200 mg 每 21 天 ×9 週期'
+      ]));
+      L.push('<b>不用 pembrolizumab 時，白金有兩種加法</b>（p33）：' + SUB([
+        'EC 或 AC 之後接 taxane 加白金，共 4 個週期（比較常見）',
+        '不用 anthracycline 的人：taxane 加白金共 6 個週期'
+      ]));
+      L.push('<b>優先考慮臨床試驗收案</b>（p19）。');
+      L.push(EV('pembrolizumab 已於 2025-06-01 納入健保給付（早期三陰性、第 II–IIIb 期），' +
+        '但<b>輔助期只給付未達病理完全緩解者</b>，且與輔助 olaparib 只能擇一。詳見下方健保條文。<br>' +
+        '指引 p19 的原始警語仍然重要：<b>此藥會造成免疫相關不良反應，須與病人非常仔細地討論。</b>'));
+    } else {
+      L.push(H('處方 · 荷爾蒙受體陽性、HER2 陰性', 'p11、p28–p31'));
+      L.push('<b>術前化療，或術前內分泌治療</b>（p11）。');
+      L.push('<b>術前內分泌治療適合體能較差、年紀較大或腫瘤生長緩慢的人</b>；反應慢，通常要用數個月才看得到縮小。');
+      L.push('化療處方沿用早期乳癌的標準處方（見下方收合的處方表）。');
+      L.push(EV('這一型對化療的反應率本來就比 HER2 陽性與三陰性低，達到病理完全緩解的比例也低。' +
+        '所以走術前治療的主要目的通常是<b>把腫瘤縮小以保留乳房</b>，而不是為了拿到病理完全緩解這個預後資訊。'));
+    }
+
+    if (p.g === 'high') {
+      L.push(H('這一格的額外提醒', 'p11'));
+      L.push('<b>局部晚期病人的療程要跑完再評估手術</b> —— 中途手術通常拿不到乾淨切緣。');
+    }
+    return L;
   }
 
-  function her2AdjLines(g, hrPos, path) {
-    var l = ['<span class="rx-h">HER2(+)：抗 HER2 ＋ 化療</span>　<span class="rx-sub">p17、p18、p34、p35</span>'];
+  /* ---------- 術後輔助治療 ---------- */
+  function renderAdjuvant(recId, path) {
+    var s = S.sub, L = [], cls = 'rec-elective', title, g = null, pt = null, pn = null;
+
     if (path === 'up') {
-      if (g === 'g-none') {
-        l.push('<b>本格為 pT1mi–pT1aN0 → ±（化療 + <span class="drug">trastuzumab</span>）</b>（p17）。' +
-          '也就是<b>給或不給都在指引範圍內</b>，應把「絕對復發風險很低」講清楚後由病人一起決定。');
-      } else if (g === 'g-ii') {
-        l.push('<b>本格為 pT1bN0 或 pT1aN1mi → 可考慮（consider）化療 + <span class="drug">trastuzumab</span></b>（p17）。');
-      } else if (g === 'g-low') {
-        l.push('<b>本格為 ≥pT1cN0 → 化療 + <span class="drug">trastuzumab</span></b>（p17）。' +
-          '注意：<b>健保於 EBC 僅給付淋巴結陽性者</b>，本格為 LN(−)，trastuzumab 需自費（院內立場見下方給付說明）。');
-      } else {
-        l.push('<b>本格為淋巴結陽性 → 輔助化療 + <span class="drug">trastuzumab</span>，並<b>建議加上</b> <span class="drug">pertuzumab</span></b>（p17）。<b>指引寫 pertuzumab 未給付，但健保已自 2024-12-01 於淋巴結陽性早期乳癌給付</b>（條文 9.70.1，與 trastuzumab 合計上限 18 個週期）。');
-      }
-      l.push('<span class="rx">APT</span>（Dana-Farber，p35）：<span class="drug">paclitaxel</span> 80 mg/m² 每週 ×12 週 ＋ ' +
-        '<span class="drug">trastuzumab</span> 共 1 年（與 paclitaxel 同時開始）—— <b>僅適用 T &lt; 3 cm、淋巴結陰性</b>。' +
-        '這是小腫瘤避免過度治療的標準做法。');
-    } else if (path === 'pcr') {
-      l.push('<b>已達 pCR</b>：<b>完成 <span class="drug">trastuzumab</span> 至滿 1 年</b>（若術前有用 <span class="drug">pertuzumab</span> 則一併完成）。' +
-        '無須換藥。');
+      var pp = S.ptn.split('_');
+      pt = pp[0]; pn = pp[1];
+      g = ptnGroup(pt, pn);
+      var ptr = PT_ROWS.filter(function (r) { return r[0] === pt; })[0];
+      var pnc = PN_COLS.filter(function (c) { return c[0] === pn; })[0];
+      title = ptr[1] + ' ' + pnc[1] + '（' + subLabel(s) + '）→ 術後輔助治療';
+      L = L.concat(adjSystemicUpfront(s, pt, pn, g));
     } else {
-      l.push('<b>未達 pCR（non-pCR）→ 換用 <span class="drug">T-DM1</span></b> 3.6 mg/kg q3W ×<b>14 個週期</b>（依 <b>KATHERINE</b> 試驗；p18、p35）。' +
-        'p18 之措辭為「if affordable」，<b>但健保已自 2024-08-01 給付</b>（條文 9.87.1）—— ' +
-        '需已接受 ≥6 週期化療（含 taxane ≥3 週期）與術前 trastuzumab ≥3 週期後仍有殘存，且符合<b>腋下淋巴結轉移</b>，' +
-        '或<b>淋巴結陰性但 ER(−) 且腫瘤 &gt;2cm</b>；上限 14 週期，須<b>術後 12 週內</b>申請。<b>條件比 KATHERINE 窄。</b>');
-      l.push('無論是否換 T-DM1，<b>至少完成 <span class="drug">trastuzumab</span> 至滿 1 年</b>（p18）。');
-      l.push('<b>若先前的術前治療不含 anthracycline，可考慮術後再加 anthracycline</b>（p18）。');
+      title = { pcr: '病理完全緩解', res_n0: '乳房有殘存病灶、淋巴結陰性', npos: '淋巴結仍有轉移' }[S.ypath] +
+        '（' + subLabel(s) + '）→ 術後輔助治療';
+      L = L.concat(adjSystemicNeo(s));
     }
-    l.push('<span class="drug">trastuzumab</span> 療程若未特別指定應<b>總計 1 年</b>；因給付因素，<b>9–12 週亦被視為可接受</b>（p34）。' +
-      '劑量：6 mg/kg q3W（首劑另加 2 mg/kg）、2 mg/kg q1W 或 4 mg/kg q2W；<b>皮下劑型 600 mg 固定劑量 q3W，不需首劑加量</b>。');
-    l.push('<b>抗 HER2 抗體不與 anthracycline 併用</b>（心毒性考量），與 taxane 併用（p34）。常見組合為 EC／AC → TH 或 THP；或 TH／THP 先、再接 (F)EC／(F)AC。');
-    if (hrPos) {
-      l.push('<span class="rx-h">內分泌治療</span>　<span class="rx-sub">p17、p23、p24</span>');
-      l.push('<b>ER(+) 者輔助內分泌治療為必要（mandated），且於化療完成後才開始</b>（p17）—— 不與化療同時給。');
-      l.push('<b>延長輔助 <span class="drug">neratinib</span> 1 年</b>（<b>健保仍未給付</b>，2026-08 查證）：可考慮用於<b>高風險 HR(+)/HER2(+)</b>，如 LN(+) 或 non-pCR。' +
-        '<b>NTUH 共識：neratinib 可提早開始</b> —— 化療結束後即可，與抗 HER2 治療及內分泌治療併行（p18）。');
-    } else {
-      l.push('<b>本例 HR(−)</b>：不需輔助內分泌治療；<b>neratinib 的適應症是高風險 HR(+)/HER2(+)</b>，故不適用（p18）。');
-    }
-    return l;
-  }
 
-  function erAdjLines(g, path) {
-    var l = ['<span class="rx-h">HR(+) / HER2(−)：內分泌治療為主軸</span>　<span class="rx-sub">p22、p23、p24</span>'];
+    if (s === 'erpos' || s === 'her2hr') {
+      L.push(H('內分泌治療', 'p17、p23、p24'));
+      L.push('<b>荷爾蒙受體陽性者一定要做內分泌治療</b>；<b>有化療的話，等化療結束後才開始</b>（p17）。');
+      L.push('<b>停經前先用 ' + drug('tamoxifen') + '；停經後先用芳香環酶抑制劑</b>（aromatase inhibitor）。' +
+        '完整的排法見下方收合表。');
+    }
+
+    L = L.concat(rtLines(path));
+
+    L.push(H('療程結束後', 'p27'));
+    L.push('<b>門診每 3–6 個月一次共 5 年，之後每年一次；每年乳房影像是必要的。</b>細節見下方追蹤區塊。');
+
     if (path === 'up') {
-      if (g === 'g-ii') {
-        l.push('<b>本格為 ≤pT2N0 → 輔助內分泌治療（ET），或 化療 + ET</b>；' +
-          '風險以<b>多基因檢測、IHC4 分數或臨床病理參數</b>評估（p22）。');
-        l.push('多基因檢測的證據來自前瞻性的 <b>Oncotype DX TAILORx</b> 試驗；' +
-          '其他檢測（<b>MammaPrint、PAM50、EndoPredict、BCI</b>）<b>皆屬預後性（prognostic）</b>工具（p22 註）。' +
-          '——「預後性」與「可預測化療效益」不是同一件事，選用時要分清楚。');
-      } else if (g === 'g-low') {
-        l.push('<b>本格為 ≥pT3N0（傾向 化療 + ET）或 pT1-2 N1mi–N1（通常 化療 + ET，除非多基因檢測顯示低復發風險）</b>（p22）。');
-        l.push('<b>停經前且淋巴結 1–3 顆陽性者，多基因檢測不適合用來省略化療</b> —— 這是國際指引（ASCO biomarker guideline，依 RxPONDER）與台大' +
-          '「unless low risk by multi-gene assay」之間需要留意的落差，實務上停經前病人請把卵巢功能抑制一併納入討論。');
-      } else {
-        l.push('<b>本格為 TanyN2–3 → 化療 + 內分泌治療</b>（p22）。此格<b>不以多基因檢測豁免化療</b>。');
-      }
-      l.push('<b>高風險者可加：<span class="drug">abemaciclib</span> 2 年，或 <span class="drug">TS-1</span> 1 年</b>（p22）。' +
-        '<b>指引寫兩者均未給付，但 abemaciclib 已自 2024-03-01 納入輔助給付</b>（條文 9.107）：' +
-        '成年女性、HR(+)（ER 或 PR &gt;30%）、HER2(−)、淋巴結陽性且符合 <b>pALN ≥4 顆</b>／<b>1–3 顆且腫瘤 ≥5cm</b>／<b>1–3 顆且 grade 3</b> 之一；' +
-        '須完成標準輔助化放療後申請、<b>術後 16 個月內開始</b>、最長 2 年。' +
-        '⚠ <b>用此藥後進展者，日後不得再申請任何 CDK4/6 抑制劑</b>（9.72.7）。<b>TS-1 仍未給付</b>（條文 9.46 無乳癌適應症）。');
-    } else if (path === 'pcr') {
-      l.push('<b>已達 pCR</b>（HR(+)/HER2(−) 的 pCR 率本來就低，達到者屬預後良好族群）：<b>完成輔助內分泌治療</b>。');
-      l.push('若術前用的是內分泌治療（NAHT），術後<b>繼續同一套內分泌治療</b>並累計療程。');
-      l.push('高風險者仍可討論 <span class="drug">abemaciclib</span> 2 年（p22；健保 9.107 自 2024-03-01 起於淋巴結陽性高風險族群給付）或 <span class="drug">TS-1</span> 1 年（仍未給付）。');
-    } else {
-      l.push('<b>未達 pCR</b>：完成輔助內分泌治療；<b>依殘存病灶的分期與淋巴結狀態</b>判定是否屬 p22 的高風險族群。');
-      l.push('<b>高風險者：<span class="drug">abemaciclib</span> 2 年</b>（p22；健保 9.107 自 2024-03-01 起給付，限淋巴結陽性且符合三項高風險條件之一），' +
-        '<b>或 <span class="drug">TS-1</span> 1 年</b>（仍未給付）。');
-      l.push('<b>gBRCA1/2(+) 者</b>：<b>non-pCR 且 CPS-EG 分數 ≥3</b> 才符合 OlympiA 的 ER(+) 條件 → <span class="drug">olaparib</span> 1 年（p21）。' +
-        '<b>指引寫未給付，但健保已自 2025-06-01 納入</b>（條文 9.85.4）—— 惟健保之 HR(+) 條件為「術前化療後 non-pCR」或「直接手術後淋巴結 ≥4 顆」，' +
-        '<b>不走 CPS-EG 分數那條路</b>，且須於最後一次治療後 12 週內開始。' +
-        'ER(+) 族群<b>可設較高門檻</b>。');
+      if (g === 'high') cls = 'rec-urgent';
+      else if (g === 'none') cls = 'rec-nonop';
+    } else if (S.ypath !== 'pcr') {
+      cls = 'rec-urgent';
     }
-    l.push('<b>內分泌治療的選擇（p23、p24）</b>：停經前以 <span class="drug">tamoxifen</span> 至少 5 年為基礎，' +
-      '高風險者可用 <b>GnRH agonist ＋ AI／tamoxifen 5 年</b>；停經後以 <b>AI 5 年</b>為主，' +
-      '亦可 AI 與 tamoxifen 交替（詳見下表）。ER 1–10% 之弱陽性者為「± 使用」。');
-    l.push('<b>監測</b>：服用 tamoxifen 且子宮存在者<b>每年婦科評估</b>；服用 AI 者建議<b>定期骨密度檢查</b>（健保 33064B 有給付）。' +
-      '心血管疾病高風險或骨質疏鬆者，AI 應謹慎使用。');
-    return l;
+
+    fill(recId, cls, title, L,
+      path === 'up'
+        ? 'p17（HER2 陽性）、p19／p20（三陰性）、p22（荷爾蒙受體陽性）、p21（BRCA）、p23／p24（內分泌治療）、p47／p48（放射治療）。'
+        : 'p18（HER2 陽性術後）、p20（三陰性術後）、p21（BRCA 與 OlympiA）、p22、p23／p24（內分泌治療）、p49（術前治療後的放射治療）。',
+      '<div class="rec-detail">' + etReference() + chemoReference() + rtReference() +
+      olympiaTable() + nhiEarly() + '</div>');
   }
 
-  function tnbcAdjLines(g, path, usedPembro) {
-    var l = ['<span class="rx-h">TNBC（HR(−)/HER2(−)）</span>　<span class="rx-sub">p19、p20、p21、p32、p33</span>'];
-    if (path === 'up') {
-      if (g === 'g-none') {
-        l.push('<b>本格為 pT1miN0 → 可省略化療（can omit）</b>（p19）。');
-      } else if (g === 'g-ii') {
-        l.push('<b>本格為 pT1aN0–N1mi 或 pT1bN0 → ± 化療</b>（p19）—— 給或不給都在指引範圍內，與病人討論絕對效益後決定。');
+  function adjSystemicUpfront(s, pt, pn, g) {
+    var L = [];
+    if (s === 'her2hr' || s === 'her2') {
+      L.push(H('化療與抗 HER2 治療', 'p17'));
+      if (g === 'none') {
+        L.push('<b>這一格（pT1mi–pT1a 且 pN0）指引寫「±（化療加 trastuzumab）」—— 給或不給都在指引範圍內。</b>');
+        L.push('<b>要做的是把「絕對復發風險本來就很低」講清楚，然後和病人一起決定</b>，而不是預設要給。');
+      } else if (g === 'ii') {
+        L.push('<b>這一格（pT1b 且 pN0，或 pT1a 且 pN1mi）指引寫「可以考慮（consider）化療加 trastuzumab」</b>（p17）。');
+        L.push('傾向給的理由：腫瘤已達 5 mm 以上、組織分化等級高、有淋巴血管侵犯、年紀輕。');
+      } else if (g === 'low') {
+        L.push('<b>≥pT1c 且淋巴結陰性 → 化療加 ' + drug('trastuzumab') + '</b>（p17）。');
+        L.push('腫瘤 &lt; 3 cm 且淋巴結陰性者可用 APT 處方：<b>每週 paclitaxel 80 mg/m² 共 12 週，' +
+          'trastuzumab 從第一天起同時開始、滿 1 年</b>（p35）。');
       } else {
-        l.push('<b>除非風險極低，TNBC 皆有化療指徵</b>（p19）；本格屬需要化療者。處方見下方世代分類表。');
+        L.push('<b>淋巴結陽性 → 化療加 ' + drug('trastuzumab') + '，並建議再加上 ' + drug('pertuzumab') + '</b>（p17）。');
+        if (pn === 'n23') {
+          L.push('<b>這一格是 ≥ 4 顆，同時也達到胸壁放射治療的明確適應症</b>（見下方放射治療段）。');
+        }
       }
-      l.push('<b>直接手術族群的加強選項（p20）</b>：<br>' +
-        '· <b>gBRCA1/2(+)</b> 且 <b>≥pT2 或 ≥pN1</b> → 建議加 <span class="drug">olaparib</span> 1 年。' +
-        '<b>指引寫未給付，但健保已自 2025-06-01 納入</b>（條文 9.85.4，三陰性之直接手術族群條件即為 ≥pN1 或 pN0 但腫瘤 ≥2cm）。<br>' +
-        '· 可考慮<b>延長輔助 <span class="drug">capecitabine</span> 1 年</b>。<br>' +
-        '· <b>把 <span class="drug">pembrolizumab</span> 加進輔助化療，只有在仔細討論後才考慮</b>（有 irAE）。' +
-        '<b>健保僅給付「術前用過 KEYNOTE-522 處方且未達 pCR」者的輔助 pembrolizumab</b>（9.69.2(7)）—— 直接手術者不在給付範圍。');
-      l.push('<b>優先考慮臨床試驗收案</b>（p19）。');
-    } else if (path === 'pcr') {
-      l.push('<b>已達 pCR</b>：預後良好，<b>不需再加 capecitabine 或 olaparib</b>（CREATE-X 與 OlympiA 的 TNBC 條件都要求 non-pCR）。');
-      l.push(usedPembro
-        ? '<b>術前若使用了 <span class="drug">pembrolizumab</span>，術後接續輔助 pembrolizumab 200 mg q21d ×9 個週期</b>（KEYNOTE-522 處方，p32）。'
-        : '術前若使用了 <span class="drug">pembrolizumab</span>，術後應接續輔助 pembrolizumab ×9 個週期（p32）。');
+      if (g !== 'none') {
+        L.push('<b>trastuzumab 沒有特別指定時，總療程應為滿 1 年</b>（p17）。');
+        L.push(EV('健保：trastuzumab 已不限淋巴結陽性（9.18.1）；pertuzumab 於早期乳癌<b>只給付淋巴結陽性者</b>（9.70.1）。' +
+          '院內立場（p21）是<b>不論淋巴結是否陽性</b>，只要腫瘤有一定大小或風險較高就建議用 trastuzumab。詳見下方健保條文。'));
+      }
+      if (s === 'her2hr' && (pn === 'n1' || pn === 'n23')) {
+        L.push('<b>荷爾蒙受體陽性且 HER2 陽性、淋巴結陽性者，可考慮延長輔助 ' + drug('neratinib') + ' 1 年</b>（p18）。');
+        L.push(EV('指引對這裡的「高風險」只舉了兩個例子：<b>淋巴結陽性</b>，或<b>術前治療後未達病理完全緩解</b>。' +
+          '院內共識是 neratinib 可以提早開始 —— 化療結束後即可，與抗 HER2 治療、內分泌治療同時進行。' +
+          '<b>neratinib 目前仍未納入健保給付。</b>'));
+      }
+    } else if (s === 'tnbc') {
+      L.push(H('化療', 'p19'));
+      if (g === 'none') {
+        L.push('<b>pT1mi 且 pN0 → 可以不做化療</b>（p19）。');
+      } else if (g === 'ii') {
+        L.push('<b>這一格（pT1a 且 pN0 或 pN1mi，或 pT1b 且 pN0）指引寫「± 化療」—— 給或不給都在指引範圍內</b>（p19）。');
+        L.push('傾向給的理由：組織分化等級 3、有淋巴血管侵犯、年紀輕、Ki-67 很高。');
+      } else {
+        L.push('<b>要做化療</b>（p19：除了風險非常低的以外都有適應症）。<b>優先考慮臨床試驗收案。</b>');
+      }
+      if (g === 'low' || g === 'high') {
+        L.push(H('直接手術後還能不能再加強？', 'p20、p21'));
+        L.push('<b>帶生殖細胞 BRCA1/2 突變者：≥pT2 或 ≥pN1 時，建議加 ' + drug('olaparib') + ' 1 年</b>（p20）。');
+        L.push('<b>沒有 BRCA 突變者：可以考慮加 ' + drug('capecitabine') + ' 1 年</b>（p20）。');
+        L.push('<b>把 pembrolizumab 加進輔助化療，只有在充分討論後才考慮</b>（p20）。');
+        L.push(EV('這裡的門檻和「術前治療後未達病理完全緩解」不同 —— 直接手術的人沒有病理完全緩解這個資訊，' +
+          '所以改用 pT 與 pN 當門檻。<br>' +
+          '<b>capecitabine 的術後強化健保不給付</b>（條文 9.17 的乳癌適應症只到局部晚期或轉移性）。' +
+          'olaparib 於 2025-06-01 起給付，條件見下方 OlympiA 表。'));
+      }
     } else {
-      l.push('<b>未達 pCR（p20）—— 這是 TNBC 最需要加強治療的族群：</b>');
-      l.push('· <b>延長輔助 <span class="drug">capecitabine</span> 6–12 個月</b>（依 CREATE-X；p33 之劑量為 1000–1250 mg/m² BID D1–14 q3W ×6–8 週期）。');
-      l.push('· <b>gBRCA1/2(+) 者建議 <span class="drug">olaparib</span> 1 年</b>（OlympiA）。' +
-        '<b>健保已自 2025-06-01 給付</b>（9.85.4，三陰性之術前化療後 non-pCR 即符合）；' +
-        '⚠ <b>輔助情境下 olaparib 與 pembrolizumab 只能擇一給付</b>。');
-      l.push('· <b>olaparib 與 capecitabine 不建議併用</b>（p20）。');
-      l.push('· 先前用過術前 <span class="drug">pembrolizumab</span> 者，<b>可用 pembrolizumab + capecitabine</b>；' +
-        '若同時是 gBRCA1/2(+)，<b>可用 pembrolizumab + olaparib</b>（p20）。');
+      L.push(H('要不要化療？', 'p22'));
+      if (g === 'none') {
+        L.push('<b>這一格（≤pT1b 且淋巴結陰性）用內分泌治療就夠了。</b>');
+      } else if (g === 'ii') {
+        L.push('<b>≤pT2 且淋巴結陰性 → 內分泌治療，或化療加內分泌治療。要不要加化療，取決於復發風險評估</b>（p22）。');
+        L.push('<b>風險評估的三種方法（擇一）</b>：' + SUB([
+          '<b>多基因檢測</b> —— Oncotype DX（有前瞻性 TAILORx 試驗支持）；MammaPrint、PAM50、EndoPredict、BCI 均為預後型',
+          '<b>IHC4 分數</b>（用 ER、PR、HER2、Ki-67 四個免疫組織化學指標計算）',
+          '<b>臨床與病理參數</b> —— 腫瘤大小、組織分化等級、年齡、Ki-67'
+        ]));
+        L.push(EV('<b>多基因檢測全部自費。</b>健保 2024-05-01 起的次世代定序給付，乳癌那一格只涵蓋三陰性乳癌的 BRCA 檢測。'));
+      } else if (g === 'low') {
+        if (pn === 'n0') {
+          L.push('<b>≥pT3 且淋巴結陰性 → 傾向化療加內分泌治療</b>（p22）。');
+        } else {
+          L.push('<b>pT1–2 且 pN1mi 至 pN1 → 通常化療加內分泌治療，除非多基因檢測顯示復發風險低</b>（p22）。');
+        }
+      } else {
+        L.push('<b>任何 T 但 pN2–3（≥ 4 顆）→ 化療加內分泌治療</b>（p22）。');
+      }
+      if (pn === 'n1' || pn === 'n23') {
+        L.push(H('內分泌治療要不要加強？', 'p22'));
+        L.push('<b>高風險者可加 ' + drug('abemaciclib') + ' 2 年，或 ' + drug('TS-1') + ' 1 年</b>（p22）。');
+        L.push('<b>健保對 abemaciclib 的「高風險」定義很具體 —— 淋巴結陽性且符合下列其一</b>（條文 9.107）：' + SUB([
+          '<b>腋下淋巴結 ≥ 4 顆</b>',
+          '<b>腋下淋巴結 1–3 顆，而且腫瘤 ≥ 5 cm</b>',
+          '<b>腋下淋巴結 1–3 顆，而且組織分化等級 3</b>'
+        ]));
+        L.push(EV('另外還要符合：成年<b>女性</b>、ER 或 PR &gt; 30%、HER2 陰性、完成標準輔助化療與放療、' +
+          '先前內分泌治療不超過 12 週、<b>術後 16 個月內開始</b>、最長 2 年。<br>' +
+          '<b>台灣不看 Ki-67</b>（與 monarchE 試驗不同）；<b>男性不在條文內</b>；' +
+          '<b>用了之後進展者，日後不得再申請任何 CDK4/6 抑制劑。</b><br>' +
+          '<b>TS-1 未給付</b>（條文 9.46 完全沒有乳癌）；輔助 ribociclib 也未給付。'));
+      }
+      L.push(H('帶 BRCA 突變的話', 'p21'));
+      L.push('<b>荷爾蒙受體陽性、HER2 陰性、帶生殖細胞 BRCA1/2 突變，而且淋巴結 ≥ 4 顆 → 可加 ' +
+        drug('olaparib') + ' 1 年</b>。條件見下方 OlympiA 表。');
     }
-    return l;
+    return L;
   }
 
-  function renderAdjRec(isNoop, showPtn, showResp) {
-    var s = bcSt;
-    if (s.scope !== 'ebc') return;
-    var R = 'bc_adj_rec', F = 'bc_adj_fu';
+  function adjSystemicNeo(s) {
+    var L = [], pcr = (S.ypath === 'pcr'), npos = (S.ypath === 'npos');
 
-    if (isNoop) {
-      var nl = ['<span class="rx-h">不適合手術／局部無法切除</span>　<span class="rx-sub">p11、p22、p37、p43</span>'];
-      if (s.sub === 'erpos') {
-        nl.push('<b>HR(+) 者以「原發內分泌治療」為主</b>：停經後用 AI、停經前用 tamoxifen ±卵巢功能抑制（p23、p24），' +
-          '定期評估反應，體能改善且腫瘤降期後<b>重新評估手術可行性</b>。');
-      } else if (s.sub === 'her2hr' || s.sub === 'her2') {
-        nl.push('<b>HER2(+) 者：抗 HER2 治療必須與化療併用</b>（p37）；體能不佳者可選毒性較低的組合（如每週 paclitaxel + trastuzumab）。');
+    if (s === 'her2hr' || s === 'her2') {
+      L.push(H('抗 HER2 治療', 'p18'));
+      if (pcr) {
+        L.push('<b>達到病理完全緩解 → 把 trastuzumab（±pertuzumab）打滿 1 年就好，不用換藥。</b>');
+        L.push(EV('健保：術前用過 pertuzumab 且達病理完全緩解者可以續用（9.70.1）；' +
+          'trastuzumab 與 pertuzumab、Phesgo 合併計算上限 18 個週期。'));
       } else {
-        nl.push('<b>TNBC 無內分泌或抗 HER2 選項</b>，以化療為主；體能不佳者採循序單一藥物、劑量依耐受度調整。');
+        L.push('<b>沒有達到病理完全緩解 → 換成 ' + drug('T-DM1') + '</b>（依 KATHERINE 試驗，p18）。' +
+          '劑量 3.6 mg/kg 每 3 週，共 14 個週期（p35）。');
+        L.push('<b>不論換不換，抗 HER2 治療至少要把 trastuzumab 補滿 1 年</b>（p18）。');
+        L.push('<b>若術前的處方沒有用過 anthracycline，術後可以考慮再補上</b>（p18）。');
+        L.push(EV('健保 T-DM1（9.87.1，2024-08-01 起）條件比試驗窄：需已接受 ≥ 6 週期化療（taxane ≥ 3 週期）' +
+          '與術前 trastuzumab ≥ 3 週期，<b>且腋下淋巴結有轉移，或淋巴結陰性但 ER 陰性且腫瘤 &gt; 2 cm</b>；' +
+          '上限 14 週期，須術後 12 週內申請。KATHERINE 試驗本身收所有殘存病灶者。'));
       }
-      nl.push('局部症狀（潰瘍、出血、疼痛）→ 考慮<b>緩解性放射治療</b>。');
-      nl.push('<b>每次回診評估反應</b>（p12）；轉為可切除且體能允許 → 回步驟 4 改選「術前輔助治療 → 再手術」。');
-      nl.push('持續進展或已出現遠處轉移 → 回步驟 1 選「轉移性乳癌」。');
-      nl.push('末期病人：<b>安寧緩和照護，照會安寧共同照護團隊</b>（p37）。');
-      result(R, F, 'rec-nonop', '不適合手術或局部無法切除 → 全身治療 ± 放療 → 再評估', nl,
-        'p11（局部晚期之術前治療）、p37（晚期治療總則）、p12（治療中評估反應）。' +
-        '「無法手術者的逐條處方」台大乳癌指引未單獨規範，此處依同亞型之全身治療原則整理。',
-        'inop', '<div class="rec-detail">' + chemoGenDetails() + htDetails() + nhiPanelEBC() + '</div>');
-      return;
-    }
-
-    if (!showPtn && !showResp) { idleRec(R, F, '請完成上方步驟'); return; }
-
-    var hrPos = (s.sub === 'her2hr' || s.sub === 'erpos');
-    var lines = [], title, cls = 'rec-elective', g = null, path;
-
-    if (showPtn) {
-      if (!s.ptn) { idleRec(R, F, '請於步驟 8 點選 pT×pN 格子'); return; }
-      var row = s.ptn.split('_')[0], col = s.ptn.split('_').slice(1).join('_');
-      var ci = ['n0', 'n1mi', 'n1', 'n23'].indexOf(col);
-      g = PTN_GROUP[s.sub][row][ci];
-      path = 'up';
-      var rowLab = PTN_ROWS.filter(function (r) { return r[0] === row; })[0][1];
-      var colLab = PTN_COLS[ci][1];
-      title = rowLab + ' ' + colLab + '（' + SUB_LABEL[s.sub] + '）→ 輔助全身治療';
-      cls = (g === 'g-none') ? 'rec-elective' : (g === 'g-high' ? 'rec-urgent' : 'rec-nonop');
+      if (s === 'her2hr' && !pcr) {
+        L.push('<b>荷爾蒙受體陽性且 HER2 陽性的高風險者，可考慮延長輔助 ' + drug('neratinib') + ' 1 年</b>（p18）。');
+        L.push(EV('指引對這裡的「高風險」只舉兩個例子：<b>淋巴結陽性</b>或<b>未達病理完全緩解</b>，本例符合。' +
+          '院內共識是可以提早開始 —— 化療結束後即可，與抗 HER2 治療、內分泌治療同時進行。' +
+          '<b>目前仍未納入健保給付。</b>'));
+      }
+    } else if (s === 'tnbc') {
+      L.push(H('術後還要不要加強？', 'p20'));
+      if (pcr) {
+        L.push('<b>達到病理完全緩解 → 沒有殘存病灶，就沒有「殘存病灶加強」的適應症。</b>' +
+          '把原訂療程走完（若術前用過 pembrolizumab，術後單用 pembrolizumab 補滿）。');
+        L.push(EV('健保 pembrolizumab（9.69.2(7)）的<b>輔助期只給付未達病理完全緩解者</b>；' +
+          '達到病理完全緩解者術後那 9 個週期屬自費。這是台灣與 KEYNOTE-522 試驗設計最大的落差。'));
+      } else {
+        L.push('<b>建議加 ' + drug('capecitabine') + ' 6 至 12 個月</b>（依 CREATE-X 試驗，p20）。' +
+          '劑量 1000–1250 mg/m² 每日兩次 D1–14，每 21 天一次，共 6–8 個週期（p33）。');
+        L.push('<b>帶生殖細胞 BRCA1/2 突變者：建議加 ' + drug('olaparib') + ' 1 年</b>（p20）。');
+        L.push('<b>olaparib 和 capecitabine 不建議併用</b>（p20）。');
+        L.push('<b>術前用過 pembrolizumab 的話：可以 pembrolizumab 加 capecitabine；' +
+          '若同時帶 BRCA 突變，可以 pembrolizumab 加 olaparib</b>（p20）。');
+        L.push(EV('健保上有一個硬限制：<b>輔助情境的 olaparib 與 pembrolizumab 只能擇一給付</b>；' +
+          'capecitabine 的術後強化<b>完全不給付</b>。所以指引列的四種組合裡，' +
+          '真正能全額給付的只有「單用 pembrolizumab」或「單用 olaparib」其中一種。'));
+      }
     } else {
-      if (!s.resp) { idleRec(R, F, '請於步驟 8 選擇術後病理反應'); return; }
-      path = (s.resp === 'pcr') ? 'pcr' : 'nonpcr';
-      title = (s.resp === 'pcr' ? '病理完全緩解 pCR' : '殘存病灶 non-pCR') +
-        '（' + SUB_LABEL[s.sub] + '）→ 術後輔助治療';
-      cls = (s.resp === 'pcr') ? 'rec-elective' : 'rec-urgent';
+      L.push(H('術後還要不要加強？', 'p20、p21、p22'));
+      if (pcr) {
+        L.push('<b>達到病理完全緩解 → 完成原訂化療療程，接內分泌治療。</b>');
+      } else {
+        L.push('<b>完成原訂化療療程，接內分泌治療</b>（p22）。');
+        L.push('<b>帶生殖細胞 BRCA1/2 突變且未達病理完全緩解者，可考慮加 ' + drug('olaparib') + ' 1 年</b>' +
+          ' —— 但這一型指引<b>多要求一個門檻：CPS+EG 分數 ≥ 3</b>（p21）。算法見下方收合表。');
+        L.push(EV('指引 p21 對荷爾蒙受體陽性者的原話是「may set higher bar」（門檻可以訂高一點）。' +
+          '不過<b>健保 9.85.4 並沒有採用 CPS+EG 那條路</b> —— 健保只認「未達病理完全緩解」' +
+          '或「直接手術後淋巴結 ≥ 4 顆」。所以會出現「試驗要求算分數、健保不要求」的落差。'));
+      }
+      if (npos) {
+        L.push('<b>淋巴結陽性者，內分泌治療可考慮加上 ' + drug('abemaciclib') + ' 2 年</b>（p22）。');
+        L.push('<b>健保的「高風險」定義 —— 淋巴結陽性且符合下列其一</b>（條文 9.107）：' + SUB([
+          '<b>腋下淋巴結 ≥ 4 顆</b>',
+          '<b>腋下淋巴結 1–3 顆，而且腫瘤 ≥ 5 cm</b>',
+          '<b>腋下淋巴結 1–3 顆，而且組織分化等級 3</b>'
+        ]));
+        L.push(EV('須<b>術後 16 個月內開始</b>、先前內分泌治療不超過 12 週、完成標準輔助化療與放療後才申請。' +
+          '<b>用了之後進展者，日後不得再申請任何 CDK4/6 抑制劑。</b>'));
+      }
+    }
+    return L;
+  }
+
+  /* 放射治療 —— 由已知的 state 算出來，不另外開步驟 */
+  function rtLines(path) {
+    var L = [H('放射治療', path === 'na' ? 'p49' : 'p47、p48')];
+
+    if (path === 'na') {
+      var pcr = (S.ypath === 'pcr'), npos = (S.ypath === 'npos'), c = ctnParts();
+      if (npos) {
+        L.push('<b>術前治療後淋巴結仍陽性 → 要做</b>全乳切除後胸壁放射治療，或乳房放射治療加區域淋巴結照射（p49）。');
+      } else if (!pcr) {
+        L.push('<b>沒有達到病理完全緩解 → 依「原本的臨床分期」判斷有沒有適應症</b>（p49）。本例原本是 ' + ctnName() + '。');
+        if ((c.t === 't1c' || c.t === 't2') && c.n === 'n1' && (S.sub === 'her2hr' || S.sub === 'her2')) {
+          L.push('<b>cT1–2N1 的 HER2 陽性且未達病理完全緩解 → 指引明列為「應該要做」</b>（p49）。');
+        } else if ((c.t === 't1c' || c.t === 't2') && c.n === 'n1') {
+          L.push('<b>cT1–2N1 的荷爾蒙受體陽性或三陰性、只剩乳房內殘存病灶 → 屬灰色地帶，請放射腫瘤科評估</b>（p49）。');
+        } else if (c.t === 't3' && c.n === 'n0') {
+          L.push('<b>cT3N0 但術後是 ypT1–2N0 → 屬灰色地帶，請放射腫瘤科評估</b>（p49）。');
+        }
+      } else {
+        L.push('<b>達到病理完全緩解，可以考慮省略</b> —— 需符合下列其中一項（p49）：' + SUB([
+          '荷爾蒙受體陽性',
+          'HER2 陽性且<b>原本</b>是 cT 任何 N0–1',
+          '三陰性且<b>原本</b>是 cT1–2N0'
+        ]));
+        var can = (S.sub === 'erpos' || S.sub === 'her2hr') ||
+          (S.sub === 'her2' && (c.n === 'n0' || c.n === 'n1')) ||
+          (S.sub === 'tnbc' && (c.t === 't1ab' || c.t === 't1c' || c.t === 't2') && c.n === 'n0');
+        L.push(can
+          ? '<b>本例符合上面其中一項 → 可以和放射腫瘤科討論省略。</b>'
+          : '<b>本例不符合上面任何一項 → 仍應依原本的臨床分期做放療。</b>');
+      }
+      if (S.nresp === 'op_bct') {
+        L.push('<b>不過做了乳房保留手術就一定要做全乳放射治療</b>；上面談的省略是指區域淋巴結照射與胸壁照射的部分。');
+      }
+      return L;
     }
 
-    if (s.sub === 'her2hr' || s.sub === 'her2') {
-      lines = her2AdjLines(g, hrPos, path);
-    } else if (s.sub === 'erpos') {
-      lines = erAdjLines(g, path);
+    var pp = S.ptn.split('_'), pt = pp[0], pn = pp[1];
+    if (S.surg === 'bct') {
+      L.push('<b>做了乳房保留手術 → 一定要做全乳放射治療</b>（p47）。');
+      L.push('<b>唯一可以討論省略的族群：年齡 &gt; 70、臨床 cN0、切緣乾淨、荷爾蒙受體陽性且正在服用 tamoxifen 或' +
+        '芳香環酶抑制劑</b> —— 絕對獲益很小，<b>但放療仍然改善局部控制</b>（p47）。');
+      if (pn === 'n23') L.push('<b>淋巴結 ≥ 4 顆者，還要加做區域淋巴結照射。</b>');
     } else {
-      lines = tnbcAdjLines(g, path, true);
+      var need = [];
+      if (pn === 'n23') need.push('<b>腋下淋巴結陽性 ≥ 4 顆</b>');
+      if (pt === 't3' && pn !== 'n0') need.push('<b>T3 且腋下淋巴結陽性</b>');
+      if (pt === 't4') need.push('<b>T4（侵犯胸壁或皮膚）</b>');
+      if (need.length) {
+        L.push('<b>本例符合胸壁放射治療的明確適應症：</b>' + need.join('、') + '（p47）。');
+      } else if (pn === 'n1') {
+        L.push('<b>腋下淋巴結陽性 1–3 顆 → 依風險因子個案判斷</b>（p47）。');
+        L.push(EV('<b>指引沒有列出這裡的「風險因子」內容。</b>實務上會納入考慮的包括年齡輕、組織分化等級 3、' +
+          '有淋巴血管侵犯、切緣接近、荷爾蒙受體陰性、取下的淋巴結數目偏少。' +
+          '這一段屬指引未定義的部分，應由放射腫瘤科個案評估。'));
+      } else {
+        L.push('<b>本例不符合胸壁放射治療的明確適應症</b>，除非另有下列情況（p47）：<b>切緣陽性</b>、' +
+          '<b>侵犯皮膚</b>、<b>侵犯胸壁</b>（只碰到胸肌筋膜不算）。');
+      }
+      if ((pn === 'n1' || pn === 'n1mi') &&
+        (pt === 't1mi' || pt === 't1a' || pt === 't1b' || pt === 't1c' || pt === 't2')) {
+        L.push('<b>若是全乳切除加前哨淋巴結切片、前哨 1–2 顆陽性而沒做完整廓清，處理方式在 p48</b>：' + SUB([
+          '<b>原則上應完成腋下淋巴結廓清</b>',
+          '取下的淋巴結不足 10 顆，且是<b>三陰性或有淋巴血管侵犯</b>、陽性仍為 1–2 顆 → 建議完成廓清',
+          '非三陰性且無淋巴血管侵犯 → 仍建議廓清，除非外科判斷困難、或病人充分討論後仍拒絕',
+          '不做廓清時，依 AMAROS 試驗<b>改做區域放射治療（腋下加鎖骨上）± 胸壁</b>'
+        ]));
+      }
+    }
+    L.push('<b>需要化療時，放療排在化療之後</b>（p10）。');
+    return L;
+  }
+
+  /* ---------- E. 轉移性 ---------- */
+  function renderMbc() {
+    show('bc_b_mbc', true);
+    show('bc_n_msub', true);
+    if (!S.sub) return;
+
+    var needRisk = (S.sub === 'erpos' || S.sub === 'her2hr');
+    if (needRisk) {
+      show('bc_n_mrisk', true);
+      if (!S.mrisk) return;
+    }
+    show('bc_n_mline', true);
+    if (!S.mline) return;
+
+    var needBio = (S.sub === 'tnbc' || S.sub === 'erpos');
+    if (needBio) {
+      show('bc_n_mbio', true);
+      if (!S.mbio) return;
     }
 
-    // 放射治療
-    lines.push('<span class="rx-h">放射治療</span>　<span class="rx-sub">p47、p48、p49</span>');
-    var rtCtx = (s.strat === 'nact') ? 'nact' : (s.surg === 'sg_sm' ? 'sm' : 'bct');
-    lines = lines.concat(rtLines(rtCtx));
-    if (s.strat === 'nact') lines = lines.concat(rtLines(s.surg === 'sg_sm' ? 'sm' : 'bct'));
+    var L = [], title, cls = 'rec-elective';
+    var lineTxt = { l1: '第一線', l2: '第二線', l3: '第三線以後' }[S.mline];
 
-    // 化療起始時間
-    lines.push('<b>化療起始時間（p28）</b>：除非傷口癒合不良或其他併發症，一般希望<b>術後六至八週內</b>開始化療。');
+    L.push(H('先講三個總原則', 'p37、p42'));
+    L.push('① <b>荷爾蒙受體陽性者，先用內分泌治療</b> —— 除非有內臟危象或進展很快。');
+    L.push('② <b>化療以「單一藥物依序使用」優於「多藥合併」。</b>');
+    L.push('③ <b>HER2 陽性者，抗 HER2 藥物要和化療一起用。</b>');
+    L.push(EV('第 ② 點的理由是轉移性乳癌治不好，目標是延長控制時間、同時維持生活品質；' +
+      '合併化療的反應率高一點，但毒性明顯增加，整體存活沒有比較好。<br>' +
+      '指引 p42 講得更直接：<b>沒有證據顯示哪一個處方比另一個好，也沒有明確的第一線處方，' +
+      '病人的偏好是選擇的關鍵因素之一。</b>'));
 
-    var extra = '<div class="rec-detail">' + chemoGenDetails();
-    if (hrPos) extra += htDetails();
-    if (s.sub === 'tnbc') extra += tnbcOptionDetails();
-    if (s.sub !== 'her2hr' && s.sub !== 'her2') extra += olympiaDetails();
-    extra += favHistoDetails() + nhiPanelEBC() + '</div>';
+    if (S.sub === 'erpos') { L = L.concat(mbcErLines()); title = '荷爾蒙受體陽性、HER2 陰性 · ' + lineTxt; }
+    else if (S.sub === 'her2hr' || S.sub === 'her2') { L = L.concat(mbcHer2Lines()); title = 'HER2 陽性 · ' + lineTxt; }
+    else { L = L.concat(mbcTnbcLines()); title = '三陰性 · ' + lineTxt; }
 
-    result(R, F, cls, title, lines,
-      'p17（HER2(+) 依病理分期）、p18（HER2(+) 之 NACT 與 non-pCR）、p19／p20（TNBC）、p21（OlympiA 與 TNBC 其他選項）、' +
-      'p22（ER(+)HER2(−)）、p23／p24（內分泌治療原則）、p28–p35（化療與抗 HER2 處方）、p47／p49（放療）。',
-      'curative', extra);
+    if (S.mrisk === 'crisis') cls = 'rec-urgent';
+
+    L.push(H('不論哪一型都要處理的三件事', 'p37、p43'));
+    L.push('<b>骨轉移</b>：評估骨骼保護用藥。<b>健保只給付蝕骨性骨轉移</b>' +
+      '（zoledronate 條文 5.5.3.2.1、denosumab 5.5.4 —— 在第 5 節不在第 9 節，所以常找不到）。');
+    L.push('<b>劑量可以調整</b>：轉移期治不好，臨床上劑量會依病人的最佳利益調整，<b>不強求建議劑量</b>（p43）。');
+    L.push('<b>末期病人：安寧緩和照護，照會安寧共同照護團隊</b>（p37）。');
+
+    fill('bc_r_mbc', cls, title, L,
+      'p37（總原則）、p38（內分泌治療決策圖）、p39（抗 HER2 藥物）、p40（三陰性免疫治療）、p41（PARP 抑制劑）、p42–p45（化療處方）。',
+      '<div class="rec-detail">' + mbcChemoTable() + nhiMeta() + '</div>');
+    fu('bc_f_mbc', 'meta');
+  }
+
+  function mbcErLines() {
+    var L = [], r = S.mrisk, l = S.mline, bio = S.mbio;
+
+    L.push(H('這一線要用什麼', 'p38'));
+    if (r === 'crisis') {
+      L.push('<b>有內臟危象或進展很快 → 先用化療，不用內分泌治療。</b>');
+      L.push(EV('這是指引唯一寫明可以跳過內分泌治療的情況（p37）。<b>內臟危象指器官功能已經受損、' +
+        '需要短時間內見效</b>，不是「有內臟轉移」就算。控制住之後，仍可以回頭換成內分泌治療加 CDK4/6 抑制劑作為維持。'));
+      L.push('<b>健保的 CDK4/6 抑制劑條文明文排除內臟危象</b>（9.72），所以這一格本來也申請不到。');
+    } else if (l === 'l1') {
+      if (r === 'low') {
+        L.push('<b>低風險 → 單用內分泌治療即可</b>（也可以加 CDK4/6 抑制劑）。');
+        L.push('停經後用芳香環酶抑制劑；停經前用卵巢功能抑制加芳香環酶抑制劑或 tamoxifen。');
+      } else if (r === 'mid') {
+        L.push('<b>中風險 → 內分泌治療加 CDK4/6 抑制劑</b>（單用內分泌治療、或化療也在選項內）。');
+      } else {
+        L.push('<b>高風險 → 化療，或內分泌治療加 CDK4/6 抑制劑</b>（兩者都在指引的選項內）。');
+      }
+      L.push('<b>健保給付的 CDK4/6 抑制劑只有 ' + drug('ribociclib') + ' 與 ' + drug('palbociclib') +
+        '</b>（條文 9.72）—— <b>abemaciclib 在轉移性不給付</b>。');
+      L.push('<b>申請條件</b>：' + SUB([
+        'ER 或 PR &gt; 30%、HER2 陰性',
+        '<b>沒有內臟危象、沒有腦轉移</b>',
+        '<b>不可以只有骨轉移</b>',
+        '停經後（9.72.1）：年齡 ≥ 55、或曾雙側卵巢切除、或濾泡刺激素與雌二醇達停經後範圍',
+        '停經前、圍停經期與男性（9.72.2）：<b>須併用芳香環酶抑制劑加 GnRH 類似物</b>',
+        '<b>終生上限 24 個月</b>，兩種藥只能擇一'
+      ]));
+      L.push(EV('「不可以只有骨轉移」這條最容易踩到 —— 只有骨轉移的病人反而申請不到，' +
+        '雖然臨床上這是預後最好、最適合長期內分泌治療的一群。'));
+    } else {
+      L.push('<b>先問一個問題：之前用過什麼？後線的選擇幾乎完全由前面用過什麼決定。</b>');
+      L.push('<b>用過 CDK4/6 抑制劑後進展，而且驗到基因變異的話</b>：' + SUB([
+        '<b>PIK3CA 突變</b> → ' + drug('alpelisib') + ' 加 fulvestrant（健保 9.129，2026-01-01 起，限停經後）',
+        '<b>PIK3CA、AKT1 或 PTEN 任一變異</b> → ' + drug('capivasertib') + ' 加 fulvestrant（健保 9.135，2026-06-01 起，限停經後）',
+        '⚠ <b>這兩條擇一給付，不能都用</b>'
+      ]));
+      L.push('<b>非固醇類芳香環酶抑制劑失敗後</b>：' + drug('everolimus') +
+        ' 加 exemestane（健保 9.36.1 第 4 項；限無內臟危象、未曾用過 exemestane）。');
+      L.push('<b>⚠ 順序陷阱：用過 everolimus 失敗者，之後不得再申請 CDK4/6 抑制劑</b>（9.72.6）。' +
+        '所以 <b>CDK4/6 抑制劑要排在 everolimus 前面</b>。');
+      if (bio === 'brca') {
+        L.push('<b>帶生殖細胞 BRCA1/2 突變 → 可以用 PARP 抑制劑，但要自費。</b>');
+        L.push(EV('健保 9.85.2 的 PARP 抑制劑<b>只給付三陰性</b>；' +
+          '<b>荷爾蒙受體陽性的 BRCA 突變轉移性乳癌不給付</b>（指引 p41 已寫明這一點，至今未變）。'));
+      }
+      L.push('<b>用過 CDK4/6 抑制劑 ≤ 12 個月、有內臟轉移，又已接受 ≥ 2 線轉移性化療者 → ' +
+        drug('sacituzumab govitecan') + '</b>（健保 9.106，2025-10-01 起新增此適應症）。');
+      L.push('<b>' + drug('elacestrant') + ' 在台灣未給付</b>（健保藥品清單查無此成分）。');
+      L.push('<b>內分泌治療的選項走完了就換化療</b> —— 處方見下方收合表。');
+    }
+    return L;
+  }
+
+  function mbcHer2Lines() {
+    var L = [], l = S.mline;
+    L.push(H('這一線要用什麼', 'p39、p44'));
+    if (l === 'l1') {
+      L.push('<b>第一線首選：' + drug('trastuzumab') + ' ＋ ' + drug('pertuzumab') + ' ＋ taxane</b>（p44）。');
+      L.push(EV('劑量：trastuzumab 6 mg/kg（首劑 8 mg/kg）＋ pertuzumab 420 mg（首劑 840 mg），每 3 週；' +
+        '搭配 docetaxel 75 mg/m² 每 3 週，或 paclitaxel 80 mg/m²（D1、D8、D15）。<br>' +
+        '健保：pertuzumab 與 Phesgo 於轉移性<b>限第一線</b>，上限 18 個月（9.70.2／9.112.2）。'));
+    } else if (l === 'l2') {
+      L.push('<b>第二線：' + drug('T-DM1') + ' 或 ' + drug('T-DXd') + '</b>（p39、p44）。');
+      L.push('<b>⚠ 這裡有一條會影響後面所有安排的健保限制：T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換；' +
+        'T-DXd 與 sacituzumab govitecan 也互斥。</b>排順序前先算清楚。');
+      L.push(EV('劑量：T-DM1 3.6 mg/kg 每 3 週（健保 9.87.2，上限 10 個月／13 週期）；' +
+        'T-DXd 5.4 mg/kg 每 3 週（健保 9.115，HER2 陽性第二線上限 18 週期）。<br>' +
+        '指引 p39 寫 T-DXd「未給付」—— <b>這一項已於 2025-02-01 反轉。</b>'));
+    } else {
+      L.push('<b>第三線以後可用的：</b>' + SUB([
+        '<b>' + drug('T-DXd') + '</b> —— 在任何含 trastuzumab 的治療失敗後皆可（p39）',
+        '<b>' + drug('lapatinib') + ' 加 ' + drug('capecitabine') + '</b> —— <b>健保限腦轉移</b>，且已用過 anthracycline、taxane 與 trastuzumab 後進展（9.47）',
+        '<b>' + drug('neratinib') + ' 加 capecitabine</b> —— <b>未給付</b>（p39）',
+        '<b>' + drug('tucatinib') + '</b> —— <b>未給付</b>',
+        '<b>trastuzumab 繼續用下去、換化療夥伴</b> —— 這是實務上最常走的一條'
+      ]));
+      L.push(EV('lapatinib 加 capecitabine 劑量：lapatinib 1250 mg 每日一次 ＋ capecitabine 1250 mg/m² ' +
+        '每日兩次 D1–14，每 3 週（最大劑量，p44）。'));
+    }
+    if (S.sub === 'her2hr') {
+      L.push(H('荷爾蒙受體也陽性的話', 'p37'));
+      L.push('<b>抗 HER2 治療仍然是主軸</b>；內分泌治療可以在化療結束後接上去作為維持。');
+      L.push(EV('健保的 CDK4/6 抑制劑條文（9.72）<b>要求 HER2 陰性</b>，所以這一型用不到 CDK4/6 抑制劑的給付。'));
+    }
+    L.push(H('腦轉移', 'p39'));
+    L.push('<b>HER2 陽性的腦轉移比例高，有神經症狀時要積極影像評估。</b>' +
+      '健保的 lapatinib 條文正是為腦轉移而設（9.47）。');
+    return L;
+  }
+
+  function mbcTnbcLines() {
+    var L = [], l = S.mline, bio = S.mbio;
+    L.push(H('這一線要用什麼', 'p40、p41、p44'));
+    if (l === 'l1') {
+      L.push('<b>第一線：化療；適合的人再加上免疫治療</b>（p40）。');
+      L.push('<b>兩個試驗的伴隨式診斷不一樣，不可以混用</b>：' + SUB([
+        '<b>IMpassion130</b> —— 用 <b>Ventana SP142</b> 判讀 PD-L1 免疫細胞陽性；化療夥伴是 nab-paclitaxel；藥是 atezolizumab',
+        '<b>KEYNOTE-355</b> —— 用 <b>Dako 22C3</b> 判讀 <b>CPS ≥ 10</b>；化療夥伴是 gemcitabine 加白金、nab-paclitaxel 或 paclitaxel；藥是 pembrolizumab'
+      ]));
+      L.push('<b>院內立場：認同第一線加免疫治療的概念、依各自建議的伴隨式診斷選病人，但化療夥伴可以放寬</b>（p40）。');
+      L.push('<b>⚠ 但轉移性三陰性的免疫治療在台灣完全不給付</b> —— 健保 9.69 的乳癌只有「早期三陰性乳癌」一格，' +
+        '<b>這兩個處方目前都是自費</b>。');
+      if (bio === 'brca') {
+        L.push(H('帶 BRCA 突變的話', 'p41'));
+        L.push('<b>' + drug('olaparib') + ' 或 ' + drug('talazoparib') + ' 有給付</b>（健保 9.85.2）—— ' +
+          '限 ER、PR、HER2 皆陰性且<b>生殖細胞</b> BRCA1/2 突變。兩藥擇一。');
+      }
+      if (bio === 'pdl1') {
+        L.push(EV('PD-L1 CPS ≥ 10（Dako 22C3）符合 KEYNOTE-355 的族群定義，但如上所述<b>台灣不給付</b>，' +
+          '要用就是自費。開始前務必把費用講清楚。'));
+      }
+    } else if (l === 'l2') {
+      L.push('<b>換另一個化療處方</b>（單一藥物依序使用；處方見下方收合表）。');
+      if (bio === 'brca') {
+        L.push('<b>還沒用過 PARP 抑制劑的話，這一線可以用 ' + drug('olaparib') + ' 或 ' +
+          drug('talazoparib') + '，健保有給付</b>（9.85.2，限三陰性加生殖細胞 BRCA 突變）。');
+      }
+    } else {
+      L.push('<b>第三線以後：' + drug('sacituzumab govitecan') + '</b> —— 10 mg/kg，D1、D8，每 3 週（p44）。');
+      L.push('<b>健保條件（9.106）</b>：' + SUB([
+        '已失敗 <b>≥ 2 線</b>全身治療，其中 <b>≥ 1 線</b>用於晚期',
+        '體能狀態 ECOG ≤ 1',
+        '曾使用過 taxane',
+        '<b>未曾使用過 T-DXd</b>（兩者互斥）'
+      ]));
+      L.push('<b>HER2 低表現者（ER 與 PR 皆陰性，且 HER2 免疫組織化學 1+，或 2+ 但 ISH 陰性）可以用 ' +
+        drug('T-DXd') + '</b>（健保 9.115）。');
+      L.push(EV('三陰性報告上寫 HER2 免疫組織化學 1+ 或 2+/ISH 陰性的人，其實有一條額外的路 —— ' +
+        '這是 2023 年指引沒有、2025-02-01 才開的給付。翻病理報告時要特別看這一欄。'));
+    }
+    L.push(EV('指引 p45 列出<b>不建議當第一線</b>的三個藥：mitoxantrone、mitomycin C、ixabepilone —— ' +
+      '應保留給已經治療過很多線、沒有其他選擇的病人。'));
+    return L;
+  }
+
+  /* ---------- F. 局部區域復發 ---------- */
+  function renderRecur() {
+    show('bc_b_recur', true);
+    show('bc_n_rsite', true);
+    if (!S.rsite) return;
+
+    var L = [], title;
+
+    if (S.rsite === 'local') {
+      show('bc_n_rprev', true);
+      if (!S.rprev) return;
+      title = '只有局部復發（乳房內或胸壁）';
+      L.push(H('局部處置 —— 完全取決於當初做過什麼', 'p36'));
+      if (S.rprev === 'bct_rt') {
+        L.push('<b>當初是乳房保留手術加放射治療 → 這次做全乳切除，並做淋巴結分期</b>' +
+          '（如果第 I／II 級腋下廓清之前沒有做過）。');
+        L.push(EV('乳房不能再照一次放療，所以局部控制只能靠手術。淋巴結分期要不要做，取決於當年有沒有做過完整廓清。'));
+      } else if (S.rprev === 'bct_lnd_rt') {
+        L.push('<b>當初是乳房保留手術加腋下淋巴結手術加放射治療 → 能開就開；不能開就先做全身治療，之後再評估手術</b>（p36）。');
+      } else {
+        L.push('<b>當初沒有做過放射治療 → 能開就開，並加做胸壁、鎖骨上與鎖骨下淋巴結的放射治療</b>（p36）。');
+        L.push(EV('這一格是唯一還有放療空間的 —— 當年沒照過，這次可以照。'));
+      }
+    } else {
+      title = { axilla: '腋下淋巴結復發', scf: '鎖骨上淋巴結復發', imn: '內乳淋巴結復發' }[S.rsite];
+      L.push(H('局部處置', 'p36'));
+      if (S.rsite === 'axilla') {
+        L.push('<b>能開就開；放射治療照胸壁、鎖骨上、鎖骨下與腋下</b>（可行的話）。');
+      } else if (S.rsite === 'scf') {
+        L.push('<b>以放射治療為主，照胸壁、鎖骨上與鎖骨下</b>（可行的話）。');
+      } else {
+        L.push('<b>放射治療照胸壁、鎖骨上、鎖骨下與內乳淋巴結</b>（可行的話）。');
+      }
+    }
+
+    L.push(H('全身治療 —— 這一段才是重點', 'p36 註 *'));
+    L.push('<b>不論復發在哪裡，都要做全身治療。</b>');
+    L.push(EV('指引註記寫明依據是 <b>CALOR 試驗</b> —— 可完全切除的局部復發，術後再給化療能改善結果。' +
+      '常見的錯誤是把局部復發當成「再開一次刀就好」，只處理局部而不給全身治療。'));
+    L.push('<b>先確認沒有遠處轉移</b>（此時屬「強烈建議做全身分期」的情境，p3）；有遠處轉移就改走轉移性乳癌流程。');
+    L.push('<b>復發病灶要重新做 ER、PR、HER2 染色</b> —— 受體狀態可能和原發灶不一樣，會改變用藥。');
+    L.push('全身治療的藥物依重新確認的亞型決定，並把<b>之前用過什麼、用了多久</b>算進去。');
+
+    fill('bc_r_recur', 'rec-urgent', title, L,
+      'p36（局部與區域復發的處置表，含 CALOR 試驗註記）、p3（全身分期）、p2（免疫組織化學重驗）。', null);
+    fu('bc_f_recur', null);
+  }
+
+  /* ---------- G. 治療中進展 ---------- */
+  function renderProg() {
+    show('bc_b_prog', true);
+    show('bc_n_pstage', true);
+    if (!S.pstage) return;
+
+    var L = [], title;
+    L.push(H('第一件事：先確認這是局部還是全身的問題', 'p2、p3'));
+    L.push('<b>做影像確認有沒有遠處轉移。</b>有遠處轉移 → 回步驟 1 改走「轉移性乳癌」。');
+    L.push('<b>可以切片就重新切片</b>，重驗 ER、PR、HER2 —— 受體會變，尤其在治療壓力下。');
+
+    if (S.pstage === 'na') {
+      title = '術前藥物治療期間腫瘤變大或臨床惡化';
+      L.push(H('處置', 'p12、p13'));
+      L.push('<b>換一個沒有交叉抗藥性的處方，或評估直接手術</b>（若仍可切除）。<b>優先考慮臨床試驗收案。</b>');
+      L.push('<b>腋下不可以只做前哨淋巴結切片 —— 要做腋下淋巴結廓清</b>（p13 明文的例外）。');
+      L.push(EV('指引原文：「after NACT, SLNB alone, <b>unless clinical PD</b>」。' +
+        '對治療沒有反應的腫瘤，前哨淋巴結的偽陰性率無法接受。'));
+      L.push('<b>建議提多專科團隊會議討論</b> —— 這一群病人預後差，不宜單一科別決定。');
+    } else if (S.pstage === 'chemo') {
+      title = '輔助化療還沒做完就復發';
+      L.push(H('處置', 'p42、p43'));
+      L.push('<b>這代表對現行處方有抗藥性 —— 換一個不同機轉、沒有交叉抗藥性的處方。</b>');
+      L.push('<b>把 anthracycline 的累積劑量算清楚</b>：它有終生累積劑量上限，換藥前先算已經用掉多少。');
+      L.push(EV('指引 p43 講得很清楚：早期乳癌的所有處方轉移時都可以用，' +
+        '<b>只有「已知抗藥性的疑慮（例如快速復發）」或 anthracycline 已達累積劑量時才不適合</b>。' +
+        '在治療中復發，正好就是那個「已知抗藥性」的情況。'));
+    } else if (S.pstage === 'et') {
+      title = '輔助內分泌治療期間，或結束後 12 個月內復發';
+      L.push(H('處置', 'p38'));
+      L.push('<b>在輔助內分泌治療期間進展，或結束後 12 個月內復發 → 下一步用 ' + drug('fulvestrant') +
+        ' 加 CDK4/6 抑制劑，不要再用同一類的內分泌單方。</b>');
+      L.push('<b>兩個時間門檻不要搞混</b>：' + SUB([
+        '<b>2 年</b> —— 用來「分類」抗藥型別：輔助治療前 2 年內復發叫原發性抗藥，2 年後才復發叫續發性抗藥',
+        '<b>12 個月</b> —— 用來「決定下一步用什麼藥」：治療中進展或結束後 12 個月內復發，就換 fulvestrant 加 CDK4/6 抑制劑'
+      ]));
+      L.push(EV('分類（2 年）是用來估預後與溝通的，換藥（12 個月）才是實際的操作門檻。' +
+        '這兩個數字來自不同的文件體系，很常被混在一起講。'));
+      L.push('<b>健保：CDK4/6 抑制劑已不限第一線</b>（9.72），但仍要求沒有內臟危象、沒有腦轉移、不可以只有骨轉移。');
+    } else {
+      title = '抗 HER2 輔助治療期間或剛結束就復發';
+      L.push(H('處置', 'p39、p44'));
+      L.push('<b>視為對 trastuzumab 有抗藥性 → 下一步換 ' + drug('T-DM1') + ' 或 ' + drug('T-DXd') + '。</b>');
+      L.push('<b>T-DXd 的適應症是「任何含 trastuzumab 的治療失敗後」</b>（p39）—— 輔助期失敗也算在內。');
+      L.push('<b>⚠ 健保限制：T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換</b>；' +
+        'T-DXd 與 sacituzumab govitecan 也互斥。');
+      L.push(EV('若復發在腦部，lapatinib 加 capecitabine 是健保唯一為腦轉移設計的條文（9.47），' +
+        '但要求已用過 anthracycline、taxane 與 trastuzumab 後進展。'));
+    }
+
+    L.push(H('共通的一句話', 'p37'));
+    L.push('<b>最終治療決定仍取決於病人與醫師的討論</b>；末期病人應照會安寧共同照護團隊。');
+
+    fill('bc_r_prog', 'rec-urgent', title, L,
+      'p12、p13（術前治療中進展）、p38（內分泌抗藥）、p39（抗 HER2 後線）、p42、p43（化療原則）、p2、p3（重驗與分期）。',
+      '<div class="rec-detail">' + nhiMeta() + '</div>');
+    fu('bc_f_prog', 'meta');
   }
 
   /* ==========================================================
-     E. 治療中進展／治療後早期復發
+     7. 總 render
      ========================================================== */
-  function renderProgRec() {
-    var s = bcSt;
-    if (s.scope !== 'prog') return;
-    var R = 'bc_prog_rec', F = 'bc_prog_fu';
-    if (!s.pg) { idleRec(R, F, '請選擇步驟 2（在哪一種治療當中出現進展）'); return; }
-
-    var lines = [], title, cls = 'rec-urgent', note;
-
-    if (s.pg === 'pg_nact') {
-      title = '術前化療進行中臨床惡化 → 停藥、重新分期、改走手術或換全身治療';
-      lines = [
-        '<span class="rx-h">第一步：確認這真的是進展</span>',
-        '<b>以理學檢查為主</b>；影像的角色是<b>確認臨床上的懷疑</b>，並沿用治療前最有參考價值的那一種（乳房攝影、超音波或 MRI）。' +
-        '<b>不可用腫瘤標記（CA15-3、CA27-29）判定進展</b>，也不建議為了找進展而做例行影像 —— 真正進展的比例很低。',
-        '<b>先排除已出現遠處轉移</b> —— 若已 M1，治療目標從治癒轉為緩解，請回步驟 1 走「轉移性乳癌」。' +
-        '必要時<b>重新切片</b>（亞型可能被誤判，或腫瘤本身異質）。',
-        '<span class="rx-h">仍為 M0 且可切除：兩條路，指引沒有偏好</span>',
-        '<b>換另一套全身處方</b>，<b>或直接進手術</b> —— 這是<b>多專科團隊的判斷</b>，兩者都在建議範圍內。' +
-        '未做完的療程可以移到術後補完。<b>不要為了跑完療程而繼續一個已被證明無效的處方。</b>',
-        '<span class="rx-h">仍為 M0 但不可切除／局部晚期</span>',
-        '<b>加做全身治療，和／或術前放射治療</b>；若因此轉為可切除 → 全乳切除或乳房保留手術＋腋下手術分期；' +
-        '仍不可切除 → 個別化處理。<b>術前放療只出現在「不可切除」這一支</b>，可切除的病人不走這條。',
-        '<span class="rx-h">腋下處置必須改變</span>　<span class="rx-sub">台大 p13</span>',
-        '<b>台大 p13 明文：cN0 者「NACT 後可單做 SLNB —— 除非臨床惡化（unless clinical PD）」。</b>' +
-        '<b>治療中惡化的病人不能只做前哨淋巴結切片。</b>',
-        '治療前已 cN(+) 而治療後仍 ycN(+) 者（惡化者依定義即屬此類）→ <b>Level I／II 腋下淋巴結廓清</b>（台大 p13、p14）。',
-        '<span class="rx-h">乳房手術方式也要重新討論</span>',
-        '原本靠降期爭取乳房保留的病人，惡化後多半已不符合乳房保留條件。',
-        '<b>放療指徵依「治療前的臨床分期」判定</b>（台大 p49）—— 惡化者幾乎必然落在「應接受 PMRT／Breast RT ＋ 區域淋巴照射」那一組。',
-        '<span class="rx-h">要知道的一件事</span>',
-        '<b>術前治療中真正進展的比例很低</b>（最大宗的系列中約 3%，且過半發生在<b>前兩個週期</b>內），' +
-        '但<b>一旦發生，無惡化存活與整體存活都顯著較差</b>。這也是指引要求「每次回診評估反應」而不是靠例行影像篩檢的理由。'
-      ];
-      note = '台大 p12（治療中每次評估反應）、p13（unless clinical PD）、p14（ycN(+) → ALND）、p49（NACT 後放療之 NTUH 共識）。' +
-        '「換處方或直接手術由多專科決定」「不可切除者才用術前放療」「不可用腫瘤標記判定進展」為 NCCN 乳癌指引術前全身治療原則與 ASCO 術前治療指引之建議；' +
-        '<b>台大乳癌診療指引未就此情境逐條規範</b>，ASCO 亦指出此情境缺乏隨機試驗證據。';
-    } else if (s.pg === 'pg_chemo') {
-      title = '輔助化療期間或剛結束就出現轉移 → 視為對該類藥物抗藥';
-      cls = 'rec-nonop';
-      lines = [
-        '<span class="rx-h">為什麼要換類別</span>　<span class="rx-sub">台大 p43</span>',
-        '<b>台大 p43 原則二明文：「有已知抗藥性的疑慮（如快速復發）或者是 anthracycline 類達累積劑量，才不適合使用」</b>之前的處方。' +
-        '也就是說，早期乳癌的處方原則上都可以在轉移期沿用，<b>唯獨「快速復發」是明列的例外</b>。',
-        '<span class="rx-h">界線畫在哪裡 —— 沒有指引定義，只有試驗的收案窗</span>',
-        '「taxane-refractory」<b>沒有任何指引給過定義</b>。真正決定實務的是各個試驗與藥證的收案條件：',
-        '<b>三陰性 · 一線免疫治療</b>：KEYNOTE-355 要求<b>根治性治療結束到復發之間 ≥6 個月</b>。' +
-        '<b>不到 6 個月就復發者不在該試驗族群內</b>，pembrolizumab ＋ 化療對她並無一線證據。' +
-        '（此適應症在台灣本來就<b>未給付</b>，見下方給付表。）',
-        '<b>三陰性 · sacituzumab govitecan</b>：關鍵是 <b>12 個月</b> —— 若在（術前／術後）化療結束 <b>12 個月內</b>復發，' +
-        '<b>該次化療可算作一線</b>，病人因此在轉移期只需再走一線化療就用得到此藥。' +
-        '台灣健保 9.106 另要求 ≥2 線全身治療、曾用 taxane、ECOG ≤1、且<b>未曾用過 T-DXd</b>。',
-        '<b>HER2-low（ER／PR 皆陰性且 HER2 IHC1+ 或 2+/ISH−）</b>：若在輔助化療期間或結束 <b>6 個月內</b>進展，' +
-        '<span class="drug">T-DXd</span> 可考慮提前到一線；台灣健保 9.115 之 HER2-low 條文要求 ECOG ≤1 且 ≥1 次先前化療。',
-        '<span class="rx-h">實務上要一併確認的三件事</span>',
-        '① <b>anthracycline 累積劑量</b>（doxorubicin 一般以 450–550 mg/m² 為上限區間，epirubicin 較高）—— 已達上限者不可再用，並評估左心室射出分率。' +
-        '（此為藥品仿單與腫瘤內科實務，非本指引條文。）',
-        '② <b>重新取得轉移病灶組織並重測 ER／PR／HER2</b> —— 亞型可能與原發灶不同，換錯類別就白換了；' +
-        '<b>順便看 HER2 是不是 low</b>，這會多開一條路。',
-        '③ HER2(−) 且曾接受化療者 → <b>做 gBRCA1/2 檢測</b>（台大 p5 明列此為檢測適應症）。',
-        '<span class="rx-h">接下來</span>',
-        '確認亞型後回步驟 1 選「轉移性乳癌」取得完整選單。' +
-        '<b>HR(+) 者即使剛化療完，只要沒有 visceral crisis 或快速惡化，一線仍應優先用內分泌治療</b>（台大 p37）。'
-      ];
-      note = '台大 p43（轉移期化療三原則）、p37（晚期治療總則）、p5（gBRCA1/2 檢測適應症）。' +
-        '各收案窗（KEYNOTE-355 之 ≥6 個月、ASCENT 與 sacituzumab govitecan 藥證之 12 個月、T-DXd 於 HER2-low 之 6 個月）取自各該試驗與藥證條文；' +
-        '<b>台大乳癌指引未就此情境逐條規範</b>。健保條件見下方給付表。';
-    } else if (s.pg === 'pg_her2') {
-      title = '輔助抗 HER2 治療期間或結束 12 個月內復發 → 不重複一線雙標靶，直接進二線';
-      cls = 'rec-nonop';
-      lines = [
-        '<span class="rx-h">判讀 —— 界線是 12 個月</span>',
-        '<b>在輔助 trastuzumab 治療中、或完成後 12 個月內</b>出現轉移者，應<b>直接依「二線」建議治療</b>；' +
-        '<b>超過 12 個月才復發者，才回到一線</b> <span class="rx">THP</span>（台大 p44 之 preferred 1st line）。',
-        '<b>為什麼是 12 個月</b>：一線雙標靶的關鍵試驗 <b>CLEOPATRA 明文排除</b>「從完成全身治療到診斷轉移不足 12 個月」者 —— ' +
-        'THP 的療效證據裡幾乎沒有這一群病人。',
-        '<span class="rx-h">二線怎麼選</span>　<span class="rx-sub">台大 p39、p44</span>',
-        '<b>首選 <span class="drug">T-DXd</span></b>（trastuzumab deruxtecan）5.4 mg/kg q3W —— 台大 p39 定位為「<b>任何含 trastuzumab 之治療失敗後</b>」使用。' +
-        '<b>台大指引寫「未給付」，但健保已於 2025-02-01 納入</b>（條文 9.115，HER2(+) 二線，上限 18 週期）。',
-        '<span class="drug">T-DM1</span> 3.6 mg/kg q3W（健保 9.87.2：二線、須有<b>內臟轉移</b>、上限 10 個月／13 週期）。',
-        '<span class="drug">lapatinib</span> 1250 mg/day PO ＋ <span class="drug">capecitabine</span> 1250 mg/m² BID D1–14 q3W' +
-        '（健保 9.47 <b>限腦轉移</b>且已用過 anthracycline、taxane 與 trastuzumab 後進展者）。',
-        '<span class="drug">neratinib</span> ＋ capecitabine（台大 p39）與 <span class="drug">tucatinib</span>：<b>台灣健保均未給付</b>。',
-        '<b>⚠ 台灣最關鍵的一條限制：T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換</b>' +
-        '（9.115、9.87.2、9.47）；<b>T-DXd 與 sacituzumab govitecan 亦互斥</b>。' +
-        '<b>排治療順序前先把這條算進去</b>，第一步選錯等於少一條路。',
-        '<span class="rx-h">仍要做的事</span>',
-        '<b>重新切片確認 HER2 仍為陽性</b>；ER 也要重測（會影響是否併用內分泌治療）。',
-        '<b>抗 HER2 藥物應與化療併用</b>（台大 p37）；有腦轉移者，藥物選擇要把中樞神經活性納入考量。'
-      ];
-      note = '台大 p37（抗 HER2 須與化療併用）、p39（可用藥物與給付）、p44（處方與劑量）。' +
-        '「≤12 個月視同二線」為 ASCO 晚期 HER2 陽性乳癌指引之明文，ESMO 用 9–12 個月，' +
-        'T-DXd 藥證與 DESTINY-Breast03 收案則用「治療中或結束 6 個月內」；' +
-        '<b>台大乳癌指引未就此情境逐條規範</b>。健保條文與互斥規則見下方給付表。';
-    } else if (s.pg === 'pg_cdk') {
-      title = '輔助 CDK4/6 抑制劑期間或結束後復發 → 換機轉，不要原藥再挑戰';
-      cls = 'rec-nonop';
-      lines = [
-        '<span class="rx-h">先講清楚證據的位置</span>',
-        '<b>沒有任何指引直接規範這個情境</b> —— 這是本頁證據最薄弱的一格，講清楚比硬給一個答案有用。',
-        'ESO-ESMO ABC 6/7 的立場是：<b>進展後繼續使用 CDK4/6 抑制劑「在臨床試驗之外不建議」</b>' +
-        '（MAINTAIN 同時換藥與換內分泌骨架有小幅獲益，PACE 與 PALMIRA 只換骨架則失敗，結果互相矛盾）。' +
-        'NCCN 的二線 CDK4/6 抑制劑雖為第 1 級推薦，但<b>前提是「先前未曾使用過」</b>。',
-        '<span class="rx-h">唯一的第三期資料</span>',
-        '<b>postMONARCH</b> 是唯一前瞻納入這個族群（含輔助期 CDK4/6 後復發者）的第三期試驗：' +
-        '<span class="drug">abemaciclib</span> ＋ <b>fulvestrant</b> vs 安慰劑＋fulvestrant，' +
-        '研究者評估之無惡化存活 HR 0.73（中位 6.0 vs 5.3 個月）。' +
-        '<b>絕對獲益很小，而且這是「二線等級」的治療，不是一線原藥再挑戰的背書。</b>',
-        '<b>同一顆藥再挑戰有負面資料</b>：AGAIN／WJOG14220B（第二期）針對 abemaciclib 進展後再用 abemaciclib，<b>主要指標未達成</b>' +
-        '（中位無惡化存活 4.2 個月）。postMONARCH 中<b>只有 8% 病人先前用過 abemaciclib</b>，不能拿來替同藥再挑戰背書。',
-        '<span class="rx-h">實務上怎麼走</span>',
-        '<b>優先換機轉，並讓分子檢測決定方向</b>：<b>PIK3CA 突變</b> → <span class="drug">alpelisib</span> ＋ fulvestrant' +
-        '（健保 9.129，2026-01-01 起；限<b>停經後</b>、曾用 CDK4/6 後進展）；' +
-        '<b>PIK3CA／AKT1／PTEN 任一變異</b> → <span class="drug">capivasertib</span> ＋ fulvestrant' +
-        '（健保 9.135，2026-06-01 起；同樣限停經後、曾用 CDK4/6 後進展）。⚠ <b>這兩者擇一給付</b>。',
-        '<span class="drug">everolimus</span> ＋ exemestane（健保 9.36.1）亦為選項，' +
-        '但<b>用過 everolimus 失敗後就不得再申請 CDK4/6</b>（9.72.6）—— 順序要先想好。',
-        '<b>有 visceral crisis 或快速惡化者，一線直接用化療</b>（台大 p37）。',
-        '<span class="rx-h">台灣特有的一條陷阱</span>',
-        '<b>輔助 abemaciclib 治療中進展者，依健保 9.107 必須停藥，且日後「不得再使用任何 CDK4/6 抑制劑」</b>' +
-        '（9.72.7 亦有相同的鎖）。<b>這條比國際指引更硬</b>，在決定要不要開始輔助 abemaciclib 時就該一起討論。',
-        '<span class="rx-h">一定要做的檢查</span>',
-        '<b>重新切片</b>並重測 ER／PR／HER2（順便看 HER2 是不是 low）；<b>PIK3CA／AKT1／PTEN 檢測</b>（決定上面兩條路）；' +
-        '<b>gBRCA1/2 檢測</b>（台大 p5）。<b>ESR1 檢測不建議在這個時間點做</b> —— ' +
-        '它主要是在轉移期 AI 壓力下後天產生，應留到<b>後續內分泌治療進展時</b>再以 ctDNA 檢測。'
-      ];
-      note = '台大 p22（abemaciclib 為高風險輔助選項）、p37（visceral crisis）、p5（gBRCA 檢測）。' +
-        'ABC 6/7 之「進展後不建議續用 CDK4/6」、NCCN 二線 CDK4/6 之「先前未曾使用」前提、postMONARCH 與 AGAIN 之結果均為院外實證；' +
-        '<b>台大乳癌指引未就此情境規範</b>。健保 9.107／9.72.7 之互鎖見下方給付表。';
-    } else {
-      // 輔助內分泌治療期間或結束後復發
-      if (!s.pget) { idleRec(R, F, '請選擇步驟 3（復發與輔助內分泌治療的時間關係）'); return; }
-      cls = 'rec-nonop';
-      if (s.pget === 'et_gt12') {
-        title = '完成輔助內分泌治療 >12 個月才復發 → 視為對內分泌治療仍敏感，走標準一線';
-        cls = 'rec-elective';
-        lines = [
-          '<span class="rx-h">判讀</span>',
-          '<b>不符合演算法所用的「治療中進展或結束 12 個月內復發」條件</b>，這一組對內分泌治療的反應機會最好。',
-          '<span class="rx-h">一線選擇</span>',
-          '<b>芳香環酶抑制劑（AI）＋ CDK4/6 抑制劑</b>為標準一線（台大 p38：中／高風險為內分泌 ＋ CDK4/6）。' +
-          '<b>停經前病人須併用卵巢功能抑制。</b>',
-          '<b>低風險者單用內分泌治療也是合理選項</b>（p38 之風險分層圖：低風險 → 單一藥物內分泌治療）。'
-        ];
-      } else {
-        title = (s.pget === 'et_on' ? '仍在輔助內分泌治療中復發' : '完成輔助內分泌治療 ≤12 個月內復發') +
-          ' → 一線改用 fulvestrant ＋ CDK4/6 抑制劑';
-        lines = [
-          '<span class="rx-h">這一格為什麼重要</span>',
-          '<b>「在輔助內分泌治療中進展，或完成後 12 個月內復發」是治療演算法真正使用的界線。</b>' +
-          '符合者一線<b>不用 AI，改用 <span class="drug">fulvestrant</span> ＋ CDK4/6 抑制劑</b> —— ' +
-          '病人是在 AI／tamoxifen 的壓力下復發的，換內分泌骨架才有意義。',
-          s.pget === 'et_on'
-            ? '<b>抗性型別</b>：復發發生在輔助內分泌治療<b>前 2 年內</b>屬「原發性抗性」，<b>滿 2 年之後</b>屬「次發性抗性」' +
-              '（ESO-ESMO ABC 6/7）。分類本身不改變上面的一線選擇，但影響對治療反應的期待。'
-            : '<b>抗性型別</b>：ABC 第 6／7 版已把「完成後 12 個月內復發」併入次發性抗性的概括條款、不再單獨列名；' +
-              '真正決定用藥的仍是這個 12 個月的界線。',
-          '<span class="rx-h">先做分子檢測再決定加什麼</span>',
-          '<b>PIK3CA 狀態是這個族群的第一個分岔</b>。<b>PIK3CA 突變</b>者，' +
-          '<span class="drug">inavolisib</span> ＋ palbociclib ＋ fulvestrant 於此適應症有第三期證據（<b>台灣健保未收載此藥</b>）；' +
-          '<b>PIK3CA／AKT1／PTEN 變異</b>者，<span class="drug">capivasertib</span> ＋ fulvestrant 之藥證即涵蓋' +
-          '「輔助治療中或結束 12 個月內復發」（健保 9.135 於 2026-06-01 起給付，但<b>限停經後且曾用 CDK4/6 後進展</b>，本格病人多半還沒用過 CDK4/6，會卡住）。',
-          '<b>ESR1 檢測不在這個時間點做</b> —— ESR1 突變主要在轉移期 AI 壓力下後天產生，' +
-          '應留到<b>後續內分泌治療進展時</b>再以 ctDNA 檢測。<span class="drug">elacestrant</span> 也不是這一格的一線用藥' +
-          '（其適應症為 ESR1 突變且已接受 ≥1 線內分泌治療後進展；<b>台灣健保未收載</b>）。',
-          '<span class="rx-h">健保（9.72）要注意</span>',
-          '僅涵蓋 <b>ribociclib 與 palbociclib</b>（<b>abemaciclib 於轉移性不給付</b>）；' +
-          '需 ER 或 PR &gt;30%、HER2(−)、<b>無內臟危象、無腦轉移、不可只有骨轉移</b>；<b>終生上限 24 個月</b>；' +
-          '停經前／圍停經期與男性須併用 AI ＋ GnRH 類似物。' +
-          '條文<b>未指定停經後族群的內分泌夥伴</b>，是否可搭 fulvestrant 請先與藥劑部或審查確認。',
-          '<b>有 visceral crisis 或快速惡化者，一線直接用化療</b>（台大 p37）；控制住之後再轉回內分泌治療。'
-        ];
-      }
-      lines.push('<span class="rx-h">不論屬於哪一組，都要做的三件事</span>');
-      lines.push('① <b>重新取得轉移病灶組織並重測 ER／PR／HER2</b> —— 受體狀態可能改變；順便看 HER2 是不是 low（會多一條 T-DXd 的路）。');
-      lines.push('② <b>gBRCA1/2 檢測</b>：台大 p5 明列「晚期乳癌之 HER2(−) 且曾接受化療者」為檢測適應症；' +
-        '但 PARP 抑制劑在台灣<b>僅三陰性給付、HR(+) 不給付</b>（健保 9.85.2）。');
-      lines.push('③ 評估是否有 <b>visceral crisis</b>（器官功能已受威脅，而非只是「有內臟轉移」）—— 有的話一線直接化療（台大 p37）。');
-      note = '台大 p37（HR(+) 先用內分泌治療）、p38（台灣乳房醫學會共識之風險分層與健保 CDK4/6 一線給付）、p5（gBRCA 檢測）、健保 9.72／9.85.2。' +
-        '「治療中進展或結束 12 個月內復發 → fulvestrant ＋ CDK4/6」為 NCCN 與 ESMO 之演算法條文；' +
-        '內分泌抗性之時間定義為 ESO-ESMO ABC 6/7 共識。<b>台大乳癌診療指引未收錄這些定義與分支</b>。';
-    }
-
-    result(R, F, cls, title, lines, note, 'palliative',
-      '<div class="rec-detail">' + nhiPanelMBC() + '</div>');
+  function render() {
+    collapseAll();
+    if (!S.scope) return;
+    if (S.scope === 'dx') renderDx();
+    else if (S.scope === 'dcis') renderDcis();
+    else if (S.scope === 'lcis') renderLcis();
+    else if (S.scope === 'inv') renderInv();
+    else if (S.scope === 'mbc') renderMbc();
+    else if (S.scope === 'recur') renderRecur();
+    else if (S.scope === 'prog') renderProg();
   }
 
   /* ==========================================================
-     F. 轉移性乳癌（p37–p45）
+     8. 互動
      ========================================================== */
-  function mbcErPanel() {
-    return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">HR(+) / HER2(−) 轉移性乳癌<span class="rx-panel-src">p37、p38、p43</span></div>' +
-      '<div class="rx-def"><b>一線的三種型態（p38，台灣乳房醫學會共識）</b>：單用內分泌治療、內分泌治療 + CDK4/6 抑制劑、或化療。' +
-      '選擇依<b>疾病活性</b>（無病間隔短、內臟腫瘤負荷、症狀）與<b>對內分泌治療反應的機率</b>（抗性型別、內在亞型、生物標記）判斷。</div>' +
-      rxLine('風險分層 → 一線選擇', 'p38', [
-        '<b>低風險</b>：單一藥物內分泌治療（亦可內分泌 + CDK4/6）。',
-        '<b>中風險</b>：內分泌 + CDK4/6 抑制劑（或單一藥物內分泌治療；或化療）。',
-        '<b>高風險</b>：化療（或內分泌 + CDK4/6）。',
-        '<b>健保：2019/10/1 起給付停經後婦女之 CDK4/6 抑制劑 + AI 作為轉移後第一線治療。</b>'
-      ]) +
-      rxLine('化療（無標準一線處方）', 'p43', [
-        '<span class="drug">pegylated liposomal doxorubicin</span> 30–50 mg/m² D1 q3–4W。',
-        '<span class="drug">eribulin</span> 1.4 mg/m² D1、D8。',
-        '<span class="drug">capecitabine</span> 850–1000 mg/m² PO BID D1–14 q21d。',
-        '<span class="drug">vinorelbine</span> 25–30 mg/m² D1、D8 q3W。',
-        '<span class="rx">N-HDFL</span>：vinorelbine 25 mg/m² D1、8 ＋（5-FU 2000–2600 mg/m² ± leucovorin 300 mg/m²）24 小時輸注 D1、8，q3W。',
-        '<span class="rx">NP</span>：vinorelbine 25 mg/m² ＋ cisplatin 30–35 mg/m² D1、8，q3W。',
-        '<span class="rx">P-HDFL</span>：cisplatin 30–35 mg/m² ＋（5-FU 2000–2600 mg/m² ± leucovorin）D1、8，q3W。',
-        '<span class="rx">TG</span>：paclitaxel 80 mg/m² ＋ gemcitabine 800 mg/m² D1、8，q3W。',
-        '<span class="rx">BEEP</span>：bevacizumab 15 mg/kg D1 ＋ cisplatin 70 mg/m² D2 ＋ etoposide 70 mg/m² D2–4，q3W。'
-      ]) +
-      rxLine('gBRCA1/2(+)', 'p41', [
-        '<span class="drug">olaparib</span> 或 <span class="drug">talazoparib</span>（HER2(−) 且 gBRCA1/2(+) 者 PFS 較佳）。',
-        '<b>健保僅於 TNBC 給付；ER(+) 不給付</b>。'
-      ]) +
-      '<div class="rx-warn"><b>不建議作為一線的藥物（p45）</b>：<span class="drug">mitoxantrone</span>、' +
-      '<span class="drug">mitomycin C</span>、<span class="drug">ixabepilone</span> —— 應保留給已多線治療、無其他選擇者。<br>' +
-      '<b>合併 <span class="drug">bevacizumab</span> 與化療是合理的（p45）。</b></div>' +
-      nhiPanelMBC() +
-      '</div>';
-  }
-  function mbcHer2Panel() {
-    return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">HER2(+) 轉移性乳癌<span class="rx-panel-src">p37、p39、p44</span></div>' +
-      '<div class="rx-def"><b>總則（p37）</b>：HER2(+) 者<b>抗 HER2 藥物應與化療併用</b>。' +
-      'ER 同時陽性者，化療結束後可接內分泌治療與抗 HER2 治療併行維持。</div>' +
-      rxLine('一線 First line（preferred）', 'p44', [
-        '<span class="rx">THP</span>：<span class="drug">trastuzumab</span> 6 mg/kg（C1D1 8 mg/kg）＋ ' +
-        '<span class="drug">pertuzumab</span> 420 mg（C1D1 840 mg）＋ ' +
-        '<span class="drug">docetaxel</span> 75 mg/m² q3W，或 <span class="drug">paclitaxel</span> 80 mg/m² D1、8、15 q3W。'
-      ]) +
-      rxLine('二線以後 ≥ 2nd line', 'p44', [
-        '<span class="drug">T-DM1</span> 3.6 mg/kg q3W。',
-        '<span class="drug">T-DXd</span>（trastuzumab deruxtecan）5.4 mg/kg q3W —— p39 定位為「<b>任何含 trastuzumab 之治療失敗後</b>」使用。' +
-        '<b>指引寫未給付，但健保已自 2025-02-01 納入</b>（條文 9.115：HER2(+) 二線，上限 18 週期；另涵蓋 HER2-low）。',
-        '<span class="drug">lapatinib</span> 1250 mg/day PO ＋ <span class="drug">capecitabine</span> 1250 mg/m² BID D1–14 q3W（最大劑量）。',
-        '<span class="drug">neratinib</span> 通常與 capecitabine 併用（p39）；<b>健保仍未給付</b>。' +
-        '⚠ <b>T-DXd、T-DM1、lapatinib 三者只能擇一給付、不可互換</b>；T-DXd 與 sacituzumab govitecan 亦互斥。'
-      ]) +
-      rxLine('可用之抗 HER2 藥物與給付', 'p39', [
-        '<b>有條件給付</b>：<span class="drug">trastuzumab</span>（通常與化療併用）、' +
-        '<span class="drug">pertuzumab</span>（與 trastuzumab 併用形成雙重阻斷）、<span class="drug">T-DM1</span>、' +
-        '<span class="drug">lapatinib</span>（通常與 capecitabine 併用）。',
-        '<b>指引當時列為未給付者</b>：<span class="drug">T-DXd</span>（<b>已於 2025-02-01 納入給付</b>，條文 9.115）、<span class="drug">neratinib</span>（<b>仍未給付</b>）。'
-      ]) +
-      '<div class="rx-def"><b>轉移期化療的沿用原則（p43）</b>：所有早期乳癌的處方（合併或其中單一藥物）皆可於轉移時使用；' +
-      '僅在<b>已知抗藥（如快速復發）或 anthracycline 已達累積劑量</b>時不適用。</div>' +
-      nhiPanelMBC() +
-      '</div>';
-  }
-  function mbcTnbcPanel() {
-    return '<div class="rec-detail rx-panel">' +
-      '<div class="rx-panel-h">三陰性（TNBC）轉移性乳癌<span class="rx-panel-src">p40、p41、p44</span></div>' +
-      '<div class="rx-def"><b>一線加入免疫治療可改善 PFS 與 OS（p40）</b>，但必須依各自的<b>伴隨式診斷</b>選病人。</div>' +
-      rxLine('一線 First line', 'p40、p44', [
-        '<b>IMpassion130</b>：適用 <b>PD-L1 IC(+)</b>（伴隨式診斷 <b>Ventana SP142</b>），化療夥伴為 <b>nab-paclitaxel</b>。',
-        '<b>KEYNOTE-355</b>：適用 <b>PD-L1 CPS ≥ 10</b>（伴隨式診斷 <b>Dako 22C3</b>），化療夥伴為 <b>gemcitabine／platinum、nab-paclitaxel 或 paclitaxel</b>；' +
-        '<span class="drug">pembrolizumab</span> 200 mg q3W 併化療。',
-        '<b>NTUH 修正（p40）</b>：認同一線加入免疫治療的概念、依建議之伴隨式診斷選病人，但<b>化療夥伴可較寬</b>。',
-        '<b>⚠ 轉移性 TNBC 之 <span class="drug">pembrolizumab</span> 與 <span class="drug">atezolizumab</span> 至 2026-08 仍均未給付</b>' +
-        '（條文 9.69 之乳癌只有「早期三陰性乳癌」一格）。'
-      ]) +
-      rxLine('三線以後 ≥ 3rd line', 'p44', [
-        '<span class="drug">sacituzumab govitecan</span> 10 mg/kg 3 小時輸注 D1、D8，q3W。'
-      ]) +
-      rxLine('gBRCA1/2(+)', 'p41', [
-        '<span class="drug">olaparib</span> 或 <span class="drug">talazoparib</span>。<b>TNBC 有給付</b>（ER(+) 不給付）。',
-        '<b>檢測適應症（p5）</b>：晚期乳癌之 HER2(−) 且曾於術前、術後或轉移期接受過化療者。'
-      ]) +
-      rxLine('化療', 'p43', [
-        '早期乳癌的所有處方皆可沿用（除非已知抗藥或 anthracycline 達累積劑量）。',
-        '常用單方與組合同 HR(+) 段：pegylated liposomal doxorubicin、eribulin、capecitabine、vinorelbine、' +
-        '<span class="rx">N-HDFL</span>、<span class="rx">NP</span>、<span class="rx">P-HDFL</span>、<span class="rx">TG</span>、<span class="rx">BEEP</span>。',
-        '<b>循序單一藥物優於合併化療</b>（p37）。'
-      ]) +
-      nhiPanelMBC() +
-      '</div>';
+  var SEL_GROUPS = ['bc_n1', 'bc_n_dx', 'bc_n_dloc', 'bc_n_dmar', 'bc_n_sub', 'bc_n_ctn', 'bc_n_plan',
+    'bc_n_surg', 'bc_n_ptn', 'bc_n_nresp', 'bc_n_ypath',
+    'bc_n_msub', 'bc_n_mrisk', 'bc_n_mline', 'bc_n_mbio',
+    'bc_n_rsite', 'bc_n_rprev', 'bc_n_pstage'];
+
+  /* 上游一改，下游全部歸零 —— 否則會出現「上游的建議掛在下游選項後面」 */
+  var DOWNSTREAM = {
+    scope: ['img', 'dloc', 'dmar', 'sub', 'ctn', 'plan', 'surg', 'ptn', 'nresp', 'ypath',
+      'mrisk', 'mline', 'mbio', 'rsite', 'rprev', 'pstage'],
+    dloc: ['dmar'],
+    sub: ['ctn', 'plan', 'surg', 'ptn', 'nresp', 'ypath', 'mrisk', 'mline', 'mbio'],
+    ctn: ['plan', 'surg', 'ptn', 'nresp', 'ypath'],
+    plan: ['surg', 'ptn', 'nresp', 'ypath'],
+    surg: ['ptn'],
+    nresp: ['ypath'],
+    mrisk: ['mline', 'mbio'],
+    mline: ['mbio'],
+    rsite: ['rprev']
+  };
+
+  function clearSelectionMarks() {
+    SEL_GROUPS.forEach(function (id) {
+      var e = el(id);
+      if (e) e.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
+    });
   }
 
-  function renderMbcRec() {
-    var s = bcSt;
-    if (s.scope !== 'mbc') return;
-    var R = 'bc_mbc_rec', F = 'bc_mbc_fu';
-    if (!s.msub) { idleRec(R, F, '請選擇步驟 2（生物亞型）'); return; }
-
-    var common = [
-      '<b>轉移病灶應盡可能重新切片</b>並重測 ER／PR／HER2 —— 與原發灶不同的情況並不罕見，會直接改變治療。',
-      '<b>循序單一藥物優於合併化療</b>（p37）。',
-      '<b>末期病人：安寧緩和照護，照會安寧共同照護團隊</b>（p37，依安寧緩和醫療條例）。'
-    ];
-
-    if (s.msub === 'm_her2') {
-      result(R, F, 'rec-nonop', 'HER2(+) 轉移性乳癌 → 抗 HER2 ＋ 化療', [
-        '<span class="rx-h">總則</span>　<span class="rx-sub">p37</span>',
-        '<b>抗 HER2 藥物必須與化療併用</b>；一線首選 <span class="rx">THP</span>（trastuzumab + pertuzumab + taxane）。',
-        '<b>ER 同時陽性者</b>：化療完成後可接內分泌治療，與抗 HER2 治療併行維持。',
-        '<b>先前用過 trastuzumab 且在輔助治療中或結束 12 個月內復發者</b>：不宜重複一線雙標靶，請改走步驟 1 的' +
-        '「治療中進展／治療後早期復發」分支。'
-      ].concat(common), 'p37（總則）、p39（可用藥物與給付）、p44（處方與劑量）、p43（化療沿用原則）。',
-        'palliative', mbcHer2Panel());
-      return;
-    }
-    if (s.msub === 'm_tnbc') {
-      result(R, F, 'rec-nonop', 'TNBC 轉移性乳癌 → 化療 ＋（合適者）一線免疫治療', [
-        '<span class="rx-h">總則</span>　<span class="rx-sub">p40、p37</span>',
-        '<b>化療為主軸</b>，循序單一藥物優於合併化療。',
-        '<b>一線加入免疫治療可改善 PFS 與 OS</b>，但必須先做 PD-L1 伴隨式診斷（SP142 之 IC(+)，或 22C3 之 CPS ≥ 10）。' +
-        '<b>兩種免疫藥物於轉移性 TNBC 至 2026-08 仍均未給付</b>（早期三陰性乳癌之 pembrolizumab 則已於 2025-06-01 納入）。',
-        '<b>務必檢測 gBRCA1/2</b>（p5）—— TNBC 是台灣唯一給付 PARP 抑制劑的族群（p41）。'
-      ].concat(common), 'p40（免疫治療與伴隨式診斷）、p41（PARP 抑制劑與給付）、p44（處方）、p43（化療原則）、p5（gBRCA 檢測）。',
-        'palliative', mbcTnbcPanel());
-      return;
-    }
-
-    // HR(+) HER2(−)
-    if (!s.mcrisis) { idleRec(R, F, '請選擇步驟 3（是否有 visceral crisis 或快速惡化）'); return; }
-    if (s.mcrisis === 'mc_yes') {
-      result(R, F, 'rec-urgent', 'HR(+) HER2(−) ＋ visceral crisis／快速惡化 → 一線先用化療', [
-        '<span class="rx-h">為什麼先化療</span>　<span class="rx-sub">p37</span>',
-        '<b>p37 原文：HR(+) 者應先用內分泌治療，「除非有 visceral crisis 或快速惡化」。</b>' +
-        '內分泌治療起效慢，器官功能已受威脅時來不及。',
-        '<b>Visceral crisis</b> 指內臟轉移已造成器官功能不全（如肝功能急速惡化、癌性淋巴管炎導致呼吸衰竭），' +
-        '而非只是「有內臟轉移」——這兩者常被混淆。',
-        '<b>選擇單一藥物、循序使用</b>（p37）；早期乳癌用過的處方原則上都可沿用，' +
-        '除非快速復發已知抗藥、或 anthracycline 已達累積劑量（p43）。',
-        '<b>症狀控制住之後，應轉回內分泌治療</b>（± CDK4/6 抑制劑）作為維持。'
-      ].concat(common), 'p37（總則與 visceral crisis 例外）、p38（風險分層）、p43（化療原則）。',
-        'palliative', mbcErPanel());
-      return;
-    }
-    result(R, F, 'rec-nonop', 'HR(+) HER2(−) 轉移性乳癌 → 一線內分泌治療 ±CDK4/6 抑制劑', [
-      '<span class="rx-h">一線</span>　<span class="rx-sub">p37、p38</span>',
-      '<b>內分泌治療優先</b>（p37）。依<b>疾病活性</b>與<b>對內分泌治療反應的機率</b>分為低／中／高風險：' +
-      '低風險 → 單一藥物內分泌治療；中風險 → 內分泌 + CDK4/6 抑制劑；高風險 → 化療或 內分泌 + CDK4/6（p38）。',
-      '<b>健保自 2019/10/1 起給付停經後婦女之 CDK4/6 抑制劑 + AI 作為轉移後第一線治療</b>（p38）。' +
-      '停經前病人需併用卵巢功能抑制。',
-      '<b>內分泌骨架應避開輔助期用過的藥</b>；曾在輔助內分泌治療期間或結束 12 個月內復發者，' +
-      '請改走步驟 1 的「治療中進展／治療後早期復發」分支判定抗性型別。',
-      '<b>gBRCA1/2(+) 者</b>可用 <span class="drug">olaparib</span> 或 <span class="drug">talazoparib</span>，' +
-      '但<b>健保僅於 TNBC 給付，ER(+) 不給付</b>（p41）。'
-    ].concat(common), 'p37（HR(+) 先用內分泌治療）、p38（台灣乳房醫學會共識之風險分層與健保給付）、p41（PARP 抑制劑）、p43（化療）。',
-      'palliative', mbcErPanel());
-  }
-
-  /* ==========================================================
-     G. 局部／區域復發（p36）
-     ========================================================== */
-  function renderRecurRec() {
-    var s = bcSt;
-    if (s.scope !== 'recur') return;
-    var R = 'bc_recur_rec', F = 'bc_recur_fu';
-    if (!s.rsite) { idleRec(R, F, '請選擇步驟 2（復發的位置與初始治療方式）'); return; }
-
-    var map = {
-      r_bctrt: ['單純局部復發 · 初始為 BCT + 放療', [
-        '<b>全乳切除 ＋ 淋巴結分期</b>（SM + LN staging）—— <b>若先前未做過 Level I／II 腋下廓清才需要做腋下分期</b>（p36）。',
-        '已放療過的乳房無法再做保留手術，這是此格必然走向全乳切除的原因。'
-      ]],
-      r_bctlndrt: ['單純局部復發 · 初始為 BCT + 淋巴結廓清 + 放療', [
-        '<b>可行則手術；或先做全身治療，之後若可行再手術</b>（OP if possible, or systemic therapy then op if possible，p36）。',
-        '腋下已廓清、乳房已放療，可用的局部手段所剩不多，因此把全身治療放到手術之前是合理選項。'
-      ]],
-      r_nort: ['單純局部復發 · 初始為 BCT 或全乳切除、未放療', [
-        '<b>可行則手術 ＋ 放療至胸壁、鎖骨上窩（SCF）與鎖骨下窩（ICF）淋巴結</b>（p36）。',
-        '先前<b>未</b>放療是這一格最重要的資訊 —— 放療的空間還在，應該用。'
-      ]],
-      r_ax: ['腋下復發 Axillary', [
-        '<b>可行則手術；放療（若可行）照射胸壁、SCF、ICF 與腋下</b>（p36）。'
-      ]],
-      r_scf: ['鎖骨上復發 Supraclavicular', [
-        '<b>放療（若可行）照射胸壁、SCF、ICF</b>（p36）。此處通常無手術角色。'
-      ]],
-      r_imn: ['內乳淋巴結復發 Internal mammary', [
-        '<b>放療（若可行）照射胸壁、SCF、ICF 與內乳淋巴結</b>（p36）。'
-      ]]
-    };
-    var m = map[s.rsite];
-    var lines = ['<span class="rx-h">局部處置</span>　<span class="rx-sub">p36</span>'].concat(m[1]);
-    lines.push('<span class="rx-h">全身治療</span>　<span class="rx-sub">p36 註 *</span>');
-    lines.push('<b>不論屬於哪一格，都要接全身治療</b> —— p36 的表把每一條局部處置都連到同一個「Systemic tx*」方塊。' +
-      '<b>註 * 明文：化療之建議依 CALOR 研究之結果</b>。');
-    lines.push('全身治療的內容依<b>重新確認的</b> ER／PR／HER2 決定：HR(+) 加內分泌治療、HER2(+) 加抗 HER2 治療。' +
-      '<b>復發病灶務必重新切片並重測受體</b>。');
-    lines.push('<b>先排除遠處轉移</b> —— 局部／區域復發者應完成分期檢查；若同時有遠處轉移，治療目標與藥物選擇完全不同，' +
-      '請回步驟 1 選「轉移性乳癌」。');
-    lines.push('<b>gBRCA1/2 檢測</b>：曾接受過化療的 HER2(−) 病人為檢測適應症（p5）。');
-
-    result(R, F, 'rec-nonop', m[0], lines,
-      'p36（Local recurrence only／Regional only or Local &amp; regional recurrence 之對照表；' +
-      '註 *：Chemotherapy recommended based on CALOR study results）、p5（gBRCA1/2 檢測適應症）。',
-      'palliative');
-  }
-
-  /* ==========================================================
-     互動
-     ========================================================== */
   function bcPick(key, val, btn) {
-    var s = bcSt;
-    bcSel(btn);
-    if (key === 'scope') {
-      s.scope = val;
-      s.img = s.dloc = s.dmar = null;
-      s.sub = s.ctn = s.strat = s.nresp = s.surg = s.ax = s.ptn = s.resp = null;
-      s.pg = s.pget = null;
-      s.msub = s.mcrisis = null;
-      s.rsite = null;
-      bcClearSel(['bc_s_dx', 'bc_s_dcis', 'bc_s_dmar', 'bc_s2', 'bc_s3', 'bc_s4', 'bc_s5n', 'bc_s6',
-        'bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n', 'bc_s_pg', 'bc_s_pget', 'bc_s_msub', 'bc_s_mcrisis', 'bc_s_rsite']);
-    } else if (key === 'img') {
-      s.img = val;
-    } else if (key === 'dloc') {
-      s.dloc = val; s.dmar = null; bcClearSel(['bc_s_dmar']);
-    } else if (key === 'dmar') {
-      s.dmar = val;
-    } else if (key === 'sub') {
-      s.sub = val;
-      s.ctn = s.strat = s.nresp = s.surg = s.ax = s.ptn = s.resp = null;
-      bcClearSel(['bc_s3', 'bc_s4', 'bc_s5n', 'bc_s6', 'bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n']);
-    } else if (key === 'ctn') {
-      s.ctn = val;
-      s.strat = s.nresp = s.surg = s.ax = s.ptn = s.resp = null;
-      bcClearSel(['bc_s4', 'bc_s5n', 'bc_s6', 'bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n']);
-    } else if (key === 'strat') {
-      s.strat = val;
-      s.nresp = s.surg = s.ax = s.ptn = s.resp = null;
-      bcClearSel(['bc_s5n', 'bc_s6', 'bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n']);
-    } else if (key === 'nresp') {
-      s.nresp = val;
-      s.surg = s.ax = s.ptn = s.resp = null;
-      bcClearSel(['bc_s6', 'bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n']);
-    } else if (key === 'surg') {
-      s.surg = val;
-      s.ax = s.ptn = s.resp = null;
-      bcClearSel(['bc_s7u', 'bc_s7n', 'bc_s8u', 'bc_s8n']);
-    } else if (key === 'ax') {
-      s.ax = val;
-      s.ptn = s.resp = null;
-      bcClearSel(['bc_s8u', 'bc_s8n']);
-    } else if (key === 'ptn') {
-      s.ptn = val;
-    } else if (key === 'resp') {
-      s.resp = val;
-    } else if (key === 'pg') {
-      s.pg = val; s.pget = null; bcClearSel(['bc_s_pget']);
-    } else if (key === 'pget') {
-      s.pget = val;
-    } else if (key === 'msub') {
-      s.msub = val; s.mcrisis = null; bcClearSel(['bc_s_mcrisis']);
-    } else if (key === 'mcrisis') {
-      s.mcrisis = val;
-    } else if (key === 'rsite') {
-      s.rsite = val;
+    var down = DOWNSTREAM[key];
+    S[key] = val;
+    if (down) {
+      down.forEach(function (k) { S[k] = null; });
+      /* 先把所有選取標記清掉，render 之後再依 state 重打 —— 這樣下游的
+         舊選取不會殘留在畫面上（那是「上游建議掛在下游」的來源）。 */
+      clearSelectionMarks();
     }
-    bcRender();
+    render();
+    reapplyMarks();
+    if (btn && document.body.contains(btn)) {
+      var sel = btn.classList.contains('tn-cell') ? '.tn-cell' : '.flow-opt';
+      var g = btn.parentNode;
+      if (g) g.querySelectorAll(sel).forEach(function (b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+    }
+  }
+
+  /* 依 state 重新標記所有選取 —— 格子是每次 render 重畫的，必須這樣補 */
+  function reapplyMarks() {
+    var pairs = [
+      ['bc_n1', 'scope'], ['bc_n_dx', 'img'], ['bc_n_dloc', 'dloc'], ['bc_n_dmar', 'dmar'],
+      ['bc_n_sub', 'sub'], ['bc_n_plan', 'plan'], ['bc_n_surg', 'surg'], ['bc_n_nresp', 'nresp'],
+      ['bc_n_ypath', 'ypath'], ['bc_n_msub', 'sub'], ['bc_n_mrisk', 'mrisk'],
+      ['bc_n_mline', 'mline'], ['bc_n_mbio', 'mbio'], ['bc_n_rsite', 'rsite'],
+      ['bc_n_rprev', 'rprev'], ['bc_n_pstage', 'pstage']
+    ];
+    pairs.forEach(function (p) {
+      var box = el(p[0]);
+      if (!box || !S[p[1]]) return;
+      box.querySelectorAll('.flow-opt').forEach(function (b) {
+        var m = /bcPick\('([a-z]+)','([a-z0-9_]+)'/.exec(b.getAttribute('onclick') || '');
+        if (m && m[1] === p[1] && m[2] === S[p[1]]) b.classList.add('selected');
+      });
+    });
+    if (S.sub && S.ctn) {
+      var c = el('bc_ctnc_' + S.sub + '_' + S.ctn); if (c) c.classList.add('selected');
+    }
+    if (S.sub && S.ptn) {
+      var d = el('bc_ptnc_' + S.sub + '_' + S.ptn); if (d) d.classList.add('selected');
+    }
   }
 
   function bcReset() {
-    Object.keys(bcSt).forEach(function (k) { bcSt[k] = null; });
-    var root = document.getElementById('bcPath');
-    if (root) root.querySelectorAll('.flow-opt,.tn-cell').forEach(function (b) { b.classList.remove('selected'); });
-    if (root) root.querySelectorAll('.flow-fu').forEach(function (f) { f.classList.add('hidden'); f.innerHTML = ''; });
-    bcRender();
+    KEYS.forEach(function (k) { S[k] = null; });
+    clearSelectionMarks();
+    var h1 = el('bc_ctn_hold'); if (h1) h1.innerHTML = '';
+    var h2 = el('bc_ptn_hold'); if (h2) h2.innerHTML = '';
+    render();
   }
 
   function initBreastPathway() { bcReset(); }

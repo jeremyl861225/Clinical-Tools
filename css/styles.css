@@ -556,6 +556,13 @@
   /* 證據／論文引述：與臨床建議同層但降一階，供流程圖在建議項下補充試驗數據與正反立場 */
   .flow-rec .rec-detail li.ev{font-size:11.5px; line-height:1.65; opacity:.82; margin:3px 0 5px;}
   .flow-rec .rec-detail li.ev::marker{font-size:9px;}
+  /* 建議卡內的小標題（局部處置／腋下／輔助治療）。與建議條列同在一個 ul，
+     但不掛點點、並向左退回容器的 padding，讀起來才是標題而不是又一條建議。 */
+  .flow-rec .rec-detail li.hd{list-style:none; margin:13px 0 3px -18px;}
+  .flow-rec .rec-detail li.hd:first-child{margin-top:0;}
+  /* 標題底下的子條列（例如「這四種情況要做 SLNB」）：縮一階、字級降半級 */
+  .flow-rec .rec-detail ul.rec-sub{margin:3px 0 4px; padding-left:17px; list-style:disc; font-size:12.5px;}
+  .flow-rec .rec-detail ul.rec-sub li{margin:3px 0;}
   .flow-rec .rec-note{margin-top:11px; padding-top:9px; border-top:1px solid rgba(180,180,180,.28); font-size:11.5px; opacity:.9; line-height:1.6;}
   .flow-rec.rec-idle .rec-title{color:var(--muted); font-size:15px; font-family:var(--sans); font-weight:600;}
   .flow-rec.rec-idle .rec-label,.flow-rec.rec-idle .rec-note{color:var(--muted-soft);}

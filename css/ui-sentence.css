@@ -34,6 +34,7 @@
   --sentence-hot:     #97331d;   /* 硃砂：最高急迫度／危險 */
   --sentence-warn:    #7d5a10;   /* 琥珀：中 */
   --sentence-calm:    #2b5f45;   /* 墨綠：低／安全 */
+  --sentence-cool:    #1f4a6b;   /* 靛藍：第四色，只給 T×N 決策格用（見 P11 段） */
   --sentence-sel:     #14211c;
   --sentence-shade:   rgba(20,33,28,.06);
   --sentence-scrim:   rgba(239,236,225,.94);
@@ -69,6 +70,7 @@
     --sentence-hot:    #e0715a;
     --sentence-warn:   #d3a247;
     --sentence-calm:   #79b58e;
+    --sentence-cool:   #6faccc;
     --sentence-sel:    #ece6d8;
     --sentence-shade:  rgba(236,230,216,.07);
     --sentence-scrim:  rgba(10,21,18,.94);
@@ -731,6 +733,10 @@
 [data-ui="sentence"] .flow-rec .rec-detail li { margin: 3px 0; color: var(--sentence-fg2); }
 [data-ui="sentence"] .flow-rec .rec-detail li b, [data-ui="sentence"] .flow-rec .rec-detail li strong { color: var(--sentence-fg); }
 [data-ui="sentence"] .flow-rec .rec-detail li.ev { opacity: .82; }
+/* 建議卡內的小標題與其子條列。styles.css 用 -18px 退回 padding，造句版的
+   padding 是 1.2em，所以這裡只改退回量，其餘（不掛點點、上留白）沿用。 */
+[data-ui="sentence"] .flow-rec .rec-detail li.hd { margin-left: -1.2em; }
+[data-ui="sentence"] .flow-rec .rec-detail ul.rec-sub { font-size: 11.5px; }
 [data-ui="sentence"] .flow-rec .rec-note {
   border-top: 1px dotted var(--sentence-line); border-top-color: var(--sentence-line);
   font-family: var(--sentence-mono); font-size: 10.5px; color: var(--sentence-dim); opacity: 1;
@@ -2671,20 +2677,23 @@
 [data-ui="sentence"] .tn-na { border: 1px dashed var(--sentence-line2); border-radius: 0; color: var(--sentence-dim); }
 [data-ui="sentence"] .tn-lg { color: var(--sentence-fg2); }
 [data-ui="sentence"] .tn-sw { border-radius: 0; border: 1px solid var(--sentence-line2); }
-/* g-none/g-ii/g-low/g-high 四組＝四種輔助治療決策風險分層，本身即嚴重度
-   序列，改吃 calm→warn(淡)→warn(深)→hot；仍是「文字（COL-3 決策分組本身
-   已用文字標明）＋色＋邊框粗細」三重編碼。 */
+/* g-none/g-ii/g-low/g-high 四組＝四種決策分層。
+   2026-08-16 改版：原本是 calm→warn(18%)→warn(34%)→hot，g-ii 與 g-low
+   同一個色相只差濃度，手機上根本分不出來（使用者實機回報）。改成四個
+   互不相同的色相：墨綠→琥珀→靛藍→硃砂，並拉開填色濃度，配合邊框粗細
+   1/2/2/3。仍維持「文字＋色相＋邊框粗細」三重編碼，色盲亦可用。
+   正式版（styles/cancer-staging.css）本來就是四色相，這裡是回到同一原則。 */
 [data-ui="sentence"] .tn-cell.g-none, [data-ui="sentence"] .tn-sw.g-none {
-  background: color-mix(in srgb, var(--sentence-calm) 16%, var(--sentence-bg)); border-color: var(--sentence-calm); color: var(--sentence-fg);
+  background: color-mix(in srgb, var(--sentence-calm) 28%, var(--sentence-bg)); border-color: var(--sentence-calm); color: var(--sentence-fg);
 }
 [data-ui="sentence"] .tn-cell.g-ii, [data-ui="sentence"] .tn-sw.g-ii {
-  background: color-mix(in srgb, var(--sentence-warn) 18%, var(--sentence-bg)); border-color: var(--sentence-warn); color: var(--sentence-fg); border-width: 2px;
+  background: color-mix(in srgb, var(--sentence-warn) 30%, var(--sentence-bg)); border-color: var(--sentence-warn); color: var(--sentence-fg); border-width: 2px;
 }
 [data-ui="sentence"] .tn-cell.g-low, [data-ui="sentence"] .tn-sw.g-low {
-  background: color-mix(in srgb, var(--sentence-warn) 34%, var(--sentence-bg)); border-color: var(--sentence-warn); color: var(--sentence-fg); border-width: 2px;
+  background: color-mix(in srgb, var(--sentence-cool) 30%, var(--sentence-bg)); border-color: var(--sentence-cool); color: var(--sentence-fg); border-width: 2px;
 }
 [data-ui="sentence"] .tn-cell.g-high, [data-ui="sentence"] .tn-sw.g-high {
-  background: color-mix(in srgb, var(--sentence-hot) 26%, var(--sentence-bg)); border-color: var(--sentence-hot); color: var(--sentence-fg); border-width: 3px;
+  background: color-mix(in srgb, var(--sentence-hot) 34%, var(--sentence-bg)); border-color: var(--sentence-hot); color: var(--sentence-fg); border-width: 3px;
 }
 
 /* ---- P12. 大腸直腸癌補充參考面板（.crc-supp 本身；.rec-detail 系列徽章

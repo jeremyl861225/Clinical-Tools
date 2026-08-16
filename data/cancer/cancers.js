@@ -628,7 +628,7 @@ window.CANCERS = [
     ],
     m1:'<b>Tis N0 M0 → 0 期</b>（原位癌，另見治療流程之 DCIS 分支）　｜　T0（無原發腫瘤證據）：N1mi → IB、N1 → IIA、N2 → IIIA、N3 → IIIC。<br>T1 含 T1mi。<b>N1mi 僅於 T0／T1 自成 IB</b>；T2 以上之 N1mi 併入 N1 分組（故 T2N1mi = IIB、T3N1mi = IIIA、T4N1mi = IIIB）。此為 <b>AJCC 8th 解剖分期</b>；預後分期需另計 grade 與 ER/PR/HER2。',
   },
-  node_note:'依 <b>AJCC 第 8 版</b>乳癌區域淋巴結定義：腋下以<b>胸小肌</b>為界分 Level I（外／下）、II（後方）、III（內／鎖骨下 apical），加上 Rotter（胸大小肌間）、內乳（IMN）與鎖骨上（N3c）。<b>乳內淋巴結（intramammary）計入腋下淋巴結</b>。轉移至<b>頸部淋巴結或對側腋下／內乳</b>屬遠處轉移（M1）。<br><b>台大指引之腋下處置</b>（p8、p13–p15、p48）：<b>cN0 首選 SLNB、cN(+) 行 ALND</b>（術前對可疑淋巴結應先做 FNA）。符合 <b>ACOSOG Z0011</b> 五項條件者（cN0、SLN 僅 1–2 顆巨轉移、T1-2、接受乳房保留手術且已規劃術後放療、有足量輔助全身治療，尤其 ER(+)）可免除進一步 ALND；<b>微轉移（≤2mm）不是 Z0011 的族群</b>，其證據來自 IBCSG 23-01。<br><b>術前化療之後規則不同</b>（p13、p14）：cN0 者術後可單做 SLNB — 除非治療中臨床惡化（PD）；cN1-2 降為 ycN0 者需<b>足量前哨</b>（雙示蹤劑且取 ≥3 顆，或 SLNB + 標記淋巴結摘除 TAD）才可免 ALND；<b>任一顆陽性（含 ypN1mi、ypN0(i+)）即須 ALND</b>；仍 ycN(+) 者直接 ALND。<b>Z0011 不適用於接受過術前化療者。</b><br><b>可省略腋下手術的情境與各自的證據，見「治療建議」頁籤流程中的對照表。</b>',
+  node_note:'依 <b>AJCC 第 8 版</b>乳癌區域淋巴結定義：腋下以<b>胸小肌</b>為界分為 Level I（外側、下方）、Level II（胸小肌後方）、Level III（內側、鎖骨下 apical），另加 Rotter 淋巴結（胸大肌與胸小肌之間）、內乳淋巴結與鎖骨上淋巴結（N3c）。<br><b>兩個容易記錯的歸類</b>：<b>乳房內淋巴結（intramammary node）計入腋下淋巴結</b>；轉移到<b>頸部淋巴結、對側腋下或對側內乳</b>屬<b>遠處轉移（M1）</b>，不算區域淋巴結。<br><b>顆數的門檻</b>：pN1 為 1–3 顆、pN2 為 4–9 顆、pN3 為 ≥ 10 顆或含鎖骨下、鎖骨上淋巴結。<b>pN1mi 是微轉移</b>（大於 0.2 mm 且不超過 2 mm）；<b>孤立腫瘤細胞 pN0(i+)</b>（不超過 0.2 mm 且細胞數不超過 200）在分期上仍視為 pN0。<br><b>腋下要開到什麼程度、什麼時候可以不做前哨淋巴結切片，全部寫在「治療建議」頁籤的互動流程裡</b>（直接手術與術前藥物治療後的規則不一樣），此處不重複。',
 
   nodes:[
     ['Level I','腋下低位 — 胸小肌外側（含 axillary vein、external mammary、scapular 群）','腋下（區域，計入 N）'],
@@ -646,6 +646,8 @@ window.CANCERS = [
   refs:[
     ['台大醫院乳癌診療指引（NTUH Clinical Guidelines of Breast Cancer in Oncology, 2023.V1；文件 50710-2-000010 版次 14；2026/06/16 癌委會檢視通過；p1–p49）', PS('NTUH breast cancer clinical guidelines')],
     ['健保署藥品給付規定 第9節 抗癌瘤藥物（本頁所列給付條文之查詢日：2026-08-16；條文會變動，用藥前請以當期公告為準）', 'https://www.nhi.gov.tw/'],
+    ['ASBrS 資源指引：原位癌與侵襲癌之腋下處置（Axillary Management for Patients With In-Situ and Invasive Breast Cancer，2026-02-24 版）— DCIS 之 SLNB 四項適應症出處', 'https://www.breastsurgeons.org/docs/statements/asbrs-management-of-the-axilla-2026-02-24.pdf'],
+    ['NCCN 乳癌指引 BINV-G（乳房保留治療之絕對／相對禁忌）與 DCIS-1 註 e／f／h — 本頁查核之公開版本為 v5.2020', 'https://www2.tri-kobe.org/nccn/guideline/breast/english/breast.pdf'],
     ['AJCC 8th 乳癌分期主要變革 — Giuliano AE et al. CA Cancer J Clin 2017;67:290-303', PM('28294295')],
     ['ACOSOG Z0011（SLN 1–2 顆巨轉移可免 ALND）— Giuliano AE et al. JAMA 2011;305:569-575', PM('21304082')],
     ['ACOSOG Z0011 10 年結果 — Giuliano AE et al. JAMA 2017;318:918-926', PM('28898379')],
