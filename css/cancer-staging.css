@@ -476,6 +476,9 @@
   .tn-sw.g-high{background:var(--tn-high-bg); border-color:var(--tn-high-line);}
   /* 欄數變體：預設 3 欄（結腸 N0/N1/N2）。乳癌之術後格為 4 欄（pN0/pN1mi/pN1/pN2-3），
      列數也多（pT1mi…pT4），故一併把格高與字級收小，否則在手機上會撐破版面。 */
+  /* 2 欄（直腸 cN0／cN1–2）。沒有這一條的話會套到預設的 3 欄，
+     每一列的列標題會被擠到上一列去 —— 表頭會多出一格奇怪的內容。 */
+  .tn-grid.tn-c2{grid-template-columns:minmax(64px,96px) repeat(2,1fr);}
   .tn-grid.tn-c4{grid-template-columns:minmax(48px,64px) repeat(4,1fr);}
   .tn-grid.tn-c4 .tn-cell,.tn-grid.tn-c4 .tn-na{padding:8px 1px; font-size:10.5px;}
   .tn-grid.tn-c4 .tn-corner,.tn-grid.tn-c4 .tn-ch,.tn-grid.tn-c4 .tn-rh{font-size:9.5px; padding:2px 2px;}

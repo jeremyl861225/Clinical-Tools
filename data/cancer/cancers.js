@@ -952,7 +952,7 @@ window.CANCERS = [
 {
   id:'colorectal', zh:'大腸直腸癌', en:'Colorectal Cancer', group:'消化系 GI',
   subtype_label:'部位 Primary site（先選部位；分期／淋巴結／治療三個分頁會一併切換）',
-  edition:'AJCC 8th（2017）／治療依台大大腸直腸癌診療指引 版次 21（2026/06/16，COL-1～COL-18）；治療分頁另附補充參考（CRC 臨床實務手冊 ver.1，2026.01，依 NCCN Colon v5.2025）',
+  edition:'AJCC 8th（2017）／治療依台大大腸直腸癌診療指引 版次 21（2026/06/16，COL-1～COL-18）· 健保給付條文查至 2026-08-16；治療分頁另附補充參考（CRC 臨床實務手冊 ver.1，2026.01，依 NCCN Colon v5.2025）',
   subtypes:[
     { key:'colon', label:'結腸 Colon', search_label:'結腸癌', search_en:'Colon Cancer',
       pathway:'colon',
