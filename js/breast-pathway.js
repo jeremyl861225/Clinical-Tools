@@ -48,7 +48,6 @@
     'ypath',   // 術前治療後的病理：pcr | res_n0 | npos
     'mrisk',   // 轉移：crisis | high | mid | low
     'mline',   // 轉移線別：l1 | l2 | l3
-    'mbio',    // 轉移生物標記：brca | pdl1 | none
     'rsite',   // 局部區域復發位置：local | axilla | scf | imn
     'rprev',   // 局部復發時的初始治療：bct_rt | bct_lnd_rt | nort
     'pstage'   // 治療中進展的階段：na | chemo | et | her2
@@ -231,28 +230,44 @@
 
   /* 3b. 化療處方（p28–p31） */
   function chemoReference() {
-    return fold('化療處方要開哪一個？<b>院內常用處方與劑量</b>（p28–p31）', tbl([
+    return fold('化療處方要開哪一個？<b>院內常用處方的藥名、劑量與療程</b>（p28–p31）', tbl([
       ['怎麼選強度',
         '院內共識：<b>除了強烈建議用第三代處方的病人以外，原則上只建議「要化療」或「不必化療」，' +
         '強度由主治醫師與病人討論後共同決定</b>（p28）。<br>' +
-        '第二代比第一代約再降 15% 的相對復發率，第三代比第二代再降 15%。<br>' +
+        '第二代比第一代約再降 15% 的相對復發率，第三代比第二代再降 15%。' +
         '風險因子中<b>最重要的是腫瘤大小、淋巴結轉移顆數、grade</b>，再加年齡、ER、PR、HER2、Ki-67。'],
-      ['第一代', 'CMF；AC ×4；EC ×4'],
-      ['第二代', 'CEF；FAC；AC-T 或 EC-T；TC（USO9735）；A-CMF 或 E-CMF'],
-      ['第三代', '劑量密集 ATC（CALGB9741）；TAC（BCIRG001）；TEC；FEC-T（PACS01）；AC-wT（E1199）'],
-      ['AC-T／EC-T',
-        'cyclophosphamide 500–600 mg/m² ＋ epirubicin 75–100 mg/m²（或 doxorubicin 60 mg/m²）D1，共 4 次；' +
-        '接 paclitaxel 175–225 mg/m²（或 docetaxel 75–100 mg/m²）共 4 次。全部每 21 天一次。'],
-      ['AC-wT（E1199）', 'AC 或 EC ×4（每 21 天）→ paclitaxel 80 mg/m² D1、D8、D15，共 12 劑。'],
-      ['TC ×4–6', 'docetaxel 75 mg/m² ＋ cyclophosphamide 500–600 mg/m² D1，每 21 天一次。'],
-      ['TAC／TEC', 'docetaxel 75 ＋ doxorubicin 50（TEC 用 epirubicin 70）＋ cyclophosphamide 500 mg/m²，每 21 天 ×6，<b>需要 G-CSF 支持</b>。'],
+      ['第一代',
+        '<b>CMF（classical）</b>：cyclophosphamide 100 mg/m² 口服 D1–14 ＋ methotrexate 40 mg/m² D1、D8 ＋ ' +
+        '5-FU 600 mg/m² D1、D8；<b>每 28 天一次，共 6 次</b>。<br>' +
+        '<b>CMF（modified）</b>：cyclophosphamide 600 ＋ methotrexate 40 ＋ 5-FU 600 mg/m²，全部 D1；<b>每 21 天一次，共 6 次</b>。<br>' +
+        '<b>AC ×4</b>：doxorubicin 60 ＋ cyclophosphamide 500–600 mg/m² D1；<b>每 21 天一次，共 4 次</b>。<br>' +
+        '<b>EC ×4</b>：epirubicin 75–90 ＋ cyclophosphamide 500–600 mg/m² D1；<b>每 21 天一次，共 4 次</b>。'],
+      ['第二代',
+        '<b>CEF</b>：cyclophosphamide 500–600 ＋ epirubicin 75–100 ＋ 5-FU 500–600 mg/m² D1；<b>每 21 天一次，共 6 次</b>。<br>' +
+        '<b>FAC</b>：cyclophosphamide 500–600 ＋ doxorubicin 60 ＋ 5-FU 500 mg/m² D1；<b>每 21 天一次，共 6 次</b>。<br>' +
+        '<b>AC-T／EC-T</b>（CALGB9344、BCIRG-005）：先 cyclophosphamide 500–600 ＋ epirubicin 75–100' +
+        '（或 doxorubicin 60）mg/m² D1 ×4，再接 paclitaxel 175–225（或 docetaxel 75–100）mg/m² D1 ×4；' +
+        '<b>全部每 21 天一次，合計 8 次</b>。<br>' +
+        '<b>TC ×4–6</b>（USO9735）：docetaxel 75 ＋ cyclophosphamide 500–600 mg/m² D1；<b>每 21 天一次，共 4–6 次</b>。<br>' +
+        '<b>A-CMF／E-CMF</b>：doxorubicin 或 epirubicin 單用數個週期後接 CMF。<b>指引只列名稱，沒有給劑量與次數。</b>'],
+      ['第三代',
+        '<b>AC-wT</b>（E1199）：cyclophosphamide 500–600 ＋ doxorubicin 60（或 epirubicin 75–90）mg/m² D1，' +
+        '<b>每 21 天 ×4</b>；再接 paclitaxel 80 mg/m² D1、D8、D15，<b>共 12 劑</b>。<br>' +
+        '<b>TAC</b>（BCIRG001）：docetaxel 75 ＋ doxorubicin 50 ＋ cyclophosphamide 500 mg/m² D1；' +
+        '<b>每 21 天一次，共 6 次，需要 G-CSF 支持</b>。<br>' +
+        '<b>TEC</b>：docetaxel 75 ＋ epirubicin 70 ＋ cyclophosphamide 500 mg/m² D1；' +
+        '<b>每 21 天一次，共 6 次，需要 G-CSF 支持</b>。<br>' +
+        '<b>FEC-T</b>（PACS01）：第 1–4 次 cyclophosphamide 600 ＋ epirubicin 75 ＋ 5-FU 600 mg/m² D1；' +
+        '第 5–8 次 docetaxel 75 mg/m² D1；<b>全部每 21 天一次</b>。<br>' +
+        '<b>劑量密集 ATC</b>（CALGB9741）：<b>指引只列名稱，沒有給劑量與間隔</b>；此處不自行補上。'],
       ['什麼時候開始', '<b>除非傷口癒合不良或有其他併發症，希望在術後六至八週內開始化療</b>（p28）。'],
-      ['院內兩點特別說明',
+      ['院內兩點<br>特別說明',
         'NCCN 推薦的輔助處方裡<b>沒有 liposomal doxorubicin</b>，本院指引也不含。若病人堅持以它取代 doxorubicin 或 epirubicin，' +
         '基於有治療優於沒有治療，仍可接受，但<b>病歷須詳細註明</b>（p28）。<br>' +
         'docetaxel 與 paclitaxel 可互換，以每 3 週 docetaxel 與每週 paclitaxel 為優先（E1199）。']
     ]));
   }
+
 
   /* 3c. 腋下手術原則（p8、p13、p14） */
   function axillaReference() {
@@ -585,11 +600,11 @@
     /* 步驟 1 */
     h += node0('bc_n1', '1', '這位病人目前在哪一個階段？',
       opt('scope', 'dx', '影像有異常，還沒有病理診斷', '乳房攝影微鈣化、超音波腫塊、皮膚變化、腋下腫塊') +
-      opt('scope', 'dcis', '原位管癌（ductal carcinoma in situ）', 'Tis N0M0，含無侵襲成分的柏哲德氏病') +
-      opt('scope', 'lcis', '小葉原位癌（lobular carcinoma in situ）', '') +
-      opt('scope', 'inv', '侵襲性乳癌、沒有遠處轉移', '管狀、小葉、混合、化生型癌 —— 從決定先開刀還是先給藥開始') +
-      opt('scope', 'mbc', '轉移性乳癌（有遠處轉移）', '第一線到後線') +
-      opt('scope', 'recur', '局部或區域復發（沒有遠處轉移）', '乳房內、胸壁、腋下、鎖骨上、內乳淋巴結') +
+      opt('scope', 'dcis', '原位管癌 DCIS（ductal carcinoma in situ）', 'Tis N0M0，含無侵襲成分的柏哲德氏病') +
+      opt('scope', 'lcis', '小葉原位癌 LCIS（lobular carcinoma in situ）', '') +
+      opt('scope', 'inv', '侵襲性乳癌、沒有遠處轉移（M0）', '管狀、小葉、混合、化生型癌 —— 從決定先開刀還是先給藥開始') +
+      opt('scope', 'mbc', '轉移性乳癌（M1，有遠處轉移）', '第一線到後線') +
+      opt('scope', 'recur', '局部或區域復發（M0）', '乳房內、胸壁、腋下、鎖骨上、內乳淋巴結') +
       opt('scope', 'prog', '治療中進展，或治療剛結束就復發', '術前治療中惡化；輔助治療期間或剛結束就復發'));
 
     /* A. 影像 → 診斷 */
@@ -626,10 +641,10 @@
     /* D. 侵襲癌主線 */
     h += '<div id="bc_b_inv" class="hidden">';
     h += node('bc_n_sub', '2', '生物亞型是哪一種？（依切片的 ER／PR 與 HER2；p2）',
-      opt('sub', 'erpos', '荷爾蒙受體陽性、HER2 陰性', '最常見；以內分泌治療為主軸') +
-      opt('sub', 'her2hr', '荷爾蒙受體陽性、HER2 陽性', '兩條軸線都要走') +
-      opt('sub', 'her2', '荷爾蒙受體陰性、HER2 陽性', '') +
-      opt('sub', 'tnbc', '三陰性（ER、PR、HER2 皆陰性）', ''),
+      opt('sub', 'erpos', 'ER/PR(+) HER2(−)　—　Luminal A 或 Luminal B（HER2 陰性型）', '最常見；以內分泌治療為主軸') +
+      opt('sub', 'her2hr', 'ER/PR(+) HER2(+)　—　Luminal B（HER2 陽性型）', '兩條軸線都要走') +
+      opt('sub', 'her2', 'ER/PR(−) HER2(+)　—　HER2 型（HER2-enriched）', '') +
+      opt('sub', 'tnbc', 'ER/PR(−) HER2(−)　—　TNBC（三陰性）', ''),
       fold('HER2 怎麼判讀？ER 幾 % 算陽性？（p2、p23）', tbl([
         ['HER2 IHC 0 或 1+', '陰性，通常不做 FISH'],
         ['HER2 IHC 2+', '<b>必須做 FISH</b> 才能定案'],
@@ -641,8 +656,8 @@
       '<div id="bc_ctn_hold"></div>');
     h += recBox('bc_r_ctn', '建議處置 · 先開刀還是先給藥');
     h += node('bc_n_plan', '4', '實際決定走哪一條？',
-      opt('plan', 'up', '直接手術', '') +
-      opt('plan', 'na', '先做術前藥物治療，之後再手術', ''));
+      opt('plan', 'up', 'Upfront surgery', '直接手術') +
+      opt('plan', 'na', 'Neoadjuvant therapy', '先做藥物治療，之後再手術'));
 
     /* D-1 直接手術 */
     h += '<div id="bc_b_up" class="hidden">';
@@ -678,10 +693,10 @@
     /* E. 轉移性 */
     h += '<div id="bc_b_mbc" class="hidden">';
     h += node('bc_n_msub', '2', '生物亞型是哪一種？（轉移病灶若能切片，應重驗；p2）',
-      opt('sub', 'erpos', '荷爾蒙受體陽性、HER2 陰性', '') +
-      opt('sub', 'her2hr', '荷爾蒙受體陽性、HER2 陽性', '走抗 HER2 那條路，再加上內分泌治療') +
-      opt('sub', 'her2', '荷爾蒙受體陰性、HER2 陽性', '') +
-      opt('sub', 'tnbc', '三陰性', ''));
+      opt('sub', 'erpos', 'ER/PR(+) HER2(−)　—　Luminal A 或 Luminal B（HER2 陰性型）', '') +
+      opt('sub', 'her2hr', 'ER/PR(+) HER2(+)　—　Luminal B（HER2 陽性型）', '走抗 HER2 那條路，再加上內分泌治療') +
+      opt('sub', 'her2', 'ER/PR(−) HER2(+)　—　HER2 型（HER2-enriched）', '') +
+      opt('sub', 'tnbc', 'ER/PR(−) HER2(−)　—　TNBC（三陰性）', ''));
     h += node('bc_n_mrisk', '3', '疾病活性有多高？（p38，台灣乳房醫學會共識圖）',
       opt('mrisk', 'crisis', '有 visceral crisis，或進展很快', '器官功能已經受影響，需要短時間內見效') +
       opt('mrisk', 'high', '高風險（但沒有 visceral crisis）', 'disease-free interval 短、內臟腫瘤負荷高、已有症狀') +
@@ -706,10 +721,6 @@
       opt('mline', 'l1', '第一線（轉移後還沒用過藥）', '') +
       opt('mline', 'l2', '第二線', '') +
       opt('mline', 'l3', '第三線以後', ''));
-    h += node('bc_n_mbio', '5', '生物標記的結果？',
-      opt('mbio', 'brca', 'germline BRCA1/2 有致病性突變', '') +
-      opt('mbio', 'pdl1', 'PD-L1 陽性（CPS ≥ 10，Dako 22C3）', '') +
-      opt('mbio', 'none', '都沒有，或還沒驗', ''));
     h += recBox('bc_r_mbc', '建議處置 · 轉移性乳癌');
     h += fuBox('bc_f_mbc');
     h += '</div>';
@@ -793,10 +804,10 @@
 
   function subLabel(s) {
     return {
-      her2hr: '荷爾蒙受體陽性、HER2 陽性',
-      her2: '荷爾蒙受體陰性、HER2 陽性',
-      erpos: '荷爾蒙受體陽性、HER2 陰性',
-      tnbc: '三陰性'
+      her2hr: 'ER/PR(+) HER2(+)',
+      her2: 'ER/PR(−) HER2(+)',
+      erpos: 'ER/PR(+) HER2(−)',
+      tnbc: 'TNBC'
     }[s];
   }
   function ctnParts() {
@@ -807,7 +818,7 @@
     var p = ctnParts();
     var tr = CT_ROWS.filter(function (r) { return r[0] === p.t; })[0];
     var cc = CN_COLS.filter(function (c) { return c[0] === p.n; })[0];
-    return tr[1] + ' ' + cc[1];
+    return tr[1] + cc[1].replace('c', '');
   }
 
   /* ==========================================================
@@ -1288,7 +1299,7 @@
       g = ptnGroup(pt, pn);
       var ptr = PT_ROWS.filter(function (r) { return r[0] === pt; })[0];
       var pnc = PN_COLS.filter(function (c) { return c[0] === pn; })[0];
-      title = ptr[1] + ' ' + pnc[1] + '（' + subLabel(s) + '）→ 術後輔助治療';
+      title = ptr[1] + pnc[1].replace('p', '') + '（' + subLabel(s) + '）→ 術後輔助治療';
       L = L.concat(adjSystemicUpfront(s, pt, pn, g));
     } else {
       title = { pcr: 'pCR', res_n0: '乳房有殘存病灶、淋巴結陰性', npos: '淋巴結仍有轉移' }[S.ypath] +
@@ -1570,12 +1581,6 @@
     show('bc_n_mline', true);
     if (!S.mline) return;
 
-    var needBio = (S.sub === 'tnbc' || S.sub === 'erpos');
-    if (needBio) {
-      show('bc_n_mbio', true);
-      if (!S.mbio) return;
-    }
-
     var L = [], title, cls = 'rec-elective';
     var lineTxt = { l1: '第一線', l2: '第二線', l3: '第三線以後' }[S.mline];
 
@@ -1607,7 +1612,7 @@
   }
 
   function mbcErLines() {
-    var L = [], r = S.mrisk, l = S.mline, bio = S.mbio;
+    var L = [], r = S.mrisk, l = S.mline;
 
     L.push(H('這一線要用什麼', 'p38'));
     if (r === 'crisis') {
@@ -1647,11 +1652,10 @@
         ' 加 exemestane（健保 9.36.1 第 4 項；限無 visceral crisis、未曾用過 exemestane）。');
       L.push('<b>⚠ 順序陷阱：用過 everolimus 失敗者，之後不得再申請 CDK4/6 抑制劑</b>（9.72.6）。' +
         '所以 <b>CDK4/6 抑制劑要排在 everolimus 前面</b>。');
-      if (bio === 'brca') {
-        L.push('<b>帶 germline BRCA1/2 突變 → 可以用 PARP 抑制劑，但要自費。</b>');
-        L.push(EV('健保 9.85.2 的 PARP 抑制劑<b>只給付三陰性</b>；' +
-          '<b>荷爾蒙受體陽性的 BRCA 突變轉移性乳癌不給付</b>（指引 p41 已寫明這一點，至今未變）。'));
-      }
+      L.push('<b>如果帶 germline BRCA1/2 突變 → 可以用 PARP 抑制劑（' + drug('olaparib') + ' 或 ' +
+        drug('talazoparib') + '），但要自費。</b>');
+      L.push(EV('健保 9.85.2 的 PARP 抑制劑<b>只給付三陰性</b>；' +
+        '<b>ER/PR(+) 的 BRCA 突變轉移性乳癌不給付</b>（指引 p41 已寫明這一點，至今未變）。'));
       L.push('<b>用過 CDK4/6 抑制劑 ≤ 12 個月、有內臟轉移，又已接受 ≥ 2 線轉移性化療者 → ' +
         drug('sacituzumab govitecan') + '</b>（健保 9.106，2025-10-01 起新增此適應症）。');
       L.push('<b>' + drug('elacestrant') + ' 在台灣未給付</b>（健保藥品清單查無此成分）。');
@@ -1698,7 +1702,7 @@
   }
 
   function mbcTnbcLines() {
-    var L = [], l = S.mline, bio = S.mbio;
+    var L = [], l = S.mline;
     L.push(H('這一線要用什麼', 'p40、p41、p44'));
     if (l === 'l1') {
       L.push('<b>第一線：化療；適合的人再加上免疫治療</b>（p40）。');
@@ -1709,21 +1713,16 @@
       L.push('<b>院內立場：認同第一線加免疫治療的概念、依各自建議的 companion diagnostic 選病人，但化療夥伴可以放寬</b>（p40）。');
       L.push('<b>⚠ 但轉移性三陰性的免疫治療在台灣完全不給付</b> —— 健保 9.69 的乳癌只有「早期三陰性乳癌」一格，' +
         '<b>這兩個處方目前都是自費</b>。');
-      if (bio === 'brca') {
-        L.push(H('帶 BRCA 突變的話', 'p41'));
-        L.push('<b>' + drug('olaparib') + ' 或 ' + drug('talazoparib') + ' 有給付</b>（健保 9.85.2）—— ' +
-          '限 ER、PR、HER2 皆陰性且 <b>germline</b> BRCA1/2 突變。兩藥擇一。');
-      }
-      if (bio === 'pdl1') {
-        L.push(EV('PD-L1 CPS ≥ 10（Dako 22C3）符合 KEYNOTE-355 的族群定義，但如上所述<b>台灣不給付</b>，' +
-          '要用就是自費。開始前務必把費用講清楚。'));
-      }
+      L.push(EV('PD-L1 驗出 CPS ≥ 10（Dako 22C3）只代表符合 KEYNOTE-355 的族群定義，' +
+        '<b>不代表拿得到給付</b>；開始前務必把費用講清楚。'));
+      L.push(H('如果帶 BRCA1/2 生殖細胞突變', 'p41'));
+      L.push('<b>' + drug('olaparib') + ' 或 ' + drug('talazoparib') + ' 有給付</b>（健保 9.85.2）—— ' +
+        '限 ER、PR、HER2 皆陰性且 <b>germline</b> BRCA1/2 突變。兩藥擇一。');
+      L.push(EV('這一條是三陰性與 ER/PR(+) 最大的給付差別 —— 同樣帶 BRCA 突變，三陰性有給付，ER/PR(+) 沒有。'));
     } else if (l === 'l2') {
       L.push('<b>換另一個化療處方</b>（單一藥物依序使用；處方見下方收合表）。');
-      if (bio === 'brca') {
-        L.push('<b>還沒用過 PARP 抑制劑的話，這一線可以用 ' + drug('olaparib') + ' 或 ' +
-          drug('talazoparib') + '，健保有給付</b>（9.85.2，限三陰性加 germline BRCA 突變）。');
-      }
+      L.push('<b>帶 germline BRCA1/2 突變、而且還沒用過 PARP 抑制劑的話，這一線可以用 ' + drug('olaparib') +
+        ' 或 ' + drug('talazoparib') + '，健保有給付</b>（9.85.2，限三陰性加 germline BRCA 突變）。');
     } else {
       L.push('<b>第三線以後：' + drug('sacituzumab govitecan') + '</b> —— 10 mg/kg，D1、D8，每 3 週（p44）。');
       L.push('<b>健保條件（9.106）</b>：' + SUB([
@@ -1869,21 +1868,20 @@
      ========================================================== */
   var SEL_GROUPS = ['bc_n1', 'bc_n_dx', 'bc_n_dloc', 'bc_n_dmar', 'bc_n_sub', 'bc_n_ctn', 'bc_n_plan',
     'bc_n_surg', 'bc_n_ptn', 'bc_n_nresp', 'bc_n_ypath',
-    'bc_n_msub', 'bc_n_mrisk', 'bc_n_mline', 'bc_n_mbio',
+    'bc_n_msub', 'bc_n_mrisk', 'bc_n_mline',
     'bc_n_rsite', 'bc_n_rprev', 'bc_n_pstage'];
 
   /* 上游一改，下游全部歸零 —— 否則會出現「上游的建議掛在下游選項後面」 */
   var DOWNSTREAM = {
     scope: ['img', 'dloc', 'dmar', 'sub', 'ctn', 'plan', 'surg', 'ptn', 'nresp', 'ypath',
-      'mrisk', 'mline', 'mbio', 'rsite', 'rprev', 'pstage'],
+      'mrisk', 'mline', 'rsite', 'rprev', 'pstage'],
     dloc: ['dmar'],
-    sub: ['ctn', 'plan', 'surg', 'ptn', 'nresp', 'ypath', 'mrisk', 'mline', 'mbio'],
+    sub: ['ctn', 'plan', 'surg', 'ptn', 'nresp', 'ypath', 'mrisk', 'mline'],
     ctn: ['plan', 'surg', 'ptn', 'nresp', 'ypath'],
     plan: ['surg', 'ptn', 'nresp', 'ypath'],
     surg: ['ptn'],
     nresp: ['ypath'],
-    mrisk: ['mline', 'mbio'],
-    mline: ['mbio'],
+    mrisk: ['mline'],
     rsite: ['rprev']
   };
 
@@ -1919,7 +1917,7 @@
       ['bc_n1', 'scope'], ['bc_n_dx', 'img'], ['bc_n_dloc', 'dloc'], ['bc_n_dmar', 'dmar'],
       ['bc_n_sub', 'sub'], ['bc_n_plan', 'plan'], ['bc_n_surg', 'surg'], ['bc_n_nresp', 'nresp'],
       ['bc_n_ypath', 'ypath'], ['bc_n_msub', 'sub'], ['bc_n_mrisk', 'mrisk'],
-      ['bc_n_mline', 'mline'], ['bc_n_mbio', 'mbio'], ['bc_n_rsite', 'rsite'],
+      ['bc_n_mline', 'mline'], ['bc_n_rsite', 'rsite'],
       ['bc_n_rprev', 'rprev'], ['bc_n_pstage', 'pstage']
     ];
     pairs.forEach(function (p) {

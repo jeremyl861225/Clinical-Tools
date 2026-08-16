@@ -337,7 +337,13 @@
   .kps-details summary::-webkit-details-marker{display:none;}
   .kps-details table{border-collapse:collapse; margin-top:7px; font-size:11px; line-height:1.4;}
   .kps-details td{border:1px solid rgba(190,190,190,.32); padding:3px 8px; vertical-align:top;}
-  .kps-details td:first-child{font-family:var(--mono); font-weight:700; text-align:right; white-space:nowrap;}
+  /* 左欄以往用 nowrap，欄名一長整張表就被撐得又窄又高。改成允許換行並限寬，
+     右欄的內文才攤得開、表格總高度也短很多。 */
+  .kps-details td:first-child{font-family:var(--mono); font-weight:700; text-align:right;
+    white-space:normal; width:20%; min-width:58px; line-height:1.35;}
+  /* 建議卡末尾那幾條可展開連結：縮小行距與彼此的間距 */
+  .flow-rec .rec-detail > details{margin:1px 0;}
+  .flow-rec .rec-detail > details > summary{line-height:1.45;}
   /* 診斷／縮寫等參考區塊：安靜的可折疊清單（不用醒目的 rx-line 框） */
   .dx-details{margin:6px 0 2px;}
   .dx-details summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; color:var(--muted); text-decoration:underline; opacity:.92;}
@@ -399,7 +405,9 @@
   .tn-wrap{min-width:0;}
   .tn-cap{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
     color:var(--muted-soft); margin-bottom:7px;}
-  .tn-grid{display:grid; grid-template-columns:auto repeat(3,1fr); gap:4px; min-width:0;}
+  /* 首欄以往是 auto，最長的列名（如「cT4a–c 侵犯胸壁或皮膚」）會把整個格子
+     往右推，看起來偏一邊。改成限寬並允許換行，格子本身就回到版面中央。 */
+  .tn-grid{display:grid; grid-template-columns:minmax(54px,74px) repeat(3,1fr); gap:4px; min-width:0;}
   .tn-grid > *{min-width:0;}
   .tn-corner,.tn-ch,.tn-rh{font-family:var(--mono); font-size:10.5px; display:flex; align-items:center;
     justify-content:center; text-align:center; padding:2px 4px; color:var(--muted-soft); overflow-wrap:anywhere;}
@@ -425,7 +433,7 @@
   .tn-sw.g-high{background:var(--tn-high-bg); border-color:var(--tn-high-line);}
   /* 欄數變體：預設 3 欄（結腸 N0/N1/N2）。乳癌之術後格為 4 欄（pN0/pN1mi/pN1/pN2-3），
      列數也多（pT1mi…pT4），故一併把格高與字級收小，否則在手機上會撐破版面。 */
-  .tn-grid.tn-c4{grid-template-columns:auto repeat(4,1fr);}
+  .tn-grid.tn-c4{grid-template-columns:minmax(48px,64px) repeat(4,1fr);}
   .tn-grid.tn-c4 .tn-cell,.tn-grid.tn-c4 .tn-na{padding:8px 1px; font-size:10.5px;}
   .tn-grid.tn-c4 .tn-corner,.tn-grid.tn-c4 .tn-ch,.tn-grid.tn-c4 .tn-rh{font-size:9.5px; padding:2px 2px;}
   @media(max-width:400px){
