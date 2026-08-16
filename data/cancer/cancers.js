@@ -363,7 +363,7 @@ window.CANCERS = [
 {
   id:'gastric', zh:'胃癌', en:'Gastric Cancer', group:'消化系 GI',
   pathway:'gastric',
-  edition:'AJCC 8th（2017）／JGCA 淋巴結分群 · 治療依台大 V.1 2026 指引',
+  edition:'AJCC 8th（2017）／JGCA 第 6 版（2021）淋巴結分群 · 治療依台大胃癌診療指引 版次 17（2026/06/16 修訂公告，AGC-1～AGC-5、AGC-P）· 健保給付條文查至 2026-08-17',
   staging_note:'食道胃接合部（EGJ）腫瘤中心距接合部 ≤2cm 且侵犯食道者依食道癌分期；>2cm 或未侵犯食道者依胃癌分期。',
   t:[
     ['T1a','黏膜固有層／黏膜肌層 Lamina propria / muscularis mucosae'],

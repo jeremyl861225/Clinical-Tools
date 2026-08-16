@@ -482,9 +482,17 @@
   .tn-grid.tn-c4{grid-template-columns:minmax(48px,64px) repeat(4,1fr);}
   .tn-grid.tn-c4 .tn-cell,.tn-grid.tn-c4 .tn-na{padding:8px 1px; font-size:10.5px;}
   .tn-grid.tn-c4 .tn-corner,.tn-grid.tn-c4 .tn-ch,.tn-grid.tn-c4 .tn-rh{font-size:9.5px; padding:2px 2px;}
+  /* 5 欄（胃癌 pN0／N1／N2／N3a／N3b —— AJCC 第 8 版把 N 切成五級，
+     少於五欄就沒辦法把病理第 III 期和第 I–II 期分開）。字級再收一階。 */
+  .tn-grid.tn-c5{grid-template-columns:minmax(40px,54px) repeat(5,1fr); gap:3px;}
+  .tn-grid.tn-c5 .tn-cell,.tn-grid.tn-c5 .tn-na{padding:7px 0; font-size:9.5px; letter-spacing:-.02em;}
+  .tn-grid.tn-c5 .tn-corner,.tn-grid.tn-c5 .tn-ch,.tn-grid.tn-c5 .tn-rh{font-size:9px; padding:2px 1px;}
   @media(max-width:400px){
     .tn-grid.tn-c4{gap:3px;}
     .tn-grid.tn-c4 .tn-cell,.tn-grid.tn-c4 .tn-na{padding:7px 0; font-size:9.5px;}
+    .tn-grid.tn-c5{gap:2px;}
+    .tn-grid.tn-c5 .tn-cell,.tn-grid.tn-c5 .tn-na{padding:6px 0; font-size:8.5px;}
+    .tn-grid.tn-c5 .tn-corner,.tn-grid.tn-c5 .tn-ch,.tn-grid.tn-c5 .tn-rh{font-size:8.5px;}
   }
   /* 亞型切換後整格重上色：格子上方的一行說明（哪一種亞型、依哪一頁）*/
   .tn-sub{font-size:11.5px; line-height:1.6; color:var(--label-ink); margin:-3px 0 8px;}
