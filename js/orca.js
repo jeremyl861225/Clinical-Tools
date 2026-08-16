@@ -307,8 +307,8 @@
     return proj(bx(u), sp + (cs >= 0 ? botH(u) : topH(u)) * cs,
                 halfW(u) * Math.sin(ps), out);
   }
-  function patchMesh(g, uc, ru, pc, rp, sk) {
-    var NR = 3, NT = 16, i, j, j2, r, a, ca, sa, any = false, base;
+  function patchMesh(g, uc, ru, pc, rp, sk, minR) {
+    var NR = 3, NT = 16, i, j, j2, r, a, ca, sa, any = 0, base;
     for (i = 0; i <= NR; i++) {
       r = i / NR;
       for (j = 0; j < NT; j++) {
@@ -327,12 +327,23 @@
             x2 = PAT[b1], y2 = PAT[b1 + 1], x3 = PAT[b0], y3 = PAT[b0 + 1];
         var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
                  (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
-        if (ar <= .02) continue;
+        if (ar <= 1e-4) continue;
         g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
-        g.closePath(); any = true;
+        g.closePath(); any += ar * .5;
       }
     }
-    return any;
+    /* 被壓扁到只剩四成面積就整塊不畫。斑塊被大幅透視壓縮時，真正刺眼的不是它
+       自己，而是它與旁邊那塊白之間**被壓到只剩一兩個像素的黑縫**——看起來就像
+       白色上被劃了一刀（正臉時兩塊眼斑會在背上夾出一個「Λ」形的細縫）。
+       與其留一條刮痕，不如讓這塊斑紋在那個角度乾脆消失。
+       門檻用「投影面積 ÷ 正對時的面積」，與鯨魚畫多大無關。 */
+    /* 被透視壓扁到一定程度就整塊不畫。斑塊被壓扁時真正刺眼的不是它自己，而是它
+       與旁邊那塊白之間**被壓到只剩一兩個像素的黑縫**——看起來就像白色上被劃了
+       一刀（正臉時兩塊眼斑會在背上夾出一個「Λ」形的細縫，就是使用者圈出來的
+       那種線段）。與其留一條刮痕，不如讓這塊斑紋在那個角度乾脆消失。
+       門檻是「投影面積 ÷ 正對時的面積」，與鯨魚畫多大無關；跨過背中線的鞍斑
+       永遠只看得到一半，所以它的門檻本來就該低很多（實測側面 0.14、眼斑 0.85）。 */
+    return any > Math.PI * (ru * D.L) * (rp * topH(uc)) * minR ? any : 0;
   }
 
   /* ---- 有厚度的板子：背鰭、胸鰭、尾鰭都走這一支 ----
@@ -604,10 +615,10 @@
 
     /* 貼在體表的斑塊：背面剔除已經保證留下來的面片看得見，畫在身體之後即可。 */
     g.beginPath();
-    if (patchMesh(g, .63, .115, Math.PI, 1.05, 0)) { g.fillStyle = P.belly; g.fill(); }
+    if (patchMesh(g, .62, .095, Math.PI, .70, 0, .06)) { g.fillStyle = P.belly; g.fill(); }
     g.beginPath();
-    var e1 = patchMesh(g, .135, .076, 2.03, .26, .020);
-    var e2 = patchMesh(g, .135, .076, -2.03, .26, -.020);
+    var e1 = patchMesh(g, .132, .055, 2.05, .30, 0, .45);
+    var e2 = patchMesh(g, .132, .055, -2.05, .30, 0, .45);
     if (e1 || e2) { g.fillStyle = P.belly; g.fill(); }
 
     if (dPecR >= bPec) { pecFin(g,  1);   g.fillStyle = P.skin; g.fill(); }
