@@ -318,6 +318,10 @@ function field(label, text, warn) {
     <div class="dc-ftext ${warn ? 'dc-warn' : ''}">${richText(text)}</div></div>`;
 }
 
+/* 「這一格沒有資料」的各種寫法。尾巴的 (1)／(1,3) 是台大的文獻編號，要一起吃掉，
+   但顯示時保留第一格的原字串（含編號），資訊不流失。 */
+const NO_DATA = /^(無資料|無|尚無資料|N\/?A|not\s+available|-|－)\s*[。.]?\s*(\(\s*[\d,\s]+\s*\))?\s*[。.]?$/i;
+
 function rowTbl(label, rows, cols) {
   if (!rows || !rows.length) return '';
   /* 型別防線：同一個欄位在兩批資料裡型別不同（台大的 food 是字串、抗生素卡是
@@ -326,6 +330,14 @@ function rowTbl(label, rows, cols) {
      字串一律退回純文字欄位。 */
   if (typeof rows === 'string') return field(label, rows);
   if (!Array.isArray(rows)) return '';
+  /* 整張表每一格都是「無資料」時，退成一行純文字。
+     台大很多藥的透析劑量是 HD／PD 各三格全填「無資料」，畫成六列的表格佔掉
+     大半個畫面，讀到的卻只有「沒有資料」這件事（使用者實機指出）。
+     只要有任何一格有真內容就維持表格——半滿的表不能壓成一行，那會蓋掉有值的格。 */
+  const vals = rows.reduce((a, r) => a.concat(cols.map(([k]) => r[k]).filter(Boolean)), []);
+  if (vals.length && vals.every(v => NO_DATA.test(String(v).trim()))) {
+    return field(label, vals[0]);
+  }
   /* 表格內文也可能帶 <b>／<br>（台大 acyclovir 透析、foscarnet 腎功能就是），
      跟 field() 走同一套白名單，否則標籤會原樣印出來。 */
   const body = rows.map(r => cols.map(([k, t]) => r[k]
