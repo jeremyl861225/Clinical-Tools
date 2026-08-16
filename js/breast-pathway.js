@@ -54,6 +54,99 @@
   ];
   KEYS.forEach(function (k) { S[k] = null; });
 
+
+  /* ==========================================================
+     0b. 學名 → 台大藥卡
+     ----------------------------------------------------------
+     只收台大醫院藥劑部處方集真的有的品項，2026-08-16 對 data/drugs/ 逐碼實跑核對。
+     code 一律是「卡層主碼」（data/drugs/<pid>.js 的 code 欄）—— 同一張卡的其他八碼
+     是副碼，onCardToggle 用 x.code === code 比對，掛副碼會查不到卡而顯示
+     「這個品項的明細尚未建檔」，而且不會有任何錯誤訊息。
+     ⚠ 六個 code 內含半形空白（HE 1CE35、AD 1CD04、PH 1CD10、FO 1QB04、TA 1CC06、
+     AV 1CE89），任何環節都不可 trim；做成 id 時要把空白換掉，data-code 則要保留原樣。
+     re：流程圖內文裡用來認出這個藥的樣式（沒寫就用 key 本身當整字比對）。
+     flag：藥卡本身看不出來的旗標（專案採購、自費、缺貨），必須由這裡帶出來。
+     ========================================================== */
+  var BC_DRUGS = [
+    /* ── 內分泌治療 ───────────────────────────── */
+    { key: 'tamoxifen', cards: [['12', 'NOL4CE01', 'Nolvadex 諾瓦得士錠 10 mg']] },
+    { key: 'aromatase inhibitor',
+      cards: [['17', 'FEM4CB22', 'Femara 復乳納膜衣錠 2.5 mg（letrozole）'],
+              ['17', 'ARI4CB22', 'Arimidex 安美達錠 1 mg（anastrozole）'],
+              ['17', 'ARO4CB35', 'Aromasin 諾曼癌素糖衣錠 25 mg（exemestane）']] },
+    { key: 'fulvestrant', cards: [['17', 'FAS1CE32', 'Faslodex 法洛德注射液 250 mg/5 mL']] },
+    { key: 'GnRH 類似物', re: 'GnRH 類似物|卵巢功能抑制',
+      cards: [['12', 'ZOL1LD28', 'Zoladex 諾雷德 3.6 mg 皮下注射 q4w'],
+              ['12', 'ZOL1LD49', 'Zoladex LA 諾雷德 10.8 mg 皮下注射 q12w']] },
+
+    /* ── 抗 HER2 ─────────────────────────────── */
+    { key: 'trastuzumab',
+      cards: [['17', 'HE 1CE35', 'Herceptin 賀癌平 440 mg 靜脈／600 mg 皮下'],
+              ['17', 'HER1CH25', 'Herzuma 赫珠瑪 440 mg（生物相似藥）'],
+              ['17', 'OGI1CH25', 'Ogivri 癌吉清 440 mg（生物相似藥）']] },
+    { key: 'pertuzumab',
+      cards: [['17', 'PER1CEG5', 'Perjeta 賀疾妥 420 mg/14 mL'],
+              ['17', 'PHE1CH54', 'Phesgo 賀雙妥 皮下（pertuzumab＋trastuzumab）']] },
+    { key: 'T-DM1', cards: [['17', 'KAD1CEG6', 'Kadcyla 賀癌寧 160 mg（trastuzumab emtansine）']] },
+    { key: 'T-DXd', cards: [['17', 'ENH1CH06', 'Enhertu 優赫得 100 mg（trastuzumab deruxtecan）']] },
+    { key: 'lapatinib', cards: [['17', 'TYK4CEA6', 'Tykerb 泰嘉錠 250 mg']] },
+    { key: 'neratinib', cards: [['17', 'NER4CEZ8', 'Nerlynx 賀儷安 40 mg']], flag: '專案採購／自費' },
+    { key: 'tucatinib', cards: [['17', 'TUK4CG58', 'Tukysa 150 mg']], flag: '專案採購／全自費' },
+
+    /* ── 化療 ───────────────────────────────── */
+    { key: 'doxorubicin', cards: [['17', 'AD 1CD04', 'Adriamycin 艾黴素 10 mg/5 mL']] },
+    { key: 'liposomal doxorubicin', cards: [['17', 'LIP1CD12', 'Lipo-Dox 力得微脂體 20 mg/10 mL']],
+      flag: '乳癌健保限「有心臟風險之轉移性」' },
+    { key: 'epirubicin', cards: [['17', 'PH 1CD10', 'Pharmorubicin 泛艾黴素 10 mg']] },
+    { key: 'cyclophosphamide',
+      cards: [['16', 'END1CA09', 'Endoxan 癌得星注射劑 500 mg'],
+              ['16', 'END4CA04', 'Endoxan 癌德星錠 50 mg（口服，CMF 用）']] },
+    { key: 'methotrexate', cards: [['17', 'MET1CB07', 'Methotrexate 盈壽求得注射液（抗腫瘤劑量）']] },
+    { key: '5-FU', re: '5-FU', cards: [['17', '5FU1CB41', '5-FU 好復注射液 1000 mg/20 mL']] },
+    { key: 'leucovorin', cards: [['11', 'FO 1QB04', 'Folina 芙琳亞注射液 100 mg/10 mL']] },
+    { key: 'paclitaxel', re: '(?<!nab-)paclitaxel', cards: [['17', 'PHY1CC03', 'Phyxol 輝克癒蘇 30 mg（溶劑型）']] },
+    { key: 'nab-paclitaxel', cards: [['17', 'ABR1CC38', 'Abraxane 亞伯杉 100 mg']],
+      flag: '乳癌自費；與 paclitaxel 不可互換' },
+    { key: 'docetaxel', cards: [['17', 'TA 1CC06', 'Taxotere 剋癌易 80 mg/4 mL']] },
+    { key: 'carboplatin', cards: [['17', 'KEM1CA32', 'Kemocarb 爾定康 150 mg/15 mL']] },
+    { key: 'cisplatin', cards: [['17', 'KEO1CA10', 'Kemoplat 克莫抗癌 50 mg/50 mL']] },
+    { key: 'capecitabine', cards: [['17', 'XEL4CB24', 'Xeloda 截瘤達錠 500 mg']] },
+    { key: 'gemcitabine', cards: [['17', 'GEI1CB14', 'Gemmis 健仕注射液 200 mg/6 mL']] },
+    { key: 'vinorelbine',
+      cards: [['17', 'NAV1CC12', 'Navelbine 溫諾平注射液 50 mg/5 mL'],
+              ['17', 'NAV4CC24', 'Navelbine 溫諾平軟膠囊 20 mg（口服）']] },
+    { key: 'eribulin', cards: [['17', 'HAL1CEI4', 'Halaven 賀樂維注射液 1 mg/2 mL']] },
+    { key: 'etoposide', cards: [['17', 'FYT1CC11', 'Fytosid 癌妥滅靜脈注射液 100 mg/5 mL']] },
+    { key: 'TS-1', cards: [['17', 'TS14CB44', 'TS-1 愛斯萬膠囊 20 mg']], flag: '乳癌健保未給付' },
+    { key: 'mitoxantrone', cards: [['17', 'MIT1CD08', 'Mitoxantrone 雙羥蒽醌 20 mg/10 mL']], flag: '暫時缺貨' },
+    { key: 'mitomycin', cards: [['17', 'MIN1CD06', 'Mitonco 密多邁杏 10 mg']], flag: '台灣仿單不含乳癌' },
+    { key: 'ixabepilone', cards: [['17', 'IXE1CC33', 'Ixempra 易莎平注射劑 15 mg']] },
+
+    /* ── 標靶與免疫 ──────────────────────────── */
+    { key: 'pembrolizumab', cards: [['17', 'KEY1CEO9', 'Keytruda 吉舒達 100 mg/4 mL']] },
+    { key: 'atezolizumab', cards: [['17', 'TEC1CEL9', 'Tecentriq 癌自禦 1200 mg/20 mL']] },
+    { key: 'olaparib', cards: [['17', 'LYN4CET5', 'Lynparza 令癌莎膜衣錠 150 mg']] },
+    { key: 'talazoparib', cards: [['17', 'TAL4CI10', 'Talzenna 達勝癌膠囊 0.25 mg']] },
+    { key: 'abemaciclib', cards: [['17', 'VER4CEY0', 'Verzenio 捷癌寧膜衣錠 100／150／200 mg']] },
+    { key: 'ribociclib', cards: [['17', 'KIS4CEQ5', 'Kisqali 擊癌利膜衣錠 200 mg']] },
+    { key: 'palbociclib', cards: [['17', 'IBR4CEL2', 'Ibrance 愛乳適膠囊 125／100／75 mg']] },
+    { key: 'everolimus', cards: [['17', 'AFI4CEC1', 'Afinitor 癌伏妥錠 5 mg']] },
+    { key: 'alpelisib', cards: [['17', 'PIQ4CG02', 'Piqray 愛克利膜衣錠 每日劑量盒']] },
+    { key: 'capivasertib', cards: [['17', 'TRU4CG65', 'Truqap 泛抑癌膜衣錠 200 mg']] },
+    { key: 'elacestrant', cards: [['27', 'ORS4CI25', 'Orserdu 345 mg']], flag: '專案／自費／台灣未核適應症' },
+    { key: 'sacituzumab govitecan', cards: [['17', 'TRO1CH08', 'Trodelvy 拓達維注射劑 180 mg']] },
+    { key: 'bevacizumab', cards: [['17', 'AV 1CE89', 'Avastin 癌思停 100 mg/4 mL']], flag: '乳癌無健保適應症' },
+
+    /* ── 支持性治療 ──────────────────────────── */
+    { key: 'zoledronate', re: 'zoledronate|zoledronic',
+      cards: [['12', 'BOL1FAB5', 'Bolenic 卓固尼 4 mg（骨轉移劑量）'],
+              ['12', 'ZOB1FAB5', 'Zobonic 抑骨 4 mg（骨轉移劑量）']] },
+    { key: 'denosumab', cards: [['12', 'XGS1FAG7', 'Xgeva 癌骨瓦 120 mg q4w（骨轉移）']] },
+    { key: 'G-CSF', re: 'G-CSF',
+      cards: [['11', 'FIL1EG01', 'Filgrastim 惠爾血添 75／300 mcg'],
+              ['11', 'FUL1EG24', 'Fulphila 福富血 6 mg（長效，生物相似藥）']] }
+  ];
+
   /* ==========================================================
      1. 版面小工具
      ========================================================== */
@@ -761,6 +854,9 @@
 
     h += '<div class="flow-reset"><button class="back-btn" onclick="bcReset()">重置</button></div>';
     h += '</div>';
+    /* 藥卡區塊刻意放在 #bcPath 之外：流程圖每次點選都會重寫建議框的 innerHTML，
+       藥卡若放在裡面，使用者展開的卡會被銷毀重建、收起來，等於每點一次就白展開一次。 */
+    h += '<div class="bc-drugbox hidden" id="bc_drugs"></div>';
     return h;
   }
 
@@ -782,6 +878,8 @@
     root.querySelectorAll('.flow-fu').forEach(function (f) { f.classList.add('hidden'); f.innerHTML = ''; });
     ['bc_b_dx', 'bc_b_dcis', 'bc_b_lcis', 'bc_b_inv', 'bc_b_mbc', 'bc_b_recur', 'bc_b_prog',
       'bc_b_up', 'bc_b_na'].forEach(function (id) { show(id, false); });
+    /* 藥卡區塊不在 #bcPath 內，collapseAll 掃不到它；改由 renderDrugCards() 依
+       「畫面上真的看得到什麼」重算，這裡不動它，才不會每次點選都閃一下。 */
   }
 
   function liOf(t) {
@@ -1427,9 +1525,13 @@
           '<b>用了之後進展者，日後不得再申請任何 CDK4/6 抑制劑。</b><br>' +
           '<b>TS-1 未給付</b>（條文 9.46 完全沒有乳癌）；輔助 ribociclib 也未給付。'));
       }
-      L.push(H('帶 BRCA 突變的話', 'p21'));
-      L.push('<b>荷爾蒙受體陽性、HER2 陰性、帶 germline BRCA1/2 突變，而且淋巴結 ≥ 4 顆 → 可加 ' +
-        drug('olaparib') + ' 1 年</b>。條件見下方 OlympiA 表。');
+      /* 只在淋巴結 ≥ 4 顆時出現 —— 那是健保與 OlympiA 對直接手術者的唯一門檻。
+         掛在 pN0–pN1 只會多列一張用不到的 olaparib 藥卡。 */
+      if (pn === 'n23') {
+        L.push(H('帶 BRCA 突變的話', 'p21'));
+        L.push('<b>ER/PR(+)、HER2 陰性、帶 germline BRCA1/2 突變，而且淋巴結 ≥ 4 顆 → 可加 ' +
+          drug('olaparib') + ' 1 年</b>。條件見下方 OlympiA 表。');
+      }
     }
     return L;
   }
@@ -1855,6 +1957,81 @@
     fu('bc_f_prog', 'meta');
   }
 
+
+  /* ==========================================================
+     9. 本路徑用藥的台大藥卡
+     ----------------------------------------------------------
+     藥名不是手動維護的清單，而是掃「目前畫面上真的看得到的建議條列」——
+     這樣流程圖改了文案，藥卡自動跟著對，不會有兩份會走鐘的名單。
+     只掃 ul.rec-detail（不含 .rec-more 的參考資料），因為收合的處方表把
+     幾乎每個化療藥都提到了一次，掃進去等於全部列出來。
+     ========================================================== */
+  var drugSig = '';                       // 上一次渲染的藥物集合簽章
+
+  function cardId(code) { return 'bc-drug-' + code.replace(/ /g, '_'); }
+
+  function drugCardHTML(c, gen, flag) {
+    return '<details class="drugcard" id="' + cardId(c[1]) + '" data-pid="' + c[0] +
+      '" data-code="' + c[1] + '" ontoggle="onCardToggle(this)">' +
+      '<summary><span class="dc-name">' + c[2] + '</span>' +
+      (flag ? '<span class="db-tag db-tag-ext">' + flag + '</span>' : '') +
+      '<span class="dc-nameen">' + gen + '</span></summary>' +
+      '<div class="dc-body"><div class="db-loading">載入中…</div></div></details>';
+  }
+
+  function renderDrugCards() {
+    var box = el('bc_drugs');
+    if (!box) return;
+    /* 只看「目前顯示中、而且已經有結論」的建議卡的主條列 */
+    var txt = '';
+    var root = el('bcPath');
+    if (root) {
+      root.querySelectorAll('.flow-rec').forEach(function (r) {
+        if (r.classList.contains('hidden') || r.classList.contains('rec-idle')) return;
+        /* 只取「這個病人要用的藥」那幾行：跳過 li.ev（理由與證據）——
+           那裡常拿別的亞型當對照，例如三陰性那張卡會提到「HER2 陽性未達 pCR 可換
+           T-DM1」，掃進去就會冒出一張跟這個病人無關的 Kadcyla。 */
+        r.querySelectorAll('ul.rec-detail:not(.rec-more) > li:not(.ev)').forEach(function (li) {
+          txt += li.textContent + '\n';
+        });
+        var t = r.querySelector('.rec-title');
+        if (t) txt += t.textContent + '\n';
+      });
+    }
+
+    var picked = [];
+    BC_DRUGS.forEach(function (d) {
+      var re = new RegExp('(?<![A-Za-z-])(?:' + (d.re || d.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) + ')(?![A-Za-z-])', 'i');
+      if (re.test(txt)) picked.push(d);
+    });
+
+    var sig = picked.map(function (d) { return d.key; }).join('|');
+    if (sig === drugSig) return;          // 集合沒變就不動 DOM，保住已經展開的卡
+    drugSig = sig;
+
+    if (!picked.length) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+    var nCards = picked.reduce(function (a, d) { return a + d.cards.length; }, 0);
+    box.classList.remove('hidden');
+    box.innerHTML =
+      '<div class="bc-drugbox-h">本路徑用到的藥 · 台大藥卡<span class="bc-drugbox-n">' +
+      picked.length + ' 種藥 · ' + nCards + ' 張卡</span></div>' +
+      '<div class="bc-drugbox-note">點藥名展開台大醫院藥劑部處方集的完整藥卡（劑量、腎肝功能調整、' +
+      '禁忌、健保給付規定、剝半磨粉）。<b>離線也看得到；只有藥品外觀照是台大原站外連，需要連線。</b></div>' +
+      picked.map(function (d) {
+        return d.cards.map(function (c) { return drugCardHTML(c, d.label || d.key, d.flag); }).join('');
+      }).join('');
+
+    /* 卡片區塊一出現就把要用到的分類檔預抓起來，點開才不會等。
+       離線時這一步只是讀快取，零成本；沒有 requestIdleCallback 的瀏覽器就跳過。 */
+    if (window.DrugCard && window.requestIdleCallback) {
+      var pids = {};
+      picked.forEach(function (d) { d.cards.forEach(function (c) { pids[c[0]] = 1; }); });
+      window.requestIdleCallback(function () {
+        Object.keys(pids).forEach(function (pid) { window.DrugCard.loadPid(pid).catch(function () {}); });
+      });
+    }
+  }
+
   /* ==========================================================
      7. 總 render
      ========================================================== */
@@ -1868,6 +2045,7 @@
     else if (S.scope === 'mbc') renderMbc();
     else if (S.scope === 'recur') renderRecur();
     else if (S.scope === 'prog') renderProg();
+    renderDrugCards();
   }
 
   /* ==========================================================

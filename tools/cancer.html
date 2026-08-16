@@ -26,6 +26,12 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<!-- drugcards:start 台大藥卡樣式。順序有三個約束：antibiotics.css 必須在
+     drug-database.css 之前（.dose-fmt／renal-thr／tbl-sep 兩檔同特異度靠後載決勝），
+     兩支都必須在 ui-sentence.css 之後（a.db-xlink 與造句版的 a{color:inherit} 同分）。 -->
+<link rel="stylesheet" href="../css/antibiotics.css">
+<link rel="stylesheet" href="../css/drug-database.css">
+<!-- drugcards:end -->
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
@@ -116,6 +122,11 @@
 <script src="../js/mpn-pathway.js"></script>
 <script src="../js/lym-pathway.js"></script>
 <script src="../js/cancer-staging.js"></script>
+<!-- drugcards:start 藥卡渲染。重用 drug-database.js 的 cardBody()／loadPid()，
+     分類資料與補充資料全部延遲注入，開頁不多付任何流量。
+     刻意不載 data/drugs/index.js（788 KB）—— cardBody 一個欄位都不讀它。 -->
+<script src="../js/drug-database.js"></script>
+<!-- drugcards:end -->
 
 <script src="../js/searchbar.js" defer></script>
 <script src="../js/pull-to-refresh.js" defer></script>

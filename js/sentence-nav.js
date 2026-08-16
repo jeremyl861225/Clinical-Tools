@@ -45,10 +45,13 @@
  *
  * **首頁**這一段已補齊原型主畫面的四件事（實機比對原型後補做，見
  * workspace/work/restyle/style-04-sentence/index.html 檔頭的設計主張）：
- *   1. 空句子＝主選單：值班常用句六格 ＋ 三軌熱門詞 ＋ 一顆「怎麼用？」摺疊，
- *      不再把 136 個標的攤成一整片等高清單——那正是原型明文要避免的事。
+ *   1. 空句子＝主選單：值班常用句六格 ＋ 三軌熱門詞，不再把 136 個標的攤成
+ *      一整片等高清單——那正是原型明文要避免的事。（原本還有一顆「怎麼用？」
+ *      摺疊，2026-08-16 依使用者指定刪掉。）
  *   2. 「⌕ 說整句」：整條句子塌成一個輸入框，打字直接挑一整句話走。
- *   3. 畫面下緣固定列：⌕ 說整句 ／ ← 退一個詞（＝ Backspace）／ 清空句子。
+ *   3. 畫面下緣固定列：⌕ 說整句 ／ ← 上一步 ／ 清空句子。
+ *      （中間那顆本來叫「退一個詞」，2026-08-16 改成通用的「上一步」，
+ *      見 stepBack()。鍵盤 Backspace 維持原本的「退句尾一個詞」語意不變。）
  *   4. 句子列字面修正：範圍不再多一格空格、連接詞不再印出「，，」。
  *
  * **首頁第二輪**：使用者要求「一定要有 04 prototype 的各個元素與編排」。
@@ -1058,7 +1061,7 @@
    * 所以退路有四條，主要那條就是工具列最左邊那顆「← 回六大分類」：
    *   1. 「← 回六大分類」（主要，永遠在清單最上面，不必捲回去找）
    *   2. Esc
-   *   3. 畫面下緣的「← 退一個詞」——句子是空的時候，退的就是這一步瀏覽
+   *   3. 畫面下緣的「← 上一步」——句子是空的時候，退的就是這一步瀏覽
    *   4. 畫面下緣的「清空句子」
    *
    * 工具列第二顆「以『腹部急症』為範圍開始造句」是**補回**被拿掉的能力：
@@ -1120,14 +1123,12 @@
       .sort(function (x, y) { return counts[y] - counts[x]; })
       .slice(0, k).map(function (w) { return { w: w, n: counts[w] }; });
   }
+  /* 「怎麼用？」那個收合區塊在 2026-08-16 依使用者指定整段拿掉：主選單第一屏
+     要留給六大分類與熱門詞，一段自我說明的長文擠在中間反而讓人先讀完才敢動。
+     操作說明仍在（字輪那一行 #sentWhHint、下緣固定列每顆鍵的 aria-label），
+     只是不再佔一整塊版面。css/ui-sentence.css 的 .sent-howto 規則一併刪除。 */
   function mainMenuHTML() {
-    var h = '<details class="sent-howto"><summary>怎麼用？</summary>' +
-      '<div class="sent-howto-body">句子還是空的——這就是主選單。上面六大分類點一格，會列出那一類的全部條目' +
-      '（不會改動句子）；要造句就點一個熱門詞直接填一格，也可以逐格點 ▢ 自己選詞。選好的詞塊點一下會把清單重開在原位，' +
-      '長按則不用重開清單就能原地換詞（桌機：按住後 ← →，或聚焦後按 ↑ ↓），按 × 退掉這一格。' +
-      '畫面下緣的「← 退一個詞」（等同鍵盤 Backspace）退掉句尾一個詞，「清空句子」回到這裡。' +
-      '左邊的「⌕ 說整句」（或直接按 /）可以打字找一整句話，不必逐格點選。' +
-      '</div></details>';
+    var h = '';
     ['s', 'c', 'a'].forEach(function (f) {
       var words = hotWords(f, 8);
       if (!words.length) return;
@@ -2976,6 +2977,161 @@
     return false;
   }
 
+  /* ================================================================
+   * 「上一步」：一顆鍵退掉最近做過的那一個動作
+   * ================================================================
+   * 使用者原話（2026-08-16）：「這個按鈕改成『上一步』，若是正在輸入句子的詞
+   * 則功能為退一個詞，若剛剛進行頁面跳轉則回上一個頁面，若剛剛在流程圖中點擊
+   * 選項，則取消選擇該選項。可連續點擊持續返回上一個動作。」
+   *
+   * 判斷順序（stepBack()）：頁內的動作先退，頁內退不動了才離開這一頁。
+   *   1. 說整句面板開著 → 先收起面板（那也是一個動作）
+   *   2. 流程圖點過選項 → 取消最後那一個（flowUndo）
+   *   3. 首頁句子還有詞 → 退掉句尾一個詞；沒詞但攤開了某一類 → 收起那一類
+   *   4. 有站內上一頁 → history.back()
+   *   5. 內頁真的無路可退 → 帶著少一個詞的句子回首頁（既有的 targetDropTailHref）
+   *
+   * 流程圖為什麼用「重置＋重播」而不是「把那一格設回 null」：全站 24 支 pathway
+   * 各自把狀態關在自己的 IIFE 裡（alSt／S／…），對外只匯出 xxPick()／xxReset()，
+   * 沒有一支給得出「取消某一格」的入口。要逐檔開介面就是動 24 個檔案，而且
+   * 每支的下游連動規則（DOWNSTREAM）都不一樣，改壞了是臨床建議跟著錯。
+   * 重播走的是既有的公開入口，一步都不繞過那些連動規則——js/common.js 的
+   * 「流程圖 ⇄ 計分工具往返」早就用同一招（restore() 裡的 list[i].click()）。
+   *
+   * 記的是**按鈕的簽章**（id ／ onclick 字串 ／ 文字）不是 DOM 索引：重置之後
+   * 版面會塌回第一步，索引整排位移，但 `bcPick('scope','early')` 這串不會變。 */
+  var flowStack = [];        // 本頁點過的流程圖選項，依點擊順序
+  var flowReplaying = false; // 重播中：不把重播出來的點擊再記一次
+  var FLOW_SEL = '.flow-opt, .tn-cell';
+  var FLOW_MAX = 200;        // 反覆改選也不無限累積（js/common.js 用 300，同一種保險）
+
+  function flowSig(btn) {
+    return {
+      id: btn.id || '',
+      oc: btn.getAttribute('onclick') || '',
+      tx: (btn.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40)
+    };
+  }
+  function flowVisible(b) { return !!(b && b.offsetParent !== null); }
+  function flowFind(sig) {
+    if (sig.id) {
+      var byId = document.getElementById(sig.id);
+      if (byId) return byId;
+    }
+    var all = [].slice.call(document.querySelectorAll(FLOW_SEL));
+    var cands = sig.oc
+      ? all.filter(function (b) { return b.getAttribute('onclick') === sig.oc; })
+      : all.filter(function (b) {
+          return (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40) === sig.tx;
+        });
+    for (var i = 0; i < cands.length; i++) if (flowVisible(cands[i])) return cands[i];
+    return cands[0] || null;
+  }
+  /* 重置鍵：各頁字面不一（「重置」「重新開始」），class 也分成 .btn-reset 與
+     包在 .flow-reset 裡的 .back-btn（例：js/breast-pathway.js），所以兩種都認。
+     找不到重置鍵就代表這一頁重播不回去（例 tools/antibiotics.html 的部位選單），
+     那就讓 stepBack() 往下一個分支走，不要清掉半套狀態。 */
+  function flowResetBtn() {
+    var list = [].slice.call(document.querySelectorAll('.flow-reset button, button.btn-reset, .btn-reset'));
+    for (var i = 0; i < list.length; i++) if (flowVisible(list[i])) return list[i];
+    return list[0] || null;
+  }
+  function flowUndo() {
+    if (!flowStack.length) return false;
+    var reset = flowResetBtn();
+    if (!reset) return false;
+    var keep = flowStack.slice(0, -1);
+    flowReplaying = true;
+    try {
+      reset.click();
+      for (var i = 0; i < keep.length; i++) {
+        var b = flowFind(keep[i]);
+        /* 重播不下去就到此為止（資料改版、選項改名都可能讓某一步找不到）。
+           已經重播到的那幾步是對的，後面連同 stack 一起截斷，不留下
+           「畫面上沒有、堆疊裡卻還記著」的幽靈步。 */
+        if (!b) { keep = keep.slice(0, i); break; }
+        b.click();
+      }
+    } catch (e) { /* 某一支 pathway 的 pick 丟例外：狀態已經是重置後那一套，不再往下 */ }
+    flowReplaying = false;
+    flowStack = keep;
+    return true;
+  }
+  document.addEventListener('click', function (e) {
+    if (flowReplaying) return;
+    var t = e.target;
+    if (!t || !t.closest) return;
+    // 「重置」是使用者自己把整張流程清空——堆疊跟著歸零，否則下一次上一步會把它重播回來
+    if (t.closest('.flow-reset button, button.btn-reset, .btn-reset')) { flowStack = []; return; }
+    var opt = t.closest(FLOW_SEL);
+    if (!opt) return;
+    flowStack.push(flowSig(opt));
+    if (flowStack.length > FLOW_MAX) flowStack.shift();
+    syncBar();
+  }, true);
+
+  /* ---- 站內上一頁 ----
+   * 判斷用 document.referrer 同源：從站內任何一頁點過來就有得退，直接開網址／
+   * 從書籤或 PWA 圖示進來的第一頁沒有。**不用 history.length**（它把整個分頁
+   * 的歷史都算進去，包含來這個站之前的頁面，會把人送出站），也不用
+   * history.state 記深度——全站有 11 個頁面在切分頁時呼叫
+   * `history.replaceState(null, …)`，那會把我們寫進去的 state 一起抹掉。
+   *
+   * referrer 判斷不準時還有第二道保險：真的按下去之後如果 350ms 內既沒有
+   * pagehide 也沒有 popstate，就當作沒退成，改走 fallback。 */
+  function sameOriginRef() {
+    var r = document.referrer;
+    if (!r) return false;
+    try { return new URL(r, location.href).origin === location.origin; } catch (e) { return false; }
+  }
+  function canStepHistory() { return sameOriginRef(); }
+  function stepHistory(fallback) {
+    var moved = false;
+    var mark = function () { moved = true; };
+    window.addEventListener('pagehide', mark, true);
+    window.addEventListener('popstate', mark, true);
+    try { history.back(); }
+    catch (e) { moved = false; }
+    setTimeout(function () {
+      window.removeEventListener('pagehide', mark, true);
+      window.removeEventListener('popstate', mark, true);
+      if (!moved && fallback) fallback();
+    }, 350);
+  }
+
+  /* 這一頁到底還有沒有「上一步」可走——決定下緣固定列那一顆是不是 disabled。 */
+  function canStepBack() {
+    if (sayOpen) return true;
+    if (flowStack.length && flowResetBtn()) return true;
+    if (isHome()) {
+      if (homeSt.g || homeSt.s || homeSt.c || homeSt.a || openTile) return true;
+      return canStepHistory();
+    }
+    return true;   // 內頁最差也還有「帶著少一個詞的句子回首頁」
+  }
+
+  function stepBack() {
+    if (sayOpen) { showSay(false); try { window.scrollTo(0, 0); } catch (e) {} syncBar(); return; }
+    if (flowUndo()) { syncBar(); return; }
+    if (isHome()) {
+      if (dropTail()) { renderHome(); return; }
+      if (openTile) { openTile = null; renderHome(); return; }
+      if (canStepHistory()) { stepHistory(null); return; }
+      renderBar();
+      return;
+    }
+    // 內頁：先回上一頁；退不成（直接開網址進來的）才把句子少一個詞帶回首頁
+    var fallback = function () {
+      var href = targetDropTailHref();
+      if (href) location.href = href;
+    };
+    if (canStepHistory()) { stepHistory(fallback); return; }
+    fallback();
+  }
+
+  /* 流程圖的點擊不經過 renderHome()／renderTarget()，固定列的 disabled 要自己補畫 */
+  function syncBar() { renderBar(); }
+
   /* 畫面下緣固定列（原型 index.html #mobilebar）：首頁與 107 個內頁共用同一條。
      三格恆常存在——⌕ 是唯一的快速入口，不能因為句子是空的就跟著消失；
      退詞／清空句子在沒東西可退時用 disabled 呈現（文字仍在、觸控尺寸不變），
@@ -2992,8 +3148,10 @@
       '<button type="button" class="smb-btn" data-act="say" aria-expanded="false" ' +
       'aria-label="直接說整句：打字找一整句話，Enter 直達">' +
       '<span aria-hidden="true">⌕</span> <span class="lbl">說整句</span></button>' +
-      '<button type="button" class="smb-btn" id="sentBarDrop" data-act="droptail" ' +
-      'aria-label="退一個詞，等同鍵盤 Backspace"><span aria-hidden="true">←</span> 退一個詞</button>' +
+      '<button type="button" class="smb-btn" id="sentBarDrop" data-act="stepback" ' +
+      'aria-label="上一步：退掉最近做過的那一個動作——正在造句就退一個詞（等同鍵盤 Backspace）、' +
+      '剛在流程圖點了選項就取消那個選項、剛換過頁就回上一頁。可以連續按。">' +
+      '<span aria-hidden="true">←</span> 上一步</button>' +
       '<button type="button" class="smb-btn" id="sentBarClear" data-act="clear" ' +
       'aria-label="清空整句，回到主選單">清空句子</button>';
     document.body.appendChild(bar);
@@ -3002,13 +3160,13 @@
   function renderBar() {
     var bar = document.getElementById('sentBar');
     if (!bar) return;
-    // 六大分類攤開時也算「有東西可退」——這時「← 退一個詞」退的是這一步瀏覽，
-    // 「清空句子」則連瀏覽帶句子一起回到最初的畫面（見 click 的兩個分支）。
+    // 六大分類攤開時也算「有東西可清」——「清空句子」連瀏覽帶句子一起回到最初的畫面。
     var has = isHome()
       ? !!(homeSt.g || homeSt.s || homeSt.c || homeSt.a || openTile)
-      : !!targetSt;   // 內頁一定有一句完成式句子，退詞／清空一律可用
+      : !!targetSt;   // 內頁一定有一句完成式句子，清空一律可用
     var d = document.getElementById('sentBarDrop'), c = document.getElementById('sentBarClear');
-    if (d) d.disabled = !has;
+    // 「上一步」管的不只句子（還有流程圖選項、說整句面板、站內上一頁），自己一套判斷
+    if (d) d.disabled = !canStepBack();
     if (c) c.disabled = !has;
   }
 
@@ -3101,7 +3259,17 @@
     if (!el || !inChrome(el)) return;
     var act = el.getAttribute('data-act');
     var f = el.getAttribute('data-f');
-    if (act === 'say') { e.preventDefault(); showSay(!sayOpen); return; }
+    /* 開／關都把頁面捲回最上（2026-08-16 使用者指定：「點選左下角的『回句子』或
+       『說整句』則一併回到頁面最上」）。查詢欄與句子列都長在頁首，人按下這一顆
+       就是要回去那裡開始下一句；停在原地只會看到面板在畫面外。
+       開啟時原本就會捲上去——但那是 inp.focus() 的副作用（實測 1500 → 0），
+       靠副作用不牢靠（面板已在視窗內時瀏覽器不捲），所以兩邊都寫明。 */
+    if (act === 'say') {
+      e.preventDefault();
+      showSay(!sayOpen);
+      try { window.scrollTo(0, 0); } catch (err) {}
+      return;
+    }
 
     /* ---- 最近搜尋的三顆（首頁與內頁同一套；放在下面「內頁只放行四個 act」
            那道關卡之前，兩邊才都吃得到） ---- */
@@ -3152,12 +3320,7 @@
         return;
       }
       if (act === 'tclear' || act === 'clear') { e.preventDefault(); location.href = ROOT + 'index.html'; return; }
-      if (act === 'droptail') {
-        e.preventDefault();
-        var href = targetDropTailHref();
-        if (href) location.href = href;
-        return;
-      }
+      if (act === 'stepback') { e.preventDefault(); stepBack(); return; }
       /* open／pick／drop／closepanel **故意不在這裡處理**：內頁的詞塊列與候選詞
          面板跟首頁是同一套 DOM、同一批函式，直接讓事件落到下面共用的分支去，
          不複製第二份。內頁與首頁行為不同的那兩處寫在那些分支自己裡面。 */
@@ -3244,10 +3407,11 @@
       if (!isHome()) { trailGo(); return; }
       openTile = null; renderHome(); return;
     }
-    if (act === 'droptail') {
-      // 句子還有詞就先退詞；一個詞都沒有、卻正攤著某一格分類時，退的就是那一步瀏覽。
-      if (dropTail()) { renderHome(); return; }
-      if (openTile) { openTile = null; renderHome(); }
+    if (act === 'stepback') {
+      /* 順序全部收在 stepBack() 裡：說整句面板 → 流程圖選項 → 句尾一個詞 →
+         攤開的那一類 → 站內上一頁。首頁與內頁共用同一支。 */
+      e.preventDefault();
+      stepBack();
       return;
     }
     /* ---- 六大分類的三顆 ---- */
@@ -3349,6 +3513,11 @@
     }
   });
   document.addEventListener('keydown', function (e) {
+    /* 藥卡外觀照的燈箱開著時整段讓開：燈箱自己也綁 Esc／←／→（drug-database.js 的
+       openShot），兩邊都掛在 document 上、都不 stopPropagation，一起跑的結果是
+       「關掉燈箱的同時句子被退了一個詞」。cancer.html 從造句導覽進來時 #sentTrail
+       會存在，所以這條守衛在那裡才生效得到。 */
+    if (document.body.classList.contains('db-lb-open')) return;
     var onHome = !!document.getElementById('sentHome'), onTrail = !!document.getElementById('sentTrail');
     if (!onHome && !onTrail) return;
     var typing = /^(input|textarea|select)$/i.test(e.target.tagName || '') || e.target.isContentEditable;

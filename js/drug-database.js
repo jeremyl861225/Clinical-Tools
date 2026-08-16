@@ -9,7 +9,13 @@
  *   data/drugs/<pid>.js  各藥理分類的完整藥卡；使用者展開某張卡時才注入 <script> 載入，
  *                        載過就留在 window.DRUGDB_DATA 不再重載。
  * 兩者皆由 work/drugcards/build_cards.py 產生，勿手改。
+ *
+ * 2026-08-16 起包成 IIFE：這支檔改成可被 tools/cancer.html 借用（癌症治療流程圖
+ * 最下方要就地展開台大藥卡），頂層識別字不再污染全域 —— 尤其 applyHash 會蓋掉
+ * js/cancer-staging.js 的同名函式（#cancer= 深層連結因此進不去），el／esc 這種
+ * 泛用名日後也一定會撞。對外只留檔尾匯出的那幾個名字。
  */
+(function () {
 'use strict';
 
 /* 藥理大類（台大分類的羅馬數字層）中文名；沒列到的照英文原名顯示。 */
@@ -204,19 +210,46 @@ function renderList() {
 
 /* ---------------- 分類資料的延遲載入 ---------------- */
 
+const injected = {};
+function injectOnce(src) {
+  if (injected[src]) return injected[src];
+  injected[src] = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = res;
+    s.onerror = () => rej(new Error('load ' + src));
+    document.head.appendChild(s);
+  });
+  return injected[src];
+}
+
+/* cardBody() 的四個「有就多一欄、沒有就靜默少一欄」的資料層。
+   drug-database.html 在 <head> 就把它們載完；tools/cancer.html 只是借藥卡，
+   不能照抄（首屏無故多 1 MB），所以綁在第一次 loadPid() 時才補。
+   四支都在 sw.js 的 PRECACHE_URLS 內，離線讀快取，不另外付流量。 */
+const SIDE_DATA = [
+  ['DRUGDB_EXTRA',   '../data/drugs/extras.js'],
+  ['DRUG_IMAGES',    '../data/drugs/images.js'],
+  ['DRUG_CRUSH_EXT', '../data/drugs/crush-ext.js'],
+  ['DDI_FOOD_CARDS', '../data/ddi/food-cards.js']
+];
+let sideP = null;
+function ensureSideData() {
+  if (!sideP) {
+    sideP = Promise.all(SIDE_DATA
+      .filter(([g]) => !window[g])
+      .map(([, src]) => injectOnce(src).catch(() => {})));   // 補充資料失敗不可拖垮藥卡
+  }
+  return sideP;
+}
+
 const loading = {};
 function loadPid(pid) {
   window.DRUGDB_DATA = window.DRUGDB_DATA || {};
-  if (window.DRUGDB_DATA[pid]) return Promise.resolve();
-  if (loading[pid]) return loading[pid];
-  loading[pid] = new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = `../data/drugs/${pid}.js`;
-    s.onload = res;
-    s.onerror = () => rej(new Error('load ' + pid));
-    document.head.appendChild(s);
-  });
-  return loading[pid];
+  const side = ensureSideData();
+  if (window.DRUGDB_DATA[pid]) return side;
+  if (!loading[pid]) loading[pid] = injectOnce(`../data/drugs/${pid}.js`);
+  return Promise.all([loading[pid], side]);
 }
 
 function onCardToggle(node) {
@@ -886,7 +919,17 @@ function switchVariant(btn, i) {
 
 /* ---------------- 進場 ---------------- */
 
-// 網址帶 #code=XXXX 時直接展開該藥卡（合併後一張卡含多個八碼，任一皆可連進來）
+/* 網址帶 #code=XXXX 時直接展開該藥卡（合併後一張卡含多個八碼，任一皆可連進來）
+
+   落點：卡片**上緣**（商品名那一行）貼齊畫面上緣，不是置中——2026-08-16
+   使用者指定「從『說整句』查詢藥卡時，點擊後讓該藥卡上緣（商品名的地方）
+   位於畫面上緣」。上緣留 16px 由 CSS 的 scroll-margin-top 給。
+
+   behavior 從 smooth 改成 auto（預設）是**修 bug 不是換風格**：本頁 2621 張卡
+   全展在同一份文件裡，實測 375×812 文件高 177338px，捲到 Tamoxifen 那張要走
+   155029px；`scrollIntoView({behavior:'smooth'})` 在這種距離下靜默不動——
+   實測連續量 4.2 秒，scrollY 一路停在 0、卡片 top 停在 155044，卡片是展開了
+   但畫面沒動，看起來就像「點了沒反應」。同一張卡改 auto 立刻落在 top=16。 */
 function applyHash() {
   const m = location.hash.match(/#code=([A-Za-z0-9 %]+)/);
   if (!m) return;
@@ -894,12 +937,37 @@ function applyHash() {
   let card = el('drug-' + code);
   if (!card) card = [...document.querySelectorAll('.drugcard')]
     .find(c => (c.dataset.codes || '').split(' ').indexOf(code) >= 0);
-  if (card) { card.open = true; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  if (card) { card.open = true; card.scrollIntoView({ block: 'start' }); }
 }
 
-renderSrc();
-renderTops();
-renderCls();
-renderList();
-applyHash();
-window.addEventListener('hashchange', applyHash);
+/* ---------------- 進場 ----------------
+   只有藥物資料庫本頁（有 #db-list 這幾個容器）才跑清單、篩選與深層連結。
+   cancer.html 之類「只借藥卡」的頁面沒有這些容器，跑下去 el('db-src') 是 null，
+   .innerHTML 當場 TypeError，而 classic script 頂層一拋錯，後面整段都不會執行。 */
+if (document.getElementById('db-list')) {
+  renderSrc();
+  renderTops();
+  renderCls();
+  renderList();
+  applyHash();
+  window.addEventListener('hashchange', applyHash);
+}
+
+/* ---------------- 對外介面 ----------------
+   下面八個必須用原名：它們是本檔（或 tools/drug-database.html L62）自己吐出來的
+   inline on* 字串唯一認得的名字，改名等於改字串。
+   applyHash 刻意不匯出 —— 匯出就等於把「蓋掉 cancer-staging.js 的 applyHash、
+   讓 #cancer= 深層連結重新整理進不去」那個 bug 原樣搬回來。 */
+window.onSearch      = onSearch;        // drug-database.html 的搜尋框
+window.pickSrc       = pickSrc;
+window.pickTop       = pickTop;
+window.pickCls       = pickCls;
+window.toggleCls     = toggleCls;
+window.onCardToggle  = onCardToggle;    // 藥卡展開；cancer.html 的流程圖也直接用這支
+window.switchVariant = switchVariant;   // 藥卡內的含量規格分頁
+window.openShot      = openShot;        // 外觀照燈箱
+
+/* 其他頁面借藥卡用的命名空間。cardBody() 只吃傳進來的 d，不讀 DRUGDB_INDEX，
+   所以借卡頁不必載 788 KB 的 data/drugs/index.js。 */
+window.DrugCard = { cardBody: cardBody, loadPid: loadPid, ensureSideData: ensureSideData };
+})();
