@@ -628,7 +628,7 @@ window.CANCERS = [
     ],
     m1:'<b>Tis N0 M0 → 0 期</b>（原位癌，另見治療流程之 DCIS 分支）　｜　T0（無原發腫瘤證據）：N1mi → IB、N1 → IIA、N2 → IIIA、N3 → IIIC。<br>T1 含 T1mi。<b>N1mi 僅於 T0／T1 自成 IB</b>；T2 以上之 N1mi 併入 N1 分組（故 T2N1mi = IIB、T3N1mi = IIIA、T4N1mi = IIIB）。此為 <b>AJCC 8th 解剖分期</b>；預後分期需另計 grade 與 ER/PR/HER2。',
   },
-  node_note:'依 <b>AJCC 第 8 版</b>乳癌區域淋巴結定義：腋下以<b>胸小肌</b>為界分為 Level I（外側、下方）、Level II（胸小肌後方）、Level III（內側、鎖骨下 apical），另加 Rotter 淋巴結（胸大肌與胸小肌之間）、內乳淋巴結與鎖骨上淋巴結（N3c）。<br><b>兩個容易記錯的歸類</b>：<b>乳房內淋巴結（intramammary node）計入腋下淋巴結</b>；轉移到<b>頸部淋巴結、對側腋下或對側內乳</b>屬<b>遠處轉移（M1）</b>，不算區域淋巴結。<br><b>顆數的門檻</b>：pN1 為 1–3 顆、pN2 為 4–9 顆、pN3 為 ≥ 10 顆或含鎖骨下、鎖骨上淋巴結。<b>pN1mi 是微轉移</b>（大於 0.2 mm 且不超過 2 mm）；<b>孤立腫瘤細胞 pN0(i+)</b>（不超過 0.2 mm 且細胞數不超過 200）在分期上仍視為 pN0。<br><b>腋下要開到什麼程度、什麼時候可以不做前哨淋巴結切片，全部寫在「治療建議」頁籤的互動流程裡</b>（直接手術與術前藥物治療後的規則不一樣），此處不重複。',
+  node_note:'依 <b>AJCC 第 8 版</b>乳癌區域淋巴結定義：腋下以<b>胸小肌</b>為界分為 Level I（外側、下方）、Level II（胸小肌後方）、Level III（內側、鎖骨下 apical），另加 Rotter 淋巴結（胸大肌與胸小肌之間）、內乳淋巴結與鎖骨上淋巴結（N3c）。<br><b>兩個容易記錯的歸類</b>：<b>乳房內淋巴結（intramammary node）計入腋下淋巴結</b>；轉移到<b>頸部淋巴結、對側腋下或對側內乳</b>屬<b>遠處轉移（M1）</b>，不算區域淋巴結。<br><b>顆數的門檻</b>：pN1 為 1–3 顆、pN2 為 4–9 顆、pN3 為 ≥ 10 顆或含鎖骨下、鎖骨上淋巴結。<b>pN1mi 是 micrometastasis</b>（大於 0.2 mm 且不超過 2 mm）；<b>isolated tumor cells pN0(i+)</b>（不超過 0.2 mm 且細胞數不超過 200）在分期上仍視為 pN0。<br><b>腋下要開到什麼程度、什麼時候可以不做 SLNB，全部寫在「治療建議」頁籤的互動流程裡</b>（直接手術與術前藥物治療後的規則不一樣），此處不重複。',
 
   nodes:[
     ['Level I','腋下低位 — 胸小肌外側（含 axillary vein、external mammary、scapular 群）','腋下（區域，計入 N）'],
