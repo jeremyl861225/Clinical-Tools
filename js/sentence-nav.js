@@ -3004,6 +3004,7 @@
   var flowReplaying = false; // 重播中：不把重播出來的點擊再記一次
   var FLOW_SEL = '.flow-opt, .tn-cell';
   var FLOW_MAX = 200;        // 反覆改選也不無限累積（js/common.js 用 300，同一種保險）
+  var STEP_GAP = 12;         // 退回選項區塊時，區塊上緣離畫面上緣留的縫
 
   function flowSig(btn) {
     return {
@@ -3036,17 +3037,30 @@
     for (var i = 0; i < list.length; i++) if (flowVisible(list[i])) return list[i];
     return list[0] || null;
   }
+  /* 一顆選項屬於哪一個「選項區塊」：全站的流程圖都是
+     `.flow-step > .flow-step-head(.flow-num + .flow-q) + .flow-opts`，
+     T×N 那種格子表包在 `.tn-wrap` 裡（有的掛在 .flow-step 內，有的直接塞進
+     hold 容器），所以兩層都試，都沒有才退回按鈕自己。 */
+  function flowStepOf(btn) {
+    if (!btn || !btn.closest) return btn || null;
+    return btn.closest('.flow-step') || btn.closest('.tn-wrap') || btn.closest('.flow-opts') || btn;
+  }
+
   function flowUndo() {
     if (!flowStack.length) return false;
     var reset = flowResetBtn();
     if (!reset) return false;
+    var dropped = flowStack[flowStack.length - 1];   // 這一下要取消掉的那一顆
     var keep = flowStack.slice(0, -1);
     /* 重置＋重播這一趟會把版面整個拆掉再蓋回來，中途瀏覽器對捲動位置做的事
        不是我們要的——實測乳癌 T×N 退一格：退之前 scrollY=1695，退完變成 2828，
-       畫面往下跳了一千多 px，人會以為自己按到別的東西。所以退之前記下位置，
-       重播完再放回去。退一步只會讓內容變少、上面的東西不動，放回原位看到的
-       就是同一段；真的塌到比原位還短時瀏覽器自己會夾到底部，也還在合理範圍。
-       （abxReset() 那種自帶 scrollTo(0) 的重置鍵一併蓋掉，同樣是要的。） */
+       畫面往下跳了一千多 px，人會以為自己按到別的東西。
+
+       退完之後要停在哪裡：**被取消的那顆選項所在的那個區塊**（2026-08-16
+       使用者指定「取消此選項並回到上一個選項區塊」）。那一區現在正等著重選，
+       是唯一有意義的落點——尤其人多半是捲到下面看完建議才按上一步的，
+       停在原地等於還在看一段已經失效的建議。
+       找不到那顆按鈕（重播後那一步不再出現）才退回「原捲動位置」。 */
     var y0 = window.pageYOffset || document.documentElement.scrollTop || 0;
     flowReplaying = true;
     try {
@@ -3064,8 +3078,17 @@
     flowStack = keep;
     /* 當場放一次、下一幀再放一次：pathway 的 render() 大多是同步的，但
        tools/cancer.html 那一套在 showDetail／switchTab 之後還掛了一輪掃描
-       （js/cancer-staging.js 的 sweepIdlePlaceholders），會在這一幀之後再改版面。 */
-    var put = function () { try { window.scrollTo(0, y0); } catch (e2) {} };
+       （js/cancer-staging.js 的 sweepIdlePlaceholders），會在這一幀之後再改版面。
+       每一次都重新找一遍那顆按鈕——重播後的節點是新的，抓著舊參考會落空。 */
+    var put = function () {
+      var step = flowStepOf(flowFind(dropped));
+      if (step && step.getBoundingClientRect) {
+        var y = (window.pageYOffset || document.documentElement.scrollTop || 0) +
+                step.getBoundingClientRect().top - STEP_GAP;
+        try { window.scrollTo(0, Math.max(0, Math.round(y))); return; } catch (e2) {}
+      }
+      try { window.scrollTo(0, y0); } catch (e3) {}
+    };
     put();
     if (window.requestAnimationFrame) requestAnimationFrame(put); else setTimeout(put, 0);
     return true;
