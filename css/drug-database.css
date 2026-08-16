@@ -46,6 +46,9 @@ a.db-xlink:focus-visible{outline:2px solid var(--x-bg); outline-offset:2px;}
 .db-crush b{font-weight:700;}
 .db-crush.ok{color:var(--accent); border-color:var(--accent);}
 .db-crush.no{color:var(--accent2); border-color:var(--accent2);}
+/* 危害性藥品：台大在這一欄只標了暴露風險、沒講能不能磨，所以不是可／不可，
+   用琥珀色與可（綠）不可（紅）區隔開。 */
+.db-crush.hazard{color:var(--warn, #c98a2e); border-color:var(--warn, #c98a2e);}
 .db-crush-l{font-size:13px; line-height:1.6; margin-top:2px;}
 .db-crush-l b{font-weight:700; margin-right:2px;}
 .db-crush-sep{height:1px; background:var(--line); margin:8px 0;}

@@ -2715,15 +2715,12 @@
 [data-ui="sentence"] .kps-details td:first-child { font-family: var(--sentence-mono); font-weight: 700; color: var(--sentence-fg); }
 /* 左欄不要撐開：欄名換行沒關係，換來右欄內文可以攤開，整張表短很多 */
 [data-ui="sentence"] .kps-details td:first-child { white-space: normal; width: 20%; }
-/* 建議卡末尾那幾條可展開連結：縮小行距與間距 */
-[data-ui="sentence"] .flow-rec .rec-detail > details { margin: 1px 0; }
-[data-ui="sentence"] .flow-rec .rec-detail > details > summary { line-height: 1.45; }
-/* 觸控目標的 min-height:44px（第 961 行那條）在建議卡末尾會變成一整排空白 ——
-   那裡有四、五條可展開連結疊在一起，使用者實機回報「行距太大」。
-   只在這個位置降到 30px，並用 flex 置中讓文字仍落在可點區的中間；
-   其他地方的 44px 不動。 */
-[data-ui="sentence"] .flow-rec .rec-detail > details > summary {
-  min-height: 30px; display: flex; align-items: center; flex-wrap: wrap;
+[data-ui="sentence"] .flow-rec .rec-detail.rec-more > li > details { margin: 0; }
+/* 觸控目標的 min-height:44px（第 961 行那條）在建議卡末尾會變成一整排空白。
+   那幾條參考資料現在是一般的 li（.rec-more），行距要和其他段落一致，
+   所以這裡把 min-height 收掉、行距交還給 li 本身；其他地方的 44px 不動。 */
+[data-ui="sentence"] .flow-rec .rec-detail.rec-more > li > details > summary {
+  min-height: 0; display: block; line-height: inherit;
 }
 [data-ui="sentence"] .dx-details summary { color: var(--sentence-dim); font-family: var(--sentence-mono); text-underline-offset: 2px; }
 [data-ui="sentence"] .dx-details .dx-h { font-family: var(--sentence-sans); font-weight: 700; color: var(--sentence-dim); }
@@ -4380,6 +4377,7 @@
    正式版沿用 drug-database.css 的 --accent／--accent2，不在這裡動。 */
 [data-ui="sentence"] .db-crush.ok { color: var(--sentence-calm); border-color: var(--sentence-calm); }
 [data-ui="sentence"] .db-crush.no { color: var(--sentence-hot); border-color: var(--sentence-hot); }
+[data-ui="sentence"] .db-crush.hazard { color: var(--sentence-warm, #c08a3e); border-color: var(--sentence-warm, #c08a3e); }
 
 [data-ui="sentence"] .nu-warn b, [data-ui="sentence"] .vt-warn b, [data-ui="sentence"] .cv-warn b,
 [data-ui="sentence"] .ps-warn b, [data-ui="sentence"] .gr-warn b, [data-ui="sentence"] .pc-warn b,

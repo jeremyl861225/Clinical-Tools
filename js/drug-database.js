@@ -709,7 +709,11 @@ function crushField(v) {
 
   const merged = Object.assign({}, base || {}, ext || {});
   const conflict = (ext && ext.conflict) || [];
-  const tags = CRUSH_LABELS.filter(([k]) => merged[k]).map(([k, t]) => {
+  /* 台大把「危害性藥品」「Embryo-Fetal Toxicity」填在這一欄，意思是調配要注意暴露，
+     但沒明講能不能磨。不臆測成「不可」，改掛一顆琥珀色旗標並照登原文。 */
+  const hazard = merged.hazard
+    ? `<span class="db-crush hazard">${esc(merged.hazard)}<i>⚠</i></span>` : '';
+  const tags = hazard + CRUSH_LABELS.filter(([k]) => merged[k]).map(([k, t]) => {
     const yes = String(merged[k]).indexOf('不') < 0;
     const warn = conflict.indexOf(k) >= 0;
     return `<span class="db-crush ${yes ? 'ok' : 'no'}${warn ? ' clash' : ''}">${t}<b>${esc(merged[k])}</b>${warn ? '<i>⚠</i>' : ''}</span>`;

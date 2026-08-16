@@ -341,9 +341,10 @@
      右欄的內文才攤得開、表格總高度也短很多。 */
   .kps-details td:first-child{font-family:var(--mono); font-weight:700; text-align:right;
     white-space:normal; width:20%; min-width:58px; line-height:1.35;}
-  /* 建議卡末尾那幾條可展開連結：縮小行距與彼此的間距 */
-  .flow-rec .rec-detail > details{margin:1px 0;}
-  .flow-rec .rec-detail > details > summary{line-height:1.45;}
+  /* 建議卡末尾的參考資料（.rec-more）：外面已經是一般的 li，行距與點點跟其他
+     段落一致，details 本身就不要再自帶上下留白或另一套行距。 */
+  .flow-rec .rec-detail.rec-more > li > details{margin:0;}
+  .flow-rec .rec-detail.rec-more > li > details > summary{line-height:inherit;}
   /* 診斷／縮寫等參考區塊：安靜的可折疊清單（不用醒目的 rx-line 框） */
   .dx-details{margin:6px 0 2px;}
   .dx-details summary{cursor:pointer; font-family:var(--mono); font-size:11.5px; color:var(--muted); text-decoration:underline; opacity:.92;}

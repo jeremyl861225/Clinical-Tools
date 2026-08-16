@@ -95,6 +95,14 @@
   function panel(summary, inner) {
     return '<details class="rx-more"><summary>' + summary + ' ▸</summary><div class="rx-note">' + inner + '</div></details>';
   }
+  /* 建議卡末尾的參考資料：和上面的建議條列用同一個 ul／同一種點點與行距，
+     不要再自成一個間距不同的區塊（使用者 2026-08-16 指定）。 */
+  function more() {
+    var parts = [].slice.call(arguments).filter(Boolean);
+    if (!parts.length) return '';
+    return '<ul class="rec-detail rec-more"><li>' + parts.join('</li><li>') + '</li></ul>';
+  }
+
   function tbl(rows) {
     return '<table>' + rows.map(function (r) {
       return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
@@ -876,7 +884,7 @@
 
     fill('bc_r_dx', 'rec-elective', title, L,
       'p1（work-up）、p2（IHC 原則）、p3（全身分期原則）、p4（遺傳諮詢）、p5（gBRCA1/2 檢測適應症）、p10 註 b。',
-      '<div class="rec-detail">' + geneticTable() + '</div>');
+      more(geneticTable()));
     fu('bc_f_dx', null);
   }
 
@@ -917,7 +925,7 @@
         '<b>原位管癌完全不做全身分期</b>（p3）。'
       ]),
         'p6：Tis N0M0 → BCT → adjuvant RT or not；if ER(+), suggest tamoxifen for 5 yr。p46：VNPI／E5194。',
-        '<div class="rec-detail">' + omitSlnbReference() + etReference() + '</div>');
+        more(omitSlnbReference(), etReference()));
       fu('bc_f_dcis', 'insitu');
       return;
     }
@@ -932,7 +940,7 @@
         '而不是降低同側復發 —— 同側乳房已經切掉了。決定要不要吃五年時，應該把這一點講清楚。')
     ]),
       'p6：Tis N0M0 → SM(TM) ± SLNB ± Reconstruction；p46：Simple mastectomy — no need for adjuvant RT。',
-      '<div class="rec-detail">' + omitSlnbReference() + etReference() + '</div>');
+      more(omitSlnbReference(), etReference()));
     fu('bc_f_dcis', 'insitu');
   }
 
@@ -1018,7 +1026,7 @@
 
     if (p.g === 'none') {
       cls = 'rec-nonop';
-      title = ctnName() + '（' + subLabel(S.sub) + '）→ 建議直接手術';
+      title = ctnName() + '（' + subLabel(S.sub) + '）<br>→ 建議直接手術';
       L.push(H('這一格為什麼是直接手術', 'p8、p9'));
       L.push('<b>大部分臨床第 I、II 期的病人都是直接手術</b>（p8）；這一格沒有達到指引建議術前治療的門檻。');
       if (S.sub === 'her2hr' || S.sub === 'her2') {
@@ -1031,7 +1039,7 @@
       }
     } else if (p.g === 'ii') {
       cls = 'rec-elective';
-      title = ctnName() + '（' + subLabel(S.sub) + '）→ 兩條路都可以，看想不想保留乳房';
+      title = ctnName() + '（' + subLabel(S.sub) + '）<br>→ 兩條路都可以，看想不想保留乳房';
       L.push(H('這一格為什麼兩條都行', 'p9、p11'));
       L.push('<b>沒有達到指引「建議」術前治療的門檻，但術前治療是合理選項</b> —— ' +
         '主要理由是<b>把腫瘤縮小以便做乳房保留手術</b>（p11）。');
@@ -1051,7 +1059,7 @@
       }
     } else if (p.g === 'low') {
       cls = 'rec-elective';
-      title = ctnName() + '（' + subLabel(S.sub) + '）→ 建議先做術前藥物治療';
+      title = ctnName() + '（' + subLabel(S.sub) + '）<br>→ 建議先做術前藥物治療';
       L.push(H('這一格為什麼建議先給藥', 'p9、p11'));
       if (S.sub === 'her2hr' || S.sub === 'her2') {
         L.push('<b>HER2 陽性，已達指引建議術前治療的門檻</b>：≥cT2N0、或 ≥cN1、或荷爾蒙受體陰性者的 ≥cT1cN0（p9）。');
@@ -1065,7 +1073,7 @@
         '帶 germline BRCA 突變者可加 olaparib。直接手術的人拿不到這個資訊，也就用不到這些藥。'));
     } else {
       cls = 'rec-urgent';
-      title = ctnName() + '（' + subLabel(S.sub) + '）→ 局部晚期，一定要先做全身治療';
+      title = ctnName() + '（' + subLabel(S.sub) + '）<br>→ 局部晚期，一定要先做全身治療';
       L.push(H('這一格為什麼不能先開刀', 'p11'));
       L.push('<b>局部晚期（通常是第 III 期，或 cT3N0 以上）—— 指引寫「highly recommended」走術前治療</b>（p11）。');
       if (p.t === 't4d') {
@@ -1125,7 +1133,7 @@
 
     fill('bc_r_up_op', 'rec-elective', '直接手術 —— 乳房與腋下要怎麼開', L,
       'p8（手術原則）、p9（對側預防性切除）、p10（第 ≤IIB 期與 T3N1 的局部治療）。',
-      '<div class="rec-detail">' + axillaReference() + '</div>');
+      more(axillaReference()));
 
     show('bc_n_surg', true);
     if (!S.surg) return;
@@ -1170,7 +1178,7 @@
 
     fill('bc_r_na_rx', 'rec-elective', '術前藥物治療 —— 處方與開始前的準備', L,
       'p12（術前治療的一般原則）、p18／p19（各亞型的術前處方）、p32–p35（處方劑量）。',
-      '<div class="rec-detail">' + chemoReference() + nhiEarly() + '</div>');
+      more(chemoReference(), nhiEarly()));
 
     show('bc_n_nresp', true);
     if (!S.nresp) return;
@@ -1233,7 +1241,7 @@
     fill('bc_r_na_op', 'rec-elective',
       (S.nresp === 'op_bct' ? '乳房保留手術' : '全乳切除') + ' ＋ 腋下分期', OL,
       'p12（術前治療後的手術原則）、p13、p14（術前治療情境的腋下分期策略）。',
-      '<div class="rec-detail">' + axillaReference() + '</div>');
+      more(axillaReference()));
 
     show('bc_n_ypath', true);
     if (!S.ypath) return;
@@ -1299,11 +1307,11 @@
       g = ptnGroup(pt, pn);
       var ptr = PT_ROWS.filter(function (r) { return r[0] === pt; })[0];
       var pnc = PN_COLS.filter(function (c) { return c[0] === pn; })[0];
-      title = ptr[1] + pnc[1].replace('p', '') + '（' + subLabel(s) + '）→ 術後輔助治療';
+      title = ptr[1] + pnc[1].replace('p', '') + '（' + subLabel(s) + '）<br>→ 術後輔助治療';
       L = L.concat(adjSystemicUpfront(s, pt, pn, g));
     } else {
       title = { pcr: 'pCR', res_n0: '乳房有殘存病灶、淋巴結陰性', npos: '淋巴結仍有轉移' }[S.ypath] +
-        '（' + subLabel(s) + '）→ 術後輔助治療';
+        '（' + subLabel(s) + '）<br>→ 術後輔助治療';
       L = L.concat(adjSystemicNeo(s));
     }
 
@@ -1330,8 +1338,7 @@
       path === 'up'
         ? 'p17（HER2 陽性）、p19／p20（三陰性）、p22（荷爾蒙受體陽性）、p21（BRCA）、p23／p24（內分泌治療）、p47／p48（放射治療）。'
         : 'p18（HER2 陽性術後）、p20（三陰性術後）、p21（BRCA 與 OlympiA）、p22、p23／p24（內分泌治療）、p49（術前治療後的放射治療）。',
-      '<div class="rec-detail">' + etReference() + chemoReference() + rtReference() +
-      olympiaTable() + nhiEarly() + '</div>');
+      more(etReference(), chemoReference(), rtReference(), olympiaTable(), nhiEarly()));
   }
 
   function adjSystemicUpfront(s, pt, pn, g) {
@@ -1607,7 +1614,7 @@
 
     fill('bc_r_mbc', cls, title, L,
       'p37（總原則）、p38（內分泌治療決策圖）、p39（抗 HER2 藥物）、p40（三陰性免疫治療）、p41（PARP 抑制劑）、p42–p45（化療處方）。',
-      '<div class="rec-detail">' + mbcChemoTable() + nhiMeta() + '</div>');
+      more(mbcChemoTable(), nhiMeta()));
     fu('bc_f_mbc', 'meta');
   }
 
@@ -1844,7 +1851,7 @@
 
     fill('bc_r_prog', 'rec-urgent', title, L,
       'p12、p13（術前治療中進展）、p38（內分泌抗藥）、p39（抗 HER2 後線）、p42、p43（化療原則）、p2、p3（重驗與分期）。',
-      '<div class="rec-detail">' + nhiMeta() + '</div>');
+      more(nhiMeta()));
     fu('bc_f_prog', 'meta');
   }
 
