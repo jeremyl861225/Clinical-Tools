@@ -297,6 +297,33 @@
     }
   }
 
+  /* ---- 口腔內側 ----
+     下顎轉開之後，上下顎之間那條縫在幾何上是**真的透空**：暗色那一圈從 KB+1
+     繞到 KN−1，腹白那一圈從 0 到 KB，兩圈的兩個接口（KB↔KB+1 與 KN−1↔0）
+     沒有面片接起來，於是縫裡看到的是頁面底色。暗底看不出來（底色本來就近乎黑），
+     **亮底的底色就是骨白**——那條縫看起來就是嘴上憑空多出一條白線段。
+     解法是把口腔內側補起來，而且要併進同一條暗色 path：另外用一次 fill 補的話，
+     它的邊會與剪影的邊落在同一排像素，兩次各塗一半只有 0.75，照樣留一條淡線。
+     面片會隨著張口翻面，所以繞向要逐片校正；為了不怕投影後自交，切成三角形送。 */
+  function tri(g, x0, y0, x1, y1, x2, y2) {
+    var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) + (x2 * y0 - x0 * y2);
+    if (ar > -.03 && ar < .03) return;
+    g.moveTo(x0, y0);
+    if (ar > 0) { g.lineTo(x1, y1); g.lineTo(x2, y2); }
+    else { g.lineTo(x2, y2); g.lineTo(x1, y1); }
+    g.closePath();
+  }
+  function gapQuad(g, a, b, c, d) {
+    var x0 = STA[a], y0 = STA[a + 1], x1 = STA[b], y1 = STA[b + 1],
+        x2 = STA[c], y2 = STA[c + 1], x3 = STA[d], y3 = STA[d + 1];
+    tri(g, x0, y0, x1, y1, x2, y2);
+    tri(g, x0, y0, x2, y2, x3, y3);
+  }
+  function mouthQuads(g, oA, oB) {
+    gapQuad(g, oA + KB * 2, oA + (KB + 1) * 2, oB + (KB + 1) * 2, oB + KB * 2);
+    gapQuad(g, oA + (KN - 1) * 2, oA, oB, oB + (KN - 1) * 2);
+  }
+
   /* ---- 貼在體表上的斑塊（眼斑、鞍斑）----
      一樣切成網格、一樣逐片背面剔除，所以斑塊會**沿著身體的曲面包過去**，
      轉到哪個角度都不會壓扁或飄在身體外面；跨過輪廓線的那一半自己就被剔掉了。
@@ -307,7 +334,7 @@
     return proj(bx(u), sp + (cs >= 0 ? botH(u) : topH(u)) * cs,
                 halfW(u) * Math.sin(ps), out);
   }
-  function patchMesh(g, uc, ru, pc, rp, sk, minR) {
+  function patchScan(g, uc, ru, pc, rp, sk) {
     var NR = 3, NT = 16, i, j, j2, r, a, ca, sa, any = 0, base;
     for (i = 0; i <= NR; i++) {
       r = i / NR;
@@ -328,22 +355,32 @@
         var ar = (x0 * y1 - x1 * y0) + (x1 * y2 - x2 * y1) +
                  (x2 * y3 - x3 * y2) + (x3 * y0 - x0 * y3);
         if (ar <= 1e-4) continue;
-        g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
-        g.closePath(); any += ar * .5;
+        if (g) {
+          g.moveTo(x0, y0); g.lineTo(x1, y1); g.lineTo(x2, y2); g.lineTo(x3, y3);
+          g.closePath();
+        }
+        any += ar * .5;
       }
     }
-    /* 被壓扁到只剩四成面積就整塊不畫。斑塊被大幅透視壓縮時，真正刺眼的不是它
-       自己，而是它與旁邊那塊白之間**被壓到只剩一兩個像素的黑縫**——看起來就像
-       白色上被劃了一刀（正臉時兩塊眼斑會在背上夾出一個「Λ」形的細縫）。
-       與其留一條刮痕，不如讓這塊斑紋在那個角度乾脆消失。
-       門檻用「投影面積 ÷ 正對時的面積」，與鯨魚畫多大無關。 */
-    /* 被透視壓扁到一定程度就整塊不畫。斑塊被壓扁時真正刺眼的不是它自己，而是它
-       與旁邊那塊白之間**被壓到只剩一兩個像素的黑縫**——看起來就像白色上被劃了
-       一刀（正臉時兩塊眼斑會在背上夾出一個「Λ」形的細縫，就是使用者圈出來的
-       那種線段）。與其留一條刮痕，不如讓這塊斑紋在那個角度乾脆消失。
-       門檻是「投影面積 ÷ 正對時的面積」，與鯨魚畫多大無關；跨過背中線的鞍斑
-       永遠只看得到一半，所以它的門檻本來就該低很多（實測側面 0.14、眼斑 0.85）。 */
-    return any > Math.PI * (ru * D.L) * (rp * topH(uc)) * minR ? any : 0;
+    return any;
+  }
+  /* 斑塊被透視壓扁時，真正刺眼的不是它自己，而是它與旁邊那塊白之間**被壓到只剩
+     一兩個像素的黑縫**——看起來就像白色上被劃了一刀（正臉時兩塊眼斑會在背上夾出
+     一個「Λ」形的細縫）。所以壓扁到一定程度就得讓它退場。
+     退場**不能用一個門檻直接關掉**：轉身時眼斑會整塊瞬間不見，很顯眼（使用者說的
+     「轉身時白色眼斑會短暫消失」）。改成連續地把斑塊縮小——縮小同時也把那條黑縫
+     撐開，正好一併解決刮痕。縮放量走 smoothstep，兩端斜率為零，不會在門檻上跳動。
+     「壓扁程度」＝投影面積 ÷ 正對時的面積，與鯨魚畫多大無關；量的時候一律用**全尺寸**
+     去量，免得「縮小 → 面積變小 → 再縮小」自己回授。跨過背中線的鞍斑永遠只看得到
+     一半，門檻本來就該低很多（實測側面：眼斑 0.85、鞍斑 0.14）。 */
+  function patchMesh(g, uc, ru, pc, rp, sk, lo, hi) {
+    var f = patchScan(null, uc, ru, pc, rp, sk) /
+            (Math.PI * (ru * D.L) * (rp * topH(uc)));
+    f = (f - lo) / (hi - lo);
+    if (f <= 0) return 0;
+    if (f > 1) f = 1;
+    f = f * f * (3 - 2 * f);
+    return patchScan(g, uc, ru * f, pc, rp * f, sk * f);
   }
 
   /* ---- 有厚度的板子：背鰭、胸鰭、尾鰭都走這一支 ----
@@ -400,6 +437,17 @@
      那個洞看起來就是黑色裡憑空多出一條白線（實測 120 種姿態共 747 條，三片鰭各佔
      三分之一）。描一道與填色同色、1.1 px 的邊，破洞與「鰭剛好貼著身體」的接縫
      一次補掉，代價只是鰭胖了半個像素。 */
+  /* 骨白的每一塊（腹白、眼斑、鞍斑）填完都要**描一道同色的邊**。整個剪影已經先鋪了
+     一層暗色，骨白蓋在它上面；兩者在腹側輪廓上是同一條邊，那排像素被暗色塗掉一半、
+     再被骨白補回一半——補不回全部（0.5 → 0.75），剩下的 0.25 是暗色。亮底的骨白就是
+     頁面底色，於是每一塊白的輪廓都浮出一道 25% 的細灰線，整條腹部像被描了邊。
+     描一道 1.1 px 的同色邊就蓋掉了（實測 72 種姿態：8941 px → 277 px），代價只是
+     白的地方往外長了半個像素。 */
+  function inkBelly(g) {
+    g.fillStyle = P.belly; g.fill();
+    g.strokeStyle = P.belly; g.lineWidth = 1.1;
+    g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke();
+  }
   function inkFin(g) {
     g.fillStyle = P.skin; g.fill();
     g.strokeStyle = P.skin; g.lineWidth = 1.2;
@@ -627,21 +675,22 @@
       oA = i * KN * 2; oB = oA + KN * 2;
       bandQuads(g, oA, oB, 0, KB);            // 腹白那一圈也先鋪暗色
       bandQuads(g, oA, oB, KB + 1, KB + 1 + KD);
+      if (ja) mouthQuads(g, oA, oB);          // 張口時把口腔內側補起來
     }
     flukeFin(g); dorsalFin(g); pecFin(g, 1); pecFin(g, -1);
     g.fillStyle = P.skin; g.fill();
 
     g.beginPath();
     for (i = 0; i < NS; i++) bandQuads(g, i * KN * 2, (i + 1) * KN * 2, 0, KB);
-    g.fillStyle = P.belly; g.fill();
+    inkBelly(g);
 
     /* 貼在體表的斑塊：背面剔除已經保證留下來的面片看得見，畫在身體之後即可。 */
     g.beginPath();
-    if (patchMesh(g, .62, .095, Math.PI, .70, 0, .06)) { g.fillStyle = P.belly; g.fill(); }
+    if (patchMesh(g, .62, .095, Math.PI, .70, 0, .02, .10)) inkBelly(g);
     g.beginPath();
-    var e1 = patchMesh(g, .132, .055, 2.05, .30, 0, .45);
-    var e2 = patchMesh(g, .132, .055, -2.05, .30, 0, .45);
-    if (e1 || e2) { g.fillStyle = P.belly; g.fill(); }
+    var e1 = patchMesh(g, .132, .055, 2.05, .30, 0, .20, .62);
+    var e2 = patchMesh(g, .132, .055, -2.05, .30, 0, .20, .62);
+    if (e1 || e2) inkBelly(g);
 
     /* **近側**的鰭要在腹白之後再畫一次，否則會被腹白蓋掉。遠側的不必——
        它本來就該藏在身體後面，而上面那一次填已經把它的形狀併進剪影裡了。 */
