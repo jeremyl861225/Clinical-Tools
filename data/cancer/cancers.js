@@ -1313,7 +1313,7 @@ window.CANCERS = [
 {
   id:'hcc', zh:'肝細胞癌', abbr:'HCC', en:'Hepatocellular Carcinoma', group:'消化系 GI',
   pathway:'hcc',
-  edition:'AJCC 8th（2017，解剖分期）＋ BCLC 2022 update（治療分派） · 治療依台大肝細胞癌診療指引 版次 20（2026/06/16）',
+  edition:'AJCC 8th（2017，解剖分期）＋ BCLC 2022 update（治療分派） · 治療依台大肝細胞癌診療指引 版次 20（文件編號 50710-2-000008，2026/06/16 第 87 次癌症醫療委員會修訂通過）· 健保給付條文查至 2026-08-17',
   staging_note:'HCC 有<b>兩套並存、回答不同問題</b>的系統：<br>①<b>AJCC 8th TNM</b>（下方矩陣）——純<b>解剖範圍</b>分期，只看腫瘤數目／大小／血管侵犯／淋巴結／遠處轉移，<b>完全不看肝功能與體能狀態</b>，主要用於病理報告、癌症登記與預後比較。<br>②<b>BCLC（2022 update）</b>（再下方）——<b>治療分派演算法</b>，結合腫瘤負荷 ＋ 肝功能 ＋ ECOG PS，直接對應第一線治療；<b>它不是解剖期別</b>，不可與 AJCC 期別互相換算。臨床決策以 BCLC 為主。<br>AJCC 8th 要點：T1 依 2cm 切分 T1a／T1b；T4（主幹分支血管侵犯或侵犯鄰近器官）+N0 為 IIIB，<b>N1 才進入第 IV 期（IVA）</b>，M1 為 IVB。',
   t:[
     ['T1a','單顆 ≤2cm，不論有無血管侵犯 Solitary ≤2 cm, with or without vascular invasion'],
