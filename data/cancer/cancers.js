@@ -1382,7 +1382,8 @@ window.CANCERS = [
 /* ============================ 膽管癌 ============================ */
 {
   id:'cca', zh:'膽管癌', en:'Cholangiocarcinoma', group:'消化系 GI',
-  edition:'AJCC 8th（2017）— 肝內／肝門／遠端三部位分別分期 · 治療依臨床試驗證據（未對應特定台大指引版次）',
+  pathway:'cca',
+  edition:'AJCC 8th（2017）— 肝內／肝門／遠端三部位分別分期 · ⚠ 台大與台灣皆無膽道癌診療指引；治療依 ESMO 膽道癌 CPG（Ann Oncol 2023;34:127-140）與現行 2025 期中更新（ESMO Open 2025;10:104003），並對照與台灣腫瘤醫學會共同協調之泛亞洲版（ESMO Open 2024;9:103647）· 健保給付條文查至 2026-08-17',
   staging_note:'AJCC 第 8 版將膽管癌<b>依解剖部位分成三套獨立的 TNM 與三張不同的分期組合表</b>：<b>肝內（iCCA）</b>、<b>肝門／Klatskin（pCCA）</b>、<b>遠端（dCCA）</b>。三者的 T 定義、N 定義與分期組合<b>皆不相同</b>，不可互用——請先於下方選擇部位再讀分期表。<br><b>膽囊癌（gallbladder cancer）為 AJCC 另一獨立部位</b>，T／N 與分期組合與本頁三者皆不同，<b>不包含於本頁</b>，請勿套用。<br>N 的計數方式亦依部位而異：<b>iCCA 之 N1 不計顆數</b>（有無轉移二分），<b>pCCA／dCCA 則以顆數分 N1（1–3 顆）與 N2（≥4 顆）</b>。',
   t:[
     ['肝內 iCCA T1a','單一腫瘤 ≤5cm 且無血管侵犯 Solitary tumor ≤5cm without vascular invasion'],
