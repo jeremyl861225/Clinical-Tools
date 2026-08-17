@@ -1932,22 +1932,20 @@
 [data-ui="sentence"] .sh-top {
   display: block; line-height: 1.55;
 }
-/* 型別：形狀 ＋ 文字標籤兩者並呈，不單靠顏色（原型 .kind-badge / .kind-label） */
-[data-ui="sentence"] .sh-kind {
-  display: inline-block; font-size: 12px; line-height: 1;
-  width: 1.2em; text-align: center; margin-right: 1px;
-}
+/* 型別：只用文字標籤，不單靠顏色（原型 .kind-badge / .kind-label）。
+   ⚠ 2026-08-17 拿掉形狀記號（.sh-kind）—— 暗色主題下看不見，而且會讓每一列
+   多一個縮排的列點欄。型別的可辨識性由這個文字標籤承擔，色弱與黑白列印皆可讀。 */
 [data-ui="sentence"] .sh-kind-l {
   display: inline-block;
   font-family: var(--sentence-mono); font-size: 9px; letter-spacing: .1em;
   border: 1px solid var(--sentence-line2); padding: 1px 5px; white-space: nowrap;
   margin-right: 6px;
 }
-[data-ui="sentence"] .sh-kind.k-tool,    [data-ui="sentence"] .sh-kind-l.k-tool    { color: var(--sentence-fg2); }
-[data-ui="sentence"] .sh-kind.k-pathway, [data-ui="sentence"] .sh-kind-l.k-pathway { color: var(--sentence-hot); }
-[data-ui="sentence"] .sh-kind.k-mega,    [data-ui="sentence"] .sh-kind-l.k-mega    { color: var(--sentence-fg); font-weight: 700; }
-[data-ui="sentence"] .sh-kind.k-mode,    [data-ui="sentence"] .sh-kind-l.k-mode    { color: var(--sentence-dim); }
-[data-ui="sentence"] .sh-kind.k-cancer,  [data-ui="sentence"] .sh-kind-l.k-cancer  { color: var(--sentence-warn); }
+[data-ui="sentence"] .sh-kind-l.k-tool    { color: var(--sentence-fg2); }
+[data-ui="sentence"] .sh-kind-l.k-pathway { color: var(--sentence-hot); }
+[data-ui="sentence"] .sh-kind-l.k-mega    { color: var(--sentence-fg); font-weight: 700; }
+[data-ui="sentence"] .sh-kind-l.k-mode    { color: var(--sentence-dim); }
+[data-ui="sentence"] .sh-kind-l.k-cancer { color: var(--sentence-warn); }
 [data-ui="sentence"] .sh-name {
   font-family: var(--sentence-serif); font-size: 15px; letter-spacing: .05em;
   color: var(--sentence-fg);

@@ -716,7 +716,8 @@ window.CANCERS = [
 {
   id:'gist', zh:'胃腸道基質瘤', abbr:'GIST', en:'Gastrointestinal Stromal Tumor', group:'消化系 GI',
   pathway:'gist',
-  edition:'AJCC 8th（2017，依部位×有絲分裂速率分四套 TNM）／復發風險採 AFIP（Miettinen）分級 · ⚠ <b>台大醫院沒有 GIST 診療指引</b>（肉瘤診療指引版次 08 第 9 頁將 GIST 列為 exclusion，胃癌指引版次 17 亦不含 GIST），治療全部屬院外實證：ESMO–EURACAN–GENTURIS 2022（Ann Oncol 2022;33:20-33）· 健保給付條文查至 2026-08-17',
+  /* ⚠ edition 這一欄由 cancer-staging.js 以 escapeHtml() 輸出 —— 放 HTML 標籤會原字印出來，只能純文字。 */
+  edition:'AJCC 8th（2017，依部位×有絲分裂速率分四套 TNM）／復發風險採 AFIP（Miettinen）分級 · 治療依 ESMO–EURACAN–GENTURIS 2022（Ann Oncol 2022;33:20-33）· 健保給付條文查至 2026-08-17',
   staging_note:'GIST 有<b>兩套並存、回答不同問題</b>的系統，兩者都要看：<br>①<b>AJCC 8th TNM 分期</b>（下方矩陣）——解剖範圍與預後分期。同一個 T／N 在<b>不同部位、不同有絲分裂速率</b>下是不同期別，故分成四張表：胃／網膜與小腸等部位各有低／高分裂速率兩套。<br>②<b>AFIP／Miettinen 復發風險分級</b>（再下方）——決定<b>是否需要輔助 imatinib</b>，AJCC 8th 亦收錄此表。<br>要點：有絲分裂數以<b>每 5 mm²</b> 計（舊式顯微鏡約 50 HPF，新式廣角物鏡約 20–25 HPF），低 ≤5／5mm²、高 >5／5mm²。GIST 淋巴結轉移罕見，但<b>一旦 N1 即為第 IV 期</b>。此外「腫瘤破裂」不在 AFIP 表內，但在 modified-NIH 分級中<b>單獨即列為高風險</b>。',
   t:[
     ['T1','≤2cm Tumor ≤2 cm in greatest dimension'],

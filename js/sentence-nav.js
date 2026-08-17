@@ -1157,12 +1157,19 @@
    * 分類尾巴（secTitle／grp）也不搬進這一列——它們就是這一列的上兩層標頭，
    * 同一組字在同一屏印兩次只會把清單變長。「說整句」的候選項才需要那條尾巴
    * （見 .sai-meta），因為那份清單是平的、沒有分組標頭。 */
+  /* 2026-08-17 形狀記號（● ◆ ◎ ◐ ▪）整組拿掉，清單改為平面。
+     使用者實機指出兩件事，其實是同一個原因：那顆記號在暗色主題下看不見，
+     而且它讓每一列多一個縮排的列點欄、讀起來像巢狀清單。
+     原型把「形狀 ＋ 文字標籤」並呈是為了色弱與黑白列印下仍分得出型別 ——
+     ⚠ 那個保障來自**文字標籤**（.sh-kind-l 印的「癌別／流程／計分」），
+     形狀只是冗餘的裝飾層（原本就掛 aria-hidden，讀屏根本不念）。
+     拿掉形狀不影響無障礙，標籤仍在。 */
   var KIND_META = {
-    tool:    { shape: '●', label: '計分', cls: 'k-tool' },
-    pathway: { shape: '◆', label: '流程', cls: 'k-pathway' },
-    mega:    { shape: '◎', label: '總站', cls: 'k-mega' },
-    mode:    { shape: '◐', label: '模式', cls: 'k-mode' },
-    cancer:  { shape: '▪', label: '癌別', cls: 'k-cancer' }
+    tool:    { label: '計分', cls: 'k-tool' },
+    pathway: { label: '流程', cls: 'k-pathway' },
+    mega:    { label: '總站', cls: 'k-mega' },
+    mode:    { label: '模式', cls: 'k-mode' },
+    cancer:  { label: '癌別', cls: 'k-cancer' }
   };
   /* ---------------- 頁內子目標：句子的最後一步 ----------------
    * 句子收斂完之後只停在「抗生素指引」這個**頁面**，可是使用者要的是頁內的
@@ -1549,7 +1556,6 @@
     return '<div class="sent-hit-row' + (on ? ' subs-open' : '') + '">' +
       '<a class="sent-hit" href="' + esc(withSentQuery(hitHref, completeSentenceFor(t))) + '">' +
         '<span class="sh-top">' +
-          '<span class="sh-kind ' + m.cls + '" aria-hidden="true">' + m.shape + '</span>' +
           '<span class="sh-kind-l ' + m.cls + '">' + m.label + '</span>' +
           '<span class="sh-name">' + esc(hitName) + '</span>' +
           '<span class="sh-en">' + esc(hitEn) + '</span>' +

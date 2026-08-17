@@ -629,10 +629,14 @@
      ========================================================== */
   function gistPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note"><b>⚠ 台大醫院沒有 GIST 的診療指引。</b>台大肉瘤診療指引（版次 08，2026/06/16）' +
-      '第 9 頁把 GIST 明確列為 <b>exclusion</b>，全文沒有 GIST 的治療章節；台大胃癌診療指引（版次 17）也沒有。' +
-      '因此<b>本流程的臨床內容全部屬院外實證</b>，每一段都標明出處與版本。' +
-      '台大指引唯一可引用的一句是肉瘤指引第 9 頁的註腳：被排除的次型<b>仍應在多專科團隊討論</b>。<br>' +
+    /* 這一段和上方的 edition 欄曾經各講一次「台大沒有 GIST 指引」，重複度太高。
+       依 pathway-ux-rules 1-4「同一件事只寫一次」：這件事只在這裡點一句，
+       完整的依據（肉瘤指引版次 08 第 9 頁 exclusion 與 MDT 註腳）收在
+       surgeryReference() 的「照護場域」那一列，各建議卡的來源欄也不再重複。 */
+    h += '<p class="onc-note">GIST 的臨床內容<b>依院外實證</b>編成 —— ' +
+      '主幹為 ESMO–EURACAN–GENTURIS 2022（Ann Oncol 2022;33:20-33），' +
+      '並對照 2025 亞洲共識（有台大作者列名）；<b>台大沒有 GIST 診療指引</b>，' +
+      '每一張建議卡的來源欄都標明出處與版本。<br>' +
       '步驟照臨床決策實際發生的先後排：<b>發現腫瘤 → 追蹤還是切除 → 直接開刀還是先給藥 → ' +
       '術後風險分級決定輔助治療 → 轉移與進展的線別</b>。<br>' +
       '<b>每一步選完才會出現下一步與該步的建議。</b>建議框內：<b>正常字是要做的決定</b>，' +
@@ -818,8 +822,7 @@
       L.push(H('決定要切的話', ''));
       L.push('<b>下面的步驟 3 判斷切得下來、要付出什麼代價。</b>');
       fill('gi_r_site', 'rec-idle', title, L,
-        'ESMO–EURACAN–GENTURIS GIST CPG，Ann Oncol 2022;33:20-33（PMID 34560242），診斷節。' +
-        '<b>台大無 GIST 指引，本段全部屬院外實證。</b>',
+        'ESMO–EURACAN–GENTURIS GIST CPG，Ann Oncol 2022;33:20-33（PMID 34560242），診斷節。',
         more(mitosisReference(), mutationReference(), surgeryReference(), asianReference()));
       fu('gi_f_site', 'surv');
 
@@ -841,7 +844,7 @@
       L.push(H('下一步', ''));
       L.push('<b>下面的步驟 3 判斷切得下來、要付出什麼代價 —— 直腸最常落在「切得下來但代價很大」那一格。</b>');
       fill('gi_r_site', cls, title, L,
-        'ESMO 2022 診斷節（rectal nodules）與分期節（MRI）。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 診斷節（rectal nodules）與分期節（MRI）。',
         more(mitosisReference(), mutationReference(), surgeryReference(), asianReference()));
 
     } else if (S.site === 'ge2') {
@@ -866,7 +869,7 @@
       L.push(H('下一步', ''));
       L.push('<b>下面的步驟 3 判斷切得下來、要付出什麼代價。</b>');
       fill('gi_r_site', cls, title, L,
-        'ESMO 2022 診斷節（tumours ≥ 2 cm、biopsy 途徑）。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 診斷節（tumours ≥ 2 cm、biopsy 途徑）。',
         more(ruptureReference(), mitosisReference(), mutationReference(), surgeryReference(), asianReference()));
 
     } else {
@@ -884,8 +887,7 @@
       L.push(H('下一步', ''));
       L.push('<b>下面的步驟 3 判斷切得下來、要付出什麼代價。</b>');
       fill('gi_r_site', cls, title, L,
-        'ESMO 2022 診斷節（abdominal nodule／large mass／metastatic presentation）。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 診斷節（abdominal nodule／large mass／metastatic presentation）。',
         more(ruptureReference(), mutationReference(), surgeryReference(), asianReference()));
     }
 
@@ -973,8 +975,7 @@
     L.push('<b>下面的步驟 4 選重新評估的結果。</b>');
 
     fill('gi_r_resect', cls, title, L,
-      'ESMO 2022 局部／區域疾病節 neoadjuvant 段 ［III, A］、Figure 1 註 b；健保 9.22（查詢日 2026-08-17）。' +
-      '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      'ESMO 2022 局部／區域疾病節 neoadjuvant 段 ［III, A］、Figure 1 註 b；健保 9.22（查詢日 2026-08-17）。',
       more(mutationReference(), responseReference(), surgeryReference(), nhiReference(), asianReference()));
 
     show('gi_n_nres', true);
@@ -1000,7 +1001,7 @@
       L.push('<b>切完之後可以回步驟 1 選第二項做風險分級</b> —— ' +
         '但要記得上面這一條：吃過術前藥的人，格子上的數字要打折扣看。');
       fill('gi_r_nres', cls, title, L,
-        'ESMO 2022 neoadjuvant 段與 Figure 1 註 b。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 neoadjuvant 段與 Figure 1 註 b。',
         more(surgeryReference(), riskToolsReference(), nhiReference()));
       fu('gi_f_dx', 'adjhigh');
       return;
@@ -1020,8 +1021,7 @@
       L.push(H('下一步', ''));
       L.push('<b>之後進展的話，回步驟 1 選第四項。</b>');
       fill('gi_r_nres', cls, title, L,
-        'ESMO 2022 轉移／晚期疾病節 ［I, A］；健保 9.22（查詢日 2026-08-17）。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 轉移／晚期疾病節 ［I, A］；健保 9.22（查詢日 2026-08-17）。',
         more(responseReference(), nhiReference(), nhiOrderReference()));
       fu('gi_f_nres', 'meta');
       return;
@@ -1051,8 +1051,7 @@
     L.push(H('下一步', ''));
     L.push('<b>回步驟 1 選第三項或第四項，決定後線用藥。</b>');
     fill('gi_r_nres', cls, title, L,
-      'ESMO 2022 療效評估節、轉移／晚期疾病節 ［III, B］／［IV, C］；健保 9.31（查詢日 2026-08-17）。' +
-      '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      'ESMO 2022 療效評估節、轉移／晚期疾病節 ［III, B］／［IV, C］；健保 9.31（查詢日 2026-08-17）。',
       more(responseReference(), mutationReference(), nhiReference(), nhiOrderReference()));
     fu('gi_f_nres', 'meta');
   }
@@ -1117,7 +1116,7 @@
       SITE_LABEL[S.psite] + '　·　' + SIZE_WORD[sizeKey] + '　·　' + MIT_WORD[mitKey] +
       '<br>→ ' + (isNa ? 'AFIP 無資料，依 modified-NIH 判為高風險' : RISK_WORD[v[0]] + '（進展率 ' + v[1] + '）'),
       L, 'AFIP／Miettinen 分級（PMID 17193820，AJCC 第 8 版與 CAP protocol 收錄）；' +
-      'modified-NIH（PMID 18774375）；ESMO 2022 風險評估節。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      'modified-NIH（PMID 18774375）；ESMO 2022 風險評估節。',
       more(riskToolsReference(), mitosisReference(), asianReference()));
 
     show('gi_n_rupt', true);
@@ -1185,8 +1184,7 @@
           ? '<b>D842V 轉移期用 avapritinib 300 mg／天，健保 9.97 有給付而且不必先用過 ' + NR('imatinib') + '。</b>'
           : '<b>SDH 缺陷型的轉移期 sunitinib 與 regorafenib 可能有部分活性</b>［III, B］。'));
       fill('gi_r_adj', cls, title, L,
-        'ESMO 2022 輔助治療段 ［IV, D］、Recommendations 第 6／7 點；健保 9.22（查詢日 2026-08-17）。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 輔助治療段 ［IV, D］、Recommendations 第 6／7 點；健保 9.22（查詢日 2026-08-17）。',
         more(mutationReference(), riskToolsReference(), nhiReference()));
       fu('gi_f_adj', risk === 'high' ? 'adjhigh' : 'adjlow');
       return;
@@ -1212,8 +1210,7 @@
       L.push(H('下一步', ''));
       L.push('<b>把型別驗清楚之後，如果最後確認是 SDH 缺陷型，回步驟 5 改選該項。</b>');
       fill('gi_r_adj', cls, title, L,
-        'ESMO 2022 診斷節 ［II, A］、輔助治療段 ［IV, D］、風險評估節。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 診斷節 ［II, A］、輔助治療段 ［IV, D］、風險評估節。',
         more(mutationReference(), riskToolsReference(), nhiReference()));
       fu('gi_f_adj', risk === 'high' ? 'adjhigh' : 'adjlow');
       return;
@@ -1238,7 +1235,7 @@
       L.push(H('下一步', ''));
       L.push('<b>拿到報告後回步驟 5 重選。</b>');
       fill('gi_r_adj', cls, title, L,
-        'ESMO 2022 診斷節 ［II, A］與 Table 1；健保通則十二。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 診斷節 ［II, A］與 Table 1；健保通則十二。',
         more(mutationReference(), nhiReference()));
       return;
     }
@@ -1380,8 +1377,7 @@
 
     fill('gi_r_adj', cls, title, L,
       'ESMO 2022 局部／區域疾病節輔助治療段（3 年 ［I, A］；exon 9 800 mg ［II, B］；破裂 ［IV, A］）；' +
-      'SSGXVIII PMID 22453568／32469385；PERSIST-5 PMID 30383140；健保 9.22（查詢日 2026-08-17）。' +
-      '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      'SSGXVIII PMID 22453568／32469385；PERSIST-5 PMID 30383140；健保 9.22（查詢日 2026-08-17）。',
       more(nhiAdjReference(), riskToolsReference(), mitosisReference(), ruptureReference(),
         mutationReference(), nhiReference(), asianReference()));
     fu('gi_f_adj', risk === 'high' ? 'adjhigh' : 'adjlow');
@@ -1471,8 +1467,7 @@
         '<b>健保 9.22 第 3 項第（1）款只要求「無法手術切除或轉移」，沒有要求突變報告</b> —— ' +
           '所以臨床上常見的做法是先起 imatinib 400 mg，報告出來再調整。' +
           '<b>但 D842V 的病人這樣做等於白吃。</b>'
-      ], 'ESMO 2022 診斷節 ［II, A］與 Table 1；健保 9.22／9.97／9.95、通則十二（查詢日 2026-08-17）。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      ], 'ESMO 2022 診斷節 ［II, A］與 Table 1；健保 9.22／9.97／9.95、通則十二（查詢日 2026-08-17）。',
         more(mutationReference(), nhiReference()));
       return;
     }
@@ -1656,7 +1651,7 @@
 
     fill('gi_r_adv', cls, title, L,
       'ESMO 2022 轉移／晚期疾病節與 Recommendations；健保 9.22／9.31／9.51／9.123／9.97／9.95' +
-      '（查詢日 2026-08-17）。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      '（查詢日 2026-08-17）。',
       more(lineRxTable(m), responseReference(), mutationReference(), nhiOrderReference(), nhiReference(), asianReference()));
     fu('gi_f_adv', 'meta');
   }
@@ -1694,7 +1689,7 @@
         '<b>能靠局部治療撐住的，就把 imatinib 這一線留著。</b>');
       fill('gi_r_prog', cls, title, L,
         'ESMO 2022 轉移／晚期疾病節 ［IV, C］、Recommendations 第 6 點、療效評估節；' +
-        '健保 9.22／9.31（查詢日 2026-08-17）。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        '健保 9.22／9.31（查詢日 2026-08-17）。',
         more(responseReference(), nhiOrderReference(), nhiReference()));
       fu('gi_f_prog', 'meta');
       return;
@@ -1728,7 +1723,7 @@
         '在那裡選基因型與線別，會列出完整的處方與健保條件。</b>');
       fill('gi_r_prog', cls, title, L,
         'ESMO 2022 療效評估節、轉移／晚期疾病節 ［III, B］、Recommendations 第 7 點；' +
-        '健保 9.22／9.31（查詢日 2026-08-17）。<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        '健保 9.22／9.31（查詢日 2026-08-17）。',
         more(responseReference(), mutationReference(), nhiOrderReference(), nhiReference()));
       fu('gi_f_prog', 'meta');
       return;
@@ -1759,8 +1754,7 @@
       L.push('<b>因為不耐受而「跳過」sunitinib 直接申請 ' + NR('regorafenib') + ' 是不行的</b> —— ' +
         '9.51 要求 imatinib「與」sunitinib 兩者都用過。');
       fill('gi_r_prog', cls, title, L,
-        'ESMO 2022 轉移／晚期疾病節 ［I, A］／［III, C］；健保 9.31／9.51（查詢日 2026-08-17）。' +
-        '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+        'ESMO 2022 轉移／晚期疾病節 ［I, A］／［III, C］；健保 9.31／9.51（查詢日 2026-08-17）。',
         more(nhiOrderReference(), responseReference(), nhiReference()));
       fu('gi_f_prog', 'meta');
       return;
@@ -1797,8 +1791,7 @@
     L.push('<b>回步驟 1 選第三項，在那裡選基因型與線別，會列出完整的處方與健保條件。</b>');
     fill('gi_r_prog', cls, title, L,
       'ESMO 2022 轉移／晚期疾病節 ［I, A］；SSGXVIII PMID 32469385、PERSIST-5 PMID 30383140、' +
-      'BFR14 PMID 17369574；健保 9.22（查詢日 2026-08-17）。' +
-      '<b>台大無 GIST 指引，本段屬院外實證。</b>',
+      'BFR14 PMID 17369574；健保 9.22（查詢日 2026-08-17）。',
       more(mutationReference(), responseReference(), nhiOrderReference(), nhiReference()));
     fu('gi_f_prog', 'meta');
   }
