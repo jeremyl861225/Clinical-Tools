@@ -251,6 +251,7 @@ function switchTab(id, tab){
     if(c.pathway === 'sts' && typeof initStsPathway === 'function') initStsPathway();
     if(c.pathway === 'gist' && typeof initGistPathway === 'function') initGistPathway();
     if(c.pathway === 'cca' && typeof initCcaPathway === 'function') initCcaPathway();
+    if(c.pathway === 'appendix' && typeof initAppendixPathway === 'function') initAppendixPathway();
     if(c.pathway === 'pnet' && typeof initPnetPathway === 'function') initPnetPathway();
     if(c.pathway === 'net' && typeof initNetPathway === 'function') initNetPathway();
     if(c.pathway === 'cervix' && typeof initCervixPathway === 'function') initCervixPathway();
@@ -573,6 +574,9 @@ function renderTx(c){
   }
   if(c.pathway === 'cca' && typeof ccaPathwayHTML === 'function'){
     return ccaPathwayHTML();
+  }
+  if(c.pathway === 'appendix' && typeof appendixPathwayHTML === 'function'){
+    return appendixPathwayHTML();
   }
   if(c.pathway === 'sts' && typeof stsPathwayHTML === 'function'){
     return stsPathwayHTML();
