@@ -394,6 +394,19 @@
       poly4(g, PPX[i], PPY[i], PPX[j], PPY[j], QPX[j], QPY[j], QPX[i], QPY[i]);
     }
   }
+  /* 鰭一律「填完再沿著同一條 path 描一次邊」。板子的輪廓由正反兩面加側帶三組子路徑
+     湊成，板面快與視線平行時側帶的四邊形面積會小到被丟掉，或者兩面的投影繞向在
+     零附近抖動——路徑內部因此會留下一兩個像素的破洞。亮色主題下腹白就是頁面底色，
+     那個洞看起來就是黑色裡憑空多出一條白線（實測 120 種姿態共 747 條，三片鰭各佔
+     三分之一）。描一道與填色同色、1.1 px 的邊，破洞與「鰭剛好貼著身體」的接縫
+     一次補掉，代價只是鰭胖了半個像素。 */
+  function inkFin(g) {
+    g.fillStyle = P.skin; g.fill();
+    g.strokeStyle = P.skin; g.lineWidth = 1.2;
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.stroke();
+  }
+
   function qbez(p0, p1, p2, t) {
     var m = 1 - t;
     return m * m * p0 + 2 * m * t * p1 + t * t * p2;
@@ -403,14 +416,19 @@
   function dorsalFin(g) {
     var u = D.dorU, X0 = bx(u), Y0 = spine(u) - topH(u) + 2;
     var th = D.dorW * .20, i, t, n = 0;
-    var aX = X0 + D.dorW * .50, aY = Y0;
+    /* 基部要**埋進身體裡**，不能只是貼著。鰭與身體是兩次分開的 fill，只要邊落在
+       同一個位置，那排像素兩次各塗一半、疊起來只有 0.75，底色就從縫裡透出來——
+       亮色主題下腹白就是底色，看起來就是黑色裡憑空多了一條白線。實測 120 種姿態、
+       884 條白線裡有 753 條是這樣來的。 */
+    var sink = topH(u) * .55;
+    var aX = X0 + D.dorW * .50, aY = Y0 + sink;
     var cX = X0 + D.dorW * .14, cY = Y0 - D.dorH * .99;
     var tX = X0 - D.dorSweep,   tY = Y0 - D.dorH;
     var dX = X0 - D.dorW * .26, dY = Y0 - D.dorH * .30;
-    var eX = X0 - D.dorW * .50, eY = Y0 + 1;
+    var eX = X0 - D.dorW * .50, eY = Y0 + sink;
     function put(X, Y) {
       BX[n] = X; BY[n] = Y; BZ[n] = 0;
-      BT[n] = th * Math.max(.10, 1 - (Y0 - Y) / D.dorH);   // 厚度不收到零，鰭尖才是圓的
+      BT[n] = th * Math.max(.10, Math.min(1, 1 - (Y0 - Y) / D.dorH));  // 厚度不收到零，鰭尖才是圓的
       n++;
     }
     var N1 = 12, N2 = 12, NC = 5, LO = .92, HI = .08;
@@ -427,7 +445,7 @@
     for (i = 0; i <= N2; i++) {                    // 後緣：鰭尖之後 → 基部
       t = HI + (1 - HI) * i / N2; put(qbez(tX, dX, eX, t), qbez(tY, dY, eY, t));
     }
-    g.beginPath(); plate(g, n, 0, 0, 1);
+    plate(g, n, 0, 0, 1);
   }
 
   /* 胸鰭：真的長在體側 Z=±hw 上、往後下外方伸出去的一片槳。因為是 3D 的，
@@ -436,7 +454,7 @@
   function pecAxis(side, out) {
     var w = halfW(D.pecU);
     out[0] = -D.pecLen * .68; out[1] = D.pecLen * .46;
-    out[2] = (w * .02 + D.pecLen * .62) * side;
+    out[2] = (w * .45 + D.pecLen * .62) * side;
     return out;
   }
   var _ax = [0, 0, 0];
@@ -447,11 +465,11 @@
      體表 Z=±hw 上，它的深度才是這片鰭該排在身體前面還是後面的依據。 */
   function pecBase(side, out) {
     var u = D.pecU;
-    return proj(bx(u), spine(u) + botH(u) * .40, halfW(u) * .98 * side, out);
+    return proj(bx(u), spine(u) + botH(u) * .40, halfW(u) * .55 * side, out);
   }
   function pecFin(g, side) {
     var u = D.pecU, w = halfW(u), i, a, sc, n = 0;
-    var bX = bx(u), bY = spine(u) + botH(u) * .40, bZ = w * .98 * side;
+    var bX = bx(u), bY = spine(u) + botH(u) * .40, bZ = w * .55 * side;   // 鰭根埋進體內
     pecAxis(side, _ax);
     /* 弦向刻意不是純粹的 (1,0,0)，而是往上翹一點（前緣高、後緣低）。
        純水平的弦向會讓鰭面所在的平面**包含體軸**，正臉時整片鰭剛好與視線平行、
@@ -493,7 +511,7 @@
       sc = sT * i / SN;
       put(sc, -D.pecW * (1.04 - .76 * sc * sc));
     }
-    g.beginPath(); plate(g, n, nx, ny, nz);
+    plate(g, n, nx, ny, nz);
   }
 
   /* 尾鰭：橫向的一片板子。純側面時它其實只投影成一條線，真要那樣畫就沒有
@@ -525,11 +543,11 @@
     function taper(aw) { return 1 - .44 * aw * aw; }
     function Xmid(wv) {
       var aw = Math.abs(wv);
-      return X0 - FL * ((.30 + .70 * aw) + (.22 * aw)) * .5;
+      return X0 - FL * ((.30 + .70 * aw) + (.22 * aw - .20)) * .5;
     }
     function Xhalf(wv) {
       var aw = Math.abs(wv);
-      return FL * ((.30 + .70 * aw) - (.22 * aw)) * .5 * taper(aw);
+      return FL * ((.30 + .70 * aw) - (.22 * aw - .20)) * .5 * taper(aw);
     }
     function Xt(wv) { return Xmid(wv) - Xhalf(wv); }                   // 後緣
     function Xl(wv) { return Xmid(wv) + Xhalf(wv); }                   // 前緣
@@ -552,7 +570,7 @@
     cap(-1);
     for (i = 0; i <= SN; i++) { w = wT * (-1 + 2 * i / SN); put(w, Xl(w)); }
     cap(1);
-    g.beginPath(); plate(g, n, 0, 1, 0);
+    plate(g, n, 0, 1, 0);
   }
 
   /* ================================================================
@@ -596,17 +614,21 @@
     var dFlk = proj(bx(1) - D.flukeLen * .6, spine(1), 0, _q)[2];
     var bFlk = proj(bx(1), spine(1), 0, _q)[2];
 
-    if (dFlk  <  bFlk) { flukeFin(g);     g.fillStyle = P.skin; g.fill(); }
-    if (dDor  <  bDor) { dorsalFin(g);    g.fillStyle = P.skin; g.fill(); }
-    if (dPecR <  bPec) { pecFin(g,  1);   g.fillStyle = P.skin; g.fill(); }
-    if (dPecL <  bPec) { pecFin(g, -1);   g.fillStyle = P.skin; g.fill(); }
-
+    /* ---- 整個暗色剪影收進**同一條 path**、一次填 ----
+       身體與三片鰭原本是分開填的。同色的兩塊只要邊落在同一個位置，那排像素兩次
+       各塗一半、疊起來只有 0.75，底色就從縫裡透出來；更糟的是鰭與身體之間、甚至
+       鰭自己正反兩面與側帶之間，會留下一兩個像素**真的沒被畫到**的洞。亮色主題下
+       腹白就是頁面底色，那些洞看起來就是黑色裡憑空多出一條白線（使用者說的
+       「嘴巴黑色部分有白線」）。實測 120 種姿態共 366 個洞，光靠描邊只補得掉兩成。
+       全部收進同一條 path 就不可能有縫：同一次 fill 的覆蓋率是整條路徑一起算的。
+       鰭的前後順序不必再管——反正都是同一個顏色。 */
     g.beginPath();
     for (i = 0; i < NS; i++) {
       oA = i * KN * 2; oB = oA + KN * 2;
-      bandQuads(g, oA, oB, 0, KB);                 // 腹白那一圈也先鋪暗色
+      bandQuads(g, oA, oB, 0, KB);            // 腹白那一圈也先鋪暗色
       bandQuads(g, oA, oB, KB + 1, KB + 1 + KD);
     }
+    flukeFin(g); dorsalFin(g); pecFin(g, 1); pecFin(g, -1);
     g.fillStyle = P.skin; g.fill();
 
     g.beginPath();
@@ -621,10 +643,14 @@
     var e2 = patchMesh(g, .132, .055, -2.05, .30, 0, .45);
     if (e1 || e2) { g.fillStyle = P.belly; g.fill(); }
 
-    if (dPecR >= bPec) { pecFin(g,  1);   g.fillStyle = P.skin; g.fill(); }
-    if (dPecL >= bPec) { pecFin(g, -1);   g.fillStyle = P.skin; g.fill(); }
-    if (dDor  >= bDor) { dorsalFin(g);    g.fillStyle = P.skin; g.fill(); }
-    if (dFlk  >= bFlk) { flukeFin(g);     g.fillStyle = P.skin; g.fill(); }
+    /* **近側**的鰭要在腹白之後再畫一次，否則會被腹白蓋掉。遠側的不必——
+       它本來就該藏在身體後面，而上面那一次填已經把它的形狀併進剪影裡了。 */
+    g.beginPath();
+    if (dPecR >= bPec) pecFin(g, 1);
+    if (dPecL >= bPec) pecFin(g, -1);
+    if (dDor >= bDor) dorsalFin(g);
+    if (dFlk >= bFlk) flukeFin(g);
+    inkFin(g);
   }
 
   /* 把身上任一點（體長座標 u、偏離體軸 off）換算成**文件座標**。
