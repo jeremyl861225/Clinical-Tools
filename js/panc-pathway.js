@@ -112,12 +112,17 @@
      2. 共用參考區塊 —— 每一段只在這裡定義一次
      ========================================================== */
 
-  /* 2a. 可切除性判定（PANC-B，M.D. Anderson criteria） */
+  /* 2a. 可切除性判定 —— 指引 PANC-B 頁的正式名稱是
+     「CRITERIA DEFINING RESECTABILITY STATUS」，其中那張表逐字標題為
+     「M. D. Anderson criteria for resectability of pancreatic cancer」。
+     ⚠ 對外一律稱 M.D. Anderson criteria，PANC-B 只當頁碼定位用。 */
   function resectReference() {
-    return fold('<b>可切除、borderline、還是切不下來？</b>三個血管的判定準則（PANC-B）',
+    return fold('<b>可切除、borderline、還是切不下來？</b>三個血管的判定準則 · <b>M.D. Anderson criteria</b>',
       '<table>' +
-      '<tr><td></td><td><b>看的是腫瘤和三條血管的關係，不是 TNM。</b>下表為指引所引用之 ' +
-      'M.D. Anderson criteria。</td></tr>' +
+      '<tr><td></td><td><b>看的是腫瘤和三條血管的關係，不是 TNM。</b><br>' +
+      '這套準則的名字是 <b>M.D. Anderson criteria</b> —— 台大胰臟癌診療指引把它逐字收在 PANC-B 頁，' +
+      '該頁標題為 <b>Criteria Defining Resectability Status</b>，表格標題為 ' +
+      '<b>「M. D. Anderson criteria for resectability of pancreatic cancer」</b>。</td></tr>' +
       '<tr><td><b>SMA</b><br>上腸繫膜動脈</td><td>' +
       '<b>可切除</b>：沒有侵犯，腫瘤與動脈之間有正常脂肪層。<br>' +
       '<b>Borderline</b>：腫瘤貼合動脈周長 <b>≤ 180°（一半以下）</b>；動脈周圍條紋狀變化；' +
@@ -126,7 +131,8 @@
       '<tr><td><b>腹腔動脈幹<br>／肝動脈</b></td><td>' +
       '<b>可切除</b>：沒有侵犯。<br>' +
       '<b>Borderline</b>：總肝動脈的<b>短節段包覆或貼合</b>（典型在胃十二指腸動脈起始處）；' +
-      '<b>外科醫師要事先準備做血管切除與間置移植</b>。<br>' +
+      '<b>外科醫師要事先準備做 vascular resection／interposition grafting</b>' +
+      '（指引原文：the surgeon should be prepared for vascular resection/interposition grafting）。<br>' +
       '<b>局部晚期</b>：包覆且通常<b>無法重建</b>（因為侵犯延伸到腹腔動脈幹／脾動脈與左胃動脈交界，' +
       '或腹腔動脈幹起始處）。</td></tr>' +
       '<tr><td><b>SMV／PV</b><br>上腸繫膜靜脈<br>／門靜脈</td><td>' +
@@ -333,7 +339,7 @@
       opt('jaun', 'chol', '有黃疸，而且有膽管炎症狀或發燒', '') +
       opt('jaun', 'jaun', '有黃疸，但沒有膽管炎症狀也沒有發燒', ''));
     h += recBox('pc_r_jaun', '建議處置 · 術前處置與腫瘤標記');
-    h += node('pc_n_rsec', '4', '依 PANC-B 的準則，這個腫瘤屬於哪一類？',
+    h += node('pc_n_rsec', '4', '依 M.D. Anderson criteria，這個腫瘤屬於哪一類？',
       opt('rsec', 'res', 'Resectable 可切除', '三條血管都沒有侵犯') +
       opt('rsec', 'bord', 'Borderline resectable', '短節段的血管貼合或阻塞，但有機會切除並重建') +
       opt('rsec', 'la', 'Locally advanced unresectable 局部晚期不可切除', '沒有遠處轉移，但切不下來'),
@@ -474,7 +480,7 @@
         '切片沒有診斷出來也不應該延遲手術。</b>',
       EV('這一條常被誤解成「一定要切片才能開刀」。指引的立場相反 —— ' +
         '<b>陰性的切片不是延後手術的理由</b>。但要做切片的話，' +
-        '可切除者<b>EUS 導引的 FNA 優於 CT 導引</b>（診斷率高、腹膜種植風險可能較低）。'),
+        '可切除者 <b>EUS 導引的 FNA 優於 CT 導引</b>（診斷率高、腹膜種植風險可能較低）。'),
       H('影像的技術要求', 'PANC-A #2'),
       '<b>要用胰臟專用的 CT protocol：三相橫斷面、薄切，腹部 3 mm。</b>' +
         '這樣才看得出腫瘤與腸繫膜血管的關係，並偵測到小至 3–5 mm 的轉移。'
@@ -513,8 +519,8 @@
       '<b>要等膽道充分減壓、膽紅素正常之後測到的值，才能當作基準。</b>');
     L.push('<b>② Lewis 抗原陰性的人可能完全測不到 CA 19-9</b>，' +
       '這種人不能用 CA 19-9 追蹤。');
-    L.push(H('接下來', 'PANC-2、PANC-B'));
-    L.push('<b>依 PANC-B 的三血管準則判定可切除性</b>：resectable、borderline resectable，' +
+    L.push(H('接下來', 'M.D. Anderson criteria（指引 PANC-B）'));
+    L.push('<b>依 M.D. Anderson criteria 的三血管準則判定可切除性</b>：resectable、borderline resectable，' +
       '或 locally advanced unresectable。');
 
     fill('pc_r_jaun', cls, title, L, 'PANC-2（黃疸與膽管炎的分流、術前腫瘤標記）、註 b。',
@@ -539,13 +545,13 @@
         '<b>重新切片，並考慮做腹腔鏡合併切片（如果之前沒做過）</b>；' +
           '<b>腹腔鏡導引的切片在這個情境可能特別有用</b>（註 m）。',
         '<b>如果確認的是其他癌症，就轉到對應的台大指引。</b>',
-        H('這一格的定義提醒', 'PANC-B'),
+        H('這一格的定義提醒', 'M.D. Anderson criteria（指引 PANC-B）'),
         '<b>「切不下來」看的是血管：SMA 或腹腔動脈幹包覆 &gt; 180°、' +
           'SMV 與門靜脈阻塞且無法重建、主動脈侵犯，' +
           '以及轉移到切除範圍以外的淋巴結。</b>',
         H('下一步', ''),
         '<b>下面的步驟 5 開始依體能決定全身治療。</b>'
-      ], 'PANC-7（locally advanced unresectable 的 workup）、註 l、註 m、PANC-B。',
+      ], 'PANC-7（locally advanced unresectable 的 workup）、註 l、註 m、PANC-B（M.D. Anderson criteria）。',
         more(resectReference(), palliationReference()));
       showSys('5');
       return;
@@ -600,7 +606,7 @@
         '<b>後半才是選術前治療的真正理由 —— 避免一台注定 R1 的手術。</b>'),
       H('下一步', ''),
       '<b>下面的步驟 5 選要走哪一條。</b>'
-    ], 'PANC-4（borderline resectable 的 workup 與兩條路）、註 h、註 i、PANC-B。',
+    ], 'PANC-4（borderline resectable 的 workup 與兩條路）、註 h、註 i、PANC-B（M.D. Anderson criteria）。',
       more(resectReference(), rtReference()));
 
     setNum('pc_n_bplan', '5');
