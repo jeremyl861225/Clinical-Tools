@@ -117,7 +117,7 @@
      「M. D. Anderson criteria for resectability of pancreatic cancer」。
      ⚠ 對外一律稱 M.D. Anderson criteria，PANC-B 只當頁碼定位用。 */
   function resectReference() {
-    return fold('<b>可切除、borderline、還是切不下來？</b>三個血管的判定準則 · <b>M.D. Anderson criteria</b>',
+    return fold('<b>M.D. Anderson criteria</b>',
       '<table>' +
       '<tr><td></td><td><b>看的是腫瘤和三條血管的關係，不是 TNM。</b><br>' +
       '這套準則的名字是 <b>M.D. Anderson criteria</b> —— 台大胰臟癌診療指引把它逐字收在 PANC-B 頁，' +
@@ -245,14 +245,17 @@
       '<tr><td><b>胃出口阻塞</b></td><td><b>體能好</b>：胃空腸吻合（開放或腹腔鏡）± J-tube，' +
       '或考慮腸道支架。<b>體能差</b>：腸道支架，或 feeding jejunostomy。' +
       '<b>體能差的病人放腸道支架特別重要</b></td></tr>' +
-      '<tr><td><b>嚴重的腫瘤相關<br>腹痛</b></td><td><b>腹腔神經叢阻斷術</b>' +
-      '（透視導引，沒有的話用電腦斷層導引）；' +
-      '若原本的治療計畫沒有包含化放療，可考慮緩和性化放療</td></tr>' +
+      '<tr><td><b>嚴重的腫瘤相關<br>腹痛</b></td><td><b>Celiac plexus neurolysis</b>' +
+      '（指引原文：<b>fluoroscopic- or CT-guided if unavailable</b> —— ' +
+      '以 fluoroscopy 導引為主，沒有 fluoroscopy 才用 CT 導引）；' +
+      '若原本的治療計畫沒有包含化放療，可考慮緩和性化放療<br>' +
+      '❗<b>這裡是 neurolysis（把神經破壞掉），不是暫時性的 nerve block</b>；' +
+      '手術中做的那一個才是 <b>open ethanol celiac plexus block</b>（PANC-3／PANC-4／PANC-5）。' +
+      '兩者不是同一個術式，不要都寫成「阻斷術」。</td></tr>' +
       '<tr><td><b>憂鬱、疼痛<br>與營養不良</b></td><td>適當時機請<b>安寧緩和醫療團隊正式評估</b></td></tr>' +
       '<tr><td><b>胰臟功能不全</b></td><td>消化酵素分泌不足 → <b>補充胰臟酵素</b></td></tr>' +
       '<tr><td><b>血栓栓塞疾病</b></td><td><b>低分子量肝素優於 warfarin</b></td></tr>' +
-      '<tr><td colspan="2"><b>緩和性手術要留給預期壽命較長的病人</b>（PANC-C 註 2）；' +
-      '流程圖裡的繞道手術也一律加上「<b>預估存活超過 6 個月</b>」這個前提。</td></tr>' +
+      '<tr><td colspan="2"><b>緩和手術留給預期壽命較長者；繞道手術要求預估存活 &gt; 6 個月</b>（PANC-C 註 2）。</td></tr>' +
       '</table>');
   }
 
@@ -294,7 +297,7 @@
       return '<div class="fu-label">治療期間要一起處理的事（PANC-C）</div><ul class="fu-list">' +
         '<li><b>膽道阻塞</b>：內視鏡膽道支架為首選（<b>不可切除者用永久性支架</b>）。</li>' +
         '<li><b>胃出口阻塞</b>：體能好做胃空腸吻合，體能差放腸道支架或 feeding jejunostomy。</li>' +
-        '<li><b>嚴重腹痛</b>：腹腔神經叢阻斷術。</li>' +
+        '<li><b>嚴重腹痛</b>：celiac plexus neurolysis（fluoroscopy 導引，沒有才用 CT）。</li>' +
         '<li><b>胰臟功能不全 → 補充胰臟酵素</b>；營養不良與憂鬱要請安寧緩和團隊評估。</li>' +
         '<li><b>血栓栓塞：低分子量肝素優於 warfarin。</b></li>' +
         '<li>體能持續變差 → best supportive care 與安寧照護（PANC-8 註 s）。</li></ul>';
@@ -644,9 +647,9 @@
         '<b>沒有黃疸 → 直接依疾病範圍走 locally advanced unresectable（PANC-7）或 ' +
           'metastatic disease（PANC-9）。</b>',
         '<b>有黃疸 → 膽道引流或繞道手術（限預估存活超過 6 個月），' +
-          '± 開放性酒精腹腔神經叢阻斷術。</b>',
+          '± open ethanol celiac plexus block。</b>',
         EV('「預估存活超過 6 個月」是指引在每一個繞道手術選項都加上的前提（PANC-C 註 2）—— ' +
-          '<b>緩和性手術要留給預期壽命較長的病人</b>。'),
+          '<b>緩和手術留給預期壽命較長者</b>。'),
         H('下一步', ''),
         '<b>下面的步驟開始決定要用什麼藥。</b>'
       ], 'PANC-4（disease progression precluding surgery）、PANC-C。',
@@ -661,8 +664,8 @@
       '<b>如果之前沒有做過，現在就用抽吸或切片確認是腺癌。</b>',
       H('接下來', 'PANC-5'),
       '<b>沒有黃疸 → 依疾病範圍走 locally advanced unresectable（PANC-7）或 metastatic disease（PANC-9）。</b>',
-      '<b>有黃疸 → 膽道引流或膽道繞道（限預估存活超過 6 個月），± 開放性酒精腹腔神經叢阻斷術。</b>',
-      EV('人已經在手術室裡，這一刻做膽道繞道與腹腔神經叢阻斷的代價最低 —— ' +
+      '<b>有黃疸 → 膽道引流或膽道繞道（限預估存活超過 6 個月），± open ethanol celiac plexus block。</b>',
+      EV('人已經在手術室裡，這一刻做膽道繞道與 celiac plexus block 的代價最低 —— ' +
         '這是 PANC-3／PANC-5 把它們放在這一格的原因。'),
       H('PANC-3 多寫的一條', 'PANC-3'),
       '<b>可切除但術中發現切不下來的病人，指引另外列出「繞道手術（限預估存活超過 6 個月）」' +
