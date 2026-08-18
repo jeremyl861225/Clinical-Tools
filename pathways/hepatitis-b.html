@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>B 型肝炎用藥 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<!-- drugcards:start 台大藥卡樣式。順序有三個約束（與 tools/cancer.html 相同）：
+     antibiotics.css 必須在 drug-database.css 之前（.dose-fmt／renal-thr／tbl-sep 兩檔
+     同特異度靠後載決勝），兩支都必須在 ui-sentence.css 之後
+     （a.db-xlink 與造句版的 a{color:inherit} 同分）。 -->
+<link rel="stylesheet" href="../css/antibiotics.css">
+<link rel="stylesheet" href="../css/drug-database.css">
+<!-- drugcards:end -->
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  /* ── 本頁只用「既有且已被 css/ui-sentence.css 收過」的視覺 class ──────────────
+     .rxbox/.rx-*（AC1）、.gr（AC2）、.refbar/.dirhead/.steps（AC7）、
+     .dt-cor/.dt-wrap（AC8）、.kbox/.tw/.lead/.pmid（R–AB 段）、
+     .flow-opt/.flow-rec 變體（H 段）、.bc-drugbox*（P11b 段）。
+     本頁自訂的 class（.hb-*）一律只管版面（display／grid／間距），不碰任何顏色，
+     所以造句設計不需要再補一段規則。做法沿用 pathways/diabetes.html。 */
+  .hb-panel{display:none;} .hb-panel.on{display:block;}
+
+  /* 條件選單：沿用 .flow-opt 的外觀，只把它從整列改成可換行的方磚。 */
+  .hb-chips{display:grid; grid-template-columns:1fr; gap:8px; margin:6px 0 4px;}
+  @media(min-width:560px){ .hb-chips{grid-template-columns:1fr 1fr;} }
+  .hb-chips.c3{grid-template-columns:1fr;}
+  @media(min-width:560px){ .hb-chips.c3{grid-template-columns:1fr 1fr 1fr;} }
+  .hb-chips .flow-opt{width:100%;}
+  /* 小標只降份量、不指定顏色：指定 var(--muted-soft) 會在造句設計下吃到正式版色票。
+     改用 opacity，兩個主題都跟著各自的字色走（見 diabetes.html 的同一段註解）。 */
+  .hb-grp{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+          opacity:.66; margin:14px 0 4px;}
+  .hb-grp:first-child{margin-top:2px;}
+
+  /* 數值輸入列：與 .rxbox 的 .rx-grid 同一套，欄數改為自動填滿 */
+  .hb-nums{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px 14px;}
+  /* 手機一欄。造句設計把 .rx-row 改成 block（標籤在上、輸入框在下），
+     兩欄時每欄只剩約 159px，標籤會折成兩行、整區高度翻倍且難讀。 */
+  @media(max-width:520px){ .hb-nums{grid-template-columns:1fr;} }
+
+  .hb-out{margin-top:14px;}
+  .hb-out .flow-rec{margin-top:10px;}
+
+  /* ── 以下整段是 .rxbox/.rx-*／.refbar／.dirhead／.steps／.kbox／.tw／.lead／.pmid／.gr
+     的**基礎樣式**，逐字取自 pathways/diabetes.html（該頁與 nutrition.html 是母本）。
+     這些 class 的顏色在 css/ui-sentence.css 的 AC 段已收，但**版面與框線是每頁自帶的**，
+     不在 css/styles.css 裡——漏掉這一段的話，正式版（貓咪主題）下這些框全部消失，
+     而且 .tw 沒有 overflow-x:auto，寬表格會把整頁撐出橫向捲軸。 ── */
+  .rxbox{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:11px 13px; margin:10px 0 12px;}
+  .rxbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .rx-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px 14px;}
+  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }
+  .rx-row{display:flex; align-items:center; gap:7px;}
+  .rx-row label{font-size:12px; color:var(--ink); flex:1 1 auto; line-height:1.4;}
+  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .rx-row input[type=number]{width:92px; font-family:var(--mono); font-size:14px; font-weight:700;
+      padding:4px 6px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
+  .rx-row .rx-u{font-family:var(--mono); font-size:10.5px; color:var(--muted); width:66px;}
+  .rx-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:8px;}
+
+  /* ── 參考值列 ── */
+  .refbar{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline;
+          background:var(--soft-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:2px; padding:8px 11px; margin:2px 0 12px;}
+  .refbar .rb{font-family:var(--mono); font-size:11.5px; color:var(--ink);}
+  .refbar .rb b{color:var(--accent); font-weight:700;}
+  .refbar .rb i{font-style:normal; color:var(--muted);}
+  .refbar .rb-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:auto;}
+
+  /* ── 區塊標頭 ── */
+  .dirhead{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+           margin:22px 0 7px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
+  .dirhead:first-child{margin-top:2px;}
+  .dirhead .dh-n{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink);}
+  .dirhead .dh-e{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft);}
+  .dirhead.hi{border-bottom-color:var(--accent2-soft);}
+  .dirhead.hi .dh-n{color:var(--accent2);}
+
+  /* ── 步驟條 ── */
+  .steps{counter-reset:st; margin:8px 0 10px;}
+  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
+        font-size:12.5px; line-height:1.75;}
+  .step:before{counter-increment:st; content:counter(st) "."; font-family:var(--mono); font-size:12px;
+               font-weight:700; color:var(--accent); line-height:1.75; letter-spacing:.02em;}
+  .step.alt:before{color:var(--accent2);}
+  .step .sq{font-weight:700; color:var(--ink);}
+
+  /* ── 通用小元件 ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+      background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .gr.w{background:var(--accent2-soft); color:var(--accent2);}
+  /* 表格內的長內容一律可換行（本頁表格第二欄以後都是整段文字，不可用 .dt-cor 的 nowrap） */
+  .def-table td{line-height:1.7;}
+  .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  .nw{white-space:nowrap;}
+
+  /* ── 最下方藥卡區塊。基礎樣式逐字取自 css/cancer-staging.css（.bc-drugbox 段），
+     顏色在 css/ui-sentence.css 的 P11b 段已收；藥卡本體（.drugcard／.dc-*）
+     沿用 antibiotics.css 與 drug-database.css。 ── */
+  .bc-drugbox{margin-top:18px; border-top:1px solid var(--line); padding-top:14px;}
+  .bc-drugbox.hidden{display:none;}
+  .bc-drugbox-h{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+                color:var(--accent); font-weight:700; display:flex; align-items:baseline; gap:8px;
+                border-bottom:1px solid var(--line); padding-bottom:6px;}
+  .bc-drugbox-n{margin-left:auto; color:var(--muted-soft); letter-spacing:.04em;}
+  .bc-drugbox-note{font-size:11.5px; line-height:1.7; color:var(--muted); margin:7px 0 9px;}
+</style>
+</head>
+<body data-back-label="B 型肝炎用藥">
+<div class="sheet">
+<div class="view active" id="view-hbv">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Decision Pathway</div>
+      <h1>B 型肝炎用藥</h1>
+      <div class="sub">何時開始 · 選哪支藥 · 停藥與追蹤 · 免疫抑制前預防 · 健保給付</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-hbv-path'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="hb_tabs">
+    <button class="tab-btn active" data-p="rx"   onclick="hbTab('rx')">何時治療</button>
+    <button class="tab-btn"        data-p="pick" onclick="hbTab('pick')">選哪支藥</button>
+    <button class="tab-btn"        data-p="stop" onclick="hbTab('stop')">停藥與追蹤</button>
+    <button class="tab-btn"        data-p="sp"   onclick="hbTab('sp')">特殊情境</button>
+    <button class="tab-btn"        data-p="imm"  onclick="hbTab('imm')">免疫抑制</button>
+    <button class="tab-btn"        data-p="nhi"  onclick="hbTab('nhi')">健保給付</button>
+    <button class="tab-btn"        data-p="ev"   onclick="hbTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>本頁處理慢性 B 型肝炎（CHB）的抗病毒藥物治療。</b>急性肝衰竭見
+    <a href="../tools/acute-liver-failure.html" class="pmid">急性肝衰竭</a>，肝硬化嚴重度見
+    <a href="../tools/child-pugh.html" class="pmid">Child-Pugh</a>／<a href="../tools/meld.html" class="pmid">MELD 3.0</a>，
+    纖維化初篩見 <a href="../tools/fib4.html" class="pmid">FIB-4</a>，肝細胞癌治療見
+    <a href="../tools/cancer.html" class="pmid">癌症分期與治療</a>。<br>
+    治療建議依 <b>AASLD／IDSA 2025 慢性 B 型肝炎指引</b>（Hepatology 2026;83(4):974–997，2025-11-04 線上刊出）；
+    該版<b>只重寫了 6 個 PICO 問題</b>（母嬰與水平傳染的預防、共病感染與 HBsAg 消失後的肝癌監測、
+    免疫耐受期與灰色地帶的治療、停藥），<b>免疫活動期與肝硬化的治療適應症仍沿用 AASLD 2018 guidance</b>——
+    本頁一律標明每一條的出處版本。歐洲依 <b>EASL 2017</b>，台灣本土依 <b>TASL 2018 共識</b>
+    （<b>該共識自 2018 年起未改版</b>，與 AASLD 2025 的差異有相當比例是版本落差而非立場不同）。
+    再活化預防依 <b>AGA 2025</b>。<br>
+    <b>健保給付依 115.07.23 版藥品給付規定第 10 節 10.7.3／10.7.4</b>（該兩條最近一次修訂為 <b>114/6/1</b>）。
+    <b>指引建議與健保給付是兩回事，本頁一律分開標示。</b>
+    藥品品項與院內有無以<b>台大醫院藥劑部藥品資料庫</b>為準（見本頁最下方藥卡）。
+  </div>
+
+<!-- ==================== 何時治療 ==================== -->
+<div class="hb-panel on" id="p-rx">
+
+  <div class="refbar">
+    <span class="rb"><b>ALT 正常值上限</b> 男 35／女 25 <i>U/L・AASLD</i></span>
+    <span class="rb"><b>台大檢驗室</b> ALT 0–41 <i>U/L・健保用這個</i></span>
+    <span class="rb"><b>HBeAg(+) 免疫活動</b> ALT ≥2×ULN ＋ DNA ≥20,000</span>
+    <span class="rb"><b>HBeAg(−) 免疫活動</b> ALT ≥2×ULN ＋ DNA ≥2,000</span>
+    <span class="rb-src">AASLD 2025 Table 1</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">先看懂這一頁在算什麼</div>
+    這個工具同時算兩件事，而且<b>兩件事的 ALT 正常值上限不是同一個數字</b>：<br>
+    ① <b>指引上該不該治療</b>——用 AASLD 的 ULN（男 35、女 25 U/L）判分期；<br>
+    ② <b>健保給不給付</b>——條文寫的是「正常值上限」，指的是<b>各檢驗室自己的參考區間上限</b>，
+    台大檢驗醫學部的 ALT 參考區間是 <b>0–41 U/L</b>，所以健保的 2 倍是 <b>82</b>、5 倍是 <b>205</b>。<br>
+    <b>後果：一位 ALT 75 U/L 的男性，依 AASLD 已經是 2 倍以上（≥70）、屬免疫活動期該治療，
+    但健保只算 1.8 倍，不給付。</b>這個落差是門診最常見的爭議點，本頁把兩邊分開算給你看。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">病人條件</span><span class="dh-e">Enter values and select conditions</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    數值留空就不列入判斷。<b>這是輔助工具，不取代臨床判斷</b>；健保條文會改版，送件前請至健保署官網確認。
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">數值</div>
+    <div class="hb-nums">
+      <div class="rx-row"><label>年齡 <span class="rx-en">Age</span></label>
+        <input type="number" id="hb_age" min="0" max="120" step="1" inputmode="numeric"><span class="rx-u">歲</span></div>
+      <div class="rx-row"><label>ALT (GPT) <span class="rx-en">Alanine aminotransferase</span></label>
+        <input type="number" id="hb_alt" min="0" max="5000" step="1" inputmode="numeric"><span class="rx-u">U/L</span></div>
+      <div class="rx-row"><label>HBV DNA <span class="rx-en">Viral load</span></label>
+        <input type="number" id="hb_dna" min="0" max="1000000000" step="1" inputmode="numeric"><span class="rx-u">IU/mL</span></div>
+      <div class="rx-row"><label>血小板 <span class="rx-en">Platelet count</span></label>
+        <input type="number" id="hb_plt" min="0" max="1000" step="1" inputmode="numeric"><span class="rx-u">10³/µL</span></div>
+      <div class="rx-row"><label>肝纖維化掃描 <span class="rx-en">Transient elastography (Fibroscan)</span></label>
+        <input type="number" id="hb_kpa" min="0" max="80" step="0.1" inputmode="decimal"><span class="rx-u">kPa</span></div>
+      <div class="rx-row"><label>FIB-4 <span class="rx-en">Fibrosis-4 index</span></label>
+        <input type="number" id="hb_fib4" min="0" max="50" step="0.01" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>檢驗室 ALT 上限 <span class="rx-en">Local lab ULN — 健保用</span></label>
+        <input type="number" id="hb_lab" min="10" max="100" step="1" inputmode="numeric" value="41"><span class="rx-u">U/L</span></div>
+    </div>
+    <div class="rx-note">
+      預設的檢驗室上限 <b>41</b> 取自台大醫院檢驗醫學部臨床檢驗目錄（ALT 參考區間 0–41 U/L）；
+      在別家醫院請改成該院的數字。血小板單位 10³/µL 與 FIB-4 公式用的 10⁹/L <b>數值相同，不需換算</b>。
+    </div>
+  </div>
+
+  <div class="hb-grp">性別（決定 AASLD 的 ALT 上限）</div>
+  <div class="hb-chips c3">
+    <button type="button" class="flow-opt" data-g="sex" data-v="m" onclick="hbPick(this)">男性 <span class="nw">ULN 35 U/L</span></button>
+    <button type="button" class="flow-opt" data-g="sex" data-v="f" onclick="hbPick(this)">女性 <span class="nw">ULN 25 U/L</span></button>
+  </div>
+
+  <div class="hb-grp">HBeAg</div>
+  <div class="hb-chips c3">
+    <button type="button" class="flow-opt" data-g="eag" data-v="pos" onclick="hbPick(this)">e 抗原陽性</button>
+    <button type="button" class="flow-opt" data-g="eag" data-v="neg" onclick="hbPick(this)">e 抗原陰性</button>
+  </div>
+
+  <div class="hb-grp">肝病期別</div>
+  <div class="hb-chips c3">
+    <button type="button" class="flow-opt" data-g="cir" data-v="none"   onclick="hbPick(this)">無肝硬化</button>
+    <button type="button" class="flow-opt" data-g="cir" data-v="comp"   onclick="hbPick(this)">代償性肝硬化</button>
+    <button type="button" class="flow-opt" data-g="cir" data-v="decomp" onclick="hbPick(this)">失代償性肝硬化</button>
+  </div>
+
+  <div class="hb-grp">可複選：影響判定與給付的其他條件</div>
+  <div class="hb-chips">
+    <button type="button" class="flow-opt" data-f="alt2x"   onclick="hbTog(this)">ALT 半年內<b>兩次以上</b> ≥2×檢驗室上限（間隔 &gt;3 個月）</button>
+    <button type="button" class="flow-opt" data-f="altUlnX2" onclick="hbTog(this)">ALT 半年內<b>兩次以上</b> &gt;檢驗室上限（間隔 &gt;3 個月）</button>
+    <button type="button" class="flow-opt" data-f="cirDx"   onclick="hbTog(this)">已符合健保<b>肝硬化診斷條件</b>（見「健保給付」分頁）</button>
+    <button type="button" class="flow-opt" data-f="hcc"     onclick="hbTog(this)">肝癌已接受<b>根除性治療</b></button>
+    <button type="button" class="flow-opt" data-f="fmhx"    onclick="hbTog(this)">一等親<b>肝癌家族史</b></button>
+    <button type="button" class="flow-opt" data-f="hdv"     onclick="hbTog(this)">合併 <b>D 型肝炎</b>（HDV）</button>
+    <button type="button" class="flow-opt" data-f="hiv"     onclick="hbTog(this)">合併 <b>HIV</b></button>
+    <button type="button" class="flow-opt" data-f="hcv"     onclick="hbTog(this)">合併 <b>C 型肝炎</b>（HCV）</button>
+    <button type="button" class="flow-opt" data-f="risk"    onclick="hbTog(this)"><b>高傳染風險情境</b>（見下方說明）</button>
+  </div>
+
+  <div class="hb-out" id="hb_out"></div>
+
+  <div class="dirhead"><span class="dh-n">五個分期的定義</span><span class="dh-e">AASLD 2025 Table 1</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>分期</th><th>定義（ULN：男 35、女 25 U/L）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>免疫耐受期</b><br><span class="dc-nameen">Immune-tolerant</span></td>
+            <td>HBeAg 陽性、HBV DNA &gt; 10,000,000 IU/mL、<b>ALT 正常</b></td></tr>
+        <tr><td class="nw"><b>免疫活動期</b><br><span class="dc-nameen">Immune active</span></td>
+            <td>HBeAg 陽性：ALT ≥2×ULN <b>且</b> HBV DNA ≥20,000 IU/mL<br>
+                HBeAg 陰性：ALT ≥2×ULN <b>且</b> HBV DNA ≥2,000 IU/mL</td></tr>
+        <tr><td class="nw"><b>不活動期</b><br><span class="dc-nameen">Inactive</span></td>
+            <td>HBeAg 陰性、HBV DNA &lt; 2,000 IU/mL、<b>ALT 正常</b></td></tr>
+        <tr><td class="nw"><b>灰色地帶</b><br><span class="dc-nameen">Indeterminate</span></td>
+            <td>HBeAg 陽性或陰性，<b>但 DNA 與／或 ALT 落在上面三個定義之外</b>——
+                這一群在 2018 年的建議是「先觀察」，<b>2025 年改成用共同決策考慮治療</b></td></tr>
+        <tr><td class="nw"><b>HBsAg 消失</b><br><span class="dc-nameen">HBsAg loss</span></td>
+            <td>治療中或自發性地失去 HBsAg（原本為陽性者）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">2025 年這一版真正改了什麼</div>
+    <ul>
+      <li><b>灰色地帶（HBeAg 陰性、無肝硬化）從「觀察」改成「以共同決策考慮治療」</b>
+          <span class="gr">Conditional</span> <span class="gr w">Very low</span>。
+          偏向治療的因子：<b>年齡 &gt;40 歲、男性、血小板偏低（&lt;180 k/mm³）</b>；
+          <b>已是 F3／F4 者則是建議治療</b>。指引明列高敏感度的非侵入性門檻為
+          <b>FIB-4 &gt;1.45、肝纖維化掃描 ≥8 kPa</b>。</li>
+      <li><b>免疫耐受期改成「&gt;40 歲或已有 ≥grade 2 發炎／≥F2 纖維化就建議治療」</b>
+          <span class="gr">Conditional</span> <span class="gr w">Very low</span>。
+          &lt;40 歲而本人想早點治療者採共同決策。
+          <b>要判定是免疫耐受期，需要「至少兩次、間隔 ≥6 個月的 ALT 都正常」且 DNA &gt;10⁷ IU/mL。</b></li>
+      <li><b>停藥改成「不建議停藥，直到 HBsAg 消失」</b>——見「停藥與追蹤」分頁。</li>
+      <li><b>ALT 持續偏高但 HBV DNA &lt;2,000 IU/mL 的人，要去找別的肝損傷原因</b>（脂肪肝、酒精、藥物），
+          不要理所當然歸給 B 肝。</li>
+    </ul>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">高傳染風險情境：AASLD 2025 建議 2</div>
+    HBsAg 陽性、有病毒血症但<b>未達疾病本身的治療適應症</b>，而處於對他人的高傳染風險時，
+    AASLD 建議<b>用共同決策討論要不要投藥</b> <span class="gr">Conditional</span> <span class="gr w">Very low</span>。<br>
+    指引舉的高風險情境：<b>未採取防護的性行為或多重性伴侶、共用針具且減害措施不穩定、
+    家中有未具免疫力的同住者、執行 SHEA 第三級暴露風險手術的醫療人員</b>。
+    對方<b>未接種疫苗、疫苗無反應、免疫低下或疫苗史不明</b>時更偏向投藥。<br>
+    <b>一般風險情境（日常接觸、共餐）不需要為了防傳染而投藥。</b>
+    若治療的唯一目的是防傳染，<b>當高傳染風險不再存在時可以重新評估是否續用</b>，
+    但停藥前要說明停藥可能引起嚴重的肝炎發作。
+  </div>
+
+</div>
+
+<!-- ==================== 選哪支藥 ==================== -->
+<div class="hb-panel" id="p-pick">
+
+  <div class="refbar">
+    <span class="rb"><b>Entecavir</b> 0.5 mg qd <i>空腹</i></span>
+    <span class="rb"><b>TDF</b> 300 mg qd</span>
+    <span class="rb"><b>TAF</b> 25 mg qd <i>與食物併服</i></span>
+    <span class="rb-src">台大藥卡／AASLD 2025 Table 1</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">第一線只有三支，沒有優劣排序</div>
+    <b>Entecavir（貝樂克）、TDF（惠立妥）、TAF（韋立得）</b>三者都是高抗藥屏障的核苷（酸）類似物，
+    指引把它們<b>並列為第一線，不預設誰優先</b>——差別在共病與情境。<br>
+    <b>Lamivudine、telbivudine（喜必福）、adefovir 抗藥性高，不可作為第一線起始用藥</b>；
+    它們留在健保條文裡是歷史因素與救援療法的角色。<b>台大沒有 adefovir 品項。</b><br>
+    <b>Peg-IFN alfa-2a（Pegasys）台大目前也沒有品項</b>（藥品資料庫查無），健保條文中只出現在
+    10.7.4 的抗藥株救援選項（治療 1 年）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">病人條件</span><span class="dh-e">Select all that apply</span></div>
+  <div class="lead" style="margin-top:-2px;">可複選。下方即時列出建議與要避開的藥。</div>
+
+  <div class="hb-chips">
+    <button type="button" class="flow-opt" data-f="renal"  onclick="hbTog2(this)">腎功能不佳（CrCl &lt;50）或蛋白尿</button>
+    <button type="button" class="flow-opt" data-f="hd"     onclick="hbTog2(this)">已在<b>血液透析</b></button>
+    <button type="button" class="flow-opt" data-f="bone"   onclick="hbTog2(this)">骨質疏鬆、骨折病史或骨密度低</button>
+    <button type="button" class="flow-opt" data-f="preg"   onclick="hbTog2(this)"><b>懷孕</b>、備孕或哺乳</button>
+    <button type="button" class="flow-opt" data-f="lamR"   onclick="hbTog2(this)">曾用 <b>lamivudine／telbivudine</b> 或已知抗藥</button>
+    <button type="button" class="flow-opt" data-f="decomp" onclick="hbTog2(this)"><b>失代償性</b>肝硬化（Child-Pugh B／C）</button>
+    <button type="button" class="flow-opt" data-f="hiv"    onclick="hbTog2(this)">合併 <b>HIV</b>（或尚未排除）</button>
+    <button type="button" class="flow-opt" data-f="lipid"  onclick="hbTog2(this)">高血脂需嚴格控制</button>
+    <button type="button" class="flow-opt" data-f="npo"    onclick="hbTog2(this)">禁食、管灌或無法配合空腹服藥</button>
+    <button type="button" class="flow-opt" data-f="cost"   onclick="hbTog2(this)">費用考量（自費）</button>
+  </div>
+
+  <div class="hb-out" id="hb_pick_out"></div>
+
+  <div class="dirhead"><span class="dh-n">三支藥的差別一次看完</span><span class="dh-e">Head-to-head</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th></th><th>Entecavir</th><th>TDF</th><th>TAF</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">台大品項</td><td>Baraclude 0.5／1 mg</td><td>Viread 300 mg</td><td>Vemlidy 25 mg</td></tr>
+        <tr><td class="nw">成人劑量</td><td>0.5 mg qd<br><b>需空腹</b>（飯前或飯後 2 小時）</td><td>300 mg qd</td><td>25 mg qd<br><b>需與食物併服</b></td></tr>
+        <tr><td class="nw">腎功能調整</td>
+            <td>CrCl 30–49：50% 或 q48h<br>10–29：30% 或 q72h<br>&lt;10：10% 或 q7d</td>
+            <td>CrCl 30–49：q48h<br>10–29：q72–96h<br>&lt;10：<b>無資料，避免</b></td>
+            <td><b>CrCl &lt;15 未透析：不建議</b><br>透析者不需調整</td></tr>
+        <tr><td class="nw">透析</td><td>10% 或 q7d，透析後給</td><td>透析後每週 300 mg 一次</td><td>不需調整，透析日於透析後給</td></tr>
+        <tr><td class="nw">腎／骨風險</td><td>低</td><td><b>近端腎小管病變、Fanconi、骨密度下降</b></td><td>比 TDF 低（血漿 tenofovir 暴露約 1/10）</td></tr>
+        <tr><td class="nw">懷孕</td><td><b>禁用</b>（AASLD 2025）</td><td><b>首選</b>，孕期資料最多</td><td>可用，孕期資料少於 TDF</td></tr>
+        <tr><td class="nw">Lamivudine 抗藥</td><td><b>不宜</b>（交叉抗藥；需 1 mg 且失敗率高）</td><td>可用</td><td>可用</td></tr>
+        <tr><td class="nw">失代償肝硬化</td><td>建議 <b>1 mg qd</b></td><td>可用</td><td><b>仿單：Child-Pugh B／C 不建議</b></td></tr>
+        <tr><td class="nw">其他</td><td>未同時治療的 HIV 共感染者<b>不可單用</b>（誘發 HIV 抗藥，黑框警語）</td>
+            <td>停藥可能引起 HBV 急性惡化</td><td>血脂上升；啟用前須排除 HIV</td></tr>
+        <tr><td class="nw">台大自費價</td><td>0.5 mg 94 元／1 mg 139 元</td><td>113 元</td><td>134 元</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead">
+    劑量、腎肝調整、禁忌與剝半磨粉的完整內容<b>請直接看本頁最下方的台大藥卡</b>，那是台大醫院藥劑部的原始資料，
+    這張表只是把三支藥拉在一起比較。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 台大藥卡與美國仿單在「失代償肝硬化」這一格不一致</div>
+    台大 Vemlidy（TAF）藥卡的肝功能欄寫「<b>不需調整劑量</b>」，
+    但<b>美國仿單 2.4 明文寫「not recommended in patients with decompensated (Child-Pugh B or C) hepatic impairment」</b>。
+    「不需調整劑量」講的是代償性肝功能不良的藥動學，<b>不等於失代償可以用</b>。
+    <b>失代償性肝硬化請用 entecavir 1 mg 或 TDF，不要用 TAF。</b>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 開藥前一定要先驗 HIV</div>
+    Entecavir、TDF、TAF <b>三支都要求啟用前先驗 HIV</b>。
+    未經治療的 HIV 共感染者若單用抗 HBV 藥（尤其 entecavir、lamivudine），
+    <b>會篩選出 HIV 抗藥突變</b>——這是 entecavir 與 Vemlidy 的黑框／警語內容，不是理論風險。<br>
+    HBV／HIV 共感染者應直接使用<b>含 tenofovir 的完整抗反轉錄病毒處方</b>，由感染科主導。
+  </div>
+
+</div>
+
+<!-- ==================== 停藥與追蹤 ==================== -->
+<div class="hb-panel" id="p-stop">
+
+  <div class="kbox alert">
+    <div class="kbox-t">AASLD 2025 建議 5：不建議停藥，直到 HBsAg 消失</div>
+    「In adults with chronic hepatitis B, who are HBeAg-negative without cirrhosis, with sustained undetectable
+    HBV DNA on nucleos(t)ide analogue therapy, AASLD suggests <b>not withdrawing</b> nucleos(t)ide analogue
+    therapy <b>until HBsAg loss</b>.」<span class="gr">Conditional</span> <span class="gr w">Very low</span><br>
+    <b>這與健保「每次療程最多給付 36 個月、要停藥」的邏輯直接相反</b>——見「健保給付」分頁。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">停藥的實際數字</span><span class="dh-e">Systematic review, 11 studies / 1,957 persons</span></div>
+  <div class="tw">
+    <table class="def-table dt-cor">
+      <thead><tr><th>停藥後結果</th><th>發生率</th><th>時間點</th></tr></thead>
+      <tbody>
+        <tr><td>HBsAg 消失（想要的那個）</td><td><b>10.6%</b></td><td>2 年</td></tr>
+        <tr><td>ALT 發作（flare）</td><td><b>26.9%</b></td><td>2 年</td></tr>
+        <tr><td>需要重新治療</td><td><b>23%</b></td><td>1.5 年</td></tr>
+        <tr><td>需要重新治療</td><td><b>42%</b></td><td>5 年</td></tr>
+        <tr><td>肝代償不全</td><td>0%</td><td>1.5 年（僅 RCT 族群）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead">
+    這些數字來自四個小型 RCT。<b>七篇真實世界的回溯性世代研究報告的併發症（含代償不全與死亡）比 RCT 更高</b>，
+    這是委員會最後決定「不要停」的主要理由。停藥後 HBsAg 消失的最佳預測因子是<b>停藥當下的定量 HBsAg</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">真的要停：六項條件全部要符合</span><span class="dh-e">All criteria must be met</span></div>
+  <div class="steps">
+    <div class="step"><span class="sq">沒有</span>進行性纖維化／肝硬化、肝代償不全（食道靜脈瘤出血、腹水、肝性腦病變、肝腎症候群）、肝細胞癌，或 B 肝的肝外併發症。</div>
+    <div class="step">起始治療時 <span class="sq">HBeAg 陽性</span>者：已轉為 HBeAg 陰性／anti-HBe 陽性<b>滿 1 年以上</b>，且 HBV DNA 測不到<b>至少 2 年</b>。</div>
+    <div class="step">起始治療時 <span class="sq">HBeAg 陰性</span>者：HBV DNA 測不到<b>至少 2 年</b>。</div>
+    <div class="step"><span class="sq">沒有</span> HIV 或 HDV 共感染。</div>
+    <div class="step">定量 <span class="sq">HBsAg &lt; 100 IU/mL</span>。</div>
+    <div class="step">病人<span class="sq">願意配合密集追蹤</span>。</div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">停藥後追蹤時程</div>
+    <b>前 6 個月：每 1–3 個月</b>驗 ALT 與 HBV DNA →
+    <b>接下來 6–12 個月：每 3 個月</b> →
+    <b>之後：每 3–6 個月</b>（依 ALT 與 DNA 決定）。
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">立刻重新開始治療的門檻（任一成立即可）</div>
+    <ul>
+      <li><b>HBV DNA ≥ 10,000 IU/mL</b>（4 log IU/mL），<b>不論 ALT 多少</b></li>
+      <li><b>ALT ≥ 5×ULN</b>，<b>不論 HBV DNA 多少</b></li>
+      <li><b>總膽紅素 &gt; 2.5 mg/dL</b></li>
+      <li>出現<b>任何肝代償不全的症狀</b></li>
+    </ul>
+    另外，<b>病人自己想重新開始、出現 B 肝的肝外併發症，或重新達到起始治療條件
+    （HBV DNA &gt;2,000 IU/mL 且 ALT &gt;2×ULN），隨時都可以重新開始。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">肝癌監測要不要繼續做</span><span class="dh-e">AASLD 2025 Table 4</span></div>
+  <div class="lead">監測方式為<b>腹部超音波＋血清 AFP，每 6 個月一次</b>（依 AASLD 2023 肝細胞癌指引，最具成本效益）。</div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>族群</th><th>要監測的對象</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">慢性 B 肝<b>併肝硬化</b></td><td>Child-Pugh A–B，以及可以移植的 Child-Pugh C</td></tr>
+        <tr><td class="nw">慢性 B 肝<b>無肝硬化</b>但風險升高</td>
+            <td><b>來自流行地區的男性 &gt;40 歲</b>（台灣屬流行地區）、<b>女性 &gt;50 歲</b>、
+                來自非洲者更早開始、<b>肝癌家族史</b>、<b>PAGE-B ≥10</b></td></tr>
+        <tr><td class="nw">共感染<b>無肝硬化</b></td>
+            <td><b>HBV／HDV：全部都要</b>（不論有無肝硬化）<br>
+                <b>HBV／HIV：男性 ≥18 歲、女性 ≥40 歲</b><br>
+                HBV／HCV：先治 HCV，監測比照單純 B 肝</td></tr>
+        <tr><td class="nw"><b>HBsAg 已消失</b>但風險升高</td>
+            <td>所有肝硬化者、<b>男性在 &gt;40 歲後才消失</b>、<b>女性在 &gt;50 歲後才消失</b>、肝癌家族史</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead">
+    <b>HBsAg 消失不等於可以停止監測。</b>消失時機不明者，依有無肝硬化與家族史個別決定。
+  </div>
+
+</div>
+
+<!-- ==================== 特殊情境 ==================== -->
+<div class="hb-panel" id="p-sp">
+
+  <div class="dirhead"><span class="dh-n">懷孕與母嬰垂直傳染</span><span class="dh-e">AASLD 2025 建議 1 · Strong / Moderate</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">唯一一條「強建議」</div>
+    <b>孕期任何時間點</b> HBV DNA <b>&gt; 200,000 IU/mL</b>（不論 HBeAg 陰陽），
+    <b>於懷孕第 28 週開始 TDF 或 TAF</b> 以預防母嬰傳染。<b>TDF 的孕期安全性資料比 TAF 完整。</b><br>
+    <b>Entecavir 與 peginterferon 在孕期為禁忌。</b>
+    <span class="gr">Strong</span> <span class="gr">Moderate certainty</span>
+  </div>
+  <div class="steps">
+    <div class="step">已在用 <span class="sq">TDF 或 TAF</span> 的孕婦：<b>繼續用</b>。用 entecavir 或其他藥的：<b>換成 TDF 或 TAF</b>。</div>
+    <div class="step">預計要做<span class="sq">羊膜穿刺</span>時：HBV DNA &gt;2,000,000 IU/mL 者穿刺會增加傳染風險，<b>應考慮更早開始投藥壓低病毒量</b>；早產高風險者亦同。</div>
+    <div class="step"><span class="sq">超過 28 週</span>才來產檢的高病毒量孕婦：<b>還是要立刻開始</b>，不要因為過了 28 週就放棄。</div>
+    <div class="step">新生兒<span class="sq">拿不到 B 肝免疫球蛋白（HBIG）</span>時：<b>提前到第 16 週</b>開始 TDF／TAF，並搭配之後的嬰兒疫苗。</div>
+    <div class="step">若治療的<span class="sq">唯一目的是防母嬰傳染</span>：<b>可於分娩時停藥</b>。</div>
+    <div class="step">停藥者：<b>每 1–3 個月驗 HBV DNA 與 ALT，追到產後 6 個月</b>，防的是停藥後的發作；<b>ALT ≥5×ULN 就要重新投藥</b>。</div>
+    <div class="step"><span class="sq">哺乳</span>期間需要治療者：<b>用 TDF 或 TAF</b>。</div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">健保這一條與指引的三個差別</div>
+    健保 10.7.3 第 2(7) 項：血清 HBV DNA <b>≧2×10⁵ IU/mL</b> 之懷孕者，
+    可於<b>懷孕滿 27 週後</b>開始給付 <b>telbivudine、tenofovir disoproxil 或 tenofovir alafenamide</b>，
+    <b>直至產後 4 週</b>。<br>
+    ① 健保是<b>滿 27 週</b>，指引是<b>第 28 週</b>（實務上幾乎重疊）；<br>
+    ② 健保給付<b>到產後 4 週</b>，指引則說唯一目的是防傳染時<b>分娩即可停</b>，但要追到產後 6 個月；<br>
+    ③ 健保<b>額外收 telbivudine</b>，但 telbivudine 抗藥性高，<b>指引不建議拿來當第一線</b>。<br>
+    <b>提前到 16 週那一段健保沒有對應條文。</b>另外，懷孕滿 27 週至產後 4 週接受<b>第 2 次以後</b>治療者，
+    健保允許由婦產科專科醫師開立處方（114/6/1 新增）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">肝硬化</span><span class="dh-e">Cirrhosis</span></div>
+  <div class="kbox">
+    <div class="kbox-t">代償性肝硬化</div>
+    <b>只要驗得到 HBV DNA 就治療，不看 ALT，而且不停藥</b>（AASLD 2018 guidance／EASL 2017 一致）。
+    AASLD 2025 的停藥建議<b>明文把肝硬化排除在外</b>——系統性回顧的族群就不包含肝硬化。
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">失代償性肝硬化</div>
+    <ul>
+      <li><b>立刻治療，不論 HBV DNA 與 ALT</b>，並<b>同步轉肝臟移植評估</b>。</li>
+      <li>用 <b>entecavir 1 mg qd</b> 或 <b>TDF</b>。<b>TAF 依仿單於 Child-Pugh B／C 不建議。</b></li>
+      <li><b>絕對不可用干擾素</b>——會誘發肝衰竭。</li>
+      <li>健保走 10.7.3 第 1 項：條件是 <b>prothrombin time 延長 ≥3 秒</b>（以該次檢驗的 control 值為準）
+          <b>或 total bilirubin ≥2.0 mg/dL</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">肝細胞癌</span><span class="dh-e">HCC</span></div>
+  <div class="kbox">
+    健保 10.7.3 第 2(8) 項：<b>確診肝癌並接受根除性治療、且可檢驗到血清 HBV DNA 者，可長期使用</b>，
+    直至<b>肝癌復發且未能再次接受根除性治療</b>為止。<br>
+    條文定義的根除性治療：<b>手術切除、肝臟移植、射頻燒灼（RFA）、局部酒精注射、微波消融、冷凍治療</b>。
+    <b>已符合肝硬化長期給付者不重複適用這一條。</b><br>
+    <b>TACE 不在這份根除性治療清單裡</b>——但 TACE 本身是 AGA 2025 列的 HBV 再活化<b>高風險</b>情境，
+    走的是「免疫抑制」那一條路，見該分頁。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">共感染</span><span class="dh-e">HDV · HIV · HCV</span></div>
+  <div class="kbox">
+    <ul>
+      <li><b>HDV</b>：肝癌監測<b>不論有無肝硬化，成人全部都要做</b>（AASLD 2025 建議 7）。
+          兒童因風險未知，個別決定。<b>HDV 共感染者不可停 B 肝藥。</b>
+          <b>台灣沒有 bulevirtide 品項。</b></li>
+      <li><b>HIV</b>：肝癌監測<b>男性 ≥18 歲、女性 ≥40 歲</b>（建議 8）。
+          治療須用<b>含 tenofovir 的完整 ART</b>，<b>不可單用抗 HBV 藥</b>。
+          健保條文允許 HIV 併 B 或 C 肝者由<b>照護的感染症專科醫師</b>直接開立處方，不必先照會消化系。</li>
+      <li><b>HCV</b>：<b>先治 C 肝</b>，肝癌監測比照單純 B 肝（建議 9）。
+          ⚠ <b>HBsAg 陽性者在使用 C 肝直接抗病毒藥（DAA）期間，AGA 2025 列為 HBV 再活化高風險</b>，
+          要一起投抗 B 肝藥。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">器官移植與造血幹細胞移植</span><span class="dh-e">健保 10.7.3 第 2 項</span></div>
+  <div class="steps">
+    <div class="step"><span class="sq">非肝臟器官移植</span>：<b>移植前 7 天內</b>可開始預防性使用；移植後 B 肝發作者可<b>長期使用</b>。</div>
+    <div class="step"><span class="sq">肝臟移植</span>：可預防性使用。</div>
+    <div class="step"><span class="sq">異體造血幹細胞移植</span>：捐贈者 HBsAg 陽性時，捐贈者自確認為捐贈者後即可開始，
+        原則上治療到<b>血中偵測不到 HBV DNA</b>；受贈者或捐贈來源 HBsAg 陽性時，
+        受贈者經照會消化系專科醫師同意後，<b>自移植前一週起至移植後免疫抑制藥物停用後 6 個月內</b>給付。</div>
+  </div>
+  <div class="lead">
+    這一整組（含化療與免疫抑制劑）的給付對象是「<b>HBsAg(+)，或 HBsAg(−) 但 anti-HBc 陽性者</b>」，
+    <b>但預防性投藥那幾款另有更窄的限制</b>——見「免疫抑制」分頁。
+  </div>
+
+</div>
+
+<!-- ==================== 免疫抑制 ==================== -->
+<div class="hb-panel" id="p-imm">
+
+  <div class="kbox alert">
+    <div class="kbox-t">第一步永遠是篩檢，而且是三項一起驗</div>
+    <b>所有 18 歲以上成人都應該至少驗過一次</b> <b>HBsAg ＋ anti-HBs ＋ total anti-HBc</b>
+    （CDC 全民篩檢建議）。AGA 2025 因此明說：<b>再也不需要「依再活化風險高低決定要不要篩檢」</b>，
+    要用免疫抑制藥就是全部先驗。<br>
+    篩檢陽性者<b>再加驗 HBV DNA</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">AGA 2025 的四條建議</span><span class="dh-e">Gastroenterology 2025;168(2):267–284</span></div>
+  <div class="steps">
+    <div class="step"><span class="sq">高風險（&gt;10%）</span>：<b>投預防性抗病毒藥，優於只監測</b> <span class="gr">Strong</span> <span class="gr">Moderate</span>。</div>
+    <div class="step"><span class="sq">中風險（1–10%）</span>：<b>建議投預防性抗病毒藥</b> <span class="gr">Conditional</span>（只監測也是可接受的選項）。</div>
+    <div class="step"><span class="sq">低風險（&lt;1%）</span>：<b>只監測、不投預防藥</b> <span class="gr">Conditional</span>。</div>
+    <div class="step"><span class="sq">所有有風險者</span>：<b>都要驗 HBV</b> <span class="gr">Strong</span>。</div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">監測與療程</div>
+    <b>監測＝每 1–3 個月，而且一定要含 HBV DNA，不能只驗 ALT。</b><br>
+    預防用藥：<b>entecavir、TDF 或 TAF</b>（高抗藥屏障；lamivudine 不適合長期預防）。<br>
+    <b>免疫抑制藥開始前就要投</b>，停用免疫抑制藥後<b>至少再用 6 個月</b>；
+    <b>B 細胞清除類（anti-CD20，如 rituximab）要用到停藥後 12 個月</b>。<br>
+    再活化的定義：<b>原本測不到的 HBV DNA 重新出現，或較基準值上升 10 倍</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">風險分層</span><span class="dh-e">HBsAg(+) 與 anti-HBc(+) only 是兩套表</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>風險</th><th>HBsAg 陽性</th><th>HBsAg 陰性、anti-HBc 陽性</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>高</b><br>&gt;10%</td>
+            <td>B 細胞清除藥（anti-CD20）、anthracycline、anti-TNF、酪胺酸激酶抑制劑（TKI）、
+                CAR-T、JAK 抑制劑、<b>prednisone ≥10 mg/day 且 ≥4 週</b>、
+                肝癌 <b>TACE</b>、合併 HCV 使用 <b>DAA</b></td>
+            <td><b>只有 B 細胞清除藥（anti-CD20）</b></td></tr>
+        <tr><td class="nw"><b>中</b><br>1–10%</td>
+            <td>抗 T 細胞治療（abatacept）、免疫檢查點抑制劑、<b>prednisone &lt;10 mg/day 且 ≥4 週</b></td>
+            <td>抗 T 細胞治療、免疫檢查點抑制劑、anthracycline、anti-TNF、TKI、
+                細胞激素／integrin 抑制劑、CAR-T、JAK 抑制劑、TACE、
+                <b>prednisone ≥10 mg/day 且 ≥4 週</b></td></tr>
+        <tr><td class="nw"><b>低</b><br>&lt;1%</td>
+            <td colspan="2">兩群共同：<b>methotrexate、azathioprine、mercaptopurine、關節腔內類固醇、
+                任何劑量類固醇但 ≤1 週</b>。<br>
+                僅 anti-HBc(+) 群另加：anti-TNF、免疫檢查點抑制劑、合併 HCV 使用 DAA</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lead">
+    分層表依 AGA 2025 指引整理。<b>同一支藥在兩欄的風險等級不同</b>——例如 anti-TNF 在 HBsAg 陽性是高風險、
+    在只有 anti-HBc 陽性是低風險；anthracycline 則是高 vs 中。看表時務必先確認病人落在哪一欄。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 健保給付比 AGA 窄很多，這裡有四個缺口</div>
+    健保 10.7.3 第 2 項的<b>預防性</b>給付只有兩款：<br>
+    <b>(4) 接受癌症化學療法</b>：經照會消化系專科醫師同意後，<b>化療前 1 週開始，至化療結束後 6 個月</b>。<br>
+    <b>(9)Ⅰ 接受免疫抑制劑治療</b>：<b>限 HBsAg(+)</b>，於下列藥物治療<b>前一週起至停用後 6 個月內</b>——
+    <b>① rituximab ② anthracycline 類衍生物 ③ 中高劑量類固醇（prednisolone ≥20 mg/day 且使用超過 4 週）</b>。<br>
+    <b>(9)Ⅱ</b>：HBsAg(+) <b>或</b> HBsAg(−) 但 anti-HBc(+) 者，<b>已經發作</b>之後才給付，給付至免疫抑制劑停用後 6 個月。<br><br>
+    四個缺口：<br>
+    ① <b>只有 anti-HBc 陽性、要用 rituximab 的人</b>：AGA 列為<b>高風險、強烈建議預防</b>，
+       但健保 (9)Ⅰ 限 HBsAg(+)，這一群<b>要等發作了才給付</b>。<br>
+    ② <b>類固醇門檻不同</b>：AGA 的 HBsAg(+) 高風險是 <b>≥10 mg/day ≥4 週</b>，健保是 <b>≥20 mg/day 超過 4 週</b>。
+       落在 10–20 mg 這一段的人，指引要預防、健保不給。<br>
+    ③ <b>rituximab 的療程長度不同</b>：AGA 要用到停藥後 <b>12 個月</b>，健保只給到 <b>6 個月</b>——
+       第 7 到 12 個月這半年要自費或另尋他法。<br>
+    ④ <b>AGA 表上的 TKI、JAK 抑制劑、CAR-T、免疫檢查點抑制劑、TACE、DAA 都不在健保 (9)Ⅰ 的三款清單裡</b>。
+  </div>
+
+</div>
+
+<!-- ==================== 健保給付 ==================== -->
+<div class="hb-panel" id="p-nhi">
+
+  <div class="refbar">
+    <span class="rb"><b>條號</b> 10.7.3（起始）／10.7.4（抗藥與復發）</span>
+    <span class="rb"><b>版本</b> 115.07.23 版藥品給付規定</span>
+    <span class="rb"><b>條文最近修訂</b> 114/6/1</span>
+    <span class="rb-src">健保署 第10節 抗微生物劑</span>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">10.7.3 收錄的藥</div>
+    Lamivudine 100 mg（如 Zeffix）、entecavir（如 Baraclude）、telbivudine（如 Sebivo）、
+    tenofovir disoproxil（如 Viread）、tenofovir alafenamide（如 Vemlidy）。<br>
+    <b>本條所謂「正常值上限」指的是各檢驗室自己的 ALT 參考區間上限</b>，
+    台大是 <b>41 U/L</b>（檢驗醫學部臨床檢驗目錄），不是 AASLD 的 35／25。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">第 3 項：HBeAg 陽性</span><span class="dh-e">療程＝治療至 e 抗原轉陰，再給付最多 12 個月</span></div>
+  <div class="lead">前提：HBsAg(+) 超過 6 個月（或 IgM anti-HBc 陰性）且 HBeAg(+)，符合下列<b>任一</b>條件。</div>
+  <div class="steps">
+    <div class="step"><span class="sq">ALT ≥ 5×</span>正常值上限（台大：≥205 U/L）。</div>
+    <div class="step"><span class="sq">2× ≤ ALT &lt; 5×</span>（台大：82–204 U/L），<b>且</b> HBV DNA ≥20,000 IU/mL，或肝組織切片證實 HBcAg 陽性。</div>
+    <div class="step">經切片、<span class="sq">肝纖維化掃描或 FIB-4 證實 ≥F3</span>，<b>且</b> ALT 半年內有兩次以上（間隔 &gt;3 個月）&gt;正常值上限，
+        <b>且</b> HBV DNA ≥20,000 IU/mL（或切片 HBcAg 陽性）。</div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">≥F3 的非侵入性換算（條文明訂）</div>
+    肝纖維化掃描 <b>Fibroscan ≥9.5 kPa</b> 或 <b>ARFI ≥1.81</b>；或 <b>FIB-4 ≥3.25</b>
+    （公式：[年齡 × AST] ÷ [血小板(10⁹/L) × √ALT]）。
+    <b>Entecavir 在第 3、4 項的給付劑量是每日 0.5 mg。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">第 4 項：HBeAg 陰性</span><span class="dh-e">療程至少 2 年，每次療程最多 36 個月</span></div>
+  <div class="lead">
+    前提：HBsAg(+) 超過 6 個月（或 IgM anti-HBc 陰性）且 HBeAg(−)，符合下列<b>任一</b>條件。
+    停藥條件：治療期間驗血清 HBV DNA，<b>連續三次、每次間隔 6 個月都測不到</b>時停藥。
+  </div>
+  <div class="steps">
+    <div class="step"><span class="sq">ALT ≥ 2×</span>正常值上限（台大：≥82 U/L），<b>且</b> HBV DNA ≥2,000 IU/mL（或切片 HBcAg 陽性）。</div>
+    <div class="step"><span class="sq">肝纖維化 ≥F2</span>，<b>且</b> ALT 半年內有兩次以上（間隔 &gt;3 個月）&gt;正常值上限，
+        <b>且</b> HBV DNA ≥20,000 IU/mL（或切片 HBcAg 陽性）。</div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">≥F2 的非侵入性換算（112/10/1 新增）</div>
+    肝纖維化掃描 <b>Fibroscan ≥8 kPa</b> 或 <b>ARFI ≥1.5</b>；或 <b>FIB-4 ≥2.1</b>。
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 第 4 項有一份「品名清單」，清單上的藥條件更嚴</div>
+    第 4 項 (1)(2) 兩款都附了同一句話：<b>「惟 Fofnir、Hepwin、Sebivo、Ricovir、Hepuri、Virclean、
+    Teno B、Tenof、Viread、Livepro、Lamidine、Hepar-Pro、Hepato-Ease、Barazer、Becavir 等
+    除上述條件外，應符合……」</b>——<br>
+    在 (1)：清單上的品項<b>還要 ALT 半年內兩次以上 ≥2×</b>（不在清單上的一次就夠）；<br>
+    在 (2)：清單上的品項<b>纖維化要 ≥F3，不是 ≥F2</b>。<br><br>
+    <b>對照台大目前的三個品項：</b><br>
+    ・<b>Viread（TDF）在清單內</b> → 要兩次 ALT、纖維化要 ≥F3。<br>
+    ・<b>Baraclude（entecavir 原廠）不在清單內</b> → 一次 ALT 即可、≥F2 即可。<br>
+    ・<b>Vemlidy（TAF）不在清單內</b> → 同上，走寬鬆條件。<br>
+    <b>也就是說，同一個病人開 Baraclude 過得了、開 Viread 過不了。</b>
+    這是條文原文的寫法，送件前請與藥劑部再確認品名版本。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">第 1、2 項：不看 ALT 的那幾條</span><span class="dh-e">代償不全、肝硬化、肝癌、移植、化療、懷孕</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>條款</th><th>條件</th><th>療程</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>1</b> 肝代償不全</td>
+            <td>HBsAg(+) 且已發生肝代償不全。<b>定義：PT 延長 ≥3 秒（以該次檢驗 control 值為準）或 total bilirubin ≥2.0 mg/dL。</b><br>
+                <b>此條的 entecavir 為 1.0 mg，且每日限 1 粒。</b></td>
+            <td>HBeAg(+)：至 e 抗原轉陰再 12 個月<br>HBeAg(−)：至少 2 年，連三次間隔 6 個月測不到才停，最多 36 個月</td></tr>
+        <tr><td class="nw"><b>2(5)</b> 肝硬化</td>
+            <td><b>兩項都要符合</b>：<br>
+                Ⅰ. HBsAg(+) <b>且可檢驗到血清 HBV DNA</b>；<br>
+                Ⅱ. 診斷符合下列之一——切片 <b>Metavir F4 或 Ishak F5 以上</b>；超音波診斷肝硬化<b>併食道或胃靜脈曲張</b>；
+                超音波診斷肝硬化<b>併脾腫大</b>；超音波診斷肝硬化<b>且血小板 &lt;120,000/µL</b>；
+                <b>肝硬度超音波診斷為肝硬化</b>（Fibroscan ≥12 kPa 或 ARFI ≥1.98）。
+                因其他適應症做的 CT／MRI 診斷為肝硬化亦可採用。</td>
+            <td><b>長期使用</b></td></tr>
+        <tr><td class="nw"><b>2(8)</b> 肝癌</td>
+            <td>確診肝癌<b>並接受根除性治療</b>且可檢驗到血清 HBV DNA。根除性治療＝手術切除、肝臟移植、RFA、酒精注射、微波消融、冷凍治療。</td>
+            <td>長期使用，<b>直至肝癌復發且未能再次接受根除性治療</b>為止</td></tr>
+        <tr><td class="nw"><b>2(1)(3)</b> 器官移植</td>
+            <td>非肝臟器官移植：移植前 7 天內可開始預防性使用；移植後發作可長期使用。肝臟移植：可預防性使用。</td>
+            <td>依條款</td></tr>
+        <tr><td class="nw"><b>2(4)</b> 癌症化療</td>
+            <td>經<b>照會消化系專科醫師同意</b>後預防性使用。</td>
+            <td><b>化療前 1 週 → 化療結束後 6 個月</b></td></tr>
+        <tr><td class="nw"><b>2(6)</b> 異體造血幹細胞移植</td>
+            <td>捐贈者 HBsAg(+)：自確認為捐贈者後開始，原則上治療到測不到 HBV DNA。<br>
+                受贈者或捐贈來源 HBsAg(+)：經照會消化系專科醫師同意。</td>
+            <td>受贈者：<b>移植前 1 週 → 免疫抑制藥停用後 6 個月內</b></td></tr>
+        <tr><td class="nw"><b>2(7)</b> 懷孕</td>
+            <td>血清 HBV DNA <b>≥2×10⁵ IU/mL</b>。<b>只給付 telbivudine、TDF、TAF</b>（不含 entecavir）。</td>
+            <td><b>懷孕滿 27 週 → 產後 4 週</b></td></tr>
+        <tr><td class="nw"><b>2(9)</b> 免疫抑制劑</td>
+            <td>見「免疫抑制」分頁。<b>預防性限 HBsAg(+) ＋ rituximab／anthracycline／prednisolone ≥20 mg/day 超過 4 週</b>。</td>
+            <td>用藥前 1 週 → 停用後 6 個月</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">10.7.4：出現抗藥株或停藥後復發</span><span class="dh-e">Rescue therapy</span></div>
+  <div class="lead">
+    抗藥株的定義：<b>治療中 HBV DNA 從治療期間的最低值上升超過 1 個對數值（1 log IU/mL）</b>。
+  </div>
+  <div class="steps">
+    <div class="step">原治療藥物<span class="sq">加上 adefovir</span> 合併救援；或</div>
+    <div class="step">改用 <span class="sq">entecavir 1.0 mg</span> 單一藥物（<b>僅限 lamivudine 產生抗藥性者</b>）；或</div>
+    <div class="step">以 <span class="sq">interferon alpha-2a／2b 或 peginterferon alfa-2a</span> 治療 1 年；或</div>
+    <div class="step">改用 <span class="sq">TDF 或 TAF</span> 單一藥物。</div>
+  </div>
+  <div class="kbox">
+    <b>多重抗藥株</b>（對 lamivudine、telbivudine、entecavir、adefovir 其中<b>兩種以上</b>抗藥）：
+    可給 TDF 或 TAF 單方，或 <b>entecavir 1.0 mg ＋ TDF</b>，或 <b>entecavir 1.0 mg ＋ TAF</b>。<br>
+    <b>停藥後復發</b>：得以合併療法、TDF／TAF 單方再治療，或以干擾素再治療 1 年。
+    <b>再次復發時得再接受治療，不限治療次數。</b><br>
+    ⚠ <b>台大沒有 adefovir 與 Pegasys 品項</b>，這兩條在院內走不通。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">誰可以開這張處方</span><span class="dh-e">醫事服務機構及醫師資格（114/6/1 修訂）</span></div>
+  <div class="kbox">
+    <b>醫院</b>：須有消化系內科或消化系兒科專科醫師。可開立者為該院之<b>消化系內科、消化系兒科、血液病、
+    腫瘤內科、癌症相關科、符合器官移植手術資格及風濕免疫科</b>之專任或兼任專科醫師。<br>
+    <b>上列非消化系專科醫師，需先照會消化系專科醫師。</b>兩個例外：<br>
+    ① <b>HIV 感染併 B 或 C 肝者</b>，得由照護的<b>感染症內科</b>專科醫師開立；<br>
+    ② <b>懷孕滿 27 週至產後 4 週、接受第 2 次以後治療</b>的孕產婦，得由其<b>婦產科</b>專科醫師開立（114/6/1 新增）。<br>
+    <b>外科醫師不在名單上</b>——術前照會或出院帶藥要走消化系內科。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">健保與指引的四個明確衝突</div>
+    <ul>
+      <li><b>ALT 上限用哪一個</b>：健保用檢驗室 ULN（台大 41），AASLD 用 35／25。ALT 70–81 的男性在指引已達 2 倍、健保未達。</li>
+      <li><b>灰色地帶</b>：AASLD 2025 建議以共同決策治療，<b>健保完全沒有對應條款</b>。</li>
+      <li><b>停藥</b>：AASLD 2025 建議「不要停，直到 HBsAg 消失」，
+          <b>健保第 4 項卻寫「每次療程至多給付 36 個月」並訂了停藥條件</b>。</li>
+      <li><b>免疫抑制預防</b>：AGA 2025 的高中風險清單遠大於健保的三款藥；
+          只有 anti-HBc 陽性用 rituximab 者，健保要等發作。</li>
+    </ul>
+    <b>2026 年 6 月健保署曾對外表示正研議再放寬（估 1.7 萬至 3 萬人受惠），但 115.07.23 版條文尚未變動，
+    現在不能照那個開。</b>
+  </div>
+
+</div>
+
+<!-- ==================== 證據 ==================== -->
+<div class="hb-panel" id="p-ev">
+
+  <div class="dirhead"><span class="dh-n">本頁引用的文件與版本</span><span class="dh-e">Sources and currency</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>文件</th><th>版本／現行狀態</th><th>本頁用它來做什麼</th></tr></thead>
+      <tbody>
+        <tr><td><b>AASLD／IDSA 慢性 B 型肝炎指引</b></td>
+            <td>Hepatology 2026;83(4):974–997<br>2025-11-04 線上刊出<br><b>現行</b></td>
+            <td>分期定義、免疫耐受期與灰色地帶的治療、停藥、母嬰預防、肝癌監測。
+                <b>只涵蓋 6 個 PICO 問題</b></td></tr>
+        <tr><td><b>AASLD 2018 hepatitis B guidance</b></td>
+            <td>Hepatology 2018;67(4):1560–1599<br><b>免疫活動期與肝硬化的適應症仍以此為準</b></td>
+            <td>免疫活動期要治療、肝硬化只要驗得到 DNA 就治療、三支第一線藥的劑量與監測表</td></tr>
+        <tr><td><b>AGA 再活化指引</b></td>
+            <td>Gastroenterology 2025;168(2):267–284<br><b>現行</b>（前一版為 2014）</td>
+            <td>免疫抑制與化療的風險分層、預防與監測</td></tr>
+        <tr><td><b>EASL 臨床指引</b></td>
+            <td>J Hepatol 2017;67(2):370–398<br><b>仍為現行版</b></td>
+            <td>「所有可測到 HBV DNA 的肝硬化病人都要治療」的歐洲立場</td></tr>
+        <tr><td><b>TASL 台灣共識</b></td>
+            <td>J Formos Med Assoc 2019;118(1 Pt 1):7–38<br><b>自 2018 年起未改版</b></td>
+            <td>本土立場參照。<b>與 AASLD 2025 的差異有相當比例是版本落差</b></td></tr>
+        <tr><td><b>WHO 慢性 B 肝指引</b></td>
+            <td>2024 年 3 月改版（簡化照護、擴大治療條件）</td>
+            <td>背景：國際上放寬治療門檻的方向</td></tr>
+        <tr><td><b>健保藥品給付規定 第 10 節</b></td>
+            <td><b>115.07.23 版</b>；10.7.3／10.7.4 條文最近一次修訂為 <b>114/6/1</b></td>
+            <td>全部給付判定</td></tr>
+        <tr><td><b>台大醫院藥劑部藥品資料庫</b></td>
+            <td>抗生素藥物查詢（含 2026H1 在地感受性）</td>
+            <td>院內品項、劑量、腎肝調整、禁忌、價格（本頁最下方藥卡）</td></tr>
+        <tr><td><b>台大檢驗醫學部臨床檢驗目錄</b></td>
+            <td>2026-07 查</td>
+            <td>ALT 參考區間 0–41 U/L（健保「正常值上限」的實際數字）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">查證時踩到的三件事，寫下來免得下次再犯</div>
+    <ul>
+      <li><b>AASLD 2025 不是一份完整的新指引</b>，它只重寫了 6 個 PICO 問題。
+          「免疫活動期要不要治療」「肝硬化要不要治療」這些最常用的條文<b>不在裡面</b>，
+          仍要回 2018 guidance。把 2025 當成全套來引用會引錯。</li>
+      <li><b>健保條文的「正常值上限」不是指引的 ULN。</b>兩者差 6 U/L，在 ALT 70–81 這一段會得到完全相反的結論。</li>
+      <li><b>健保第 4 項那份 15 個品名的清單很容易被略過。</b>
+          它讓「112/10/1 放寬成一次 ALT、F2 即可」這件事<b>對清單上的品項不成立</b>，
+          而台大的 Viread 正好在清單上。新聞稿與衛教文章一律沒有提到這一層。</li>
+    </ul>
+  </div>
+
+</div>
+
+  <!-- ==================== 最下方：本頁用到的藥 · 台大藥卡 ==================== -->
+  <div class="bc-drugbox" id="hb_drugs"></div>
+
+  <footer class="tool-footer" style="margin-top:24px;">
+    Ghany MG, et al. —
+    <a href="https://doi.org/10.1097/HEP.0000000000001549" target="_blank" rel="noopener" class="ref-link">AASLD/IDSA Practice Guideline on Treatment of Chronic Hepatitis B. Hepatology. 2026;83(4):974-997.</a>
+    ｜ Terrault NA, et al. —
+    <a href="https://doi.org/10.1002/hep.29800" target="_blank" rel="noopener" class="ref-link">Update on prevention, diagnosis, and treatment of chronic hepatitis B: AASLD 2018 hepatitis B guidance. Hepatology. 2018;67(4):1560-1599.</a>
+    ｜ Ali FS, et al. —
+    <a href="https://doi.org/10.1053/j.gastro.2024.11.008" target="_blank" rel="noopener" class="ref-link">AGA Clinical Practice Guideline on the Prevention and Treatment of Hepatitis B Virus Reactivation in At-Risk Individuals. Gastroenterology. 2025;168(2):267-284.</a>
+    ｜ EASL. —
+    <a href="https://doi.org/10.1016/j.jhep.2017.03.021" target="_blank" rel="noopener" class="ref-link">EASL 2017 Clinical Practice Guidelines on the management of hepatitis B virus infection. J Hepatol. 2017;67(2):370-398.</a>
+    ｜ Chien RN, et al. —
+    <a href="https://doi.org/10.1016/j.jfma.2018.11.008" target="_blank" rel="noopener" class="ref-link">Taiwan consensus statement on the management of chronic hepatitis B. J Formos Med Assoc. 2019;118(1 Pt 1):7-38.</a>
+    ｜ 衛生福利部中央健康保險署 —
+    <a href="https://www.nhi.gov.tw/ch/dl-50614-51b47002f99f4ba38f69bb432ca23477-1.pdf" target="_blank" rel="noopener" class="ref-link">藥品給付規定 第10節 抗微生物劑（115.07.23 版）</a>
+    ｜ 藥品資料以台大醫院藥劑部藥品資料庫為準。本頁為教學整理，非商業指南之重製，不取代臨床判斷。
+  </footer>
+</div>
+</div>
+
+<!-- 藥卡渲染。重用 js/drug-database.js 的 cardBody()／loadPid()／onCardToggle()，
+     分類資料延遲注入，開頁不多付流量。刻意不載 data/drugs/index.js（788 KB）——
+     cardBody 一個欄位都不讀它。做法與 tools/cancer.html 相同。 -->
+<script src="../js/drug-database.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   分頁切換
+   ══════════════════════════════════════════════════════════════════════ */
+function hbTab(name){
+  document.querySelectorAll('#hb_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.hb-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   狀態。S＝單選群組（性別／HBeAg／肝病期別），F＝「何時治療」的複選旗標，
+   P＝「選哪支藥」的複選旗標。三者互不干擾，各自觸發自己的 render。
+   ══════════════════════════════════════════════════════════════════════ */
+var S = { sex:null, eag:null, cir:null };
+var F = {};
+var P = {};
+
+function hbPick(btn){
+  var g = btn.getAttribute('data-g'), v = btn.getAttribute('data-v');
+  S[g] = (S[g] === v) ? null : v;          /* 再點一次取消，避免選錯了改不掉 */
+  document.querySelectorAll('.flow-opt[data-g="' + g + '"]').forEach(function(b){
+    b.classList.toggle('selected', b.getAttribute('data-v') === S[g]);
+  });
+  hbCalc();
+}
+function hbTog(btn){
+  var f = btn.getAttribute('data-f');
+  F[f] = !F[f];
+  btn.classList.toggle('selected', !!F[f]);
+  hbCalc();
+}
+function hbTog2(btn){
+  var f = btn.getAttribute('data-f');
+  P[f] = !P[f];
+  btn.classList.toggle('selected', !!P[f]);
+  hbPickCalc();
+}
+function hbNum(id){
+  var v = parseFloat((document.getElementById(id) || {}).value);
+  return isFinite(v) ? v : null;
+}
+/* 產生一張建議卡。cls：rec-elective（要治療）／rec-blue（監測或背景）／
+   rec-urgent（緊急或禁忌）／rec-nonop（中性資訊）／rec-idle（尚未輸入） */
+function hbCard(cls, label, title, items, note){
+  var h = '<div class="flow-rec ' + cls + '">';
+  h += '<div class="rec-label">' + label + '</div>';
+  h += '<div class="rec-title">' + title + '</div>';
+  if(items && items.length){
+    h += '<ul class="rec-detail">';
+    items.forEach(function(t){ h += '<li>' + t + '</li>'; });
+    h += '</ul>';
+  }
+  if(note) h += '<div class="rec-note">' + note + '</div>';
+  return h + '</div>';
+}
+function yn(ok){ return ok ? '<b>✔</b> ' : '<b>✘</b> '; }
+function fmt(v){ return v === null ? '未填' : String(v); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   「何時治療」的判定引擎
+
+   刻意的設計取捨：
+   · 指引與健保分成兩張卡，不混在一起講——這是使用者最容易被誤導的地方。
+   · 兩張卡用**不同的 ALT 上限**：指引用 AASLD 的 35／25，健保用檢驗室的
+     參考區間上限（台大 41）。這不是筆誤，是條文與指引真的不一樣。
+   · 數值沒填就不做該項判斷，不猜預設值；缺哪一項就明講缺哪一項。
+   ══════════════════════════════════════════════════════════════════════ */
+function hbCalc(){
+  var out = document.getElementById('hb_out');
+  if(!out) return;
+
+  var age = hbNum('hb_age'), alt = hbNum('hb_alt'), dna = hbNum('hb_dna'),
+      plt = hbNum('hb_plt'), kpa = hbNum('hb_kpa'), fib4 = hbNum('hb_fib4');
+  var lab = hbNum('hb_lab'); if(lab === null) lab = 41;
+
+  var anyInput = S.sex || S.eag || S.cir || alt !== null || dna !== null ||
+                 Object.keys(F).some(function(k){ return F[k]; });
+  if(!anyInput){
+    out.innerHTML = hbCard('rec-idle', '尚未輸入', '填上數值、選好條件，這裡會列出判定',
+      ['<b>指引判定</b>至少需要：性別、HBeAg、ALT、HBV DNA。',
+       '<b>健保判定</b>另外需要：檢驗室 ALT 上限（已預填台大的 41）、纖維化證據、ALT 是否有兩次。',
+       '有肝硬化時 ALT 與 HBeAg 就不影響結論了，直接選「肝病期別」即可。']);
+    return;
+  }
+
+  var uln = (S.sex === 'f') ? 25 : 35;           /* AASLD ULN */
+  var html = '';
+
+  /* ── 卡一：分期 ─────────────────────────────────────────── */
+  var phase = null, phaseName = '', phaseWhy = [];
+  if(S.cir === 'decomp'){
+    phaseName = '失代償性肝硬化';
+  } else if(S.cir === 'comp'){
+    phaseName = '代償性肝硬化';
+  } else if(S.sex && S.eag && alt !== null && dna !== null){
+    if(S.eag === 'pos'){
+      if(dna > 10000000 && alt <= uln){ phase = 'tol'; phaseName = '免疫耐受期 Immune-tolerant'; }
+      else if(alt >= 2 * uln && dna >= 20000){ phase = 'active'; phaseName = '免疫活動期 Immune active'; }
+      else { phase = 'indet'; phaseName = '灰色地帶 Indeterminate（HBeAg 陽性）'; }
+    } else {
+      if(dna < 2000 && alt <= uln){ phase = 'inactive'; phaseName = '不活動期 Inactive'; }
+      else if(alt >= 2 * uln && dna >= 2000){ phase = 'active'; phaseName = '免疫活動期 Immune active'; }
+      else { phase = 'indet'; phaseName = '灰色地帶 Indeterminate（HBeAg 陰性）'; }
+    }
+    phaseWhy.push('ALT ' + alt + ' U/L，AASLD 的 ULN 為 <b>' + uln + '</b>（' +
+      (S.sex === 'f' ? '女性' : '男性') + '）→ <b>' + (alt / uln).toFixed(1) + ' 倍</b>。');
+    phaseWhy.push('HBV DNA ' + dna.toLocaleString() + ' IU/mL。');
+    if(phase === 'tol'){
+      phaseWhy.push('⚠ <b>要確定是免疫耐受期，需要至少兩次、間隔 ≥6 個月的 ALT 都正常</b>；' +
+        '單一次正常不足以判定。DNA 正在下降而 ALT 正在上升的人，多半是正在轉入免疫活動期。');
+    }
+    if(phase === 'indet' && S.eag === 'neg' && dna < 2000 && alt > uln){
+      phaseWhy.push('⚠ <b>ALT 高但 HBV DNA &lt;2,000 IU/mL：要先找別的肝損傷原因</b>' +
+        '（脂肪肝、酒精、藥物、自體免疫），找到就治那個。');
+    }
+  } else {
+    phaseName = '資料不足，無法判分期';
+    var miss = [];
+    if(!S.sex) miss.push('性別');
+    if(!S.eag) miss.push('HBeAg');
+    if(alt === null) miss.push('ALT');
+    if(dna === null) miss.push('HBV DNA');
+    phaseWhy.push('還缺：<b>' + miss.join('、') + '</b>。');
+  }
+  html += hbCard('rec-nonop', '分期', phaseName, phaseWhy,
+    'AASLD 2025 Table 1。ULN：男 35、女 25 U/L。');
+
+  /* ── 卡二：指引建議 ─────────────────────────────────────── */
+  var gCls = 'rec-blue', gTitle = '', gItems = [], gNote = '';
+  if(S.cir === 'decomp'){
+    gCls = 'rec-urgent';
+    gTitle = '立刻治療，並同步轉肝臟移植評估';
+    gItems = [
+      '<b>不論 HBV DNA 與 ALT 是多少都要治療</b>，而且<b>終身不停藥</b>。',
+      '用 <b>entecavir 1 mg qd</b> 或 <b>TDF 300 mg qd</b>。' +
+        '<b>TAF 依美國仿單於 Child-Pugh B／C 不建議使用。</b>',
+      '<b>絕對不可用干擾素</b>——會誘發肝衰竭。',
+      '嚴重度與移植排序見 <a href="../tools/child-pugh.html" class="pmid">Child-Pugh</a> 與 ' +
+        '<a href="../tools/meld.html" class="pmid">MELD 3.0</a>。'
+    ];
+    gNote = 'AASLD 2018 guidance；AASLD 2025 的停藥建議明文把肝硬化排除在外。';
+  } else if(S.cir === 'comp'){
+    gCls = 'rec-elective';
+    gTitle = '只要驗得到 HBV DNA 就治療，不看 ALT';
+    gItems = [
+      (dna === null ? '<b>先驗 HBV DNA。</b>驗得到（不論多低）就治療。'
+                    : (dna > 0 ? '本例 HBV DNA ' + dna.toLocaleString() + ' IU/mL <b>可測到 → 治療</b>。'
+                               : 'HBV DNA 測不到：仍應密切追蹤，DNA 一旦轉為可測即治療。')),
+      '<b>不停藥。</b>AASLD 2025 的停藥條件第一項就是「沒有進行性纖維化／肝硬化」。',
+      '<b>肝癌監測：超音波＋AFP 每 6 個月一次</b>，終身。',
+      '第一線三支藥都可以；有腎骨問題選 TAF 或 entecavir。'
+    ];
+    gNote = 'AASLD 2018 guidance／EASL 2017：all cirrhotic patients with detectable HBV DNA should be treated。';
+  } else if(phase === 'active'){
+    gCls = 'rec-elective';
+    gTitle = '免疫活動期 → 治療';
+    gItems = [
+      '第一線：<b>entecavir 0.5 mg qd（空腹）／TDF 300 mg qd／TAF 25 mg qd（配食物）</b>，三選一。',
+      (S.eag === 'pos'
+        ? '<b>HBeAg 陽性</b>的治療終點是 e 抗原血清轉換後再鞏固治療；健保給付至轉陰後再 12 個月。'
+        : '<b>HBeAg 陰性</b>者 AASLD 2025 建議<b>一路治療到 HBsAg 消失才停</b>；健保則是每療程最多 36 個月，兩者相反。'),
+      '<b>開藥前先驗 HIV。</b>'
+    ];
+    gNote = 'AASLD 2018 guidance（2025 版未重寫免疫活動期的適應症）。';
+  } else if(phase === 'tol'){
+    var tolTreat = (age !== null && age > 40);
+    var tolF2 = (kpa !== null && kpa >= 8) || (fib4 !== null && fib4 >= 2.1);
+    if(tolTreat || tolF2){
+      gCls = 'rec-elective';
+      gTitle = '免疫耐受期，但已達建議治療的門檻';
+      gItems.push(tolTreat ? '<b>年齡 ' + age + ' 歲 &gt; 40 歲</b> → 建議治療。'
+                           : '年齡未達 40 歲或未填。');
+      if(tolF2) gItems.push('<b>非侵入性檢查已達 ≥F2</b>' +
+        (kpa !== null ? '（Fibroscan ' + kpa + ' kPa）' : '') +
+        (fib4 !== null ? '（FIB-4 ' + fib4 + '）' : '') + ' → 建議治療。');
+    } else {
+      gCls = 'rec-blue';
+      gTitle = '免疫耐受期，尚未達門檻 → 監測，或共同決策';
+      gItems.push('<b>&lt;40 歲且沒有 ≥grade 2 發炎／≥F2 纖維化</b>：以監測為主。' +
+        '若病人本人想早點開始，<b>採共同決策</b>，把風險與好處講清楚。');
+    }
+    gItems.push('<b>不治療者：每 6 個月驗 ALT 與 HBV DNA</b>，看有沒有轉入免疫活動期（轉期通常沒有症狀）。');
+    gItems.push('⚠ 免疫耐受期病毒量極高，<b>即使長期治療 HBV DNA 也未必壓得到測不到</b>' +
+      '（TDF 單方 4 年僅 55% 壓到 &lt;69 IU/mL）。');
+    gNote = 'AASLD 2025 建議 3（Conditional／Very low）。';
+  } else if(phase === 'indet'){
+    gCls = 'rec-blue';
+    gTitle = '灰色地帶 → 用共同決策考慮治療（2025 年改過的一條）';
+    var favor = [];
+    if(age !== null && age > 40) favor.push('年齡 ' + age + ' 歲 &gt;40');
+    if(S.sex === 'm') favor.push('男性');
+    if(plt !== null && plt < 180) favor.push('血小板 ' + plt + ' &lt;180 k/mm³');
+    var adv = (fib4 !== null && fib4 > 1.45) || (kpa !== null && kpa >= 8);
+    if(adv){
+      gItems.push('<b>已達指引所列的進行性纖維化高敏感度門檻</b>' +
+        (fib4 !== null && fib4 > 1.45 ? '（FIB-4 ' + fib4 + ' &gt;1.45）' : '') +
+        (kpa !== null && kpa >= 8 ? '（Fibroscan ' + kpa + ' kPa ≥8）' : '') +
+        ' → 需進一步確認分期；<b>F3／F4 是「建議治療」，不是共同決策。</b>');
+    }
+    gItems.push(favor.length
+      ? '<b>偏向治療的因子：' + favor.join('、') + '</b>。'
+      : '目前沒有勾到偏向治療的因子（&gt;40 歲、男性、血小板 &lt;180 k/mm³）。');
+    gItems.push('<b>不治療者的追蹤：ALT 與 HBV DNA 第一年每 3–6 個月、之後每 6 個月</b>，' +
+      '<b>而且每次回診都要重新評估要不要開始治療</b>——病人的想法會變。');
+    gItems.push('進展到進行性纖維化／肝硬化，或轉入 HBeAg 陰性免疫活動期，<b>就要開始治療</b>。');
+    gNote = 'AASLD 2025 建議 4（Conditional／Very low）。2018 年這一群的建議是「先觀察」。';
+  } else if(phase === 'inactive'){
+    gCls = 'rec-blue';
+    gTitle = '不活動期 → 監測';
+    gItems = [
+      '<b>第一年每 3–6 個月</b>驗 HBV DNA 與 ALT，<b>之後每 6–12 個月</b>。',
+      '每次都要<b>評估有沒有肝硬化的跡象</b>，並重新評估要不要治療。',
+      '⚠ <b>不活動不等於沒事</b>：仍需依年齡與性別決定要不要做肝癌監測（見下方）。'
+    ];
+    gNote = 'AASLD 2025 Figure 3。';
+  } else {
+    gCls = 'rec-idle';
+    gTitle = '資料不足，先把上面缺的填完';
+    gItems = ['指引判定需要：性別、HBeAg、ALT、HBV DNA（或直接指定肝硬化）。'];
+  }
+  if(F.risk && gCls !== 'rec-elective' && gCls !== 'rec-urgent'){
+    gItems.push('<b>另有高傳染風險情境</b>：即使疾病本身未達治療適應症，' +
+      'AASLD 2025 建議 2 建議<b>用共同決策討論要不要為了防傳染而投藥</b>；' +
+      '風險解除後可重新評估是否續用，但停藥要先講清楚發作風險。');
+  }
+  html += hbCard(gCls, '指引建議', gTitle, gItems, gNote);
+
+  /* ── 卡三：健保給付 ─────────────────────────────────────── */
+  var nhi = [];
+  var lab2 = 2 * lab, lab5 = 5 * lab;
+  var f2 = (kpa !== null && kpa >= 8) || (fib4 !== null && fib4 >= 2.1);
+  var f3 = (kpa !== null && kpa >= 9.5) || (fib4 !== null && fib4 >= 3.25);
+  var f4 = (kpa !== null && kpa >= 12);
+  var covered = false;
+
+  if(S.cir === 'decomp'){
+    covered = true;
+    nhi.push('<b>走第 1 項（肝代償不全）。</b>條件為 <b>PT 延長 ≥3 秒或 total bilirubin ≥2.0 mg/dL</b>' +
+      '——本頁沒有收這兩個數值，<b>請自行核對</b>。此條的 entecavir 為 <b>1.0 mg，每日限 1 粒</b>。');
+  }
+  if(F.cirDx || S.cir === 'comp' || S.cir === 'decomp'){
+    var cirOK = (F.cirDx || f4) && (dna === null || dna > 0);
+    if(cirOK) covered = true;
+    nhi.push('<b>第 2(5) 項（肝硬化，長期給付）</b>：' +
+      yn(dna === null ? false : dna > 0) + 'HBsAg(+) 且<b>可檢驗到 HBV DNA</b>（本例 ' + fmt(dna === null ? null : dna.toLocaleString()) + '）；' +
+      yn(F.cirDx || f4) + '診斷條件' +
+      (f4 ? '（Fibroscan ' + kpa + ' kPa ≥12，符合）' : (F.cirDx ? '（已勾選符合）' : '（未確認：需切片 F4／超音波併靜脈曲張或脾腫大或血小板 &lt;120k／Fibroscan ≥12 kPa 或 ARFI ≥1.98）')) + '。');
+  }
+  if(F.hcc){
+    covered = true;
+    nhi.push('<b>第 2(8) 項（肝癌根除性治療後）</b>：可長期使用，直至肝癌復發且未能再次接受根除性治療。' +
+      '需<b>可檢驗到血清 HBV DNA</b>。已符合肝硬化長期給付者不重複適用。');
+  }
+  if(S.cir !== 'comp' && S.cir !== 'decomp' && !F.cirDx && !F.hcc){
+    if(S.eag === 'pos' && alt !== null){
+      var c1 = alt >= lab5;
+      var c2 = (alt >= lab2 && alt < lab5) && (dna !== null && dna >= 20000);
+      var c3 = f3 && F.altUlnX2 && (dna !== null && dna >= 20000);
+      if(c1 || c2 || c3) covered = true;
+      nhi.push('<b>第 3 項（HBeAg 陽性）</b>，療程＝治療至 e 抗原轉陰再最多 12 個月，entecavir 用 0.5 mg：<br>' +
+        yn(c1) + '(1) ALT ≥5× ＝ <b>≥' + lab5 + ' U/L</b>（本例 ' + fmt(alt) + '）<br>' +
+        yn(c2) + '(2) ALT 落在 <b>' + lab2 + '–' + (lab5 - 1) + ' U/L</b> 且 HBV DNA ≥20,000（本例 ' + fmt(dna === null ? null : dna.toLocaleString()) + '）<br>' +
+        yn(c3) + '(3) ≥F3（Fibroscan ≥9.5／FIB-4 ≥3.25）＋ ALT 半年兩次 &gt;' + lab + ' ＋ HBV DNA ≥20,000');
+    }
+    if(S.eag === 'neg' && alt !== null){
+      var d1 = (alt >= lab2) && (dna !== null && dna >= 2000);
+      var d2 = f2 && F.altUlnX2 && (dna !== null && dna >= 20000);
+      if(d1 || d2) covered = true;
+      nhi.push('<b>第 4 項（HBeAg 陰性）</b>，療程至少 2 年、每次最多 36 個月：<br>' +
+        yn(d1) + '(1) ALT ≥2× ＝ <b>≥' + lab2 + ' U/L</b>（本例 ' + fmt(alt) + '）且 HBV DNA ≥2,000（本例 ' + fmt(dna === null ? null : dna.toLocaleString()) + '）<br>' +
+        yn(d2) + '(2) ≥F2（Fibroscan ≥8／FIB-4 ≥2.1）＋ ALT 半年兩次 &gt;' + lab + ' ＋ HBV DNA ≥20,000');
+      if(d1 || d2){
+        nhi.push('⚠ <b>品名陷阱</b>：第 4 項對 <b>Viread</b> 等 15 個品名另加條件——' +
+          '(1) 要 <b>ALT 半年兩次 ≥2×</b>' + (F.alt2x ? '（<b>已勾選符合</b>）' : '（<b>目前沒有勾選</b>，開 Viread 會卡）') + '；' +
+          '(2) 纖維化要 <b>≥F3</b> 而不是 ≥F2' + (f3 ? '（本例已達 F3）' : '（本例未達 F3）') + '。' +
+          '<b>Baraclude 與 Vemlidy 不在該清單內，走寬鬆條件。</b>');
+      }
+    }
+  }
+  if(!nhi.length){
+    nhi.push('尚無足夠資料判定。健保判定至少需要 HBeAg 與 ALT，或直接指定肝硬化／肝癌。');
+  }
+  nhi.push('<b>開立資格</b>：非消化系專科醫師需<b>先照會消化系專科醫師</b>；' +
+    'HIV 併肝炎者得由感染症專科醫師開立，孕產婦第 2 次以後治療得由婦產科開立。<b>外科不在名單上。</b>');
+  html += hbCard(covered ? 'rec-blue' : 'rec-nonop', '台灣的現實',
+    covered ? '依目前輸入，找得到符合的健保條款' : '依目前輸入，尚未對上任何健保條款',
+    nhi,
+    '依 <b>115.07.23 版</b>藥品給付規定 10.7.3（條文最近修訂 114/6/1）。' +
+    '「正常值上限」用的是<b>檢驗室</b>的參考區間上限，本頁預設 <b>' + lab + ' U/L</b>（台大）。' +
+    '健保規定會改版，送件前請至健保署官網確認。');
+
+  /* ── 卡四：肝癌監測 ─────────────────────────────────────── */
+  var hcc = [], need = false;
+  if(S.cir === 'comp' || S.cir === 'decomp' || F.cirDx){ need = true; hcc.push('<b>有肝硬化 → 要監測</b>（Child-Pugh A–B，以及可移植的 C）。'); }
+  if(F.hdv){ need = true; hcc.push('<b>HDV 共感染 → 成人全部都要監測，不論有無肝硬化。</b>'); }
+  if(F.hiv && age !== null){
+    if((S.sex === 'm' && age >= 18) || (S.sex === 'f' && age >= 40)){ need = true; hcc.push('<b>HIV 共感染：男性 ≥18 歲、女性 ≥40 歲要監測</b>——本例符合。'); }
+    else hcc.push('HIV 共感染的監測門檻為男性 ≥18 歲、女性 ≥40 歲，本例未達。');
+  } else if(F.hiv){ hcc.push('HIV 共感染：監測門檻為男性 ≥18 歲、女性 ≥40 歲（需填年齡與性別）。'); }
+  if(age !== null && S.sex){
+    if(S.sex === 'm' && age > 40){ need = true; hcc.push('<b>台灣屬 B 肝流行地區，男性 &gt;40 歲即使沒有肝硬化也要監測。</b>'); }
+    if(S.sex === 'f' && age > 50){ need = true; hcc.push('<b>台灣屬 B 肝流行地區，女性 &gt;50 歲即使沒有肝硬化也要監測。</b>'); }
+  }
+  if(F.fmhx){ need = true; hcc.push('<b>一等親肝癌家族史 → 要監測。</b>'); }
+  if(F.hcv){ hcc.push('<b>合併 C 肝：先治 C 肝</b>，肝癌監測比照單純 B 肝。' +
+    '⚠ HBsAg 陽性者用 DAA 期間，AGA 2025 列為 HBV 再活化<b>高風險</b>，要同時投抗 B 肝藥。'); }
+  hcc.push('未列出的另一個判準是 <b>PAGE-B ≥10</b>（本頁未收此分數）。');
+  html += hbCard(need ? 'rec-nonop' : 'rec-blue', '肝癌監測',
+    need ? '要做：腹部超音波＋血清 AFP，每 6 個月一次' : '依目前輸入，尚未落入必須監測的族群',
+    hcc, 'AASLD 2025 Table 4；監測方式依 AASLD 2023 肝細胞癌指引。');
+
+  out.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   「選哪支藥」的判定引擎。規則全部可回溯到本頁「選哪支藥」分頁的比較表
+   與最下方的台大藥卡，這裡不產生任何在頁面別處找不到依據的建議。
+   ══════════════════════════════════════════════════════════════════════ */
+function hbPickCalc(){
+  var out = document.getElementById('hb_pick_out');
+  if(!out) return;
+  var picked = Object.keys(P).filter(function(k){ return P[k]; });
+  if(!picked.length){
+    out.innerHTML = hbCard('rec-idle', '尚未選擇', '點上面的條件，這裡會列出建議',
+      ['沒有任何特殊狀況時，<b>entecavir、TDF、TAF 三支都可以</b>，指引不預設誰優先。',
+       '條件可以複選——腎功能差又要懷孕是常見組合，兩條線的建議會一起列出。']);
+    return;
+  }
+
+  var yes = [], no = [], html = '';
+
+  /* 懷孕的權重最高，先講 */
+  if(P.preg){
+    yes.push('<b>懷孕／備孕／哺乳 → 用 TDF</b>（孕期安全性資料最完整）；TAF 也可以，但資料少於 TDF。' +
+      '<b>Entecavir 與 peginterferon 在孕期為禁忌。</b>已在用 entecavir 者<b>換成 TDF 或 TAF</b>。');
+    yes.push('HBV DNA <b>&gt;200,000 IU/mL</b> 者，<b>懷孕第 28 週</b>開始投藥防母嬰傳染' +
+      '（拿不到 HBIG 時提前到 <b>16 週</b>）。健保則是<b>滿 27 週至產後 4 週</b>，且不含 entecavir。');
+    if(P.renal || P.hd){
+      yes.push('⚠ <b>懷孕又腎功能不佳</b>：TDF 需依 CrCl 拉長間隔，TAF 在 CrCl &lt;15 未透析不建議。' +
+        '兩個條件互相拉扯，<b>請與肝膽腸胃科及產科共同決定</b>，不要只照單一條規則。');
+    }
+  }
+  if(P.renal && !P.hd){
+    yes.push('<b>腎功能不佳（CrCl &lt;50）→ 優先 TAF 或 entecavir，避開 TDF</b>。' +
+      'TDF 與近端腎小管病變、Fanconi 症候群、腎功能下降相關。');
+    yes.push('要用 <b>entecavir</b> 就依 CrCl 減量：<b>30–49 給 50% 或 q48h；10–29 給 30% 或 q72h；&lt;10 給 10% 或 q7d</b>。');
+    no.push('<b>TAF 在 CrCl &lt;15 且未透析者不建議使用</b>（仿單）。' +
+      '<b>TDF 在 CrCl &lt;10 沒有資料，避免使用。</b>');
+  }
+  if(P.hd){
+    yes.push('<b>血液透析：TAF 不需調整劑量</b>，透析日於<b>透析後</b>給藥。' +
+      'TDF 為<b>透析後每週 300 mg 一次</b>；entecavir 為<b>10% 劑量或每 7 天一次，透析後給</b>。');
+  }
+  if(P.bone){
+    yes.push('<b>骨質疏鬆或骨折病史 → 避開 TDF</b>，改 TAF 或 entecavir。' +
+      'TDF 與骨密度下降、低血磷相關；TAF 的血漿 tenofovir 暴露量約為 TDF 的 1/10。');
+    yes.push('若非用 TDF 不可：<b>基礎與每年至少一次</b>驗肌酸酐、CrCl、尿糖、尿蛋白與血磷，' +
+      '有骨折史或骨質疏鬆風險者<b>考慮做骨密度</b>。');
+  }
+  if(P.lamR){
+    yes.push('<b>曾用 lamivudine／telbivudine 或已知抗藥 → 用 TDF 或 TAF</b>。');
+    no.push('<b>不要用 entecavir</b>：與 lamivudine 交叉抗藥，即使加到 1 mg 失敗率仍高。' +
+      '健保 10.7.4 雖允許「改用 entecavir 1.0 mg 單方」，但<b>僅限 lamivudine 抗藥</b>，且不是首選。');
+    yes.push('<b>多重抗藥株</b>（對 lamivudine／telbivudine／entecavir／adefovir 其中兩種以上）：' +
+      '健保允許 TDF 或 TAF 單方，或 <b>entecavir 1.0 mg ＋ TDF／TAF</b> 併用。');
+  }
+  if(P.decomp){
+    yes.push('<b>失代償性肝硬化 → entecavir 1 mg qd 或 TDF</b>，並同步轉肝臟移植評估。');
+    no.push('<b>TAF 依美國仿單於 Child-Pugh B／C 不建議使用</b>——' +
+      '台大藥卡的肝功能欄寫「不需調整劑量」，那講的是藥動學，<b>不等於失代償可以用</b>。');
+    no.push('<b>干擾素在失代償為禁忌</b>，會誘發肝衰竭。');
+  }
+  if(P.hiv){
+    yes.push('<b>HBV／HIV 共感染 → 用含 tenofovir 的完整抗反轉錄病毒處方</b>，由感染科主導。');
+    no.push('<b>不可單用抗 HBV 藥</b>（entecavir、lamivudine、單方 TAF）——' +
+      '會篩選出 HIV 抗藥突變，這是 entecavir 的黑框警語與 Vemlidy 的警語內容。');
+    yes.push('健保條文允許 <b>HIV 併 B 或 C 肝者由照護的感染症內科專科醫師直接開立處方</b>，不必先照會消化系。');
+  }
+  if(P.lipid){
+    no.push('<b>TAF 會使血脂上升</b>（總膽固醇、LDL）。仿單要求<b>治療前、開始後 4–12 週、之後每年</b>驗血脂。' +
+      '需嚴格控制血脂者可考慮 entecavir 或 TDF（TDF 反而會略降血脂）。');
+  }
+  if(P.npo){
+    yes.push('<b>無法配合空腹 → 不要選 entecavir</b>：它必須<b>飯前或飯後 2 小時</b>服用，與食物併服會降低吸收。');
+    yes.push('<b>TAF 需與食物併服；TDF 空腹或配食物都可以</b>（配食物吸收較好）。管灌者 <b>TDF 與 entecavir 的台大藥卡標示可磨粉</b>。');
+  }
+  if(P.cost){
+    yes.push('台大自費價：<b>entecavir 0.5 mg 94 元／1 mg 139 元、TDF 113 元、TAF 134 元</b>（每顆）。' +
+      '符合健保 10.7.3 條件時走健保，<b>先確認品名——Viread 的給付條件比 Baraclude 與 Vemlidy 嚴</b>（見「健保給付」分頁）。');
+  }
+
+  yes.push('<b>三支藥開始前都要先驗 HIV</b>，並在開始時及治療中定期驗肌酸酐、CrCl、尿糖、尿蛋白。');
+  html += hbCard('rec-elective', '建議', '依所選條件的優先用藥', yes);
+  if(no.length) html += hbCard('rec-urgent', '避免與注意', '這些條件會排除或限制某些藥', no);
+  html += hbCard('rec-blue', '共同的提醒', '不論選哪一支', [
+    '<b>停藥可能造成 B 型肝炎急性惡化</b>——三支藥都有這個警語。停藥後要密切追蹤肝功能數個月。',
+    '<b>核苷（酸）類共通風險：乳酸中毒併嚴重肝腫大與脂肪變性</b>，少見但可致命。',
+    '完整的劑量、腎肝調整、禁忌、交互作用與剝半磨粉<b>請看本頁最下方的台大藥卡</b>。'
+  ]);
+  out.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   最下方藥卡。本頁的用藥是固定的一組（不像癌症流程圖會隨選擇變動），
+   所以直接列出，不做文字掃描。pid/code 取自 data/drugs/index.js，
+   2026-08-18 逐碼核對過。
+   ══════════════════════════════════════════════════════════════════════ */
+var HB_DRUGS = [
+  { key:'entecavir',   label:'Entecavir',                    cards:[['abx','A06DAC4F','Entecavir 恩替卡韋（貝樂克）']] },
+  { key:'tdf',         label:'Tenofovir Disoproxil Fumarate',cards:[['abx','A6BDEC71','Tenofovir Disoproxil 泰諾福韋（惠立妥）']] },
+  { key:'taf',         label:'Tenofovir Alafenamide',        cards:[['abx','AC261DDF','Tenofovir Alafenamide 泰諾福韋艾拉酚胺（韋立得）']] },
+  { key:'telbivudine', label:'Telbivudine',                  cards:[['abx','A0C1BFD7','Telbivudine 替比夫定（喜必福）']] },
+  { key:'lamivudine',  label:'Lamivudine',                   cards:[['abx','AD1FF5AA','Lamivudine 拉米夫定']] },
+  { key:'hbig',        label:'Hepatitis B Immune Globulin',  cards:[
+      ['16','HEP1NC44','B 型肝炎免疫球蛋白 · Hepatect CP 500 IU/10 mL'],
+      ['16','HYP1NC48','B 型肝炎免疫球蛋白 · HyperHep B 110 IU/0.5 mL'],
+      ['16','HEP1NCE1','B 型肝炎免疫球蛋白 · 1000 IU/5 mL']] }
+];
+
+function hbDrugCardHTML(c, gen){
+  return '<details class="drugcard" data-pid="' + c[0] + '" data-code="' + c[1] +
+    '" ontoggle="onCardToggle(this)">' +
+    '<summary><span class="dc-name">' + c[2] + '</span>' +
+    '<span class="dc-nameen">' + gen + '</span></summary>' +
+    '<div class="dc-body"><div class="db-loading">載入中…</div></div></details>';
+}
+
+function hbRenderDrugs(){
+  var box = document.getElementById('hb_drugs');
+  if(!box) return;
+  var n = HB_DRUGS.reduce(function(a, d){ return a + d.cards.length; }, 0);
+  box.innerHTML =
+    '<div class="bc-drugbox-h">本頁用到的藥 · 台大藥卡<span class="bc-drugbox-n">' +
+    HB_DRUGS.length + ' 種藥 · ' + n + ' 張卡</span></div>' +
+    '<div class="bc-drugbox-note">點藥名展開台大醫院藥劑部處方集的完整藥卡（劑量、腎肝功能調整、' +
+    '禁忌、健保給付規定、剝半磨粉）。<b>離線也看得到；只有藥品外觀照是台大原站外連，需要連線。</b><br>' +
+    'Telbivudine 與 lamivudine 列在這裡是因為<b>健保條文仍收錄它們</b>，' +
+    '<b>不是建議拿來當第一線</b>——兩者抗藥性高。<b>台大沒有 adefovir 與 Pegasys 品項。</b></div>' +
+    HB_DRUGS.map(function(d){
+      return d.cards.map(function(c){ return hbDrugCardHTML(c, d.label); }).join('');
+    }).join('');
+
+  if(window.DrugCard){
+    var pids = {};
+    HB_DRUGS.forEach(function(d){ d.cards.forEach(function(c){ pids[c[0]] = 1; }); });
+    var warm = function(){
+      Object.keys(pids).forEach(function(pid){ window.DrugCard.loadPid(pid).catch(function(){}); });
+    };
+    if(window.requestIdleCallback) window.requestIdleCallback(warm); else setTimeout(warm, 1200);
+  }
+}
+
+(function init(){
+  var h = (location.hash || '').replace('#', '');
+  if(document.getElementById('p-' + h)) hbTab(h);
+  hbCalc();
+  hbPickCalc();
+  hbRenderDrugs();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>
