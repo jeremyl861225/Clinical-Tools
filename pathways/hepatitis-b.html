@@ -61,6 +61,13 @@
   /* 手機一欄。造句設計把 .rx-row 改成 block（標籤在上、輸入框在下），
      兩欄時每欄只剩約 159px，標籤會折成兩行、整區高度翻倍且難讀。 */
   @media(max-width:520px){ .hb-nums{grid-template-columns:1fr;} }
+  /* 輸入框與單位欄不准被壓縮。.rx-row 是 flex，label 是 flex:1 1 auto，
+     標籤長的那一列（「肝纖維化掃描 TRANSIENT ELASTOGRAPHY (FIBROSCAN)」折三行）
+     會把 input 從 86px 擠成 71px，單位字串長短不一又讓右緣各自對不齊
+     ——實測 375px 下六列的框左緣在 187，那一列跑到 215。只鎖本頁的 .hb-nums，
+     不動 diabetes／nutrition／crrt 共用的那份基礎樣式。 */
+  .hb-nums .rx-row input[type=number]{flex:0 0 auto;}
+  .hb-nums .rx-row .rx-u{flex:0 0 62px;}
 
   .hb-out{margin-top:14px;}
   .hb-out .flow-rec{margin-top:10px;}
