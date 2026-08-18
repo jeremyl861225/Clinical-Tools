@@ -31,6 +31,9 @@ import os
 import re
 import sys
 
+# 讓本檔不論從哪個工作目錄被呼叫，都找得到同一層的 check_kinds.py
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 每頁都必須引用的共用資源（以檔名比對，不管相對路徑深度）
@@ -164,6 +167,17 @@ def main():
         for msg in bad:
             print(f'✗ {rel(page)}: {msg}')
             problems += 1
+
+    # 6. 造句導覽的型別徽章（data/facets.js 的 kind）—— 判準寫在 schema/check_kinds.py。
+    #    掛在這裡而不是要人另外記一條指令：新頁面漏標或標錯型別，跟漏進 precache
+    #    一樣是「看起來好好的、實際上壞掉」，收尾只跑一支腳本才會真的被跑到。
+    try:
+        import check_kinds
+        if check_kinds.main() != 0:
+            problems += 1
+    except Exception as exc:                      # noqa: BLE001 —— 檢查器自己壞掉也要說
+        print(f'✗ schema/check_kinds.py 跑不起來：{exc}')
+        problems += 1
 
     if args.verbose or not problems:
         print(f'— 檢查了 {checked} 個頁面，發現 {problems} 個問題')

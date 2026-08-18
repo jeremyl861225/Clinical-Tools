@@ -1,3 +1,4 @@
 .DS_Store
 .design-bundle/
 .claude/
+__pycache__/
