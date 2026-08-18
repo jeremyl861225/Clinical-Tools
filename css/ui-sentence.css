@@ -3289,6 +3289,18 @@
 [data-ui="sentence"] .db-food-src {                            /* (0,2,0) > (0,1,0) */
   color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
 }
+/* 健保給付規定欄的兩個新元件（見 js/drug-database.js 的 nhiField()）：
+   .db-nhi-warn 是「這一段其實是修訂對照表」的警語，.db-nhi-src 是官方章節出處。
+   兩者在正式版用 --accent2／--muted-soft，這裡各自換成造句版色票，
+   否則會是 leak.py 判準第 (1) 類的漏網（藥卡要展開才有內容，那支掃不到）。 */
+[data-ui="sentence"] .db-nhi-warn {                            /* (0,2,0) > (0,1,0) */
+  color: var(--sentence-hot); background: var(--sentence-shade);
+  border-left: 2px solid var(--sentence-hot); border-radius: 0; font-size: 11.5px;
+}
+[data-ui="sentence"] .db-nhi-warn b { color: var(--sentence-fg); }
+[data-ui="sentence"] .db-nhi-src {                             /* (0,2,0) > (0,1,0) */
+  color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
+}
 /* DDInter 飲食交互作用的逐項展開區（.db-food*）——整組先前都沒收，還在吃
    --ink／--muted／--muted-soft／--line／--accent，以及深色模式寫死的 #d3a86a。
    嚴重度沿用 Q7 的三段（hot／warn／dim）；「處置」那條左標線是全區唯一的

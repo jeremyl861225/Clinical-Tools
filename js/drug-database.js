@@ -651,8 +651,7 @@ function variantBody(v, ddi) {
     ${field('備註', v.note)}
     ${field('院內用藥指引', v.remark)}
     ${field('兒童可用的同成分劑型', v.kidAlt)}
-    ${v.nhiRule ? `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
-       <div class="dc-ftext db-nhi">${linkify(v.nhiRule)}</div></div>` : ''}
+    ${nhiField(v.nhiRule)}
     ${field('藥品外觀', v.look)}
     ${field('藥商', v.company)}
     ${field('製造廠', v.factory)}
@@ -660,6 +659,81 @@ function variantBody(v, ddi) {
     <div class="db-foot">${v.src
       ? `${esc(v.src)}${v.code8 ? `　·　藥品八碼 ${esc(v.code8)}` : ''}　·　分類：${esc(v.cat || '')}`
       : `藥品八碼 ${esc(v.code)}　·　台大分類：${esc(v.cat || '')}`}</div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   健保給付規定欄。這一欄是台大原站 lblNHIRegulation 的逐字轉載，有兩個
+   **必須在畫面上講出來**的資料瑕疵（2026-08-18 對 1,324 個 variant 全庫稽核）：
+
+   (1) 574 個 variant（425 支藥）抓到的其實是健保署的**修訂對照表**，不是條文。
+       對照表把新舊條文並排、以**紅字**標示新條文；台大原站保留了這個排版，
+       但抽成純文字之後顏色消失，新舊兩句就黏在同一行。實例（Sebivo 的 10.7.3）：
+         「entecavir 0.5mg 1mg」          ← 舊 0.5 mg 與新 1 mg 並列
+         「HBV DNA≧ 2×10 5 10 6 IU/mL」   ← 兩個互斥的門檻並列
+         「4. 5. HBsAg(+)…」              ← 舊條號與新條號並列
+       這種文字**比過期更危險**——過期至少自洽，紅黑壓平則自相矛盾且看不出
+       哪一句才算數。判準就是欄位裡出現「紅字」二字：純文字欄位提到紅字，
+       就代表原本靠顏色區分的排版已經壓平。**不要比對落款句型**——實測落款有
+       十幾種寫法（「紅字部分自114年6月1日起施行」「紅字給付規定自113年11月1日起生效」
+       「紅字部份為新修訂條文，自108年8月1日起施行」「以上紅字部分111年2月1日起生效」…），
+       用句型比對第一版只抓到 284 筆，漏掉一半。
+
+   (2) 另有 236 個 variant 的日期清單落後現行條文（最久的落後 19 次修訂、20 餘年）。
+       兩種瑕疵的處置相同：回官方章節看現行條文，所以這裡不分開標，
+       一律把該節次的官方章節連結印在欄位下方。
+
+   **不在這裡改寫台大的文字**：外部資料不得蓋過台大（見 augment_ntuh_cards.py 的鐵則），
+   而且逐條重抽 1,324 筆條文的誤植風險遠高於它要修的問題。這裡只做「標示 ＋ 導流」。
+
+   章節連結表的更新方式：開 https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html
+   （Cloudflare 會擋 curl，要用瀏覽器），每一列取 .pdf 的 a[href]。
+   dl- 後面的雜湊每次重新上傳都會變，連結失效時整表重抓。
+   第十一節（解毒劑）官方只提供 doc/odt，沒有 PDF。 */
+const NHI_CHAP = {
+  '1':  ['第一節 神經系統藥物', '115.06.23', 'https://www.nhi.gov.tw/ch/dl-50594-eb9f7e40c26a4446968ce8fe49cbf55c-1.pdf'],
+  '2':  ['第二節 心臟血管及腎臟藥物', '115.05.22', 'https://www.nhi.gov.tw/ch/dl-55676-3f0c34a22fda48cb95db47b4807637ab-1.pdf'],
+  '3':  ['第三節 代謝及營養劑', '115.05.22', 'https://www.nhi.gov.tw/ch/dl-50601-a3baf9dd4cd44fbb93b4d62a01cdf1df-1.pdf'],
+  '4':  ['第四節 血液治療藥物', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-50604-c079f56241d94d678a621c79571ddb7f-1.pdf'],
+  '5':  ['第五節 激素及影響內分泌機轉藥物', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-42511-66ac909b574f4f5c9c1c96042873cab4-1.pdf'],
+  '6':  ['第六節 呼吸道藥物', '115.03.23', 'https://www.nhi.gov.tw/ch/dl-55679-b7f95f376a054e14bf655b99c280c55e-1.pdf'],
+  '7':  ['第七節 腸胃藥物', '114.07.24', 'https://www.nhi.gov.tw/ch/dl-42517-ca9cb4fbbf6646a183b01f8e021c7b06-1.pdf'],
+  '8':  ['第八節 免疫製劑', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-55682-0edce502618d4d309195db2577c9319b-1.pdf'],
+  '9':  ['第九節 抗癌瘤藥物', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-55685-99c675b771ab4b2789c891bc8db447ce-1.pdf'],
+  '10': ['第十節 抗微生物劑', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-50614-51b47002f99f4ba38f69bb432ca23477-1.pdf'],
+  '11': ['第十一節 解毒劑（官方僅提供 doc）', '', 'https://www.nhi.gov.tw/ch/dl-42527-fac038b7c637414db87c9cfc983a02e2-1.doc'],
+  '12': ['第十二節 耳鼻喉科製劑', '', 'https://www.nhi.gov.tw/ch/dl-42531-407b709cedf7490f8a31b7ac6b38b133-1.pdf'],
+  '13': ['第十三節 皮膚科製劑', '115.05.22', 'https://www.nhi.gov.tw/ch/dl-66483-865569bb4e6047e792e8481766710b30-1.pdf'],
+  '14': ['第十四節 眼科製劑', '115.07.23', 'https://www.nhi.gov.tw/ch/dl-42537-2369702839984c10b23d1eab08cd047b-1.pdf'],
+  '15': ['第十五節 婦科製劑', '114.07.24', 'https://www.nhi.gov.tw/ch/dl-42539-e793ff410ce74a6f8af7891a6be042af-1.pdf'],
+  '通則': ['藥品給付規定 通則', '113.05.28', 'https://www.nhi.gov.tw/ch/dl-42496-098a6e0374b74330803951a76911c49f-1.pdf'],
+};
+/* 判準見上：欄位裡出現「紅字」二字即可，不比對落款句型。 */
+const NHI_REDLINE = /紅字/;
+
+function nhiField(rule) {
+  if (!rule || !String(rule).trim()) return '';
+  /* 節次只認**開頭**那一個。不要退而求其次去內文撈——實測有 481 筆的內文撈得到數字，
+     但那些多半是「通則：5.」（通則的第 5 點，不是第五節）或交叉引用，撈了會給錯連結。
+     開頭是通則的（36 筆「通則…」＋一批「(一) 注射藥品使用時機…」）改指通則那份。 */
+  const txt = String(rule);
+  const sec = (txt.match(/^\s*(\d{1,2})(?:\.\d{1,3})*/) || [])[1];
+  const ch = NHI_CHAP[sec] ||
+    (/^\s*(?:全民健康保險藥品給付規定)?通則|^\s*[（(]一[)）]\s*注射藥品使用時機/.test(txt)
+      ? NHI_CHAP['通則'] : null);
+  const warn = NHI_REDLINE.test(rule)
+    ? `<div class="db-nhi-warn">⚠ <b>這一段是健保署的「修訂對照表」，不是條文本身。</b>
+         對照表把<b>新舊條文並排</b>、以紅字標示新條文，台大原站保留該排版，
+         轉成純文字後<b>顏色消失、新舊兩句黏在一起</b>——同一句裡可能同時出現舊值與新值
+         （例如「entecavir 0.5mg 1mg」、「≧2×10⁵ 10⁶ IU/mL」、條號「4. 5.」）。
+         <b>不可直接照讀，請以下方官方章節的現行條文為準。</b></div>`
+    : '';
+  const src = ch
+    ? `<div class="db-nhi-src">台大藥劑部轉載之節錄　·　現行條文：<a href="${ch[2]}"
+         target="_blank" rel="noopener" class="ref-link">${esc(ch[0])}</a>${ch[1] ? `（${ch[1]} 更新）` : ''}
+         　·　<b>需要連線</b></div>`
+    : '';
+  return `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
+    ${warn}<div class="dc-ftext db-nhi">${linkify(rule)}</div>${src}</div>`;
 }
 
 /* Liverpool 交互作用查核外連。

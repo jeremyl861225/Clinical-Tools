@@ -190,6 +190,15 @@ table.renal-tbl.renal-thr td:first-child{white-space:normal; width:34%; overflow
 /* 健保給付規定：原頁就是一長段條列，節錄後仍偏長，收在可捲動的小框裡免得洗掉整張卡 */
 .db-nhi{max-height:190px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);
   border-radius:2px; padding:8px 10px; font-size:12.5px;}
+/* 台大原站把健保署的**修訂對照表**（新舊條文並排、紅字標新）也一併轉載，
+   抽成純文字後顏色消失、新舊黏在一起，會讀到互相矛盾的門檻。
+   1,324 筆裡有 574 筆是這種，判準與說明見 js/drug-database.js 的 nhiField()。
+   放在框外、框上方，因為 .db-nhi 是 overflow-y:auto，塞進框裡會被捲走看不到。 */
+.db-nhi-warn{font-size:12px; line-height:1.7; color:var(--accent2); background:var(--accent2-soft);
+  border-left:3px solid var(--accent2); border-radius:2px; padding:7px 9px; margin-bottom:6px;}
+/* 欄位末尾的來源小字，與 .db-food-src 同一件事：一條分隔線加一行出處。 */
+.db-nhi-src{font-size:11px; line-height:1.6; color:var(--muted-soft); margin-top:7px;
+  border-top:1px solid var(--line); padding-top:6px;}
 
 /* Liverpool 外連：資料不在本站，樣式刻意跟站內欄位有別（虛線框＋外連箭頭），
    免得看起來像已經收錄的內容。窄螢幕要能換行，兩個 checker 並排會超出卡寬。 */
