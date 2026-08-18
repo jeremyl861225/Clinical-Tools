@@ -66,10 +66,20 @@
 
   /* 逐藥卡：標題列與內容格，皆無顏色宣告 */
   .dm-drug{margin:10px 0 16px;}
-  .dm-kv{display:grid; grid-template-columns:5.5em 1fr; gap:2px 10px; font-size:12.5px; line-height:1.75;}
-  @media(max-width:420px){ .dm-kv{grid-template-columns:4.6em 1fr;} }
-  .dm-kv dt{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; padding-top:3px;}
-  .dm-kv dd{margin:0;}
+  /* 逐藥資料的標籤／內容兩欄。標籤一律收在兩個字以內（劑量／腎／肝／注意／禁忌），
+     藥名不再當標籤用——藥名放在 .kbox-t，那格會自己換行，
+     塞進 5.5em 的標籤欄會被折成「Glimepirid／e」（使用者實機反映的跑版）。 */
+  .dm-kv{display:grid; grid-template-columns:3.4em 1fr; gap:3px 10px; font-size:12.5px; line-height:1.7;}
+  .dm-kv dt{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; padding-top:3px; min-width:0;}
+  .dm-kv dd{margin:0; min-width:0;}
+  /* 條列用懸掛縮排：換行時對齊到第一個字，不會頂回行首 */
+  .dm-li{display:block; padding-left:1.15em; text-indent:-1.15em; margin-top:1px;}
+  .dm-li:first-child{margin-top:0;}
+  /* 條列裡再降一階（例如逐 eGFR 級距） */
+  .dm-li2{display:block; padding-left:2.3em; text-indent:-1.15em; margin-top:1px;}
+  /* 每支藥一個 .kbox，藥名放 .kbox-t（既有 class，造句設計已收） */
+  .dm-rx{margin-top:9px;}
+  .dm-rx:first-of-type{margin-top:6px;}
 
   /* ── 以下整段是 .rxbox/.rx-*／.refbar／.dirhead／.steps／.kbox／.tw／.lead／.pmid／.gr 的
      **基礎樣式**，逐字取自 pathways/nutrition.html（該頁與 CRRT 頁是這套 class 的母本）。
@@ -434,253 +444,324 @@
 <div class="dm-panel" id="p-cls">
 
   <div class="kbox alert">
-    <div class="kbox-t">先講三件容易寫錯的事</div>
-    ① <b>各類藥的 A1C 降幅不能橫向比較</b>。下表的數字來自不同試驗、基期 A1C 不同
-    （例如 pioglitazone 那組仿單試驗的基期 A1C 高達 10.2–10.4%），只能當量級參考。<br>
-    ② <b>「腎功能門檻」有兩套</b>：指引的門檻（例如 SGLT2i eGFR ≥20 起始）與<b>仿單的門檻</b>（逐藥不同且更保守）。
-    本頁兩套都列，開藥前要看的是仿單那一套。<br>
-    ③ <b>台大有的品項</b>在藥名後標院內藥卡連結；<b>台大沒有的</b>（liraglutide、exenatide、glipizide、Lantus U-100、Xultophy…）
-    本頁不會出現在建議裡。
+    <div class="kbox-t">看表之前先知道三件事</div>
+    <span class="dm-li">① <b>A1C 降幅不能橫向比。</b>各藥的數字來自不同試驗、基期 A1C 不同
+      （pioglitazone 那組仿單試驗的基期高達 10.2–10.4%），只能當量級參考。</span>
+    <span class="dm-li">② <b>腎功能門檻有兩套。</b>指引的門檻（SGLT2i eGFR ≥20 起始）與<b>仿單的門檻</b>
+      （逐藥不同、更保守）。<b>開藥前看的是仿單那一套。</b></span>
+    <span class="dm-li">③ <b>只列台大有的藥。</b>台大沒有 liraglutide、exenatide、glipizide、
+      glibenclamide、vildagliptin、alogliptin、ertugliflozin、Lantus U-100、Xultophy、finerenone。</span>
   </div>
 
-  <div class="dirhead"><span class="dh-n">一眼看完：ADA 2026 Table 9.2 的六個欄位</span><span class="dh-e">Class comparison</span></div>
+  <div class="dirhead"><span class="dh-n">Class comparison</span><span class="dh-e">ADA 2026 Table 9.2</span></div>
 
   <div class="tw">
-    <table class="def-table dt-cor" style="min-width:760px;">
+    <table class="def-table dt-cor" style="min-width:920px;">
       <thead><tr>
-        <th>類別</th><th>降糖效力</th><th>低血糖</th><th>體重</th><th>MACE</th><th>心衰竭</th><th>CKD 進展</th><th>MASH</th>
+        <th>Class</th><th>降糖效力</th><th>低血糖</th><th>體重</th>
+        <th>MACE</th><th>心衰竭</th><th>CKD 進展</th><th>MASH</th>
       </tr></thead>
       <tbody>
-        <tr><td><b>Metformin</b></td><td>High</td><td>否</td><td>中性<br>（可能微降）</td><td>可能有益</td><td>中性</td><td>中性</td><td>中性</td></tr>
-        <tr><td><b>SGLT2 抑制劑</b></td><td>中<br>（eGFR&lt;45 降效）</td><td>否</td><td>降</td><td>有益<br>（部分藥）</td><td><b>有益</b></td><td><b>有益</b></td><td>中性</td></tr>
-        <tr><td><b>GLP-1 RA</b></td><td>High<br>～Very high</td><td>否</td><td><b>降</b></td><td><b>有益</b><br>（部分藥）</td><td>中性</td><td><b>有益</b></td><td><b>有益</b></td></tr>
-        <tr><td><b>GIP/GLP-1（tirzepatide）</b></td><td>Very high</td><td>否</td><td><b>大幅降</b></td><td>非劣<br>（SURPASS-CVOT）</td><td>HFpEF 有益</td><td>探索性有益</td><td>可能有益</td></tr>
-        <tr><td><b>DPP-4 抑制劑</b></td><td>中</td><td>否</td><td>中性</td><td>中性</td><td>中性*</td><td>中性</td><td>未知</td></tr>
-        <tr><td><b>磺醯脲類</b></td><td>High</td><td><b>是</b></td><td><b>增</b></td><td>中性</td><td>中性</td><td>中性</td><td>未知</td></tr>
-        <tr><td><b>Meglitinide</b></td><td>中</td><td><b>是</b></td><td><b>增</b></td><td>中性</td><td>中性</td><td>中性</td><td>未知</td></tr>
-        <tr><td><b>Pioglitazone</b></td><td>High</td><td>否</td><td><b>增</b></td><td>可能有益</td><td><b>風險增加</b></td><td>中性</td><td><b>可能有益</b></td></tr>
-        <tr><td><b>α-glucosidase 抑制劑</b></td><td>低～中</td><td>否</td><td>中性</td><td>中性</td><td>中性</td><td>中性</td><td>未知</td></tr>
-        <tr><td><b>胰島素</b></td><td><b>Very high</b></td><td><b>是</b></td><td><b>增</b></td><td>中性</td><td>中性</td><td>中性</td><td>未知</td></tr>
+        <tr><td><b>Metformin</b></td>
+            <td><span class="risk-band b2">High</span></td><td>No</td><td>Neutral<br>（可能微降）</td>
+            <td>Potential benefit</td><td>Neutral</td><td>Neutral</td><td>Neutral</td></tr>
+        <tr><td><b>SGLT2 inhibitors</b></td>
+            <td><span class="risk-band b2">Intermediate to high</span></td><td>No</td><td>Loss<br>（intermediate）</td>
+            <td>Benefit：<br>cana、empa</td><td>Benefit：<br>cana、dapa、empa、ertu</td>
+            <td>Benefit：<br>cana、empa、dapa</td><td><b>Unknown</b></td></tr>
+        <tr><td><b>GLP-1 RAs</b></td>
+            <td><span class="risk-band b3">High to very high</span></td><td>No</td><td>Loss<br>（intermediate<br>to very high）</td>
+            <td>Benefit：<br>dula、lira、sema<br><span class="nw">Neutral：exenatide QW、lixi</span></td>
+            <td>Benefit：<br>sema（SQ）</td>
+            <td>Benefit（CVOT 腎終點，<br>主要由白蛋白尿帶動）<br>sema（SQ）有 CKD 進展實證</td>
+            <td>Benefit：<br>sema（SQ）</td></tr>
+        <tr><td><b>Dual GIP and GLP-1 RA</b><br>tirzepatide</td>
+            <td><span class="risk-band b3">Very high</span></td><td>No</td><td>Loss<br>（very high）</td>
+            <td><b>Under<br>investigation</b></td><td>Benefit：<br>tirzepatide</td>
+            <td>Potential benefit</td><td>Potential benefit</td></tr>
+        <tr><td><b>DPP-4 inhibitors</b></td>
+            <td><span class="risk-band b1">Intermediate</span></td><td>No</td><td>Neutral</td>
+            <td>Neutral</td><td>Neutral<br><b>（potential risk：<br>saxagliptin）</b></td><td>Neutral</td><td>Unknown</td></tr>
+        <tr><td><b>Pioglitazone</b></td>
+            <td><span class="risk-band b2">High</span></td><td>No</td><td>Gain</td>
+            <td>Potential benefit</td><td><b>Increased risk</b></td><td>Neutral</td><td><b>Potential benefit</b></td></tr>
+        <tr><td><b>Sulfonylureas</b><br>2nd generation</td>
+            <td><span class="risk-band b2">High</span></td><td><b>Yes</b></td><td>Gain</td>
+            <td>Neutral</td><td>Neutral</td><td>Neutral</td><td>Unknown</td></tr>
+        <tr><td><b>Insulin</b><br>human ＆ analogs</td>
+            <td><span class="risk-band b3">High to very high</span></td><td><b>Yes</b></td><td>Gain</td>
+            <td>Neutral</td><td>Neutral</td><td>Neutral</td><td>Unknown</td></tr>
       </tbody>
     </table>
   </div>
   <div class="lead" style="margin-top:-4px;">
-    欄位取自 ADA 2026 Table 9.2（效力欄依據 Tsapas 2020 network meta-analysis
-    <a href="https://pubmed.ncbi.nlm.nih.gov/32598218/" target="_blank" rel="noopener" class="pmid">PMID 32598218</a>；
-    體重欄依據 Tsapas 2021 <a href="https://pubmed.ncbi.nlm.nih.gov/34047443/" target="_blank" rel="noopener" class="pmid">PMID 34047443</a>）。<br>
-    ＊<b>DPP-4i 的心衰竭欄要拆開看</b>：saxagliptin 在 SAVOR-TIMI 53 心衰竭住院增加（HR 1.27, 1.07–1.51），
-    <b>ESC 2023 列為 Class III B（不建議用於有心衰竭或心衰竭風險者）</b>；sitagliptin 與 linagliptin 為中性（ESC IIa A）。
-    alogliptin 三家講法不同，見下方。
+    <b>整張表逐格取自 ADA 2026 Table 9.2 原文</b>（效力欄依據 Tsapas 2020
+    <a href="https://pubmed.ncbi.nlm.nih.gov/32598218/" target="_blank" rel="noopener" class="pmid">PMID 32598218</a>，
+    體重欄依據 Tsapas 2021 <a href="https://pubmed.ncbi.nlm.nih.gov/34047443/" target="_blank" rel="noopener" class="pmid">PMID 34047443</a>）。
+    效力燈 ▮▯▯▯／▮▮▯▯／▮▮▮▯／▮▮▮▮ 對應 Low／Intermediate／High／Very high；
+    <b>跨兩級的（Intermediate to high、High to very high）以「上緣」點亮</b>，實際字樣以格內為準。<br>
+    <b>⚠ Meglitinides 與 α-glucosidase inhibitors 不在 ADA 2026 Table 9.2 之內</b>，
+    所以本表沒有這兩列——它們的資料見下方各自的段落，<b>不要拿別處的數字硬填進這張表。</b><br>
+    <b>⚠ 心腎效益是「逐藥」不是「逐類」。</b>ADA 原文點名到藥：MACE 有益的 SGLT2i 只有
+    canagliflozin 與 empagliflozin；GLP-1 RA 中 <b>exenatide 週劑型與 lixisenatide 是 Neutral</b>。
+    開藥時要挑<b>那一支有實證的</b>，不是「這一類有實證」。<br>
+    <b>⚠ SGLT2i 的 MASH 欄是 Unknown，不是中性。</b>
   </div>
 
   <div class="dirhead"><span class="dh-n">Metformin</span><span class="dh-e">Biguanide</span></div>
-  <div class="dm-drug">
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Metformin</div>
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB32" class="pmid lw">庫魯化錠 Glucophage 850 mg</a>、
-        <a href="../tools/drug-database.html#code=LOD4LB57" class="pmid lw">伏糖膜衣錠 Loditon 500 mg</a>（健保價每顆約 2 元）</dd>
-      <dt>劑量</dt><dd>速效：起始 500 mg BID 或 850 mg QD，<b>隨餐</b>；每週加 500 mg 或每兩週加 850 mg；
-        維持 1–2.55 g/day 分 2–3 次；<b>台灣公告每日上限 速效 3000 mg／緩釋 2000 mg</b>。
-        美國仿單寫「一般 2000 mg，必要時到 2550 mg，超過 2000 mg 建議分三次」。
-        <b>低於 1500 mg/day 通常看不到有意義的降糖效果</b>（仿單原文）。</dd>
-      <dt>腎功能</dt><dd><b>台大藥卡</b>：eGFR 30–45「一般不建議起始；可減量續用，上限 500 mg BID 並密切監測」。<br>
-        <b>台灣食藥署公告</b>（部授食字第1031412405A號，2014-11-28）：<b>eGFR &lt;30 禁用、30–45 應減量</b>。
-        <b>此公告只約束單方；複方要看各自仿單</b>（部授食字第1041402974A號）。<br>
-        <b>ADA 2026</b>：內文「eGFR &lt;45 不應起始、&lt;45 應減量、&lt;30 應停用」；Table 9.2 只寫「eGFR &lt;30 禁忌」——
-        <b>同一份文件兩個顆粒度，45 是不起始／減量的線，30 是禁忌／停用的線。</b><br>
-        <b>美國仿單</b>：&lt;30 禁忌；30–45「不建議起始」；掉到 &lt;45「評估繼續用藥的利弊」——<b>沒有指定減多少</b>。<br>
-        <b>DAROC 2024 DKD 表二</b>：45 &gt; eGFR ≥30 時<b>每日不超過 1000 mg</b>。</dd>
-      <dt>肝功能</dt><dd>台大藥卡：<b>避免或禁忌</b>。仿單：「有臨床或檢驗上的肝病證據就<b>避免使用</b>」，沒有分級劑量表。
-        EASL–EASD–EASO 2024：<b>代償性肝硬化且腎功能正常可用；失代償性肝硬化不可用</b>（乳酸中毒風險）。</dd>
-      <dt>副作用</dt><dd>腸胃道為主。仿單試驗：<b>腹瀉 速效 53.2% vs 安慰劑 11.7%；長效 9.6% vs 2.6%</b>。
-        <b>因腹瀉停藥率：速效 6%、長效 0.6%</b>——這是長效劑型最實用的一個數字。
-        噁心嘔吐 25.5%（長效 6.5%）。緩解方法：<b>慢慢加量、改長效、隨餐</b>。</dd>
-      <dt>B12</dt><dd>仿單：約 <b>7%</b> 病人 B12 掉到正常值以下，<b>很少造成貧血</b>，停藥或補充可快速回復。
-        現行仿單建議「<b>每年驗血液學參數、每 2–3 年驗 B12</b>」；KDIGO 2026 草案寫「<b>用超過 4 年</b>或有缺乏風險者每年驗」。</dd>
-      <dt>乳酸中毒</dt><dd>ADA 2026 原文：「<b>the occurrence of this complication is very rare</b>，主要發生在 eGFR &lt;30」。
-        黑框警語的診斷特徵：<b>乳酸 &gt;5 mmol/L、陰離子間隙酸中毒（無酮）、lactate/pyruvate 比上升、metformin 血中濃度 &gt;5 mcg/mL</b>。
-        危險因子：腎功能不全、碳酸酐酶抑制劑（topiramate 等）、≥65 歲、顯影劑檢查、手術、缺氧狀態（急性心衰竭）、
-        過量飲酒、肝功能不全。<b>坊間常引的「3–10/10 萬人年」在仿單與 ADA 全文都查不到，本頁不列。</b></dd>
-      <dt>禁忌</dt><dd>eGFR &lt;30；對成分過敏；<b>急性或慢性代謝性酸中毒（含 DKA）</b>。</dd>
-      <dt>要停的時候</dt><dd>無法進食、疑似急性腎損傷（ADA 2026 內文）；顯影劑依 eGFR 分層（見「手術」分頁）；
-        手術當天（ADA）；台大 80 歲以上未曾用過 metformin 者<b>不建議新起始</b>（DAROC 引衛署藥字第0980325034號）。</dd>
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=GLU4LB32" class="pmid lw">庫魯化錠 Glucophage 850 mg</a>、
+        <a href="../tools/drug-database.html#code=LOD4LB57" class="pmid lw">伏糖膜衣錠 Loditon 500 mg</a>（每顆約 2 元）</dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li">起始 <b>500 mg BID</b> 或 850 mg QD，<b>隨餐</b>；每週加 500 mg</span>
+        <span class="dm-li">台灣公告上限：<b>速效 3000 mg／緩釋 2000 mg</b> 每日</span>
+        <span class="dm-li"><b>低於 1500 mg/day 通常看不到有意義的降糖效果</b>（仿單）</span></dd>
+      <dt>腎</dt><dd>
+        <span class="dm-li"><b>eGFR ≥45</b>　照常</span>
+        <span class="dm-li"><b>eGFR 30–44</b>　不新起始；已在用者減量</span>
+        <span class="dm-li2">DAROC 2024 DKD：<b>每日 ≤1000 mg</b>｜台大藥卡：<b>≤500 mg BID</b></span>
+        <span class="dm-li"><b>eGFR &lt;30</b>　<b>停用／禁忌</b></span></dd>
+      <dt>肝</dt><dd>肝病<b>避免或禁忌</b>；EASL 2024：代償性肝硬化且腎功能正常可用，<b>失代償性不可用</b></dd>
+      <dt>副作用</dt><dd>
+        <span class="dm-li">腹瀉 <b>速效 53%／長效 9.6%</b>；<b>因腹瀉停藥 6% vs 0.6%</b>——這是改長效最實用的理由</span>
+        <span class="dm-li">B12 下降約 7%，<b>很少造成貧血</b>；每 2–3 年驗（用超過 4 年每年驗）</span>
+        <span class="dm-li">乳酸中毒<b>非常罕見</b>，主要發生在 eGFR &lt;30</span></dd>
+      <dt>要停</dt><dd>無法進食、疑似急性腎損傷、手術當天；顯影劑依 eGFR 分層（見「手術」分頁）</dd>
+      <dt>台灣</dt><dd><b>80 歲以上、以前沒用過 metformin 者不建議新起始</b>（DAROC 引衛署藥字第0980325034號）</dd>
     </dl>
   </div>
 
-  <div class="dirhead"><span class="dh-n">SGLT2 抑制劑</span><span class="dh-e">Gliflozins</span></div>
+  <div class="dirhead"><span class="dh-n">SGLT2 Inhibitors</span><span class="dh-e">Gliflozins</span></div>
 
   <div class="tw">
-    <table class="def-table dt-wrap" style="min-width:720px;">
-      <thead><tr><th>藥</th><th>台大品項／劑量</th><th>控糖不建議下限</th><th>心腎適應症起始下限</th><th>跌破下限後</th></tr></thead>
+    <table class="def-table dt-wrap" style="min-width:700px;">
+      <thead><tr><th>藥</th><th>台大品項／劑量</th><th>控糖不建議</th><th>心腎起始下限</th><th>跌破下限後</th></tr></thead>
       <tbody>
         <tr><td><b>Dapagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid lw">福適佳 Forxiga 10 mg</a><br>控糖起始 5 mg QD 可加到 10 mg；心腎適應症一律 10 mg QD</td>
-            <td>eGFR <b>&lt;45</b></td><td>eGFR <b>&lt;25 不建議起始</b></td>
-            <td><b>可續用 10 mg</b>（仿單明文）</td></tr>
+            <td><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid lw">福適佳 Forxiga 10 mg</a><br>控糖 5→10 mg QD；心腎一律 10 mg QD</td>
+            <td>eGFR <b>&lt;45</b></td><td>eGFR <b>&lt;25</b> 不建議起始</td><td><b>可續用 10 mg</b></td></tr>
         <tr><td><b>Empagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid lw">恩排糖 Jardiance 10 mg</a><br>控糖 10 mg 可加到 25 mg；心腎適應症固定 10 mg QD，早上服</td>
-            <td>eGFR <b>&lt;30</b></td><td>心衰竭／CKD 試驗入組 <b>≥20</b>；&lt;20 資料不足</td>
-            <td>試驗中<b>不需停藥</b></td></tr>
+            <td><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid lw">恩排糖 Jardiance 10 mg</a><br>控糖 10→25 mg；心腎固定 10 mg QD，早上服</td>
+            <td>eGFR <b>&lt;30</b></td><td>試驗入組 <b>≥20</b>；&lt;20 資料不足</td><td>試驗中<b>不需停藥</b></td></tr>
         <tr><td><b>Canagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid lw">可拿糖 Canaglu 100 mg</a><br>起始 100 mg QD 於第一餐前；eGFR ≥60 可加到 300 mg</td>
-            <td>eGFR <b>&lt;30</b></td><td>eGFR <b>&lt;30 不建議起始</b>；<b>eGFR 30–&lt;60 上限 100 mg</b></td>
-            <td>僅限<b>尿蛋白 &gt;300 mg/day</b> 者可續用 100 mg</td></tr>
+            <td><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid lw">可拿糖 Canaglu 100 mg</a><br>100 mg QD 第一餐前；eGFR ≥60 可到 300 mg</td>
+            <td>eGFR <b>&lt;30</b></td><td>eGFR <b>&lt;30</b> 不建議起始<br><b>30–&lt;60 上限 100 mg</b></td>
+            <td>僅限<b>尿蛋白 &gt;300 mg/day</b> 可續 100 mg</td></tr>
       </tbody>
     </table>
   </div>
   <div class="lead" style="margin-top:-4px;">
-    <b>指引的統一門檻是 eGFR ≥20 起始</b>（ADA 11.7a A、KDIGO 2022 Rec 1.3.1 1A、ESC 2023 Table 24 I A、DAROC 2024 DKD），
-    <b>但三個藥的仿單門檻各不相同而且更保守</b>。照指引開 dapagliflozin 給 eGFR 22 的病人時，
-    要知道仿單寫的是「&lt;25 不建議起始」。<br>
-    <b>複方不能套用單方門檻</b>：Glyxambi（empagliflozin 25 mg＋linagliptin 5 mg）台大藥卡寫 eGFR &lt;30 不建議；
-    Qtern（saxagliptin 5 mg＋dapagliflozin 10 mg）台大藥卡寫 <b>eGFR &lt;45 禁忌</b>（因為 saxagliptin 那一半）。
+    指引統一寫 <b>eGFR ≥20 可起始</b>（ADA 11.7a A、KDIGO 2022 1A、ESC Table 24 I A、DAROC 2024 DKD），
+    <b>三個藥的仿單門檻各不相同而且更保守</b>。<br>
+    <b>複方不可套用單方門檻</b>：Glyxambi（empagliflozin 25＋linagliptin 5）台大藥卡 eGFR &lt;30 不建議；
+    Qtern（saxagliptin 5＋dapagliflozin 10）台大藥卡 <b>eGFR &lt;45 禁忌</b>（因為 saxagliptin 那一半）。
   </div>
 
-  <div class="kbox alert">
-    <div class="kbox-t">SGLT2i 的特有不良反應（外科最需要認得的一個是第 3 項）</div>
-    <b>① 生殖泌尿道黴菌感染</b>：最常見。ADA 2026 提醒<b>起始前後都要問尿失禁症狀</b>，長者尤其。<br>
-    <b>② Fournier 壞死性筋膜炎</b>：罕見但致命，會陰部疼痛紅腫發燒要立刻想到。<br>
-    <b>③ 正常血糖酮酸中毒（euglycemic DKA）</b>：<b>血糖可以 &lt;200 mg/dL</b>，靠血糖篩不出來。
-    誘因是<b>禁食、手術、急性病、極低熱量飲食、腸道準備</b>。ADA 2026 建議 <b>9.39（E）</b>：
-    要衛教風險與徵象、<b>提供酮體測量工具（血中 β-羥丁酸）</b>、並<b>勸阻生酮飲食</b>。<br>
-    <b>④ 體液不足與姿勢性低血壓</b>：KDIGO 建議起始前<b>先減利尿劑</b>，起始後 1–4 週回診評估容積狀態與血壓。<br>
-    <b>⑤ 起始時 eGFR 會先掉一截</b>（eGFR dip）：<b>是可逆的，不是停藥的理由</b>（KDIGO PP 1.3.5）。<br>
-    <b>⑥ 截肢</b>：CANVAS 曾出現訊號，<b>但這一點各家說法隨時間變動，本頁不下定論</b>；仿單與指引現行文字以官方標示為準。<br>
-    <b>腎移植受贈者不適用</b>上述建議（KDIGO PP 1.3.7；DAROC 2024 DKD 同旨）。
+  <div class="kbox alert dm-rx">
+    <div class="kbox-t">SGLT2i 的特有不良反應</div>
+    <span class="dm-li"><b>① 生殖泌尿道黴菌感染</b>　最常見。ADA 提醒<b>起始前後都要問尿失禁症狀</b>，長者尤其。</span>
+    <span class="dm-li"><b>② Fournier 壞死性筋膜炎</b>　罕見但致命。會陰部疼痛紅腫發燒要立刻想到。</span>
+    <span class="dm-li"><b>③ 正常血糖酮酸中毒</b>　<b>血糖可以 &lt;200 mg/dL，靠血糖篩不出來。</b></span>
+    <span class="dm-li2">誘因：禁食、手術、急性病、極低熱量飲食、腸道準備</span>
+    <span class="dm-li2">ADA <b>9.39（E）</b>：衛教徵象、<b>提供血中 β-羥丁酸測量工具</b>、<b>勸阻生酮飲食</b></span>
+    <span class="dm-li"><b>④ 體液不足與姿勢性低血壓</b>　起始前<b>先減利尿劑</b>，起始後 1–4 週回診評估容積與血壓。</span>
+    <span class="dm-li"><b>⑤ 起始時 eGFR 會先掉一截</b>　<b>是可逆的，不是停藥的理由</b>（KDIGO PP 1.3.5）。</span>
+    <span class="dm-li"><b>⑥ 腎移植受贈者不適用</b>上述建議（KDIGO PP 1.3.7；DAROC 2024 DKD 同旨）。</span>
   </div>
 
-  <div class="dirhead"><span class="dh-n">GLP-1 受體促效劑與 GIP/GLP-1 雙促效劑</span><span class="dh-e">Incretin-based therapy</span></div>
+  <div class="dirhead"><span class="dh-n">GLP-1 RA &amp; GIP/GLP-1 RA</span><span class="dh-e">Incretin-based therapy</span></div>
 
   <div class="tw">
-    <table class="def-table dt-wrap" style="min-width:720px;">
-      <thead><tr><th>藥</th><th>台大品項</th><th>起始與升階（台大藥卡）</th><th>腎／肝</th><th>健保</th></tr></thead>
+    <table class="def-table dt-wrap" style="min-width:680px;">
+      <thead><tr><th>藥</th><th>台大品項</th><th>起始與升階</th><th>腎／肝</th><th>健保</th></tr></thead>
       <tbody>
-        <tr><td><b>Semaglutide</b> 針劑</td>
+        <tr><td><b>Semaglutide</b><br>針劑</td>
             <td><a href="../tools/drug-database.html#code=OZE1LBB0" class="pmid lw">胰妥讚 Ozempic</a></td>
-            <td>0.25 mg QW × 4 週 → 0.5 mg QW；再至少 4 週後可加到 1 mg QW。任何時間、與進食無關</td>
-            <td>皆不需調整</td><td>有給付（條件見「健保與台大」）</td></tr>
-        <tr><td><b>Semaglutide</b> 口服</td>
+            <td>0.25 mg QW × 4 週 → 0.5 mg QW<br>再 ≥4 週可到 1 mg QW；與進食無關</td>
+            <td>皆不需調整</td><td>有給付</td></tr>
+        <tr><td><b>Semaglutide</b><br>口服</td>
             <td><a href="../tools/drug-database.html#code=RYB4LBB7" class="pmid lw">瑞倍適 Rybelsus 7 mg</a></td>
-            <td>7 mg QD，30 天後可加到 14 mg QD。<b>服法有嚴格規定，見下方</b></td>
-            <td>皆不需調整</td><td><b>無健保給付</b>（自費）</td></tr>
+            <td>7 mg QD，30 天後可到 14 mg<br><b>服法有嚴格規定，見下</b></td>
+            <td>皆不需調整</td><td><b>無給付</b></td></tr>
         <tr><td><b>Dulaglutide</b></td>
-            <td><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid lw">易週糖 Trulicity 1.5 mg</a><br><b>台大目前標「暫供兒童」</b></td>
+            <td><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid lw">易週糖 Trulicity 1.5 mg</a><br><b>台大標「暫供兒童」</b></td>
             <td>SC，最高 1.5 mg QW</td><td>皆不需調整</td><td>有給付</td></tr>
-        <tr><td><b>Tirzepatide</b><br>（GIP/GLP-1 雙）</td>
+        <tr><td><b>Tirzepatide</b></td>
             <td><a href="../tools/drug-database.html#code=MOU1LBB9" class="pmid lw">猛健樂 Mounjaro</a></td>
-            <td><b>2.5 mg QW × 4 週（此劑量無治療效果，只是耐受期）</b> → 5 mg QW；
-                之後每 4 週可增 2.5 mg；<b>最高 15 mg QW</b></td>
-            <td>皆不需調整</td><td><b>無健保給付</b>（台大自費價每支約 9,500 元）</td></tr>
+            <td><b>2.5 mg QW × 4 週（此劑量無治療效果，純耐受期）</b><br>→ 5 mg QW；每 4 週加 2.5 mg；最高 15 mg</td>
+            <td>皆不需調整</td><td><b>無給付</b><br>自費約 9,500 元／支</td></tr>
         <tr><td><b>Lixisenatide</b></td>
-            <td>只有複方 <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">爽胰達 Soliqua</a>（＋glargine）</td>
+            <td>只有複方 <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">爽胰達 Soliqua</a></td>
             <td>見「胰島素」分頁</td>
-            <td><b>eGFR ≤30 應避免</b>（ADA 2026 內文）</td><td>有給付（HbA1c &gt;8.0%）</td></tr>
+            <td><b>eGFR ≤30 應避免</b></td><td>有給付</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="kbox">
-    <div class="kbox-t">口服 semaglutide 的服法（DAROC 2022 逐字收錄，最容易被病人做錯）</div>
-    「每日一次口服給藥，需搭配<b>少量的水（最多半杯，相當於 120 毫升）整顆吞服</b>。
-    病人服藥後應<b>等待至少 30 分鐘</b>再進食、喝水或服用其他口服藥物。」<br>
-    起始劑量 DAROC 寫 3 mg 一個月 → 7 mg → 必要時 14 mg；<b>台大藥卡的品項是 7 mg 起</b>，與此不同，以院內品項為準。
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Oral semaglutide 的服法</div>
+    DAROC 2022 逐字：<b>「配少量的水（最多半杯，約 120 毫升）整顆吞服；服藥後等待至少 30 分鐘再進食、喝水或服用其他口服藥」</b>。<br>
+    起始劑量 DAROC 寫 3 mg 一個月 → 7 mg →（必要時）14 mg；<b>台大品項是 7 mg 起</b>，以院內為準。
   </div>
 
-  <div class="kbox alert">
+  <div class="kbox alert dm-rx">
     <div class="kbox-t">GLP-1 類的四件事</div>
-    <b>① 腸胃道副作用是主要限制</b>。ADA 原文承認降糖效力與基礎胰島素相當或更好，
-    「<b>albeit with greater gastrointestinal side effects</b>」。處理方式是<b>放慢升階節奏</b>——
-    tirzepatide 的 2.5 mg 那四週仿單直接寫「無治療效果」，就是純耐受期。<br>
-    <b>② 甲狀腺髓質癌／MEN2 家族史是禁忌</b>（美國仿單黑框警語）。<br>
-    <b>③ 胃排空延遲會影響麻醉</b>：FDA 已在<b>所有</b> GLP-1 RA 與 GIP/GLP-1 藥品標示加註「全身麻醉或深度鎮靜時可能吸入性肺炎」的警語。
-    手術前怎麼處理見「手術」分頁——<b>目前全球沒有共識，四份文件講法互相矛盾</b>。<br>
-    <b>④ 長者不優先</b>：ADA 2026 Section 13 明寫，<b>不明原因體重下降、營養不良、嚴重便祕、明顯胃輕癱、反覆腸阻塞</b>的長者
-    「not preferred」；要監測脫水與過度減重（肌少症、骨密度），可用<b>足量蛋白質＋阻抗訓練</b>緩解。<br>
-    <b>不可與 DPP-4 抑制劑併用</b>（ADA 9.18 B、KDIGO PP、DAROC 2022 流程圖三家一致）。
+    <span class="dm-li"><b>① 腸胃道副作用是主要限制。</b>ADA 承認降糖效力與基礎胰島素相當或更好，
+      「albeit with <b>greater gastrointestinal side effects</b>」。處理方式是<b>放慢升階節奏</b>。</span>
+    <span class="dm-li"><b>② 甲狀腺髓質癌／MEN2 家族史是禁忌</b>（美國仿單黑框警語）。</span>
+    <span class="dm-li"><b>③ 胃排空延遲會影響麻醉。</b>FDA 已在所有 GLP-1 RA 與 GIP/GLP-1 藥品標示
+      加註「全身麻醉或深度鎮靜時可能吸入性肺炎」。<b>術前怎麼處理見「手術」分頁——目前四份文件互相矛盾。</b></span>
+    <span class="dm-li"><b>④ 長者不優先。</b>ADA Section 13 明列：不明原因體重下降或營養不良、嚴重便祕、
+      明顯胃輕癱、反覆腸阻塞者「not preferred」。</span>
+    <span class="dm-li"><b>不可與 DPP-4 抑制劑併用</b>（ADA 9.18 B、KDIGO、DAROC 三家一致）。</span>
   </div>
 
-  <div class="dirhead"><span class="dh-n">DPP-4 抑制劑</span><span class="dh-e">Gliptins</span></div>
-  <div class="dm-drug">
+  <div class="dirhead"><span class="dh-n">DPP-4 Inhibitors</span><span class="dh-e">Gliptins</span></div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Linagliptin</div>
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=TRA4LB89" class="pmid lw">糖漸平 Trajenta（linagliptin）5 mg QD</a>；
-        <a href="../tools/drug-database.html#code=JAN4LB71" class="pmid lw">佳糖維 Januvia（sitagliptin）100 mg QD</a>。皆與進食無關。</dd>
-      <dt>腎功能</dt><dd><b>linagliptin 完全不需依腎功能調整</b>（台大藥卡與仿單皆標 N）——這是它最實用的特點。<br>
-        <b>sitagliptin 要調</b>：台大藥卡「eGFR ≥45 不需調整」；DAROC 2024 DKD 表二：
-        <b>45 &gt; eGFR ≥30 → 每日 50 mg；eGFR &lt;30 → 每日 25 mg</b>。</dd>
-      <dt>心衰竭</dt><dd><b>三家講法不同，不要合併</b>：<br>
-        · <b>saxagliptin</b>：ESC 2023 <b>Class III B（不建議）</b>；仿單有心衰竭警語（SAVOR-TIMI 53，HR 1.27, 1.07–1.51）。<br>
-        · <b>alogliptin</b>：ADA 2026 把 EXAMINE 列為「未達顯著增加」；ESC 2023 <b>未</b>列 Class III；
-          但 <b>FDA 仿單仍帶心衰竭警語</b>（3.9% vs 3.3%）。<b>不要寫成「禁用」，也不要寫成「安全」。</b><br>
-        · <b>sitagliptin／linagliptin</b>：TECOS、CARMELINA 未增加，ESC 2023 列 <b>IIa A（可考慮）</b>。<br>
-        台大沒有 saxagliptin 單方與 alogliptin，但有 <b>Qtern（含 saxagliptin）</b>複方。</dd>
-      <dt>其他不良反應</dt><dd><b>類天疱瘡（bullous pemphigoid）</b>與嚴重關節痛是這一類的特有警訊；急性胰臟炎亦有報告。</dd>
-      <dt>定位</dt><dd>ADA 2026：開始強化胰島素治療時，DPP-4i 應<b>限制或停用</b>（9.23 A 內文），
-        因為沒有額外的心腎體重肝好處。GRADE 試驗中 sitagliptin 是四組裡<b>最不能維持 A1C &lt;7%</b> 的一組。<br>
-        住院則相反：ADA 2026 內文與 Endocrine Society 2022 Rec 7.2 都認為<b>輕度高血糖的住院病人</b>用 DPP-4i ± correction insulin
-        是較安全簡單的方案（見「住院」分頁）。</dd>
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=TRA4LB89" class="pmid lw">糖漸平 Trajenta 5 mg</a></dd>
+      <dt>劑量</dt><dd>5 mg QD，與進食無關</dd>
+      <dt>腎</dt><dd><b>完全不需調整</b>（台大藥卡與仿單皆標 N）——這是它最實用的特點</dd>
+    </dl>
+  </div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Sitagliptin</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=JAN4LB71" class="pmid lw">佳糖維 Januvia 100 mg</a></dd>
+      <dt>劑量</dt><dd>100 mg QD，與進食無關</dd>
+      <dt>腎</dt><dd>
+        <span class="dm-li"><b>eGFR ≥45</b>　100 mg</span>
+        <span class="dm-li"><b>eGFR 30–44</b>　<b>50 mg</b>／日</span>
+        <span class="dm-li"><b>eGFR &lt;30</b>　<b>25 mg</b>／日（DAROC 2024 DKD）</span></dd>
+    </dl>
+  </div>
+  <div class="kbox alert dm-rx">
+    <div class="kbox-t">心衰竭：三家講法不同，不要合併</div>
+    <span class="dm-li"><b>Saxagliptin</b>　ESC 2023 <b>Class III B（不建議）</b>；仿單有心衰竭警語
+      （SAVOR-TIMI 53，HR 1.27, 1.07–1.51）。<b>台大的 Qtern 複方含 saxagliptin，要一起算。</b></span>
+    <span class="dm-li"><b>Alogliptin</b>　ADA 認為 EXAMINE <b>未達顯著</b>；ESC <b>未</b>列 Class III；
+      <b>但 FDA 仿單仍帶心衰竭警語</b>（3.9% vs 3.3%）。
+      <b>不要寫成「禁用」，也不要寫成「安全」。</b></span>
+    <span class="dm-li"><b>Sitagliptin／Linagliptin</b>　TECOS、CARMELINA 未增加，ESC <b>IIa A（可考慮）</b>。</span>
+  </div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">其他重點</div>
+    <span class="dm-li"><b>特有不良反應</b>：類天疱瘡（bullous pemphigoid）、嚴重關節痛、急性胰臟炎。</span>
+    <span class="dm-li"><b>定位</b>：開始強化胰島素時應<b>限制或停用</b>（9.23 A 內文）——沒有額外的心腎體重肝好處。
+      GRADE 試驗中 sitagliptin 是四組裡<b>最不能維持 A1C &lt;7%</b> 的。</span>
+    <span class="dm-li"><b>住院則相反</b>：輕度高血糖的住院病人用 DPP-4i ± correction insulin 較安全簡單（見「住院」分頁）。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">Sulfonylureas &amp; Meglitinides</span><span class="dh-e">Insulin secretagogues</span></div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Glimepiride</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=AMA4LB13" class="pmid lw">瑪爾胰 Amaryl 2 mg</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li">起始 <b>1–2 mg QD</b>，<b>隨第一餐</b>；高齡或腎功能不全者<b>起始 1 mg</b></span>
+        <span class="dm-li">每 1–2 週加 1–2 mg；<b>最大 8 mg QD</b></span></dd>
+      <dt>腎</dt><dd>CrCl 15–60 → 起始 1 mg/day 小心加量（台大藥卡）</dd>
+      <dt>要點</dt><dd>
+        <span class="dm-li"><b>仿單自己的數據：4 mg 與 8 mg 的 A1C 降幅一樣（皆 −1.8%），但體重多增 0.4 kg</b>
+          ——加到 8 mg 不會更有效、只會更重</span>
+        <span class="dm-li"><b>對 sulfonamide 過敏者禁用</b>；G6PD 缺乏可致溶血性貧血</span></dd>
     </dl>
   </div>
 
-  <div class="dirhead"><span class="dh-n">磺醯脲類與 meglitinide</span><span class="dh-e">Insulin secretagogues</span></div>
-  <div class="dm-drug">
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Gliclazide MR</div>
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AMA4LB13" class="pmid lw">瑪爾胰 Amaryl（glimepiride）2 mg</a>、
-        <a href="../tools/drug-database.html#code=DIA4LB59" class="pmid lw">岱蜜克龍 Diamicron MR（gliclazide）30 mg</a>、
-        <a href="../tools/drug-database.html#code=GLN4LB36" class="pmid lw">優糖錠 Glunormal（gliquidone）30 mg</a>、
-        <a href="../tools/drug-database.html#code=REP4LB06" class="pmid lw">柔醣錠 Repaglinide 1 mg</a>。</dd>
-      <dt>Glimepiride</dt><dd>起始 1–2 mg QD <b>隨第一餐</b>；<b>高齡或腎功能不全者起始 1 mg</b>；
-        每 1–2 週加 1–2 mg；<b>最大 8 mg QD</b>。台大藥卡腎功能欄：CrCl 15–60 → 起始 1 mg/day 小心加量。
-        <b>仿單自己的數據：4 mg 與 8 mg 的 A1C 降幅一樣（皆 −1.8%），但體重多增 0.4 kg</b>——
-        加到 8 mg 不會更有效、只會更重。<b>對 sulfonamide 過敏者禁用</b>；G6PD 缺乏可致溶血性貧血。</dd>
-      <dt>Gliclazide MR</dt><dd>起始 30 mg QD <b>隨早餐</b>，每次調整間隔<b>至少一個月</b>，最大 120 mg/day。
-        台大藥卡：<b>eGFR &lt;15 禁忌</b>；肝功能中重度需減量、嚴重者禁忌。
-        UK SmPC 警語：「只有<b>能規律進食（含早餐）</b>的病人才適合開這個藥」。</dd>
-      <dt>Gliquidone</dt><dd>台大藥卡：<b>飯前 30 分鐘</b>，起始 15 mg QD，可每次加 15 mg 到 45–60 mg/day 分 2–3 次；
-        <b>單次 &gt;60 mg 或每日 &gt;120 mg 不建議</b>。台大藥卡的腎、肝調整欄皆標「<b>無資料</b>」。<br>
-        ⚠ <b>「gliquidone 主要經膽汁排除、腎不全可用」這個說法本次查不到台灣一手仿單佐證</b>，
-        DAROC 2024 DKD 表二也<b>沒有</b>給 gliquidone 單獨的 eGFR 建議欄。本頁不把它寫成「腎不全首選 SU」。
-        另註：Glurenorm（糖適平／糖瑞平）在台灣<b>已註銷</b>，現行只剩應元優糖錠。</dd>
-      <dt>Repaglinide</dt><dd><b>每餐前 30 分鐘內</b>；未用過口服藥或 A1C &lt;8% 起始 0.5 mg/餐，A1C ≥8% 起始 1–2 mg/餐；
-        最大 4 mg/餐、<b>16 mg/day</b>。<b>跳過一餐就跳過那一劑</b>。台大藥卡：CrCl 20–40 起始 0.5 mg 小心加量。<br>
-        <b>禁忌：與 gemfibrozil 併用</b>（暴露量 ↑8.1 倍）。clopidogrel ↑3.9–5.1 倍（不得已時每日總量 ≤4 mg）；
-        cyclosporine ↑2.5 倍（每日總量 ≤6 mg）。<b>仿單特別註明：不適用於與 NPH 胰島素併用</b>（七個對照試驗中六件心肌缺血嚴重不良事件）。</dd>
-      <dt>共同要注意</dt><dd><b>低血糖與體重增加</b>是這一類的代價。ADA <b>9.17（A）</b>：加任何新藥時都要<b>重新評估 SU／glinide／胰島素的必要性與劑量</b>。<br>
-        <b>骨折</b>：ADA <b>4.10（B）</b>建議<b>避開已知增加骨折風險的藥（TZD 與 SU）</b>，尤其骨折高風險者。<br>
-        <b>抗生素交互作用（外科很實用）</b>：ADA 2026 原文——fluoroquinolone、TMP-SMX、clarithromycin
-        會拉高 SU 的有效劑量而誘發低血糖，「<b>sulfonylureas should be reduced or temporarily discontinued</b>」。</dd>
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=DIA4LB59" class="pmid lw">岱蜜克龍 Diamicron MR 30 mg</a></dd>
+      <dt>劑量</dt><dd>起始 <b>30 mg QD 隨早餐</b>；每次調整間隔<b>至少一個月</b>；最大 120 mg/day</dd>
+      <dt>腎</dt><dd><b>eGFR &lt;15 禁忌</b>（台大藥卡）</dd>
+      <dt>肝</dt><dd>中重度需減量；<b>嚴重者禁忌</b></dd>
+      <dt>要點</dt><dd>UK SmPC 警語：<b>「只有能規律進食（含早餐）的病人才適合開這個藥」</b></dd>
     </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Gliquidone</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=GLN4LB36" class="pmid lw">優糖錠 Glunormal 30 mg</a></dd>
+      <dt>劑量</dt><dd><b>飯前 30 分鐘</b>；起始 15 mg QD，每次加 15 mg 到 45–60 mg/day 分 2–3 次；
+        <b>單次 &gt;60 mg 或每日 &gt;120 mg 不建議</b></dd>
+      <dt>腎肝</dt><dd>台大藥卡兩欄皆標<b>「無資料」</b></dd>
+      <dt>⚠</dt><dd>
+        <span class="dm-li"><b>「主要經膽汁排除、腎不全可用」查不到台灣一手仿單佐證</b>，
+          DAROC 2024 DKD 表二也沒有給 gliquidone 單獨的 eGFR 欄。<b>本頁不把它寫成「腎不全首選 SU」。</b></span>
+        <span class="dm-li"><b>Glurenorm（糖適平／糖瑞平）在台灣已註銷</b>，現行只剩應元優糖錠。</span></dd>
+    </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Repaglinide</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=REP4LB06" class="pmid lw">柔醣錠 Repaglinide 1 mg</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li"><b>每餐前 30 分鐘內</b>；<b>跳過一餐就跳過那一劑</b></span>
+        <span class="dm-li">未用過口服藥或 A1C &lt;8% → 起始 <b>0.5 mg/餐</b>；A1C ≥8% → <b>1–2 mg/餐</b></span>
+        <span class="dm-li">最大 <b>4 mg/餐、16 mg/day</b></span></dd>
+      <dt>腎</dt><dd>CrCl 20–40 → 起始 0.5 mg 小心加量（台大藥卡）</dd>
+      <dt>禁忌</dt><dd><b>與 gemfibrozil 併用</b>（暴露量 ↑8.1 倍）</dd>
+      <dt>交互</dt><dd>
+        <span class="dm-li">clopidogrel ↑3.9–5.1 倍 → 不得已時<b>每日總量 ≤4 mg</b></span>
+        <span class="dm-li">cyclosporine ↑2.5 倍 → <b>每日總量 ≤6 mg</b></span></dd>
+      <dt>⚠</dt><dd><b>仿單特別註明：不適用於與 NPH 胰島素併用</b>（七個對照試驗中六件心肌缺血嚴重不良事件）</dd>
+    </dl>
+  </div>
+
+  <div class="kbox alert dm-rx">
+    <div class="kbox-t">這一類共同要注意</div>
+    <span class="dm-li"><b>低血糖與體重增加是代價。</b>ADA <b>9.17（A）</b>：加任何新藥時都要重新評估
+      SU／glinide／胰島素的必要性與劑量。</span>
+    <span class="dm-li"><b>骨折。</b>ADA <b>4.10（B）</b>：避開已知增加骨折風險的藥（<b>TZD 與 SU</b>），骨折高風險者尤其。</span>
+    <span class="dm-li"><b>抗生素陷阱（外科很實用）。</b>fluoroquinolone、TMP-SMX、clarithromycin
+      會拉高 SU 的有效劑量而誘發低血糖——ADA 原文：<b>「應減量或暫時停用磺醯脲類」</b>。</span>
+    <span class="dm-li">DAROC 2022：<b>磺醯脲類與 glinide 不建議合併使用</b>。</span>
   </div>
 
   <div class="dirhead"><span class="dh-n">Pioglitazone</span><span class="dh-e">Thiazolidinedione</span></div>
-  <div class="dm-drug">
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Pioglitazone</div>
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AC%204LB42" class="pmid lw">愛妥糖 Actos 30 mg</a></dd>
-      <dt>劑量</dt><dd>起始 15–30 mg QD；<b>NYHA Class I 或 II 心衰竭者只能從 15 mg 起</b>；每次加 15 mg，最大 <b>45 mg/day</b>；
-        併用強效 CYP2C8 抑制劑（如 gemfibrozil）時<b>限 15 mg/day</b>。腎功能不需調整；<b>活動性肝病或 ALT &gt;2.5 倍上限者不應起始</b>。</dd>
-      <dt>心衰竭</dt><dd><b>黑框警語</b>：TZD「cause or exacerbate congestive heart failure」。
-        <b>症狀性心衰竭「不建議使用」；已確診 NYHA Class III 或 IV 心衰竭「起始為禁忌」</b>——兩者程度不同，別混。<br>
-        ESC 2023 Table 22：<b>Class III, Level A（不建議用於有心衰竭或心衰竭風險者）</b>。
-        ADA 2026 Section 10 內文：「should be avoided in people with heart failure」。<br>
-        DAROC 2022 表一註記：<b>嚴重心衰竭（NYHA III、IV）與急性心衰竭不建議使用 TZD</b>；
-        並提醒<b>胰島素與 TZD 併用會增加水腫與心衰竭機會</b>。</dd>
-      <dt>其他</dt><dd>水腫、體重增加、<b>骨折</b>（IRIS 試驗：需手術或住院的骨折 5.1% vs 3.2%, P=0.003）、
-        <b>黃斑部水腫</b>（多數診斷時同時有周邊水腫）。膀胱癌爭議見仿單 5.4 節原文。</dd>
-      <dt>它的價值在哪</dt><dd><b>MASH</b>：ADA <b>9.13a（B）</b>可考慮，<b>9.13b（B）</b>可與 GLP-1 RA 併用。
-        Diabetes Canada 2025 對 F2/F3 給到 <b>Grade A/Level 1A</b>，EASL 2024 卻說<b>不能</b>推薦為 MASH 標的治療——三家等級差很大。<br>
-        <b>中風後</b>：IRIS 試驗（無糖尿病、胰島素阻抗、近期缺血性中風／TIA）中風或 MI 9.0% vs 11.8%，HR 0.76（0.62–0.93）。<br>
-        <b>加在胰島素上</b>可減少胰島素需求量（ADA 內文），但要權衡水腫。</dd>
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=AC%204LB42" class="pmid lw">愛妥糖 Actos 30 mg</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li">起始 15–30 mg QD；<b>NYHA I 或 II 心衰竭者只能從 15 mg 起</b></span>
+        <span class="dm-li">每次加 15 mg，<b>最大 45 mg/day</b>；併用強效 CYP2C8 抑制劑時<b>限 15 mg/day</b></span></dd>
+      <dt>腎</dt><dd><b>不需依腎功能調整劑量</b>，<b>但 ADA Table 9.2 原文另註「腎功能不全者一般不建議使用，
+        因為可能造成體液滯留」</b>——兩句要一起看。</dd>
+      <dt>肝</dt><dd><b>活動性肝病或 ALT &gt;2.5 倍上限不應起始</b></dd>
+      <dt>心衰竭</dt><dd>
+        <span class="dm-li"><b>黑框警語</b>：TZD「cause or exacerbate congestive heart failure」</span>
+        <span class="dm-li"><b>症狀性心衰竭「不建議」</b>；<b>已確診 NYHA III／IV「起始為禁忌」</b>——兩者程度不同</span>
+        <span class="dm-li">ESC 2023 Table 22 <b>Class III Level A</b>；DAROC 2022 同旨，
+          並提醒<b>胰島素與 TZD 併用會增加水腫與心衰竭</b></span></dd>
+      <dt>其他</dt><dd>水腫、體重增加、<b>骨折</b>（IRIS：需手術或住院的骨折 5.1% vs 3.2%, P=0.003）、<b>黃斑部水腫</b></dd>
+      <dt>價值</dt><dd>
+        <span class="dm-li"><b>MASH</b>：ADA 9.13a（B）可考慮，9.13b（B）可與 GLP-1 RA 併用。
+          Diabetes Canada 2025 給 <b>Grade A</b>，<b>EASL 2024 卻說不能推薦為 MASH 標的治療</b>——三家等級差很大。</span>
+        <span class="dm-li"><b>中風後</b>：IRIS（無糖尿病、胰島素阻抗、近期缺血性中風／TIA）
+          中風或 MI 9.0% vs 11.8%，HR 0.76（0.62–0.93）。</span>
+        <span class="dm-li"><b>加在胰島素上</b>可減少胰島素需求量，但要權衡水腫。</span></dd>
     </dl>
   </div>
 
-  <div class="dirhead"><span class="dh-n">α-glucosidase 抑制劑</span><span class="dh-e">Acarbose</span></div>
-  <div class="dm-drug">
+  <div class="dirhead"><span class="dh-n">α-Glucosidase Inhibitors</span><span class="dh-e">Acarbose</span></div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Acarbose</div>
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB44" class="pmid lw">醣祿錠 Glucobay 50 mg</a>、
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=GLU4LB44" class="pmid lw">醣祿錠 Glucobay 50 mg</a>、
         <a href="../tools/drug-database.html#code=CAR4LB44" class="pmid lw">糖利平錠 Carlipin 50 mg</a></dd>
-      <dt>劑量</dt><dd><b>與每餐第一口飯一起吞</b>。起始 25 mg TID，每 4–8 週調整；
-        維持上限 <b>體重 ≤60 kg → 50 mg TID；&gt;60 kg → 100 mg TID</b>。</dd>
-      <dt>腎／肝</dt><dd>台大藥卡：<b>eGFR &lt;25 不建議</b>（DAROC 2024 DKD 表二同）；<b>肝硬化為禁忌</b>。</dd>
-      <dt>⚠ 低血糖處置不一樣</dt><dd>ADA 2026 原文：「<b>People taking acarbose should treat hypoglycemia with only pure glucose</b>」——
-        acarbose 抑制蔗糖分解，<b>用含蔗糖的東西（一般糖果、汽水）會延誤矯正</b>。這一條要寫進病人衛教。</dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li"><b>與每餐第一口飯一起吞</b>；起始 25 mg TID，每 4–8 週調整</span>
+        <span class="dm-li">維持上限：體重 <b>≤60 kg → 50 mg TID</b>；<b>&gt;60 kg → 100 mg TID</b></span></dd>
+      <dt>腎肝</dt><dd><b>eGFR &lt;25 不建議</b>；<b>肝硬化為禁忌</b>（台大藥卡）</dd>
+      <dt>⚠</dt><dd><b>吃 acarbose 的人低血糖只能用純葡萄糖</b>——acarbose 抑制蔗糖分解，
+        用一般糖果或汽水會延誤矯正（ADA 2026 原文）。這一條要寫進病人衛教。</dd>
     </dl>
   </div>
 </div>
@@ -1022,11 +1103,11 @@
     <table class="def-table dt-wrap" style="min-width:660px;">
       <thead><tr><th>藥類</th><th>ADA 2026 的立場</th></tr></thead>
       <tbody>
-        <tr><td><b>SGLT2 抑制劑</b></td>
+        <tr><td><b>SGLT2 inhibitors</b></td>
             <td>不建議用於院內血糖控制；但<b>因心衰竭有適應症且無禁忌者可起始或續用</b>（<b>16.11 A</b>）。
                 <b>嚴重疾病、有酮血症或酮尿、長時間禁食與手術時應避免</b>。手術前<b>停 3 天</b>（ertugliflozin 停 4 天）。
                 恢復進食後可為心衰竭適應症重新開始。</td></tr>
-        <tr><td><b>DPP-4 抑制劑</b></td>
+        <tr><td><b>DPP-4 inhibitors</b></td>
             <td>入院血糖 <b>&lt;180–200 mg/dL</b> 的輕中度高血糖，<b>DPP-4i ± basal insulin 可能是更安全簡單的方案</b>，低血糖風險較低。
                 saxagliptin／alogliptin 若出現心衰竭應考慮停用。<b>linagliptin 不需依腎功能調量</b>。</td></tr>
         <tr><td><b>GLP-1 RA</b></td>
@@ -1037,7 +1118,7 @@
                 <b>對「一般住院期間是否續用」沒有建議條文——這是指引的空白，本頁不補</b>。<br>
                 可參考的相鄰條文：ADA 10.45（B）穩定型心衰竭且 eGFR &gt;30 可續用，<b>但不穩定或住院中的心衰竭應避免</b>；
                 Section 6 內文：<b>無法進食或疑似急性腎損傷時應考慮停 metformin 與 SGLT2i</b>。</td></tr>
-        <tr><td><b>SU／glinide／TZD／acarbose</b></td>
+        <tr><td><b>Sulfonylureas／Meglitinides／TZD／Acarbose</b></td>
             <td>ADA 2026 Section 16 <b>未逐一討論</b>。Section 6 有兩條可用：
                 <b>TZD 在心衰竭惡化或體液過多時應停</b>；<b>SU 與 fluoroquinolone／clarithromycin／sulfamethoxazole 併用會誘發低血糖</b>。</td></tr>
       </tbody>
@@ -1197,13 +1278,13 @@
         <tr><td><b>Metformin</b><br>（eGFR &gt;60 且不打顯影劑）</td><td>照常</td>
             <td>一天 1–2 次者<b>照常</b>；一天 3 次者<b>停中午那劑</b></td><td>同左</td>
             <td>停，<b>恢復進食「且腎功能穩定」才重開</b></td></tr>
-        <tr><td><b>磺醯脲類</b><br>（gliclazide、glimepiride…）</td><td>照常</td>
+        <tr><td><b>Sulfonylureas</b><br>gliclazide、glimepiride…</td><td>照常</td>
             <td>一天一次（早上）<b>停當天</b>；一天兩次<b>停早上那劑</b></td>
             <td>一天一次<b>停當天</b>；一天兩次<b>兩劑都停</b></td><td>停，恢復進食才重開</td></tr>
         <tr><td><b>Pioglitazone</b></td><td>照常</td><td><b>照常</b></td><td><b>照常</b></td><td>停，恢復進食才重開</td></tr>
-        <tr><td><b>DPP-4 抑制劑</b></td><td>照常</td><td><b>照常</b></td><td><b>照常</b></td><td>停，恢復進食才重開</td></tr>
+        <tr><td><b>DPP-4 inhibitors</b></td><td>照常</td><td><b>照常</b></td><td><b>照常</b></td><td>停，恢復進食才重開</td></tr>
         <tr><td><b>GLP-1 RA／tirzepatide</b></td><td>照常</td><td><b>照常</b></td><td><b>照常</b></td><td>停，恢復進食才重開</td></tr>
-        <tr><td><b>SGLT2 抑制劑</b></td><td><b>停</b></td><td><b>停</b></td><td><b>停</b></td>
+        <tr><td><b>SGLT2 inhibitors</b></td><td><b>停</b></td><td><b>停</b></td><td><b>停</b></td>
             <td><b>停到恢復進食且酮體 &lt;0.6 mmol/L</b></td></tr>
       </tbody>
     </table>
@@ -1548,11 +1629,11 @@
         <tr><td><b>Metformin</b></td>
             <td><b>代償性肝硬化且腎功能正常可用</b>；<b>失代償性肝硬化不可用</b>（乳酸中毒風險），尤其合併腎功能不全時</td>
             <td>未給肝硬化分級條文；只寫失代償性肝硬化以胰島素為首選。台大藥卡：<b>肝病應避免或禁忌</b></td></tr>
-        <tr><td><b>磺醯脲類</b></td><td><b>肝失代償應避免</b>（低血糖風險）</td><td>未給肝硬化專條</td></tr>
+        <tr><td><b>Sulfonylureas</b></td><td><b>肝失代償應避免</b>（低血糖風險）</td><td>未給肝硬化專條</td></tr>
         <tr><td><b>GLP-1 RA</b></td><td><b>Child-Pugh A 可依適應症使用</b>；MASH（含代償性肝硬化）安全</td><td>MASH 首選（4.27a <b>A</b>）</td></tr>
-        <tr><td><b>SGLT2i</b></td><td><b>Child-Pugh A 與 B 可用</b></td><td>未給肝硬化分級</td></tr>
+        <tr><td><b>SGLT2 inhibitors</b></td><td><b>Child-Pugh A 與 B 可用</b></td><td>未給肝硬化分級</td></tr>
         <tr><td><b>Pioglitazone</b></td><td><b>非肝硬化 MASH 安全可用</b></td><td>4.27a <b>B</b> 可考慮；台大藥卡：活動性肝病或 ALT &gt;2.5 倍上限不應起始</td></tr>
-        <tr><td><b>胰島素</b></td><td>（無獨立條文）</td><td><b>4.30b（C）：失代償性肝硬化的第二型糖尿病，胰島素是首選</b></td></tr>
+        <tr><td><b>Insulin</b></td><td>（無獨立條文）</td><td><b>4.30b（C）：失代償性肝硬化的第二型糖尿病，胰島素是首選</b></td></tr>
         <tr><td><b>Statin</b></td><td>慢性肝病含<b>代償性</b>肝硬化可用</td><td>4.31b（B）代償性肝硬化<b>安全</b>應起始或續用；<b>失代償性須謹慎並密切監測</b></td></tr>
         <tr><td><b>代謝手術</b></td><td>代償性可考慮但需多專科；<b>失代償為禁忌</b></td><td>4.32a/b（B）代償性<b>須謹慎</b>；<b>失代償不建議</b></td></tr>
       </tbody>
@@ -1858,17 +1939,17 @@
 
   <div class="kbox">
     <div class="kbox-t">院內品項一覽（藥劑部藥品資料庫，共 33 個品項）</div>
-    <b>雙胍</b>：metformin（庫魯化錠 850 mg、伏糖膜衣錠 500 mg）<br>
-    <b>磺醯脲類</b>：glimepiride（瑪爾胰）、gliclazide MR（岱蜜克龍）、gliquidone（優糖錠）<br>
-    <b>Meglitinide</b>：repaglinide（柔醣錠）<br>
-    <b>α-glucosidase</b>：acarbose（醣祿錠、糖利平錠）<br>
+    <b>Biguanide</b>：metformin（庫魯化錠 850 mg、伏糖膜衣錠 500 mg）<br>
+    <b>Sulfonylureas</b>：glimepiride（瑪爾胰）、gliclazide MR（岱蜜克龍）、gliquidone（優糖錠）<br>
+    <b>Meglitinides</b>：repaglinide（柔醣錠）<br>
+    <b>α-Glucosidase inhibitors</b>：acarbose（醣祿錠、糖利平錠）<br>
     <b>TZD</b>：pioglitazone（愛妥糖錠）<br>
-    <b>DPP-4i</b>：linagliptin（糖漸平）、sitagliptin（佳糖維）<br>
-    <b>SGLT2i</b>：empagliflozin（恩排糖 10 mg）、dapagliflozin（福適佳 10 mg）、canagliflozin（可拿糖 100 mg）<br>
+    <b>DPP-4 inhibitors</b>：linagliptin（糖漸平）、sitagliptin（佳糖維）<br>
+    <b>SGLT2 inhibitors</b>：empagliflozin（恩排糖 10 mg）、dapagliflozin（福適佳 10 mg）、canagliflozin（可拿糖 100 mg）<br>
     <b>複方</b>：Glyxambi（empagliflozin＋linagliptin）、Qtern（saxagliptin＋dapagliflozin）<br>
-    <b>GLP-1 類</b>：semaglutide 針劑（胰妥讚）、口服 semaglutide（瑞倍適）、dulaglutide（易週糖，標「暫供兒童」）、
+    <b>GLP-1 RA / GIP-GLP-1 RA</b>：semaglutide 針劑（胰妥讚）、口服 semaglutide（瑞倍適）、dulaglutide（易週糖，標「暫供兒童」）、
       tirzepatide（猛健樂，自費）<br>
-    <b>胰島素</b>：aspart、lispro、regular（Actrapid／Humulin R）、NPH（Humulin N）、detemir（Levemir）、
+    <b>Insulins</b>：aspart、lispro、regular（Actrapid／Humulin R）、NPH（Humulin N）、detemir（Levemir）、
       degludec（Tresiba）、glargine U-300（Toujeo）、Humalog Mix50、Ryzodeg、Soliqua<br><br>
     <b>台大沒有的常見品項</b>：liraglutide（Victoza）、exenatide（Byetta）、glipizide、glibenclamide、
     vildagliptin、saxagliptin 單方、alogliptin、ertugliflozin、<b>glargine U-100（Lantus）</b>、Xultophy、finerenone。<br>
