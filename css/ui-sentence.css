@@ -1942,6 +1942,10 @@
   margin-right: 6px;
 }
 [data-ui="sentence"] .sh-kind-l.k-tool    { color: var(--sentence-fg2); }
+/* 2026-08-18 新增第三個型別「指引」（整理型／多分頁的參考頁，見 js/sentence-nav.js
+   的 KIND_META）。用墨綠而不是再借一個既有色：硃砂已經是「流程」、琥珀是「癌別」，
+   三個標籤常常同屏出現，共用顏色等於少一層辨識。 */
+[data-ui="sentence"] .sh-kind-l.k-guide   { color: var(--sentence-calm); }
 [data-ui="sentence"] .sh-kind-l.k-pathway { color: var(--sentence-hot); }
 [data-ui="sentence"] .sh-kind-l.k-mega    { color: var(--sentence-fg); font-weight: 700; }
 [data-ui="sentence"] .sh-kind-l.k-mode    { color: var(--sentence-dim); }
