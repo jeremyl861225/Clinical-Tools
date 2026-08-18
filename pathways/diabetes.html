@@ -49,10 +49,15 @@
   .dm-grp:first-child{margin-top:2px;}
 
   /* 數值輸入列：與 .rxbox 的 .rx-grid 同一套，欄數改為自動填滿 */
-  .dm-nums{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px 14px;}
-  /* 手機一欄。造句設計把 .rx-row 改成 block（標籤在上、輸入框在下），
-     兩欄時每欄只剩約 159px，標籤會折成兩行、整區高度翻倍且難讀。 */
-  @media(max-width:520px){ .dm-nums{grid-template-columns:1fr;} }
+  .dm-nums{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:6px 16px;}
+  /* ⚠ 造句設計（ui-sentence.css AC1 段）把 .rx-row 改成 display:block，
+     於是標籤在上、輸入框在下，六個欄位就吃掉一整屏（使用者實機反映）。
+     這裡把它收回同一行——只改版面，不碰顏色。本頁 <style> 在外部樣式表之後，
+     同特異度時勝出（`.dm-nums .rx-row` 與 `[data-ui="sentence"] .rx-row` 皆為 0,2,0）。 */
+  .dm-nums .rx-row{display:flex; align-items:center; gap:8px; min-height:30px;}
+  .dm-nums .rx-row label{flex:1 1 auto; min-width:0; line-height:1.35;}
+  .dm-nums .rx-row input[type=number]{flex:0 0 82px; width:82px;}
+  .dm-nums .rx-row .rx-u{display:none;}
 
   /* 建議輸出區：只是容器，內容用 .flow-rec 變體 */
   .dm-out{margin-top:14px;}
@@ -2470,6 +2475,49 @@ function dmCalc(){
       + '<b>磺醯脲類應避免</b>（低血糖）。<b>Acarbose 在肝硬化為禁忌</b>（台大藥卡）。'
       + 'statin 在失代償性肝硬化<b>須謹慎並密切監測</b>（ADA 4.31b B）；<b>代謝手術不建議</b>（4.32b B）。');
   }
+  /* 年齡：ADA Section 13 的高齡條文，加上台灣獨有的 80 歲 metformin 限制 */
+  var pers = [];
+  if(age !== null && age >= 65){
+    var eld = '<b>' + age + ' 歲：套 ADA Section 13 的高齡條文</b> —— '
+      + '血糖目標<b>依健康分層</b>而不是年齡：健康良好 <b>&lt;7.0–7.5%</b>；'
+      + '多重共病／輕中度認知或功能障礙 <b>&lt;8.0%</b>；'
+      + '長照機構／末期慢性病／中重度認知障礙 <b>不以 A1C 為目標</b>，只求避免低血糖與有症狀的高血糖。'
+      + '<br><b>13.4（B）</b>：每次回診都要主動問有沒有低血糖，尤其在用 SU、glinide 或胰島素者。'
+      + '<b>13.14a（B）</b>：高風險者把這些藥減量或換成低血糖風險低的類別。'
+      + '<b>但 13.14d（A）：心腎保護藥不能減</b>——有 ASCVD、心衰竭或 CKD 的長者仍要用，irrespective of glycemia。'
+      + '<br>CGM 目標也不同：<b>TBR &lt;70 mg/dL 從 &lt;4% 收緊到 &lt;1%</b>（6.3c B）。'
+      + '<br><b>SGLT2i</b> 在衰弱或容易姿勢性低血壓的長者要小心體液不足，起始前後都要問尿失禁與生殖泌尿感染症狀；'
+      + '<b>GLP-1 RA／tirzepatide</b> 在不明原因體重下降、營養不良、嚴重便祕、明顯胃輕癱者「not preferred」；'
+      + '<b>胰島素優先用筆針而非空針</b>（功能受損者）。';
+    if(age >= 80){
+      eld += '<br>⚠ <b>台灣獨有的一條</b>：DAROC 2024 DKD 表一逐字——'
+        + '「<b>80 歲以上的第 2 型糖尿病患者，若以前未曾使用過 Metformin，不建議以 Metformin 治療</b>」'
+        + '（引衛署藥字第0980325034號）。<b>已經在用的不受此限。</b>';
+    }
+    pers.push(eld);
+  }
+  /* BMI：亞裔切點與台灣本土目標 */
+  if(bmi !== null){
+    var bstr = '<b>BMI ' + bmi + '</b>：';
+    if(bmi >= 27.5){
+      bstr += '已達 <b>ADA 的亞裔切點 27.5</b>（非亞裔為 30）。'
+        + '<b>8.16（B）優先選對體重有利的藥；8.18（A）偏好 semaglutide 或 tirzepatide</b>。'
+        + '<b>8.22（A）：BMI ≥27.5（亞裔）且為適當手術人選者，可考慮代謝手術</b>。'
+        + (F.obes ? '' : '<br>⚠ 你沒有勾「肥胖／體重是主要治療目標」，但這個 BMI 已達門檻，建議一併考慮。');
+      if(F.cirr) bstr += '<br>⚠ <b>但失代償性肝硬化不建議代謝手術</b>（4.32b B），代償性也要謹慎。';
+    } else if(bmi >= 24){
+      bstr += '未達 ADA 的亞裔切點 27.5，<b>但已超過台灣 DAROC 2022 的目標 18.5–24</b>；'
+        + 'DAROC 的篩檢危險因子切點也是 <b>BMI ≥24 或腰圍 男 ≥90／女 ≥80 cm</b>。';
+    } else if(bmi < 18.5) {
+      bstr += '<b>低於 DAROC 目標下緣 18.5</b>。'
+        + '<b>體重過輕時 GLP-1 類不是好選擇</b>（ADA Section 13 對不明原因體重下降者明列 not preferred），'
+        + '並要想「這是不是第 1 型或胰源性糖尿病」。';
+    } else {
+      bstr += '在台灣 DAROC 2022 的目標區間 <b>18.5–24</b> 之內。';
+    }
+    pers.push(bstr);
+  }
+
   if(F.cost){
     no.push('<b>費用考量</b> —— ADA <b>9.30（E）</b>把低成本選項明列為：'
       + '<b>metformin、磺醯脲類、TZD、人類胰島素</b>，但要同時衡量它們的低血糖、體重、心腎風險。'
@@ -2486,6 +2534,11 @@ function dmCalc(){
   }
   if(no.length){
     html += dmCard('rec-urgent', '避免與注意', '這些條件會排除或限制某些藥', no);
+  }
+  if(pers.length){
+    html += dmCard('rec-nonop', '個別化', '年齡與體重會改變目標與選藥', pers,
+      '這兩格留空就不做這段判斷。年齡影響的是<b>血糖目標與減藥時機</b>，不是直接排除某個藥；'
+      + 'BMI 用的是 <b>ADA 的亞裔切點 27.5</b>（非亞裔 30）與<b>台灣 DAROC 的目標 18.5–24</b>。');
   }
 
   /* ── 健保現實 ── */
