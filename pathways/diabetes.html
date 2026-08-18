@@ -142,6 +142,12 @@
   .def-table td{line-height:1.7;}
   .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
   .nw{white-space:nowrap;}
+  /* 長標籤的連結：.pmid 本身帶 white-space:nowrap（原本是給「PMID 12345678」用的），
+     拿來當藥卡連結時標籤很長，會把 grid 的 1fr 軌道 min-content 撐大而溢出容器。
+     這裡只改 white-space，不碰顏色。 */
+  .pmid.lw{white-space:normal;}
+  /* grid 子項預設 min-width:auto（＝min-content），內容有長不斷字時會撐破軌道 */
+  .dm-kv dd,.dm-kv dt{min-width:0;}
 </style>
 </head>
 <body data-back-label="糖尿病用藥">
@@ -286,20 +292,20 @@
 
   <div class="dirhead"><span class="dh-n">不看共病時的四步邏輯</span><span class="dh-e">ADA 2026 Section 9</span></div>
   <div class="steps">
-    <div class="step"><span class="sq">先看共病，不是先看 A1C。</span>
+    <div class="step"><span><span class="sq">先看共病，不是先看 A1C。</span>
       ASCVD 或高風險 → GLP-1 RA 和／或 SGLT2i（<b>9.7 A</b>）｜心衰竭（EF 高低皆然）→ SGLT2i（<b>9.8 A</b>）｜
       CKD eGFR 20–60 或蛋白尿 → SGLT2i 或 GLP-1 RA（<b>9.10 A</b>）｜eGFR &lt;30 → GLP-1 RA 優先（<b>9.11 B</b>）｜
-      MASH → GLP-1 RA 優先（<b>9.13a A</b>）。以上皆 <b>irrespective of A1C</b>。</div>
-    <div class="step"><span class="sq">沒有上述共病，才回到「純降糖」。</span>
+      MASH → GLP-1 RA 優先（<b>9.13a A</b>）。以上皆 <b>irrespective of A1C</b>。</span></div>
+    <div class="step"><span><span class="sq">沒有上述共病，才回到「純降糖」。</span>
       metformin 是常用的「歷來第一線」。A1C 高於個人目標 <b>1.5–2.0%</b> 以上就直接考慮
-      <b>初始併用兩種藥</b>（<b>9.6 A</b>）；高於 <b>1.5%</b> 通常單一藥物達不到目標。</div>
-    <div class="step"><span class="sq">要更強的降糖時，先加 GLP-1 類，不要先加胰島素。</span>
+      <b>初始併用兩種藥</b>（<b>9.6 A</b>）；高於 <b>1.5%</b> 通常單一藥物達不到目標。</span></div>
+    <div class="step"><span><span class="sq">要更強的降糖時，先加 GLP-1 類，不要先加胰島素。</span>
       建議 <b>9.21 是 A 級</b>：「無嚴重高血糖或高血糖危象時，GLP-1 為基礎的治療優於胰島素」。
       例外是 <b>9.20（E 級）</b>：有高血糖症狀、A1C &gt;10%、血糖 ≥300 mg/dL、或分解代謝徵象 → 先給胰島素。
-      <b>注意兩者的等級落差：優先用 GLP-1 是 A 級，先給胰島素只是 E 級（專家共識）。</b></div>
-    <div class="step"><span class="sq">未達標就不要拖。</span>
+      <b>注意兩者的等級落差：優先用 GLP-1 是 A 級，先給胰島素只是 E 級（專家共識）。</b></span></div>
+    <div class="step"><span><span class="sq">未達標就不要拖。</span>
       建議 <b>9.15（A）</b>：「不論是加強或減量，未達個人化目標者的治療調整<b>不應延遲</b>」。
-      每 <b>3–6 個月</b>重新評估一次（9.14 E）。</div>
+      每 <b>3–6 個月</b>重新評估一次（9.14 E）。</span></div>
   </div>
 
   <div class="kbox">
@@ -465,8 +471,8 @@
   <div class="dirhead"><span class="dh-n">Metformin</span><span class="dh-e">Biguanide</span></div>
   <div class="dm-drug">
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB32" class="pmid">庫魯化錠 Glucophage 850 mg</a>、
-        <a href="../tools/drug-database.html#code=LOD4LB57" class="pmid">伏糖膜衣錠 Loditon 500 mg</a>（健保價每顆約 2 元）</dd>
+      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB32" class="pmid lw">庫魯化錠 Glucophage 850 mg</a>、
+        <a href="../tools/drug-database.html#code=LOD4LB57" class="pmid lw">伏糖膜衣錠 Loditon 500 mg</a>（健保價每顆約 2 元）</dd>
       <dt>劑量</dt><dd>速效：起始 500 mg BID 或 850 mg QD，<b>隨餐</b>；每週加 500 mg 或每兩週加 850 mg；
         維持 1–2.55 g/day 分 2–3 次；<b>台灣公告每日上限 速效 3000 mg／緩釋 2000 mg</b>。
         美國仿單寫「一般 2000 mg，必要時到 2550 mg，超過 2000 mg 建議分三次」。
@@ -502,15 +508,15 @@
       <thead><tr><th>藥</th><th>台大品項／劑量</th><th>控糖不建議下限</th><th>心腎適應症起始下限</th><th>跌破下限後</th></tr></thead>
       <tbody>
         <tr><td><b>Dapagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid">福適佳 Forxiga 10 mg</a><br>控糖起始 5 mg QD 可加到 10 mg；心腎適應症一律 10 mg QD</td>
+            <td><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid lw">福適佳 Forxiga 10 mg</a><br>控糖起始 5 mg QD 可加到 10 mg；心腎適應症一律 10 mg QD</td>
             <td>eGFR <b>&lt;45</b></td><td>eGFR <b>&lt;25 不建議起始</b></td>
             <td><b>可續用 10 mg</b>（仿單明文）</td></tr>
         <tr><td><b>Empagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid">恩排糖 Jardiance 10 mg</a><br>控糖 10 mg 可加到 25 mg；心腎適應症固定 10 mg QD，早上服</td>
+            <td><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid lw">恩排糖 Jardiance 10 mg</a><br>控糖 10 mg 可加到 25 mg；心腎適應症固定 10 mg QD，早上服</td>
             <td>eGFR <b>&lt;30</b></td><td>心衰竭／CKD 試驗入組 <b>≥20</b>；&lt;20 資料不足</td>
             <td>試驗中<b>不需停藥</b></td></tr>
         <tr><td><b>Canagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid">可拿糖 Canaglu 100 mg</a><br>起始 100 mg QD 於第一餐前；eGFR ≥60 可加到 300 mg</td>
+            <td><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid lw">可拿糖 Canaglu 100 mg</a><br>起始 100 mg QD 於第一餐前；eGFR ≥60 可加到 300 mg</td>
             <td>eGFR <b>&lt;30</b></td><td>eGFR <b>&lt;30 不建議起始</b>；<b>eGFR 30–&lt;60 上限 100 mg</b></td>
             <td>僅限<b>尿蛋白 &gt;300 mg/day</b> 者可續用 100 mg</td></tr>
       </tbody>
@@ -544,23 +550,23 @@
       <thead><tr><th>藥</th><th>台大品項</th><th>起始與升階（台大藥卡）</th><th>腎／肝</th><th>健保</th></tr></thead>
       <tbody>
         <tr><td><b>Semaglutide</b> 針劑</td>
-            <td><a href="../tools/drug-database.html#code=OZE1LBB0" class="pmid">胰妥讚 Ozempic</a></td>
+            <td><a href="../tools/drug-database.html#code=OZE1LBB0" class="pmid lw">胰妥讚 Ozempic</a></td>
             <td>0.25 mg QW × 4 週 → 0.5 mg QW；再至少 4 週後可加到 1 mg QW。任何時間、與進食無關</td>
             <td>皆不需調整</td><td>有給付（條件見「健保與台大」）</td></tr>
         <tr><td><b>Semaglutide</b> 口服</td>
-            <td><a href="../tools/drug-database.html#code=RYB4LBB7" class="pmid">瑞倍適 Rybelsus 7 mg</a></td>
+            <td><a href="../tools/drug-database.html#code=RYB4LBB7" class="pmid lw">瑞倍適 Rybelsus 7 mg</a></td>
             <td>7 mg QD，30 天後可加到 14 mg QD。<b>服法有嚴格規定，見下方</b></td>
             <td>皆不需調整</td><td><b>無健保給付</b>（自費）</td></tr>
         <tr><td><b>Dulaglutide</b></td>
-            <td><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid">易週糖 Trulicity 1.5 mg</a><br><b>台大目前標「暫供兒童」</b></td>
+            <td><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid lw">易週糖 Trulicity 1.5 mg</a><br><b>台大目前標「暫供兒童」</b></td>
             <td>SC，最高 1.5 mg QW</td><td>皆不需調整</td><td>有給付</td></tr>
         <tr><td><b>Tirzepatide</b><br>（GIP/GLP-1 雙）</td>
-            <td><a href="../tools/drug-database.html#code=MOU1LBB9" class="pmid">猛健樂 Mounjaro</a></td>
+            <td><a href="../tools/drug-database.html#code=MOU1LBB9" class="pmid lw">猛健樂 Mounjaro</a></td>
             <td><b>2.5 mg QW × 4 週（此劑量無治療效果，只是耐受期）</b> → 5 mg QW；
                 之後每 4 週可增 2.5 mg；<b>最高 15 mg QW</b></td>
             <td>皆不需調整</td><td><b>無健保給付</b>（台大自費價每支約 9,500 元）</td></tr>
         <tr><td><b>Lixisenatide</b></td>
-            <td>只有複方 <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid">爽胰達 Soliqua</a>（＋glargine）</td>
+            <td>只有複方 <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">爽胰達 Soliqua</a>（＋glargine）</td>
             <td>見「胰島素」分頁</td>
             <td><b>eGFR ≤30 應避免</b>（ADA 2026 內文）</td><td>有給付（HbA1c &gt;8.0%）</td></tr>
       </tbody>
@@ -590,8 +596,8 @@
   <div class="dirhead"><span class="dh-n">DPP-4 抑制劑</span><span class="dh-e">Gliptins</span></div>
   <div class="dm-drug">
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=TRA4LB89" class="pmid">糖漸平 Trajenta（linagliptin）5 mg QD</a>；
-        <a href="../tools/drug-database.html#code=JAN4LB71" class="pmid">佳糖維 Januvia（sitagliptin）100 mg QD</a>。皆與進食無關。</dd>
+      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=TRA4LB89" class="pmid lw">糖漸平 Trajenta（linagliptin）5 mg QD</a>；
+        <a href="../tools/drug-database.html#code=JAN4LB71" class="pmid lw">佳糖維 Januvia（sitagliptin）100 mg QD</a>。皆與進食無關。</dd>
       <dt>腎功能</dt><dd><b>linagliptin 完全不需依腎功能調整</b>（台大藥卡與仿單皆標 N）——這是它最實用的特點。<br>
         <b>sitagliptin 要調</b>：台大藥卡「eGFR ≥45 不需調整」；DAROC 2024 DKD 表二：
         <b>45 &gt; eGFR ≥30 → 每日 50 mg；eGFR &lt;30 → 每日 25 mg</b>。</dd>
@@ -612,10 +618,10 @@
   <div class="dirhead"><span class="dh-n">磺醯脲類與 meglitinide</span><span class="dh-e">Insulin secretagogues</span></div>
   <div class="dm-drug">
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AMA4LB13" class="pmid">瑪爾胰 Amaryl（glimepiride）2 mg</a>、
-        <a href="../tools/drug-database.html#code=DIA4LB59" class="pmid">岱蜜克龍 Diamicron MR（gliclazide）30 mg</a>、
-        <a href="../tools/drug-database.html#code=GLN4LB36" class="pmid">優糖錠 Glunormal（gliquidone）30 mg</a>、
-        <a href="../tools/drug-database.html#code=REP4LB06" class="pmid">柔醣錠 Repaglinide 1 mg</a>。</dd>
+      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AMA4LB13" class="pmid lw">瑪爾胰 Amaryl（glimepiride）2 mg</a>、
+        <a href="../tools/drug-database.html#code=DIA4LB59" class="pmid lw">岱蜜克龍 Diamicron MR（gliclazide）30 mg</a>、
+        <a href="../tools/drug-database.html#code=GLN4LB36" class="pmid lw">優糖錠 Glunormal（gliquidone）30 mg</a>、
+        <a href="../tools/drug-database.html#code=REP4LB06" class="pmid lw">柔醣錠 Repaglinide 1 mg</a>。</dd>
       <dt>Glimepiride</dt><dd>起始 1–2 mg QD <b>隨第一餐</b>；<b>高齡或腎功能不全者起始 1 mg</b>；
         每 1–2 週加 1–2 mg；<b>最大 8 mg QD</b>。台大藥卡腎功能欄：CrCl 15–60 → 起始 1 mg/day 小心加量。
         <b>仿單自己的數據：4 mg 與 8 mg 的 A1C 降幅一樣（皆 −1.8%），但體重多增 0.4 kg</b>——
@@ -642,7 +648,7 @@
   <div class="dirhead"><span class="dh-n">Pioglitazone</span><span class="dh-e">Thiazolidinedione</span></div>
   <div class="dm-drug">
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AC%204LB42" class="pmid">愛妥糖 Actos 30 mg</a></dd>
+      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=AC%204LB42" class="pmid lw">愛妥糖 Actos 30 mg</a></dd>
       <dt>劑量</dt><dd>起始 15–30 mg QD；<b>NYHA Class I 或 II 心衰竭者只能從 15 mg 起</b>；每次加 15 mg，最大 <b>45 mg/day</b>；
         併用強效 CYP2C8 抑制劑（如 gemfibrozil）時<b>限 15 mg/day</b>。腎功能不需調整；<b>活動性肝病或 ALT &gt;2.5 倍上限者不應起始</b>。</dd>
       <dt>心衰竭</dt><dd><b>黑框警語</b>：TZD「cause or exacerbate congestive heart failure」。
@@ -663,8 +669,8 @@
   <div class="dirhead"><span class="dh-n">α-glucosidase 抑制劑</span><span class="dh-e">Acarbose</span></div>
   <div class="dm-drug">
     <dl class="dm-kv">
-      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB44" class="pmid">醣祿錠 Glucobay 50 mg</a>、
-        <a href="../tools/drug-database.html#code=CAR4LB44" class="pmid">糖利平錠 Carlipin 50 mg</a></dd>
+      <dt>台大品項</dt><dd><a href="../tools/drug-database.html#code=GLU4LB44" class="pmid lw">醣祿錠 Glucobay 50 mg</a>、
+        <a href="../tools/drug-database.html#code=CAR4LB44" class="pmid lw">糖利平錠 Carlipin 50 mg</a></dd>
       <dt>劑量</dt><dd><b>與每餐第一口飯一起吞</b>。起始 25 mg TID，每 4–8 週調整；
         維持上限 <b>體重 ≤60 kg → 50 mg TID；&gt;60 kg → 100 mg TID</b>。</dd>
       <dt>腎／肝</dt><dd>台大藥卡：<b>eGFR &lt;25 不建議</b>（DAROC 2024 DKD 表二同）；<b>肝硬化為禁忌</b>。</dd>
@@ -684,34 +690,34 @@
       <thead><tr><th>學名</th><th>台大品項</th><th>類型</th><th>Onset (h)</th><th>Peak (h)</th><th>Duration (h)</th><th>健保價</th></tr></thead>
       <tbody>
         <tr><td><b>Insulin aspart</b></td>
-            <td><a href="../tools/drug-database.html#code=NO%201LB65" class="pmid">NovoRapid FlexPen</a>／<a href="../tools/drug-database.html#code=NOV1LB95" class="pmid">Penfill</a></td>
+            <td><a href="../tools/drug-database.html#code=NO%201LB65" class="pmid lw">NovoRapid FlexPen</a>／<a href="../tools/drug-database.html#code=NOV1LB95" class="pmid lw">Penfill</a></td>
             <td>速效</td><td>0.17–0.33</td><td>1–3</td><td>3–5</td><td>237</td></tr>
         <tr><td><b>Insulin lispro</b></td>
-            <td><a href="../tools/drug-database.html#code=HUM1LB94" class="pmid">Humalog KwikPen</a></td>
+            <td><a href="../tools/drug-database.html#code=HUM1LB94" class="pmid lw">Humalog KwikPen</a></td>
             <td>速效</td><td>0.25–0.5</td><td>0.5–2.5</td><td>3–6.5</td><td>219</td></tr>
         <tr><td><b>Insulin regular</b></td>
-            <td><a href="../tools/drug-database.html#code=ACT1LB04" class="pmid">Actrapid HM</a>／<a href="../tools/drug-database.html#code=HUM1LB04" class="pmid">Humulin R</a></td>
+            <td><a href="../tools/drug-database.html#code=ACT1LB04" class="pmid lw">Actrapid HM</a>／<a href="../tools/drug-database.html#code=HUM1LB04" class="pmid lw">Humulin R</a></td>
             <td>短效</td><td>0.5–1</td><td>1–5</td><td>6–10</td><td>273</td></tr>
         <tr><td><b>Isophane (NPH)</b></td>
-            <td><a href="../tools/drug-database.html#code=HUM1LB05" class="pmid">Humulin N</a></td>
+            <td><a href="../tools/drug-database.html#code=HUM1LB05" class="pmid lw">Humulin N</a></td>
             <td>中效</td><td>1–2</td><td>6–14</td><td>16–24+</td><td>273</td></tr>
         <tr><td><b>Insulin detemir</b></td>
-            <td><a href="../tools/drug-database.html#code=LEV1LB10" class="pmid">Levemir FlexPen</a></td>
+            <td><a href="../tools/drug-database.html#code=LEV1LB10" class="pmid lw">Levemir FlexPen</a></td>
             <td>長效</td><td>1.1–2</td><td>3.2–9.3</td><td>6–23</td><td>414</td></tr>
         <tr><td><b>Insulin degludec</b></td>
-            <td><a href="../tools/drug-database.html#code=TRE1LBA6" class="pmid">Tresiba FlexTouch</a></td>
+            <td><a href="../tools/drug-database.html#code=TRE1LBA6" class="pmid lw">Tresiba FlexTouch</a></td>
             <td>超長效</td><td>0.5–1.5</td><td>—</td><td><b>42</b></td><td>473</td></tr>
         <tr><td><b>Glargine U-300</b></td>
-            <td><a href="../tools/drug-database.html#code=TOU1LBA1" class="pmid">Toujeo SoloStar</a></td>
+            <td><a href="../tools/drug-database.html#code=TOU1LBA1" class="pmid lw">Toujeo SoloStar</a></td>
             <td>超長效</td><td>6</td><td>12–16</td><td>&gt;24</td><td>555</td></tr>
         <tr><td><b>Lispro 50/50 預混</b></td>
-            <td><a href="../tools/drug-database.html#code=HUM1LB84" class="pmid">Humalog Mix50 KwikPen</a></td>
+            <td><a href="../tools/drug-database.html#code=HUM1LB84" class="pmid lw">Humalog Mix50 KwikPen</a></td>
             <td>預混</td><td>0.25–0.5</td><td>0.8–4.8</td><td>14–24</td><td>219</td></tr>
         <tr><td><b>Degludec 70／aspart 30</b></td>
-            <td><a href="../tools/drug-database.html#code=RYZ1LBA9" class="pmid">Ryzodeg FlexTouch</a></td>
+            <td><a href="../tools/drug-database.html#code=RYZ1LBA9" class="pmid lw">Ryzodeg FlexTouch</a></td>
             <td>預混（超長效＋速效）</td><td>0.23<br>(aspart)</td><td>2.3</td><td><b>42</b></td><td>473</td></tr>
         <tr><td><b>Glargine ＋ lixisenatide</b></td>
-            <td><a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid">Soliqua SoloStar</a></td>
+            <td><a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">Soliqua SoloStar</a></td>
             <td>固定比例複方</td><td colspan="3">見下方「固定比例複方」</td><td>839</td></tr>
       </tbody>
     </table>
@@ -795,19 +801,19 @@
   <div class="dirhead"><span class="dh-n">升階：basal → basal-plus → basal-bolus</span><span class="dh-e">Intensification</span></div>
 
   <div class="steps">
-    <div class="step"><span class="sq">什麼時候要升階（三個條件任一，ADA 原文）</span>
-      基礎胰島素已調到空腹血糖可接受但 <b>A1C 仍未達標</b>；或有<b>明顯的餐後高血糖</b>；或出現 <b>over-basalization 的徵象</b>。</div>
-    <div class="step alt"><span class="sq">先確認已經用了 GLP-1 類</span>
-      若尚未用 GLP-1 RA 或 tirzepatide，<b>應在開始餐時胰島素之前先加上去</b>（可用固定比例複方）。</div>
-    <div class="step"><span class="sq">Basal-plus：先加一餐</span>
+    <div class="step"><span><span class="sq">什麼時候要升階（三個條件任一，ADA 原文）</span>
+      基礎胰島素已調到空腹血糖可接受但 <b>A1C 仍未達標</b>；或有<b>明顯的餐後高血糖</b>；或出現 <b>over-basalization 的徵象</b>。</span></div>
+    <div class="step alt"><span><span class="sq">先確認已經用了 GLP-1 類</span>
+      若尚未用 GLP-1 RA 或 tirzepatide，<b>應在開始餐時胰島素之前先加上去</b>（可用固定比例複方）。</span></div>
+    <div class="step"><span><span class="sq">Basal-plus：先加一餐</span>
       <b>起始 4 units，或基礎劑量的 10%</b>，下在<b>最大的一餐</b>或餐後血糖升最多的那一餐。<br>
       <b>若 A1C &lt;8%，同時把基礎降 4 units 或降 10%</b>（Fig. 9.5 原文）。<br>
-      調整：<b>每週兩次、每次加 1–2 units 或加 10–15%</b>；低血糖時先找原因，找不到就把對應那一劑降 10–20%。</div>
-    <div class="step"><span class="sq">再往上：二餐 → 三餐 → 完整 basal-bolus</span>
-      逐步加，不要一次全開。第二型的總日劑量參考值約 <b>1 U/kg</b>（比第一型高，因為胰島素阻抗）。</div>
-    <div class="step alt"><span class="sq">晚餐那一劑加上去時，記得把基礎降下來</span>
+      調整：<b>每週兩次、每次加 1–2 units 或加 10–15%</b>；低血糖時先找原因，找不到就把對應那一劑降 10–20%。</span></div>
+    <div class="step"><span><span class="sq">再往上：二餐 → 三餐 → 完整 basal-bolus</span>
+      逐步加，不要一次全開。第二型的總日劑量參考值約 <b>1 U/kg</b>（比第一型高，因為胰島素阻抗）。</span></div>
+    <div class="step alt"><span><span class="sq">晚餐那一劑加上去時，記得把基礎降下來</span>
       ADA 原文：「When significant additions to the prandial insulin dose are made, <b>particularly with the evening meal</b>,
-      consideration should be given to <b>decreasing basal insulin</b>」。</div>
+      consideration should be given to <b>decreasing basal insulin</b>」。</span></div>
   </div>
 
   <div class="kbox">
@@ -1082,7 +1088,7 @@
       <thead><tr><th>項目</th><th>數字</th><th>出處</th></tr></thead>
       <tbody>
         <tr><td>管灌的營養胰島素換算</td><td><b>1 U 胰島素 / 10–15 g 碳水</b></td><td>ADA 2026</td></tr>
-        <tr><td>持續管灌的給法</td><td>speed 速效 <b>q4h</b>／regular <b>q6h</b>／NPH <b>q8–12h</b>；<br><b>regular-based 方案的血糖結果較好、針數較少</b></td><td>ADA 2026</td></tr>
+        <tr><td>持續管灌的給法</td><td>速效 <b>q4h</b>／regular <b>q6h</b>／NPH <b>q8–12h</b>；<br><b>regular-based 方案的血糖結果較好、針數較少</b></td><td>ADA 2026</td></tr>
         <tr><td>Bolus 管灌</td><td><b>每次灌食前</b>給速效 <b>1 U / 10–15 g 碳水</b></td><td>ADA 2026</td></tr>
         <tr><td>夜間管灌</td><td><b>灌食開始時給 NPH</b></td><td>ADA 2026</td></tr>
         <tr><td>TPN 加入輸液袋的胰島素</td><td><b>1 U regular / 10 g dextrose</b>，<b>每天調整</b></td><td>ADA 2026</td></tr>
