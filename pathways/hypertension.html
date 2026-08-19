@@ -1,0 +1,2929 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>高血壓用藥 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#1f5a6b">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<link rel="stylesheet" href="../css/drug-database.css">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<style>
+  /* ── 本頁只用「既有且已被 css/ui-sentence.css 收過」的視覺 class ──────────────
+     .rxbox/.rx-*（AC1）、.gr（AC2）、.refbar/.dirhead/.steps（AC7）、
+     .dt-cor/.dt-wrap（AC8）、.kbox/.tw/.lead/.pmid（R–AB 段）、
+     .flow-opt/.flow-rec 變體（H 段）、.risk-band（styles.css）、.tab-row/.tab-btn。
+     本頁自訂的 .ht-* 一律只管「版面」（display／grid／間距），不碰任何顏色，
+     故造句設計不需要再補一段規則。做法沿用 pathways/diabetes.html 與 nutrition.html。 */
+  .ht-panel{display:none;} .ht-panel.on{display:block;}
+
+  /* 共病選單：沿用 .flow-opt 的外觀，只把它從整列改成可換行的方磚。 */
+  .ht-chips{display:grid; grid-template-columns:1fr; gap:8px; margin:6px 0 4px;}
+  @media(min-width:560px){ .ht-chips{grid-template-columns:1fr 1fr;} }
+  .ht-chips .flow-opt{width:100%;}
+  /* 小標只降份量、不指定顏色（指定 var(--muted-soft) 會在造句設計下吃到正式版色票）。 */
+  .ht-grp{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+          opacity:.66; margin:14px 0 4px;}
+  .ht-grp:first-child{margin-top:2px;}
+
+  /* 數值輸入列：與 .rxbox 的 .rx-grid 同一套，欄數自動填滿。
+     ⚠ 造句設計（ui-sentence.css AC1）把 .rx-row 改成 display:block，
+     標籤在上、輸入框在下會吃掉一整屏，這裡收回同一行——只改版面，不碰顏色。 */
+  .ht-nums{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:6px 16px;}
+  .ht-nums .rx-row{display:flex; align-items:center; gap:8px; min-height:30px;}
+  .ht-nums .rx-row label{flex:1 1 auto; min-width:0; line-height:1.35;}
+  .ht-nums .rx-row input[type=number]{flex:0 0 78px; width:78px;}
+  .ht-nums .rx-row .rx-u{display:none;}
+
+  .ht-out{margin-top:14px;}
+  .ht-out .flow-rec{margin-top:10px;}
+  .ht-act{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
+
+  /* 逐藥卡：標籤欄一律兩字以內，藥名放 .kbox-t（藥名塞進標籤欄會被折成一字一行）。 */
+  .ht-rx{margin-top:9px;}
+  .ht-rx:first-of-type{margin-top:6px;}
+  .ht-kv{display:grid; grid-template-columns:3.4em 1fr; gap:3px 10px; font-size:12.5px; line-height:1.7;}
+  .ht-kv dt{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; padding-top:3px; min-width:0;}
+  .ht-kv dd{margin:0; min-width:0;}
+  /* 條列用懸掛縮排：換行時對齊到第一個字，不會頂回行首 */
+  .ht-li{display:block; padding-left:1.15em; text-indent:-1.15em; margin-top:1px;}
+  .ht-li:first-child{margin-top:0;}
+
+  /* 目標血壓三欄並列（三份指引各一欄）；手機一欄。只設 grid。 */
+  .ht-tgt{display:grid; grid-template-columns:1fr; gap:8px; margin:8px 0 4px;}
+  @media(min-width:600px){ .ht-tgt{grid-template-columns:repeat(3,1fr);} }
+  .ht-tgt .kbox{margin:0;}
+  .ht-big{font-family:var(--serif); font-size:26px; font-weight:600; line-height:1.15; letter-spacing:-.01em;}
+  .ht-big small{font-family:var(--mono); font-size:11px; font-weight:400; opacity:.7;}
+
+  /* 長標籤的連結：.pmid 本身帶 white-space:nowrap，當藥卡連結時會撐破 grid 軌道 */
+  .pmid.lw{white-space:normal;}
+  .ht-kv dd,.ht-kv dt{min-width:0;}
+
+  /* ── 以下整段是 .rxbox/.rx-*／.refbar／.dirhead／.steps／.kbox／.tw／.lead／.pmid／.gr 的
+     **基礎樣式**，逐字取自 pathways/nutrition.html（該頁與 CRRT 頁是這套 class 的母本）。
+     這些 class 的顏色在 css/ui-sentence.css 的 AC 段已收，但**版面與框線是每頁自帶的**，
+     不在 css/styles.css 裡——漏掉這一段的話，正式版下這些框全部消失，
+     而且 .tw 沒有 overflow-x:auto，寬表格會把整頁撐出橫向捲軸。 ── */
+  .rxbox{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:11px 13px; margin:10px 0 12px;}
+  .rxbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+           text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .rx-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px 14px;}
+  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }
+  .rx-row{display:flex; align-items:center; gap:7px;}
+  .rx-row label{font-size:12px; color:var(--ink); flex:1 1 auto; line-height:1.4;}
+  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .rx-row input[type=number]{width:78px; font-family:var(--mono); font-size:14px; font-weight:700;
+      padding:4px 6px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
+  .rx-row .rx-u{font-family:var(--mono); font-size:10.5px; color:var(--muted); width:62px;}
+  /* 深色結果面板：底色寫死 #132126，不能用 var(--ink)——暗色模式下 --ink 會翻成淺色，
+     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */
+  .rx-out{margin-top:11px; background:#132126; border-radius:2px; padding:10px 12px;}
+  .rx-out-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:9px;}
+  .rx-metric .rx-lab{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:#9fb3b8;}
+  .rx-metric .rx-val{font-family:var(--serif); font-size:23px; font-weight:600; color:#f4f2ec; line-height:1.2;}
+  .rx-metric .rx-val small{font-family:var(--mono); font-size:11px; font-weight:400; color:#9fb3b8;}
+  .rx-metric .rx-val.warn{color:#f0a58e;}
+  .rx-metric .rx-val.ok{color:#93d3b0;}
+  .rx-flag{margin-top:9px; font-family:var(--mono); font-size:11px; line-height:1.7; color:#d8d3c4;}
+  .rx-flag .f-bad{color:#f0a58e;} .rx-flag .f-ok{color:#93d3b0;}
+  .rx-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:8px;}
+
+  /* ── 參考值列 ── */
+  .refbar{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline;
+          background:var(--soft-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
+          border-radius:2px; padding:8px 11px; margin:2px 0 12px;}
+  .refbar .rb{font-family:var(--mono); font-size:11.5px; color:var(--ink);}
+  .refbar .rb b{color:var(--accent); font-weight:700;}
+  .refbar .rb i{font-style:normal; color:var(--muted);}
+  .refbar .rb-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:auto;}
+
+  /* ── 區塊標頭 ── */
+  .dirhead{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+           margin:22px 0 7px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
+  .dirhead:first-child{margin-top:2px;}
+  .dirhead .dh-n{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink);}
+  .dirhead .dh-e{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft);}
+  .dirhead.hi{border-bottom-color:var(--accent2-soft);}
+  .dirhead.hi .dh-n{color:var(--accent2);}
+
+  /* ── 步驟條 ──
+     ⚠ .step 是 grid：每個子元素與每段裸文字節點各自成為一個 grid item，
+     所以段落裡的 <b> 會被排進第一欄那 1.8em、變成一字一行。
+     正確寫法是整段包在一個 <span> 內：<div class="step"><span>…</span></div> */
+  .steps{counter-reset:st; margin:8px 0 10px;}
+  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
+        font-size:12.5px; line-height:1.75;}
+  .step:before{counter-increment:st; content:counter(st) "."; font-family:var(--mono); font-size:12px;
+               font-weight:700; color:var(--accent); line-height:1.75; letter-spacing:.02em;}
+  .step.alt:before{color:var(--accent2);}
+  .step .sq{font-weight:700; color:var(--ink);}
+
+  /* ── 通用小元件 ── */
+  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
+        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
+  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
+  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
+          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
+  .kbox.alert .kbox-t{color:var(--accent2);}
+  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
+  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
+        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+  .pmid:hover{color:var(--accent2);}
+  .gr{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
+      background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .gr.w{background:var(--accent2-soft); color:var(--accent2);}
+  /* 表格內的長內容一律可換行（本頁表格第二欄以後多為整段文字，
+     不可用 .dt-cor 的 nowrap，否則第一欄被擠成一字一行——nutrition.html 的教訓） */
+  .def-table td{line-height:1.7;}
+  .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
+  .nw{white-space:nowrap;}
+  /* 多欄且每欄都是整段文字的表：在窄螢幕若讓它縮成 100%，欄寬會被壓到 60 px 上下、
+     一行只剩三個字（375 px 實測）。給一個最小寬度讓它在 .tw 內橫向捲動，
+     這是全站既有的作法（.tw 本來就是為此存在）。只設寬度，不碰顏色。 */
+  .tw .def-table.ht-w3{min-width:540px;}
+  .tw .def-table.ht-w4{min-width:660px;}
+</style>
+</head>
+<body data-back-label="高血壓用藥">
+<div class="sheet">
+<div class="view active" id="view-hypertension">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Decision Pathway</div>
+      <h1>高血壓用藥</h1>
+      <div class="sub">依共病選藥 · 加藥升階 · 各類藥劑量與副作用 · 住院與急症 · 圍手術期 · 健保給付</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-htn-path'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <div class="tab-row" id="ht_tabs">
+    <button class="tab-btn active" data-p="rx"  onclick="htTab('rx')">選藥</button>
+    <button class="tab-btn"        data-p="up"  onclick="htTab('up')">加藥升階</button>
+    <button class="tab-btn"        data-p="cls" onclick="htTab('cls')">各類藥</button>
+    <button class="tab-btn"        data-p="adm" onclick="htTab('adm')">住院與急症</button>
+    <button class="tab-btn"        data-p="op"  onclick="htTab('op')">圍手術期</button>
+    <button class="tab-btn"        data-p="sp"  onclick="htTab('sp')">特殊族群</button>
+    <button class="tab-btn"        data-p="dx"  onclick="htTab('dx')">量測與診斷</button>
+    <button class="tab-btn"        data-p="nhi" onclick="htTab('nhi')">健保與台大</button>
+    <button class="tab-btn"        data-p="ev"  onclick="htTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>三份現行指引的門檻與目標並不一致，本頁一律三邊並列，不替使用者選一個。</b>
+    <b>2025 AHA/ACC</b>（Circulation 2025，取代 2017 版）／
+    <b>2024 ESC</b>（Eur Heart J 2024，新設 Elevated BP 分類）／
+    <b>2022 台灣 TSOC-THS</b>（Acta Cardiol Sin 2022，以居家血壓 722 為準）。
+    腎臟依 <b>KDIGO 2021</b>；糖尿病依 <b>ADA 2026 Section 10</b>。<br>
+    <b>健保給付依藥品給付規定第 2 節（115.05.22 更新版）與通則（整份 115.07.23 版）</b>——與糖尿病、B 型肝炎用藥不同，
+    <b>一般降壓藥（ACEI／ARB／CCB／thiazide／乙型阻斷劑）健保沒有任何限制條文</b>，
+    有條件的只有少數幾項，逐條列在「健保與台大」分頁。
+    藥品品項與院內有無以<b>台大醫院藥劑部藥品資料庫</b>為準。<br>
+    <b>本頁是輔助工具，不取代臨床判斷。</b>
+  </div>
+
+<!-- ==================== 選藥 ==================== -->
+<div class="ht-panel on" id="p-rx">
+
+  <div class="kbox alert">
+    <div class="kbox-t">三份指引在同一個病人身上會給出不同答案</div>
+    這不是誰對誰錯，是<b>量測方法、風險工具與證據取捨都不一樣</b>。本頁把三邊都算給你看，由你決定。
+    <span class="ht-li">· <b>AHA/ACC 2025</b>（2025-08-14 發表，取代 2017 版）——用<b>診間血壓</b>，
+      風險工具是 <b>PREVENT</b>，門檻與目標最積極。</span>
+    <span class="ht-li">· <b>ESC 2024</b>——用<b>診間血壓</b>，風險工具是 <b>SCORE2／SCORE2-OP</b>，
+      高血壓仍定義為 ≥140/90，但新增 <b>Elevated BP（120–139 或 70–89）</b>這一段，且目標是<b>區間 120–129</b>（有下界）。</span>
+    <span class="ht-li">· <b>台灣 TSOC／THS 2022</b>——用<b>居家 722 血壓</b>，
+      定義 ≥130/80、<b>全體目標 &lt;130/80</b>，<b>五大類都是第一線（含乙型阻斷劑）</b>。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">病人條件</span><span class="dh-e">Enter values and select comorbidities</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    數值留空就不列入判斷。共病可以複選——一個人同時有冠心病、慢性腎病與痛風是常態，三條線的建議會一起列出。
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">血壓（兩組都填才比得出白袍／隱匿型）</div>
+    <div class="ht-nums">
+      <div class="rx-row"><label>診間 SBP <span class="rx-en">mmHg</span></label>
+        <input type="number" id="ht_osbp" min="60" max="300" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>診間 DBP <span class="rx-en">mmHg</span></label>
+        <input type="number" id="ht_odbp" min="30" max="200" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>居家 SBP（722 平均） <span class="rx-en">mmHg</span></label>
+        <input type="number" id="ht_hsbp" min="60" max="300" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>居家 DBP（722 平均） <span class="rx-en">mmHg</span></label>
+        <input type="number" id="ht_hdbp" min="30" max="200" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+    </div>
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">其他數值</div>
+    <div class="ht-nums">
+      <div class="rx-row"><label>年齡 <span class="rx-en">years</span></label>
+        <input type="number" id="ht_age" min="18" max="120" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>10 年心血管風險 <span class="rx-en">% · PREVENT 或 SCORE2</span></label>
+        <input type="number" id="ht_risk" min="0" max="100" step="0.1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>eGFR <span class="rx-en">mL/min/1.73m²</span></label>
+        <input type="number" id="ht_egfr" min="0" max="200" step="1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>UACR <span class="rx-en">mg/g</span></label>
+        <input type="number" id="ht_uacr" min="0" max="10000" step="1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>血鉀 <span class="rx-en">mmol/L</span></label>
+        <input type="number" id="ht_k" min="1.5" max="9" step="0.1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>心跳 <span class="rx-en">bpm</span></label>
+        <input type="number" id="ht_hr" min="20" max="220" step="1" inputmode="numeric"><span class="rx-u"></span></div>
+    </div>
+  </div>
+
+  <div class="ht-grp">心血管共病</div>
+  <div class="ht-chips" id="ht_c1">
+    <button type="button" class="flow-opt" data-f="cad">冠狀動脈疾病／心絞痛
+      <span class="fo-sub">穩定型心絞痛、曾做過 PCI 或 CABG</span></button>
+    <button type="button" class="flow-opt" data-f="postmi">心肌梗塞後
+      <span class="fo-sub">會影響乙型阻斷劑要用多久</span></button>
+    <button type="button" class="flow-opt" data-f="hfref">心衰竭 EF ≤40%
+      <span class="fo-sub">HFrEF</span></button>
+    <button type="button" class="flow-opt" data-f="hfpef">心衰竭 EF &gt;40%
+      <span class="fo-sub">HFmrEF／HFpEF</span></button>
+    <button type="button" class="flow-opt" data-f="stroke">曾中風或短暫性腦缺血
+      <span class="fo-sub">非急性期；急性期見「住院與急症」</span></button>
+    <button type="button" class="flow-opt" data-f="af">心房顫動</button>
+    <button type="button" class="flow-opt" data-f="aorta">主動脈瘤或主動脈剝離病史
+      <span class="fo-sub">含 Marfan 等結締組織疾病</span></button>
+    <button type="button" class="flow-opt" data-f="pad">周邊動脈疾病</button>
+  </div>
+
+  <div class="ht-grp">腎臟與代謝</div>
+  <div class="ht-chips" id="ht_c2">
+    <button type="button" class="flow-opt" data-f="dm">糖尿病</button>
+    <button type="button" class="flow-opt" data-f="dial">透析中
+      <span class="fo-sub">血液透析或腹膜透析</span></button>
+    <button type="button" class="flow-opt" data-f="tx">腎移植後
+      <span class="fo-sub">使用 tacrolimus 或 cyclosporine</span></button>
+    <button type="button" class="flow-opt" data-f="gout">痛風或高尿酸血症</button>
+    <button type="button" class="flow-opt" data-f="obes">肥胖／代謝症候群</button>
+  </div>
+
+  <div class="ht-grp">其他共病與族群</div>
+  <div class="ht-chips" id="ht_c3">
+    <button type="button" class="flow-opt" data-f="preg">懷孕、備孕或哺乳
+      <span class="fo-sub">會整組改變用藥，選了會蓋過其他建議</span></button>
+    <button type="button" class="flow-opt" data-f="asthma">氣喘</button>
+    <button type="button" class="flow-opt" data-f="copd">慢性阻塞性肺病</button>
+    <button type="button" class="flow-opt" data-f="osa">睡眠呼吸中止症</button>
+    <button type="button" class="flow-opt" data-f="bph">良性攝護腺肥大</button>
+    <button type="button" class="flow-opt" data-f="migraine">偏頭痛</button>
+    <button type="button" class="flow-opt" data-f="frail">中重度衰弱或預期餘命 &lt;3 年</button>
+    <button type="button" class="flow-opt" data-f="ortho">有症狀的姿勢性低血壓
+      <span class="fo-sub">站立後 SBP 降 ≥20 或 DBP 降 ≥10 且有症狀</span></button>
+  </div>
+
+  <div class="ht-grp">目前狀態</div>
+  <div class="ht-chips" id="ht_c4">
+    <button type="button" class="flow-opt" data-f="naive">尚未用任何降壓藥</button>
+    <button type="button" class="flow-opt" data-f="resist">已用三種藥（含利尿劑）仍未達標
+      <span class="fo-sub">難治型高血壓</span></button>
+    <button type="button" class="flow-opt" data-f="hypok">低血鉀
+      <span class="fo-sub">自發性或利尿劑引起</span></button>
+    <button type="button" class="flow-opt" data-f="adrenal">意外發現腎上腺腫瘤</button>
+    <button type="button" class="flow-opt" data-f="famhx">早發高血壓家族史或 &lt;40 歲中風</button>
+  </div>
+
+  <div class="ht-act">
+    <button type="button" class="btn-reset" onclick="htReset()">清除全部選擇</button>
+  </div>
+
+  <div class="ht-out" id="ht_out"></div>
+
+</div>
+<!-- ==================== 加藥升階 ==================== -->
+<div class="ht-panel" id="p-up">
+
+  <div class="kbox alert">
+    <div class="kbox-t">加藥的第一原則：先加另一類，不要一味加同一支的劑量</div>
+    五大類在標準劑量下的降壓幅度差不多（單方約降 SBP 9–10、DBP 5 mmHg）。
+    <b>同一支加倍只多降約 20%（大約再 2/1 mmHg），但加另一類藥多降的幅度大約是加倍的 5 倍。</b><br>
+    台灣 2022 指引把它寫成 <b>10/5 rule</b>：基準血壓 154/97 時，五大類任一種標準劑量可降約
+    <b>10 mmHg SBP／5 mmHg DBP</b>（已扣安慰劑）；基準血壓每高 10 mmHg，再多降 1.0/1.1 mmHg。<br>
+    <b>而且半劑量的副作用幾乎只有一半，降壓效果卻只少 20%</b>——這就是三份指引都偏好
+    「低劑量多種藥」而不是「單方最大劑量」的理由。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">目前用了哪幾類</span><span class="dh-e">Select current classes</span></div>
+  <div class="lead" style="margin-top:-2px;">點選目前在用的類別，下面會列出下一步。</div>
+  <div class="ht-chips" id="ht_u1">
+    <button type="button" class="flow-opt" data-u="a">A — ACEI 或 ARB
+      <span class="fo-sub">台大：captopril／enalapril；losartan／valsartan／irbesartan／olmesartan／azilsartan</span></button>
+    <button type="button" class="flow-opt" data-u="c">C — 二氫吡啶類 CCB
+      <span class="fo-sub">台大：amlodipine／lercanidipine／nifedipine 持續性錠</span></button>
+    <button type="button" class="flow-opt" data-u="d">D — Thiazide 類利尿劑
+      <span class="fo-sub">台大：trichlormethiazide 2 mg／indapamide SR 1.5 mg</span></button>
+    <button type="button" class="flow-opt" data-u="b">B — 乙型阻斷劑</button>
+    <button type="button" class="flow-opt" data-u="m">MRA — spironolactone 或 eplerenone</button>
+    <button type="button" class="flow-opt" data-u="o">其他（α 阻斷劑、clonidine、hydralazine、minoxidil）</button>
+    <button type="button" class="flow-opt" data-u="ndhp">non-DHP CCB — diltiazem 或 verapamil</button>
+    <button type="button" class="flow-opt" data-u="maxdose">已到最大可耐受劑量</button>
+    <button type="button" class="flow-opt" data-u="bbind">有乙型阻斷劑的明確適應症
+      <span class="fo-sub">心絞痛、心肌梗塞後、HFrEF、心率控制</span></button>
+    <button type="button" class="flow-opt" data-u="egfr45">eGFR &lt; 45
+      <span class="fo-sub">決定能不能加 MRA</span></button>
+  </div>
+  <div class="ht-act"><button type="button" class="btn-reset" onclick="upReset()">清除</button></div>
+  <div class="ht-out" id="ht_uout"></div>
+
+  <div class="dirhead"><span class="dh-n">A ＋ C ＋ D 這個三角形</span><span class="dh-e">The core three</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    三份指引的三藥組合完全一致：<b>RAS 阻斷劑（A）＋ 二氫吡啶類 CCB（C）＋ thiazide 類利尿劑（D）</b>。
+    分歧只在「乙型阻斷劑算不算第一線」。
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">為什麼是這三個</div>
+    <span class="ht-li">· <b>A ＋ D</b>：AHA 原文——把 RAS 阻斷劑與 thiazide 類併用，<b>可以降低低血鉀或高血鉀的機率</b>
+      （兩者對血鉀的作用方向相反）。</span>
+    <span class="ht-li">· <b>A ＋ C</b>：AHA 原文——把 ACEI 或 ARB 與二氫吡啶類 CCB 併用，
+      <b>可以降低下肢水腫的發生率與嚴重度</b>。這也是 amlodipine 水腫時的正解（加 RASi，不是加利尿劑）。</span>
+    <span class="ht-li">· <b>C ＋ D</b>：可用，但缺少上面兩種互補作用。</span>
+    <span class="ht-li">· <b>ACCOMPLISH 試驗</b>（NEJM 2008;359:2417–28，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/19052124/" target="_blank" rel="noopener">PMID 19052124</a>）：
+      11,506 位高風險高血壓病人，<b>benazepril＋amlodipine vs benazepril＋HCTZ</b>，
+      因達到預設停止界線而<b>提前中止</b>。主要複合終點 <b>9.6% vs 11.8%，HR 0.80（0.72–0.90），P&lt;0.001</b>；
+      兩組達成的血壓幾乎一樣（131.6/73.3 vs 132.5/74.4）。<br>
+      ⚠ <b>但這篇的限制要一起講</b>：對照組用的是 <b>HCTZ</b>（不是 chlorthalidone 或 indapamide），
+      而 Cochrane 已顯示不同 thiazide 的行為並不相同；<b>台大兩支 thiazide 也都不在這篇裡</b>。
+      所以它支持的是「A＋C 是好組合」，<b>不等於「利尿劑不好」</b>。</span>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">不可以的組合</div>
+    <span class="ht-li">· <b>ACEI ＋ ARB ＋ 直接腎素抑制劑，三者之間任何兩兩組合都禁止。</b>
+      AHA 2025 <b>COR 3: Harm／LOE A</b>；ESC 2024 <b>Class III／A</b>；台灣 2022 <b>COR III／LOE A</b>。三家一致。</span>
+    <span class="ht-li">· <b>Sacubitril/valsartan 不可與 ACEI 或 ARB 併用</b>；換用前<b>與 ACEI 至少間隔 36 小時</b>；
+      <b>曾有血管性水腫者禁用</b>（健保 2.14 明文）。</span>
+    <span class="ht-li">· <b>乙型阻斷劑 ＋ non-DHP CCB（diltiazem／verapamil）</b>——心搏過緩、房室傳導阻滯、心衰竭惡化。
+      真要併用要有心電圖與心跳監測。</span>
+    <span class="ht-li">· <b>MRA ＋ 另一種 MRA</b>（例如 finerenone 加 spironolactone）——高血鉀。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">反而是可以的組合（常被誤以為不行）</div>
+    <span class="ht-li">· <b>DHP CCB ＋ non-DHP CCB</b>——AHA 原文：selected patients 可併用以增加降壓。
+      台灣 2022 也把「同類藥併用（DHP＋non-DHP、thiazide＋loop）」列為 <b>COR IIa／LOE C</b> 允許。</span>
+    <span class="ht-li">· <b>Thiazide 類 ＋ loop 利尿劑</b>、<b>thiazide 類 ＋ 保鉀利尿劑</b>——AHA 明列為例外，可以併用。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">單片複方（SPC）</span><span class="dh-e">Single-pill combination</span></div>
+  <div class="kbox">
+    <div class="kbox-t">三份指引都建議，但台大只有一支</div>
+    <span class="ht-li">· <b>AHA 2025</b>：Stage 2 起始就用兩種不同類別的藥，<b>單片複方優於兩顆分開的藥</b>（<b>COR 1／B-R</b>）。</span>
+    <span class="ht-li">· <b>ESC 2024</b>：用複方時<b>建議用固定劑量單片複方</b>（<b>Class I／B</b>）；三藥階段<b>最好也是 SPC</b>。</span>
+    <span class="ht-li">· <b>台灣 2022</b>：血壓高於目標 ≥20/10 → 起始就用合併治療、<b>優先 SPC</b>（<b>COR I／B</b>）；
+      &lt;20/10 → 可考慮<b>半顆 SPC</b> 起始（<b>COR IIa／B</b>）。</span>
+    <span class="ht-li">· <b>台灣本土實證</b>：健保資料庫分析，由兩種藥的自由組合換成對應 SPC，
+      <b>一年內順從性相對提升 75%</b>（台灣 2022 指引 ref 342）。
+      另一筆台灣資料：起始降壓治療後一年內<b>只有 18.6% 的病人服藥天數 ≥80%</b>。</span>
+    <span class="ht-li">· ⚠ <b>AHA 自承「沒有任何 RCT 比較過起始階梯式與起始併用」</b>；
+      ESC 也自承本來只夠 Class IIa，是靠觀察性研究加 polypill 的 RCT 才升到 Class I。</span>
+    <span class="ht-li">· ⚠ <b>台大院內只有 Exforge（amlodipine 5／valsartan 160，易安穩）一支複方，
+      而且仿單寫明「不適合用於起始治療」。</b>院內沒有 ARB＋thiazide、沒有三合一。
+      要照指引起始 SPC，在台大實際上只能開兩顆。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">早上吃還是睡前吃</span><span class="dh-e">Timing of dosing</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">TIME 試驗（Lancet 2022）：對心血管結果沒有差別</div>
+    <span class="ht-li">· 英國 <b>21,104 人</b>，隨機分成<b>早上（06–10 時）</b>或<b>晚上（20–24 時）</b>吃平常的降壓藥，
+      中位追蹤 <b>5.2 年</b>（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36240838/" target="_blank" rel="noopener">PMID 36240838</a>）。</span>
+    <span class="ht-li">· <b>主要終點（血管性死亡或心肌梗塞／中風住院）：晚上組 3.4% vs 早上組 3.7%，
+      未校正 HR 0.95（95% CI 0.83–1.10），P=0.53——沒有差別</b>，也沒有安全性疑慮。</span>
+    <span class="ht-li">· 作者結論逐字：「Patients can be advised that they can take their regular antihypertensive
+      medications at <b>a convenient time that minimises any undesirable effects</b>.」
+      <b>也就是：挑一個病人記得住、副作用最少的時間就好。</b></span>
+    <span class="ht-li">· ⚠ 這推翻了 Hygia 研究「睡前吃可以大幅降低心血管事件」的說法（該研究的可信度另有爭議）。
+      <b>不要再把「降壓藥要睡前吃」當成通則。</b></span>
+    <span class="ht-li">· <b>但「個別化調整給藥時間」仍然有用</b>——台灣 2022 指引的 ATGOALs 就把它列為第二步
+      （<b>COR IIa／LOE B</b>）：<b>晨間血壓未控制 → 改睡前給；晚間血壓未控制 → 換更長效的藥；
+      早晚都未控制 → 加一種藥</b>。<b>差別在於：這是依居家血壓型態做的個別調整，不是「全部人都睡前吃」。</b></span>
+    <span class="ht-li">· 實務上的兩個例外：<b>利尿劑不要睡前吃</b>（夜尿；台灣 trichlormethiazide 仿單也寫「夜間需休息者宜中午前服藥」）；
+      <b>α 阻斷劑的第一劑要睡前吃</b>（第一劑低血壓，服藥後 2–6 小時最明顯）。</span>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">難治型高血壓的第四支藥</span><span class="dh-e">Resistant hypertension</span></div>
+  <div class="kbox">
+    <div class="kbox-t">先確認是真的難治</div>
+    <b>定義</b>（AHA 2025）：用<b>三種機轉互補的降壓藥、含一種利尿劑、皆已到最大可耐受劑量</b>仍未達標；
+    <b>或</b>已達標但需要 <b>≥4 種</b>藥。以 &lt;130/80 為目標時，美國成人的盛行率約 <b>8.5–20%</b>。<br>
+    <b>第一步不是加藥，是找原因</b>（AHA 2025 新條文 <b>COR 1／B-NR</b>）：<b>更詳細地找續發原因、
+    逐項檢視所有用藥並把會升血壓的藥拿掉</b>；同時確認順從性、用居家血壓排除白袍效應、檢視鹽攝取。
+    <b>難治型一律要篩原發性醛固酮症，不論血鉀正不正常。</b>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">PATHWAY-2：spironolactone 為什麼是第四線首選</div>
+    <span class="ht-li">· 英國雙盲、安慰劑對照<b>交叉</b>試驗，335 位難治型高血壓病人（已用三種藥的最大可耐受劑量 ≥3 個月），
+      依隨機順序輪流用 <b>spironolactone 25–50 mg</b>、<b>bisoprolol 5–10 mg</b>、
+      <b>doxazosin 緩釋 4–8 mg</b> 與安慰劑各 12 週
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26414968/" target="_blank" rel="noopener">PMID 26414968</a>）。</span>
+    <span class="ht-li">· <b>居家收縮壓的降幅：spironolactone 優於安慰劑 −8.70 mmHg（−9.72 到 −7.69，P&lt;0.0001）；
+      優於另外兩支藥的平均 −4.26 mmHg；對 doxazosin −4.03、對 bisoprolol −4.48，全部 P&lt;0.0001。</b>
+      <b>spironolactone 在整個血壓分布上都是最有效的。</b></span>
+    <span class="ht-li">· 台灣 2022 指引也把 spironolactone 列為<b>第二線用藥（COR I／LOE A）</b>，
+      並註明難治型加 <b>25–50 mg/day</b> 即可，<b>而且與血漿腎素活性、醛固酮濃度、血鉀水平無關</b>。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">新藥：有數字，但台灣都還拿不到</div>
+    <span class="ht-li">· <b>Aprocitentan（雙重內皮素受體拮抗劑）</b>——PRECISION 第 3 期
+      （Lancet 2022;400:1927–37，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36356632/" target="_blank" rel="noopener">PMID 36356632</a>）：
+      730 人，<b>4 週診間收縮壓相對安慰劑只多降 3.8 mmHg（12.5 mg）與 3.7 mmHg（25 mg）</b>；
+      <b>24 小時 ABPM 多降 4.2 與 5.9 mmHg</b>；停藥 4 週後血壓回升 5.8 mmHg。
+      <b>最常見的不良事件是輕中度水腫／體液滯留：12.5 mg 9%、25 mg 18%、安慰劑 2%。</b>
+      AHA 2025 已把「雙重內皮素受體拮抗劑」列入 MRA 不耐受時的選項（COR 2a）。
+      ⚠ <b>台灣查無藥證。</b></span>
+    <span class="ht-li">· <b>Baxdrostat（醛固酮合成酶抑制劑）</b>——BaxHTN 第 3 期
+      （NEJM 2025;393:1363–74，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40888730/" target="_blank" rel="noopener">PMID 40888730</a>）：
+      796 位<b>未控制或難治型</b>高血壓（已用 2 種或 ≥3 種含利尿劑的藥），12 週後
+      <b>相對安慰劑多降 8.7 mmHg（1 mg）與 9.8 mmHg（2 mg），P&lt;0.001</b>。
+      <b>血鉀 &gt;6.0 mmol/L：1 mg 2.3%、2 mg 3.0%、安慰劑 0.4%</b>。
+      ⚠ <b>台灣尚無藥證。</b>心血管結果試驗尚未完成。</span>
+    <span class="ht-li">· <b>腎去神經術</b>：AHA 2025 <b>COR 2b／B-R</b>，限<b>診間 SBP 140–180「且」DBP ≥90、eGFR ≥40</b>
+      ——<b>單純收縮期高血壓不在適應範圍</b>。ESC 2024 給難治型 <b>IIb／B</b>、
+      給「高風險但用不到三種藥」<b>IIb／A</b>（注意證據等級反而是後者較高）；
+      <b>eGFR &lt;40 或續發性高血壓為 Class III 不建議</b>。
+      ⚠ <b>台灣健保不給付。</b>AHA 對 RDN 的兩條 <b>COR 1</b> 不是「做不做」，
+      而是<b>「一定要多專科團隊評估」與「一定要共享決策」</b>。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">未達標時的調藥順序</span><span class="dh-e">ATGOALs · Taiwan 2022</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    台灣 2022 指引的作法：<b>治療 4 週未達標，先跑這個演算法，不要一看到數字就加藥</b>。
+  </div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">A — Adherence 順從性。</span>
+      先確認病人真的有在吃。台灣資料：起始治療後一年內只有 18.6% 的人服藥天數 ≥80%。
+      <b>早期換成 SPC 可以改善</b>。</span></div>
+    <div class="step"><span><span class="sq">T — Timing 給藥時間。</span>
+      依早／晚居家血壓或 ABPM 調整。<b>晨間血壓未控制 → 改睡前給藥</b>；
+      <b>晚間血壓未控制 → 換成作用更長效的藥</b>；<b>早晚都未控制 → 加一種藥</b>（<b>COR IIa／LOE B</b>）。</span></div>
+    <div class="step"><span><span class="sq">G — Greater doses 增加劑量。</span>
+      往上調到最大可耐受劑量。但記得加倍只多降 20%。</span></div>
+    <div class="step"><span><span class="sq">O — Other classes 換或加其他類別。</span></span></div>
+    <div class="step"><span><span class="sq">A — Alternative combination 換組合或換 SPC。</span></span></div>
+    <div class="step"><span><span class="sq">L — LSM 與 Laboratory。</span>
+      重新優化生活型態；依檢驗結果調整。<b>心電圖與尿液檢查至少每年一次</b>。</span></div>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">回診間隔：三家的說法</div>
+    <span class="ht-li">· <b>AHA 2025</b>：新開藥或加強治療後<b>每個月回診一次直到達標</b>（<b>COR 1／B-R</b>）。
+      ⚠ 原文<b>沒有</b>「幾週內必須達標」的條文。</span>
+    <span class="ht-li">· <b>ESC 2024</b>：低劑量雙藥後 <b>1–3 個月</b>（有條件的話 1 個月更好）評估；
+      對需要慢慢調的族群，理想上 <b>3 個月內達標</b>。</span>
+    <span class="ht-li">· <b>台灣 2022</b>：<b>治療 4 週</b>未達標啟動 ATGOALs；
+      調藥後 <b>2 週</b>再跑一輪 722（藥效 1 週達 50%、2 週達 80%）。</span>
+    <span class="ht-li">· <b>抽血追蹤</b>：起始或調整 <b>利尿劑、ACEI、ARB、MRA</b> 之後
+      <b>2–4 週</b>驗一次基礎生化與 eGFR，看有沒有<b>高血鉀或 eGFR 下降 &gt;30%</b>（AHA §5.2.8／5.2.9）。
+      高血鉀高風險者，KDIGO 建議<b>起始後 1–2 週</b>就先驗鉀。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">選藥時要一起想的七件事</span><span class="dh-e">PROCEED · Taiwan 2015／2022</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    台灣指引的助記口訣，2015 年提出、2022 年沿用。它提醒的是「藥理以外」的決定因素。
+  </div>
+  <div class="kbox">
+    <span class="ht-li"><b>P</b>revious unfavorable experience — 病人以前用降壓藥的不良經驗。</span>
+    <span class="ht-li"><b>R</b>isk factors — 危險因子，決定風險分期。</span>
+    <span class="ht-li"><b>O</b>rgan damages — 器官損傷，是特定藥的明確適應症。</span>
+    <span class="ht-li"><b>C</b>ontraindications or unfavorable conditions — 禁忌與不利條件。</span>
+    <span class="ht-li"><b>E</b>xpert's or doctor's judgment — 醫師判斷（指引原文：always of the utmost importance）。</span>
+    <span class="ht-li"><b>E</b>xpenses — 費用。</span>
+    <span class="ht-li"><b>D</b>elivery and adherence — 取得與服藥順從性，要定期評估。</span>
+  </div>
+  <div class="note">
+    ⚠ 網路上常把「DECIDE」也列為台灣高血壓指引的口訣——<b>2015、2017、2020、2022 四份台灣文件全文搜尋皆查無此口訣</b>，
+    不要引用。台灣指引真正的口訣是 <b>S-ABCDE</b>（生活型態）、<b>HER</b>（起始前評估）、
+    <b>PROCEED</b>（選藥）、<b>ATGOALs</b>（未達標時的調整）。
+  </div>
+
+</div>
+<!-- ==================== 各類藥 ==================== -->
+<div class="ht-panel" id="p-cls">
+
+  <div class="refbar">
+    <span class="rb"><b>標準劑量單方</b> 降 SBP 約 9–10、DBP 約 5</span>
+    <span class="rb"><b>劑量加倍</b> 只多降約 20%</span>
+    <span class="rb"><b>半劑量</b> 副作用幾乎減半、效果只少 20%</span>
+    <span class="rb-src">Law BMJ 2003／2009；台灣 2022「10/5 rule」</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">先記住這條，比背劑量表有用</div>
+    <b>五大類在標準劑量下的降壓幅度差不多。把同一支加倍只多降約 20%；換成加另一類，多降的幅度大約是加倍的 5 倍。</b><br>
+    <span class="ht-li">· 依據：Law MR 等的兩篇統合分析——<b>354 個隨機試驗</b>（BMJ 2003;326:1427，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/12829555/" target="_blank" rel="noopener">PMID 12829555</a>）與
+      <b>147 個隨機試驗、46.4 萬人</b>（BMJ 2009;338:b1665，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/19454737/" target="_blank" rel="noopener">PMID 19454737</a>）。
+      後者原文：SBP 降 10 或 DBP 降 5 mmHg，冠心病事件降 <b>22%</b>、中風降 <b>41%</b>；
+      <b>三種藥各用半標準劑量的組合，估計降冠心病 46%、中風 62%，單一藥物標準劑量大約只有一半的效果</b>。</span>
+    <span class="ht-li">· ⚠ <b>但這條有一個重要例外</b>：Cochrane（Musini 2014，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24869750/" target="_blank" rel="noopener">PMID 24869750</a>，
+      60 個雙盲 RCT、11,282 人）發現<b>只有 HCTZ 有劑量–反應曲線</b>
+      （6.25／12.5／25／50 mg 分別降 4/2、6/3、8/3、11/5 mmHg）；
+      <b>chlorthalidone、indapamide、metolazone 等在直接劑量比較中看不到劑量依存性——最低試驗劑量就已達最大降壓</b>。
+      也就是說<b>把 thiazide 類往上加，多半只換到更多低血鉀，換不到更多降壓</b>。</span>
+  </div>
+
+  <div class="lead">
+    以下品項、含量、劑量、腎肝調整與健保價一律取自<b>台大醫院藥劑部藥品資料庫</b>（標 <span class="gr">台大</span>）；
+    發生率與監測時程取自<b>美國仿單</b>（標 <span class="gr">FDA</span>）、<b>台灣仿單</b>（標 <span class="gr">TFDA</span>）
+    或已驗證的文獻。<b>抽不到的欄位一律寫「未取得」，沒有用常識補。</b>
+    藥名可點開完整藥卡。
+  </div>
+
+  <!-- ── ACEI ─────────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">ACE 抑制劑（A）</span><span class="dh-e">ACE inhibitors</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b0">第一線</span>
+    台大現行只有 <b>captopril</b> 與 <b>enalapril</b>。
+    <b>Perindopril（雅施達）與 ramipril（心達舒）院內有藥卡但標「關機／留連處」</b>，開之前要先問藥劑部；
+    <b>lisinopril 查無</b>。⚠ 這三支<b>台灣都有藥證也有健保給付</b>——是台大的品項選擇，不是台灣沒有。
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=CEP4DB21">Captopril 血樂平錠 25 mg</a>　<span class="gr">懷孕 C</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><span class="ht-li">高血壓：起始 12.5–25 mg bid–tid，每 1–2 週依反應調到 50 mg tid，
+          <b>上限 450 mg/day</b>（<b>不是常被記成的 150 mg/day</b>）。</span>
+        <span class="ht-li">心衰竭：6.25 mg tid 起，目標 50 mg tid。糖尿病腎病變：25 mg tid。</span>
+        <span class="ht-li"><b>飯前 1 小時服用</b>（食物影響吸收）。</span></dd>
+      <dt>腎</dt><dd>CrCl 10–50：<b>75% 劑量、q12–18h</b>。血液透析移除 35%、補 25–35%；腹膜透析 75% 劑量 q12–18h。
+        <b>CrCl &lt;10 的建議：台大未列（未取得）。</b></dd>
+      <dt>肝</dt><dd>台大標「無資料」（未取得）。</dd>
+      <dt>副作用</dt><dd><span class="ht-li"><b>皮疹 4–7%</b>（多在前 4 週）、<b>味覺障礙 2–4%</b>（可逆，2–3 個月自行恢復，可能伴體重下降）、
+          <b>血管性水腫約 1/1000</b>、蛋白尿約 1%。<span class="gr">FDA</span></span>
+        <span class="ht-li"><b>咳嗽：仿單寫 0.5–2%，台灣 2022 指引寫 5–35%</b>——差距來自通報方式
+          （仿單是試驗中自發通報，指引引的是主動詢問／前瞻追蹤）。<b>兩個數字都要知道。</b></span></dd>
+      <dt>要點</dt><dd>作用時間短、一天三次，長期控制血壓不是好選擇。
+        台大另有 <b>7 種兒科分包粉劑</b>（1/3～1/20 錠）與內服液劑；<b>內服液健保限 18 歲以下</b>（給付規定 2.18）。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=SYN4DB17">Enalapril 欣保錠 5 mg</a>　<span class="gr w">懷孕 D</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>高血壓：起始 2.5–5 mg qd，維持 <b>10–40 mg/day 分 1–2 次</b>。心衰竭：2.5 mg bid 起，上限 40 mg/day 分 2 次。</dd>
+      <dt>腎</dt><dd><b>CrCl &lt;30：2.5 mg/day 起</b>再依血壓上調。血液透析移除 20–50%；<b>透析日 2.5 mg qd 起，非透析日依血壓調</b>；腹膜透析用 25%。</dd>
+      <dt>肝</dt><dd>不需調整。（但它是前驅藥，需肝臟活化成 enalaprilat。）</dd>
+      <dt>要點</dt><dd>台大<b>只有 5 mg 一種含量</b>，40 mg 就是八顆。
+        ⚠ <b>懷孕分級 captopril 是 C、enalapril 是 D</b>——<b>同一類藥兩支分級不同，不要當通則寫</b>。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">ACEI 咳嗽與血管性水腫：亞洲人的兩個事實方向相反</div>
+    <span class="ht-li">· <b>咳嗽：亞洲人確實比較多。</b>東亞人 vs 白人 <b>RR 2.7（95% CI 1.6–4.5）</b>
+      （McDowell, BMJ 2006，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/16679330/" target="_blank" rel="noopener">PMID 16679330</a>）；
+      華裔美國人因咳嗽停用 lisinopril <b>RR 2.53（2.11–3.03）</b>，校正後 2.63；
+      <b>華裔停藥率 47% vs 一般 31%</b>（Tseng, Am J Med 2010，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/20103031/" target="_blank" rel="noopener">PMID 20103031</a>）。</span>
+    <span class="ht-li">· <b>血管性水腫：亞洲人並沒有比較多。</b>Medicare 世代每千人年發生率
+      （Reichman, 2017，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/28722207/" target="_blank" rel="noopener">PMID 28722207</a>）：
+      ACEI 在<b>黑人 23.77、白人 4.03、亞洲人 2.94</b>；相對乙型阻斷劑的風險比，
+      <b>黑人 6.28、白人 2.33、亞洲人 1.48（95% CI 0.94–2.35，不顯著）</b>。
+      台灣 2022 指引也寫「angioedema &lt;1%，especially rare in Chinese」。
+      <b>所以不能寫成「亞洲人對 ACEI 副作用比較多」——要分開講。</b></span>
+    <span class="ht-li">· <b>血管性水腫最危險的是頭 30 天</b>，不是用久了。心衰竭族群資料：<b>女性 5.2 vs 男性 2.3／1000 人年</b>，
+      同樣以起始後 30 天內最高。</span>
+    <span class="ht-li">· <b>發生過血管性水腫就不要再挑戰 ACEI。</b>對 ACEI 不耐受者改用 ARB 的統合分析
+      （Caldeira 2012，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22587776/" target="_blank" rel="noopener">PMID 22587776</a>，11 個 RCT）：
+      ARB vs ACEI 咳嗽 <b>RR 0.37（0.28–0.48）</b>；ARB vs 安慰劑咳嗽與停藥率相當。
+      但<b>血管性水腫 ARB vs 安慰劑 RR 1.62，95% CI 0.17–15.79——信賴區間寬到幾乎沒有資訊量，
+      不可以寫成「換 ARB 就不會再發」</b>。<b>換 ARB 後的絕對再發率：未取得。</b>
+      同一篇也顯示 ARB vs 安慰劑<b>低血壓 RR 2.63、腎功能異常 RR 2.07、高血鉀 RR 3.37</b>。
+      作者結論原話是「<b>ACE inhibitor rechallenge should be discouraged</b>」。</span>
+    <span class="ht-li">· <b>AHA Table 13 註記</b>：曾對 ACEI 發生血管性水腫者，
+      <b>應在停用 ACEI 滿 6 週之後</b>才開始 ARB。</span>
+  </div>
+
+  <!-- ── ARB ─────────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">血管收縮素受體阻斷劑（A）</span><span class="dh-e">ARB</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b0">第一線</span>
+    降壓效果與 ACEI 相當，咳嗽與血管性水腫明顯較少。<b>台大五支 ARB 懷孕分級全部 D。</b>
+    <b>ACEI、ARB、直接腎素抑制劑三者之間任何組合都禁止</b>（三份指引一致：AHA COR 3: Harm／A、
+    ESC Class III／A、台灣 COR III／A）。
+  </div>
+
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>台大品項</th><th>起始／維持／上限</th><th>腎</th><th>肝</th></tr></thead>
+    <tbody>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=COZ4DB62">Losartan 可悅您 50 mg</a></td>
+        <td>50 mg qd（<b>低血容或已在用利尿劑者 25 mg qd</b>）；維持 25–100 mg/day 分 1–2 次</td>
+        <td>不需調整</td>
+        <td><b>輕中度：起始減為 25 mg，每日總量不得超過 100 mg</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=DIO4DB23">Valsartan 得安穩 40／160 mg</a></td>
+        <td>80–160 mg qd；維持 80–320 mg qd，<b>上限 320 mg/day</b></td>
+        <td>不需調整</td>
+        <td>不需調整（輕中度肝病小心）</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=APR4DBF1">Irbesartan 安普諾維 300 mg</a></td>
+        <td>150 mg qd 起 → 300 mg qd；糖尿病腎病變的目標維持量就是 300 mg qd</td>
+        <td>不需調整；<b>血液透析者 75 mg qd 起</b></td>
+        <td>不需調整</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=OLM4DBE6">Olmesartan 雅脈 40 mg</a></td>
+        <td>20 mg qd 起，2 週後可到 40 mg/day</td>
+        <td><b>CrCl &lt;20：AUC 增為 3 倍，上限 20 mg/day</b></td>
+        <td>中度肝損暴露量增加約 60%</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=EDA4DBB7">Azilsartan 易得平 40 mg</a></td>
+        <td><b>台大寫 40 mg qd 起</b>，必要時 80 mg qd。⚠ <b>FDA 仿單的建議起始是 80 mg</b>，只有在用高劑量利尿劑時才考慮 40 mg 起。兩者並列</td>
+        <td>不需調整</td>
+        <td><b>重度肝損不建議使用</b>（無研究）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">選 ARB 時實際會影響決定的幾件事</div>
+    <span class="ht-li">· <b>痛風時只有 losartan 是合理選擇，而且效果被高估了。</b>
+      LIFE 試驗中 <b>losartan 組尿酸仍上升（+17.0 µmol/L），只是比 atenolol（+44.4）少</b>——
+      <b>不是「降尿酸」</b>（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/14871425/" target="_blank" rel="noopener">PMID 14871425</a>）。
+      族群研究（Choi, BMJ 2012，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/22240117/" target="_blank" rel="noopener">PMID 22240117</a>）：
+      <b>losartan RR 0.81、CCB RR 0.87；但 ACEI RR 1.24、非 losartan 的 ARB RR 1.29、利尿劑 RR 2.36、乙型阻斷劑 RR 1.48</b>。
+      <b>「ARB 對痛風比較安全」是錯的，只有 losartan。</b></span>
+    <span class="ht-li">· <b>Cozaar 50 mg 含鉀 4.24 mg（0.108 mEq）</b>（台大藥卡註記）。量很小，
+      但在斤斤計較每一分鉀的腎衰竭病人身上值得知道。</span>
+    <span class="ht-li">· <b>Olmesartan 有 sprue-like enteropathy</b>（嚴重慢性腹瀉合併明顯體重下降），
+      <b>用藥數月到數年後才出現</b>（FDA 仿單 5.8）。<b>發生率未取得。</b>
+      不明原因的慢性腹瀉合併體重下降，要想到這一支。</span>
+    <span class="ht-li">· <b>台大 losartan 只有 50 mg、irbesartan 只有 300 mg、olmesartan／azilsartan 只有 40 mg</b>——
+      要半量就是剝半。<b>台大 crush 欄只有 valsartan 明確標「不可」，其餘四支沒有資料（未取得），
+      不可以用劑型自行推斷。</b></span>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">ACEI／ARB 共通的監測與停藥時機</div>
+    <span class="ht-li">· <b>起始或加量後 2–4 週</b>驗基礎生化與 eGFR（AHA §5.2.8／5.2.9）；
+      台灣 2022 指引對 <b>CKD 第 3b 期</b>要求<b>2 週內</b>驗 eGFR 與血鉀；
+      KDIGO 對高血鉀高風險者建議<b>起始後 1–2 週</b>先驗鉀。</span>
+    <span class="ht-li">· <b>4 週內 creatinine 上升 &lt;30% 就繼續用</b>（KDIGO 2021 Practice Point 3.2.5）。
+      ⚠ 但 KDIGO 自己寫得很清楚：<b>「沒有任何一個試驗比較過 10%／20%／30%／40% 這些門檻」，觀察性資料「equivocal and contradictory」</b>——
+      30% 是專家共識不是試驗結果。台灣 2022 指引與 ADA 2026 用的也是同一個 30%。
+      ⚠ <b>KDIGO 2026 的糖尿病 CKD 草案把指標改成「GFR 下降 &gt;30%」</b>，
+      <b>「Cr 升 30%」與「GFR 降 30%」在數學上不等價</b>，引用時要標明是哪一份。</span>
+    <span class="ht-li">· <b>該停的三種情況</b>（KDIGO Practice Point 3.2.6）：<b>有症狀的低血壓</b>、
+      <b>積極處理仍無法控制的高血鉀</b>、<b>為減輕尿毒症狀而處理腎衰竭（eGFR &lt;15）時</b>。
+      <b>只因為腎功能數字低就停藥，會不必要地剝奪心血管保護。</b></span>
+    <span class="ht-li">· <b>STOP-ACEi</b>（NEJM 2022，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36326117/" target="_blank" rel="noopener">PMID 36326117</a>，
+      411 位 eGFR &lt;30 的進展性 CKD）：3 年 eGFR <b>停藥組 12.6 vs 繼續組 13.3，差 −0.7（95% CI −2.5 到 1.0），P=0.42</b>。
+      ⚠ <b>它證明的是「停藥沒有好處」，不是「繼續用可以顯著減少洗腎」</b>——
+      ESKD 的 <b>HR 1.28（95% CI 0.99–1.65）未達顯著</b>。</span>
+    <span class="ht-li">· <b>高血鉀時第一步不是減 RASi。</b>KDIGO 原文：高血鉀「often be managed by measures to reduce
+      the serum potassium levels <b>rather than</b> decreasing the dose or stopping RASi」。
+      順序是：<b>排除假性高血鉀 → 限鉀（特別是含鉀代鹽）→ 停掉會升鉀的藥與補充劑 → 治便祕 →
+      加排鉀利尿劑 → 口服碳酸氫鈉（若合併酸中毒）→ 鉀結合劑</b>，全都失敗才減量或停藥。
+      ⚠ <b>台大沒有鉀結合劑</b>（patiromer 台灣查無藥證；SZC 有藥證但多為自費）。</span>
+  </div>
+
+  <!-- ── DHP CCB ─────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">二氫吡啶類 CCB（C）</span><span class="dh-e">Dihydropyridine CCB</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b0">第一線（限長效）</span>
+    <b>指引要的是「long-acting」DHP CCB</b>。台大的長效品項是 amlodipine 與 nifedipine 持續性錠；
+    <b>lercanidipine 不在 AHA Table 13 的品項清單內</b>（該表只收 FDA 核准品項）。
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=NOR4DE18">Amlodipine 脈優錠 5 mg</a>　<span class="gr">懷孕 C</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>高血壓：起始 2.5–5 mg qd，維持 5–10 mg qd，<b>上限 10 mg qd</b>。
+        <b>⚠ 台大只有 5 mg 錠，10 mg 要開兩顆</b>（另有口服懸液 1 mg/mL）。</dd>
+      <dt>腎</dt><dd><b>不需調整；透析不會移除、透析後不用補</b>——腎衰竭與透析病人的好選擇。</dd>
+      <dt>肝</dt><dd><b>要減量：高血壓 2.5 mg qd 起</b>（心絞痛 5 mg qd）。</dd>
+      <dt>水腫</dt><dd><span class="ht-li"><b>劑量關係（FDA 仿單，安慰劑對照）</b>：
+          <b>2.5 mg 1.8%、5 mg 3.0%、10 mg 10.8%、安慰劑 0.6%</b>。</span>
+        <span class="ht-li"><b>性別差異比劑量差異還大</b>：<b>女性 14.6%（N=512）vs 男性 5.6%（N=1218）</b>；
+          安慰劑組女 5.1%／男 1.4%。<b>（⚠ 仿單沒有做劑量×性別的交叉分層，
+          「女性用 5 mg 可能比男性用 10 mg 更容易水腫」是把兩張表並置的推論，不是仿單數據。）</b></span>
+        <span class="ht-li"><b>它是微血管前小動脈擴張造成的液體外滲，不是水鈉滯留——加利尿劑沒有用。</b>
+          正解是<b>減量、或加上 ACEI／ARB</b>：25 個 RCT、17,206 人的統合分析
+          （Makani, Am J Med 2011，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/21295192/" target="_blank" rel="noopener">PMID 21295192</a>）顯示
+          <b>CCB＋RASi 相較 CCB 單用，周邊水腫少 38%（RR 0.62, 0.53–0.74）、因水腫退出少 62%（RR 0.38, 0.22–0.66）</b>；
+          <b>ACEI 減水腫的效果優於 ARB（ratio of RR 0.74, 0.64–0.84）</b>，但作者明講那是<b>間接比較</b>。
+          ⚠ <b>台大沒有 amlodipine＋ACEI 的複方</b>，要落地只能開兩顆。</span></dd>
+      <dt>要點</dt><dd><b>半衰期 30–50 小時</b>：漏吃一天血壓不會馬上跳，但<b>調藥後也要等 1–2 週</b>才看得到完整效果。
+        <b>不要配葡萄柚汁。</b>因不良反應停藥率約 1.5%，與安慰劑無顯著差異。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=ZAN4DB91">Lercanidipine 利壓膜衣錠 10 mg</a></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>起始 10 mg qd，常用 10–20 mg qd，<b>上限 20 mg/day</b>。</dd>
+      <dt>腎</dt><dd>GFR &lt;50：小劑量起始、依反應調整（台大未給具體數字）。<b>透析資料六欄全空（未取得）。</b></dd>
+      <dt>肝</dt><dd><b>重度肝功能異常不建議使用</b>。</dd>
+      <dt>水腫</dt><dd><b>「比 amlodipine 少」有實證，但不是純頭對頭。</b>
+        8 個 RCT 的統合分析（Makarounas-Kirchmann, Clin Ther 2009，
+        <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/19808126/" target="_blank" rel="noopener">PMID 19808126</a>）：
+        <b>vs 第一代 DHP（amlodipine、felodipine、nifedipine 三者合併）周邊水腫 RR 0.44（0.31–0.62）</b>、
+        因水腫退出 RR 0.24（0.12–0.47）；<b>vs 第二代親脂性 DHP（lacidipine、manidipine）則無差異</b>。
+        ⚠ <b>那個 RR 0.44 是對「三種第一代 DHP 合併」，不是單獨對 amlodipine，
+        不可以寫成「比脈優少 56% 的水腫」。</b></dd>
+      <dt>要點</dt><dd><b>美國沒有這支藥</b>（openFDA 查無），所以沒有 FDA 仿單可對照。<b>不要配葡萄柚汁。</b></dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t">Nifedipine：台大兩支，適應症完全不同</div>
+    <div class="tw">
+    <table class="def-table ht-w3">
+      <thead><tr><th></th><th><a class="pmid lw" href="../tools/drug-database.html#code=AT%204DE11">壓達能軟膠囊 5 mg（短效）</a></th><th><a class="pmid lw" href="../tools/drug-database.html#code=NIF4DE12">恆脈循持續性膜衣錠 30 mg</a></th></tr></thead>
+      <tbody>
+        <tr><td>台大登錄的適應症與劑量</td><td><b>只列心絞痛</b>：10 mg tid 起，維持 10–30 mg tid–qid，上限 180 mg/day。<b>沒有列高血壓劑量</b></td><td>高血壓、心絞痛：起始 30 或 60 mg qd，<b>上限 120 mg/day</b></td></tr>
+        <tr><td>劑型</td><td>軟膠囊（immediate release）</td><td><b>S.R.F.C.（持續性釋放膜衣錠）——不是 OROS／GITS</b>，藥動不同</td></tr>
+        <tr><td>剝半磨粉</td><td>台大無此欄（未取得）</td><td><b>不可</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="kbox-t" style="margin-top:8px;">⚠ 短效 nifedipine 為什麼不能拿來降血壓，理由和多數人記的不一樣</div>
+    <span class="ht-li">· <b>「舌下給藥」在藥動上根本不存在。</b>Grossman／Messerli, JAMA 1996
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/8861992/" target="_blank" rel="noopener">PMID 8861992</a>）：
+      <b>「Sublingual absorption of nifedipine has been found to be poor; most of the drug is absorbed by the
+      intestinal mucosa.」</b>——咬破膠囊含在舌下，藥其實是吞下去經腸黏膜吸收的。
+      所以問題不只是「降太快」，而是<b>你不知道它什麼時候降、降多少</b>。
+      該文回顧到的嚴重不良事件包括腦缺血、中風、嚴重低血壓、急性心肌梗塞、傳導障礙、胎兒窘迫與死亡，
+      結論是用於高血壓急症與假性急症<b>應予廢止</b>。</span>
+    <span class="ht-li">· <b>死亡率的數字要引對。</b>台大藥卡備註寫「nearly 4-fold increased risk for all-cause mortality」，
+      但原始劑量–反應統合分析（Furberg, Circulation 1995，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/7648682/" target="_blank" rel="noopener">PMID 7648682</a>）給的是：
+      總死亡 RR 1.16（1.01–1.33），<b>依日劑量分層：30–50 mg RR 1.06、60 mg RR 1.18、
+      80 mg RR 2.83（95% CI 1.35–5.93）</b>，趨勢檢定 P=0.01。<b>最高劑量是 2.83 倍，不是 4 倍。</b>
+      本頁並列兩者。</span>
+    <span class="ht-li">· <b>FDA 從未核准 nifedipine 膠囊用於任何形式的高血壓。</b>
+      台大院內資料庫在這一品項上<b>本來就沒有給你一個「拿它降血壓」的劑量可抄</b>。</span>
+  </div>
+
+  <!-- ── non-DHP ─────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">非二氫吡啶類 CCB</span><span class="dh-e">Non-DHP CCB</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b2">替代藥，非第一線</span>
+    AHA Table 13 把它們列在「Alternative agents」而不是第一線。位置是心率控制與心絞痛。
+  </div>
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=DIL4DE17">Diltiazem 達爾能 SR 120 mg</a>　／　<a class="pmid lw" href="../tools/drug-database.html#code=ISO4DD14">Verapamil 心舒平 SR 240 mg</a></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><span class="ht-li"><b>Diltiazem</b> SR：120 mg qd 起，7–14 天內調整，維持 240–360 mg qd。
+          速效錠（合必爽 30 mg）：30 mg qid 起，維持 180–360 mg/day 分 3–4 次。</span>
+        <span class="ht-li"><b>Verapamil</b>：速效 40–80 mg tid（120–320 mg/day）；SR 120–240 mg 早上一次起，
+          每次加 120 mg，<b>上限 480 mg/day</b>。</span></dd>
+      <dt>腎</dt><dd>Diltiazem 不需調整；<b>Verapamil 廠商建議小心並「加做心電圖監測」</b>（無具體減量數字）。</dd>
+      <dt>肝</dt><dd><b>Diltiazem 肝硬化上限 90 mg/day</b>；<b>Verapamil 肝硬化減到常用量的 20% 並監測心電圖</b>（減到五分之一，幅度很大）。</dd>
+      <dt>副作用</dt><dd><b>Verapamil 口服（FDA，n=4,954）</b>：<b>便秘 7.3%</b>、頭暈 3.3%、噁心 2.7%、低血壓 2.5%、
+        頭痛 2.2%、水腫 1.9%、<b>心衰竭／肺水腫 1.8%</b>、<b>心搏過緩（HR&lt;50）1.4%</b>、
+        <b>二度及三度房室阻滯 0.8%</b>。用於已服 digitalis 的心房顫動控制心室率時，
+        <b>休息時心室率 &lt;50 發生於 15%</b>。另有可逆性麻痺性腸阻塞的零星報告。</dd>
+      <dt>禁忌</dt><dd><span class="ht-li"><b>HFrEF 禁用</b>（負性肌力）。</span>
+        <span class="ht-li">病竇症候群、二度或三度房室阻滯（除非已裝節律器）、<b>收縮壓 &lt;90</b>（FDA diltiazem 仿單）。</span>
+        <span class="ht-li"><b>不要與乙型阻斷劑併用</b>；真的要併用要有心電圖與心跳監測。</span>
+        <span class="ht-li"><b>會拉高 tacrolimus／cyclosporine 濃度</b>——FDA tacrolimus 仿單點名的是
+          <b>verapamil、diltiazem、nifedipine、nicardipine</b>；<b>仿單沒有列 amlodipine</b>
+          （但「仿單未列」不等於「沒有交互作用」，加藥後仍要回驗濃度）。</span>
+        <span class="ht-li">不要配葡萄柚汁。</span></dd>
+    </dl>
+  </div>
+
+  <!-- ── 利尿劑 ─────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">Thiazide 類利尿劑（D）</span><span class="dh-e">Thiazide &amp; thiazide-like</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 台大在這一類上與國際指引完全對不上</div>
+    AHA Table 13 的 thiazide 只列三個品項：<b>chlorthalidone 12.5–25 mg、hydrochlorothiazide 25–50 mg、
+    indapamide 1.25–2.5 mg</b>（⚠ 注意 <b>HCTZ 寫的是 25–50 mg，不是常見的 12.5–25 mg</b>）。<br>
+    <b>台大三者只有 indapamide</b>；院內另一支 <b>trichlormethiazide 不在任何國際指引或試驗裡</b>，
+    <b>指引沒有評估過它，不能當成「指引建議的 thiazide-type」</b>。<br>
+    ⚠ 全台灣 <b>chlorthalidone 單方只剩 1 個現行健保品項</b>（HYGROTON 50 mg），
+    <b>歐美「優先用 chlorthalidone」的建議在台灣實務上幾乎做不到</b>；
+    <b>台灣 2022 指引本身也沒有偏好 chlorthalidone 的條文</b>。
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=FLU4DA08">Trichlormethiazide 服爾伊得安錠 2 mg</a>　<span class="gr w">台灣特有</span>　<span class="gr">懷孕 C</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><span class="ht-li"><b>台灣仿單（降壓）</b>：普通療法 <b>2–4 mg qd</b>；速效／初期療法 2–4 mg bid；
+          <b>維持 2 mg qd</b>。長期使用宜取<b>最低有效劑量</b>；與其他降壓藥併用時應酌減。</span>
+        <span class="ht-li"><b>台大寫的是「1–4 mg qd，起始時可分兩次」</b>——<b>下限 1 mg 不在台灣仿單裡</b>（仿單最低 2 mg）。兩者並列。</span>
+        <span class="ht-li">⚠ <b>仿單沒有訂降壓的最大劑量。</b>仿單只在利尿用途寫「單次最大有效劑量 8 mg，
+          超過 8 mg 也不會增加利尿效果」——<b>不可以把 8 mg 當成降壓上限，也不要自己填一個</b>。</span></dd>
+      <dt>腎</dt><dd><b>Scr &gt;2.5 mg/dL：無效果，避免使用</b>（台大藥卡）。台灣仿單把<b>急性腎衰竭列為禁忌</b>。</dd>
+      <dt>肝</dt><dd>低劑量起始、緩慢調整。仿單：<b>進行性肝硬化可能誘發肝昏迷</b>。</dd>
+      <dt>禁忌</dt><dd>無尿症、急性腎衰竭、體液中鈉鉀明顯減少、對磺胺類衍生物過敏，
+        <b>以及正在服用 desmopressin（MINIRIN）者——台灣仿單列為「併用禁止」</b>（兩者都會造成低血鈉）。
+        ⚠ 這條在國際 thiazide 資料裡看不到。</dd>
+      <dt>警語</dt><dd><span class="ht-li"><b>脈絡膜積水／急性近視／續發性隅角閉鎖型青光眼</b>：磺胺類特異體質反應，
+          <b>通常在開始用藥後數小時到一週內</b>發生，未處理可能永久失明，<b>主要治療是盡快停藥</b>。</span>
+        <span class="ht-li">仿單引用「結構相似的 HCTZ 與<b>非黑色素細胞皮膚癌</b>有累積劑量依存關聯，光敏感極可能是機轉」，處方時應告知。</span>
+        <span class="ht-li"><b>夜間需休息者宜中午前服藥</b>；老年人急遽利尿可能誘發血栓，<b>不宜過度降壓（可能引起腦梗塞）</b>。</span></dd>
+      <dt>等效</dt><dd><b>它對 HCTZ／chlorthalidone 的等效劑量，台灣仿單、台大、台灣指引與 Cochrane 全都沒有——無公認換算。</b>
+        換藥後一定要重新量血壓與電解質，不要自己推算。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=NAT4DA44">Indapamide SR 鈉催離持續性藥效錠 1.5 mg</a>　<span class="gr">懷孕 B</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><b>1.5 mg qd 早上服。</b>台大藥卡直接註明 <b>&gt;2.5 mg/day 一般不建議</b>——風險增加而額外效益極小
+        （與 Cochrane「indapamide 沒有劑量依存性」一致）。台大只有 SR 1.5 mg 一種規格。</dd>
+      <dt>腎</dt><dd>嚴重腎病變小心；<b>腎功能持續惡化時應考慮中斷或停用</b>。</dd>
+      <dt>肝</dt><dd>小心使用；<b>肝功能不全或進行性肝病者，體液電解質紊亂可能誘發肝昏迷</b>。</dd>
+      <dt>禁忌</dt><dd><b>無尿症</b>；對 indapamide 或其他<b>磺胺衍生物</b>過敏。</dd>
+      <dt>低血鉀</dt><dd>⚠ <b>下面這組數字是美國的速效劑型（IR），台大是 SR 1.5 mg，不可直接套用</b>：
+        FDA 仿單 6–8 週對照試驗中，至少一次 K &lt;3.4 mEq/L 者
+        <b>1.25 mg 20%、5 mg 61%、10 mg 80%</b>；1.25 mg 組中約 40% 未經處置即自行回復；
+        <b>合併臨床症狀的低血鉀在 1.25 mg 組為 2%</b>。</dd>
+      <dt>要點</dt><dd>它是 <b>thiazide-like</b>（作用時間長），<b>不是</b> thiazide 本身。
+        <b>台大唯一買得到、且被 AHA 抗藥性高血壓條文指名的 thiazide-like 就是這一支。</b>
+        懷孕分級 B（台大所有降壓藥中只有它與 eplerenone 是 B）。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Thiazide 的四大代謝副作用：有數字的部分</div>
+    <span class="ht-li">· <b>低血鈉</b>：Rotterdam 世代 13,325 人追蹤逾 10 年
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/23602191/" target="_blank" rel="noopener">PMID 23602191</a>）——
+      <b>用 thiazide 者低血鈉 HR 4.95（95% CI 4.12–5.96）</b>；中度（125–130）與重度（≤125）都是<b>約 8 倍</b>。
+      <b>年齡與 BMI 會修飾風險，性別（P=0.8）與 eGFR（P=0.2）不會。</b>
+      ⚠ 但另一份泰國的篩檢分數（ABCDF-S，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/32012317/" target="_blank" rel="noopener">PMID 32012317</a>）
+      <b>把「女性」列為六個危險因子之一</b>——<b>兩篇結論相反，本頁並列</b>。</span>
+    <span class="ht-li">· <b>低血鉀</b>：台灣 2022 指引轉述 Cochrane——
+      <b>chlorthalidone 12.5–25 mg 約 7.2–8.5%、HCTZ 50 mg 可達 56%</b>；
+      且<b>男性的盛行率是女性的兩倍以上</b>，與劑量、年齡相關。
+      ⚠ <b>同一份台灣指引的婦女章節卻寫「女性使用利尿劑時低血鉀與低血鈉較多」——原文自己前後矛盾，本頁照原樣並列。</b></span>
+    <span class="ht-li">· <b>高尿酸、血脂、血糖</b>：Cochrane 指出 thiazide 降血鉀、升尿酸、升總膽固醇與三酸甘油酯，
+      <b>皆為劑量相關，而且以 HCTZ 影響最小</b>；chlorthalidone 會升血糖。
+      作者自陳這些代謝數據<b>有高偏誤風險</b>。</span>
+    <span class="ht-li">· <b>高血鈣</b>：<b>獨立發生率未取得</b>——台灣仿單把它併在「電解質不平衡」的合併頻率格內。
+      實務上的用法反過來：<b>驗出高血鈣時要回頭想 thiazide</b>；仿單也提醒高血鈣症與副甲狀腺亢進者要注意。</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">chlorthalidone 真的比 HCTZ 好嗎：DCP 是陰性試驗</div>
+    <span class="ht-li">· <b>DCP</b>（NEJM 2022，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36516076/" target="_blank" rel="noopener">PMID 36516076</a>）——
+      <b>第一個頭對頭 RCT</b>，13,523 位 ≥65 歲、原本在用 HCTZ 的退伍軍人，隨機續用 HCTZ 或換 chlorthalidone，
+      中位追蹤 2.4 年。<b>主要複合終點 10.4% vs 10.0%，HR 1.04（0.94–1.16），P=0.45 → 完全沒有差異</b>；
+      <b>各組成成分也都沒有差別</b>；<b>只有低血鉀 chlorthalidone 較多（6.0% vs 4.4%，P&lt;0.001）</b>。</span>
+    <span class="ht-li">· <b>CLICK</b>（NEJM 2021，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/34739197/" target="_blank" rel="noopener">PMID 34739197</a>）
+      回答的是<b>另一個問題</b>：160 位<b>第 4 期 CKD</b>（平均 eGFR 23.2）病人，chlorthalidone 12.5 mg 起、
+      上限 50 mg，12 週後 <b>24 小時 ABPM 收縮壓組間差 −10.5 mmHg（95% CI −14.6 到 −6.4），P&lt;0.001</b>，
+      UACR 多降 50 個百分點。<b>它推翻的是「eGFR &lt;30 就不能用 thiazide」這條通則</b>，
+      但不良反應（低血鉀、可逆性肌酸酐上升、高血糖、頭暈、高尿酸）都比較多。</span>
+    <span class="ht-li">· ⚠ <b>兩篇回答的是不同問題，不可互相佐證。</b>而且<b>台大兩支藥（trichlormethiazide、indapamide SR）
+      都不在這兩篇裡</b>，Cochrane 也已指出不同 thiazide 的劑量–反應行為並不相同——
+      <b>CLICK 與 DCP 的結論不能直接搬到台大的品項上。</b></span>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=LAS4DA03">Furosemide 來適泄錠 40 mg</a>（loop 利尿劑）</div>
+    <dl class="ht-kv">
+      <dt>定位</dt><dd><b>降壓效果不如 thiazide</b>。只有在 <b>eGFR &lt;30</b>（thiazide 失效）、
+        <b>心衰竭或明顯體液過多</b>時才用來降壓。台灣 2022：eGFR ≥30 用 thiazide、&lt;30 用 loop，
+        兩者<b>可以併用</b>（COR IIa／C）。</dd>
+      <dt>劑量</dt><dd>高血壓 40 mg bid（個別化）；水腫口服 20–80 mg qd，可每 6–8 小時加 20–40 mg，<b>上限 600 mg/day</b>。
+        <b>效價：furosemide 40 mg ≒ bumetanide 1 mg</b>（台大藥卡）。</dd>
+      <dt>腎</dt><dd>不需調整；急性腎衰竭「可能需 1–3 g/day 才起效」，<b>少尿狀態應避免使用</b>。<b>無尿為禁忌。</b></dd>
+      <dt>監測</dt><dd><b>密切監測血鉀</b>；定期監測其他電解質；偶爾監測血糖、尿酸、BUN、creatinine。</dd>
+    </dl>
+  </div>
+
+  <!-- ── MRA ─────────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">礦物皮質素受體拮抗劑（MRA）</span><span class="dh-e">MRA</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b1">難治型的第四線首選</span>
+    <b>MRA 之間沒有公認的等效劑量</b>——台灣 2022 指引原文明講「The equivalent doses of other MRA to
+    spironolactone in terms of BP reductions have not been determined yet」，<b>不要自行換算</b>。
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=ALD4DA06">Spironolactone 安達通錠 25 mg</a>　<span class="gr">懷孕 C</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><span class="ht-li"><b>高血壓：25–100 mg/day</b>（台大另註 JNC7 為 25–50 mg/day）。
+          台灣 2022：難治型高血壓加 <b>25–50 mg/day</b> 即可，<b>而且與血漿腎素活性、醛固酮濃度、血鉀水平無關</b>。</span>
+        <span class="ht-li">心衰竭 NYHA III–IV：12.5–25 mg/day，上限 50 mg/day。
+          原發性醛固酮症：術前 100–400 mg/day；長期 12.5–25 mg qd 起。</span></dd>
+      <dt>腎</dt><dd><b>eGFR 31–50（心衰竭適應症）：12.5 mg qd 或隔日一次起</b>；血鉀 &lt;5 且腎功能穩定才加倍，上限 25 mg/day。<br>
+        台灣 2022：<b>血鉀 &gt;5.0 mmol/L 或 eGFR &lt;30 時，加用 MRA 屬相對禁忌</b>。
+        KDIGO：加在 ACEI／ARB／利尿劑上時，<b>eGFR &lt;45</b> 者高血鉀與可逆性腎功能下降風險特別高；
+        <b>低醛固酮症與第 4 型腎小管酸中毒者禁用</b>。</dd>
+      <dt>肝</dt><dd>肝功能不全改一天一次，可考慮隔日給藥。</dd>
+      <dt>監測</dt><dd><b>FDA 仿單（最嚴）：起始或加量後 1 週內驗血鉀，之後定期。</b>
+        台大只寫「periodically」，並註明<b>老年心衰竭病人用 &gt;25 mg/day、或併用 NSAID／ACEI／ARB／補鉀時風險增加</b>。</dd>
+      <dt>女乳症</dt><dd><b>FDA 仿單引 RALES：平均劑量 26 mg/day 下，約 9% 的男性發生女乳症；
+        風險呈劑量依存；發作時間從 1–2 個月到超過 1 年；通常可逆。</b><br>
+        ⚠ <b>這個 9% 是心衰竭族群的數字。高血壓劑量（25–100 mg/day）下的發生率：未取得。</b><br>
+        機轉：spironolactone 同時是<b>雄性素受體拮抗劑</b>（男性女乳、陽痿）與<b>黃體素受體促效劑</b>
+        （停經前女性月經異常）。<b>有效但不耐受時應換其他 MRA。</b></dd>
+      <dt>其他</dt><dd>另有 SJS／TEN／DRESS、膽汁鬱積／肝細胞毒性、白血球低下、血小板低下的報告。
+        <b>上消化道出血約 2 倍且劑量依存</b>的訊號（1 個世代＋2 個病例對照研究一致），
+        但<b>證據等級低</b>——有出血時應懷疑、有危險因子者小心。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=INS4DA49">Eplerenone 迎甦心膜衣錠 50 mg</a>　<span class="gr">懷孕 B</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>高血壓：<b>50 mg qd 起，反應不足可到 50 mg bid，完整療效可能要 4 週</b>。
+        心衰竭：25 mg qd 起，4 週後若血鉀 ≤5 mmol/L 增至 50 mg qd。<br>
+        ESC 2024 補充：<b>治療高血壓要 50–200 mg 才有效，統合分析顯示 25 mg 不降血壓</b>；
+        作用時間比 spironolactone 短，<b>治療高血壓時可能要一天兩次</b>。台灣 2022：第四線用 <b>50 mg bid</b> 時 24 小時 ABPM 收縮壓可降 10 mmHg。</dd>
+      <dt>禁忌</dt><dd><b>⚠ 用於「高血壓」時的禁忌比用於心衰竭時嚴格得多，台大 renal 欄只抄到心衰竭那一層。</b><br>
+        <span class="ht-li"><b>所有適應症共通</b>：起始時血鉀 <b>&gt;5.5 mEq/L</b>；<b>CrCl ≤30</b>；併用<b>強效 CYP3A 抑制劑</b>
+          （ketoconazole、itraconazole、clarithromycin、ritonavir 等）。</span>
+        <span class="ht-li"><b>用於高血壓另外禁忌</b>：<b>第 2 型糖尿病合併微量白蛋白尿</b>；
+          <b>creatinine &gt;2.0 mg/dL（男）或 &gt;1.8 mg/dL（女）</b>；<b>CrCl &lt;50</b>；
+          併用鉀補充劑或保鉀利尿劑。<b>→ 降壓用的腎功能門檻是 CrCl &lt;50，不是 &lt;30。</b></span></dd>
+      <dt>要點</dt><dd><b>選擇性高，幾乎不造成女乳症</b>——這是換藥的主要理由，但<b>降壓效力弱於 spironolactone</b>。
+        <b>併用中度 CYP3A4 抑制劑時上限 25 mg qd</b>；<b>避免併用鋰鹽、cyclosporine、tacrolimus</b>；
+        <b>併用 trimethoprim 會增加高血鉀風險</b>。
+        ⚠ <b>健保只給付「對 spironolactone 不耐受」的心衰竭病人（且 LVEF ≤30%），用於高血壓不給付。</b></dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=KER4DH36">Finerenone 可申達膜衣錠 20 mg</a>　<span class="gr w">自費</span>　<span class="gr w">不是降壓藥</span></div>
+    <dl class="ht-kv">
+      <dt>定位</dt><dd><b>台大登錄的適應症是「第 2 型糖尿病相關的腎臟與心血管風險降低」，不是高血壓。</b>
+        台灣 2022 指引明講 finerenone 與 esaxerenone <b>尚未在難治型高血壓病人中研究</b>；
+        KDIGO 引 FIDELIO 時也寫它<b>對血壓的作用 modest</b> 而高血鉀事件增加。</dd>
+      <dt>劑量</dt><dd><b>起始前要測血鉀與 eGFR；血鉀 &gt;5.0 mEq/L 不得起始。</b><br>
+        起始：<b>eGFR ≥60 → 20 mg qd；eGFR 25–&lt;60 → 10 mg qd；eGFR &lt;25 → 不建議起始</b>。<br>
+        <b>起始後 4 週、每次調量後 4 週</b>測血鉀。10 mg 時 K ≤4.8 可增至 20 mg
+        （但若 eGFR 較前次下降 &gt;30% 則維持 10 mg）；<b>任何劑量下 K &gt;5.5 就停藥</b>，待 K ≤5.0 由 10 mg 重啟。</dd>
+      <dt>禁忌</dt><dd>併用<b>強效 CYP3A4 抑制劑</b>；<b>腎上腺功能不全</b>。肝：Child-Pugh A／B 不需調整、<b>C 避免使用</b>。</dd>
+      <dt>剝半</dt><dd><b>可</b>（台大 crush 欄唯一標「可」的降壓品項；FDA 佐證：可壓碎混水或蘋果泥，需即時服用）。</dd>
+    </dl>
+  </div>
+
+  <!-- ── BB ─────────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">乙型阻斷劑（B）</span><span class="dh-e">Beta blockers</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b2">有適應症才用</span>
+    <b>三份指引對它的定位直接衝突</b>：台灣 2022 列為五大類第一線（<b>COR I／LOE B</b>，
+    理由是不利證據多來自 atenolol、新一代未被試驗、且華人對 propranolol 反應較敏感）；
+    <b>AHA 2025 與 ESC 2024 都不列第一線</b>——AHA 原文「BBs were less effective than first-line
+    antihypertensive classes in <b>preventing strokes</b> and had a less favorable side effect profile;
+    therefore, they should be <b>reserved for adults with compelling indications</b>」。
+    ESC 也強調降級理由<b>不是降壓效果差</b>，而是<b>預防心血管事件（尤其中風）較差＋耐受性</b>。<br>
+    <b>明確適應症（ESC Class I／A）：心絞痛、心肌梗塞後、HFrEF、心率控制。</b>
+  </div>
+
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>台大品項</th><th>高血壓劑量／上限</th><th>腎</th><th>肝</th></tr></thead>
+    <tbody>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=CON4DB41">Bisoprolol 康肯 1.25／5 mg</a></td>
+        <td>2.5–5 mg qd 起，<b>上限 20 mg qd</b>（心衰竭 1.25 mg 起、上限 10 mg）</td>
+        <td><b>CrCl &lt;40：2.5 mg qd 起、上限 10 mg/day</b></td>
+        <td><b>上限 10 mg/day</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=BET4DB42">Metoprolol succinate 舒壓寧 ZOK 100 mg</a></td>
+        <td>25–100 mg qd 起，每週調整，<b>上限 400 mg/day</b>（心衰竭 12.5–25 mg 起、目標 150–200 mg/day）</td>
+        <td>不需調整</td>
+        <td>可能需減量（無具體數字）</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=ATE4DB11">Atenolol 壓平樂 100 mg</a>　<span class="gr w">懷孕 D</span></td>
+        <td>25–50 mg qd 起，維持 100 mg qd</td>
+        <td><b>CrCl 15–35：≤50 mg qd；CrCl &lt;15：上限 25 mg qd</b>（FDA）。血液透析移除 20–50%、透析後補 25–50 mg</td>
+        <td>不需調整</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=NEB4DBD2">Nebivolol 耐比洛 5 mg</a></td>
+        <td>5 mg qd，每 2 週可調，<b>上限 40 mg qd</b></td>
+        <td><b>CrCl &lt;30：2.5 mg qd 起</b></td>
+        <td><b>中度肝損：2.5 mg qd 起</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=DIL4DB61">Carvedilol 達利全 6.25／25 mg</a></td>
+        <td>6.25 mg bid × 1–2 週 → 12.5 mg bid，<b>上限 25 mg bid</b></td>
+        <td>不需調整</td>
+        <td><b>重度肝功能異常為禁忌</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=LAB4DB18">Labetalol 壓血泰 200 mg</a></td>
+        <td>100 mg bid 起，每 2–3 天加 100 mg bid；維持 200–400 mg bid，<b>上限 2.4 g/day 分 2–3 次</b>（單次調升不超過 200 mg bid）</td>
+        <td>不需調整</td>
+        <td><b>慢性肝病者所需劑量約為常人的一半</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">突然停藥：門診很危險，急性心肌梗塞當下反而可以</div>
+    <span class="ht-li">· <b>門診／慢性心絞痛：危險。</b>Miller RR, NEJM 1975
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/1097925/" target="_blank" rel="noopener">PMID 1097925</a>）——
+      20 位心絞痛病人突停 propranolol，<b>2 週內 10 人發生缺血事件，其中 6 人為嚴重併發症
+      （含 1 例致死性心肌梗塞、1 例猝死）</b>。</span>
+    <span class="ht-li">· <b>急性心肌梗塞當下因臨床理由必須停：RCT 顯示沒有問題。</b>
+      MILIS 研究（Croft, Circulation 1986，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/3009050/" target="_blank" rel="noopener">PMID 3009050</a>）——
+      326 位急性 MI 病人，原本在用乙型阻斷劑而被停藥者 vs 從未用者，
+      <b>梗塞範圍、LVEF、梗塞延伸、心衰竭、心室顫動、院內死亡皆無顯著差異</b>；
+      停藥組<b>只有頭 24 小時內缺血性胸痛較多（P=0.002）</b>。作者結論：
+      <b>「β-Blockade therapy can be discontinued abruptly during acute myocardial infarction if clinically indicated.」</b></span>
+    <span class="ht-li">· <b>台大藥卡的立場</b>：atenolol、bisoprolol、metoprolol、nebivolol 四支寫
+      <b>「應在約 1–2 週內逐步減量」</b>；carvedilol 與 labetalol 只寫「避免突然停藥」，<b>沒給時程</b>。</span>
+    <span class="ht-li">· <b>實務結論</b>：門診換藥或病人自行停藥，<b>1–2 週逐步減量</b>；
+      住院中因急性心肌梗塞、休克、心搏過緩等臨床理由必須停時，<b>可以直接停</b>。</span>
+    <span class="ht-li">· ⚠ <b>剛停乙型阻斷劑就開 nifedipine 並不能預防戒斷症狀，FDA 仿單甚至寫「曾被報告會加重它」。</b></span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">其他要注意的</div>
+    <span class="ht-li">· <b>Labetalol 有肝毒性警語（FDA 仿單，台大藥卡未載）</b>：
+      罕見但嚴重的肝細胞損傷，<b>曾有肝壞死與死亡報告</b>；<b>應定期檢驗肝功能</b>；
+      出現搔癢、深色尿、持續食欲不振、黃疸、右上腹壓痛或不明原因「類流感」症狀時立即驗肝功能；
+      <b>一旦有肝損傷或黃疸的實驗室證據就停用，且不得再開始</b>。另有<b>頭皮麻刺感</b>的感覺異常。</span>
+    <span class="ht-li">· <b>氣喘 vs COPD 要分開</b>：非選擇性（carvedilol、labetalol、propranolol）在氣喘要避免。
+      Cochrane 的兩個數字方向相反，<b>兩個都要知道</b>：心臟選擇性乙型阻斷劑<b>單一劑量讓 FEV1 掉 7.46%</b>，
+      但<b>持續 3–28 天 FEV1 無變化（−0.42%）</b>；原文同時註明「<b>長期安全性、特別是急性惡化期間的影響，仍未確立</b>」。</span>
+    <span class="ht-li">· <b>COPD 不是禁忌，但也不是理由。</b>GOLD 2026 逐字：
+      「There is <b>no evidence</b> that beta-blockers should be used in people with COPD who do not have a
+      cardiovascular indication.」<b>BLOCK-COPD 更顯示在沒有適應症的 COPD 病人身上，
+      metoprolol 讓住院性惡化 HR 1.91（1.29–2.83）</b>，試驗因無效與安全顧慮提前中止。
+      <b>單純高血壓的 COPD 病人，本來就不該用乙型阻斷劑。</b></span>
+    <span class="ht-li">· <b>周邊動脈疾病不是禁忌</b>——「會惡化跛行」是舊觀念，實證不支持。</span>
+    <span class="ht-li">· 會遮蔽低血糖的心悸與顫抖（出汗不受影響）；<b>疲倦、運動耐力下降、性功能障礙、睡眠障礙</b>是實際造成停藥的原因，要主動問。</span>
+    <span class="ht-li">· <b>ESC 2024 對單純收縮期高血壓／動脈硬化的病人明講要避免乙型阻斷劑</b>
+      （心跳變慢會使每跳輸出量增加）；<b>老年與衰弱起始用藥時也「preferably not a beta-blocker」（Class IIa／B）</b>。</span>
+  </div>
+
+  <!-- ── 其他 ─────────────────────────────────────────── -->
+  <div class="dirhead"><span class="dh-n">α 阻斷劑、中樞作用藥與直接血管擴張劑</span><span class="dh-e">Alpha blockers · central agents · vasodilators</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    <span class="risk-band b3">不用於一般高血壓</span>
+    它們的位置是難治型的加藥、特定共病（BPH、嗜鉻細胞瘤術前），或其他都失敗後的最後幾支。
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=DOX4DB97">Doxazosin 可迅 2 mg（IR）／可迅 XL 4 mg</a></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd><b>高血壓（只用 IR）：1 mg qd 起，每 1–2 週加倍，上限 16 mg qd。</b><br>
+        攝護腺肥大：IR 1 mg qd 起、上限 8 mg/day；<b>XL 4 mg qd 起、上限 8 mg/day</b>。<br>
+        ⚠ <b>兩種劑型上限不同（IR 16、XL 8），不可等量換算</b>——台大註明 XL 缺乏 &gt;8 mg/day 的臨床試驗資料。</dd>
+      <dt>腎</dt><dd>台大標「無資料」（未取得）。透析不會移除。</dd>
+      <dt>肝</dt><dd>輕中度小心；<b>重度不可使用</b>。</dd>
+      <dt>要點</dt><dd><span class="ht-li"><b>第一劑低血壓：台大註明姿勢性效應最可能發生在服藥後 2–6 小時</b>，
+          首劑與每次加量後都要在這段時間量站立血壓。<b>第一劑睡前吃。</b></span>
+        <span class="ht-li"><b>ALLHAT 的 doxazosin 分支提前中止</b>
+          （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/10789664/" target="_blank" rel="noopener">PMID 10789664</a>）：
+          與 chlorthalidone 相比<b>心衰竭風險加倍（4 年 8.13% vs 4.45%，RR 2.04, 1.79–2.32）</b>、
+          合併心血管疾病 RR 1.25、中風 RR 1.19；<b>但主要終點（冠心病死亡或非致死心肌梗塞）與總死亡率都沒有差別</b>。
+          <b>所以它不能當第一線降壓藥</b>；合併 BPH 時也要在已有第一線藥的基礎上加。</span>
+        <span class="ht-li"><b>白內障手術的術中虹膜鬆弛症候群（IFIS）</b>：FDA 仿單逐字
+          「The benefit of <b>stopping</b> alpha-1 blocker therapy prior to cataract or glaucoma surgery
+          <b>has not been established</b>」，而且風險及於<b>「曾經用過」</b>的人——
+          <b>術前停藥解決不了，正確做法是事先告知眼科醫師。</b></span></dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=CA%204DB01">Clonidine 降保適錠 0.075 mg</a></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>起始 0.1 mg bid；常用 0.1–0.8 mg/day 分 2 次，上限 2.4 mg/day。
+        <b>⚠ 台大只有 0.075 mg 錠</b>，與仿單的 0.1 mg 級距對不上，開立時要換算顆數。</dd>
+      <dt>腎</dt><dd>用劑量範圍的低端並密切監測。肝：不需調整。</dd>
+      <dt>停藥</dt><dd><span class="ht-li"><b>台大藥卡的副作用欄第一項就是「驟然停藥血壓劇增」。</b></span>
+        <span class="ht-li"><b>FDA 仿單：應在 2 至 4 天內逐步減量。</b>症狀是神經緊張、躁動、頭痛、顫抖，
+          伴隨血壓急速上升與血漿兒茶酚胺升高；<b>曾有高血壓腦病變、腦血管意外與死亡的罕見報告</b>。
+          <b>高風險：劑量較高、以及同時仍在用乙型阻斷劑。</b></span>
+        <span class="ht-li"><b>★ 順序最常被搞反：兩者都要停時，應「先在數天前停掉乙型阻斷劑，再開始逐步停 clonidine」。</b>
+          顛倒會放大反彈性高血壓。</span>
+        <span class="ht-li">反彈時仿單建議的處置是「口服 clonidine，或靜脈注射 phentolamine」——
+          ⚠ <b>phentolamine 在台灣的藥證已註銷</b>，這條處置在台灣做不到。</span>
+        <span class="ht-li">⚠ <b>台大沒有 clonidine 貼片</b>，禁食病人就是斷藥。</span></dd>
+      <dt>副作用</dt><dd>口乾、嗜睡、便秘；老年人容易跌倒。</dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=STA4DBE9">Hydralazine 血得平錠 10／25 mg</a>　<span class="gr w">台大只有口服</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>10 mg qid × 2–4 天 → 25 mg qid；維持 12.5–50 mg bid–qid，
+        <b>上限 300–400 mg/day；慢乙醯化者 200 mg/day</b>。</dd>
+      <dt>腎</dt><dd><b>CrCl 10–50：改成 q8h</b>；血液透析<b>透析後給藥</b>，腹膜透析 q8–12h。肝：台大無資料（未取得）。</dd>
+      <dt>禁忌</dt><dd><b>二尖瓣風濕性心臟病為禁忌</b>；二尖瓣疾病者小心（可能拉高肺動脈壓）。</dd>
+      <dt>狼瘡</dt><dd><b>藥物誘發狼瘡</b>（含腎絲球腎炎），<b>高劑量風險較高</b>；危險因子還有<b>慢乙醯化型、HLA-DRw4、
+        療程超過 3 個月、女性</b>，但<b>低劑量也有明確病例報告</b>。<br>
+        ⚠ <b>ANA 轉陽本身不是停藥的理由。</b>追蹤研究
+        （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/6802356/" target="_blank" rel="noopener">PMID 6802356</a>）：
+        治療 3 年後<b>超過半數病人 ANA &gt;1/20</b>，由陰轉陽發生在開始治療後 5–26 個月，
+        <b>部分人即使續用效價仍自行下降</b>。原文結論：<b>除非出現狼瘡症候群的臨床表現，否則不必停藥。</b></dd>
+      <dt>其他</dt><dd><b>周邊神經炎</b>（麻木刺痛）——FDA 仿單指出有抗 pyridoxine 效應，<b>出現症狀時應補 pyridoxine</b>。
+        會反射性心搏過速與水鈉滯留，<b>單用效果差</b>。<b>台大沒有針劑。</b></dd>
+    </dl>
+  </div>
+
+  <div class="kbox ht-rx">
+    <div class="kbox-t"><a class="pmid lw" href="../tools/drug-database.html#code=LON4DB09">Minoxidil 洛寧錠 10 mg</a>　<span class="gr w">最後一線</span></div>
+    <dl class="ht-kv">
+      <dt>劑量</dt><dd>5 mg qd 起，<b>至少間隔 3 天</b>再調到 10–40 mg/day 分 1–2 次，<b>上限 100 mg/day</b>。<br>
+        <b>給藥次數的判準</b>（台大原文）：仰臥舒張壓下降 &lt;30 mmHg → qd；下降 ≥30 mmHg → bid 或更多分次。</dd>
+      <dt>強制</dt><dd><b>⚠ 台大藥卡明列兩個必須併用（等同 FDA 黑框警語）</b>：<br>
+        (1) <b>開始 minoxidil 之前必須先給乙型阻斷劑</b>（約當 propranolol 80–160 mg/day）並在治療期間持續；<br>
+        (2) <b>依賴腎功能維持鈉水平衡者必須併用 thiazide 或 loop 利尿劑</b>。</dd>
+      <dt>發生率</dt><dd><b>FDA 仿單</b>：<b>心包積液（偶爾進展為心包填塞）非透析病人約 3%</b>——
+        <b>一有懷疑就做心臟超音波，積液持續應考慮停藥</b>；<b>多毛症約 80%</b>
+        （先出現在太陽穴、眉間、髮際與眉毛之間、上外側頰，之後擴及背、四肢、頭皮；
+        停藥後需 <b>1–6 個月</b>才回復；<b>對兒童與女性特別困擾，治療前必須充分告知</b>）；
+        <b>暫時性水腫 7%</b>；<b>心電圖 T 波改變約 60%</b>；乳房壓痛 &lt;1%。</dd>
+      <dt>定位</dt><dd>FDA 黑框：應保留給<b>對「最大治療劑量的利尿劑＋另外兩種降壓藥」反應不佳</b>的病人。
+        ESC 2024 也寫<b>只在所有藥物都無效時才考慮</b>。</dd>
+    </dl>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">剝半與磨粉</span><span class="dh-e">Crushing &amp; splitting</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">台大 71 個降壓品項裡，只有 9 筆有剝半磨粉的資料</div>
+    <span class="ht-li">· <b>可</b>：<b>Finerenone 可申達</b>（唯一一筆）。</span>
+    <span class="ht-li">· <b>不可</b>：<b>可迅 XL、恆脈循持續性膜衣錠、Nitrostat 舌下錠、健安心（三種劑型）、得安穩 160／40 mg</b>。</span>
+    <span class="ht-li">· <b>其餘 62 筆全部是「未取得」——包含所有 ACEI、losartan／irbesartan／olmesartan／azilsartan、
+      amlodipine、lercanidipine、diltiazem、verapamil、trichlormethiazide、indapamide SR、furosemide、
+      spironolactone、eplerenone、全部六支乙型阻斷劑、doxazosin IR、clonidine、hydralazine、minoxidil。</b>
+      <b>⚠ 不可以用劑型（膜衣錠、糖衣錠、SR）自行推斷</b>——判「可」只能走白名單。</span>
+    <span class="ht-li">· <b>比自行磨粉更安全的做法：用台大現成的小劑量劑型。</b><br>
+      <b>分包粉劑</b>：Captopril（1/3、1/5、1/6、1/8、1/10、1/15、1/20 錠共 7 種）、
+      Spironolactone（2.5／3.1／4.2／5／8.3 mg）、Trichlormethiazide（0.25／0.33 mg）、Hydralazine（2.5 mg）。<br>
+      <b>口服液／懸液</b>：Captopril 心寧寶、Amlodipine 1 mg/mL、Carvedilol 1.25 mg/mL（<b>每次服藥前先搖勻</b>）、
+      Furosemide 10 mg/mL、Entresto 4 mg/mL。</span>
+  </div>
+
+</div>
+<!-- ==================== 住院與急症 ==================== -->
+<div class="ht-panel" id="p-adm">
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 這一頁最重要的一句話：血壓數字高，本身不是給藥的理由</div>
+    <b>2025 AHA/ACC 新增條文（COR 3: Harm，LOE B-NR）</b>逐字：
+    「For adults with <b>severe hypertension (&gt;180/120 mm Hg) who are hospitalized for noncardiac conditions
+    without evidence of acute target organ damage</b>, <b>intermittent use of additional intravenous or oral
+    antihypertensive medications are not recommended</b> to acutely reduce BP.」<br>
+    <b>是「Harm（有害）」不是「No Benefit」，也不是 2b。</b>病房裡「BP 190/100 → 先給一支 PRN」這個習慣動作，
+    在現行指引裡是被列為有害的等級。<br>
+    <b>而且「hypertensive urgency（高血壓亞急症）」這個詞在 2025 版被正式廢除，改稱「severe hypertension」。</b>
+    AHA 2024 聲明廢除它的理由不是定義不精確，而是<b>「crisis／urgency 這種情緒性字眼會誘發不必要的治療」</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">名詞：三份文件三套定義</span><span class="dh-e">Definitions</span></div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>文件</th><th>名詞</th><th>定義</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="3">AHA 2024 急性照護科學聲明</td><td>高血壓急症</td><td>&gt;180/110–120 <b>＋ 新發生或惡化</b>的標的器官損傷</td></tr>
+      <tr><td>無症狀顯著升高</td><td>&gt;180/110–120，<b>無</b>標的器官損傷</td></tr>
+      <tr><td>無症狀升高</td><td><b>≥130/80</b>，無標的器官損傷</td></tr>
+      <tr><td rowspan="2">2025 AHA/ACC 指引</td><td>高血壓急症</td><td>&gt;180 和／或 &gt;120 ＋ 急性標的器官損傷</td></tr>
+      <tr><td><b>Severe hypertension</b>（取代 urgency）</td><td>&gt;180/120，<b>無</b>急性標的器官損傷</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">⚠ 180/120 不是診斷急症的門檻</div>
+    AHA 2024 聲明原文：標的器官損傷「<b>might manifest even when BP is below the 180/110 to 120 mm Hg
+    threshold in particular contexts</b>, indicating that this benchmark <b>should not be perceived as an
+    unequivocal aspect of the definition criteria</b>.」<br>
+    <b>把 180/120 當成 gate，會漏掉真的急症</b>（例如子癲前症在 160/110 就是急症）。<br>
+    <b>要找的標的器官（BARKH）</b>：<b>B</b>rain（腦病變／PRES、腦出血、缺血性中風）、
+    <b>A</b>rteries（急性主動脈剝離、子癲前症／HELLP／子癲症）、<b>R</b>etina（Keith-Wagener-Barker III–IV 級）、
+    <b>K</b>idney（急性腎損傷、血栓性微血管病變）、<b>H</b>eart（急性心衰竭、肺水腫、急性冠心症）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">病房被 call「血壓高」時的順序</span><span class="dh-e">Asymptomatic inpatient hypertension</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">先確認有沒有急性器官損傷。</span>
+      有＝高血壓急症，往下看急症段。沒有＝<b>severe hypertension</b>，
+      <b>不要給 PRN 靜脈或口服降壓藥</b>（COR 3: Harm）。</span></div>
+    <div class="step"><span><span class="sq">確認血壓是真的。</span>
+      校正過的儀器、袖帶尺寸與位置、姿勢（<b>盡量讓病人坐起而不是平躺後重測</b>）。</span></div>
+    <div class="step"><span><span class="sq">找可逆原因。</span>
+      AHA 2024 聲明列的是<b>急性壓力、疼痛、焦慮、睡眠剝奪與其他急性病況</b>，加上藥物、心跳與體液狀態。
+      （<b>尿滯留</b>是臨床上常見的誘因，但<b>不是該聲明的原文字眼</b>，本頁照實標示。）</span></div>
+    <div class="step"><span><span class="sq">查漏藥與升壓藥。</span>
+      家用降壓藥有沒有被停掉或沒開回去；有沒有過量輸液、NSAID、類固醇、興奮劑。</span></div>
+    <div class="step"><span><span class="sq">看院外血壓紀錄</span>與有沒有慢性高血壓的診斷。真的需要處理時<b>用口服、慢慢來、排定門診追蹤</b>。</span></div>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">數字：為什麼不要動</div>
+    <span class="ht-li">· <b>近一半不用藥也會自己降。</b>12,825 人的研究：出現 severe HTN 後
+      <b>44.2% 在 3 小時內沒給任何降壓藥就自行降到 SBP&lt;160 且 DBP&lt;100</b>
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37988620/" target="_blank" rel="noopener">PMID 37988620</a>）。
+      而且<b>常規臨床特徵預測不了是哪些人</b>。</span>
+    <span class="ht-li">· <b>治療組的結果比較差。</b>Rastogi 2021（22,834 人，傾向分數配對，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/33369614/" target="_blank" rel="noopener">PMID 33369614</a>）：
+      <b>急性腎損傷 10.3% vs 7.9%（P&lt;.001）、心肌損傷 1.2% vs 0.6%（P=.003）</b>；
+      原文：「<b>There was no BP interval in which treated patients had better outcomes than untreated patients.</b>」</span>
+    <span class="ht-li">· Anderson 2023（66,140 位 ≥65 歲退伍軍人，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/37252732/" target="_blank" rel="noopener">PMID 37252732</a>）：
+      複合終點 8.7% vs 6.9%，<b>加權 OR 1.28（1.18–1.39）</b>；
+      <b>只用靜脈藥的次族群 OR 1.90（1.65–2.19）</b>。</span>
+    <span class="ht-li">· Canales 2025（133,760 人，target trial emulation，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/39585709/" target="_blank" rel="noopener">PMID 39585709</a>）：
+      <b>急性腎損傷 aHR 1.23（1.18–1.29）</b>；<b>3 小時內 SBP 掉 &gt;25% 的風險 1.5 倍</b>；
+      心肌梗塞／中風／死亡複合 <b>1.69 倍</b>。<b>靜脈途徑的腎損傷風險高於口服。</b></span>
+    <span class="ht-li">· ⚠ <b>但證據不是一面倒，本頁誠實並列。</b>
+      Ghazi 2023（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/36583354/" target="_blank" rel="noopener">PMID 36583354</a>）
+      的<b>急性腎損傷 HR 0.97（0.81–1.17）、中風 HR 0.7、死亡 HR 0.86，三項都沒有差異</b>，
+      只有<b>心肌損傷 HR 1.6（1.13–2.24）</b>顯著；Gaynor 2018 更明文寫「<b>沒有嚴重不良事件與 PRN 降壓藥有關</b>」。
+      <b>而且這些全部是觀察性研究——AHA 2024 聲明原文：「No randomized clinical trials have studied the
+      treatment of asymptomatic elevated inpatient BP.」</b></span>
+    <span class="ht-li">· ⚠ <b>「治療會讓血壓驟降」這句要說對。</b>Ghazi 2022
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/35174627/" target="_blank" rel="noopener">PMID 35174627</a>）：
+      MAP 下降 ≥30% 的風險，<b>治療 vs 未治療是 HR 0.9（0.8–0.99，反而較少）</b>；
+      <b>但「只用靜脈藥」vs 未治療是 HR 1.4（1.2–1.7）</b>。<b>問題出在靜脈途徑，不是「治療」本身。</b></span>
+    <span class="ht-li">· <b>口服 metoprolol 與口服 amlodipine 拿來壓血壓，6 小時內根本沒效</b>
+      （Ghazi 2022 PLoS One，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/35385506/" target="_blank" rel="noopener">PMID 35385506</a>）；
+      同研究中<b>降最多的是 IV hydralazine（MAP −13、SBP −18 mmHg）——也就是最容易 overshoot 的那一支</b>。</span>
+    <span class="ht-li">· 給 PRN 靜脈藥者，<b>32.6% 在 6 小時內血壓掉超過 25%</b>；而且
+      <b>超過 98% 的靜脈劑量是在 SBP &lt;200 時給的、84.5% 是在 SBP &lt;180 時給的</b>
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26560085/" target="_blank" rel="noopener">PMID 26560085</a>）。</span>
+    <span class="ht-li">· <b>台灣還有一條健保理由。</b>藥品給付規定<b>通則四（一）</b>逐字：
+      「注射藥品使用時機，應以經醫師診斷後，判斷病情需要且<b>病人不能口服，或口服仍不能期待其有治療效果</b>，
+      記明於病歷表者，方得為之。」<b>病人能口服卻打針降壓，臨床上沒有實證支持，健保規定上也站不住腳。</b></span>
+    <span class="ht-li">· ⚠ <b>台大院內沒有 hydralazine 針</b>——教科書上那支最常被 PRN 的藥，台大本來就開不到。
+      而 <b>FDA hydralazine 仿單的禁忌包含「冠狀動脈疾病」與「二尖瓣風濕性心臟病」</b>，
+      台灣病房最常拿 PRN hydralazine 給的正是有冠心症的老人。</span>
+    <span class="ht-li">· <b>出院時不要因為住院期間的血壓數字就加強降壓藥</b>——住院血壓多半是暫時的。
+      ⚠ <b>出院後追蹤的天數沒有指引明訂</b>（只有 ACOG 對妊娠高血壓寫 3–10 天），不要憑印象寫「1–2 週」。</span>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">高血壓急症</span><span class="dh-e">Hypertensive emergency</span></div>
+  <div class="kbox">
+    <div class="kbox-t">2025 AHA/ACC §6.2 的三條 COR 1</div>
+    <span class="ht-li">· <b>收住加護病房、持續監測血壓與器官損傷</b>（<b>COR 1／B-NR</b>）。</span>
+    <span class="ht-li">· <b>沒有 compelling condition 時的降壓速度</b>（<b>COR 1／C-LD</b>）：
+      <b>第 1 小時降幅 ≤25%</b> → 穩定後 <b>2–6 小時降到 &lt;160/100</b> → <b>24–48 小時內降到 130–140</b>。
+      ⚠ <b>這條只適用於「沒有 compelling condition」的急症</b>——
+      有 compelling condition 的（如主動脈症候群）要降到 <b>SBP &lt;140</b>，剝離則是 <b>&lt;120</b>。
+      <b>把 25% 套用到主動脈剝離身上是錯的。</b></span>
+    <span class="ht-li">· <b>主動脈剝離</b>（<b>COR 1／C-LD</b>）：<b>第 1 小時內 SBP &lt;120</b>。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">逐器官的目標（各自不同，不要套用同一條）</span><span class="dh-e">Condition-specific targets</span></div>
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>情境</th><th>目標</th><th>台大可用的藥／出處</th></tr></thead>
+    <tbody>
+      <tr><td>一般高血壓急症<br>（無 compelling condition）</td><td>第 1 小時降 ≤25%；2–6 小時 &lt;160/100；24–48 小時 130–140</td><td>AHA 2025 §6.2 <b>COR 1／C-LD</b>。原文自承這一類<b>沒有 RCT 證據</b>，策略「應更保守」</td></tr>
+      <tr><td><b>急性主動脈症候群</b></td><td><b>SBP &lt;120</b>（或維持器官灌流的最低值）<b>＋心率 60–80 bpm</b>（2022 主動脈指引 <b>COR 1／C-LD</b>）<br>⚠ <b>三處不一致</b>：時間上 2025 條文寫「第 1 小時」但<b>同一份指引的 Table 27 寫「20 分鐘內」</b>；<b>2025 指引完全沒給心率數字</b>；符號上條文 &lt;120、表 ≤120</td><td><b>先給靜脈乙型阻斷劑（esmolol／labetalol），血壓仍不好再加血管擴張劑（nicardipine）</b>。原文理由：血管擴張劑「should be avoided as initial treatment … given the potential for <b>compensatory tachycardia</b>」。乙型阻斷劑禁忌／不耐受時，<b>靜脈 non-DHP CCB（diltiazem 或 verapamil）</b>是合理替代（<b>COR 2a</b>）——台大兩者都有針劑。<b>疼痛控制用 IV opiate，避免 ketorolac 等 NSAID</b></td></tr>
+      <tr><td>急性冠心症</td><td>立即 SBP &lt;140（AHA 2024 聲明）</td><td>Table 27 的四個首選 <b>esmolol、labetalol、nicardipine、nitroglycerin 台大全部都有</b>。⚠ <b>併用 PDE-5 抑制劑時給硝酸鹽會嚴重低血壓</b></td></tr>
+      <tr><td><b>急性肺水腫</b></td><td>SBP &lt;180 或 MAP 降 25%（急性心衰竭）／立即 &lt;140（肺水腫）</td><td>Table 27 首選是 clevidipine、nitroglycerin、nitroprusside——<b>台大只有 nitroglycerin</b>。⚠ <b>Table 27 明寫「Beta blockers contraindicated」</b>；但 AHA 2024 聲明的心臟欄卻把 labetalol 與 esmolol 列入——<b>兩份文件矛盾，以較新且較明確的 2025 指引為準：急性肺水腫不要用乙型阻斷劑</b></td></tr>
+      <tr><td>急性腎損傷</td><td>MAP 於數小時內降 20–25%</td><td>Table 27 首選 clevidipine、fenoldopam、nicardipine——<b>台大只有 nicardipine</b></td></tr>
+      <tr><td>急性缺血性中風<br>（要溶栓）</td><td>溶栓前 <b>&lt;185/110</b>；溶栓後 24 小時 <b>&lt;180/105</b></td><td>AHA/ASA 2019 <b>COR I／B-NR</b>。⚠ 原文自承這是<b>沿用當年試驗的納入條件</b>，並直言「The exact BP at which the risk of hemorrhage increases is <b>unknown</b>」</td></tr>
+      <tr><td>急性缺血性中風<br>（不溶栓不取栓）</td><td><b>≥220/120</b> 才考慮降壓，第 1 天降幅 <b>15%</b></td><td>AHA/ASA 2019 <b>COR IIb／C-EO</b>；<b>&lt;220/120 時降壓是 COR III: No Benefit／LOE A（無效）</b></td></tr>
+      <tr><td><b>取栓成功再灌流後</b></td><td><b>不要把 SBP 降到 &lt;140</b></td><td>AHA 2025 <b>COR 3: Harm</b>（新條文）。三個 RCT 都顯示有害或無益：ENCHANTED2/MT（common OR 1.37）、OPTIMAL-BP（功能獨立 39.4% vs 54.4%，adjusted OR 0.56，<b>因安全提前中止</b>）、BEST-II</td></tr>
+      <tr><td><b>自發性腦出血</b><br>SBP 150–220</td><td><b>台灣腦中風學會 2023 與 AHA 2022：目標 140、維持 130–150（COR 2b）</b>；<b>降到 &lt;130 是 COR 3: Harm</b><br>2025 AHA/ACC 改成 <b>130 到 &lt;140、至少維持 7 天（COR 2a）</b>，並寫「SBP &lt;130 就停降壓藥」</td><td>⚠ <b>兩份 AHA 文件互相不一致，台灣指引站在 2022 那一邊。本頁並列，不替你選。</b>用 <b>nicardipine</b>（ATACH-2 用的就是它）；<b>⚠ 靜脈擴張劑（nitroglycerin／nitroprusside）可能有害</b>——原文「unopposed venodilation and its effect on hemostasis and ICP」</td></tr>
+      <tr><td>自發性腦出血<br>SBP &gt;220</td><td>持續靜脈輸注、密切監測；先降到 <b>160–180</b> 可能合理</td><td>AHA 2025 <b>COR 2a</b>（新條文）。<b>ATACH-2 的教訓：積極降壓組 7 天內腎臟不良事件 9.0% vs 4.0%（P=0.002）；單中心資料顯示收縮壓降幅超過 90 mmHg 就與急性腎損傷相關</b></td></tr>
+      <tr><td>蜘蛛膜下腔出血</td><td><b>AHA 2023 已不給數字目標</b>——原文：現有證據「insufficient to recommend any specific BP target」。<b>「SBP &lt;160」是舊指引的說法</b></td><td>nimodipine 造成低血壓時<b>原則是設法維持給藥而不是停</b>；<b>預防性升壓是 COR 3: Harm</b></td></tr>
+      <tr><td>子癲前症／子癲症</td><td>SBP ≥160 或 DBP ≥110（15 分鐘內重測確認）→ <b>30–60 分鐘內降到 &lt;160/&lt;110</b>（AHA 2025 <b>COR 1</b>，新條文）</td><td>Table 27 首選 hydralazine、labetalol、nicardipine、nifedipine——<b>台大沒有 hydralazine 針，實務上是 labetalol 針、nicardipine 針、口服 nifedipine</b>。台灣 2022 指引：靜脈 labetalol 或 nicardipine ＋ 硫酸鎂；肺水腫用 nitroglycerin（<b>COR I／C</b>）。<b>ACEI／ARB／腎素抑制劑／nitroprusside 禁用</b></td></tr>
+      <tr><td>交感神經危象<br>（古柯鹼、安非他命、嗜鉻細胞瘤、clonidine 戒斷、頸動脈內膜切除術後）</td><td>需要快速降壓</td><td>Table 27 首選 clevidipine、nicardipine、<b>phentolamine</b>——<b>台大只有 nicardipine，台灣的 phentolamine 藥證已註銷</b>，所以「alpha 先於 beta」在台大做不到</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 兩個常被誤記的「壓縮版知識」</div>
+    <span class="ht-li">· <b>嗜鉻細胞瘤危象不是 compelling condition。</b>2025 指引 supportive text 逐字：
+      「<b>pheochromocytoma should not be considered a compelling indication to reduce SBP immediately
+      to less than &lt;120 or 140 mm Hg in the first hour</b>」。很多人直覺把它跟主動脈剝離放同一格。</span>
+    <span class="ht-li">· <b>「交感神經危象不能用乙型阻斷劑」在 2025 指引裡並沒有被列為禁忌。</b>
+      該表只在<b>急性肺水腫</b>那一列寫「Beta blockers contraindicated」，交感神經危象那一列<b>沒有寫</b>，
+      只是列出首選藥。unopposed alpha 的原始證據是 1990 年 n=30、冠脈內 propranolol、
+      以冠狀血管阻力為終點的研究；2016 年的系統性回顧（作者含原研究者）明指其
+      <b>「證據有限且不一致」</b>。唯一有藥證標籤背書的是 <b>esmolol 仿單把「未治療的嗜鉻細胞瘤」列為警語</b>。
+      <b>但在台大，因為沒有 phentolamine，實務上仍應先用 nicardipine 這類血管擴張劑。</b></span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大有的靜脈降壓藥</span><span class="dh-e">IV agents available at NTUH</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    ⚠ <b>指引 Table 26 列的 clevidipine、sodium nitroprusside、enalaprilat、fenoldopam、phentolamine，台大全部沒有；
+    hydralazine 台大也只有口服。</b>下表的「指引劑量」與「仿單劑量」不一致時一律並列。
+  </div>
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>藥（台大品項）</th><th>2025 指引劑量</th><th>FDA 仿單劑量</th><th>注意</th></tr></thead>
+    <tbody>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=PER1DE10">Nicardipine 培爾吉平<br>10 mg/10 mL</a></td>
+        <td>起始 <b>5 mg/hr</b>，每 <b>5 分鐘</b>加 2.5 mg/hr，最大 <b>15 mg/hr</b></td>
+        <td>同左；<b>緩降每 15 分鐘調、快降每 5 分鐘調</b>；低血壓或心搏過速則停，穩定後由 <b>3–5 mg/hr</b> 重啟。台大版：起始 5 mg/hr，每 5–15 分鐘加 2.5</td>
+        <td>輸注後<b>數分鐘</b>開始降，<b>約 45 分鐘</b>達最終降幅一半，停藥後 <b>30±7 分鐘</b>退一半。<b>禁忌：重度主動脈瓣狹窄。</b><b>周邊給藥每 12 小時換部位</b>、勿用手背手腕小靜脈；<b>與 Lactated Ringer's 及 5% NaHCO₃ 不相容</b>。它不是乙型阻斷劑，<b>不能防止乙型阻斷劑停藥反彈</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=TRA1DB18">Labetalol 湍泰低／壓泰定<br>25 mg/5 mL</a></td>
+        <td><b>0.3–1.0 mg/kg（單次上限 20 mg）緩推，每 2 分鐘一次</b>；輸注 <b>0.4–1.0 mg/kg/hr</b>，最高 3 mg/kg/hr；24 小時累積上限 300 mg</td>
+        <td><b>首劑 20 mg 推超過 2 分鐘</b>；之後 <b>40 或 80 mg，每 10 分鐘</b>一次，累積上限 300 mg；輸注 <b>2 mg/min</b>（稀釋成 1 mg/mL）。台大版：10–20 mg 推 2 分鐘，每 10 分鐘加倍（單次上限 80 mg）</td>
+        <td>⚠ <b>給藥間隔 2 分鐘 vs 10 分鐘是實質差異，本頁並列。</b>每次推注後<b>約 5 分鐘</b>達最大效果，半衰期 5–8 小時。<b>仿單要求給藥期間病人維持平躺，下床前先確認能耐受直立姿勢。</b><b>禁忌：支氣管氣喘、明顯心衰竭、大於一度的傳導阻滯、心因性休克、嚴重心搏過緩。</b>另有<b>肝毒性</b>警語</td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=ESM1DD21">Esmolol 律平<br>100 mg/10 mL</a></td>
+        <td>負荷 <b>500–1000 mcg/kg 打 1 分鐘</b>，續 50 mcg/kg/min；必要時重複負荷並以 50 遞增，最大 <b>300 mcg/kg/min</b></td>
+        <td>術中即時控制：<b>1 mg/kg 推 30 秒</b> → 150 mcg/kg/min。<b>心搏過速的維持量勿超過 200</b>；<b>高血壓可用到 250–300</b>；<b>&gt;300 未經研究</b>。每 ≥4 分鐘調整，維持輸注最長 48 小時</td>
+        <td>停藥或減量後低血壓<b>通常 30 分鐘內回復</b>。<b>輸注用原液 10 mg/mL。</b><b>禁忌：嚴重竇性心搏過緩、大於一度的傳導阻滯、病竇症候群、失代償心衰竭、心因性休克、肺動脈高壓、與靜脈 verapamil 近距離併用（曾發生致死性心跳停止）。</b>⚠ 2025 指引 Table 26 另加「已在用乙型阻斷劑者禁用」（FDA 仿單無此條）。<b>末期妊娠或生產中可造成胎兒心搏過緩，且停藥後仍持續</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=MIF1DE13">Nitroglycerin 敏佐心<br>5 mg/10 mL</a></td>
+        <td>起始 <b>5 mcg/min</b>，每 3–5 分鐘加 5 mcg/min，最大 <b>200 mcg/min</b>。原文限定「<b>只用於急性冠心症和／或急性肺水腫</b>」；低血容者勿用；久用易產生耐受性</td>
+        <td>用<b>非吸附性管路</b>，起始 5 mcg/min，每 3–5 分鐘加 5；<b>到 20 mcg/min 仍無反應可改用 10 甚至 20 mcg/min 的增量</b>；須用輸液幫浦</td>
+        <td>⚠ <b>PVC 管路會吸附 nitroglycerin</b>——換濃度時必須把管路脫離病人並用新溶液沖洗，否則可能要好幾個小時才真的送到設定劑量。<b>禁忌：心包填塞、限制型心肌病變、縮窄性心包炎、顱內壓升高、併用 PDE-5 抑制劑或 riociguat。</b>⚠ <b>腦出血避免使用</b></td></tr>
+      <tr><td><a class="pmid lw" href="../tools/drug-database.html#code=HER1DE19">Diltiazem 合必爽注射<br>50 mg/vial</a></td>
+        <td>⚠ <b>2025 指引 Table 26 沒有收錄它</b>——它不是高血壓急症用藥</td>
+        <td><b>FDA 適應症只有心房顫動／撲動的心室速率控制與 PSVT，沒有高血壓。</b>Bolus 0.25 mg/kg 打 2 分鐘（約 20 mg）；不足則 15 分鐘後 0.35 mg/kg（約 25 mg）；輸注 5–10 mg/hr，上限 15 mg/hr，<b>最長 24 小時</b></td>
+        <td>⚠ <b>「靜脈 diltiazem 與靜脈乙型阻斷劑不可同時或在數小時內接續給」</b>（FDA 仿單明文）——<b>台大兩類針劑都有，這條要特別小心</b>。<b>不可與其他藥同瓶混合</b>（與 furosemide、phenytoin、NaHCO₃ 會沉澱）。用它降血壓屬仿單外使用</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    ⚠ <b>健保給付規定第 2 節裡，這些靜脈降壓藥沒有個別的限制條文</b>（以 nicardipine／labetalol／esmolol／
+    hydralazine／nitroprusside 檢索全文皆 0 筆），適用通則四（一）。
+  </div>
+
+  <div class="rxbox">
+    <div class="rxbox-t">輸注速率換算</div>
+    <div class="ht-nums">
+      <div class="rx-row"><label>體重 <span class="rx-en">kg</span></label>
+        <input type="number" id="iv_wt" min="1" max="250" step="0.5" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>藥量 <span class="rx-en">mg 放進點滴袋</span></label>
+        <input type="number" id="iv_mg" min="1" max="2000" step="1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>總體積 <span class="rx-en">mL</span></label>
+        <input type="number" id="iv_ml" min="1" max="1000" step="1" inputmode="decimal"><span class="rx-u"></span></div>
+      <div class="rx-row"><label>目標速率 <span class="rx-en">見下方單位</span></label>
+        <input type="number" id="iv_rate" min="0" max="1000" step="0.1" inputmode="decimal"><span class="rx-u"></span></div>
+    </div>
+    <div class="rx-out" id="iv_out">
+      <div class="rx-out-grid">
+        <div class="rx-metric"><div class="rx-lab">濃度</div><div class="rx-val" id="iv_conc">—</div></div>
+        <div class="rx-metric"><div class="rx-lab">mg/hr → mL/hr</div><div class="rx-val" id="iv_mgh">—</div></div>
+        <div class="rx-metric"><div class="rx-lab">mcg/kg/min → mL/hr</div><div class="rx-val" id="iv_ugkg">—</div></div>
+        <div class="rx-metric"><div class="rx-lab">mcg/min → mL/hr</div><div class="rx-val" id="iv_ugmin">—</div></div>
+      </div>
+      <div class="rx-flag" id="iv_flag"></div>
+    </div>
+    <div class="rx-note">
+      「目標速率」填數字，三個換算同時算——<b>依你用的藥看對應那一格</b>：
+      nicardipine 用 <b>mg/hr</b>、esmolol 用 <b>mcg/kg/min</b>、nitroglycerin 用 <b>mcg/min</b>、
+      labetalol 連續輸注用 <b>mg/min</b>（＝ mg/hr ÷ 60，自行換算）。
+      <b>這只是單位換算，不是劑量建議</b>；實際濃度與配製以院內規範為準。
+    </div>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">禁食病人怎麼辦</span><span class="dh-e">NPO patients</span></div>
+  <div class="kbox">
+    <div class="kbox-t">先分成「不能停」與「可以停」兩類</div>
+    <span class="ht-li">· <b>不能突然停</b>：<b>乙型阻斷劑</b>（門診族群的反彈有 RCT 證據：突停 propranolol 後 2 週內
+      20 人中 10 人發生缺血事件、6 人嚴重）、<b>clonidine</b>（FDA 仿單：應在 <b>2–4 天</b>內逐步減量；
+      反彈時伴血漿兒茶酚胺升高，<b>曾有高血壓腦病變、中風與死亡的報告</b>）。
+      ⚠ <b>台大沒有 clonidine 貼片</b>，禁食就等於斷藥。
+      ⚠ <b>兩者都要停時，順序是「先停乙型阻斷劑（提前數天），再開始逐步停 clonidine」</b>，顛倒會放大反彈。</span>
+    <span class="ht-li">· <b>短期停掉通常沒關係</b>：thiazide 類、α 阻斷劑、DHP CCB（amlodipine 半衰期 30–50 小時）。</span>
+    <span class="ht-li">· <b>ACEI／ARB 在禁食＋可能低血容的情況下停掉反而合理</b>（見「圍手術期」分頁）。</span>
+    <span class="ht-li">· <b>台大有現成的粉劑與液劑可管餵，不一定要轉靜脈</b>：
+      <b>分包粉劑</b>——captopril（1/3～1/20 錠共 7 種）、spironolactone（2.5～8.3 mg）、
+      trichlormethiazide（0.25／0.33 mg）、hydralazine（2.5 mg）；
+      <b>口服液／懸液</b>——captopril 心寧寶、amlodipine 1 mg/mL、carvedilol 1.25 mg/mL（<b>先搖勻</b>）、
+      furosemide 10 mg/mL。<br>
+      ⚠ <b>Furosemide 口服液劑健保成人可用，但病歷要註明不能用錠劑的原因（2.9.3）；
+      captopril 內服液劑健保限未滿 18 歲（2.18）——成人吞嚥困難不能用這一條。</b></span>
+    <span class="ht-li">· <b>持續性／控釋劑型不可磨</b>：台大的 <b>Betaloc ZOK、恆脈循持續性膜衣錠、Diltelan SR、
+      Isoptin SR、Doxaben XL、Natrilix SR</b> 都是；<b>得安穩（valsartan）雖然只是膜衣錠，
+      台大也標「不可磨」</b>。其餘品項台大沒有資料，<b>不可以用劑型自行推斷</b>。</span>
+    <span class="ht-li">· <b>有靜脈對應的只有四類</b>：乙型阻斷劑（labetalol、esmolol）、DHP CCB（nicardipine）、
+      non-DHP CCB（diltiazem）、硝酸鹽（nitroglycerin）。
+      <b>ACEI／ARB／thiazide／MRA／α 阻斷劑在台大都沒有靜脈劑型可以接。</b></span>
+    <span class="ht-li">· ⚠ <b>沒有可靠的口服↔靜脈等效換算表。</b>只有 nicardipine（口服轉靜脈）與 labetalol（靜脈轉口服）
+      的仿單轉換說明；其餘一律<b>以血壓為目標重新滴定</b>，不要自己造一張換算表。</span>
+  </div>
+
+</div>
+<!-- ==================== 圍手術期 ==================== -->
+<div class="ht-panel" id="p-op">
+
+  <div class="kbox alert">
+    <div class="kbox-t">先破除三個最常見的錯誤說法</div>
+    <span class="ht-li">· <b>「2024 ACC/AHA 建議術前停 ACEI／ARB」是錯的。</b>那是 <b>COR 2b（may be beneficial）／LOE B-R</b>，
+      而且<b>三個條件缺一不可</b>：①適應症是高血壓（不是心衰竭）②血壓控制良好 ③要開的是 <b>elevated-risk</b> 手術。
+      <b>HFrEF 反而是 COR 2a「繼續用」。</b></span>
+    <span class="ht-li">· <b>「Stop-or-Not 已經被 2024 ACC/AHA 指引納入」也是錯的。</b>
+      該指引的文獻搜尋<b>截止於 2023 年 3 月</b>，而<b>兩者是同一天（2024-09-24）發表的</b>。
+      指引那條 2b 的證據基礎是 PREOP-ACEI、POISE-3 與統合分析，<b>不含 Stop-or-Not</b>。</span>
+    <span class="ht-li">· <b>「血壓太高要延刀去控制」沒有實證支持。</b>2026 英國麻醉學會／高血壓學會指引原文直說
+      <b>「there is no evidence that delaying surgery to optimise blood pressure is beneficial」</b>。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">逐藥：停還是續</span><span class="dh-e">Hold or continue</span></div>
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>藥</th><th>做法</th><th>強度與出處</th></tr></thead>
+    <tbody>
+      <tr><td><b>乙型阻斷劑<br>（已在長期使用）</b></td><td><b>繼續，不要停</b></td><td>2024 ACC/AHA §7.7 <b>COR 1／B-NR</b>；ESC 2022 <b>Class I／B</b>。ESC 內文：術前停乙型阻斷劑造成死亡率上升有 5 篇觀察性研究支持；<b>術後中斷超過 2 天可能使心房顫動風險加倍</b></td></tr>
+      <tr><td><b>乙型阻斷劑<br>（術前才新開）</b></td><td><b>手術當天絕對不要新開</b>；真的有新適應症要開，<b>至少提前 7 天以上（約 1 週）</b>，從低劑量開始並調到靜止心率 60–70 bpm</td><td>當天新開＝<b>COR 3: Harm／B-R</b>；提前 &gt;7 天新開＝<b>COR 2b／B-NR</b>；ESC 對「常規圍手術期起始」是 <b>Class III／A</b>。⚠ 二手來源對天數說法不一（&gt;7 天／至少 8 天／至少 1 週），本頁用「&gt;7 天」</td></tr>
+      <tr><td><b>ACEI／ARB／ARNI</b></td><td><b>六份文件六種做法，本頁全部並列</b>（見下方專段）</td><td>從「術前 48–72 小時停」到「完全不要停」都有</td></tr>
+      <tr><td><b>Clonidine 等 α2 促效劑</b></td><td><b>不要「新開」</b>（COR 3: No Benefit／B-R）。<br><b>但已經在吃的要續用</b>——突然停會反彈</td><td>POISE-2 clonidine 臂：主要終點 HR 1.08（無效），<b>臨床上重要的低血壓 47.6% vs 37.1%（HR 1.32）</b>，<b>非致命心跳停止 0.3% vs 0.1%（HR 3.20, 1.17–8.73, P=0.02）</b></td></tr>
+      <tr><td><b>利尿劑</b></td><td>ESC 2022：<b>以利尿劑治療高血壓者，手術當天暫停</b>（<b>Class IIa／B</b>）</td><td>⚠ <b>2024 ACC/AHA 圍手術期指引對利尿劑完全沒有建議條文</b>，這一格只能掛 ESC</td></tr>
+      <tr><td><b>CCB、MRA、α 阻斷劑</b></td><td><b>2024 ACC/AHA 沒有任何建議條文</b>；一般原則回到 §6.2 Rec 1：<b>多數擇期手術病人的高血壓藥物治療應在圍手術期繼續</b>（<b>COR 2a／C-LD</b>）</td><td>不要自己補一個「都要停」的規則</td></tr>
+      <tr><td><b>SGLT2 抑制劑</b></td><td><b>術前停 3–4 天</b>（ACC/AHA <b>COR 1／C-LD</b>）；ESC 寫<b>至少 3 天</b>（IIa／C）。目的是避免正常血糖型酮酸中毒</td><td>⚠ 兩份指引天數不同，並列。<b>台灣沒有 ertugliflozin</b>（藥證全註銷），常用的是 dapagliflozin 與 empagliflozin</td></tr>
+      <tr><td>Statin</td><td>已在用要繼續（COR 1／B-NR）；符合條件而未用者可在圍手術期開始（COR 1／B-R）</td><td>順帶列出，因為常一起處理</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="dirhead hi"><span class="dh-n">ACEI／ARB 停不停：六份文件六種做法</span><span class="dh-e">RAS inhibitors</span></div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>文件</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td><b>2024 ACC/AHA §7.2</b></td><td>選擇性病人<b>術前 24 小時</b>停（<b>2b／B-R</b>）；<b>HFrEF 續用（2a／C-EO）</b></td></tr>
+      <tr><td>2025 AHA/ACC 高血壓指引 §6.4</td><td>「可考慮術前停」（2b／B-R），<b>沒有給時間，也沒有限定手術風險</b></td></tr>
+      <tr><td>ESC 2022</td><td>無心衰竭者<b>手術當天</b>停（<b>IIa／B</b>）；穩定心衰竭者可考慮續用（IIb／C）</td></tr>
+      <tr><td>CCS 2017（加拿大）</td><td><b>所有病人</b>術前<b>至少 24 小時</b>停</td></tr>
+      <tr><td>KDIGO 2024（CKD 病人）</td><td>擇期手術前 <b>48–72 小時</b>停</td></tr>
+      <tr><td><b>2026 英國 AoA／BIHS</b></td><td><b>「Patients should continue all routine antihypertensive medications pre-operatively, i.e. not stop ACEIs or ARBs.」</b>——<b>唯一明確叫你照吃的</b>，方向與上面全部相反</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">Stop-or-Not 試驗（JAMA 2024）到底說了什麼</div>
+    <span class="ht-li">· 法國 40 家醫院、2,222 位長期（≥3 個月）用 ACEI 或 ARB 且要接受<b>大型非心臟手術</b>的病人，
+      隨機分成<b>吃到手術當天</b>（n=1107）vs <b>術前 48 小時停</b>（n=1115）。
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/39212270/" target="_blank" rel="noopener">PMID 39212270</a>）</span>
+    <span class="ht-li">· <b>主要終點（28 天全因死亡＋重大術後併發症）：22% vs 22%，RR 1.02（0.87–1.19），P=0.85——完全沒有差別。</b>
+      急性腎損傷、術後器官衰竭、住院與加護天數也都沒有差。</span>
+    <span class="ht-li">· <b>唯一的差別是術中低血壓發作：繼續組 54% vs 停藥組 41%（RR 1.31）。</b>
+      ⚠ <b>但「量」很小</b>：每例平均低血壓時間<b>停藥 6 分鐘 vs 繼續 9 分鐘</b>，
+      差約 <b>3.4 分鐘</b>——次數差 13 個百分點聽起來很多，時間只差 3 分鐘。</span>
+    <span class="ht-li">· <b>2025 年的事後分析</b>（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40560582/" target="_blank" rel="noopener">PMID 40560582</a>）：
+      用 RCRI 等分層後<b>心血管風險高低不改變結論</b>——「the decision to continue or discontinue RASi
+      <b>should not be influenced by a patient's preoperative cardiovascular risk assessment</b>」。</span>
+    <span class="ht-li">· <b>限制（必須知道）</b>：開放標籤（低血壓的處置就掌握在未設盲的麻醉團隊手上）；
+      <b>心衰竭病人只有約 6%</b>，所以指引那條「HFrEF 要續用」<b>這篇沒有回答</b>；
+      單一國家、單一停藥時程（48 小時），<b>無法外推到「手術當天早上不吃」這種常見做法</b>；
+      <b>沒有 ARNI（台大有健安心）的資料</b>。</span>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 停 RASi 的代價：術後高血壓變多</div>
+    <span class="ht-li">· 5 個 RCT、2,848 人的統合分析（Br J Anaesth 2025，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/40750467/" target="_blank" rel="noopener">PMID 40750467</a>）：
+      <b>死亡＋MACE OR 1.21（0.60–2.42，無差異）</b>；<b>低血壓：停藥組較少 OR 0.62（0.42–0.90）</b>；
+      <b>高血壓：停藥組較多 OR 1.90（1.20–3.02），P=0.007</b>。</span>
+    <span class="ht-li">· PREOP-ACEI（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/30261084/" target="_blank" rel="noopener">PMID 30261084</a>）
+      也一樣：<b>術後高血壓 RR 1.95（1.14–3.34）</b>。SPACE 試驗：<b>急性高血壓（&gt;180）停藥組 12.4% vs 續用 5.3%</b>。</span>
+    <span class="ht-li">· 英國調查：<b>超過 80% 的醫師會叫病人停藥，64.8% 的首要理由是「避免低血壓」，只有 18.7% 想到高血壓。</b></span>
+    <span class="ht-li">· ⚠ <b>SPACE 的事後分析與直覺相反：術前 NT-proBNP 低的病人，停 RASi 反而心肌損傷比較多。</b>
+      推測是停藥後 angiotensin II 濃度高、血壓反彈更明顯。<b>「低風險所以可以放心停」這個推理不成立。</b></span>
+    <span class="ht-li">· <b>停了就要記得開回去。</b>美國退伍軍人的觀察資料（引自 CCJM 2025 綜述）：
+      近 25 萬名長期用 ACEI 者，<b>25% 停藥後 14 天內沒有重新開始</b>，與 30 天死亡率上升相關（<b>HR 3.44</b>）；
+      ARB 的分析中<b>三分之一在術後 48 小時內沒有恢復</b>（HR 1.47）。
+      Stop-or-Not 的試驗設計本身就要求停藥組「盡快恢復」。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">血壓多高要延刀</span><span class="dh-e">Deferring surgery</span></div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>出處</th><th>門檻與做法</th><th>強度</th></tr></thead>
+    <tbody>
+      <tr><td>2024 ACC/AHA §6.2</td><td>擇期 <b>elevated-risk</b> 手術＋有心血管危險因子＋近期 <b>SBP ≥180 或 DBP ≥110</b> 控制不良 → 延刀「may be considered」</td><td><b>COR 2b／C-LD</b></td></tr>
+      <tr><td>2025 AHA/ACC 高血壓指引 §6.4</td><td>擇期大手術，<b>SBP ≥180 或 DBP ≥110</b> → 延刀 may be considered，高風險者尤然</td><td><b>COR 2b／C-LD</b></td></tr>
+      <tr><td><b>ESC 2022</b></td><td><b>「不建議」為了第 1 或第 2 級高血壓延刀</b></td><td><b>Class III／C</b></td></tr>
+      <tr><td>ESC 2022 內文（非條文）</td><td>SBP ≥180 和／或 DBP ≥110 時，延到血壓控制住是「advisable」，急診手術除外</td><td>敘述，無 Class</td></tr>
+      <tr><td><b>2026 英國 AoA／BIHS</b></td><td>①初級照護 12 個月內 clinic <b>&lt;160/100</b> 或居家／24 小時 <b>&lt;155/95</b> → 二級照護必須接受轉介；②術前門診沒有正常血壓紀錄者，<b>clinic &lt;180/120 或 ABPM/HBPM &lt;175/115 才可進行擇期手術</b>；③<b>「surgery should be postponed until primary care blood pressures are &lt;180/120」</b></td><td>共識意見</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">⚠ 英國的舒張壓門檻從 110 改成 120 了</div>
+    2016 版是 clinic <b>&lt;180/110</b> 可以開；<b>2026 版改成 &lt;180/120</b>（與 NICE 對齊）。原文明講：
+    「their definition of severe diastolic hypertension starts at <b>115 mmHg rather than 120 mmHg</b>.
+    We have adapted this new guideline to match the recent NICE guidance in that respect.」<b>抄舊版會抄錯。</b><br>
+    <b>唯一的隨機證據是反對延刀的</b>：Weksler 2003
+    （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/12770652/" target="_blank" rel="noopener">PMID 12770652</a>）——
+    989 位平時控制良好、但到開刀房時 DBP 110–130 的病人，隨機分成延刀住院控壓 vs <b>照開</b>；
+    <b>術後心血管與神經併發症無差異，照開組住院天數還比較短</b>。
+    ⚠ 但該研究是<b>鼻內給 nifedipine</b>，這個給法台灣沒有劑型；<b>而且它排除了先前心肌梗塞、不穩定心絞痛、
+    腎衰竭、左心室肥厚、曾接受冠脈重建、主動脈瓣狹窄、心律不整、中風的病人</b>。
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">要在術前快速把血壓壓下來時（2026 英國指引的具體建議）</div>
+    <b>起始 amlodipine 5 mg qd，2 週後視反應調到 10 mg</b>；不耐受高劑量 CCB 者可用
+    <b>losartan 50 mg ＋ amlodipine 5 mg</b> 併用；不能用 CCB 者改 <b>indapamide SR 1.5 mg</b>。<br>
+    <b>這三支台大全部都有</b>（脈優、可悅您、鈉催離）。<br>
+    其他操作細節：術前門診發現 ≥180/120 → 依 NICE <b>7 天內</b>安排診間外量測；
+    有惡性高血壓紅旗則需<b>當日</b>專科評估；癌症手術這類 clinically urgent 的，由麻醉、外科、
+    圍手術期內科與病人共同決策。另：<b>脈壓 &gt;62 mmHg 與術後 30 天心肌損傷增加相關</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">術中血壓目標</span><span class="dh-e">Intraoperative targets</span></div>
+  <div class="kbox">
+    <div class="kbox-t">三份指引三個數字，本頁並列</div>
+    <span class="ht-li">· <b>2024 ACC/AHA</b>：維持 <b>MAP ≥60–65 或 SBP ≥90</b>（<b>COR 1／B-NR</b>）；
+      術後低血壓（MAP &lt;60–65 或 SBP &lt;90）也要處理（<b>COR 1／B-NR</b>）。</span>
+    <span class="ht-li">· <b>ESC 2022</b>：避免 <b>MAP 較 baseline 下降 &gt;20% 或 &lt;60–70，持續 ≥10 分鐘</b>（<b>Class I／B</b>）。</span>
+    <span class="ht-li">· <b>2026 英國 AoA／BIHS</b>：高風險病人常用的目標是 <b>MAP &gt;70 且／或 SBP &gt;100</b>。</span>
+    <span class="ht-li">· 觀察性資料的閾值：<b>MAP &lt;55 只要 1–5 分鐘</b>就與急性腎損傷（aOR 1.18）與心肌損傷（aOR 1.30）相關，
+      且<b>累積超過 20 分鐘時分別到 1.51 與 1.82</b>（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/23835589/" target="_blank" rel="noopener">PMID 23835589</a>）。
+      另一篇（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/27792044/" target="_blank" rel="noopener">PMID 27792044</a>）
+      發現絕對值（MAP &lt;65）與相對值（降 &gt;20%）的鑑別力相當，而且<b>與術前血壓沒有臨床上重要的交互作用</b>——
+      原文結論：<b>「麻醉處置可以只看術中壓力，不必參照術前血壓。」</b></span>
+    <span class="ht-li">· ⚠ <b>但「降低術中低血壓」這件事本身沒有被證明有用。</b>
+      2026 英國指引原文：近期統合分析顯示<b>嚴格控制與寬鬆控制的結果沒有差別</b>，
+      「this suggests that <b>intra-operative hypotension may be a marker, rather than a mediator, of adverse outcomes</b>」。
+      至今 <b>8 個</b>試圖降低術中低血壓的隨機試驗（含 POISE-3、SPACE、AI 預測、目標導向）
+      <b>沒有一個優於標準麻醉照護</b>。<b>所以「為了避免低血壓所以停 RASi」這條因果鏈，中間那一段其實沒有被證實。</b></span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">術後高血壓</span><span class="dh-e">Postoperative hypertension</span></div>
+  <div class="kbox">
+    <div class="kbox-t">先找原因，大部分處理原因就會好</div>
+    <span class="ht-li">· 發生率：<b>擇期非心臟手術約 20%；顱內神經外科手術 57–91%</b>（2026 英國指引）。
+      原文也承認「acute postoperative hypertension … <b>is not well defined</b>」。</span>
+    <span class="ht-li">· 指引列出的誘因：<b>疼痛、焦慮、缺氧、低體溫</b>（甦醒期）；
+      以及<b>誘導與手術期間的交感刺激、急性疼痛、體液過多</b>，尤其在術後 <b>24–48 小時</b>內。
+      ⚠ <b>「尿滯留」與「停藥反彈」是常見的教科書說法，但不在這幾份指引的誘因清單裡</b>——
+      本頁照實標示（停藥反彈另有獨立條文）。</span>
+    <span class="ht-li">· 原文：「Frequently, the hypertension <b>subsides with the treatment of the underlying cause</b>
+      (e.g. pain, anxiety, hypoxia, hypothermia). If it persists, management should be targeted at the
+      suspected underlying issue, but drugs used commonly include <b>intravenous or topical nitroglycerin,
+      magnesium sulphate, beta blockers and calcium channel antagonists. Hydralazine and sodium nitroprusside
+      are used less frequently.</b>」</span>
+    <span class="ht-li">· <b>什麼時候恢復口服降壓藥</b>：2024 ACC/AHA <b>COR 1／C-EO</b>——
+      <b>「as soon as clinically reasonable」</b>。2026 英國指引補充操作細節：
+      <b>血壓回到病人平常值後盡快重啟</b>；<b>早期可考慮先減量再依血壓上調</b>
+      （「病人在住院期間可能不需要平常的劑量」）；<b>用臥／站血壓引導重啟</b>；
+      <b>院內的調整與後續計畫要寫進出院摘要並交回門診追蹤</b>。</span>
+    <span class="ht-li">· ⚠ <b>但不要為了數字漂亮而 PRN 降壓。</b>2025 AHA/ACC §6.2 有一條
+      <b>COR 3: Harm</b>：住院於非心臟疾病、<b>無急性器官損傷</b>的 severe hypertension（&gt;180/120），
+      <b>不建議間歇使用額外的靜脈或口服降壓藥</b>。詳見「住院與急症」分頁。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">禁食病人的實務（台大版）</span><span class="dh-e">NPO — NTUH specifics</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">台灣的三個硬限制</div>
+    <span class="ht-li">· <b>Clonidine 貼片在台灣完全沒有藥證</b>（食藥署 42 張 clonidine 許可證中，貼片／穿皮劑型 0 張）。
+      國外「禁食就換貼片」的做法<b>在台灣做不到</b>。已在用 clonidine 的病人手術前後要另外規劃。</span>
+    <span class="ht-li">· <b>Nitroglycerin 貼片台灣有</b>（護心貼片 NITRODERM TTS 5），
+      而 2026 英國指引把 <b>topical nitroglycerin</b> 列為術後高血壓常用藥之一——
+      這是禁食病人少數的非注射選項。</span>
+    <span class="ht-li">· <b>「給 IV metoprolol」在台灣沒有這個品項</b>——食藥署 48 張 metoprolol 藥證中<b>注射劑 0 張</b>。
+      需要靜脈乙型阻斷劑就是 <b>labetalol</b> 或 <b>esmolol</b>。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">剝半與磨粉：一個很容易被誤判的細節</div>
+    <span class="ht-li">· <b>舒壓寧控釋錠（metoprolol succinate ER）可以對半，但不可以磨粉。</b>
+      FDA 仿單原文：「scored and <b>can be divided</b>; however, <b>do not crush or chew</b> the whole
+      <b>or half</b> tablet」。<b>這是最容易被誤判的一項。</b></span>
+    <span class="ht-li">· <b>不可磨、不可打開</b>：<b>恆脈循持續性膜衣錠</b>、<b>達爾能持續性膠囊</b>（diltiazem ER）、
+      <b>可迅持續性藥效錠</b>（doxazosin GITS，仿單：must not be chewed, divided, cut, or crushed）。</span>
+    <span class="ht-li">· <b>可磨</b>：<b>合必爽速效錠（diltiazem 30 mg）</b>——FDA 仿單「may be swallowed whole,
+      crushed, or chewed」（但 30 mg 那段另註 do not split）。
+      <b>Verapamil SR 膠囊型</b>可打開把顆粒撒在食物上（仿單有生體相等性資料）；
+      <b>verapamil ER 錠</b>可對半（仿單：對半不改變緩釋特性），<b>但沒說可磨</b>。
+      ⚠ <b>台大的心舒平持續性是錠還是膠囊要先確認，兩者行為不同。</b></span>
+    <span class="ht-li">· <b>其餘品項一律「未取得」</b>——amlodipine、五支 ARB、bisoprolol、atenolol、carvedilol、
+      nebivolol、hydralazine、spironolactone、trichlormethiazide、indapamide SR 在 FDA 仿單裡
+      都沒有剝半磨粉的敘述。<b>不可以用劑型自行推斷。</b></span>
+    <span class="ht-li">· <b>比磨粉更好的做法是用台大現成的小劑量劑型</b>：
+      captopril 心寧寶內服液劑（<b>台灣唯一的口服降壓藥液劑</b>，但<b>健保限 18 歲以下</b>）、
+      captopril／spironolactone／hydralazine／trichlormethiazide 的分包粉劑、
+      amlodipine 與 carvedilol 的口服懸液、furosemide 內服液（<b>健保成人可用，但病歷要註明不能用錠劑的原因</b>）。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">特殊手術</span><span class="dh-e">Specific procedures</span></div>
+  <div class="kbox">
+    <span class="ht-li">· <b>頸動脈內膜切除術／頸動脈支架（ESVS 2023）</b>：
+      <b>ESVS 沒有給術後血壓的數字目標。</b>原文：「because units tend to adopt different thresholds
+      for intervening, <b>it is difficult to define a consensus treatment protocol</b>」——
+      它給的是 <b>Class I／C：執行頸動脈手術的中心必須有自己處理術後高血壓的書面準則</b>。
+      <b>所以不要寫「CEA 後 SBP &lt;140」並掛 ESVS 的名字。</b><br>
+      有數字的部分：術前未受控的高血壓（&gt;180/90）應予治療（IIa／C）；
+      <b>CEA 後前 3–6 小時要定期量血壓</b>（I／C）；術後低血壓<b>先給晶體液與容積擴充，無效再用滴定式升壓劑維持 SBP &gt;90</b>（IIa／C）。
+      背景數字（ECST）：術前 SBP &lt;120 者 CEA 後中風率 3.4%，121–159 為 6.5%，160–180 為 7.7%，<b>&gt;180 為 13.0%</b>（P=0.040）。</span>
+    <span class="ht-li">· <b>心臟手術體外循環</b>：把 MAP 拉高到 70–80 <b>沒有好處</b>——
+      新缺血病灶體積 29 vs 25 mm³（P=0.99，<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/29339351/" target="_blank" rel="noopener">PMID 29339351</a>）。</span>
+    <span class="ht-li">· <b>神經外科擇期手術的血壓目標</b>：<b>本次沒有查到指引級的數字</b>，本頁不編一個。</span>
+    <span class="ht-li">· <b>主動脈手術／急性主動脈症候群</b>的血壓與心率目標見「住院與急症」分頁，
+      以及 <a href="acute-aortic-syndrome.html" class="pmid">急性主動脈症候群</a>。</span>
+  </div>
+
+</div>
+<!-- ==================== 特殊族群 ==================== -->
+<div class="ht-panel" id="p-sp">
+
+  <div class="dirhead hi"><span class="dh-n">懷孕、備孕與哺乳</span><span class="dh-e">Pregnancy</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">2025 AHA/ACC 在懷孕這一節有三條全新的 COR 1，而且禁忌清單擴大了</div>
+    <span class="ht-li">· <b>慢性高血壓的治療門檻降下來了。</b>新條文（<b>COR 1</b>）：
+      慢性高血壓（懷孕前已有，或<b>20 週前 SBP 140–159 和／或 DBP 90–109</b>）
+      <b>應接受降壓治療，目標 &lt;140/90</b>。<br>
+      依據是 <b>CHAP 試驗</b>（NEJM 2022;386:1781–92，
+      <a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/35363951/" target="_blank" rel="noopener">PMID 35363951</a>）：
+      2,408 位輕度慢性高血壓孕婦，<b>目標 &lt;140/90 vs 只在重度（≥160 或 ≥105）才治療</b>。
+      <b>主要複合終點（重度子癲前症、&lt;35 週的醫療性早產、胎盤早期剝離、胎兒或新生兒死亡）
+      30.2% vs 37.0%，校正 RR 0.82（0.74–0.92），P&lt;0.001</b>；
+      <b>而且小於妊娠年齡的出生體重（&lt;10 百分位）11.2% vs 10.4%，校正 RR 1.04（0.82–1.31），P=0.76——沒有增加</b>。
+      任何子癲前症 24.4% vs 31.1%（RR 0.79）、早產 27.5% vs 31.4%（RR 0.87）。<br>
+      <b>⚠ 這推翻了「懷孕要到 160/110 才治療」的舊做法，而且「怕影響胎兒生長」這個顧慮在 CHAP 裡沒有成立。</b></span>
+    <span class="ht-li">· <b>重度高血壓要在 1 小時內處理完。</b>新條文（<b>COR 1</b>）：
+      <b>SBP ≥160 或 DBP ≥110，在 15 分鐘內重測確認</b>後，
+      <b>應在 30–60 分鐘內把血壓降到 &lt;160/&lt;110</b>。</span>
+    <span class="ht-li">· <b>低劑量 aspirin。</b>新條文（<b>COR 1</b>）：備孕或已懷孕的高血壓婦女，
+      <b>應被告知低劑量 aspirin 可降低子癲前症的風險</b>。</span>
+    <span class="ht-li">· <b>⚠ 禁忌藥清單比 2017 版擴大。</b>2017 只列 ACEI 與直接腎素抑制劑；
+      <b>2025 的 COR 3: Harm 條文是「atenolol、ACEI、ARB、直接腎素抑制劑、nitroprusside、MRA」六類</b>。
+      台大有 <b>atenolol（壓平樂）</b>、五支 ARB、<b>spironolactone／eplerenone／finerenone</b>——
+      <b>開給備孕或懷孕婦女要特別注意</b>。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">急性重度高血壓可以用什麼（台大版）</div>
+    <span class="ht-li">· 2025 指引 Table 27 的四個首選是 <b>hydralazine、labetalol、nicardipine、nifedipine</b>。
+      <b>⚠ 台大沒有 hydralazine 針</b>，所以院內實務只有
+      <b>靜脈 labetalol、靜脈 nicardipine、口服 nifedipine</b> 三個選項。</span>
+    <span class="ht-li">· 台灣 2022 指引逐字：「The recommended treatment for hypertensive crisis in pregnancy is
+      <b>intravenous labetalol or nicardipine and magnesium; and nitroglycerin for pulmonary edema</b>（<b>COR I／LOE C</b>）」；
+      另有「懷孕期間 <b>SBP &gt;170 和／或 DBP &gt;110 應視為緊急狀況、需要住院</b>（COR I／LOE C）」。</span>
+    <span class="ht-li">· <b>ACEI／ARB／腎素抑制劑／nitroprusside 在此情境明列禁忌。</b></span>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 台大的硫酸鎂是用 mEq 開的，不是公克</div>
+    台大品項是 <b>Magnesium Sulfate Injection 10%</b>，有 <b>20 mL/amp</b> 與 <b>200 mL/btl</b> 兩種，
+    濃度標示為 <b>Mg 0.8 mEq/mL</b>。院內劑量欄寫的是：<br>
+    <b>「預防或治療子癲症發作：負荷 32–48 mEq，之後 8–16 mEq/hr 至少 24 小時；上限 240–320 mEq/day」</b>。<br>
+    <b>換算：1 g MgSO₄·7H₂O 約 8 mEq</b>，所以負荷 32–48 mEq ≈ <b>4–6 g</b>、維持 8–16 mEq/hr ≈ <b>1–2 g/hr</b>，
+    與國際常用協定一致。<br>
+    ⚠ <b>但多數教科書與協定假設的是 50% 安瓿；台大是 10%</b>——
+    <b>4 g 負荷在台大是 40 mL（＝兩支 20 mL 安瓿，或從 200 mL 瓶抽 40 mL）</b>。
+    <b>照抄「抽 8 mL」會給到五分之一的劑量。</b>台大登錄的適應症就包含子癲症、子癲前症與妊娠毒血症。
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">台大沒有 methyldopa</div>
+    methyldopa 是懷孕高血壓的傳統長期用藥，<b>台大院內沒有這個品項</b>（台灣市面上有學名藥，如「永信路平膠衣錠」）。
+    院內可用於懷孕的長期口服選項實務上是 <b>labetalol（壓血泰 200 mg）</b>與
+    <b>nifedipine 持續性錠（恆脈循 30 mg）</b>。<br>
+    ⚠ 詳細的產科用藥時程、子癲前症的完整處置與哺乳期用藥，超出本頁範圍，請依產科規範。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">高齡與衰弱</span><span class="dh-e">Older adults &amp; frailty</span></div>
+  <div class="kbox">
+    <div class="kbox-t">ESC 2024 把「年齡」與「衰弱」分開處理</div>
+    <span class="ht-li">· <b>&lt;85 歲且非中重度衰弱者，治療原則與年輕人相同</b>（<b>Class I／A</b>）。</span>
+    <span class="ht-li">· <b>即使超過 85 歲也應終身維持降壓藥</b>，只要耐受（<b>Class I／A</b>）。
+      ESC 明文：「very old and frail patients with hypertension <b>should not be denied</b> the potential benefits」。</span>
+    <span class="ht-li">· <b>但起始門檻與目標可以放寬</b>：治療前有症狀性姿勢性低血壓／≥85 歲／中重度衰弱／餘命 &lt;3 年者，
+      <b>只在 ≥140/90 才考慮起始用藥</b>（<b>Class IIa／B</b>）；目標放寬到<b>例如 &lt;140</b>（IIa／C）
+      或 <b>&lt;140/90</b>（IIb／C）。</span>
+    <span class="ht-li">· <b>起始用藥要選對：長效 DHP-CCB 或 RAS 抑制劑，必要時再加低劑量利尿劑；
+      盡量不要用乙型阻斷劑（除非有明確適應症）或 α 阻斷劑</b>（<b>Class IIa／B</b>）。</span>
+    <span class="ht-li">· <b>起始也要選單方</b>：≥85 歲、症狀性姿勢性低血壓、中重度衰弱是 ESC「建議起始單方」的三種例外。</span>
+    <span class="ht-li">· <b>血壓隨衰弱進展自己降下來時，可以考慮減藥</b>（<b>Class IIb／C</b>），
+      同時檢視鎮靜劑、攝護腺用 α 阻斷劑等會降壓的藥。</span>
+    <span class="ht-li">· <b>應用已驗證的工具篩檢衰弱</b>（如 Clinical Frailty Scale）並共享決策（IIa／C）。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">但台灣與 AHA 的立場更積極</div>
+    <span class="ht-li">· <b>台灣 2022</b>：「<b>對目標的耐受性是第一優先</b>」，但<b>「年齡本身不是耐受性差的理由」</b>——
+      SPRINT 與 STEP 都顯示 70–80 歲族群的相對風險下降相似、<b>絕對風險下降更大</b>。</span>
+    <span class="ht-li">· <b>AHA 2025</b>：≥80 歲者「風險模型在此年齡受限，<b>當臨床判斷認為利大於弊且符合病人的照護目標時，
+      ≥130/80 即建議起始治療</b>」。AHA <b>沒有</b>為任何族群（含 ≥80 歲、洗腎、機構住民）訂出不同於 &lt;130/80 的數字目標。
+      <b>二手資料若寫「老年人放寬到 &lt;140」，那不是 AHA 2025 的條文。</b></span>
+    <span class="ht-li">· <b>ESC 也提醒：支持 120–129/70–79 的統合分析證據只確立到 85 歲</b>；
+      而觀察性研究看到的 J 型曲線被 ESC 明確評為「<b>unreliable when guiding clinical care</b>」
+      （反向因果；大動脈僵硬同時造成低舒張壓與高死亡率）。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">姿勢性低血壓怎麼量</div>
+    <span class="ht-li">· <b>ESC 定義</b>：站起後 <b>1 分鐘和／或 3 分鐘</b>，<b>SBP 下降 ≥20 和／或 DBP 下降 ≥10 mmHg</b>；
+      量之前先躺或坐 5 分鐘。<b>診斷時至少測一次</b>，之後有症狀再測（<b>Class IIa／C</b>）。</span>
+    <span class="ht-li">· 台灣 2022 的量測表也要求：站立後 <b>1 分鐘（典型）與 3 分鐘（延遲型）</b>各量一次。</span>
+    <span class="ht-li">· ⚠ <b>有嚴重症狀性姿勢性低血壓時，AHA 註明「減鈉可能是禁忌」。</b></span>
+    <span class="ht-li">· 台灣 2022 對 α 阻斷劑造成的姿勢性低血壓提到「<b>增加鹽分攝取可能有幫助</b>」。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">續發性高血壓</span><span class="dh-e">Secondary hypertension</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">原發性醛固酮症：篩檢範圍在 2025 版大幅擴大，而且篩檢前不用停藥</div>
+    <span class="ht-li">· <b>六個篩檢適應症（AHA 2025 COR 1／C-EO）</b>：
+      <b>難治型高血壓（不論血鉀正不正常）</b>、<b>低血鉀（自發性或利尿劑引起）</b>、
+      <b>睡眠呼吸中止症</b>、<b>意外發現的腎上腺腫瘤</b>、<b>早發高血壓家族史</b>、<b>&lt;40 歲中風</b>。
+      其中「難治型不論血鉀」與「OSA」是本版新加的。</span>
+    <span class="ht-li">· <b>Stage 2 高血壓「可考慮」篩檢（COR 2b／C-EO）</b>——等於所有 ≥140/90 都進入可考慮範圍。
+      ESC 2024 對此給 <b>Class IIa</b>；<b>Endocrine Society 2025 更建議「所有高血壓都篩」，
+      但那只是 2 級弱建議、低度確定性</b>。<b>三者強度不同，不要寫成「指引都要求全篩」。</b></span>
+    <span class="ht-li">· <b>⚠ 篩檢前不用停大部分降壓藥</b>（AHA 2025 <b>COR 1／C-EO</b>，新條文）：
+      「<b>continue most antihypertensive medications (other than MRA) prior to initial screening</b>」，
+      目的是不要讓停藥變成篩檢的障礙。<b>只有 MRA 要停至少 4 週。</b>
+      ESC 2024 更直接鼓勵「在用藥狀態下篩檢」以提高篩檢率。<b>「一定要洗掉所有藥才能驗 ARR」是舊觀念。</b></span>
+    <span class="ht-li">· <b>⚠ 各類藥造成偽陽性還是偽陰性，方向常被寫反</b>：
+      <b>乙型阻斷劑與中樞 α2 促效劑會壓低 renin → 偽陽性</b>；
+      <b>MRA、利尿劑、ACEI、ARB、SGLT2 抑制劑會拉高 renin → 偽陰性</b>。
+      <b>SGLT2i 是近年才被列入需停 2 週的清單，最容易漏掉。</b></span>
+    <span class="ht-li">· 真的需要停藥再驗時，可暫時換成<b>不干擾的藥：非 DHP CCB、血管擴張劑、周邊 α 阻斷劑</b>
+      （以及可能可用的 DHP CCB），<b>至少 2–4 週</b>後再測。準備事項：<b>不限鹽</b>、把血鉀補到正常。</span>
+    <span class="ht-li">· ⚠ <b>CKD 病人的 ARR 偽陽性偏多</b>（renin 隨腎元喪失下降、aldosterone 也可能升高）。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">睡眠呼吸中止：它是續發原因，但 CPAP 不是降壓治療</div>
+    <span class="ht-li">· <b>在高血壓族群的盛行率 25–50%</b>（AHA 2025 Table 10）。
+      何時要查：打鼾／睡眠中窒息、白天嗜睡、<b>難治型高血壓</b>；
+      理學：肥胖、<b>頸圍男 &gt;17 吋／女 &gt;16 吋</b>、Mallampati 3–4 級、<b>夜間血壓正常下降消失</b>。</span>
+    <span class="ht-li">· <b>CPAP 的實際降幅只有 2–3 mmHg。</b>51 個 RCT、4,888 人的網絡統合分析
+      （<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/26624827/" target="_blank" rel="noopener">PMID 26624827</a>）：
+      <b>CPAP vs 無治療 SBP −2.5（1.5–3.5）、DBP −2.0（1.3–2.7）</b>；
+      <b>每晚多用 1 小時，額外 SBP −1.5</b>。下顎前突裝置的效果與 CPAP 無顯著差異。</span>
+    <span class="ht-li">· 難治型高血壓的 HIPARCO 試驗（<a class="pmid" href="https://pubmed.ncbi.nlm.nih.gov/24327037/" target="_blank" rel="noopener">PMID 24327037</a>）：
+      <b>24 小時平均血壓多降 3.1 mmHg（P=.02）、DBP 多降 3.2（P=.005）；
+      但 24 小時 SBP 多降 3.1 mmHg 的 P=.10，未達顯著</b>。
+      真正明顯的是<b>夜間 dipper 比例 35.9% vs 21.6%（OR 2.4）</b>。</span>
+    <span class="ht-li">· ⚠ <b>2025 AHA/ACC 逐字：「data do not support the use of CPAP for the prevention of
+      CVD events or mortality」</b>。<b>CPAP 是共病治療，不是降壓階梯的一格。</b></span>
+    <span class="ht-li">· 減重的效果反而比較大：<b>減重＋CPAP 的 SBP 降幅約 8 mmHg</b>；
+      SURMOUNT-OSA 中未用 CPAP 者 tirzepatide 降 SBP <b>7.6 mmHg</b>。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">其他續發原因：什麼時候懷疑</div>
+    <span class="ht-li">· <b>腎動脈狹窄</b>：突然惡化的高血壓、開始 ACEI／ARB 後 creatinine 急升、
+      反覆急性肺水腫、腹部血管雜音、<b>不對稱的腎臟大小</b>。
+      ⚠ <b>放支架沒有比較好</b>（CORAL、ASTRAL），以藥物治療為主。</span>
+    <span class="ht-li">· <b>嗜鉻細胞瘤</b>：陣發性頭痛、心悸、冒汗三聯徵；<b>血壓劇烈波動</b>。
+      ⚠ <b>它不是 compelling condition</b>（見「住院與急症」分頁）；
+      ⚠ <b>術前 α 阻斷用的 phenoxybenzamine 台大沒有</b>，
+      <b>phentolamine 在台灣的藥證已註銷</b>——要開刀前務必提早確認取得管道。</span>
+    <span class="ht-li">· <b>庫欣症候群</b>：中央型肥胖、月亮臉、紫色條紋、近端肌無力、低血鉀。</span>
+    <span class="ht-li">· <b>主動脈狹窄（coarctation）</b>：<b>上下肢血壓差</b>、股動脈脈搏延遲或減弱；年輕高血壓必查。</span>
+    <span class="ht-li">· <b>甲狀腺疾病</b>：甲亢造成收縮期高血壓與心跳快；甲狀腺低下造成舒張期高血壓。</span>
+    <span class="ht-li">· <b>藥物引起</b>（AHA 2025 Table 17 的方向）：<b>NSAID</b>、<b>類固醇</b>、<b>口服避孕藥</b>、
+      <b>免疫抑制劑（cyclosporine、tacrolimus）</b>、<b>VEGF 抑制劑</b>、<b>安非他命與減充血劑</b>、
+      <b>甘草</b>、<b>酒精</b>。<br>
+      ⚠ 精神科用藥要特別注意：<b>venlafaxine 是雙向干擾</b>——它自己會升血壓
+      （&gt;300 mg/day 時約 13% 出現持續性舒張壓上升），同時 <b>AHA Table 17 把它列為會「抵銷降壓藥效果」</b>的藥。
+      ⚠ <b>台灣沒有經典 MAOI</b>（tranylcypromine／phenelzine 藥證早已註銷），只有 moclobemide。</span>
+    <span class="ht-li">· ⚠ <b>青光眼點的 timolol 眼藥水是全身吸收的非選擇性乙型阻斷劑</b>，
+      其仿單把<b>支氣管氣喘列為絕對禁忌</b>並警告曾有氣喘病人因支氣管痙攣死亡。
+      門診常見的「青光眼＋氣喘＋高血壓」病人，風險來源可能是眼藥水而不是口服藥。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">其他常見共病的實務</span><span class="dh-e">Practical notes</span></div>
+  <div class="kbox">
+    <span class="ht-li">· <b>攝護腺肥大</b>：doxazosin 可一石二鳥，但<b>只能當加藥</b>。
+      ALLHAT 的 doxazosin 分支<b>心衰竭風險加倍（RR 2.04）</b>而提前中止；
+      <b>不過主要終點與總死亡率其實都沒有差別</b>——兩件事要分清楚。
+      <b>白內障手術的術中虹膜鬆弛症候群，術前停藥解決不了</b>（仿單明文），要事先告知眼科。</span>
+    <span class="ht-li">· <b>偏頭痛</b>：乙型阻斷劑（如 propranolol，台大有 10 mg）可同時預防偏頭痛。</span>
+    <span class="ht-li">· <b>腎移植後</b>：首選 <b>DHP CCB 或 ARB</b>，目標 &lt;130/&lt;80（KDIGO Practice Point 4.1）。
+      ⚠ <b>非 DHP CCB 沒有顯著效果</b>（RR 0.91, 0.61–1.34）；
+      「用 diltiazem 一邊降壓一邊省免疫抑制劑」<b>不是 KDIGO 支持的降壓策略</b>，而且它會拉高 tacrolimus 濃度。
+      ⚠ <b>KDIGO 2021 的 SBP &lt;120 不適用移植病人</b>——理由之一是 SPRINT 積極組 eGFR 下降較快、
+      急性腎損傷較多，而移植病人只有一顆去神經化的腎。</span>
+    <span class="ht-li">· <b>透析</b>：<b>KDIGO 2021 完全不涵蓋透析族群</b>（工作小組在引言明文排除），
+      「洗腎也要 &lt;120」沒有 KDIGO 依據。<b>透析前／後的血壓不該單獨用來調藥</b>，
+      要用 <b>44 小時 ABPM 或居家血壓</b>。<b>「透析日早上先停降壓藥」的效果，KDIGO 原文寫 unknown。</b></span>
+    <span class="ht-li">· <b>兒童（&lt;18 歲）</b>：KDIGO 用的是 <b>24 小時 ABPM 的 MAP 降到年齡、性別、身高別的第 50 百分位以下</b>（2C），
+      <b>不是 &lt;120</b>。兒科高血壓不在本頁範圍。</span>
+  </div>
+
+</div>
+<!-- ==================== 量測與診斷 ==================== -->
+<div class="ht-panel" id="p-dx">
+
+  <div class="refbar">
+    <span class="rb"><b>台灣診斷門檻</b> 居家 ≥130/80</span>
+    <span class="rb"><b>722</b> 7 天 · 2 回 · 2 次</span>
+    <span class="rb"><b>調藥後</b> 2 週再測</span>
+    <span class="rb"><b>ABPM 24 小時</b> ≥130/80</span>
+    <span class="rb-src">台灣 TSOC／THS 2022 Table 4–7</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台灣指引與國際指引最大的不同：診斷與治療都以居家血壓為準</div>
+    2022 台灣指引把<b>居家血壓（HBPM）</b>當成診斷、分級、治療門檻與目標的<b>主要依據</b>，
+    而不是診間血壓。原文對「隨手量的診間血壓」給的是
+    <b>COR III（不建議）</b>：「Routine office BP <b>should not be used</b> for the diagnosis and
+    management of hypertension, unless the recommended BP measurement protocol is followed（COR III, LOE C）」。<br>
+    <b>⚠ 而且台灣指引刻意讓居家與診間用同一組切點</b>（120/80、130/80、140/90），
+    <b>不是一般教科書說的「居家比診間低 5 mmHg」</b>。理由寫在原文：依 Dallas Heart Study
+    以結果導出（outcome-derived）的方法，診間 SBP 140 對應到居家 SBP <b>140</b>（回歸法才是 135），
+    Task Force 認為結果導出法臨床意義較大，所以三個切點兩邊一致。
+    <b>只有在對照 140/90 與 160/90 這兩格時，居家值才比診間低</b>（見下表）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">四種量法的對應值</span><span class="dh-e">Taiwan 2022 Table 4</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    同一個風險水準，在不同量法下是不同的數字。ROBP＝隨手量的診間血壓、
+    AOBP＝自動診間血壓（機器連測取平均、SPRINT 用的那種）。
+  </div>
+  <div class="tw">
+  <table class="def-table dt-cor">
+    <thead><tr><th>居家 HBPM</th><th>診間 ROBP</th><th>自動 AOBP</th><th>白天 ABPM</th><th>夜間 ABPM</th><th>24 小時 ABPM</th></tr></thead>
+    <tbody>
+      <tr><td>120/80</td><td>120/80</td><td>120/80</td><td>120/80</td><td>100/65</td><td>115/75</td></tr>
+      <tr><td>130/80</td><td>130/80</td><td>130/80</td><td>130/80</td><td>110/65</td><td>125/75</td></tr>
+      <tr><td>135/85</td><td>140/90</td><td>135/85</td><td>135/85</td><td>120/79</td><td>130/80</td></tr>
+      <tr><td>145/90</td><td>160/90</td><td>145/90</td><td>145/90</td><td>140/85</td><td>145/90</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    台灣 2022 指引 Table 4。<b>AOBP、居家、白天 ABPM 三者數值幾乎相同</b>（原文引的統合分析：
+    AOBP 與白天 ABPM 平均只差 0.3 mmHg），<b>真正偏高的是「隨手量的診間血壓」</b>——
+    它比標準化診間血壓高約 7 mmHg、比 AOBP 高約 14.5 mmHg。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">分級（依居家血壓）</span><span class="dh-e">Taiwan 2022 Table 5</span></div>
+  <div class="tw">
+  <table class="def-table dt-cor">
+    <thead><tr><th>分類</th><th>SBP</th><th></th><th>DBP</th></tr></thead>
+    <tbody>
+      <tr><td>Normal 正常</td><td>&lt;120</td><td>and</td><td>&lt;80</td></tr>
+      <tr><td>Elevated 血壓偏高</td><td>120–129</td><td>and</td><td>&lt;80</td></tr>
+      <tr><td>Grade 1 第一級</td><td>130–139</td><td>or</td><td>80–89</td></tr>
+      <tr><td>Grade 2 第二級</td><td>≥140</td><td>or</td><td>≥90</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    ⚠ <b>「Elevated」這個字在三份指引裡指的東西不一樣</b>：台灣 2022 與 AHA 是 120–129/&lt;80；
+    <b>ESC 2024 的 Elevated BP 是 120–139/70–89</b>（範圍大得多，而且是 ESC 2024 才新設的分類）。
+    看到 Elevated 要先確認是誰的定義。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">722 怎麼量、多久量一次</span><span class="dh-e">Taiwan 2022 Table 7</span></div>
+  <div class="steps">
+    <div class="step"><span><span class="sq">7</span>——連續 <b>7 天</b>（至少 4 天）。
+      <b>第一天的數據要丟掉不算</b>，morning／evening 各取其餘天數的平均。</span></div>
+    <div class="step"><span><span class="sq">2</span>——一天 <b>2 個時段</b>：
+      <b>早上</b>起床後 1 小時內、<b>解完小便後、吃早餐與吃藥之前</b>；
+      <b>晚上</b>睡前 1 小時內。</span></div>
+    <div class="step"><span><span class="sq">2</span>——每個時段量 <b>2 次以上</b>，兩次間隔 <b>1 分鐘</b>；
+      <b>心房顫動的人要量 3 次以上</b>，而且要用特別驗證過可測 AF 的機器。</span></div>
+  </div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>情況</th><th>多久跑一輪 722</th></tr></thead>
+    <tbody>
+      <tr><td>血壓正常 &lt;120/80</td><td>每 1 年</td></tr>
+      <tr><td>血壓偏高 120–129/&lt;80</td><td>每 6 個月</td></tr>
+      <tr><td>未治療的高血壓</td><td>先跑一輪 722 確診並判定表現型（持續型／白袍／隱匿）</td></tr>
+      <tr><td>剛開始用藥／剛調藥</td><td><b>2 週後</b>再跑一輪；之後未控制每 1 個月、控制良好每 3 個月</td></tr>
+      <tr><td>已治療但未達標</td><td>每 1 個月</td></tr>
+      <tr><td>已治療且達標</td><td>每 3 個月</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">為什麼調藥後是「2 週」不是「1 週」</div>
+    台灣指引原文引的藥效動力學：降壓藥用了 <b>1 週達到最大降壓幅度的 50%、2 週達到 80%</b>。
+    所以 1 週就回診判定「這個藥沒效」會低估藥效、造成不必要的加藥。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">量血壓的標準做法</span><span class="dh-e">Taiwan 2022 Table 6</span></div>
+  <div class="lead" style="margin-top:-2px;">下面每一條都在指引的正式表格裡，不是常識補上去的。</div>
+  <div class="kbox">
+    <div class="kbox-t">量之前</div>
+    <span class="ht-li">· <b>先上廁所</b>（原文就寫 empty bowel and stomach）。</span>
+    <span class="ht-li">· 量前 <b>30 分鐘</b>內不喝含咖啡因飲料、不運動、不抽菸。</span>
+    <span class="ht-li">· <b>安靜坐 5 分鐘</b>；休息中與量測中<b>都不要講話</b>。</span>
+    <span class="ht-li">· <b>把袖子脫掉，不要捲起來</b>——捲起的袖子會變成止血帶。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">姿勢與壓脈帶</div>
+    <span class="ht-li">· 坐著、<b>背有靠、雙腳平放地面</b>，手臂放在桌上支撐。</span>
+    <span class="ht-li">· 壓脈帶中點對齊<b>右心房高度</b>（＝胸骨中點）。</span>
+    <span class="ht-li">· 壓脈帶氣囊寬度 ≥ 上臂圍的 <b>40%</b>、長度 ≥ <b>80%</b>；要記錄上臂圍。</span>
+    <span class="ht-li">· 壓脈帶下緣距肘窝 <b>至少 2.5 cm（兩指幅）</b>。</span>
+    <span class="ht-li">· 血壓計<b>每 12 個月要校正一次</b>（COR I）。</span>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">量的時候</div>
+    <span class="ht-li">· <b>第一次量要兩手都量</b>。兩手差 &lt;15 mmHg 時，之後都用<b>比較高的那隻手</b>。</span>
+    <span class="ht-li">· 重複量之間隔 <b>1 分鐘</b>。</span>
+    <span class="ht-li">· <b>取 ≥2 次的平均</b>；若量了 3 次以上，<b>取 SBP 最低的兩次平均</b>（原文如此）。</span>
+    <span class="ht-li">· 要查姿勢性低血壓：站起來後 <b>1 分鐘</b>（典型）與 <b>3 分鐘</b>（延遲型）各量一次。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">白袍型與隱匿型</span><span class="dh-e">White-coat / Masked</span></div>
+  <div class="tw">
+  <table class="def-table ht-w4">
+    <thead><tr><th>表現型</th><th>診間</th><th>居家／ABPM</th><th>處理</th></tr></thead>
+    <tbody>
+      <tr><td>持續型高血壓</td><td>高</td><td>高</td><td>照本頁的流程治療</td></tr>
+      <tr><td>白袍型高血壓</td><td>高</td><td>正常</td><td>未治療者：以生活型態為主、定期追蹤，<b>一般不立刻用藥</b></td></tr>
+      <tr><td>隱匿型高血壓</td><td>正常</td><td>高</td><td><b>要治療</b>——風險與持續型相當，只量診間會整個漏掉</td></tr>
+      <tr><td>白袍效應（已治療）</td><td>未達標</td><td>已達標</td><td><b>不要因為診間數字而加藥</b></td></tr>
+      <tr><td>隱匿型未控制（已治療）</td><td>已達標</td><td>未達標</td><td>要加強治療</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    這五種表現型正是台灣指引把居家血壓放在核心的理由：<b>只量診間會同時做錯兩件事</b>——
+    對白袍型加了不必要的藥，對隱匿型漏掉該給的藥。
+  </div>
+
+</div>
+<!-- ==================== 健保與台大 ==================== -->
+<div class="ht-panel" id="p-nhi">
+
+  <div class="kbox alert">
+    <div class="kbox-t">先講結論：降壓藥的健保限制少得出乎意料</div>
+    健保藥品給付規定<b>第 2 節「心臟血管及腎臟藥物」</b>從 2.1 排到 2.19，
+    <b>沒有任何一條在限制 ACEI／ARB／CCB／thiazide／乙型阻斷劑的一般使用</b>。
+    這和糖尿病用藥（第 5.1 節整節都是條件）、B 型肝炎用藥（10.7.3 逐項卡）完全不同。<br>
+    實際查證：整份 413 頁現行規定裡，<b>telmisartan、candesartan、hydrochlorothiazide、chlorthalidone、
+    methyldopa、hydralazine、amlodipine、indapamide、doxazosin、minoxidil、nitroprusside、labetalol
+    各出現 0 次</b>。<br>
+    <b>降壓藥的限制不在第 2 節，而在「通則」</b>：<br>
+    <span class="ht-li">· <b>通則七</b>：處方用藥須符合<b>藥品許可證登載的適應症</b>——仿單外使用不給付。</span>
+    <span class="ht-li">· <b>通則九（重複用藥不予給付）</b>：「為達相同之治療目的，使用兩種以上<b>同一治療類別
+      （或作用機轉）</b>之藥品，視為重複用藥」。<b>ACEI＋ARB 併用被核刪，法源在這裡，不是某一條專門的降壓藥條文。</b></span>
+    <span class="ht-li">· <b>通則四（一）</b>：注射藥品限「病人不能口服，或口服仍不能期待其有治療效果」，且要記明於病歷。</span>
+    第 2 節裡真正有條件的只有下面幾條，<b>而且其中大多是心衰竭適應症而不是高血壓</b>。
+    <b>2.18（captopril 內服液劑）是第 2 節裡唯一一條真正寫著「高血壓」適應症的降壓藥條文。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">第 2 節裡真正卡到降壓藥的條文</span><span class="dh-e">NHI 藥品給付規定 第 2 節</span></div>
+
+  <div class="kbox">
+    <div class="kbox-t">2.7　Metoprolol succinate 23.75 mg（Betaloc ZOK 25 mg）</div>
+    原文只有一句：<b>「限用於慢性心衰竭病患。」</b>（93/5/1）<br>
+    ⚠ <b>只卡 23.75 mg（＝ ZOK 25 mg）這個含量</b>；台大院內品項是
+    <b>Betaloc ZOK 100 mg（metoprolol succinate 95 mg）</b>，<b>不在這一條的範圍內</b>。<br>
+    ⚠ <b>但 100 mg 這一支的健保狀態兩邊資料不一致，本頁不下定論</b>：台大處方集記<b>健保價 0、自費 7 元</b>；
+    健保現行品項檔<b>確實有</b>「舒壓寧控釋錠 100 公絲」的品項代碼（成分欄寫成
+    <b>METOPROLOL 95 MG</b>，用「metoprolol succinate」去搜會漏掉）。<b>開之前請向藥劑部確認計價方式。</b>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">2.9.1　Eplerenone（Inspra）</div>
+    <b>限「對 spironolactone 無法耐受」的下列個案</b>：<br>
+    1. 心肌梗塞後之心衰竭病人。<br>
+    2. NYHA 第 II 級（含）以上之慢性心衰竭<b>且 LVEF ≤30%</b> 的成人。（104/12/1）<br>
+    ⚠ <b>用於高血壓或原發性醛固酮症不在給付範圍</b>；<b>前提是先用過 spironolactone 且不耐受</b>
+    （男性女乳症、乳房疼痛就是最常見的「不耐受」理由，病歷要寫）。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">2.9.2　Amiloride 單方口服製劑</div>
+    <b>限 Liddle's Syndrome 病人，經事前審查核准後使用。</b>（109/9/1）
+    送審要檢附高血壓、電解質異常（高血鈉、低血鉀）、偏鹼（高 serum bicarbonate）、
+    <b>醛固酮偏低或正常</b>、<b>renin activity 低</b>的病歷資料。<br>
+    ⚠ 也就是說，<b>拿 amiloride 當難治型高血壓的第四線藥，健保不給付</b>。而且<b>台大院內沒有這個品項</b>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">2.14　Sacubitril + Valsartan（Entresto）</div>
+    <b>是慢性收縮性心衰竭的藥，不是降壓藥。</b>給付要同時符合：<br>
+    <span class="ht-li">· NYHA II–IV 級，<b>LVEF ≤35%</b>（初次使用要附半年內的心臟功能檢查數值）；
+      或 <b>LVEF 36–40% 且對 SGLT2i 不耐受</b>。</span>
+    <span class="ht-li">· 已用 ACEI 或 ARB 穩定劑量，<b>併用最大可耐受劑量乙型阻斷劑 ≥4 週</b>（或有禁忌不能用），
+      <b>且再併用 SGLT2i 治療 12 週後 LVEF 仍 ≤35%</b>（或對 SGLT2i 不耐受）、仍有症狀。</span>
+    <span class="ht-li">· <b>不得與 ACEI 或 ARB 併用</b>；<b>與 ACEI 至少間隔 36 小時</b>；
+      <b>曾有血管性水腫病史者禁用</b>。</span>
+    <span class="ht-li">· 每日最多 2 粒。</span>
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">2.18　Captopril 內服液劑（Cen-Capto Oral Solution）</div>
+    <b>限未滿 12 歲兒童</b>的高血壓、心衰竭、心肌梗塞後左心室功能不全、第一型糖尿病腎病變；
+    以及 12 歲以上未滿 18 歲、<b>需劑量微調或有吞嚥障礙</b>而不適用一般錠劑者。（114/8/1）<br>
+    ⚠ <b>成人不能用液劑</b>——成人吞不下就走磨粉或改藥，不是開液劑。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 健保沒有規定、但常被誤以為有規定的四件事</div>
+    <span class="ht-li">· <b>沒有「降壓藥最多幾種」的上限。</b></span>
+    <span class="ht-li">· <b>沒有規定要先用便宜的學名藥或先用單方才能用複方。</b></span>
+    <span class="ht-li">· <b>第 2 節裡沒有一條寫「ACEI 不得與 ARB 併用」</b>——寫這句的只有 <b>2.14 Entresto</b>。
+      一般 ACEI＋ARB 併用被核刪，靠的是<b>通則九「同一治療類別（或作用機轉）視為重複用藥」</b>，不是專條。
+      而指引層面的禁令是 <b>COR 3: Harm／LOE A</b>（AHA 2025），兩者是不同層次的東西。</span>
+    <span class="ht-li">· <b>Finerenone（可申達）在台灣有藥證但健保完全不給付</b>——三個來源互相印證：
+      413 頁現行給付規定<b>提及 0 次</b>、健保現行用藥品項檔<b>0 筆</b>、
+      台大處方集記<b>健保價 0、自費 90 元/錠</b>。食藥署有 2 張現效藥證（10／20 mg，效期 2027/07/01）。
+      它的適應症是<b>第 2 型糖尿病相關的腎臟與心血管風險</b>，<b>不是高血壓</b>。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大有什麼</span><span class="dh-e">NTUH formulary</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    以台大醫院藥劑部藥品資料庫為準。點藥名可開該品項的完整藥卡（含腎肝透析、外觀、藥價）。
+  </div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>類別</th><th>台大品項（含量）</th></tr></thead>
+    <tbody>
+      <tr><td>ACEI</td><td>Captopril 血樂平 25 mg（另有兒童分包 1.25–8.3 mg 與內服液）、Enalapril 欣保 5 mg。<b>只有這兩支</b></td></tr>
+      <tr><td>ARB</td><td>Losartan 可悅您 50 mg、Valsartan 得安穩 40／160 mg、Irbesartan 安普諾維 300 mg、Olmesartan 雅脈 40 mg、Azilsartan 易得平 40 mg</td></tr>
+      <tr><td>DHP CCB</td><td>Amlodipine 脈優 5 mg（<b>院內沒有 10 mg 錠，要開 10 mg 得兩顆</b>）＋口服懸液 1 mg/mL、Lercanidipine 利壓 10 mg、Nifedipine 恆脈循<b>持續性膜衣錠</b> 30 mg（S.R.F.C.）、<b>Atanaal 短效軟膠囊 5 mg</b>。⚠ <b>恆脈循不是 OROS</b>；真正的 OROS（冠達悅歐樂 Adalat OROS 30 mg/24 hr）院內藥卡標了 (DC)</td></tr>
+      <tr><td>non-DHP CCB</td><td>Diltiazem Herbesser 錠 30 mg／Diltelan SR 膠囊 120 mg／針 50 mg、Verapamil 40 mg／Isoptin SR 240 mg／針 5 mg/2 mL</td></tr>
+      <tr><td>Thiazide 類</td><td><b>Trichlormethiazide 服爾伊得安 2 mg</b>、<b>Indapamide SR 鈉催離 1.5 mg</b>。<b>院內沒有 hydrochlorothiazide 單方、沒有 chlorthalidone</b></td></tr>
+      <tr><td>Loop</td><td>Furosemide 來適泄 40 mg／針 20 mg／內服液、Bumetanide 1 mg／針 2 mg</td></tr>
+      <tr><td>MRA</td><td>Spironolactone 安達通 25 mg（另有兒童分包）、Eplerenone 迎甦心 50 mg、Finerenone 可申達 20 mg（自費）</td></tr>
+      <tr><td>乙型阻斷劑</td><td>Bisoprolol 康肯 1.25／5 mg、Metoprolol succinate ZOK 100 mg、Atenolol 壓平樂 100 mg、Nebivolol 耐比洛 5 mg、Carvedilol 達利全 6.25／25 mg＋口服懸液、Propranolol 10 mg（另有兒童分包）、Labetalol 壓血泰 200 mg</td></tr>
+      <tr><td>α 阻斷劑</td><td>Doxazosin 可迅 2 mg、可迅 XL 4 mg</td></tr>
+      <tr><td>中樞與血管擴張</td><td>Clonidine 降保適 0.075 mg、Hydralazine 血得平 10／25 mg（<b>只有口服</b>）、Minoxidil 洛寧 10 mg</td></tr>
+      <tr><td>靜脈注射</td><td>Nicardipine 培爾吉平 10 mg/10 mL、Labetalol 壓泰定／湍泰低 25 mg/5 mL、<b>Esmolol 律平 100 mg/10 mL（健保價 0、自費約 538）</b>、Diltiazem 合必爽 50 mg/vial、Verapamil 優賜定 5 mg/2 mL、Nitroglycerin 敏佐心 5 mg/10 mL（另一支敏立舒站上註記停產）、Furosemide 來喜妥 20 mg/2 mL、Bumetanide 必瑞 2 mg/4 mL</td></tr>
+      <tr><td>複方</td><td><b>只有一支：Amlodipine 5 mg／Valsartan 160 mg（易安穩 Exforge）</b></td></tr>
+      <tr><td>常被漏掉的院內品項</td><td><b>Propranolol 心律整錠 10 mg</b>（另有 7 種小兒分包）、<b>Nadolol 20 mg（專案藥品，健保價 0、自費 25）</b>、<b>Nimodipine 腦妥膜衣錠 30 mg</b>（口服，不只有針）、Diltiazem 合必爽<b>速放</b>錠 30 mg、Verapamil 依索蜜糖衣錠 40 mg</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 台大院內查無的降壓藥（開了會領不到）</div>
+    <span class="ht-li">· <b>⚠ Sodium nitroprusside 不只是台大沒有——全台灣自 2021-12-08 起沒有任何有效藥證。</b>
+      食藥署 6 張藥證全部註銷，最後一張（輝瑞「壓得疏靜脈輸注劑」）原本效期到 2024/06/26，
+      卻於 <b>2021-12-08 由藥商自請註銷</b>。
+      ⚠ <b>健保用藥品項檔裡還留著 4 個 nitroprusside 品項代碼，那是掛在已註銷藥證上的殭屍資料，不代表拿得到藥。</b>
+      <b>所有把 nitroprusside 列為高血壓急症首選的教科書表格，在台灣都要改寫。</b></span>
+    <span class="ht-li">· <b>Clevidipine、urapidil、enalaprilat、moxonidine——台灣從來沒有過製劑藥證。</b>
+      <b>Fenoldopam</b> 在 openFDA 也已查無現行標籤。</span>
+    <span class="ht-li">· <b>Phentolamine</b>——台灣藥證已註銷。嗜鉻細胞瘤危象與 clonidine 反彈的仿單建議處置在台灣做不到。</span>
+    <span class="ht-li">· <b>Hydralazine 針劑</b>——<b>台大只有口服錠</b>，但<b>台灣是有的</b>：
+      全國有 3 個現行健保品項代碼（東洲「安血平注射液 20 mg/mL」、台灣諾華「Apresoline 20 mg 凍晶注射劑」）。
+      產科常用的 IV hydralazine 在台大要另尋途徑。</span>
+    <span class="ht-li">· <b>Methyldopa</b>——懷孕高血壓的傳統用藥，<b>台大 0 個品項，但全國有 18 個健保品項</b>。
+      <b>「台大沒有」不等於「台灣沒有」，這一支尤其容易誤導。</b></span>
+    <span class="ht-li">· <b>台大高血壓急症可用的靜脈藥只有五類</b>：labetalol、nicardipine、
+      <b>esmolol（自費）</b>、diltiazem／verapamil、nitroglycerin。</span>
+    <span class="ht-li">· ⚠ <b>台大現在用的 esmolol（律平注射液）沒有健保碼，是自費藥</b>：
+      台大記<b>健保價 0、自費 538 元/vial</b>；健保檔裡的 esmolol 只有 Brevibloc，
+      而 Brevibloc 的藥證<b>已於 2008 年全部註銷</b>。</span>
+    <span class="ht-li">· <b>Chlorthalidone</b>、<b>hydrochlorothiazide 單方</b>、<b>metolazone</b>、
+      <b>amiloride</b>、<b>torsemide</b>——院內都沒有。⚠ 但這不等於健保不給付：<b>健保現行 HCTZ 單方有 56 個品項</b>；<b>chlorthalidone 單方全台灣只剩 1 個品項（HYGROTON 50 mg）</b>。</span>
+    <span class="ht-li">· <b>Telmisartan／candesartan／lisinopril 單方</b>——院內查無。
+      ⚠ <b>Perindopril（雅施達 5 mg）與 ramipril（心達舒 10 mg）院內其實有藥卡，但都標註「關機／留連處（DC）」</b>——
+      這是台大站上的原始註記，<b>實際還能不能開要問藥劑部，不要假設可以</b>。
+      病人從外院或診所帶藥進來時，院內多半<b>沒有同成分可以接續</b>，要換成上表的品項。</span>
+    <span class="ht-li">· <b>Phenoxybenzamine</b>（嗜鉻細胞瘤術前 α 阻斷）——<b>院內沒有</b>，台灣市面上有「平順脈寧膠囊 10 mg」。要開刀前務必提早確認取得管道。⚠ <b>Phentolamine 與 sodium nitroprusside 在台灣的藥證都已註銷</b>（健保品項檔仍顯示「有效迄日 9991231」，兩邊資料不一致，本頁並列）。</span>
+    <span class="ht-li">· <b>Clonidine 貼片</b>——院內只有 0.075 mg 口服錠，沒有貼片；
+      禁食病人不能靠貼片維持，要注意反彈性高血壓。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">病人從診所帶進來的藥，院內沒有時怎麼接</span><span class="dh-e">Formulary substitution</span></div>
+  <div class="lead" style="margin-top:-2px;">
+    下面是台灣市面上常見、但台大院內沒有的品項與可接續的院內同類藥。
+    <b>同類換藥沒有一對一的等效劑量表</b>，換完要重新追蹤血壓，不要直接照原劑量換算。
+  </div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>院外常見（台灣有藥證）</th><th>院內接續</th></tr></thead>
+    <tbody>
+      <tr><td>Telmisartan、Candesartan、Perindopril、Ramipril、Lisinopril、Fosinopril、Imidapril</td><td>換成院內 ARB（losartan／valsartan／irbesartan／olmesartan／azilsartan）或 enalapril</td></tr>
+      <tr><td>Felodipine、Benidipine、Lacidipine、Nitrendipine</td><td>Amlodipine 或 lercanidipine</td></tr>
+      <tr><td>Hydrochlorothiazide 單方、Metolazone</td><td>Trichlormethiazide 2 mg 或 indapamide SR 1.5 mg</td></tr>
+      <tr><td>ARB＋HCTZ 複方（losartan／valsartan／irbesartan／olmesartan／candesartan 各家都有）</td><td>拆成院內 ARB ＋ trichlormethiazide 或 indapamide 兩顆</td></tr>
+      <tr><td>ARB＋amlodipine 複方（candesartan／perindopril 等）</td><td>院內唯一複方是 Exforge（amlodipine 5／valsartan 160）；其餘拆成兩顆</td></tr>
+      <tr><td>三合一複方（ARB＋amlodipine＋HCTZ：Dafiro HCT、降壓安、泰穩壓等）</td><td>院內沒有三合一，一律拆成三顆</td></tr>
+      <tr><td>Azilsartan＋chlorthalidone（Edarbyclor）</td><td>Azilsartan 40 mg ＋ indapamide SR 1.5 mg</td></tr>
+      <tr><td>Terazosin、Prazosin、Bunazosin</td><td>Doxazosin</td></tr>
+      <tr><td>Acebutolol、Pindolol</td><td>Bisoprolol 或 metoprolol succinate</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    ⚠ 上表的院外品項取自食藥署許可證與健保品項檔的快照，<b>是舉例不是完整清單</b>
+    （已知該快照缺少若干單方 ARB 的品項）。實際有無以健保署藥品查詢與各院藥局為準。<br>
+    ⚠ <b>Reserpine 系列複方（使血淨、泌排特安耶）在台灣仍有藥證</b>，
+    偶爾會在長輩的舊藥袋裡看到。它含 reserpine（中樞單胺耗竭），
+    <b>與憂鬱、鎮靜、鼻塞、消化性潰瘍有關，現行指引已不列為選項</b>，發現時應考慮換掉。
+  </div>
+
+</div>
+<!-- ==================== 證據 ==================== -->
+<div class="ht-panel" id="p-ev">
+
+  <div class="kbox alert">
+    <div class="kbox-t">這一頁怎麼讀</div>
+    本頁所有數字都可以回溯到下面的來源。<b>指引之間互相矛盾時，前面各分頁一律並列不選邊</b>，
+    因為它們的量測方法、風險工具與證據取捨都不同，合成會製造出原文沒有的建議。<br>
+    <b>PMID 全部用 PubMed 查證過</b>；抽不到的資料在各分頁標「未取得」，沒有用常識補。
+    <b>台大品項、劑量、腎肝調整與健保價取自台大醫院藥劑部藥品資料庫。</b>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">⚠ 兩份主要指引的已知資料風險</div>
+    <span class="ht-li">· <b>2025 AHA/ACC 高血壓指引截至 2026-08 已發布三次勘誤</b>
+      （2025-11-10、2026-04-13、2026-05-26；Circulation 與 Hypertension 各有鏡像）。
+      <b>勘誤的實際內容取不到</b>（PubMed 無摘要、Wayback 無存檔）。
+      本頁引用的 COR／LOE 取自 <b>JACC 2025-08-16 的存檔（勘誤前版本）</b>，
+      並與勘誤後的 Circulation 存檔交叉比對過 20 個關鍵數字字串（完全一致），
+      但<b>建議表本身無法做勘誤前後比對</b>。這是本頁最大的資料風險。</span>
+    <span class="ht-li">· <b>ESC 2024 已有兩次 Correction</b>（2025 年 4 月與 12 月），內容同樣取不到。
+      本頁的 ESC 數字取自原始 2024 全文，<b>未套用勘誤</b>。</span>
+    <span class="ht-li">· <b>2025 AHA/ACC 指引原文自己就有內部矛盾</b>：Stage 1／2 的 and 與 or
+      （Table 4 用 or、§5.2.4 與 §5.6 用 and）；主動脈剝離的時間（條文寫第 1 小時、Table 27 寫 20 分鐘）；
+      以及與 AHA 自己 2022 腦出血指引的目標不一致。<b>這些都在相關分頁並列。</b></span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">現行指引</span><span class="dh-e">Guidelines</span></div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>指引</th><th>出處</th><th>PMID</th></tr></thead>
+    <tbody>
+      <tr><td><b>2025 AHA/ACC 高血壓指引</b><br>（13 個學會，含 SGIM；取代 2017 版）</td><td>Circulation 2025;152:e114–e218／JACC 2025;86:1567–1678／Hypertension 2025;82:e212–e316。線上發表 2025-08-14</td><td>40811497／40815242／40811516</td></tr>
+      <tr><td><b>2024 ESC 血壓升高與高血壓指引</b></td><td>Eur Heart J 2024（新設 Elevated BP 分類；目標 SBP 120–129）</td><td>39210715</td></tr>
+      <tr><td>2023 ESH 指引</td><td>J Hypertens 2023（<b>明確反對主動追求 SBP &lt;120 或 DBP &lt;70，Class III</b>；無 IIa／IIb 之分）</td><td>37345492</td></tr>
+      <tr><td><b>2022 台灣 TSOC／THS 高血壓指引</b></td><td>Acta Cardiol Sin 2022;38(3):225–325。<b>以居家 722 血壓為診斷與治療基準</b></td><td>35673334</td></tr>
+      <tr><td>722 居家血壓法則的原始說明</td><td>J Clin Hypertens 2022;24(9):1161–1173（作者含台大 Wang TD、Lin HJ）</td><td>36196472</td></tr>
+      <tr><td>KDIGO 2021 CKD 血壓指引</td><td>Kidney Int 2021;99(3S):S1–S87。<b>SBP &lt;120 是 2B 弱建議；1B 的是「要用標準化診間血壓」</b></td><td>33637203（執行摘要）</td></tr>
+      <tr><td>ADA Standards of Care 2026 §10</td><td>Diabetes Care 2026;49(Suppl 1):S216–S245</td><td>41358899</td></tr>
+      <tr><td>2024 ACC/AHA 非心臟手術圍手術期指引</td><td>Circulation 2024;150:e351–e442／JACC 2024;84:1869–1969（有勘誤）</td><td>39316661／39320289</td></tr>
+      <tr><td>2022 ESC 非心臟手術指引</td><td>Eur Heart J 2022（ESAIC 背書）</td><td>36017553</td></tr>
+      <tr><td>2026 英國 AoA／BIHS 圍手術期高血壓指引</td><td>Anaesthesia 2026;81:402–414。<b>唯一明確建議「術前不要停 ACEI／ARB」的指引</b></td><td>41532177</td></tr>
+      <tr><td>2022 ACC/AHA 主動脈疾病指引</td><td>Circulation／JACC 2022。<b>急性主動脈症候群 SBP &lt;120 ＋ 心率 60–80 bpm（COR 1／C-LD）</b></td><td>36322642／36334952</td></tr>
+      <tr><td>AHA/ASA 2019 急性缺血性中風指引</td><td>Stroke 2019;50:e344–e418</td><td>31662037</td></tr>
+      <tr><td>AHA/ASA 2022 自發性腦出血指引</td><td>Stroke 2022;53:e282–e361。<b>目標 140、維持 130–150（COR 2b）；&lt;130 是 COR 3: Harm</b></td><td>35579034</td></tr>
+      <tr><td>ESVS 2023 頸動脈與椎動脈指引</td><td>EJVES 2023;65:7–111。<b>沒有給 CEA 術後血壓數字，只要求各中心自訂書面準則</b></td><td>35598721</td></tr>
+      <tr><td>AHA 2024 急性照護血壓管理科學聲明</td><td>廢除 hypertensive urgency 一詞的來源；<b>「180/120 不是診斷急症的門檻」</b></td><td>38804130</td></tr>
+      <tr><td>Endocrine Society 2025 原發性醛固酮症指引</td><td>JCEM 2025;110:2453–2495。<b>建議所有高血壓都篩，但只是 2 級弱建議、低度確定性</b></td><td>40658480</td></tr>
+      <tr><td>ACR 2020 痛風指引</td><td>Arthritis Care Res 2020;72:744–760</td><td>32391934</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">關鍵試驗</span><span class="dh-e">Key trials</span></div>
+  <div class="tw">
+  <table class="def-table ht-w3">
+    <thead><tr><th>主題</th><th>試驗與一句話結論</th><th>PMID</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="2">降壓幅度</td><td><b>Law 2003</b>（354 個 RCT）＋<b>Law 2009</b>（147 個 RCT、46.4 萬人）：SBP 降 10 或 DBP 降 5 → 冠心病 −22%、中風 −41%；<b>三種藥各半劑量的組合，效果約為單一藥標準劑量的兩倍</b></td><td>12829555／19454737</td></tr>
+      <tr><td><b>Musini 2014 Cochrane</b>（60 個雙盲 RCT）：<b>只有 HCTZ 有劑量–反應曲線</b>；chlorthalidone、indapamide、metolazone 加量不再多降</td><td>24869750</td></tr>
+      <tr><td rowspan="2">Thiazide 之爭</td><td><b>DCP 2022</b>（13,523 人，第一個頭對頭 RCT）：<b>chlorthalidone vs HCTZ 主要終點 HR 1.04（0.94–1.16），完全沒有差異；只有低血鉀較多</b></td><td>36516076</td></tr>
+      <tr><td><b>CLICK 2021</b>（第 4 期 CKD，平均 eGFR 23）：chlorthalidone 讓 24 小時 ABPM 收縮壓多降 <b>10.5 mmHg</b>——<b>推翻「eGFR &lt;30 就不能用 thiazide」</b></td><td>34739197</td></tr>
+      <tr><td>CCB 水腫</td><td><b>Makani 2011</b>（25 個 RCT、17,206 人）：<b>CCB＋RASi 讓周邊水腫少 38%、因水腫退出少 62%；ACEI 優於 ARB</b>（間接比較）</td><td>21295192</td></tr>
+      <tr><td>lercanidipine</td><td><b>Makarounas-Kirchmann 2009</b>：vs 第一代 DHP 合併，<b>水腫 RR 0.44</b>；vs 第二代親脂性 DHP 無差異</td><td>19808126</td></tr>
+      <tr><td>短效 nifedipine</td><td><b>Furberg 1995</b>：日劑量 80 mg 的總死亡 <b>RR 2.83（1.35–5.93）</b>；<b>Grossman 1996</b>：<b>舌下吸收很差，藥其實是經腸黏膜吸收的</b>，起效不可預測，應予廢止</td><td>7648682／8861992</td></tr>
+      <tr><td>α 阻斷劑</td><td><b>ALLHAT doxazosin 臂</b>：因<b>心衰竭風險加倍（RR 2.04）</b>提前中止；<b>但主要終點與總死亡率沒有差別</b></td><td>10789664／12925554</td></tr>
+      <tr><td>ACEI 副作用</td><td><b>McDowell 2006</b>：東亞人咳嗽 <b>RR 2.7</b>；<b>Tseng 2010</b>：華裔停藥 RR 2.53，<b>但血管性水腫兩組無差異</b>；<b>Reichman 2017</b>：<b>亞洲人的 ACEI 血管性水腫風險比不顯著（1.48, 0.94–2.35）</b>；<b>Caldeira 2012</b>：換 ARB 後咳嗽 RR 0.37，但<b>ACEI 不可再挑戰</b></td><td>16679330／20103031／28722207／22587776</td></tr>
+      <tr><td>痛風</td><td><b>Choi 2012</b>：losartan RR 0.81、CCB 0.87；<b>ACEI 1.24、非 losartan ARB 1.29、利尿劑 2.36</b>。<b>LIFE 次分析</b>：losartan 組尿酸仍上升 17.0 µmol/L（atenolol 44.4）</td><td>22240117／14871425</td></tr>
+      <tr><td>乙型阻斷劑停藥</td><td><b>Miller 1975</b>：門診突停 propranolol，2 週內 20 人中 10 人缺血事件、6 人嚴重；<b>Croft 1986（MILIS）</b>：<b>急性心肌梗塞當下停藥沒有問題</b></td><td>1097925／3009050</td></tr>
+      <tr><td>CKD 與 RASi</td><td><b>STOP-ACEi 2022</b>：eGFR &lt;30 停 RASi <b>沒有好處</b>（3 年 eGFR 差 −0.7，P=0.42）；ESKD 的 HR 1.28 <b>未達顯著</b></td><td>36326117</td></tr>
+      <tr><td rowspan="4">住院無症狀高血壓</td><td><b>Rastogi 2021</b>：治療組急性腎損傷 10.3% vs 7.9%、心肌損傷 1.2% vs 0.6%；<b>「沒有任何血壓區間是治療組結果比較好的」</b></td><td>33369614</td></tr>
+      <tr><td><b>Anderson 2023</b>：複合終點加權 OR 1.28；<b>只用靜脈藥的次族群 OR 1.90</b></td><td>37252732</td></tr>
+      <tr><td><b>Canales 2025</b>：急性腎損傷 aHR 1.23；心肌梗塞／中風／死亡複合 1.69 倍。<b>但 Ghazi 2023 的腎損傷 HR 0.97 完全沒差</b>——證據不一面倒</td><td>39585709／36583354</td></tr>
+      <tr><td><b>Garg／Ghazi 2024</b>：<b>44.2% 的 severe hypertension 在 3 小時內未給藥就自行降下來</b>，而且臨床特徵預測不了</td><td>37988620</td></tr>
+      <tr><td rowspan="3">圍手術期 RASi</td><td><b>Stop-or-Not 2024</b>（2,222 人）：繼續 vs 停用，<b>28 天死亡與重大併發症 22% vs 22%（RR 1.02）</b>；只有術中低血壓次數差，<b>但每例平均只差 3.4 分鐘</b></td><td>39212270</td></tr>
+      <tr><td><b>事後分析 2025</b>：<b>心血管風險高低不改變結論</b></td><td>40560582</td></tr>
+      <tr><td><b>BJA 2025 統合分析</b>（5 個 RCT）：死亡／MACE 無差；<b>停藥組低血壓較少（OR 0.62）但術後高血壓較多（OR 1.90）</b>。<b>PREOP-ACEI</b>、<b>SPACE</b>、<b>POISE-3</b> 方向一致</td><td>40750467／30261084／37935833／37094336</td></tr>
+      <tr><td>圍手術期乙型阻斷劑</td><td><b>POISE 2008</b>：<b>心肌梗塞減少（HR 0.73）但死亡增加（HR 1.33）、中風增加（HR 2.17）</b>——傷害來自「當天新開」，不是「續用」</td><td>18479744</td></tr>
+      <tr><td>圍手術期 clonidine</td><td><b>POISE-2</b>：主要終點無效（HR 1.08）；<b>臨床上重要的低血壓 47.6% vs 37.1%；非致命心跳停止 HR 3.20</b></td><td>24679061</td></tr>
+      <tr><td>延刀</td><td><b>Weksler 2003</b>：DBP 110–130 直接照開 vs 延刀住院控壓，<b>併發症無差、住院天數還比較短</b></td><td>12770652</td></tr>
+      <tr><td>術中低血壓</td><td><b>Walsh 2013</b>：<b>MAP &lt;55 只要 1–5 分鐘</b>就與急性腎損傷與心肌損傷相關；<b>Salmasi 2017</b>：<b>與術前血壓沒有臨床上重要的交互作用</b>；<b>Vedel 2018</b>：體外循環把 MAP 拉高沒有好處</td><td>23835589／27792044／29339351</td></tr>
+      <tr><td rowspan="3">腦血管</td><td><b>INTERACT2</b>：主要終點<b>未達顯著（P=0.06）</b>，只有 ordinal 分析 P=0.04；<b>ATACH-2</b>：因無效提前中止，<b>7 天內腎臟不良事件 9.0% vs 4.0%</b>；<b>INTERACT3</b>：<b>是照護組合不是單純降壓</b>，不可把好處歸給降壓</td><td>23713578／27276234／37245517</td></tr>
+      <tr><td>取栓後降壓三個 RCT 都是「越低越差」：<b>ENCHANTED2/MT</b>（common OR 1.37）、<b>OPTIMAL-BP</b>（因安全提前中止）、<b>BEST-II</b></td><td>36341753／37668619／37668620</td></tr>
+      <tr><td><b>ENCHANTED</b>（溶栓病人）：積極降壓<b>顱內出血減少（OR 0.75）但臨床預後沒有改善</b></td><td>30739745</td></tr>
+      <tr><td>睡眠呼吸中止</td><td><b>Bratton 2015</b>（51 個 RCT）：<b>CPAP 只降 SBP 2.5、DBP 2.0 mmHg</b>；<b>HIPARCO</b>：難治型高血壓多降 3.1 mmHg，<b>但 24 小時 SBP 的 P=.10 未達顯著</b></td><td>26624827／24327037</td></tr>
+      <tr><td>老年積極降壓</td><td><b>STEP</b>（8,511 位華人 60–80 歲，SBP 110–130 vs 130–150）：主要終點 <b>HR 0.74（0.60–0.92）</b>——台灣指引採用 130/80 的主要本土相關依據之一</td><td>34491661</td></tr>
+      <tr><td>糖尿病積極降壓</td><td><b>BPROAD</b>（12,821 位第 2 型糖尿病）：SBP &lt;120 vs &lt;140，<b>HR 0.79</b>。⚠ <b>SPRINT 把糖尿病病人排除在外</b>，不能拿 SPRINT 支持糖尿病的 &lt;120</td><td>39555827／38945140（ESPRIT）</td></tr>
+      <tr><td>thiazide 低血鈉</td><td><b>Rodenburg 2013</b>（Rotterdam，13,325 人）：<b>HR 4.95</b>；<b>年齡與 BMI 修飾風險，性別與 eGFR 不修飾</b>。⚠ 但泰國的 ABCDF-S 分數把「女性」列為危險因子，兩者相反</td><td>23602191／32012317</td></tr>
+      <tr><td>hydralazine 狼瘡</td><td><b>Mansilla-Tinoco 1982</b>：3 年後過半數 ANA &gt;1/20；<b>部分人續用效價仍自行下降</b>。<b>ANA 轉陽不是停藥的理由</b>，除非出現臨床狼瘡</td><td>6802356</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台灣與台大的資料來源</span><span class="dh-e">Local sources</span></div>
+  <div class="kbox">
+    <span class="ht-li">· <b>台大醫院藥劑部藥品資料庫</b>——品項、含量、劑量、適應症、腎肝透析調整、
+      副作用、健保價、懷孕分級、剝半磨粉欄。本頁的所有台大資料以此為準。</span>
+    <span class="ht-li">· <b>全民健康保險藥品給付規定 第 2 節（心臟血管及腎臟藥物）</b>現行版，
+      條號 2.1–2.19。<b>降壓藥的限制條文只有 2.7（metoprolol succinate 23.75 mg）、
+      2.9.1（eplerenone）、2.9.2（amiloride）、2.9.3（furosemide 內服液）、
+      2.14（Entresto）、2.16（SGLT2i）、2.18（captopril 內服液）</b>，
+      以及通則四（一）對注射藥品的一般規定。</span>
+    <span class="ht-li">· <b>食藥署西藥許可證資料庫</b>——用於判斷「台灣有沒有這個藥」。
+      ⚠ <b>健保品項檔與藥證檔會不一致</b>（例如 nitroprusside 與 phentolamine 在健保品項檔顯示有效迄日 9991231，
+      但藥證檔顯示全數註銷），本頁遇到這種衝突一律並列。</span>
+    <span class="ht-li">· ⚠ <b>本頁「台灣有、台大沒有」的清單取自食藥署許可證與健保品項檔的快照，是舉例不是完整清單</b>
+      （已知該快照缺少若干單方 ARB 的品項）。實際有無以健保署藥品查詢與各院藥局為準。</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">相關頁面</span><span class="dh-e">Related</span></div>
+  <div class="kbox">
+    <span class="ht-li">· <a href="../tools/heart-failure.html" class="pmid">心臟衰竭</a>——HFrEF 的四本柱與 ARNI</span>
+    <span class="ht-li">· <a href="diabetes.html" class="pmid">糖尿病用藥</a>——SGLT2i、GLP-1 RA、finerenone 與圍手術期停藥</span>
+    <span class="ht-li">· <a href="acute-aortic-syndrome.html" class="pmid">急性主動脈症候群</a>——剝離的完整處置</span>
+    <span class="ht-li">· <a href="ich.html" class="pmid">顱內出血</a>／<a href="../tools/stroke.html" class="pmid">中風</a>——腦部急症的血壓管理</span>
+    <span class="ht-li">· <a href="../tools/vasoactive.html" class="pmid">血管活性藥物</a>——升壓與強心藥的對照</span>
+    <span class="ht-li">· <a href="../tools/drug-database.html" class="pmid">藥物資料庫</a>——台大全院藥卡</span>
+    <span class="ht-li">· <a href="../tools/periop-anticoag.html" class="pmid">圍手術期抗栓</a>——同一台刀要一起想的另一件事</span>
+  </div>
+
+</div>
+
+</div><!-- /view -->
+</div><!-- /sheet -->
+
+<script>
+/* ── 分頁切換 ────────────────────────────────────────────── */
+function htTab(name){
+  document.querySelectorAll('#ht_tabs .tab-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-p') === name);
+  });
+  document.querySelectorAll('.ht-panel').forEach(function(p){
+    p.classList.toggle('on', p.id === 'p-' + name);
+  });
+  if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+  window.scrollTo(0, 0);
+}
+
+/* ── 共病選單 ────────────────────────────────────────────── */
+var HT_F = {};
+
+document.addEventListener('click', function(e){
+  var b = e.target.closest('.ht-chips .flow-opt');
+  if(!b) return;
+  var f = b.getAttribute('data-f');
+  HT_F[f] = !HT_F[f];
+  b.classList.toggle('selected', !!HT_F[f]);
+  htCalc();
+});
+
+document.addEventListener('input', function(e){
+  if(e.target.closest('#p-rx')) htCalc();
+  if(e.target.closest('#p-adm')) ivCalc();
+});
+
+var HT_NUM_IDS = ['ht_osbp','ht_odbp','ht_hsbp','ht_hdbp','ht_age','ht_risk','ht_egfr','ht_uacr','ht_k','ht_hr'];
+
+function htReset(){
+  HT_F = {};
+  document.querySelectorAll('.ht-chips .flow-opt').forEach(function(b){ b.classList.remove('selected'); });
+  HT_NUM_IDS.forEach(function(id){ var el = document.getElementById(id); if(el) el.value = ''; });
+  htCalc();
+}
+
+function htNum(id){
+  var v = parseFloat((document.getElementById(id) || {}).value);
+  return isFinite(v) ? v : null;
+}
+
+/* 產生一張建議卡。cls：rec-elective（優先）／rec-nonop（說明）／rec-urgent（警示）／rec-blue（背景） */
+function htCard(cls, label, title, items, note){
+  var h = '<div class="flow-rec ' + cls + '">';
+  h += '<div class="rec-label">' + label + '</div>';
+  h += '<div class="rec-title">' + title + '</div>';
+  if(items && items.length){
+    h += '<ul class="rec-detail">';
+    items.forEach(function(t){
+      if(t && t.hd) h += '<li class="hd">' + t.hd + '</li>';
+      else h += '<li>' + t + '</li>';
+    });
+    h += '</ul>';
+  }
+  if(note) h += '<div class="rec-note">' + note + '</div>';
+  return h + '</div>';
+}
+</script>
+<script>
+/* ── 靜脈輸注速率換算（只做單位換算，不建議劑量） ───────────────── */
+function ivCalc(){
+  var wt = htNum('iv_wt'), mg = htNum('iv_mg'), ml = htNum('iv_ml'), rate = htNum('iv_rate');
+  var set = function(id, v){ var el = document.getElementById(id); if(el) el.innerHTML = v; };
+  if(mg === null || ml === null || ml === 0){
+    set('iv_conc','—'); set('iv_mgh','—'); set('iv_ugkg','—'); set('iv_ugmin','—');
+    var f0 = document.getElementById('iv_flag'); if(f0) f0.innerHTML = '填「藥量」與「總體積」後開始換算。';
+    return;
+  }
+  var conc = mg / ml;                       /* mg/mL */
+  set('iv_conc', conc.toFixed(conc < 1 ? 3 : 2) + '<small> mg/mL</small>');
+  if(rate === null){
+    set('iv_mgh','—'); set('iv_ugkg','—'); set('iv_ugmin','—');
+    document.getElementById('iv_flag').innerHTML = '填「目標速率」後算 mL/hr。';
+    return;
+  }
+  /* mg/hr → mL/hr */
+  set('iv_mgh', (rate / conc).toFixed(1) + '<small> mL/hr</small>');
+  /* mcg/kg/min → mL/hr（需要體重） */
+  if(wt !== null && wt > 0){
+    var mghr = rate * wt * 60 / 1000;
+    set('iv_ugkg', (mghr / conc).toFixed(1) + '<small> mL/hr</small>');
+  } else {
+    set('iv_ugkg', '<small>需填體重</small>');
+  }
+  /* mcg/min → mL/hr */
+  set('iv_ugmin', (rate * 60 / 1000 / conc).toFixed(2) + '<small> mL/hr</small>');
+  var msg = [];
+  if(conc > 10) msg.push('<span class="f-bad">濃度 ' + conc.toFixed(1) + ' mg/mL 偏高，確認是否要走中央靜脈。</span>');
+  msg.push('換算式：mL/hr ＝ 目標劑量 ÷ 濃度。mcg/kg/min 先乘體重再乘 60 除以 1000 換成 mg/hr。');
+  document.getElementById('iv_flag').innerHTML = msg.join('<br>');
+}
+
+/* ── 加藥升階：目前用了哪幾類 → 下一步 ────────────────────────── */
+var HT_U = {};
+document.addEventListener('click', function(e){
+  var b = e.target.closest('#ht_u1 .flow-opt');
+  if(!b) return;
+  var u = b.getAttribute('data-u');
+  HT_U[u] = !HT_U[u];
+  b.classList.toggle('selected', !!HT_U[u]);
+  upCalc();
+});
+function upReset(){
+  HT_U = {};
+  document.querySelectorAll('#ht_u1 .flow-opt').forEach(function(b){ b.classList.remove('selected'); });
+  upCalc();
+}
+function upCalc(){
+  var U = HT_U, out = document.getElementById('ht_uout');
+  if(!out) return;
+  var core = ['a','c','d'].filter(function(x){ return U[x]; }).length;
+  var n = ['a','c','d','b','m','o','ndhp'].filter(function(x){ return U[x]; }).length;
+  if(!n){
+    out.innerHTML = htCard('rec-idle', '尚未選擇', '點上面的類別，這裡會列出下一步', [
+      'A＝ACEI 或 ARB、C＝二氫吡啶類 CCB、D＝thiazide 類利尿劑。三份指引的三藥組合都是這三個。'
+    ]);
+    return;
+  }
+  var h = '', it = [];
+  var miss = [];
+  if(!U.a) miss.push('<b>A</b>（ACEI 或 ARB）');
+  if(!U.c) miss.push('<b>C</b>（二氫吡啶類 CCB）');
+  if(!U.d) miss.push('<b>D</b>（thiazide 類利尿劑）');
+
+  if(U.a && U.c && U.d && U.maxdose){
+    /* 已經是最大耐受劑量的三藥 → 難治型 */
+    it.push('本例符合<b>難治型高血壓</b>的定義（三種機轉互補、含利尿劑、皆到最大可耐受劑量仍未達標）。');
+    it.push({hd:'第一步不是加第四支藥'});
+    it.push('AHA 2025 新條文（<b>COR 1／B-NR</b>）：先做<b>更詳細的續發原因評估</b>，並<b>逐項檢視所有用藥、' +
+      '把會升血壓的藥拿掉</b>（NSAID、類固醇、口服避孕藥、減充血劑、免疫抑制劑、甘草、安非他命類）。' +
+      '同時確認<b>順從性</b>與<b>用居家血壓排除白袍效應</b>。');
+    it.push('<b>難治型高血壓一律要篩原發性醛固酮症，不論血鉀正不正常</b>（AHA 2025 <b>COR 1／B-NR</b>，新條文）。');
+    it.push({hd:'第四支藥'});
+    if(U.m){
+      it.push('已經在 MRA 上。<b>Eplerenone 治療高血壓要 50–200 mg 才有效，25 mg 在統合分析中不降血壓</b>，' +
+        '而且作用時間比 spironolactone 短，<b>治療高血壓時可能要一天兩次</b>（ESC 2024）。');
+      it.push('MRA 之後（AHA <b>COR 2a／B-NR</b>）：<b>amiloride、乙型阻斷劑、α 阻斷劑、中樞交感抑制劑、' +
+        '雙重內皮素受體拮抗劑、直接血管擴張劑</b>其中之一。' +
+        '⚠ <b>台大沒有 amiloride</b>，健保也只給 Liddle 症候群且需事前審查。');
+      it.push('若選乙型阻斷劑當第四線，<b>優先選血管擴張型（labetalol、carvedilol、nebivolol）</b>；' +
+        '但 ESC 註明它在難治型的降壓效果<b>不如 spironolactone</b>。');
+      it.push('<b>Minoxidil 只在所有藥都無效時才考慮</b>，而且台大藥卡強制要求<b>同時給乙型阻斷劑與利尿劑</b>。');
+    } else if(U.egfr45){
+      it.push('⚠ <b>eGFR &lt;45：AHA 加 MRA 那條的前提不成立</b>（原文要求 eGFR ≥45）。' +
+        'KDIGO 也指出 MRA 加在 ACEI／ARB／利尿劑上時，<b>eGFR &lt;45 者高血鉀與可逆性腎功能下降的風險特別高</b>，' +
+        '並明列<b>低醛固酮症與第 4 型腎小管酸中毒者禁用</b>。');
+      it.push('可考慮的替代（AHA <b>COR 2a／B-NR</b>）：<b>乙型阻斷劑、α 阻斷劑、中樞交感抑制劑、直接血管擴張劑</b>。' +
+        '同時要把<b>利尿劑改成 loop</b>（eGFR &lt;30 時 thiazide 幾乎無效；台大 trichlormethiazide 藥卡直接寫 Scr &gt;2.5 時無效）。');
+    } else {
+      it.push('<b>加 spironolactone 25–50 mg qd</b>——AHA 2025 <b>COR 1／B-R</b>（前提：已在 A＋C＋thiazide-like 上、eGFR ≥45）；' +
+        'ESC 2024 <b>Class IIa／B</b>；台灣 2022 把 spironolactone 列為第二線用藥之一（<b>COR I／LOE A</b>）。');
+      it.push('⚠ <b>AHA 那條指名的是 thiazide-<b>like</b>（chlorthalidone 或 indapamide）</b>，' +
+        '<b>台大只有 Indapamide SR 1.5 mg 一個選擇</b>（沒有 chlorthalidone）。' +
+        '若目前用的是 trichlormethiazide，嚴格說並不落在該條文的定義內。');
+      it.push('<b>起始或加量後 1 週與 4 週各驗一次血鉀與腎功能。</b>男性女乳症是最常見的停藥原因，' +
+        '出現時可換 eplerenone，但<b>健保只給心衰竭且要先對 spironolactone 不耐受</b>。');
+    }
+    it.push({hd:'器械治療'});
+    it.push('<b>腎去神經術</b>：AHA <b>COR 2b／B-R</b>，限<b>診間 SBP 140–180「且」DBP ≥90、eGFR ≥40</b>' +
+      '——<b>單純收縮期高血壓不在適應範圍</b>。ESC 給難治型 <b>IIb／B</b>；<b>eGFR &lt;40 或續發性高血壓為 Class III 不建議</b>。' +
+      '⚠ <b>台灣健保不給付。</b>');
+    h += htCard('rec-urgent', '難治型高血壓', '先排除假性難治，再談第四支藥', it,
+      '「假性難治」——順從性不佳、白袍效應、量測方式錯誤、鹽攝取過量、會升血壓的藥——是最常見的原因。');
+  } else if(core === 3){
+    it.push('A＋C＋D 三類都在了。<b>先把每一支都調到最大可耐受劑量</b>再談第四支藥' +
+      '（ESC 2024 的階梯：低劑量三藥 → 最大耐受劑量三藥 → 測順從性＋加 spironolactone）。');
+    it.push('⚠ 目前沒有勾「已到最大可耐受劑量」。<b>還沒到最大劑量就加第四支藥，不符合難治型高血壓的定義。</b>');
+    h += htCard('rec-nonop', '下一步', '三類都在了：先往上調，不要急著加第四支', it);
+  } else {
+    it.push('缺的類別：' + miss.join('、') + '。<b>下一步就是從缺的類別裡補上一種</b>，' +
+      '而不是把現有的藥加倍——加倍只多降約 20%。');
+    if(U.a && !U.c) it.push('<b>建議先加 C（二氫吡啶類 CCB）</b>：ACCOMPLISH 之後，A＋C 是最常被推薦的雙藥組合；' +
+      '而且 A 可以減少 CCB 造成的下肢水腫（AHA 原文）。');
+    if(U.c && !U.a) it.push('<b>建議先加 A（ACEI 或 ARB）</b>：除了降壓，還能減少 CCB 造成的下肢水腫。');
+    if(U.d && !U.a) it.push('<b>建議加 A</b>：A＋D 併用可降低低血鉀或高血鉀的機率（兩者對血鉀作用方向相反，AHA 原文）。');
+    if(U.b && !U.a && !U.c && !U.d) it.push('⚠ <b>目前只用乙型阻斷劑。</b>AHA 2025 與 ESC 2024 都<b>不把乙型阻斷劑列為第一線</b>' +
+      '（AHA 原文：預防中風的效果不如第一線藥，且耐受性較差，應保留給有明確適應症者）。' +
+      '<b>台灣 2022 則仍把它列為五大類第一線（COR I／B）</b>。若沒有明確適應症，考慮改用或加上 A／C／D。');
+    if(U.ndhp) it.push('⚠ <b>non-DHP CCB（diltiazem／verapamil）不是高血壓的第一線</b>，它的位置是心率控制與心絞痛。' +
+      '若同時在用乙型阻斷劑，注意心搏過緩與房室阻滯。<b>HFrEF 禁用。</b>');
+    if(U.o) it.push('⚠ <b>α 阻斷劑、clonidine、hydralazine、minoxidil 都不是第一到第三線</b>。' +
+      '若這些藥在第一到第三線之前就被加上去，先回頭確認 A／C／D 有沒有補齊、有沒有加到最大耐受劑量。');
+    if(U.bbind) it.push('<b>有乙型阻斷劑的明確適應症</b>（心絞痛、心肌梗塞後、HFrEF、心率控制）：' +
+      '此時乙型阻斷劑<b>與其他任一類第一線藥併用是 Class I／LOE A</b>（ESC 2024），任何階段都可以加。');
+    h += htCard('rec-elective', '下一步', '從缺的類別裡補一種', it,
+      '每次調藥後 <b>2 週</b>再跑一輪 722 居家血壓（藥效 1 週達 50%、2 週達 80%）。');
+  }
+  out.innerHTML = h;
+}
+
+/* ── 建議引擎 ────────────────────────────────────────────────────────────
+   規則全部可回溯到頁面其他分頁列出的條號與出處；這裡不產生任何在別處找不到依據的建議。
+   刻意的設計取捨：
+   · 三份指引的結論**分開列**，不合成一個「正確答案」——它們用的血壓量法、風險工具與
+     證據取捨都不同，合成會製造原文沒有的建議。
+   · 共病是並聯不是串聯：一個人可以同時落在冠心病、CKD、痛風三條線上。
+   · 數值沒填就不做該項判斷，不猜預設值。 */
+
+/* 分級：回傳 {aha, esc, tw} 三個字串 */
+function htGrade(sbp, dbp){
+  var r = {};
+  if(sbp === null || dbp === null) return null;
+  /* AHA 2025 Table 4（診間）：跨級取高 */
+  if(sbp >= 140 || dbp >= 90) r.aha = 'Stage 2 第二期';
+  else if(sbp >= 130 || dbp >= 80) r.aha = 'Stage 1 第一期';
+  else if(sbp >= 120) r.aha = 'Elevated 血壓偏高';
+  else r.aha = 'Normal 正常';
+  /* ESC 2024 §6.1（診間） */
+  if(sbp >= 140 || dbp >= 90) r.esc = 'Hypertension 高血壓';
+  else if(sbp >= 120 || dbp >= 70) r.esc = 'Elevated BP 血壓偏高';
+  else r.esc = 'Non-elevated BP';
+  /* 台灣 2022 Table 5（居家 722，無居家時用標準化診間） */
+  if(sbp >= 140 || dbp >= 90) r.tw = 'Grade 2 第二級';
+  else if(sbp >= 130 || dbp >= 80) r.tw = 'Grade 1 第一級';
+  else if(sbp >= 120) r.tw = 'Elevated 血壓偏高';
+  else r.tw = 'Normal 正常';
+  return r;
+}
+
+function htCalc(){
+  var F = HT_F;
+  var osbp = htNum('ht_osbp'), odbp = htNum('ht_odbp'),
+      hsbp = htNum('ht_hsbp'), hdbp = htNum('ht_hdbp'),
+      age = htNum('ht_age'), risk = htNum('ht_risk'),
+      egfr = htNum('ht_egfr'), uacr = htNum('ht_uacr'),
+      k = htNum('ht_k'), hr = htNum('ht_hr');
+  var out = document.getElementById('ht_out');
+  if(!out) return;
+
+  var picked = Object.keys(F).filter(function(x){ return F[x]; });
+  if(!picked.length && osbp === null && hsbp === null){
+    out.innerHTML = htCard('rec-idle', '尚未輸入', '填血壓或點共病，這裡會即時列出建議', [
+      '三份指引在同一個病人身上常給出不同答案，本頁一律三邊並列。',
+      '共病可以複選；數值留空就不做該項判斷。'
+    ]);
+    return;
+  }
+
+  var html = '';
+  var CKD = (egfr !== null && egfr < 60) || (uacr !== null && uacr >= 30);
+  var lenient = F.frail || F.ortho || (age !== null && age >= 85);
+
+  /* ── 1. 懷孕：整組蓋過 ── */
+  if(F.preg){
+    html += htCard('rec-urgent', '先看這一張', '懷孕、備孕或哺乳：用藥邏輯整組不同', [
+      '<b>立刻停掉並改藥：ACEI、ARB、直接腎素抑制劑、MRA（spironolactone／eplerenone／finerenone）、atenolol、nitroprusside。</b>' +
+        'AHA 2025 把這一整串列為 <b>COR 3: Harm</b>——2017 版原本只列 ACEI 與直接腎素抑制劑，<b>本版新增 atenolol、ARB、nitroprusside 與 MRA</b>。',
+      '<b>慢性高血壓（懷孕前已有，或 20 週前 SBP 140–159 和／或 DBP 90–109）：治療目標 &lt;140/90</b>（AHA 2025 <b>COR 1</b>，新條文，依據 CHAP 試驗）。' +
+        '⚠ 這推翻了「懷孕要到 160/110 才治療」的舊做法。',
+      '<b>重度高血壓（SBP ≥160 或 DBP ≥110，15 分鐘內重測確認）：應在 30–60 分鐘內把血壓降到 &lt;160/&lt;110</b>（AHA 2025 <b>COR 1</b>，新條文）。',
+      '<b>低劑量 aspirin</b>：備孕或已懷孕的高血壓婦女應被告知它可降低子癲前症風險（AHA 2025 <b>COR 1</b>，新條文）。',
+      '可用藥與劑量、台大品項的缺口（<b>台大沒有 methyldopa、沒有 hydralazine 針</b>）請看「特殊族群」分頁。'
+    ], '本卡只列 AHA 2025 逐字條文。台大院內細節與產科用藥表在「特殊族群」分頁。');
+  }
+
+  /* ── 2. 分級 ── */
+  var og = htGrade(osbp, odbp), hg = htGrade(hsbp, hdbp);
+  if(og || hg){
+    var gi = [];
+    if(og){
+      gi.push({hd:'依<b>診間</b>血壓 ' + osbp + '/' + odbp});
+      gi.push('<b>AHA/ACC 2025</b>：' + og.aha + '　<span class="rec-note" style="border:none;padding:0;margin:0;display:inline">（Table 4，跨級取高）</span>');
+      gi.push('<b>ESC 2024</b>：' + og.esc + '　<span class="rec-note" style="border:none;padding:0;margin:0;display:inline">（Elevated 是 120–139 <b>或</b> 70–89，範圍比 AHA 大得多）</span>');
+    }
+    if(hg){
+      gi.push({hd:'依<b>居家 722</b> 血壓 ' + hsbp + '/' + hdbp});
+      gi.push('<b>台灣 TSOC／THS 2022</b>：' + hg.tw + '　<span class="rec-note" style="border:none;padding:0;margin:0;display:inline">（台灣的分級就是用居家血壓，且切點與診間相同）</span>');
+      gi.push('<b>ESC 2024（居家門檻）</b>：' + (hsbp >= 135 || hdbp >= 85 ? 'Hypertension 高血壓' : (hsbp >= 120 || hdbp >= 70 ? 'Elevated BP' : 'Non-elevated BP')) +
+        '　<span class="rec-note" style="border:none;padding:0;margin:0;display:inline">（ESC 的居家門檻是 ≥135/85，<b>不是</b> 140/90）</span>');
+    } else if(og){
+      gi.push({hd:'⚠ 沒有居家血壓，台灣指引無法判定'});
+      gi.push('台灣 2022 指引對「隨手量的診間血壓」給的是 <b>COR III（不建議）</b>：不照標準流程量的診間血壓' +
+        '<b>不應</b>用於高血壓的診斷與管理。要照台灣指引走，先請病人做一輪 <b>722</b>（見「量測與診斷」分頁）。' +
+        '若已用標準化流程量診間血壓，台灣指引允許用它代替：本例為 <b>' + og.tw + '</b>。');
+    }
+    if(og && hg){
+      var wc = (osbp >= 130 || odbp >= 80) && (hsbp < 130 && hdbp < 80);
+      var mk = (osbp < 130 && odbp < 80) && (hsbp >= 130 || hdbp >= 80);
+      if(wc) gi.push({hd:'⚠ 診間高、居家正常 → <b>白袍型高血壓／白袍效應</b>'});
+      if(wc) gi.push('未治療者一般<b>不立刻用藥</b>，以生活型態與定期追蹤為主；已治療者<b>不要因為診間數字而加藥</b>。');
+      if(mk) gi.push({hd:'⚠ 診間正常、居家高 → <b>隱匿型高血壓／隱匿型未控制</b>'});
+      if(mk) gi.push('<b>風險與持續型高血壓相當，要治療。</b>只看診間血壓會整個漏掉這一群。');
+    }
+    html += htCard('rec-blue', '第一步：分級', '同一組數字，三份指引的分級不一樣', gi,
+      '⚠ 三份指引的 130/80 指的不是同一種血壓：<b>AHA 與 ESC 是診間血壓，台灣是居家 722 血壓</b>。');
+  }
+
+  /* ── 3. 要不要開始用藥 ── */
+  if((osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null)){
+    var ti = [];
+    var highRiskAHA = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+    /* AHA */
+    if(osbp !== null){
+      if(osbp >= 140 || (odbp !== null && odbp >= 90)){
+        ti.push({hd:'AHA/ACC 2025（診間）'});
+        ti.push('<b>開始用藥</b>。SBP ≥140 → <b>COR 1／LOE A</b>；DBP ≥90 → <b>COR 1／LOE A</b>（§5.2.2）。');
+      } else if(osbp >= 130 || (odbp !== null && odbp >= 80)){
+        ti.push({hd:'AHA/ACC 2025（診間）'});
+        if(highRiskAHA){
+          ti.push('<b>開始用藥</b>。已有心血管疾病（冠心病／中風／心衰竭）→ SBP ≥130 <b>COR 1／A</b>、DBP ≥80 <b>COR 1／C-LD</b>；' +
+            '糖尿病、CKD 或 <b>PREVENT 10 年風險 ≥7.5%</b> → 同樣門檻、同樣等級（§5.2.2 #3–#6）。');
+        } else {
+          ti.push('<b>先做 3–6 個月生活型態治療</b>；之後平均 SBP 仍 ≥130 或 DBP 仍 ≥80 才開始用藥（<b>COR 1／B-R</b>，§5.2.2 #7、#8）。' +
+            (risk === null ? '　⚠ 沒填 10 年風險，這一格是假設 &lt;7.5%。' : ''));
+        }
+        ti.push('⚠ <b>3–6 個月是「生活型態試驗期」，不是「達標期限」。</b>原文沒有任何「幾週內要達標」的條文；' +
+          '唯一的追蹤頻率條文是<b>每月回診直到達標</b>（COR 1／B-R，§5.4）。');
+      }
+      if(age !== null && age >= 80){
+        ti.push('≥80 歲：原文另有一句——風險模型在此年齡受限，<b>當臨床判斷認為利大於弊且符合病人的照護目標時，' +
+          '≥130/80 即建議起始治療</b>（§5.2.2 supportive text）。');
+      }
+    }
+    /* ESC */
+    if(osbp !== null){
+      ti.push({hd:'ESC 2024（診間）'});
+      if(osbp >= 140 || (odbp !== null && odbp >= 90)){
+        if(lenient){
+          ti.push('本例有「≥85 歲／症狀性姿勢性低血壓／中重度衰弱／餘命 &lt;3 年」其中之一：' +
+            'ESC 建議<b>只在 ≥140/90 才考慮起始</b>（<b>Class IIa／B</b>）——本例已達此門檻，可以開始，但要慢、要低劑量、要單方起始。');
+        } else {
+          ti.push('<b>立即開始生活型態＋藥物，不看風險</b>（<b>Class I／A</b>，Recommendation Table 17）。');
+        }
+      } else if(osbp >= 130 || (odbp !== null && odbp >= 80)){
+        if(lenient){
+          ti.push('本例屬 ESC 的「保守族群」（≥85 歲／症狀性姿勢性低血壓／中重度衰弱／餘命 &lt;3 年）：' +
+            '<b>應只在 ≥140/90 才考慮起始用藥</b>（<b>Class IIa／B</b>）。本例未達，<b>先不要開藥</b>。');
+        } else if(risk !== null && risk >= 10 || F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || F.pad || F.aorta){
+          ti.push('屬 Elevated BP 且風險夠高：<b>先做 3 個月生活型態</b>，之後 confirmed BP 仍 ≥130/80 才建議用藥（<b>Class I／A</b>）。');
+        } else {
+          ti.push('屬 Elevated BP 且風險不夠高：<b>只給生活型態</b>（<b>Class I／B</b>）。' +
+            (risk === null ? '　⚠ 沒填 SCORE2 風險，這一格是假設 &lt;10% 且無高風險條件。' : ''));
+        }
+      } else if(osbp >= 120 || (odbp !== null && odbp >= 70)){
+        ti.push('屬 Elevated BP 但 <b>SBP 120–129／DBP 70–79</b>：<b>不論風險多高，ESC 的 Table 14 都只給生活型態</b>。' +
+          '「Elevated BP + 風險 ≥10% 就開藥」是常見的誤讀。');
+      } else {
+        ti.push('屬 Non-elevated BP（SBP &lt;120 <b>且</b> DBP &lt;70）：維持生活型態。' +
+          'ESC 刻意不用「正常」這個字，因為相對風險從 SBP 90 就開始上升。');
+      }
+    }
+    /* 台灣 */
+    var twS = (hsbp !== null ? hsbp : osbp), twD = (hdbp !== null ? hdbp : odbp);
+    if(twS !== null && twD !== null){
+      ti.push({hd:'台灣 TSOC／THS 2022' + (hsbp === null ? '（用診間值代算，僅供參考）' : '（居家 722）')});
+      var twLow = !(F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad || F.dm || CKD || F.dial);
+      if(twS >= 140 || twD >= 90){
+        ti.push('<b>開始用藥</b>（Grade 2，<b>COR I／LOE A</b>）。');
+      } else if(twS >= 130 || twD >= 80){
+        if(twLow){
+          ti.push('<b>低風險族群的起始用藥門檻是 140/90，不是 130/80</b>（<b>COR I／LOE A</b>）——' +
+            '本例未達，<b>先做生活型態並每 3 個月跑一輪 722</b>。' +
+            '⚠ <b>診斷門檻 130/80 ≠ 起始用藥門檻 130/80</b>，這一格最常被填錯。' +
+            '（低風險＝無 ASCVD、無器官損傷，且危險因子少於 3 個。）');
+        } else {
+          ti.push('<b>開始用藥</b>（有 ASCVD、器官損傷或危險因子 ≥3 → 門檻 130/80，<b>COR I／LOE A</b>）。');
+        }
+      } else {
+        ti.push('未達起始門檻。血壓 ≥120/80 者一律給生活型態（S-ABCDE）以降低終身血壓負擔。');
+      }
+    }
+    html += htCard('rec-nonop', '第二步：要不要開始用藥', '三份指引的門檻不同', ti,
+      '起始藥物前先跑台灣指引的 <b>HER</b>：<b>H</b>＝用 722 確認診斷、<b>E</b>＝找誘發因子與續發性高血壓、' +
+      '<b>R</b>＝做風險分期（COR I／LOE C）。');
+  }
+
+  /* ── 4. 目標血壓 ── */
+  var tg = [];
+  var ahaHigh = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+  tg.push({hd:'AHA/ACC 2025（診間）'});
+  if(ahaHigh){
+    tg.push('<b>SBP &lt;130、並鼓勵達到 &lt;120</b>（<b>COR 1／LOE A</b>）；<b>DBP &lt;80</b>（<b>COR 1／LOE B-R</b>）。§5.2.7');
+  } else {
+    tg.push('<b>SBP &lt;130、鼓勵 &lt;120；DBP &lt;80</b>，但因為不屬「increased risk」，等級只有 <b>COR 2b／LOE B-NR（may be reasonable）</b>。§5.2.7' +
+      '<br>⚠ 「2025 版把 &lt;130/80 設為全體 Class 1」是常見的誤寫。Top Take-Home 那句 “for all adults” 是宣示，不是條文強度。' +
+      (risk === null ? '　（沒填 PREVENT 風險，這一格假設 &lt;7.5%。）' : ''));
+  }
+  tg.push({hd:'ESC 2024（診間）'});
+  if(lenient){
+    tg.push('本例有 ≥85 歲／症狀性姿勢性低血壓 → <b>個人化較寬鬆目標，例如 &lt;140</b>（<b>Class IIa／C</b>）；' +
+      '中重度衰弱或餘命 &lt;3 年 → <b>例如 &lt;140/90</b>（<b>Class IIb／C</b>）。');
+  } else {
+    tg.push('<b>SBP 120–129</b>（<b>Class I／A</b>，前提是耐受）。⚠ <b>是區間，有下界</b>，不是「&lt;130」。' +
+      '<br>耐受不了或達不到 → <b>ALARA：降到「合理可達到的最低值」（Class I／A）</b>，Figure 20 把它具體化成「最好 &lt;140」。' +
+      '<br>DBP：<b>只有</b>在 SBP 已達 120–129 但 DBP 仍 ≥80 時，才可考慮把 DBP 降到 <b>70–79</b>（<b>Class IIb／C</b>）。' +
+      'ESC 2024 <b>沒有</b>「全體 DBP &lt;80」這條——那是 2018 版（IIa B），2024 已降級。');
+  }
+  if(egfr !== null && egfr < 30){
+    tg.push('⚠ 本例 eGFR &lt;30：ESC 明列為「不適用 120–129/70–79」的情境之一（非心血管死亡的競爭風險高）。');
+  }
+  tg.push({hd:'台灣 TSOC／THS 2022（居家 722）'});
+  tg.push('<b>全體通用目標 &lt;130/80</b>（<b>COR I／LOE A</b>），不分風險。' +
+    (F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad || (risk !== null && risk >= 10)
+      ? '<br>本例有已確立的心血管疾病或高心血管風險：<b>SBP 目標可到 &lt;120（如可耐受）</b>（<b>COR IIa／LOE B</b>）。' : '') +
+    '<br>出現器官低灌流的症狀或徵象時<b>放寬目標</b>（COR IIb／C）。指引明講「<b>對目標的耐受性是第一優先</b>」，' +
+    '而且「<b>年齡本身不是耐受性差的理由</b>」——SPRINT 與 STEP 都顯示 70–80 歲的絕對獲益更大。');
+  tg.push({hd:'⚠ 三邊最大的分歧'});
+  tg.push('<b>ESH 2023 明確反對主動追求 SBP &lt;120 或 DBP &lt;70（Class III）</b>，' +
+    '而 AHA 2025 寫的是「with encouragement to achieve SBP &lt;120」，兩者<b>直接相反</b>。' +
+    'KDIGO 對非透析 CKD 則建議 SBP &lt;120（<b>2B，弱建議</b>）——比 AHA 更積極。');
+  html += htCard('rec-elective', '第三步：目標血壓', (ahaHigh ? '高心血管風險：三邊都偏積極' : '非高風險：三邊差異最大'), tg,
+    '⚠ 目標值要對應量法：AHA／ESC 是診間，台灣是居家 722。用居家血壓去追 ESC 的 120–129 會過度治療。');
+
+  /* ── 5. 起始一種還是兩種 ── */
+  if(F.naive || (osbp !== null || hsbp !== null)){
+    var ci = [];
+    var s2 = (osbp !== null && osbp >= 140) && (odbp !== null && odbp >= 90);
+    var s2or = (osbp !== null && (osbp >= 140 || (odbp !== null && odbp >= 90)));
+    ci.push({hd:'AHA/ACC 2025'});
+    if(s2){
+      ci.push('<b>Stage 2 → 起始就用兩種不同類別的第一線藥，且優先用單片複方（SPC）</b>（<b>COR 1／B-R</b>，§5.2.4）。');
+    } else if(s2or){
+      ci.push('⚠ <b>原文自己不一致</b>：Table 4 的 Stage 2 是「SBP ≥140 <b>或</b> DBP ≥90」，' +
+        '但 §5.2.4 起始雙藥那條寫成「SBP ≥140 <b>且</b> DBP ≥90」。' +
+        '本例只滿足其中一項（例如單純收縮期高血壓），<b>依 Table 4 是 Stage 2、依 §5.2.4 字面卻不符合起始雙藥</b>。' +
+        '這一格必須自己判斷，本頁不替你選。');
+    } else if(osbp !== null){
+      ci.push('<b>Stage 1 → 起始單一第一線藥即可</b>，再依需要往上調並依序加藥（<b>COR 2a／C-EO</b>）。');
+    }
+    ci.push('<b>ACEI、ARB、腎素抑制劑三者之間任何組合皆不建議</b>（<b>COR 3: Harm／LOE A</b>）。');
+    ci.push('⚠ 原文自承「<b>沒有任何 RCT 比較過起始階梯式與起始併用</b>」——SPC 的 B-R 不是來自頭對頭試驗。');
+    ci.push({hd:'ESC 2024'});
+    if(lenient){
+      ci.push('本例屬「<b>建議起始單方</b>」的四種例外之一（≥85 歲／症狀性姿勢性低血壓／中重度衰弱／Elevated BP）。' +
+        '（Figure 18 例外框、§8.3.4）');
+    } else if(osbp !== null && (osbp >= 140 || (odbp !== null && odbp >= 90))){
+      ci.push('<b>確診高血壓（≥140/90）→ 低劑量雙藥起始，且用固定劑量單片複方</b>（<b>Class I／B</b>）。' +
+        '建議組合：<b>RAS 阻斷劑（ACEI 或 ARB）＋ DHP-CCB 或利尿劑</b>。');
+      ci.push('策略是<b>先用低劑量多種藥、之後才往最大劑量調</b>（原文明文）。');
+    } else if(osbp !== null){
+      ci.push('屬 Elevated BP 而需要用藥者：<b>建議先用單方</b>（monotherapy is recommended in the first instance，§8.3.4）。');
+    }
+    ci.push({hd:'台灣 TSOC／THS 2022'});
+    var tS = (hsbp !== null ? hsbp : osbp), tD = (hdbp !== null ? hdbp : odbp);
+    if(tS !== null && tD !== null){
+      var above = Math.max(tS - 130, 0), aboveD = Math.max(tD - 80, 0);
+      if(above >= 20 || aboveD >= 10){
+        ci.push('本例高於目標 <b>' + above + '/' + aboveD + ' mmHg</b>，達到「<b>≥20/10</b>」的門檻 → ' +
+          '<b>起始就用合併治療，並優先用單片複方</b>（<b>COR I／LOE B</b>）。');
+      } else {
+        ci.push('本例高於目標 <b>' + above + '/' + aboveD + ' mmHg</b>，未達 20/10 → ' +
+          '可考慮用 <b>半顆 SPC</b> 當起始（<b>COR IIa／LOE B</b>）。' +
+          '原文理由：<b>半劑量時副作用幾乎減半，降壓效果只少 20%</b>。');
+      }
+    }
+    ci.push('五大類全是第一線：<b>ACEI [A]、ARB [A]、乙型阻斷劑 [B]、CCB [C]、thiazide 利尿劑 [D]</b>（<b>COR I／LOE B</b>）。' +
+      '⚠ <b>這是台灣與 AHA／ESC 最直接的衝突</b>——後兩者都把乙型阻斷劑排除在第一線之外。');
+    ci.push({hd:'⚠ 台大的現實'});
+    ci.push('<b>台大院內只有一支複方：Exforge（amlodipine 5／valsartan 160，易安穩）</b>，' +
+      '而且它的<b>仿單明寫「不適合用於起始治療」</b>。' +
+      '院內<b>沒有</b> ARB＋thiazide 的複方、<b>沒有</b>三合一複方。' +
+      '要照三份指引都推薦的「起始 SPC」，在台大實際上只能開兩顆藥。');
+    html += htCard('rec-nonop', '第四步：起始用一種還是兩種', '這一格三份指引的門檻完全不同', ci,
+      '⚠ 「高於目標 20/10 就起始併用」是<b>台灣</b>指引的寫法；AHA 用的是 <b>Stage 2</b>；' +
+      'ESC 用的是<b>確診高血壓 ≥140/90</b>。三者常被混寫成同一句。');
+  }
+
+  /* ── 6. 依共病的首選與避免 ── */
+  var go = [], avoid = [];
+
+  if(F.cad || F.postmi){
+    go.push('<b>乙型阻斷劑</b>——ESC 2024 把「<b>心絞痛、心肌梗塞後、HFrEF、心率控制</b>」列為乙型阻斷劑的 compelling indication，' +
+      '此時<b>與其他任一類第一線藥併用，Class I／LOE A</b>。台大品項：bisoprolol、metoprolol succinate、carvedilol、nebivolol。');
+    go.push('<b>ACEI 或 ARB</b>——冠心病與心肌梗塞後的標準用藥；台大 ACEI 只有 captopril 與 enalapril，實務上多用 ARB。');
+  }
+  if(F.postmi){
+    go.push({hd:'⚠ 心肌梗塞後的乙型阻斷劑要用多久：兩個 2024 年的 RCT 方向不同，本頁並列'});
+    go.push('<b>REDUCE-AMI</b>（NEJM 2024;390:1372–81）：5,020 位<b>做過冠脈攝影、EF ≥50%</b> 的急性心肌梗塞病人，' +
+      '隨機分成<b>長期用乙型阻斷劑 vs 不用</b>，中位追蹤 3.5 年。' +
+      '<b>主要終點（全因死亡或新發心肌梗塞）7.9% vs 8.3%，HR 0.96（0.79–1.16），P=0.64——沒有差別</b>；' +
+      '各次要終點（死亡、心血管死亡、心肌梗塞、心房顫動住院、心衰竭住院）也都沒有差別。' +
+      '<b>→ EF ≥50% 的現代治療下，長期乙型阻斷劑沒有顯示好處。</b>');
+    go.push('<b>ABYSS</b>（NEJM 2024;391:1277–86）：3,698 位<b>EF ≥40%、過去 6 個月無心血管事件</b>、' +
+      '已長期使用乙型阻斷劑的心肌梗塞病史病人，隨機分成<b>停藥 vs 繼續</b>（非劣性設計）。' +
+      '<b>主要終點 23.8% vs 21.1%，HR 1.16（1.01–1.33），非劣性 P=0.44——「停藥」未達到非劣於「繼續」</b>；' +
+      '而且<b>停藥並沒有改善生活品質</b>。<b>→ 已經在吃的，不要為了減藥而停。</b>');
+    go.push('<b>兩篇合起來的實務讀法</b>：<b>「EF ≥50% 的新發心肌梗塞，可以不常規開長期乙型阻斷劑」（REDUCE-AMI）</b>，' +
+      '但<b>「已經在長期使用的，不要主動停掉」（ABYSS）</b>。兩者<b>不衝突</b>——一個問「要不要開始」，一個問「能不能停」。' +
+      '⚠ 兩篇都<b>不涵蓋 EF &lt;40% 的病人</b>，HFrEF 仍然要用。');
+  }
+  if(F.hfref){
+    go.push('<b>心衰竭 EF ≤40%：降壓藥的選擇要服從心衰竭的四本柱</b>（ACEI／ARB 或 ARNI、乙型阻斷劑、MRA、SGLT2i），' +
+      '不要為了降壓另外加藥。詳見 <a href="../tools/heart-failure.html" class="pmid">心衰竭</a>。');
+    avoid.push('<b>非二氫吡啶類 CCB（diltiazem、verapamil）在 HFrEF 禁用</b>——負性肌力作用會讓心衰竭惡化。');
+    avoid.push('<b>Doxazosin 等 α 阻斷劑</b>——ALLHAT 的 doxazosin 分支因心衰竭增加而提前中止；ESC 2024 也在正文點名此事。');
+  }
+  if(F.hfpef){
+    go.push('<b>心衰竭 EF &gt;40%</b>：血壓控制本身就是治療；SGLT2i 與 MRA 的角色見 <a href="../tools/heart-failure.html" class="pmid">心衰竭</a>與' +
+      '<a href="diabetes.html" class="pmid">糖尿病用藥</a>。');
+  }
+  if(F.af){
+    go.push('<b>心房顫動：乙型阻斷劑或非二氫吡啶類 CCB</b>可同時做心率控制與降壓（ESC 2024 把「心率控制」列為乙型阻斷劑的 compelling indication，Class I／A）。' +
+      '⚠ <b>兩者不要併用</b>（心搏過緩與房室阻滯）。');
+  }
+  if(F.dm){
+    go.push('<b>糖尿病＋CKD（eGFR &lt;60 或 UACR ≥30 mg/g）：ACEI 或 ARB</b>——AHA 2025 <b>COR 1</b>' +
+      '（2017 版原本只有 COR 2b「may be considered」，本版升級）；<b>UACR &lt;30 的輕微白蛋白尿也應考慮</b>。' +
+      '⚠ <b>ACEI 與 ARB 不可併用。</b>');
+    if(!CKD){
+      go.push('⚠ <b>糖尿病但沒有白蛋白尿時，ACEI／ARB 不是必然首選。</b>ADA 2026 Section 10 逐字：' +
+        '「ACE inhibitors and ARBs <b>have not been found to afford superior cardioprotection</b> compared with ' +
+        'thiazide-like diuretics or dihydropyridine CCBs」。<b>但台灣 2022 指引寫的相反</b>——RASi 是 CKD 首選（COR I／A）。兩句並列，自己判斷。');
+    }
+    go.push('<b>ADA 2026 的血壓目標是雙層的</b>：主目標 &lt;130/80；<b>心血管或腎臟高風險者鼓勵 SBP &lt;120</b>（等級 A，依據 BPROAD 與 ESPRIT）。' +
+      '⚠ 不能拿 SPRINT 支持糖尿病的 &lt;120——<b>SPRINT 把糖尿病病人排除在外</b>。');
+  }
+  if(CKD && !F.dial){
+    go.push('<b>CKD（eGFR &lt;60 且 UACR ≥30 mg/g）：RAASi（ACEI 或 ARB，<b>不可兩者併用</b>）</b>——AHA 2025 <b>COR 1</b>' +
+      '（2017 版是 COR 2a／2b，本版升級）。');
+    go.push('<b>KDIGO 的目標是 SBP &lt;120，但那是「弱建議（2B）」，而且必須用<b>標準化診間血壓</b>量。</b>' +
+      'KDIGO 真正的 <b>1B</b> 是「要用標準化診間血壓而不是隨手量」這一條——兩條常被寫反。' +
+      '<b>KDIGO 對未透析成人沒有訂舒張壓目標。</b>');
+    if(egfr !== null && egfr < 30){
+      avoid.push('<b>eGFR &lt;30：thiazide 類（含台大的 trichlormethiazide）效果變差</b>。' +
+        '台大藥卡直接寫 trichlormethiazide 在 <b>Scr &gt;2.5 mg/dL 時無效、應避免使用</b>。' +
+        'AHA Table 13 也註明 loop 利尿劑在 <b>GFR &lt;30</b> 時優於 thiazide。');
+    }
+  }
+  if(F.dial){
+    go.push('<b>透析病人：KDIGO 2021 完全不涵蓋</b>——工作小組在引言明文把透析族群排除在外。' +
+      '所以「洗腎也要 &lt;120」<b>沒有 KDIGO 依據</b>。');
+    go.push('<b>透析前／後的血壓不該單獨用來診斷或調藥</b>（與死亡率呈無關聯或 U／J 型）；' +
+      '要用 <b>44 小時 ABPM 或居家血壓</b>。');
+    go.push('<b>選藥時「會不會被透析掉」的資料互相矛盾</b>：metoprolol 有四個來源分別說 slightly／high／highly dialyzable，' +
+      'FDA 仿單則說移除量沒有意義；bisoprolol 台大寫 not dialyzable、但 EXTRIP 2021 歸為 moderately dialyzable。' +
+      '<b>KDIGO 的共識就是把矛盾並列，不建議任何一類優於另一類。</b>' +
+      '台大可用而不被透析移除的有 <b>amlodipine</b>（not dialyzable、透析後不用補）與 <b>carvedilol</b>。');
+    go.push('⚠ <b>「透析日早上先停降壓藥」沒有證據</b>——KDIGO 原文：其減少透析中低血壓的效果 <b>unknown</b>，仍在試驗中。');
+  }
+  if(F.tx){
+    go.push('<b>腎移植後：首選 DHP CCB 或 ARB</b>（目標 &lt;130/&lt;80）。' +
+      '⚠ <b>非 DHP CCB 沒有顯著效果</b>（RR 0.91, 95% CI 0.61–1.34）；' +
+      '「用 diltiazem 一邊降壓一邊省免疫抑制劑」<b>不是 KDIGO 支持的降壓策略</b>。');
+    avoid.push('<b>Verapamil、diltiazem、nifedipine、nicardipine 會拉高 tacrolimus／cyclosporine 濃度</b>（FDA 仿單點名）。' +
+      '⚠ <b>仿單沒有列 amlodipine</b>——但這只代表「仿單未列」，不等於「沒有交互作用」。加藥後仍要回驗濃度。');
+  }
+  if(F.gout){
+    go.push('<b>痛風：ARB 選 losartan</b>（痛風風險 RR 0.81）、或用 <b>CCB</b>（RR 0.87）。' +
+      '⚠ <b>ACEI（RR 1.24）與非 losartan 的 ARB（RR 1.29）反而增加痛風風險</b>——' +
+      '「ARB 對痛風比較安全」是錯的。');
+    avoid.push('<b>Thiazide 與 loop 利尿劑會升尿酸</b>。但 ACR 對「因為痛風就換掉 thiazide」只給 conditional 建議、' +
+      '證據等級 <b>very low</b>——<b>不要為了痛風輕易犧牲血壓控制</b>。');
+  }
+  if(F.bph){
+    go.push('<b>攝護腺肥大：doxazosin 可以一石二鳥</b>，但<b>只能當加藥、不能當第一線降壓藥</b>' +
+      '（ALLHAT 的 doxazosin 分支因心衰竭增加而提前中止）。台大有 Doxaben 2 mg 與 Doxaben XL 4 mg。' +
+      '<b>第一劑睡前吃</b>；服藥後 <b>2–6 小時</b>是姿勢性低血壓最可能發生的時段。');
+  }
+  if(F.asthma){
+    avoid.push('<b>氣喘：非選擇性乙型阻斷劑（carvedilol、labetalol、propranolol）要避免。</b>' +
+      '心臟選擇性的（bisoprolol、metoprolol、nebivolol）在有明確適應症時可個別評估、從低劑量起始。');
+  }
+  if(F.copd){
+    go.push('<b>COPD 不是乙型阻斷劑的禁忌</b>——有明確適應症（心衰竭、心肌梗塞後）時，心臟選擇性乙型阻斷劑利大於弊。');
+  }
+  if(F.osa){
+    go.push('⚠ <b>睡眠呼吸中止症是原發性醛固酮症的篩檢適應症之一</b>（AHA 2025 新列入，見下方篩檢卡）。');
+  }
+  if(F.migraine){
+    go.push('<b>偏頭痛：乙型阻斷劑（如 propranolol）可同時預防偏頭痛</b>。台大有 propranolol 10 mg。');
+  }
+  if(F.aorta){
+    go.push('<b>主動脈瘤／剝離病史：乙型阻斷劑是核心</b>（降低 dP/dt）。急性期的目標與給藥順序見「住院與急症」分頁。');
+  }
+  if(F.pad){
+    go.push('<b>周邊動脈疾病不是乙型阻斷劑的禁忌</b>——「會惡化跛行」是舊觀念，實證不支持。');
+  }
+  if(lenient){
+    go.push('<b>高齡（≥85 歲）或中重度衰弱：起始藥物應考慮長效 DHP-CCB 或 RAS 抑制劑，必要時再加低劑量利尿劑；' +
+      '盡量不要用乙型阻斷劑（除非有明確適應症）或 α 阻斷劑</b>（ESC 2024 <b>Class IIa／B</b>）。');
+    go.push('<b>但不要因為年紀大就不治療</b>：ESC 明文「very old and frail patients <b>should not be denied</b> ' +
+      'the potential benefits」；<b>即使超過 85 歲也應終身維持降壓藥（Class I／A）</b>，只要耐受。');
+    go.push('若隨衰弱進展血壓自己降下來，<b>可考慮減藥（deprescription）</b>，同時檢視鎮靜劑、攝護腺用 α 阻斷劑等會降壓的藥（ESC <b>Class IIb／C</b>）。');
+  }
+  if(F.ortho){
+    avoid.push('<b>有症狀的姿勢性低血壓：α 阻斷劑、利尿劑要特別小心</b>；' +
+      'AHA 也註明<b>嚴重症狀性姿勢性低血壓者，減鈉可能是禁忌</b>。' +
+      '量血壓時要加測站立 1 分鐘與 3 分鐘。');
+  }
+  if(F.obes){
+    go.push('<b>肥胖：減重 ≥5% 體重是 COR 1／LOE A</b>；AHA Table 12 給的幅度是<b>每減 1 kg 約降 1 mmHg</b>，' +
+      '已有高血壓者整體可降 <b>6–8 mmHg</b>。');
+  }
+  if(go.length){
+    html += htCard('rec-elective', '依共病的首選', '這些建議可以疊加，不是二選一', go,
+      '⚠ 只有勾選的共病會出現在這裡。沒有勾選不代表沒有建議。');
+  }
+
+  /* 通用禁忌與注意 */
+  if(k !== null && k >= 5.5){
+    avoid.push('<b>血鉀 ' + k + ' mmol/L：先排除假性高血鉀</b>（溶血、握拳、採血技術）。' +
+      'KDIGO 明文：高血鉀「<b>can often be managed by measures to reduce the serum potassium levels ' +
+      'rather than decreasing the dose or stopping RASi</b>」——<b>減量或停 RASi 排在所有措施都失敗之後</b>，不是第一步。');
+  }
+  if(avoid.length){
+    html += htCard('rec-urgent', '要避開或要小心的', '依你勾選的條件列出', avoid);
+  }
+
+  /* ── 7. 續發性高血壓篩檢 ── */
+  var pa = [];
+  if(F.resist) pa.push('<b>難治型高血壓</b>——AHA 2025 新條文：<b>不論有沒有低血鉀都要篩</b>（<b>COR 1／B-NR</b>）。');
+  if(F.hypok) pa.push('<b>低血鉀</b>（自發性或利尿劑引起）。');
+  if(F.osa) pa.push('<b>睡眠呼吸中止症</b>（本版新列入）。');
+  if(F.adrenal) pa.push('<b>意外發現的腎上腺腫瘤</b>。');
+  if(F.famhx) pa.push('<b>早發高血壓家族史，或 &lt;40 歲中風</b>。');
+  var stage2now = (osbp !== null && osbp >= 140) || (odbp !== null && odbp >= 90);
+  if(pa.length || stage2now){
+    var pai = [];
+    if(pa.length){
+      pai.push({hd:'本例符合 AHA 2025 <b>COR 1／C-EO</b> 的篩檢適應症'});
+      pa.forEach(function(x){ pai.push(x); });
+    }
+    if(stage2now && !pa.length){
+      pai.push({hd:'本例是 Stage 2 高血壓'});
+      pai.push('AHA 2025 新增：<b>Stage 2 高血壓「可考慮」篩檢原發性醛固酮症（COR 2b／C-EO）</b>——' +
+        '等於所有 ≥140/90 的病人都進入可考慮範圍。ESC 2024 給的是 Class IIa；' +
+        '<b>Endocrine Society 2025 更進一步建議「所有高血壓都篩」，但那只是 2 級弱建議、低度確定性</b>。' +
+        '三者強度不同，不要寫成「指引都要求全篩」。');
+    }
+    pai.push({hd:'⚠ 篩檢前不用停大部分降壓藥（這一條與舊教科書相反）'});
+    pai.push('AHA 2025 新條文（<b>COR 1／C-EO</b>）：<b>「continue most antihypertensive medications ' +
+      '(other than MRA) prior to initial screening」</b>——目的是不要讓停藥變成篩檢的障礙。' +
+      '<b>只有 MRA（spironolactone／eplerenone）要停至少 4 週。</b>');
+    pai.push('準備事項（supportive text）：<b>不限鹽</b>、把血鉀補到正常範圍（避免偽陰性）。' +
+      '真的需要停其他藥再驗時，可暫時換成<b>不干擾的藥：非 DHP CCB、血管擴張劑、周邊 α 阻斷劑，' +
+      '以及可能可用的 DHP CCB</b>，至少 <b>2–4 週</b>後再測。');
+    pai.push('⚠ <b>各類藥造成偽陽性還是偽陰性，方向常被寫反</b>：' +
+      '<b>乙型阻斷劑與中樞 α2 促效劑會壓低 renin → 偽陽性</b>；' +
+      '<b>MRA、利尿劑、ACEI、ARB、SGLT2i 會拉高 renin → 偽陰性</b>。' +
+      'SGLT2i 是近年才被列入需停 2 週的清單，臨床上最容易漏掉。');
+    pai.push('初步篩檢用 <b>血漿 aldosterone、renin activity 與兩者的比值（ARR）</b>（<b>COR 1／C-LD</b>）；' +
+      '陽性或持續懷疑（renin 被壓抑、器官損傷不成比例）就轉高血壓專科或內分泌科（<b>COR 1／C-EO</b>）。');
+    pai.push('⚠ <b>CKD 病人的 ARR 偽陽性偏多</b>（renin 隨腎元喪失下降、aldosterone 也可能升高）。');
+    html += htCard('rec-blue', '要不要查續發性高血壓', '原發性醛固酮症的篩檢範圍在 2025 版大幅擴大', pai,
+      '其他續發原因（腎動脈狹窄、嗜鉻細胞瘤、庫欣、主動脈狹窄、藥物引起）的鑑別在「特殊族群」分頁。');
+  }
+
+  /* ── 8. 難治型 ── */
+  if(F.resist){
+    html += htCard('rec-elective', '難治型高血壓的第四支藥', '先排除假性難治，再加 MRA', [
+      '<b>定義</b>（AHA 2025）：用<b>三種機轉互補的降壓藥、含一種利尿劑、皆已到最大可耐受劑量</b>仍未達標；' +
+        '<b>或</b>已達標但需要 <b>≥4 種</b>藥。以 &lt;130/80 為目標時，美國成人的盛行率約 <b>8.5–20%</b>。',
+      '<b>第一步不是加藥，是找原因</b>：AHA 2025 新條文（<b>COR 1／B-NR</b>）要求<b>更詳細地找續發原因，' +
+        '並逐項檢視所有用藥、把會升血壓的藥拿掉</b>。同時要確認順從性與排除白袍效應（用居家血壓）。',
+      '<b>加 MRA（spironolactone）</b>——AHA 2025 <b>COR 1／B-R</b>，' +
+        '前提是已經在「<b>ACEI 或 ARB ＋ CCB ＋ thiazide-like 利尿劑（chlorthalidone 或 indapamide）</b>」上，' +
+        '且 <b>eGFR ≥45</b>。ESC 2024 給的是 <b>Class IIa／B</b>。' +
+        '⚠ <b>台大的 thiazide-like 只有 Indapamide SR 1.5 mg 一個選擇</b>（沒有 chlorthalidone）。',
+      '<b>不能用或不耐受 MRA 時</b>（AHA <b>COR 2a／B-NR</b>）：可加 <b>amiloride、乙型阻斷劑、α 阻斷劑、' +
+        '中樞交感抑制劑、雙重內皮素受體拮抗劑，或直接血管擴張劑</b>其中之一。' +
+        '⚠ <b>台大沒有 amiloride</b>，而且<b>健保只給 Liddle 症候群且要事前審查</b>。',
+      'ESC 2024 的細節：<b>eplerenone 要 50–200 mg 才有降壓效果，25 mg 在統合分析中不降血壓</b>，' +
+        '而且作用時間比 spironolactone 短、治療高血壓時<b>可能要一天兩次</b>。' +
+        '若選乙型阻斷劑當第四線，<b>優先選血管擴張型（labetalol、carvedilol、nebivolol）</b>，' +
+        '但降壓效果<b>不如 spironolactone</b>。<b>minoxidil 只在所有藥都無效時才考慮</b>。',
+      '<b>腎去神經術（RDN）</b>：AHA 2025 <b>COR 2b／B-R</b>，且限 <b>診間 SBP 140–180 「且」 DBP ≥90、eGFR ≥40</b>' +
+        '——<b>單純收縮期高血壓不在適應範圍</b>。ESC 2024 給難治型 <b>IIb／B</b>、' +
+        '給「高風險但用不到三種藥」<b>IIb／A</b>（注意證據等級反而是後者較高）；' +
+        '<b>eGFR &lt;40 或續發性高血壓不建議（Class III）</b>。' +
+        '⚠ <b>台灣健保不給付 RDN。</b>',
+      '⚠ AHA 對 RDN 的兩條 <b>COR 1</b> 不是「做不做」，而是<b>「一定要多專科團隊評估」與「一定要共享決策」</b>。'
+    ], '「假性難治」（順從性不佳、白袍效應、量測方式錯誤、鹽攝取過量、NSAID／類固醇／口服避孕藥）是最常見的原因，' +
+       '在加第四支藥之前一定要先排除。');
+  }
+
+  /* ── 9. 台大與健保 ── */
+  var nh = [];
+  nh.push('<b>健保給付規定第 2 節沒有任何一條在限制 ACEI／ARB／CCB／thiazide／乙型阻斷劑的一般使用。</b>' +
+    '「健保規定 ACEI 不得與 ARB 併用」在給付規定全文中<b>查無此條文</b>——那是<b>指引</b>的禁令（AHA COR 3: Harm／A）。');
+  nh.push('<b>台大 thiazide 類只有 trichlormethiazide 2 mg 與 indapamide SR 1.5 mg</b>；' +
+    '<b>沒有 HCTZ 單方、沒有 chlorthalidone</b>。⚠ <b>trichlormethiazide 不在 AHA Table 13 內</b>' +
+    '（非 FDA 核准品項），指引沒有評估過它，不能當成「指引建議的 thiazide-type」。');
+  nh.push('⚠ 全台灣 <b>chlorthalidone 單方只剩 1 個現行健保品項</b>（HYGROTON 50 mg）——' +
+    '歐美「優先用 chlorthalidone」的建議在台灣實務上幾乎做不到。' +
+    '<b>台灣 2022 指引本身也沒有偏好 chlorthalidone 的條文。</b>');
+  if(F.hfref || F.hfpef){
+    nh.push('<b>Sacubitril/valsartan（Entresto）在台灣不是降壓藥</b>：TFDA 仿單適應症只有心臟衰竭' +
+      '（全份仿單「高血壓」出現 0 次），健保 2.14 也只給心衰竭且條件嚴格。');
+    nh.push('<b>Eplerenone 健保只給「對 spironolactone 不耐受」的 MI 後心衰竭，或 NYHA ≥II 且 LVEF ≤30%</b>' +
+      '——注意這個 30% 比 Entresto 的 35% 還嚴。<b>用於高血壓不給付。</b>');
+  }
+  if(F.dm || CKD){
+    nh.push('<b>Finerenone 有台灣藥證但健保 0 品項、全自費</b>，而且<b>藥證適應症是第二型糖尿病相關 CKD、不是高血壓</b>。' +
+      'KDIGO 引用 FIDELIO 時也明說它<b>對血壓的作用 modest</b>——它不是降壓藥。');
+  }
+  html += htCard('rec-blue', '台大與健保', '開藥前先確認院內有沒有、健保給不給', nh,
+    '完整條文與院內外品項對照在「健保與台大」分頁。');
+
+  out.innerHTML = html;
+}
+
+(function init(){
+  var h = (location.hash || '').replace('#','');
+  if(document.getElementById('p-' + h)) htTab(h);
+  htCalc();
+  upCalc();
+  ivCalc();
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) { console.warn('SW 註冊失敗:', e); });
+    });
+  }
+</script>
+</body>
+</html>

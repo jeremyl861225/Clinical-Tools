@@ -195,6 +195,7 @@ const PRECACHE_URLS = [
   './pathways/acute-limb-ischemia.html',
   './pathways/seizure.html',
   './pathways/hepatitis-b.html',
+  './pathways/hypertension.html',
   './tools/emergency-surgery.html',
   './tools/abg.html',
   './tools/air.html',
