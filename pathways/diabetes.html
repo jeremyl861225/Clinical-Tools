@@ -25,6 +25,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/antibiotics.css">
+<link rel="stylesheet" href="../css/drug-database.css">
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
@@ -157,6 +159,13 @@
   .def-table td{line-height:1.7;}
   .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
   .nw{white-space:nowrap;}
+  /* 六段亮燈：ADA Table 9.2 的效力值實際出現六種
+     （Low／Intermediate／Intermediate to high／High／High to very high／Very high），
+     四格的 .risk-band 表達不完。作法是沿用 .risk-band 的**顏色**（全站既有、造句設計已收），
+     只把它的 ::before 那四格關掉，改用六個字元當內容。
+     這個修飾類別只碰 content 與字距，不碰任何顏色。 */
+  .risk-band.dm-lamp{letter-spacing:.16em; padding:3px 8px; font-size:12px;}
+  .risk-band.dm-lamp::before{content:none;}
   /* 長標籤的連結：.pmid 本身帶 white-space:nowrap（原本是給「PMID 12345678」用的），
      拿來當藥卡連結時標籤很長，會把 grid 的 1fr 軌道 min-content 撐大而溢出容器。
      這裡只改 white-space，不碰顏色。 */
@@ -304,6 +313,9 @@
   </div>
 
   <div class="dm-out" id="dm_out"></div>
+
+  <!-- 上面「優先考慮」那張卡點到的藥，即時展開台大藥卡（沿用癌症治療頁的同一套元件） -->
+  <div id="dm_drugs" class="hidden"></div>
 
   <div class="dirhead"><span class="dh-n">不看共病時的四步邏輯</span><span class="dh-e">ADA 2026 Section 9</span></div>
   <div class="steps">
@@ -463,33 +475,33 @@
       </tr></thead>
       <tbody>
         <tr><td><b>Metformin</b></td>
-            <td><span class="risk-band b2">High</span></td><td>No</td><td>Neutral<br>（可能微降）</td>
+            <td><span class="risk-band dm-lamp b2" title="ADA Table 9.2：High" aria-label="High">▮▮▮▮▯▯</span></td><td>No</td><td>Neutral<br>（可能微降）</td>
             <td>Potential benefit</td><td>Neutral</td><td>Neutral</td><td>Neutral</td></tr>
         <tr><td><b>SGLT2 inhibitors</b></td>
-            <td><span class="risk-band b2">Intermediate to high</span></td><td>No</td><td>Loss<br>（intermediate）</td>
+            <td><span class="risk-band dm-lamp b1" title="ADA Table 9.2：Intermediate to high" aria-label="Intermediate to high">▮▮▮▯▯▯</span></td><td>No</td><td>Loss<br>（intermediate）</td>
             <td>Benefit：<br>cana、empa</td><td>Benefit：<br>cana、dapa、empa、ertu</td>
             <td>Benefit：<br>cana、empa、dapa</td><td><b>Unknown</b></td></tr>
         <tr><td><b>GLP-1 RAs</b></td>
-            <td><span class="risk-band b3">High to very high</span></td><td>No</td><td>Loss<br>（intermediate<br>to very high）</td>
+            <td><span class="risk-band dm-lamp b3" title="ADA Table 9.2：High to very high" aria-label="High to very high">▮▮▮▮▮▯</span></td><td>No</td><td>Loss<br>（intermediate<br>to very high）</td>
             <td>Benefit：<br>dula、lira、sema<br><span class="nw">Neutral：exenatide QW、lixi</span></td>
             <td>Benefit：<br>sema（SQ）</td>
             <td>Benefit（CVOT 腎終點，<br>主要由白蛋白尿帶動）<br>sema（SQ）有 CKD 進展實證</td>
             <td>Benefit：<br>sema（SQ）</td></tr>
         <tr><td><b>Dual GIP and GLP-1 RA</b><br>tirzepatide</td>
-            <td><span class="risk-band b3">Very high</span></td><td>No</td><td>Loss<br>（very high）</td>
+            <td><span class="risk-band dm-lamp b3" title="ADA Table 9.2：Very high" aria-label="Very high">▮▮▮▮▮▮</span></td><td>No</td><td>Loss<br>（very high）</td>
             <td><b>Under<br>investigation</b></td><td>Benefit：<br>tirzepatide</td>
             <td>Potential benefit</td><td>Potential benefit</td></tr>
         <tr><td><b>DPP-4 inhibitors</b></td>
-            <td><span class="risk-band b1">Intermediate</span></td><td>No</td><td>Neutral</td>
+            <td><span class="risk-band dm-lamp b0" title="ADA Table 9.2：Intermediate" aria-label="Intermediate">▮▮▯▯▯▯</span></td><td>No</td><td>Neutral</td>
             <td>Neutral</td><td>Neutral<br><b>（potential risk：<br>saxagliptin）</b></td><td>Neutral</td><td>Unknown</td></tr>
         <tr><td><b>Pioglitazone</b></td>
-            <td><span class="risk-band b2">High</span></td><td>No</td><td>Gain</td>
+            <td><span class="risk-band dm-lamp b2" title="ADA Table 9.2：High" aria-label="High">▮▮▮▮▯▯</span></td><td>No</td><td>Gain</td>
             <td>Potential benefit</td><td><b>Increased risk</b></td><td>Neutral</td><td><b>Potential benefit</b></td></tr>
         <tr><td><b>Sulfonylureas</b><br>2nd generation</td>
-            <td><span class="risk-band b2">High</span></td><td><b>Yes</b></td><td>Gain</td>
+            <td><span class="risk-band dm-lamp b2" title="ADA Table 9.2：High" aria-label="High">▮▮▮▮▯▯</span></td><td><b>Yes</b></td><td>Gain</td>
             <td>Neutral</td><td>Neutral</td><td>Neutral</td><td>Unknown</td></tr>
         <tr><td><b>Insulin</b><br>human ＆ analogs</td>
-            <td><span class="risk-band b3">High to very high</span></td><td><b>Yes</b></td><td>Gain</td>
+            <td><span class="risk-band dm-lamp b3" title="ADA Table 9.2：High to very high" aria-label="High to very high">▮▮▮▮▮▯</span></td><td><b>Yes</b></td><td>Gain</td>
             <td>Neutral</td><td>Neutral</td><td>Neutral</td><td>Unknown</td></tr>
       </tbody>
     </table>
@@ -498,8 +510,13 @@
     <b>整張表逐格取自 ADA 2026 Table 9.2 原文</b>（效力欄依據 Tsapas 2020
     <a href="https://pubmed.ncbi.nlm.nih.gov/32598218/" target="_blank" rel="noopener" class="pmid">PMID 32598218</a>，
     體重欄依據 Tsapas 2021 <a href="https://pubmed.ncbi.nlm.nih.gov/34047443/" target="_blank" rel="noopener" class="pmid">PMID 34047443</a>）。
-    效力燈 ▮▯▯▯／▮▮▯▯／▮▮▮▯／▮▮▮▮ 對應 Low／Intermediate／High／Very high；
-    <b>跨兩級的（Intermediate to high、High to very high）以「上緣」點亮</b>，實際字樣以格內為準。<br>
+    <b>效力燈是六段的</b>，因為 ADA 這一欄實際出現六種值——燈數本身就是刻度，不另寫字：<br>
+    <span class="nw">▮▮▯▯▯▯ Intermediate</span>　
+    <span class="nw">▮▮▮▯▯▯ Intermediate to high</span>　
+    <span class="nw">▮▮▮▮▯▯ High</span>　
+    <span class="nw">▮▮▮▮▮▯ High to very high</span>　
+    <span class="nw">▮▮▮▮▮▮ Very high</span>
+    （最低的 ▮▯▯▯▯▯ 是 Low，本表沒有藥落在這一格）。<b>滑過或長按燈號會顯示原文字樣。</b><br>
     <b>⚠ Meglitinides 與 α-glucosidase inhibitors 不在 ADA 2026 Table 9.2 之內</b>，
     所以本表沒有這兩列——它們的資料見下方各自的段落，<b>不要拿別處的數字硬填進這張表。</b><br>
     <b>⚠ 心腎效益是「逐藥」不是「逐類」。</b>ADA 原文點名到藥：MACE 有益的 SGLT2i 只有
@@ -534,33 +551,76 @@
   </div>
 
   <div class="dirhead"><span class="dh-n">SGLT2 Inhibitors</span><span class="dh-e">Gliflozins</span></div>
-
-  <div class="tw">
-    <table class="def-table dt-wrap" style="min-width:700px;">
-      <thead><tr><th>藥</th><th>台大品項／劑量</th><th>控糖不建議</th><th>心腎起始下限</th><th>跌破下限後</th></tr></thead>
-      <tbody>
-        <tr><td><b>Dapagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid lw">福適佳 Forxiga 10 mg</a><br>控糖 5→10 mg QD；心腎一律 10 mg QD</td>
-            <td>eGFR <b>&lt;45</b></td><td>eGFR <b>&lt;25</b> 不建議起始</td><td><b>可續用 10 mg</b></td></tr>
-        <tr><td><b>Empagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid lw">恩排糖 Jardiance 10 mg</a><br>控糖 10→25 mg；心腎固定 10 mg QD，早上服</td>
-            <td>eGFR <b>&lt;30</b></td><td>試驗入組 <b>≥20</b>；&lt;20 資料不足</td><td>試驗中<b>不需停藥</b></td></tr>
-        <tr><td><b>Canagliflozin</b></td>
-            <td><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid lw">可拿糖 Canaglu 100 mg</a><br>100 mg QD 第一餐前；eGFR ≥60 可到 300 mg</td>
-            <td>eGFR <b>&lt;30</b></td><td>eGFR <b>&lt;30</b> 不建議起始<br><b>30–&lt;60 上限 100 mg</b></td>
-            <td>僅限<b>尿蛋白 &gt;300 mg/day</b> 可續 100 mg</td></tr>
-      </tbody>
-    </table>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Dapagliflozin</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=FOR4LB99" class="pmid lw">福適佳 Forxiga 10 mg</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li">控糖：起始 <b>5 mg QD</b>，可加到 10 mg QD</span>
+        <span class="dm-li">心腎適應症：<b>一律 10 mg QD</b></span></dd>
+      <dt>腎</dt><dd>
+        <span class="dm-li"><b>控糖</b>　eGFR <b>&lt;45 不建議</b></span>
+        <span class="dm-li"><b>心腎</b>　eGFR <b>&lt;25 不建議起始</b></span></dd>
+      <dt>續用</dt><dd><b>可續用 10 mg</b>——仿單原文寫的是
+        「若治療中 eGFR 掉到 25 以下，<b>patients may continue</b> FARXIGA 10 mg 每日一次，
+        以降低 eGFR 下降、末期腎病、心血管死亡與心衰竭住院的風險」。</dd>
+      <dt>肝</dt><dd>嚴重肝功能不全起始要小心（未經研究）</dd>
+    </dl>
   </div>
-  <div class="lead" style="margin-top:-4px;">
-    指引統一寫 <b>eGFR ≥20 可起始</b>（ADA 11.7a A、KDIGO 2022 1A、ESC Table 24 I A、DAROC 2024 DKD），
-    <b>三個藥的仿單門檻各不相同而且更保守</b>。<br>
-    <b>複方不可套用單方門檻</b>：Glyxambi（empagliflozin 25＋linagliptin 5）台大藥卡 eGFR &lt;30 不建議；
-    Qtern（saxagliptin 5＋dapagliflozin 10）台大藥卡 <b>eGFR &lt;45 禁忌</b>（因為 saxagliptin 那一半）。
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Empagliflozin</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=JAR4LB97" class="pmid lw">恩排糖 Jardiance 10 mg</a>
+        （台大另有 25 mg，但<b>健保 2.16 只收 10 mg</b>）</dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li">控糖：起始 <b>10 mg QD</b>，可加到 25 mg QD</span>
+        <span class="dm-li">心腎適應症：<b>固定 10 mg QD，早上服</b></span></dd>
+      <dt>腎</dt><dd>
+        <span class="dm-li"><b>控糖</b>　eGFR <b>&lt;30 不建議</b></span>
+        <span class="dm-li"><b>心腎</b>　試驗入組下限 <b>eGFR ≥20</b></span></dd>
+      <dt>續用</dt><dd><b>⚠ 仿單沒有寫「可續用」。</b>它寫的是兩件事：
+        <span class="dm-li">①「<b>eGFR &lt;20 的資料不足以支持劑量建議</b>」</span>
+        <span class="dm-li">②「EMPA-REG OUTCOME、EMPEROR-Reduced、EMPEROR-Preserved、EMPA-KIDNEY
+          四個試驗中，已收案的成人<b>並未被要求</b>因 eGFR 惡化到 20 以下而停藥」</span>
+        <span class="dm-li"><b>②是在陳述試驗怎麼做的，不是仿單在建議你可以續用</b>——
+          這就是本頁要標「試驗」兩個字的理由。</span></dd>
+      <dt>肝</dt><dd>不需調整</dd>
+      <dt>手術</dt><dd>仿單：<b>大手術或長時間禁食前至少停 3 天</b></dd>
+    </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Canagliflozin</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=CAN4LBA4" class="pmid lw">可拿糖 Canaglu 100 mg</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li"><b>100 mg QD，當天第一餐前</b></span>
+        <span class="dm-li">eGFR ≥60 且耐受良好可加到 <b>300 mg QD</b></span></dd>
+      <dt>腎</dt><dd>
+        <span class="dm-li"><b>eGFR 30–&lt;60</b>　<b>上限 100 mg</b></span>
+        <span class="dm-li"><b>eGFR &lt;30</b>　控糖不建議；<b>不建議起始</b></span></dd>
+      <dt>續用</dt><dd>仿單同樣是 <b>may continue</b>，但<b>附條件</b>——
+        <b>限尿蛋白 &gt;300 mg/day</b> 者可續用 100 mg</dd>
+      <dt>肝</dt><dd><b>Child-Pugh C 不建議使用</b>（未經研究）</dd>
+    </dl>
   </div>
 
   <div class="kbox alert dm-rx">
-    <div class="kbox-t">SGLT2i 的特有不良反應</div>
+    <div class="kbox-t">這一類共同要注意</div>
+    <span class="dm-li"><b>指引門檻統一、仿單門檻各不相同。</b>指引一律寫 <b>eGFR ≥20 可起始</b>
+      （ADA 11.7a A、KDIGO 2022 1A、ESC Table 24 I A、DAROC 2024 DKD），
+      但三支的仿單都更保守。<b>被質疑時能拿出來的是仿單那一句。</b></span>
+    <span class="dm-li"><b>「跌破下限後」三張仿單的用字強度不一樣</b>：
+      dapagliflozin 與 canagliflozin 是 <b>may continue</b>（後者附蛋白尿條件）；
+      <b>empagliflozin 只是陳述試驗事實</b>。</span>
+    <span class="dm-li"><b>複方不可套用單方門檻。</b>Glyxambi（empagliflozin 25＋linagliptin 5）
+      台大藥卡 eGFR &lt;30 不建議；Qtern（saxagliptin 5＋dapagliflozin 10）台大藥卡
+      <b>eGFR &lt;45 禁忌</b>（因為 saxagliptin 那一半）。</span>
+    <span class="dm-li"><b>控糖效果從 eGFR &lt;45 開始明顯下降</b>（ADA 原文：minimal），
+      但<b>心腎保護的理由不受影響</b>。</span>
+
+    <span class="dm-li" style="margin-top:8px;"><b>—— 特有不良反應 ——</b></span>
     <span class="dm-li"><b>① 生殖泌尿道黴菌感染</b>　最常見。ADA 提醒<b>起始前後都要問尿失禁症狀</b>，長者尤其。</span>
     <span class="dm-li"><b>② Fournier 壞死性筋膜炎</b>　罕見但致命。會陰部疼痛紅腫發燒要立刻想到。</span>
     <span class="dm-li"><b>③ 正常血糖酮酸中毒</b>　<b>血糖可以 &lt;200 mg/dL，靠血糖篩不出來。</b></span>
@@ -571,43 +631,78 @@
     <span class="dm-li"><b>⑥ 腎移植受贈者不適用</b>上述建議（KDIGO PP 1.3.7；DAROC 2024 DKD 同旨）。</span>
   </div>
 
-  <div class="dirhead"><span class="dh-n">GLP-1 RA &amp; GIP/GLP-1 RA</span><span class="dh-e">Incretin-based therapy</span></div>
 
-  <div class="tw">
-    <table class="def-table dt-wrap" style="min-width:680px;">
-      <thead><tr><th>藥</th><th>台大品項</th><th>起始與升階</th><th>腎／肝</th><th>健保</th></tr></thead>
-      <tbody>
-        <tr><td><b>Semaglutide</b><br>針劑</td>
-            <td><a href="../tools/drug-database.html#code=OZE1LBB0" class="pmid lw">胰妥讚 Ozempic</a></td>
-            <td>0.25 mg QW × 4 週 → 0.5 mg QW<br>再 ≥4 週可到 1 mg QW；與進食無關</td>
-            <td>皆不需調整</td><td>有給付</td></tr>
-        <tr><td><b>Semaglutide</b><br>口服</td>
-            <td><a href="../tools/drug-database.html#code=RYB4LBB7" class="pmid lw">瑞倍適 Rybelsus 7 mg</a></td>
-            <td>7 mg QD，30 天後可到 14 mg<br><b>服法有嚴格規定，見下</b></td>
-            <td>皆不需調整</td><td><b>無給付</b></td></tr>
-        <tr><td><b>Dulaglutide</b></td>
-            <td><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid lw">易週糖 Trulicity 1.5 mg</a><br><b>台大標「暫供兒童」</b></td>
-            <td>SC，最高 1.5 mg QW</td><td>皆不需調整</td><td>有給付</td></tr>
-        <tr><td><b>Tirzepatide</b></td>
-            <td><a href="../tools/drug-database.html#code=MOU1LBB9" class="pmid lw">猛健樂 Mounjaro</a></td>
-            <td><b>2.5 mg QW × 4 週（此劑量無治療效果，純耐受期）</b><br>→ 5 mg QW；每 4 週加 2.5 mg；最高 15 mg</td>
-            <td>皆不需調整</td><td><b>無給付</b><br>自費約 9,500 元／支</td></tr>
-        <tr><td><b>Lixisenatide</b></td>
-            <td>只有複方 <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">爽胰達 Soliqua</a></td>
-            <td>見「胰島素」分頁</td>
-            <td><b>eGFR ≤30 應避免</b></td><td>有給付</td></tr>
-      </tbody>
-    </table>
+  <div class="dirhead"><span class="dh-n">GLP-1 RA &amp; GIP/GLP-1 RA</span><span class="dh-e">Incretin-based therapy</span></div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Semaglutide（針劑）</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=OZE1LBB0" class="pmid lw">胰妥讚 Ozempic</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li"><b>0.25 mg QW × 4 週</b>（耐受期）</span>
+        <span class="dm-li">→ <b>0.5 mg QW</b>；再至少 4 週後可加到 <b>1 mg QW</b></span>
+        <span class="dm-li">每週固定一天，<b>任何時間、與進食無關</b></span></dd>
+      <dt>腎肝</dt><dd>皆<b>不需調整</b></dd>
+      <dt>實證</dt><dd>SUSTAIN-6（心血管）、<b>FLOW（腎臟，HR 0.76）</b>；
+        <b>ESSENCE 三期使 semaglutide 成為唯一取得 FDA MASH 適應症的降糖藥</b></dd>
+      <dt>健保</dt><dd>有給付（A1c &gt;8.5% ＋ 前置用藥 6 個月；<b>不得與 DPP-4i、SGLT-2i 併用</b>）</dd>
+    </dl>
   </div>
 
   <div class="kbox dm-rx">
-    <div class="kbox-t">Oral semaglutide 的服法</div>
-    DAROC 2022 逐字：<b>「配少量的水（最多半杯，約 120 毫升）整顆吞服；服藥後等待至少 30 分鐘再進食、喝水或服用其他口服藥」</b>。<br>
-    起始劑量 DAROC 寫 3 mg 一個月 → 7 mg →（必要時）14 mg；<b>台大品項是 7 mg 起</b>，以院內為準。
+    <div class="kbox-t">Semaglutide（口服）</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=RYB4LBB7" class="pmid lw">瑞倍適 Rybelsus 7 mg</a></dd>
+      <dt>劑量</dt><dd>7 mg QD，30 天後可加到 14 mg QD（DAROC 寫 3 mg 起，<b>台大品項是 7 mg 起</b>）</dd>
+      <dt>⚠ 服法</dt><dd>DAROC 2022 逐字：<b>「配少量的水（最多半杯，約 120 毫升）整顆吞服；
+        服藥後等待至少 30 分鐘再進食、喝水或服用其他口服藥」</b>。這一條病人最常做錯。</dd>
+      <dt>腎肝</dt><dd>皆不需調整</dd>
+      <dt>健保</dt><dd><b>無給付</b>（台大自費約每顆 149 元）</dd>
+    </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Dulaglutide</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=TRU1LBA0" class="pmid lw">易週糖 Trulicity 1.5 mg</a>
+        <b>——台大目前標「暫供兒童」，成人開立前先確認院內供應</b></dd>
+      <dt>劑量</dt><dd>SC 每週一次，<b>台大品項最高 1.5 mg QW</b></dd>
+      <dt>腎肝</dt><dd>皆不需調整</dd>
+      <dt>實證</dt><dd>REWIND（心血管，多數為初級預防，HR 0.88）</dd>
+      <dt>健保</dt><dd>有給付（條件同 Ozempic）</dd>
+    </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Tirzepatide（GIP／GLP-1 雙促效劑）</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd><a href="../tools/drug-database.html#code=MOU1LBB9" class="pmid lw">猛健樂 Mounjaro</a></dd>
+      <dt>劑量</dt><dd>
+        <span class="dm-li"><b>2.5 mg QW × 4 週</b>——<b>仿單明講這個劑量沒有治療效果，純粹是耐受期</b></span>
+        <span class="dm-li">→ <b>5 mg QW</b>；之後每 4 週可增 <b>2.5 mg</b></span>
+        <span class="dm-li"><b>最高 15 mg QW</b></span></dd>
+      <dt>腎肝</dt><dd>皆不需調整</dd>
+      <dt>實證</dt><dd><b>SURPASS-CVOT 只達非劣性</b>（vs dulaglutide，優效 P=0.09 未達）；
+        SUMMIT（HFpEF＋肥胖，HR 0.62）；SURPASS-2 降 A1C 與體重優於 semaglutide 1 mg</dd>
+      <dt>健保</dt><dd><b>無給付</b>（台大自費約每支 9,500 元）</dd>
+    </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">Lixisenatide（只有複方）</div>
+    <dl class="dm-kv">
+      <dt>台大</dt><dd>沒有單方；只有
+        <a href="../tools/drug-database.html#code=SOL1LBB2" class="pmid lw">爽胰達 Soliqua</a>
+        （insulin glargine ＋ lixisenatide 固定比例複方）</dd>
+      <dt>劑量</dt><dd>見<b>「胰島素」分頁</b>的固定比例複方段落</dd>
+      <dt>腎</dt><dd><b>⚠ eGFR ≤30 應避免</b>（ADA 2026 內文；它倚賴腎臟排除）</dd>
+      <dt>心血管</dt><dd>ELIXA 為<b>中性</b>——ADA Table 9.2 把 lixisenatide 與 exenatide 週劑型
+        列在 GLP-1 RA 裡的 <b>Neutral</b> 那一組，不是有益那一組</dd>
+      <dt>健保</dt><dd>有給付，門檻是 <b>A1c &gt;8.0%</b>（比其他 GLP-1 RA 的 8.5% 低）</dd>
+    </dl>
   </div>
 
   <div class="kbox alert dm-rx">
-    <div class="kbox-t">GLP-1 類的四件事</div>
+    <div class="kbox-t">這一類共同要注意</div>
     <span class="dm-li"><b>① 腸胃道副作用是主要限制。</b>ADA 承認降糖效力與基礎胰島素相當或更好，
       「albeit with <b>greater gastrointestinal side effects</b>」。處理方式是<b>放慢升階節奏</b>。</span>
     <span class="dm-li"><b>② 甲狀腺髓質癌／MEN2 家族史是禁忌</b>（美國仿單黑框警語）。</span>
@@ -639,16 +734,15 @@
     </dl>
   </div>
   <div class="kbox alert dm-rx">
-    <div class="kbox-t">心衰竭：三家講法不同，不要合併</div>
+    <div class="kbox-t">這一類共同要注意</div>
+    <span class="dm-li"><b>—— 心衰竭：三家講法不同，不要合併 ——</b></span>
     <span class="dm-li"><b>Saxagliptin</b>　ESC 2023 <b>Class III B（不建議）</b>；仿單有心衰竭警語
       （SAVOR-TIMI 53，HR 1.27, 1.07–1.51）。<b>台大的 Qtern 複方含 saxagliptin，要一起算。</b></span>
     <span class="dm-li"><b>Alogliptin</b>　ADA 認為 EXAMINE <b>未達顯著</b>；ESC <b>未</b>列 Class III；
       <b>但 FDA 仿單仍帶心衰竭警語</b>（3.9% vs 3.3%）。
       <b>不要寫成「禁用」，也不要寫成「安全」。</b></span>
     <span class="dm-li"><b>Sitagliptin／Linagliptin</b>　TECOS、CARMELINA 未增加，ESC <b>IIa A（可考慮）</b>。</span>
-  </div>
-  <div class="kbox dm-rx">
-    <div class="kbox-t">其他重點</div>
+
     <span class="dm-li"><b>特有不良反應</b>：類天疱瘡（bullous pemphigoid）、嚴重關節痛、急性胰臟炎。</span>
     <span class="dm-li"><b>定位</b>：開始強化胰島素時應<b>限制或停用</b>（9.23 A 內文）——沒有額外的心腎體重肝好處。
       GRADE 試驗中 sitagliptin 是四組裡<b>最不能維持 A1C &lt;7%</b> 的。</span>
@@ -2310,6 +2404,7 @@ function dmCalc(){
     out.innerHTML = dmCard('rec-idle', '尚未選擇', '點上面的條件，這裡會列出建議',
       ['共病可以複選——一個病人同時有 ASCVD、CKD 與 HFpEF 是常態，三條線的建議會一起列出。',
        'eGFR、UACR、HbA1c、血鉀留空就不做該項判斷。']);
+    dmRenderDrugs();
     return;
   }
 
@@ -2318,7 +2413,7 @@ function dmCalc(){
 
   /* ── 紅旗：先確認診斷 ── */
   if(F.t1d){
-    html += dmCard('rec-urgent', '先確認診斷', '疑似第 1 型：不要套第 2 型的選藥邏輯', [
+    html += dmCard('rec-urgent dm-rx-src', '先確認診斷', '疑似第 1 型：不要套第 2 型的選藥邏輯', [
       '<b>胰島素是必要的，不是選項之一。</b>第 1 型中斷胰島素會很快進展為酮症與 DKA。',
       '<b>先驗 GAD 抗體</b>；陰性再驗 IA-2 和／或 ZnT8。⚠ <b>&lt;35 歲且沒有第 2 型特徵者，抗體陰性也不改變第 1 型的診斷</b>——5–10% 的第 1 型沒有抗體。<b>肥胖不能作為排除的理由。</b>',
       'C-peptide <b>只有正在用胰島素的人才需要驗</b>；<b>停胰島素之前一定要先驗</b>；<b>高血糖急症後兩週內不要驗</b>。',
@@ -2329,7 +2424,7 @@ function dmCalc(){
 
   var severe = F.severe || (a1c !== null && a1c > 10);
   if(severe){
-    html += dmCard('rec-urgent', '先處理高血糖', '符合「胰島素當第一支針」的條件', [
+    html += dmCard('rec-urgent dm-rx-src', '先處理高血糖', '符合「胰島素當第一支針」的條件', [
       'ADA <b>9.20（E）</b>：有高血糖症狀、<b>A1C &gt;10%</b>、<b>血糖 ≥300 mg/dL</b>，或有分解代謝徵象（非預期體重下降、高三酸甘油酯、酮症）→ <b>不論目前用什麼藥、病程多久，都應考慮開始胰島素</b>。',
       '基礎胰島素起始 <b>10 U/day 或 0.1–0.2 U/kg/day</b>；每 3 天加 2 units 調到空腹血糖達標。',
       '<b>糖毒性解除之後可以簡化方案、甚至改回非胰島素藥</b>（ADA 原文）。',
@@ -2687,6 +2782,106 @@ function dmCalc(){
     '依 <b>115.07.23 版</b>藥品給付規定（第 5 節 5.1）與 <b>115.05.22 版</b>（第 2 節 2.16）。健保規定會改版，用之前請至健保署官網確認。');
 
   out.innerHTML = html;
+  dmRenderDrugs();
+}
+
+/* ── 建議用到的藥 → 台大藥卡 ──────────────────────────────────────────
+   作法與 tools/cancer.html 的流程圖相同：借 js/drug-database.js 的
+   cardBody()／loadPid()，卡片本體與外觀照都由那支負責，本頁只決定「列哪幾張」。
+
+   刻意只掃「優先考慮」那一張卡（.rec-elective）：
+   其餘三張卡講的是「要避開什麼」「腎功能門檻」「健保給不給付」，
+   把那裡提到的藥也拉出藥卡，等於把「不要用的藥」擺在建議底下，容易看反。
+
+   每一筆是 [pid, 八碼, 商品名, 學名]；pid 一律 12（台大分類 X. 內分泌與代謝）。 */
+var DM_DRUGS = [
+  { re: 'metformin|雙胍', cards: [
+      [12, 'GLU4LB32', '庫魯化錠 Glucophage 850 mg', 'Metformin'],
+      [12, 'LOD4LB57', '伏糖膜衣錠 Loditon 500 mg', 'Metformin'] ] },
+  { re: 'SGLT2|SGLT-2|dapagliflozin|empagliflozin|canagliflozin', cards: [
+      [12, 'FOR4LB99', '福適佳 Forxiga 10 mg', 'Dapagliflozin'],
+      [12, 'JAR4LB97', '恩排糖 Jardiance 10 mg', 'Empagliflozin'],
+      [12, 'CAN4LBA4', '可拿糖 Canaglu 100 mg', 'Canagliflozin'] ] },
+  { re: 'GLP-1|semaglutide|dulaglutide', cards: [
+      [12, 'OZE1LBB0', '胰妥讚 Ozempic 0.25–0.5 mg', 'Semaglutide（針劑）'],
+      [12, 'RYB4LBB7', '瑞倍適 Rybelsus 7 mg', 'Semaglutide（口服）'],
+      [12, 'TRU1LBA0', '易週糖 Trulicity 1.5 mg', 'Dulaglutide'] ] },
+  { re: 'tirzepatide|GIP', cards: [
+      [12, 'MOU1LBB9', '猛健樂 Mounjaro', 'Tirzepatide'] ] },
+  { re: 'DPP-4|linagliptin|sitagliptin', cards: [
+      [12, 'TRA4LB89', '糖漸平 Trajenta 5 mg', 'Linagliptin'],
+      [12, 'JAN4LB71', '佳糖維 Januvia 100 mg', 'Sitagliptin'] ] },
+  { re: 'pioglitazone|TZD', cards: [
+      [12, 'AC 4LB42', '愛妥糖 Actos 30 mg', 'Pioglitazone'] ] },
+  { re: '磺醯脲|sulfonylurea|glimepiride|gliclazide|gliquidone', cards: [
+      [12, 'AMA4LB13', '瑪爾胰 Amaryl 2 mg', 'Glimepiride'],
+      [12, 'DIA4LB59', '岱蜜克龍 Diamicron MR 30 mg', 'Gliclazide MR'],
+      [12, 'GLN4LB36', '優糖錠 Glunormal 30 mg', 'Gliquidone'] ] },
+  { re: 'glinide|repaglinide', cards: [
+      [12, 'REP4LB06', '柔醣錠 Repaglinide 1 mg', 'Repaglinide'] ] },
+  { re: 'acarbose|glucosidase', cards: [
+      [12, 'GLU4LB44', '醣祿錠 Glucobay 50 mg', 'Acarbose'],
+      [12, 'CAR4LB44', '糖利平錠 Carlipin 50 mg', 'Acarbose'] ] },
+  { re: '胰島素|insulin', cards: [
+      [12, 'TOU1LBA1', '糖德仕 Toujeo U-300', 'Insulin glargine（超長效）'],
+      [12, 'TRE1LBA6', '諾胰保 Tresiba', 'Insulin degludec（超長效）'],
+      [12, 'LEV1LB10', '瑞和密爾 Levemir', 'Insulin detemir（長效）'],
+      [12, 'HUM1LB05', '優泌林 Humulin N', 'Isophane / NPH（中效）'],
+      [12, 'NO 1LB65', '諾和瑞 NovoRapid FlexPen', 'Insulin aspart（速效）'],
+      [12, 'HUM1LB94', '優泌樂 Humalog KwikPen', 'Insulin lispro（速效）'],
+      [12, 'ACT1LB04', '愛速 Actrapid HM', 'Insulin regular（短效）'],
+      [12, 'SOL1LBB2', '爽胰達 Soliqua', 'Insulin glargine ＋ lixisenatide'] ] }
+];
+
+var dmDrugSig = '';
+
+function dmCardHTML(c) {
+  return '<details class="drugcard" id="dm-drug-' + c[1].replace(/ /g, '_') + '"' +
+    ' data-pid="' + c[0] + '" data-code="' + c[1] + '" ontoggle="onCardToggle(this)">' +
+    '<summary><span class="dc-name">' + c[2] + '</span>' +
+    '<span class="dc-nameen">' + c[3] + '</span></summary>' +
+    '<div class="dc-body"><div class="db-loading">載入中…</div></div></details>';
+}
+
+function dmRenderDrugs() {
+  var box = document.getElementById('dm_drugs');
+  if (!box) return;
+  var out = document.getElementById('dm_out');
+  var txt = '';
+  /* 只掃建議條列本身（ul.rec-detail > li），不掃卡片註腳 .rec-note——
+     註腳那句「with or without metformin use」會把 metformin 拉出來，
+     但那是在講「不必先讓 metformin 失敗」，不是在建議開它。 */
+  if (out) out.querySelectorAll('.flow-rec.rec-elective ul.rec-detail > li, .flow-rec.dm-rx-src ul.rec-detail > li').forEach(function (li) {
+    txt += li.textContent + '\n';
+  });
+
+  var picked = [];
+  DM_DRUGS.forEach(function (d) {
+    if (new RegExp(d.re, 'i').test(txt)) picked.push(d);
+  });
+
+  var sig = picked.map(function (d) { return d.re; }).join('|');
+  if (sig === dmDrugSig) return;      // 集合沒變就不重畫，保住已經展開的卡
+  dmDrugSig = sig;
+
+  if (!picked.length) { box.className = 'hidden'; box.innerHTML = ''; return; }
+  var n = picked.reduce(function (a, d) { return a + d.cards.length; }, 0);
+  box.className = '';
+  box.innerHTML =
+    '<div class="dirhead"><span class="dh-n">建議用到的藥</span>' +
+    '<span class="dh-e">' + picked.length + ' 類 · ' + n + ' 張台大藥卡</span></div>' +
+    '<div class="lead" style="margin-top:-2px;">點藥名展開<b>台大醫院藥劑部處方集</b>的完整藥卡' +
+    '（劑量、腎肝功能調整、懷孕分級、禁忌、健保給付規定、剝半磨粉、健保價與自費價）。' +
+    '<b>離線也看得到；只有藥品外觀照是台大原站外連，需要連線。</b><br>' +
+    '這裡只列「<b>優先考慮</b>」那張卡點到的藥——要避開的藥不會出現在這裡。</div>' +
+    picked.map(function (d) { return d.cards.map(dmCardHTML).join(''); }).join('');
+
+  /* 卡片一出現就把分類檔預抓起來，點開才不會等。離線時只是讀快取。 */
+  if (window.DrugCard && window.requestIdleCallback) {
+    window.requestIdleCallback(function () {
+      window.DrugCard.loadPid(12).catch(function () {});
+    });
+  }
 }
 
 /* ── 基礎胰島素起始試算 ────────────────────────────────────── */
@@ -2732,6 +2927,10 @@ function insCalc(){
   insCalc();
 })();
 </script>
+<!-- drugcards:start 藥卡渲染。重用 drug-database.js 的 cardBody()／loadPid()，
+     分類資料（data/drugs/12.js）延遲注入，開頁不多付流量。與 tools/cancer.html 同一套。 -->
+<script src="../js/drug-database.js"></script>
+<!-- drugcards:end -->
 <script src="../js/pull-to-refresh.js" defer></script>
 <!-- pwa-sw-register -->
 <script>
