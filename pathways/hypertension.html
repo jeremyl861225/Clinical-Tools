@@ -2436,6 +2436,140 @@ function htGrade(sbp, dbp){
   return r;
 }
 
+/* ── 具體處方：把三份指引的共識落成「台大開得到的藥＋起始劑量」 ──────────
+   原則：只列台大有的品項；每一支都給起始劑量；共病改變的地方直接寫進理由。
+   這裡不重述指引條號（條號在下面幾張比較卡），這一張只回答「現在開什麼」。 */
+function htRegimen(F, egfr, k, age, hr, nAgents){
+  var rx = [], why = [], avoid = [], mon = [];
+  var CKD = (egfr !== null && egfr < 60) || (htNum('ht_uacr') !== null && htNum('ht_uacr') >= 30);
+  var lowEgfr = (egfr !== null && egfr < 30);
+  var hiK = (k !== null && k >= 5.5);
+  var bbInd = F.cad || F.postmi || F.hfref || F.af;
+
+  /* 懷孕：整組換掉 */
+  if(F.preg){
+    rx.push({d:'<b>Labetalol 壓血泰 200 mg</b>', s:'起始 100 mg bid（半顆），每 2–3 天加 100 mg bid；維持 200–400 mg bid',
+             w:'懷孕高血壓的第一線口服藥，台大有口服錠也有針劑'});
+    rx.push({d:'<b>Nifedipine 恆脈循持續性膜衣錠 30 mg</b>', s:'起始 30 mg qd，上限 120 mg/day',
+             w:'第二個選項；<b>不可以用短效的壓達能軟膠囊</b>'});
+    why.push('目標 <b>&lt;140/90</b>（AHA 2025 COR 1，依據 CHAP）。');
+    why.push('⚠ <b>台大沒有 methyldopa</b>，也<b>沒有 hydralazine 針</b>。');
+    avoid.push('<b>立刻停：ACEI、ARB、直接腎素抑制劑、MRA（spironolactone／eplerenone／finerenone）、atenolol、nitroprusside</b>（AHA 2025 COR 3: Harm）。');
+    mon.push('提醒低劑量 aspirin 可降低子癲前症風險（AHA 2025 COR 1）。');
+    return {rx:rx, why:why, avoid:avoid, mon:mon, single:true};
+  }
+
+  /* 高齡衰弱：單方、低劑量、避開 BB／α */
+  var single = F.frail || F.ortho || (age !== null && age >= 85) || nAgents === 1;
+
+  /* A：RAS 阻斷劑 */
+  var needA = CKD || F.dm || F.cad || F.postmi || F.hfref || F.hfpef || F.stroke;
+  var aDrug = '<b>Losartan 可悅您 50 mg</b>';
+  var aDose = '起始 50 mg qd（<b>已在用利尿劑或脫水者 25 mg qd</b>）';
+  var aWhy  = 'A：RAS 阻斷劑。台大 ACEI 只有 captopril（tid）與 enalapril，長期控制實務上用 ARB。';
+  if(F.gout){
+    aWhy = 'A：<b>痛風時 ARB 只有 losartan 是合理選擇</b>（痛風風險 RR 0.81；ACEI 1.24、其他 ARB 1.29）。';
+  } else {
+    aWhy += ' <b>Losartan 50 mg 常常撐不滿 24 小時</b>，不夠時換 <b>Olmesartan 雅脈 40 mg qd</b>、'
+          + '<b>Azilsartan 易得平 40 mg qd</b> 或 <b>Valsartan 得安穩 160 mg qd</b>。';
+  }
+  if(hiK) aWhy += ' ⚠ <b>血鉀 ' + k + '：先排除假性高血鉀並處理血鉀，再決定 RASi 的劑量</b>。';
+
+  /* C：DHP CCB */
+  var cDrug = '<b>Amlodipine 脈優 5 mg</b>';
+  var cDose = '起始 5 mg qd（<b>肝功能不全 2.5 mg qd</b>；台大沒有 10 mg 錠，要 10 mg 開兩顆）';
+  var cWhy  = 'C：長效二氫吡啶類 CCB。<b>腎功能不需調整、透析不會移除</b>。';
+  if(F.tx) cWhy += ' <b>腎移植後 KDIGO 首選就是 DHP CCB 或 ARB</b>；'
+                 + '⚠ 不要用 diltiazem／verapamil（會拉高 tacrolimus 濃度、而且降壓實證不顯著）。';
+
+  /* D：利尿劑 */
+  var dDrug = '<b>Indapamide SR 鈉催離 1.5 mg</b>';
+  var dDose = '1.5 mg qd 早上服（<b>台大只有這個規格；&gt;2.5 mg/day 不建議</b>）';
+  var dWhy  = 'D：thiazide-like 利尿劑。<b>台大的另一支 trichlormethiazide 不在任何國際指引或試驗裡</b>，'
+            + '而 indapamide 是 AHA 難治型高血壓條文指名的兩支之一。';
+  if(lowEgfr){
+    dDrug = '<b>Furosemide 來適泄 40 mg</b>';
+    dDose = '起始 40 mg qd–bid，依體液狀態調整';
+    dWhy  = 'D：<b>eGFR ' + egfr + ' &lt;30，thiazide 幾乎無效</b>（台大 trichlormethiazide 藥卡直接寫 Scr &gt;2.5 時無效），改用 loop。'
+          + '⚠ <b>但 loop 的降壓效果不如 thiazide</b>，主要靠移除體液。';
+  }
+  if(F.gout) dWhy += ' ⚠ <b>利尿劑會升尿酸（痛風風險 RR 2.36）</b>——但 ACR 對「因痛風就換掉利尿劑」只給 conditional／very low 證據，'
+                   + '<b>不要為了痛風輕易犧牲血壓控制</b>。';
+
+  /* 組合 */
+  if(single){
+    if(needA || CKD || F.dm){ rx.push({d:aDrug, s:aDose, w:aWhy}); }
+    else { rx.push({d:cDrug, s:cDose, w:cWhy}); }
+    if(F.frail || (age !== null && age >= 85)){
+      why.push('<b>本例屬 ESC「建議起始單方」的例外</b>（≥85 歲／中重度衰弱／症狀性姿勢性低血壓）：'
+             + '起始藥物應選<b>長效 DHP-CCB 或 RAS 抑制劑</b>，必要時再加<b>低劑量利尿劑</b>；'
+             + '<b>盡量不要用乙型阻斷劑（除非有明確適應症）或 α 阻斷劑</b>（Class IIa／B）。');
+    }
+  } else {
+    rx.push({d:aDrug, s:aDose, w:aWhy});
+    rx.push({d:cDrug, s:cDose, w:cWhy});
+    if(F.resist){
+      rx.push({d:dDrug, s:dDose, w:dWhy + ' <b>難治型的定義本來就要求三種藥「含一種利尿劑」，而且都要到最大可耐受劑量</b>——'
+                                        + '骨幹沒有利尿劑就還不算難治型。'});
+    }
+    why.push('<b>兩種不同類別的藥，各用低劑量起始</b>——加倍同一支只多降約 20%，加另一類多降的幅度約是加倍的 5 倍。');
+    why.push('<b>A＋C 這個組合是刻意的</b>：ACEI／ARB 可以<b>減少 CCB 造成的下肢水腫</b>（統合分析：水腫少 38%），'
+           + '而 ACCOMPLISH 顯示 benazepril＋amlodipine 優於 benazepril＋HCTZ（HR 0.80）。');
+    why.push('⚠ <b>台大唯一的複方是 Exforge 易安穩（amlodipine 5／valsartan 160），1–2 tab qd</b>——'
+           + '三份指引都偏好單片複方，但<b>它的仿單寫明「不適合用於起始治療」</b>，要用要自己判斷。');
+  }
+
+  /* 乙型阻斷劑 */
+  if(bbInd){
+    var bDrug = '<b>Bisoprolol 康肯 5 mg</b>', bDose = '起始 2.5–5 mg qd（台大有 1.25 mg 錠可微調），上限 20 mg qd';
+    if(F.hfref && !F.asthma){ bDrug = '<b>Carvedilol 達利全 6.25 mg</b>'; bDose = '心衰竭：3.125 mg bid 起，每 2 週加倍；體重 &lt;85 kg 上限 25 mg bid'; }
+    if(F.hfref && F.asthma){ bDrug = '<b>Bisoprolol 康肯 1.25 mg</b>'; bDose = '心衰竭：1.25 mg qd 起，逐步加到上限 10 mg qd'; }
+    rx.push({d:bDrug, s:bDose,
+      w:'B：本例有<b>明確適應症</b>（' + [F.cad?'心絞痛／冠心病':'', F.postmi?'心肌梗塞後':'', F.hfref?'HFrEF':'', F.af?'心率控制':''].filter(Boolean).join('、')
+        + '）。ESC 2024 <b>Class I／LOE A</b>：此時乙型阻斷劑與任一類第一線藥併用。'
+        + (F.asthma ? ' ⚠ <b>本例有氣喘：非選擇性的 carvedilol／labetalol／propranolol 要避開</b>，用心臟選擇性的並從低劑量起始。' : '')});
+  } else {
+    why.push('<b>本例沒有乙型阻斷劑的明確適應症</b>（心絞痛、心肌梗塞後、HFrEF、心率控制），'
+           + '所以不放進第一線——<b>AHA 2025 與 ESC 2024 都把它排除在第一線之外</b>'
+           + '（AHA 原文：預防中風的效果不如第一線藥）。⚠ <b>但台灣 2022 指引仍列它為五大類第一線（COR I／B）</b>。');
+  }
+
+  /* HFrEF 導向 */
+  if(F.hfref){
+    why.push('⚠ <b>HFrEF 的用藥要服從心衰竭的四本柱</b>（ACEI／ARB 或 ARNI、乙型阻斷劑、MRA、SGLT2i），'
+           + '不要為了降壓另外加藥。見 <a href="../tools/heart-failure.html" class="pmid">心臟衰竭</a>。');
+    avoid.push('<b>HFrEF 禁用非二氫吡啶類 CCB（diltiazem、verapamil）</b>——負性肌力會讓心衰竭惡化。');
+    avoid.push('<b>避免 doxazosin 等 α 阻斷劑</b>——ALLHAT 的 doxazosin 分支因心衰竭風險加倍（RR 2.04）提前中止。');
+  }
+
+  /* 加分項 */
+  if(F.bph) why.push('<b>合併攝護腺肥大</b>：可在上面的基礎上<b>加</b> Doxazosin 可迅 2 mg（起始 1 mg qd、<b>睡前吃</b>）一石二鳥，'
+                   + '<b>但它不能當第一線降壓藥</b>；服藥後 2–6 小時是姿勢性低血壓最可能的時段。');
+  if(F.migraine) why.push('<b>合併偏頭痛</b>：乙型阻斷劑（台大有 propranolol 10 mg）可同時做偏頭痛預防。');
+  if(F.osa) why.push('<b>合併睡眠呼吸中止</b>：它是原發性醛固酮症的篩檢適應症之一；<b>CPAP 只降 2–3 mmHg，算共病治療不算降壓治療</b>。');
+  if(F.obes) why.push('<b>合併肥胖</b>：減重 ≥5% 是 COR 1／A，<b>每減 1 kg 約降 1 mmHg</b>，整體可降 6–8 mmHg。');
+  if(F.dial) why.push('⚠ <b>透析病人</b>：KDIGO 2021 完全不涵蓋透析族群。台大可用而<b>不會被透析移除</b>的是 '
+                    + '<b>amlodipine</b>（透析後不用補）與 <b>carvedilol</b>；metoprolol 與 bisoprolol 的透析性各家說法互相矛盾。');
+  if(F.aorta) why.push('<b>主動脈瘤／剝離病史</b>：乙型阻斷劑是核心（降 dP/dt），急性期目標見「住院與急症」分頁。');
+  if(F.pad) why.push('<b>周邊動脈疾病不是乙型阻斷劑的禁忌</b>——「會惡化跛行」是舊觀念。');
+  if(F.copd) why.push('<b>COPD 不是乙型阻斷劑的禁忌，但也不是理由</b>——沒有心血管適應症就不該用（GOLD 2026）。');
+
+  /* 監測 */
+  mon.push('<b>起始或加量後 2–4 週</b>驗基礎生化與 eGFR，看有沒有<b>高血鉀或 eGFR 下降 &gt;30%</b>（AHA §5.2.8／5.2.9）；'
+         + 'CKD 第 3b 期台灣指引要求 <b>2 週內</b>驗。');
+  mon.push('<b>調藥後 2 週</b>再跑一輪 722 居家血壓——降壓藥 1 週達最大效果的 50%、2 週達 80%。');
+  mon.push('<b>未達標時每個月回診一次直到達標</b>（AHA COR 1／B-R）。');
+  if(rx.some(function(x){ return x.d.indexOf('Indapamide') >= 0 || x.d.indexOf('Furosemide') >= 0; }))
+    mon.push('用利尿劑：<b>2–4 週內驗一次血鈉血鉀</b>（thiazide 的低血鈉 HR 4.95，年齡與 BMI 會加重風險）。');
+
+  /* 通用禁忌 */
+  avoid.push('<b>ACEI、ARB、直接腎素抑制劑三者之間任何組合都禁止</b>（AHA COR 3: Harm／A；健保靠通則九「重複用藥」核刪）。');
+  if(F.asthma) avoid.push('<b>氣喘：非選擇性乙型阻斷劑（carvedilol、labetalol、propranolol）要避免</b>；連青光眼點的 timolol 眼藥水都算。');
+  if(hiK) avoid.push('<b>血鉀 ' + k + '：先排除假性高血鉀 → 限鉀（含代鹽）→ 停會升鉀的藥 → 治便祕 → 加排鉀利尿劑</b>，'
+                   + '<b>減量或停 RASi 排在最後</b>（KDIGO 原文）。');
+  return {rx:rx, why:why, avoid:avoid, mon:mon, single:single};
+}
+
 function htCalc(){
   var F = HT_F;
   var osbp = htNum('ht_osbp'), odbp = htNum('ht_odbp'),
@@ -2472,6 +2606,89 @@ function htCalc(){
     ], '本卡只列 AHA 2025 逐字條文。台大院內細節與產科用藥表在「特殊族群」分頁。');
   }
 
+  /* ── 1.5 現在該開什麼：這一頁最上面、也是最實用的一張 ── */
+  var haveBP = (osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null);
+  if(haveBP){
+    /* 三邊各自判「要不要開藥」 */
+    var ahaHi0 = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+    var tAHA = (osbp !== null) ? ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2
+              : ((osbp >= 130 || (odbp !== null && odbp >= 80)) ? (ahaHi0 ? 2 : 1) : 0)) : -1;
+    var escHi0 = (risk !== null && risk >= 10) || F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || F.pad || F.aorta;
+    var tESC = (osbp !== null) ? (
+        lenient ? ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2 : 0)
+        : ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2
+           : ((osbp >= 130 || (odbp !== null && odbp >= 80)) ? (escHi0 ? 1 : 0) : 0))) : -1;
+    var twS0 = (hsbp !== null ? hsbp : osbp), twD0 = (hdbp !== null ? hdbp : odbp);
+    var twLow0 = !(F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad || F.dm || CKD || F.dial);
+    var tTW = (twS0 !== null && twD0 !== null) ? ((twS0 >= 140 || twD0 >= 90) ? 2
+              : ((twS0 >= 130 || twD0 >= 80) ? (twLow0 ? 0 : 2) : 0)) : -1;
+
+    var votes = [tAHA, tESC, tTW].filter(function(x){ return x >= 0; });
+    var nowN = votes.filter(function(x){ return x === 2; }).length;
+    var laterN = votes.filter(function(x){ return x === 1; }).length;
+    var noN = votes.filter(function(x){ return x === 0; }).length;
+
+    /* 起始幾種藥 */
+    var two = false;
+    if(osbp !== null && osbp >= 140 && odbp !== null && odbp >= 90) two = true;
+    if(twS0 !== null && twD0 !== null && (twS0 - 130 >= 20 || twD0 - 80 >= 10)) two = true;
+    if(lenient) two = false;
+
+    if(F.preg){
+      /* 懷孕已在上面那張卡處理，這裡只給處方 */
+      var rgP = htRegimen(F, egfr, k, age, hr, 1);
+      var itP = [{hd:'台大開得到的品項與起始劑量'}];
+      rgP.rx.forEach(function(x){ itP.push(x.d + ' — ' + x.s + '<br><span class="rec-note" style="border:none;padding:0;margin:0;display:inline">' + x.w + '</span>'); });
+      if(rgP.avoid.length){ itP.push({hd:'必須避開'}); rgP.avoid.forEach(function(x){ itP.push(x); }); }
+      if(rgP.why.length){ itP.push({hd:'為什麼這樣開'}); rgP.why.forEach(function(x){ itP.push(x); }); }
+      html += htCard('rec-elective', '處方', '懷孕：改用 labetalol 或長效 nifedipine，目標 &lt;140/90', itP,
+        '完整的產科用藥時程與硫酸鎂劑量（<b>台大是 10%、以 mEq 標示</b>）見「特殊族群」分頁。');
+    } else if(nowN === 0 && laterN === 0){
+      html += htCard('rec-nonop', '處方', '現在不用開藥——先做生活型態，排定回診',
+        ['三份指引都沒有達到起始用藥的門檻。',
+         '<b>減重 ≥5%</b>（每減 1 kg 約降 1 mmHg）、<b>鈉 &lt;2,300 邁向 &lt;1,500 mg/day</b>（台灣：鈉 2–4 g/天，<b>每減 1 g 降 3.1 mmHg</b>）、'
+         + '<b>DASH 飲食</b>、<b>每週 90–150 分鐘有氧</b>、<b>戒酒或男 ≤2／女 ≤1 drink/day</b>、<b>戒菸（含電子菸）</b>。',
+         '<b>回診間隔</b>：血壓偏高（120–129/&lt;80）每 6 個月跑一輪 722；Grade 1 且低風險每 3 個月一輪。'],
+        '⚠ 這裡的判定只看你填的數值與勾選項。實際決定仍要看整體心血管風險與病人意願。');
+    } else if(nowN === 0 && laterN > 0){
+      html += htCard('rec-nonop', '處方', '先做 3 個月生活型態，之後血壓仍高才開藥',
+        ['本例落在「風險夠高但血壓還沒到 140/90」這一段：<b>AHA 給 3–6 個月生活型態試驗期、ESC 給 3 個月</b>，'
+         + '之後確認的血壓仍 ≥130/80 才開始用藥。',
+         '⚠ <b>3–6 個月是「生活型態試驗期」，不是「達標期限」</b>。',
+         '⚠ <b>ESC 有一格例外：SBP 120–129／DBP 70–79 這一段，不論風險多高都只給生活型態。</b>'],
+        '若期間血壓升到 ≥140/90，就直接進入下面的用藥流程。');
+    } else {
+      var rg = htRegimen(F, egfr, k, age, hr, two ? 2 : 1);
+      var names = rg.rx.map(function(x){ return x.d.replace(/<[^>]+>/g,'').split(' ')[0]; });
+      var CN = ['', '一', '兩', '三', '四', '五'];
+      var title = (F.resist ? '已在三種藥上——這是重整後的組合：'
+                            : (names.length === 1 ? '起始單方：' : '起始' + (CN[names.length] || names.length) + '種：'))
+                  + names.join(' ＋ ');
+      var it = [];
+      if(F.resist){
+        it.push('⚠ <b>本例已勾選「已用三種藥（含利尿劑）仍未達標」</b>——'
+              + '<b>在加第四支藥之前，先確認下面「難治型高血壓」那張卡的排除步驟</b>：'
+              + '順從性、白袍效應、量測方式、鹽攝取、會升血壓的藥（NSAID／類固醇／口服避孕藥／減充血劑）。'
+              + '下面列的是「三類骨幹應該長什麼樣」，不是第四支藥。');
+      }
+      if(nowN < votes.length){
+        it.push('⚠ <b>三份指引結論不一致</b>：' + nowN + ' 份建議現在開始、'
+              + (laterN ? laterN + ' 份建議先做生活型態、' : '') + (noN ? noN + ' 份認為還不用開藥' : '')
+              + '。逐條理由在下面「要不要開始用藥」那張卡。');
+      }
+      it.push({hd:'台大開得到的品項與起始劑量'});
+      rg.rx.forEach(function(x){
+        it.push(x.d + ' — ' + x.s + '<br><span class="rec-note" style="border:none;padding:0;margin:0;display:inline">' + x.w + '</span>');
+      });
+      if(rg.why.length){ it.push({hd:'為什麼這樣組'}); rg.why.forEach(function(x){ it.push(x); }); }
+      if(rg.avoid.length){ it.push({hd:'要避開的'}); rg.avoid.forEach(function(x){ it.push(x); }); }
+      it.push({hd:'開完之後'});
+      rg.mon.forEach(function(x){ it.push(x); });
+      html += htCard('rec-elective', '處方', title, it,
+        '⚠ 這是依你勾選的條件產生的建議起始方案，<b>不是處方箋</b>；劑量與品項以台大醫院藥劑部藥品資料庫為準，實際開立仍需臨床判斷。');
+    }
+  }
+
   /* ── 2. 分級 ── */
   var og = htGrade(osbp, odbp), hg = htGrade(hsbp, hdbp);
   if(og || hg){
@@ -2500,12 +2717,27 @@ function htCalc(){
       if(mk) gi.push({hd:'⚠ 診間正常、居家高 → <b>隱匿型高血壓／隱匿型未控制</b>'});
       if(mk) gi.push('<b>風險與持續型高血壓相當，要治療。</b>只看診間血壓會整個漏掉這一群。');
     }
-    html += htCard('rec-blue', '第一步：分級', '同一組數字，三份指引的分級不一樣', gi,
+    var gTitle;
+    var _o = og ? og.aha : null, _e = og ? og.esc : null, _t = hg ? hg.tw : (og ? og.tw : null);
+    var _isHtnA = _o && _o.indexOf('Stage') === 0, _isHtnE = _e && _e.indexOf('Hypertension') === 0,
+        _isHtnT = _t && _t.indexOf('Grade') === 0;
+    if(_o && _e && _t){
+      if(_isHtnA && _isHtnE && _isHtnT) gTitle = '三份指引都判為高血壓（' + _o + '）';
+      else if(!_isHtnA && !_isHtnE && !_isHtnT) gTitle = '三份指引都還沒到高血壓';
+      else gTitle = '三份指引判得不一樣——' + (_isHtnA ? 'AHA 算高血壓' : 'AHA 還沒到')
+                  + '、' + (_isHtnE ? 'ESC 算高血壓' : 'ESC 只算 Elevated BP')
+                  + '、' + (_isHtnT ? '台灣算高血壓' : '台灣還沒到');
+    } else if(_o){
+      gTitle = '診間血壓判為 ' + _o + '（沒有居家血壓，台灣指引無法判定）';
+    } else {
+      gTitle = '居家 722 血壓判為 ' + _t;
+    }
+    html += htCard('rec-blue', '分級', gTitle, gi,
       '⚠ 三份指引的 130/80 指的不是同一種血壓：<b>AHA 與 ESC 是診間血壓，台灣是居家 722 血壓</b>。');
   }
 
   /* ── 3. 要不要開始用藥 ── */
-  if((osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null)){
+  if(!F.preg && ((osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null))){
     var ti = [];
     var highRiskAHA = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
     /* AHA */
@@ -2578,13 +2810,21 @@ function htCalc(){
         ti.push('未達起始門檻。血壓 ≥120/80 者一律給生活型態（S-ABCDE）以降低終身血壓負擔。');
       }
     }
-    html += htCard('rec-nonop', '第二步：要不要開始用藥', '三份指引的門檻不同', ti,
+    var tTitle = '三份指引的門檻不同，逐條列在下面';
+    if(typeof nowN === 'number'){
+      if(nowN === votes.length && votes.length) tTitle = '三份指引一致：現在就要開始用藥';
+      else if(nowN === 0 && laterN === 0) tTitle = '三份指引一致：現在還不用開藥';
+      else if(nowN > 0) tTitle = nowN + ' 份指引建議現在開始，其餘認為可以再等';
+      else tTitle = '三份指引都建議先做生活型態，之後再決定';
+    }
+    html += htCard('rec-nonop', '要不要開始用藥', tTitle, ti,
       '起始藥物前先跑台灣指引的 <b>HER</b>：<b>H</b>＝用 722 確認診斷、<b>E</b>＝找誘發因子與續發性高血壓、' +
       '<b>R</b>＝做風險分期（COR I／LOE C）。');
   }
 
-  /* ── 4. 目標血壓 ── */
+  /* ── 4. 目標血壓（懷孕另有目標，不套一般族群） ── */
   var tg = [];
+  if(!F.preg){
   var ahaHigh = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
   tg.push({hd:'AHA/ACC 2025（診間）'});
   if(ahaHigh){
@@ -2617,11 +2857,20 @@ function htCalc(){
   tg.push('<b>ESH 2023 明確反對主動追求 SBP &lt;120 或 DBP &lt;70（Class III）</b>，' +
     '而 AHA 2025 寫的是「with encouragement to achieve SBP &lt;120」，兩者<b>直接相反</b>。' +
     'KDIGO 對非透析 CKD 則建議 SBP &lt;120（<b>2B，弱建議</b>）——比 AHA 更積極。');
-  html += htCard('rec-elective', '第三步：目標血壓', (ahaHigh ? '高心血管風險：三邊都偏積極' : '非高風險：三邊差異最大'), tg,
+  var gTargetTitle;
+  if(lenient){
+    gTargetTitle = '本例目標放寬：ESC 建議 &lt;140／&lt;140-90，台灣仍是居家 &lt;130/80';
+  } else if(ahaHigh){
+    gTargetTitle = '診間 SBP &lt;130（可再往 &lt;120 推）、DBP &lt;80；居家 722 也是 &lt;130/80';
+  } else {
+    gTargetTitle = '目標同樣是 &lt;130/80，但 AHA 對本例只給 Class 2b';
+  }
+  html += htCard('rec-elective', '目標血壓', gTargetTitle, tg,
     '⚠ 目標值要對應量法：AHA／ESC 是診間，台灣是居家 722。用居家血壓去追 ESC 的 120–129 會過度治療。');
+  }
 
-  /* ── 5. 起始一種還是兩種 ── */
-  if(F.naive || (osbp !== null || hsbp !== null)){
+  /* ── 5. 起始一種還是兩種（懷孕不適用） ── */
+  if(!F.preg && (F.naive || (osbp !== null || hsbp !== null))){
     var ci = [];
     var s2 = (osbp !== null && osbp >= 140) && (odbp !== null && odbp >= 90);
     var s2or = (osbp !== null && (osbp >= 140 || (odbp !== null && odbp >= 90)));
@@ -2664,12 +2913,22 @@ function htCalc(){
     }
     ci.push('五大類全是第一線：<b>ACEI [A]、ARB [A]、乙型阻斷劑 [B]、CCB [C]、thiazide 利尿劑 [D]</b>（<b>COR I／LOE B</b>）。' +
       '⚠ <b>這是台灣與 AHA／ESC 最直接的衝突</b>——後兩者都把乙型阻斷劑排除在第一線之外。');
+    ci.push({hd:'⚠ 這裡算的是「降壓骨幹」的支數'});
+    ci.push('因為<b>共病適應症</b>而加的藥（例如冠心病或心肌梗塞後的乙型阻斷劑、HFrEF 的四本柱、'
+          + '攝護腺肥大的 doxazosin）<b>不算在這個數裡</b>——它們是為了那個共病而加，不是為了血壓。'
+          + '所以上面「處方」那張卡列的支數可能比這裡多。');
     ci.push({hd:'⚠ 台大的現實'});
     ci.push('<b>台大院內只有一支複方：Exforge（amlodipine 5／valsartan 160，易安穩）</b>，' +
       '而且它的<b>仿單明寫「不適合用於起始治療」</b>。' +
       '院內<b>沒有</b> ARB＋thiazide 的複方、<b>沒有</b>三合一複方。' +
       '要照三份指引都推薦的「起始 SPC」，在台大實際上只能開兩顆藥。');
-    html += htCard('rec-nonop', '第四步：起始用一種還是兩種', '這一格三份指引的門檻完全不同', ci,
+    var cTitle = '三份指引的門檻不同，逐條列在下面';
+    if(typeof two === 'boolean'){
+      if(lenient) cTitle = '降壓骨幹用一種就好——本例屬「建議單方起始」的例外';
+      else if(two) cTitle = '降壓骨幹起始就用兩種不同類別，單片複方優先';
+      else cTitle = '降壓骨幹起始一種即可，再依血壓逐步加';
+    }
+    html += htCard('rec-nonop', '起始用一種還是兩種', cTitle, ci,
       '⚠ 「高於目標 20/10 就起始併用」是<b>台灣</b>指引的寫法；AHA 用的是 <b>Stage 2</b>；' +
       'ESC 用的是<b>確診高血壓 ≥140/90</b>。三者常被混寫成同一句。');
   }
@@ -2801,7 +3060,7 @@ function htCalc(){
       '已有高血壓者整體可降 <b>6–8 mmHg</b>。');
   }
   if(go.length){
-    html += htCard('rec-elective', '依共病的首選', '這些建議可以疊加，不是二選一', go,
+    html += htCard('rec-blue', '共病帶來的額外考量', '除了上面的處方，這些共病還各自加一條', go,
       '⚠ 只有勾選的共病會出現在這裡。沒有勾選不代表沒有建議。');
   }
 
@@ -2812,7 +3071,7 @@ function htCalc(){
       'rather than decreasing the dose or stopping RASi</b>」——<b>減量或停 RASi 排在所有措施都失敗之後</b>，不是第一步。');
   }
   if(avoid.length){
-    html += htCard('rec-urgent', '要避開或要小心的', '依你勾選的條件列出', avoid);
+    html += htCard('rec-urgent', '禁忌與注意', '這些藥在本例要避開或要特別小心', avoid);
   }
 
   /* ── 7. 續發性高血壓篩檢 ── */
@@ -2823,7 +3082,7 @@ function htCalc(){
   if(F.adrenal) pa.push('<b>意外發現的腎上腺腫瘤</b>。');
   if(F.famhx) pa.push('<b>早發高血壓家族史，或 &lt;40 歲中風</b>。');
   var stage2now = (osbp !== null && osbp >= 140) || (odbp !== null && odbp >= 90);
-  if(pa.length || stage2now){
+  if(!F.preg && (pa.length || stage2now)){
     var pai = [];
     if(pa.length){
       pai.push({hd:'本例符合 AHA 2025 <b>COR 1／C-EO</b> 的篩檢適應症'});
@@ -2850,13 +3109,15 @@ function htCalc(){
     pai.push('初步篩檢用 <b>血漿 aldosterone、renin activity 與兩者的比值（ARR）</b>（<b>COR 1／C-LD</b>）；' +
       '陽性或持續懷疑（renin 被壓抑、器官損傷不成比例）就轉高血壓專科或內分泌科（<b>COR 1／C-EO</b>）。');
     pai.push('⚠ <b>CKD 病人的 ARR 偽陽性偏多</b>（renin 隨腎元喪失下降、aldosterone 也可能升高）。');
-    html += htCard('rec-blue', '要不要查續發性高血壓', '原發性醛固酮症的篩檢範圍在 2025 版大幅擴大', pai,
+    var paTitle = pa.length ? '本例符合原發性醛固酮症的篩檢適應症——該驗 ARR'
+                            : '本例是 Stage 2，可以考慮篩原發性醛固酮症';
+    html += htCard('rec-blue', '續發性高血壓', paTitle, pai,
       '其他續發原因（腎動脈狹窄、嗜鉻細胞瘤、庫欣、主動脈狹窄、藥物引起）的鑑別在「特殊族群」分頁。');
   }
 
   /* ── 8. 難治型 ── */
   if(F.resist){
-    html += htCard('rec-elective', '難治型高血壓的第四支藥', '先排除假性難治，再加 MRA', [
+    html += htCard('rec-elective', '難治型高血壓', '第四支藥開 spironolactone 25–50 mg qd（先排除假性難治）', [
       '<b>定義</b>（AHA 2025）：用<b>三種機轉互補的降壓藥、含一種利尿劑、皆已到最大可耐受劑量</b>仍未達標；' +
         '<b>或</b>已達標但需要 <b>≥4 種</b>藥。以 &lt;130/80 為目標時，美國成人的盛行率約 <b>8.5–20%</b>。',
       '<b>第一步不是加藥，是找原因</b>：AHA 2025 新條文（<b>COR 1／B-NR</b>）要求<b>更詳細地找續發原因，' +
@@ -2902,7 +3163,8 @@ function htCalc(){
     nh.push('<b>Finerenone 有台灣藥證但健保 0 品項、全自費</b>，而且<b>藥證適應症是第二型糖尿病相關 CKD、不是高血壓</b>。' +
       'KDIGO 引用 FIDELIO 時也明說它<b>對血壓的作用 modest</b>——它不是降壓藥。');
   }
-  html += htCard('rec-blue', '台大與健保', '開藥前先確認院內有沒有、健保給不給', nh,
+  var nhTitle = '上面這些藥台大都有，健保對一般降壓藥沒有限制條文';
+  html += htCard('rec-blue', '台大與健保', nhTitle, nh,
     '完整條文與院內外品項對照在「健保與台大」分頁。');
 
   out.innerHTML = html;
