@@ -159,13 +159,22 @@
   .def-table td{line-height:1.7;}
   .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
   .nw{white-space:nowrap;}
+  /* 「這幾支之間怎麼選」的第一欄是情境標籤，會被第三欄的長依據擠到 79px
+     （中文一行只剩 6 個字）。給它一個下限，其餘欄位照舊自動分配。 */
+  .dm-pick th:first-child,.dm-pick td:first-child{min-width:9em;}
+  .dm-pick td:nth-child(2){min-width:8.5em;}
   /* 六段亮燈：ADA Table 9.2 的效力值實際出現六種
      （Low／Intermediate／Intermediate to high／High／High to very high／Very high），
      四格的 .risk-band 表達不完。作法是沿用 .risk-band 的**顏色**（全站既有、造句設計已收），
      只把它的 ::before 那四格關掉，改用六個字元當內容。
      這個修飾類別只碰 content 與字距，不碰任何顏色。 */
   .risk-band.dm-lamp{letter-spacing:.16em; padding:3px 8px; font-size:12px;}
-  .risk-band.dm-lamp::before{content:none;}
+  /* ⚠ 特異度：造句設計那條是 `[data-ui="sentence"] .risk-band.b2::before`（0,3,0），
+     只寫 `.risk-band.dm-lamp::before`（0,2,0）壓不過它，四格燈與六格燈會**同時出現**
+     （這是這個專案第四次踩同一個坑，見 ui-sentence.css 的「特異度陷阱」註解）。
+     補一條同為 0,3,0 且排在後面的選擇器才關得掉。 */
+  .risk-band.dm-lamp::before,
+  [data-ui] .risk-band.dm-lamp::before{content:none !important;}
   /* 長標籤的連結：.pmid 本身帶 white-space:nowrap（原本是給「PMID 12345678」用的），
      拿來當藥卡連結時標籤很長，會把 grid 的 1fr 軌道 min-content 撐大而溢出容器。
      這裡只改 white-space，不碰顏色。 */
@@ -545,6 +554,9 @@
         <span class="dm-li">腹瀉 <b>速效 53%／長效 9.6%</b>；<b>因腹瀉停藥 6% vs 0.6%</b>——這是改長效最實用的理由</span>
         <span class="dm-li">B12 下降約 7%，<b>很少造成貧血</b>；每 2–3 年驗（用超過 4 年每年驗）</span>
         <span class="dm-li">乳酸中毒<b>非常罕見</b>，主要發生在 eGFR &lt;30</span></dd>
+      <dt>劑型</dt><dd><b>先開緩釋（XR）</b>——<b>因腹瀉停藥率 6% vs 0.6%</b>，這是兩種劑型唯一有意義的差別。
+        代價是<b>上限只到 2000 mg</b>（速效 3000 mg），而且<b>必須整粒吞、不可剝半磨粉</b>。
+        需要更高劑量、或病人有管餵時才回頭用速效。</dd>
       <dt>要停</dt><dd>無法進食、疑似急性腎損傷、手術當天；顯影劑依 eGFR 分層（見「手術」分頁）</dd>
       <dt>台灣</dt><dd><b>80 歲以上、以前沒用過 metformin 者不建議新起始</b>（DAROC 引衛署藥字第0980325034號）</dd>
     </dl>
@@ -604,6 +616,56 @@
         <b>限尿蛋白 &gt;300 mg/day</b> 者可續用 100 mg</dd>
       <dt>肝</dt><dd><b>Child-Pugh C 不建議使用</b>（未經研究）</dd>
     </dl>
+  </div>
+
+  <div class="kbox dm-rx">
+    <div class="kbox-t">這三支之間怎麼選</div>
+    <div class="tw">
+      <table class="def-table dt-wrap dm-pick" style="min-width:700px;">
+        <thead><tr><th>情境</th><th>選哪一支</th><th>依據</th></tr></thead>
+        <tbody>
+          <tr><td><b>心衰竭</b>（EF 高低皆然）</td>
+              <td><b>Dapagliflozin 或 Empagliflozin</b><br><span class="nw">canagliflozin 非首選</span></td>
+              <td>只有這兩支<b>高低 EF 各有一個專屬試驗</b>：dapa 有 DAPA-HF（EF ≤40）＋DELIVER（EF &gt;40）；
+                  empa 有 EMPEROR-Reduced＋EMPEROR-Preserved。<br>
+                  <b>ESC 2023 在「已確診 HFrEF」只列 dapagliflozin／empagliflozin／sotagliflozin</b>（Table 20 I A），
+                  <b>EF &gt;40% 只列 empagliflozin／dapagliflozin</b>（Table 21 I A）。<br>
+                  ⚠ canagliflozin 並非無效——<b>ADA Table 9.2 的心衰竭欄仍把它列為 Benefit</b>
+                  （來自 CANVAS 與 CREDENCE 的心衰竭住院終點），只是<b>沒有心衰竭專屬試驗</b>，
+                  而且<b>台灣健保 2.16 不收它</b>。empagliflozin 走 2.16 時<b>限 10 mg</b>。</td></tr>
+          <tr><td><b>CKD，eGFR 20–25</b></td>
+              <td><b>Empagliflozin</b></td>
+              <td>EMPA-KIDNEY 的收案下限是 <b>eGFR 20</b>，三個腎臟試驗中最低；
+                  dapagliflozin 仿單 <b>&lt;25 不建議起始</b>；canagliflozin <b>&lt;30 不建議起始</b>。</td></tr>
+          <tr><td><b>CKD，eGFR 25–30</b></td>
+              <td><b>Dapagliflozin 或 Empagliflozin</b></td>
+              <td>DAPA-CKD 收 eGFR 25–75；EMPA-KIDNEY 收 20–&lt;45。canagliflozin 此區間不建議起始。</td></tr>
+          <tr><td><b>非糖尿病的 CKD</b></td>
+              <td><b>Dapagliflozin 或 Empagliflozin</b></td>
+              <td>DAPA-CKD（67.5% 有糖尿病）與 EMPA-KIDNEY（約半數）<b>都收非糖尿病病人</b>；
+                  CREDENCE <b>只收糖尿病</b>。</td></tr>
+          <tr><td><b>糖尿病腎病變＋明顯蛋白尿</b><br>（UACR &gt;300、eGFR ≥30）</td>
+              <td>三支都有實證；<b>CREDENCE 最貼近</b>，但<b>台灣 canagliflozin 無心腎給付</b></td>
+              <td>CREDENCE 的收案就是 UACR &gt;300–5000＋eGFR 30–90；
+                  canagliflozin 仿單的腎臟適應症也<b>明文限「尿蛋白 &gt;300 mg/day 的糖尿病腎病變」</b>。</td></tr>
+          <tr><td><b>要降 MACE</b>（ASCVD）</td>
+              <td><b>Empagliflozin 或 Canagliflozin</b></td>
+              <td>ADA Table 9.2 的 MACE 欄<b>只點名這兩支</b>——
+                  <b>dapagliflozin 不在內</b>（DECLARE-TIMI 58 的 MACE 未達顯著，HR 0.93, P=0.17）。</td></tr>
+          <tr><td><b>純控糖、腎功能正常</b></td>
+              <td>三支皆可</td>
+              <td>canagliflozin <b>可加到 300 mg</b>（另兩支控糖上限分別是 10 與 25 mg）；
+                  但 eGFR 掉到 60 以下就要退回 100 mg。</td></tr>
+          <tr><td><b>已在用、eGFR 掉下來</b></td>
+              <td>見各自的「續用」欄</td>
+              <td>用字強度不一樣：dapa／cana 是 <b>may continue</b>（cana 附蛋白尿條件）；
+                  <b>empa 的仿單沒有這句</b>。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <span class="dm-li"><b>一句話版本</b>：<b>台灣實務上心腎適應症只有 dapagliflozin 與 Jardiance 10 mg 兩支可走健保</b>；
+      要壓到最低 eGFR 用 empagliflozin，要降 MACE 別選 dapagliflozin，
+      canagliflozin 在台灣沒有心腎給付、且劑量還要隨 eGFR 調。</span>
   </div>
 
   <div class="kbox alert dm-rx">
@@ -701,6 +763,56 @@
     </dl>
   </div>
 
+  <div class="kbox dm-rx">
+    <div class="kbox-t">這幾支之間怎麼選</div>
+    <div class="tw">
+      <table class="def-table dt-wrap dm-pick" style="min-width:720px;">
+        <thead><tr><th>情境</th><th>選哪一支</th><th>依據</th></tr></thead>
+        <tbody>
+          <tr><td><b>合併 CKD</b></td>
+              <td><b>Semaglutide 針劑</b></td>
+              <td><b>只有它有腎臟硬終點的實證</b>——FLOW（HR 0.76）。ADA Table 9.2 的 CKD 進展欄
+                  也<b>只點名 semaglutide (SQ)</b>；台灣仿單已納入 CKD 適應症。</td></tr>
+          <tr><td><b>合併 MASH／肝纖維化</b></td>
+              <td><b>Semaglutide 針劑</b></td>
+              <td><b>目前唯一取得 FDA MASH 適應症的降糖／減重藥</b>（ESSENCE 三期）。
+                  ADA Table 9.2 的 MASH 欄同樣只點名它。</td></tr>
+          <tr><td><b>要降 MACE</b></td>
+              <td>Semaglutide（針劑或口服）、Dulaglutide</td>
+              <td>ADA Table 9.2 逐藥列出有益者；
+                  <b>lixisenatide 與 exenatide 週劑型被列為 Neutral</b>，不是有益那一組。</td></tr>
+          <tr><td><b>肥胖＋症狀性 HFpEF</b></td>
+              <td><b>Tirzepatide</b>（9.9a <b>A</b>）或 <b>Semaglutide</b>（9.9b A／B）</td>
+              <td>SUMMIT（tirzepatide，HR 0.62）與 STEP-HFpEF DM（semaglutide，KCCQ 差 7.3 分）。
+                  <b>兩者在台灣都要自費或走一般糖尿病給付。</b></td></tr>
+          <tr><td><b>體重是主要目標</b></td>
+              <td><b>Tirzepatide &gt; Semaglutide &gt; Dulaglutide</b></td>
+              <td>SURPASS-2 頭對頭：tirzepatide 15 mg 比 semaglutide 1 mg 多降 5.5 kg。
+                  ADA <b>8.18（A）</b>也把 semaglutide 與 tirzepatide 列為減重效力最強的兩支。
+                  ⚠ <b>有糖尿病時減重幅度約少三分之一</b>，衛教要引 SURMOUNT-2／STEP 2 那組數字。</td></tr>
+          <tr><td><b>不想打針</b></td>
+              <td><b>口服 semaglutide</b>（Rybelsus）</td>
+              <td>SOUL（2025）證實口服劑型也能<b>降低 MACE（HR 0.86，優效）</b>。
+                  代價是<b>服法嚴格</b>（空腹、≤120 mL 水、等 30 分鐘）與<b>台灣無健保給付</b>。</td></tr>
+          <tr><td><b>eGFR ≤30</b></td>
+              <td>Semaglutide 或 Dulaglutide</td>
+              <td>兩者<b>都不需依腎功能調整</b>；<b>lixisenatide 應避免用於 eGFR ≤30</b>（倚賴腎臟排除）。</td></tr>
+          <tr><td><b>已在打基礎胰島素、想合併</b></td>
+              <td><b>Soliqua</b>（glargine＋lixisenatide 固定比例複方）</td>
+              <td>健保門檻是 <b>A1c &gt;8.0%</b>（比其他 GLP-1 RA 的 8.5% 低），
+                  但前置的 insulin 需<b>每日劑量少於 60 單位</b>。
+                  ⚠ <b>換藥前必須先停掉原本的基礎胰島素</b>；<b>與餐時胰島素併用未經研究</b>。</td></tr>
+          <tr><td><b>健保拿得到的</b></td>
+              <td><b>Ozempic、Trulicity、Soliqua</b></td>
+              <td>Rybelsus（口服）、Mounjaro（tirzepatide）、Wegovy <b>都沒有健保給付</b>。
+                  ⚠ 台大的 Trulicity 目前標<b>「暫供兒童」</b>，成人開立前先確認院內供應。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <span class="dm-li"><b>一句話版本</b>：<b>有 CKD 或 MASH 就選 semaglutide 針劑</b>（那兩個適應症只有它有實證）；
+      體重掛帥選 tirzepatide 但要自費；只求健保拿得到且方便，Ozempic 與 Trulicity 都可以。</span>
+  </div>
+
   <div class="kbox alert dm-rx">
     <div class="kbox-t">這一類共同要注意</div>
     <span class="dm-li"><b>① 腸胃道副作用是主要限制。</b>ADA 承認降糖效力與基礎胰島素相當或更好，
@@ -733,6 +845,20 @@
         <span class="dm-li"><b>eGFR &lt;30</b>　<b>25 mg</b>／日（DAROC 2024 DKD）</span></dd>
     </dl>
   </div>
+  <div class="kbox dm-rx">
+    <div class="kbox-t">這兩支之間怎麼選</div>
+    <span class="dm-li"><b>腎功能差、或腎功能會變動的人 → linagliptin。</b>
+      它是台大兩支裡<b>唯一完全不需依腎功能調整</b>的，不必追著 eGFR 改劑量、也不會因為漏改而過量。
+      CAROLINA 試驗（vs glimepiride）另證實它<b>心血管非劣且低血糖少很多</b>。</span>
+    <span class="dm-li"><b>腎功能穩定、以藥價為考量 → sitagliptin。</b>
+      健保價每顆約 <b>8.2 元</b>，linagliptin 約 <b>12.9 元</b>。
+      但要記得依 eGFR 調：<b>30–44 → 50 mg／日；&lt;30 → 25 mg／日</b>。</span>
+    <span class="dm-li"><b>心衰竭：兩支都可以</b>（TECOS 與 CARMELINA 皆未增加住院，ESC 2023 列 <b>IIa A</b>）。
+      要避開的是 <b>saxagliptin</b>（ESC Class III B）——台大的 <b>Qtern 複方含 saxagliptin</b>，要一起算。</span>
+    <span class="dm-li"><b>兩支都沒有心腎保護</b>。有 ASCVD／心衰竭／CKD 的病人，
+      這一類<b>不會是優先選擇</b>；ADA 9.23（A）在開始強化胰島素時甚至要求<b>限制或停用</b>。</span>
+  </div>
+
   <div class="kbox alert dm-rx">
     <div class="kbox-t">這一類共同要注意</div>
     <span class="dm-li"><b>—— 心衰竭：三家講法不同，不要合併 ——</b></span>
@@ -808,6 +934,30 @@
     </dl>
   </div>
 
+  <div class="kbox dm-rx">
+    <div class="kbox-t">這幾支之間怎麼選</div>
+    <span class="dm-li"><b>要有大型試驗撐腰 → gliclazide MR。</b>
+      ADVANCE 用的就是它（n=11,140，微血管終點 HR 0.86，主要來自腎病變 HR 0.79）。
+      調量間隔<b>至少一個月</b>，適合門診慢慢調的病人。
+      ⚠ <b>eGFR &lt;15 禁忌</b>；<b>只有能規律進食（含早餐）的人才適合</b>。</span>
+    <span class="dm-li"><b>要一天一次、劑量好記 → glimepiride。</b>
+      隨第一餐、每 1–2 週調一次。<b>但仿單自己的數據顯示 4 mg 與 8 mg 的 A1C 降幅一樣（皆 −1.8%），
+      只有體重多增 0.4 kg</b>——<b>加到 8 mg 沒有意義</b>，該加的是別類藥。
+      對 <b>sulfonamide 過敏者禁用</b>。</span>
+    <span class="dm-li"><b>進食不規律、常跳餐 → repaglinide。</b>
+      它是<b>每餐前 30 分鐘內</b>給、<b>跳過一餐就跳過那一劑</b>，比 SU 更貼合不規律的進食。
+      代價是一天要吃 2–4 次。⚠ <b>與 gemfibrozil 併用為禁忌</b>（暴露量 ↑8.1 倍）；
+      <b>不適用於與 NPH 胰島素併用</b>。</span>
+    <span class="dm-li"><b>Gliquidone：本頁不給它一個「該用的情境」。</b>
+      坊間把它當「腎不全可用的 SU」，但<b>台灣一手仿單查不到佐證</b>，
+      台大藥卡的腎、肝調整欄<b>兩欄都標「無資料」</b>，DAROC 2024 DKD 表二也<b>沒有</b>給它單獨的 eGFR 建議。
+      腎功能不全要用促泌劑，證據較完整的是<b>低劑量 glimepiride（起始 1 mg）</b>或 repaglinide（CrCl 20–40 起始 0.5 mg）。</span>
+    <span class="dm-li"><b>不管選哪一支，先問一句：這個病人真的需要促泌劑嗎？</b>
+      ADA 對長者（13.4 B）與骨折高風險者（4.10 B）都要求謹慎或避開；
+      GRADE 試驗中 glimepiride 組的<b>嚴重低血糖明顯較多</b>；
+      開始強化胰島素時 ADA 9.23（A）要求<b>限制或停用</b>這一類。</span>
+  </div>
+
   <div class="kbox alert dm-rx">
     <div class="kbox-t">這一類共同要注意</div>
     <span class="dm-li"><b>低血糖與體重增加是代價。</b>ADA <b>9.17（A）</b>：加任何新藥時都要重新評估
@@ -854,6 +1004,8 @@
         <span class="dm-li"><b>與每餐第一口飯一起吞</b>；起始 25 mg TID，每 4–8 週調整</span>
         <span class="dm-li">維持上限：體重 <b>≤60 kg → 50 mg TID</b>；<b>&gt;60 kg → 100 mg TID</b></span></dd>
       <dt>腎肝</dt><dd><b>eGFR &lt;25 不建議</b>；<b>肝硬化為禁忌</b>（台大藥卡）</dd>
+      <dt>兩個牌子</dt><dd>醣祿錠與糖利平錠<b>成分、含量、劑量與腎肝限制完全相同</b>，
+        台大藥卡兩張的欄位一致，健保價也都是每顆 2 元——<b>依院內供應開即可，沒有臨床上的取捨</b>。</dd>
       <dt>⚠</dt><dd><b>吃 acarbose 的人低血糖只能用純葡萄糖</b>——acarbose 抑制蔗糖分解，
         用一般糖果或汽水會延誤矯正（ADA 2026 原文）。這一條要寫進病人衛教。</dd>
     </dl>
