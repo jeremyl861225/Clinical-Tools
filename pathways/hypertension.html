@@ -247,7 +247,7 @@
     <div class="ht-nums">
       <div class="rx-row"><label>年齡 <span class="rx-en">years</span></label>
         <input type="number" id="ht_age" min="18" max="120" step="1" inputmode="numeric"><span class="rx-u"></span></div>
-      <div class="rx-row"><label>10 年心血管風險 <span class="rx-en">% · PREVENT 或 SCORE2</span></label>
+      <div class="rx-row"><label>10 年心血管風險（選填） <span class="rx-en">% · 多數人不用填，見下方</span></label>
         <input type="number" id="ht_risk" min="0" max="100" step="0.1" inputmode="decimal"><span class="rx-u"></span></div>
       <div class="rx-row"><label>eGFR <span class="rx-en">mL/min/1.73m²</span></label>
         <input type="number" id="ht_egfr" min="0" max="200" step="1" inputmode="decimal"><span class="rx-u"></span></div>
@@ -287,6 +287,38 @@
       <span class="fo-sub">使用 tacrolimus 或 cyclosporine</span></button>
     <button type="button" class="flow-opt" data-f="gout">痛風或高尿酸血症</button>
     <button type="button" class="flow-opt" data-f="obes">肥胖／代謝症候群</button>
+  </div>
+
+  <div class="ht-grp">心血管危險因子（用來算台灣的風險分期）</div>
+  <div class="ht-chips" id="ht_c5">
+    <button type="button" class="flow-opt" data-f="male">男性</button>
+    <button type="button" class="flow-opt" data-f="smoke">抽菸
+      <span class="fo-sub">含電子菸</span></button>
+    <button type="button" class="flow-opt" data-f="lipid">血脂異常</button>
+    <button type="button" class="flow-opt" data-f="fhascvd">早發 ASCVD 家族史
+      <span class="fo-sub">台灣指引的定義是「發病 &lt;50 歲」</span></button>
+    <button type="button" class="flow-opt" data-f="hmod">已有器官損傷（HMOD）
+      <span class="fo-sub">左心室肥厚、動脈硬化度增加（PWV）、頸動脈斑塊或狹窄、阻塞性動脈粥狀硬化</span></button>
+    <button type="button" class="flow-opt" data-f="preghx">妊娠高血壓或子癲前症病史
+      <span class="fo-sub">且合併不良妊娠結果</span></button>
+  </div>
+  <div class="kbox" id="ht_riskbox">
+    <div class="kbox-t">10 年心血管風險要去哪裡算？多數情況你不用算</div>
+    <span class="ht-li">· <b>台灣 2022 指引根本不用風險分數。</b>它用的是<b>風險分期圖（Stage 1／2／3）</b>——
+      數危險因子、看有沒有器官損傷、看有沒有已確立的心血管疾病，<b>就是上面這幾格</b>。
+      指引明講不用 ASCVD Risk Score 與 SCORE 的三個理由：
+      <b>台灣與西方的絕對發生率不同、未在台灣族群充分驗證、沒有工具不好算</b>。
+      <b>所以你只要把上面的共病與危險因子勾完，台灣那一邊就算得出來。</b></span>
+    <span class="ht-li">· <b>AHA 與 ESC 那一邊，只有「沒有心血管疾病、沒有糖尿病、沒有 CKD」的人才需要那個百分比。</b>
+      有其中任一項就<b>自動算高風險</b>，百分比填不填都不影響結論。</span>
+    <span class="ht-li">· 真的需要算的時候：<b>AHA 用 PREVENT</b>（30–79 歲，終點是 total CVD 含心衰竭，門檻 <b>≥7.5%</b>）——
+      <a class="pmid lw" href="https://professional.heart.org/en/guidelines-and-statements/prevent-calculator" target="_blank" rel="noopener">professional.heart.org 的 PREVENT 計算器</a>。
+      <b>ESC 用 SCORE2（40–69 歲）／SCORE2-OP（≥70 歲）</b>，門檻 <b>≥10%</b>。</span>
+    <span class="ht-li">· ⚠ <b>兩個工具都沒有台灣的驗證資料。</b>PREVENT 用美國 320 萬人開發、含美國郵遞區號的社會剝奪指數；
+      SCORE2 依歐洲風險區校準。<b>把它們的百分比直接套在台灣病人身上要保留</b>——這也是台灣指引不用它們的理由。</span>
+    <span class="ht-li">· ⚠ <b>PREVENT 的 7.5% 不等於舊 PCE 的 7.5%。</b>
+      PREVENT 7.5%（total CVD）≈ PCE 10%（ASCVD）≈ Framingham 15%。
+      實際受影響人數只增加 0.7%——<b>「門檻從 10% 降到 7.5%，所以很多人要吃藥」是雙重誤解</b>。</span>
   </div>
 
   <div class="ht-grp">其他共病與族群</div>
@@ -2593,6 +2625,32 @@ function htCalc(){
   var CKD = (egfr !== null && egfr < 60) || (uacr !== null && uacr >= 30);
   var lenient = F.frail || F.ortho || (age !== null && age >= 85);
 
+  /* ── 台灣 2022 的風險分期（Figure 4）——完全用勾選項算，不需要風險百分比 ──
+     Stage 3：CKD 4/5 期、有器官損傷的糖尿病、非瓣膜性心房顫動、已確立的心腦血管疾病
+     Stage 2：CKD 3 期或蛋白尿、無器官損傷的糖尿病、器官損傷（HMOD）
+     Stage 1：只有危險因子（年齡 ≥65、男性、血脂異常、抽菸、早發 ASCVD 家族史、妊娠高血壓病史）
+              ⚠ 肥胖不列入——指引原文說預後意義的證據互相矛盾 */
+  var rfList = [];
+  if(age !== null && age >= 65) rfList.push('年齡 ≥65');
+  if(F.male) rfList.push('男性');
+  if(F.lipid) rfList.push('血脂異常');
+  if(F.smoke) rfList.push('抽菸');
+  if(F.fhascvd) rfList.push('早發 ASCVD 家族史');
+  if(F.preghx) rfList.push('妊娠高血壓病史');
+  var rfN = rfList.length;
+  var ascvd3 = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad;
+  var ckd45 = (egfr !== null && egfr < 30) || F.dial;
+  var dmOrgan = F.dm && F.hmod;
+  var twStage = 1;
+  if(ascvd3 || ckd45 || dmOrgan) twStage = 3;
+  else if((egfr !== null && egfr >= 30 && egfr < 60) || (uacr !== null && uacr >= 30) || F.dm || F.hmod) twStage = 2;
+  /* 低風險＝無 ASCVD、無 HMOD，且危險因子 <3（此時起始用藥門檻是 140/90，不是 130/80） */
+  var twLowRisk = (twStage === 1) && rfN < 3;
+  /* AHA／ESC 的「高風險」：有臨床心血管疾病、糖尿病、CKD 或 HMOD 就自動成立，
+     沒有這些才需要那個百分比 */
+  var autoHigh = ascvd3 || F.dm || CKD || F.hmod || F.dial;
+  var riskKnown = autoHigh || (risk !== null);
+
   /* ── 1. 懷孕：整組蓋過 ── */
   if(F.preg){
     html += htCard('rec-urgent', '先看這一張', '懷孕、備孕或哺乳：用藥邏輯整組不同', [
@@ -2610,18 +2668,17 @@ function htCalc(){
   var haveBP = (osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null);
   if(haveBP){
     /* 三邊各自判「要不要開藥」 */
-    var ahaHi0 = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+    var ahaHi0 = autoHigh || (risk !== null && risk >= 7.5);
     var tAHA = (osbp !== null) ? ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2
               : ((osbp >= 130 || (odbp !== null && odbp >= 80)) ? (ahaHi0 ? 2 : 1) : 0)) : -1;
-    var escHi0 = (risk !== null && risk >= 10) || F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || F.pad || F.aorta;
+    var escHi0 = autoHigh || (risk !== null && risk >= 10);
     var tESC = (osbp !== null) ? (
         lenient ? ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2 : 0)
         : ((osbp >= 140 || (odbp !== null && odbp >= 90)) ? 2
            : ((osbp >= 130 || (odbp !== null && odbp >= 80)) ? (escHi0 ? 1 : 0) : 0))) : -1;
     var twS0 = (hsbp !== null ? hsbp : osbp), twD0 = (hdbp !== null ? hdbp : odbp);
-    var twLow0 = !(F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad || F.dm || CKD || F.dial);
     var tTW = (twS0 !== null && twD0 !== null) ? ((twS0 >= 140 || twD0 >= 90) ? 2
-              : ((twS0 >= 130 || twD0 >= 80) ? (twLow0 ? 0 : 2) : 0)) : -1;
+              : ((twS0 >= 130 || twD0 >= 80) ? (twLowRisk ? 0 : 2) : 0)) : -1;
 
     var votes = [tAHA, tESC, tTW].filter(function(x){ return x >= 0; });
     var nowN = votes.filter(function(x){ return x === 2; }).length;
@@ -2709,6 +2766,23 @@ function htCalc(){
         '<b>不應</b>用於高血壓的診斷與管理。要照台灣指引走，先請病人做一輪 <b>722</b>（見「量測與診斷」分頁）。' +
         '若已用標準化流程量診間血壓，台灣指引允許用它代替：本例為 <b>' + og.tw + '</b>。');
     }
+    gi.push({hd:'台灣 2022 的風險分期（不需要風險百分比，用勾選項就算得出來）'});
+    gi.push('<b>Stage ' + twStage + '</b>' +
+      (twStage === 3 ? '——已有<b>已確立的心腦血管疾病、非瓣膜性心房顫動、CKD 第 4/5 期，或有器官損傷的糖尿病</b>其中之一。'
+       : twStage === 2 ? '——有 <b>CKD 第 3 期或蛋白尿、無器官損傷的糖尿病，或器官損傷（HMOD）</b>其中之一。'
+       : '——只有危險因子。') +
+      '　危險因子 <b>' + rfN + ' 個</b>' + (rfN ? '（' + rfList.join('、') + '）' : '') + '。' +
+      '<br>⚠ <b>肥胖不算在危險因子裡</b>——台灣指引明講預後意義的證據互相矛盾。');
+    gi.push('<b>所以台灣的起始用藥門檻是 ' + (twLowRisk ? '140/90' : '130/80') + '</b>' +
+      (twLowRisk ? '（Stage 1 且危險因子 &lt;3 個＝低風險）。⚠ <b>這一格最常被填成 130/80。</b>'
+                 : '（不屬低風險）。'));
+    if(!autoHigh && risk === null){
+      gi.push({hd:'⚠ 這一格才需要 10 年風險百分比'});
+      gi.push('本例<b>沒有心血管疾病、沒有糖尿病、沒有 CKD、沒有器官損傷</b>，' +
+        '所以 <b>AHA（PREVENT ≥7.5%）與 ESC（SCORE2 ≥10%）的門檻要靠風險分數才決定得了</b>。' +
+        '沒填的話，下面 AHA／ESC 那兩段是<b>假設「不是高風險」</b>算的。' +
+        '<b>台灣那一段不受影響</b>——它用的是上面的風險分期，不是百分比。');
+    }
     if(og && hg){
       var wc = (osbp >= 130 || odbp >= 80) && (hsbp < 130 && hdbp < 80);
       var mk = (osbp < 130 && odbp < 80) && (hsbp >= 130 || hdbp >= 80);
@@ -2732,6 +2806,7 @@ function htCalc(){
     } else {
       gTitle = '居家 722 血壓判為 ' + _t;
     }
+    gTitle += '；台灣風險分期 Stage ' + twStage;
     html += htCard('rec-blue', '分級', gTitle, gi,
       '⚠ 三份指引的 130/80 指的不是同一種血壓：<b>AHA 與 ESC 是診間血壓，台灣是居家 722 血壓</b>。');
   }
@@ -2739,7 +2814,7 @@ function htCalc(){
   /* ── 3. 要不要開始用藥 ── */
   if(!F.preg && ((osbp !== null && odbp !== null) || (hsbp !== null && hdbp !== null))){
     var ti = [];
-    var highRiskAHA = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+    var highRiskAHA = autoHigh || (risk !== null && risk >= 7.5);
     /* AHA */
     if(osbp !== null){
       if(osbp >= 140 || (odbp !== null && odbp >= 90)){
@@ -2776,7 +2851,7 @@ function htCalc(){
         if(lenient){
           ti.push('本例屬 ESC 的「保守族群」（≥85 歲／症狀性姿勢性低血壓／中重度衰弱／餘命 &lt;3 年）：' +
             '<b>應只在 ≥140/90 才考慮起始用藥</b>（<b>Class IIa／B</b>）。本例未達，<b>先不要開藥</b>。');
-        } else if(risk !== null && risk >= 10 || F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || F.pad || F.aorta){
+        } else if(autoHigh || (risk !== null && risk >= 10)){
           ti.push('屬 Elevated BP 且風險夠高：<b>先做 3 個月生活型態</b>，之後 confirmed BP 仍 ≥130/80 才建議用藥（<b>Class I／A</b>）。');
         } else {
           ti.push('屬 Elevated BP 且風險不夠高：<b>只給生活型態</b>（<b>Class I／B</b>）。' +
@@ -2794,11 +2869,10 @@ function htCalc(){
     var twS = (hsbp !== null ? hsbp : osbp), twD = (hdbp !== null ? hdbp : odbp);
     if(twS !== null && twD !== null){
       ti.push({hd:'台灣 TSOC／THS 2022' + (hsbp === null ? '（用診間值代算，僅供參考）' : '（居家 722）')});
-      var twLow = !(F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.af || F.aorta || F.pad || F.dm || CKD || F.dial);
       if(twS >= 140 || twD >= 90){
         ti.push('<b>開始用藥</b>（Grade 2，<b>COR I／LOE A</b>）。');
       } else if(twS >= 130 || twD >= 80){
-        if(twLow){
+        if(twLowRisk){
           ti.push('<b>低風險族群的起始用藥門檻是 140/90，不是 130/80</b>（<b>COR I／LOE A</b>）——' +
             '本例未達，<b>先做生活型態並每 3 個月跑一輪 722</b>。' +
             '⚠ <b>診斷門檻 130/80 ≠ 起始用藥門檻 130/80</b>，這一格最常被填錯。' +
@@ -2825,7 +2899,7 @@ function htCalc(){
   /* ── 4. 目標血壓（懷孕另有目標，不套一般族群） ── */
   var tg = [];
   if(!F.preg){
-  var ahaHigh = F.cad || F.postmi || F.hfref || F.hfpef || F.stroke || F.dm || CKD || (risk !== null && risk >= 7.5);
+  var ahaHigh = autoHigh || (risk !== null && risk >= 7.5);
   tg.push({hd:'AHA/ACC 2025（診間）'});
   if(ahaHigh){
     tg.push('<b>SBP &lt;130、並鼓勵達到 &lt;120</b>（<b>COR 1／LOE A</b>）；<b>DBP &lt;80</b>（<b>COR 1／LOE B-R</b>）。§5.2.7');
