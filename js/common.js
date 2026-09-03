@@ -1,10 +1,27 @@
 /* 決策流程共用 helpers（供 pathways/ 使用） */
-function flowShow(id,on){ const el=document.getElementById(id); if(el) el.classList.toggle('hidden',!on); }
+
+/* 動態（css/styles.css「動態系統 Motion」那一段）：下一步出現時由上而下「上墨」，
+   讓「這一步是我剛剛那個選擇造成的」看得出因果。只在**由隱藏轉為顯示**時加記號：
+   已經在畫面上的步驟每改一次選項都重播一次，就變成閃爍而不是回饋。
+   元素本來是 display:none，重新顯示時動畫本來就會從頭跑，不必強制 reflow。 */
+function flowShow(id,on){
+  const el=document.getElementById(id); if(!el) return;
+  const was=el.classList.contains('hidden');
+  el.classList.toggle('hidden',!on);
+  if(on && was && !window.__flowReplaying) el.classList.add('flow-revealed');
+}
 function flowClearSel(stepId){ const s=document.getElementById(stepId); if(s) s.querySelectorAll('.flow-opt').forEach(b=>b.classList.remove('selected')); }
 function flowSelect(btn){ const g=btn.parentNode; g.querySelectorAll('.flow-opt').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
 function flowRec(id,cls,title,detail,note){
   const rec=document.getElementById(id);
-  rec.className='flow-rec '+cls;
+  /* 建議沒換的時候不要重播：改選一個不影響結論的選項，答案卻閃一下，
+     會讓人以為結論變了。用「等級＋標題」當簽章比對。
+     記號必須在 innerHTML 之前設好——子節點是那一行之後才生出來的，
+     動畫因此保證從頭播放，不需要強制 reflow 去重啟。 */
+  const sig=cls+'\u0000'+title;
+  const changed=rec.dataset.recSig!==undefined && rec.dataset.recSig!==sig;
+  rec.dataset.recSig=sig;
+  rec.className='flow-rec '+cls+(changed?' rec-landed':'');
   rec.innerHTML='<div class="rec-label">建議處置 Recommendation</div><div class="rec-title">'+title+'</div>'+
     (detail?'<ul class="rec-detail">'+detail+'</ul>':'')+
     (note?'<div class="rec-note">'+note+'</div>':'');
@@ -84,8 +101,12 @@ function flowRec(id,cls,title,detail,note){
     }
     if (Array.isArray(d.picks)){
       replaying = true;
+      /* 還原時整條路徑會在同一瞬間重播，若每一步都上墨就是一串閃爍；
+         這是「回到原狀」不是「剛做了選擇」，不該有回饋。 */
+      window.__flowReplaying = true;
       var list = opts();
       d.picks.forEach(function(i){ if (list[i]) list[i].click(); });
+      window.__flowReplaying = false;
       replaying = false;
       picks = d.picks.slice();
     }

@@ -609,3 +609,84 @@
   /* 由深層連結（#sys=）跳進來時短暫標示，否則捲到定位後看不出停在哪一套 */
   .sys-head.sys-hit{background:var(--accent-soft); animation:sysFade 2.4s ease forwards;}
   @keyframes sysFade{0%,55%{background:var(--accent-soft);} 100%{background:transparent;}}
+
+  /* ================================================================
+   * 動態系統 Motion（全站共用層，兩套主題都吃這一段）
+   * ================================================================
+   * DESIGN.md 原本只有三句話：快 180ms、慢 260ms、緩動 cubic-bezier(.22,.61,.36,1)，
+   * 而且「動畫只用於狀態回饋，不用於入場或裝飾」。這一段把那三句話變成真的能用的一層。
+   *
+   * 一條貫穿全站的比喻——**上墨**：
+   *   新出現的資訊不是滑進來、也不是淡進來，是**沿著閱讀方向被畫上去**的。
+   *   句子裡的詞由左而右上墨、流程圖的下一步由上而下上墨、改變的數字亮一道螢光。
+   *   這是骨白紙上的墨字這套語言自己的動法，不是借來的介面慣例。
+   *
+   * 三條界線（照 DESIGN.md 的既有規則推出來，不是憑感覺）：
+   *   1. **不做位移、不做投影。**「平的規則」說表面永遠是平的，要浮起來只能換邊框
+   *      粗細或底色階。所以全段沒有任何 translate／scale／box-shadow 當層次用；
+   *      唯一的 inset box-shadow 是按壓回饋，那是**狀態訊號**（DESIGN.md 允許的那一類）。
+   *   2. **不做入場。** 捲到哪裡就淡出一塊，是裝飾不是回饋，全站不做。
+   *   3. **收起一律比展開快。** 使用者已經知道要收起來了，不必再看一次過程。
+   */
+  :root{
+    --mo-tap:110ms;    /* 按下的當下 */
+    --mo-fast:180ms;   /* 一般狀態切換 */
+    --mo-slow:260ms;   /* 上墨、展開、換版 */
+    --mo-exit:140ms;   /* 收起 */
+    --mo-ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  /* ---------------- 按下 ----------------
+     手機沒有 hover，所以在觸控上，全站 119 頁按下任何東西都沒有回應——這是原本
+     最大的一個洞。回饋刻意用**中性灰的 inset 填色**而不是主題色：這一段是共用層，
+     兩套主題的色票不同，用 --hover-bg 之類的正式版變數會把正式版的暖白帶進造句設計
+     （兩套主題不得互相污染）。中性灰在骨白與深墨底上都成立，而且 .sc-x:hover
+     本來就是用 rgba(128,128,128,…)，不是新發明的手法。
+     刻意不加 transition：按壓要當下就有，而且共用層若在這些元素上宣告 transition，
+     會整條蓋掉它們各自原有的 transition 清單（CSS 沒有可疊加的寫法）。 */
+  button:active,
+  summary:active,
+  .tool-card:active,
+  .gs-item:active,
+  label.item:active,
+  .flow-opt:active,
+  .flow-link:active,
+  .back-btn:active,
+  .back-origin:active{ box-shadow:inset 0 0 0 999px rgba(128,128,128,.14); }
+  /* 方磚有底圖與遮罩，蓋一層灰會把圖弄髒；改成沿用它自己既有的 hover 表現。 */
+  .hub-card:active{ box-shadow:none; }
+  .hub-card:active .hub-scrim{ background:var(--scrim-hover); }
+
+  /* ---------------- 展開層 ----------------
+     PRODUCT.md 的第一條原則是「答案先出來，細節收在後面」，所以 <details> 是全站
+     最常被打開的東西。::details-content 是漸進增強：瀏覽器不支援時就是現在的即時展開，
+     不會壞掉。只做開、不做關——收起要快，而且使用者已經知道自己收了什麼。 */
+  @supports selector(::details-content){
+    details[open]::details-content{ animation:mo-ink-down var(--mo-slow) var(--mo-ease); }
+  }
+
+  /* ---------------- 決策流程（37 條共用 js/common.js 的 flowShow／flowRec） ----------------
+     下一步是「上一個選擇造成的結果」，它出現的時候要看得出因果，否則畫面只是突然變長。
+     由上而下上墨＝順著流程往下走的方向。版面空間是即時就位的（display 一換就佔位），
+     動的只有內容的裁切，所以不會有東西被推著跑。 */
+  .flow-step.flow-revealed{ animation:mo-ink-down var(--mo-slow) var(--mo-ease); }
+  /* 建議處置是整頁的答案。標籤→標題→細節→附註依序上墨，讀起來像被寫下來；
+     總長 290ms，最後一行也只晚 110ms，不會擋到讀。 */
+  .flow-rec.rec-landed .rec-label { animation:mo-ink-in var(--mo-fast) var(--mo-ease) both; }
+  .flow-rec.rec-landed .rec-title { animation:mo-ink-in var(--mo-fast) var(--mo-ease) 40ms both; }
+  .flow-rec.rec-landed .rec-detail{ animation:mo-ink-in var(--mo-fast) var(--mo-ease) 80ms both; }
+  .flow-rec.rec-landed .rec-note  { animation:mo-ink-in var(--mo-fast) var(--mo-ease) 110ms both; }
+
+  @keyframes mo-ink-down{ from{clip-path:inset(0 0 100% 0);} to{clip-path:inset(0 0 0 0);} }
+  @keyframes mo-ink-in{ from{opacity:0;} to{opacity:1;} }
+
+  /* 關掉動態效果時：不做上墨（那是位移型的揭露），但**保留**按下的回饋與依序出現的
+     節奏感——animate 的規範是「減少位移、不是把回饋一起關掉」。答案仍然要看得出剛換過。 */
+  @media (prefers-reduced-motion:reduce){
+    @supports selector(::details-content){ details[open]::details-content{ animation:none; } }
+    .flow-step.flow-revealed{ animation:mo-ink-in var(--mo-fast) var(--mo-ease); }
+    .flow-rec.rec-landed .rec-label,
+    .flow-rec.rec-landed .rec-title,
+    .flow-rec.rec-landed .rec-detail,
+    .flow-rec.rec-landed .rec-note{ animation-delay:0s; }
+  }

@@ -5385,3 +5385,40 @@
   font-family: var(--sentence-sans);
   color: var(--sentence-dim);
 }
+
+/* ================================================================
+ * 第 P20 段 — 造句本身的動態（共用層在 css/styles.css 的「動態系統 Motion」）
+ * ================================================================
+ * 這一套設計的信條是「句子即狀態」，那麼**句子改變**就是整個產品最重要的一件事，
+ * 而它原本是無聲的：renderRow()／renderPointer() 都是 innerHTML 整塊重畫，
+ * 節點每次都是新的，所以上面掛的 transition 在狀態切換時永遠不會觸發。
+ * 能動的只有新節點上的 @keyframes——這一段就是那些 @keyframes。
+ *
+ * 觸發時機由 js/sentence-nav.js 判斷（moPrev／moPrevN），**只有真的變了的那一格**
+ * 才帶 is-landed／is-changed。不加這個判斷的話，退掉一個詞會讓沒被動到的另外兩格
+ * 也跟著閃，那是雜訊不是回饋。
+ */
+
+/* ---- 詞落格：由左而右上墨，順著讀的方向 ----
+   裁切的是整個詞塊，所以那條標示面向的下底線（實線／虛線／雙線／點線）
+   會跟著字一起被畫出來——「這一格是哪個面向」和「這一格填好了」是同一筆。 */
+@keyframes sent-chip-land { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+[data-ui="sentence"] .sent-chip.is-landed {
+  animation: sent-chip-land var(--sentence-slow) var(--sentence-ease);
+}
+
+/* ---- 指向的件數變了：一道螢光 ----
+   「這句話目前指向 N 件事」是全站唯一的收斂讀數，150 → 20 是使用者做對了事情的證據，
+   原本卻是靜悄悄地換掉。用底色階往上跳一階再退回去（DESIGN.md：深度靠底色階與線，
+   不靠光），亮暗兩個主題都成立。刻意只動背景不動字距與內距：這一行的基準位置
+   被 baseline 對過（.sent-point-n 與 .sent-point-hint 只差 3px），不能因為動畫而位移。 */
+@keyframes sent-count-mark { from { background: var(--sentence-bg3); } to { background: transparent; } }
+[data-ui="sentence"] .sent-point-n.is-changed b {
+  animation: sent-count-mark 520ms var(--sentence-ease);
+}
+
+/* 關掉動態效果：詞不再用裁切的方式畫出來（那是位移型的揭露），改成純淡入；
+   件數那道螢光保留——它是「你剛剛把範圍縮小了」的證據，不是裝飾。 */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes sent-chip-land { from { opacity: 0; } to { opacity: 1; } }
+}

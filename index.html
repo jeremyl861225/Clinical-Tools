@@ -30,6 +30,163 @@
 <script src="./js/backlink.js" defer></script>
 </head>
 <body data-backtotop>
+<!-- splash:start —— PWA 開場：整片墨色收斂成一頭虎鯨
+     只在「以 PWA 獨立視窗開啟」且「這個分頁工作階段的第一次」播放；瀏覽器分頁不播，
+     頁與頁之間切換也不播（sessionStorage 記一次）。網址加 ?splash=1 可強制播放（驗收用）。
+     值班時開 App 是為了查東西，所以隨手一點就跳過，整段也只有 0.98 秒。
+     要逐格檢查時：workspace 之外另有一份定格用的驗收頁（把 setTimeout(finish) 拿掉、
+     改用 animationDelay 負值＋paused 停在任一毫秒），本檔不留那組鉤子。
+
+     為什麼整段內嵌而不拆成 css/splash.css＋js/splash.js：開場必須在**第一次繪製**就蓋住畫面，
+     多一個請求就多一次空窗；而且新檔案得同時改 sw.js 的 precache 清單，那個檔是多個工作階段
+     共用的熱點，不該為了開場動它。
+
+     虎鯨的形狀從哪裡來：這 73 個頂點是拿 js/orca.js **自己的剖面控制點**（PK/PTOP/PBOT、
+     dorsalFin()、pecFin()、flukeFin()）在純側面 θ=90° 下算出來的側視剪影——那個角度投影會
+     退化成 2D（螢幕 x ＝ X·sinθ ＋ Z·cosθ，cosθ=0 故 Z 不影響畫面），所以剪影可以離線算死，
+     不必去讀首頁那張 canvas。牠因此跟游在首頁上的是同一頭鯨，不是另外畫的一隻。
+     腸絨毛是從 icons/icon-512.png 描出來的輪廓（1 條外框 ＋ 6 個洞，evenodd 填），
+     與桌面圖示逐像素相同。
+
+     為什麼是「放大到蓋滿再縮回來」而不是把矩形變形成虎鯨：矩形→虎鯨的頂點內插，
+     中途是一團認不出來的黑塊（實測定格過）。而等比放大則有一個關鍵前提——
+     **錨點要選在肚子上**：若錨點落在背鰭那一欄，離開幾十個單位就沒有覆蓋，
+     算出來要放到 60 倍視窗高（約 48,000px，瀏覽器撐不住）；錨點移到 (0.692, 0.639)
+     這個腹側的點之後，實測 390×844 只要 17.6 倍就蓋得滿。COV[] 就是那條
+     「以錨點為中心往兩側走 k 個單位時，上下還剩多少半厚」的剖面表。 -->
+<div id="ct-splash" aria-hidden="true" hidden>
+  <svg class="ct-splash-whale" viewBox="0 0 1075.2 516.2" preserveAspectRatio="none" aria-hidden="true"><path d="M552.2 0.0 L558.5 0.0 L575.5 5.5 L592.5 14.8 L609.0 28.2 L636.5 61.5 L662.2 109.0 L674.2 138.0 L701.2 226.0 L835.2 223.2 L942.8 228.0 L1005.2 236.5 L1022.5 242.5 L1037.2 252.0 L1049.5 263.5 L1063.5 282.2 L1075.2 329.0 L1066.0 371.0 L1060.0 383.0 L1046.0 399.8 L1024.8 417.0 L997.5 426.8 L922.0 436.0 L836.5 439.0 L788.0 467.0 L696.0 502.5 L667.5 516.2 L657.8 492.8 L663.8 477.8 L675.0 460.2 L701.2 436.5 L600.2 428.8 L511.8 418.0 L423.8 403.0 L247.8 368.5 L145.5 353.5 L95.5 348.2 L83.0 392.5 L70.2 416.8 L61.8 428.2 L59.0 428.8 L59.0 432.8 L42.5 438.8 L30.8 439.5 L19.0 438.8 L2.2 432.8 L2.2 428.8 L0.0 428.5 L0.0 403.8 L4.2 387.8 L16.5 358.2 L31.5 331.5 L10.8 291.8 L0.0 258.8 L0.0 234.0 L2.2 229.8 L9.0 226.2 L19.0 223.8 L42.5 223.8 L59.0 229.8 L70.2 245.8 L83.0 269.8 L95.5 310.8 L195.5 297.8 L436.5 256.0 L566.2 237.8 L571.2 188.2 L570.2 144.0 L560.5 73.0 L546.0 15.0 L546.0 7.2 L548.0 2.8 L552.0 0.2Z"/></svg>
+  <svg class="ct-splash-mark" viewBox="0 0 297 295" aria-hidden="true"><path d="M38 0 L50 0 L60 3 L67 7 L78 19 L92 6 L107 0 L120 0 L127 2 L138 8 L148 19 L162 6 L177 0 L190 0 L197 2 L208 8 L218 19 L233 5 L247 0 L259 0 L267 2 L275 6 L285 15 L293 29 L296 40 L296 295 L1 295 L1 40 L4 29 L12 15 L22 6 L30 2 L37 1ZM38 20 L50 20 L58 24 L45 36 L41 42 L35 59 L35 188 L33 193 L30 196 L18 196 L18 44 L20 37 L27 26 L37 21ZM108 20 L119 20 L128 24 L135 32 L139 42 L139 196 L128 196 L123 190 L123 63 L117 43 L109 32 L100 25 L101 23 L107 21ZM178 20 L189 20 L196 23 L197 25 L188 32 L180 43 L174 63 L174 190 L172 194 L169 196 L158 196 L158 42 L164 29 L169 24 L177 21ZM247 20 L259 20 L266 23 L274 31 L279 44 L279 196 L267 196 L262 188 L262 59 L256 42 L252 36 L239 24 L246 21ZM76 39 L86 40 L92 43 L99 50 L103 58 L104 190 L110 206 L117 213 L126 217 L171 217 L180 213 L190 201 L193 189 L194 58 L198 50 L205 43 L211 40 L221 39 L233 44 L240 52 L244 63 L244 192 L249 205 L257 213 L266 217 L279 217 L279 236 L261 235 L248 229 L237 218 L229 201 L228 60 L226 58 L209 59 L209 194 L203 213 L190 228 L179 234 L171 236 L126 236 L110 230 L98 219 L93 211 L88 194 L88 59 L71 58 L69 60 L68 201 L60 218 L49 229 L36 235 L18 236 L18 217 L31 217 L37 215 L48 205 L52 196 L53 63 L59 49 L67 42 L75 40ZM78 224 L87 236 L98 246 L108 252 L120 256 L170 257 L181 255 L191 251 L204 242 L219 224 L225 234 L235 244 L244 250 L260 256 L279 257 L279 275 L18 275 L18 257 L37 256 L55 249 L72 234 L78 225Z" fill-rule="evenodd"/></svg>
+</div>
+<style>
+#ct-splash{
+  position:fixed; inset:0; z-index:9999; pointer-events:none; overflow:hidden;
+  /* 墨與紙都取自既有色票：造句設計用 --sentence-*，正式版退回 --ink/--paper。
+     兩套在暗色下都會自己對調，所以暗色主題自動變成「骨白的鯨 ＋ 墨色的絨毛」——
+     在深色頁面上畫深色的鯨魚是看不見的，這一層必須跟著主題翻面。 */
+  --sp-ink:  var(--sentence-fg, var(--ink, #132126));
+  --sp-paper:var(--sentence-bg, var(--paper, #f4f2ec));
+  --sp-mark: var(--sentence-bg, var(--paper, #f4f2ec));
+  background:var(--sp-paper);
+}
+/* 暗色不可以直接沿用「墨＝前景色」那一套：暗色的前景是骨白，開場就會變成一整片
+   骨白鋪滿螢幕——半夜在病房開 App 等於閃光彈。兩個主題都必須**以近黑開場**，
+   所以暗色改成「鯨魚用頁面自己的深墨、周圍露出的是高一階的線色」，
+   收斂出來是一頭黑鯨浮在稍亮的深底上。 */
+@media (prefers-color-scheme: dark){
+  #ct-splash{
+    --sp-ink:  var(--sentence-bg, var(--paper, #14181b));
+    --sp-paper:var(--sentence-line, var(--line, #39424a));
+    /* 標記不跟著底色走：底色壓暗之後絨毛就跟著看不見了，但開場第一格
+       就是要像一張「桌面圖示」，圖必須讀得出來。 */
+    --sp-mark: var(--sentence-fg2, var(--ink, #e7e4db));
+  }
+}
+#ct-splash[hidden]{display:none;}
+#ct-splash.is-out{opacity:0; transition:opacity 220ms var(--sentence-ease, cubic-bezier(.22,.61,.36,1));}
+.ct-splash-whale{position:absolute; left:0; top:0; fill:var(--sp-ink);}  /* transform-origin 由 JS 設在錨點上 */
+.ct-splash-mark{position:absolute; left:0; top:0; fill:var(--sp-mark); transform-origin:50% 50%;}
+</style>
+<script>
+(function () {
+  'use strict';
+  var el = document.getElementById('ct-splash');
+  if (!el) return;
+  var force = /[?&]splash=1/.test(location.search);
+  var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+                   window.navigator.standalone === true;
+  var seen = false;
+  try { seen = sessionStorage.getItem('ct-splash') === '1'; } catch (e) {}
+  if (!force && (!standalone || seen)) return;
+  try { sessionStorage.setItem('ct-splash', '1'); } catch (e) {}
+
+  el.hidden = false;
+  var whale = el.firstElementChild, mark = el.lastElementChild;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    whale.style.willChange = 'auto';
+    el.classList.add('is-out');
+    setTimeout(function () { el.remove(); }, 260);
+  }
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
+    window.addEventListener(t, finish, { once: true, passive: true });
+  });
+
+  /* ---- 版面：先擺好「最終的鯨」，再往回推出蓋滿畫面要放多大 ---- */
+  var OW = 1075.2, OH = 516.2, AX = 0.6920, AY = 0.6393;   // 錨點（相對鯨魚外框）
+  var COVK = 10, COV = [103,103,103,103,103,103,103,103,103,103,102,101,100,100,99,98,97,96,91,90,88,87,85,84,82,81,79,78,77,75,71,61,47];                          // 半厚剖面表（viewBox 單位）
+  var vw = window.innerWidth, vh = window.innerHeight;
+  var Wf = Math.min(vw * 0.64, 300), Hf = Wf * OH / OW;    // 最終尺寸
+  var BASE = 3;                                              // 版面尺寸給到最終的 3 倍：
+  var bw = Wf * BASE, bh = Hf * BASE;                        // 放大階段才不會是把小圖拉糊
+  var unit = Wf / OW;                                       // 1 個 viewBox 單位 = 幾 px（最終）
+
+  /* 最終的鯨置中；錨點跟著跑到偏離畫面中心的地方，覆蓋計算要把這段偏移算進去 */
+  var cx = vw / 2, cy = vh * 0.47;
+  var axPx = cx + (AX - 0.5) * Wf, ayPx = cy + (AY - 0.5) * Hf;
+  var needW = Math.max(axPx, vw - axPx), needH = Math.max(ayPx, vh - ayPx);
+  function halfAt(k) {
+    var i = k / COVK;
+    if (i >= COV.length - 1) return COV[COV.length - 1] * (i > COV.length ? 0 : 1);
+    var a = Math.floor(i), f = i - a;
+    return COV[a] * (1 - f) + COV[a + 1] * f;
+  }
+  var s0 = 1;
+  for (var s = 1; s <= 200; s += 0.5) {                      // 找最小的「蓋得滿」倍率
+    var k = needW / (s * unit);
+    if (k > (COV.length - 1) * COVK) continue;
+    if (halfAt(k) * unit * s >= needH) { s0 = s * 1.12; break; }   // 1.12 是安全邊
+  }
+
+  /* 錨點固定在 axPx/ayPx：元素左上角先擺到「錨點減去錨點在元素內的位置」，
+     transform-origin 設在 0 0，縮放就一定繞著錨點走。 */
+  whale.style.transformOrigin = (AX * 100).toFixed(3) + '% ' + (AY * 100).toFixed(3) + '%';
+  whale.style.width = bw + 'px'; whale.style.height = bh + 'px';
+  whale.style.left = (axPx - AX * bw) + 'px';
+  whale.style.top  = (ayPx - AY * bh) + 'px';
+  var kEnd = 1 / BASE, kStart = s0 / BASE;
+
+  var mw = Math.min(vw * 0.27, 116);
+  mark.style.width = mw + 'px'; mark.style.height = (mw * 295 / 297) + 'px';
+  mark.style.left = (cx - mw / 2) + 'px';
+  mark.style.top  = (vh * 0.47 - mw / 2) + 'px';
+
+  if (reduce) {                                             // 關掉動態效果：不縮放，只停一下
+    whale.style.transform = 'scale(' + kEnd + ')';
+    setTimeout(finish, 460);
+    return;
+  }
+
+  /* 倍率用**等比級數**鋪關鍵影格，不是讓瀏覽器在 s0 與 1 之間線性內插：
+     線性內插的話「看起來縮多快」前段暴衝、後段幾乎停住，收斂會像卡住。
+     緩動曲線改成烘進影格值裡，timing-function 因此用 linear。 */
+  /* 指數 3 會讓九成的位移擠在前六成時間裡，後段幾乎不動、看起來像卡住（定格量過）。
+     1.8 在等比級數之上只留一點點減速，收尾仍有「靠站」的感覺。 */
+  function ease(t) { return 1 - Math.pow(1 - t, 1.8); }
+  var STOPS = 14, kf = [], mf = [], i, t, p;
+  for (i = 0; i <= STOPS; i++) {
+    t = i / STOPS; p = ease(t);
+    kf.push((t * 100).toFixed(2) + '%{transform:scale(' +
+            (kStart * Math.pow(kEnd / kStart, p)).toFixed(5) + ');}');
+    mf.push((t * 100).toFixed(2) + '%{transform:scale(' + (1 - 0.70 * p).toFixed(4) +
+            ');opacity:' + Math.max(0, 1 - Math.max(0, (p - 0.45) / 0.5)).toFixed(3) + ';}');
+  }
+  var st = document.createElement('style');
+  st.textContent = '@keyframes ctSplashWhale{' + kf.join('') + '}' +
+                   '@keyframes ctSplashMark{' + mf.join('') + '}';
+  document.head.appendChild(st);
+  whale.style.transform = 'scale(' + kStart + ')';
+  whale.style.willChange = 'transform';
+  whale.style.animation = 'ctSplashWhale 560ms linear 200ms forwards';
+  mark.style.animation = 'ctSplashMark 560ms linear 200ms forwards';
+  /* 收斂完靜置 120ms 才淡出——立刻消失會像被打斷 */
+  setTimeout(finish, 880);
+})();
+</script>
+<!-- splash:end -->
 <!-- 方磚圖版上色：亮色→淺灰版畫、暗色→深板岩反相。sRGB 不可省，否則中間調會再偏一次。
      必須定義在引用它的 <img> 之前，否則首次繪製時 filter 尚未存在，整張圖不會顯示。
      尺寸給 1×1 移出畫面外，不用 width="0" height="0"：零尺寸的 SVG 會被繪製階段整個略過，
@@ -60,7 +217,7 @@
       <div class="eyebrow">Clinical Toolbox</div>
       <h1>臨床工具箱</h1>
       <!-- 兩段各自不斷行，窄螢幕時整段「latest revision …」落到下一行（見 .sub-part） -->
-      <div class="sub"><span class="sub-part">Established by Lin Shao-Chin</span><span class="sub-sep"> · </span><span class="sub-part">latest revision 2026.08.19</span></div>
+      <div class="sub"><span class="sub-part">Established by Lin Shao-Chin</span><span class="sub-sep"> · </span><span class="sub-part">latest revision 2026.09.04</span></div>
     </div>
     <!-- 為像素貓保留的空白帶：貓腳底＝本區塊底緣＝標題橫桿（見 js/pixel-cat.js）。
          這條空白同時把橫桿與上方文字拉開，貓不會壓到 .sub。

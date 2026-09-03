@@ -571,8 +571,22 @@
    *    逗號改用 F.lex.scopePost（同一份詞表裡本來就有的欄位），不寫死字面。
    * 3. 面向記號走底線樣式（.f-s 實線／.f-c 虛線／.f-a 雙線／.f-g 點線，見 CSS），
    *    不靠顏色區分，色弱與黑白列印下仍分得出這一格是哪個面向。 */
-  function chipHTML(f, label) {
-    return '<span class="sent-chip f-' + f + '" data-fk="' + f + '">' +
+  /* ---------------- 動態：只標記「這一次才變的東西」 ----------------
+   * renderRow()／renderPointer() 都是 innerHTML 整塊重畫，節點每次都是新的，
+   * 所以 CSS 的 transition 在狀態切換時**永遠不會觸發**——能動的只有新節點上的
+   * @keyframes。但反過來，若不加判斷就等於「每畫一次全部重播一次」：退掉一個詞，
+   * 沒被動到的另外兩格也會跟著閃。所以這裡自己記上一次畫的是什麼，
+   * 只有真的變了的那一格才帶 is-landed／is-changed。 */
+  var moPrev = { g: null, s: null, c: null, a: null }, moPrevN = null, moFirst = true;
+  /* 實測：點一個詞會觸發 **3 次** renderHome()（點擊本身、網址同步、再一次）。
+     第 1 次畫出來的節點帶著記號、動畫開始跑，第 2 次就把它整塊換掉——動畫等於
+     從來沒播過。這裡不去動導覽核心的重繪次數（那是句子導覽最核心的一段），
+     改成讓記號在一個短窗口內存活：同一格在 MO_HOLD 內重畫仍然帶記號，
+     動畫會從頭再跑一次，而那幾次重繪相隔只有幾毫秒，看起來就是播了一次。 */
+  var moLanded = { f: null, at: 0 }, moCountAt = 0, MO_HOLD = 700;
+
+  function chipHTML(f, label, landed) {
+    return '<span class="sent-chip f-' + f + (landed ? ' is-landed' : '') + '" data-fk="' + f + '">' +
       '<button type="button" class="sc-w" data-act="open" data-f="' + f + '" ' +
       'aria-label="' + esc(FKEY[f] + '：' + label) + '。點一下換詞">' + esc(label) + '</button>' +
       '<button type="button" class="sc-x" data-act="drop" data-f="' + f + '" aria-label="退掉' + esc(FKEY[f] + '：' + label) + '">×</button>' +
@@ -587,15 +601,23 @@
   function renderRow() {
     var row = document.getElementById('sentRow');
     if (!row) return;
+    /* 這一格「這次才落」＝上一次不是這個值，而且不是整頁的第一次繪製 */
+    function isNew(f) {
+      if (moFirst || !homeSt[f]) return false;
+      if (homeSt[f] !== moPrev[f]) { moLanded = { f: f, at: Date.now() }; return true; }
+      return moLanded.f === f && (Date.now() - moLanded.at) < MO_HOLD;
+    }
     var h = '';
-    if (homeSt.g) h += chipHTML('g', SECT_TITLE[homeSt.g].title) + '<span class="sent-lx">' + esc(F.lex.scopePost) + '</span>';
+    if (homeSt.g) h += chipHTML('g', SECT_TITLE[homeSt.g].title, isNew('g')) + '<span class="sent-lx">' + esc(F.lex.scopePost) + '</span>';
     h += '<span class="sent-lx">' + esc(F.lex.p0) + '</span>';
-    h += homeSt.s ? chipHTML('s', homeSt.s) : slotHTML('s');
+    h += homeSt.s ? chipHTML('s', homeSt.s, isNew('s')) : slotHTML('s');
     h += '<span class="sent-lx">' + esc(F.lex.p1) + '</span>';
-    h += homeSt.c ? chipHTML('c', homeSt.c) : slotHTML('c');
+    h += homeSt.c ? chipHTML('c', homeSt.c, isNew('c')) : slotHTML('c');
     h += '<span class="sent-lx">' + esc(F.lex.p2) + '</span>';
-    h += homeSt.a ? chipHTML('a', homeSt.a) : slotHTML('a');
+    h += homeSt.a ? chipHTML('a', homeSt.a, isNew('a')) : slotHTML('a');
     row.innerHTML = h;
+    moPrev = { g: homeSt.g || null, s: homeSt.s || null, c: homeSt.c || null, a: homeSt.a || null };
+    moFirst = false;
   }
 
   /* 候選詞面板 ＝ 原型的詞軌 .tokrail。原型有而這裡併入前沒有的兩件：
@@ -929,6 +951,7 @@
       point.innerHTML =
         '<span class="sent-point-n">正在瀏覽「' + esc(TL.zh) + '」的全部 <b>' + tileList(openTile).length + '</b> 件</span>' +
         '<span class="sent-point-hint">句子沒有被改動 · 按下面「← 回六大分類」或 Esc 回去</span>';
+      moPrevN = null;      /* 攤開分類清單時句子沒動，回來時不該把「沒變」誤判成「變了」 */
       /* 這裡**不再**放第二顆「回六大分類」：清單本體最上面那條工具列已經有一顆
          （.sent-tile-bar 的 .sent-tile-back），兩顆同名按鈕上下相隔不到 60px，
          實測 390×844 截圖看起來像壞掉。指向行維持純敘述，動作只留一個地方。 */
@@ -953,8 +976,14 @@
       var bn = bestNarrow();
       if (bn && bn.n < n) hint += '，再選一個' + FKEY[bn.f] + '可從 ' + n + ' 縮到 ' + bn.n;
     }
+    var nChanged = false;
+    if (moPrevN !== null) {
+      if (moPrevN !== n) { nChanged = true; moCountAt = Date.now(); }
+      else if (moCountAt && Date.now() - moCountAt < MO_HOLD) nChanged = true;
+    }
+    moPrevN = n;
     point.innerHTML = relaxNote +
-      '<span class="sent-point-n">這句話目前指向 <b>' + n + '</b> 件事</span>' +
+      '<span class="sent-point-n' + (nChanged ? ' is-changed' : '') + '">這句話目前指向 <b>' + n + '</b> 件事</span>' +
       '<span class="sent-point-hint">' + esc(hint) + '</span>' +
       (any ? '<button type="button" class="sent-clear" data-act="clear">清空句子</button>' : '');
   }
