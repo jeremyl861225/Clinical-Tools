@@ -134,6 +134,9 @@
    * ================================================================ */
   var W = 0, Hv = 0, dpr = 1, floorY = 0, docH = 0, barH = 0;
   var canvas = null, ctx = null, raf = null, last = 0, alive = false;
+  /* 從開場（index.html 的 splash 區段）交棒過來時，牠會先被**凍住**停在
+     與開場最後那一格完全相同的位置／體長／姿態上，等疊層淡完才放開開始游。 */
+  var held = false;
   var P = null;
 
   var o = {
@@ -1250,7 +1253,8 @@
     if (!alive) return;
     var dt = Math.min((ts - last) / 1000 || 0, .05);
     last = ts;
-    step(dt); draw();
+    if (!held) step(dt);          /* 交棒前凍住：姿態一格都不能動，否則接不上 */
+    draw();
     raf = requestAnimationFrame(loop);
   }
 
@@ -1262,13 +1266,37 @@
     dpr = Math.min(window.devicePixelRatio || 1, 3);
     W = window.innerWidth; Hv = window.innerHeight;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(Hv * dpr);
-    proportions(Math.max(132, Math.min(232, W * .40)));
+    /* 這個式子在 index.html 的開場裡有一份複本——開場收斂完的那條鯨魚必須跟
+       這裡算出來的一樣大，交棒才接得上。改這裡要一起改那邊。
+       交棒時直接用它算好的 L，即使兩邊哪天漂掉了，接手的那一格仍然對得上。 */
+    var hs = (!o.x) ? window.__orcaHandoff : null;
+    proportions(hs && hs.L ? hs.L : Math.max(132, Math.min(232, W * .40)));
     P = palette();
     measure();
     if (!o.x) {
       var sc = scrollTop();
-      o.x = W * .68; o.y = sc + Hv * .42; o.z = -D.zMax * .25;
-      o.tx = W * .25; o.ty = sc + Hv * .55; o.tz = 0;
+      if (hs) {
+        /* 開場畫的是**純側面、不擺尾**的剪影（θ=90°、thrust=0、z=0），
+           所以接手的第一格必須是同一組姿態，否則疊層淡完的瞬間身體會彈一下。
+           thrust 先歸零，放開之後由既有的指數緩動（tau 0.4s）自己接回巡游。 */
+        o.x = hs.x; o.y = hs.y; o.z = 0;
+        o.th = o.thWant = Math.PI / 2; o.thV = 0;
+        o.pitch = o.pitchWant = 0; o.pitchV = 0;
+        o.rollA = 0; o.rollV = 0;
+        o.thrust = o.thrustWant = 0; o.phase = 0;
+        o.speed = o.spdWant = 0;
+        o.tx = o.x; o.ty = o.y; o.tz = 0;
+        held = true;
+        hs.release = function () {
+          if (!held) return;
+          held = false;
+          o.thrustWant = 1; o.spdWant = 40;
+          pickTarget();
+        };
+      } else {
+        o.x = W * .68; o.y = sc + Hv * .42; o.z = -D.zMax * .25;
+        o.tx = W * .25; o.ty = sc + Hv * .55; o.tz = 0;
+      }
     }
     o.z = Math.max(-D.zMax, Math.min(D.zMax, o.z));
     o.x = Math.max(0, Math.min(o.x, W));

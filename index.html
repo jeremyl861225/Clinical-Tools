@@ -33,7 +33,7 @@
 <!-- splash:start —— PWA 開場：整片墨色收斂成一頭虎鯨
      只在「以 PWA 獨立視窗開啟」且「這個分頁工作階段的第一次」播放；瀏覽器分頁不播，
      頁與頁之間切換也不播（sessionStorage 記一次）。網址加 ?splash=1 可強制播放（驗收用）。
-     值班時開 App 是為了查東西，所以隨手一點就跳過，整段也只有 0.98 秒。
+     值班時開 App 是為了查東西，所以隨手一點就跳過，收斂完停留 1 秒讓 logo 定在鯨身上，整段約 1.98 秒。
      要逐格檢查時：workspace 之外另有一份定格用的驗收頁（把 setTimeout(finish) 拿掉、
      改用 animationDelay 負值＋paused 停在任一毫秒），本檔不留那組鉤子。
 
@@ -103,76 +103,116 @@
   el.hidden = false;
   var whale = el.firstElementChild, mark = el.lastElementChild;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var done = false;
+  var done = false, snap = null;
   function finish() {
     if (done) return;
     done = true;
+    /* 中途被點掉的話，收斂還在半路上：先把兩層對齊到最終姿態再淡出，
+       否則會看到一頭放大的剪影直接換成小一號的活虎鯨。 */
+    if (snap) snap();
     whale.style.willChange = 'auto';
     el.classList.add('is-out');
-    setTimeout(function () { el.remove(); }, 260);
+    setTimeout(function () {
+      el.remove();
+      /* 交棒：首頁那條**活的**虎鯨此刻已經被凍在同一個位置、同一個體長、
+         同一個純側面姿態上（見 js/orca.js 的 __orcaHandoff），放開牠就開始游。
+         疊層是在牠上面淡出的，所以整段看起來是同一頭鯨從剪影變成有腹白的本體。 */
+      var h = window.__orcaHandoff;
+      if (h && h.release) h.release();
+    }, 260);
   }
   ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
     window.addEventListener(t, finish, { once: true, passive: true });
   });
 
-  /* ---- 版面：先擺好「最終的鯨」，再往回推出蓋滿畫面要放多大 ---- */
-  var OW = 1075.2, OH = 516.2, AX = 0.6920, AY = 0.6393;   // 錨點（相對鯨魚外框）
-  var COVK = 10, COV = [103,103,103,103,103,103,103,103,103,103,102,101,100,100,99,98,97,96,91,90,88,87,85,84,82,81,79,78,77,75,71,61,47];                          // 半厚剖面表（viewBox 單位）
+  /* ---- 幾何 ----
+   * OW/OH  ：剪影的 viewBox
+   * AX/AY  ：覆蓋錨點，縮放繞著它走。**必須在肚子上**——落在背鰭那一欄的話，
+   *          離開幾十個單位就沒有覆蓋，算出來要放到 60 倍視窗高（約 48,000px）。
+   * BX/BY  ：體軸原點，也就是 js/orca.js 的 o.x／o.y 那一點（「身體中心」）。
+   *          交棒就是把這一點的螢幕座標交給牠。
+   * MX/MY  ：logo 落在鯨身上的位置（體軸中段）；MS 是邊長佔鯨魚全寬的比例，
+   *          由「以該點為中心、完全落在剪影內的最大正方形」量出來（184/1075），
+   *          再收到 0.88 倍留邊：用滿的話上下緣正好與背線／腹線相切，
+   *          反鋸齒一畫就看起來像溢出鯨身。
+   */
+  var OW = 1075.2, OH = 516.2;
+  var AX = 0.6920, AY = 0.6393;
+  var BX = 0.4886, BY = 0.6419;
+  var MX = 0.6000, MY = 0.6420, MS = 0.1505;
+  var COVK = 10, COV = [103,103,103,103,103,103,103,103,103,103,102,101,100,100,99,98,97,96,91,90,88,87,85,84,82,81,79,78,77,75,71,61,47];
   var vw = window.innerWidth, vh = window.innerHeight;
-  var Wf = Math.min(vw * 0.64, 300), Hf = Wf * OH / OW;    // 最終尺寸
-  var BASE = 3;                                              // 版面尺寸給到最終的 3 倍：
-  var bw = Wf * BASE, bh = Hf * BASE;                        // 放大階段才不會是把小圖拉糊
-  var unit = Wf / OW;                                       // 1 個 viewBox 單位 = 幾 px（最終）
 
-  /* 最終的鯨置中；錨點跟著跑到偏離畫面中心的地方，覆蓋計算要把這段偏移算進去 */
-  var cx = vw / 2, cy = vh * 0.47;
-  var axPx = cx + (AX - 0.5) * Wf, ayPx = cy + (AY - 0.5) * Hf;
+  /* 最終體長＝首頁那條活虎鯨的體長。**這個式子與 js/orca.js resize() 裡的那一行
+     是同一份**，改一邊要一起改；交棒時另外把算好的 L 一起交過去，即使兩邊哪天
+     漂掉了，接手的那一格仍然對得上。 */
+  var L = Math.max(132, Math.min(232, vw * 0.40));
+  var Wf = OW / 1000 * L, Hf = Wf * OH / OW;
+  var ox = vw / 2, oy = vh * 0.47;                 // 體軸原點的落點
+  var axPx = ox + (AX - BX) * Wf, ayPx = oy + (AY - BY) * Hf;
+
+  /* 交棒的資料要在 js/orca.js 之前就備好：本段是 <body> 開頭的內嵌腳本，
+     orca.js 是 defer，一定晚於這裡執行。不播開場時**不設**這個物件，
+     牠就照原本的方式隨機起游。 */
+  if (!reduce) {
+    window.__orcaHandoff = { x: ox, y: oy + (window.pageYOffset || 0), L: L, release: null };
+  }
+
+  var BASE = 3;                                    // 版面尺寸給到最終的 3 倍，放大階段才不糊
+  var bw = Wf * BASE, bh = Hf * BASE;
+  var unit = Wf / OW;
   var needW = Math.max(axPx, vw - axPx), needH = Math.max(ayPx, vh - ayPx);
   function halfAt(k) {
     var i = k / COVK;
-    if (i >= COV.length - 1) return COV[COV.length - 1] * (i > COV.length ? 0 : 1);
+    if (i >= COV.length - 1) return COV[COV.length - 1];
     var a = Math.floor(i), f = i - a;
     return COV[a] * (1 - f) + COV[a + 1] * f;
   }
   var s0 = 1;
-  for (var s = 1; s <= 200; s += 0.5) {                      // 找最小的「蓋得滿」倍率
+  for (var s = 1; s <= 200; s += 0.5) {
     var k = needW / (s * unit);
     if (k > (COV.length - 1) * COVK) continue;
-    if (halfAt(k) * unit * s >= needH) { s0 = s * 1.12; break; }   // 1.12 是安全邊
+    if (halfAt(k) * unit * s >= needH) { s0 = s * 1.12; break; }
   }
 
-  /* 錨點固定在 axPx/ayPx：元素左上角先擺到「錨點減去錨點在元素內的位置」，
-     transform-origin 設在 0 0，縮放就一定繞著錨點走。 */
   whale.style.transformOrigin = (AX * 100).toFixed(3) + '% ' + (AY * 100).toFixed(3) + '%';
   whale.style.width = bw + 'px'; whale.style.height = bh + 'px';
   whale.style.left = (axPx - AX * bw) + 'px';
   whale.style.top  = (ayPx - AY * bh) + 'px';
   var kEnd = 1 / BASE, kStart = s0 / BASE;
 
-  var mw = Math.min(vw * 0.27, 116);
-  mark.style.width = mw + 'px'; mark.style.height = (mw * 295 / 297) + 'px';
-  mark.style.left = (cx - mw / 2) + 'px';
-  mark.style.top  = (vh * 0.47 - mw / 2) + 'px';
+  /* logo：開場是畫面正中的一枚桌面圖示，收斂後落在鯨身正中間並留在那裡。
+     位移只有十幾個 px（體軸中段離畫面中心很近），所以看起來是「縮小」不是「飛過去」。 */
+  var mStart = Math.min(vw * 0.27, 116), mStartH = mStart * 295 / 297;
+  var mEnd = MS * Wf;
+  var mk = mEnd / mStart;
+  var mx0 = vw / 2, my0 = vh * 0.46;
+  var mx1 = ox + (MX - BX) * Wf, my1 = oy + (MY - BY) * Hf;
+  mark.style.width = mStart + 'px'; mark.style.height = mStartH + 'px';
+  mark.style.left = '0px'; mark.style.top = '0px';
 
-  if (reduce) {                                             // 關掉動態效果：不縮放，只停一下
+  var HOLD = 1000;                                 // 收斂完停留多久才進主畫面
+  if (reduce) {                                    // 關掉動態效果：不縮放，只停一下
     whale.style.transform = 'scale(' + kEnd + ')';
-    setTimeout(finish, 460);
+    mark.style.transform = 'translate(' + (mx1 - mStart / 2) + 'px,' + (my1 - mStartH / 2) +
+                           'px) scale(' + mk + ')';
+    setTimeout(finish, 460 + HOLD);
     return;
   }
 
   /* 倍率用**等比級數**鋪關鍵影格，不是讓瀏覽器在 s0 與 1 之間線性內插：
      線性內插的話「看起來縮多快」前段暴衝、後段幾乎停住，收斂會像卡住。
-     緩動曲線改成烘進影格值裡，timing-function 因此用 linear。 */
-  /* 指數 3 會讓九成的位移擠在前六成時間裡，後段幾乎不動、看起來像卡住（定格量過）。
-     1.8 在等比級數之上只留一點點減速，收尾仍有「靠站」的感覺。 */
+     指數 3 會讓九成的位移擠在前六成時間裡（定格量過）；1.8 只留一點點減速。 */
   function ease(t) { return 1 - Math.pow(1 - t, 1.8); }
   var STOPS = 14, kf = [], mf = [], i, t, p;
   for (i = 0; i <= STOPS; i++) {
     t = i / STOPS; p = ease(t);
     kf.push((t * 100).toFixed(2) + '%{transform:scale(' +
             (kStart * Math.pow(kEnd / kStart, p)).toFixed(5) + ');}');
-    mf.push((t * 100).toFixed(2) + '%{transform:scale(' + (1 - 0.70 * p).toFixed(4) +
-            ');opacity:' + Math.max(0, 1 - Math.max(0, (p - 0.45) / 0.5)).toFixed(3) + ';}');
+    mf.push((t * 100).toFixed(2) + '%{transform:translate(' +
+            (mx0 + (mx1 - mx0) * p - mStart / 2).toFixed(2) + 'px,' +
+            (my0 + (my1 - my0) * p - mStartH / 2).toFixed(2) + 'px) scale(' +
+            Math.pow(mk, p).toFixed(4) + ');}');
   }
   var st = document.createElement('style');
   st.textContent = '@keyframes ctSplashWhale{' + kf.join('') + '}' +
@@ -181,9 +221,16 @@
   whale.style.transform = 'scale(' + kStart + ')';
   whale.style.willChange = 'transform';
   whale.style.animation = 'ctSplashWhale 560ms linear 200ms forwards';
+  mark.style.transform = 'translate(' + (mx0 - mStart / 2) + 'px,' + (my0 - mStartH / 2) + 'px)';
   mark.style.animation = 'ctSplashMark 560ms linear 200ms forwards';
-  /* 收斂完靜置 120ms 才淡出——立刻消失會像被打斷 */
-  setTimeout(finish, 880);
+  snap = function () {
+    whale.style.animation = 'none';
+    whale.style.transform = 'scale(' + kEnd + ')';
+    mark.style.animation = 'none';
+    mark.style.transform = 'translate(' + (mx1 - mStart / 2).toFixed(2) + 'px,' +
+                           (my1 - mStartH / 2).toFixed(2) + 'px) scale(' + mk.toFixed(4) + ')';
+  };
+  setTimeout(finish, 200 + 560 + HOLD);
 })();
 </script>
 <!-- splash:end -->
