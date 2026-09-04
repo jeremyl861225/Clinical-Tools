@@ -399,6 +399,21 @@ def main():
         if p in page_set and 'location.hash' not in read(p):
             E('%s 在 TAB_PAGES 內，但頁面不讀 location.hash（造句導覽的分頁深層連結會落空）' % p)
 
+    # 9. 連到分類分級頁的深層連結：只認 #sys=<id>（頁內 id="sys-<id>"）與 #tab=<key>（data-tab="<key>"）；
+    #    寫錯（例如 #circ）不會報錯，只會靜靜落到預設分頁
+    sys_ids = set(re.findall(r'class="sys-head" id="sys-([\w-]+)"', cl))
+    tab_keys = set(re.findall(r'data-tab="([\w-]+)"', cl))
+    for p in sorted(page_set | {'js/' + f for f in os.listdir(os.path.join(ROOT, 'js')) if f.endswith('.js')}):
+        src = read(p)
+        for m in re.finditer(r"classifications\.html#([^'\"\s)]+)", src):
+            frag = m.group(1)
+            if frag.startswith('sys=') and frag[4:] and frag[4:] not in sys_ids:
+                E('%s 連到 classifications.html#%s，但分類頁沒有 id="sys-%s"' % (p, frag, frag[4:]))
+            elif frag.startswith('tab=') and frag[4:] not in tab_keys:
+                E('%s 連到 classifications.html#%s，但分類頁沒有 data-tab="%s"' % (p, frag, frag[4:]))
+            elif not (frag.startswith('sys=') or frag.startswith('tab=')):
+                E('%s 連到 classifications.html#%s：分類頁只認 #sys=<id> 或 #tab=<key>，這個錨點會落到預設分頁' % (p, frag))
+
     for e in errs:
         print('✗ ' + e)
     for w in warns:
