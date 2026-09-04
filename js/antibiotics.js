@@ -69,7 +69,7 @@ function abgSpectrum(d){
   });
   if(!cells.length) return '';
   const src = d.abgProxy ? `台大 2026 上半年在地感受性 %S（以 ${d.abgProxy} 為同類代表）` : '台大 2026 上半年在地感受性 %S';
-  return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗　·　* ＝本期無資料、沿用 2025 上半年</div>${covFold(cells)}</div>`;
+  return `<div class="dc-susc"><div class="dc-susc-cap">${src}　·　越亮＝越有效：≥90 實心橘 / 80–89 緋紅 / 60–79 酒紅 / &lt;60 深梅　·　* ＝本期無資料、沿用 2025 上半年</div>${covFold(cells)}</div>`;
 }
 
 /* 「依細菌」的在地感受性徽章：對選定菌，列出台大表中所有有數值的抗生素 %S。
@@ -94,7 +94,7 @@ function abgForBac(b){
   });
   if(!blocks.length) return '';
   const n = (!Array.isArray(map)) ? `（n=${ABG[map.sec].org[map.org].n}）` : '';
-  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2026 上半年在地感受性 %S${n}　·　≥90 粗框 / 80–89 亮 / 60–79 琥珀 / &lt;60 暗　·　* ＝本期無資料、沿用 2025 上半年</div>${blocks.join('')}</div>`;
+  return `<div class="dc-susc"><div class="dc-susc-cap">台大 2026 上半年在地感受性 %S${n}　·　越亮＝越有效：≥90 實心橘 / 80–89 緋紅 / 60–79 酒紅 / &lt;60 深梅　·　* ＝本期無資料、沿用 2025 上半年</div>${blocks.join('')}</div>`;
 }
 
 /* =========================================================================

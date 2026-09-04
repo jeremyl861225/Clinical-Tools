@@ -28,17 +28,20 @@
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
 <style>
   /* 四級感受性色階：降彩度、與全站 teal/rust 色系調和，仍保四級可辨與對比 */
-  :root{ --s2:#2f6b5c; --s1:#8aab8d; --s0:#c6a15f; --sn:#a8756d;
-         --s2t:#fff; --s1t:#1b2b1f; --s0t:#2b2110; --snt:#fff; }
+  /* 四級 ＝ 色票本身的階序，**越亮＝越有效**（深梅 無效 → 酒紅 變異 → 緋紅 有效 →
+     橘 強效）。塊上文字都驗過對比：有效那一級的緋紅原色配骨白字只有 4.44，
+     加深到 #c82a3c 才過 4.5；強效的橘配墨字是 6.48。 */
+  :root{ --s2:#ed893a; --s1:#c82a3c; --s0:#820b33; --sn:#40263a;
+         --s2t:#1f1f1d; --s1t:#efece1; --s0t:#efece1; --snt:#efece1; }
   @media (prefers-color-scheme: dark){
-    :root{ --s2:#3d8272; --s1:#7d9c81; --s0:#b8945a; --sn:#9c6d66;
-           --s1t:#0f1a12; --s0t:#221a0c; }
+    :root{ --s2:#f6964e; --s1:#ed595f; --s0:#a33850; --sn:#5e4357;
+           --s2t:#0a1512; --s1t:#0a1512; --s0t:#ece6d8; --snt:#ece6d8; }
   }
   /* 台大 %S 分級文字色。這幾個字印在一般頁面底色上（不是 .result 那種恆深色面板），
      故必須跟著亮/暗色切換——原本只有亮色一組，暗色模式下深綠字壓在深底上幾乎看不見。 */
-  :root{ --sh-hi:#0c8a3e; --sh-ok:#2f7a2a; --sh-mid:#b5751a; --sh-lo:#c0392b; }
+  :root{ --sh-hi:#954b00; --sh-ok:#ab0027; --sh-mid:#820b33; --sh-lo:#40263a; }
   @media (prefers-color-scheme: dark){
-    :root{ --sh-hi:#5cc98a; --sh-ok:#7fc086; --sh-mid:#d6a44e; --sh-lo:#e2897c; }
+    :root{ --sh-hi:#ffb989; --sh-ok:#ff8989; --sh-mid:#e4788b; --sh-lo:#987c91; }
   }
   .sHi{color:var(--sh-hi)} .sOk{color:var(--sh-ok)} .sMid{color:var(--sh-mid)} .sLo{color:var(--sh-lo)}
 

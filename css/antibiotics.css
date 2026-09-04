@@ -65,13 +65,16 @@
   .lf-x{border:0; background:none; color:var(--accent); font-size:14px; line-height:1; cursor:pointer; padding:0 5px;}
   .cov-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
   .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; border-radius:8px; padding:1px 7px;}
-  .cov-tag.yes{color:var(--accent); background:var(--accent-soft);}
-  .cov-tag.partial{color:var(--accent2); background:var(--accent2-soft);}
-  .cov-tag.no{color:var(--muted-soft); background:var(--soft-bg); text-decoration:line-through; opacity:.7;}
+  /* 感受性／涵蓋度一律走同一條階序：**越亮＝越有效**（見 css/styles.css 的 --susc-*）。
+     最有效那一級（.sy-hi，≥90）是實心橘底＋墨字——徽章的字只有 9.5px，
+     橘當字色在米白上只有 2.15，反過來當底配墨字是 6.48。 */
+  .cov-tag.yes{color:var(--susc-3); background:transparent; border:1px solid currentColor;}
+  .cov-tag.partial{color:var(--susc-2); background:transparent; border:1px dashed currentColor;}
+  .cov-tag.no{color:var(--susc-1); background:transparent; border:1px dotted currentColor; text-decoration:line-through; opacity:.85;}
   /* 藥卡標題下的抗菌覆蓋徽章列（收合時即可一眼判讀；亮燈=涵蓋、暗掉刪除線=不涵蓋） */
   .dc-cov{flex-basis:100%; display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
   .dc-cov .cov-tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em; border-radius:8px; padding:2px 8px;}
-  .cov-tag.sy-hi{color:var(--accent); background:var(--accent-soft); font-weight:800; border:1.5px solid var(--accent); padding:1px 7px;}
+  .cov-tag.sy-hi{color:var(--susc-top-ink); background:var(--susc-top); font-weight:800; border:1.5px solid var(--susc-top); padding:1px 7px;}
   /* 抗結核／抗病毒等非抗菌藥的單一類別標籤 */
   .cov-tag.cat{color:var(--muted); background:var(--soft-bg); border:1px solid var(--line); letter-spacing:.06em;}
   .dc-preg{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); border:1px solid var(--accent2); border-radius:8px; padding:1px 7px;}

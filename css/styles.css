@@ -18,6 +18,17 @@
     /* 手繪螢光筆：一道略帶傾斜、上下緣起伏的筆觸，起筆處疊一層（筆停頓的地方較深）、
        下緣壓一條積墨。整段是內嵌 SVG，離線可用、不發請求；顏色烘在檔案裡，
        所以亮暗兩套各有一份（要換螢光筆顏色就是換這兩行）。 */
+    /* ---- 菌譜的感受性階序（暗＝低感受性、亮＝最有效）----
+       使用者指定用色票本身的階序表達「這支藥對這隻菌有多好」：
+       深梅 → 酒紅 → 緋紅 → 橘。但徽章上的字只有 9.5px，緋紅在米白上 4.44、
+       橘只有 2.15，直接當字色兩個都不到 AA 的 4.5。所以：
+         · 緋紅那一級改用同色相的加深變體（6.43）；
+         · 最有效那一級改成**實心橘底 ＋ 墨字**（6.48）——它因此是整條階序裡
+           最亮、最突出的一顆，正是「最有效」該有的份量，而且合格。
+       明度是單調遞增的，所以「越亮＝越有效」這件事不靠色相也讀得出來。 */
+    --susc-1:#40263a; --susc-2:#820b33; --susc-3:#ab0027;
+    --susc-top:#ed893a; --susc-top-ink:#1f1f1d;
+    --hl-img-deep:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.46%22%20d%3D%22M4.6%2013.2C38%208.4%2082%2011.2%20126%209.1C168%207.2%20204%2010.4%20232.2%208.6L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.1%22%20d%3D%22M3.8%2014.1C20%2011.2%2034%2012.6%2047%2011.3L51.4%2033.8C34%2035.6%2018%2034.1%202.6%2035.9Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.09%22%20d%3D%22M3.2%2031.4C48%2034.8%20118%2031.6%20168%2032.4C196%2032.9%20218%2031.2%20236.6%2027.4L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3C%2Fsvg%3E");
     --hl-img:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.34%22%20d%3D%22M4.6%2013.2C38%208.4%2082%2011.2%20126%209.1C168%207.2%20204%2010.4%20232.2%208.6L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.16%22%20d%3D%22M3.8%2014.1C20%2011.2%2034%2012.6%2047%2011.3L51.4%2033.8C34%2035.6%2018%2034.1%202.6%2035.9Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.13%22%20d%3D%22M3.2%2031.4C48%2034.8%20118%2031.6%20168%2032.4C196%2032.9%20218%2031.2%20236.6%2027.4L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3C%2Fsvg%3E");
     --field-bg:#ffffff; --box-bg:#faf8f2; --hover-bg:#fbfaf6; --soft-bg:#eef4f5;
     --mono:"IBM Plex Mono","SF Mono",Consolas,monospace;
@@ -31,6 +42,9 @@
       --accent:#af8fa6; --accent-soft:#2c202c;
       --accent2:#eb7289; --accent2-soft:#421325;
       --muted:#a4a49e; --muted-soft:#8a8a86; --label-ink:#cbc7be;
+      /* 暗色：同一條階序，改成在深底上單調變亮（4.98 / 6.52 / 8.83） */
+      --susc-1:#987c91; --susc-2:#e4788b; --susc-3:#ff9593;
+      --susc-top:#ed893a; --susc-top-ink:#0a1512;
       --hl-img:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.3%22%20d%3D%22M4.6%2013.2C38%208.4%2082%2011.2%20126%209.1C168%207.2%20204%2010.4%20232.2%208.6L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.14%22%20d%3D%22M3.8%2014.1C20%2011.2%2034%2012.6%2047%2011.3L51.4%2033.8C34%2035.6%2018%2034.1%202.6%2035.9Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.12%22%20d%3D%22M3.2%2031.4C48%2034.8%20118%2031.6%20168%2032.4C196%2032.9%20218%2031.2%20236.6%2027.4L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3C%2Fsvg%3E");
       --field-bg:#232b31; --box-bg:#222a2f; --hover-bg:#262e34; --soft-bg:#1b3037;
     }
@@ -139,7 +153,17 @@
      刻意**不**掛在 <b> 上：全站 <b> 有 19,058 個（臨床內文用它標關鍵詞），
      螢光筆一旦變成常態就不再是強調。box-decoration-break:clone 讓換行的每一段
      各自得到一筆，不會被拉成一條橫跨兩行的怪東西。 */
-  mark, .gs-hl, .hl{
+  /* 建議處置是整條流程的答案，它裡面的粗體就是重點——除了粗體之外再上一筆螢光。
+     面板是深底，共用那支 0.34 的筆疊上去幾乎看不見，所以另給一支濃的（約 0.52）；
+     實測面板文字壓在螢光筆上仍有 4.9–6.5 的對比。rec-idle 是淺底，用一般那支。 */
+  .flow-rec b, .flow-rec strong{
+    background:var(--hl-img-deep) no-repeat center/100% 100%;
+    color:inherit; padding:.04em .26em; margin:0 -.10em;
+    -webkit-box-decoration-break:clone; box-decoration-break:clone;
+  }
+  .flow-rec.rec-idle b, .flow-rec.rec-idle strong{ background-image:var(--hl-img); }
+
+  mark, strong, .gs-hl, .hl{
     background:var(--hl-img) no-repeat center/100% 100%;
     color:inherit; border-radius:0;
     padding:.04em .26em; margin:0 -.10em;
@@ -346,6 +370,10 @@
      使其成為可佔滿剩餘寬度並自行折行的單一 flex item，即可與勾選框對齊。
      短條目不需要，維持原本寫法即可。 */
   label.item>.it-t{flex:1 1 0; min-width:0;}
+  /* 條目的採計標準：放在名稱底下自成一行，而不是塞進 .unit 的括號裡——
+     標準一長，括號會把整列撐成三四行、勾選框與文字也對不齊。 */
+  label.item .it-def{display:block; margin-top:3px; font-size:11.5px; line-height:1.6; color:var(--muted); font-weight:400;}
+
   label.item:has(>.it-t){align-items:flex-start;}
   label.item:has(>.it-t)>input{margin-top:4px;}
   .pt-badge{margin-left:auto; flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--accent2); background:var(--accent2-soft); border-radius:10px; padding:2px 8px; white-space:nowrap;}

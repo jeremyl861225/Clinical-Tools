@@ -450,6 +450,7 @@
   min-height: 44px; padding: 6px 4px; font-family: var(--sentence-sans); font-size: 13px; color: var(--sentence-fg2);
 }
 [data-ui="sentence"] label.item:hover { background: var(--sentence-shade); }
+[data-ui="sentence"] label.item .it-def { color: var(--sentence-dim); font-family: var(--sentence-sans); }
 [data-ui="sentence"] .toggle-inline {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 9px; min-height: 48px;
   border-bottom: 1px dotted var(--sentence-line); padding: 7px 0;
@@ -2953,6 +2954,8 @@
 [data-ui="sentence"] button.cov-tag:hover {
   filter: none; background: var(--sentence-shade); outline: none;
 }
+/* 最有效那一級是實心的，hover 再疊一層 shade 會把橘底弄濁；改成壓暗一點點。 */
+[data-ui="sentence"] button.cov-tag.sy-hi:hover { background: var(--susc-top); filter: brightness(.94); }
 [data-ui="sentence"] button.cov-tag:focus-visible {
   outline: 2px solid var(--sentence-fg); outline-offset: 1px;
 }
@@ -2971,19 +2974,25 @@
               var(--sentence-line) var(--tier-fill) 100%);
 }
 
-/* ---- 四級。色相仍照頁面自己印出來的規則（≥90／80–89 墨綠、60–79 琥珀、
-   <60 暗），但色相已經是第四重，不是唯一線索。 */
+/* ---- 四級。2026-09 換成色票本身的階序：**越亮＝越有效**
+   （深梅 <60 → 酒紅 60–79 → 加深緋紅 80–89 → 實心橘 ≥90，見 css/styles.css 的
+   --susc-*）。明度單調遞增，所以「哪一級比較好」不靠色相也讀得出來；
+   立柱的填充比例仍是第一重編碼、線型是第二重，色相是第三重。
+   最有效那一級**改成實心填色**：徽章的字只有 9.5px，橘 #ed893a 當字色在米白上
+   只有 2.15（AA 要 4.5），反過來拿它當底、配墨字則是 6.48——而且它因此成為整條
+   階序裡最亮最重的一顆，正是「最有效」該有的份量。 */
 [data-ui="sentence"] .cov-tag.sy-hi {                          /* (0,3,0) > (0,2,0) */
   --tier-fill: 100%;
-  color: var(--sentence-calm); border: 2px solid currentColor; font-weight: 800;
+  color: var(--susc-top-ink); background: var(--susc-top);
+  border: 2px solid var(--susc-top); font-weight: 800;
 }
 [data-ui="sentence"] .cov-tag.yes {                            /* (0,3,0) */
   --tier-fill: 66%;
-  color: var(--sentence-calm); border: 1px solid currentColor;
+  color: var(--susc-3); border: 1px solid currentColor;
 }
 [data-ui="sentence"] .cov-tag.partial {                        /* (0,3,0) */
   --tier-fill: 33%;
-  color: var(--sentence-warn); border: 1px dashed currentColor;
+  color: var(--susc-2); border: 1px dashed currentColor;
 }
 /* `no` 的邊框用 --sentence-dim 而不是 --sentence-line2：邊框在這裡是**承重的
    分級線索**（線型是第二重編碼），適用 WCAG 1.4.11 非文字對比 ≥3:1。
@@ -2991,7 +3000,7 @@
    其餘四級的邊框都是 currentColor，跟著字色走，自然過關（5.31–8.00）。 */
 [data-ui="sentence"] .cov-tag.no {                             /* (0,3,0) */
   --tier-fill: 12%;
-  color: var(--sentence-fg2); border: 1px dotted var(--sentence-dim);
+  color: var(--susc-1); border: 1px dotted currentColor;
   font-weight: 400; text-decoration: line-through; opacity: 1;
 }
 [data-ui="sentence"] button.cov-tag.no:hover { opacity: 1; background: var(--sentence-shade); }
@@ -3985,6 +3994,7 @@
    （background 簡寫會把 background-image 一併重設成 none）。 */
 [data-ui="sentence"] .tab mark,
 [data-ui="sentence"] mark,
+[data-ui="sentence"] strong,
 [data-ui="sentence"] .gs-hl,
 [data-ui="sentence"] .hl {
   background: var(--hl-img) no-repeat center / 100% 100%;
@@ -3992,6 +4002,16 @@
   padding: .04em .26em; margin: 0 -.10em;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
+/* 建議處置裡的粗體也上一筆螢光——那是整條流程的答案，粗體就是重點。
+   **造句設計的建議面板是淺底**（只有正式版才是深色實心板），所以這裡用的是
+   一般那支筆，不是 css/styles.css 給正式版深底用的濃版。 */
+[data-ui="sentence"] .flow-rec b,
+[data-ui="sentence"] .flow-rec strong {
+  background: var(--hl-img) no-repeat center / 100% 100%;
+  color: inherit; padding: .04em .26em; margin: 0 -.10em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+
 [data-ui="sentence"] .disclaimer { font-size: 11px; color: var(--sentence-dim); }
 
 /* ---- T3. 建議等級徽章 .badge（ACC/AHA Class I / IIa / IIb / III）----
@@ -4145,20 +4165,22 @@
  * 換成骨白／墨色階的四個近中性色，維持原本的意圖。
  * ================================================================ */
 :root[data-ui="sentence"] {
-  --s2: #2b5f45;  --s2t: #efece1;      /* 涵蓋：墨綠實心 */
-  --s1: #7f9e8b;  --s1t: #14211c;      /* 部分：淡墨綠 */
-  --s0: #7d5a10;  --s0t: #efece1;      /* 變異：琥珀 */
-  --sn: #97331d;  --snt: #efece1;      /* 不涵蓋：硃砂 */
-  --sh-hi: #2b5f45; --sh-ok: #2b5f45; --sh-mid: #7d5a10; --sh-lo: #97331d;
+  /* 2026-09 換成色票的階序：**越亮＝越有效**。塊上文字都驗過對比（見下方數字）。 */
+  --s2: #ed893a;  --s2t: #1f1f1d;      /* 強效：橘實心（6.48） */
+  --s1: #c82a3c;  --s1t: #efece1;      /* 有效：緋紅加深（4.61；原色 4.44 不足） */
+  --s0: #820b33;  --s0t: #efece1;      /* 變異：酒紅（8.68） */
+  --sn: #40263a;  --snt: #efece1;      /* 無效：深梅（11.41） */
+  /* 同一條階序的**文字版**（.sHi/.sOk/.sMid/.sLo），色塊版是上面的 --s2/--s1/--s0/--sn */
+  --sh-hi: #954b00; --sh-ok: #ab0027; --sh-mid: #820b33; --sh-lo: #40263a;
   --gA: #e8e4d6; --gB: #e1e0d5; --gC: #e6e1d8; --gD: #eae3d1;
 }
 @media (prefers-color-scheme: dark) {
   :root[data-ui="sentence"] {
-    --s2: #79b58e;  --s2t: #0a1512;
-    --s1: #4a6b58;  --s1t: #ece6d8;
-    --s0: #d3a247;  --s0t: #0a1512;
-    --sn: #e0715a;  --snt: #0a1512;
-    --sh-hi: #79b58e; --sh-ok: #79b58e; --sh-mid: #d3a247; --sh-lo: #e0715a;
+    --s2: #f6964e;  --s2t: #0a1512;
+    --s1: #ed595f;  --s1t: #0a1512;
+    --s0: #a33850;  --s0t: #ece6d8;
+    --sn: #5e4357;  --snt: #ece6d8;
+    --sh-hi: #ffb989; --sh-ok: #ff8989; --sh-mid: #e4788b; --sh-lo: #987c91;
     --gA: #132420; --gB: #141f1c; --gC: #161f24; --gD: #181f17;
   }
 }
