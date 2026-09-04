@@ -1,0 +1,33 @@
+{{HEAD}}
+<body data-back-label="{{BACK_LABEL}}">
+<div class="sheet">
+<div class="view active" id="view-{{K}}">
+  <div class="app-header">
+    <div><div class="eyebrow">{{EYEBROW}}</div><h1>{{TITLE}}</h1><div class="sub">{{SUB}}</div></div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-{{K}}'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- ===== 分頁列：data-p 是造句導覽（js/sentence-nav.js parseTabs）與 check_kinds.py 認的記號，
+       有分頁列的頁面 kind 一律是 guide。 ===== -->
+  <div class="tab-row" id="{{K}}_tabs">
+    <button class="tab-btn active" data-p="p1" onclick="{{K}}Tab('p1')">分頁一</button>
+    <button class="tab-btn"        data-p="p2" onclick="{{K}}Tab('p2')">分頁二</button>
+  </div>
+  <section class="{{K}}-panel" data-panel="p1"></section>
+  <section class="{{K}}-panel hidden" data-panel="p2"></section>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/PMID/" target="_blank" rel="noopener" class="ref-link">Guideline body. Title. Journal. Year.</a></footer>
+</div>
+</div>
+<script>
+function {{K}}Tab(k) {
+  document.querySelectorAll('#{{K}}_tabs .tab-btn').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-p') === k); });
+  document.querySelectorAll('.{{K}}-panel').forEach(function (p) { p.classList.toggle('hidden', p.getAttribute('data-panel') !== k); });
+  if (history.replaceState) history.replaceState(null, '', '#' + k);
+}
+(function () { var h = location.hash.replace('#', ''); if (h && document.querySelector('#{{K}}_tabs [data-p="' + h + '"]')) {{K}}Tab(h); })();
+</script>
+{{TAIL}}

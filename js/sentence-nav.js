@@ -1270,7 +1270,10 @@
                    /* 2026-08 新增的五頁，分頁形式與上面同一套（button[data-p] ＋ 裸名 hash ＋ p- 前綴的窗格）：
                       vasoactive 4 個、pacemaker 6 個、crrt 5 個、lyte-all 6 個（鈉鉀氯鈣鎂磷各一）、
                       nutrition 6 個（晶體輸液／靜脈營養液／添加劑／處方計算／重症營養時機／證據）。 */
-                   'vasoactive', 'pacemaker', 'crrt', 'lyte-all', 'nutrition'];
+                   'vasoactive', 'pacemaker', 'crrt', 'lyte-all', 'nutrition',
+                   /* 2026-09-04 補三頁用藥指引（schema/check_registry.py 會擋漏登錄的分頁頁）：
+                      dm-path 9 個、htn-path 9 個、hbv-path 7 個，同樣是 button[data-p] ＋ 裸名 hash。 */
+                   'dm-path', 'htn-path', 'hbv-path'];
   var tabsOf = {};            // facets 的 k → parseTabs() 解析出來的分頁陣列
   /* 這 13 頁的頁內清單也掛進候選清單那顆「N 個分頁 ⌄」。與抗生素／分級系統
      那三顆不同的是它多帶一個 file：按下去只抓**那一頁自己**（22–169 KB），

@@ -27,7 +27,13 @@ def cards_in_module(path):
     # 元組是 [pid, code, 商品名] 或 [pid, code, 商品名, 學名]，第 4 欄可有可無
     return re.findall(r"\['(\d+)',\s*'([^']+)',\s*'[^']*'(?:,\s*'[^']*')?\]", src)
 
-MODULES = ['js/breast-pathway.js']
+# 2026-09-04 改成自動掃描：凡是 js/*-pathway.js 內有 drugCardHTML（自帶藥卡表）的模組都檢查，
+# 不再手寫清單（原本只列 breast 一支，其餘九支第二代模組的藥卡從來沒被查過）。
+MODULES = sorted(
+    p.relative_to(ROOT).as_posix()
+    for p in (ROOT / 'js').glob('*-pathway.js')
+    if 'drugCardHTML' in io.open(p, encoding='utf-8').read()
+)
 
 def main():
     problems, total = [], 0

@@ -43,7 +43,15 @@ REQUIRED = [
     ('js/nav.js', 'nav.js'),
     ('js/backlink.js', 'backlink.js'),
     ('js/pull-to-refresh.js', 'pull-to-refresh.js'),
+    # 造句導覽（預設主題）的四件：少任何一件，該頁會靜靜地以貓咪主題渲染
+    ('css/ui-sentence.css', 'ui-sentence.css'),
+    ('js/ui-mode.js', 'ui-mode.js'),
+    ('data/facets.js', 'facets.js'),
+    ('js/sentence-nav.js', 'sentence-nav.js'),
 ]
+# <head> 內那段不可 defer 的 inline boot（決定 data-ui 要不要在 paint 前設好）
+UI_BOOT = "localStorage.getItem('ct-ui')!=='classic'"
+
 # h1 超過這個中文字數就該自訂 data-back-label，否則返回鍵會被撐得很長
 LABEL_LIMIT = 14
 
@@ -111,14 +119,19 @@ def check_page(page, pre):
             bad.append(f'未載入 {filename}')
     if 'serviceWorker' not in html:
         bad.append('未註冊 service worker')
+    if UI_BOOT not in html:
+        bad.append('缺 <head> 內的 ui-mode inline boot（會先畫出貓咪主題再閃成造句設計）')
 
     # 3. 返回鍵
     home = re.findall(r'<button[^>]*class="[^"]*back-btn[^"]*"[^>]*>', html)
     home = [b for b in home if 'index.html' in b]
     if not home:
         bad.append('沒有連回 index.html 的「返回主選單」按鈕')
-    elif 'back-stack' not in html:
-        bad.append('返回鍵不在 .back-stack 內，backlink.js 插入的返回來源頁鍵會排版錯亂')
+    else:
+        # 只認「在 .back-stack 裡面」的那一顆：檔案別處恰好有 back-stack 字樣不算
+        stack = re.search(r'<div class="back-stack">(.*?)</div>', html, re.S)
+        if not stack or 'back-btn' not in stack.group(1) or 'index.html' not in stack.group(1):
+            bad.append('返回鍵不在 .back-stack 內，backlink.js 插入的返回來源頁鍵會排版錯亂')
 
     # 4. 頁首三件組
     header = re.search(r'<div class="app-header">(.*?)</div>\s*</div>', html, re.S)
@@ -160,6 +173,16 @@ def main():
                 print(f'✗ sw.js: PRECACHE_URLS 列了 {url}，但檔案不存在')
                 problems += 1
 
+    # 1c. 動態載入的資料檔（藥卡展開才注入的 data/drugs/<pid>.js 等）靜態掃描抓不到，
+    #     直接要求這幾個目錄的 .js 全在 precache；data/ddi 的 t/、r/ 分片刻意不進（見 data/README.md）
+    if pre is not None:
+        for d in ('data/drugs', 'data/antibiotics', 'data/cancer'):
+            folder = os.path.join(ROOT, d)
+            for name in sorted(os.listdir(folder)) if os.path.isdir(folder) else []:
+                if name.endswith('.js') and f'{d}/{name}' not in pre:
+                    print(f'✗ sw.js: {d}/{name} 不在 PRECACHE_URLS（展開才載入，離線時會靜默空白）')
+                    problems += 1
+
     checked = 0
     for page in pages():
         bad = check_page(page, pre)
@@ -178,6 +201,30 @@ def main():
     except Exception as exc:                      # noqa: BLE001 —— 檢查器自己壞掉也要說
         print(f'✗ schema/check_kinds.py 跑不起來：{exc}')
         problems += 1
+
+    # 7. 登錄簿交叉檢查（index 卡片 ↔ facets ↔ 返回鍵錨點 ↔ nav/search 子頁清單 ↔ sentence-nav 派生表）
+    #    與癌症六個登錄點；判準各寫在該檔檔頭。掛在這裡的理由同上：收尾只跑一支腳本。
+    for mod_name in ('check_registry', 'check_cancer_wiring'):
+        try:
+            mod = __import__(mod_name)
+            if mod.main() != 0:
+                problems += 1
+        except Exception as exc:                  # noqa: BLE001
+            print(f'✗ schema/{mod_name}.py 跑不起來：{exc}')
+            problems += 1
+
+    # 8. 資料檔驗證器（各自有 argparse，用子行程跑，避免吃到本檔的參數）
+    import subprocess
+    for script in ('validate_cancers.py', 'validate_drugs.py', 'check_drugcards.py'):
+        r = subprocess.run([sys.executable, os.path.join(ROOT, 'schema', script)],
+                           cwd=ROOT, capture_output=True, text=True)
+        tail = (r.stdout.strip().splitlines() or [''])[-1]
+        if r.returncode != 0:
+            print(r.stdout.rstrip())
+            print(f'✗ schema/{script} 回報問題（見上）')
+            problems += 1
+        elif args.verbose:
+            print(f'  {script}: {tail}')
 
     if args.verbose or not problems:
         print(f'— 檢查了 {checked} 個頁面，發現 {problems} 個問題')

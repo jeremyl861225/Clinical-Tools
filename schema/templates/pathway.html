@@ -1,0 +1,47 @@
+{{HEAD}}
+<body data-back-label="{{BACK_LABEL}}">
+<div class="sheet">
+<div class="view active" id="view-{{K}}">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Decision Pathway</div><h1>{{TITLE}}</h1><div class="sub">{{SUB}}</div></div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-{{K}}'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- ===== 定義／前提（可收合） ===== -->
+  <details class="def-box" style="margin-bottom:12px;">
+    <summary>定義 Definitions</summary>
+    <div class="box-inner"></div>
+  </details>
+
+  <!-- ===== 流程：一個 st 物件、一個 render()、每個建議的 class 只在一處決定
+       （見 ~/.claude/skills/clinical-tools-builder/references/decision-pathways.md）。
+       共用 helper 在 js/common.js：flowShow / flowSelect / flowClearSel / flowRec。 ===== -->
+  <div class="flow-step" id="{{K}}_step1">
+    <div class="flow-q">第一步</div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="{{K}}Pick('q1','a',this)">選項 A</button>
+      <button class="flow-opt" onclick="{{K}}Pick('q1','b',this)">選項 B</button>
+    </div>
+  </div>
+  <div class="flow-rec hidden" id="{{K}}_rec"></div>
+  <button class="btn-reset" style="margin-top:12px" onclick="{{K}}Reset()">↺ 重置</button>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/PMID/" target="_blank" rel="noopener" class="ref-link">Guideline body. Title. Journal. Year.</a></footer>
+</div>
+</div>
+<script src="../js/common.js"></script>
+<script>
+var {{K}}St = {};
+function {{K}}Pick(q, v, btn) { {{K}}St[q] = v; flowSelect(btn); {{K}}Render(); }
+function {{K}}Render() {
+  var st = {{K}}St;
+  flowShow('{{K}}_rec', !!st.q1);
+  if (st.q1) flowRec('{{K}}_rec', st.q1 === 'a' ? 'rec-go' : 'rec-hold', '建議標題', '<li>細節</li>', '');
+}
+function {{K}}Reset() { {{K}}St = {}; flowClearSel('{{K}}_step1'); {{K}}Render(); }
+{{K}}Render();
+</script>
+{{TAIL}}

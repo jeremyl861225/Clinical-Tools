@@ -1,0 +1,46 @@
+{{HEAD}}
+<body data-back-label="{{BACK_LABEL}}">
+<div class="sheet">
+<div class="view active" id="view-{{K}}">
+  <div class="app-header">
+    <div><div class="eyebrow">{{EYEBROW}}</div><h1>{{TITLE}}</h1><div class="sub">{{SUB}}</div></div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-{{K}}'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- ===== 輸入 ===== 三種原型見 ~/.claude/skills/clinical-tools-builder/references/scoring-tools.md
+       (1) 勾選清單 <label class="item"><input type="checkbox" class="{{K}}-cb" data-w="1"> 條件 <span class="pt-badge">1</span></label>
+       (2) 數值      <div class="field-row"><label>Bilirubin</label><input type="number" id="{{K}}_bili" step="0.1"><span class="unit">mg/dL</span></div>
+       (3) 器官分項  <div class="card"><div class="organ-head">…<div class="organ-score" id="{{K}}_s_x">0</div></div>…</div> -->
+  <div class="card">
+  </div>
+
+  <!-- ===== 結果 ===== 判讀句用 .result-interp，風險徽章用 .risk-band b0–b3（css/styles.css）；
+       深色面板底色寫死 #132126、不可用 var(--ink)（暗色下會變淺底淺字） -->
+  <div class="result">
+    <div class="metric-label">{{TITLE}}</div>
+    <div class="metric-value big" id="{{K}}_total">0</div>
+    <div class="result-interp" id="{{K}}_interp">—</div>
+  </div>
+
+  <footer class="tool-footer">REF — <a href="https://pubmed.ncbi.nlm.nih.gov/PMID/" target="_blank" rel="noopener" class="ref-link">Author A, et al. Journal. Year;vol(iss):pages.</a></footer>
+</div>
+</div>
+<script>
+(function () {
+  'use strict';
+  function calc() {
+    var total = 0;
+    document.getElementById('{{K}}_total').textContent = total;
+    document.getElementById('{{K}}_interp').textContent = '—';
+  }
+  document.querySelectorAll('#view-{{K}} input, #view-{{K}} select').forEach(function (el) {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+{{TAIL}}

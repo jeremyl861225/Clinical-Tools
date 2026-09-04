@@ -61,11 +61,20 @@
       { href: 'tools/antibiotics.html#mode=lookup',   zh: '藥物查詢',         en: 'Drug Lookup' },
       { href: 'tools/spectrum-database.html',         zh: '菌譜資料庫',       en: 'Spectrum Database' },
       { href: 'tools/surgical-prophylaxis.html',      zh: '手術預防',         en: 'Surgical Prophylaxis' },
-      { href: 'tools/trauma-abx.html',                zh: '創傷用藥',         en: 'Trauma Antibiotics' }
+      { href: 'tools/trauma-abx.html',                zh: '創傷用藥',         en: 'Trauma Antibiotics' },
+      // 2026-09-04 補上分頁列的最後兩頁（原本側欄只列到創傷用藥，這兩頁只能從抗生素頁連入）
+      { href: 'tools/iv-to-po.html',                  zh: '注射轉口服',       en: 'IV to PO Switch' },
+      { href: 'tools/y-site.html',                    zh: '輸注與藥物相容性', en: 'Infusion & Y-site Compatibility' }
     ],
     // 空陣列＝這一類只列底下的癌別；該頁本身由大類標題連過去，不再重複一項
-    'tools/cancer.html': []
+    'tools/cancer.html': [],
+    // 藥物資料庫方磚：本頁由大類標題連過去，底下只列交互作用查核（原本它不在側欄任何地方）
+    'tools/drug-database.html': [
+      { href: 'tools/ddi.html',                       zh: '交互作用查核',     en: 'Drug Interactions' }
+    ]
   };
+  /* 首頁沒有卡片的頁面要登錄在這裡（側欄）與 js/search.js 的 SUB_PAGES（查詢）兩處，
+     並列在 schema/check_registry.py 的 SUBHUB 名單——三處對不上時 check_pages.py 會擋。 */
   var CANCER_PAGE = 'tools/cancer.html';
 
   /* 急重症處置與藥物資料庫原先只在導覽列出現（首頁沒有方磚），故曾在此明列一份清單；
