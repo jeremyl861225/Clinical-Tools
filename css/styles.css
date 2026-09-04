@@ -1,9 +1,24 @@
   :root{
     color-scheme: light dark;
-    --ink:#132126; --paper:#f4f2ec; --panel:#ffffff; --line:#d8d3c4;
-    --accent:#1f5a6b; --accent-soft:#dbe8ea;
-    --accent2:#a13d2f; --accent2-soft:#e7dccb;
-    --muted:#5b5b52; --muted-soft:#8a8579; --label-ink:#333333;
+    /* ---- 色票（2026-09 換版）----------------------------------------
+       五色一組的暖色階：近黑 → 深梅 → 酒紅 → 緋紅 → 橘。
+       兩件事**照舊不動**：米白底（--paper／--sentence-bg）與虎鯨的顏色。
+       分工原則：**深色成員承載文字、亮色成員承載填色。**
+       這不是美感問題而是量出來的——緋紅在米白上只有 4.44、橘只有 2.15，
+       當內文都不到 AA 的 4.5；所以臨床語意色改用它們**加深後**的變體
+       （每一項都與換版前的對比等值或更好，沒有無障礙退步），
+       原色則留給燈號填色、圖磚與螢光筆。 */
+    --pal-ink:#1f1f1d; --pal-plum:#40263a; --pal-wine:#820b33;
+    --pal-crimson:#cb2e3e; --pal-orange:#ed893a;
+
+    --ink:#1f1f1d; --paper:#f4f2ec; --panel:#ffffff; --line:#d8d3c4;
+    --accent:#40263a; --accent-soft:#dbd5d3;
+    --accent2:#820b33; --accent2-soft:#e4d2d2;
+    --muted:#5b5a57; --muted-soft:#868582; --label-ink:#343431;
+    /* 手繪螢光筆：一道略帶傾斜、上下緣起伏的筆觸，起筆處疊一層（筆停頓的地方較深）、
+       下緣壓一條積墨。整段是內嵌 SVG，離線可用、不發請求；顏色烘在檔案裡，
+       所以亮暗兩套各有一份（要換螢光筆顏色就是換這兩行）。 */
+    --hl-img:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.34%22%20d%3D%22M4.6%2013.2C38%208.4%2082%2011.2%20126%209.1C168%207.2%20204%2010.4%20232.2%208.6L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.16%22%20d%3D%22M3.8%2014.1C20%2011.2%2034%2012.6%2047%2011.3L51.4%2033.8C34%2035.6%2018%2034.1%202.6%2035.9Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.13%22%20d%3D%22M3.2%2031.4C48%2034.8%20118%2031.6%20168%2032.4C196%2032.9%20218%2031.2%20236.6%2027.4L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3C%2Fsvg%3E");
     --field-bg:#ffffff; --box-bg:#faf8f2; --hover-bg:#fbfaf6; --soft-bg:#eef4f5;
     --mono:"IBM Plex Mono","SF Mono",Consolas,monospace;
     --serif:"Iowan Old Style","Georgia","Noto Serif TC",serif;
@@ -13,18 +28,19 @@
   @media (prefers-color-scheme: dark){
     :root{
       --ink:#e7e4db; --paper:#14181b; --panel:#1e2429; --line:#39424a;
-      --accent:#7cbccc; --accent-soft:#233a42;
-      --accent2:#e89a8c; --accent2-soft:#3d2d27;
-      --muted:#a8a39a; --muted-soft:#8f897e; --label-ink:#cbc7be;
+      --accent:#af8fa6; --accent-soft:#2c202c;
+      --accent2:#eb7289; --accent2-soft:#421325;
+      --muted:#a4a49e; --muted-soft:#8a8a86; --label-ink:#cbc7be;
+      --hl-img:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.3%22%20d%3D%22M4.6%2013.2C38%208.4%2082%2011.2%20126%209.1C168%207.2%20204%2010.4%20232.2%208.6L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.14%22%20d%3D%22M3.8%2014.1C20%2011.2%2034%2012.6%2047%2011.3L51.4%2033.8C34%2035.6%2018%2034.1%202.6%2035.9Z%22%2F%3E%3Cpath%20fill%3D%22%23ed893a%22%20fill-opacity%3D%220.12%22%20d%3D%22M3.2%2031.4C48%2034.8%20118%2031.6%20168%2032.4C196%2032.9%20218%2031.2%20236.6%2027.4L237.4%2030.4C206%2036.6%20152%2033.0%20106%2035.7C64%2038.0%2028%2034.4%202.4%2036.3Z%22%2F%3E%3C%2Fsvg%3E");
       --field-bg:#232b31; --box-bg:#222a2f; --hover-bg:#262e34; --soft-bg:#1b3037;
     }
     /* 「新增藥物」按鈕在淺色 accent 上改用深色文字以維持對比 */
     .btn-add{color:#0e1417;}
   }
   /* 全站文字選取:亮色為金、暗色為青,與底色反白 */
-  ::selection{background:#c9a227; color:#f4f2ec;}
+  ::selection{background:var(--pal-wine); color:#f4f2ec;}
   @media (prefers-color-scheme: dark){
-    ::selection{background:#6fb7d6; color:#14181b;}
+    ::selection{background:var(--pal-orange); color:#14181b;}
   }
 
   *{box-sizing:border-box;}
@@ -59,7 +75,7 @@
   /* 圖磚沒有底色可漸變，改以金框脈動標示「剛才所在的入口」 */
   .hub-card.card-return::after{animation:tileReturn 1.6s ease-out;}
   @keyframes tileReturn{
-    0%,55%{border-color:var(--tile-accent); box-shadow:inset 0 0 0 2px rgba(201,162,39,.5);}
+    0%,55%{border-color:var(--tile-accent); box-shadow:inset 0 0 0 2px rgba(237,137,58,.5);}
     100%{border-color:transparent; box-shadow:none;}
   }
   .tool-card.deci-card.card-return{animation:cardReturnDeci 1.6s ease-out;}
@@ -119,7 +135,16 @@
   .gs-name{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; font-family:var(--serif); font-size:15px; font-weight:600;}
   .gs-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); font-weight:400;}
   .gs-sub{display:block; font-size:11.5px; color:var(--muted); margin-top:2px;}
-  .gs-hl{background:var(--accent-soft); color:inherit; border-radius:2px; padding:0 1px;}
+  /* 搜尋命中、內文的 <mark>、以及要刻意標重點的 .hl，一律走手繪螢光筆。
+     刻意**不**掛在 <b> 上：全站 <b> 有 19,058 個（臨床內文用它標關鍵詞），
+     螢光筆一旦變成常態就不再是強調。box-decoration-break:clone 讓換行的每一段
+     各自得到一筆，不會被拉成一條橫跨兩行的怪東西。 */
+  mark, .gs-hl, .hl{
+    background:var(--hl-img) no-repeat center/100% 100%;
+    color:inherit; border-radius:0;
+    padding:.04em .26em; margin:0 -.10em;
+    -webkit-box-decoration-break:clone; box-decoration-break:clone;
+  }
   /* 頁面內文命中：名稱較輕、以命中片段為主體 */
   .gs-text{border-left-color:var(--line);}
   .gs-text .gs-name{font-size:13.5px; font-weight:500;}
@@ -166,7 +191,7 @@
     --tile-bg:#e9e7e1;
     --tile-label:#fdf8ee; --tile-label-soft:rgba(253,248,238,.86);
     --tile-label-shadow:0 0 2px rgba(0,0,0,.95), 0 0 4px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.85), 0 0 9px rgba(0,0,0,.6);
-    --tile-accent:#c9a227;
+    --tile-accent:var(--pal-orange);
     --plate-filter:url(#plate-duo) brightness(1) contrast(1.02);
     --plate-filter-hover:url(#plate-duo) brightness(1.04) contrast(1.03);
     /* 比癌別方磚(.12)壓得深：那些是白底版畫，這裡是照片，且有藥錠、表格等亮底 */
@@ -178,7 +203,7 @@
       --tile-bg:#262b2f;
       --tile-label:#eaf4fb; --tile-label-soft:rgba(234,244,251,.82);
       --tile-label-shadow:0 0 2px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.7), 0 0 10px rgba(0,0,0,.35);
-      --tile-accent:#6fb7d6;
+      --tile-accent:var(--pal-orange);
       --plate-filter:url(#plate-cyano) brightness(1) contrast(1.06);
       --plate-filter-hover:url(#plate-cyano) brightness(1.08) contrast(1.08);
       --scrim:radial-gradient(ellipse 68% 42% at 50% 50%, rgba(6,10,14,.5), rgba(6,10,14,.2) 70%, rgba(6,10,14,.06) 100%);
@@ -244,9 +269,9 @@
   }
   .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{ transform:scale(1.04) translateZ(0); filter:var(--plate-filter-hover); }
   .hub-card:hover .hub-scrim, .hub-card:focus-visible .hub-scrim{ background:var(--scrim-hover); }
-  .hub-card:hover::after{ border-color:var(--tile-accent); box-shadow:inset 0 0 0 1px rgba(201,162,39,.24); }
+  .hub-card:hover::after{ border-color:var(--tile-accent); box-shadow:inset 0 0 0 1px rgba(237,137,58,.24); }
   .hub-card:focus-visible{ outline:none; }
-  .hub-card:focus-visible::after{ border-color:var(--tile-accent); box-shadow:0 0 0 2px rgba(201,162,39,.5); }
+  .hub-card:focus-visible::after{ border-color:var(--tile-accent); box-shadow:0 0 0 2px rgba(237,137,58,.5); }
   @media (prefers-reduced-motion:reduce){
     .hub-card .hub-img, .hub-card .hub-scrim, .hub-card::after{transition:none;}
     .hub-card:hover .hub-img, .hub-card:focus-visible .hub-img{transform:translateZ(0);}
@@ -546,9 +571,9 @@
   .flow-rec{border-radius:2px; padding:18px 20px; margin-top:14px; border:1px solid var(--line);}
   .flow-rec.rec-idle{background:var(--box-bg);}
   .flow-rec.rec-elective{background:#123028; color:#eef6f2; border:none;}
-  .flow-rec.rec-urgent{background:#3a1712; color:#fdeee9; border:none;}
-  .flow-rec.rec-nonop{background:#132126; color:#eef4f2; border:none;}
-  .flow-rec.rec-blue{background:#122a3f; color:#e9f1f8; border:none;}
+  .flow-rec.rec-urgent{background:#3a0007; color:#fdeee9; border:none;}
+  .flow-rec.rec-nonop{background:#1b1b19; color:#eef4f2; border:none;}
+  .flow-rec.rec-blue{background:#251421; color:#e9f1f8; border:none;}
   .flow-rec .rec-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:5px;}
   .flow-rec .rec-title{font-family:var(--serif); font-size:20px; font-weight:600; margin-bottom:4px; line-height:1.3;}
   .flow-rec .rec-detail{margin:8px 0 0; padding-left:18px; font-size:13px; line-height:1.75;}

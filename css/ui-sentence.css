@@ -24,19 +24,23 @@
   --sentence-bg:      #efece1;
   --sentence-bg2:     #e6e2d4;
   --sentence-bg3:     #dcd7c6;
-  --sentence-fg:      #14211c;
-  --sentence-fg2:     #3b4a43;
-  --sentence-dim:     #64726a;
+  --sentence-fg:      #1f1f1d;   /* 色票的近黑，取代原本的墨綠黑 */
+  --sentence-fg2:     #474643;   /* 墨↔紙軸上取值，中性暖灰（與換版前對比等值） */
+  --sentence-dim:     #706e69;
   --sentence-line:    #c3bda9;
   --sentence-line2:   #a8a18b;
-  --sentence-inv-bg:  #14211c;
+  --sentence-inv-bg:  #1f1f1d;
   --sentence-inv-fg:  #efece1;
-  --sentence-hot:     #97331d;   /* 硃砂：最高急迫度／危險 */
-  --sentence-warn:    #7d5a10;   /* 琥珀：中 */
-  --sentence-calm:    #2b5f45;   /* 墨綠：低／安全 */
-  --sentence-mid:     #545c2b;   /* 黃綠：墨綠與琥珀的中間色，只給 T×N 決策格用（見 P11 段） */
-  --sentence-sel:     #14211c;
-  --sentence-shade:   rgba(20,33,28,.06);
+  /* 臨床語意色改用新色票**加深後**的變體：緋紅在米白上只有 4.44、橘只有 2.15，
+     當內文都不到 AA 的 4.5。加深後每一項都與換版前等值或更好（hot 6.33→6.43、
+     warn 5.31→5.41），原色 --pal-crimson／--pal-orange 留給燈號填色與螢光筆。
+     墨綠照舊：這套色票裡沒有「安全」色，拿暖色當低風險會把臨床語意講反。 */
+  --sentence-hot:     #ab0027;   /* 緋紅（加深）：最高急迫度／危險 */
+  --sentence-warn:    #954b00;   /* 橘（加深）：中 */
+  --sentence-calm:    #2b5f45;   /* 墨綠：低／安全——照舊 */
+  --sentence-mid:     #615e09;   /* 墨綠與新 warn 的中間色，只給 T×N 決策格用（見 P11 段） */
+  --sentence-sel:     #1f1f1d;
+  --sentence-shade:   rgba(31,31,29,.06);
   --sentence-scrim:   rgba(239,236,225,.94);
 
   /* ---------- 字體堆疊（全部系統字，無外部載入） ---------- */
@@ -62,15 +66,15 @@
     --sentence-bg3:    #162922;
     --sentence-fg:     #ece6d8;
     --sentence-fg2:    #cfc8b8;
-    --sentence-dim:    #8b9a90;
+    --sentence-dim:    #97978d;
     --sentence-line:   #2a3b34;
     --sentence-line2:  #3d5349;
     --sentence-inv-bg: #ece6d8;
     --sentence-inv-fg: #0a1512;
-    --sentence-hot:    #e0715a;
-    --sentence-warn:   #d3a247;
+    --sentence-hot:    #fd5f66;
+    --sentence-warn:   #ed893a;
     --sentence-calm:   #79b58e;
-    --sentence-mid:    #a6ac6a;
+    --sentence-mid:    #9b994e;
     --sentence-sel:    #ece6d8;
     --sentence-shade:  rgba(236,230,216,.07);
     --sentence-scrim:  rgba(10,21,18,.94);
@@ -3976,7 +3980,18 @@
 [data-ui="sentence"] .tab .en,
 [data-ui="sentence"] .section-title .en { font-family: var(--sentence-mono); color: var(--sentence-dim); }
 [data-ui="sentence"] .tab .note { font-size: 11.5px; color: var(--sentence-dim); }
-[data-ui="sentence"] .tab mark { background: var(--sentence-shade); color: inherit; box-shadow: inset 0 -1px 0 var(--sentence-fg); }
+/* <mark> 交給共用層的手繪螢光筆（css/styles.css）。這一條原本用 shade 底色＋
+   inset 下底線自成一套，但那是在還沒有螢光筆之前的權宜；留著會把螢光筆整條蓋掉
+   （background 簡寫會把 background-image 一併重設成 none）。 */
+[data-ui="sentence"] .tab mark,
+[data-ui="sentence"] mark,
+[data-ui="sentence"] .gs-hl,
+[data-ui="sentence"] .hl {
+  background: var(--hl-img) no-repeat center / 100% 100%;
+  color: inherit; box-shadow: none; border-radius: 0;
+  padding: .04em .26em; margin: 0 -.10em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
 [data-ui="sentence"] .disclaimer { font-size: 11px; color: var(--sentence-dim); }
 
 /* ---- T3. 建議等級徽章 .badge（ACC/AHA Class I / IIa / IIb / III）----
@@ -5407,14 +5422,23 @@
   animation: sent-chip-land var(--sentence-slow) var(--sentence-ease);
 }
 
-/* ---- 指向的件數變了：一道螢光 ----
-   「這句話目前指向 N 件事」是全站唯一的收斂讀數，150 → 20 是使用者做對了事情的證據，
-   原本卻是靜悄悄地換掉。用底色階往上跳一階再退回去（DESIGN.md：深度靠底色階與線，
-   不靠光），亮暗兩個主題都成立。刻意只動背景不動字距與內距：這一行的基準位置
-   被 baseline 對過（.sent-point-n 與 .sent-point-hint 只差 3px），不能因為動畫而位移。 */
-@keyframes sent-count-mark { from { background: var(--sentence-bg3); } to { background: transparent; } }
+/* ---- 指向的件數：手繪螢光筆 ＋ 變動時重新畫過 ----
+   「這句話目前指向 N 件事」是全站唯一的收斂讀數，150 → 20 是使用者做對了事情的證據。
+   這個數字**常駐**帶著螢光筆（全站標重點就是這一枝筆）；件數真的變了的時候，
+   那一筆會從左到右重新畫過去——與詞落格的「上墨」是同一條語言，方向也一樣。
+   只動 background-size，不動字級與行高：這一行的基準位置被 baseline 對過
+   （.sent-point-n 與 .sent-point-hint 只差 3px），縱向一格都不能跑。 */
+[data-ui="sentence"] .sent-point-n b {
+  background-image: var(--hl-img);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 100% 100%;
+  padding: .04em .28em; margin: 0 -.10em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+@keyframes sent-count-mark { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
 [data-ui="sentence"] .sent-point-n.is-changed b {
-  animation: sent-count-mark 520ms var(--sentence-ease);
+  animation: sent-count-mark 380ms var(--sentence-ease);
 }
 
 /* 關掉動態效果：詞不再用裁切的方式畫出來（那是位移型的揭露），改成純淡入；
