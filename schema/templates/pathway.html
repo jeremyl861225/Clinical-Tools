@@ -39,7 +39,9 @@ function {{K}}Pick(q, v, btn) { {{K}}St[q] = v; flowSelect(btn); {{K}}Render(); 
 function {{K}}Render() {
   var st = {{K}}St;
   flowShow('{{K}}_rec', !!st.q1);
-  if (st.q1) flowRec('{{K}}_rec', st.q1 === 'a' ? 'rec-go' : 'rec-hold', '建議標題', '<li>細節</li>', '');
+  // 建議框的 class 只能用 css/styles.css 既有的五種：rec-urgent（緊急）／rec-elective（擇期）／
+  // rec-nonop（非手術）／rec-blue（中性）／rec-idle（尚未成立）
+  if (st.q1) flowRec('{{K}}_rec', st.q1 === 'a' ? 'rec-urgent' : 'rec-nonop', '建議標題', '<li>細節</li>', '');
 }
 function {{K}}Reset() { {{K}}St = {}; flowClearSel('{{K}}_step1'); {{K}}Render(); }
 {{K}}Render();
