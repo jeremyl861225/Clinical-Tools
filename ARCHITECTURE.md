@@ -75,11 +75,13 @@
 
 ## 6. 子系統
 
-- **癌症**（`tools/cancer.html`）：一個癌別要對齊六處——`data/cancer/cancers.js` 條目（`pathway:'<k>'`）、
-  `js/<k>-pathway.js`（尾端匯出 `global.<k>PathwayHTML` 與 `global.init<K>Pathway`）、`cancer.html` 的 `<script>`
-  （排在 `cancer-staging.js` 之前）、`cancer-staging.js` 的兩條 if-chain 與 `ONC_TILE_IMG`、`sw.js` precache
-  （模組＋`assets/organs/<id>.png`）、`facets.js` 的 `cancer-<id>`。全部由 `schema/check_cancer_wiring.py` 對帳；
-  模組內寫死的台大藥卡八碼由 `schema/check_drugcards.py` 對 `data/drugs/<pid>.js` 逐筆查證。
+- **癌症**（`tools/cancer.html`）：一個癌別要對齊五處——`data/cancer/cancers.js` 條目（`pathway:'<k>'`）、
+  `js/<k>-pathway.js`（尾端匯出 `global.<k>PathwayHTML` 與 `global.init<K>Pathway`，**分派靠這條命名規則**，
+  `cancer-staging.js` 的 `pathwayFn()` 不再逐支列舉）、`sw.js` precache（模組＋`assets/organs/<id>.png`）、
+  `cancer-staging.js` 的 `ONC_TILE_IMG`、`facets.js` 的 `cancer-<id>`。模組**不由 `cancer.html` 靜態載入**：
+  第一次點到該癌別的治療分頁時 `loadPathway()` 才注入，跨模組相依（結直腸要先有 crc-regimens／crc-supplement、
+  NET 內嵌 pNET）寫在 `PATHWAY_DEPS`。全部由 `schema/check_cancer_wiring.py` 對帳（含「用到別支模組的匯出就必須列在
+  PATHWAY_DEPS」）；模組內寫死的台大藥卡八碼由 `schema/check_drugcards.py` 對 `data/drugs/<pid>.js` 逐筆查證。
 - **抗微生物家族**：`tools/antibiotics.html` 是子入口（依部位／依病原菌／藥物查詢三個模式＋分頁列連到
   菌譜資料庫、手術預防、創傷用藥、注射轉口服、輸注與相容性五頁）。這五頁沒有首頁卡片，登錄方式見 §3 第 5 列。
 - **藥物資料庫／交互作用**：`tools/drug-database.html`（`data/drugs/`，一商品名一張卡）與 `tools/ddi.html`
@@ -117,11 +119,11 @@ git add tools/my-score.html index.html data/facets.js sw.js && git commit && git
 | `check_cancer_wiring.py` | §6 癌症六處對帳 |
 | `validate_cancers.py`／`validate_drugs.py` | `cancers.js`／抗生素 `drugs.js` 的欄位型別 |
 | `check_drugcards.py` | 流程模組寫死的藥卡八碼 ↔ `data/drugs/<pid>.js` |
+| `render_compare.py`（用 `cdp.py` 驅動本機 Chrome） | 重構前後的渲染比對：首頁五格清單、內頁造句軌跡、32 個癌別標的三分頁的 HTML。`snapshot <dir>` 兩次確認零差異，再改程式、再拍、`compare` |
 
 ## 10. 已知的架構債（2026-09-04 審查，需要決定才動）
 
-- `sentence-nav.js` 的分組計數以組名中文為鍵、不分區（神經／肝臟／腎臟兩區同名會混算）。
-- `cancer-staging.js` 兩條 31 行的 if-chain 可以用命名規則一行取代；`cancer.html` 同步載入 33 支模組（2 MB）而單次只用 1–3 支。
+- （2026-09-05 已修）分組計數改「範圍|群組」複合鍵；if-chain 改 `pathwayFn()` 命名規則；模組改延遲載入。
 - 44 頁的內嵌 CSS 有 8 個元件家族逐字重複（`.kbox`、`.dg-*`…），但搬到共用檔要顧級聯位置，需渲染基準比對。
 - `ui-sentence.css` 58% 是單頁專屬段落卻全站每頁載入（實測 CPU 成本小，是維護性問題）。
 - 22 頁分頁列有四套寫法、24 支同形 Tab 函式；9 個 guide 頁的 eyebrow 仍寫 Clinical Decision Pathway。

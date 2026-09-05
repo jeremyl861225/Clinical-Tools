@@ -914,14 +914,19 @@
   /* 群組標頭按下去要把句子收斂到什麼？——這個群組底下出現最多次的那個「狀況」
      （原型 js/views.js grpTop()）。掃 F.c 的順序決定同票時取誰，跟原型一致。
      GRP_N 是「這個群組總共幾個標的」，用來印出「命中 / 全部 項」。 */
+  /* 2026-09-05：鍵改成「範圍|群組」。神經／肝臟／腎臟在急重症處置與計分工具兩區同名，
+     只用中文組名當鍵會把兩區混算——攤開急重症時「神經」印成「4 / 5 項」，像是沒全中；
+     平行換題也會拿另一區的狀況詞。 */
   var GRP_C = {}, GRP_N = {};
+  function grpKey(sec, g) { return sec + '|' + g; }
   TOOLS.forEach(function (t) {
-    GRP_N[t.grp] = (GRP_N[t.grp] || 0) + 1;
-    var m = GRP_C[t.grp] = GRP_C[t.grp] || {};
+    var key = grpKey(t.sec, t.grp);
+    GRP_N[key] = (GRP_N[key] || 0) + 1;
+    var m = GRP_C[key] = GRP_C[key] || {};
     (t.c || []).forEach(function (c) { m[c] = (m[c] || 0) + 1; });
   });
-  function grpTop(g) {
-    var m = GRP_C[g] || {}, best = '', n = 0;
+  function grpTop(sec, g) {
+    var m = GRP_C[grpKey(sec, g)] || {}, best = '', n = 0;
     (F.c || []).forEach(function (o) { if ((m[o.w] || 0) > n) { n = m[o.w]; best = o.w; } });
     return best;
   }
@@ -1651,9 +1656,9 @@
           /* 群組標頭可點（原型 .grp-h data-act="swap"）＝**平行換題**：只把「狀況」
              換成這個群組最具代表性的那個詞，句子其他部分不動。數量印成
              「命中 / 全部 項」，全中時只印總數（原型 renderRefs() 同一條規則）。 */
-          var total = GRP_N[grp.name] || grp.tools.length;
+          var total = GRP_N[grpKey(g.id, grp.name)] || grp.tools.length;
           var nTxt = grp.tools.length === total ? (total + ' 項') : (grp.tools.length + ' / ' + total + ' 項');
-          var top = grpTop(grp.name);
+          var top = grpTop(g.id, grp.name);
           var grpHead = '';
           if (grp.name && grp.name !== soloName) {
             grpHead = (interactive

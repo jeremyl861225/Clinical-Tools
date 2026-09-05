@@ -6,9 +6,8 @@ schema/check_cancer_wiring.py — 癌症子系統的六個登錄點交叉檢查�
 一個癌別要對齊六個地方，過去全靠人工：
   (1) data/cancer/cancers.js 的條目（id、pathway:'<k>'、家族 CANCER_FAMILIES）
   (2) js/<k>-pathway.js 模組，尾端匯出 global.<k>PathwayHTML 與 global.init<K>Pathway
-  (3) tools/cancer.html 的 <script src="../js/<k>-pathway.js">（必須排在 js/cancer-staging.js 之前）
-  (4) js/cancer-staging.js 兩條 if-chain（switchTab 呼叫 init<K>Pathway、renderTx 呼叫 <k>PathwayHTML）
-      與 ONC_TILE_IMG（方磚圖版）
+  (3) tools/cancer.html **不再**靜態載入模組——由 js/cancer-staging.js 的 loadPathway() 延遲注入
+  (4) js/cancer-staging.js 的 pathwayFn()（命名規則分派）、PATHWAY_DEPS（跨模組相依順序）與 ONC_TILE_IMG（方磚圖版）
   (5) sw.js PRECACHE_URLS（模組與 assets/organs/<id>.png）
   (6) data/facets.js 的 cancer-<id> 條目
 少一處都不會報錯：模組沒接進 if-chain 只會退回 tx 卡片、沒進 precache 只會離線開不了、
@@ -57,39 +56,62 @@ def main():
         return 1
 
     # (2)(3)(4)(5) 每個 pathway 鍵
+    #   2026-09-05 起模組改為**延遲載入**：cancer.html 不再靜態 <script> 任何 *-pathway.js，
+    #   由 cancer-staging.js 的 loadPathway() 依 PATHWAY_DEPS 順序注入；分派改用命名規則 pathwayFn()。
     scripts = re.findall(r'<script src="\.\./js/([\w-]+)\.js"></script>', page)
-    stg_pos = scripts.index('cancer-staging') if 'cancer-staging' in scripts else len(scripts)
     pre = set(re.findall(r"'\./([^']+)'", sw))
-    init_chain = set(re.findall(r"c\.pathway === '([\w-]+)' && typeof init\w+Pathway === 'function'", stg))
-    html_chain = set(re.findall(r"c\.pathway === '([\w-]+)' && typeof \w+PathwayHTML === 'function'", stg))
+    for name in ('pathwayFn', 'loadPathway'):
+        if not re.search(r'function %s\(' % name, stg):
+            E('js/cancer-staging.js 少了 %s()（延遲載入與命名規則分派都靠它）' % name)
+    dm = re.search(r'var PATHWAY_DEPS\s*=\s*\{(.*?)\};', stg, re.S)
+    deps = {}
+    if dm:
+        for k, arr in re.findall(r"(\w+):\s*\[(.*?)\]", dm.group(1)):
+            deps[k] = re.findall(r"'([\w-]+)'", arr)
+    else:
+        E('js/cancer-staging.js 找不到 PATHWAY_DEPS')
+    for base in scripts:
+        if base.endswith('-pathway') or base.startswith('crc-'):
+            E('tools/cancer.html 仍靜態載入 js/%s.js——模組已改為延遲載入，重複載入會覆寫狀態' % base)
+
+    def code_only(src):
+        return re.sub(r'//[^\n]*', '', re.sub(r'/\*.*?\*/', '', src, flags=re.S))
+
+    mods = {f[:-3]: code_only(read('js/' + f)) for f in os.listdir(os.path.join(ROOT, 'js'))
+            if f.endswith('-pathway.js') or f.startswith('crc-')}
+    exports = {m: set(re.findall(r'global\.(\w+)\s*=', src)) for m, src in mods.items()}
+    owner = {e: m for m, es in exports.items() for e in es}
     for k in keys:
         mod = 'js/%s-pathway.js' % k
         if not os.path.exists(os.path.join(ROOT, mod)):
             E('cancers.js 用了 pathway:\'%s\'，但 %s 不存在' % (k, mod))
             continue
-        src = read(mod)
+        src = mods.get('%s-pathway' % k, '')
         for name in ('%sPathwayHTML' % k, 'init%sPathway' % cap(k)):
             if not re.search(r'global\.%s\s*=' % re.escape(name), src):
                 E('%s 沒有匯出 global.%s（cancer-staging.js 靠命名規則呼叫）' % (mod, name))
-        base = '%s-pathway' % k
-        if base not in scripts:
-            E('tools/cancer.html 沒有載入 %s' % mod)
-        elif scripts.index(base) > stg_pos:
-            E('tools/cancer.html 把 %s 排在 js/cancer-staging.js 之後（初始化時模組還沒定義）' % mod)
         if mod not in pre:
-            E('sw.js PRECACHE_URLS 少了 %s（離線開癌症頁會缺這一支）' % mod)
-        if k not in init_chain:
-            E('js/cancer-staging.js switchTab 的 if-chain 沒有 pathway \'%s\'（治療分頁不會初始化）' % k)
-        if k not in html_chain:
-            E('js/cancer-staging.js renderTx 的 if-chain 沒有 pathway \'%s\'（會退回 tx 卡片）' % k)
-    for k in sorted((init_chain | html_chain) - set(keys)):
-        W('js/cancer-staging.js 分派了 pathway \'%s\'，但 cancers.js 沒有任何條目用它（死分派）' % k)
-    for base in scripts:
-        if base.endswith('-pathway') and base[:-8] not in keys and base != 'pnet-pathway'[:-3]:
-            W('tools/cancer.html 載入 js/%s.js，但沒有條目以它為 pathway（pnet 由 net 內嵌屬例外）' % base)
-    for f in sorted(os.listdir(os.path.join(ROOT, 'js'))):
-        if f.endswith('-pathway.js') and f[:-3] not in scripts:
-            W('js/%s 沒有被 tools/cancer.html 載入（孤兒模組）' % f)
+            E('sw.js PRECACHE_URLS 少了 %s（離線開治療分頁會載不到）' % mod)
+        # 跨模組相依：程式碼（去掉註解）用到別支模組匯出的名字，就必須列在 PATHWAY_DEPS
+        need = set()
+        for e, m in owner.items():
+            if m != '%s-pathway' % k and re.search(r'\b%s\b' % re.escape(e), src):
+                need.add(m)
+        have = set(deps.get(k, []))
+        for m in sorted(need - have):
+            E('js/%s-pathway.js 用到 js/%s.js 的匯出，但 PATHWAY_DEPS[%s] 沒列它（延遲載入時會先跑到未定義）' % (k, m, k))
+        for d in deps.get(k, []):
+            if not os.path.exists(os.path.join(ROOT, 'js/%s.js' % d)):
+                E('PATHWAY_DEPS[%s] 列了不存在的 js/%s.js' % (k, d))
+            elif 'js/%s.js' % d not in pre:
+                E('sw.js PRECACHE_URLS 少了 js/%s.js（%s 的相依）' % (d, k))
+    used = set('%s-pathway' % k for k in keys) | {d for ds in deps.values() for d in ds}
+    for m in sorted(mods):
+        if m not in used:
+            W('js/%s.js 沒有任何癌別或 PATHWAY_DEPS 用到它（孤兒模組）' % m)
+    for k in deps:
+        if k not in keys:
+            W('PATHWAY_DEPS 有 %s，但 cancers.js 沒有這個 pathway 鍵' % k)
 
     # (4) 方磚圖版 → (5) 圖檔與 precache
     tm = re.search(r'var ONC_TILE_IMG = \{(.*?)\};', stg, re.S)

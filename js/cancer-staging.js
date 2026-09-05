@@ -184,9 +184,11 @@ function showOncSearch(on){
   if(box) box.style.display = on ? '' : 'none';
 }
 
+var CURRENT_ID = null;   // 目前顯示中的癌別（延遲載入回來時比對用）
 function showDetail(id, keepScroll){
   var base = CANCERS.find(function(x){return x.id === id;});
   if(!base) return;
+  CURRENT_ID = id;
   var c = resolveCancer(base);
   var tab = ACTIVE_TAB[id] || 'stage';
   document.getElementById('oncPicker').style.display = 'none';
@@ -237,40 +239,78 @@ function switchTab(id, tab){
   var el = document.getElementById('oncTab');
   if(tab === 'stage') el.innerHTML = renderStage(c);
   else if(tab === 'node') el.innerHTML = renderNode(c);
-  else {
+  else renderTxTab(id, c, el);
+}
+
+/* ── 治療分頁：命名規則分派 ＋ 延遲載入（2026-09-05） ────────────────────────
+   流程模組 js/<k>-pathway.js 尾端固定匯出 global.<k>PathwayHTML（產出 HTML）與
+   global.init<K>Pathway（reset＋render）。以前這裡是兩條 31 行的 if-chain，一支模組
+   一行；現在只認這條命名規則，模組多一支就自動接上（schema/check_cancer_wiring.py
+   驗每支模組真的照規則匯出、跨模組相依有列在 PATHWAY_DEPS）。
+
+   模組不再由 cancer.html 同步載入（33 支合計 2 MB，單次瀏覽只用 1–3 支），而是
+   第一次點到某癌別的治療分頁時才注入 <script>；sw.js 仍把全部模組放在 precache，
+   所以離線一樣載得到。相依順序照原本 cancer.html 的 <script> 順序：
+   結直腸兩支要先有 crc-regimens／crc-supplement，NET 內嵌 pNET。 */
+var PATHWAY_DEPS = {
+  colon:  ['crc-regimens', 'crc-supplement'],
+  rectal: ['crc-regimens', 'crc-supplement'],
+  net:    ['pnet-pathway']
+};
+var PATHWAY_LOADING = {};   // src → [callbacks]（載入中）；true（已載）
+
+function pathwayFn(c, kind){
+  var k = c && c.pathway;
+  if(!k) return null;
+  var name = kind === 'html' ? k + 'PathwayHTML'
+                             : 'init' + k.charAt(0).toUpperCase() + k.slice(1) + 'Pathway';
+  return typeof window[name] === 'function' ? window[name] : null;
+}
+
+function loadScript(src, cb){
+  if(PATHWAY_LOADING[src] === true){ cb(); return; }
+  if(PATHWAY_LOADING[src]){ PATHWAY_LOADING[src].push(cb); return; }
+  PATHWAY_LOADING[src] = [cb];
+  var s = document.createElement('script');
+  s.src = src;
+  s.onload = function(){
+    var cbs = PATHWAY_LOADING[src]; PATHWAY_LOADING[src] = true;
+    cbs.forEach(function(f){ f(); });
+  };
+  s.onerror = function(){
+    var cbs = PATHWAY_LOADING[src]; delete PATHWAY_LOADING[src];
+    console.warn('pathway module failed to load: ' + src);
+    cbs.forEach(function(f){ f(new Error(src)); });
+  };
+  document.head.appendChild(s);
+}
+
+function loadPathway(k, cb){
+  var files = (PATHWAY_DEPS[k] || []).concat([k + '-pathway']);
+  (function next(i, err){
+    if(err || i >= files.length){ cb(err); return; }
+    loadScript('../js/' + files[i] + '.js', function(e){ next(i + 1, e); });
+  })(0, null);
+}
+
+function renderTxTab(id, c, el){
+  function paint(){
     el.innerHTML = renderTx(c);
-    if(c.pathway === 'lung' && typeof initLungPathway === 'function') initLungPathway();
-    if(c.pathway === 'gastric' && typeof initGastricPathway === 'function') initGastricPathway();
-    if(c.pathway === 'esoph' && typeof initEsophPathway === 'function') initEsophPathway();
-    if(c.pathway === 'breast' && typeof initBreastPathway === 'function') initBreastPathway();
-    if(c.pathway === 'thyroid' && typeof initThyroidPathway === 'function') initThyroidPathway();
-    if(c.pathway === 'colon' && typeof initColonPathway === 'function') initColonPathway();
-    if(c.pathway === 'rectal' && typeof initRectalPathway === 'function') initRectalPathway();
-    if(c.pathway === 'panc' && typeof initPancPathway === 'function') initPancPathway();
-    if(c.pathway === 'hcc' && typeof initHccPathway === 'function') initHccPathway();
-    if(c.pathway === 'sts' && typeof initStsPathway === 'function') initStsPathway();
-    if(c.pathway === 'gist' && typeof initGistPathway === 'function') initGistPathway();
-    if(c.pathway === 'cca' && typeof initCcaPathway === 'function') initCcaPathway();
-    if(c.pathway === 'appendix' && typeof initAppendixPathway === 'function') initAppendixPathway();
-    if(c.pathway === 'pnet' && typeof initPnetPathway === 'function') initPnetPathway();
-    if(c.pathway === 'net' && typeof initNetPathway === 'function') initNetPathway();
-    if(c.pathway === 'cervix' && typeof initCervixPathway === 'function') initCervixPathway();
-    if(c.pathway === 'endo' && typeof initEndoPathway === 'function') initEndoPathway();
-    if(c.pathway === 'utsarc' && typeof initUtsarcPathway === 'function') initUtsarcPathway();
-    if(c.pathway === 'ovarian' && typeof initOvarianPathway === 'function') initOvarianPathway();
-    if(c.pathway === 'utuc' && typeof initUtucPathway === 'function') initUtucPathway();
-    if(c.pathway === 'rcc' && typeof initRccPathway === 'function') initRccPathway();
-    if(c.pathway === 'bladder' && typeof initBladderPathway === 'function') initBladderPathway();
-    if(c.pathway === 'prostate' && typeof initProstatePathway === 'function') initProstatePathway();
-    if(c.pathway === 'npc' && typeof initNpcPathway === 'function') initNpcPathway();
-    if(c.pathway === 'hnc' && typeof initHncPathway === 'function') initHncPathway();
-    if(c.pathway === 'aml' && typeof initAmlPathway === 'function') initAmlPathway();
-    if(c.pathway === 'all' && typeof initAllPathway === 'function') initAllPathway();
-    if(c.pathway === 'cml' && typeof initCmlPathway === 'function') initCmlPathway();
-    if(c.pathway === 'mpn' && typeof initMpnPathway === 'function') initMpnPathway();
-    if(c.pathway === 'mds' && typeof initMdsPathway === 'function') initMdsPathway();
-    if(c.pathway === 'lym' && typeof initLymPathway === 'function') initLymPathway();
+    var init = pathwayFn(c, 'init');
+    if(init) init();
+    sweepIdlePlaceholders();
   }
+  if(c.pathway && !pathwayFn(c, 'html')){
+    el.innerHTML = '<div class="onc-loading">載入治療流程…</div>';
+    loadPathway(c.pathway, function(err){
+      // 使用者可能已經切到別的癌別或分頁：只在還停在這一格時才畫
+      if(CURRENT_ID !== id || ACTIVE_TAB[id] !== 'tx') return;
+      if(err) console.warn('pathway module missing: ' + c.pathway + '（退回 tx 卡片）');
+      paint();
+    });
+    return;
+  }
+  paint();
 }
 
 var MTX_VARIANT = {};   // cancerId -> 目前選取之變體 key
@@ -542,99 +582,8 @@ function renderNode(c){
 
 function renderTx(c){
   // 具互動決策流程圖之癌別：療程資料已整合於各建議處置色塊，tx 僅作為模組未載入時的後備
-  if(c.pathway === 'lung' && typeof lungPathwayHTML === 'function'){
-    return lungPathwayHTML();
-  }
-  if(c.pathway === 'gastric' && typeof gastricPathwayHTML === 'function'){
-    return gastricPathwayHTML();
-  }
-  if(c.pathway === 'esoph' && typeof esophPathwayHTML === 'function'){
-    return esophPathwayHTML();
-  }
-  if(c.pathway === 'breast' && typeof breastPathwayHTML === 'function'){
-    return breastPathwayHTML();
-  }
-  if(c.pathway === 'thyroid' && typeof thyroidPathwayHTML === 'function'){
-    return thyroidPathwayHTML();
-  }
-  if(c.pathway === 'colon' && typeof colonPathwayHTML === 'function'){
-    return colonPathwayHTML();
-  }
-  if(c.pathway === 'rectal' && typeof rectalPathwayHTML === 'function'){
-    return rectalPathwayHTML();
-  }
-  if(c.pathway === 'panc' && typeof pancPathwayHTML === 'function'){
-    return pancPathwayHTML();
-  }
-  if(c.pathway === 'hcc' && typeof hccPathwayHTML === 'function'){
-    return hccPathwayHTML();
-  }
-  if(c.pathway === 'gist' && typeof gistPathwayHTML === 'function'){
-    return gistPathwayHTML();
-  }
-  if(c.pathway === 'cca' && typeof ccaPathwayHTML === 'function'){
-    return ccaPathwayHTML();
-  }
-  if(c.pathway === 'appendix' && typeof appendixPathwayHTML === 'function'){
-    return appendixPathwayHTML();
-  }
-  if(c.pathway === 'sts' && typeof stsPathwayHTML === 'function'){
-    return stsPathwayHTML();
-  }
-  if(c.pathway === 'pnet' && typeof pnetPathwayHTML === 'function'){
-    return pnetPathwayHTML();
-  }
-  if(c.pathway === 'net' && typeof netPathwayHTML === 'function'){
-    return netPathwayHTML();
-  }
-  if(c.pathway === 'cervix' && typeof cervixPathwayHTML === 'function'){
-    return cervixPathwayHTML();
-  }
-  if(c.pathway === 'endo' && typeof endoPathwayHTML === 'function'){
-    return endoPathwayHTML();
-  }
-  if(c.pathway === 'utsarc' && typeof utsarcPathwayHTML === 'function'){
-    return utsarcPathwayHTML();
-  }
-  if(c.pathway === 'ovarian' && typeof ovarianPathwayHTML === 'function'){
-    return ovarianPathwayHTML();
-  }
-  if(c.pathway === 'utuc' && typeof utucPathwayHTML === 'function'){
-    return utucPathwayHTML();
-  }
-  if(c.pathway === 'rcc' && typeof rccPathwayHTML === 'function'){
-    return rccPathwayHTML();
-  }
-  if(c.pathway === 'bladder' && typeof bladderPathwayHTML === 'function'){
-    return bladderPathwayHTML();
-  }
-  if(c.pathway === 'npc' && typeof npcPathwayHTML === 'function'){
-    return npcPathwayHTML();
-  }
-  if(c.pathway === 'hnc' && typeof hncPathwayHTML === 'function'){
-    return hncPathwayHTML();
-  }
-  if(c.pathway === 'prostate' && typeof prostatePathwayHTML === 'function'){
-    return prostatePathwayHTML();
-  }
-  if(c.pathway === 'aml' && typeof amlPathwayHTML === 'function'){
-    return amlPathwayHTML();
-  }
-  if(c.pathway === 'all' && typeof allPathwayHTML === 'function'){
-    return allPathwayHTML();
-  }
-  if(c.pathway === 'cml' && typeof cmlPathwayHTML === 'function'){
-    return cmlPathwayHTML();
-  }
-  if(c.pathway === 'mpn' && typeof mpnPathwayHTML === 'function'){
-    return mpnPathwayHTML();
-  }
-  if(c.pathway === 'mds' && typeof mdsPathwayHTML === 'function'){
-    return mdsPathwayHTML();
-  }
-  if(c.pathway === 'lym' && typeof lymPathwayHTML === 'function'){
-    return lymPathwayHTML();
-  }
+  var fn = pathwayFn(c, 'html');
+  if(fn) return fn();
   var h = '';
   (c.tx||[]).forEach(function(t){
     h += '<div class="tx '+t.cls+'"><div class="tx-head"><span class="tx-role">'+t.role+

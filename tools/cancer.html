@@ -91,39 +91,8 @@
 </div>
 
 <script src="../data/cancer/cancers.js"></script>
-<script src="../js/lung-pathway.js"></script>
-<script src="../js/gastric-pathway.js"></script>
-<script src="../js/esoph-pathway.js"></script>
-<script src="../js/breast-pathway.js"></script>
-<script src="../js/thyroid-pathway.js"></script>
-<script src="../js/crc-regimens.js"></script>
-<script src="../js/crc-supplement.js"></script>
-<script src="../js/colon-pathway.js"></script>
-<script src="../js/rectal-pathway.js"></script>
-<script src="../js/panc-pathway.js"></script>
-<script src="../js/hcc-pathway.js"></script>
-<script src="../js/sts-pathway.js"></script>
-<script src="../js/gist-pathway.js"></script>
-<script src="../js/cca-pathway.js"></script>
-<script src="../js/appendix-pathway.js"></script>
-<script src="../js/pnet-pathway.js"></script>
-<script src="../js/net-pathway.js"></script>
-<script src="../js/cervix-pathway.js"></script>
-<script src="../js/endo-pathway.js"></script>
-<script src="../js/utsarc-pathway.js"></script>
-<script src="../js/ovarian-pathway.js"></script>
-<script src="../js/utuc-pathway.js"></script>
-<script src="../js/rcc-pathway.js"></script>
-<script src="../js/bladder-pathway.js"></script>
-<script src="../js/prostate-pathway.js"></script>
-<script src="../js/npc-pathway.js"></script>
-<script src="../js/hnc-pathway.js"></script>
-<script src="../js/aml-pathway.js"></script>
-<script src="../js/all-pathway.js"></script>
-<script src="../js/cml-pathway.js"></script>
-<script src="../js/mds-pathway.js"></script>
-<script src="../js/mpn-pathway.js"></script>
-<script src="../js/lym-pathway.js"></script>
+<!-- 30 支治療流程模組（js/*-pathway.js）改由 js/cancer-staging.js 的 loadPathway() 在第一次點到
+     該癌別的治療分頁時才注入；相依順序在 PATHWAY_DEPS，離線靠 sw.js 的 precache。 -->
 <script src="../js/cancer-staging.js"></script>
 <!-- drugcards:start 藥卡渲染。重用 drug-database.js 的 cardBody()／loadPid()，
      分類資料與補充資料全部延遲注入，開頁不多付任何流量。
