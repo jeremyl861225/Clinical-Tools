@@ -584,6 +584,11 @@
   .flow-step.hidden,.flow-connector.hidden,.hidden{display:none;}
   .flow-link{display:inline-block; margin-top:9px; font-family:var(--mono); font-size:12px; color:var(--accent); background:none; border:1px dashed var(--accent-soft); border-radius:2px; padding:5px 10px; cursor:pointer;}
   .flow-link:hover{border-color:var(--accent); background:var(--accent-soft);}
+  /* 2026-09-06：連到計分工具／別頁的鍵統一用「→ 」當記號（原本各頁自己放 🧮🔗🧭 等 emoji，設計規範列為反面參照） */
+  .flow-link::before{content:'→ '; opacity:.7;}
+  /* SOFA 藥物流速換算器的摺疊標題（原本寫在 inline style）*/
+  .drug-calc-details > summary{cursor:pointer; font-family:var(--mono); font-size:12.5px; color:var(--accent); font-weight:700; margin-top:10px; list-style:none;}
+  .drug-calc-details > summary::-webkit-details-marker{display:none;}
   /* .flow-link 的 display 與上方 .hidden 同特異度且排在後面，會蓋掉 .hidden；
      可切換顯示的 flow-link 必須靠這條才藏得住（僅加 class 不會生效）。 */
   .flow-link.hidden{display:none;}

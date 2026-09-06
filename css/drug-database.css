@@ -276,3 +276,5 @@ table.titr-tbl tr.titr-hi td:first-child{box-shadow:inset 3px 0 0 var(--accent);
    換行時後續行對齊到破折號後的文字（hanging indent，但不突出段落左緣）。 */
 .dose-fmt .dl-sub{padding-left:1.5em; text-indent:-0.9em; color:var(--muted); font-size:12.5px;}
 .dose-fmt .dl-sub:before{content:'– '; color:var(--muted-soft);}
+.db-hint{font-family:var(--mono); font-size:10.5px; color:var(--muted); margin:-4px 0 10px 2px;}
+.db-more{display:block; width:100%; margin:12px 0 4px; padding:10px; font-family:var(--mono); font-size:12px; background:var(--panel); border:1px solid var(--line); border-radius:2px; color:var(--ink); cursor:pointer;}

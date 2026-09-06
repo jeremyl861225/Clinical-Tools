@@ -28,6 +28,11 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
+<style>
+  /* 2026-09-06：疾病／分級／Stage 三個下拉原本內聯 flex:1（basis 0），手機上被壓成 91px 只看得到「A. 急性闌」 */
+  #view-classifications .field-row select{flex:1 1 220px; min-width:0; max-width:100%;}
+  @media(max-width:480px){ #view-classifications .field-row select{flex-basis:100%;} }
+</style>
 </head>
 <body data-back-label="臨床分級表">
 <div class="sheet">
@@ -92,10 +97,10 @@
 
   <div class="card">
     <div class="field-row"><label>疾病</label>
-      <select id="ae_dz" style="flex:1;"></select>
+      <select id="ae_dz"></select>
     </div>
     <div class="field-row"><label>分級</label>
-      <select id="ae_gr" style="flex:1;">
+      <select id="ae_gr">
         <option value="0">Grade I</option>
         <option value="1">Grade II</option>
         <option value="2">Grade III</option>
@@ -1084,7 +1089,7 @@
       <div class="sys-sub">互動分級：選 stage 看逐級處置</div>
       <div class="card" style="margin:6px 0 4px;">
         <div class="field-row"><label>Stage</label>
-          <select id="cs_stage" style="flex:1;">
+          <select id="cs_stage">
             <option value="a">A — At Risk（有風險，無 shock）</option>
             <option value="b">B — Beginning（不穩但無低灌流）</option>
             <option value="c">C — Classic（低灌流，乳酸 ≥2）</option>

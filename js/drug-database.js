@@ -176,12 +176,23 @@ function covStrip(d) {
     `<span class="cov-tag ${COV_TIER[c[1]] || 'no'}">${esc(c[0])}</span>`).join('') + `</div>`;
 }
 
-function renderList() {
+/* 2026-09-06：清單改分頁。原本一次把 2,623 張卡的標題列全畫出來（.sheet 高 17 萬 px），
+   頁尾與主題切換實質上到不了；現在先畫 LIST_PAGE 筆，底下一顆「再顯示」。
+   換分類／搜尋時從頭數；#code= 深層連結指到還沒畫的卡時由 applyHash() 補畫全部再展開。 */
+const LIST_PAGE = 150;
+let listShown = LIST_PAGE;
+function showMoreList() { listShown += LIST_PAGE; renderList(true); }
+
+function renderList(keepShown) {
+  if (!keepShown) listShown = LIST_PAGE;
   const hits = IDX.filter(matches);
   el('db-count').textContent = `${hits.length} 個品項` +
     (hits.length > 400 ? '（品項較多，可用上方分類或搜尋縮小範圍）' : '');
+  const more = hits.length - Math.min(listShown, hits.length);
+  const moreBtn = more > 0
+    ? `<button type="button" class="db-more" onclick="showMoreList()">再顯示 ${Math.min(LIST_PAGE, more)} 筆 · 還有 ${more} 筆</button>` : '';
   // 同學名的品項排在一起，商品名為次序；未展開的卡片只畫標題列，展開時才載入該分類資料
-  el('db-list').innerHTML = hits.map(d => {
+  el('db-list').innerHTML = (hits.slice(0, listShown).map(d => {
     const badges = (d.strengths || []).map(s => `<span class="db-strength">${esc(s)}</span>`).join('');
     /* 「非台大處方」給不同底色——那批不是台大處方集，清單上要一眼分得出來 */
     const tags = (d.tags || []).map(t =>
@@ -204,7 +215,7 @@ function renderList() {
       </summary>
       <div class="dc-body"><div class="db-loading">載入中…</div></div>
     </details>`;
-  }).join('') ||
+  }).join('') + moreBtn) ||
     '<div class="db-empty">找不到符合的藥品。可改用學名、商品名或中文品名搜尋。</div>';
 }
 
@@ -1029,6 +1040,11 @@ function applyHash() {
   let card = el('drug-' + code);
   if (!card) card = [...document.querySelectorAll('.drugcard')]
     .find(c => (c.dataset.codes || '').split(' ').indexOf(code) >= 0);
+  if (!card && IDX.length > listShown) {          // 目標在分頁之外：補畫全部再找一次
+    listShown = IDX.length; renderList(true);
+    card = el('drug-' + code) || [...document.querySelectorAll('.drugcard')]
+      .find(c => (c.dataset.codes || '').split(' ').indexOf(code) >= 0);
+  }
   if (card) { card.open = true; card.scrollIntoView({ block: 'start' }); }
 }
 
@@ -1054,6 +1070,7 @@ window.onSearch      = onSearch;        // drug-database.html 的搜尋框
 window.pickSrc       = pickSrc;
 window.pickTop       = pickTop;
 window.pickCls       = pickCls;
+window.showMoreList  = showMoreList;   // 清單底下的「再顯示」
 window.toggleCls     = toggleCls;
 window.onCardToggle  = onCardToggle;    // 藥卡展開；cancer.html 的流程圖也直接用這支
 window.switchVariant = switchVariant;   // 藥卡內的含量規格分頁

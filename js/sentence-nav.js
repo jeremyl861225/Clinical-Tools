@@ -3828,13 +3828,15 @@
         '<div class="sent-row" id="sentRow"></div>' +
         '<div class="sent-panel" id="sentPanel" hidden></div>' +
         '<div class="st-edit-note">點任何一格只改那一格，其餘幾格一個字都不動。</div>' +
+        /* 2026-09-06：提示與誠實聲明收進展開區。收合時首屏只留「這句話目前指向 N 件事」一行——
+           原本三行說明（同一個件數講兩次）每頁重複佔掉約 130px，SOFA 的第一個輸入要到畫面中線才出現。 */
+        '<span class="sent-point-hint">' + esc(hint) + '</span>' +
+        '<div class="st-honest">' + esc(srcNote) + '</div>' +
       '</div>' +
       '<div class="sent-point">' +
         '<span class="sent-point-n">這句話目前指向 <b>' + list.length + '</b> 件事</span>' +
-        '<span class="sent-point-hint">' + esc(hint) + '</span>' +
         '<button type="button" class="sent-clear" data-act="tclear">清空句子</button>' +
       '</div>' +
-      '<div class="st-honest">' + esc(srcNote) + ' · 展開後可以改任何一格，改完就帶你到新的落點</div>' +
       '<div class="sent-ask" id="sentAsk" hidden>' +
         '<input class="sent-ask-in" id="sentAskIn" type="text" autocomplete="off" spellcheck="false" ' +
         'aria-label="直接說整句：打字找一整句話，Enter 直達" ' +
@@ -3858,7 +3860,7 @@
       return '這句話指向「' + (only ? only.name : '') + '」· 改完會直接過去';
     }
     if (!n) return '這句話目前指不到東西 · 改完會回首頁，由首頁自動放寬並說明放寬了哪一格';
-    return '指向 ' + n + ' 件事 · 改完會回首頁，在候選清單裡繼續收斂';
+    return '改完會回首頁，在候選清單裡繼續收斂';   // 件數已在上一行印過，不重複
   }
 
   /* 內頁的軌跡重畫。刻意**不整段換 innerHTML**：那會把「說整句」面板連同使用者

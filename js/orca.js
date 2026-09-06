@@ -775,6 +775,30 @@
        很長一段時間幾乎正對鏡頭——畫面上幾乎不動、又看不出是什麼，那不好看。
      邊界只留約 1/4 身長與 2.5 倍體高的餘裕，那不是牆（飼料丟在角落照樣游過去、
      身子探出畫外一截，見 step() 結尾的夾限），只是不會自己挑一個必然半身出畫的點。 */
+  /* 2026-09-06：桌機版（≥1100px）版心 .sheet 兩側各有三、四百 px 的水道，牠巡游時不該壓在
+     方磚的說明文字上。巡游目標若落在版心（含半身長餘裕）就推到較近、放得下牠的那一側；
+     水道太窄（手機、平板）就照原本的行為。追餌不受此限——那是使用者丟的。 */
+  function offSheet(x, mx) {
+    if (W < 1100) return x;
+    var sh = document.querySelector('.sheet');
+    if (!sh) return x;
+    var r = sh.getBoundingClientRect(), m = D.span * .55;
+    var L = r.left - m, R = r.right + m;
+    if (x <= L || x >= R) return x;
+    var leftRoom = L - mx, rightRoom = W - mx - R, need = D.span * .6;
+    if (leftRoom < need && rightRoom < need) return x;
+    var goLeft = (x - L) < (R - x) ? leftRoom >= need : rightRoom < need;
+    return goLeft ? mx + Math.random() * Math.max(20, leftRoom)
+                  : R + Math.random() * Math.max(20, rightRoom);
+  }
+  function overSheet() {
+    if (W < 1100) return false;
+    var sh = document.querySelector('.sheet');
+    if (!sh) return false;
+    var r = sh.getBoundingClientRect();
+    return o.x > r.left + D.span * .15 && o.x < r.right - D.span * .15;
+  }
+
   function pickTarget() {
     var top = scrollTop(), face = Math.sin(o.th) >= 0 ? 1 : -1;
     var mx = Math.min(D.span * .28, W * .3), my = Math.min(D.H * 2.5, Hv * .28);
@@ -799,6 +823,7 @@
       o.ty = top + my + Math.random() * band;
       o.turnCool = 8;
     }
+    o.tx = offSheet(o.tx, mx);
     /* 深度只有四成的機會換新的，而且步幅只有半個水族箱：每換一個目標就換一次
        深度的話，牠有很長一段時間幾乎正對鏡頭——畫面上幾乎不動、又看不出是什麼。
        實測那樣的偏航分布是平的（每個角度各佔八分之一），完全側面反而變少了。 */
@@ -1244,9 +1269,16 @@
     /* 藥丸躺在 z=0 那一面。鯨魚游到那一面後方時，藥丸就該蓋在牠身上——
        這一筆是深度最直接的線索，少了它「牠在藥丸後面」根本讀不出來。 */
     var i;
+    /* 桌機版行經版心文字時整體降到 .45（緩動，避免一格跳成半透明），出了版心再回到 1 */
+    var wantA = overSheet() ? .45 : 1;
+    o.alpha = (o.alpha === undefined) ? wantA : o.alpha + (wantA - o.alpha) * .08;
+    ctx.globalAlpha = o.alpha;
     if (o.z > 0) drawWhale(ctx, sc);
+    ctx.globalAlpha = 1;
     for (i = 0; i < food.length; i++) drawPill(ctx, food[i], sc);
+    ctx.globalAlpha = o.alpha;
     if (o.z <= 0) drawWhale(ctx, sc);
+    ctx.globalAlpha = 1;
   }
 
   function loop(ts) {

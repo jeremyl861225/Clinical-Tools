@@ -7,7 +7,7 @@ colors:
   sentence-bg3: "#dcd7c6"
   sentence-fg: "#1f1f1d"
   sentence-fg2: "#474643"
-  sentence-dim: "#706e69"
+  sentence-dim: "#5f5d58"
   sentence-line: "#c3bda9"
   sentence-line2: "#a8a18b"
   sentence-inv-bg: "#1f1f1d"
