@@ -16,7 +16,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -26,12 +26,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/guide.css">
 <style>
   /* ── 建議強度徽章 ────────────────────────────────────────────
-     四級：建議給／有條件建議／證據不足／不建議。色系沿用全站 teal-ochre-rust。 */
-  .tr-rec{display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.03em;
-          border-radius:9px; padding:1px 8px; white-space:nowrap; vertical-align:1px;}
-  .tr-rec.r3{color:#fff; background:#2f6b5c;}                              /* 建議給 */
+     四級：建議給／有條件建議／證據不足／不建議。色系沿用全站 teal-ochre-rust。 */                              /* 建議給 */
   .tr-rec.r2{color:#1b2b1f; background:#a9c7ae; border:1px solid #7fa085;} /* 有條件建議 */
   .tr-rec.r1{color:#2b2110; background:#e6d3a8; border:1px solid #c2a468;} /* 證據不足 */
   .tr-rec.r0{color:#fff; background:#a8756d;}                              /* 不建議 */
@@ -40,11 +38,7 @@
     .tr-rec.r2{color:#0f1a12; background:#7d9c81; border-color:#5c7a61;}
     .tr-rec.r1{color:#221a0c; background:#b8945a; border-color:#8d7040;}
     .tr-rec.r0{background:#9c6d66;}
-  }
-  .tr-legend{display:flex; flex-wrap:wrap; gap:7px 14px; align-items:center; margin-bottom:12px;}
-  .tr-legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted);}
-
-  /* ── 損傷卡 ─────────────────────────────────────────────────── */
+  }  /* ── 損傷卡 ─────────────────────────────────────────────────── */
   .tr-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:11px;}
   .tr-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:9px;}
 
@@ -72,10 +66,7 @@
   .tr-fld .v b{font-weight:700;}
   .tr-fld .v em{font-style:normal; color:var(--accent2); font-weight:600;}
   .tr-src{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft); line-height:1.75;}
-  .tr-src a{color:var(--accent);}
-  .tr-cav{display:block; background:var(--box-bg); border-left:2px solid var(--accent2); border-radius:2px;
-          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
-  /* NM ADSP 機構在地指引框：與 tr-cav 同為框選，但用不同左緣色以資區別 */
+  .tr-src a{color:var(--accent);}  /* NM ADSP 機構在地指引框：與 tr-cav 同為框選，但用不同左緣色以資區別 */
   .tr-nm{display:block; background:var(--box-bg); border-left:2px solid var(--accent); border-radius:2px;
          padding:7px 10px; font-size:12px; line-height:1.7; color:var(--muted); margin:6px 0 2px;}
   .tr-nm .lbl{display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; font-weight:700;

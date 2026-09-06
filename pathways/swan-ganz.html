@@ -15,7 +15,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
 <style>
   /* 分頁列沿用全站共用的 .tab-row／.tab-btn（見 css/styles.css），此處只定義內容面板 */
   .sg-panel{display:none;} .sg-panel.on{display:block;}
@@ -61,25 +62,9 @@
   .w-seg{font-family:var(--mono); font-size:9.5px; fill:var(--accent); text-anchor:middle; font-weight:700;}
   .w-dep{font-family:var(--mono); font-size:8.5px; fill:var(--muted); text-anchor:middle;}
 
-  /* ── 通用小元件（與 pathways/cardiogenic-shock.html 同一套） ── */
-  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
-        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
-  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
-  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
-          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
-  .kbox.alert .kbox-t{color:var(--accent2);}
-  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
-  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
-  .tw table{min-width:560px;}
+  /* ── 通用小元件（與 pathways/cardiogenic-shock.html 同一套） ── */  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}  .tw table{min-width:560px;}
   .tw.wide table{min-width:660px;}
-  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
-  .sect{margin-top:16px;}
-  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
-        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
-  .pmid:hover{color:var(--accent2);}
-  .cor{font-family:var(--mono); font-size:10px; font-weight:700; padding:1px 5px; border-radius:2px;
-       background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
-  .def-table td{line-height:1.7;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}  .pmid:hover{color:var(--accent2);}  .def-table td{line-height:1.7;}
   .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal;
                                    color:var(--ink); font-weight:400; min-width:92px;}
   .def-table.dt-rec th:nth-child(n+2),.def-table.dt-rec td:nth-child(n+2){text-align:center; white-space:nowrap;}

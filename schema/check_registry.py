@@ -44,8 +44,6 @@ SUBHUB = {
     'tools/iv-to-po.html':            {'tile': 'card-view-antibiotics', 'hub': 'tools/antibiotics.html'},
     'tools/y-site.html':              {'tile': 'card-view-antibiotics', 'hub': 'tools/antibiotics.html'},
     'tools/ddi.html':                 {'tile': None,                    'hub': 'tools/drug-database.html'},
-    'tools/ich-score.html':           {'tile': 'card-view-ich-path',    'hub': None},
-    'tools/pss.html':                 {'tile': 'card-view-esoph',       'hub': None},
 }
 
 TITLE_SUFFIX = ' · 臨床工具箱'
@@ -335,8 +333,8 @@ def main():
         if 'tool-footer' not in src:
             W('%s: 沒有 footer.tool-footer（出處文獻）' % p)
         tc = re.search(r'name="theme-color" content="([^"]+)"', src)
-        if tc and tc.group(1) != '#1f5a6b':
-            W('%s: theme-color %s（其他頁都是 #1f5a6b）' % (p, tc.group(1)))
+        if tc and tc.group(1) != '#234551':
+            E('%s: theme-color %s（全站統一為 manifest 的 #234551）' % (p, tc.group(1)))
         k = k_of_page.get(p)
         r = by_k.get(k) if k else None
         eb = re.search(r'class="eyebrow">([^<]*)<', src)

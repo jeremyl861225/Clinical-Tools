@@ -15,7 +15,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
 <style>
   /* 分頁列沿用共用的 .tab-row／.tab-btn，此處只定義內容面板 */
   .va-panel{display:none;} .va-panel.on{display:block;}
@@ -81,24 +82,9 @@
   .hemo-key{font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.8; margin:2px 0 12px;}
   .hemo-key b{color:var(--ink);}
 
-  /* ── 藥物卡（同 RSI／心因性休克頁的元件，禁忌症獨立框出） ── */
-  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
-      background:var(--panel); padding:10px 12px; margin:9px 0;}
-  .dg.warn{border-left-color:var(--accent2);}
-  .dg.na{border-left-color:var(--muted-soft); background:var(--soft-bg);}
-  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
-  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
-  .dg-zh{font-size:11.5px; color:var(--muted);}
-  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
-          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
-  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
-  .dg-tag.off{background:var(--soft-bg); color:var(--muted); border:1px solid var(--line);}
+  /* ── 藥物卡（同 RSI／心因性休克頁的元件，禁忌症獨立框出） ── */  .dg.na{border-left-color:var(--muted-soft); background:var(--soft-bg);}  .dg-tag.off{background:var(--soft-bg); color:var(--muted); border:1px solid var(--line);}
   .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
-           display:flex; gap:14px; flex-wrap:wrap; align-items:baseline;}
-  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
-  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent); display:block;}
-  .dg-dose .dd-v.alt{color:var(--accent2);}
-  .dg-dose .dd-ml{font-family:var(--mono); font-size:12.5px; font-weight:700; color:var(--ink);
+           display:flex; gap:14px; flex-wrap:wrap; align-items:baseline;}  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent); display:block;}  .dg-dose .dd-ml{font-family:var(--mono); font-size:12.5px; font-weight:700; color:var(--ink);
                   display:block; margin-top:1px;}
   .dg-dose .dd-ml:empty{display:none;}
   .dg-mix{display:flex; align-items:center; gap:6px; flex-wrap:wrap;
@@ -111,36 +97,7 @@
   .dg-mix .mix-u{font-family:var(--mono); font-size:11px; color:var(--muted);}
   .dg-mix .mix-c{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:2px;}
   .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px; line-height:1.6;}
-  .dg-kin b{color:var(--ink); font-weight:700;}
-  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
-  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
-  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em; text-transform:uppercase;}
-  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
-  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
-  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
-  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
-         background:var(--accent2-soft); padding:7px 10px;}
-  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
-           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
-  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
-  .dg-ci .abs{font-weight:700;}
-  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
-
-  /* ── 通用小元件（與心因性休克頁同一套） ── */
-  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
-        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
-  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
-  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
-          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
-  .kbox.alert .kbox-t{color:var(--accent2);}
-  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
-  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
-  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
-  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
-        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
-  .pmid:hover{color:var(--accent2);}
-  .sect{margin-top:16px;}
-  .def-table td{line-height:1.7;}
+  .dg-kin b{color:var(--ink); font-weight:700;}  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }  /* ── 通用小元件（與心因性休克頁同一套） ── */  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}  .pmid:hover{color:var(--accent2);}  .def-table td{line-height:1.7;}
   .def-table.dt-rec td:first-child{font-family:var(--sans); white-space:normal; color:var(--ink); font-weight:400;}
   .def-table.dt-dose td:nth-child(n+2){font-family:var(--mono); font-size:11.5px; line-height:1.6;}
 </style>

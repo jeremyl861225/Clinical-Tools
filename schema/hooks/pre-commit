@@ -1,0 +1,24 @@
+#!/bin/sh
+# Clinical-Tools 的 pre-commit hook：把 index.html 的「latest revision 日期」換成今天。
+#
+# 安裝：cp schema/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# （.git/hooks 不在版控內，重新 clone 或換電腦要重做一次。）
+#
+# 2026-09-05 改寫：舊版是 sed 改工作區檔案再 `git add index.html` **整檔**，會把同一個工作目錄裡
+# 其他 session 尚未完成的首頁改動一起掃進這次 commit（實際造成過線上死連結）。
+# 現在只改「這次 commit 會帶上去的那一份」：index.html 若已 stage 就拿暫存區版本、否則拿 HEAD 版本，
+# 換掉日期後寫成 blob 直接放進暫存區；工作區的檔案只用 sed 同步那一行，不做 git add。
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+INDEX="$REPO_ROOT/index.html"
+TODAY="$(date +%Y.%m.%d)"
+[ -f "$INDEX" ] || exit 0
+grep -q "latest revision" "$INDEX" || exit 0
+
+if git diff --cached --quiet -- index.html; then BASE="HEAD:index.html"; else BASE=":index.html"; fi
+NEW="$(git show "$BASE" | sed -E "s/(latest revision )[0-9]{4}\.[0-9]{2}\.[0-9]{2}/\1$TODAY/")"
+BLOB="$(printf '%s\n' "$NEW" | git hash-object -w --stdin)"
+git update-index --cacheinfo 100644,"$BLOB",index.html
+
+# 工作區同步：只換那一行，其餘（包括別人未提交的改動）原封不動
+sed -i '' -E "s/(latest revision )[0-9]{4}\.[0-9]{2}\.[0-9]{2}/\1$TODAY/" "$INDEX"
+exit 0

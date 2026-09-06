@@ -68,6 +68,9 @@
   有 22 條 `[style*=…] !important` 在攔它）。深色結果面板底色寫死 `#132126`，不可用 `var(--ink)`。
 - **兩個主題軸**：`data-ui`（sentence 預設／classic 貓咪，切換鈕在頁尾「找貓咪」）× `prefers-color-scheme`。
   `<head>` 內那段 inline boot 必須在 paint 前跑，不可 defer。
+- **指引／整理型頁面共用的元件**（`.kbox`／`.dg-*`／`.rsi-*`／`.tl-*`／`.sp-*`／`.rx-*`／`.tr-rec`…）在 `css/guide.css`，
+  2026-09-05 由 18 頁逐字相同的 `<style>` 抽出，`<link>` 放在該頁第一個 `<style>` 之前（與原內嵌時同一級聯位置）。
+  新頁面要用這些元件就 `<link>` 它，不要再抄進 `<style>`。頁面自己獨有的規則仍留在頁內 `<style>`。
 - **每頁的 `<head>` 與尾段**以 `schema/templates/_head.html`／`_tail.html` 為準（`check_registry.py` 驗順序）。
 - **返回鍵不要自己寫**：`.back-stack` 內只放一顆「← 返回主選單」，`backlink.js` 依 `document.referrer` 自動插「← 返回來源頁」；
   h1 超過 14 字要給 `<body data-back-label>`。
@@ -90,10 +93,14 @@
 ## 7. 離線與快取
 
 - 策略是 stale-while-revalidate（先回快取、背景重抓）；**不要改回 network-first**（實測手機明顯變慢）。
-- `CACHE_VERSION` 只在需要強制清舊快取時 bump（刪檔、改檔名、整批換新）；新增頁面只加 precache 行。
-  慣例上目前每次改動都 bump，這一行也是 session 之間最常衝突的一行——改前重讀。
+- `CACHE_VERSION` 政策（2026-09-05 定案）：**新增或修改頁面只加 precache 行、不 bump**（stale-while-revalidate 會在背景換新）；
+  只有刪檔、改檔名，或一批檔案彼此相依必須同時換新（例如同時改 cancer.html 與 cancer-staging.js）才 bump。
+  `schema/new_page.py` 預設不 bump，加 `--bump` 才會。這一行是 session 之間最常衝突的一行——要改就當場重讀。
 - 同一個 github.io origin 上還有其他 PWA：`activate` 只能刪 `clinical-tools-` 前綴的快取。
 - 本機驗證前先清 SW 與 `caches`，再對改過的檔 `fetch(f, {cache:'reload'})` 灌回，否則測到的是舊檔。
+- **多 session 同一個工作目錄**：pre-commit hook（`schema/hooks/pre-commit`，安裝到 `.git/hooks/`）只把 `index.html` 的
+  「latest revision」日期換成今天並放進暫存區，**不會**整檔 `git add`；別人未提交的首頁改動留在工作區。
+  部署工作流（`.github/workflows/pages.yml`）在上傳前先跑 `python3 schema/check_pages.py`，不過就不部署。
 
 ## 8. 新增內容的流程
 
@@ -119,12 +126,13 @@ git add tools/my-score.html index.html data/facets.js sw.js && git commit && git
 | `check_cancer_wiring.py` | §6 癌症六處對帳 |
 | `validate_cancers.py`／`validate_drugs.py` | `cancers.js`／抗生素 `drugs.js` 的欄位型別 |
 | `check_drugcards.py` | 流程模組寫死的藥卡八碼 ↔ `data/drugs/<pid>.js` |
-| `render_compare.py`（用 `cdp.py` 驅動本機 Chrome） | 重構前後的渲染比對：首頁五格清單、內頁造句軌跡、32 個癌別標的三分頁的 HTML。`snapshot <dir>` 兩次確認零差異，再改程式、再拍、`compare` |
+| `render_compare.py`（用 `cdp.py` 驅動本機 Chrome） | 重構前後的渲染比對。`snapshot`：首頁五格清單、內頁造句軌跡、32 個癌別標的三分頁的 HTML；`styles`：全站 120 頁 × 亮暗 × 390/1440 每個元素的 computed style＋bbox 指紋（動 CSS 檔位置時用，約 15 分鐘）。先對同一份程式碼拍兩次確認零差異，再改、再拍、`compare` |
 
 ## 10. 已知的架構債（2026-09-04 審查，需要決定才動）
 
 - （2026-09-05 已修）分組計數改「範圍|群組」複合鍵；if-chain 改 `pathwayFn()` 命名規則；模組改延遲載入。
-- 44 頁的內嵌 CSS 有 8 個元件家族逐字重複（`.kbox`、`.dg-*`…），但搬到共用檔要顧級聯位置，需渲染基準比對。
-- `ui-sentence.css` 58% 是單頁專屬段落卻全站每頁載入（實測 CPU 成本小，是維護性問題）。
-- 22 頁分頁列有四套寫法、24 支同形 Tab 函式；9 個 guide 頁的 eyebrow 仍寫 Clinical Decision Pathway。
-- `.git/hooks/pre-commit` 整檔 `git add index.html`，會把別的 session 未提交的首頁修改掃進你的 commit。
+- （2026-09-05 已修）18 頁逐字重複的內嵌元件抽成 `css/guide.css`；9 個 guide 頁 eyebrow 改 Clinical Guide；pre-commit hook 改只動日期一行。
+- **`ui-sentence.css` 刻意不拆**：P／S／T／U／Z 五段名義上是單頁段落，但量過其選擇器有 26／10／31／13／25 個 class
+  也出現在別的頁面或模組（`.flow-rec`、`.rec-idle`、`.rx-note`、`.def-table`、`.mono`…），搬出去會改到其他頁面在互動後的樣子，
+  而那些狀態不是載入快照能列舉的。要拆只能用「同順序多檔、每頁都載」的形式，那對維護性沒有幫助。
+- 22 頁分頁列有四套寫法、24 支同形 Tab 函式（新頁用 `schema/templates/guide.html` 那一套；舊頁不回頭改）。

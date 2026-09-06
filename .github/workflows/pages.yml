@@ -33,6 +33,11 @@ jobs:
       - name: 取出原始碼
         uses: actions/checkout@v4
 
+      # 2026-09-05：部署前先跑全站檢查（登錄簿對帳、precache 完整性、癌症接線、藥卡八碼…約 1 秒）。
+      # 失敗就不部署——線上維持前一版，而不是帶著離線全掛或死連結上線。
+      - name: 全站檢查（schema/check_pages.py）
+        run: python3 schema/check_pages.py
+
       - name: 設定 Pages
         uses: actions/configure-pages@v5
 

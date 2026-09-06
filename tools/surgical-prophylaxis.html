@@ -16,7 +16,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -26,6 +26,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/guide.css">
 <style>
   /* ── 體重給藥計算 ───────────────────────────────────────────── */
   .sp-calc{background:var(--soft-bg); border:1px solid var(--accent-soft); border-radius:2px; padding:14px 16px; margin-bottom:16px;}
@@ -43,41 +44,10 @@
   .sp-dose .dv{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink); margin-top:1px;}
   .sp-dose .dr{font-size:11px; color:var(--muted-soft); margin-top:2px;}
 
-  /* ── 原則清單 ───────────────────────────────────────────────── */
-  .sp-rules{margin:0; padding:0; list-style:none; counter-reset:r;}
-  .sp-rules li{position:relative; padding:7px 0 7px 30px; font-size:13px; line-height:1.7; border-bottom:1px dotted var(--line);}
-  .sp-rules li:last-child{border-bottom:none;}
-  .sp-rules li::before{counter-increment:r; content:"(" counter(r) ")"; position:absolute; left:0; top:7px;
-                       font-family:var(--mono); font-size:11px; color:var(--accent);}
-  .sp-rules b{color:var(--accent2);}
-
-  /* ── 工具列 ─────────────────────────────────────────────────── */
-  .sp-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;}
-  .sp-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
-  .sp-chip{font-family:var(--mono); font-size:11.5px; border:1px solid var(--line); background:var(--panel);
-           color:var(--muted); border-radius:12px; padding:5px 11px; cursor:pointer;}
-  .sp-chip:hover{background:var(--hover-bg); color:var(--ink);}
-  .sp-chip.on{color:var(--accent); background:var(--accent-soft); border-color:var(--accent); font-weight:700;}
-  .sp-count{font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-bottom:8px;}
-
-  /* ── 術式列 ─────────────────────────────────────────────────── */
-  .sp-dept{margin-bottom:16px;}
-  .sp-dept-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin:0 0 8px;
-                padding-bottom:4px; border-bottom:2px solid var(--accent-soft);}
-  .sp-dept-zh{font-family:var(--serif); font-size:16px; font-weight:600; color:var(--accent);}
-  .sp-dept-en{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-soft);}
-  .sp-dept-n{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
-
-  .sp-op{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent-soft);
-         border-radius:2px; margin-bottom:7px; overflow:hidden;}
-  .sp-op.open{border-left-color:var(--accent);}
+  /* ── 原則清單 ───────────────────────────────────────────────── */  /* ── 工具列 ─────────────────────────────────────────────────── */  /* ── 術式列 ─────────────────────────────────────────────────── */  .sp-op.open{border-left-color:var(--accent);}
   .sp-op-head{display:block; width:100%; text-align:left; background:none; border:none; cursor:pointer;
               padding:11px 13px; font-family:var(--sans); color:var(--ink);}
-  .sp-op-head:hover{background:var(--hover-bg);}
-  .sp-op-t{display:flex; align-items:baseline; gap:7px; flex-wrap:wrap;}
-  .sp-op-zh{font-family:var(--serif); font-size:14.5px; font-weight:600;}
-  .sp-op-en{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
-  .sp-op-rec{display:block; font-size:12.5px; color:var(--accent); font-family:var(--mono); margin-top:4px; line-height:1.6;}
+  .sp-op-head:hover{background:var(--hover-bg);}  .sp-op-rec{display:block; font-size:12.5px; color:var(--accent); font-family:var(--mono); margin-top:4px; line-height:1.6;}
   .sp-caret{float:right; font-family:var(--mono); font-size:11px; color:var(--muted-soft); margin-left:8px;}
 
   /* 分類徽章 */
@@ -99,13 +69,7 @@
   .sp-op-body{display:none; padding:0 13px 13px; border-top:1px dashed var(--line); margin-top:2px;}
   .sp-op.open .sp-op-body{display:block;}
   .sp-fld{display:grid; grid-template-columns:82px 1fr; gap:4px 10px; padding:8px 0; border-bottom:1px dotted var(--line);
-          font-size:12.5px; line-height:1.65;}
-  .sp-fld:last-child{border-bottom:none;}
-  .sp-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft); text-transform:uppercase; padding-top:2px;}
-  .sp-fld .v b{font-family:var(--mono); font-weight:700;}
-  .sp-alt{color:var(--accent2);}
-  .sp-refs{font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);}
-  .sp-fnref{font-family:var(--mono); font-size:10px; color:var(--accent2); cursor:help; vertical-align:super;}
+          font-size:12.5px; line-height:1.65;}  .sp-fld .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-soft); text-transform:uppercase; padding-top:2px;}  .sp-alt{color:var(--accent2);}  .sp-fnref{font-family:var(--mono); font-size:10px; color:var(--accent2); cursor:help; vertical-align:super;}
   @media(max-width:480px){ .sp-fld{grid-template-columns:1fr; gap:1px;} }
 
   /* ── 風險因子三欄 ───────────────────────────────────────────── */
@@ -115,14 +79,8 @@
            border-bottom:1px solid var(--accent-soft); padding-bottom:4px;}
   .sp-rf-col ol{margin:0; padding-left:17px; font-size:12px; line-height:1.75;}
 
-  /* ── 附註 ───────────────────────────────────────────────────── */
-  .sp-notes{margin:0; padding:0; list-style:none;}
-  .sp-notes li{display:grid; grid-template-columns:22px 1fr; gap:9px; padding:8px 0;
-               border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}
-  .sp-notes li:last-child{border-bottom:none;}
-  .sp-notes .lt{font-family:var(--mono); font-weight:700; color:var(--accent2);}
-
-  /* ── 追加給藥間隔表 ─────────────────────────────────────────── */
+  /* ── 附註 ───────────────────────────────────────────────────── */  .sp-notes li{display:grid; grid-template-columns:22px 1fr; gap:9px; padding:8px 0;
+               border-bottom:1px dotted var(--line); font-size:12.5px; line-height:1.7;}  /* ── 追加給藥間隔表 ─────────────────────────────────────────── */
   table.sp-rd{border-collapse:collapse; width:100%; font-size:12.5px;}
   table.sp-rd th,table.sp-rd td{border:1px solid var(--line); padding:6px 10px; text-align:left;}
   table.sp-rd thead th{background:var(--accent-soft); font-family:var(--mono); font-size:10.5px;

@@ -15,7 +15,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
 <style>
   /* ── 本頁只用「既有且已被 css/ui-sentence.css 收過」的視覺 class ──────────────
      .rxbox/.rx-*（AC1）、.gr（AC2）、.refbar/.dirhead/.steps（AC7）、
@@ -54,7 +55,8 @@
   .dm-nums{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:6px 16px;}
   /* ⚠ 造句設計（ui-sentence.css AC1 段）把 .rx-row 改成 display:block，
      於是標籤在上、輸入框在下，六個欄位就吃掉一整屏（使用者實機反映）。
-     這裡把它收回同一行——只改版面，不碰顏色。本頁 <style> 在外部樣式表之後，
+     這裡把它收回同一行——只改版面，不碰顏色。本頁 <style>
+  在外部樣式表之後，
      同特異度時勝出（`.dm-nums .rx-row` 與 `[data-ui="sentence"] .rx-row` 皆為 0,2,0）。 */
   .dm-nums .rx-row{display:flex; align-items:center; gap:8px; min-height:30px;}
   .dm-nums .rx-row label{flex:1 1 auto; min-width:0; line-height:1.35;}
@@ -88,77 +90,21 @@
      這些 class 的顏色在 css/ui-sentence.css 的 AC 段已收，但**版面與框線是每頁自帶的**，
      不在 css/styles.css 裡——漏掉這一段的話，正式版（貓咪主題）下這些框全部消失，
      而且 .tw 沒有 overflow-x:auto，寬表格會把整頁撐出橫向捲軸。 ── */
-  /* ── 處方計算器（與 CRRT 那頁同一套 .rxbox/.rx-*，樣式在 ui-sentence.css AC 段已收） ── */
-  .rxbox{border:1px solid var(--line); border-radius:2px; background:var(--panel); padding:11px 13px; margin:10px 0 12px;}
-  .rxbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
-           text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
-  .rx-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px 14px;}
-  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }
-  .rx-row{display:flex; align-items:center; gap:7px;}
-  .rx-row label{font-size:12px; color:var(--ink); flex:1 1 auto; line-height:1.4;}
-  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
+  /* ── 處方計算器（與 CRRT 那頁同一套 .rxbox/.rx-*，樣式在 ui-sentence.css AC 段已收） ── */  @media (max-width:560px){ .rx-grid{grid-template-columns:1fr;} }  .rx-row label .rx-en{display:block; font-family:var(--mono); font-size:10px; color:var(--muted);}
   .rx-row input[type=number]{width:78px; font-family:var(--mono); font-size:14px; font-weight:700;
       padding:4px 6px; border:1px solid var(--line); border-radius:2px; background:var(--field-bg); color:var(--ink);}
   .rx-row .rx-u{font-family:var(--mono); font-size:10.5px; color:var(--muted); width:62px;}
   /* 深色結果面板：底色寫死 #132126，不能用 var(--ink)——暗色模式下 --ink 會翻成淺色，
-     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */
-  .rx-out{margin-top:11px; background:#132126; border-radius:2px; padding:10px 12px;}
-  .rx-out-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:9px;}
-  .rx-metric .rx-lab{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:#9fb3b8;}
-  .rx-metric .rx-val{font-family:var(--serif); font-size:23px; font-weight:600; color:#f4f2ec; line-height:1.2;}
-  .rx-metric .rx-val small{font-family:var(--mono); font-size:11px; font-weight:400; color:#9fb3b8;}
-  .rx-metric .rx-val.warn{color:#f0a58e;}
-  .rx-metric .rx-val.ok{color:#93d3b0;}
-  .rx-flag{margin-top:9px; font-family:var(--mono); font-size:11px; line-height:1.7; color:#d8d3c4;}
-  .rx-flag .f-bad{color:#f0a58e;} .rx-flag .f-ok{color:#93d3b0;}
-  .rx-note{font-size:11.5px; color:var(--muted); line-height:1.7; margin-top:8px;}
-
-  /* ── 參考值列 ── */
-  .refbar{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline;
-          background:var(--soft-bg); border:1px solid var(--line); border-left:3px solid var(--accent);
-          border-radius:2px; padding:8px 11px; margin:2px 0 12px;}
-  .refbar .rb{font-family:var(--mono); font-size:11.5px; color:var(--ink);}
-  .refbar .rb b{color:var(--accent); font-weight:700;}
-  .refbar .rb i{font-style:normal; color:var(--muted);}
-  .refbar .rb-src{font-family:var(--mono); font-size:10px; color:var(--muted-soft); margin-left:auto;}
-
-  /* ── 區塊標頭 ── */
-  .dirhead{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
-           margin:22px 0 7px; padding-bottom:5px; border-bottom:2px solid var(--accent-soft);}
-  .dirhead:first-child{margin-top:2px;}
-  .dirhead .dh-n{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--ink);}
-  .dirhead .dh-e{font-family:var(--mono); font-size:11.5px; color:var(--muted-soft);}
-  .dirhead.hi{border-bottom-color:var(--accent2-soft);}
-  .dirhead.hi .dh-n{color:var(--accent2);}
-
-  /* ── 步驟條 ── */
-  .steps{counter-reset:st; margin:8px 0 10px;}
-  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
+     面板變成淺底配淺字（全站 .result 同樣是寫死的，理由相同）。 */  .rx-out-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:9px;}  /* ── 參考值列 ── */  /* ── 區塊標頭 ── */  /* ── 步驟條 ── */  .step{display:grid; grid-template-columns:1.8em 1fr; gap:6px; margin:0 0 7px;
         font-size:12.5px; line-height:1.75;}
   .step:before{counter-increment:st; content:counter(st) "."; font-family:var(--mono); font-size:12px;
                font-weight:700; color:var(--accent); line-height:1.75; letter-spacing:.02em;}
   .step.alt:before{color:var(--accent2);}
-  .step .sq{font-weight:700; color:var(--ink);}
-
-  /* ── 通用小元件 ── */
-  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
-        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
-  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
-  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
-          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
-  .kbox.alert .kbox-t{color:var(--accent2);}
-  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
-  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
-  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
-  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
-        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
-  .pmid:hover{color:var(--accent2);}
+  /* ── 通用小元件 ── */  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}  .pmid:hover{color:var(--accent2);}
   .def-table td{line-height:1.7;}
   /* 表格內的長內容一律可換行（本頁的表格第二欄以後都是整段文字，
      不可用 .dt-cor 的 nowrap，否則第一欄會被擠成一字一行——見 nutrition.html 的教訓） */
-  .def-table td{line-height:1.7;}
-  .def-table.dt-cor th:nth-child(n+2),.def-table.dt-cor td:nth-child(n+2){text-align:center; white-space:nowrap;}
-  .nw{white-space:nowrap;}
+  .def-table td{line-height:1.7;}  .nw{white-space:nowrap;}
   /* 「這幾支之間怎麼選」的第一欄是情境標籤，會被第三欄的長依據擠到 79px
      （中文一行只剩 6 個字）。給它一個下限，其餘欄位照舊自動分配。 */
   .dm-pick th:first-child,.dm-pick td:first-child{min-width:9em;}
@@ -188,7 +134,7 @@
 <div class="view active" id="view-diabetes">
   <div class="app-header">
     <div>
-      <div class="eyebrow">Clinical Decision Pathway</div>
+      <div class="eyebrow">Clinical Guide</div>
       <h1>糖尿病用藥</h1>
       <div class="sub">依共病選藥 · 加藥升階 · 胰島素起始與調整 · 住院與圍手術期 · 健保給付</div>
     </div>

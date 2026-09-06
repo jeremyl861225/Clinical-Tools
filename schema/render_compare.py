@@ -9,9 +9,13 @@ schema/render_compare.py — 重構前後的渲染比對（用 schema/cdp.py 驅
   cancer/<id>/<tab> 30 個癌別（含 colon／rectal 子型）三個分頁各自的 #oncTab innerHTML（正規化）
   console/<page>   每次載入後的 console 錯誤
 
+  styles/<page>/<theme>-<w> 全站每一頁、亮暗兩主題、390 與 1440 兩寬度：每個元素的 computed style ＋ bbox 指紋
+                   （動 CSS 檔位置、抽共用樣式時的零變化證明；側欄、畫布等動態疊層排除）
+
 用法：
-  python3 schema/render_compare.py snapshot <dir>          # 拍一份存成 <dir>/*.json
-  python3 schema/render_compare.py compare <dirA> <dirB>   # 逐鍵比對，列出不同的鍵與第一處差異
+  python3 schema/render_compare.py snapshot <dir>          # 內容快照（首頁清單／軌跡／癌別）
+  python3 schema/render_compare.py styles <dir>            # 樣式指紋快照（約 10 分鐘）
+  python3 schema/render_compare.py compare <dirA> <dirB> [--common]   # 逐鍵比對；--common 只比兩邊都有的鍵（RC_ONLY 局部重拍時用）
 建議先對同一份程式碼拍兩次比對，確認零差異（排除非決定性），再改程式、再拍、再比。
 """
 import json
@@ -116,16 +120,108 @@ def snapshot(outdir):
     return 0
 
 
-def compare(a, b):
+STYLE_JS = r"""(function(){
+  var props=['display','position','color','background-color','border-top-width','border-top-style','border-top-color',
+    'border-bottom-width','border-bottom-style','border-bottom-color','border-left-width','border-left-color',
+    'border-right-width','border-right-color','border-radius','font-family','font-size','font-weight','font-style',
+    'line-height','letter-spacing','text-transform','text-decoration-line','text-decoration-color','text-align',
+    'white-space','opacity','visibility','box-shadow','margin-top','margin-bottom','margin-left','margin-right',
+    'padding-top','padding-bottom','padding-left','padding-right','gap','flex-direction','flex-wrap','align-items',
+    'justify-content','grid-template-columns','overflow-x','overflow-y','z-index','transform','outline-width'];
+  function h32(str){var h=0x811c9dc5;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=(h*0x01000193)>>>0;}return ('0000000'+h.toString(16)).slice(-8);}
+  var skip='#side-nav, .nav-toggle, .nav-scrim, #cat-canvas, #orca-canvas, #ct-splash, #ptr-wrap, canvas, script, style, link, meta';
+  var els=document.querySelectorAll('body *'); var out=[]; var texts=0;
+  for(var i=0;i<els.length;i++){var el=els[i]; if(el.matches(skip)||el.closest(skip)) continue;
+    var cs=getComputedStyle(el); var r=el.getBoundingClientRect();
+    var s=el.tagName+'.'+el.className+'|'+Math.round(r.left)+','+Math.round(r.top)+','+Math.round(r.width)+','+Math.round(r.height);
+    for(var j=0;j<props.length;j++) s+='|'+cs.getPropertyValue(props[j]);
+    var b=getComputedStyle(el,'::before').content, a=getComputedStyle(el,'::after').content; s+='|'+b+'|'+a;
+    out.push(h32(s));}
+  return {n:out.length, h:out.join(' ')};
+})()"""
+
+
+# 幾個頁面在載入後多拍一個「互動過的狀態」（JS 渲染的內容才會進指紋）：
+#   key 是頁面路徑，值是要跑的 JS；跑完等 1.2 秒再拍，鍵名加上 "@state"
+STATE_JS = {
+    'tools/cancer.html': "showDetail('gastric'); switchTab('gastric','tx');",
+    'tools/antibiotics.html': "var b=document.querySelector('#abx-sites .abx-site, #abx-sites button'); if(b) b.click(); var t=document.querySelector('#abx-types button'); if(t) t.click();",
+    'tools/drug-database.html': "var d=document.querySelector('#db-list details, #db-list .dc-card summary, #db-list button'); if(d){ if(d.tagName==='DETAILS') d.open=true; else d.click(); }",
+    'pathways/swan-ganz.html': "var b=document.querySelectorAll('.tab-row .tab-btn, .tab-btn')[1]; if(b) b.click();",
+    'tools/heart-failure.html': "var b=document.querySelectorAll('.tabbar button, .tabbar .tab')[1]; if(b) b.click();",
+    'pathways/diabetes.html': "var b=document.querySelectorAll('.tab-row .tab-btn')[1]; if(b) b.click();",
+    'pathways/hypertension.html': "var b=document.querySelectorAll('.tab-row .tab-btn')[1]; if(b) b.click();",
+    'tools/spectrum-database.html': "var b=document.querySelectorAll('.tab-row .tab-btn, .abx-mode, button')[2]; if(b) b.click();",
+    'tools/acls.html': "var b=document.querySelector('.algo-card, .acls-card, details summary, .tab-btn'); if(b){ if(b.tagName==='SUMMARY') b.parentElement.open=true; else b.click(); }",
+    'tools/classifications.html': "var b=document.querySelectorAll('#cl_tabs .tab-btn')[3]; if(b) b.click();",
+}
+
+
+def all_pages():
+    out = ['index.html']
+    for d in ('tools', 'pathways'):
+        for n in sorted(os.listdir(os.path.join(ROOT, d))):
+            if n.endswith('.html'):
+                out.append(d + '/' + n)
+    only = os.environ.get('RC_ONLY')           # 除錯用：RC_ONLY=sofa,crrt 只拍檔名含這些字的頁
+    if only:
+        keys = [k.strip() for k in only.split(',') if k.strip()]
+        out = [p for p in out if any(k in p for k in keys)]
+    return out
+
+
+def styles(outdir):
+    os.makedirs(outdir, exist_ok=True)
+    data = {}
+    combos = [('light', 390, 844, True), ('dark', 390, 844, True), ('light', 1440, 900, False)]
+    with Browser(width=390, height=844, mobile=True) as b:
+        for theme, w, hgt, mobile in combos:
+            b.resize(w, hgt, mobile=mobile)
+            b.set_media(color_scheme=theme, reduced_motion=True)
+            for p in all_pages():
+                try:
+                    b.open(furl(p), wait=1.0)
+                    b.wait(0.6)                       # 讓「上墨」動畫與 defer 腳本收尾
+                    r = b.js(STYLE_JS)
+                    data['styles/%s/%s-%d' % (p, theme, w)] = r
+                    if p in STATE_JS:
+                        b.js('(function(){' + STATE_JS[p] + '})()')
+                        for _ in range(40):
+                            if not b.js("!!document.querySelector('.onc-loading')"):
+                                break
+                            b.wait(0.1)
+                        b.wait(1.2)
+                        data['styles/%s@state/%s-%d' % (p, theme, w)] = b.js(STYLE_JS)
+                    errs = b.console_errors()
+                    if errs:
+                        data['console/%s/%s-%d' % (p, theme, w)] = errs
+                except Exception as exc:              # noqa: BLE001
+                    data['error/%s/%s-%d' % (p, theme, w)] = str(exc)[:300]
+            print('  %s %d: %d 頁' % (theme, w, len(all_pages())))
+    with open(os.path.join(outdir, 'snapshot.json'), 'w', encoding='utf-8') as fh:
+        json.dump(data, fh, ensure_ascii=False)
+    print('— 拍了 %d 個鍵 → %s' % (len(data), outdir))
+    for k in sorted(data):
+        if k.startswith('error/'):
+            print('✗ ' + k + ': ' + str(data[k])[:160])
+    return 0
+
+
+def compare(a, b, common=False):
     A = json.load(open(os.path.join(a, 'snapshot.json'), encoding='utf-8'))
     B = json.load(open(os.path.join(b, 'snapshot.json'), encoding='utf-8'))
-    keys = sorted(set(A) | set(B))
+    keys = sorted(set(A) & set(B)) if common else sorted(set(A) | set(B))   # --common：只比兩邊都有的鍵（局部重拍時用）
     diffs = 0
     for k in keys:
         va, vb = A.get(k), B.get(k)
         if va == vb:
             continue
         diffs += 1
+        if k.startswith('styles/') and isinstance(va, dict) and isinstance(vb, dict):
+            ha, hb = va['h'].split(' '), vb['h'].split(' ')
+            first = next((n for n, (x, y) in enumerate(zip(ha, hb)) if x != y), min(len(ha), len(hb)))
+            print('✗ %s  元素數 %d → %d，第一個不同的元素索引 %d' % (k, va['n'], vb['n'], first))
+            continue
         sa, sb = json.dumps(va, ensure_ascii=False), json.dumps(vb, ensure_ascii=False)
         i = 0
         while i < min(len(sa), len(sb)) and sa[i] == sb[i]:
@@ -138,7 +234,9 @@ def compare(a, b):
 if __name__ == '__main__':
     if len(sys.argv) >= 3 and sys.argv[1] == 'snapshot':
         sys.exit(snapshot(sys.argv[2]))
+    if len(sys.argv) >= 3 and sys.argv[1] == 'styles':
+        sys.exit(styles(sys.argv[2]))
     if len(sys.argv) >= 4 and sys.argv[1] == 'compare':
-        sys.exit(compare(sys.argv[2], sys.argv[3]))
+        sys.exit(compare(sys.argv[2], sys.argv[3], common='--common' in sys.argv))
     print(__doc__)
     sys.exit(2)

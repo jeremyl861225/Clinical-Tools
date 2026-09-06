@@ -6,13 +6,13 @@ schema/new_page.py — 一道指令把新頁面接進站內的四個地方
     python3 schema/new_page.py --kind tool --k my-score --file tools/my-score.html \
         --name "中文名" --en "English Name" --desc "一句話說明" \
         --sec scores --grp "重症 / 多器官功能" [--eyebrow …] [--sub …] [--back-label …] \
-        [--s 部位,部位] [--c 狀況,狀況] [--a 動作,動作] [--dry-run] [--no-bump]
+        [--s 部位,部位] [--c 狀況,狀況] [--a 動作,動作] [--dry-run] [--bump]
 
 做的事（依序）：
   1. 由 schema/templates/<kind>.html 產生頁面骨架（head／tail 與現有 119 頁逐字相同）。
   2. index.html：在 --sec 分類、--grp 分組的清單最後加一張 .tool-card，並把「N 項」加一。
   3. data/facets.js：在 "tools" 陣列末端補一筆（secTitle／secEn／grpEn 從 index.html 讀，不用手填；s/c/a 只能用詞表既有的詞）。
-  4. sw.js：把頁面加進 PRECACHE_URLS（tools/ 或 pathways/ 那一段的最後），CACHE_VERSION +1。
+  4. sw.js：把頁面加進 PRECACHE_URLS（tools/ 或 pathways/ 那一段的最後）；不動 CACHE_VERSION（加 --bump 才會 +1）。
   5. 跑 schema/check_pages.py（含 check_kinds）與 schema/check_registry.py。
 
 --dry-run 只印出會插進三個檔案的片段與位置，不寫任何檔。
@@ -159,7 +159,7 @@ def main():
     ap.add_argument('--c', default='', help='facets 狀況（逗號分隔）')
     ap.add_argument('--a', default='', help='facets 動作（逗號分隔）')
     ap.add_argument('--dry-run', action='store_true')
-    ap.add_argument('--no-bump', action='store_true', help='不動 CACHE_VERSION（同一回合已有別人 bump 過時）')
+    ap.add_argument('--bump', action='store_true', help='一併把 CACHE_VERSION +1（政策：新增頁只加 precache 行，不必 bump；刪檔／改名或整批換新才 bump）')
     a = ap.parse_args()
 
     if not re.match(r'^[a-z0-9-]+$', a.k):
@@ -192,14 +192,14 @@ def main():
     idx2, n, grp_en, card = insert_index(idx, a)
     fline = facets_line(a, n, grp_en)
     fac2 = insert_facets(fac, fline)
-    sw2 = insert_sw(sw, a, not a.no_bump)
+    sw2 = insert_sw(sw, a, a.bump)
 
     print('── 頁面 %s（%d 行）' % (a.file, page.count('\n')))
     print('── index.html › #%s › 「%s」 → %d 項' % (SEC[a.sec][0], a.grp, n))
     print(card, end='')
     print('── data/facets.js › tools[] 末端')
     print(fline, end='')
-    print('── sw.js › PRECACHE_URLS + CACHE_VERSION%s' % ('（不 bump）' if a.no_bump else ' +1'))
+    print('── sw.js › PRECACHE_URLS%s' % ('＋ CACHE_VERSION +1' if a.bump else '（不 bump：新增頁面只加 precache 行）'))
     if a.dry_run:
         print('（--dry-run：未寫入任何檔案）')
         return 0

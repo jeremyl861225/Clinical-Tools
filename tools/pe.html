@@ -15,7 +15,7 @@
 <script src="../data/facets.js" defer></script>
 <script src="../js/sentence-nav.js" defer></script>
 <!-- sentence-nav:end -->
-<meta name="theme-color" content="#1f5a6b">
+<meta name="theme-color" content="#234551">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
@@ -28,91 +28,19 @@
 <link rel="stylesheet" href="../css/nav.css">
 <script src="../js/nav.js" defer></script>
 <script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
 <style>
-  .rsi-bar{position:sticky; top:0; z-index:20; background:var(--paper);
-           border-bottom:1px solid var(--line); padding:8px 0 9px; margin-bottom:10px;}
-  .rsi-bar.stuck{box-shadow:0 2px 8px rgba(0,0,0,.10);}
-  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }
-  .rsi-bar-in{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
-  .rsi-bar label{font-family:var(--mono); font-size:11px; color:var(--accent);
-                 text-transform:uppercase; letter-spacing:.04em;}
-  .rsi-bar input[type=number]{width:88px; font-family:var(--mono); font-size:15px; font-weight:700;
-      padding:5px 7px; border:1px solid var(--line); border-radius:2px;
-      background:var(--field-bg); color:var(--ink);}
-  .rsi-bar .rsi-hint{font-size:11px; color:var(--muted-soft); font-family:var(--mono);}
-  .rsi-tabs{display:flex; gap:0; flex-wrap:wrap; border-bottom:2px solid var(--ink); margin-bottom:14px;}
-  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
+  @media (max-width:1023px){ .rsi-bar.stuck .rsi-bar-in{padding-left:52px;} }  .rsi-tab{font-family:var(--mono); font-size:12px; padding:7px 11px; cursor:pointer;
            border:none; background:none; color:var(--muted); border-bottom:2px solid transparent;
            margin-bottom:-2px;}
   .rsi-tab:hover{color:var(--ink);}
-  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;}
-  .rsi-panel{display:none;} .rsi-panel.on{display:block;}
-  .tl{border-left:2px solid var(--line); margin:4px 0 4px 8px; padding-left:0;}
-  .tl-item{position:relative; padding:0 0 14px 18px;}
-  .tl-item:last-child{padding-bottom:2px;}
-  /* 圓點要正好騎在 .tl 的 2px 左框上：框佔 x=-2~0，中心 -1。
+  .rsi-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:700;} .rsi-panel.on{display:block;}  /* 圓點要正好騎在 .tl 的 2px 左框上：框佔 x=-2~0，中心 -1。
      全域的 *{box-sizing:border-box} 不套用到偽元素，故此處必須自己宣告，
-     否則 width:10px 會再加上左右各 2px 邊框（實際 14px）而使圓點右偏 2px。 */
-  .tl-item:before{content:''; position:absolute; box-sizing:border-box; left:-6px; top:5px;
-                  width:10px; height:10px;
-                  border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
-  .tl-item.t0:before{background:var(--accent2);}
-  .tl-t{font-family:var(--mono); font-size:10.5px; color:var(--accent2); letter-spacing:.04em;}
-  .tl-h{font-family:var(--serif); font-size:15px; font-weight:600; margin:1px 0 3px;}
-  .tl-h .en{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400; margin-left:5px;}
-  .tl-b{font-size:12.5px; line-height:1.7;}
-  .tl-b ul{margin:3px 0; padding-left:17px;}
-  .tl-b li{margin:1px 0;}
-  .dg{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
-      background:var(--panel); padding:10px 12px; margin:9px 0;}
-  .dg.warn{border-left-color:var(--accent2);}
-  .dg-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
-  .dg-name{font-family:var(--serif); font-size:16px; font-weight:600;}
-  .dg-zh{font-size:11.5px; color:var(--muted);}
-  .dg-tag{font-family:var(--mono); font-size:10px; padding:1px 5px; border-radius:2px;
-          background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
-  .dg-tag.ctrl{background:var(--accent2-soft); color:var(--accent2);}
-  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
-           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}
-  .dg-dose .dd-k{font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block;}
-  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}
-  .dg-dose .dd-v.alt{color:var(--accent2);}
-  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
+     否則 width:10px 會再加上左右各 2px 邊框（實際 14px）而使圓點右偏 2px。 */  .dg-dose{margin:7px 0 0; padding:7px 9px; background:var(--soft-bg); border-radius:2px;
+           display:flex; gap:12px; flex-wrap:wrap; align-items:baseline;}  .dg-dose .dd-v{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--accent);}  .dg-dose .dd-u{font-family:var(--mono); font-size:11px; color:var(--muted); font-weight:400;}
   .dg-kin{font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:6px;}
-  .dg-kin b{color:var(--ink); font-weight:700;}
-  .dg-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;}
-  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }
-  .dg-col h4{font-family:var(--mono); font-size:10.5px; margin:0 0 3px; letter-spacing:.04em;
-             text-transform:uppercase;}
-  .dg-pro h4{color:#2e6b53;} .dg-con h4{color:var(--accent2);}
-  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }
-  .dg-col ul{margin:0; padding-left:15px; font-size:12px; line-height:1.65;}
-  .dg-note{margin-top:7px; font-size:11.5px; color:var(--muted); line-height:1.65;
-           border-top:1px dashed var(--line); padding-top:6px;}
-  .dg-note b{color:var(--accent2);}
-  .dg-ci{margin-top:8px; border:1.5px solid var(--accent2); border-radius:2px;
-         background:var(--accent2-soft); padding:7px 10px;}
-  .dg-ci-t{font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--accent2);
-           text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
-  .dg-ci ul{margin:0; padding-left:16px; font-size:12px; line-height:1.7; color:var(--ink);}
-  .dg-ci li{margin:1px 0;}
-  .dg-ci .abs{font-weight:700;}
-  .dg-ci .ci-k{font-family:var(--mono); font-size:10.5px; color:var(--accent2); font-weight:700;}
-  .kbox{border:1px solid var(--line); border-radius:2px; background:var(--box-bg);
-        padding:9px 11px; margin:9px 0; font-size:12.5px; line-height:1.7;}
-  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}
-  .kbox-t{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700;
-          text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px;}
-  .kbox.alert .kbox-t{color:var(--accent2);}
-  .kbox ul{margin:3px 0; padding-left:17px;} .kbox li{margin:2px 0;}
-  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:6px 0 10px;}
-  .tw table{min-width:520px;}
-  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}
-  .pmid{font-family:var(--mono); font-size:10.5px; color:var(--accent);
-        text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
-  .pmid:hover{color:var(--accent2);}
-  .sect{margin-top:16px;}
-  .risk-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+  .dg-kin b{color:var(--ink); font-weight:700;}  @media (max-width:560px){ .dg-grid{grid-template-columns:1fr;} }  @media (prefers-color-scheme: dark){ .dg-pro h4{color:#7fc7a6;} }  .dg-ci li{margin:1px 0;}  .kbox.alert{border-color:var(--accent2); background:var(--accent2-soft);}  .tw table{min-width:520px;}
+  .lead{font-size:12.5px; color:var(--muted); line-height:1.7; margin:2px 0 10px;}  .pmid:hover{color:var(--accent2);}  .risk-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
   .risk-chip{flex:1 1 150px; border:1px solid var(--line); border-radius:2px; padding:8px 10px; background:var(--panel);}
   .risk-chip.r-hi{border-left:3px solid var(--accent2);}
   .risk-chip.r-mh{border-left:3px solid #c9902a;}

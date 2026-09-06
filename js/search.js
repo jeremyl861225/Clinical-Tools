@@ -258,8 +258,8 @@
     return out;
   }
 
-  // 只從別頁連出、首頁沒有卡片的頁面（抗生素指引的三個分頁、食道急症流程內的
-  // Pittsburgh 分數）：無法由 DOM 取得，於此明列。
+  // 只從別頁連出、首頁沒有卡片的頁面（抗生素分頁列的五頁、藥物資料庫底下的交互作用查核）：
+  // 無法由 DOM 取得，於此明列。pss 與 ICH Score 2026-09-05 起有首頁卡，已移出。
   // 列為 guide 型別後亦會被 pageList() 納入頁面內文索引。
   var SUB_PAGES = [
     { label: '抗生素菌譜資料庫', en: 'Spectrum Database', url: 'tools/spectrum-database.html',
@@ -271,10 +271,7 @@
     { label: '創傷後抗生素', en: 'Trauma Antibiotics', url: 'tools/trauma-abx.html',
       sub: '穿刺性腹部創傷、開放性骨折、胸管、腦傷、咬傷、燒燙傷與破傷風預防',
       kw: '創傷 外傷 開放性骨折 Gustilo 胸管 tube thoracostomy 穿刺傷 咬傷 燒燙傷 顏面骨折 顱底骨折 破傷風 tetanus TIG EAST 預防性抗生素' },
-    { label: 'Pittsburgh 食道穿孔嚴重度', en: 'Pittsburgh Esophageal Perforation Severity Score', url: 'tools/pss.html',
-      sub: '食道穿孔嚴重度分數（PSS）：分數愈高愈不宜單純修補，與食道急症流程往返',
-      kw: 'PSS Pittsburgh 食道 穿孔 esophageal perforation 嚴重度 severity Abbas 2009 Schweigert 2016 Boerhaave 縱膈炎 支架 修補 食道切除' },
-    // 2026-09-04 補四頁：抗生素分頁列的最後兩頁、藥物資料庫底下的交互作用查核、腦出血流程內的 ICH Score
+    // 2026-09-04 補：抗生素分頁列的最後兩頁、藥物資料庫底下的交互作用查核
     //（label／en／sub 逐字取自 data/facets.js 對應條目；漏登錄會被 schema/check_registry.py 擋下）
     { label: '注射轉口服', en: 'IV to PO Switch', url: 'tools/iv-to-po.html',
       sub: '依台大醫院《抗微生物製劑注射轉口服劑型建議》表一，含七條轉換條件的床邊檢核，與 34 種口服抗微生物製劑的吸收率、吸收部位、管灌可行性',
@@ -284,10 +281,7 @@
       kw: '抗生素 抗微生物 延長輸注 extended infusion 持續輸注 Y-site 相容性 配伍 藥物相容性 fT>MIC 重症 ICU β-lactam 安定性 溶劑' },
     { label: '交互作用查核', en: 'Drug Interactions', url: 'tools/ddi.html',
       sub: '把病人的藥一個一個加進來，列出所有兩兩配對的交互作用、機轉與處置建議，重大的排最前面 · DDInter 2.0',
-      kw: 'DDI drug-drug interaction 交互作用 藥物交互作用 藥品交互作用 相互作用 併用 合併用藥 撞藥 QT 血清素 出血 CYP3A4 warfarin' },
-    { label: 'ICH Score', en: 'ICH Score · Intracerebral Hemorrhage Score', url: 'tools/ich-score.html',
-      sub: '自發性腦內出血 30 天死亡率分層（Hemphill 2001），含 ABC/2 血腫體積估算',
-      kw: 'ICH score 腦出血 腦內出血 intracerebral hemorrhage Hemphill ABC/2 血腫體積 GCS 死亡率 IVH 幕下' }
+      kw: 'DDI drug-drug interaction 交互作用 藥物交互作用 藥品交互作用 相互作用 併用 合併用藥 撞藥 QT 血清素 出血 CYP3A4 warfarin' }
   ];
   function indexSubPages() {
     return SUB_PAGES.map(function (p) {
