@@ -1710,7 +1710,7 @@ window.CANCERS = [
 {
   id:'sts', zh:'軟組織肉瘤', abbr:'STS', en:'Soft Tissue Sarcoma', group:'軟組織／血液淋巴 Soft Tissue & Hema',
   pathway:'sts',
-  edition:'AJCC 8th（2017）／治療依台大肉瘤診療指引 版次 08（NTUH Sarcoma v.1 2026，2026/06/16）',
+  edition:'AJCC 8th（2017）依原發部位分四章 · 治療依台大肉瘤診療指引 版次 08（文件編號 50710-2-000049，2026/06/16 第 87 次癌委會修訂通過，共 12 頁，標題頁自稱 NTUH Sarcoma v.1 2026；12 張圖已全部 render 成 PNG 逐張看圖判讀）· 該指引含三個實體：軟組織肉瘤 p2–p6、骨肉瘤 p6–p8（只有通則沒有流程圖）、腹膜後肉瘤 p9–p12 · ❗只讀文字層會漏掉三處：可切除流程的 Grade 2/3 有兩條並列進入路線用大括號匯進同一個 R0／R1 分岔；上支標籤只有「Grade 1」而下支是三選一（Grade 2/3 或 ≥ 5 cm 或術前確認無法達乾淨切緣），故 Grade 1 且 ≥ 5 cm 同時符合上下兩支而指引未給優先序；腹膜後術後的 Adjuvant Tx 有一條線折回 Follow-up · ❗指引全文沒有寫分級用哪一套系統也沒有寫評分方式，但整個分岔掛在 grade 上；也沒有任何化療劑量、療程數與線別互斥規則 · ❗GIST 不走本頁（p9 明列於腹膜後肉瘤 Exclusion，另見 GIST 條目）· 院外實證：ESMO–EURACAN–GENTURIS 2021（PMID 34303806，仍為現行版）——❗其術後間隔 4–8 週與台大註 b 的 3–6 週不同；STRASS 主要終點陰性（HR 1.01，p=0.95）、STREXIT 為非隨機傾向分數配對且合併世代範圍僅 WDLPS 與 G1-2 DDLPS，比指引寫的「其他 G1-2 肉瘤」窄 · ❗台灣：健保支付標準第 9 章 141 條只有 6 條提及肉瘤，eribulin（限脂肪肉瘤）與 pazopanib（排除脂肪肉瘤）互補不重疊；trabectedin 有藥證無健保；指引指定給血管肉瘤的 liposomal doxorubicin 在台灣藥證與健保都只有卡波西氏肉瘤；atezolizumab 是唯一有肉瘤適應症（ASPS）的免疫藥但健保不給付；質子 36026B 含惡性軟組織肉瘤卻限 19 歲以下 · 查詢日 2026-09-13',
   staging_note:'AJCC 8th 依原發部位分四章，<b>僅<u>軀幹／四肢（Ch.41）</u>與<u>腹膜後（Ch.44）</u>有分期組合表</b>；<b>頭頸（Ch.40，T 以 2／4cm 分）與腹腔／胸腔內臟（Ch.42，依器官侵犯／多發性）AJCC 未公布分期組合</b>，不適用下表。下表以<b>原發部位</b>切換，<b>組織學分級（FNCLCC）為欄</b>（分期時 <b>GX 與 G1 同組、G2 與 G3 同組</b>），T／N／M 為列。<b>N1 M0 之期別依部位而異：軀幹／四肢＝IV、腹膜後＝IIIB</b>（此格 AJCC 與 UICC 分歧，CAP protocol 採 UICC；本頁標示 AJCC）。<b>GIST 不適用本頁</b>（另見「胃腸道基質瘤（GIST）」條目）。',
   t:[
     ['T1','腫瘤最大徑 ≤5cm　Tumor ≤5 cm in greatest dimension'],
