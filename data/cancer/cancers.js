@@ -1990,7 +1990,8 @@ window.CANCERS = [
 {
   id:'utsarc', zh:'子宮肉瘤', en:'Uterine Sarcoma', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'utsarc',
-  edition:'AJCC 8th／FIGO（依本院指引 ST-3、ST-4）／治療依台大婦癌診療指引 版次 10（2026/06/16，UTSARC-1～UTSARC-5）',
+  /* ⚠ edition 這一欄會被 escapeHtml() 處理，不可寫 HTML 標籤。 */
+  edition:'AJCC 8th／FIGO（本院指引 ST-3 用腫瘤大小、ST-4 用肌層侵犯深度，見分期分頁） · 治療依台大婦癌診療指引 版次 10（2026/06/16）：入口在 UN-1（p19），主流程 UTSARC-1～5（p37–41），九張圖已 render 成 PNG 逐張看圖判讀 · ❗該 PDF 的文字層沒有「±」這個字元，直接複製會把「TH with en bloc resection ± BSO」讀成強制切除附件；p38 另留著未清的紅色刪除線（Observe, if [menopausal or] prior BSO），定稿讀法是「只有先前已做過 BSO」 · ❗UTSARC-A 整頁不存在（三處指向它），故處方與分子檢測原則整段缺席——全 68 頁 doxorubicin／gemcitabine／trabectedin／pazopanib 各 0 次；指引亦完全沒有 morcellation 警語、UTSARC-1～5 完全未提淋巴結 · 這三處改用院外實證：ESGO／EURACAN／GCIG 2024、FDA power morcellator 安全通告（2014／2020） · 癌肉瘤不走本頁，依 UN-1 歸為 carcinoma 走 ENDO-14 並以 ST-1 分期 · 查核日 2026-09-13',
   staging_note:'<b>子宮肉瘤有兩張互不相同的分期表，用錯一張整個 T 分類就錯。</b>本院指引 <b>ST-3</b> 適用<b>平滑肌肉瘤（LMS）與子宮內膜間質肉瘤（ESS）</b>，其 T1 依<b>腫瘤大小</b>（≤5cm／&gt;5cm）分；<b>ST-4</b> 適用<b>苗勒氏腺肉瘤（Müllerian adenosarcoma）</b>，其 T1 依<b>肌層侵犯深度</b>分，且多一個 IC 期。請以下方「組織型態」切換。<br><b>癌肉瘤（carcinosarcoma）不使用本頁分期</b>——依 ST-1／ST-2 以<b>子宮內膜癌</b>之 TNM 分期，治療亦走 ENDO-14（見子宮內膜癌頁）。<br>ST-4 之原註：<b>2009 FIGO 與 2017 AJCC 對腺肉瘤 IB／IC 之腫瘤定義存在歧異，NCCN 專家小組選用 2009 FIGO 之文字</b>（Corrigendum to “FIGO staging for uterine sarcomas”, Int J Gynaecol Obstet 2009;104:179），本頁從之。',
   matrix_axis:'組織型態 Histology（決定採用哪一張分期表）',
   t:[
@@ -2040,7 +2041,7 @@ window.CANCERS = [
       m1:'<b>IB／IC 之定義存在 2009 FIGO 與 2017 AJCC 之歧異</b>，本表依 ST-4 原註採 <b>2009 FIGO</b> 之文字。',
     },
   ],
-  node_note:'<b>來源：AJCC 第 8 版（本院指引 ST-3／ST-4）。</b>子宮肉瘤<b>無站號式淋巴結地圖</b>，且 <b>N 只有 N0／N1 兩級</b>——不像子宮內膜癌再分骨盆腔（N1）與主動脈旁（N2），子宮肉瘤<b>任一區域淋巴結陽性一律為 IIIC</b>。<br><b>臨床上的重點不是廓清範圍而是「要不要廓清」</b>：本院指引 UTSARC-1 之手術為<b>全子宮切除併整塊切除 ± 雙側輸卵管卵巢切除</b>，<b>全程未將系統性淋巴結廓清列為標準步驟</b>；淋巴結轉移在 LMS 罕見，廓清僅於術中發現異常淋巴結時個別考量。指引明列之附加手術是<b>殘餘輸卵管／卵巢之補行切除</b>（限低惡性度 ESS、腺肉瘤或 ER 陽性腫瘤）與<b>腫瘤破碎或殘餘子宮頸時之再探查</b>。',
+  node_note:'<b>來源：AJCC 第 8 版（本院指引 ST-3／ST-4）。</b>子宮肉瘤<b>無站號式淋巴結地圖</b>，且 <b>N 只有 N0／N0(i+)／N1 三級</b>——不像子宮內膜癌再分骨盆腔與主動脈旁，子宮肉瘤<b>任一區域淋巴結陽性一律為 IIIC</b>；<b>ST-3／ST-4 也沒有子宮內膜癌 ST-2 的 sentinel node 超分期規則（無 sn 後綴、無 N1mi／N1a／N2 細分）</b>。<br>❗<b>「要不要廓清」這一題，本院指引是<u>完全沒有寫</u>，不是「不建議」</b>——<b>UTSARC-1 至 UTSARC-5 五頁逐字檢索 lymph／node 命中 0 次</b>，連一句說明或警語都沒有。<b>常見的誤讀是把 UTSARC-1 那句「Additional surgical resection for intraoperative discovery of <u>extrauterine disease</u> is individualized」當成淋巴結——該句的受詞是<u>子宮外病灶</u>，不是淋巴結。</b><br><b>淋巴結的處置須引院外指引</b>：ESGO／EURACAN／GCIG 2024 —— <b>「Routine systematic lymphadenectomy should not be performed」（III, D）</b>；<b>「Suspicious nodes or peritoneal lesions should be removed as well」（IV, B）</b>，❗<b>其觸發條件是「術中明顯腫大<u>或術前影像可疑</u>」，只寫術中會漏掉術前影像已見腫大者</b>。<br>本院指引明列的附加手術是<b>殘餘輸卵管／卵巢之補行切除</b>（限低惡性度 ESS、腺肉瘤<b>或 ER 陽性腫瘤</b>）與<b>腫瘤已被碎解或殘餘子宮頸時之再探查</b>；<b>原發手術寫的是「TH with en bloc resection ± BSO」——附件是「±」可做可不做，而該「±」在 PDF 文字層並不存在，直接複製會誤讀成強制切除。</b>',
   nodes:[
     ['骨盆腔（閉孔、髂內、髂外、髂總、薦前）','Pelvic (obturator, internal/external/common iliac, presacral)','區域（N1）→ IIIC'],
     ['主動脈旁','Para-aortic','區域（N1）→ IIIC'],
