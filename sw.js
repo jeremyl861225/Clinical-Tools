@@ -69,6 +69,7 @@ const PRECACHE_URLS = [
   './js/hnc-pathway.js',
   './js/aml-pathway.js',
   './js/all-pathway.js',
+  './js/anal-pathway.js',
   './js/cml-pathway.js',
   './js/mds-pathway.js',
   './js/mpn-pathway.js',
