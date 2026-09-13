@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>甲狀腺與副甲狀腺疾病 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#234551">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
+<style>
+  /* 本頁專屬：其餘元件（.kbox／.refbar／.dirhead／.tw／.pmid／.tl）在 css/guide.css，
+     流程圖元件（.flow-step／.flow-opt／.flow-rec）在 css/styles.css，兩支都不在這裡重寫。 */
+  .tp-panel{display:block;}
+  .tp-panel.hidden{display:none;}
+  /* 流程圖區塊的標頭：與 .dirhead 同一層級，但要能標「這一段是可點的流程」 */
+  .tp-flowhead{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+               border-top:2px solid var(--ink); padding-top:9px; margin:20px 0 10px;}
+  .tp-flowhead .fh-n{font-family:var(--serif); font-size:17px; font-weight:600;}
+  .tp-flowhead .fh-e{font-family:var(--mono); font-size:10.5px; color:var(--muted); letter-spacing:.04em;}
+  .tp-flowhead .fh-reset{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--accent);
+                         background:none; border:1px dashed var(--accent-soft); border-radius:2px;
+                         padding:4px 9px; cursor:pointer;}
+  .tp-flowhead .fh-reset:hover{border-color:var(--accent); background:var(--accent-soft);}
+  /* 兩欄對照（指引 A vs 指引 B），窄螢幕自動疊成一欄 */
+  .tp-two{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:8px 0 12px;}
+  @media (max-width:560px){ .tp-two{grid-template-columns:1fr;} }
+  /* 台大品項小卡 */
+  .tp-item{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:2px;
+           padding:9px 11px; margin:6px 0; font-size:12.5px; line-height:1.7;}
+  .tp-item .ti-n{font-family:var(--serif); font-size:14.5px; font-weight:600;}
+  .tp-item .ti-c{font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-left:6px;}
+  .tp-item .ti-no{border-left-color:var(--accent2);}
+  .tp-none{border-left-color:var(--accent2);}
+</style>
+</head>
+<body data-back-label="甲狀腺副甲狀腺">
+<div class="sheet">
+<div class="view active" id="view-thyroid-parathyroid">
+  <div class="app-header">
+    <div>
+      <div class="eyebrow">Clinical Guide</div>
+      <h1>甲狀腺與副甲狀腺疾病</h1>
+      <div class="sub">功能判讀 · 甲亢 · 眼病 · 放射碘 · 甲低 · 結節 · 手術 · 副甲狀腺</div>
+    </div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-thyroid-parathyroid'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- ===== 分頁列：data-p 是造句導覽（js/sentence-nav.js parseTabs）與 check_kinds.py 認的記號，
+       有分頁列的頁面 kind 一律是 guide。 ===== -->
+  <div class="tab-row" id="tp_tabs">
+    <button class="tab-btn active" data-p="dx"     onclick="tpTab('dx')">功能判讀</button>
+    <button class="tab-btn"        data-p="hyper"  onclick="tpTab('hyper')">甲亢</button>
+    <button class="tab-btn"        data-p="ted"    onclick="tpTab('ted')">眼病</button>
+    <button class="tab-btn"        data-p="rai"    onclick="tpTab('rai')">放射碘</button>
+    <button class="tab-btn"        data-p="hypo"   onclick="tpTab('hypo')">甲低</button>
+    <button class="tab-btn"        data-p="nodule" onclick="tpTab('nodule')">結節與腫大</button>
+    <button class="tab-btn"        data-p="surg"   onclick="tpTab('surg')">甲狀腺手術</button>
+    <button class="tab-btn"        data-p="pth"    onclick="tpTab('pth')">副甲狀腺</button>
+    <button class="tab-btn"        data-p="ev"     onclick="tpTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>本頁處理甲狀腺與副甲狀腺的良性疾病</b>：甲狀腺功能亢進與低下、甲狀腺炎、結節與甲狀腺腫、
+    甲狀腺與副甲狀腺手術、原發性／次發性／三發性副甲狀腺機能亢進，以及術後低血鈣與副甲狀腺功能低下。<br>
+    <b>甲狀腺癌的分期與治療不在本頁</b>——結節一旦細胞學或病理判為惡性，請走
+    <a href="../tools/cancer.html#cancer=thyroid" class="pmid">甲狀腺癌</a>（依 ATA 2025／2015／2021 三份指引）。
+    <b>甲狀腺風暴</b>見 <a href="../tools/thyroid-storm.html" class="pmid">Burch-Wartofsky</a> 與
+    <a href="adrenal-crisis.html" class="pmid">內分泌危象</a>；<b>高血鈣與低血鈣的急救</b>見
+    <a href="electrolyte.html" class="pmid">電解質失衡</a>與
+    <a href="electrolyte-emergency.html" class="pmid">電解質急症</a>，本頁不重複。<br>
+    <b>來源政策</b>：本頁逐條標出處與版本，並區分「一手核對」與「經開放文獻轉述」兩種。
+    甲亢依 <b>ETA 2018</b>、放射碘依 <b>KTA 2025</b>、眼病並列 <b>ATA/ETA 2022</b> 與 <b>EUGOGO 2021</b>、
+    結節依 <b>ETA 2023</b>、甲低依 <b>ATA 2014</b>、術後低副甲依 <b>ESES／AAES／ATA／BAETS 2025 共識</b>、
+    原發性副甲狀腺亢進依<b>第五屆國際工作坊 2022</b>、腎性副甲狀腺亢進依 <b>KDIGO 2017</b>。
+    <b>ATA 2016 甲亢指引、AAES 三份外科指引、第五屆工作坊原文與 Bethesda 2023 全文為付費牆，無法一手核對</b>，
+    凡引用該幾份之處都標成轉述——詳見「證據」分頁。
+    檢驗參考值與藥品品項以<b>台大醫院檢驗醫學部與藥劑部</b>為準（查詢日 2026-09-13）。
+  </div>
+
+<!-- ==================== 分頁：功能判讀 ==================== -->
+<section class="tp-panel" data-panel="dx">
+
+  <div class="refbar">
+    <span class="rb"><b>hsTSH</b> 0.270–4.20 <i>µIU/mL</i></span>
+    <span class="rb"><b>Free T4</b> 0.92–1.68 <i>ng/dL</i></span>
+    <span class="rb"><b>T3</b> 80–200 <i>ng/dL</i></span>
+    <span class="rb"><b>i-PTH</b> 17.3–74.1 <i>pg/mL</i></span>
+    <span class="rb"><b>鈣</b> 2.15–2.58 <i>mmol/L</i></span>
+    <span class="rb"><b>磷</b> 2.5–5.0 <i>mg/dL</i></span>
+    <span class="rb-src">台大檢驗醫學部 · 2026-09-13</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台大的單位會讓你算錯兩件事</div>
+    <ul>
+      <li><b>血鈣報 mmol/L、血磷報 mg/dL</b>——同一張報告單上兩種單位並存。
+        血鈣換算：<b>1 mmol/L = 4.008 mg/dL</b>，正常上限 2.58 mmol/L ≒ <b>10.3 mg/dL</b>。
+        原發性副甲狀腺亢進的手術門檻「高於上限 1 mg/dL」＝<b>高於 2.58 mmol/L 再加 0.25 mmol/L，也就是 ≥2.83 mmol/L</b>。</li>
+      <li><b>24 小時尿鈣台大報 mmol/day（參考區間 2.5–7.5），而手術準則寫 mg/24h</b>。
+        換算後：<b>女性 250 mg/day = 6.24 mmol/day、男性 300 mg/day = 7.49 mmol/day</b>——
+        也就是說<b>台大參考區間的上限 7.5 mmol/day，剛好等於男性的手術門檻</b>，
+        一位女性報 6.5 mmol/day 看起來「在正常範圍」，其實已達手術準則。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">TSH × Free T4 的八種組合</span><span class="dh-e">Pattern recognition</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>TSH</th><th>Free T4</th><th>判讀</th><th>下一步</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">↓</td><td class="nw">↑</td><td><b>原發性甲狀腺功能亢進</b>（甲狀腺毒症）</td>
+            <td>查病因：TRAb、甲狀腺超音波（含都卜勒）；合併結節或計畫放射碘時加核醫掃描</td></tr>
+        <tr><td class="nw">↓</td><td class="nw">正常</td><td><b>亞臨床甲亢</b>（先確認 T3 是否升高＝T3 型甲亢）</td>
+            <td>3–6 個月後複驗確認持續；TSH &lt;0.1 且 &gt;65 歲要治療（ETA 2018 Rec 14）</td></tr>
+        <tr><td class="nw">↑</td><td class="nw">↓</td><td><b>原發性甲狀腺功能低下</b></td>
+            <td>驗 anti-TPO（橋本氏甲狀腺炎）；開始 levothyroxine</td></tr>
+        <tr><td class="nw">↑</td><td class="nw">正常</td><td><b>亞臨床甲低</b></td>
+            <td>依 TSH 高低與年齡決定治療（見「甲低」分頁）</td></tr>
+        <tr><td class="nw">正常／↓</td><td class="nw">↓</td><td><b>中樞性（次發性）甲低</b>——TSH 沒有代償性上升</td>
+            <td>查腦下垂體其他軸線；<b>補甲狀腺素前要先排除腎上腺功能不全</b></td></tr>
+        <tr><td class="nw">正常／↑</td><td class="nw">↑</td><td>TSH 分泌腺瘤、甲狀腺素阻抗、<b>檢驗干擾</b></td>
+            <td>先換一套試劑複驗；問 biotin 保健食品</td></tr>
+        <tr><td class="nw">↓</td><td class="nw">↓ 或正常</td><td><b>非甲狀腺疾病症候群</b>（重症、禁食、多巴胺、類固醇）</td>
+            <td><b>重症當下不要常規驗甲狀腺功能</b>；必要時三個月後康復再驗</td></tr>
+        <tr><td class="nw">↑↑</td><td class="nw">↑</td><td>剛開始或剛調整 levothyroxine、服藥不規則（假日才吃）</td>
+            <td>問服藥方式與時間；調整後 <b>4–6 週</b>才複驗才有意義</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大開得到什麼、開不到什麼</span><span class="dh-e">NTUH order codes</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>中文</th><th>醫令代碼</th><th>參考區間</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">hsTSH (CIA)</td><td>甲狀腺刺激素</td><td class="nw">09112B0P</td><td>0.270–4.20 µIU/mL</td></tr>
+        <tr><td class="nw">Free T4 (CIA)</td><td>游離型甲狀腺素</td><td class="nw">09106C0P</td><td>0.92–1.68 ng/dL</td></tr>
+        <tr><td class="nw">T4</td><td>四碘甲狀腺素</td><td class="nw">27003B0P</td><td>5.1–14.1 µg/dL</td></tr>
+        <tr><td class="nw">T3</td><td>三碘甲狀腺素</td><td class="nw">09117B0P</td><td>80–200 ng/dL</td></tr>
+        <tr><td class="nw">Anti-TPO</td><td>甲狀腺過氧化酶抗體</td><td class="nw">12134B0P</td><td>&lt; 34 IU/mL</td></tr>
+        <tr><td class="nw">Anti-Tg</td><td>抗甲狀腺球蛋白抗體</td><td class="nw">12068BZP</td><td>&lt; 115 IU/mL</td></tr>
+        <tr><td class="nw">Thyroglobulin</td><td>甲狀腺球蛋白</td><td class="nw">09111B0P</td><td>3.5–77 ng/mL</td></tr>
+        <tr><td class="nw">Calcitonin</td><td>抑鈣素</td><td class="nw">09115BZP</td><td>男 &lt; 9.52、女 &lt; 6.4 pg/mL</td></tr>
+        <tr><td class="nw">i-PTH</td><td>副甲狀腺素</td><td class="nw">09122B0P</td><td>17.3–74.1 pg/mL</td></tr>
+        <tr><td class="nw">Calcium</td><td>鈣</td><td class="nw">09011CZP</td><td><b>2.15–2.58 mmol/L</b></td></tr>
+        <tr><td class="nw">Calcium (Urine)</td><td>鈣（尿）</td><td class="nw">09011CVP</td><td><b>2.5–7.5 mmol/day</b></td></tr>
+        <tr><td class="nw">Plasma free Ca<sup>++</sup></td><td>游離鈣</td><td class="nw">24007B0P</td><td>1.15–1.33 mmol/L</td></tr>
+        <tr><td class="nw">Phosphate</td><td>磷</td><td class="nw">09012CZP</td><td>≧18 歲 2.5–5.0 mg/dL</td></tr>
+        <tr><td class="nw">Magnesium</td><td>鎂</td><td class="nw">09046BZP</td><td>0.78–1.11 mmol/L</td></tr>
+        <tr><td class="nw">25-OH Vitamin D</td><td>維生素 D</td><td class="nw">000P1702</td><td>≥ 30 ng/mL</td></tr>
+        <tr><td class="nw">Bone ALP</td><td>骨質特異性鹼性磷酸酶（委外）</td><td class="nw">08130C0P</td><td>5.1–20.2 µg/L</td></tr>
+        <tr><td class="nw">Thyroid FNA</td><td>甲狀腺細針穿刺細胞學（液基 15021BZP）</td><td class="nw">15007BZP</td><td>不適用</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">❗TRAb 不在台大檢驗醫學部的目錄裡</div>
+    ETA 2018 第 1 條建議把 <b>TSH 受體抗體（TRAb／TSH-R-Ab）</b>當成 Graves 診斷與鑑別的第一線工具，
+    但<b>以英文名、中文名、醫令代碼（健保碼 12121B）三種查法搜尋台大檢驗醫學部臨床檢驗目錄，都查不到這一項</b>
+    （查詢日 2026-09-13）。實務上可能由核子醫學部體外檢驗或委外執行，
+    <b>開單前請以院內醫令查詢為準</b>；本頁不因此宣稱「台大沒有這項檢查」。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">什麼時候驗抗體、什麼時候照影像</span><span class="dh-e">Antibodies &amp; imaging</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">TRAb</div>
+      <div class="tl-h">Graves 的診斷、停藥時機與孕期風險<span class="en">TSH receptor antibody</span></div>
+      <div class="tl-b">ETA 2018 明列三個要驗的時機：<b>① 診斷與鑑別診斷</b>（Rec 1）、
+        <b>② 停抗甲狀腺藥之前</b>（Rec 8：數值正常者緩解機會較高）、
+        <b>③ 懷孕</b>（Rec 36：自體免疫甲狀腺病史者第一次產檢就驗，偏高者 18–22 週再驗；
+        <b>高於切點 3 倍要監測胎兒</b>，Rec 37）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">Anti-TPO</div>
+      <div class="tl-h">橋本氏甲狀腺炎與進展風險<span class="en">Thyroid peroxidase antibody</span></div>
+      <div class="tl-b">用於解釋原發性甲低的病因、以及評估亞臨床甲低會不會進展。<b>不需要重複驗</b>——
+        抗體數值不用來追蹤治療。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">超音波</div>
+      <div class="tl-h">摸到結節、甲狀腺腫大、或要鑑別甲亢病因<span class="en">Ultrasound</span></div>
+      <div class="tl-b">ETA 2018 Rec 3：灰階加上 color／power Doppler 可支持 Graves 的診斷（瀰漫性低回音、血流增加）。
+        結節的風險分層與細針穿刺門檻見「結節與腫大」分頁。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">核醫掃描</div>
+      <div class="tl-h">只在兩種情況要做<span class="en">Scintigraphy</span></div>
+      <div class="tl-b">ETA 2018 Rec 4：<b>甲亢合併結節</b>、以及<b>放射碘治療之前</b>。
+        ETA 2023 補充：多結節性甲狀腺腫用掃描分辨哪些是冷結節（可做 FNA）、哪些是熱結節（不做 FNA）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">CT／MRI</div>
+      <div class="tl-h">只用於局部侵犯或胸骨後延伸<span class="en">Cross-sectional imaging</span></div>
+      <div class="tl-b">ETA 2023 明寫斷層影像在結節評估中<b>僅限</b>評估局部侵犯或<b>胸骨後（retrosternal）延伸</b>。
+        ❗<b>要做放射碘治療的病人在打顯影劑之前要想清楚</b>——碘顯影劑會讓甲狀腺攝碘率下降數週到數月。</div>
+    </li>
+  </ul>
+
+  <details class="def-box">
+    <summary>會把甲狀腺功能報告帶偏的東西 Interferences</summary>
+    <div class="box-inner">
+      <div class="dot-line">・<b>Biotin（維生素 B7、生物素）保健食品</b>：免疫分析法會被干擾，典型型態是
+        <b>TSH 假性偏低、Free T4 假性偏高</b>，看起來像甲亢。停用數天後複驗。</div>
+      <div class="dot-line">・<b>Amiodarone</b>：含碘量極高，既可造成甲低也可造成甲亢（見「甲亢」分頁的兩型）。</div>
+      <div class="dot-line">・<b>鋰鹽</b>：甲低與甲狀腺腫；也是高血鈣與副甲狀腺亢進的鑑別項目之一。</div>
+      <div class="dot-line">・<b>類固醇、多巴胺</b>：抑制 TSH。<b>重症本身</b>（非甲狀腺疾病症候群）會使 T3 下降、TSH 低平。</div>
+      <div class="dot-line">・<b>懷孕</b>：hCG 有 TSH 樣作用，第一孕期 TSH 生理性下降；孕期參考區間與非孕期不同。</div>
+      <div class="dot-line">・<b>Levothyroxine 的服藥時間</b>：抽血當天已服藥者 Free T4 會偏高，TSH 才是判斷依據。</div>
+    </div>
+  </details>
+
+</section>
+
+<!-- ==================== 分頁：甲亢 ==================== -->
+<section class="tp-panel hidden" data-panel="hyper">
+
+  <div class="refbar">
+    <span class="rb"><b>MMI 起始</b> 10–30 <i>mg/day</i></span>
+    <span class="rb"><b>台大只有 CBZ</b> 15–40 <i>mg/day</i></span>
+    <span class="rb"><b>維持</b> MMI 2.5–10／PTU 50–100 <i>mg/day</i></span>
+    <span class="rb"><b>療程</b> 12–18 <i>個月</i></span>
+    <span class="rb"><b>顆粒球缺乏</b> 0.1–1.0<i>%</i></span>
+    <span class="rb-src">ETA 2018 · PMID 30283735</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">❗台大處方集沒有 methimazole，只有 carbimazole</div>
+    所有指引的抗甲狀腺藥劑量都是以 <b>methimazole（MMI）</b>計。
+    <b>台大醫院藥劑部只有 carbimazole</b>（Carbizo 抗泌腫錠 10 mg、Newmazole 紐甲舒錠 10 mg，
+    2026-08-15 快照；methimazole 在資料庫內被標為「非台大處方」）。
+    <b>Carbimazole 本身沒有活性，要在肝臟脫羧成 MMI 才作用</b>（ETA 2018 原文），
+    ETA 2018 在每一處劑量都同時給出兩者：<b>MMI 10–30 mg/day ↔ CBZ 15–40 mg/day</b>、
+    <b>孕期 MMI 5–15 mg ↔ CBZ 10–30 mg</b>。換算慣例是 <b>carbimazole 10 mg ≒ methimazole 6 mg</b>。<br>
+    台灣<b>有</b> methimazole 的藥證（如美甲順錠 METHIZOL、豐碘錠 HONTAN，效期至 2029／2027），
+    只是不在台大處方集內——<b>不要寫成「台灣沒有 methimazole」</b>。
+  </div>
+
+  <div class="tp-flowhead">
+    <span class="fh-n">甲狀腺毒症：從病因走到處置</span>
+    <span class="fh-e">Interactive pathway · ETA 2018</span>
+    <button class="fh-reset" onclick="hyReset()">重置</button>
+  </div>
+  <div class="note" style="margin:0 0 12px;">
+    照臨床實際發生的順序走：<b>先確定病因</b>（不是所有甲狀腺毒症都要抗甲狀腺藥），
+    <b>再看哪一個條件主導治療選擇</b>，最後才是<b>那一種治療怎麼執行</b>。
+    每一步只講它正上方那一步的結論。
+  </div>
+
+  <div class="flow-step" id="hy_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">甲狀腺毒症的病因是哪一類？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="hyPick('cause','graves',this)">Graves 病<span class="fo-sub">TRAb 陽性／超音波瀰漫性低回音且血流增加／合併眼病；核醫掃描為瀰漫性高攝取</span></button>
+      <button class="flow-opt" onclick="hyPick('cause','nodular',this)">毒性多結節性甲狀腺腫 · 毒性腺瘤<span class="fo-sub">TMNG / toxic adenoma：核醫掃描為局部熱區、其餘腺體受抑制；TRAb 陰性</span></button>
+      <button class="flow-opt" onclick="hyPick('cause','thyroiditis',this)">甲狀腺炎（破壞性甲狀腺毒症）<span class="fo-sub">亞急性（疼痛、ESR 高）／無痛性／產後；核醫攝取率低下，多為自限性</span></button>
+      <button class="flow-opt" onclick="hyPick('cause','iodine',this)">碘或藥物引起<span class="fo-sub">Amiodarone、碘顯影劑、外源性甲狀腺素；分 AIT 1（合成增加）與 AIT 2（破壞性）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="hy_r1"></div>
+
+  <div class="flow-connector hidden" id="hy_c2">↓</div>
+  <div class="flow-step hidden" id="hy_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">哪一個條件主導治療方式的選擇？（選最主導的一項）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="hyPick('ctx','new',this)">初次診斷、沒有特殊條件<span class="fo-sub">病人可以配合門診追蹤、沒有壓迫、沒有中重度眼病、近期無懷孕計畫</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','relapse',this)">完成一個療程後復發<span class="fo-sub">停藥後再次甲亢；或 12–18 個月時 TRAb 仍持續偏高</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','adr',this)">抗甲狀腺藥發生嚴重不良反應<span class="fo-sub">顆粒球缺乏、肝炎、血管炎；或是嚴重皮疹、無法忍受</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','preg',this)">懷孕中，或 6 個月內計畫懷孕<span class="fo-sub">含哺乳中；放射碘在懷孕與哺乳是絕對禁忌</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','eye',this)">中重度且活動性的甲狀腺眼病<span class="fo-sub">CAS ≥3、複視、突眼進展、視神經病變</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','goiter',this)">巨大甲狀腺腫、壓迫症狀，或合併可疑結節<span class="fo-sub">胸骨後延伸、氣管壓迫，或細胞學 Bethesda III 以上</span></button>
+      <button class="flow-opt" onclick="hyPick('ctx','cardiac',this)">老年人合併心房顫動／心衰竭／心肌缺血<span class="fo-sub">甲亢是誘發或惡化因子，需要儘快且確定的控制</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="hy_r2"></div>
+
+  <div class="flow-connector hidden" id="hy_c3">↓</div>
+  <div class="flow-step hidden" id="hy_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">實際決定採用哪一種治療？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="hyPick('tx','atd',this)">抗甲狀腺藥 ATD<span class="fo-sub">台大品項為 carbimazole；懷孕第一孕期改 PTU</span></button>
+      <button class="flow-opt" onclick="hyPick('tx','rai',this)">放射碘 RAI<span class="fo-sub">固定劑量 10–15 mCi；詳細前後流程見「放射碘」分頁</span></button>
+      <button class="flow-opt" onclick="hyPick('tx','surg',this)">手術<span class="fo-sub">Graves 選全甲狀腺切除；術前準備與併發症見「甲狀腺手術」分頁</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="hy_r3"></div>
+
+  <div class="dirhead"><span class="dh-n">抗甲狀腺藥：台大有的品項與實際劑量</span><span class="dh-e">Antithyroid drugs at NTUH</span></div>
+
+  <div class="dg">
+    <div class="dg-head"><span class="dg-name">Carbimazole</span><span class="dg-zh">抗泌腫錠 Carbizo 10 mg／紐甲舒錠 Newmazole 10 mg</span><span class="dg-tag">台大第一線</span></div>
+    <div class="dg-dose">
+      <span class="dd-k">起始（ETA 2018）</span><span class="dd-v"><b>CBZ 15–40 mg/day</b>（＝MMI 10–30 mg/day），依甲狀腺毒症嚴重度，<b>一天一次</b></span>
+      <span class="dd-k">維持</span><span class="dd-v">逐步減量至 <b>MMI 2.5–10 mg/day（CBZ 約 5–20 mg/day）</b></span>
+      <span class="dd-k">療程</span><span class="dd-v"><b>12–18 個月</b>，TSH 與 TRAb 都正常才停（Rec 7）；最高緩解率 50–55%</span>
+      <span class="dd-k">孕期</span><span class="dd-v">MMI 5–15 mg ↔ <b>CBZ 10–30 mg</b>；<b>第一孕期改用 PTU</b>（Rec 35）</span>
+    </div>
+    <div class="dg-note"><b>台大藥卡：</b>
+      <a href="../tools/drug-database.html#code=CAR4LC03" class="pmid">CAR4LC03 抗泌腫錠</a>、
+      <a href="../tools/drug-database.html#code=NEW4LC03" class="pmid">NEW4LC03 紐甲舒錠</a>。
+      Carbimazole 是前驅藥，<b>在肝臟脫羧成 methimazole 才有作用</b>。</div>
+  </div>
+
+  <div class="dg">
+    <div class="dg-head"><span class="dg-name">Propylthiouracil</span><span class="dg-zh">普樂治錠 Procil 50 mg</span><span class="dg-tag ctrl">限定情境</span></div>
+    <div class="dg-dose">
+      <span class="dd-k">維持</span><span class="dd-v">50–100 mg/day（孕期 50–200 mg/day）</span>
+      <span class="dd-k">適用</span><span class="dd-v"><b>備孕與第一孕期</b>（Rec 35）、對 MMI 過敏而暫時無法換藥者、甲狀腺風暴（抑制 T4→T3 轉換）</span>
+      <span class="dd-k">不適用</span><span class="dd-v"><b>兒童與青少年應避免</b>（Rec 46）、<b>哺乳期首選 MMI 而非 PTU</b>（Rec 43，因肝毒性）</span>
+    </div>
+    <div class="dg-ci">
+      <div class="dg-ci-t">為什麼 PTU 只用在特定情境</div>
+      <ul>
+        <li><span class="ci-k">肝毒性</span>PTU 可造成<b>猛爆性肝衰竭</b>，兒童尤其；MMI 的肝毒性型態多為<b>較輕的膽汁鬱積</b>。</li>
+        <li><span class="ci-k">血管炎</span>ANCA 相關血管炎、狼瘡樣症候群主要見於 PTU。</li>
+        <li><span class="ci-k">16 週之後</span>需要繼續用藥者<b>可考慮換回 MMI</b>（Rec 40）。</li>
+      </ul>
+    </div>
+    <div class="dg-note"><b>台大藥卡：</b><a href="../tools/drug-database.html#code=PRO4LC02" class="pmid">PRO4LC02 普樂治錠 50 mg</a></div>
+  </div>
+
+  <div class="dg">
+    <div class="dg-head"><span class="dg-name">Propranolol</span><span class="dg-zh">心律整錠 Pronolol 10 mg</span><span class="dg-tag">症狀控制</span></div>
+    <div class="dg-dose">
+      <span class="dd-k">建議</span><span class="dd-v">ETA 2018 Rec 12：<b>所有合適的病人都應使用 β 阻斷劑</b>（1, ∅∅∅∅）</span>
+      <span class="dd-k">額外好處</span><span class="dd-v">非選擇性 β 阻斷劑同時<b>抑制 5′-deiodinase、減少 T4 轉成 T3</b></span>
+      <span class="dd-k">注意</span><span class="dd-v">已有心衰竭者要小心；氣喘者改用選擇性 β1 阻斷劑</span>
+    </div>
+    <div class="dg-note"><b>台大藥卡：</b><a href="../tools/drug-database.html#code=PRN4DD05" class="pmid">PRN4DD05 心律整錠 10 mg</a>（另有 5 種小兒分包規格）</div>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">監測：定期抽血驗白血球是沒有用的</div>
+    ETA 2018 說得很直接：<b>「常規的血液與肝功能檢查沒有用，因為顆粒球缺乏是突然發生的」</b>。
+    取而代之的是<b>書面衛教</b>（Rec 10）與<b>症狀觸發式檢驗</b>（Rec 11）：
+    <ul>
+      <li><b>發燒或咽喉痛</b> → 立即停藥並驗<b>白血球分類</b>（顆粒球缺乏＝ANC &lt; 500/µL）。</li>
+      <li><b>黃疸、灰白便、深色尿</b> → 驗<b>肝功能</b>。</li>
+      <li>發生率：顆粒球缺乏 <b>0.1–1.0%</b>，多在<b>開始用藥後 3 個月內</b>突然發生；
+        一項研究的 100 天累積發生率為 <b>0.28%</b>。已知 <b>HLA-B*38:02 與 HLA-B*27:05</b> 是獨立的感受性基因座。</li>
+      <li>常見副作用（1–5%）：皮疹、蕁麻疹、關節痛、發燒、暫時性輕度白血球下降。</li>
+    </ul>
+  </div>
+
+  <details class="def-box">
+    <summary>Block-and-replace 與滴定式療法的取捨 Regimens</summary>
+    <div class="box-inner">
+      <div class="dot-line">・<b>滴定式（titration）</b>：隨甲狀腺毒症改善逐步減量，<b>ETA 2018 偏好這一種</b>，理由是總藥量最低。</div>
+      <div class="dot-line">・<b>Block-and-replace</b>：MMI 30 mg/day 合併 levothyroxine。
+        <b>早期宣稱的較高緩解率後來沒有被重現</b>，且藥量較大、副作用較多。</div>
+      <div class="dot-line">・❗<b>懷孕期間明確不建議用 block-and-replace</b>（Rec 38）——
+        抗甲狀腺藥會通過胎盤而 levothyroxine 幾乎不會，母親正常但胎兒會甲狀腺功能低下。</div>
+      <div class="dot-line">・復發率：一項 meta 分析中 ATD 停藥後復發 <b>52.7%</b>，放射碘 <b>15%</b>（OR 6.25），
+        手術 <b>10%</b>（OR 9.09）；ATD 的副作用發生率 13%。</div>
+    </div>
+  </details>
+
+  <div class="dirhead"><span class="dh-n">不是每一種甲狀腺毒症都要抗甲狀腺藥</span><span class="dh-e">Destructive thyrotoxicosis</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>特徵</th><th>Graves／毒性結節</th><th>甲狀腺炎（破壞性）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">核醫攝取率</td><td><b>升高</b>（瀰漫或局部熱區）</td><td><b>低下</b>（腺體不在合成，是漏出來的）</td></tr>
+        <tr><td class="nw">TRAb</td><td>Graves 陽性；毒性結節陰性</td><td>陰性</td></tr>
+        <tr><td class="nw">病程</td><td>持續，不治療不會好</td><td><b>自限性</b>：毒症期 → 甲低期 → 多數恢復</td></tr>
+        <tr><td class="nw">抗甲狀腺藥</td><td>有效</td><td><b>無效，不要開</b></td></tr>
+        <tr><td class="nw">處置</td><td>見上方流程</td><td>β 阻斷劑症狀控制；亞急性甲狀腺炎的疼痛用 NSAID，嚴重時口服類固醇；追蹤甲低期是否需要補充</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">Amiodarone 相關的甲狀腺功能異常</span><span class="dh-e">ETA 2018 · PMID 29594056</span></div>
+  <div class="kbox">
+    <div class="kbox-t">先分清楚是哪一型，處置完全不同</div>
+    <ul>
+      <li><b>AIH（amiodarone 引起的甲低）</b>：<b>不需要停 amiodarone</b>；明顯甲低者補 levothyroxine，
+        亞臨床者（尤其老年人）可以先不補，但要密切追蹤是否進展（Rec 1）。</li>
+      <li><b>AIT 1</b>（原有結節或潛在 Graves，碘負荷後合成增加）：<b>首選抗甲狀腺藥</b>；
+        因為腺體已被碘灌飽而對抗甲狀腺藥有抗性，ETA 建議可合併 <b>sodium perchlorate ≤1 g/day、4–6 週</b>（Rec 5）。
+        ❗<b>台灣查無 perchlorate 藥證</b>（食藥署許可證資料 0 筆，查詢日 2026-09-13）——這一招在台灣做不到。</li>
+      <li><b>AIT 2</b>（破壞性）：<b>口服類固醇是第一線</b>（Rec 6）。</li>
+      <li><b>混合／無法分型</b>：<b>先給 thionamide</b>，類固醇要不要一開始就加、或觀察 4–6 週反應不佳再加，尚無定論（Rec 8）。</li>
+      <li><b>要不要停 amiodarone</b>：致命性心律不整或重症預後不佳者<b>建議繼續用</b>；
+        AIT 2 而心律不整非致命者可以繼續，但達到甲狀腺功能正常的時間會拉長、復發風險可能上升（Rec 4）。
+        <b>這個決定要和心臟科一起做。</b></li>
+      <li>❗<b>急刀的門檻在這裡比一般甲亢低</b>：心功能惡化、有嚴重心臟病、或藥物治療無效者，
+        <b>建議毫不延遲地做全甲狀腺切除</b>（Rec 3，由內分泌、心臟、麻醉與高量甲狀腺外科醫師共同決定）。
+        AIT 2 以急症表現時，搶救性甲狀腺切除同樣可以考慮（Rec 7）。</li>
+      <li>AIT 病人<b>不可用 rhTSH 刺激後再做放射碘</b>（Rec 11）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">亞臨床甲亢</span><span class="dh-e">Subclinical hyperthyroidism</span></div>
+  <div class="kbox">
+    <div class="kbox-t">治療門檻只有一條是強建議</div>
+    <ul>
+      <li><b>ETA 2018 Rec 14：&gt;65 歲且 TSH 持續 &lt; 0.1 mIU/L 的 Graves 病人應治療</b>（1, ∅∅○○）。</li>
+      <li><b>Rec 15：第一選擇是抗甲狀腺藥</b>（1, ∅∅○○）。</li>
+      <li>判定前先<b>確認是持續的</b>（間隔 3–6 個月複驗），並排除非甲狀腺疾病、藥物與懷孕。</li>
+      <li>❗<b>亞臨床甲亢的國際指引差異極大</b>：2024 年一篇系統性回顧納入 22 份指引，發現診斷、治療門檻、
+        追蹤間隔（3–12 個月不等）都不一致（Eur Thyroid J 2024，PMID 38758966）。本頁採 ETA 2018。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">懷孕與哺乳</span><span class="dh-e">Pregnancy &amp; lactation · ETA 2018 Rec 33–43</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">備孕</div>
+      <div class="tl-h">先穩定，再懷孕</div>
+      <div class="tl-b">育齡女性應接受孕前諮詢並在<b>甲狀腺功能穩定正常</b>後才嘗試懷孕（Rec 33）；
+        <b>用 MMI 者在計畫懷孕時就要換成 PTU</b>（Rec 35）。確認懷孕後立即聯絡醫師（Rec 34）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">孕期用藥</div>
+      <div class="tl-h">最低有效劑量，且不可用 block-and-replace</div>
+      <div class="tl-b">Rec 38。低劑量者（<b>MMI &lt; 5–10 mg/day 或 PTU &lt; 50–100 mg/day</b>）
+        <b>可在懷孕第 6–10 週前停藥</b>（Rec 41）；<b>16 週後仍需用藥者可考慮換回 MMI</b>（Rec 40）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">監測</div>
+      <div class="tl-h">開始治療後每 2 週、達標後每 4 週</div>
+      <div class="tl-b">驗<b>母親的 Free T4（或 Total T4）與 TSH</b>（Rec 39）。
+        <b>TRAb</b>：所有自體免疫甲狀腺病史者第一次產檢就驗，偏高者 <b>18–22 週</b>再驗（Rec 36）；
+        <b>持續高於切點 3 倍以上要監測胎兒甲狀腺功能異常</b>（Rec 37）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">哺乳</div>
+      <div class="tl-h">與非哺乳者相同的治療選項，<b>首選 MMI</b></div>
+      <div class="tl-b">Rec 42、43——這裡和孕期相反，<b>哺乳期偏好 MMI 而非 PTU</b>，理由是 PTU 的肝毒性。
+        <b>放射碘在哺乳期是絕對禁忌</b>（Rec 21），要治療必須先停止哺乳。</div>
+    </li>
+  </ul>
+
+</section>
+
+<!-- ==================== 分頁：眼病 ==================== -->
+<section class="tp-panel hidden" data-panel="ted">
+
+  <div class="refbar">
+    <span class="rb"><b>活動期</b> CAS ≥ 3/7</span>
+    <span class="rb"><b>IVMP 標準</b> 累積 4.5 <i>g／12 週</i></span>
+    <span class="rb"><b>嚴重者</b> 累積 7.5 <i>g</i></span>
+    <span class="rb"><b>視力威脅</b> 500–1000 <i>mg×3 天</i></span>
+    <span class="rb"><b>Selenium</b> 100 µg <i>BID×6 個月</i></span>
+    <span class="rb-src">ATA/ETA 2022 · PMID 36480280</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">兩份現行文件在「第一線用什麼」上不一致，本頁並列不合成</div>
+    <ul>
+      <li><b>EUGOGO 2021</b>（Eur J Endocrinol 2021;185:G43-G67）：中重度且活動期的第一線是
+        <b>靜脈類固醇（±mycophenolate）</b>。</li>
+      <li><b>ATA/ETA 2022</b>（Thyroid 2022;32:1439-1470）：第一線是 <b>teprotumumab</b>，
+        尤其<b>以突眼為主</b>的表現型；但同一份文件也寫明，
+        <b>若治療目標是「讓眼病不活動、消掉發炎」，靜脈類固醇仍是偏好的選擇</b>；
+        若目標是不活動化<b>加上矯正眼球運動障礙</b>，偏好靜脈類固醇合併眼眶放射治療。</li>
+      <li><b>差異的來源是時間</b>：EUGOGO 成文時 teprotumumab 只在美國上市。
+        2025 年由兩份文件的作者群共同撰寫的逐項比較文（Eur Thyroid J 2025;14(6)，PMID 41283777）指出，
+        兩者在<b>分類、評估、預防、輕度、非活動期與視力威脅型</b>的處置上高度一致，
+        <b>唯一的重大分歧就是中重度活動期的第一線</b>。</li>
+      <li>⭐<b>台灣狀態</b>：<b>teprotumumab 已有藥證</b>——適目達注射劑 TEPEZZA，
+        衛部菌疫輸字第001294號，效期至 2030/08/21（食藥署許可證資料，查詢日 2026-09-13）；
+        <b>但健保藥品品項查無</b>（健保署 API 與健保品項全檔兩路查證皆 0 筆）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">活動度與嚴重度：兩個軸要分開講</span><span class="dh-e">Activity vs severity</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>軸</th><th>定義（ATA/ETA 2022 原文）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>活動度</b><br><span class="dc-nameen">Clinical Activity Score</span></td>
+            <td><b>七項各 1 分，CAS ≥3/7 通常代表活動期</b>：自發性球後疼痛、上／側視時疼痛、眼瞼發紅、
+              結膜發紅、眼瞼腫脹、淚阜或半月皺襞發炎、結膜水腫（chemosis）。<br>
+              <b>即使 CAS 未達 3</b>，若有記錄到視力、軟組織發炎、眼球運動或突眼的惡化，同樣提示活動期。</td></tr>
+        <tr><td class="nw"><b>輕度</b><br><span class="dc-nameen">Mild</span></td>
+            <td>對日常生活影響輕微，<b>不足以承擔免疫抑制或手術的風險</b>。通常只有下列之一：
+              眼瞼退縮 &lt; 2 mm、輕度軟組織侵犯、突眼<b>低於該族群性別常模 3 mm</b>、
+              短暫或無複視、以人工淚液可處理的角膜暴露。</td></tr>
+        <tr><td class="nw"><b>中重度</b><br><span class="dc-nameen">Moderate-to-severe</span></td>
+            <td>沒有視力威脅，但眼病對日常生活的影響已足以承擔治療風險。通常有下列任一：
+              <b>眼瞼退縮 ≥ 2 mm</b>、中度或重度軟組織侵犯、<b>突眼高於常模 ≥ 3 mm</b>、
+              <b>複視（Gorman score 2–3）</b>。</td></tr>
+        <tr><td class="nw"><b>視力威脅</b><br><span class="dc-nameen">Sight-threatening</span></td>
+            <td><b>甲狀腺功能失調性視神經病變（DON）、角膜破損、或眼球脫位</b>。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">處置</span><span class="dh-e">Management ladder</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">全部病人</div>
+      <div class="tl-h">四件不需要專科就該做的事</div>
+      <div class="tl-b">
+        <b>① 戒菸</b>（含二手菸）——菸是可修正的風險因子，要說明並提供協助；
+        <b>② 把甲狀腺功能穩定在正常範圍</b>（ETA 2018 Rec 28）；
+        <b>③ 局部照護</b>（人工淚液、夜間眼藥膏、抬高床頭、太陽眼鏡）；
+        <b>④ 高風險族群要主動追蹤</b>：男性、&gt;50 歲、吸菸、甲狀腺功能不穩定、糖尿病、
+        6 個月內接受過放射碘、症狀進行中、眼眶痠痛、複視、明顯軟組織發炎、閉眼不全。
+      </div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">輕度 · 活動期</div>
+      <div class="tl-h">Selenium — 但台大沒有這個品項</div>
+      <div class="tl-b"><b>selenium selenite 100 µg 一天兩次、連續 6 個月，單一療程</b>，
+        尤其在硒攝取不足的地區可以考慮。
+        ❗<b>台大藥劑部處方集查無硒製劑</b>（2026-08-15 快照）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">中重度 · 活動期</div>
+      <div class="tl-h">靜脈類固醇或 teprotumumab（兩份指引分歧處）</div>
+      <div class="tl-b">
+        <b>靜脈 methylprednisolone 標準方案：累積 4.5 g／約 12 週</b>
+        （0.5 g 每週 ×6 週 → 0.25 g 每週 ×6 週）；<b>特別嚴重或有持續性複視者可用累積 7.5 g</b>。<br>
+        對靜脈類固醇無效或不耐受者，ATA/ETA 2022 列出的選項有
+        <b>第二療程靜脈類固醇、口服類固醇合併 cyclosporine 或 azathioprine、眼眶放射治療合併類固醇、
+        teprotumumab、rituximab、tocilizumab</b>。<br>
+        <b>台大有的品項</b>：<a href="../tools/drug-database.html#code=SOL1LA13" class="pmid">Solu-Medrol 500 mg</a>、
+        <a href="../tools/drug-database.html#code=CEL4NB19" class="pmid">CellCept 250 mg</a>／
+        <a href="../tools/drug-database.html#code=MYF4NB35" class="pmid">Myfortic 180 mg</a>、
+        <a href="../tools/drug-database.html#code=ACT1NB58" class="pmid">Actemra（tocilizumab）</a>、
+        <a href="../tools/drug-database.html#code=MA%201CE37" class="pmid">Rituximab</a>——
+        <b>後三者用於甲狀腺眼病都屬仿單外使用</b>。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">視力威脅</div>
+      <div class="tl-h">高劑量靜脈類固醇，無效就減壓</div>
+      <div class="tl-b"><b>500–1000 mg methylprednisolone 連續 3 天或隔天給，第一週內</b>；
+        靜脈類固醇對 DON 約 <b>40%</b> 有效，可因此免於手術。
+        反應不完全或只有短暫改善者，<b>做眼眶減壓（深部內側壁與眼眶底）</b>。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">非活動期</div>
+      <div class="tl-h">重建手術的順序不能顛倒</div>
+      <div class="tl-b"><b>必須在眼病不活動、且甲狀腺功能已正常並維持之後</b>才做。
+        順序是<b>眼眶減壓 → 斜視手術 → 眼瞼手術</b>——
+        因為減壓後有 <b>7–34%</b> 會出現新的斜視，眼瞼位置也會隨之改變。</div>
+    </li>
+  </ul>
+
+  <div class="kbox alert">
+    <div class="kbox-t">甲亢治療方式與眼病的交互作用</div>
+    <ul>
+      <li><b>有 GO 者先用抗甲狀腺藥把甲亢壓下來並維持正常</b>（ETA 2018 Rec 28）。</li>
+      <li><b>放射碘</b>：<b>活動性中重度眼病是禁忌</b>（KTA 2025 第 1.3.2 與 5.1 條，建議等級 1）。
+        <b>輕度活動性眼病要給類固醇預防</b>（ETA 2018 Rec 29；KTA 2025 第 5.2 條）；
+        <b>非活動的中重度</b>若有 TRAb 高或吸菸等風險因子可考慮預防（5.3 條）；
+        <b>非活動的輕度且無風險因子則不建議</b>（5.4 條）。<br>
+        ❗<b>本頁不列類固醇預防的具體劑量</b>——該方案出自 EUGOGO 2021，
+        本輪無法取得該文全文（bioscientifica 回 HTTP 525），依院內核醫科／內分泌科常規執行。</li>
+      <li><b>中重度且活動期時，治療眼病優先</b>（ETA 2018 Rec 30）；<b>視力威脅型用抗甲狀腺藥</b>（Rec 31）。</li>
+      <li><b>眼病已不活動者，甲亢治療方式可以獨立選擇</b>（Rec 32）。</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：放射碘 ==================== -->
+<section class="tp-panel hidden" data-panel="rai">
+
+  <div class="refbar">
+    <span class="rb"><b>固定劑量</b> 10–15 <i>mCi</i></span>
+    <span class="rb"><b>ATD 停</b> 治療前 3–7 <i>天</i></span>
+    <span class="rb"><b>ATD 復用</b> 治療後 3–7 <i>天</i></span>
+    <span class="rb"><b>首次複驗</b> 4–6 <i>週</i></span>
+    <span class="rb"><b>延後受孕</b> ≥ 6 <i>個月</i></span>
+    <span class="rb-src">KTA 2025 · PMID 40598903</span>
+  </div>
+
+  <div class="note" style="margin:0 0 12px;">
+    <b>為什麼這一分頁用韓國甲狀腺學會 2025 年版而不是 ATA 2016？</b>
+    ATA 2016 甲亢指引<b>仍是 ATA 的現行版本</b>（2025 年只有一則勘誤），但<b>全文在付費牆之後</b>
+    （liebertpub 與 SAGE 皆回 HTTP 403），無法一手核對。
+    <b>KTA 2025 是專門處理甲亢放射碘的指引、全文開放、且由韓國五個相關學會共同背書</b>，
+    每一條都能回頭查證，因此本頁的放射碘實務以它為準，並在與 ETA 2018 有交集處並列。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">適應證與禁忌</span><span class="dh-e">KTA 2025 Section 1</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>分類</th><th>情境</th><th>等級</th></tr></thead>
+      <tbody>
+        <tr><td class="nw" rowspan="4"><b>應考慮</b></td><td>病人希望採用治癒率高的初始治療</td><td class="nw">1</td></tr>
+        <tr><td>抗甲狀腺藥發生<b>嚴重</b>不良反應</td><td class="nw">1</td></tr>
+        <tr><td>抗甲狀腺藥緩解後<b>復發</b>且希望根治</td><td class="nw">1</td></tr>
+        <tr><td>適當使用抗甲狀腺藥但<b>甲狀腺功能仍控制不良</b></td><td class="nw">1</td></tr>
+        <tr><td class="nw" rowspan="3"><b>可考慮</b></td><td>抗甲狀腺藥<b>服藥順從性差</b></td><td class="nw">2</td></tr>
+        <tr><td>有<b>共病</b>（未控制的心律不整、心衰竭），甲亢惡化會造成不穩定</td><td class="nw">2</td></tr>
+        <tr><td>需<b>長期高劑量</b>抗甲狀腺藥才能維持正常（尤其計畫<b>6 個月以後</b>才懷孕的女性）</td><td class="nw">3</td></tr>
+        <tr><td class="nw" rowspan="3"><b>不建議</b></td><td><b>懷孕或哺乳</b></td><td class="nw">1</td></tr>
+        <tr><td><b>活動性中重度甲狀腺眼病</b></td><td class="nw">1</td></tr>
+        <tr><td><b>合併甲狀腺癌</b></td><td class="nw">1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tl-b" style="margin:-4px 0 12px;">
+    等級定義：<b>1 ＝強烈建議</b>（證據充分）、<b>2 ＝有條件建議</b>（證據不確定或間接）、<b>3 ＝專家共識</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">從決定到追蹤的完整時序</span><span class="dh-e">Before · During · After</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">治療前 ≥ 1 週</div>
+      <div class="tl-h">飲食：不必嚴格低碘，但要避開富碘食物</div>
+      <div class="tl-b"><b>KTA 2025 第 3.1 條：甲亢的放射碘治療前不常規要求低碘飲食</b>，
+        但<b>至少治療前 1 週應避免富碘食物</b>（等級 3）。
+        ❗<b>碘顯影劑</b>會讓攝碘率下降數週以上——安排電腦斷層前要先確認放射碘的時程。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">治療前 3–7 天</div>
+      <div class="tl-h">停抗甲狀腺藥</div>
+      <div class="tl-b"><b>第 4.1 條：治療前停藥 3–7 天（等級 1）</b>。ETA 2018 Rec 19 的說法是
+        「前後各暫停約 1 週」，兩者不衝突。停藥期間可繼續用 β 阻斷劑控制症狀。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">治療前</div>
+      <div class="tl-h">眼病與懷孕兩件事要先確認</div>
+      <div class="tl-b"><b>活動性中重度眼病 → 不做</b>；<b>輕度活動性眼病 → 給類固醇預防</b>。
+        <b>育齡女性要排除懷孕</b>；<b>哺乳必須先停止</b>（放射碘會進入母乳）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">治療當天</div>
+      <div class="tl-h">固定劑量 10–15 mCi</div>
+      <div class="tl-b"><b>第 2.1 條：建議採用足以誘發甲狀腺低下的固定劑量 10–15 mCi（等級 2）。</b>
+        ETA 2018 Rec 20 講得更直白：<b>「沒有任何劑量計算方式能保證長期的甲狀腺功能正常，
+        給固定劑量是完全可以接受的」</b>。治療目標本來就是把甲亢換成可以用藥物補充的甲低。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">治療後 3–7 天</div>
+      <div class="tl-h">高風險者恢復抗甲狀腺藥</div>
+      <div class="tl-b"><b>第 4.2 條（等級 2）</b>：治療前有用抗甲狀腺藥、或甲亢惡化會造成臨床不穩定的高風險者，
+        可在治療後 3–7 天恢復用藥。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">治療後 4–6 週</div>
+      <div class="tl-h">第一次驗 TSH 與 Free T4</div>
+      <div class="tl-b"><b>第 6.1 條</b>。接著<b>每 2–3 個月追蹤至穩定（最多至 6 個月）或 TSH 恢復正常</b>（6.2）；
+        <b>連續兩次正常之後改為每 6–12 個月</b>（6.3）；<b>出現症狀時隨時驗</b>（6.4）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">6 個月內</div>
+      <div class="tl-h">避孕</div>
+      <div class="tl-b"><b>ETA 2018 Rec 22：男女皆應延後受孕至少 6 個月。</b>
+        KTA 2025 的理由寫得更細：<b>放射碘後 TRAb 可能一過性上升</b>，
+        因此建議等甲狀腺功能穩定、<b>通常至少 6 個月</b>；
+        男性另有<b>精子生成週期</b>的考量（3–4 個月）——兩者不衝突，取較長的 6 個月。</div>
+    </li>
+  </ul>
+
+  <div class="kbox">
+    <div class="kbox-t">療效與併發症的實際數字（KTA 2025 正文）</div>
+    <ul>
+      <li>緩解：<b>約 50–90% 在 3–12 個月內</b>達成。</li>
+      <li><b>甲狀腺低下是預期結果，不是併發症</b>：治療後<b>第一年內發生率 24–87%</b>（劑量越高越早發生）。
+        一項前瞻研究中，Graves 病人的累積發生率為 <b>1 年 24%、10 年 59%、25 年 82%</b>；
+        對照之下毒性多結節性甲狀腺腫為 <b>4%／15%／32%</b>。</li>
+      <li>短期：一過性頸部疼痛與腫脹、<b>唾液腺炎</b>。長期：永久性甲狀腺低下，以及次發性惡性腫瘤的潛在風險。</li>
+      <li>❗<b>放射碘可能誘發或惡化甲狀腺眼病</b>——這是它與手術、抗甲狀腺藥最大的差別，
+        也是眼病評估必須排在治療決定之前的理由。</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <b>輻射防護的具體規範（與家人的距離、隔離天數、廢棄物處理）依各院核醫科與主管機關規定，本頁不代為列出。</b>
+    治療前請由核子醫學科完成書面與口頭說明——ETA 2018 Rec 18 把這一點列為強建議。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：甲低 ==================== -->
+<section class="tp-panel hidden" data-panel="hypo">
+
+  <div class="refbar">
+    <span class="rb"><b>足量替代</b> 1.6 <i>µg/kg/day</i></span>
+    <span class="rb"><b>輕度／老年起始</b> 25–50 <i>µg</i></span>
+    <span class="rb"><b>調整幅度</b> 12.5–25 <i>µg</i></span>
+    <span class="rb"><b>複驗間隔</b> 4–6 <i>週</i></span>
+    <span class="rb"><b>吸收率</b> 70–80<i>%</i></span>
+    <span class="rb-src">ATA 2014 · PMID 25266247</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">Levothyroxine 怎麼開</span><span class="dh-e">Dosing &amp; titration</span></div>
+  <div class="kbox">
+    <div class="kbox-t">四個數字</div>
+    <ul>
+      <li><b>足量替代約 1.6 µg/kg/day</b>（ATA 2014 引用的換算是 0.73 µg/lb）。
+        TSH 明顯升高者可直接以體重估算；<b>TSH ≤ 10 mIU/L 或亞臨床者從 25–50 µg 起始</b>。</li>
+      <li><b>每次調整 12.5–25 µg</b>，<b>4–6 週後複驗 TSH</b>，直到達標。
+        <b>調整後不到 4 週驗的 TSH 不能用來決定劑量。</b></li>
+      <li>起始劑量要同時考慮<b>體重、去脂體重、懷孕與否、病因、TSH 升高的程度、年齡、有無心臟病</b>。</li>
+      <li>錠劑在健康空腹成人的<b>腸道吸收率約 70–80%</b>——這就是服藥時間會影響結果的原因。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">服藥時間：只有兩種正確答案，而且要固定用同一種</div>
+    ATA 2014 的建議是：<b>「早餐前 60 分鐘」或「睡前（晚餐後 3 小時以上）」，固定用同一種以取得穩定的吸收」</b>。<br>
+    會干擾吸收而必須<b>間隔 4 小時</b>的常見藥物：<b>鈣片、鐵劑、制酸劑、氫氧化鋁、
+    膽酸結合樹脂（cholestyramine）、sucralfate、質子幫浦抑制劑（改變胃酸）</b>；
+    食物中的<b>咖啡與豆製品</b>同樣會減少吸收。
+    <b>副甲狀腺術後同時在補鈣的病人特別容易踩到這一條。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">亞臨床甲低要不要治療</span><span class="dh-e">Subclinical hypothyroidism</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>來源</th><th>分層</th><th>立場</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>ATA 2014</b></td><td>TSH &gt; 10 mIU/L</td>
+            <td>合併症狀或有進展風險因子者，<b>補充 levothyroxine 是合理的</b></td></tr>
+        <tr><td class="nw" rowspan="2"><b>KTA 2023</b></td><td><b>輕度</b>：TSH 6.8–10.0 mIU/L</td>
+            <td rowspan="2"><b>&lt; 70 歲建議治療</b>（尤其 TSH &gt; 10 的重度）；
+              <b>≥ 70 歲一般不建議治療，無論輕重</b>。開始治療者要個別化劑量並規則追蹤 TSH</td></tr>
+        <tr><td><b>重度</b>：TSH &gt; 10.0 mIU/L</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tl-b" style="margin:-4px 0 14px;">
+    ❗<b>兩份指引的分層界線不同</b>（ATA 用單一個 10、KTA 用 6.8 與 10 兩段、並以 70 歲為界），
+    本頁並列而不合成。判定前先<b>確認是持續性的</b>：間隔數週到 3 個月複驗，並排除急病後恢復期、藥物與檢驗干擾。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">橋本氏甲狀腺炎</span><span class="dh-e">Hashimoto thyroiditis</span></div>
+  <div class="kbox">
+    <div class="kbox-t">診斷靠抗體，處置靠功能</div>
+    <ul>
+      <li><b>Anti-TPO 陽性</b>（台大參考值 &lt; 34 IU/mL）是最常用的佐證；
+        超音波典型為<b>瀰漫性不均質低回音</b>。<b>抗體數值不用來追蹤治療，不需要重複驗。</b></li>
+      <li><b>甲狀腺功能正常且無腫大者不需要治療</b>，定期追蹤 TSH 即可。</li>
+      <li><b>橋本氏本身不是手術適應證</b>；手術的理由只有兩個：<b>壓迫症狀或美觀的甲狀腺腫</b>、
+        以及<b>合併的結節有惡性疑慮</b>（見「結節與腫大」分頁）。</li>
+      <li>一過性的甲狀腺毒症期（Hashitoxicosis）與無痛性甲狀腺炎<b>不需要抗甲狀腺藥</b>。</li>
+      <li>橋本氏甲狀腺炎與<b>原發性甲狀腺淋巴瘤</b>相關——<b>短時間內迅速變大的甲狀腺腫要當成紅旗</b>，
+        安排細針穿刺或粗針切片，不要當成單純的橋本氏腫大。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">特殊情境</span><span class="dh-e">Special situations</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">中樞性甲低</div>
+      <div class="tl-h">❗補甲狀腺素之前要先排除腎上腺功能不全</div>
+      <div class="tl-b">TSH 不會升高，<b>不能用 TSH 追蹤，要用 Free T4</b>。
+        先給甲狀腺素會加速皮質醇代謝而誘發<b>腎上腺危機</b>——處置見
+        <a href="adrenal-crisis.html" class="pmid">內分泌危象</a>。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">老年與心臟病</div>
+      <div class="tl-h">低劑量起始、慢慢調</div>
+      <div class="tl-b">ATA 2014 指出<b>目前沒有比較不同 TSH 目標值的隨機試驗</b>可依循；
+        實務上以 25–50 µg 起始、緩步上調，並注意心絞痛與心律不整。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">黏液水腫昏迷</div>
+      <div class="tl-h">靜脈 levothyroxine，且類固醇要先給</div>
+      <div class="tl-b">ATA 2014 的四條建議：<b>用靜脈 levothyroxine</b>；
+        <b>經驗性靜脈類固醇（壓力劑量）要在甲狀腺素之前給</b>；
+        考慮併用<b>靜脈 liothyronine</b>（T4 轉 T3 可能受阻）；
+        療效終點是<b>意識、心臟與肺功能改善</b>，重度甲低者可在一週內改善。<br>
+        ❗<b>台灣的 liothyronine（T3）藥證全部已註銷</b>（食藥署許可證資料查證，6 筆皆「已註銷」）；
+        <b>台大的 levothyroxine 注射劑屬「專案」藥品</b>（LEV1LC15）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">T4＋T3 併用</div>
+      <div class="tl-h">2021 三學會共識：不是常規</div>
+      <div class="tl-b">ATA／BTA／ETA 2021 共識（Thyroid 2021;31:156-182）認為併用只適合
+        <b>在特定病人身上以「試驗性治療」的方式進行</b>，並非一般甲低的標準療法。
+        ❗<b>台灣沒有單方 T3 可用</b>，這個選項在本地無法執行。</div>
+    </li>
+  </ul>
+
+  <div class="dirhead"><span class="dh-n">台大品項</span><span class="dh-e">NTUH formulary · 2026-08-15 快照</span></div>
+  <div class="tp-item">
+    <span class="ti-n">Eltroxin 昂特欣錠 100 mcg</span><span class="ti-c">ELT4LC06</span><br>
+    台大最常用的 levothyroxine 口服錠。
+    <a href="../tools/drug-database.html#code=ELT4LC06" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item">
+    <span class="ti-n">活甲錠 100 mcg</span><span class="ti-c">THY4LC14</span><br>
+    台大處方集內另一個 levothyroxine 品項（商品名 Thyroid-S）。
+    <a href="../tools/drug-database.html#code=THY4LC14" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item tp-none">
+    <span class="ti-n">Levothyroxine 注射劑 200 mcg／amp</span><span class="ti-c">LEV1LC15 · 專案</span><br>
+    ❗<b>專案藥品</b>，不是隨時可開；黏液水腫昏迷需要時要提早聯繫藥劑部。另有專案的口服液 Tirosint（TIR5LC14）。
+  </div>
+  <div class="tp-item tp-none">
+    <span class="ti-n">Liothyronine（T3）</span><span class="ti-c">台灣無有效藥證</span><br>
+    ❗食藥署許可證資料中 6 筆 liothyronine 相關許可證<b>全部已註銷</b>（最晚一筆 1999 年）。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：結節與腫大 ==================== -->
+<section class="tp-panel hidden" data-panel="nodule">
+
+  <div class="refbar">
+    <span class="rb"><b>FNA 門檻</b> EU-TIRADS 5 &gt;10／4 &gt;15／3 &gt;20 <i>mm</i></span>
+    <span class="rb"><b>顯著長大</b> 兩徑 ≥20% 且 ≥2 mm，或體積 &gt;50<i>%</i></span>
+    <span class="rb"><b>良性但 ≥4 cm</b> 可考慮手術</span>
+    <span class="rb-src">ETA 2023 · PMID 37358008</span>
+  </div>
+
+  <div class="note" style="margin:0 0 12px;">
+    <b>本分頁到「良性／不確定」為止。</b>細胞學或病理判為惡性（Bethesda V／VI 之後）請走
+    <a href="../tools/cancer.html#cancer=thyroid" class="pmid">甲狀腺癌</a>：分期、淋巴結分群、
+    術式與後續治療都在那裡，本頁不重複。<br>
+    風險分層採 <b>ETA 2023 的 EU-TIRADS</b>（全文開放、可逐條查核）。
+    台灣影像報告常見的 <b>ACR TI-RADS</b> 是另一套點數系統，
+    <b>其原始白皮書（JACR 2017）本輪無法取得全文</b>（jacr.org 回 HTTP 403），故本頁不轉載它的點數表。
+    細胞學採 <b>Bethesda 系統</b>；<b>Bethesda 第 3 版（2023）原文亦在付費牆之後</b>，
+    本頁只用 ETA 2023 明列的「依 Bethesda 級別的處置」，不引用各級的惡性風險百分比。
+  </div>
+
+  <div class="tp-flowhead">
+    <span class="fh-n">一顆結節怎麼走到處置</span>
+    <span class="fh-e">Interactive pathway · ETA 2023</span>
+    <button class="fh-reset" onclick="ndReset()">重置</button>
+  </div>
+
+  <div class="flow-step" id="nd_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">先看 TSH——它決定要不要先做核醫掃描</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ndPick('tsh','normal',this)">TSH 正常或偏高<span class="fo-sub">台大參考區間 0.270–4.20 µIU/mL；直接進入超音波風險分層</span></button>
+      <button class="flow-opt" onclick="ndPick('tsh','hot',this)">TSH 低下，核醫掃描顯示<b>熱結節</b><span class="fo-sub">功能亢進結節：該區高攝取、其餘腺體受抑制</span></button>
+      <button class="flow-opt" onclick="ndPick('tsh','cold',this)">TSH 低下，但目標結節是<b>冷結節</b><span class="fo-sub">多結節腺體中常見：有熱區也有冷區，冷的那一顆仍要照一般流程評估</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="nd_r1"></div>
+
+  <div class="flow-connector hidden" id="nd_c2">↓</div>
+  <div class="flow-step hidden" id="nd_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">超音波風險分類（EU-TIRADS）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ndPick('tr','2',this)">EU-TIRADS 2 — 良性<span class="fo-sub">純囊腫或完全海綿樣；估計惡性風險 0%（手術對照系列觀察值 1.4%）</span></button>
+      <button class="flow-opt" onclick="ndPick('tr','3',this)">EU-TIRADS 3 — 低風險<span class="fo-sub">等回音或高回音、無任何高度懷疑特徵；2–4%（觀察值 3.5%）</span></button>
+      <button class="flow-opt" onclick="ndPick('tr','4',this)">EU-TIRADS 4 — 中風險<span class="fo-sub">輕度低回音、無高度懷疑特徵；6–17%（觀察值 17%）</span></button>
+      <button class="flow-opt" onclick="ndPick('tr','5',this)">EU-TIRADS 5 — 高風險<span class="fo-sub">具下列任一：形狀不規則、邊緣不規則、微鈣化、明顯低回音；26–87%（觀察值 87.7%）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-connector hidden" id="nd_c3">↓</div>
+  <div class="flow-step hidden" id="nd_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">結節最大徑</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ndPick('sz','lt10',this)">&lt; 10 mm</button>
+      <button class="flow-opt" onclick="ndPick('sz','10_15',this)">10–15 mm</button>
+      <button class="flow-opt" onclick="ndPick('sz','15_20',this)">15–20 mm</button>
+      <button class="flow-opt" onclick="ndPick('sz','gt20',this)">&gt; 20 mm</button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="nd_r2"></div>
+
+  <div class="flow-connector hidden" id="nd_c4">↓</div>
+  <div class="flow-step hidden" id="nd_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">細針穿刺的細胞學結果（Bethesda）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ndPick('be','1',this)">Bethesda I — 檢體不足／無法判讀<span class="fo-sub">Non-diagnostic</span></button>
+      <button class="flow-opt" onclick="ndPick('be','2',this)">Bethesda II — 良性<span class="fo-sub">Benign</span></button>
+      <button class="flow-opt" onclick="ndPick('be','3',this)">Bethesda III — 意義未明的非典型<span class="fo-sub">AUS</span></button>
+      <button class="flow-opt" onclick="ndPick('be','4',this)">Bethesda IV — 濾泡性腫瘤<span class="fo-sub">Follicular neoplasm</span></button>
+      <button class="flow-opt" onclick="ndPick('be','56',this)">Bethesda V／VI — 疑似惡性／惡性<span class="fo-sub">Suspicious for malignancy / Malignant</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="nd_r3"></div>
+
+  <div class="dirhead"><span class="dh-n">沒做 FNA 的無症狀結節，多久追蹤一次</span><span class="dh-e">ETA 2023 Table 1</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>EU-TIRADS</th><th>大小</th><th>追蹤</th></tr></thead>
+      <tbody>
+        <tr><td class="nw" rowspan="2">2</td><td class="nw">5–10 mm</td><td><b>不需要再評估</b></td></tr>
+        <tr><td class="nw">&gt; 10 mm</td><td>3–5 年後再評估</td></tr>
+        <tr><td class="nw" rowspan="2">3（&lt; 20 mm）</td><td class="nw">5–10 mm</td><td><b>不需要再評估</b></td></tr>
+        <tr><td class="nw">10–20 mm</td><td>3–5 年後再評估</td></tr>
+        <tr><td class="nw">4（&lt; 15 mm）</td><td class="nw">—</td><td>1 年後再評估</td></tr>
+        <tr><td class="nw">5（&lt; 10 mm）</td><td class="nw">—</td><td><b>每 6–12 個月</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tl-b" style="margin:-4px 0 14px;">
+    <b>「顯著長大」的定義（ETA 2023）：至少兩個徑線增加 ≥20% 且最小增加 2 mm，或體積增加 &gt;50%</b>；
+    出現局部壓迫症狀同樣算。<b>5 年內只有約 16% 的結節符合這個定義。</b>
+    達到這個門檻就重做 FNA。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">不管分數多少，這兩種情況一律要 FNA</div>
+    <b>① 有病理性淋巴結</b>（囊性變化、微鈣化、看起來像甲狀腺組織、無正常淋巴門而血流紊亂）；
+    <b>② 結節疑似侵犯腺體外</b>。<br>
+    <b>可疑淋巴結本身也要 FNA</b>，並依表現型加做<b>沖洗液的 thyroglobulin 或 calcitonin</b>。<br>
+    另外：<b>5–10 mm 的 EU-TIRADS 5</b> 若有可疑淋巴結、疑似腺體外侵犯，或位置<b>貼近氣管或喉返神經走行區</b>，
+    仍建議 FNA。<b>粗針切片（core-needle biopsy）不作為第一線</b>，只在特定情況當第二線。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">手術適應證（良性與不確定的結節）</span><span class="dh-e">ETA 2023 原文</span></div>
+  <div class="kbox">
+    <div class="kbox-t">建議條文列的六項</div>
+    <ul>
+      <li><b>症狀性的結節性甲狀腺疾病</b>（作為微創治療與放射碘之外的選項）。</li>
+      <li>原本細胞學和／或超音波判為<b>良性、但後來出現症狀</b>者。</li>
+      <li><b>Bethesda III／IV 而不適合主動追蹤者</b>（體積大、超音波高度懷疑、有症狀）。</li>
+      <li><b>Bethesda V／VI</b>。</li>
+      <li><b>calcitonin 高於切點</b>（台大參考值：男 &lt; 9.52、女 &lt; 6.4 pg/mL）。</li>
+      <li><b>RET 帶因者</b>刺激試驗後 calcitonin 有反應。</li>
+    </ul>
+    <div class="kbox-t" style="margin-top:10px;">正文另外補充的四種情況</div>
+    <ul>
+      <li><b>良性（Bethesda II）但 ≥ 4 cm</b>——理由是體積大時 FNA 偽陰性的機會上升。</li>
+      <li><b>氣道或食道壓迫</b>。</li>
+      <li><b>美觀考量</b>。</li>
+      <li><b>鎖骨後或縱膈腔延伸</b>（此時才需要 CT／MRI）。</li>
+    </ul>
+    <div class="kbox-t" style="margin-top:10px;">術式</div>
+    <b>病灶侷限於單葉者做葉切除（lobectomy／hemithyroidectomy）</b>；
+    若病灶位在多結節性甲狀腺腫之內，<b>則考慮近全甲狀腺切除（near-total）</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">非手術的選項</span><span class="dh-e">Non-surgical options</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">不要做的事</div>
+      <div class="tl-h">甲狀腺素抑制療法與亂補碘硒</div>
+      <div class="tl-b"><b>甲狀腺功能正常的結節性疾病不應該用甲狀腺素治療</b>（建議等級 1，證據 ØØØO）；
+        <b>碘或硒的補充在沒有缺乏的情況下沒有適應證</b>。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">微創治療 MIT</div>
+      <div class="tl-h">乙醇注射用於囊性、熱消融用於實心</div>
+      <div class="tl-b">用於<b>造成局部壓迫症狀或美觀困擾</b>的病灶，超音波導引、門診即可執行、不需全身麻醉。
+        <b>乙醇注射（EA）</b>是囊性或以囊性為主結節的首選；
+        <b>熱消融（射頻、雷射、微波、高強度聚焦超音波）</b>因破壞體積可預測，是實心病灶的第一線。
+        體積縮小可達 <b>5 年 57–77%</b>。
+        <b>對 &lt; 10 mL 的小型功能亢進結節，熱消融是放射碘與手術之外的替代選項；結節越大效果越差。</b>
+        主要限制是<b>可及性與長期資料不足</b>。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">放射碘</div>
+      <div class="tl-h">毒性多結節性甲狀腺腫與毒性腺瘤</div>
+      <div class="tl-b">見「放射碘」分頁。與 Graves 相比，<b>毒性多結節性甲狀腺腫在放射碘後發生甲狀腺低下的比例低很多</b>
+        （1 年 4%、10 年 15%、25 年 32%）。</div>
+    </li>
+  </ul>
+
+</section>
+
+<!-- ==================== 分頁：甲狀腺手術 ==================== -->
+<section class="tp-panel hidden" data-panel="surg">
+
+  <div class="refbar">
+    <span class="rb"><b>術後 PTH</b> 24 小時內測</span>
+    <span class="rb"><b>偏好時點</b> 術後 1–6 <i>小時</i></span>
+    <span class="rb"><b>預測門檻</b> &lt;10 或 &lt;15 <i>pg/mL</i></span>
+    <span class="rb"><b>永久性</b> &gt; 12 <i>個月</i></span>
+    <span class="rb"><b>高量術者</b> &gt; 50 <i>例/年</i></span>
+    <span class="rb-src">ESES／AAES／ATA／BAETS 2025 · PMID 41229353</span>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">什麼情況要開刀</span><span class="dh-e">Indications, by disease</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>疾病</th><th>手術適應證</th><th>術式</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>Graves 病</b></td>
+            <td>抗甲狀腺藥復發或不良反應、<b>巨大甲狀腺腫或壓迫</b>、<b>合併可疑結節</b>、
+              <b>中重度活動性眼病</b>（放射碘不宜）、<b>短期內計畫懷孕</b>、病人偏好快速確定的根治</td>
+            <td><b>全甲狀腺切除</b>，由<b>高量術者</b>執行（ETA 2018 Rec 24）</td></tr>
+        <tr><td class="nw"><b>毒性多結節性甲狀腺腫<br>毒性腺瘤</b></td>
+            <td>腺體大、有壓迫、合併可疑結節、放射碘不適用或病人不願意</td>
+            <td>依範圍：單側病灶做葉切除；多結節者近全或全切除</td></tr>
+        <tr><td class="nw"><b>結節性甲狀腺腫</b></td>
+            <td>見「結節與腫大」分頁六項條文；另含<b>良性但 ≥4 cm</b>、氣道或食道壓迫、美觀、<b>鎖骨後／縱膈延伸</b></td>
+            <td>單葉病灶葉切除；多結節腺體近全切除</td></tr>
+        <tr><td class="nw"><b>細胞學不確定</b></td>
+            <td><b>Bethesda III／IV 不適合主動追蹤者</b>——手術同時提供確定診斷</td>
+            <td>診斷性葉切除；有分子檢測結果時應在術前納入考量</td></tr>
+        <tr><td class="nw"><b>Amiodarone 相關甲亢</b></td>
+            <td>❗<b>門檻比一般甲亢低</b>：心功能惡化、嚴重心臟病、藥物治療無效者，<b>應毫不延遲地手術</b></td>
+            <td>全甲狀腺切除；多專科共同決定（ETA 2018 AIT Rec 3、7）</td></tr>
+        <tr><td class="nw"><b>惡性</b></td>
+            <td colspan="2">走 <a href="../tools/cancer.html#cancer=thyroid" class="pmid">甲狀腺癌</a>，本頁不重複</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">術前準備</span><span class="dh-e">Preoperative preparation</span></div>
+  <div class="kbox">
+    <div class="kbox-t">ETA 2018 對 Graves 手術前寫了三條</div>
+    <ul>
+      <li><b>Rec 25：術前先用抗甲狀腺藥回復甲狀腺功能正常</b>，避免術中或術後甲狀腺毒症惡化（1, ∅∅∅∅）。</li>
+      <li><b>Rec 26：矯正維生素 D 缺乏</b>，以降低術後低血鈣的風險（1, ∅∅∅∅）。</li>
+      <li><b>Rec 27：術前可以給含碘化鉀的溶液 10 天</b>——注意這一條的<b>強度只有 2 級</b>。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">❗Lugol 溶液：能降荷爾蒙，但沒有證據能減少出血</div>
+    傳統理由是「減少腺體血流與脆度、讓手術好做」。
+    <b>但近年的隨機試驗與統合分析、以及 2026 年一篇回溯研究都指出：術前 Lugol 雖然確實降低 T3 與 T4，
+    卻沒有顯著影響術中出血量、手術時間，或喉返神經麻痺與低副甲狀腺等併發症。</b>
+    因此本頁把它寫成<b>「可以給、但不要靠它止血」</b>，與 ETA 2018 只給 2 級建議的語氣一致。<br>
+    療程長度各家不同：<b>ATA／ETA／AACE 皆為 10 天；AAES 寫 7–10 天</b>（經開放文獻轉述）。
+    ETA 2018 的條文本身<b>沒有寫劑量</b>；上述回溯研究採用的是 <b>7 滴、一天三次、共 10 天</b>。<br>
+    <b>台大有兩種濃度的 Lugol，開立前務必確認是哪一支</b>：
+    <a href="../tools/drug-database.html#code=LUG5LC05" class="pmid">魯哥爾氏溶液（稀釋，0.3%/mL）LUG5LC05</a>、
+    以及常備藥的 <a href="../tools/drug-database.html#code=LUG5LC13" class="pmid">Lugol's Solution 3%、100 mL LUG5LC13</a>；
+    另有 <a href="../tools/drug-database.html#code=KI15AL06" class="pmid">碘化鉀口服溶液 10% KI15AL06</a>。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">其他術前該做的事</div>
+    <ul>
+      <li><b>對抗甲狀腺藥過敏、或需要緊急手術者</b>：以 <b>β 阻斷劑＋碘化鉀溶液</b>做準備；
+        難治者可加 <b>cholestyramine</b>（台大：<a href="../tools/drug-database.html#code=CHO5FD01" class="pmid">可利舒散 4 g</a>），
+        它藉由阻斷腸肝循環加速甲狀腺素清除。</li>
+      <li><b>聲帶評估</b>：ETA 2018 的敘述中，歐洲的作法包含<b>術前喉部（聲帶）評估</b>。
+        有聲音改變、頸部手術史或懷疑侵犯者尤其要做。</li>
+      <li><b>維生素 D 與鈣</b>：術前補充可降低術後低血鈣的發生率與症狀（ETA 2018 Rec 26；多份研究支持）。
+        台大檢驗 25-OH vitamin D 的判讀標準是 <b>≥ 30 ng/mL</b>。</li>
+      <li><b>術者量能</b>：2025 國際共識把<b>低量定義為 ≤ 25 例/年、高量為 &gt; 50 例/年</b>，
+        並指出術者經驗是低副甲狀腺功能<b>可修正的風險因子</b>。</li>
+    </ul>
+  </div>
+
+  <div class="tp-flowhead">
+    <span class="fh-n">術後低血鈣與低副甲狀腺功能</span>
+    <span class="fh-e">Interactive pathway · ESES/AAES/ATA/BAETS 2025</span>
+    <button class="fh-reset" onclick="pcReset()">重置</button>
+  </div>
+
+  <div class="flow-step" id="pc_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">全甲狀腺（或補全）切除後 24 小時內的 PTH</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="pcPick('pth','normal',this)">在參考範圍內<span class="fo-sub">台大 i-PTH 參考區間 17.3–74.1 pg/mL</span></button>
+      <button class="flow-opt" onclick="pcPick('pth','low',this)">低於參考下限但仍測得到<span class="fo-sub">文獻常用的預測門檻是 &lt; 10 或 &lt; 15 pg/mL</span></button>
+      <button class="flow-opt" onclick="pcPick('pth','und',this)">測不到<span class="fo-sub">Undetectable</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="pc_r1"></div>
+
+  <div class="flow-connector hidden" id="pc_c2">↓</div>
+  <div class="flow-step hidden" id="pc_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">目前的血鈣與症狀</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="pcPick('sx','none',this)">無症狀，血鈣僅略低或仍在正常範圍<span class="fo-sub">白蛋白校正後血鈣或游離鈣</span></button>
+      <button class="flow-opt" onclick="pcPick('sx','mild',this)">有症狀：口周或指尖麻木、肌肉抽筋<span class="fo-sub">Chvostek／Trousseau 徵象可能陽性</span></button>
+      <button class="flow-opt" onclick="pcPick('sx','severe',this)">嚴重：手足搐搦、喉痙攣、癲癇、心律不整或 QT 延長<span class="fo-sub">需要靜脈鈣</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="pc_r2"></div>
+
+  <div class="flow-connector hidden" id="pc_c3">↓</div>
+  <div class="flow-step hidden" id="pc_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">術後滿 12 個月時的狀態</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="pcPick('fu','off',this)">已成功停掉補充，鈣與 PTH 都正常<span class="fo-sub">必須真的嘗試過停藥</span></button>
+      <button class="flow-opt" onclick="pcPick('fu','on',this)">仍需要鈣和／或活性維生素 D 才能維持血鈣<span class="fo-sub">PTH 可能測不到、偏低、或「不恰當地正常」</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="pc_r3"></div>
+
+  <div class="dirhead"><span class="dh-n">術後甲狀腺素與追蹤</span><span class="dh-e">After thyroidectomy</span></div>
+  <div class="kbox">
+    <div class="kbox-t">三件事的時程不一樣</div>
+    <ul>
+      <li><b>全甲狀腺切除</b>：術後開始 levothyroxine，良性疾病的目標是<b>把 TSH 維持在正常範圍</b>
+        （不是抑制——<b>TSH 抑制是甲狀腺癌的策略，不適用於良性疾病</b>）。
+        足量替代約 <b>1.6 µg/kg/day</b>，<b>調整後 4–6 週</b>才複驗 TSH。</li>
+      <li><b>單葉切除</b>：多數人不需要立即補充，<b>術後 4–6 週驗 TSH</b>，之後依結果決定追蹤頻率；
+        原本 TSH 偏高或 anti-TPO 陽性者較容易需要補充。</li>
+      <li><b>低血鈣</b>：依上方流程；<b>2025 共識要求第一次 PTH 在 24 小時內測，且 66.78% 的投票者偏好術後 1–6 小時</b>。</li>
+    </ul>
+  </div>
+
+  <details class="def-box">
+    <summary>為什麼「永久性」的時間點從 6 個月改成 12 個月 Definitions</summary>
+    <div class="box-inner">
+      <div class="dot-line">・<b>ATA 的舊定義</b>：術後<b>未滿 6 個月</b>者為暫時性，超過 6 個月即為永久性。</div>
+      <div class="dot-line">・<b>2025 年 ESES／AAES／ATA／BAETS 等學會的國際共識改採 12 個月</b>（Statement 6、7）。</div>
+      <div class="dot-line">・<b>理由是實測資料</b>：一項研究中，在術後 6 個月被判定為永久性低副甲的病人，
+        <b>有 25.4% 在 6 到 12 個月之間恢復</b>；另一項 854 人的系列中，
+        恢復時間分別為 <b>&lt;6 個月 8.5%、6–12 個月 2.5%、&gt;12 個月 1.4%</b>。</div>
+      <div class="dot-line">・共識也要求：<b>要下永久性的診斷，必須真的嘗試過停止補充而失敗</b>（Statement 7）。</div>
+      <div class="dot-line">・另一個常被忽略的狀態是<b>「相對副甲狀腺功能不足」</b>——
+        PTH 落在參考範圍內，卻不足以維持正常血鈣、病人仍有症狀。</div>
+    </div>
+  </details>
+
+</section>
+
+<!-- ==================== 分頁：副甲狀腺 ==================== -->
+<section class="tp-panel hidden" data-panel="pth">
+
+  <div class="refbar">
+    <span class="rb"><b>血鈣門檻</b> 高於上限 1 mg/dL（0.25 <i>mmol/L</i>）</span>
+    <span class="rb"><b>T-score</b> ≤ −2.5</span>
+    <span class="rb"><b>eGFR</b> &lt; 60 <i>mL/min</i></span>
+    <span class="rb"><b>尿鈣</b> 女 &gt;250／男 &gt;300 <i>mg/24h</i></span>
+    <span class="rb"><b>年齡</b> &lt; 50 <i>歲</i></span>
+    <span class="rb-src">第五屆國際工作坊 2022（轉述）</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">台大的數值要先換算才能對上準則</div>
+    <ul>
+      <li><b>血鈣</b>：台大報 <b>mmol/L</b>（2.15–2.58），準則寫 mg/dL。
+        「高於正常上限 1 mg/dL」＝<b>高於 2.58 + 0.25 = 2.83 mmol/L</b>。</li>
+      <li><b>24 小時尿鈣</b>：台大報 <b>mmol/day</b>（2.5–7.5），準則寫 mg/24h。
+        <b>女性 250 mg/day = 6.24 mmol/day、男性 300 mg/day = 7.49 mmol/day</b>。
+        ❗<b>一位女性報 6.5 mmol/day 在報告上是「正常」，但已符合手術準則。</b></li>
+      <li><b>i-PTH</b> 台大參考區間 <b>17.3–74.1 pg/mL</b>；<b>磷</b>成人 2.5–5.0 mg/dL（與鈣不同單位）。</li>
+    </ul>
+  </div>
+
+  <div class="tp-flowhead">
+    <span class="fh-n">從一組鈣與 PTH 走到處置</span>
+    <span class="fh-e">Interactive pathway</span>
+    <button class="fh-reset" onclick="ptReset()">重置</button>
+  </div>
+
+  <div class="flow-step" id="pt_s1">
+    <div class="flow-step-head"><span class="flow-num">1</span><span class="flow-q">血鈣與 PTH 的組合是哪一種？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ptPick('bio','hi_pth',this)">高血鈣＋PTH 升高或「不恰當地正常」<span class="fo-sub">高血鈣時 PTH 本來應該被抑制；沒被抑制就是副甲狀腺在主導</span></button>
+      <button class="flow-opt" onclick="ptPick('bio','lo_pth',this)">高血鈣＋PTH 被抑制<span class="fo-sub">非副甲狀腺性高血鈣</span></button>
+      <button class="flow-opt" onclick="ptPick('bio','normoca',this)">血鈣正常＋PTH 升高<span class="fo-sub">次發性副甲狀腺亢進，或正常血鈣型原發性副甲狀腺亢進</span></button>
+      <button class="flow-opt" onclick="ptPick('bio','hypo',this)">低血鈣＋PTH 偏低或不恰當地正常<span class="fo-sub">副甲狀腺功能低下（最常見的原因是頸部手術）</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle" id="pt_r1"></div>
+
+  <div class="flow-connector hidden" id="pt_c2">↓</div>
+  <div class="flow-step hidden" id="pt_s2">
+    <div class="flow-step-head"><span class="flow-num">2</span><span class="flow-q">在下診斷之前，這些混淆因素排除了嗎？</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ptPick('dd','clear',this)">都已排除 → 原發性副甲狀腺亢進<span class="fo-sub">腎功能正常、沒有在用 thiazide 或鋰鹽、尿鈣不低、維生素 D 不缺乏</span></button>
+      <button class="flow-opt" onclick="ptPick('dd','fhh',this)">尿鈣偏低，懷疑家族性低尿鈣高血鈣（FHH）<span class="fo-sub">鈣／肌酸酐清除率比偏低、自幼即有高血鈣、家族史</span></button>
+      <button class="flow-opt" onclick="ptPick('dd','drug',this)">正在使用 thiazide 利尿劑或鋰鹽<span class="fo-sub">兩者都會造成高血鈣併 PTH 不受抑制</span></button>
+      <button class="flow-opt" onclick="ptPick('dd','ckd',this)">有慢性腎病或腎移植病史<span class="fo-sub">要往次發性／三發性副甲狀腺亢進判讀</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="pt_r2"></div>
+
+  <div class="flow-connector hidden" id="pt_c3">↓</div>
+  <div class="flow-step hidden" id="pt_s3">
+    <div class="flow-step-head"><span class="flow-num">3</span><span class="flow-q">符合第五屆國際工作坊 2022 手術準則的哪一項？（有症狀者不必走這一步，直接建議手術）</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ptPick('crit','sx',this)">有症狀<span class="fo-sub">腎結石、脆弱性骨折、高血鈣症狀（多尿、便祕、噁心、意識改變）、胰臟炎</span></button>
+      <button class="flow-opt" onclick="ptPick('crit','ca',this)">血鈣高於正常上限 1 mg/dL 以上<span class="fo-sub">台大：&gt; 2.83 mmol/L</span></button>
+      <button class="flow-opt" onclick="ptPick('crit','bone',this)">骨骼：脊椎壓迫性骨折，或 T-score ≤ −2.5<span class="fo-sub">腰椎、全髖／股骨頸、或橈骨 33% 任一處；影像可用 X 光／CT／MRI／VFA</span></button>
+      <button class="flow-opt" onclick="ptPick('crit','renal',this)">腎臟：eGFR &lt; 60、腎結石或腎鈣化、或高尿鈣<span class="fo-sub">高尿鈣＝女 &gt;250、男 &gt;300 mg/24h（台大 &gt;6.24／&gt;7.49 mmol/day）</span></button>
+      <button class="flow-opt" onclick="ptPick('crit','age',this)">年齡 &lt; 50 歲<span class="fo-sub">單獨這一項就是手術適應證</span></button>
+      <button class="flow-opt" onclick="ptPick('crit','none',this)">以上皆不符合<span class="fo-sub">無症狀且未達任一準則</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="pt_r3"></div>
+
+  <div class="flow-connector hidden" id="pt_c4">↓</div>
+  <div class="flow-step hidden" id="pt_s4">
+    <div class="flow-step-head"><span class="flow-num">4</span><span class="flow-q">術前定位影像的結果</span></div>
+    <div class="flow-opts">
+      <button class="flow-opt" onclick="ptPick('loc','single',this)">超音波與 MIBI 一致指向<b>單一腺體</b><span class="fo-sub">兩種影像互相吻合</span></button>
+      <button class="flow-opt" onclick="ptPick('loc','neg',this)">影像<b>陰性或兩者不一致</b><span class="fo-sub">第一線影像無法定位</span></button>
+      <button class="flow-opt" onclick="ptPick('loc','multi',this)">懷疑<b>多腺體病變或家族性</b><span class="fo-sub">MEN1／MEN2、&lt; 30 歲、家族史、多顆腺體顯影</span></button>
+    </div>
+  </div>
+
+  <div class="flow-rec rec-idle hidden" id="pt_r4"></div>
+
+  <div class="dirhead"><span class="dh-n">不開刀的人怎麼追蹤</span><span class="dh-e">Non-surgical management（第五屆工作坊，轉述）</span></div>
+  <div class="kbox">
+    <div class="kbox-t">要做的與不必做的一樣重要</div>
+    <ul>
+      <li><b>每年至少一次</b>：血鈣、25(OH)D、肌酸酐與 eGFR（或直接測肌酸酐清除率）。</li>
+      <li><b>骨密度每 1–2 年</b>一次，測<b>腰椎、髖部與橈骨遠端 1/3</b>，且要用<b>同一台 DXA</b>。</li>
+      <li><b>不需要例行重複</b>：24 小時尿鈣、腹部超音波／CT／X 光、脊椎 X 光／VFA 或 TBS——
+        <b>除非臨床上有指徵</b>。</li>
+      <li><b>PTH 對評估嚴重度的價值較低</b>，臨床有需要時才驗。</li>
+      <li><b>維生素 D 補到 25(OH)D &gt; 30 ng/mL</b>（並低於檢驗室上限，通常 &lt; 50 ng/mL）；
+        <b>鈣的攝取與一般人相同</b>（女性 &lt; 50 歲與男性 &lt; 70 歲 800 mg/day；女性 &gt; 50 歲與男性 &gt; 70 歲 1,000 mg/day）——
+        <b>不要為了高血鈣而讓病人嚴格限鈣</b>。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">藥物只能處理其中一半，而且在台灣自費</div>
+    <ul>
+      <li><b>Cinacalcet（擬鈣劑）</b>：<b>降血鈣</b>，但<b>只稍微降 PTH、對骨密度沒有幫助</b>。
+        工作坊建議用於<b>血鈣高於上限 1 mg/dL 以上</b>而不手術者。副作用（食慾差、噁心、嘔吐、腹瀉、頭暈）常見到會停藥。</li>
+      <li><b>雙磷酸鹽（如 alendronate）或 denosumab</b>：<b>改善骨密度、降低骨轉換</b>，但不降血鈣。</li>
+      <li><b>兩者都需要時可以併用。</b></li>
+      <li>⭐<b>台灣現況（查詢日 2026-09-13）</b>：cinacalcet <b>有藥證</b>（銳克鈣錠 25 mg／75 mg、鈣適樂錠 25 mg），
+        <b>但健保藥品品項查無</b>（健保署 API 與健保品項全檔 224,553 筆兩路查證皆 0 筆）→ <b>自費</b>。
+        <b>台大處方集的 cinacalcet（鈣易清膜衣錠 25 mg）在 2026-08-15 的快照中標記為 DC</b>。
+        <b>Etelcalcetide（Parsabiv 旁必福）有藥證、健保同樣 0 筆，台大處方集查無。</b></li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">次發性與三發性副甲狀腺亢進</span><span class="dh-e">Renal hyperparathyroidism</span></div>
+  <div class="kbox">
+    <div class="kbox-t">KDIGO 2017 的四條（現行版本，2026 年仍未改版）</div>
+    <ul>
+      <li><b>4.2.1</b> CKD G3a–G5 未透析者，<b>最佳 PTH 值未知</b>；PTH 持續上升或高於上限時，
+        要先找<b>可矯正因素</b>：高血磷、低血鈣、磷攝取過多、維生素 D 缺乏（2C）。</li>
+      <li><b>4.2.2</b> <b>不建議常規使用 calcitriol 與維生素 D 類似物</b>；保留給
+        <b>G4–G5 且嚴重、進行性</b>的副甲狀腺亢進（Not Graded）。</li>
+      <li><b>4.2.3</b> 透析病人（G5D）<b>iPTH 維持在檢驗室正常上限的 2–9 倍</b>（2C）——
+        以台大的 74.1 pg/mL 上限計算，<b>約 148–667 pg/mL</b>；在這個區間內大幅變動就該調整治療。</li>
+      <li><b>4.2.4</b> 需要降 PTH 時：<b>擬鈣劑、calcitriol／維生素 D 類似物，或兩者併用</b>（2B）。</li>
+      <li><b>4.2.5</b> <b>G3a–G5D 且嚴重副甲狀腺亢進、對藥物治療無反應者，建議副甲狀腺切除（2B）。</b></li>
+    </ul>
+  </div>
+
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>面向</th><th>次發性（透析中）</th><th>三發性（多為腎移植後）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">生化</td><td>PTH 高、血鈣正常或偏低、高血磷</td><td><b>PTH 高且血鈣升高</b>（自主分泌）</td></tr>
+        <tr><td class="nw">手術適應證</td>
+            <td colspan="2"><b>KDIGO：嚴重且藥物治療無效</b>。<b>AAES 2022</b>（經開放文獻轉述，原文付費）列出三項：
+              <b>① 副甲狀腺亢進造成的嚴重骨痛；② 自發性骨折；③ 藥物無法控制的高血鈣和／或低血磷</b></td></tr>
+        <tr><td class="nw">術前影像</td>
+            <td colspan="2">EANM 2021：<b>腎性副甲狀腺亢進通常不靠術前影像，直接做雙側頸部探查</b>；
+              影像的價值在於找<b>異位或多餘腺體</b>，以及挑出攝取最低的那一顆來做自體移植或保留。
+              ❗<b>活性維生素 D 與擬鈣劑會降低 MIBI 的攝取</b></td></tr>
+        <tr><td class="nw">時機</td>
+            <td>依 KDIGO 於藥物失敗時</td>
+            <td>移植後<b>約 61.7% 有持續性副甲狀腺亢進、21.5% 在一年內進展為三發性</b>；
+              三發性會增加<b>死亡校正後的移植腎失能</b>風險。手術時機（移植前或移植後）目前文獻未有定論</td></tr>
+        <tr><td class="nw">藥物 vs 手術</td>
+            <td colspan="2">隨機試驗顯示<b>次全切除在腰椎與股骨頸的骨密度增幅優於 cinacalcet</b>；
+              ❗<b>cinacalcet 用於三發性副甲狀腺亢進在美國屬仿單外，在台灣則是自費</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">骨飢餓症候群（hungry bone syndrome）</div>
+    依 2026 年一篇 91 例的手術系列（次全切除 87.9%、全切除加自體移植 12.1%）：
+    <ul>
+      <li><b>定義</b>：術後血鈣 <b>&lt; 8.4 mg/dL（2.1 mmol/L）</b>，或<b>低血鈣持續超過 4 天</b>。</li>
+      <li><b>發生率 34.1%</b>；<b>次發性（72.2%）遠高於三發性</b>。</li>
+      <li><b>風險因子：年齡較輕、次發性、術前 ALP 與 iPTH 偏高</b>
+        （該系列 HBS 組術前 ALP 411.6 ± 455.1 IU/L）。</li>
+      <li><b>術式也有關</b>：<b>全切除加自體移植比次全切除更容易發生</b>。</li>
+      <li>後果是<b>補鈣時間拉長</b>（該系列平均 14.3 個月 vs 對照組短很多）。</li>
+      <li>該系列採用的<b>手術成功生化定義</b>：
+        <b>(術前 iPTH − 術後 iPTH) / 術前 iPTH ≥ 0.7，或術後 iPTH ≤ 60 pg/mL</b>。</li>
+    </ul>
+    低血鈣本身的急性處置（靜脈鈣、矯正鎂）見
+    <a href="electrolyte-emergency.html" class="pmid">電解質急症</a>與
+    <a href="electrolyte.html" class="pmid">電解質失衡</a>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">副甲狀腺功能低下的長期管理</span><span class="dh-e">Chronic hypoparathyroidism</span></div>
+  <div class="kbox">
+    <div class="kbox-t">目標不是把血鈣拉回正常中段</div>
+    <ul>
+      <li><b>治療的支柱是鈣鹽＋活性維生素 D</b>（calcitriol 或 alfacalcidol）——
+        因為缺的是 PTH，一般的膽鈣化醇無法取代 1α 羥化的那一步。</li>
+      <li><b>血鈣維持在正常範圍的低端、且病人沒有症狀即可</b>；
+        <b>拉太高會造成高尿鈣、腎結石與腎功能惡化</b>。</li>
+      <li><b>低血鎂會讓 PTH 分泌與作用都失效</b>——補鈣無效時要先驗鎂（台大參考區間 0.78–1.11 mmol/L）。</li>
+      <li>❗<b>補鈣與 levothyroxine 至少間隔 4 小時</b>——甲狀腺全切除後同時吃這兩種藥的人非常多，
+        鈣片會顯著減少甲狀腺素吸收。</li>
+      <li><b>長效 PTH 補充療法（palopegteriparatide）在台灣查無藥證</b>（食藥署許可證資料 0 筆）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大品項</span><span class="dh-e">NTUH formulary · 2026-08-15 快照</span></div>
+  <div class="tp-item">
+    <span class="ti-n">Calcitriol 活維Ｄ軟膠囊 0.25 mcg</span><span class="ti-c">UCA4FB23</span><br>
+    活性維生素 D 口服；另有注射劑<b>鈣注益 1 mcg</b>（<a href="../tools/drug-database.html#code=CAT1FB28" class="pmid">CAT1FB28</a>）。
+    <a href="../tools/drug-database.html#code=UCA4FB23" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item">
+    <span class="ti-n">Alfacalcidol 愛康鈣軟膠囊 0.25 mcg</span><span class="ti-c">ALC4FB16</span><br>
+    另一個活性維生素 D 選項。<a href="../tools/drug-database.html#code=ALC4FB16" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item">
+    <span class="ti-n">碳酸鈣錠 0.5 g（元素鈣 200 mg、10 mEq）</span><span class="ti-c">CAL4HA46</span><br>
+    口服補鈣；<b>醋酸鈣普羅鈣錠 667 mg</b>（<a href="../tools/drug-database.html#code=PRO4FAC8" class="pmid">PRO4FAC8</a>，元素鈣 169 mg）
+    主要用途是磷結合劑。<a href="../tools/drug-database.html#code=CAL4HA46" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item">
+    <span class="ti-n">Calcium gluconate 鈣克康注射液 10%</span><span class="ti-c">CAL1FA03</span><br>
+    10 mL/amp、0.465 mEq/mL。急性症狀性低血鈣用；輸注方式見
+    <a href="electrolyte-emergency.html" class="pmid">電解質急症</a>。
+    <a href="../tools/drug-database.html#code=CAL1FA03" class="pmid">看藥卡</a>
+  </div>
+  <div class="tp-item tp-none">
+    <span class="ti-n">Cinacalcet 鈣易清膜衣錠 25 mg</span><span class="ti-c">CIN4FAJ0 · DC</span><br>
+    ❗台大快照標示<b>已停用（DC）</b>；台灣<b>有藥證但健保 0 筆</b>，屬自費。
+  </div>
+  <div class="tp-item tp-none">
+    <span class="ti-n">Etelcalcetide（Parsabiv 旁必福注射液）</span><span class="ti-c">台大查無</span><br>
+    ❗有藥證（衛部藥輸字第027639號）但<b>健保 0 筆、台大處方集查無</b>。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：證據 ==================== -->
+<section class="tp-panel hidden" data-panel="ev">
+
+  <div class="note" style="margin:0 0 12px;">
+    <b>本頁把「能一手查核」與「只能經開放文獻轉述」分成兩張表。</b>
+    凡是本輪無法取得全文的文件，頁面內容只保留能由開放來源交叉核對的部分，
+    其餘（例如各級 Bethesda 的惡性風險百分比、ACR TI-RADS 的點數表、EUGOGO 的類固醇預防劑量）<b>一律不寫</b>。
+    查詢日：<b>2026-09-13</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">一手核對過的來源</span><span class="dh-e">Full text obtained</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>主題</th><th>文件</th><th>PMID</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">Graves 甲亢</td><td>2018 ETA Guideline for the Management of Graves' Hyperthyroidism（Eur Thyroid J 2018;7:167-186）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/30283735/" target="_blank" rel="noopener" class="pmid">30283735</a></td></tr>
+        <tr><td class="nw">放射碘</td><td>2025 KTA Management Guidelines for RAI Therapy in Hyperthyroidism（Endocrinol Metab 2025;40:342-356）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/40598903/" target="_blank" rel="noopener" class="pmid">40598903</a></td></tr>
+        <tr><td class="nw">Amiodarone</td><td>2018 ETA Guidelines for Amiodarone-Associated Thyroid Dysfunction（Eur Thyroid J 2018;7:55-66）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/29594056/" target="_blank" rel="noopener" class="pmid">29594056</a></td></tr>
+        <tr><td class="nw">甲狀腺眼病</td><td>Management of Thyroid Eye Disease: ATA／ETA Consensus Statement（Thyroid 2022;32:1439-1470）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/36480280/" target="_blank" rel="noopener" class="pmid">36480280</a></td></tr>
+        <tr><td class="nw">眼病兩文比較</td><td>Bartalena 等，EUGOGO 2021 與 ATA/ETA 2022 逐項比對（Eur Thyroid J 2025;14(6)）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/41283777/" target="_blank" rel="noopener" class="pmid">41283777</a></td></tr>
+        <tr><td class="nw">結節</td><td>2023 ETA Clinical Practice Guidelines for Thyroid Nodule Management（Eur Thyroid J 2023;12:e230067）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/37358008/" target="_blank" rel="noopener" class="pmid">37358008</a></td></tr>
+        <tr><td class="nw">甲狀腺低下</td><td>ATA 2014 Guidelines for the Treatment of Hypothyroidism（Thyroid 2014;24:1670-1751）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/25266247/" target="_blank" rel="noopener" class="pmid">25266247</a></td></tr>
+        <tr><td class="nw">T4／T3 併用</td><td>ATA／BTA／ETA 2021 Consensus Document（Thyroid 2021;31:156-182）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/33276704/" target="_blank" rel="noopener" class="pmid">33276704</a></td></tr>
+        <tr><td class="nw">亞臨床甲低</td><td>2023 KTA 指引之解說（Endocrinol Metab 2023;38:381-391）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/37550859/" target="_blank" rel="noopener" class="pmid">37550859</a></td></tr>
+        <tr><td class="nw">術後低副甲</td><td>ESES／AAES／ATA／BAETS 等 2025 共識：術後低副甲狀腺功能的報告標準（Br J Surg 2025）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/41229353/" target="_blank" rel="noopener" class="pmid">41229353</a></td></tr>
+        <tr><td class="nw">副甲狀腺影像</td><td>EANM Practice Guidelines for Parathyroid Imaging（Eur J Nucl Med Mol Imaging 2021;48:2801-2822）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/33839893/" target="_blank" rel="noopener" class="pmid">33839893</a></td></tr>
+        <tr><td class="nw">CKD-MBD</td><td>KDIGO 2017 Clinical Practice Guideline Update（Kidney Int Suppl 2017;7:1-59）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/28941737/" target="_blank" rel="noopener" class="pmid">28941737</a></td></tr>
+        <tr><td class="nw">骨飢餓症候群</td><td>Hungry bone syndrome after parathyroidectomy（Ann Surg Treat Res 2026）</td>
+            <td class="nw"><a href="https://pubmed.ncbi.nlm.nih.gov/41822741/" target="_blank" rel="noopener" class="pmid">41822741</a></td></tr>
+        <tr><td class="nw">Lugol 的實際效果</td><td>Premedication with Lugol's solution in total thyroidectomy（2026 回溯研究）</td>
+            <td class="nw"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12909308/" target="_blank" rel="noopener" class="pmid">PMC12909308</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">取不到全文、只能經開放文獻轉述的來源</span><span class="dh-e">Paywalled</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>文件</th><th>狀態</th><th>本頁怎麼處理</th></tr></thead>
+      <tbody>
+        <tr><td><b>ATA 2016 甲亢指引</b>（PMID 27521067）</td>
+            <td><b>仍是 ATA 現行版</b>（2025 年只有勘誤 PMID 40765504）；liebertpub 與 SAGE 皆回 HTTP 403</td>
+            <td>甲亢以 ETA 2018、放射碘以 KTA 2025 為準；只在轉述處標明</td></tr>
+        <tr><td><b>ATA 2026 懷孕與產後甲狀腺疾病指引</b>（PMID 42219800）</td>
+            <td><b>已取代 ATA 2017</b>；SAGE 403</td>
+            <td>懷孕段只寫 ETA 2018 的條文，並註明 ATA 已有 2026 新版未及核對</td></tr>
+        <tr><td><b>AAES 2020 成人甲狀腺疾病手術指引</b>（PMID 32079830）</td><td>非開放取用</td>
+            <td>手術適應證以 ETA 2023 與 ETA 2018 為主；AAES 的碘化鉀天數等細節標為轉述</td></tr>
+        <tr><td><b>AAES 2016 原發性副甲狀腺亢進</b>（PMID 27532368）</td><td>非開放取用</td>
+            <td>改用較新的第五屆國際工作坊 2022</td></tr>
+        <tr><td><b>AAES 2022 次發性與三發性腎性副甲狀腺亢進</b>（PMID 35848728）</td><td>非開放取用</td>
+            <td>三項手術適應證經 PMC12429494 轉述引用，已於文中標明</td></tr>
+        <tr><td><b>第五屆國際工作坊 2022 原文</b>（PMID 36245251）</td>
+            <td>Unpaywall 標為開放，但 Wiley 與 OUP 均回 403</td>
+            <td>手術準則表以<b>三份開放文獻互相核對</b>後採用（PMC10515122、PMC12591880、PMC12313830）</td></tr>
+        <tr><td><b>EUGOGO 2021 眼病指引</b>（PMID 34297684）</td><td>bioscientifica 回 HTTP 525</td>
+            <td>眼病以 ATA/ETA 2022 與 2025 比較文為準；<b>不列 EUGOGO 的類固醇預防劑量</b></td></tr>
+        <tr><td><b>Bethesda 第 3 版 2023</b>（PMID 37427847）</td><td>非開放取用</td>
+            <td>只用 ETA 2023 明列的「依 Bethesda 級別的處置」，<b>不引用各級惡性風險百分比</b></td></tr>
+        <tr><td><b>ACR TI-RADS 白皮書 2017</b>（PMID 28372962）</td><td>jacr.org 回 403</td>
+            <td>風險分層一律用 EU-TIRADS，<b>不轉載 ACR 的點數表</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台灣與台大的一手查證</span><span class="dh-e">Local verification · 2026-09-13</span></div>
+  <div class="kbox">
+    <div class="kbox-t">查證方式與結果</div>
+    <ul>
+      <li><b>檢驗參考值與醫令代碼</b>：台大醫院檢驗醫學部「臨床檢驗目錄」逐項查詢（見「功能判讀」分頁的表）。
+        ❗<b>TRAb（健保碼 12121B）以英文名、中文名、代碼三種查法都查不到</b>。</li>
+      <li><b>藥品品項</b>：台大醫院藥劑部藥品資料庫（<b>2026-08-15 快照</b>；
+        2026-09-13 當日 dept.ntuh.gov.tw/phar 全站顯示「系統維護中」，無法即時覆查）。</li>
+      <li><b>健保給付</b>：健保署 API（<span class="pmid">info.nhi.gov.tw/api/INAE3000/INAE3000S01/SQL0001</span>）
+        與本機健保品項全檔（224,553 筆）兩路查證。
+        <b>cinacalcet 與 etelcalcetide 皆 0 筆</b>；carbimazole 44 筆、PTU 15 筆、levothyroxine 22 筆、
+        calcitriol 226 筆、alfacalcidol 276 筆（後兩者的給付規定條文編號為 3.2.／3.2.2.）。</li>
+      <li><b>藥證</b>：食藥署西藥許可證資料集。
+        <b>teprotumumab 有證</b>（衛部菌疫輸字第001294號，效期 2030/08/21）、
+        <b>cinacalcet 有證</b>（衛署藥輸字第025140／025141號、衛部藥輸字第029046號）、
+        <b>etelcalcetide 有證</b>（衛部藥輸字第027639號）；
+        <b>perchlorate 0 筆</b>、<b>palopegteriparatide 0 筆</b>、
+        <b>liothyronine 6 筆全部已註銷</b>；methimazole 則<b>有有效藥證</b>（美甲順錠、豐碘錠），只是不在台大處方集。</li>
+    </ul>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">本輪查證推翻或更正的五個說法</div>
+    <ul>
+      <li>❌「術後超過 6 個月還需要補鈣就是永久性副甲狀腺功能低下」→
+        <b>2025 國際共識已改為 12 個月</b>，因為 6–12 個月之間仍有 25.4% 會恢復。</li>
+      <li>❌「術前 Lugol 可以減少甲狀腺手術出血」→
+        <b>近年隨機試驗與統合分析顯示它降荷爾蒙但不減出血、不減併發症</b>。</li>
+      <li>❌「原發性副甲狀腺亢進的尿鈣門檻是 400 mg/24h」→
+        <b>第五屆工作坊 2022 改為女性 &gt;250、男性 &gt;300 mg/24h</b>（三份開放文獻一致）。</li>
+      <li>❌「teprotumumab 在美國以外還沒有上市」（EUGOGO 2021 的敘述）→
+        <b>台灣已核准，效期至 2030/08/21</b>；但健保未給付。</li>
+      <li>❌「台灣沒有 methimazole」→ <b>台灣有藥證，是台大處方集沒有</b>（台大用 carbimazole）。</li>
+    </ul>
+  </div>
+
+</section>
+
+  <footer class="tool-footer">
+    ETA —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/30283735/" target="_blank" rel="noopener" class="ref-link">Kahaly GJ, et al. 2018 European Thyroid Association Guideline for the Management of Graves' Hyperthyroidism. Eur Thyroid J. 2018;7(4):167-186.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/37358008/" target="_blank" rel="noopener" class="ref-link">Durante C, et al. 2023 European Thyroid Association Clinical Practice Guidelines for thyroid nodule management. Eur Thyroid J. 2023;12(5):e230067.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29594056/" target="_blank" rel="noopener" class="ref-link">Bartalena L, et al. 2018 ETA Guidelines for the Management of Amiodarone-Associated Thyroid Dysfunction. Eur Thyroid J. 2018;7(2):55-66.</a> |
+    KTA —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40598903/" target="_blank" rel="noopener" class="ref-link">Kim KJ, et al. 2025 Korean Thyroid Association Management Guidelines for Radioactive Iodine Therapy in Patients with Hyperthyroidism. Endocrinol Metab. 2025;40(3):342-356.</a> |
+    ATA/ETA —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36480280/" target="_blank" rel="noopener" class="ref-link">Burch HB, et al. Management of Thyroid Eye Disease: A Consensus Statement by the ATA and the ETA. Thyroid. 2022;32(12):1439-1470.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/25266247/" target="_blank" rel="noopener" class="ref-link">Jonklaas J, et al. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014;24(12):1670-1751.</a> |
+    外科 —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/41229353/" target="_blank" rel="noopener" class="ref-link">Standardizing the reporting of postoperative hypoparathyroidism following thyroidectomy: consensus statement from ESES, AAES, ATA, BAETS et al. Br J Surg. 2025.</a> |
+    副甲狀腺 —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/36245251/" target="_blank" rel="noopener" class="ref-link">Bilezikian JP, et al. Evaluation and Management of Primary Hyperparathyroidism: Summary Statement and Guidelines from the Fifth International Workshop. J Bone Miner Res. 2022;37(11):2293-2314.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33839893/" target="_blank" rel="noopener" class="ref-link">Petranović Ovčariček P, et al. The EANM practice guidelines for parathyroid imaging. Eur J Nucl Med Mol Imaging. 2021;48(9):2801-2822.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/28941737/" target="_blank" rel="noopener" class="ref-link">KDIGO 2017 Clinical Practice Guideline Update for CKD-MBD. Kidney Int Suppl. 2017;7(1):1-59.</a>
+    　本頁為臨床決策輔助，不取代臨床判斷；台大檢驗值與藥品品項查詢日 2026-09-13。
+  </footer>
+</div>
+</div>
+<script>
+/* ============================================================
+   分頁切換
+   ============================================================ */
+function tpTab(k) {
+  document.querySelectorAll('#tp_tabs .tab-btn').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-p') === k); });
+  document.querySelectorAll('.tp-panel').forEach(function (p) { p.classList.toggle('hidden', p.getAttribute('data-panel') !== k); });
+  if (history.replaceState) history.replaceState(null, '', '#' + k);
+  window.scrollTo(0, 0);
+}
+
+/* ============================================================
+   流程圖共用層
+   ------------------------------------------------------------
+   規則（skill: pathway-ux-rules.md）：
+   · 沒有選之前，下游一律不出現 —— 每次 render 先把全部建議框與下游步驟關掉再逐層打開。
+   · 建議框只講它正上方那一步的結論。
+   · 三層字級：一般條列＝要做的決定；'@ev ' 前綴＝小灰字（理由、數據、指引差異）；
+     '@hd ' 前綴＝小標題（不掛點點）；<details> 收合＝完整表格。
+   · 空的建議框要整個藏起來（本頁沒有載 cancer-staging.js 的 sweepIdlePlaceholders，自己做）。
+   ============================================================ */
+function tpLi(t) {
+  if (t.indexOf('@ev ') === 0) return '<li class="ev">' + t.slice(4) + '</li>';
+  if (t.indexOf('@hd ') === 0) return '<li class="hd">' + t.slice(4) + '</li>';
+  return '<li>' + t + '</li>';
+}
+function tpRec(id, cls, title, lines, note) {
+  var el = document.getElementById(id); if (!el) return;
+  el.className = 'flow-rec ' + cls;
+  el.innerHTML = '<div class="rec-label">建議處置 Recommendation</div>' +
+    '<div class="rec-title">' + title + '</div>' +
+    (lines && lines.length ? '<ul class="rec-detail">' + lines.map(tpLi).join('') + '</ul>' : '') +
+    (note ? '<div class="rec-note">' + note + '</div>' : '');
+}
+function tpHideRec(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.className = 'flow-rec rec-idle hidden'; el.innerHTML = '';
+}
+function tpShow(id, on) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.toggle('hidden', !on);
+}
+/* 上游改變時，下游步驟的 selected 標記也要清掉——殘留的標記正是「上游建議掛在下游」的視覺成因 */
+function tpClearMarks(stepId) {
+  var s = document.getElementById(stepId); if (!s) return;
+  s.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
+}
+function tpMark(btn) {
+  var g = btn.parentNode;
+  g.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+/* ============================================================
+   流程一：甲狀腺毒症
+   ============================================================ */
+var HY = { cause: null, ctx: null, tx: null };
+var HY_DOWN = { cause: ['ctx', 'tx'], ctx: ['tx'] };
+var HY_STEP = { ctx: 'hy_s2', tx: 'hy_s3' };
+function hyPick(k, v, btn) {
+  HY[k] = v; tpMark(btn);
+  (HY_DOWN[k] || []).forEach(function (d) { HY[d] = null; tpClearMarks(HY_STEP[d]); });
+  hyRender();
+}
+function hyReset() {
+  HY = { cause: null, ctx: null, tx: null };
+  ['hy_s1', 'hy_s2', 'hy_s3'].forEach(tpClearMarks);
+  hyRender();
+}
+function hyRender() {
+  ['hy_r1', 'hy_r2', 'hy_r3'].forEach(tpHideRec);
+  ['hy_c2', 'hy_s2', 'hy_c3', 'hy_s3'].forEach(function (i) { tpShow(i, false); });
+  if (!HY.cause) return;
+
+  if (HY.cause === 'graves') {
+    tpRec('hy_r1', 'rec-blue', 'Graves 病<br>→ 先把診斷釘死，再決定走哪一條路', [
+      '@hd 確認診斷',
+      '<b>TRAb</b> 是最直接的證據（ETA 2018 Rec 1，1／∅∅∅∅）；超音波應含 <b>color 或 power Doppler</b>（Rec 3）。',
+      '<b>核醫掃描只在兩種情況做</b>：合併結節、或準備做放射碘（Rec 4）。',
+      '@ev 台大檢驗醫學部的臨床檢驗目錄查不到 TRAb（健保碼 12121B），開單前請以院內醫令查詢為準。',
+      '@hd 現在就可以做的事',
+      '<b>所有合適的病人都給 β 阻斷劑</b>（Rec 12，1／∅∅∅∅）——台大品項為心律整錠 10 mg；非選擇性 β 阻斷劑還能減少 T4 轉成 T3。',
+      '<b>新診斷者先用抗甲狀腺藥</b>（Rec 5）；病人偏好時可以直接選放射碘或手術。',
+      '@hd 同時要看的兩件事',
+      '<b>有沒有甲狀腺眼病</b>——它會改變治療方式的選擇（見「眼病」分頁）。<b>有沒有懷孕或懷孕計畫</b>。'
+    ], '接下來這一步決定的是「往哪一條路走」，不是「現在開什麼藥」。');
+    tpShow('hy_c2', true); tpShow('hy_s2', true);
+  } else if (HY.cause === 'nodular') {
+    tpRec('hy_r1', 'rec-blue', '毒性多結節性甲狀腺腫／毒性腺瘤<br>→ 不會自行緩解，目標是根治', [
+      '@hd 確認診斷',
+      '<b>核醫掃描</b>是關鍵：熱區高攝取、其餘腺體受抑制；<b>TRAb 陰性</b>。',
+      '<b>熱結節不做細針穿刺</b>（ETA 2023）——熱結節幾乎不會是惡性，硬做常得到 Bethesda III／IV 而導致不必要的手術。',
+      '@hd 與 Graves 最大的不同',
+      '<b>抗甲狀腺藥無法讓它緩解</b>，停藥就復發；藥物的角色是<b>症狀控制與根治治療前的準備</b>。',
+      '<b>根治選項是放射碘或手術</b>；體積小（&lt; 10 mL）的單一功能亢進結節，熱消融是第三個選項。',
+      '@ev 放射碘後發生甲狀腺低下的比例遠低於 Graves：1 年 4%、10 年 15%、25 年 32%（Graves 為 24%／59%／82%）。'
+    ]);
+    tpShow('hy_c2', true); tpShow('hy_s2', true);
+  } else if (HY.cause === 'thyroiditis') {
+    tpRec('hy_r1', 'rec-nonop', '破壞性甲狀腺毒症<br>→ 不要開抗甲狀腺藥', [
+      '@hd 為什麼不給抗甲狀腺藥',
+      '腺體不是在「製造過多」，而是儲存的荷爾蒙<b>漏出來</b>——抗甲狀腺藥抑制的是合成，<b>在這裡無效</b>。',
+      '<b>鑑別的關鍵是核醫攝取率低下</b>；TRAb 陰性。',
+      '@hd 要做的',
+      '<b>β 阻斷劑</b>控制症狀。<b>亞急性甲狀腺炎</b>的疼痛用 NSAID，嚴重時口服類固醇。',
+      '<b>追蹤甲狀腺功能</b>：典型病程是毒症期 → 甲低期 → 多數恢復；甲低期明顯或有症狀時補充 levothyroxine，之後再試著停。',
+      '@ev 無痛性與產後甲狀腺炎會復發，尤其下一次懷孕後；橋本氏甲狀腺炎的一過性毒症期同樣屬於這一類。'
+    ], '若攝取率其實是高的，回到步驟 1 重選——那不是甲狀腺炎。');
+  } else if (HY.cause === 'iodine') {
+    tpRec('hy_r1', 'rec-urgent', '碘或藥物引起的甲狀腺毒症<br>→ 先分型，並同時評估心臟', [
+      '@hd Amiodarone 相關（ETA 2018 AIT 指引）',
+      '<b>AIT 1</b>（原有結節或潛在 Graves，碘負荷後合成增加）：<b>抗甲狀腺藥為首選</b>（Rec 5）。',
+      '<b>AIT 2</b>（破壞性）：<b>口服類固醇是第一線</b>（Rec 6）。',
+      '<b>混合或無法分型</b>：<b>先給 thionamide</b>，類固醇何時加入尚無定論（Rec 8）。',
+      '❗<b>台灣查無 perchlorate 藥證</b>——ETA 建議 AIT 1 可加 sodium perchlorate ≤1 g/day、4–6 週，這一招在台灣做不到。',
+      '@hd 這一類的手術門檻比一般甲亢低',
+      '<b>心功能惡化、有嚴重心臟病、或藥物治療無效者，建議毫不延遲地做全甲狀腺切除</b>（Rec 3）；決定由內分泌、心臟、麻醉與高量甲狀腺外科共同做出。',
+      '<b>要不要停 amiodarone 必須和心臟科一起決定</b>（Rec 4）：致命性心律不整或重症預後不佳者建議繼續。',
+      '@hd 其他碘相關',
+      '碘顯影劑後的甲狀腺毒症多為自限；<b>外源性甲狀腺素</b>（減重或保健食品）者 thyroglobulin 低、攝取率低。'
+    ], '這一類病人隨時可能需要緊急處置（ETA 2018 AIT Rec 2），尤其高齡或左心室功能不佳者。');
+  }
+
+  if (!HY.ctx || (HY.cause !== 'graves' && HY.cause !== 'nodular')) return;
+
+  var isG = HY.cause === 'graves';
+  var R2 = {
+    new: ['rec-blue', '初次診斷、無特殊條件<br>→ ' + (isG ? '先用抗甲狀腺藥' : '以根治治療為主軸'), isG ? [
+      '<b>ETA 2018 Rec 5：新診斷的 Graves 甲亢應先用抗甲狀腺藥</b>；想直接根治者也可以選放射碘或手術。',
+      '療程 <b>12–18 個月</b>，<b>TSH 與 TRAb 都正常才停</b>（Rec 7）。',
+      '@ev 最高緩解率只有 50–55%，而且停藥後復發率約 52.7%（放射碘 15%、手術 10%）——一開始就要把這個數字講給病人聽。'
+    ] : [
+      '毒性結節<b>不會因為吃藥而緩解</b>，抗甲狀腺藥只是準備與症狀控制。',
+      '<b>放射碘與手術都可以</b>：腺體小、手術風險高者偏放射碘；腺體大、有壓迫、合併可疑結節者偏手術。'
+    ]],
+    relapse: ['rec-elective', '療程後復發<br>→ 建議根治治療', [
+      '<b>ETA 2018 Rec 13：完成第一個療程後再度甲亢者，建議放射碘或手術</b>（1／∅∅∅○）。',
+      '<b>不想根治者可以長期低劑量 MMI（carbimazole）</b>——這是條文明列的替代方案，不是妥協。',
+      '<b>Rec 9：12–18 個月時 TRAb 仍持續偏高者</b>，可以繼續用藥再測一次（12 個月後），或直接轉放射碘／手術。'
+    ]],
+    adr: ['rec-elective', '抗甲狀腺藥嚴重不良反應<br>→ 停藥並改走根治治療', [
+      '<b>顆粒球缺乏（ANC &lt; 500/µL）、肝炎、血管炎</b>發生時立即停藥。',
+      '<b>KTA 2025 第 1.1.2 條：抗甲狀腺藥發生嚴重不良事件是放射碘的強建議適應證（等級 1）。</b>',
+      '若選手術而無法用抗甲狀腺藥準備：<b>以 β 阻斷劑加碘化鉀溶液準備</b>，難治者加 cholestyramine（台大：可利舒散）。',
+      '@ev 顆粒球缺乏多在開始用藥後 3 個月內突然發生（發生率 0.1–1.0%）；常規定期驗白血球沒有用，要靠症狀觸發。'
+    ]],
+    preg: ['rec-urgent', '懷孕中或 6 個月內計畫懷孕<br>→ 放射碘出局', [
+      '<b>懷孕與哺乳是放射碘的絕對禁忌</b>（ETA 2018 Rec 21；KTA 2025 第 1.3.1 條）。',
+      '<b>已經懷孕</b>：用抗甲狀腺藥，<b>第一孕期用 PTU</b>（Rec 35），<b>最低有效劑量、不可用 block-and-replace</b>（Rec 38）。',
+      '<b>16 週後仍需用藥者可考慮換回 MMI</b>（Rec 40）；低劑量者可在 6–10 週前停藥（Rec 41）。',
+      '<b>計畫懷孕但還沒懷孕</b>：先穩定再懷孕（Rec 33）。若選放射碘，<b>男女都要延後受孕至少 6 個月</b>（Rec 22）。',
+      '<b>需要手術者應安排在第二孕期</b>——ETA 2018 正文：對抗甲狀腺藥過敏或有禁忌時可能需要手術，且應在第二孕期執行。',
+      '@ev 監測頻率：開始治療後每 2 週、達標後每 4 週驗母親 Free T4 與 TSH（Rec 39）。TRAb 於初診與 18–22 週各驗一次（Rec 36）。'
+    ]],
+    eye: ['rec-urgent', '中重度且活動性的甲狀腺眼病<br>→ 眼病優先，且不要用放射碘', [
+      '<b>ETA 2018 Rec 30：中重度活動期時，治療眼病是優先事項</b>，同時把甲狀腺功能穩定在正常。',
+      '<b>KTA 2025 第 1.3.2 與 5.1 條：活動性中重度眼病不建議做放射碘（等級 1）。</b>',
+      '<b>可用的路徑是抗甲狀腺藥或手術</b>；<b>視力威脅型用抗甲狀腺藥</b>（Rec 31）。',
+      '眼病本身的治療階梯（靜脈類固醇 4.5 g／12 週、teprotumumab、放射治療、減壓手術）見<b>「眼病」分頁</b>。',
+      '@ev 如果眼病已經不活動，甲亢的治療方式可以獨立選擇（Rec 32）——不要把「有過眼病」當成永久的放射碘禁忌。'
+    ]],
+    goiter: ['rec-elective', '巨大甲狀腺腫、壓迫症狀或合併可疑結節<br>→ 手術', [
+      '<b>放射碘無法解決壓迫</b>，而且治療初期腺體可能先腫脹。',
+      '<b>合併 Bethesda III 以上的結節</b>時，手術同時解決甲亢與診斷問題。',
+      '<b>胸骨後／縱膈延伸</b>要先做 CT 或 MRI 評估範圍（ETA 2023：斷層影像就是用在這裡）。',
+      '@hd 術式',
+      'Graves <b>選全甲狀腺切除</b>（ETA 2018 Rec 24），並由<b>高量術者</b>執行；毒性結節依範圍決定葉切或近全切除。'
+    ]],
+    cardiac: ['rec-elective', '老年合併心房顫動／心衰竭／心肌缺血<br>→ 根治治療，通常是放射碘', [
+      '<b>ETA 2018 Rec 44：因甲亢而誘發心房顫動、心衰竭或心肌缺血的老年病人，應接受根治治療，通常是放射碘</b>（1／∅∅∅○）。',
+      '<b>KTA 2025 第 1.2.2 條</b>也把「共病惡化會造成臨床不穩定」列為可考慮放射碘的情境。',
+      '<b>放射碘前後的抗甲狀腺藥銜接特別重要</b>：治療後 3–7 天恢復用藥可避免一過性惡化（KTA 4.2）。',
+      '<b>β 阻斷劑</b>先控制心室速率；心衰竭者要小心。',
+      '@ev 輕症的老年 Graves 也可以長期低劑量 MMI（carbimazole）當作滿意的治療（Rec 45，2／∅○○○）。'
+    ]]
+  };
+  var r2 = R2[HY.ctx]; if (!r2) return;
+  tpRec('hy_r2', r2[0], r2[1], r2[2]);
+  tpShow('hy_c3', true); tpShow('hy_s3', true);
+
+  if (!HY.tx) return;
+
+  if (HY.tx === 'atd') {
+    tpRec('hy_r3', 'rec-blue', '抗甲狀腺藥<br>→ 怎麼開、怎麼追、什麼時候停', [
+      '@hd 劑量（台大只有 carbimazole）',
+      '<b>起始 carbimazole 15–40 mg/day（＝MMI 10–30 mg/day），一天一次</b>，依甲狀腺毒症嚴重度決定。',
+      '<b>維持 MMI 2.5–10 mg/day（carbimazole 約 5–20 mg/day）</b>，隨改善逐步減量（滴定式，ETA 偏好）。',
+      '<b>懷孕：MMI 5–15 mg ↔ carbimazole 10–30 mg；第一孕期改 PTU 50–200 mg/day。</b>',
+      '@ev Carbimazole 是前驅藥，要在肝臟脫羧成 methimazole 才有作用；換算慣例 carbimazole 10 mg ≒ MMI 6 mg。',
+      '@hd 追蹤',
+      '<b>治療期間追 Free T4 與 T3</b>（TSH 會延遲數月才回升，早期不能拿來調藥）。',
+      '<b>療程 12–18 個月，TSH 與 TRAb 都正常才停</b>（Rec 7）；<b>停藥前一定要測 TRAb</b>（Rec 8）。',
+      '@hd 安全衛教（Rec 10、11）',
+      '<b>發燒或咽喉痛 → 立刻停藥、驗白血球分類</b>；<b>黃疸、灰白便、深色尿 → 驗肝功能</b>。',
+      '<b>常規定期抽血驗白血球沒有用</b>——顆粒球缺乏是突然發生的，要靠書面衛教與症狀觸發。'
+    ], '台大藥卡：<a href="../tools/drug-database.html#code=CAR4LC03" class="pmid">抗泌腫錠 10 mg</a>、<a href="../tools/drug-database.html#code=NEW4LC03" class="pmid">紐甲舒錠 10 mg</a>、<a href="../tools/drug-database.html#code=PRO4LC02" class="pmid">普樂治錠 50 mg</a>、<a href="../tools/drug-database.html#code=PRN4DD05" class="pmid">心律整錠 10 mg</a>。');
+  } else if (HY.tx === 'rai') {
+    tpRec('hy_r3', 'rec-blue', '放射碘<br>→ 固定劑量，前後各停一次藥', [
+      '@hd 劑量',
+      '<b>固定劑量 10–15 mCi，目標是造成甲狀腺低下</b>（KTA 2025 第 2.1 條）。<b>沒有任何計算方式能保證長期功能正常</b>（ETA Rec 20）。',
+      '@hd 前後',
+      '<b>治療前停抗甲狀腺藥 3–7 天</b>（KTA 4.1，等級 1）；高風險者<b>治療後 3–7 天恢復</b>（4.2）。',
+      '<b>不必嚴格低碘飲食，但至少 1 週避開富碘食物</b>（3.1）。<b>近期打過碘顯影劑要延後。</b>',
+      '<b>輕度活動性眼病要給類固醇預防</b>；<b>活動性中重度眼病不做</b>。',
+      '@hd 之後',
+      '<b>4–6 週驗 TSH 與 Free T4</b> → 每 2–3 個月至穩定 → 連兩次正常後每 6–12 個月。',
+      '<b>男女都延後受孕至少 6 個月</b>；<b>哺乳必須先停止</b>。',
+      '@ev Graves 病人放射碘後甲狀腺低下的累積發生率：1 年 24%、10 年 59%、25 年 82%。這是預期結果，不是併發症。'
+    ], '完整時序、適應證與禁忌見<b>「放射碘」分頁</b>。');
+  } else if (HY.tx === 'surg') {
+    tpRec('hy_r3', 'rec-elective', '手術<br>→ 術前先正常化，術後立刻處理鈣', [
+      '@hd 術式',
+      (isG ? '<b>Graves 選全甲狀腺切除</b>（ETA 2018 Rec 24），由<b>高量術者</b>執行（&gt; 50 例/年）。'
+           : '<b>毒性腺瘤做葉切除；毒性多結節性甲狀腺腫做近全或全甲狀腺切除。</b>'),
+      '@hd 術前',
+      '<b>先用抗甲狀腺藥回復甲狀腺功能正常</b>（Rec 25），避免術中術後毒症惡化。',
+      '<b>矯正維生素 D 缺乏</b>（Rec 26，台大判讀標準 25-OH vitamin D ≥ 30 ng/mL）。',
+      '<b>碘化鉀溶液可術前 10 天</b>（Rec 27，僅 2 級）——❗<b>新近證據顯示它降荷爾蒙但不減少出血與併發症</b>。',
+      '<b>術前聲帶評估</b>；無法使用抗甲狀腺藥者以 β 阻斷劑加碘化鉀準備，必要時加 cholestyramine。',
+      '@hd 術後',
+      '<b>24 小時內測 PTH</b>（偏好術後 1–6 小時）；<b>生化上低副甲者出院前就要開始口服鈣（±活性維生素 D）</b>。',
+      '<b>全切除者開始 levothyroxine，良性疾病的目標是 TSH 落在正常範圍，不是抑制。</b>'
+    ], '術前準備、併發症與術後低鈣的完整流程見<b>「甲狀腺手術」分頁</b>。');
+  }
+}
+
+/* ============================================================
+   流程二：甲狀腺結節
+   ============================================================ */
+var ND = { tsh: null, tr: null, sz: null, be: null };
+var ND_DOWN = { tsh: ['tr', 'sz', 'be'], tr: ['sz', 'be'], sz: ['be'] };
+var ND_STEP = { tr: 'nd_s2', sz: 'nd_s3', be: 'nd_s4' };
+function ndPick(k, v, btn) {
+  ND[k] = v; tpMark(btn);
+  (ND_DOWN[k] || []).forEach(function (d) { ND[d] = null; tpClearMarks(ND_STEP[d]); });
+  ndRender();
+}
+function ndReset() {
+  ND = { tsh: null, tr: null, sz: null, be: null };
+  ['nd_s1', 'nd_s2', 'nd_s3', 'nd_s4'].forEach(tpClearMarks);
+  ndRender();
+}
+/* 依 EU-TIRADS × 大小回傳「要不要 FNA」與理由 */
+function ndFna(tr, sz) {
+  var order = { lt10: 0, '10_15': 1, '15_20': 2, gt20: 3 };
+  var need = { '2': 99, '3': 3, '4': 2, '5': 1 };   // 達到這個級距才建議 FNA
+  return order[sz] >= need[tr];
+}
+function ndRender() {
+  ['nd_r1', 'nd_r2', 'nd_r3'].forEach(tpHideRec);
+  ['nd_c2', 'nd_s2', 'nd_c3', 'nd_s3', 'nd_c4', 'nd_s4'].forEach(function (i) { tpShow(i, false); });
+  if (!ND.tsh) return;
+
+  if (ND.tsh === 'hot') {
+    tpRec('nd_r1', 'rec-nonop', '功能亢進（熱）結節<br>→ 不做細針穿刺，走甲亢的路', [
+      '<b>ETA 2023：除非高度懷疑惡性，功能亢進結節不應該做切片。</b>',
+      '<b>理由</b>：熱結節幾乎不會是惡性；而它的濾泡結構與高細胞量<b>常被判成 Bethesda III 或 IV</b>，造成過度診斷與不必要的手術。',
+      '@hd 接下來',
+      '<b>治療選項是放射碘、手術，或（&lt; 10 mL 的小病灶）熱消融</b>。',
+      '走<b>「甲亢」分頁</b>的流程第 1 步選「毒性多結節性甲狀腺腫／毒性腺瘤」。',
+      '@ev 在曾經或目前碘缺乏的地區，功能亢進結節也可能出現在 TSH 正常的人身上——這是 ETA 2023 建議用核醫掃描的理由之一。'
+    ]);
+    return;
+  }
+  tpRec('nd_r1', 'rec-blue', ND.tsh === 'cold' ? '甲亢腺體中的冷結節<br>→ 照一般結節流程評估' : 'TSH 正常或偏高<br>→ 直接做超音波風險分層', [
+    '<b>超音波要描述</b>：&gt; 10 mm 的結節；5–10 mm 但帶可疑特徵者；若同一葉超過 3 顆，描述<b>最大的那顆與所有帶可疑特徵者</b>。',
+    '<b>可疑特徵</b>：微鈣化、邊緣不規則、非平行走向（縱向生長）、實質部分明顯低回音。<b>非可疑特徵</b>：薄暈環、粗鈣化。',
+    '<b>同時要看頸部淋巴結</b>：囊性變化、微鈣化、像甲狀腺組織、無正常淋巴門而血流紊亂＝高度可疑。',
+    (ND.tsh === 'cold' ? '<b>甲亢病人的冷結節不能因為「在治療甲亢」就略過</b>——它的評估與一般結節相同。' :
+      '@ev ❗<b>核醫掃描的門檻不只是「TSH 低下」</b>——ETA 2023 正文寫的是「TSH 被抑制<b>或落在正常值的低端</b>」時就該做，以免把功能亢進結節誤拿去穿刺。')
+  ]);
+  tpShow('nd_c2', true); tpShow('nd_s2', true);
+  if (!ND.tr) return;
+  tpShow('nd_c3', true); tpShow('nd_s3', true);
+  if (!ND.sz) return;
+
+  var trName = { '2': 'EU-TIRADS 2（良性）', '3': 'EU-TIRADS 3（低風險）', '4': 'EU-TIRADS 4（中風險）', '5': 'EU-TIRADS 5（高風險）' }[ND.tr];
+  var szName = { lt10: '&lt; 10 mm', '10_15': '10–15 mm', '15_20': '15–20 mm', gt20: '&gt; 20 mm' }[ND.sz];
+  var doFna = ndFna(ND.tr, ND.sz);
+  var lines = [];
+  if (doFna) {
+    lines.push('@hd 建議做細針穿刺');
+    lines.push('<b>FNA 的大小門檻：EU-TIRADS 5 &gt; 10 mm、4 &gt; 15 mm、3 &gt; 20 mm</b>（ETA 2023，建議等級 2）。這一格達標。');
+    lines.push('<b>一律在超音波導引下執行</b>，抽吸法或毛細管法皆可（建議等級 1，∅∅∅○）。');
+    lines.push('@ev EU-TIRADS 2 的純囊腫或完全海綿樣結節<b>不需要 FNA</b>，除非本來就要接受治療。');
+  } else {
+    lines.push('@hd 這一格不需要細針穿刺');
+    var fu = {
+      '2': { lt10: '<b>不需要再評估</b>（5–10 mm）。', '10_15': '<b>3–5 年後再評估</b>。', '15_20': '<b>3–5 年後再評估</b>。', gt20: '<b>3–5 年後再評估</b>。' },
+      '3': { lt10: '<b>不需要再評估</b>（5–10 mm）。', '10_15': '<b>3–5 年後再評估</b>（10–20 mm）。', '15_20': '<b>3–5 年後再評估</b>（10–20 mm）。' },
+      '4': { lt10: '<b>1 年後再評估</b>。', '10_15': '<b>1 年後再評估</b>（&lt; 15 mm）。' },
+      '5': { lt10: '<b>每 6–12 個月再評估</b>（&lt; 10 mm）。' }
+    }[ND.tr][ND.sz];
+    lines.push(fu || '依 ETA 2023 Table 1 的追蹤時程。');
+    if (ND.tr === '5') lines.push('❗<b>5–10 mm 的 EU-TIRADS 5 仍要做 FNA 的三種情況</b>：有可疑淋巴結、疑似腺體外侵犯、或位置貼近氣管或喉返神經走行區。');
+  }
+  lines.push('@hd 不論分數，這兩種情況一律要做 FNA');
+  lines.push('<b>① 有病理性淋巴結；② 結節疑似侵犯腺體外。</b>可疑淋巴結本身也要 FNA，並依表現型加驗沖洗液的 thyroglobulin 或 calcitonin。');
+  lines.push('@hd 之後怎麼算長大');
+  lines.push('<b>至少兩個徑線增加 ≥20% 且最小增加 2 mm，或體積增加 &gt; 50%</b>——達到這個定義（或出現壓迫症狀）就重做 FNA。');
+  lines.push('@ev 5 年內只有約 16% 的結節會達到這個門檻。');
+  tpRec('nd_r2', doFna ? 'rec-blue' : 'rec-nonop', trName + ' × ' + szName + '<br>→ ' + (doFna ? '建議細針穿刺' : '追蹤，不穿刺'), lines);
+
+  tpShow('nd_c4', true); tpShow('nd_s4', true);
+  if (!ND.be) return;
+
+  var big = (ND.tr === '3' ? '&gt; 20 mm' : ND.tr === '4' ? '&gt; 15 mm' : '&gt; 10 mm');
+  var R3 = {
+    '1': ['rec-blue', 'Bethesda I（檢體不足）<br>→ 重做細針穿刺', [
+      '<b>先重做 FNA</b>（ETA 2023：第一次 non-diagnostic 就該重做，單純囊腫除外）。',
+      '<b>EU-TIRADS 3（' + big + '）</b>：重做仍無法判讀 → 考慮粗針切片；再不行 → <b>1 年內再評估或提供手術</b>。',
+      '<b>EU-TIRADS 4（&gt; 15 mm）與 5（&gt; 10 mm）</b>：重做仍無法判讀 → 考慮粗針切片，或（檢體足夠且可用時）分子檢測；再不行 → <b>主動追蹤或手術</b>。',
+      '@ev 粗針切片不作為第一線工具，只在特定情況當第二線（建議等級 1，∅∅○○）。'
+    ]],
+    '2': ['rec-nonop', 'Bethesda II（良性）<br>→ 依超音波風險決定追蹤或重做', [
+      '<b>EU-TIRADS 3（&gt; 20 mm）與 4（&gt; 15 mm）：3–5 年後再評估。</b>',
+      '<b>EU-TIRADS 5（&gt; 10 mm）：重做 FNA</b>——<b>影像高風險但細胞學良性就是「不一致」，ETA 明列為重做的適應證</b>。',
+      '<b>良性但 ≥ 4 cm 者可以考慮手術</b>（體積大時 FNA 偽陰性機率上升），有壓迫、美觀考量或鎖骨後延伸者亦同。',
+      '@ev 重複一次良性的細胞學會讓惡性機率再下降，之後就偏向追蹤而非手術。'
+    ]],
+    '3': ['rec-blue', 'Bethesda III（意義未明的非典型）<br>→ 不論分數，先重做一次 FNA', [
+      '<b>ETA 2023：不論 EU-TIRADS 級別，Bethesda III 都要重做 FNA。</b>',
+      '<b>重做仍是 Bethesda III 且 EU-TIRADS 3（&gt; 10 mm）</b>：<b>1 年內再評估</b>、可考慮分子檢測，或提供手術。',
+      '<b>重做仍是 Bethesda III 且 EU-TIRADS 4 或 5（&gt; 10 mm）</b>：<b>提供手術或主動追蹤</b>；有分子檢測則納入判斷。',
+      '<b>不適合主動追蹤者（體積大、超音波高度懷疑、有症狀）就是手術適應證</b>。',
+      '@ev 分子檢測「可考慮、若有可用」（建議等級 1）——台灣多數情況下不是常規可得的工具。'
+    ]],
+    '4': ['rec-elective', 'Bethesda IV（濾泡性腫瘤）<br>→ 提供手術', [
+      '<b>ETA 2023：不論 EU-TIRADS 級別，所有 Bethesda IV 結節都提供手術</b>；有分子檢測則納入判斷。',
+      '<b>理由</b>：細胞學無法分辨濾泡腺瘤與濾泡癌——<b>需要看包膜或血管是否侵犯，只有組織才看得到</b>。',
+      '@hd 術式',
+      '<b>病灶侷限於單葉：葉切除（同時是診斷）</b>；若位在多結節性甲狀腺腫之內：考慮近全切除。',
+      '@ev 手術對 Bethesda III–V 的意義之一就是「取得確定診斷」，這一點 ETA 2023 正文寫得很明白。'
+    ]],
+    '56': ['rec-elective', 'Bethesda V／VI（疑似惡性／惡性）<br>→ 建議手術，並轉到甲狀腺癌流程', [
+      '<b>ETA 2023：不論 EU-TIRADS 級別，建議手術</b>（建議等級 1，∅∅∅○）。',
+      '<b>5–10 mm、且沒有可疑淋巴結與腺體外侵犯風險者，可以考慮主動追蹤或微創治療。</b>',
+      '<b>晚期癌症需要多專科評估。</b>',
+      '@hd 從這裡開始換一份指引',
+      '分期、淋巴結分群、術式範圍、放射碘與後續治療請走 <a href="../tools/cancer.html#cancer=thyroid" class="pmid">甲狀腺癌</a>（ATA 2025／2015／2021）。',
+      '@ev 本頁到此為止，不重複癌症的內容。'
+    ]]
+  };
+  var r3 = R3[ND.be];
+  tpRec('nd_r3', r3[0], r3[1], r3[2]);
+}
+</script>
+<script>
+/* ============================================================
+   流程三：甲狀腺術後低血鈣與低副甲狀腺功能
+   ============================================================ */
+var PC = { pth: null, sx: null, fu: null };
+var PC_DOWN = { pth: ['sx', 'fu'], sx: ['fu'] };
+var PC_STEP = { sx: 'pc_s2', fu: 'pc_s3' };
+function pcPick(k, v, btn) {
+  PC[k] = v; tpMark(btn);
+  (PC_DOWN[k] || []).forEach(function (d) { PC[d] = null; tpClearMarks(PC_STEP[d]); });
+  pcRender();
+}
+function pcReset() {
+  PC = { pth: null, sx: null, fu: null };
+  ['pc_s1', 'pc_s2', 'pc_s3'].forEach(tpClearMarks);
+  pcRender();
+}
+function pcRender() {
+  ['pc_r1', 'pc_r2', 'pc_r3'].forEach(tpHideRec);
+  ['pc_c2', 'pc_s2', 'pc_c3', 'pc_s3'].forEach(function (i) { tpShow(i, false); });
+  if (!PC.pth) return;
+
+  if (PC.pth === 'normal') {
+    tpRec('pc_r1', 'rec-nonop', '術後 24 小時內 PTH 正常<br>→ 永久性低副甲狀腺功能的風險極低', [
+      '<b>Statement 21A：POD1 PTH 正常者發生永久性低副甲狀腺功能的風險很低，預期只需最少的監測，出院時不需要補鈣</b>（證據等級：高）。',
+      '@hd 仍要做的兩件事',
+      '<b>衛教低血鈣症狀</b>：口周與指尖麻木、肌肉抽筋、手足搐搦——出現時回診。',
+      '<b>全甲狀腺切除者開始 levothyroxine</b>；良性疾病的目標是 TSH 落在正常範圍。',
+      '@ev 這一條是整份共識裡少數證據等級被評為「高」的敘述——它的意義是「可以安心不補」，而不是「也順便補一下」。'
+    ]);
+    return;
+  }
+  var isUnd = PC.pth === 'und';
+  tpRec('pc_r1', isUnd ? 'rec-urgent' : 'rec-blue',
+    isUnd ? '術後 PTH 測不到<br>→ 立刻開始鈣＋活性維生素 D，並密切追蹤' : '術後 PTH 低於參考下限<br>→ 出院前就要開始補充',
+    [
+      '@hd 生化定義',
+      '<b>Statement 1：術後低副甲狀腺功能＝PTH 測不到或低於該中心的參考下限，不論有沒有低血鈣。</b>',
+      '<b>Statement 2：第一次 PTH 應在 24 小時內測</b>（66.78% 的投票者偏好術後 1–6 小時）。',
+      '<b>早期預測門檻：術後 24 小時內 PTH &lt; 10 pg/mL 與 &lt; 15 pg/mL 都可靠</b>，而且<b>優於術中 PTH</b>。',
+      '@hd 要做的',
+      '<b>Statement 4：有生化性低副甲者，出院前就要開始口服鈣（加或不加活性維生素 D），以降低出現臨床低血鈣的風險。</b>',
+      (isUnd ? '<b>Statement 21B：PTH 測不到者永久性功能不良的風險上升，要立即開始鈣＋活性維生素 D 並密切追蹤。</b>'
+             : '<b>同時測血鈣</b>（白蛋白校正後與／或游離鈣，Statement 4A），並依症狀與數值調整。'),
+      '<b>活性維生素 D 是必要的</b>：缺的是 PTH，一般膽鈣化醇無法取代 1α 羥化那一步——台大品項為 calcitriol（活維Ｄ 0.25 mcg）或 alfacalcidol（愛康鈣 0.25 mcg）。',
+      '@ev 共識也提醒要<b>主動規劃減量</b>：避免醫源性 PTH 抑制、鈣攝取過量與腎臟併發症（Statement 4A 的討論）。'
+    ]);
+  tpShow('pc_c2', true); tpShow('pc_s2', true);
+  if (!PC.sx) return;
+
+  var R2 = {
+    none: ['rec-blue', '無症狀、血鈣僅略低<br>→ 口服補充，門診追蹤', [
+      '<b>口服鈣＋活性維生素 D</b>，並在出院後短期內複驗血鈣（Statement 5：依需要重複測，以確立診斷並調整劑量）。',
+      '<b>目標是「沒有症狀、血鈣在正常範圍的低端」</b>，不是把血鈣拉到正常中段。',
+      '❗<b>鈣片與 levothyroxine 至少間隔 4 小時</b>——甲狀腺全切除後兩種藥同時開的病人非常多。',
+      '@ev 有一種容易漏掉的狀態：PTH 落在參考範圍內，卻不足以維持血鈣、病人仍有症狀，共識稱之為<b>相對副甲狀腺功能不足</b>。'
+    ]],
+    mild: ['rec-blue', '有麻木或抽筋<br>→ 口服補充加量，並找鎂', [
+      '<b>加量口服鈣與活性維生素 D</b>，縮短複驗間隔。',
+      '<b>驗血鎂</b>（台大參考區間 0.78–1.11 mmol/L）——<b>低血鎂會讓 PTH 的分泌與作用同時失效</b>，補鈣怎麼補都不會好。',
+      '<b>症狀與數值要一起看</b>：Chvostek 與 Trousseau 徵象可以參考，但不是治療門檻。',
+      '@ev 共識要求在研究與報告中記錄<b>症狀是病人自述還是醫師觀察</b>，以及是否需要靜脈鈣、急診就診或再入院（Statement 15）——這也是臨床上判斷嚴重度的實用分界。'
+    ]],
+    severe: ['rec-urgent', '手足搐搦、喉痙攣、癲癇或心律不整<br>→ 靜脈鈣', [
+      '<b>這是急症</b>：靜脈鈣鹽的稀釋、速率與監測見 <a href="electrolyte-emergency.html" class="pmid">電解質急症</a>與 <a href="electrolyte.html" class="pmid">電解質失衡</a>，本頁不重複。',
+      '<b>台大品項</b>：<a href="../tools/drug-database.html#code=CAL1FA03" class="pmid">鈣克康注射液 10%（0.465 mEq/mL、10 mL/amp）</a>。',
+      '<b>同時補鎂、開始或加量口服鈣與活性維生素 D</b>，否則停掉靜脈鈣就會再掉下去。',
+      '<b>監測心電圖</b>（QT 延長）。',
+      '@ev 喉痙攣在甲狀腺術後特別要警覺——它同時可能是低血鈣，也可能是雙側喉返神經麻痺，兩者處置完全不同。'
+    ]]
+  }[PC.sx];
+  tpRec('pc_r2', R2[0], R2[1], R2[2]);
+  tpShow('pc_c3', true); tpShow('pc_s3', true);
+  if (!PC.fu) return;
+
+  if (PC.fu === 'off') {
+    tpRec('pc_r3', 'rec-nonop', '12 個月內成功停藥<br>→ 屬於暫時性', [
+      '<b>Statement 6：暫時性術後低副甲狀腺功能通常在 6 個月內恢復（偶爾可到 12 個月），恢復的定義是不靠補充也能維持正常的 PTH 與血鈣。</b>',
+      '停藥後仍建議<b>複驗一次鈣與 PTH</b> 確認。',
+      '@ev 在 854 人的系列中，恢復時間分布為 <b>&lt; 6 個月 8.5%、6–12 個月 2.5%、&gt; 12 個月 1.4%</b>。'
+    ]);
+  } else {
+    tpRec('pc_r3', 'rec-urgent', '滿 12 個月仍需補充<br>→ 永久性副甲狀腺功能低下', [
+      '@hd 定義（2025 國際共識，與 ATA 舊定義不同）',
+      '<b>Statement 7：術後超過 12 個月仍需補充才能維持血鈣者為永久性</b>；PTH 可以是測不到、偏低、或<b>不恰當地正常</b>。<b>下診斷前必須真的嘗試過停藥。</b>',
+      '❗<b>ATA 的舊定義是 6 個月</b>；2025 共識改成 12 個月，理由是<b>在 6 個月被判永久性的人有 25.4% 在 6–12 個月間恢復</b>。',
+      '@hd 長期管理',
+      '<b>鈣鹽＋活性維生素 D（calcitriol 或 alfacalcidol）是支柱。</b>',
+      '<b>把血鈣維持在正常範圍低端、病人無症狀即可</b>——拉太高會造成<b>高尿鈣、腎結石與腎功能惡化</b>。',
+      '<b>追蹤要包含尿鈣與腎功能</b>，不是只看血鈣。<b>補鈣與 levothyroxine 間隔 4 小時。</b>',
+      '<b>低血鎂要一併矯正。</b>',
+      '@ev <b>長效 PTH 補充療法（palopegteriparatide）在台灣查無藥證</b>（食藥署許可證資料 0 筆，查詢日 2026-09-13）。',
+      '@ev 共識另建議：在品質登錄中若難以精確計算永久性比例，可用<b>「術後超過 12 個月仍在使用活性維生素 D」</b>當替代指標（Statement 23）。'
+    ]);
+  }
+}
+
+/* ============================================================
+   流程四：鈣與副甲狀腺素
+   ============================================================ */
+var PT = { bio: null, dd: null, crit: null, loc: null };
+var PT_DOWN = { bio: ['dd', 'crit', 'loc'], dd: ['crit', 'loc'], crit: ['loc'] };
+var PT_STEP = { dd: 'pt_s2', crit: 'pt_s3', loc: 'pt_s4' };
+function ptPick(k, v, btn) {
+  PT[k] = v; tpMark(btn);
+  (PT_DOWN[k] || []).forEach(function (d) { PT[d] = null; tpClearMarks(PT_STEP[d]); });
+  ptRender();
+}
+function ptReset() {
+  PT = { bio: null, dd: null, crit: null, loc: null };
+  ['pt_s1', 'pt_s2', 'pt_s3', 'pt_s4'].forEach(tpClearMarks);
+  ptRender();
+}
+function ptRender() {
+  ['pt_r1', 'pt_r2', 'pt_r3', 'pt_r4'].forEach(tpHideRec);
+  ['pt_c2', 'pt_s2', 'pt_c3', 'pt_s3', 'pt_c4', 'pt_s4'].forEach(function (i) { tpShow(i, false); });
+  if (!PT.bio) return;
+
+  if (PT.bio === 'lo_pth') {
+    tpRec('pt_r1', 'rec-urgent', '高血鈣＋PTH 被抑制<br>→ 這不是副甲狀腺的問題', [
+      '<b>PTH 被正確抑制，代表高血鈣另有來源。</b>優先想<b>惡性腫瘤相關高血鈣</b>（PTHrP、溶骨性轉移、淋巴瘤的 1,25(OH)₂D）。',
+      '其他原因：<b>維生素 D 中毒、肉芽腫性疾病（結核、結節病）、甲狀腺毒症、腎上腺功能不全、制動、乳鹼症候群</b>。',
+      '@hd 接下來',
+      '<b>急性高血鈣的處置（水化、雙磷酸鹽、denosumab、calcitonin）見 <a href="electrolyte.html" class="pmid">電解質失衡</a></b>，本頁不重複。',
+      '<b>副甲狀腺手術不會改善這一類的高血鈣</b>——不要因為「鈣高」就安排定位影像。'
+    ]);
+    return;
+  }
+  if (PT.bio === 'normoca') {
+    tpRec('pt_r1', 'rec-blue', '血鈣正常＋PTH 升高<br>→ 先排除次發性，再談正常血鈣型', [
+      '@hd 先排除次發性副甲狀腺亢進的原因',
+      '<b>維生素 D 缺乏、CKD 第 3 期以上、鈣吸收不良、鈣攝取不足、雙磷酸鹽或 denosumab 使用中、hypercalciuria。</b>',
+      '<b>正常血鈣型原發性副甲狀腺亢進的診斷條件</b>：在 3–6 個月內<b>至少兩次</b>同時出現 <b>PTH 升高、白蛋白校正後血鈣正常、且游離鈣也正常</b>，並排除上述所有次發性原因。',
+      '@hd 重要限制',
+      '❗<b>第五屆國際工作坊明言：正常血鈣型原發性副甲狀腺亢進「因資料有限，沒有手術準則」。</b>不要把高血鈣型的六項準則直接套上去。',
+      '@ev 血鈣低下時可以直接排除正常血鈣型原發性副甲狀腺亢進——那是單純的次發性。'
+    ]);
+    return;
+  }
+  if (PT.bio === 'hypo') {
+    tpRec('pt_r1', 'rec-blue', '低血鈣＋PTH 偏低或不恰當地正常<br>→ 副甲狀腺功能低下', [
+      '<b>最常見的原因是頸部手術</b>（甲狀腺全切除、中央區廓清、副甲狀腺手術）——處置與定義見<b>「甲狀腺手術」分頁</b>的流程。',
+      '其他原因：自體免疫、浸潤性疾病、放射線、基因（DiGeorge、自體免疫多內分泌症候群）、<b>嚴重低血鎂</b>。',
+      '❗<b>補鈣前先驗鎂</b>：低血鎂會讓 PTH 的分泌與作用同時失效。',
+      '<b>治療是鈣鹽＋活性維生素 D</b>（calcitriol／alfacalcidol）；目標是<b>正常範圍低端且無症狀</b>，避免高尿鈣。',
+      '@ev 假性副甲狀腺功能低下（PTH 阻抗）則相反：<b>低血鈣、高血磷，但 PTH 是升高的</b>。'
+    ]);
+    return;
+  }
+
+  tpRec('pt_r1', 'rec-blue', '高血鈣＋PTH 升高或不恰當地正常<br>→ 以副甲狀腺亢進處理，但先排除混淆', [
+    '<b>這個組合就是副甲狀腺主導的高血鈣</b>：高血鈣時 PTH 本來應該被抑制。',
+    '<b>同時要看的</b>：血磷（常在正常低值或偏低）、25(OH)D、肌酸酐與 eGFR、24 小時尿鈣。',
+    '❗<b>台大單位</b>：血鈣 mmol/L（2.15–2.58）、尿鈣 mmol/day（2.5–7.5）、磷 mg/dL（2.5–5.0）、i-PTH 17.3–74.1 pg/mL。',
+    '@ev 台大的血鈣正常上限 2.58 mmol/L ≒ 10.3 mg/dL；準則中的「高於上限 1 mg/dL」＝ &gt; 2.83 mmol/L。'
+  ]);
+  tpShow('pt_c2', true); tpShow('pt_s2', true);
+  if (!PT.dd) return;
+
+  if (PT.dd === 'fhh') {
+    tpRec('pt_r2', 'rec-nonop', '疑似家族性低尿鈣高血鈣（FHH）<br>→ ❗手術是禁忌', [
+      '<b>FHH 病人不該接受副甲狀腺手術</b>——切了也不會好，還會留下永久性低副甲狀腺功能的風險。',
+      '@hd 怎麼分',
+      '<b>鈣／肌酸酐清除率比：FHH 典型 &lt; 0.01，原發性副甲狀腺亢進典型 &gt; 0.02。</b>',
+      '❗<b>但這個比值遠不如一般以為的乾淨</b>：<b>兩種病各約 40% 落在 0.01–0.02 的灰色地帶</b>；<b>原發性副甲狀腺亢進有 20% &lt; 0.01、FHH 有 10% &gt; 0.02</b>。',
+      '<b>支持 FHH 的線索</b>：自幼即有高血鈣、家族史、症狀輕微、PTH 只是輕度升高。',
+      '<b>確診靠 CASR 等基因檢測</b>；第五屆工作坊建議<b>&lt; 30 歲、多腺體病變、或有家族史者做基因檢測</b>。',
+      '@ev FHH 偶爾也會有腎結石的報告——「有結石就不是 FHH」不成立。'
+    ]);
+    return;
+  }
+  if (PT.dd === 'drug') {
+    tpRec('pt_r2', 'rec-nonop', 'thiazide 或鋰鹽使用中<br>→ 先處理藥物再下診斷', [
+      '<b>Thiazide</b> 減少尿鈣排出而造成高血鈣；<b>鋰鹽</b>提高副甲狀腺的鈣設定點，造成 PTH 不受抑制。',
+      '<b>在臨床安全的前提下換藥或停藥後重驗鈣與 PTH</b>；若仍然異常，才以原發性副甲狀腺亢進處理。',
+      '@ev 這兩種藥也可能<b>把原本就存在的原發性副甲狀腺亢進顯現出來</b>——停藥後恢復正常才算排除。'
+    ]);
+    return;
+  }
+  if (PT.dd === 'ckd') {
+    tpRec('pt_r2', 'rec-blue', '慢性腎病或腎移植後<br>→ 走次發性／三發性的路', [
+      '<b>次發性</b>（透析中）：PTH 高、血鈣正常或偏低、高血磷。<b>KDIGO 2017：透析病人的 iPTH 維持在檢驗室上限的 2–9 倍</b>（以台大 74.1 pg/mL 計算約 148–667 pg/mL）。',
+      '<b>三發性</b>（多為移植後）：<b>PTH 高且血鈣升高</b>，副甲狀腺已自主分泌。',
+      '<b>手術適應證</b>：KDIGO「嚴重且藥物治療無效」；<b>AAES 2022（轉述）</b>列出<b>嚴重骨痛、自發性骨折、藥物無法控制的高血鈣和／或低血磷</b>三項。',
+      '<b>術式</b>：次全切除，或全切除加自體移植。❗<b>全切除加自體移植發生骨飢餓症候群的比例較高。</b>',
+      '@ev 腎性副甲狀腺亢進通常<b>不靠術前影像</b>，直接雙側探查（EANM 2021）；影像的用處是找異位或多餘腺體。',
+      '@ev 詳細內容見本分頁下方「次發性與三發性副甲狀腺亢進」。'
+    ]);
+    return;
+  }
+
+  tpRec('pt_r2', 'rec-blue', '原發性副甲狀腺亢進（PHPT）<br>→ 接下來只有一個問題：要不要開刀', [
+    '<b>診斷已成立</b>：高血鈣＋PTH 升高或不恰當地正常，且已排除 FHH、thiazide、鋰鹽與腎性因素。',
+    '@hd 手術之前要先補足的一件事',
+    '<b>維生素 D 要補到 25(OH)D &gt; 30 ng/mL</b>（並低於檢驗室上限，通常 &lt; 50 ng/mL）——維生素 D 缺乏會讓 PTH 更高、也會影響術後的鈣。',
+    '<b>鈣的攝取量與一般人相同</b>（女性 &lt; 50 歲、男性 &lt; 70 歲 800 mg/day；其餘 1,000 mg/day）——<b>不要嚴格限鈣</b>。',
+    '@ev 有症狀者（腎結石、脆弱性骨折、高血鈣症狀、胰臟炎）不需要走準則，<b>手術本身就是適應證</b>。'
+  ]);
+  tpShow('pt_c3', true); tpShow('pt_s3', true);
+  if (!PT.crit) return;
+
+  if (PT.crit === 'none') {
+    tpRec('pt_r3', 'rec-nonop', '無症狀且未達任一準則<br>→ 可以觀察，但監測項目有規定', [
+      '@hd 要做的',
+      '<b>每年至少一次</b>：血鈣、25(OH)D、肌酸酐與 eGFR（或直接測肌酸酐清除率）。',
+      '<b>骨密度每 1–2 年</b>，測<b>腰椎、髖部與橈骨遠端 1/3</b>，且用<b>同一台 DXA</b>。',
+      '@hd 明確不必例行做的',
+      '<b>24 小時尿鈣、腹部超音波／CT／X 光、脊椎 X 光／VFA 或 TBS 都不需要定期重複</b>——除非臨床上出現指徵。',
+      '<b>PTH 對評估嚴重度的價值較低</b>，有臨床需要才驗。',
+      '@hd 不開刀但需要藥物時',
+      '<b>血鈣高於上限 1 mg/dL 以上者可用 cinacalcet 降鈣</b>（但它<b>只稍微降 PTH、對骨密度沒有幫助</b>，副作用常見）。',
+      '<b>骨密度低者用雙磷酸鹽或 denosumab</b>（改善骨密度但不降血鈣）；兩者需要時可併用。',
+      '@ev ❗<b>cinacalcet 在台灣有藥證但健保 0 筆（自費），台大處方集的品項且已標記 DC。</b>',
+      '@ev ❗<b>認知功能、生活品質與心血管症狀不能當作手術適應證</b>——第五屆工作坊明言證據不足以支持術後會改善。'
+    ], '出現任何一項準則（含新發生的腎結石、骨折或 eGFR 下降）就回到手術這條路。');
+    return;
+  }
+  var critName = {
+    sx: '有症狀', ca: '血鈣高於上限 1 mg/dL 以上', bone: '骨骼準則（脊椎骨折或 T-score ≤ −2.5）',
+    renal: '腎臟準則（eGFR &lt; 60、結石／腎鈣化，或高尿鈣）', age: '年齡 &lt; 50 歲'
+  }[PT.crit];
+  var extra = {
+    sx: ['<b>有症狀者不需要再比對準則</b>——腎結石、脆弱性骨折、典型高血鈣症狀或胰臟炎本身就是手術適應證。'],
+    ca: ['<b>台大換算：正常上限 2.58 mmol/L ＋ 0.25 = &gt; 2.83 mmol/L。</b>'],
+    bone: ['<b>停經前女性與 &lt; 50 歲男性要用 Z-score 而不是 T-score。</b>',
+           '<b>橈骨遠端 1/3 是皮質骨為主的部位，最容易被原發性副甲狀腺亢進侵蝕——不要只測腰椎與髖部。</b>',
+           '脊椎壓迫性骨折可用 X 光、CT、MRI 或 VFA 判定。'],
+    renal: ['❗<b>台大 24 小時尿鈣報 mmol/day</b>：女性 &gt; 6.24、男性 &gt; 7.49 mmol/day 才等於準則的 250／300 mg/24h。',
+            '<b>台大的參考區間上限 7.5 mmol/day 幾乎等於男性門檻</b>——女性報「正常範圍內」的 6.5 其實已達標。',
+            '<b>單腎的病人即使 eGFR &gt; 60，也可以考慮手術。</b>'],
+    age: ['<b>單獨這一項就是手術適應證</b>，不需要合併其他異常。']
+  }[PT.crit] || [];
+  tpRec('pt_r3', 'rec-elective', critName + '<br>→ 符合手術適應證，建議副甲狀腺切除',
+    ['@hd 第五屆國際工作坊 2022 的準則（符合任一項即建議手術）',
+      '<b>血鈣</b>：白蛋白校正後高於正常上限 <b>1 mg/dL（0.25 mmol/L）</b>以上。',
+      '<b>骨骼</b>：脊椎壓迫性骨折；或 BMD <b>T-score ≤ −2.5</b>（腰椎、全髖／股骨頸、或橈骨 33%）。',
+      '<b>腎臟</b>：<b>eGFR 或肌酸酐清除率 &lt; 60 mL/min</b>；腎結石或腎鈣化；<b>高尿鈣（女 &gt; 250、男 &gt; 300 mg/24h）</b>。',
+      '<b>年齡</b>：<b>&lt; 50 歲</b>。',
+      '@hd 這一格要補充的'].concat(extra).concat([
+        '@hd 手術是唯一能治癒的方式',
+        '藥物只能處理其中一半：<b>cinacalcet 降鈣但不改善骨密度；雙磷酸鹽／denosumab 改善骨密度但不降鈣</b>。',
+        '@ev 家族性的處理不同：<b>FHH 禁止手術</b>；<b>HPT-JT 因副甲狀腺癌風險要早期雙側探查</b>；<b>MEN1 與 MEN2 需要雙側探查加上全切除或次全切除</b>。'
+      ]));
+  tpShow('pt_c4', true); tpShow('pt_s4', true);
+  if (!PT.loc) return;
+
+  var R4 = {
+    single: ['rec-elective', '超音波與 MIBI 一致指向單一腺體<br>→ 可做微創（局部）副甲狀腺切除', [
+      '<b>術前定位不是為了診斷，是為了決定切口與範圍</b>——EANM 2021 寫明：<b>影像只做給要開刀的人</b>。',
+      '<b>[99mTc]MIBI 掃描＋頸部超音波是最普遍的第一線組合，合併敏感度 81–95%</b>。',
+      '<b>加做 SPECT/CT 可改善定位</b>；多結節性甲狀腺腫者 MIBI 容易偽陰性，<b>超音波是必要的</b>。',
+      '@hd 術中',
+      '<b>術中 PTH 監測</b>是微創手術的標準搭配（實務上最常用的判準是切除後 10 分鐘較最高基準值下降 &gt; 50%）。',
+      '@ev 判準本身出自外科文獻而非本頁查核過的指引，各院門檻略有不同；EANM 2021 引述的一項研究顯示，<b>以 [18F]fluorocholine PET/CT 確認為單一腺瘤者，不做術中 PTH 也能安全地施行微創手術</b>。'
+    ]],
+    neg: ['rec-blue', '第一線影像陰性或不一致<br>→ 換第二線影像，不要硬開', [
+      '<b>EANM 2021 的第二線</b>：<b>[18F]fluorocholine PET/CT</b>、[11C]methionine PET/CT、<b>4D-CT</b>、MRI，或 [18F]fluorocholine PET 合併 4D 增強 CT。',
+      '<b>[18F]fluorocholine PET/CT 的表現最好</b>：一項頭對頭研究中敏感度 <b>92%</b>，傳統核醫方法只有 39–56%；meta 分析的整體敏感度 <b>95%</b>、PPV 97%。<b>它也可以直接當替代的第一線</b>。',
+      '<b>4D-CT 對小腺體與異位腺體有優勢</b>，代價是<b>輻射劑量較高且需要含碘顯影劑</b>；再手術系列中敏感度 <b>88%</b>（MIBI SPECT/CT 54%、超音波 21%）。<b>解剖變形或再手術時特別有用。</b>',
+      '❗<b>用了碘顯影劑就會影響後續的放射碘計畫</b>——同時有甲狀腺問題時要先排序。',
+      '<b>MRI 可用於孕婦</b>或需要避免輻射者。',
+      '@hd 如果還是找不到',
+      '<b>由高量術者做雙側頸部探查</b>；細針穿刺細胞學只保留給<b>超音波表現不典型且 MIBI 無資訊</b>的高度選擇病例。',
+      '@ev <b>活性維生素 D 與擬鈣劑會降低 MIBI 的攝取</b>——影像前要問清楚用藥。'
+    ]],
+    multi: ['rec-elective', '懷疑多腺體病變或家族性<br>→ 雙側探查，並先釐清基因', [
+      '<b>15–20% 的原發性副甲狀腺亢進是多腺體病變</b>（多發腺瘤或增生），<b>所有影像對它的敏感度都明顯下降</b>（MIBI 對多腺體病變僅 26.7–61%）。',
+      '<b>術式是雙側頸部探查</b>；不要依賴單一影像做微創手術。',
+      '@hd 基因',
+      '<b>&lt; 30 歲、多腺體病變、家族性高血鈣或相關症候群家族史者應考慮基因檢測</b>。',
+      '<b>MEN1 與 MEN2：雙側探查加上全切除或次全切除。</b>',
+      '<b>HPT-JT：因副甲狀腺癌風險，建議早期雙側探查。</b>',
+      '<b>FHH：不要手術。</b>',
+      '@ev 懷疑副甲狀腺癌的線索是<b>血鈣特別高、PTH 特別高、可觸摸的頸部腫塊、聲帶麻痺</b>——這種情況要整塊切除，不要做切開取樣。'
+    ]]
+  }[PT.loc];
+  tpRec('pt_r4', R4[0], R4[1], R4[2]);
+}
+
+/* ============================================================
+   啟動
+   ============================================================ */
+(function () {
+  hyRender(); ndRender(); pcRender(); ptRender();
+  var h = location.hash.replace('#', '');
+  if (h && document.querySelector('#tp_tabs [data-p="' + h + '"]')) tpTab(h);
+})();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>

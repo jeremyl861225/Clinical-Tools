@@ -1278,7 +1278,10 @@
                    'vasoactive', 'pacemaker', 'crrt', 'lyte-all', 'nutrition',
                    /* 2026-09-04 補三頁用藥指引（schema/check_registry.py 會擋漏登錄的分頁頁）：
                       dm-path 9 個、htn-path 9 個、hbv-path 7 個，同樣是 button[data-p] ＋ 裸名 hash。 */
-                   'dm-path', 'htn-path', 'hbv-path'];
+                   'dm-path', 'htn-path', 'hbv-path',
+                   /* 2026-09-13 新增：甲狀腺與副甲狀腺疾病 9 個分頁（功能判讀／甲亢／眼病／放射碘／
+                      甲低／結節與腫大／甲狀腺手術／副甲狀腺／證據），同樣是 button[data-p] ＋ 裸名 hash。 */
+                   'thyroid-parathyroid'];
   var tabsOf = {};            // facets 的 k → parseTabs() 解析出來的分頁陣列
   /* 這 13 頁的頁內清單也掛進候選清單那顆「N 個分頁 ⌄」。與抗生素／分級系統
      那三顆不同的是它多帶一個 file：按下去只抓**那一頁自己**（22–169 KB），

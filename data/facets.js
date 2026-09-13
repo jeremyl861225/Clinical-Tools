@@ -62,6 +62,9 @@ window.FACETS = {
     {"w": "體液與滲透壓", "al": "fluid osmolality 水分 補液 滲透壓 輸液 點滴 脫水 水腫"},
     {"w": "血糖", "al": "glucose glycemia DKA HHS 血醣 糖尿病 diabetes 胰島素 insulin"},
     {"w": "甲狀腺", "al": "thyroid 甲狀腺素 T4 TSH 甲亢 甲狀腺功能"},
+    // 2026-09-13 新增：副甲狀腺自成一個部位。血鈣異常的鑑別、副甲狀腺切除、術後低鈣
+    // 都不是「甲狀腺」，掛在甲狀腺底下會讓「副甲狀腺的手術」查到一堆甲狀腺的東西。
+    {"w": "副甲狀腺", "al": "parathyroid PTH 副甲 副甲狀腺素 iPTH 副甲狀腺切除 parathyroidectomy 鈣 血鈣"},
     {"w": "腎上腺", "al": "adrenal cortisol 皮質醇 類固醇 steroid ACTH"},
     // sub 收腦血管與意識：打「頭」「腦」的人要的是中風、腦出血、TBI、癲癇一整群。
     {"w": "腦", "al": "brain cerebral ICP 顱內 頭 頭部 大腦 腦部 顱骨 腦壓", "sub": ["腦血管", "意識"]},
@@ -102,7 +105,7 @@ window.FACETS = {
     {"w": "泌尿系統", "al": "urologic urinary tract ureter bladder prostate 泌尿 腎盂輸尿管 泌尿道 膀胱 攝護腺 前列腺 輸尿管 腎盂 尿道 尿路 泌尿科", "sub": ["腎臟"]},
     // 鼻咽癌／頭頸癌共用的部位；原本兩者都掛在錯誤的 s=['癌症']。
     // sub 收甲狀腺：甲狀腺長在脖子上，打「脖子」「頸部」要看得到甲狀腺那兩頁。
-    {"w": "頭頸", "al": "head neck 頭頸部 鼻咽 咽喉 口腔 脖子 頸部 頸 喉嚨 舌 扁桃腺 下咽", "sub": ["甲狀腺"]},
+    {"w": "頭頸", "al": "head neck 頭頸部 鼻咽 咽喉 口腔 脖子 頸部 頸 喉嚨 舌 扁桃腺 下咽", "sub": ["甲狀腺", "副甲狀腺"]},
     // 第 5 輪合併頁內子目標新增：c 已有「骨關節感染」卻沒有對應部位詞
     // （data/sub-abx.js 的「骨與關節感染」#site 子目標需要，s 標註逐字沿用該檔）。
     {"w": "骨與關節", "al": "bone joint osteomyelitis 骨科 骨骼 關節 骨髓炎 化膿性關節炎 人工關節 骨頭 骨 脊椎 spine 髖 膝"},
@@ -218,6 +221,14 @@ window.FACETS = {
     {"w": "意識障礙", "al": "altered-consciousness coma confusion delirium GCS 昏迷 譫妄 意識不清 神智不清 叫不醒 意識改變 沒反應", "sub": ["腦出血", "蜘蛛膜下腔出血", "缺血性中風", "創傷性腦損傷", "癲癇重積", "低血鈉", "DKA", "HHS"]},
     {"w": "肢體缺血", "al": "acute-limb-ischaemia ALI Rutherford 急性肢體缺血 腳冰冷 摸不到脈"},
     {"w": "主動脈剝離", "al": "aortic dissection IMH PAU 剝離"},
+    // 2026-09-13 新增五個病況詞：甲狀腺與副甲狀腺疾病頁涵蓋的範圍，
+    // 原本在 c 表裡只有「甲狀腺風暴」「甲狀腺癌」「高血鈣」「低血鈣」四個出口，
+    // 打「甲亢」「甲狀腺結節」「副甲狀腺亢進」都落不到任何一頁。
+    {"w": "甲狀腺功能亢進", "al": "hyperthyroidism thyrotoxicosis 甲亢 甲狀腺毒症 Graves 葛瑞夫茲 突眼 毒性結節 甲狀腺炎 antithyroid ATD methimazole carbimazole 放射碘 RAI"},
+    {"w": "甲狀腺功能低下", "al": "hypothyroidism 甲低 甲狀腺低下 橋本 Hashimoto 黏液水腫 myxedema levothyroxine 甲狀腺素 亞臨床"},
+    {"w": "甲狀腺結節", "al": "thyroid-nodule nodule goiter goitre 結節 甲狀腺腫 甲狀腺腫大 TI-RADS TIRADS Bethesda FNA 細針穿刺 胸骨後"},
+    {"w": "副甲狀腺亢進", "al": "hyperparathyroidism PHPT SHPT primary secondary tertiary 原發性 次發性 三發性 副甲狀腺瘤 adenoma 高血鈣 sestamibi"},
+    {"w": "副甲狀腺功能低下", "al": "hypoparathyroidism 副甲低 術後低鈣 permanent transient calcitriol 補鈣 hungry-bone 骨飢餓"},
     {"w": "甲狀腺風暴", "al": "thyroid storm Burch-Wartofsky 甲亢危象"},
     {"w": "腎上腺危機", "al": "adrenal crisis hydrocortisone 腎上腺功能不全"},
     {"w": "高血鉀", "al": "hyperkalemia hyperkalaemia K 鉀離子過高 鉀高 血鉀高"},
@@ -838,6 +849,7 @@ window.FACETS = {
        所以縮寫一律寫進 en 欄，說整句的索引才吃得到。 */
     {"k": "ich-score", "name": "ICH Score", "en": "ICH Score · Intracerebral Hemorrhage Score", "desc": "自發性腦內出血 30 天死亡率分層（Hemphill 2001），含 ABC/2 血腫體積估算", "kind": "tool", "href": "tools/ich-score.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "神經", "grpEn": "Neurology", "s": ["腦", "腦血管"], "c": ["腦出血", "出血", "意識障礙"], "a": ["算分數", "定嚴重度", "判時機"]},
     {"k": "pss", "name": "Pittsburgh 食道穿孔嚴重度", "en": "PSS · Pittsburgh Esophageal Perforation Severity Score", "desc": "食道穿孔嚴重度分數（Abbas 2009，Schweigert 2016 多國驗證），用於分流保守、內視鏡處置或手術", "kind": "tool", "href": "tools/pss.html", "sec": "scores", "secTitle": "計分工具", "secEn": "Scoring Tools", "grp": "食道", "grpEn": "Esophagus", "s": ["食道"], "c": ["食道急症", "消化道穿孔", "食道穿孔"], "a": ["算分數", "定嚴重度", "要不要開刀"]},
+    {"k": "thyroid-parathyroid", "name": "甲狀腺與副甲狀腺疾病", "en": "Thyroid & Parathyroid Disorders", "desc": "九個分頁。甲亢依 ETA 2018、放射碘依可一手查核的 KTA 2025、眼病並列 ATA/ETA 2022 與 EUGOGO 2021、結節依 ETA 2023 的 EU-TIRADS×大小門檻、副甲狀腺依第五屆國際工作坊 2022 的手術準則與 KDIGO 2017，四張互動流程圖走到處置。標出三個會出錯的地方：台大只有 carbimazole 沒有 methimazole（10 mg 約等於 MMI 6 mg）、24 小時尿鈣台大報 mmol/day 而手術準則寫 mg/24h、術後永久性低副甲的時間點 2025 國際共識已由 6 個月改為 12 個月", "kind": "guide", "href": "pathways/thyroid-parathyroid.html", "sec": "critical", "secTitle": "急重症處置", "secEn": "Emergency & Critical Care", "grp": "內分泌代謝", "grpEn": "Endocrine & Metabolic", "s": ["甲狀腺", "副甲狀腺", "頭頸"], "c": ["甲狀腺功能亢進", "甲狀腺功能低下", "甲狀腺結節", "副甲狀腺亢進", "副甲狀腺功能低下", "高血鈣", "低血鈣"], "a": ["要不要開刀", "看治療", "查劑量", "找原因", "判時機"]},
   ],
 
   /* ══════════════════════════════════════════════════════════════════════
