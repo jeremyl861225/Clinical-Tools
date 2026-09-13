@@ -2058,7 +2058,8 @@ window.CANCERS = [
 {
   id:'ovarian', zh:'卵巢癌', en:'Ovarian / Fallopian Tube / Primary Peritoneal Cancer', group:'婦科／泌尿 Gynecologic & Urologic',
   pathway:'ovarian',
-  edition:'FIGO 2014／AJCC 8th／治療依台大婦癌診療指引 版次 10（2026/06/16，OV-1～OV-8、LCOC-1～LCOC-14）',
+  /* ⚠ edition 這一欄會被 escapeHtml() 處理，不可寫 HTML 標籤。 */
+  edition:'FIGO 2014／AJCC 8th · 治療依台大婦癌診療指引 版次 10（2026/06/16，OV-1～OV-8 於 p47–54、LCOC-1～LCOC-14 於 p55–68，22 張流程圖已逐張 render 看圖核對箭頭） · ❗該指引的卵巢癌章節有結構性殘缺：OV-A／OV-B／OV-C／LCOC-A／LCOC-B 五頁被引用 30 次以上卻不存在，整份文件沒有任何一個化療劑量（AUC 與 mg/m² 各 0 次），也沒有任何一頁註腳（但上標到處都是），且卵巢癌章節未宣告分期版本；OV-5 整頁為被裁切的貼圖。缺的部分一律標明「指引未列」並改用院外實證 · 院外：ESMO CPG 2023（PMID 37597580）、BGCS 2024（PMID 39002401）、GCIG OCCC6 · ❗platinum-sensitive／resistant 二分法已在指引層面被放棄（台大 OV-7 與 FDA 仿單仍在用）；PARP 適應症於 2024-03-26 與 2026-03 兩度縮減 · 健保與藥證查詢日 2026-09-13',
   staging_note:'<b>卵巢癌、輸卵管癌與原發性腹膜癌採同一套分期與同一套治療流程</b>（FIGO 2014 起合併），本院指引各頁標題亦一律三者並列。<br><b>本院指引未複製 FIGO 分期表</b>，分期內容之來源為 <b>FIGO 2014 與 AJCC 8th</b>，非本院指引。分期為<b>手術分期</b>——須完整探查、腹水或沖洗液細胞學、大網膜切除與腹膜多處切片，分期不足會系統性低估期別。<br><b>本頁 T×N 方格與條件表並列</b>：方格用<b>合併儲存格</b>呈現「僅淋巴結陽性 → IIIA1」與「一旦有腹膜病灶 → 改由病灶大小定期別」兩條規則；條件表則保留方格表達不了的細節——<b>IC 依「如何破裂」再分三級</b>（手術中破裂／術前破裂或表面腫瘤／腹水或沖洗液陽性），此三者的 T 分類相同、期別不同，只能以條件列出。',
   t:[
     ['T1','腫瘤侷限於單側或雙側卵巢／輸卵管'],
