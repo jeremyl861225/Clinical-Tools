@@ -35,6 +35,7 @@ SEC = {
     'scores': ('sec-scores', '計分工具', 'Scoring Tools'),
 }
 KIND_DEFAULT_EYEBROW = {'tool': 'Scoring Tool', 'pathway': 'Clinical Decision Pathway', 'guide': 'Clinical Guide'}
+KIND_DECI_TAG = {'pathway': 'Pathway', 'guide': 'Guide'}
 
 
 def read(p):
@@ -68,7 +69,8 @@ def render_page(a):
 
 def index_snippet(a, deci, tag):
     cls = 'tool-card deci-card' if deci else 'tool-card'
-    tagspan = ' <span class="deci-tag">Pathway</span>' if tag else ''
+    # 徽章文字跟著 kind 走（站上 pathway 一律 Pathway、guide 一律 Guide），不能寫死
+    tagspan = ' <span class="deci-tag">%s</span>' % KIND_DECI_TAG.get(a.kind, 'Pathway') if tag else ''
     return ('        <div class="%s" id="card-view-%s" onclick="location.href=\'%s\'">\n'
             '          <div class="tool-name">%s <span class="tool-en">%s</span>%s</div>\n'
             '          <div class="tool-desc">%s</div>\n'

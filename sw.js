@@ -199,6 +199,7 @@ const PRECACHE_URLS = [
   './pathways/hepatitis-b.html',
   './pathways/hypertension.html',
   './pathways/thyroid-parathyroid.html',
+  './pathways/diet.html',
   './tools/emergency-surgery.html',
   './tools/abg.html',
   './tools/air.html',

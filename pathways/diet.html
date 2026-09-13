@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>飲食指南 · 臨床工具箱</title>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- pwa-head-tags -->
+<!-- ui-mode:start -->
+<script>try{if(localStorage.getItem('ct-ui')!=='classic')document.documentElement.setAttribute('data-ui','sentence')}catch(e){}</script>
+<link rel="stylesheet" href="../css/ui-sentence.css">
+<script src="../js/ui-mode.js" defer></script>
+<!-- ui-mode:end -->
+<!-- sentence-nav:start -->
+<script src="../data/facets.js" defer></script>
+<script src="../js/sentence-nav.js" defer></script>
+<!-- sentence-nav:end -->
+<meta name="theme-color" content="#234551">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-dark.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Tools">
+<link rel="stylesheet" href="../css/nav.css">
+<script src="../js/nav.js" defer></script>
+<script src="../js/backlink.js" defer></script>
+<link rel="stylesheet" href="../css/guide.css">
+<style>
+  /* 本頁專屬。共用元件（.kbox／.refbar／.dirhead／.tw／.pmid／.tl／.def-table）在 css/guide.css，
+     不在這裡重寫。 */
+  .diet-panel{display:block;}
+  .diet-panel.hidden{display:none;}
+  /* 飲食醫囑總表：左欄是台大實際的醫令名稱，要能一眼掃到 */
+  .def-table td.ord{font-family:var(--mono); font-size:11px; white-space:nowrap;}
+  .def-table td.num{font-family:var(--mono); text-align:right; white-space:nowrap;}
+  /* IDDSI 色階：用既有 token，不新增顏色 */
+  .iddsi-n{display:inline-block; min-width:20px; text-align:center; font-family:var(--mono);
+           font-size:11px; font-weight:600; padding:1px 4px; border:1px solid var(--line);
+           background:var(--accent-soft); color:var(--accent); border-radius:2px;}
+  /* 「台大未公開」的待補標記 */
+  .todo{font-family:var(--mono); font-size:10px; color:var(--accent2);
+        border:1px dashed var(--accent2); padding:0 4px; border-radius:2px; white-space:nowrap;}
+</style>
+</head>
+<body data-back-label="飲食指南">
+<div class="sheet">
+<div class="view active" id="view-diet">
+  <div class="app-header">
+    <div><div class="eyebrow">Clinical Guide</div><h1>飲食指南</h1><div class="sub">開醫囑 · 管灌 · 外科術後 · 腎臟 · 消化與肝 · 代謝 · 生酮 · 檢查前</div></div>
+    <div class="back-stack">
+      <!-- 「← 返回<來源頁>」由 js/backlink.js 於載入時自動插在這一顆之上 -->
+      <button class="back-btn" onclick="location.href='../index.html#card-view-diet'">← 返回主選單</button>
+    </div>
+  </div>
+
+  <!-- ===== 分頁列：data-p 是造句導覽（js/sentence-nav.js parseTabs）與 check_kinds.py 認的記號，
+       有分頁列的頁面 kind 一律是 guide。 ===== -->
+  <div class="tab-row" id="diet_tabs">
+    <button class="tab-btn active" data-p="ord"  onclick="dietTab('ord')">開醫囑</button>
+    <button class="tab-btn"        data-p="tube" onclick="dietTab('tube')">管灌</button>
+    <button class="tab-btn"        data-p="surg" onclick="dietTab('surg')">外科術後</button>
+    <button class="tab-btn"        data-p="ren"  onclick="dietTab('ren')">腎臟</button>
+    <button class="tab-btn"        data-p="gi"   onclick="dietTab('gi')">消化與肝</button>
+    <button class="tab-btn"        data-p="met"  onclick="dietTab('met')">代謝</button>
+    <button class="tab-btn"        data-p="ket"  onclick="dietTab('ket')">生酮與特殊</button>
+    <button class="tab-btn"        data-p="pre"  onclick="dietTab('pre')">檢查前</button>
+    <button class="tab-btn"        data-p="ev"   onclick="dietTab('ev')">證據</button>
+  </div>
+
+  <div class="note" style="margin:-8px 0 14px;">
+    <b>這一頁回答兩個問題</b>：住院醫囑上的飲食欄該勾哪一個，以及這個病人的疾病需要什麼飲食處方。
+    <b>飲食種類、餐次與餐費以台大醫院營養室的公開文件為準</b>——飲食收費表（115 年 7 月 20 日更新）
+    與住院病人供餐內容；飲食的臨床適應症與限量則逐條標出指引名稱、年份與建議強度。<br>
+    <b>不在本頁</b>：靜脈輸液與靜脈營養（含台大 TPN 指引）見
+    <a href="nutrition.html" class="pmid">輸液營養</a>；營養風險篩檢與再餵食症候群見
+    <a href="../tools/nutrition-risk.html" class="pmid">NRS-2002 · GLIM</a>；
+    糖尿病用藥見 <a href="diabetes.html" class="pmid">糖尿病用藥</a>；
+    放射碘前的低碘飲食見 <a href="thyroid-parathyroid.html#rai" class="pmid">甲狀腺與副甲狀腺</a>。<br>
+    <b>標成 <span class="todo">台大未公開</span> 的欄位</b>是院外查不到逐階內容的院內飲食（胃切 1–8、大腸腸切 1–4、
+    溫和飲食 1–3、四種檢查飲食）。這裡只列醫令名稱與餐次餐費，<b>不以通用原則冒充台大的實際內容</b>。
+  </div>
+
+<!-- ==================== 分頁：開醫囑 ==================== -->
+<section class="diet-panel" data-panel="ord">
+
+  <div class="refbar">
+    <span class="rb"><b>訂餐截止</b> 早 08:00 · 午 12:00 · 晚 18:00</span>
+    <span class="rb"><b>補餐</b> 早 08:30 · 午 13:00 · 晚 19:00</span>
+    <span class="rb"><b>營養室</b> 分機 265653 · 261234</span>
+    <span class="rb-src">台大營養室 · 收費表 2026-07-20</span>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">開飲食單最常出的五個錯</div>
+    <ul>
+      <li><b>清流質飲食開超過 48 小時。</b>它只提供水分、電解質與少量熱量，
+        本來就<b>不是一份營養完整的飲食</b>；病人躺著、看起來「有在吃」，實際上每天熱量與蛋白質幾乎是零。
+        病人若無法在兩三天內進到全流以上，該想的是管灌或靜脈營養，不是繼續開清流。</li>
+      <li><b>把「軟質／剁碎」當成吞嚥困難飲食開。</b>台大這兩者是<b>分開的收費類別</b>：
+        軟質剁碎（第 2 類）處理的是<b>咀嚼</b>，吞嚥困難飲食（第 4 類，IDDSI level 3–6）處理的是<b>吞嚥安全</b>。
+        真正嗆咳的病人開軟質飲食沒有保護作用。</li>
+      <li><b>「低蛋白 20／30／45／60」的數字是每日蛋白質公克數，不是熱量。</b>
+        熱量寫在前面的是低蛋白糖尿病飲食（糖尿 1500–2100 × 低蛋白 20–60）。</li>
+      <li><b>治療飲食沒有一起開營養師照會。</b>低蛋白、生酮、低銅、低碘、質地調整這幾類，
+        院內是由營養師個別化設計份量；只勾飲食別而沒有照會，實際送到的份量未必是你要的。</li>
+      <li><b>忘了飲食也要換。</b>飲食醫囑不會自己前進——術後病人常卡在清流或全流好幾天，
+        只因為沒有人去改那一欄。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">治療飲食的四條通則</span><span class="dh-e">ESPEN 住院營養指引 2021</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>條文</th><th>內容</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>Rec 54</b></td>
+            <td><b>「治療飲食不宜合併開立（The combination of therapeutic diets may not be prescribed），
+              因為攝取不足與營養不良的風險很高。」</b><br>
+              ⚠ 台大的飲食單上有<b>低蛋白糖尿病飲食（糖尿 1500–2100 × 低蛋白 20–60，共 20 種）</b>與
+              <b>低脂肪低膽固醇飲食</b>這類<b>由營養室預先設計好的複方</b>——那與「臨時把兩種限制疊在一起」不是同一件事。
+              但這條提醒仍然成立：<b>每疊一層限制，病人實際吃下去的熱量就少一截。</b></td>
+            <td class="nw">Grade 0<br>（91.4%）</td></tr>
+        <tr><td class="nw"><b>Rec 31</b></td>
+            <td><b>「住院通常沒有低熱量飲食的適應症，而且應該避免，因為即使是急性照護的肥胖病人也會增加營養不良風險。」</b>
+              少數例外（Rec 32）：<b>再餵食症候群、合併嚴重胰島素阻抗的肥胖、肥胖復健單位</b>，而且是暫時性的。
+              真的要給低熱量飲食時，<b>蛋白質不可減少</b>——BMI &lt;30 者至少 1 g/kg 實際體重/日，BMI ≥30 者至少 1 g/kg 校正體重/日（Rec 33）</td>
+            <td class="nw">Grade B<br>（94.6%）</td></tr>
+        <tr><td class="nw"><b>Rec 55／56</b></td>
+            <td><b>進食量本身就是營養評估的一部分</b>，應以半定量方法監測：入院時、無營養風險者<b>至少每週一次</b>、
+              有營養風險或已營養不良者<b>每天一次</b>（Rec 55，Grade B）。
+              有營養風險者<b>連續三天攝取 ≤50% 熱量需求，就應啟動營養介入</b>（Rec 56，Grade B）</td>
+            <td class="nw">Grade B</td></tr>
+        <tr><td class="nw"><b>Rec 25／24</b></td>
+            <td><b>「醫院不應提供純素飲食（vegan diet）」</b>（Grade B，76.5% 共識，是全份共識度最低的幾條之一）；
+              <b>素食飲食必須設計成能涵蓋熱量與蛋白質需求</b>（Rec 24，GPP，89.4%）。
+              台大有「素食餐」（三餐、一天 320 元）</td>
+            <td class="nw">Grade B／GPP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大飲食醫囑總表</span><span class="dh-e">NTUH diet order list · 2026-07-20</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>飲食醫令</th><th>餐次</th><th>一天餐費</th><th>臨床定位</th></tr></thead>
+      <tbody>
+        <tr><th colspan="4">1. 一般飲食</th></tr>
+        <tr><td class="ord">特甲飲食（全餐）</td><td class="nw">三餐二點</td><td class="num">450</td><td>含水果點心的完整餐</td></tr>
+        <tr><td class="ord">養生清淡套餐</td><td class="nw">三餐二點</td><td class="num">375</td><td>少油少鹽的一般飲食</td></tr>
+        <tr><td class="ord">普通飲食（不含水果點心）</td><td class="nw">三餐</td><td class="num">290</td><td>預設值</td></tr>
+        <tr><td class="ord">素食餐</td><td class="nw">三餐</td><td class="num">320</td><td>113/1/1 起晚餐供水果</td></tr>
+        <tr><td class="ord">元氣小品餐</td><td class="nw">三餐</td><td class="num">220</td><td>份量較小</td></tr>
+        <tr><td class="ord">主廚特餐</td><td class="nw">晚餐</td><td class="num">135</td><td>只有晚餐</td></tr>
+        <tr><td class="ord">燉品</td><td class="nw">午、晚</td><td class="num">180</td><td>加點，非正餐</td></tr>
+
+        <tr><th colspan="4">2. 軟質剁碎（處理<b>咀嚼</b>，不是吞嚥安全）</th></tr>
+        <tr><td class="ord">軟質飲食</td><td class="nw">三餐一點</td><td class="num">350</td><td>稍加咀嚼即可吞嚥；缺牙、假牙不合、咀嚼疼痛</td></tr>
+        <tr><td class="ord">剁碎飲食（剁碎）</td><td class="nw">三餐一點</td><td class="num">365</td><td>固體剁碎絞細</td></tr>
+        <tr><td class="ord">剁碎飲食（剁泥）</td><td class="nw">三餐二點</td><td class="num">365</td><td>更細的泥狀</td></tr>
+
+        <tr><th colspan="4">3. 質地調整飲食（漸進式飲食走這一段）</th></tr>
+        <tr><td class="ord">清流質飲食</td><td class="nw">三餐</td><td class="num">160</td><td><b>營養不完整，短期使用</b>；腸道休息、術後第一階、檢查前</td></tr>
+        <tr><td class="ord">冷流質飲食</td><td class="nw">三餐三點</td><td class="num">250</td><td>需冷食的情況（如扁桃腺術後）</td></tr>
+        <tr><td class="ord">牙科手術後流質飲食（牙流）</td><td class="nw">三餐三點</td><td class="num">220</td><td>口腔與牙科術後</td></tr>
+        <tr><td class="ord">全流／半流質飲食</td><td class="nw">三餐三點</td><td class="num">250</td><td>台大是<b>同一個收費項目</b>；打碎成流體</td></tr>
+        <tr><td class="ord">全流／半流質飲食－減量</td><td class="nw">三餐三點</td><td class="num">220</td><td>同上，份量較小</td></tr>
+        <tr><td class="ord">溫和飲食 1～3</td><td class="nw">三餐三點</td><td class="num">220</td><td><span class="todo">台大未公開</span> 三階的逐階內容</td></tr>
+        <tr><td class="ord">米湯／五分粥／全粥</td><td class="nw">三餐</td><td class="num">45</td><td>只有主食，<b>單開等於沒有蛋白質</b></td></tr>
+        <tr><td class="ord">五分粥＋小菜／全粥＋小菜</td><td class="nw">三餐</td><td class="num">165</td><td>加了菜才有蛋白質</td></tr>
+
+        <tr><th colspan="4">4. 吞嚥困難飲食（<b>台大直接用 IDDSI 分級命名</b>）</th></tr>
+        <tr><td class="ord">吞嚥困難飲食_濃流</td><td class="nw"><span class="iddsi-n">3</span> Liquidised</td><td class="num">280</td><td>叉縫慢慢滴落成滴狀</td></tr>
+        <tr><td class="ord">吞嚥困難飲食_泥狀</td><td class="nw"><span class="iddsi-n">4</span> Pureed</td><td class="num">350</td><td>不需咀嚼，可塑形不可倒</td></tr>
+        <tr><td class="ord">吞嚥困難飲食_細碎濕潤</td><td class="nw"><span class="iddsi-n">5</span> Minced &amp; Moist</td><td class="num">330</td><td>成人顆粒 ≤ 4 mm 寬、≤ 15 mm 長</td></tr>
+        <tr><td class="ord">吞嚥困難飲食_軟質小口</td><td class="nw"><span class="iddsi-n">6</span> Soft &amp; Bite-Sized</td><td class="num">330</td><td>成人每塊 ≤ 1.5 cm</td></tr>
+        <tr><td class="ord">吞嚥困難訓練餐</td><td class="nw">果凍／蒸蛋／麥粥／增稠粉末</td><td class="num">150／105／60／150</td><td>吞嚥訓練用</td></tr>
+        <tr><td class="ord">IDDSI 訓練餐</td><td class="nw">level 3 濃流／4 米凍粥／5 稠粥</td><td class="num">165</td><td>各 165</td></tr>
+        <tr><td class="ord">IDDSI 調色檢查餐 A-彩虹餐／B-無調色</td><td class="nw">—</td><td class="num">250／次</td><td>吞嚥檢查用</td></tr>
+
+        <tr><th colspan="4">5. 營養成分調整飲食（一天 220；低蛋白罕病 200）</th></tr>
+        <tr><td class="ord">成人糖尿病飲食</td><td class="nw">熱量 &lt;1800／≧1800</td><td class="num">220</td><td>另有糖尿病流質飲食</td></tr>
+        <tr><td class="ord">妊娠糖尿病飲食／小兒糖尿病飲食</td><td class="nw">三餐～三餐三點</td><td class="num">220</td><td></td></tr>
+        <tr><td class="ord">低蛋白 20／30／45／60</td><td class="nw">三餐三點</td><td class="num">220</td><td><b>數字＝每日蛋白質公克數</b></td></tr>
+        <tr><td class="ord">低蛋白－罕見疾病飲食</td><td class="nw">依營養師個別化設計</td><td class="num">200</td><td>先天代謝疾病</td></tr>
+        <tr><td class="ord">低蛋白糖尿病飲食</td><td class="nw">糖尿 1500／1650／1800／1950／2100 × 低蛋白 20／30／45／60</td><td class="num">220</td><td><b>共 20 種組合</b>；前面是熱量、後面是蛋白質</td></tr>
+        <tr><td class="ord">低鉀／高鉀</td><td class="nw">三餐一點</td><td class="num">220</td><td>見「腎臟」分頁</td></tr>
+        <tr><td class="ord">低磷／低鈉／低鈣</td><td class="nw">三餐一點</td><td class="num">220</td><td></td></tr>
+        <tr><td class="ord">低油／低膽固醇／低脂肪低膽固醇</td><td class="nw">三餐一點</td><td class="num">220</td><td>見「消化與肝」「代謝」分頁</td></tr>
+        <tr><td class="ord">低醣／低普林</td><td class="nw">三餐一點</td><td class="num">220</td><td>低普林見「代謝」分頁</td></tr>
+        <tr><td class="ord">低銅</td><td class="nw">三餐一點</td><td class="num">220</td><td>威爾森氏症；台大有跨領域團隊</td></tr>
+        <tr><td class="ord">低碘</td><td class="nw">三餐一點</td><td class="num">220</td><td>放射碘前；見<a href="thyroid-parathyroid.html#rai" class="pmid">甲狀腺頁</a></td></tr>
+        <tr><td class="ord">低渣</td><td class="nw">三餐一點（給果汁）</td><td class="num">220</td><td>見「檢查前」「消化與肝」分頁</td></tr>
+        <tr><td class="ord">高纖維</td><td class="nw">三餐一點</td><td class="num">220</td><td></td></tr>
+        <tr><td class="ord">高蛋白高熱量飲食</td><td class="nw">三餐三點</td><td class="num">220</td><td>營養不良、傷口、腫瘤</td></tr>
+        <tr><td class="ord">生酮飲食</td><td class="nw">三餐、無水果</td><td class="num">—</td><td>只見於供餐內容表，<b>收費表未單列</b>；見「生酮與特殊」分頁</td></tr>
+
+        <tr><th colspan="4">6. 小兒飲食</th></tr>
+        <tr><td class="ord">兒童 A（全餐／正餐）</td><td class="nw">三餐三點／三餐</td><td class="num">220／190</td><td></td></tr>
+        <tr><td class="ord">兒童 B（含／不含水果點心）</td><td class="nw">三餐三點／三餐</td><td class="num">375／290</td><td></td></tr>
+
+        <tr><th colspan="4">7. 孕產婦飲食</th></tr>
+        <tr><td class="ord">泌乳餐／產婦餐／產婦＋泌乳餐</td><td class="nw">三餐～三餐三點</td><td class="num">290／435／725</td><td>泌乳餐附泌乳茶與泌乳湯</td></tr>
+        <tr><td class="ord">非哺乳餐（＋麥芽水）／孕婦套餐</td><td class="nw">三餐二點／三餐三點</td><td class="num">300（355）／250</td><td></td></tr>
+
+        <tr><th colspan="4">8. 檢查飲食</th></tr>
+        <tr><td class="ord">無血檢查飲食</td><td class="nw">三餐一點</td><td class="num">220</td><td>傳統癒創樹脂法糞便潛血用；<b>免疫法（FIT）不需限制飲食</b></td></tr>
+        <tr><td class="ord">無油檢查飲食（＝無油試驗餐）</td><td class="nw">三餐一點</td><td class="num">220</td><td><span class="todo">台大未公開</span> 適用檢查</td></tr>
+        <tr><td class="ord">高血壓檢查飲食</td><td class="nw">三餐一點</td><td class="num">220</td><td><span class="todo">台大未公開</span> 適用檢查</td></tr>
+        <tr><td class="ord">甲狀腺素碘檢查飲食</td><td class="nw">三餐一點</td><td class="num">220</td><td><span class="todo">台大未公開</span> 碘限量</td></tr>
+        <tr><td class="ord">腸道檢查與腸道術前準備飲食</td><td class="nw">三餐一點（給果汁）</td><td class="num">220</td><td>見「檢查前」分頁</td></tr>
+
+        <tr><th colspan="4">9. 胃切飲食（胃切除後八階）</th></tr>
+        <tr><td class="ord">胃切 1～4</td><td class="nw">1–3 三餐一點／4 三餐三點</td><td class="num">220</td><td><span class="todo">台大未公開</span> 逐階內容；原則見「外科術後」分頁</td></tr>
+        <tr><td class="ord">胃切 5～6</td><td class="nw">三餐三點</td><td class="num">250</td><td><span class="todo">台大未公開</span></td></tr>
+        <tr><td class="ord">胃切 7</td><td class="nw">三餐一點，午晚有軟質水果</td><td class="num">250</td><td><span class="todo">台大未公開</span></td></tr>
+        <tr><td class="ord">胃切 8</td><td class="nw">三餐一點，午晚有軟質水果</td><td class="num">220</td><td><span class="todo">台大未公開</span></td></tr>
+
+        <tr><th colspan="4">10. 大腸腸切飲食（大腸切除後四階）</th></tr>
+        <tr><td class="ord">大腸腸切 1／2／3／4</td><td class="nw">—</td><td class="num">130／210／210／335</td><td><span class="todo">台大未公開</span> 逐階內容；<b>只出現在收費表，供餐內容表沒有這一類</b></td></tr>
+
+        <tr><th colspan="4">11. 自費口服營養品（每項每天）</th></tr>
+        <tr><td class="ord">蛋白質補充品（粉末）</td><td class="nw">—</td><td class="num">45</td><td></td></tr>
+        <tr><td class="ord">均衡補充品（液體／粉末）／小兒均衡補充品</td><td class="nw">—</td><td class="num">165／150／165</td><td></td></tr>
+        <tr><td class="ord">腎臟疾病配方補充品（液體／粉末）</td><td class="nw">—</td><td class="num">255／105</td><td></td></tr>
+        <tr><td class="ord">糖尿疾病補充品／消化道疾病補充品</td><td class="nw">—</td><td class="num">210／660</td><td></td></tr>
+        <tr><td class="ord">天然攪打補充品</td><td class="nw">—</td><td class="num">195</td><td></td></tr>
+        <tr><td class="ord">高營養密度補充品（液體／粉末）</td><td class="nw">—</td><td class="num">240</td><td></td></tr>
+        <tr><td class="ord">手術期高碳水化合物補充品</td><td class="nw">—</td><td class="num">550／次</td><td><b>ERAS 術前碳水飲品</b>；見「檢查前」分頁</td></tr>
+
+        <tr><th colspan="4">12. 特殊處置（每餐加收）</th></tr>
+        <tr><td class="ord">隔離／消毒／治療飲食特殊處理費</td><td class="nw">每餐</td><td class="num">10／20／5</td><td></td></tr>
+        <tr><td class="ord">加主食及青菜／加單點 I（蛋、肉鬆、素鬆）／加單點 II（水果、湯品）</td><td class="nw">每餐每項</td><td class="num">10／15／30</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">吞嚥困難：IDDSI 質地分級</span><span class="dh-e">IDDSI Framework 2.2 · April 2026</span></div>
+  <div class="kbox">
+    <div class="kbox-t">引用 IDDSI 前先確認版本</div>
+    <ul>
+      <li>原始框架 2016 釋出、2017 發表；<b>Detailed Definitions 1.0 = 2017／2.0 = 2019 年 7 月／2.1 從未釋出／
+        <b>2.2 = 2026 年 4 月</b>（現行）</b>。大多數教材停在 2.0。</li>
+      <li><b>2.2 版最實質的臨床改動</b>：Level 5 與 Level 6 的麵包項下<b>刪除了「預凝膠化（pre-gelled）浸潤麵包」</b>——
+        照 2.0 版寫的「泡軟的麵包可以」現在已經不成立。</li>
+      <li><b>測試方法文件仍停在 2.0（2019 年 7 月）</b>，與定義文件版本不同步；引用時要分開講。
+        官方另有<b>正體中文版測試方法</b>（2020 年 9 月）。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>Level</th><th>飲品</th><th>食物</th><th>判準（原文測試法）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><span class="iddsi-n">0</span></td><td>Thin 稀薄</td><td>—</td><td>流動測試 10 秒後殘留 &lt; 1 mL</td></tr>
+        <tr><td class="nw"><span class="iddsi-n">1</span></td><td>Slightly Thick 極微稠</td><td>—</td><td>殘留 <b>1–4 mL</b>；可通過奶嘴，接近市售 AR 嬰兒配方</td></tr>
+        <tr><td class="nw"><span class="iddsi-n">2</span></td><td>Mildly Thick 微稠</td><td>—</td><td>殘留 <b>4–8 mL</b>；一般粗細吸管（5.3 mm）要稍微用力</td></tr>
+        <tr><td class="nw"><span class="iddsi-n">3</span></td><td>Moderately Thick 中度稠</td><td>Liquidised 流質</td><td>殘留 <b>&gt; 8 mL</b>；叉縫慢慢滴落成滴狀，湯匙傾斜易倒出不沾匙；<b>不可用筷子測</b></td></tr>
+        <tr><td class="nw"><span class="iddsi-n">4</span></td><td>Extremely Thick 高度稠</td><td>Pureed 泥狀</td><td><b>不適用流動測試</b>，改叉子滴落＋湯匙傾斜；叉齒壓下留清楚紋路；<b>不可有稀液分離出來</b></td></tr>
+        <tr><td class="nw"><span class="iddsi-n">5</span></td><td>—</td><td>Minced &amp; Moist 細碎濕潤</td><td>顆粒<b>成人寬 ≤ 4 mm、長 ≤ 15 mm</b>；兒童寬 ≤ 2 mm、長 ≤ 8 mm。叉子輕壓即散、<b>拇指指甲不需泛白</b></td></tr>
+        <tr><td class="nw"><span class="iddsi-n">6</span></td><td>—</td><td>Soft &amp; Bite-Sized 軟質小口</td><td>每塊<b>成人 ≤ 15 mm（1.5 cm）</b>、兒童 ≤ 8 mm；壓到<b>拇指指甲泛白</b>時樣本壓扁且不回彈</td></tr>
+        <tr><td class="nw"><span class="iddsi-n">7</span></td><td>—</td><td>Regular 普通／<b>EC7 Easy to Chew 易咀嚼</b></td><td>尺寸不限；不含硬、韌、有嚼勁、纖維、有絲、酥脆、易碎屑、籽、核、果皮、骨</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">四個容易忽略的判準</div>
+    <ul>
+      <li><b>Level 5 與 Level 6 都明訂「No regular, dry bread, sandwiches or toast of any kind」</b>——
+        一般乾麵包、三明治、吐司<b>任何形式都不可以</b>。</li>
+      <li><b>Level 4 與 Level 5 都不可有稀液從食物中分離出來</b>——湯汁會分開的燴飯不合格。</li>
+      <li><b>Level 7 Regular 仍有嗆咳風險。</b>原文明說「could present a choking risk for people with
+        clinically identified increased risk of choking」；開「普通飲食」不等於零風險。</li>
+      <li><b>手邊的尺規</b>：標準餐叉<b>齒縫約 4 mm</b>＝ Level 5 成人上限；成人<b>拇指指甲約 1.5 × 1.5 cm</b>＝ Level 6 上限。
+        壓到指甲泛白的力量約 <b>17 kPa</b>，與吞嚥時的舌壓相當。</li>
+    </ul>
+  </div>
+  <div class="note">
+    流動測試要用 <b>10 mL slip tip 注射器，且零刻度到 10 mL 刻度須量到 61.5 mm</b>——
+    標示 10 mL 但長度不同或其實是 12 mL 的注射器，測出來的結果<b>不能</b>套用 IDDSI 分級。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：管灌 ==================== -->
+<section class="diet-panel hidden" data-panel="tube">
+
+  <div class="note" style="margin:0 0 12px;">
+    本分頁處理<b>經腸道餵食</b>的路徑、時機、配方與日常操作。
+    重症的熱量蛋白質目標與靜脈營養時機在 <a href="nutrition.html#tpn" class="pmid">輸液營養</a>，本頁不重複。
+    依據：<b>ESPEN 居家腸道營養指引 2020</b>（逐條原文，建議編號與同意度照抄）與
+    <b>ASPEN 2022 重症腸道營養共識</b>（經 ASPEN 官方 Practice Tool 逐字核對）。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">四件與常規做法相反的事</div>
+    <ul>
+      <li><b>鼻胃管不是「兩週就要換 PEG」。</b>ESPEN 寫的是<b>短期 up to 4–6 weeks</b>（Rec 6）；
+        超過 4–6 週才建議改經皮管路（Rec 47，Grade B，98% 共識）。</li>
+      <li><b>PEG 放完 2–4 小時內就可以開始灌食</b>（Rec 28，<b>Grade A，100% 共識</b>）。不必禁食到隔天。</li>
+      <li><b>腹瀉時「應常規使用含纖維配方」</b>（Rec 40，<b>Grade A</b>，92% 共識）——不是停掉纖維。便秘時也一樣用含纖維配方（Rec 41）。</li>
+      <li><b>重症不建議常規監測胃殘餘量（GRV）。</b>GRV 與耐受性、胃排空、逆流、吸入性肺炎、VAP 的發生率<b>都不相關</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">GRV 的三個數字分屬三份文件</span><span class="dh-e">Don't merge them</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>出處</th><th>寫的是什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>ASPEN 2022</b></td><td><b>不建議在重症常規監測 GRV</b>；若真的要測，「依有限的低品質證據，成人 <b>GRV &gt; 300 mL</b> 時暫停灌食是合理的」</td></tr>
+        <tr><td class="nw"><b>SCCM/ASPEN 2016</b></td><td>一般人記得的 <b>500 mL</b> 出自這一版</td></tr>
+        <tr><td class="nw"><b>ESPEN</b></td><td><b>6 小時內超過 500 mL</b> 才建議延後</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">寫病歷或訂 protocol 時，<b>必須註明引用的是哪一套</b>；把三個數字混成一個門檻就是錯的。</div>
+
+  <div class="dirhead"><span class="dh-n">路徑與時機</span><span class="dh-e">Route &amp; timing</span></div>
+  <ul class="tl">
+    <li class="tl-item t0">
+      <div class="tl-t">≤ 4–6 週</div>
+      <div class="tl-h">鼻胃／鼻腸管 <span class="en">Nasal feeding tube</span></div>
+      <div class="tl-b">確認管路位置後<b>可立即依原訂計畫開始</b>（Rec 27）。
+        空腸灌食要走<b>逐步升階</b>（Rec 29，Grade B），不可一次到目標速率。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">&gt; 4–6 週</div>
+      <div class="tl-h">經皮管路：PEG 優先 <span class="en">PEG &gt; surgical gastrostomy</span></div>
+      <div class="tl-b"><b>PEG 優於外科胃造口</b>——併發症率較低、成本效益較好、手術時間較短（Rec 8，Grade B，<b>100% 共識</b>）。
+        PEG 不適合時可考慮腹腔鏡輔助經皮胃造口（PLAG，Rec 9）；內視鏡無法進行時才用 RIG／PRG（Rec 10）。
+        <b>放完 2–4 小時內即可灌食</b>（Rec 28，Grade A）。</div>
+    </li>
+    <li class="tl-item">
+      <div class="tl-t">不啟動</div>
+      <div class="tl-h">禁忌與不適用 <span class="en">Contraindications</span></div>
+      <div class="tl-b"><b>預期餘命不到一個月，原則上不啟動居家腸道營養</b>（Rec 3，78% 共識）。
+        禁忌：<b>腸道嚴重功能障礙、腸阻塞、消化道出血、嚴重吸收不良、嚴重代謝失衡</b>（Rec 4）。
+        病人或照顧者不同意、無法配合，或後勤問題無法克服時不應提供（Rec 5）。</div>
+    </li>
+  </ul>
+
+  <div class="dirhead"><span class="dh-n">重症：升壓劑、ECMO、肌鬆劑</span><span class="dh-e">ASPEN 2022</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>情境</th><th>可不可以灌</th><th>怎麼灌</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>使用升壓劑</b></td>
+            <td><b>升壓劑不是早期腸道營養的禁忌</b>，但要謹慎監測。
+                <b>MAP ≥ 60 mmHg 可給；MAP &lt; 50 mmHg 應暫停。</b>
+                <b>VDE &gt; 12</b> 時考慮只給 trophic 或暫停</td>
+            <td>升壓劑開始後 <b>48 小時內</b>（依劑量）；<b>首選胃內灌食</b>；
+                配方用 <b>1.0–1.2 kcal/mL、較高蛋白、低纖維</b>（半元素與聚合型都耐受）</td></tr>
+        <tr><td class="nw"><b>ECMO</b>（VA 或 VV）</td><td>可以；<b>俯臥時仍繼續灌</b></td>
+            <td>ECMO 支持後 <b>24 小時內</b>開始；連續胃內灌食
+                <b>trophic rate 10–20 mL/h 起始，每 4 小時調速，24–36 小時內達目標</b></td></tr>
+        <tr><td class="nw"><b>肌肉鬆弛劑</b></td><td><b>不可暫停或延後</b></td><td>照常</td></tr>
+        <tr><td class="nw"><b>BiPAP／NIV</b></td><td>多專科逐案決定</td>
+            <td>放管會造成額外漏氣；漏氣無法代償時要換適合的面罩</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><b>乳酸值不足以當作腸道營養耐受性的監測指標</b>（ASPEN 2022 原文）。</div>
+
+  <div class="dirhead"><span class="dh-n">配方怎麼選</span><span class="dh-e">Formula selection</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>情況</th><th>建議</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">一般</td><td>市售<b>標準聚合型</b>配方；除非有特殊理由才用攪打飲食</td><td class="nw">Rec 39，Grade 0</td></tr>
+        <tr><td class="nw"><b>腹瀉</b></td><td><b>應常規使用含纖維配方</b></td><td class="nw">Rec 40，<b>Grade A</b>（92%）</td></tr>
+        <tr><td class="nw">便秘</td><td>應使用含纖維配方</td><td class="nw">Rec 41，Grade B（96%）</td></tr>
+        <tr><td class="nw">糖尿病</td><td>可用低糖、慢消化醣類、脂肪以單元不飽和為主的調整配方</td><td class="nw">Rec 42，Grade 0，<b>僅 60% 多數同意</b></td></tr>
+        <tr><td class="nw">自製攪打</td><td><b>不建議</b>——效果較差（Rec 48，63%）且較不安全（Rec 49，76%）</td><td class="nw">GPP</td></tr>
+        <tr><td class="nw"><b>持續腹瀉、疑似吸收不良、腸缺血、或無纖維配方仍不耐受</b></td>
+            <td>才考慮<b>胜肽型（oligomeric／semi-elemental）</b>——蛋白質以 2–50 個胺基酸的胜肽形式存在、已預先水解</td>
+            <td class="nw">SCCM/ASPEN</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">日常操作與併發症</span><span class="dh-e">Daily care</span></div>
+  <div class="kbox">
+    <div class="kbox-t">藥物經管給藥</div>
+    <ul>
+      <li>先確認該藥適合經管給——<b>給藥部位的影響、與配方及管材的交互作用</b>（Rec 37）。</li>
+      <li><b>每種藥分開給，前、中、後各以 30 mL 水沖管</b>（Rec 38，100% 共識）。</li>
+      <li>必須使用符合標準的接頭（<b>ENFit</b>）以免誤接（Rec 35，Grade A，ISO 標準）；
+        <b>低劑量 ENFit 針筒不可甩動</b>去除殘留藥液（Rec 36）。</li>
+      <li>衛教需有<b>藥師參與</b>（Rec 34）。逐藥「可否剝半磨粉」請查
+        <a href="../tools/drug-database.html" class="pmid">藥品資料庫</a>。</li>
+    </ul>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">PEG：防埋沒式墊片與脫落處理</div>
+    <ul>
+      <li>造口約<b>一週</b>癒合後，<b>每日旋轉管子、每週至少推進一次（至少 2 cm，最多 10 cm）</b>（Rec 17）；
+        推進後外墊片與皮膚保留 <b>0.5–1 cm</b> 空隙（Rec 18）。</li>
+      <li><b>胃空腸管或帶空腸延伸的胃造口不可旋轉</b>，只能每週推進拉出（Rec 19）。</li>
+      <li><b>意外脫落</b>：置放<b>未滿四週</b>是<b>急症</b>——前兩週多需內視鏡或放射線經原位置換，
+        二到四週間可嘗試盲插；<b>超過四週</b>者可在瘻管閉合前直接嘗試置換（Rec 11）。
+        胃壁與腹壁貼合通常需 <b>7–14 天</b>，營養不良、腹水、類固醇治療者更慢。</li>
+      <li>換藥：造口成形前（術後約 <b>5–7 天</b>）每日檢查、保持清潔乾燥、無菌換藥（Rec 12）；
+        第一週可用 glycerin hydrogel／glycogel 敷料替代（Rec 13，Grade B）；
+        癒合後改每週一至兩次、用清水肥皂清洗（Rec 14），<b>或乾脆不貼敷料讓它開放</b>（Rec 15）。</li>
+      <li>造口滲漏：氧化鋅皮膚保護劑（Rec 20）；PPI 可減少滲漏但需定期重新評估（Rec 21）。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>灌食前後例行沖水</b>可預防阻塞，屬於病人／照顧者衛教的一部分（Rec 32，100% 共識）。
+    監測以<b>體重、身體組成、水份狀態</b>為主，可加白蛋白／前白蛋白（Rec 45，83% 共識）。
+    <b>達到目標體重且口服量足以維持需求時就該停</b>（Rec 46）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大營養室可外賣的管灌／營養品</span><span class="dh-e">NTUH tube-feed &amp; ONS list</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>劑型</th><th>品項</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>粉狀</b></td><td>勉益增、好敏瑞、創快復、胺命一號、新普派、佳易得、基速得、倍力素、速養遼、千卡達、
+          GFO 即服歐、雀巢媽媽 G 穩適、愛速康、糖飴、優生坊奶麥粉、快凝寶、吞樂美、日清 MCT 能量粉、T-CELL 乳酸菌粉</td></tr>
+        <tr><td class="nw"><b>液狀</b></td><td>雙卡、益沛佳、小安素、益力壯 14、益力壯優纖 16、益力壯 17、倍速、桂格完膳 50 鉻、
+          力增未洗腎、力增洗腎、補體素鉻 100、雙備素、速得康、倍力素、原味安素、安素草莓減甜、桂格完膳植物蛋白、
+          桂格完膳原味無糖、桂格完膳低糖香草、日清 MCT 能量油、補體素倍力、力攝適諾沛、雀巢飲沛</td></tr>
+        <tr><td class="nw"><b>果凍</b></td><td>海恩士果凍（玉米風味）</td></tr>
+        <tr><td class="nw"><b>滴／錠劑<br>（需醫師開立）</b></td><td>補維勝錠專用維他命、頂級 Petit Pur 3 Omega-3 液態魚油、
+          優寶滴液體維生素 D3、新鐵多膠囊、多補多 β-Glucan 膠囊</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    住院病人由病房護理站電腦點選後由營養室送病房；出院後可直接至營養室訂購。
+    <b>品項以營養室現場供應為準</b>；需營養師評估時請護理站通知病房營養師。
+    台大的公告<b>只列品名與劑型、沒有標示配方類別</b>——要選哪一支請對照上面的配方選擇原則，或直接照會營養師。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：外科術後 ==================== -->
+<section class="diet-panel hidden" data-panel="surg">
+
+  <div class="kbox alert">
+    <div class="kbox-t">術後飲食進階：正解是兩段式，不要簡化成一句話</div>
+    <ul>
+      <li><b>① 不需要從清流一級一級往上爬。</b>ESPEN 外科指引 <b>Update 2025</b>（已取代 2017 完整版與 2021 實用版）
+        <b>Recommendation 4（Grade A，100% 強共識）</b>：
+        「Oral/tube feeding <b>shall be started as soon as possible within the first few hours after surgery</b>,
+        in conscious and hemodynamic stable patients as tolerated.」
+        ERAS 大腸直腸 2025：「Oral intake should be resumed <b>within hours</b> after colorectal surgery.」（Strong）</li>
+      <li><b>但 2025 版同時加了一個煞車。Recommendation 5（GPP，93%）</b>：
+        「The oral diet <b>should be adapted to the type of surgical procedure and individual tolerance</b>.
+        Tolerance of early oral nutrition <b>shall be assessed carefully</b> in patients after operations with a
+        <b>high risk for delayed gastric emptying or postoperative ileus</b>.」
+        內文更明確：<b>「a more cautious approach should be adopted, especially in older patients (&gt;75 years old)」</b>，
+        而且這些病人<b>在上消化道與胰臟切除後的早期腸道營養也要謹慎</b>。
+        2021 版只有「數小時內開始」那一條，<b>沒有</b>這個煞車。</li>
+      <li><b>② 但「術後當天直接上普通飲食」也沒有額外好處。</b>
+        Yao 2023（Dis Colon Rectum，PMID 37656683）：POD0 普通飲食 vs 清流，POD2 耐受度、腸阻塞、腸道功能恢復全部無差異，
+        <b>而 POD0 當天的耐受率反而是清流組較高（91% vs 71%，p=0.01）</b>。</li>
+      <li><b>③ 真正勝出的是「早期直接給低渣」</b>。Lau 2014（Ann Surg，PMID 25203881）：
+        POD1 給<b>低渣飲食</b>比清流——噁心分數 4.7 → <b>3.5（P=0.01）</b>、排氣提早 <b>1.1 天（P=0.04）</b>、
+        住院 7.0 → <b>5.0 天（P=0.01）</b>，校正後仍短 <b>1.4 天</b>；併發症沒有增加。</li>
+      <li>→ 實作是<b>「數小時內開始經口，直接給低渣／軟質，依術式與耐受度調整」</b>，
+        不是逐級爬，也不是立刻普通飲食，<b>更不是不看術式一律照表操課</b>。
+        ESPEN 內文逐字：<b>「早期正常飲食或腸道營養，包括術後第一或第二天給清流，
+        不會影響結腸或直腸吻合口癒合，且顯著縮短住院天數。」</b></li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">傳統四級飲食的實際內容</span><span class="dh-e">教科書典型值，非指引數字</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>飲食</th><th>定義</th><th>熱量／蛋白質</th><th>期限</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>清流質</b></td>
+            <td>室溫下完全透明、消化道不留殘渣：水、冰、無果肉果汁、運動飲料、碳酸飲料、果凍、茶、咖啡、清湯、冰棒</td>
+            <td class="nw">約 <b>600 kcal</b>／蛋白質約 <b>6 g</b></td>
+            <td>「<b>未併用營養補充時不應開超過 5 天</b>」；<b>營養不完整</b></td></tr>
+        <tr><td class="nw"><b>全流質</b></td>
+            <td>所有液體，以及室溫下會液化的食物：奶類、過濾濃湯、滑順優格、布丁、卡士達、冰淇淋、雪酪、液體營養品、米糊麥糊</td>
+            <td class="nw">加了營養補充品才可能到 <b>&gt;2000 kcal／約 70 g</b>（<b>高度依賴有沒有加，不是常數</b>）</td>
+            <td>仍非營養完整</td></tr>
+        <tr><td class="nw"><b>低渣／低纖</b></td>
+            <td>減少增加糞便體積的成分；典型為<b>每日纖維 &lt;10 g</b></td>
+            <td class="nw">—</td>
+            <td><b>沒有標準化的量化定義</b>；「低渣」與「低纖」常被混用</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    這組熱量數字<b>在任何指引裡都查不到</b>，只出現在教科書型的二手來源，頁面上標成「典型值」。
+    但方向是明確的：<b>清流的 600 kcal 與 6 g 蛋白質，對任何一個成人都遠遠不夠</b>。<br>
+    <b>ESPEN 外科 2025 Recommendation 9</b>：圍手術期<b>預期五天以上無法經口進食</b>者，
+    或<b>超過七天經口攝取不足建議熱量的 50%</b> 者，<b>都應立即開始營養治療</b>（營養不良者尤其如此）。
+    <b>Recommendation 28（Grade A）</b>：<b>經口無法達到熱量需求、或還不能吃</b>者，
+    <b>應在 24 小時內開始腸道營養</b>——特別是<b>預期未來七天經口熱量與蛋白質攝取不到 50%</b> 者，
+    以及<b>頭頸大手術與上消化道手術後</b>的病人。<br>
+    再餵食症候群高風險者，腸道營養要<b>從 10–30 mL/h 慢慢起始並分數天漸增</b>，
+    監測低血磷、低血鉀、低血鎂與維生素 B1 缺乏（見 <a href="../tools/nutrition-risk.html" class="pmid">再餵食風險</a>）。
+    <b>ERAS 大腸直腸 2025</b>：術後前 3–5 天除正常飲食外應給<b>至少 500 kcal 的口服營養補充品</b>（Conditional）；
+    營養不良者術後<b>繼續至少 2–3 個月（8–12 週）</b>以減少肌肉流失（Strong）。<br>
+    <b>術前禁食與 ERAS 碳水飲品見「檢查前」分頁。</b>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">胃切除後</span><span class="dh-e">Dumping 國際共識 2020 · 台灣胃癌營養共識 2021</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th></th><th>早期 dumping</th><th>晚期 dumping</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>時間</b></td><td><b>餐後 1 小時內</b>（多數在 30 分鐘就出現）</td><td><b>餐後 1–3 小時</b></td></tr>
+        <tr><td class="nw"><b>症狀</b></td>
+            <td>腸胃道：腹痛、絞痛、脹氣、腸鳴、噁心、腹瀉<br>血管運動：疲倦、<b>想躺下</b>、臉潮紅、心悸、出汗、心搏過速、低血壓，罕見昏厥</td>
+            <td>神經低血糖：疲倦、無力、意識混亂、飢餓、昏厥<br>自律／腎上腺素：出汗、心悸、顫抖、易怒</td></tr>
+        <tr><td class="nw"><b>機轉</b></td>
+            <td>食物高滲透壓使血漿水分快速移入腸腔，加上多種腸道荷爾蒙釋放</td>
+            <td>未消化碳水快速到達小腸 → GLP-1 驅動的高胰島素血症 → <b>反應性低血糖</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">Dumping 飲食對策：哪幾條共識通過了、哪兩條沒通過</div>
+    <ul>
+      <li>✅ <b>減少每餐份量、並把喝水延到餐後至少 30 分鐘</b>（陳述 44，<b>Grade B</b>，90% 同意）</li>
+      <li>✅ <b>去除快速吸收的碳水</b>以預防晚期 dumping 的低血糖（陳述 45，<b>Grade B</b>，90% 同意）</li>
+      <li>✅ <b>高纖高蛋白、細嚼慢嚥</b>（陳述 46，Grade C，80% 同意）</li>
+      <li>❌ <b>「餐後躺 30 分鐘」沒有通過</b>——同意度只有 <b>55%</b>，共識內文逐字寫「evidence for this approach is lacking」。</li>
+      <li>❌ <b>增稠劑（guar gum／pectin／glucomannan）當第二線也沒通過</b>——同意度只有 <b>40%</b>；
+        共識指出「這類補充品的口感與耐受性通常很差」。</li>
+      <li>共識另一句誠實的話：<b>「高蛋白食物或延後喝水的好處，文獻中沒有對照數據。」</b>
+        以及<b>靜脈輸液並不能預防早期 dumping 的症狀</b>——所以不是單純的血容積問題。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>台灣胃癌營養共識 2021</b>（台灣消化系醫學會，30 位專家 modified Delphi，PMID 31859187）：
+    <b>全胃切除者常規補充維生素 B12</b>；<b>高劑量口服 B12 與肌肉注射效果相同</b>（不必然要打針）；
+    術後<b>早期經口或管灌的住院天數比 TPN 短</b>；<b>早期經口相較晚期經口可縮短住院且不增加併發症</b>。<br>
+    全胃切除後 B12 缺乏的合併盛行率 <b>48.8%（95% CI 32.4–65.2）</b>（14 篇、2,627 人；PMID 37669168，異質性極高 I²=98.85）。<br>
+    <span class="todo">未查到條文</span> 胃切除後<b>鐵與鈣</b>的常規補充劑量——台灣與國際指引都沒有給數字，
+    本頁不自行填。機轉上是胃酸減少與十二指腸／近端空腸被繞過（鐵與鈣的主要吸收部位）。<br>
+    對應台大醫令：<b>胃切飲食 1～8</b>（逐階內容台大未公開，見「開醫囑」分頁）。
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">上消化道大手術的餵食管是「術中就放」，不是等到吃不下才想辦法</div>
+    <ul>
+      <li><b>ESPEN 外科 2025 Recommendation 30（Grade B，89% 共識）</b>逐字：
+        「In patients with <b>malnutrition and/or high metabolic risk</b>, <b>intraoperative placement of a nasojejunal tube
+        or feeding jejunostomy</b> should be considered, <b>especially during esophagectomy, total gastrectomy,
+        and pancreatoduodenectomy</b>.」</li>
+      <li><b>Recommendation 34（GPP，100% 共識）</b>：術中放的空腸造口<b>出院時可以暫時留著</b>，
+        依<b>體重進展</b>與<b>輔助化療的順從性</b>而定。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">食道切除後</span><span class="dh-e">ERAS 2019</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>建議</th><th>證據／強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">鼻胃管</td><td>手術當下<b>建議</b>放鼻胃管減壓，但臨床適當時<b>考慮早期（術後第 2 天）移除</b></td><td class="nw">Moderate／<b>Strong</b></td></tr>
+        <tr><td class="nw">餵食管</td><td><b>應強烈考慮早期腸道餵食，於第 3–6 天達到營養目標</b>；
+          <b>餵食空腸造口或鼻空腸／鼻十二指腸管皆可</b></td><td class="nw">Moderate／Moderate</td></tr>
+        <tr><td class="nw">術後早期營養</td><td>食道癌手術病人<b>早期腸道營養有益</b></td><td class="nw">Moderate／<b>Strong</b></td></tr>
+        <tr><td class="nw">術前營養</td><td>所有病人都要做營養評估並在術前優化；高風險者<b>優先走腸道</b>，選擇性使用餵食管</td><td class="nw">Low／<b>Strong</b></td></tr>
+        <tr><td class="nw">藥理營養</td><td>食道癌手術的 pharmaconutrition <b>證據互相矛盾，目前不支持常規使用</b></td><td class="nw">Moderate／Strong</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>空腸造口 vs 鼻空腸管，指引明說不知道哪個好</b>——ERAS 逐字：「the ideal route of administration <b>remains unclear</b>」。
+    空腸造口：死亡率 0–0.5%、再手術 0–2.9%、入口感染 0.4–16%、滲漏 1.4–25%、腸胃不適 10–39%；
+    鼻空腸管主要問題是移位，<b>20–35% 需再入院處理餵食通路</b>。
+    一個直接比較的 RCT：達標時間相同（皆 3 天），但<b>管路相關併發症反而是空腸造口組較高（38% vs 29%）</b>。<br>
+    <span class="todo">指引查無</span> <b>進食姿勢與吞嚥訓練</b>——ERAS 食道切除 2019 全文中沒有這類條文。
+    臨床上仍這樣做，但那是實務不是指引。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">胰十二指腸切除後與胰外分泌功能不全</span><span class="dh-e">European PEI guidelines 2025</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">胰外分泌功能不全不要限脂</div>
+    <ul>
+      <li>2025 歐洲 PEI 指引逐字：<b>「Patients with PEI receiving adequate PERT usually do not require dietary fat restriction.」</b>
+        正確的做法是把酵素補到夠，而不是把脂肪拿掉。</li>
+      <li><b>PERT 最低有效劑量：每主餐 40,000–50,000 units lipase，點心減半（20,000–25,000）。</b>
+        指引並明說「有些指引建議從 25,000–40,000 起始，但<b>低於 40,000 的證據很少</b>」。</li>
+      <li><b>胰十二指腸切除術後屬於嚴重 PEI</b>，指引記載這類病人<b>起始劑量要更高</b>才有效。</li>
+      <li>PERT 已足量但症狀仍在，<b>才</b>考慮限制纖維（尤其原本高纖者）。</li>
+      <li><b>管灌時</b>：讓 1,000 mL <b>聚合型</b>配方完全水解需 <b>125,000–250,000 units lipase</b>；
+        改用<b>胜肽／半元素</b>配方則只要 <b>37,500 units</b>。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>ERAS 胰十二指腸 2019</b>（PMID 32161987）：27 個項目、314 篇文獻、GRADE＋三輪 Delphi。
+    摘要逐字指出證據等級最高的五項之一是<b>「嚴重體重減輕（&gt;15%）病人的術前營養介入」</b>。
+    術後營養的逐字條文與 GRADE 等級<span class="todo">全文付費未取得</span>，二手來源一致轉述為
+    「術後開始正常飲食不設限、選擇性給腸道營養、不常規給 TPN」。<br>
+    <b>延遲性胃排空（DGE）</b>的定義出自 ISGPS（Wente 2007，PMID 17981197）；
+    <span class="todo">全文付費</span> A/B/C 分級的天數門檻本頁不憑記憶寫。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">大腸直腸術後的腸胃症狀與 LARS</span><span class="dh-e">UEG／ESCP／EAES／ESPCG／ESPEN／ESNM／ESSO 2024</span></div>
+  <div class="note" style="margin:0 0 10px;">
+    首份跨七個學會＋病人代表的整合指引，分兩部分：<b>Part I 癌症術後</b>（PMID 39576262）、
+    <b>Part II 良性疾病術後（含迴腸肛門袋 IPAA）</b>（PMID 39276317），兩部分都是 PMC 免費全文。
+    <b>用語即等級</b>：<code>should be used</code> &gt; <code>could be used</code>（low）&gt;
+    <code>can be considered</code>（very low）；另有未分級的 Good Practice Statement。
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>第一線（癌症術後）</th><th>等級</th></tr></thead>
+      <tbody>
+        <tr><td>基本行為衛教（如廁常規、腸道訓練）<b>可考慮</b></td><td class="nw">GPS，未分級</td></tr>
+        <tr><td><b>飲食調整（最適當的纖維與水分攝取）可考慮</b></td><td class="nw"><b>Very low</b></td></tr>
+        <tr><td>生活型態調整，特別是<b>過重者減重</b>與<b>吸菸者戒菸</b></td><td class="nw">Low</td></tr>
+        <tr><td>藥物：<b>psyllium</b>（糞便成形劑）、<b>macrogol</b>（軟便劑）、<b>loperamide</b>（止瀉）、
+          <b>cholestyramine</b>（膽酸結合劑）</td><td class="nw">Low</td></tr>
+        <tr><td><b>排除其他病理之後</b>，可考慮心理社會介入（認知行為訓練或心理治療）</td><td class="nw">GPS，未分級</td></tr>
+        <tr><td>第二線非手術：經肛門灌洗（very low）、<b>骨盆底物理治療</b>（low，需有經驗的治療師）、
+          經皮脛後神經刺激（low）；第二線手術：順行性灌腸（very low）、薦神經調節（moderate，但工作小組有降級）</td><td class="nw">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">兩件要注意的事</div>
+    <ul>
+      <li><b>飲食調整的證據只有 very low</b>——指引內文逐字：
+        「There is <b>limited evidence</b> on the effects of dietary adjustments as a first-line treatment for
+        gastrointestinal symptoms after oncological colorectal resections」，而且只有<b>一個 2009 年的混合方法彙整分析</b>。
+        該研究列出的<b>要避開</b>的是：<b>乳製品、辛辣與油膩食物</b>（可能造成便秘或腹瀉），部分病人覺得<b>碳酸飲料</b>難受；
+        <b>特別要避開</b>：<b>爆米花、洋蔥、玉米、豆類、生菜、花生</b>；<b>有幫助</b>的是：
+        <b>足夠水分、高纖食物、黑棗汁</b>。另一篇回顧只說要避開會引起頻便或軟便的食物，
+        <b>但沒有指出是哪些食物</b>。</li>
+      <li><b>迴腸肛門袋（IPAA）功能障礙不要用益生菌當第一線</b>——逐字：
+        「Probiotics <b>should not be used</b> as first-line treatment for pouch dysfunction.」
+        <b>Moderate level of evidence，是 Part II 裡等級最高的一條，而且是「不要用」。</b>
+        同段另有：<b>「Octreotide 或 calcium polycarbophil 不應用於治療腸袋功能障礙」</b>（low）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">腸造口：高輸出量</span><span class="dh-e">Nightingale 2022（St Mark's）</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">高輸出量造口「多喝水」會讓情況更糟</div>
+    <ul>
+      <li>機轉逐字：<b>「空腸黏膜是『漏的』。若喝下水或任何鈉濃度低於 90 mmol/L 的溶液，
+        鈉會從血漿淨流出到腸腔，直到腔內鈉濃度達到 90–100 mmol/L 為止。」</b></li>
+      <li>於是：缺水缺鈉 → 口渴 → 喝更多低張液 → <b>造口輸出更多、鈉流失更多 → 更渴</b>，形成惡性循環。</li>
+      <li>造口排出液鈉濃度約 <b>100 mmol/L（範圍 80–140）</b>——<b>每天 4 L 的輸出量就帶走約 400 mmol 鈉</b>。</li>
+      <li><b>運動飲料與單倍 Dioralyte 是不夠的</b>（單倍 Dioralyte 鈉只有 60 mmol/L）。逐字：
+        「鈉含量低於 90 mmol/L 的溶液……<b>are not adequate</b>」。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>輸出量</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">正常迴腸造口 600–1,200 mL/d</td><td>—</td></tr>
+        <tr><td class="nw">&lt;1,200 mL/d</td><td>通常<b>在餐桌上與烹調時加鹽到能接受的極限</b>即可維持鈉平衡</td></tr>
+        <tr><td class="nw">1–1.5 L/d（略偏高）</td><td><b>輕度限水（&lt;1.5 L/d）＋飲食加鹽</b></td></tr>
+        <tr><td class="nw">1,200–2,000 mL/d 或更多</td><td>靠<b>葡萄糖食鹽水溶液或鹽膠囊</b>維持鈉平衡</td></tr>
+        <tr><td class="nw"><b>高輸出量造口（連續兩天 &gt;1,500 mL/d）</b></td>
+            <td><b>低張液（茶、咖啡、水、果汁）限制到 0.5–1.0 L／24 小時</b>，改喝<b>鈉 90–120 mmol/L</b> 的葡萄糖電解質液；
+              低血鎂則補鎂。若給管灌，目標是<b>等滲透壓（300 mOsm/kg）且鈉 90–120 mmol/L</b></td></tr>
+        <tr><td class="nw">淨分泌型（輸出量 &gt; 口服攝取，常 &gt;2 L/d）</td><td>需要靜脈支持；<b>PPI／H2 阻斷劑有效</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">St Mark's solution 配方（兩個獨立來源數字一致）</div>
+    <ul>
+      <li><b>氯化鈉 3.5 g（60 mmol）＋碳酸氫鈉 2.5 g（30 mmol）或檸檬酸鈉 2.9 g（30 mmol）＋葡萄糖 20 g（110 mmol）＋自來水 1 公升</b>
+        → <b>總鈉 90 mmol/L</b>。這是改良版 WHO 霍亂補液（去掉氯化鉀）。</li>
+      <li>家用量法：葡萄糖粉 20 g（6 平匙 5 mL）＋碳酸氫鈉 2.5 g（1 尖匙 2.5 mL）＋食鹽 3.5 g（1 平匙 5 mL），
+        溶於 1 公升自來水，<b>每天新鮮泡製</b>。口感偏苦可冷藏、加少量果汁或檸檬調味、用吸管喝；
+        不耐受碳酸氫鈉可<b>等量改用檸檬酸鈉</b>。</li>
+      <li>更濃的版本：<b>氯化鈉 7 g（120 mmol）＋葡萄糖 8 g（44 mmol）＋自來水 1 公升</b>。
+        鈉提高到 136 mmol/L 吸收更好，但<b>「嚐起來像甜的海水」</b>，病人常喝不下去。</li>
+      <li><b>鹽膠囊</b>（每顆 500 mg）大量服用（每 24 小時 14 顆）有效，但部分病人會噁心甚至嘔吐。</li>
+      <li><b>管灌配方</b>：要加氯化鈉把配方總鈉濃度拉到 <b>100 mmol/L</b>，同時維持滲透壓接近 300 mOsm/kg。</li>
+    </ul>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">高劑量 loperamide 不是沒有代價</div>
+    <ul>
+      <li>Loperamide <b>4–24 mg 每天四次</b>；因腸肝循環被破壞、小腸傳輸快，可能需要 12–24 mg 的單次高劑量。
+        Loperamide 4 mg qid 比 codeine phosphate 60 mg qid <b>更能降低迴腸造口液的重量與鈉含量</b>，兩者合用可能更好；
+        <b>codeine 會增加造口的脂肪流失，loperamide 不會</b>。</li>
+      <li>英國 MHRA 2017 就高劑量 loperamide 的<b>嚴重心血管事件（QT 延長、torsades、心跳停止／死亡）</b>發出警訊。
+        British Intestinal Failure Alliance 建議：<b>開始 &gt;4 mg qid 之前，所有高輸出量造口／瘻管病人都要做心電圖並量 QT</b>；
+        <b>每日總量應低於 80 mg</b>，超過要驗血中濃度。</li>
+      <li><b>Omeprazole 40–80 mg/day</b>，劑量調到新鮮造口液 pH &gt;5；對淨分泌型有效，對淨吸收型通常無效。
+        剩餘空腸 &lt;50 cm 時可能需要靜脈給藥。</li>
+    </ul>
+  </div>
+  <div class="note">
+    術後早期飲食（JBI 式證據總結，PMID 39990640，<b>不是學會指引</b>）：
+    術後 <b>4–6 週</b>低纖、低渣、低油、少辛辣（1A）；前 <b>6–8 週</b>避開燕麥、柑橘、玉米、蘋果、堅果、豆類（3A）；
+    前 <b>六週</b>避開生的蔬果，改吃煮過或罐頭水果（3A）；限制單醣與含糖飲料（2A）；
+    幫助糞便成形的食物：<b>奶油、起司、白飯、香蕉、義大利麵、馬鈴薯、麵條、棉花糖</b>（1A）；
+    <b>細嚼慢嚥，術後 6–8 週起每三天試一種新食物、份量少</b>（2A）；
+    <b>阻塞性食物</b>（要特別細嚼）：爆米花、椰子、菇類、黑橄欖、高纖蔬菜、玉米、堅果、芹菜、帶皮食物、果乾、有腸衣的肉類（2A）；
+    <b>產氣食物</b>：碳酸飲料、豆類、洋蔥、啤酒、菠菜、豆芽、咖啡（2A）；
+    <b>避免用吸管、嚼口香糖、邊吃邊講話、抽菸</b>（2A）；早餐午餐吃多一點、晚餐少、<b>晚間限水</b>（2B）；
+    迴腸造口者每日液體要比一般建議<b>多 500–750 mL</b>。
+    監測：術後早期每 <b>1–3 天</b>驗腎功能電解質與<b>隨機尿鈉</b>，穩定後住院每週、出院後每 2–3 個月；每年檢查貧血與 B12。<br>
+    <span class="todo">查無來源</span> <b>「除臭食物」清單</b>——該文件只寫「記飲食日記追蹤哪些食物產生氣味」，
+    坊間常見的優格／巴西里／蔓越莓汁說法在文件中查不到，本頁不補。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">短腸症候群</span><span class="dh-e">ESPEN 慢性腸衰竭 Update 2023</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">有結腸與沒結腸的飲食是相反的——記反會直接害到病人</div>
+    <ul>
+      <li><b>有結腸（type 2／3）</b>：<b>高複合碳水、低脂、低單雙醣</b>（R52，Grade 0）。
+        因為未吸收的碳水可被結腸菌發酵成短鏈脂肪酸回收能量——高碳水（60%）低脂（20%）飲食可使糞便能量流失減少約
+        <b>2.0 MJ/d（477.7 kcal）</b>。並<b>應提高 MCT 比例</b>（R53，Grade B），但只帶來「marginal benefit」。</li>
+      <li><b>無結腸（type 1，end jejunostomy）</b>：<b>脂肪與碳水比例可以任意，只要低單雙醣</b>（R54，Grade 0）。
+        造口病人吃高碳水低脂飲食反而<b>餐重多約 700 g/d</b>，造口濕重流失也等幅增加。</li>
+      <li>低脂高碳水飲食的代價（逐字）：<b>體積大、口感差、產氣脹氣多，可能反而降低食慾與總熱量</b>，
+        還有必需脂肪酸與脂溶性維生素不足的問題——<b>要監測</b>（R55，GPP）。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>條文</th><th>內容</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">R56</td><td><b>不要加可溶性纖維（如 pectin）</b>來增進整體腸道吸收</td><td class="nw">Grade 0</td></tr>
+        <tr><td class="nw">R57</td><td><b>不要常規排除乳糖</b>，除非臨床上已記錄到不耐受</td><td class="nw">Grade 0</td></tr>
+        <tr><td class="nw">R61</td><td><b>麩醯胺酸、益生菌或其他補充營養素不能被建議</b>用來促進腸道復健</td><td class="nw">Grade 0</td></tr>
+        <tr><td class="nw">R60</td><td>需要管灌時，<b>等滲透壓的聚合型配方可為首選</b>（高空腸造口的研究中，小胜肽配方雖改善蛋白質吸收 14 vs 11 g/d，
+          但<b>整體能量吸收沒有改善</b>）</td><td class="nw">—</td></tr>
+        <tr><td class="nw">R62</td><td>type 1（end jejunostomy）可<b>大方用鹽</b>，並<b>限制與餐食一起喝的液體</b></td><td class="nw">GPP（96%）</td></tr>
+        <tr><td class="nw">R64</td><td>淨分泌型高輸出空腸造口<b>「shall」限制低鈉的低張液（水、茶、咖啡、酒）
+          與<b>高張液（果汁、可樂）</b></b>——<b>高張的也要限，不是只有白開水</b></td><td class="nw">GPP（96%）</td></tr>
+        <tr><td class="nw">R129</td><td>有結腸者要預防草酸鈣結石：<b>低草酸＋低脂飲食，並增加口服鈣</b>
+          （脂肪酸會結合鈣鎂，使草酸游離被吸收）</td><td class="nw">—</td></tr>
+        <tr><td class="nw">R77</td><td>選定病人使用腸道生長因子時，<b>teduglutide 為首選</b>（唯一獲 FDA 與 EMA 核准的 GLP-2 類似物）；
+          有無結腸都觀察到效果。仿單劑量 <b>0.05 mg/kg 每日一次皮下注射</b>，
+          開始前 6 個月內成人需做<b>大腸鏡＋上消化道內視鏡並切除瘜肉</b></td><td class="nw">GPP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    可脫離居家靜脈營養的長度門檻（逐字）：<b>type 1 &gt;100 cm；type 2 &gt;65 cm 小腸（且 &gt;50% 結腸在連續性內）；type 3 &gt;30 cm</b>。<br>
+    口服補液的濃度科學：造口排出液鈉平均 <b>88 mmol/L（範圍 60–118）</b>；
+    <b>人類最大鈉吸收出現在 120 mmol/L 氯化鈉＋30 mmol/L 葡萄糖的混合液</b>。<br>
+    <span class="todo">未查</span> teduglutide 的台灣藥證與健保給付狀態。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">乳糜漏</span><span class="dh-e">證據總結（非指引），Front Nutr 2024</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>輸出量</th><th>處置（逐字）</th><th>等級</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>高流量 &gt;1 L/d</b></td><td><b>立即停止經口進食並開始 TPN</b>，讓腸道完全休息</td><td class="nw">2c</td></tr>
+        <tr><td class="nw"><b>低流量 &lt;1 L/d</b></td><td><b>低脂與／或 MCT 飲食；低脂飲食應維持 7–10 天</b></td><td class="nw">2c</td></tr>
+        <tr><td class="nw">脂肪上限</td><td><b>高蛋白、低脂（每日脂肪 &lt;10 g）</b>，密切監測臨床反應與營養狀態</td><td class="nw">2b</td></tr>
+        <tr><td class="nw">MCT 劑量</td><td>口服 MCT 油<b>起始 1 湯匙、每日 3–4 次</b>；成人典型劑量 <b>50–100 mL/day</b></td><td class="nw">2c</td></tr>
+        <tr><td class="nw">TPN 時程</td><td><b>6–30 天</b></td><td class="nw">4d</td></tr>
+        <tr><td class="nw">無法經口</td><td>放鼻胃管或胃造口，給<b>以中鏈脂肪酸為基礎</b>的管灌，直到乳糜漏解決</td><td class="nw">4d</td></tr>
+        <tr><td class="nw">必需脂肪酸</td><td>高風險者給周邊靜脈脂肪乳劑，<b>每週三次、每次 250 mL 的 20% 溶液</b></td><td class="nw">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    該文件自己的但書（逐字）：<b>「低脂飲食的定義在臨床實務上仍有爭議，而且很多病人覺得難以下嚥。」</b>
+    監測用<b>乳糜液中的總三酸甘油酯輸出量</b>來精確反映漏出量。
+    <span class="todo">未取得</span> <b>octreotide 的劑量與使用時機</b>——該證據總結只引用了相關統合分析，沒有列出劑量，本頁不憑印象寫。
+    這份是<b>證據總結不是學會指引</b>，且對象是癌症術後的乳糜漏。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">腸皮瘻管</span><span class="dh-e">ESPEN CIF 2023</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">「瘻管要禁食讓它自己關」已被明文否定</div>
+    <ul>
+      <li><b>R98（GPP，96% 強共識）</b>逐字：<b>「Withholding EN cannot be of benefit regarding fistula closure」</b>，
+        反而「some oral/enteral nutrition may protect the integrity of the mucosal barrier as well as the immunologic and
+        hormonal function of the gut」。內文更直接：<b>「沒有任何研究顯示禁食對瘻管閉合有好處。」</b></li>
+      <li><b>R99（Grade 0，100%）</b>：優化營養與傷口照護<b>可能穩定瘻管並使其自發性閉合</b>。</li>
+      <li><b>R100（Grade 0，96%）</b>：雙腸造口的高輸出量瘻管可考慮<b>食糜回輸（refeeding enteroclysis）</b>。</li>
+      <li><b>R101（Grade 0，100%）</b>：<b>藥物治療與短腸症候群相同</b>（PPI 降低輸出量、抗蠕動藥）。</li>
+      <li><b>R102（Grade 0，100%）</b>：恢復腸道連續性的手術要個別化，<b>只由專門跨領域團隊中有經驗的外科醫師執行</b>；
+        內文：<b>「到目前為止，關於處置與腸道重建，尚未發展出以證據為基礎的標準化建議。」</b></li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：腎臟 ==================== -->
+<section class="diet-panel hidden" data-panel="ren">
+
+  <div class="kbox alert">
+    <div class="kbox-t">「CKD 要限蛋白質」這件事，三大指引講的不是同一件事</div>
+    <ul>
+      <li>這不是筆誤、不是版本落差，是<b>三個學會同時代的立場不一致</b>。寫醫囑與寫病歷時要說清楚你依的是哪一套。</li>
+      <li><b>KDOQI 2020</b> 是腎臟營養專科的觀點；<b>KDIGO 2024</b> 是腎臟科整體照護的觀點；<b>ADA 2026</b> 是糖尿病科的觀點。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>指引</th><th>非糖尿病 CKD 3–5（未透析）</th><th>糖尿病 CKD 3–5（未透析）</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>KDOQI 2020</b></td>
+            <td><b>0.55–0.60 g/kg/d</b><br>或 <b>0.28–0.43 g/kg/d ＋酮酸／胺基酸類似物</b>（補到等效 0.55–0.60）</td>
+            <td><b>0.6–0.8 g/kg/d</b></td>
+            <td class="nw"><b>1A</b> ／ OPINION</td></tr>
+        <tr><td class="nw"><b>KDIGO 2024</b></td>
+            <td><b>維持 0.8 g/kg/d</b>；極低蛋白 0.3–0.4 ＋ EAA／酮酸（補到 ≤0.6）<b>只留給「有腎衰竭風險」且能密切監督者</b></td>
+            <td>未另立條文</td>
+            <td class="nw">2C</td></tr>
+        <tr><td class="nw"><b>ADA 2026</b></td>
+            <td>—</td>
+            <td><b>0.8 g/kg/d，與一般人相同</b>；明文寫<b>低於 0.8 「is not recommended」</b>——不改善血糖、不改善心血管指標、不減緩 eGFR 下降，<b>且可能增加營養不良風險</b></td>
+            <td class="nw"><b>A</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    KDIGO 另訂上限：<b>有進展風險者避免 &gt;1.3 g/kg/d</b>；<b>代謝不穩定者不可開低蛋白或極低蛋白飲食</b>。
+    兩端族群方向相反——<b>小兒不可限制蛋白質</b>（會影響生長，目標放在健康兒童正常範圍的<b>上緣</b>）；
+    <b>衰弱與肌少症的長者要考慮提高</b>蛋白質與熱量。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">換算成台大的「低蛋白幾號」</span><span class="dh-e">NTUH low-protein diet mapping</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>體重</th><th>KDOQI 非糖尿病 0.55–0.60</th><th>KDOQI 糖尿病 0.6–0.8</th><th>KDIGO／ADA 0.8</th><th>透析 1.0–1.2</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">50 kg</td><td>27.5–30 g → <b>低蛋白 30</b></td><td>30–40 g → <b>低蛋白 30～45</b></td><td>40 g → <b>低蛋白 45</b></td><td>50–60 g → <b>低蛋白 60</b></td></tr>
+        <tr><td class="nw">60 kg</td><td>33–36 g → <b>低蛋白 30～45</b></td><td>36–48 g → <b>低蛋白 45</b></td><td>48 g → <b>低蛋白 45～60</b></td><td>60–72 g → <b>超過 60</b></td></tr>
+        <tr><td class="nw">70 kg</td><td>38.5–42 g → <b>低蛋白 45</b></td><td>42–56 g → <b>低蛋白 45～60</b></td><td>56 g → <b>低蛋白 60</b></td><td>70–84 g → <b>超過 60</b></td></tr>
+        <tr><td class="nw">80 kg</td><td>44–48 g → <b>低蛋白 45</b></td><td>48–64 g → <b>低蛋白 60</b></td><td>64 g → <b>超過 60</b></td><td>80–96 g → <b>超過 60</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">兩個由這張表直接掉出來的結論</div>
+    <ul>
+      <li><b>透析病人不該開低蛋白飲食。</b>KDOQI 給 HD（1C）與 PD（OPINION）的是 <b>1.0–1.2 g/kg/d</b>——
+        60 kg 就要 60–72 g，<b>已經超過台大最高的「低蛋白 60」</b>。透析病人若還掛著低蛋白飲食，那是沒有隨透析啟動更新的舊醫囑。</li>
+      <li><b>「低蛋白 20」對應的是極低蛋白飲食</b>（0.28–0.43 g/kg），<b>必須同時給酮酸／胺基酸類似物</b>，
+        否則就是單純的蛋白質不足。KDOQI 與 KDIGO 都要求<b>密切臨床監督</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">KDOQI 2020 的其餘條文</span><span class="dh-e">AJKD 2020;76(3 Suppl 1)</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>條文</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>熱量</b></td>
+            <td><b>25–35 kcal/kg body weight/d</b>，依年齡、性別、活動量、身體組成、體重目標、CKD 期別、共病與發炎個別化。
+              <b>適用 CKD 1–5D（含透析）與移植後</b>，不是只有未透析</td><td class="nw">1C／OPINION</td></tr>
+        <tr><td class="nw"><b>鈉</b></td>
+            <td>CKD 3–5、5D、移植後一律 <b>&lt;100 mmol/d（&lt;2.3 g/d）</b>。KDIGO 2024 則寫
+              <b>&lt;2 g 鈉／d（&lt;90 mmol，&lt;5 g 食鹽）</b>，強度只有 2C，且明文例外：
+              <b>失鈉性腎病通常不適合限鈉</b></td><td class="nw">1B／1C</td></tr>
+        <tr><td class="nw"><b>鉀</b></td>
+            <td><b>沒有任何 mg/day 上限。</b>原文只寫「調整鉀攝取以維持血鉀在正常範圍」；
+              高血鉀或低血鉀時依<b>個別需求與臨床判斷</b>調整</td><td class="nw"><b>OPINION</b>／2D</td></tr>
+        <tr><td class="nw"><b>磷</b></td>
+            <td>調整到<b>血磷正常</b>（1B）；另立一條要求考慮<b>磷的來源與生體可用率</b>（動物性／植物性／食品添加劑）。
+              移植後低血磷者反而<b>可給高磷飲食或補充劑</b></td><td class="nw">1B／OPINION</td></tr>
+        <tr><td class="nw"><b>鈣</b></td>
+            <td>CKD 3–4 <b>未使用活性維生素 D 類似物</b>者，<b>總元素鈣 800–1,000 mg/d</b>（含飲食鈣、鈣片與含鈣磷結合劑）</td><td class="nw">2B</td></tr>
+        <tr><td class="nw"><b>酸鹼</b></td>
+            <td>CKD 1–4 以<b>增加蔬果</b>降低淨產酸（2C）；CKD 3–5D 用<b>碳酸氫鹽或檸檬酸／檸檬酸鈉</b>（1C）；
+              血中碳酸氫鹽維持 <b>24–26 mmol/L</b></td><td class="nw">2C／1C／OPINION</td></tr>
+        <tr><td class="nw"><b>飲食型態</b></td>
+            <td>植物性 vs 動物性蛋白<b>證據不足</b>（1B）；<b>地中海飲食</b>可能改善血脂（2C）；
+              CKD 1–4 <b>增加蔬果</b>可能降體重、降血壓、降淨產酸（2C）</td><td class="nw">1B／2C</td></tr>
+        <tr><td class="nw"><b>水分</b></td>
+            <td><b>KDOQI 2020 完全沒有液體限制的條文</b>（全文搜尋 0 筆）。
+              透析病人的水分限制在現行營養指引裡沒有數字，臨床上用的數字來自更舊的文件或機構慣例</td><td class="nw">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>磷目標的實務落差</b>：指引指向「正常範圍」，對 HD 病人是 <b>2.5–4.5 mg/dL</b>；
+    但 2020–2022 的實施研究顯示營養師幾乎一律用洗腎中心的 <b>3.0–5.5 mg/dL</b>（Academy of Nutrition and Dietetics 評論，PMID 38007185）。<br>
+    <b>PD 的透析液葡萄糖熱量要另外算進去</b>——KDOQI 沒有這條，ESPEN 用 <b>glucose 3.4 kcal/g</b>（不是 4 kcal/g）。
+    <b>PD 不建議常規用胺基酸透析液</b>取代葡萄糖透析液來改善營養（2C）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">住院與 AKI：方向和門診相反</span><span class="dh-e">ESPEN 2024 · KDIGO 2012</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">住院醫囑最常錯的兩條</div>
+    <ul>
+      <li><b>急性病住院時，要把原本門診的低蛋白飲食停掉</b>（ESPEN practical 2024 Rec 41，GPP，<b>100% 共識</b>）。</li>
+      <li><b>不可以為了避免或延後洗腎而減蛋白質</b>（ESPEN Rec 39，<b>Grade A</b>，96% 強共識；原文 "shall not"）。
+        理由是<b>降低蛋白質攝取並不會改變蛋白質分解速率</b>。
+        KDIGO 2012 也有同樣方向的條文，但強度只有 <b>2D</b>——引用時請用 ESPEN 的 A 級。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>住院情境</th><th>ESPEN 2024 蛋白質</th></tr></thead>
+      <tbody>
+        <tr><td>CKD 住院、非急重症</td><td class="nw"><b>0.6–0.8 g/kg/d</b></td></tr>
+        <tr><td>已規律透析、非急重症</td><td class="nw"><b>≥1.2 g/kg/d</b></td></tr>
+        <tr><td>AKI／AKI on CKD、非急重症</td><td class="nw"><b>0.8–1.0 g/kg/d</b></td></tr>
+        <tr><td>急重症、<b>未上 KRT</b></td><td class="nw"><b>從 1 g/kg/d 起，耐受則漸增至 1.3 g/kg/d</b></td></tr>
+        <tr><td>急重症、規律間歇性 KRT</td><td class="nw"><b>1.3–1.5 g/kg/d</b></td></tr>
+        <tr><td>急重症、<b>CKRT 或 PIKRT</b></td><td class="nw"><b>1.5–1.7 g/kg/d</b>（長期 CKRT 且氮平衡為負者可到 2.0）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>分母用住院前或平常體重，不要用當下的實際體重</b>（ESPEN 原文：Actual BW should not be considered for a protein prescription）——AKI 病人水腫會把體重灌大。<br>
+    <b>「未上 KRT 的 AKI」不要給高蛋白。</b>EFFORT Protein（Lancet 2023，PMID 36708732）中 1.6 vs 0.9 g/kg/d 整體無差異，
+    但 <b>AKI 次群組在高蛋白組死亡率增加</b>；ESPEN ICU 2023 因此明說「沒有依據建議超過 1.3 g/kg/d」。
+    這與「已上 CKRT 可到 1.5–1.7」<b>不衝突，但很容易被混用</b>——差別在有沒有上 KRT。<br>
+    <b>KDIGO 的 1.7 和 ESPEN 的 1.7 不是同一件事</b>：KDIGO 2012 寫的是 "up to a maximum of 1.7"（<b>上限</b>，2D），
+    ESPEN 寫的是 "1.5 up to 1.7"（<b>目標區間</b>，grade 0）。
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">CRRT 的兩本帳：熱量進得比你想的多、胺基酸掉得比你想的多</div>
+    <ul>
+      <li><b>熱量要把透析液／置換液算進去</b>（ESPEN Rec 31，Grade B，100% 共識）：
+        citrate <b>3 kcal/g</b>、glucose <b>3.4 kcal/g</b>、lactate <b>3.62 kcal/g</b>。
+        增益 <b>115–1300 kcal/d</b>（高乳酸置換液＋ACD-A 抗凝可達 1300）；SLED 這類擴散式 PIKRT 只要算 <b>100–300 kcal/d</b>。
+        實測一例：CVVH 迴路淨葡萄糖 295 ± 28 kcal/d ＋淨檸檬酸 218 ± 8 kcal/d ≒ <b>512 kcal/d</b>（PMID 28468893）。
+        <b>propofol 的脂質 1.1 kcal/mL 也要一起算</b>。</li>
+      <li><b>胺基酸流失 3.8–18.7 g/d，隨模式與 effluent rate 變動</b>：CVVH <b>18.69 ± 3.04 g</b> ≫ SLEDf <b>8.21 ± 4.07 g</b> &gt;
+        IHD <b>5.13 ± 3.1 g</b>（PMID 31440700）。現代 CVVH 實測中位數 <b>13.4 g/d（11.8–17.4）</b>（PMID 31291614）。
+        常被轉抄的「每日 10–15 g」出自 1999 年的一篇<b>綜述</b>（PMID 10560807）而非實測，已被低估。</li>
+      <li><b>微量營養素</b>（ESPEN Rec 42／43，皆 Grade B，100% 共識）：要監測並補充微量元素，
+        <b>特別注意硒、鋅、銅</b>；水溶性維生素<b>特別注意維生素 C、葉酸、B1</b>。
+        每日 effluent 流失約：<b>維生素 C 68 mg、葉酸 0.3 mg、B1 4 mg</b>。
+        <b>反直覺</b>：重度 AKI 病人超過 30% 有 zinc／iron／selenium／vitamin D／vitamin C 低下，
+        <b>不論有沒有做 CRRT 都一樣</b>（PMID 32001725）——不要只在做 CRRT 時才想到補。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">腎結石</span><span class="dh-e">EAU Urolithiasis 2025 · AUA 2014/2019</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">腎結石不可以限鈣</div>
+    <ul>
+      <li>EAU 2025 原文：鈣<b>不應</b>限制，除非有強烈理由，因為<b>飲食鈣與結石形成呈反向關係</b>；目標 <b>1,000–1,200 mg/d</b>。</li>
+      <li>但<b>鈣「補充劑」不建議</b>——唯一例外是<b>腸源性高草酸尿</b>，而且要<b>隨餐</b>吃。
+        「飲食鈣」與「鈣片」在結石病人身上方向相反。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>EAU 2025（Table 4.5）</th><th>AUA 2014/2019</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">水分</td><td><b>攝取 2.5–3.0 L/d</b>，以白開水為主；<b>尿量 2.0–2.5 L/d</b>；尿比重 &lt;1.010</td><td>尿量 <b>&gt;2.5 L/d</b>（standard）</td></tr>
+        <tr><td class="nw">鈣</td><td><b>正常鈣 1–1.2 g/d</b></td><td>高尿鈣者<b>飲食鈣 1000–1200 mg/d</b>（standard）</td></tr>
+        <tr><td class="nw">鈉</td><td><b>食鹽限制 4–5 g/d</b></td><td>限鈉，<b>專家小組建議 2300 mg/d</b>（standard）</td></tr>
+        <tr><td class="nw">動物性蛋白</td><td><b>0.8–1.0 g/kg/d</b></td><td>增加蔬果、<b>限制非乳製品的動物性蛋白</b>（專家意見）</td></tr>
+        <tr><td class="nw">其他</td><td>多蔬菜與纖維；維持正常 BMI、適度運動、補足流失、<b>減少酒精與含糖飲料</b>；<b>避免過量維生素補充劑</b></td>
+            <td>低檸檬酸尿→<b>檸檬酸鉀</b>（standard）；腸源性高草酸尿→<b>限草酸飲食＋鈣補充劑</b>（專家意見）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    EAU 特別警告：<b>兒童的蛋白質需求隨年齡而異，限蛋白必須謹慎處理</b>。
+    AUA 原文（auanet.org 擋外部存取）未取得，上表 AUA 欄位為<b>經開放文獻轉述</b>，statement 編號與證據等級待補。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台灣：腎臟醫學會指引與健保</span><span class="dh-e">TSN 2025 · 健保 3.3.2</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>編號</th><th>台灣腎臟醫學會《臺灣慢性腎臟病臨床指引專書》2025 年 12 月更新版</th><th>建議／證據</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">A6-2-1</td>
+            <td>CKD 1–5 期應攝取足夠能量以維持正氮平衡、避免蛋白質能量耗損（PEW）。
+              <b>男 &lt;65 歲 33–35、≥65 歲 28–30 kcal/kg/day；女 &lt;65 歲 28–30、≥65 歲 25–28 kcal/kg/day</b>
+              ——<b>依性別與年齡分四段給數字，這是台灣指引與 KDOQI 最不同的地方</b></td><td class="nw">1／B</td></tr>
+        <tr><td class="nw">A6-2-2</td><td>CKD 3–5 期<b>建議採行低蛋白飲食 0.6–0.8 g/kg/day</b></td><td class="nw">1／C</td></tr>
+        <tr><td class="nw">A6-2-3</td><td>CKD 4–5 期在足夠衛教與配合度下，可用 0.6–0.8 g/kg/day，
+          或<b>極低蛋白 0.3–0.4 g/kg ＋胺基酸酮基衍生物</b>補到總量 0.6–0.8 g/kg/day</td><td class="nw">2／B</td></tr>
+        <tr><td class="nw">A6-4-2</td><td>CKD 3–5 期<b>應限制飲食中磷的攝取</b>以維持正常血磷</td><td class="nw">1／B</td></tr>
+        <tr><td class="nw">A6-4-8</td><td>CKD 3–5 期<b>飲食鈣＋鈣補充劑＋含鈣磷結合劑的鈣離子總量，每日不應超過 2,000 mg</b></td><td class="nw"><b>1／A</b></td></tr>
+        <tr><td class="nw">A6-5-2</td><td>CKD 3–5 期<b>鈉限制在每日 2,300 mg 內</b></td><td class="nw">1／B</td></tr>
+        <tr><td class="nw">A6-5-3</td><td>鉀的攝取與限制<b>依臨床狀況與檢驗數值調整以維持血鉀正常</b>（<b>同樣沒有給數字</b>）</td><td class="nw">2／B</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>台灣指引在蛋白質上站在 KDOQI 與 KDIGO 中間</b>：0.6–0.8 g/kg/d（1C），與 KDOQI 給糖尿病腎病的數字相同。
+    <b>鈣的總量上限（≤2,000 mg/d，1A）比 KDOQI 寬</b>，但兩者適用族群不同——KDOQI 那條限定「未使用活性維生素 D 類似物的 CKD 3–4」（800–1,000 mg/d，2B）。<br>
+    <b>國健署自己的兩份素材數字不一致</b>：闢謠頁寫 <b>0.6–0.8</b>，《早期慢性腎臟病照護手冊》（111 年 1 月）表格寫 <b>0.8–1.0</b>
+    ——因為後者針對「<b>早期</b>」CKD。<b>引用時一定要標分期。</b>
+    該手冊另給：脂肪佔總熱量 25–35%、飽和脂肪 &lt;7%、膽固醇 &lt;200 mg/d、鹽 &lt;5 g/d；
+    <b>鉀：第 1、2 期 &gt;4 g/d；第 3、4 期 2–4 g/d</b>。<br>
+    <b>台灣有兩個鈉數字並存</b>：DRIs 第八版的鈉 <b>CDRR ＝ 2,300 mg/d</b>（營養素基準，未訂 UL），
+    vs 國民飲食指標／國健署衛教的每日上限 <b>2,400 mg（約 6 公克鹽）</b>。
+    DRIs 的鉀只訂 AI（19 歲以上男 2,800、女 2,500 mg/d），<b>明文「暫不訂定鉀之 CDRR 與 UL」</b>。
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">酮酸類似物（Ketosteril／吉多利錠）的健保門檻不是「第 4 期」</div>
+    <ul>
+      <li>健保給付規定 <b>3.3.2</b> 逐字：「限慢性腎衰竭病患行低蛋白飲食治療，<b>連續三個月，每個月之腎絲球過濾率
+        eGFR ≦15 mL/min/1.73 m²</b>，且<b>尚未接受透析治療</b>，<b>每日至多使用六顆</b>。」</li>
+      <li>停藥條件：<b>每兩個月檢查一次</b>；<b>eGFR ≧25</b> 時，或<b>體重減輕 &gt;5%、血清白蛋白降低 &gt;5%</b>，
+        或<b>病人不遵守低蛋白飲食</b>時<b>應即停藥</b>。</li>
+      <li><b>不得用於透析與換腎病人，不得做為一般營養補充劑</b>；<b>不得與同類品製劑（例如 Amiyu）同時處方</b>。</li>
+      <li>條文只寫「行低蛋白飲食治療」，<b>沒有規定蛋白質攝取的克數門檻</b>。健保代碼 BC18273100。</li>
+      <li><b>低蛋白米、低氮澱粉、腎臟病配方食品一律自費</b>——《全民健康保險法》第 51 條第 9 款明文把
+        「管灌飲食以外之膳食」排除在給付範圍外；查無中央層級的補助方案。
+        台大的「<b>腎臟疾病配方補充品</b>」也是自費（液體 255／粉末 105 元一天）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">移植後</span><span class="dh-e">Post-transplant</span></div>
+  <div class="note">
+    KDOQI 2020 把移植後納入多條條文，但<b>多數強度只有 OPINION</b>：熱量 25–35 kcal/kg/d；
+    鈉 &lt;100 mmol/d（<b>1C</b>）；鉀依血鉀調整；<b>低血磷時可給高磷飲食或補充劑</b>（與「腎臟病要限磷」的直覺相反）；
+    地中海飲食可能改善血脂（2C）；<b>不建議常規使用 n-3 多元不飽和脂肪酸</b>來降低死亡率（2C）或心血管事件（2B）。
+  </div>
+
+  <div class="note">
+    <b>對應台大醫令</b>：低蛋白 20／30／45／60、低蛋白糖尿病飲食（糖尿 1500–2100 × 低蛋白 20–60）、
+    低鉀／高鉀、低磷、低鈉、低鈣、低蛋白－罕見疾病飲食（依營養師個別化設計），
+    以及自費的<b>腎臟疾病配方補充品（液體 255／粉末 105 元/天）</b>。詳見「開醫囑」分頁。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：消化與肝 ==================== -->
+<section class="diet-panel hidden" data-panel="gi">
+
+  <div class="dirhead"><span class="dh-n">肝硬化與肝性腦病</span><span class="dh-e">ACG 2025／2026 · EASL 2019 · ESPEN 2019</span></div>
+  <div class="kbox">
+    <div class="kbox-t">先看版本：ACG 在 2025 與 2026 連出兩份，比 EASL 2019 新</div>
+    <ul>
+      <li><b>ACG 肝病營養不良與營養建議指引 2025</b>（Am J Gastroenterol 2025;120:950-972，PMID 40314389，PMC 免費全文）——ACG 首份肝病營養指引。</li>
+      <li><b>ACG 肝性腦病指引 2026 年 3 月</b>（Am J Gastroenterol 2026;121:588-618，PMID 41773757）。</li>
+      <li><b>數字與建議等級跟 EASL 2019 不完全一樣</b>，有幾處差很大——下面逐條並列，引用時務必標明是哪一份。</li>
+    </ul>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">肝性腦病不可限制蛋白質——四份指引方向一致，但強度差很大</div>
+    <ul>
+      <li><b>EASL 2019</b> 給到最高等級 <b>（Grade II-1, A1）</b>：<b>「Avoid protein restriction in patients with HE.」</b>
+        內文逐字：<b>「Protein restriction is now considered <u>detrimental</u>, except <u>perhaps</u>, for very short periods of time,
+        in patients with severe overt HE <u>and</u> gastrointestinal bleeding.」</b>
+        ——例外只有一個（嚴重顯性 HE <b>且</b> 消化道出血），只限「very short periods」，原文還加了 "perhaps"。</li>
+      <li><b>ACG 2026 HE #20</b> 方向相同但強度只有 <b>conditional／very low</b>：
+        「We <b>suggest against</b> protein restriction in patients with HE because it <b>increases muscle breakdown and
+        does not reduce the duration of HE</b>.」<b>同一件事，EASL 是 A1、ACG 是 conditional／very low。</b></li>
+      <li><b>ACG 2025</b>：「We suggest <b>not restricting dietary protein</b>…」（conditional／<b>very low</b>）。</li>
+      <li>ESPEN 2019 Rec 54：肝性腦病<b>不應限制蛋白質，因為那會增加蛋白質分解</b>。</li>
+      <li>EASL 與 ACG 2025 都另外建議：<b>優先用蔬菜與乳製品／植物性來源的蛋白質</b>。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>條文</th><th>出處與等級</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>熱量</b></td><td><b>不低於 35 kcal/kg/d</b>（非肥胖者）</td><td class="nw">EASL 2019（II-2, B1）</td></tr>
+        <tr><td class="nw"></td><td><b>30–35 kcal/kg/d</b></td><td class="nw">ESPEN 2019 Rec 57（B）</td></tr>
+        <tr><td class="nw"><b>蛋白質</b></td><td><b>不低於 1.2–1.5 g/kg/d</b></td><td class="nw">EASL 2019（II-2, B1）</td></tr>
+        <tr><td class="nw"></td><td><b>門診 HE 病人目標 1.2–1.5 g/kg/d</b></td><td class="nw"><b>ACG 2026 #17（strong／moderate）</b></td></tr>
+        <tr><td class="nw"></td><td><b>重症合併 HE 者可給到 2 g/kg/d</b></td><td class="nw">ACG 2026 Key Concept</td></tr>
+        <tr><td class="nw"></td><td>補充營養不良／肌少者 <b>1.5 g/kg/d</b></td><td class="nw">ESPEN 2019 Rec 53、57（B）</td></tr>
+        <tr><td class="nw"><b>體重怎麼算</b></td><td><b>用實際體重扣掉腹水</b>：輕度扣 5%、中度扣 10%、重度扣 15%；合併雙側足部水腫再扣 5%</td><td class="nw">EASL 2019</td></tr>
+        <tr><td class="nw"><b>夜間點心</b></td><td><b>建議納入夜間點心</b>以改善 BMI、瘦肌肉組織，降低腹水與肝性腦病風險</td>
+            <td class="nw"><b>ACG 2025（strong／moderate）</b></td></tr>
+        <tr><td class="nw"></td><td>同一件事——<b>建議夜間點心以減少衰弱與 HE</b></td>
+            <td class="nw"><b>ACG 2026 #19（conditional／very low）</b></td></tr>
+        <tr><td class="nw"></td><td>一天<b>三到五餐＋夜間點心</b>，把禁食時段縮短；口服營養補充品應在<b>夜間或睡前</b>給</td><td class="nw">ESPEN 2019 Rec 58、24</td></tr>
+        <tr><td class="nw"><b>BCAA</b></td><td><b>建議在標準治療之外加上 BCAA</b>（若取得得到）</td><td class="nw"><b>ACG 2025（strong／moderate）</b></td></tr>
+        <tr><td class="nw"></td><td><b>建議補充 BCAA——但只在「光靠食物無法達到蛋白質需求」時</b></td><td class="nw"><b>ACG 2026 #18（strong／moderate）</b></td></tr>
+        <tr><td class="nw"></td><td><b>0.25 g/kg/d 口服</b>，用於「蛋白質不耐受」者或改善進階肝硬化的無事件存活與生活品質</td><td class="nw">ESPEN 2019 Rec 59、60（B）</td></tr>
+        <tr><td class="nw"><b>咖啡</b></td><td><b>建議慢性肝病病人喝咖啡，最好每天 ≥2 杯</b>，以降低肝纖維化進展或肝細胞癌風險</td>
+            <td class="nw"><b>ACG 2025（conditional／low）</b></td></tr>
+        <tr><td class="nw"><b>果糖</b></td><td>高果糖／高蔗糖飲食是肝臟新生脂肪生成與胰島素阻抗的強力誘發因子；
+          <b>低果糖飲食建議給所有慢性肝病病人，不分疾病嚴重度</b></td><td class="nw">ACG 2025 Key Concept</td></tr>
+        <tr><td class="nw"><b>運動</b></td><td><b>建議 HE 病人做運動</b>以降低跌倒風險、降低門脈壓、增加骨骼肌代謝氨的能力。
+          原文另澄清：<b>無氧運動後氨值上升與 HE 風險升高無關，不應因此不敢開運動處方</b>（但要注意運動傷害、需監督）</td>
+            <td class="nw">ACG 2026 #21（conditional／low）</td></tr>
+        <tr><td class="nw"><b>鋅</b></td><td>顯性 HE 用了 lactulose 與 rifaximin 仍持續有症狀、<b>且血鋅低</b>者，建議加上補鋅</td>
+            <td class="nw">ACG 2026 #14（conditional／very low）</td></tr>
+        <tr><td class="nw"><b>維生素 E</b></td><td><b>無肝硬化的 MASH 建議維生素 E 800 IU/day</b></td><td class="nw">ACG 2025（conditional／low）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">腹水限鈉：ACG 2025 已經退到「無法建議贊成或反對」</div>
+    <ul>
+      <li><b>ACG 2025 逐字</b>：「In patients with cirrhosis and ascites who are managed with diuretic therapies,
+        <b>we <u>cannot recommend for or against</u> strict sodium restricted diets</b>」（conditional／low）。</li>
+      <li><b>EASL 2019</b> 仍建議腹水者鈉約 <b>80 mmol/d（＝鈉 2 g ＝額外加入飲食的鹽 5 g）</b>，
+        但同時要求<b>注意改善口感</b>，因為這種飲食可能減少熱量攝取；
+        並明文<b>「鈉攝取 certainly not be reduced below 60 mmol/d」</b>
+        ——會讓飲食難以下嚥、危及熱量與蛋白質攝取。而且<b>低血鈉在鈉攝取低、水分不變或增加時更容易發生</b>。</li>
+      <li><b>ESPEN 2019 Rec 61（GPP，共識度只有 78%）</b>：低鈉飲食難吃，
+        <b>要把「吃更少」的風險與它對腹水的中度好處放在天秤上衡量</b>。</li>
+      <li><b>水分限制</b>（ACG 2025 Key Concept）：有體液滯留（腹水／水腫）者，
+        <b>血鈉低於 126 mEq/L 時可能需要限制自由水</b>。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>所有肝硬化病人都要評估衰弱與肌少症</b>（ACG 2025 Key Concept）。EASL 用 <b>L3 骨骼肌指數</b>，
+    首選腰大肌、脊椎旁肌與腹壁肌（相對不受活動量與水腫影響）；篩檢工具用 <b>RFH-NPT</b>（完成不到 3 分鐘、非專科人員也能操作）。
+    ACG 2026 另要求<b>所有 HE 病人（含輕微型與隱性 HE）都要評估肌肉健康與體能</b>。<br>
+    <b>酒精性肝病</b>：酒精可能佔每日熱量的<b>約 50%</b>，而那些是<b>空熱量</b>（ACG 2025）。<br>
+    <span class="todo">四份指引都查無</span> <b>夜間點心的建議克數</b>。ACG 2026 是第一份給出組成方向的：
+    <b>「建議是複合碳水化合物與蛋白質的組合」</b>；效果——相較對照組 <b>HE 風險 RR 0.46（P=0.002）</b>，
+    對氮平衡、全身蛋白質儲存與生活品質一致有效，但<b>對骨骼肌質量效果不一致、對免移植存活沒有影響</b>。
+    提醒：<b>點心會影響血糖，太接近就寢還可能加重胃食道逆流</b>。
+    常被引用的「50 g 碳水」出自個別試驗，不是任何一份指引的條文。<br>
+    <b>BCAA 的實話</b>：ACG 2026 引 16 篇 RCT 的系統性回顧——HE 顯著減少（<b>RR 0.73</b>），
+    但原文接著寫<b>「BCAA 存在於含蛋白質的食物中，除非光靠食物達不到需求，否則長期補充並非必要」</b>，
+    並提到<b>近期一個試驗沒有顯示 BCAA 有重大影響</b>。
+    EASL 引的 Cochrane（16 RCT、827 名 HE 病人）：口服 BCAA 對 HE 有正面影響，
+    但<b>口服或靜脈 BCAA 都沒有影響死亡率、生活品質或營養狀態</b>；
+    <b>急性顯性 HE 用靜脈 BCAA 沒有證據支持</b>。<br>
+    <b>肥胖肝硬化</b>（BMI &gt;30，需校正水腫）：目標漸進減重 &gt;5–10%，飲食<b>中度低熱量（−500～800 kcal/d）
+    但蛋白質要 &gt;1.5 g/kg/d</b>（EASL II-2, C1）。維生素 D 證據有限，但數值低者補充可能對骨與肝有益；
+    <b>血鋅低或有缺乏徵象者應考慮補鋅</b>；黃疸或膽汁鬱積者要考慮維生素 K 缺乏。<br>
+    <b>住院的肝硬化病人建議早期給口服或腸道營養補充</b>（ACG 2025，conditional／low）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">急性胰臟炎</span><span class="dh-e">ACG 2024 · ESPEN 2020</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">三件被明文推翻的舊做法</div>
+    <ul>
+      <li><b>「要先 NPO、等 lipase 降下來才吃」</b>——ESPEN 2020 Rec 2（<b>Grade A，100% 共識</b>）逐字：
+        「Oral feeding shall be offered as soon as clinically tolerated and <b>independent of serum lipase concentrations</b>」。
+        ACG 2024 #10：輕度急性胰臟炎<b>在 24–48 小時內</b>依耐受度早期經口進食（conditional／low）。
+        <b>注意是 24–48 小時，不是 24 小時。</b></li>
+      <li><b>「從清流逐步進階」</b>——ACG 2024 #11 逐字：
+        「oral feedings … <b>do not need to begin with clear liquids and increase in a stepwise manner</b> but may begin as a
+        <b>low-residue, low-fat, soft diet</b>」。ESPEN Rec 3（<b>Grade A，100%</b>）同方向。
+        支持的三個 RCT：Jacobson 2007（PMID 17613280）、Sathiaraj 2008（PMID 19145732）、Moraes 2010（PMID 20054282）。</li>
+      <li><b>「重症胰臟炎越早放管餵越好」</b>——PYTHON trial（NEJM 2014，PMID 25409371）：
+        預測為重症者，<b>24 小時內</b>放鼻腸管餵食 vs 需要時才餵，
+        <b>感染率 25% vs 26%、死亡率 11% vs 7%，都沒有差別</b>。
+        <b>「早期經口」與「早期管餵」是兩件事，不能混為一談。</b></li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>鼻胃 vs 鼻空腸</b>：ACG 2024 #20 <b>偏好鼻胃</b>（安全性與效果相當，鼻空腸還需放射或內視鏡置放、較貴）。
+    ESPEN Rec 7（Grade B，95%）：需要腸道營養時<b>走鼻胃管</b>，<b>消化道不耐受時才優先鼻空腸</b>——約 <b>15%</b> 會因胃排空延遲而不耐受。<br>
+    <b>靜脈營養</b>：只有在腸道途徑不可行、不耐受、或無法達到熱量需求時才用（ACG #19、ESPEN Rec 8）。
+    需要腸道營養時<b>在入院 24–72 小時內開始</b>（ESPEN Rec 5，Grade B），用<b>標準聚合型配方</b>（Rec 6，Grade A）。<br>
+    微創壞死組織清除術後：<b>臨床狀況允許時應在 24 小時內開始經口進食</b>。
+    腹內壓 &gt;15 mmHg 時腸道營養走鼻空腸、<b>起始 20 mL/h</b> 再依耐受度加速。<br>
+    <b>IAP 2025</b>（PMID 40651900）為最新國際版，<span class="todo">全文付費</span>，摘要所載方向一致：
+    「有食慾且無嘔吐就可以盡快開始經口」「<b>以一般的低脂固體飲食開始是安全的</b>」。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">慢性胰臟炎與胰外分泌功能不全</span><span class="dh-e">ESPEN 2020 · 歐洲 PEI 指引 2025</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">該限的不是脂肪，是「非常高纖」</div>
+    <ul>
+      <li>ESPEN 2020 Rec 25：<b>「除非脂肪瀉的症狀控制不住，否則沒有限制飲食脂肪的必要」</b>。
+        2025 歐洲 PEI 指引：<b>「接受足量 PERT 的 PEI 病人通常不需要限制飲食脂肪」</b>，
+        並補一句<b>「在營養不良的情況下，過度限制的飲食可能適得其反」</b>。</li>
+      <li><b>纖維才是要注意的</b>——非常高纖的飲食會結合 lipase；PERT 已足量但症狀仍在時，<b>才</b>考慮限制纖維。</li>
+      <li><b>PERT 不是從小劑量慢慢加</b>：<b>最低 40,000–50,000 units lipase／主餐</b>，點心減半；
+        指引明說<b>「低於 40,000 units 的證據很少」</b>。胰十二指腸切除術後屬嚴重 PEI，<b>起始劑量要更高</b>。</li>
+      <li><b>MCT 不一定比較好</b>：ESPEN 2020 逐字——與酵素補充併用時，
+        <b>「研究並未顯示 MCT 相較於標準長鏈三酸甘油酯有任何明確好處」</b>，還可能因難吃而降低總熱量。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">發炎性腸道疾病</span><span class="dh-e">ESPEN 2023</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>條文</th><th>內容</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">Rec 15</td><td><b>沒有任何可以普遍推薦的「IBD 飲食」</b>來促進活動期病人緩解。
+          特殊碳水化合物、舊石器、無麩質、低 FODMAP、抗發炎、無鹿角菜膠、無奶、高／低紅肉、素食、n-3 強化飲食的
+          RCT 資料<b>仍然缺乏或結果不確定</b></td><td class="nw">GPP（91%）</td></tr>
+        <tr><td class="nw">EEN 小兒</td><td><b>全腸道營養（EEN）是輕度活動期克隆氏症兒童與青少年誘導緩解的第一線治療</b></td><td class="nw">—</td></tr>
+        <tr><td class="nw"><b>EEN 成人</b></td><td><b>成人也有效，但效果不如藥物治療，因此「不」建議作為第一線</b>
+          ——這一點最常被混用</td><td class="nw">—</td></tr>
+        <tr><td class="nw">Rec 16／17</td><td><b>CDED（克隆氏症排除飲食）＋部分腸道營養</b>可作為小兒中輕度 CD 的替代方案（<b>Grade B，100%</b>）；
+          成人可考慮用 CDED 併或不併腸道營養（Grade 0，95%）。上游 RCT：12 週、78 人，
+          <b>CDED 在第 3 週的臨床反應與 EEN 一樣有效但更好耐受</b></td><td class="nw">B／0</td></tr>
+        <tr><td class="nw">狹窄</td><td>合併阻塞症狀者可用<b>調整質地的飲食</b>或<b>經狹窄遠端的管路做 EEN</b>。
+          但<b>影像上有狹窄卻無症狀者</b>，習慣給低不可溶纖維飲食——原文：
+          <b>「there are no robust data to support this logical approach」</b></td><td class="nw">—</td></tr>
+        <tr><td class="nw">Rec 62</td><td>緩解期<b>遵循健康飲食型態、避開個人明確的觸發食物</b>即可；
+          原文「一般而言，沒有任何特定飲食被證實能維持緩解」</td><td class="nw">GPP（100%）</td></tr>
+        <tr><td class="nw"><b>Rec 63</b></td><td><b>n-3 脂肪酸「shall not」用於維持 IBD 緩解</b></td><td class="nw"><b>Grade A（100%）</b></td></tr>
+        <tr><td class="nw">Rec 64</td><td>切除<b>遠端迴腸超過 20 cm</b>（不論有無合併迴盲瓣），或已記錄 B12 缺乏者，
+          應補充維生素 B12（內文：&gt;20 cm 者每月肌注 1,000 µg、終身；&lt;20 cm 通常不會缺）</td><td class="nw">Grade B</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">乳糜瀉、IBS、GERD、憩室、便秘</span><span class="dh-e">ACG · BDA · ESPEN</span></div>
+  <div class="kbox">
+    <div class="kbox-t">乳糜瀉</div>
+    <ul>
+      <li>ESPEN 住院營養指引 2021 Rec 26：<b>確診乳糜瀉者「shall」提供無麩質飲食</b>（<b>Grade A，100% 共識</b>）。</li>
+      <li>ACG 2023 建議乳糜瀉病人<b>可食用無麩質燕麥</b>，但要以症狀與血清學<b>監測燕麥耐受度</b>
+        （原因：交叉污染、品種毒性不一、少數人對燕麥蛋白 avenin 有免疫反應）；<b>監測間隔目前未知</b>。
+        <span class="todo">全文付費</span> 兩個二次來源對這條的建議強度標示不一致，本頁不標等級。</li>
+      <li><b>「無麩質」的 &lt;20 ppm 門檻出自 Codex／美國 FDA 的標示法規，不是 ACG 的建議條文</b>。
+        <span class="todo">查無</span> 台灣食藥署對「無麩質」標示的官方門檻（只查到含麩質穀類須標示為過敏原）
+        ——<b>不要把 20 ppm 當成台灣法規</b>。</li>
+      <li>乳糖不耐：ESPEN Rec 28（<b>Grade A</b>）——<b>經乳糖呼氣測試確診者</b>提供
+        <b>每餐乳糖 &lt;12 g</b> 的低乳糖飲食。</li>
+    </ul>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">IBS：麥麩是無效的，而低 FODMAP 的等級比想像中低</div>
+    <ul>
+      <li>ACG 2021 #11：<b>可溶性纖維有效、不可溶纖維無效</b>。
+        <b>Bran（麥麩，不可溶）RR 0.90（0.79–1.03）——無效</b>；
+        <b>Ispaghula（洋車前子，可溶）RR 0.83（0.73–0.94），NNT 7</b>。
+        給 IBS 病人「多吃麥麩」是反效果。</li>
+      <li>ACG 2021 #10：低 FODMAP 飲食是<b>「limited trial」</b>，等級<b>只有 conditional／very low quality</b>。
+        效果量 RR 0.69（0.54–0.88），但<b>與另一種主動飲食建議相比只剩不顯著的趨勢（RR 0.82，0.66–1.02）</b>；
+        兩個營養師主導、比較低 FODMAP 與英國標準飲食建議的研究<b>兩組沒有差別</b>。
+        （ESPEN 住院營養指引 2021 Rec 27 則給到 Grade B。）</li>
+      <li><b>必須三階段做完，不可只做限制期</b>：① 以低 FODMAP 食物替代 → ② 逐步再導入並評估症狀 → ③ 個人化避開會觸發的食物。
+        <b>2–6 週可辨識有反應者</b>；原文警告<b>「長期過度限制 FODMAP 可能導致微量營養素缺乏」</b>，
+        並認為這件事<b>需要受過訓練的腸胃專科營養師</b>。</li>
+    </ul>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">GERD：傳統飲食建議幾乎都是 conditional／low</div>
+    <ul>
+      <li>ACG 2022 的生活型態建議中<b>只有「減重」是 strong／moderate</b>；
+        避開睡前 2–3 小時進食、戒菸、避開觸發食物、抬高床頭<b>全部是 conditional／low</b>。</li>
+      <li>原文逐字：<b>「在實驗室研究中，咖啡、咖啡因、柑橘與辛辣食物對下食道括約肌壓力幾乎沒有影響。」</b>
+        酒精、菸、巧克力、薄荷與高脂食物確實會降低 LES 壓力，<b>但少有研究證明避開它們有好處</b>。</li>
+      <li>真正有資料的：<b>抬高床頭</b>（多個 RCT）；<b>避免右側臥</b>（右側臥比左側臥增加夜間與餐後逆流）；
+        <b>把兩份咖啡／茶／汽水換成水</b>可減少症狀（牛奶與果汁則無關，即使偏酸）；
+        <b>成功戒菸一年者症狀改善 44%</b>（續抽者 18%）；<b>BMI 下降 ≥3.5 的女性頻繁症狀減少 40%</b>。</li>
+    </ul>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">憩室症：「不能吃堅果種子爆米花」已被推翻，而且方向是相反的</div>
+    <ul>
+      <li>Strate 2008（JAMA，PMID 18728264）：730,446 人年、801 例憩室炎、383 例憩室出血。
+        逐字：<b>「堅果、玉米與爆米花的攝取與複雜性憩室疾病風險增加無關；反而觀察到堅果與爆米花的攝取
+        與憩室炎風險呈反向關係。」</b>
+        <b>堅果 HR 0.80（趨勢 P=0.04）、爆米花 HR 0.72（趨勢 P=0.007）</b>，玉米無相關；憩室出血三者皆不顯著。</li>
+      <li><b>ACG 2026 年 7 月的新版憩室炎指引正式寫進「suggests against the avoidance of nut, corn, seed, or popcorn
+        consumption」</b>（conditional／very low）。有憩室炎病史者建議<b>健康飲食型態</b>（多蔬果全穀豆類、少紅肉精製穀物反式脂肪甜食）
+        以降低復發（conditional／very low），且<b>補充纖維不能取代高品質飲食</b>。</li>
+      <li><span class="todo">指引查無</span> <b>急性憩室炎期間的清流飲食</b>——ACG 2026 文件中沒有這條建議。
+        頁面上若要寫「急性期先清流」，那是<b>臨床慣例而非指引</b>。</li>
+    </ul>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">便秘：纖維補充劑有明確的劑量與時間門檻</div>
+    <ul>
+      <li><b>BDA 2025</b>（英國首份專門處理飲食的慢性便秘指引，59 條建議，GRADE＋Delphi ≥85%）：
+        <b>纖維補充劑「&gt;10 g/d」才有效——RR 1.72（1.35–2.18）；「≤10 g/d」RR 1.01（0.6–1.34），完全無效。</b>
+        同樣的分界也出現在排便次數與糞便軟化。</li>
+      <li><b>要吃滿至少 4 週</b>才看得到排便次數與整體症狀的改善。耐受不良者可<b>每週漸增</b>以避免脹氣排氣；
+        <b>要同時增加水分</b>。</li>
+      <li><b>Psyllium（洋車前子）是證據最強的</b>：臨床受益 <b>RR 1.82（1.51–2.20）</b>（Level low，Strength <b>strong</b>）；
+        排便次數 SMD 1.13；用力程度 SMD −0.65。</li>
+      <li><b>Polydextrose、菊糖與其他纖維混合物、半乳寡醣對「達到臨床受益的人數」沒有影響。</b></li>
+      <li><b>奇異果不改善排便次數或糞便性狀</b>，但可減少腹痛頻率；每天 2–3 顆、至少 4 週可建議，
+        與 psyllium 的臨床受益人數<b>無差異但腸胃副作用較少</b>。
+        <b>氧化鎂 0.5–1.5 g/d、至少 4 週</b>可依臨床情況建議。
+        益生菌整體可能有益但<b>不清楚哪一菌種有效</b>。<b>整體飲食型態因證據不足，沒有做出任何建議。</b></li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>消化道出血後</b>（ESPEN 住院營養指引 2021）：<b>下消化道出血</b>——一旦可以進食，
+    依營養風險與狀態給標準或營養強化的院內飲食（Rec 51，GPP）；
+    <b>上消化道出血</b>——以液體開始，<b>24 小時內進階</b>到標準或營養強化飲食（Rec 52，<b>Grade B</b>）。
+    見 <a href="gi-bleeding.html" class="pmid">消化道出血</a>。<br>
+    <b>內視鏡檢查後</b>：麻醉藥效退了就應<b>回到標準院內飲食</b>，以免住院期間營養不良（Rec 53，GPP，97%）。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：代謝 ==================== -->
+<section class="diet-panel hidden" data-panel="met">
+
+  <div class="note" style="margin:0 0 12px;">
+    本分頁只處理<b>飲食</b>。降血糖藥見 <a href="diabetes.html" class="pmid">糖尿病用藥</a>、
+    降壓藥見 <a href="hypertension.html" class="pmid">高血壓用藥</a>、
+    心衰竭藥物見 <a href="../tools/heart-failure.html" class="pmid">心臟衰竭</a>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">糖尿病</span><span class="dh-e">ADA Standards of Care 2026 §5</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">ADA 沒有「理想的醣類比例」</div>
+    <ul>
+      <li>原文：<b>「There is no ideal percentage of calories from carbohydrate, protein, or fat for people with diabetes.」</b>
+        巨量營養素分配要依現有飲食型態、偏好與代謝目標個別化。ADA 2026 更明講要
+        <b>從「營養素」轉向「食物」與「飲食型態」</b>——「people eat food, not nutrients」。</li>
+      <li>可接受的飲食型態原文列舉：<b>地中海、DASH、低脂、限醣、素食、純素</b>。</li>
+      <li><b>碳水計算並沒有比一般衛教好</b>：系統性回顧顯示 A1C <b>無顯著差異</b>；
+        隨機交叉試驗中碳水計算 TIR <b>74%</b> vs 質性餐量估計 <b>70.5%</b>，<b>非劣性未成立</b>（所以也不是隨便估就好）。
+        ADA 並說 CGM／AID 等新技術「may reduce the need for precise carbohydrate counting」。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>條文</th><th>內容</th><th>等級</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">5.12</td><td>過重或肥胖者目標<b>至少減重 5–7%</b></td><td class="nw">A</td></tr>
+        <tr><td class="nw">5.14</td><td>強調<b>非澱粉類蔬菜、完整水果、豆類、瘦肉蛋白、全穀、堅果種子、低脂乳品或替代品</b>；
+          減少<b>紅肉、含糖飲料、甜食、精製穀物、加工與超加工食品</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw">5.15</td><td>部分成人<b>可考慮減少碳水</b>以改善血糖；有效做法是<b>限制加工食品</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw">5.20</td><td><b>鈉 &lt;2,300 mg/day</b>（臨床適當時）</td><td class="nw">B</td></tr>
+        <tr><td class="nw">5.24</td><td>碳水來源要<b>最少加工、營養密度高、高纖</b>——<b>每 1,000 kcal 至少 14 g 纖維</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw"><b>5.26</b></td><td>用 <b>SGLT2 抑制劑</b>者要衛教 DKA 徵象、<b>提供血中 β-羥丁酸測量工具</b>，並<b>勸阻生酮飲食</b></td><td class="nw">E</td></tr>
+        <tr><td class="nw">5.30</td><td>可考慮<b>地中海飲食</b>（富含多脂魚、堅果、種子）以降心血管風險 <b>A</b>、改善糖代謝 <b>B</b></td><td class="nw">A／B</td></tr>
+        <tr><td class="nw">5.18</td><td>飲酒者不超過每日上限（<b>男 ≤2 杯、女 ≤1 杯</b>）；<b>不喝的人不要開始喝，即使適量也一樣</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw">5.22</td><td>代糖<b>可在適量且短期的前提下</b>取代含糖產品</td><td class="nw">B</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>低碳與生酮在糖尿病</b>：極低碳（&lt;26% 總熱量）在<b>短期（&lt;6 個月）</b>可降 A1C，<b>超過 1 年差異變小</b>；
+    ≥12 個月 RCT 的統合分析 <b>SMD −0.11（95% CI −0.33 ~ 0.11，P=0.32）——無顯著差異</b>（PMID 39046308）。
+    Keto-Med 交叉試驗（PMID 35641199）中，生酮飲食（每日總碳水 20–50 g）相較低碳地中海飲食
+    <b>A1C 沒有顯著改善，而 LDL-C 反而 +10%（對照組 −5%，P=0.01）</b>，且<b>纖維攝取較低、較不可持續</b>。<br>
+    <b>ADA 明列不建議極低碳的族群</b>：懷孕或哺乳、兒童、腎臟病、有飲食失調或其風險者；
+    <b>使用 SGLT2 抑制劑者應避免</b>（酮酸中毒風險）。<br>
+    <b>蛋白質</b>：原文說「沒有證據顯示把每日蛋白質調高或調低於一般建議量（<b>約 0.8–1.5 g/kg/d 或總熱量 15–20%</b>）會改善健康」；
+    第二型糖尿病<b>略高（20–30%）</b>可能增加飽足感。<b>糖尿病腎病見「腎臟」分頁</b>——ADA 的 0.8 g/kg（等級 A）與 KDOQI 的 0.6–0.8 正面衝突。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">心臟衰竭的限鈉：指引其實沒有給數字</span><span class="dh-e">2022 AHA/ACC/HFSA · SODIUM-HF</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">「心衰竭要限鈉 &lt;2 g/day，指引建議的」是誤引</div>
+    <ul>
+      <li>2022 AHA/ACC/HFSA 的條文全文只有一句：<b>「For patients with stage C HF, avoiding excessive sodium intake
+        is reasonable to reduce congestive symptoms.」</b>——<b>沒有任何 mg 或 g 的數字</b>，而且是 <b>COR 2a / LOE C-LD</b>。</li>
+      <li><b>SODIUM-HF</b>（Lancet 2022，PMID 35381194）：806 人隨機到<b>鈉 &lt;100 mmol/d（&lt;1,500 mg/d）</b>或常規照護。
+        低鈉組實際從 2,286 降到 <b>1,658 mg/d</b>。主要結果 <b>HR 0.89（0.63–1.26），p=0.53</b>——<b>沒有減少臨床事件</b>。
+        <b>全因死亡 6% vs 4%，HR 1.38（0.73–2.60）</b>，數值方向對低鈉組不利（不顯著）。</li>
+      <li>歐洲立場更保守：HFA/ESC 2024 共識明說 ESC 指引「<b>已逐步下調</b>這些建議」，現在是
+        <b>食鹽 ≤5 g/day</b>（≒鈉 2 g/day），<b>液體 1.5–2 L/day 只給選擇性病人</b>。
+        <b>注意單位：ESC 的 5 g 是食鹽（NaCl），不是鈉。</b></li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">高血壓與 DASH</span><span class="dh-e">2025 AHA/ACC · 台灣 2022</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>介入</th><th>目標</th><th>ΔSBP 有高血壓</th><th>ΔSBP 無高血壓</th><th>COR/LOE</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">減重</td><td>持續減 ≥5% 體重或 BMI ≥3 kg/m²；<b>每減 1 kg 約降 1 mmHg</b></td><td class="num">6–8</td><td class="num">3–5</td><td class="nw">1／A</td></tr>
+        <tr><td class="nw"><b>DASH 飲食</b></td><td>多蔬果、全穀、低脂乳品，減飽和與總脂肪</td><td class="num">5–8</td><td class="num">3–7</td><td class="nw">1／A</td></tr>
+        <tr><td class="nw">減鈉</td><td><b>&lt;2,300 mg/d，理想 &lt;1,500 mg/d</b></td><td class="num">6–8</td><td class="num">1–4</td><td class="nw">1／A</td></tr>
+        <tr><td class="nw"><b>鉀鹽代用品</b></td><td>以代用品全面取代食鹽（含 <b>25–30% KCl</b>）</td><td class="num">5–7</td><td class="num">5</td><td class="nw">2a／A</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">三個註腳比建議本身更重要</div>
+    <ul>
+      <li><b>鉀鹽代用品與補鉀都明文排除 CKD 與會減少排鉀的藥物</b>：保鉀利尿劑（amiloride、triamterene）、
+        MRA（spironolactone、eplerenone、<b>finerenone</b>）、ACEi、ARB、部分免疫抑制劑（cyclosporine、tacrolimus）。
+        市售自稱「低鈉鹽」但<b>不含氯化鉀</b>者，對血壓的效果 <b>unknown</b>。補鉀的「moderate」定義是 <b>&lt;80 mmol/d</b>。</li>
+      <li><b>限鈉有禁忌症</b>：原文註腳寫「<b>may be contraindicated in patients with severe, symptomatic orthostatic hypotension</b>」。</li>
+      <li><b>DASH 的原始降壓效果是在不減鈉、不減重的條件下測到的</b>：整體多降 <b>SBP 5.5／DBP 3.0 mmHg</b>；
+        高血壓者多降 <b>SBP 11.4／DBP 5.5 mmHg</b>（PMID 9099655）。
+        而在 DASH 之上<b>再</b>減鈉的增益，比在一般飲食上減鈉小很多（<b>1.3＋1.7</b> vs <b>2.1＋4.6 mmHg</b>，PMID 11136953）——
+        因為 DASH 本身已含高鉀高鎂高鈣。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>台灣</b>：2022 台灣心臟學會／高血壓學會指引以 <b>S-ABCDE</b> 記生活型態
+    （Sodium restriction、Alcohol limitation、Body weight reduction、Cigarette smoking cessation、Diet adaptation、Exercise adoption），
+    並把 <b>ALDH2 基因多型性</b>納入酒精建議（其他國家指引沒有）；居家血壓用 <b>722 原則</b>。詳見
+    <a href="hypertension.html" class="pmid">高血壓用藥</a>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">血脂與飲食脂肪</span><span class="dh-e">AHA 2021 · AHA 2020 advisory</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">膳食膽固醇的 300 mg 上限已經刪除，而且沒有被恢復</div>
+    <ul>
+      <li>AHA 2020 science advisory（PMID 31838890）原文開宗明義：<b>「The elimination of specific dietary cholesterol
+        target recommendations in recent guidelines…」</b>，並說給一個具體數字「is challenging for clinicians and consumers to implement」，
+        <b>飲食型態的指引比較可能改善飲食品質</b>。</li>
+      <li><b>2025–2030 美國膳食指南（2026-01-07 發布）亦未恢復該上限</b>；飽和脂肪仍維持<b>不超過總熱量 10%</b>。</li>
+      <li>常被引用的<b>「飽和脂肪 5–6% 總熱量」出自 2013 AHA/ACC 生活型態指引</b>，
+        <b>不是</b> AHA 2021 飲食指引（該篇刻意不給單一營養素的數字上限），也不是 2025–2030 DGA。引用時要標年份。</li>
+      <li>飽和脂肪的核心結論是<b>「以多元不飽和脂肪（尤其植物油）取代飽和脂肪」</b>，不是單純「少吃油」（PMID 28620111）。</li>
+    </ul>
+  </div>
+  <div class="note">
+    AHA 2021 十條飲食指引的骨幹：熱量收支平衡以維持健康體重／大量且多樣的蔬果／全穀／
+    <b>健康蛋白質來源（以植物為主，規律吃魚與海鮮，低脂或脫脂乳品；要吃肉禽則選瘦的、未加工的）</b>／
+    <b>用液態植物油取代熱帶油與部分氫化油</b>／最少加工食品而非超加工食品／少添加糖／少鹽／
+    <b>不喝酒的不要開始喝</b>／<b>不論在哪裡備餐或用餐都適用</b>。
+    對應台大醫令：<b>低油、低膽固醇、低脂肪低膽固醇飲食</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">痛風</span><span class="dh-e">ACR 2020</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">痛風飲食建議的強度比一般認知弱很多</div>
+    <ul>
+      <li><b>五條飲食建議全部是 conditional，沒有任何一條是 strong</b>，最高只到 Low certainty：
+        <b>限酒（Low）、限普林（Low）、限高果糖玉米糖漿（Very low）、過重者減重（Very low）、
+        「不要」補充維生素 C（Low）</b>。</li>
+      <li><b>維生素 C 是從 2012 版的建議使用反轉成 conditionally recommended AGAINST。</b></li>
+      <li><b>ACR 2020 對櫻桃沒有任何建議</b>——櫻桃只出現在敘述段，Table 7 完全沒有。
+        2012 年那篇 case-crossover（OR 0.65，PMID 23023818）之後，
+        <b>2020 年的 RCT（n=50，PMID 31891407）顯示酸櫻桃濃縮液對血尿酸與發作皆無效（p=0.76）</b>。
+        網路上「指引建議吃櫻桃」是錯的。</li>
+      <li><b>飲食對血尿酸的效果非常小</b>：ACR 原文寫一單位啤酒只讓血尿酸升 <b>0.16 mg/dL</b>，
+        健康／地中海／DASH 飲食的效果「even smaller」。16 條 <b>strong</b> 建議全部都是關於降尿酸治療與急性發作處理。
+        指引並特別提醒<b>不要把責任推給病人（patient-blaming）</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">肥胖與減重</span><span class="dh-e">CKM 2026（已取代 2013 AHA/ACC/TOS）</span></div>
+  <div class="note">
+    <b>2013 AHA/ACC/TOS 肥胖指引已經退役</b>——由 <b>2026 AHA/ACC/ADA/ASN 心腎代謝症候群（CKM）指引</b>
+    明文 "retires, replaces, and expands upon"（PMID 42265997）。<br>
+    處方（COR 1／LOE A）：<b>熱量赤字 500–750 kcal/day</b>＋<b>每週 ≥150 分鐘中等強度有氧</b>＋
+    <b>≥14 個月的行為治療</b>（含自我監測），平均減重約 <b>8%</b>；每年至少一次諮商，目標 <b>至少減 5–10%</b>。
+  </div>
+  <div class="kbox">
+    <div class="kbox-t">CKM 2026 對各種流行飲食的原文評語</div>
+    <ul>
+      <li>121 篇試驗的網絡統合分析：低脂與低碳等各種方案<b>只減約 4 kg</b>，而且<b>到 12 個月時，多數研究的減重與危險因子好處都消失了</b>（多因遵從性下降）。</li>
+      <li><b>DASH、地中海、魚素、素食</b>提供特別顯著的心臟代謝好處。</li>
+      <li><b>生酮飲食</b>：極低碳、高飽和脂肪，「induce weight loss but <b>cause severe hypercholesterolemia
+        with the potential for increased cardiovascular risk</b>」——這是 2026 年主要指引對減重生酮最負面的一句。</li>
+      <li><b>間歇性斷食</b>「<b>no more effective than a calorie-limited approach</b>」。</li>
+      <li><b>單靠運動不太可能達到臨床顯著的減重</b>，但飲食＋運動的長期減重優於單靠飲食。</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>DIETFITS</b>（JAMA 2018，PMID 29466592）：609 人、12 個月，健康低脂 <b>−5.3 kg</b> vs 健康低碳 <b>−6.0 kg</b>，
+    組間差 <b>0.7 kg（95% CI −0.2~1.6），無顯著差異</b>；而且<b>基因型（P=0.20）與胰島素分泌（P=0.47）都無法預測誰適合哪一種</b>——
+    「哪種飲食適合誰」的兩個主流假說都沒被證實。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">減重手術後</span><span class="dh-e">四份文件分工，別引錯</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">這個主題最常引錯出處</div>
+    <ul>
+      <li><b>ASMBS 2016 Update 只更新了微量營養素。</b>其 Methods 明文寫術後<b>飲食質地進程</b>「did not require updating」、
+        <b>蛋白質</b>「outside the scope」——所以拿 2016 當飲食階段或蛋白質克數的出處是錯的。那兩項還停在 <b>2008 版</b>（PMID 18490202）。</li>
+      <li><b>「術後蛋白質 60–80 g/day」不是 2019 CPG 的說法。</b>2019 CPG R38 寫的是
+        <b>「A minimal protein intake of 60 g/d and up to 1.5 g/kg ideal body weight per day」</b>，個別化可到 <b>2.1 g/kg IBW</b>。
+        60–80 g 出自 2008 ASMBS；<b>BPD/DS 要多約 30%，約 90 g/d</b>。</li>
+      <li><b>「鈣一次最多吸收 500–600 mg」不在 2016 或 2019 指引裡</b>，兩份都只寫 "in divided doses"。
+        500–600 mg 分次出自 <b>2008 ASMBS Table 5</b>（同表另寫「與鐵劑至少間隔 2 小時」「快速減重期合計鈣可能需 &gt;1,700 mg/d」）。</li>
+      <li><b>2019 CPG 的 Table 10 是四個來源的並列比較表，不是指引自己的建議</b>，而且該表 ERAS 欄的蛋白質印成「60-20 g」（排版錯誤）。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>階段</th><th>2019 CPG 的時程</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">清流質</td><td>手術當晚即可開始；<b>術後第 1 天可視耐受度進到全流</b></td></tr>
+        <tr><td class="nw">全流（stage 2）</td><td>出院後持續 <b>10–14 天</b></td></tr>
+        <tr><td class="nw">泥狀（stage 3）</td><td><b>術後約 2 週</b>開始，持續<b>再一週</b></td></tr>
+        <tr><td class="nw">軟質（stage 4）</td><td>再 <b>1–2 週</b></td></tr>
+        <tr><td class="nw">一般固體（stage 5）</td><td><b>術後約 4–6 週</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    熱量軌跡（2019 CPG 原文）：術後第一週約 <b>400 kcal/day</b> → 第 3–4 週 <b>600–800</b> → 數月後 <b>1,200–1,500</b> →
+    術後 6 個月與長期 <b>1,500–1,800 kcal/day</b>。<br>
+    水分：<b>通常 &gt;1.5 L/d</b>；術後數日內應能耐受 <b>至少 1,800 cc/day</b> 以免脫水；
+    <b>固體食物前後 30 分鐘不要喝水</b>。<br>
+    <b>Dumping</b>：RYGB 後應<b>完全去除濃縮甜食</b>（Grade D）；2025 ASMBS RYGB 路徑寫
+    「Dumping syndrome is minimized by <b>eliminating simple carbohydrates</b>」。
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">Wernicke 腦病變：以 2025 ASMBS 專門指引為準（該文未給證據等級）</div>
+    <ul>
+      <li><b>預防（高風險者）</b>：減重治療前 <b>至少 2 週起 thiamine 100 mg PO qd</b>，用藥期間持續，
+        <b>術後至少 3 個月</b>，之後 <b>至少 12 mg PO qd 終身</b>。</li>
+      <li><b>診斷用 Caine criteria</b>：四取二 —— ① 意識混亂 ② 步態失調 ③ 眼徵 ④ 營養缺乏。</li>
+      <li><b>治療 Wernicke：thiamine 500 mg IV tid，至少 5 天</b>，持續到不再進步；
+        之後 <b>300 mg PO bid–tid</b> 到危險因子解除，再 <b>100 mg PO qd 終身</b>。</li>
+      <li><b>Wernicke 是急症：抽血與治療同時做，不要等結果。</b>低血糖時
+        <b>thiamine 要在葡萄糖之前或同時給</b>（但不可為了等 thiamine 而延後矯正低血糖），
+        並同時補 <b>鎂、鉀、磷</b>。未治療者<b>死亡率可達 20%，存活者 85% 留下 Korsakoff</b>。</li>
+      <li><b>一般市售綜合維他命只含約 1.5 mg thiamine</b>；靜脈綜合維生素 3–3.5 mg；
+        成人腸道配方每 1,500 kcal 含 2.2–2.9 mg——這些都不足以治療。
+        <b>IM 每日超過 100 mg 很少能耐受</b>（注射部位疼痛）。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>營養素</th><th>ASMBS 2016 Update 常規補充劑量</th><th>Grade</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">Thiamine</td><td><b>至少 12 mg/d</b>（C）；較佳為 B 群或綜合維他命中的 <b>50 mg 一到二次/日</b>（D）</td><td class="nw">C／D</td></tr>
+        <tr><td class="nw">B12</td><td>口服（崩散錠／舌下／液劑）<b>350–500 µg/d</b>；或 <b>IM／SQ 1,000 µg 每月</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw">葉酸</td><td><b>400–800 µg/d</b>；<b>育齡女性 800–1,000 µg/d</b></td><td class="nw">B</td></tr>
+        <tr><td class="nw">鐵（元素鐵）</td><td>低風險 <b>至少 18 mg</b>；<b>月經中女性與 RYGB／SG／BPD-DS 術後至少 45–60 mg/d</b>；
+          分次服用，<b>與鈣、制酸劑、植酸／多酚分開</b></td><td class="nw">C／D</td></tr>
+        <tr><td class="nw">鈣</td><td><b>BPD/DS 1,800–2,400 mg/d</b>；<b>LAGB／SG／RYGB 1,200–1,500 mg/d</b>（含飲食）。分次給；
+          <b>carbonate 要隨餐，citrate 隨餐或空腹皆可</b></td><td class="nw">C</td></tr>
+        <tr><td class="nw">維生素 D</td><td><b>D3 3,000 IU/d</b> 直到 25(OH)D <b>&gt;30 ng/mL</b>（2019 CPG R39 寫 <b>至少 2,000–3,000 IU</b>，兩條數字不同要標明）</td><td class="nw">D／A</td></tr>
+        <tr><td class="nw">維生素 A</td><td>LAGB <b>5,000 IU/d</b>；RYGB 與 SG <b>5,000–10,000 IU/d</b>；DS <b>10,000 IU/d</b></td><td class="nw">C／D／B</td></tr>
+        <tr><td class="nw">維生素 E／K</td><td>E 各術式 <b>15 mg/d</b>；K：LAGB／RYGB／SG <b>90–120 µg/d</b>，DS <b>300 µg/d</b></td><td class="nw">D／C–D／B</td></tr>
+        <tr><td class="nw">鋅／銅</td><td>鋅：BPD/DS <b>16–22 mg/d</b>、RYGB <b>8–22 mg/d</b>、SG/LAGB <b>8–11 mg/d</b>；
+          <b>每 1 mg 銅搭 8–15 mg 鋅</b>。銅：BPD/DS 或 RYGB <b>2 mg/d</b>、SG 或 LAGB <b>1 mg/d</b></td><td class="nw">C</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    台大營養室的<b>「減重手術術後營養照護」衛教影片</b>（黎佩軒，111/11）可搭配使用。
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：生酮與特殊 ==================== -->
+<section class="diet-panel hidden" data-panel="ket">
+
+  <div class="note" style="margin:0 0 12px;">
+    <b>治療性生酮</b>（難治型癲癇與兩個腦能量代謝疾病）與<b>減重／代謝用生酮</b>是兩件不同的事，本分頁分開處理。
+    末段收台大飲食單上的其他特殊治療飲食。
+  </div>
+
+  <div class="kbox">
+    <div class="kbox-t">版本：2018 那份仍是現行，沒有新版</div>
+    <ul>
+      <li><b>International Ketogenic Diet Study Group 兒童共識 2018</b>（Kossoff，Epilepsia Open 2018;3:175–192，
+        PMID 29881797，<b>PMC 全文開放</b>）取代 2009 版，<b>到 2026-09 為止查無更新版</b>。</li>
+      <li>之後新增的是三份<b>補充</b>文件而非取代：<b>成人版 2021</b>（PMID 34840865）、
+        <b>嬰兒母乳並行版 2024</b>（PMID 38669468）、<b>兒童超級難治型癲癇重積 ICU 版 2026</b>（PMID 42132666）。
+        另有<b>靜脈生酮 2019</b>（PMID 31313290，明訂<b>只能在 ICU 起始</b>）。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">四種處方的定義</span><span class="dh-e">Kossoff 2018</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>處方</th><th>定義</th><th>誰用</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>Classic KD</b><br>經典生酮</td>
+            <td>以<b>脂肪克數 ÷（蛋白質＋碳水克數）</b>計算比值。最常用 <b>4:1</b>——<b>90% 熱量來自脂肪</b>。
+              <b>3:1 或更低</b>可用來增加蛋白質或碳水，<b>也比較適合嬰兒起始</b>。
+              <b>比值高於 4.5:1 一般不使用超過數個月</b>（副作用、蛋白質不足、順從性差），
+              例外是癲癇重積經管餵食時可試更高比值，<b>最多兩週</b></td>
+            <td><b>2 歲以下只能用這一種</b>（92% 的共識中心不給 2 歲以下 MAD）</td></tr>
+        <tr><td class="nw"><b>MCT KD</b></td>
+            <td>傳統版 <b>60% 熱量來自 MCT</b>（會腸胃不適）；改良版 <b>30% MCT ＋ 30% 長鏈脂肪</b>。
+              多數兒童落在 <b>40–50% MCT</b>，必要時可到 60%。
+              <b>MCT 油含 C6（己酸）會刺激喉嚨</b></td>
+            <td>40% 的共識中心使用</td></tr>
+        <tr><td class="nw"><b>MAD</b><br>改良阿金飲食</td>
+            <td>約 <b>1:1–1.5:1</b> 的生酮比，<b>但沒有規定比值</b>。
+              <b>起始每日碳水約 10–15 g</b>，1–3 個月後可增至 <b>20 g/day</b>。
+              <b>蛋白質、液體、熱量都不限制</b>（但蛋白質過高會干擾酮症），<b>積極鼓勵吃脂肪</b></td>
+            <td rowspan="2">青少年與成人<b>多數（72%）偏好 MAD 或 LGIT</b>，因為順從性較好</td></tr>
+        <tr><td class="nw"><b>LGIT</b><br>低升糖指數療法</td>
+            <td>每日碳水放寬到 <b>40–60 g/day</b>，但只能選<b>升糖指數 &lt;50</b> 的碳水。
+              <b>蛋白質佔 20–30% 熱量、脂肪佔 60%</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    委員會結論逐字：<b>選哪一種應依家庭與孩子的狀況個別化，而不是依「感覺哪個有效」</b>；
+    <b>熱量與水分限制已不再建議</b>（這是相對 2009 版的改動）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">適應症</span><span class="dh-e">Indications</span></div>
+  <div class="kbox">
+    <div class="kbox-t">兩個「第一線」適應症：不是抗癲癇藥失敗後才用</div>
+    <ul>
+      <li><b>Glut1 缺乏症候群（Glut1DS）</b>與<b>丙酮酸脫氫酶缺乏（PDHD）</b>——原文：
+        「KDTs are <b>the treatment of first choice</b> for 2 distinct disorders of brain energy metabolism」。
+        <b>96% 的共識成員認為 Glut1DS 應以生酮優先於 triheptanoin，即使病人沒有癲癇（例如只有動作障礙）。</b></li>
+      <li><b>LGIT 不可用於 Glut1DS 或 PDHD</b>——原文寫「provides inadequate ketosis」，酮體不足。
+        Glut1DS 的嬰幼兒與學齡前用經典 KD；學齡兒童、青少年與成人可有效使用 MAD。</li>
+      <li>一般難治型癲癇：<b>兩種抗癲癇藥失敗後就應該強烈考慮</b>。</li>
+      <li><b>七個應該「非常早期」就考慮的條件</b>（88% 共識）：Glut1DS、PDHD、
+        肌陣攣—失張力癲癇（Doose）、嬰兒痙攣、結節硬化症、<b>已有胃造口的兒童</b>、Dravet 症候群。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>效果一致優於平均（&gt;70% 的病人發作減少 &gt;50%，整體平均約 50%）</th><th>只有中度效果或單中心報告</th></tr></thead>
+      <tbody>
+        <tr><td>Angelman 症候群、複合體 1 粒線體疾病、<b>Dravet 症候群</b>、
+          <b>肌陣攣—失張力癲癇（Doose）</b>、<b>Glut1DS</b>、<b>FIRES</b>、
+          <b>純配方餵食的嬰幼兒</b>、<b>嬰兒痙攣</b>、Ohtahara 症候群、<b>PDHD</b>、
+          超級難治型癲癇重積、<b>結節硬化症</b></td>
+          <td>腺苷酸琥珀酸裂解酶缺乏、CDKL5 腦病變、兒童失神性癲癇、皮質發育異常、
+            嬰兒期移行性局部發作癲癇、睡眠期持續棘慢波腦病變、肝醣儲積症第 V 型、
+            青少年肌陣攣癲癇、Lafora 體病、Landau-Kleffner 症候群、<b>Lennox-Gastaut 症候群</b>、
+            磷酸果糖激酶缺乏、Rett 症候群、亞急性硬化性全腦炎</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>Lennox-Gastaut 在 2018 版被降級到第二組</b>（原文：51% 的病人有 &gt;50% 發作減少）——很多中文衛教仍把它列為主要適應症。<br>
+    <b>非癲癇適應症（自閉症、阿茲海默症、偏頭痛、腦瘤、創傷性腦損傷）：證據「growing but insufficient」，
+    目前只能在研究性質下使用。</b>
+  </div>
+
+  <div class="kbox alert">
+    <div class="kbox-t">絕對禁忌——名字只差一個字，方向完全相反</div>
+    <ul>
+      <li><b>原發性肉鹼缺乏</b>；<b>肉鹼棕櫚醯基轉移酶 I 或 II 缺乏（CPT I／II）</b>；<b>肉鹼轉位酶缺乏</b></li>
+      <li><b>β 氧化缺陷</b>：MCAD、LCAD、SCAD、長鏈 3-hydroxyacyl-CoA 缺乏、中鏈 3-hydroxyacyl-CoA 缺乏</li>
+      <li><b>丙酮酸羧化酶缺乏（pyruvate CARBOXYLASE deficiency）</b>
+        ——注意：<b>丙酮酸脫氫酶缺乏（PDHD）是絕對適應症</b>。兩者只差一個字，一個是禁忌一個是首選。</li>
+      <li><b>卟啉症（porphyria）</b>——原文說明是 porphobilinogen deaminase 缺乏的血基質合成疾病。</li>
+      <li>機轉：生酮把主要能量來源從碳水切換成脂質，<b>脂肪代謝有缺陷的病人在禁食或生酮下可能發生毀滅性的分解代謝危機（昏迷、死亡）</b>。
+        所以<b>起始前一定要驗 serum acylcarnitine profile</b> 篩檢脂肪酸氧化缺陷。</li>
+      <li><b>相對禁忌</b>：無法維持足夠營養、影像與錄影腦波已找到可手術的病灶、家長或照顧者無法配合、
+        <b>併用 propofol</b>（propofol infusion syndrome 風險可能更高；粒線體疾病兒童風險再上升）。</li>
+      <li><b>「續發性肉鹼低下」是生酮本身的副作用，不是禁忌</b>——別和原發性肉鹼缺乏搞混。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">起始、監測、停用</span><span class="dh-e">Initiation · monitoring · weaning</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">起始已經不需要禁食了</div>
+    <ul>
+      <li>原文：<b>「禁食起始並不會改善酮症，也不會改善三個月時的發作控制；而且不禁食時體重減輕、低血糖與酸中毒都比較少。」</b></li>
+      <li>共識投票：<b>68% 認為禁食是選項，但沒有任何一個中心認為它是必要的</b>（2009 年還有 11%）；
+        <b>72% 的中心不常規禁食</b>。<b>沒有任何中心認為 2 歲以下的兒童適合禁食。</b></li>
+      <li>唯一的用途：禁食<b>可能讓發作減少來得快一些</b>，所以在需要立即反應時（如難治型癲癇重積）可能有利。</li>
+      <li>地點：<b>80% 的中心在住院起始經典 KD</b>，但 <b>92% 認為特定情況下可以門診起始</b>
+        （需先完成代謝篩檢、住家離醫療照護近、團隊能在門診完成家庭衛教）。
+        歐洲共識建議<b>未滿 12 個月的嬰兒住院起始，用不禁食的流程</b>。<b>MAD 與 LGIT 多數在門診起始，且不禁食。</b></li>
+      <li>起始前要評估的共病：<b>腎結石、吞嚥困難、高膽固醇、體重增加不良或進食差、胃食道逆流、便秘、心肌病變、慢性代謝性酸中毒</b>。
+        <b>腎臟超音波只在有腎結石家族史時才做。</b></li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>監測</th><th>內容</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">回診</td><td>第一年 <b>1、3、6、9、12 個月</b>，之後<b>每 6 個月</b>；嬰兒與高營養缺乏風險者更頻繁。
+          <b>每次回診都要看小兒神經科醫師與營養師。</b>考慮停用前應做腦波</td></tr>
+        <tr><td class="nw">常規檢驗</td><td>全血球計數含血小板、電解質（含<b>血中碳酸氫鹽</b>）、總蛋白、鈣、肝腎功能（含白蛋白、BUN、肌酸酐）、
+          <b>維生素 D</b>、<b>空腹血脂</b>、<b>游離與總肉鹼</b>、尿液常規、<b>硒</b>、抗癲癇藥濃度。
+          第一年<b>每 3 個月</b>，之後可放寬到 <b>6–12 個月</b></td></tr>
+        <tr><td class="nw">選擇性</td><td>血中 β-羥丁酸、尿鈣與肌酸酐、鋅銅、腎臟超音波、心電圖、
+          <b>使用滿 2 年後的骨密度（DEXA）</b>（48% 的中心會做）</td></tr>
+        <tr><td class="nw">補充劑</td><td><b>所有兒童都要給每日綜合維他命與含足量維生素 D 的鈣</b>；
+          所有補充劑<b>盡可能選無碳水的劑型</b>。<br>
+          <b>口服檸檬酸鹽可預防腎結石</b>（Class III；經驗性全面給予的研究讓發生率由 6.7% 降到 0.9%），
+          但<b>是否常規給意見分歧</b>（56% 常規使用）。<br>
+          <b>制酸劑、瀉劑、益生菌、外源性酮體、額外的硒或肉鹼都不建議經驗性使用</b>；
+          <b>84% 認為肉鹼只在數值低或出現症狀時才補</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>副作用</th><th>原文數字</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">腸胃道</td><td>便秘、嘔吐、腹痛<b>可達 50%</b>，多在前幾週，<b>很少因此停藥</b></td></tr>
+        <tr><td class="nw">高血脂</td><td>三酸甘油酯與總／LDL 膽固醇上升見於 <b>14–59%</b>；可在<b>第一個月</b>就出現；
+          一研究中 <b>60% 膽固醇 &gt;200 mg/dL</b>。<b>到 12 個月時血脂值通常回到正常並維持</b></td></tr>
+        <tr><td class="nw">腎結石</td><td>歷史上 <b>3–7%</b>；<b>通常不需停用生酮，極少需要碎石</b></td></tr>
+        <tr><td class="nw">代謝性酸中毒</td><td>慢性但常為輕度或無症狀；<b>併用碳酸酐酶抑制劑（acetazolamide、topiramate、zonisamide）會惡化</b>，
+          碳酸氫鹽下降在起始早期最明顯。原文：併用 topiramate <b>似乎沒有</b>增加結石率，但 <b>zonisamide 可能有</b></td></tr>
+        <tr><td class="nw"><b>生長</b></td><td><b>六篇超過 6 個月的研究一致顯示經典 KD 對生長有負面影響，長期可能造成身高減速</b>。
+          一篇回顧中 <b>86% 生長變慢</b>，且<b>與年齡、療程長度、蛋白質或熱量攝取都無關</b>。
+          MCT 飲食多給的那一點蛋白質<b>並未改善生長</b></td></tr>
+        <tr><td class="nw">骨骼與心臟</td><td>使用 &gt;2 年者骨折、腎結石、生長遲緩風險較高（該研究未發現血脂異常）。
+          曾報告<b>心肌病變與 QT 延長</b>，一例與<b>硒缺乏</b>有關；<b>目前不建議把心電圖當常規篩檢</b></td></tr>
+        <tr><td class="nw">其他</td><td>曾報告<b>胰臟炎</b>；<b>併用 valproic acid 時較可能出現肝功能異常</b>，合併病毒感染風險再提高。
+          <b>長期血管結果未知</b>——兒童研究顯示 6、12 個月頸動脈內中膜厚度無變化，但有 2 篇顯示動脈硬度顯著增加</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>療效評估與停用</b>：至少用滿平均 <b>3.2 個月（SD 1.3）</b>才算公平評估；
+    <b>有效時通常很快——75% 的兒童在 14 天內就有反應</b>，但也有研究顯示發作完全停止可能晚到 18 個月。
+    <b>若開始後發作惡化超過 1–2 週，可以立即停用。</b><br>
+    發作減少 &gt;50% 者<b>通常用約 2 年後停用</b>；<b>接近完全控制（&gt;90% 減少）且副作用少者可連續用數年——沒有最長療程限制</b>。
+    <b>Glut1DS 建議至少維持到青春期</b>，成人期長期使用也有用；嬰兒痙攣可能只需較短療程。<br>
+    <b>減停</b>：緊急時經典 KD 可<b>立即停</b>（最好住院），但多數是<b>數個月漸減——比值每月降一階（4:1 → 3:1 → 2:1）</b>，
+    再逐步加回一般食物與不限熱量直到酮症消失，<b>期間仍要繼續補充營養</b>。
+    停用期間 <b>14% 的兒童發作增加</b>，且<b>與減停速度無關</b>；<b>原本發作減少 50–99% 者，風險是完全無發作者的 3 倍</b>。
+    委員會結論：<b>1–3 個月漸減，除非有緊急停用的適應症</b>。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">成人的治療性生酮</span><span class="dh-e">Cervenka 2021（preliminary recommendations，非分級指引）</span></div>
+  <div class="note">
+    20 個中心、超過 2,000 名成人病人的調查。<b>90% 用 MAD、84% 用經典 KD、63% 用改良 KD 或 LGIT</b>。
+    <b>只有 1 個中心</b>在住院快速起始前用 24–48 小時禁食；40% 用不禁食的快速起始、40% 漸進式起始。
+    追蹤 <b>3、6、12 個月後每年</b>；半數中心在前 5 年內做骨密度。
+    副作用依頻率遞減：<b>便秘、體重減輕、高血脂、腿抽筋、（育齡女性）月經不規則、噁心、嘔吐</b>；
+    罕見：膽結石、姿勢性低血壓、骨質缺乏／疏鬆、腎結石。
+    <b>約三分之一成人出現高膽固醇</b>，3 個月時升高常見、通常 1 年內回到基線，可先觀察；
+    <b>65% 的專家把既有高血脂視為相對而非絕對禁忌</b>。
+    <b>成人的生酮治療沒有時間上限</b>；75% 的中心鼓勵至少維持 3 個月再考慮停用。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">減重與代謝用的生酮：另一回事</span><span class="dh-e">CKM 2026 · ADA 2026</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">2026 年主要指引對減重生酮的用字很重</div>
+    <ul>
+      <li><b>CKM 2026 原文</b>：生酮飲食「極低碳水、高飽和脂肪，<b>會造成減重，但也造成嚴重高膽固醇血症，可能增加心血管風險</b>」。</li>
+      <li><b>ADA 2026 Rec 5.26（E）</b>：對使用 SGLT2 抑制劑且有 DKA 風險者，要衛教徵象、
+        <b>提供血中 β-羥丁酸測量工具，並「discourage a ketogenic eating pattern」</b>。
+        正文更直接：<b>「使用 SGLT2 抑制劑者應避免極低碳水飲食，因為有酮酸中毒風險」</b>，
+        並說已有多篇第 1 型與第 2 型糖尿病的個案報告。<b>用 SGLT2i 時也要避免過量飲酒、維持足夠水分。</b></li>
+      <li><b>ADA 明列不建議的族群</b>：<b>懷孕或哺乳、兒童、腎臟病、有飲食失調或其風險者</b>。
+        執行時需<b>持續的醫療監督</b>——<b>胰島素與其他糖尿病藥物可能需要調整以免低血糖，血壓也要監測</b>。</li>
+      <li><b>義大利內分泌學會 VLCKD 共識（2019）</b>自己的話：
+        「對潛在風險與長期使用仍有疑慮，臨床研究稀少……<b>這個主題明顯缺乏指引</b>，
+        VLCKD 的使用與推行<b>大多是在沒有清楚實證適應症的情況下發生的</b>。」</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>問題</th><th>證據</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">比低脂飲食好嗎？</td>
+            <td><b>沒有差異。</b>DIETFITS（JAMA 2018，PMID 29466592）12 個月：健康低脂 −5.3 kg vs 健康低碳 −6.0 kg，
+              組間差 <b>0.7 kg，不顯著</b>；而且<b>基因型（P=0.20）與胰島素分泌（P=0.47）都無法預測誰適合哪一種</b>。
+              CKM 2026 引的 121 篇試驗網絡統合分析：各種飲食都只減約 <b>4 kg</b>，
+              <b>到 12 個月時多數研究的好處都消失</b></td></tr>
+        <tr><td class="nw">對 HbA1c 呢？</td>
+            <td><b>短期有、長期沒有。</b>ADA：極低碳（&lt;26% 總熱量）在 <b>&lt;6 個月</b>有效降 A1C，超過 1 年差異變小。
+              ≥12 個月 RCT 的統合分析（PMID 39046308，6 篇、524 人）：
+              <b>SMD −0.11（95% CI −0.33~0.11，P=0.32）——無顯著差異</b>；低碳<b>對血脂有利、對血糖控制無利</b></td></tr>
+        <tr><td class="nw">LDL 會怎樣？</td>
+            <td>Keto-Med RCT（PMID 35641199）12 週：<b>LDL-C 生酮組 +10% vs 低碳地中海組 −5%（P=0.01）</b>；
+              三酸甘油酯則是生酮降得較多。原文結論點名<b>「LDL 上升與營養素攝取較低的潛在風險，以及較不可持續」</b></td></tr>
+        <tr><td class="nw">肌肉量？</td>
+            <td><span class="todo">查無指引級數字</span> 找不到可直接引用的量化證據，本頁不寫百分比。
+              可寫的是成人治療性生酮把<b>體重減輕列為第二常見副作用</b>、<b>骨質缺乏／疏鬆列為罕見副作用</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <span class="todo">未查</span> 台灣的治療用生酮配方輸入／藥證／健保給付狀態，以及哪些醫學中心設有生酮飲食團隊。
+    台大飲食單上有<b>「生酮飲食」</b>這個醫令（三餐、無水果），但只出現在供餐內容表、收費表未單列。
+    可確定的是：治療性生酮需要<b>小兒神經科醫師＋營養師</b>的團隊，起始前<b>必須驗 acylcarnitine profile</b> 排除脂肪酸氧化缺陷。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大飲食單上的其他特殊治療飲食</span><span class="dh-e">Other NTUH therapeutic diets</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">低微生物飲食：ESPEN 明文「不得使用」（Grade A）</div>
+    <ul>
+      <li><b>ESPEN 住院營養指引 2021 Recommendation 37</b> 逐字：
+        「Neutropenic diets（也叫 germ-free、no microbial 或 sterilized diets）<b>shall not be used</b>
+        （例如用於癌症的嗜中性球低下病人，含造血幹細胞移植病人）。」
+        <b>Grade of recommendation A — strong consensus（93.6% 同意）</b>。</li>
+      <li>台大營養室的衛教影片清單裡有「<b>低微生物飲食</b>」（陳慈佾，107/08），飲食單上也有這一類；
+        院內實務與 ESPEN 這條建議之間有落差，<b>開單前值得先確認為什麼要開</b>。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>台大醫令</th><th>用在哪</th><th>本站其他頁</th></tr></thead>
+      <tbody>
+        <tr><td class="ord">低銅飲食</td><td>威爾森氏症。台大有<b>威爾森氏症跨領域團隊</b>，衛教影片由林郁芳與該團隊撰稿（112/04）</td><td>—</td></tr>
+        <tr><td class="ord">低碘飲食</td><td>放射碘治療或掃描前。<b>甲亢的放射碘治療前不常規要求嚴格低碘</b>（KTA 2025 第 3.1 條，等級 3），
+          但<b>至少治療前一週應避免富碘食物</b>；<b>近期打過碘顯影劑會讓攝碘率下降數週以上</b></td>
+          <td><a href="thyroid-parathyroid.html#rai" class="pmid">甲狀腺與副甲狀腺</a></td></tr>
+        <tr><td class="ord">低微生物飲食</td><td>見上；ESPEN 2021 Rec 37 建議<b>不要用</b></td><td>—</td></tr>
+        <tr><td class="ord">低蛋白－罕見疾病飲食</td><td>先天代謝疾病，<b>依營養師個別化設計</b>（台大收費 200 元/天，是所有治療飲食中最低的）</td><td>—</td></tr>
+        <tr><td class="ord">低鈣飲食</td><td>只出現在收費表，供餐內容表沒有這一類</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：檢查前 ==================== -->
+<section class="diet-panel hidden" data-panel="pre">
+
+  <div class="dirhead"><span class="dh-n">術前禁食</span><span class="dh-e">ASA 2017（主體）＋2023 模組式增補</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">「ASA 2023 取代了 2017」是錯的</div>
+    <ul>
+      <li>2023 那份的標題就寫 <b>「A <u>Modular Update</u> of the 2017…」</b>，只補三個 2017 沒談過的題目：
+        <b>含碳水的清流、嚼口香糖、小兒清流的禁食時間</b>。
+        <b>2017 的禁食時間表至今仍是現行</b>——「All other recommendations from the 2017 guideline still apply.」</li>
+      <li><b>「含碳水的營養飲品」在 2017 版就已經被列為清流的例子了</b>，不是 2023 才新增。
+        2023 新增的是<b>「主動鼓勵喝、上限 400 mL」</b>這個推薦動作。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>攝入內容</th><th>術前禁食時間（ASA 2017 逐字）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>清流質</b></td><td><b>2 小時</b>。官方定義的例子：<b>水、無果肉果汁、碳酸飲料、
+          含碳水的營養飲品、清茶、黑咖啡</b>。<b>「These liquids should not include alcohol.」</b></td></tr>
+        <tr><td class="nw"><b>母乳</b></td><td><b>4 小時</b></td></tr>
+        <tr><td class="nw"><b>嬰兒配方奶</b></td><td><b>6 小時</b></td></tr>
+        <tr><td class="nw"><b>輕食</b>／<b>非人類乳汁</b></td><td><b>6 小時</b>。
+          <b>牛奶不是清流</b>——原文：「nonhuman milk is <b>similar to solids</b> in gastric emptying time」，與輕食同級</td></tr>
+        <tr><td class="nw"><b>油炸、油膩食物、肉類</b></td><td><b>8 小時或更久</b>。決定禁食時間時<b>份量與種類都要考慮</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>ASA 2023 增補的三個題目</th><th>建議</th><th>強度／確定性</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">含碳水的清流（成人）</td><td>可<b>喝到術前 2 小時</b>；<b>體積上限 400 mL</b>；
+          限<b>沒有吸入風險因子的健康成人</b>；碳水可為單醣或多醣</td><td class="nw"><b>Strong／Moderate</b></td></tr>
+        <tr><td class="nw">含蛋白質的清流</td><td><b>證據不足，不做優先建議</b>（加蛋白質「似乎既無益也無害」）</td><td class="nw">No recommendation／Very low</td></tr>
+        <tr><td class="nw">嚼口香糖</td><td>健康成人嚼口香糖<b>建議不要因此延後手術</b>；但<b>給鎮靜或麻醉藥前必須把口香糖拿掉</b></td><td class="nw">Conditional／Very low</td></tr>
+        <tr><td class="nw">小兒清流 1 vs 2 小時</td><td><b>證據不足，不做建議</b>。Best Practice Statement：
+          吸入風險低的兒童應盡力讓他們<b>盡可能接近術前 2 小時</b>還能喝清流</td><td class="nw">No recommendation／Very low</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>歐洲版正在改版</b>：2026 ESAIC 術前禁食指引目前<b>只有 protocol 發表，指引本體尚未問世</b>。
+    改版的理由是<b>實務上的禁食時間「often far exceeds」現行指引</b>——問題不在指引太嚴，而在執行面禁食遠比指引還久。
+    對 sip-til-send 這類放寬做法，protocol 的評價是「初步資料顯示可改善病人感受而吸入風險沒有明顯增加，
+    但<b>缺乏大型隨機試驗與系統性評估，限制了這個結論</b>」。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">ERAS 術前碳水飲品：兩份 2025 年文件立場不同</span><span class="dh-e">ESPEN 2025 vs ERAS 大腸直腸 2025</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>來源</th><th>立場</th><th>強度</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>ESPEN 外科<br>Update 2025</b></td>
+            <td>Rec 3：碳水存量<b>應在大型擇期腹部手術前不久選擇性補充</b>以觸發胰島素釋放、對抗胰島素阻抗並增加舒適度（B）；
+              專用碳水飲品<b>可在前一晚給，並可給到麻醉前兩小時</b>（0）</td><td class="nw">B／0（96%）</td></tr>
+        <tr><td class="nw"><b>ERAS 大腸直腸<br>2025</b></td>
+            <td>術前碳水<b>「可以用來改善胰島素敏感度，但相較標準的短時間禁食，在舒適度與臨床結果上沒有優勢」</b></td>
+            <td class="nw">Conditional</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kbox alert">
+    <div class="kbox-t">濃度比總量重要——運動飲料不能替代</div>
+    <ul>
+      <li>ESPEN 2025 逐字：<b>「胰島素釋放主要與碳水的<u>濃度</u>有關，而不是總量。」</b>
+        <b>「6% 的運動飲料幾乎不引起胰島素釋放（而且是刻意設計成這樣的），
+        同樣的碳水量做成 12% 的飲品則造成 5–6 倍的上升，如同一頓正常餐食之後。」</b></li>
+      <li>實際用量的出處（ESPEN 2025 評註逐字）：多數研究用
+        <b>前一晚 800 mL 的 12% 麥芽糊精碳水飲品＋麻醉誘導前約兩小時 400 mL</b>。
+        安全性：<b>這些劑量沒有增加氣管支氣管吸入的風險，胃排空也在多數禁食指引給清流的兩小時內完成</b>。</li>
+      <li><b>效果沒有想像中強</b>（ESPEN 自己的評註）：<b>「沒有令人信服的資料顯示能減少主要併發症」</b>；
+        兩個統合分析顯示只有<b>大型腹部手術</b>的住院天數縮短，<b>短住院手術（≤2 天）沒有</b>；
+        另一個 43 篇試驗、3,110 人的統合分析寫<b>「與喝水相比沒有好處」</b>。</li>
+      <li><b>糖尿病不是一律禁用</b>。ESPEN <b>2021</b> 的限制條件是
+        <b>「severe diabetes，特別是預期有胃輕癱者」</b>——不是所有糖尿病。
+        <span class="todo">待查</span> 2025 版是否保留同一句。
+        ESPEN 2025 Rec 2 列出的「兩小時清流」例外族群是<b>急診手術、胃排空延遲、胃食道逆流</b>。
+        <b>食道切除</b>術前另有限制：<b>有明顯吞嚥困難或其他阻塞症狀者要小心</b>（ERAS 2019）。</li>
+      <li>台大營養室的自費品項中有<b>「手術期高碳水化合物補充品」（550 元/次）</b>。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">GLP-1 受體促效劑</span><span class="dh-e">2024 Multisociety guidance</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">已經不是一律停藥了</div>
+    <ul>
+      <li><b>2024 年 10 月的 multisociety guidance</b>（AGA＋ASMBS＋ISPCOP＋SAGES，ASA 發出 Affirmation of Value）
+        <b>取代了 ASA 2023 的「一律停藥」共識</b>。文件自我定位逐字：
+        <b>「should be considered <u>guidance</u>, and not an evidence-based guideline」</b>。</li>
+      <li><b>Rec 1b 逐字</b>：<b>「GLP-1RA therapy <u>may be continued</u> pre-operatively in patients <u>without</u>
+        elevated-risk of delayed gastric emptying and aspiration.」</b>
+        文件並明說：只因為「肥胖」這個適應症就停藥<b>「could constitute overweight and obesity bias, which should be avoided」</b>。</li>
+      <li><b>Rec 1a 的五個高風險變項</b>：① <b>劑量增加期（escalation phase）</b>而非維持期；② <b>高劑量</b>；
+        ③ <b>每週劑型</b>（腸胃道副作用比每日劑型常見）；④ <b>已有腸胃道症狀</b>（噁心、嘔吐、腹痛、消化不良、便秘）；
+        ⑤ <b>其他會延遲胃排空的疾病</b>（腸蠕動障礙、胃輕癱、帕金森氏症）。</li>
+      <li><b>Rec 2（飲食，本頁重點）逐字</b>：對有胃排空延遲疑慮者，可用
+        <b>「preoperative liquid diet for at least 24 h, as performed in patients undergoing colonoscopy and bariatric surgery」</b>
+        ——<b>是「術前至少 24 小時流質飲食」，不是「多禁食幾小時」</b>。
+        當天仍懷疑胃內有殘留物時可用<b>即時胃部超音波</b>評估；確認有殘留則與病人共同決策，
+        權衡<b>快速誘導插管</b>與取消手術。</li>
+      <li><b>停藥天數「不知道」是寫在文件裡的</b>：<b>「the duration to hold therapy is <u>unknown</u>」</b>；
+        暫且沿用 ASA 原本的<b>每日劑型停手術當天、每週劑型停一週</b>，且<b>所有病人在手術當天仍要評估胃排空延遲的症狀</b>。</li>
+      <li>⚠ <b>2025 年 SPAQI 與英國麻醉醫學會另有版本，彼此互有出入</b>；2026 年 BJA 有專文回顧這個國際差異。
+        引用時務必標明是哪一份、哪一年。</li>
+    </ul>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">大腸鏡腸道準備</span><span class="dh-e">USMSTF 2025 · ESGE 2019</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">「前一天只能喝清流」與「提前三天吃低渣」兩個都已經被推翻</div>
+    <ul>
+      <li><b>USMSTF 2025</b>（取代 2014）<b>Strong／High-Quality Evidence</b> 逐字：
+        <b>「We recommend dietary modifications should include the use of <u>low-residue and low-fiber foods or full liquids</u>
+        for the <u>early and midday meals on the day before</u> colonoscopy when using a split-dose bowel preparation regimen.」</b></li>
+      <li>同樣是 <b>Strong／High</b>：<b>「limiting dietary modifications to the <u>day before</u> colonoscopy」</b>
+        ——<b>只限前一天，不是三天。</b></li>
+      <li><b>分次給藥（split-dose）適用於所有病人，不論高容積或低容積製劑</b>（Strong／High）。</li>
+      <li>病人接受度（二次來源轉述的統合分析，<span class="todo">未取得原表</span>）：低渣 vs 清流——
+        <b>願意再做一次 71% vs 62%、覺得容易遵循 52% vs 39%、飢餓 25% vs 44%、噁心 18% vs 23%</b>，而清潔度不輸。</li>
+    </ul>
+  </div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th></th><th>USMSTF 2025（美國）</th><th>ESGE 2019（歐洲）</th></tr></thead>
+      <tbody>
+        <tr><td class="nw">飲食限制天數</td><td><b>只限前一天</b>（Strong／High）</td><td><b>前一天</b>（Strong／moderate）</td></tr>
+        <tr><td class="nw">前一天吃什麼</td><td>早餐與午餐吃<b>低渣／低纖食物或全流</b></td><td><b>低纖飲食</b>（例：去皮水果、煮熟蔬菜、肉、起司、魚、白麵包）</td></tr>
+        <tr><td class="nw">最後一劑時間</td><td>檢查前 <b>4–6 小時</b>開始；下午的大腸鏡可同日給藥，
+          第二劑<b>至少在檢查前 2 小時完成</b></td>
+            <td>檢查前 <b>5 小時內</b>開始，<b>至少提前 2 小時完成</b>（Strong／moderate）</td></tr>
+        <tr><td class="nw">容積</td><td><b>2 L 優於 4 L</b>——療效相當（86.1% vs 87.4%）但順從度與耐受度更好</td><td>未以此為主軸</td></tr>
+        <tr><td class="nw">Simethicone</td><td>口服 <b>≥320 mg</b> 改善視野</td><td>建議加口服 simethicone（Weak／moderate）</td></tr>
+        <tr><td class="nw">準備不佳高風險</td><td>split-dose <b>4 L PEG</b>＋前一天下午 <b>bisacodyl 15 mg</b>＋更嚴格的飲食限制</td>
+            <td>建議使用<b>加強版說明（enhanced instructions）</b>（Strong／moderate）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    ESPEN 住院營養指引 2021 <b>Rec 38</b> 也同方向：<b>「僅在大腸鏡前一天」</b>吃低纖飲食以達到較佳清潔度並減少病人不適
+    （<b>Grade B，94.3% 強共識</b>）。<br>
+    台大的對應醫令是「<b>腸道檢查與腸道術前準備飲食</b>」（三餐一點、給果汁、一天 220 元）與「<b>低渣飲食</b>」。
+    台大營養室另有兩支衛教影片：<b>大腸鏡檢查前低渣飲食</b>（陳慈佾，112/06）與<b>大腸鏡檢查低渣 2 日餐</b>（110/02）。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">其他檢查</span><span class="dh-e">Other tests</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>檢查</th><th>飲食限制</th></tr></thead>
+      <tbody>
+        <tr><td class="nw"><b>糞便潛血</b></td>
+            <td><b>免疫法（FIT）不需要任何飲食或藥物限制</b>——抗體只認人類血紅素球蛋白，不受食物過氧化酶或維生素 C 影響。
+              <b>台灣國健署的大腸癌篩檢用的就是定量 FIT。</b><br>
+              需要限制的是舊的<b>癒創木脂法（gFOBT）</b>：紅肉、含過氧化酶的生蔬果（蘿蔔、辣根、花椰菜、蕪菁、哈密瓜）、
+              高劑量維生素 C、NSAID。衛教單張若還寫「檢查前三天不可吃豬血、紅肉」，那是 gFOBT 時代的殘留。
+              台大的對應醫令是<b>「無血檢查飲食」</b></td></tr>
+        <tr><td class="nw"><b>24 小時尿液<br>5-HIAA</b></td>
+            <td><b>需要嚴格限制</b>。CAP 的模組寫<b>「採檢前 3 天開始並持續整個採集期間」</b>（其他來源常寫 48–72 小時）。
+              要避開富含血清素／色胺酸的食物：<b>酪梨、香蕉、李子、核桃、鳳梨、番茄、茄子</b>；
+              <b>茶、咖啡、尼古丁</b>也會使 5-HIAA 上升。機轉是這些食物本身含前驅物，會直接抬高尿中濃度造成<b>偽陽性</b>。
+              <span class="todo">未取得</span> NANETS／ENETS 指引原文逐字條文</td></tr>
+        <tr><td class="nw"><b>嗜鉻細胞瘤<br>（metanephrines）</b></td>
+            <td><b>採檢姿勢比飲食重要</b>：Endocrine Society 2014（<b>至今未改版</b>）建議血漿游離 metanephrines
+              <b>採血前 30 分鐘先置入留置針、全程仰臥 30 分鐘</b>；做不到就要改用坐姿參考區間或改測 24 小時尿液。<br>
+              <b>「香蕉、香草、堅果、咖啡黑名單」主要是舊的 VMA／兒茶酚胺比色法時代的殘留</b>；
+              現行 LC-MS/MS 測 metanephrines 受食物干擾有限，但 <b>acetaminophen 與部分藥物仍可能干擾特定分析方法</b>。
+              <b>各家實驗室前處理要求不同——依受檢實驗室的規定，不要照抄通用食物黑名單。</b>
+              台大的對應醫令是<b>「高血壓檢查飲食」</b>，但<span class="todo">台大未公開</span>其實際內容與適用檢查</td></tr>
+        <tr><td class="nw"><b>內視鏡超音波</b></td>
+            <td><b>沒有專屬的飲食限制指引</b>——就是一般內視鏡鎮靜的禁食，<b>比照上面的 ASA 規則</b>
+              （清流 2 h、輕食 6 h、油炸油膩肉類 8 h）。要做 EUS-FNA 且用鎮靜／麻醉時也一樣</td></tr>
+        <tr><td class="nw"><b>小腸膠囊<br>內視鏡</b></td>
+            <td><b>ESGE 2022 更新版裡沒有任何關於腸道準備、禁食或瀉劑的建議條文</b>（45 條建議逐條查過）。
+              常被引用的「2 L PEG」出自 <b>ESGE 2015 版與 2018 Technical Review</b>，<b>不能掛在 2022 Update 名下</b>。
+              2022 版唯一與飲食有關的條文是乳糜瀉：<b>膠囊內視鏡「沒有角色」評估疾病範圍或對無麩質飲食的反應</b>
+              （strong／low）。<b>GLP-1 對膠囊內視鏡準備的影響</b>已有專文建議調整流程，<b>但尚未進入指引</b></td></tr>
+        <tr><td class="nw"><b>放射碘</b></td>
+            <td>台大有<b>「甲狀腺素碘檢查飲食」</b>醫令（<span class="todo">台大未公開</span>碘限量）。
+              <b>甲亢的放射碘治療前不常規要求嚴格低碘</b>，但<b>至少治療前一週避免富碘食物</b>；
+              <b>近期打過碘顯影劑會讓攝碘率下降數週以上</b>——見
+              <a href="thyroid-parathyroid.html#rai" class="pmid">甲狀腺與副甲狀腺</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ==================== 分頁：證據 ==================== -->
+<section class="diet-panel hidden" data-panel="ev">
+
+  <div class="note" style="margin:0 0 12px;">
+    <b>查證日期 2026-09-13。</b>下表每一筆的 PMID 都以 PubMed 逐一核對過標題、期刊與卷頁；
+    「取代了哪一版」一欄也逐份查證，<b>不以記憶中的版本為準</b>。
+    有 <span class="todo">標記</span>的項目是本頁<b>刻意不寫</b>的內容——拿不到原文或查證後確認查無，
+    寧可留白也不用二手轉述或常識填補。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">台大院內資料</span><span class="dh-e">NTUH</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>文件</th><th>版本</th></tr></thead>
+      <tbody>
+        <tr><td>台大醫院營養室<b>飲食收費表</b></td><td class="nw"><b>115 年 7 月 20 日更新（2026-07-20）</b>，本頁飲食醫囑總表的主要依據</td></tr>
+        <tr><td>台大醫院營養室<b>住院病人供餐內容</b></td><td class="nw">11 頁、10 大類</td></tr>
+        <tr><td>台大醫院營養室<b>管灌／營養品外賣服務</b></td><td class="nw">1 頁</td></tr>
+        <tr><td>台大醫院營養室<b>治療飲食衛教影片 QR code</b></td><td class="nw">2024-12-27 公告，51 支影片</td></tr>
+        <tr><td>新竹臺大分院營養室常見問答（低渣飲食）／台大健康教育中心知識庫（慢性腎臟病飲食，賴聖如）</td><td class="nw">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    營養室網站的站台代碼是 <b><code>DD</code></b>（Department of Dietetics），不是 <code>nutr</code>。<br>
+    <b>收費表與供餐內容兩份對不起來</b>：收費表多了「低鈣／低醣／低脂肪低膽固醇／大腸腸切飲食 1–4／IDDSI 各級」，
+    供餐內容多了「生酮飲食」。本頁以<b>較新的收費表</b>為主表。
+  </div>
+
+  <div class="dirhead"><span class="dh-n">各分頁的指引版本</span><span class="dh-e">Guideline versions &amp; PMIDs</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>分頁</th><th>指引</th><th>年份／取代</th><th>PMID</th></tr></thead>
+      <tbody>
+        <tr><th colspan="4">開醫囑</th></tr>
+        <tr><td class="nw">住院飲食</td><td>ESPEN guideline on hospital nutrition（Thibault R, et al. Clin Nutr 2021;40:5684-5709）</td><td class="nw">2021</td><td class="nw">34742138</td></tr>
+        <tr><td class="nw">質地分級</td><td>Complete IDDSI Framework Detailed Definitions</td><td class="nw"><b>2.2｜2026 年 4 月</b>（取代 2.0｜2019；2.1 從未釋出；1.0＝2017）</td><td class="nw">—</td></tr>
+        <tr><td class="nw"></td><td>IDDSI Framework Testing Methods</td><td class="nw"><b>2.0｜2019 年 7 月</b>（與定義文件版本不同步）</td><td class="nw">—</td></tr>
+        <tr><td class="nw"></td><td>IDDSI 原始論文（Cichero JAY, et al. Dysphagia 2017;32:293-314）</td><td class="nw">2016 釋出／2017 發表</td><td class="nw">27913916</td></tr>
+
+        <tr><th colspan="4">管灌</th></tr>
+        <tr><td class="nw">重症腸道營養</td><td>ASPEN 成人重症營養指引（Compher C, et al. JPEN 2022;46:12-41）</td><td class="nw">2022</td><td class="nw">34784064</td></tr>
+        <tr><td class="nw"></td><td>ASPEN「何時該用腸道營養」共識（Bechtold ML, et al. JPEN 2022;46:1470-1496）</td><td class="nw">2022</td><td class="nw">35838308</td></tr>
+        <tr><td class="nw"></td><td>SCCM/ASPEN 成人重症營養指引（McClave SA, et al. JPEN 2016;40:159-211）</td><td class="nw">2016（GRV 500 mL 的出處）</td><td class="nw">26773077</td></tr>
+        <tr><td class="nw">居家腸道營養</td><td>ESPEN guideline on home enteral nutrition（Bischoff SC, et al. Clin Nutr 2020;39:5-22）</td><td class="nw">2020</td><td class="nw">31255350</td></tr>
+        <tr><td class="nw"></td><td>ESPEN practical guideline: Home enteral nutrition</td><td class="nw">2022（2020 版的濃縮）</td><td class="nw">35007816</td></tr>
+
+        <tr><th colspan="4">外科術後</th></tr>
+        <tr><td class="nw">外科營養</td><td><b>ESPEN guideline on clinical nutrition in surgery — Update 2025</b>（Weimann A, et al. Clin Nutr 2025;53:222-261）</td>
+            <td class="nw"><b>2025，取代 2017 完整版與 2021 實用版</b>（34242915）</td><td class="nw"><b>40957230</b></td></tr>
+        <tr><td class="nw">ERAS 大腸直腸</td><td>ERAS Society recommendations（Surgery 2025;184:109397）</td><td class="nw"><b>2025，取代 2018</b>（30426190）；另有 2026-07 勘誤 42106302</td><td class="nw">40783294</td></tr>
+        <tr><td class="nw">ERAS 食道切除</td><td>ERAS Society Recommendations（World J Surg 2019;43:299-330）</td><td class="nw">2019（首版）</td><td class="nw">30276441</td></tr>
+        <tr><td class="nw">ERAS 胰十二指腸</td><td>ERAS Recommendations（World J Surg 2020;44:2056-2084）</td><td class="nw">2019，取代 2012</td><td class="nw">32161987</td></tr>
+        <tr><td class="nw">ERAS 胃切除</td><td>ERAS Society consensus（Br J Surg 2014;101:1209-29）</td><td class="nw">2014（<b>查證確認無更新版</b>）</td><td class="nw">25047143</td></tr>
+        <tr><td class="nw">大腸直腸術後症狀</td><td>UEG／ESCP／EAES／ESPCG／ESPEN／ESNM／ESSO 指引（兩部分）</td><td class="nw">2024（首份跨學會整合版）</td><td class="nw">39576262（癌症）<br>39276317（良性）</td></tr>
+        <tr><td class="nw">Dumping</td><td>International consensus（Nat Rev Endocrinol 2020;16:448-466）</td><td class="nw">2020（首份國際共識，62 條 Delphi）</td><td class="nw">32457534</td></tr>
+        <tr><td class="nw">台灣胃癌營養</td><td>Taiwan nutritional consensus（J Formos Med Assoc 2021;120:25-33）</td><td class="nw">2021（首份，30 位專家）</td><td class="nw">31859187</td></tr>
+        <tr><td class="nw">慢性腸衰竭／短腸</td><td>ESPEN guideline on chronic intestinal failure in adults — Update 2023</td><td class="nw"><b>2023，取代 2016</b>（實用版 2021 比它<b>舊</b>）</td><td class="nw">37639741</td></tr>
+        <tr><td class="nw">高輸出量造口</td><td>Nightingale JMD. How to manage a high-output stoma.（Frontline Gastroenterol 2022;13:140-151）</td><td class="nw">2022（作者即 St Mark's）</td><td class="nw">35300464</td></tr>
+        <tr><td class="nw">造口飲食</td><td>JBI 式證據總結（J Multidiscip Healthc 2025;18:877-888）<b>——不是學會指引</b></td><td class="nw">2025</td><td class="nw">39990640</td></tr>
+        <tr><td class="nw">乳糜漏</td><td>證據總結（Front Nutr 2024;11:1478190）<b>——不是學會指引</b></td><td class="nw">2024</td><td class="nw">39845922</td></tr>
+        <tr><td class="nw">術後進階 RCT</td><td>Lau C（Ann Surg 2014）／Yao LY（Dis Colon Rectum 2023）</td><td class="nw">—</td><td class="nw">25203881／37656683</td></tr>
+
+        <tr><th colspan="4">腎臟</th></tr>
+        <tr><td class="nw">CKD 營養</td><td>KDOQI Clinical Practice Guideline for Nutrition in CKD: 2020 Update（AJKD 2020;76(3 Suppl 1):S1-S107）</td>
+            <td class="nw"><b>2020，取代 K/DOQI 2000</b>（10895784）</td><td class="nw">32829751</td></tr>
+        <tr><td class="nw">CKD 整體</td><td>KDIGO 2024 CKD Guideline（Kidney Int 2024;105(4S)）</td><td class="nw">2024，取代 2012</td><td class="nw">—</td></tr>
+        <tr><td class="nw">台灣</td><td><b>台灣腎臟醫學會《臺灣慢性腎臟病臨床指引專書》</b>（543 頁）</td>
+            <td class="nw"><b>2025 年 12 月更新版</b>（2015 首版後首度全面修訂）</td><td class="nw">—</td></tr>
+        <tr><td class="nw">住院／AKI</td><td>ESPEN practical guideline on hospitalized patients with acute or chronic kidney disease（Clin Nutr 2024;43:2238-2254）</td>
+            <td class="nw">2024（2021 完整版 33640205 的實用版）；<b>勘誤 39288648</b></td><td class="nw">39178492</td></tr>
+        <tr><td class="nw">AKI</td><td>KDIGO AKI Guideline</td><td class="nw"><b>仍是 2012 年版</b>——2026 版到 2026-09 仍是 public review draft，草案首頁明文禁止引用</td><td class="nw">—</td></tr>
+        <tr><td class="nw">腎結石</td><td>EAU Guidelines on Urolithiasis（Limited Update March 2025）／AUA（2014, Amended 2019）</td><td class="nw">2025／2019</td><td class="nw">—／24857648</td></tr>
+        <tr><td class="nw">糖尿病腎病</td><td>ADA Standards of Care 2026 §11（Diabetes Care 2026;49:S246-S260）</td><td class="nw">2026</td><td class="nw">41358881</td></tr>
+
+        <tr><th colspan="4">消化與肝</th></tr>
+        <tr><td class="nw">肝病營養</td><td><b>ACG Clinical Guideline: Malnutrition and Nutritional Recommendations in Liver Disease</b>（Am J Gastroenterol 2025;120:950-972）</td>
+            <td class="nw"><b>2025，ACG 首份</b></td><td class="nw"><b>40314389</b></td></tr>
+        <tr><td class="nw">肝性腦病</td><td><b>ACG Clinical Guideline: Hepatic Encephalopathy</b>（Am J Gastroenterol 2026;121:588-618）</td>
+            <td class="nw"><b>2026 年 3 月</b></td><td class="nw"><b>41773757</b></td></tr>
+        <tr><td class="nw"></td><td>EASL CPG on nutrition in chronic liver disease（J Hepatol 2019;70:172-193）</td>
+            <td class="nw">2019（<b>查證確認 EASL 無 2026 更新</b>）</td><td class="nw">30144956</td></tr>
+        <tr><td class="nw"></td><td>ESPEN guideline on clinical nutrition in liver disease（Clin Nutr 2019;38:485-521）</td><td class="nw">2019；實用版 2020（33213977）</td><td class="nw">30712783</td></tr>
+        <tr><td class="nw">急性胰臟炎</td><td>ACG Guidelines: Management of Acute Pancreatitis（Am J Gastroenterol 2024;119:419-437）</td><td class="nw"><b>2024，取代 2013</b></td><td class="nw">38857482</td></tr>
+        <tr><td class="nw"></td><td>IAP Revised Guidelines on Acute Pancreatitis（Pancreatology 2025;25:770-814）</td><td class="nw">2025，取代 IAP/APA 2013</td><td class="nw">40651900</td></tr>
+        <tr><td class="nw">胰臟炎營養</td><td>ESPEN guideline（Clin Nutr 2020;39:612-631）</td><td class="nw">2020；實用版 2024（38169174）是濃縮非新證據回顧</td><td class="nw">32008871</td></tr>
+        <tr><td class="nw">胰外分泌功能不全</td><td>European guidelines for the diagnosis and treatment of PEI（UEG J 2025;13:125-172）</td><td class="nw">2025，取代各國舊版</td><td class="nw">39639485</td></tr>
+        <tr><td class="nw">IBD</td><td>ESPEN guideline on Clinical Nutrition in IBD（Clin Nutr 2023;42:352-379）</td><td class="nw"><b>2023，取代 2017</b>（28131521）</td><td class="nw">36739756</td></tr>
+        <tr><td class="nw">乳糜瀉</td><td>ACG Guideline: Diagnosis and Management of Celiac Disease</td><td class="nw">2023，取代 2013；勘誤 36862380</td><td class="nw">36602833</td></tr>
+        <tr><td class="nw">IBS</td><td>ACG Clinical Guideline: Management of IBS（Am J Gastroenterol 2021;116:17-44）</td><td class="nw">2021</td><td class="nw">33315591</td></tr>
+        <tr><td class="nw">GERD</td><td>ACG Clinical Guideline for GERD（Am J Gastroenterol 2022;117:27-56）</td><td class="nw">2022，取代 2013</td><td class="nw">34807007</td></tr>
+        <tr><td class="nw">憩室炎</td><td>ACG Clinical Guideline: Colonic Diverticulitis（Am J Gastroenterol 2026;121:1549-1561）</td><td class="nw"><b>2026 年 7 月</b></td><td class="nw">42390126</td></tr>
+        <tr><td class="nw">慢性便秘飲食</td><td>BDA Guidelines for the Dietary Management of Chronic Constipation in Adults</td><td class="nw">2025（英國首份專門的「飲食」指引，59 條）</td><td class="nw">41081513</td></tr>
+
+        <tr><th colspan="4">代謝</th></tr>
+        <tr><td class="nw">糖尿病</td><td>ADA Standards of Care in Diabetes—2026 §5（Diabetes Care 2026;49:S89-S131）</td><td class="nw">2026（年度改版）</td><td class="nw">41358898</td></tr>
+        <tr><td class="nw"></td><td>ADA Nutrition Therapy Consensus Report（Diabetes Care 2019;42:731-754）</td><td class="nw">2019</td><td class="nw">31000505</td></tr>
+        <tr><td class="nw">心衰竭</td><td>2022 AHA/ACC/HFSA HF Guideline（Circulation 2022;145:e895-e1032）</td><td class="nw">2022，取代 2013＋2017</td><td class="nw">35363499</td></tr>
+        <tr><td class="nw"></td><td>HFA/ESC 鈉與液體共識（Eur J Heart Fail 2024;26:730-741）／SODIUM-HF（Lancet 2022）</td><td class="nw">2024／2022</td><td class="nw">38606657／35381194</td></tr>
+        <tr><td class="nw">高血壓</td><td>2025 AHA/ACC 高血壓指引（Circulation 2025;152:e114-e218）</td><td class="nw"><b>2025，retires and replaces 2017</b></td><td class="nw">40811497</td></tr>
+        <tr><td class="nw"></td><td>台灣心臟學會／高血壓學會指引（Acta Cardiol Sin 2022;38:225-325）</td><td class="nw">2022</td><td class="nw">35673334</td></tr>
+        <tr><td class="nw">DASH</td><td>Appel LJ（NEJM 1997）／Sacks FM（NEJM 2001，DASH-Sodium）</td><td class="nw">—</td><td class="nw">9099655／11136953</td></tr>
+        <tr><td class="nw">血脂與飲食脂肪</td><td>AHA 2021 Dietary Guidance／AHA 2020 膳食膽固醇 advisory／AHA 2017 飲食脂肪</td><td class="nw">2021／2020／2017</td><td class="nw">34724806／31838890／28620111</td></tr>
+        <tr><td class="nw">痛風</td><td>2020 ACR Guideline for the Management of Gout</td><td class="nw">2020，取代 2012（<b>查無更新版</b>）</td><td class="nw">32391934<br>（另 32390306）</td></tr>
+        <tr><td class="nw">肥胖／體重</td><td><b>2026 AHA/ACC/ADA/ASN 心腎代謝症候群（CKM）指引</b>（JACC 2026;87:e1889-e2007）</td>
+            <td class="nw"><b>2026，明文 retires, replaces, and expands upon 2013 AHA/ACC/TOS</b></td><td class="nw">42265997</td></tr>
+        <tr><td class="nw">減重手術後</td><td>ASMBS 微量營養素 2016 Update（28392254）／ASMBS 2008（18490202，<b>飲食階段與蛋白質仍在這份</b>）／
+          AACE-TOS-ASMBS-OMA-ASA 2019 CPG（31917200）／<b>ASMBS Wernicke 指引 2025</b>（40345894）</td><td class="nw">四份分工，別引錯</td><td class="nw">見左</td></tr>
+
+        <tr><th colspan="4">生酮與特殊</th></tr>
+        <tr><td class="nw">兒童治療性生酮</td><td>International Ketogenic Diet Study Group updated recommendations（Epilepsia Open 2018;3:175-192）</td>
+            <td class="nw"><b>2018，取代 2009（18823325）；查證確認無更新版</b></td><td class="nw">29881797</td></tr>
+        <tr><td class="nw">成人</td><td>International Recommendations for Adults（Neurol Clin Pract 2021;11:385-397）</td><td class="nw">2021（補充，非取代）</td><td class="nw">34840865</td></tr>
+        <tr><td class="nw">嬰兒母乳／SRSE／靜脈</td><td>Dev Med Child Neurol 2024／Epilepsia Open 2026／Dev Med Child Neurol 2020</td><td class="nw">2024／2026／2019</td><td class="nw">38669468／42132666／31313290</td></tr>
+        <tr><td class="nw">減重用 VLCKD</td><td>義大利內分泌學會共識（J Endocrinol Invest 2019;42:1365-1386）</td><td class="nw">2019</td><td class="nw">31111407</td></tr>
+        <tr><td class="nw">關鍵試驗</td><td>DIETFITS（JAMA 2018）／Keto-Med（Am J Clin Nutr 2022）／≥12 個月低碳統合分析（J Diabetes Investig 2024）</td><td class="nw">—</td><td class="nw">29466592／35641199／39046308</td></tr>
+
+        <tr><th colspan="4">檢查前</th></tr>
+        <tr><td class="nw">大腸鏡準備（美）</td><td>USMSTF Consensus Recommendations（Gastroenterology 2025;168:798-829 等三刊同步）</td><td class="nw"><b>2025，取代 2014</b></td><td class="nw">40047732</td></tr>
+        <tr><td class="nw">大腸鏡準備（歐）</td><td>ESGE Guideline — Update 2019（Endoscopy 2019;51:775-794）</td><td class="nw">2019，取代 2013</td><td class="nw">31295746</td></tr>
+        <tr><td class="nw">術前禁食</td><td>ASA Practice Guidelines（Anesthesiology 2017;126:376-393）<b>——主體，禁食時間表仍現行</b></td><td class="nw">2017，取代 2011</td><td class="nw">28045707</td></tr>
+        <tr><td class="nw"></td><td>2023 ASA Practice Guidelines <b>— A Modular Update of the 2017</b>（Anesthesiology 2023;138:132-151）</td>
+            <td class="nw"><b>2023，不是取代</b>，只補三個題目</td><td class="nw">36629465</td></tr>
+        <tr><td class="nw"></td><td>2026 ESAIC 術前禁食指引</td><td class="nw"><b>僅 protocol 發表，指引本體尚未問世</b></td><td class="nw">42730370</td></tr>
+        <tr><td class="nw">GLP-1</td><td>Multisociety clinical practice guidance（AGA＋ASMBS＋ISPCOP＋SAGES，ASA 於 2024-10 Affirmation of Value）</td>
+            <td class="nw"><b>2024，取代 ASA 2023 共識</b>（37982170）；2025 各學會另有版本且互有出入</td><td class="nw">39482213<br>39480373</td></tr>
+        <tr><td class="nw">嗜鉻細胞瘤</td><td>Endocrine Society Clinical Practice Guideline</td><td class="nw"><b>仍是 2014 版</b>（勘誤 36752564）</td><td class="nw">24893135</td></tr>
+        <tr><td class="nw">膠囊內視鏡</td><td>ESGE Guideline — Update 2022（Endoscopy 2023;55:58-95）</td><td class="nw">2022，取代 2015；<b>本版沒有腸道準備條文</b>（2 L PEG 出自 2015 版與 2018 Technical Review 29539652）</td><td class="nw">36423618</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">本頁刻意留白的地方</span><span class="dh-e">What this page will not say</span></div>
+  <div class="tw">
+    <table class="def-table">
+      <thead><tr><th>項目</th><th>狀況</th></tr></thead>
+      <tbody>
+        <tr><td>台大<b>胃切飲食 1–8、大腸腸切飲食 1–4、溫和飲食 1–3</b>的逐階內容</td><td>院外查不到。只列醫令名稱、餐次與收費，<b>不以通用原則冒充台大的實際內容</b></td></tr>
+        <tr><td>台大<b>無油檢查飲食、高血壓檢查飲食、甲狀腺素碘檢查飲食</b>的適用檢查與限量</td><td>同上</td></tr>
+        <tr><td>胃切除後<b>鐵與鈣</b>的常規補充劑量</td><td>台灣與國際指引<b>都查無條文</b>；只有 B12 有明確建議</td></tr>
+        <tr><td>肝硬化<b>夜間點心的克數</b></td><td><b>EASL 2019／ESPEN 2019／ACG 2025／ACG 2026 四份都沒有給</b>。ACG 2026 只給組成方向（複合碳水＋蛋白質）。常被引用的「50 g 碳水」出自個別試驗</td></tr>
+        <tr><td>造口的<b>「除臭食物」清單</b></td><td>證據總結中<b>查無</b>；該文件只寫「記飲食日記追蹤氣味」。坊間的優格／巴西里／蔓越莓汁說法本頁不補</td></tr>
+        <tr><td><b>台灣「無麩質」標示的官方門檻</b></td><td><b>查無</b>食藥署的門檻規定（只查到含麩質穀類須標示為過敏原）。<b>20 ppm 是 Codex／美國 FDA 標準，不是台灣法規</b></td></tr>
+        <tr><td><b>乳糜漏的 octreotide 劑量</b></td><td>證據總結只引用了相關統合分析，<b>沒有列出劑量</b></td></tr>
+        <tr><td><b>「生酮會掉多少肌肉」</b></td><td>找不到可直接引用的指引級量化證據，本頁不寫百分比</td></tr>
+        <tr><td><b>台灣治療用生酮配方的藥證與健保</b>、teduglutide 的台灣狀態</td><td>未查證</td></tr>
+        <tr><td><b>急性憩室炎期間的清流飲食</b></td><td>ACG 2026 文件中<b>沒有</b>這條建議；臨床上這樣做屬慣例而非指引</td></tr>
+        <tr><td><b>食道切除後的進食姿勢與吞嚥訓練</b></td><td>ERAS 2019 全文中<b>沒有</b>這類條文</td></tr>
+        <tr><td><b>ISGPS 延遲性胃排空 A/B/C 的天數門檻</b></td><td>原文付費未取得，不憑記憶寫</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dirhead"><span class="dh-n">查證過程中撞到的坑</span><span class="dh-e">Traps</span></div>
+  <div class="kbox alert">
+    <div class="kbox-t">給下一個要更新這頁的人</div>
+    <ul>
+      <li><b>IDDSI 的定義文件與測試文件版本不同步</b>：定義已到 2.2（2026-04），測試方法還停在 2.0（2019-07）。</li>
+      <li><b>ACG 痛風指引的 PMC 版 XML 會把斜體的 "against" 吃掉</b>——維生素 C 那條會被讀成相反的意思，必須用 PDF 核對。</li>
+      <li><b>KDOQI 2020 的公開審查草稿與最終刊出版數字不同</b>：草稿寫糖尿病腎病 0.8–0.9 g/kg <b>ideal</b> body weight，
+        最終版改成 <b>0.6–0.8 g/kg body weight</b>，連編號都從 3.1.3 變成 3.0.2。網路上（含部分中文衛教）流傳的是草稿數字。</li>
+      <li><b>台灣腎臟醫學會指引 PDF 的建議表用 PyMuPDF 抽取時相鄰列會串行</b>，必須目視核對。</li>
+      <li><b>2019 AACE/ASMBS 減重手術 CPG 有多處 PDF 轉檔誤植</b>：「7-90%」（應為 70–90%）、「4 RDA」（應為 &gt; RDA）、
+        ERAS 欄的蛋白質「60-20 g」（應為 60–120）。不可照抄。</li>
+      <li><b>ESPEN 外科 2025 的 PDF 不在 <code>/ESPEN-Guidelines/</code> 目錄下</b>，路徑與其他 ESPEN 檔不同。</li>
+      <li><b>Nutr Hosp 2026 有一篇看起來像 2026 新版 ICU 指引，實際是 ESPEN 2023 practical 版的西班牙文翻譯。</b></li>
+      <li><b>CRRT 胺基酸流失「每日 10–15 g」出自 1999 年的一篇綜述而非實測</b>，現代實測值高得多。</li>
+    </ul>
+  </div>
+
+</section>
+
+  <footer class="tool-footer">REF —
+    <a href="https://pubmed.ncbi.nlm.nih.gov/34742138/" target="_blank" rel="noopener" class="ref-link">Thibault R, et al. ESPEN guideline on hospital nutrition. Clin Nutr. 2021;40:5684-5709.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40957230/" target="_blank" rel="noopener" class="ref-link">Weimann A, et al. ESPEN guideline on clinical nutrition in surgery — Update 2025. Clin Nutr. 2025;53:222-261.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/32829751/" target="_blank" rel="noopener" class="ref-link">Ikizler TA, et al. KDOQI Nutrition in CKD: 2020 Update. Am J Kidney Dis. 2020;76(3 Suppl 1):S1-S107.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40314389/" target="_blank" rel="noopener" class="ref-link">Singal AK, et al. ACG Clinical Guideline: Malnutrition and Nutritional Recommendations in Liver Disease. Am J Gastroenterol. 2025;120:950-972.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/38857482/" target="_blank" rel="noopener" class="ref-link">Tenner S, et al. ACG Guidelines: Management of Acute Pancreatitis. Am J Gastroenterol. 2024;119:419-437.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/29881797/" target="_blank" rel="noopener" class="ref-link">Kossoff EH, et al. International Ketogenic Diet Study Group. Epilepsia Open. 2018;3:175-192.</a> ·
+    <a href="https://pubmed.ncbi.nlm.nih.gov/40047732/" target="_blank" rel="noopener" class="ref-link">Jacobson BC, et al. USMSTF: Optimizing Bowel Preparation Quality for Colonoscopy. Gastroenterology. 2025;168:798-829.</a> ·
+    台大醫院營養室飲食收費表（2026-07-20）與住院病人供餐內容 · IDDSI Framework Detailed Definitions 2.2（2026-04，CC BY-SA 4.0）
+  </footer>
+</div>
+</div>
+<script>
+function dietTab(k) {
+  document.querySelectorAll('#diet_tabs .tab-btn').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-p') === k); });
+  document.querySelectorAll('.diet-panel').forEach(function (p) { p.classList.toggle('hidden', p.getAttribute('data-panel') !== k); });
+  if (history.replaceState) history.replaceState(null, '', '#' + k);
+}
+(function () { var h = location.hash.replace('#', ''); if (h && document.querySelector('#diet_tabs [data-p="' + h + '"]')) dietTab(h); })();
+</script>
+<script src="../js/pull-to-refresh.js" defer></script>
+<!-- pwa-sw-register -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('../sw.js').catch(function (e) {
+        console.warn('SW 註冊失敗:', e);
+      });
+    });
+  }
+</script>
+</body>
+</html>
+
