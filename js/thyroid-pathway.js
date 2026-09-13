@@ -1,837 +1,1897 @@
 /* ============================================================
    甲狀腺癌治療互動決策流程 Thyroid Cancer Treatment Pathway
-   資料來源（依組織型態分屬不同指引，非單一台大 PDF）：
-     · DTC：ATA 2015 分化型甲狀腺癌指引（Haugen BR et al. Thyroid 2016;26:1-133，PMID 26462967）
-     · MTC：ATA 2015 髓質癌指引（Wells SA Jr et al. Thyroid 2015;25:567-610，PMID 25810047）
-     · ATC：ATA 2021 未分化癌指引（Bible KC et al. Thyroid 2021;31:337-386，PMID 33728999）
-     · 分期：AJCC Cancer Staging Manual 8th ed. Ch.73
-   ※ 台大醫院並未公開發行甲狀腺癌診療指引，故本流程不掛台大名義；
-     台灣端僅標註健保給付狀態（健保署藥品給付規定第 9 節）。
+   ------------------------------------------------------------
+   2026-09-13 打掉重做。舊版 839 行是舊世代寫法（無收合、無下游歸零表、無藥卡、
+   無基因段），而且**分化型還停在 ATA 2015**。
+
+   ⚠ 台大醫院沒有甲狀腺癌診療指引（本輪三重確認）：
+     ① 癌症防治中心 15 個 MDT 團隊名單沒有甲狀腺／內分泌；
+     ② workspace/guidelines/ 33 份院內 PDF 沒有甲狀腺；
+     ③ **頭頸癌診療指引全文「甲狀腺」0 次、「thyroid」0 次** —— 沒有藏在頭頸癌裡。
+   台灣也沒有全國學會版：國健署《癌症診療品質保證措施準則》是要求「各醫院自行建立
+   臨床診療指引」，所以是各院各一份。**本頁因此不掛台大名義。**
+   ❗搜尋引擎會把 tmuh.org.tw 的《甲狀腺癌診療指引》標成「台大醫院」——那是**北醫體系**
+   （臺北癌症中心），而且其 115 年版（2026）內文仍自述「按 2015 ATA 及 2019 NCCN」。
+
+   來源（依組織型態分屬三份不同指引）：
+     · DTC：**ATA 2025**（Ringel MD, Sosa JA et al. Thyroid 2025;35(8):841-985，PMID 40844370）
+       ⚠ 正式標題**不含 thyroid nodules**（結節已拆成姊妹指引）；
+       ⚠ DOI 是 **10.1177/10507256251363120**（Thyroid 已改由 SAGE 發行，不是 10.1089）；
+       ⚠ 有勘誤 **PMID 41182278**（Table 8 列名改為「Follicular Carcinoma and IEFVPTC」）。
+       84 條建議、modified GRADE、病理用 WHO 第 5 版、分期用 AJCC 第 8 版、文獻截止 2024-07-01。
+     · MTC：ATA 2015（Wells SA Jr et al. Thyroid 2015;25:567-610，PMID 25810047）——**仍是現行版**
+       （PubMed 三種檢索式與 ATA 官網指引頁皆確認 2015 之後無新版）。
+     · ATC：ATA 2021（Bible KC et al. Thyroid 2021;31:337-386，PMID 33728999）
+       ⚠ 有勘誤：GPS 4 刪除 MOST，只留 **POLST**；PMC 版全文仍是未更正的舊文字。
+     · 分期：AJCC 第 8 版（Tuttle RM et al. Thyroid 2017;27:751-756，PMID 28463585）
+
+   ❗本輪對抗式查核推翻了三個常見說法，本頁一律用更正後的寫法：
+     ① **不是「葉切切點 1 cm 放寬到 2 cm」** —— ATA 2015 Rec 35B 早就允許 >1 cm 到 <4 cm
+        的低風險 DTC 做葉切（Strong）。真正改變的是「**應直接做葉切**」的強建議門檻由
+        <1 cm 上移到 ≤2 cm；葉切可用的上限**兩版都是 4 cm**。「>1 cm 一律全切」是 2006／2009 的立場。
+     ② **預防性中央區廓清不是翻轉** —— ATA 2015 Rec 36(C) 已是 Strong／Moderate 的
+        「不做預防性中央區廓清是適當的」，2025 Rec 19(A) 只是改成反面句型，**強度與證據等級未變**。
+        唯一實質差異：2025 的 19(B) 把 2015 列的 cN1b 拿掉，並把 should 降為 may。
+     ③ **ATA 2021 ATC 有 Gy／fraction 數字** —— 但全部在「術語定義節與文獻回顧」，
+        **沒有任何一條編號 Recommendation 帶 Gy**（Rec 14／15／17 只寫 standard fractionation IMRT）。
+        另 checkpoint 的試驗證據是 spartalizumab，但 **Figure 2 流程圖點名 pembrolizumab 當代表藥**。
+
+   ⚠ 舊版的一個真正錯誤已修正：舊版把髓質癌的 calcitonin doubling time 做成
+     「<6 月／6–24 月／>24 月」三段式**決策**步驟。實際上 ATA 2015 那三段是引用
+     Barbet 2005 的**存活率資料**，不是處置門檻；指引真正的決策門檻只有一個：
+     **doubling time > 2 年**（Rec 53）。
+
+   健保與藥證查詢日：**2026-09-13**。四個卡點：
+     · **rhTSH（Thyrogen）有藥證但健保藥品支付價已歸零**；健保走的是**診療項目 26074C**
+       「碘-131 癌症追蹤檢查-施打 Thyrogen」19,475 點，**且限「復發或轉移」或「不適合停 T4」**——
+       而**藥證適應症反而限「沒有轉移性甲狀腺癌跡象的病人」**，兩者涵蓋的族群正好相反。
+     · **cabozantinib 的健保與藥證都只寫分化型**，髓質癌與未分化癌都沒有；
+       髓質癌專用的 Cometriq 膠囊**台灣沒有藥證**。
+     · **selpercatinib／pralsetinib 有藥證但健保 0 筆**（連健保藥品代號都沒有）。
+     · ❗**驗得到、用不到**：BRAF 檢測 30107B 明文含甲狀腺癌、NGS 附表也有甲狀腺癌的
+       BRAF V600E／RET fusion 與髓質癌 RET mutation 兩列，**但 9.91 dabrafenib＋trametinib
+       沒有甲狀腺適應症**。
+
+   ── 遵守的六條版面規則見 skill: pathway-ux-rules.md ──
    本模組為 cancer.html 治療分頁專用；自足，不依賴 common.js。
    ============================================================ */
 (function (global) {
   'use strict';
 
-  var thSt = {
-    histo: null,      // dtc | mtc | atc
-    /* --- DTC --- */
-    dsurg: null,      // as | lobe | total
-    drisk: null,      // low | int | high
-    dresp: null,      // excellent | indeterminate | bio_inc | str_inc
-    drefr: null,      // refractory | avid
-    /* --- MTC --- */
-    mext: null,       // loc（頸部侷限可切除）| adv（廣泛區域／轉移）
-    mctn: null,       // undetect（測不到／正常）| ctn_lt150 | ctn_gt150
-    mdt: null,        // dt_slow（>24 月）| dt_mid（6–24 月）| dt_fast（<6 月）
-    /* --- ATC --- */
-    astage: null,     // iva_ivb_res（可切除）| ivb_unres | ivc
-    abraf: null       // braf_pos | braf_neg | braf_pending
-  };
+  /* ==========================================================
+     0. 狀態
+     ========================================================== */
+  var S = {};
+  var KEYS = [
+    'histo',   // dtc | mtc | atc
+    'dstage',  // DTC 現在要決定什麼：init | postop | fu | rair
+    'dsize',   // DTC 初次：t1a | le2 | t2 | big
+    'dhisto',  // DTC 術後：ptc | ftc
+    'drisk',   // DTC 術後風險：low | lowint | inthigh | high
+    'dtx',     // DTC 追蹤：hemi | ttnorai | ttrai
+    'dresp',   // DTC 治療反應：exc | ind | bioinc | strinc
+    'dmol',    // RAIR 分子：braf | ret | ntrk | none | pending
+    'mstage',  // MTC：preop | postop | adv
+    'mctn',    // MTC 術前 calcitonin：lt20 | c20 | c200 | gt500
+    'mpost',   // MTC 術後 calcitonin：und | lt150 | gt150
+    'madv',    // MTC 進展性：stable | prog
+    'astage',  // ATC：iva | ivb_res | ivb_unres | ivc
+    'abraf'    // ATC BRAF：pos | neg | pending
+  ];
+  KEYS.forEach(function (k) { S[k] = null; });
 
+  /* ==========================================================
+     0b. 學名 → 台大藥卡（2026-09-13 對 data/drugs/ 逐碼實跑核對）
+     ⚠ 徽章寫的是「這個藥用於甲狀腺癌時在台灣的藥證與健保狀態」，
+       不是該藥整體的給付狀態。
+     ⚠ 只出現在「用不到／沒有入口」敘述裡的藥一律用 NR() 包住，不列卡。
+     ========================================================== */
+  var TH_DRUGS = [
+    { key: 'lenvatinib', cards: [['17', 'LEN4CEP5', 'Lenvima 樂衛瑪膠囊 4 mg', 'lenvatinib']],
+      flag: '健保 9.63.1 分化型、放射碘難治' },
+    { key: 'sorafenib', cards: [['17', 'NEX4CE10', 'Nexavar 蕾莎瓦膜衣錠 200 mg', 'sorafenib']],
+      flag: '健保 9.34.3 分化型、放射碘難治' },
+    { key: 'cabozantinib', cards: [['17', 'CAB4CES5', 'Cabometyx 癌必定膜衣錠 20 mg', 'cabozantinib']],
+      flag: '❗健保 9.74.2 只寫分化型；每日限 1 粒' },
+    { key: 'vandetanib', cards: [['17', 'CAP4CEY9', 'Caprelsa 佳瑞莎膜衣錠 100 mg', 'vandetanib']],
+      flag: '健保 9.86 唯一給付髓質癌者' },
+    { key: 'selpercatinib', cards: [['17', 'RET4CG28', 'Retsevmo 銳癌寧膠囊 40 mg', 'selpercatinib']],
+      flag: '❗有藥證、健保 0 筆（全自費）' },
+    { key: 'pralsetinib', cards: [['17', 'GAV4CEV5', 'Gavreto 普吉華膠囊 100 mg', 'pralsetinib']],
+      flag: '❗有藥證、健保 0 筆；台灣適應症無 RET 突變髓質癌' },
+    { key: 'larotrectinib', cards: [['17', 'VIT4CG46', 'Vitrakvi 維泰凱膠囊 100 mg', 'larotrectinib']],
+      flag: '健保 9.95.3(5) 明列甲狀腺癌' },
+    { key: 'dabrafenib', cards: [['17', 'DAB4CEE5', 'Tafinlar 泰伏樂膠囊 75 mg', 'dabrafenib']],
+      flag: '❗健保 9.91 無甲狀腺適應症' },
+    { key: 'trametinib', cards: [['17', 'MEK4CEQ8', 'Mekinist 麥欣霓膜衣錠 2 mg', 'trametinib']],
+      flag: '❗健保 9.91 無甲狀腺適應症' },
+    { key: 'levothyroxine',
+      cards: [['12', 'ELT4LC06', 'Eltroxin 昂特欣錠 100 mcg', 'levothyroxine sodium'],
+              ['12', 'LEV1LC15', 'Levothyroxine 注射（台大處方集無正式中文品名）', 'levothyroxine sodium']],
+      flag: '❗藥證只寫「甲狀腺機能減退症」，抑制療法屬仿單外' },
+    { key: 'thyrotropin', re: 'thyrotropin|rhTSH|Thyrogen',
+      cards: [['12', 'THY1LC12', 'Thyrogen 適諾進凍晶注射劑 1.1 mg', 'thyrotropin alfa']],
+      flag: '❗藥品支付價已歸零；走診療項目 26074C 且限復發／轉移' },
+    { key: 'paclitaxel', cards: [['17', 'PHY1CC03', 'Paclitaxel 輝克癒蘇注射劑', 'paclitaxel']] },
+    { key: 'docetaxel', cards: [['17', 'TA 1CC06', 'Taxotere 剋癌易注射劑', 'docetaxel']] },
+    { key: 'carboplatin', cards: [['17', 'KEM1CA32', 'Kemocarb 爾定康靜脈注射液 150 mg', 'carboplatin']] },
+    { key: 'cisplatin', cards: [['17', 'KEO1CA10', 'Kemoplat 克莫抗癌注射劑 50 mg', 'cisplatin']] },
+    { key: 'doxorubicin', cards: [['17', 'ADR1CD04', 'Adriamycin 艾黴素注射劑', 'doxorubicin']] },
+    { key: 'pembrolizumab', cards: [['17', 'KEY1CEO9', 'Keytruda 吉舒達注射劑 100 mg', 'pembrolizumab']],
+      flag: '❗健保 9.69 無甲狀腺癌適應症' }
+  ];
+
+  /* ==========================================================
+     1. 版面小工具
+     ========================================================== */
   function opt(key, val, title, sub) {
     return '<button class="flow-opt" onclick="thPick(\'' + key + '\',\'' + val + '\',this)">' +
       title + (sub ? '<span class="fo-sub">' + sub + '</span>' : '') + '</button>';
   }
-  function step(id, num, q, optsHtml, extra) {
-    return '<div class="flow-step" id="' + id + '"><div class="flow-step-head">' +
+  function node(id, num, q, opts, extra) {
+    return '<div class="ty-node hidden" id="' + id + '">' +
+      '<div class="flow-connector">↓</div>' +
+      '<div class="flow-step"><div class="flow-step-head">' +
       '<span class="flow-num">' + num + '</span><span class="flow-q">' + q + '</span></div>' +
-      '<div class="flow-opts">' + optsHtml + '</div>' + (extra || '') + '</div>';
+      (opts ? '<div class="flow-opts">' + opts + '</div>' : '') + (extra || '') + '</div></div>';
   }
-  function conn(id) { return '<div class="flow-connector" id="' + id + '">↓</div>'; }
-  function connH(id) { return '<div class="flow-connector hidden" id="' + id + '">↓</div>'; }
-  function rec(id, label) {
-    return '<div class="flow-rec rec-idle" id="' + id + '"><div class="rec-label">' + label +
-      '</div><div class="rec-title">請完成上方步驟</div></div>';
+  function node0(id, num, q, opts, extra) {
+    return '<div class="ty-node" id="' + id + '">' +
+      '<div class="flow-step"><div class="flow-step-head">' +
+      '<span class="flow-num">' + num + '</span><span class="flow-q">' + q + '</span></div>' +
+      '<div class="flow-opts">' + opts + '</div>' + (extra || '') + '</div></div>';
+  }
+  function recBox(id, label) {
+    return '<div class="flow-rec rec-idle hidden" id="' + id + '">' +
+      '<div class="rec-label">' + label + '</div><div class="rec-title"></div></div>';
+  }
+  function fuBox(id) { return '<div class="flow-fu hidden" id="' + id + '"></div>'; }
+
+  function H(title, src) {
+    return '<span class="rx-h">' + title + '</span>' + (src ? '　<span class="rx-sub">' + src + '</span>' : '');
+  }
+  function EV(t) { return '@ev ' + t; }
+  function SUB(items) { return '<ul class="rec-sub"><li>' + items.join('</li><li>') + '</li></ul>'; }
+  function NR(t) { return '<span class="no-rx">' + t + '</span>'; }
+  function fold(summary, inner) {
+    return '<details class="kps-details"><summary>' + summary + ' ▸</summary>' + inner + '</details>';
+  }
+  function more() {
+    var parts = [].slice.call(arguments).filter(Boolean);
+    if (!parts.length) return '';
+    return '<ul class="rec-detail rec-more"><li>' + parts.join('</li><li>') + '</li></ul>';
   }
 
-  /* ---------- 互動 helpers ---------- */
-  function thSel(btn) {
-    var g = btn.parentNode;
-    g.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
-    btn.classList.add('selected');
-  }
-  function thShow(id, on) { var el = document.getElementById(id); if (el) el.classList.toggle('hidden', !on); }
-  function thClearSel(ids) {
-    ids.forEach(function (id) {
-      var s = document.getElementById(id);
-      if (s) s.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
-    });
-  }
-  function ulRec(id, cls, title, lines, note) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.className = 'flow-rec ' + cls;
-    var label = el.querySelector('.rec-label');
-    var labelTxt = label ? label.textContent : '建議處置 Recommendation';
-    el.innerHTML = '<div class="rec-label">' + labelTxt + '</div>' +
-      '<div class="rec-title">' + title + '</div>' +
-      (lines && lines.length ? '<ul class="rec-detail"><li>' + lines.join('</li><li>') + '</li></ul>' : '') +
-      (note ? '<div class="rec-note">' + note + '</div>' : '');
+  /* ==========================================================
+     2. 共用參考區塊（同一件事只寫一次，其他地方指過來）
+     ========================================================== */
+
+  /* 2a. ATA 2025 的分級制度 —— 讀每一條建議之前要先懂 */
+  function gradeReference() {
+    return fold('<b>ATA 2025 的建議強度怎麼讀</b>（modified GRADE；84 條建議）',
+      '<table>' +
+      '<tr><td><b>Strong</b></td><td>「applicable to <b>all or nearly all</b> persons or situations」 —— ' +
+      '效益明顯大於風險，且至少有 moderate certainty。<b>全文 32 條。</b></td></tr>' +
+      '<tr><td><b>Conditional</b></td><td>「applicable to <b>most</b> people or situations, though ' +
+      'other courses of action <b>might be appropriate in certain circumstances</b>」。<b>全文 50 條。</b></td></tr>' +
+      '<tr><td>❗<b>Good Practice<br>Statement（GPS）</b></td>' +
+      '<td>證據太少而**不給 GRADE 分級**，但地位「like a strong recommendation」 —— ' +
+      '逐字：<b>「not following a GPS would be considered <u>outside of usual clinical practice</u>」</b>。' +
+      '<b>而且每一條 GPS 都要求委員會<u>全體一致同意</u>。</b><b>全文 59 條。</b><br>' +
+      '→ <b>看到 GPS 不要當成「弱建議」，它比 Conditional 更硬。</b></td></tr>' +
+      '<tr><td>證據等級</td><td>high／moderate／low／very low；證據不足者標 <b>insufficient</b> 並列為 ' +
+      '<b>No recommendation</b>。表註：<b>「Strong recommendations are only indicated when certainty ' +
+      'is low or very low in <u>limited circumstances</u>」</b>。</td></tr>' +
+      '<tr><td>版本注意</td><td>文獻檢索截止 <b>2024-07-01</b>（唯一例外是納入 2025 年 WHO 分類）；' +
+      '病理用 <b>WHO 第 5 版</b>；分期用 <b>AJCC 第 8 版</b>（全文 0 次提及第 9 版）。<br>' +
+      '❗<b>有勘誤（PMID 41182278）</b>：Table 8 的列名改為「Follicular Carcinoma <b>and IEFVPTC</b>」。</td></tr>' +
+      '</table>');
   }
 
-  /* ============================================================
-     追蹤區塊 Follow-up
-     ============================================================ */
-  function renderFollowup(fuId, type) {
-    var el = document.getElementById(fuId);
-    if (!el) return;
-    if (!type) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-    el.classList.remove('hidden');
-    var h = '';
-
-    if (type === 'dtc_as') {
-      h = '<div class="fu-label">積極監測之追蹤 Active surveillance（ATA 2025 REC 12–14）</div><ul class="fu-list">' +
-        '<li>以<b>頸部超音波</b>監測；<b>ATA 2025 REC 13 明確不建議</b>於監測期間常規測 Tg 與 TgAb。</li>' +
-        '<li><b>轉為手術的觸發條件（REC 14，逐條）</b>：切片證實的<b>新</b>淋巴結轉移、原發腫瘤<b>增大 ≥3 mm</b>、遠處轉移、出現腺外侵犯證據、<b>向後方生長</b>、病人焦慮、無法配合追蹤、或病人表達手術意願。</li>' +
-        '<li>侵犯喉返神經、氣管或食道者<b>不適合</b>積極監測。</li>' +
-        '<li>ESMO 2019：單發微小乳突癌（≤10mm、無包膜外侵犯與淋巴結轉移）可每 <b>6–12 個月</b>超音波追蹤［III, B］。<b>年齡是唯一已知的進展預測因子</b>：10 年進展風險 &lt;30 歲 36%、30–50 歲 14%、50–60 歲 6%。</li>' +
-        '<li><b>ATA 2025 REC 11B（新）</b>：超音波導引<b>經皮消融</b>可作為積極監測或手術之外的替代選項（選擇性病人，Conditional）。</li>' +
-        '</ul>';
-    } else if (type === 'dtc_curative') {
-      h = '<div class="fu-label">追蹤與監測 Follow-up（ATA 2015 REC 63–68／ATA 2025 REC 31／47–50）</div><ul class="fu-list">' +
-        '<li><b>頸部超音波</b>：初始治療完成後 <b>6–12 個月</b>做一次，其後依風險與治療反應調整頻率。</li>' +
-        '<li><b>可疑淋巴結門檻（兩版一致）</b>：最小徑 <b>≥8–10 mm</b> 且結果會改變處置 → FNA 細胞學 <b>+ 沖洗液 Tg</b>；<b>&lt;8–10 mm 可追蹤不切片</b>。沖洗液 Tg <b>&gt;10 ng/mL 高度可疑</b>，1–10 ng/mL 中度可疑。</li>' +
-        '<li><b>Tg</b>：初期追蹤於服藥狀態下 <b>每 6–12 個月</b>（中高／高風險可更密集）。<b>ATA 2025 REC 47D：葉切後不常規測 Tg。</b></li>' +
-        '<li><b>TgAb 陽性者以影像為主要監測工具</b>（REC 47E）：免疫分析法受干擾、LC-MS/MS 敏感度低，「不應單獨依賴」。</li>' +
-        '<li><b>診斷性全身掃描</b>：低／中風險且反應極佳者不需常規做；ATA 2025 REC 49A 進一步規定<b>葉切者或未做 RAI 之全切者不應做監測用 RAI 掃描</b>。高風險或中高風險臨床懷疑復發時可做（I-123 或低活度 I-131，診斷劑量常 2–5 mCi）。</li>' +
-        '<li><b>FDG-PET</b>：適用<b>高風險 + Tg 升高（一般 &gt;10 ng/mL）+ RAI 影像陰性</b>者（敏感度 83%、特異度 84%）。<b>刺激後 Tg ≤10 ng/mL 時敏感度僅 &lt;10–30%</b>，不宜使用。</li>' +
-        '<li><b>ATA 2025 REC 48 — 去階梯化與「完全緩解」（全新概念）</b>：低風險、持續反應極佳達 <b>5–8 年</b> → 可停止常規超音波，改<b>每 1–2 年</b>僅追蹤生化指標；達 <b>10–15 年</b> → <b>不需再常規生化監測，視為已達完全緩解</b>（未做 RAI 之全切者同此規則）。<b>葉切者</b>：首次超音波陰性後，每 <b>1–3 年</b>超音波、持續 5–8 年。</li>' +
-        '<li>復發再手術門檻（ATA 2015 REC 71）：可於解剖影像定位、<b>中央區 ≥8 mm、側頸 ≥10 mm</b>（最小徑）者考慮再手術；ATA 2025 REC 52 改為情境化陳述，並新增<b>酒精注射（PEI）與射頻消融（RFA）</b>作為再手術高風險者的替代（Conditional）。</li>' +
-        '</ul>';
-    } else if (type === 'dtc_excellent') {
-      h = '<div class="fu-label">反應極佳後之去階梯化 De-escalation（ATA 2015 REC 63B／ATA 2025 REC 48）</div><ul class="fu-list">' +
-        '<li>ATA 2015 明載：反應極佳「應導致<b>及早降低追蹤強度與頻率、以及 TSH 抑制的程度</b>」。</li>' +
-        '<li><b>不需重複刺激性 Tg 測定</b>（ATA 2015 REC 63B）。</li>' +
-        '<li><b>TSH 目標放寬至 0.5–2 mU/L</b>（ATA 2015 REC 70D，Strong）；ATA 2025 則僅表述為「正常參考範圍內」。</li>' +
-        '<li>低風險 + 持續反應極佳 <b>5–8 年</b> → 停止常規超音波，改每 1–2 年生化追蹤；<b>10–15 年</b> → 視為<b>完全緩解</b>，不需再常規監測（ATA 2025 REC 48，全新概念）。</li>' +
-        '<li>復發率參考：全切+RAI 之 excellent 為 <b>1–4%</b>（低風險 0.2–2%）；全切未做 RAI 之 excellent 為 <b>0–1.6%</b>。疾病特異死亡率 &lt;1%。</li>' +
-        '</ul>';
-    } else if (type === 'dtc_sys') {
-      h = '<div class="fu-label">系統性治療期間之追蹤與支持 Follow-up（ATA 2025 REC 60／76／78–79）</div><ul class="fu-list">' +
-        '<li>無症狀、穩定或極輕微進展、或有顯著共病者 → <b>每 3–12 個月</b>影像追蹤即可，不急於用藥（ATA 2015 REC 92A／ATA 2025 REC 60A）。</li>' +
-        '<li><b>TSH 目標：結構未完全緩解者維持 &lt;0.1 mU/L 且無限期</b>（ATA 2015 REC 70A，Strong）。</li>' +
-        '<li><b>寡轉移（2–5 個病灶）</b>可考慮局部消融（ATA 2025 REC 76）。</li>' +
-        '<li><b>骨轉移</b>：瀰漫性或有症狀者用 bisphosphonate 或 <span class="drug">denosumab</span>（REC 78）。<b>中樞神經轉移</b>以手術切除與 SBRT 為主（REC 79）。</li>' +
-        '<li>治療期間依 RECIST 評估反應與毒性；lenvatinib 之高血壓（67.8%）、腹瀉（59.4%）、疲倦（59.0%）需主動管理，因不良事件停藥率 14.2%。</li>' +
-        '</ul>';
-    } else if (type === 'mtc_cured') {
-      h = '<div class="fu-label">追蹤與監測 Follow-up（ATA MTC 2015 Rec 46–49）</div><ul class="fu-list">' +
-        '<li>術後 <b>3 個月</b>測 calcitonin + CEA；若測不到或正常 → <b>每 6 個月 × 1 年，之後每年</b>（Rec 46）。</li>' +
-        '<li>MTC 源自濾泡旁 C 細胞、<b>不受 TSH 驅動 → 不做 TSH 抑制</b>；levothyroxine 僅維持 euthyroid（Rec 31，術後 4–6 週測 TSH）。</li>' +
-        '<li>術後 RAI <b>不適用</b>（Rec 51，Grade E）；例外僅為併存 PTC／FTC 成分者。</li>' +
-        '<li>生化治癒（術後 basal Ctn &lt;10 pg/mL）者 10 年存活 97.7%，惟仍有約 3% 於 7.5 年內生化復發 → 不可停止追蹤。</li>' +
-        '</ul>';
-    } else if (type === 'mtc_marker') {
-      h = '<div class="fu-label">追蹤與監測 Follow-up（ATA MTC 2015 Rec 47–49）</div><ul class="fu-list">' +
-        '<li>Ctn 升高但 <b>&lt;150 pg/mL</b> → 理學檢查 + 頸部超音波；陰性則 Ctn／CEA／US <b>每 6 個月</b>（Rec 47）。</li>' +
-        '<li>Ctn <b>&gt;150 pg/mL</b> → 全面影像分期：頸部 US、胸部 CT、肝臟顯影 MRI 或三相 CT、骨骼掃描、骨盆與中軸骨 MRI（Rec 48）。</li>' +
-        '<li>任何可測得之 Ctn／CEA → <b>至少每 6 個月</b>追蹤以計算 doubling time（Rec 49）。</li>' +
-        '<li><b>Doubling time 之計算</b>：非線性最小平方法配適單一指數；可靠估計需 <b>至少 4 個時間點、跨 2 年以上</b>；惟 &lt;6 個月之 doubling time 於術後 12 個月內即可可靠估得。ATA 提供線上計算器。</li>' +
-        '<li>Ctn 與 CEA <b>兩者都要算</b>：兩者皆 ≤25 個月 → 94% 會進展；皆 ≥25 個月 → 僅 14% 進展（一致率 80%）。</li>' +
-        '</ul>';
-    } else if (type === 'mtc_sys') {
-      h = '<div class="fu-label">追蹤與支持治療 Follow-up / Supportive care（ATA MTC 2015）</div><ul class="fu-list">' +
-        '<li>依 RECIST 定期影像評估反應與毒性；持續追蹤 Ctn／CEA doubling time。</li>' +
-        '<li><b>腦部</b>（Rec 55）：有神經症狀者<b>及擬啟動系統性治療者</b>皆應做腦部影像；孤立病灶 → 手術或 EBRT／SRS，多發 → 全腦 EBRT。</li>' +
-        '<li><b>脊髓壓迫</b>（Rec 56）：<b>緊急</b> glucocorticoid + 手術減壓；非手術候選者單用 EBRT。</li>' +
-        '<li><b>骨</b>（Rec 57–58）：骨折／瀕臨骨折 → 手術、thermoablation、cement injection 或 EBRT（EBRT 使 70% 疼痛顯著緩解）；疼痛性骨轉移 → <span class="drug">denosumab</span> 或 bisphosphonates（惟 ATA 自陳 MTC 之 bisphosphonate 證據極少，係由甲狀腺癌整體外推）。</li>' +
-        '<li><b>肺</b>（Rec 59）：大的孤立轉移 → 切除；小的周邊病灶 → RFA。<b>肝</b>（Rec 60）：孤立大病灶 → 切除；瀰漫性、病灶 &lt;30mm 且侵犯 &lt;1/3 肝臟 → chemoembolization。</li>' +
-        '<li><b>症狀處理</b>：腹瀉（Rec 66）先用止瀉藥，替代為 somatostatin analogs；異位 ACTH／CRH 之 Cushing syndrome（Rec 67）→ ketoconazole、mifepristone、metyrapone、mitotane，難治者雙側腎上腺切除。</li>' +
-        '</ul>';
-    } else if (type === 'atc_active') {
-      h = '<div class="fu-label">追蹤、支持與臨終照護 Follow-up（ATA ATC 2021）</div><ul class="fu-list">' +
-        '<li><b>緩和醫療應在每一個階段介入</b>（Rec 9，Strong）——不是末期才照會；處理疼痛、症狀與身心社會靈性議題。</li>' +
-        '<li><b>Goals of care 討論須「儘早」啟動並「頻繁更新」</b>（GPS 5），完整揭露各選項風險效益，<b>病人偏好應主導處置</b>；鼓勵預立醫療決定（代理人、code status、POLST），並須討論 DNR 在何種情況下暫時中止（GPS 4）。</li>' +
-        '<li><b>Hospice 自始即應列為選項之一</b>（Table 1 step 8）：「對某些病人，hospice 甚至從一開始就可能優於其他選擇」。正式觸發條件為<b>婉拒延命性抗腫瘤治療但仍需症狀與疼痛緩解</b>（Rec 10）。</li>' +
-        '<li>長療程 IMRT 應於<b>療程中途安排 restaging 影像</b>，以偵測早期遠端進展；若遠端快速進展應立即更換系統性治療。</li>' +
-        '<li><b>Oligo-progression</b>（慣例定義為 <b>≤5 個</b>轉移灶，GPS 16）：可用 SBRT 或 RFA 局部處理，以延後更換原本仍有效之系統性治療。</li>' +
-        '<li><b>腦轉移</b>：壓迫性神經症狀 → <span class="drug">dexamethasone</span> <b>4–16 mg/day</b>（Rec 27）；轉介神經外科／放射腫瘤科（Rec 28）。注意 VEGFR 導向 TKI 於<b>未經治療之腦轉移</b>可能增加顱內出血風險。</li>' +
-        '<li><b>骨轉移</b>：有症狀或具威脅性 → 緩和性放療（Rec 29）；<b>負重部位有結構性損害或瀕臨脊髓壓迫者，須先骨科固定再放療</b>（Rec 30，順序不可顛倒）；可用靜脈 bisphosphonate 或皮下 RANKL 抑制劑（Rec 31，Conditional；<span class="fu-gap">指引未給藥名、劑量與間隔</span>）。</li>' +
-        '<li>三模式治療之代價須事先告知：住院率 60%、暫時性餵食管需求 60%、治療期間死亡率 3%；慢性淋巴水腫與頸部活動度受限常見且<b>不可逆</b>；<span class="fu-gap">生活品質資料完全闕如</span>。</li>' +
-        '</ul>';
-    } else if (type === 'atc_hospice') {
-      h = '<div class="fu-label">緩和與安寧照護 Palliative / Hospice（ATA ATC 2021）</div><ul class="fu-list">' +
-        '<li>啟動 hospice（Rec 10）：婉拒延命性抗腫瘤治療、但餘病程仍需症狀與疼痛緩解者。</li>' +
-        '<li>緩和醫療照會於<b>任何階段</b>皆有用；hospice 則聚焦於已不再接受延命治療者之疼痛與症狀處理。</li>' +
-        '<li>Comfort care／hospice 之同意過程應納入緩和醫療專家<b>與宗教關懷（pastoral care）</b>。</li>' +
-        '<li>須理解家庭系統及其對病人決策之影響（Rec 11）；決策能力有疑慮時照會心理衛生與／或臨床倫理（GPS 3）。</li>' +
-        '<li><b>營養與餵食管</b>：停止進食者應先評估<b>憂鬱及其他妨礙舒適進食之生理障礙（含吞嚥問題）</b>；最終「自願停止進食與飲水」可被提供並予尊重。與家屬對餵食管適當性有衝突時，採 ATS「7 Step」流程。<span class="fu-gap">此段無分級建議，僅見於臨床倫理章節。</span></li>' +
-        '</ul>';
-    }
-    el.innerHTML = h;
+  /* 2b. ⭐ ATA 2025 Figure 2 四級復發風險分層 —— 本頁最重要的一張表 */
+  function riskReference() {
+    var head = '<tr><td><b>層級</b></td><td><b>PTC 與其亞型</b></td>' +
+      '<td><b>FTC／IEFVPTC 與 OTC</b>（兩欄內容相同）</td></tr>';
+    return fold('<b>⭐ ATA 2025 四級復發風險分層的完整判定準則</b>（Figure 2 逐格）',
+      '<table>' +
+      '<tr><td colspan="3">❗<b>這張表在指引裡只存在於 Figure 2 的點陣圖中</b>，PDF 文字層只有圖說，' +
+      '正文各風險因子小節只回顧證據、不指派級別。<b>本頁的內容經三重核對</b>：' +
+      '① 原生嵌入圖（1267×966）逐格判讀；② 四個級別名稱與百分比在正文 Definitions 段有獨立文字出處；' +
+      '③ 兩篇開放取用評論文（PMC12602013 Table 1、PMC13341181 Table 1）以文字表格重製，逐項一致。</td></tr>' +
+      '<tr><td colspan="3">❗<b>指引自己的命名不一致</b>：Definitions 段寫 <b>intermediate-high</b>，' +
+      'RAI 段寫 <b>high-intermediate</b>，兩篇評論文也各用一種。<b>指的是同一層。</b></td></tr>' +
+      head +
+      '<tr><td><b>HIGH<br>&gt; 30%</b></td>' +
+      '<td colspan="2"><b>T3a ＋ microscopic ETE、T3b 或 T4；或<u>任何 T</u> 只要有下列任一：</b><br>' +
+      '<b>PTC 欄</b>：Poorly differentiated or high grade／<b>Gross incomplete resection (R2)</b>／' +
+      'cN1 ≥ 3 cm／Extranodal extension (ENE)／Distant metastasis (M1)<br>' +
+      '<b>FTC／OTC 欄</b>：Poorly differentiated or high grade／<b>Widely invasive</b>／' +
+      '<b>Encapsulated angioinvasive：extensive vascular invasion ≥ 4 vessels</b>／' +
+      'cN1 ≥ 3 cm／Extranodal extension (ENE)／Distant metastasis (M1)<br>' +
+      '❗<b>差別</b>：R2 只列在 PTC 欄；widely invasive 與 ≥ 4 條血管侵犯只列在 FTC／OTC 欄。</td></tr>' +
+      '<tr><td><b>INTERMEDIATE-HIGH<br>≥ 16–30%</b></td>' +
+      '<td><b>T1、T2 或 T3a 只要有下列任一：</b><br>' +
+      '· Bilateral multifocality &gt; 1 cm<br>' +
+      '· Clinically evident lateral LN mets (cN1b) &lt; 3 cm<br>' +
+      '· <b>2 項以上的 low-intermediate 風險因子</b><br>' +
+      '· Aggressive histology<br>· Vascular invasion</td>' +
+      '<td><b>T1、T2 或 T3a 只要有下列任一：</b><br>' +
+      '· Clinically evident lateral LN mets (cN1b) &lt; 3 cm<br>' +
+      '· <b>2 項以上的 low-intermediate 風險因子</b><br>' +
+      '❗<b>沒有</b> bilateral multifocality、aggressive histology、vascular invasion 這三列。</td></tr>' +
+      '<tr><td><b>LOW-INTERMEDIATE<br>10–15%</b></td>' +
+      '<td><b>T3a；或 T1／T2 只要有下列任一：</b><br>' +
+      '· <b>Unilateral</b> multifocality<br>· Microscopic ETE<br>' +
+      '· cN1a 或 pN1a &gt; 2 mm，或 &gt; 5 顆淋巴結<br>' +
+      '· 切緣陰性，或僅 microscopic ＋ <b>posterior</b> margin (R1)</td>' +
+      '<td><b>T3a；或 T1／T2 只要有下列任一：</b><br>' +
+      '· Microscopic ETE<br>· <b>Limited vascular invasion &lt; 4 vessels</b><br>' +
+      '· cN1a 或 pN1a &gt; 2 mm，或 &gt; 5 顆淋巴結<br>' +
+      '· 切緣陰性，或僅 microscopic ＋ <b>posterior</b> margin (R1)<br>' +
+      '❗<b>沒有</b> unilateral multifocality 這一列。</td></tr>' +
+      '<tr><td><b>LOW<br>&lt; 10%</b></td>' +
+      '<td><b>T1 與 T2（≤ 4 cm）：</b><br>· <b>Unifocal</b><br>' +
+      '· pN0a，或 cN0 且 pN1a（≤ 5 顆且全部 ≤ 2 mm）<br>' +
+      '· 切緣陰性，或僅 microscopic ＋ <b>anterior</b> margin (R1)</td>' +
+      '<td><b>T1 與 T2（≤ 4 cm）：</b><br>' +
+      '· <b>Minimally invasive：只有 capsular invasion</b><br>' +
+      '· pN0a，或 cN0 且 pN1a（≤ 5 顆且全部 ≤ 2 mm）<br>' +
+      '· 切緣陰性，或僅 microscopic ＋ <b>anterior</b> margin (R1)</td></tr>' +
+      '<tr><td colspan="3">❗<b>兩個最容易看漏的細節</b><br>' +
+      '① <b>切緣的前後位置會改變級別</b>：同樣是 microscopic 陽性切緣（R1），' +
+      '<b>anterior 落在 LOW、posterior 落在 LOW-INTERMEDIATE</b>。<br>' +
+      '② <b>血管侵犯的條數是硬門檻</b>：FTC／OTC 的 <b>&lt; 4 條 → LOW-INTERMEDIATE、' +
+      '≥ 4 條 → HIGH</b>，中間沒有其他級別。</td></tr>' +
+      '<tr><td colspan="3"><b>圖例逐字</b>：PTC＝Papillary Thyroid Carcinoma；' +
+      'FTC／IEFVPTC＝Follicular Thyroid Carcinoma／Invasive Encapsulated Follicular Variant of ' +
+      'Papillary Thyroid Carcinoma；OTC＝Oncocytic Thyroid Carcinoma；Φ＝WHO 2022 definition。<br>' +
+      '圖註 * 逐字：<b>「No clear cutoffs for LNs between low-intermediate and high-intermediate ' +
+      'risk groups. In general, smaller size and fewer lymph node metastases are associated with ' +
+      'lower risk of recurrence.」</b>—— <b>淋巴結那一條的切點指引自己承認沒有定清楚。</b><br>' +
+      '圖註 ** 逐字：<b>「LN mets are uncommon in OTC and FTC/IEFVPTC」</b>。</td></tr>' +
+      '<tr><td colspan="3"><b>這套分層怎麼用</b>（RECOMMENDATION 28）<br>' +
+      'A：<b>「The 2025 ATA Risk Stratification System… is recommended to determine the risk of ' +
+      'structural disease persistence/recurrence」（Strong, Moderate certainty）</b> —— ' +
+      '它要和 <b>AJCC 分期、術後影像、Tg 與 TgAb</b> 合併判讀，不是單獨使用。<br>' +
+      'B：<b>術後組織的分子檢測「not recommended routinely」（Conditional, Low certainty）</b>；' +
+      '但若已經有資料，可以拿來進一步修正風險估計。<br>' +
+      '❗<b>2009 與 2015 版是三層，2025 才改成四層</b> —— 舊病歷上的「中度風險」和這裡的兩個中間層不能直接對應。</td></tr>' +
+      '</table>');
   }
 
-  function result(recId, fuId, cls, title, lines, note, fuType) {
-    ulRec(recId, cls, title, lines, note);
-    renderFollowup(fuId, fuType);
-  }
-  function idleRec(recId, fuId, title) {
-    ulRec(recId, 'rec-idle', title, [], '');
-    renderFollowup(fuId, null);
-  }
-
-  /* ============================================================
-     共用內容區塊
-     ============================================================ */
-
-  /* DTC：RAI 適應症與活度（ATA 2015 REC 51/55/56 + ATA 2025 REC 32 Table 10） */
-  function dtcRAI(risk) {
-    var head, body;
-    if (risk === 'low') {
-      head = '<span class="rx-h">放射碘 RAI</span>　<span class="rx-sub">低風險：不常規建議</span><br>' +
-        '<b>ATA 2015 REC 51A</b>：低風險者<b>不常規建議</b> RAI 殘餘消融；<b>REC 51B（Strong）</b>：單發微小乳突癌於葉切或全切後，若無其他不良特徵，<b>不常規建議</b>。' +
-        '<b>ATA 2025 REC 32A</b>：低風險<b>不常規建議</b>——證據等級由 2015 年的 Low <b>升格為 High</b>，依據為 ESTIMABL2 與 IoN。';
-      body = '<b>三個去階梯化試驗（皆已 PubMed 驗證）</b>：' +
-        '<span class="rx">ESTIMABL2</span>（NEJM 2022，n=776，pT1a／pT1b N0）：<b>不給 RAI vs 給 1.1 GBq</b> 之 3 年無事件比例 <b>95.6% vs 95.9%</b>（差 −0.3 個百分點），達非劣性；<b>5 年追蹤</b>（Lancet Diabetes Endocrinol 2025）93.2% vs 94.8%，結論明言「不做術後消融而追蹤這些病人，並無損失機會」。' +
-        '<span class="rx">IoN</span>（Lancet 2025，n=504，R0、pT1–pT3a、N0/Nx/N1a）：5 年無復發存活 <b>97.9% vs 96.3%</b>，絕對差 0.5 個百分點（非劣性界值 5 個百分點，p=0.033），<b>兩組皆無癌症相關死亡</b>。' +
-        '<span class="rx">HiLo</span>（NEJM 2012，2×2 factorial，n=438）：<b>1.1 vs 3.7 GBq</b> 消融成功 85.0% vs 88.9%、<b>rhTSH vs 停藥</b> 87.1% vs 86.7%，皆達非劣性；高劑量組住院 ≥3 天 36.3% vs 13.0%、不良事件 33% vs 21%。長期追蹤（中位 6.5 年）復發 HR 1.10（p=0.83）。' +
-        '<b>綜合訊息</b>：低風險可<b>完全省略</b> RAI；若仍給，<b>30 mCi + rhTSH 已足夠</b>。';
-    } else if (risk === 'int') {
-      head = '<span class="rx-h">放射碘 RAI</span>　<span class="rx-sub">中風險：應考慮（Consider）</span><br>' +
-        '<b>ATA 2015 REC 51D</b>：中風險者<b>應考慮</b> RAI 輔助治療（Weak, Low）。<b>ATA 2025 REC 32B</b>：低中／中高風險「may be considered」（Conditional, Low）。';
-      body = '<b>活度</b>：ATA 2015 REC 55A（<b>Strong, High</b>）——低風險或具較低風險特徵之中風險者，<b>採低活度約 30 mCi</b>；REC 56：作為<b>輔助治療</b>時可用高於消融之活度，<b>至多 150 mCi</b>，惟「是否常規使用 &gt;150 mCi 能降低 T3 與 N1 病人之結構性復發並不確定」。' +
-        'ATA 2025 Table 10：低中與中高風險 <b>1.1–3.7 GBq（30–100 mCi）</b>。' +
-        '<b>Table 14 逐格</b>（ATA 2015）：T1a → 否；T1b–T2 N0 → 非常規；T3（&gt;4cm 或顯微腺外侵犯）→ 考慮；T1-3 <b>N1a</b> → 考慮，惟「<b>中央區 &lt;5 顆顯微淋巴結轉移且無其他不良特徵者，資料不足以強制使用 RAI</b>」；T1-3 N1b → 考慮；T4 → 是；M1 → 是。';
-    } else {
-      head = '<span class="rx-h">放射碘 RAI</span>　<span class="rx-sub">高風險：常規建議（Strong）</span><br>' +
-        '<b>ATA 2015 REC 51E（Strong, Moderate）</b>與 <b>ATA 2025 REC 32C</b>：高風險者<b>常規建議</b> RAI；有遠處轉移者亦常規建議（REC 32D）。';
-      body = '<b>活度</b>：ATA 2025 Table 10——高風險 <b>3.7–5.55 GBq（100–150 mCi）</b>；<b>遠處轉移 3.7–7.4 GBq（100–200 mCi）</b>或考慮劑量學（dosimetry）。' +
-        'ATA 2015 REC 81：經驗性治療 <b>100–200 mCi</b>；<b>若經驗性 RAI 後掃描陰性，即判定為 RAI 難治，不再給 RAI</b>。' +
-        '<b>ATA 2025 REC 55A（Strong）</b>：<b>&gt;70 歲或腎衰竭者應避免經驗性給予 &gt;5.5 GBq（150 mCi）</b>，因高度可能超過毒性參數。' +
-        'ESMO 2019：遠處轉移採 100–200 mCi 停藥法，每 6 個月一次共 2 年；<b>累積劑量達 600 mCi 後病灶仍持續者，治癒機會渺茫</b>。';
-    }
-    return head + '<br>' + body + '<br>' +
-      '<span class="rx-h">準備方式</span>　<span class="rx-sub">2025 年立場翻轉</span><br>' +
-      '<b>ATA 2025 REC 34A（Strong, High）</b>：擬做消融或輔助治療者，<b>rhTSH 刺激優於停用甲狀腺素</b>——2015 年 REC 54A 僅稱 rhTSH 為低／中風險者的「可接受替代方案」，且對高風險<b>無建議（證據不足）</b>。' +
-      '停藥法：LT4 停 <b>3–4 週</b>；若停 ≥4 週，前期可用 LT3 替代，LT3 須停 ≥2 週。目標 <b>TSH &gt;30 mIU/L</b>（2015 為 Weak/Low，<b>2025 升格為 Good Practice Statement</b>）。低碘飲食 <b>1–2 週</b>。治療後掃描兩版皆建議（可用 SPECT/CT）。';
-  }
-
-  /* DTC：TSH 抑制目標（ATA 2015 REC 59／70；ATA 2025 已移除數值） */
-  function dtcTSH(context) {
-    var line;
-    if (context === 'high') line = '<b>高風險 → TSH &lt;0.1 mU/L</b>（REC 59A，Strong）。';
-    else if (context === 'int') line = '<b>中風險 → TSH 0.1–0.5 mU/L</b>（REC 59B）。';
-    else if (context === 'lobe') line = '<b>低風險接受葉切 → TSH 0.5–2 mU/L</b>（REC 59E）；<b>若病人本身即能維持於此範圍，可不需服用甲狀腺素</b>。實務數字：目標若訂在正常範圍，<b>70–80% 葉切者可免服 LT4</b>；若訂 0.5–2.0 mIU/L 則<b>僅 20–30%</b> 可免藥。';
-    else if (context === 'excellent') line = '<b>反應極佳／不確定（尤其低風險）→ 放寬至 TSH 0.5–2 mU/L</b>（REC 70D，Strong）；初始高風險但反應極佳者維持 0.1–0.5 mU/L <b>至多 5 年</b>後可放寬（REC 70C）。';
-    else if (context === 'bio_inc') line = '<b>生化未完全緩解 → TSH 0.1–0.5 mU/L</b>（REC 70B）。';
-    else if (context === 'str_inc') line = '<b>結構未完全緩解 → TSH &lt;0.1 mU/L，且無限期維持</b>（REC 70A，Strong）。';
-    else line = '<b>低風險已消融且 Tg 測不到 → TSH 0.5–2 mU/L</b>（REC 59C）；低量可測 Tg 者 0.1–0.5 mU/L（REC 59D）。';
-    return '<span class="rx-h">TSH 抑制目標</span>　<span class="rx-sub">數值僅 ATA 2015 版有</span><br>' + line +
-      '<br><b>ATA 2025 已刻意移除數值分層</b>：REC 45 改為「個別化決定是否抑制至參考範圍以下，並認知高風險者較可能自 subnormal TSH 獲益」（Conditional）；<b>REC 46A：低／中風險且無生化或結構復發證據者，不建議長期 TSH 抑制</b>。Table 9 僅給「正常參考範圍內」與「低於正常參考範圍」兩類，且兩則腳註皆明載「最佳 TSH 目標範圍之資料尚無定論」。' +
-      '<b>支持依據</b>：NTCTCSG（n=3,238）顯示<b>中度抑制（subnormal-to-normal）</b>於各期別之存活與無病存活皆較佳，而<b>抑制到測不到的程度並未帶來進一步改善</b>；另一低中風險世代（n=771）顯示 <b>TSH ≤0.4 mIU/L 者心房顫動與骨質疏鬆風險升高，但復發風險相同</b>。' +
-      '<span class="fu-gap">若需 mIU/L 數字只能引 ATA 2015 REC 59／70 或 ESMO 2019，並註明 ATA 2025 已移除。</span>';
+  /* 2c. RAI 適應症與劑量（ATA 2025 Rec 32 + Table 10 + Rec 34） */
+  function raiReference() {
+    return fold('<b>放射碘（RAI）的適應症、劑量與準備方式</b>（ATA 2025 Rec 32／34、Table 10）',
+      '<table>' +
+      '<tr><td colspan="2"><b>RECOMMENDATION 32 —— 誰要給</b></td></tr>' +
+      '<tr><td><b>Low</b></td><td><b>「Remnant ablation is <u>not recommended routinely</u> after total ' +
+      'thyroidectomy for patients with ATA low-risk DTC.」（Strong recommendation, <u>High</u> certainty evidence）</b><br>' +
+      '❗<b>這是全文少數 High certainty 的條文之一，語氣比一般的「可考慮不給」強得多。</b></td></tr>' +
+      '<tr><td><b>Low-intermediate<br>與 Intermediate-high</b></td>' +
+      '<td><b>「RAI adjuvant therapy <u>may be considered</u>…」（Conditional recommendation, Low certainty evidence）</b></td></tr>' +
+      '<tr><td><b>High</b></td><td><b>「RAI adjuvant therapy <u>is recommended routinely</u>…」' +
+      '（Strong recommendation, Moderate certainty evidence）</b></td></tr>' +
+      '<tr><td><b>遠端轉移</b></td><td><b>「…RAI therapy is recommended routinely after total ' +
+      'thyroidectomy.」（Strong recommendation, Moderate certainty evidence）</b></td></tr>' +
+      '<tr><td colspan="2"><b>Table 10 —— 給多少（逐字）</b></td></tr>' +
+      '<tr><td>Low</td><td>典型建議 <b>No</b>；活度 <b>1.1–1.85 GBq（30–50 mCi）</b>；目標：無，或 remnant ablation</td></tr>' +
+      '<tr><td>Intermediate-low<br>與 intermediate-high</td><td>典型建議 <b>Consider</b>；' +
+      '活度 <b>1.1–3.7 GBq（30–100 mCi）</b>；目標：remnant ablation ± adjuvant therapy</td></tr>' +
+      '<tr><td>High</td><td>典型建議 <b>Yes</b>；活度 <b>3.7–5.55 GBq（100–150 mCi）</b>；' +
+      '目標：remnant ablation 與 adjuvant therapy</td></tr>' +
+      '<tr><td>遠端轉移</td><td>典型建議 <b>Yes</b>；活度 <b>3.7–7.4 GBq（100–200 mCi）</b>，' +
+      '或考慮 dosimetry；目標：治療已知病灶與 remnant ablation</td></tr>' +
+      '<tr><td colspan="2">表註：<b>「the final recommendation for administered activity should be based ' +
+      'on <u>multidisciplinary</u> management recommendations」</b>。</td></tr>' +
+      '<tr><td colspan="2"><b>RECOMMENDATION 34 —— 怎麼準備（本版最大的轉向之一）</b></td></tr>' +
+      '<tr><td>❗<b>A</b></td><td><b>「In patients with DTC in whom RAI remnant ablation or adjuvant ' +
+      'therapy is planned, <u>preparation with rhTSH stimulation is preferred over thyroid hormone ' +
+      'withdrawal</u>.」（Strong recommendation, <u>High</u> certainty evidence）</b><br>' +
+      '相較 ATA 2015 Rec 54(A) 只稱 rhTSH 為「an <b>acceptable alternative</b> to thyroid hormone ' +
+      'withdrawal」。❗<b>但 2015 那一條本來就已經是 Strong recommendation</b>（Moderate quality，' +
+      '且限低／中風險、無廣泛淋巴結侵犯者）。<b>真正改變的是用字（acceptable alternative → preferred）、' +
+      '證據等級（Moderate → High）、以及不再限定風險層級 —— 不是「從非 Strong 升級為 Strong」。</b></td></tr>' +
+      '<tr><td><b>B</b></td><td>任何風險層，若有顯著共病使停藥不可行，<b>應考慮 rhTSH</b>（Good Practice Statement）</td></tr>' +
+      '<tr><td><b>C</b></td><td><b>「If thyroid hormone withdrawal is planned… LT4 should be withdrawn ' +
+      'for <u>3–4 weeks</u>. If LT4 is withdrawn for ≥ 4 weeks, substitution of LT4 with liothyronine ' +
+      '(LT3) in the initial weeks should be considered. In such circumstances LT3 should be withdrawn ' +
+      'for <u>at least 2 weeks</u>…」（Good Practice Statement）</b><br>' +
+      '❗<b>台灣買不到單方 liothyronine（T3）</b>——食藥署許可證 0 筆，這個 LT3 橋接做法在台灣做不到。</td></tr>' +
+      '<tr><td><b>D</b></td><td><b>「A goal of <u>TSH &gt; 30 mIU/L</u> should be employed in preparation ' +
+      'for RAI therapy or diagnostic testing.」（Good Practice Statement）</b><br>' +
+      '❗<b>這是全文唯一用 mIU/L 給數字的地方</b>——它是「準備 RAI 的 TSH 目標」，' +
+      '<b>不是 TSH 抑制治療的目標</b>，兩者常被搞混。</td></tr>' +
+      '<tr><td>❗<b>E</b></td><td><b>「In patients with <u>known distant metastases</u>, either LT4 ' +
+      'withdrawal or rhTSH can be used for preparation.」（Conditional recommendation, Low certainty evidence）</b><br>' +
+      '<b>已知遠端轉移者刻意退回「兩者皆可」，不適用 A 的 preferred。</b></td></tr>' +
+      '<tr><td colspan="2">❗<b>台灣的現實：rhTSH 的藥證與健保涵蓋的族群正好相反</b><br>' +
+      '<b>藥證</b>（Thyrogen 適諾進，衛署罕菌疫輸字第000003號，有效至 2028/05/06）：' +
+      '適應症含「甲狀腺殘留組織的放射碘去除之輔助療劑」，<b>但限「<u>且沒有轉移性甲狀腺癌的跡象</u>的病人」</b>。<br>' +
+      '<b>健保</b>：藥品端的支付價自 94/04/01 起為 <b>0.00</b>（等同不給付）；' +
+      '實際走的是<b>診療項目 26074C「碘-131 癌症追蹤檢查-施打 Thyrogen」19,475 點</b>，' +
+      '適應症逐字「(1) 甲狀腺癌<b>復發或轉移</b>之患者　(2) 不適合停用 T4 之甲狀腺癌患者」，' +
+      '<b>且須個案申請事前審查</b>。<br>' +
+      '→ <b>ATA 2025 主打的用途（非轉移性病人做 RAI 前的準備）落在藥證涵蓋、健保不涵蓋的夾縫裡。' +
+      '實務上是「自費用 rhTSH」對上「停藥升 TSH（健保）」的選擇。</b></td></tr>' +
+      '</table>');
   }
 
-  /* DTC：RAI 難治之系統性治療全菜單 */
-  function dtcSystemic() {
-    return [
-      '<span class="rx-h">先做基因檢測，再決定用藥</span>　<span class="rx-sub">ATA 2025 REC 61，Strong／立場與 2015 相反</span><br>' +
-        '<b>「進展性 RAI 難治 DTC 於啟動系統性治療前，應先做組織基因檢測以找出可標靶的致癌驅動變異。」</b>ATA 2015 REC 92B 原本認為不需常規做 BRAF 檢測——此處是 10 年間的方向性反轉。',
-      '<span class="rx-h">何時開始、何時觀察</span>　<span class="rx-sub">ATA 2025 REC 60／63</span><br>' +
-        '<b>觀察</b>：無症狀、穩定或極輕微進展、或有顯著共病者 → 每 3–12 個月影像追蹤即可。' +
-        '<b>立即治療（REC 63A，Strong）</b>：<b>有症狀且不適合局部治療者，lenvatinib 或其他治療應立即開始，不應延遲。</b>' +
-        '<b>REC 63B</b>：無症狀但過去 <b>12–14 個月</b>內有進展者——以療效為優先可提早啟動，以生活品質為優先可延後並持續監測。',
-      '<span class="rx-h">有驅動變異者：第一線即用標靶</span>　<span class="rx-sub">ATA 2025 REC 67–70</span><br>' +
-        '<b>RET fusion（REC 68，Strong）</b>→ <span class="drug">selpercatinib</span>（LIBRETTO-001：RET fusion 甲狀腺癌 <b>ORR 79%</b>，1 年 PFS 64%）或 <span class="drug">pralsetinib</span>（ARROW：<b>ORR 89%</b>，8/9）。' +
-        '<b>NTRK fusion（REC 67，Strong）</b>→ <span class="drug">larotrectinib</span>（甲狀腺癌專門分析：28 例可評估 ORR 71%，<b>僅 DTC 21 例 ORR 86%</b>）或 <span class="drug">entrectinib</span>；NCCN 另列 repotrectinib。' +
-        '<b>ALK fusion（REC 69，Strong／證據 Low）</b>→ ALK 標靶（僅有 crizotinib、alectinib、lorlatinib 之個案報告，因罕見無法做常規試驗）。' +
-        '<b>BRAF V600E（REC 70）</b>→ (a) <b>不適合 lenvatinib</b> 者可第一線用 BRAF 導向治療（Conditional）；(b) 一線以上 MKI 進展或不耐受者<b>建議</b>使用（Strong）；(c) <b>非 V600 之 BRAF 變異不建議</b>用現行 BRAF 導向藥（Strong）。' +
-        'Vemurafenib 第二期：未用過 VEGFR MKI 者 ORR 39%、用過者 27%。<span class="rx">Dabrafenib ± trametinib</span> 隨機第二期（n=53）：<b>併用未優於單用</b>（ORR 42% vs 48%，p=0.67）。',
-      '<span class="rx-h">無可標靶變異：第一線多激酶抑制劑</span>　<span class="rx-sub">ATA 2025 REC 62，Strong, High</span><br>' +
-        '<b>「多數情況下 lenvatinib 為首選第一線 MKI。」</b>' +
-        '<span class="rx">Lenvatinib</span>（SELECT，NEJM 2015，n=392）：<b>中位 PFS 18.3 vs 3.6 個月，HR 0.21；ORR 64.8% vs 1.5%</b>。OS 兩組皆未達（後續分析 HR 0.73，p=0.10，因 <b>83% 安慰劑組跨組</b>而混淆）。' +
-        '<b>起始劑量 24 mg qd</b>（REC 64A，Strong, High）：18 mg vs 24 mg 隨機試驗顯示 24 週 ORR <b>40.3% vs 57.3%，未達非劣性</b>，而 ≥G3 不良事件相當——故不應為降低毒性而預設減量。' +
-        '<span class="rx">Sorafenib</span>（DECISION，Lancet 2014，n=417）：中位 PFS <b>10.8 vs 5.8 個月</b>，HR 0.59；<b>ORR 僅 12.2%</b>；OS 無差異（71.4% 跨組）。' +
-        'NCCN v1.2025：兩者皆 category 1，<b>lenvatinib 為首選</b>（反應率 65% vs 12%，惟兩藥未曾直接比較）。',
-      '<span class="rx-h">第二線</span>　<span class="rx-sub">ATA 2025 REC 66，Strong, High</span><br>' +
-        '<span class="rx">Cabozantinib</span>（COSMIC-311 更新，Cancer 2022，n=258）：<b>中位 PFS 11.0 vs 1.9 個月，HR 0.22；ORR 11.0% vs 0%</b>。效益<b>不因既往使用哪一種 VEGFR TKI 而異</b>。' +
-        'NCCN：乳突癌 category 1、濾泡與嗜酸性癌 category 2A。NCCN 另提及 lenvatinib + <span class="drug">pembrolizumab</span> 於 lenvatinib 進展後（ORR 16%、PFS 10.0 個月）「或可考慮」。',
-      '<span class="rx-h">再分化 Redifferentiation</span>　<span class="rx-sub">ATA 2025 REC 74</span><br>' +
-        '(A) 具可標靶突變者之 MAPK 阻斷再分化「<b>可於選擇性病人考慮，並鼓勵參加臨床試驗</b>」（Conditional, Low）。' +
-        'Selumetinib 先驅研究（NEJM 2013，n=20）：<b>12/20 增加 I-124 攝取</b>（<b>NRAS 突變者 5/5</b>），8 例達治療門檻，接受 RAI 的 8 例中 5 例 PR、3 例 SD，Tg 平均下降 89%。MERAIODE BRAF 隊列（n=24）6 個月 ORR 38%。' +
-        '<b>(B) 但（Strong, Moderate）：高風險、未經基因篩選之 DTC，不建議在輔助性 RAI 治療中使用再分化策略</b>——依據為 ASTRA 試驗未達標。',
-      '<span class="rx-h">免疫治療與細胞毒性化療</span><br>' +
-        '免疫檢查點抑制劑（REC 73，Conditional）：<b>僅於選擇性情形</b>，如<b>高腫瘤突變負荷或錯配修復缺損</b>者。' +
-        '細胞毒性化療（REC 75）：僅限轉移、快速進展、有症狀或立即威脅生命者。',
-      '<span class="rx-h">台灣健保給付</span>　<span class="rx-sub">健保署藥品給付規定第 9 節（115/6/23 版）</span><br>' +
-        '<b>已給付</b>：<span class="drug">lenvatinib</span>（9.63，107/7/1 起）與 <span class="drug">sorafenib</span>（9.34，106/1/1 起）用於<b>放射碘治療無效之局部晚期或轉移性進行性 DTC</b>——兩者<b>不得合併使用</b>，需事前審查、每次療程 3 個月、每 3 個月檢送影像評估。' +
-        '<span class="drug">cabozantinib</span>（9.74）<b>自 114/8/1（＝2025-08-01）起給付</b>二線：曾接受 VEGFR 標靶治療後惡化、放射碘無效或不適用者，每日限 1 粒。' +
-        '<span class="drug">larotrectinib</span>（9.95，112/12/1）給付 NTRK fusion 之進行性甲狀腺癌，須附基因融合檢測報告。' +
-        '<b>未給付（須自費）</b>：<b>selpercatinib 於第 9 節全文零命中</b>（任何癌別皆未納保）；<b>dabrafenib + trametinib（9.91）僅給付黑色素瘤與 BRAF V600E 非小細胞肺癌，全條無「甲狀腺」字樣</b>。' +
-        '<span class="fu-gap">即 RET fusion 與 BRAF V600E 的標靶藥在台灣屬自費；民國 114 年＝2025 年，多個二手網站把 cabozantinib 給付起日誤植為 2024-08-01。</span>'
-    ];
+  /* 2d. 治療反應四分類與 TSH 目標（Table 9 + Rec 45/46） */
+  function responseReference() {
+    return fold('<b>治療反應四分類與 TSH 目標</b>（ATA 2025 Table 9、Rec 45／46）',
+      '<table>' +
+      '<tr><td colspan="5">❗<b>切點依「做了什麼治療」分欄 —— 同一個 Tg 數值在不同欄是不同的反應級別。</b>' +
+      '這是 2025 版的重要改動，而且<b>新增了 hemithyroidectomy 欄</b>。</td></tr>' +
+      '<tr><td><b>反應</b></td><td><b>全切 ± 廓清<br>＋ RAI</b></td><td><b>全切 ± 廓清<br>未做 RAI</b></td>' +
+      '<td><b>葉切<br>（hemithyroidectomy）</b></td><td><b>TSH 目標</b></td></tr>' +
+      '<tr><td><b>Excellent</b></td>' +
+      '<td>未刺激 Tg <b>&lt; 0.2</b>，或刺激後 Tg <b>&lt; 1</b>，且影像陰性</td>' +
+      '<td>未刺激 Tg <b>&lt; 2.5</b></td>' +
+      '<td>對側葉正常或為低風險結節，或對側葉結節切片為良性，<b>且</b>影像無異常淋巴結</td>' +
+      '<td>TSH <b>維持在正常參考範圍內</b></td></tr>' +
+      '<tr><td><b>Indeterminate</b></td>' +
+      '<td>影像有非特異性發現，或未刺激 Tg <b>0.2–1</b>，或刺激後 Tg <b>1–10</b>，或 TgAb 穩定／下降</td>' +
+      '<td>影像有非特異性發現，或未刺激 Tg <b>2.5–5</b>，或 TgAb 穩定／下降</td>' +
+      '<td>不適用</td><td>TSH <b>維持在正常參考範圍內</b></td></tr>' +
+      '<tr><td><b>Biochemically<br>incomplete</b></td>' +
+      '<td>未刺激 Tg <b>&gt; 1</b>，或刺激後 Tg <b>&gt; 10</b>，或 TgAb 上升，且影像陰性</td>' +
+      '<td>未刺激 Tg <b>&gt; 5</b>，或 TgAb 上升，且影像陰性</td>' +
+      '<td>不適用</td><td>TSH <b>低於正常參考範圍</b></td></tr>' +
+      '<tr><td><b>Structurally<br>incomplete</b></td>' +
+      '<td colspan="3">有結構性疾病的證據（影像可疑，或切片證實的局部或遠端轉移）—— 三欄相同</td>' +
+      '<td>TSH <b>低於正常參考範圍</b></td></tr>' +
+      '<tr><td colspan="5">❗<b>TSH 目標為什麼沒有數字</b>：RECOMMENDATION 45、46 與 Table 9、Table 11 ' +
+      '<b>都沒有任何 mIU/L 數值</b>，全部改用文字。Table 9 表註逐字說明理由：' +
+      '<b>「Data on optimal TSH target range are <u>inconclusive and/or conflicting</u>. If there is ' +
+      'progression of residual disease or development of new recurrence, targeting a TSH below normal ' +
+      'reference range may be reasonable. However, comorbidities such as <u>atrial fibrillation and ' +
+      'osteoporosis</u> should be factored into the decision making process.」</b><br>' +
+      '<b>RECOMMENDATION 46(A)</b>：<b>「Long-term TSH suppression is <u>not suggested</u> for patients ' +
+      'with low- or intermediate-risk disease who have no evidence of biochemical or structural ' +
+      'recurrence.」（Conditional recommendation, Low certainty evidence）</b><br>' +
+      '<b>若臨床上需要數值</b>，要標明出處不是 ATA 2025：<b>ATA 2015 Rec 59</b>（高風險 &lt; 0.1、' +
+      '中風險 0.1–0.5、低風險 0.5–2 mU/L）或 <b>ESMO 2019</b>。' +
+      '<b>不要把這些數字掛在 ATA 2025 名下。</b></td></tr>' +
+      '<tr><td colspan="5"><b>Tg 與 TgAb 的測量規則（RECOMMENDATION 47）</b><br>' +
+      'A：<b>Tg 要用對 <u>BCR457 標準品</u>校正的方法；每一次驗 Tg 都要同時定量 TgAb</b>（GPS）。<br>' +
+      'C：初期追蹤的 Tg <b>每 6–12 個月</b>驗一次；intermediate-high 與 high 可以更密（GPS）。<br>' +
+      'D：❗<b>葉切之後不常規驗 Tg</b>（Conditional, Very low certainty）。<br>' +
+      'E：❗<b>TgAb 陽性者，現行 Tg 免疫測定法會受干擾、Tg LC-MS/MS 敏感度又低 → ' +
+      '「Imaging is the <u>primary</u> modality for monitoring in this population.」</b></td></tr>' +
+      '<tr><td colspan="5"><b>超音波（RECOMMENDATION 31）</b>：完成初始治療後 <b>6–12 個月</b>做頸部超音波；' +
+      '之後的時機與頻率依風險與治療反應決定（GPS）。' +
+      '❗<b>可疑淋巴結或病灶最短徑 &lt; 8–10 mm 可以只追蹤不做 FNA</b>，除非長大或威脅重要構造' +
+      '（Conditional, Low）；<b>≥ 8–10 mm 則應做 FNA 並驗針洗液 Tg</b>（GPS）。</td></tr>' +
+      '</table>');
   }
 
-  /* MTC 系統性治療全菜單（ATA MTC 2015 Rec 53/63/65 + 後續選擇性 RET 抑制劑證據） */
-  function mtcSystemic() {
-    return [
-      '<span class="rx-h">先確認「該不該治療」</span>　<span class="rx-sub">ATA Rec 53，Grade C</span><br>' +
-        '<b>Ctn／CEA 上升但影像無可證實之轉移病灶者，不應給予系統性治療</b>；<b>低量、穩定</b>之轉移性疾病且 Ctn 與 CEA <b>doubling time 皆 &gt;2 年</b>者亦然。指引敘述段更直接：無可測轉移之無症狀病人「it is best to do nothing」。',
-      '<span class="rx-h">一線 1st line — 選擇性 RET 抑制劑</span>　<span class="rx-sub">RET 突變陽性</span><br>' +
-        '<span class="drug">Selpercatinib</span>（LIBRETTO-531 第三期，第一線頭對頭勝 cabozantinib／vandetanib：中位 PFS 未達 vs 16.8 個月，<b>HR 0.28</b>；ORR 69.4% vs 38.8%；因不良事件減量 38.9% vs 77.3%、停藥 4.7% vs 26.8%）。' +
-        '<span class="drug">Pralsetinib</span>（ARROW：未曾治療 RET-mutant MTC ORR <b>71%</b>，曾用 MKI 者 60%）。',
-      '<span class="rx-h">非選擇性多激酶抑制劑 MKI</span>　<span class="rx-sub">ATA Rec 65，Grade A</span><br>' +
-        '腫瘤負荷大且有症狀、或依 RECIST 進展者 → 同時針對 RET 與 VEGFR 之 TKI。' +
-        '<span class="drug">Vandetanib</span> <b>300 mg/day</b>（ZETA：PFS HR 0.46；PR 45%；12% 因毒性停藥、35% 需減量）；' +
-        '<span class="drug">Cabozantinib</span> <b>140 mg/day</b>（EXAM：中位 PFS 11.2 vs 4.0 個月，HR 0.28；ORR 28% vs 0%；<b>最終 OS 26.6 vs 21.1 個月未達顯著，P=0.24</b>；79% 需減量、16% 停藥）。' +
-        'ATA 對 cabozantinib 起始劑量自陳保留：「140 mg/d 是否過毒？40–100 mg/d 是否較合理？」',
-      '<span class="rx-h">細胞毒性化療</span>　<span class="rx-sub">ATA Rec 63，Grade D＝不建議</span><br>' +
-        '單藥或合併細胞毒性化療<b>不應作為第一線</b>（反應率僅 15–20% 且短暫）。若仍需使用，最有效者為 <span class="drug">doxorubicin</span> 併另一藥，或 <span class="drug">5-FU</span> + <span class="drug">dacarbazine</span>。',
-      '<span class="rx-h">外放射治療 EBRT</span>　<span class="rx-sub">ATA Rec 52，Grade C</span><br>' +
-        '適應症為局部復發高風險——<b>顯微或肉眼殘存、腺外侵犯、或廣泛淋巴結轉移</b>——以及有呼吸道阻塞風險者。劑量：顯微殘存 <b>60–66 Gy／6 週</b>，肉眼殘存 <b>≥70 Gy</b>；鄰近脊髓者用 IMRT。' +
-        '<b>順序警告</b>：啟動 EBRT 前外科must先確認病人已非再手術候選者，因放療後再手術技術上更困難。',
-      '<span class="rx-h">台灣健保給付</span>　<span class="rx-sub">健保署藥品給付規定第 9 節</span><br>' +
-        '<b>vandetanib</b>（第 9.86 節）為<b>唯一給付於甲狀腺髓質癌</b>者，適應症限「無法手術切除之局部侵犯或轉移性 MTC，且為症狀性及疾病侵襲性」，劑量 300 mg PO QD。' +
-        '<b>cabozantinib</b>（9.74）僅給付腎細胞癌、<b>selpercatinib 與 pralsetinib 均未納健保</b>（selpercatinib 在台已有藥證「銳癌寧 Retsevmo」，&lt;50kg 120mg BID／≥50kg 160mg BID，需自費）。' +
-        '<span class="fu-gap">給付規定每 1–2 個月修訂，臨床使用前請以最新版第 9 節核對。</span>'
-    ];
+  /* 2e. 健保與藥證（甲狀腺癌專屬） */
+  function nhiReference() {
+    return fold('<b>❗健保與藥證在甲狀腺癌的缺口</b>（查詢日 2026-09-13）',
+      '<table>' +
+      '<tr><td colspan="2"><b>有健保給付的五個藥</b></td></tr>' +
+      '<tr><td><b>lenvatinib</b><br>9.63.1</td><td><b>分化型、放射碘難治</b>。須事前審查，每次療程 3 個月。<br>' +
+      '藥證適應症逐字：<b>「適用於<u>放射性碘治療無效</u>之<u>進行性</u>，且為<u>局部晚期或轉移性</u>之' +
+      '分化型甲狀腺癌之<u>成人</u>病人」</b>——比一般講法多了「進行性／局部晚期或轉移性／成人」三個限制。</td></tr>' +
+      '<tr><td><b>sorafenib</b><br>9.34.3</td><td><b>分化型、放射碘難治</b>。須事前審查，每次療程 3 個月。</td></tr>' +
+      '<tr><td>❗<b>cabozantinib</b><br>9.74.2</td>' +
+      '<td><b>只寫分化型</b>：「適用於 12 歲以上<b>曾接受 VEGFR 標靶治療後惡化</b>、放射碘治療無效或' +
+      '不適用放射碘治療的局部晚期或轉移性<b>分化型</b>甲狀腺癌病人。」<br>' +
+      '<b>114/8/1（＝2025-08-01）才新增</b>。須事前審查，每次療程 3 個月、每 3 個月評估，' +
+      '<b>每日限用 1 粒</b>（20／40／60 mg 同價）。<br>' +
+      '❗<b>條文不含髓質癌與未分化癌</b>；髓質癌專用的 Cometriq 膠囊<b>台灣沒有藥證</b>。</td></tr>' +
+      '<tr><td><b>vandetanib</b><br>9.86</td>' +
+      '<td><b>髓質癌唯一的健保入口</b>：限「無法進行手術切除的局部侵犯或轉移性甲狀腺髓質癌，' +
+      '並且為<b>症狀性及疾病侵襲性</b>的患者」。須事前審查，每次療程 <b>6 個月</b>。<br>' +
+      '❗<b>劑量陷阱</b>：條文寫「每日最大劑量 300 毫克」，但 <b>300 mg 的藥證已於 2023/12/26 自請註銷、' +
+      '健保支付價 113/04/01 歸零</b> → 實務上只能用 <b>3 顆 100 mg</b> 湊。</td></tr>' +
+      '<tr><td><b>larotrectinib</b><br>9.95.3(5)</td>' +
+      '<td>條文<b>明列「甲狀腺癌」</b>，須 NTRK 基因融合，且要求' +
+      '<b>「沒有合適的替代治療選項（<u>包含免疫檢查點抑制劑</u>）」</b>。須事前審查，每次療程 <b>12 週</b>。<br>' +
+      '❗<b>entrectinib（9.93）在台灣健保只給 ROS-1 陽性非小細胞肺癌</b>，' +
+      '雖然它的藥證有泛實體腫瘤 NTRK。<b>NTRK 融合的甲狀腺癌要走健保只能用 larotrectinib。</b></td></tr>' +
+      '<tr><td colspan="2"><b>有藥證但健保 0 筆（自費買得到）</b></td></tr>' +
+      '<tr><td>❗<b>selpercatinib</b></td><td>Retsevmo 銳癌寧（衛部藥輸字第028331／028332號）。' +
+      '<b>健保三處查詢全 0 筆 —— 沒有健保藥品代號、沒有支付價、沒有給付規定。全額自費。</b><br>' +
+      '台大處方集有這張卡（RET4CG28）。</td></tr>' +
+      '<tr><td>❗<b>pralsetinib</b></td><td>Gavreto 普吉華（衛部藥輸字第028393號），台大處方集列「專案」。' +
+      '<b>健保同樣 0 筆</b>；審議歷程為 115/4/7 完成審議（同意給付）→ <b>115/7/28 結案（其他原因）</b>。<br>' +
+      '❗<b>台灣的適應症沒有「RET 突變髓質癌」</b>（只有 RET 融合甲狀腺癌與非小細胞肺癌），' +
+      '<b>與美國仿單不同</b>——而髓質癌最常見的正是 RET <u>突變</u>而非融合。</td></tr>' +
+      '<tr><td>❗<b>rhTSH</b></td><td>見上方 RAI 橫列：<b>藥品支付價歸零，走診療項目 26074C，' +
+      '且限復發／轉移或不適合停 T4。</b></td></tr>' +
+      '<tr><td colspan="2"><b>❗最大的缺口：驗得到、用不到</b></td></tr>' +
+      '<tr><td><b>檢測<u>有</u>給付</b></td>' +
+      '<td><b>BRAF 檢測 30107B</b> 的適應症明文含「甲狀腺癌（<b>不包含髓質癌</b>）…無分化甲狀腺癌' +
+      '經多專科團隊評估無法接受根除手術者」。<br>' +
+      '<b>NGS 附表 2.2.1</b> 也列了兩行：甲狀腺癌（BRAF V600E／BRAF nonV600E／RET fusion）與' +
+      '甲狀腺髓質癌（RET mutation）。<b>NGS 30302B／30303B 為 2 萬／3 萬點，每人各癌別終生一次。</b></td></tr>' +
+      '<tr><td><b>藥<u>沒有</u>給付</b></td>' +
+      '<td>❗<b>' + NR('dabrafenib') + ' ＋ ' + NR('trametinib') + '（9.91）沒有任何甲狀腺適應症</b>' +
+      '（現行條文只有黑色素瘤與 BRAF V600E 轉移性非小細胞肺癌）。<br>' +
+      '❗<b>' + NR('selpercatinib') + '、' + NR('pralsetinib') + ' 健保 0 筆。</b><br>' +
+      '→ <b>未分化癌驗出 BRAF V600E、髓質癌驗出 RET 突變，在台灣都是「檢測健保付、藥要自費」。</b></td></tr>' +
+      '<tr><td colspan="2"><b>其他要知道的</b></td></tr>' +
+      '<tr><td>順序陷阱</td><td><b>lenvatinib 與 sorafenib 的條文只寫「不得合併使用」，' +
+      '<u>沒有</u>先後互斥或「用過 A 不得申請 B」。</b>' +
+      '❗<b>肝細胞癌那邊的「擇一給付、不得互換」規則不適用於甲狀腺癌</b>，不要照搬。<br>' +
+      '同樣地，9.74 的「第一線使用後再復發不得再次申請」<b>只在腎細胞癌項下</b>，甲狀腺癌段落沒有這條。</td></tr>' +
+      '<tr><td>放射碘與追蹤檢驗</td><td><b>I-131 治療 26038B，478 點／mCi</b>（無事前審查）。' +
+      '<b>Tg 09111C 90 點、anti-Tg 12068C 200 點、calcitonin 09115B 240 點、CEA 12021C 400 點</b>，均現行。</td></tr>' +
+      '<tr><td>❗<b>levothyroxine</b></td><td><b>7 張藥證的適應症一律只有「甲狀腺機能減退症。」</b>' +
+      '→ <b>分化型甲狀腺癌的 TSH 抑制治療，在藥證文字上屬於仿單外使用。</b>' +
+      '另：<b>單方 liothyronine（T3）與注射用 levothyroxine 台灣都沒有藥證。</b></td></tr>' +
+      '</table>');
   }
 
-  /* ATC 系統性治療全菜單（ATA ATC 2021） */
-  function atcSystemic() {
-    return [
-      '<span class="rx-h">BRAF V600E 陽性</span>　<span class="rx-sub">Rec 20，Strong</span><br>' +
-        '<span class="rx">Dabrafenib 150 mg BID + Trametinib 2 mg QD</span>，優先於其他系統性治療（適用 IVC，及拒絕放療之不可切除 IVB）。' +
-        'ROAR 更新分析（n=36）：<b>ORR 56%</b>（含 3 例 CR）、中位 PFS 6.7 個月、<b>中位 OS 14.5 個月</b>、12 個月 OS 51.7%、24 個月 OS 31.5%。' +
-        '<b>解讀警語</b>：試驗只收 ECOG 0–1 且<b>排除無法吞服藥丸者</b>，可能低估真實世界腫瘤負荷；被排除於試驗外之真實世界對照（n=6）中位 PFS 僅 3.7 個月、中位 OS 9.3 個月。Dabrafenib 可穿越血腦障壁。',
-      '<span class="rx-h">Neoadjuvant BRAF 導向治療 → 手術</span>　<span class="rx-sub">Rec 21，Conditional</span><br>' +
-        'BRAF V600E 之不可切除 IVB 且放療可行時，<b>化放療</b>與 <b>neoadjuvant dabrafenib／trametinib</b> 為兩個並列的初始選項。' +
-        'MD Anderson 經驗（Wang 2019，<b>n=6</b>）：6 人全部完全切除，<b>6 個月 OS 100%、1 年 OS 83%、局部區域控制 100%</b>。' +
-        '<b>術後必須續用</b> BRAF／MEK 抑制劑以維持控制；<span class="fu-gap">完全切除後是否仍需輔助化放療，指引明言「尚不清楚」。</span>',
-      '<span class="rx-h">其他驅動變異</span>　<span class="rx-sub">Rec 23，Conditional／Very low——全指引唯一「極低」證據等級</span><br>' +
-        '<b>NTRK fusion</b>（非 NTRK 點突變）→ <span class="drug">larotrectinib</span> 或 <span class="drug">entrectinib</span>；<b>RET fusion</b> → <span class="drug">selpercatinib</span> 或 <span class="drug">pralsetinib</span>。' +
-        '<b>建議儘可能在臨床試驗中使用</b>：selpercatinib 註冊試驗<b>僅收入 2 名 ATC</b>（其中 1 人反應持續 18 個月）；larotrectinib 之 5 名甲狀腺癌全部有反應但<b>無法確認是否為 ATC</b>。<span class="fu-gap">指引未給任何劑量。</span>',
-      '<span class="rx-h">免疫檢查點抑制劑</span>　<span class="rx-sub">Rec 24，Conditional</span><br>' +
-        '<b>PD-L1 高表現</b>且無其他可標靶變異之 IVC，可考慮作為一線或後線，且以臨床試驗為佳。' +
-        '證據基礎為 <span class="drug">spartalizumab</span>（第二期：ORR 19%、中位 OS 5.9 個月；依 PD-L1 分層 <b>&lt;1% 者無任何反應、中位 OS 僅 1.6 個月</b>，1–49% ORR 18%，≥50% ORR 35%）。' +
-        '<b>注意</b>：ATA 2021 <b>沒有 pembrolizumab 的建議條文、劑量或 MSI／TMB 導向路徑</b>（僅兩處軼事性提及）；「dab/tram 併用 PD-1 抑制劑」為 <b>ASCO</b> 之立場，<span class="fu-gap">NCCN 是否有對應條文未能由一手文件證實，勿逕自引為 NCCN 建議。</span>',
-      '<span class="rx-h">無可標靶變異之細胞毒性化療</span>　<span class="rx-sub">Rec 25／Rec 19，Conditional</span><br>' +
-        '<b>Rec 19「橋接」</b>：等待分子檢測結果或標靶藥可及性期間，應<b>及早啟動化療作為橋接</b>，以免有效治療被延誤。' +
-        '系統性／轉移性劑量：<span class="drug">paclitaxel</span> <b>60–90 mg/m² IV 每週</b>（<b>指引明載已發表之 225 mg/m² 每週為誤植，切勿沿用</b>）；' +
-        '<span class="drug">docetaxel</span> <b>60 mg/m² IV 每 3 週</b>；<span class="drug">doxorubicin</span> <b>20 mg/m² 每週或 60–75 mg/m² 每 3 週</b>（<b>唯一經 FDA 核准用於 ATC 之細胞毒性藥</b>）。' +
-        '<span class="fu-gap">指引未提供非同步情境之 carboplatin AUC，亦無更正後之 q3 週 paclitaxel 劑量。</span>',
-      '<span class="rx-h">抗血管新生藥與 RAI</span><br>' +
-        '<b>RAI 對 ATC 無效，不應使用</b>。<span class="drug">Lenvatinib</span> 為唯一有前瞻數據者（日本試驗 ORR 24%、中位 OS 10.6 個月，僅日本核准），惟 ITOG 之確認性第二期試驗<b>因缺乏療效於期中分析即關閉</b>。' +
-        '<b>出血警告</b>：腫瘤侵犯氣管、食道或大血管時，抗血管新生藥有出血與瘻管風險，須事先告知病人。',
-      '<span class="rx-h">台灣健保給付</span>　<span class="rx-sub">健保署藥品給付規定第 9 節</span><br>' +
-        '<b>dabrafenib 與 trametinib（第 9.91 節）僅給付黑色素瘤，甲狀腺癌不給付</b>；<b>selpercatinib／pralsetinib 未納健保</b>；<b>pembrolizumab（9.69）給付癌別不含甲狀腺</b>。' +
-        'larotrectinib（9.95）為 NTRK fusion 實體腫瘤之 tumor-agnostic 給付，理論上可涵蓋 ATC。' +
-        '<span class="fu-gap">即 ATC 現行最重要的標靶方案（dab+tram）在台灣須自費——決策時應與病人同時討論療效與費用（GPS 9 明列財務考量）。</span>'
-    ];
+  /* 2f. Bethesda 細胞學（術前，非 ATA 2025 範圍） */
+  function bethesdaReference() {
+    return fold('<b>Bethesda 甲狀腺細胞學報告系統 第 3 版</b>（2023，成人惡性風險）',
+      '<table>' +
+      '<tr><td colspan="3">❗<b>ATA 2025 已把「甲狀腺結節」整個拆成另一份姊妹指引</b>，' +
+      '本頁不涵蓋結節的評估流程。這一格只放細胞學分類與惡性風險，供術前對照。<br>' +
+      '❗數字來源標註：原文（Ali SZ et al. Thyroid 2023;33:1039-1044，PMID 37427847）' +
+      '取不到全文（出版社 403、付費牆），本表數字取自<b>兩個彼此獨立、且都註明經 Springer 授權' +
+      '轉載自原文</b>的開放來源，六類完全一致，屬<b>二手交叉核對</b>而非一手逐字。</td></tr>' +
+      '<tr><td><b>類別</b></td><td><b>成人惡性風險</b></td><td><b>一般處置</b></td></tr>' +
+      '<tr><td>I 無法診斷 Nondiagnostic</td><td>13%</td><td>重做 FNA（超音波導引）</td></tr>' +
+      '<tr><td>II 良性 Benign</td><td>4%</td><td>臨床與超音波追蹤</td></tr>' +
+      '<tr><td>III AUS</td><td>22%</td><td>重做 FNA、分子檢測或葉切</td></tr>' +
+      '<tr><td>IV 濾泡性腫瘤 FN</td><td>30%</td><td>分子檢測或葉切</td></tr>' +
+      '<tr><td>V 疑似惡性</td><td>74%</td><td>葉切或全甲狀腺切除</td></tr>' +
+      '<tr><td>VI 惡性</td><td>97%</td><td>依本頁流程</td></tr>' +
+      '<tr><td colspan="3">❗<b>兒童另有一套數字</b>（14／6／28／50／81／98%），' +
+      '<b>兩套極易混用</b>——已知有期刊把兒童版的範圍當成通用範圍在引。</td></tr>' +
+      '</table>');
   }
 
-  /* ATC 化放療處方表（ATA ATC 2021 Table 6，四者皆每週） */
-  function atcChemoRT() {
-    return '<div class="cbx"><div class="cbx-h">同步化放療處方　<span class="cbx-sub">ATA ATC 2021 Table 6，四者皆為每週給藥</span></div>' +
-      '<div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">①</span>Paclitaxel 50 mg/m² + Carboplatin AUC2 IV</span>' +
-      '<span class="cb"><span class="cb-k">②</span>Docetaxel 20 mg/m² + Doxorubicin 20 mg/m² IV</span>' +
-      '<span class="cb"><span class="cb-k">③</span>Paclitaxel 30–60 mg/m² IV 單方</span>' +
-      '<span class="cb"><span class="cb-k">④</span>Docetaxel 20 mg/m² IV 單方</span>' +
-      '</div></div>';
-  }
-
-  function atcRTDose() {
-    return '<span class="rx-h">放射治療處方</span>　<span class="rx-sub">Rec 14／15／17 僅寫「standard fractionation IMRT」，未附劑量；以下數字出自指引定義章節而非分級建議</span><br>' +
-      '根治性標準範例：<b>66 Gy／6.5 週（33 次 × 2 Gy，每週 5 天）</b>；範圍 <b>50 Gy/20 次</b> 至 <b>70 Gy/35 次</b>。' +
-      '加速超分割範例 60 Gy／4 週（40 次 × 1.5 Gy，每日兩次）——中位存活 13.6 vs 10.3 個月<b>未達統計顯著</b>，且另有報告顯示毒性顯著而無存活優勢。' +
-      '緩和性：<b>20 Gy/5 次</b> 或 <b>30 Gy/10 次</b>。' +
-      '<b>照射體積</b>：甲狀腺／術床 + 雙側 II–V 頸淋巴結 + VI 中央區 + <b>上縱膈至隆突</b>——指引自陳此體積「非常大，因此必須有所折衷」，這正是採 IMRT（凹形劑量分布以保留脊髓、喉、食道、臂神經叢、唾液腺）的理據。';
-  }
-
-  function atcTiming() {
-    return '<div class="cbx"><div class="cbx-h">時序 Timing　<span class="cbx-sub">ATA ATC 2021 Good Practice Statements</span></div>' +
-      '<div class="cbx-items">' +
-      '<span class="cb"><span class="cb-k">GPS 8</span>放療應於術後<b>不遲於 6 週</b>開始（內文：腫脹消退後約 2–3 週即可）</span>' +
-      '<span class="cb"><span class="cb-k">GPS 10</span>化療可於術後<b>1 週內</b>啟動（癒合允許時）</span>' +
-      '<span class="cb"><span class="cb-k">計畫</span>放療計畫時間應<b>少於 5 個工作天</b></span>' +
-      '<span class="cb"><span class="cb-k">GPS 1</span>轉移灶切片<b>不得延誤</b>主要治療</span>' +
-      '</div></div>';
-  }
-
-  /* ============================================================
-     版面 HTML
-     ============================================================ */
+  /* ==========================================================
+     3. 版面
+     ========================================================== */
   function thyroidPathwayHTML() {
     var h = '';
-    h += '<p class="onc-note">甲狀腺癌<b>沒有單一指引可涵蓋</b>：分化型（DTC）依 <b>ATA 2015</b>、髓質癌（MTC）依 <b>ATA 2015 MTC 指引</b>、未分化癌（ATC）依 <b>ATA 2021 ATC 指引</b>，分期依 <b>AJCC 8th Ch.73</b>。三者的手術範圍、術後輔助、追蹤標記與系統性治療<b>完全不同</b>，故第一步即為組織型態。台大醫院未公開發行甲狀腺癌診療指引，本流程不掛台大名義；台灣端僅標註健保給付狀態。</p>';
+    h += '<p class="onc-note"><b>甲狀腺癌依組織型態分成三條完全不同的路</b>，' +
+      '而且分屬三份不同的指引 —— 選錯型態，整條路都是錯的。<br>' +
+      '⚠<b>台大醫院沒有甲狀腺癌診療指引</b>（癌症防治中心 15 個多專科團隊名單沒有甲狀腺／內分泌；' +
+      '頭頸癌診療指引全文「甲狀腺」0 次），<b>台灣也沒有全國學會版</b>' +
+      '（國健署的規範是要求各醫院自行建立），<b>所以本頁不掛台大名義</b>。<br>' +
+      '❗<b>搜尋引擎會把 tmuh.org.tw 的《甲狀腺癌診療指引》標成「台大醫院」——那是北醫體系</b>' +
+      '（臺北癌症中心），而且其 115 年版（2026）內文仍自述依據「2015 ATA 及 2019 NCCN」，落後一個世代。<br>' +
+      '本頁用的是：<b>分化型 → ATA 2025</b>（Thyroid 2025;35:841-985，84 條建議）；' +
+      '<b>髓質癌 → ATA 2015</b>（仍是現行版，已查證 2015 後無新版）；' +
+      '<b>未分化癌 → ATA 2021</b>。分期為 AJCC 第 8 版。<br>' +
+      '❗<b>台灣最要緊的三件事</b>：<b>rhTSH 的藥證與健保涵蓋的族群正好相反</b>；' +
+      '<b>cabozantinib 的健保與藥證都只寫分化型</b>，髓質癌與未分化癌都沒有；' +
+      '<b>未分化癌的 BRAF 檢測健保有給付，但對應的藥沒有</b>。<br>' +
+      '<b>每一步選完才會出現下一步與該步的建議。</b>建議框內：<b>正常字是要做的決定</b>，' +
+      '<span style="opacity:.72">小灰字是理由與證據</span>，可展開的橫列是分級制度、' +
+      '四級復發風險分層、放射碘、治療反應與 TSH、健保條文與細胞學。</p>';
     h += '<div class="onc-path" id="thPath">';
 
-    // Step 1 — 組織型態
-    h += step('th_s1', '1', '組織型態 Histology（決定後續整條路徑）',
-      opt('histo', 'dtc', '分化型 DTC', '乳突 papillary／濾泡 follicular／嗜酸性 oncocytic(Hürthle)；佔絕大多數') +
-      opt('histo', 'mtc', '髓質癌 MTC', '源自濾泡旁 C 細胞；標記為 calcitonin／CEA，不受 TSH 驅動、RAI 無效') +
-      opt('histo', 'atc', '未分化癌 ATC', '一律第 IV 期；須以「天」為單位推進，RAI 無效'));
+    h += node0('ty_n1', '1', '病理是哪一種組織型態？',
+      opt('histo', 'dtc', '分化型 DTC', '乳突 PTC ／ 濾泡 FTC ／ oncocytic OTC → ATA 2025') +
+      opt('histo', 'mtc', '髓質癌 MTC', 'Medullary → ATA 2015；來自 C 細胞，不吃碘') +
+      opt('histo', 'atc', '未分化癌 ATC', 'Anaplastic → ATA 2021；<b>這是急症</b>，先看氣道'),
+      gradeReference() + bethesdaReference());
 
-    /* ===================== DTC ===================== */
-    h += '<div id="th_dtc" class="hidden">';
-    h += conn('th_dc2');
-    h += step('th_ds2', '2', '初始處置：手術範圍（ATA 2025 REC 11／15）',
-      opt('dsurg', 'as', '積極監測 Active surveillance', 'cT1aN0M0（≤1cm）之乳突癌；ATA 2025 REC 11A') +
-      opt('dsurg', 'lobe', '甲狀腺葉切除 Lobectomy', 'cT1（≤2cm）N0M0 應做葉切；cT2（>2–4cm）低風險單側亦以葉切為佳') +
-      opt('dsurg', 'total', '全甲狀腺切除 Total thyroidectomy', '>4cm（cT3a）、任何大小合併明顯腺外侵犯（cT3b／cT4）、cN1 或 cM1'),
-      '<div class="note"><b>切點在 2025 年由 1cm 上移至 2cm</b>。ATA 2025 REC 15A（<b>Strong</b>）：<b>≤2cm 無明顯腺外侵犯、cN0M0 者「應」做葉切</b>，除非雙側癌或有其他對側切除指徵；REC 15B（Conditional）：<b>&gt;2 且 ≤4cm 低風險單側（cT2N0M0），因風險與副作用顯著較低，葉切可為首選</b>，惟仍可選全切以利 RAI 與追蹤。對照 ATA 2015 REC 35 之切點為 1cm／4cm。<br>' +
-      '<b>偏向雙側手術的因子</b>（ATA 2015 內文）：年齡較大、對側結節、頭頸部放射線照射病史、家族性 DTC。<br>' +
-      '<b>術前細胞學分流</b>（Bethesda 2023 第 3 版惡性風險）：Nondiagnostic 13%、Benign 4%、AUS 22%、Follicular neoplasm 30%、Suspicious 74%、Malignant 97%。AUS／FN 若分子檢測 <b>RAS 陽性 → 惡性風險 84%</b>；<b>BRAF V600E／RET-PTC／PAX8-PPARγ 陽性 → &gt;95%</b>，比照確診癌處理。<span class="fu-gap">ATA 2025 明載結節／Bethesda 分流不在其範圍內，將另出獨立指引，故此段仍依 ATA 2015 + Bethesda 2023。</span><br>' +
-      '<b>ATA 2025 REC 10</b>：確診 DTC 者<b>術前不常規</b>做基因體評估。</div>');
-
-    h += connH('th_dc3');
-    h += step('th_ds3', '3', '術後復發風險分層（決定 RAI 與 TSH 目標）',
-      opt('drisk', 'low', '低風險 Low', '無轉移、腫瘤完整切除、無侵犯、無侵襲性組織型、無血管侵犯；cN0 或 ≤5 顆 <0.2cm 之微轉移') +
-      opt('drisk', 'int', '中風險 Intermediate', '顯微腺外侵犯／首次治療後掃描見頸部 RAI-avid 病灶／侵襲性組織型／血管侵犯／cN1 或 >5 顆 N1 且皆 <3cm') +
-      opt('drisk', 'high', '高風險 High', '肉眼腺外侵犯／切除不完全／遠處轉移／術後 Tg 提示遠處轉移／任一淋巴結 ≥3cm／濾泡癌廣泛血管侵犯（>4 focus）'),
-      '<div class="note">上列為 <b>ATA 2015 Table 11 三級系統</b>（逐項準則完整可考）。<b>ATA 2025 已改為四級</b>：低（&lt;10%）／低中（10–15%）／中高（≥16–30%）／高（&gt;30%），並將 PTC、FTC／IEFVPTC、OTC <b>分開分層</b>（REC 28A，Strong）。' +
-      '<span class="fu-gap">ATA 2025 四級的<b>逐項判定準則僅存在於 Figure 2 圖片</b>，PDF 文字層無法擷取，PMC 上的評論文亦未重製——本頁因此仍以 2015 三級呈現可操作的準則，不從記憶重建 2025 的分層表。此為已知缺口。</span><br>' +
-      '<b>ATA 2025 可直接引用之單項復發率</b>：血管侵犯 <b>21% vs 4%</b>（無侵犯）；濾泡癌 <b>≥4 條血管侵犯 30–55%</b> vs &lt;4 條 2–3%；<b>顯微</b>腺外侵犯 3–9% vs <b>肉眼</b>腺外侵犯 <b>23–40%</b>；<b>&gt;3 顆</b>轉移淋巴結 <b>40%</b>；轉移灶 &gt;5mm 者 25.9%；切緣陽性 11.6%。</div>');
-    h = h.replace('id="th_ds3"', 'id="th_ds3" class="hidden"');
-
-    h += connH('th_dc4');
-    h += step('th_ds4', '4', '治療反應再分層 Response to therapy（ATA 反應準則）',
-      opt('dresp', 'excellent', '極佳 Excellent', '影像陰性，且抑制下 Tg <0.2 或刺激後 Tg <1 ng/mL（全切+RAI）') +
-      opt('dresp', 'indeterminate', '不確定 Indeterminate', '非特異影像所見；或抑制下 Tg 0.2–1、刺激後 Tg 1–10；或 TgAb 穩定／下降') +
-      opt('dresp', 'bio_inc', '生化未完全緩解', '影像陰性，但抑制下 Tg >1 或刺激後 Tg >10 ng/mL，或 TgAb 上升') +
-      opt('dresp', 'str_inc', '結構未完全緩解', '有結構性或功能性疾病證據，<b>不論 Tg 高低</b>'),
-      '<div class="note"><b>ATA 2025 首次依手術／RAI 型態把 Tg 切點分三欄</b>（Table 9）——這是最容易做錯的地方：' +
-      '<b>全切＋RAI</b>：excellent 為抑制下 Tg &lt;0.2／刺激後 &lt;1；<b>全切但未做 RAI</b>：excellent 為抑制下 <b>Tg &lt;2.5</b>、indeterminate 為 2.5–5、biochemically incomplete 為 <b>&gt;5</b>；<b>葉切</b>：改以<b>影像</b>判定（對側葉正常或屬低風險結節／良性切片，且無異常淋巴結），<b>不以 Tg 數值分類</b>。上方選項標示的數值為全切＋RAI 之情境。<br>' +
-      '<b>ATA 2025 REC 29（Strong）</b>：應在<b>決定是否給予進一步治療（含 RAI）之前</b>就先做反應分類——2015 版原設計是初始治療完成後才用，2025 提前了。<b>REC 30</b>：全切後 <b>6–12 週</b>測 Tg（Tg 達最低點的中位時間為 <b>12 週</b>，較過去認知晚）；葉切後測一次確認未異常升高，<b>但明確切點未定</b>。<br>' +
-      '<b>各類別復發率</b>（ATA 2025）：全切+RAI — excellent 1–4%、indeterminate 5% 至 15–20%、生化未完全緩解 <b>20–53%</b>（合併結構性者達 85%）；全切未做 RAI — excellent 0–1.6%、indeterminate 0–5.6%、生化未完全緩解 0–31.6%。</div>');
-    h = h.replace('id="th_ds4"', 'id="th_ds4" class="hidden"');
-
-    h += connH('th_dc5');
-    h += step('th_ds5', '5', '是否為放射碘難治（RAI-refractory）？',
-      opt('drefr', 'avid', '仍具攝碘能力 RAI-avid', '治療後掃描顯示病灶攝碘 → 可續用 RAI') +
-      opt('drefr', 'refractory', 'RAI 難治 RAI-refractory', '符合下列任一條件'),
-      '<div class="note"><b>ATA 2015 REC 91 經典四條</b>（須在適當 TSH 刺激與低碘準備之下）：①惡性／轉移組織<b>從未</b>攝碘（首次治療後掃描於甲狀腺床外無攝取）；②原本攝碘的腫瘤<b>失去</b>攝碘能力（且排除穩定碘污染）；③<b>部分病灶攝碘、部分不攝碘</b>；④<b>雖有顯著攝碘但疾病仍進展</b>。' +
-      '<b>ATA 2015：一旦判定為 RAI 難治，即無再給 RAI 之適應症。</b><br>' +
-      '<b>ATA 2025 REC 59 重新框定</b>：(A)<b>未曾接受過消融或治療劑量 RAI 者，不能診斷為 RAI-refractory</b>（Good Practice Statement）；其 <b>Strong criteria</b> 收緊為兩條——(i) 已由結構影像或 FDG-PET 確認有病灶，但<b>治療後掃描無 I-131 攝取</b>；(ii) 適當治療劑量 RAI（治療後掃描確有攝取）後<b>不到 6 個月</b>即疾病進展。' +
-      '且 ATA 2025 明確聲明：這些特徵應用來<b>風險分層「腫瘤對 RAI 反應的可能性」，而非作為硬性排除再給 RAI 的判定標準</b>——立場較 2015 寬鬆。<br>' +
-      '<b>ESMO 2019</b>：遠處轉移失去攝碘能力，或 RAI 給予後 <b>6–12 個月</b>內出現結構性進展，即視為 RAI 難治［IV, A］。約 1/3 病人病灶非 RAI-avid，5 年存活 &lt;50%。</div>');
-    h = h.replace('id="th_ds5"', 'id="th_ds5" class="hidden"');
-
-    h += rec('th_dtc_rec', '建議處置 · 分化型 DTC');
-    h += '<div class="flow-fu hidden" id="th_dtc_fu"></div>';
+    /* ── 分化型 DTC ── */
+    h += '<div id="ty_b_dtc" class="hidden">';
+    h += node('ty_n_dstage', '2', '現在要決定的是哪一段？',
+      opt('dstage', 'init', '初次治療 —— 還沒開刀', '要決定積極監測、葉切還是全甲狀腺切除') +
+      opt('dstage', 'postop', '已經手術 —— 要決定放射碘與 TSH 目標', '要先做復發風險分層') +
+      opt('dstage', 'fu', '追蹤中 —— 要判讀治療反應', 'Tg 的切點依做過什麼治療而不同') +
+      opt('dstage', 'rair', '放射碘難治（RAI-refractory）', '要決定全身性治療'));
+    h += node('ty_n_dsize', '3', '腫瘤大小與腺外侵犯、淋巴結、遠端轉移的臨床評估？',
+      opt('dsize', 't1a', 'cT1a：≤ 1 cm、cN0M0', '可以討論積極監測或消融') +
+      opt('dsize', 'le2', 'cT1：≤ 2 cm、無明顯腺外侵犯、cN0M0', '') +
+      opt('dsize', 't2', 'cT2：&gt; 2 且 ≤ 4 cm、單側、低風險、cN0M0', '') +
+      opt('dsize', 'big', '&gt; 4 cm（cT3a），或明顯腺外侵犯（cT3b／T4），或 cN1，或 cM1', ''));
+    h += recBox('ty_r_dinit', '建議處置 · 初次手術要開到哪裡');
+    h += node('ty_n_dhisto', '3', '病理屬於哪一組？（兩組的風險準則不同）',
+      opt('dhisto', 'ptc', '乳突癌 PTC 與其亞型', '') +
+      opt('dhisto', 'ftc', '濾泡癌 FTC ／ IEFVPTC ／ oncocytic OTC', '這兩欄的準則相同'),
+      riskReference());
+    h += node('ty_n_drisk', '4', '依 ATA 2025 四級分層，這位病人落在哪一級？',
+      opt('drisk', 'low', 'LOW &lt; 10%', 'T1／T2 ≤ 4 cm；unifocal（PTC）或僅 capsular invasion（FTC／OTC）；pN0a 或 pN1a ≤ 5 顆且全 ≤ 2 mm；切緣陰性或僅 microscopic ＋ anterior margin') +
+      opt('drisk', 'lowint', 'LOW-INTERMEDIATE 10–15%', 'T3a；或 T1／T2 有：unilateral multifocality（PTC）／limited vascular invasion &lt; 4 條（FTC／OTC）／microscopic ETE／cN1a 或 pN1a &gt; 2 mm 或 &gt; 5 顆／posterior margin R1') +
+      opt('drisk', 'inthigh', 'INTERMEDIATE-HIGH ≥ 16–30%', 'T1／T2／T3a 有：bilateral multifocality &gt; 1 cm（PTC）／cN1b &lt; 3 cm／2 項以上 low-intermediate 因子／aggressive histology（PTC）／vascular invasion（PTC）') +
+      opt('drisk', 'high', 'HIGH &gt; 30%', 'T3a ＋ microscopic ETE、T3b 或 T4；或任何 T 有：poorly differentiated／high grade、R2（PTC）、widely invasive 或 ≥ 4 條血管侵犯（FTC／OTC）、cN1 ≥ 3 cm、ENE、M1'));
+    h += recBox('ty_r_dpostop', '建議處置 · 放射碘要不要給、TSH 目標');
+    h += fuBox('ty_f_dpostop');
+    h += node('ty_n_dtx', '3', '這位病人做過的是哪一種治療？（Tg 切點依此而不同）',
+      opt('dtx', 'hemi', '葉切除 hemithyroidectomy', '2025 版新增的一欄') +
+      opt('dtx', 'ttnorai', '全甲狀腺切除 ± 廓清，<b>沒有</b>做放射碘', '') +
+      opt('dtx', 'ttrai', '全甲狀腺切除 ± 廓清，<b>有</b>做放射碘', ''),
+      responseReference());
+    h += node('ty_n_dresp', '4', '依上一欄的切點，治療反應屬於哪一類？',
+      opt('dresp', 'exc', 'Excellent 極佳', '') +
+      opt('dresp', 'ind', 'Indeterminate 不確定', '') +
+      opt('dresp', 'bioinc', 'Biochemically incomplete 生化未完全', '影像陰性但 Tg 或 TgAb 不理想') +
+      opt('dresp', 'strinc', 'Structurally incomplete 結構未完全', '影像可疑或切片證實有病灶'));
+    h += recBox('ty_r_dfu', '建議處置 · 這個反應該怎麼接');
+    h += fuBox('ty_f_dfu');
+    h += node('ty_n_dmol', '3', '分子檢測的結果？（ATA 2025 要求<b>開始全身治療前</b>先驗）',
+      opt('dmol', 'braf', 'BRAF V600E 突變', '') +
+      opt('dmol', 'ret', 'RET 融合 fusion', '') +
+      opt('dmol', 'ntrk', 'NTRK 1／3 融合 fusion', '') +
+      opt('dmol', 'none', '沒有可標靶的變異', '') +
+      opt('dmol', 'pending', '還沒驗', '先別開藥'));
+    h += recBox('ty_r_drair', '建議處置 · 放射碘難治的全身性治療');
+    h += fuBox('ty_f_drair');
     h += '</div>';
 
-    /* ===================== MTC ===================== */
-    h += '<div id="th_mtc" class="hidden">';
-    h += conn('th_mc2');
-    h += step('th_ms2', '2', '疾病範圍（術前影像與 calcitonin 分期後）',
-      opt('mext', 'loc', '侷限於頸部 · 可切除', '無遠處轉移，病灶限於甲狀腺與頸淋巴結') +
-      opt('mext', 'adv', '廣泛區域侵犯 或 遠處轉移', '不可完整切除／已有遠處轉移'),
-      '<div class="note"><b>術前必做（Rec 21）</b>：basal calcitonin + CEA + <b>germline RET 檢測（所有 MTC 都要做</b>——1–7% 的「散發型」實為遺傳性，Rec 6）；遺傳性者須排除 <b>pheochromocytoma 與副甲狀腺機能亢進</b>。' +
-      '<b>Rec 39 鐵則：若 PHEO 與 MTC／HPTH 並存，PHEO 必須先切除。</b>Rec 38：MEN2A／MEN2B 且組織學確診 MTC 者，<b>不論年齡與症狀，任何介入性處置前都必須排除 PHEO</b>。<br>' +
-      '<b>影像門檻（Rec 22，Grade C）</b>：所有 MTC 都做頸部超音波；<b>calcitonin &gt;500 pg/mL</b>（或頸部病灶廣泛、有轉移徵象）→ 加做頸胸顯影 CT、三相肝臟 CT 或顯影肝 MRI、中軸骨 MRI、骨骼掃描。<b>FDG-PET 與 F-DOPA-PET 皆不建議</b>（Rec 23，Grade E）。<br>' +
-      '<span class="fu-gap">注意三個 calcitonin 門檻不可混用：術前影像 &gt;500（Rec 22）／術後影像 &gt;150（Rec 48）／對側頸廓清 &gt;200（Rec 26）／兒童預防性 CND &gt;40（Rec 35）。NCCN 另有一套（&gt;400、≥150），與 ATA 不同。</span></div>');
-
-    h += connH('th_mc3');
-    h += step('th_ms3', '3', '術後 calcitonin／CEA 狀態（術後 3 個月，Rec 46）',
-      opt('mctn', 'undetect', '測不到／正常', '生化治癒 biochemical cure') +
-      opt('mctn', 'ctn_lt150', '升高但 &lt;150 pg/mL', 'Rec 47') +
-      opt('mctn', 'ctn_gt150', '&gt;150 pg/mL', 'Rec 48 → 全面影像分期'));
-    h = h.replace('id="th_ms3"', 'id="th_ms3" class="hidden"');
-
-    h += connH('th_mc4');
-    h += step('th_ms4', '4', 'Calcitonin doubling time（決定是否啟動系統性治療）',
-      opt('mdt', 'dt_slow', '&gt;24 個月', '研究結束時全數存活') +
-      opt('mdt', 'dt_mid', '6–24 個月', '5 年存活 92%、10 年 37%') +
-      opt('mdt', 'dt_fast', '&lt;6 個月', '5 年存活 25%、10 年 8%'),
-      '<div class="note">多變項分析中<b>僅 calcitonin doubling time 為獨立預後因子</b>（優於 TNM 分期、EORTC score 與 CEA doubling time）。計算需<b>至少 4 個時間點、跨 2 年以上</b>；惟 &lt;6 個月者於術後 12 個月內即可可靠估得。<b>Ctn 與 CEA 兩者都應計算</b>。</div>');
-    h = h.replace('id="th_ms4"', 'id="th_ms4" class="hidden"');
-
-    h += rec('th_mtc_rec', '建議處置 · 髓質癌 MTC');
-    h += '<div class="flow-fu hidden" id="th_mtc_fu"></div>';
+    /* ── 髓質癌 MTC ── */
+    h += '<div id="ty_b_mtc" class="hidden">';
+    h += node('ty_n_mstage', '2', '現在要決定的是哪一段？',
+      opt('mstage', 'preop', '術前 —— 要決定廓清範圍', '❗開刀前一定要先排除 pheochromocytoma') +
+      opt('mstage', 'postop', '術後 —— 要判讀 calcitonin', '') +
+      opt('mstage', 'adv', '進展性或轉移性 —— 要決定全身治療', ''));
+    h += node('ty_n_mctn', '3', '術前的基礎 calcitonin 是多少？（正常參考值 &lt; 10 pg/mL）',
+      opt('mctn', 'lt20', '&lt; 20 pg/mL', '淋巴結轉移風險幾乎為零') +
+      opt('mctn', 'c20', '20–200 pg/mL', '') +
+      opt('mctn', 'c200', '&gt; 200 且 ≤ 500 pg/mL', '') +
+      opt('mctn', 'gt500', '&gt; 500 pg/mL', '要做完整的遠端轉移影像'));
+    h += recBox('ty_r_mpreop', '建議處置 · 手術範圍與術前必做');
+    h += node('ty_n_mpost', '3', '術後 3 個月的 calcitonin？',
+      opt('mpost', 'und', '測不到或落在正常範圍', '') +
+      opt('mpost', 'lt150', '升高但 &lt; 150 pg/mL', '') +
+      opt('mpost', 'gt150', '&gt; 150 pg/mL', '要做全套影像'));
+    h += recBox('ty_r_mpostop', '建議處置 · 術後要追什麼、要不要找病灶');
+    h += fuBox('ty_f_mpostop');
+    h += node('ty_n_madv', '3', '這位病人的疾病狀態是哪一種？',
+      opt('madv', 'stable', '低量轉移且穩定，或只有腫瘤指標上升', '影像上沒有進展') +
+      opt('madv', 'prog', '影像證實進展，或有症狀', ''));
+    h += recBox('ty_r_madv', '建議處置 · 要不要開始全身治療');
+    h += fuBox('ty_f_madv');
     h += '</div>';
 
-    /* ===================== ATC ===================== */
-    h += '<div id="th_atc" class="hidden">';
-    h += conn('th_ac2');
-    h += step('th_as2', '2', '分期與可切除性（AJCC 8th：ATC 一律第 IV 期）',
-      opt('astage', 'iva_ivb_res', 'IVA／IVB · 預期可 R0／R1 切除', '不需喉切除、氣管或動脈切除、不預期永久氣切') +
-      opt('astage', 'ivb_unres', 'IVB · 不可切除', '無遠處轉移但無法達成 R0／R1') +
-      opt('astage', 'ivc', 'IVC · 遠處轉移', 'Any T, Any N, M1'),
-      '<div class="note"><b>呼吸道優先（Rec 7）</b>：所有 ATC 初診時應做聲帶評估，內視鏡須涵蓋咽→喉→聲門下→氣管，並加做顯影 CT 或 MRI（<b>CT 因掃描時間短可能較佳</b>）。' +
-      '<b>但指引明確反對預防性氣切（GPS 7）</b>：「無立即呼吸道危險者，我們建議不要預先放置氣切」——即使是<b>不可切除的 ATC 通常也不需要</b>建立外科呼吸道。氣切僅限於<b>危及生命之窒息</b>，且應在手術室全身麻醉下執行，<b>不應在病房或急診以局部麻醉施行</b>；氣切會延誤後續放療與標靶治療達<b>2 週以上</b>且與存活下降相關。因術中氣切並不罕見，應納入所有 ATC 重大切除手術之標準同意書。<br>' +
-      '<b>BRAF V600E 須「迅速」以 IHC 檢測（Rec 4）</b>：IHC 陽性即可能不必再做 NGS，陰性則應做 NGS（較敏感）；組織不可得時可用 cfDNA liquid biopsy。BRAF 變異佔 ATC 之 40–70%。<b>Targeted NGS panel 通常 1–2 週出結果</b>；whole-exome／transcriptome 因耗時過久明確不建議作為初始檢測。<span class="fu-gap">指引僅用「expeditiously／urgently」，並無以天數計的 turnaround 目標，勿引用天數。</span><br>' +
-      '<b>16–30% 的 ATC 以顯著白血球增多表現（腫瘤分泌 G-CSF）——白血球高不一定代表感染。</b></div>');
-
-    h += connH('th_ac3');
-    h += step('th_as3', '3', 'BRAF V600E 狀態',
-      opt('abraf', 'braf_pos', 'BRAF V600E 陽性', '佔 ATC 之 40–70%') +
-      opt('abraf', 'braf_neg', 'BRAF V600E 陰性', '續行 NGS 找 NTRK／RET fusion 等') +
-      opt('abraf', 'braf_pending', '尚未回報', 'Rec 19：等待期間應以化療「橋接」，不可空等'));
-    h = h.replace('id="th_as3"', 'id="th_as3" class="hidden"');
-
-    h += rec('th_atc_rec', '建議處置 · 未分化癌 ATC');
-    h += '<div class="flow-fu hidden" id="th_atc_fu"></div>';
+    /* ── 未分化癌 ATC ── */
+    h += '<div id="ty_b_atc" class="hidden">';
+    h += recBox('ty_r_aurg', '❗先做的事 · 氣道、診斷與治療目標');
+    h += node('ty_n_astage', '2', '分期與可切除性？（未分化癌一律是第 IV 期）',
+      opt('astage', 'iva', 'IVA：T1–T3a、N0、M0', '仍侷限在甲狀腺內；1 年存活 72.7%') +
+      opt('astage', 'ivb_res', 'IVB 且評估可以達到 R0／R1 切除', '1 年存活 24.8%') +
+      opt('astage', 'ivb_unres', 'IVB 但無法切除', '') +
+      opt('astage', 'ivc', 'IVC：任何 T、任何 N、M1', '1 年存活 8.2%'));
+    h += node('ty_n_abraf', '3', 'BRAF V600E 的結果？（ATA 2025 要求 expeditiously 驗）',
+      opt('abraf', 'pos', 'BRAF V600E 陽性', '未分化癌有 50–70% 是陽性') +
+      opt('abraf', 'neg', 'BRAF V600E 陰性', '要再看其他可標靶變異') +
+      opt('abraf', 'pending', '還沒有結果', ''));
+    h += recBox('ty_r_atc', '建議處置 · 未分化癌');
+    h += fuBox('ty_f_atc');
     h += '</div>';
 
-    h += '<div class="flow-reset"><button class="btn-reset" onclick="thReset()">重置</button></div>';
-    h += '</div>'; // thPath
+    h += '<div class="flow-reset"><button class="back-btn" onclick="thReset()">重置</button></div>';
+    h += '</div>';
+    h += '<div class="bc-gene hidden" id="ty_gene"></div>';
+    h += '<div class="bc-drugbox hidden" id="ty_drugs"></div>';
     return h;
   }
 
-  /* ============================================================
-     渲染
-     ============================================================ */
-  function thRender() {
-    var s = thSt;
-
-    thShow('th_dtc', s.histo === 'dtc'); thShow('th_dc2', s.histo === 'dtc');
-    thShow('th_mtc', s.histo === 'mtc'); thShow('th_mc2', s.histo === 'mtc');
-    thShow('th_atc', s.histo === 'atc'); thShow('th_ac2', s.histo === 'atc');
-
-    // DTC 步驟可見性
-    var dSurg = (s.dsurg === 'lobe' || s.dsurg === 'total');
-    thShow('th_dc3', dSurg); thShow('th_ds3', dSurg);
-    var dResp = dSurg && !!s.drisk;
-    thShow('th_dc4', dResp); thShow('th_ds4', dResp);
-    var dRefr = dResp && s.dresp === 'str_inc';
-    thShow('th_dc5', dRefr); thShow('th_ds5', dRefr);
-
-    // MTC 步驟可見性
-    var mLoc = (s.mext === 'loc');
-    thShow('th_mc3', mLoc); thShow('th_ms3', mLoc);
-    var mDt = mLoc && (s.mctn === 'ctn_lt150' || s.mctn === 'ctn_gt150');
-    thShow('th_mc4', mDt); thShow('th_ms4', mDt);
-
-    // ATC 步驟可見性
-    var aShowBraf = !!s.astage;
-    thShow('th_ac3', aShowBraf); thShow('th_as3', aShowBraf);
-
-    renderDtcRec();
-    renderMtcRec();
-    renderAtcRec();
+  /* ==========================================================
+     4. 顯示控制
+     ========================================================== */
+  function el(id) { return document.getElementById(id); }
+  function show(id, on) { var e = el(id); if (e) e.classList.toggle('hidden', !on); }
+  function collapseAll() {
+    var root = el('thPath');
+    if (!root) return;
+    root.querySelectorAll('.ty-node').forEach(function (n) {
+      if (n.id !== 'ty_n1') n.classList.add('hidden');
+    });
+    root.querySelectorAll('.flow-rec').forEach(function (r) { r.classList.add('hidden'); });
+    root.querySelectorAll('.flow-fu').forEach(function (f) { f.classList.add('hidden'); f.innerHTML = ''; });
+    ['ty_b_dtc', 'ty_b_mtc', 'ty_b_atc'].forEach(function (id) { show(id, false); });
+  }
+  function liOf(t) {
+    if (t.indexOf('@ev ') === 0) return '<li class="ev">' + t.slice(4) + '</li>';
+    if (t.indexOf('<span class="rx-h">') === 0) return '<li class="hd">' + t + '</li>';
+    return '<li>' + t + '</li>';
+  }
+  function fill(id, cls, title, lines, src, extra) {
+    var e = el(id);
+    if (!e) return;
+    var label = e.querySelector('.rec-label');
+    var labelTxt = label ? label.textContent : '建議處置';
+    e.className = 'flow-rec ' + cls;
+    e.innerHTML = '<div class="rec-label">' + labelTxt + '</div>' +
+      '<div class="rec-title">' + title + '</div>' +
+      (lines && lines.length ? '<ul class="rec-detail">' + lines.map(liOf).join('') + '</ul>' : '') +
+      (extra || '') + (src ? '<div class="rec-note">' + src + '</div>' : '');
+  }
+  function fu(id, html) {
+    var e = el(id);
+    if (!e) return;
+    e.classList.remove('hidden');
+    e.innerHTML = '<div class="fu-h">接下來怎麼追蹤</div><ul class="fu-list">' + html + '</ul>';
   }
 
-  /* ---------- MTC ---------- */
-  function renderMtcRec() {
-    var s = thSt;
-    if (s.histo !== 'mtc') return;
-    var R = 'th_mtc_rec', F = 'th_mtc_fu';
+  /* ==========================================================
+     5. 分化型 DTC
+     ========================================================== */
+  var PCND = '❗<b>預防性中央區廓清（prophylactic central neck dissection）</b>：' +
+    '<b>RECOMMENDATION 19(A)「should <u>not</u> be performed for most small, noninvasive, clinically ' +
+    'node-negative PTC (cT1-T2, cN0) and for most FTCs.」（Strong, Moderate certainty）</b>；' +
+    '<b>19(B)：cN0 但原發灶為 T3 或 T4 者「<u>may</u> be considered」（Conditional, Low certainty）</b>，' +
+    '要和手術當下逐步浮現的風險權衡。<b>不能簡化成「一律不做」。</b>';
 
-    if (!s.mext) { idleRec(R, F, '請選擇步驟 2（疾病範圍）'); return; }
+  var PCND_HIST = EV('❗常被說成「2025 大翻轉」，其實不是：<b>ATA 2015 Rec 36(C) 已經是 ' +
+    'Strong／Moderate 的「thyroidectomy <u>without</u> prophylactic central neck dissection is ' +
+    'appropriate」</b>，2025 只是改成反面句型，<b>強度與證據等級都沒變</b>。' +
+    '唯一的實質差異是 2025 的 19(B) 把 2015 列在「可考慮」裡的 <b>cN1b 拿掉</b>，' +
+    '並把動詞由 should be considered 降為 may be considered。');
 
-    if (s.mext === 'adv') {
-      result(R, F, 'rec-nonop', '廣泛區域侵犯／遠處轉移：以功能保留為前提之減量手術 + 系統性治療',
-        ['<b>手術原則轉向保守（Rec 27，Grade C）</b>：廣泛區域或轉移性病灶，中央與側頸應採<b>較不積極</b>之手術，以保留發聲、吞嚥、副甲狀腺功能與肩關節活動度；局部控制改由 EBRT 與系統性治療達成。',
-         '<b>局部復發再手術（Rec 50）</b>：應做 compartment-oriented 廓清；<b>「僅切除肉眼可見轉移淋巴結」的有限術式應避免</b>，除非該區已有大範圍前次手術。',
-         '<b>再手術前的隱匿肝轉移</b>（Rec 54）：長時間頸部再手術前可考慮腹腔鏡肝臟評估切片——41 例中 8 例（19.5%）發現 &lt;5mm 白色結節，<b>CT 僅測得其中 1 例</b>。'
-        ].concat(mtcSystemic()),
-        'ATA MTC 2015（PMID 25810047）Rec 27／50／52–67。', 'mtc_sys');
-      return;
-    }
-
-    // 侷限可切除
-    if (!s.mctn) {
-      result(R, F, 'rec-elective', '侷限於頸部：全甲狀腺切除 + 中央區（Level VI）廓清',
-        ['<b>Rec 24（Grade B）</b>：影像無頸部淋巴結轉移、無遠處轉移者 → <b>全甲狀腺切除 + Level VI 中央區廓清</b>（即影像陰性仍做<b>預防性</b>中央區廓清）。理由：<b>不論原發腫瘤 &lt;1cm 或 &gt;4cm，中央與同側區淋巴結轉移率皆為 50–75%</b>——腫瘤大小不具保護作用，這正是 MTC 一律做全切除的核心理由。',
-         '<b>Rec 26（Grade C）</b>：病灶侷限於頸部與頸淋巴結者 → 全甲狀腺切除 + Level VI + <b>受累側之側頸（II–V）廓清</b>；術前影像同側陽性但對側陰性時，若 <b>basal Ctn &gt;200 pg/mL 應考慮對側頸廓清</b>。',
-         '<b>影像陰性者的預防性側頸廓清——ATA 明文未達共識（Rec 25，Grade I）</b>：「may be considered based on serum Ctn levels. <b>The Task Force did not achieve consensus on this recommendation.</b>」<span class="fu-gap">此點最常被誤引為「應依 calcitonin 做預防性側頸廓清」；ATA 並未背書。20／50／200／500 pg/mL 那組數字是指引引用 Machens &amp; Dralle 的證據，不是 ATA 建議。</span>',
-         '<b>副甲狀腺處理（Rec 30，Grade B）</b>：正常腺體帶血管蒂原位保留；若無存活腺體 → 散發型 MTC／MEN2B／MEN2A 且該 RET 突變罕見合併 HPTH 者<b>自體移植至胸鎖乳突肌</b>；<b>MEN2A 且突變高度合併 HPTH 者則移植至異位肌肉床</b>（便於日後再手術）。',
-         '<b>補全切除（Rec 28）</b>：單側切除後若有 germline RET 突變、術後 Ctn 升高、或影像顯示殘存 → 補做 completion thyroidectomy。<b>淋巴結腫大但 Ctn 正常不是再手術適應症。</b>',
-         '<div class="cbx"><div class="cbx-h">遺傳性 MTC 之預防性甲狀腺切除　<span class="cbx-sub">ATA 2015 風險分級（2009 之 Level D／C／A+B 已改名）</span></div><div class="cbx-items">' +
-           '<span class="cb"><span class="cb-k">HST</span>MEN2B、RET <b>M918T</b> → <b>出生第 1 年內</b>，甚至頭幾個月（Rec 34）</span>' +
-           '<span class="cb"><span class="cb-k">H</span>RET <b>C634</b> 系列、<b>A883F</b> → <b>5 歲</b>或更早（依 Ctn 升高）；Ctn &gt;40 pg/mL 或影像／直視可見轉移才加中央區廓清（Rec 35）</span>' +
-           '<span class="cb"><span class="cb-k">MOD</span>其餘所有 RET codon 突變 → <b>無固定年齡</b>，約 5 歲起追蹤、依 Ctn 升高決定（Rec 36）</span>' +
-           '</div></div>' +
-           '<b>A883F 於 2015 年由 Level D 降為 H</b>（其 MTC 侵襲性低於 M918T）。HST 佐證：44 名 MEN2B 兒童中<b>4 歲前手術者 9/9 全部生化治癒，5 歲後手術者僅 1/35</b>。' +
-           '篩檢起始年齡：ATA-H（codon 634）<b>3 歲</b>、ATA-MOD <b>5 歲</b>起年度理學檢查 + 頸部 US + Ctn；PHEO 篩檢 ATA-H／HST 自 <b>11 歲</b>、MOD 自 <b>16 歲</b>（Rec 37）；HPTH 篩檢同齡開始（Rec 42）。' +
-           '<span class="fu-gap">注意 MTC 風險與 PHEO 風險是兩條軸線：D631Y 雖屬 MOD，卻帶約 50% 的 PHEO 風險。&lt;2 歲兒童因副甲狀腺「小、半透明、難以辨識」可考慮延後手術。</span>'
-        ],
-        'ATA MTC 2015（PMID 25810047）Rec 24–30、34–37。術後 4–6 週測 TSH，levothyroxine 維持 euthyroid，<b>不做 TSH 抑制</b>（Rec 31）。', null);
-      return;
-    }
-
-    if (s.mctn === 'undetect') {
-      result(R, F, 'rec-elective', '術後 calcitonin／CEA 測不到 → 生化治癒，定期追蹤',
-        ['術後 basal Ctn &lt;10 pg/mL 者 <b>10 年存活 97.7%</b>。',
-         '不需系統性治療；依下方時程追蹤即可。',
-         '<b>惟仍有約 3% 於 7.5 年內生化復發</b>，追蹤不可中止。'],
-        'ATA MTC 2015 Rec 46。', 'mtc_cured');
-      return;
-    }
-
-    // Ctn 升高 → 需 doubling time
-    if (!s.mdt) {
-      var stagingLine = (s.mctn === 'ctn_gt150')
-        ? '<b>Ctn &gt;150 pg/mL（Rec 48）→ 立即全面影像分期</b>：頸部 US、胸部 CT、肝臟顯影 MRI 或三相顯影 CT、骨骼掃描、骨盆與中軸骨 MRI。'
-        : '<b>Ctn 升高但 &lt;150 pg/mL（Rec 47）</b>：先做理學檢查 + 頸部超音波；陰性則 Ctn／CEA／US 每 6 個月追蹤，<b>暫不做全面影像</b>。';
-      result(R, F, 'rec-nonop', '術後 calcitonin 升高 → 先定位病灶，再以 doubling time 決定是否治療',
-        [stagingLine,
-         '<b>下一步取決於 doubling time（見下方步驟 4）</b>：ATA 明文規定<b>「Ctn／CEA 上升但無影像可證實之轉移病灶者，不應給予系統性治療」</b>（Rec 53）。',
-         '<b>再手術（Rec 29，Grade C）</b>：術前 basal Ctn &lt;1000 pg/mL 且初次手術僅取出 ≤5 顆轉移淋巴結者，可考慮 compartment-oriented 廓清。',
-         '<b>預後量化（Rec 45）</b>：ATA 提出以陽性淋巴結<b>數目</b>分級（1–10／11–20／&gt;20）優於 AJCC 的 N1a／N1b 定性分類；<b>≥10 顆陽性或 &gt;2 個 compartment 受累者，Ctn 無法正常化</b>。'],
-        'ATA MTC 2015 Rec 45／47–49／53。', 'mtc_marker');
-      return;
-    }
-
-    if (s.mdt === 'dt_slow') {
-      result(R, F, 'rec-elective', 'Doubling time &gt;24 個月 → 觀察追蹤，不啟動系統性治療',
-        ['<b>Rec 53（Grade C）明文</b>：低量且穩定之轉移性疾病，若 Ctn 與 CEA doubling time <b>皆 &gt;2 年</b>，<b>不應給予系統性治療</b>。',
-         '該族群於研究結束時<b>全數存活</b>。',
-         '維持每 6 個月之 Ctn／CEA 與影像追蹤，重新計算 doubling time；轉快時再評估。',
-         '<b>局部病灶</b>仍可視需要以手術或 EBRT 處理（Rec 52：顯微殘存 60–66 Gy／6 週；肉眼殘存 ≥70 Gy）。'],
-        'ATA MTC 2015 Rec 52–53。Doubling time &gt;24 個月組於研究期間無死亡。', 'mtc_marker');
-      return;
-    }
-
-    var dtLine = (s.mdt === 'dt_fast')
-      ? '<b>Doubling time &lt;6 個月：5 年存活 25%、10 年存活 8%</b>——最具侵襲性族群，應積極評估系統性治療。'
-      : '<b>Doubling time 6–24 個月：5 年存活 92%、10 年存活 37%</b>。';
-    result(R, F, s.mdt === 'dt_fast' ? 'rec-urgent' : 'rec-nonop',
-      'Doubling time ' + (s.mdt === 'dt_fast' ? '&lt;6 個月' : '6–24 個月') + ' → 依腫瘤負荷與症狀啟動系統性治療',
-      [dtLine,
-       '<b>啟動門檻（Rec 65，Grade A）</b>：腫瘤負荷大且有症狀、或依 RECIST 有進展者 → 選擇性 RET 抑制劑或 RET／VEGFR 雙標靶 TKI。' +
-         '<b>但影像上若無可證實之轉移病灶，仍不應僅因指標上升而治療</b>（Rec 53）。'
-      ].concat(mtcSystemic()),
-      'ATA MTC 2015 Rec 53／65。<span class="fu-gap">ATA 2015 全文完全不含 selpercatinib／pralsetinib（成文早於選擇性 RET 抑制劑）；其第一線建議已被 LIBRETTO-531 覆蓋，故本頁以 selpercatinib 列為 RET 突變陽性者之首選。</span>',
-      'mtc_sys');
-  }
-
-  /* ---------- ATC ---------- */
-  function renderAtcRec() {
-    var s = thSt;
-    if (s.histo !== 'atc') return;
-    var R = 'th_atc_rec', F = 'th_atc_fu';
-
-    if (!s.astage) { idleRec(R, F, '請選擇步驟 2（分期與可切除性）'); return; }
-    if (!s.abraf) {
-      result(R, F, 'rec-urgent', '先確立診斷、呼吸道與 goals of care——同時等待 BRAF 結果',
-        ['<b>Rec 2</b>：手術切除前應盡一切努力先以切片確立診斷，<b>因為手術切除可能是不適當的</b>；FNA 診斷率 &gt;60%，常需併行 core biopsy 以取得足夠分子檢測材料（Rec 1）。',
-         '<b>Rec 8</b>：定義 goals of care 或進行治療討論<b>之前</b>，須先取得完整的疾病專屬多專科意見，且參與者須含<b>高度熟悉 ATC 治療的專家</b>。',
-         '<b>Rec 19</b>：希望積極治療者，應<b>及早啟動細胞毒性化療作為「橋接」</b>，直到分子檢測結果或標靶藥可及為止——不可空等。',
-         '請於上方步驟 3 選擇 BRAF V600E 狀態以取得對應方案。'],
-        'ATA ATC 2021（PMID 33728999）Rec 1／2／8／19。', 'atc_active');
-      return;
-    }
-
-    // IVA/IVB 可切除
-    if (s.astage === 'iva_ivb_res') {
-      var lines = [
-        '<b>手術（Rec 12，Strong）</b>：侷限性 IVA／IVB 且<b>預期可達 R0／R1 切除</b>者，強烈建議手術切除。作者群明言「將較高價值置於手術帶來的存活延長，較低價值置於潛在併發症與化放療之延遲」。',
-        '<b>但根治性擴大手術一般不建議（Rec 13）</b>：喉切除、氣管切除、食道切除、大血管或縱膈切除，僅在多專科充分討論、並考量突變狀態與標靶藥可及性後，極選擇性地執行。',
-        '<b>術後放化療（Rec 14）</b>：R0／R1 切除後，體能良好、無轉移、希望積極治療者 → <b>standard fractionation IMRT + 同步系統性治療</b>（Rec 17：建議用 IMRT）。',
-        atcChemoRT(),
-        atcRTDose(),
-        atcTiming()
-      ];
-      if (s.abraf === 'braf_pos') {
-        lines.push('<b>BRAF V600E 陽性且屬 borderline resectable</b>：可考慮 <span class="rx">neoadjuvant dabrafenib + trametinib</span> 後再手術（MD Anderson n=6：全數完全切除、1 年 OS 83%）。<span class="fu-gap">NCCN 將可切除者之 neoadjuvant dab/tram 列為 category 2B（panel 共識較低）——此為二手來源，未經 NCCN 一手文件證實。</span>');
-      }
-      lines.push('<b>存活參考</b>：三模式 vs 手術+放療未化療——<b>IVA 11.2 vs 9.3 個月、IVB 9.9 vs 5.9 個月</b>（皆 p&lt;0.001）。IMRT／taxane 時代之全分期 1 年 OS 由 10% 提升至 43%，惟<b>統計顯著僅見於 IVA 與 IVB</b>。');
-      result(R, F, 'rec-elective', 'IVA／IVB 可切除：手術 → 術後 IMRT + 同步化療（三模式治療）',
-        lines,
-        'ATA ATC 2021 Rec 12–14／17–18、GPS 8／10。<span class="fu-gap">Rec 14/15/17 本身未附 Gy/fraction，上列劑量出自指引定義章節；另指引自陳「一項系統性回顧未發現 R0 vs R1 vs R2 在無病或整體存活上有差異」——切緣狀態的理據並非無爭議。</span>',
-        'atc_active');
-      return;
-    }
-
-    // IVB 不可切除
-    if (s.astage === 'ivb_unres') {
-      var ul = [];
-      if (s.abraf === 'braf_pos') {
-        ul.push('<b>兩個並列選項（Rec 21，Conditional）</b>：BRAF V600E 之不可切除 IVB 且放療可行時，<b>化放療</b>與 <b>neoadjuvant dabrafenib／trametinib</b> 皆為合理的初始治療。');
-        ul.push('<b>若拒絕放療</b> → 直接 <span class="rx">dabrafenib + trametinib</span>（Rec 20，Strong）。');
-      } else {
-        ul.push('<b>Rec 15</b>：不可切除但無轉移、體能佳且希望積極治療者 → <b>standard fractionation IMRT + 系統性治療</b>。');
-        ul.push('<b>Rec 22（Strong）</b>：BRAF 非突變者，<b>為維持呼吸道</b>應考慮放療併同步化療，以降低窒息風險；最好併用 taxane ± 鉑類或 doxorubicin（例如 docetaxel + doxorubicin）。');
-        ul.push('<b>GPS 12</b>：BRAF wild-type（陰性或狀態不明）之不可切除 IVB，希望積極治療且未接受化放療者，<b>應鼓勵參加臨床試驗</b>。');
-      }
-      ul.push('<b>Rec 16（Strong）</b>：初評不可切除者，若放療和／或系統性治療（化療或 BRAF／MEK 抑制劑）使腫瘤<b>轉為可能可切除，建議重新考慮手術</b>——不可切除不是一次性的判定。');
-      ul.push(atcChemoRT());
-      ul.push(atcRTDose());
-      ul = ul.concat(atcSystemic());
-      ul.push('<b>存活參考</b>：多模式 vs 緩和意向之 <b>IVB 專屬</b>數據——中位 OS <b>22.4 vs 4 個月</b>（OR 0.12；p=0.0001），<b>1 年存活 68% vs 0%</b>。');
-      result(R, F, 'rec-nonop', 'IVB 不可切除：IMRT + 同步化療；BRAF V600E 者另有標靶選項',
-        ul,
-        'ATA ATC 2021 Rec 15–18／20–22、GPS 11–12。<b>GPS 11</b>：體能狀態差者應採緩和性或預防性局部區域放療，而非高劑量放療。', 'atc_active');
-      return;
-    }
-
-    // IVC
-    var cl = [];
-    if (s.abraf === 'braf_pos') {
-      cl.push('<b>Rec 20（Strong）</b>：BRAF V600E 之 IVC → <span class="rx">dabrafenib 150 mg BID + trametinib 2 mg QD</span>，<b>優先於其他所有系統性治療</b>。作者群（<b>含病友代表</b>）明言：在「先前幾乎沒有希望」的處境下，此方案有帶來深遠效益的潛力，故即使證據等級低仍給予 Strong 建議。');
-    } else if (s.abraf === 'braf_neg') {
-      cl.push('<b>BRAF 陰性</b>：續依 NGS 結果尋找 NTRK／RET fusion；<b>無可標靶變異者應優先考慮臨床試驗</b>（GPS 12），並依 Rec 25 使用 taxane 和／或 anthracycline，或 taxane ± 鉑類。');
+  function renderDtcInit() {
+    var L = [], cls = 'rec-elective', title = '';
+    if (S.dsize === 't1a') {
+      cls = 'rec-nonop';
+      title = 'cT1a（≤ 1 cm）、cN0M0<br>→ 可以和病人討論積極監測，不是非開不可';
+      L.push(H('主建議', 'ATA 2025 Rec 11'));
+      L.push('A：<b>「Active surveillance <u>may be offered</u> as an appropriate management option ' +
+        'for some patients with cT1aN0M0 PTCs. <u>Shared clinical decision-making</u> between the ' +
+        'patient and clinical team regarding risks and benefits of this approach is essential.」' +
+        '（Conditional recommendation, Low certainty evidence）</b>');
+      L.push('B：<b>超音波導引的經皮消融（percutaneous ablation）</b>對選定的 cT1aN0M0 乳突癌，' +
+        '<b>可作為積極監測或手術之外的另一個選項</b>（Conditional, Low certainty）。');
+      L.push(H('選了監測之後要做什麼', 'Rec 12、13'));
+      L.push('<b>用頸部超音波追蹤疾病進展</b>（Good Practice Statement）。' +
+        '正文給的節奏是<b>「每 6 個月做 1–2 年，之後每年一次」</b>；' +
+        '❗<b>指引明言「The length of necessary follow-up remains unknown」</b>，' +
+        '而且<b>先前所有積極監測研究都沒有用頸部 CT 做例行追蹤</b>。');
+      L.push('❗<b>不要例行驗 Tg 或 TgAb</b> —— <b>「routine measurement of serum Tg and/or TgAb ' +
+        'levels is <u>not recommended</u>」（Good Practice Statement）</b>。');
+      L.push(H('❗什麼時候要改成開刀', 'Rec 14，Good Practice Statement'));
+      L.push('逐字八項，任一成立就有手術適應症：' + SUB([
+        '<b>新出現、且經切片證實的淋巴結轉移</b>',
+        '<b>原發腫瘤長大 ≥ 3 mm</b>',
+        '<b>出現遠端轉移</b>',
+        '<b>出現腺外侵犯（extrathyroidal extension）的證據</b>',
+        '<b>往後方生長（posterior growth）</b>',
+        '<b>病人焦慮（patient anxiety）</b>',
+        '<b>無法配合追蹤</b>',
+        '<b>病人表達希望手術</b>']) +
+        '❗<b>後三項是病人端的理由，不是腫瘤變化 —— 指引把它們和影像變化並列，不要漏掉。</b>');
+      L.push('❗<b>一開始就不適合積極監測的情況</b>：' +
+        '<b>已侵犯喉返神經、氣管或食道者</b>；' +
+        '<b>緊鄰但尚未侵犯這些構造者，應先與外科討論再決定。</b>');
+      L.push(EV('❗<b>常被引錯的數字</b>：坊間常寫的「5 年增大 4.9%」<u>不是</u> Ito 2014 那篇的世代數字' +
+        '（該篇全世代只報 10 年：增大 8.0%、新發淋巴結 3.8%、進展為臨床疾病 6.8%；' +
+        '4.9% 其實是該篇 Table 3 裡「中年組 10 年進展為臨床疾病」那一格）。' +
+        '建議改引 <b>Ito 2023 World J Surg（PMID 36182976，n = 2705）</b>，摘要就有完整三個時點：' +
+        '<b>腫瘤增大 5 年 3.0%、10 年 5.5%、15 年 6.2%；新發淋巴結轉移 0.9%／1.1%／1.1%</b>。' +
+        '三個世代（2010 的 n=340、2014、2023）數字互不相同，引用時要指明是哪一篇。'));
+    } else if (S.dsize === 'le2') {
+      title = 'cT1（≤ 2 cm）、無明顯腺外侵犯、cN0M0<br>→ 甲狀腺葉切除（Strong）';
+      L.push(H('主建議', 'ATA 2025 Rec 15(A)'));
+      L.push('<b>「When resection is performed for patients with thyroid cancer ≤ 2 cm without gross ' +
+        'extra-thyroidal extension (cT1) and without metastases (cN0M0), the initial surgical ' +
+        'procedure <u>should be a thyroid lobectomy</u> unless there are bilateral cancers or other ' +
+        'indications to remove the contralateral lobe.」（Strong recommendation, Moderate certainty ' +
+        'evidence）</b>');
+      L.push('<b>例外只有兩種：雙側都有癌，或有其他必須切掉對側葉的理由。</b>');
+      L.push(PCND);
+      L.push(PCND_HIST);
+      L.push(EV('❗<b>「葉切的切點從 1 cm 放寬到 2 cm」這個說法不精確。</b>' +
+        '<b>ATA 2015 Rec 35(B) 早就允許 &gt; 1 cm 到 &lt; 4 cm 的低風險 cN0 做葉切</b>，而且同為 Strong。' +
+        '真正改變的是<b>「應直接做葉切」這個強建議的門檻由 &lt; 1 cm 上移到 ≤ 2 cm</b>；' +
+        '<b>葉切可被接受的上限兩版都是 4 cm，沒有放寬。</b>' +
+        '「&gt; 1 cm 一律全甲狀腺切除」是 <b>2006 與 2009 兩版</b>的立場。'));
+    } else if (S.dsize === 't2') {
+      title = 'cT2（&gt; 2 且 ≤ 4 cm）、單側、低風險、cN0M0<br>→ 葉切可能是較好的起手式，但要先把話說清楚';
+      L.push(H('主建議', 'ATA 2025 Rec 15(B)'));
+      L.push('<b>「For patients with low risk, unilateral thyroid cancer &gt; 2 and ≤ 4 cm (cT2N0M0), ' +
+        'thyroid lobectomy <u>may be the preferred</u> initial surgical treatment due to significantly ' +
+        'lower risk and side effects.」（Conditional recommendation, Low-moderate certainty evidence）</b>');
+      L.push('❗<b>但同一條也寫出了選全切的理由</b>：<b>「the patient and treatment team <u>may adopt ' +
+        'total thyroidectomy</u> to enable RAI administration and/or enhance follow-up based on disease ' +
+        'features, suspicious contralateral nodularity, and/or patient preferences.」</b>' +
+        '<b>也就是「想留放射碘這條路、或想讓追蹤更好判讀」本身就是選全切的正當理由。</b>');
+      L.push('❗<b>選葉切時，術前一定要先講的一句話</b>（條文明文要求）：' +
+        '<b>「counsel the patient about the possibility of <u>conversion to total thyroidectomy</u> or ' +
+        'need for subsequent <u>completion thyroidectomy</u> if higher-risk factors emerge ' +
+        'intraoperatively or postoperatively.」</b>' +
+        '<b>—— 術中或術後冒出高風險因子時，可能要當場改成全切或之後補做完成性切除。</b>');
+      L.push(PCND);
+      L.push(EV('<b>選葉切會連帶影響之後兩件事</b>：① 治療反應的判讀要改用 Table 9 的' +
+        '<b>葉切欄</b>（Excellent 的定義完全不同，不看 Tg 數值而看對側葉與淋巴結）；' +
+        '② <b>葉切之後不常規驗 Tg</b>（Rec 47D，Conditional／Very low），' +
+        '也<b>不做監測性全身碘掃描</b>（Rec 49A，Good Practice Statement）。'));
     } else {
-      cl.push('<b>BRAF 結果未回報</b>：依 Rec 19 <b>立即啟動化療作為橋接</b>，不可空等分子檢測；結果回報後再依變異調整。');
+      cls = 'rec-urgent';
+      title = '&gt; 4 cm（cT3a），或明顯腺外侵犯（cT3b／T4），或 cN1，或 cM1<br>→ 全甲狀腺切除 ＋ 廓清（Strong）';
+      L.push(H('主建議', 'ATA 2025 Rec 15(C)'));
+      L.push('<b>「For patients with thyroid cancer &gt; 4 cm (cT3a), cancer of any size with gross ' +
+        'extra-thyroidal extension (cT3b or cT4), or clinically apparent metastatic disease to lymph ' +
+        'nodes (cN1) or distant sites (cM1), the initial surgical procedure <u>should include a total ' +
+        'thyroidectomy</u> with gross removal of all primary tumor and node dissection unless there are ' +
+        'contraindications to this procedure.」（Strong recommendation, Moderate certainty evidence）</b>');
+      L.push('<b>四個觸發條件任一成立即可</b>：' + SUB([
+        '<b>腫瘤 &gt; 4 cm（cT3a）</b>',
+        '<b>任何大小但有明顯腺外侵犯（cT3b 或 cT4）</b>',
+        '<b>臨床上明顯的淋巴結轉移（cN1）</b>',
+        '<b>遠端轉移（cM1）</b>']));
+      L.push('❗<b>注意條文寫的是 total thyroidectomy <u>with node dissection</u></b> —— ' +
+        '<b>這一格的廓清是治療性的，不是上面在講的預防性廓清。</b>');
+      L.push(PCND);
+      L.push('<b>接下來</b>：術後病理出來後回<b>步驟 2 選「已經手術」</b>，' +
+        '做 ATA 2025 四級復發風險分層，才能決定放射碘與 TSH 目標。');
     }
-    cl.push('<b>局部治療仍有角色（Rec 22）</b>：低轉移負荷之 IVC，若局部病灶有症狀或即將威脅呼吸道，EBRT ± 同步化療應列為優先<b>以降低窒息風險</b>。');
-    cl = cl.concat(atcSystemic());
-    cl.push('<b>存活參考與誠實告知</b>：ATC 歷史中位存活約 <b>5 個月</b>、1 年整體存活 <b>20%</b>；<b>3–10% 存活超過 10 年</b>。' +
-      '關鍵限定：在多模式 vs 緩和意向的比較中，<b>IVC 病人之整體存活並不因治療方式而異</b>——效益集中於無遠處轉移者。指引因此明言「對積極治療的熱情必須有所節制」。' +
-      '<span class="fu-gap">指引並未提供一張乾淨的分期別中位 OS 表；上列數字皆出自特定文獻的治療比較情境。</span>');
-    result(R, F, 'rec-urgent', 'IVC 遠處轉移：以分子變異決定系統性治療，並同步啟動 goals of care',
-      cl,
-      'ATA ATC 2021 Rec 19–25、GPS 5／12／14。<b>GPS 14</b>：轉移性與進展性 ATC 預後極差，<b>best supportive care（hospice）亦應作為選項討論</b>。',
-      'atc_active');
+    fill('ty_r_dinit', cls, title, L,
+      'ATA 2025 分化型甲狀腺癌指引（Ringel MD, Sosa JA et al. Thyroid 2025;35(8):841-985，' +
+      'PMID 40844370，DOI 10.1177/10507256251363120）Recommendation 11–15、19。' +
+      '⚠ 台大醫院無甲狀腺癌診療指引，本頁全部為院外實證。',
+      gradeReference() + riskReference());
   }
 
-  /* ---------- DTC ---------- */
-  function renderDtcRec() {
-    var s = thSt;
-    if (s.histo !== 'dtc') return;
-    var R = 'th_dtc_rec', F = 'th_dtc_fu';
+  function renderDtcPostop() {
+    var L = [], cls = 'rec-elective', title = '', fuHtml = '';
+    var isPtc = S.dhisto === 'ptc';
+    var grp = isPtc ? '乳突癌 PTC 與其亞型' : '濾泡癌 FTC ／ IEFVPTC ／ oncocytic OTC';
 
-    if (!s.dsurg) { idleRec(R, F, '請選擇步驟 2（初始處置：手術範圍）'); return; }
-
-    // 積極監測
-    if (s.dsurg === 'as') {
-      result(R, F, 'rec-elective', '積極監測 Active surveillance（cT1aN0M0 乳突癌）',
-        ['<b>ATA 2025 REC 11A（Conditional, Low）</b>：<b>「積極監測對部分 cT1aN0M0 乳突癌病人而言，是合適的處置選項。」</b>',
-         '<b>ATA 2015 REC 12</b>列出四種可改採積極監測的情境：①極低風險腫瘤（如無臨床可見轉移或局部侵犯、細胞學無侵襲性證據之微小乳突癌）；②手術風險高；③預期餘命短；④有其他需先處理的醫療或外科問題。',
-         '<b>ATA 2025 REC 11B（新選項）</b>：超音波導引<b>經皮消融</b>可作為積極監測或手術之外的替代方案（選擇性病人）。',
-         '<b>不適合積極監測者</b>：侵犯喉返神經、氣管或食道者。',
-         '<b>ATA 2025 REC 13：監測期間不建議常規測 Tg／TgAb</b>——以超音波為監測工具。'],
-        'ATA 2025（PMID 40844370）REC 11–14；ATA 2015（PMID 26462967）REC 12。轉手術的觸發條件見下方追蹤區塊。', 'dtc_as');
-      return;
-    }
-
-    // 已手術，尚未分層 → 手術計畫（中間狀態，不掛追蹤）
-    if (!s.drisk) {
-      var sg = [];
-      if (s.dsurg === 'lobe') {
-        sg.push('<b>ATA 2025 REC 15A（Strong, Moderate）</b>：<b>≤2cm 無明顯腺外侵犯之 cT1N0M0「應」做甲狀腺葉切除</b>，除非雙側癌或有其他對側切除指徵。');
-        sg.push('<b>REC 15B（Conditional）</b>：<b>&gt;2 且 ≤4cm 之低風險單側 cT2N0M0，因風險與副作用顯著較低，葉切可為首選初始治療</b>；仍可選擇全切以利 RAI 給予與後續追蹤。');
-        sg.push('<b>對照 ATA 2015 REC 35</b>：切點為 1cm／4cm——&lt;1cm 做葉切、1–4cm 雙側或單側皆可、&gt;4cm 做全切。<b>2025 年把「應做葉切」的上限由 1cm 上移至 2cm</b>，流程若沿用 2015 數值須標明版本。');
-        sg.push('<b>補全切除（ATA 2025 REC 16A，Conditional）</b>：「可考慮用以處理殘存的原發惡性病灶、便於給予 RAI、和／或依術後評估之較高復發風險強化追蹤，<b>並須顧及喉返神經功能</b>」——語氣較 2015 REC 38A 保守。<b>REC 38B：不建議以 RAI 消融常規取代補全切除。</b>');
+    if (S.drisk === 'low') {
+      cls = 'rec-nonop';
+      title = grp + ' · <b>LOW（&lt; 10%）</b><br>→ 不常規給放射碘；TSH 維持在正常範圍';
+      L.push(H('放射碘：不給', 'Rec 32(A)'));
+      L.push('<b>「Remnant ablation is <u>not recommended routinely</u> after total thyroidectomy for ' +
+        'patients with ATA low-risk DTC.」（Strong recommendation, <u>High</u> certainty evidence）</b>');
+      L.push('❗<b>這是全文少數拿到 High certainty 的條文之一</b> —— ' +
+        '語氣比一般的「可以考慮不給」強得多，<b>預設就是不給</b>。');
+      L.push(EV('<b>證據基礎是兩個隨機試驗</b>：<b>ESTIMABL2</b>（PMID 35263518）與 ' +
+        '<b>IoN</b>（PMID 40543520），兩者的非劣性界值都是 <b>5 個百分點</b>。' +
+        '❗<b>但 IoN 的結論比它的收案範圍窄</b>：它收了 pT3／pT3a 與 N1a，' +
+        '結論卻只說 <b>pT1、pT2、N0／Nx 且無不良特徵</b>者可以省略放射碘 —— ' +
+        '因為 <b>pT3／pT3a 的復發率 9%、N1a 13%，而 pT1／pT2 只有 3%、N0／Nx 2%</b>。' +
+        '<b>不要把「低風險可以不給」直接套到 pT3 或 N1a。</b>' +
+        'ESTIMABL2 另有五年追蹤（PMID 39586309）：93.2% vs 94.8%，差 −1.6%。'));
+      L.push(H('TSH 目標', 'Table 9、Rec 46(A)'));
+      L.push('<b>TSH 維持在正常參考範圍內。</b>' +
+        '<b>「Long-term TSH suppression is <u>not suggested</u> for patients with low- or ' +
+        'intermediate-risk disease who have no evidence of biochemical or structural recurrence.」' +
+        '（Conditional, Low certainty）</b>');
+      L.push('❗<b>ATA 2025 沒有給任何 mIU/L 數值</b>，理由寫在 Table 9 表註：' +
+        '<b>「Data on optimal TSH target range are inconclusive and/or conflicting」</b>，' +
+        '而且要把<b>心房顫動與骨質疏鬆</b>納入考量。' +
+        '需要數字時要標明出處是 <b>ATA 2015 Rec 59</b> 或 ESMO，<b>不可掛在 ATA 2025 名下</b>。');
+      fuHtml = '<li><b>完成初始治療後 6–12 個月</b>做頸部超音波（Rec 31C，Good Practice Statement）。</li>' +
+        '<li><b>初期追蹤的 Tg 每 6–12 個月驗一次</b>；每次驗 Tg 都要<b>同時定量 TgAb</b>（Rec 47）。</li>' +
+        '<li>❗<b>可以停下來的出口（Rec 48）</b>：低風險且<b>持續極佳反應 5–8 年</b>後，' +
+        '<b>可以停掉例行超音波</b>，改成只用生化指標每 1–2 年追蹤（Conditional, Low certainty）。</li>' +
+        '<li>❗<b>持續極佳反應 10–15 年</b>者<b>不需要再繼續例行的生化監測</b>，' +
+        '並<b>視為已達成 complete remission（完全緩解）</b>（Good Practice Statement）。<br>' +
+        '⚠<b>指引用的詞是 complete remission，而且明文說「This does <u>not always</u> mean that cancer ' +
+        'has been cured or will not return.」—— 不要在病人面前講成「治癒」。</b><br>' +
+        '⚠<b>這個出口只給做過全甲狀腺切除的人；葉切族群沒有這個出口。</b></li>' +
+        '<li>❗<b>不做監測性全身碘掃描</b>：葉切或全切未做放射碘者「should <u>not</u>」做（Rec 49A）；' +
+        '低與 low-intermediate 且極佳反應者也不需常規做（Rec 49B）。</li>';
+    } else if (S.drisk === 'high') {
+      cls = 'rec-urgent';
+      title = grp + ' · <b>HIGH（&gt; 30%）</b><br>→ 常規給放射碘輔助治療；TSH 低於正常範圍';
+      L.push(H('放射碘：要給', 'Rec 32(C)、Table 10'));
+      L.push('<b>「RAI adjuvant therapy <u>is recommended routinely</u> after total thyroidectomy for ' +
+        'patients with ATA high-risk DTC.」（Strong recommendation, Moderate certainty evidence）</b>');
+      L.push('<b>活度（Table 10）：3.7–5.55 GBq（100–150 mCi）</b>；' +
+        '目標是 <b>remnant ablation 與 adjuvant therapy</b>。' +
+        '<b>若已有遠端轉移則改為 3.7–7.4 GBq（100–200 mCi），或考慮做 dosimetry。</b>');
+      L.push('❗<b>表註明文：最終活度要依<u>多專科團隊</u>的建議決定</b>，不是照表抓。');
+      L.push(H('準備方式', 'Rec 34'));
+      L.push('<b>「preparation with rhTSH stimulation is <u>preferred over</u> thyroid hormone ' +
+        'withdrawal」（Strong recommendation, <u>High</u> certainty evidence）</b>。' +
+        '<b>目標 TSH &gt; 30 mIU/L。</b>');
+      L.push('❗<b>已知遠端轉移者是例外</b>（Rec 34E）：<b>停藥或 rhTSH 兩者皆可</b>' +
+        '（Conditional, Low certainty），不適用上面的 preferred。');
+      L.push('❗<b>台灣的現實</b>：<b>rhTSH（Thyrogen）的健保藥品支付價已歸零</b>，' +
+        '實際走的是<b>診療項目 26074C</b>，而該項目<b>限「復發或轉移」或「不適合停用 T4」</b>；' +
+        '<b>而藥證適應症反而限「沒有轉移性甲狀腺癌跡象的病人」</b> —— ' +
+        '<b>兩者涵蓋的族群正好相反，這一格實務上是「自費 rhTSH」對「停藥升 TSH（健保）」的選擇。</b>' +
+        '停藥做法見下方可展開的橫列（LT4 停 3–4 週；❗<b>台灣買不到單方 T3，LT3 橋接做不到</b>）。');
+      L.push(H('TSH 目標', 'Table 9'));
+      L.push('<b>結構或生化未完全緩解者：TSH 低於正常參考範圍。</b>' +
+        '❗<b>但數值一樣沒有給</b>，且要把<b>心房顫動與骨質疏鬆</b>納入決策。');
+      fuHtml = '<li><b>完成初始治療後 6–12 個月</b>做頸部超音波；' +
+        '<b>intermediate-high 與 high 的 Tg 可以驗得比每 6–12 個月更密</b>（Rec 47C）。</li>' +
+        '<li>❗<b>高風險沒有 Rec 48 的「停止監測」出口</b> —— 那些出口只寫給低風險。</li>' +
+        '<li><b>臨床懷疑復發時可做診斷性全身碘掃描</b>，用 ¹²³I 或低劑量 ¹³¹I（Rec 49C，Conditional／Low）。</li>' +
+        '<li>可疑淋巴結<b>最短徑 &lt; 8–10 mm 可以只追蹤</b>；<b>≥ 8–10 mm 應做 FNA 並驗針洗液 Tg</b>。</li>';
+    } else {
+      var lbl = S.drisk === 'lowint' ? 'LOW-INTERMEDIATE（10–15%）' : 'INTERMEDIATE-HIGH（≥ 16–30%）';
+      title = grp + ' · <b>' + lbl + '</b><br>→ 放射碘「可以考慮」，這一格要真的做決定';
+      L.push(H('放射碘：可考慮，不是預設要給', 'Rec 32(B)'));
+      L.push('<b>「RAI adjuvant therapy <u>may be considered</u> after total thyroidectomy in patients ' +
+        'with ATA low-intermediate and intermediate-high risk of recurrent DTC.」' +
+        '（Conditional recommendation, Low certainty evidence）</b>');
+      L.push('❗<b>兩個中間層共用同一條建議、同一個活度區間</b> —— ' +
+        '<b>指引沒有在這兩層之間再做區分。</b>' +
+        '<b>活度（Table 10）：1.1–3.7 GBq（30–100 mCi）</b>，' +
+        '目標是 <b>remnant ablation ± adjuvant therapy</b>。');
+      L.push('<b>因為是 Conditional／Low certainty，這一格真的要和病人討論</b>：' +
+        '<b>條文的定義是「applicable to most people or situations, though other courses of action ' +
+        'might be appropriate in certain circumstances」。</b>');
+      if (S.drisk === 'lowint') {
+        L.push(EV('這一層的組成（Figure 2）：<b>T3a；或 T1／T2 帶有 unilateral multifocality（僅 PTC）、' +
+          'limited vascular invasion &lt; 4 條（僅 FTC／OTC）、microscopic ETE、' +
+          'cN1a 或 pN1a &gt; 2 mm 或 &gt; 5 顆、或 posterior margin R1</b>。' +
+          '❗<b>同樣是 microscopic 陽性切緣，anterior 會落在 LOW、posterior 才落在這一層。</b>'));
       } else {
-        sg.push('<b>ATA 2025 REC 15C（Strong, Moderate）</b>：<b>&gt;4cm（cT3a）、任何大小合併明顯腺外侵犯（cT3b／cT4）、cN1 或 cM1 → 全甲狀腺切除 + 淋巴結廓清</b>。');
-        sg.push('<b>ATA 2015 REC 35A</b>同向：&gt;4cm、或 gross ETE（cT4）、或 cN1、或 cM1 → near-total／total thyroidectomy。');
+        L.push(EV('這一層的組成（Figure 2）：<b>T1／T2／T3a 帶有 cN1b &lt; 3 cm，' +
+          '或「2 項以上的 low-intermediate 風險因子」</b>；' +
+          '<b>PTC 另外多三項：bilateral multifocality &gt; 1 cm、aggressive histology、vascular invasion。</b>' +
+          '❗<b>「2 項以上 low-intermediate 因子就升一級」這條很容易漏掉。</b>'));
       }
-      sg.push('<div class="cbx"><div class="cbx-h">淋巴結廓清　<span class="cbx-sub">ATA 2025 REC 19／20——中央區的語氣在 2025 年反轉</span></div><div class="cbx-items">' +
-        '<span class="cb"><span class="cb-k">預防性中央區</span><b>REC 19A（Strong）：「大多數小型、非侵襲性、臨床淋巴結陰性之乳突癌（cT1–T2, cN0）與大多數濾泡癌，<b>不應</b>做預防性中央區廓清。」</b>——2015 REC 36B 原為「may be considered」</span>' +
-        '<span class="cb"><span class="cb-k">例外</span>REC 19B（Conditional）：cN0 但 T3／T4，或該資訊將影響後續治療者「可考慮」，須權衡術中風險</span>' +
-        '<span class="cb"><span class="cb-k">治療性中央區</span>REC 20A（Strong）：cN1a → 廓清含 <b>Level VI 及上段 Level VII</b></span>' +
-        '<span class="cb"><span class="cb-k">cN1b</span>REC 20B（Conditional）：<b>同側中央區廓清應與側頸廓清、甲狀腺切除一併進行</b></span>' +
-        '<span class="cb"><span class="cb-k">治療性側頸</span>REC 20C（Strong）：切片證實或臨床明顯之側頸轉移 → 廓清<b>典型含 Level IIa、III、IV、Vb</b></span>' +
-        '<span class="cb"><span class="cb-k">不常規做</span>Level I、IIb、Va 不常規廓清，除非該區有轉移跡象</span>' +
-        '</div></div>' +
-        '<b>反轉的依據</b>（ATA 2025 引 Chen 等統合分析，n=18,376）：預防性中央區廓清使局部區域復發由 4.59% 降至 2.52%（OR 0.65），但<b>暫時性喉返神經損傷 OR 2.03、暫時性低血鈣 OR 2.23、永久性低血鈣 OR 2.22（CI 1.58–3.13）</b>——傷害超過獲益。' +
-        '<b>ATA 2015 內文另明載：原發腫瘤的 BRAF V600E 狀態不應影響是否做預防性中央區廓清。</b>');
-      sg.push('<b>高量術者（ATA 2025 REC 6）</b>：建議轉介年施行 <b>&gt;25–50 例</b>甲狀腺切除之術者。');
-      sg.push('請於上方步驟 3 選擇復發風險分層，以取得 RAI 與 TSH 目標之建議。');
-      result(R, F, 'rec-elective',
-        s.dsurg === 'lobe' ? '甲狀腺葉切除 Lobectomy' : '全甲狀腺切除 Total thyroidectomy',
-        sg,
-        'ATA 2025（PMID 40844370）REC 6／15／16／19／20；ATA 2015（PMID 26462967）REC 35／36／37／38。', null);
-      return;
+      L.push(H('準備方式', 'Rec 34(A)'));
+      L.push('<b>若決定要給，rhTSH 優先於停藥（Strong, High certainty），目標 TSH &gt; 30 mIU/L。</b>' +
+        '❗<b>台灣的 rhTSH 走診療項目 26074C 且限復發／轉移，這一格多半要自費</b>，詳見下方橫列。');
+      L.push(H('TSH 目標', 'Table 9、Rec 46(A)'));
+      L.push('<b>沒有生化或結構復發證據的中風險病人，不建議長期 TSH 抑制</b>' +
+        '（Conditional, Low certainty）；<b>Table 9 的極佳與不確定反應都是「維持在正常參考範圍內」。</b>');
+      fuHtml = '<li><b>完成初始治療後 6–12 個月</b>做頸部超音波（Rec 31C）。</li>' +
+        '<li><b>Tg 每 6–12 個月</b>；<b>intermediate-high 可以更密</b>（Rec 47C）。' +
+        '每次都要同時定量 TgAb。</li>' +
+        '<li>❗<b>low-intermediate 且達到極佳反應者，適用 Rec 48 的降階監測</b>' +
+        '（5–8 年後可停超音波）；<b>intermediate-high 不在 Rec 48 的適用範圍內</b>。</li>' +
+        '<li><b>後續的時機與頻率由「風險 ＋ 治療反應」共同決定</b> —— ' +
+        'Rec 51 稱為 <b>ongoing risk stratification（動態風險評估）</b>，是 Good Practice Statement。</li>';
     }
-
-    // 已分層，尚未評反應 → RAI + TSH
-    if (!s.dresp) {
-      var riskTitle = s.drisk === 'low' ? '低風險' : (s.drisk === 'int' ? '中風險' : '高風險');
-      var tshCtx = (s.dsurg === 'lobe' && s.drisk === 'low') ? 'lobe' : s.drisk;
-      result(R, F, s.drisk === 'high' ? 'rec-nonop' : 'rec-elective',
-        riskTitle + '：術後輔助治療（RAI 決策與 TSH 目標）',
-        [dtcRAI(s.drisk), dtcTSH(tshCtx),
-         '<b>下一步</b>：ATA 2025 REC 29（Strong）規定應以<b>反應準則分類治療反應</b>後，才決定後續治療或監測強度——請續選步驟 4。術後 Tg 於<b>全切後 6–12 週</b>測（達最低點的中位時間為 12 週）。'],
-        'ATA 2025 REC 29／30／32／34／45／46；ATA 2015 REC 51／54–59／81。' +
-          (s.drisk === 'low' ? '' : '<span class="fu-gap">ATA 2025 之四級風險分層（低／低中／中高／高）逐項準則僅存在於其 Figure 2 圖片，無法自 PDF 文字層擷取，故本頁維持 ATA 2015 三級。</span>'),
-        'dtc_curative');
-      return;
-    }
-
-    if (s.dresp === 'excellent') {
-      result(R, F, 'rec-elective', '反應極佳 Excellent response → 降低追蹤強度與 TSH 抑制',
-        ['<b>ATA 2015 Table 13</b>：復發率 <b>1–4%</b>，疾病特異死亡率 &lt;1%。指引明載此結果「<b>應導致及早降低追蹤強度與頻率、以及 TSH 抑制的程度</b>」。',
-         dtcTSH('excellent'),
-         '<b>不需重複刺激性 Tg 測定</b>（ATA 2015 REC 63B）。',
-         '<b>ATA 2025 REC 48「完全緩解」（全新概念）</b>：低風險且持續反應極佳達 <b>10–15 年</b>者，<b>不需再為甲狀腺癌做常規生化監測，應視為已達完全緩解</b>——這是本指引首次為 DTC 定義治癒出口。'],
-        'ATA 2015 REC 63B／70D、Table 13；ATA 2025 REC 48。', 'dtc_excellent');
-      return;
-    }
-
-    if (s.dresp === 'indeterminate') {
-      result(R, F, 'rec-elective', '反應不確定 Indeterminate → 續觀察、序列影像與 Tg',
-        ['<b>ATA 2015 Table 13</b>：<b>15–20% 於追蹤中出現結構性疾病</b>，其餘穩定或消退；死亡率 &lt;1%。',
-         '處置：續觀察並做序列影像與 Tg；轉為可疑者再評估或切片。',
-         dtcTSH('excellent'),
-         '<b>ATA 2025 Table 9 的三欄切點</b>：全切+RAI 者 indeterminate 為抑制下 Tg 0.2–1 或刺激後 1–10；<b>全切但未做 RAI 者為抑制下 Tg 2.5–5</b>；葉切者不以 Tg 分類。<span class="fu-gap">Table 9 腳註明載「最佳 TSH 目標範圍之資料尚無定論」。</span>'],
-        'ATA 2015 Table 13、REC 70C/D；ATA 2025 Table 9。', 'dtc_curative');
-      return;
-    }
-
-    if (s.dresp === 'bio_inc') {
-      result(R, F, 'rec-nonop', '生化未完全緩解 Biochemical incomplete → 依 Tg 趨勢決定',
-        ['<b>ATA 2015 Table 13 之自然史</b>：<b>≥30% 自行轉為無疾病證據</b>、20% 經追加治療後轉為無疾病證據、<b>20% 發展出結構性疾病</b>；死亡率 &lt;1%。',
-         '<b>處置取決於趨勢</b>：Tg <b>穩定或下降</b> → 觀察並續 TSH 抑制；Tg <b>上升</b> → 進一步檢查與治療。',
-         dtcTSH('bio_inc'),
-         '<b>影像定位</b>：Tg 升高但 RAI 影像陰性時，FDG-PET 適用於<b>高風險且 Tg 一般 &gt;10 ng/mL</b> 者；<b>刺激後 Tg ≤10 ng/mL 時 FDG-PET 敏感度僅 &lt;10–30%</b>，不宜貿然使用。',
-         '<b>ATA 2025 REC 58A</b>：無結構性病灶且（停藥法）刺激後 Tg &lt;10 ng/mL 者，可續觀察。',
-         '<b>復發率</b>（ATA 2025）：全切+RAI 者 <b>20–53%</b>（若合併結構性疾病可達 85%）；全切未做 RAI 者 0–31.6%。'],
-        'ATA 2015 Table 13、REC 68A／70B；ATA 2025 REC 58A。', 'dtc_curative');
-      return;
-    }
-
-    // 結構未完全緩解
-    if (!s.drefr) {
-      result(R, F, 'rec-nonop', '結構未完全緩解 Structural incomplete → 先判定是否仍具攝碘能力',
-        ['<b>ATA 2015 Table 13</b>：<b>50–85% 於追加治療後仍持續存在</b>；局部區域轉移死亡率可達 <b>11%</b>，<b>遠處結構性轉移可達 50%</b>——這是四類反應中唯一有實質死亡風險者。',
-         '處置依<b>大小、位置、生長速率、RAI／FDG 攝取狀況與病理</b>決定治療或觀察。',
-         dtcTSH('str_inc'),
-         '<b>局部處理優先</b>：可於解剖影像定位、<b>中央區 ≥8 mm、側頸 ≥10 mm</b>（最小徑）者可考慮再手術（ATA 2015 REC 71）；ATA 2025 REC 52 另提供<b>酒精注射（PEI）與射頻消融（RFA）</b>作為再手術高風險者的替代。',
-         '請於上方步驟 5 判定是否為 RAI 難治，以決定續用 RAI 或轉系統性治療。'],
-        'ATA 2015 Table 13、REC 70A／71；ATA 2025 REC 52。', 'dtc_curative');
-      return;
-    }
-
-    if (s.drefr === 'avid') {
-      result(R, F, 'rec-elective', '病灶仍具攝碘能力 → 續行 RAI 治療',
-        ['<b>ATA 2025 REC 59 之立場</b>：RAI 難治的判定特徵「應用來<b>風險分層腫瘤對 RAI 反應的可能性，而非作為硬性排除是否再給 RAI 的判定標準</b>」——比 2015 版寬鬆。',
-         '<b>活度</b>：遠處轉移 <b>100–200 mCi</b>（3.7–7.4 GBq），或考慮劑量學（ATA 2025 Table 10）。ESMO 2019：每 6 個月一次、共 2 年。',
-         '<b>停損點</b>：ESMO 2019 明載<b>累積劑量達 600 mCi 後病灶仍持續者，治癒機會渺茫</b>。ATA 2025 REC 55A：<b>&gt;70 歲或腎衰竭者應避免經驗性給予 &gt;150 mCi</b>。',
-         '<b>準備方式</b>：rhTSH 刺激優於停藥（ATA 2025 REC 34A，Strong, High），目標 TSH &gt;30 mIU/L，低碘飲食 1–2 週。',
-         dtcTSH('str_inc')],
-        'ATA 2025 REC 34／55／59、Table 10；ESMO 2019（PMID 31549998）。', 'dtc_curative');
-      return;
-    }
-
-    result(R, F, 'rec-urgent', 'RAI 難治（RAI-refractory）→ 分子分型後啟動系統性治療',
-      dtcSystemic(),
-      'ATA 2025（PMID 40844370）REC 59–79；ATA 2015 REC 91／92／96／97；NCCN Thyroid Carcinoma v1.2025 Insights（PMID 40639400）；ESMO 2019／2022（PMID 31549998／35491008）。' +
-        '<span class="fu-gap">NCCN 現行版本為 v2.2026，其 PDF 需註冊登入，本頁僅能引用經同儕審查、開放全文的 v1.2025 Insights「全身性治療」章節；NCCN 之手術範圍、積極監測、頸廓清、RAI 適應症、TSH 目標與追蹤排程均未能查證，故未引用。</span>',
-      'dtc_sys');
+    fill('ty_r_dpostop', cls, title, L,
+      'ATA 2025 Recommendation 28、32、34、45、46 與 Table 9、Table 10；' +
+      '四級風險分層為 Figure 2（本頁經三重核對，見上方可展開的橫列）。' +
+      '健保與藥證查詢日 2026-09-13。',
+      riskReference() + raiReference() + responseReference() + nhiReference());
+    if (fuHtml) fu('ty_f_dpostop', fuHtml);
   }
 
-  /* ============================================================
-     事件
-     ============================================================ */
-  function thPick(key, val, btn) {
-    thSel(btn);
-    var s = thSt;
-    if (key === 'histo') {
-      s.histo = val;
-      s.dsurg = s.drisk = s.dresp = s.drefr = null;
-      s.mext = s.mctn = s.mdt = null;
-      s.astage = s.abraf = null;
-      thClearSel(['th_ds2', 'th_ds3', 'th_ds4', 'th_ds5', 'th_ms2', 'th_ms3', 'th_ms4', 'th_as2', 'th_as3']);
+  function renderDtcFu() {
+    var L = [], cls = 'rec-elective', title = '', fuHtml = '';
+    var col = S.dtx === 'hemi' ? '葉切除' : (S.dtx === 'ttrai' ? '全切 ＋ 放射碘' : '全切、未做放射碘');
+
+    if (S.dresp === 'exc') {
+      cls = 'rec-nonop';
+      title = col + ' · <b>Excellent（極佳反應）</b><br>→ 開始降階，而且有機會停下來';
+      L.push(H('這一欄的 Excellent 是怎麼定義的', 'Table 9'));
+      if (S.dtx === 'hemi') {
+        L.push('<b>葉切欄不看 Tg 數值</b>：<b>「對側葉正常或為低風險結節，或對側葉結節切片為良性，' +
+          '<u>且</u>影像無異常淋巴結」</b>。' +
+          '❗<b>這是 2025 版新增的一欄</b>，舊的三欄式表格沒有葉切這一格。');
+        L.push('❗<b>葉切之後不常規驗 Tg</b>（Rec 47D，Conditional／Very low certainty）；' +
+          '<b>也不做監測性全身碘掃描</b>（Rec 49A，Good Practice Statement）。' +
+          '<b>殘餘葉裡的結節依「甲狀腺結節」那份姊妹指引處理。</b>');
+      } else if (S.dtx === 'ttrai') {
+        L.push('<b>未刺激 Tg &lt; 0.2 ng/mL，或刺激後 Tg &lt; 1 ng/mL，且影像陰性。</b>');
+      } else {
+        L.push('<b>未刺激 Tg &lt; 2.5 ng/mL。</b>' +
+          '❗<b>注意這個切點比做過放射碘那一欄寬了一個數量級</b>（2.5 對 0.2）—— ' +
+          '<b>同一個 Tg 數值在兩欄是不同的反應級別，這是 2025 版最容易看錯的地方。</b>');
+      }
+      L.push('<b>TSH 目標：維持在正常參考範圍內。</b>');
+      L.push(H('❗可以停下來的出口', 'Rec 48'));
+      if (S.dtx === 'hemi') {
+        L.push('<b>葉切族群沒有「complete remission」這個出口。</b>' +
+          'Rec 48 第 5、6 項只給監測節奏：<b>初次超音波陰性者，之後每 1–3 年做一次，做 5–8 年</b>' +
+          '（Good Practice Statement）；<b>術後 Tg 若沒有明顯升高，不建議再例行驗 Tg</b>。');
+        L.push(EV('指引對葉切族群的長期資料明言不足，正文以 <b>「providing a call for more research」</b> 作結。'));
+      } else {
+        var what = S.dtx === 'ttrai' ? '全甲狀腺切除 ＋ 放射碘' : '單做全甲狀腺切除（無放射碘）';
+        L.push('<b>' + what + '且<u>持續</u>極佳反應 <u>5–8 年</u></b>後：' +
+          '<b>可以停掉例行超音波</b>，改成只用生化指標<b>每 1–2 年</b>追蹤' +
+          '（Conditional recommendation, Low certainty evidence）。');
+        L.push('❗<b>' + what + '且<u>持續</u>極佳反應 <u>10–15 年</u></b>者：' +
+          '<b>「do not require continued routine biochemical monitoring for thyroid cancer and ' +
+          '<u>should be considered to have achieved a complete remission</u>」（Good Practice Statement）</b>。');
+        L.push('⚠<b>用詞要小心</b>：指引用的是 <b>complete remission（完全緩解）</b>，' +
+          '而且在定義段明文寫 <b>「This does <u>not always</u> mean that cancer has been cured or ' +
+          'will not return.」</b> —— <b>不要向病人講成「治癒」。</b>' +
+          '定義段另註明：<b>這個詞在先前各版 ATA 指引都沒有出現過，且缺乏明確的甲狀腺癌定義資料。</b>');
+        L.push('❗<b>這個出口只寫給「low-risk」</b> —— 中高與高風險層沒有對應條文。');
+      }
+      L.push('❗<b>Table 11 的降階門檻（低風險、極佳反應）</b>：' + SUB([
+        '<b>葉切：術後驗一次 Tg；TSH 正常；超音波每 1–3 年、做 5–8 年</b>',
+        '<b>全切未做放射碘：未刺激 Tg &lt; 2.5 ng/mL 且 TgAb 測不到；TSH 正常；' +
+          '超音波每 1–3 年做 5–8 年，之後停止，除非 Tg 上升或 TgAb 新出現</b>',
+        '<b>全切 ＋ 放射碘：未刺激 Tg &lt; 0.2 ng/mL 且 TgAb 測不到；其餘同上</b>']));
+      fuHtml = '<li><b>停止監測的條件是「Tg 沒有上升、TgAb 沒有新出現」</b> —— ' +
+        '這兩件事任一發生就要回頭。</li>' +
+        '<li><b>Rec 51 動態風險評估</b>（Good Practice Statement）：' +
+        '<b>「初始復發風險」要和「當下的治療反應」合起來看</b>，用來決定影像的時機與種類。</li>';
+    } else if (S.dresp === 'ind') {
+      title = col + ' · <b>Indeterminate（不確定）</b><br>→ 不升階治療，但也還不能降階';
+      L.push(H('這一欄的定義', 'Table 9'));
+      if (S.dtx === 'hemi') {
+        L.push('❗<b>葉切欄沒有 Indeterminate 這一格（表上標 N/A）。</b>' +
+          '<b>請回步驟 3 確認治療方式，或依對側葉與影像所見直接歸到極佳或結構未完全。</b>');
+      } else if (S.dtx === 'ttrai') {
+        L.push('<b>影像有非特異性發現，或未刺激 Tg 0.2–1，或刺激後 Tg 1–10，或 TgAb 穩定／下降。</b>');
+      } else {
+        L.push('<b>影像有非特異性發現，或未刺激 Tg 2.5–5，或 TgAb 穩定／下降。</b>');
+      }
+      L.push('<b>TSH 目標：維持在正常參考範圍內</b>（與極佳反應相同）。' +
+        'Table 9 表註 b 逐字：<b>「Data on optimal TSH target range are inconclusive.」</b>');
+      L.push('❗<b>「TgAb 穩定或下降」被歸在這一格，而「TgAb 上升」會直接掉到生化未完全</b> —— ' +
+        '<b>TgAb 的<u>趨勢</u>比它的絕對值重要。</b>');
+      L.push('<b>處置的重點是「繼續觀察、不要因為一個模糊的數字就升階」</b>：' +
+        '<b>Rec 51 的動態風險評估就是為這一格設計的</b> —— ' +
+        '隨時間重新評估，多數 Indeterminate 會往極佳移動。');
+      fuHtml = '<li><b>Tg 每 6–12 個月，每次同時定量 TgAb</b>（Rec 47C）。</li>' +
+        '<li><b>頸部超音波的時機與頻率依風險與反應決定</b>（Rec 31C）。</li>' +
+        '<li>❗<b>非特異性影像發現：最短徑 &lt; 8–10 mm 可以只追蹤不做 FNA</b>，' +
+        '除非長大或威脅重要構造（Rec 31D）；<b>≥ 8–10 mm 則做 FNA 並驗針洗液 Tg</b>（Rec 31E）。</li>';
+    } else if (S.dresp === 'bioinc') {
+      title = col + ' · <b>Biochemically incomplete（生化未完全）</b><br>→ 影像是陰性的，重點是找病灶與 TSH 降下來';
+      L.push(H('這一欄的定義', 'Table 9'));
+      if (S.dtx === 'hemi') {
+        L.push('❗<b>葉切欄沒有這一格（表上標 N/A）。</b>殘留的一葉本來就會製造 Tg，' +
+          '<b>所以葉切之後不常規驗 Tg</b>（Rec 47D）。');
+      } else if (S.dtx === 'ttrai') {
+        L.push('<b>未刺激 Tg &gt; 1，或刺激後 Tg &gt; 10，或 TgAb 上升，<u>且影像陰性</u>。</b>');
+      } else {
+        L.push('<b>未刺激 Tg &gt; 5，或 TgAb 上升，<u>且影像陰性</u>。</b>');
+      }
+      L.push('❗<b>「影像陰性」是這一格的定義的一部分</b> —— ' +
+        '<b>一旦影像找到病灶就不是這一格，要改判為結構未完全。</b>');
+      L.push(H('TSH 目標', 'Table 9 表註 c'));
+      L.push('<b>TSH 低於正常參考範圍。</b>逐字理由：<b>「If there is progression of residual disease ' +
+        'or development of new recurrence, targeting a TSH below normal reference range may be ' +
+        'reasonable. However, comorbidities such as <u>atrial fibrillation and osteoporosis</u> ' +
+        'should be factored into the decision making process.」</b>');
+      L.push('❗<b>ATA 2025 沒有給這一格任何 mIU/L 數值。</b>' +
+        '需要數字時要標明出處是 <b>ATA 2015 Rec 59</b>（高風險 &lt; 0.1、中風險 0.1–0.5、低風險 0.5–2 mU/L）' +
+        '或 ESMO 2019，<b>不可掛在 ATA 2025 名下</b>。');
+      L.push('❗<b>TgAb 陽性者要改用影像當主力</b>（Rec 47E）：' +
+        '<b>「Current Tg immunometric assays (IMA) and radioimmunoassays (RIA) are often affected by ' +
+        'TgAb, and Tg LC-MS/MS has low sensitivity… <u>Imaging is the primary modality for monitoring ' +
+        'in this population.</u>」</b>');
+      fuHtml = '<li><b>Tg 要用對 BCR457 標準品校正的方法</b>，而且<b>每一次驗 Tg 都要同時定量 TgAb</b>' +
+        '（Rec 47A，Good Practice Statement）。<b>換實驗室或換方法時數值不可直接比較。</b></li>' +
+        '<li><b>臨床懷疑復發時可做診斷性全身碘掃描</b>，用 ¹²³I 或低劑量 ¹³¹I' +
+        '（Rec 49C，限 intermediate-high／high）。</li>' +
+        '<li><b>這一格不是「沒事」，但也不等於要治療</b> —— ' +
+        '要用 Rec 51 的動態風險評估隨時間重估。</li>';
+    } else {
+      cls = 'rec-urgent';
+      title = col + ' · <b>Structurally incomplete（結構未完全）</b><br>→ 有實體病灶，要決定局部處置還是全身治療';
+      L.push(H('這一欄的定義', 'Table 9'));
+      L.push('<b>有結構性疾病的證據：影像可疑，或切片證實的局部或遠端轉移。' +
+        '這一格三欄的定義相同，不因治療方式而異。</b>');
+      L.push('<b>TSH 目標：低於正常參考範圍</b>（同樣沒有數值，且要考量心房顫動與骨質疏鬆）。');
+      L.push(H('接下來要分兩條路', ''));
+      L.push('<b>① 病灶還吃碘（RAI-avid）→ 再給放射碘</b>；' +
+        '若已知遠端轉移，準備方式<b>停藥或 rhTSH 皆可</b>（Rec 34E，Conditional／Low），' +
+        '<b>不適用一般情況下的 rhTSH preferred</b>。' +
+        '活度為 <b>3.7–7.4 GBq（100–200 mCi），或考慮做 dosimetry</b>（Table 10）。');
+      L.push('<b>② 病灶不吃碘或在放射碘下仍進展 → 就是放射碘難治（RAI-refractory）</b>，' +
+        '<b>請回步驟 2 選「放射碘難治」</b>，那一格會先要求做分子檢測再選藥。');
+      L.push('❗<b>可疑淋巴結的處理門檻</b>（Rec 31D／31E）：' +
+        '<b>最短徑 &lt; 8–10 mm 可以只追蹤</b>，除非長大或威脅重要構造；' +
+        '<b>≥ 8–10 mm 應做 FNA 並驗針洗液 Tg</b>。' +
+        '<b>不是看到就切。</b>');
+      fuHtml = '<li><b>這一格要由多專科團隊決定順序</b>：局部處置（手術、消融、放療）與全身治療的先後，' +
+        '指引沒有給固定順序。</li>' +
+        '<li><b>開始全身治療之前，ATA 2025 要求先做組織的分子檢測</b>（Rec 61，Strong／Moderate）—— ' +
+        '見步驟 2 的「放射碘難治」那一條。</li>';
     }
-    else if (key === 'mext') { s.mext = val; s.mctn = s.mdt = null; thClearSel(['th_ms3', 'th_ms4']); }
-    else if (key === 'mctn') { s.mctn = val; s.mdt = null; thClearSel(['th_ms4']); }
-    else if (key === 'mdt') { s.mdt = val; }
-    else if (key === 'astage') { s.astage = val; s.abraf = null; thClearSel(['th_as3']); }
-    else if (key === 'abraf') { s.abraf = val; }
-    else if (key === 'dsurg') { s.dsurg = val; s.drisk = s.dresp = s.drefr = null; thClearSel(['th_ds3', 'th_ds4', 'th_ds5']); }
-    else if (key === 'drisk') { s.drisk = val; s.dresp = s.drefr = null; thClearSel(['th_ds4', 'th_ds5']); }
-    else if (key === 'dresp') { s.dresp = val; s.drefr = null; thClearSel(['th_ds5']); }
-    else if (key === 'drefr') { s.drefr = val; }
-    thRender();
+    fill('ty_r_dfu', cls, title, L,
+      'ATA 2025 Table 9（治療反應四分類，依治療方式分欄）、Table 11（低風險極佳反應的降階）、' +
+      'Recommendation 31、47、48、49、51。⚠ 台大醫院無甲狀腺癌診療指引，本頁全部為院外實證。',
+      responseReference() + raiReference());
+    if (fuHtml) fu('ty_f_dfu', fuHtml);
+  }
+
+  function renderDtcRair() {
+    var L = [], cls = 'rec-elective', title = '';
+    L.push(H('❗開藥之前先做這一件事', 'Rec 61，Strong／Moderate'));
+    L.push('<b>「Tissue-based biomarker testing to identify actionable oncogenic driver alterations ' +
+      'in RAIR DTC <u>should be performed prior to initiating systemic therapy</u> for progressive ' +
+      'disease.」（Strong recommendation, Moderate certainty evidence）</b>');
+    L.push('❗<b>要和另一條分清楚</b>：<b>術後組織的分子檢測仍是「不常規」</b>' +
+      '（Rec 28B，Conditional／Low）；<b>只有「放射碘難治、要開始全身治療前」這一格才是 Strong「應執行」。</b>');
+    L.push('<b>要找的變異（正文逐字）</b>：<b>NTRK 1 與 3 融合、RET 融合、BRAF V600E 突變</b>；' +
+      '另外 <b>N/H RAS 突變與 ALK 融合</b>也可能對標靶治療有反應。');
+
+    if (S.dmol === 'pending') {
+      cls = 'rec-nonop';
+      title = '放射碘難治 · <b>分子檢測還沒有結果</b><br>→ 先等結果，除非疾病進展快到不能等';
+      L.push(H('為什麼要等', ''));
+      L.push('<b>因為 Rec 61 是 Strong 建議，而且不同變異對應的藥完全不同</b> —— ' +
+        '先開 multikinase inhibitor 會讓之後的標靶選擇變複雜。');
+      L.push('<b>台灣的檢測管道</b>：<b>NGS 30302B／30303B（2 萬／3 萬點）健保有給付，' +
+        '附表明列甲狀腺癌的 BRAF V600E／BRAF nonV600E／RET fusion 三項</b>，' +
+        '<b>每人每個癌別終生一次</b>。<b>BRAF 單項檢測 30107B</b> 的適應症也含甲狀腺癌' +
+        '（但<b>不含髓質癌</b>）。');
+      L.push('❗<b>但要先知道結果出來之後可能的落差</b>：' +
+        '<b>驗到 BRAF V600E，健保 9.91 的 ' + NR('dabrafenib') + ' ＋ ' + NR('trametinib') +
+        ' 沒有甲狀腺適應症；驗到 RET 融合，' + NR('selpercatinib') + ' 與 ' + NR('pralsetinib') +
+        ' 健保 0 筆。</b><b>只有 NTRK 融合走得到健保（larotrectinib 9.95）。</b>' +
+        '<b>檢測前就該把這件事和病人講清楚。</b>');
+      L.push('<b>若疾病進展快到不能等</b>：可先依 Rec 62 起始 <b>lenvatinib</b>' +
+        '（健保 9.63.1 給付，分化型、放射碘難治），之後再依結果調整。');
+    } else if (S.dmol === 'none') {
+      title = '放射碘難治 · <b>沒有可標靶的變異</b><br>→ lenvatinib 為第一線首選（Strong／High）';
+      L.push(H('主建議', 'Rec 62'));
+      L.push('<b>「MKI therapy with either lenvatinib or sorafenib is recommended. In most cases, ' +
+        '<u>lenvatinib is the preferred first-line MKI</u>.」（Strong recommendation, <u>High</u> ' +
+        'certainty evidence）</b>');
+      L.push('<b>第一線：<span class="rx">lenvatinib</span></b>（健保 9.63.1，' +
+        '分化型、放射碘難治，須事前審查、每次療程 3 個月）。');
+      L.push('<b>替代：<span class="rx">sorafenib</span></b>（健保 9.34.3，同樣條件）。');
+      L.push('❗<b>健保對這兩個藥只寫「不得合併使用」，<u>沒有</u>先後互斥</b> —— ' +
+        '<b>肝細胞癌那邊的「擇一給付、不得互換、失敗後不得申請後線」規則不適用於甲狀腺癌，不要照搬。</b>');
+      L.push(H('二線', ''));
+      L.push('<b><span class="rx">cabozantinib</span></b>（健保 9.74.2，<b>114/8/1 起</b>）：' +
+        '條文逐字「適用於 12 歲以上<b>曾接受 VEGFR 標靶治療後惡化</b>、放射碘治療無效或不適用放射碘治療的' +
+        '局部晚期或轉移性<b>分化型</b>甲狀腺癌病人」。' +
+        '<b>須事前審查，每次療程 3 個月、每 3 個月評估，每日限用 1 粒。</b>');
+      L.push(EV('<b>試驗數字</b>：<b>SELECT</b>（lenvatinib，PMID 25671254）與 <b>DECISION</b>' +
+        '（sorafenib，PMID 24768112）是這兩個藥的依據。' +
+        '❗<b>SELECT 用的是 99% CI 不是 95%</b>。' +
+        '<b>COSMIC-311</b>（cabozantinib 二線，PMID 34237250）' +
+        '❗<b>其主要終點 ORR 在期中分析<u>未達</u>預設的 α = 0.01</b>，' +
+        '且 ORR 用 99% CI、PFS 用 96% CI。延長追蹤（PMID 36259380）的中位 PFS 為 11.0 對 1.9 個月。'));
+      L.push('<b>沒有可標靶變異，不代表不用驗</b> —— Rec 61 的檢測本身就是為了排除這件事。');
+    } else if (S.dmol === 'ntrk') {
+      title = '放射碘難治 · <b>NTRK 1／3 融合</b><br>→ 這是唯一走得到台灣健保的標靶路';
+      L.push(H('主建議', ''));
+      L.push('<b><span class="rx">larotrectinib</span></b> —— ' +
+        '<b>健保 9.95.3(5) 的條文明列「甲狀腺癌」</b>，須 NTRK 基因融合，' +
+        '<b>須事前審查，每次療程 12 週</b>。');
+      L.push('❗<b>但條文有一個容易卡住的前提</b>：要求' +
+        '<b>「沒有合適的替代治療選項（<u>包含免疫檢查點抑制劑</u>）」</b> —— ' +
+        '<b>審查時可能被質疑為何不先用 lenvatinib。申請前要先想好理由。</b>');
+      L.push('❗<b>' + NR('entrectinib') + ' 在台灣健保只給 ROS-1 陽性非小細胞肺癌</b>' +
+        '（9.93），雖然它的藥證有泛實體腫瘤的 NTRK 適應症。' +
+        '<b>NTRK 融合的甲狀腺癌要走健保，只能用 larotrectinib。</b>');
+      L.push(EV('依據是 <b>Waguespack SG et al. Eur J Endocrinol 2022;186:631-643（PMID 35333737）</b>，' +
+        'TRK 融合甲狀腺癌的 larotrectinib 系列。'));
+    } else if (S.dmol === 'ret') {
+      title = '放射碘難治 · <b>RET 融合</b><br>→ 藥在台灣拿得到，但健保 0 筆';
+      L.push(H('主建議', ''));
+      L.push('<b><span class="rx">selpercatinib</span></b>（Retsevmo 銳癌寧，衛部藥輸字第028331／028332號）' +
+        '或 <b><span class="rx">pralsetinib</span></b>（Gavreto 普吉華，衛部藥輸字第028393號）。');
+      L.push('❗<b>兩個都是「有藥證、健保 0 筆」</b> —— ' +
+        '<b>健保三處查詢全 0 筆：沒有健保藥品代號、沒有支付價、沒有給付規定條文。全額自費。</b>' +
+        'pralsetinib 的審議歷程是 115/4/7 完成審議（同意給付）→ <b>115/7/28 結案（其他原因）</b>。');
+      L.push('<b>台大處方集兩張卡都有</b>（selpercatinib 為常規品項、pralsetinib 標「專案」），' +
+        '<b>所以是「院內調得到、要自費」而不是「拿不到」。</b>');
+      L.push('❗<b>檢測與藥的落差就在這裡</b>：<b>NGS 附表明列甲狀腺癌的 RET fusion 一項、健保給付檢測</b>，' +
+        '<b>但驗出來之後對應的藥沒有健保。</b><b>驗之前要先把這件事講清楚。</b>');
+      L.push(EV('依據是 <b>LIBRETTO-001</b>（selpercatinib，Wirth LJ, NEJM 2020;383:825-835，PMID 32846061）' +
+        '與 <b>ARROW</b>（pralsetinib，PMID 34118198）。' +
+        '❗<b>搜尋 LIBRETTO-531 時第一個跳出來的 PMID 38201566 其實是 LIBRETTO-001 的探索性分析</b>，' +
+        'LIBRETTO-531 的正確 PMID 是 <b>37870969</b>（Hadoux J, NEJM 2023;389:1851-1861），' +
+        '而且那是<b>髓質癌</b>的第一線試驗，不是分化型。'));
+    } else {
+      title = '放射碘難治 · <b>BRAF V600E 突變</b><br>→ 指引承認可用，但台灣健保沒有這條路';
+      L.push(H('指引怎麼寫', 'Rec 61 narrative'));
+      L.push('<b>BRAF V600E 是 ATA 2025 明列的三個可標靶變異之一</b>' +
+        '（另兩個是 NTRK 1／3 融合與 RET 融合），' +
+        '<b>Rec 61 要求在開始全身治療前就驗出來</b>。');
+      L.push('❗<b>台灣的落差</b>：<b>健保 9.91 的 ' + NR('dabrafenib') + ' ＋ ' + NR('trametinib') +
+        ' 條文只有黑色素瘤與 BRAF V600E 轉移性非小細胞肺癌，<u>沒有任何甲狀腺適應症</u></b>。' +
+        '<b>分化型甲狀腺癌要用 BRAF／MEK 抑制劑，在台灣是自費或走個案事前審查。</b>');
+      L.push('<b>所以實務上這一格常常仍是走 <span class="rx">lenvatinib</span></b>' +
+        '（健保 9.63.1，Rec 62 的 first-line preferred MKI），' +
+        '<b>二線 <span class="rx">cabozantinib</span></b>（健保 9.74.2）。' +
+        '<b>BRAF 標靶留作自費選項或臨床試驗。</b>');
+      L.push('❗<b>注意分化型與未分化癌在這一格的差別</b>：' +
+        '<b>未分化癌（ATC）的 BRAF V600E 有 ATA 2021 的 Strong 建議（Rec 20）支持用 BRAF／MEK 抑制劑</b>，' +
+        '<b>但分化型沒有對應的強建議</b> —— ATA 2025 只是把它列為可標靶的變異之一。');
+      L.push('<b>檢測本身健保有給付</b>：<b>BRAF 檢測 30107B 的適應症明文含甲狀腺癌（不含髓質癌）</b>，' +
+        '<b>NGS 附表也列了甲狀腺癌的 BRAF V600E 與 BRAF nonV600E 兩項。</b>');
+    }
+    fill('ty_r_drair', cls, title, L,
+      'ATA 2025 Recommendation 61、62；健保藥品給付規定 9.63／9.34／9.74／9.95／9.91 與' +
+      '《醫療服務給付項目及支付標準》30107B、30302B／30303B，查詢日 2026-09-13。' +
+      '⚠ 台大醫院無甲狀腺癌診療指引，本頁全部為院外實證。',
+      nhiReference() + gradeReference());
+    fu('ty_f_drair', '<li><b>每次事前審查的週期就是實際的追蹤節奏</b>：' +
+      '<b>lenvatinib 與 sorafenib 每 3 個月、cabozantinib 每 3 個月並須評估無惡化、' +
+      'larotrectinib 每 12 週。</b></li>' +
+      '<li><b>TSH 目標維持在低於正常參考範圍</b>（結構未完全緩解，Table 9）。</li>' +
+      '<li>❗<b>每人每個癌別的 NGS 健保給付終生只有一次</b> —— ' +
+      '要驗就一次驗完整的套組，不要分次。</li>');
+  }
+
+  /* ==========================================================
+     6. 髓質癌 MTC
+     ========================================================== */
+  var PHEO = '❗<b>開刀之前一定要先排除 pheochromocytoma</b>（ATA 2015 Rec 38、39）。<br>' +
+    '正文逐字：<b>「An undiagnosed PHEO in a patient undergoing a thyroidectomy <u>may result in ' +
+    'substantial morbidity and even death</u>. Thus, in patients with hereditary MTC, it is critical ' +
+    'to exclude the presence of a PHEO prior to thyroidectomy…」</b><br>' +
+    '<b>Rec 38（Grade C）</b>：MEN2A 或 MEN2B 且病理確診髓質癌者，' +
+    '<b>「<u>regardless of age and presenting symptoms</u> must have a PHEO excluded prior to any ' +
+    'interventional procedure」</b>；計畫懷孕或已懷孕的女性也要排除，' +
+    '若查到<b>盡可能在第三孕期之前切除</b>。<br>' +
+    '<b>Rec 39（Grade B）</b>：<b>「<u>If they coexist, a PHEO should be removed prior to surgery for ' +
+    'either MTC or HPTH.</u>」—— 兩者並存時，嗜鉻細胞瘤要先開。</b><br>' +
+    '❗<b>還不知道是偶發還是遺傳性時</b>：正文明文' +
+    '<b>「a PHEO should be excluded prior to thyroidectomy <u>if determination of the RET status takes ' +
+    'an inordinate amount of time</u>」—— 不要為了等基因報告而延後排除嗜鉻細胞瘤。</b><br>' +
+    '<b>篩檢方式</b>：血漿游離 metanephrines／normetanephrines，或 24 小時尿液 metanephrines／' +
+    'normetanephrines；生化陽性再做 CT 或 MRI。<br>' +
+    '<b>副甲狀腺亢進（HPTH）的順序不同</b>：<b>和甲狀腺切除<u>同一次手術</u>處理</b>' +
+    '（Figure 1 逐字 "Present, Rx at time of TTX"），<b>但仍排在嗜鉻細胞瘤之後</b>。' +
+    'Rec 43：<b>只切除肉眼腫大的副甲狀腺</b>；四顆都腫大時可做次全切除或全切除加異位自體移植。';
+
+  var RETTEST = '<b>所有髓質癌都要驗 germline RET</b>（Rec 21，Grade B）：' +
+    '<b>「Patients presenting with a thyroid nodule and a cytological or histological diagnosis of MTC ' +
+    'should have a physical examination, determination of serum levels of Ctn and CEA, and ' +
+    '<u>genetic testing for a RET germline mutation</u>.」</b><br>' +
+    '<b>Rec 6（Grade B）</b>：<b>看起來是偶發性的髓質癌也要驗</b>。<br>' +
+    '<b>Rec 7（Grade B）</b>：要提供遺傳諮詢與檢測的四種對象 —— ' +
+    '<b>已證實遺傳性髓質癌病人的一等親；有 MEN2B 典型表現型的嬰幼兒的父母；' +
+    '皮膚苔癬樣澱粉沉著症（CLA）病人；有 Hirschsprung 病且帶 exon 10 突變的嬰幼兒，' +
+    '以及帶 exon 10 突變、有 Hirschsprung 相關症狀的 MEN2A 成人。</b><br>' +
+    '❗<b>MEN2B 的嬰兒要盡早驗</b>：正文逐字<b>「macroscopic MTC and nodal metastases may occur ' +
+    'during the <u>first year of life</u>… genetic testing should be done <u>soon after birth</u> in ' +
+    'at-risk infants」</b>。';
+
+  function renderMtcPreop() {
+    var L = [], cls = 'rec-elective', title = '';
+    L.push(H('❗這三件事要排在手術之前', ''));
+    L.push(PHEO);
+    L.push(RETTEST);
+    L.push(H('手術範圍', 'ATA 2015 Rec 24、25、26'));
+    L.push('<b>Rec 24（Grade B）</b>：超音波無頸部淋巴結轉移、無遠端轉移者 —— ' +
+      '<b>「should have a <u>total thyroidectomy and dissection of the lymph nodes in the central ' +
+      'compartment (level VI)</u>」</b>。<b>中央區廓清是標配，不是選配。</b>');
+    L.push('<b>Rec 26（Grade C）</b>：疾病侷限於頸部與頸部淋巴結者 —— ' +
+      '<b>全甲狀腺切除 ＋ 中央區（level VI）廓清 ＋ 受侵犯的側頸區（levels II–V）廓清</b>。');
+    L.push('❗<b>Rec 25 是全份指引唯一一條「委員會沒有達成共識」的建議</b>（Grade I）：' +
+      '<b>「dissection of lymph nodes in the lateral compartments (levels II–V) <u>may be considered ' +
+      'based on serum Ctn levels</u>. <u>The Task Force did not achieve consensus on this ' +
+      'recommendation.</u>」</b> —— <b>這一格本來就沒有標準答案，寫病歷時要說明是依哪一派做的。</b>');
+
+    if (S.mctn === 'lt20') {
+      cls = 'rec-nonop';
+      title = '術前 calcitonin <b>&lt; 20 pg/mL</b><br>→ 淋巴結轉移風險幾乎為零，不需要預防性側頸廓清';
+      L.push(H('這個數字代表什麼', '正文 p.581–582'));
+      L.push('<b>「there was <u>virtually no risk of lymph node metastases</u> when the preoperative ' +
+        'serum Ctn level was less than 20 pg/mL（normal reference range &lt; 10 pg/mL）」</b>');
+      L.push('<b>做法：全甲狀腺切除 ＋ 中央區（level VI）廓清</b>（Rec 24）。' +
+        '<b>側頸不需要預防性廓清。</b>');
+    } else if (S.mctn === 'c20') {
+      title = '術前 calcitonin <b>20–200 pg/mL</b><br>→ 有一派主張同側中央區與同側側頸都要廓清';
+      L.push(H('這個數字代表什麼', '正文 p.581–582'));
+      L.push('<b>calcitonin 分別超過 20、50、200、500 pg/mL，對應的轉移範圍依序是：' +
+        '<u>同側中央區與同側側頸 → 對側中央區 → 對側側頸 → 上縱膈</u>。</b>');
+      L.push('❗<b>指引明講這裡有「two schools of thought」</b>，其中一派主張：' +
+        '<b>「elective dissection of US-normal <u>ipsilateral central and ipsilateral lateral</u> neck ' +
+        'compartments is indicated in patients with basal serum Ctn levels above 20 pg/mL」</b>。' +
+        '<b>這是其中一派的立場，不是指引的統一建議</b>（對照 Rec 25 未達共識）。');
+      L.push('<b>另一派的做法是只做影像上看得到的（治療性廓清）。</b>' +
+        '<b>兩派都要在病歷寫清楚依據。</b>');
+    } else if (S.mctn === 'c200') {
+      cls = 'rec-urgent';
+      title = '術前 calcitonin <b>&gt; 200 且 ≤ 500 pg/mL</b><br>→ 對側頸部廓清要納入考慮（這條有明文）';
+      L.push(H('❗這一格有明文寫進建議條文', 'Rec 26'));
+      L.push('<b>「When preoperative imaging is positive in the ipsilateral lateral neck compartment ' +
+        'but negative in the contralateral neck compartment, <u>contralateral neck dissection should be ' +
+        'considered if the basal serum calcitonin level is greater than 200 pg/mL</u>.」</b>');
+      L.push('<b>也就是說：影像只看到同側、但 calcitonin &gt; 200，對側也要考慮開。</b>' +
+        '<b>這是少數把 pg/mL 數字寫進正式建議條文的地方。</b>');
+      L.push('<b>正文另有一派主張</b>：<b>「elective dissection of an US-normal <u>contralateral ' +
+        'lateral</u> neck compartment is indicated when the basal serum Ctn level is greater than ' +
+        '200 pg/mL」</b>。');
+    } else {
+      cls = 'rec-urgent';
+      title = '術前 calcitonin <b>&gt; 500 pg/mL</b><br>→ 開刀前要先做完整的遠端轉移影像';
+      L.push(H('❗這一格的重點是「先找遠端轉移」', 'Rec 22，Grade C'));
+      L.push('<b>所有 serum calcitonin &gt; 500 pg/mL 者都要做</b>：' + SUB([
+        '<b>頸部與胸部的對比增強 CT</b>',
+        '<b>三時相肝臟 CT 或肝臟 MRI</b>',
+        '<b>軸心骨的 MRI 與骨骼掃描（bone scintigraphy）</b>']));
+      L.push('<b>理由（正文 p.580）</b>：<b>「no distant metastases were detected when the baseline ' +
+        'serum Ctn level was <u>less than 500 pg/mL</u>」</b> —— ' +
+        '<b>500 以下幾乎不會有遠端轉移，500 以上才需要全套影像。</b>');
+      L.push('❗<b>Rec 23（Grade E，反對）</b>：<b>不建議用 FDG-PET/CT 或 F-DOPA-PET/CT 偵測遠端轉移。</b>' +
+        '<b>Grade E 是明確的反對建議，不是「證據不足」。</b>');
+      L.push('<b>calcitonin &gt; 500 也對應到上縱膈的轉移範圍</b>（正文的四段對照）。');
+    }
+    L.push(H('術後立刻要處理的兩件事', ''));
+    L.push('<b>Rec 31（Grade B）：術後 4–6 週測 TSH。' +
+      '❗<u>髓質癌不需要壓抑 TSH</u>，只要維持 euthyroid</b> —— ' +
+      '<b>這和分化型完全不同，不要把分化型的 TSH 抑制邏輯套過來。</b>');
+    L.push('❗<b>Rec 51（Grade E，反對）：術後不做放射碘</b>，' +
+      '除非轉移病灶裡混有乳突癌或濾泡癌的成分。<b>髓質癌來自 C 細胞，不吃碘。</b>');
+    L.push('<b>再手術的條件（Rec 29，Grade C）</b>：初次廓清不足者，' +
+      '<b>若術前 basal calcitonin &lt; 1000 pg/mL 且初次手術取出的轉移淋巴結 ≤ 5 顆</b>，' +
+      '可考慮再次做 compartment-oriented 廓清。');
+    fill('ty_r_mpreop', cls, title, L,
+      'ATA 2015 髓質癌指引（Wells SA Jr et al. Thyroid 2015;25:567-610，PMID 25810047）' +
+      'Recommendation 21–26、29、31、38、39、43、51 與正文 p.580–582、p.587。' +
+      '<b>已查證 2015 之後 ATA 無新版髓質癌指引</b>（PubMed 三種檢索式與 ATA 官網指引頁）。' +
+      '⚠ 台大醫院無甲狀腺癌診療指引。',
+      nhiReference());
+  }
+
+  function renderMtcPostop() {
+    var L = [], cls = 'rec-elective', title = '', fuHtml = '';
+    L.push(H('術後第一次抽血的時間', 'Rec 46，Grade C'));
+    L.push('<b>「Serum levels of Ctn and CEA should be measured <u>3 months postoperatively</u>…」</b>');
+
+    if (S.mpost === 'und') {
+      cls = 'rec-nonop';
+      title = '術後 calcitonin <b>測不到或在正常範圍</b><br>→ 追蹤節奏降下來';
+      L.push('<b>Rec 46 後半逐字</b>：<b>「…and if <u>undetectable or within the normal range</u>, they ' +
+        'should be measured <u>every 6 months for 1 year, and then yearly thereafter</u>.」</b>');
+      L.push('<b>Figure 3 的對應分支</b>：<b>「If physical exam and US remain normal, evaluate every ' +
+        '6 months for 1 year, then annually」</b>。');
+      L.push('<b>要同時追的是理學檢查與頸部超音波</b>，不是只看數字。');
+      fuHtml = '<li><b>calcitonin 與 CEA：前 1 年每 6 個月，之後每年一次。</b></li>' +
+        '<li><b>TSH 維持 euthyroid 即可，不壓抑</b>（Rec 31）。</li>' +
+        '<li>❗<b>之後任何一次 calcitonin 進展性上升超過 150 pg/mL，就要啟動影像檢查</b>（正文 p.583）。</li>';
+    } else if (S.mpost === 'lt150') {
+      title = '術後 calcitonin <b>升高但 &lt; 150 pg/mL</b><br>→ 先做理學檢查與頸部超音波，不必全套影像';
+      L.push(H('主建議', 'Rec 47，Grade C'));
+      L.push('<b>「Patients with elevated postoperative serum Ctn levels <u>less than 150 pg/mL</u> ' +
+        'should have a <u>physical examination and US of the neck</u>. If these studies are negative ' +
+        'the patients should be followed with physical examinations, measurement of serum levels of ' +
+        'Ctn and CEA, and <u>US every 6 months</u>.」</b>');
+      L.push('❗<b>這一格不要跳去做全身影像</b> —— ' +
+        '<b>指引把全套影像留給 &gt; 150 pg/mL 那一格。</b>');
+      L.push('<b>同時開始算 doubling time</b>（見下方追蹤）。');
+      fuHtml = '<li><b>理學檢查與頸部超音波每 6 個月</b>（Rec 47）。</li>' +
+        '<li>❗<b>calcitonin 與 CEA 的頻率，建議條文與流程圖不一致</b>：' +
+        '<b>Rec 49（Grade B）寫「at least <u>every 6 months</u>」，但 Figure 3 兩處都寫' +
+        '「every <u>3 to 6 months</u>」。</b><b>指引自己沒有調和，取較密的比較安全。</b></li>' +
+        '<li><b>calcitonin 一旦進展性上升超過 150 pg/mL 就要啟動影像</b>（正文 p.583）。</li>';
+    } else {
+      cls = 'rec-urgent';
+      title = '術後 calcitonin <b>&gt; 150 pg/mL</b><br>→ 要做全套影像找病灶';
+      L.push(H('主建議', 'Rec 48，Grade C'));
+      L.push('<b>「If the postoperative serum Ctn level <u>exceeds 150 pg/mL</u> patients should be ' +
+        'evaluated by imaging procedures, including…」</b>' + SUB([
+        '<b>頸部超音波</b>', '<b>胸部 CT</b>',
+        '<b>對比增強肝臟 MRI，或三時相對比增強肝臟 CT</b>',
+        '<b>骨骼掃描（bone scintigraphy）</b>',
+        '<b>骨盆與軸心骨的 MRI</b>']));
+      L.push('<b>Figure 3 在這一格之後的走法</b>：' +
+        '<b>影像陽性 → 考慮手術或體外放射治療；全身性進展者用全身治療（優先 TKI）或臨床試驗。</b>' +
+        '<b>影像陰性 → 理學檢查與重複影像每 6–12 個月，calcitonin 與 CEA 每 3–6 個月。</b>');
+      L.push('❗<b>再次頸部大手術之前可以考慮先做肝臟探查</b>（Rec 54，Grade C）：' +
+        '正文的數字是<b>41 人中有 8 人（19.5%）由腹腔鏡發現 &lt; 5 mm 的白色肝結節，' +
+        '而 CT 只抓到其中 1 人</b>。<b>目的是避免做了大手術才發現已有隱匿肝轉移。</b>');
+      fuHtml = '<li><b>calcitonin 與 CEA 每 3–6 個月（Figure 3）或至少每 6 個月（Rec 49）</b>，' +
+        '用來算 doubling time。</li>' +
+        '<li><b>影像陰性者，理學檢查與影像每 6–12 個月。</b></li>' +
+        '<li>❗<b>找到病灶不等於要立刻給全身治療</b> —— 見步驟 2 的「進展性或轉移性」那一格。</li>';
+    }
+    L.push(H('❗兩個指標都要算 doubling time', 'Rec 49，Grade B'));
+    L.push('<b>「In patients with detectable serum levels of Ctn and CEA following thyroidectomy, ' +
+      'the levels of the markers should be measured at least every 6 months to determine their ' +
+      '<u>doubling times</u>.」</b>');
+    L.push('<b>calcitonin 與 CEA 的 doubling time 在 80% 的病人一致</b>；不一致時' +
+      '<b>只要其中一個 ≤ 25 個月就可能有進展</b>。正文逐字：' +
+      '<b>「The clinician should determine the doubling times of <u>both</u> markers.」</b>');
+    L.push('<b>怎麼算</b>（正文 p.591）：<b>「Reliable estimates are obtained using <u>at least four ' +
+      'data points over a minimum of 2 years</u>; however, doubling times less than 6 months can be ' +
+      'reliably estimated within the first 12 months postoperatively.」</b>' +
+      '<b>ATA 官網有線上計算器。</b>');
+    fill('ty_r_mpostop', cls, title, L,
+      'ATA 2015 髓質癌指引 Recommendation 46、47、48、49、54 與 Figure 3（本頁已 render 圖檔判讀）、' +
+      '正文 p.583、p.590–591。⚠ 台大醫院無甲狀腺癌診療指引。',
+      nhiReference());
+    if (fuHtml) fu('ty_f_mpostop', fuHtml);
+  }
+
+  function renderMtcAdv() {
+    var L = [], cls = 'rec-elective', title = '';
+    if (S.madv === 'stable') {
+      cls = 'rec-nonop';
+      title = '低量轉移且穩定，或只有腫瘤指標上升<br>→ ❗<b>不要給全身治療</b>';
+      L.push(H('❗這一格有明文禁止', 'Rec 53，Grade C'));
+      L.push('<b>「<u>Systemic therapy should not be administered to patients who have increasing ' +
+        'serum Ctn and CEA levels but no documented metastatic disease.</u> Nor should systemic ' +
+        'therapy be administered to patients with <u>stable low-volume metastatic disease</u>, as ' +
+        'determined by imaging studies and serum Ctn and CEA <u>doubling times greater than 2 years</u>.」</b>');
+      L.push('<b>兩種情況都不給</b>：' + SUB([
+        '<b>指標在升，但影像找不到轉移病灶</b>',
+        '<b>有低量轉移但穩定，而且 calcitonin 與 CEA 的 doubling time 都 &gt; 2 年</b>']));
+      L.push('<b>正文講得更白</b>：<b>「Even though the presence of a somatic RET codon M918T mutation ' +
+        'in a patient\'s tumor or rapid doubling times of serum Ctn and CEA levels are useful ' +
+        'prognostic indicators, <u>it is best to do nothing in asymptomatic patients with no ' +
+        'detectable metastases</u>.」</b>');
+      L.push('❗<b>舊版流程的一個錯誤要改正</b>：常見的「&lt; 6 個月／6–24 個月／&gt; 24 個月」三段式' +
+        '<b>不是處置門檻</b>，那是正文引用 <b>Barbet 2005</b> 的<b>存活率資料</b>：' +
+        '<b>doubling time &lt; 6 個月者 5 年與 10 年存活 25% 與 8%；6–24 個月者為 92% 與 37%；' +
+        '&gt; 24 個月者在研究結束時全數存活。</b>' +
+        '<b>指引真正用來做決策的門檻只有一個：doubling time &gt; 2 年。</b>');
+      L.push(EV('同段另有一條容易被忽略的：<b>Rec 54（Grade C）</b> —— ' +
+        '再次頸部大手術之前可考慮腹腔鏡或開腹的肝臟探查與切片，以排除隱匿轉移。'));
+    } else {
+      cls = 'rec-urgent';
+      title = '影像證實進展或有症狀<br>→ 可以開始全身治療；但台灣的選項被卡得很窄';
+      L.push(H('指引時代的兩個藥', ''));
+      L.push('<b><span class="rx">vandetanib</span></b>（ZETA，Wells SA, JCO 2012，PMID 22025146）' +
+        '與 <b><span class="rx">cabozantinib</span></b>（EXAM，Elisei R, JCO 2013，PMID 24002501）。');
+      L.push(EV('❗<b>ZETA 常被引錯的數字</b>：' +
+        '<b>vandetanib 組的「30.5 個月」是 Weibull 模型的<u>預測值</u>，不是觀察到的中位無惡化存活</b>' +
+        '（該組當時未達中位）；<b>安慰劑組的 19.3 個月才是實測值</b>。' +
+        'ORR 45% 對 13%（OR 5.48）來自全文 Table 2，不在摘要裡。'));
+      L.push(H('指引之後才有的 RET 抑制劑', ''));
+      L.push('<b><span class="rx">selpercatinib</span></b> —— ' +
+        '<b>LIBRETTO-531</b>（Hadoux J, NEJM 2023;389:1851-1861，<b>PMID 37870969</b>）是' +
+        '<b>RET 突變髓質癌的第一線</b>隨機試驗，對照組是醫師選擇的 vandetanib 或 cabozantinib。' +
+        '<b>這是 ATA 2015 之後才出現的證據，指引本身沒有涵蓋。</b>');
+      L.push('<b><span class="rx">pralsetinib</span></b>（ARROW，PMID 34118198）。');
+      L.push(H('❗台灣的三個卡點', '查詢日 2026-09-13'));
+      L.push('<b>① 健保唯一給付髓質癌的是 <span class="rx">vandetanib</span>（9.86）</b>：' +
+        '限「無法進行手術切除的局部侵犯或轉移性甲狀腺髓質癌，<b>並且為症狀性及疾病侵襲性</b>的患者」，' +
+        '<b>須事前審查，每次療程 6 個月</b>。' +
+        '❗<b>劑量陷阱：條文寫「每日最大 300 毫克」，但 300 mg 的藥證已於 2023/12/26 自請註銷、' +
+        '健保支付價 113/04/01 歸零 → 實務上只能用 3 顆 100 mg 湊。</b>');
+      L.push('<b>② ' + NR('cabozantinib') + ' 在台灣進不了髓質癌</b>：' +
+        '<b>健保 9.74.2 與藥證適應症都只寫「分化型」</b>，' +
+        '<b>而髓質癌專用的 Cometriq 膠囊台灣沒有藥證（0 筆）。</b>' +
+        '<b>這是台灣與國際做法差最多的一格。</b>');
+      L.push('<b>③ RET 抑制劑有藥證但健保 0 筆</b>：' +
+        '<b><span class="rx">selpercatinib</span>（Retsevmo 銳癌寧）與 ' +
+        '<span class="rx">pralsetinib</span>（Gavreto 普吉華）都要全額自費。</b>' +
+        '❗<b>而且 pralsetinib 的台灣適應症只有「RET <u>融合</u>甲狀腺癌」與非小細胞肺癌，' +
+        '<u>沒有</u>「RET <u>突變</u>髓質癌」</b> —— ' +
+        '<b>而髓質癌最常見的正是 RET 突變而非融合，所以它在台灣連仿單內使用都不成立。</b>' +
+        '<b>selpercatinib 的台灣適應症含甲狀腺癌，是這條路比較站得住的一個。</b>');
+      L.push('❗<b>檢測與藥的落差</b>：<b>NGS 附表 2.2.1 明列「甲狀腺髓質癌（RET mutation）」一行、' +
+        '健保給付檢測</b>，<b>但驗出來之後對應的藥沒有健保。</b>' +
+        '（另注意 <b>BRAF 單項檢測 30107B 的適應症明文<u>排除</u>髓質癌</b>。）' +
+        '<b>驗之前要先把這件事講清楚。</b>');
+    }
+    fill('ty_r_madv', cls, title, L,
+      'ATA 2015 髓質癌指引 Recommendation 49、53、54 與正文 p.590–592；' +
+      'ZETA（PMID 22025146）、EXAM（PMID 24002501）、LIBRETTO-531（PMID 37870969）、ARROW（PMID 34118198）；' +
+      '健保藥品給付規定 9.86、9.74 與食藥署許可證資料，查詢日 2026-09-13。' +
+      '⚠ 台大醫院無甲狀腺癌診療指引。',
+      nhiReference());
+    fu('ty_f_madv', '<li><b>calcitonin 與 CEA 至少每 6 個月（Rec 49），Figure 3 寫每 3–6 個月</b>，' +
+      '<b>兩個指標都要算 doubling time。</b></li>' +
+      '<li><b>vandetanib 的健保事前審查每次 6 個月</b>，這就是實際的追蹤節奏。</li>' +
+      '<li>❗<b>TSH 只要維持 euthyroid，不做抑制</b>（Rec 31）。</li>');
+  }
+
+  /* ==========================================================
+     7. 未分化癌 ATC
+     ========================================================== */
+  function renderAtcUrgent() {
+    fill('ty_r_aurg', 'rec-urgent',
+      '未分化癌 · <b>先做這四件事</b><br>→ 氣道、診斷、分子檢測、治療目標討論',
+      [H('① 氣道 —— 但不是先做氣切', 'Good Practice Statement 7'),
+      '<b>「In patients <u>without impending airway compromise</u>, we advise <u>against preemptive ' +
+        'tracheostomy placement</u>.」</b>',
+      '正文逐字：<b>「there is generally <u>no need</u> for creation of a surgical airway, ' +
+        '<u>even in patients with unresectable ATC</u>」</b> —— ' +
+        '<b>氣切管與分泌物會造成相當大的不適。</b>',
+      '❗<b>但立場不是一刀切</b>：<b>急性阻塞時「there should be a <u>low threshold</u> for ' +
+        'tracheostomy」</b>；而且<b>「tracheostomy should be part of the standard consent form in most ' +
+        'patients undergoing any significant resection for ATC」</b> —— ' +
+        '<b>不預防性做，但同意書要先簽。</b>',
+      '❗<b>真要做的時候的三個細節</b>：' + SUB([
+        '<b>「Tracheostomy is best performed under anesthesia with preoperative intubation, if possible.」</b>',
+        '<b>「An attempt to perform the tracheostomy either in the ward or in the emergency room ' +
+          'under local anesthesia <u>should be avoided</u>.」</b>',
+        '<b>常需要先做 isthmusectomy 或氣管前腫瘤減積才進得去；</b>' +
+          '<b>必要時經環甲膜的較高位置切開（cricothyroidotomy）可能是繞過阻塞的最佳選擇。</b>']),
+      EV('<b>指引自己引的數字</b>：一個系列中 <b>19% 以 stridor 表現、另有 23% 在放療期間出現顯著氣道症狀、' +
+        '最終 36% 死於氣道阻塞</b>；另一系列 <b>40% 需要氣切</b>。' +
+        '❗<b>但氣切本身與較短存活相關</b>（可能反映疾病較侵襲，也可能是延後了放療）；' +
+        '<b>氣切可能讓後續放療與標靶治療延後 2 週以上。</b>'),
+      '<b>每位病人初診時都要評估聲帶</b>（Recommendation 7，strong／low），之後依症狀變化再評。' +
+        '<b>評估方式：內視鏡 ＋ 對比 CT 或 MRI；CT 因為掃描時間短可能更合適；' +
+        '而且要把內視鏡延伸到氣管做纖維內視鏡評估。</b>',
+      H('② 診斷 —— 但不要為了切片延後治療', 'GPS 1、Recommendation 2'),
+      '<b>Recommendation 2（strong／low）</b>：<b>「Every effort should be made to establish a ' +
+        'diagnosis <u>via biopsy</u> before proceeding with surgical resection, as surgical resection ' +
+        'may be inappropriate.」</b>',
+      '❗<b>GPS 1</b>：<b>「In the event that biopsy of a <u>suspected metastatic</u> disease site is ' +
+        'clinically indicated, <u>primary management of ATC should not be delayed</u> until biopsy is ' +
+        'obtained.」</b> —— <b>原發灶要確診，但不要等轉移灶的切片。</b>',
+      '<b>GPS 2</b>：<b>「All critical appointments and assessments that are required before primary ' +
+        'treatment of ATC should be prioritized and completed <u>as rapidly as possible</u>.」</b>',
+      H('③ BRAF V600E —— 要快，但指引沒有給天數', 'Recommendation 4、5'),
+      '<b>Rec 4（strong／<u>moderate</u>，全文僅兩條拿到 moderate 的其中一條）</b>：' +
+        '<b>「Once ATC diagnosis is considered, assessment of BRAF V600E mutation should be ' +
+        '<u>expeditiously</u> performed by IHC and confirmed/expeditiously assessed by molecular testing.」</b>',
+      '❗<b>指引全文沒有任何「N 天內」的 turnaround 目標</b> —— 用的是 expeditiously、' +
+        'early-on、urgently 這些副詞。<b>全文唯一的檢測時效數字是講 NGS：' +
+        '「targeted next-generation sequencing panels… usually offer results in <u>1–2 weeks</u>」，' +
+        '而全外顯子與全轉錄體分析「usually become available in <u>several weeks</u>」，' +
+        '對這個快速進展的癌太慢。</b>' +
+        '<b>若院內要訂「幾天內」，那是自訂標準，不可掛 ATA 名義。</b>',
+      '<b>做法</b>：<b>「BRAF IHC provides a rapid result and if positive NGS testing may not be ' +
+        'necessary. If BRAF IHC is negative, NGS should be performed as it is more sensitive.」</b>' +
+        '組織不足時可考慮 <b>cfDNA 液態切片</b>。',
+      '<b>BRAF V600E 在未分化癌的盛行率 50–70%</b>；' +
+        '<b>病理標本中若同時存在乳突癌成分，超過 90% 帶 BRAF V600E。</b>',
+      H('④ 治療目標討論 —— 要「盡快」開始', 'Good Practice Statement 5'),
+      '<b>「A "goals-of-care" discussion should be initiated with the patient <u>as soon as possible</u>. ' +
+        '…a candid session should be conducted in which there is <u>full disclosure</u> of the ' +
+        'potential risks and benefits of various treatment options, <u>updated frequently</u>… ' +
+        'Treatment options discussed <u>should include all end-of-life options, such as hospice and ' +
+        'palliative care</u>. <u>Patient preferences should guide clinical management.</u>」</b>',
+      '<b>Recommendation 9（strong／low）</b>：<b>治療團隊「should include palliative care expertise ' +
+        'at <u>every stage</u> of patient management」</b> —— <b>不是末期才會診。</b>',
+      '❗<b>GPS 14</b>：<b>「As prognosis is dire in metastatic and progressive ATC, ' +
+        '<u>best supportive care (hospice) should also be discussed as an option</u>.」</b>' +
+        'Table 1 第 8 點：<b>「Keep hospice/end-of-life care discussions in the <u>foreground</u>」</b>、' +
+        '<b>「hospice should <u>always</u> be presented among care options」</b>。',
+      '<b>GPS 4（已被勘誤修改）</b>：鼓勵病人訂立<b>預立醫療決定並指定代理人</b>，' +
+        '含 <b>POLST</b> 文件。❗<b>原刊寫的是「POLST or MOST」，勘誤已把 MOST 全數刪除</b>' +
+        '（PMC 版全文仍是未更正的舊文字）。' +
+        '<b>要暫停 DNR 的情況也必須事先與病人討論。</b>',
+      '<b>GPS 3</b>：對決策能力有疑慮時，應會診<b>身心科與／或臨床倫理</b>。',
+      H('要先知道的預後數字', '指引自己引用'),
+      '<b>歷史中位存活約 5 個月（5–6 個月），1 年整體存活約 20%。</b>',
+      '❗<b>依分期的 1 年存活差距極大：IVA 72.7%、IVB 24.8%、IVC 8.2%</b>' +
+        '（Akaishi et al., n = 100）—— <b>這組數字是門診說明時最實用的。</b>',
+      '<b>多模式治療與緩和意向的對比：中位存活 21 個月對 3.9 個月（HR 0.32，p = 0.0006）</b>；' +
+        '<b>IVB 次群為 22.4 個月對 4 個月（OR 0.12，CI 0.03–0.44，p = 0.0001），1 年存活 68% 對 0%。</b>',
+      '❗<b>但同一研究的 IVC 次群「overall survival did not differ by therapy」</b> —— ' +
+        '<b>效益集中在沒有遠端轉移的人身上。這一點在和 IVC 病人討論時必須誠實講。</b>'],
+      'ATA 2021 未分化甲狀腺癌指引（Bible KC et al. Thyroid 2021;31:337-386，PMID 33728999）' +
+      'Recommendation 2、4、5、7、9 與 Good Practice Statement 1、2、3、4、5、7、14、Table 1、Table 5。' +
+      '⚠ 已查證 2021 之後無新版。⚠ 該指引有勘誤：GPS 4 刪除 MOST 只留 POLST。' +
+      '⚠ 台大醫院無甲狀腺癌診療指引。',
+      gradeReference());
+  }
+
+  function renderAtc() {
+    var L = [], cls = 'rec-urgent', title = '';
+    var st = S.astage, br = S.abraf;
+    var stName = st === 'iva' ? 'IVA' : (st === 'ivb_res' ? 'IVB（可切除）' :
+      (st === 'ivb_unres' ? 'IVB（無法切除）' : 'IVC'));
+    var brName = br === 'pos' ? 'BRAF V600E 陽性' : (br === 'neg' ? 'BRAF V600E 陰性' : 'BRAF 結果未出');
+    title = stName + ' · ' + brName + '<br>';
+
+    if (st === 'iva' || st === 'ivb_res') {
+      title += '→ 以手術為主，目標是 R0／R1，然後盡快接輔助治療';
+      L.push(H('手術', 'Recommendation 12，strong／low'));
+      L.push('<b>「For patients with confined (stage IVA/IVB) ATC in whom <u>R0/R1 resection is ' +
+        'anticipated</u>, we <u>strongly recommend</u> surgical resection.」</b>');
+      L.push('<b>Figure 1 的手術方框只有三條</b>：<b>「Goal: R0/R1 resection」、「Avoid debulking」、' +
+        '「Avoid laryngectomy」</b>。');
+      L.push('❗<b>Recommendation 13（strong／low）：根除性大範圍切除<u>一般不建議</u></b> —— ' +
+        '<b>「Radical resection (including laryngectomy, tracheal resections, esophageal resections, ' +
+        'and/or major vascular or mediastinal resections) is <u>generally not recommended</u> given the ' +
+        'poor prognosis of ATC and should be considered <u>only very selectively</u>…」</b>');
+      L.push('<b>Table 5 的可切除性判準（唯一的正式判準表）</b>：核心問題是' +
+        '<b>「Is R0/R1 resection expected?」</b>，條件是' +
+        '<b>「R0/R1 resection anticipated <u>without extensive visceral/vascular resection</u> ' +
+        '(laryngectomy, arterial/tracheal resection, permanent tracheostomy <u>not anticipated</u>)」</b>。');
+      L.push('❗<b>排除手術的條件</b>（Table 5）：' + SUB([
+        '<b>病人的狀況、治療目標或決策能力不適合手術</b>',
+        '<b>大量的未分化癌轉移（high-volume ATC metastases）</b> —— ' +
+          '表註：<b>「coexistent metastatic DTC or <u>oligometastatic/low-volume</u> metastatic ATC ' +
+          'should <u>not necessarily</u> preclude surgery」</b>',
+        '<b>為了達到 R0／R1 需要做喉、氣管、雙側神經、食道或血管的大範圍切除，風險不可接受</b>',
+        '❗<b>預期的術後恢復時間會擋到後續必須接上的治療（例如化放療）</b>']));
+      L.push('<b>Table 1 第 5 點逐字</b>：<b>「surgical procedures <u>should not generate a wound or ' +
+        'result in complications that would prevent chemotherapy and radiation onset</u> due to the ' +
+        'risk of wound breakdown」</b> —— <b>開刀的成敗不只看切乾不乾淨，還看會不會擋到接下來的治療。</b>');
+      L.push(H('❗術後的時間軸', 'GPS 8、GPS 10 與正文'));
+      L.push('<b>GPS 8：「Radiation therapy should begin <u>no later than 6 weeks</u> after surgery.」</b>');
+      L.push('<b>GPS 10：「Cytotoxic chemotherapy can be initiated <u>within 1 week</u> of surgery, ' +
+        'providing sufficient healing, in anticipation of subsequent chemoradiation.」</b>');
+      L.push('<b>正文更緊</b>：<b>放療計畫應在術後腫脹消退後盡快開始（約 2–3 週）</b>，' +
+        '<b>「adjuvant therapy should preferentially be started <u>within 2–3 weeks</u> of the ' +
+        'surgical date」</b>；治療計畫完成前可先用對穿野開始照，<b>而計畫完成應「less than 5 business days」</b>。');
+      L.push(EV('實際世界的數字（指引引用）：<b>手術到化療的中位時間 19 天、手術到放療 27 天。</b>'));
+      L.push(H('輔助治療', 'Recommendation 14、17、18'));
+      L.push('<b>Rec 14（strong／low）</b>：R0 或 R1 切除後，體能狀態良好、無轉移、希望積極治療者，' +
+        '應提供 <b>standard fractionation IMRT 併同步全身治療</b>。');
+      L.push('<b>Rec 18（strong／low）</b>：<b>「The use of cytotoxic chemotherapy involving a <u>taxane ' +
+        '(paclitaxel or docetaxel)</u>, administered with or without <u>anthracyclines (doxorubicin)</u> ' +
+        'or <u>platin (cisplatin or carboplatin)</u>, is recommended in patients treated with ' +
+        'definitive-intention radiation.」</b>');
+      L.push('<b>Table 6 的四個處方（唯一給劑量的表）</b>：' + SUB([
+        '<b><span class="rx">paclitaxel 50 mg/m² ＋ carboplatin AUC 2</span> 靜脈，每週</b>',
+        '<b><span class="rx">docetaxel 20 mg/m² ＋ doxorubicin 20 mg/m²</span> 靜脈，每週</b>',
+        '<b><span class="rx">paclitaxel 30–60 mg/m²</span> 靜脈，每週</b>',
+        '<b><span class="rx">docetaxel 20 mg/m²</span> 靜脈，每週</b>']));
+      L.push('<b>Rec 17（strong／low）：放療要用 IMRT。</b>' +
+        '<b>照野包含甲狀腺或手術床、雙側 level II–V 頸部淋巴結、level VI 中央區、以及上縱膈淋巴結到氣管分叉。</b>');
+      L.push('❗<b>關於 Gy 的正確講法</b>：<b>ATA 2021 的「術語定義節」有給示例</b> —— ' +
+        '定性治療的標準處方例如 <b>66 Gy 分 33 次、每次 2 Gy、每週 5 天，共 6 週半</b>；' +
+        '範圍從 <b>50 Gy／20 次</b>到 <b>70 Gy／35 次</b>；緩和性例如 <b>20 Gy／5 次</b>或 <b>30 Gy／10 次</b>。' +
+        '<b>但<u>沒有任何一條編號 Recommendation 帶 Gy 數字</u></b>（Rec 14／15／17 只寫 ' +
+        'standard fractionation IMRT）。<b>引用時要講清楚這是定義節的示例而非建議條文。</b>');
+      if (br === 'pos') {
+        L.push(H('BRAF V600E 陽性在這一格的位置', 'Recommendation 21'));
+        L.push('❗<b>可切除的 IVA／IVB，BRAF 陽性<u>不會</u>改成先用標靶</b> —— ' +
+          '手術仍是主線。<b>Rec 21 講的是「<u>unresectable</u> stage IVB」才有 neoadjuvant 的選項。</b>');
+        L.push('<b>但 BRAF 結果仍要驗</b>：術後若殘存或後續進展，它決定下一步用什麼。');
+      }
+      L.push(EV('<b>手術的存活數字（指引引用）</b>：有手術者中位存活 <b>8 個月</b>、無手術者 <b>3 個月</b>；' +
+        '<b>手術後加上輔助治療由 6.6 個月增為 9.6 個月</b>。' +
+        '❗<b>指引自己加了兩個警告</b>：① 這可能反映<b>病人選擇</b>（該族群 48.1% 是 IVA）；' +
+        '② <b>一篇系統性回顧在有限資料下「no differences in disease-free or overall survival rates ' +
+        'were found comparing patients who had R0 versus R1 versus R2 resections」。</b>'));
+    } else if (st === 'ivb_unres') {
+      title += '→ 化放療是現行標準；BRAF 陽性另有新輔助的選項';
+      if (br === 'pos') {
+        L.push(H('這一格有兩條路，指引把先後講得很清楚', 'Recommendation 21'));
+        L.push('<b>「In BRAF V600E-mutated <u>unresectable stage IVB</u> ATC <u>in which radiation ' +
+          'therapy is feasible</u>, chemoradiotherapy <u>or neoadjuvant dabrafenib/trametinib</u> ' +
+          'represents alternatives to initial therapy.」（<u>conditional</u>／low）</b>');
+        L.push('❗<b>正文明講現行標準仍是化放療</b>：' +
+          '<b>「In BRAF V600E-mutated ATC patients with unresectable stage IVB disease, however, ' +
+          'consideration of <u>upfront chemoradiation is the current standard</u>. Alternatively, ' +
+          'when upfront chemoradiation may be contraindicated or not desired by the patient, systemic ' +
+          'therapy with BRAF-directed therapy can be considered.」</b>');
+        L.push('<b>Recommendation 20（strong／low）的適用範圍是 IVC，以及<u>拒絕放療</u>的無法切除 IVB</b>：' +
+          '<b>「In BRAF V600E-mutated IVC and in unresectable IVB ATC patients <u>who decline radiation ' +
+          'therapy</u>, initiation of BRAF/MEK inhibitors (dabrafenib plus trametinib) is recommended ' +
+          'over other systemic therapies if available.」</b>');
+        L.push('<b>走新輔助這條路的目標是「打到可以開」</b>：Figure 1 的走法是' +
+          '<b>標靶 → 「Excellent tumor response?」→ 是 → 「Surgery (if feasible)」→ 定性放療</b>；' +
+          '<b>否 → 緩和性化療與／或放療，或最佳支持療護／安寧。</b>');
+        L.push(EV('<b>新輔助 BRAF 標靶後手術的數字（指引引用）：n = 20 的系列 1 年存活 94%。</b>' +
+          '<b>dabrafenib ＋ trametinib 整體：1 年存活 80%（歷史對照 20–40%）、' +
+          '中位存活 86 週、中位無惡化存活 60 週、反應率 61%。</b>'));
+        L.push('❗<b>台灣的落差</b>：<b>健保 9.91 的 ' + NR('dabrafenib') + ' ＋ ' + NR('trametinib') +
+          ' 條文只有黑色素瘤與 BRAF V600E 轉移性非小細胞肺癌，<u>沒有甲狀腺適應症</u></b>。' +
+          '<b>藥證方面可走泛腫瘤（tumor-agnostic）那一項，但健保要自費或走個案事前審查。</b>' +
+          '❗<b>而 BRAF 檢測 30107B 的適應症卻明文包含「無分化甲狀腺癌經多專科團隊評估無法接受根除手術者」' +
+          '—— 檢測健保付、藥不付，這一格是台灣最典型的缺口。</b>');
+      } else {
+        L.push(H('主建議', 'Recommendation 15，strong／low'));
+        L.push('<b>「We recommend that patients who have undergone <u>R2 resection or have ' +
+          'unresectable but nonmetastatic disease</u> with good performance status and who wish an ' +
+          'aggressive approach be offered <u>standard fractionation IMRT with systemic therapy</u>…」</b>');
+        L.push('<b>化療處方同 Table 6</b>：<b><span class="rx">paclitaxel ＋ carboplatin</span></b>、' +
+          '<b><span class="rx">docetaxel ＋ doxorubicin</span></b>，或單用 taxane，皆為每週給。');
+        if (br === 'neg') {
+          L.push(H('BRAF 陰性接下來要看什麼', 'Figure 1'));
+          L.push('<b>Figure 1 的走法：BRAF 陰性 → 「Other tumor genetics? e.g. ALK, NTRK, RET fusions」</b>' +
+            ' → 有 → <b>對應標靶</b>：' + SUB([
+            '<b>ALK：crizotinib、ceritinib、alectinib</b>',
+            '<b>RET：<span class="rx">pralsetinib</span>、<span class="rx">selpercatinib</span></b>',
+            '<b>NTRK：<span class="rx">larotrectinib</span>、entrectinib</b>']));
+          L.push('❗<b>台灣只有 NTRK 那一條走得到健保</b>（larotrectinib 9.95.3(5) 明列甲狀腺癌）；' +
+            '<b>RET 的兩個藥健保 0 筆。</b>');
+        } else {
+          L.push('❗<b>BRAF 結果還沒出來，不要因此延後治療</b> —— ' +
+            'GPS 2 要求所有治療前必要的評估都要「as rapidly as possible」完成。' +
+            '<b>化放療可以照常開始，結果出來後再決定要不要加標靶。</b>');
+        }
+      }
+      L.push(H('放療的劑量怎麼講', ''));
+      L.push('<b>編號 Recommendation 只寫 standard fractionation IMRT，沒有 Gy。</b>' +
+        '定義節的示例為 <b>66 Gy／33 次（每次 2 Gy、每週 5 天、6 週半）</b>，' +
+        '範圍 <b>50 Gy／20 次</b>到 <b>70 Gy／35 次</b>。');
+      L.push(EV('劑量與存活的關聯（指引引用的回溯資料）：<b>「longer survival was associated with doses ' +
+        'of radiotherapy &gt; 59.4 Gy—but not with lower doses」；&lt; 45 Gy 相較於不放療沒有存活效益；' +
+        '&gt; 59.4 Gy 者 2 年存活 38%、中位 16 個月。</b>' +
+        '<b>超分次與傳統分次的比較為 13.6 對 10.3 個月，<u>未達統計顯著</u>。</b>'));
+      L.push('❗<b>毒性要先講</b>（指引引用）：<b>住院率 60%、暫時需要灌食管者 60%、' +
+        '多模式治療期間死亡率 3%</b>；<b>淋巴水腫、頸部活動受限、慢性口乾常見而且不可逆</b>。' +
+        '<b>「Quality-of-life data are completely lacking.」</b>');
+    } else {
+      title += '→ 先問要不要積極治療；安寧一定要放進選項裡';
+      L.push(H('Figure 2 的第一個分岔不是藥，是意願', ''));
+      L.push('<b>IVC 的流程圖第一個問題是「Aggressive Care Desired?」</b> —— ' +
+        '<b>答「否」直接走 Best Supportive Care／Hospice。</b>' +
+        '<b>GPS 14：「As prognosis is dire in metastatic and progressive ATC, best supportive care ' +
+        '(hospice) should also be discussed as an option.」</b>');
+      L.push('❗<b>要誠實講的一個數字</b>：多模式治療的存活效益<b>在 IVC 次群消失了</b> —— ' +
+        '<b>「Among patients with stage IVC cancer, overall survival <u>did not differ by therapy</u>… ' +
+        'suggesting also that improved outcomes are concentrated in patients <u>without distant ' +
+        'metastases</u>.」</b><b>IVC 的 1 年存活是 8.2%。</b>');
+      if (br === 'pos') {
+        L.push(H('選擇積極治療且 BRAF 陽性', 'Recommendation 20，strong／low'));
+        L.push('<b>「In BRAF V600E-mutated <u>IVC</u> and in unresectable IVB ATC patients who decline ' +
+          'radiation therapy, initiation of <u>BRAF/MEK inhibitors (dabrafenib plus trametinib)</u> is ' +
+          'recommended <u>over other systemic therapies</u> if available.」</b>');
+        L.push('❗<b>這條是 strong 但證據只有 low</b>，指引特地附了 Values Statement 解釋：' +
+          '<b>「placed a high value on available and emerging data indicating the potential for ' +
+          '<u>profound benefit</u> from using this approach in a setting where <u>little hope had ' +
+          'previously existed</u>, supporting the strong recommendation in the presence of ' +
+          'low-quality evidence.」</b>');
+        L.push('<b>數字</b>：<b>1 年存活 80%（歷史對照 20–40%）、中位存活 86 週、' +
+          '中位無惡化存活 60 週、反應率 61%。</b>');
+        L.push('❗<b>台灣：健保 9.91 沒有甲狀腺適應症，要自費或走個案事前審查</b>；' +
+          '而 <b>BRAF 檢測 30107B 反而明文含「無分化甲狀腺癌…無法接受根除手術者」</b>。');
+        L.push('<b>有良好反應之後</b>：Figure 2 的終點是 <b>「Consider consolidative therapy as ' +
+          'feasible」</b>，圖註定義為<b>「focal therapy intended to control residual macrometastatic ' +
+          'disease among those electing aggressive therapy」</b>。');
+      } else if (br === 'neg') {
+        L.push(H('選擇積極治療但 BRAF 陰性', 'Figure 2、Recommendation 24'));
+        L.push('<b>Figure 2 的下一個分岔是「High PD-L1 expression and/or ≥ 10 mutations/Mb TMB」</b>。');
+        L.push('<b>Recommendation 24（<u>conditional</u>／low）</b>：' +
+          '<b>「In IVC ATC patients with <u>high PD-L1 expression</u>, checkpoint (PD-L1, PD1) ' +
+          'inhibitors can be considered <u>first-line</u> therapy in the absence of other targetable ' +
+          'alterations or as later line therapy, <u>preferably in the context of a clinical trial</u>.」</b>');
+        L.push('❗<b>條文只寫藥物類別，沒有指名任何藥</b>；' +
+          '<b>但 Figure 2 的方框逐字寫「Checkpoint inhibitor e.g. <u>pembrolizumab</u>, etc.」</b> —— ' +
+          '<b>pembrolizumab 是官方流程圖裡唯一被點名的 checkpoint 藥。</b>');
+        L.push(EV('❗<b>但指引的試驗證據其實來自 spartalizumab 而不是 pembrolizumab</b>：' +
+          '<b>反應率 19%、中位存活 5.9 個月、1 年存活 40%、中位無惡化存活 1.7 個月</b>；' +
+          '<b>PD-L1 &lt; 1% 者中位存活只有 1.6 個月且<u>無人有反應</u>；' +
+          'PD-L1 1–49% 與 ≥ 50% 者中位存活未達，反應率 18% 與 35%。</b>' +
+          '❗<b>而且「spartalizumab is <u>not FDA approved and is not commercially available</u>」。</b>' +
+          '另注意 <b>多數未分化癌「do not meet the formal criterion for high TMB (&gt; 10 mutations/Mb)」</b>，' +
+          '<b>只有約 11–28% 的未分化癌表現 PD-L1。</b>'));
+        L.push('❗<b>台灣：' + NR('pembrolizumab') + ' 的健保 9.69 沒有甲狀腺癌適應症</b>，要自費。');
+        L.push('<b>沒有高 PD-L1 時，Figure 2 轉向「Other tumor genetics?」</b>：' +
+          '<b>ALK（crizotinib、ceritinib、alectinib）、RET（<span class="rx">pralsetinib</span>、' +
+          '<span class="rx">selpercatinib</span>）、NTRK（<span class="rx">larotrectinib</span>、entrectinib）。</b>' +
+          '❗<b>台灣只有 NTRK 走得到健保。</b>');
+      } else {
+        L.push(H('BRAF 結果還沒出來', ''));
+        L.push('❗<b>不要等 —— 但也不要因此放棄驗。</b>' +
+          '<b>Rec 4 要求 expeditiously 用 IHC 驗；IHC 陽性可以不必再做 NGS，IHC 陰性才做 NGS。</b>' +
+          '<b>NGS panel 約 1–2 週，全外顯子分析要數週、對這個癌太慢。</b>');
+        L.push('<b>同時進行的事</b>：治療目標討論（GPS 5）、安寧照護會診（Rec 9）、' +
+          '症狀控制。<b>Figure 2 的第一個分岔本來就是「要不要積極治療」，不是藥。</b>');
+        L.push('<b>兩張流程圖共同的頂部虛線框逐字</b>：' +
+          '<b>「Clinical Trials are strongly recommended if available」</b>、' +
+          '<b>「Best Supportive Care/Hospice option can be elected <u>at any point</u>」</b>。');
+      }
+    }
+    L.push(H('不管走哪一條，這兩句都成立', ''));
+    L.push('<b>「Clinical Trials are strongly recommended if available」</b>（兩張流程圖的頂部框）。');
+    L.push('<b>GPS 13</b>：<b>「Therapeutic decision-making in the setting of progressive disease after ' +
+      'initial therapy… is very complex and <u>not easily defined by an algorithmic approach</u>. ' +
+      'In this setting, care guided by an <u>expert in ATC therapeutics</u> is best pursued.」</b>' +
+      '—— <b>指引自己說這一段不適合用流程圖決定。</b>');
+    fill('ty_r_atc', cls, title, L,
+      'ATA 2021 未分化甲狀腺癌指引 Recommendation 12–15、17、18、20、21、24 與 ' +
+      'Good Practice Statement 8、10、13、14、Table 1、Table 5、Table 6、Figure 1、Figure 2。' +
+      '健保與藥證查詢日 2026-09-13。⚠ 台大醫院無甲狀腺癌診療指引，本頁全部為院外實證。',
+      nhiReference() + gradeReference());
+    fu('ty_f_atc', '<li>❗<b>術後放療最遲不得晚於 6 週</b>（GPS 8）；' +
+      '<b>化療可在術後 1 週內開始</b>（GPS 10）；<b>輔助治療最好在術後 2–3 週內開始</b>（正文）。</li>' +
+      '<li><b>治療目標討論要「updated frequently」</b>（GPS 5），不是簽一次就結束。</li>' +
+      '<li><b>安寧照護在每一個階段都要在團隊裡</b>（Rec 9），' +
+      '<b>而且安寧選項在任何時間點都可以選</b>（流程圖頂部框）。</li>' +
+      '<li><b>骨轉移的緩和放療</b>：典型為 <b>1–2 週內 5–10 次、每次 300–400 cGy、' +
+      '總量 2000–3000 cGy</b>；<b>單次 800 cGy 也是合適的替代分次</b>。</li>');
+  }
+
+  /* ==========================================================
+     8. 最下方一：要不要驗基因？
+     ========================================================== */
+  function geneBlock() {
+    var L = [];
+    L.push(H('三種組織型態的答案完全不同，不能混用', ''));
+    L.push('<b>分化型 DTC</b>：<b>術後組織的分子檢測「not recommended routinely」</b>' +
+      '（ATA 2025 Rec 28B，Conditional／Low certainty）——若已經有資料，可以拿來修正復發風險估計。' +
+      '<b>但「放射碘難治、要開始全身治療前」是 Strong「應執行」</b>（Rec 61，Moderate certainty）。' +
+      '<b>同一個癌別、兩個不同時機、兩種相反的答案，這是最容易搞混的一格。</b>');
+    L.push('<b>髓質癌 MTC</b>：<b>所有病人都要驗 germline RET</b>（Rec 21，Grade B），' +
+      '<b>包含看起來是偶發性的</b>（Rec 6）。<b>這不是為了選藥，是為了找出遺傳症候群。</b>' +
+      '❗<b>Rec 8（Grade C）：不常規檢驗腫瘤的體細胞 HRAS／KRAS／NRAS 或 RET M918T。</b>');
+    L.push('<b>未分化癌 ATC</b>：<b>診斷一成立就要 expeditiously 驗 BRAF V600E</b>' +
+      '（Rec 4，strong／moderate），<b>並在診斷時做分子檢測以指引標靶治療</b>（Rec 5，strong／moderate）。' +
+      '<b>做法是先 IHC 求快，陰性再做 NGS。</b>');
+    L.push(H('髓質癌的 RET 要驗哪些位置', 'ATA 2015 Rec 3、4、5'));
+    L.push('<b>MEN2A 表現型</b>：先驗 <b>exon 10（codons 609、611、618、620）、' +
+      'exon 11（codons 630、634），以及 exons 8、13、14、15、16</b>。');
+    L.push('<b>MEN2B 表現型</b>：<b>先驗 M918T（exon 16）；陰性再驗 A883F（exon 15）；' +
+      '仍陰性才做全定序。</b>');
+    L.push('<b>全 coding region 定序</b>保留給「找不到突變」或「表現型與基因型不符」的情況。');
+    L.push('❗<b>MEN2B 的高危嬰兒要「soon after birth」就驗</b> —— ' +
+      '<b>因為巨觀髓質癌與淋巴結轉移可能在出生第一年內就發生。</b>');
+    L.push('<b>臨床符合 MEN2 但全定序陰性的罕見家族</b>：親屬要以傳統方法週期篩檢' +
+      '髓質癌、嗜鉻細胞瘤與副甲狀腺亢進，<b>初評後每 1–3 年</b>（Rec 9）。');
+    L.push(H('驗到之後會改變什麼', ''));
+    L.push('<b>驗到 germline RET → 立刻改變三件事</b>：' + SUB([
+      '❗<b>手術之前必須先排除 pheochromocytoma</b>（Rec 38，「regardless of age and presenting ' +
+        'symptoms」）—— <b>這是會出人命的一步</b>',
+      '<b>要開始篩檢副甲狀腺亢進</b>（ATA-H 於 11 歲、ATA-MOD 於 16 歲起，與嗜鉻細胞瘤同時）',
+      '<b>要做家屬檢測與遺傳諮詢</b>（Rec 7 列了四種對象）']));
+    L.push('<b>育齡帶因者（尤其 MEN2B）應考慮著床前或產前檢測的遺傳諮詢</b>' +
+      '（Rec 12，<b>Grade A</b> —— 這是髓質癌指引裡少數的 Grade A）。');
+    L.push(H('❗台灣：檢測有給付，但對應的藥常常沒有', '查詢日 2026-09-13'));
+    L.push('<b>健保有給付的檢測</b>：<b>NGS 30302B／30303B（2 萬／3 萬點，每人各癌別終生一次）</b>，' +
+      '附表 2.2.1 明列兩行 —— <b>甲狀腺癌（BRAF V600E／BRAF nonV600E／RET fusion）</b>與' +
+      '<b>甲狀腺髓質癌（RET mutation）</b>。' +
+      '<b>BRAF 單項檢測 30107B</b> 的適應症也含甲狀腺癌，' +
+      '❗<b>但明文「不包含髓質癌」</b>。');
+    L.push('❗<b>藥的那一端</b>：<b>' + NR('dabrafenib') + ' ＋ ' + NR('trametinib') +
+      '（9.91）沒有甲狀腺適應症</b>；<b>' + NR('selpercatinib') + ' 與 ' + NR('pralsetinib') +
+      ' 健保 0 筆</b>。<b>只有 NTRK 融合走得到健保（larotrectinib 9.95.3(5) 明列甲狀腺癌）。</b>');
+    L.push('<b>所以驗之前要先和病人講清楚</b>：<b>「驗得出來，不代表用得到」</b>。' +
+      '<b>而且每人每個癌別的 NGS 健保給付終生只有一次，要驗就一次驗完整套組。</b>');
+    return '<div class="bc-gene-h">要不要驗基因？三種組織型態的答案完全不同' +
+      '<span class="bc-gene-n">每一條路徑都適用</span></div>' +
+      '<ul class="bc-gene-list">' + L.map(liOf).join('') + '</ul>';
+  }
+
+  /* ==========================================================
+     9. 最下方二：本路徑用到的藥 · 台大藥卡
+     ========================================================== */
+  var drugSig = '';
+  function cardId(code) { return 'ty-drug-' + code.replace(/ /g, '_'); }
+  function drugCardHTML(c, gen, flag) {
+    gen = c[3] || gen;
+    return '<details class="drugcard" id="' + cardId(c[1]) + '" data-pid="' + c[0] +
+      '" data-code="' + c[1] + '" ontoggle="onCardToggle(this)">' +
+      '<summary><span class="dc-name">' + c[2] + '</span>' +
+      (flag ? '<span class="db-tag db-tag-ext">' + flag + '</span>' : '') +
+      '<span class="dc-nameen">' + gen + '</span></summary>' +
+      '<div class="dc-body"><div class="db-loading">載入中…</div></div></details>';
+  }
+  function renderGeneBlock(hasRec) {
+    var g = el('ty_gene');
+    if (!g) return;
+    g.classList.toggle('hidden', !hasRec);
+    if (hasRec && !g.innerHTML) g.innerHTML = geneBlock();
+  }
+  function renderDrugCards() {
+    var box = el('ty_drugs');
+    if (!box) return;
+    var txt = '';
+    function textOf(n) {
+      var c = n.cloneNode(true);
+      c.querySelectorAll('.no-rx').forEach(function (x) { x.remove(); });
+      /* ⚠ 不能直接讀 textContent —— 標籤邊界在 textContent 裡是零寬度的，
+         會把兩個相鄰的藥名黏成一個字，整字比對就抓不到。 */
+      return c.innerHTML.replace(/<[^>]*>/g, ' ');
+    }
+    var root = el('thPath');
+    if (root) {
+      root.querySelectorAll('.flow-rec').forEach(function (r) {
+        if (r.classList.contains('hidden') || r.classList.contains('rec-idle')) return;
+        r.querySelectorAll('ul.rec-detail:not(.rec-more) > li:not(.ev)').forEach(function (li) {
+          txt += textOf(li) + '\n';
+        });
+        r.querySelectorAll('details.rx-table').forEach(function (d) { txt += textOf(d) + '\n'; });
+        var t = r.querySelector('.rec-title');
+        if (t) txt += t.textContent + '\n';
+      });
+    }
+    renderGeneBlock(!!txt.trim());
+
+    var picked = [];
+    TH_DRUGS.forEach(function (d) {
+      var re = new RegExp('(?<![A-Za-z-])(?:' +
+        (d.re || d.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) + ')(?![A-Za-z-])', 'i');
+      if (re.test(txt)) picked.push(d);
+    });
+    var sig = picked.map(function (d) { return d.key; }).join('|');
+    if (sig === drugSig) return;
+    drugSig = sig;
+
+    if (!picked.length) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+    var nCards = picked.reduce(function (a, d) { return a + d.cards.length; }, 0);
+    box.classList.remove('hidden');
+    box.innerHTML =
+      '<div class="bc-drugbox-h">本路徑用到的藥 · 台大藥卡<span class="bc-drugbox-n">' +
+      picked.length + ' 種藥 · ' + nCards + ' 張卡</span></div>' +
+      '<div class="bc-drugbox-note">點藥名展開台大醫院藥劑部處方集的完整藥卡（劑量、腎肝功能調整、' +
+      '禁忌、健保給付規定、剝半磨粉）。<b>徽章標明該藥「用於甲狀腺癌時」在台灣的健保與藥證狀態 —— ' +
+      '不是該藥整體的給付狀態。</b>' +
+      '<b>放射碘（I-131）不是處方集品項，走診療項目 26038B（478 點／mCi）。</b></div>' +
+      picked.map(function (d) {
+        return d.cards.map(function (c) { return drugCardHTML(c, d.label || d.key, d.flag); }).join('');
+      }).join('');
+
+    if (window.DrugCard && window.requestIdleCallback) {
+      var pids = {};
+      picked.forEach(function (d) { d.cards.forEach(function (c) { pids[c[0]] = 1; }); });
+      window.requestIdleCallback(function () {
+        Object.keys(pids).forEach(function (pid) { window.DrugCard.loadPid(pid).catch(function () {}); });
+      });
+    }
+  }
+
+  /* ==========================================================
+     10. 總 render
+     ========================================================== */
+  function render() {
+    collapseAll();
+    if (S.histo === 'dtc') {
+      show('ty_b_dtc', true);
+      show('ty_n_dstage', true);
+      if (S.dstage === 'init') {
+        show('ty_n_dsize', true);
+        if (S.dsize) renderDtcInit();
+      } else if (S.dstage === 'postop') {
+        show('ty_n_dhisto', true);
+        if (S.dhisto) {
+          show('ty_n_drisk', true);
+          if (S.drisk) renderDtcPostop();
+        }
+      } else if (S.dstage === 'fu') {
+        show('ty_n_dtx', true);
+        if (S.dtx) {
+          show('ty_n_dresp', true);
+          if (S.dresp) renderDtcFu();
+        }
+      } else if (S.dstage === 'rair') {
+        show('ty_n_dmol', true);
+        if (S.dmol) renderDtcRair();
+      }
+    } else if (S.histo === 'mtc') {
+      show('ty_b_mtc', true);
+      show('ty_n_mstage', true);
+      if (S.mstage === 'preop') {
+        show('ty_n_mctn', true);
+        if (S.mctn) renderMtcPreop();
+      } else if (S.mstage === 'postop') {
+        show('ty_n_mpost', true);
+        if (S.mpost) renderMtcPostop();
+      } else if (S.mstage === 'adv') {
+        show('ty_n_madv', true);
+        if (S.madv) renderMtcAdv();
+      }
+    } else if (S.histo === 'atc') {
+      show('ty_b_atc', true);
+      renderAtcUrgent();
+      show('ty_n_astage', true);
+      if (S.astage) {
+        show('ty_n_abraf', true);
+        if (S.abraf) renderAtc();
+      }
+    }
+    renderDrugCards();
+  }
+
+  /* ==========================================================
+     11. 互動
+     ========================================================== */
+  var SEL_GROUPS = ['ty_n1', 'ty_n_dstage', 'ty_n_dsize', 'ty_n_dhisto', 'ty_n_drisk',
+    'ty_n_dtx', 'ty_n_dresp', 'ty_n_dmol', 'ty_n_mstage', 'ty_n_mctn', 'ty_n_mpost',
+    'ty_n_madv', 'ty_n_astage', 'ty_n_abraf'];
+
+  var DOWNSTREAM = {
+    histo:  ['dstage', 'dsize', 'dhisto', 'drisk', 'dtx', 'dresp', 'dmol',
+             'mstage', 'mctn', 'mpost', 'madv', 'astage', 'abraf'],
+    dstage: ['dsize', 'dhisto', 'drisk', 'dtx', 'dresp', 'dmol'],
+    dhisto: ['drisk'],
+    dtx:    ['dresp'],
+    mstage: ['mctn', 'mpost', 'madv'],
+    astage: ['abraf']
+  };
+
+  function clearSelectionMarks() {
+    SEL_GROUPS.forEach(function (id) {
+      var e = el(id);
+      if (e) e.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
+    });
+  }
+
+  function thPick(key, val, btn) {
+    var down = DOWNSTREAM[key];
+    S[key] = val;
+    if (down) {
+      down.forEach(function (k) { S[k] = null; });
+      clearSelectionMarks();
+    }
+    render();
+    reapplyMarks();
+    if (btn && document.body.contains(btn)) {
+      var g = btn.parentNode;
+      if (g) g.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+    }
+  }
+
+  function reapplyMarks() {
+    var pairs = [
+      ['ty_n1', 'histo'], ['ty_n_dstage', 'dstage'], ['ty_n_dsize', 'dsize'],
+      ['ty_n_dhisto', 'dhisto'], ['ty_n_drisk', 'drisk'], ['ty_n_dtx', 'dtx'],
+      ['ty_n_dresp', 'dresp'], ['ty_n_dmol', 'dmol'], ['ty_n_mstage', 'mstage'],
+      ['ty_n_mctn', 'mctn'], ['ty_n_mpost', 'mpost'], ['ty_n_madv', 'madv'],
+      ['ty_n_astage', 'astage'], ['ty_n_abraf', 'abraf']
+    ];
+    pairs.forEach(function (p) {
+      var box = el(p[0]);
+      if (!box || !S[p[1]]) return;
+      box.querySelectorAll('.flow-opt').forEach(function (b) {
+        var m = /thPick\('([a-z0-9_]+)','([a-z0-9_]+)'/.exec(b.getAttribute('onclick') || '');
+        if (m && m[1] === p[1] && m[2] === S[p[1]]) b.classList.add('selected');
+      });
+    });
   }
 
   function thReset() {
-    for (var k in thSt) { if (thSt.hasOwnProperty(k)) thSt[k] = null; }
-    var root = document.getElementById('thPath');
-    if (root) root.querySelectorAll('.flow-opt').forEach(function (b) { b.classList.remove('selected'); });
-    ['th_dtc_fu', 'th_mtc_fu', 'th_atc_fu'].forEach(function (id) {
-      var el = document.getElementById(id); if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
-    });
-    thRender();
+    KEYS.forEach(function (k) { S[k] = null; });
+    clearSelectionMarks();
+    render();
   }
 
   function initThyroidPathway() { thReset(); }
 
+  /* ⚠ 匯出名稱必須符合 js/cancer-staging.js 的命名規則（延遲載入靠它分派）：
+     <k>PathwayHTML 與 init<K>Pathway。schema/check_cancer_wiring.py 會驗。 */
   global.thyroidPathwayHTML = thyroidPathwayHTML;
   global.initThyroidPathway = initThyroidPathway;
   global.thPick = thPick;
