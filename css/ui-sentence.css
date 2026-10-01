@@ -3319,6 +3319,14 @@
   border-left: 2px solid var(--sentence-hot); border-radius: 0; font-size: 11.5px;
 }
 [data-ui="sentence"] .db-nhi-warn b { color: var(--sentence-fg); }
+/* 色彩圖例與紅字（2026-10-01，保留台大原頁修訂標示）：紅字＝新修訂條文，用 hot；
+   圖例是資訊不是警告，只留一條左線與 dim 字色。 */
+[data-ui="sentence"] .db-nhi ins,
+[data-ui="sentence"] .db-nhi-legend ins { color: var(--sentence-hot); }
+[data-ui="sentence"] .db-nhi-legend {                          /* (0,2,0) > (0,1,0) */
+  color: var(--sentence-dim); border-left: 2px solid var(--sentence-line); font-size: 11px;
+}
+[data-ui="sentence"] .db-nhi-legend b { color: var(--sentence-fg2); }
 [data-ui="sentence"] .db-nhi-src {                             /* (0,2,0) > (0,1,0) */
   color: var(--sentence-dim); border-top: 1px solid var(--sentence-line);
 }

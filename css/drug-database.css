@@ -188,8 +188,16 @@ table.renal-tbl.renal-thr td:first-child{white-space:normal; width:34%; overflow
   border-radius:8px; padding:1px 7px; white-space:normal; max-width:100%; overflow-wrap:break-word;}
 
 /* 健保給付規定：原頁就是一長段條列，節錄後仍偏長，收在可捲動的小框裡免得洗掉整張卡 */
-.db-nhi{max-height:190px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);
+.db-nhi{max-height:320px; overflow-y:auto; background:var(--box-bg); border:1px solid var(--line);
   border-radius:2px; padding:8px 10px; font-size:12.5px;}
+/* 保留台大原頁的修訂標示：紅字＝新修訂條文（<ins>）；刪除線＝已刪除的舊條文（<s>，
+   .dc-ftext s 已畫成淡色劃掉）。<ins> 瀏覽器預設有底線，這裡拿掉只留顏色。 */
+.db-nhi ins{text-decoration:none; color:var(--accent2);}
+/* 色彩圖例：資訊而非警告，所以比 .db-nhi-warn 安靜（灰線、不填色）。放在框外上方。 */
+.db-nhi-legend{font-size:11.5px; line-height:1.7; color:var(--muted); border-left:3px solid var(--line);
+  padding:4px 9px; margin-bottom:6px;}
+.db-nhi-legend ins{text-decoration:none; color:var(--accent2);}
+.db-nhi-legend s{text-decoration:line-through;}
 /* 台大原站把健保署的**修訂對照表**（新舊條文並排、紅字標新）也一併轉載，
    抽成純文字後顏色消失、新舊黏在一起，會讀到互相矛盾的門檻。
    1,324 筆裡有 574 筆是這種，判準與說明見 js/drug-database.js 的 nhiField()。

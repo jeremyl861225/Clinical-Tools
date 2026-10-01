@@ -313,10 +313,11 @@ function linkify(text) {
 
 /* 台大原始資料用 <BR> 斷行、<B> 標段落標題、<U> 標子標題、<SUP> 寫 m²，還有刪除線
    與少數表格。逐字 esc 會把標籤原樣印出來，所以只放行一張**極小的白名單**，其餘一律轉義：
-     行內：b i u s sup sub　　斷行：br　　表格：table tr td th（td／th 只留 colspan／rowspan）
+     行內：b i u s ins sup sub　　斷行：br　　表格：table tr td th（td／th 只留 colspan／rowspan）
+     （s＝台大畫了刪除線；ins＝紅字，只出現在健保給付規定，見 nhiField）
    這張表與建置端 workspace/work/ntuh-scraper/ntuh_richtext.py 的輸出詞彙一一對應，
    兩邊要一起改。 */
-const TAG_OK = /&lt;(\/?)(b|i|u|s|sup|sub|br|table|tr)\s*\/?&gt;/gi;
+const TAG_OK = /&lt;(\/?)(b|i|u|s|ins|sup|sub|br|table|tr)\s*\/?&gt;/gi;
 const CELL_OK = /&lt;(\/)?(td|th)((?:\s(?:col|row)span=&quot;\d{1,2}&quot;)*)&gt;/gi;
 /* 台大原始頁面把符號寫成 HTML 實體（Apixaban 減量準則的 ≥／≤ 就是 &#8805;／&#8804;）。
    esc() 會把 & 轉成 &amp;，畫面就印出字面「&#8805;」，三個門檻的不等號全看不到。
@@ -779,28 +780,40 @@ const NHI_REDLINE = /紅字/;
 
 function nhiField(rule) {
   if (!rule || !String(rule).trim()) return '';
+  /* 2026-10-01：欄位現在保留台大原頁的版面——段落、清單、表格，以及**顏色**：
+     台大用灰字加刪除線標「已刪除的舊條文」（<s>）、紅字標「新修訂條文」（<ins>）。
+     壓平時這兩種被混成一句，才會有下面那條「新舊黏在一起」的警語；顏色保住之後
+     就改成圖例，不再叫人「不可照讀」。節次與紅字判斷一律看**純文字**（去標籤）。 */
+  const txt = stripTags(rule).replace(/[\u2060\s\u00a0]+/g, ' ').trim();
   /* 節次只認**開頭**那一個。不要退而求其次去內文撈——實測有 481 筆的內文撈得到數字，
      但那些多半是「通則：5.」（通則的第 5 點，不是第五節）或交叉引用，撈了會給錯連結。
      開頭是通則的（36 筆「通則…」＋一批「(一) 注射藥品使用時機…」）改指通則那份。 */
-  const txt = String(rule);
-  const sec = (txt.match(/^\s*(\d{1,2})(?:\.\d{1,3})*/) || [])[1];
+  const sec = (txt.match(/^(\d{1,2})(?:\.\d{1,3})*/) || [])[1];
   const ch = NHI_CHAP[sec] ||
-    (/^\s*(?:全民健康保險藥品給付規定)?通則|^\s*[（(]一[)）]\s*注射藥品使用時機/.test(txt)
+    (/^(?:全民健康保險藥品給付規定)?通則|^[（(]一[)）]\s*注射藥品使用時機/.test(txt)
       ? NHI_CHAP['通則'] : null);
-  const warn = NHI_REDLINE.test(rule)
-    ? `<div class="db-nhi-warn">⚠ <b>這一段是健保署的「修訂對照表」，不是條文本身。</b>
+  const hasDel = /<s>/.test(rule), hasNew = /<ins>/.test(rule);
+  let warn = '';
+  if (hasDel || hasNew) {
+    const items = [hasDel ? '<s>灰色刪除線</s>＝已刪除的舊條文' : '',
+                   hasNew ? '<ins>紅字</ins>＝新修訂條文（生效日見文末註記）' : ''].filter(Boolean);
+    warn = `<div class="db-nhi-legend">條文含修訂標示：${items.join('；')}。
+         台大轉載之節錄，<b>現行條文以下方官方章節為準</b>。</div>`;
+  } else if (NHI_REDLINE.test(txt)) {
+    /* 資料沒有顏色標記（守恆閘門未過、退回純文字）但文字仍提到紅字：舊警語照舊 */
+    warn = `<div class="db-nhi-warn">⚠ <b>這一段是健保署的「修訂對照表」，不是條文本身。</b>
          對照表把<b>新舊條文並排</b>、以紅字標示新條文，台大原站保留該排版，
          轉成純文字後<b>顏色消失、新舊兩句黏在一起</b>——同一句裡可能同時出現舊值與新值
          （例如「entecavir 0.5mg 1mg」、「≧2×10⁵ 10⁶ IU/mL」、條號「4. 5.」）。
-         <b>不可直接照讀，請以下方官方章節的現行條文為準。</b></div>`
-    : '';
+         <b>不可直接照讀，請以下方官方章節的現行條文為準。</b></div>`;
+  }
   const src = ch
     ? `<div class="db-nhi-src">台大藥劑部轉載之節錄　·　現行條文：<a href="${ch[2]}"
          target="_blank" rel="noopener" class="ref-link">${esc(ch[0])}</a>${ch[1] ? `（${ch[1]} 更新）` : ''}
          　·　<b>需要連線</b></div>`
     : '';
   return `<div class="dc-field"><div class="dc-flabel">健保給付規定（節錄）</div>
-    ${warn}<div class="dc-ftext db-nhi">${linkify(rule)}</div>${src}</div>`;
+    ${warn}<div class="dc-ftext db-nhi">${richText(rule)}</div>${src}</div>`;
 }
 
 /* Liverpool 交互作用查核外連。
