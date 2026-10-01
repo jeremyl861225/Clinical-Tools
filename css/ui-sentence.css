@@ -3077,6 +3077,12 @@
 [data-ui="sentence"] .dose-fmt .dl-sub { color: var(--sentence-dim); }
 [data-ui="sentence"] .dose-fmt .dl-item::before { color: var(--sentence-fg2); }   /* (0,3,1) > (0,2,1) */
 [data-ui="sentence"] .dose-fmt .dl-sub::before { color: var(--sentence-dim); }
+/* 台大原文自帶版面的欄位（表格、刪除線）——對應 drug-database.css 的同名規則 */
+[data-ui="sentence"] .dose-fmt .dl-del,
+[data-ui="sentence"] .dc-ftext s { color: var(--sentence-dim); }
+[data-ui="sentence"] .dc-ftext table:not([class]) td,
+[data-ui="sentence"] .dc-ftext table:not([class]) th { border-color: var(--sentence-line); }
+[data-ui="sentence"] .dc-ftext table:not([class]) th { background: transparent; color: var(--sentence-fg); }
 
 
 /* ═══ Q7. 藥卡內的小徽章：懷孕分級／剝半磨粉／飲食交互作用 ══════════════════

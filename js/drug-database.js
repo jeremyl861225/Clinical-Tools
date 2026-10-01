@@ -298,7 +298,7 @@ function decodeEnt(html) {
       return (v === undefined || v === '<' || v === '>' || v === '&') ? m : v;
     });
 }
-const URL_RE = /https?:\/\/[^\s，、）)】」"'<>]+/g;
+const URL_RE = /https?:\/\/(?:(?!&lt;|&gt;|&quot;)[^\s，、）)】」"'<>])+/g;
 function linkLabel(u) {
   if (/INAE3000.*getPDF/i.test(u)) return '給付規定 PDF';
   if (/mcp\.fda\.gov\.tw/i.test(u)) return '仿單 PDF';
@@ -311,16 +311,22 @@ function linkify(text) {
     `<a href="${u}" target="_blank" rel="noopener" class="ref-link">${esc(linkLabel(u))}</a>`);
 }
 
-/* 台大原始資料在抗菌譜、懷孕分級等欄位用 <b> 排版。逐字 esc 會把標籤原樣印出來，
-   所以比照 doseField 的做法：只放行 <b>／<i>／<br>，其餘一律轉義。 */
-const TAG_OK = /&lt;(\/?)(b|i|br)\s*\/?&gt;/gi;
+/* 台大原始資料用 <BR> 斷行、<B> 標段落標題、<U> 標子標題、<SUP> 寫 m²，還有刪除線
+   與少數表格。逐字 esc 會把標籤原樣印出來，所以只放行一張**極小的白名單**，其餘一律轉義：
+     行內：b i u s sup sub　　斷行：br　　表格：table tr td th（td／th 只留 colspan／rowspan）
+   這張表與建置端 workspace/work/ntuh-scraper/ntuh_richtext.py 的輸出詞彙一一對應，
+   兩邊要一起改。 */
+const TAG_OK = /&lt;(\/?)(b|i|u|s|sup|sub|br|table|tr)\s*\/?&gt;/gi;
+const CELL_OK = /&lt;(\/)?(td|th)((?:\s(?:col|row)span=&quot;\d{1,2}&quot;)*)&gt;/gi;
 /* 台大原始頁面把符號寫成 HTML 實體（Apixaban 減量準則的 ≥／≤ 就是 &#8805;／&#8804;）。
    esc() 會把 & 轉成 &amp;，畫面就印出字面「&#8805;」，三個門檻的不等號全看不到。
    在渲染端一次解回真字元：只認數字實體與一小張具名表，不放行任何標籤。
    放在 esc() 之後、只還原成**文字符號**，不會破壞 esc→linkify 的安全順序。 */
 function richText(t) {
-  return linkify(t).replace(TAG_OK, (m, close, tag) =>
-    `<${close}${tag.toLowerCase()}>`);
+  return linkify(t)
+    .replace(TAG_OK, (m, close, tag) => `<${close}${tag.toLowerCase()}>`)
+    .replace(CELL_OK, (m, close, tag, attrs) =>
+      close ? `</${tag.toLowerCase()}>` : `<${tag.toLowerCase()}${(attrs || '').replace(/&quot;/g, '"')}>`);
 }
 
 function field(label, text, warn) {
@@ -574,17 +580,67 @@ function fmtDose(text) {
   return `<div class="dose-fmt">${html}</div>`;
 }
 
+/* 台大原文**有**版面標記（<BR> 斷行、<B> 段落標題）時走這條：照原文一行一行排，
+   不再用 fmtDose 那套「從壓平的一長串字猜標題」的啟發式。
+   （2026-10-01：原先建置端把 <BR>／<B> 全部壓成空白，<B>Heart allograft Tx：</B> 就變成
+   上一句句尾的內文，使用者看到的是「段落標題變內文」。）
+
+   逐行判斷，順序固定：
+     · 空行            → .dl-gap（段落之間的空隙，連續空行只留一個）
+     · 表格            → 整張原樣，不拆行（儲存格裡自己有 <br>）
+     · 第一行是給藥途徑（PO./IV./IF.… 且 ≤60 字）→ .dl-head
+     · 行首是粗體：整行都粗、或粗體以冒號結尾 → 段標 .dl-sect（階段詞降為 .dl-stage），
+       粗體之後還有字就另起一行接在標題下面；其餘情形粗體留在句中
+     · 沒有粗體、但整行很短並以冒號結尾（「Hypercalcemia:」）→ 段標
+     · 其餘 → .dl-line
+   台大畫了刪除線的行（已刪除的適應症）整行加 .dl-del，畫面上也是劃掉的。 */
+const DOSE_ROUTE_LINE = /^(?:PO|IV|IM|SC|SL|PR|IN|IT|IO|ID|IF|Top|Topical|Inhal\w*|Nebuli\w*|Intra\w*|Oral|Rectal|Buccal|Transdermal|Ophthalmic)\b[^.]*\.?$/i;
+const stripTags = h => String(h).replace(/<[^>]*>/g, '');
+function fmtRichDose(text) {
+  const tables = [];
+  const t = String(text).replace(/<table>[\s\S]*?<\/table>/gi, m => `\u0001${tables.push(m) - 1}\u0002`);
+  let html = '', first = true, gap = false;
+  t.split(/<br>/i).forEach(line => {
+    const vis = stripTags(line).replace(/[\s\u00a0\u3000]+/g, ' ').trim();
+    const tm = line.match(/\u0001(\d+)\u0002/);
+    if (tm) {
+      html += `<div class="dl-tbl">${richText(tables[+tm[1]])}</div>`;
+      first = false; gap = false; return;
+    }
+    if (!vis) { if (!first) gap = true; return; }
+    if (gap) { html += '<div class="dl-gap"></div>'; gap = false; }
+    const del = /^<s>/i.test(line.trim()) ? ' dl-del' : '';
+    if (first) {
+      first = false;
+      if (vis.length <= 60 && DOSE_ROUTE_LINE.test(vis)) {
+        html += `<div class="dl-head${del}">${richText(line)}</div>`; return;
+      }
+    }
+    const m = line.trim().match(/^(?:<s>)?<b>([\s\S]*?)<\/b>(?:<\/s>)?([\s\S]*)$/i);
+    if (m) {
+      const label = stripTags(m[1]).replace(/[\s\u00a0]+/g, ' ').trim();
+      const rest = stripTags(m[2]).trim() ? m[2].trim() : '';
+      if (!rest || /[:：]$/.test(label)) {
+        html += `<div class="${DOSE_STAGE.test(label.replace(/[:：]\s*$/, '')) ? 'dl-stage' : 'dl-sect'}${del}">${richText(m[1])}</div>`;
+        if (rest) html += `<div class="dl-line${del}">${richText(rest)}</div>`;
+        return;
+      }
+    }
+    if (/[:：]$/.test(vis) && vis.length <= 90) {
+      html += `<div class="dl-sect${del}">${richText(line)}</div>`; return;
+    }
+    html += `<div class="dl-line${del}">${richText(line)}</div>`;
+  });
+  return `<div class="dose-fmt">${html}</div>`;
+}
+
+/* 有版面標記（<br>／<b>／表格／刪除線）→ fmtRichDose；整段純文字（台大只寫一長串）
+   → 沿用 fmtDose 的啟發式斷句。 */
+const DOSE_HAS_MARKUP = /<(?:br|b|s|u|table)>/i;
 function doseField(text) {
   if (!text || !String(text).trim()) return '';
-  /* 抗生素頁的劑量原文用 <br> 排版（台大原始資料就是這樣寫的），
-     fmtDose 是為台大處方集那種一整段英文設計的，套上去會把 <br> 當內文。
-     含標籤的走簡單路徑：只放行 <br>，其餘一律轉義。 */
-  if (/<br\s*\/?>/i.test(text)) {
-    return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
-      <div class="dc-ftext">${richText(text)}</div></div>`;
-  }
   return `<div class="dc-field"><div class="dc-flabel">常用劑量</div>
-    <div class="dc-ftext">${fmtDose(text)}</div></div>`;
+    <div class="dc-ftext">${DOSE_HAS_MARKUP.test(text) ? fmtRichDose(text) : fmtDose(text)}</div></div>`;
 }
 
 /* 輸注流速調整（nomogram）：資料在 data/drugs/extras.js 的手寫補充層，以藥品八碼掛在

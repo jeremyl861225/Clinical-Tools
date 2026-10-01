@@ -276,5 +276,23 @@ table.titr-tbl tr.titr-hi td:first-child{box-shadow:inset 3px 0 0 var(--accent);
    換行時後續行對齊到破折號後的文字（hanging indent，但不突出段落左緣）。 */
 .dose-fmt .dl-sub{padding-left:1.5em; text-indent:-0.9em; color:var(--muted); font-size:12.5px;}
 .dose-fmt .dl-sub:before{content:'– '; color:var(--muted-soft);}
+/* 台大原文自帶版面（<BR>／<B>／<U>／刪除線／表格）的欄位：fmtRichDose 與 richText 的輸出。
+   段落之間的空行 → .dl-gap；整行刪除線（台大畫掉的適應症）→ .dl-del。 */
+.dose-fmt .dl-sect:first-child{margin-top:0;}
+.dose-fmt .dl-gap{height:5px;}
+.dose-fmt .dl-gap + .dl-sect{margin-top:2px;}
+.dose-fmt .dl-del{text-decoration:line-through; color:var(--muted);}
+.dose-fmt .dl-tbl{margin:4px 0;}
+.dc-ftext u{text-decoration:underline; text-underline-offset:2px;}
+.dc-ftext s{text-decoration:line-through; color:var(--muted);}
+.dc-ftext sup, .dc-ftext sub{font-size:.75em; line-height:0;}
+/* 台大自己的表格（劑量表的滴定步驟、carboplatin 公式…）：沒有 class 的才套，
+   .renal-tbl／.titr-tbl 那兩張是本站自己畫的、有各自的樣式。
+   display:block + overflow-x：手機上太寬時表格自己橫向捲動，不撐破卡片。 */
+.dc-ftext table:not([class]){display:block; max-width:100%; overflow-x:auto; border-collapse:collapse;
+  margin:4px 0; font-size:12px; line-height:1.5;}
+.dc-ftext table:not([class]) td, .dc-ftext table:not([class]) th{border:1px solid var(--line);
+  padding:3px 7px; vertical-align:top; text-align:left; min-width:3.5em;}
+.dc-ftext table:not([class]) th{background:var(--soft-bg); font-weight:600;}
 .db-hint{font-family:var(--mono); font-size:10.5px; color:var(--muted); margin:-4px 0 10px 2px;}
 .db-more{display:block; width:100%; margin:12px 0 4px; padding:10px; font-family:var(--mono); font-size:12px; background:var(--panel); border:1px solid var(--line); border-radius:2px; color:var(--ink); cursor:pointer;}
