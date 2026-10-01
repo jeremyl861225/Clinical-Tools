@@ -595,11 +595,86 @@ function fmtDose(text) {
      · 沒有粗體、但整行很短並以冒號結尾（「Hypercalcemia:」）→ 段標
      · 其餘 → .dl-line
    台大畫了刪除線的行（已刪除的適應症）整行加 .dl-del，畫面上也是劃掉的。 */
+/* 台大原文在標題之後常常**沒有**換行，整段劑量擠成一行：
+     「Prevention of C/T-induced N/V: IF, over 15 mins (…). Adults, 8 mg or 0.15 mg/kg;
+       children ≧ 6 m/o, 0.15 mg/kg; max. 16 mg/dose, …」
+   所以原文的換行與粗體標題只當**骨架**，每一行內部再套 fmtDose 那套調過的斷句規則
+   （使用者實機回報逐條修出來的）：
+     · 括號外的句點（非縮寫、非小數、非「1.」這種項號）→ 另起一行
+     · 括號外的分號 → 子項（縮排＋破折號）；比較／體重帶（「≦ 60 kg…」「or…」）接回上一行
+     · 大寫的族群詞（Adults, Children…）接在逗號或冒號前 → 另起一行
+     · **小寫的族群詞接在分號後（"; children ≧ 6 m/o"）也是另一行，不是上一行的子項**——
+       舊版只認大寫，造成同一張卡裡 "Children 1 m/o-12 y/o" 是獨立一行、
+       "children ≧ 6 m/o" 卻縮成 Adults 的子項（使用者圈出的就是這個不一致）。
+   切的時候行內標籤（b i u s ins sup sub）逐片段關開，不會留下沒配對的標籤。 */
+const POP_MID = /^(?:Adults?|Children|Child|Neonates?|Infants?(?:\s+and\s+children)?|Adolescents?|Elderly|Geriatric|Pediatric|Paediatric)\b[,:]/;
+const POP_AFTER_SEMI = /^(?:adults?|children|child|neonates?|infants?|adolescents?|elderly|geriatric|pediatric|paediatric|preterm|premature)\b/i;
+const INLINE_TAG = /^<(\/?)(b|i|u|s|ins|sup|sub)>/;
+function splitDoseLine(h) {
+  const segs = [];
+  let cur = '', depth = 0, open = [];
+  const flush = sep => {
+    const closers = open.slice().reverse().map(t => `</${t}>`).join('');
+    segs.push({h: cur + closers, sep});
+    cur = open.map(t => `<${t}>`).join('');
+  };
+  const visible = () => stripTags(cur).replace(/[\s ]+/g, ' ');
+  for (let i = 0; i < h.length; i++) {
+    const c = h[i];
+    if (c === '<') {
+      const m = h.slice(i).match(INLINE_TAG);
+      if (m) {
+        if (m[1]) { const k = open.lastIndexOf(m[2]); if (k >= 0) open.splice(k, 1); } else open.push(m[2]);
+        cur += m[0]; i += m[0].length - 1; continue;
+      }
+    }
+    if (c === '(' || c === '（') depth++;
+    else if (c === ')' || c === '）') depth = Math.max(0, depth - 1);
+    // 大寫族群詞：前面是空白、不在行首、不在括號內 → 另起一行
+    if (depth === 0 && /[ACEGINP]/.test(c) && /\s$/.test(cur) && visible().trim() && POP_MID.test(h.slice(i))) {
+      flush('');
+    }
+    const next = h[i + 1];
+    const atBreak = next === undefined || /\s/.test(next);
+    if (c === ';' || c === '；') {
+      if (depth === 0 && atBreak) { flush(';'); continue; }
+    }
+    cur += c;
+    if (c === '.' && depth === 0 && atBreak) {
+      const before = visible().slice(0, -1);
+      const lw = (before.match(/[A-Za-z]+$/) || [''])[0];
+      const listMark = /^\s*(?:\d{1,2}|[A-Za-z])$/.test(before);         // 「1.」「a.」這種項號
+      if (!listMark && (lw.length === 0 || lw.length > 2) && !DOSE_ABBR.has(lw.toLowerCase())) flush('.');
+    }
+  }
+  if (stripTags(cur).trim()) flush('');
+  return segs;
+}
+/* 一行 → 若干 <div>：句首＝.dl-line，分號後的子項＝.dl-sub（族群詞開頭者升為 .dl-line） */
+function doseItems(h, del) {
+  const items = [];
+  let prev = '';
+  splitDoseLine(h).forEach(sg => {
+    const vis = stripTags(sg.h).replace(/[\s 　]+/g, ' ').trim();
+    if (!vis) { return; }
+    if (items.length && prev === ';' && /^(?:[<>≤≥≦≧]|or\b)/i.test(vis)) {
+      items[items.length - 1].h += '；' + sg.h.trim();            // 比較／體重帶接回上一行
+    } else {
+      const sub = items.length && prev === ';' && !POP_AFTER_SEMI.test(vis);
+      items.push({k: sub ? 'dl-sub' : 'dl-line', h: sg.h.trim()});
+    }
+    prev = sg.sep;
+  });
+  return items.map(it => `<div class="${it.k}${del}">${richText(it.h)}</div>`).join('');
+}
 const DOSE_ROUTE_LINE = /^(?:PO|IV|IM|SC|SL|PR|IN|IT|IO|ID|IF|Top|Topical|Inhal\w*|Nebuli\w*|Intra\w*|Oral|Rectal|Buccal|Transdermal|Ophthalmic)\b[^.]*\.?$/i;
 const stripTags = h => String(h).replace(/<[^>]*>/g, '');
 function fmtRichDose(text) {
   const tables = [];
-  const t = String(text).replace(/<table>[\s\S]*?<\/table>/gi, m => `\u0001${tables.push(m) - 1}\u0002`);
+  /* 表格抽成佔位符，且前後各補**恰好一個**換行：台大有表格後面緊接文字、沒有 <br> 的寫法
+     （lamotrigine 的 "EIAEDs: enzyme-inducing…" 註腳），不補的話整行只剩表格、後面的字被丟掉。 */
+  const t = String(text).replace(/<table>[\s\S]*?<\/table>/gi, m => `\u0001${tables.push(m) - 1}\u0002`)
+    .replace(/(?:<br>)*(\u0001\d+\u0002)(?:<br>)*/g, '<br>$1<br>');
   let html = '', first = true, gap = false;
   t.split(/<br>/i).forEach(line => {
     const vis = stripTags(line).replace(/[\s\u00a0\u3000]+/g, ' ').trim();
@@ -623,14 +698,14 @@ function fmtRichDose(text) {
       const rest = stripTags(m[2]).trim() ? m[2].trim() : '';
       if (!rest || /[:：]$/.test(label)) {
         html += `<div class="${DOSE_STAGE.test(label.replace(/[:：]\s*$/, '')) ? 'dl-stage' : 'dl-sect'}${del}">${richText(m[1])}</div>`;
-        if (rest) html += `<div class="dl-line${del}">${richText(rest)}</div>`;
+        if (rest) html += doseItems(rest, del);
         return;
       }
     }
     if (/[:：]$/.test(vis) && vis.length <= 90) {
       html += `<div class="dl-sect${del}">${richText(line)}</div>`; return;
     }
-    html += `<div class="dl-line${del}">${richText(line)}</div>`;
+    html += doseItems(line.trim(), del);
   });
   return `<div class="dose-fmt">${html}</div>`;
 }
